@@ -414,7 +414,12 @@
         (meta.explanation ? '<div style="margin-top:8px;color:var(--text2,#374151)">' + escHtml(meta.explanation) + '</div>' : '') +
       '</div>' +
 
-      '<details class="rd-optional" open>' +
+      // Collapsed by default — nothing in here is required, and having it
+      // expanded on every single mistake added visual clutter/felt like
+      // more work across a multi-mistake review. Stays open if the student
+      // already wrote something here on an earlier visit (resuming a
+      // partially-completed mistake must never hide their own input).
+      '<details class="rd-optional"' + ((m.evidence || m.temptingAnswerNote || m.note) ? ' open' : '') + '>' +
         '<summary>Bằng chứng / Vì sao đáp án sai lại hấp dẫn? / Ghi chú (không bắt buộc)</summary>' +
         '<textarea class="rd-textarea" id="rd-evidence" placeholder="Bằng chứng trong bài...">' + escHtml(m.evidence || '') + '</textarea>' +
         '<textarea class="rd-textarea" id="rd-tempting" placeholder="Vì sao đáp án sai lại hấp dẫn?" style="margin-top:6px">' + escHtml(m.temptingAnswerNote || '') + '</textarea>' +

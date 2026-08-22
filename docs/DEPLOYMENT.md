@@ -134,8 +134,8 @@ a diff or PR review.
    any per-page `.css` next to an `.html` file), bump the cache-busting
    version string before pushing.** Every `<script src>`/`<link href>` in
    `frontend/*.html` that points at a local `.js`/`.css` file carries a
-   `?v=YYYYMMDD` query string (current version: `20260827` — e.g.
-   `js/dashboard.js?v=20260827`) — Render
+   `?v=YYYYMMDD` query string (current version: `20260828` — e.g.
+   `js/dashboard.js?v=20260828`) — Render
    Static Sites have no build step and don't content-hash filenames, and
    there is no in-repo way to set custom Cache-Control (Render only supports
    that via its Dashboard, not a `_headers` file like Netlify/Cloudflare
@@ -147,7 +147,7 @@ a diff or PR review.
    ```
    # PowerShell — always replace the CURRENT version above with the next one
    Get-ChildItem frontend/*.html | ForEach-Object {
-     (Get-Content $_.FullName -Raw) -replace '\?v=20260827', '?v=20260828' | Set-Content $_.FullName -NoNewline
+     (Get-Content $_.FullName -Raw) -replace '\?v=20260828', '?v=20260829' | Set-Content $_.FullName -NoNewline
    }
    ```
    Use today's date (or bump the last digit for same-day fixes). This only
