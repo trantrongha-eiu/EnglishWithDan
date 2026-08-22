@@ -9,12 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260829"/>
-  <link rel="stylesheet" href="css/components.css?v=20260829"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260829"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260829"/>
-  <script src="js/theme.js?v=20260829"></script>
-  <script src="js/shared/visit-tracker.js?v=20260829"></script>
+  <link rel="stylesheet" href="css/tokens.css?v=20260830"/>
+  <link rel="stylesheet" href="css/components.css?v=20260830"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260830"/>
+  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260830"/>
+  <script src="js/theme.js?v=20260830"></script>
+  <script src="js/shared/visit-tracker.js?v=20260830"></script>
   <style>
     body { background: var(--bg); }
     .dict-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
@@ -141,10 +141,10 @@
       display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;
     }
     .dict-script-toggle-label { font-size: 14px; font-weight: 700; color: var(--text); }
-    .dict-script-body { display: none; margin-top: 12px; font-size: 15px; line-height: 1.7; color: var(--text); }
+    .dict-script-body { display: none; margin-top: 12px; }
     .dict-script-body.show { display: block; }
-    .dict-script-word { cursor: pointer; }
-    .dict-script-word:hover { color: var(--brand); text-decoration: underline; }
+    .dict-hint-count { display: inline-block; background: var(--surface2, #f3f4f6); color: var(--text2, #4b5563); border-radius: 20px; padding: 3px 12px; font-weight: 700; font-size: 12.5px; margin-bottom: 8px; }
+    .dict-hint-pattern { font-family: 'Courier New', monospace; letter-spacing: 1px; font-size: 15px; color: var(--text3, #9ca3af); font-weight: 700; line-height: 1.8; }
 
     .dict-session-stat { font-size: 12px; color: var(--text3); text-align: center; margin-top: 10px; }
     .dict-loading { text-align: center; padding: 80px 20px; color: var(--text3); }
@@ -153,16 +153,16 @@
 </head>
 
 <body>
-<script src="js/shared/auth-service.js?v=20260829"></script>
-<script src="js/auth.js?v=20260829"></script>
-<script src="js/upgrade-modal.js?v=20260829"></script>
-<script src="js/nav.js?v=20260829"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260829"></script>
-<script src="js/shared/sound-effects.js?v=20260829"></script>
-<script src="js/shared/utils.js?v=20260829"></script>
-<script src="js/shared/toast.js?v=20260829"></script>
-<script src="js/shared/api-client.js?v=20260829"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260829"></script>
+<script src="js/shared/auth-service.js?v=20260830"></script>
+<script src="js/auth.js?v=20260830"></script>
+<script src="js/upgrade-modal.js?v=20260830"></script>
+<script src="js/nav.js?v=20260830"></script>
+<script src="js/shared/peer-chat-widget.js?v=20260830"></script>
+<script src="js/shared/sound-effects.js?v=20260830"></script>
+<script src="js/shared/utils.js?v=20260830"></script>
+<script src="js/shared/toast.js?v=20260830"></script>
+<script src="js/shared/api-client.js?v=20260830"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260830"></script>
 
 <div class="dict-wrap">
 
@@ -225,7 +225,7 @@
         </div>
 
         <div class="dict-script-toggle" onclick="dictToggleScript()">
-          <span class="dict-script-toggle-label"><i class="fas fa-file-alt"></i> Xem script câu này</span>
+          <span class="dict-script-toggle-label"><i class="fas fa-lightbulb"></i> Xem gợi ý</span>
           <i class="fas fa-chevron-down" id="dict-script-chevron"></i>
         </div>
         <div class="dict-script-body" id="dict-script-body"></div>
@@ -367,20 +367,25 @@ function dictGoTo(i) {
   document.getElementById('dict-check-btn').disabled = false;
   const sentence = sentences[i];
   document.getElementById('dict-word-count').textContent = sentence.text.trim().split(/\s+/).length + ' từ';
-  document.getElementById('dict-script-body').innerHTML = sentence.text.split(/\s+/).map(w =>
-    `<span class="dict-script-word" onclick="speakWord('${escHtml(w.replace(/[^a-zA-Z']/g, ''))}')">` + escHtml(w) + '</span>'
-  ).join(' ');
+  const hint = _buildDictHint(sentence.text);
+  document.getElementById('dict-script-body').innerHTML =
+    `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
+    `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>`;
   updateDictProgress(0);
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
   document.getElementById('dict-input').focus();
 }
 
-function speakWord(word) {
-  if (!word || !window.speechSynthesis) return;
-  const u = new SpeechSynthesisUtterance(word);
-  u.lang = 'en-US';
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+// Word count + first-letter-per-word hint — same UX as Task 1/2 writing
+// practice (see backend/utils/textMatch.js's buildAnswerHint) and the
+// Task 2 Template's Dịch câu mode. Was previously the full correct
+// sentence text (clickable per word, spoken via TTS) — replaced since
+// showing the literal answer let a student just read it instead of
+// transcribing what they actually heard, defeating dictation practice.
+function _buildDictHint(text) {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
+  return { wordCount: words.length, pattern };
 }
 
 /* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared
@@ -502,6 +507,23 @@ document.getElementById('dict-input').addEventListener('keydown', e => {
     if (!document.getElementById('dict-check-btn').disabled) dictCheck();
   }
 });
+
+// Anti-cheat: dictation is meant to be typed from what the student hears,
+// never pasted in from an outside source. Blocks Ctrl+V, right-click
+// "Paste", and dragging text in — normal typing is untouched. Same
+// pattern as speaking.js's #transcript-textarea guard.
+(() => {
+  const input = document.getElementById('dict-input');
+  input.addEventListener('paste', e => {
+    e.preventDefault();
+    showToast('Không thể dán văn bản vào đây — hãy nghe và gõ lại.', 'warn', 3000);
+  });
+  input.addEventListener('drop', e => {
+    e.preventDefault();
+    showToast('Không thể kéo-thả văn bản vào đây — hãy nghe và gõ lại.', 'warn', 3000);
+  });
+  input.addEventListener('dragover', e => e.preventDefault());
+})();
 
 /* ══════════════ INIT ══════════════ */
 document.addEventListener('DOMContentLoaded', () => {
