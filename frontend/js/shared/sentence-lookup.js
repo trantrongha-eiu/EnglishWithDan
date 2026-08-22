@@ -258,7 +258,15 @@
     document.addEventListener('mousedown', onDocMouseDown);
     document.addEventListener('mouseup', onSelectionEnd);
     document.addEventListener('touchend', onSelectionEnd);
-    window.addEventListener('scroll', hideAll, { passive: true, capture: true });
+    // Only the icon (pre-click, tied to a transient selection) hides on
+    // scroll — the popup (post-click, showing the actual translation)
+    // must NOT: both are `position: fixed` (sentence-lookup.css), so they
+    // already stay put on screen correctly while the page scrolls under
+    // them. Hiding the popup here made the translation vanish the instant
+    // a student scrolled to keep reading, which defeats the point of
+    // having it open. hideAll() (both) is still used elsewhere for actual
+    // dismissal: click-outside, Escape, a new exam starting.
+    window.addEventListener('scroll', hideIcon, { passive: true, capture: true });
     window.addEventListener('resize', hideAll);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') hideAll();
