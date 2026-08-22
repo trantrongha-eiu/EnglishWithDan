@@ -186,6 +186,21 @@ function showScreen(id) {
       const btn = document.getElementById('btn-analyze');
       if (btn) btn.disabled = !this.value.trim();
     });
+
+    // Anti-cheat: the transcript is meant to be speech-to-text output that
+    // the student may correct by typing, never a pre-written answer smuggled
+    // in from elsewhere. Block paste (Ctrl+V, right-click "Paste", middle-
+    // click on Linux — all fire the same 'paste' event) and dragging text in
+    // from another window/tab; typing and editing in place are untouched.
+    ta.addEventListener('paste', function(e) {
+      e.preventDefault();
+      showToast('Không thể dán văn bản vào đây — hãy nói hoặc gõ trực tiếp câu trả lời của bạn.', 'warn', 3000);
+    });
+    ta.addEventListener('drop', function(e) {
+      e.preventDefault();
+      showToast('Không thể kéo-thả văn bản vào đây — hãy nói hoặc gõ trực tiếp câu trả lời của bạn.', 'warn', 3000);
+    });
+    ta.addEventListener('dragover', function(e) { e.preventDefault(); });
   }
 
   // Navigate to the right screen/tab per the URL, also restoring the exact
