@@ -985,6 +985,11 @@ function renderSelect() {
         </label>
       </div>
 
+      ${state.currentMode === 'practice' ? `
+      <button class="t2-back-btn" style="margin-top:10px" onclick="openT2Preview()" title="Xem trước toàn bộ câu hỏi sẽ xuất hiện trong bài luyện tập">
+        <i class="fas fa-eye"></i> Xem trước câu hỏi
+      </button>` : ''}
+
       ${state.currentMode === 'practice' && !isVocabLearned(t._id) ? `
       <div class="t2-vocab-gate-banner">
         <div class="t2-vocab-gate-info">📖 Bạn cần học từ vựng và lưu vào sổ trước khi có thể luyện tập chủ đề này.</div>
@@ -2094,6 +2099,57 @@ async function openT2History() {
         <div class="t2-hist-stat"><div class="t2-hist-num">${avgScore}%</div><div class="t2-hist-lbl">TB chính xác</div></div>
       </div>
       ${rows}`;
+  } catch (e) {
+    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
+  }
+}
+
+// ── "Xem trước câu hỏi" — lets a student read every sentence that will
+// come up in this topic's Luyện tập session before starting, so they can
+// mentally prepare instead of hitting each one cold. Reuses the exact
+// same /questions/topic endpoint (and "level: all") startPractice() itself
+// calls — this is a read-only peek, it doesn't touch session state, and
+// the endpoint already strips correctAnswer/modelAnswer server-side
+// (sanitizeQuestionForClient), so this can never leak an answer key.
+async function openT2Preview() {
+  if (!document.getElementById('t2-preview-overlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 't2-preview-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px';
+    overlay.innerHTML = `
+      <div class="t2-hist-modal">
+        <div class="t2-hist-hdr">
+          <h3>👀 Xem trước câu hỏi</h3>
+          <button class="t2-hist-close" onclick="document.getElementById('t2-preview-overlay').style.display='none'"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="t2-hist-body2" id="t2-preview-body">
+          <div style="text-align:center;padding:24px"><div class="wp-spinner"></div></div>
+        </div>
+      </div>`;
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+    document.body.appendChild(overlay);
+  }
+  document.getElementById('t2-preview-overlay').style.display = 'flex';
+  const body = document.getElementById('t2-preview-body');
+  body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
+  try {
+    const params = new URLSearchParams({ level: state.selectedLevel });
+    const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
+    if (!data.questions?.length) {
+      body.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px;font-size:13px">Chưa có câu hỏi ở level này</p>';
+      return;
+    }
+    body.innerHTML = `
+      <p style="font-size:12.5px;color:#9ca3af;margin:0 0 14px">Toàn bộ ${data.questions.length} câu sẽ xuất hiện khi bạn bấm "Bắt đầu" (thứ tự có thể bị xáo trộn nếu bật "Xáo trộn câu"). Đáp án chưa hiển thị ở đây.</p>` +
+      data.questions.map((q, i) => `
+        <div class="t2-hist-entry">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span class="t2-hist-entry-date" style="margin:0">Câu ${i + 1}</span>
+            <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
+            ${q.answerWordCount ? `<span class="t2-hist-entry-date" style="margin:0">📏 ${q.answerWordCount} từ</span>` : ''}
+          </div>
+          <div class="t2-question-text" style="margin:0">${_escHtml(q.questionText || '')}</div>
+        </div>`).join('');
   } catch (e) {
     body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
   }
