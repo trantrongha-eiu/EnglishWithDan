@@ -40,7 +40,9 @@ async function startExam() {
   return { status: 'ok', exam: { _id: exam._id, name: exam.name, duration: exam.duration, task1, task2 } };
 }
 
-async function submitExam(userId, body) {
+// `user` is the full req.user Mongoose document (not just an id) — needed
+// to advance the streak below, same convention as reading/listeningService.
+async function submitExam(user, body) {
   const {
     examId, task1Id, task2Id, task1Answer = '', task2Answer = '',
     wordCount1 = 0, wordCount2 = 0, timeTaken = 0, status = 'completed'
@@ -58,7 +60,7 @@ async function submitExam(userId, body) {
   if (!exam) return null;
 
   const attempt = new WritingAttempt({
-    userId, examId, examName: exam.name,
+    userId: user._id, examId, examName: exam.name,
     task1Id: task1Id || undefined, task2Id: task2Id || undefined,
     task1Snapshot: buildTask1Snapshot(t1), task2Snapshot: buildTask2Snapshot(t2),
     task1Answer, task2Answer,
@@ -67,6 +69,20 @@ async function submitExam(userId, body) {
     submittedAt: new Date(), status
   });
   await attempt.save();
+
+  // Writing (unlike Reading/Listening) isn't auto-graded at submission time
+  // — a teacher may not score it for days — so there's no accuracy to tier
+  // a bonus off yet. A flat +1 just keeps today's link in the streak chain
+  // alive (matches vocabBookService's flat-bonus activities); same-day
+  // resubmits are a no-op since updateStreak() defaults allowSameDayStack
+  // to false. This was previously missing entirely, so a student who only
+  // wrote an essay (no Reading/Listening/Vocab that day) saw the day marked
+  // "done" in the activity heatmap yet had their streak quietly die anyway.
+  if (user.role === 'student') {
+    user.updateStreak();
+    user.save().catch(() => {});
+  }
+
   return attempt._id;
 }
 
@@ -80,13 +96,13 @@ async function getPracticeTask(taskType) {
   return randomDoc(Model);
 }
 
-async function submitPractice(userId, { taskType, taskId, answer, wordCount }) {
+async function submitPractice(user, { taskType, taskId, answer, wordCount }) {
   const tNum = taskType;
   const Model = tNum === 1 ? WritingTask1 : WritingTask2;
   const task = taskId ? await Model.findById(taskId).lean() : null;
 
   const attempt = new WritingAttempt({
-    userId, submissionType: 'practice', examName: `Luyện Task ${tNum}`,
+    userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum}`,
     ...(tNum === 1 ? {
       task1Id: taskId || undefined,
       task1Snapshot: buildTask1Snapshot(task),
@@ -101,6 +117,13 @@ async function submitPractice(userId, { taskType, taskId, answer, wordCount }) {
     submittedAt: new Date(), status: 'completed'
   });
   await attempt.save();
+
+  // See submitExam()'s comment above — same flat, once-a-day streak credit.
+  if (user.role === 'student') {
+    user.updateStreak();
+    user.save().catch(() => {});
+  }
+
   return attempt._id;
 }
 

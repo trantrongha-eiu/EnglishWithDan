@@ -130,7 +130,7 @@ describe('speakingService.saveAttempt', () => {
       improvements: ['Use more linking words'],
     };
 
-    const attemptId = await speakingService.saveAttempt(student._id, {
+    const attemptId = await speakingService.saveAttempt(student, {
       questionId: null, topic: 'Travel', part: 2,
       questionText: 'Describe a memorable trip.', transcript: 'He go to school yesterday for a trip',
       duration: 45, feedback,
@@ -174,7 +174,7 @@ describe('speakingService.saveAttempt', () => {
       improvements: [{ suggestion: 'Use more linking words' }],
     };
 
-    await speakingService.saveAttempt(student._id, {
+    await speakingService.saveAttempt(student, {
       questionId: null, topic: 'Travel', part: 2,
       questionText: 'Describe a memorable trip.', transcript: 'Some transcript',
       duration: 45, feedback,
@@ -191,7 +191,7 @@ describe('speakingService.saveAttempt', () => {
     const student = await createStudent();
     const feedback = { overallBand: 5, mistakes: [], strengths: [], improvements: [] };
 
-    await expect(speakingService.saveAttempt(student._id, {
+    await expect(speakingService.saveAttempt(student, {
       questionId: null, topic: 'Travel', part: 99, // not in enum [1,2,3] -> save() validation fails
       questionText: 'Q', transcript: 'T', duration: 10, feedback,
     })).resolves.toBeNull();
@@ -435,7 +435,7 @@ describe('speakingService.retryGrading', () => {
     const other = await createStudent();
     const attempt = await SpeakingAttempt.create({ userId: other._id, part: 1, question: 'Q', transcript: 't', status: 'error' });
 
-    const result = await speakingService.retryGrading(attempt._id, student._id);
+    const result = await speakingService.retryGrading(attempt._id, student);
     expect(result.status).toBe('not_found');
   });
 
@@ -446,7 +446,7 @@ describe('speakingService.retryGrading', () => {
       aiFeedback: { overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6 },
     });
 
-    const result = await speakingService.retryGrading(attempt._id, student._id);
+    const result = await speakingService.retryGrading(attempt._id, student);
     expect(result.status).toBe('already_analyzed');
     expect(geminiService.checkSpeaking).not.toHaveBeenCalled();
   });
@@ -462,7 +462,7 @@ describe('speakingService.retryGrading', () => {
       overallFeedback: 'retried ok', strengths: [], mistakes: [], improvements: [],
     });
 
-    const result = await speakingService.retryGrading(attempt._id, student._id);
+    const result = await speakingService.retryGrading(attempt._id, student);
     expect(result.status).toBe('ok');
     expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2);
 
@@ -479,7 +479,7 @@ describe('speakingService.retryGrading', () => {
     });
     geminiService.checkSpeaking.mockRejectedValue(new Error('still failing'));
 
-    await expect(speakingService.retryGrading(attempt._id, student._id)).rejects.toThrow('still failing');
+    await expect(speakingService.retryGrading(attempt._id, student)).rejects.toThrow('still failing');
 
     const saved = await SpeakingAttempt.findById(attempt._id).lean();
     expect(saved.status).toBe('error');

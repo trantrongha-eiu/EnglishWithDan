@@ -61,8 +61,8 @@ exports.analyze = catchAsync(async (req, res) => {
   }
 
   const attemptId = pendingId
-    ? await speakingService.finalizeAttempt(pendingId, feedback)
-    : await speakingService.saveAttempt(req.user._id, { questionId, topic, part: partNum, questionText, transcript, duration, feedback });
+    ? await speakingService.finalizeAttempt(pendingId, feedback, req.user)
+    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript, duration, feedback });
 
   // attemptId lets the frontend key a locally-stored (IndexedDB) audio
   // recording to this exact attempt, so History can offer same-device
@@ -161,7 +161,7 @@ exports.improveAnswer = catchAsync(async (req, res) => {
 // already-'analyzed' attempt.
 exports.retry = catchAsync(async (req, res) => {
   try {
-    const result = await speakingService.retryGrading(req.params.attemptId, req.user._id);
+    const result = await speakingService.retryGrading(req.params.attemptId, req.user);
     if (result.status === 'not_found') {
       return res.status(404).json({ success: false, message: 'Không tìm thấy lượt làm bài' });
     }

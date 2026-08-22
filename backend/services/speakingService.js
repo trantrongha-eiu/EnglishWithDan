@@ -222,10 +222,12 @@ function mapFeedbackToAiFeedback(feedback) {
 // the student still gets their feedback even if saving the attempt fails.
 // Returns the saved attempt's _id (or null on failure) so the frontend can
 // key a locally-stored (IndexedDB) audio recording to this exact attempt.
-async function saveAttempt(userId, { questionId, topic, part, questionText, transcript, duration, feedback }) {
+// `user` is the full req.user Mongoose document (not just an id) — needed
+// to advance the streak below, same convention as reading/listeningService.
+async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback }) {
   try {
     const attempt = new SpeakingAttempt({
-      userId,
+      userId: user._id,
       questionId: questionId || null,
       topic: topic || '',
       part,
@@ -236,11 +238,26 @@ async function saveAttempt(userId, { questionId, topic, part, questionText, tran
       aiFeedback: mapFeedbackToAiFeedback(feedback)
     });
     await attempt.save();
+    _creditStreakForAnalyzedAttempt(user);
     return attempt._id;
   } catch (saveErr) {
     console.error('[Speaking] Save attempt error:', saveErr.message);
     return null;
   }
+}
+
+// Speaking (like Writing) is graded by AI, not right-vs-wrong, so there's
+// no accuracy to tier a bonus off — a flat +1 just keeps today's link in
+// the streak chain alive (matches vocabBookService's flat-bonus
+// activities); same-day repeats are a no-op since updateStreak() defaults
+// allowSameDayStack to false. This was previously missing entirely: the
+// activity heatmap already counts SpeakingAttempt docs (userService.
+// getActivityHeatmap), so a student who only practiced Speaking that day
+// saw the day marked "done" there yet had their streak quietly die anyway.
+function _creditStreakForAnalyzedAttempt(user) {
+  if (!user || user.role !== 'student') return;
+  user.updateStreak();
+  user.save().catch(() => {});
 }
 
 // Persisted BEFORE calling Gemini so the submission is visible to the
@@ -271,14 +288,18 @@ async function createPendingAttempt(userId, { questionId, topic, part, questionT
 }
 
 // Fills in a pending attempt once grading succeeds. Returns the attempt's
-// _id (or null on failure) — same contract as saveAttempt.
-async function finalizeAttempt(attemptId, feedback) {
+// _id (or null on failure) — same contract as saveAttempt. `user` (the full
+// req.user document) is optional — retryGrading()'s only caller always has
+// it, but pass-through call sites shouldn't be forced to fetch one just to
+// finalize a grade.
+async function finalizeAttempt(attemptId, feedback, user) {
   try {
     const updated = await SpeakingAttempt.findByIdAndUpdate(
       attemptId,
       { status: 'analyzed', aiFeedback: mapFeedbackToAiFeedback(feedback) },
       { new: true, runValidators: true }
     );
+    if (updated) _creditStreakForAnalyzedAttempt(user);
     return updated ? updated._id : null;
   } catch (err) {
     console.error('[Speaking] Finalize attempt error:', err.message);
@@ -305,14 +326,14 @@ async function markAttemptError(attemptId) {
 // successful grade isn't a "retry", it's a silent re-grade a student never
 // asked for. AI errors propagate the same way analyze()'s do, so the
 // controller can apply the same isOverloaded -> 503 handling.
-async function retryGrading(attemptId, userId) {
-  const attempt = await SpeakingAttempt.findOne({ _id: attemptId, userId });
+async function retryGrading(attemptId, user) {
+  const attempt = await SpeakingAttempt.findOne({ _id: attemptId, userId: user._id });
   if (!attempt) return { status: 'not_found' };
   if (attempt.status === 'analyzed') return { status: 'already_analyzed' };
 
   try {
     const feedback = await gradeSpeaking(attempt.question, attempt.transcript, attempt.part);
-    await finalizeAttempt(attempt._id, feedback);
+    await finalizeAttempt(attempt._id, feedback, user);
     return { status: 'ok', feedback, attemptId: attempt._id };
   } catch (aiErr) {
     await markAttemptError(attempt._id);
