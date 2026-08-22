@@ -130,6 +130,31 @@ a diff or PR review.
    equivalent). If the backend's public URL ever changes, every one of these
    call sites needs updating — there is currently no single shared config
    point for it in the public frontend.
+5. **If you changed any `frontend/js/*.js` or `frontend/css/*.css` file (or
+   any per-page `.css` next to an `.html` file), bump the cache-busting
+   version string before pushing.** Every `<script src>`/`<link href>` in
+   `frontend/*.html` that points at a local `.js`/`.css` file carries a
+   `?v=YYYYMMDD` query string (e.g. `js/dashboard.js?v=20260822`) — Render
+   Static Sites have no build step and don't content-hash filenames, and
+   there is no in-repo way to set custom Cache-Control (Render only supports
+   that via its Dashboard, not a `_headers` file like Netlify/Cloudflare
+   Pages), so without a changing URL, a browser or intermediate cache can go
+   on serving an old cached JS/CSS file indefinitely after a deploy — this
+   was the cause of a real "new feature's UI looks broken until I clear my
+   browser cache and log in again" report. Bump it with a single repo-wide
+   find/replace, e.g.:
+   ```
+   # PowerShell
+   Get-ChildItem frontend/*.html | ForEach-Object {
+     (Get-Content $_.FullName -Raw) -replace '\?v=20260822', '?v=20260823' | Set-Content $_.FullName -NoNewline
+   }
+   ```
+   Use today's date (or bump the last digit for same-day fixes). This only
+   needs to happen when a `.js`/`.css` file's *content* changed — editing an
+   `.html` file alone doesn't need a bump, since Render/browsers already
+   revalidate HTML aggressively. External URLs (Google Fonts, the cdnjs
+   Font Awesome CDN) are deliberately left unversioned by us — they're
+   already versioned/cached by their own host.
 
 ## 5. Zero-downtime and rollback
 
