@@ -37,8 +37,19 @@ describe('GET /api/learning/today', () => {
   test('a real goal + full-week study plan produces a real today response via the actual route', async () => {
     const student = await createStudent();
     const token = signTokenFor(student);
+    // weeklyStudyMinutes must be enough to cover every one of the 7
+    // studyDays at preferredSessionMinutes each (7*60=420) — otherwise
+    // generateSessions() (studyPlanService.js) legitimately runs out of
+    // allocated minutes partway through the week and leaves the later
+    // days with an empty items[] (Case D, documented in learningService.js
+    // as known/deferred behavior, not a bug). The previous 240 here meant
+    // "today" got zero sessions on any day past Thursday in the Mon-start
+    // iteration order — this test only ever passed Monday-Thursday and
+    // failed deterministically the rest of the week (caught running it on
+    // a Saturday). 500 leaves headroom over the 420 needed so every day
+    // is guaranteed non-empty regardless of which weekday the suite runs.
     await request(app).put('/api/goals').set('Authorization', `Bearer ${token}`).send({
-      currentBand: 5.5, targetBand: 7.0, weeklyStudyMinutes: 240,
+      currentBand: 5.5, targetBand: 7.0, weeklyStudyMinutes: 500,
       studyDays: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], preferredSessionMinutes: 60,
     });
     const res = await request(app).get('/api/learning/today').set('Authorization', `Bearer ${token}`);
