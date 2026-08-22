@@ -109,6 +109,7 @@ export default function StudentDetail() {
   const [page, setPage] = useState(1);
 
   const [vocabStudent, setVocabStudent] = useState(null);
+  const [badges, setBadges] = useState(null);
 
   useEffect(() => {
     apiFetch(`/admin/users/${id}`)
@@ -129,6 +130,15 @@ export default function StudentDetail() {
     // shows, filtered down to this one row here rather than adding a new endpoint.
     apiFetch('/admin/vocab-students')
       .then(d => setVocabStudent((d.students || []).find(s => s._id === id) || null))
+      .catch(() => {});
+  }, [id]);
+
+  useEffect(() => {
+    // Previously only the student themselves could see their own earned
+    // badges (GET /api/badges reads req.user._id) — teachers had no way to
+    // see this at all (PLATFORM_AUDIT_2026-08-22 "làm ngay" #4).
+    apiFetch(`/admin/users/${id}/badges`)
+      .then(d => setBadges(d))
       .catch(() => {});
   }, [id]);
 
@@ -189,6 +199,9 @@ export default function StudentDetail() {
         </button>
         <button className={`inner-tab${tab === 'vocab' ? ' active' : ''}`} onClick={() => setTab('vocab')}>
           📈 Hoạt động từ vựng
+        </button>
+        <button className={`inner-tab${tab === 'badges' ? ' active' : ''}`} onClick={() => setTab('badges')}>
+          🏅 Huy hiệu{badges ? ` (${badges.earnedCount}/${badges.totalCount})` : ''}
         </button>
       </div>
 
@@ -260,6 +273,42 @@ export default function StudentDetail() {
         vocabStudent
           ? <VocabDetailPanel student={vocabStudent} />
           : <div style={{ padding: 20, color: 'var(--text3)', fontSize: 13 }}>Học sinh chưa có hoạt động từ vựng nào.</div>
+      )}
+
+      {tab === 'badges' && (
+        !badges
+          ? <div style={{ padding: 20, color: 'var(--text3)', fontSize: 13 }}>Đang tải...</div>
+          : (
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12,
+            }}>
+              {badges.badges.map(b => (
+                <div key={b.id} style={{
+                  background: 'var(--surface)', border: `1px solid ${b.earned ? 'var(--green)' : 'var(--border)'}`,
+                  borderRadius: 10, padding: 14, textAlign: 'center', opacity: b.earned ? 1 : 0.6,
+                }} title={b.description}>
+                  <div style={{ fontSize: 28, marginBottom: 6 }}>{b.icon}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>{b.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)', margin: '4px 0 8px' }}>{b.description}</div>
+                  {b.earned ? (
+                    <span className="badge badge-green">✓ Đã đạt</span>
+                  ) : (
+                    <>
+                      <div style={{ background: 'var(--surface2)', borderRadius: 6, height: 6, overflow: 'hidden' }}>
+                        <div style={{
+                          background: 'var(--blue)', height: '100%',
+                          width: `${Math.round((b.progress.current / b.progress.target) * 100)}%`,
+                        }} />
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>
+                        {b.progress.current}/{b.progress.target}
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
       )}
     </>
   );

@@ -31,6 +31,31 @@ describe('GET /api/admin/users (teacherOnly)', () => {
   });
 });
 
+// PLATFORM_AUDIT_2026-08-22 "làm ngay" #4 — GET /api/badges only ever read
+// req.user._id (a student's own badges); this admin route reuses the same
+// badgeService.getBadges() against an arbitrary student id for StudentDetail.jsx.
+describe('GET /api/admin/users/:id/badges (teacherOnly)', () => {
+  test('a student is blocked with 403', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const res = await request(app).get(`/api/admin/users/${student._id}/badges`).set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(403);
+  });
+
+  test('a teacher can fetch a student\'s badge catalog', async () => {
+    const student = await createStudent();
+    const teacher = await createTeacher();
+    const token = signTokenFor(teacher);
+    const res = await request(app).get(`/api/admin/users/${student._id}/badges`).set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.badges)).toBe(true);
+    expect(res.body.badges.length).toBeGreaterThan(0);
+    expect(typeof res.body.earnedCount).toBe('number');
+    expect(typeof res.body.totalCount).toBe('number');
+  });
+});
+
 describe('POST /api/admin/users (adminOnly — stricter than teacherOnly)', () => {
   test('a teacher is blocked with 403 even though they pass teacherOnly routes', async () => {
     const teacher = await createTeacher();

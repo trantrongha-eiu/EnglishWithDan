@@ -8,6 +8,7 @@ const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
 const logger  = require('../../utils/logger');
 const { isImageDataUri } = require('../../utils/validation');
 const cloudinaryService = require('../../services/cloudinaryService');
+const badgeService = require('../../services/badgeService');
 
 const User = require('../../models/User');
 const Message = require('../../models/Message');
@@ -55,6 +56,20 @@ router.get('/users/:id', auth, teacherOnly, async (req, res) => {
     const user = await User.findById(req.params.id).select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
     res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/users/:id/badges – huy hiệu thành tích của 1 học sinh, cho
+// StudentDetail.jsx (PLATFORM_AUDIT_2026-08-22 "làm ngay" #4). Trước đây
+// GET /api/badges chỉ đọc req.user._id (chỉ học sinh tự xem được huy hiệu
+// của chính mình) — badgeService.getBadges() đã nhận userId bất kỳ sẵn, chỉ
+// thiếu 1 route admin gọi tới nó với req.params.id.
+router.get('/users/:id/badges', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await badgeService.getBadges(req.params.id);
+    res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

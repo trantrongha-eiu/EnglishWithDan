@@ -24,6 +24,7 @@ const TITLES = {
   '/task2-templates':        'Task 2 Templates',
   '/history':                'Lịch sử làm bài',
   '/reading-stats':          'Thống kê Reading',
+  '/listening-stats':        'Thống kê Listening',
   '/writing-grades':         'Chấm bài Writing',
   '/vocab-activity':         'Hoạt động từ vựng',
   '/messages':               'Hộp thư',
