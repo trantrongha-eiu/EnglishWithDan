@@ -372,6 +372,11 @@
     [data-theme=dark] .t2-trans-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333)}
     .t2-trans-vi{font-size:15px;font-weight:600;color:#111827;line-height:1.7;margin-bottom:14px;padding:12px 14px;background:#f5f3ff;border-left:3px solid #8b5cf6;border-radius:8px}
     [data-theme=dark] .t2-trans-vi{background:#1e1b4b;color:#e2e8f0}
+    .t2-answer-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+    .t2-answer-hint-count{background:#f3f4f6;color:#4b5563;border-radius:20px;padding:2px 10px;font-weight:700;font-size:12px;white-space:nowrap}
+    .t2-answer-hint-pattern{font-family:'Courier New',monospace;letter-spacing:1px;color:#9ca3af;font-weight:700;font-size:12px}
+    [data-theme=dark] .t2-answer-hint-count{background:var(--surface, #0d0d0d);color:#94a3b8}
+    [data-theme=dark] .t2-answer-hint-pattern{color:#64748b}
     .t2-trans-input{width:100%;min-height:88px;border:1.5px solid #d1d5db;border-radius:12px;padding:13px 15px;
       font-size:14px;font-family:inherit;line-height:1.6;resize:vertical;outline:none;
       transition:border-color .2s ease,box-shadow .2s ease;background:#fff;color:#111827;box-sizing:border-box}
@@ -1615,6 +1620,15 @@ function _fullEnglishSentence(item) {
   return out;
 }
 
+// Word count + first-letter pattern hint, same UX as Task 1/Task 2 writing
+// practice (see backend/utils/textMatch.js buildAnswerHint — reimplemented
+// client-side here since the target sentence is assembled in the browser).
+function _buildAnswerHint(answer) {
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
+  return { wordCount: words.length, pattern };
+}
+
 function renderTranslationMode() {
   const flat = _tplFlatItems(_tplActiveType);
   const area = document.getElementById('tpl-content-area');
@@ -1632,6 +1646,7 @@ function renderTranslationMode() {
   const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
   const target = _fullEnglishSentence(item);
   _transHintLevel = 0;
+  const answerHint = _buildAnswerHint(target);
 
   area.innerHTML = `
     ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dịch câu`)}
@@ -1642,6 +1657,11 @@ function renderTranslationMode() {
       </div>
       <div class="t2-trans-card">
         <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
+        ${!alreadyOk ? `
+        <div class="t2-answer-hint">
+          <span class="t2-answer-hint-count">📏 ${answerHint.wordCount} từ</span>
+          <span class="t2-answer-hint-pattern">${escHtml(answerHint.pattern)}</span>
+        </div>` : ''}
         <textarea class="t2-trans-input" id="trans-input" placeholder="Nhập câu tiếng Anh..." ${alreadyOk ? 'disabled' : ''}
           onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkTranslation()}"
         >${alreadyOk ? escHtml(target) : ''}</textarea>
@@ -2296,6 +2316,7 @@ function renderDictationMode() {
   const key = `${si}-${ii}`;
   const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
   const target = _fullEnglishSentence(item);
+  const answerHint = _buildAnswerHint(target);
 
   area.innerHTML = `
     ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dictation`)}
@@ -2314,6 +2335,11 @@ function renderDictationMode() {
             <button class="t2-dict-speed-btn ${_dictSpeed === 'slow' ? 'active' : ''}" data-speed="slow" onclick="setDictSpeed('slow')">Chậm</button>
           </div>
         </div>
+        ${!alreadyOk ? `
+        <div class="t2-answer-hint">
+          <span class="t2-answer-hint-count">📏 ${answerHint.wordCount} từ</span>
+          <span class="t2-answer-hint-pattern">${escHtml(answerHint.pattern)}</span>
+        </div>` : ''}
         <textarea class="t2-trans-input" id="dict-input" placeholder="Nghe và gõ lại câu bạn nghe được..." ${alreadyOk ? 'disabled' : ''}
           onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkDictation()}"
         >${alreadyOk ? escHtml(target) : ''}</textarea>
