@@ -290,7 +290,13 @@ async function sendReminder(feeId, customMessage, sender) {
     body: customMessage || buildReminderBody([fee]),
     type: 'reminder',
   });
-  await sendTuitionReminderEmail(fee.studentId, [fee], customMessage);
+  // Fire-and-forget: a fresh SMTP connection per send (see emailService.js)
+  // can genuinely take a few seconds, and awaiting it here was making the
+  // admin's "Đang gửi..." button hang the whole time for a channel that's
+  // already documented as best-effort/fail-open — the in-app Message above
+  // is the guaranteed notification, this is purely additive.
+  sendTuitionReminderEmail(fee.studentId, [fee], customMessage)
+    .catch(err => console.error('[Tuition] reminder email failed:', err.message));
   await bumpTuitionReminderCount(fee.studentId._id);
   return true;
 }
@@ -308,9 +314,13 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
     type: 'reminder',
   }));
   await Message.insertMany(msgs);
-  // Best-effort, in parallel — one slow/failed mailbox must not delay or
-  // block the others (sendTuitionReminderEmail already fails open per-call).
-  await Promise.all(fees.map(fee => sendTuitionReminderEmail(fee.studentId, [fee], customMessage)));
+  // Fire-and-forget, in parallel — one slow/failed mailbox (or the per-send
+  // SMTP-connect cost, see emailService.js) must not delay the others NOR
+  // the admin's response; the in-app Messages above are the guaranteed
+  // channel, email is purely additive (sendTuitionReminderEmail fails open
+  // per-call regardless).
+  Promise.all(fees.map(fee => sendTuitionReminderEmail(fee.studentId, [fee], customMessage)))
+    .catch(err => console.error('[Tuition] bulk reminder email failed:', err.message));
   // Dedupe by student first — one nudge per student this batch, even on the
   // rare student with 2+ unpaid fees the same month/year.
   const studentIds = [...new Set(fees.map(fee => String(fee.studentId._id)))];
