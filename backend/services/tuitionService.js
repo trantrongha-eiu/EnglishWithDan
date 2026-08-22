@@ -51,6 +51,23 @@ async function sendTuitionReminderEmail(student, fees, customMessage) {
   await emailService.sendEmail(student.email, 'Nhắc nhở học phí — EnglishWithDan', html);
 }
 
+// Shared by sendReminder/sendBulkReminders/cron's runReminders — the one
+// tracked counter for "this student got nudged about unpaid tuition",
+// mirroring routes/admin/users.js's studyReminderCount pattern (see
+// User.js's tuitionReminderCount field comment).
+async function bumpTuitionReminderCount(studentId) {
+  await User.findByIdAndUpdate(studentId, { $inc: { tuitionReminderCount: 1 } });
+}
+
+// Called after a fee is marked paid or deleted — if the student has no
+// unpaid fees left, the nag is resolved, so clear the counter automatically
+// (unlike studyReminderCount, "caught up" has no ambiguity here, so this
+// doesn't need a manual admin reset button).
+async function resetTuitionReminderCountIfCaughtUp(studentId) {
+  const remaining = await TuitionFee.countDocuments({ studentId, isPaid: false });
+  if (remaining === 0) await User.findByIdAndUpdate(studentId, { tuitionReminderCount: 0 });
+}
+
 async function getSettings() {
   return TuitionSettings.getSingleton();
 }
@@ -110,7 +127,7 @@ async function listFees(query) {
   const [total, fees, aggStats] = await Promise.all([
     TuitionFee.countDocuments(filter),
     TuitionFee.find(filter)
-      .populate('studentId', 'username email firstName lastName')
+      .populate('studentId', 'username email firstName lastName tuitionReminderCount')
       .sort({ year: -1, month: -1, createdAt: -1 })
       .skip(skip).limit(Number(limit)).lean(),
     TuitionFee.aggregate([
@@ -250,12 +267,16 @@ async function updateFee(id, body, sender) {
       type: 'personal',
     });
   }
+  if (justMarkedPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
 
   return fee.populate('studentId', 'username email firstName lastName');
 }
 
 async function deleteFee(id) {
-  await TuitionFee.findByIdAndDelete(id);
+  const fee = await TuitionFee.findByIdAndDelete(id);
+  // Deleting an unpaid fee (e.g. it was created by mistake) can itself
+  // resolve the "still owes money" nag, same as marking it paid.
+  if (fee && !fee.isPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
 }
 
 async function sendReminder(feeId, customMessage, sender) {
@@ -270,6 +291,7 @@ async function sendReminder(feeId, customMessage, sender) {
     type: 'reminder',
   });
   await sendTuitionReminderEmail(fee.studentId, [fee], customMessage);
+  await bumpTuitionReminderCount(fee.studentId._id);
   return true;
 }
 
@@ -289,6 +311,10 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
   // Best-effort, in parallel — one slow/failed mailbox must not delay or
   // block the others (sendTuitionReminderEmail already fails open per-call).
   await Promise.all(fees.map(fee => sendTuitionReminderEmail(fee.studentId, [fee], customMessage)));
+  // Dedupe by student first — one nudge per student this batch, even on the
+  // rare student with 2+ unpaid fees the same month/year.
+  const studentIds = [...new Set(fees.map(fee => String(fee.studentId._id)))];
+  await Promise.all(studentIds.map(bumpTuitionReminderCount));
   return msgs.length;
 }
 
@@ -335,5 +361,5 @@ module.exports = {
   createFee, updateFee, deleteFee,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
-  buildReminderBody, sendTuitionReminderEmail,
+  buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount,
 };

@@ -108,6 +108,7 @@
         u.planExpiresAt = d.user.planExpiresAt;
         u.planStartedAt = d.user.planStartedAt;
         u.studyReminderCount = d.user.studyReminderCount || 0;
+        u.tuitionReminderCount = d.user.tuitionReminderCount || 0;
         u.lastVocabStudyDate = d.user.lastVocabStudyDate || null;
         // Needed by isWithinTrial()/hasPremiumAccess() — a user cached
         // before this field existed self-heals here on their very next

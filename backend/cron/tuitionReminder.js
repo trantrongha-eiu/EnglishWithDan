@@ -3,7 +3,7 @@ const TuitionFee      = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
-const { buildReminderBody, sendTuitionReminderEmail } = require('../services/tuitionService');
+const { buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount } = require('../services/tuitionService');
 const logger = require('../utils/logger');
 
 async function runReminders() {
@@ -65,6 +65,10 @@ async function runReminders() {
     // Best-effort email alongside the in-app message — a student who hasn't
     // opened the app since the reminder cron ran would otherwise never see it.
     await Promise.all(groups.map(({ student, fees }) => sendTuitionReminderEmail(student, fees)));
+    // One tracked nudge per student per run — same counter Tuition.jsx's
+    // per-fee/bulk reminders bump, so nav.js's escalation banner also
+    // catches students only ever reminded by this daily cron.
+    await Promise.all(groups.map(({ student }) => bumpTuitionReminderCount(student._id)));
     logger.info('cron', 'TuitionCron: sent auto-reminders', { count: msgs.length, day: today, month: currentMonth, year: currentYear });
   } catch (e) {
     logger.error('cron', 'TuitionCron run error', { errorMessage: e.message });

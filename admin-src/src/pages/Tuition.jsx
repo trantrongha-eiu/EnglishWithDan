@@ -248,6 +248,7 @@ export default function Tuition() {
       });
       toast('Đã gửi nhắc nhở đến ' + (remindFee.studentId?.username || 'học viên'));
       setRemindFee(null); setRemindMsg('');
+      loadFees(); // refresh so the updated "đã nhắc N lần" count shows immediately
     } catch (e) { toast(e.message, 'error'); }
     finally { setSendingRemind(false); }
   }
@@ -261,6 +262,7 @@ export default function Tuition() {
       });
       toast(`Đã gửi ${d.sent} nhắc nhở`);
       setShowBulkRemind(false); setBulkMsg('');
+      loadFees();
     } catch (e) { toast(e.message, 'error'); }
     finally { setSendingBulk(false); }
   }
@@ -571,8 +573,16 @@ export default function Tuition() {
                         {f.note || '–'}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: 6 }}>
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                           <button className="btn btn-ghost btn-sm" title="Nhắc nhở" onClick={() => { setRemindFee(f); setRemindMsg(''); }}>📩</button>
+                          {f.studentId?.tuitionReminderCount > 0 && (
+                            <span
+                              className={`badge ${f.studentId.tuitionReminderCount >= 3 ? 'badge-red' : 'badge-gray'}`}
+                              title="Số lần đã nhắc học phí (mọi kỳ, tự về 0 khi hết nợ) — cùng cơ chế đếm dồn với Nhắc nhở học tập"
+                            >
+                              {f.studentId.tuitionReminderCount >= 3 ? '⚠️ ' : ''}{f.studentId.tuitionReminderCount}
+                            </span>
+                          )}
                           <button className="btn btn-ghost btn-sm" title="Copy sang tháng tiếp" onClick={() => openCopy(f)}>📋</button>
                           <button className="btn btn-ghost btn-sm" title="Sửa" onClick={() => openEdit(f)}>✏️</button>
                           {isAdmin && <button className="btn btn-danger btn-sm" title="Xóa" onClick={() => deleteFee(f._id)}>🗑</button>}

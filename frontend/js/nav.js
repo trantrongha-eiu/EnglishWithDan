@@ -491,6 +491,10 @@
         // the whole point is it keeps showing on every visit until an admin
         // clears studyReminderCount (student caught up on their work).
         if ((u.studyReminderCount || 0) >= 3) _showStudyWarningBanner(u.studyReminderCount);
+        // Same escalation pattern, tuition side — auto-clears itself once
+        // the student has no unpaid fees left (tuitionService.js), unlike
+        // the study one above which needs an admin to manually reset it.
+        if ((u.tuitionReminderCount || 0) >= 3) _showTuitionWarningBanner(u.tuitionReminderCount);
 
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
@@ -570,6 +574,36 @@
       '<a href="inbox.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
       '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     var afterEl = document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
+    document.body.insertBefore(banner, afterEl.nextSibling);
+
+    function applyOffset() {
+      document.documentElement.style.setProperty('--expiry-banner-height', (baseOffset + banner.offsetHeight) + 'px');
+    }
+    applyOffset();
+    window.addEventListener('resize', applyOffset);
+
+    banner.querySelector('button').addEventListener('click', function () {
+      window.removeEventListener('resize', applyOffset);
+      document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
+      banner.remove();
+    });
+  }
+
+  // Tuition-payment counterpart to _showStudyWarningBanner above — same
+  // stacking mechanism (reads the current --expiry-banner-height so it
+  // lands below any banner already showing), separate wording/link since
+  // "you've been reminded about unpaid tuition" must not be confused with
+  // the study-reminder banner's "practice more vocab/exercises" message.
+  function _showTuitionWarningBanner(count) {
+    var baseOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--expiry-banner-height')) || 0;
+    var banner = document.createElement('div');
+    banner.id = 'nav-tuition-warning-banner';
+    banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b45309,#d97706);box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.innerHTML =
+      '<span style="flex:1;text-align:center">💰 Bạn đã được nhắc <strong>' + count + ' lần</strong> về học phí chưa thanh toán. Vui lòng kiểm tra và xác nhận chuyển khoản nhé!</span>' +
+      '<a href="tuition.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem học phí</a>' +
+      '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
+    var afterEl = document.getElementById('nav-study-warning-banner') || document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
     document.body.insertBefore(banner, afterEl.nextSibling);
 
     function applyOffset() {

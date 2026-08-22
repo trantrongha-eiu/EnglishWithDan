@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const tuitionService = require('../../../services/tuitionService');
 const TuitionFee = require('../../../models/TuitionFee');
 const Message = require('../../../models/Message');
+const User = require('../../../models/User');
 const { createTuitionFee } = require('../../factories/contentFactory');
 const { createStudent, createAdmin } = require('../../factories/userFactory');
 
@@ -343,6 +344,78 @@ describe('tuitionService', () => {
 
       const messages = await Message.find({ fromId: admin._id });
       expect(messages).toHaveLength(0);
+    });
+  });
+
+  // Regression coverage for PLATFORM_AUDIT_2026-08-22 item #2 — the 3
+  // tuition-reminder mechanisms (per-fee, bulk, cron) previously tracked
+  // nothing, unlike routes/admin/users.js's studyReminderCount escalation.
+  describe('tuitionReminderCount tracking', () => {
+    it('sendReminder bumps the student\'s tuitionReminderCount', async () => {
+      const student = await createStudent();
+      const admin = await createAdmin();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 3, year: 2026, amount: 400000, isPaid: false,
+      });
+
+      await tuitionService.sendReminder(fee._id, null, admin);
+      await tuitionService.sendReminder(fee._id, null, admin);
+
+      const updated = await User.findById(student._id).select('tuitionReminderCount');
+      expect(updated.tuitionReminderCount).toBe(2);
+    });
+
+    it('sendBulkReminders bumps each reminded student once, deduped', async () => {
+      const admin = await createAdmin();
+      const studentA = await createStudent();
+      const studentB = await createStudent();
+
+      await createTuitionFee({ studentId: studentA._id, feeType: 'monthly', month: 8, year: 2026, amount: 100000, isPaid: false });
+      await createTuitionFee({ studentId: studentB._id, feeType: 'monthly', month: 8, year: 2026, amount: 200000, isPaid: false });
+
+      await tuitionService.sendBulkReminders({ month: 8, year: 2026 }, admin);
+
+      const [uA, uB] = await Promise.all([
+        User.findById(studentA._id).select('tuitionReminderCount'),
+        User.findById(studentB._id).select('tuitionReminderCount'),
+      ]);
+      expect(uA.tuitionReminderCount).toBe(1);
+      expect(uB.tuitionReminderCount).toBe(1);
+    });
+
+    it('updateFee resets tuitionReminderCount to 0 once the student has no unpaid fees left', async () => {
+      const student = await createStudent({ extra: { tuitionReminderCount: 5 } });
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 9, year: 2026, amount: 400000, isPaid: false,
+      });
+
+      await tuitionService.updateFee(fee._id, { isPaid: true });
+
+      const updated = await User.findById(student._id).select('tuitionReminderCount');
+      expect(updated.tuitionReminderCount).toBe(0);
+    });
+
+    it('updateFee does NOT reset tuitionReminderCount while another unpaid fee remains', async () => {
+      const student = await createStudent({ extra: { tuitionReminderCount: 5 } });
+      const feeA = await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 9, year: 2026, amount: 400000, isPaid: false });
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 400000, isPaid: false });
+
+      await tuitionService.updateFee(feeA._id, { isPaid: true });
+
+      const updated = await User.findById(student._id).select('tuitionReminderCount');
+      expect(updated.tuitionReminderCount).toBe(5);
+    });
+
+    it('deleteFee resets tuitionReminderCount to 0 once no unpaid fees remain', async () => {
+      const student = await createStudent({ extra: { tuitionReminderCount: 3 } });
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 11, year: 2026, amount: 400000, isPaid: false,
+      });
+
+      await tuitionService.deleteFee(fee._id);
+
+      const updated = await User.findById(student._id).select('tuitionReminderCount');
+      expect(updated.tuitionReminderCount).toBe(0);
     });
   });
 

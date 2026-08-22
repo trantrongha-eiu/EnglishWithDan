@@ -69,6 +69,15 @@ const UserSchema = new mongoose.Schema({
   // warning banner on every page the student visits until an admin resets
   // it back to 0 (POST /:id/reset-reminders).
   studyReminderCount: { type: Number, default: 0 },
+  // Same pattern as studyReminderCount above, but for tuition-payment nudges
+  // — bumped by tuitionService.sendReminder/sendBulkReminders and
+  // cron/tuitionReminder.js's daily auto-remind (previously none of the 3
+  // tracked anything, unlike the study-reminder mechanism they were meant to
+  // mirror per docs/ADMIN_PANEL_AUDIT.md #1). Auto-resets to 0 the moment the
+  // student has no unpaid fees left (tuitionService.updateFee/deleteFee) —
+  // unlike study reminders, "caught up" here has an unambiguous signal, so
+  // no manual admin reset endpoint is needed.
+  tuitionReminderCount: { type: Number, default: 0 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
   // Highest learningStreak ever reached — learningStreak itself resets to 0
