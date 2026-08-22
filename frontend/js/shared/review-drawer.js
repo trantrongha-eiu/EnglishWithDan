@@ -1,9 +1,14 @@
 /**
  * shared/review-drawer.js — the mandatory post-test "guided mistake review"
  * drawer, shared between reading-v2.js's and listening.html's existing
- * review screens (not a new full-screen flow — it's a slide-over that sits
- * on top of whichever passage/transcript view is already rendered
- * underneath, so the student can still see the real context).
+ * review screens (not a new full-screen flow — it's a docked side panel
+ * that sits on top of whichever passage/transcript view is already
+ * rendered underneath). The rest of the page is deliberately left fully
+ * interactive while it's open — no dimming overlay, no click-to-close on
+ * the page itself — specifically so a student can keep replaying the
+ * Listening audio (or scroll the Reading passage) while working through
+ * review without having to close the drawer first. See _injectStyles()'s
+ * #rd-backdrop rule below.
  *
  * Builds its own DOM/CSS (same self-contained pattern as
  * shared/peer-chat-widget.js) so it works on both host pages without any
@@ -82,9 +87,16 @@
       // content, never above a modal dialog raised from within it (the X
       // button's "are you sure" confirmation is exactly that case: it used to
       // render invisibly behind the drawer at z-index 1400/1401, unclickable).
-      '#rd-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:950;display:none}' +
+      // Deliberately NOT a dimming modal backdrop: transparent and
+      // pointer-events:none so clicks/scroll/audio-player controls on the
+      // page underneath keep working while the drawer is open — only
+      // #rd-root (re-enabling pointer-events for itself below) actually
+      // captures input. inset:0 is kept purely so #rd-root's fixed
+      // positioning has a full-viewport container to anchor to; it no
+      // longer plays any visual or interactive role of its own.
+      '#rd-backdrop{position:fixed;inset:0;background:transparent;pointer-events:none;z-index:950;display:none}' +
       '#rd-backdrop.open{display:block}' +
-      '#rd-root{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:calc(100vw - 24px);background:var(--surface,#fff);box-shadow:-8px 0 30px rgba(0,0,0,.25);z-index:951;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}' +
+      '#rd-root{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:calc(100vw - 24px);background:var(--surface,#fff);box-shadow:-8px 0 30px rgba(0,0,0,.25);z-index:951;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;pointer-events:auto}' +
       '#rd-backdrop.open #rd-root{transform:translateX(0)}' +
       '.rd-header{padding:14px 16px;border-bottom:1px solid var(--border,#e5e7eb);display:flex;align-items:center;gap:10px;flex-shrink:0}' +
       '.rd-header-title{font-weight:800;font-size:14.5px;color:var(--text,#111827);flex:1}' +
@@ -97,6 +109,7 @@
       '.rd-section-label{font-size:12px;font-weight:700;color:var(--text2,#374151);margin:14px 0 6px}' +
       '.rd-select,.rd-input,.rd-textarea{width:100%;border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;background:var(--bg,var(--surface,#fff));color:var(--text,#111827)}' +
       '.rd-textarea{resize:vertical;min-height:52px}' +
+      '.rd-blank-note{font-size:12.5px;color:var(--text3,#6b7280);background:var(--surface2,#f3f4f6);border-radius:8px;padding:8px 10px;line-height:1.5}' +
       '.rd-chip-row{display:flex;gap:6px;flex-wrap:wrap}' +
       '.rd-chip{border:1.5px solid var(--border,#e5e7eb);background:var(--surface,#fff);border-radius:20px;padding:6px 12px;font-size:12.5px;cursor:pointer;color:var(--text2,#374151)}' +
       '.rd-chip.active{border-color:var(--blue,#3d8bff);background:var(--blue,#3d8bff);color:#fff;font-weight:700}' +
@@ -204,8 +217,10 @@
     _body = _backdrop.querySelector('#rd-body');
     _footer = _backdrop.querySelector('#rd-footer');
     _progressEl = _backdrop.querySelector('#rd-progress');
+    // No backdrop-click-to-close: #rd-backdrop is pointer-events:none now
+    // (see _injectStyles()), so it never actually receives a click — the X
+    // button is the only way to close.
     _backdrop.querySelector('#rd-close-btn').addEventListener('click', _close);
-    _backdrop.addEventListener('click', function (e) { if (e.target === _backdrop) _close(); });
 
     document.addEventListener('click', function (e) {
       if (_rd && e.target.closest && e.target.closest('.dict-save-btn')) _rd.vocabCount++;
@@ -286,6 +301,22 @@
 
   function _renderPhaseA(m, meta) {
     var categories = _categoriesFor(_rd.opts.skill, meta.type, m.errorCategory);
+    // A blank answer means the student never actually attempted this
+    // question — "how confident were you" has no sensible answer in that
+    // case (there's nothing to have been confident ABOUT), so that question
+    // is swapped out entirely instead of being forced. See the 'left-blank'
+    // confidence value below and in AttemptReview.js.
+    var isBlank = !m.userAnswer || !m.userAnswer.trim();
+
+    var confidenceSectionHtml = isBlank
+      ? '<div class="rd-section-label">2. Bạn đã bỏ trống câu này</div>' +
+        '<div class="rd-blank-note">Không có gì để đánh giá độ tự tin — hãy thử trả lời thật ở bước 3 bên dưới nhé.</div>'
+      : '<div class="rd-section-label">2. Bạn tự tin đến mức nào?</div>' +
+        '<div class="rd-chip-row" id="rd-confidence">' +
+          Object.keys(CONFIDENCE_LABELS).map(function (k) {
+            return '<button type="button" class="rd-chip' + (m.confidence === k ? ' active' : '') + '" data-val="' + k + '">' + CONFIDENCE_LABELS[k] + '</button>';
+          }).join('') +
+        '</div>';
 
     _body.innerHTML =
       '<button class="rd-jump-link" id="rd-jump-btn"><i class="fas fa-arrow-up-right-from-square"></i> Xem lại đề/đoạn văn gốc</button>' +
@@ -303,12 +334,7 @@
         '<option value="">-- Chọn lý do cụ thể --</option>' +
       '</select>' +
 
-      '<div class="rd-section-label">2. Bạn tự tin đến mức nào?</div>' +
-      '<div class="rd-chip-row" id="rd-confidence">' +
-        Object.keys(CONFIDENCE_LABELS).map(function (k) {
-          return '<button type="button" class="rd-chip' + (m.confidence === k ? ' active' : '') + '" data-val="' + k + '">' + CONFIDENCE_LABELS[k] + '</button>';
-        }).join('') +
-      '</div>' +
+      confidenceSectionHtml +
 
       '<div class="rd-section-label">3. Thử lại câu này (chưa hiển thị đáp án đúng)</div>' +
       (meta.options && meta.options.length
@@ -352,19 +378,21 @@
   }
 
   async function _submitPhaseA(m) {
+    var isBlank = !m.userAnswer || !m.userAnswer.trim();
     var category = document.getElementById('rd-category').value;
     var reason = document.getElementById('rd-reason').value;
     var confidenceBtn = document.querySelector('#rd-confidence .rd-chip.active');
+    var confidenceVal = isBlank ? 'left-blank' : (confidenceBtn && confidenceBtn.getAttribute('data-val'));
     var retryAnswer = document.getElementById('rd-retry').value.trim();
 
     if (!category || !reason) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn lý do sai'); return; }
-    if (!confidenceBtn) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn mức độ tự tin'); return; }
+    if (!isBlank && !confidenceBtn) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn mức độ tự tin'); return; }
     if (!retryAnswer) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng thử lại câu hỏi'); return; }
 
     var btn = document.getElementById('rd-save-btn');
     btn.disabled = true; btn.textContent = 'Đang nộp...';
     try {
-      var patch = { errorCategory: category, errorReason: reason, confidence: confidenceBtn.getAttribute('data-val'), retryAnswer: retryAnswer };
+      var patch = { errorCategory: category, errorReason: reason, confidence: confidenceVal, retryAnswer: retryAnswer };
       var d = await _api('/review/' + _rd.review._id + '/mistakes/' + m._id, { method: 'PATCH', body: JSON.stringify(patch) });
       _rd.review = d.review;
       _renderStep(); // same idx — m.retryResult is now set, so this renders Phase B

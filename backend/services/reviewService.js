@@ -150,7 +150,7 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   // save()), but the wrong order for a function whose whole point is
   // never trusting client input.
   if (patch.confidence !== undefined && patch.confidence !== null
-      && !['very-confident', 'not-sure', 'guessing'].includes(patch.confidence)) {
+      && !['very-confident', 'not-sure', 'guessing', 'left-blank'].includes(patch.confidence)) {
     return { status: 'invalid_confidence' };
   }
   let resolvedCode = null;

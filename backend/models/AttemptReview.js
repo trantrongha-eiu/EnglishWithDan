@@ -30,7 +30,11 @@ const MistakeSchema = new mongoose.Schema({
   errorReason:   { type: String, default: null },
   errorCode:     { type: String, default: null },
 
-  confidence: { type: String, enum: ['very-confident', 'not-sure', 'guessing'], default: null },
+  // 'left-blank' is not really a confidence LEVEL — it's what the drawer
+  // records instead when userAnswer was empty (the student never attempted
+  // this question), where "how confident were you" has no sensible answer.
+  // See review-drawer.js's _renderPhaseA().
+  confidence: { type: String, enum: ['very-confident', 'not-sure', 'guessing', 'left-blank'], default: null },
 
   // "Try Again" — retryResult is always server-computed against this
   // mistake's own frozen correctAnswer, never trusted from the client.

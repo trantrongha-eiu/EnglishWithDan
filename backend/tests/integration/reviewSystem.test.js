@@ -113,6 +113,43 @@ describe('Reading mandatory review — full loop', () => {
     expect(unblocked.status).toBe(200);
   });
 
+  // review-drawer.js swaps the "how confident were you" question out for a
+  // blank-answer mistake (there's nothing to have been confident about) and
+  // sends confidence:'left-blank' instead of one of the 3 real levels —
+  // the backend must accept it as a valid, completing value, not reject it.
+  test('a skipped (blank) answer can be completed with confidence:"left-blank"', async () => {
+    const { test } = await makeThreePassageReadingTest();
+    const user = await createStudent();
+    const api = authed(user);
+
+    const start = await api.post('/api/reading/start', { testId: String(test._id) });
+    const submit = await api.post('/api/reading/submit', {
+      attemptId: start.body.attemptId,
+      answers: { 1: 'apple', 2: '', 3: 'cherry' }, // question 2 left blank
+    });
+    // A blank answer grades as skipped, not wrong — pickMistakes() still
+    // treats it as needing review either way (isCorrect:false covers both).
+    expect(submit.body.result.wrongCount).toBe(0);
+    expect(submit.body.result.skippedCount).toBe(1);
+
+    const pending = await api.get('/api/review/pending?skill=reading');
+    const reviewId = pending.body.pending._id;
+    const detail = await api.get(`/api/review/${reviewId}`);
+    const mistake = detail.body.review.mistakes[0];
+    expect(mistake.userAnswer).toBe('');
+
+    const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistake._id}`, {
+      errorCategory: 'Khác', errorReason: 'Lý do khác',
+      confidence: 'left-blank',
+      retryAnswer: 'banana',
+      learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
+    });
+    expect(patch.status).toBe(200);
+    expect(patch.body.reviewCompleted).toBe(true);
+    const patchedMistake = patch.body.review.mistakes.find(m => String(m._id) === String(mistake._id));
+    expect(patchedMistake.confidence).toBe('left-blank');
+  });
+
   test('blocks new Reading only once MAX_PENDING_REVIEWS (3) pending reviews pile up, and unblocks as soon as one drops below it', async () => {
     const user = await createStudent();
     const api = authed(user);
