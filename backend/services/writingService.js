@@ -174,6 +174,26 @@ async function getUnreadFeedbackCount(userId) {
   return WritingAttempt.countDocuments({ userId, gradingStatus: 'confirmed', feedbackRead: { $ne: true } });
 }
 
+// Per-taskType count for the nav dropdown's Task 1 / Task 2 badges: unfinished
+// drafts + unread graded feedback, combined into one number per type (a
+// student doesn't need to know which of the two reasons the badge is for —
+// either way there's something waiting for them under that nav item).
+async function getPracticeNavCounts(userId) {
+  const [drafts, unreadAttempts] = await Promise.all([
+    WritingDraft.find({ userId }).select('taskType').lean(),
+    WritingAttempt.find({
+      userId, submissionType: 'practice', gradingStatus: 'confirmed', feedbackRead: { $ne: true },
+    }).select('task1Id task2Id').lean(),
+  ]);
+  const counts = { 1: 0, 2: 0 };
+  drafts.forEach(d => { if (counts[d.taskType] != null) counts[d.taskType]++; });
+  unreadAttempts.forEach(a => {
+    if (a.task1Id) counts[1]++;
+    if (a.task2Id) counts[2]++;
+  });
+  return counts;
+}
+
 async function markFeedbackRead(attemptId, userId) {
   const attempt = await WritingAttempt.findById(attemptId).select('userId gradingStatus').lean();
   if (!attempt) return { status: 'not_found' };
@@ -215,6 +235,6 @@ async function getSampleFilters() {
 
 module.exports = {
   startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice,
-  getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, markFeedbackRead,
+  getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, getPracticeNavCounts, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
 };

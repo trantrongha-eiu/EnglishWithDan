@@ -46,6 +46,13 @@ router.delete('/practice/draft', auth, writingController.deleteDraft);
 router.get('/unread-feedback-count', auth, writingController.getUnreadFeedbackCount);
 
 // ══════════════════════════════════════════════════
+// GET /api/writing/practice/nav-counts
+// Per-taskType count (unfinished drafts + unread graded feedback) for the
+// nav dropdown's Task 1 / Task 2 badges
+// ══════════════════════════════════════════════════
+router.get('/practice/nav-counts', auth, writingController.getPracticeNavCounts);
+
+// ══════════════════════════════════════════════════
 // PATCH /api/writing/attempt/:id/mark-read
 // Đánh dấu học sinh đã xem feedback
 // ══════════════════════════════════════════════════

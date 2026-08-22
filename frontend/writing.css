@@ -1198,9 +1198,18 @@ body {
 .history-body.practice-split-mode {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 24px;
   max-width: 1200px;
   align-items: flex-start;
+}
+
+/* #practice-restore-banner is a flex item here like every other direct
+   child of .history-body — without this it would squeeze into the row
+   alongside the sidebar/task-list instead of sitting above them full-width. */
+.history-body.practice-split-mode #practice-restore-banner {
+  flex: 0 0 100%;
+  order: -1;
 }
 
 #practice-hist-section {
@@ -1227,9 +1236,13 @@ body {
   margin-bottom: 0;
 }
 
-/* Home-only elements are already hidden by JS in task mode; belt-and-suspenders */
+/* Home-only elements are already hidden by JS in task mode; belt-and-suspenders.
+   #practice-restore-banner is deliberately NOT in this list — a student who
+   opened a specific Task 1/2 list straight from the nav dropdown (skipping
+   the task-select cards entirely) still needs to see "bạn có bài chưa nộp"
+   here, or an in-progress draft is invisible until they stumble onto it,
+   click "Làm bài" on the same prompt again, and silently wipe it. */
 .history-body.practice-split-mode #practice-task-select,
-.history-body.practice-split-mode #practice-restore-banner,
 .history-body.practice-split-mode #practice-pending-notice {
   display: none !important;
 }
@@ -1279,6 +1292,13 @@ body {
   }
   .history-body.practice-split-mode #practice-task-list {
     order: 0;
+  }
+  .history-body.practice-split-mode #practice-restore-banner {
+    /* flex-basis:100% maps to HEIGHT once the container switches to
+       flex-direction:column above — reset it so the banner sizes to its
+       content instead of stretching to fill the column's cross axis. */
+    flex-basis: auto;
+    order: -1;
   }
 
   .history-body           { padding: 16px; }

@@ -1258,10 +1258,21 @@ const _PRACTICE_MAX_AGE     = 24 * 60 * 60 * 1000; // 24h
 // clicking into "Luyện tập lẻ" — must run here (after _PRACTICE_SAVE_PREFIX
 // and practiceState are initialized), same TDZ reason as the deferred init
 // above, and skipped when a URL param already routes to a different screen.
+//
+// ?taskType=1/2 (the nav dropdown's direct Task 1/Task 2 links) used to be
+// skipped here too, on the assumption a student landing there was always
+// starting fresh — but the nav dropdown links straight into the task list
+// (screen-practice, via the sibling deferred init above), which has its own
+// #practice-restore-banner slot that simply never got populated. A student
+// with an in-progress draft who used that link (rather than "Luyện tập lẻ")
+// had no way to know a draft existed, clicked "Làm bài" on the same prompt
+// again, and startPracticeTask()'s clearPracticeAutoSave() wiped it —
+// reported as "autosave said saved, but the essay came back empty".
+// Reachable through this path too now; only samples/writing-tips (which
+// route to an unrelated screen entirely) still skip it.
 (function() {
   var _p = new URLSearchParams(location.search);
-  var _tt = parseInt(_p.get('taskType'));
-  if ((_tt === 1 || _tt === 2) || _p.get('view') === 'samples' || _p.get('view') === 'writing-tips') return;
+  if (_p.get('view') === 'samples' || _p.get('view') === 'writing-tips') return;
   checkPracticeRestoreBanner();
 })();
 

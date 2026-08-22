@@ -93,6 +93,15 @@ exports.getUnreadFeedbackCount = async (req, res) => {
   }
 };
 
+exports.getPracticeNavCounts = async (req, res) => {
+  try {
+    const counts = await writingService.getPracticeNavCounts(req.user._id);
+    res.json({ success: true, counts });
+  } catch (err) {
+    res.status(500).json({ success: false, counts: { 1: 0, 2: 0 } });
+  }
+};
+
 exports.markFeedbackRead = async (req, res) => {
   try {
     const result = await writingService.markFeedbackRead(req.params.id, req.user._id);

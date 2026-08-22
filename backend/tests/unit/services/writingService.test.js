@@ -244,6 +244,65 @@ describe('writingService.getDrafts / saveDraft / deleteDraft', () => {
   });
 });
 
+describe('writingService.getPracticeNavCounts', () => {
+  test('returns {1:0, 2:0} when there is nothing to resume or read', async () => {
+    const student = await createStudent();
+    const counts = await writingService.getPracticeNavCounts(student._id);
+    expect(counts).toEqual({ 1: 0, 2: 0 });
+  });
+
+  test('counts unfinished drafts per taskType', async () => {
+    const student = await createStudent();
+    await writingService.saveDraft(student._id, { taskType: 1, task: { _id: 'task-1', prompt: 'p1' }, answer: 'first' });
+    await writingService.saveDraft(student._id, { taskType: 2, task: { _id: 'task-2', prompt: 'p2' }, answer: 'second' });
+    await writingService.saveDraft(student._id, { taskType: 2, task: { _id: 'task-3', prompt: 'p3' }, answer: 'third' });
+
+    const counts = await writingService.getPracticeNavCounts(student._id);
+    expect(counts).toEqual({ 1: 1, 2: 2 });
+  });
+
+  test('counts unread graded practice feedback per taskType, keyed by which task field is set', async () => {
+    const student = await createStudent();
+    await WritingAttempt.create({
+      userId: student._id, examName: 'X', submissionType: 'practice',
+      gradingStatus: 'confirmed', feedbackRead: false, task1Id: new mongoose.Types.ObjectId(),
+    });
+    await WritingAttempt.create({
+      userId: student._id, examName: 'X', submissionType: 'practice',
+      gradingStatus: 'confirmed', feedbackRead: false, task2Id: new mongoose.Types.ObjectId(),
+    });
+    // Already read — must not count.
+    await WritingAttempt.create({
+      userId: student._id, examName: 'X', submissionType: 'practice',
+      gradingStatus: 'confirmed', feedbackRead: true, task2Id: new mongoose.Types.ObjectId(),
+    });
+    // Not yet graded — must not count.
+    await WritingAttempt.create({
+      userId: student._id, examName: 'X', submissionType: 'practice',
+      gradingStatus: 'pending', feedbackRead: false, task1Id: new mongoose.Types.ObjectId(),
+    });
+    // A full-exam (not practice) submission — must not count towards either
+    // Task 1/Task 2 practice badge even though it carries both task ids.
+    await WritingAttempt.create({
+      userId: student._id, examName: 'X', submissionType: 'exam',
+      gradingStatus: 'confirmed', feedbackRead: false,
+      task1Id: new mongoose.Types.ObjectId(), task2Id: new mongoose.Types.ObjectId(),
+    });
+
+    const counts = await writingService.getPracticeNavCounts(student._id);
+    expect(counts).toEqual({ 1: 1, 2: 1 });
+  });
+
+  test('is scoped to the requesting user only', async () => {
+    const student = await createStudent();
+    const other = await createStudent();
+    await writingService.saveDraft(other._id, { taskType: 1, task: { _id: 'task-1', prompt: 'p1' }, answer: 'first' });
+
+    const counts = await writingService.getPracticeNavCounts(student._id);
+    expect(counts).toEqual({ 1: 0, 2: 0 });
+  });
+});
+
 describe('writingService.listSamples', () => {
   async function seedSamples() {
     await WritingSample.create([

@@ -22,8 +22,8 @@
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
       children: [
         { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
-        { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1' },
-        { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2' },
+        { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1', badgeId: 'navWritingTask1Badge' },
+        { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2', badgeId: 'navWritingTask2Badge' },
         { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
       ]
     },
@@ -458,6 +458,19 @@
     fetch(API + '/writing/unread-feedback-count', { headers: headers })
       .then(function (r) { return r.json(); })
       .then(function (d) { if (d.count > 0) showBadge('navWritingBadge', d.count); })
+      .catch(function () {});
+
+    // Per-Task1/Task2 counts (unfinished drafts + unread graded feedback,
+    // combined) for the "Writing" dropdown's own Task 1 / Task 2 rows —
+    // navWritingBadge above only tells a student SOMETHING needs attention
+    // under Writing; this tells them which of Task 1 / Task 2 it is.
+    fetch(API + '/writing/practice/nav-counts', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.success || !d.counts) return;
+        showBadge('navWritingTask1Badge', d.counts[1] || 0);
+        showBadge('navWritingTask2Badge', d.counts[2] || 0);
+      })
       .catch(function () {});
 
     fetch(API + '/tuition/my/summary', { headers: headers })
