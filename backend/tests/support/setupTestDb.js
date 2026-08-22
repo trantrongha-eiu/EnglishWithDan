@@ -27,6 +27,16 @@ const dbName = `test_${crypto.randomUUID().replace(/-/g, '')}`;
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_URI, { dbName });
+  // mongoose.connect() only kicks off index builds in the background; it
+  // does not wait for them. Against this file's brand-new dbName, a test's
+  // very first writes can race a still-building unique index and let a
+  // real duplicate through (observed: dictionaryCollocationService's
+  // concurrent-lookup test intermittently saw 2 rows instead of 1). Model
+  // schemas are all registered by now (test files require them at the top,
+  // before this hook runs), so explicitly waiting on each model's own
+  // .init() here guarantees every declared index — unique ones included —
+  // is actually built before any test body runs.
+  await Promise.all(mongoose.modelNames().map(name => mongoose.model(name).init()));
 });
 
 afterEach(async () => {
