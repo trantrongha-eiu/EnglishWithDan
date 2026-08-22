@@ -507,6 +507,14 @@ async function listStudentTests(userId) {
     const key = a.testId.toString();
     if (!attemptMap[key] || attemptMap[key].submittedAt < a.submittedAt) attemptMap[key] = a;
   });
+  // Per-test review-status badge — see readingService.listTestsForUser's
+  // identical use of this same shared helper.
+  const reviewMap = await reviewService.getReviewStatusMap(userId, 'listening', Object.values(attemptMap).map(a => a._id));
+  Object.values(attemptMap).forEach(a => {
+    const rv = reviewMap[a._id.toString()];
+    a.reviewStatus = rv ? rv.status : 'none';
+    a.reviewMistakeCount = rv ? rv.mistakeCount : 0;
+  });
 
   return tests.map(t => ({
     _id: t._id, name: t.name, testNumber: t.testNumber, seriesName: t.seriesName,

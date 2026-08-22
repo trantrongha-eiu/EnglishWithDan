@@ -72,6 +72,13 @@ const reading = {
     'Đọc quá nhiều thông tin không cần thiết': 'TIME_MANAGEMENT',
     'Mất quá nhiều thời gian': 'TIME_MANAGEMENT',
   },
+  // Catch-all — a mistake that genuinely doesn't fit any structured
+  // category above must never force a student to pick an inaccurate one
+  // just to finish the mandatory review.
+  'Khác': {
+    'Bất cẩn / lỗi ngẫu nhiên': 'CARELESS',
+    'Lý do khác': 'OTHER',
+  },
 };
 
 const listening = {
@@ -112,6 +119,11 @@ const listening = {
     'Không xác định được thông tin cần nghe': 'QUESTION_MISUNDERSTANDING',
     'Không hiểu paraphrase trong câu hỏi': 'PARAPHRASE',
   },
+  // Catch-all — same rationale as reading's own 'Khác' above.
+  'Khác': {
+    'Bất cẩn / lỗi ngẫu nhiên': 'CARELESS',
+    'Lý do khác': 'OTHER',
+  },
 };
 
 const TAXONOMY = { reading, listening };
@@ -150,6 +162,13 @@ const LISTENING_TYPE_CATEGORIES = {
   'map-labelling':       ['Vocabulary', 'Listening Comprehension', 'Question Understanding'],
   'checkbox':            ['Spelling & Grammar', 'Distractor', 'Vocabulary', 'Listening Comprehension'],
 };
+
+// 'Khác' (see the TAXONOMY catch-all above) applies regardless of question
+// type, same as Vocabulary/Question Understanding — appended here instead
+// of hand-editing every entry above, so it can't be missed on a future one.
+[READING_TYPE_CATEGORIES, LISTENING_TYPE_CATEGORIES].forEach(table => {
+  Object.keys(table).forEach(type => table[type].push('Khác'));
+});
 
 const CATEGORIES_BY_TYPE = { reading: READING_TYPE_CATEGORIES, listening: LISTENING_TYPE_CATEGORIES };
 

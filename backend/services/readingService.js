@@ -179,6 +179,15 @@ async function listTestsForUser(userId) {
     const key = a.testId.toString();
     if (!attemptMap[key] || attemptMap[key].endTime < a.endTime) attemptMap[key] = a;
   });
+  // Per-test review-status badge (none/pending/completed) for the
+  // student's own most recent attempt of that test — one extra query
+  // instead of N, via the shared helper both reading/listening use.
+  const reviewMap = await reviewService.getReviewStatusMap(userId, 'reading', Object.values(attemptMap).map(a => a._id));
+  Object.values(attemptMap).forEach(a => {
+    const rv = reviewMap[a._id.toString()];
+    a.reviewStatus = rv ? rv.status : 'none';
+    a.reviewMistakeCount = rv ? rv.mistakeCount : 0;
+  });
   // isFixed tells the frontend whether to show the "câu hỏi ngẫu nhiên mỗi
   // lần" disclaimer — only true for the random-sample test(s); a fixed
   // test always serves the same 3 passages (see startTest()).

@@ -1,8 +1,10 @@
 /**
  * backend/middleware/requireReviewComplete.js
- * Blocks starting a NEW Reading/Listening test/practice while the student
- * has an unfinished mandatory review from a previous wrong-containing
- * attempt of that same skill (see backend/services/reviewService.js).
+ * Blocks starting a NEW Reading/Listening test/practice once the student
+ * has MAX_PENDING_REVIEWS or more unfinished mandatory reviews from
+ * previous wrong-containing attempts of that same skill (see
+ * backend/services/reviewService.js) — below that, practicing is still
+ * allowed, this is a nudge, not a hard stop, until it piles up.
  * Mirrors requirePremium.js's exact shape/response convention.
  * Must be used after middleware `auth` (needs req.user).
  *
@@ -16,15 +18,19 @@ const reviewService = require('../services/reviewService');
 function requireReviewComplete(skill) {
   return async (req, res, next) => {
     if (skill === 'listening' && req.query.purpose === 'dictation') return next();
-    const pending = await reviewService.getPendingReview(req.user._id, skill);
-    if (!pending) return next();
+    const { items, count } = await reviewService.getPendingReviews(req.user._id, skill);
+    if (count < reviewService.MAX_PENDING_REVIEWS) return next();
     return res.status(403).json({
       success: false,
       code: 'REVIEW_REQUIRED',
-      message: 'Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới.',
-      reviewId: pending._id,
-      attemptType: pending.attemptType,
-      attemptId: pending.attemptId,
+      message: `Bạn có ${count} bài đang chờ Review. Hãy hoàn thành ít nhất 1 bài trước khi bắt đầu bài mới.`,
+      count,
+      items: items.map(r => ({ _id: r._id, attemptType: r.attemptType, attemptId: r.attemptId, mistakeCount: r.mistakes.length })),
+      // Back-compat for any caller still reading the old singular shape —
+      // the oldest pending review, same as before.
+      reviewId: items[0]._id,
+      attemptType: items[0].attemptType,
+      attemptId: items[0].attemptId,
     });
   };
 }

@@ -60,7 +60,7 @@ describe('Reading mandatory review — full loop', () => {
     expect(secondStart.status).toBe(200);
   });
 
-  test('a wrong answer creates a pending review, blocks new Reading, and completing it unlocks again', async () => {
+  test('a single wrong answer creates a pending review but does NOT block a new Reading attempt (gate only fires at MAX_PENDING_REVIEWS)', async () => {
     const { test, p1 } = await makeThreePassageReadingTest();
     const user = await createStudent();
     const api = authed(user);
@@ -72,18 +72,19 @@ describe('Reading mandatory review — full loop', () => {
     });
     expect(submit.body.result.wrongCount).toBe(1);
 
-    // Pending review exists and blocks both chokepoints.
+    // Pending review exists...
     const pending = await api.get('/api/review/pending?skill=reading');
     expect(pending.body.pending).not.toBeNull();
+    expect(pending.body.count).toBe(1);
+    expect(pending.body.blocked).toBe(false);
     const reviewId = pending.body.pending._id;
 
-    const blockedStart = await api.post('/api/reading/start', { testId: String(test._id) });
-    expect(blockedStart.status).toBe(403);
-    expect(blockedStart.body.code).toBe('REVIEW_REQUIRED');
-
-    const blockedPractice = await api.get(`/api/reading/practice/by-id/${p1._id}`);
-    expect(blockedPractice.status).toBe(403);
-    expect(blockedPractice.body.code).toBe('REVIEW_REQUIRED');
+    // ...but a single pending review is still under the 3 threshold, so
+    // both chokepoints stay open — a student can keep practicing.
+    const stillOpenStart = await api.post('/api/reading/start', { testId: String(test._id) });
+    expect(stillOpenStart.status).not.toBe(403);
+    const stillOpenPractice = await api.get(`/api/reading/practice/by-id/${p1._id}`);
+    expect(stillOpenPractice.status).not.toBe(403);
 
     // Fetch the full review doc, find the mistake, complete it.
     const detail = await api.get(`/api/review/${reviewId}`);
@@ -104,11 +105,73 @@ describe('Reading mandatory review — full loop', () => {
     expect(patchedMistake.retryResult).toBe('correct');
     expect(patchedMistake.errorCode).toBe('VOCAB_UNKNOWN');
 
-    // Gate is lifted now.
+    // Gate reflects zero pending now.
     const pendingAfter = await api.get('/api/review/pending?skill=reading');
     expect(pendingAfter.body.pending).toBeNull();
+    expect(pendingAfter.body.count).toBe(0);
     const unblocked = await api.post('/api/reading/start', { testId: String(test._id) });
     expect(unblocked.status).toBe(200);
+  });
+
+  test('blocks new Reading only once MAX_PENDING_REVIEWS (3) pending reviews pile up, and unblocks as soon as one drops below it', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+
+    // 3 separate tests, each submitted with exactly one wrong answer —
+    // 3 independent pending AttemptReview docs (submit is never gated,
+    // by design, so a student CAN accumulate these). Check the gate after
+    // 2 (still open) and after the 3rd (now blocked).
+    const attempts = [];
+    for (let i = 0; i < 2; i++) {
+      const { test } = await makeThreePassageReadingTest();
+      const start = await api.post('/api/reading/start', { testId: String(test._id) });
+      await api.post('/api/reading/submit', {
+        attemptId: start.body.attemptId,
+        answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
+      });
+      attempts.push(test);
+    }
+    const pendingAt2 = await api.get('/api/review/pending?skill=reading');
+    expect(pendingAt2.body.count).toBe(2);
+    expect(pendingAt2.body.blocked).toBe(false);
+    const stillOpenAt2 = await api.post('/api/reading/start', { testId: String(attempts[0]._id) });
+    expect(stillOpenAt2.status).not.toBe(403);
+
+    const { test: thirdTest } = await makeThreePassageReadingTest();
+    const thirdStart = await api.post('/api/reading/start', { testId: String(thirdTest._id) });
+    await api.post('/api/reading/submit', {
+      attemptId: thirdStart.body.attemptId,
+      answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
+    });
+    attempts.push(thirdTest);
+
+    const pending2 = await api.get('/api/review/pending?skill=reading');
+    expect(pending2.body.count).toBe(3);
+    expect(pending2.body.blocked).toBe(true);
+    expect(pending2.body.items).toHaveLength(3);
+
+    const blockedStart = await api.post('/api/reading/start', { testId: String(attempts[0]._id) });
+    expect(blockedStart.status).toBe(403);
+    expect(blockedStart.body.code).toBe('REVIEW_REQUIRED');
+    expect(blockedStart.body.count).toBe(3);
+
+    // Complete just ONE of the three (the oldest, per getPendingReviews'
+    // createdAt:1 sort — same one `pending` pointed at).
+    const oldestReviewId = pending2.body.pending._id;
+    const detail = await api.get(`/api/review/${oldestReviewId}`);
+    const mistake = detail.body.review.mistakes[0];
+    await api.patch(`/api/review/${oldestReviewId}/mistakes/${mistake._id}`, {
+      errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
+      confidence: 'guessing', retryAnswer: 'banana',
+      learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
+    });
+
+    // Down to 2 pending — under the threshold again.
+    const pendingAfter = await api.get('/api/review/pending?skill=reading');
+    expect(pendingAfter.body.count).toBe(2);
+    expect(pendingAfter.body.blocked).toBe(false);
+    const unblocked = await api.post('/api/reading/start', { testId: String(attempts[0]._id) });
+    expect(unblocked.status).not.toBe(403);
   });
 
   test('an unrecognized category/reason pair is rejected with 400', async () => {
@@ -141,24 +204,42 @@ describe('Reading mandatory review — full loop', () => {
 });
 
 describe('Listening mandatory review + dictation exemption', () => {
-  test('a wrong Listening-test answer blocks new Listening but never dictation', async () => {
+  async function submitOneWrongListeningTest(api) {
     const lt = await createListeningTest({
       sections: [{
         partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 1 },
         questionGroups: [{ groupType: 'plain', questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q', correctAnswer: 'sunny' }] }],
       }],
     });
-    const user = await createStudent();
-    const api = authed(user);
-
     const start = await api.post(`/api/listening/tests/${lt._id}/start`, {});
     expect(start.status).toBe(200);
     const submit = await api.post(`/api/listening/tests/${lt._id}/submit`, {
       attemptId: start.body.attemptId, startTime: new Date().toISOString(), answers: { 1: 'wrong-answer' },
     });
     expect(submit.body.result.wrongCount).toBe(1);
+    return lt;
+  }
 
-    const blockedStart = await api.post(`/api/listening/tests/${lt._id}/start`, {});
+  test('a single wrong Listening answer does not block new Listening (under the pending threshold)', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    const lt = await submitOneWrongListeningTest(api);
+
+    const stillOpenStart = await api.post(`/api/listening/tests/${lt._id}/start`, {});
+    expect(stillOpenStart.status).not.toBe(403);
+  });
+
+  test('blocks new Listening once 3 pending reviews pile up, but never dictation', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    let lastTest;
+    for (let i = 0; i < 3; i++) lastTest = await submitOneWrongListeningTest(api);
+
+    const pending = await api.get('/api/review/pending?skill=listening');
+    expect(pending.body.count).toBe(3);
+    expect(pending.body.blocked).toBe(true);
+
+    const blockedStart = await api.post(`/api/listening/tests/${lastTest._id}/start`, {});
     expect(blockedStart.status).toBe(403);
     expect(blockedStart.body.code).toBe('REVIEW_REQUIRED');
 
@@ -290,8 +371,12 @@ describe('Mandatory-review completion cannot be faked with an empty retry (audit
     expect(patch.body.reviewCompleted).toBe(false);
     expect(patch.body.review.mistakes[0].completedAt).toBeNull();
 
-    const stillBlocked = await api.post('/api/reading/start', { testId: String(test._id) });
-    expect(stillBlocked.status).toBe(403);
+    // The fake "completion" attempt must not have lifted anything — this
+    // review is still pending (blocking-threshold behavior itself is
+    // covered separately in the "full loop" describe block above).
+    const pendingAfter = await api.get('/api/review/pending?skill=reading');
+    expect(pendingAfter.body.count).toBe(1);
+    expect(pendingAfter.body.pending._id).toBe(reviewId);
   });
 });
 
@@ -366,5 +451,88 @@ describe('AttemptReview retention', () => {
     const ttl = indexes.find(i => i.expireAfterSeconds !== undefined);
     expect(ttl).toBeTruthy();
     expect(ttl.expireAfterSeconds).toBe(90 * 24 * 60 * 60);
+  });
+});
+
+// A mistake that doesn't fit any structured category must never force an
+// inaccurate pick just to finish the mandatory review (PLATFORM_AUDIT
+// review-system redesign, item 2).
+describe('"Khác" catch-all taxonomy category', () => {
+  test('is a valid category+reason pair for both skills and appears in every type-filtered list', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    const res = await api.get('/api/review/taxonomy?skill=reading');
+    expect(Object.keys(res.body.taxonomy)).toContain('Khác');
+    expect(res.body.categoriesByType['true-false-ng']).toContain('Khác');
+    expect(res.body.categoriesByType['fill-blank']).toContain('Khác');
+
+    const lres = await api.get('/api/review/taxonomy?skill=listening');
+    expect(Object.keys(lres.body.taxonomy)).toContain('Khác');
+    expect(lres.body.categoriesByType['multiple-choice']).toContain('Khác');
+  });
+
+  test('resolves to a real errorCode and can complete a mistake end to end', async () => {
+    const { test } = await makeThreePassageReadingTest();
+    const user = await createStudent();
+    const api = authed(user);
+    const start = await api.post('/api/reading/start', { testId: String(test._id) });
+    await api.post('/api/reading/submit', { attemptId: start.body.attemptId, answers: { 1: 'apple', 2: 'nope', 3: 'cherry' } });
+    const pending = await api.get('/api/review/pending?skill=reading');
+    const reviewId = pending.body.pending._id;
+    const mistakeId = pending.body.pending.mistakes[0]._id;
+
+    const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
+      errorCategory: 'Khác', errorReason: 'Bất cẩn / lỗi ngẫu nhiên',
+      confidence: 'guessing', retryAnswer: 'banana',
+      learningPoint: { category: 'strategy', content: 'slow down' },
+    });
+    expect(patch.status).toBe(200);
+    const mistake = patch.body.review.mistakes.find(m => String(m._id) === String(mistakeId));
+    expect(mistake.errorCode).toBe('CARELESS');
+    expect(patch.body.reviewCompleted).toBe(true);
+  });
+});
+
+// Per-test review-status badge (none/pending/completed) attached to
+// lastAttempt by readingService.listTestsForUser / listeningService.
+// listStudentTests, via reviewService.getReviewStatusMap.
+describe('Per-test reviewStatus badge on the test list', () => {
+  test('reflects none/pending/completed correctly across 3 different tests', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+
+    // Test A: perfect score -> no review doc -> 'none'.
+    const { test: testA } = await makeThreePassageReadingTest();
+    const startA = await api.post('/api/reading/start', { testId: String(testA._id) });
+    await api.post('/api/reading/submit', { attemptId: startA.body.attemptId, answers: { 1: 'apple', 2: 'banana', 3: 'cherry' } });
+
+    // Test B: one wrong, left unreviewed -> 'pending'.
+    const { test: testB } = await makeThreePassageReadingTest();
+    const startB = await api.post('/api/reading/start', { testId: String(testB._id) });
+    await api.post('/api/reading/submit', { attemptId: startB.body.attemptId, answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' } });
+
+    // Test C: one wrong, fully reviewed -> 'completed'.
+    const { test: testC } = await makeThreePassageReadingTest();
+    const startC = await api.post('/api/reading/start', { testId: String(testC._id) });
+    await api.post('/api/reading/submit', { attemptId: startC.body.attemptId, answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' } });
+    const pendingC = await api.get('/api/review/pending?skill=reading');
+    // Complete whichever of the (now 2) pending reviews belongs to testC's attempt.
+    for (const r of pendingC.body.items) {
+      const detail = await api.get(`/api/review/${r._id}`);
+      if (String(detail.body.review.attemptId) !== String(startC.body.attemptId)) continue;
+      const m = detail.body.review.mistakes[0];
+      await api.patch(`/api/review/${r._id}/mistakes/${m._id}`, {
+        errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
+        confidence: 'guessing', retryAnswer: 'banana',
+        learningPoint: { category: 'vocabulary', content: 'x' },
+      });
+    }
+
+    const list = await api.get('/api/reading/tests');
+    const byId = {};
+    list.body.tests.forEach(t => { byId[String(t._id)] = t; });
+    expect(byId[String(testA._id)].lastAttempt.reviewStatus).toBe('none');
+    expect(byId[String(testB._id)].lastAttempt.reviewStatus).toBe('pending');
+    expect(byId[String(testC._id)].lastAttempt.reviewStatus).toBe('completed');
   });
 });

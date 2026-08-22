@@ -31,8 +31,18 @@ exports.getTaxonomy = guard(null, async (req, res) => {
 exports.getPending = guard(null, async (req, res) => {
   const { skill } = req.query;
   if (!validSkill(skill)) return res.status(400).json({ success: false, message: 'Thiếu hoặc sai tham số skill' });
-  const pending = await reviewService.getPendingReview(req.user._id, skill);
-  res.json({ success: true, pending: pending || null });
+  const { items, count } = await reviewService.getPendingReviews(req.user._id, skill);
+  // `pending` (the oldest doc, or null) is kept for back-compat with
+  // existing callers that only ever cared about "is there anything to
+  // review" — `count`/`items`/`blocked` are additive, for the redesigned
+  // "up to 2 is fine, 3+ blocks" gate.
+  res.json({
+    success: true,
+    pending: items[0] || null,
+    count,
+    items,
+    blocked: count >= reviewService.MAX_PENDING_REVIEWS,
+  });
 });
 
 exports.getDetail = guard(null, async (req, res) => {

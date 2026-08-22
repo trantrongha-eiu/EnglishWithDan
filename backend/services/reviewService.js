@@ -57,9 +57,38 @@ async function createReviewIfNeeded({ userId, attemptType, attemptId, gradedAnsw
 // Scoped per-skill: a pending Reading review blocks new Reading only, not
 // Listening — matches the fact the gate sits at skill-specific route
 // chokepoints (see middleware/requireReviewComplete.js).
-function getPendingReview(userId, skill) {
+//
+// A student can legitimately have MULTIPLE pending reviews at once — submit
+// routes were never gated, only start/fetch — so this returns every pending
+// doc, not just the oldest (see MAX_PENDING_REVIEWS below for why that
+// matters: the old getPendingReview() only ever surfaced the single oldest
+// one, so a student who fully finished THAT review could still be blocked
+// by a second, entirely invisible one from a concurrent attempt, with no
+// indication anything else was left).
+function getPendingReviews(userId, skill) {
   const attemptTypes = skill === 'reading' ? ['reading', 'reading-practice'] : ['listening', 'listening-practice'];
-  return AttemptReview.findOne({ userId, status: 'pending', attemptType: { $in: attemptTypes } }).sort({ createdAt: 1 });
+  return AttemptReview.find({ userId, status: 'pending', attemptType: { $in: attemptTypes } })
+    .sort({ createdAt: 1 })
+    .then(items => ({ items, count: items.length }));
+}
+
+// Gate threshold — a student may have up to this many pending reviews
+// before being blocked from starting a new test/practice of that skill.
+// Below this, they're free to keep practicing (informational nudge only);
+// at/above it, requireReviewComplete.js blocks with a 403 explaining why.
+const MAX_PENDING_REVIEWS = 3;
+
+// One query, reused by both readingService.listTestsForUser and
+// listeningService.listStudentTests to attach a per-test review-status
+// badge (none/pending/completed) to each test's lastAttempt, instead of
+// each duplicating the AttemptReview query itself.
+async function getReviewStatusMap(userId, attemptType, attemptIds) {
+  if (!attemptIds.length) return {};
+  const reviews = await AttemptReview.find({ userId, attemptType, attemptId: { $in: attemptIds } })
+    .select('attemptId status mistakes').lean();
+  const map = {};
+  reviews.forEach(r => { map[r.attemptId.toString()] = { status: r.status, mistakeCount: r.mistakes.length }; });
+  return map;
 }
 
 // Strips `correctAnswer` from any mistake that hasn't gone through "Try
@@ -213,6 +242,6 @@ async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit
 }
 
 module.exports = {
-  createReviewIfNeeded, getPendingReview, getReviewDetail, getReviewByAttempt,
-  updateMistake, getReviewHistory,
+  createReviewIfNeeded, getPendingReviews, getReviewStatusMap, MAX_PENDING_REVIEWS,
+  getReviewDetail, getReviewByAttempt, updateMistake, getReviewHistory,
 };
