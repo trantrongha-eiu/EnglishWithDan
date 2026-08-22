@@ -9,20 +9,13 @@ const AttemptReview = require('../models/AttemptReview');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 
 // A mistake counts as "reviewed" once the core guided-review steps are
-// done — error classification, confidence, and an attempted retry. Free-
-// text fields (evidence, temptingAnswerNote, note, learningPoint.content)
-// are deliberately optional so 7 mistakes doesn't turn into an essay
-// assignment; learningPoint.category is a single tap, not free text, so
-// it's required alongside the others.
+// done — error classification, confidence, and "what to remember" learning
+// point. Free-text fields (evidence, temptingAnswerNote, note,
+// learningPoint.content) are deliberately optional so 7 mistakes doesn't
+// turn into an essay assignment; learningPoint.category is a single tap,
+// not free text, so it's required alongside the others.
 function coreFieldsFilled(m) {
-  // retryAnswer must be a non-empty attempt, not just "the field was
-  // touched" — `!= null` alone let a client PATCH with retryAnswer:'' and
-  // have it count as a completed retry without the student actually
-  // attempting anything (found during audit; the frontend already guards
-  // against sending an empty value, but the backend must not rely on that).
-  return !!(m.errorCategory && m.errorReason && m.confidence
-    && typeof m.retryAnswer === 'string' && m.retryAnswer.trim().length > 0
-    && m.learningPoint?.category);
+  return !!(m.errorCategory && m.errorReason && m.confidence && m.learningPoint?.category);
 }
 
 // Filters graded answers down to the ones that need review (wrong OR
@@ -91,47 +84,16 @@ async function getReviewStatusMap(userId, attemptType, attemptIds) {
   return map;
 }
 
-// Strips `correctAnswer` from any mistake that hasn't gone through "Try
-// Again" yet. Audit finding: hiding the correct answer until after retry
-// was implemented purely in the frontend's rendering order — the raw API
-// response already carried it from the start, so anyone opening devtools'
-// network tab could see it before attempting the retry, defeating the
-// whole point of the exercise. Once retryResult is set (the student has
-// submitted their retry), the answer is meant to be revealed, so it's left
-// in untouched from that point on.
-function _withheldUntilRetried(reviewDoc) {
-  if (!reviewDoc) return reviewDoc;
-  reviewDoc.mistakes = reviewDoc.mistakes.map(m => m.retryResult == null ? { ...m, correctAnswer: undefined } : m);
-  return reviewDoc;
-}
-
+// correctAnswer is always included — the review screen behind this data
+// already shows it unconditionally (built straight from the attempt's own
+// graded answers, independent of this collection), so there was never
+// anything left to protect by withholding it here too.
 async function getReviewDetail(reviewId, userId) {
-  const doc = await AttemptReview.findOne({ _id: reviewId, userId }).lean();
-  return _withheldUntilRetried(doc);
+  return AttemptReview.findOne({ _id: reviewId, userId }).lean();
 }
 
 async function getReviewByAttempt(attemptType, attemptId, userId) {
-  const doc = await AttemptReview.findOne({ attemptType, attemptId, userId }).lean();
-  return _withheldUntilRetried(doc);
-}
-
-// The isolated "Try Again" retry is always a single value for ONE question
-// — even for cluster question types (multi-answer-group, checkbox) whose
-// ORIGINAL submission format is a JSON-encoded array/letter-set shared
-// across a whole question cluster (see readingService.gradeMultiAnswerGroup/
-// listeningService.matchSingleAnswer's own comments). Audit finding: the
-// frontend's isolated retry sends a single chip value, not a JSON array, so
-// reusing those original comparators here made JSON.parse throw on every
-// multi-answer-group/checkbox retry, silently grading it "wrong"
-// regardless of correctness. A plain single-value match (case-insensitive,
-// "/"-delimited alternates supported, matching gradeOne's own fallback
-// branch) is correct for every question type in this isolated-retry
-// context — this never needs to call back into readingService/
-// listeningService at all.
-function gradeRetry(rawUser, rawCorrect) {
-  if (!rawUser) return false;
-  const alts = String(rawCorrect || '').split('/').map(s => s.trim().toLowerCase()).filter(Boolean);
-  return alts.includes(String(rawUser).trim().toLowerCase());
+  return AttemptReview.findOne({ attemptType, attemptId, userId }).lean();
 }
 
 const MAX_LEN = { evidence: 1000, temptingAnswerNote: 1000, note: 1000, 'learningPoint.content': 500 };
@@ -185,12 +147,6 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   for (const field of PATCHABLE_TEXT_FIELDS) {
     if (patch[field] !== undefined) mistake[field] = patch[field];
   }
-  if (patch.retryAnswer !== undefined) {
-    mistake.retryAnswer = patch.retryAnswer;
-    // Server-computed, never trusted from the client — grades the isolated
-    // retry against this mistake's own frozen correctAnswer.
-    mistake.retryResult = gradeRetry(patch.retryAnswer, mistake.correctAnswer) ? 'correct' : 'wrong';
-  }
   if (patch.learningPoint !== undefined) {
     if (patch.learningPoint.category !== undefined) mistake.learningPoint.category = patch.learningPoint.category;
     if (patch.learningPoint.content !== undefined) mistake.learningPoint.content = patch.learningPoint.content;
@@ -212,12 +168,7 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   await review.save();
   return {
     status: 'ok',
-    // toObject() + _withheldUntilRetried, not the live mongoose doc directly
-    // — this response carries every mistake in the review, not just the one
-    // just patched, so any OTHER mistake still awaiting its own retry must
-    // have its correctAnswer withheld here too, the same as the plain GET
-    // endpoints (fixed alongside the same audit finding).
-    review: _withheldUntilRetried(review.toObject()),
+    review: review.toObject(),
     reviewCompleted: review.status === 'completed',
     summary: review.status === 'completed' ? {
       mistakesReviewed: review.mistakes.length,

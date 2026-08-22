@@ -30,16 +30,11 @@ const MistakeSchema = new mongoose.Schema({
   errorReason:   { type: String, default: null },
   errorCode:     { type: String, default: null },
 
-  // 'left-blank' is not really a confidence LEVEL — it's what the drawer
-  // records instead when userAnswer was empty (the student never attempted
-  // this question), where "how confident were you" has no sensible answer.
-  // See review-drawer.js's _renderPhaseA().
+  // 'left-blank' is not really a confidence LEVEL — it's what the review
+  // form records instead when userAnswer was empty (the student never
+  // attempted this question), where "how confident were you" has no
+  // sensible answer. See review-inline.js's _renderForm().
   confidence: { type: String, enum: ['very-confident', 'not-sure', 'guessing', 'left-blank'], default: null },
-
-  // "Try Again" — retryResult is always server-computed against this
-  // mistake's own frozen correctAnswer, never trusted from the client.
-  retryAnswer: { type: String, default: null },
-  retryResult: { type: String, enum: ['correct', 'wrong'], default: null },
 
   // Free-text fields get the same maxlength convention as other user-note
   // fields elsewhere in this codebase (User.studyMotto/className) — audit
@@ -57,8 +52,8 @@ const MistakeSchema = new mongoose.Schema({
   },
 
   // Set once this mistake's required fields (category/reason, confidence,
-  // a retry attempt, learningPoint.category) are all present — see
-  // reviewService.js's REQUIRED_FIELDS_FILLED for the exact check.
+  // learningPoint.category) are all present — see reviewService.js's
+  // coreFieldsFilled() for the exact check.
   completedAt: { type: Date, default: null },
 }, { _id: true });
 

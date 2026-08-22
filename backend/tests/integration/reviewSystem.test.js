@@ -96,13 +96,11 @@ describe('Reading mandatory review — full loop', () => {
     const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistake._id}`, {
       errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
       confidence: 'guessing',
-      retryAnswer: 'banana', // correct this time
       learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
     });
     expect(patch.status).toBe(200);
     expect(patch.body.reviewCompleted).toBe(true);
     const patchedMistake = patch.body.review.mistakes.find(m => String(m._id) === String(mistake._id));
-    expect(patchedMistake.retryResult).toBe('correct');
     expect(patchedMistake.errorCode).toBe('VOCAB_UNKNOWN');
 
     // Gate reflects zero pending now.
@@ -141,7 +139,6 @@ describe('Reading mandatory review — full loop', () => {
     const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistake._id}`, {
       errorCategory: 'Khác', errorReason: 'Lý do khác',
       confidence: 'left-blank',
-      retryAnswer: 'banana',
       learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
     });
     expect(patch.status).toBe(200);
@@ -199,7 +196,7 @@ describe('Reading mandatory review — full loop', () => {
     const mistake = detail.body.review.mistakes[0];
     await api.patch(`/api/review/${oldestReviewId}/mistakes/${mistake._id}`, {
       errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
-      confidence: 'guessing', retryAnswer: 'banana',
+      confidence: 'guessing',
       learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
     });
 
@@ -292,8 +289,8 @@ describe('Listening mandatory review + dictation exemption', () => {
   });
 });
 
-describe('Correct answer withheld until retry (audit fix)', () => {
-  test('GET review detail hides correctAnswer before retry, reveals it after', async () => {
+describe('Correct answer is always visible (retry step removed)', () => {
+  test('GET review detail always includes correctAnswer, even before any classification is submitted', async () => {
     const { test } = await makeThreePassageReadingTest();
     const user = await createStudent();
     const api = authed(user);
@@ -301,94 +298,21 @@ describe('Correct answer withheld until retry (audit fix)', () => {
     await api.post('/api/reading/submit', { attemptId: start.body.attemptId, answers: { 1: 'apple', 2: 'nope', 3: 'cherry' } });
     const pending = await api.get('/api/review/pending?skill=reading');
     const reviewId = pending.body.pending._id;
-    const mistakeId = pending.body.pending.mistakes[0]._id;
 
     const before = await api.get(`/api/review/${reviewId}`);
-    expect(before.body.review.mistakes[0].correctAnswer).toBeUndefined();
+    expect(before.body.review.mistakes[0].correctAnswer).toBe('banana');
 
+    const mistakeId = pending.body.pending.mistakes[0]._id;
     const patched = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
       errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
-      confidence: 'guessing', retryAnswer: 'wrong-guess',
+      confidence: 'guessing',
     });
-    // Revealed in the PATCH response itself once retryResult is set...
     expect(patched.body.review.mistakes[0].correctAnswer).toBe('banana');
-
-    // ...and in a subsequent GET too.
-    const after = await api.get(`/api/review/${reviewId}`);
-    expect(after.body.review.mistakes[0].correctAnswer).toBe('banana');
   });
 });
 
-describe('Retry grading fix — multi-answer-group (audit finding)', () => {
-  test('retrying a multi-answer-group mistake grades correctly instead of always "wrong"', async () => {
-    const p1 = await createPassage({
-      category: 'passage1',
-      questions: [
-        { questionNumber: 1, type: 'multi-answer-group', questionText: 'Choose TWO', correctAnswer: 'A' },
-        { questionNumber: 2, type: 'multi-answer-group', questionText: 'Choose TWO', correctAnswer: 'D' },
-      ],
-    });
-    const p2 = await createPassage({ category: 'passage2', questions: [{ questionNumber: 3, type: 'sentence-completion', questionText: 'Q3', correctAnswer: 'banana' }] });
-    const p3 = await createPassage({ category: 'passage3', questions: [{ questionNumber: 4, type: 'sentence-completion', questionText: 'Q4', correctAnswer: 'cherry' }] });
-    const test = await createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
-    const user = await createStudent();
-    const api = authed(user);
-
-    const start = await api.post('/api/reading/start', { testId: String(test._id) });
-    // Submit '["A","C"]' for BOTH clustered question numbers (matches how
-    // reading-v2.js's toggleMultiAnswer() actually submits these — the same
-    // selected-letters array written to every question number in the
-    // cluster) — question 1 (correct=A) is correct, question 2 (correct=D) is wrong.
-    const submit = await api.post('/api/reading/submit', {
-      attemptId: start.body.attemptId,
-      answers: { 1: '["A","C"]', 2: '["A","C"]', 3: 'banana', 4: 'cherry' },
-    });
-    expect(submit.body.result.wrongCount).toBe(1);
-
-    const pending = await api.get('/api/review/pending?skill=reading');
-    const reviewId = pending.body.pending._id;
-    const mistake = pending.body.pending.mistakes.find(m => m.questionNumber === 2);
-    expect(mistake).toBeTruthy();
-
-    // Isolated retry: student now picks the single correct letter for
-    // question 2 ('D') — before the fix, gradeMultiAnswerGroup's
-    // JSON.parse('D') would throw and silently grade this "wrong" no
-    // matter what was sent.
-    const correctRetry = await api.patch(`/api/review/${reviewId}/mistakes/${mistake._id}`, {
-      errorCategory: 'Multiple Choice', errorReason: 'Chọn đáp án dựa trên suy đoán',
-      confidence: 'not-sure', retryAnswer: 'D',
-    });
-    expect(correctRetry.body.review.mistakes.find(m => m.questionNumber === 2).retryResult).toBe('correct');
-  });
-
-  test('a genuinely wrong retry still grades "wrong" (not just always-true)', async () => {
-    const p1 = await createPassage({
-      category: 'passage1',
-      questions: [{ questionNumber: 1, type: 'multi-answer-group', questionText: 'Choose TWO', correctAnswer: 'A' }],
-    });
-    const p2 = await createPassage({ category: 'passage2', questions: [{ questionNumber: 2, type: 'sentence-completion', questionText: 'Q2', correctAnswer: 'banana' }] });
-    const p3 = await createPassage({ category: 'passage3', questions: [{ questionNumber: 3, type: 'sentence-completion', questionText: 'Q3', correctAnswer: 'cherry' }] });
-    const test = await createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
-    const user = await createStudent();
-    const api = authed(user);
-
-    const start = await api.post('/api/reading/start', { testId: String(test._id) });
-    const submit = await api.post('/api/reading/submit', { attemptId: start.body.attemptId, answers: { 1: '["B"]', 2: 'banana', 3: 'cherry' } });
-    expect(submit.body.result.wrongCount).toBe(1);
-
-    const pending = await api.get('/api/review/pending?skill=reading');
-    const reviewId = pending.body.pending._id;
-    const mistakeId = pending.body.pending.mistakes[0]._id;
-    const retry = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
-      errorCategory: 'Multiple Choice', errorReason: 'Chọn đáp án dựa trên suy đoán',
-      confidence: 'guessing', retryAnswer: 'Z', // still wrong
-    });
-    expect(retry.body.review.mistakes[0].retryResult).toBe('wrong');
-  });
-});
-
-describe('Mandatory-review completion cannot be faked with an empty retry (audit finding)', () => {
-  test('an empty-string retryAnswer does not mark the mistake complete or lift the gate', async () => {
+describe('Mandatory-review completion requires the core fields (no retry step)', () => {
+  test('a mistake is not complete until category, reason, confidence, and learningPoint.category are all set', async () => {
     const { test } = await makeThreePassageReadingTest();
     const user = await createStudent();
     const api = authed(user);
@@ -398,22 +322,23 @@ describe('Mandatory-review completion cannot be faked with an empty retry (audit
     const reviewId = pending.body.pending._id;
     const mistakeId = pending.body.pending.mistakes[0]._id;
 
-    // Attempt to satisfy every field but with an empty retryAnswer, directly
-    // via the API (bypassing the frontend's own non-empty guard).
-    const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
+    // Category+reason+confidence alone is not enough — learningPoint.category
+    // is still required.
+    const partial = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
       errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
-      confidence: 'guessing', retryAnswer: '',
+      confidence: 'guessing',
+    });
+    expect(partial.body.reviewCompleted).toBe(false);
+    expect(partial.body.review.mistakes[0].completedAt).toBeNull();
+
+    const complete = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
       learningPoint: { category: 'vocabulary', content: 'x' },
     });
-    expect(patch.body.reviewCompleted).toBe(false);
-    expect(patch.body.review.mistakes[0].completedAt).toBeNull();
+    expect(complete.body.reviewCompleted).toBe(true);
+    expect(complete.body.review.mistakes[0].completedAt).not.toBeNull();
 
-    // The fake "completion" attempt must not have lifted anything — this
-    // review is still pending (blocking-threshold behavior itself is
-    // covered separately in the "full loop" describe block above).
     const pendingAfter = await api.get('/api/review/pending?skill=reading');
-    expect(pendingAfter.body.count).toBe(1);
-    expect(pendingAfter.body.pending._id).toBe(reviewId);
+    expect(pendingAfter.body.count).toBe(0);
   });
 });
 
@@ -520,7 +445,7 @@ describe('"Khác" catch-all taxonomy category', () => {
 
     const patch = await api.patch(`/api/review/${reviewId}/mistakes/${mistakeId}`, {
       errorCategory: 'Khác', errorReason: 'Bất cẩn / lỗi ngẫu nhiên',
-      confidence: 'guessing', retryAnswer: 'banana',
+      confidence: 'guessing',
       learningPoint: { category: 'strategy', content: 'slow down' },
     });
     expect(patch.status).toBe(200);
@@ -560,7 +485,7 @@ describe('Per-test reviewStatus badge on the test list', () => {
       const m = detail.body.review.mistakes[0];
       await api.patch(`/api/review/${r._id}/mistakes/${m._id}`, {
         errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
-        confidence: 'guessing', retryAnswer: 'banana',
+        confidence: 'guessing',
         learningPoint: { category: 'vocabulary', content: 'x' },
       });
     }

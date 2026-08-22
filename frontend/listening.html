@@ -9,30 +9,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="/css/tokens.css?v=20260828" />
-    <link rel="stylesheet" href="/css/components.css?v=20260828" />
-    <link rel="stylesheet" href="/listening.css?v=20260828" />
-    <link rel="stylesheet" href="/css/mobile.css?v=20260828" />
-    <script src="/js/theme.js?v=20260828"></script>
-    <script src="/js/shared/visit-tracker.js?v=20260828"></script>
+    <link rel="stylesheet" href="/css/tokens.css?v=20260829" />
+    <link rel="stylesheet" href="/css/components.css?v=20260829" />
+    <link rel="stylesheet" href="/listening.css?v=20260829" />
+    <link rel="stylesheet" href="/css/mobile.css?v=20260829" />
+    <script src="/js/theme.js?v=20260829"></script>
+    <script src="/js/shared/visit-tracker.js?v=20260829"></script>
 </head>
 
 <body>
-<script src="/js/shared/auth-service.js?v=20260828"></script>
-<script src="/js/auth.js?v=20260828"></script>
-<script src="/js/upgrade-modal.js?v=20260828"></script>
-<script src="/js/nav.js?v=20260828"></script>
-<script src="/js/learning-popups.js?v=20260828"></script>
-<script src="/js/shared/peer-chat-widget.js?v=20260828"></script>
-<script src="/js/shared/sound-effects.js?v=20260828"></script>
-<script src="/js/shared/utils.js?v=20260828"></script>
-<script src="/js/shared/toast.js?v=20260828"></script>
-<script src="/js/shared/confirm-dialog.js?v=20260828"></script>
-<script src="/js/shared/api-client.js?v=20260828"></script>
-<script src="/js/shared/route-params.js?v=20260828"></script>
-<script src="/js/shared/dictionary-lookup.js?v=20260828"></script>
-<script src="/js/shared/highlight-remove.js?v=20260828"></script>
-<script src="/js/shared/review-drawer.js?v=20260828"></script>
+<script src="/js/shared/auth-service.js?v=20260829"></script>
+<script src="/js/auth.js?v=20260829"></script>
+<script src="/js/upgrade-modal.js?v=20260829"></script>
+<script src="/js/nav.js?v=20260829"></script>
+<script src="/js/learning-popups.js?v=20260829"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260829"></script>
+<script src="/js/shared/sound-effects.js?v=20260829"></script>
+<script src="/js/shared/utils.js?v=20260829"></script>
+<script src="/js/shared/toast.js?v=20260829"></script>
+<script src="/js/shared/confirm-dialog.js?v=20260829"></script>
+<script src="/js/shared/api-client.js?v=20260829"></script>
+<script src="/js/shared/route-params.js?v=20260829"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260829"></script>
+<script src="/js/shared/highlight-remove.js?v=20260829"></script>
+<script src="/js/shared/review-required-popup.js?v=20260829"></script>
+<script src="/js/shared/review-inline.js?v=20260829"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -556,7 +557,7 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="/css/listening-extra.css?v=20260828">
+    <link rel="stylesheet" href="/css/listening-extra.css?v=20260829">
 
     <script>
         // ── Fullscreen toggle ──────────────────────────────────────────
@@ -1058,38 +1059,85 @@
         }
 
         // Mandatory Review System — after showing the normal review screen,
-        // check for an unfinished guided-review doc and auto-open the drawer
-        // (shared/review-drawer.js) on top of it. `questions` is a flat array
-        // with {questionNumber, questionText, options, audioTimestamp} per
-        // question — already fetched by the caller, no extra request needed.
-        async function _maybeOpenMandatoryReview(attemptType, attemptId, questions, jumpFn) {
-            if (!window.openReviewDrawer) return;
+        // fetch this attempt's guided-review doc (if any) and mount an
+        // inline "Review lỗi này" form (shared/review-inline.js) next to
+        // each wrong/skipped question's own already-visible answer. Runs
+        // regardless of review status (not just 'pending') so a returning
+        // student still sees their "✓ Đã review" badges. `questions` is a
+        // flat array with {questionNumber, questionText, options,
+        // audioTimestamp} per question — already fetched by the caller.
+        async function _mountInlineReviews(attemptType, attemptId, questions, containerId = 'review-questions-inner') {
+            if (!window.ReviewInline) return;
             try {
                 const res = await fetch(`${API}/review/by-attempt/${attemptType}/${attemptId}`, { headers: authH() });
                 const data = await safeJson(res);
                 const review = data.review;
-                if (!review || review.status !== 'pending') return;
+                if (!review) { state.inlineReviewCtx = null; return; }
                 const qByNum = {};
                 (questions || []).forEach(q => { qByNum[q.questionNumber] = q; });
-                window.openReviewDrawer(review, {
-                    skill: 'listening',
-                    getQuestionMeta: qNum => {
-                        const q = qByNum[qNum];
-                        if (!q) return {};
-                        // See findTemplateContext's comment — prefer the real
-                        // gap-fill sentence/cell over questionText, which for
-                        // table/note-form/summary-completion questions is
-                        // frequently just an unfilled placeholder.
-                        const questionText = q._templateContext || q.questionText;
-                        return { questionText, options: (q.options && q.options.length) ? q.options : null, type: q.type, explanation: q.explanation };
-                    },
-                    onJumpToContext: jumpFn,
-                    // See reading-v2.js's identical onClose wiring — refreshes
-                    // the banner/popup immediately on any close, fixing the
-                    // stale "still locked" state that was the original bug report.
-                    onClose: () => _checkPendingReviewBanner(),
-                });
+                const mistakesByQNum = {};
+                review.mistakes.forEach(m => { mistakesByQNum[m.questionNumber] = m; });
+                // Stored on state so part-tab switches can re-run the mount
+                // pass against the already-fetched data (see switchPart's
+                // cache-restore branch) without another round-trip.
+                state.inlineReviewCtx = { reviewId: review._id, mistakesByQNum, qByNum, containerId };
+                _runInlineReviewMountPass();
             } catch (e) { /* server-side gate stands regardless */ }
+        }
+
+        // The actual DOM pass — separated from the fetch above so a part-tab
+        // switch's cache-restore can re-run it cheaply. Covers every
+        // question-group rendering variant the review screen uses; see each
+        // renderer's own data-qnum wiring (renderStandaloneQuestion, the
+        // multi-answer-cluster q-mistake-block wrapper,
+        // resolvePlaceholders' inline-answer-wrap span, and
+        // renderMatchingOptionsGroup's mo-q-row).
+        function _runInlineReviewMountPass() {
+            const ctx = state.inlineReviewCtx;
+            if (!ctx || !window.ReviewInline) return;
+            const root = document.getElementById(ctx.containerId);
+            if (!root) return;
+
+            function mountFor(qnum, anchorEl, mode) {
+                const mistake = ctx.mistakesByQNum[qnum];
+                if (!mistake) return;
+                const q = ctx.qByNum[qnum];
+                window.ReviewInline.mount(anchorEl, mistake, {
+                    skill: 'listening', mode, reviewId: ctx.reviewId, questionType: q && q.type,
+                    onSaved: () => _checkPendingReviewBanner(),
+                });
+            }
+
+            // Plain questions + multi-answer-cluster sub-question rows —
+            // both use the same container convention (a block-level element
+            // carrying its own data-qnum).
+            root.querySelectorAll('.question-item[data-qnum], .q-mistake-block[data-qnum]').forEach(el => {
+                mountFor(+el.dataset.qnum, el, 'beforeend');
+            });
+            // Table/note-form/bullet-list/summary-completion templated
+            // blanks — inline span mid-sentence/mid-cell; mount at the end
+            // of its block-level container instead of splicing into the
+            // middle of the text. Two different class names in this file
+            // for the same pattern: resolvePlaceholders() (table/note-form/
+            // bullet-list) uses .inline-answer-wrap, renderSummaryCompletionGroup
+            // uses .rq-inline-wrap — both handled the same way.
+            root.querySelectorAll('.inline-answer-wrap[data-qnum], .rq-inline-wrap[data-qnum]').forEach(span => {
+                const container = span.closest('td, .note-line, .bullet-item, .rq-summary-text, .dd-text-col') || span.parentElement;
+                mountFor(+span.dataset.qnum, container, 'beforeend');
+            });
+            // Map drag-drop rows — sibling insert; parent .map-dd-questions
+            // is a column-flex container so a new row-level sibling stacks
+            // for free.
+            root.querySelectorAll('.map-dd-row[data-qnum]').forEach(row => {
+                mountFor(+row.dataset.qnum, row, 'afterend');
+            });
+            // Matching-options rows — mount as an OUTER sibling (the row
+            // itself is a flex row, not a column, so an inner append would
+            // wrap awkwardly — same reason the existing .match-feedback
+            // element for this row hard-codes width:100%).
+            root.querySelectorAll('.mo-q-row[data-qnum]').forEach(row => {
+                mountFor(+row.dataset.qnum, row, 'afterend');
+            });
         }
 
         // Group filtered tests into pages of at most LS_PAGE_SIZE cards each.
@@ -1617,6 +1665,13 @@
                     const pending = _pendingReviewQuestionHl[idx];
                     if (pending?.length) _reapplyTextHighlights(document.getElementById('review-questions-inner'), pending);
                 }
+                // Whichever branch ran above, #review-questions-inner's HTML
+                // was just replaced wholesale — any inline review toggle/form
+                // listeners from before this switch are gone with the old
+                // nodes, so re-run the mount pass. Cheap: reuses
+                // state.inlineReviewCtx, no network call. See reading-v2.js's
+                // identical switchReviewPassage wiring.
+                _runInlineReviewMountPass();
                 // Scroll về đầu sau khi switch part
                 const rvInner = document.getElementById('review-questions-inner');
                 if (rvInner) rvInner.scrollTop = 0;
@@ -1774,7 +1829,7 @@
                     if (isReview) {
                         const cls = q.isCorrect ? 'rq-ans-ok' : q.userAnswer ? 'rq-ans-wrong' : 'rq-ans-skip';
                         const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
-                        return `<div class="map-dd-row"><span class="rq-q-badge">${num}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}${labelHtml}</div>`;
+                        return `<div class="map-dd-row" id="mapdd-${num}" data-qnum="${num}"><span class="rq-q-badge">${num}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}${labelHtml}</div>`;
                     }
                     const ans = state.answers[num] || '';
                     return `<div class="map-dd-row">
@@ -2091,11 +2146,18 @@
                     const ok = !!q.isCorrect;
                     const qUA = (q.userAnswer || '').trim();
                     const qCA = (q.correctAnswer || '').trim().toUpperCase();
-                    return `<div class="q-correct-ans ${ok ? 'right' : qUA ? 'wrong' : 'skip'}" style="margin-top:4px">
-                        Q${q.questionNumber}: ${ok ? '✓ Đúng'
-                          : qUA ? `✗ Sai — Đáp án: <strong>${escHtml(qCA)}</strong>`
-                                : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(qCA)}</strong>`}
-                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}`;
+                    // Wrapped in its own data-qnum block (unlike the plain
+                    // per-question case, a cluster shares ONE .question-item
+                    // across several question numbers) so the inline review
+                    // mount pass has a per-mistake anchor — see
+                    // _runInlineReviewMountPass().
+                    return `<div class="q-mistake-block" id="qfb-${q.questionNumber}" data-qnum="${q.questionNumber}">
+                        <div class="q-correct-ans ${ok ? 'right' : qUA ? 'wrong' : 'skip'}" style="margin-top:4px">
+                            Q${q.questionNumber}: ${ok ? '✓ Đúng'
+                              : qUA ? `✗ Sai — Đáp án: <strong>${escHtml(qCA)}</strong>`
+                                    : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(qCA)}</strong>`}
+                        </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}
+                    </div>`;
                 }).join('');
             }
 
@@ -2157,6 +2219,13 @@
                 const ca = isReview ? (q.correctAnswer || '') : '';
                 if (isReview) {
                     const ok = !!q.isCorrect;
+                    // NOT injecting the explanation here as a trailing block
+                    // element — __Qn__ can sit mid-sentence (more text may
+                    // follow on the same line/cell), so a block-level div
+                    // right in the replacement would break the surrounding
+                    // text flow. The mount pass appends the explanation
+                    // (and the review form) at the END of the whole line's
+                    // container instead — see _runInlineReviewMountPass().
                     return `<span class="inline-answer-wrap" id="rv-q${num}" data-qnum="${num}">
                         <span class="q-badge-inline">${num}</span>
                         <span class="inline-answer ${ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip'}">${escHtml(ua || '–')}</span>
@@ -2251,10 +2320,7 @@
             // summaryConfig/etc. — needed for findTemplateContext to find
             // the real gap-fill sentence, see _ltGetAllQs.
             const _reviewAllQs = (r.sections || []).flatMap(_ltGetAllQs);
-            _maybeOpenMandatoryReview('listening', r.attemptId, _reviewAllQs, qNum => {
-                const q = (r.questions || []).find(x => x.questionNumber === qNum);
-                if (q && q.audioTimestamp) jumpToTime(q.audioTimestamp);
-            });
+            _mountInlineReviews('listening', r.attemptId, _reviewAllQs);
         }
 
         function renderReviewPartQuestions(partIdx) {
@@ -4431,10 +4497,7 @@
                 <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
                 <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
 
-            _maybeOpenMandatoryReview('listening-practice', attemptId, _ltGetAllQs(reviewSection), qNum => {
-                const q = _ltGetAllQs(reviewSection).find(x => x.questionNumber === qNum);
-                if (q && q.audioTimestamp && section.audioUrl) jumpToTime(q.audioTimestamp);
-            });
+            _mountInlineReviews('listening-practice', attemptId, _ltGetAllQs(reviewSection), 'lt-practice-questions-inner');
         } catch (e) { console.error(e); }
     }
 
@@ -4490,7 +4553,7 @@
         return true;
     };
     </script>
-    <script src="/js/listening-tips.js?v=20260828"></script>
+    <script src="/js/listening-tips.js?v=20260829"></script>
 </body>
 
 </html>

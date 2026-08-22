@@ -702,11 +702,11 @@ async function _doStartExam(testId) {
 //
 // Below MAX_PENDING_REVIEWS (backend/services/reviewService.js) this is
 // purely informational — a soft banner, never the modal popup — since 1-2
-// pending reviews doesn't block anything. Re-run after the drawer closes
-// (via openReviewDrawer's onClose) so this never goes stale: previously
-// the banner element, once created, was never updated again even as the
-// underlying pending count changed, which is what made a just-finished
-// review look like it was still "stuck".
+// pending reviews doesn't block anything. Re-run after saving an inline
+// review form (via ReviewInline's onSaved) so this never goes stale:
+// previously the banner element, once created, was never updated again
+// even as the underlying pending count changed, which is what made a
+// just-finished review look like it was still "stuck".
 let _pendingReadingReview = null;
 async function _checkPendingReviewBanner() {
   let count = 0, blocked = false;
@@ -1510,9 +1510,7 @@ function getAllGroupsFromPassage(passage) {
 // live test — only the shared template is. Walking every config field
 // generically (rather than hand-modeling table vs note vs summary shape)
 // means this keeps working for any future template-based group type without
-// a code change here. Used by _maybeOpenMandatoryReview's getQuestionMeta so
-// the mandatory review drawer shows the actual sentence a student needs to
-// remember, not a meaningless "Question 37" label.
+// a code change here.
 function findTemplateContext(group, qNum) {
   if (!group) return null;
   const marker = `__Q${qNum}__`;
@@ -1641,11 +1639,17 @@ function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
       const ok = !!r?.isCorrect;
       const ua = r?.userAnswer || '';
       const ca = (r?.correctAnswer || q.correctAnswer || '').toUpperCase();
-      return `<div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}" style="margin-top:4px">
-        Q${q.questionNumber}: ${ok ? '✓ Đúng'
-          : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`
-               : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
-      </div>${r?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>` : ''}`;
+      // Wrapped in its own data-qnum block (unlike the plain per-question
+      // case, a cluster shares ONE .question-item across several question
+      // numbers) so the inline review mount pass has a per-mistake anchor
+      // to attach its toggle+form to — see _runInlineReviewMountPass().
+      return `<div class="q-mistake-block" id="qfb-${q.questionNumber}" data-qnum="${q.questionNumber}">
+        <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}" style="margin-top:4px">
+          Q${q.questionNumber}: ${ok ? '✓ Đúng'
+            : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`
+                 : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
+        </div>${r?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>` : ''}
+      </div>`;
     }).join('');
   }
 
@@ -1734,7 +1738,7 @@ function renderMapGroup(group, isReview, reviewMap) {
         const rvUA = review?.userAnswer || '';
         const cls = review?.isCorrect ? 'rq-ans-ok' : rvUA ? 'rq-ans-wrong' : 'rq-ans-skip';
         const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
-        return `<div class="map-dd-row"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}${labelHtml}</div>`;
+        return `<div class="map-dd-row" id="mapdd-${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}${labelHtml}</div>`;
       }
       const ans = state.answers[qNum] || '';
       return `<div class="map-dd-row">
@@ -1958,7 +1962,7 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
       const rvUA = review?.userAnswer || '';
       const cls = review?.isCorrect ? 'rq-ans-ok' : rvUA ? 'rq-ans-wrong' : 'rq-ans-skip';
       const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
-      return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}</span>`;
+      return `<span class="rq-inline-wrap" id="sc-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}</span>`;
     }
     const ans = state.answers[qNum] || '';
     return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
@@ -2840,49 +2844,77 @@ async function loadReviewByTest(testId) {
   } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
 
-// Mandatory Review System — after showing the normal review screen, check
-// whether this attempt has an unfinished guided-review doc and, if so,
-// auto-open the drawer (shared/review-drawer.js) on top of it. Silent on
+// Mandatory Review System — after showing the normal review screen, fetch
+// this attempt's guided-review doc (if any) and mount an inline "Review
+// lỗi này" form (shared/review-inline.js) next to each wrong/skipped
+// question's own already-visible answer/explanation. Runs regardless of
+// review status (not just 'pending') so a student revisiting an already-
+// completed review still sees their "✓ Đã review" badges. Silent on
 // failure: the actual gate is enforced server-side regardless of whether
 // this UI hook manages to show up.
-async function _maybeOpenMandatoryReview(attemptType, attemptId, allQuestions, jumpFn) {
-  if (!window.openReviewDrawer) return;
+async function _mountInlineReviews(attemptType, attemptId, allQuestions, containerId = 'review-questions-inner') {
+  if (!window.ReviewInline) return;
   try {
     const res = await apiFetch(`/api/review/by-attempt/${attemptType}/${attemptId}`);
     const review = res.review;
-    if (!review || review.status !== 'pending') return;
+    if (!review) { state.inlineReviewCtx = null; return; }
     const qByNum = {};
     allQuestions.forEach(q => { qByNum[q.questionNumber] = q; });
-    window.openReviewDrawer(review, {
-      skill: 'reading',
-      getQuestionMeta: qNum => {
-        const q = qByNum[qNum];
-        if (!q) return {};
-        let options = (q.options && q.options.length) ? q.options : null;
-        // TFNG questions don't store an options array on the content model
-        // (the exam UI hardcodes these three labels client-side) — without
-        // this, the review drawer's retry input fell back to free-text
-        // typing instead of clean True/False/Not Given buttons.
-        if (!options && q.type === 'true-false-ng') options = ['TRUE', 'FALSE', 'NOT GIVEN'];
-        if (!options && q.type === 'yes-no-ng') options = ['YES', 'NO', 'NOT GIVEN'];
-        // Prefer the real gap-fill sentence/cell (from the group's shared
-        // template — see findTemplateContext) over q.questionText, which
-        // for table/note-form/summary-completion questions is frequently
-        // just an unfilled content-authoring placeholder like "Question 37"
-        // — showing that in review tells the student nothing about what
-        // they actually got wrong.
-        const questionText = q._templateContext || q.questionText;
-        return { questionText, options, type: q.type, explanation: q.explanation };
-      },
-      onJumpToContext: jumpFn,
-      // Refresh the banner/popup the instant the drawer closes, for ANY
-      // reason (finished, or X'd out mid-way) — without this, a student
-      // who genuinely finished everything kept seeing a stale "still
-      // locked" banner/popup until a full page reload (the actual bug
-      // report this whole redesign started from).
-      onClose: () => _checkPendingReviewBanner(),
-    });
+    const mistakesByQNum = {};
+    review.mistakes.forEach(m => { mistakesByQNum[m.questionNumber] = m; });
+    // Stored on state so passage-tab switches can re-run the mount pass
+    // against the already-fetched data (see switchReviewPassage's
+    // cache-restore branch) without another round-trip.
+    state.inlineReviewCtx = { reviewId: review._id, mistakesByQNum, qByNum, containerId };
+    _runInlineReviewMountPass();
   } catch { /* server-side gate stands regardless */ }
+}
+
+// The actual DOM pass — separated from the fetch above so a passage-tab
+// switch's cache-restore can re-run it cheaply. Covers every question-group
+// rendering variant the review screen uses; see each renderer's own
+// data-qnum wiring (renderSingleQuestion, the multi-answer-cluster
+// q-mistake-block wrapper, resolvePlaceholders'/renderSummaryCompletionGroup's
+// rq-inline-wrap span, and renderMapGroup's map-dd-row). containerId
+// differs between the full-test review screen (review-questions-inner)
+// and the single-passage practice review screen (retry-questions-inner)
+// — see loadPracticeReview.
+function _runInlineReviewMountPass() {
+  const ctx = state.inlineReviewCtx;
+  if (!ctx || !window.ReviewInline) return;
+  const root = document.getElementById(ctx.containerId);
+  if (!root) return;
+
+  function mountFor(qnum, anchorEl, mode) {
+    const mistake = ctx.mistakesByQNum[qnum];
+    if (!mistake) return;
+    const q = ctx.qByNum[qnum];
+    window.ReviewInline.mount(anchorEl, mistake, {
+      skill: 'reading', mode, reviewId: ctx.reviewId, questionType: q && q.type,
+      onSaved: () => _checkPendingReviewBanner(),
+    });
+  }
+
+  // Plain questions, multi-answer-cluster sub-question rows, and matching-
+  // headings/matching-options rows all use the same container convention
+  // (a block-level element carrying its own data-qnum), so one selector
+  // covers all of them.
+  root.querySelectorAll('.question-item[data-qnum], .q-mistake-block[data-qnum], .match-question-row[data-qnum]').forEach(el => {
+    mountFor(+el.dataset.qnum, el, 'beforeend');
+  });
+  // Table/note-form/bullet-list templated blanks — the answer is an inline
+  // span mid-sentence/mid-cell; mount at the end of its block-level
+  // container (td/note-line/bullet-item) instead of splicing into the
+  // middle of the text.
+  root.querySelectorAll('.rq-inline-wrap[data-qnum]').forEach(span => {
+    const container = span.closest('td, .rq-note-line, .rq-bullet-item, .rq-summary-text') || span.parentElement;
+    mountFor(+span.dataset.qnum, container, 'beforeend');
+  });
+  // Map drag-drop rows — sibling insert; parent .rq-map-dd-questions is a
+  // column-flex container so a new row-level sibling stacks for free.
+  root.querySelectorAll('.map-dd-row[data-qnum]').forEach(row => {
+    mountFor(+row.dataset.qnum, row, 'afterend');
+  });
 }
 
 function renderReview(attempt) {
@@ -2935,7 +2967,7 @@ function renderReview(attempt) {
   showScreen('review');
 
   const allQ = attempt.passages.flatMap(getAllQuestionsFromPassage);
-  _maybeOpenMandatoryReview('reading', attempt._id, allQ, jumpToReviewQuestion);
+  _mountInlineReviews('reading', attempt._id, allQ);
 }
 
 function switchReviewPassage(idx) {
@@ -2985,6 +3017,14 @@ function switchReviewPassage(idx) {
       if (savedTexts && savedTexts.length) _reapplyTextHighlights(rvQuestionsInner, savedTexts);
     }
   }
+  // Whichever branch ran above, #review-questions-inner's HTML was just
+  // replaced wholesale (either freshly rendered or restored from a cached
+  // string) — any inline review toggle/form event listeners from before
+  // this switch are gone with the old nodes, so re-run the mount pass
+  // against the current DOM. Cheap: reuses state.inlineReviewCtx, no
+  // network call. A form that was mid-open (not yet saved) collapses back
+  // to its toggle button — accepted trade-off, see the redesign plan.
+  _runInlineReviewMountPass();
 
   // Scroll both panels to top when switching to a new passage
   const rvPassagePanel = document.getElementById('review-passage');
@@ -3515,7 +3555,7 @@ async function loadPracticeReview(attemptId) {
     inner.scrollTop = 0;
     showVocabToast('Đã tải bài xem lại', 'success');
 
-    _maybeOpenMandatoryReview('reading-practice', attemptId, getAllQuestionsFromPassage(passage), jumpToRetryQuestion);
+    _mountInlineReviews('reading-practice', attemptId, getAllQuestionsFromPassage(passage), 'retry-questions-inner');
   } catch (e) {
     console.error(e);
     showVocabToast('Lỗi tải bài xem lại', 'error');
