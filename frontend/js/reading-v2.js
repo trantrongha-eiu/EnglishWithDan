@@ -533,6 +533,17 @@ function renderTestList(tests) {
   wrap.innerHTML = html;
 }
 
+// 🟠 pending / 🔵 completed badge for a test's lastAttempt — 'none'
+// (perfect score, nothing to review) renders nothing, since the existing
+// done-tick already covers that case.
+function reviewStatusBadge(lastAttempt, testId) {
+  if (!lastAttempt || !lastAttempt.reviewStatus || lastAttempt.reviewStatus === 'none') return '';
+  if (lastAttempt.reviewStatus === 'pending') {
+    return `<div class="review-status-badge pending" onclick="loadReviewByTest('${testId}')">🟠 Chờ Review — ${lastAttempt.reviewMistakeCount} câu</div>`;
+  }
+  return `<div class="review-status-badge completed" onclick="loadReviewByTest('${testId}')">🔵 Đã Review</div>`;
+}
+
 function testCard(t) {
   const done = !!t.lastAttempt;
   const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
@@ -549,6 +560,7 @@ function testCard(t) {
       <div class="test-card-name">${escHtml(t.name)}</div>
       <div class="test-card-meta">40 câu · 60 phút</div>
       ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
+      ${reviewStatusBadge(t.lastAttempt, t._id)}
       <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escH(t.name)}')">
         ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? (t.isFixed ? 'Làm lại' : 'Làm test mới') : 'Bắt đầu')}
       </button>
@@ -687,29 +699,44 @@ async function _doStartExam(testId) {
 // screen (mirrors the existing premium-promo-banner pattern), plus the
 // shared jump-in helper both the proactive banner and the reactive
 // REVIEW_REQUIRED catch blocks use.
+//
+// Below MAX_PENDING_REVIEWS (backend/services/reviewService.js) this is
+// purely informational — a soft banner, never the modal popup — since 1-2
+// pending reviews doesn't block anything. Re-run after the drawer closes
+// (via openReviewDrawer's onClose) so this never goes stale: previously
+// the banner element, once created, was never updated again even as the
+// underlying pending count changed, which is what made a just-finished
+// review look like it was still "stuck".
 let _pendingReadingReview = null;
 async function _checkPendingReviewBanner() {
+  let count = 0, blocked = false;
   try {
     const res = await apiFetch('/api/review/pending?skill=reading');
     _pendingReadingReview = res.pending || null;
+    count = res.count || 0;
+    blocked = !!res.blocked;
   } catch { _pendingReadingReview = null; }
 
-  if (_pendingReadingReview && window.showReviewRequiredPopup) {
-    window.showReviewRequiredPopup(_pendingReadingReview, () => _goToPendingReview(_pendingReadingReview));
+  if (blocked && window.showReviewRequiredPopup) {
+    window.showReviewRequiredPopup(_pendingReadingReview, count, () => _goToPendingReview(_pendingReadingReview));
   }
 
   const wrap = document.getElementById('tests-wrapper');
   if (!wrap) return;
   let banner = document.getElementById('review-required-banner');
-  if (_pendingReadingReview) {
+  if (count > 0) {
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'review-required-banner';
-      banner.style.cssText = 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e';
-      banner.innerHTML = '<span>🔒 Hoàn thành review bài trước để mở khóa bài Reading mới.</span>' +
-        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>';
       wrap.parentNode.insertBefore(banner, wrap);
     }
+    banner.style.cssText = blocked
+      ? 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e'
+      : 'background:#f8f9fb;border:1px solid #e5e7eb;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#374151';
+    banner.innerHTML = (blocked
+        ? `<span>🔒 Bạn có ${count} bài đang chờ Review — hoàn thành ít nhất 1 bài để mở khóa bài Reading mới.</span>`
+        : `<span>🟡 Bạn có ${count} bài đang chờ Review — review khi rảnh để tránh lặp lại lỗi cũ.</span>`) +
+      '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>';
   } else if (banner) {
     banner.remove();
   }
@@ -1472,9 +1499,46 @@ function getAllGroupsFromPassage(passage) {
 }
 
 /* ── getAllQuestionsFromPassage: flat list for answer collection ── */
+// Template-based group types (summary-completion, note-form, table, ...)
+// store the REAL gap-fill sentence/cell in a shared config on the GROUP
+// (summaryConfig.text, noteConfig.lines, tableConfig.rows, ...), each blank
+// marked `__Qn__` — the exact same marker/regex convention already used to
+// render the live test (see renderSummaryCompletionGroup/renderNoteFormGroup
+// etc.'s own `/__Q(\d+)__/g` replace calls). Each individual question's own
+// `questionText` field is often left as a content-authoring placeholder
+// ("Question 37") for these group types, since it's never shown during the
+// live test — only the shared template is. Walking every config field
+// generically (rather than hand-modeling table vs note vs summary shape)
+// means this keeps working for any future template-based group type without
+// a code change here. Used by _maybeOpenMandatoryReview's getQuestionMeta so
+// the mandatory review drawer shows the actual sentence a student needs to
+// remember, not a meaningless "Question 37" label.
+function findTemplateContext(group, qNum) {
+  if (!group) return null;
+  const marker = `__Q${qNum}__`;
+  let found = null;
+  function walk(val) {
+    if (found) return;
+    if (typeof val === 'string') { if (val.includes(marker)) found = val; return; }
+    if (Array.isArray(val)) { val.forEach(walk); return; }
+    if (val && typeof val === 'object') Object.values(val).forEach(walk);
+  }
+  ['tableConfig', 'noteConfig', 'bulletConfig', 'summaryConfig', 'endingsConfig', 'dragDropConfig', 'headingsConfig']
+    .forEach(key => { if (!found && group[key]) walk(group[key]); });
+  // Blank out EVERY __Qn__ marker in the found line, not just this
+  // question's own — a shared sentence/table row often carries several
+  // sibling questions' blanks (see the Mozart summary-completion example),
+  // and leaving those as raw "__Q38__" syntax would leak internal markup
+  // into what's supposed to read as a plain sentence.
+  return found ? found.replace(/__Q\d+__/g, '_____') : null;
+}
+
 function getAllQuestionsFromPassage(passage) {
   if (passage.questionGroups?.length) {
-    return passage.questionGroups.flatMap(g => g.questions || []);
+    return passage.questionGroups.flatMap(g => (g.questions || []).map(q => ({
+      ...q,
+      _templateContext: findTemplateContext(g, q.questionNumber),
+    })));
   }
   return passage.questions || [];
 }
@@ -2801,9 +2865,22 @@ async function _maybeOpenMandatoryReview(attemptType, attemptId, allQuestions, j
         // typing instead of clean True/False/Not Given buttons.
         if (!options && q.type === 'true-false-ng') options = ['TRUE', 'FALSE', 'NOT GIVEN'];
         if (!options && q.type === 'yes-no-ng') options = ['YES', 'NO', 'NOT GIVEN'];
-        return { questionText: q.questionText, options, type: q.type, explanation: q.explanation };
+        // Prefer the real gap-fill sentence/cell (from the group's shared
+        // template — see findTemplateContext) over q.questionText, which
+        // for table/note-form/summary-completion questions is frequently
+        // just an unfilled content-authoring placeholder like "Question 37"
+        // — showing that in review tells the student nothing about what
+        // they actually got wrong.
+        const questionText = q._templateContext || q.questionText;
+        return { questionText, options, type: q.type, explanation: q.explanation };
       },
       onJumpToContext: jumpFn,
+      // Refresh the banner/popup the instant the drawer closes, for ANY
+      // reason (finished, or X'd out mid-way) — without this, a student
+      // who genuinely finished everything kept seeing a stale "still
+      // locked" banner/popup until a full page reload (the actual bug
+      // report this whole redesign started from).
+      onClose: () => _checkPendingReviewBanner(),
     });
   } catch { /* server-side gate stands regardless */ }
 }

@@ -9,29 +9,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="/css/tokens.css?v=20260823" />
-    <link rel="stylesheet" href="/css/components.css?v=20260823" />
-    <link rel="stylesheet" href="/listening.css?v=20260823" />
-    <link rel="stylesheet" href="/css/mobile.css?v=20260823" />
-    <script src="/js/theme.js?v=20260823"></script>
-    <script src="/js/shared/visit-tracker.js?v=20260823"></script>
+    <link rel="stylesheet" href="/css/tokens.css?v=20260824" />
+    <link rel="stylesheet" href="/css/components.css?v=20260824" />
+    <link rel="stylesheet" href="/listening.css?v=20260824" />
+    <link rel="stylesheet" href="/css/mobile.css?v=20260824" />
+    <script src="/js/theme.js?v=20260824"></script>
+    <script src="/js/shared/visit-tracker.js?v=20260824"></script>
 </head>
 
 <body>
-<script src="/js/shared/auth-service.js?v=20260823"></script>
-<script src="/js/auth.js?v=20260823"></script>
-<script src="/js/upgrade-modal.js?v=20260823"></script>
-<script src="/js/nav.js?v=20260823"></script>
-<script src="/js/learning-popups.js?v=20260823"></script>
-<script src="/js/shared/peer-chat-widget.js?v=20260823"></script>
-<script src="/js/shared/sound-effects.js?v=20260823"></script>
-<script src="/js/shared/utils.js?v=20260823"></script>
-<script src="/js/shared/toast.js?v=20260823"></script>
-<script src="/js/shared/api-client.js?v=20260823"></script>
-<script src="/js/shared/route-params.js?v=20260823"></script>
-<script src="/js/shared/dictionary-lookup.js?v=20260823"></script>
-<script src="/js/shared/highlight-remove.js?v=20260823"></script>
-<script src="/js/shared/review-drawer.js?v=20260823"></script>
+<script src="/js/shared/auth-service.js?v=20260824"></script>
+<script src="/js/auth.js?v=20260824"></script>
+<script src="/js/upgrade-modal.js?v=20260824"></script>
+<script src="/js/nav.js?v=20260824"></script>
+<script src="/js/learning-popups.js?v=20260824"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260824"></script>
+<script src="/js/shared/sound-effects.js?v=20260824"></script>
+<script src="/js/shared/utils.js?v=20260824"></script>
+<script src="/js/shared/toast.js?v=20260824"></script>
+<script src="/js/shared/confirm-dialog.js?v=20260824"></script>
+<script src="/js/shared/api-client.js?v=20260824"></script>
+<script src="/js/shared/route-params.js?v=20260824"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260824"></script>
+<script src="/js/shared/highlight-remove.js?v=20260824"></script>
+<script src="/js/shared/review-drawer.js?v=20260824"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -555,7 +556,7 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="/css/listening-extra.css?v=20260823">
+    <link rel="stylesheet" href="/css/listening-extra.css?v=20260824">
 
     <script>
         // ── Fullscreen toggle ──────────────────────────────────────────
@@ -1016,28 +1017,35 @@
         // both the proactive banner and reactive REVIEW_REQUIRED catches use.
         let _pendingListeningReview = null;
         async function _checkPendingReviewBanner() {
+            let count = 0, blocked = false;
             try {
                 const res = await fetch(`${API}/review/pending?skill=listening`, { headers: authH() });
                 const data = await safeJson(res);
                 _pendingListeningReview = data.pending || null;
+                count = data.count || 0;
+                blocked = !!data.blocked;
             } catch (e) { _pendingListeningReview = null; }
 
-            if (_pendingListeningReview && window.showReviewRequiredPopup) {
-                window.showReviewRequiredPopup(_pendingListeningReview, () => _goToPendingReview(_pendingListeningReview));
+            if (blocked && window.showReviewRequiredPopup) {
+                window.showReviewRequiredPopup(_pendingListeningReview, count, () => _goToPendingReview(_pendingListeningReview));
             }
 
             const wrap = document.getElementById('tests-wrapper');
             if (!wrap) return;
             let banner = document.getElementById('review-required-banner');
-            if (_pendingListeningReview) {
+            if (count > 0) {
                 if (!banner) {
                     banner = document.createElement('div');
                     banner.id = 'review-required-banner';
-                    banner.style.cssText = 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e';
-                    banner.innerHTML = '<span>🔒 Hoàn thành review bài trước để mở khóa bài Listening mới.</span>' +
-                        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingListeningReview)">Tiếp tục Review</button>';
                     wrap.parentNode.insertBefore(banner, wrap);
                 }
+                banner.style.cssText = blocked
+                    ? 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e'
+                    : 'background:#f8f9fb;border:1px solid #e5e7eb;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#374151';
+                banner.innerHTML = (blocked
+                        ? `<span>🔒 Bạn có ${count} bài đang chờ Review — hoàn thành ít nhất 1 bài để mở khóa bài Listening mới.</span>`
+                        : `<span>🟡 Bạn có ${count} bài đang chờ Review — review khi rảnh để tránh lặp lại lỗi cũ.</span>`) +
+                    '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingListeningReview)">Tiếp tục Review</button>';
             } else if (banner) {
                 banner.remove();
             }
@@ -1068,9 +1076,18 @@
                     getQuestionMeta: qNum => {
                         const q = qByNum[qNum];
                         if (!q) return {};
-                        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null, type: q.type, explanation: q.explanation };
+                        // See findTemplateContext's comment — prefer the real
+                        // gap-fill sentence/cell over questionText, which for
+                        // table/note-form/summary-completion questions is
+                        // frequently just an unfilled placeholder.
+                        const questionText = q._templateContext || q.questionText;
+                        return { questionText, options: (q.options && q.options.length) ? q.options : null, type: q.type, explanation: q.explanation };
                     },
                     onJumpToContext: jumpFn,
+                    // See reading-v2.js's identical onClose wiring — refreshes
+                    // the banner/popup immediately on any close, fixing the
+                    // stale "still locked" state that was the original bug report.
+                    onClose: () => _checkPendingReviewBanner(),
                 });
             } catch (e) { /* server-side gate stands regardless */ }
         }
@@ -1137,6 +1154,17 @@
             }
         }
 
+        // 🟠 pending / 🔵 completed badge for a test's lastAttempt — mirrors
+        // reading-v2.js's identical helper. 'none' (perfect score) renders
+        // nothing, the existing done-tick already covers that case.
+        function reviewStatusBadge(lastAttempt, testId) {
+            if (!lastAttempt || !lastAttempt.reviewStatus || lastAttempt.reviewStatus === 'none') return '';
+            if (lastAttempt.reviewStatus === 'pending') {
+                return `<div class="review-status-badge pending" onclick="reviewFromHistory('${lastAttempt._id}')">🟠 Chờ Review — ${lastAttempt.reviewMistakeCount} câu</div>`;
+            }
+            return `<div class="review-status-badge completed" onclick="reviewFromHistory('${lastAttempt._id}')">🔵 Đã Review</div>`;
+        }
+
         function renderTestCard(t) {
             const dur = t.audioDuration ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)} min` : '–';
             const done = !!t.lastAttempt;
@@ -1159,6 +1187,7 @@
                         <div class="test-card-name">${escHtml(t.name)}</div>
                         <div class="test-card-meta"><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</div>
                         ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
+                        ${reviewStatusBadge(t.lastAttempt, t._id)}
                         <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}')"><i class="fas ${_userPlan !== 'premium' ? 'fa-lock' : 'fa-headphones'}" style="font-size:11px"></i> ${_userPlan !== 'premium' ? 'Upgrade gói' : (done ? 'Làm lại' : 'Bắt đầu')}</button>
                         ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')"><i class="fas fa-search"></i> Xem lại</button>` : ''}
                     </div>
@@ -2217,7 +2246,12 @@
             setTool('dict', true);
             showScreen('review');
 
-            _maybeOpenMandatoryReview('listening', r.attemptId, r.questions || [], qNum => {
+            // Built from r.sections (not the flatter r.questions) so each
+            // question carries its group's tableConfig/noteConfig/
+            // summaryConfig/etc. — needed for findTemplateContext to find
+            // the real gap-fill sentence, see _ltGetAllQs.
+            const _reviewAllQs = (r.sections || []).flatMap(_ltGetAllQs);
+            _maybeOpenMandatoryReview('listening', r.attemptId, _reviewAllQs, qNum => {
                 const q = (r.questions || []).find(x => x.questionNumber === qNum);
                 if (q && q.audioTimestamp) jumpToTime(q.audioTimestamp);
             });
@@ -3297,8 +3331,38 @@
     let _ltPracticeActive   = false; // true while practice screen is open (before submit)
 
     /* ── Helper ──────────────────────────────────────────────────────────── */
+    // Mirrors reading-v2.js's identical helper. Table/note-form/summary-
+    // completion groups store the REAL gap-fill sentence/cell on the
+    // GROUP's shared template (tableConfig/noteConfig/summaryConfig/...),
+    // each blank marked __Qn__ (same convention the live-test renderers
+    // already use, see this file's own /__Q(\d+)__/g replace calls) —
+    // each individual question's own questionText is frequently left as
+    // an unfilled content-authoring placeholder ("Question 9") for these
+    // group types.
+    function findTemplateContext(group, qNum) {
+        if (!group) return null;
+        const marker = `__Q${qNum}__`;
+        let found = null;
+        function walk(val) {
+            if (found) return;
+            if (typeof val === 'string') { if (val.includes(marker)) found = val; return; }
+            if (Array.isArray(val)) { val.forEach(walk); return; }
+            if (val && typeof val === 'object') Object.values(val).forEach(walk);
+        }
+        ['tableConfig', 'noteConfig', 'bulletConfig', 'summaryConfig', 'endingsConfig', 'dragDropConfig', 'headingsConfig']
+            .forEach(key => { if (!found && group[key]) walk(group[key]); });
+        // Blank out EVERY __Qn__ marker in the found line, not just this
+        // question's own — see reading-v2.js's identical comment for why
+        // (a shared sentence/row/table cell often carries sibling
+        // questions' blanks too).
+        return found ? found.replace(/__Q\d+__/g, '_____') : null;
+    }
+
     function _ltGetAllQs(section) {
-        return (section?.questionGroups || []).flatMap(g => g.questions || []);
+        return (section?.questionGroups || []).flatMap(g => (g.questions || []).map(q => ({
+            ...q,
+            _templateContext: findTemplateContext(g, q.questionNumber),
+        })));
     }
 
     // Single-section practice equivalent of _saveListeningHighlightsToStorage()
@@ -4426,7 +4490,7 @@
         return true;
     };
     </script>
-    <script src="/js/listening-tips.js?v=20260823"></script>
+    <script src="/js/listening-tips.js?v=20260824"></script>
 </body>
 
 </html>

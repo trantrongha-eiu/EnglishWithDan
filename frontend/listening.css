@@ -1643,6 +1643,24 @@ body.tool-hl .check-box { user-select: none; }
 
 .test-card-last .band-mini { color: #1565c0; font-weight: 700; }
 
+/* Per-test mandatory-review status badge — mirrors reading.css's identical
+   rules (separate stylesheets, same convention as .test-card-last above). */
+.review-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 3px 7px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.review-status-badge.pending { background: #fef3c7; color: #92400e; }
+.review-status-badge.completed { background: #dbeafe; color: #1d4ed8; }
+[data-theme="dark"] .review-status-badge.pending { background: #451a03; color: #fbbf24; }
+[data-theme="dark"] .review-status-badge.completed { background: #1e3a5f; color: #93c5fd; }
+
 .btn-redo-test {
   width: 100%;
   padding: 9px 0;

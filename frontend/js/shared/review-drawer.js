@@ -77,9 +77,14 @@
     var s = document.createElement('style');
     s.id = 'rd-styles';
     s.textContent =
-      '#rd-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1400;display:none}' +
+      // z-index kept BELOW components.css's --z-modal (1000, confirm-dialog.js's
+      // layer) on purpose — the drawer only needs to sit above ordinary page
+      // content, never above a modal dialog raised from within it (the X
+      // button's "are you sure" confirmation is exactly that case: it used to
+      // render invisibly behind the drawer at z-index 1400/1401, unclickable).
+      '#rd-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:950;display:none}' +
       '#rd-backdrop.open{display:block}' +
-      '#rd-root{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:calc(100vw - 24px);background:var(--surface,#fff);box-shadow:-8px 0 30px rgba(0,0,0,.25);z-index:1401;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}' +
+      '#rd-root{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:calc(100vw - 24px);background:var(--surface,#fff);box-shadow:-8px 0 30px rgba(0,0,0,.25);z-index:951;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease}' +
       '#rd-backdrop.open #rd-root{transform:translateX(0)}' +
       '.rd-header{padding:14px 16px;border-bottom:1px solid var(--border,#e5e7eb);display:flex;align-items:center;gap:10px;flex-shrink:0}' +
       '.rd-header-title{font-weight:800;font-size:14.5px;color:var(--text,#111827);flex:1}' +
@@ -121,7 +126,8 @@
       '.rd-popup-title{font-weight:800;font-size:16.5px;color:var(--text,#111827);margin-bottom:8px}' +
       '.rd-popup-text{font-size:13.5px;color:var(--text2,#374151);line-height:1.6;margin-bottom:20px}' +
       '.rd-popup-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue,#3d8bff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px}' +
-      '.rd-popup-dismiss{background:none;border:none;color:var(--text3,#9ca3af);font-size:12.5px;cursor:pointer;padding:6px}';
+      '.rd-popup-dismiss{background:none;border:none;color:var(--text3,#9ca3af);font-size:12.5px;cursor:pointer;padding:6px}' +
+      '.rd-popup-count{font-size:12px;color:var(--text3,#9ca3af);margin-top:6px}';
     document.head.appendChild(s);
   }
 
@@ -129,8 +135,15 @@
   // check on every list-screen re-entry — without a guard, navigating back
   // to the list a few times would pop this up repeatedly and get annoying;
   // the persistent banner already stays up as the standing reminder).
+  //
+  // Only meant to fire once the student is actually BLOCKED (count >=
+  // MAX_PENDING_REVIEWS, mirrored from backend/services/reviewService.js) —
+  // 1-2 pending reviews is still fine to keep practicing, so the host page
+  // only calls this when opts.blocked is true; below that it shows the
+  // softer, non-modal banner instead. See reading-v2.js/listening.html's
+  // _checkPendingReviewBanner().
   var _popupShownThisLoad = false;
-  function showReviewRequiredPopup(pending, onGoToReview) {
+  function showReviewRequiredPopup(pending, count, onGoToReview) {
     if (_popupShownThisLoad || !pending) return;
     _popupShownThisLoad = true;
     _injectStyles();
@@ -143,10 +156,11 @@
     backdrop.innerHTML =
       '<div class="rd-popup-box">' +
         '<div class="rd-popup-emoji">🔒</div>' +
-        '<div class="rd-popup-title">Cần hoàn thành Review trước</div>' +
-        '<div class="rd-popup-text">Bạn cần review lại các câu <strong>đã làm sai</strong> và lưu từ vựng cần thiết ở đề trước — câu đã làm đúng thì không cần review — trước khi có thể bắt đầu đề mới.</div>' +
-        '<button class="rd-popup-btn" id="rd-popup-go-btn">Vào Review ngay</button>' +
+        '<div class="rd-popup-title">Bạn có ' + count + ' bài đang chờ Review</div>' +
+        '<div class="rd-popup-text">Hãy review ít nhất 1 bài trước khi làm bài mới.<br><br>Review giúp bạn tìm ra lỗi và tránh lặp lại cùng một lỗi trong bài tiếp theo.</div>' +
+        '<button class="rd-popup-btn" id="rd-popup-go-btn">Review ngay</button>' +
         '<button class="rd-popup-dismiss" id="rd-popup-dismiss-btn">Để sau</button>' +
+        '<div class="rd-popup-count">Bài đang chờ Review: ' + count + '</div>' +
       '</div>';
     backdrop.classList.add('open');
     document.getElementById('rd-popup-dismiss-btn').addEventListener('click', function () {
@@ -177,10 +191,20 @@
         '<div class="rd-footer" id="rd-footer"></div>' +
       '</div>';
     document.body.appendChild(_backdrop);
-    _body = document.getElementById('rd-body');
-    _footer = document.getElementById('rd-footer');
-    _progressEl = document.getElementById('rd-progress');
-    document.getElementById('rd-close-btn').addEventListener('click', _close);
+    // Scoped to _backdrop (not document.getElementById) and _root actually
+    // assigned this time — previously _root was declared but never set, so
+    // this guard's `if (_root) return;` above was permanently false and
+    // EVERY openReviewDrawer() call rebuilt a whole new #rd-backdrop tree
+    // on top of the old one (never removed). The stale first copy's
+    // getElementById-resolved elements then silently absorbed clicks/
+    // selects meant for the new, visible one on any second-or-later open
+    // in the same page session — the most likely concrete cause of "the X
+    // button/drawer stops responding" after reopening review.
+    _root = _backdrop.querySelector('#rd-root');
+    _body = _backdrop.querySelector('#rd-body');
+    _footer = _backdrop.querySelector('#rd-footer');
+    _progressEl = _backdrop.querySelector('#rd-progress');
+    _backdrop.querySelector('#rd-close-btn').addEventListener('click', _close);
     _backdrop.addEventListener('click', function (e) { if (e.target === _backdrop) _close(); });
 
     document.addEventListener('click', function (e) {
@@ -203,11 +227,36 @@
     _renderStep();
   }
 
-  function _close() {
+  // Actually tears down the drawer — the only place that does, so both the
+  // X button and the "already reviewed nothing left" fast path funnel
+  // through here after any confirmation has been resolved.
+  function _actuallyClose() {
     _backdrop.classList.remove('open');
     var opts = _rd && _rd.opts;
     _rd = null;
     if (opts && opts.onClose) opts.onClose(null);
+  }
+
+  // X button / backdrop click. If every mistake is already done (student is
+  // on — or past — the completion screen), close immediately, no prompt.
+  // Otherwise confirm first: progress IS already saved per-PATCH (each
+  // Phase A/B submit is its own round-trip, never batched at the end), so
+  // the dialog's claim that it's safe to leave is true today, not aspirational.
+  function _close() {
+    if (!_rd || _firstIncompleteIdx(_rd.review.mistakes) === -1) { _actuallyClose(); return; }
+    var remaining = _rd.review.mistakes.filter(function (m) { return !m.completedAt; }).length;
+    if (window.confirmDialog) {
+      window.confirmDialog(
+        'Bạn chưa hoàn thành Review',
+        'Bạn vẫn còn ' + remaining + ' câu chưa review. Nếu thoát bây giờ, tiến độ review sẽ được lưu lại.',
+        _actuallyClose,
+        { confirmLabel: 'Thoát', confirmClass: 'btn-primary' }
+      );
+    } else {
+      // confirm-dialog.js not loaded on this host page for some reason —
+      // fail open rather than trap the student with an unclosable drawer.
+      _actuallyClose();
+    }
   }
 
   // Two phases per mistake, split specifically so the correct answer is
