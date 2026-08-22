@@ -88,4 +88,26 @@ async function getBadges(userId) {
   return { badges, earnedCount, totalCount: badges.length };
 }
 
-module.exports = { getUserStats, getBadges };
+// Wraps getBadges() with detection + persistence of NEWLY earned badges —
+// getBadges() itself stays pure/side-effect-free (still used as-is by the
+// admin "view a student's badges" route, which must never mark anything
+// as "seen" on that student's behalf). Diffs the live-computed earned set
+// against User.earnedBadgeIds (the "already notified" record) and
+// $addToSet's any newly-crossed ids. Callers use `newlyUnlocked` to pop a
+// real-time notification; everything else in the response is identical to
+// getBadges().
+async function checkAndAwardNewBadges(userId) {
+  const result = await getBadges(userId);
+  const user = await User.findById(userId).select('earnedBadgeIds').lean();
+  const known = new Set(user?.earnedBadgeIds || []);
+  const newlyUnlocked = result.badges.filter(b => b.earned && !known.has(b.id));
+  if (newlyUnlocked.length) {
+    await User.updateOne(
+      { _id: userId },
+      { $addToSet: { earnedBadgeIds: { $each: newlyUnlocked.map(b => b.id) } } }
+    );
+  }
+  return { ...result, newlyUnlocked };
+}
+
+module.exports = { getUserStats, getBadges, checkAndAwardNewBadges };

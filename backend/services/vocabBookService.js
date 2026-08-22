@@ -8,6 +8,7 @@ const VocabActivity = require('../models/VocabActivity');
 const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
 const VocabPracticeSession = require('../models/VocabPracticeSession');
 const { escapeRegex } = require('../utils/strings');
+const badgeService = require('./badgeService');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
 // _reportSessionStreak()) so the 35-word/day engagement threshold stays
@@ -170,12 +171,16 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   }
 
   await user.save();
+  // A session completion is exactly "a practice session just finished" —
+  // where maxStreak (streak badges) can newly cross a threshold.
+  const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
   return {
     status: 'ok',
     streak: user.learningStreak,
     bonusApplied: appliedBonus,
     hammerEarned,
     streakHammers: user.streakHammers,
+    newlyUnlocked,
   };
 }
 
@@ -228,6 +233,8 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
   const wordDoc = book.words.id(wordId);
   if (!wordDoc) return { status2: 'word_not_found' };
 
+  const wasMastered = wordDoc.status === 'da-thuoc';
+
   if (correct) {
     wordDoc.correctCount = (wordDoc.correctCount || 0) + 1;
   } else {
@@ -240,7 +247,16 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
   wordDoc.status = statusFromBox(wordDoc.srsBox);
 
   await book.save();
-  return { status2: 'ok', word: wordDoc };
+
+  // Only worth a badge check when this specific call is what pushed the
+  // word INTO mastery — recordPracticeResult fires once per answer, so an
+  // unconditional full recompute on every call (most of which can't have
+  // moved vocabMastered at all) would be wasteful.
+  let newlyUnlocked = [];
+  if (!wasMastered && wordDoc.status === 'da-thuoc') {
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(userId)).newlyUnlocked;
+  }
+  return { status2: 'ok', word: wordDoc, newlyUnlocked };
 }
 
 async function getBook(id, userId) {
@@ -413,7 +429,13 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
     }
   }
 
-  return { status2: 'ok', word: wordDoc };
+  // Only worth a badge check when this manual status edit is what pushed
+  // the word INTO mastery (mirrors recordPracticeResult's same guard).
+  let newlyUnlocked = [];
+  if (hadStatusChange && wordDoc.status === 'da-thuoc') {
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(userId)).newlyUnlocked;
+  }
+  return { status2: 'ok', word: wordDoc, newlyUnlocked };
 }
 
 async function deleteWord(bookId, wordId, userId) {

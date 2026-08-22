@@ -8,6 +8,7 @@ const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require(
 const {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
+const badgeService = require('./badgeService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -238,11 +239,11 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
       aiFeedback: mapFeedbackToAiFeedback(feedback)
     });
     await attempt.save();
-    _creditStreakForAnalyzedAttempt(user);
-    return attempt._id;
+    const newlyUnlocked = await _creditStreakForAnalyzedAttempt(user);
+    return { attemptId: attempt._id, newlyUnlocked };
   } catch (saveErr) {
     console.error('[Speaking] Save attempt error:', saveErr.message);
-    return null;
+    return { attemptId: null, newlyUnlocked: [] };
   }
 }
 
@@ -254,10 +255,14 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
 // activity heatmap already counts SpeakingAttempt docs (userService.
 // getActivityHeatmap), so a student who only practiced Speaking that day
 // saw the day marked "done" there yet had their streak quietly die anyway.
-function _creditStreakForAnalyzedAttempt(user) {
-  if (!user || user.role !== 'student') return;
+async function _creditStreakForAnalyzedAttempt(user) {
+  if (!user || user.role !== 'student') return [];
   user.updateStreak();
-  user.save().catch(() => {});
+  // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
+  // the streak fresh from the DB, so the save must actually land first.
+  await user.save().catch(() => {});
+  const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
+  return newlyUnlocked;
 }
 
 // Persisted BEFORE calling Gemini so the submission is visible to the
@@ -299,11 +304,11 @@ async function finalizeAttempt(attemptId, feedback, user) {
       { status: 'analyzed', aiFeedback: mapFeedbackToAiFeedback(feedback) },
       { new: true, runValidators: true }
     );
-    if (updated) _creditStreakForAnalyzedAttempt(user);
-    return updated ? updated._id : null;
+    const newlyUnlocked = updated ? await _creditStreakForAnalyzedAttempt(user) : [];
+    return { attemptId: updated ? updated._id : null, newlyUnlocked };
   } catch (err) {
     console.error('[Speaking] Finalize attempt error:', err.message);
-    return null;
+    return { attemptId: null, newlyUnlocked: [] };
   }
 }
 

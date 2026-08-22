@@ -130,7 +130,7 @@ describe('speakingService.saveAttempt', () => {
       improvements: ['Use more linking words'],
     };
 
-    const attemptId = await speakingService.saveAttempt(student, {
+    const { attemptId } = await speakingService.saveAttempt(student, {
       questionId: null, topic: 'Travel', part: 2,
       questionText: 'Describe a memorable trip.', transcript: 'He go to school yesterday for a trip',
       duration: 45, feedback,
@@ -191,10 +191,12 @@ describe('speakingService.saveAttempt', () => {
     const student = await createStudent();
     const feedback = { overallBand: 5, mistakes: [], strengths: [], improvements: [] };
 
-    await expect(speakingService.saveAttempt(student, {
+    const result = await speakingService.saveAttempt(student, {
       questionId: null, topic: 'Travel', part: 99, // not in enum [1,2,3] -> save() validation fails
       questionText: 'Q', transcript: 'T', duration: 10, feedback,
-    })).resolves.toBeNull();
+    });
+    expect(result.attemptId).toBeNull();
+    expect(result.newlyUnlocked).toEqual([]);
 
     const count = await SpeakingAttempt.countDocuments({ userId: student._id });
     expect(count).toBe(0); // the failed save left nothing behind
@@ -228,7 +230,7 @@ describe('speakingService pending attempt flow', () => {
       questionText: 'Describe a memorable trip.', transcript: 'transcript', duration: 90,
     });
 
-    const finalId = await speakingService.finalizeAttempt(pendingId, {
+    const { attemptId: finalId } = await speakingService.finalizeAttempt(pendingId, {
       overallBand: 6.5, fluency: 6, vocabulary: 7, grammar: 6, pronunciation: 6.5,
       overallFeedback: 'Solid attempt.', strengths: ['Good range'], mistakes: [], improvements: [],
     });

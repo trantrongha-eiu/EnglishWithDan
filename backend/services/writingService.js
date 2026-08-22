@@ -14,6 +14,7 @@ const WritingTask2 = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample = require('../models/WritingSample');
 const WritingDraft = require('../models/WritingDraft');
+const badgeService = require('./badgeService');
 
 async function randomDoc(Model) {
   const count = await Model.countDocuments({ isActive: true });
@@ -78,12 +79,16 @@ async function submitExam(user, body) {
   // to false. This was previously missing entirely, so a student who only
   // wrote an essay (no Reading/Listening/Vocab that day) saw the day marked
   // "done" in the activity heatmap yet had their streak quietly die anyway.
+  let newlyUnlocked = [];
   if (user.role === 'student') {
     user.updateStreak();
-    user.save().catch(() => {});
+    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
+    // the streak fresh from the DB, so the save must actually land first.
+    await user.save().catch(() => {});
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
-  return attempt._id;
+  return { attemptId: attempt._id, newlyUnlocked };
 }
 
 async function listPracticeTasks(taskType) {
@@ -119,12 +124,16 @@ async function submitPractice(user, { taskType, taskId, answer, wordCount }) {
   await attempt.save();
 
   // See submitExam()'s comment above — same flat, once-a-day streak credit.
+  let newlyUnlocked = [];
   if (user.role === 'student') {
     user.updateStreak();
-    user.save().catch(() => {});
+    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
+    // the streak fresh from the DB, so the save must actually land first.
+    await user.save().catch(() => {});
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
-  return attempt._id;
+  return { attemptId: attempt._id, newlyUnlocked };
 }
 
 async function getPracticeHistory(userId) {

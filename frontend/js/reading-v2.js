@@ -2703,6 +2703,7 @@ async function submitExam() {
     if (!res.success) { showVocabToast('Lỗi nộp bài: ' + res.message); return; }
     clearExamStorage();
     _testsCache = null; // force a fresh /api/reading/tests fetch next time so the new lastAttempt badge isn't stale
+    if (window.showBadgeUnlocked && res.result?.newlyUnlocked?.length) window.showBadgeUnlocked(res.result.newlyUnlocked);
     showResult(res.result);
   } catch (e) {
     clearTimeout(submitTimeout);

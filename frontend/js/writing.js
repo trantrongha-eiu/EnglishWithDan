@@ -546,6 +546,7 @@ async function submitExam(statusOverride) {
     if (data.success) {
       clearAutoSave();
       state.currentAttemptId = data.attemptId;
+      if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
       // Done screen
       const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
       const name = user.firstName
@@ -1965,6 +1966,7 @@ async function submitPractice() {
     });
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
+    if (window.showBadgeUnlocked && d.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
     stopPracticeStopwatch();
     clearPracticeAutoSave(practiceState.taskType, practiceState.task?._id);
     deleteDraftFromServer(practiceState.taskType, practiceState.task?._id);

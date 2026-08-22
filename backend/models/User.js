@@ -87,6 +87,14 @@ const UserSchema = new mongoose.Schema({
   // (updateStreak/useHammerToRestore/applyGiftStreak) so it can't drift out
   // of sync if a future call site is added and forgets to touch it.
   maxLearningStreak:    { type: Number, default: 0 },
+  // IDs (constants/badges.js) of achievement badges this student has
+  // already been notified about — the "already known" set
+  // badgeService.checkAndAwardNewBadges() diffs the live-computed earned
+  // set against, so a badge only ever pops up as "newly unlocked" once.
+  // Badges themselves stay computed live (see badgeService.js's own
+  // comment) — this is just a notification-dedup record, not a second
+  // source of truth for whether a badge is earned.
+  earnedBadgeIds:       [{ type: String }],
   // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()
   // — powers the "you just lost a streak" mascot state on the dashboard.
   // Cleared back to 0 as soon as the student studies again (updateStreak()).

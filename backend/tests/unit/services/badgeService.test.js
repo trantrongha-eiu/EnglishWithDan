@@ -1,6 +1,7 @@
 'use strict';
 
 const badgeService = require('../../../services/badgeService');
+const User = require('../../../models/User');
 const { createStudent } = require('../../factories/userFactory');
 const {
   createVocabBook, createCompletedTestAttempt, createListeningAttempt,
@@ -113,5 +114,56 @@ describe('badgeService.getBadges', () => {
     const { badges } = await badgeService.getBadges(student._id);
     expect(findBadge(badges, 'streak_7').earned).toBe(true);
     expect(findBadge(badges, 'streak_30').earned).toBe(false);
+  });
+});
+
+describe('badgeService.checkAndAwardNewBadges', () => {
+  test('the first crossing of a threshold is reported as newlyUnlocked and persisted', async () => {
+    const student = await createStudent();
+    await createVocabBook({
+      userId: student._id,
+      words: Array.from({ length: 20 }, (_, i) => ({ word: `w${i}`, status: 'da-thuoc' })),
+    });
+
+    const result = await badgeService.checkAndAwardNewBadges(student._id);
+    expect(result.newlyUnlocked.map(b => b.id)).toEqual(['vocab_20']);
+    // Full getBadges() shape (badges/earnedCount/totalCount) is still there too.
+    expect(result.totalCount).toBe(18);
+
+    const reloaded = await User.findById(student._id).select('earnedBadgeIds').lean();
+    expect(reloaded.earnedBadgeIds).toContain('vocab_20');
+  });
+
+  test('an unchanged stat set is not reported again on a second call', async () => {
+    const student = await createStudent();
+    await createVocabBook({
+      userId: student._id,
+      words: Array.from({ length: 20 }, (_, i) => ({ word: `w${i}`, status: 'da-thuoc' })),
+    });
+
+    await badgeService.checkAndAwardNewBadges(student._id);
+    const second = await badgeService.checkAndAwardNewBadges(student._id);
+    expect(second.newlyUnlocked).toEqual([]);
+  });
+
+  test('crossing a further threshold later reports only the NEW badge, not the one already known', async () => {
+    const student = await createStudent();
+    const book = await createVocabBook({
+      userId: student._id,
+      words: Array.from({ length: 20 }, (_, i) => ({ word: `w${i}`, status: 'da-thuoc' })),
+    });
+    await badgeService.checkAndAwardNewBadges(student._id); // vocab_20 becomes known
+
+    book.words.push(...Array.from({ length: 80 }, (_, i) => ({ word: `x${i}`, status: 'da-thuoc' })));
+    await book.save();
+
+    const result = await badgeService.checkAndAwardNewBadges(student._id);
+    expect(result.newlyUnlocked.map(b => b.id)).toEqual(['vocab_100']);
+  });
+
+  test('no badges earned yet -> newlyUnlocked is empty, nothing persisted', async () => {
+    const student = await createStudent();
+    const result = await badgeService.checkAndAwardNewBadges(student._id);
+    expect(result.newlyUnlocked).toEqual([]);
   });
 });

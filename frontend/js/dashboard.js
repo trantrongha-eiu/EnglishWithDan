@@ -1161,10 +1161,11 @@ async function updateWordStatus(wordId, status, selectEl) {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ status })
         });
-        await window.ApiClient.handleResponse(res);
+        const data = await window.ApiClient.handleResponse(res);
         if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
         // Confetti only after server confirms — not on optimistic update
         if (w && status === 'da-thuoc') checkBookCompletion();
+        if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
     } catch {
         toast('Update error', 'error');
         if (w && prevStatus !== undefined) {
@@ -2176,6 +2177,7 @@ async function _reportSessionStreak() {
         _lastReportedAnsweredCount = reportedAnswered;
         _lastReportedCorrectCount  = reportedCorrect;
         _applyStreakResult(d);
+        if (window.showBadgeUnlocked && d?.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
     } catch { /* silent — batch stays unreported, picked up by the next trigger */ }
     finally { _streakReportInFlight = false; }
 }
@@ -3000,7 +3002,10 @@ async function _syncPracticeEvidence() {
             // until the next full page load. For review-due/weak-vocab
             // sessions `w` is a throwaway spread copy with nothing reading
             // it afterward, so the assign is harmless there.
-            .then(data => { if (data?.word) Object.assign(w, data.word); })
+            .then(data => {
+                if (data?.word) Object.assign(w, data.word);
+                if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
+            })
             .catch(() => {})
         );
     }

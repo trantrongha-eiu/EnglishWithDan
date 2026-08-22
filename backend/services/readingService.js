@@ -14,6 +14,7 @@ const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const reviewService = require('./reviewService');
+const badgeService = require('./badgeService');
 
 // questionNumber -> type, built from the passages already loaded for
 // grading — reading's gradedAnswers[] doesn't carry `type` (unlike
@@ -295,6 +296,7 @@ async function submitTest(attemptId, answers, user) {
   });
 
   let bonusApplied = 0;
+  let newlyUnlocked = [];
   if (user.role === 'student') {
     // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
     // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
@@ -302,7 +304,10 @@ async function submitTest(attemptId, answers, user) {
     const rawBonus = bonusForAccuracy(accuracy);
     bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
     user.updateStreak(bonusApplied, { allowSameDayStack: true });
-    user.save().catch(() => {});
+    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
+    // the streak fresh from the DB, so the save must actually land first.
+    await user.save().catch(() => {});
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
   // Mandatory Review System — must be awaited (not fire-and-forget): the
@@ -315,7 +320,7 @@ async function submitTest(attemptId, answers, user) {
 
   return {
     attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount,
-    totalQuestions, duration, bonusApplied, streak: user.learningStreak,
+    totalQuestions, duration, bonusApplied, streak: user.learningStreak, newlyUnlocked,
   };
 }
 

@@ -39,6 +39,7 @@ exports.completePractice = guard(async (req, res) => {
     bonusApplied: result.bonusApplied,
     hammerEarned: result.hammerEarned,
     streakHammers: result.streakHammers,
+    newlyUnlocked: result.newlyUnlocked,
   });
 });
 
@@ -64,7 +65,7 @@ exports.recordPracticeResult = guard(async (req, res) => {
   const result = await vocabBookService.recordPracticeResult(req.params.id, req.params.wordId, req.user._id, correct);
   if (result.status2 === 'book_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   if (result.status2 === 'word_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
-  res.json({ success: true, word: result.word });
+  res.json({ success: true, word: result.word, newlyUnlocked: result.newlyUnlocked });
 });
 
 exports.getBook = guard(async (req, res) => {
@@ -128,7 +129,7 @@ exports.updateWord = guard(async (req, res) => {
   if (result.status2 === 'book_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   if (result.status2 === 'word_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
   if (result.status2 === 'duplicate') return res.status(409).json({ success: false, message: 'Từ này đã có trong sổ' });
-  res.json({ success: true, word: result.word });
+  res.json({ success: true, word: result.word, newlyUnlocked: result.newlyUnlocked });
 });
 
 exports.deleteWord = guard(async (req, res) => {

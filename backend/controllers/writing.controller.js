@@ -29,9 +29,9 @@ exports.startExam = guard(async (req, res) => {
 exports.submitExam = guard(async (req, res) => {
   const { examId } = req.body;
   if (!examId) return res.status(400).json({ success: false, message: 'Thiếu examId' });
-  const attemptId = await writingService.submitExam(req.user, req.body);
-  if (!attemptId) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
-  res.status(201).json({ success: true, attemptId });
+  const result = await writingService.submitExam(req.user, req.body);
+  if (!result?.attemptId) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+  res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
 
 exports.listPracticeTasks = guard(async (req, res) => {
@@ -56,8 +56,8 @@ exports.submitPractice = guard(async (req, res) => {
   if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
   if (!answer.trim()) return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
 
-  const attemptId = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, wordCount });
-  res.status(201).json({ success: true, attemptId });
+  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, wordCount });
+  res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
 
 exports.getPracticeHistory = guard(async (req, res) => {

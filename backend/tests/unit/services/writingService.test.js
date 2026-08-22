@@ -57,7 +57,7 @@ describe('writingService.submitExam', () => {
     const task1 = await createWritingTask1({ imageUrl: 'https://img/1.png', prompt: 'Describe the chart.' });
     const task2 = await createWritingTask2({ prompt: 'Discuss both views.' });
 
-    const attemptId = await writingService.submitExam(student, {
+    const { attemptId } = await writingService.submitExam(student, {
       examId: exam._id, task1Id: task1._id, task2Id: task2._id,
       task1Answer: 'my task1 answer', task2Answer: 'my task2 answer',
       wordCount1: 160, wordCount2: 270, timeTaken: -50,
@@ -79,7 +79,7 @@ describe('writingService.submitPractice', () => {
     const student = await createStudent();
     const task1 = await createWritingTask1({ prompt: 'Practice prompt 1' });
 
-    const attemptId = await writingService.submitPractice(student, {
+    const { attemptId } = await writingService.submitPractice(student, {
       taskType: 1, taskId: task1._id, answer: 'my answer', wordCount: 155.9,
     });
 
@@ -95,7 +95,7 @@ describe('writingService.submitPractice', () => {
     const student = await createStudent();
     const task2 = await createWritingTask2({ prompt: 'Practice prompt 2' });
 
-    const attemptId = await writingService.submitPractice(student, {
+    const { attemptId } = await writingService.submitPractice(student, {
       taskType: 2, taskId: task2._id, answer: 'my essay', wordCount: 300,
     });
 

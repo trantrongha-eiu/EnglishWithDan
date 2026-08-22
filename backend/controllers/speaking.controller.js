@@ -60,14 +60,14 @@ exports.analyze = catchAsync(async (req, res) => {
     return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
   }
 
-  const attemptId = pendingId
+  const { attemptId, newlyUnlocked } = pendingId
     ? await speakingService.finalizeAttempt(pendingId, feedback, req.user)
     : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript, duration, feedback });
 
   // attemptId lets the frontend key a locally-stored (IndexedDB) audio
   // recording to this exact attempt, so History can offer same-device
   // playback later — see js/speaking-audio-store.js.
-  res.json({ success: true, feedback, attemptId });
+  res.json({ success: true, feedback, attemptId, newlyUnlocked });
 });
 
 // ── POST /api/speaking/sample-answer ─────────────────────────

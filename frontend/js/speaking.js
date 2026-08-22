@@ -1176,6 +1176,7 @@ async function analyzeTranscript() {
       previousBand = prev?.aiFeedback?.overallBand ?? null;
     }
     renderFeedback(data.feedback || {}, previousBand);
+    if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
 
     // Best-effort: key the locally-captured recording (if any) to this
     // exact attempt so History can offer same-device playback later.
@@ -1900,6 +1901,7 @@ async function finishSequentialSession() {
     if (feedbackBody) feedbackBody.style.display = 'block';
     if (actionsEl)    actionsEl.style.display    = 'flex';
     renderSeqFeedback(data.feedback || {});
+    if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
 
     // Priority 2C — only for a session launched via the Today's Learning
     // popup's "Start" button. AI feedback already rendered above is the
