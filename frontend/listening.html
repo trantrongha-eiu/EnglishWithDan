@@ -771,6 +771,12 @@
         }
 
         function resumeExam() {
+            // Same gate as goToStartTest() — without it, a plan downgrade/
+            // expiry after an exam was started but before it was finished
+            // let the student resume and complete the whole premium exam
+            // free via this banner (localStorage still had the in-progress
+            // exam saved, resumeExam() never re-checked the plan).
+            if (!window.AuthService.hasPremiumAccess()) { openUpgradeModal(); return; }
             const banner = document.getElementById('resume-banner');
             const data = banner?._resumeData;
             if (!data) return;
@@ -1018,7 +1024,15 @@
         // reading-v2.js's _checkPendingReviewBanner()) + the jump-in helper
         // both the proactive banner and reactive REVIEW_REQUIRED catches use.
         let _pendingListeningReview = null;
+        let _checkingPendingReviewBanner = false;
         async function _checkPendingReviewBanner() {
+            // Re-entrancy guard — rapid repeated navigation to the list
+            // screen (loadTestList's cache-hit path calls this every time)
+            // can start a second call before the first's awaited fetch
+            // resolves; both would otherwise see #review-required-banner as
+            // not-yet-created and each insert their own copy.
+            if (_checkingPendingReviewBanner) return;
+            _checkingPendingReviewBanner = true;
             let count = 0, blocked = false;
             try {
                 const res = await fetch(`${API}/review/pending?skill=listening`, { headers: authH() });
@@ -1033,7 +1047,7 @@
             }
 
             const wrap = document.getElementById('tests-wrapper');
-            if (!wrap) return;
+            if (!wrap) { _checkingPendingReviewBanner = false; return; }
             let banner = document.getElementById('review-required-banner');
             if (count > 0) {
                 if (!banner) {
@@ -1051,6 +1065,7 @@
             } else if (banner) {
                 banner.remove();
             }
+            _checkingPendingReviewBanner = false;
         }
 
         function _goToPendingReview(info) {
@@ -1197,8 +1212,14 @@
             ]) : null;
             const _tid = (_cleanTid && _cleanTid.testId) || new URLSearchParams(location.search).get('testId');
             if (_tid) {
-                const allTests = groups.flatMap(g => g.tests);
-                const _t = allTests.find(t => String(t._id) === _tid);
+                // Search the full unpaginated/unfiltered list, not just the
+                // groups on the currently-rendered page — renderTestList()
+                // is only ever called with one page's worth of groups
+                // (rerenderLsFilteredTests), so a deep link to a test outside
+                // the first LS_PAGE_SIZE tests (or filtered out by an active
+                // search/category) previously never matched and silently did
+                // nothing.
+                const _t = (state.tests || []).find(t => String(t._id) === _tid);
                 if (_t) setTimeout(() => goToStartTest(_tid), 80);
             }
         }
@@ -1350,6 +1371,12 @@
         // START EXAM
         // ══════════════════════════════════════════════
         async function startTest(testId) {
+            // Guards against clicking "Bắt đầu" on test B before test A's
+            // /start request resolves — without this, whichever response
+            // arrives last wins and silently overwrites state.currentTest/
+            // audio.src/screen back to the test the student already navigated
+            // away from.
+            state.pendingTestId = testId;
             try {
                 clearExamStorage(); // clear any previous in-progress exam
                 const res = await fetch(`${API}/listening/tests/${testId}/start`, {
@@ -1357,6 +1384,7 @@
                     body: JSON.stringify({})
                 });
                 const data = await safeJson(res);
+                if (testId !== state.pendingTestId) return; // superseded by a later startTest() call
                 if (!data.success) throw new Error(data.message);
                 const t = data.test;
                 state.currentTestId = testId;
@@ -1391,6 +1419,7 @@
                 clearInterval(_saveInterval);
                 _saveInterval = setInterval(saveExamToStorage, 10000);
             } catch (err) {
+                if (testId !== state.pendingTestId) return; // superseded — don't surface a stale error
                 if (err.body && err.body.code === 'REVIEW_REQUIRED') {
                     toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
                     _goToPendingReview(err.body);
@@ -2423,7 +2452,14 @@
         }
 
         function renderInlineDrop(num, questionText, ua, ca, isReview) {
-            const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : ua ? 'wrong-drop' : 'skip-drop') : '';
+            // Same accepted-alternates split as renderFillBlank (ca can be
+            // "colour/color") — without it, an answer the backend already
+            // graded correct rendered wrong-drop here, visibly contradicting
+            // the "✓ Đúng" shown by the standalone question block below it.
+            const cls = isReview
+                ? (ca.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean).includes(ua.toLowerCase().trim())
+                    ? 'correct-drop' : ua ? 'wrong-drop' : 'skip-drop')
+                : '';
             const dzHtml = `<div class="drop-zone ${ua ? 'filled' : ''} ${isReview ? cls : ''}" data-qnum="${num}"
                 ${isReview ? '' : `ondragover="dzOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
                 ${ua ? `${escHtml(ua)}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
@@ -3291,7 +3327,14 @@
                 if (!onExam) setTool('dict');
             }
             if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) translateSelected();
-            if (['1', '2', '3', '4'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+            // switchPart() operates on exam/review-only DOM and state
+            // (state.partIdx, #questions-panel/#transcript-body/
+            // #review-questions-inner) — LT Practice (onPractice) uses its
+            // own separate part mechanism, so this must not fire there. It
+            // previously fired regardless of screen, silently corrupting a
+            // stale exam's state.partIdx/partHlCache while the student was
+            // actually in an unrelated practice session.
+            if ((onExam || onReview) && ['1', '2', '3', '4'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
                 const idx = parseInt(e.key) - 1;
                 const sections = getSortedSections(state.isReview);
                 if (sections[idx]) switchPart(idx, state.isReview);
@@ -4242,7 +4285,7 @@
 
     /* ── Close practice → back to section list ───────────────────────────── */
     function closeLTPractice() {
-        if (document.fullscreenElement) document.exitFullscreen();
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;
@@ -4280,11 +4323,19 @@
         if (!_ltPracticeSectionId || !_ltPracticePartNum) return;
         const sectionId = _ltPracticeSectionId;
         const partNum   = _ltPracticePartNum;
-        // Restore backup so _enterLTPracticeScreen can re-save it
+        // Restore backup so _enterLTPracticeScreen can re-save it — all 5
+        // fields, matching closeLTPractice()/handleLtPracticePopstate. Missing
+        // partIdx/isReview here left the fresh _enterLTPracticeScreen() call
+        // backing up isReview:false regardless of the real value (e.g. true
+        // when this practice session was entered from exam review), silently
+        // and permanently resetting state.isReview once this retry's session
+        // eventually closes.
         if (_ltPracticeBackup) {
             state.answers      = _ltPracticeBackup.answers;
             state.currentTestId= _ltPracticeBackup.currentTestId;
             state.currentTest  = _ltPracticeBackup.currentTest;
+            state.partIdx      = _ltPracticeBackup.partIdx;
+            state.isReview     = _ltPracticeBackup.isReview;
             _ltPracticeBackup  = null;
         }
         startPracticeSection(sectionId, partNum);
@@ -4359,7 +4410,7 @@
         try {
             const res  = await fetch(`${API}/listening/practice/history/${attemptId}`, { headers: authH() });
             const data = await safeJson(res);
-            if (!data.success || !data.section) return;
+            if (!data.success || !data.section) { toast('Không tải được bài đã làm.', 'error'); return; }
             const { attempt, section } = data;
 
             // Restore highlights saved locally while this practice attempt was
@@ -4500,7 +4551,7 @@
                 <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
 
             _mountInlineReviews('listening-practice', attemptId, _ltGetAllQs(reviewSection), 'lt-practice-questions-inner');
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error(e); toast('Không tải được bài đã làm.', 'error'); }
     }
 
     function copyLtPracticeLink(sectionId, partNum) {
@@ -4531,6 +4582,11 @@
     // Handles the "close practice on browser Back" logic that lives in block-3 scope
     window.handleLtPracticePopstate = function(tab, part) {
         if (!_ltPracticeActive) return false;
+        // closeLTPractice()/forceExit() both do this on exit — without it,
+        // leaving LT Practice via the browser Back button (rather than the
+        // in-page close button) leaves the page stuck in fullscreen with the
+        // toolbar hidden even though the section list is now showing.
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;

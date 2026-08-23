@@ -285,6 +285,7 @@ function renderDictList() {
 }
 
 /* ══════════════ OPEN A SECTION ══════════════ */
+let _openDictSeq = 0;
 async function openDictSection(id) {
   // Same free-plan gate as reading/listening tests — browsing the list
   // above stays free, but actually opening a section to practice requires
@@ -302,19 +303,30 @@ async function openDictSection(id) {
     setupDictionaryDouble('screen-practice', 'dictation');
   }
   document.getElementById('dict-section-title').textContent = 'Đang tải...';
+  // Guards against double-clicking a card (or clicking a second card before
+  // the first finishes loading) resolving out of order, and against a
+  // fetch that's still in flight when the user has already clicked "back"
+  // — only the most recently-requested section is allowed to apply, and a
+  // stale one is discarded instead of silently overwriting the screen the
+  // user is now looking at (or re-adding ?sectionId= after backToList()
+  // already cleared it).
+  const requestId = ++_openDictSeq;
+  let data;
   try {
     // ?purpose=dictation exempts this fetch from the mandatory-review gate
     // (backend/middleware/requireReviewComplete.js) — dictation is an
     // ungraded, non-attempt-tracked feature and must never be blocked by a
     // pending Listening-test review.
     const res = await fetch(`${API}/listening/practice/by-id/${id}?purpose=dictation`, { headers: authH() });
-    const data = await window.ApiClient.handleResponse(res);
-    dictSection = data.section;
+    data = await window.ApiClient.handleResponse(res);
   } catch (e) {
+    if (requestId !== _openDictSeq) return;
     toast('Không tải được bài này.', 'error');
     backToList();
     return;
   }
+  if (requestId !== _openDictSeq) return;
+  dictSection = data.section;
   if (!dictSection || !(dictSection.dictationSentences || []).length) {
     toast('Bài này chưa có dữ liệu dictation.', 'error');
     backToList();
@@ -332,6 +344,7 @@ async function openDictSection(id) {
 }
 
 function backToList() {
+  _openDictSeq++; // invalidate any in-flight openDictSection() fetch
   audio.pause();
   document.getElementById('screen-practice').classList.remove('active');
   document.getElementById('screen-list').classList.remove('hidden');
@@ -366,8 +379,9 @@ function dictGoTo(i) {
   document.getElementById('dict-script-chevron').className = 'fas fa-chevron-down';
   document.getElementById('dict-check-btn').disabled = false;
   const sentence = sentences[i];
-  document.getElementById('dict-word-count').textContent = sentence.text.trim().split(/\s+/).length + ' từ';
-  const hint = _buildDictHint(sentence.text);
+  const sentenceText = sentence.text || '';
+  document.getElementById('dict-word-count').textContent = sentenceText.trim().split(/\s+/).filter(Boolean).length + ' từ';
+  const hint = _buildDictHint(sentenceText);
   document.getElementById('dict-script-body').innerHTML =
     `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
     `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>`;
@@ -439,7 +453,7 @@ function normWord(w) { return w.toLowerCase().replace(/[^a-z0-9']/g, ''); }
 
 function dictCheck() {
   const typed = document.getElementById('dict-input').value.trim();
-  const correct = currentSentence().text;
+  const correct = currentSentence().text || '';
   const typedWords = typed.split(/\s+/).filter(Boolean);
   const correctWords = correct.split(/\s+/).filter(Boolean);
 
@@ -455,19 +469,29 @@ function dictCheck() {
     }
   }
   const matchedCorrectIdx = new Set();
+  const matchedTypedIdx = new Set();
   let i = n, j = m;
   while (i > 0 && j > 0) {
     if (normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])) {
       matchedCorrectIdx.add(j - 1);
+      matchedTypedIdx.add(i - 1);
       i--; j--;
     } else if (dp[i - 1][j] >= dp[i][j - 1]) i--;
     else j--;
   }
 
   const isPerfect = matchedCorrectIdx.size === m && n === m;
+  // Extra typed words (e.g. filler "um") never appear among correctWords, so
+  // without this every word could render green (w-match) while the sentence
+  // is still marked wrong overall — with nothing shown telling the student
+  // what actually caused the mismatch. Appended with .w-extra (styled but,
+  // until now, never assigned by any code).
+  const extraWords = typedWords.filter((_, idx) => !matchedTypedIdx.has(idx));
   const diffHtml = correctWords.map((w, idx) =>
     `<span class="${matchedCorrectIdx.has(idx) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`
-  ).join(' ');
+  ).join(' ') + (extraWords.length
+    ? ' ' + extraWords.map(w => `<span class="w-extra">${escHtml(w)}</span>`).join(' ')
+    : '');
 
   const resultEl = document.getElementById('dict-result');
   resultEl.classList.add('show');
@@ -475,7 +499,7 @@ function dictCheck() {
   resultEl.classList.toggle('wrong', !isPerfect);
   document.getElementById('dict-result-label').textContent = isPerfect
     ? '✓ Chính xác!'
-    : `Đúng ${matchedCorrectIdx.size}/${m} từ — phần bôi đỏ là từ bạn thiếu/sai:`;
+    : `Đúng ${matchedCorrectIdx.size}/${m} từ — phần bôi đỏ là từ bạn thiếu/sai${extraWords.length ? ', phần xám gạch ngang là từ thừa' : ''}:`;
   document.getElementById('dict-diff').innerHTML = diffHtml;
   document.getElementById('dict-check-btn').disabled = true;
 

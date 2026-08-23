@@ -18,8 +18,17 @@ let lstLessons = [];
 let lstCategories = [];
 let lstCurrentKey = null;
 let lstLoaded = false; // guards against re-fetching every time the tab is reopened
-let lstCollapsed = new Set(JSON.parse(localStorage.getItem(LST_COLLAPSED_KEY) || '[]'));
-let lstRead = new Set(JSON.parse(localStorage.getItem(LST_READ_KEY) || '[]'));
+// Guarded — a malformed value here (partial write from a storage-quota
+// error, manual edit, future format change) previously threw synchronously
+// at script-parse time, aborting this whole file before any lst* function
+// was even defined. Same fix as writing-tips.js/speaking-tips.js's mirrored
+// safe-parse helpers.
+function _lstSafeParse(json, fallback) {
+  if (json == null) return fallback;
+  try { return JSON.parse(json); } catch { return fallback; }
+}
+let lstCollapsed = new Set(_lstSafeParse(localStorage.getItem(LST_COLLAPSED_KEY), []));
+let lstRead = new Set(_lstSafeParse(localStorage.getItem(LST_READ_KEY), []));
 
 function lstKeyOf(l) { return l.category + '||' + l.lessonKey; }
 
