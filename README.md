@@ -73,6 +73,7 @@ EnglishWithDan/
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — overall/frontend/backend/admin architecture, auth & authorization flow, request lifecycle, AI grading workflow, database architecture, deployment architecture
 - [`docs/DATABASE.md`](docs/DATABASE.md) — every collection: purpose, relationships, indexes, lifecycle, common queries
 - [`docs/API.md`](docs/API.md) and [`docs/API_ADMIN.md`](docs/API_ADMIN.md) — every backend endpoint: request, response, auth, permissions, validation, error responses
+- [`docs/EXERCISE_SYSTEMS.md`](docs/EXERCISE_SYSTEMS.md) — the three overlapping "sentence exercise" models (`WPExercise`, `Task1Exercise`, `Task2Topic.questions`) and which one a new exercise actually belongs in — read this before adding writing-practice content, the models look interchangeable but aren't
 
 **Working on the code**
 - [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) — local setup, environment variables, running/testing/building/deploying/debugging
@@ -80,6 +81,7 @@ EnglishWithDan/
 - [`docs/FEATURE_GUIDE.md`](docs/FEATURE_GUIDE.md) — step-by-step: adding a new API endpoint, page, React component, database model, AI feature, admin feature
 
 **Operating the system**
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — index into the docs below by topic (health checks, monitoring, logging, deployment, rollback, backup, recovery, incident response) — start here if you're not sure which doc has what you need
 - [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — how a push becomes a live deploy, rollback
 - [`docs/RUNBOOK.md`](docs/RUNBOOK.md) — health checks, logs, common operational tasks, secret rotation procedure
 - [`docs/INCIDENT_RESPONSE.md`](docs/INCIDENT_RESPONSE.md) — severity classification and playbooks for the incidents most likely to actually happen here
@@ -88,6 +90,12 @@ EnglishWithDan/
 - [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) — pre/post-release checklist
 - [`docs/SECURITY.md`](docs/SECURITY.md) — authentication/authorization model, secret management, OWASP considerations, security checklist
 - [`docs/MAINTENANCE.md`](docs/MAINTENANCE.md) — versioning, dependency-update policy, known technical debt, roadmap
+
+**Audit reports** (point-in-time reviews, not living docs — each is dated and describes findings *as of* that date, several already fixed; check [`PLATFORM_AUDIT_2026-08-22.md`](docs/PLATFORM_AUDIT_2026-08-22.md) first, it reconciles the other three against current code)
+- [`docs/STUDENT_UI_AUDIT.md`](docs/STUDENT_UI_AUDIT.md) (2026-07-25) — student-facing page flows, duplication, dark mode, mobile
+- [`docs/ADMIN_PANEL_AUDIT.md`](docs/ADMIN_PANEL_AUDIT.md) (2026-07-25) — overlapping/duplicated admin features
+- [`docs/PRODUCT_FEATURE_AUDIT.md`](docs/PRODUCT_FEATURE_AUDIT.md) (2026-08-18) — missing features and dated UI, from a product/UX angle
+- [`docs/PLATFORM_AUDIT_2026-08-22.md`](docs/PLATFORM_AUDIT_2026-08-22.md) (2026-08-22) — reconciles the three audits above against current code, plus what's changed since
 
 ## Quick start
 
