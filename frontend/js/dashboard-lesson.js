@@ -255,6 +255,7 @@ async function renderTodaysLessonCard(lessonIdOverride) {
 /* ──────────────────────────────────────────────
    LESSON DETAIL — open/close + tabs
 ────────────────────────────────────────────── */
+let _openLessonSeq = 0;
 function openLesson(lessonId, push = true) {
     // Same free-plan gate as openBook()/loadUnit() in dashboard.js — full
     // access for a free account's first 24h, then locked.
@@ -278,16 +279,23 @@ function openLesson(lessonId, push = true) {
         if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
 
         document.getElementById('lesson-title').textContent = 'Đang tải...';
+        // Guards against rapid lesson switching (clicking Lesson B before
+        // Lesson A's fetch resolves) applying a stale response — only the
+        // most recently-requested lesson is allowed to become currentLesson.
+        const requestId = ++_openLessonSeq;
         try {
             const res = await fetch(`${API}/vocabulary-lessons/${lessonId}`, { headers: authH() });
             const data = await window.ApiClient.handleResponse(res);
+            if (requestId !== _openLessonSeq) return;
             lessonState.currentLesson = data.lesson;
             document.getElementById('lesson-title').textContent = data.lesson.title;
             resetQuizState();
             switchLessonTab('learn');
         } catch (err) {
+            if (requestId !== _openLessonSeq) return;
             toast('Lỗi tải bài học: ' + err.message, 'error');
         }
+        if (requestId !== _openLessonSeq) return;
         syncViewUrl(push ? 'push' : 'replace', { view: 'lesson', lessonId });
     };
 
@@ -451,10 +459,10 @@ function updateQuizTimerDisplay() {
 
 // Minimum options a Multiple-Choice-family question must have (1 correct +
 // at least 3 distinct wrong ones) to count as a real question rather than a
-// giveaway. fill/listen/rearrange never depend on a distractor pool, so
-// they're always eligible regardless of lesson size.
+// giveaway. fill/listen never depend on a distractor pool, so they're always
+// eligible regardless of lesson size.
 const MIN_MCQ_OPTIONS = 4;
-const ALWAYS_ELIGIBLE_TYPES = ['fill', 'listen', 'rearrange'];
+const ALWAYS_ELIGIBLE_TYPES = ['fill', 'listen'];
 
 // Which quiz types can produce a real (>= MIN_MCQ_OPTIONS-option, no
 // duplicate-answer) question for this specific word, given the rest of the
@@ -463,6 +471,11 @@ const ALWAYS_ELIGIBLE_TYPES = ['fill', 'listen', 'rearrange'];
 // lesson can never support mcq/translateViEn/translateEnVi at all.
 function eligibleTypesFor(word, allWords) {
     const types = [...ALWAYS_ELIGIBLE_TYPES];
+    // rearrange tokenizes word.example — words with no example (legacy docs,
+    // or edited outside the standard parser) can't support it; without this
+    // guard the question renders with zero tiles/slots and no way to ever
+    // finish (see renderQuizQuestion's 'rearrange' branch).
+    if (word.example && word.example.trim()) types.push('rearrange');
     if (pickDistractorWords(word, allWords, MIN_MCQ_OPTIONS - 1).length >= MIN_MCQ_OPTIONS - 1) {
         types.push('mcq', 'translateViEn');
     }
@@ -542,7 +555,9 @@ function renderQuizQuestion() {
 
     lessonState.quiz.currentWord = q.word;
 
-    const progressPct = Math.round((index / queue.length) * 100);
+    // (index+1) to match the "N/total" text below — otherwise the bar always
+    // lags one question behind (0% on question 1, never 100% until results).
+    const progressPct = Math.round(((index + 1) / queue.length) * 100);
     const shell = (bodyHtml) => `
         <div class="practice-container">
             <div class="practice-progress">

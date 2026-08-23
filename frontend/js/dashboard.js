@@ -203,10 +203,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setupEmojiPicker();
-    // All four are independent fetches — was awaiting loadMyBooks/loadUnits
-    // first, then firing these two afterward for no reason (a network
-    // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard(), refreshReviewDueCard(), loadMyVocabStats(), loadWeaknessProfile()]);
+    // Only loadMyBooks() actually gates the deep-link restore below (openBook
+    // looks the book up in myBooks) — everything else here is a decorative
+    // home-screen widget (streak, leaderboards, weakness card, etc.) with no
+    // bearing on what the URL asks to open. Firing those in parallel rather
+    // than awaiting all 10 up front means a reload mid-unit/mid-lesson shows
+    // the actual content the URL points at without waiting on a full page's
+    // worth of secondary widgets first.
+    loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    await Promise.all([loadMyBooks(), loadUnits()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,
     // or a plain reload) — same "restore on load" idiom as reading-v2.js's
@@ -1285,17 +1290,20 @@ function updateBulkBar() {
 async function bulkChangeStatus(status) {
     if (!status || !selectedWordIds.size) return;
     try {
-        const results = await Promise.all([...selectedWordIds].map(wid =>
+        // Routed through handleResponse (not raw fetch+r.ok) so an expired
+        // session 401s into the same logout/redirect every other write path
+        // on this page gets, instead of silently failing in place.
+        const results = await Promise.allSettled([...selectedWordIds].map(wid =>
             fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
                 method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
-            })
+            }).then(r => window.ApiClient.handleResponse(r))
         ));
-        const allOk = results.every(r => r.ok);
+        const allOk = results.every(r => r.status === 'fulfilled');
         selectedWordIds.clear();
         document.getElementById('bulk-status-sel').value = '';
         toast(allOk ? 'Status updated' : 'Some updates failed', allOk ? 'success' : 'error');
         await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-    } catch { toast('Update failed', 'error'); }
+    } catch (err) { toast(err.message || 'Update failed', 'error'); }
 }
 async function bulkDelete() {
     if (!selectedWordIds.size) return;
@@ -2371,9 +2379,10 @@ function showMixedQuestion() {
     currentWord = item.word;
     const type  = item.type;
 
-    // Update mixed progress bar
+    // Update mixed progress bar. (mixedIndex+1) to match the "N/total" text
+    // below — see updateProgress()'s comment for why the bare index lags.
     const total = mixedQueue.length;
-    const pct   = (mixedIndex / total) * 100;
+    const pct   = ((mixedIndex + 1) / total) * 100;
     const fill  = document.getElementById('mixProgressFill');
     const txt   = document.getElementById('mixProgressText');
     if (fill) fill.style.width = pct + '%';
@@ -2578,7 +2587,11 @@ function generateOptions(cw) {
 function checkMultipleChoice(btn, selected, correct) {
     _checkMCAnswer(btn, selected, correct, '#mcAnswerOptions', 'mcBtnNext');
 }
-function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+// Backslash MUST be escaped before the quote-escaping step below — otherwise
+// a word/meaning ending in a literal backslash (e.g. `x\`) lets the quote it
+// precedes close the onclick="...('...')" JS string early, turning the rest
+// of the attribute into executable script.
+function escH(s) { return (s || '').replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 /* ── Flashcard ── */
@@ -3012,7 +3025,6 @@ async function _syncPracticeEvidence() {
     if (!calls.length) return;
     await Promise.all(calls);
     if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
-    if (typeof refreshReviewDueCard === 'function') refreshReviewDueCard();
 }
 
 /* ══════════════════════════════════════════════
@@ -3031,7 +3043,7 @@ async function _reportDifficultWords() {
     });
     const source = _isBookPractice
         ? (currentBookData?.name || 'Sổ cá nhân')
-        : (_isDifficultPractice ? 'Từ hay sai' : `Unit ${currentUnit?.unitNumber || ''}`);
+        : (_isDifficultPractice ? 'Từ hay sai' : (currentUnit?.unitNumber ? `Unit ${currentUnit.unitNumber}` : (currentUnit?.title || 'Unit')));
     try {
         const res = await fetch(`${API}/difficult-words/report`, {
             method: 'POST', headers: authH(),

@@ -169,28 +169,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   .todays-lesson-switch-btn{font-size:10px;gap:3px}
 }
 
-/* "Ôn tập hôm nay" (spaced-repetition review queue) — same horizontal-card
-   shape as .todays-lesson-card, distinct teal/green tint so the two callouts
-   (teacher-assigned lesson vs. self-driven SRS review) read as different
-   things at a glance. */
-.review-due-card{
-  display:flex;align-items:center;gap:18px;
-  background:linear-gradient(135deg,#ecfdf5 0%,#f0fdfa 100%);
-  border:1px solid var(--border);border-radius:var(--radius);
-  padding:18px 22px;margin-bottom:20px;
-}
-[data-theme="dark"] .review-due-card{background:linear-gradient(135deg,#052e16 0%,#042f2e 100%)}
-.review-due-icon{font-size:32px;color:var(--success);flex-shrink:0}
-.review-due-info{flex:1;min-width:0}
-.review-due-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
-.review-due-title{font-size:16px;font-weight:800;color:var(--text);margin:2px 0}
-.review-due-meta{font-size:12px;color:var(--text2)}
-@media(max-width:640px){
-  .review-due-card{gap:12px;padding:14px 16px}
-  .review-due-icon{font-size:24px}
-  .review-due-card>.btn{padding:8px 14px;font-size:13px;white-space:nowrap}
-}
-
 /* "My Vocabulary" — aggregate stat tiles across all books (GET /vocabbook/stats) */
 .myvocab-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .myvocab-tile{

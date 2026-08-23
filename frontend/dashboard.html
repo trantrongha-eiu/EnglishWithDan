@@ -1031,24 +1031,8 @@
     });
   };
 
-  // ── Sync book list từ sidebar vào sheet ─────────
-  window.syncSheetBooks = function(){
-    var list = document.getElementById('sheet-book-list');
-    if(!list) return;
-    if(typeof myBooks === 'undefined' || !myBooks.length){
-      list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📭</div><div style="font-size:13px">Chưa có sổ nào</div></div>';
-      return;
-    }
-    list.innerHTML = myBooks.map(function(b){
-      var active = (b._id === currentBookId) ? 'active' : '';
-      return '<div class="sheet-book-item '+active+'" onclick="openBook(\''+b._id+'\');closeSheet()">'
-        +'<span style="font-size:18px;flex-shrink:0">'+escHtml(b.emoji)+'</span>'
-        +'<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">'+escHtml(b.name)+'</span>'
-        +'<span class="sheet-book-count">'+b.totalWords+'</span>'
-        +'<button class="sheet-book-menu-btn" onclick="event.stopPropagation();openBookMenu(\''+b._id+'\')" title="Tùy chọn sổ">⋯</button>'
-        +'</div>';
-    }).join('');
-  };
+  // syncSheetBooks is defined in dashboard.js (loaded after this inline
+  // script) and calls itself onto window — nothing to define here.
 
   // ── Custom Unit Picker ──────────────────────────
   (function(){

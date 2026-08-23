@@ -20,23 +20,7 @@
  * why "ever wrong this session" wins over any correct answer along the way.
  */
 
-async function refreshReviewDueCard() {
-    const card = document.getElementById('review-due-card');
-    if (!card) return;
-    try {
-        const data = await fetch(`${API}/vocabbook/review/due?limit=50`, { headers: authH() })
-            .then(r => window.ApiClient.handleResponse(r));
-        const count = (data.words || []).length;
-        if (count === 0) { card.style.display = 'none'; return; }
-        document.getElementById('review-due-title').textContent =
-            count >= 50 ? '50+ từ cần ôn lại' : `${count} từ cần ôn lại`;
-        card.style.display = 'flex';
-    } catch {
-        card.style.display = 'none';
-    }
-}
-
-// Entry point for the home card's "Ôn ngay" button — fetches the due queue
+// Entry point for the "Cần ôn lại" home tile — fetches the due queue
 // and launches it straight into a mixed quiz (no intermediate list screen).
 async function openReviewDueModal() {
     let data;
@@ -50,7 +34,6 @@ async function openReviewDueModal() {
     const items = data.words || [];
     if (!items.length) {
         toast('🎉 Không còn từ nào cần ôn lúc này!', 'success');
-        refreshReviewDueCard();
         if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
         return;
     }
