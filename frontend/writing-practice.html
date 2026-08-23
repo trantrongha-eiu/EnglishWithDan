@@ -477,6 +477,10 @@
           <div id="view-translation" class="hidden">
             <div class="wp-task-label" id="task-instruction">Dịch sang tiếng Anh:</div>
             <div class="wp-question-text" id="question-text"></div>
+            <div class="wp-answer-hint hidden" id="answer-hint-row">
+              <span class="wp-answer-hint-count" id="answer-hint-count"></span>
+              <span class="wp-answer-hint-pattern" id="answer-hint-pattern"></span>
+            </div>
             <div class="wp-hints-row" id="hints-row"></div>
             <textarea class="wp-answer-box" id="answer-box" placeholder="Viết câu trả lời của bạn tại đây..." rows="3" onkeydown="handleKeydown(event)"></textarea>
           </div>
@@ -502,6 +506,10 @@
             <div class="wp-task-label" id="combine-label">Nối hai câu thành một:</div>
             <div class="wp-combine-sentences" id="combine-sentences"></div>
             <div class="wp-connector-hint" id="connector-hint"></div>
+            <div class="wp-answer-hint hidden" id="combine-answer-hint-row">
+              <span class="wp-answer-hint-count" id="combine-answer-hint-count"></span>
+              <span class="wp-answer-hint-pattern" id="combine-answer-hint-pattern"></span>
+            </div>
             <textarea class="wp-answer-box" id="combine-answer-box" placeholder="Viết câu đã nối..." rows="2" onkeydown="handleKeydown(event)"></textarea>
           </div>
 
@@ -1321,6 +1329,18 @@ function showTranslationView(ex) {
   document.getElementById('view-translation').classList.remove('hidden');
   document.getElementById('task-instruction').textContent = ex.instruction || 'Dịch sang tiếng Anh:';
   document.getElementById('question-text').textContent    = ex.type === 'expand' ? ex.baseText || ex.question : ex.question;
+  // answerWordCount/answerLetterHint are computed server-side from the
+  // (never-sent-to-client) sample answer — see writingPracticeService.js's
+  // sanitizeExerciseForClient, same pattern as task1-practice.html/
+  // task2-practice.html's identical hint.
+  const hintRow = document.getElementById('answer-hint-row');
+  if (ex.answerWordCount) {
+    document.getElementById('answer-hint-count').textContent   = `📏 ${ex.answerWordCount} từ`;
+    document.getElementById('answer-hint-pattern').textContent = ex.answerLetterHint || '';
+    hintRow.classList.remove('hidden');
+  } else {
+    hintRow.classList.add('hidden');
+  }
   document.getElementById('answer-box').value = '';
   document.getElementById('answer-box').focus();
   document.getElementById('hints-row').innerHTML = '';
@@ -1422,6 +1442,14 @@ function showCombineView(ex) {
     (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${_escHtml(s)}"</div>`).join('');
   document.getElementById('connector-hint').innerHTML = ex.connector
     ? `<span class="wp-connector-badge">💡 Dùng: <strong>${_escHtml(ex.connector)}</strong></span>` : '';
+  const combineHintRow = document.getElementById('combine-answer-hint-row');
+  if (ex.answerWordCount) {
+    document.getElementById('combine-answer-hint-count').textContent   = `📏 ${ex.answerWordCount} từ`;
+    document.getElementById('combine-answer-hint-pattern').textContent = ex.answerLetterHint || '';
+    combineHintRow.classList.remove('hidden');
+  } else {
+    combineHintRow.classList.add('hidden');
+  }
   document.getElementById('combine-answer-box').value = '';
   document.getElementById('combine-answer-box').focus();
 }

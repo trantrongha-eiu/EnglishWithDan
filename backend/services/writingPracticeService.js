@@ -10,7 +10,31 @@ const WPExercise = require('../models/WPExercise');
 const WPTopic = require('../models/WPTopic');
 const WPLesson = require('../models/WPLesson');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
-const { levenshtein, NUM_WORDS } = require('../utils/textMatch');
+const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
+
+// Practice-mode types that show a "word count + first-letter" hint under the
+// question — free-text single-sentence answer types only, same design as
+// task1PracticeService.js/task2PracticeService.js's identical HINT_TYPES.
+// Not rearrange (the word bank is already fully visible — a letter hint
+// would be redundant), not fill_blank (a single blank word/short phrase —
+// a letter-blanked pattern would give away almost the entire answer).
+const HINT_TYPES = new Set(['translation', 'expand', 'combine']);
+
+// sampleAnswer/blankAnswer/alternativeAnswers were previously stripped with
+// a bare destructure at each call site below and nothing put back — the
+// client had no way to show the word-count/letter-pattern scaffold that
+// task1-practice.html/task2-practice.html already show for their own
+// translation-type exercises. Computing the hint from the about-to-be-
+// stripped answer text keeps the answer itself never sent to the client.
+function sanitizeExerciseForClient(ex) {
+  const { sampleAnswer, blankAnswer, alternativeAnswers, ...rest } = ex;
+  if (sampleAnswer && HINT_TYPES.has(ex.type)) {
+    const hint = buildAnswerHint(sampleAnswer);
+    rest.answerWordCount  = hint.wordCount;
+    rest.answerLetterHint = hint.pattern;
+  }
+  return rest;
+}
 
 function normalize(str) {
   return str
@@ -138,7 +162,7 @@ async function listExercises({ level, topic, type, limit = 100, skip = 0 }) {
     WPExercise.find(query).sort({ orderIndex: 1, createdAt: 1 }).skip(Number(skip)).limit(Number(limit)).lean(),
     WPExercise.countDocuments(query)
   ]);
-  const safe = exercises.map(({ sampleAnswer, blankAnswer, alternativeAnswers, ...rest }) => rest); // eslint-disable-line no-unused-vars
+  const safe = exercises.map(sanitizeExerciseForClient);
   return { exercises: safe, total };
 }
 
@@ -147,7 +171,7 @@ async function getTestQuestions({ level, count = 10 }) {
   if (level && level !== 'all') query.level = level;
   const all = await WPExercise.find(query).lean();
   const shuffled = all.sort(() => Math.random() - 0.5).slice(0, Number(count));
-  const safe = shuffled.map(({ sampleAnswer, blankAnswer, alternativeAnswers, ...rest }) => rest); // eslint-disable-line no-unused-vars
+  const safe = shuffled.map(sanitizeExerciseForClient);
   return { exercises: safe, total: safe.length };
 }
 
