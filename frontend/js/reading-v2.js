@@ -16,7 +16,12 @@ const DURATION = 3600;  // 60 min in seconds
 // element's handler silently non-functional. `'` is escaped to `\'`
 // (a JS string escape, not an HTML entity) so it survives HTML
 // attribute parsing intact and is correctly unescaped by the JS engine.
-function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+// Backslash MUST be escaped before the quote-escaping step below — otherwise
+// a word/label ending in a literal backslash immediately followed by an
+// apostrophe (e.g. "Anne\'s") lets that backslash pair with the escaped
+// quote and consume the onclick="...('...')" JS string's real closing quote,
+// corrupting the attribute and silently breaking that element's handler.
+function escH(s) { return (s || '').replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
 /* ── State ─────────────────────────────────────────────────────────── */
 const state = {
@@ -118,25 +123,33 @@ function _reapplyTextHighlights(container, texts) {
   });
 }
 
-// Called after every highlight is made in exam mode. Flushes the current
-// (live) passage tab into passageHlCache first — otherwise the tab the
-// student is actively highlighting on would never get captured until they
-// switch away from it — then serializes anything highlighted so far to
-// localStorage so it survives the page fully reloading after submission.
+// Called after every highlight is made in exam mode OR while viewing a
+// review screen (renderReview() restores from this same storage key/cache
+// shape on open, so a highlight added directly in review must be saved back
+// to it too — previously it early-returned on state.isReview and any
+// highlight made in review was silently lost on navigating away/reloading).
+// Flushes the current (live) passage tab into the right in-memory cache
+// first — otherwise the tab the student is actively highlighting on would
+// never get captured until they switch away from it — then serializes
+// anything highlighted so far to localStorage.
 function _saveReadingHighlightsToStorage() {
-  if (!state.attemptId || state.isReview) return;
-  const passageInner = document.getElementById('passage-inner');
-  const questionsInner = document.getElementById('questions-inner');
+  // Review mode has no state.attemptId (only ever set by exam start/resume)
+  // — the attempt being reviewed lives in state.reviewData instead.
+  const attemptId = state.isReview ? state.reviewData?.attempt?._id : state.attemptId;
+  if (!attemptId) return;
+  const cache = state.isReview ? reviewHlCache : passageHlCache;
+  const passageInner = document.getElementById(state.isReview ? 'review-passage-inner' : 'passage-inner');
+  const questionsInner = document.getElementById(state.isReview ? 'review-questions-inner' : 'questions-inner');
   if (passageInner || questionsInner) {
-    passageHlCache[state.currentPassageIdx] = {
+    cache[state.currentPassageIdx] = {
       passage: passageInner ? passageInner.innerHTML : null,
       questions: questionsInner ? questionsInner.innerHTML : null,
     };
   }
   const data = {};
   let hasAny = false;
-  for (const idx in passageHlCache) {
-    const entry = passageHlCache[idx];
+  for (const idx in cache) {
+    const entry = cache[idx];
     const questionTexts = _extractHlTexts(entry.questions);
     const hasPassageHl = !!(entry.passage && entry.passage.includes('class="hl"'));
     if (hasPassageHl || questionTexts.length) {
@@ -145,7 +158,7 @@ function _saveReadingHighlightsToStorage() {
     }
   }
   try {
-    const key = _readingHlStorageKey(state.attemptId);
+    const key = _readingHlStorageKey(attemptId);
     if (hasAny) localStorage.setItem(key, JSON.stringify(data));
     else localStorage.removeItem(key);
   } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
@@ -800,6 +813,7 @@ function resumeExam() {
   const data = banner?._resumeData;
   if (!data) return;
   banner.style.display = 'none';
+  banner._resumeData = null;
 
   state.passages = data.passages;
   state.attemptId = data.attemptId;
@@ -823,7 +837,12 @@ function resumeExam() {
 
 function dismissResume() {
   const banner = document.getElementById('resume-banner');
-  if (banner) banner.style.display = 'none';
+  // Without clearing _resumeData too, setReadingMode()'s `banner._resumeData
+  // ? 'flex' : 'none'` visibility check (it doesn't re-check storage) brings
+  // the dismissed banner back the next time the student switches tabs back
+  // to "Full đề" — and "Tiếp tục làm" would then resume with this stale
+  // in-memory data even though clearExamStorage() below already discarded it.
+  if (banner) { banner.style.display = 'none'; banner._resumeData = null; }
   clearExamStorage();
 }
 
@@ -2853,10 +2872,17 @@ async function loadReviewByTest(testId) {
 // completed review still sees their "✓ Đã review" badges. Silent on
 // failure: the actual gate is enforced server-side regardless of whether
 // this UI hook manages to show up.
+let _mountInlineReviewsToken = 0;
 async function _mountInlineReviews(attemptType, attemptId, allQuestions, containerId = 'review-questions-inner') {
   if (!window.ReviewInline) return;
+  // Guards against opening review A, then quickly opening review B before
+  // A's fetch resolves — same class of race as _rdGlobalSearchToken above.
+  // Without it, A's response arriving after B's silently overwrites
+  // state.inlineReviewCtx with A's mistake data while the DOM shows B.
+  const token = ++_mountInlineReviewsToken;
   try {
     const res = await apiFetch(`/api/review/by-attempt/${attemptType}/${attemptId}`);
+    if (token !== _mountInlineReviewsToken) return;
     const review = res.review;
     if (!review) { state.inlineReviewCtx = null; return; }
     const qByNum = {};

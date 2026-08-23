@@ -568,10 +568,21 @@
       }).join('');
       let reviewExtra = '';
       if (isReview) {
+        // q-mistake-block wrapper + id="qfb-N"/data-qnum="N" and the
+        // skip-vs-wrong (ua ? wrong : skip) distinction match the canonical
+        // renderMultiAnswerCluster in reading-v2.js — this override had
+        // drifted from it (missing both), which silently broke the
+        // Mandatory Review System's inline-review mounting
+        // (_runInlineReviewMountPass() selects .q-mistake-block[data-qnum])
+        // for every "Choose TWO/THREE Letters" question, and mislabeled
+        // every skipped one as "✗ Sai" instead of "⊘ Bỏ qua".
         reviewExtra = cluster.map(q => {
           const r = reviewMap[q.questionNumber]; const ok = !!r?.isCorrect;
+          const ua = r?.userAnswer || '';
           const ca = (r?.correctAnswer || q.correctAnswer || '').toUpperCase();
-          return `<div class="q-correct-ans ${ok?'right':'wrong'}" style="margin-top:4px">Q${q.questionNumber}: ${ok?'✓ Đúng':`✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`}</div>${r?.explanation?`<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>`:''}`;
+          return `<div class="q-mistake-block" id="qfb-${q.questionNumber}" data-qnum="${q.questionNumber}">
+            <div class="q-correct-ans ${ok?'right':ua?'wrong':'skip'}" style="margin-top:4px">Q${q.questionNumber}: ${ok?'✓ Đúng':ua?`✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`:`⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}</div>${r?.explanation?`<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>`:''}
+          </div>`;
         }).join('');
       }
       return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}"><div class="q-num-label"><span class="q-badge">${rangeLabel}</span></div><div class="q-text">${escHtml(cluster[0].questionText||'')}</div><div class="checkbox-hint">Chọn <strong>${letterWord}</strong> chữ cái, A–${LTRS[opts.length-1]||'E'}</div><div class="checkbox-opts">${optHtml}</div>${reviewExtra}</div>`;
@@ -732,17 +743,16 @@
         }).length;
         const pct = Math.round((answered / total) * 100);
         const bar = document.getElementById('exam-progress-bar');
-        const pill = document.getElementById('exam-progress-pill');
         const progAns = document.getElementById('prog-answered');
         const progTotal = document.getElementById('prog-total');
         if (bar) bar.style.width = pct + '%';
         if (progAns) progAns.textContent = answered;
         if (progTotal) progTotal.textContent = total;
-        if (pill) {
-          if (pct === 100) { pill.className = 'rd-progress-pill rd-progress-pill--done'; }
-          else if (pct > 50) { pill.className = 'rd-progress-pill rd-progress-pill--mid'; }
-          else { pill.className = 'rd-progress-pill'; }
-        }
+        // #exam-progress-pill's color is NOT set here — reading-v2.js's own
+        // updateProgressPill() (run live on every real answer change) sets
+        // it via inline style, which always wins over a class assigned here
+        // regardless of what runs last; toggling the class had no visible
+        // effect and was removed rather than left as dead code.
       }
       const examEl = document.getElementById('screen-exam');
       if (examEl) {

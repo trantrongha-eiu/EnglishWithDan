@@ -19,8 +19,17 @@ let rtLessons = [];
 let rtCategories = [];
 let rtCurrentKey = null;
 let rtLoaded = false; // guards against re-fetching every time the tab is reopened
-let rtCollapsed = new Set(JSON.parse(localStorage.getItem(RT_COLLAPSED_KEY) || '[]'));
-let rtRead = new Set(JSON.parse(localStorage.getItem(RT_READ_KEY) || '[]'));
+// Guarded — a malformed value here (partial write from a storage-quota
+// error, manual edit, future format change) previously threw synchronously
+// at script-parse time, aborting this whole file before any rt* function
+// was even defined. Same fix as writing-tips.js/speaking-tips.js/
+// listening-tips.js's mirrored safe-parse helpers.
+function _rtSafeParse(json, fallback) {
+  if (json == null) return fallback;
+  try { return JSON.parse(json); } catch { return fallback; }
+}
+let rtCollapsed = new Set(_rtSafeParse(localStorage.getItem(RT_COLLAPSED_KEY), []));
+let rtRead = new Set(_rtSafeParse(localStorage.getItem(RT_READ_KEY), []));
 
 function rtKeyOf(l) { return l.category + '||' + l.lessonKey; }
 
