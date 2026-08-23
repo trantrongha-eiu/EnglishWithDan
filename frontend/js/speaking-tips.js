@@ -21,8 +21,17 @@ let sstLessons = [];
 let sstCategories = [];
 let sstCurrentKey = null;
 let sstLoaded = false; // guards against re-fetching every time the screen is reopened
-let sstCollapsed = new Set(JSON.parse(localStorage.getItem(SST_COLLAPSED_KEY) || '[]'));
-let sstRead = new Set(JSON.parse(localStorage.getItem(SST_READ_KEY) || '[]'));
+// Guarded — a malformed value here (partial write from a storage-quota
+// error, manual edit, future format change) previously threw synchronously
+// at script-parse time, aborting this whole file (including initSpeakingTips)
+// before speaking.js even loads, permanently stranding the Speaking Tips
+// screen on its loading placeholder with no error shown.
+function _sstSafeParse(json, fallback) {
+  if (json == null) return fallback;
+  try { return JSON.parse(json); } catch { return fallback; }
+}
+let sstCollapsed = new Set(_sstSafeParse(localStorage.getItem(SST_COLLAPSED_KEY), []));
+let sstRead = new Set(_sstSafeParse(localStorage.getItem(SST_READ_KEY), []));
 
 function sstKeyOf(l) { return l.category + '||' + l.lessonKey; }
 

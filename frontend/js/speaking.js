@@ -724,6 +724,11 @@ function resetPractice() {
   state.recordStartTime = null;
   state._frozenDurationSeconds = 0;
   state._analyzing      = false;
+  // Without this, an async onend still in flight from the abandoned
+  // recording (recognition.stop() above is async) fires _finishRecordingUI()
+  // afterward, sees the just-cleared textarea empty, and repopulates it with
+  // this now-stale transcript from the question being left.
+  state.finalTranscript = '';
 
   hidePrepTimer();
   hideSpeakCountdown();
@@ -1120,6 +1125,11 @@ function _stopFeedbackLoadingMessages() {
 
 async function analyzeTranscript() {
   if (state._analyzing) return; // already in flight — ignore a double click
+  // btn-analyze gets enabled as soon as the first final speech segment
+  // arrives (mid-recording, not just after stopping) — without this guard,
+  // clicking it while still recording sends duration:0 (only ever set by
+  // _finishRecordingUI(), which hasn't run yet) and a partial transcript.
+  if (state.isRecording) { toast('Hãy dừng ghi âm trước khi phân tích.', 'warn'); return; }
   const ta         = document.getElementById('transcript-textarea');
   const transcript = ta ? ta.value.trim() : '';
   if (!transcript) return;
@@ -1796,27 +1806,38 @@ function startSeqRecording() {
 
 function confirmSeqAnswer() {
   if (!state.seqActive) return;
-  clearSeqSilenceTimer();
-  hideSeqPrepTimer();
-  hideSeqSpeakCountdown();
+  // Re-entrancy guard — the 120s speak countdown can auto-call this exactly
+  // as the student manually clicks "Ghi nhận câu trả lời" (the post-load
+  // 500ms lock only disables the button, not this function). A second
+  // concurrent call would run against the already-advanced seqIndex,
+  // pushing a bogus answer for the next question and skipping it silently.
+  if (state._seqConfirming) return;
+  state._seqConfirming = true;
+  try {
+    clearSeqSilenceTimer();
+    hideSeqPrepTimer();
+    hideSeqSpeakCountdown();
 
-  const manualVal = document.getElementById('seq-manual-input')?.value.trim() || '';
-  const transcript = state.seqFinalTranscript.trim() || manualVal;
-  if (state.seqIsRecording && state.seqRecognition) {
-    state._seqUserStoppedRecording = true; // moving to the next question — don't auto-restart this session
-    try { state.seqRecognition.stop(); } catch (e) {}
-  }
-  state.seqTotalElapsed += getSeqElapsedSeconds();
-  stopSeqElapsedTimer();
+    const manualVal = document.getElementById('seq-manual-input')?.value.trim() || '';
+    const transcript = state.seqFinalTranscript.trim() || manualVal;
+    if (state.seqIsRecording && state.seqRecognition) {
+      state._seqUserStoppedRecording = true; // moving to the next question — don't auto-restart this session
+      try { state.seqRecognition.stop(); } catch (e) {}
+    }
+    state.seqTotalElapsed += getSeqElapsedSeconds();
+    stopSeqElapsedTimer();
 
-  const q = state.seqQueue[state.seqIndex];
-  state.seqAnswers.push({ question: q.question, part: q.part, transcript });
+    const q = state.seqQueue[state.seqIndex];
+    state.seqAnswers.push({ question: q.question, part: q.part, transcript });
 
-  state.seqIndex++;
-  if (state.seqIndex < state.seqQueue.length) {
-    loadSeqQuestion();
-  } else {
-    finishSequentialSession();
+    state.seqIndex++;
+    if (state.seqIndex < state.seqQueue.length) {
+      loadSeqQuestion();
+    } else {
+      finishSequentialSession();
+    }
+  } finally {
+    state._seqConfirming = false;
   }
 }
 
@@ -1847,6 +1868,11 @@ function exitSequentialSession() {
     state._seqUserStoppedRecording = true; // exiting the session — don't auto-restart
     try { state.seqRecognition.stop(); } catch (e) {}
   }
+  // Set synchronously rather than left for the async onend -> _finishSeqRecordingUI()
+  // to clear later — otherwise starting a new sequential session before that
+  // onend fires hits startSeqRecording()'s `if (state.seqIsRecording) return;`
+  // guard and silently never records the new session's first question.
+  state.seqIsRecording = false;
   window.speechSynthesis?.cancel();
   // Full mock test was launched from the home card, not from browsing a
   // topic — return there instead of the (unvisited) practice sidebar.
