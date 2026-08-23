@@ -287,8 +287,17 @@ let allLessons = [];
 let categories = [];
 let currentKey = null;
 let searchTerm = '';
-let collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSED_KEY) || '[]'));
-let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
+// Guarded — a malformed value here (partial write from a storage-quota
+// error, manual edit, future format change) previously threw synchronously
+// at script-parse time, aborting the whole <script> block before even
+// initEssentialGrammar was defined and leaving the page stuck on its
+// initial "Đang tải..." placeholder forever with no error shown.
+function _safeParse(json, fallback) {
+  if (json == null) return fallback;
+  try { return JSON.parse(json); } catch { return fallback; }
+}
+let collapsed = new Set(_safeParse(localStorage.getItem(COLLAPSED_KEY), []));
+let scores = _safeParse(localStorage.getItem(SCORE_KEY), {});
 let quizState = null; // { total, answered, correct, lessonKey } — reset per lesson render
 
 // playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
@@ -346,6 +355,11 @@ async function initEssentialGrammar() {
     const data = await res.json();
     if (!data.success) throw new Error('load failed');
     allLessons = data.lessons || [];
+    if (!allLessons.length) {
+      document.getElementById('eg-main-content').innerHTML =
+        '<div class="eg-loading"><div class="eg-loading-icon">📭</div>Chưa có bài học nào.</div>';
+      return;
+    }
     categories = [...new Set(allLessons.map(l => l.category))];
 
     // A deep link (?lesson=...) takes priority over the last-viewed lesson
@@ -454,10 +468,17 @@ function toggleCategory(cat) {
   renderSidebar();
 }
 
+let _renderedLessonKey = null; // last lesson actually passed to renderLessonContent() — distinct from currentKey, which init sets before the first render happens
 function selectLesson(key, skipScroll, pushHistory = true) {
+  // Re-clicking the already-open lesson (easy to do — its sidebar entry
+  // stays a normal enabled button while .active) would otherwise fully
+  // re-render it via renderLessonContent(), silently discarding any
+  // in-progress mini-quiz answers.
+  if (key === _renderedLessonKey) { closeEgSheet(); if (!skipScroll) window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const lesson = allLessons.find(l => keyOf(l) === key);
   if (!lesson) return;
   currentKey = key;
+  _renderedLessonKey = key;
   localStorage.setItem(LAST_LESSON_KEY, key);
   // pushHistory is false for the initial page render and for popstate
   // restores (initEssentialGrammar already set/synced the URL for those);

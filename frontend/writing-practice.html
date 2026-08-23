@@ -873,7 +873,7 @@ function resumeTest() {
   document.getElementById('test-in-progress').style.display = '';
   document.getElementById('test-results').style.display     = 'none';
   showTestQuestion(testIdx);
-  startTestTimer(data.timeLeft || testExercises.length * 90);
+  startTestTimer(data.timeLeft ?? testExercises.length * 90);
 }
 
 function dismissTestResume() {
@@ -1083,8 +1083,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Read URL params to pre-configure filters (shareable links). Deep link
   // (e.g. shared/nav link with a level/topic/type in the URL) should jump
-  // straight into practice instead of stopping at the welcome screen.
-  if (_applyWpUrlFilters()) loadExercises();
+  // straight into practice instead of stopping at the welcome screen — but
+  // still through startPractice() so the premium gate isn't bypassed by a
+  // bookmarked/shared URL.
+  if (_applyWpUrlFilters()) startPractice();
 
   // Init toggles from saved prefs
   document.getElementById('toggle-auto-advance').checked       = _wpAutoAdvance;
@@ -1146,6 +1148,7 @@ function setMode(mode) {
 }
 
 function _doSetMode(mode) {
+  _clearAutoAdvance();
   currentMode = mode;
   document.getElementById('btn-mode-practice').classList.toggle('active', mode === 'practice');
   document.getElementById('btn-mode-test').classList.toggle('active', mode === 'test');
@@ -1233,6 +1236,10 @@ function selectType(type) {
 //  PRACTICE – LOAD  (no shuffle – ordered)
 // ════════════════════════════════════════════════════════
 async function loadExercises() {
+  // A pending auto-advance timeout armed by the exercise set we're about to
+  // replace must not survive into the new set — it would fire on whatever
+  // ends up at the same currentIdx and silently skip that exercise.
+  _clearAutoAdvance();
   showState('loading');
   try {
     const params = new URLSearchParams({ level: currentLevel, topic: currentTopic, type: currentType });
@@ -1614,10 +1621,14 @@ async function _saveBatchWithRetry(attempts) {
   const token = window.AuthService.getToken();
   if (!token) return;
   try {
+    // keepalive lets this survive a beforeunload-triggered call (tab close/
+    // navigation right after finishing an exercise) — a plain fetch can be
+    // aborted mid-flight by the browser once the page starts unloading.
     const res = await fetch(`${API}/api/writing-practice/save-batch`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ attempts })
+      body: JSON.stringify({ attempts }),
+      keepalive: true
     });
     await window.ApiClient.handleResponse(res);
   } catch (e) {
@@ -1971,7 +1982,7 @@ async function submitTest() {
 function showTestResults(data) {
   document.getElementById('test-results').style.display = '';
   const { correct, score, countable, results } = data;
-  const expandCount = results.length - (countable || results.length);
+  const expandCount = results.length - (countable ?? results.length);
   const { emoji, message: msg } = getScoreMessage(score);
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
   const wpImgSrc = score >= 90 ? 'img/vocab_writingabove90%25.jpg'
@@ -2060,6 +2071,11 @@ function mobSetType(type) {
     b.classList.toggle('active', b.dataset.type === type));
 }
 function mobStartLearning() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    closeWpSheet();
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   if (sessionDone > 0) {
     closeWpSheet();
     askWpQuit(() => { stopSessionTimer(); saveBatch(); loadExercises(); }, {

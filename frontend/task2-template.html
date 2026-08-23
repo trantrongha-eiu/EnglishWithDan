@@ -1004,6 +1004,7 @@ let _examTimeLeft      = 1800;
 let _examStartTime     = null;
 let _examSessionCorrect = 0;
 let _examSessionTotal   = 0;
+let _examAutoSubmitTimer = null; // pending tickExamTimer() -> submitExam()/finishExam() at time-up
 
 function saveTplScores() {
   localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
@@ -1088,27 +1089,36 @@ function modeCompletionPct(mode, typeId) {
 }
 
 // ── URL sharing ────────────────────────────────────────────────
+const TPL_VALID_MODES = ['cloze', 'translation', 'chunks', 'build', 'dictation'];
 function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
   if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
+  if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
   const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
   if (push) history.pushState(null, '', url);
   else history.replaceState(null, '', url);
 }
 
-// Browser back/forward after switching template type (doSwitchType below
-// now pushes a new history entry per switch via _syncTplShareUrl(true)) —
-// re-derive the type from the URL and re-render without pushing again.
+// Browser back/forward after switching template type/mode (doSwitchType/
+// switchTplMode below now push a new history entry per switch via
+// _syncTplShareUrl(true)) — re-derive both from the URL and re-render
+// without pushing again.
 window.addEventListener('popstate', () => {
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');
+  const _urlMode   = _urlParams.get('mode');
   const nextType   = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
-  if (nextType === _tplActiveType) return;
+  const nextMode   = TPL_VALID_MODES.includes(_urlMode) ? _urlMode : 'cloze';
+  if (nextType === _tplActiveType && nextMode === _tplActiveMode) return;
+  if (_examMode) exitExamMode();
+  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
   saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
   _tplActiveType = nextType;
+  _tplActiveMode = nextMode;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === nextType);
   });
+  _applyModeTabUI(nextMode);
   renderTplContent();
   updateTplScore();
   updateTypeStatus();
@@ -1116,6 +1126,7 @@ window.addEventListener('popstate', () => {
 function copyTplShareUrl() {
   const params = new URLSearchParams();
   if (_tplActiveType) params.set('type', _tplActiveType);
+  if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url)
@@ -1156,10 +1167,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   // _examMode flag this page already refuses its own translate feature for
   // (see showTranslationHint()'s "Không dùng dịch trong chế độ thi thử!").
   window.__ewsExamActive = () => _examMode;
-  // Restore type from URL param
+  // Restore type + mode from URL params (deep link / bookmark / reload)
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');
+  const _urlMode   = _urlParams.get('mode');
   if (_urlType && TPL_DATA[_urlType]) _tplActiveType = _urlType;
+  if (TPL_VALID_MODES.includes(_urlMode)) {
+    _tplActiveMode = _urlMode;
+    _applyModeTabUI(_tplActiveMode);
+  }
 
   try {
     const saved = localStorage.getItem('tpl_scores');
@@ -1566,6 +1582,7 @@ function cancelTypeSwitch() {
 }
 
 function doSwitchType(typeId) {
+  _clearBuildAdvance(); // a pending Build-mode round advance must not fire into the new type
   if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
   saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
   _tplActiveType = typeId;
@@ -1579,12 +1596,7 @@ function doSwitchType(typeId) {
 }
 
 // ── Learning mode switch (Cloze / Translation / Chunks / Build / Dictation) ──
-function switchTplMode(mode) {
-  if (mode === _tplActiveMode) return;
-  if (_examMode) exitExamMode(); // an exam run never survives a mode switch
-  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
-  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // save the session we're leaving
-  _tplActiveMode = mode;
+function _applyModeTabUI(mode) {
   document.querySelectorAll('.t2-mode-tab').forEach(btn => {
     const isActive = btn.dataset.mode === mode;
     btn.classList.toggle('active', isActive);
@@ -1594,7 +1606,17 @@ function switchTplMode(mode) {
   const otherTb = document.getElementById('tpl-toolbar-other');
   if (cloTb)   cloTb.style.display   = mode === 'cloze' ? '' : 'none';
   if (otherTb) otherTb.style.display = mode === 'cloze' ? 'none' : '';
+}
+function switchTplMode(mode) {
+  if (mode === _tplActiveMode) return;
+  _clearBuildAdvance(); // a pending Build-mode round advance must not fire into the new mode
+  if (_examMode) exitExamMode(); // an exam run never survives a mode switch
+  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
+  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // save the session we're leaving
+  _tplActiveMode = mode;
+  _applyModeTabUI(mode);
   renderTplContent();
+  _syncTplShareUrl(true);
 }
 
 // ── Mode 1: Sentence-by-Sentence Translation ─────────────────────
@@ -2088,6 +2110,11 @@ let _buildAnswer = [];        // ids, in the order the student tapped them
 let _buildTargetPieces = [];  // correct-order texts for the current round
 let _buildRoundKey = null;    // `${si}-${ii}-${hardMode}` — regenerate only when this changes
 let _buildHardMode = false;   // false = chunks (default), true = individual words
+let _buildAdvanceTimer = null; // pending checkBuild() -> advance() timeout, so a mode/type switch mid-delay can cancel it
+function _clearBuildAdvance() {
+  clearTimeout(_buildAdvanceTimer);
+  _buildAdvanceTimer = null;
+}
 
 function _restartBuildQueue() {
   _buildQueueType = null;
@@ -2241,7 +2268,7 @@ function checkBuild() {
     resultEl.innerHTML = `🎉 <b>Chính xác!</b>`;
     playOk();
     if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
-    setTimeout(advance, 900);
+    _buildAdvanceTimer = setTimeout(advance, 900);
   } else {
     if (!_examMode) setModeItemResult('build', _tplActiveType, si, ii, 'err');
     answerArea.classList.add('t2-build-shake');
@@ -2254,7 +2281,7 @@ function checkBuild() {
       const reinsertAt = Math.min(_buildQueue.length, _buildIdx + 1 + 3);
       _buildQueue.splice(reinsertAt, 0, { si, ii });
     }
-    setTimeout(advance, 2200);
+    _buildAdvanceTimer = setTimeout(advance, 2200);
   }
   if (!_examMode) { updateModeOverallBadge(); renderTabs(); }
 }
@@ -2530,7 +2557,11 @@ function tickExamTimer() {
     clearInterval(_examTimerInterval);
     _examTimerInterval = null;
     showToast('⏰ Hết giờ! Bài đang được chấm tự động...', 'warn', 3000);
-    setTimeout(() => { if (_examScopeMode === 'cloze') submitExam(); else finishExam(); }, 1000);
+    _examAutoSubmitTimer = setTimeout(() => {
+      _examAutoSubmitTimer = null;
+      if (!_examMode) return; // exited during the 1s toast window — nothing left to submit
+      if (_examScopeMode === 'cloze') submitExam(); else finishExam();
+    }, 1000);
   }
 }
 
@@ -2707,7 +2738,14 @@ function submitExam() {
       <button class="t2-tpl-reset-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát thi thử</button>`;
   }
 
-  _examMode = false;
+  // Reset the same fields exitExamMode()/finishExam() do — otherwise its
+  // "Thoát thi" button (still wired to exitExamMode()) finds _examScopeMode
+  // still 'cloze' and _examStartTime still set, re-scores the now-disabled
+  // DOM via _scoreClozeSoFar(), and POSTs a second, duplicate exam attempt.
+  _examMode      = false;
+  _examScopeMode = null;
+  _examStartTime = null;
+  window.onbeforeunload = null;
   updateExamBtn();
 
   const pct = Math.round(correct / total * 100);
@@ -2798,20 +2836,27 @@ async function saveTplAttemptToServer(typeId, mode = 'cloze') {
   if (!token || !typeId) return;
   const type = TPL_DATA[typeId];
   if (!type) return;
-  let total = 0, correct = 0;
+  let total = 0, correct = 0, attempted = 0;
   if (mode === 'cloze') {
     type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
       total++;
-      if (_tplScores[`${typeId}-${si}-${ii}`] === 'ok') correct++;
+      const s = _tplScores[`${typeId}-${si}-${ii}`];
+      if (s === 'ok') correct++;
+      if (s === 'ok' || s === 'err') attempted++;
     }));
   } else {
     const modeData = _modeProgress[typeId]?.[mode] || {};
     type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
       total++;
-      if (modeData[`${si}-${ii}`]?.status === 'ok') correct++;
+      const s = modeData[`${si}-${ii}`]?.status;
+      if (s === 'ok') correct++;
+      if (s === 'ok' || s === 'err') attempted++;
     }));
   }
-  if (correct === 0) return; // Không lưu nếu chưa làm gì
+  // correct===0 alone can't tell "never opened this type" apart from "tried
+  // every item and got every one wrong" — the latter is real effort that
+  // should still show up in history/analytics, so gate on attempted instead.
+  if (attempted === 0) return; // Không lưu nếu chưa làm gì
   const typeMeta = TPL_TYPES.find(t => t.id === typeId);
   try {
     const res = await fetch(`${API}/api/task2template/save`, {

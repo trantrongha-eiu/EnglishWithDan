@@ -1112,10 +1112,14 @@ async function _saveBatchWithRetry(toSave, sessionId) {
   const token = window.AuthService.getToken();
   if (!token) return;
   try {
+    // keepalive lets this survive a beforeunload-triggered call (tab close/
+    // navigation right after finishing an exercise) — a plain fetch can be
+    // aborted mid-flight by the browser once the page starts unloading.
     const res = await fetch(`${API}/api/task1/save-batch`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ attempts: toSave, sessionId })
+      body: JSON.stringify({ attempts: toSave, sessionId }),
+      keepalive: true
     });
     await safeJson(res);
   } catch (e) {
@@ -1714,6 +1718,12 @@ function nextExercise() {
 }
 
 function skipExercise() {
+  // Without this guard, skipping while submitAnswer()'s /check request for
+  // the current exercise is still in flight lets that response arrive after
+  // showExercise() has already moved on — showFeedback() then yanks the UI
+  // back to the skipped exercise's feedback screen mid-way through the next
+  // one. See submitAnswer()'s _isSubmitting flag, set for the same reason.
+  if (_isSubmitting) return;
   const ex = exercises[currentIdx];
   if (!ex || _skippedIds.has(ex._id)) {
     showToast('Câu này đã bỏ qua rồi – hãy trả lời nhé! 😊', 'warn'); return;
@@ -1794,7 +1804,11 @@ function retryWrongT1() {
   const wrongIds = new Set(_wrongAttemptCache.map(a => a.exerciseId));
   const wrongExercises = exercises.filter(ex => wrongIds.has(String(ex._id)));
   if (!wrongExercises.length) { showToast('Không còn câu sai!', 'info'); return; }
-  _originalExercises = exercises;
+  // Only capture the true original set once — retrying wrong answers a
+  // second time (from a subset session) must not clobber it with that
+  // subset, or restartExercises()'s "start over" would only restore the
+  // subset instead of the real original set.
+  if (!_originalExercises) _originalExercises = exercises;
   exercises = wrongExercises;
   currentIdx = 0; sessionDone = 0; sessionXP = 0;
   sessionCorrect = 0; sessionAttempts = []; comboStreak = 0; _skippedIds = new Set();

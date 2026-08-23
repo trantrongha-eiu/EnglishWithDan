@@ -908,6 +908,7 @@ function bindTopics() {
     el.addEventListener('click', () => selectTopic(el.dataset.id));
   });
 }
+let _selectTopicSeq = 0;
 async function selectTopic(id) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) window.openUpgradeModal();
@@ -919,15 +920,23 @@ async function selectTopic(id) {
   state.draft = null;
   const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, mode: state.currentMode });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
+  // Guards against rapidly clicking between topics resolving out of order —
+  // only the most recently-selected topic's wrong-questions/draft response
+  // is allowed to apply, so a slow response for a topic the user already
+  // clicked away from can't overwrite the newer topic's state.
+  const requestId = ++_selectTopicSeq;
   if (window.AuthService.isLoggedIn()) {
     try {
       const [wrongData, draftData] = await Promise.all([
         apiFetch(`/api/task2/wrong-questions/${id}`),
         apiFetch(`/api/task2/draft/${id}`)
       ]);
+      if (requestId !== _selectTopicSeq) return;
       state.wrongQuestionIds = wrongData.wrongIds || [];
       state.draft = draftData.draft || null;
-    } catch {}
+    } catch {
+      if (requestId !== _selectTopicSeq) return;
+    }
   }
   state.view = 'select';
   render();
@@ -1059,6 +1068,11 @@ async function startPractice() {
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
     state.questionStatus = new Array(state.questions.length).fill('pending');
+    // No dedicated 'practice' history entry — push a fresh 'select' checkpoint
+    // instead so browser Back pops straight to the topic-select screen
+    // (handled by the existing popstate case) rather than skipping past it to
+    // 'topics', since 'select' is otherwise still the top of the stack here.
+    history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -1083,6 +1097,7 @@ async function startRetryWrong() {
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
     state.questionStatus = new Array(wrongQuestions.length).fill('pending');
+    history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -1192,7 +1207,9 @@ function renderPractice() {
   const q = state.questions[state.currentIdx];
   if (!q) return renderDone();
   const topic = state.selectedTopic;
-  const pct = Math.round((state.currentIdx / state.questions.length) * 100);
+  // (currentIdx+1) to match the "N/total" text — otherwise the bar always
+  // lags one question behind (0% on question 1, never 100% until done).
+  const pct = Math.round(((state.currentIdx + 1) / state.questions.length) * 100);
   return `
     <div class="t2-nav" style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between">
       <button class="t2-back-btn" onclick="quitPractice()"><i class="fas fa-times"></i> Thoát</button>
@@ -1422,6 +1439,16 @@ function getUserAnswerPractice() {
 
 async function submitPractice() {
   if (state._isSubmitting) return;
+  // A progress dot for an already-answered question stays clickable (so
+  // students can review it) — without this guard, jumping back to it via
+  // goToQuestion() and submitting again would double-count sessionDone/
+  // sessionCorrect/XP and push a second sessionAttempts entry for the same
+  // questionId.
+  const status = state.questionStatus[state.currentIdx];
+  if (status === 'correct' || status === 'wrong') {
+    showToast('Câu này đã trả lời rồi.', 'info');
+    return;
+  }
   const q = state.questions[state.currentIdx];
   const answer = getUserAnswerPractice();
   if (answer === '' || answer === undefined) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
@@ -1649,6 +1676,9 @@ async function startExam() {
     state.examAnswers   = [];
     state.examIdx       = 0;
     state.rearrangeAnswer = []; state.mcSelected = null;
+    // See startPractice()'s comment — same "select" checkpoint trick so
+    // browser Back exits the exam back to 'select' instead of skipping it.
+    if (state.selectedTopic) history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'exam'; render();
     startExamTimer(state.examQuestions.length * 120);
   } catch { showToast('Lỗi tải đề thi', 'error'); }
@@ -1800,6 +1830,9 @@ async function loadVocab() {
     // every visible "Lưu" button already shows "Đã lưu".
     _vocabTotalMap[state.selectedTopic._id] = new Set(state.vocab.map(v => v.term)).size;
     localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
+    // See startPractice()'s comment — same "select" checkpoint trick so
+    // browser Back exits the vocab list back to 'select' instead of skipping it.
+    history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'vocab'; render();
   } catch { showToast('Lỗi tải từ vựng', 'error'); }
 }
