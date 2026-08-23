@@ -76,7 +76,11 @@ function restoreExam() {
   state.exam        = saved.exam;
   state.answers     = saved.answers  || { 1: '', 2: '' };
   state.flags       = saved.flags    || { 1: false, 2: false };
-  state.secondsLeft = saved.secondsLeft || 3600;
+  // ?? not || — secondsLeft:0 is a legitimate saved value (the exam timed
+  // out right as the tab closed, before submitExam('timeout') completed);
+  // treating it as falsy handed the student a fresh full-length timer on an
+  // exam that had actually already expired.
+  state.secondsLeft = saved.secondsLeft ?? 3600;
   state.totalSeconds = state.exam.duration ? state.exam.duration * 60 : 3600;
   state.currentTask  = 1;
   document.getElementById('restore-banner').style.display = 'none';

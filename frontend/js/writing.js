@@ -14,6 +14,16 @@ const API = 'https://englishwithdan.onrender.com';
 // the deployed writing.js/.css both had the fix — this is why.
 window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
 
+// escHtml() (js/shared/utils.js) only escapes &/</>/" — safe for plain HTML
+// text/attribute content, but NOT for a value embedded inside a JS string
+// literal in an onclick="...('...')" attribute: the browser HTML-decodes
+// entities (including escAttr()'s &#39;) before compiling the attribute as
+// JS, so a literal apostrophe in the source data still terminates the JS
+// string early either way. This backslash-escapes the quote for the JS
+// string itself, then entity-escapes the (double-quoted) HTML attribute
+// delimiter around it — same pattern as dashboard.js's escH().
+function escJsAttr(s) { return (s || '').replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
 // ──────────────────────────────────────────────────────
 // Auth helpers
 // ──────────────────────────────────────────────────────
@@ -113,14 +123,6 @@ function showScreen(id) {
   // check with no next= support, duplicating (and slightly diverging from)
   // the page-load guard that already ran before this script.
   if (window.AuthService ? !window.AuthService.requirePageAuth(false) : !getToken()) return;
-
-  const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
-  const displayName = user.firstName
-    ? `${user.firstName} ${user.lastName || ''}`.trim()
-    : (user.username || '');
-
-  document.querySelectorAll('#user-name-done, #user-name-history, #user-name-samples')
-    .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 
   // URL param routing: ?taskType=1/2&taskId=<id> (shareable), or ?taskType=1/2 (nav link to task list)
   const params = new URLSearchParams(location.search);
@@ -248,7 +250,10 @@ async function startExam() {
     state.answers = { 1: '', 2: '' };
     state.flags   = { 1: false, 2: false };
     state.currentTask = 1;
-    state.secondsLeft = 0;
+    // null, not 0 — launchExam() below tells "fresh start" apart from "restored
+    // exam that had already timed out at secondsLeft:0" by whether this is set
+    // yet at all; 0 is a real, meaningful value for the latter case.
+    state.secondsLeft = null;
 
     launchExam();
   } catch (e) {
@@ -274,8 +279,9 @@ function launchExam() {
   document.getElementById('exam-candidate').textContent =
     `${displayName}  –  ${exam.name}`;
 
-  // Timer – only reset if not restoring (secondsLeft already set by restoreExam)
-  if (!state.secondsLeft || state.secondsLeft <= 0) {
+  // Timer – only reset if not restoring (secondsLeft already set by restoreExam,
+  // including a legitimate 0 for an exam that had already timed out).
+  if (state.secondsLeft == null) {
     const mins = (exam.duration || 60) * 60;
     state.totalSeconds = mins;
     state.secondsLeft  = mins;
@@ -548,13 +554,6 @@ async function submitExam(statusOverride) {
       state.currentAttemptId = data.attemptId;
       if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
       // Done screen
-      const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
-      const name = user.firstName
-        ? `${user.firstName} ${user.lastName || ''}`.trim()
-        : (user.username || '');
-      document.querySelectorAll('#user-name-done, #user-name-history')
-        .forEach(el => { if (el) el.textContent = `👋 ${name}`; });
-
       document.getElementById('done-exam-name').textContent = state.exam.name;
       document.getElementById('done-wc1').textContent = wc1;
       document.getElementById('done-wc2').textContent = wc2;
@@ -976,14 +975,14 @@ async function loadWritingSamples() {
     qChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
     fData.quarters.forEach(q => {
       qChips.insertAdjacentHTML('beforeend',
-        `<span class="pv-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
+        `<span class="pv-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escJsAttr(q)}',this)">${escHtml(q)}</span>`);
     });
 
     // Render topic chips
     tChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
     fData.topics.forEach(t => {
       tChips.insertAdjacentHTML('beforeend',
-        `<span class="pv-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
+        `<span class="pv-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escJsAttr(t)}',this)">${escHtml(t)}</span>`);
     });
   }
 
@@ -1010,7 +1009,7 @@ async function _fetchAndRenderSamples() {
 
     const taskLabel = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 & 2' };
     list.innerHTML = data.samples.map(s => `
-      <div class="pv-doc-card" onclick="openSamplePdf('${escHtml(s.pdfUrl)}','${escHtml(s.title)}',this)">
+      <div class="pv-doc-card" onclick="openSamplePdf('${escJsAttr(s.pdfUrl)}','${escJsAttr(s.title)}',this)">
         <div class="pv-doc-icon">📄</div>
         <div class="pv-doc-info">
           <div class="pv-doc-title">${escHtml(s.title)}</div>
@@ -1744,7 +1743,13 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
   practiceState.wordCount = 0;
   practiceState.seconds   = 0;
 
-  clearPracticeAutoSave(taskType, taskId); // Clear any stale draft when starting fresh
+  // Clear any stale draft when starting fresh — both the local copy AND the
+  // server-synced one (discardPracticeAutoSave does the same pair). Missing
+  // the server delete previously let an old server draft for this exact
+  // task resurface later in checkPracticeRestoreBanner()'s merge, even
+  // though the student had explicitly moved past it by starting over here.
+  clearPracticeAutoSave(taskType, taskId);
+  deleteDraftFromServer(taskType, taskId);
   renderPracticeWriteScreen(taskType, task);
   showScreen('screen-practice-write');
   startPracticeStopwatch(0);

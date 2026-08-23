@@ -24,8 +24,17 @@ let wstLessons = [];
 let wstCategories = [];
 let wstCurrentKey = null;
 let wstLoaded = false; // guards against re-fetching every time the screen is reopened
-let wstCollapsed = new Set(JSON.parse(localStorage.getItem(WST_COLLAPSED_KEY) || '[]'));
-let wstRead = new Set(JSON.parse(localStorage.getItem(WST_READ_KEY) || '[]'));
+// Guarded — a malformed value here (partial write from a storage-quota
+// error, manual edit, future format change) previously threw synchronously
+// at script-parse time, aborting this whole file before any wst* function
+// was even defined, permanently stranding Writing Tips on its loading
+// placeholder. Same fix as speaking-tips.js's mirrored _sstSafeParse.
+function _wstSafeParse(json, fallback) {
+  if (json == null) return fallback;
+  try { return JSON.parse(json); } catch { return fallback; }
+}
+let wstCollapsed = new Set(_wstSafeParse(localStorage.getItem(WST_COLLAPSED_KEY), []));
+let wstRead = new Set(_wstSafeParse(localStorage.getItem(WST_READ_KEY), []));
 
 function wstKeyOf(l) { return l.category + '||' + l.lessonKey; }
 
