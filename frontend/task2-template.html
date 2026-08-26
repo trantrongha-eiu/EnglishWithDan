@@ -630,8 +630,8 @@
              folded into the mode-tabs bar below, since level applies across
              ALL modes (Cloze/Dịch câu/Chunks/Build/Dictation) at once. -->
         <div class="t2-level-toggle" id="tpl-level-toggle" role="tablist" aria-label="Trình độ">
-          <button class="t2-level-btn" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="false">🌱 Band 6+</button>
-          <button class="t2-level-btn active" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="true">🏆 Band 7+</button>
+          <button class="t2-level-btn active" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="true">🌱 Band 6+</button>
+          <button class="t2-level-btn" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="false">🏆 Band 7+</button>
         </div>
       </div>
     </div>
@@ -1004,7 +1004,7 @@ let TPL_DATA = {
 // ── State ──────────────────────────────────────────────────────
 let _tplActiveType = 'type01';
 let _tplActiveMode = 'cloze'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation'
-let _tplActiveLevel = 'band7'; // 'band6' | 'band7' — see switchTplLevel()
+let _tplActiveLevel = 'band6'; // 'band6' | 'band7' — see switchTplLevel(). Band 6+ is the default level shown on page load.
 
 // typeId is shared between the Band 6+ and Band 7+ document for the "same"
 // essay type (see Task2Template's {typeId,level} compound key) — but every
@@ -1128,7 +1128,7 @@ function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
   if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
   if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
-  if (_tplActiveLevel && _tplActiveLevel !== 'band7') params.set('level', _tplActiveLevel);
+  if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
   const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
   if (push) history.pushState(null, '', url);
   else history.replaceState(null, '', url);
@@ -1195,7 +1195,7 @@ function copyTplShareUrl() {
   const params = new URLSearchParams();
   if (_tplActiveType) params.set('type', _tplActiveType);
   if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
-  if (_tplActiveLevel && _tplActiveLevel !== 'band7') params.set('level', _tplActiveLevel);
+  if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url)
@@ -1678,7 +1678,10 @@ let _loadTplSeq = 0;
 async function _loadTplTemplates(level) {
   const requestId = ++_loadTplSeq;
   try {
-    const res = await fetch(`${API}/api/task2/templates?level=${level}`);
+    const token = window.AuthService && window.AuthService.getToken();
+    const res = await fetch(`${API}/api/task2/templates?level=${level}`, {
+      headers: token ? { Authorization: 'Bearer ' + token } : {}
+    });
     if (requestId !== _loadTplSeq) return false;
     if (res.ok) {
       const data = await res.json();
