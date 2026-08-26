@@ -485,16 +485,35 @@ function eligibleTypesFor(word, allWords) {
     return types;
 }
 
-// mcq ("Multiple Choice — chọn từ đúng") is the format students practice most
-// often elsewhere on the site, so it's weighted to show up in ~60% of
-// questions rather than an even 1/N split across all eligible types; the
-// remaining 40% is split evenly across whichever other types are eligible.
-const MCQ_TARGET_WEIGHT = 0.6;
+// Question-type mix (2026-08-26 rebalance, product ask): Trắc nghiệm (mcq)
+// twice as likely as each other category — Điền từ/Nghe/Dịch/Sắp xếp câu.
+// "Dịch" is one weight-bucket covering BOTH translateViEn and translateEnVi
+// leaf types — whichever direction(s) are eligible for this word share that
+// bucket's weight rather than each getting their own, matching the 5-way
+// split (mcq/fill/listen/dịch/rearrange) the ask described. Weights don't
+// need to sum to 100 — pickWeightedType() normalizes over whatever's
+// actually present after eligibleTypesFor()'s per-word filtering.
+const TYPE_WEIGHTS = { mcq: 30, fill: 15, listen: 15, translate: 15, rearrange: 15 };
 
 function pickWeightedType(eligible) {
-    if (eligible.includes('mcq') && Math.random() < MCQ_TARGET_WEIGHT) return 'mcq';
-    const rest = eligible.filter(t => t !== 'mcq');
-    return rest[Math.floor(Math.random() * rest.length)];
+    const buckets = {};
+    eligible.forEach(t => {
+        const key = (t === 'translateViEn' || t === 'translateEnVi') ? 'translate' : t;
+        (buckets[key] = buckets[key] || []).push(t);
+    });
+    const keys = Object.keys(buckets);
+    const totalWeight = keys.reduce((sum, k) => sum + (TYPE_WEIGHTS[k] || 0), 0);
+    let r = Math.random() * totalWeight;
+    for (const k of keys) {
+        r -= TYPE_WEIGHTS[k] || 0;
+        if (r <= 0) {
+            const leafTypes = buckets[k];
+            return leafTypes[Math.floor(Math.random() * leafTypes.length)];
+        }
+    }
+    // Floating-point edge case (r never dipped to <=0 due to rounding) —
+    // fall back to the last bucket's first leaf type.
+    return buckets[keys[keys.length - 1]][0];
 }
 
 function buildQuizQueue(words) {
@@ -550,6 +569,7 @@ function renderQuizQuestion() {
     const q = queue[index];
     lessonState.quiz.answered = false;
     lessonState.quiz.rearrangeTokens = null;
+    lessonState.quiz.hintCount = 0;
     const words = lessonState.currentLesson.words;
     const container = document.getElementById('lesson-tab-quiz');
 
@@ -605,8 +625,11 @@ function renderQuizQuestion() {
             <div class="question-number">Fill in the Blank</div>
             <div class="question-text">${escHtml(sentence)}</div>
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(meaning)}</div>
+            <div class="listen-hint">💡 Từ có ${q.word.word.length} chữ cái</div>
+            <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
+                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Hint (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkFillQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -617,8 +640,11 @@ function renderQuizQuestion() {
         container.innerHTML = shell(`
             <div class="question-number">Listening</div>
             <button class="btn-play-audio" id="qPlayAudioBtn"><i class="fas fa-volume-up"></i> Play Audio</button>
+            <div class="listen-hint">💡 Từ có ${q.word.word.length} chữ cái</div>
+            <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
+                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Hint (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkListenQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -746,6 +772,35 @@ function answerWordChoice(btn) {
     showQuizFeedback(correct, currentWord, currentAnswer);
     recordAnswer(correct);
     document.getElementById('qBtnNext').style.display = 'flex';
+}
+
+// Progressive letter reveal for the Fill-in-the-blank and Listening quiz
+// types — each press shows one more letter of the answer (1st: 1 letter,
+// 2nd: 2, 3rd: 3), capped at LESSON_QUIZ_HINT_MAX so it stays a hint rather
+// than handing over the whole word. Shared by both types since both grade
+// against the same q.word.word.
+const LESSON_QUIZ_HINT_MAX = 3;
+function showLessonQuizHint() {
+    if (lessonState.quiz.answered) return;
+    const q = lessonState.quiz.queue[lessonState.quiz.index];
+    if (!q?.word?.word) return;
+    if (lessonState.quiz.hintCount >= LESSON_QUIZ_HINT_MAX) return;
+    lessonState.quiz.hintCount++;
+    const word = q.word.word;
+    const revealed = escHtml(word.slice(0, lessonState.quiz.hintCount));
+    const masked = '_ '.repeat(Math.max(0, word.length - lessonState.quiz.hintCount)).trim();
+    const letterHintEl = document.getElementById('qLetterHint');
+    if (letterHintEl) {
+        letterHintEl.textContent = `💡 ${revealed}${masked ? ' ' + masked : ''}`;
+        letterHintEl.style.display = '';
+    }
+    const remaining = LESSON_QUIZ_HINT_MAX - lessonState.quiz.hintCount;
+    const label = document.getElementById('qHintBtnLabel');
+    if (label) label.textContent = remaining > 0 ? `Hint (${remaining})` : 'Hint';
+    if (remaining <= 0) {
+        const btn = document.getElementById('qHintBtn');
+        if (btn) btn.disabled = true;
+    }
 }
 
 function checkFillQuiz() {
