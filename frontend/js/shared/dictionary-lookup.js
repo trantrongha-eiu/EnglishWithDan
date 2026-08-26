@@ -70,6 +70,20 @@
     return true;
   }
 
+  // Plain fetch() has no timeout — if a lookup API is blocked by a firewall/
+  // extension that silently drops the connection instead of erroring (rather
+  // than rejecting quickly, e.g. a CORS block or 4xx), the request just stays
+  // pending forever. Since lookupWord awaits Promise.allSettled on all three
+  // lookup fetches, ANY one of them hanging means allSettled never resolves
+  // either, and the popup is stuck on "Đang tra..." with no way out. This
+  // wrapper aborts a fetch that takes too long so it always settles (as a
+  // rejection), same as a normal network failure.
+  function _fetchWithTimeout(url, ms) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, ms);
+    return fetch(url, { signal: controller.signal }).finally(function () { clearTimeout(timer); });
+  }
+
   async function _vocabFetch(path, opts) {
     opts = opts || {};
     var res = await fetch(VOCAB_API_BASE + path, Object.assign({}, opts, {
@@ -211,9 +225,9 @@
 
     var enc = encodeURIComponent;
     var results = await Promise.allSettled([
-      fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + enc(word)).then(function (r) { return r.ok ? r.json() : null; }),
-      fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + enc(word)).then(function (r) { return r.json(); }),
-      fetch('https://api.mymemory.translated.net/get?q=' + enc(word) + '&langpair=en|vi').then(function (r) { return r.json(); })
+      _fetchWithTimeout('https://api.dictionaryapi.dev/api/v2/entries/en/' + enc(word), 8000).then(function (r) { return r.ok ? r.json() : null; }),
+      _fetchWithTimeout('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + enc(word), 8000).then(function (r) { return r.ok ? r.json() : null; }),
+      _fetchWithTimeout('https://api.mymemory.translated.net/get?q=' + enc(word) + '&langpair=en|vi', 8000).then(function (r) { return r.json(); })
     ]);
     var dictRes = results[0], transRes = results[1], memRes = results[2];
 
