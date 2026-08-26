@@ -1,25 +1,23 @@
 /* ══════════════════════════════════════════════════════════════════════
-   onboarding-tour.js — first-visit feature tour for new students.
+   onboarding-tour.js — first-visit feature tour, per page.
 
    Self-injecting component (same pattern as upgrade-modal.js /
    learning-popups.js): any page that loads this file gets window.EWSTour
-   immediately, no per-page markup needed. Auto-starts once per browser
-   (localStorage-gated) on dashboard.html only, after a short delay so
-   nav.js (which injects the top nav synchronously but is loaded via a
-   separate <script> tag) and the sidebar's own async notebook fetch have
-   had a moment to settle.
+   immediately, no per-page markup needed beyond the <script> tag. Each
+   page below gets its OWN tour (own step list, own localStorage key —
+   ews_onboarding_tour_v1_<page> — so finishing the dashboard tour doesn't
+   silently skip the reading tour, etc.) and auto-starts once per browser
+   for logged-in users on that specific page.
 
-   Every step points at a REAL element already on the page — no invented
-   feature (no ELO/battle system exists here) — via a resolver function
-   rather than a fixed selector, so a step that resolves to nothing
-   currently visible (e.g. the desktop-only vocab sidebar on a phone, or
-   the desktop nav-links row collapsed behind the mobile hamburger) is
-   skipped automatically instead of spotlighting an invisible element.
+   Every step points at a REAL element already on that page — no invented
+   feature — via a resolver function rather than a fixed selector, so a
+   step whose target isn't currently visible (desktop-only sidebar on a
+   phone, desktop nav row collapsed behind the mobile hamburger, a banner
+   that's only shown conditionally) is skipped automatically instead of
+   spotlighting nothing.
 ══════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-
-  const TOUR_KEY = 'ews_onboarding_tour_v1';
 
   function isVisible(el) {
     if (!el) return false;
@@ -27,52 +25,190 @@
     return r.width > 0 && r.height > 0 && !!el.getClientRects().length;
   }
 
-  // ── Step definitions — resolver returns the element to spotlight, or
-  // null/undefined to skip this step entirely. ──────────────────────────
-  const STEPS = [
-    {
-      icon: '🧭',
-      title: 'Menu chính',
-      body: 'Đây là nơi bạn vào từng kỹ năng: Reading, Listening, Writing, Speaking, Luyện viết — mỗi mục đều có bài luyện lẻ và full đề thi thử. Trên điện thoại, bấm biểu tượng ☰ để mở menu.',
-      resolve() {
-        const links = document.querySelector('.top-nav .nav-links');
-        if (isVisible(links)) return links;
-        const ham = document.getElementById('globalHamburger');
-        return isVisible(ham) ? ham : null;
-      }
-    },
-    {
-      icon: '✍️',
-      title: 'Luyện viết',
-      body: 'Mục "Luyện viết" gồm Task 1 Grammar, Task 2 Writing (luyện theo tuần, tự động lưu tiến độ), Task 2 Templates và Essential Grammar. Bấm vào để mở danh sách.',
-      resolve() {
-        const link = document.querySelector('.top-nav a[href="writing-practice.html"]');
-        const dropdown = link && link.closest('.nav-dropdown');
-        return isVisible(dropdown) ? dropdown : null;
-      }
-    },
-    {
-      icon: '📚',
-      title: 'Sổ từ vựng',
-      body: 'Đây là sổ từ vựng cá nhân của bạn. Khi luyện tập ở bất kỳ trang nào, lưu từ mới vào đây rồi quay lại ôn tập bất cứ lúc nào.',
-      resolve() {
-        const sidebar = document.getElementById('vocabSidebar');
-        return isVisible(sidebar) ? sidebar : null;
-      }
-    },
-    {
-      icon: '🔔',
-      title: 'Thông báo & Trang cá nhân',
-      body: 'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.',
-      resolve() {
-        const actions = document.querySelector('.top-nav .nav-actions');
-        return isVisible(actions) ? actions : null;
-      },
-      isLast: true
-    }
-  ];
+  // Shared resolver: desktop nav-links row, falling back to the mobile
+  // hamburger when the row itself is collapsed away. Reused by every
+  // page's first step below.
+  function resolveNavMenu() {
+    const links = document.querySelector('.top-nav .nav-links');
+    if (isVisible(links)) return links;
+    const ham = document.getElementById('globalHamburger');
+    return isVisible(ham) ? ham : null;
+  }
 
-  // ── Styles ──────────────────────────────────────────────────────────
+  // ── Per-page step definitions — resolver returns the element to
+  // spotlight, or null/undefined to skip that step entirely. ────────────
+  const PAGE_TOURS = {
+    'dashboard.html': [
+      {
+        icon: '🧭',
+        title: 'Menu chính',
+        body: 'Đây là nơi bạn vào từng kỹ năng: Reading, Listening, Writing, Speaking, Luyện viết — mỗi mục đều có bài luyện lẻ và full đề thi thử. Trên điện thoại, bấm biểu tượng ☰ để mở menu.',
+        resolve: resolveNavMenu
+      },
+      {
+        icon: '✍️',
+        title: 'Luyện viết',
+        body: 'Mục "Luyện viết" gồm Task 1 Grammar, Task 2 Writing (luyện theo tuần, tự động lưu tiến độ), Task 2 Templates và Essential Grammar. Bấm vào để mở danh sách.',
+        resolve() {
+          const link = document.querySelector('.top-nav a[href="writing-practice.html"]');
+          const dropdown = link && link.closest('.nav-dropdown');
+          return isVisible(dropdown) ? dropdown : null;
+        }
+      },
+      {
+        icon: '📚',
+        title: 'Sổ từ vựng',
+        body: 'Đây là sổ từ vựng cá nhân của bạn. Khi luyện tập ở bất kỳ trang nào, lưu từ mới vào đây rồi quay lại ôn tập bất cứ lúc nào.',
+        resolve() {
+          const sidebar = document.getElementById('vocabSidebar');
+          return isVisible(sidebar) ? sidebar : null;
+        }
+      },
+      {
+        icon: '🔔',
+        title: 'Thông báo & Trang cá nhân',
+        body: 'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.',
+        resolve() {
+          const actions = document.querySelector('.top-nav .nav-actions');
+          return isVisible(actions) ? actions : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'reading.html': [
+      {
+        icon: '📖',
+        title: 'Chọn chế độ',
+        body: 'Full đề: làm bài đầy đủ 3 passages trong 60 phút, tính band điểm như thi thật. Bài lẻ: luyện từng passage riêng theo chủ đề. Reading Tips: chiến lược làm từng dạng câu hỏi.',
+        resolve() {
+          const bar = document.querySelector('.rmode-tabs-bar');
+          return isVisible(bar) ? bar : null;
+        }
+      },
+      {
+        icon: '📄',
+        title: 'Danh sách đề',
+        body: 'Đây là danh sách đề Full test — mỗi đề có 3 passages và 40 câu hỏi. Gõ tên đề vào ô tìm kiếm ở trên để tìm nhanh, hoặc bấm vào một đề để bắt đầu làm bài có tính giờ.',
+        resolve() {
+          const wrap = document.getElementById('tests-wrapper');
+          return isVisible(wrap) ? wrap : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'listening.html': [
+      {
+        icon: '🎧',
+        title: 'Chọn chế độ',
+        body: 'Full đề: làm bài đầy đủ 4 sections trong 30 phút, tính band điểm như thi thật. Bài lẻ: luyện từng section riêng. Listening Tips: chiến lược nghe theo từng dạng câu hỏi.',
+        resolve() {
+          const bar = document.querySelector('.rmode-tabs-bar');
+          return isVisible(bar) ? bar : null;
+        }
+      },
+      {
+        icon: '🎵',
+        title: 'Danh sách đề',
+        body: 'Đây là danh sách đề Full test Listening. Gõ tên đề vào ô tìm kiếm ở trên để tìm nhanh, hoặc bấm vào một đề để bắt đầu làm bài có tính giờ và phát audio.',
+        resolve() {
+          const wrap = document.getElementById('tests-wrapper');
+          return isVisible(wrap) ? wrap : null;
+        }
+      },
+      {
+        icon: '⌨️',
+        title: 'Dictation',
+        body: 'Ngoài Listening, mục "Dictation" trong menu Listening giúp bạn luyện nghe — chép chính tả từng câu để rèn khả năng nghe chi tiết.',
+        resolve() {
+          const link = document.querySelector('.top-nav a[href="dictation.html"]');
+          const dropdown = link && link.closest('.nav-dropdown');
+          return isVisible(dropdown) ? dropdown : resolveNavMenu();
+        },
+        isLast: true
+      }
+    ],
+
+    'speaking.html': [
+      {
+        icon: '🎙',
+        title: 'Các lựa chọn luyện Speaking',
+        body: 'Luyện tập: chọn đề Part 1, 2, 3 và ghi âm để nhận AI feedback ngay. Thi thử đầy đủ: mô phỏng bài thi hoàn chỉnh. Lịch sử, Tài liệu và Speaking Tips cũng nằm ở đây.',
+        resolve() {
+          const cards = document.querySelector('.sp-home-cards');
+          return isVisible(cards) ? cards : null;
+        }
+      },
+      {
+        icon: '🎓',
+        title: 'Thi thử đầy đủ',
+        body: 'Mô phỏng bài thi Speaking hoàn chỉnh — Part 1, 2, 3 với đề ngẫu nhiên, AI chấm điểm toàn bài giống giám khảo thật.',
+        resolve() {
+          const el = document.getElementById('btn-full-mock');
+          return isVisible(el) ? el : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'writing.html': [
+      {
+        icon: '⏱️',
+        title: 'Thi thử Writing',
+        body: 'Bấm để làm bài thi Writing đầy đủ — Task 1 + Task 2 với đề ngẫu nhiên, có tính giờ 60 phút, giống thi thật.',
+        resolve() {
+          const btn = document.getElementById('btn-start');
+          return isVisible(btn) ? btn : null;
+        }
+      },
+      {
+        icon: '📋',
+        title: 'Các lựa chọn khác',
+        body: 'Luyện tập lẻ để làm từng Task riêng không tính giờ, xem lại Lịch sử các bài đã nộp, đọc Tài liệu mẫu, hoặc xem Writing Tips theo từng dạng đề.',
+        resolve() {
+          const el = document.querySelector('.key-card-actions');
+          return isVisible(el) ? el : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'writing-practice.html': [
+      {
+        icon: '📝',
+        title: 'Luyện tập hay Thi thử',
+        body: 'Luyện tập: làm từng câu, có gợi ý và nhận phản hồi ngay sau mỗi câu — tích lũy XP và combo. Thi thử: làm một bộ đề ngẫu nhiên không có gợi ý, giống thi thật, xem đáp án sau khi nộp.',
+        resolve() {
+          const el = document.querySelector('.wp-mode-toggle');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '🎯',
+        title: 'Cấp độ & chủ đề',
+        body: 'Chọn cấp độ (Beginner → Intermediate), chủ đề và dạng bài (dịch câu, sắp xếp từ, điền chỗ trống...) ở đây trước khi bắt đầu luyện tập.',
+        resolve() {
+          const el = document.getElementById('practice-filters');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '🚀',
+        title: 'Bắt đầu luyện tập',
+        body: 'Sau khi chọn xong ở thanh bên, bấm đây để bắt đầu. Trả lời đúng liên tiếp 3–10 câu sẽ kích hoạt combo thưởng XP — duy trì học mỗi ngày để giữ streak.',
+        resolve() {
+          const el = document.querySelector('.wp-welcome-start');
+          return isVisible(el) ? el : null;
+        },
+        isLast: true
+      }
+    ]
+  };
+
+  function tourKeyFor(page) { return 'ews_onboarding_tour_v1_' + page; }
+
+  // ── Styles (shared across every page's tour) ───────────────────────────
   const css = document.createElement('style');
   css.textContent = `
     #ews-tour-tip{position:fixed;z-index:9601;background:#fff;color:#111;border-radius:16px;width:min(360px,calc(100vw - 32px));box-shadow:0 24px 64px rgba(0,0,0,.32);padding:18px 20px;font-family:inherit;}
@@ -86,19 +222,39 @@
     #ews-tour-tip .ews-tour-next:hover{filter:brightness(1.06);}
     #ews-tour-tip .ews-tour-skip{background:none;border:none;color:#9ca3af;font-size:13px;font-family:inherit;cursor:pointer;padding:8px 4px;}
     #ews-tour-tip .ews-tour-skip:hover{color:#6b7280;text-decoration:underline;}
-    .ews-tour-spotlight{position:relative!important;z-index:9600!important;box-shadow:0 0 0 4px #fbbf24,0 0 0 9999px rgba(15,23,42,.62),0 0 28px 6px rgba(251,191,36,.45)!important;border-radius:12px!important;transition:box-shadow .2s ease;}
+    #ews-tour-hole{position:fixed;z-index:9598;pointer-events:none;border-radius:12px;box-shadow:0 0 0 4px #fbbf24,0 0 0 9999px rgba(15,23,42,.62),0 0 28px 6px rgba(251,191,36,.45);transition:top .2s ease,left .2s ease,width .2s ease,height .2s ease;}
   `;
   document.head.appendChild(css);
 
-  let currentIdx = -1;
+  let currentSteps = null;
+  let currentPage = null;
   let currentTarget = null;
   let tipEl = null;
+  let holeEl = null;
 
   function clearSpotlight() {
-    if (currentTarget) {
-      currentTarget.classList.remove('ews-tour-spotlight');
-      currentTarget = null;
-    }
+    currentTarget = null;
+    if (holeEl) { holeEl.remove(); holeEl = null; }
+  }
+
+  // The dark "everything but the target" dimming used to be a giant
+  // box-shadow on the target element itself — but that promotes the
+  // target into its own stacking context, which drags its DOM siblings
+  // (a card's title/banner sitting next to the button being spotlighted)
+  // behind the shadow too, since they're no longer above it in the new
+  // context. A separate overlay element, positioned to match the target's
+  // rect but never touching the target's own styles, doesn't have that
+  // problem — found by screenshotting writing.html's "Bắt đầu làm bài"
+  // step in a real browser and seeing the whole card dim, not just the
+  // area outside the button.
+  function positionHole(target) {
+    if (!holeEl) return;
+    const r = target.getBoundingClientRect();
+    const pad = 6;
+    holeEl.style.top = (r.top - pad) + 'px';
+    holeEl.style.left = (r.left - pad) + 'px';
+    holeEl.style.width = (r.width + pad * 2) + 'px';
+    holeEl.style.height = (r.height + pad * 2) + 'px';
   }
 
   function positionTip(target) {
@@ -110,10 +266,10 @@
     const spaceAbove = r.top;
     const spaceRight = window.innerWidth - r.right;
     const spaceLeft = r.left;
-    // A tall, narrow target (e.g. the vocab sidebar) needs a side placement —
-    // "below"/"above" would either run off-screen or land the tip on top of
-    // the very thing being spotlighted, since the target's own height can
-    // exceed the tip's. Wide targets (nav bars) keep the below/above default.
+    // A tall, narrow target (e.g. a sidebar) needs a side placement —
+    // "below"/"above" would either run off-screen or land the tip on top
+    // of the very thing being spotlighted, since the target's own height
+    // can exceed the tip's. Wide targets (nav/toolbars) keep below/above.
     const tall = r.height > r.width * 1.3;
     const candidates = tall
       ? [['right', spaceRight >= tw + margin], ['left', spaceLeft >= tw + margin], ['below', spaceBelow >= th + margin], ['above', spaceAbove >= th + margin]]
@@ -137,25 +293,31 @@
     if (tipEl) { tipEl.remove(); tipEl = null; }
     window.removeEventListener('resize', onReposition);
     window.removeEventListener('scroll', onReposition, true);
-    try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {}
-    currentIdx = -1;
+    if (currentPage) { try { localStorage.setItem(tourKeyFor(currentPage), '1'); } catch (e) {} }
+    currentSteps = null;
+    currentPage = null;
   }
 
   function onReposition() {
-    if (currentTarget) positionTip(currentTarget);
+    if (currentTarget) { positionTip(currentTarget); positionHole(currentTarget); }
   }
 
   function renderStep(idx) {
-    if (idx >= STEPS.length) { endTour(); return; }
-    const step = STEPS[idx];
+    if (!currentSteps || idx >= currentSteps.length) { endTour(); return; }
+    const step = currentSteps[idx];
     const target = step.resolve();
     if (!target) { renderStep(idx + 1); return; }
 
     clearSpotlight();
-    currentIdx = idx;
     currentTarget = target;
     target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    target.classList.add('ews-tour-spotlight');
+
+    if (!holeEl) {
+      holeEl = document.createElement('div');
+      holeEl.id = 'ews-tour-hole';
+      document.body.appendChild(holeEl);
+    }
+    positionHole(target);
 
     if (!tipEl) {
       tipEl = document.createElement('div');
@@ -164,7 +326,7 @@
     }
     const nextLabel = step.isLast ? 'Đã hiểu ✅' : 'Tiếp theo →';
     tipEl.innerHTML =
-      '<div class="ews-tour-step">Hướng dẫn · ' + (idx + 1) + ' / ' + STEPS.length + '</div>' +
+      '<div class="ews-tour-step">Hướng dẫn · ' + (idx + 1) + ' / ' + currentSteps.length + '</div>' +
       '<div class="ews-tour-title">' + step.icon + ' ' + step.title + '</div>' +
       '<div class="ews-tour-body">' + step.body + '</div>' +
       '<div class="ews-tour-foot">' +
@@ -179,31 +341,40 @@
     if (skipBtn) skipBtn.addEventListener('click', endTour);
 
     // Wait a frame so the tip has real dimensions before positioning.
-    requestAnimationFrame(function () { positionTip(target); });
+    requestAnimationFrame(function () { positionTip(target); positionHole(target); });
   }
 
-  function start() {
+  // Starts the tour for the CURRENT page (or a given page override, mostly
+  // useful for testing/replay from elsewhere). No-op if that page has no
+  // tour defined.
+  function start(pageOverride) {
+    const page = pageOverride || (location.pathname.split('/').pop() || 'dashboard.html');
+    const steps = PAGE_TOURS[page];
+    if (!steps) return;
     endTour(); // reset any stale state before a fresh run
+    currentSteps = steps;
+    currentPage = page;
     window.addEventListener('resize', onReposition);
     window.addEventListener('scroll', onReposition, true);
     renderStep(0);
   }
 
-  function reset() {
-    try { localStorage.removeItem(TOUR_KEY); } catch (e) {}
+  function reset(pageOverride) {
+    const page = pageOverride || (location.pathname.split('/').pop() || 'dashboard.html');
+    try { localStorage.removeItem(tourKeyFor(page)); } catch (e) {}
   }
 
   window.EWSTour = { start, reset };
 
-  // ── Auto-start: dashboard.html only, once per browser, logged-in users ──
+  // ── Auto-start: once per browser per page, logged-in users only ────────
   document.addEventListener('DOMContentLoaded', function () {
     const page = location.pathname.split('/').pop() || 'dashboard.html';
-    if (page !== 'dashboard.html') return;
+    if (!PAGE_TOURS[page]) return;
     let seen = false;
-    try { seen = localStorage.getItem(TOUR_KEY) === '1'; } catch (e) {}
+    try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
     if (seen) return;
     const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
     if (!loggedIn) return;
-    setTimeout(start, 900);
+    setTimeout(function () { start(page); }, 900);
   });
 })();
