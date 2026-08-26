@@ -2,7 +2,7 @@
 
 const Task2TemplateAttempt = require('../models/Task2TemplateAttempt');
 
-async function saveAttempt({ userId, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec }) {
+async function saveAttempt({ userId, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec, level }) {
   await Task2TemplateAttempt.create({
     userId, templateType, templateName,
     totalItems: Number(totalItems),
@@ -10,6 +10,7 @@ async function saveAttempt({ userId, templateType, templateName, totalItems, cor
     mode: mode || 'cloze',
     isExam: !!isExam,
     timeTakenSec: timeTakenSec != null ? Number(timeTakenSec) : undefined,
+    level: level === 'band6' ? 'band6' : 'band7',
   });
 }
 
@@ -17,7 +18,7 @@ async function getHistory(userId, limit) {
   return Task2TemplateAttempt.find({ userId })
     .sort({ createdAt: -1 })
     .limit(limit)
-    .select('templateType templateName totalItems correctItems mode isExam timeTakenSec createdAt')
+    .select('templateType templateName totalItems correctItems mode isExam timeTakenSec level createdAt')
     .lean();
 }
 

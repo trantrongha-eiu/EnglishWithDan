@@ -139,8 +139,11 @@ function sanitizeQuestionForClient(q, opts = {}) {
   return rest;
 }
 
-async function listTemplates() {
-  return Task2Template.find({ isActive: true }).sort({ orderIndex: 1 }).lean();
+async function listTemplates(level) {
+  // Default band7 — existing clients/URLs with no ?level= param keep getting
+  // exactly what they always got.
+  const lvl = level === 'band6' ? 'band6' : 'band7';
+  return Task2Template.find({ isActive: true, level: lvl }).sort({ orderIndex: 1 }).lean();
 }
 
 async function listWeeks() {

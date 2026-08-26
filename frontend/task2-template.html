@@ -45,6 +45,15 @@
     .tpl-cache-warning{font-size:11px;opacity:.8;margin:5px 0 0;display:flex;align-items:center;gap:5px}
     .tpl-cache-warning i{color:#fde68a}
 
+    /* Band 6+/7+ level toggle — glass-pill buttons on the purple hero,
+       readable in both themes since the hero itself never changes with
+       dark mode (see .tpl-cache-warning's comment above). */
+    .t2-level-toggle{display:flex;gap:4px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:4px;flex-shrink:0}
+    .t2-level-btn{border:none;background:transparent;color:#fff;opacity:.85;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s,opacity .15s}
+    .t2-level-btn:hover{opacity:1;background:rgba(255,255,255,.12)}
+    .t2-level-btn.active{background:#fff;color:#6d28d9;opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    @media(max-width:640px){ .t2-level-toggle{width:100%} .t2-level-btn{flex:1;padding:8px 10px;font-size:12px} }
+
     .t2-tpl-vi-btn-tab{flex-shrink:0;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s,border-color .15s}
     .t2-tpl-vi-btn-tab:hover{background:#f0f0ff;color:#6366f1;border-color:#c4b5fd}
     .t2-tpl-vi-btn-tab.active{background:#ede9fe;color:#4338ca;border-color:#c4b5fd}
@@ -611,9 +620,18 @@
       <div class="tpl-page-hero-inner">
         <div>
           <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
-          <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+          <p class="tpl-page-sub" id="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
           <p class="tpl-cache-warning"><i class="fas fa-triangle-exclamation"></i> Tiến độ điền từ được lưu trên trình duyệt này — xoá cache/dữ liệu trình duyệt hoặc đổi thiết bị sẽ mất tiến độ.</p>
           <div class="wp-status-row" id="tpl-type-status"></div>
+        </div>
+        <!-- Band 6+ / Band 7+ level toggle — same 7 essay types either way,
+             just simpler vs. more advanced vocab (see task2PracticeService's
+             level-scoped listTemplates()). Deliberately its own toggle, not
+             folded into the mode-tabs bar below, since level applies across
+             ALL modes (Cloze/Dịch câu/Chunks/Build/Dictation) at once. -->
+        <div class="t2-level-toggle" id="tpl-level-toggle" role="tablist" aria-label="Trình độ">
+          <button class="t2-level-btn" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="false">🌱 Band 6+</button>
+          <button class="t2-level-btn active" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="true">🏆 Band 7+</button>
         </div>
       </div>
     </div>
@@ -986,6 +1004,16 @@ let TPL_DATA = {
 // ── State ──────────────────────────────────────────────────────
 let _tplActiveType = 'type01';
 let _tplActiveMode = 'cloze'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation'
+let _tplActiveLevel = 'band7'; // 'band6' | 'band7' — see switchTplLevel()
+
+// typeId is shared between the Band 6+ and Band 7+ document for the "same"
+// essay type (see Task2Template's {typeId,level} compound key) — but every
+// progress store here (_tplScores, _modeProgress) is still keyed by bare
+// typeId. Without namespacing, completing Band 7+ Type 01 would make Band
+// 6+ Type 01 show as already-completed too (and vice versa), since both
+// would resolve to the exact same "type01-0-0"-style keys. Every read/write
+// of those stores must route the typeId through this first.
+function _lvlKey(typeId) { return _tplActiveLevel === 'band6' ? typeId + '@band6' : typeId; }
 let _tplShowVi     = false;
 let _tplScores     = {};
 let _pendingTypeId   = null;
@@ -1019,15 +1047,20 @@ const TYPE_SCORE_KEY = 't2_tpl_type_scores';
 const TYPE_COMPLETE_THRESHOLD = 80;
 let _typeScores = JSON.parse(localStorage.getItem(TYPE_SCORE_KEY) || '{}');
 
-function getTypeScore(typeId) { return _typeScores[typeId] || null; }
-function isTypeCompleted(typeId) { const s = _typeScores[typeId]; return !!(s && s.completed); }
+// _lvlKey()'d for the same reason as _tplScores/_modeProgress — typeId is
+// shared between the Band 6+ and Band 7+ document for a given type, and
+// without namespacing, completing one level's Type 01 would show the
+// OTHER level's Type 01 as already-completed too.
+function getTypeScore(typeId) { return _typeScores[_lvlKey(typeId)] || null; }
+function isTypeCompleted(typeId) { const s = _typeScores[_lvlKey(typeId)]; return !!(s && s.completed); }
 
 function saveTypeScore(typeId, score) {
-  const prev = _typeScores[typeId] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
+  const lk = _lvlKey(typeId);
+  const prev = _typeScores[lk] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
   const bestScore = Math.max(prev.bestScore, score);
   const completed = bestScore >= TYPE_COMPLETE_THRESHOLD;
   const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
-  _typeScores[typeId] = { bestScore, latestScore: score, completed, completedAt };
+  _typeScores[lk] = { bestScore, latestScore: score, completed, completedAt };
   localStorage.setItem(TYPE_SCORE_KEY, JSON.stringify(_typeScores));
 }
 
@@ -1062,11 +1095,12 @@ function saveModeProgress() {
 }
 
 function setModeItemResult(mode, typeId, si, ii, status) {
-  if (!_modeProgress[typeId]) _modeProgress[typeId] = {};
-  if (!_modeProgress[typeId][mode]) _modeProgress[typeId][mode] = {};
+  const lk = _lvlKey(typeId);
+  if (!_modeProgress[lk]) _modeProgress[lk] = {};
+  if (!_modeProgress[lk][mode]) _modeProgress[lk][mode] = {};
   const key = `${si}-${ii}`;
-  const prev = _modeProgress[typeId][mode][key];
-  _modeProgress[typeId][mode][key] = {
+  const prev = _modeProgress[lk][mode][key];
+  _modeProgress[lk][mode][key] = {
     status, attempts: (prev?.attempts || 0) + 1, lastPracticed: new Date().toISOString()
   };
   saveModeProgress();
@@ -1080,7 +1114,7 @@ function modeCompletionPct(mode, typeId) {
   const type = TPL_DATA[typeId];
   if (!type) return 0;
   let done = 0, total = 0;
-  const modeData = _modeProgress[typeId]?.[mode] || {};
+  const modeData = _modeProgress[_lvlKey(typeId)]?.[mode] || {};
   type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
     total++;
     if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
@@ -1094,39 +1128,74 @@ function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
   if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
   if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
+  if (_tplActiveLevel && _tplActiveLevel !== 'band7') params.set('level', _tplActiveLevel);
   const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
   if (push) history.pushState(null, '', url);
   else history.replaceState(null, '', url);
 }
 
-// Browser back/forward after switching template type/mode (doSwitchType/
-// switchTplMode below now push a new history entry per switch via
-// _syncTplShareUrl(true)) — re-derive both from the URL and re-render
-// without pushing again.
-window.addEventListener('popstate', () => {
+// Browser back/forward after switching template type/mode/level
+// (doSwitchType/switchTplMode/switchTplLevel above all push a new history
+// entry per switch via _syncTplShareUrl(true)) — re-derive all three from
+// the URL and re-render without pushing again. Async because a level
+// change needs its own fetch (different TPL_DATA), unlike a bare type/mode
+// change.
+window.addEventListener('popstate', async () => {
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');
   const _urlMode   = _urlParams.get('mode');
-  const nextType   = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
+  const _urlLevel  = _urlParams.get('level');
   const nextMode   = TPL_VALID_MODES.includes(_urlMode) ? _urlMode : 'cloze';
-  if (nextType === _tplActiveType && nextMode === _tplActiveMode) return;
+  const nextLevel  = (_urlLevel === 'band6' || _urlLevel === 'band7') ? _urlLevel : 'band7';
+  const levelChanged = nextLevel !== _tplActiveLevel;
+  // Can't reliably check _urlType against TPL_DATA until after a possible
+  // level reload below (different TPL_DATA) — if level is changing, assume
+  // something changed and let the precise nextType resolution after reload
+  // decide; otherwise the normal TPL_DATA[_urlType] check applies.
+  if (!levelChanged && (_urlType && TPL_DATA[_urlType] ? _urlType : (TPL_TYPES[0]?.id || 'type01')) === _tplActiveType
+      && nextMode === _tplActiveMode) return;
+
   if (_examMode) exitExamMode();
   if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
   saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
+
+  if (levelChanged) {
+    const ok = await _loadTplTemplates(nextLevel);
+    if (ok) {
+      _tplActiveLevel = nextLevel;
+      document.querySelectorAll('.t2-level-btn').forEach(btn => {
+        const isActive = btn.dataset.level === nextLevel;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      const subEl = document.getElementById('tpl-page-sub');
+      if (subEl) {
+        const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
+          s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+        subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
+      }
+    }
+  }
+
+  const nextType = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
   _tplActiveType = nextType;
   _tplActiveMode = nextMode;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === nextType);
   });
   _applyModeTabUI(nextMode);
+  renderTabs();
   renderTplContent();
   updateTplScore();
+  updateOverallBadge();
+  updateModeOverallBadge();
   updateTypeStatus();
 });
 function copyTplShareUrl() {
   const params = new URLSearchParams();
   if (_tplActiveType) params.set('type', _tplActiveType);
   if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
+  if (_tplActiveLevel && _tplActiveLevel !== 'band7') params.set('level', _tplActiveLevel);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url)
@@ -1167,14 +1236,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   // _examMode flag this page already refuses its own translate feature for
   // (see showTranslationHint()'s "Không dùng dịch trong chế độ thi thử!").
   window.__ewsExamActive = () => _examMode;
-  // Restore type + mode from URL params (deep link / bookmark / reload)
+  // Restore type + mode + level from URL params (deep link / bookmark / reload)
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');
   const _urlMode   = _urlParams.get('mode');
+  const _urlLevel  = _urlParams.get('level');
   if (_urlType && TPL_DATA[_urlType]) _tplActiveType = _urlType;
   if (TPL_VALID_MODES.includes(_urlMode)) {
     _tplActiveMode = _urlMode;
     _applyModeTabUI(_tplActiveMode);
+  }
+  if (_urlLevel === 'band6' || _urlLevel === 'band7') {
+    _tplActiveLevel = _urlLevel;
+    document.querySelectorAll('.t2-level-btn').forEach(btn => {
+      const isActive = btn.dataset.level === _tplActiveLevel;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
   }
 
   try {
@@ -1182,24 +1260,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (saved) _tplScores = JSON.parse(saved);
   } catch(e) {}
 
-  try {
-    const res = await fetch(`${API}/api/task2/templates`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.templates && data.templates.length > 0) {
-        // Preserve local metadata (icon, color, desc, structure) not stored in DB
-        const localMeta = [...TPL_TYPES];
-        TPL_TYPES = data.templates.map(t => {
-          const lm = localMeta.find(lt => lt.id === t.typeId) || {};
-          return { id: t.typeId, label: t.label, sub: t.sub,
-            icon: lm.icon, color: lm.color, desc: lm.desc, structure: lm.structure };
-        });
-        TPL_DATA = {};
-        data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
-        if (!TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
-      }
-    }
-  } catch(e) {}
+  const loadedOk = await _loadTplTemplates(_tplActiveLevel);
+  if (loadedOk && !TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
+  const subEl = document.getElementById('tpl-page-sub');
+  if (subEl) {
+    const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
+      s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+    subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
+  }
 
   renderTabs();
   renderTplContent();
@@ -1222,7 +1290,7 @@ function renderTabs() {
       typeData.sections.forEach((sec, si) => {
         sec.items.forEach((item, ii) => {
           total++;
-          if (_tplScores[`${t.id}-${si}-${ii}`] === 'ok') done++;
+          if (_tplScores[`${_lvlKey(t.id)}-${si}-${ii}`] === 'ok') done++;
         });
       });
     }
@@ -1282,7 +1350,7 @@ function renderTplContent() {
     type.sections.forEach((sec, si) => {
       sec.items.forEach((item, ii) => {
         total++;
-        if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+        if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
       });
     });
   }
@@ -1302,7 +1370,7 @@ function renderTplContent() {
 
   const sectionsHtml = type.sections.map((sec, si) => {
     const itemsHtml = sec.items.map((item, ii) => {
-      const key = `${_tplActiveType}-${si}-${ii}`;
+      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
       const scoreState = _examMode ? '' : (_tplScores[key] || '');
       const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
       const answersStr = _escOnclickArg(answers.join('||'));
@@ -1481,7 +1549,7 @@ function updateTplScore() {
   type.sections.forEach((sec, si) => {
     sec.items.forEach((item, ii) => {
       total++;
-      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
     });
   });
   const scoreEl = document.querySelector('.t2-tpl-score');
@@ -1495,7 +1563,13 @@ function updateTplScore() {
 function updateOverallBadge() {
   const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
     s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-  const doneAll = Object.keys(_tplScores).filter(k => _tplScores[k] === 'ok').length;
+  // Keys are namespaced by _lvlKey() ("type01" for band7, "type01@band6" for
+  // band6) — filtering by the current level's suffix keeps this badge
+  // scoped to what TPL_DATA/totalAll above actually represents, instead of
+  // summing completions from both levels into one number bigger than 100%.
+  const doneAll = Object.keys(_tplScores).filter(k =>
+    _tplScores[k] === 'ok' && k.includes('@band6') === (_tplActiveLevel === 'band6')
+  ).length;
   const badge = document.getElementById('tpl-main-badge');
   if (badge) badge.textContent = `${doneAll} / ${totalAll} mẫu câu`;
   renderTabs();
@@ -1518,7 +1592,7 @@ function resetTplType() {
   if (!type) return;
   type.sections.forEach((sec, si) => {
     sec.items.forEach((item, ii) => {
-      delete _tplScores[`${_tplActiveType}-${si}-${ii}`];
+      delete _tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`];
     });
   });
   saveTplScores();
@@ -1543,7 +1617,7 @@ function switchTplType(typeId) {
   }
   const type = TPL_DATA[_tplActiveType];
   const hasProgress = type && type.sections.some((sec, si) =>
-    sec.items.some((item, ii) => !!_tplScores[`${_tplActiveType}-${si}-${ii}`])
+    sec.items.some((item, ii) => !!_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`])
   );
   if (hasProgress) {
     _pendingTypeId = typeId;
@@ -1552,7 +1626,7 @@ function switchTplType(typeId) {
     let done = 0, total = 0;
     type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
       total++;
-      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
     }));
     document.getElementById('tpl-switch-sub').innerHTML =
       `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${escHtml(fromMeta ? fromMeta.label : _tplActiveType)}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
@@ -1593,6 +1667,74 @@ function doSwitchType(typeId) {
   updateTplScore();
   updateTypeStatus();
   _syncTplShareUrl(true);
+}
+
+// ── Band 6+ / Band 7+ level switch ───────────────────────────────
+// Guards against rapid double-clicks (or a slow response for a level the
+// student already navigated away from) resolving out of order — only the
+// most recently-requested level's response is allowed to populate
+// TPL_TYPES/TPL_DATA.
+let _loadTplSeq = 0;
+async function _loadTplTemplates(level) {
+  const requestId = ++_loadTplSeq;
+  try {
+    const res = await fetch(`${API}/api/task2/templates?level=${level}`);
+    if (requestId !== _loadTplSeq) return false;
+    if (res.ok) {
+      const data = await res.json();
+      if (requestId !== _loadTplSeq) return false;
+      if (data.success && data.templates && data.templates.length > 0) {
+        // Preserve local metadata (icon, color, desc, structure) not stored
+        // in DB — typeId is shared across levels, so this correctly carries
+        // over regardless of which level's fetch populated it last.
+        const localMeta = [...TPL_TYPES];
+        TPL_TYPES = data.templates.map(t => {
+          const lm = localMeta.find(lt => lt.id === t.typeId) || {};
+          return { id: t.typeId, label: t.label, sub: t.sub,
+            icon: lm.icon, color: lm.color, desc: lm.desc, structure: lm.structure };
+        });
+        TPL_DATA = {};
+        data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
+        return true;
+      }
+    }
+  } catch (e) {}
+  return false;
+}
+
+function switchTplLevel(level) {
+  if (level !== 'band6' && level !== 'band7') return;
+  if (level === _tplActiveLevel) return;
+  if (_examMode) exitExamMode(); // an exam run never survives a level switch
+  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
+  _clearBuildAdvance();
+  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // flush progress for the level being left
+
+  _loadTplTemplates(level).then(ok => {
+    if (!ok) { showToast('Không tải được nội dung. Vui lòng thử lại.', 'error'); return; }
+    _tplActiveLevel = level;
+    document.querySelectorAll('.t2-level-btn').forEach(btn => {
+      const isActive = btn.dataset.level === level;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    if (!TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
+
+    const subEl = document.getElementById('tpl-page-sub');
+    if (subEl) {
+      const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
+        s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+      subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
+    }
+
+    renderTabs();
+    renderTplContent();
+    updateTplScore();
+    updateOverallBadge();
+    updateModeOverallBadge();
+    updateTypeStatus();
+    _syncTplShareUrl(true);
+  });
 }
 
 // ── Learning mode switch (Cloze / Translation / Chunks / Build / Dictation) ──
@@ -1658,7 +1800,7 @@ function renderTranslationMode() {
   if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
   if (_transIdx >= flat.length) _transIdx = 0;
 
-  const modeData = _modeProgress[_tplActiveType]?.translation || {};
+  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.translation || {};
   let done = 0;
   flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
   const pct = Math.round(done / flat.length * 100);
@@ -1778,7 +1920,7 @@ function renderDiffHtml(diff) {
 // not only after Next. Shared by both modes since the logic is identical
 // bar which mode/element it reads and writes.
 function _updateModeProgressHeader(mode, flat, countElId) {
-  const modeData = _modeProgress[_tplActiveType]?.[mode] || {};
+  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.[mode] || {};
   let done = 0;
   flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
   const pct = flat.length ? Math.round(done / flat.length * 100) : 0;
@@ -1921,7 +2063,7 @@ function updateModeOverallBadge() {
     TPL_TYPES.forEach(t => {
       const type = TPL_DATA[t.id];
       if (!type) return;
-      const modeData = _modeProgress[t.id]?.[mode] || {};
+      const modeData = _modeProgress[_lvlKey(t.id)]?.[mode] || {};
       type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
         total++;
         if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
@@ -1996,7 +2138,7 @@ function renderChunksMode() {
   }
   _chunkFlipped = false;
 
-  const modeData = _modeProgress[_tplActiveType]?.chunks || {};
+  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.chunks || {};
   const remembered = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
   const fill = document.getElementById('tpl-progress-fill');
   if (fill) fill.style.width = (_examMode
@@ -2149,7 +2291,7 @@ function renderBuildMode() {
     _buildRoundKey = null;
   }
 
-  const modeData = _modeProgress[_tplActiveType]?.build || {};
+  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.build || {};
   const done = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
   const fill = document.getElementById('tpl-progress-fill');
   if (fill) fill.style.width = (_examMode
@@ -2334,7 +2476,7 @@ function renderDictationMode() {
   if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
   if (_dictIdx >= flat.length) _dictIdx = 0;
 
-  const modeData = _modeProgress[_tplActiveType]?.dictation || {};
+  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.dictation || {};
   let done = 0;
   flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
   const pct = Math.round(done / flat.length * 100);
@@ -2643,7 +2785,7 @@ function _scoreClozeSoFar() {
   let correct = 0, total = 0;
   type.sections.forEach((sec, si) => {
     sec.items.forEach((item, ii) => {
-      const key = `${_tplActiveType}-${si}-${ii}`;
+      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
       const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
       let attempted = false, allOk = true;
       answers.forEach((ans, bi) => {
@@ -2670,7 +2812,7 @@ async function saveExamAttemptToServer(mode, correct, total, timeTakenSec) {
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
       body: JSON.stringify({
         templateType: _tplActiveType, templateName: typeMeta?.label || type?.name || _tplActiveType,
-        totalItems: total, correctItems: correct, mode, isExam: true, timeTakenSec,
+        totalItems: total, correctItems: correct, mode, isExam: true, timeTakenSec, level: _tplActiveLevel,
       })
     });
     await window.ApiClient.handleResponse(res);
@@ -2689,7 +2831,7 @@ function submitExam() {
 
   type.sections.forEach((sec, si) => {
     sec.items.forEach((item, ii) => {
-      const key = `${_tplActiveType}-${si}-${ii}`;
+      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
       const card = document.getElementById('cloze-' + key);
       const fb   = document.getElementById('fb-'    + key);
       const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
@@ -2780,7 +2922,7 @@ function scrollToNextCloze(currentKey) {
   for (let si = 0; si < type.sections.length; si++) {
     const sec = type.sections[si];
     for (let ii = 0; ii < sec.items.length; ii++) {
-      const k = `${_tplActiveType}-${si}-${ii}`;
+      const k = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
       if (k === currentKey) { found = true; continue; }
       if (found && (!_tplScores[k] || _tplScores[k] === 'err')) {
         const nextCard = document.getElementById('cloze-' + k);
@@ -2804,7 +2946,7 @@ function checkTypeComplete() {
   type.sections.forEach((sec, si) => {
     sec.items.forEach((item, ii) => {
       total++;
-      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
     });
   });
   if (done < total) return;
@@ -2840,12 +2982,12 @@ async function saveTplAttemptToServer(typeId, mode = 'cloze') {
   if (mode === 'cloze') {
     type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
       total++;
-      const s = _tplScores[`${typeId}-${si}-${ii}`];
+      const s = _tplScores[`${_lvlKey(typeId)}-${si}-${ii}`];
       if (s === 'ok') correct++;
       if (s === 'ok' || s === 'err') attempted++;
     }));
   } else {
-    const modeData = _modeProgress[typeId]?.[mode] || {};
+    const modeData = _modeProgress[_lvlKey(typeId)]?.[mode] || {};
     type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
       total++;
       const s = modeData[`${si}-${ii}`]?.status;
@@ -2862,7 +3004,7 @@ async function saveTplAttemptToServer(typeId, mode = 'cloze') {
     const res = await fetch(`${API}/api/task2template/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ templateType: typeId, templateName: typeMeta?.label || type.name || typeId, totalItems: total, correctItems: correct, mode })
+      body: JSON.stringify({ templateType: typeId, templateName: typeMeta?.label || type.name || typeId, totalItems: total, correctItems: correct, mode, level: _tplActiveLevel })
     });
     await window.ApiClient.handleResponse(res);
   } catch {}

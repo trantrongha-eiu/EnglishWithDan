@@ -4,7 +4,7 @@ const task2PracticeService = require('../services/task2PracticeService');
 
 exports.listTemplates = async (req, res) => {
   try {
-    const templates = await task2PracticeService.listTemplates();
+    const templates = await task2PracticeService.listTemplates(req.query.level);
     res.json({ success: true, templates });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

@@ -4,6 +4,10 @@ const task2TemplateAttemptSchema = new mongoose.Schema({
   userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   templateType: { type: String },
   templateName: { type: String },
+  // Absent on every attempt saved before Band 6+ templates existed —
+  // defaults to 'band7' so old rows keep meaning what they always meant
+  // (the only level that existed at the time).
+  level:        { type: String, enum: ['band6', 'band7'], default: 'band7' },
   totalItems:   { type: Number, default: 0 },
   correctItems: { type: Number, default: 0 },
   // Optional — absent on every attempt saved before the memorization-modes

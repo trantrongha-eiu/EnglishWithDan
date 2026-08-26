@@ -222,16 +222,20 @@ router.get('/task2/templates', auth, teacherOnly, async (req, res) => {
 });
 
 // POST /api/admin/task2/templates/seed  (before :id route)
+// SEED_TEMPLATES above is the Band 7+ set only — scoped strictly to
+// level:'band7' throughout (count + force-delete) so this button can never
+// touch the separate Band 6+ set (see scripts/seedTask2TemplatesBand6.js),
+// which an unscoped deleteMany({}) here would otherwise silently destroy.
 router.post('/task2/templates/seed', auth, teacherOnly, async (req, res) => {
   try {
     const { force = false } = req.body;
-    const existing = await Task2Template.countDocuments();
+    const existing = await Task2Template.countDocuments({ level: 'band7' });
     if (existing > 0 && !force) {
-      return res.json({ success: false, message: `Đã có ${existing} template. Gửi force:true để ghi đè.` });
+      return res.json({ success: false, message: `Đã có ${existing} template Band 7+. Gửi force:true để ghi đè.` });
     }
-    if (force) await Task2Template.deleteMany({});
+    if (force) await Task2Template.deleteMany({ level: 'band7' });
     await Task2Template.insertMany(SEED_TEMPLATES);
-    res.json({ success: true, message: `Đã seed ${SEED_TEMPLATES.length} template mặc định.` });
+    res.json({ success: true, message: `Đã seed ${SEED_TEMPLATES.length} template Band 7+ mặc định.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

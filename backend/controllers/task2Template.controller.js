@@ -14,10 +14,10 @@ function guard(handler) {
 }
 
 exports.saveAttempt = guard(async (req, res) => {
-  const { templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec } = req.body;
+  const { templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec, level } = req.body;
   if (!templateType || totalItems == null || correctItems == null)
     return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
-  await task2TemplateService.saveAttempt({ userId: req.user._id, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec });
+  await task2TemplateService.saveAttempt({ userId: req.user._id, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec, level });
   res.json({ success: true });
 });
 
