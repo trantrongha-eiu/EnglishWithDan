@@ -65,6 +65,9 @@ exports.register = async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
     }
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 8 ký tự' });
+    }
 
     const result = await authService.registerUser({ firstName, lastName, username, email, password });
     if (result.status === 'duplicate') {
@@ -145,8 +148,8 @@ exports.verifyOTP = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { resetToken, newPassword } = req.body;
-    if (!newPassword || newPassword.length < 6) {
-      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự' });
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 8 ký tự' });
     }
 
     const result = await authService.resetPassword(resetToken, newPassword);

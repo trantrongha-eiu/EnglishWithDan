@@ -203,6 +203,107 @@
         },
         isLast: true
       }
+    ],
+
+    'task1-practice.html': [
+      {
+        icon: '📝',
+        title: 'Luyện tập hay Thi thử',
+        body: 'Luyện tập: làm từng câu về ngữ pháp Task 1 (Noun Phrase, mô tả dữ liệu, so sánh, xu hướng...), có gợi ý và phản hồi ngay. Thi thử: làm một bộ đề ngẫu nhiên không gợi ý, giống thi thật.',
+        resolve() {
+          const el = document.querySelector('.wp-mode-toggle');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '🎯',
+        title: 'Kỹ năng & cấp độ',
+        body: 'Chọn kỹ năng cụ thể muốn luyện (Noun Phrase, Data Description, Comparison...) hoặc "Tất cả" để luyện ngẫu nhiên.',
+        resolve() {
+          const el = document.getElementById('practice-filters');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '🚀',
+        title: 'Bắt đầu luyện tập',
+        body: 'Sau khi chọn xong ở thanh bên, bấm đây để bắt đầu. Duy trì học mỗi ngày để giữ streak và tích lũy XP.',
+        resolve() {
+          const el = document.querySelector('.wp-welcome-start');
+          return isVisible(el) ? el : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'task2-practice.html': [
+      {
+        icon: '📝',
+        title: 'Chọn tuần luyện tập',
+        body: 'Mỗi tuần gồm các câu hỏi Task 2 theo một chủ đề + dạng bài cụ thể (Advantages/Disadvantages, Cause & Effect, Discuss Both...). Bấm vào một tuần để bắt đầu — tiến độ được tự động lưu lại.',
+        resolve() {
+          const el = document.querySelector('.t2-week-grid');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '📊',
+        title: 'Lịch sử làm bài',
+        body: 'Xem lại các tuần đã hoàn thành và tiến độ của từng tuần ở đây.',
+        resolve() {
+          const el = document.querySelector('.t2-back-btn');
+          return isVisible(el) ? el : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'task2-template.html': [
+      {
+        icon: '📚',
+        title: 'Chọn dạng bài',
+        body: '7 dạng bài Task 2 phổ biến (Discuss Both, Advantage/Disadvantage, Problem/Solution...). Mỗi dạng có sẵn mẫu câu (template) chuẩn giúp bạn viết nhanh và đúng cấu trúc hơn.',
+        resolve() {
+          const el = document.getElementById('tpl-type-tabs');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '🎚️',
+        title: 'Trình độ & chế độ học',
+        body: 'Chọn Band 6+ hoặc Band 7+ rồi điền từ vào chỗ trống để ghi nhớ mẫu câu. Bấm "Thi thử" để tự kiểm tra không có gợi ý.',
+        resolve() {
+          const el = document.getElementById('tpl-level-toggle');
+          return isVisible(el) ? el : null;
+        }
+      },
+      {
+        icon: '📄',
+        title: 'Xem đầy đủ mẫu câu',
+        body: 'Bấm để đọc toàn bộ mẫu câu của dạng bài này (cả Band 6+ và Band 7+) — tiện tham khảo khi viết bài thật.',
+        resolve() {
+          const c1 = document.querySelector('#tpl-toolbar-cloze button[onclick="openTplFullView()"]');
+          if (isVisible(c1)) return c1;
+          const c2 = document.querySelector('#tpl-toolbar-other button[onclick="openTplFullView()"]');
+          return isVisible(c2) ? c2 : null;
+        },
+        isLast: true
+      }
+    ],
+
+    'essential-grammar.html': [
+      {
+        icon: '📘',
+        title: 'Danh sách bài học',
+        body: 'Các bài ngữ pháp thiết yếu cho IELTS, chia theo chủ đề. Gõ vào ô tìm kiếm để tìm nhanh, hoặc bấm vào một bài để bắt đầu học. Trên điện thoại, bấm nút danh sách ở góc dưới màn hình.',
+        resolve() {
+          const sidebar = document.getElementById('eg-sidebar');
+          if (isVisible(sidebar)) return sidebar;
+          const fab = document.getElementById('eg-mob-fab');
+          return isVisible(fab) ? fab : null;
+        },
+        isLast: true
+      }
     ]
   };
 

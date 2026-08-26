@@ -180,6 +180,14 @@
                 <span class="band-score" id="scoreListening">-</span>
               </div>
               <div class="band-item">
+                <span class="band-skill">Writing</span>
+                <div class="band-bar-wrap">
+                  <div class="band-bar-fill" id="barWriting" style="width:0%"></div>
+                  <div class="band-bar-target" id="targetWriting" style="display:none"></div>
+                </div>
+                <span class="band-score" id="scoreWriting">-</span>
+              </div>
+              <div class="band-item">
                 <span class="band-skill">Speaking</span>
                 <div class="band-bar-wrap">
                   <div class="band-bar-fill" id="barSpeaking" style="width:0%"></div>
@@ -304,7 +312,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">Mật khẩu mới</label>
-              <input class="form-control" type="password" id="secNewPass" placeholder="Ít nhất 6 ký tự" onkeypress="if(event.key==='Enter')document.getElementById('secConfirmPass').focus()">
+              <input class="form-control" type="password" id="secNewPass" placeholder="Ít nhất 8 ký tự" minlength="8" onkeypress="if(event.key==='Enter')document.getElementById('secConfirmPass').focus()">
             </div>
             <div class="form-group">
               <label class="form-label">Xác nhận mật khẩu mới</label>
@@ -744,12 +752,14 @@
           document.getElementById('barListening').style.width   = toPercent(s.listening.avgBand);
           document.getElementById('scoreReading').textContent   = s.reading.avgBand  || '-';
           document.getElementById('scoreListening').textContent = s.listening.avgBand || '-';
+          document.getElementById('barWriting').style.width     = toPercent(s.writing.avgBand);
+          document.getElementById('scoreWriting').textContent   = s.writing.avgBand || '-';
 
           // Target band markers
           const targetBand = pd.user?.targetBand;
           if (targetBand) {
             const pct = Math.min(100, (targetBand / 9) * 100) + '%';
-            ['targetReading','targetListening','targetSpeaking'].forEach(id => {
+            ['targetReading','targetListening','targetWriting','targetSpeaking'].forEach(id => {
               const el = document.getElementById(id);
               el.style.display = 'block'; el.style.left = pct;
               el.title = `Mục tiêu: Band ${targetBand}`;
@@ -898,7 +908,7 @@
       const msgEl = document.getElementById('secMsg');
 
       if (!currentPassword) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Vui lòng nhập mật khẩu hiện tại'; return; }
-      if (newPassword.length < 6) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu phải có ít nhất 6 ký tự'; return; }
+      if (newPassword.length < 8) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu phải có ít nhất 8 ký tự'; return; }
       if (newPassword !== confirmPass) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu xác nhận không khớp'; return; }
 
       try {
