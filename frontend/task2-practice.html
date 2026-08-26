@@ -22,10 +22,12 @@
     .et-cause{background:#fff3e0;color:#e65100}
     .et-opinion{background:#f3e5f5;color:#6a1b9a}
     .et-discuss{background:#e3f2fd;color:#1565c0}
+    .et-posneg{background:#e0f2f1;color:#00695c}
     [data-theme="dark"] .et-adv{background:#14321a;color:#81c995}
     [data-theme="dark"] .et-cause{background:#3a2508;color:#ffb74d}
     [data-theme="dark"] .et-opinion{background:#2e1a3a;color:#ce93d8}
     [data-theme="dark"] .et-discuss{background:#132b45;color:#90caf9}
+    [data-theme="dark"] .et-posneg{background:#0a2e2a;color:#4db6ac}
 
     /* ── Navigation steps ── */
     .t2-nav{display:flex;gap:8px;padding:16px 20px;align-items:center;flex-wrap:wrap}
@@ -461,8 +463,8 @@ function _escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree / Disagree', discuss_both_views:'Discuss Both Views' };
-const ESSAY_BADGE_CLASS = { advantages_disadvantages:'et-badge et-adv', cause_effect:'et-badge et-cause', cause_solution:'et-badge et-cause', effect_solution:'et-badge et-cause', agree_disagree:'et-badge et-opinion', discuss_both_views:'et-badge et-discuss' };
+const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree / Disagree', discuss_both_views:'Discuss Both Views', positive_or_negative_development:'Positive or Negative Dev' };
+const ESSAY_BADGE_CLASS = { advantages_disadvantages:'et-badge et-adv', cause_effect:'et-badge et-cause', cause_solution:'et-badge et-cause', effect_solution:'et-badge et-cause', agree_disagree:'et-badge et-opinion', discuss_both_views:'et-badge et-discuss', positive_or_negative_development:'et-badge et-posneg' };
 const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Điền chỗ trống', rearrange:'Sắp xếp từ', translation:'Dịch câu', error_correction:'Sửa lỗi', topic_sentence:'Chọn topic sentence', short_writing:'Viết đoạn', paraphrase:'Paraphrase' };
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 

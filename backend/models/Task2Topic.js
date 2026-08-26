@@ -34,7 +34,7 @@ const task2TopicSchema = new mongoose.Schema({
   block:             { type: String, required: true },
   topicName:         { type: String, required: true },
   topicEmoji:        { type: String, default: '📝' },
-  essayType:         { type: String, enum: ['advantages_disadvantages', 'cause_effect', 'cause_solution', 'effect_solution', 'agree_disagree', 'discuss_both_views'], required: true },
+  essayType:         { type: String, enum: ['advantages_disadvantages', 'cause_effect', 'cause_solution', 'effect_solution', 'agree_disagree', 'discuss_both_views', 'positive_or_negative_development'], required: true },
   prompt:            { type: String, required: true },
   hintAdvantages:    [{ type: String }],
   hintDisadvantages: [{ type: String }],
