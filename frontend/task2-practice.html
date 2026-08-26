@@ -1304,9 +1304,20 @@ function renderQuestion(q) {
     <input type="hidden" id="mc-selected" value=""/>`;
   }
   if (q.type === 'rearrange') {
+    // Fallback (no admin-set baseWords): every seeded rearrange question
+    // puts its chip phrases inside "[phrase / phrase / phrase]" in
+    // questionText. The old fallback here stripped that bracket out and
+    // split what was LEFT (the Vietnamese instruction sentence) into
+    // "words" — so every rearrange question without baseWords rendered
+    // Vietnamese instruction fragments as chips instead of the actual
+    // English phrases. Confirmed via a full DB scan: all 29 seeded
+    // rearrange questions rely on this fallback (none set baseWords), so
+    // this was breaking 100% of them. Fix: extract what's INSIDE the
+    // brackets, split on "/" (phrases can contain spaces, so this can't
+    // just split on whitespace).
     const words = (q.baseWords && q.baseWords.length)
       ? q.baseWords
-      : q.questionText.replace(/\[.*\]/s, '').replace('Sắp xếp:','').split(/\s+/).filter(Boolean);
+      : (q.questionText.match(/\[(.*)\]/s)?.[1] || '').split('/').map(w => w.trim()).filter(Boolean);
     const shuffled = shuffle([...words]);
     const displayText = q.questionText.replace(/\n?\[.*\]/s, '').trim();
     return `

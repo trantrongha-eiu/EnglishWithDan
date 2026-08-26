@@ -7,7 +7,6 @@
  * Run: node backend/scripts/seedTask2Exercises.js
  */
 
-
 const topics = [
   {
     "week": 1,
@@ -310,7 +309,7 @@ const topics = [
         "questionId": "w1t1_q08",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[of online learning / significant / One / advantage / the / most / is / its flexibility]",
+        "questionText": "Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[of online learning / significant / One / advantages / of / the / most / is / its flexibility]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "One of the most significant advantages of online learning is its flexibility.",
@@ -3301,7 +3300,7 @@ const topics = [
         "questionId": "w3t4_q07",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp các cụm từ sau thành câu hoàn chỉnh:\n[lack of peer interaction / As a result of / , / many students / feel isolated / and lose motivation]",
+        "questionText": "Sắp xếp các cụm từ sau thành câu hoàn chỉnh:\n[the lack of peer interaction, / As a result of / many students / feel isolated / and lose motivation]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "As a result of the lack of peer interaction, many students feel isolated and lose motivation.",
@@ -12028,7 +12027,7 @@ const topics = [
         "questionId": "w8ec_q07",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[can / Overtourism / to / fragile ecosystems / lead / serious damage]",
+        "questionText": "Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[Overtourism / can / lead to / serious damage / to fragile ecosystems]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "Overtourism can lead to serious damage to fragile ecosystems.",
@@ -13899,7 +13898,7 @@ const topics = [
         "questionId": "w9t14_q07",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[profit-driven / While / can / private healthcare / motives / medical innovation, / encourage / they / may / also / compromise / patient care / and / medical ethics]",
+        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[profit-driven / While / can / private healthcare / motives / medical innovation, / encourage / may / also / compromise / patient care / and / medical ethics]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "While private healthcare can encourage medical innovation, profit-driven motives may also compromise patient care and medical ethics.",
@@ -14380,7 +14379,7 @@ const topics = [
         "questionId": "w9t15_q07",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[a throwaway culture / Mass production / and / has / consumerism / of / encouraged / overconsumption, / leading / and / environmental damage / to / significant]",
+        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[a throwaway culture / Mass production / and / has / consumerism / of / encouraged / overconsumption, / leading / environmental damage / to / significant]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "Mass production and consumerism has encouraged a throwaway culture of overconsumption, leading to significant environmental damage.",
@@ -14860,7 +14859,7 @@ const topics = [
         "questionId": "w10t16_q07",
         "level": "elementary",
         "type": "rearrange",
-        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[government / Although / the arts / supports / the / funding / cultural development, / argue / critics / that / public money / on / better spent / is / essential services]",
+        "questionText": "Sắp xếp thành câu hoàn chỉnh:\n\n[Although / the government / supports / cultural development / through / arts funding, / critics / argue / that / public money / is / better spent / on / essential services]",
         "options": [],
         "baseWords": [],
         "correctAnswer": "Although the government supports cultural development through arts funding, critics argue that public money is better spent on essential services.",
@@ -17920,8 +17919,7 @@ const topics = [
       }
     ]
   }
-];
-
+]
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
 
