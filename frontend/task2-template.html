@@ -346,6 +346,35 @@
     .tpl-hist-mode-badge{font-size:10px;font-weight:700;color:#6366f1;background:#ede9fe;border-radius:10px;padding:1px 7px;margin-left:6px}
     [data-theme="dark"] .tpl-hist-mode-badge{color:#a5b4fc;background:#1e1b4b}
 
+    /* "Xem đầy đủ" (full template) modal — reuses .tpl-hist-overlay/-box/-hdr/-close */
+    .tpl-full-box{max-width:720px}
+    .tpl-full-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid #f3f4f6}
+    [data-theme="dark"] .tpl-full-toolbar{border-color:var(--border2, #333333)}
+    /* Own class (not .t2-level-toggle/.t2-level-btn) — those are queried by
+       bare `document.querySelectorAll('.t2-level-btn')` for the page-level
+       toggle, which must not also pick up this independent modal toggle. */
+    .tpl-full-level-toggle{display:flex;gap:4px;background:#f3f4f6;border-radius:10px;padding:3px}
+    [data-theme="dark"] .tpl-full-level-toggle{background:var(--bg, #000000)}
+    .tpl-full-level-btn{border:none;background:transparent;color:#6b7280;border-radius:7px;padding:6px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s,color .15s}
+    [data-theme="dark"] .tpl-full-level-btn{color:#94a3b8}
+    .tpl-full-level-btn:hover{color:#374151}
+    [data-theme="dark"] .tpl-full-level-btn:hover{color:#e2e8f0}
+    .tpl-full-level-btn.active{background:#fff;color:#6d28d9;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+    [data-theme="dark"] .tpl-full-level-btn.active{background:var(--surface, #0d0d0d);color:#c4b5fd}
+    .tpl-full-body{line-height:1.7}
+    .tpl-full-essay-title{margin:0 0 14px;font-size:15px;font-weight:800;color:#111827}
+    [data-theme="dark"] .tpl-full-essay-title{color:#f1f5f9}
+    .tpl-full-section{margin-bottom:18px}
+    .tpl-full-sec-title{margin:0 0 6px;font-size:12px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.02em}
+    [data-theme="dark"] .tpl-full-sec-title{color:#a5b4fc}
+    .tpl-full-en{margin:0;font-size:14px;color:#1f2937}
+    [data-theme="dark"] .tpl-full-en{color:#e2e8f0}
+    .tpl-full-blank{color:#6d28d9;font-weight:700}
+    [data-theme="dark"] .tpl-full-blank{color:#c4b5fd}
+    .tpl-full-vi{margin:6px 0 0;font-size:12.5px;color:#9ca3af;font-style:italic}
+    [data-theme="dark"] .tpl-full-vi{color:#64748b}
+    .tpl-full-loading{text-align:center;padding:32px;color:#9ca3af}
+
     /* ══════════════════════════════════════════════
        MEMORIZATION MODES — segmented tab bar (Phase 1)
     ══════════════════════════════════════════════ */
@@ -669,6 +698,9 @@
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
+      <button class="t2-tpl-vi-btn-tab" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
+        <i class="fas fa-file-lines"></i> Xem đầy đủ
+      </button>
     </div>
 
     <!-- Toolbar (every non-Cloze mode — no VI-toggle, each mode has its own way of showing VI) -->
@@ -678,6 +710,9 @@
       </button>
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
+      </button>
+      <button class="t2-tpl-vi-btn-tab" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
+        <i class="fas fa-file-lines"></i> Xem đầy đủ
       </button>
     </div>
 
@@ -1005,6 +1040,10 @@ let TPL_DATA = {
 let _tplActiveType = 'type01';
 let _tplActiveMode = 'cloze'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation'
 let _tplActiveLevel = 'band6'; // 'band6' | 'band7' — see switchTplLevel(). Band 6+ is the default level shown on page load.
+// Populated as each level is fetched (by _loadTplTemplates or the "Xem đầy
+// đủ" modal's own on-demand fetch) so the full-view modal can show either
+// level's complete text without re-fetching one already seen this session.
+let _tplDataByLevel = { band6: null, band7: null };
 
 // typeId is shared between the Band 6+ and Band 7+ document for the "same"
 // essay type (see Task2Template's {typeId,level} compound key) — but every
@@ -1698,6 +1737,7 @@ async function _loadTplTemplates(level) {
         });
         TPL_DATA = {};
         data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
+        _tplDataByLevel[level] = TPL_DATA;
         // Chunks/Build pre-build an ordered {si,ii} queue and only rebuild it
         // when _tplActiveType changes — typeId is shared across levels, so a
         // level switch alone (same typeId, different/shorter item list under
@@ -1712,6 +1752,27 @@ async function _loadTplTemplates(level) {
     }
   } catch (e) {}
   return false;
+}
+
+// Fetches a level's templates into _tplDataByLevel without touching the
+// active practice state (TPL_TYPES/TPL_DATA/_tplActiveLevel) — used by the
+// "Xem đầy đủ" modal so a student can read the *other* level's full text
+// without leaving whatever they're currently practicing.
+async function _ensureLevelCached(level) {
+  if (_tplDataByLevel[level]) return _tplDataByLevel[level];
+  try {
+    const token = window.AuthService && window.AuthService.getToken();
+    const res = await fetch(`${API}/api/task2/templates?level=${level}`, {
+      headers: token ? { Authorization: 'Bearer ' + token } : {}
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success || !data.templates || !data.templates.length) return null;
+    const map = {};
+    data.templates.forEach(t => { map[t.typeId] = { name: t.name, sections: t.sections }; });
+    _tplDataByLevel[level] = map;
+    return map;
+  } catch (e) { return null; }
 }
 
 function switchTplLevel(level) {
@@ -3024,6 +3085,135 @@ async function saveTplAttemptToServer(typeId, mode = 'cloze') {
 window.addEventListener('beforeunload', () => saveTplAttemptToServer(_tplActiveType, _tplActiveMode));
 
 // ── Template history modal ────────────────────────────────────
+// ── "Xem đầy đủ" — full template reader ──────────────────────────
+// Shows every sentence of the currently-selected essay type fully resolved
+// (blank filled with its answer, highlighted) so a student can read the
+// whole model essay in one place while writing their own — for either
+// level, independent of whichever level the student is actively
+// practicing in the page behind the modal.
+let _tplFullLevel = 'band6';
+let _tplFullShowVi = false;
+
+function _fullSentenceHtml(item) {
+  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+  const parts = item.en.split('___');
+  let out = escHtml(parts[0]);
+  answers.forEach((a, i) => {
+    out += `<strong class="tpl-full-blank">${escHtml(a)}</strong>${escHtml(parts[i + 1] || '')}`;
+  });
+  return out;
+}
+
+function _tplFullViewHtml(level) {
+  const data = _tplDataByLevel[level];
+  if (!data) return '<div class="tpl-full-loading">⏳ Đang tải...</div>';
+  const type = data[_tplActiveType];
+  if (!type) return '<div class="tpl-full-loading">Không có dữ liệu cho dạng bài này.</div>';
+  const viDisplay = _tplFullShowVi ? '' : 'display:none';
+  const sections = type.sections.map(sec => {
+    const enHtml = sec.items.map(_fullSentenceHtml).join(' ');
+    const viHtml = sec.items.map(it => escHtml((it.vi || '').replace(/^→\s*/, ''))).join(' ');
+    return `<div class="tpl-full-section">
+      <h4 class="tpl-full-sec-title">${escHtml(sec.title)}</h4>
+      <p class="tpl-full-en">${enHtml}</p>
+      <p class="tpl-full-vi" style="${viDisplay}">${viHtml}</p>
+    </div>`;
+  }).join('');
+  return `<h3 class="tpl-full-essay-title">${escHtml(type.name)}</h3>${sections}`;
+}
+
+function _renderTplFullLevelBtns() {
+  document.querySelectorAll('.tpl-full-level-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.level === _tplFullLevel);
+  });
+}
+
+// Guards against a slow fetch for a level the student already tapped away
+// from (in the modal) resolving after a newer, faster one already rendered.
+let _tplFullSeq = 0;
+async function _renderTplFullBody() {
+  const body = document.getElementById('tpl-full-body');
+  if (!body) return;
+  const requestId = ++_tplFullSeq;
+  const level = _tplFullLevel;
+  body.innerHTML = '<div class="tpl-full-loading">⏳ Đang tải...</div>';
+  const data = await _ensureLevelCached(level);
+  if (requestId !== _tplFullSeq) return;
+  body.innerHTML = data ? _tplFullViewHtml(level)
+    : '<p style="color:#e53935;text-align:center;padding:24px">Không tải được nội dung. Vui lòng thử lại.</p>';
+}
+
+async function switchTplFullLevel(level) {
+  if (level === _tplFullLevel) return;
+  _tplFullLevel = level;
+  _renderTplFullLevelBtns();
+  await _renderTplFullBody();
+}
+
+function toggleTplFullVi() {
+  _tplFullShowVi = !_tplFullShowVi;
+  const lbl = document.getElementById('tpl-full-vi-label');
+  if (lbl) lbl.textContent = _tplFullShowVi ? '🇻🇳 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
+  document.querySelectorAll('#tpl-full-body .tpl-full-vi').forEach(el => {
+    el.style.display = _tplFullShowVi ? '' : 'none';
+  });
+}
+
+function copyTplFullText() {
+  const data = _tplDataByLevel[_tplFullLevel];
+  const type = data && data[_tplActiveType];
+  if (!type) return;
+  const text = type.sections
+    .map(sec => `${sec.title}\n${sec.items.map(_fullEnglishSentence).join(' ')}`)
+    .join('\n\n');
+  const onDone = () => showToast('Đã sao chép văn bản!', 'info', 2500);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(onDone).catch(() => _copyTplFullTextFallback(text, onDone));
+  } else {
+    _copyTplFullTextFallback(text, onDone);
+  }
+}
+
+function _copyTplFullTextFallback(text, onDone) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); onDone(); }
+  catch { showToast('Không thể sao chép', 'warn', 2000); }
+  document.body.removeChild(ta);
+}
+
+async function openTplFullView() {
+  _tplFullLevel = _tplActiveLevel;
+  if (!document.getElementById('tpl-full-overlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 'tpl-full-overlay';
+    overlay.className = 'tpl-hist-overlay';
+    overlay.innerHTML = `
+      <div class="tpl-hist-box tpl-full-box">
+        <div class="tpl-hist-hdr">
+          <h3 class="tpl-hist-title"><i class="fas fa-file-lines"></i> Bản đầy đủ template</h3>
+          <button class="tpl-hist-close" onclick="document.getElementById('tpl-full-overlay').style.display='none'"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="tpl-full-toolbar">
+          <div class="tpl-full-level-toggle" id="tpl-full-level-toggle">
+            <button class="tpl-full-level-btn" data-level="band6" onclick="switchTplFullLevel('band6')">🌱 Band 6+</button>
+            <button class="tpl-full-level-btn" data-level="band7" onclick="switchTplFullLevel('band7')">🏆 Band 7+</button>
+          </div>
+          <button class="t2-tpl-vi-btn-tab" onclick="toggleTplFullVi()"><span id="tpl-full-vi-label">🇻🇳 Hiện tiếng Việt</span></button>
+          <button class="t2-tpl-vi-btn-tab" onclick="copyTplFullText()"><i class="fas fa-copy"></i> Sao chép văn bản</button>
+        </div>
+        <div id="tpl-full-body" class="tpl-hist-body tpl-full-body"></div>
+      </div>`;
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+    document.body.appendChild(overlay);
+  } else {
+    document.getElementById('tpl-full-overlay').style.display = 'flex';
+  }
+  _renderTplFullLevelBtns();
+  await _renderTplFullBody();
+}
+
 function openTplHistory() {
   if (!document.getElementById('tpl-hist-overlay')) {
     const overlay = document.createElement('div');
