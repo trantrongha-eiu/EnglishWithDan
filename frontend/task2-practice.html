@@ -799,10 +799,22 @@ async function loadWeeks() {
 }
 
 function renderWeeks() {
-  const weekNums = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const weekNums = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
   const weekData = {};
   state.weeks.forEach(w => { weekData[w.week] = w; });
-  const weekNames = { 1:'Adv & Disadv', 2:'Adv & Disadv', 3:'Solution Essays', 4:'Cause & Effect', 5:'Agree/Disagree', 6:'Agree/Disagree', 7:'Discuss Both', 8:'Positive/Negative', 9:'Ôn tập', 10:'Ôn tập', 11:'Ôn tập', 12:'Ôn tập' };
+  // Each essay type now spans 2 consecutive weeks (1 theme each, no theme
+  // repeated across blocks) — see restructure notes (2026). Weeks 15-18
+  // stay "Ôn tập" (mixed review content, unchanged since the old 9-12).
+  const weekNames = {
+    1:'Adv & Disadv · Technology', 2:'Adv & Disadv · Technology',
+    3:'Cause & Effect · Education', 4:'Cause & Effect · Education',
+    5:'Cause & Solution · Health', 6:'Cause & Solution · Health',
+    7:'Effect & Solution · Transport', 8:'Effect & Solution · Transport',
+    9:'Agree/Disagree · Work', 10:'Agree/Disagree · Work',
+    11:'Discuss Both · Government', 12:'Discuss Both · Government',
+    13:'Positive/Negative · Environment', 14:'Positive/Negative · Environment',
+    15:'Ôn tập', 16:'Ôn tập', 17:'Ôn tập', 18:'Ôn tập'
+  };
   // group pending drafts by week
   const draftsByWeek = {};
   (state.allDrafts || []).forEach(dr => {

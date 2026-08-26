@@ -30,7 +30,7 @@ const vocabSchema = new mongoose.Schema({
 }, { _id: false });
 
 const task2TopicSchema = new mongoose.Schema({
-  week:              { type: Number, required: true, min: 1, max: 12 },
+  week:              { type: Number, required: true, min: 1, max: 18 },
   block:             { type: String, required: true },
   topicName:         { type: String, required: true },
   topicEmoji:        { type: String, default: '📝' },
