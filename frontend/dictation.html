@@ -263,6 +263,44 @@ let dictSpeeds   = [1, 1.25, 1.5, 0.75];
 let dictSpeedIdx = 0;
 const audio = document.getElementById('dict-audio');
 
+// ══════════════ SAVE RESULTS (so admin's "Lịch sử làm bài" actually sees
+// dictation practice — this page previously never sent anything to the
+// server, checking answers entirely client-side). Keyed by sentenceIndex so
+// re-checking the same sentence (dictRetry()) overwrites its earlier result
+// instead of double-counting it. ══════════════
+let dictSessionAnswers = [];
+let dictSessionSaved   = false; // guards against double-POSTing from both backToList() and pagehide
+
+function _recordDictAnswer(sentenceIndex, isCorrect, matchedWords, totalWords) {
+  const row = { sentenceIndex, isCorrect, matchedWords, totalWords };
+  const i = dictSessionAnswers.findIndex(a => a.sentenceIndex === sentenceIndex);
+  if (i >= 0) dictSessionAnswers[i] = row; else dictSessionAnswers.push(row);
+  dictSessionSaved = false; // new activity since the last save
+}
+
+// Fire-and-forget, same as other session/progress saves in this codebase
+// (e.g. task2-practice.html's saveDraft()) — a failed save silently drops
+// this session's history without blocking the student's practice.
+// keepalive:true keeps the request alive past page unload (pagehide below),
+// unlike a plain fetch which the browser would otherwise cancel.
+function saveDictSession() {
+  if (dictSessionSaved || !dictSection || !dictSessionAnswers.length) return;
+  dictSessionSaved = true;
+  fetch(`${API}/listening/dictation/save-attempt`, {
+    method: 'POST',
+    headers: authH(),
+    keepalive: true,
+    body: JSON.stringify({
+      sectionId: dictSection._id,
+      sectionTitle: dictSection.title,
+      partNumber: dictSection.partNumber,
+      answers: dictSessionAnswers
+    })
+  }).catch(() => {});
+}
+
+document.addEventListener('pagehide', saveDictSession);
+
 /* ══════════════ PICKER ══════════════ */
 async function loadDictList() {
   try {
@@ -347,6 +385,8 @@ async function openDictSection(id) {
   audio.src = dictSection.audioUrl;
   dictIndex = 0;
   dictDone = new Set();
+  dictSessionAnswers = [];
+  dictSessionSaved = false;
   document.getElementById('dict-section-title').textContent = dictSection.title;
   document.getElementById('dict-section-sub').textContent = (dictSection.isActualTest ? 'Actual Test' : 'Part ' + dictSection.partNumber) + ' · ' + dictSection.dictationSentences.length + ' câu';
   document.getElementById('dict-total-num').textContent = dictSection.dictationSentences.length;
@@ -357,6 +397,7 @@ async function openDictSection(id) {
 
 function backToList() {
   _openDictSeq++; // invalidate any in-flight openDictSection() fetch
+  saveDictSession();
   audio.pause();
   document.getElementById('screen-practice').classList.remove('active');
   document.getElementById('screen-list').classList.remove('hidden');
@@ -514,6 +555,7 @@ function dictCheck() {
     : `Đúng ${matchedCorrectIdx.size}/${m} từ — phần bôi đỏ là từ bạn thiếu/sai${extraWords.length ? ', phần xám gạch ngang là từ thừa' : ''}:`;
   document.getElementById('dict-diff').innerHTML = diffHtml;
   document.getElementById('dict-check-btn').disabled = true;
+  _recordDictAnswer(dictIndex, isPerfect, matchedCorrectIdx.size, m);
 
   if (isPerfect) {
     dictDone.add(dictIndex);

@@ -18,6 +18,7 @@ const SpeakingAttempt = require('../../models/SpeakingAttempt');
 const Task2TemplateAttempt      = require('../../models/Task2TemplateAttempt');
 const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
+const DictationAttempt = require('../../models/DictationAttempt');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
@@ -181,8 +182,8 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
 });
 
 // GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening +
-// Writing + Speaking + Task1/Task2 + Task2 Templates + Essential Grammar + Vocabulary Lessons)
-// Fans out across 12 heterogeneous attempt collections (no single-collection
+// Writing + Speaking + Task1/Task2 + Task2 Templates + Essential Grammar + Vocabulary Lessons + Dictation)
+// Fans out across 13 heterogeneous attempt collections (no single-collection
 // union to page against), so this can't do textbook skip/limit pagination —
 // each collection is queried for its own top-LIMIT rows, merged, sorted,
 // then capped again in JS. What THIS fixes (StudentHistory.jsx admin-panel
@@ -238,6 +239,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       Task2TemplateAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
@@ -249,7 +251,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
 
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
-           task2TemplateAttempts, grammarAttempts, vocabLessonAttempts] = await Promise.all([
+           task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts] = await Promise.all([
       TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -318,6 +320,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('lessonId', 'title')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-wrongWords').lean()
+        .catch(() => []),
+      DictationAttempt.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-answers').lean()
         .catch(() => [])
     ]);
 
@@ -482,6 +489,17 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correct,
         totalQuestions: h.total,
         duration: h.timeSpent || null
+      })),
+      ...dictationAttempts.map(h => ({
+        _id: h._id, skill: 'dictation',
+        testName: h.sectionTitle || '–',
+        testMeta: `Part ${h.partNumber || '?'}`,
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: null,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalSentences,
+        duration: null
       }))
     ];
 

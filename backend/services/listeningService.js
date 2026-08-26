@@ -15,6 +15,7 @@ const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const DictationAttempt = require('../models/DictationAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const reviewService = require('./reviewService');
@@ -381,6 +382,40 @@ async function listDictationSections() {
     isActualTest: s.isActualTest,
     sentenceCount: s.dictationSentences.length,
   }));
+}
+
+// dictation.html previously never saved anything server-side at all —
+// dictCheck() only ever updated local page state, so a student's practice
+// never showed up in admin's "Lịch sử làm bài" (student-reported bug). No
+// reviewService.createReviewIfNeeded() call here unlike savePractice()
+// below — dictation is deliberately exempt from the mandatory-review gate
+// (see routes/listening.js's requireReviewComplete comment and dictation.
+// html's ?purpose=dictation), so it must never create a pending review.
+async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answers }, userId) {
+  const section = await ListeningSection.findById(sectionId).select('_id title partNumber').lean();
+  if (!section) return null;
+
+  const safeAnswers = (answers || []).map(a => ({
+    sentenceIndex: Number(a.sentenceIndex),
+    isCorrect: a.isCorrect === true,
+    matchedWords: Number(a.matchedWords) || 0,
+    totalWords: Number(a.totalWords) || 0
+  })).filter(a => Number.isInteger(a.sentenceIndex));
+  if (!safeAnswers.length) return null;
+
+  const correctCount = safeAnswers.filter(a => a.isCorrect).length;
+  const attempt = await DictationAttempt.create({
+    userId,
+    sectionId,
+    sectionTitle: sectionTitle || section.title || '',
+    partNumber: partNumber || section.partNumber || 1,
+    answers: safeAnswers,
+    totalSentences: safeAnswers.length,
+    correctCount,
+    submittedAt: new Date()
+  });
+
+  return { attemptId: attempt._id, correctCount, totalSentences: safeAnswers.length };
 }
 
 async function listAdminSections() {
@@ -784,7 +819,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections,
+  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, saveDictationAttempt,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent,
   assembleTest,
   listStudentTests, startTest, submitTest,

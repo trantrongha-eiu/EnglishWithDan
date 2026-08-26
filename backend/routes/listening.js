@@ -26,6 +26,7 @@ router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng c
 // fetching one section's full data (audioUrl + dictationSentences) reuses
 // /practice/by-id/:id above, which already returns the whole document.
 router.get('/dictation/list', auth, listeningController.listDictationSections);
+router.post('/dictation/save-attempt', auth, listeningController.saveDictationAttempt);
 
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, listeningController.listStudentTests);

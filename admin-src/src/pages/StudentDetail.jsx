@@ -74,6 +74,7 @@ const SKILL_META = {
   'task2-template':    { color: '#8b5cf6', label: '📚 Task 2 Templates' },
   'essential-grammar': { color: '#0ea5e9', label: '📘 Ngữ pháp' },
   'vocabulary-lesson':  { color: '#14b8a6', label: '🗂 Từ vựng' },
+  'dictation':          { color: '#22d3ee', label: '🎧 Dictation' },
 };
 
 function skillBadge(skill) {
@@ -222,6 +223,7 @@ export default function StudentDetail() {
               <option value="task2-template">📚 Task 2 Templates</option>
               <option value="essential-grammar">📘 Ngữ pháp</option>
               <option value="vocabulary-lesson">🗂 Từ vựng</option>
+              <option value="dictation">🎧 Dictation</option>
             </select>
           </div>
           {attempts.length < attemptsTotal && (

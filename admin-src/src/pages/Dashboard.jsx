@@ -19,6 +19,7 @@ function skillBadge(skill) {
     'task2-template':    { label: '📚 Task 2 Templates', bg: '#8b5cf622', color: '#8b5cf6' },
     'essential-grammar': { label: '📘 Ngữ pháp', bg: '#0ea5e922', color: '#0ea5e9' },
     'vocabulary-lesson':  { label: '🗂 Từ vựng', bg: '#14b8a622', color: '#14b8a6' },
+    'dictation':          { label: '🎧 Dictation', bg: '#22d3ee22', color: '#22d3ee' },
   };
   const s = map[skill] || { label: skill, bg: '#55587822', color: '#8b92a8' };
   return (

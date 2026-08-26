@@ -14,6 +14,7 @@ const WritingPracticeAttempt   = require('../../models/WritingPracticeAttempt');
 const Task1Attempt    = require('../../models/Task1Attempt');
 const Task2Attempt    = require('../../models/Task2Attempt');
 const SpeakingAttempt = require('../../models/SpeakingAttempt');
+const DictationAttempt = require('../../models/DictationAttempt');
 
 const router = express.Router();
 
@@ -115,6 +116,17 @@ router.delete('/speaking-attempts/:id', auth, teacherOnly, async (req, res) => {
     const result = await SpeakingAttempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Speaking' });
     res.json({ success: true, message: 'Đã xóa bài Speaking' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/dictation-attempts/:id
+router.delete('/dictation-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await DictationAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
+    res.json({ success: true, message: 'Đã xóa bài luyện Dictation' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -149,6 +149,21 @@ exports.listDictationSections = async (req, res) => {
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
+exports.saveDictationAttempt = async (req, res) => {
+  try {
+    const { sectionId, sectionTitle, partNumber, answers } = req.body;
+    if (!sectionId || !Array.isArray(answers) || !answers.length) {
+      return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+    }
+    const result = await listeningService.saveDictationAttempt({ sectionId, sectionTitle, partNumber, answers }, req.user._id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    console.error('[Dictation save]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // ── Admin CRUD for practice sections ─────────────────────────────────────
 exports.listAdminSections = async (req, res) => {
   try {
