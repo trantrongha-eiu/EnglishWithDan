@@ -6,7 +6,6 @@
  * is the reproducibility snapshot; the live DB is authoritative going forward.
  * Run: node backend/scripts/seedTask2Exercises.js
  */
-
 const topics = [
   {
     "week": 1,
@@ -176,6 +175,56 @@ const topics = [
         "term": "attention span",
         "definitionVi": "khả năng tập trung",
         "example": "Frequent device use may shorten students' attention span over time."
+      },
+      {
+        "term": "bridge the gap",
+        "definitionVi": "thu hẹp khoảng cách",
+        "example": "Online learning has helped bridge the gap between rural and urban students' access to quality education."
+      },
+      {
+        "term": "keep pace with",
+        "definitionVi": "theo kịp",
+        "example": "Traditional classrooms often struggle to keep pace with rapid technological change."
+      },
+      {
+        "term": "foster independence",
+        "definitionVi": "nuôi dưỡng tính độc lập",
+        "example": "Distance learning platforms foster independence in young learners."
+      },
+      {
+        "term": "tailor lessons to",
+        "definitionVi": "điều chỉnh bài học cho phù hợp với",
+        "example": "Adaptive software can tailor lessons to each student's pace."
+      },
+      {
+        "term": "widen access to",
+        "definitionVi": "mở rộng khả năng tiếp cận",
+        "example": "Online courses widen access to higher education for working adults."
+      },
+      {
+        "term": "compromise the quality of",
+        "definitionVi": "làm giảm chất lượng của",
+        "example": "Excessive screen time may compromise the quality of face-to-face learning."
+      },
+      {
+        "term": "undermine student engagement",
+        "definitionVi": "làm suy giảm sự hứng thú của học sinh",
+        "example": "A lack of interaction can undermine student engagement in virtual classrooms."
+      },
+      {
+        "term": "strike a balance between",
+        "definitionVi": "cân bằng giữa",
+        "example": "Educators must strike a balance between online and in-person instruction."
+      },
+      {
+        "term": "equip students with",
+        "definitionVi": "trang bị cho học sinh",
+        "example": "Digital platforms equip students with skills needed for the modern workplace."
+      },
+      {
+        "term": "hinder academic progress",
+        "definitionVi": "cản trở sự tiến bộ học tập",
+        "example": "Poor internet connectivity can hinder academic progress in remote areas."
       }
     ],
     "questions": [
@@ -761,6 +810,56 @@ const topics = [
         "term": "improve connectivity",
         "definitionVi": "cải thiện khả năng kết nối",
         "example": "Mobile technology has helped improve connectivity in even the most remote regions."
+      },
+      {
+        "term": "revolutionise the way",
+        "definitionVi": "cách mạng hóa cách thức",
+        "example": "Smartphones have revolutionised the way people stay in touch with friends and family."
+      },
+      {
+        "term": "come at the cost of",
+        "definitionVi": "phải trả giá bằng",
+        "example": "Constant connectivity often comes at the cost of genuine face-to-face interaction."
+      },
+      {
+        "term": "erode traditional values",
+        "definitionVi": "làm xói mòn các giá trị truyền thống",
+        "example": "Some critics argue that mobile culture is eroding traditional family values."
+      },
+      {
+        "term": "foster a sense of connection",
+        "definitionVi": "nuôi dưỡng cảm giác kết nối",
+        "example": "Video calls foster a sense of connection between family members living apart."
+      },
+      {
+        "term": "breed dependency",
+        "definitionVi": "gây ra sự lệ thuộc",
+        "example": "Constant notifications can breed dependency on mobile devices."
+      },
+      {
+        "term": "blur the line between",
+        "definitionVi": "làm mờ ranh giới giữa",
+        "example": "Smartphones blur the line between work time and personal time."
+      },
+      {
+        "term": "facilitate instant communication",
+        "definitionVi": "tạo điều kiện cho giao tiếp tức thời",
+        "example": "Messaging apps facilitate instant communication across different time zones."
+      },
+      {
+        "term": "take a toll on",
+        "definitionVi": "gây tổn hại đến",
+        "example": "Excessive screen time can take a toll on users' mental health."
+      },
+      {
+        "term": "stay connected with",
+        "definitionVi": "duy trì kết nối với",
+        "example": "Mobile devices allow people to stay connected with loved ones abroad."
+      },
+      {
+        "term": "cultivate healthy habits",
+        "definitionVi": "xây dựng thói quen lành mạnh",
+        "example": "Parents should help children cultivate healthy habits around device use."
       }
     ],
     "questions": [
@@ -1306,6 +1405,56 @@ const topics = [
         "term": "the democratization of information",
         "definitionVi": "dân chủ hóa thông tin",
         "example": "The democratization of information allows everyone to share their views, for better or worse."
+      },
+      {
+        "term": "shape public opinion",
+        "definitionVi": "định hình dư luận",
+        "example": "Social media platforms increasingly shape public opinion on major issues."
+      },
+      {
+        "term": "distort the truth",
+        "definitionVi": "bóp méo sự thật",
+        "example": "Sensational headlines can distort the truth to attract more clicks."
+      },
+      {
+        "term": "amplify misinformation",
+        "definitionVi": "khuếch đại thông tin sai lệch",
+        "example": "Algorithms can amplify misinformation faster than fact-checkers can respond."
+      },
+      {
+        "term": "hold sources accountable",
+        "definitionVi": "buộc nguồn tin phải chịu trách nhiệm",
+        "example": "Traditional journalism holds sources accountable through rigorous editorial standards."
+      },
+      {
+        "term": "foster critical thinking",
+        "definitionVi": "nuôi dưỡng tư duy phản biện",
+        "example": "Media literacy programmes foster critical thinking about online content."
+      },
+      {
+        "term": "fall prey to",
+        "definitionVi": "trở thành nạn nhân của",
+        "example": "Many users fall prey to sensationalised or misleading headlines."
+      },
+      {
+        "term": "verify the accuracy of",
+        "definitionVi": "kiểm chứng tính chính xác của",
+        "example": "Readers should verify the accuracy of a story before sharing it."
+      },
+      {
+        "term": "gain traction rapidly",
+        "definitionVi": "nhanh chóng lan truyền, được chú ý",
+        "example": "False stories can gain traction rapidly before being debunked."
+      },
+      {
+        "term": "provide a platform for",
+        "definitionVi": "cung cấp một nền tảng cho",
+        "example": "Social media provides a platform for ordinary citizens to report breaking news."
+      },
+      {
+        "term": "reinforce existing beliefs",
+        "definitionVi": "củng cố những niềm tin sẵn có",
+        "example": "Personalised algorithms tend to reinforce existing beliefs rather than challenge them."
       }
     ],
     "questions": [
@@ -1782,6 +1931,56 @@ const topics = [
         "term": "digital health record",
         "definitionVi": "hồ sơ sức khỏe điện tử",
         "example": "Data from wearables can be stored as part of a digital health record."
+      },
+      {
+        "term": "empower individuals to",
+        "definitionVi": "trao quyền cho các cá nhân để",
+        "example": "Wearable devices empower individuals to take control of their own health."
+      },
+      {
+        "term": "raise red flags",
+        "definitionVi": "đưa ra cảnh báo, dấu hiệu bất thường",
+        "example": "Abnormal heart rate readings can raise red flags for underlying conditions."
+      },
+      {
+        "term": "streamline the process of",
+        "definitionVi": "đơn giản hóa quy trình",
+        "example": "Health apps streamline the process of tracking daily physical activity."
+      },
+      {
+        "term": "foster a culture of",
+        "definitionVi": "xây dựng một văn hóa về",
+        "example": "Fitness trackers foster a culture of proactive health management."
+      },
+      {
+        "term": "come with certain risks",
+        "definitionVi": "đi kèm với những rủi ro nhất định",
+        "example": "Relying on wearable data comes with certain risks, such as inaccurate readings."
+      },
+      {
+        "term": "generate false alarms",
+        "definitionVi": "tạo ra những cảnh báo sai",
+        "example": "Overly sensitive sensors can generate false alarms that cause unnecessary worry."
+      },
+      {
+        "term": "safeguard personal information",
+        "definitionVi": "bảo vệ thông tin cá nhân",
+        "example": "Manufacturers must safeguard personal information collected by health apps."
+      },
+      {
+        "term": "promote proactive healthcare",
+        "definitionVi": "thúc đẩy chăm sóc sức khỏe chủ động",
+        "example": "Continuous monitoring can promote proactive healthcare rather than reactive treatment."
+      },
+      {
+        "term": "place excessive trust in",
+        "definitionVi": "đặt quá nhiều niềm tin vào",
+        "example": "Users should not place excessive trust in unverified health readings."
+      },
+      {
+        "term": "integrate seamlessly into",
+        "definitionVi": "tích hợp liền mạch vào",
+        "example": "Modern wearables integrate seamlessly into users' daily routines."
       }
     ],
     "questions": [
@@ -2249,6 +2448,56 @@ const topics = [
         "term": "long-term consequences",
         "definitionVi": "hậu quả lâu dài",
         "example": "University dropout can have long-term consequences for a person's career."
+      },
+      {
+        "term": "fall behind academically",
+        "definitionVi": "tụt lại phía sau về mặt học tập",
+        "example": "Students who fall behind academically are more likely to drop out."
+      },
+      {
+        "term": "shoulder the financial burden",
+        "definitionVi": "gánh vác gánh nặng tài chính",
+        "example": "Many families struggle to shoulder the financial burden of tuition fees."
+      },
+      {
+        "term": "lose sight of their goals",
+        "definitionVi": "mất phương hướng, quên đi mục tiêu",
+        "example": "Without proper guidance, students can lose sight of their academic goals."
+      },
+      {
+        "term": "provide a safety net for",
+        "definitionVi": "cung cấp mạng lưới an toàn cho",
+        "example": "Universities should provide a safety net for students facing financial hardship."
+      },
+      {
+        "term": "take a heavy toll on",
+        "definitionVi": "gây tổn hại nặng nề đến",
+        "example": "Constant financial stress takes a heavy toll on students' mental health."
+      },
+      {
+        "term": "jeopardise future prospects",
+        "definitionVi": "đe dọa triển vọng tương lai",
+        "example": "Dropping out can jeopardise a young person's future career prospects."
+      },
+      {
+        "term": "invest in student retention",
+        "definitionVi": "đầu tư vào việc giữ chân sinh viên",
+        "example": "Universities are increasingly investing in student retention programmes."
+      },
+      {
+        "term": "identify at-risk students",
+        "definitionVi": "xác định những sinh viên có nguy cơ",
+        "example": "Early-warning systems help universities identify at-risk students promptly."
+      },
+      {
+        "term": "adapt to university life",
+        "definitionVi": "thích nghi với cuộc sống đại học",
+        "example": "Some freshmen find it difficult to adapt to university life."
+      },
+      {
+        "term": "erode students' confidence",
+        "definitionVi": "làm xói mòn sự tự tin của sinh viên",
+        "example": "Repeated academic failure can erode students' confidence over time."
       }
     ],
     "questions": [
@@ -2717,6 +2966,56 @@ const topics = [
         "term": "curriculum reform",
         "definitionVi": "cải cách chương trình học",
         "example": "Curriculum reform could make science and maths more engaging at an early age."
+      },
+      {
+        "term": "spark students' interest in",
+        "definitionVi": "khơi dậy sự hứng thú của học sinh với",
+        "example": "Hands-on experiments can spark students' interest in science subjects."
+      },
+      {
+        "term": "fall short of demand",
+        "definitionVi": "không đáp ứng đủ nhu cầu",
+        "example": "The supply of STEM graduates often falls short of industry demand."
+      },
+      {
+        "term": "cultivate a passion for",
+        "definitionVi": "nuôi dưỡng niềm đam mê với",
+        "example": "Inspiring teachers can cultivate a passion for mathematics from an early age."
+      },
+      {
+        "term": "deter students from pursuing",
+        "definitionVi": "khiến học sinh e ngại theo đuổi",
+        "example": "A reputation for difficulty can deter students from pursuing engineering degrees."
+      },
+      {
+        "term": "close the skills gap",
+        "definitionVi": "thu hẹp khoảng cách kỹ năng",
+        "example": "Vocational partnerships can help close the skills gap in the tech sector."
+      },
+      {
+        "term": "drive innovation forward",
+        "definitionVi": "thúc đẩy sự đổi mới tiến lên",
+        "example": "A strong pipeline of engineers helps drive innovation forward."
+      },
+      {
+        "term": "level the playing field",
+        "definitionVi": "tạo sân chơi công bằng",
+        "example": "Scholarships can help level the playing field for underrepresented groups in STEM."
+      },
+      {
+        "term": "invest in future talent",
+        "definitionVi": "đầu tư vào nhân tài tương lai",
+        "example": "Governments must invest in future talent to remain globally competitive."
+      },
+      {
+        "term": "lag behind other nations",
+        "definitionVi": "tụt hậu so với các quốc gia khác",
+        "example": "A country may lag behind other nations in technological development."
+      },
+      {
+        "term": "break down stereotypes",
+        "definitionVi": "phá bỏ những định kiến",
+        "example": "Outreach programmes aim to break down stereotypes about who can succeed in STEM."
       }
     ],
     "questions": [
@@ -3184,6 +3483,56 @@ const topics = [
         "term": "learner autonomy",
         "definitionVi": "tính tự chủ của người học",
         "example": "Learner autonomy is crucial for success in self-paced online programmes."
+      },
+      {
+        "term": "lose momentum",
+        "definitionVi": "mất động lực, đà tiến",
+        "example": "Students studying alone at home can quickly lose momentum."
+      },
+      {
+        "term": "foster a sense of community",
+        "definitionVi": "xây dựng cảm giác cộng đồng",
+        "example": "Group projects help foster a sense of community among online learners."
+      },
+      {
+        "term": "set realistic goals",
+        "definitionVi": "đặt ra mục tiêu thực tế",
+        "example": "Setting realistic goals can help students stay motivated during online courses."
+      },
+      {
+        "term": "succumb to distractions",
+        "definitionVi": "bị cuốn theo những sự phân tâm",
+        "example": "Without supervision, students may easily succumb to distractions at home."
+      },
+      {
+        "term": "sustain long-term engagement",
+        "definitionVi": "duy trì sự gắn kết lâu dài",
+        "example": "Interactive content helps sustain long-term engagement in virtual classrooms."
+      },
+      {
+        "term": "provide timely feedback",
+        "definitionVi": "cung cấp phản hồi kịp thời",
+        "example": "Instructors should provide timely feedback to keep students motivated."
+      },
+      {
+        "term": "instil a sense of discipline",
+        "definitionVi": "hình thành tính kỷ luật",
+        "example": "A structured schedule can instil a sense of discipline in online learners."
+      },
+      {
+        "term": "combat feelings of isolation",
+        "definitionVi": "chống lại cảm giác cô lập",
+        "example": "Regular video check-ins can combat feelings of isolation among remote students."
+      },
+      {
+        "term": "boost self-motivation",
+        "definitionVi": "tăng cường động lực tự thân",
+        "example": "Gamified learning platforms can boost self-motivation in students."
+      },
+      {
+        "term": "fall into bad habits",
+        "definitionVi": "rơi vào những thói quen xấu",
+        "example": "Students learning from home may fall into bad habits like procrastination."
       }
     ],
     "questions": [
@@ -3673,6 +4022,56 @@ const topics = [
         "term": "retention rate",
         "definitionVi": "tỷ lệ duy trì sinh viên",
         "example": "Universities with strong support services have higher retention rates."
+      },
+      {
+        "term": "place a strain on",
+        "definitionVi": "gây áp lực lên, đặt gánh nặng lên",
+        "example": "Rising tuition fees place a strain on many families' finances."
+      },
+      {
+        "term": "widen the wealth gap",
+        "definitionVi": "nới rộng khoảng cách giàu nghèo",
+        "example": "Unequal access to education can widen the wealth gap in society."
+      },
+      {
+        "term": "offer a lifeline to",
+        "definitionVi": "mang lại cứu cánh cho",
+        "example": "Scholarships can offer a lifeline to students from disadvantaged backgrounds."
+      },
+      {
+        "term": "improve graduate outcomes",
+        "definitionVi": "cải thiện kết quả đầu ra của sinh viên tốt nghiệp",
+        "example": "Mentoring schemes have been shown to improve graduate outcomes."
+      },
+      {
+        "term": "drain the economy",
+        "definitionVi": "làm cạn kiệt nền kinh tế",
+        "example": "A high dropout rate can drain the economy of skilled workers."
+      },
+      {
+        "term": "provide a stepping stone to",
+        "definitionVi": "tạo bàn đạp cho",
+        "example": "Vocational training can provide a stepping stone to stable employment."
+      },
+      {
+        "term": "exacerbate social inequality",
+        "definitionVi": "làm trầm trọng thêm bất bình đẳng xã hội",
+        "example": "Low graduation rates can exacerbate social inequality over generations."
+      },
+      {
+        "term": "reap the benefits of",
+        "definitionVi": "gặt hái được lợi ích từ",
+        "example": "Countries that invest in education reap the benefits of a skilled workforce."
+      },
+      {
+        "term": "channel resources into",
+        "definitionVi": "dồn nguồn lực vào",
+        "example": "Governments should channel resources into student support services."
+      },
+      {
+        "term": "break the cycle of poverty",
+        "definitionVi": "phá vỡ vòng luẩn quẩn của đói nghèo",
+        "example": "A university degree can help individuals break the cycle of poverty."
       }
     ],
     "questions": [
@@ -4102,6 +4501,56 @@ const topics = [
         "term": "public health campaign",
         "definitionVi": "chiến dịch y tế công cộng",
         "example": "Public health campaigns can help reduce the stigma of mental illness."
+      },
+      {
+        "term": "take a toll on mental health",
+        "definitionVi": "gây tổn hại đến sức khỏe tinh thần",
+        "example": "Constant pressure at work can take a toll on mental health."
+      },
+      {
+        "term": "seek professional help",
+        "definitionVi": "tìm kiếm sự giúp đỡ chuyên nghiệp",
+        "example": "More young people are willing to seek professional help for anxiety."
+      },
+      {
+        "term": "cope with pressure",
+        "definitionVi": "đối phó với áp lực",
+        "example": "Students need effective strategies to cope with academic pressure."
+      },
+      {
+        "term": "spiral out of control",
+        "definitionVi": "trở nên mất kiểm soát",
+        "example": "Untreated anxiety can spiral out of control if left unaddressed."
+      },
+      {
+        "term": "break the stigma around",
+        "definitionVi": "phá bỏ sự kỳ thị xung quanh",
+        "example": "Public campaigns aim to break the stigma around mental illness."
+      },
+      {
+        "term": "provide a safe space for",
+        "definitionVi": "tạo ra một không gian an toàn cho",
+        "example": "Support groups provide a safe space for people to share their struggles."
+      },
+      {
+        "term": "trigger anxiety symptoms",
+        "definitionVi": "kích hoạt các triệu chứng lo âu",
+        "example": "Social media use can trigger anxiety symptoms in vulnerable individuals."
+      },
+      {
+        "term": "prioritise mental well-being",
+        "definitionVi": "ưu tiên sức khỏe tinh thần",
+        "example": "Companies should prioritise mental well-being alongside productivity."
+      },
+      {
+        "term": "build resilience",
+        "definitionVi": "xây dựng khả năng phục hồi tinh thần",
+        "example": "Mindfulness practices can help individuals build resilience to stress."
+      },
+      {
+        "term": "weigh heavily on someone",
+        "definitionVi": "đè nặng lên tâm trí ai đó",
+        "example": "Financial insecurity can weigh heavily on a person's mind."
       }
     ],
     "questions": [
@@ -4571,6 +5020,56 @@ const topics = [
         "term": "public awareness campaign",
         "definitionVi": "chiến dịch nâng cao nhận thức cộng đồng",
         "example": "Public awareness campaigns can highlight the dangers of inactivity."
+      },
+      {
+        "term": "lead a sedentary life",
+        "definitionVi": "sống một cuộc sống ít vận động",
+        "example": "Many office workers lead a sedentary life due to long desk hours."
+      },
+      {
+        "term": "get into the habit of",
+        "definitionVi": "hình thành thói quen",
+        "example": "Urban residents should get into the habit of walking short distances."
+      },
+      {
+        "term": "take up regular exercise",
+        "definitionVi": "bắt đầu tập thể dục đều đặn",
+        "example": "Health campaigns encourage citizens to take up regular exercise."
+      },
+      {
+        "term": "pose a serious risk to",
+        "definitionVi": "gây ra nguy cơ nghiêm trọng cho",
+        "example": "Physical inactivity poses a serious risk to cardiovascular health."
+      },
+      {
+        "term": "carve out time for",
+        "definitionVi": "dành ra thời gian cho",
+        "example": "Busy professionals often struggle to carve out time for exercise."
+      },
+      {
+        "term": "reap the health benefits of",
+        "definitionVi": "gặt hái lợi ích sức khỏe từ",
+        "example": "Even short walks allow people to reap the health benefits of movement."
+      },
+      {
+        "term": "make physical activity accessible",
+        "definitionVi": "làm cho hoạt động thể chất trở nên dễ tiếp cận",
+        "example": "Cities should make physical activity accessible through free public facilities."
+      },
+      {
+        "term": "counteract the effects of",
+        "definitionVi": "chống lại tác động của",
+        "example": "Short daily walks can counteract the effects of sitting all day."
+      },
+      {
+        "term": "integrate movement into",
+        "definitionVi": "lồng ghép sự vận động vào",
+        "example": "Urban planners should integrate movement into people's daily routines."
+      },
+      {
+        "term": "fall into unhealthy patterns",
+        "definitionVi": "rơi vào những mô hình sống không lành mạnh",
+        "example": "It is easy to fall into unhealthy patterns when working from home."
       }
     ],
     "questions": [
@@ -5039,6 +5538,56 @@ const topics = [
         "term": "public health initiative",
         "definitionVi": "sáng kiến y tế công cộng",
         "example": "A national public health initiative could help tackle childhood obesity."
+      },
+      {
+        "term": "instil healthy eating habits",
+        "definitionVi": "hình thành thói quen ăn uống lành mạnh",
+        "example": "Parents play a key role in instilling healthy eating habits early on."
+      },
+      {
+        "term": "tackle the root causes of",
+        "definitionVi": "giải quyết tận gốc nguyên nhân của",
+        "example": "Effective policies must tackle the root causes of childhood obesity."
+      },
+      {
+        "term": "curb the consumption of",
+        "definitionVi": "hạn chế việc tiêu thụ",
+        "example": "Schools should curb the consumption of sugary snacks on campus."
+      },
+      {
+        "term": "set a positive example",
+        "definitionVi": "làm gương tích cực",
+        "example": "Parents can set a positive example by eating balanced meals themselves."
+      },
+      {
+        "term": "place children at risk of",
+        "definitionVi": "đặt trẻ em vào nguy cơ mắc",
+        "example": "Poor diets place children at risk of long-term health problems."
+      },
+      {
+        "term": "encourage active play",
+        "definitionVi": "khuyến khích vui chơi vận động",
+        "example": "Communities should encourage active play instead of screen time."
+      },
+      {
+        "term": "limit exposure to advertising",
+        "definitionVi": "hạn chế tiếp xúc với quảng cáo",
+        "example": "Regulations can limit children's exposure to junk food advertising."
+      },
+      {
+        "term": "promote a balanced diet",
+        "definitionVi": "thúc đẩy chế độ ăn cân bằng",
+        "example": "Nutrition education helps promote a balanced diet among students."
+      },
+      {
+        "term": "shape lifelong habits",
+        "definitionVi": "định hình những thói quen suốt đời",
+        "example": "Childhood experiences shape lifelong habits around food and exercise."
+      },
+      {
+        "term": "combat rising obesity rates",
+        "definitionVi": "chống lại tỷ lệ béo phì đang gia tăng",
+        "example": "Governments are launching initiatives to combat rising obesity rates."
       }
     ],
     "questions": [
@@ -5506,6 +6055,56 @@ const topics = [
         "term": "community-supported agriculture",
         "definitionVi": "nông nghiệp hỗ trợ bởi cộng đồng",
         "example": "Community-supported agriculture gives residents access to affordable fresh produce."
+      },
+      {
+        "term": "opt for convenience over health",
+        "definitionVi": "chọn sự tiện lợi thay vì sức khỏe",
+        "example": "Busy families often opt for convenience over health when choosing meals."
+      },
+      {
+        "term": "reverse an unhealthy trend",
+        "definitionVi": "đảo ngược một xu hướng không lành mạnh",
+        "example": "Public health campaigns aim to reverse this unhealthy dietary trend."
+      },
+      {
+        "term": "make healthy food affordable",
+        "definitionVi": "làm cho thực phẩm lành mạnh có giá phải chăng",
+        "example": "Subsidies can make healthy food affordable for low-income families."
+      },
+      {
+        "term": "compromise on nutrition",
+        "definitionVi": "hy sinh yếu tố dinh dưỡng",
+        "example": "People often compromise on nutrition when short on time."
+      },
+      {
+        "term": "revive traditional cooking",
+        "definitionVi": "khôi phục việc nấu ăn truyền thống",
+        "example": "Cooking classes aim to revive traditional home cooking among young adults."
+      },
+      {
+        "term": "flood the market with",
+        "definitionVi": "tràn ngập thị trường bằng",
+        "example": "Fast food chains have flooded the market with cheap, convenient options."
+      },
+      {
+        "term": "shift consumer habits",
+        "definitionVi": "làm thay đổi thói quen tiêu dùng",
+        "example": "Public awareness campaigns can gradually shift consumer habits."
+      },
+      {
+        "term": "erode dietary standards",
+        "definitionVi": "làm xói mòn các tiêu chuẩn ăn uống",
+        "example": "Modern lifestyles have gradually eroded traditional dietary standards."
+      },
+      {
+        "term": "regulate food advertising",
+        "definitionVi": "quản lý quảng cáo thực phẩm",
+        "example": "Governments could regulate food advertising aimed at children."
+      },
+      {
+        "term": "cultivate mindful eating habits",
+        "definitionVi": "xây dựng thói quen ăn uống có ý thức",
+        "example": "Nutrition education helps people cultivate mindful eating habits."
       }
     ],
     "questions": [
@@ -5973,6 +6572,56 @@ const topics = [
         "term": "vehicle emission standards",
         "definitionVi": "tiêu chuẩn khí thải phương tiện",
         "example": "Stricter vehicle emission standards could reduce pollution from traffic."
+      },
+      {
+        "term": "grind to a halt",
+        "definitionVi": "dừng hẳn lại, tắc nghẽn hoàn toàn",
+        "example": "Rush-hour traffic often grinds to a halt in the city centre."
+      },
+      {
+        "term": "ease traffic flow",
+        "definitionVi": "giảm bớt ùn tắc, giúp giao thông thông suốt hơn",
+        "example": "Smart traffic lights can help ease traffic flow during peak hours."
+      },
+      {
+        "term": "take drastic measures",
+        "definitionVi": "thực hiện các biện pháp quyết liệt",
+        "example": "City authorities may need to take drastic measures to reduce congestion."
+      },
+      {
+        "term": "clog city streets",
+        "definitionVi": "làm tắc nghẽn đường phố thành phố",
+        "example": "Private vehicles continue to clog city streets every morning."
+      },
+      {
+        "term": "divert traffic away from",
+        "definitionVi": "chuyển hướng giao thông ra khỏi",
+        "example": "New ring roads can divert traffic away from congested city centres."
+      },
+      {
+        "term": "wreak havoc on",
+        "definitionVi": "gây ra sự hỗn loạn cho",
+        "example": "Gridlock can wreak havoc on residents' daily schedules."
+      },
+      {
+        "term": "incentivise public transport use",
+        "definitionVi": "khuyến khích sử dụng phương tiện công cộng",
+        "example": "Cheaper fares could incentivise public transport use over driving."
+      },
+      {
+        "term": "impose restrictions on",
+        "definitionVi": "áp đặt các hạn chế đối với",
+        "example": "Some cities impose restrictions on private cars entering the centre."
+      },
+      {
+        "term": "curb the growth of",
+        "definitionVi": "kiềm chế sự gia tăng của",
+        "example": "Congestion charges aim to curb the growth of car traffic downtown."
+      },
+      {
+        "term": "alleviate urban gridlock",
+        "definitionVi": "giảm bớt tình trạng tắc nghẽn đô thị",
+        "example": "Expanding the metro system could help alleviate urban gridlock."
       }
     ],
     "questions": [
@@ -6441,6 +7090,56 @@ const topics = [
         "term": "modal shift",
         "definitionVi": "sự chuyển đổi phương thức di chuyển",
         "example": "Encouraging a modal shift from cars to public transport takes time and investment."
+      },
+      {
+        "term": "wean people off",
+        "definitionVi": "cai (thói quen) cho ai đó",
+        "example": "Cities are trying to wean people off their reliance on private cars."
+      },
+      {
+        "term": "make public transport appealing",
+        "definitionVi": "làm cho giao thông công cộng trở nên hấp dẫn",
+        "example": "Comfortable buses can make public transport appealing to commuters."
+      },
+      {
+        "term": "shift travel behaviour",
+        "definitionVi": "làm thay đổi hành vi di chuyển",
+        "example": "Higher fuel prices alone rarely shift travel behaviour significantly."
+      },
+      {
+        "term": "come with hidden costs",
+        "definitionVi": "đi kèm với những chi phí ẩn",
+        "example": "Car ownership comes with hidden costs such as parking and maintenance."
+      },
+      {
+        "term": "prioritise sustainable transport",
+        "definitionVi": "ưu tiên giao thông bền vững",
+        "example": "Urban planners should prioritise sustainable transport over road expansion."
+      },
+      {
+        "term": "phase out petrol vehicles",
+        "definitionVi": "loại bỏ dần xe chạy xăng",
+        "example": "Several countries plan to phase out petrol vehicles within decades."
+      },
+      {
+        "term": "strain existing infrastructure",
+        "definitionVi": "gây áp lực lên cơ sở hạ tầng hiện có",
+        "example": "Rising car numbers continue to strain existing road infrastructure."
+      },
+      {
+        "term": "offer viable alternatives to",
+        "definitionVi": "cung cấp các lựa chọn thay thế khả thi cho",
+        "example": "Cities must offer viable alternatives to private car ownership."
+      },
+      {
+        "term": "discourage car dependency",
+        "definitionVi": "hạn chế sự phụ thuộc vào xe hơi",
+        "example": "High parking fees can discourage car dependency in city centres."
+      },
+      {
+        "term": "reduce the environmental footprint of",
+        "definitionVi": "giảm dấu chân môi trường của",
+        "example": "Electric buses help reduce the environmental footprint of public transport."
       }
     ],
     "questions": [
@@ -6905,6 +7604,56 @@ const topics = [
         "term": "cross-border trade",
         "definitionVi": "thương mại xuyên biên giới",
         "example": "Efficient freight systems are essential for smooth cross-border trade."
+      },
+      {
+        "term": "shift freight onto rail",
+        "definitionVi": "chuyển hàng hóa sang đường sắt",
+        "example": "Policymakers are trying to shift freight onto rail to ease road congestion."
+      },
+      {
+        "term": "place a heavy burden on",
+        "definitionVi": "đặt gánh nặng lớn lên",
+        "example": "Constant truck traffic places a heavy burden on ageing roads."
+      },
+      {
+        "term": "modernise transport networks",
+        "definitionVi": "hiện đại hóa mạng lưới giao thông",
+        "example": "Investment is needed to modernise transport networks nationwide."
+      },
+      {
+        "term": "streamline the supply chain",
+        "definitionVi": "hợp lý hóa chuỗi cung ứng",
+        "example": "Efficient logistics can streamline the supply chain and cut costs."
+      },
+      {
+        "term": "diversify transport modes",
+        "definitionVi": "đa dạng hóa các phương thức vận tải",
+        "example": "Companies are encouraged to diversify transport modes beyond trucking."
+      },
+      {
+        "term": "accelerate wear and tear",
+        "definitionVi": "đẩy nhanh sự hao mòn",
+        "example": "Heavy freight traffic accelerates wear and tear on highway surfaces."
+      },
+      {
+        "term": "offset carbon emissions",
+        "definitionVi": "bù đắp lượng khí thải carbon",
+        "example": "Some logistics firms invest in projects to offset carbon emissions."
+      },
+      {
+        "term": "expand rail capacity",
+        "definitionVi": "mở rộng năng lực đường sắt",
+        "example": "Expanding rail capacity could reduce reliance on heavy trucks."
+      },
+      {
+        "term": "cut transport-related emissions",
+        "definitionVi": "cắt giảm khí thải liên quan đến giao thông",
+        "example": "Switching to rail freight can cut transport-related emissions substantially."
+      },
+      {
+        "term": "bear the cost of",
+        "definitionVi": "gánh chịu chi phí của",
+        "example": "Taxpayers ultimately bear the cost of road damage caused by heavy trucks."
       }
     ],
     "questions": [
@@ -7372,6 +8121,56 @@ const topics = [
         "term": "school travel plans",
         "definitionVi": "kế hoạch di chuyển đến trường học",
         "example": "School travel plans can encourage children to walk or cycle safely to school."
+      },
+      {
+        "term": "reclaim public space",
+        "definitionVi": "giành lại không gian công cộng",
+        "example": "Car-free zones help cities reclaim public space for pedestrians."
+      },
+      {
+        "term": "make streets safer for",
+        "definitionVi": "làm cho đường phố an toàn hơn cho",
+        "example": "Traffic calming measures make streets safer for cyclists and pedestrians."
+      },
+      {
+        "term": "champion active travel",
+        "definitionVi": "cổ vũ cho việc di chuyển chủ động",
+        "example": "Several European cities actively champion active travel over driving."
+      },
+      {
+        "term": "revitalise city centres",
+        "definitionVi": "hồi sinh khu trung tâm thành phố",
+        "example": "Pedestrian-friendly design can revitalise city centres and boost local businesses."
+      },
+      {
+        "term": "instil a walking culture",
+        "definitionVi": "hình thành văn hóa đi bộ",
+        "example": "Urban design can instil a walking culture from a young age."
+      },
+      {
+        "term": "remove barriers to",
+        "definitionVi": "loại bỏ các rào cản đối với",
+        "example": "Better infrastructure can remove barriers to cycling in busy cities."
+      },
+      {
+        "term": "prioritise pedestrians over cars",
+        "definitionVi": "ưu tiên người đi bộ hơn xe hơi",
+        "example": "Some cities now prioritise pedestrians over cars in urban planning."
+      },
+      {
+        "term": "cater to cyclists' needs",
+        "definitionVi": "đáp ứng nhu cầu của người đi xe đạp",
+        "example": "New road designs increasingly cater to cyclists' needs."
+      },
+      {
+        "term": "improve air quality",
+        "definitionVi": "cải thiện chất lượng không khí",
+        "example": "Encouraging cycling can significantly improve air quality in cities."
+      },
+      {
+        "term": "yield long-term health gains",
+        "definitionVi": "mang lại lợi ích sức khỏe lâu dài",
+        "example": "Regular walking can yield long-term health gains for city dwellers."
       }
     ],
     "questions": [
@@ -7891,6 +8690,56 @@ const topics = [
         "term": "personal development",
         "definitionVi": "phát triển bản thân",
         "example": "Having extra time off allows employees to invest in personal development."
+      },
+      {
+        "term": "boost productivity levels",
+        "definitionVi": "thúc đẩy mức năng suất",
+        "example": "Some studies suggest a four-day week can boost productivity levels."
+      },
+      {
+        "term": "reap the rewards of",
+        "definitionVi": "gặt hái thành quả từ",
+        "example": "Employees reap the rewards of a shorter week through better well-being."
+      },
+      {
+        "term": "come at the expense of",
+        "definitionVi": "phải trả giá bằng",
+        "example": "Longer weekends should not come at the expense of business output."
+      },
+      {
+        "term": "recharge one's batteries",
+        "definitionVi": "nạp lại năng lượng",
+        "example": "A longer weekend gives workers time to recharge their batteries."
+      },
+      {
+        "term": "cut down on overtime",
+        "definitionVi": "cắt giảm giờ làm thêm",
+        "example": "A shorter working week could help cut down on excessive overtime."
+      },
+      {
+        "term": "reshape working patterns",
+        "definitionVi": "định hình lại mô hình làm việc",
+        "example": "The pandemic has helped reshape working patterns across industries."
+      },
+      {
+        "term": "safeguard employees' well-being",
+        "definitionVi": "bảo vệ sức khỏe và hạnh phúc của nhân viên",
+        "example": "Companies should safeguard employees' well-being alongside profit."
+      },
+      {
+        "term": "maintain output levels",
+        "definitionVi": "duy trì mức sản lượng",
+        "example": "Trials have shown some firms can maintain output levels with fewer days."
+      },
+      {
+        "term": "trial a new policy",
+        "definitionVi": "thử nghiệm một chính sách mới",
+        "example": "Several companies have trialled a new four-day-week policy successfully."
+      },
+      {
+        "term": "erode work-life balance",
+        "definitionVi": "làm xói mòn sự cân bằng công việc-cuộc sống",
+        "example": "Long working hours can gradually erode work-life balance."
       }
     ],
     "questions": [
@@ -8424,6 +9273,56 @@ const topics = [
         "term": "long-term sustainability",
         "definitionVi": "tính bền vững lâu dài",
         "example": "Some argue that remote work as a dominant model lacks long-term sustainability for team culture."
+      },
+      {
+        "term": "embrace remote working",
+        "definitionVi": "chấp nhận, đón nhận làm việc từ xa",
+        "example": "Many companies have embraced remote working since the pandemic."
+      },
+      {
+        "term": "foster collaboration among",
+        "definitionVi": "thúc đẩy sự hợp tác giữa",
+        "example": "Video conferencing tools help foster collaboration among remote teams."
+      },
+      {
+        "term": "blur the boundaries between",
+        "definitionVi": "làm mờ ranh giới giữa",
+        "example": "Working from home can blur the boundaries between work and personal life."
+      },
+      {
+        "term": "cut commuting time",
+        "definitionVi": "cắt giảm thời gian di chuyển",
+        "example": "Remote work cuts commuting time and reduces daily stress."
+      },
+      {
+        "term": "sustain team morale",
+        "definitionVi": "duy trì tinh thần đội nhóm",
+        "example": "Managers must find new ways to sustain team morale remotely."
+      },
+      {
+        "term": "adapt to a hybrid model",
+        "definitionVi": "thích nghi với mô hình kết hợp",
+        "example": "Many organisations are adapting to a hybrid working model."
+      },
+      {
+        "term": "widen the talent pool",
+        "definitionVi": "mở rộng nguồn nhân lực",
+        "example": "Remote work allows companies to widen the talent pool beyond one city."
+      },
+      {
+        "term": "invest in digital infrastructure",
+        "definitionVi": "đầu tư vào cơ sở hạ tầng kỹ thuật số",
+        "example": "Firms must invest in digital infrastructure to support remote staff."
+      },
+      {
+        "term": "undermine team cohesion",
+        "definitionVi": "làm suy yếu sự gắn kết của đội nhóm",
+        "example": "A lack of face-to-face contact can undermine team cohesion over time."
+      },
+      {
+        "term": "strike the right balance",
+        "definitionVi": "tìm ra sự cân bằng phù hợp",
+        "example": "Companies need to strike the right balance between flexibility and structure."
       }
     ],
     "questions": [
@@ -9044,6 +9943,56 @@ const topics = [
         "term": "materialistic values",
         "definitionVi": "giá trị vật chất",
         "example": "Pursuing materialistic values at the expense of personal fulfillment can lead to dissatisfaction."
+      },
+      {
+        "term": "outweigh financial gain",
+        "definitionVi": "vượt trội hơn lợi ích tài chính",
+        "example": "For some, personal fulfilment outweighs financial gain in a career."
+      },
+      {
+        "term": "climb the corporate ladder",
+        "definitionVi": "thăng tiến trong sự nghiệp",
+        "example": "Some employees sacrifice satisfaction to climb the corporate ladder."
+      },
+      {
+        "term": "find meaning in one's work",
+        "definitionVi": "tìm thấy ý nghĩa trong công việc",
+        "example": "People who find meaning in their work tend to be more engaged."
+      },
+      {
+        "term": "chase a higher salary",
+        "definitionVi": "theo đuổi mức lương cao hơn",
+        "example": "Some young professionals chase a higher salary at the cost of happiness."
+      },
+      {
+        "term": "foster a positive work culture",
+        "definitionVi": "xây dựng văn hóa làm việc tích cực",
+        "example": "Employers should foster a positive work culture to retain staff."
+      },
+      {
+        "term": "compensate for low pay",
+        "definitionVi": "bù đắp cho mức lương thấp",
+        "example": "A supportive workplace can partly compensate for relatively low pay."
+      },
+      {
+        "term": "burn out quickly",
+        "definitionVi": "nhanh chóng kiệt sức",
+        "example": "Employees in unfulfilling but high-paying jobs can burn out quickly."
+      },
+      {
+        "term": "value personal fulfilment over",
+        "definitionVi": "coi trọng sự viên mãn cá nhân hơn",
+        "example": "More workers now value personal fulfilment over a high salary."
+      },
+      {
+        "term": "retain talented employees",
+        "definitionVi": "giữ chân nhân viên tài năng",
+        "example": "Meaningful work helps companies retain talented employees long-term."
+      },
+      {
+        "term": "settle for a lower wage",
+        "definitionVi": "chấp nhận mức lương thấp hơn",
+        "example": "Some professionals settle for a lower wage in exchange for job satisfaction."
       }
     ],
     "questions": [
@@ -9609,6 +10558,56 @@ const topics = [
         "term": "personal well-being",
         "definitionVi": "sức khỏe và hạnh phúc cá nhân",
         "example": "Personal well-being should be considered alongside financial factors."
+      },
+      {
+        "term": "trade security for happiness",
+        "definitionVi": "đánh đổi sự an toàn để lấy hạnh phúc",
+        "example": "Some people trade job security for happiness by quitting an unfulfilling job."
+      },
+      {
+        "term": "weigh the pros and cons",
+        "definitionVi": "cân nhắc ưu và nhược điểm",
+        "example": "Job seekers should weigh the pros and cons before resigning."
+      },
+      {
+        "term": "make ends meet",
+        "definitionVi": "xoay xở đủ sống",
+        "example": "Without a job, many people struggle to make ends meet."
+      },
+      {
+        "term": "hold out for a better opportunity",
+        "definitionVi": "chờ đợi để có cơ hội tốt hơn",
+        "example": "Some job seekers hold out for a better opportunity rather than settle."
+      },
+      {
+        "term": "drain a person's motivation",
+        "definitionVi": "làm cạn kiệt động lực của một người",
+        "example": "A miserable job can gradually drain a person's motivation."
+      },
+      {
+        "term": "provide financial stability",
+        "definitionVi": "mang lại sự ổn định tài chính",
+        "example": "Even an unenjoyable job can provide financial stability for a family."
+      },
+      {
+        "term": "take a leap of faith",
+        "definitionVi": "chấp nhận mạo hiểm, đánh cược",
+        "example": "Quitting a stable job to pursue passion requires a leap of faith."
+      },
+      {
+        "term": "leave a lasting impact on",
+        "definitionVi": "để lại tác động lâu dài đến",
+        "example": "Prolonged unemployment can leave a lasting impact on self-esteem."
+      },
+      {
+        "term": "pursue a fulfilling career",
+        "definitionVi": "theo đuổi một sự nghiệp viên mãn",
+        "example": "Many people eventually choose to pursue a fulfilling career over pay."
+      },
+      {
+        "term": "cushion the financial blow",
+        "definitionVi": "giảm nhẹ cú sốc tài chính",
+        "example": "Savings can help cushion the financial blow of unemployment."
       }
     ],
     "questions": [
@@ -10074,6 +11073,56 @@ const topics = [
         "term": "public awareness",
         "definitionVi": "nhận thức cộng đồng",
         "example": "Raising public awareness is essential alongside financial measures."
+      },
+      {
+        "term": "make a compelling case for",
+        "definitionVi": "đưa ra lập luận thuyết phục cho",
+        "example": "Health experts make a compelling case for taxing sugary drinks."
+      },
+      {
+        "term": "shift the burden onto",
+        "definitionVi": "chuyển gánh nặng sang",
+        "example": "A junk food tax shifts the financial burden onto unhealthy choices."
+      },
+      {
+        "term": "curb unhealthy consumption",
+        "definitionVi": "kiềm chế việc tiêu thụ không lành mạnh",
+        "example": "Higher prices can curb unhealthy consumption over time."
+      },
+      {
+        "term": "level the economic playing field",
+        "definitionVi": "tạo sân chơi kinh tế công bằng",
+        "example": "Subsidies help level the economic playing field for healthy food."
+      },
+      {
+        "term": "disproportionately affect low-income families",
+        "definitionVi": "ảnh hưởng không cân xứng đến các gia đình thu nhập thấp",
+        "example": "Critics argue sugar taxes disproportionately affect low-income families."
+      },
+      {
+        "term": "yield measurable results",
+        "definitionVi": "mang lại kết quả có thể đo lường được",
+        "example": "Sugar taxes in some countries have yielded measurable results."
+      },
+      {
+        "term": "channel tax revenue into",
+        "definitionVi": "dồn nguồn thu thuế vào",
+        "example": "Governments can channel tax revenue into public health programmes."
+      },
+      {
+        "term": "nudge consumers towards",
+        "definitionVi": "thúc đẩy người tiêu dùng hướng tới",
+        "example": "Price incentives can nudge consumers towards healthier choices."
+      },
+      {
+        "term": "strike at the source of",
+        "definitionVi": "đánh trực tiếp vào nguồn gốc của",
+        "example": "Taxing sugar strikes at the source of rising obesity rates."
+      },
+      {
+        "term": "complement other public health measures",
+        "definitionVi": "bổ sung cho các biện pháp y tế công cộng khác",
+        "example": "A sugar tax should complement other public health measures, not replace them."
       }
     ],
     "questions": [
@@ -10542,6 +11591,56 @@ const topics = [
         "term": "educational equity",
         "definitionVi": "sự công bằng trong giáo dục",
         "example": "Libraries help promote educational equity across different income groups."
+      },
+      {
+        "term": "serve the wider community",
+        "definitionVi": "phục vụ cộng đồng rộng lớn hơn",
+        "example": "Public libraries serve the wider community beyond just book lending."
+      },
+      {
+        "term": "render obsolete",
+        "definitionVi": "khiến cho trở nên lỗi thời",
+        "example": "Some argue that the internet has rendered libraries largely obsolete."
+      },
+      {
+        "term": "close the digital divide",
+        "definitionVi": "thu hẹp khoảng cách kỹ thuật số",
+        "example": "Investment in broadband can help close the digital divide."
+      },
+      {
+        "term": "allocate public funds wisely",
+        "definitionVi": "phân bổ ngân sách công một cách khôn ngoan",
+        "example": "Governments must allocate public funds wisely between competing priorities."
+      },
+      {
+        "term": "reinvent themselves as",
+        "definitionVi": "tự tái tạo bản thân thành",
+        "example": "Many libraries have reinvented themselves as digital learning hubs."
+      },
+      {
+        "term": "guarantee equal access to",
+        "definitionVi": "đảm bảo khả năng tiếp cận bình đẳng đến",
+        "example": "Public libraries help guarantee equal access to information for all."
+      },
+      {
+        "term": "justify the expenditure on",
+        "definitionVi": "biện minh cho khoản chi tiêu vào",
+        "example": "It can be hard to justify the expenditure on physical libraries today."
+      },
+      {
+        "term": "complement online resources",
+        "definitionVi": "bổ sung cho các nguồn tài nguyên trực tuyến",
+        "example": "Libraries can complement online resources rather than compete with them."
+      },
+      {
+        "term": "leave no one behind",
+        "definitionVi": "không để ai bị bỏ lại phía sau",
+        "example": "Public services should leave no one behind in the digital age."
+      },
+      {
+        "term": "represent good value for money",
+        "definitionVi": "thể hiện giá trị xứng đáng với chi phí bỏ ra",
+        "example": "Supporters argue that libraries represent good value for money."
       }
     ],
     "questions": [
@@ -11001,6 +12100,56 @@ const topics = [
         "term": "balanced funding approach",
         "definitionVi": "cách tiếp cận tài trợ cân bằng",
         "example": "Many experts recommend a balanced funding approach for both goals."
+      },
+      {
+        "term": "inspire the next generation",
+        "definitionVi": "truyền cảm hứng cho thế hệ tiếp theo",
+        "example": "Olympic champions can inspire the next generation to take up sport."
+      },
+      {
+        "term": "reap long-term dividends",
+        "definitionVi": "thu về lợi ích lâu dài",
+        "example": "Investment in grassroots sport reaps long-term dividends for public health."
+      },
+      {
+        "term": "put the nation on the map",
+        "definitionVi": "đưa đất nước lên bản đồ (thế giới)",
+        "example": "Elite sporting success can put a small nation on the map."
+      },
+      {
+        "term": "cultivate sporting talent",
+        "definitionVi": "nuôi dưỡng tài năng thể thao",
+        "example": "Community clubs help cultivate sporting talent from a young age."
+      },
+      {
+        "term": "come with a hefty price tag",
+        "definitionVi": "đi kèm với một khoản chi phí lớn",
+        "example": "Preparing elite athletes for the Olympics comes with a hefty price tag."
+      },
+      {
+        "term": "broaden participation in sport",
+        "definitionVi": "mở rộng sự tham gia vào thể thao",
+        "example": "Grassroots funding aims to broaden participation in sport among children."
+      },
+      {
+        "term": "justify public investment in",
+        "definitionVi": "biện minh cho khoản đầu tư công vào",
+        "example": "It can be difficult to justify public investment in elite sport alone."
+      },
+      {
+        "term": "reduce healthcare spending",
+        "definitionVi": "giảm chi tiêu cho y tế",
+        "example": "A more active population could reduce long-term healthcare spending."
+      },
+      {
+        "term": "boost national morale",
+        "definitionVi": "nâng cao tinh thần quốc gia",
+        "example": "International sporting success can boost national morale significantly."
+      },
+      {
+        "term": "trickle down to grassroots level",
+        "definitionVi": "lan tỏa xuống cấp cơ sở, quần chúng",
+        "example": "Elite success is claimed to trickle down to grassroots level, though evidence is mixed."
       }
     ],
     "questions": [
@@ -11459,6 +12608,56 @@ const topics = [
         "term": "dual education system",
         "definitionVi": "hệ thống giáo dục song song",
         "example": "A dual education system combines academic study with vocational training."
+      },
+      {
+        "term": "meet the demands of the labour market",
+        "definitionVi": "đáp ứng nhu cầu của thị trường lao động",
+        "example": "Vocational courses are designed to meet the demands of the labour market."
+      },
+      {
+        "term": "confer prestige on",
+        "definitionVi": "mang lại uy tín cho",
+        "example": "A university degree still confers prestige on graduates in many societies."
+      },
+      {
+        "term": "narrow the skills gap",
+        "definitionVi": "thu hẹp khoảng cách kỹ năng",
+        "example": "Apprenticeships can help narrow the skills gap in technical industries."
+      },
+      {
+        "term": "open doors to employment",
+        "definitionVi": "mở ra cánh cửa việc làm",
+        "example": "Vocational qualifications can open doors to stable employment quickly."
+      },
+      {
+        "term": "carry equal weight",
+        "definitionVi": "có giá trị ngang bằng nhau",
+        "example": "Vocational and academic qualifications should carry equal weight."
+      },
+      {
+        "term": "diversify the economy",
+        "definitionVi": "đa dạng hóa nền kinh tế",
+        "example": "A skilled trade workforce helps diversify the economy."
+      },
+      {
+        "term": "steer students towards",
+        "definitionVi": "hướng học sinh tới",
+        "example": "Schools should not steer all students towards university by default."
+      },
+      {
+        "term": "yield a strong return on investment",
+        "definitionVi": "mang lại lợi tức đầu tư cao",
+        "example": "Vocational training can yield a strong return on investment for students."
+      },
+      {
+        "term": "bridge theory and practice",
+        "definitionVi": "kết nối lý thuyết và thực hành",
+        "example": "Apprenticeships help bridge theory and practice for young workers."
+      },
+      {
+        "term": "future-proof the workforce",
+        "definitionVi": "giúp lực lượng lao động thích ứng với tương lai",
+        "example": "Investing in both paths can help future-proof the national workforce."
       }
     ],
     "questions": [
@@ -11917,6 +13116,56 @@ const topics = [
         "term": "environmental degradation",
         "definitionVi": "suy thoái môi trường",
         "example": "Poorly managed tourism can accelerate environmental degradation."
+      },
+      {
+        "term": "generate much-needed revenue",
+        "definitionVi": "tạo ra nguồn thu rất cần thiết",
+        "example": "Eco-tourism can generate much-needed revenue for local communities."
+      },
+      {
+        "term": "leave a light footprint",
+        "definitionVi": "để lại tác động nhẹ nhàng đến môi trường",
+        "example": "Responsible travellers try to leave a light footprint on the places they visit."
+      },
+      {
+        "term": "come under increasing pressure",
+        "definitionVi": "chịu áp lực ngày càng tăng",
+        "example": "Popular eco-tourism sites have come under increasing pressure from visitors."
+      },
+      {
+        "term": "safeguard natural heritage",
+        "definitionVi": "bảo vệ di sản thiên nhiên",
+        "example": "Strict regulations help safeguard natural heritage for future generations."
+      },
+      {
+        "term": "strike a delicate balance",
+        "definitionVi": "duy trì một sự cân bằng tinh tế",
+        "example": "Eco-tourism must strike a delicate balance between profit and preservation."
+      },
+      {
+        "term": "empower local communities",
+        "definitionVi": "trao quyền cho cộng đồng địa phương",
+        "example": "Well-managed eco-tourism can empower local communities economically."
+      },
+      {
+        "term": "cap visitor numbers",
+        "definitionVi": "giới hạn số lượng du khách",
+        "example": "Some national parks cap visitor numbers to protect fragile ecosystems."
+      },
+      {
+        "term": "raise environmental consciousness",
+        "definitionVi": "nâng cao ý thức về môi trường",
+        "example": "Guided eco-tours help raise environmental consciousness among tourists."
+      },
+      {
+        "term": "exploit natural attractions",
+        "definitionVi": "khai thác các điểm hấp dẫn tự nhiên",
+        "example": "Some operators exploit natural attractions purely for profit."
+      },
+      {
+        "term": "champion sustainable development",
+        "definitionVi": "đề cao phát triển bền vững",
+        "example": "Governments increasingly champion sustainable development in tourism policy."
       }
     ],
     "questions": [
@@ -12387,6 +13636,56 @@ const topics = [
         "term": "sustainable transportation",
         "definitionVi": "giao thông bền vững",
         "example": "Electric vehicles are a key part of the shift towards sustainable transportation."
+      },
+      {
+        "term": "accelerate the shift towards",
+        "definitionVi": "đẩy nhanh sự chuyển đổi hướng tới",
+        "example": "Government incentives can accelerate the shift towards electric vehicles."
+      },
+      {
+        "term": "wean the economy off",
+        "definitionVi": "cai (sự phụ thuộc) của nền kinh tế khỏi",
+        "example": "Countries are trying to wean the economy off fossil fuels."
+      },
+      {
+        "term": "come with a hefty upfront cost",
+        "definitionVi": "đi kèm với chi phí ban đầu lớn",
+        "example": "Electric vehicles still come with a hefty upfront cost for many buyers."
+      },
+      {
+        "term": "roll out charging infrastructure",
+        "definitionVi": "triển khai cơ sở hạ tầng sạc điện",
+        "example": "Governments must roll out charging infrastructure to support EV adoption."
+      },
+      {
+        "term": "curb harmful emissions",
+        "definitionVi": "kiềm chế khí thải độc hại",
+        "example": "Electric vehicles help curb harmful emissions in city centres."
+      },
+      {
+        "term": "phase out combustion engines",
+        "definitionVi": "loại bỏ dần động cơ đốt trong",
+        "example": "Several nations plan to phase out combustion engines by 2035."
+      },
+      {
+        "term": "spark a green revolution",
+        "definitionVi": "khơi mào một cuộc cách mạng xanh",
+        "example": "The rise of EVs could spark a green revolution in transportation."
+      },
+      {
+        "term": "raise questions about",
+        "definitionVi": "đặt ra những câu hỏi về",
+        "example": "Battery production raises questions about the true environmental cost of EVs."
+      },
+      {
+        "term": "close the price gap between",
+        "definitionVi": "thu hẹp khoảng cách giá giữa",
+        "example": "Falling battery costs are closing the price gap between EVs and petrol cars."
+      },
+      {
+        "term": "future-proof transportation systems",
+        "definitionVi": "giúp hệ thống giao thông thích ứng với tương lai",
+        "example": "Investing in EVs helps future-proof national transportation systems."
       }
     ],
     "questions": [
@@ -12856,6 +14155,56 @@ const topics = [
         "term": "carbon footprint",
         "definitionVi": "dấu chân carbon",
         "example": "Renewable energy significantly reduces a country's overall carbon footprint."
+      },
+      {
+        "term": "harness natural resources",
+        "definitionVi": "khai thác nguồn tài nguyên tự nhiên",
+        "example": "Wind farms harness natural resources to generate clean electricity."
+      },
+      {
+        "term": "reduce dependence on fossil fuels",
+        "definitionVi": "giảm sự phụ thuộc vào nhiên liệu hóa thạch",
+        "example": "Solar power helps reduce dependence on fossil fuels significantly."
+      },
+      {
+        "term": "drive down energy costs",
+        "definitionVi": "kéo giảm chi phí năng lượng",
+        "example": "Advances in technology continue to drive down renewable energy costs."
+      },
+      {
+        "term": "secure energy independence",
+        "definitionVi": "đảm bảo sự tự chủ về năng lượng",
+        "example": "Investing in renewables can help a country secure energy independence."
+      },
+      {
+        "term": "cushion against price shocks",
+        "definitionVi": "giảm nhẹ tác động từ những cú sốc giá cả",
+        "example": "Renewable energy can cushion economies against oil price shocks."
+      },
+      {
+        "term": "scale up production",
+        "definitionVi": "mở rộng quy mô sản xuất",
+        "example": "Governments are helping firms scale up solar panel production."
+      },
+      {
+        "term": "yield substantial environmental benefits",
+        "definitionVi": "mang lại lợi ích môi trường đáng kể",
+        "example": "Wind power yields substantial environmental benefits over coal."
+      },
+      {
+        "term": "commit to net-zero targets",
+        "definitionVi": "cam kết thực hiện mục tiêu phát thải ròng bằng 0",
+        "example": "Many countries have committed to net-zero targets by mid-century."
+      },
+      {
+        "term": "overhaul the energy grid",
+        "definitionVi": "cải tổ toàn diện lưới điện",
+        "example": "A shift to renewables requires countries to overhaul the energy grid."
+      },
+      {
+        "term": "attract green investment",
+        "definitionVi": "thu hút đầu tư xanh",
+        "example": "Clear policies can attract green investment from international firms."
       }
     ],
     "questions": [
@@ -13319,6 +14668,56 @@ const topics = [
         "term": "vacant lot",
         "definitionVi": "lô đất bỏ trống",
         "example": "Many cities have converted vacant lots into productive green spaces."
+      },
+      {
+        "term": "breathe new life into",
+        "definitionVi": "thổi luồng sinh khí mới vào",
+        "example": "Community gardens breathe new life into neglected urban spaces."
+      },
+      {
+        "term": "foster a sense of community",
+        "definitionVi": "xây dựng cảm giác cộng đồng",
+        "example": "Shared gardening projects foster a sense of community among neighbours."
+      },
+      {
+        "term": "reclaim derelict land",
+        "definitionVi": "cải tạo lại đất bỏ hoang",
+        "example": "Cities are increasingly reclaiming derelict land for green use."
+      },
+      {
+        "term": "cultivate a sense of pride",
+        "definitionVi": "nuôi dưỡng niềm tự hào",
+        "example": "Tending a community garden can cultivate a sense of pride among residents."
+      },
+      {
+        "term": "promote self-sufficiency",
+        "definitionVi": "thúc đẩy sự tự cung tự cấp",
+        "example": "Urban gardens promote self-sufficiency by letting residents grow their own food."
+      },
+      {
+        "term": "counteract urban decay",
+        "definitionVi": "chống lại sự xuống cấp của đô thị",
+        "example": "Green initiatives can counteract urban decay in run-down neighbourhoods."
+      },
+      {
+        "term": "require ongoing upkeep",
+        "definitionVi": "đòi hỏi sự bảo trì liên tục",
+        "example": "Community gardens require ongoing upkeep from dedicated volunteers."
+      },
+      {
+        "term": "enhance urban biodiversity",
+        "definitionVi": "nâng cao đa dạng sinh học đô thị",
+        "example": "Green spaces can enhance urban biodiversity by attracting wildlife."
+      },
+      {
+        "term": "test soil for contamination",
+        "definitionVi": "kiểm tra đất để phát hiện ô nhiễm",
+        "example": "Authorities must test soil for contamination before opening a new garden."
+      },
+      {
+        "term": "boost neighbourhood morale",
+        "definitionVi": "nâng cao tinh thần khu dân cư",
+        "example": "A thriving community garden can boost neighbourhood morale considerably."
       }
     ],
     "questions": [
@@ -13785,6 +15184,56 @@ const topics = [
         "term": "doctor-to-patient ratio",
         "definitionVi": "tỷ lệ bác sĩ trên bệnh nhân",
         "example": "A low doctor-to-patient ratio leads to overworked medical staff and poor care."
+      },
+      {
+        "term": "put patients' needs first",
+        "definitionVi": "đặt nhu cầu bệnh nhân lên hàng đầu",
+        "example": "A good healthcare system should put patients' needs first, not profit."
+      },
+      {
+        "term": "shoulder rising healthcare costs",
+        "definitionVi": "gánh chịu chi phí y tế ngày càng tăng",
+        "example": "Public budgets increasingly shoulder rising healthcare costs."
+      },
+      {
+        "term": "queue for treatment",
+        "definitionVi": "xếp hàng chờ điều trị",
+        "example": "Patients in public systems sometimes have to queue for treatment."
+      },
+      {
+        "term": "drive up medical costs",
+        "definitionVi": "đẩy chi phí y tế lên cao",
+        "example": "Profit motives can drive up medical costs in private hospitals."
+      },
+      {
+        "term": "guarantee universal coverage",
+        "definitionVi": "đảm bảo bảo hiểm phổ cập",
+        "example": "Public healthcare systems aim to guarantee universal coverage for all citizens."
+      },
+      {
+        "term": "ease pressure on public hospitals",
+        "definitionVi": "giảm áp lực cho các bệnh viện công",
+        "example": "Private clinics can ease pressure on overcrowded public hospitals."
+      },
+      {
+        "term": "compromise patient care",
+        "definitionVi": "làm giảm chất lượng chăm sóc bệnh nhân",
+        "example": "Cost-cutting measures should never compromise patient care."
+      },
+      {
+        "term": "widen health inequalities",
+        "definitionVi": "làm nới rộng bất bình đẳng về y tế",
+        "example": "A purely private system risks widening health inequalities."
+      },
+      {
+        "term": "invest in cutting-edge treatment",
+        "definitionVi": "đầu tư vào phương pháp điều trị tiên tiến",
+        "example": "Private hospitals often invest in cutting-edge treatment technology."
+      },
+      {
+        "term": "deliver timely care",
+        "definitionVi": "cung cấp dịch vụ chăm sóc kịp thời",
+        "example": "Well-funded systems are better able to deliver timely care to patients."
       }
     ],
     "questions": [
@@ -14268,6 +15717,56 @@ const topics = [
         "term": "planned obsolescence",
         "definitionVi": "lỗi thời có chủ ý (sản phẩm bị lỗi sớm)",
         "example": "Planned obsolescence encourages consumers to replace products more frequently than necessary."
+      },
+      {
+        "term": "fuel a throwaway culture",
+        "definitionVi": "thúc đẩy văn hóa dùng-rồi-vứt",
+        "example": "Fast fashion continues to fuel a throwaway culture worldwide."
+      },
+      {
+        "term": "chase material possessions",
+        "definitionVi": "theo đuổi của cải vật chất",
+        "example": "Many people chase material possessions in the belief they bring happiness."
+      },
+      {
+        "term": "succumb to advertising pressure",
+        "definitionVi": "khuất phục trước áp lực quảng cáo",
+        "example": "Consumers often succumb to advertising pressure to buy unnecessary goods."
+      },
+      {
+        "term": "live beyond one's means",
+        "definitionVi": "sống vượt quá khả năng tài chính của bản thân",
+        "example": "Easy credit encourages people to live beyond their means."
+      },
+      {
+        "term": "place excessive value on",
+        "definitionVi": "đặt giá trị quá mức vào",
+        "example": "Modern society tends to place excessive value on owning the latest products."
+      },
+      {
+        "term": "deplete natural resources",
+        "definitionVi": "làm cạn kiệt tài nguyên thiên nhiên",
+        "example": "Mass production and overconsumption deplete natural resources rapidly."
+      },
+      {
+        "term": "cultivate mindful spending habits",
+        "definitionVi": "xây dựng thói quen chi tiêu có ý thức",
+        "example": "Financial education can help young people cultivate mindful spending habits."
+      },
+      {
+        "term": "define self-worth by possessions",
+        "definitionVi": "định nghĩa giá trị bản thân qua của cải",
+        "example": "Some individuals define their self-worth by the possessions they own."
+      },
+      {
+        "term": "generate excessive waste",
+        "definitionVi": "tạo ra lượng rác thải quá mức",
+        "example": "Disposable products generate excessive waste that harms the environment."
+      },
+      {
+        "term": "resist consumerist pressures",
+        "definitionVi": "chống lại áp lực tiêu dùng",
+        "example": "Some communities actively resist consumerist pressures through minimalism."
       }
     ],
     "questions": [
@@ -14745,6 +16244,56 @@ const topics = [
         "term": "artistic expression",
         "definitionVi": "biểu đạt nghệ thuật",
         "example": "Freedom of artistic expression is a cornerstone of a democratic society."
+      },
+      {
+        "term": "enrich cultural life",
+        "definitionVi": "làm phong phú đời sống văn hóa",
+        "example": "Public funding for the arts helps enrich the cultural life of a nation."
+      },
+      {
+        "term": "divert funds away from",
+        "definitionVi": "chuyển hướng ngân sách ra khỏi",
+        "example": "Critics argue arts funding diverts funds away from essential services."
+      },
+      {
+        "term": "nurture creative talent",
+        "definitionVi": "nuôi dưỡng tài năng sáng tạo",
+        "example": "Public grants help nurture creative talent that might otherwise go unsupported."
+      },
+      {
+        "term": "justify public spending on",
+        "definitionVi": "biện minh cho chi tiêu công vào",
+        "example": "It can be difficult to justify public spending on the arts during a recession."
+      },
+      {
+        "term": "preserve cultural identity",
+        "definitionVi": "bảo tồn bản sắc văn hóa",
+        "example": "State funding helps preserve cultural identity through traditional art forms."
+      },
+      {
+        "term": "stimulate the local economy",
+        "definitionVi": "kích thích nền kinh tế địa phương",
+        "example": "Arts festivals can stimulate the local economy through tourism."
+      },
+      {
+        "term": "compete for limited resources",
+        "definitionVi": "cạnh tranh vì nguồn lực hạn chế",
+        "example": "The arts sector must compete for limited resources with healthcare and education."
+      },
+      {
+        "term": "foster national pride",
+        "definitionVi": "nuôi dưỡng niềm tự hào dân tộc",
+        "example": "Successful cultural institutions can foster national pride."
+      },
+      {
+        "term": "democratise access to culture",
+        "definitionVi": "phổ cập hóa khả năng tiếp cận văn hóa",
+        "example": "Public funding helps democratise access to culture for low-income citizens."
+      },
+      {
+        "term": "yield intangible benefits",
+        "definitionVi": "mang lại những lợi ích vô hình",
+        "example": "Investment in the arts yields intangible benefits like well-being and creativity."
       }
     ],
     "questions": [
@@ -15221,6 +16770,56 @@ const topics = [
         "term": "early intervention",
         "definitionVi": "can thiệp sớm",
         "example": "Early intervention programmes can prevent at-risk youth from committing crimes."
+      },
+      {
+        "term": "fall into a life of crime",
+        "definitionVi": "rơi vào con đường phạm tội",
+        "example": "Without guidance, vulnerable teenagers may fall into a life of crime."
+      },
+      {
+        "term": "tackle the underlying causes of",
+        "definitionVi": "giải quyết nguyên nhân sâu xa của",
+        "example": "Effective policy must tackle the underlying causes of youth crime."
+      },
+      {
+        "term": "steer young people away from",
+        "definitionVi": "hướng giới trẻ tránh xa khỏi",
+        "example": "Community programmes aim to steer young people away from gangs."
+      },
+      {
+        "term": "provide constructive outlets for",
+        "definitionVi": "cung cấp lối thoát mang tính xây dựng cho",
+        "example": "Sports clubs provide constructive outlets for troubled teenagers' energy."
+      },
+      {
+        "term": "break the cycle of offending",
+        "definitionVi": "phá vỡ vòng lặp tái phạm tội",
+        "example": "Rehabilitation programmes aim to break the cycle of youth offending."
+      },
+      {
+        "term": "come from broken homes",
+        "definitionVi": "xuất thân từ những gia đình tan vỡ",
+        "example": "A disproportionate number of young offenders come from broken homes."
+      },
+      {
+        "term": "instil a sense of responsibility",
+        "definitionVi": "hình thành ý thức trách nhiệm",
+        "example": "Mentorship can instil a sense of responsibility in at-risk youth."
+      },
+      {
+        "term": "reintegrate offenders into society",
+        "definitionVi": "tái hòa nhập người phạm tội vào xã hội",
+        "example": "Support services help reintegrate young offenders into society."
+      },
+      {
+        "term": "address socioeconomic root causes",
+        "definitionVi": "giải quyết nguyên nhân gốc rễ về kinh tế-xã hội",
+        "example": "Long-term solutions must address socioeconomic root causes of crime."
+      },
+      {
+        "term": "curb rising crime rates",
+        "definitionVi": "kiềm chế tỷ lệ tội phạm gia tăng",
+        "example": "Community policing has helped curb rising crime rates in some areas."
       }
     ],
     "questions": [
@@ -15694,6 +17293,56 @@ const topics = [
         "term": "prison overcrowding",
         "definitionVi": "quá tải trại giam",
         "example": "Prison overcrowding undermines efforts to rehabilitate offenders."
+      },
+      {
+        "term": "act as a deterrent",
+        "definitionVi": "đóng vai trò như một biện pháp răn đe",
+        "example": "Harsh sentences are meant to act as a deterrent to future crime."
+      },
+      {
+        "term": "fail to address root causes",
+        "definitionVi": "không giải quyết được nguyên nhân gốc rễ",
+        "example": "Long sentences alone fail to address the root causes of crime."
+      },
+      {
+        "term": "reduce reoffending rates",
+        "definitionVi": "giảm tỷ lệ tái phạm",
+        "example": "Rehabilitation programmes have been shown to reduce reoffending rates."
+      },
+      {
+        "term": "come at a great cost to society",
+        "definitionVi": "gây tốn kém lớn cho xã hội",
+        "example": "Mass incarceration comes at a great cost to society."
+      },
+      {
+        "term": "equip offenders with skills",
+        "definitionVi": "trang bị kỹ năng cho phạm nhân",
+        "example": "Vocational programmes equip offenders with skills for life after release."
+      },
+      {
+        "term": "serve as a wake-up call",
+        "definitionVi": "đóng vai trò như một lời cảnh tỉnh",
+        "example": "A short custodial sentence can serve as a wake-up call for first-time offenders."
+      },
+      {
+        "term": "perpetuate a cycle of crime",
+        "definitionVi": "duy trì vòng luẩn quẩn của tội phạm",
+        "example": "Overcrowded prisons can perpetuate a cycle of crime rather than break it."
+      },
+      {
+        "term": "prioritise rehabilitation over punishment",
+        "definitionVi": "ưu tiên phục hồi hơn trừng phạt",
+        "example": "Some countries prioritise rehabilitation over punishment with notable success."
+      },
+      {
+        "term": "ease overcrowding in prisons",
+        "definitionVi": "giảm bớt tình trạng quá tải trong nhà tù",
+        "example": "Alternative sentencing can help ease overcrowding in prisons."
+      },
+      {
+        "term": "restore offenders to productive life",
+        "definitionVi": "đưa phạm nhân trở lại cuộc sống có ích",
+        "example": "Restorative justice aims to restore offenders to a productive life."
       }
     ],
     "questions": [
@@ -16193,6 +17842,56 @@ const topics = [
         "term": "environmental policy",
         "definitionVi": "chính sách môi trường",
         "example": "Strong environmental policies are essential for long-term ecological health."
+      },
+      {
+        "term": "wreak environmental havoc",
+        "definitionVi": "gây ra tàn phá môi trường nghiêm trọng",
+        "example": "Unchecked industrial growth can wreak environmental havoc on ecosystems."
+      },
+      {
+        "term": "curb greenhouse gas emissions",
+        "definitionVi": "kiềm chế khí thải nhà kính",
+        "example": "Nations have pledged to curb greenhouse gas emissions by 2050."
+      },
+      {
+        "term": "push the planet to the brink",
+        "definitionVi": "đẩy hành tinh đến bờ vực",
+        "example": "Scientists warn that inaction could push the planet to the brink of crisis."
+      },
+      {
+        "term": "adopt greener practices",
+        "definitionVi": "áp dụng những thực hành xanh hơn",
+        "example": "Businesses are being encouraged to adopt greener practices."
+      },
+      {
+        "term": "mitigate the effects of climate change",
+        "definitionVi": "giảm nhẹ tác động của biến đổi khí hậu",
+        "example": "Reforestation can help mitigate the effects of climate change."
+      },
+      {
+        "term": "exhaust natural resources",
+        "definitionVi": "làm cạn kiệt tài nguyên thiên nhiên",
+        "example": "Overconsumption continues to exhaust the planet's natural resources."
+      },
+      {
+        "term": "transition to clean energy",
+        "definitionVi": "chuyển đổi sang năng lượng sạch",
+        "example": "Many governments are working to transition to clean energy sources."
+      },
+      {
+        "term": "trigger extreme weather events",
+        "definitionVi": "kích hoạt các hiện tượng thời tiết cực đoan",
+        "example": "Rising temperatures can trigger extreme weather events worldwide."
+      },
+      {
+        "term": "hold governments accountable",
+        "definitionVi": "buộc chính phủ phải chịu trách nhiệm",
+        "example": "Activists are working to hold governments accountable for their climate pledges."
+      },
+      {
+        "term": "safeguard the planet for future generations",
+        "definitionVi": "bảo vệ hành tinh cho các thế hệ tương lai",
+        "example": "Bold action today can safeguard the planet for future generations."
       }
     ],
     "questions": [
@@ -16558,6 +18257,56 @@ const topics = [
         "term": "innovation",
         "definitionVi": "sự đổi mới, sáng tạo",
         "example": "Technological innovation has dramatically improved medical treatments."
+      },
+      {
+        "term": "transform the way we live",
+        "definitionVi": "biến đổi cách chúng ta sống",
+        "example": "Digital technology continues to transform the way we live and work."
+      },
+      {
+        "term": "outpace regulation",
+        "definitionVi": "vượt qua tốc độ của các quy định pháp luật",
+        "example": "Rapid AI development often outpaces regulation designed to control it."
+      },
+      {
+        "term": "raise ethical concerns",
+        "definitionVi": "làm dấy lên những lo ngại về đạo đức",
+        "example": "Facial recognition technology raises serious ethical concerns."
+      },
+      {
+        "term": "safeguard user privacy",
+        "definitionVi": "bảo vệ quyền riêng tư của người dùng",
+        "example": "Tech companies must do more to safeguard user privacy."
+      },
+      {
+        "term": "streamline everyday tasks",
+        "definitionVi": "đơn giản hóa các công việc hằng ngày",
+        "example": "Smart devices help streamline everyday tasks for busy households."
+      },
+      {
+        "term": "widen the digital divide",
+        "definitionVi": "nới rộng khoảng cách kỹ thuật số",
+        "example": "Unequal internet access continues to widen the digital divide."
+      },
+      {
+        "term": "disrupt traditional industries",
+        "definitionVi": "làm gián đoạn, xáo trộn các ngành công nghiệp truyền thống",
+        "example": "E-commerce has disrupted traditional retail industries."
+      },
+      {
+        "term": "harness the power of data",
+        "definitionVi": "khai thác sức mạnh của dữ liệu",
+        "example": "Companies increasingly harness the power of data to improve services."
+      },
+      {
+        "term": "expose users to risks",
+        "definitionVi": "khiến người dùng tiếp xúc với rủi ro",
+        "example": "Weak cybersecurity can expose users to serious online risks."
+      },
+      {
+        "term": "drive technological innovation",
+        "definitionVi": "thúc đẩy sự đổi mới công nghệ",
+        "example": "Fierce competition continues to drive technological innovation forward."
       }
     ],
     "questions": [
@@ -16929,6 +18678,56 @@ const topics = [
         "term": "digital education",
         "definitionVi": "giáo dục kỹ thuật số",
         "example": "Digital education tools make learning more interactive and accessible."
+      },
+      {
+        "term": "prepare students for the real world",
+        "definitionVi": "chuẩn bị cho học sinh bước vào thực tế cuộc sống",
+        "example": "Schools must do more to prepare students for the real world."
+      },
+      {
+        "term": "place undue pressure on",
+        "definitionVi": "đặt áp lực không cần thiết lên",
+        "example": "Standardised testing can place undue pressure on young students."
+      },
+      {
+        "term": "broaden students' horizons",
+        "definitionVi": "mở rộng tầm nhìn của học sinh",
+        "example": "Extracurricular activities help broaden students' horizons beyond academics."
+      },
+      {
+        "term": "fall through the cracks",
+        "definitionVi": "bị bỏ sót, không được quan tâm đúng mức",
+        "example": "Struggling students can easily fall through the cracks in large classes."
+      },
+      {
+        "term": "nurture well-rounded individuals",
+        "definitionVi": "nuôi dưỡng những cá nhân phát triển toàn diện",
+        "example": "A balanced curriculum helps nurture well-rounded individuals."
+      },
+      {
+        "term": "shape young minds",
+        "definitionVi": "định hình tư duy của giới trẻ",
+        "example": "Teachers play a powerful role in shaping young minds."
+      },
+      {
+        "term": "close the achievement gap",
+        "definitionVi": "thu hẹp khoảng cách về thành tích học tập",
+        "example": "Targeted support can help close the achievement gap between students."
+      },
+      {
+        "term": "instil lifelong values",
+        "definitionVi": "hình thành những giá trị suốt đời",
+        "example": "Good education instils lifelong values such as honesty and resilience."
+      },
+      {
+        "term": "equip youth with practical skills",
+        "definitionVi": "trang bị cho giới trẻ những kỹ năng thực tiễn",
+        "example": "Modern curricula should equip youth with practical, real-world skills."
+      },
+      {
+        "term": "foster a love of learning",
+        "definitionVi": "nuôi dưỡng niềm yêu thích học tập",
+        "example": "Engaging teaching methods foster a genuine love of learning."
       }
     ],
     "questions": [
@@ -17294,6 +19093,56 @@ const topics = [
         "term": "healthcare access",
         "definitionVi": "khả năng tiếp cận dịch vụ y tế",
         "example": "Healthcare access is often limited in rapidly urbanising developing cities."
+      },
+      {
+        "term": "put a strain on public services",
+        "definitionVi": "gây áp lực lên các dịch vụ công",
+        "example": "Rapid urbanisation puts a strain on public services like healthcare."
+      },
+      {
+        "term": "exacerbate health problems",
+        "definitionVi": "làm trầm trọng thêm các vấn đề sức khỏe",
+        "example": "Air pollution in cities can exacerbate respiratory health problems."
+      },
+      {
+        "term": "outstrip housing supply",
+        "definitionVi": "vượt quá nguồn cung nhà ở",
+        "example": "Population growth often outstrips housing supply in major cities."
+      },
+      {
+        "term": "improve living conditions",
+        "definitionVi": "cải thiện điều kiện sống",
+        "example": "Investment in infrastructure can improve living conditions in slums."
+      },
+      {
+        "term": "expand access to healthcare",
+        "definitionVi": "mở rộng khả năng tiếp cận dịch vụ y tế",
+        "example": "Cities must expand access to healthcare as populations grow."
+      },
+      {
+        "term": "give rise to overcrowding",
+        "definitionVi": "gây ra tình trạng quá tải",
+        "example": "Uncontrolled urban growth can give rise to overcrowding and poor sanitation."
+      },
+      {
+        "term": "invest in green infrastructure",
+        "definitionVi": "đầu tư vào cơ sở hạ tầng xanh",
+        "example": "Cities are investing in green infrastructure to improve residents' well-being."
+      },
+      {
+        "term": "compromise public well-being",
+        "definitionVi": "làm tổn hại đến phúc lợi cộng đồng",
+        "example": "Poor urban planning can compromise public well-being in the long run."
+      },
+      {
+        "term": "alleviate urban poverty",
+        "definitionVi": "giảm bớt tình trạng nghèo đô thị",
+        "example": "Job creation programmes can help alleviate urban poverty."
+      },
+      {
+        "term": "cope with rapid urban growth",
+        "definitionVi": "đối phó với sự tăng trưởng đô thị nhanh chóng",
+        "example": "Many developing cities struggle to cope with rapid urban growth."
       }
     ],
     "questions": [
@@ -17660,6 +19509,56 @@ const topics = [
         "term": "currency depreciation",
         "definitionVi": "mất giá đồng tiền",
         "example": "Currency depreciation makes exports cheaper but raises the cost of imports."
+      },
+      {
+        "term": "reap the benefits of globalisation",
+        "definitionVi": "gặt hái lợi ích từ toàn cầu hóa",
+        "example": "Developed economies have long reaped the benefits of globalisation."
+      },
+      {
+        "term": "widen the gap between rich and poor",
+        "definitionVi": "nới rộng khoảng cách giàu nghèo",
+        "example": "Unequal trade practices can widen the gap between rich and poor nations."
+      },
+      {
+        "term": "boost cross-border trade",
+        "definitionVi": "thúc đẩy thương mại xuyên biên giới",
+        "example": "Trade agreements have helped boost cross-border trade significantly."
+      },
+      {
+        "term": "drive down production costs",
+        "definitionVi": "kéo giảm chi phí sản xuất",
+        "example": "Outsourcing helps companies drive down production costs."
+      },
+      {
+        "term": "expose local industries to competition",
+        "definitionVi": "khiến các ngành công nghiệp địa phương đối mặt cạnh tranh",
+        "example": "Free trade exposes local industries to intense foreign competition."
+      },
+      {
+        "term": "stimulate economic growth",
+        "definitionVi": "kích thích tăng trưởng kinh tế",
+        "example": "Foreign investment can stimulate economic growth in developing nations."
+      },
+      {
+        "term": "erode local traditions",
+        "definitionVi": "làm xói mòn các truyền thống địa phương",
+        "example": "Some argue that globalisation gradually erodes local traditions."
+      },
+      {
+        "term": "integrate into the global economy",
+        "definitionVi": "hội nhập vào nền kinh tế toàn cầu",
+        "example": "Emerging markets are working to integrate into the global economy."
+      },
+      {
+        "term": "trigger job losses",
+        "definitionVi": "gây ra tình trạng mất việc làm",
+        "example": "Automation and outsourcing can trigger job losses in certain sectors."
+      },
+      {
+        "term": "level the global playing field",
+        "definitionVi": "tạo sân chơi toàn cầu công bằng",
+        "example": "Fair trade policies aim to level the global playing field for smaller economies."
       }
     ],
     "questions": [
@@ -17919,7 +19818,8 @@ const topics = [
       }
     ]
   }
-]
+];
+
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
 
