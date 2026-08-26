@@ -8,13 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/tokens.css?v=20260831" />
-  <link rel="stylesheet" href="css/components.css?v=20260831" />
-  <link rel="stylesheet" href="writing-practice.css?v=20260831" />
-  <link rel="stylesheet" href="css/mobile.css?v=20260831" />
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831" />
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831" />
+  <link rel="stylesheet" href="/css/components.css?v=20260831" />
+  <link rel="stylesheet" href="/writing-practice.css?v=20260831" />
+  <link rel="stylesheet" href="/css/mobile.css?v=20260831" />
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260831" />
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     /* ── Stop/Quit button ── */
     .wp-stop-btn {
@@ -249,18 +249,18 @@
   </style>
 </head>
 <body>
-<script src="js/shared/auth-service.js?v=20260831"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/upgrade-modal.js?v=20260831"></script>
-<script src="js/nav.js?v=20260831"></script>
-<script src="js/shared/onboarding-tour.js?v=20260831"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260831"></script>
-<script src="js/shared/sound-effects.js?v=20260831"></script>
-<script src="js/shared/utils.js?v=20260831"></script>
-<script src="js/shared/toast.js?v=20260831"></script>
-<script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260831"></script>
-<script src="js/shared/score-message.js?v=20260831"></script>
+<script src="/js/shared/auth-service.js?v=20260831"></script>
+<script src="/js/auth.js?v=20260831"></script>
+<script src="/js/upgrade-modal.js?v=20260831"></script>
+<script src="/js/nav.js?v=20260831"></script>
+<script src="/js/shared/onboarding-tour.js?v=20260831"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260831"></script>
+<script src="/js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/toast.js?v=20260831"></script>
+<script src="/js/shared/api-client.js?v=20260831"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260831"></script>
+<script src="/js/shared/score-message.js?v=20260831"></script>
 
 
 <!-- ── Mini stats widget (XP/streak/sound) — floats top-right, shared
@@ -2014,12 +2014,12 @@ function showTestResults(data) {
   const expandCount = results.length - (countable ?? results.length);
   const { emoji, message: msg } = getScoreMessage(score);
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
-  const wpImgSrc = score >= 90 ? 'img/vocab_writingabove90%25.jpg'
-                  : score >= 70 ? 'img/above7.5.jpg'
-                  : score >= 60 ? 'img/band_6_7.jpg'
-                  : score >= 50 ? 'img/writingbelow60%25.jpg'
-                  : score >= 45 ? 'img/writingbelow50%25.jpg'
-                  : 'img/writingbelow45%25.jpg';
+  const wpImgSrc = score >= 90 ? '/img/vocab_writingabove90%25.jpg'
+                  : score >= 70 ? '/img/above7.5.jpg'
+                  : score >= 60 ? '/img/band_6_7.jpg'
+                  : score >= 50 ? '/img/writingbelow60%25.jpg'
+                  : score >= 45 ? '/img/writingbelow50%25.jpg'
+                  : '/img/writingbelow45%25.jpg';
   document.getElementById('test-score-header').innerHTML = `
     <img src="${wpImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
     <div class="wp-test-big-score">${emoji} ${score}%</div>

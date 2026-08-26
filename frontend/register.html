@@ -19,6 +19,9 @@
 <body>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/toast.js?v=20260831"></script>
+  <script src="js/shared/safe-redirect.js?v=20260831"></script>
+  <script src="js/shared/auth-service.js?v=20260831"></script>
+  <script src="js/shared/api-client.js?v=20260831"></script>
   <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
   <div class="page-center">
     <div class="container">
@@ -189,6 +192,13 @@
         // dark-mode-aware .toast styling — same as every other page.
         // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
+        // register.html loads auth-service.js directly (not auth.js — see
+        // that file's header comment) so an already-logged-in visitor still
+        // gets bounced away (Guard 2), same as login.html.
+        (function () {
+            if (window.AuthService && window.AuthService.redirectIfAuthenticated()) return;
+        })();
+
         // Toggle hiển thị mật khẩu
         function togglePassword(fieldId) {
             const passwordInput = document.getElementById(fieldId);
@@ -291,19 +301,19 @@
                     body: JSON.stringify(formData)
                 });
 
-                const data = await res.json();
+                await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
 
-                if (data.success) {
-                    showToast("Đăng ký thành công! Mời bạn đăng nhập.", "success", 2500);
-                    setTimeout(function () { window.location.href = "login.html"; }, 2000);
-                } else {
-                    showToast(data.message || "Đăng ký thất bại!", "error");
-                    btn.innerHTML = originalHTML;
-                    btn.disabled = false;
-                }
+                showToast("Đăng ký thành công! Mời bạn đăng nhập.", "success", 2500);
+                setTimeout(function () { window.location.href = "login.html"; }, 2000);
             } catch (err) {
                 console.error('Register error:', err);
-                showToast("Không kết nối được server! Vui lòng thử lại.", "warning");
+                if (err.coldStart) {
+                    showToast("Server đang khởi động lại (thường mất khoảng 30 giây), vui lòng thử lại.", "warning");
+                } else if (err.body) {
+                    showToast(err.body.message || "Đăng ký thất bại!", "error");
+                } else {
+                    showToast("Không kết nối được server! Vui lòng thử lại.", "warning");
+                }
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }

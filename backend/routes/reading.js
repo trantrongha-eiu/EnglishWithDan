@@ -41,7 +41,7 @@ router.get('/practice/list', auth, readingController.listPracticePassages);
 router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('reading'), readingController.getPracticePassageById);
 
 // GET /api/reading/practice/answer-key/:id — fetched only at submit time
-router.get('/practice/answer-key/:id', auth, readingController.getPassageAnswerKey);
+router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), readingController.getPassageAnswerKey);
 
 // POST /api/reading/practice/save
 router.post('/practice/save', auth, readingController.savePractice);

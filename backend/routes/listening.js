@@ -19,7 +19,7 @@ const listeningController = require('../controllers/listening.controller');
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/practice/list', auth, listeningController.listPracticeSections);
 router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('listening'), listeningController.getPracticeSectionById);
-router.get('/practice/answer-key/:id', auth, listeningController.getSectionAnswerKey);
+router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getSectionAnswerKey);
 
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
 // sections have already been through scripts/bulkAlignListeningDictation.js;

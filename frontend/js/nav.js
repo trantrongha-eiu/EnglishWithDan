@@ -89,11 +89,11 @@
         var items = l.children.map(function (c) {
           var cc = navChildActive(c.href) ? ' class="active"' : '';
           var cbadge = c.badgeId ? '<span id="' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
-          return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + cbadge + '</a>';
+          return '<a href="/' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + cbadge + '</a>';
         }).join('');
-        return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
+        return '<div class="nav-dropdown"><a href="/' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
       }
-      return '<a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + '</a>';
+      return '<a href="/' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + '</a>';
     }).join('');
   }
 
@@ -103,12 +103,12 @@
       var isActive = page === l.href || (l.children && l.children.some(function (c) { return navChildActive(c.href); }));
       var active = isActive ? ' active' : '';
       var badge = l.badgeId ? '<span id="mob_' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
-      out.push('<a href="' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
+      out.push('<a href="/' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
       if (l.children) {
         l.children.forEach(function (c) {
           var ca = navChildActive(c.href) ? ' active' : '';
           var cbadge = c.badgeId ? '<span id="mob_' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
-          out.push('<a href="' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + cbadge + '</a>');
+          out.push('<a href="/' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + cbadge + '</a>');
         });
       }
     });
@@ -120,7 +120,7 @@
   nav.className = 'top-nav';
   nav.id = 'globalTopNav';
   nav.innerHTML =
-    '<a href="dashboard.html" class="nav-brand"><img src="img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
+    '<a href="/dashboard.html" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
       '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh" aria-label="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
@@ -140,7 +140,7 @@
           '<div class="nav-bell-panel-list" id="globalBellList"><div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div></div>' +
         '</div>' +
       '</div>' +
-      '<a href="profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
+      '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
       '</a>' +
       '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>' +
@@ -269,7 +269,7 @@
   function doLogout() {
     if (typeof window.logout === 'function') { window.logout(); return; }
     if (window.AuthService) { window.AuthService.clearSession(); }
-    location.href = 'login.html';
+    location.href = '/login.html';
   }
   document.getElementById('globalLogoutBtn').addEventListener('click', doLogout);
   document.getElementById('mobileLogoutBtn').addEventListener('click', doLogout);
@@ -710,7 +710,7 @@
     // is deliberate: the student picks which sổ to study, per the product ask.
     document.getElementById('nav-vocab-inactivity-go').addEventListener('click', function () {
       overlay.remove();
-      location.href = 'dashboard.html';
+      location.href = '/dashboard.html';
     });
   }
 

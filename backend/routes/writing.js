@@ -27,8 +27,8 @@ router.post('/submit', auth, writingController.submitExam);
 // ══════════════════════════════════════════════════
 // PRACTICE MODE – luyện Task 1 / Task 2 lẻ
 // ══════════════════════════════════════════════════
-router.get('/practice/tasks', auth, writingController.listPracticeTasks);
-router.get('/practice/task', auth, writingController.getPracticeTask);
+router.get('/practice/tasks', auth, fullAccess, writingController.listPracticeTasks);
+router.get('/practice/task', auth, fullAccess, writingController.getPracticeTask);
 router.post('/practice/submit', auth, fullAccess, writingController.submitPractice);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 

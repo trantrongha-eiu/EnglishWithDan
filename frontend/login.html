@@ -23,6 +23,7 @@
   <script src="js/shared/toast.js?v=20260831"></script>
   <script src="js/shared/safe-redirect.js?v=20260831"></script>
   <script src="js/shared/auth-service.js?v=20260831"></script>
+  <script src="js/shared/api-client.js?v=20260831"></script>
   <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
   <div class="page-center">
     <div class="container">
@@ -184,6 +185,16 @@
     </div>
   </div><!-- /.page-center -->
     <script>
+        // login.html deliberately loads auth-service.js directly instead of
+        // auth.js (see that file's header comment) so it gets the session
+        // primitives without auth.js's automatic page-load guards firing —
+        // this page needs to run its own reason=/error= toast logic first.
+        // Guard 2 (bounce an already-logged-in visitor away from login.html)
+        // still needs to fire though, just called explicitly instead.
+        (function () {
+            if (window.AuthService && window.AuthService.redirectIfAuthenticated()) return;
+        })();
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.querySelector('.eye-icon');
@@ -264,31 +275,38 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: emailOrUsername, password })
                 });
-                const data = await res.json();
+                // skipAuthRedirect: a wrong-password login attempt returns
+                // 401 too (see backend/controllers/auth.controller.js) — that
+                // must show "Sai email/mật khẩu", not trigger ApiClient's
+                // normal "session expired, log out" handling on the login
+                // page itself.
+                const data = await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
 
-                if (data.success) {
-                    // Session creation centralized in AuthService.login() —
-                    // writes token/user/lastLoginAt in one place instead of
-                    // this page hand-rolling the same 3 lines auth-callback.html
-                    // also used to (Phase 5).
-                    window.AuthService.login(data.token, data.user);
-                    // getPostLoginRedirect() centralizes the role-matched
-                    // next= handling that used to be duplicated inline here
-                    // and in auth-callback.html.
-                    window.location.href = window.AuthService.getPostLoginRedirect(data.user);
-                } else {
+                // Session creation centralized in AuthService.login() —
+                // writes token/user/lastLoginAt in one place instead of
+                // this page hand-rolling the same 3 lines auth-callback.html
+                // also used to (Phase 5).
+                window.AuthService.login(data.token, data.user);
+                // getPostLoginRedirect() centralizes the role-matched
+                // next= handling that used to be duplicated inline here
+                // and in auth-callback.html.
+                window.location.href = window.AuthService.getPostLoginRedirect(data.user);
+            } catch (err) {
+                console.error('Login error:', err);
+                if (err.coldStart) {
+                    showToastWithTitle('error', 'Server đang khởi động', 'Server đang khởi động lại (thường mất khoảng 30 giây), vui lòng thử lại.');
+                } else if (err.body) {
                     // PATCH: Phân biệt bị cấm vs lỗi thường
-                    const isBanned = data.message && data.message.includes('bị cấm');
+                    const isBanned = err.body.message && err.body.message.includes('bị cấm');
                     if (isBanned) {
                         showToastWithTitle('banned', 'Tài khoản bị khóa',
                             'Vui lòng liên hệ giáo viên để mở khóa.', 0);
                     } else {
-                        showToastWithTitle('error', 'Đăng nhập thất bại', data.message || 'Vui lòng thử lại.');
+                        showToastWithTitle('error', 'Đăng nhập thất bại', err.body.message || 'Vui lòng thử lại.');
                     }
+                } else {
+                    showToastWithTitle('error', 'Lỗi kết nối', 'Không kết nối được server! Vui lòng thử lại.');
                 }
-            } catch (err) {
-                console.error('Login error:', err);
-                showToastWithTitle('error', 'Lỗi kết nối', 'Không kết nối được server! Vui lòng thử lại.');
             } finally {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
@@ -359,7 +377,7 @@
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ email: _fmEmail })
                 });
-                const data = await res.json();
+                const data = await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
                 if (data.success) {
                     document.getElementById('fmStep1').style.display = 'none';
                     document.getElementById('fmStep2').style.display = 'block';
@@ -380,10 +398,10 @@
                     });
                     inputs[0].focus();
                     if (resend) showFmMsg('Đã gửi lại mã OTP!', false);
-                } else {
-                    showFmMsg(data.message || 'Lỗi gửi email', true);
                 }
-            } catch { showFmMsg('Không kết nối được server', true); }
+            } catch (err) {
+                showFmMsg(err.coldStart ? 'Server đang khởi động lại, vui lòng thử lại sau vài giây.' : ((err.body && err.body.message) || 'Không kết nối được server'), true);
+            }
             if (btn) { btn.disabled = false; btn.textContent = 'Gửi mã OTP'; }
         }
 
@@ -395,18 +413,16 @@
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ email: _fmEmail, otp })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    _fmResetToken = data.resetToken;
-                    document.getElementById('fmStep2').style.display = 'none';
-                    document.getElementById('fmStep3').style.display = 'block';
-                    document.getElementById('fmTitle').textContent = 'Đặt mật khẩu mới';
-                    document.getElementById('fmSubtitle').textContent = 'Nhập mật khẩu mới cho tài khoản';
-                    document.getElementById('fmMsg').style.display = 'none';
-                } else {
-                    showFmMsg(data.message || 'Mã không đúng', true);
-                }
-            } catch { showFmMsg('Không kết nối được server', true); }
+                const data = await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
+                _fmResetToken = data.resetToken;
+                document.getElementById('fmStep2').style.display = 'none';
+                document.getElementById('fmStep3').style.display = 'block';
+                document.getElementById('fmTitle').textContent = 'Đặt mật khẩu mới';
+                document.getElementById('fmSubtitle').textContent = 'Nhập mật khẩu mới cho tài khoản';
+                document.getElementById('fmMsg').style.display = 'none';
+            } catch (err) {
+                showFmMsg(err.coldStart ? 'Server đang khởi động lại, vui lòng thử lại sau vài giây.' : ((err.body && err.body.message) || 'Không kết nối được server'), true);
+            }
         }
 
         function openConsultModal(){} // overridden by consult-modal.js
@@ -421,14 +437,12 @@
                     method: 'POST', headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ resetToken: _fmResetToken, newPassword: newPass })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    showFmMsg('Đặt lại mật khẩu thành công! Đang chuyển hướng...', false);
-                    setTimeout(closeForgotModal, 2000);
-                } else {
-                    showFmMsg(data.message || 'Lỗi đặt lại mật khẩu', true);
-                }
-            } catch { showFmMsg('Không kết nối được server', true); }
+                await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
+                showFmMsg('Đặt lại mật khẩu thành công! Đang chuyển hướng...', false);
+                setTimeout(closeForgotModal, 2000);
+            } catch (err) {
+                showFmMsg(err.coldStart ? 'Server đang khởi động lại, vui lòng thử lại sau vài giây.' : ((err.body && err.body.message) || 'Không kết nối được server'), true);
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
