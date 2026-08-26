@@ -439,9 +439,12 @@
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
               <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
+              <div class="fb-meaning-hint" id="listenMeaning" style="display:none"><i class="fas fa-language"></i> <span id="listenMeaningText"></span></div>
               <div class="listen-hint" id="listenHint"></div>
+              <div class="listen-hint" id="listenLetterHint" style="display:none"></div>
               <div class="fb-input-row">
                 <input class="listen-input" id="listenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkListening()"/>
+                <button class="btn-hint-sm" id="listenHintBtn" onclick="showListenHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i> <span id="listenHintBtnLabel">Hint (3)</span></button>
                 <button class="btn-check" onclick="checkListening()">Check</button>
               </div>
               <div id="listenFeedback" style="margin-top:10px"></div>

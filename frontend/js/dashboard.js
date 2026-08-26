@@ -24,6 +24,8 @@ let currentWord = null;
 let isFlipped = false;
 let hintUsed = false;
 let answered = false;
+let _listenHintCount = 0; // presses used so far on the current Listen-mode question — capped at 3
+const LISTEN_HINT_MAX = 3;
 // Sound on/off is now the shared js/shared/sound-effects.js toggle
 
 // ── Spaced Repetition & Mixed Mode ─────────────
@@ -2719,9 +2721,23 @@ function checkFillBlank() {
 /* ── Listening – FIX: không auto-play khi load, chỉ play khi bấm nút ── */
 function showListeningQuestion() {
     answered = false;
+    _listenHintCount = 0;
     updateProgress('listen');
     document.getElementById('listenQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('listenHint').textContent = `💡 The word has ${currentWord.word.length} letters`;
+    const meaningRow = document.getElementById('listenMeaning');
+    if (meaningRow) {
+        const hasMeaning = !!currentWord.meaning;
+        meaningRow.style.display = hasMeaning ? '' : 'none';
+        document.getElementById('listenMeaningText').textContent = hasMeaning ? currentWord.meaning : '';
+    }
+    const letterHintEl = document.getElementById('listenLetterHint');
+    if (letterHintEl) { letterHintEl.textContent = ''; letterHintEl.style.display = 'none'; }
+    const hintBtn = document.getElementById('listenHintBtn');
+    if (hintBtn) {
+        hintBtn.disabled = false;
+        document.getElementById('listenHintBtnLabel').textContent = `Hint (${LISTEN_HINT_MAX})`;
+    }
     document.getElementById('listenInput').value   = '';
     document.getElementById('listenInput').disabled = false;
     document.getElementById('listenFeedback').innerHTML = '';
@@ -2731,6 +2747,27 @@ function showListeningQuestion() {
     setupDictionaryDouble('listeningMode', 'vocab-quiz', () => !_vocabQuizActive);
 }
 function playAudio() { speakWord(currentWord?.word); }
+// Progressive letter reveal — each press shows one more letter of the answer
+// (1st press: 1 letter, 2nd: 2, 3rd: 3), capped at LISTEN_HINT_MAX presses so
+// it stays a hint rather than just handing over the whole word.
+function showListenHint() {
+    if (answered || !currentWord?.word || _listenHintCount >= LISTEN_HINT_MAX) return;
+    _listenHintCount++;
+    const word = currentWord.word;
+    const revealed = _esc(word.slice(0, _listenHintCount));
+    const masked = '_ '.repeat(Math.max(0, word.length - _listenHintCount)).trim();
+    const letterHintEl = document.getElementById('listenLetterHint');
+    if (letterHintEl) {
+        letterHintEl.textContent = `💡 ${revealed}${masked ? ' ' + masked : ''}`;
+        letterHintEl.style.display = '';
+    }
+    const remaining = LISTEN_HINT_MAX - _listenHintCount;
+    const hintBtn = document.getElementById('listenHintBtn');
+    if (hintBtn) {
+        document.getElementById('listenHintBtnLabel').textContent = remaining > 0 ? `Hint (${remaining})` : 'Hint';
+        if (remaining <= 0) hintBtn.disabled = true;
+    }
+}
 function checkListening() {
     _checkExactWordMatch('listenInput', 'listenFeedback', 'listenBtnNext');
 }
