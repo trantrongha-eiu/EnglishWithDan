@@ -183,7 +183,7 @@ async function getVocabulary(topicId) {
   return { vocabularyList: topic.vocabularyList || [], topicName: topic.topicName };
 }
 
-async function checkAnswer(topicId, questionId, userAnswer) {
+async function checkAnswer(topicId, questionId, userAnswer, opts = {}) {
   const topic = await Task2Topic.findById(topicId).lean();
   if (!topic) return { status: 'topic_not_found' };
 
@@ -194,7 +194,10 @@ async function checkAnswer(topicId, questionId, userAnswer) {
   let result;
   let aiGraded = false;
 
-  if (AI_GRADED_TYPES.has(q.type) && trimmed.length >= 3) {
+  // opts.skipAI: set by the /check route's rate limiter once a student hits
+  // it — go straight to the keyword fallback below instead of calling
+  // Gemini at all, same fallback used when Gemini itself errors out.
+  if (!opts.skipAI && AI_GRADED_TYPES.has(q.type) && trimmed.length >= 3) {
     try {
       result = await gradeT2Question({
         type: q.type,

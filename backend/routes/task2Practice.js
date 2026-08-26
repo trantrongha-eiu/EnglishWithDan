@@ -10,13 +10,21 @@ const premiumOnly = requirePremium('Bạn cần nâng cấp lên Premium để l
 
 // /check calls the Gemini API for AI-graded question types (real per-call
 // cost) — cap abuse/runaway client loops without affecting normal practice.
+// Previously this hard-blocked with a 429 once the limit was hit, which cut
+// a student off from practicing entirely — worse than just being "AI quá
+// tải", since even the keyword-fallback path never got a chance to run.
+// Instead, mark the request and let it through: the controller/service skip
+// the Gemini call and grade with the same keyword-match-against-model-answer
+// fallback already used when Gemini itself errors out, so hitting this limit
+// degrades grading quality instead of blocking practice.
 const checkLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
   keyGenerator: req => req.user?._id?.toString() || req.ip,
-  handler: (req, res) => {
-    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
-    res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu chấm bài, vui lòng thử lại sau 15 phút.' });
+  handler: (req, res, next) => {
+    logger.security('AI check rate limit hit — falling back to keyword grading', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    req.skipAIGrading = true;
+    next();
   },
   skip: req => req.user?.role === 'admin'
 });

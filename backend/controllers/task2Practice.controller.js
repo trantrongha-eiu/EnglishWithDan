@@ -56,7 +56,7 @@ exports.checkAnswer = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
 
   try {
-    const result = await task2PracticeService.checkAnswer(topicId, questionId, userAnswer);
+    const result = await task2PracticeService.checkAnswer(topicId, questionId, userAnswer, { skipAI: !!req.skipAIGrading });
     if (result.status === 'topic_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy topic' });
     if (result.status === 'question_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
     res.json({
