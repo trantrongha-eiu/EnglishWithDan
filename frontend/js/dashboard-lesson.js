@@ -625,7 +625,7 @@ function renderQuizQuestion() {
             <div class="question-number">Fill in the Blank</div>
             <div class="question-text">${escHtml(sentence)}</div>
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(meaning)}</div>
-            <div class="listen-hint">💡 Từ có ${q.word.word.length} chữ cái</div>
+            <div class="listen-hint">💡 Từ có ${_letterCount(q.word.word)} chữ cái</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
@@ -640,7 +640,8 @@ function renderQuizQuestion() {
         container.innerHTML = shell(`
             <div class="question-number">Listening</div>
             <button class="btn-play-audio" id="qPlayAudioBtn"><i class="fas fa-volume-up"></i> Play Audio</button>
-            <div class="listen-hint">💡 Từ có ${q.word.word.length} chữ cái</div>
+            <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(q.word.meaning || '')}</div>
+            <div class="listen-hint">💡 Từ có ${_letterCount(q.word.word)} chữ cái</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
@@ -774,6 +775,26 @@ function answerWordChoice(btn) {
     document.getElementById('qBtnNext').style.display = 'flex';
 }
 
+// Vocab entries can be multi-word phrases (e.g. "up to date"), not just a
+// single word — a space is a word boundary, not a letter, so it must not
+// count toward "Từ có N chữ cái" nor consume one of the 3 hint presses.
+function _letterCount(word) { return (word || '').replace(/\s/g, '').length; }
+
+// Builds the reveal/mask string for showLessonQuizHint() below: letters get
+// revealed or '_'-masked according to revealCount, spaces are kept as a gap
+// (an empty token, so the join below renders them as a wider space) rather
+// than being treated as a maskable character.
+function _buildLetterHint(word, revealCount) {
+    let shown = 0;
+    const parts = [];
+    for (const ch of word) {
+        if (/\s/.test(ch)) { parts.push(''); continue; }
+        shown++;
+        parts.push(shown <= revealCount ? ch : '_');
+    }
+    return parts.join(' ');
+}
+
 // Progressive letter reveal for the Fill-in-the-blank and Listening quiz
 // types — each press shows one more letter of the answer (1st: 1 letter,
 // 2nd: 2, 3rd: 3), capped at LESSON_QUIZ_HINT_MAX so it stays a hint rather
@@ -787,11 +808,10 @@ function showLessonQuizHint() {
     if (lessonState.quiz.hintCount >= LESSON_QUIZ_HINT_MAX) return;
     lessonState.quiz.hintCount++;
     const word = q.word.word;
-    const revealed = escHtml(word.slice(0, lessonState.quiz.hintCount));
-    const masked = '_ '.repeat(Math.max(0, word.length - lessonState.quiz.hintCount)).trim();
     const letterHintEl = document.getElementById('qLetterHint');
     if (letterHintEl) {
-        letterHintEl.textContent = `💡 ${revealed}${masked ? ' ' + masked : ''}`;
+        // textContent, not innerHTML — no HTML-escaping needed here.
+        letterHintEl.textContent = `💡 ${_buildLetterHint(word, lessonState.quiz.hintCount)}`;
         letterHintEl.style.display = '';
     }
     const remaining = LESSON_QUIZ_HINT_MAX - lessonState.quiz.hintCount;

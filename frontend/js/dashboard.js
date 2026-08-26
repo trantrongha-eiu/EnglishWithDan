@@ -2724,7 +2724,12 @@ function showListeningQuestion() {
     _listenHintCount = 0;
     updateProgress('listen');
     document.getElementById('listenQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    document.getElementById('listenHint').textContent = `💡 The word has ${currentWord.word.length} letters`;
+    // _letterCount/_buildLetterHint come from dashboard-lesson.js (loaded
+    // before this file — see dashboard.html), shared so both this Notebook
+    // Listen mode and the Classroom quiz's Listen/Fill types treat a space
+    // in a multi-word vocab entry (e.g. "up to date") as a word boundary,
+    // not a maskable letter.
+    document.getElementById('listenHint').textContent = `💡 The word has ${_letterCount(currentWord.word)} letters`;
     const meaningRow = document.getElementById('listenMeaning');
     if (meaningRow) {
         const hasMeaning = !!currentWord.meaning;
@@ -2754,11 +2759,9 @@ function showListenHint() {
     if (answered || !currentWord?.word || _listenHintCount >= LISTEN_HINT_MAX) return;
     _listenHintCount++;
     const word = currentWord.word;
-    const revealed = _esc(word.slice(0, _listenHintCount));
-    const masked = '_ '.repeat(Math.max(0, word.length - _listenHintCount)).trim();
     const letterHintEl = document.getElementById('listenLetterHint');
     if (letterHintEl) {
-        letterHintEl.textContent = `💡 ${revealed}${masked ? ' ' + masked : ''}`;
+        letterHintEl.textContent = `💡 ${_buildLetterHint(word, _listenHintCount)}`;
         letterHintEl.style.display = '';
     }
     const remaining = LISTEN_HINT_MAX - _listenHintCount;
