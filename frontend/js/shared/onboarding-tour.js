@@ -366,15 +366,25 @@
 
   window.EWSTour = { start, reset };
 
-  // ── Auto-start: once per browser per page, logged-in users only ────────
+  // ── Auto-start (once per browser per page, logged-in users only) + the
+  // always-available "replay" button nav.js injects hidden by default —
+  // revealed here only on pages that actually have a tour, independent of
+  // whether this browser already auto-saw it once. ───────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     const page = location.pathname.split('/').pop() || 'dashboard.html';
-    if (!PAGE_TOURS[page]) return;
+    const steps = PAGE_TOURS[page];
+    if (!steps) return;
+
+    const btn = document.getElementById('globalTourBtn');
+    if (btn) {
+      btn.style.display = '';
+      btn.addEventListener('click', function () { start(page); });
+    }
+
     let seen = false;
     try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
-    if (seen) return;
     const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
-    if (!loggedIn) return;
+    if (seen || !loggedIn) return;
     setTimeout(function () { start(page); }, 900);
   });
 })();

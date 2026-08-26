@@ -132,6 +132,7 @@
           '<div class="nav-search-results" id="globalSearchResults"></div>' +
         '</div>' +
       '</div>' +
+      '<button class="btn-dark-mode" id="globalTourBtn" title="Xem lại hướng dẫn" aria-label="Xem lại hướng dẫn" style="display:none"><i class="fas fa-circle-question"></i></button>' +
       '<div class="nav-bell-wrap" style="position:relative">' +
         '<button class="btn-dark-mode" id="globalBellBtn" title="Thông báo" aria-label="Thông báo" aria-haspopup="true" aria-expanded="false"><i class="fas fa-bell"></i><span id="navBellBadge" class="nav-bell-badge" style="display:none">0</span></button>' +
         '<div class="nav-bell-panel" id="globalBellPanel">' +
