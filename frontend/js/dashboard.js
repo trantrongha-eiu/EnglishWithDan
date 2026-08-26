@@ -169,6 +169,24 @@ let selectedBookForSave = null;
 // Sound effects + speakWord() TTS (with its multi-layer fallback) moved to
 // js/dashboard-audio.js — loaded before this file, see dashboard.html.
 
+// nav.js's one-time-ever popups (streak35 rule notice, vocab-inactivity
+// nudge) are also full-screen overlays that can fire on this exact same
+// page load, from their own independent async refreshPlan().then() chain.
+// Neither system knows about the other, so without this check a student
+// hitting both conditions at once (goal not set yet + hasn't dismissed
+// streak35 yet) would see EWSLearning's goal-setup modal rendered on top
+// of nav.js's overlay, its "Đã hiểu" button visibly peeking out from
+// behind — found via screenshot when wiring up autoShow() below. Waits
+// for either to clear before firing, rather than trying to suppress or
+// reorder either popup system.
+function fireAutoShowWhenClear(attempt) {
+    attempt = attempt || 0;
+    const blocked = ['nav-streak35-notice-overlay', 'nav-vocab-inactivity-overlay']
+        .some(id => document.getElementById(id));
+    if (blocked && attempt < 40) { setTimeout(() => fireAutoShowWhenClear(attempt + 1), 300); return; }
+    window.EWSLearning.autoShow();
+}
+
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
@@ -213,6 +231,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
     loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    // Goal-setup nudge (once per browser session, if no goal set yet) or
+    // today's recommended study plan (once per calendar day, if a goal
+    // exists and there are sessions scheduled today) — self-gated inside
+    // autoShow() itself via session/localStorage. Skipped on a visit where
+    // the first-time onboarding tour is still about to auto-play (same
+    // localStorage key onboarding-tour.js itself checks) — a brand-new
+    // student would otherwise see this popup stacked on top of the tour's
+    // own tooltip the instant they land on the dashboard. Just deferred,
+    // not lost: it fires normally on their next visit once the tour key
+    // is set.
+    if (window.EWSLearning) {
+        let tourSeen = true;
+        try { tourSeen = localStorage.getItem('ews_onboarding_tour_v1_dashboard.html') === '1'; } catch (e) {}
+        if (tourSeen) fireAutoShowWhenClear();
+    }
     await Promise.all([loadMyBooks(), loadUnits()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,

@@ -639,9 +639,24 @@
   // throwaway vocab word a day. Shown once ever per browser (localStorage,
   // not sessionStorage — this is an announcement, not a per-visit warning)
   // to every logged-in student.
+  // Guards against stacking on top of learning-popups.js's goal-setup/
+  // today's-plan modal (js/learning-popups.js's #lp-overlay, fired from
+  // dashboard.js's own independent async chain around the same page
+  // load) — both are full-screen one-time-ever/once-a-day overlays with
+  // no shared coordinator, so without this a student could see this
+  // notice's "Đã hiểu" button visibly stacked behind the goal modal.
+  // Safe to just skip rather than queue: neither notice below marks
+  // itself as "seen" unless it actually renders, so it simply tries
+  // again on the student's next page load instead.
+  function _learningModalOpen() {
+    var el = document.getElementById('lp-overlay');
+    return !!(el && el.classList.contains('open'));
+  }
+
   var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';
   function _showStreak35Notice() {
     if (localStorage.getItem(STREAK35_NOTICE_KEY)) return;
+    if (_learningModalOpen()) return;
 
     var overlay = document.createElement('div');
     overlay.id = 'nav-streak35-notice-overlay';
@@ -683,6 +698,7 @@
 
     var todayStr = new Date().toDateString();
     if (localStorage.getItem(VOCAB_INACTIVITY_SHOWN_KEY) === todayStr) return;
+    if (_learningModalOpen()) return;
     localStorage.setItem(VOCAB_INACTIVITY_SHOWN_KEY, todayStr);
 
     var overlay = document.createElement('div');
