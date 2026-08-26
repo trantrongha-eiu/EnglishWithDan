@@ -1,9 +1,11 @@
 // Integration tests for backend/routes/admin/task2Topics.js — Task 2
-// Topics CRUD (teacherOnly) plus nested question CRUD, plus the two
-// one-off adminOnly maintenance endpoints (reseed-task2-week12,
-// fix-task1-context — deliberately NOT called by admin-src UI, see the
-// route file's comment block; here we only verify the auth/role gate,
-// not the underlying script behavior).
+// Topics CRUD (teacherOnly) plus nested question CRUD, plus the one-off
+// adminOnly maintenance endpoint (fix-task1-context — deliberately NOT
+// called by admin-src UI, see the route file's comment block; here we
+// only verify the auth/role gate, not the underlying script behavior).
+// reseed-task2-week12 (formerly tested below) was removed in the
+// 2026-08-26 curriculum restructure — "week 12" no longer means what its
+// hardcoded seed data assumed; see that route file's comment block.
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
@@ -244,24 +246,6 @@ describe('DELETE /api/admin/task2/topics/:topicId/questions/:qid', () => {
 
     const saved = await Task2Topic.findById(topic._id);
     expect(saved.questions.length).toBe(0);
-  });
-});
-
-describe('POST /api/admin/reseed-task2-week12 (adminOnly, no frontend caller — manual maintenance tool)', () => {
-  test('teacher is blocked with 403 (adminOnly, stricter than teacherOnly)', async () => {
-    const teacher = await createTeacher();
-    const res = await request(app)
-      .post('/api/admin/reseed-task2-week12')
-      .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
-    expect(res.status).toBe(403);
-  });
-
-  test('student is blocked with 403', async () => {
-    const student = await createStudent();
-    const res = await request(app)
-      .post('/api/admin/reseed-task2-week12')
-      .set('Authorization', `Bearer ${signTokenFor(student)}`);
-    expect(res.status).toBe(403);
   });
 });
 
