@@ -8,7 +8,8 @@ exports.listPublicLessons = async (req, res) => {
     const lessons = await vocabularyLessonService.listPublicLessons(req.user.className);
     res.json({ success: true, lessons });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -18,7 +19,8 @@ exports.getPublicLesson = async (req, res) => {
     if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
     res.json({ success: true, lesson });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -27,7 +29,8 @@ exports.getQuizLeaderboard = async (req, res) => {
     const leaderboard = await vocabularyLessonService.getQuizLeaderboard(10);
     res.json({ success: true, leaderboard });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -39,7 +42,8 @@ exports.getAttempt = async (req, res) => {
     const attempt = await vocabularyLessonService.getAttempt(req.user._id, req.params.id);
     res.json({ success: true, attempt: attempt || null });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -50,7 +54,8 @@ exports.getLessonLeaderboard = async (req, res) => {
     const leaderboard = await vocabularyLessonService.getLessonAttemptLeaderboard(req.params.id);
     res.json({ success: true, leaderboard });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -65,7 +70,8 @@ exports.submitAttempt = async (req, res) => {
     const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongWords });
     res.json({ success: true, attempt });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -76,7 +82,8 @@ exports.getMyAttemptHistory = async (req, res) => {
     const history = await vocabularyLessonService.getAttemptHistory(req.user._id, req.params.id, 20);
     res.json({ success: true, history });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabularyLesson]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 

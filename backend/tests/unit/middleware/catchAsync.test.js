@@ -1,7 +1,9 @@
 // Unit tests for middleware/catchAsync.js — wraps an async Express route
 // handler so a thrown/rejected error becomes a JSON response instead of an
-// unhandled rejection. Deliberately exposes err.message directly (unlike
-// errorHandler.js, which hides it) — documented intentional difference.
+// unhandled rejection. Mirrors errorHandler.js's message rule (2026-08-26
+// error-message audit): an AppError (err.isOperational) shows its own
+// message; anything else falls back to a generic "Lỗi server" rather than
+// leaking a raw Mongoose/system error's .message to the client.
 const catchAsync = require('../../../middleware/catchAsync');
 
 function makeReq() {
@@ -46,9 +48,9 @@ describe('catchAsync middleware', () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
-  test('a handler that rejects with a plain Error -> 500 with the real err.message', async () => {
+  test('a handler that rejects with a plain (non-operational) Error -> 500 with a generic message, not err.message', async () => {
     const handler = jest.fn(async () => {
-      throw new Error('something broke');
+      throw new Error('E11000 duplicate key error collection: test.users index: email_1');
     });
     const wrapped = catchAsync(handler);
     const req = makeReq();
@@ -59,13 +61,14 @@ describe('catchAsync middleware', () => {
     await new Promise((resolve) => setImmediate(resolve));
 
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ success: false, message: 'something broke' });
+    expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Lỗi server' });
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
-  test('a handler that rejects with an error carrying statusCode -> responds with that status', async () => {
+  test('a handler that rejects with an AppError (isOperational) -> shows its own message + statusCode', async () => {
+    const { NotFoundError } = require('../../../errors/AppError');
     const handler = jest.fn(async () => {
-      throw Object.assign(new Error('x'), { statusCode: 404 });
+      throw new NotFoundError('Không tìm thấy bài luyện tập này');
     });
     const wrapped = catchAsync(handler);
     const req = makeReq();
@@ -76,7 +79,23 @@ describe('catchAsync middleware', () => {
     await new Promise((resolve) => setImmediate(resolve));
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ success: false, message: 'x' });
+    expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Không tìm thấy bài luyện tập này' });
+  });
+
+  test('a handler that rejects with a non-operational error carrying statusCode -> keeps that status, still hides the message', async () => {
+    const handler = jest.fn(async () => {
+      throw Object.assign(new Error('CastError: Cast to ObjectId failed for value "abc"'), { statusCode: 404 });
+    });
+    const wrapped = catchAsync(handler);
+    const req = makeReq();
+    const res = makeRes();
+    const next = jest.fn();
+
+    wrapped(req, res, next);
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Lỗi server' });
   });
 
   test('does not call next() on either success or failure', async () => {

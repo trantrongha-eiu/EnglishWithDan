@@ -1,12 +1,15 @@
 'use strict';
 
-// Preserves routes/writing.js's original error-response shapes exactly,
-// including two real inconsistencies worth flagging (not silently fixed
-// here, since that would be an API-behavior change outside this pass's
-// scope): most routes leak the raw err.message to the client (every other
-// migrated file in this phase uses a generic message), and two routes
-// (getUnreadFeedbackCount, markFeedbackRead) return a shape that omits
-// `message` entirely on error.
+// Preserves routes/writing.js's original error-response shapes, except
+// guard()'s message (site-wide error-message audit, 2026-08-26): every
+// guard()-wrapped route here used to leak the raw err.message straight
+// to the client on any uncaught error (a Mongoose validation error, a
+// DB timeout, whatever) — this file's own students-only routes have no
+// legitimate reason to throw a custom user-facing Error, so there was
+// nothing intentional being preserved by showing it. Now generic, same
+// as every other migrated controller in this phase already does.
+// getUnreadFeedbackCount/markFeedbackRead below still return a shape
+// that omits `message` entirely on error — unrelated, left as-is.
 const writingService = require('../services/writingService');
 
 function guard(handler) {
@@ -14,7 +17,8 @@ function guard(handler) {
     try {
       await handler(req, res);
     } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
+      console.error(`[Writing] ${req.method} ${req.originalUrl}:`, err);
+      res.status(500).json({ success: false, message: 'Lỗi server' });
     }
   };
 }

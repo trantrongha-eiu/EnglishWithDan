@@ -120,7 +120,7 @@ exports.listPracticeSections = async (req, res) => {
   try {
     const { sections, doneMap } = await listeningService.listPracticeSections(req.query, req.user._id);
     res.json({ success: true, sections, doneMap });
-  } catch (err) { res.status(err.status || 500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(err.status || 500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.getPracticeSectionById = async (req, res) => {
@@ -128,7 +128,7 @@ exports.getPracticeSectionById = async (req, res) => {
     const section = await listeningService.getPracticeSectionById(req.params.id);
     if (!section) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
     res.json({ success: true, section });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 // Answer key only — called at submit time, not on opening the section. See
@@ -139,14 +139,14 @@ exports.getSectionAnswerKey = async (req, res) => {
     const answerKey = await listeningService.getSectionAnswerKey(req.params.id);
     if (!answerKey) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
     res.json({ success: true, answerKey });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.listDictationSections = async (req, res) => {
   try {
     const sections = await listeningService.listDictationSections();
     res.json({ success: true, sections });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 // ── Admin CRUD for practice sections ─────────────────────────────────────
@@ -219,7 +219,7 @@ exports.listStudentTests = async (req, res) => {
     res.set('Cache-Control', 'private, max-age=120');
     const tests = await listeningService.listStudentTests(req.user._id || req.user.id);
     res.json({ success: true, tests, userPlan: req.user.plan || 'free', planExpiresAt: req.user.planExpiresAt || null });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.startTest = async (req, res) => {
@@ -227,7 +227,7 @@ exports.startTest = async (req, res) => {
     const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
     res.json({ success: true, test });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.submitTest = async (req, res) => {
@@ -239,7 +239,7 @@ exports.submitTest = async (req, res) => {
     // it's accurate for both "test not found" and "not in progress".
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi đang làm' });
     res.json({ success: true, result });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 // ── Student – history ─────────────────────────────────────────────────────
@@ -247,7 +247,7 @@ exports.getHistory = async (req, res) => {
   try {
     const attempts = await listeningService.getHistory(req.user._id || req.user.id);
     res.json({ success: true, attempts });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.getHistoryDetail = async (req, res) => {
@@ -256,7 +256,7 @@ exports.getHistoryDetail = async (req, res) => {
     if (status === 'attempt_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     if (status === 'test_not_found') return res.status(404).json({ success: false, message: 'Đề thi không tồn tại' });
     res.json({ success: true, result });
-  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 // ── Practice attempts ──────────────────────────────────────────────────────

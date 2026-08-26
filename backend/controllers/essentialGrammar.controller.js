@@ -21,7 +21,8 @@ exports.getAttempt = async (req, res) => {
     const attempt = await essentialGrammarService.getAttempt(req.user._id, req.params.id);
     res.json({ success: true, attempt: attempt || null });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[EssentialGrammar]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -36,7 +37,8 @@ exports.submitAttempt = async (req, res) => {
     const attempt = await essentialGrammarService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongQuestions });
     res.json({ success: true, attempt });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[EssentialGrammar]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
@@ -47,7 +49,8 @@ exports.getMyAttemptHistory = async (req, res) => {
     const history = await essentialGrammarService.getAttemptHistory(req.user._id, req.params.id, 20);
     res.json({ success: true, history });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[EssentialGrammar]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
 
