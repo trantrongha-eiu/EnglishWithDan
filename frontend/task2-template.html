@@ -1695,6 +1695,15 @@ async function _loadTplTemplates(level) {
         });
         TPL_DATA = {};
         data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
+        // Chunks/Build pre-build an ordered {si,ii} queue and only rebuild it
+        // when _tplActiveType changes — typeId is shared across levels, so a
+        // level switch alone (same typeId, different/shorter item list under
+        // it) left both queues pointing at indices that may no longer exist
+        // in the newly-loaded TPL_DATA, throwing on the next render. Forcing
+        // both to rebuild here covers every caller of this function (init,
+        // switchTplLevel, the popstate handler) in one place.
+        _chunkQueueType = null;
+        _buildQueueType = null;
         return true;
       }
     }
