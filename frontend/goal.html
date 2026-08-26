@@ -9,12 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
+  <link rel="stylesheet" href="css/components.css?v=20260831" />
+  <link rel="stylesheet" href="css/mobile.css?v=20260831" />
   <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <style>
-    /* Minimal, self-contained page — deliberately does not integrate with
-       js/nav.js's sidebar chrome yet (out of scope for this phase, see
-       Priority 2B's "dashboard integration comes later"). Just a header
-       with a back-link + auth-gated content. */
+    /* This page's own header (back-link + title) sits below the global
+       top nav now (see the nav.js include below) — kept as a lightweight
+       secondary header rather than removed, since it's still useful
+       in-page context once you're on Goal & Study Plan. */
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif}
     .goal-header{display:flex;align-items:center;gap:14px;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
@@ -96,6 +99,10 @@
 <body>
 <script src="js/shared/auth-service.js?v=20260831"></script>
 <script src="js/auth.js?v=20260831"></script>
+<script src="js/upgrade-modal.js?v=20260831"></script>
+<script src="js/nav.js?v=20260831"></script>
+<script src="js/shared/peer-chat-widget.js?v=20260831"></script>
+<script src="js/shared/sound-effects.js?v=20260831"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>

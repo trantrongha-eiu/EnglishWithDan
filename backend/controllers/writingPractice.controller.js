@@ -1,9 +1,6 @@
 'use strict';
 
-// Preserves each original route's own status codes / message shapes,
-// including two admin routes that return a bare { success:false } with
-// no message on error/forbidden — that's the original behavior, not an
-// oversight here.
+// Preserves each original route's own status codes / message shapes.
 const writingPracticeService = require('../services/writingPracticeService');
 
 exports.listExercises = async (req, res) => {
@@ -117,29 +114,6 @@ exports.getMyStats = async (req, res) => {
   try {
     const { totalXP, totalDone, byLevel } = await writingPracticeService.getMyStats(req.user._id);
     res.json({ success: true, totalXP, totalDone, byLevel });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-};
-
-exports.adminBulkAddExercises = async (req, res) => {
-  try {
-    if (!['teacher', 'admin'].includes(req.user.role)) return res.status(403).json({ success: false });
-    const { exercises } = req.body;
-    if (!Array.isArray(exercises) || !exercises.length)
-      return res.status(400).json({ success: false });
-    const created = await writingPracticeService.adminBulkAddExercises(exercises);
-    res.json({ success: true, created });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-};
-
-exports.adminSoftDeleteExercise = async (req, res) => {
-  try {
-    if (req.user.role !== 'admin') return res.status(403).json({ success: false });
-    await writingPracticeService.adminSoftDeleteExercise(req.params.id);
-    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

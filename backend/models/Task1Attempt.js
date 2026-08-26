@@ -13,8 +13,11 @@ const task1AttemptSchema = new mongoose.Schema({
   sessionId:  { type: String }
 }, { timestamps: true });
 
-// Auto-delete after 30 days
-task1AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+// Same 3-month retention convention as every other attempt-history model
+// (TestAttempt, ListeningAttempt, ReadingPracticeAttempt, WritingAttempt...
+// all use this exact expireAfterSeconds keyed on createdAt) — was 30 days
+// here until a consistency audit found the mismatch (2026-08-26).
+task1AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 // getProgress()/getHistory() filter by userId sorted by recency — previously unindexed.
 task1AttemptSchema.index({ userId: 1, createdAt: -1 });

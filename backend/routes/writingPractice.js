@@ -36,10 +36,4 @@ router.get('/history', auth, writingPracticeController.getHistory);
 // GET /api/writing-practice/my-stats
 router.get('/my-stats', auth, writingPracticeController.getMyStats);
 
-// ══════════════════════════════════════════════════════════════
-//  ADMIN – bulk add / soft delete
-// ══════════════════════════════════════════════════════════════
-router.post('/admin/exercises', auth, writingPracticeController.adminBulkAddExercises);
-router.delete('/admin/exercises/:id', auth, writingPracticeController.adminSoftDeleteExercise);
-
 module.exports = router;

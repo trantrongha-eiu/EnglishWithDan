@@ -1,11 +1,10 @@
 // Integration tests for controllers/writingPractice.controller.js
 // (routes/writingPractice.js): premium gate on the content routes, the
-// public meta/topics routes, grading, saveBatch/saveSingle, ownership
-// scoping on history/my-stats, and the inline (route-level, not
-// middleware-level) teacher/admin role checks on the admin routes.
+// public meta/topics routes, grading, saveBatch/saveSingle, and ownership
+// scoping on history/my-stats.
 const request = require('supertest');
 const app = require('../../app');
-const { createStudent, createPremiumStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createWPTopic, createWPExercise } = require('../factories/contentFactory');
 
 describe('GET /api/writing-practice/exercises (premium gate)', () => {
@@ -143,49 +142,5 @@ describe('GET /api/writing-practice/history (ownership scoping)', () => {
     const res = await request(app).get('/api/writing-practice/history').set('Authorization', `Bearer ${signTokenFor(studentA)}`);
     expect(res.status).toBe(200);
     expect(res.body.attempts).toHaveLength(1);
-  });
-});
-
-describe('Admin routes — inline role check (route-level auth only, no teacherOnly middleware)', () => {
-  test('adminBulkAddExercises: a plain student is rejected (403)', async () => {
-    const student = await createStudent();
-    const res = await request(app)
-      .post('/api/writing-practice/admin/exercises')
-      .set('Authorization', `Bearer ${signTokenFor(student)}`)
-      .send({ exercises: [{ topicKey: 'general', level: 'beginner', type: 'fill_blank', question: 'Q', sampleAnswer: 'A' }] });
-    expect(res.status).toBe(403);
-  });
-
-  test('adminBulkAddExercises: unauthenticated requests are rejected (401)', async () => {
-    expect((await request(app).post('/api/writing-practice/admin/exercises').send({ exercises: [] })).status).toBe(401);
-  });
-
-  test('adminBulkAddExercises: a teacher can create exercises', async () => {
-    const teacher = await createTeacher();
-    const res = await request(app)
-      .post('/api/writing-practice/admin/exercises')
-      .set('Authorization', `Bearer ${signTokenFor(teacher)}`)
-      .send({ exercises: [{ topicKey: 'general', level: 'beginner', type: 'fill_blank', question: 'Q', sampleAnswer: 'A' }] });
-    expect(res.status).toBe(200);
-    expect(res.body.created).toBe(1);
-  });
-
-  test('adminSoftDeleteExercise: a teacher is rejected (403) — this route only allows role === "admin"', async () => {
-    const ex = await createWPExercise();
-    const teacher = await createTeacher();
-    const res = await request(app)
-      .delete(`/api/writing-practice/admin/exercises/${ex._id}`)
-      .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
-    expect(res.status).toBe(403);
-  });
-
-  test('adminSoftDeleteExercise: an admin can soft-delete', async () => {
-    const ex = await createWPExercise();
-    const admin = await createAdmin();
-    const res = await request(app)
-      .delete(`/api/writing-practice/admin/exercises/${ex._id}`)
-      .set('Authorization', `Bearer ${signTokenFor(admin)}`);
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
   });
 });

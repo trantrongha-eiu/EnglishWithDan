@@ -8,7 +8,6 @@
 // just where the code lives; flagged in the migration report instead.
 const WPExercise = require('../models/WPExercise');
 const WPTopic = require('../models/WPTopic');
-const WPLesson = require('../models/WPLesson');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
 const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
 
@@ -322,28 +321,7 @@ async function getMyStats(studentId) {
   return { totalXP: totals[0]?.totalXP || 0, totalDone: totals[0]?.totalDone || 0, byLevel };
 }
 
-async function adminBulkAddExercises(exercises) {
-  const lessonCache = {};
-  const created = [];
-  for (const ex of exercises) {
-    const lKey = `${ex.topicKey}:${ex.level}`;
-    if (!lessonCache[lKey]) {
-      let lesson = await WPLesson.findOne({ topicKey: ex.topicKey, level: ex.level });
-      if (!lesson) lesson = await WPLesson.create({ topicKey: ex.topicKey, level: ex.level,
-        title: `${ex.topicKey} – ${ex.level}`, lessonType: ex.level === 'intermediate' ? 'paragraph' : 'sentence' });
-      lessonCache[lKey] = lesson._id;
-    }
-    const doc = await WPExercise.create({ ...ex, lessonId: lessonCache[lKey] });
-    created.push(doc._id);
-  }
-  return created.length;
-}
-
-async function adminSoftDeleteExercise(id) {
-  await WPExercise.findByIdAndUpdate(id, { isActive: false });
-}
-
 module.exports = {
   listExercises, getTestQuestions, getMeta, listTopics, checkAnswer, checkTest,
-  saveBatch, saveSingle, getHistory, getMyStats, adminBulkAddExercises, adminSoftDeleteExercise,
+  saveBatch, saveSingle, getHistory, getMyStats,
 };
