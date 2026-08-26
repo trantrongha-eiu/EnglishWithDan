@@ -124,6 +124,15 @@ function showScreen(id) {
   // the page-load guard that already ran before this script.
   if (window.AuthService ? !window.AuthService.requirePageAuth(false) : !getToken()) return;
 
+  // Premium promo banner (site-wide UX unification, 2026-08-26) — same
+  // browsable-with-a-nudge pattern as reading.html/listening.html/
+  // speaking.html, replacing the previous "no visual indication at all
+  // until you click something locked" gap. Actual gating is unchanged:
+  // startExam()/submitPractice() below still do their own proactive
+  // hasPremiumAccess() check + openUpgradeModal().
+  const promoBanner = document.getElementById('premium-promo-banner');
+  if (promoBanner) promoBanner.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
+
   // URL param routing: ?taskType=1/2&taskId=<id> (shareable), or ?taskType=1/2 (nav link to task list)
   const params = new URLSearchParams(location.search);
   const urlTaskType = parseInt(params.get('taskType'));

@@ -839,6 +839,14 @@ function renderWeeks() {
         </button>
       </div>
     </div>
+    ${(window.AuthService && !window.AuthService.hasPremiumAccess()) ? `<div id="premium-promo-banner" style="margin:0 20px 16px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;flex-wrap:wrap">
+      <div style="font-size:22px">⭐</div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện tập không giới hạn</div>
+        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ 12 tuần Task 2 Writing theo chủ đề</div>
+      </div>
+      <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+    </div>` : ''}
     ${totalDraftTopics > 0 ? `<div style="margin:0 20px 4px;padding:10px 14px;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;font-size:13px;color:#92400e;display:flex;align-items:center;gap:8px">
       <i class="fas fa-bookmark" style="color:#f59e0b"></i>
       Bạn có <strong>${totalDraftTopics} topic</strong> đang dở — tuần được đánh dấu màu vàng. Nhấn vào để tiếp tục!

@@ -45,6 +45,17 @@
       <h2>IELTS Writing</h2>
       <p class="key-desc">Làm bài thi Writing tổng hợp Task 1 + Task 2 với đề ngẫu nhiên</p>
 
+      <!-- Premium promo banner (ẩn khi user đã premium) — same pattern as
+           reading.html/listening.html/speaking.html's #premium-promo-banner. -->
+      <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap;text-align:left">
+        <div style="font-size:22px">⭐</div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để làm bài thi IELTS thật</div>
+          <div style="font-size:12px;color:var(--text2,#555)">Ngân hàng đề Reading · Listening · Writing · Vocabulary — cập nhật thường xuyên</div>
+        </div>
+        <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+      </div>
+
       <!-- Restore banner (shown only when unsaved exam exists) -->
       <div id="restore-banner" class="wr-restore-banner" style="display:none">
         <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> Bạn có bài làm chưa hoàn thành</p>

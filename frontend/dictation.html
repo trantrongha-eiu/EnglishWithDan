@@ -172,6 +172,18 @@
       <h1><i class="fas fa-keyboard"></i> Luyện Dictation</h1>
       <p>Nghe và chép chính tả từng câu — chọn một bài Listening bên dưới để bắt đầu.</p>
     </div>
+
+    <!-- Premium promo banner (ẩn khi user đã premium) — same pattern as
+         reading.html/listening.html's #premium-promo-banner. -->
+    <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin:0 0 16px;flex-wrap:wrap">
+      <div style="font-size:22px">⭐</div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện Dictation</div>
+        <div style="font-size:12px;color:var(--text2,#555)">Nghe và chép chính tả toàn bộ bài Listening — cập nhật thường xuyên</div>
+      </div>
+      <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+    </div>
+
     <div id="dict-grid" class="dict-grid">
       <div class="dict-loading"><i class="fas fa-spinner fa-spin"></i>Đang tải danh sách...</div>
     </div>
@@ -551,6 +563,12 @@ document.getElementById('dict-input').addEventListener('keydown', e => {
 
 /* ══════════════ INIT ══════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  // Premium promo banner (site-wide UX unification, 2026-08-26) — same
+  // browsable-with-a-nudge pattern as reading/listening. openDictSection()
+  // below still does its own proactive hasPremiumAccess() check.
+  const promoBanner = document.getElementById('premium-promo-banner');
+  if (promoBanner) promoBanner.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
+
   const sectionId = new URLSearchParams(location.search).get('sectionId');
   loadDictList().then(() => {
     if (sectionId) openDictSection(sectionId);

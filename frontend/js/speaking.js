@@ -159,15 +159,25 @@ function showScreen(id) {
   // Premium gate: if localStorage shows free, re-verify with server
   // (catches stale cache after admin upgrades the account). hasPremiumAccess/
   // refreshPlan centralize logic that used to be hand-rolled here.
+  //
+  // Soft-gate (site-wide UX unification, 2026-08-26): used to hard-block
+  // the entire page here (showScreen('screen-upgrade'); return), skipping
+  // speech-recognition setup etc. for every free/expired user. Now matches
+  // reading.html/listening.html's pattern instead — screen-home stays
+  // browsable, a dismissible-by-upgrading banner nudges instead. The
+  // actual gated actions (topics/random/questions/analyze — see
+  // backend/routes/speaking.js) are still premium-only server-side;
+  // apiFetch()'s existing 403 handler above already falls back to
+  // showScreen('screen-upgrade') reactively the moment a free user tries
+  // one, so nothing about actual access changed, only what's browsable
+  // before that point.
   let _u = window.AuthService.getUser() || {};
   if (!window.AuthService.hasPremiumAccess(_u)) {
     const _refreshed = await window.AuthService.refreshPlan();
     if (_refreshed) _u = _refreshed;
-    if (!window.AuthService.hasPremiumAccess(_u)) {
-      showScreen('screen-upgrade');
-      return;
-    }
   }
+  const promoBanner = document.getElementById('premium-promo-banner');
+  if (promoBanner) promoBanner.style.display = window.AuthService.hasPremiumAccess(_u) ? 'none' : 'flex';
 
   // Speech API check
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -2399,12 +2409,17 @@ function closeMobilePdf() {
 // Navigation helper — free user quay lại upgrade screen
 // ──────────────────────────────────────────────────────
 function goBackFromHistory() {
-  if (!window.AuthService.hasPremiumAccess()) {
-    showScreen('screen-upgrade');
-  } else if (state._historyReturnScreen === 'screen-practice') {
+  // Origin-tracked explicitly (goHistory(fromScreen)) rather than inferred
+  // from premium status — screen-home is browsable by free users now too
+  // (soft-gate unification, 2026-08-26), so "free user" no longer implies
+  // "must have come from screen-upgrade".
+  if (state._historyReturnScreen === 'screen-practice') {
     state._historyReturnScreen = null;
     showScreen('screen-practice');
     syncTabUrl('practice');
+  } else if (state._historyReturnScreen === 'screen-upgrade') {
+    state._historyReturnScreen = null;
+    showScreen('screen-upgrade');
   } else {
     goHome();
   }

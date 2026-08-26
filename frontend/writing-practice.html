@@ -399,6 +399,18 @@
         <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết câu giao tiếp!</h2>
         <p class="wp-welcome-sub">Cải thiện kỹ năng viết câu tiếng Anh thông dụng qua các bài tập tương tác — khác với bài thi Writing thật hoặc luyện Task 1 riêng. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
 
+        <!-- Premium promo banner (ẩn khi user đã premium) — same pattern as
+             reading.html/listening.html/speaking.html/writing.html's
+             #premium-promo-banner. -->
+        <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin:0 0 20px;flex-wrap:wrap;text-align:left">
+          <div style="font-size:22px">⭐</div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện tập không giới hạn</div>
+            <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ bài luyện câu giao tiếp, Task 1 Grammar, Task 2 Writing và Templates</div>
+          </div>
+          <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+        </div>
+
         <div style="margin-bottom:28px">
           <button class="wp-welcome-start" onclick="startPractice()">
             <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
@@ -1089,6 +1101,13 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMeta();
   showState('welcome');
   updateWpTopicChecks();
+
+  // Premium promo banner (site-wide UX unification, 2026-08-26) — same
+  // browsable-with-a-nudge pattern as reading/listening/speaking/writing.
+  // Actual gating unchanged: startPractice()/startTest()/submit still do
+  // their own proactive hasPremiumAccess() check + openUpgradeModal().
+  const promoBanner = document.getElementById('premium-promo-banner');
+  if (promoBanner) promoBanner.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
 
   // Read URL params to pre-configure filters (shareable links). Deep link
   // (e.g. shared/nav link with a level/topic/type in the URL) should jump
