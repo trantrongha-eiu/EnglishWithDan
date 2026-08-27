@@ -10,19 +10,37 @@
   <meta name="description"
     content="Luyện thi IELTS và Tiếng Anh Giao Tiếp cùng thầy Daniel Hà. Các khóa học từ mất gốc đến 7.0+, giao tiếp cơ bản và văn phòng." />
   <meta name="keywords" content="IELTS, luyện IELTS, tiếng Anh giao tiếp, Daniel Hà, EnglishWithDan, IELTS 7.0" />
+  <!-- BUG-028: preconnect to every third-party origin this page actually
+       fetches from before first paint — fonts.googleapis.com (Google Fonts
+       CSS) already had one; fonts.gstatic.com (the actual font FILES the
+       above CSS references, a separate origin) and cdnjs.cloudflare.com
+       (Font Awesome CSS + its own font files) were missing. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="css/main.css?v=20260831" />
   <link rel="stylesheet" href="css/index.css?v=20260831">
+  <!-- BUG-016: deferred only where a real dependency check confirmed it's
+       safe — theme.js stays synchronous (sets data-theme before first
+       paint to avoid a flash of the wrong theme); auth-service.js + auth.js
+       stay synchronous as a pair (auth.js does an execution-order-sensitive
+       redirectIfAuthenticated() for an already-logged-in visitor on this
+       exact public page — deferring it would flash the marketing homepage
+       before redirecting to the dashboard). visit-tracker.js/pwa-register.js/
+       utils.js have no DOM or script-order dependency (pwa-register.js
+       already internally waits for window.load; utils.js's escHtml is only
+       ever called after an async course-list fetch resolves, well after any
+       deferred script has finished) — safe to defer. -->
   <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
-  <script src="js/shared/pwa-register.js?v=20260831"></script>
+  <script src="js/shared/visit-tracker.js?v=20260831" defer></script>
+  <script src="js/shared/pwa-register.js?v=20260831" defer></script>
   <script src="js/shared/auth-service.js?v=20260831"></script>
   <script src="js/auth.js?v=20260831"></script>
-  <script src="js/shared/utils.js?v=20260831"></script>
+  <script src="js/shared/utils.js?v=20260831" defer></script>
 </head>
 
 <body>
