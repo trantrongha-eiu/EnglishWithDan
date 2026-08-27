@@ -95,6 +95,41 @@ describe('POST /api/auth/login', () => {
     expect(wrongPasswordRes.body.success).toBe(false);
   });
 
+  // Regression coverage for BUG-021 (2026-08-27 audit): a non-string
+  // password (surviving mongoSanitize as e.g. {} once its $-operator keys
+  // were stripped) reached bcrypt.compare() and threw, surfacing as a raw
+  // 500 with no indication of what went wrong — instead of the normal
+  // login-failure path.
+  describe('non-string password values (BUG-021)', () => {
+    test.each([
+      ['null', null],
+      ['an empty object', {}],
+      ['an array', []],
+      ['a number', 12345],
+      ['a boolean', true],
+    ])('password: %s never 500s — same clean 401 as a real wrong password', async (_label, password) => {
+      const user = await createUser({ email: `${unique('badpwtype')}@test.local`, rawPassword: 'CorrectPass1!' });
+      const res = await request(app).post('/api/auth/login').send({ email: user.email, password });
+      expect(res.status).toBe(401);
+      expect(res.body.success).toBe(false);
+      // No bcrypt error / stack trace / implementation detail leaked.
+      expect(JSON.stringify(res.body).toLowerCase()).not.toMatch(/bcrypt|stack|at\s+\w+\s*\(/);
+    });
+
+    test('an empty string password also gets the clean 401, not a crash', async () => {
+      const user = await createUser({ email: `${unique('emptypw')}@test.local`, rawPassword: 'CorrectPass1!' });
+      const res = await request(app).post('/api/auth/login').send({ email: user.email, password: '' });
+      expect(res.status).toBe(401);
+    });
+
+    test('a valid string password still logs in normally (no regression)', async () => {
+      const user = await createUser({ email: `${unique('goodpwtype')}@test.local`, rawPassword: 'CorrectPass1!' });
+      const res = await request(app).post('/api/auth/login').send({ email: user.email, password: 'CorrectPass1!' });
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
+  });
+
   test('a banned user cannot log in even with correct credentials (403)', async () => {
     const user = await createUser({
       email: `${unique('banned')}@test.local`,

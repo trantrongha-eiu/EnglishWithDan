@@ -89,6 +89,17 @@ async function registerUser({ firstName, lastName, username, email, password }) 
 }
 
 async function loginUser({ email, password }) {
+  // bcrypt.compare() requires a string and throws on anything else — a
+  // password value that survives mongoSanitize as a non-string (e.g. an
+  // object whose operator keys were stripped, leaving {}) reached
+  // bcrypt.compare() below and threw, surfacing as a raw 500 instead of
+  // the normal login-failure path (audit finding BUG-021). Reuses the
+  // exact same 'not_found' status wrong-password/no-such-account already
+  // return — same generic 401, same anti-enumeration property, and it
+  // never reaches bcrypt at all, so it can't expose a bcrypt error either.
+  if (typeof password !== 'string' || !password) {
+    return { status: 'not_found' };
+  }
   const user = await User.findOne({ $or: [{ email }, { username: email }] }).select('+password');
   if (!user || !user.password) {
     await bcrypt.compare(password, DUMMY_PASSWORD_HASH); // pay the same time cost as a real check
