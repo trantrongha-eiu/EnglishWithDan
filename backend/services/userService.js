@@ -11,6 +11,46 @@ const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const cloudinaryService = require('./cloudinaryService');
 const { effectiveStreak } = require('../utils/streak');
+const { todayVNDate } = require('./streakBonusService');
+
+// targetBand/targetExamDate are the SAME underlying User fields
+// goalService.js's /api/goals validates (see that file's own comment) —
+// but goalService deliberately enforces a STRICTER product-scope band
+// range there (4.0-7.5) than the field's own schema bound (models/User.js:
+// min 4, max 9), specifically so that stricter rule wouldn't risk breaking
+// this older, more permissive profile.html path or any pre-existing value.
+// So this validates against the schema's own bound, not goalService's —
+// reusing goalService's range here would be an unauthorized business-rule
+// change to this endpoint, not a bug fix. What WAS a real gap: nothing
+// enforced even the schema bound before writing (findByIdAndUpdate below
+// never passed runValidators), so out-of-range/malformed values saved
+// silently (audit finding BUG-003) — a crafted targetBand:15 round-tripped
+// straight back on the next GET.
+const MIN_TARGET_BAND = 4;
+const MAX_TARGET_BAND = 9;
+
+// Returns an array of human-readable errors — empty means valid. Only
+// validates fields actually present in `input`; null/'' clear the field
+// (existing, intentional behavior — see updateProfile below) and are not
+// errors. Mirrors goalService.validateGoalInput's shape/conventions.
+function validateProfileInput({ targetBand, targetExamDate }) {
+  const errors = [];
+  if (targetBand !== undefined && targetBand !== null && targetBand !== '') {
+    if (typeof targetBand !== 'number' || Number.isNaN(targetBand) || targetBand < MIN_TARGET_BAND || targetBand > MAX_TARGET_BAND) {
+      errors.push(`targetBand must be a number between ${MIN_TARGET_BAND} and ${MAX_TARGET_BAND}`);
+    }
+  }
+  if (targetExamDate !== undefined && targetExamDate !== null && targetExamDate !== '') {
+    const d = new Date(targetExamDate);
+    if (Number.isNaN(d.getTime())) errors.push('targetExamDate is not a valid date');
+    // Same "past" definition as goalService's identical examDate check —
+    // the exam-date field is jointly owned by Profile and Goals, so a past
+    // date must be rejected here too or a student could set one by going
+    // through Profile instead of Goals.
+    else if (d < todayVNDate()) errors.push('targetExamDate must not be in the past');
+  }
+  return errors;
+}
 
 async function getProfile(userId, currentPlan) {
   const user = await User.findById(userId).select('-password -resetOTP -resetOTPExpires').lean();
@@ -21,6 +61,9 @@ async function getProfile(userId, currentPlan) {
 }
 
 async function updateProfile(userId, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate }) {
+  const errors = validateProfileInput({ targetBand, targetExamDate });
+  if (errors.length) return { status: 'invalid', errors };
+
   const update = {};
   if (firstName !== undefined) update.firstName = firstName.trim();
   if (lastName !== undefined) update.lastName = lastName.trim();
@@ -29,9 +72,10 @@ async function updateProfile(userId, { firstName, lastName, bio, studyMotto, tar
   if (targetBand !== undefined) update.targetBand = targetBand === '' || targetBand === null ? null : Number(targetBand);
   if (targetExamDate !== undefined) update.targetExamDate = targetExamDate === '' || targetExamDate === null ? null : new Date(targetExamDate);
 
-  return User.findByIdAndUpdate(userId, update, { new: true })
+  const user = await User.findByIdAndUpdate(userId, update, { new: true })
     .select('-password -resetOTP -resetOTPExpires')
     .lean();
+  return { status: 'ok', user };
 }
 
 async function changePassword(userId, currentPassword, newPassword) {
@@ -270,4 +314,4 @@ async function useHammer(userId) {
   return { status: 'ok', streak: user.learningStreak, streakHammers: user.streakHammers };
 }
 
-module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard, useHammer };
+module.exports = { getProfile, updateProfile, validateProfileInput, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard, useHammer };

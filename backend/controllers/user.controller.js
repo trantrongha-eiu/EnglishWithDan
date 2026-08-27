@@ -18,8 +18,11 @@ exports.getProfile = catchAsync(async (req, res) => {
 // ── PUT /api/user/profile ────────────────────────────────────
 exports.updateProfile = catchAsync(async (req, res) => {
   const { firstName, lastName, bio, studyMotto, targetBand, targetExamDate } = req.body;
-  const user = await userService.updateProfile(req.user._id, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate });
-  res.json({ success: true, user });
+  const result = await userService.updateProfile(req.user._id, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate });
+  if (result.status === 'invalid') {
+    return res.status(400).json({ success: false, message: result.errors[0], errors: result.errors });
+  }
+  res.json({ success: true, user: result.user });
 });
 
 // ── PUT /api/user/change-password ────────────────────────────

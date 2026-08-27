@@ -59,4 +59,48 @@ describe('PUT /api/user/profile', () => {
     expect(fromDb.plan).toBe('free');
     expect(fromDb.isBanned).toBe(false);
   });
+
+  // Regression coverage for BUG-003 (2026-08-27 audit): this endpoint used
+  // to accept targetBand/targetExamDate with no validation at all — a
+  // crafted targetBand:15 or a past exam date was persisted verbatim.
+  test('rejects an out-of-range targetBand with 400, and never persists it', async () => {
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .put('/api/user/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ targetBand: 15 });
+
+    expect(res.status).toBe(400);
+    expect(res.body.success).toBe(false);
+
+    const fromDb = await User.findById(user._id);
+    expect(fromDb.targetBand).toBeNull();
+  });
+
+  test('rejects a past targetExamDate with 400, and never persists it', async () => {
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .put('/api/user/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ targetExamDate: '2020-01-01' });
+
+    expect(res.status).toBe(400);
+
+    const fromDb = await User.findById(user._id);
+    expect(fromDb.targetExamDate).toBeNull();
+  });
+
+  test('accepts a valid future targetExamDate', async () => {
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .put('/api/user/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ targetExamDate: '2099-06-15' });
+
+    expect(res.status).toBe(200);
+    expect(new Date(res.body.user.targetExamDate).toISOString().slice(0, 10)).toBe('2099-06-15');
+  });
 });

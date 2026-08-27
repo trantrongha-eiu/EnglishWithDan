@@ -123,26 +123,103 @@ describe('userService.updateProfile — targetExamDate', () => {
     const student = await createStudent();
     const examDate = '2026-12-05';
 
-    const updated = await userService.updateProfile(student._id, { targetExamDate: examDate });
+    const result = await userService.updateProfile(student._id, { targetExamDate: examDate });
 
-    expect(new Date(updated.targetExamDate).toISOString().slice(0, 10)).toBe('2026-12-05');
+    expect(result.status).toBe('ok');
+    expect(new Date(result.user.targetExamDate).toISOString().slice(0, 10)).toBe('2026-12-05');
   });
 
   it('clears targetExamDate when set to an empty string', async () => {
     const student = await createStudent({ extra: { targetExamDate: new Date('2026-12-05') } });
 
-    const updated = await userService.updateProfile(student._id, { targetExamDate: '' });
+    const result = await userService.updateProfile(student._id, { targetExamDate: '' });
 
-    expect(updated.targetExamDate).toBeNull();
+    expect(result.status).toBe('ok');
+    expect(result.user.targetExamDate).toBeNull();
   });
 
   it('leaves targetExamDate untouched when not present in the update payload', async () => {
     const original = new Date('2026-12-05');
     const student = await createStudent({ extra: { targetExamDate: original } });
 
-    const updated = await userService.updateProfile(student._id, { firstName: 'New Name' });
+    const result = await userService.updateProfile(student._id, { firstName: 'New Name' });
 
-    expect(new Date(updated.targetExamDate).getTime()).toBe(original.getTime());
+    expect(result.status).toBe('ok');
+    expect(new Date(result.user.targetExamDate).getTime()).toBe(original.getTime());
+  });
+});
+
+// Regression coverage for BUG-003 (2026-08-27 audit): PUT /api/user/profile
+// accepted targetBand/targetExamDate with zero validation — a crafted
+// targetBand:15 or a past targetExamDate round-tripped straight back on
+// the next GET. validateProfileInput() enforces the User schema's own
+// bound (4-9), deliberately NOT goalService's stricter 4.0-7.5 product-scope
+// range (see userService.js's own comment on why those must stay separate).
+describe('userService.updateProfile — validation (BUG-003)', () => {
+  it('accepts a targetBand within the schema bound (4-9)', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetBand: 7.5 });
+    expect(result.status).toBe('ok');
+    expect(result.user.targetBand).toBe(7.5);
+  });
+
+  it('rejects a targetBand above the schema bound', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetBand: 15 });
+    expect(result.status).toBe('invalid');
+    expect(result.errors[0]).toMatch(/targetBand/);
+
+    const reloaded = await userService.getProfile(student._id, 'free');
+    expect(reloaded.targetBand).toBeNull(); // never persisted
+  });
+
+  it('rejects a targetBand below the schema bound', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetBand: 0 });
+    expect(result.status).toBe('invalid');
+  });
+
+  it('rejects a non-numeric targetBand (string)', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetBand: '7.5' });
+    expect(result.status).toBe('invalid');
+  });
+
+  it('allows clearing targetBand with null', async () => {
+    const student = await createStudent({ extra: { targetBand: 7 } });
+    const result = await userService.updateProfile(student._id, { targetBand: null });
+    expect(result.status).toBe('ok');
+    expect(result.user.targetBand).toBeNull();
+  });
+
+  it('rejects a malformed targetExamDate', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetExamDate: 'not-a-date' });
+    expect(result.status).toBe('invalid');
+    expect(result.errors[0]).toMatch(/targetExamDate/);
+  });
+
+  it('rejects a past targetExamDate', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetExamDate: '2020-01-01' });
+    expect(result.status).toBe('invalid');
+    expect(result.errors[0]).toMatch(/past/);
+
+    const reloaded = await userService.getProfile(student._id, 'free');
+    expect(reloaded.targetExamDate).toBeNull(); // never persisted
+  });
+
+  it('accepts a future targetExamDate', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { targetExamDate: '2099-01-01' });
+    expect(result.status).toBe('ok');
+  });
+
+  it('leaves unrelated profile fields (firstName) working exactly as before', async () => {
+    const student = await createStudent();
+    const result = await userService.updateProfile(student._id, { firstName: '  Trang  ' });
+    expect(result.status).toBe('ok');
+    expect(result.user.firstName).toBe('Trang');
   });
 });
 
