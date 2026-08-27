@@ -48,7 +48,11 @@
 [data-theme="dark"] .sheet-add-book-btn:hover{background:rgba(229,57,53,.15)}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+/* BUG-030: same fix as css/main.css — dashboard.html's own body font-size
+   was even further below the 16px baseline (14px). rem-sized elements in
+   this file are unaffected (anchored to html's unoverridden 16px default,
+   not body's). */
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.5}
 
 /* ══════════════════════════════════════════
    MAIN LAYOUT (sidebar + content)
