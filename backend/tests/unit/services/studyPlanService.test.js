@@ -8,6 +8,7 @@ const { createStudent } = require('../../factories/userFactory');
 const {
   createCompletedTestAttempt, createListeningAttempt, createWritingAttempt, createSpeakingAttempt,
 } = require('../../factories/contentFactory');
+const { todayVNDate } = require('../../../services/streakBonusService');
 
 const future = days => new Date(Date.now() + days * 86400000);
 const past = days => new Date(Date.now() - days * 86400000);
@@ -84,13 +85,27 @@ describe('studyPlanService.getStudyPlan', () => {
     expect(plan.urgencyExponent).toBe(studyPlanService.URGENCY_EXPONENT.low);
   });
 
-  it('User F — past exam date: plan still generates (using default urgency), goal flags isPastExamDate', async () => {
+  // BUG-004 (2026-08-27 audit): this used to generate a full dated weekly
+  // plan even with an exam date already in the past — goal.isPastExamDate
+  // was computed but never read. Fixed to return the same hasPlan:false
+  // shape as User A above (every consumer already handles that generically),
+  // instead of silently building a calendar around a lapsed exam date.
+  it('User F — past exam date: no plan generated, explains why, goal still flags isPastExamDate', async () => {
     const student = await createStudent();
     await setGoal(student._id, { targetExamDate: past(5) });
     const plan = await studyPlanService.getStudyPlan(student._id);
-    expect(plan.hasPlan).toBe(true);
+    expect(plan.hasPlan).toBe(false);
+    expect(plan.message).toMatch(/exam date has passed/i);
+    expect(plan.sessions).toBeUndefined();
     expect(plan.goal.isPastExamDate).toBe(true);
-    expect(plan.urgencyExponent).toBe(1.0); // no urgency signal from a past/null examUrgency
+  });
+
+  it('User F2 — exam date today: still generates a real plan (not treated as past)', async () => {
+    const student = await createStudent();
+    await setGoal(student._id, { targetExamDate: todayVNDate() }); // same "today" definition the service itself uses
+    const plan = await studyPlanService.getStudyPlan(student._id);
+    expect(plan.hasPlan).toBe(true);
+    expect(plan.goal.isPastExamDate).toBe(false);
   });
 
   it('User G — no skill data anywhere: every category insufficient_data, allocation stays close to baseline-even', async () => {

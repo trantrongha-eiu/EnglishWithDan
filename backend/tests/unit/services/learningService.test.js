@@ -181,11 +181,18 @@ describe('learningService.getTodayLearning', () => {
     expect(first).toEqual(second);
   });
 
-  it('past exam date / legacy goal data does not crash and does not invent claims', async () => {
+  // BUG-004 (2026-08-27 audit): studyPlanService.getStudyPlan() used to
+  // generate a full dated plan even past the exam date; fixed to return
+  // hasPlan:false with an explanatory message instead — this propagates
+  // straight through here since getTodayLearning's "no plan yet" branch
+  // (case A/B) already handles hasPlan:false generically.
+  it('past exam date: no plan generated, explains why, does not crash', async () => {
     const student = await createStudent();
     await setGoal(student._id, { targetExamDate: new Date(Date.now() - 10 * 86400000) });
     const result = await learningService.getTodayLearning(student._id);
-    expect(result.hasPlan).toBe(true);
+    expect(result.hasPlan).toBe(false);
+    expect(result.hasGoal).toBe(true);
+    expect(result.message).toMatch(/exam date has passed/i);
     expect(result.goal.isPastExamDate).toBe(true);
   });
 });

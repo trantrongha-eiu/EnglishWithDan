@@ -234,6 +234,22 @@ function mondayOfCurrentVNWeek() {
 // calendar (§8).
 async function getStudyPlan(userId) {
   const goal = await goalService.getGoal(userId);
+  // goal.isPastExamDate (goalService.getGoal) was already computed but never
+  // read here — this function generated a full dated weekly plan regardless,
+  // silently building a calendar around an exam date that had already
+  // passed (audit finding BUG-004). Same early-return shape as the
+  // no-availability case below, which every consumer (studyPlan.controller,
+  // learningService.getTodayLearning, goal.html/plan-empty rendering) already
+  // handles generically via hasPlan:false + message — no downstream change
+  // needed. Checked first since a past exam date makes weeklyStudyMinutes/
+  // studyDays/preferredSessionMinutes moot regardless of whether they're set.
+  if (goal.isPastExamDate) {
+    return {
+      hasPlan: false,
+      message: 'Your target exam date has passed — update it in your goal to generate a new study plan.',
+      goal,
+    };
+  }
   if (!goal.weeklyStudyMinutes || !goal.studyDays.length || !goal.preferredSessionMinutes) {
     return {
       hasPlan: false,
