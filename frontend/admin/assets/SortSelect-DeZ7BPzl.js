@@ -1,0 +1,1 @@
+import{c as e}from"./index-CY9O-qPe.js";import{n as t}from"./useListFilter-BJPKFeLl.js";var n=e();function r({value:e,onChange:r,style:i}){return(0,n.jsx)(`select`,{className:`form-input`,value:e,onChange:e=>r(e.target.value),style:{width:170,...i},children:t.map(e=>(0,n.jsx)(`option`,{value:e.value,children:e.label},e.value))})}export{r as t};

@@ -1497,6 +1497,9 @@ body { display: block; }
 .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .search-input { flex: 1; min-width: 180px; }
 
+/* BUG-017: fallback shown briefly while a lazy-loaded route chunk fetches */
+.route-loading { display: flex; align-items: center; justify-content: center; width: 100%; padding: 60px 0; color: var(--text-muted, #888); font-size: 14px; }
+
 /* ── PAGE-LEVEL LAYOUT (Task2, etc.) ── */
 .page-header {
   display: flex;

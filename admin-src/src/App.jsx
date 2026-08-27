@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ToastProvider } from './contexts/ToastProvider';
@@ -6,36 +7,42 @@ import { ConfirmProvider } from './components/ConfirmProvider';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminLayout from './layouts/AdminLayout';
 
+// BUG-017: Dashboard is the default landing route (see the index redirect
+// below), so it stays a static import for the fastest first paint. Every
+// other page was a static import too, which forced Vite to bundle all ~26
+// admin pages into one 757 kB chunk regardless of which page an admin
+// actually opens. Routing them through React.lazy() lets Vite split each
+// into its own chunk, fetched only when that route is visited.
 import Dashboard from './pages/Dashboard';
-import Users from './pages/Users';
-import Courses from './pages/Courses';
-import Passages from './pages/Passages';
-import ReadingTests from './pages/ReadingTests';
-import ReadingTestEdit from './pages/ReadingTestEdit';
-import ListeningTests from './pages/ListeningTests';
-import ListeningTestEdit from './pages/ListeningTestEdit';
-import ListeningSections from './pages/ListeningSections';
-import ListeningSectionEdit from './pages/ListeningSectionEdit';
-import WritingTests from './pages/WritingTests';
-import Speaking from './pages/Speaking';
-import Vocabulary from './pages/Vocabulary';
-import VocabularyLessons from './pages/VocabularyLessons';
-import VocabularyLessonImport from './pages/VocabularyLessonImport';
-import EssentialGrammarLessons from './pages/EssentialGrammarLessons';
-import WritingPractice from './pages/WritingPractice';
-import Task1Exercises from './pages/Task1Exercises';
-import Task2Topics from './pages/Task2Topics';
-import Task2Templates from './pages/Task2Templates';
-import StudentHistory from './pages/StudentHistory';
-import ReadingStats from './pages/ReadingStats';
-import ListeningStats from './pages/ListeningStats';
-import VocabActivity from './pages/VocabActivity';
-import StudentDetail from './pages/StudentDetail';
-import Messages from './pages/Messages';
-import WritingGrades from './pages/WritingGrades';
-import Tuition from './pages/Tuition';
-import UpgradeRequests from './pages/UpgradeRequests';
-import NotFound from './pages/NotFound';
+const Users = lazy(() => import('./pages/Users'));
+const Courses = lazy(() => import('./pages/Courses'));
+const Passages = lazy(() => import('./pages/Passages'));
+const ReadingTests = lazy(() => import('./pages/ReadingTests'));
+const ReadingTestEdit = lazy(() => import('./pages/ReadingTestEdit'));
+const ListeningTests = lazy(() => import('./pages/ListeningTests'));
+const ListeningTestEdit = lazy(() => import('./pages/ListeningTestEdit'));
+const ListeningSections = lazy(() => import('./pages/ListeningSections'));
+const ListeningSectionEdit = lazy(() => import('./pages/ListeningSectionEdit'));
+const WritingTests = lazy(() => import('./pages/WritingTests'));
+const Speaking = lazy(() => import('./pages/Speaking'));
+const Vocabulary = lazy(() => import('./pages/Vocabulary'));
+const VocabularyLessons = lazy(() => import('./pages/VocabularyLessons'));
+const VocabularyLessonImport = lazy(() => import('./pages/VocabularyLessonImport'));
+const EssentialGrammarLessons = lazy(() => import('./pages/EssentialGrammarLessons'));
+const WritingPractice = lazy(() => import('./pages/WritingPractice'));
+const Task1Exercises = lazy(() => import('./pages/Task1Exercises'));
+const Task2Topics = lazy(() => import('./pages/Task2Topics'));
+const Task2Templates = lazy(() => import('./pages/Task2Templates'));
+const StudentHistory = lazy(() => import('./pages/StudentHistory'));
+const ReadingStats = lazy(() => import('./pages/ReadingStats'));
+const ListeningStats = lazy(() => import('./pages/ListeningStats'));
+const VocabActivity = lazy(() => import('./pages/VocabActivity'));
+const StudentDetail = lazy(() => import('./pages/StudentDetail'));
+const Messages = lazy(() => import('./pages/Messages'));
+const WritingGrades = lazy(() => import('./pages/WritingGrades'));
+const Tuition = lazy(() => import('./pages/Tuition'));
+const UpgradeRequests = lazy(() => import('./pages/UpgradeRequests'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   return (
@@ -44,6 +51,7 @@ export default function App() {
       <AuthProvider>
         <ToastProvider>
           <ConfirmProvider>
+            <Suspense fallback={<div className="route-loading">Đang tải…</div>}>
             <Routes>
               <Route path="/" element={
                 <ProtectedRoute>
@@ -88,6 +96,7 @@ export default function App() {
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
+            </Suspense>
           </ConfirmProvider>
         </ToastProvider>
       </AuthProvider>
