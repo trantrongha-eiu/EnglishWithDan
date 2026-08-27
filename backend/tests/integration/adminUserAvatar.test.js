@@ -32,6 +32,23 @@ describe('POST /api/admin/users/:id/avatar (adminOnly)', () => {
     expect(res.status).toBe(400);
   });
 
+  // BUG-025: a direct API call bypasses the frontend's own client-side
+  // compression entirely, so the server needs its own real size cap.
+  test('rejects a payload over the 5MB decoded-byte cap, no Cloudinary call made', async () => {
+    const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage');
+    const oversized = 'data:image/png;base64,' + Buffer.alloc(6 * 1024 * 1024, 1).toString('base64');
+    const admin = await createAdmin();
+    const target = await createStudent();
+    const token = signTokenFor(admin);
+    const res = await request(app)
+      .post(`/api/admin/users/${target._id}/avatar`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ imageBase64: oversized });
+    expect(res.status).toBe(400);
+    expect(uploadSpy).not.toHaveBeenCalled();
+    uploadSpy.mockRestore();
+  });
+
   test('an admin can set a user avatar', async () => {
     const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage')
       .mockResolvedValue({ secure_url: 'https://res.cloudinary.com/test/avatars/abc.jpg' });

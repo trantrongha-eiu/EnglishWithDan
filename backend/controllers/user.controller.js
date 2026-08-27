@@ -1,4 +1,18 @@
-const { isImageDataUri } = require('../utils/validation');
+const { isImageDataUri, getBase64PayloadByteSize } = require('../utils/validation');
+
+// BUG-025: the frontend's own client-side cap (profile.html's
+// MAX_AVATAR_BYTES) is 20MB, but that's on the ORIGINAL file the user
+// picked, before it gets compressed down to ~600px/quality 0.85 — the
+// actual imageBase64 payload a real upload sends is documented there as
+// "keeps under 200KB easily". A direct API call bypasses that compression
+// entirely, so this needs its own real, enforceable limit on the payload
+// actually received. 5MB decoded gives ~25x headroom over a legitimate
+// compressed upload while staying well under app.js's global
+// express.json({limit:'20mb'}) — that 20mb figure is measured on the
+// base64-encoded (≈1.37x larger) request body, so a decoded-byte cap
+// anywhere near 20MB would be unreachable: Express's body-parser would
+// already have rejected the request with a 413 before this check ever ran.
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 const catchAsync = require('../middleware/catchAsync');
 const userService = require('../services/userService');
 const userMessageService = require('../services/userMessageService');
@@ -51,6 +65,9 @@ exports.uploadAvatar = catchAsync(async (req, res) => {
   const { imageBase64 } = req.body;
   if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
   if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
+  if (getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
+    return res.status(400).json({ success: false, message: 'Ảnh quá lớn, vui lòng chọn ảnh dưới 5MB' });
+  }
 
   const { avatar, user } = await userService.uploadAvatar(req.user._id, imageBase64);
   res.json({ success: true, avatar, user });

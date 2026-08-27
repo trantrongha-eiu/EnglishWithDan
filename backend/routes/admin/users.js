@@ -6,7 +6,12 @@ const bcrypt  = require('bcryptjs');
 const auth    = require('../../middleware/auth');
 const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
 const logger  = require('../../utils/logger');
-const { isImageDataUri } = require('../../utils/validation');
+const { isImageDataUri, getBase64PayloadByteSize } = require('../../utils/validation');
+// BUG-025: same cap and reasoning as the student-facing upload — see
+// controllers/user.controller.js's comment (5MB decoded stays safely
+// under app.js's global 20mb JSON body limit, which is measured on the
+// larger base64-encoded string, not decoded bytes).
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 const cloudinaryService = require('../../services/cloudinaryService');
 const badgeService = require('../../services/badgeService');
 
@@ -125,6 +130,9 @@ router.post('/users/:id/avatar', auth, adminOnly, async (req, res) => {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
     if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
+    if (getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
+      return res.status(400).json({ success: false, message: 'Ảnh quá lớn, vui lòng chọn ảnh dưới 5MB' });
+    }
 
     const result = await cloudinaryService.uploadImage(imageBase64, {
       folder: 'avatars',

@@ -6,6 +6,7 @@ const request = require('supertest');
 const app = require('../../app');
 const User = require('../../models/User');
 const { createStudent, signTokenFor } = require('../factories/userFactory');
+const cloudinaryService = require('../../services/cloudinaryService');
 
 describe('GET /api/user/profile', () => {
   test('requires authentication', async () => {
@@ -167,5 +168,56 @@ describe('PUT /api/user/change-password', () => {
 
     const meWithOldDevice = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${otherDeviceToken}`);
     expect(meWithOldDevice.status).toBe(401);
+  });
+});
+
+// BUG-025: a direct API call bypasses the frontend's own client-side
+// compression (profile.html resizes to ~600px before ever sending), so
+// the server needs its own real size cap independent of that.
+describe('POST /api/user/avatar', () => {
+  const TINY_PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+  test('requires authentication', async () => {
+    const res = await request(app).post('/api/user/avatar').send({ imageBase64: TINY_PNG });
+    expect(res.status).toBe(401);
+  });
+
+  test('rejects a non-data-URI payload', async () => {
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/user/avatar')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ imageBase64: 'https://evil.example/x.png' });
+    expect(res.status).toBe(400);
+  });
+
+  test('rejects a payload over the 5MB decoded-byte cap, no Cloudinary call made', async () => {
+    const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage');
+    const oversized = 'data:image/png;base64,' + Buffer.alloc(6 * 1024 * 1024, 1).toString('base64');
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/user/avatar')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ imageBase64: oversized });
+    expect(res.status).toBe(400);
+    expect(uploadSpy).not.toHaveBeenCalled();
+    uploadSpy.mockRestore();
+  });
+
+  test('accepts a payload comfortably under the cap', async () => {
+    const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage')
+      .mockResolvedValue({ secure_url: 'https://res.cloudinary.com/test/avatars/me.jpg' });
+    const user = await createStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/user/avatar')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ imageBase64: TINY_PNG });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.avatar).toBe('https://res.cloudinary.com/test/avatars/me.jpg');
+    uploadSpy.mockRestore();
   });
 });

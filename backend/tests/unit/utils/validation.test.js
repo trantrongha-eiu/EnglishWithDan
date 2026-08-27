@@ -3,7 +3,7 @@
 // URL, or a local file path — this guard ensures only an actual base64
 // image data URI is ever accepted for "imageBase64" uploads, closing off
 // the ability for a caller to make the server fetch an arbitrary URL.
-const { isImageDataUri } = require('../../../utils/validation');
+const { isImageDataUri, getBase64PayloadByteSize } = require('../../../utils/validation');
 
 describe('isImageDataUri', () => {
   test.each([
@@ -62,5 +62,33 @@ describe('isImageDataUri', () => {
 
   test('rejects a data URI with trailing garbage after the payload', () => {
     expect(isImageDataUri('data:image/png;base64,iVBORw0KGgo=;extra')).toBe(false);
+  });
+});
+
+// BUG-025: getBase64PayloadByteSize(str) — used to enforce a server-side
+// avatar upload size cap independent of any client-side compression.
+describe('getBase64PayloadByteSize', () => {
+  test('computes the exact decoded byte size for a known buffer, no padding', () => {
+    const buf = Buffer.alloc(9, 1); // 9 bytes -> base64 with no '=' padding
+    const uri = `data:image/png;base64,${buf.toString('base64')}`;
+    expect(getBase64PayloadByteSize(uri)).toBe(9);
+  });
+
+  test('computes the exact decoded byte size with 1-char padding', () => {
+    const buf = Buffer.alloc(10, 1); // 10 bytes -> base64 ends with one '='
+    const uri = `data:image/png;base64,${buf.toString('base64')}`;
+    expect(getBase64PayloadByteSize(uri)).toBe(10);
+  });
+
+  test('computes the exact decoded byte size with 2-char padding', () => {
+    const buf = Buffer.alloc(11, 1); // 11 bytes -> base64 ends with '=='
+    const uri = `data:image/png;base64,${buf.toString('base64')}`;
+    expect(getBase64PayloadByteSize(uri)).toBe(11);
+  });
+
+  test('matches a real 20MB buffer exactly', () => {
+    const buf = Buffer.alloc(20 * 1024 * 1024);
+    const uri = `data:image/png;base64,${buf.toString('base64')}`;
+    expect(getBase64PayloadByteSize(uri)).toBe(20 * 1024 * 1024);
   });
 });
