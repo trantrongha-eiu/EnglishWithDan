@@ -358,8 +358,16 @@ async function retryGrading(attemptId, user) {
   }
 }
 
-async function getHistory(userId) {
-  return SpeakingAttempt.find({ userId }).sort({ createdAt: -1 }).limit(30).lean();
+// Audit finding BUG-013: same fix as readingService/listeningService's
+// getHistory. Return shape changed (was a bare array) — the one caller
+// (speaking.controller.js) is updated alongside this.
+async function getHistory(userId, limit = 30) {
+  const filter = { userId };
+  const [attempts, total] = await Promise.all([
+    SpeakingAttempt.find(filter).sort({ createdAt: -1 }).limit(limit).lean(),
+    SpeakingAttempt.countDocuments(filter),
+  ]);
+  return { attempts, total };
 }
 
 async function listMaterials({ quarter, topic }) {

@@ -3408,10 +3408,23 @@ function retryReset() {
 
 /* ══════════════════════════════════════════════════════════════════════
    HISTORY MODAL
+   BUG-013 fix: /api/reading/history now reports an honest total/hasMore
+   instead of silently cutting off past its .limit() with no indication —
+   this renders that as "Đang hiển thị N/Y" + a "Tải thêm" button instead
+   of just dumping whatever page-1 happened to return.
 ══════════════════════════════════════════════════════════════════════ */
+const READING_HISTORY_STEP = 50; // matches the backend's own default limit
+let _readingHistoryLimit = READING_HISTORY_STEP;
+
 async function showHistoryModal() {
+  _readingHistoryLimit = READING_HISTORY_STEP;
+  await loadHistoryModalPage();
+  openModal('modal-history');
+}
+
+async function loadHistoryModalPage() {
   try {
-    const res = await apiFetch('/api/reading/history');
+    const res = await apiFetch(`/api/reading/history?limit=${_readingHistoryLimit}`);
     const history = res.history || [];
     const tbody = document.getElementById('history-tbody');
     tbody.innerHTML = history.map(h => `
@@ -3426,8 +3439,21 @@ async function showHistoryModal() {
         <td class="band-cell">${h.bandScore?.toFixed(1)}</td>
         <td><button class="btn-review-sm" onclick="loadReview('${h._id}');closeModal('modal-history')">Xem lại</button></td>
       </tr>`).join('') || '<tr><td colspan="9" class="rd-no-history">Chưa có lịch sử</td></tr>';
-    openModal('modal-history');
+
+    const footer = document.getElementById('history-pagination-footer');
+    if (footer) {
+      if (!history.length) { footer.innerHTML = ''; }
+      else {
+        footer.innerHTML = `<span>Đang hiển thị ${history.length}/${res.total} kết quả</span>` +
+          (res.hasMore ? `<button onclick="_loadMoreReadingHistory()">Tải thêm</button>` : '');
+      }
+    }
   } catch { showVocabToast('Lỗi tải lịch sử'); }
+}
+
+function _loadMoreReadingHistory() {
+  _readingHistoryLimit += READING_HISTORY_STEP;
+  loadHistoryModalPage();
 }
 
 /* ══════════════════════════════════════════════════════════════════════

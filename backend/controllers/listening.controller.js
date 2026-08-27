@@ -260,8 +260,9 @@ exports.submitTest = async (req, res) => {
 // ── Student – history ─────────────────────────────────────────────────────
 exports.getHistory = async (req, res) => {
   try {
-    const attempts = await listeningService.getHistory(req.user._id || req.user.id);
-    res.json({ success: true, attempts });
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
+    const { attempts, total } = await listeningService.getHistory(req.user._id || req.user.id, limit);
+    res.json({ success: true, attempts, total, hasMore: attempts.length < total });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 

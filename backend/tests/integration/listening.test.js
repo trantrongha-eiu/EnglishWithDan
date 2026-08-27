@@ -107,4 +107,43 @@ describe('GET /api/listening/history (ownership scoping)', () => {
     expect(res.body.attempts.length).toBe(1);
     expect(res.body.attempts[0].bandScore).toBe(7.5);
   });
+
+  // Regression coverage for BUG-013 (2026-08-27 audit): this endpoint used
+  // to be a bare .limit(50) with no total/hasMore.
+  test('reports an honest total/hasMore, independent of ?limit=', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    for (let i = 0; i < 3; i++) await createListeningAttempt({ userId: student._id, bandScore: 6.0 });
+
+    const page = await request(app).get('/api/listening/history').set('Authorization', `Bearer ${token}`).query({ limit: 2 }).send();
+    expect(page.body.attempts).toHaveLength(2);
+    expect(page.body.total).toBe(3);
+    expect(page.body.hasMore).toBe(true);
+
+    const full = await request(app).get('/api/listening/history').set('Authorization', `Bearer ${token}`).query({ limit: 50 }).send();
+    expect(full.body.attempts).toHaveLength(3);
+    expect(full.body.total).toBe(3);
+    expect(full.body.hasMore).toBe(false);
+  });
+
+  test('an invalid ?limit= never crashes or returns unbounded results', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    await createListeningAttempt({ userId: student._id, bandScore: 6.0 });
+
+    for (const limit of ['not-a-number', -5, 999999]) {
+      const res = await request(app).get('/api/listening/history').set('Authorization', `Bearer ${token}`).query({ limit }).send();
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.attempts)).toBe(true);
+    }
+  });
+
+  test('an empty history reports total:0, hasMore:false', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const res = await request(app).get('/api/listening/history').set('Authorization', `Bearer ${token}`);
+    expect(res.body.attempts).toEqual([]);
+    expect(res.body.total).toBe(0);
+    expect(res.body.hasMore).toBe(false);
+  });
 });

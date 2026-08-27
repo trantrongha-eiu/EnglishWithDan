@@ -180,8 +180,9 @@ exports.retry = catchAsync(async (req, res) => {
 
 // ── GET /api/speaking/history ────────────────────────────────
 exports.getHistory = catchAsync(async (req, res) => {
-  const attempts = await speakingService.getHistory(req.user._id);
-  res.json({ success: true, attempts });
+  const limit = Math.min(Math.max(parseInt(req.query.limit) || 30, 1), 200);
+  const { attempts, total } = await speakingService.getHistory(req.user._id, limit);
+  res.json({ success: true, attempts, total, hasMore: attempts.length < total });
 });
 
 // ── GET /api/speaking/materials ──────────────────────────────

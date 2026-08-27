@@ -46,8 +46,9 @@ exports.getAttemptReview = guard(null, async (req, res) => {
 });
 
 exports.getHistory = guard(null, async (req, res) => {
-  const history = await readingService.getHistory(req.user._id);
-  res.json({ success: true, history });
+  const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
+  const { history, total } = await readingService.getHistory(req.user._id, limit);
+  res.json({ success: true, history, total, hasMore: history.length < total });
 });
 
 exports.listPracticePassages = guard(null, async (req, res) => {

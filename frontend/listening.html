@@ -471,6 +471,7 @@
                     </thead>
                     <tbody id="history-tbody"></tbody>
                 </table>
+                <div id="history-pagination-footer" class="ls-history-pagination"></div>
             </div>
         </div>
     </div>
@@ -3243,13 +3244,27 @@
 
         // ══════════════════════════════════════════════
         // HISTORY MODAL
+        // BUG-013 fix: /api/listening/history now reports an honest
+        // total/hasMore instead of silently cutting off past its .limit()
+        // with no indication — rendered as "Đang hiển thị N/Y" + "Tải thêm"
+        // instead of just dumping whatever page-1 happened to return.
         // ══════════════════════════════════════════════
+        const LISTENING_HISTORY_STEP = 50; // matches the backend's own default limit
+        let _listeningHistoryLimit = LISTENING_HISTORY_STEP;
+
         async function showHistoryModal() {
+            _listeningHistoryLimit = LISTENING_HISTORY_STEP;
             openModal('modal-history');
+            await loadListeningHistoryPage();
+        }
+
+        async function loadListeningHistoryPage() {
             const tbody = document.getElementById('history-tbody');
+            const footer = document.getElementById('history-pagination-footer');
             tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Đang tải...</td></tr>';
+            if (footer) footer.innerHTML = '';
             try {
-                const res = await fetch(`${API}/listening/history`, { headers: authH() });
+                const res = await fetch(`${API}/listening/history?limit=${_listeningHistoryLimit}`, { headers: authH() });
                 const data = await safeJson(res);
                 if (!data.success || !data.attempts?.length) {
                     tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Chưa có lịch sử làm bài.</td></tr>';
@@ -3271,9 +3286,18 @@
                         <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" class="btn-review-sm">Review</button>` : ''}</td>
                     </tr>`;
                 }).join('');
+                if (footer) {
+                    footer.innerHTML = `<span>Đang hiển thị ${data.attempts.length}/${data.total} kết quả</span>` +
+                        (data.hasMore ? `<button onclick="_loadMoreListeningHistory()">Tải thêm</button>` : '');
+                }
             } catch (err) {
                 tbody.innerHTML = `<tr><td colspan="8" class="ls-history-error">Error: ${err.message}</td></tr>`;
             }
+        }
+
+        function _loadMoreListeningHistory() {
+            _listeningHistoryLimit += LISTENING_HISTORY_STEP;
+            loadListeningHistoryPage();
         }
 
         // ══════════════════════════════════════════════

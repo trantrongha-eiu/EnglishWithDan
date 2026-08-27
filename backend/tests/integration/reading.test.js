@@ -220,4 +220,45 @@ describe('GET /api/reading/history (ownership scoping)', () => {
     expect(res.body.history.length).toBe(1);
     expect(res.body.history[0].bandScore).toBe(7.0);
   });
+
+  // Regression coverage for BUG-013 (2026-08-27 audit): this endpoint used
+  // to be a bare .limit(50) with no total/hasMore — older history silently
+  // vanished past the cap with no indication anything was missing.
+  test('reports an honest total/hasMore, independent of ?limit=', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    for (let i = 0; i < 3; i++) await createCompletedTestAttempt({ userId: student._id, bandScore: 6.0 });
+
+    const page = await request(app).get('/api/reading/history').set('Authorization', `Bearer ${token}`).query({ limit: 2 }).send();
+    expect(page.body.history).toHaveLength(2); // capped by the requested limit
+    expect(page.body.total).toBe(3); // real count, not capped
+    expect(page.body.hasMore).toBe(true);
+
+    const full = await request(app).get('/api/reading/history').set('Authorization', `Bearer ${token}`).query({ limit: 50 }).send();
+    expect(full.body.history).toHaveLength(3);
+    expect(full.body.total).toBe(3);
+    expect(full.body.hasMore).toBe(false);
+  });
+
+  test('an invalid ?limit= (non-numeric, negative, or absurdly large) never crashes or returns unbounded results', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    await createCompletedTestAttempt({ userId: student._id, bandScore: 6.0 });
+
+    for (const limit of ['not-a-number', -5, 999999]) {
+      const res = await request(app).get('/api/reading/history').set('Authorization', `Bearer ${token}`).query({ limit }).send();
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body.history)).toBe(true);
+    }
+  });
+
+  test('an empty history reports total:0, hasMore:false, not an error', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const res = await request(app).get('/api/reading/history').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.history).toEqual([]);
+    expect(res.body.total).toBe(0);
+    expect(res.body.hasMore).toBe(false);
+  });
 });

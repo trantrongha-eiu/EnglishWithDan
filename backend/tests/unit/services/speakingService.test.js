@@ -520,10 +520,24 @@ describe('speakingService.getHistory', () => {
     await new Promise(r => setTimeout(r, 5));
     const second = await SpeakingAttempt.create({ userId: student._id, part: 1, question: 'Second', transcript: 't' });
 
-    const history = await speakingService.getHistory(student._id);
-    expect(history.length).toBe(2);
-    expect(history[0]._id.toString()).toBe(second._id.toString());
-    expect(history[1]._id.toString()).toBe(first._id.toString());
+    const { attempts, total } = await speakingService.getHistory(student._id);
+    expect(attempts.length).toBe(2);
+    expect(attempts[0]._id.toString()).toBe(second._id.toString());
+    expect(attempts[1]._id.toString()).toBe(first._id.toString());
+    expect(total).toBe(2);
+  });
+
+  // Regression coverage for BUG-013 (2026-08-27 audit): same fix as
+  // reading/listening — an honest total independent of the requested limit.
+  test('getHistory() reports an honest total independent of the limit', async () => {
+    const student = await createStudent();
+    for (let i = 0; i < 4; i++) {
+      await SpeakingAttempt.create({ userId: student._id, part: 1, question: `Q${i}`, transcript: 't' });
+    }
+
+    const page = await speakingService.getHistory(student._id, 2);
+    expect(page.attempts).toHaveLength(2);
+    expect(page.total).toBe(4);
   });
 });
 

@@ -701,15 +701,24 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
 }
 
 // ── Student – history ─────────────────────────────────────────────────────
-async function getHistory(userId) {
+// Audit finding BUG-013: same fix as readingService.getHistory — total is a
+// real countDocuments() over the SAME filter, so hasMore is accurate even
+// past the returned page. Return shape changed (was a bare array) — the
+// one caller (listening.controller.js) is updated alongside this.
+async function getHistory(userId, limit = 50) {
   // Excludes 'in-progress' rows now that startTest() persists one before
   // the student has answered anything — matches Reading's getHistory(),
   // which has always filtered to status: 'completed' for the same reason.
-  return ListeningAttempt.find({ userId, status: { $ne: 'in-progress' } })
-    .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status testId')
-    .populate('testId', 'name testNumber')
-    .sort({ submittedAt: -1 })
-    .limit(50);
+  const filter = { userId, status: { $ne: 'in-progress' } };
+  const [attempts, total] = await Promise.all([
+    ListeningAttempt.find(filter)
+      .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status testId')
+      .populate('testId', 'name testNumber')
+      .sort({ submittedAt: -1 })
+      .limit(limit),
+    ListeningAttempt.countDocuments(filter),
+  ]);
+  return { attempts, total };
 }
 
 async function getHistoryDetail(attemptId, userId) {

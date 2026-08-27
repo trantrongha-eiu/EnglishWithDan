@@ -2044,13 +2044,25 @@ function renderSeqFeedback(fb) {
 // HISTORY SCREEN
 // ══════════════════════════════════════════════════════
 
-async function loadHistory() {
+// BUG-013 fix: /api/speaking/history now reports an honest total/hasMore
+// instead of silently cutting off past its .limit() with no indication —
+// rendered below as "Đang hiển thị N/Y" + a "Tải thêm" button.
+const SPEAKING_HISTORY_STEP = 30; // matches the backend's own default limit
+let _speakingHistoryLimit = SPEAKING_HISTORY_STEP;
+
+function loadMoreSpeakingHistory() {
+  _speakingHistoryLimit += SPEAKING_HISTORY_STEP;
+  loadHistory({ resetLimit: false });
+}
+
+async function loadHistory({ resetLimit = true } = {}) {
   const container = document.getElementById('history-content');
   if (!container) return;
+  if (resetLimit) _speakingHistoryLimit = SPEAKING_HISTORY_STEP;
   container.innerHTML = '<div class="spinner"></div>';
 
   try {
-    const data = await apiFetch('/api/speaking/history');
+    const data = await apiFetch(`/api/speaking/history?limit=${_speakingHistoryLimit}`);
     const attempts = data.attempts || [];
 
     if (!attempts.length) {
@@ -2106,6 +2118,14 @@ async function loadHistory() {
       card.onclick = () => openHistoryModal(a);
       list.appendChild(card);
     });
+
+    if (data.hasMore || attempts.length > 0) {
+      const footer = document.createElement('div');
+      footer.className = 'history-pagination';
+      footer.innerHTML = `<span>Đang hiển thị ${attempts.length}/${data.total} lượt luyện</span>` +
+        (data.hasMore ? `<button onclick="loadMoreSpeakingHistory()">Tải thêm</button>` : '');
+      container.appendChild(footer);
+    }
   } catch (e) {
     container.innerHTML = `
       <div class="state-error">

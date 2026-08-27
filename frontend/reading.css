@@ -2876,6 +2876,13 @@ body.tool-hl .check-box { user-select: none; }
 .rd-no-history { text-align:center; padding:20px; color:#9ca3af; }
 [data-theme="dark"] .rd-no-history { color:#6b7280; }
 
+/* "Đang hiển thị N/Y kết quả" + Tải thêm — BUG-013 fix: older history
+   used to silently vanish past the API's cap with no indication. */
+.rd-history-pagination { display:flex; align-items:center; justify-content:center; gap:12px; padding:14px 4px 4px; font-size:13px; color:#6b7280; }
+[data-theme="dark"] .rd-history-pagination { color:#9ca3af; }
+.rd-history-pagination button { background:var(--surface2,#f3f4f6); border:1px solid var(--border,#e5e7eb); color:var(--text,#111); border-radius:8px; padding:6px 14px; font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit; }
+.rd-history-pagination button:hover { background:var(--border,#e5e7eb); }
+
 /* Practice result bar */
 .rd-result-bar { border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; font-weight:600; border:1px solid; }
 .rd-result-bar--good { background:#f0fdf4; border-color:#86efac; color:#166534; }

@@ -349,12 +349,25 @@ async function getAttemptReview(attemptId, userId) {
   };
 }
 
-async function getHistory(userId) {
-  return TestAttempt.find({ userId, status: 'completed' })
-    .populate('testId', 'name testNumber')
-    .sort({ endTime: -1 })
-    .limit(50)
-    .select('-answers -passagesUsed');
+// Audit finding BUG-013: this used to be a bare .limit(50) with no way for
+// the student (or the frontend) to tell "these are all of them" from
+// "there are more, silently cut off" — the exact class of bug
+// /admin/recent-attempts was already fixed for (2026-07-25). total is a
+// real countDocuments() over the SAME filter, independent of how many rows
+// this call actually returned, so hasMore is always accurate even past the
+// cap. Return shape changed (was a bare array) — the one caller
+// (reading.controller.js) is updated alongside this.
+async function getHistory(userId, limit = 50) {
+  const filter = { userId, status: 'completed' };
+  const [history, total] = await Promise.all([
+    TestAttempt.find(filter)
+      .populate('testId', 'name testNumber')
+      .sort({ endTime: -1 })
+      .limit(limit)
+      .select('-answers -passagesUsed'),
+    TestAttempt.countDocuments(filter),
+  ]);
+  return { history, total };
 }
 
 async function listPracticePassages(category, userId) {

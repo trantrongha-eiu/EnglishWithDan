@@ -146,9 +146,30 @@ describe('listeningService.startTest / submitTest — attempt persistence', () =
     await listeningService.startTest(test._id.toString(), student._id); // left in-progress on purpose
     await listeningService.submitTest(test._id.toString(), { answers: { 1: 'yes', 2: 'no' } }, student);
 
-    const history = await listeningService.getHistory(student._id);
-    expect(history).toHaveLength(1);
-    expect(history[0].status).toBe('completed');
+    const { attempts, total } = await listeningService.getHistory(student._id);
+    expect(attempts).toHaveLength(1);
+    expect(attempts[0].status).toBe('completed');
+    expect(total).toBe(1);
+  });
+
+  // Regression coverage for BUG-013 (2026-08-27 audit): getHistory() used
+  // to be a bare .limit(50) with no way to tell "these are all of them"
+  // from "there are more, silently cut off".
+  test('getHistory() reports an honest total independent of the limit, so hasMore can be computed accurately', async () => {
+    const student = await createStudent();
+    for (let i = 0; i < 5; i++) {
+      const test = await makeSimpleTest();
+      await listeningService.startTest(test._id.toString(), student._id);
+      await listeningService.submitTest(test._id.toString(), { answers: { 1: 'yes', 2: 'no' } }, student);
+    }
+
+    const page = await listeningService.getHistory(student._id, 2);
+    expect(page.attempts).toHaveLength(2); // capped by the requested limit
+    expect(page.total).toBe(5); // real count, not capped
+
+    const full = await listeningService.getHistory(student._id, 50);
+    expect(full.attempts).toHaveLength(5);
+    expect(full.total).toBe(5);
   });
 });
 
