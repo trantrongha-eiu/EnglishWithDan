@@ -1,5 +1,5 @@
 'use strict';
-const API = 'https://englishwithdan.onrender.com/api';
+const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
 
 let messages = [];

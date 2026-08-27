@@ -605,7 +605,7 @@
     <script>
         'use strict';
 
-        const API = 'https://englishwithdan.onrender.com/api';
+        const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 
         // Escapes a value for embedding inside a single-quoted JS string
         // literal that itself sits inside a double-quoted HTML event-handler

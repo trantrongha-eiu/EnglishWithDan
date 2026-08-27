@@ -252,7 +252,7 @@
 <audio id="dict-audio" preload="metadata"></audio>
 
 <script>
-const API = 'https://englishwithdan.onrender.com/api';
+const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
 function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
 function fmtTime(s) { if (!isFinite(s) || s < 0) s = 0; return Math.floor(s / 60) + ':' + pad(s % 60); }

@@ -2,7 +2,7 @@
    writing.js  –  EnglishWithDan Writing Module
 ═══════════════════════════════════════════════════════ */
 
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
 // Force a fresh reload when this page is restored from the browser's
 // back-forward cache (bfcache) — bfcache restores the exact in-memory JS

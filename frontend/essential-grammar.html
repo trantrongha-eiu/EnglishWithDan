@@ -281,7 +281,7 @@
 </div>
 
 <script>
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 const LAST_LESSON_KEY = 'eg_last_lesson';
 const COLLAPSED_KEY = 'eg_collapsed_categories';
 

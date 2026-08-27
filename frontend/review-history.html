@@ -70,7 +70,7 @@
   </div>
 
   <script>
-    const API = 'https://englishwithdan.onrender.com/api';
+    const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
     function headers() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
 
     const ATTEMPT_TYPE_LABEL = {

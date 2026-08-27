@@ -183,6 +183,11 @@
   </div><!-- /.page-center -->
 
     <script>
+        // BUG-027: centralize the backend base URL via the shared
+        // AuthService.API abstraction (see js/shared/auth-service.js),
+        // same fallback idiom used sitewide.
+        const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+
         // Pre-migration toast CSS + a bare #toast-container div used to live
         // here, overriding js/shared/toast.js's real components.css styling
         // (Poppins/hardcoded-gradient, no dark mode) and starving the
@@ -298,7 +303,7 @@
             btn.disabled = true;
 
             try {
-                const res = await fetch('https://englishwithdan.onrender.com/api/auth/register', {
+                const res = await fetch(`${API}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -323,7 +328,7 @@
         });
 
         document.querySelector('.btn-social.google').addEventListener('click', function () {
-            window.location.href = 'https://englishwithdan.onrender.com/api/auth/google';
+            window.location.href = `${API}/auth/google`;
         });
 
         document.querySelector('.btn-social.facebook').addEventListener('click', function () {

@@ -688,7 +688,7 @@
 // ════════════════════════════════════════════════════════
 //  CONFIG
 // ════════════════════════════════════════════════════════
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
 // Sound effects (playOk/playWrong) and the on/off toggle now live in the
 // shared js/shared/sound-effects.js, used via the global nav button.

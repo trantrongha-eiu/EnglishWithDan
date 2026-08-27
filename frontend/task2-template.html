@@ -765,7 +765,7 @@
 </div>
 
 <script>
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
 // playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
 // (single source of truth — student UI audit Nhóm 2, 2026-07-25).

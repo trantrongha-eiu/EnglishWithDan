@@ -745,7 +745,7 @@
 // ════════════════════════════════════════════════════════
 //  CONFIG
 // ════════════════════════════════════════════════════════
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
 // Delegates to js/shared/api-client.js so a 401 (expired session mid-test)
 // triggers the same logout+redirect-to-login as reading/writing/speaking,

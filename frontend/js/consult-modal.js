@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var API = 'https://englishwithdan.onrender.com/api';
+  var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 
   var css = document.createElement('style');
   css.textContent = `

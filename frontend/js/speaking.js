@@ -3,7 +3,7 @@
    All AI calls go through /api/speaking/analyze (backend).
 ═══════════════════════════════════════════════════════ */
 
-const API = 'https://englishwithdan.onrender.com';
+const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
 // showToast() and escHtml() moved to js/shared/toast.js and
 // js/shared/utils.js (single source of truth — Phase 3 audit).

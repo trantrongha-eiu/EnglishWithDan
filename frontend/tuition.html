@@ -212,7 +212,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-    const API = 'https://englishwithdan.onrender.com';
+    const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
     function tok() { return window.AuthService.getToken(); }
     function hdrs() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
 

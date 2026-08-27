@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var API = 'https://englishwithdan.onrender.com/api';
+  var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var page = location.pathname.split('/').pop() || 'index.html';
 
   var LINKS = [

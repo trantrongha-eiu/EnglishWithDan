@@ -404,7 +404,7 @@
 
   <!-- Hidden avatar file input handler -->
   <script>
-    const API = 'https://englishwithdan.onrender.com';
+    const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
     // ── Auth helpers (from auth.js) ───────────────────────────
     function token() { return window.AuthService.getToken(); }

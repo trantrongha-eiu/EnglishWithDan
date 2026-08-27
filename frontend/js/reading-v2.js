@@ -4,7 +4,7 @@
              matching-options, plain) + legacy questions[] flat array
 ═══════════════════════════════════════════════════════════════════════ */
 
-const API = 'https://englishwithdan.onrender.com/api';   // backend on Render
+const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';   // backend on Render
 const DURATION = 3600;  // 60 min in seconds
 
 // Escapes a value for embedding inside a single-quoted JS string literal

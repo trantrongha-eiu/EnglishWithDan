@@ -170,7 +170,7 @@
 
   <script src="js/shared/utils.js?v=20260831"></script>
   <script>
-    const API = 'https://englishwithdan.onrender.com/api';
+    const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
     const LEVEL_COLOR = { red: 'lv-red', blue: 'lv-blue', green: 'lv-green', purple: 'lv-purple' };
     const yrEl = document.getElementById('footer-year');
     if (yrEl) yrEl.textContent = new Date().getFullYear();
