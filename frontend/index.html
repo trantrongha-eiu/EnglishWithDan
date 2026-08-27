@@ -401,36 +401,36 @@
     </div>
 
     <div class="results-grid">
-      <div class="result-card" onclick="openResultLightbox('img/AiVan7.5.jpg','Nguyễn Thị Ái Vân · Overall 7.5')">
+      <button type="button" class="result-card" onclick="openResultLightbox('img/AiVan7.5.jpg','Nguyễn Thị Ái Vân · Overall 7.5')">
         <img src="img/AiVan7.5.jpg" alt="Giấy báo điểm IELTS Overall 7.5 của học viên Nguyễn Thị Ái Vân" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Nguyễn Thị Ái Vân</strong><span class="result-band">Overall 7.5</span></div>
-      </div>
-      <div class="result-card" onclick="openResultLightbox('img/Tue7.0.jpg','Lai Nhã Tuệ · Overall 7.0')">
+      </button>
+      <button type="button" class="result-card" onclick="openResultLightbox('img/Tue7.0.jpg','Lai Nhã Tuệ · Overall 7.0')">
         <img src="img/Tue7.0.jpg" alt="Giấy báo điểm IELTS Overall 7.0 của học viên Lai Nhã Tuệ" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Lai Nhã Tuệ</strong><span class="result-band">Overall 7.0</span></div>
-      </div>
-      <div class="result-card" onclick="openResultLightbox('img/WeiCheng6.5.jpg','Ding Weicheng · Overall 6.5')">
+      </button>
+      <button type="button" class="result-card" onclick="openResultLightbox('img/WeiCheng6.5.jpg','Ding Weicheng · Overall 6.5')">
         <img src="img/WeiCheng6.5.jpg" alt="Giấy báo điểm IELTS Overall 6.5 của học viên Ding Weicheng" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Ding Weicheng</strong><span class="result-band">Overall 6.5</span></div>
-      </div>
-      <div class="result-card" onclick="openResultLightbox('img/Dieu6.5.jpg','Ngọc Diệu · Overall 6.5')">
+      </button>
+      <button type="button" class="result-card" onclick="openResultLightbox('img/Dieu6.5.jpg','Ngọc Diệu · Overall 6.5')">
         <img src="img/Dieu6.5.jpg" alt="Tin nhắn học viên Ngọc Diệu báo điểm IELTS Overall 6.5 cho thầy Daniel Hà" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Ngọc Diệu</strong><span class="result-band">Overall 6.5</span></div>
-      </div>
-      <div class="result-card" onclick="openResultLightbox('img/An6.0.jpg','Võ Trần Bình An · Overall 6.0')">
+      </button>
+      <button type="button" class="result-card" onclick="openResultLightbox('img/An6.0.jpg','Võ Trần Bình An · Overall 6.0')">
         <img src="img/An6.0.jpg" alt="Giấy báo điểm IELTS Overall 6.0 của học viên Võ Trần Bình An" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Võ Trần Bình An</strong><span class="result-band">Overall 6.0</span></div>
-      </div>
-      <div class="result-card" onclick="openResultLightbox('img/Nhu6.0.jpg','Võ Thị Huỳnh Như · Overall 6.0')">
+      </button>
+      <button type="button" class="result-card" onclick="openResultLightbox('img/Nhu6.0.jpg','Võ Thị Huỳnh Như · Overall 6.0')">
         <img src="img/Nhu6.0.jpg" alt="Giấy báo điểm IELTS Overall 6.0 của học viên Võ Thị Huỳnh Như" loading="lazy">
-        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
         <div class="result-info"><strong>Võ Thị Huỳnh Như</strong><span class="result-band">Overall 6.0</span></div>
-      </div>
+      </button>
     </div>
 
     <div class="result-quote">
@@ -442,7 +442,7 @@
 
   <!-- Lightbox for result images -->
   <div class="result-lightbox" id="result-lightbox" onclick="closeResultLightbox()">
-    <span class="result-lightbox-close" onclick="closeResultLightbox()" aria-label="Đóng">&times;</span>
+    <button type="button" class="result-lightbox-close" onclick="closeResultLightbox()" aria-label="Đóng">&times;</button>
     <figure>
       <img id="result-lightbox-img" src="" alt="">
       <figcaption id="result-lightbox-caption"></figcaption>

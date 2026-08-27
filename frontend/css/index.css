@@ -782,6 +782,19 @@
     }
 
     .result-card {
+      /* Now a <button> (was a <div onclick>) so keyboard users can reach and
+         activate it (Tab + Enter/Space) — audit finding BUG-018. These
+         extra properties only reset the browser's default button chrome
+         (padding/font/appearance/box behavior); the properties below them
+         are unchanged from before and keep the card looking identical. */
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font: inherit;
+      text-align: inherit;
+      appearance: none;
+      -webkit-appearance: none;
       position: relative;
       background: var(--white);
       border: 1px solid var(--border);
@@ -794,6 +807,11 @@
     .result-card:hover {
       box-shadow: var(--shadow-lg);
       transform: translateY(-4px)
+    }
+
+    .result-card:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
     }
 
     .result-card img {
@@ -910,6 +928,15 @@
     }
 
     .result-lightbox-close {
+      /* Now a <button> (was a <span onclick>) — audit finding BUG-018.
+         Reset button chrome the same way .result-card is above. */
+      display: block;
+      margin: 0;
+      font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      background: none;
+      border: none;
       position: absolute;
       top: 18px;
       right: 24px;
@@ -922,6 +949,12 @@
 
     .result-lightbox-close:hover {
       opacity: 1
+    }
+
+    .result-lightbox-close:focus-visible {
+      opacity: 1;
+      outline: 2px solid #fff;
+      outline-offset: 2px;
     }
 
     @media (max-width: 720px) {
