@@ -13,6 +13,7 @@ const ListeningSection = require('../models/ListeningSection');
 const ListeningTest = require('../models/ListeningTest');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const vocabBookService = require('./vocabBookService');
 
 // A question type / grading criterion needs at least this many answered
 // questions (or graded attempts) before it's surfaced as a real weakness —
@@ -199,15 +200,29 @@ async function getSpeakingWeakness(userId) {
     .sort((a, b) => a.avgScore - b.avgScore);
 }
 
+// BUG-024: vocabulary weakness was already surfaced to users everywhere
+// they'd see it — recommendationService, studyPlanService, and dashboard.js
+// all separately call vocabBookService.getVocabStats() and merge it in at
+// their own layer (a deliberate, working, tested pattern — see
+// recommendationService.js's header comment). What this profile itself
+// never included is that same signal, so a direct caller of
+// getWeaknessProfile() (including the raw GET /api/weakness this backs)
+// got an incomplete picture. Reuses getVocabStats() as-is (same shape the
+// 3 existing consumers already read: totalWords/mastered/reviewing/notYet/
+// weak/dueToday) rather than force-fitting it into the {type,accuracy,
+// total}-array shape the other 4 skills use, which doesn't naturally apply
+// to a single aggregate stat — read-only, no new query pattern, no write
+// path anywhere near VocabBook.
 async function getWeaknessProfile(userId) {
-  const [reading, listening, writing, speaking] = await Promise.all([
+  const [reading, listening, writing, speaking, vocabulary] = await Promise.all([
     getReadingWeakness(userId),
     getListeningWeakness(userId),
     getWritingWeakness(userId),
     getSpeakingWeakness(userId),
+    vocabBookService.getVocabStats(userId),
   ]);
 
-  return { reading, listening, writing, speaking };
+  return { reading, listening, writing, speaking, vocabulary };
 }
 
 module.exports = {

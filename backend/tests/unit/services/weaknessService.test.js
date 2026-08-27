@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const weaknessService = require('../../../services/weaknessService');
 const ListeningPracticeAttempt = require('../../../models/ListeningPracticeAttempt');
+const VocabBook = require('../../../models/VocabBook');
 const { createStudent } = require('../../factories/userFactory');
 const {
   createPassage, createReadingPracticeAttempt, createTestAttempt,
@@ -292,7 +293,36 @@ describe('weaknessService', () => {
     it('combines all four skills into one object', async () => {
       const student = await createStudent();
       const result = await weaknessService.getWeaknessProfile(student._id);
-      expect(result).toEqual({ reading: [], listening: [], writing: [], speaking: [] });
+      expect(result.reading).toEqual([]);
+      expect(result.listening).toEqual([]);
+      expect(result.writing).toEqual([]);
+      expect(result.speaking).toEqual([]);
+    });
+
+    // BUG-024: was previously missing entirely — a direct caller of
+    // getWeaknessProfile() (the raw GET /api/weakness endpoint) got an
+    // incomplete picture even though recommendationService/studyPlanService/
+    // dashboard.js each already merged vocabulary in at their own layer.
+    it('includes a vocabulary key from vocabBookService.getVocabStats(), same shape as its 3 existing consumers', async () => {
+      const student = await createStudent();
+      const result = await weaknessService.getWeaknessProfile(student._id);
+      expect(result.vocabulary).toEqual({ totalWords: 0, mastered: 0, reviewing: 0, notYet: 0, weak: 0, dueToday: 0 });
+    });
+
+    it('vocabulary reflects real VocabBook data for the requesting user', async () => {
+      const student = await createStudent();
+      await VocabBook.create({
+        userId: student._id, name: 'My Book', isDefault: true,
+        words: [
+          { word: 'ubiquitous', meaning: 'x', status: 'chua-thuoc', wrongCount: 5, nextReviewAt: new Date(Date.now() - 1000) },
+          { word: 'ephemeral', meaning: 'x', status: 'da-thuoc', wrongCount: 0, nextReviewAt: new Date(Date.now() + 86400000) },
+        ],
+      });
+      const result = await weaknessService.getWeaknessProfile(student._id);
+      expect(result.vocabulary.totalWords).toBe(2);
+      expect(result.vocabulary.weak).toBe(1); // wrongCount >= 3
+      expect(result.vocabulary.dueToday).toBe(1); // nextReviewAt in the past
+      expect(result.vocabulary.mastered).toBe(1);
     });
   });
 });
