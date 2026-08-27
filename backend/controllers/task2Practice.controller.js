@@ -134,6 +134,29 @@ exports.getWrongQuestions = async (req, res) => {
 
 exports.saveDraft = async (req, res) => {
   try {
+    // Validated before this ever reaches saveDraft() (audit finding
+    // BUG-026). Two distinct failure modes, not just one:
+    //  1) sessionAttempts/questionIds/questionStatus not being real arrays
+    //     used to hit a raw Mongoose CastError deep in findOneAndUpdate,
+    //     surfacing as a generic 500.
+    //  2) WORSE: a missing/malformed topicId used to reach
+    //     saveDraft()'s Task2Draft.deleteMany({userId, topicId:{$ne:topicId}})
+    //     BEFORE that cast error — with topicId undefined, that filter's
+    //     $ne effectively matches everything, silently deleting every one
+    //     of the student's saved drafts across ALL topics, not just "other"
+    //     topics, before the request then still 500'd. Verified directly
+    //     against a real Mongo query. Requiring a real non-empty topicId
+    //     string up front closes this entirely — the deleteMany can never
+    //     run with a filter that matches more than intended.
+    const { topicId, questionIds, sessionAttempts, questionStatus } = req.body;
+    if (typeof topicId !== 'string' || !topicId.trim()) {
+      return res.status(400).json({ success: false, message: 'Thiếu topicId' });
+    }
+    for (const [field, value] of [['questionIds', questionIds], ['sessionAttempts', sessionAttempts], ['questionStatus', questionStatus]]) {
+      if (value !== undefined && !Array.isArray(value)) {
+        return res.status(400).json({ success: false, message: `${field} phải là một mảng` });
+      }
+    }
     await task2PracticeService.saveDraft(req.user._id, req.body);
     res.json({ success: true });
   } catch (err) {

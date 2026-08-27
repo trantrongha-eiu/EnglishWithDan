@@ -214,4 +214,82 @@ describe('Draft CRUD (save/get/delete/list) — ownership scoping', () => {
     const afterDelete = await request(app).get(`/api/task2/draft/${topic._id}`).set('Authorization', `Bearer ${ownerToken}`);
     expect(afterDelete.body.draft).toBeNull();
   });
+
+  // Regression coverage for BUG-026 (2026-08-27 audit). Two distinct
+  // findings, not just one:
+  //  1) sessionAttempts/questionIds/questionStatus not being real arrays
+  //     used to hit a raw Mongoose CastError -> 500.
+  //  2) WORSE (found while designing this fix, confirmed directly against
+  //     a real Mongo query): a missing/malformed topicId reached
+  //     saveDraft()'s Task2Draft.deleteMany({userId, topicId:{$ne:topicId}})
+  //     BEFORE the cast error — with topicId undefined, that filter
+  //     effectively matched every draft for the user, silently deleting
+  //     ALL of them (not just "other topics") before the request then
+  //     still 500'd. The tests below assert that a pre-existing OTHER
+  //     draft survives a malformed save attempt — not just that the
+  //     malformed request itself gets a clean 400.
+  describe('POST /api/task2/draft — malformed body (BUG-026)', () => {
+    async function setUp() {
+      const topicA = await createTask2Topic();
+      const topicB = await createTask2Topic();
+      const user = await createPremiumStudent();
+      const token = signTokenFor(user);
+      // A real, pre-existing draft on a DIFFERENT topic — this must survive
+      // every malformed request below.
+      await request(app).post('/api/task2/draft').set('Authorization', `Bearer ${token}`)
+        .send({ topicId: String(topicA._id), topicName: topicA.topicName, level: 'beginner', currentIdx: 1 });
+      return { topicA, topicB, token };
+    }
+
+    async function expectRejectedAndTopicAIntact(token, topicA, body) {
+      const res = await request(app).post('/api/task2/draft').set('Authorization', `Bearer ${token}`).send(body);
+      expect(res.status).toBe(400);
+      const stillThere = await request(app).get(`/api/task2/draft/${topicA._id}`).set('Authorization', `Bearer ${token}`);
+      expect(stillThere.body.draft).not.toBeNull();
+      expect(stillThere.body.draft.currentIdx).toBe(1);
+    }
+
+    test('missing topicId is rejected 400, and does NOT wipe an existing draft on another topic', async () => {
+      const { topicA, token } = await setUp();
+      await expectRejectedAndTopicAIntact(token, topicA, { level: 'beginner', currentIdx: 2 });
+    });
+
+    test('null topicId is rejected 400, and does NOT wipe an existing draft on another topic', async () => {
+      const { topicA, token } = await setUp();
+      await expectRejectedAndTopicAIntact(token, topicA, { topicId: null, currentIdx: 2 });
+    });
+
+    test('sessionAttempts as an object instead of an array is rejected 400', async () => {
+      const { topicA, topicB, token } = await setUp();
+      await expectRejectedAndTopicAIntact(token, topicA, { topicId: String(topicB._id), sessionAttempts: {} });
+    });
+
+    test('questionIds as a string instead of an array is rejected 400', async () => {
+      const { topicA, topicB, token } = await setUp();
+      await expectRejectedAndTopicAIntact(token, topicA, { topicId: String(topicB._id), questionIds: 'not-an-array' });
+    });
+
+    test('questionStatus as an object instead of an array is rejected 400', async () => {
+      const { topicA, topicB, token } = await setUp();
+      await expectRejectedAndTopicAIntact(token, topicA, { topicId: String(topicB._id), questionStatus: {} });
+    });
+
+    test('a valid save with real arrays still works, and correctly replaces the draft for the OTHER topic (max-1-draft rule intact)', async () => {
+      const { topicA, topicB, token } = await setUp();
+      const res = await request(app).post('/api/task2/draft').set('Authorization', `Bearer ${token}`)
+        .send({
+          topicId: String(topicB._id), topicName: topicB.topicName, currentIdx: 0,
+          questionIds: ['q1', 'q2'], sessionAttempts: [], questionStatus: ['pending', 'pending'],
+        });
+      expect(res.status).toBe(200);
+
+      // Max-1-draft rule (unchanged, pre-existing behavior): saving a NEW
+      // topic's draft correctly replaces the old one this time — this is
+      // the real, intentional deleteMany, distinct from the bug above.
+      const aGone = await request(app).get(`/api/task2/draft/${topicA._id}`).set('Authorization', `Bearer ${token}`);
+      expect(aGone.body.draft).toBeNull();
+      const bThere = await request(app).get(`/api/task2/draft/${topicB._id}`).set('Authorization', `Bearer ${token}`);
+      expect(bThere.body.draft.questionIds).toEqual(['q1', 'q2']);
+    });
+  });
 });
