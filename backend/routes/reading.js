@@ -26,7 +26,15 @@ router.get('/tests', auth, readingController.listTests);
 router.post('/start', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), requireReviewComplete('reading'), readingController.startTest);
 
 // POST /api/reading/submit
-router.post('/submit', auth, readingController.submitTest);
+// requirePremium added to match Listening's equivalent route
+// (/tests/:id/submit, already gated) — a lapsed-trial user could otherwise
+// submit a still-open TestAttempt (created via /start, itself already
+// premium-gated) at any point after their access expired (audit finding
+// BUG-008). Same acceptable edge case Listening's submit already lives
+// with today: a session whose access lapses in the narrow window between
+// start and submit gets a 403 on submit — not new risk, just Reading
+// catching up to Listening's already-proven behavior.
+router.post('/submit', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), readingController.submitTest);
 
 // GET /api/reading/attempt/:id/review
 router.get('/attempt/:id/review', auth, readingController.getAttemptReview);

@@ -70,6 +70,36 @@ describe('POST /api/reading/start (premium gate)', () => {
   });
 });
 
+// Regression coverage for BUG-008 (2026-08-27 audit): /submit had no
+// premium check at all, unlike its Listening equivalent
+// (/tests/:id/submit, already gated) — a lapsed-trial user could submit
+// against a still-open attemptId (from before their access expired, or
+// simply guessed) with no premium check anywhere in the flow.
+describe('POST /api/reading/submit (premium gate)', () => {
+  test('a free-plan student whose 24h trial has expired is blocked with 403 PLAN_REQUIRED', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/reading/submit')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ attemptId: '000000000000000000000000', answers: {} });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student passes the gate (reaches the controller, no 403)', async () => {
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/reading/submit')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ attemptId: '000000000000000000000000', answers: {} });
+    // No such attempt exists, so the controller reports 404 rather than
+    // succeeding — the point here is only that the premium gate was passed.
+    expect(res.status).not.toBe(403);
+  });
+});
+
 describe('GET /api/reading/practice/by-id/:id and /api/reading/practice/:category (premium gate)', () => {
   // Regression test for the paywall-bypass bug found in the 2026-08-21 audit:
   // these two routes returned full passage content to any authenticated user
