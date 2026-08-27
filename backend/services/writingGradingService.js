@@ -131,11 +131,26 @@ CRITICAL RULES:
 
   const result = await checkEssay(questionContext, answer, hasImage ? imageUrl : '');
 
-  // Server-side enforcement of IDP mandatory penalties (safety net — overrides AI if ignored)
+  // Server-side enforcement of IDP mandatory penalties (safety net — overrides AI if ignored).
+  // result.ta carries Task 1's TA score AND Task 2's TR score under the
+  // same JSON key (see the shared response schema below) — the incomplete-
+  // essay penalty is identical for both tasks (cap at Band 4, see both
+  // task1TA/task2TR prompt blocks above), but the under-length penalty is
+  // NOT: Task 1's rule is a hard cap at Band 5, while Task 2's IDP rule is
+  // a RELATIVE reduction ("reduce by at least 1 band" — see task2TR above),
+  // which has no independent server-side baseline to enforce against once
+  // the AI has already applied it. This safety net previously applied
+  // Task 1's hard cap to Task 2 as well (audit finding BUG-012), silently
+  // over-penalizing a strong-but-short Task 2 essay (e.g. AI-judged Band
+  // 7→6 per its own instructed reduction, then force-capped down to 5
+  // anyway). Task 2 under-length is left to the prompt instruction alone,
+  // same trust model already applied to every other qualitative rule here
+  // (LR/CC/GRA, "no clear position" cap, etc.) that has no numeric baseline
+  // to independently re-verify either.
   if (result.ta) {
     if (isIncomplete && result.ta.score > 4) {
       result.ta.score = 4;
-    } else if (isUnderLength && result.ta.score > 5) {
+    } else if (isUnderLength && taskType === 1 && result.ta.score > 5) {
       result.ta.score = 5;
     }
   }
