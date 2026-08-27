@@ -59,6 +59,16 @@ app.use(cors({
       // handler can skip its own logging for this specific error.
       const corsErr = new Error('Not allowed by CORS');
       corsErr.alreadyLogged = true;
+      // BUG-022: without this, errorHandler.js's `err.statusCode || 500`
+      // fallback turned every rejected-origin request into a generic 500 —
+      // indistinguishable from a real server fault in logs/monitoring, and
+      // semantically wrong (this is a client-side "you're not allowed",
+      // not "the server broke"). No security impact either way (no CORS
+      // header is ever reflected for a rejected origin, 403 or 500), but
+      // 403 is the honest status for what actually happened. Message stays
+      // the generic client-facing one (isOperational not set) — no reason
+      // to hand a probing client details about why the origin check failed.
+      corsErr.statusCode = 403;
       callback(corsErr);
     }
   },
