@@ -3,30 +3,12 @@ import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import VisitsChart from '../components/VisitsChart';
+import { skillBadge } from '../components/SkillBadge';
 
 function bandBadge(score) {
   if (score == null) return '–';
   const color = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--accent2)';
   return <span style={{ color, fontWeight: 700 }}>{score.toFixed(1)}</span>;
-}
-
-function skillBadge(skill) {
-  const map = {
-    reading: { label: 'Reading', bg: '#3d8bff22', color: 'var(--blue)' },
-    listening: { label: 'Listening', bg: '#34d39922', color: 'var(--green)' },
-    writing: { label: 'Writing', bg: '#fbbf2422', color: 'var(--yellow)' },
-    speaking: { label: 'Speaking', bg: '#a78bfa22', color: 'var(--purple)' },
-    'task2-template':    { label: '📚 Task 2 Templates', bg: '#8b5cf622', color: '#8b5cf6' },
-    'essential-grammar': { label: '📘 Ngữ pháp', bg: '#0ea5e922', color: '#0ea5e9' },
-    'vocabulary-lesson':  { label: '🗂 Từ vựng', bg: '#14b8a622', color: '#14b8a6' },
-    'dictation':          { label: '🎧 Dictation', bg: '#22d3ee22', color: '#22d3ee' },
-  };
-  const s = map[skill] || { label: skill, bg: '#55587822', color: '#8b92a8' };
-  return (
-    <span style={{ background: s.bg, color: s.color, padding: '2px 8px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>
-      {s.label}
-    </span>
-  );
 }
 
 function formatDur(sec) {
