@@ -124,7 +124,7 @@ Return ONLY valid JSON (no markdown, no text outside JSON):
 {"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 2-3 sentences: strengths, main weaknesses, specific advice — address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<corrected English sentence>"},{"type":"ok","original":"<exact sentence from essay>"}]}
 
 CRITICAL RULES:
-• bandScore in JSON is ignored — server recalculates from (ta+cc+lr+gra)/4 rounded to nearest 0.5
+• bandScore in JSON is ignored — server recalculates from (ta+cc+lr+gra)/4 rounded DOWN to the nearest 0.5
 • sentenceFeedback MUST include EVERY sentence of the essay in original order
 • All comment/issue/overallFeedback MUST be in Vietnamese; "better" MUST be in English
 • Use encouraging teacher tone in Vietnamese; address student as "em"`;
@@ -140,11 +140,17 @@ CRITICAL RULES:
     }
   }
 
-  // Recalculate bandScore from individual criterion scores
+  // Recalculate bandScore from individual criterion scores. Site policy is
+  // to always round DOWN to the nearest 0.5 — deliberately stricter than
+  // the official IELTS half-up-at-.25/.75 convention (which would round a
+  // 5.75 average, e.g. three 6.0 criteria + one 5.0, UP to 6.0) — a student
+  // should never see a band their criteria scores didn't actually average
+  // to. Only four 6.0s average to a clean 6.0; anything under that, even by
+  // 0.25, is reported as the band below.
   const scores = [result.ta?.score, result.cc?.score, result.lr?.score, result.gra?.score]
     .map(Number).filter(s => !isNaN(s) && s > 0);
   if (scores.length === 4) {
-    result.bandScore = Math.round((scores.reduce((a, b) => a + b, 0) / 4) * 2) / 2;
+    result.bandScore = Math.floor((scores.reduce((a, b) => a + b, 0) / 4) * 2) / 2;
   }
   return result;
 }
