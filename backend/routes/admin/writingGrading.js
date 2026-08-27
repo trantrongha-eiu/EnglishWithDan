@@ -96,6 +96,12 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
         const student = await User.findById(attempt.userId).select('email firstName username').lean();
         if (student?.email) {
           const nodemailer = require('nodemailer');
+          // NEW-001: this is a student-facing link (view your graded
+          // writing on the public site) and must use the frontend's own
+          // production domain, not the backend API's — same FRONTEND_URL
+          // env var + localhost fallback already used for OAuth/auth-
+          // callback redirects in controllers/auth.controller.js.
+          const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
           const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
@@ -129,7 +135,7 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
     </div>` : ''}
 
     <div style="text-align:center;margin-top:8px">
-      <a href="https://englishwithdan.onrender.com/writing.html"
+      <a href="${frontendUrl}/writing.html"
         style="display:inline-block;background:#e53935;color:#fff;text-decoration:none;padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700">
         📋 Xem bài làm & Feedback chi tiết
       </a>

@@ -1,5 +1,15 @@
 export const API = import.meta.env.VITE_API_URL || 'https://englishwithdan.onrender.com/api';
 
+// NEW-001: separate from API on purpose. API is the *backend*'s own
+// domain (Render Web Service) — correct for fetch()/apiFetch() calls.
+// Student-facing links (e.g. "copy shareable link" buttons) must point at
+// the *frontend*'s production domain instead, which is a different Render
+// deployment (a Static Site) with its own real-world domain. Conflating
+// the two previously sent students a link to a domain that only serves
+// the API and 404s on any .html page. Same env-var-with-fallback pattern
+// as API.
+export const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'https://ieltsthayha.com';
+
 export function authHeaders() {
   return {
     'Authorization': `Bearer ${localStorage.getItem('token')}`,

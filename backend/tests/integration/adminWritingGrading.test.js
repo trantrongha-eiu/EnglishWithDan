@@ -196,4 +196,57 @@ describe('PUT /api/admin/writing-attempts/:id/confirm-grade (teacherOnly)', () =
     expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);
   });
+
+  // NEW-001: the "Xem bài làm & Feedback chi tiết" link in the grading-
+  // confirmation email used to hardcode the *backend* API's own domain
+  // (englishwithdan.onrender.com), which doesn't serve writing.html at
+  // all — a student clicking it would 404. It must use FRONTEND_URL
+  // (same env var + fallback already used for OAuth/auth-callback
+  // redirects in controllers/auth.controller.js), which points at the
+  // actual frontend Static Site deployment.
+  test('the grade-confirmed email links to FRONTEND_URL, not the backend API domain', async () => {
+    const prevEmailUser = process.env.EMAIL_USER;
+    const prevEmailPass = process.env.EMAIL_PASS;
+    const prevFrontendUrl = process.env.FRONTEND_URL;
+    process.env.EMAIL_USER = 'teacher@example.com';
+    process.env.EMAIL_PASS = 'app-password';
+    process.env.FRONTEND_URL = 'https://ieltsthayha.com';
+
+    try {
+      const teacher = await createTeacher();
+      const student = await createStudent({ email: 'student@example.com' });
+      const attempt = await createWritingAttempt({
+        userId: student._id,
+        extra: { gradingStatus: 'ai_done', examName: 'Practice Test 1' },
+      });
+
+      const res = await request(app)
+        .put(`/api/admin/writing-attempts/${attempt._id}/confirm-grade`)
+        .set('Authorization', `Bearer ${signTokenFor(teacher)}`)
+        .send({ task1: { bandScore: 6.5 }, task2: { bandScore: 6 }, overallBand: 6.5 });
+      expect(res.status).toBe(200);
+
+      // The send happens in a setImmediate() detached from the request
+      // lifecycle (see route comment), with its own await (User.findById)
+      // before nodemailer is even touched — poll rather than assume one
+      // tick is enough, same pattern as tests/unit/cron/writingAutoGrade.test.js.
+      const nodemailer = require('nodemailer');
+      const start = Date.now();
+      while (nodemailer.createTransport.mock.calls.length === 0) {
+        if (Date.now() - start > 2000) throw new Error('waitFor: grading email was never sent');
+        await new Promise(r => setTimeout(r, 5));
+      }
+
+      const lastResult = nodemailer.createTransport.mock.results.at(-1);
+      const sendMailMock = lastResult.value.sendMail;
+      expect(sendMailMock).toHaveBeenCalledTimes(1);
+      const html = sendMailMock.mock.calls[0][0].html;
+      expect(html).toContain('https://ieltsthayha.com/writing.html');
+      expect(html).not.toContain('englishwithdan.onrender.com');
+    } finally {
+      process.env.EMAIL_USER = prevEmailUser;
+      process.env.EMAIL_PASS = prevEmailPass;
+      process.env.FRONTEND_URL = prevFrontendUrl;
+    }
+  });
 });

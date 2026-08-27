@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { apiFetch, formatDate, API } from '../utils/api';
+import { apiFetch, formatDate, API, FRONTEND_URL } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
@@ -122,7 +122,7 @@ export default function ListeningTests() {
   }
 
   function copyLink(id) {
-    const url = `https://englishwithdan.onrender.com/listening.html?testId=${id}`;
+    const url = `${FRONTEND_URL}/listening.html?testId=${id}`;
     navigator.clipboard.writeText(url)
       .then(() => toast('Đã copy link chia sẻ ✓'))
       .catch(() => toast(`Link: ${url}`, 'error'));

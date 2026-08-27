@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { apiFetch, formatDate, API } from '../utils/api';
+import { apiFetch, formatDate, API, FRONTEND_URL } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
@@ -467,7 +467,7 @@ export default function WritingTests() {
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(e => toast(e.message, 'error'));
 
   function copyPracticeLink(taskType, id) {
-    const url = `https://englishwithdan.onrender.com/writing.html?taskType=${taskType}&taskId=${id}`;
+    const url = `${FRONTEND_URL}/writing.html?taskType=${taskType}&taskId=${id}`;
     navigator.clipboard.writeText(url)
       .then(() => toast('Đã copy link chia sẻ ✓'))
       .catch(() => toast(`Link: ${url}`, 'info'));
