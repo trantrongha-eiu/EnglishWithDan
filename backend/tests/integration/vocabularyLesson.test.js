@@ -269,6 +269,69 @@ describe('Full happy path: import → publish → student reads → submits atte
   });
 });
 
+// Regression coverage for BUG-020 (2026-08-27 audit): a malformed :id (not
+// a real ObjectId shape) reached a raw Mongoose query and threw a CastError,
+// surfacing as a generic 500 — across every student-facing :id route, not
+// just the one submitAttempt example the audit cited. validateObjectIdParam
+// middleware now rejects it with 400 before any query runs; a well-formed
+// but nonexistent ID is unaffected and still gets the controller's real 404.
+describe('Malformed vs nonexistent :id (validateObjectIdParam middleware)', () => {
+  const MALFORMED_ID = 'not-a-valid-id';
+  const NONEXISTENT_ID = '000000000000000000000000'; // valid ObjectId shape, no such document
+
+  async function studentToken() {
+    const student = await createStudent();
+    return signTokenFor(student);
+  }
+
+  test('GET /:id — malformed 400, nonexistent 404', async () => {
+    const token = await studentToken();
+    const malformed = await request(app).get(`/api/vocabulary-lessons/${MALFORMED_ID}`).set('Authorization', `Bearer ${token}`);
+    expect(malformed.status).toBe(400);
+
+    const nonexistent = await request(app).get(`/api/vocabulary-lessons/${NONEXISTENT_ID}`).set('Authorization', `Bearer ${token}`);
+    expect(nonexistent.status).toBe(404);
+  });
+
+  test('GET /:id/attempt — malformed 400, nonexistent 404', async () => {
+    const token = await studentToken();
+    const malformed = await request(app).get(`/api/vocabulary-lessons/${MALFORMED_ID}/attempt`).set('Authorization', `Bearer ${token}`);
+    expect(malformed.status).toBe(400);
+
+    const nonexistent = await request(app).get(`/api/vocabulary-lessons/${NONEXISTENT_ID}/attempt`).set('Authorization', `Bearer ${token}`);
+    expect(nonexistent.status).toBe(404);
+  });
+
+  test('POST /:id/attempt — malformed 400, nonexistent 404 (the audit\'s own example)', async () => {
+    const token = await studentToken();
+    const malformed = await request(app).post(`/api/vocabulary-lessons/${MALFORMED_ID}/attempt`).set('Authorization', `Bearer ${token}`)
+      .send({ correctCount: 1, totalCount: 1, timeSpent: 1 });
+    expect(malformed.status).toBe(400);
+
+    const nonexistent = await request(app).post(`/api/vocabulary-lessons/${NONEXISTENT_ID}/attempt`).set('Authorization', `Bearer ${token}`)
+      .send({ correctCount: 1, totalCount: 1, timeSpent: 1 });
+    expect(nonexistent.status).toBe(404);
+  });
+
+  test('GET /:id/attempt/history — malformed 400, nonexistent 404', async () => {
+    const token = await studentToken();
+    const malformed = await request(app).get(`/api/vocabulary-lessons/${MALFORMED_ID}/attempt/history`).set('Authorization', `Bearer ${token}`);
+    expect(malformed.status).toBe(400);
+
+    const nonexistent = await request(app).get(`/api/vocabulary-lessons/${NONEXISTENT_ID}/attempt/history`).set('Authorization', `Bearer ${token}`);
+    expect(nonexistent.status).toBe(404);
+  });
+
+  test('GET /:id/leaderboard — malformed 400, nonexistent 404', async () => {
+    const token = await studentToken();
+    const malformed = await request(app).get(`/api/vocabulary-lessons/${MALFORMED_ID}/leaderboard`).set('Authorization', `Bearer ${token}`);
+    expect(malformed.status).toBe(400);
+
+    const nonexistent = await request(app).get(`/api/vocabulary-lessons/${NONEXISTENT_ID}/leaderboard`).set('Authorization', `Bearer ${token}`);
+    expect(nonexistent.status).toBe(404);
+  });
+});
+
 describe('Analytics endpoints', () => {
   async function setUpPublishedLesson() {
     const teacher = await createTeacher();

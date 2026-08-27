@@ -2,6 +2,7 @@ const router = require('express').Router();
 const rateLimit = require('express-rate-limit');
 const auth = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
+const validateObjectIdParam = require('../middleware/validateObjectIdParam');
 const logger = require('../utils/logger');
 const ctrl = require('../controllers/vocabularyLesson.controller');
 
@@ -83,12 +84,12 @@ router.get('/admin/:id/export.csv', auth, teacherOnly, ctrl.exportLessonStudents
 // rule as every other Vocab surface (VocabBook, VocabUnit). "/" (list)
 // stays open above so a locked-out student still sees the lesson list.
 // ══════════════════════════════════════════════════════
-router.get('/:id', auth, requirePremium(), ctrl.getPublicLesson);
+router.get('/:id', auth, validateObjectIdParam('id'), requirePremium(), ctrl.getPublicLesson);
 
 // Tiến độ học — 2-3 segment nên không xung đột thứ tự với "/:id" hay "/admin/*" ở trên.
-router.get('/:id/attempt', auth, requirePremium(), ctrl.getAttempt);
-router.post('/:id/attempt', auth, requirePremium(), ctrl.submitAttempt);
-router.get('/:id/attempt/history', auth, requirePremium(), ctrl.getMyAttemptHistory);
-router.get('/:id/leaderboard', auth, requirePremium(), ctrl.getLessonLeaderboard);
+router.get('/:id/attempt', auth, validateObjectIdParam('id'), requirePremium(), ctrl.getAttempt);
+router.post('/:id/attempt', auth, validateObjectIdParam('id'), requirePremium(), ctrl.submitAttempt);
+router.get('/:id/attempt/history', auth, validateObjectIdParam('id'), requirePremium(), ctrl.getMyAttemptHistory);
+router.get('/:id/leaderboard', auth, validateObjectIdParam('id'), requirePremium(), ctrl.getLessonLeaderboard);
 
 module.exports = router;
