@@ -166,6 +166,39 @@ describe('vocabBookService', () => {
       const fresh2 = await require('../../../models/User').findById(student._id);
       expect(fresh2.learningStreak).toBe(1);
     });
+
+    // Regression coverage for BUG-007 (2026-08-27 audit): the word insert
+    // (findOneAndUpdate) is the primary, already-durable operation; the
+    // streak bookkeeping right after it is secondary. A failure in that
+    // secondary step used to propagate uncaught, turning an
+    // already-successful save into a 500 the client read as "save failed"
+    // even though the word was sitting in their book the whole time.
+    it('a failure in the trailing streak bookkeeping does not fail the save — the word is still persisted and the response still reports success', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+
+      // 34 words -> the next single addWord() call is the one that would
+      // normally cross the 35/day threshold and call user.save().
+      await vocabBookService.bulkAddWords(book._id, student, makeWords(34, 'bulk'));
+      jest.spyOn(student, 'save').mockRejectedValueOnce(new Error('simulated transient DB failure'));
+
+      const result = await vocabBookService.addWord(book._id, student, { word: 'stormproof', meaning: 'm' });
+
+      // The API-level outcome must reflect the real persistence state, not
+      // the secondary failure.
+      expect(result.status).toBe('ok');
+      expect(result.word.word).toBe('stormproof');
+
+      // The word really is in the database, independent of the mocked instance.
+      const freshBook = await VocabBook.findById(book._id).lean();
+      expect(freshBook.words.some(w => w.word === 'stormproof')).toBe(true);
+
+      // Accepted, documented tradeoff: THIS day's streak credit is lost
+      // when the secondary step fails — not a silent data-corruption risk,
+      // just the expected cost of not letting it block the real save.
+      const freshUser = await require('../../../models/User').findById(student._id);
+      expect(freshUser.learningStreak).toBe(0);
+    });
   });
 
   describe('updateWord', () => {

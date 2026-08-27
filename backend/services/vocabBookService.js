@@ -371,10 +371,26 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
 
   if (!updated) return { status: 'duplicate' };
 
+  // The word is already durably saved by this point (findOneAndUpdate above
+  // committed) — everything below is secondary, best-effort streak
+  // bookkeeping, not a precondition for the save having succeeded. Without
+  // this try/catch, a failure here (e.g. a transient DB blip on the
+  // trailing user.save()) propagated uncaught, and the controller's
+  // generic catch-all turned an already-successful save into a 500 — the
+  // student was told the save failed while the word sat in their book the
+  // whole time (audit finding BUG-007, confirmed live: a follow-up request
+  // showed the word had, in fact, been saved). Scoped to only this
+  // secondary step, not a blanket wrap of addWord() — the primary
+  // insert's own errors (ownership, cap, duplicate) are still handled
+  // exactly as before, unaffected by this.
   if (user.role === 'student') {
-    if (await reachedDailyWordThreshold(user._id, { wordsAdded: 1 })) {
-      user.updateStreak();
-      await user.save();
+    try {
+      if (await reachedDailyWordThreshold(user._id, { wordsAdded: 1 })) {
+        user.updateStreak();
+        await user.save();
+      }
+    } catch (err) {
+      console.error('[VocabBook] addWord: streak bookkeeping failed after a successful save:', err.message);
     }
   }
 
