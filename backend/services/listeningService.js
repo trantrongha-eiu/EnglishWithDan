@@ -568,11 +568,26 @@ async function startTest(id, userId) {
   // saved until submitTest() ran, so a student who started and never
   // finished left zero trace anywhere (audit finding). Mirrors Reading's
   // TestAttempt, which has done this from the start.
-  const totalQuestions = test.sections.reduce((sum, s) =>
-    sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
-  const attempt = await ListeningAttempt.create({
-    userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date()
-  });
+  //
+  // BUG-010: reuse an already-open in-progress attempt instead of creating
+  // a new one every time /start is called (a refreshed tab, or a second
+  // tab, previously left behind an unbounded trail of duplicate
+  // 'in-progress' rows that never resolved). Deliberately REUSE, never
+  // invalidate/supersede the old row: submitTest()'s findOneAndUpdate
+  // below requires status:'in-progress' in its own filter, so marking a
+  // stale row anything else would silently reject a legitimate late
+  // submission from that same session — a real student-data-loss risk
+  // this fix must not introduce. The reused row's own already-persisted
+  // fields (startTime included) are left untouched — a resumed session
+  // keeps its real elapsed time, not a reset clock.
+  let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress' });
+  if (!attempt) {
+    const totalQuestions = test.sections.reduce((sum, s) =>
+      sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
+    attempt = await ListeningAttempt.create({
+      userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date()
+    });
+  }
 
   const sections = test.sections.map(s => ({
     partNumber: s.partNumber, title: s.title, description: s.description, questionRange: s.questionRange,

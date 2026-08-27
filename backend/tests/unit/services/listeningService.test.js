@@ -76,6 +76,56 @@ describe('listeningService.startTest / submitTest — attempt persistence', () =
     expect(saved.totalQuestions).toBe(2);
   });
 
+  // BUG-010: calling /start twice without submitting (a refreshed tab, a
+  // second tab) previously inserted a second 'in-progress' row every time,
+  // an unbounded duplicate trail that never resolved.
+  test('startTest() called twice in a row reuses the same in-progress attempt, not a second row', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const first = await listeningService.startTest(test._id.toString(), student._id);
+    const second = await listeningService.startTest(test._id.toString(), student._id);
+
+    expect(second.attemptId.toString()).toBe(first.attemptId.toString());
+    const count = await ListeningAttempt.countDocuments({ userId: student._id, testId: test._id });
+    expect(count).toBe(1);
+  });
+
+  // The reused row must never be invalidated (status changed away from
+  // 'in-progress') — submitTest()'s own findOneAndUpdate requires that
+  // exact status in its filter, so doing so would silently reject a
+  // legitimate late submission from the original session (real student
+  // data loss, not just a UX inconvenience).
+  test('after a second startTest() call, the ORIGINAL attemptId can still be submitted successfully', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const first = await listeningService.startTest(test._id.toString(), student._id);
+    await listeningService.startTest(test._id.toString(), student._id); // second tab/refresh
+
+    const result = await listeningService.submitTest(
+      test._id.toString(),
+      { answers: { 1: 'yes', 2: 'no' }, attemptId: first.attemptId },
+      student
+    );
+    expect(result).not.toBeNull();
+    expect(result.attemptId.toString()).toBe(first.attemptId.toString());
+  });
+
+  // A different, unrelated in-progress attempt (a different test, or a
+  // different student) must never be reused — only an exact
+  // {userId, testId, status:'in-progress'} match.
+  test('a different student starting the same test gets their own separate attempt', async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const test = await makeSimpleTest();
+
+    const a = await listeningService.startTest(test._id.toString(), studentA._id);
+    const b = await listeningService.startTest(test._id.toString(), studentB._id);
+
+    expect(a.attemptId.toString()).not.toBe(b.attemptId.toString());
+  });
+
   test('submitTest() with the attemptId from startTest() updates that same row rather than inserting a second one', async () => {
     const student = await createStudent();
     const test = await makeSimpleTest();

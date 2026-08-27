@@ -207,8 +207,26 @@ async function startTest(testId, userId) {
     'questions.explanation': 0,
   } };
 
+  // BUG-010: reuse an already-open in-progress attempt instead of creating
+  // a new one every time /start is called (a refreshed tab, or a second
+  // tab, previously left behind an unbounded trail of duplicate
+  // 'in-progress' rows that never resolved). Deliberately REUSE, never
+  // invalidate/supersede the old row: submitTest()'s findOneAndUpdate
+  // requires status:'in-progress' in its own filter, so marking a stale
+  // row anything else would silently reject a legitimate late submission
+  // from that same session — a real student-data-loss risk this fix must
+  // not introduce. Checked BEFORE passage selection — a resumed attempt
+  // must show the SAME 3 passages it started with, not a freshly
+  // re-randomized set from the $sample branch below.
+  const existingAttempt = await TestAttempt.findOne({ userId, testId, status: 'in-progress' });
+
   let passages;
-  if (test.passageIds && test.passageIds.length === 3) {
+  if (existingAttempt) {
+    const raw = await Passage.find({ _id: { $in: existingAttempt.passagesUsed } }).select(safeFields).lean();
+    const byId = new Map(raw.map(p => [p._id.toString(), p]));
+    passages = existingAttempt.passagesUsed.map(id => byId.get(id.toString())).filter(Boolean);
+    if (passages.length !== existingAttempt.passagesUsed.length) return { status: 'insufficient_data' };
+  } else if (test.passageIds && test.passageIds.length === 3) {
     // Fixed test: always the same 3 passages, in the passage1/2/3 order
     // they were assigned at creation time — not $sample.
     const raw = await Passage.find({ _id: { $in: test.passageIds }, isActive: true }).select(safeFields).lean();
@@ -225,8 +243,11 @@ async function startTest(testId, userId) {
     passages = [p1arr[0], p2arr[0], p3arr[0]];
   }
 
-  const attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date() });
-  await attempt.save();
+  let attempt = existingAttempt;
+  if (!attempt) {
+    attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date() });
+    await attempt.save();
+  }
 
   const safePassages = passages.map(p => ({
     _id: p._id, title: p.title, category: p.category, content: p.content, questionRange: p.questionRange,

@@ -4,6 +4,7 @@
 // added so the server never trusts client-supplied isCorrect/correctCount.
 const mongoose = require('mongoose');
 const readingService = require('../../../services/readingService');
+const TestAttempt = require('../../../models/TestAttempt');
 const { bandScoreTable } = require('../../../utils/bandScore');
 const { createStudent } = require('../../factories/userFactory');
 const { createPassage, createReadingTest, createTestAttempt, createCompletedTestAttempt } = require('../../factories/contentFactory');
@@ -479,6 +480,46 @@ describe('readingService.startTest — fixed vs. random passage selection', () =
 
     const result = await readingService.startTest(test._id, student._id);
     expect(result.status).toBe('insufficient_data');
+  });
+
+  // BUG-010: calling /start twice without submitting (a refreshed tab, a
+  // second tab) previously inserted a second in-progress TestAttempt row
+  // every time. Also verifies the resumed attempt shows the SAME
+  // passages, not a freshly re-randomized set — this test uses the random
+  // (no passageIds) branch specifically since that's where a re-roll
+  // would be observable.
+  test('startTest() called twice reuses the same attempt AND the same randomly-selected passages', async () => {
+    const student = await createStudent();
+    await createPassage({ category: 'passage1', isActualTest: true });
+    await createPassage({ category: 'passage2', isActualTest: true });
+    await createPassage({ category: 'passage3', isActualTest: true });
+    const test = await createReadingTest({ name: 'MockTest Đề Random' });
+
+    const first = await readingService.startTest(test._id, student._id);
+    const second = await readingService.startTest(test._id, student._id);
+
+    expect(second.attemptId.toString()).toBe(first.attemptId.toString());
+    expect(second.passages.map(p => p._id.toString())).toEqual(first.passages.map(p => p._id.toString()));
+    const count = await TestAttempt.countDocuments({ userId: student._id, testId: test._id });
+    expect(count).toBe(1);
+  });
+
+  // The reused row must never be invalidated — submitTest()'s own
+  // findOneAndUpdate requires status:'in-progress' in its filter, so
+  // changing it away from that on a second /start call would silently
+  // reject a legitimate late submission from the original session.
+  test('after a second startTest() call, the ORIGINAL attemptId can still be submitted successfully', async () => {
+    const student = await createStudent();
+    const p1 = await createPassage({ category: 'passage1', isActualTest: true });
+    const p2 = await createPassage({ category: 'passage2', isActualTest: true });
+    const p3 = await createPassage({ category: 'passage3', isActualTest: true });
+    const test = await createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
+
+    const first = await readingService.startTest(test._id, student._id);
+    await readingService.startTest(test._id, student._id); // second tab/refresh
+
+    const result = await readingService.submitTest(first.attemptId, {}, { _id: student._id });
+    expect(result).not.toBeNull();
   });
 });
 
