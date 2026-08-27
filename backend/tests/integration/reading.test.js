@@ -118,6 +118,30 @@ describe('GET /api/reading/practice/by-id/:id and /api/reading/practice/:categor
     expect(res.status).not.toBe(403);
     expect(res.status).toBe(200);
   });
+
+  // Regression test for BUG-001 (2026-08-27 audit): this route returned the
+  // raw passage document — correctAnswer + explanation included, for every
+  // question — before the student had answered anything, unlike its sibling
+  // practice/by-id/:id which already stripped these fields. Field-stripping
+  // is done via an aggregation $project (not .select(), since
+  // getRandomPracticePassage uses $sample), so this is worth asserting on
+  // directly rather than trusting the code path is equivalent.
+  test('practice/:category (random passage) never leaks correctAnswer/explanation before submission', async () => {
+    await createPassage({
+      category: 'passage3',
+      questions: [{ questionNumber: 1, type: 'sentence-completion', questionText: 'Q1', correctAnswer: 'apple', explanation: 'Because it says so in paragraph 2.' }],
+    });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .get('/api/reading/practice/passage3')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.passage.questions[0].questionText).toBe('Q1'); // real content still present
+    expect(res.body.passage.questions[0].correctAnswer).toBeUndefined();
+    expect(res.body.passage.questions[0].explanation).toBeUndefined();
+    expect(JSON.stringify(res.body)).not.toContain('Because it says so in paragraph 2.');
+  });
 });
 
 describe('GET /api/reading/history (ownership scoping)', () => {

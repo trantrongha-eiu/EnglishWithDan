@@ -208,6 +208,48 @@ describe('Reading mandatory review — full loop', () => {
     expect(unblocked.status).not.toBe(403);
   });
 
+  // Regression test for BUG-001 (2026-08-27 audit): GET /reading/practice/:category
+  // (the random-passage wildcard route) was missing requireReviewComplete
+  // entirely — a student could keep fetching fresh practice passages by
+  // direct API call no matter how many pending reviews they'd piled up,
+  // bypassing the exact gate this whole file otherwise proves is airtight.
+  test('blocks GET /reading/practice/:category the same as /reading/start once 3 pending reviews pile up', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+
+    for (let i = 0; i < 3; i++) {
+      const { test } = await makeThreePassageReadingTest();
+      const start = await api.post('/api/reading/start', { testId: String(test._id) });
+      await api.post('/api/reading/submit', {
+        attemptId: start.body.attemptId,
+        answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
+      });
+    }
+    const pending = await api.get('/api/review/pending?skill=reading');
+    expect(pending.body.count).toBe(3);
+    expect(pending.body.blocked).toBe(true);
+
+    // Each loop iteration's makeThreePassageReadingTest() created its own
+    // passage3, so a 403 here can only be the gate, never a 404 "no passage
+    // for this category" false negative.
+    const blocked = await api.get('/api/reading/practice/passage3');
+    expect(blocked.status).toBe(403);
+    expect(blocked.body.code).toBe('REVIEW_REQUIRED');
+
+    // Complete the oldest review, drop back under the threshold, and the
+    // exact same route unblocks — same live-query behavior as /start.
+    const oldestReviewId = pending.body.pending._id;
+    const detail = await api.get(`/api/review/${oldestReviewId}`);
+    const mistake = detail.body.review.mistakes[0];
+    await api.patch(`/api/review/${oldestReviewId}/mistakes/${mistake._id}`, {
+      errorCategory: 'Vocabulary', errorReason: 'Không hiểu từ vựng trong bài',
+      confidence: 'guessing',
+      learningPoint: { category: 'vocabulary', content: 'banana = a fruit' },
+    });
+    const unblocked = await api.get('/api/reading/practice/passage3');
+    expect(unblocked.status).toBe(200);
+  });
+
   test('an unrecognized category/reason pair is rejected with 400', async () => {
     const { test } = await makeThreePassageReadingTest();
     const user = await createStudent();

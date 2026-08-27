@@ -477,8 +477,22 @@ async function getPracticeHistoryDetail(attemptId, userId) {
   return { attempt, passage };
 }
 
+// Same field-stripping as getPracticePassageById() above (security audit
+// finding BUG-001) — this route used to return the raw document, correctAnswer
+// + explanation included, before the student had answered anything.
+// $project (not .select(), since this is an aggregation pipeline) excludes
+// the same four paths.
 async function getRandomPracticePassage(category) {
-  const arr = await Passage.aggregate([{ $match: { category, isActive: true } }, { $sample: { size: 1 } }]);
+  const arr = await Passage.aggregate([
+    { $match: { category, isActive: true } },
+    { $sample: { size: 1 } },
+    { $project: {
+      'questionGroups.questions.correctAnswer': 0,
+      'questionGroups.questions.explanation': 0,
+      'questions.correctAnswer': 0,
+      'questions.explanation': 0
+    } }
+  ]);
   return arr[0] || null;
 }
 

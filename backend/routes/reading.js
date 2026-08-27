@@ -56,6 +56,10 @@ router.get('/practice/history/:attemptId', auth, readingController.getPracticeHi
 
 // GET /api/reading/practice/:category
 // (Wildcard — must be LAST among /practice/* GET routes)
-router.get('/practice/:category', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), readingController.getRandomPracticePassage);
+// requireReviewComplete + answer-key stripping added to match /practice/by-id/:id
+// (security audit finding BUG-001: this route was missing both — it skipped
+// the review gate entirely and returned raw correctAnswer/explanation for
+// every question before the student had answered anything).
+router.get('/practice/:category', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('reading'), readingController.getRandomPracticePassage);
 
 module.exports = router;
