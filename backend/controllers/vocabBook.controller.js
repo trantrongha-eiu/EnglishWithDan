@@ -153,8 +153,19 @@ exports.bulkAddWords = guard(async (req, res) => {
 });
 
 exports.deleteWords = guard(async (req, res) => {
-  const { wordIds = [] } = req.body;
-  const result = await vocabBookService.deleteWords(req.params.id, req.user._id, wordIds);
+  // wordIds:null (not just undefined) used to reach vocabBookService's
+  // wordIds.includes(...) filter and throw — the `= []` default only ever
+  // fires for undefined, not an explicit null (audit finding BUG-019). Any
+  // non-array, or an array with a non-string entry, is rejected the same
+  // way; an array containing a malformed/non-ObjectId string is left alone
+  // — the filter below just won't match it against any real word, a
+  // harmless no-op, not a crash risk.
+  const { wordIds } = req.body;
+  if (wordIds !== undefined && (!Array.isArray(wordIds) || wordIds.some(id => typeof id !== 'string'))) {
+    return res.status(400).json({ success: false, message: 'wordIds phải là một mảng chuỗi ID' });
+  }
+  const safeWordIds = wordIds || [];
+  const result = await vocabBookService.deleteWords(req.params.id, req.user._id, safeWordIds);
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
-  res.json({ success: true, message: `Đã xoá ${wordIds.length} từ` });
+  res.json({ success: true, message: `Đã xoá ${safeWordIds.length} từ` });
 });
