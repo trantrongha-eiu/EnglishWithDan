@@ -20,6 +20,50 @@ definition=Able to continue without harming the environment.
 distractors=renewable|temporary|harmful
 `;
 
+// 5 real words — needed for tests exercising a totalCount that must be
+// both in-bounds (BUG-002's totalCount<=lesson.words.length check) and
+// large enough to qualify for the leaderboard (MIN_QUIZ_LEADERBOARD_QUESTIONS=5).
+const FIVE_WORD_LESSON = `@lesson
+title=Week 13 - Climate
+difficulty=B1
+order=13
+
+@word
+word=sustainable
+meaning=bền vững
+example=Solar energy is a sustainable source of power.
+definition=Able to continue without harming the environment.
+distractors=renewable|temporary|harmful
+
+@word
+word=renewable
+meaning=tái tạo
+example=Wind is a renewable resource.
+definition=Able to be replenished naturally over time.
+distractors=sustainable|limited|scarce
+
+@word
+word=emission
+meaning=khí thải
+example=Factories must reduce carbon emissions.
+definition=A substance discharged into the air.
+distractors=absorption|reduction|pollution
+
+@word
+word=drought
+meaning=hạn hán
+example=The region suffered a severe drought last summer.
+definition=A prolonged period of abnormally low rainfall.
+distractors=flood|storm|frost
+
+@word
+word=habitat
+meaning=môi trường sống
+example=Deforestation destroys the habitat of many species.
+definition=The natural home of a plant or animal.
+distractors=climate|terrain|region
+`;
+
 describe('Auth gating', () => {
   test('every route requires a valid token', async () => {
     expect((await request(app).get('/api/vocabulary-lessons')).status).toBe(401);
@@ -181,6 +225,48 @@ describe('Full happy path: import → publish → student reads → submits atte
       .send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
     expect(res.status).toBe(404);
   });
+
+  // Regression test for BUG-002 (2026-08-27 audit): the quiz is always
+  // exactly one question per word (buildQuizQueue() in dashboard-lesson.js
+  // maps 1:1 over lesson.words), so a real submission can never claim more
+  // questions than the lesson actually has — but nothing checked that
+  // server-side, so a crafted request like {correctCount:9999,
+  // totalCount:9999} was accepted verbatim and fed the public leaderboard.
+  test('submitAttempt rejects a totalCount that exceeds the lesson\'s real word count', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const importRes = await request(app)
+      .post('/api/vocabulary-lessons/admin/import')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`)
+      .send({ text: FIVE_WORD_LESSON }); // 5 words
+    const lessonId = importRes.body.lesson._id;
+    await request(app).patch(`/api/vocabulary-lessons/admin/${lessonId}/publish`).set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ published: true });
+    const studentToken = signTokenFor(student);
+
+    const exploit = await request(app)
+      .post(`/api/vocabulary-lessons/${lessonId}/attempt`)
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ correctCount: 9999, totalCount: 9999, timeSpent: 1 });
+    expect(exploit.status).toBe(400);
+
+    // No attempt/log row was created by the rejected request.
+    const noAttempt = await request(app).get(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`);
+    expect(noAttempt.body.attempt).toBeNull();
+
+    // A genuine, in-bounds submission (5 questions for 5 real words) still
+    // works normally afterward.
+    const real = await request(app)
+      .post(`/api/vocabulary-lessons/${lessonId}/attempt`)
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ correctCount: 5, totalCount: 5, timeSpent: 5 });
+    expect(real.status).toBe(200);
+    expect(real.body.attempt.score).toBe(100);
+
+    // The leaderboard reflects the real 5/5 attempt, never the 9999/9999 exploit.
+    const leaderboard = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${studentToken}`);
+    const row = leaderboard.body.leaderboard.find(r => r.userId === String(student._id));
+    expect(row?.score).toBe(100);
+  });
 });
 
 describe('Analytics endpoints', () => {
@@ -285,7 +371,13 @@ describe('GET /leaderboard', () => {
     const teacherToken = signTokenFor(teacher);
     const studentToken = signTokenFor(student);
 
-    const importRes = await request(app).post('/api/vocabulary-lessons/admin/import').set('Authorization', `Bearer ${teacherToken}`).send({ text: GOOD_LESSON });
+    // FIVE_WORD_LESSON, not GOOD_LESSON (1 word) — this test needs a real
+    // totalCount:5 submission to reach the leaderboard's own
+    // MIN_QUIZ_LEADERBOARD_QUESTIONS=5 floor, and BUG-002's fix now rejects
+    // totalCount exceeding the lesson's real word count (this test used to
+    // submit totalCount:5 against a 1-word lesson — the exact exploit shape
+    // BUG-002 closes).
+    const importRes = await request(app).post('/api/vocabulary-lessons/admin/import').set('Authorization', `Bearer ${teacherToken}`).send({ text: FIVE_WORD_LESSON });
     const lessonId = importRes.body.lesson._id;
     await request(app).patch(`/api/vocabulary-lessons/admin/${lessonId}/publish`).set('Authorization', `Bearer ${teacherToken}`).send({ published: true });
     await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 5, totalCount: 5, timeSpent: 12 });

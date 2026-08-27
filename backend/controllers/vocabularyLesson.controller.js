@@ -67,6 +67,18 @@ exports.submitAttempt = async (req, res) => {
     if (typeof totalCount !== 'number' || totalCount <= 0) {
       return res.status(400).json({ success: false, message: 'Thiếu totalCount' });
     }
+    // Security/data-integrity audit finding BUG-002: the quiz queue is
+    // always exactly one question per word (buildQuizQueue() in
+    // dashboard-lesson.js maps 1:1 over lesson.words), so a real submission
+    // can never exceed the lesson's own word count — but nothing enforced
+    // that server-side, so a crafted request (e.g. totalCount:9999) was
+    // accepted verbatim and fed straight into the public quiz leaderboard.
+    // correctCount<=totalCount, correctCount>=0, and timeSpent>=0 are
+    // already clamped in vocabularyLessonService.submitAttempt().
+    const maxQuestions = (lesson.words || []).length;
+    if (totalCount > maxQuestions) {
+      return res.status(400).json({ success: false, message: 'totalCount vượt quá số từ của bài học' });
+    }
     const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongWords });
     res.json({ success: true, attempt });
   } catch (err) {
