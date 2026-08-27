@@ -110,6 +110,28 @@ describe('speakingService.listQuestions', () => {
     const resultB = await speakingService.listQuestions({ topic: 'all', part: 'all', userId: studentB._id });
     expect(resultB[0].attempted).toBe(false);
   });
+
+  // Regression coverage for BUG-006 (2026-08-27 audit): sampleAnswer/hints
+  // are cached on the question doc the first time ANY student reveals them
+  // via POST /sample-answer or /hints — once cached, every future listing
+  // of that question leaked the answer/hints to every other student before
+  // they'd ever attempted it.
+  test('never includes sampleAnswer/hints even once they are cached on the question', async () => {
+    const q = await createSpeakingQuestion({
+      topic: 'Travel', part: 1,
+      sampleAnswer: 'This is the model answer.', hints: { vocab: ['itinerary', 'excursion'] },
+    });
+
+    const listed = await speakingService.listQuestions({ topic: 'all', part: 'all' });
+    const found = listed.find(item => item._id.toString() === q._id.toString());
+    expect(found.sampleAnswer).toBeUndefined();
+    expect(found.hints).toBeUndefined();
+    expect(found.question).toBe(q.question); // real content still present
+
+    const random = await speakingService.getRandomQuestion({ topic: 'Travel', part: 1 });
+    expect(random.sampleAnswer).toBeUndefined();
+    expect(random.hints).toBeUndefined();
+  });
 });
 
 describe('speakingService.saveAttempt', () => {

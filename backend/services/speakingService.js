@@ -17,6 +17,18 @@ async function listTopics(part) {
   return topics.sort();
 }
 
+// Excluded from both student-facing listing queries below (security audit
+// finding BUG-006): sampleAnswer/hints are cached directly on the question
+// doc the first time ANY student reveals them (see getSampleAnswer/
+// getSpeakingHints below, backing the dedicated POST /sample-answer and
+// POST /hints reveal endpoints frontend/js/speaking.js already exclusively
+// uses) — so once even one student had revealed a question, every future
+// listing of it leaked the answer/hints to every other student before they
+// ever attempted it. The reveal endpoints' own .select('sampleAnswer'/
+// 'hints') cache reads are intentional and untouched; only these two
+// listing paths were ever a leak.
+const LISTING_EXCLUDED_FIELDS = '-sampleAnswer -hints';
+
 async function getRandomQuestion({ topic, part }) {
   const filter = { isActive: true };
   if (topic && topic !== 'all') filter.topic = topic;
@@ -26,7 +38,7 @@ async function getRandomQuestion({ topic, part }) {
   if (count === 0) return null;
 
   const skip = Math.floor(Math.random() * count);
-  return SpeakingQuestion.findOne(filter).skip(skip).lean();
+  return SpeakingQuestion.findOne(filter).select(LISTING_EXCLUDED_FIELDS).skip(skip).lean();
 }
 
 // userId is optional (some callers may not have an authenticated user), in
@@ -35,7 +47,7 @@ async function listQuestions({ topic, part, userId }) {
   const filter = { isActive: true };
   if (topic && topic !== 'all') filter.topic = topic;
   if (part && part !== 'all') filter.part = Number(part);
-  const questions = await SpeakingQuestion.find(filter).sort({ part: 1, topic: 1 }).lean();
+  const questions = await SpeakingQuestion.find(filter).select(LISTING_EXCLUDED_FIELDS).sort({ part: 1, topic: 1 }).lean();
 
   let attemptedIds = new Set();
   if (userId && questions.length) {
