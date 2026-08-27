@@ -741,8 +741,17 @@ async function _checkPendingReviewBanner() {
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'review-required-banner';
-      wrap.parentNode.insertBefore(banner, wrap);
     }
+    // Pin the banner to the top of the list screen. #tests-wrapper is only
+    // the topmost block in "Full đề" mode — in "Bài lẻ" mode #practice-picker
+    // sits above it in the DOM, so anchoring to #tests-wrapper alone dropped
+    // the banner below the whole picker (it looked stuck at the page footer).
+    // The mode-tabs bar is always rendered and always on top, so anchor there
+    // instead; re-running this insert is a harmless no-op when already placed.
+    // (listening.html doesn't hit this because its Bài lẻ picker comes *after*
+    // #tests-wrapper in the DOM.)
+    const anchor = document.querySelector('.rmode-tabs-bar') || wrap;
+    anchor.parentNode.insertBefore(banner, anchor.nextSibling);
     banner.style.cssText = blocked
       ? 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e'
       : 'background:#f8f9fb;border:1px solid #e5e7eb;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#374151';
