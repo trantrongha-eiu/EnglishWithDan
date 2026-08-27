@@ -172,3 +172,43 @@ describe('checkAnswer — AI grading timeout', () => {
     expect(res.score).toBe(100);
   });
 });
+
+describe('getTopicPracticeStats — "Viết bài ngay" gate data', () => {
+  async function topic() {
+    return Task2Topic.create({
+      week: 1, block: 'advantages_disadvantages', orderIndex: 1,
+      topicName: 'Gate Topic', essayType: 'advantages_disadvantages', prompt: 'p',
+    });
+  }
+
+  test('reports not practised when there are no practice attempts', async () => {
+    const t = await topic();
+    const student = await createStudent();
+    const stats = await svc.getTopicPracticeStats(student._id, t._id);
+    expect(stats).toMatchObject({ practiced: false, attempts: 0, bestScore: 0 });
+  });
+
+  test('best score is the max across this user\'s practice sessions for the topic', async () => {
+    const t = await topic();
+    const student = await createStudent();
+    await Task2Attempt.create({ userId: student._id, topicId: t._id, sessionType: 'practice', totalQuestions: 10, correctCount: 5, scorePercentage: 50 });
+    await Task2Attempt.create({ userId: student._id, topicId: t._id, sessionType: 'practice', totalQuestions: 10, correctCount: 8, scorePercentage: 80 });
+    // an exam session must NOT count toward the practice gate
+    await Task2Attempt.create({ userId: student._id, topicId: t._id, sessionType: 'exam', totalQuestions: 10, correctCount: 10, scorePercentage: 100 });
+
+    const stats = await svc.getTopicPracticeStats(student._id, t._id);
+    expect(stats.practiced).toBe(true);
+    expect(stats.attempts).toBe(2);
+    expect(stats.bestScore).toBe(80);
+    expect(stats.lastScore).toBe(80);
+    expect(stats.cumulativeScore).toBe(65); // (5+8)/(10+10)
+  });
+
+  test('another user\'s attempts do not leak in', async () => {
+    const t = await topic();
+    const [me, other] = [await createStudent(), await createStudent()];
+    await Task2Attempt.create({ userId: other._id, topicId: t._id, sessionType: 'practice', totalQuestions: 10, correctCount: 10, scorePercentage: 100 });
+    const stats = await svc.getTopicPracticeStats(me._id, t._id);
+    expect(stats.practiced).toBe(false);
+  });
+});

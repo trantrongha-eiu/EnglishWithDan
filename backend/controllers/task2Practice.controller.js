@@ -132,6 +132,15 @@ exports.getWrongQuestions = async (req, res) => {
   }
 };
 
+exports.getTopicStats = async (req, res) => {
+  try {
+    const stats = await task2PracticeService.getTopicPracticeStats(req.user._id, req.params.topicId);
+    res.json({ success: true, stats });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.saveDraft = async (req, res) => {
   try {
     // Validated before this ever reaches saveDraft() (audit finding

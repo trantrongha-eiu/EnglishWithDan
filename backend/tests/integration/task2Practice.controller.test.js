@@ -114,6 +114,37 @@ describe('POST /api/task2/check', () => {
   });
 });
 
+describe('GET /api/task2/topic-stats/:topicId ("Viết bài ngay" gate)', () => {
+  test('401 without auth', async () => {
+    expect((await request(app).get('/api/task2/topic-stats/000000000000000000000000')).status).toBe(401);
+  });
+
+  test('reports not practised for a topic the student has never done', async () => {
+    const topic = await createTask2Topic({ questions: [question()] });
+    const user = await createPremiumStudent();
+    const res = await request(app).get(`/api/task2/topic-stats/${topic._id}`).set('Authorization', `Bearer ${signTokenFor(user)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.stats).toMatchObject({ practiced: false, bestScore: 0 });
+  });
+
+  test('reports the best practice score after a real session', async () => {
+    const topic = await createTask2Topic({ questions: [question({ type: 'fill_blank', correctAnswer: 'grew' })] });
+    const q = topic.questions[0];
+    const user = await createPremiumStudent();
+    const auth = { Authorization: `Bearer ${signTokenFor(user)}` };
+
+    await request(app).post('/api/task2/save-attempt').set(auth).send({
+      sessionType: 'practice', week: topic.week, topicId: String(topic._id), topicName: topic.topicName, level: 'beginner',
+      questionsAttempted: [{ questionId: String(q._id), userAnswer: 'grew' }],
+      totalQuestions: 1, correctCount: 1,
+    });
+
+    const res = await request(app).get(`/api/task2/topic-stats/${topic._id}`).set(auth);
+    expect(res.body.stats.practiced).toBe(true);
+    expect(res.body.stats.bestScore).toBe(100);
+  });
+});
+
 describe('GET /api/task2/exam and POST /api/task2/exam/submit', () => {
   test('exam route requires premium and returns sanitized questions', async () => {
     await createTask2Topic({ week: 1, questions: [question({ correctAnswer: 'secret' })] });

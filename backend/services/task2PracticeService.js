@@ -385,6 +385,29 @@ async function getProgress(userId) {
   ]);
 }
 
+// This user's practice record for ONE topic — backs the "Viết bài ngay"
+// gate on task2-practice.html (needs practised + best score >= 70%). Only
+// 'practice' sessions with real questions count; 'exam' (Thi thử) doesn't.
+async function getTopicPracticeStats(userId, topicId) {
+  const rows = await Task2Attempt.find({
+    userId, topicId, sessionType: 'practice', totalQuestions: { $gt: 0 }
+  }).select('scorePercentage correctCount totalQuestions completedAt').sort({ completedAt: 1 }).lean();
+
+  if (!rows.length) {
+    return { practiced: false, attempts: 0, bestScore: 0, lastScore: 0, cumulativeScore: 0 };
+  }
+  const bestScore = Math.max(...rows.map(r => r.scorePercentage || 0));
+  const totCorrect = rows.reduce((s, r) => s + (r.correctCount || 0), 0);
+  const totAnswered = rows.reduce((s, r) => s + (r.totalQuestions || 0), 0);
+  return {
+    practiced: true,
+    attempts: rows.length,
+    bestScore,
+    lastScore: rows[rows.length - 1].scorePercentage || 0,
+    cumulativeScore: totAnswered > 0 ? Math.round((totCorrect / totAnswered) * 100) : 0,
+  };
+}
+
 async function getWrongQuestions(userId, topicId) {
   const attempts = await Task2Attempt.find({ userId, topicId }).sort({ createdAt: 1 }).lean();
   if (!attempts.length) return [];
@@ -426,5 +449,5 @@ async function listDrafts(userId) {
 module.exports = {
   listTemplates, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
   checkAnswer, getExam, submitExam, saveAttempt, getHistory, getProgress, getWrongQuestions,
-  saveDraft, getDraft, deleteDraft, listDrafts,
+  getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
 };

@@ -78,6 +78,14 @@
     .t2-btn-write{border-color:#e53935;background:#fff1f2;color:#c62828}
     .t2-btn-write:hover{border-color:#c62828;background:#fee2e2;color:#c62828}
     [data-theme="dark"] .t2-btn-write{background:#2a1a1f;border-color:#7f1d1d;color:#fca5a5}
+    /* Locked until the topic has been practised to >= 70% */
+    .t2-btn-write-locked{border-color:#e5e7eb;background:#f3f4f6;color:#9ca3af}
+    .t2-btn-write-locked:hover{border-color:#d1d5db;background:#e5e7eb;color:#6b7280}
+    [data-theme="dark"] .t2-btn-write-locked{background:var(--surface,#0d0d0d);border-color:var(--border2,#333);color:#6b7280}
+    .t2-write-gate-note{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:10px 12px;
+      background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:12.5px;line-height:1.6;color:#92400e}
+    .t2-write-gate-note i{margin-top:2px;flex-shrink:0}
+    [data-theme="dark"] .t2-write-gate-note{background:#2a2416;border-color:#78350f;color:#fcd34d}
     .t2-start-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-top:20px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
     .t2-start-btn:hover{opacity:.9;transform:translateY(-1px)}
     .t2-draft-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
@@ -508,6 +516,9 @@ let state = {
   questionStatus: [],
   // saved session draft for resuming
   draft: null,
+  // this user's practice record for the selected topic ({practiced,bestScore,...})
+  // — gates the "Viết bài ngay" button. Fetched in selectTopic().
+  topicStats: null,
   // all drafts across topics (for week screen indicators)
   allDrafts: [],
   // settings toggles
@@ -652,6 +663,40 @@ function topicCompletedCount() {
   return Object.values(_topicScores).filter(s => s.completed).length;
 }
 
+// ── "Viết bài ngay" gate ──────────────────────────────────────────────────
+// Full-essay writing is unlocked only after the student has practised this
+// topic (at least one 'practice' session with questions) AND reached a best
+// score of >= 70% on it. Server-verified via GET /api/task2/topic-stats/:id
+// (state.topicStats), with the local _topicScores best as a fallback so a
+// student who just finished a good session doesn't have to wait for a
+// refetch to see it unlock.
+const T2_WRITE_MIN_ACCURACY = 70;
+
+function _bestPracticeScore(topicId) {
+  const server = state.topicStats && state.topicStats.practiced ? (state.topicStats.bestScore || 0) : null;
+  const local  = _topicScores[topicId] ? (_topicScores[topicId].bestScore || 0) : null;
+  if (server == null && local == null) return null; // never practised anywhere we can see
+  return Math.max(server || 0, local || 0);
+}
+
+// Returns { ok, code, best }. code: 'ok' | 'not_practiced' | 'low_accuracy'.
+function canWriteFullEssay(topicId) {
+  const best = _bestPracticeScore(topicId);
+  if (best == null) return { ok: false, code: 'not_practiced', best: 0 };
+  if (best < T2_WRITE_MIN_ACCURACY) return { ok: false, code: 'low_accuracy', best };
+  return { ok: true, code: 'ok', best };
+}
+
+function writeGateMessage(gate) {
+  if (gate.code === 'not_practiced') {
+    return `Hãy hoàn thành phần "Luyện tập" của chủ đề này trước đã. ` +
+           `Bạn cần đạt tối thiểu ${T2_WRITE_MIN_ACCURACY}% số câu đúng (điểm cao nhất) thì nút "Viết bài ngay" mới mở khoá.`;
+  }
+  return `Bạn mới đạt cao nhất ${gate.best}% ở phần "Luyện tập". ` +
+         `Cần tối thiểu ${T2_WRITE_MIN_ACCURACY}% mới mở khoá "Viết bài ngay" — hãy luyện thêm ` +
+         `(hoặc dùng "Ôn câu sai") rồi thử lại.`;
+}
+
 // ── Vocab-learned gate — Luyện tập requires the topic's vocab to have been
 // opened (Từ vựng tab, which caches its total word count below) AND every
 // one of those terms saved into a VocabBook first. Same localStorage-keyed-
@@ -774,14 +819,17 @@ async function loadWeeks() {
       const topic = state.topics.find(t => t._id === urlTopicId);
       if (topic) {
         state.selectedTopic = topic;
+        state.topicStats = null;
         if (hasToken) {
           try {
-            const [wrongData, draftData] = await Promise.all([
+            const [wrongData, draftData, statsData] = await Promise.all([
               apiFetch(`/api/task2/wrong-questions/${urlTopicId}`),
-              apiFetch(`/api/task2/draft/${urlTopicId}`)
+              apiFetch(`/api/task2/draft/${urlTopicId}`),
+              apiFetch(`/api/task2/topic-stats/${urlTopicId}`).catch(() => ({ stats: null }))
             ]);
             state.wrongQuestionIds = wrongData.wrongIds || [];
             state.draft = draftData.draft || null;
+            state.topicStats = statsData.stats || null;
           } catch {}
         }
         state.view = 'select';
@@ -947,6 +995,7 @@ async function selectTopic(id) {
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
   state.draft = null;
+  state.topicStats = null;
   const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, mode: state.currentMode });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
   // Guards against rapidly clicking between topics resolving out of order —
@@ -956,13 +1005,15 @@ async function selectTopic(id) {
   const requestId = ++_selectTopicSeq;
   if (window.AuthService.isLoggedIn()) {
     try {
-      const [wrongData, draftData] = await Promise.all([
+      const [wrongData, draftData, statsData] = await Promise.all([
         apiFetch(`/api/task2/wrong-questions/${id}`),
-        apiFetch(`/api/task2/draft/${id}`)
+        apiFetch(`/api/task2/draft/${id}`),
+        apiFetch(`/api/task2/topic-stats/${id}`).catch(() => ({ stats: null }))
       ]);
       if (requestId !== _selectTopicSeq) return;
       state.wrongQuestionIds = wrongData.wrongIds || [];
       state.draft = draftData.draft || null;
+      state.topicStats = statsData.stats || null;
     } catch {
       if (requestId !== _selectTopicSeq) return;
     }
@@ -992,11 +1043,18 @@ function renderSelect() {
       <div class="t2-selector-label">Chế độ</div>
       <div class="t2-btn-group">
         <button class="t2-btn ${state.currentMode==='practice'?'active':''}" onclick="setMode2('practice')"><i class="fas fa-pencil-alt"></i> Luyện tập</button>
-        ${t.writingTask2Id ? `<button class="t2-btn t2-btn-write" onclick="goWriteFullEssay()" title="Viết luôn bài văn hoàn chỉnh cho đề này"><i class="fas fa-pen-nib"></i> Viết bài ngay</button>` : ''}
+        ${t.writingTask2Id ? (() => {
+          const wg = canWriteFullEssay(t._id);
+          return `<button class="t2-btn t2-btn-write${wg.ok ? '' : ' t2-btn-write-locked'}" onclick="goWriteFullEssay()" title="${wg.ok ? 'Viết luôn bài văn hoàn chỉnh cho đề này' : 'Cần luyện tập đạt ≥ ' + T2_WRITE_MIN_ACCURACY + '% mới mở khoá'}"><i class="fas fa-${wg.ok ? 'pen-nib' : 'lock'}"></i> Viết bài ngay</button>`;
+        })() : ''}
         <button class="t2-btn ${state.currentMode==='exam'?'active':''}" onclick="setMode2('exam')"><i class="fas fa-clipboard-check"></i> Thi thử</button>
         <button class="t2-btn ${state.currentMode==='vocab'?'active':''}" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Từ vựng</button>
         ${state.wrongQuestionIds.length > 0 ? `<button class="t2-btn ${state.currentMode==='retry'?'active':''}" onclick="setMode2('retry')" style="border-color:#fbbf24;color:#92400e;${state.currentMode==='retry'?'background:#fef3c7;':''}"><i class="fas fa-exclamation-circle" style="color:#f59e0b"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
+      ${t.writingTask2Id && !canWriteFullEssay(t._id).ok ? `
+      <div class="t2-write-gate-note">
+        <i class="fas fa-lock"></i> <span>${_escHtml(writeGateMessage(canWriteFullEssay(t._id)))}</span>
+      </div>` : ''}
 
       ${state.currentMode === 'exam' ? `
         <div class="t2-selector-label">Số câu</div>
@@ -1059,8 +1117,16 @@ function setMode2(m) { state.currentMode = m; _syncT2ShareUrl(); render(); }
 // Only shown when the topic has been linked to a WritingTask2
 // (scripts/seedTask2TopicEssays.js).
 function goWriteFullEssay() {
-  const id = state.selectedTopic?.writingTask2Id;
+  const topic = state.selectedTopic;
+  const id = topic?.writingTask2Id;
   if (!id) { showToast('Chủ đề này chưa có đề luyện viết bài đầy đủ.', 'error'); return; }
+
+  const gate = canWriteFullEssay(topic._id);
+  if (!gate.ok) {
+    showToast('🔒 Chưa mở khoá "Viết bài ngay". ' + writeGateMessage(gate), 'warn', 8000);
+    if (gate.code === 'not_practiced' || gate.code === 'low_accuracy') setMode2('practice');
+    return;
+  }
   window.location.href = `writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
 }
 function setExamCount(n) { state.examCount = n; render(); }

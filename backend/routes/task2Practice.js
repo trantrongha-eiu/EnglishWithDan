@@ -67,6 +67,10 @@ router.get('/progress', auth, task2PracticeController.getProgress);
 // GET /api/task2/wrong-questions/:topicId  (auth required)
 router.get('/wrong-questions/:topicId', auth, task2PracticeController.getWrongQuestions);
 
+// GET /api/task2/topic-stats/:topicId  — this user's practice record for one
+// topic (practised? best score?), used to gate "Viết bài ngay".
+router.get('/topic-stats/:topicId', auth, task2PracticeController.getTopicStats);
+
 // ══════════════════════════════════════════════════════════════════════
 //  DRAFT — save / load / delete session progress
 // ══════════════════════════════════════════════════════════════════════
