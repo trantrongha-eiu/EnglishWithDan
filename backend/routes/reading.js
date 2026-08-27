@@ -52,7 +52,12 @@ router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp 
 router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), readingController.getPassageAnswerKey);
 
 // POST /api/reading/practice/save
-router.post('/practice/save', auth, readingController.savePractice);
+// requirePremium added (audit finding BUG-009) — this creates a real
+// ReadingPracticeAttempt (feeding history + the mandatory-review system),
+// yet had no premium check at all: a lapsed-trial user could call it
+// directly with any passageId, including one they never legitimately
+// fetched (practice/by-id/:id, already premium-gated).
+router.post('/practice/save', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), readingController.savePractice);
 
 // GET /api/reading/practice/history
 // (MUST be before /practice/:category to avoid wildcard match)

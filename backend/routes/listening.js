@@ -52,7 +52,12 @@ router.get('/history', auth, listeningController.getHistory);
 router.get('/history/:attemptId', auth, listeningController.getHistoryDetail);
 
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/practice/save', auth, listeningController.savePractice);
+// requirePremium added (audit finding BUG-009) — this creates a real
+// ListeningPracticeAttempt (feeding history + the mandatory-review system),
+// yet had no premium check at all: a lapsed-trial user could call it
+// directly with any sectionId, including one they never legitimately
+// fetched (practice/by-id/:id, already premium-gated).
+router.post('/practice/save', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.savePractice);
 router.get('/practice/history', auth, listeningController.getPracticeHistory);
 router.get('/practice/history/:attemptId', auth, listeningController.getPracticeHistoryDetail);
 

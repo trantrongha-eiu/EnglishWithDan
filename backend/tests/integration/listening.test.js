@@ -4,7 +4,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
-const { createListeningTest, createListeningAttempt } = require('../factories/contentFactory');
+const { createListeningTest, createListeningAttempt, createListeningSection } = require('../factories/contentFactory');
 
 describe('GET /api/listening/tests', () => {
   test('requires authentication', async () => {
@@ -61,6 +61,35 @@ describe('POST /api/listening/tests/:id/start (premium gate)', () => {
       .send({});
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
+  });
+});
+
+// Regression coverage for BUG-009 (2026-08-27 audit): /practice/save had no
+// premium check at all — a lapsed-trial user could call it directly with
+// any sectionId to create a real ListeningPracticeAttempt.
+describe('POST /api/listening/practice/save (premium gate)', () => {
+  test('a free-plan student whose 24h trial has expired is blocked with 403 PLAN_REQUIRED', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/listening/practice/save')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ sectionId: '000000000000000000000000', answers: [] });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student passes the gate and the attempt is actually saved', async () => {
+    const section = await createListeningSection();
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/listening/practice/save')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ sectionId: String(section._id), answers: [{ questionNumber: 1, userAnswer: 'sunny' }], timeTaken: 30 });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.attemptId).toBeTruthy();
   });
 });
 

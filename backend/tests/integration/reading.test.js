@@ -100,6 +100,38 @@ describe('POST /api/reading/submit (premium gate)', () => {
   });
 });
 
+// Regression coverage for BUG-009 (2026-08-27 audit): /practice/save had no
+// premium check at all — a lapsed-trial user could call it directly with
+// any passageId to create a real ReadingPracticeAttempt.
+describe('POST /api/reading/practice/save (premium gate)', () => {
+  test('a free-plan student whose 24h trial has expired is blocked with 403 PLAN_REQUIRED', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/reading/practice/save')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ passageId: '000000000000000000000000', answers: [] });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student passes the gate and the attempt is actually saved', async () => {
+    const passage = await createPassage({
+      category: 'passage1',
+      questions: [{ questionNumber: 1, type: 'sentence-completion', questionText: 'Q1', correctAnswer: 'apple' }],
+    });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post('/api/reading/practice/save')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ passageId: String(passage._id), category: 'passage1', answers: [{ questionNumber: 1, userAnswer: 'apple' }], timeTaken: 30 });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.attemptId).toBeTruthy();
+  });
+});
+
 describe('GET /api/reading/practice/by-id/:id and /api/reading/practice/:category (premium gate)', () => {
   // Regression test for the paywall-bypass bug found in the 2026-08-21 audit:
   // these two routes returned full passage content to any authenticated user
