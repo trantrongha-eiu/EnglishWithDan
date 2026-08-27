@@ -95,6 +95,13 @@ const state = {
   currentAttemptData: null   // for download
 };
 
+// Set when this page is step 3/4 of a full mock test (?mock=<id>&skill=writing)
+// — see the init() IIFE and shared/mock-test.js. Holds the assigned exam id
+// so startExam() opens exactly that WritingExam, and makes #screen-done hand
+// off to Speaking instead of ending here.
+let _mockMode = false;
+let _mockWritingExamId = null;
+
 // ──────────────────────────────────────────────────────
 // Screen management
 // ──────────────────────────────────────────────────────
@@ -154,6 +161,25 @@ function showScreen(id) {
 
   if (params.get('view') === 'writing-tips') {
     openWritingTips();
+    return;
+  }
+
+  // Full mock test, step 3/4 (?mock=<id>&skill=writing): open the assigned
+  // writing exam straight away, no key screen.
+  if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'writing') {
+    (async () => {
+      try {
+        const mt = await window.MockTest.fetchCurrent();
+        _mockWritingExamId = mt && mt.bundle && mt.bundle.writingExamId;
+        if (!_mockWritingExamId) { showToast('Không tìm thấy đề Writing của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
+        _mockMode = true;
+        window.MockTest.showBanner('writing');
+        await startExam();
+      } catch (e) {
+        showToast('Lỗi mở bài thi thử', 'error');
+        location.href = 'dashboard.html';
+      }
+    })();
     return;
   }
 
@@ -248,7 +274,10 @@ async function startExam() {
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
 
   try {
-    const data = await apiFetch('/api/writing/start', { method: 'POST', body: JSON.stringify({}) });
+    const data = await apiFetch('/api/writing/start', {
+      method: 'POST',
+      body: JSON.stringify(_mockMode && _mockWritingExamId ? { examId: _mockWritingExamId } : {})
+    });
 
     if (!data.success) {
       showToast(data.message || 'Không thể tải bài thi', 'error');
@@ -567,6 +596,14 @@ async function submitExam(statusOverride) {
       document.getElementById('done-wc1').textContent = wc1;
       document.getElementById('done-wc2').textContent = wc2;
       showScreen('screen-done');
+
+      // Full mock test: move on to Speaking (step 4/4). Writing is graded
+      // later (teacher/AI), so no band is available now — that's expected.
+      if (_mockMode && window.MockTest && window.MockTest.active()) {
+        showToast('Đã nộp Writing — chuyển sang Speaking…', 'success');
+        setTimeout(() => window.MockTest.advance('writing', data.attemptId), 1400);
+        return;
+      }
 
       // Priority 2C — only for a session launched via the Today's Learning
       // popup's "Start" button. Writing has no immediate score (teacher/AI

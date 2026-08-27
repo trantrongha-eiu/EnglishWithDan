@@ -18,6 +18,11 @@ const reviewService = require('../services/reviewService');
 function requireReviewComplete(skill) {
   return async (req, res, next) => {
     if (skill === 'listening' && req.query.purpose === 'dictation') return next();
+    // The full 4-skill mock test (see mockTestService) is a sit-down exam of
+    // its own — it must not be blocked by an unrelated pile-up of pending
+    // per-mistake reviews from ordinary practice. Same opt-out shape as
+    // dictation above; requirePremium still applies on these routes.
+    if (req.query.purpose === 'mocktest') return next();
     const { items, count } = await reviewService.getPendingReviews(req.user._id, skill);
     if (count < reviewService.MAX_PENDING_REVIEWS) return next();
     return res.status(403).json({

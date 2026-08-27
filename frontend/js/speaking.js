@@ -37,6 +37,12 @@ async function apiFetch(path, opts = {}) {
   }
 }
 
+// Set when this page is step 4/4 of a full mock test
+// (?mock=<id>&skill=speaking) — see init() and shared/mock-test.js. In mock
+// mode the student is locked to one assigned Part 2 cue card and, once it's
+// graded, finishes the whole mock instead of returning to the practice list.
+let _mockMode = false;
+
 // ──────────────────────────────────────────────────────
 // State
 // ──────────────────────────────────────────────────────
@@ -220,6 +226,13 @@ function showScreen(id) {
   // `history.state` is populated for THIS entry (a direct load/bookmark
   // never runs through pushState, so `history.state` would otherwise be
   // null here) — popstate later relies on that to know what to restore.
+  // Full mock test, step 4/4 (?mock=<id>&skill=speaking): lock the student
+  // to the assigned Part 2 cue card, skip the browser/list entirely.
+  if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'speaking') {
+    await startSpeakingMockQuestion();
+    return;
+  }
+
   const urlParams = new URLSearchParams(location.search);
   const tabParam = urlParams.get('tab') || 'home';
   const partParam = urlParams.get('part');
@@ -480,6 +493,62 @@ function selectQuestion(q, itemEl) {
   if (window.innerWidth <= 768) {
     document.getElementById('practice-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+// Full mock test — Speaking step. Loads the one assigned Part 2 cue card
+// and drops the student straight into the recording UI, with the question
+// browser/filters hidden so they can't swap questions mid-exam.
+async function startSpeakingMockQuestion() {
+  _mockMode = true;
+  state.practiceInited = true; // keep initPractice()/loadTopics() from running
+  showScreen('screen-practice');
+  if (window.MockTest) window.MockTest.showBanner('speaking');
+
+  ['.practice-sidebar', '.mob-change-q-btn'].forEach(sel => {
+    const el = document.querySelector(sel);
+    if (el) el.style.display = 'none';
+  });
+  // .practice-layout is a 300px + 1fr grid — collapse the (now hidden)
+  // sidebar column so the practice area isn't shoved 300px to the right.
+  const layout = document.querySelector('.practice-layout');
+  if (layout) layout.style.gridTemplateColumns = '1fr';
+
+  try {
+    const mt = await window.MockTest.fetchCurrent();
+    const qid = mt && mt.bundle && mt.bundle.speakingQuestionId;
+    if (!qid) throw new Error('no assigned question');
+    const data = await apiFetch(`/api/speaking/questions?questionId=${encodeURIComponent(qid)}`);
+    const q = data.question || (data.questions && data.questions[0]);
+    if (!q) throw new Error('question not found');
+
+    setQuestion(q);
+    resetPractice();
+    document.getElementById('practice-empty').style.display   = 'none';
+    document.getElementById('practice-content').style.display = 'block';
+    if (q.part === 2) {
+      setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
+    }
+  } catch (e) {
+    console.error('startSpeakingMockQuestion:', e);
+    showToast('Không mở được câu Speaking của bài thi thử', 'error');
+    location.href = 'dashboard.html';
+  }
+}
+
+// After the mock's Speaking answer is graded, show a single "finish the
+// mock" affordance instead of leaving the student on the feedback screen
+// with no obvious next step.
+function _showSpeakingMockFinish(attemptId) {
+  if (document.getElementById('mock-finish-bar')) return;
+  const bar = document.createElement('div');
+  bar.id = 'mock-finish-bar';
+  bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:linear-gradient(135deg,#e53935,#c62828);padding:12px 16px;display:flex;justify-content:center;box-shadow:0 -4px 16px rgba(0,0,0,.25)';
+  const btn = document.createElement('button');
+  btn.textContent = 'Hoàn tất bài thi thử → xem kết quả';
+  btn.style.cssText = 'background:#fff;color:#c62828;border:none;border-radius:10px;padding:11px 22px;font:800 14px inherit;cursor:pointer';
+  btn.onclick = () => { btn.disabled = true; window.MockTest.advance('speaking', attemptId); };
+  bar.appendChild(btn);
+  document.body.appendChild(bar);
 }
 
 async function loadRandomQuestion() {
@@ -1197,6 +1266,13 @@ async function analyzeTranscript() {
     }
     renderFeedback(data.feedback || {}, previousBand);
     if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
+
+    // Full mock test: this was the last skill — offer to finish and see the
+    // combined result (advance() redirects to review-history.html?view=mock).
+    if (_mockMode && window.MockTest && window.MockTest.active()) {
+      toast('Đã chấm xong Speaking — đây là kỹ năng cuối của bài thi thử.', 'success');
+      _showSpeakingMockFinish(data.attemptId);
+    }
 
     // Best-effort: key the locally-captured recording (if any) to this
     // exact attempt so History can offer same-device playback later.

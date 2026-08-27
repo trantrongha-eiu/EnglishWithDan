@@ -41,6 +41,15 @@ async function getRandomQuestion({ topic, part }) {
   return SpeakingQuestion.findOne(filter).select(LISTING_EXCLUDED_FIELDS).skip(skip).lean();
 }
 
+// Single question by id — used by the full mock test's Speaking step, which
+// assigns one specific Part 2 cue card at start and must re-fetch exactly
+// that one when the student reaches the Speaking sitting. sampleAnswer/hints
+// stay excluded (same leak concern as the listing queries — the student is
+// about to attempt it).
+async function getQuestionById(id) {
+  return SpeakingQuestion.findOne({ _id: id, isActive: true }).select(LISTING_EXCLUDED_FIELDS).lean();
+}
+
 // userId is optional (some callers may not have an authenticated user), in
 // which case every question is simply reported as not-yet-attempted.
 async function listQuestions({ topic, part, userId }) {
@@ -386,7 +395,7 @@ async function getMaterialFilters() {
 }
 
 module.exports = {
-  listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
+  listTopics, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
   createPendingAttempt, finalizeAttempt, markAttemptError, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints,

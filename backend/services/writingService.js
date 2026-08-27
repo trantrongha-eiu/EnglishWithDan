@@ -29,12 +29,17 @@ function buildTask2Snapshot(t2) {
   return t2 ? { instructions: t2.instructions || '', prompt: t2.prompt || '' } : {};
 }
 
-async function startExam() {
+// examId (optional): the full mock test assigns one specific WritingExam at
+// start and passes it here so the Writing sitting opens exactly that exam
+// instead of "the newest one". Ignored (falls back to default) if the id
+// doesn't resolve to an active exam.
+async function startExam(examId) {
   const [task1, task2] = await Promise.all([randomDoc(WritingTask1), randomDoc(WritingTask2)]);
   if (!task1) return { status: 'no_task1' };
   if (!task2) return { status: 'no_task2' };
 
-  let exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 }).lean();
+  let exam = examId ? await WritingExam.findOne({ _id: examId, isActive: true }).lean() : null;
+  if (!exam) exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 }).lean();
   if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 }).lean();
   if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
 

@@ -24,7 +24,7 @@ function guard(handler) {
 }
 
 exports.startExam = guard(async (req, res) => {
-  const result = await writingService.startExam();
+  const result = await writingService.startExam(req.body?.examId);
   if (result.status === 'no_task1') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 1 nào. Vui lòng liên hệ giáo viên.' });
   if (result.status === 'no_task2') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 2 nào. Vui lòng liên hệ giáo viên.' });
   res.json({ success: true, exam: result.exam });

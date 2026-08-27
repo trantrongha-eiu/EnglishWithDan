@@ -16,8 +16,15 @@ exports.getRandom = catchAsync(async (req, res) => {
 });
 
 // ── GET /api/speaking/questions ──────────────────────────────
+// ?questionId=<id> → single question (used by the full mock test's Speaking
+// step, which assigned one specific Part 2 cue card at start).
 exports.getQuestions = catchAsync(async (req, res) => {
-  const { topic, part } = req.query;
+  const { topic, part, questionId } = req.query;
+  if (questionId) {
+    const question = await speakingService.getQuestionById(questionId);
+    if (!question) return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
+    return res.json({ success: true, questions: [question], question });
+  }
   const questions = await speakingService.listQuestions({ topic, part, userId: req.user._id });
   res.json({ success: true, questions });
 });

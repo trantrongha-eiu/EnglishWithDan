@@ -38,6 +38,7 @@
 <script src="/js/shared/review-required-popup.js?v=20260831"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
+<script src="/js/shared/mock-test.js?v=20260901"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -636,6 +637,12 @@
             startTime: null
         };
 
+        // Set when this page was opened as step 1 of a full mock test
+        // (?mock=<id>&skill=listening) — see the DOMContentLoaded handler and
+        // shared/mock-test.js. Changes /start's review-gate opt-out and makes
+        // the result screen hand off to the next skill instead of stopping.
+        let _mockMode = false;
+
         /* Highlight cache – preserve <span class="hl"> spans across part switches */
         const partHlCache = {};  // exam mode  : { partIdx: questionsPanelHTML }
         const partHlCacheRv = {};  // review mode: { partIdx: { transcript, questions } }
@@ -862,6 +869,24 @@
             setupHighlight();
             setupDictionaryDouble('questions-panel', 'listening', _ltDictGate);   // dict trong exam
             setupAudioEvents();
+
+            // Full mock test, step 1/4 (?mock=<id>&skill=listening): skip the
+            // list screen entirely and jump straight into the assigned test.
+            if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'listening') {
+                try {
+                    const mt = await window.MockTest.fetchCurrent();
+                    const tid = mt && mt.bundle && mt.bundle.listeningTestId;
+                    if (!tid) { toast('Không tìm thấy đề Listening của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
+                    window.MockTest.showBanner('listening');
+                    _mockMode = true;
+                    await startTest(tid);
+                } catch (e) {
+                    toast('Lỗi mở bài thi thử', 'error');
+                    location.href = 'dashboard.html';
+                }
+                return;
+            }
+
             await loadTestList();
             checkResumeExam();
 
@@ -1383,7 +1408,7 @@
             state.pendingTestId = testId;
             try {
                 clearExamStorage(); // clear any previous in-progress exam
-                const res = await fetch(`${API}/listening/tests/${testId}/start`, {
+                const res = await fetch(`${API}/listening/tests/${testId}/start${_mockMode ? '?purpose=mocktest' : ''}`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({})
                 });
@@ -2958,9 +2983,12 @@
         function _renderExamResult(r) {
             state.reviewResult = r;
             state.submitted = true;
-            // refresh test list để cập nhật trạng thái đã làm
-            _testListCache = null; // force a fresh fetch so the new "done" status isn't stale
-            loadTestList();
+            // refresh test list để cập nhật trạng thái đã làm — bỏ qua ở
+            // mock mode vì sắp điều hướng sang trang kỹ năng kế tiếp ngay.
+            if (!_mockMode) {
+                _testListCache = null; // force a fresh fetch so the new "done" status isn't stale
+                loadTestList();
+            }
             document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
             document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
             document.getElementById('r-correct').textContent = r.correctCount;
@@ -2987,6 +3015,14 @@
                 document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
             }
             showScreen('result');
+
+            // Full mock test: don't stop at the result screen — record this
+            // sub-attempt and move the student on to Reading (step 2/4).
+            if (_mockMode && window.MockTest && window.MockTest.active()) {
+                toast('Đã xong Listening — chuyển sang Reading…', 'success');
+                setTimeout(() => window.MockTest.advance('listening', state.attemptId), 1200);
+                return;
+            }
 
             // Priority 2C — only fires for a session launched via the
             // Today's Learning popup's "Start" button; normal practice is

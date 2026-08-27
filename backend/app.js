@@ -108,6 +108,7 @@ app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/listening',require('./routes/listening'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
+app.use('/api/mock-test', require('./routes/mockTest'));
 app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/weakness', require('./routes/weakness'));
 app.use('/api/recommendations', require('./routes/recommendation'));

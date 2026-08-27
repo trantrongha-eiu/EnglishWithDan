@@ -231,6 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
     loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
     // Goal-setup nudge (once per browser session, if no goal set yet) or
     // today's recommended study plan (once per calendar day, if a goal
     // exists and there are sessions scheduled today) — self-gated inside

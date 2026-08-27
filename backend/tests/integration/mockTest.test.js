@@ -1,0 +1,118 @@
+// Integration tests for the full 4-skill mock test HTTP surface
+// (routes/mockTest.js): premium gate on /start, the bundle/progress shape,
+// the advance → nav handoff, resume via /current, and the history list.
+const request = require('supertest');
+const app = require('../../app');
+const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
+const User = require('../../models/User');
+
+// A free student whose first-24h trial window has already closed — the state
+// requirePremium() actually blocks (a brand-new createStudent() is still
+// inside its trial and would pass).
+async function createExpiredFreeStudent() {
+  const u = await createStudent();
+  // createdAt is immutable under {timestamps:true}, so go through the raw
+  // driver to backdate it past the 24h trial window.
+  await User.collection.updateOne({ _id: u._id }, { $set: { createdAt: new Date('2020-01-01T00:00:00Z') } });
+  return u;
+}
+const {
+  createReadingTest, createListeningTest, createWritingExam, createSpeakingQuestion,
+  createListeningAttempt, createTestAttempt, createWritingAttempt, createSpeakingAttempt,
+} = require('../factories/contentFactory');
+
+function authed(user) {
+  const token = signTokenFor(user);
+  return {
+    get: (url) => request(app).get(url).set('Authorization', `Bearer ${token}`),
+    post: (url, body) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+  };
+}
+
+async function seedPools() {
+  await Promise.all([
+    createListeningTest(), createReadingTest(), createWritingExam(),
+    createSpeakingQuestion({ part: 2, cueCard: 'Describe a place.' }),
+  ]);
+}
+
+describe('POST /api/mock-test/start', () => {
+  test('403 for a free student past the trial window', async () => {
+    await seedPools();
+    const res = await authed(await createExpiredFreeStudent()).post('/api/mock-test/start');
+    expect(res.status).toBe(403);
+  });
+
+  test('201 for premium — returns a full bundle at progress "listening"', async () => {
+    await seedPools();
+    const res = await authed(await createPremiumStudent()).post('/api/mock-test/start');
+    expect(res.status).toBe(201);
+    expect(res.body.attempt.progress).toBe('listening');
+    expect(res.body.attempt.bundle.listeningTestId).toBeTruthy();
+    expect(res.body.attempt.bundle.speakingQuestionId).toBeTruthy();
+  });
+
+  test('400 when a skill pool is empty', async () => {
+    await createListeningTest(); await createReadingTest(); await createWritingExam();
+    const res = await authed(await createPremiumStudent()).post('/api/mock-test/start');
+    expect(res.status).toBe(400);
+  });
+
+  test('a second start resumes the same run', async () => {
+    await seedPools();
+    const api = authed(await createPremiumStudent());
+    const first = await api.post('/api/mock-test/start');
+    const second = await api.post('/api/mock-test/start');
+    expect(second.status).toBe(200);
+    expect(second.body.resumed).toBe(true);
+    expect(second.body.attempt._id).toBe(first.body.attempt._id);
+  });
+});
+
+describe('mock-test advance + current + history', () => {
+  test('advance walks listening → reading and hands off the next target', async () => {
+    await seedPools();
+    const user = await createPremiumStudent();
+    const api = authed(user);
+
+    const started = (await api.post('/api/mock-test/start')).body.attempt;
+    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+
+    const adv = await api.post(`/api/mock-test/${started._id}/advance`, { skill: 'listening', attemptId: la._id });
+    expect(adv.status).toBe(200);
+    expect(adv.body.attempt.progress).toBe('reading');
+    expect(adv.body.nav).toEqual({ nextSkill: 'reading', nextTargetId: started.bundle.readingTestId });
+
+    const cur = await api.get('/api/mock-test/current');
+    expect(cur.body.attempt.progress).toBe('reading');
+    expect(cur.body.attempt.steps.listening.band).toBe(6);
+  });
+
+  test('full run ends up in history with an overall band once all four are graded', async () => {
+    await seedPools();
+    const user = await createPremiumStudent();
+    const api = authed(user);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+
+    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    const ra = await createTestAttempt({ userId: user._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
+    const wa = await createWritingAttempt({ userId: user._id, extra: { grading: { overallBand: 6 } } });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
+    const sa = await createSpeakingAttempt({ userId: user._id, part: 2, extra: { aiFeedback: { overallBand: 6 } } });
+    const last = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
+
+    expect(last.body.nav).toEqual({ done: true });
+    expect(last.body.attempt.status).toBe('completed');
+    expect(last.body.attempt.overallBand).toBe(6);
+
+    const hist = await api.get('/api/mock-test/history');
+    expect(hist.status).toBe(200);
+    expect(hist.body.items).toHaveLength(1);
+    expect(hist.body.items[0].overallBand).toBe(6);
+
+    // No open run left.
+    expect((await api.get('/api/mock-test/current')).body.attempt).toBeNull();
+  });
+});

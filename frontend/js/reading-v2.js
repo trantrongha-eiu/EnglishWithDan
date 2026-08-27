@@ -56,6 +56,7 @@ const TESTS_CACHE_TTL_MS = 60000;
 let _rdGlobalSearchActive = false;
 let _rdGlobalSearchToken = 0;
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
+let _mockMode = false;       // true khi mở trang này là bước 2/4 của bài thi thử full (?mock=<id>&skill=reading) — xem shared/mock-test.js
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
 let _practiceStatusFilter = 'all'; // 'all' | 'done' | 'new'
@@ -353,6 +354,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       startPractice(e.state.passageId, e.state.category || 'passage1', true);
     }
   });
+
+  // Full mock test, step 2/4 (?mock=<id>&skill=reading): skip the list
+  // screen and start the assigned reading test straight away.
+  if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'reading') {
+    try {
+      const mt = await window.MockTest.fetchCurrent();
+      const tid = mt && mt.bundle && mt.bundle.readingTestId;
+      if (!tid) { showVocabToast('Không tìm thấy đề Reading của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
+      _mockMode = true;
+      window.MockTest.showBanner('reading');
+      state.testId = tid;
+      await _doStartExam(tid);
+    } catch (e) {
+      showVocabToast('Lỗi mở bài thi thử', 'error');
+      location.href = 'dashboard.html';
+    }
+    return;
+  }
 
   // Check URL params on load. Clean path-based deep links (/reading/test/:id,
   // /reading/review/:id — served via _redirects rewrites, see Phase 4
@@ -683,7 +702,7 @@ async function _doStartExam(testId) {
   const btn = document.querySelector(`#tcard-${testId} .btn-do-test`);
   if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
   try {
-    const res = await apiFetch('/api/reading/start', {
+    const res = await apiFetch(`/api/reading/start${_mockMode ? '?purpose=mocktest' : ''}`, {
       method: 'POST',
       body: JSON.stringify({ testId })
     });
@@ -2826,6 +2845,15 @@ function showResult(r) {
     document.exitFullscreen().then(() => showScreen('result')).catch(() => showScreen('result'));
   } else {
     showScreen('result');
+  }
+
+  // Full mock test: Reading is the last step of sitting 1 — record it and
+  // bounce the student to the dashboard "sitting break" (Writing + Speaking
+  // come later, in sitting 2).
+  if (_mockMode && window.MockTest && window.MockTest.active()) {
+    showVocabToast('Đã xong Listening + Reading — tạm nghỉ trước khi làm Writing & Speaking', 'success');
+    setTimeout(() => window.MockTest.advance('reading', state.attemptId || r.attemptId), 1400);
+    return;
   }
 
   // Priority 2C — only fires for a session actually launched via the

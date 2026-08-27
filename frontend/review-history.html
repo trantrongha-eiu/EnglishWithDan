@@ -31,6 +31,24 @@
     .rh-mistake-note { color: var(--text3, #9ca3af); font-style: italic; margin-top: 4px; }
     .rh-empty { text-align: center; padding: 60px 20px; color: var(--text3, #9ca3af); }
     .rh-pagination { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+
+    /* View toggle: My Mistakes | Thi thử Full test */
+    .rh-viewtabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .rh-viewtab { border: 1px solid var(--border); background: var(--surface); color: var(--text2, #374151); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .rh-viewtab.active { background: var(--brand, #e53935); color: #fff; border-color: var(--brand, #e53935); }
+
+    /* Full mock test history cards */
+    .mt-overall-row { margin: 6px 0 10px; }
+    .mt-overall { font-size: 15px; font-weight: 800; color: var(--text); }
+    .mt-overall.pending { font-size: 13px; font-weight: 600; color: var(--text3, #9ca3af); }
+    .mt-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .mt-chip { font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 9px; border: 1px solid var(--border); }
+    .mt-chip.done { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+    .mt-chip.pending { background: var(--surface); color: var(--text3, #9ca3af); }
+    [data-theme="dark"] .mt-chip.done { background: rgba(16,185,129,.12); color: #6ee7b7; border-color: rgba(16,185,129,.35); }
+    .mt-links { font-size: 12px; }
+    .mt-links a { color: var(--brand, #e53935); text-decoration: none; font-weight: 700; }
+    .mt-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -47,6 +65,11 @@
   <div class="rh-layout">
     <div class="rh-title">📝 My Mistakes</div>
     <div class="rh-subtitle">Lịch sử các câu sai đã review — dữ liệu tự động xóa sau 3 tháng, giống lịch sử làm bài.</div>
+
+    <div class="rh-viewtabs">
+      <button id="rhTabMistakes" class="rh-viewtab active">📝 My Mistakes</button>
+      <button id="rhTabMock" class="rh-viewtab">🎯 Thi thử Full test</button>
+    </div>
 
     <div class="rh-filters">
       <select id="rhFilterType">
@@ -66,6 +89,13 @@
       <button class="btn btn-ghost btn-sm" id="rhPrevBtn">← Trước</button>
       <span id="rhPageLabel" style="align-self:center;font-size:13px;color:var(--text2)"></span>
       <button class="btn btn-ghost btn-sm" id="rhNextBtn">Sau →</button>
+    </div>
+
+    <div id="mockList" style="display:none"></div>
+    <div class="rh-pagination" id="mockPagination" style="display:none">
+      <button class="btn btn-ghost btn-sm" id="mockPrevBtn">← Trước</button>
+      <span id="mockPageLabel" style="align-self:center;font-size:13px;color:var(--text2)"></span>
+      <button class="btn btn-ghost btn-sm" id="mockNextBtn">Sau →</button>
     </div>
   </div>
 
@@ -163,7 +193,85 @@
     document.getElementById('rhPrevBtn').addEventListener('click', () => { rhPage--; rhLoad(); });
     document.getElementById('rhNextBtn').addEventListener('click', () => { rhPage++; rhLoad(); });
 
-    rhLoad();
+    /* ── Thi thử Full test (mock-test) history view ───────────────────── */
+    let mtPage = 1;
+    const MT_SKILLS = [['listening', 'Listening'], ['reading', 'Reading'], ['writing', 'Writing'], ['speaking', 'Speaking']];
+
+    function setView(v) {
+      const isMock = v === 'mock';
+      document.getElementById('rhTabMistakes').classList.toggle('active', !isMock);
+      document.getElementById('rhTabMock').classList.toggle('active', isMock);
+      document.querySelector('.rh-filters').style.display = isMock ? 'none' : 'flex';
+      document.getElementById('rhList').style.display = isMock ? 'none' : 'block';
+      document.getElementById('rhPagination').style.display = 'none';
+      document.getElementById('mockList').style.display = isMock ? 'block' : 'none';
+      document.getElementById('mockPagination').style.display = 'none';
+      const url = new URL(location.href);
+      if (isMock) url.searchParams.set('view', 'mock'); else url.searchParams.delete('view');
+      history.replaceState(null, '', url);
+      if (isMock) mtLoad(); else rhLoad();
+    }
+    document.getElementById('rhTabMistakes').addEventListener('click', () => setView('mistakes'));
+    document.getElementById('rhTabMock').addEventListener('click', () => setView('mock'));
+
+    async function mtLoad() {
+      const listEl = document.getElementById('mockList');
+      listEl.innerHTML = '<div class="rh-empty">Đang tải...</div>';
+      try {
+        const res = await fetch(`${API}/mock-test/history?page=${mtPage}&limit=10`, { headers: headers() });
+        const data = await window.ApiClient.handleResponse(res);
+        mtRenderList(data.items || []);
+        mtRenderPagination(data.total, data.page, data.limit);
+      } catch (e) {
+        listEl.innerHTML = '<div class="rh-empty">Lỗi tải lịch sử thi thử.</div>';
+      }
+    }
+
+    function mtChip(label, step) {
+      const b = step && step.band != null ? Number(step.band).toFixed(1) : null;
+      return `<span class="mt-chip ${b != null ? 'done' : 'pending'}">${label}: ${b != null ? b : 'chờ chấm'}</span>`;
+    }
+
+    function mtRenderList(items) {
+      const listEl = document.getElementById('mockList');
+      if (!items.length) {
+        listEl.innerHTML = '<div class="rh-empty">Bạn chưa hoàn thành bài thi thử full nào.</div>';
+        return;
+      }
+      listEl.innerHTML = items.map(a => {
+        const d = new Date(a.createdAt).toLocaleString('vi-VN');
+        const overall = a.overallBand != null
+          ? `<span class="mt-overall">Band tổng ${Number(a.overallBand).toFixed(1)}</span>`
+          : `<span class="mt-overall pending">${a.status === 'in-progress' ? 'Đang làm dở' : 'Đang chờ chấm Writing / Speaking'}</span>`;
+        const chips = MT_SKILLS.map(([s, l]) => mtChip(l, a.steps[s])).join('');
+        const links = [];
+        if (a.steps.reading && a.steps.reading.attemptId) links.push(`<a href="reading.html?review=${a.steps.reading.attemptId}">Xem lại Reading</a>`);
+        links.push(`<a href="speaking.html?tab=history">Lịch sử Speaking</a>`);
+        links.push(`<a href="writing.html">Lịch sử Writing</a>`);
+        if (a.status === 'in-progress') links.unshift(`<a href="dashboard.html">Tiếp tục thi thử</a>`);
+        return `<div class="card rh-item"><div class="card-body">
+            <div class="rh-item-meta"><span class="badge badge-primary">🎯 Thi thử Full 4 kỹ năng</span><span>${d}</span></div>
+            <div class="mt-overall-row">${overall}</div>
+            <div class="mt-chips">${chips}</div>
+            <div class="mt-links">${links.join(' · ')}</div>
+          </div></div>`;
+      }).join('');
+    }
+
+    function mtRenderPagination(total, page, limit) {
+      const pag = document.getElementById('mockPagination');
+      const totalPages = Math.max(1, Math.ceil(total / limit));
+      if (totalPages <= 1) { pag.style.display = 'none'; return; }
+      pag.style.display = 'flex';
+      document.getElementById('mockPageLabel').textContent = `Trang ${page}/${totalPages}`;
+      document.getElementById('mockPrevBtn').disabled = page <= 1;
+      document.getElementById('mockNextBtn').disabled = page >= totalPages;
+    }
+    document.getElementById('mockPrevBtn').addEventListener('click', () => { mtPage--; mtLoad(); });
+    document.getElementById('mockNextBtn').addEventListener('click', () => { mtPage++; mtLoad(); });
+
+    if (new URLSearchParams(location.search).get('view') === 'mock') setView('mock');
+    else rhLoad();
   </script>
 </body>
 </html>

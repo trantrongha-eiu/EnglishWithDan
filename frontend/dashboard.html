@@ -87,25 +87,42 @@
             <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
           </div>
 
-          <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
-          <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
-            <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-            <div class="todays-lesson-info">
-              <div class="todays-lesson-label-row">
-                <div class="todays-lesson-label">Today's Lesson</div>
-                <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
-                  <i class="fas fa-exchange-alt"></i> Đổi bài
-                </button>
-                <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
+          <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
+          <div class="home-dual-row">
+            <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
+            <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
+              <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+              <div class="todays-lesson-info">
+                <div class="todays-lesson-label-row">
+                  <div class="todays-lesson-label">Today's Lesson</div>
+                  <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
+                    <i class="fas fa-exchange-alt"></i> Đổi bài
+                  </button>
+                  <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
+                </div>
+                <div class="todays-lesson-title" id="todays-lesson-title">—</div>
+                <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
+                <div class="todays-lesson-progress-row">
+                  <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
+                  <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
+                </div>
               </div>
-              <div class="todays-lesson-title" id="todays-lesson-title">—</div>
-              <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
-              <div class="todays-lesson-progress-row">
-                <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
-                <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
+              <button class="btn btn-primary" id="todays-lesson-btn">Start</button>
+            </div>
+
+            <!-- IELTS Full Mock Test — random 4-skill exam, 2 sittings (js/dashboard-mocktest.js) -->
+            <div class="mocktest-card" id="mocktest-card" style="display:none">
+              <div class="mocktest-icon"><i class="fas fa-graduation-cap"></i></div>
+              <div class="mocktest-info">
+                <div class="mocktest-label">IELTS Full Mock Test</div>
+                <div class="mocktest-title" id="mocktest-title">Thi thử 4 kỹ năng</div>
+                <div class="mocktest-meta" id="mocktest-meta">Đề ngẫu nhiên · Listening → Reading → Writing → Speaking</div>
+              </div>
+              <div class="mocktest-actions">
+                <button class="btn btn-primary" id="mocktest-btn">Bắt đầu thi thử</button>
+                <a class="mocktest-history-link" href="review-history.html?view=mock">Lịch sử thi thử</a>
               </div>
             </div>
-            <button class="btn btn-primary" id="todays-lesson-btn">Start</button>
           </div>
 
           <!-- "My Vocabulary" — aggregate stats across ALL of the student's books
@@ -1276,6 +1293,8 @@
 <script src="js/dashboard-audio.js?v=20260831"></script>
 <script src="js/dashboard-lesson.js?v=20260831"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
-<script src="js/dashboard.js?v=20260831"></script>
+<script src="js/shared/mock-test.js?v=20260901"></script>
+<script src="js/dashboard-mocktest.js?v=20260901"></script>
+<script src="js/dashboard.js?v=20260832"></script>
 </body>
 </html>
