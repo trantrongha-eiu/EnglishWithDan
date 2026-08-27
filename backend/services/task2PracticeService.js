@@ -13,6 +13,12 @@ const { gradeT2Question } = require('./geminiService');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
 
 const AI_GRADED_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
+// If Gemini hasn't graded a sentence within this long, stop waiting and use
+// the keyword fallback instead — a student shouldn't sit staring at a
+// spinner because the AI is slow/overloaded. The Gemini call itself isn't
+// aborted (no signal is threaded through gradeT2Question); its late result
+// is just ignored.
+const AI_GRADE_TIMEOUT_MS = 5000;
 const AUTO_DERIVE_TYPES = new Set(['translation', 'rearrange', 'error_correction', 'paraphrase']);
 // Practice-mode types that show a "word count + first-letter" hint under the
 // question text. Scoped to short free-text sentence answers, not the
@@ -198,17 +204,25 @@ async function checkAnswer(topicId, questionId, userAnswer, opts = {}) {
   // it — go straight to the keyword fallback below instead of calling
   // Gemini at all, same fallback used when Gemini itself errors out.
   if (!opts.skipAI && AI_GRADED_TYPES.has(q.type) && trimmed.length >= 3) {
+    let timer;
     try {
-      result = await gradeT2Question({
-        type: q.type,
-        questionText: q.questionText,
-        modelAnswer: q.modelAnswer || q.correctAnswer || '',
-        userAnswer: trimmed
-      });
+      result = await Promise.race([
+        gradeT2Question({
+          type: q.type,
+          questionText: q.questionText,
+          modelAnswer: q.modelAnswer || q.correctAnswer || '',
+          userAnswer: trimmed
+        }),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error(`AI grading timed out (>${AI_GRADE_TIMEOUT_MS}ms)`)), AI_GRADE_TIMEOUT_MS);
+        })
+      ]);
       aiGraded = true;
     } catch (aiErr) {
-      console.warn('[Task2/check] Gemini failed, falling back to keyword:', aiErr.message);
+      console.warn('[Task2/check] AI grading unavailable, keyword fallback:', aiErr.message);
       result = autoGrade(q, trimmed);
+    } finally {
+      clearTimeout(timer);
     }
   } else {
     result = autoGrade(q, trimmed);
