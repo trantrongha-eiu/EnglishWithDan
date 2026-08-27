@@ -14,6 +14,7 @@ process.env.EMAIL_USER = '';
 process.env.EMAIL_PASS = '';
 
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
 const app = require('../../app');
 const User = require('../../models/User');
 const { createStudent, createUser, signTokenFor, unique } = require('../factories/userFactory');
@@ -155,6 +156,50 @@ describe('GET /api/auth/me', () => {
     expect(res.status).toBe(200);
     expect(res.body.user.id).toBe(String(user._id));
     expect(res.body.user.username).toBe(user.username);
+  });
+});
+
+// BUG-023: logout must revoke the session server-side, not just clear the
+// client's localStorage — otherwise a "logged out" token stays valid for
+// up to 7 more days against every protected route.
+describe('POST /api/auth/logout', () => {
+  test('requires authentication', async () => {
+    const res = await request(app).post('/api/auth/logout');
+    expect(res.status).toBe(401);
+  });
+
+  // Tokens are signed with an explicit iat a few seconds in the past —
+  // middleware/auth.js deliberately treats a token issued in the SAME
+  // second as the revocation event as still valid (see its comment: this
+  // is what lets change-password reissue a working token for the current
+  // request instant), which real login→logout timing is never close
+  // enough to hit, but a synchronous test signing the token immediately
+  // before logging out could.
+  function tokenIssuedSecondsAgo(user, seconds) {
+    return jwt.sign({ id: user._id, iat: Math.floor(Date.now() / 1000) - seconds }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  }
+
+  test('invalidates the token used to call it — a subsequent request with the same token 401s', async () => {
+    const user = await createStudent({ username: unique('logoutuser') });
+    const token = tokenIssuedSecondsAgo(user, 5);
+
+    const logoutRes = await request(app).post('/api/auth/logout').set('Authorization', `Bearer ${token}`);
+    expect(logoutRes.status).toBe(200);
+    expect(logoutRes.body.success).toBe(true);
+
+    const meRes = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${token}`);
+    expect(meRes.status).toBe(401);
+  });
+
+  test('invalidates every token for that user, not just the one used to log out (all-devices revocation)', async () => {
+    const user = await createStudent({ username: unique('multidevice') });
+    const phoneToken = tokenIssuedSecondsAgo(user, 5);
+    const laptopToken = tokenIssuedSecondsAgo(user, 3);
+
+    await request(app).post('/api/auth/logout').set('Authorization', `Bearer ${phoneToken}`);
+
+    const laptopRes = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${laptopToken}`);
+    expect(laptopRes.status).toBe(401);
   });
 });
 

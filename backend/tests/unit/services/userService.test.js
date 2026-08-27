@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const userService = require('../../../services/userService');
 const User = require('../../../models/User');
 const TestAttempt = require('../../../models/TestAttempt');
@@ -353,5 +355,50 @@ describe('userService.getActivityHeatmap', () => {
     const byDate = Object.fromEntries(activity.map(a => [a.date, a.count]));
 
     expect(byDate['2021-05-01']).toBe(6); // 1 writing attempt + 5 words studied
+  });
+});
+
+// BUG-023: changing your password must revoke prior tokens (all devices)
+// but keep the current session working via a freshly-issued token.
+describe('userService.changePassword', () => {
+  test('correct currentPassword: updates the hash, revokes prior tokens, returns a fresh verifiable token', async () => {
+    const user = await createStudent({ rawPassword: 'OldPassword1!' });
+    const oldToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    const result = await userService.changePassword(user._id, 'OldPassword1!', 'NewPassword2!');
+
+    expect(result.status).toBe('changed');
+    expect(typeof result.token).toBe('string');
+    const decoded = jwt.verify(result.token, process.env.JWT_SECRET);
+    expect(decoded.id.toString()).toBe(user._id.toString());
+
+    const userAfter = await User.findById(user._id).select('+password');
+    const newHashValid = await bcrypt.compare('NewPassword2!', userAfter.password);
+    expect(newHashValid).toBe(true);
+    expect(userAfter.tokenValidAfter).toBeTruthy();
+    const oldDecoded = jwt.verify(oldToken, process.env.JWT_SECRET);
+    expect(oldDecoded.iat).toBeLessThanOrEqual(Math.floor(userAfter.tokenValidAfter.getTime() / 1000));
+  });
+
+  test('wrong currentPassword is rejected and does not touch tokenValidAfter', async () => {
+    const user = await createStudent({ rawPassword: 'OldPassword1!' });
+    const result = await userService.changePassword(user._id, 'TotallyWrong!', 'NewPassword2!');
+    expect(result.status).toBe('invalid');
+    expect(result.token).toBeUndefined();
+
+    const userAfter = await User.findById(user._id);
+    expect(userAfter.tokenValidAfter).toBeFalsy();
+  });
+
+  test('social account with no password set: sets one, revokes prior tokens, returns a fresh token', async () => {
+    const user = await createStudent({ password: '' });
+    const result = await userService.changePassword(user._id, '', 'BrandNewPassword1!');
+
+    expect(result.status).toBe('set');
+    expect(typeof result.token).toBe('string');
+    jwt.verify(result.token, process.env.JWT_SECRET); // throws if invalid
+
+    const userAfter = await User.findById(user._id);
+    expect(userAfter.tokenValidAfter).toBeTruthy();
   });
 });

@@ -9,6 +9,7 @@ const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
 const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
+const { signToken } = require('./authService');
 const cloudinaryService = require('./cloudinaryService');
 const { effectiveStreak } = require('../utils/streak');
 const { todayVNDate } = require('./streakBonusService');
@@ -83,16 +84,23 @@ async function changePassword(userId, currentPassword, newPassword) {
   // If social account with no password
   if (!user.password && !currentPassword) {
     user.password = await bcrypt.hash(newPassword, 10);
+    // BUG-023: revoke every token issued before now (all devices), then
+    // hand back a freshly-signed one so the session that just made this
+    // change keeps working without an extra forced re-login — see
+    // middleware/auth.js's same-second truncation for why signing the
+    // fresh token right after this is safe.
+    user.tokenValidAfter = new Date();
     await user.save();
-    return { status: 'set' };
+    return { status: 'set', token: signToken(user._id) };
   }
 
   const valid = await bcrypt.compare(currentPassword, user.password);
   if (!valid) return { status: 'invalid' };
 
   user.password = await bcrypt.hash(newPassword, 10);
+  user.tokenValidAfter = new Date();
   await user.save();
-  return { status: 'changed' };
+  return { status: 'changed', token: signToken(user._id) };
 }
 
 async function uploadAvatar(userId, imageBase64) {

@@ -119,6 +119,52 @@ describe('logout', () => {
       expect(loc.href).toBe('/login.html?reason=inactive');
     });
   });
+
+  // BUG-023: logout must also tell the server to revoke the session
+  // (see backend/models/User.js's tokenValidAfter) — without this, a
+  // "logged out" token stays fully valid against the API for up to 7 more days.
+  describe('server-side revocation call', () => {
+    let originalFetch;
+    beforeEach(() => { originalFetch = global.fetch; });
+    afterEach(() => { global.fetch = originalFetch; });
+
+    test('POSTs to <API>/auth/logout with the current token, keepalive set', () => {
+      const fetchMock = jest.fn().mockResolvedValue({});
+      global.fetch = fetchMock;
+      window.AuthService.setToken('my-token');
+
+      withMockLocation(() => { window.AuthService.logout(); });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        window.AuthService.API + '/auth/logout',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { Authorization: 'Bearer my-token' },
+          keepalive: true,
+        })
+      );
+    });
+
+    test('does not call fetch when there is no token to revoke', () => {
+      const fetchMock = jest.fn();
+      global.fetch = fetchMock;
+
+      withMockLocation(() => { window.AuthService.logout(); });
+
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    test('still clears the session and navigates even if fetch throws synchronously', () => {
+      global.fetch = () => { throw new Error('network down'); };
+      window.AuthService.setToken('my-token');
+
+      withMockLocation((loc) => {
+        window.AuthService.logout();
+        expect(loc.href).toBe('/login.html');
+      });
+      expect(localStorage.getItem('token')).toBeNull();
+    });
+  });
 });
 
 describe('isLoggedIn', () => {

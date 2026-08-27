@@ -150,6 +150,23 @@ describe('authService password reset OTP flow', () => {
     expect(userAfter.resetOTPAttempts).toBe(0);
   });
 
+  // BUG-023: a password reset must revoke tokens issued before it — the
+  // scenario is literally "someone may have had access to this account".
+  test('resetPassword sets tokenValidAfter, invalidating tokens issued before the reset', async () => {
+    const email = `${unique('otprevoke')}@test.local`;
+    const user = await createStudent({ email, rawPassword: 'OldPassword1!' });
+    const oldToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    const otp = await requestAndGetOtp(email);
+    const verifyResult = await authService.verifyOTP(email, otp);
+    await authService.resetPassword(verifyResult.resetToken, 'BrandNewPassword1!');
+
+    const userAfter = await User.findOne({ email });
+    expect(userAfter.tokenValidAfter).toBeTruthy();
+    const decoded = jwt.verify(oldToken, process.env.JWT_SECRET);
+    expect(decoded.iat).toBeLessThan(Math.floor(userAfter.tokenValidAfter.getTime() / 1000) + 1);
+  });
+
   test('requestPasswordReset for a nonexistent email returns no_such_user', async () => {
     const result = await authService.requestPasswordReset(`${unique('ghost')}@test.local`);
     expect(result.status).toBe('no_such_user');
@@ -343,5 +360,23 @@ describe('authService.userPayload / signToken', () => {
     const token = authService.signToken('someUserId123');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded.id).toBe('someUserId123');
+  });
+});
+
+// BUG-023: JWT session revocation on explicit logout.
+describe('authService.logoutAllSessions', () => {
+  test('sets tokenValidAfter to now, invalidating any token issued before this call', async () => {
+    const user = await createStudent();
+    const oldToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    expect(user.tokenValidAfter).toBeFalsy();
+
+    await authService.logoutAllSessions(user._id);
+
+    const userAfter = await User.findById(user._id);
+    expect(userAfter.tokenValidAfter).toBeTruthy();
+    const decoded = jwt.verify(oldToken, process.env.JWT_SECRET);
+    // The pre-existing token's iat must now be at or before tokenValidAfter
+    // (seconds precision) — i.e. middleware/auth.js would reject it.
+    expect(decoded.iat).toBeLessThanOrEqual(Math.floor(userAfter.tokenValidAfter.getTime() / 1000));
   });
 });

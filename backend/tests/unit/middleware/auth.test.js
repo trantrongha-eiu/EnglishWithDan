@@ -150,4 +150,67 @@ describe('auth middleware', () => {
     expect(next).toHaveBeenCalledTimes(1);
     expect(req.user.plan).toBe('premium');
   });
+
+  // BUG-023: JWT session revocation (logout / password change / password
+  // reset all set User.tokenValidAfter — see the middleware's own comment
+  // for why the comparison truncates to whole seconds).
+  describe('tokenValidAfter revocation', () => {
+    test('a token issued before tokenValidAfter is rejected 401, next not called', async () => {
+      const user = await createStudent();
+      const nowSec = Math.floor(Date.now() / 1000);
+      const oldToken = jwt.sign({ id: user._id, iat: nowSec - 60 }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      await User.updateOne({ _id: user._id }, { tokenValidAfter: new Date() });
+
+      const req = makeReq(oldToken);
+      const res = makeRes();
+      const next = jest.fn();
+      await authMiddleware(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ success: false, message: expect.stringContaining('đăng nhập lại') })
+      );
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    test('a token issued after tokenValidAfter is accepted', async () => {
+      const user = await createStudent();
+      await User.updateOne({ _id: user._id }, { tokenValidAfter: new Date(Date.now() - 60_000) });
+      const token = signTokenFor(user); // iat = now, well after tokenValidAfter
+
+      const req = makeReq(token);
+      const res = makeRes();
+      const next = jest.fn();
+      await authMiddleware(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(res.status).not.toHaveBeenCalled();
+    });
+
+    test('a user with no tokenValidAfter set (default null) accepts any valid token — backward compatible', async () => {
+      const user = await createStudent();
+      const oldToken = jwt.sign({ id: user._id, iat: Math.floor(Date.now() / 1000) - 100000 }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+      const req = makeReq(oldToken);
+      const res = makeRes();
+      const next = jest.fn();
+      await authMiddleware(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+    });
+
+    test('a token issued in the same second as tokenValidAfter is NOT rejected (same-second reissue safety)', async () => {
+      const user = await createStudent();
+      const nowSec = Math.floor(Date.now() / 1000);
+      await User.updateOne({ _id: user._id }, { tokenValidAfter: new Date(nowSec * 1000) });
+      const sameSecondToken = jwt.sign({ id: user._id, iat: nowSec }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+      const req = makeReq(sameSecondToken);
+      const res = makeRes();
+      const next = jest.fn();
+      await authMiddleware(req, res, next);
+
+      expect(next).toHaveBeenCalledTimes(1);
+    });
+  });
 });

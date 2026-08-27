@@ -136,6 +136,24 @@
   }
 
   function logout(reason) {
+    // BUG-023: tell the server to invalidate this user's tokens (all
+    // devices — see backend/models/User.js's tokenValidAfter) before the
+    // page navigates away. Best-effort: `keepalive` asks the browser to
+    // still deliver the request even though navigation starts immediately
+    // after, but if it's ever lost (offline, browser doesn't support it)
+    // this degrades to exactly today's behavior — local session cleared,
+    // old token still valid until natural expiry — never a hard failure
+    // that blocks logout itself.
+    var token = getToken();
+    if (token) {
+      try {
+        fetch(AuthService.API + '/auth/logout', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + token },
+          keepalive: true
+        }).catch(function () {});
+      } catch (e) { /* fetch/keepalive unsupported — ignore, see comment above */ }
+    }
     clearSession();
     // Root-relative (leading "/") — some pages are reached through a
     // nested clean URL (e.g. /writing/templates) where the browser's

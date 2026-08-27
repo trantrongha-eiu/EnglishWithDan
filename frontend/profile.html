@@ -917,6 +917,11 @@
       try {
         const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify({ currentPassword, newPassword }) });
         const data = await window.ApiClient.handleResponse(res);
+        // BUG-023: changing your password revokes every token issued
+        // before now, including the one this very request used — the
+        // server hands back a freshly-signed one so this tab's own
+        // session keeps working instead of 401ing on its next request.
+        if (data.token && window.AuthService) window.AuthService.setToken(data.token);
         msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
         msgEl.textContent = data.message || 'Đổi mật khẩu thành công';
         setTimeout(() => { msgEl.style.display = 'none'; }, 4000);

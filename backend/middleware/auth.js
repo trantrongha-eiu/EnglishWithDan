@@ -17,6 +17,19 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại' });
     }
 
+    // ── BUG-023: reject a token issued before the user's last revocation
+    // event (logout / password change / password reset) ──
+    // Compared in whole seconds, matching JWT `iat`'s native precision
+    // (seconds since epoch) — user.tokenValidAfter has millisecond
+    // precision, so truncating it down avoids rejecting a token minted in
+    // the same second a revocation was recorded (e.g. change-password
+    // immediately reissues a fresh token for the current session; without
+    // this truncation a same-second fresh token could be born already
+    // "revoked").
+    if (user.tokenValidAfter && decoded.iat < Math.floor(user.tokenValidAfter.getTime() / 1000)) {
+      return res.status(401).json({ success: false, message: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại' });
+    }
+
     // ── Chặn token cũ nếu tài khoản đã bị cấm sau khi login ──
     if (user.isBanned) {
       // Worth a security-audit log line: a still-valid token was rejected

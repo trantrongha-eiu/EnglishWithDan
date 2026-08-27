@@ -37,9 +37,13 @@ exports.changePassword = catchAsync(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không đúng' });
   }
   if (result.status === 'set') {
-    return res.json({ success: true, message: 'Đã đặt mật khẩu thành công' });
+    // BUG-023: a fresh token, since changePassword() just revoked every
+    // token issued before now (including the one used to make this very
+    // request) — without this the caller's own session would 401 on its
+    // next request.
+    return res.json({ success: true, message: 'Đã đặt mật khẩu thành công', token: result.token });
   }
-  res.json({ success: true, message: 'Đã đổi mật khẩu thành công' });
+  res.json({ success: true, message: 'Đã đổi mật khẩu thành công', token: result.token });
 });
 
 // ── POST /api/user/avatar ────────────────────────────────────

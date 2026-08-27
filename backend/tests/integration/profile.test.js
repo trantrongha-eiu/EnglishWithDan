@@ -104,3 +104,68 @@ describe('PUT /api/user/profile', () => {
     expect(new Date(res.body.user.targetExamDate).toISOString().slice(0, 10)).toBe('2099-06-15');
   });
 });
+
+// BUG-023: changing your password revokes every token issued before the
+// change, but hands back a fresh one so the request that just made the
+// change doesn't itself get logged out.
+describe('PUT /api/user/change-password', () => {
+  test('requires authentication', async () => {
+    const res = await request(app).put('/api/user/change-password').send({ currentPassword: 'x', newPassword: 'NewPassword1!' });
+    expect(res.status).toBe(401);
+  });
+
+  test('wrong currentPassword -> 400, no token issued', async () => {
+    const user = await createStudent({ rawPassword: 'OldPassword1!' });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .put('/api/user/change-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ currentPassword: 'WrongOne!', newPassword: 'NewPassword1!' });
+
+    expect(res.status).toBe(400);
+    expect(res.body.token).toBeUndefined();
+  });
+
+  test('correct currentPassword: 200 with a fresh token that still works for this same session', async () => {
+    const user = await createStudent({ rawPassword: 'OldPassword1!' });
+    const currentToken = signTokenFor(user);
+
+    const res = await request(app)
+      .put('/api/user/change-password')
+      .set('Authorization', `Bearer ${currentToken}`)
+      .send({ currentPassword: 'OldPassword1!', newPassword: 'NewPassword1!' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(typeof res.body.token).toBe('string');
+
+    // The fresh token keeps working — this is the whole point of reissuing
+    // one: without it, the request that just changed the password would
+    // immediately 401 on its own next call.
+    const meWithNewToken = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${res.body.token}`);
+    expect(meWithNewToken.status).toBe(200);
+  });
+
+  // A genuinely older session (signed well before the change, unlike the
+  // request's own token above which is deliberately NOT penalized for
+  // landing in the same second — see middleware/auth.js's comment) must
+  // be revoked.
+  test('an older token from a different session is revoked by the change', async () => {
+    const jwt = require('jsonwebtoken');
+    const user = await createStudent({ rawPassword: 'OldPassword1!' });
+    const otherDeviceToken = jwt.sign(
+      { id: user._id, iat: Math.floor(Date.now() / 1000) - 5 },
+      process.env.JWT_SECRET, { expiresIn: '7d' }
+    );
+    const currentToken = signTokenFor(user);
+
+    const res = await request(app)
+      .put('/api/user/change-password')
+      .set('Authorization', `Bearer ${currentToken}`)
+      .send({ currentPassword: 'OldPassword1!', newPassword: 'NewPassword1!' });
+    expect(res.status).toBe(200);
+
+    const meWithOldDevice = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${otherDeviceToken}`);
+    expect(meWithOldDevice.status).toBe(401);
+  });
+});

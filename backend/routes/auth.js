@@ -43,6 +43,7 @@ router.post('/verify-otp',      verifyOtpLimiter,       authCtrl.verifyOTP);
 router.post('/reset-password',  resetPasswordLimiter,   authCtrl.resetPassword);
 
 router.get('/me', auth, authCtrl.me);
+router.post('/logout', auth, authCtrl.logout);
 
 // ── Google OAuth (requires passport-google-oauth20 to be installed) ──
 // Enabled only when GOOGLE_CLIENT_ID is configured in .env

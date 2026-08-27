@@ -221,6 +221,14 @@ async function resetPassword(resetToken, newPassword) {
   user.resetOTP = '';
   user.resetOTPExpires = null;
   user.resetOTPAttempts = 0;
+  // BUG-023: a password reset is exactly the "someone may have had access
+  // to my account" scenario — invalidate any token issued before this
+  // moment (including one an attacker used to get here, and the user's
+  // own other devices). No fresh token is issued here: the frontend
+  // already leaves the user on the login page after a successful reset,
+  // never carrying a session forward (see login.html's forgot-password
+  // modal), so there's nothing to keep alive.
+  user.tokenValidAfter = new Date();
   await user.save();
   return { status: 'ok' };
 }
@@ -233,7 +241,16 @@ function completeGoogleLogin(user) {
   return { token: signToken(user._id), user: userPayload(user) };
 }
 
+// BUG-023 — called on explicit logout. Invalidates every token issued for
+// this user up to this instant, on every device (see User.tokenValidAfter
+// / middleware/auth.js's revocation check) — there's no per-device session
+// tracking in this app, so "log out" means "this user, everywhere."
+async function logoutAllSessions(userId) {
+  await User.updateOne({ _id: userId }, { tokenValidAfter: new Date() });
+}
+
 module.exports = {
   signToken, userPayload, findOrCreateGoogleUser,
   registerUser, loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
+  logoutAllSessions,
 };

@@ -26,6 +26,17 @@ const UserSchema = new mongoose.Schema({
   },
   isBanned:       { type: Boolean, default: false },
   banReason:      { type: String, default: '' },
+  // BUG-023 — JWT session revocation. Compared against a token's `iat`
+  // claim in middleware/auth.js: any token issued strictly before this
+  // timestamp is rejected even though it's still cryptographically valid
+  // and unexpired. null (the default) means "nothing has ever revoked
+  // this user's tokens" — every existing token stays valid, so this is
+  // fully backward-compatible with every session issued before this field
+  // existed. Set on logout, password change, and password reset — all
+  // sessions/devices at once (no per-device session tracking exists in
+  // this app), matching how a password change already invalidates
+  // sessions everywhere in most real-world apps.
+  tokenValidAfter: { type: Date, default: null },
   // Social auth
   googleId:       { type: String, default: '' },
   facebookId:     { type: String, default: '' },

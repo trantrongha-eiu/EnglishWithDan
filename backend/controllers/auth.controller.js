@@ -170,6 +170,21 @@ exports.me = (req, res) => {
   res.json({ success: true, user: authService.userPayload(req.user) });
 };
 
+// ── POST /api/auth/logout ────────────────────────────────────
+// BUG-023: previously logout was purely client-side (clear localStorage),
+// so a token stayed valid against the API for its full remaining 7-day
+// life regardless of "logout". This invalidates every token issued for
+// this user up to now, on every device — see authService.logoutAllSessions.
+exports.logout = async (req, res) => {
+  try {
+    await authService.logoutAllSessions(req.user._id);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[Auth] logout error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // ── GET /api/auth/google (called by the client, kicks off OAuth) ────
 exports.startGoogleAuth = (req, res, next) => {
   const passport = require('passport');
