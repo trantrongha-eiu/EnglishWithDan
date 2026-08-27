@@ -78,6 +78,17 @@ const AttemptReviewSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 AttemptReviewSchema.index({ userId: 1, status: 1, attemptType: 1 });
+// BUG-029: reviewService.getReviewHistory() (backs review-history.html)
+// filters on {userId, status} — often without attemptType, since that's an
+// optional query param — and always sorts by completedAt with skip/limit
+// pagination. The index above doesn't cover that sort (attemptType is its
+// 3rd field, not completedAt), so later pages forced an in-memory sort
+// after only a partial index match. Kept as a separate index rather than
+// changing the one above — both shapes are real and independently hit
+// (the one above also backs getPendingReviews' {userId,status,attemptType:
+// {$in:...}} check, which runs on nearly every page load for the review
+// gate itself).
+AttemptReviewSchema.index({ userId: 1, status: 1, completedAt: -1 });
 // Idempotency guard — createReviewIfNeeded() upserts on this key so a
 // retried/duplicate submit call can never create two review docs for the
 // same attempt.

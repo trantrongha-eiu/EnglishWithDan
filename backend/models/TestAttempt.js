@@ -50,6 +50,15 @@ const TestAttemptSchema = new mongoose.Schema({
 // ─── Indexes ───────────────────────────────────────────────────────────────
 TestAttemptSchema.index({ status: 1, endTime: -1 });
 TestAttemptSchema.index({ userId: 1, status: 1 });
+// BUG-029: every sibling attempt model (ListeningAttempt, WritingAttempt,
+// SpeakingAttempt, etc.) has a {userId, <dateField>} index backing its own
+// "my history, newest first" query — this one didn't, even though
+// readingService.getHistory()/listAdminAttempts() run exactly that shape
+// (find({userId,status}).sort({endTime:-1})) on every reading-history page
+// view, and weaknessService (the recommendation engine) reads from the
+// same collection. Without this, that sort ran in-memory after an
+// index-only-partial-match instead of being satisfied directly by the index.
+TestAttemptSchema.index({ userId: 1, endTime: -1 });
 TestAttemptSchema.index({ testId: 1, status: 1 });
 // Retention: auto-delete 3 months after the attempt was created — student
 // practice/exam history isn't kept indefinitely (unlike VocabBook, the
