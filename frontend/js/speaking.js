@@ -539,16 +539,23 @@ async function startSpeakingMockQuestion() {
 // mock" affordance instead of leaving the student on the feedback screen
 // with no obvious next step.
 function _showSpeakingMockFinish(attemptId) {
-  if (document.getElementById('mock-finish-bar')) return;
-  const bar = document.createElement('div');
-  bar.id = 'mock-finish-bar';
-  bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:linear-gradient(135deg,#e53935,#c62828);padding:12px 16px;display:flex;justify-content:center;box-shadow:0 -4px 16px rgba(0,0,0,.25)';
+  if (document.getElementById('mock-finish-btn')) return;
+  // A floating pill (not a full-width bar) bottom-centre — nudged up off
+  // the very edge so it doesn't sit on the peer-chat FAB. It's the only
+  // action left on this screen in mock mode, so a single button is enough.
   const btn = document.createElement('button');
+  btn.id = 'mock-finish-btn';
   btn.textContent = 'Hoàn tất bài thi thử → xem kết quả';
-  btn.style.cssText = 'background:#fff;color:#c62828;border:none;border-radius:10px;padding:11px 22px;font:800 14px inherit;cursor:pointer';
-  btn.onclick = () => { btn.disabled = true; window.MockTest.advance('speaking', attemptId); };
-  bar.appendChild(btn);
-  document.body.appendChild(bar);
+  btn.style.cssText = [
+    'position:fixed', 'left:50%', 'bottom:20px', 'transform:translateX(-50%)',
+    'z-index:2147483000', 'background:linear-gradient(135deg,#e53935,#c62828)',
+    'color:#fff', 'border:none', 'border-radius:999px', 'padding:13px 26px',
+    'font:800 14px inherit', 'cursor:pointer', 'box-shadow:0 6px 20px rgba(0,0,0,.3)',
+    'max-width:92vw'
+  ].join(';');
+  btn.onclick = () => { btn.disabled = true; btn.textContent = 'Đang lưu…'; window.MockTest.advance('speaking', attemptId); };
+  document.body.appendChild(btn);
+  btn.scrollIntoView({ block: 'nearest' });
 }
 
 async function loadRandomQuestion() {

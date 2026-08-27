@@ -77,23 +77,32 @@
     }
   }
 
-  // Small unobtrusive fixed pill so the student always knows they're inside
-  // a mock test (and how far along). Bottom-left so it never covers an exam
-  // bar / timer at the top of the page.
+  // Brief orientation cue ("you're in a mock test, step N/4"). Delivered as
+  // a normal auto-dismissing toast — a persistent fixed pill in any corner
+  // ended up covering the exam chrome pinned to the page edges (Writing's
+  // Task 1/Task 2 switcher, the nav arrows, Nộp bài). Falls back to a
+  // short-lived top-centre pill only if the toast helper isn't loaded.
   function showBanner(skill) {
-    if (document.getElementById('mock-test-pill')) return;
     var idx = STEP_INDEX[skill] || 1;
+    var msg = '🎯 Thi thử Full — Bước ' + idx + '/4: ' + (SKILL_LABEL[skill] || skill);
+    if (window.showToast) { window.showToast(msg, 'info', 5000); return; }
+    if (document.getElementById('mock-test-pill')) return;
     var pill = document.createElement('div');
     pill.id = 'mock-test-pill';
     pill.style.cssText = [
-      'position:fixed', 'left:12px', 'bottom:12px', 'z-index:2147483000',
-      'background:linear-gradient(135deg,#e53935,#c62828)', 'color:#fff',
-      'font:700 12px/1.3 inherit', 'padding:8px 12px', 'border-radius:999px',
-      'box-shadow:0 4px 14px rgba(0,0,0,.28)', 'pointer-events:none',
-      'max-width:70vw'
+      'position:fixed', 'left:50%', 'top:10px', 'transform:translateX(-50%)',
+      'z-index:2147483000', 'background:linear-gradient(135deg,#e53935,#c62828)',
+      'color:#fff', 'font:700 12px/1.3 inherit', 'padding:8px 14px',
+      'border-radius:999px', 'box-shadow:0 4px 14px rgba(0,0,0,.28)',
+      'pointer-events:none', 'max-width:90vw', 'white-space:nowrap',
+      'transition:opacity .4s ease'
     ].join(';');
-    pill.textContent = '🎯 Thi thử Full — Bước ' + idx + '/4: ' + (SKILL_LABEL[skill] || skill);
+    pill.textContent = msg;
     document.body.appendChild(pill);
+    setTimeout(function () {
+      pill.style.opacity = '0';
+      setTimeout(function () { if (pill.parentNode) pill.parentNode.removeChild(pill); }, 500);
+    }, 5000);
   }
 
   window.MockTest = {
