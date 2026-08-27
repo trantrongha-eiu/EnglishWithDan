@@ -74,6 +74,10 @@
     .t2-btn:hover{border-color:#6366f1;color:#4338ca}
     [data-theme="dark"] .t2-btn{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#94a3b8}
     [data-theme="dark"] .t2-btn.active{border-color:#818cf8;background:#1e1b4b;color:#a5b4fc}
+    /* "Viết bài ngay" — an action (leaves this page for the full essay), not a mode toggle */
+    .t2-btn-write{border-color:#e53935;background:#fff1f2;color:#c62828}
+    .t2-btn-write:hover{border-color:#c62828;background:#fee2e2;color:#c62828}
+    [data-theme="dark"] .t2-btn-write{background:#2a1a1f;border-color:#7f1d1d;color:#fca5a5}
     .t2-start-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-top:20px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
     .t2-start-btn:hover{opacity:.9;transform:translateY(-1px)}
     .t2-draft-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
@@ -988,6 +992,7 @@ function renderSelect() {
       <div class="t2-selector-label">Chế độ</div>
       <div class="t2-btn-group">
         <button class="t2-btn ${state.currentMode==='practice'?'active':''}" onclick="setMode2('practice')"><i class="fas fa-pencil-alt"></i> Luyện tập</button>
+        ${t.writingTask2Id ? `<button class="t2-btn t2-btn-write" onclick="goWriteFullEssay()" title="Viết luôn bài văn hoàn chỉnh cho đề này"><i class="fas fa-pen-nib"></i> Viết bài ngay</button>` : ''}
         <button class="t2-btn ${state.currentMode==='exam'?'active':''}" onclick="setMode2('exam')"><i class="fas fa-clipboard-check"></i> Thi thử</button>
         <button class="t2-btn ${state.currentMode==='vocab'?'active':''}" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Từ vựng</button>
         ${state.wrongQuestionIds.length > 0 ? `<button class="t2-btn ${state.currentMode==='retry'?'active':''}" onclick="setMode2('retry')" style="border-color:#fbbf24;color:#92400e;${state.currentMode==='retry'?'background:#fef3c7;':''}"><i class="fas fa-exclamation-circle" style="color:#f59e0b"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
@@ -1047,6 +1052,17 @@ function renderSelect() {
 }
 function bindSelect() {}
 function setMode2(m) { state.currentMode = m; _syncT2ShareUrl(); render(); }
+
+// "Viết bài ngay" — hand the student straight into the full Task 2 essay
+// practice flow (writing.html), for THIS topic's prompt. That page reuses
+// its own AI grading / draft / history machinery via ?taskType=2&taskId=.
+// Only shown when the topic has been linked to a WritingTask2
+// (scripts/seedTask2TopicEssays.js).
+function goWriteFullEssay() {
+  const id = state.selectedTopic?.writingTask2Id;
+  if (!id) { showToast('Chủ đề này chưa có đề luyện viết bài đầy đủ.', 'error'); return; }
+  window.location.href = `writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
+}
 function setExamCount(n) { state.examCount = n; render(); }
 function setAutoNext(v) { state.autoNext = v; }
 function setShuffleMode(v) { state.shuffleMode = v; }

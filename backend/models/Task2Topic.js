@@ -36,6 +36,12 @@ const task2TopicSchema = new mongoose.Schema({
   topicEmoji:        { type: String, default: '📝' },
   essayType:         { type: String, enum: ['advantages_disadvantages', 'cause_effect', 'cause_solution', 'effect_solution', 'agree_disagree', 'discuss_both_views', 'positive_or_negative_development'], required: true },
   prompt:            { type: String, required: true },
+  // The matching full-essay task in the Writing Task 2 bank, so the weekly
+  // sentence-practice screen's "Viết bài ngay" button can hand the student
+  // straight into writing.html's Task 2 practice flow for THIS prompt (AI
+  // grading, drafts, history — all reused). Backfilled by
+  // scripts/seedTask2TopicEssays.js; null until then.
+  writingTask2Id:    { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask2', default: null },
   hintAdvantages:    [{ type: String }],
   hintDisadvantages: [{ type: String }],
   questions:         [questionSchema],
