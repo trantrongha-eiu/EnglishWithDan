@@ -1,0 +1,41 @@
+User-agent: *
+Allow: /
+
+# Authenticated / personal app pages — nothing useful to a search index and
+# nothing a crawler should be surfacing in results (a student's own reading
+# attempt, dashboard, inbox, tuition ledger, etc.). Clean-URL aliases are
+# listed alongside the raw .html filenames because both resolve (see
+# frontend/_redirects); pages with no clean alias defined there are listed
+# by filename only.
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /vocabulary
+Disallow: /profile
+Disallow: /profile.html
+Disallow: /inbox
+Disallow: /inbox.html
+Disallow: /tuition
+Disallow: /tuition.html
+Disallow: /reading
+Disallow: /reading.html
+Disallow: /listening
+Disallow: /listening.html
+Disallow: /writing
+Disallow: /writing.html
+Disallow: /writing/practice
+Disallow: /writing/templates
+Disallow: /writing-practice.html
+Disallow: /task2-template.html
+Disallow: /speaking
+Disallow: /speaking.html
+Disallow: /dictation.html
+Disallow: /goal.html
+Disallow: /task1-practice.html
+Disallow: /task2-practice.html
+Disallow: /review-history.html
+Disallow: /auth-callback.html
+
+# Admin back office — never index.
+Disallow: /admin/
+
+Sitemap: https://ieltsthayha.com/sitemap.xml

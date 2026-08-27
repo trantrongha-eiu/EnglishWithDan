@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  BUG-005: only genuinely public, indexable marketing/content pages are
+  listed here — no authenticated app pages (dashboard, reading, profile,
+  etc., see robots.txt Disallow list), no utility pages (login/register,
+  low value as search results, though not disallowed from crawling), no
+  404/auth-callback (not real content), no /admin/ (back office).
+  URLs use the clean-path aliases defined in frontend/_redirects where one
+  exists; essential-grammar.html has no clean alias so its raw path is used.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ieltsthayha.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/about</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/courses</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/essential-grammar.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/contact</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/terms</loc>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ieltsthayha.com/privacy</loc>
+    <priority>0.3</priority>
+  </url>
+</urlset>
