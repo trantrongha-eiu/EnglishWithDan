@@ -673,7 +673,10 @@ function topicCompletedCount() {
 const T2_WRITE_MIN_ACCURACY = 70;
 
 function _bestPracticeScore(topicId) {
-  const server = state.topicStats && state.topicStats.practiced ? (state.topicStats.bestScore || 0) : null;
+  // Only trust state.topicStats when it was loaded for THIS topic — a
+  // back/forward nav can leave a previous topic's stats in place.
+  const ts = state.topicStats;
+  const server = (ts && ts.forTopic === topicId && ts.practiced) ? (ts.bestScore || 0) : null;
   const local  = _topicScores[topicId] ? (_topicScores[topicId].bestScore || 0) : null;
   if (server == null && local == null) return null; // never practised anywhere we can see
   return Math.max(server || 0, local || 0);
@@ -822,14 +825,13 @@ async function loadWeeks() {
         state.topicStats = null;
         if (hasToken) {
           try {
-            const [wrongData, draftData, statsData] = await Promise.all([
+            const [wrongData, draftData] = await Promise.all([
               apiFetch(`/api/task2/wrong-questions/${urlTopicId}`),
               apiFetch(`/api/task2/draft/${urlTopicId}`),
-              apiFetch(`/api/task2/topic-stats/${urlTopicId}`).catch(() => ({ stats: null }))
+              loadTopicStats(urlTopicId)
             ]);
             state.wrongQuestionIds = wrongData.wrongIds || [];
             state.draft = draftData.draft || null;
-            state.topicStats = statsData.stats || null;
           } catch {}
         }
         state.view = 'select';
@@ -985,6 +987,23 @@ function bindTopics() {
     el.addEventListener('click', () => selectTopic(el.dataset.id));
   });
 }
+// Loads this user's practice record for `id` into state.topicStats, tagged
+// with `forTopic` so a later render for a different topic can't read it by
+// mistake. Best-effort — on any failure leaves a "not practised" shape so
+// the gate simply falls back to the local _topicScores value.
+async function loadTopicStats(id) {
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) {
+    state.topicStats = { forTopic: id, practiced: false, bestScore: 0 };
+    return;
+  }
+  try {
+    const d = await apiFetch(`/api/task2/topic-stats/${id}`);
+    state.topicStats = { forTopic: id, ...(d.stats || { practiced: false, bestScore: 0 }) };
+  } catch {
+    state.topicStats = { forTopic: id, practiced: false, bestScore: 0 };
+  }
+}
+
 let _selectTopicSeq = 0;
 async function selectTopic(id) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
@@ -1005,15 +1024,14 @@ async function selectTopic(id) {
   const requestId = ++_selectTopicSeq;
   if (window.AuthService.isLoggedIn()) {
     try {
-      const [wrongData, draftData, statsData] = await Promise.all([
+      const [wrongData, draftData] = await Promise.all([
         apiFetch(`/api/task2/wrong-questions/${id}`),
         apiFetch(`/api/task2/draft/${id}`),
-        apiFetch(`/api/task2/topic-stats/${id}`).catch(() => ({ stats: null }))
+        loadTopicStats(id)
       ]);
       if (requestId !== _selectTopicSeq) return;
       state.wrongQuestionIds = wrongData.wrongIds || [];
       state.draft = draftData.draft || null;
-      state.topicStats = statsData.stats || null;
     } catch {
       if (requestId !== _selectTopicSeq) return;
     }
@@ -2097,7 +2115,13 @@ window.addEventListener('popstate', async e => {
     }
     state.selectedWeek = e.state.week;
     const topic = state.topics.find(t => t._id === e.state.topicId);
-    if (topic) { state.selectedTopic = topic; state.view = 'select'; render(); }
+    if (topic) {
+      state.selectedTopic = topic;
+      state.topicStats = null;      // stale for this topic until refetched
+      state.view = 'select';
+      render();
+      loadTopicStats(e.state.topicId).then(render); // re-render once stats arrive
+    }
     else { state.view = 'weeks'; render(); }
   } else if (s === 'topics' && e.state.week) {
     if (state.selectedWeek !== e.state.week || !state.topics.length) {
