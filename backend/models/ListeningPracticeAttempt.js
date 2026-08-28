@@ -20,10 +20,19 @@ const ListeningPracticeAttemptSchema = new mongoose.Schema({
   skippedCount:   { type: Number, default: 0 },
 
   timeTaken:   { type: Number, default: 0 },
-  submittedAt: { type: Date, default: Date.now }
+  submittedAt: { type: Date, default: Date.now },
+
+  // BUG-A07 — see ReadingPracticeAttempt.js for the full rationale. One UUID
+  // per practice attempt on the client; when present the service upserts on
+  // (userId, clientKey) so a double fire can't duplicate the row.
+  clientKey:   { type: String }
 }, { timestamps: true });
 
 ListeningPracticeAttemptSchema.index({ userId: 1, submittedAt: -1 });
+ListeningPracticeAttemptSchema.index(
+  { userId: 1, clientKey: 1 },
+  { unique: true, partialFilterExpression: { clientKey: { $type: 'string' } } }
+);
 // Retention: auto-delete 3 months after the attempt was created — student
 // practice history isn't kept indefinitely (unlike VocabBook, the personal
 // saved-word notebooks, which have no expiry).

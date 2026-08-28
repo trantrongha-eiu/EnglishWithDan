@@ -4,6 +4,14 @@ const app = require('../../app');
 const mongoose = require('mongoose');
 const cloudinaryService = require('../../services/cloudinaryService');
 
+// BUG-A05: GET /health only returns memory + per-integration detail when
+// HEALTH_DETAIL_TOKEN is set AND the caller presents it. Set it for the
+// whole file; individual tests choose whether to send the token.
+const HTOKEN = 'test-health-detail-token';
+let _savedHealthToken;
+beforeAll(() => { _savedHealthToken = process.env.HEALTH_DETAIL_TOKEN; process.env.HEALTH_DETAIL_TOKEN = HTOKEN; });
+afterAll(() => { if (_savedHealthToken === undefined) delete process.env.HEALTH_DETAIL_TOKEN; else process.env.HEALTH_DETAIL_TOKEN = _savedHealthToken; });
+
 describe('GET /health/live', () => {
   test('returns 200 with status ok and an uptime, unauthenticated', async () => {
     const res = await request(app).get('/health/live');
@@ -23,8 +31,24 @@ describe('GET /health/ready', () => {
 });
 
 describe('GET /health', () => {
-  test('returns memory/uptime/dependency status, never leaking real secret values', async () => {
+  test('anonymous caller gets only { status, database } — no memory, no per-integration detail', async () => {
     const res = await request(app).get('/health');
+    expect([200, 503]).toContain(res.status);
+    expect(res.body.status).toBeDefined();
+    expect(res.body.database).toBe('ok');
+    expect(res.body.memory).toBeUndefined();
+    expect(res.body.dependencies).toBeUndefined();
+    expect(res.body.uptimeSeconds).toBeUndefined();
+  });
+
+  test('a wrong token is treated as anonymous (minimal shape)', async () => {
+    const res = await request(app).get('/health?token=nope');
+    expect(res.body.memory).toBeUndefined();
+    expect(res.body.dependencies).toBeUndefined();
+  });
+
+  test('with the operator token: returns memory/uptime/dependency status, never leaking real secret values', async () => {
+    const res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
     expect([200, 503]).toContain(res.status);
     expect(typeof res.body.uptimeSeconds).toBe('number');
     expect(typeof res.body.memory.rssMb).toBe('number');
@@ -35,7 +59,7 @@ describe('GET /health', () => {
     expect(bodyText).not.toMatch(/AIza|sk-|ya29\./); // common API-key prefixes
   });
 
-  test('reports Cloudinary as not_configured (not "error") when credentials are unset', async () => {
+  test('with the operator token: reports Cloudinary as not_configured (not "error") when credentials are unset', async () => {
     // Explicitly clear rather than assume — a real local backend/.env
     // (common in dev) may have genuine Cloudinary credentials set, which
     // would otherwise make this test flaky/environment-dependent.
@@ -48,7 +72,7 @@ describe('GET /health', () => {
     delete process.env.CLOUDINARY_API_KEY;
     delete process.env.CLOUDINARY_API_SECRET;
     try {
-      const res = await request(app).get('/health');
+      const res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
       expect(res.body.dependencies.cloudinary.status).toBe('not_configured');
     } finally {
       Object.entries(saved).forEach(([k, v]) => { if (v !== undefined) process.env[k] = v; });
@@ -79,7 +103,7 @@ describe('failure paths — the branches an incident actually depends on', () =>
     const dbName = mongoose.connection.name;
     await mongoose.connection.close();
     try {
-      const res = await request(app).get('/health');
+      const res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('degraded');
       expect(res.body.dependencies.database.status).toBe('error');
@@ -94,7 +118,7 @@ describe('failure paths — the branches an incident actually depends on', () =>
     process.env.CLOUDINARY_API_SECRET = 'test-secret';
     const pingSpy = jest.spyOn(cloudinaryService, 'ping').mockRejectedValue(new Error('connection refused'));
     try {
-      const res = await request(app).get('/health');
+      const res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('degraded');
       expect(res.body.dependencies.cloudinary.status).toBe('error');

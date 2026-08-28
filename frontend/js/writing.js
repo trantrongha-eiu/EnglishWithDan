@@ -57,7 +57,7 @@ async function apiFetch(path, opts = {}) {
 // bottom-center pill — a deliberate consistency normalization, not a bug.
 
 // ──────────────────────────────────────────────────────
-// Full-access upsell — /start and /practice/submit respond 403
+// Full-access upsell — /start, /submit and /practice/submit respond 403
 // requiresPremium:true once a free account's 24h trial has expired (see
 // backend/middleware/requirePremium.js). Reactive fallback for whenever the
 // proactive hasPremiumAccess() check below can't run first (e.g. the trial
@@ -622,7 +622,10 @@ async function submitExam(statusOverride) {
   } catch (e) {
     state.isSubmitting = false;
     overlay.style.display = 'none';
-    showToast('Lỗi nộp bài: ' + e.message, 'error');
+    // /api/writing/submit is now full-access gated (BUG-A02) like /start and
+    // /practice/submit — handle a mid-exam trial expiry the same way they do
+    // (upgrade prompt, not a bare error toast).
+    if (!_handleQuotaError(e)) showToast('Lỗi nộp bài: ' + e.message, 'error');
   }
 }
 
@@ -911,6 +914,9 @@ function _buildStudentFeedback(g) {
         <div class="fb-wrap-band-lbl">Overall Band${dateStr ? ' · ' + dateStr : ''}</div>
         <div class="fb-wrap-band-num">${g.overallBand ?? '–'}</div>
       </div>
+    </div>
+    <div style="font-size:11px;color:#6b7280;line-height:1.5;margin:-4px 2px 12px">
+      Overall = trung bình 4 tiêu chí (TA/TR, CC, LR, GRA), <strong>làm tròn xuống</strong> 0.5 gần nhất — nghiêm hơn cách quy đổi IELTS chính thức một chút, để phản ánh đúng phần em chưa chắc.
     </div>
     ${g.adminNote ? `<div class="fb-admin-note"><span class="fb-admin-note-lbl"><i class="fas fa-comment-dots"></i> Nhận xét từ giáo viên:</span> ${escHtml(g.adminNote)}</div>` : ''}
     ${taskCard('Task 1', g.task1)}

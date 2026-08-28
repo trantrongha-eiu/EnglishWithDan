@@ -1,17 +1,43 @@
 const express = require('express');
 const router  = express.Router();
+const rateLimit = require('express-rate-limit');
 const auth    = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const writingController = require('../controllers/writing.controller');
+const logger  = require('../utils/logger');
 
 // Same full-access gate as Reading/Listening/Speaking/Vocab (see
 // backend/utils/plan.js's hasFullAccess) — free users get every feature
 // unlimited for their first 24h, then everything locks. examLimit/
 // practiceLimit's old per-day quota system is gone; startExam gates the
 // content-serving point (same convention as reading.js/listening.js's full-
-// test gates), submitPractice gates the point a practice essay would
-// otherwise consume a teacher grading slot for a locked-out user.
+// test gates), submitExam/submitPractice gate the point an essay would
+// otherwise consume a teacher/AI grading slot for a locked-out user
+// (submitExam was missing this gate — audit finding BUG-A02 — while every
+// sibling submit route, reading/listening/writing-practice, already had it).
 const fullAccess = requirePremium();
+
+// A submitted essay is graded by Gemini downstream (writingAutoGrade cron /
+// admin "Chấm bằng AI") — /submit triggers TWO essay grades (Task 1 + Task
+// 2), /practice/submit one. Cap runaway clients / abuse the same way
+// speaking.js's analyzeLimiter and reading.js's startLimiter already do:
+// same 15-min window, keyed per authenticated user, admin-exempt, hard 429
+// with the shared message. Thresholds are far above real student cadence
+// (a human does not submit 10 full writing exams in 15 minutes) so a
+// legitimate user never hits them; the essay text stays in the editor /
+// autosave on a 429, so this is retry friction, never data loss.
+const submitLimiter = (max) => rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max,
+  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' });
+  },
+  skip: req => req.user?.role === 'admin',
+});
+const examSubmitLimiter     = submitLimiter(10); // 2 Gemini grades/request — matches reading.js startLimiter
+const practiceSubmitLimiter = submitLimiter(20); // 1 Gemini grade/request — matches speaking.js analyzeLimiter
 
 // ══════════════════════════════════════════════════
 // POST /api/writing/start
@@ -21,15 +47,20 @@ router.post('/start', auth, fullAccess, writingController.startExam);
 
 // ══════════════════════════════════════════════════
 // POST /api/writing/submit
+// fullAccess runs before submitExam so a lapsed-trial user is rejected with
+// 403 PLAN_REQUIRED before any WritingAttempt is created / streak+badge work
+// runs / the attempt becomes visible to the auto-grade cron.
+// examSubmitLimiter runs before the controller too — a rate-limited request
+// never creates an attempt, so it never reaches Gemini grading.
 // ══════════════════════════════════════════════════
-router.post('/submit', auth, writingController.submitExam);
+router.post('/submit', auth, fullAccess, examSubmitLimiter, writingController.submitExam);
 
 // ══════════════════════════════════════════════════
 // PRACTICE MODE – luyện Task 1 / Task 2 lẻ
 // ══════════════════════════════════════════════════
 router.get('/practice/tasks', auth, fullAccess, writingController.listPracticeTasks);
 router.get('/practice/task', auth, fullAccess, writingController.getPracticeTask);
-router.post('/practice/submit', auth, fullAccess, writingController.submitPractice);
+router.post('/practice/submit', auth, fullAccess, practiceSubmitLimiter, writingController.submitPractice);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // ══════════════════════════════════════════════════

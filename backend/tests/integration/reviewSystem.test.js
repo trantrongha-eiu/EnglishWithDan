@@ -8,8 +8,9 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, signTokenFor } = require('../factories/userFactory');
-const { createPassage, createReadingTest, createListeningTest } = require('../factories/contentFactory');
+const { createPassage, createReadingTest, createListeningTest, createListeningSection } = require('../factories/contentFactory');
 const AttemptReview = require('../../models/AttemptReview');
+const MockTestAttempt = require('../../models/MockTestAttempt');
 
 function authed(user) {
   const token = signTokenFor(user);
@@ -319,15 +320,150 @@ describe('Listening mandatory review + dictation exemption', () => {
     expect(blockedStart.status).toBe(403);
     expect(blockedStart.body.code).toBe('REVIEW_REQUIRED');
 
-    // Regular listening practice fetch (no dictation exemption) is blocked...
+    // Regular listening practice fetch is blocked...
     const { createListeningSection } = require('../factories/contentFactory');
     const section = await createListeningSection();
     const blockedPractice = await api.get(`/api/listening/practice/by-id/${section._id}`);
     expect(blockedPractice.status).toBe(403);
 
-    // ...but the exact same content, fetched with ?purpose=dictation, is not.
-    const dictationFetch = await api.get(`/api/listening/practice/by-id/${section._id}?purpose=dictation`);
+    // BUG-A01: `?purpose=dictation` no longer switches the gate off — the
+    // practice route ignores it entirely now.
+    const stillBlockedWithParam = await api.get(`/api/listening/practice/by-id/${section._id}?purpose=dictation`);
+    expect(stillBlockedWithParam.status).toBe(403);
+
+    // ...but the dedicated dictation-content route is not gated at all.
+    const dictationFetch = await api.get(`/api/listening/dictation/section/${section._id}`);
     expect(dictationFetch.status).not.toBe(403);
+    expect(dictationFetch.status).toBe(200);
+  });
+});
+
+// BUG-A01: the mock-test exemption on requireReviewComplete used to fire on
+// `?purpose=mocktest` alone — any student could append it to skip the gate.
+// It now also requires mockTestService.hasActiveMockStep(): a real
+// in-progress MockTestAttempt, owned by the caller, sitting on this exact
+// skill step.
+describe('Mock-test review-gate exemption is server-verified (BUG-A01)', () => {
+  async function pileUp3ReadingReviews(api) {
+    for (let i = 0; i < 3; i++) {
+      const { test } = await makeThreePassageReadingTest();
+      const start = await api.post('/api/reading/start', { testId: String(test._id) });
+      await api.post('/api/reading/submit', {
+        attemptId: start.body.attemptId,
+        answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
+      });
+    }
+    const pending = await api.get('/api/review/pending?skill=reading');
+    expect(pending.body.count).toBe(3);
+    expect(pending.body.blocked).toBe(true);
+  }
+
+  test('1. normal practice with 3 pending reviews → blocked (no purpose param)', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post('/api/reading/start', { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('2. ?purpose=mocktest but NO MockTestAttempt → still blocked', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post(`/api/reading/start?purpose=mocktest`, { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('3. a real in-progress mock sitting on the reading step → allowed', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+    await MockTestAttempt.create({ userId: user._id, progress: 'reading', status: 'in-progress' });
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post(`/api/reading/start?purpose=mocktest`, { testId: String(test._id) });
+    expect(res.status).not.toBe(403);
+    expect(res.status).toBe(200);
+  });
+
+  test('3b. a real in-progress mock on the listening step → allowed for listening', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    // pile up 3 listening reviews
+    for (let i = 0; i < 3; i++) {
+      const lt = await createListeningTest({
+        sections: [{
+          partNumber: 1, title: 'P1', questionRange: { start: 1, end: 1 },
+          questionGroups: [{ groupType: 'plain', questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q', correctAnswer: 'sunny' }] }],
+        }],
+      });
+      const s = await api.post(`/api/listening/tests/${lt._id}/start`, {});
+      await api.post(`/api/listening/tests/${lt._id}/submit`, { attemptId: s.body.attemptId, startTime: new Date().toISOString(), answers: { 1: 'nope' } });
+    }
+    expect((await api.get('/api/review/pending?skill=listening')).body.blocked).toBe(true);
+    await MockTestAttempt.create({ userId: user._id, progress: 'listening', status: 'in-progress' });
+
+    const lt = await createListeningTest({
+      sections: [{ partNumber: 1, title: 'P1', questionRange: { start: 1, end: 1 }, questionGroups: [{ groupType: 'plain', questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q', correctAnswer: 'x' }] }] }],
+    });
+    const res = await api.post(`/api/listening/tests/${lt._id}/start?purpose=mocktest`, {});
+    expect(res.status).not.toBe(403);
+  });
+
+  test('4. ?purpose=dictation on a start route is meaningless now → still blocked', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post(`/api/reading/start?purpose=dictation`, { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('5. user A cannot ride user B’s in-progress mock', async () => {
+    const userB = await createStudent();
+    await MockTestAttempt.create({ userId: userB._id, progress: 'reading', status: 'in-progress' });
+
+    const userA = await createStudent();
+    const apiA = authed(userA);
+    await pileUp3ReadingReviews(apiA);
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await apiA.post(`/api/reading/start?purpose=mocktest`, { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('6a. a completed / abandoned mock cannot be replayed to bypass', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+    await MockTestAttempt.create({ userId: user._id, progress: 'done', status: 'completed' });
+    await MockTestAttempt.create({ userId: user._id, progress: 'reading', status: 'abandoned' });
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post(`/api/reading/start?purpose=mocktest`, { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('6b. an in-progress mock already PAST the reading step cannot bypass reading', async () => {
+    const user = await createStudent();
+    const api = authed(user);
+    await pileUp3ReadingReviews(api);
+    await MockTestAttempt.create({ userId: user._id, progress: 'writing', status: 'in-progress' });
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post(`/api/reading/start?purpose=mocktest`, { testId: String(test._id) });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('REVIEW_REQUIRED');
   });
 });
 

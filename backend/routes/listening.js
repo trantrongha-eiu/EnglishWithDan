@@ -22,11 +22,23 @@ router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp 
 router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getSectionAnswerKey);
 
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
-// sections have already been through scripts/bulkAlignListeningDictation.js;
-// fetching one section's full data (audioUrl + dictationSentences) reuses
-// /practice/by-id/:id above, which already returns the whole document.
+// sections have already been through scripts/bulkAlignListeningDictation.js.
 router.get('/dictation/list', auth, listeningController.listDictationSections);
-router.post('/dictation/save-attempt', auth, listeningController.saveDictationAttempt);
+// Fetch one section's full data (audioUrl + dictationSentences + transcript)
+// for the dictation player. Dedicated route — same content + premium gate as
+// /practice/by-id/:id, but WITHOUT requireReviewComplete: dictation is an
+// ungraded transcription drill that never creates a pending review, so the
+// mandatory-review pile-up gate must not apply. Previously this was
+// /practice/by-id/:id?purpose=dictation, i.e. a client-supplied query param
+// switching off the gate — replaced so nothing turns the gate off from the
+// request side (audit finding BUG-A01).
+router.get('/dictation/section/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
+// requirePremium added (audit finding BUG-A11) — this creates a real
+// DictationAttempt (feeds admin's "Lịch sử làm bài" + dictation stats), yet
+// was the one practice-save route with no plan gate. Same posture as
+// reading/listening /practice/save (BUG-009) and the section-fetch route
+// just above: full access for a free account's first 24h, then locked.
+router.post('/dictation/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveDictationAttempt);
 
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, listeningController.listStudentTests);

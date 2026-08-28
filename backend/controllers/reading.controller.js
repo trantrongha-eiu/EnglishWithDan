@@ -85,8 +85,9 @@ exports.savePractice = guard('[Reading practice save]', async (req, res) => {
 });
 
 exports.getPracticeHistory = guard('[Reading practice history]', async (req, res) => {
-  const attempts = await readingService.getPracticeHistory(req.user._id);
-  res.json({ success: true, attempts });
+  const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
+  const { attempts, total } = await readingService.getPracticeHistory(req.user._id, limit);
+  res.json({ success: true, attempts, total, hasMore: attempts.length < total });
 });
 
 exports.getPracticeHistoryDetail = guard('[Reading practice history detail]', async (req, res) => {

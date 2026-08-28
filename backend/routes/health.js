@@ -72,7 +72,25 @@ router.get('/ready', (_req, res) => {
 // Gemini is checked by API-key presence only, never a live generateContent
 // call — that costs real money per call and would make this endpoint an
 // unbounded-cost target if polled by anything automated.
-router.get('/', async (_req, res) => {
+//
+// The verbose body (memory figures + which third-party integrations are
+// configured) is operator diagnostic detail, not something an anonymous
+// caller should see (audit finding BUG-A05 — a public probe was reporting
+// RSS/heap MB and "gemini/oauth/email configured"). It's now returned only
+// when HEALTH_DETAIL_TOKEN is set AND the caller presents it (?token= or
+// X-Health-Token header). Without a valid token the endpoint still works —
+// it just returns the same minimal { status, database } shape as /ready,
+// which is all an uptime monitor needs to alert on. If the env var is
+// unset, the detail is simply never exposed (safe default).
+function hasHealthDetailAccess(req) {
+  const expected = process.env.HEALTH_DETAIL_TOKEN;
+  if (!expected) return false;
+  const provided = req.get('X-Health-Token') || req.query.token || '';
+  return provided.length > 0 && provided === expected;
+}
+
+router.get('/', async (req, res) => {
+  const detailed = hasHealthDetailAccess(req);
   const mem = process.memoryUsage();
   const result = {
     status: 'ok', // flipped to 'degraded' below if any dependency check fails
@@ -108,28 +126,42 @@ router.get('/', async (_req, res) => {
   // (Checking all three, not just cloud name + key, avoids attempting a
   // live ping — and reporting a confusing "error" — when only the secret
   // is missing; production-readiness audit finding.)
-  if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
-    try {
-      await withTimeout(cloudinaryService.ping(), DEPENDENCY_CHECK_TIMEOUT_MS);
-      result.dependencies.cloudinary = { status: 'ok' };
-    } catch (err) {
-      result.status = 'degraded';
-      result.dependencies.cloudinary = { status: 'error', message: err.message };
+  // Only run for token-holding operators: an anonymous caller shouldn't be
+  // able to trigger an outbound Cloudinary call or learn its status.
+  if (detailed) {
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      try {
+        await withTimeout(cloudinaryService.ping(), DEPENDENCY_CHECK_TIMEOUT_MS);
+        result.dependencies.cloudinary = { status: 'ok' };
+      } catch (err) {
+        result.status = 'degraded';
+        result.dependencies.cloudinary = { status: 'error', message: err.message };
+      }
+    } else {
+      result.dependencies.cloudinary = { status: 'not_configured' };
     }
-  } else {
-    result.dependencies.cloudinary = { status: 'not_configured' };
   }
 
-  // Gemini — key-presence only (see file header comment for why no live call).
-  result.dependencies.gemini = { status: process.env.GEMINI_API_KEY ? 'configured' : 'not_configured' };
+  if (detailed) {
+    // Gemini — key-presence only (see file header comment for why no live call).
+    result.dependencies.gemini = { status: process.env.GEMINI_API_KEY ? 'configured' : 'not_configured' };
 
-  // Other optional integrations — presence-only, matching the app's own
-  // existing graceful-degradation pattern (server.js startup log already
-  // reports these the same way).
-  result.dependencies.googleOAuth = { status: process.env.GOOGLE_CLIENT_ID ? 'configured' : 'not_configured' };
-  result.dependencies.email = { status: (process.env.EMAIL_USER || process.env.RESEND_API_KEY) ? 'configured' : 'not_configured' };
+    // Other optional integrations — presence-only, matching the app's own
+    // existing graceful-degradation pattern (server.js startup log already
+    // reports these the same way).
+    result.dependencies.googleOAuth = { status: process.env.GOOGLE_CLIENT_ID ? 'configured' : 'not_configured' };
+    result.dependencies.email = { status: (process.env.EMAIL_USER || process.env.RESEND_API_KEY) ? 'configured' : 'not_configured' };
+  }
 
-  res.status(result.status === 'ok' ? 200 : 503).json(result);
+  const httpStatus = result.status === 'ok' ? 200 : 503;
+  if (detailed) return res.status(httpStatus).json(result);
+
+  // Anonymous / no-token: minimal shape only — enough for an uptime monitor
+  // to alert on, nothing an attacker can fingerprint the deployment with.
+  return res.status(httpStatus).json({
+    status: result.status,
+    database: result.dependencies.database?.status === 'ok' ? 'ok' : 'error',
+  });
 });
 
 module.exports = router;

@@ -278,11 +278,11 @@ exports.getHistoryDetail = async (req, res) => {
 // ── Practice attempts ──────────────────────────────────────────────────────
 exports.savePractice = async (req, res) => {
   try {
-    const { sectionId, sectionTitle, partNumber, answers, timeTaken } = req.body;
+    const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey } = req.body;
     if (!sectionId || !Array.isArray(answers)) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken }, req.user._id);
+    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey }, req.user._id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
     res.json({ success: true, ...result });
   } catch (err) {

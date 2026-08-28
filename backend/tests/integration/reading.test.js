@@ -130,6 +130,46 @@ describe('POST /api/reading/practice/save (premium gate)', () => {
     expect(res.body.success).toBe(true);
     expect(res.body.attemptId).toBeTruthy();
   });
+
+  // BUG-A07: /practice/save is fire-and-forget — a double fire must not
+  // duplicate the row OR the AttemptReview it spawns.
+  test('re-sending the same clientKey returns the original attempt, creates no duplicate', async () => {
+    const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
+    const AttemptReview = require('../../models/AttemptReview');
+    const passage = await createPassage({
+      category: 'passage1',
+      questions: [{ questionNumber: 1, type: 'sentence-completion', questionText: 'Q1', correctAnswer: 'apple' }],
+    });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const body = {
+      clientKey: 'test-idem-key-1',
+      passageId: String(passage._id), category: 'passage1',
+      answers: [{ questionNumber: 1, userAnswer: 'WRONG' }], // wrong → spawns a review
+      timeTaken: 30,
+    };
+
+    const first = await request(app).post('/api/reading/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    const second = await request(app).post('/api/reading/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    const third = await request(app).post('/api/reading/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+
+    expect(first.body.attemptId).toBeTruthy();
+    expect(second.body.attemptId).toBe(first.body.attemptId);
+    expect(third.body.attemptId).toBe(first.body.attemptId);
+    expect(await ReadingPracticeAttempt.countDocuments({ userId: user._id })).toBe(1);
+    expect(await AttemptReview.countDocuments({ userId: user._id, attemptType: 'reading-practice' })).toBe(1);
+  });
+
+  test('no clientKey → old behavior (each call is its own row)', async () => {
+    const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
+    const passage = await createPassage({ category: 'passage1', questions: [{ questionNumber: 1, type: 'sentence-completion', questionText: 'Q1', correctAnswer: 'apple' }] });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const body = { passageId: String(passage._id), category: 'passage1', answers: [{ questionNumber: 1, userAnswer: 'apple' }] };
+    await request(app).post('/api/reading/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    await request(app).post('/api/reading/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    expect(await ReadingPracticeAttempt.countDocuments({ userId: user._id })).toBe(2);
+  });
 });
 
 describe('GET /api/reading/practice/by-id/:id and /api/reading/practice/:category (premium gate)', () => {
@@ -258,6 +298,40 @@ describe('GET /api/reading/history (ownership scoping)', () => {
     const res = await request(app).get('/api/reading/history').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.history).toEqual([]);
+    expect(res.body.total).toBe(0);
+    expect(res.body.hasMore).toBe(false);
+  });
+});
+
+// BUG-A06: GET /api/reading/practice/history had the same bare .limit(50)
+// gap that /history (full tests) was already fixed for.
+describe('GET /api/reading/practice/history (BUG-A06 — honest total/hasMore)', () => {
+  const { createReadingPracticeAttempt } = require('../factories/contentFactory');
+
+  test('reports total + hasMore, and only the requesting student\'s own rows', async () => {
+    const me = await createStudent();
+    const other = await createStudent();
+    for (let i = 0; i < 3; i++) await createReadingPracticeAttempt({ userId: me._id });
+    await createReadingPracticeAttempt({ userId: other._id });
+    const token = signTokenFor(me);
+
+    const capped = await request(app).get('/api/reading/practice/history?limit=2').set('Authorization', `Bearer ${token}`);
+    expect(capped.status).toBe(200);
+    expect(capped.body.attempts).toHaveLength(2);
+    expect(capped.body.total).toBe(3);          // real count for THIS user, not the other student's
+    expect(capped.body.hasMore).toBe(true);
+
+    const full = await request(app).get('/api/reading/practice/history?limit=50').set('Authorization', `Bearer ${token}`);
+    expect(full.body.attempts).toHaveLength(3);
+    expect(full.body.total).toBe(3);
+    expect(full.body.hasMore).toBe(false);
+  });
+
+  test('empty history → attempts:[], total:0, hasMore:false', async () => {
+    const user = await createStudent();
+    const res = await request(app).get('/api/reading/practice/history').set('Authorization', `Bearer ${signTokenFor(user)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.attempts).toEqual([]);
     expect(res.body.total).toBe(0);
     expect(res.body.hasMore).toBe(false);
   });

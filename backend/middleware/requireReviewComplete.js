@@ -8,21 +8,29 @@
  * Mirrors requirePremium.js's exact shape/response convention.
  * Must be used after middleware `auth` (needs req.user).
  *
- * `dictation.html` reuses the same GET /listening/practice/by-id/:id route
- * as Listening practice to fetch a section's content, but dictation is an
- * ungraded, non-attempt-tracked feature this gate must never block — its
- * fetch call passes ?purpose=dictation to opt out.
+ * The full 4-skill mock test (see mockTestService) is a sit-down exam of
+ * its own and must not be blocked by an unrelated pile-up of ordinary
+ * per-mistake reviews. The exemption is NOT taken on the client's word:
+ * `?purpose=mocktest` is only a hint that lets us skip the DB check on
+ * every normal /start call — the actual authorisation is
+ * mockTestService.hasActiveMockStep(), which confirms server-side that
+ * THIS user owns an in-progress MockTestAttempt currently sitting on THIS
+ * skill's step. A student who just appends the query string, or replays a
+ * finished run, or points at someone else's run, still gets gated.
+ *
+ * Dictation has its own review-gate-free route now
+ * (GET /api/listening/dictation/section/:id) — it no longer rides this
+ * middleware with a `?purpose=dictation` opt-out.
  */
 const reviewService = require('../services/reviewService');
+const mockTestService = require('../services/mockTestService');
 
 function requireReviewComplete(skill) {
   return async (req, res, next) => {
-    if (skill === 'listening' && req.query.purpose === 'dictation') return next();
-    // The full 4-skill mock test (see mockTestService) is a sit-down exam of
-    // its own — it must not be blocked by an unrelated pile-up of pending
-    // per-mistake reviews from ordinary practice. Same opt-out shape as
-    // dictation above; requirePremium still applies on these routes.
-    if (req.query.purpose === 'mocktest') return next();
+    if (req.query.purpose === 'mocktest'
+        && await mockTestService.hasActiveMockStep(req.user._id, skill)) {
+      return next();
+    }
     const { items, count } = await reviewService.getPendingReviews(req.user._id, skill);
     if (count < reviewService.MAX_PENDING_REVIEWS) return next();
     return res.status(403).json({

@@ -389,8 +389,9 @@ async function listDictationSections() {
 // never showed up in admin's "Lịch sử làm bài" (student-reported bug). No
 // reviewService.createReviewIfNeeded() call here unlike savePractice()
 // below — dictation is deliberately exempt from the mandatory-review gate
-// (see routes/listening.js's requireReviewComplete comment and dictation.
-// html's ?purpose=dictation), so it must never create a pending review.
+// (it has its own gate-free content route, GET /listening/dictation/
+// section/:id — see routes/listening.js), so it must never create a
+// pending review.
 async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answers }, userId) {
   const section = await ListeningSection.findById(sectionId).select('_id title partNumber').lean();
   if (!section) return null;
@@ -792,9 +793,20 @@ async function getSectionAnswerKey(id) {
 }
 
 // ── Practice attempts (single-section, no premium gate) ─────────────────
-async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken }, userId) {
+async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey }, userId) {
   const section = await ListeningSection.findById(sectionId).lean();
   if (!section) return null;
+
+  // BUG-A07: idempotency — a double fire of this fire-and-forget save used
+  // to duplicate the row + the AttemptReview it spawns. See
+  // ReadingPracticeAttempt.js / readingService.savePractice for the pattern.
+  const key = typeof clientKey === 'string' && clientKey ? clientKey : null;
+  if (key) {
+    const existing = await ListeningPracticeAttempt.findOne({ userId, clientKey: key }).select('_id correctCount totalQuestions').lean();
+    if (existing) {
+      return { attemptId: existing._id, correctCount: existing.correctCount, totalQuestions: existing.totalQuestions, deduped: true };
+    }
+  }
 
   const uaMap = {};
   for (const a of answers) uaMap[a.questionNumber] = (a.userAnswer || '').trim();
@@ -802,19 +814,29 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
   const { correct, skipped: _skipped, wrong: _wrong, reviewed } = gradeQuestionGroups(section.questionGroups || [], getUserAnswer);
   const gradedAnswers = reviewed.map(r => ({ questionNumber: r.questionNumber, userAnswer: r.userAnswer, correctAnswer: r.correctAnswer, isCorrect: r.isCorrect }));
 
-  const attempt = await ListeningPracticeAttempt.create({
-    userId,
-    sectionId,
-    sectionTitle: sectionTitle || section.title || '',
-    partNumber: partNumber || section.partNumber || 1,
-    answers: gradedAnswers,
-    totalQuestions: gradedAnswers.length,
-    correctCount: correct,
-    wrongCount: _wrong,
-    skippedCount: _skipped,
-    timeTaken: timeTaken || 0,
-    submittedAt: new Date()
-  });
+  let attempt;
+  try {
+    attempt = await ListeningPracticeAttempt.create({
+      userId,
+      sectionId,
+      sectionTitle: sectionTitle || section.title || '',
+      partNumber: partNumber || section.partNumber || 1,
+      answers: gradedAnswers,
+      totalQuestions: gradedAnswers.length,
+      correctCount: correct,
+      wrongCount: _wrong,
+      skippedCount: _skipped,
+      timeTaken: timeTaken || 0,
+      submittedAt: new Date(),
+      ...(key ? { clientKey: key } : {}),
+    });
+  } catch (err) {
+    if (err.code === 11000 && key) {
+      const winner = await ListeningPracticeAttempt.findOne({ userId, clientKey: key }).select('_id correctCount totalQuestions').lean();
+      if (winner) return { attemptId: winner._id, correctCount: winner.correctCount, totalQuestions: winner.totalQuestions, deduped: true };
+    }
+    throw err;
+  }
 
   const questionTypeMap = {};
   (section.questionGroups || []).forEach(g => (g.questions || []).forEach(q => { questionTypeMap[q.questionNumber] = q.type; }));

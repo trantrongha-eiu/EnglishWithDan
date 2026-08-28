@@ -9,7 +9,8 @@
 // can still see they were skipped.
 //
 // The 4-skill full mock test is NOT affected either way — it opts out of
-// the review gate on its own (requireReviewComplete.js: ?purpose=mocktest).
+// the review gate on its own (requireReviewComplete.js checks the caller
+// has a real in-progress MockTestAttempt on the current skill step).
 const mongoose = require('mongoose');
 
 const ReviewBypassCodeSchema = new mongoose.Schema({

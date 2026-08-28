@@ -455,6 +455,17 @@ async function getPassageAnswerKey(id) {
 
 async function savePractice(body, userId) {
   const { passageId, passageTitle, category, answers, timeTaken } = body;
+  const clientKey = typeof body.clientKey === 'string' && body.clientKey ? body.clientKey : null;
+
+  // BUG-A07: /practice/save is fire-and-forget from the review screen and
+  // isn't idempotent — a double fire / retry used to create duplicate rows
+  // AND duplicate AttemptReview docs (which pile up against the mandatory-
+  // review gate). If the client sent an idempotency key and we already have
+  // a row for it, return that row and do nothing else.
+  if (clientKey) {
+    const existing = await ReadingPracticeAttempt.findOne({ userId, clientKey }).select('_id').lean();
+    if (existing) return existing._id;
+  }
 
   // Re-grade server-side against the real passage instead of trusting
   // client-supplied isCorrect/correctCount/wrongCount/skippedCount
@@ -481,12 +492,25 @@ async function savePractice(body, userId) {
     skippedCount = g.skippedCount;
   }
 
-  const attempt = await ReadingPracticeAttempt.create({
-    userId, passageId, passageTitle: passageTitle || '', category: category || '',
-    answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
-    wrongCount, skippedCount, timeTaken: timeTaken || 0,
-    submittedAt: new Date()
-  });
+  let attempt;
+  try {
+    attempt = await ReadingPracticeAttempt.create({
+      userId, passageId, passageTitle: passageTitle || '', category: category || '',
+      answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
+      wrongCount, skippedCount, timeTaken: timeTaken || 0,
+      submittedAt: new Date(),
+      ...(clientKey ? { clientKey } : {}),
+    });
+  } catch (err) {
+    // Lost a race against a concurrent identical submit — the (userId,
+    // clientKey) unique index rejected the second insert. Return the winner,
+    // don't create a second review.
+    if (err.code === 11000 && clientKey) {
+      const winner = await ReadingPracticeAttempt.findOne({ userId, clientKey }).select('_id').lean();
+      if (winner) return winner._id;
+    }
+    throw err;
+  }
 
   if (passage) {
     await reviewService.createReviewIfNeeded({
@@ -500,8 +524,19 @@ async function savePractice(body, userId) {
   return attempt._id;
 }
 
-async function getPracticeHistory(userId) {
-  return ReadingPracticeAttempt.find({ userId }).select('-answers').sort({ submittedAt: -1 }).limit(50).lean();
+// BUG-A06: was a bare .limit(50) returning a plain array — no way for the
+// caller to tell "that's all of them" from "silently cut off at 50", the
+// exact gap getHistory() (full tests) was already fixed for (BUG-013).
+// `total` is a real countDocuments() over the same filter, so `hasMore`
+// stays accurate no matter the cap. Shape changed (was a bare array) — the
+// one caller (reading.controller.js) is updated alongside this.
+async function getPracticeHistory(userId, limit = 50) {
+  const filter = { userId };
+  const [attempts, total] = await Promise.all([
+    ReadingPracticeAttempt.find(filter).select('-answers').sort({ submittedAt: -1 }).limit(limit).lean(),
+    ReadingPracticeAttempt.countDocuments(filter),
+  ]);
+  return { attempts, total };
 }
 
 async function getPracticeHistoryDetail(attemptId, userId) {

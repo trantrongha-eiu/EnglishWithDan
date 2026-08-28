@@ -91,6 +91,56 @@ describe('POST /api/listening/practice/save (premium gate)', () => {
     expect(res.body.success).toBe(true);
     expect(res.body.attemptId).toBeTruthy();
   });
+
+  // BUG-A07: same clientKey → same row, no duplicate.
+  test('re-sending the same clientKey is idempotent', async () => {
+    const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
+    const section = await createListeningSection();
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const body = { clientKey: 'lt-idem-1', sectionId: String(section._id), answers: [{ questionNumber: 1, userAnswer: 'x' }], timeTaken: 20 };
+
+    const a = await request(app).post('/api/listening/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    const b = await request(app).post('/api/listening/practice/save').set('Authorization', `Bearer ${token}`).send(body);
+    expect(a.body.attemptId).toBeTruthy();
+    expect(b.body.attemptId).toBe(a.body.attemptId);
+    expect(await ListeningPracticeAttempt.countDocuments({ userId: user._id })).toBe(1);
+  });
+});
+
+// BUG-A11: dictation save-attempt was the one practice-save route with no
+// plan gate, despite creating a real DictationAttempt (admin history + stats).
+describe('POST /api/listening/dictation/save-attempt (premium gate)', () => {
+  const DAY = 24 * 60 * 60 * 1000;
+
+  test('a lapsed-trial free student is blocked with 403 PLAN_REQUIRED', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * DAY) } });
+    const res = await request(app)
+      .post('/api/listening/dictation/save-attempt')
+      .set('Authorization', `Bearer ${signTokenFor(user)}`)
+      .send({ sectionId: '000000000000000000000000', answers: [{ sentenceIndex: 0, isCorrect: true }] });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student passes the gate', async () => {
+    const section = await createListeningSection();
+    const res = await request(app)
+      .post('/api/listening/dictation/save-attempt')
+      .set('Authorization', `Bearer ${signTokenFor(await createPremiumStudent())}`)
+      .send({ sectionId: String(section._id), answers: [{ sentenceIndex: 0, isCorrect: true, matchedWords: 3, totalWords: 3 }] });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+  });
+
+  test('GET /api/listening/dictation/section/:id is also premium-gated (BUG-A01 dedicated route)', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * DAY) } });
+    const res = await request(app)
+      .get('/api/listening/dictation/section/000000000000000000000000')
+      .set('Authorization', `Bearer ${signTokenFor(user)}`);
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
 });
 
 describe('GET /api/listening/history (ownership scoping)', () => {

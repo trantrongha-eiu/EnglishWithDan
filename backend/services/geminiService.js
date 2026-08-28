@@ -324,7 +324,7 @@ async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
           systemInstruction: SPEAKING_SYSTEM,
           responseMimeType: 'application/json',
           temperature: 0.3,
-          maxOutputTokens: 2048, // was 1024 (before that 768) — still not enough headroom for Part 2/3 transcripts, whose longer answers produce richer strengths/mistakes/vocabUpgrades arrays that were hitting the cap and triggering the parse-failure retry (each retry adds a full ~30s round trip, and a second truncation drops the attempt entirely — see backend/controllers/speaking.controller.js's analyze(), which never calls saveAttempt() if grading throws)
+          maxOutputTokens: 2048, // was 1024 (before that 768) — still not enough headroom for Part 2/3 transcripts, whose longer answers produce richer strengths/mistakes/vocabUpgrades arrays that were hitting the cap and triggering the parse-failure retry (each retry adds a full ~30s round trip). A second truncation makes grading throw; speaking.controller.js's analyze() persists a 'pending' attempt BEFORE grading and marks it 'error' on failure, so the submission is no longer lost when that happens — but the student still gets no feedback, so the headroom matters.
           thinkingConfig: { thinkingBudget: 0 }
         }
       }),

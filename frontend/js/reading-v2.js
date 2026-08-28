@@ -3356,12 +3356,15 @@ async function _doSubmitRetry() {
       <span style="font-style:italic">${encourage}</span>
     </div>`;
 
-    // Lưu kết quả lên server. Cố ý KHÔNG tự động thử lại: endpoint này luôn tạo
-    // bản ghi mới (không idempotent), nên gọi lại tự động có thể tạo bản ghi
-    // trùng lặp nếu request đầu đã thành công ở server nhưng phản hồi bị mất.
+    // Lưu kết quả lên server. clientKey (BUG-A07) khiến server chống trùng:
+    // gọi lại cùng key (double-click / render lại / trình duyệt retry) sẽ trả
+    // về bản ghi cũ, không tạo thêm. Gắn 1 lần cho mỗi lượt luyện.
+    _retryState.clientKey = _retryState.clientKey
+      || (crypto.randomUUID ? crypto.randomUUID() : 'rk-' + Date.now() + '-' + Math.random().toString(36).slice(2));
     apiFetch('/api/reading/practice/save', {
       method: 'POST',
       body: JSON.stringify({
+        clientKey:    _retryState.clientKey,
         passageId:    _retryState.practicePassageId,
         passageTitle: passage.title || '',
         category:     _retryState.practiceCategory || '',
@@ -3501,10 +3504,15 @@ function _loadMoreReadingHistory() {
 ══════════════════════════════════════════════════════════════════════ */
 async function showPracticeHistoryModal() {
   try {
-    const res = await apiFetch('/api/reading/practice/history');
+    const res = await apiFetch('/api/reading/practice/history?limit=200');
     const attempts = res.attempts || [];
     const tbody = document.getElementById('practice-history-tbody');
-    tbody.innerHTML = attempts.map(h => {
+    // hasMore is true only if there are more than the 200 most recent — tell
+    // the student instead of silently cutting the list off (BUG-A06).
+    const moreNote = res.hasMore
+      ? `<tr><td colspan="9" class="rd-no-history">Đang hiển thị 200 lần gần nhất (tổng ${res.total}).</td></tr>`
+      : '';
+    tbody.innerHTML = moreNote + attempts.map(h => {
       const date = new Date(h.submittedAt).toLocaleDateString('vi-VN');
       const time = fmtDuration(h.timeTaken);
       const pct  = h.totalQuestions ? Math.round(h.correctCount / h.totalQuestions * 100) : 0;

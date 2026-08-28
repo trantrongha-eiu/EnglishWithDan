@@ -91,6 +91,29 @@ async function getCurrentDoc(userId) {
   }).sort({ createdAt: -1 });
 }
 
+// Server-side proof that `userId` is genuinely partway through a real mock
+// run and is CURRENTLY on the `skill` step — the only thing that legitimises
+// skipping the mandatory-review gate on that skill's /start route
+// (middleware/requireReviewComplete.js). Nothing here is client-supplied:
+//   • userId          → user A can never ride user B's run
+//   • status 'in-progress' → a completed / awaiting-grading / abandoned run
+//                            can't be replayed to keep bypassing the gate
+//   • progress: skill → the bypass is scoped to the exact step the run is
+//                       on; once they advance past Listening, a Listening
+//                       /start no longer bypasses, and vice-versa.
+// (Writing/Speaking never hit requireReviewComplete, so `skill` is only ever
+// 'listening' or 'reading' in practice — the SKILL_ORDER guard just keeps a
+// bad value from building a nonsense query.)
+async function hasActiveMockStep(userId, skill) {
+  if (!SKILL_ORDER.includes(skill)) return false;
+  const doc = await MockTestAttempt.findOne({
+    userId,
+    status: 'in-progress',
+    progress: skill,
+  }).select('_id').lean();
+  return !!doc;
+}
+
 async function startMockTest(userId) {
   // Resume rather than stacking a second open run.
   const existing = await getCurrentDoc(userId);
@@ -359,7 +382,7 @@ async function getAdminHistoryDetail(id) {
 
 module.exports = {
   startMockTest, getCurrent, abandonCurrent, recordViolation,
-  advance, getHistory, getHistoryDetail,
+  advance, getHistory, getHistoryDetail, hasActiveMockStep,
   getAdminHistory, getAdminHistoryDetail,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER
