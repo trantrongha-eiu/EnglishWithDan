@@ -17,7 +17,7 @@
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260903">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260906">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831">
 </head>
 <body>
@@ -460,6 +460,7 @@
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
               <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
+              <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
               <div class="fb-meaning-hint" id="listenMeaning" style="display:none"><i class="fas fa-language"></i> <span id="listenMeaningText"></span></div>
               <div class="listen-hint" id="listenHint"></div>
               <div class="listen-hint" id="listenLetterHint" style="display:none"></div>
@@ -1291,11 +1292,11 @@
 </div>
 
 <script src="js/shared/peer-profile.js?v=20260831"></script>
-<script src="js/dashboard-audio.js?v=20260831"></script>
-<script src="js/dashboard-lesson.js?v=20260831"></script>
+<script src="js/dashboard-audio.js?v=20260906"></script>
+<script src="js/dashboard-lesson.js?v=20260906"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260905"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260832"></script>
+<script src="js/dashboard.js?v=20260906"></script>
 </body>
 </html>

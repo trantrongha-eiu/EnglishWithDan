@@ -850,6 +850,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   color:var(--blue);margin-bottom:14px;transition:all .2s;font-family:inherit;
 }
 .btn-play-audio:hover{background:#eff6ff;border-color:var(--blue)}
+/* 🐢 "read slower" toggle — compact pill under the big Play Audio button */
+.btn-slow-audio{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;background:var(--surface2);border:1.5px solid var(--border2);
+  border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;
+  color:var(--text2);font-family:inherit;margin:-4px 0 14px;transition:all .15s;
+}
+.btn-slow-audio:hover{border-color:var(--blue);color:var(--blue)}
+.btn-slow-audio.active{background:var(--blue);border-color:var(--blue);color:#fff}
 .listen-hint{font-size:13px;color:var(--text2);background:var(--surface2);padding:8px 14px;border-radius:var(--radius-sm);margin-bottom:12px;text-align:center}
 
 .trans-example{

@@ -640,6 +640,7 @@ function renderQuizQuestion() {
         container.innerHTML = shell(`
             <div class="question-number">Listening</div>
             <button class="btn-play-audio" id="qPlayAudioBtn"><i class="fas fa-volume-up"></i> Play Audio</button>
+            <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" id="qSlowAudioBtn" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(q.word.meaning || '')}</div>
             <div class="listen-hint">💡 Từ có ${_letterCount(q.word.word)} chữ cái</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
@@ -655,6 +656,10 @@ function renderQuizQuestion() {
         // serialized through an HTML attribute — same reasoning as the
         // data-idx pattern above.
         document.getElementById('qPlayAudioBtn')?.addEventListener('click', () => speakWord(q.word.word));
+        document.getElementById('qSlowAudioBtn')?.addEventListener('click', () => {
+            if (window.toggleSlowSpeech) window.toggleSlowSpeech(q.word.word);
+        });
+        if (window.syncSlowSpeechBtns) window.syncSlowSpeechBtns();
         speakWord(q.word.word);
     } else if (q.type === 'rearrange') {
         const tokens = q.word.example.split(/\s+/).filter(Boolean);

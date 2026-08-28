@@ -2456,6 +2456,7 @@ function showMixedQuestion() {
               <i class="fas fa-headphones"></i> Listening
             </div>
             <button class="btn-play-audio" onclick="speakWord('${escH(currentWord.word)}')"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
+            <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 The word has ${currentWord.word.length} letters</div>
             <div class="fb-input-row">
               <input class="listen-input" id="mixListenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
@@ -2487,6 +2488,7 @@ function showMixedQuestion() {
           </div>`;
         setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
     }
+    if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
     setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz', () => !_vocabQuizActive);
 }
 
@@ -2783,9 +2785,11 @@ function showListeningQuestion() {
     document.getElementById('listenBtnNext').style.display = 'none';
     // FIX: bỏ auto-play speakWord() — người dùng tự bấm nút "Phát Âm Thanh"
     // Thiết bị Android không Google TTS sẽ crash/im lặng nếu auto-play
+    if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
     setupDictionaryDouble('listeningMode', 'vocab-quiz', () => !_vocabQuizActive);
 }
 function playAudio() { speakWord(currentWord?.word); }
+function slowAudio() { if (typeof toggleSlowSpeech === 'function') toggleSlowSpeech(currentWord?.word); }
 // Progressive letter reveal — each press shows one more letter of the answer
 // (1st press: 1 letter, 2nd: 2, 3rd: 3), capped at LISTEN_HINT_MAX presses so
 // it stays a hint rather than just handing over the whole word.

@@ -28,6 +28,45 @@ function playWrongSound()   { if (!window.isSoundEnabled || window.isSoundEnable
 ══════════════════════════════════════════════ */
 let _ttsCache = {};   // word → audio URL đã tìm được
 
+/* ── Slow-speech toggle (🐢) ───────────────────────────────────────────
+   The word audio in the Listen / Classroom-quiz modes plays too fast for
+   some learners. This flag (persisted, like the sound toggle) makes
+   speakWord() drop the TTS rate / <audio> playbackRate so each sound is
+   easier to catch. Buttons with class .js-slow-speech-btn reflect the
+   state; toggleSlowSpeech(word) flips it and replays `word` at the new
+   speed for instant feedback. */
+let _slowSpeech = false;
+try { _slowSpeech = localStorage.getItem('ews_vocab_slow') === '1'; } catch (e) { /* private mode */ }
+
+function isSlowSpeech() { return _slowSpeech; }
+
+function syncSlowSpeechBtns() {
+    document.querySelectorAll('.js-slow-speech-btn').forEach(b => {
+        b.classList.toggle('active', _slowSpeech);
+        b.setAttribute('aria-pressed', _slowSpeech ? 'true' : 'false');
+    });
+}
+
+function setSlowSpeech(on) {
+    _slowSpeech = !!on;
+    try { localStorage.setItem('ews_vocab_slow', _slowSpeech ? '1' : '0'); } catch (e) { /* ignore */ }
+    syncSlowSpeechBtns();
+}
+
+function toggleSlowSpeech(replayWord) {
+    setSlowSpeech(!_slowSpeech);
+    if (replayWord) speakWord(replayWord);
+}
+
+window.isSlowSpeech       = isSlowSpeech;
+window.setSlowSpeech      = setSlowSpeech;
+window.toggleSlowSpeech   = toggleSlowSpeech;
+window.syncSlowSpeechBtns = syncSlowSpeechBtns;
+
+// Rates: normal keeps the existing 0.85; slow is gentle enough to hear
+// syllables but not so slow the TTS voice warbles.
+const _rate = () => (_slowSpeech ? 0.6 : 0.85);
+
 // Guards against overlapping speakWord() calls (e.g. rapidly flipping
 // flashcards, or auto-play firing for quiz question N+1 before question N's
 // utterance/fallback settled): synth.cancel() on a NEWER call fires the
@@ -52,7 +91,7 @@ async function speakWord(word) {
             synth.cancel();
             const utt = new SpeechSynthesisUtterance(word);
             utt.lang  = 'en-US';
-            utt.rate  = 0.85;
+            utt.rate  = _rate();
             utt.pitch = 1;
             // Chọn voice en-US nếu có
             const enVoice = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang.startsWith('en'));
@@ -126,7 +165,7 @@ async function _speakFallback(word, requestId) {
             synth2.cancel();
             const utt2 = new SpeechSynthesisUtterance(word);
             utt2.lang  = 'en-US';
-            utt2.rate  = 0.85;
+            utt2.rate  = _rate();
             synth2.speak(utt2);
             await new Promise(resolve => {
                 utt2.onend   = resolve;
@@ -147,6 +186,11 @@ function _playAudioUrl(url) {
     try {
         const audio = new Audio(url);
         audio.volume = 1;
+        if (_slowSpeech) {
+            // Keep the pitch natural while slowing the MP3 / Google-TTS clip.
+            try { audio.preservesPitch = true; audio.mozPreservesPitch = true; audio.webkitPreservesPitch = true; } catch (e) {}
+            audio.playbackRate = 0.7;
+        }
         audio.play().catch(() => {
             // Nếu autoplay bị block, không làm gì (tránh crash)
         });
