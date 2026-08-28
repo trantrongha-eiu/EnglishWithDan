@@ -217,7 +217,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=20260909';
+    i18nScript.src = '/js/shared/i18n.js?v=20260910';
     document.body.appendChild(i18nScript);
   }
 
@@ -781,26 +781,40 @@
       .then(function (d) {
         if (!d || !d.success || typeof d.target !== 'number') return;
 
+        var due = d.dueForReview || 0;
+        var canReview = due > 0 && window.AuthService.hasPremiumAccess
+          && window.AuthService.hasPremiumAccess();
+
         if (d.met) {
-          // Small positive confirmation, once per browser session.
+          if (canReview) { _renderVocabGoalCard({ done: true, target: d.target, due: due }); return; }
+          // Nothing due + target met — small positive confirmation, once per session.
           if (sessionStorage.getItem('ews_vocab_goal_done_toast')) return;
           sessionStorage.setItem('ews_vocab_goal_done_toast', '1');
           _renderVocabGoalCard({ done: true, target: d.target });
           return;
         }
-        _renderVocabGoalCard({ done: false, target: d.target, studied: d.studied || 0, remaining: d.remaining });
+        _renderVocabGoalCard({
+          done: false, target: d.target, studied: d.studied || 0, remaining: d.remaining,
+          due: canReview ? due : 0
+        });
       })
       .catch(function () {});
   }
 
+  function _goReviewDue() {
+    // On the vocab page already → launch straight into the due-review quiz;
+    // otherwise navigate there with the trigger param (dashboard.js reads it).
+    if (typeof window.openReviewDueModal === 'function') { window.openReviewDueModal(); return; }
+    location.href = '/dashboard.html?action=review-due';
+  }
+
   function _renderVocabGoalCard(o) {
     if (document.getElementById('nav-vocab-goal-nudge')) return;
-    var pct = o.target ? Math.min(100, Math.round((o.studied || (o.done ? o.target : 0)) / o.target * 100)) : 0;
     var card = document.createElement('div');
     card.id = 'nav-vocab-goal-nudge';
     card.style.cssText = [
       'position:fixed', 'right:20px', 'bottom:92px', 'z-index:1049',
-      'width:300px', 'max-width:calc(100vw - 32px)',
+      'width:310px', 'max-width:calc(100vw - 32px)',
       'background:var(--surface,#fff)', 'color:var(--text,#111827)',
       'border:1px solid var(--border,#e5e7eb)', 'border-radius:14px',
       'box-shadow:0 12px 34px rgba(0,0,0,.18)', 'padding:14px 16px',
@@ -808,21 +822,31 @@
       'transition:opacity .25s ease, transform .25s ease'
     ].join(';');
 
+    // A reusable "N từ đến hạn ôn" block — MochiMochi-style golden-hour nudge.
+    var reviewRow = o.due > 0
+      ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border,#e5e7eb)">' +
+          '<div style="font-size:13px;color:var(--text2,#6b7280);line-height:1.5;margin-bottom:8px">' +
+            '🔁 Bạn có <strong style="color:var(--text,#111827)">' + o.due + ' từ</strong> đến hạn ôn hôm nay.' +
+          '</div>' +
+          '<button id="nav-vocab-review-go" style="width:100%;background:var(--surface2,#f3f4f6);color:var(--text,#111827);border:1px solid var(--border,#e5e7eb);border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🔁 Ôn ngay</button>' +
+        '</div>'
+      : '';
+
     if (o.done) {
+      // Target met. Either a plain ✅ (auto-fade) or ✅ + the review row (kept).
       card.innerHTML =
+        '<button aria-label="Đóng" style="position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;line-height:1;color:var(--text3,#9ca3af);cursor:pointer;padding:4px">&times;</button>' +
         '<div style="display:flex;align-items:center;gap:10px">' +
           '<span style="font-size:22px">✅</span>' +
-          '<div style="font-size:13.5px;line-height:1.5">Bạn đã học đủ <strong>' + o.target + ' từ vựng</strong> hôm nay. Giữ phong độ nhé! 🔥</div>' +
-        '</div>';
+          '<div style="font-size:13.5px;line-height:1.5">Đã học đủ <strong>' + o.target + ' từ mới</strong> hôm nay. Giữ phong độ! 🔥</div>' +
+        '</div>' + reviewRow;
       document.body.appendChild(card);
       requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
-      setTimeout(function () {
-        card.style.opacity = '0'; card.style.transform = 'translateY(12px)';
-        setTimeout(function () { card.remove(); }, 300);
-      }, 4000);
+      _wireVocabGoalCard(card, !!reviewRow /* keep = has an action */);
       return;
     }
 
+    var pct = o.target ? Math.min(100, Math.round(o.studied / o.target * 100)) : 0;
     card.innerHTML =
       '<button aria-label="Đóng" style="position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;line-height:1;color:var(--text3,#9ca3af);cursor:pointer;padding:4px">&times;</button>' +
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
@@ -836,18 +860,27 @@
       '<div style="height:7px;background:var(--surface2,#f3f4f6);border-radius:99px;overflow:hidden;margin-bottom:12px">' +
         '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f59e0b,#e53935);border-radius:99px"></div>' +
       '</div>' +
-      '<button id="nav-vocab-goal-go" style="width:100%;background:var(--brand,#e53935);color:#fff;border:none;border-radius:9px;padding:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Học ngay</button>';
+      '<button id="nav-vocab-goal-go" style="width:100%;background:var(--brand,#e53935);color:#fff;border:none;border-radius:9px;padding:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Học ngay</button>' +
+      reviewRow;
 
     document.body.appendChild(card);
     requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
+    _wireVocabGoalCard(card, true);
+  }
 
-    card.querySelector('button[aria-label="Đóng"]').addEventListener('click', function () {
+  function _wireVocabGoalCard(card, keep) {
+    function close() {
       card.style.opacity = '0'; card.style.transform = 'translateY(12px)';
       setTimeout(function () { card.remove(); }, 250);
-    });
-    card.querySelector('#nav-vocab-goal-go').addEventListener('click', function () {
-      location.href = '/dashboard.html';
-    });
+    }
+    var x = card.querySelector('button[aria-label="Đóng"]');
+    if (x) x.addEventListener('click', close);
+    var go = card.querySelector('#nav-vocab-goal-go');
+    if (go) go.addEventListener('click', function () { location.href = '/dashboard.html'; });
+    var rev = card.querySelector('#nav-vocab-review-go');
+    if (rev) rev.addEventListener('click', _goReviewDue);
+    // Auto-dismiss only the pure ✅ confirmation (nothing actionable on it).
+    if (!keep) setTimeout(close, 4000);
   }
 
   // Free-plan trial expired — shows the shared upgrade paywall

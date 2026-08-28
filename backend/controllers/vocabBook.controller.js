@@ -62,7 +62,10 @@ exports.getVocabStats = guard(async (req, res) => {
 exports.getDailyGoal = guard(async (req, res) => {
   const targetBand = req.user.targetBand || null;
   const target = streakBonusService.dailyWordTargetForBand(targetBand);
-  const studied = await streakBonusService.vocabStudiedToday(req.user._id);
+  const [studied, dueForReview] = await Promise.all([
+    streakBonusService.vocabStudiedToday(req.user._id),
+    vocabBookService.countDueWords(req.user._id),
+  ]);
   res.json({
     success: true,
     target,
@@ -70,6 +73,10 @@ exports.getDailyGoal = guard(async (req, res) => {
     remaining: Math.max(0, target - studied),
     met: studied >= target,
     targetBand,
+    // MochiMochi-style "giờ vàng": words whose SRS nextReviewAt has come up
+    // (or never reviewed). The frontend gates the "Ôn ngay" action on
+    // premium since the review quiz is a full-access feature.
+    dueForReview,
   });
 });
 

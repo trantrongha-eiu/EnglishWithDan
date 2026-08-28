@@ -495,6 +495,14 @@
     'Ôn tập hôm nay': "Today's review",
     'Từ đến hạn ôn': 'Words due for review',
     'Ôn lại từ hay sai': 'Review your frequent mistakes',
+    // Daily vocab-goal nudge (nav.js) — fragments around <strong> counts
+    '🔁 Bạn có': '🔁 You have',
+    'đến hạn ôn hôm nay.': 'due for review today.',
+    '🔁 Ôn ngay': '🔁 Review now',
+    'Đã học đủ': 'Studied all',
+    'hôm nay. Giữ phong độ! 🔥': 'today. Keep it up! 🔥',
+    '— bạn đã học': '— studied',
+    ', còn': ', remaining',
 
     // goal.html — labels left Vietnamese after the earlier in-place i18n
     'Trình độ IELTS hiện tại (tự đánh giá, không bắt buộc)': 'Current IELTS level (self-assessed, optional)',
@@ -553,6 +561,7 @@
     [/^(\d+)\/(\d+) từ$/, '$1/$2 words'],
     [/^(\d+)\/(\d+) câu$/, '$1/$2 questions'],
     [/^(\d+) từ$/, '$1 words'],
+    [/^(\d+) từ mới$/, '$1 new words'],
     [/^(\d+) câu$/, '$1 questions'],
     [/^(\d+) bài$/, '$1 tests'],
     [/^Câu (\d+)$/, 'Question $1'],

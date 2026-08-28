@@ -533,6 +533,20 @@ async function getDueWords(userId, limit = 30) {
   ]);
 }
 
+// Just the COUNT of words due for review right now — same predicate as
+// getDueWords() but no unwind→sort→limit→project payload, so it's cheap
+// enough to call on every page load (the daily-goal nudge in nav.js).
+async function countDueWords(userId) {
+  const now = new Date();
+  const [r] = await VocabBook.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $unwind: '$words' },
+    { $match: { $or: [{ 'words.nextReviewAt': { $lte: now } }, { 'words.nextReviewAt': null }] } },
+    { $count: 'n' },
+  ]);
+  return r ? r.n : 0;
+}
+
 // A word gotten wrong this many times or more counts as "weak" — matches
 // the existing ">= 3" convention dashboard.js's "Ôn lại từ hay sai" button
 // already uses (frontend/js/dashboard.js's renderBookContent/hardBtn and
@@ -593,5 +607,5 @@ async function getWeakWords(userId, limit = 20) {
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
-  getDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
+  getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
 };

@@ -269,6 +269,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else if (viewParam === 'lesson' && lessonIdParam) {
         openLesson(lessonIdParam, false);
     }
+
+    // ?action=review-due — the "🔁 Ôn ngay" button in nav.js's daily vocab
+    // nudge lands here (from another page). Launch the SRS due-review quiz
+    // straight away, then clean the param so a refresh doesn't re-fire it.
+    if (params.get('action') === 'review-due' && typeof openReviewDueModal === 'function') {
+        history.replaceState(history.state, '', location.pathname);
+        openReviewDueModal();
+    }
 });
 
 // Distinct from closeUnitView() (which returns to whatever book was open

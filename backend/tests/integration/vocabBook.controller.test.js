@@ -8,6 +8,7 @@ const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createVocabBook } = require('../factories/contentFactory');
 const VocabActivity = require('../../models/VocabActivity');
+const VocabBook = require('../../models/VocabBook');
 const { todayVNDate } = require('../../services/streakBonusService');
 
 describe('DELETE /api/vocabbook/:id/words', () => {
@@ -133,5 +134,28 @@ describe('GET /api/vocabbook/daily-goal', () => {
     const token = signTokenFor(await createStudent({ extra: { targetBand: 6.0 } }));
     const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
     expect(res.body).toMatchObject({ target: 50, studied: 0, remaining: 50, met: false });
+  });
+
+  test('dueForReview counts SRS-due words (past nextReviewAt OR never reviewed)', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const past = new Date(Date.now() - 86400000);
+    const future = new Date(Date.now() + 86400000);
+    await VocabBook.create({
+      userId: student._id, name: 'S',
+      words: [
+        { word: 'a', nextReviewAt: past },      // due
+        { word: 'b', nextReviewAt: null },       // never reviewed → due
+        { word: 'c', nextReviewAt: future },     // not due
+      ],
+    });
+    const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
+    expect(res.body.dueForReview).toBe(2);
+  });
+
+  test('dueForReview is 0 when the student has no books', async () => {
+    const res = await request(app).get('/api/vocabbook/daily-goal')
+      .set('Authorization', `Bearer ${signTokenFor(await createStudent())}`);
+    expect(res.body.dueForReview).toBe(0);
   });
 });
