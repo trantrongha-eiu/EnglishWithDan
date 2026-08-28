@@ -81,91 +81,150 @@ export default function ReviewBypassCodes() {
     );
   }
 
+  const activeCount = codes.filter(c => c.redeemable).length;
+  const PANEL = {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)',
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div className="card" style={{ padding: 16 }}>
-        <p style={{ margin: '0 0 12px', fontSize: 13, color: 'var(--text2)' }}>
-          Mã cho học sinh nhập để <strong>bỏ qua yêu cầu Review</strong> (ép review sau mỗi 3 bài).
-          Học sinh nhập ở màn hình bị chặn của Reading / Listening. Mỗi học sinh chỉ dùng được 1 lần / mã.
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+      {/* ── Intro callout ── */}
+      <div style={{
+        ...PANEL, display: 'flex', gap: 12, padding: '14px 16px',
+        borderLeft: '3px solid var(--blue)', fontSize: 13, lineHeight: 1.6, color: 'var(--text2)',
+      }}>
+        <span style={{ fontSize: 18, lineHeight: 1.3 }}>🎫</span>
+        <div>
+          Mã cho học sinh nhập để <strong style={{ color: 'var(--text)' }}>bỏ qua yêu cầu Review</strong> (ép
+          review sau mỗi 3 bài). Học sinh nhập ở màn hình bị chặn của Reading / Listening.
+          Mỗi học sinh chỉ dùng được <strong style={{ color: 'var(--text)' }}>1 lần / mã</strong>.
+          <br />
           Thi thử Full 4 kỹ năng không bị ràng buộc bởi review nên không cần mã.
-        </p>
-        <form onSubmit={create} style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'flex-end' }}>
-          <label style={{ fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            Ghi chú
-            <input value={form.label} onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
-              placeholder="VD: Lớp A2 – tuần 3" style={{ padding: '7px 10px', minWidth: 180 }} />
-          </label>
-          <label style={{ fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            Mã (bỏ trống = tự tạo)
-            <input value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))}
-              placeholder="TỰ ĐỘNG" maxLength={16} style={{ padding: '7px 10px', width: 130, textTransform: 'uppercase', letterSpacing: 1 }} />
-          </label>
-          <label style={{ fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            Số lượt (0 = không giới hạn)
-            <input type="number" min="0" value={form.maxUses}
-              onChange={e => setForm(f => ({ ...f, maxUses: e.target.value }))}
-              style={{ padding: '7px 10px', width: 90 }} />
-          </label>
-          <label style={{ fontSize: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            Hết hạn (tuỳ chọn)
-            <input type="date" value={form.expiresAt}
-              onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))}
-              style={{ padding: '6px 10px' }} />
-          </label>
-          <button className="btn btn-primary" disabled={creating} style={{ height: 34 }}>
-            {creating ? 'Đang tạo…' : '+ Tạo mã'}
-          </button>
-        </form>
+        </div>
       </div>
 
-      <div className="card" style={{ padding: 0, overflowX: 'auto' }}>
-        {loading ? (
-          <div style={{ padding: 24, textAlign: 'center', color: 'var(--text3)' }}>Đang tải…</div>
-        ) : codes.length === 0 ? (
-          <div style={{ padding: 24, textAlign: 'center', color: 'var(--text3)' }}>Chưa có mã nào.</div>
-        ) : (
-          <table className="table" style={{ width: '100%', fontSize: 13 }}>
+      {/* ── Create form ── */}
+      <form onSubmit={create} style={{ ...PANEL, padding: 18 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.5px', color: 'var(--text3)', marginBottom: 14 }}>
+          Tạo mã mới
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, alignItems: 'end' }}>
+          <Field label="Ghi chú">
+            <input className="form-input" value={form.label}
+              onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
+              placeholder="VD: Lớp A2 – tuần 3" />
+          </Field>
+          <Field label="Mã" hint="Bỏ trống = tự tạo">
+            <input className="form-input" value={form.code} maxLength={16}
+              onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))}
+              placeholder="TỰ ĐỘNG"
+              style={{ fontFamily: 'var(--mono)', letterSpacing: '1.5px', textTransform: 'uppercase' }} />
+          </Field>
+          <Field label="Số lượt" hint="0 = không giới hạn">
+            <input className="form-input" type="number" min="0" value={form.maxUses}
+              onChange={e => setForm(f => ({ ...f, maxUses: e.target.value }))} />
+          </Field>
+          <Field label="Hết hạn" hint="Tuỳ chọn">
+            <input className="form-input" type="date" value={form.expiresAt}
+              onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))} />
+          </Field>
+          <button className="btn btn-primary" disabled={creating}>
+            {creating ? 'Đang tạo…' : '+ Tạo mã'}
+          </button>
+        </div>
+      </form>
+
+      {/* ── Codes table ── */}
+      <div>
+        <div className="section-header" style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
+            Danh sách mã
+            {!loading && (
+              <span style={{ color: 'var(--text3)', fontWeight: 500, marginLeft: 8 }}>
+                {codes.length} mã · {activeCount} dùng được
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="table-wrap">
+          <table>
             <thead>
               <tr>
-                <th>Mã</th><th>Ghi chú</th><th>Lượt dùng</th><th>Hết hạn</th>
-                <th>Tạo lúc</th><th>Trạng thái</th><th></th>
+                <th>Mã</th>
+                <th>Ghi chú</th>
+                <th>Lượt dùng</th>
+                <th>Hết hạn</th>
+                <th>Tạo lúc</th>
+                <th>Trạng thái</th>
+                <th style={{ textAlign: 'right' }}>Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {codes.map(c => (
-                <tr key={c._id} style={{ opacity: c.active ? 1 : 0.55 }}>
+              {loading ? (
+                <tr><td colSpan={7} className="table-empty">Đang tải…</td></tr>
+              ) : codes.length === 0 ? (
+                <tr><td colSpan={7} className="table-empty">Chưa có mã nào. Tạo mã đầu tiên ở trên.</td></tr>
+              ) : codes.map(c => (
+                <tr key={c._id} style={{ opacity: c.active ? 1 : 0.5 }}>
                   <td>
-                    <button className="btn btn-ghost btn-sm" onClick={() => copy(c.code)} title="Copy"
-                      style={{ fontFamily: 'monospace', fontWeight: 700, letterSpacing: 1 }}>
-                      {c.code} 📋
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => copy(c.code)}
+                      title="Copy mã"
+                      style={{ fontFamily: 'var(--mono)', fontWeight: 700, letterSpacing: '1.5px', gap: 8 }}
+                    >
+                      {c.code}<span style={{ opacity: 0.6 }}>📋</span>
                     </button>
                   </td>
                   <td>{c.label || <span style={{ color: 'var(--text3)' }}>—</span>}</td>
-                  <td>{c.usedCount}{c.maxUses === 0 ? ' / ∞' : ` / ${c.maxUses}`}</td>
-                  <td>{c.expiresAt ? formatDate(c.expiresAt) : <span style={{ color: 'var(--text3)' }}>—</span>}</td>
-                  <td>{formatDate(c.createdAt)}</td>
-                  <td>
-                    {c.redeemable
-                      ? <span className="badge badge-green">Dùng được</span>
-                      : c.active
-                        ? <span className="badge badge-red">Hết lượt/hạn</span>
-                        : <span className="badge badge-gray">Đã khoá</span>}
+                  <td style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    <strong>{c.usedCount}</strong>
+                    <span style={{ color: 'var(--text3)' }}>{c.maxUses === 0 ? ' / ∞' : ` / ${c.maxUses}`}</span>
                   </td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <button className="btn btn-ghost btn-sm" onClick={() => toggleActive(c)}>
-                      {c.active ? 'Khoá' : 'Mở lại'}
-                    </button>
-                    {isAdmin && (
-                      <button className="btn btn-ghost btn-sm" onClick={() => remove(c)}
-                        style={{ color: 'var(--danger, #dc2626)' }}>Xoá</button>
-                    )}
+                    {c.expiresAt ? formatDate(c.expiresAt) : <span style={{ color: 'var(--text3)' }}>—</span>}
+                  </td>
+                  <td style={{ whiteSpace: 'nowrap', color: 'var(--text2)' }}>{formatDate(c.createdAt)}</td>
+                  <td>
+                    {!c.active
+                      ? <span className="badge badge-gray"><span className="dot" />Đã khoá</span>
+                      : c.redeemable
+                        ? <span className="badge badge-green"><span className="dot" />Dùng được</span>
+                        : <span className="badge badge-yellow"><span className="dot" />Hết lượt / hạn</span>}
+                  </td>
+                  <td>
+                    <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
+                      <button
+                        className={`btn btn-sm ${c.active ? 'btn-ghost' : 'btn-success'}`}
+                        onClick={() => toggleActive(c)}
+                      >
+                        {c.active ? 'Khoá' : 'Mở lại'}
+                      </button>
+                      {isAdmin && (
+                        <button className="btn btn-sm btn-danger" onClick={() => remove(c)}>Xoá</button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
+        </div>
       </div>
     </div>
+  );
+}
+
+function Field({ label, hint, children }) {
+  return (
+    <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.5px', color: 'var(--text)' }}>
+        {label}
+        {hint && <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: 'var(--text3)', marginLeft: 6 }}>{hint}</span>}
+      </span>
+      {children}
+    </label>
   );
 }
