@@ -887,6 +887,19 @@
                 return;
             }
 
+            // Deep-link into a past Listening review (?review=<attemptId>).
+            // Used by review-history.html's mock-test history rows so students
+            // can open the Listening portion of a full mock — mirrors
+            // reading.html?review=<id>. reviewFromHistory() is self-contained
+            // (fetches /listening/history/:id → goToReview()), so the test
+            // list isn't needed here.
+            const _ltReviewParam = new URLSearchParams(location.search).get('review');
+            if (_ltReviewParam) {
+                history.replaceState({ screen: 'review', reviewId: _ltReviewParam }, '', `?review=${_ltReviewParam}`);
+                await reviewFromHistory(_ltReviewParam);
+                return;
+            }
+
             await loadTestList();
             checkResumeExam();
 

@@ -251,6 +251,7 @@
           ? `<span class="mt-violation" title="Số lần rời khỏi tab khi đang thi">⚠️ Vi phạm thi cử · ${a.proctor.violationCount || 0} gậy</span>`
           : '';
         const links = [];
+        if (a.steps.listening && a.steps.listening.attemptId) links.push(`<a href="listening.html?review=${a.steps.listening.attemptId}">Xem lại Listening</a>`);
         if (a.steps.reading && a.steps.reading.attemptId) links.push(`<a href="reading.html?review=${a.steps.reading.attemptId}">Xem lại Reading</a>`);
         links.push(`<a href="speaking.html?tab=history">Lịch sử Speaking</a>`);
         links.push(`<a href="writing.html">Lịch sử Writing</a>`);
