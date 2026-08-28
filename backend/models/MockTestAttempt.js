@@ -25,6 +25,17 @@ const stepSchema = new mongoose.Schema({
   completedAt: { type: Date }
 }, { _id: false });
 
+// Client-side proctoring: the mock skill pages report every time the
+// student leaves the exam tab (hides it, blurs the window, or tries to
+// close it). We can't PREVENT that in a browser — this just counts it
+// ("gậy") and flags the run so a teacher can see it. See
+// frontend/js/shared/mock-test.js (MockTest proctor) + recordViolation().
+const proctorEventSchema = new mongoose.Schema({
+  type:  { type: String, enum: ['hidden', 'blur', 'unload-attempt'], required: true },
+  skill: { type: String, enum: ['listening', 'reading', 'writing', 'speaking'] },
+  at:    { type: Date, default: Date.now }
+}, { _id: false });
+
 const MockTestAttemptSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -71,6 +82,13 @@ const MockTestAttemptSchema = new mongoose.Schema({
     // keep living in their own per-skill histories.
     enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned'],
     default: 'in-progress'
+  },
+
+  // Tab-switching / focus-loss log during the exam (best-effort proctoring).
+  proctor: {
+    violationCount: { type: Number, default: 0 },
+    violated:       { type: Boolean, default: false },
+    events:         { type: [proctorEventSchema], default: [] }
   }
 }, { timestamps: true });
 

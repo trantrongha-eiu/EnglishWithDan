@@ -373,6 +373,7 @@
     'Lịch sử thi thử': 'Mock test history',
     'Bỏ qua & làm lại': 'Discard & restart',
     'Đang huỷ…': 'Cancelling…',
+    'Đang giám sát': 'Proctoring',
     'Bắt đầu thi thử': 'Start mock test',
     'Đang tạo đề…': 'Generating…',
     'Chưa có bài học nào': 'No lessons yet',

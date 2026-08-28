@@ -58,6 +58,7 @@
   async function advance(skill, subAttemptId) {
     var x = params();
     if (!x.mockId) return;
+    stopProctor();  // legit end-of-skill navigation must not log a violation
     try {
       var res = await fetch(API + '/mock-test/' + encodeURIComponent(x.mockId) + '/advance', {
         method: 'POST',
@@ -105,6 +106,178 @@
     }, 5000);
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     Proctoring (best-effort). A browser tab CANNOT stop the student
+     switching away — so we detect it (visibilitychange → hidden, window
+     blur, a close/leave attempt) and, each time:
+       • sound a short alarm
+       • flash the screen red + the tab title
+       • bump the on-screen "gậy" counter
+       • POST /mock-test/:id/violation  → server flags the run "violated"
+         and keeps the running count (visible later to a teacher).
+     Auto-starts on any skill page opened in mock mode; stops the moment
+     the student legitimately advances to the next skill.
+     ══════════════════════════════════════════════════════════════════ */
+  var _proctor = null;
+
+  function _makeBadge() {
+    var b = document.createElement('div');
+    b.id = 'mock-proctor-badge';
+    b.style.cssText = [
+      'position:fixed', 'left:12px', 'bottom:12px', 'z-index:2147483400',
+      'font:700 12px/1.2 inherit', 'padding:7px 12px', 'border-radius:999px',
+      'display:flex', 'align-items:center', 'gap:6px', 'pointer-events:none',
+      'background:rgba(31,41,55,.92)', 'color:#e5e7eb',
+      'box-shadow:0 4px 14px rgba(0,0,0,.28)', 'transition:background .2s,color .2s',
+      'max-width:60vw', 'white-space:nowrap'
+    ].join(';');
+    b.innerHTML = '<span aria-hidden="true">👁️</span><span class="mp-txt">Đang giám sát</span>';
+    document.body.appendChild(b);
+    return b;
+  }
+
+  function _renderBadge() {
+    if (!_proctor || !_proctor.badge) return;
+    var n = _proctor.count;
+    var txt = _proctor.badge.querySelector('.mp-txt');
+    if (n > 0) {
+      _proctor.badge.style.background = '#b91c1c';
+      _proctor.badge.style.color = '#fff';
+      if (txt) txt.textContent = 'Gậy: ' + n + ' — quay lại bài thi!';
+    } else {
+      _proctor.badge.style.background = 'rgba(31,41,55,.92)';
+      _proctor.badge.style.color = '#e5e7eb';
+      if (txt) txt.textContent = 'Đang giám sát';
+    }
+  }
+
+  function _alarm() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!_proctor.actx) _proctor.actx = new AC();
+      var ctx = _proctor.actx;
+      if (ctx.state === 'suspended') ctx.resume();
+      var t0 = ctx.currentTime;
+      [0, 0.22, 0.44].forEach(function (off) {
+        var osc = ctx.createOscillator();
+        var g = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, t0 + off);
+        g.gain.setValueAtTime(0.0001, t0 + off);
+        g.gain.exponentialRampToValueAtTime(0.25, t0 + off + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + off + 0.16);
+        osc.connect(g); g.connect(ctx.destination);
+        osc.start(t0 + off); osc.stop(t0 + off + 0.18);
+      });
+    } catch (_) {}
+  }
+
+  function _flash() {
+    var el = document.getElementById('mock-proctor-flash');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'mock-proctor-flash';
+      el.style.cssText = [
+        'position:fixed', 'inset:0', 'z-index:2147483600', 'pointer-events:none',
+        'background:#ef4444', 'opacity:0', 'transition:opacity .18s ease'
+      ].join(';');
+      document.body.appendChild(el);
+    }
+    var pulses = 6, i = 0;
+    clearInterval(_proctor && _proctor.flashTimer);
+    var timer = setInterval(function () {
+      el.style.opacity = (i % 2 === 0) ? '0.6' : '0';
+      if (++i >= pulses) { clearInterval(timer); el.style.opacity = '0'; }
+    }, 200);
+    if (_proctor) _proctor.flashTimer = timer;
+    // Title nag
+    if (!_proctor.origTitle) _proctor.origTitle = document.title;
+    document.title = '⚠️ QUAY LẠI BÀI THI';
+    clearTimeout(_proctor.titleTimer);
+    _proctor.titleTimer = setTimeout(function () {
+      if (_proctor && _proctor.origTitle) document.title = _proctor.origTitle;
+    }, 4000);
+  }
+
+  function _report(type) {
+    if (!_proctor) return;
+    var body = JSON.stringify({ type: type, skill: _proctor.skill });
+    var url = API + '/mock-test/' + encodeURIComponent(_proctor.mockId) + '/violation';
+    try {
+      fetch(url, { method: 'POST', headers: h(), body: body, keepalive: true })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && typeof d.violationCount === 'number') {
+            _proctor.count = d.violationCount;
+            _renderBadge();
+          }
+        })
+        .catch(function () {});
+    } catch (_) {}
+  }
+
+  // A tab switch fires blur AND visibilitychange — collapse to one "leave".
+  function _onLeave(type) {
+    if (!_proctor || _proctor.navigatingAway) return;
+    var now = Date.now();
+    if (now - _proctor.lastLeaveAt < 1500) return;
+    _proctor.lastLeaveAt = now;
+    _proctor.count += 1;
+    _renderBadge();
+    _alarm();
+    _flash();
+    _report(type);
+  }
+
+  function startProctor() {
+    var x = params();
+    if (!x.mockId || !x.skill || _proctor) return;
+    _proctor = {
+      mockId: x.mockId, skill: x.skill, count: 0,
+      lastLeaveAt: 0, navigatingAway: false,
+      badge: null, actx: null, flashTimer: null, titleTimer: null, origTitle: null
+    };
+    var start = function () {
+      if (!_proctor) return;
+      _proctor.badge = _makeBadge();
+      _renderBadge();
+    };
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start, { once: true });
+
+    _proctor.onVis = function () { if (document.hidden) _onLeave('hidden'); };
+    _proctor.onBlur = function () {
+      // Ignore blur caused by focus moving to an element inside our own page
+      // (iframes, some widgets). Real "left the window" → document has no focus.
+      setTimeout(function () { if (!document.hasFocus()) _onLeave('blur'); }, 120);
+    };
+    _proctor.onBeforeUnload = function (e) {
+      if (!_proctor || _proctor.navigatingAway) return;
+      _report('unload-attempt');
+      e.preventDefault();
+      e.returnValue = 'Bạn đang làm bài thi thử. Rời khỏi trang sẽ bị tính là vi phạm.';
+      return e.returnValue;
+    };
+    document.addEventListener('visibilitychange', _proctor.onVis);
+    window.addEventListener('blur', _proctor.onBlur);
+    window.addEventListener('beforeunload', _proctor.onBeforeUnload);
+  }
+
+  function stopProctor() {
+    if (!_proctor) return;
+    _proctor.navigatingAway = true;
+    document.removeEventListener('visibilitychange', _proctor.onVis);
+    window.removeEventListener('blur', _proctor.onBlur);
+    window.removeEventListener('beforeunload', _proctor.onBeforeUnload);
+    clearInterval(_proctor.flashTimer);
+    clearTimeout(_proctor.titleTimer);
+    if (_proctor.origTitle) document.title = _proctor.origTitle;
+    if (_proctor.badge && _proctor.badge.parentNode) _proctor.badge.parentNode.removeChild(_proctor.badge);
+    var fl = document.getElementById('mock-proctor-flash');
+    if (fl && fl.parentNode) fl.parentNode.removeChild(fl);
+    _proctor = null;
+  }
+
   window.MockTest = {
     params: params,
     active: active,
@@ -112,8 +285,19 @@
     fetchCurrent: fetchCurrent,
     advance: advance,
     showBanner: showBanner,
+    startProctor: startProctor,
+    stopProctor: stopProctor,
     SKILL_PAGE: SKILL_PAGE,
     SKILL_LABEL: SKILL_LABEL,
     STEP_INDEX: STEP_INDEX
   };
+
+  // Auto-arm on any skill page loaded in mock mode.
+  if (active()) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startProctor, { once: true });
+    } else {
+      startProctor();
+    }
+  }
 })();

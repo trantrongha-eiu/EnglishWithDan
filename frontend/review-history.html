@@ -41,6 +41,9 @@
     .mt-overall-row { margin: 6px 0 10px; }
     .mt-overall { font-size: 15px; font-weight: 800; color: var(--text); }
     .mt-overall.pending { font-size: 13px; font-weight: 600; color: var(--text3, #9ca3af); }
+    .mt-violation { display: inline-block; margin-left: 10px; font-size: 12px; font-weight: 800; color: #b91c1c;
+      background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 3px 9px; vertical-align: middle; }
+    [data-theme="dark"] .mt-violation { background: rgba(185,28,28,.15); color: #fca5a5; border-color: rgba(185,28,28,.4); }
     .mt-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
     .mt-chip { font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 9px; border: 1px solid var(--border); }
     .mt-chip.done { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
@@ -244,6 +247,9 @@
           ? `<span class="mt-overall">Band tổng ${Number(a.overallBand).toFixed(1)}</span>`
           : `<span class="mt-overall pending">${a.status === 'in-progress' ? 'Đang làm dở' : 'Đang chờ chấm Writing / Speaking'}</span>`;
         const chips = MT_SKILLS.map(([s, l]) => mtChip(l, a.steps[s])).join('');
+        const violated = a.proctor && a.proctor.violated
+          ? `<span class="mt-violation" title="Số lần rời khỏi tab khi đang thi">⚠️ Vi phạm thi cử · ${a.proctor.violationCount || 0} gậy</span>`
+          : '';
         const links = [];
         if (a.steps.reading && a.steps.reading.attemptId) links.push(`<a href="reading.html?review=${a.steps.reading.attemptId}">Xem lại Reading</a>`);
         links.push(`<a href="speaking.html?tab=history">Lịch sử Speaking</a>`);
@@ -251,7 +257,7 @@
         if (a.status === 'in-progress') links.unshift(`<a href="dashboard.html">Tiếp tục thi thử</a>`);
         return `<div class="card rh-item"><div class="card-body">
             <div class="rh-item-meta"><span class="badge badge-primary">🎯 Thi thử Full 4 kỹ năng</span><span>${d}</span></div>
-            <div class="mt-overall-row">${overall}</div>
+            <div class="mt-overall-row">${overall}${violated}</div>
             <div class="mt-chips">${chips}</div>
             <div class="mt-links">${links.join(' · ')}</div>
           </div></div>`;

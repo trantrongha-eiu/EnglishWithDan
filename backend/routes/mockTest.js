@@ -12,6 +12,7 @@ router.post('/start', auth, requirePremium('Bạn cần nâng cấp lên Premium
 router.get('/current', auth, ctrl.current);
 router.delete('/current', auth, ctrl.abandon);
 router.post('/:id/advance', auth, ctrl.advance);
+router.post('/:id/violation', auth, ctrl.violation);
 router.get('/history', auth, ctrl.history);
 router.get('/history/:id', auth, ctrl.historyDetail);
 

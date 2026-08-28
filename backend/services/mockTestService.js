@@ -147,6 +147,41 @@ async function abandonCurrent(userId) {
   return { abandoned: true, attemptId: String(doc._id) };
 }
 
+const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt'];
+const PROCTOR_EVENT_CAP = 200; // keep the most recent N, never grow unbounded
+
+// A mock skill page reported the student leaving the exam tab. Bump the
+// counter + flag the run. Only counts while the run is still open; once
+// it's graded/completed/abandoned this is a no-op that just echoes the
+// current tally back.
+async function recordViolation(userId, mockId, { type, skill } = {}) {
+  if (!mongoose.isValidObjectId(mockId)) throw new ValidationError('mockId không hợp lệ');
+  if (!PROCTOR_TYPES.includes(type)) throw new ValidationError('Loại vi phạm không hợp lệ');
+
+  const doc = await MockTestAttempt.findOne({ _id: mockId, userId });
+  if (!doc) throw new NotFoundError('Không tìm thấy bài thi thử');
+
+  if (!doc.proctor) doc.proctor = { violationCount: 0, violated: false, events: [] };
+
+  if (doc.status !== 'in-progress') {
+    return { violationCount: doc.proctor.violationCount || 0, violated: !!doc.proctor.violated };
+  }
+
+  doc.proctor.violationCount = (doc.proctor.violationCount || 0) + 1;
+  doc.proctor.violated = true;
+  doc.proctor.events.push({
+    type,
+    skill: SKILL_ORDER.includes(skill) ? skill : undefined,
+    at: new Date()
+  });
+  if (doc.proctor.events.length > PROCTOR_EVENT_CAP) {
+    doc.proctor.events = doc.proctor.events.slice(-PROCTOR_EVENT_CAP);
+  }
+  await doc.save();
+
+  return { violationCount: doc.proctor.violationCount, violated: true };
+}
+
 async function advance(userId, mockId, { skill, attemptId }) {
   if (!mongoose.isValidObjectId(mockId)) throw new ValidationError('mockId không hợp lệ');
   if (!SKILL_ORDER.includes(skill)) throw new ValidationError('skill không hợp lệ');
@@ -261,12 +296,20 @@ function publicShape(doc) {
       reading: step('reading'),
       writing: step('writing'),
       speaking: step('speaking')
+    },
+    proctor: {
+      violationCount: (doc.proctor && doc.proctor.violationCount) || 0,
+      violated: !!(doc.proctor && doc.proctor.violated),
+      events: ((doc.proctor && doc.proctor.events) || []).map(e => ({
+        type: e.type, skill: e.skill || null, at: e.at
+      }))
     }
   };
 }
 
 module.exports = {
-  startMockTest, getCurrent, abandonCurrent, advance, getHistory, getHistoryDetail,
+  startMockTest, getCurrent, abandonCurrent, recordViolation,
+  advance, getHistory, getHistoryDetail,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER
 };
