@@ -22,6 +22,8 @@ const TITLES = {
   '/task1-exercises':        'Task 1 Grammar Exercises',
   '/task2-exercises':        'Task 2 Writing Exercises',
   '/task2-templates':        'Task 2 Templates',
+  '/monitoring':             'Theo dõi luyện tập',
+  '/mock-tests':             'Thi thử Full 4 kỹ năng',
   '/history':                'Lịch sử làm bài',
   '/review-bypass':          'Mã bỏ qua Review',
   '/reading-stats':          'Thống kê Reading',

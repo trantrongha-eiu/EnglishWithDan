@@ -3,36 +3,40 @@ import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../utils/api';
 
+// Regrouped 2026-08-28: the old split (TỔNG QUAN / NỘI DUNG THI / LUYỆN VIẾT
+// / HỌC SINH) mixed content-authoring with student-monitoring and scattered
+// the analytics across four separate entries. Now: overview, one student-
+// monitoring hub (/monitoring — tabs for history, full mock test, and the
+// per-skill stats pages), all content authoring together, then billing +
+// system. Old stats routes still resolve for bookmarks; the sidebar just
+// points at the hub.
 const NAV = [
   { section: 'TỔNG QUAN' },
-  { to: '/dashboard',       icon: '📊', label: 'Dashboard' },
+  { to: '/dashboard',          icon: '📊', label: 'Dashboard' },
   { to: '/users',              icon: '👥', label: 'Người dùng' },
-  { to: '/upgrade-requests',   icon: '⭐', label: 'Yêu cầu nâng cấp', upgradeBadge: true },
   { to: '/courses',            icon: '🎓', label: 'Khóa học' },
-  { section: 'NỘI DUNG THI' },
-  { to: '/passages',        icon: '📖', label: 'Bài đọc (Passages)' },
-  { to: '/reading-tests',   icon: '📋', label: 'Bộ đề Reading' },
+  { section: 'THEO DÕI HỌC SINH' },
+  { to: '/monitoring',         icon: '📈', label: 'Theo dõi luyện tập', mockBadge: true },
+  { to: '/writing-grades',     icon: '✍️', label: 'Chấm bài Writing', badge: true },
+  { to: '/messages',           icon: '✉️', label: 'Hộp thư', messagesBadge: true },
+  { section: 'NỘI DUNG' },
+  { to: '/passages',           icon: '📖', label: 'Bài đọc (Passages)' },
+  { to: '/reading-tests',      icon: '📋', label: 'Bộ đề Reading' },
   { to: '/listening-tests',    icon: '🎧', label: 'Đề Listening' },
   { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening' },
-  { to: '/writing-tests',   icon: '✏️', label: 'Đề Writing' },
-  { to: '/speaking',        icon: '🎤', label: 'Speaking' },
-  { to: '/vocabulary',      icon: '🟩', label: 'Từ vựng (Units)' },
+  { to: '/writing-tests',      icon: '✏️', label: 'Đề Writing' },
+  { to: '/speaking',           icon: '🎤', label: 'Speaking' },
+  { to: '/vocabulary',         icon: '🟩', label: 'Từ vựng (Units)' },
   { to: '/vocabulary-lessons', icon: '🏫', label: 'Vocabulary Lessons' },
-  { to: '/essential-grammar', icon: '📘', label: 'Essential Grammar' },
-  { section: 'LUYỆN VIẾT' },
-  { to: '/writing-practice', icon: '🖊️', label: 'Writing Practice' },
-  { to: '/task1-exercises',  icon: '📉', label: 'Task 1 Grammar' },
-  { to: '/task2-exercises',  icon: '📝', label: 'Task 2 Writing' },
-  { to: '/task2-templates', icon: '📄', label: 'Task 2 Templates' },
-  { section: 'HỌC SINH' },
-  { to: '/history',         icon: '🕓', label: 'Lịch sử làm bài' },
-  { to: '/review-bypass',   icon: '🎫', label: 'Mã bỏ qua Review' },
-  { to: '/reading-stats',   icon: '📊', label: 'Thống kê Reading' },
-  { to: '/listening-stats', icon: '🎧', label: 'Thống kê Listening' },
-  { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing', badge: true },
-  { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
-  { to: '/messages',        icon: '✉️', label: 'Hộp thư', messagesBadge: true },
-  { to: '/tuition',         icon: '💰', label: 'Học phí', tuitionBadge: true },
+  { to: '/essential-grammar',  icon: '📘', label: 'Essential Grammar' },
+  { to: '/writing-practice',   icon: '🖊️', label: 'Writing Practice' },
+  { to: '/task1-exercises',    icon: '📉', label: 'Task 1 Grammar' },
+  { to: '/task2-exercises',    icon: '📝', label: 'Task 2 Writing' },
+  { to: '/task2-templates',    icon: '📄', label: 'Task 2 Templates' },
+  { section: 'TÀI CHÍNH & HỆ THỐNG' },
+  { to: '/upgrade-requests',   icon: '⭐', label: 'Yêu cầu nâng cấp', upgradeBadge: true },
+  { to: '/tuition',            icon: '💰', label: 'Học phí', tuitionBadge: true },
+  { to: '/review-bypass',      icon: '🎫', label: 'Mã bỏ qua Review' },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
@@ -43,6 +47,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [pendingUpgrades, setPendingUpgrades] = useState(0);
   const [pendingTuition, setPendingTuition] = useState(0);
   const [pendingMessages, setPendingMessages] = useState(0);
+  const [mockViolations, setMockViolations] = useState(0);
 
   useEffect(() => {
     function fetchOnline() {
@@ -68,12 +73,16 @@ export default function Sidebar({ mobileOpen, onClose }) {
     function fetchMessages() {
       apiFetch('/admin/messages/unread-count').then(d => setPendingMessages(d.count || 0)).catch(() => {});
     }
+    function fetchMockViolations() {
+      apiFetch('/admin/mock-tests?limit=1&violatedOnly=1').then(d => setMockViolations(d.violatedTotal || 0)).catch(() => {});
+    }
     fetchOnline();
     fetchPending();
     fetchUpgrades();
     fetchTuition();
     fetchMessages();
-    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); fetchMessages(); }, 60_000);
+    fetchMockViolations();
+    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); fetchMessages(); fetchMockViolations(); }, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -152,6 +161,11 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 )}
                 {item.messagesBadge && pendingMessages > 0 && (
                   <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
+                )}
+                {item.mockBadge && mockViolations > 0 && (
+                  <span className="nav-badge" title="Lượt thi thử bị đánh dấu vi phạm proctoring">
+                    ⚠️ {mockViolations > 99 ? '99+' : mockViolations}
+                  </span>
                 )}
               </NavLink>
             );

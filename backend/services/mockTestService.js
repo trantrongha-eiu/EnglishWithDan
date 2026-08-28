@@ -307,9 +307,60 @@ function publicShape(doc) {
   };
 }
 
+// ── Admin: cross-student mock-test monitoring ────────────────────────────
+// A teacher/admin view of every student's full-mock runs. Reuses the exact
+// refreshGrades + publicShape the student history path uses (single source
+// of truth for a run's serialized form) and just attaches who ran it. The
+// full 4-skill mock had no admin surface at all before this — the runs and
+// the proctoring ("gậy") log lived in the DB unread.
+function shapeAdmin(doc) {
+  const shape = publicShape(doc);
+  const u = doc.userId && typeof doc.userId === 'object' ? doc.userId : null;
+  shape.user = {
+    _id: u ? String(u._id) : null,
+    username: (u && u.username) || '',
+    displayName: (u && ([u.firstName, u.lastName].filter(Boolean).join(' ') || u.username)) || '–',
+    className: (u && u.className) || ''
+  };
+  return shape;
+}
+
+async function getAdminHistory({ page = 1, limit = 20, userId = null, status = null, violatedOnly = false } = {}) {
+  page = Math.max(1, Number(page) || 1);
+  limit = Math.min(50, Math.max(1, Number(limit) || 20));
+  const filter = { status: { $ne: 'abandoned' } };
+  if (userId && mongoose.isValidObjectId(userId)) filter.userId = userId;
+  if (status && ['in-progress', 'awaiting-grading', 'completed'].includes(status)) filter.status = status;
+  if (violatedOnly) filter['proctor.violated'] = true;
+
+  const [docs, total, violatedTotal] = await Promise.all([
+    MockTestAttempt.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit)
+      .populate('userId', 'username firstName lastName className'),
+    MockTestAttempt.countDocuments(filter),
+    MockTestAttempt.countDocuments({ status: { $ne: 'abandoned' }, 'proctor.violated': true })
+  ]);
+
+  const items = [];
+  for (const doc of docs) {
+    await refreshGrades(doc);
+    items.push(shapeAdmin(doc));
+  }
+  return { items, total, page, limit, violatedTotal };
+}
+
+async function getAdminHistoryDetail(id) {
+  if (!mongoose.isValidObjectId(id)) return null;
+  const doc = await MockTestAttempt.findOne({ _id: id, status: { $ne: 'abandoned' } })
+    .populate('userId', 'username firstName lastName className');
+  if (!doc) return null;
+  await refreshGrades(doc);
+  return shapeAdmin(doc);
+}
+
 module.exports = {
   startMockTest, getCurrent, abandonCurrent, recordViolation,
   advance, getHistory, getHistoryDetail,
+  getAdminHistory, getAdminHistoryDetail,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER
 };
