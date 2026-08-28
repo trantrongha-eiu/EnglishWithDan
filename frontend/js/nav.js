@@ -541,6 +541,7 @@
 
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
+        if (u.role === 'student') _showDailyVocabGoalNudge();
 
         // Free-plan trial expired (24h from account creation, see
         // backend/utils/plan.js's hasFullAccess) — surface the paywall
@@ -695,8 +696,9 @@
         '<div style="font-size:44px;margin-bottom:10px">🔥📖</div>' +
         '<h3 style="font-size:18px;font-weight:800;margin-bottom:10px">Cập nhật cơ chế giữ chuỗi lửa 🔥</h3>' +
         '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px;text-align:left">' +
-          'Để chuỗi lửa phản ánh đúng việc học thật, từ nay mỗi ngày bạn cần <strong>học tối thiểu 35 từ vựng</strong> ' +
-          '(thêm từ mới, đổi trạng thái ôn từ, hoặc làm quiz từ vựng — cộng dồn tất cả trong ngày) thì mới được tính là "đã học" và cộng chuỗi lửa hôm đó.' +
+          'Để chuỗi lửa phản ánh đúng việc học thật, từ nay mỗi ngày bạn cần <strong>học đủ số từ vựng mục tiêu trong ngày</strong> ' +
+          '(mặc định 35 từ, tăng dần theo band mục tiêu bạn đặt ở Hồ sơ: 6.0 → 50 từ, 7.0 → 70 từ). ' +
+          'Tính gộp: thêm từ mới, đổi trạng thái ôn từ, hoặc làm quiz từ vựng trong ngày.' +
         '</p>' +
         '<button id="nav-streak35-notice-close" style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer">Đã hiểu</button>' +
       '</div>';
@@ -755,6 +757,95 @@
     // is deliberate: the student picks which sổ to study, per the product ask.
     document.getElementById('nav-vocab-inactivity-go').addEventListener('click', function () {
       overlay.remove();
+      location.href = '/dashboard.html';
+    });
+  }
+
+  // Daily vocab-goal nudge — a small floating card shown on EVERY page load
+  // while the student hasn't hit today's word target (which scales with
+  // their IELTS target band: backend streakBonusService.dailyWordTargetForBand,
+  // GET /api/vocabbook/daily-goal). Not persistence-dismissed on purpose:
+  // "nếu chưa học đủ thì liên tục nhắc nhở mỗi lần truy cập". Non-blocking
+  // (not a full-screen modal) so it can appear that often without being
+  // hostile.
+  function _showDailyVocabGoalNudge() {
+    if (!window.AuthService) return;
+    if (document.getElementById('nav-vocab-goal-nudge')) return;
+    // Don't pile on top of a blocking overlay this load — it re-checks next load.
+    if (_learningModalOpen()
+      || document.getElementById('nav-vocab-inactivity-overlay')
+      || document.getElementById('nav-streak35-notice-overlay')) return;
+
+    fetch(API + '/vocabbook/daily-goal', { headers: window.AuthService.authHeader() })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.success || typeof d.target !== 'number') return;
+
+        if (d.met) {
+          // Small positive confirmation, once per browser session.
+          if (sessionStorage.getItem('ews_vocab_goal_done_toast')) return;
+          sessionStorage.setItem('ews_vocab_goal_done_toast', '1');
+          _renderVocabGoalCard({ done: true, target: d.target });
+          return;
+        }
+        _renderVocabGoalCard({ done: false, target: d.target, studied: d.studied || 0, remaining: d.remaining });
+      })
+      .catch(function () {});
+  }
+
+  function _renderVocabGoalCard(o) {
+    if (document.getElementById('nav-vocab-goal-nudge')) return;
+    var pct = o.target ? Math.min(100, Math.round((o.studied || (o.done ? o.target : 0)) / o.target * 100)) : 0;
+    var card = document.createElement('div');
+    card.id = 'nav-vocab-goal-nudge';
+    card.style.cssText = [
+      'position:fixed', 'right:20px', 'bottom:92px', 'z-index:1049',
+      'width:300px', 'max-width:calc(100vw - 32px)',
+      'background:var(--surface,#fff)', 'color:var(--text,#111827)',
+      'border:1px solid var(--border,#e5e7eb)', 'border-radius:14px',
+      'box-shadow:0 12px 34px rgba(0,0,0,.18)', 'padding:14px 16px',
+      'font-family:inherit', 'transform:translateY(12px)', 'opacity:0',
+      'transition:opacity .25s ease, transform .25s ease'
+    ].join(';');
+
+    if (o.done) {
+      card.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span style="font-size:22px">✅</span>' +
+          '<div style="font-size:13.5px;line-height:1.5">Bạn đã học đủ <strong>' + o.target + ' từ vựng</strong> hôm nay. Giữ phong độ nhé! 🔥</div>' +
+        '</div>';
+      document.body.appendChild(card);
+      requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
+      setTimeout(function () {
+        card.style.opacity = '0'; card.style.transform = 'translateY(12px)';
+        setTimeout(function () { card.remove(); }, 300);
+      }, 4000);
+      return;
+    }
+
+    card.innerHTML =
+      '<button aria-label="Đóng" style="position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;line-height:1;color:var(--text3,#9ca3af);cursor:pointer;padding:4px">&times;</button>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+        '<span style="font-size:20px">📖</span>' +
+        '<div style="font-size:14px;font-weight:800">Từ vựng hôm nay</div>' +
+      '</div>' +
+      '<div style="font-size:13px;color:var(--text2,#6b7280);line-height:1.55;margin-bottom:10px">' +
+        'Mục tiêu <strong style="color:var(--text,#111827)">' + o.target + ' từ</strong> — bạn đã học ' +
+        '<strong style="color:var(--text,#111827)">' + o.studied + '/' + o.target + '</strong>, còn <strong style="color:var(--brand,#e53935)">' + o.remaining + ' từ</strong>.' +
+      '</div>' +
+      '<div style="height:7px;background:var(--surface2,#f3f4f6);border-radius:99px;overflow:hidden;margin-bottom:12px">' +
+        '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f59e0b,#e53935);border-radius:99px"></div>' +
+      '</div>' +
+      '<button id="nav-vocab-goal-go" style="width:100%;background:var(--brand,#e53935);color:#fff;border:none;border-radius:9px;padding:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Học ngay</button>';
+
+    document.body.appendChild(card);
+    requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
+
+    card.querySelector('button[aria-label="Đóng"]').addEventListener('click', function () {
+      card.style.opacity = '0'; card.style.transform = 'translateY(12px)';
+      setTimeout(function () { card.remove(); }, 250);
+    });
+    card.querySelector('#nav-vocab-goal-go').addEventListener('click', function () {
       location.href = '/dashboard.html';
     });
   }

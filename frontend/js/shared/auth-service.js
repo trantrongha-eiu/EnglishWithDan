@@ -110,6 +110,7 @@
         u.studyReminderCount = d.user.studyReminderCount || 0;
         u.tuitionReminderCount = d.user.tuitionReminderCount || 0;
         u.lastVocabStudyDate = d.user.lastVocabStudyDate || null;
+        u.targetBand = d.user.targetBand || null;
         // Needed by isWithinTrial()/hasPremiumAccess() — a user cached
         // before this field existed self-heals here on their very next
         // page load (nav.js already calls refreshPlan() unconditionally).

@@ -34,6 +34,11 @@ router.get('/stats', auth, fullAccess, vocabBookController.getVocabStats);
 // dùng cho Weakness card + tile "Từ yếu" trên dashboard — must stay above /:id.
 router.get('/weak', auth, fullAccess, vocabBookController.getWeakWords);
 
+// GET /api/vocabbook/daily-goal  – số từ cần học hôm nay (theo band mục tiêu)
+// + đã học bao nhiêu. Cho MỌI học sinh (kể cả free) — nudge nhắc mỗi lần
+// truy cập. Above /:id.
+router.get('/daily-goal', auth, vocabBookController.getDailyGoal);
+
 // GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
 router.get('/:id', auth, fullAccess, vocabBookController.getBook);
 

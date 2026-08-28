@@ -5,6 +5,7 @@
 // same per-user daily allowance so a student can't rack up more than +5
 // "lửa" a day no matter which combination of activities they do.
 const VocabActivity = require('../models/VocabActivity');
+const User = require('../models/User');
 
 // Vietnam local day (UTC+7), stored as UTC midnight — same convention as
 // User.js's own getVNDay/effectiveStreak.
@@ -25,23 +26,55 @@ function bonusForAccuracy(accuracy) {
 // single throwaway word — or flipping one word's status — used to be enough
 // to claim a full day's streak on its own, which several students were
 // farming daily for zero real study.
+//
+// The target now scales with the student's self-set IELTS target band
+// (User.targetBand). Anchors the product asked for: 5.0 → 35, 6.0 → 50,
+// 7.0 → 70; the .5 steps are filled in between. No target band set → 35
+// (VOCAB_STREAK_WORD_THRESHOLD, kept as the floor + back-compat export).
 const VOCAB_STREAK_WORD_THRESHOLD = 35;
 
+function dailyWordTargetForBand(band) {
+  const b = Number(band);
+  if (!b || b < 5.5) return 35;
+  if (b < 6.0) return 40;   // 5.5
+  if (b < 6.5) return 50;   // 6.0
+  if (b < 7.0) return 60;   // 6.5
+  if (b < 7.5) return 70;   // 7.0
+  return 80;                // 7.5+
+}
+
+// Today's per-student word target — one small User read.
+async function dailyWordTarget(userId) {
+  const u = await User.findById(userId).select('targetBand').lean();
+  return dailyWordTargetForBand(u && u.targetBand);
+}
+
+// How many vocab words the student has engaged with so far today (VN day),
+// without incrementing anything. Used by the daily-goal reminder endpoint.
+async function vocabStudiedToday(userId) {
+  const doc = await VocabActivity.findOne({ userId, date: todayVNDate() })
+    .select('wordsAdded wordsStudied').lean();
+  return (doc && ((doc.wordsAdded || 0) + (doc.wordsStudied || 0))) || 0;
+}
+
 // Increments today's word-engagement counters and reports whether today's
-// running total has reached VOCAB_STREAK_WORD_THRESHOLD — true both on the
-// call that first crosses it and on every qualifying call afterward the
-// same day, so callers can gate `user.updateStreak()` behind this without
-// separately tracking "did we already unlock today". `wordsInc` is a partial
-// $inc object using VocabActivity's own field names, e.g. { wordsAdded: 1 }
-// or { wordsStudied: wordsAnswered }.
+// running total has reached the student's personal target — true both on
+// the call that first crosses it and on every qualifying call afterward
+// the same day, so callers can gate `user.updateStreak()` behind this
+// without separately tracking "did we already unlock today". `wordsInc` is
+// a partial $inc object using VocabActivity's own field names, e.g.
+// { wordsAdded: 1 } or { wordsStudied: wordsAnswered }.
 async function reachedDailyWordThreshold(userId, wordsInc) {
   const date = todayVNDate();
-  const doc = await VocabActivity.findOneAndUpdate(
-    { userId, date },
-    { $inc: wordsInc },
-    { upsert: true, new: true }
-  );
-  return (doc.wordsAdded || 0) + (doc.wordsStudied || 0) >= VOCAB_STREAK_WORD_THRESHOLD;
+  const [doc, target] = await Promise.all([
+    VocabActivity.findOneAndUpdate(
+      { userId, date },
+      { $inc: wordsInc },
+      { upsert: true, new: true }
+    ),
+    dailyWordTarget(userId),
+  ]);
+  return (doc.wordsAdded || 0) + (doc.wordsStudied || 0) >= target;
 }
 
 // Daily streak-bonus cap (max 5/day, shared across vocab/reading/listening):
@@ -87,4 +120,5 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
 module.exports = {
   todayVNDate, bonusForAccuracy, reserveDailyStreakBonus,
   reachedDailyWordThreshold, VOCAB_STREAK_WORD_THRESHOLD,
+  dailyWordTargetForBand, dailyWordTarget, vocabStudiedToday,
 };

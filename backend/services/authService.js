@@ -39,6 +39,9 @@ function userPayload(user) {
     studyReminderCount: user.studyReminderCount || 0,
     tuitionReminderCount: user.tuitionReminderCount || 0,
     lastVocabStudyDate: user.lastVocabStudyDate || null,
+    // Self-set IELTS target band — the daily vocab word target scales with
+    // it (streakBonusService.dailyWordTargetForBand).
+    targetBand: user.targetBand || null,
     // Anchor for the free-plan 24h trial window (backend/utils/plan.js's
     // hasFullAccess) — the frontend needs this to compute
     // AuthService.hasPremiumAccess() without a round trip per check.

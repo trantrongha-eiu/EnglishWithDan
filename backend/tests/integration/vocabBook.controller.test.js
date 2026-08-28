@@ -5,8 +5,10 @@
 // fires for undefined, not an explicit null.
 const request = require('supertest');
 const app = require('../../app');
-const { createPremiumStudent, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createVocabBook } = require('../factories/contentFactory');
+const VocabActivity = require('../../models/VocabActivity');
+const { todayVNDate } = require('../../services/streakBonusService');
 
 describe('DELETE /api/vocabbook/:id/words', () => {
   async function setUp() {
@@ -104,5 +106,32 @@ describe('DELETE /api/vocabbook/:id/words', () => {
     const fresh = await VocabBook.findById(book._id).lean();
     expect(fresh.words).toHaveLength(1);
     expect(fresh.words[0].word).toBe('banana');
+  });
+});
+
+describe('GET /api/vocabbook/daily-goal', () => {
+  test('target scales with targetBand; reports today\'s progress; free students allowed', async () => {
+    const student = await createStudent({ extra: { targetBand: 7.0 } }); // → 70/day
+    const token = signTokenFor(student);
+    await VocabActivity.create({ userId: student._id, date: todayVNDate(), wordsAdded: 12, wordsStudied: 8 });
+
+    const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ success: true, target: 70, studied: 20, remaining: 50, met: false, targetBand: 7 });
+  });
+
+  test('no targetBand → default 35; met:true once reached', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    await VocabActivity.create({ userId: student._id, date: todayVNDate(), wordsStudied: 35 });
+
+    const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
+    expect(res.body).toMatchObject({ target: 35, studied: 35, remaining: 0, met: true });
+  });
+
+  test('no activity yet → studied 0', async () => {
+    const token = signTokenFor(await createStudent({ extra: { targetBand: 6.0 } }));
+    const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
+    expect(res.body).toMatchObject({ target: 50, studied: 0, remaining: 50, met: false });
   });
 });

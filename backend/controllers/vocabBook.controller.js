@@ -1,6 +1,7 @@
 'use strict';
 
 const vocabBookService = require('../services/vocabBookService');
+const streakBonusService = require('../services/streakBonusService');
 
 function guard(handler) {
   return async (req, res) => {
@@ -52,6 +53,24 @@ exports.getDueWords = guard(async (req, res) => {
 exports.getVocabStats = guard(async (req, res) => {
   const stats = await vocabBookService.getVocabStats(req.user._id);
   res.json({ success: true, stats });
+});
+
+// GET /api/vocabbook/daily-goal — today's vocab word target (scales with
+// the student's IELTS target band) + how many they've done so far. Powers
+// the "học đủ N từ hôm nay" nudge shown on every page load. Free students
+// included — the reminder is universal.
+exports.getDailyGoal = guard(async (req, res) => {
+  const targetBand = req.user.targetBand || null;
+  const target = streakBonusService.dailyWordTargetForBand(targetBand);
+  const studied = await streakBonusService.vocabStudiedToday(req.user._id);
+  res.json({
+    success: true,
+    target,
+    studied,
+    remaining: Math.max(0, target - studied),
+    met: studied >= target,
+    targetBand,
+  });
 });
 
 exports.getWeakWords = guard(async (req, res) => {
