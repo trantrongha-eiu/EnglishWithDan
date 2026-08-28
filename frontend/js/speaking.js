@@ -807,6 +807,10 @@ function resetPractice() {
   if (state.isRecording && state.recognition) state.recognition.stop();
   state.isRecording    = false;
   state._recordBusy    = false; // force-stopping here, outside toggleRecord()'s own flow
+  // Abandoning mid-recording — release the mic stream now rather than
+  // relying on a maybe-fires onend. Guarded so it's a no-op if the normal
+  // stop path already finalized it. The blob isn't kept: this session is gone.
+  if (!state._recordingFinalized) { state._recordingFinalized = true; _stopAudioCapture(); }
   state.recordStartTime = null;
   state._frozenDurationSeconds = 0;
   state._analyzing      = false;
@@ -875,6 +879,22 @@ function _finishRecordingUI() {
   state._frozenDurationSeconds = getElapsedSeconds();
   stopElapsedTimer();
   hideSpeakCountdown();
+
+  // Finalize the raw-audio capture exactly once per session, whatever ended
+  // the recording — manual Stop already does this in toggleRecord(), but a
+  // recording that ended any OTHER way (Part 2's 2-min timer, the restart
+  // cap on a flaky mic, a fatal onerror, the 8s watchdog) previously never
+  // stopped the MediaRecorder: the mic stream leaked (browser mic indicator
+  // stuck on, next attempt could hit "micro đang được dùng") and no
+  // playback blob was produced, so History had no audio for that attempt.
+  if (!state._recordingFinalized) {
+    state._recordingFinalized = true;
+    _stopAudioCapture().then(blob => {
+      _lastRecordingBlob = blob;
+      const pb = document.getElementById('btn-playback-recording');
+      if (pb) pb.classList.toggle('hidden', !blob);
+    });
+  }
 
   const recIcon   = document.getElementById('rec-icon');
   const recLabel  = document.getElementById('rec-label');
@@ -1114,6 +1134,7 @@ function _startRecordingGuarded() {
     state._userStoppedRecording = false;
     state._restartAttempts = 0;
     state._recognitionEverStarted = false;
+    state._recordingFinalized = false; // guards the one-shot _stopAudioCapture()
     state._frozenDurationSeconds = 0;
     state.finalTranscript = '';
     state.recognition.start();
@@ -1162,6 +1183,7 @@ function toggleRecord() {
     state._recordBusy = true;
     if (btnRecord) btnRecord.disabled = true;
     state._userStoppedRecording = true;
+    state._recordingFinalized = true; // claim the one-shot audio stop before onend's _finishRecordingUI can
     state.recognition.stop();
     state.isRecording = false;
     _stopAudioCapture().then(blob => {
@@ -2259,7 +2281,16 @@ function renderHistoryScores(fb) {
   </div>`;
 }
 
+// Blob URL for the history modal's <audio> — revoked when the modal closes
+// or the next entry opens, so reviewing many past recordings in one sitting
+// doesn't leak an object URL (each a few MB) per open.
+let _historyAudioUrl = null;
+function _revokeHistoryAudioUrl() {
+  if (_historyAudioUrl) { URL.revokeObjectURL(_historyAudioUrl); _historyAudioUrl = null; }
+}
+
 async function openHistoryModal(attempt) {
+  _revokeHistoryAudioUrl();
   const modal = document.getElementById('history-modal');
   const title = document.getElementById('history-modal-title');
   const body  = document.getElementById('history-modal-body');
@@ -2369,17 +2400,19 @@ async function openHistoryModal(attempt) {
     const blob = await window.SpeakingAudioStore.getAudioRecording(attempt._id);
     const slot = document.getElementById('history-audio-slot');
     if (blob && slot) {
-      const url = URL.createObjectURL(blob);
+      _revokeHistoryAudioUrl();
+      _historyAudioUrl = URL.createObjectURL(blob);
       slot.innerHTML = `
         <div class="modal-audio-playback">
           <div class="modal-transcript-label">🔊 Bản ghi âm (chỉ có trên thiết bị này)</div>
-          <audio controls src="${url}"></audio>
+          <audio controls src="${_historyAudioUrl}"></audio>
         </div>`;
     }
   }
 }
 
 function closeHistoryModal() {
+  _revokeHistoryAudioUrl();
   const modal = document.getElementById('history-modal');
   if (modal) modal.classList.remove('open');
 }
