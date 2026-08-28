@@ -59,6 +59,24 @@ describe('POST /api/mock-test/start', () => {
     expect(res.status).toBe(400);
   });
 
+  test('picks the ONLY active test per skill when the rest are hidden', async () => {
+    // Admin hides every test but one so all students sit the same paper.
+    await createListeningTest({ isActive: false });
+    await createReadingTest({ isActive: false });
+    const theL = await createListeningTest();
+    const theR = await createReadingTest();
+    const theW = await createWritingExam();
+    const theS = await createSpeakingQuestion({ part: 2, cueCard: 'Describe a place.' });
+    await createWritingExam({ isActive: false });
+
+    const res = await authed(await createPremiumStudent()).post('/api/mock-test/start');
+    expect(res.status).toBe(201);
+    expect(res.body.attempt.bundle.listeningTestId).toBe(String(theL._id));
+    expect(res.body.attempt.bundle.readingTestId).toBe(String(theR._id));
+    expect(res.body.attempt.bundle.writingExamId).toBe(String(theW._id));
+    expect(res.body.attempt.bundle.speakingQuestionId).toBe(String(theS._id));
+  });
+
   test('a second start resumes the same run', async () => {
     await seedPools();
     const api = authed(await createPremiumStudent());

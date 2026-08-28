@@ -115,8 +115,13 @@
        • bump the on-screen "gậy" counter
        • POST /mock-test/:id/violation  → server flags the run "violated"
          and keeps the running count (visible later to a teacher).
-     Auto-starts on any skill page opened in mock mode; stops the moment
-     the student legitimately advances to the next skill.
+     It also LOCKS navigation (_lockNav): the global nav is hidden and kept
+     hidden, and link clicks that would leave the page are swallowed with a
+     warning. Back button / reload / URL-bar / close still only get the
+     beforeunload confirm — a browser can't hard-block those.
+     Auto-starts on any skill page opened in mock mode; everything is torn
+     down the moment the student legitimately advances (MockTest.advance →
+     stopProctor).
      ══════════════════════════════════════════════════════════════════ */
   var _proctor = null;
 
@@ -260,6 +265,72 @@
     _report(type);
   }
 
+  /* ── Navigation lock ──────────────────────────────────────────────
+     While a mock skill page is open the student must stay on it until
+     they submit (which goes through MockTest.advance → stopProctor →
+     _unlockNav, then navigates to the next skill). A browser can't fully
+     block navigation, but we can: hide the global nav, swallow link
+     clicks that leave the page, and bounce the Back button. Tab close /
+     reload / URL-bar still hit the beforeunload confirm. */
+  function _navWarn() {
+    var msg = 'Bạn đang trong bài thi thử — không thể rời trang. Hãy hoàn thành rồi nộp bài.';
+    if (typeof window.showToast === 'function') { window.showToast(msg, 'error', 4000); return; }
+    if (typeof window.toast === 'function') { window.toast(msg, 'error'); return; }
+    var t = document.getElementById('mock-nav-warn');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'mock-nav-warn';
+      t.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:2147483600;'
+        + 'background:#b91c1c;color:#fff;font:700 13px/1.35 inherit;padding:10px 16px;border-radius:10px;'
+        + 'box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:90vw;text-align:center;pointer-events:none';
+      _fsRoot().appendChild(t);
+    }
+    t.textContent = '⚠️ ' + msg;
+    t.style.opacity = '1';
+    clearTimeout(t._hide);
+    t._hide = setTimeout(function () { t.style.opacity = '0'; }, 3500);
+  }
+
+  function _lockNav() {
+    if (!_proctor || _proctor.navLocked) return;
+    _proctor.navLocked = true;
+
+    // 1) global nav / hamburger / chat bubble — hide it and keep it hidden
+    var hide = function () { if (typeof window.hideTopNav === 'function') { try { window.hideTopNav(); } catch (_) {} } };
+    hide();
+    _proctor.navHideTimer = setInterval(function () {
+      var n = document.getElementById('globalTopNav');
+      if (n && n.style.display !== 'none') hide();
+    }, 1000);
+
+    // 2) swallow link clicks that would navigate away from this page
+    //    (nav bar, footer "Trang chủ", any in-content link). The exam's own
+    //    controls are <button>s driven by JS, so they're untouched; the
+    //    Back button / reload / URL-bar still hit the beforeunload confirm.
+    _proctor.onClickCapture = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#' || /^(javascript:|mailto:|tel:)/i.test(href)) return;
+      if (a.target === '_blank') return;                 // new tab, exam stays put
+      var dest;
+      try { dest = new URL(a.href, location.href); } catch (_) { return; }
+      if (dest.origin === location.origin &&
+          dest.pathname === location.pathname) return;    // same page (hash / query only)
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      _navWarn();
+    };
+    document.addEventListener('click', _proctor.onClickCapture, true);
+  }
+
+  function _unlockNav() {
+    if (!_proctor || !_proctor.navLocked) return;
+    _proctor.navLocked = false;
+    clearInterval(_proctor.navHideTimer);
+    if (_proctor.onClickCapture) document.removeEventListener('click', _proctor.onClickCapture, true);
+  }
+
   // Back on the exam tab / window — silence the alarm, drop the title nag.
   function _onReturn() {
     if (!_proctor) return;
@@ -276,9 +347,9 @@
     if (!x.mockId || !x.skill || _proctor) return;
     _proctor = {
       mockId: x.mockId, skill: x.skill, count: 0,
-      lastLeaveAt: 0, navigatingAway: false,
+      lastLeaveAt: 0, navigatingAway: false, navLocked: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
-      flashTimer: null, titleTimer: null, origTitle: null
+      flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
     };
     var start = function () {
       if (!_proctor) return;
@@ -317,12 +388,15 @@
     window.addEventListener('beforeunload', _proctor.onBeforeUnload);
     document.addEventListener('fullscreenchange', _proctor.onFsChange);
     document.addEventListener('webkitfullscreenchange', _proctor.onFsChange);
+
+    _lockNav();
   }
 
   function stopProctor() {
     if (!_proctor) return;
     _proctor.navigatingAway = true;
     _alarmOff();
+    _unlockNav();
     document.removeEventListener('visibilitychange', _proctor.onVis);
     window.removeEventListener('focus', _proctor.onFocus);
     window.removeEventListener('blur', _proctor.onBlur);
@@ -333,8 +407,10 @@
     clearTimeout(_proctor.titleTimer);
     if (_proctor.origTitle) document.title = _proctor.origTitle;
     if (_proctor.badge && _proctor.badge.parentNode) _proctor.badge.parentNode.removeChild(_proctor.badge);
-    var fl = document.getElementById('mock-proctor-flash');
-    if (fl && fl.parentNode) fl.parentNode.removeChild(fl);
+    ['mock-proctor-flash', 'mock-nav-warn'].forEach(function (id) {
+      var n = document.getElementById(id);
+      if (n && n.parentNode) n.parentNode.removeChild(n);
+    });
     _proctor = null;
   }
 
