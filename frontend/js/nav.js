@@ -125,6 +125,7 @@
     '<div class="nav-actions">' +
       '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh" aria-label="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
       '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
+      '<button class="btn-dark-mode" id="globalLangBtn" data-i18n-skip title="Switch to English" aria-label="Switch to English" style="font-size:12px;font-weight:800;letter-spacing:.5px">EN</button>' +
       '<div class="nav-search-wrap" style="position:relative">' +
         '<button class="btn-dark-mode" id="globalSearchBtn" title="Tìm kiếm" aria-label="Tìm kiếm" aria-haspopup="true" aria-expanded="false"><i class="fas fa-search"></i></button>' +
         '<div class="nav-search-panel" id="globalSearchPanel">' +
@@ -179,6 +180,8 @@
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
     '<div class="mobile-nav-divider"></div>' +
+    '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
+    '<i class="fas fa-language" style="width:20px;text-align:center"></i> English</button>' +
     '<button id="mobileLogoutBtn" style="width:100%;padding:12px 16px;border:none;background:none;cursor:pointer;color:var(--danger,#ef4444);font-size:15px;font-weight:600;font-family:inherit;text-align:left;border-radius:10px;display:flex;align-items:center;gap:12px;">' +
     '<i class="fas fa-sign-out-alt" style="width:20px;text-align:center"></i> Đăng xuất</button>' +
     '</div>';
@@ -203,6 +206,19 @@
     slScript.id = 'ews-sentence-lookup-js';
     slScript.src = '/js/shared/sentence-lookup.js';
     document.body.appendChild(slScript);
+  }
+
+  // ── Site-wide VI ⇄ EN toggle (js/shared/i18n.js) ──────────
+  // Injected here so every page with the global nav gets the language
+  // switch without editing ~28 HTML files. The nav + drawer buttons above
+  // (#globalLangBtn / #mobileLangBtn) are already in the DOM by the time
+  // this loads, so i18n.js's first apply() and its MutationObserver pick
+  // them up.
+  if (!document.getElementById('ews-i18n-js')) {
+    var i18nScript = document.createElement('script');
+    i18nScript.id = 'ews-i18n-js';
+    i18nScript.src = '/js/shared/i18n.js';
+    document.body.appendChild(i18nScript);
   }
 
   // ── Nav visibility helpers ────────────────────────────────
@@ -260,6 +276,19 @@
   // ── Dark mode button ──────────────────────────────────────
   document.getElementById('globalDarkBtn').addEventListener('click', function () {
     if (typeof toggleDark === 'function') toggleDark();
+  });
+
+  // ── Language toggle (VI ⇄ EN) ─────────────────────────────
+  function _toggleLang() {
+    if (window.EWSI18n) window.EWSI18n.toggle();
+  }
+  var langBtn = document.getElementById('globalLangBtn');
+  if (langBtn) langBtn.addEventListener('click', _toggleLang);
+  var mobLangBtn = document.getElementById('mobileLangBtn');
+  if (mobLangBtn) mobLangBtn.addEventListener('click', function () {
+    _toggleLang();
+    drawer.classList.remove('open');
+    ham.classList.remove('open');
   });
 
   // ── Logout ────────────────────────────────────────────────

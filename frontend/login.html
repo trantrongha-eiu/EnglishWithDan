@@ -27,6 +27,7 @@
   <script src="js/shared/auth-service.js?v=20260831"></script>
   <script src="js/shared/api-client.js?v=20260831"></script>
   <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
+  <button class="btn-dark-toggle" id="globalLangBtn" data-i18n-skip onclick="window.EWSI18n&&window.EWSI18n.toggle()" title="Switch to English" aria-label="Switch to English" style="right:70px;font-size:13px;font-weight:800;letter-spacing:.5px">EN</button>
   <div class="page-center">
     <div class="container">
         <div class="background-shapes">
@@ -465,6 +466,7 @@
     <img src="img/zalo-icon.png" alt="Zalo">
     <span class="zalo-float-label">Chat Zalo</span>
   </a>
+  <script src="js/shared/i18n.js?v=20260831"></script>
 </body>
 
 </html>
