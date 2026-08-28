@@ -120,6 +120,14 @@
      ══════════════════════════════════════════════════════════════════ */
   var _proctor = null;
 
+  // Reading / Listening / Writing exams run inside a real Fullscreen API
+  // element — a position:fixed node parented on <body> is invisible while
+  // that's active, so the badge + flash must live inside the fullscreened
+  // element instead (and move back when it exits).
+  function _fsRoot() {
+    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
+  }
+
   function _makeBadge() {
     var b = document.createElement('div');
     b.id = 'mock-proctor-badge';
@@ -132,7 +140,7 @@
       'max-width:60vw', 'white-space:nowrap'
     ].join(';');
     b.innerHTML = '<span aria-hidden="true">👁️</span><span class="mp-txt">Đang giám sát</span>';
-    document.body.appendChild(b);
+    _fsRoot().appendChild(b);
     return b;
   }
 
@@ -157,7 +165,7 @@
       if (!AC) return;
       if (!_proctor.actx) _proctor.actx = new AC();
       var ctx = _proctor.actx;
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state === 'suspended' && ctx.resume) { var p = ctx.resume(); if (p && p.catch) p.catch(function () {}); }
       var t0 = ctx.currentTime;
       [0, 0.22, 0.44].forEach(function (off) {
         var osc = ctx.createOscillator();
@@ -182,8 +190,9 @@
         'position:fixed', 'inset:0', 'z-index:2147483600', 'pointer-events:none',
         'background:#ef4444', 'opacity:0', 'transition:opacity .18s ease'
       ].join(';');
-      document.body.appendChild(el);
     }
+    var root = _fsRoot();
+    if (el.parentNode !== root) root.appendChild(el);
     var pulses = 6, i = 0;
     clearInterval(_proctor && _proctor.flashTimer);
     var timer = setInterval(function () {
@@ -258,9 +267,19 @@
       e.returnValue = 'Bạn đang làm bài thi thử. Rời khỏi trang sẽ bị tính là vi phạm.';
       return e.returnValue;
     };
+    // Keep the badge/flash inside whatever element is currently fullscreen.
+    _proctor.onFsChange = function () {
+      if (!_proctor) return;
+      var root = _fsRoot();
+      if (_proctor.badge && _proctor.badge.parentNode !== root) root.appendChild(_proctor.badge);
+      var fl = document.getElementById('mock-proctor-flash');
+      if (fl && fl.parentNode !== root) root.appendChild(fl);
+    };
     document.addEventListener('visibilitychange', _proctor.onVis);
     window.addEventListener('blur', _proctor.onBlur);
     window.addEventListener('beforeunload', _proctor.onBeforeUnload);
+    document.addEventListener('fullscreenchange', _proctor.onFsChange);
+    document.addEventListener('webkitfullscreenchange', _proctor.onFsChange);
   }
 
   function stopProctor() {
@@ -269,6 +288,8 @@
     document.removeEventListener('visibilitychange', _proctor.onVis);
     window.removeEventListener('blur', _proctor.onBlur);
     window.removeEventListener('beforeunload', _proctor.onBeforeUnload);
+    document.removeEventListener('fullscreenchange', _proctor.onFsChange);
+    document.removeEventListener('webkitfullscreenchange', _proctor.onFsChange);
     clearInterval(_proctor.flashTimer);
     clearTimeout(_proctor.titleTimer);
     if (_proctor.origTitle) document.title = _proctor.origTitle;
