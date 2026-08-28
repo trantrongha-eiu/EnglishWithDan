@@ -719,7 +719,12 @@ body {
 .wp-mob-fab {
   display: none;
   position: fixed;
-  bottom: 24px; right: 20px;
+  /* Sits above the peer-chat launcher (shared/peer-chat-widget.js — fixed
+     bottom-right, ~52px) so the two don't stack on top of each other and
+     bury this filter/settings button. Drops back down once it becomes the
+     sheet's close button (.open) since the chat FAB is hidden behind the
+     open sheet anyway. */
+  bottom: 84px; right: 20px;
   width: 52px; height: 52px;
   border-radius: 50%;
   background: #e53935;
@@ -734,15 +739,18 @@ body {
   transition: transform .2s, background .2s, box-shadow .2s;
 }
 .wp-mob-fab:active { transform: scale(.93); }
-.wp-mob-fab.open { background: #374151; box-shadow: 0 4px 16px rgba(0,0,0,.3); }
+.wp-mob-fab.open { background: #374151; box-shadow: 0 4px 16px rgba(0,0,0,.3); bottom: 24px; }
 
 /* Mobile backdrop */
+/* z-index above the shared peer-chat launcher (#pcw-root, z-index 1050) so
+   an open settings sheet — and its dimmer — cover the chat FAB instead of
+   it floating over the sheet's "Bắt đầu học" button. */
 .wp-mob-backdrop {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.5);
-  z-index: 1000;
+  z-index: 1055;
   opacity: 0;
   pointer-events: none;
   transition: opacity .3s;
@@ -756,7 +764,7 @@ body {
   bottom: 0; left: 0; right: 0;
   background: #fff;
   border-radius: 20px 20px 0 0;
-  z-index: 1001;
+  z-index: 1056;
   max-height: 82vh;
   flex-direction: column;
   transform: translateY(100%);

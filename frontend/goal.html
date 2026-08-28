@@ -4,7 +4,7 @@
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IELTS Goal &amp; Study Plan – EnglishWithDan</title>
+  <title>Mục tiêu &amp; Kế hoạch học IELTS – EnglishWithDan</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -76,9 +76,16 @@
     .plan-day-total{font-size:12px;color:var(--text3)}
     .plan-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border)}
     .plan-item:first-child{border-top:none}
-    .plan-item-cat{font-weight:700;font-size:13px;text-transform:capitalize;min-width:80px}
+    .plan-item-cat{font-weight:700;font-size:13px;min-width:80px}
     .plan-item-reason{font-size:12.5px;color:var(--text2);flex:1}
     .plan-item-min{font-size:12.5px;color:var(--text3);white-space:nowrap}
+    /* On a phone the 3-across cat/reason/minutes row is too cramped — stack it */
+    @media(max-width:640px){
+      .plan-item{flex-direction:column;gap:3px}
+      .plan-item-cat{min-width:0}
+      .plan-item-min{color:var(--text2)}
+      .plan-alloc-row{grid-template-columns:80px 1fr 44px}
+    }
 
     /* "Today's Learning" — the first thing on the page (§28/§30) */
     #today-card{border:1.5px solid var(--blue);background:linear-gradient(180deg,rgba(61,139,255,.06),transparent)}
@@ -88,7 +95,7 @@
     .today-total{font-size:12.5px;color:var(--text3);margin-bottom:2px}
     .today-session{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;background:var(--surface)}
     .today-session-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-    .today-session-cat{font-weight:800;font-size:15px;text-transform:capitalize}
+    .today-session-cat{font-weight:800;font-size:15px}
     .today-session-min{font-size:12.5px;color:var(--text3);font-weight:600}
     .today-session-reason{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px}
     .today-start-btn{
@@ -111,68 +118,68 @@
 
 <div class="goal-header">
   <a class="goal-back" href="dashboard.html"><i class="fas fa-arrow-left"></i> Dashboard</a>
-  <h1 class="goal-title">🎯 IELTS Goal &amp; Study Plan</h1>
+  <h1 class="goal-title">🎯 Mục tiêu &amp; Kế hoạch học IELTS</h1>
 </div>
 
 <div class="goal-wrap">
   <div class="goal-card" id="today-card">
-    <h2><i class="fas fa-sun"></i> Today's Learning</h2>
-    <div id="today-content" class="goal-loading">Loading…</div>
+    <h2><i class="fas fa-sun"></i> Học hôm nay</h2>
+    <div id="today-content" class="goal-loading">Đang tải…</div>
   </div>
 
   <div class="goal-card">
-    <h2><i class="fas fa-bullseye"></i> Your Goal</h2>
+    <h2><i class="fas fa-bullseye"></i> Mục tiêu của bạn</h2>
     <div id="goal-form-wrap">
       <div class="goal-form-grid">
         <div class="goal-field">
-          <label for="f-current">Current IELTS level (self-assessed, optional)</label>
-          <select id="f-current"><option value="">— Not set —</option></select>
+          <label for="f-current">Trình độ IELTS hiện tại (tự đánh giá, không bắt buộc)</label>
+          <select id="f-current"><option value="">— Chưa đặt —</option></select>
         </div>
         <div class="goal-field">
-          <label for="f-target">Target band</label>
-          <select id="f-target"><option value="">— Choose —</option></select>
+          <label for="f-target">Band mục tiêu</label>
+          <select id="f-target"><option value="">— Chọn —</option></select>
         </div>
         <div class="goal-field">
-          <label for="f-exam">Exam date</label>
+          <label for="f-exam">Ngày thi</label>
           <input type="date" id="f-exam" />
         </div>
         <div class="goal-field">
-          <label for="f-weekly">Weekly study time (minutes)</label>
-          <input type="number" id="f-weekly" min="1" step="10" placeholder="e.g. 240" />
+          <label for="f-weekly">Thời gian học mỗi tuần (phút)</label>
+          <input type="number" id="f-weekly" min="1" step="10" placeholder="VD: 240" />
         </div>
         <div class="goal-field">
-          <label for="f-session">Minutes per session</label>
-          <input type="number" id="f-session" min="5" max="240" step="5" placeholder="e.g. 60" />
+          <label for="f-session">Số phút mỗi buổi</label>
+          <input type="number" id="f-session" min="5" max="240" step="5" placeholder="VD: 60" />
         </div>
         <div class="goal-field">
-          <label>Study days</label>
+          <label>Ngày học trong tuần</label>
           <div class="goal-days" id="f-days">
-            <span class="goal-day-chip" data-day="mon">Mon</span>
-            <span class="goal-day-chip" data-day="tue">Tue</span>
-            <span class="goal-day-chip" data-day="wed">Wed</span>
-            <span class="goal-day-chip" data-day="thu">Thu</span>
-            <span class="goal-day-chip" data-day="fri">Fri</span>
-            <span class="goal-day-chip" data-day="sat">Sat</span>
-            <span class="goal-day-chip" data-day="sun">Sun</span>
+            <span class="goal-day-chip" data-day="mon">T2</span>
+            <span class="goal-day-chip" data-day="tue">T3</span>
+            <span class="goal-day-chip" data-day="wed">T4</span>
+            <span class="goal-day-chip" data-day="thu">T5</span>
+            <span class="goal-day-chip" data-day="fri">T6</span>
+            <span class="goal-day-chip" data-day="sat">T7</span>
+            <span class="goal-day-chip" data-day="sun">CN</span>
           </div>
         </div>
       </div>
       <div class="goal-form-actions">
-        <button class="goal-btn goal-btn-primary" onclick="saveGoal()">Save Goal</button>
+        <button class="goal-btn goal-btn-primary" onclick="saveGoal()">Lưu mục tiêu</button>
         <span class="goal-msg" id="goal-msg"></span>
       </div>
     </div>
   </div>
 
   <div class="goal-card" id="summary-card" style="display:none">
-    <h2><i class="fas fa-chart-line"></i> Goal Summary</h2>
+    <h2><i class="fas fa-chart-line"></i> Tổng quan mục tiêu</h2>
     <div class="goal-summary-grid" id="summary-stats"></div>
     <div class="goal-feasibility" id="summary-feasibility" style="display:none"></div>
   </div>
 
   <div class="goal-card">
-    <h2><i class="fas fa-calendar-week"></i> This Week's Study Plan</h2>
-    <div id="plan-content" class="goal-loading">Loading…</div>
+    <h2><i class="fas fa-calendar-week"></i> Kế hoạch học tuần này</h2>
+    <div id="plan-content" class="goal-loading">Đang tải…</div>
   </div>
 </div>
 
@@ -182,7 +189,10 @@ function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 
 
 const BANDS = []; // 4.0 .. 7.5 step 0.5
 for (let b = 4.0; b <= 7.5 + 1e-9; b += 0.5) BANDS.push(Math.round(b * 10) / 10);
-const DAY_LABEL = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' };
+const DAY_LABEL = { mon: 'Thứ 2', tue: 'Thứ 3', wed: 'Thứ 4', thu: 'Thứ 5', fri: 'Thứ 6', sat: 'Thứ 7', sun: 'Chủ nhật' };
+// Skill names stay as-is; only the non-skill categories get a VN label.
+const CAT_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', vocabulary: 'Từ vựng', grammar: 'Ngữ pháp' };
+const catLabel = (c) => CAT_LABEL[String(c || '').toLowerCase()] || c;
 let selectedDays = new Set();
 
 function populateBandSelects() {
@@ -227,12 +237,12 @@ function renderSummary(g) {
   card.style.display = '';
   const stats = document.getElementById('summary-stats');
   const parts = [];
-  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.targetBand ?? '—'}</div><div class="goal-stat-label">Target band</div></div>`);
-  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.currentBand ?? '—'}</div><div class="goal-stat-label">Current (${g.currentBandSource === 'self_assessed' ? 'self-assessed' : '—'})</div></div>`);
-  if (g.gapBands != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.gapBands >= 0 ? '+' : ''}${g.gapBands}</div><div class="goal-stat-label">Gap</div></div>`);
-  if (g.daysRemaining != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.isPastExamDate ? 'Past' : g.daysRemaining}</div><div class="goal-stat-label">Days remaining</div></div>`);
-  if (g.weeklyStudyMinutes) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.weeklyStudyMinutes}</div><div class="goal-stat-label">Weekly minutes</div></div>`);
-  if (g.studyDays?.length) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.studyDays.length}</div><div class="goal-stat-label">Days/week</div></div>`);
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.targetBand ?? '—'}</div><div class="goal-stat-label">Band mục tiêu</div></div>`);
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.currentBand ?? '—'}</div><div class="goal-stat-label">Hiện tại (${g.currentBandSource === 'self_assessed' ? 'tự đánh giá' : '—'})</div></div>`);
+  if (g.gapBands != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.gapBands >= 0 ? '+' : ''}${g.gapBands}</div><div class="goal-stat-label">Chênh lệch</div></div>`);
+  if (g.daysRemaining != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.isPastExamDate ? 'Đã qua' : g.daysRemaining}</div><div class="goal-stat-label">Ngày còn lại</div></div>`);
+  if (g.weeklyStudyMinutes) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.weeklyStudyMinutes}</div><div class="goal-stat-label">Phút/tuần</div></div>`);
+  if (g.studyDays?.length) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.studyDays.length}</div><div class="goal-stat-label">Ngày/tuần</div></div>`);
   stats.innerHTML = parts.join('');
 
   const feasEl = document.getElementById('summary-feasibility');
@@ -259,58 +269,58 @@ async function saveGoal() {
   try {
     const res = await fetch(`${API}/goals`, { method: 'PUT', headers: authH(), body: JSON.stringify(body) });
     const data = await window.ApiClient.handleResponse(res);
-    msgEl.textContent = 'Saved!'; msgEl.className = 'goal-msg ok';
+    msgEl.textContent = 'Đã lưu!'; msgEl.className = 'goal-msg ok';
     renderSummary(data.goal);
     loadPlan();
     loadTodayLearning();
   } catch (e) {
-    msgEl.textContent = e.message || 'Could not save your goal.';
+    msgEl.textContent = e.message || 'Không thể lưu mục tiêu.';
     msgEl.className = 'goal-msg error';
   }
 }
 
 async function loadPlan() {
   const el = document.getElementById('plan-content');
-  el.className = 'goal-loading'; el.textContent = 'Loading…';
+  el.className = 'goal-loading'; el.textContent = 'Đang tải…';
   try {
     const res = await fetch(`${API}/study-plan/current`, { headers: authH() });
     const plan = await window.ApiClient.handleResponse(res);
     if (!plan.hasPlan) {
       el.className = 'plan-empty';
-      el.textContent = plan.message || 'Set up your goal above to generate a plan.';
+      el.textContent = plan.message || 'Thiết lập mục tiêu ở trên để tạo kế hoạch.';
       return;
     }
     el.className = '';
     const maxMin = Math.max(...plan.allocation.map(a => a.minutes));
     const allocHtml = plan.allocation.map(a => `
       <div class="plan-alloc-row">
-        <div>${a.category}</div>
+        <div>${catLabel(a.category)}</div>
         <div class="plan-alloc-bar-wrap"><div class="plan-alloc-bar" style="width:${maxMin ? Math.round(a.minutes / maxMin * 100) : 0}%"></div></div>
-        <div class="plan-alloc-min">${a.minutes}m</div>
+        <div class="plan-alloc-min">${a.minutes}p</div>
       </div>`).join('');
 
     const sessionsHtml = plan.sessions.map(s => `
       <div class="plan-day">
         <div class="plan-day-head">
           <span class="plan-day-title">${DAY_LABEL[s.day] || s.day} · ${s.date}</span>
-          <span class="plan-day-total">${s.totalMinutes} min</span>
+          <span class="plan-day-total">${s.totalMinutes} phút</span>
         </div>
         ${s.items.map(i => `
           <div class="plan-item">
-            <div class="plan-item-cat">${i.category}</div>
+            <div class="plan-item-cat">${catLabel(i.category)}</div>
             <div class="plan-item-reason">${escapeHtml(i.reason)}</div>
-            <div class="plan-item-min">${i.minutes} min</div>
+            <div class="plan-item-min">${i.minutes} phút</div>
           </div>`).join('')}
       </div>`).join('');
 
     el.innerHTML = `
-      <div class="plan-week">Week of ${plan.weekStart} → ${plan.weekEnd} · ${plan.totalMinutes} min total</div>
+      <div class="plan-week">Tuần ${plan.weekStart} → ${plan.weekEnd} · Tổng ${plan.totalMinutes} phút</div>
       <div class="plan-alloc">${allocHtml}</div>
       ${sessionsHtml}
     `;
   } catch (e) {
     el.className = 'plan-empty';
-    el.textContent = 'Unable to load your study plan.';
+    el.textContent = 'Không thể tải kế hoạch học.';
   }
 }
 
@@ -318,19 +328,19 @@ function escapeHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '
 
 async function loadTodayLearning() {
   const el = document.getElementById('today-content');
-  el.className = 'goal-loading'; el.textContent = 'Loading…';
+  el.className = 'goal-loading'; el.textContent = 'Đang tải…';
   try {
     const res = await fetch(`${API}/learning/today`, { headers: authH() });
     const today = await window.ApiClient.handleResponse(res);
 
     if (!today.hasGoal) {
       el.className = 'today-empty';
-      el.innerHTML = `${escapeHtml(today.message)} <a href="#f-target">Set your goal below ↓</a>`;
+      el.innerHTML = `${escapeHtml(today.message)} <a href="#f-target">Đặt mục tiêu bên dưới ↓</a>`;
       return;
     }
     if (!today.hasPlan || !today.isStudyDay || !today.sessions.length) {
       el.className = 'today-empty';
-      el.textContent = today.message || 'Nothing scheduled right now.';
+      el.textContent = today.message || 'Hôm nay chưa có lịch học nào.';
       return;
     }
 
@@ -338,16 +348,16 @@ async function loadTodayLearning() {
     const sessionsHtml = today.sessions.map(s => `
       <div class="today-session">
         <div class="today-session-head">
-          <span class="today-session-cat">${escapeHtml(s.category)}</span>
-          <span class="today-session-min">${s.minutes} min</span>
+          <span class="today-session-cat">${escapeHtml(catLabel(s.category))}</span>
+          <span class="today-session-min">${s.minutes} phút</span>
         </div>
         <div class="today-session-reason">${escapeHtml(s.reason)}</div>
         <a class="today-start-btn" href="${escapeHtml(s.practiceUrl)}"><i class="fas fa-play"></i> ${escapeHtml(s.action)}</a>
       </div>`).join('');
-    el.innerHTML = `<div class="today-total">${today.totalMinutes} min today</div><div class="today-sessions">${sessionsHtml}</div>`;
+    el.innerHTML = `<div class="today-total">${today.totalMinutes} phút hôm nay</div><div class="today-sessions">${sessionsHtml}</div>`;
   } catch (e) {
     el.className = 'today-empty';
-    el.textContent = 'Unable to load today\'s learning.';
+    el.textContent = 'Không thể tải nội dung học hôm nay.';
   }
 }
 

@@ -588,6 +588,9 @@
             .page-center { padding: 12px 12px; align-items: flex-start; padding-top: 20px; }
             .register-card {
                 padding: 28px 20px;
+                /* extra room at the bottom so the fixed Zalo button (inline
+                   <style> in register.html) doesn't sit over the last link */
+                padding-bottom: 92px;
                 border-radius: 20px;
                 box-shadow: 0 8px 32px rgba(0,0,0,.2);
             }
@@ -605,7 +608,7 @@
 
         /* Very small phones */
         @media (max-width: 360px) {
-            .register-card { padding: 24px 16px; border-radius: 16px; }
+            .register-card { padding: 24px 16px; padding-bottom: 92px; border-radius: 16px; }
             .welcome-text { font-size: 18px; }
             .tagline { font-size: 11px; }
         }
