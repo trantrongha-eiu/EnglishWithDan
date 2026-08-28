@@ -768,13 +768,19 @@ function finalizeQuiz() {
   if (!quizState || !quizState.lessonKey) return;
   const score = quizState.total > 0 ? Math.round((quizState.correct / quizState.total) * 100) : 0;
   saveScore(quizState.lessonKey, score);
+  const passed = score >= COMPLETE_THRESHOLD;
+  const summary = 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
+    + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
   const result = document.getElementById('eg-quiz-result');
   if (result) {
-    const passed = score >= COMPLETE_THRESHOLD;
     result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
-    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ')
-      + 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
-      + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
+    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary;
+    result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (typeof showToast === 'function') {
+    // Lessons that grade only through practice_exercises (no <quiz> block)
+    // have no #eg-quiz-result node — the completion feedback would otherwise
+    // just be a quiet badge change far up the page.
+    showToast((passed ? '🏆 ' : '🔁 ') + summary, passed ? 'success' : 'warn', 5000);
   }
   const heroStatus = document.getElementById('eg-hero-status');
   if (heroStatus) heroStatus.innerHTML = heroStatusHtml();
