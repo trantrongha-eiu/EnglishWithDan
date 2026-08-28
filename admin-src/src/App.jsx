@@ -42,6 +42,7 @@ const Messages = lazy(() => import('./pages/Messages'));
 const WritingGrades = lazy(() => import('./pages/WritingGrades'));
 const Tuition = lazy(() => import('./pages/Tuition'));
 const UpgradeRequests = lazy(() => import('./pages/UpgradeRequests'));
+const ReviewBypassCodes = lazy(() => import('./pages/ReviewBypassCodes'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -80,6 +81,7 @@ export default function App() {
                 <Route path="task2-exercises" element={<Task2Topics />} />
                 <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="history" element={<StudentHistory />} />
+                <Route path="review-bypass" element={<ReviewBypassCodes />} />
                 <Route path="reading-stats" element={<ReadingStats />} />
                 <Route path="listening-stats" element={<ListeningStats />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />

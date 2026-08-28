@@ -27,4 +27,8 @@ router.get('/:id', auth, reviewController.getDetail);
 // PATCH /api/review/:id/mistakes/:mistakeId
 router.patch('/:id/mistakes/:mistakeId', auth, reviewController.updateMistake);
 
+// POST /api/review/bypass  { code } — redeem an admin-issued code to skip
+// the mandatory-review gate (marks the student's pending reviews 'bypassed').
+router.post('/bypass', auth, reviewController.redeemBypass);
+
 module.exports = router;

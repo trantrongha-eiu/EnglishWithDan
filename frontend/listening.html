@@ -35,7 +35,7 @@
 <script src="/js/shared/route-params.js?v=20260831"></script>
 <script src="/js/shared/dictionary-lookup.js?v=20260832"></script>
 <script src="/js/shared/highlight-remove.js?v=20260831"></script>
-<script src="/js/shared/review-required-popup.js?v=20260831"></script>
+<script src="/js/shared/review-required-popup.js?v=20260907"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/mock-test.js?v=20260905"></script>
@@ -1090,7 +1090,10 @@
                 banner.innerHTML = (blocked
                         ? `<span>🔒 Bạn có ${count} bài đang chờ Review — hoàn thành ít nhất 1 bài để mở khóa bài Listening mới.</span>`
                         : `<span>🟡 Bạn có ${count} bài đang chờ Review — review khi rảnh để tránh lặp lại lỗi cũ.</span>`) +
-                    '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingListeningReview)">Tiếp tục Review</button>';
+                    '<span style="display:flex;gap:8px;align-items:center">' +
+                      '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingListeningReview)">Tiếp tục Review</button>' +
+                      (blocked ? '<button style="padding:8px 12px;background:none;border:1px solid currentColor;border-radius:8px;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit" onclick="window.showReviewBypassPrompt&&window.showReviewBypassPrompt()">Nhập mã bỏ qua</button>' : '') +
+                    '</span>';
             } else if (banner) {
                 banner.remove();
             }

@@ -30,5 +30,6 @@ router.use(require('./task2Topics'));      // Task 2 Topics CRUD + maintenance e
 router.use(require('./task2Templates'));   // Task 2 Templates CRUD
 router.use(require('./messages'));         // Messages
 router.use(require('./premium'));          // Plan Management, Upgrade Requests (renamed from billing.js — no payment/invoice logic here, see file header)
+router.use(require('./reviewBypass'));     // Review-gate bypass codes
 
 module.exports = router;

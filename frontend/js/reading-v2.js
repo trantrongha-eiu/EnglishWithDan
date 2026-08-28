@@ -777,7 +777,10 @@ async function _checkPendingReviewBanner() {
     banner.innerHTML = (blocked
         ? `<span>🔒 Bạn có ${count} bài đang chờ Review — hoàn thành ít nhất 1 bài để mở khóa bài Reading mới.</span>`
         : `<span>🟡 Bạn có ${count} bài đang chờ Review — review khi rảnh để tránh lặp lại lỗi cũ.</span>`) +
-      '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>';
+      '<span style="display:flex;gap:8px;align-items:center">' +
+        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>' +
+        (blocked ? '<button style="padding:8px 12px;background:none;border:1px solid currentColor;border-radius:8px;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit" onclick="window.showReviewBypassPrompt&&window.showReviewBypassPrompt()">Nhập mã bỏ qua</button>' : '') +
+      '</span>';
   } else if (banner) {
     banner.remove();
   }

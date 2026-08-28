@@ -6,6 +6,7 @@
 // Passage/ListeningTest content (the frontend already has that from the
 // existing review/history-detail endpoints).
 const AttemptReview = require('../models/AttemptReview');
+const ReviewBypassCode = require('../models/ReviewBypassCode');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 
 // A mistake counts as "reviewed" once the core guided-review steps are
@@ -177,6 +178,44 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   };
 }
 
+// Redeem an admin-issued bypass code: mark every one of this student's
+// PENDING reviews as 'bypassed' so the mandatory-review gate opens again.
+// Returns { status, ... } — 'ok' | 'not_found' | 'not_redeemable' |
+// 'already_used' | 'nothing_pending'.
+async function redeemBypassCode(userId, rawCode) {
+  const code = String(rawCode || '').trim().toUpperCase();
+  if (!code) return { status: 'not_found' };
+
+  const doc = await ReviewBypassCode.findOne({ code });
+  if (!doc) return { status: 'not_found' };
+  if (!doc.isRedeemable()) return { status: 'not_redeemable' };
+  if (doc.redemptions.some(r => String(r.userId) === String(userId))) {
+    return { status: 'already_used' };
+  }
+
+  const pending = await AttemptReview.find({ userId, status: 'pending' });
+  if (!pending.length) {
+    // Still consume the code — the student explicitly used it — but tell
+    // the caller there was nothing to clear.
+    doc.redemptions.push({ userId, cleared: 0 });
+    doc.usedCount += 1;
+    await doc.save();
+    return { status: 'nothing_pending', cleared: 0 };
+  }
+
+  const now = new Date();
+  await AttemptReview.updateMany(
+    { userId, status: 'pending' },
+    { $set: { status: 'bypassed', bypassCode: code, bypassedAt: now } }
+  );
+
+  doc.redemptions.push({ userId, cleared: pending.length });
+  doc.usedCount += 1;
+  await doc.save();
+
+  return { status: 'ok', cleared: pending.length };
+}
+
 async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit = 20 } = {}) {
   const filter = { userId, status: 'completed' };
   if (attemptType) filter.attemptType = attemptType;
@@ -195,4 +234,5 @@ async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit
 module.exports = {
   createReviewIfNeeded, getPendingReviews, getReviewStatusMap, MAX_PENDING_REVIEWS,
   getReviewDetail, getReviewByAttempt, updateMistake, getReviewHistory,
+  redeemBypassCode,
 };

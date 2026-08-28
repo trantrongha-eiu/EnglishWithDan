@@ -73,3 +73,23 @@ exports.getHistory = guard(null, async (req, res) => {
   const result = await reviewService.getReviewHistory(req.user._id, { attemptType, from, to, page, limit });
   res.json({ success: true, ...result });
 });
+
+// POST /api/review/bypass  { code } — redeem an admin bypass code to skip
+// the mandatory-review gate. Marks all the student's pending reviews
+// 'bypassed'.
+exports.redeemBypass = guard('[Review redeemBypass]', async (req, res) => {
+  const result = await reviewService.redeemBypassCode(req.user._id, (req.body || {}).code);
+  if (result.status === 'not_found') {
+    return res.status(404).json({ success: false, message: 'Mã không tồn tại.' });
+  }
+  if (result.status === 'not_redeemable') {
+    return res.status(400).json({ success: false, message: 'Mã đã hết lượt dùng, hết hạn hoặc đã bị khoá.' });
+  }
+  if (result.status === 'already_used') {
+    return res.status(400).json({ success: false, message: 'Bạn đã dùng mã này rồi.' });
+  }
+  if (result.status === 'nothing_pending') {
+    return res.json({ success: true, cleared: 0, message: 'Bạn không có bài nào đang chờ Review.' });
+  }
+  res.json({ success: true, cleared: result.cleared, message: `Đã bỏ qua ${result.cleared} bài chờ Review.` });
+});

@@ -70,8 +70,16 @@ const AttemptReviewSchema = new mongoose.Schema({
   },
   attemptId: { type: mongoose.Schema.Types.ObjectId, required: true },
 
-  status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
+  // 'bypassed' = the student redeemed an admin ReviewBypassCode instead of
+  // doing the guided review (see reviewService.redeemBypassCode). Excluded
+  // from getPendingReviews' count like 'completed', but never counts as a
+  // real review in history.
+  status: { type: String, enum: ['pending', 'completed', 'bypassed'], default: 'pending' },
   mistakes: [MistakeSchema],
+
+  // Set alongside status:'bypassed' — which code cleared this one.
+  bypassCode:   { type: String, default: null },
+  bypassedAt:   { type: Date, default: null },
 
   startedAt:   { type: Date, default: Date.now },
   completedAt: { type: Date, default: null },

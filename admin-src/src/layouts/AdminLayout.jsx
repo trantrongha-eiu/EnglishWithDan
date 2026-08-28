@@ -23,6 +23,7 @@ const TITLES = {
   '/task2-exercises':        'Task 2 Writing Exercises',
   '/task2-templates':        'Task 2 Templates',
   '/history':                'Lịch sử làm bài',
+  '/review-bypass':          'Mã bỏ qua Review',
   '/reading-stats':          'Thống kê Reading',
   '/listening-stats':        'Thống kê Listening',
   '/writing-grades':         'Chấm bài Writing',
