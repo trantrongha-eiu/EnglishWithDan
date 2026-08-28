@@ -373,8 +373,8 @@
           </div>
           <div class="table-wrap">
             <table class="responsive-table">
-              <thead><tr><th>#</th><th>Ngày</th><th>Task 1 (số từ)</th><th>Task 2 (số từ)</th></tr></thead>
-              <tbody id="writingHistory"><tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+              <thead><tr><th>#</th><th>Ngày</th><th>Task 1 (số từ)</th><th>Task 2 (số từ)</th><th>Band</th></tr></thead>
+              <tbody id="writingHistory"><tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -425,6 +425,13 @@
       const targetBtn = btn || document.querySelector(`.tab-btn[data-tab="${name}"]`);
       if (targetBtn) targetBtn.classList.add('active');
       if (syncHash) history.replaceState(null, '', '#' + name);
+      // On a real click, bring the tab bar + the new panel's top into view —
+      // otherwise switching from a long History tab leaves you scrolled
+      // halfway down an unrelated panel.
+      if (btn) {
+        const tabsBar = document.querySelector('.tabs');
+        if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     // ── Deep-link router: profile.html#edit / #security / #plan / #readingHistoryCard ...
@@ -553,13 +560,17 @@
       var banner = document.getElementById('studyPlanBanner');
       var textEl = document.getElementById('studyPlanBannerText');
       var labels = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking' };
-      var attempted = ['reading', 'listening', 'writing', 'speaking'].filter(function (k) { return s[k].total > 0; });
+      // Needs BOTH an attempt AND a numeric band — Writing's `total` counts
+      // every submission but its `avgBand` is null until a teacher confirms
+      // one, which otherwise made this pick "Writing" as weakest and print
+      // "Band null".
+      var attempted = ['reading', 'listening', 'writing', 'speaking'].filter(function (k) {
+        return s[k] && s[k].total > 0 && parseFloat(s[k].avgBand) > 0;
+      });
       if (!attempted.length) { banner.style.display = 'none'; return; }
 
       var weakest = attempted.reduce(function (min, k) {
-        var band = parseFloat(s[k].avgBand);
-        var minBand = parseFloat(s[min].avgBand);
-        return band < minBand ? k : min;
+        return parseFloat(s[k].avgBand) < parseFloat(s[min].avgBand) ? k : min;
       });
 
       var msg = '<strong>' + labels[weakest] + '</strong> đang là kỹ năng yếu nhất của bạn (Band ' + s[weakest].avgBand + ') — hãy luyện thêm!';
@@ -718,7 +729,10 @@
           document.getElementById('mottoCount').textContent = (u.studyMotto||'').length;
           const tb = document.getElementById('editTargetBand');
           tb.value = u.targetBand != null ? String(u.targetBand) : '';
-          document.getElementById('editTargetExamDate').value = u.targetExamDate ? new Date(u.targetExamDate).toISOString().slice(0, 10) : '';
+          // Take the YYYY-MM-DD straight off the stored ISO string — routing
+          // it through new Date().toISOString() can shift the day for a
+          // UTC+ timezone (same trap the heatmap code calls out below).
+          document.getElementById('editTargetExamDate').value = String(u.targetExamDate || '').slice(0, 10);
 
           // Nav avatar widget (update with fresh data from server)
           const navAv = document.getElementById('navAvatar');
@@ -784,7 +798,10 @@
             const band = a.aiFeedback?.overallBand;
             activities.push({ icon:'🎤', color:'rgba(245,158,11,.1)', text: band ? `Speaking – Band <strong>${band}</strong>` : 'Speaking practice', date: a.createdAt });
           });
-          s.writing.history.slice(0,3).forEach(a => activities.push({ icon:'✍️', color:'rgba(139,92,246,.1)', text: 'Writing practice', date: a.createdAt }));
+          s.writing.history.slice(0,3).forEach(a => {
+            const band = a.grading?.overallBand;
+            activities.push({ icon:'✍️', color:'rgba(139,92,246,.1)', text: band != null ? `Writing – Band <strong>${band}</strong>` : 'Writing practice', date: a.createdAt });
+          });
           activities.sort((a,b) => new Date(b.date)-new Date(a.date));
 
           if (activities.length) {
@@ -820,6 +837,7 @@
                 <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td>${a.wordCount1 != null ? a.wordCount1 + ' từ' : '-'}</td>
                 <td>${a.wordCount2 != null ? a.wordCount2 + ' từ' : '-'}</td>
+                <td>${a.grading?.overallBand != null ? '<span class="badge badge-primary">Band ' + a.grading.overallBand + '</span>' : '<span style="color:var(--text-light)">Chờ chấm</span>'}</td>
               </tr>`).join('');
           }
           if (s.speaking.history.length) {
@@ -895,6 +913,11 @@
           setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
           showToastWithTitle('success', 'Thành công', 'Thông tin đã được cập nhật');
           loadProfile();
+        } else {
+          // 2xx but success:false — don't leave the user with no feedback.
+          msgEl.style.display = 'block';
+          msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
+          msgEl.textContent = data.message || 'Không lưu được thay đổi';
         }
       } catch (err) {
         msgEl.style.display = 'block';
