@@ -65,7 +65,11 @@ const MockTestAttemptSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['in-progress', 'awaiting-grading', 'completed'],
+    // 'abandoned' = the student discarded a still-open run from the
+    // dashboard so they could start a fresh mock. Excluded from history
+    // and from the "resume" lookup; the sub-attempts it linked to (if any)
+    // keep living in their own per-skill histories.
+    enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned'],
     default: 'in-progress'
   }
 }, { timestamps: true });

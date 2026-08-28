@@ -15,6 +15,13 @@ exports.current = catchAsync(async (req, res) => {
   res.json({ success: true, attempt });
 });
 
+// DELETE /api/mock-test/current — discard the still-open run so the student
+// can start a fresh mock test from the dashboard.
+exports.abandon = catchAsync(async (req, res) => {
+  const result = await mockTestService.abandonCurrent(req.user._id);
+  res.json({ success: true, ...result });
+});
+
 // POST /api/mock-test/:id/advance   body: { skill, attemptId }
 exports.advance = catchAsync(async (req, res) => {
   const { skill, attemptId } = req.body || {};

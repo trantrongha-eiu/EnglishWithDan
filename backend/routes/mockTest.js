@@ -10,6 +10,7 @@ const ctrl = require('../controllers/mockTest.controller');
 router.post('/start', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi thử full 4 kỹ năng'), ctrl.start);
 
 router.get('/current', auth, ctrl.current);
+router.delete('/current', auth, ctrl.abandon);
 router.post('/:id/advance', auth, ctrl.advance);
 router.get('/history', auth, ctrl.history);
 router.get('/history/:id', auth, ctrl.historyDetail);

@@ -136,6 +136,17 @@ async function getCurrent(userId) {
   return doc ? publicShape(doc) : null;
 }
 
+// Student discarded the still-open run from the dashboard. Mark it
+// 'abandoned' (kept out of history + the resume lookup) so startMockTest()
+// will build a fresh bundle on their next go. No-op if nothing is open.
+async function abandonCurrent(userId) {
+  const doc = await getCurrentDoc(userId);
+  if (!doc) return { abandoned: false };
+  doc.status = 'abandoned';
+  await doc.save();
+  return { abandoned: true, attemptId: String(doc._id) };
+}
+
 async function advance(userId, mockId, { skill, attemptId }) {
   if (!mongoose.isValidObjectId(mockId)) throw new ValidationError('mockId không hợp lệ');
   if (!SKILL_ORDER.includes(skill)) throw new ValidationError('skill không hợp lệ');
@@ -198,9 +209,10 @@ async function refreshGrades(doc) {
 async function getHistory(userId, { page = 1, limit = 10 } = {}) {
   page = Math.max(1, Number(page) || 1);
   limit = Math.min(50, Math.max(1, Number(limit) || 10));
+  const histFilter = { userId, status: { $ne: 'abandoned' } };
   const [docs, total] = await Promise.all([
-    MockTestAttempt.find({ userId }).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
-    MockTestAttempt.countDocuments({ userId })
+    MockTestAttempt.find(histFilter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+    MockTestAttempt.countDocuments(histFilter)
   ]);
   const items = [];
   for (const doc of docs) {
@@ -212,7 +224,7 @@ async function getHistory(userId, { page = 1, limit = 10 } = {}) {
 
 async function getHistoryDetail(userId, id) {
   if (!mongoose.isValidObjectId(id)) return null;
-  const doc = await MockTestAttempt.findOne({ _id: id, userId });
+  const doc = await MockTestAttempt.findOne({ _id: id, userId, status: { $ne: 'abandoned' } });
   if (!doc) return null;
   await refreshGrades(doc);
   return publicShape(doc);
@@ -254,7 +266,7 @@ function publicShape(doc) {
 }
 
 module.exports = {
-  startMockTest, getCurrent, advance, getHistory, getHistoryDetail,
+  startMockTest, getCurrent, abandonCurrent, advance, getHistory, getHistoryDetail,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER
 };

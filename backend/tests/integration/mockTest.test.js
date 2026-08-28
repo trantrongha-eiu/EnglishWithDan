@@ -26,6 +26,7 @@ function authed(user) {
   return {
     get: (url) => request(app).get(url).set('Authorization', `Bearer ${token}`),
     post: (url, body) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+    del: (url) => request(app).delete(url).set('Authorization', `Bearer ${token}`),
   };
 }
 
@@ -114,5 +115,48 @@ describe('mock-test advance + current + history', () => {
 
     // No open run left.
     expect((await api.get('/api/mock-test/current')).body.attempt).toBeNull();
+  });
+});
+
+describe('DELETE /api/mock-test/current — abandon the open run', () => {
+  test('clears the open run and lets a fresh one start', async () => {
+    await seedPools();
+    const api = authed(await createPremiumStudent());
+
+    const first = (await api.post('/api/mock-test/start')).body.attempt;
+
+    const abandoned = await api.del('/api/mock-test/current');
+    expect(abandoned.status).toBe(200);
+    expect(abandoned.body.abandoned).toBe(true);
+
+    // Nothing to resume any more…
+    expect((await api.get('/api/mock-test/current')).body.attempt).toBeNull();
+
+    // …and /start builds a brand-new run instead of resuming.
+    const second = await api.post('/api/mock-test/start');
+    expect(second.status).toBe(201);
+    expect(second.body.resumed).toBe(false);
+    expect(second.body.attempt._id).not.toBe(first._id);
+  });
+
+  test('abandoned run is hidden from history', async () => {
+    await seedPools();
+    const user = await createPremiumStudent();
+    const api = authed(user);
+
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    await api.del('/api/mock-test/current');
+
+    const hist = await api.get('/api/mock-test/history');
+    expect(hist.body.items).toHaveLength(0);
+    expect(hist.body.total).toBe(0);
+  });
+
+  test('no-op (abandoned:false) when there is no open run', async () => {
+    const res = await authed(await createPremiumStudent()).del('/api/mock-test/current');
+    expect(res.status).toBe(200);
+    expect(res.body.abandoned).toBe(false);
   });
 });

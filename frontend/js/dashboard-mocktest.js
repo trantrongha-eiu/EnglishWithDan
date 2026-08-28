@@ -36,12 +36,41 @@
     var titleEl = document.getElementById('mocktest-title');
     var metaEl  = document.getElementById('mocktest-meta');
     var btn     = document.getElementById('mocktest-btn');
+    var abandon = document.getElementById('mocktest-abandon');
     if (titleEl) titleEl.textContent = opts.title;
     if (metaEl)  metaEl.textContent  = opts.meta;
     if (btn) {
       btn.textContent = opts.btnLabel;
       btn.onclick = opts.onClick;
     }
+    // "Bỏ qua & làm lại" only makes sense while a run is actually open.
+    if (abandon) {
+      abandon.style.display = opts.showAbandon ? '' : 'none';
+      abandon.onclick = opts.showAbandon ? abandonCurrentMock : null;
+    }
+  }
+
+  // Discard the open run so the student can start a fresh mock test. The
+  // completed Listening/Reading sub-attempts stay in their own histories;
+  // only the mock wrapper is closed (server marks it 'abandoned').
+  function abandonCurrentMock() {
+    var ok = window.confirm(
+      'Bỏ qua bài thi thử đang làm dở? Tiến trình 4 kỹ năng của lượt này sẽ bị huỷ và bạn có thể bắt đầu một bài thi thử mới.'
+    );
+    if (!ok) return;
+    var link = document.getElementById('mocktest-abandon');
+    if (link) { link.disabled = true; link.textContent = 'Đang huỷ…'; }
+    fetch(MT_API + '/mock-test/current', { method: 'DELETE', headers: mtHeaders() })
+      .then(function (r) { return window.ApiClient.handleResponse(r); })
+      .then(function () {
+        if (window.toast) window.toast('Đã huỷ bài thi thử đang làm dở.', 'success');
+        renderMockTestCard();
+      })
+      .catch(function (e) {
+        if (link) { link.disabled = false; link.textContent = 'Bỏ qua & làm lại'; }
+        var msg = (e && e.body && e.body.message) || (e && e.message) || 'Không huỷ được bài thi thử';
+        if (window.toast) window.toast(msg, 'error'); else alert(msg);
+      });
   }
 
   function startNewMock() {
@@ -104,7 +133,8 @@
             title: 'Đang thi thử — Bước ' + idx + '/4',
             meta: sittingNote + ' · tiếp theo: ' + nextLabel,
             btnLabel: 'Tiếp tục — ' + nextLabel,
-            onClick: function () { window.location.href = pageForSkill(a.progress, a._id); }
+            onClick: function () { window.location.href = pageForSkill(a.progress, a._id); },
+            showAbandon: true
           });
           return;
         }

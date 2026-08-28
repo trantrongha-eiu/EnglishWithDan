@@ -198,6 +198,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .mocktest-actions>.btn{white-space:nowrap}
 .mocktest-history-link{font-size:11px;font-weight:700;color:var(--brand,#e53935);text-decoration:none}
 .mocktest-history-link:hover{text-decoration:underline}
+.mocktest-abandon-link{background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--text3,#9ca3af);text-decoration:none}
+.mocktest-abandon-link:hover{color:var(--brand,#e53935);text-decoration:underline}
 @media(max-width:640px){
   .mocktest-card{gap:12px;padding:14px 16px}
   .mocktest-icon{font-size:24px}
