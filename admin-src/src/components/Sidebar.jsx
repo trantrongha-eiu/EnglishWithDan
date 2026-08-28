@@ -163,8 +163,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
                   <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
                 )}
                 {item.mockBadge && mockViolations > 0 && (
-                  <span className="nav-badge" title="Lượt thi thử bị đánh dấu vi phạm proctoring">
-                    ⚠️ {mockViolations > 99 ? '99+' : mockViolations}
+                  <span className="nav-badge nav-badge--warn" title="Lượt thi thử bị đánh dấu vi phạm proctoring">
+                    {mockViolations > 99 ? '99+' : mockViolations}
                   </span>
                 )}
               </NavLink>
