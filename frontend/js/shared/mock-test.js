@@ -109,9 +109,9 @@
   /* ══════════════════════════════════════════════════════════════════
      Proctoring (best-effort). A browser tab CANNOT stop the student
      switching away — so we detect it (visibilitychange → hidden, window
-     blur, a close/leave attempt) and, each time:
-       • sound a short alarm
-       • flash the screen red + the tab title
+     blur, a close/leave attempt) and:
+       • sound a pulsing alarm that keeps going until they come back
+       • flash the screen red + nag the tab title
        • bump the on-screen "gậy" counter
        • POST /mock-test/:id/violation  → server flags the run "violated"
          and keeps the running count (visible later to a teacher).
@@ -159,26 +159,47 @@
     }
   }
 
-  function _alarm() {
+  // Continuous pulsing alarm ("beep-beep-beep…") that keeps sounding for as
+  // long as the student is away. Built entirely with Web Audio nodes — a
+  // square LFO gates the tone's gain — so it isn't affected by the timer
+  // throttling browsers apply to background tabs. Stops on _alarmOff().
+  var ALARM_MAX_MS = 120000; // safety cap so a stuck state can't siren forever
+
+  function _alarmOn() {
     try {
+      if (!_proctor || _proctor.alarm) return;      // already sounding
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       if (!_proctor.actx) _proctor.actx = new AC();
       var ctx = _proctor.actx;
-      if (ctx.state === 'suspended' && ctx.resume) { var p = ctx.resume(); if (p && p.catch) p.catch(function () {}); }
-      var t0 = ctx.currentTime;
-      [0, 0.22, 0.44].forEach(function (off) {
-        var osc = ctx.createOscillator();
-        var g = ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(880, t0 + off);
-        g.gain.setValueAtTime(0.0001, t0 + off);
-        g.gain.exponentialRampToValueAtTime(0.25, t0 + off + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t0 + off + 0.16);
-        osc.connect(g); g.connect(ctx.destination);
-        osc.start(t0 + off); osc.stop(t0 + off + 0.18);
-      });
+      if (ctx.state === 'suspended' && ctx.resume) {
+        var p = ctx.resume(); if (p && p.catch) p.catch(function () {});
+      }
+      var osc = ctx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.value = 850;
+      var gate = ctx.createGain();
+      gate.gain.value = 0.11;                        // mid-point; LFO swings it 0 … 0.22
+      var lfo = ctx.createOscillator();
+      lfo.type = 'square';
+      lfo.frequency.value = 4;                       // 4 beeps per second
+      var lfoAmt = ctx.createGain();
+      lfoAmt.gain.value = 0.11;
+      lfo.connect(lfoAmt); lfoAmt.connect(gate.gain);
+      osc.connect(gate); gate.connect(ctx.destination);
+      osc.start(); lfo.start();
+      _proctor.alarm = { osc: osc, lfo: lfo };
+      _proctor.alarmSafety = setTimeout(_alarmOff, ALARM_MAX_MS);
     } catch (_) {}
+  }
+
+  function _alarmOff() {
+    if (!_proctor || !_proctor.alarm) return;
+    clearTimeout(_proctor.alarmSafety);
+    _proctor.alarmSafety = null;
+    try { _proctor.alarm.osc.stop(); _proctor.alarm.osc.disconnect(); } catch (_) {}
+    try { _proctor.alarm.lfo.stop(); _proctor.alarm.lfo.disconnect(); } catch (_) {}
+    _proctor.alarm = null;
   }
 
   function _flash() {
@@ -229,14 +250,25 @@
   // A tab switch fires blur AND visibilitychange — collapse to one "leave".
   function _onLeave(type) {
     if (!_proctor || _proctor.navigatingAway) return;
+    _alarmOn();          // start (or keep) the continuous alarm every time
     var now = Date.now();
     if (now - _proctor.lastLeaveAt < 1500) return;
     _proctor.lastLeaveAt = now;
     _proctor.count += 1;
     _renderBadge();
-    _alarm();
     _flash();
     _report(type);
+  }
+
+  // Back on the exam tab / window — silence the alarm, drop the title nag.
+  function _onReturn() {
+    if (!_proctor) return;
+    if (document.hidden || !document.hasFocus()) return;
+    _alarmOff();
+    if (_proctor.origTitle) {
+      clearTimeout(_proctor.titleTimer);
+      document.title = _proctor.origTitle;
+    }
   }
 
   function startProctor() {
@@ -245,7 +277,8 @@
     _proctor = {
       mockId: x.mockId, skill: x.skill, count: 0,
       lastLeaveAt: 0, navigatingAway: false,
-      badge: null, actx: null, flashTimer: null, titleTimer: null, origTitle: null
+      badge: null, actx: null, alarm: null, alarmSafety: null,
+      flashTimer: null, titleTimer: null, origTitle: null
     };
     var start = function () {
       if (!_proctor) return;
@@ -254,7 +287,10 @@
     };
     if (document.body) start(); else document.addEventListener('DOMContentLoaded', start, { once: true });
 
-    _proctor.onVis = function () { if (document.hidden) _onLeave('hidden'); };
+    _proctor.onVis = function () {
+      if (document.hidden) _onLeave('hidden'); else _onReturn();
+    };
+    _proctor.onFocus = function () { _onReturn(); };
     _proctor.onBlur = function () {
       // Ignore blur caused by focus moving to an element inside our own page
       // (iframes, some widgets). Real "left the window" → document has no focus.
@@ -276,6 +312,7 @@
       if (fl && fl.parentNode !== root) root.appendChild(fl);
     };
     document.addEventListener('visibilitychange', _proctor.onVis);
+    window.addEventListener('focus', _proctor.onFocus);
     window.addEventListener('blur', _proctor.onBlur);
     window.addEventListener('beforeunload', _proctor.onBeforeUnload);
     document.addEventListener('fullscreenchange', _proctor.onFsChange);
@@ -285,7 +322,9 @@
   function stopProctor() {
     if (!_proctor) return;
     _proctor.navigatingAway = true;
+    _alarmOff();
     document.removeEventListener('visibilitychange', _proctor.onVis);
+    window.removeEventListener('focus', _proctor.onFocus);
     window.removeEventListener('blur', _proctor.onBlur);
     window.removeEventListener('beforeunload', _proctor.onBeforeUnload);
     document.removeEventListener('fullscreenchange', _proctor.onFsChange);
