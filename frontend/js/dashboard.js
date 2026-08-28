@@ -2465,7 +2465,7 @@ function showMixedQuestion() {
             </div>
             <button class="btn-play-audio" onclick="speakWord('${escH(currentWord.word)}')"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
             <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
-            <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 The word has ${currentWord.word.length} letters</div>
+            <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 ${_letterHintMeta(currentWord.word, 'en')}</div>
             <div class="fb-input-row">
               <input class="listen-input" id="mixListenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
               <button class="btn-check" onclick="checkMixedListen()">Check</button>
@@ -2734,10 +2734,10 @@ function disableFlashcardBtns() {
 }
 function showHint() {
     if (!document.getElementById('flashcard').classList.contains('flipped')) return;
-    const rawHint = currentWord.word[0] + '_'.repeat(currentWord.word.length - 1);
-    const hint = _esc(rawHint);
+    // First letter of EVERY word (multi-word answers shown as separate groups).
+    const hint = _esc(_buildLetterHint(currentWord.word, 1));
     document.getElementById('fbFeedback').innerHTML =
-        `<div class="feedback-hint">💡 Hint: <strong>${hint}</strong> (${currentWord.word.length} letters)</div>`;
+        `<div class="feedback-hint">💡 Hint: <strong>${hint}</strong> (${_letterHintMeta(currentWord.word, 'en')})</div>`;
     hintUsed = true;
 }
 function checkFillBlank() {
@@ -2773,7 +2773,7 @@ function showListeningQuestion() {
     // Listen mode and the Classroom quiz's Listen/Fill types treat a space
     // in a multi-word vocab entry (e.g. "up to date") as a word boundary,
     // not a maskable letter.
-    document.getElementById('listenHint').textContent = `💡 The word has ${_letterCount(currentWord.word)} letters`;
+    document.getElementById('listenHint').textContent = `💡 ${_letterHintMeta(currentWord.word, 'en')}`;
     const meaningRow = document.getElementById('listenMeaning');
     if (meaningRow) {
         const hasMeaning = !!currentWord.meaning;

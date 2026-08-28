@@ -625,7 +625,7 @@ function renderQuizQuestion() {
             <div class="question-number">Fill in the Blank</div>
             <div class="question-text">${escHtml(sentence)}</div>
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(meaning)}</div>
-            <div class="listen-hint">💡 Từ có ${_letterCount(q.word.word)} chữ cái</div>
+            <div class="listen-hint">💡 ${_letterHintMeta(q.word.word, 'vi')}</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
@@ -642,7 +642,7 @@ function renderQuizQuestion() {
             <button class="btn-play-audio" id="qPlayAudioBtn"><i class="fas fa-volume-up"></i> Play Audio</button>
             <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" id="qSlowAudioBtn" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(q.word.meaning || '')}</div>
-            <div class="listen-hint">💡 Từ có ${_letterCount(q.word.word)} chữ cái</div>
+            <div class="listen-hint">💡 ${_letterHintMeta(q.word.word, 'vi')}</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
@@ -785,19 +785,36 @@ function answerWordChoice(btn) {
 // count toward "Từ có N chữ cái" nor consume one of the 3 hint presses.
 function _letterCount(word) { return (word || '').replace(/\s/g, '').length; }
 
-// Builds the reveal/mask string for showLessonQuizHint() below: letters get
-// revealed or '_'-masked according to revealCount, spaces are kept as a gap
-// (an empty token, so the join below renders them as a wider space) rather
-// than being treated as a maskable character.
-function _buildLetterHint(word, revealCount) {
-    let shown = 0;
-    const parts = [];
-    for (const ch of word) {
-        if (/\s/.test(ch)) { parts.push(''); continue; }
-        shown++;
-        parts.push(shown <= revealCount ? ch : '_');
+// "21 letters" — or "2 words · 7 + 14 letters" for a multi-word answer, so
+// the student knows to type a phrase and roughly how it splits. `lang`:
+// 'en' (Notebook Listen mode) | 'vi' (Classroom quiz).
+function _letterHintMeta(word, lang) {
+    const words = String(word || '').trim().split(/\s+/).filter(Boolean);
+    if (words.length <= 1) {
+        return lang === 'vi' ? `${_letterCount(word)} chữ cái` : `The word has ${_letterCount(word)} letters`;
     }
-    return parts.join(' ');
+    const per = words.map(w => w.length).join(' + ');
+    return lang === 'vi'
+        ? `${words.length} từ · ${per} chữ cái`
+        : `${words.length} words · ${per} letters`;
+}
+
+// Builds the reveal/mask string for the letter-hint. A multi-word answer
+// ("amplify misinformation") is shown as SEPARATE word groups, and each
+// hint press reveals the first `revealCount` letters of EVERY word — so
+// press 1 gives "a _ _ …   m _ _ …", not "a m p _ _ …" across the whole
+// phrase. Groups are joined by two em-spaces (U+2003, not CSS-collapsed)
+// for a clearly visible gap; letter slots within a word by a normal space.
+function _buildLetterHint(word, revealCount) {
+    return String(word || '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(function (w) {
+            const slots = [];
+            for (let i = 0; i < w.length; i++) slots.push(i < revealCount ? w[i] : '_');
+            return slots.join(' ');
+        })
+        .join('  ');
 }
 
 // Progressive letter reveal for the Fill-in-the-blank and Listening quiz
