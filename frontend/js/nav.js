@@ -227,6 +227,19 @@
   // right on top of the submit button (student-reported overlap). Guarded
   // with a null check since not every page that calls hideTopNav() has the
   // widget included.
+  // Also hides the "tra câu" translation owl (js/shared/sentence-lookup.js)
+  // and its popup while a test / full-mock exam is running — every exam
+  // screen calls hideTopNav(), so this is the one place that guarantees the
+  // owl (an exam aid that must not be available during a real attempt) is
+  // gone, on top of sentence-lookup.js's own __ewsExamActive / nav-hidden
+  // guard. Null-guarded: the owl DOM is created lazily on first use, so it
+  // often doesn't exist yet here.
+  function _toggleExamAids(hidden) {
+    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = hidden ? 'none' : '';
+    });
+  }
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
     var d = document.getElementById('globalMobileNav');
@@ -234,8 +247,7 @@
     if (d) d.style.display = 'none';
     document.body.classList.remove('has-global-nav');
     document.documentElement.style.setProperty('--nav-height', '0px');
-    var pcw = document.getElementById('pcw-root');
-    if (pcw) pcw.style.display = 'none';
+    _toggleExamAids(true);
   };
   window.showTopNav = function () {
     var n = document.getElementById('globalTopNav');
@@ -244,8 +256,7 @@
     if (d) d.style.display = '';
     document.body.classList.add('has-global-nav');
     document.documentElement.style.removeProperty('--nav-height');
-    var pcw = document.getElementById('pcw-root');
-    if (pcw) pcw.style.display = '';
+    _toggleExamAids(false);
   };
 
   // ── Hamburger toggle ──────────────────────────────────────

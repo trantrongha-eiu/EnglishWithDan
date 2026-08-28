@@ -655,21 +655,26 @@ async function loadWeaknessProfile() {
     _cachedWeakVocabCount = weakWords.length;
 
     const chips = [];
+    // Defensive: a malformed/partial weakness row must degrade to "0%" /
+    // "Band 0", never crash the whole card with a TypeError on
+    // undefined.toFixed / undefined * 100.
+    const pct = w => `${Math.round((Number(w.accuracy) || 0) * 100)}% đúng`;
+    const band = w => `Band ${(Number(w.avgScore) || 0).toFixed(1)}`;
     if (data.reading?.length) {
         const w = data.reading[0];
-        chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'reading.html' });
+        chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: pct(w), href: 'reading.html' });
     }
     if (data.listening?.length) {
         const w = data.listening[0];
-        chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'listening.html' });
+        chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: pct(w), href: 'listening.html' });
     }
     if (data.writing?.length) {
         const w = data.writing[0];
-        chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'writing.html' });
+        chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: band(w), href: 'writing.html' });
     }
     if (data.speaking?.length) {
         const w = data.speaking[0];
-        chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'speaking.html' });
+        chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: band(w), href: 'speaking.html' });
     }
     if (weakWords.length) {
         chips.push({

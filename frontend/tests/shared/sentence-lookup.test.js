@@ -117,4 +117,38 @@ describe('sentence-lookup scroll behavior', () => {
 
     expect(document.getElementById('ews-sl-popup').classList.contains('hidden')).toBe(true);
   });
+
+  // The owl must not appear during a test / full-mock exam. Every exam
+  // screen hides the global nav (nav.js hideTopNav), so a hidden
+  // #globalTopNav is treated as "exam active".
+  test('a hidden global nav suppresses the owl on selection', async () => {
+    const nav = document.createElement('div');
+    nav.id = 'globalTopNav';
+    nav.style.display = 'none';
+    document.body.appendChild(nav);
+    try {
+      await selectAndShowIcon('this selection happens during an exam screen');
+      expect(document.getElementById('ews-sl-icon').classList.contains('hidden')).toBe(true);
+    } finally {
+      nav.remove();
+    }
+  });
+
+  test('falls back to MyMemory when the Google endpoint fails', async () => {
+    global.fetch = jest.fn((url) => {
+      if (String(url).includes('translate.googleapis.com')) {
+        return Promise.resolve({ ok: false, json: () => Promise.resolve(null) });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ responseData: { translatedText: 'Bản dịch dự phòng' } }),
+      });
+    });
+    await selectAndShowIcon('this sentence needs the mymemory fallback path');
+    await clickIconAndAwaitTranslation();
+    await new Promise((r) => setTimeout(r, 0)); // second provider hop
+
+    expect(document.getElementById('ews-sl-popup').querySelector('.ews-sl-translated').textContent)
+      .toBe('Bản dịch dự phòng');
+  });
 });
