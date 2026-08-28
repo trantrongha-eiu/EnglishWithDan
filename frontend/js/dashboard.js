@@ -231,6 +231,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
     loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    // Double-click / drag-select word lookup on the vocab HOME screen too —
+    // it was only ever wired on the notebook table / quiz / study grids, so
+    // on the home view (Today's Lesson, Areas to improve, feature copy) a
+    // double-click did nothing even though the site-wide "tra câu" phrase
+    // owl worked there. #book-welcome is a sibling of #book-content
+    // (#words-tbody lives there), so this never double-binds. Idempotent.
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('book-welcome', 'dashboard-home');
     if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
     // Goal-setup nudge (once per browser session, if no goal set yet) or
     // today's recommended study plan (once per calendar day, if a goal
