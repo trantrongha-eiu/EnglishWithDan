@@ -47,6 +47,7 @@ export default function VocabActivity() {
   const toast = useToast();
   const confirm = useConfirm();
   const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('words-desc');
   const [selected, setSelected] = useState(null);
@@ -56,7 +57,8 @@ export default function VocabActivity() {
   useEffect(() => {
     apiFetch('/admin/vocab-students')
       .then(d => setStudents(d.students || []))
-      .catch(e => toast(e.message, 'error'));
+      .catch(e => toast(e.message, 'error'))
+      .finally(() => setLoading(false));
   }, []);
 
   const displayName = s => [s.firstName, s.lastName].filter(Boolean).join(' ') || s.username || '';
@@ -197,7 +199,9 @@ export default function VocabActivity() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0
+            {loading
+              ? <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
+              : filtered.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có dữ liệu</td></tr>
               : filtered.map(s => {
                 const name = displayName(s);

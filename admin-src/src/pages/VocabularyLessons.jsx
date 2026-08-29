@@ -358,11 +358,14 @@ export default function VocabularyLessons() {
   );
 
   async function togglePublish(id, published) {
+    setLessons(prev => prev.map(l => (l._id === id ? { ...l, published: !published } : l)));
     try {
       await apiFetch(`/vocabulary-lessons/admin/${id}/publish`, { method: 'PATCH', body: JSON.stringify({ published: !published }) });
       toast(published ? 'Đã unpublish' : 'Đã publish');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setLessons(prev => prev.map(l => (l._id === id ? { ...l, published } : l)));
+      toast(e.message, 'error');
+    }
   }
 
   async function duplicate(id) {
@@ -375,8 +378,11 @@ export default function VocabularyLessons() {
 
   function del(id, title) {
     confirm(`Xoá bài học "${title}"? Toàn bộ tiến độ học sinh cho bài này sẽ bị xoá (lịch sử import vẫn được giữ lại).`, async () => {
-      try { await apiFetch(`/vocabulary-lessons/admin/${id}`, { method: 'DELETE' }); toast('Đã xoá'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/vocabulary-lessons/admin/${id}`, { method: 'DELETE' });
+        setLessons(prev => prev.filter(l => l._id !== id));
+        toast('Đã xoá');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 

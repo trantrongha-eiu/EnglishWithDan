@@ -234,17 +234,23 @@ export default function EssentialGrammarLessons() {
   );
 
   async function toggleActive(id, isActiveNow) {
+    setLessons(prev => prev.map(l => (l._id === id ? { ...l, isActive: !isActiveNow } : l)));
     try {
       await apiFetch(`/essential-grammar/admin/${id}/active`, { method: 'PATCH', body: JSON.stringify({ isActive: !isActiveNow }) });
       toast(isActiveNow ? 'Đã ẩn' : 'Đã hiện');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setLessons(prev => prev.map(l => (l._id === id ? { ...l, isActive: isActiveNow } : l)));
+      toast(e.message, 'error');
+    }
   }
 
   function del(id, title) {
     confirm(`Xoá bài học "${title}"? Toàn bộ tiến độ học sinh cho bài này sẽ bị xoá. ${SEED_RESET_NOTE}`, async () => {
-      try { await apiFetch(`/essential-grammar/admin/${id}`, { method: 'DELETE' }); toast('Đã xoá'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/essential-grammar/admin/${id}`, { method: 'DELETE' });
+        setLessons(prev => prev.filter(l => l._id !== id));
+        toast('Đã xoá');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 

@@ -56,20 +56,23 @@ export default function ReviewBypassCodes() {
   }
 
   async function toggleActive(c) {
+    setCodes(prev => prev.map(x => (x._id === c._id ? { ...x, active: !c.active } : x)));
     try {
       await apiFetch(`/admin/review-bypass-codes/${c._id}`, {
         method: 'PATCH', body: JSON.stringify({ active: !c.active }),
       });
-      reload();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setCodes(prev => prev.map(x => (x._id === c._id ? { ...x, active: c.active } : x)));
+      toast(e.message, 'error');
+    }
   }
 
   function remove(c) {
     confirm(`Xoá vĩnh viễn mã ${c.code}?`, async () => {
       try {
         await apiFetch(`/admin/review-bypass-codes/${c._id}`, { method: 'DELETE' });
+        setCodes(prev => prev.filter(x => x._id !== c._id));
         toast('Đã xoá');
-        reload();
       } catch (e) { toast(e.message, 'error'); }
     });
   }

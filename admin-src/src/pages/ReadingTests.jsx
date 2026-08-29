@@ -15,13 +15,17 @@ export default function ReadingTests() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [tests, setTests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [passageStats, setPassageStats] = useState(null);
   const {
     search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
     page, setPage, paged, filtered, filteredCount, pageSize,
   } = useListFilter(tests, { searchKeys: ['name', 'seriesName'], initialPage: location.state?.page || 1 });
 
-  const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
+  const load = () => apiFetch('/admin/tests')
+    .then(d => setTests(d.tests || []))
+    .catch(e => toast(e.message, 'error'))
+    .finally(() => setLoading(false));
   useEffect(() => {
     load();
     apiFetch('/admin/passages/stats')
@@ -125,7 +129,9 @@ export default function ReadingTests() {
         <table className="table">
           <thead><tr><th>TÊN BỘ ĐỀ</th><th>SERIES</th><th>SỐ ĐỀ</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
           <tbody>
-            {paged.length === 0
+            {loading
+              ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+              : paged.length === 0
               ? <tr><td colSpan={6} className="table-empty">Không có bộ đề nào</td></tr>
               : paged.map(t => (
                 <tr key={t._id}>

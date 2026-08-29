@@ -403,11 +403,14 @@ export default function Task2Templates() {
 
   // ── Toggle active ──────────────────────────────────────────────────────
   async function toggleActive(tpl) {
+    setTemplates(prev => prev.map(x => (x._id === tpl._id ? { ...x, isActive: !tpl.isActive } : x)));
     try {
       await apiFetch(`/admin/task2/templates/${tpl._id}`, { method: 'PUT', body: JSON.stringify({ isActive: !tpl.isActive }) });
       showToast(tpl.isActive ? 'Đã ẩn template' : 'Đã hiện template', 'success');
-      reload();
-    } catch (e) { showToast(e.message, 'error'); }
+    } catch (e) {
+      setTemplates(prev => prev.map(x => (x._id === tpl._id ? { ...x, isActive: tpl.isActive } : x)));
+      showToast(e.message, 'error');
+    }
   }
 
   // ── Delete template ────────────────────────────────────────────────────
@@ -417,7 +420,7 @@ export default function Task2Templates() {
         await apiFetch(`/admin/task2/templates/${tpl._id}`, { method: 'DELETE' });
         showToast('Đã xóa template', 'success');
         if (activeId === tpl._id) { setActiveId(null); setActiveTpl(null); }
-        reload();
+        setTemplates(prev => prev.filter(x => x._id !== tpl._id));
       } catch (e) { showToast(e.message, 'error'); }
     });
   }

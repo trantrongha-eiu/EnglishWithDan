@@ -224,6 +224,8 @@ export default function WritingPractice() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [tab, setTab] = useState('exercises');
+  const [loading, setLoading] = useState(true);
+  const [attLoading, setAttLoading] = useState(false);
   const [exercises, setExercises] = useState([]);
   const [topics, setTopics] = useState([]);
   const [attempts, setAttempts] = useState([]);
@@ -242,9 +244,9 @@ export default function WritingPractice() {
 
   const loadEx = () => apiFetch('/admin/wp-exercises?limit=500').then(d => setExercises(d.exercises || [])).catch(e => toast(e.message, 'error'));
   const loadTopics = () => apiFetch('/admin/wp-topics').then(d => setTopics(d.topics || [])).catch(e => toast(e.message, 'error'));
-  const loadAttempts = () => apiFetch('/admin/wp-attempts?limit=300').then(d => setAttempts((d.attempts || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))).catch(e => toast(e.message, 'error'));
+  const loadAttempts = () => { setAttLoading(true); return apiFetch('/admin/wp-attempts?limit=300').then(d => setAttempts((d.attempts || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))).catch(e => toast(e.message, 'error')).finally(() => setAttLoading(false)); };
 
-  useEffect(() => { loadTopics(); loadEx(); }, []);
+  useEffect(() => { Promise.all([loadTopics(), loadEx()]).finally(() => setLoading(false)); }, []);
   useEffect(() => { if (tab === 'attempts' && attempts.length === 0) loadAttempts(); }, [tab]);
 
   // Fully derivable from `exercises` + the filter fields — no need to
@@ -333,7 +335,9 @@ export default function WritingPractice() {
             <table className="table">
               <thead><tr><th>CÂU HỎI</th><th>LEVEL</th><th>LOẠI</th><th>CHỦ ĐỀ</th><th>TRẠNG THÁI</th><th></th></tr></thead>
               <tbody>
-                {paged.length === 0
+                {loading
+                  ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+                  : paged.length === 0
                   ? <tr><td colSpan={6} className="table-empty">Không có bài tập</td></tr>
                   : paged.map(ex => (
                     <tr key={ex._id}>
@@ -368,7 +372,9 @@ export default function WritingPractice() {
             <table className="table">
               <thead><tr><th>KEY</th><th>TÊN TIẾNG VIỆT</th><th>CATEGORY</th><th>THỨ TỰ</th><th>TRẠNG THÁI</th><th></th></tr></thead>
               <tbody>
-                {topics.length === 0
+                {loading
+                  ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+                  : topics.length === 0
                   ? <tr><td colSpan={6} className="table-empty">Không có chủ đề</td></tr>
                   : topics.map(t => (
                     <tr key={t._id}>
@@ -411,7 +417,9 @@ export default function WritingPractice() {
               <table className="table">
                 <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>CHỦ ĐỀ</th><th>ĐÚNG/TỔNG</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
                 <tbody>
-                  {attRows.length === 0
+                  {attLoading
+                    ? <tr><td colSpan={7} className="table-empty">Đang tải...</td></tr>
+                    : attRows.length === 0
                     ? <tr><td colSpan={7} className="table-empty">Chưa có lịch sử</td></tr>
                     : attRows.map(a => {
                       // Legacy rows saved before the per-topic aggregation (audit

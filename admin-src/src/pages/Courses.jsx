@@ -161,12 +161,16 @@ export default function Courses() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState('');
   const [editCourse, setEditCourse] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const load = () => apiFetch('/admin/courses').then(d => setCourses(d.courses || [])).catch(e => toast(e.message, 'error'));
+  const load = () => apiFetch('/admin/courses')
+    .then(d => setCourses(d.courses || []))
+    .catch(e => toast(e.message, 'error'))
+    .finally(() => setLoading(false));
   useEffect(() => { load(); }, []);
 
   const filtered = courses.filter(c => {
@@ -176,17 +180,23 @@ export default function Courses() {
   });
 
   async function toggleActive(id, isActive) {
+    setCourses(prev => prev.map(c => (c._id === id ? { ...c, isActive: !isActive } : c)));
     try {
       await apiFetch(`/admin/courses/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn khóa học' : 'Đã hiện khóa học');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setCourses(prev => prev.map(c => (c._id === id ? { ...c, isActive } : c)));
+      toast(e.message, 'error');
+    }
   }
 
   function del(id, title) {
     confirm(`Xóa khóa học "${title}"?`, async () => {
-      try { await apiFetch(`/admin/courses/${id}`, { method: 'DELETE' }); toast('Đã xóa'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/admin/courses/${id}`, { method: 'DELETE' });
+        setCourses(prev => prev.filter(c => c._id !== id));
+        toast('Đã xóa');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 
@@ -216,7 +226,9 @@ export default function Courses() {
             <tr><th>TÊN KHÓA HỌC</th><th>DANH MỤC</th><th>CẤP ĐỘ</th><th>THỜI LƯỢNG</th><th>HỌC PHÍ</th><th>TRẠNG THÁI</th><th>THỨ TỰ</th><th></th></tr>
           </thead>
           <tbody>
-            {filtered.length === 0
+            {loading
+              ? <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
+              : filtered.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có khóa học</td></tr>
               : filtered.map(c => (
                 <tr key={c._id}>

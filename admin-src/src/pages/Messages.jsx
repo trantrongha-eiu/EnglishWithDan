@@ -56,13 +56,13 @@ export default function Messages() {
   // account predates the newest 500 signups used to silently vanish from
   // this panel even though /admin/online-users correctly reported them.
   const [onlineStudents, setOnlineStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadStudents();
-    loadMessages(1);
-    loadReceived(1);
-    loadReports('open');
     loadOnline();
+    Promise.all([loadMessages(1), loadReceived(1), loadReports('open')])
+      .finally(() => setLoading(false));
   }, []);
 
   async function loadStudents() {
@@ -349,7 +349,9 @@ export default function Messages() {
                 </tr>
               </thead>
               <tbody>
-                {messages.length === 0
+                {loading
+                  ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+                  : messages.length === 0
                   ? <tr><td colSpan={6} className="table-empty">Chưa có tin nhắn nào</td></tr>
                   : messages.map(m => (
                     <tr key={m._id}>
@@ -410,7 +412,9 @@ export default function Messages() {
                 </tr>
               </thead>
               <tbody>
-                {received.length === 0
+                {loading
+                  ? <tr><td colSpan={5} className="table-empty">Đang tải...</td></tr>
+                  : received.length === 0
                   ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
                   : received.map(m => (
                     <tr key={m._id} style={{ fontWeight: m.isRead ? 400 : 700 }}>
@@ -452,7 +456,9 @@ export default function Messages() {
                 </tr>
               </thead>
               <tbody>
-                {reports.length === 0
+                {loading
+                  ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+                  : reports.length === 0
                   ? <tr><td colSpan={6} className="table-empty">Không có báo cáo nào</td></tr>
                   : reports.map(r => (
                     <tr key={r._id}>
