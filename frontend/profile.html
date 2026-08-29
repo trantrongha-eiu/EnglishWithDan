@@ -470,7 +470,8 @@
       if (light) S.setProperty('--brand-light', light);
     }
     function initAccentPicker() {
-      const saved = JSON.parse(localStorage.getItem(ACCENT_KEY) || 'null');
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem(ACCENT_KEY) || 'null'); } catch (_) {}
       if (saved) applyAccent(saved.primary, saved.dark);
       const currentPrimary = (saved?.primary || BRAND_DEFAULT).toLowerCase();
       document.querySelectorAll('.accent-swatch').forEach(sw => {

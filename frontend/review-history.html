@@ -142,13 +142,13 @@
     function rhFilterByCategory(items) {
       const cat = document.getElementById('rhFilterCategory').value;
       if (!cat) return items;
-      return items.filter(r => r.mistakes.some(m => m.errorCategory === cat));
+      return items.filter(r => (r.mistakes || []).some(m => m.errorCategory === cat));
     }
 
     function rhRenderCategoryOptions(items) {
       const sel = document.getElementById('rhFilterCategory');
       const current = sel.value;
-      const cats = [...new Set(items.flatMap(r => r.mistakes.map(m => m.errorCategory)).filter(Boolean))];
+      const cats = [...new Set(items.flatMap(r => (r.mistakes || []).map(m => m.errorCategory)).filter(Boolean))];
       sel.innerHTML = '<option value="">Tất cả nhóm lỗi</option>' +
         cats.map(c => `<option value="${escHtml(c)}"${c === current ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
     }
@@ -165,9 +165,9 @@
             <div class="rh-item-meta">
               <span class="badge badge-primary">${escHtml(ATTEMPT_TYPE_LABEL[r.attemptType] || r.attemptType)}</span>
               <span>${r.completedAt ? new Date(r.completedAt).toLocaleDateString('vi-VN') : ''}</span>
-              <span>· ${r.mistakes.length} câu sai</span>
+              <span>· ${(r.mistakes || []).length} câu sai</span>
             </div>
-            ${r.mistakes.map(m => `
+            ${(r.mistakes || []).map(m => `
               <div class="rh-mistake">
                 <div class="rh-mistake-q">Câu ${m.questionNumber}${m.questionType ? ' · ' + escHtml(m.questionType) : ''}</div>
                 ${m.errorCategory ? `<div class="rh-mistake-row">❌ <strong>${escHtml(m.errorCategory)}</strong> — ${escHtml(m.errorReason || '')}</div>` : ''}
