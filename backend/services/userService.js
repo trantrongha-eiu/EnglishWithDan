@@ -123,7 +123,13 @@ async function uploadAvatar(userId, imageBase64) {
 // handful of points to be a meaningful trend. The average/total below are
 // computed separately via aggregation over the WHOLE history, not this
 // bounded list, so bumping this only affects chart resolution, never accuracy.
-const STATS_HISTORY_LIMIT = 30;
+// Depth of the per-skill history list returned by GET /api/user/stats.
+// Feeds profile.html's history tables (collapsed to the most recent few,
+// "Xem thêm" reveals the rest) + its band-trend chart. Bumped 30 -> 60 so
+// a moderately active student can actually scroll back through a term's
+// worth of attempts from their profile; the per-skill pages still hold the
+// fully-paginated history beyond this.
+const STATS_HISTORY_LIMIT = 60;
 
 async function getStats(userId) {
   const [

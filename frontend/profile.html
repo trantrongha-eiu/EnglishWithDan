@@ -155,7 +155,7 @@
           </div>
         </div>
 
-        <div id="studyPlanBanner" style="display:none;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(245,158,11,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px">
+        <div id="studyPlanBanner" style="display:none;align-items:center;gap:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand,#e53935) 8%,transparent),rgba(245,158,11,.06));border:1px solid color-mix(in srgb,var(--brand,#e53935) 20%,transparent);border-radius:14px;padding:14px 18px;margin-bottom:16px">
           <div style="font-size:22px">🎯</div>
           <div id="studyPlanBannerText" style="flex:1;font-size:13px;color:var(--text2);line-height:1.5"></div>
         </div>
@@ -285,14 +285,15 @@
             <div class="form-group">
               <label class="form-label">Màu chủ đề cá nhân</label>
               <div class="accent-swatches" id="accentSwatches">
-                <div class="accent-swatch" data-primary="#f5576c" data-dark="#d63651" style="background:linear-gradient(135deg,#f093fb,#f5576c)" title="Hồng (Mặc định)"></div>
+                <div class="accent-swatch" data-primary="#e53935" data-dark="#c62828" style="background:#e53935" title="Đỏ (Mặc định)"></div>
+                <div class="accent-swatch" data-primary="#f5576c" data-dark="#d63651" style="background:linear-gradient(135deg,#f093fb,#f5576c)" title="Hồng"></div>
                 <div class="accent-swatch" data-primary="#667eea" data-dark="#5a67d8" style="background:#667eea" title="Tím"></div>
                 <div class="accent-swatch" data-primary="#10b981" data-dark="#059669" style="background:#10b981" title="Xanh lá"></div>
                 <div class="accent-swatch" data-primary="#06b6d4" data-dark="#0891b2" style="background:#06b6d4" title="Xanh cyan"></div>
                 <div class="accent-swatch" data-primary="#f59e0b" data-dark="#d97706" style="background:#f59e0b" title="Vàng cam"></div>
                 <div class="accent-swatch" data-primary="#3b82f6" data-dark="#2563eb" style="background:#3b82f6" title="Xanh dương"></div>
               </div>
-              <small style="color:var(--text-light);font-size:12px;">Được lưu trên thiết bị này</small>
+              <small style="color:var(--text-light);font-size:12px;">Đổi màu nhấn cho toàn bộ trang web — lưu trên thiết bị này</small>
             </div>
             <div id="editMsg" style="display:none; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:12px;"></div>
             <button class="btn btn-primary" onclick="saveProfile()">
@@ -373,8 +374,8 @@
           </div>
           <div class="table-wrap">
             <table class="responsive-table">
-              <thead><tr><th>#</th><th>Ngày</th><th>Task 1 (số từ)</th><th>Task 2 (số từ)</th></tr></thead>
-              <tbody id="writingHistory"><tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+              <thead><tr><th>#</th><th>Ngày</th><th>Task 1 (số từ)</th><th>Task 2 (số từ)</th><th>Band</th></tr></thead>
+              <tbody id="writingHistory"><tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -399,10 +400,6 @@
     </main>
   </div>
 
-  <!-- Toast container -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <!-- Hidden avatar file input handler -->
   <script>
     const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
@@ -410,10 +407,7 @@
     function token() { return window.AuthService.getToken(); }
     function headers() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
 
-    // showToastWithTitle() moved to js/shared/toast.js (single source of
-    // truth — Phase 3 audit). This page's old #toastContainer element is
-    // no longer referenced but was left in place.
-
+    // showToastWithTitle() lives in js/shared/toast.js (single source of truth).
 
     // ── Tabs ──────────────────────────────────────────────────
     const VALID_TABS = ['overview', 'edit', 'security', 'history'];
@@ -425,6 +419,13 @@
       const targetBtn = btn || document.querySelector(`.tab-btn[data-tab="${name}"]`);
       if (targetBtn) targetBtn.classList.add('active');
       if (syncHash) history.replaceState(null, '', '#' + name);
+      // On a real click, bring the tab bar + the new panel's top into view —
+      // otherwise switching from a long History tab leaves you scrolled
+      // halfway down an unrelated panel.
+      if (btn) {
+        const tabsBar = document.querySelector('.tabs');
+        if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     // ── Deep-link router: profile.html#edit / #security / #plan / #readingHistoryCard ...
@@ -453,15 +454,25 @@
     });
 
     // ── Accent color picker ───────────────────────────────────
+    // Live preview must recolour exactly what theme.js recolours on every
+    // other page load, so what you see here is what you get site-wide:
+    // --primary (+ mobile.css alias), --brand / --brand-dark (components.css
+    // / main.css), and the derived --brand-light tint.
     const ACCENT_KEY = 'profileAccent';
+    const BRAND_DEFAULT = '#e53935';
     function applyAccent(primary, dark) {
-      document.documentElement.style.setProperty('--primary', primary);
-      document.documentElement.style.setProperty('--primary-dark', dark);
+      const S = document.documentElement.style;
+      S.setProperty('--primary', primary);
+      S.setProperty('--primary-dark', dark);
+      S.setProperty('--brand', primary);
+      S.setProperty('--brand-dark', dark);
+      const light = window.hexToRgba && window.hexToRgba(primary, 0.12);
+      if (light) S.setProperty('--brand-light', light);
     }
     function initAccentPicker() {
       const saved = JSON.parse(localStorage.getItem(ACCENT_KEY) || 'null');
       if (saved) applyAccent(saved.primary, saved.dark);
-      const currentPrimary = (saved?.primary || '#f5576c').toLowerCase();
+      const currentPrimary = (saved?.primary || BRAND_DEFAULT).toLowerCase();
       document.querySelectorAll('.accent-swatch').forEach(sw => {
         if (sw.dataset.primary.toLowerCase() === currentPrimary) sw.classList.add('active');
         sw.addEventListener('click', function() {
@@ -516,9 +527,14 @@
       const plotW = W - PAD_L - PAD_R;
       const plotH = H - PAD_T - PAD_B;
       const x = t => maxT === minT ? PAD_L + plotW / 2 : PAD_L + ((t - minT) / (maxT - minT)) * plotW;
-      const y = band => PAD_T + plotH - (Math.min(9, Math.max(0, band)) / 9) * plotH;
+      // 4–9 domain, matching the band bars above — a fixed IELTS-scale y axis
+      // (not auto-scaled to the data, which would make a 6→7 run look huge)
+      // but starting at the realistic floor so the plot area isn't mostly
+      // dead space below Band 4.
+      const Y_MIN = 4, Y_MAX = 9;
+      const y = band => PAD_T + plotH - ((Math.min(Y_MAX, Math.max(Y_MIN, band)) - Y_MIN) / (Y_MAX - Y_MIN)) * plotH;
 
-      const gridlines = [0, 3, 6, 9].map(v => `
+      const gridlines = [4, 5, 6, 7, 8, 9].map(v => `
         <line x1="${PAD_L}" x2="${W - PAD_R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border)" stroke-width="1"/>
         <text x="${PAD_L - 6}" y="${y(v)}" font-size="10" fill="var(--text3)" text-anchor="end" dominant-baseline="middle">${v}</text>
       `).join('');
@@ -553,13 +569,17 @@
       var banner = document.getElementById('studyPlanBanner');
       var textEl = document.getElementById('studyPlanBannerText');
       var labels = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking' };
-      var attempted = ['reading', 'listening', 'writing', 'speaking'].filter(function (k) { return s[k].total > 0; });
+      // Needs BOTH an attempt AND a numeric band — Writing's `total` counts
+      // every submission but its `avgBand` is null until a teacher confirms
+      // one, which otherwise made this pick "Writing" as weakest and print
+      // "Band null".
+      var attempted = ['reading', 'listening', 'writing', 'speaking'].filter(function (k) {
+        return s[k] && s[k].total > 0 && parseFloat(s[k].avgBand) > 0;
+      });
       if (!attempted.length) { banner.style.display = 'none'; return; }
 
       var weakest = attempted.reduce(function (min, k) {
-        var band = parseFloat(s[k].avgBand);
-        var minBand = parseFloat(s[min].avgBand);
-        return band < minBand ? k : min;
+        return parseFloat(s[k].avgBand) < parseFloat(s[min].avgBand) ? k : min;
       });
 
       var msg = '<strong>' + labels[weakest] + '</strong> đang là kỹ năng yếu nhất của bạn (Band ' + s[weakest].avgBand + ') — hãy luyện thêm!';
@@ -642,6 +662,38 @@
       }
     }
 
+    // ── Collapse a long history table to its most recent `keep` rows with a
+    // "Xem thêm N" / "Thu gọn" toggle. The server now returns up to 60
+    // attempts/skill (STATS_HISTORY_LIMIT); this keeps the tables readable
+    // without hiding anything. Idempotent-ish: safe to call after every
+    // (re)render since it operates on the freshly-written rows.
+    function collapseHistoryTable(tbodyId, colspan, keep = 8) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      if (rows.length <= keep) return;
+      rows.forEach((r, i) => { if (i >= keep) r.style.display = 'none'; });
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = colspan;
+      td.style.cssText = 'text-align:center;padding:10px';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-ghost btn-sm';
+      const hiddenCount = rows.length - keep;
+      const collapsedLabel = `Xem thêm ${hiddenCount} lần`;
+      btn.textContent = collapsedLabel;
+      let expanded = false;
+      btn.addEventListener('click', () => {
+        expanded = !expanded;
+        rows.forEach((r, i) => { if (i >= keep) r.style.display = expanded ? '' : 'none'; });
+        btn.textContent = expanded ? 'Thu gọn' : collapsedLabel;
+      });
+      td.appendChild(btn);
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+
     // ── Load profile & stats ──────────────────────────────────
     async function loadProfile() {
       try {
@@ -718,7 +770,10 @@
           document.getElementById('mottoCount').textContent = (u.studyMotto||'').length;
           const tb = document.getElementById('editTargetBand');
           tb.value = u.targetBand != null ? String(u.targetBand) : '';
-          document.getElementById('editTargetExamDate').value = u.targetExamDate ? new Date(u.targetExamDate).toISOString().slice(0, 10) : '';
+          // Take the YYYY-MM-DD straight off the stored ISO string — routing
+          // it through new Date().toISOString() can shift the day for a
+          // UTC+ timezone (same trap the heatmap code calls out below).
+          document.getElementById('editTargetExamDate').value = String(u.targetExamDate || '').slice(0, 10);
 
           // Nav avatar widget (update with fresh data from server)
           const navAv = document.getElementById('navAvatar');
@@ -749,8 +804,14 @@
           document.getElementById('statTests').textContent    = s.reading.total + s.listening.total;
           document.getElementById('statSpeaking').textContent = s.speaking.total;
 
-          // Band bars (0-9 scale)
-          const toPercent = v => v ? Math.min(100, (parseFloat(v)/9)*100) + '%' : '0%';
+          // Band bars — mapped onto a 4–9 domain (the realistic IELTS floor),
+          // not 0–9: a Band step is then a visible ~20% of the bar instead of
+          // ~11%, and a Band 5 no longer reads as "half empty / failing"
+          // against an unreachable zero.
+          const BAND_MIN = 4, BAND_MAX = 9;
+          const bandToPct = b => Math.max(0, Math.min(100,
+            (Math.min(BAND_MAX, Math.max(BAND_MIN, b)) - BAND_MIN) / (BAND_MAX - BAND_MIN) * 100));
+          const toPercent = v => { const b = parseFloat(v); return b ? bandToPct(b) + '%' : '0%'; };
           document.getElementById('barReading').style.width     = toPercent(s.reading.avgBand);
           document.getElementById('barListening').style.width   = toPercent(s.listening.avgBand);
           document.getElementById('scoreReading').textContent   = s.reading.avgBand  || '-';
@@ -758,10 +819,10 @@
           document.getElementById('barWriting').style.width     = toPercent(s.writing.avgBand);
           document.getElementById('scoreWriting').textContent   = s.writing.avgBand || '-';
 
-          // Target band markers
+          // Target band markers — same 4–9 domain as the bars above.
           const targetBand = pd.user?.targetBand;
           if (targetBand) {
-            const pct = Math.min(100, (targetBand / 9) * 100) + '%';
+            const pct = bandToPct(targetBand) + '%';
             ['targetReading','targetListening','targetWriting','targetSpeaking'].forEach(id => {
               const el = document.getElementById(id);
               el.style.display = 'block'; el.style.left = pct;
@@ -784,7 +845,10 @@
             const band = a.aiFeedback?.overallBand;
             activities.push({ icon:'🎤', color:'rgba(245,158,11,.1)', text: band ? `Speaking – Band <strong>${band}</strong>` : 'Speaking practice', date: a.createdAt });
           });
-          s.writing.history.slice(0,3).forEach(a => activities.push({ icon:'✍️', color:'rgba(139,92,246,.1)', text: 'Writing practice', date: a.createdAt }));
+          s.writing.history.slice(0,3).forEach(a => {
+            const band = a.grading?.overallBand;
+            activities.push({ icon:'✍️', color:'rgba(139,92,246,.1)', text: band != null ? `Writing – Band <strong>${band}</strong>` : 'Writing practice', date: a.createdAt });
+          });
           activities.sort((a,b) => new Date(b.date)-new Date(a.date));
 
           if (activities.length) {
@@ -804,6 +868,7 @@
                 <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td><span class="badge badge-primary">Band ${a.bandScore}</span></td>
               </tr>`).join('');
+            collapseHistoryTable('readingHistory', 3);
           }
           if (s.listening.history.length) {
             document.getElementById('listeningHistory').innerHTML = s.listening.history.map((a,i) => `
@@ -812,6 +877,7 @@
                 <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td><span class="badge badge-success">Band ${a.bandScore}</span></td>
               </tr>`).join('');
+            collapseHistoryTable('listeningHistory', 3);
           }
           if (s.writing.history.length) {
             document.getElementById('writingHistory').innerHTML = s.writing.history.map((a,i) => `
@@ -820,7 +886,9 @@
                 <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td>${a.wordCount1 != null ? a.wordCount1 + ' từ' : '-'}</td>
                 <td>${a.wordCount2 != null ? a.wordCount2 + ' từ' : '-'}</td>
+                <td>${a.grading?.overallBand != null ? '<span class="badge badge-primary">Band ' + a.grading.overallBand + '</span>' : '<span style="color:var(--text-light)">Chờ chấm</span>'}</td>
               </tr>`).join('');
+            collapseHistoryTable('writingHistory', 5);
           }
           if (s.speaking.history.length) {
             document.getElementById('speakingHistory').innerHTML = s.speaking.history.map((a,i) => `
@@ -829,6 +897,7 @@
                 <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td>${a.aiFeedback?.overallBand ? '<span class="badge badge-warning">Band ' + a.aiFeedback.overallBand + '</span>' : '-'}</td>
               </tr>`).join('');
+            collapseHistoryTable('speakingHistory', 3);
           }
         }
 
@@ -895,6 +964,11 @@
           setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
           showToastWithTitle('success', 'Thành công', 'Thông tin đã được cập nhật');
           loadProfile();
+        } else {
+          // 2xx but success:false — don't leave the user with no feedback.
+          msgEl.style.display = 'block';
+          msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
+          msgEl.textContent = data.message || 'Không lưu được thay đổi';
         }
       } catch (err) {
         msgEl.style.display = 'block';

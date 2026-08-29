@@ -91,8 +91,16 @@
   // time) so it works regardless of script-load order between nav.js's
   // dynamically-injected <script> tag and each page's own inline script.
   function isExamActive() {
-    try { return !!(window.__ewsExamActive && window.__ewsExamActive()); }
-    catch (e) { return false; }
+    try {
+      if (window.__ewsExamActive && window.__ewsExamActive()) return true;
+      // Belt-and-suspenders: every test / full-mock exam screen hides the
+      // global nav (nav.js hideTopNav()). Treat that as "exam active" too,
+      // so the owl stays suppressed even on a page whose own
+      // __ewsExamActive flag has a gap or isn't set at all.
+      var nav = document.getElementById('globalTopNav');
+      if (nav && nav.style.display === 'none') return true;
+    } catch (e) {}
+    return false;
   }
 
   function eventCoords(e) {
@@ -199,15 +207,45 @@
     resultEl.querySelector('.ews-sl-translated').textContent = translated || 'Không tìm thấy bản dịch';
   }
 
-  function translateText(text) {
+  // Plain fetch() never times out — a silently-dropped connection (CORS
+  // block, captive portal) would leave the popup stuck on "Đang dịch..."
+  // forever. Abort after `ms` so it always settles.
+  function fetchWithTimeout(url, ms) {
+    var ctrl = new AbortController();
+    var t = setTimeout(function () { ctrl.abort(); }, ms);
+    return fetch(url, { signal: ctrl.signal }).finally(function () { clearTimeout(t); });
+  }
+
+  function translateViaGoogle(text) {
     var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + encodeURIComponent(text);
-    return fetch(url).then(function (r) {
-      if (!r.ok) throw new Error('translate failed');
+    return fetchWithTimeout(url, 7000).then(function (r) {
+      if (!r.ok) throw new Error('google translate failed');
       return r.json();
     }).then(function (data) {
       var segments = (data && data[0]) || [];
-      return segments.map(function (seg) { return seg[0] || ''; }).join('');
+      var out = segments.map(function (seg) { return seg[0] || ''; }).join('').trim();
+      if (!out) throw new Error('google translate empty');
+      return out;
     });
+  }
+
+  function translateViaMyMemory(text) {
+    var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=en|vi';
+    return fetchWithTimeout(url, 7000).then(function (r) {
+      if (!r.ok) throw new Error('mymemory failed');
+      return r.json();
+    }).then(function (data) {
+      var out = (data && data.responseData && data.responseData.translatedText || '').trim();
+      if (!out || /^please\s|invalid|mymemory warning/i.test(out)) throw new Error('mymemory unusable');
+      return out;
+    });
+  }
+
+  // Google's unofficial endpoint is the primary (better VI quality); fall
+  // back to MyMemory so a rate-limit / block on one provider doesn't leave
+  // the student with nothing.
+  function translateText(text) {
+    return translateViaGoogle(text).catch(function () { return translateViaMyMemory(text); });
   }
 
   function speakOriginal() {

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/tokens.css?v=20260831">
   <link rel="stylesheet" href="css/components.css?v=20260831">
   <link rel="stylesheet" href="css/mobile.css?v=20260831">
+  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831">
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <style>
@@ -64,6 +65,7 @@
   <script src="js/shared/toast.js?v=20260831"></script>
   <script src="js/shared/peer-chat-widget.js?v=20260831"></script>
   <script src="js/shared/api-client.js?v=20260831"></script>
+  <script src="js/shared/dictionary-lookup.js?v=20260832"></script>
 
   <div class="rh-layout">
     <div class="rh-title">📝 My Mistakes</div>
@@ -279,6 +281,46 @@
 
     if (new URLSearchParams(location.search).get('view') === 'mock') setView('mock');
     else rhLoad();
+
+    // Double-click / drag-select word lookup on the review + mock lists —
+    // they're full of English answer text, error notes and learning points.
+    // setupDictionaryDouble delegates on the container, so one call up front
+    // covers every re-render.
+    if (typeof setupDictionaryDouble === 'function') {
+      setupDictionaryDouble('rhList', 'review-history');
+      setupDictionaryDouble('mockList', 'review-history');
+    }
   </script>
+
+  <!-- ══ Dictionary lookup (double-click a word) ══ -->
+  <div id="dict-popup" class="dict-popup hidden">
+    <div class="dict-header">
+      <span class="dict-word" id="dict-word"></span>
+      <span class="dict-phonetic" id="dict-phonetic"></span>
+      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+      <button class="dict-close" onclick="closeDictPopup()" aria-label="Đóng"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="dict-body" class="dict-body"></div>
+  </div>
+  <div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+    <div class="dict-vocab-box">
+      <div class="dict-vocab-header">
+        <h3>📚 Lưu vào sổ từ vựng</h3>
+        <button class="dict-vocab-close" onclick="closeVocabPickerModal()" aria-label="Đóng"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="dict-vocab-body">
+        <div id="dict-vocab-book-list"></div>
+        <div class="rd-vocab-new-section">
+          <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+          <div style="display:flex;gap:8px">
+            <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+              class="rd-vocab-input"
+              onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+            <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

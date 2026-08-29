@@ -85,7 +85,11 @@ function startSpeakCountdown() {
       clearInterval(state.speakTimer);
       state.speakTimer = null;
       if (state.isRecording && state.recognition) {
-        state.recognition.stop();
+        // Mark it a deliberate stop so onend doesn't try to auto-restart,
+        // then let onend -> _finishRecordingUI() run the shared teardown
+        // (stops the audio capture + saves the playback blob).
+        state._userStoppedRecording = true;
+        try { state.recognition.stop(); } catch (e) {}
         state.isRecording = false;
       }
       showToast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');

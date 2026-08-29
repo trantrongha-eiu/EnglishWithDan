@@ -227,6 +227,19 @@
   // right on top of the submit button (student-reported overlap). Guarded
   // with a null check since not every page that calls hideTopNav() has the
   // widget included.
+  // Also hides the "tra câu" translation owl (js/shared/sentence-lookup.js)
+  // and its popup while a test / full-mock exam is running — every exam
+  // screen calls hideTopNav(), so this is the one place that guarantees the
+  // owl (an exam aid that must not be available during a real attempt) is
+  // gone, on top of sentence-lookup.js's own __ewsExamActive / nav-hidden
+  // guard. Null-guarded: the owl DOM is created lazily on first use, so it
+  // often doesn't exist yet here.
+  function _toggleExamAids(hidden) {
+    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = hidden ? 'none' : '';
+    });
+  }
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
     var d = document.getElementById('globalMobileNav');
@@ -234,8 +247,7 @@
     if (d) d.style.display = 'none';
     document.body.classList.remove('has-global-nav');
     document.documentElement.style.setProperty('--nav-height', '0px');
-    var pcw = document.getElementById('pcw-root');
-    if (pcw) pcw.style.display = 'none';
+    _toggleExamAids(true);
   };
   window.showTopNav = function () {
     var n = document.getElementById('globalTopNav');
@@ -244,8 +256,7 @@
     if (d) d.style.display = '';
     document.body.classList.add('has-global-nav');
     document.documentElement.style.removeProperty('--nav-height');
-    var pcw = document.getElementById('pcw-root');
-    if (pcw) pcw.style.display = '';
+    _toggleExamAids(false);
   };
 
   // ── Hamburger toggle ──────────────────────────────────────
@@ -842,7 +853,7 @@
         '</div>' + reviewRow;
       document.body.appendChild(card);
       requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
-      _wireVocabGoalCard(card, !!reviewRow /* keep = has an action */);
+      _wireVocabGoalCard(card, !!reviewRow /* keep = has an action */, o);
       return;
     }
 
@@ -865,10 +876,19 @@
 
     document.body.appendChild(card);
     requestAnimationFrame(function () { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; });
-    _wireVocabGoalCard(card, true);
+    _wireVocabGoalCard(card, true, o);
   }
 
-  function _wireVocabGoalCard(card, keep) {
+  // The vocab home is served at /dashboard.html, /dashboard and /vocabulary
+  // (see frontend/_redirects). "Học ngay" from any OTHER page navigates here;
+  // when the student is already here it must not reload the same page.
+  function _onVocabHomePage() {
+    var p = location.pathname.replace(/\/+$/, '');
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '';
+  }
+
+  function _wireVocabGoalCard(card, keep, o) {
+    o = o || {};
     function close() {
       card.style.opacity = '0'; card.style.transform = 'translateY(12px)';
       setTimeout(function () { card.remove(); }, 250);
@@ -876,7 +896,32 @@
     var x = card.querySelector('button[aria-label="Đóng"]');
     if (x) x.addEventListener('click', close);
     var go = card.querySelector('#nav-vocab-goal-go');
-    if (go) go.addEventListener('click', function () { location.href = '/dashboard.html'; });
+    if (go) go.addEventListener('click', function () {
+      if (!_onVocabHomePage()) { location.href = '/dashboard.html'; return; }
+      // Mid-quiz on this page (deep-linked ?view=unit): just dismiss — don't
+      // yank them out of an in-progress session.
+      if (typeof window._isActivePractice === 'function' && window._isActivePractice()) { close(); return; }
+      // Already on the vocab home — reloading it does nothing useful. Give the
+      // student a real "start studying" action instead:
+      //  • have SRS words due  → launch the review quiz (reviewing counts
+      //    toward the daily word goal via wordsStudied), same as "Ôn ngay".
+      //  • nothing due         → surface the sổ list so they pick one to learn
+      //    new words (mobile: open the bottom sheet; desktop: scroll to it).
+      close();
+      if (o.due > 0 && typeof window.openReviewDueModal === 'function') {
+        window.openReviewDueModal();
+        return;
+      }
+      if (window.innerWidth <= 768 && typeof window.openSheet === 'function') {
+        window.openSheet();
+      } else {
+        var side = document.getElementById('book-list-sidebar') || document.getElementById('book-welcome');
+        if (side && side.scrollIntoView) side.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (typeof window.showToast === 'function') {
+        window.showToast('Chọn một sổ từ vựng để bắt đầu học từ mới hôm nay 📖', 'info');
+      }
+    });
     var rev = card.querySelector('#nav-vocab-review-go');
     if (rev) rev.addEventListener('click', _goReviewDue);
     // Auto-dismiss only the pure ✅ confirmation (nothing actionable on it).

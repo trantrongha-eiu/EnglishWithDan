@@ -534,18 +534,45 @@ function renderLessonContent(lesson) {
     + '<div class="wp-status-row" id="eg-hero-status">' + heroStatusHtml() + '</div>'
     + '</div>';
   html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
+  // Lesson-level "grade now" affordance — so a student who answered most
+  // (but not every) gradeable item isn't stuck with no score, and there's
+  // one clear place to finish regardless of whether the lesson has a <quiz>
+  // block. Hidden until they've answered at least one; auto-hidden once
+  // finalizeQuiz() runs (answering the last item still auto-finalizes).
+  if (gradeableTotal > 0) {
+    html += '<div class="eg-grade-footer" id="eg-grade-footer" style="display:none;text-align:center;margin:8px 0 4px">'
+      + '<button type="button" id="eg-grade-now-btn" onclick="finalizeQuiz()" '
+      + 'style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">'
+      + '<i class="fas fa-flag-checkered"></i> <span id="eg-grade-now-label">Chấm điểm ngay</span></button></div>';
+  }
   html += '<div class="eg-nav-footer">'
     + navFooterBtn(prev, 'prev')
     + navFooterBtn(next, 'next')
     + '</div>';
 
   document.getElementById('eg-main-content').innerHTML = html;
-  // Gate: off while the mini-quiz on this lesson still has unanswered
-  // questions (each answer reveals correct/wrong + explanation immediately,
-  // so looking up the question text first would be a hint); on otherwise.
+  // Dictionary lookup stays ON throughout — this is a learning page, and
+  // blocking it on the whole lesson (teaching blocks included) until every
+  // quiz item was answered was too aggressive. The tiny "translate the
+  // question first" hint risk on grammar multiple-choice is acceptable here
+  // (the answer + explanation reveal on click anyway).
   if (typeof setupDictionaryDouble === 'function') {
-    setupDictionaryDouble('eg-main-content', 'essential-grammar',
-      () => !quizState || quizState.answered >= quizState.total);
+    setupDictionaryDouble('eg-main-content', 'essential-grammar');
+  }
+}
+
+// Refreshes the lesson-level grade affordance after every answered item.
+function _updateEgGradeFooter() {
+  if (!quizState) return;
+  const footer = document.getElementById('eg-grade-footer');
+  const label  = document.getElementById('eg-grade-now-label');
+  if (!footer) return;
+  const left = quizState.total - quizState.answered;
+  if (quizState.answered >= 1 && left > 0) {
+    footer.style.display = 'block';
+    if (label) label.textContent = `Chấm điểm ngay (đã làm ${quizState.answered}/${quizState.total} câu, ${left} câu bỏ trống sẽ tính sai)`;
+  } else {
+    footer.style.display = 'none';
   }
 }
 
@@ -702,6 +729,7 @@ function checkExerciseMC(btn, oi, answerIndex, i) {
   quizState.answered++;
   if (oi === answerIndex) quizState.correct++;
   else quizState.wrongTexts.push(btn.dataset.question || '');
+  _updateEgGradeFooter();
   if (quizState.answered >= quizState.total) finalizeQuiz();
 }
 
@@ -734,8 +762,13 @@ function renderQuizBlock(data) {
       + '<div class="eg-quiz-explanation" id="eg-quiz-exp-' + qi + '"><i class="fas fa-info-circle"></i> ' + escHtml(q.explanation) + '</div>'
       + '</div>';
   }).join('');
+  // Counter tracks the LESSON-wide gradeable total (this block's questions +
+  // any multiple-choice practice_exercises), matching what actually
+  // finalizes the lesson — showing the block-only count made "3/3 answered,
+  // nothing happened" look broken on a lesson that also had exercises.
+  const shown = quizState ? quizState.total : total;
   return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-puzzle-piece"></i> Mini Quiz</div>'
-    + '<div class="eg-quiz-progress" id="eg-quiz-progress">Đã trả lời: 0/' + total + '</div>'
+    + '<div class="eg-quiz-progress" id="eg-quiz-progress">Đã trả lời: 0/' + shown + ' câu (toàn bài)</div>'
     + questions
     + '<div class="eg-quiz-result" id="eg-quiz-result"></div>'
     + '</div>';
@@ -760,21 +793,32 @@ function checkQuizAnswer(btn, qi, oi, answerIndex) {
   if (oi === answerIndex) quizState.correct++;
   else quizState.wrongTexts.push(btn.dataset.question || '');
   const progressEl = document.getElementById('eg-quiz-progress');
-  if (progressEl) progressEl.textContent = 'Đã trả lời: ' + quizState.answered + '/' + quizState.total;
+  if (progressEl) progressEl.textContent = 'Đã trả lời: ' + quizState.answered + '/' + quizState.total + ' câu (toàn bài)';
+  _updateEgGradeFooter();
   if (quizState.answered >= quizState.total) finalizeQuiz();
 }
 
 function finalizeQuiz() {
   if (!quizState || !quizState.lessonKey) return;
+  const gf = document.getElementById('eg-grade-footer');
+  if (gf) gf.style.display = 'none';
+  // Unanswered items count as wrong (score over the lesson-wide total) —
+  // matches the auto-finalize path and the "câu bỏ trống sẽ tính sai" note.
   const score = quizState.total > 0 ? Math.round((quizState.correct / quizState.total) * 100) : 0;
   saveScore(quizState.lessonKey, score);
+  const passed = score >= COMPLETE_THRESHOLD;
+  const summary = 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
+    + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
   const result = document.getElementById('eg-quiz-result');
   if (result) {
-    const passed = score >= COMPLETE_THRESHOLD;
     result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
-    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ')
-      + 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
-      + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
+    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary;
+    result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if (typeof showToast === 'function') {
+    // Lessons that grade only through practice_exercises (no <quiz> block)
+    // have no #eg-quiz-result node — the completion feedback would otherwise
+    // just be a quiet badge change far up the page.
+    showToast((passed ? '🏆 ' : '🔁 ') + summary, passed ? 'success' : 'warn', 5000);
   }
   const heroStatus = document.getElementById('eg-hero-status');
   if (heroStatus) heroStatus.innerHTML = heroStatusHtml();

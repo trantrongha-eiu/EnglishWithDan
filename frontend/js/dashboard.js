@@ -231,6 +231,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
     loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    // Double-click / drag-select word lookup on the vocab HOME screen too —
+    // it was only ever wired on the notebook table / quiz / study grids, so
+    // on the home view (Today's Lesson, Areas to improve, feature copy) a
+    // double-click did nothing even though the site-wide "tra câu" phrase
+    // owl worked there. #book-welcome is a sibling of #book-content
+    // (#words-tbody lives there), so this never double-binds. Idempotent.
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('book-welcome', 'dashboard-home');
     if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
     // Goal-setup nudge (once per browser session, if no goal set yet) or
     // today's recommended study plan (once per calendar day, if a goal
@@ -655,21 +662,26 @@ async function loadWeaknessProfile() {
     _cachedWeakVocabCount = weakWords.length;
 
     const chips = [];
+    // Defensive: a malformed/partial weakness row must degrade to "0%" /
+    // "Band 0", never crash the whole card with a TypeError on
+    // undefined.toFixed / undefined * 100.
+    const pct = w => `${Math.round((Number(w.accuracy) || 0) * 100)}% đúng`;
+    const band = w => `Band ${(Number(w.avgScore) || 0).toFixed(1)}`;
     if (data.reading?.length) {
         const w = data.reading[0];
-        chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'reading.html' });
+        chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: pct(w), href: 'reading.html' });
     }
     if (data.listening?.length) {
         const w = data.listening[0];
-        chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'listening.html' });
+        chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: pct(w), href: 'listening.html' });
     }
     if (data.writing?.length) {
         const w = data.writing[0];
-        chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'writing.html' });
+        chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: band(w), href: 'writing.html' });
     }
     if (data.speaking?.length) {
         const w = data.speaking[0];
-        chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'speaking.html' });
+        chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: band(w), href: 'speaking.html' });
     }
     if (weakWords.length) {
         chips.push({

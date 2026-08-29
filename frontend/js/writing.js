@@ -363,8 +363,12 @@ function renderTimer() {
   const timerBar = _examTimerEl;
   if (state.timerHidden) { el.textContent = '--:--'; return; }
 
-  const m = Math.floor(state.secondsLeft / 60);
-  const s = state.secondsLeft % 60;
+  // Clamp at 0 — a restored already-timed-out exam (secondsLeft:0) ticks to
+  // -1 for one frame before startTimer()'s <=0 check auto-submits, which
+  // rendered "-1:-1".
+  const left = Math.max(0, state.secondsLeft);
+  const m = Math.floor(left / 60);
+  const s = left % 60;
   el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 
   if (state.secondsLeft <= 300) {
@@ -799,7 +803,7 @@ async function viewAttempt(id) {
     setupDictionaryDouble('review-modal-body', 'writing-review');
   } catch (e) {
     document.getElementById('review-modal-body').innerHTML =
-      `<p style="color:#e53935;padding:20px">${e.message}</p>`;
+      `<p style="color:#e53935;padding:20px">${escHtml(e.message || 'Không tải được bài làm.')}</p>`;
   }
 }
 
