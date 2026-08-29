@@ -99,11 +99,22 @@
     var card = document.getElementById('mocktest-card');
     if (!card) return;
 
-    // "Đã xong Listening + Reading" break toast, shown when a skill page
-    // bounced the student back here after finishing sitting 1.
+    // Break toast, shown when a mock skill page bounced the student back
+    // here. `mockbreak` says which step just finished: 'reading' = end of
+    // sitting 1 (legacy value '1'); 'writing' = Writing done, Speaking is
+    // now its own self-started step. 'mockvoid' = the run was disqualified
+    // for too many exam-screen exits.
     try {
-      if (new URLSearchParams(location.search).get('mockbreak') === '1') {
-        if (window.toast) window.toast('Đã xong Listening + Reading. Khi sẵn sàng, bấm "Tiếp tục" để làm Writing + Speaking.', 'success');
+      var _sp = new URLSearchParams(location.search);
+      var _brk = _sp.get('mockbreak');
+      if (_brk === 'writing') {
+        if (window.toast) window.toast('Đã nộp Writing. Khi sẵn sàng, bấm "Bắt đầu Speaking" để thi phần Nói (bạn có thể chờ giáo viên chấm trực tiếp).', 'success', 7000);
+        history.replaceState(null, '', location.pathname);
+      } else if (_brk === 'reading' || _brk === '1') {
+        if (window.toast) window.toast('Đã xong Listening + Reading. Khi sẵn sàng, bấm "Tiếp tục" để làm Writing.', 'success', 6000);
+        history.replaceState(null, '', location.pathname);
+      } else if (_sp.get('mockvoid') === '1') {
+        if (window.toast) window.toast('Lượt thi thử đã bị huỷ do rời khỏi màn hình thi quá 10 lần. Kết quả lượt đó không được tính — hãy đợi khoảng 5 phút rồi bắt đầu lượt mới.', 'error', 9000);
         history.replaceState(null, '', location.pathname);
       }
     } catch (_) {}
@@ -126,13 +137,17 @@
         if (a.progress && a.progress !== 'done') {
           var idx = STEP_INDEX[a.progress] || 1;
           var nextLabel = SKILL_LABEL[a.progress] || a.progress;
-          var sittingNote = (a.progress === 'writing' || a.progress === 'speaking')
-            ? 'Lượt 2: Writing + Speaking'
+          // Writing and Speaking are separate self-started steps now.
+          var sittingNote = a.progress === 'speaking' ? 'Phần cuối: Speaking (Nói)'
+            : a.progress === 'writing' ? 'Lượt 2: Writing (Viết)'
             : 'Lượt 1: Listening + Reading';
+          var btnLabel = (a.progress === 'writing' || a.progress === 'speaking')
+            ? 'Bắt đầu ' + nextLabel
+            : 'Tiếp tục — ' + nextLabel;
           setCard({
             title: 'Đang thi thử — Bước ' + idx + '/4',
             meta: sittingNote + ' · tiếp theo: ' + nextLabel,
-            btnLabel: 'Tiếp tục — ' + nextLabel,
+            btnLabel: btnLabel,
             onClick: function () { window.location.href = pageForSkill(a.progress, a._id); },
             showAbandon: true
           });

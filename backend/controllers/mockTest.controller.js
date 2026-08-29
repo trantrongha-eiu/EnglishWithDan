@@ -5,8 +5,20 @@ const mockTestService = require('../services/mockTestService');
 
 // POST /api/mock-test/start
 exports.start = catchAsync(async (req, res) => {
-  const { resumed, attempt } = await mockTestService.startMockTest(req.user._id);
-  res.status(resumed ? 200 : 201).json({ success: true, resumed, attempt });
+  try {
+    const { resumed, attempt } = await mockTestService.startMockTest(req.user._id);
+    res.status(resumed ? 200 : 201).json({ success: true, resumed, attempt });
+  } catch (e) {
+    // Proctoring cooldown after a disqualified run — surface a machine-
+    // readable code + the remaining seconds so the dashboard can explain it.
+    if (e && e.statusCode === 429 && e.cooldownSeconds != null) {
+      return res.status(429).json({
+        success: false, code: 'MOCK_COOLDOWN',
+        cooldownSeconds: e.cooldownSeconds, message: e.message
+      });
+    }
+    throw e;
+  }
 });
 
 // GET /api/mock-test/current

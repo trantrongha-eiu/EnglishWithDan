@@ -247,7 +247,9 @@
         const d = new Date(a.createdAt).toLocaleString('vi-VN');
         const overall = a.overallBand != null
           ? `<span class="mt-overall">Band tổng ${Number(a.overallBand).toFixed(1)}</span>`
-          : `<span class="mt-overall pending">${a.status === 'in-progress' ? 'Đang làm dở' : 'Đang chờ chấm Writing / Speaking'}</span>`;
+          : a.status === 'disqualified'
+            ? `<span class="mt-overall pending">🚫 Huỷ do vi phạm — không tính kết quả</span>`
+            : `<span class="mt-overall pending">${a.status === 'in-progress' ? 'Đang làm dở' : 'Đang chờ chấm Writing / Speaking'}</span>`;
         const chips = MT_SKILLS.map(([s, l]) => mtChip(l, a.steps[s])).join('');
         const violated = a.proctor && a.proctor.violated
           ? `<span class="mt-violation" title="Số lần rời khỏi tab khi đang thi">⚠️ Vi phạm thi cử · ${a.proctor.violationCount || 0} gậy</span>`

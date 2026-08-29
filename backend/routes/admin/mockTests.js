@@ -36,6 +36,28 @@ router.get('/mock-tests', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// PUT /api/admin/mock-tests/:id/scores — a teacher types in / corrects a
+// run's skill bands (e.g. they ran the Speaking part live, in person). Body:
+//   { steps: { listening?, reading?, writing?, speaking? }, note? }
+// A number pins that skill (0–9, step 0.5) and marks it manual so the lazy
+// re-grade never overwrites it; null clears the override. Overall band is
+// recomputed with the standard IELTS rounding. Never touches sub-attempts.
+router.put('/mock-tests/:id/scores', auth, teacherOnly, async (req, res) => {
+  try {
+    const { steps, note } = req.body || {};
+    const attempt = await mockTestService.setManualScores(req.params.id, {
+      steps: steps && typeof steps === 'object' ? steps : {},
+      note: typeof note === 'string' ? note : undefined,
+      actorId: req.user._id
+    });
+    res.json({ success: true, attempt });
+  } catch (err) {
+    const code = err && err.statusCode ? err.statusCode : 500;
+    if (code >= 500) console.error('[admin/mock-tests/:id/scores]', err);
+    res.status(code).json({ success: false, message: err.message || 'Lỗi lưu điểm thi thử' });
+  }
+});
+
 // GET /api/admin/mock-tests/:id — one run with the full proctor event log.
 router.get('/mock-tests/:id', auth, teacherOnly, async (req, res) => {
   try {

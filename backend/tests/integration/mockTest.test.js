@@ -3,7 +3,7 @@
 // the advance → nav handoff, resume via /current, and the history list.
 const request = require('supertest');
 const app = require('../../app');
-const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createPremiumStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
 const User = require('../../models/User');
 
 // A free student whose first-24h trial window has already closed — the state
@@ -26,6 +26,7 @@ function authed(user) {
   return {
     get: (url) => request(app).get(url).set('Authorization', `Bearer ${token}`),
     post: (url, body) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+    put: (url, body) => request(app).put(url).set('Authorization', `Bearer ${token}`).send(body || {}),
     del: (url) => request(app).delete(url).set('Authorization', `Bearer ${token}`),
   };
 }
@@ -235,5 +236,86 @@ describe('POST /api/mock-test/:id/violation — tab-switch proctoring', () => {
     expect(res.status).toBe(200);
     expect(res.body.violationCount).toBe(0);
     expect(res.body.violated).toBe(false);
+  });
+
+  test('over the limit → run is voided and /start is blocked with 429', async () => {
+    await seedPools();
+    const user = await createPremiumStudent();
+    const api = authed(user);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+
+    let last;
+    for (let i = 0; i <= 10; i++) {
+      last = await api.post(`/api/mock-test/${m._id}/violation`, { type: 'hidden' });
+    }
+    expect(last.body.disqualified).toBe(true);
+    expect(last.body.cooldownSeconds).toBe(300);
+
+    const blocked = await api.post('/api/mock-test/start');
+    expect(blocked.status).toBe(429);
+    expect(blocked.body.code).toBe('MOCK_COOLDOWN');
+    expect(blocked.body.cooldownSeconds).toBeGreaterThan(0);
+
+    // A submit that raced the disqualification can't advance the voided run.
+    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const adv = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    expect(adv.status).toBe(409);
+  });
+});
+
+describe('PUT /api/admin/mock-tests/:id/scores', () => {
+  test('teacher hand-enters bands; overall is recomputed and flagged manual', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const api = authed(student);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+
+    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    const ra = await createTestAttempt({ userId: student._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
+
+    const teacher = authed(await createTeacher());
+    const res = await teacher.put(`/api/admin/mock-tests/${m._id}/scores`, {
+      steps: { writing: 6.5, speaking: 7 }, note: 'Speaking live 29/08',
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.attempt.steps.writing.band).toBe(6.5);
+    expect(res.body.attempt.steps.writing.manual).toBe(true);
+    expect(res.body.attempt.adminNote).toBe('Speaking live 29/08');
+    // (6 + 7 + 6.5 + 7) / 4 = 6.625 -> 6.5
+    expect(res.body.attempt.overallBand).toBe(6.5);
+  });
+
+  test('403 for a normal student', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const api = authed(student);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+    const res = await api.put(`/api/admin/mock-tests/${m._id}/scores`, { steps: { writing: 6 } });
+    expect(res.status).toBe(403);
+  });
+
+  test('400 for an off-scale band', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const m = (await authed(student).post('/api/mock-test/start')).body.attempt;
+    const teacher = authed(await createTeacher());
+    const res = await teacher.put(`/api/admin/mock-tests/${m._id}/scores`, { steps: { writing: 6.2 } });
+    expect(res.status).toBe(400);
+  });
+});
+
+describe('POST /api/speaking/mock-submit', () => {
+  test('creates a pending SpeakingAttempt with no transcript and returns its id', async () => {
+    const student = await createPremiumStudent();
+    const sq = await createSpeakingQuestion({ part: 2, cueCard: 'Describe a trip.' });
+    const res = await authed(student).post('/api/speaking/mock-submit', {
+      questionId: sq._id, part: 2, question: 'Describe a trip.', transcript: '', duration: 90,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.attemptId).toBeTruthy();
+    expect(res.body.graded).toBe(false);
   });
 });

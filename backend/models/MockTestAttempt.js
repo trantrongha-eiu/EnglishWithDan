@@ -22,7 +22,13 @@ const mongoose = require('mongoose');
 const stepSchema = new mongoose.Schema({
   attemptId:   { type: mongoose.Schema.Types.ObjectId },
   band:        { type: Number, default: null },
-  completedAt: { type: Date }
+  completedAt: { type: Date },
+  // A teacher/admin typed this band in by hand (e.g. they ran the Speaking
+  // part live, in person). A manual band is authoritative: the lazy
+  // re-grade (refreshGrades) and advance() must never overwrite it.
+  manual:      { type: Boolean, default: false },
+  manualBy:    { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  manualAt:    { type: Date }
 }, { _id: false });
 
 // Client-side proctoring: the mock skill pages report every time the
@@ -74,13 +80,24 @@ const MockTestAttemptSchema = new mongoose.Schema({
 
   overallBand: { type: Number, default: null },  // avg of 4 bands, rounded to .5
 
+  // A teacher/admin edited one or more skill bands by hand — see the
+  // per-step `manual` flag. `adminNote` is their free-text note ("Speaking
+  // chấm trực tiếp 20/8"), surfaced in the admin monitor.
+  adminNote:     { type: String, default: '' },
+  scoreEditedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  scoreEditedAt: { type: Date },
+
   status: {
     type: String,
-    // 'abandoned' = the student discarded a still-open run from the
-    // dashboard so they could start a fresh mock. Excluded from history
-    // and from the "resume" lookup; the sub-attempts it linked to (if any)
-    // keep living in their own per-skill histories.
-    enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned'],
+    // 'abandoned'    = the student discarded a still-open run from the
+    //                  dashboard so they could start a fresh mock.
+    // 'disqualified' = the student left the exam screen more than
+    //                  MAX_VIOLATIONS times; the run is voided (no overall
+    //                  band) and they must wait out a cooldown before a new
+    //                  one. Both are excluded from the "resume" lookup; the
+    //                  sub-attempts they linked to keep living in their own
+    //                  per-skill histories (no data loss).
+    enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned', 'disqualified'],
     default: 'in-progress'
   },
 
@@ -88,7 +105,10 @@ const MockTestAttemptSchema = new mongoose.Schema({
   proctor: {
     violationCount: { type: Number, default: 0 },
     violated:       { type: Boolean, default: false },
-    events:         { type: [proctorEventSchema], default: [] }
+    events:         { type: [proctorEventSchema], default: [] },
+    // Set when violationCount first exceeds MAX_VIOLATIONS and the run is
+    // voided — the start of the "wait 5 minutes" cooldown.
+    disqualifiedAt: { type: Date }
   }
 }, { timestamps: true });
 

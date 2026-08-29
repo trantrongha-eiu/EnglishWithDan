@@ -601,10 +601,13 @@ async function submitExam(statusOverride) {
       document.getElementById('done-wc2').textContent = wc2;
       showScreen('screen-done');
 
-      // Full mock test: move on to Speaking (step 4/4). Writing is graded
+      // Full mock test: Writing is done. Speaking is now a SEPARATE, self-
+      // started step — advance() returns a sitting break, so this sends the
+      // student back to the dashboard to tap "Bắt đầu Speaking" when ready
+      // (e.g. once a teacher is free to run Speaking live). Writing is graded
       // later (teacher/AI), so no band is available now — that's expected.
       if (_mockMode && window.MockTest && window.MockTest.active()) {
-        showToast('Đã nộp Writing — chuyển sang Speaking…', 'success');
+        showToast('Đã nộp Writing. Quay lại trang chủ — khi sẵn sàng, bấm "Bắt đầu Speaking".', 'success');
         setTimeout(() => window.MockTest.advance('writing', data.attemptId), 1400);
         return;
       }
