@@ -508,6 +508,7 @@ function normWord(w) { return w.toLowerCase().replace(/[^a-z0-9']/g, ''); }
 
 function dictCheck() {
   const typed = document.getElementById('dict-input').value.trim();
+  if (!typed) { toast('Hãy gõ câu bạn nghe được trước khi kiểm tra.', 'warn'); return; }
   const correct = currentSentence().text || '';
   const typedWords = typed.split(/\s+/).filter(Boolean);
   const correctWords = correct.split(/\s+/).filter(Boolean);

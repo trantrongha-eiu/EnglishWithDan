@@ -972,7 +972,7 @@
                 );
                 setListeningMode('lele', false);
                 showScreen('list');
-            } else if (modeParam === 'tips') {
+            } else if (modeParam === 'tips' || modeParam === 'listening-tips') {
                 history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
                 setListeningMode('tips', false);
                 showScreen('list');
@@ -1447,6 +1447,10 @@
                 for (const k in partHlCacheRv) delete partHlCacheRv[k];
                 clearInterval(_asoTimer);
                 audio.playbackRate = 1;
+                // Practice mode ("bài lẻ") sets audio.onended to a "check your
+                // answers" toast; clear it so it can't fire during an exam a
+                // student starts without going through closeLTPractice().
+                audio.onended = null;
                 document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
@@ -1514,6 +1518,10 @@
             // all, so a broken audio file failed completely silently with no
             // indication to the student that anything was wrong.
             audio.addEventListener('error', () => {
+                // currentSrc is '' after we deliberately clear the source
+                // (audio.src = '' on submit / close) — that fires a spurious
+                // error event in some browsers; ignore it.
+                if (!audio.currentSrc || !audio.error) return;
                 console.error('[audio] load error:', audio.error);
                 if (state.isReview) return;
                 const el = document.getElementById('exam-audio-status');
@@ -1521,6 +1529,10 @@
                     el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Lỗi tải audio — vui lòng liên hệ giáo viên';
                     el.style.color = '#dc2626';
                 }
+                // #exam-audio-status is only on the exam screen — the single-
+                // item practice screen had no feedback at all for a broken
+                // audio file. A toast reaches the student on either screen.
+                toast('Không tải được audio của bài này — vui lòng thử lại hoặc liên hệ giáo viên.', 'error', 5000);
             });
         }
 
