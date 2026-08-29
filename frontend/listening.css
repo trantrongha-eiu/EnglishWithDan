@@ -1110,30 +1110,38 @@ body.tool-hl .check-box { user-select: none; }
    TABLE GROUP
 ══════════════════════════════════════════════ */
 .group-table-wrap {
+  display: inline-block;   /* hug the (now content-sized) table, don't box the whole panel width */
+  max-width: 100%;
+  vertical-align: top;
   overflow-x: auto;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   margin-bottom: 4px;
 }
 .group-table {
-  width: 100%;
+  /* width:auto (not 100%) so columns hug their content and the table stays
+     compact & left-aligned like the real exam — width:100% on a wide
+     questions panel spread the columns far apart, hard to scan/note. */
+  width: auto;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 .group-table thead th {
   background: #f3f4f6;
-  padding: 10px 14px;
+  padding: 8px 13px;
   text-align: left;
   font-size: 12px; font-weight: 700; color: #6b7280;
   text-transform: uppercase; letter-spacing: .5px;
   border-bottom: 1px solid #e5e7eb;
 }
 .group-table tbody td {
-  padding: 11px 14px;
+  padding: 9px 13px;
   border-bottom: 1px solid #f3f4f6;
-  vertical-align: middle;
+  vertical-align: top;
   color: #374151;
-  line-height: 1.8;
+  line-height: 1.55;
+  max-width: 340px;   /* a long-sentence cell wraps here instead of blowing the column out */
 }
 .group-table tbody tr:last-child td { border-bottom: none; }
 .group-table tbody tr:hover td { background: #fafafa; }

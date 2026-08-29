@@ -1903,6 +1903,9 @@ body.tool-hl .check-box { user-select: none; }
 
 /* ── TABLE GROUP (like Image 1) ─────────────────────────────────────── */
 .rq-table-wrap {
+  display: inline-block;   /* hug the (now content-sized) table, don't box the whole panel width */
+  max-width: 100%;
+  vertical-align: top;
   overflow-x: auto;
   border: 1.5px solid #e5e7eb;
   border-radius: 10px;
@@ -1910,14 +1913,18 @@ body.tool-hl .check-box { user-select: none; }
 }
 
 .rq-table {
-  width: 100%;
+  /* width:auto (not 100%) so columns size to their content and the table
+     stays compact & left-aligned like the real exam paper — width:100% on
+     a wide questions panel spread the columns far apart. */
+  width: auto;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 14px;
 }
 
 .rq-table thead th {
   background: #f3f4f6;
-  padding: 10px 14px;
+  padding: 8px 13px;
   text-align: left;
   font-size: 13px;
   font-weight: 700;
@@ -1926,12 +1933,13 @@ body.tool-hl .check-box { user-select: none; }
 }
 
 .rq-table tbody td {
-  padding: 11px 14px;
+  padding: 9px 13px;
   border-bottom: 1px solid #f3f4f6;
-  vertical-align: middle;
+  vertical-align: top;
   color: #374151;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.55;
+  max-width: 340px;   /* a long-sentence cell wraps here instead of blowing the column out */
 }
 
 .rq-table tbody tr:last-child td { border-bottom: none; }
