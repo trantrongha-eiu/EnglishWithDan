@@ -239,6 +239,19 @@
   // response into `data`. Run only once the primary meaning is known so the
   // dedup against it is correct.
   function _mergeMyMemory(data, value, word) {
+    // Google Translate (the primary-meaning source) is an unofficial endpoint
+    // that 429s readily — from a datacenter IP, or a shared school/office NAT
+    // under load. When it comes back empty, fall back to MyMemory's own
+    // top-level translation instead of leaving the popup on "Không tìm thấy"
+    // even though MyMemory clearly has the word. Same junk-guard the owl uses.
+    if (!data.primaryMeaning) {
+      var mmPrimary = (value && value.responseData && value.responseData.translatedText || '').trim();
+      var junk = /^please\s|^invalid|mymemory warning|no query specified|quota/i.test(mmPrimary);
+      var echoedQuery = mmPrimary.toLowerCase() === String(word || '').trim().toLowerCase();
+      if (mmPrimary && !junk && !echoedQuery) {
+        data.primaryMeaning = mmPrimary.replace(/[,.;:]+$/, '').trim();
+      }
+    }
     var seen = {}; seen[(data.primaryMeaning || '').toLowerCase()] = true;
     var normWord = _normForMatch(word);
     var matches = ((value && value.matches) || [])
