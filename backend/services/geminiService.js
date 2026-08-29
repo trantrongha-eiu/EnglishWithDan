@@ -680,9 +680,113 @@ async function generateCollocations(word, _attempt = 0) {
   }
 }
 
+// ── Task 2 — "Bài mẫu từ Daniel" + "Phân tích đề" generator ───────────
+// Fills a WritingTask2 doc's analysisSections (Vietnamese guide) and
+// sampleSections (a Band 7.5+ model essay). Used only by the offline seed
+// script scripts/seedWritingTask2Samples.js — never on a request path.
+// The essay must FOLLOW the same skeleton the student practises in the
+// Band 7+ cloze template for this essay type (passed in as `templateSkeleton`)
+// so the sample and the template line up, but with real, specific content
+// rather than the template's "(noun phrase)" placeholders.
+const T2_ESSAY_SYSTEM = `You are Daniel, an experienced IELTS Writing teacher creating reference material for Vietnamese students.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildTask2EssayPrompt(prompt, essayTypeLabel, templateSkeleton) {
+  return `IELTS Writing Task 2 question:
+"${prompt}"
+
+Essay type: ${essayTypeLabel}
+
+The student practises this Band 7+ sentence skeleton for this essay type (fill-in-the-blank cloze). Your sample essay MUST follow the same 4-part move structure and borrow this kind of phrasing, but replace every "(noun phrase)" / bracketed placeholder with real, specific content for THIS question:
+<<<TEMPLATE_SKELETON_START>>>
+${templateSkeleton}
+<<<TEMPLATE_SKELETON_END>>>
+
+Produce TWO things.
+
+1) "sampleSections" — a model essay, EXACTLY four objects in this order:
+   {"title":"Introduction", ...}, {"title":"Body 1", ...}, {"title":"Body 2", ...}, {"title":"Conclusion", ...}
+   Requirements for the essay:
+   - Target IELTS Band 7.5-8.0. Total length 270-320 words across the four sections.
+   - Fully answer every part of the question. Take ONE clear position and keep it consistent (for discuss-both-views, present both sides fairly in the bodies, then give your own view in the conclusion; for two-question prompts, one body per question).
+   - Each body paragraph: one clear topic sentence, ONE developed reason, and ONE concrete, specific example (a real-sounding situation — a named field, a plausible everyday scenario — never "for example, studies show" or an invented statistic).
+   - Human, natural academic English — NOT AI-flavoured. Hard bans: "In today's fast-paced world", "In this modern era", "It is undeniable that", "plays a pivotal/crucial role", "double-edged sword", "delve into", "navigate the complexities", "when it comes to", "Furthermore/Moreover" opening more than one sentence total. Vary sentence length (mix short punchy sentences with longer complex ones). Use natural collocations and 1-2 precise, non-flashy pieces of higher-level vocabulary per paragraph, not a thesaurus dump. At most ONE linking phrase per paragraph.
+   - British spelling (behaviour, recognise, organisation). No contractions (formal essay). No headings or bullet points inside the "content" — plain prose only.
+
+2) "analysisSections" — a short Vietnamese "Phân tích đề" guide, 4 objects, matching the site's existing style:
+   {"title":"1. Phân tích nhanh đề này", "content": "<dạng bài là gì; nên chọn phe/hướng nào; câu thesis mẫu bằng tiếng Anh>"}
+   {"title":"2. Body 1 – <tóm tắt ý>", "content": "<ý chính + 1 câu topic sentence tiếng Anh + gợi ý ví dụ>"}
+   {"title":"3. Body 2 – <tóm tắt ý>", "content": "<ý chính + 1 câu topic sentence tiếng Anh + gợi ý ví dụ>"}
+   {"title":"4. Công thức áp dụng cho dạng \\"${essayTypeLabel}\\"", "content": "<3-4 gạch đầu dòng checklist ngắn để tự kiểm tra bài>"}
+   Vietnamese explanation, English for the sample sentences. Keep it concise and practical.
+
+Return this exact JSON (no other text):
+{"sampleSections":[{"title":"Introduction","content":"..."},{"title":"Body 1","content":"..."},{"title":"Body 2","content":"..."},{"title":"Conclusion","content":"..."}],"analysisSections":[{"title":"...","content":"..."},{"title":"...","content":"..."},{"title":"...","content":"..."},{"title":"...","content":"..."}]}`;
+}
+
+function _sanitiseSections(arr, wantTitles) {
+  if (!Array.isArray(arr)) return [];
+  const out = arr
+    .filter(s => s && typeof s.content === 'string' && s.content.trim())
+    .map(s => ({ title: String(s.title || '').trim(), content: String(s.content).trim() }));
+  if (wantTitles) {
+    // Force the canonical 4 essay titles regardless of what the model labelled them.
+    const titles = ['Introduction', 'Body 1', 'Body 2', 'Conclusion'];
+    return out.slice(0, 4).map((s, i) => ({ title: titles[i] || s.title, content: s.content }));
+  }
+  return out;
+}
+
+async function generateTask2Essay(prompt, essayTypeLabel, templateSkeleton, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+  const content = buildTask2EssayPrompt(prompt, essayTypeLabel, templateSkeleton || '(no template skeleton available)');
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL,
+        contents: content,
+        config: {
+          systemInstruction: T2_ESSAY_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.8,
+          maxOutputTokens: 4096,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      }),
+      30000,
+      'AI phản hồi quá lâu.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generateTask2Essay: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, thử lại sau.');
+  }
+
+  try {
+    const parsed = extractJson(rawText);
+    const sampleSections = _sanitiseSections(parsed.sampleSections, true);
+    const analysisSections = _sanitiseSections(parsed.analysisSections, false);
+    if (sampleSections.length !== 4 || analysisSections.length < 3) {
+      throw new Error(`shape off: ${sampleSections.length} sample / ${analysisSections.length} analysis sections`);
+    }
+    return { sampleSections, analysisSections };
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateTask2Essay: parse/shape failed, retrying', { errorMessage: parseErr.message });
+      return generateTask2Essay(prompt, essayTypeLabel, templateSkeleton, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
+  }
+}
+
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer,
-  generateCollocations,
+  generateCollocations, generateTask2Essay,
   // Exported for services/groqService.js's Gemini-overload fallback only —
   // not meant as general-purpose utilities for other callers.
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,

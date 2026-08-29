@@ -13,7 +13,7 @@ jest.mock('@google/genai', () => ({
   })),
 }));
 
-const { checkEssay, checkSpeaking, gradeT2Question } = require('../../../services/geminiService');
+const { checkEssay, checkSpeaking, gradeT2Question, generateTask2Essay } = require('../../../services/geminiService');
 
 beforeEach(() => {
   mockGenerateContent.mockReset();
@@ -248,5 +248,49 @@ describe('gradeT2Question type normalization', () => {
 
     expect(result.isCorrect).toBe(true);
     expect(result.score).toBe(80);
+  });
+});
+
+describe('generateTask2Essay', () => {
+  const goodPayload = JSON.stringify({
+    sampleSections: [
+      { title: 'x', content: 'Intro para.' },
+      { title: 'y', content: 'Body one para.' },
+      { title: 'z', content: 'Body two para.' },
+      { title: 'w', content: 'Conclusion para.' },
+    ],
+    analysisSections: [
+      { title: '1. Phân tích', content: 'a' },
+      { title: '2. Body 1', content: 'b' },
+      { title: '3. Body 2', content: 'c' },
+      { title: '4. Công thức', content: 'd' },
+    ],
+  });
+
+  test('rejects when GEMINI_API_KEY is unset', async () => {
+    delete process.env.GEMINI_API_KEY;
+    await expect(generateTask2Essay('p', 'Agree / Disagree', 'skeleton'))
+      .rejects.toThrow('GEMINI_API_KEY chưa được cấu hình');
+    process.env.GEMINI_API_KEY = 'test-key';
+  });
+
+  test('returns 4 sample sections with canonical titles + the analysis sections', async () => {
+    mockGenerateContent.mockResolvedValue({ text: goodPayload });
+    const out = await generateTask2Essay('Some prompt', 'Advantages & Disadvantages', 'SKELETON');
+    expect(out.sampleSections.map(s => s.title)).toEqual(['Introduction', 'Body 1', 'Body 2', 'Conclusion']);
+    expect(out.sampleSections[1].content).toBe('Body one para.');
+    expect(out.analysisSections).toHaveLength(4);
+  });
+
+  test('retries once on a bad shape, then throws', async () => {
+    mockGenerateContent.mockResolvedValue({ text: JSON.stringify({ sampleSections: [{ title: 'a', content: 'only one' }], analysisSections: [] }) });
+    await expect(generateTask2Essay('p', 'Agree / Disagree', 's'))
+      .rejects.toThrow('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+  });
+
+  test('a 429 is surfaced as an overload error', async () => {
+    mockGenerateContent.mockRejectedValue(Object.assign(new Error('resource_exhausted'), { status: 429 }));
+    await expect(generateTask2Essay('p', 'Agree / Disagree', 's')).rejects.toMatchObject({ isOverloaded: true });
   });
 });
