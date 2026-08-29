@@ -211,7 +211,61 @@
     el.addEventListener('mouseup', el._dictMouseupHandler);
   }
 
-  async function lookupWord(word, x, y) {
+  // Pull phonetic / part-of-speech / example sentences out of a
+  // dictionaryapi.dev response into `data` (mutates in place).
+  function _mergeDictApi(data, value) {
+    if (!Array.isArray(value)) return;
+    var entry = value[0];
+    data.phonetic = data.phonetic
+      || (entry && entry.phonetic)
+      || (entry && entry.phonetics && (entry.phonetics.find(function (p) { return p.text; }) || {}).text)
+      || '';
+    data.partOfSpeech = data.partOfSpeech
+      || (entry && entry.meanings && entry.meanings[0] && entry.meanings[0].partOfSpeech) || '';
+    var meanings = (entry && entry.meanings) || [];
+    outer:
+    for (var i = 0; i < meanings.length; i++) {
+      var defs = meanings[i].definitions || [];
+      for (var j = 0; j < defs.length; j++) {
+        if (defs[j].example && data.examples.indexOf(defs[j].example) === -1) {
+          data.examples.push(defs[j].example);
+          if (data.examples.length >= 3) break outer;
+        }
+      }
+    }
+  }
+
+  // Pull "other meanings" + fallback example sentences out of a MyMemory
+  // response into `data`. Run only once the primary meaning is known so the
+  // dedup against it is correct.
+  function _mergeMyMemory(data, value, word) {
+    var seen = {}; seen[(data.primaryMeaning || '').toLowerCase()] = true;
+    var normWord = _normForMatch(word);
+    var matches = ((value && value.matches) || [])
+      .filter(function (m) { return m.translation && typeof m.translation === 'string' && m.segment; })
+      .sort(function (a, b) { return (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0); });
+    for (var k = 0; k < matches.length && data.otherMeanings.length < 3; k++) {
+      if (_normForMatch(matches[k].segment) !== normWord) continue;
+      var val = matches[k].translation.trim().replace(/[,.;:]+$/, '').trim();
+      if (!val || val.length > 45 || seen[val.toLowerCase()]) continue;
+      if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue;
+      seen[val.toLowerCase()] = true;
+      data.otherMeanings.push(val);
+    }
+    if (data.examples.length < 3) {
+      var wordRe = new RegExp('\\b' + _escRegExp(normWord) + '\\b', 'i');
+      for (var m2 = 0; m2 < matches.length && data.examples.length < 3; m2++) {
+        var seg = matches[m2].segment.trim();
+        if (_normForMatch(seg) === normWord) continue;
+        if (!_looksLikeSentence(seg) || !wordRe.test(seg)) continue;
+        if (data.examples.indexOf(seg) === -1) data.examples.push(seg);
+      }
+    }
+  }
+
+  var _lookupSeq = 0;
+
+  function lookupWord(word, x, y) {
     var key = word.toLowerCase();
     _word = word;
     document.getElementById('dict-word').textContent = word;
@@ -223,81 +277,64 @@
 
     document.getElementById('dict-body').innerHTML = '<div class="dict-loading">Đang tra...</div>';
 
+    // Progressive render: the three sources have very different (and often
+    // slow / flaky) latencies. Awaiting all three before showing anything
+    // meant the popup sat on "Đang tra..." until the SLOWEST settled — up to
+    // the full 6s timeout. Now the Vietnamese meaning (Google Translate,
+    // normally the quickest) paints as soon as it's back, and phonetic /
+    // other-meanings / examples fill in behind it.
+    var reqId = ++_lookupSeq;
     var enc = encodeURIComponent;
-    var results = await Promise.allSettled([
-      _fetchWithTimeout('https://api.dictionaryapi.dev/api/v2/entries/en/' + enc(word), 8000).then(function (r) { return r.ok ? r.json() : null; }),
-      _fetchWithTimeout('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + enc(word), 8000).then(function (r) { return r.ok ? r.json() : null; }),
-      _fetchWithTimeout('https://api.mymemory.translated.net/get?q=' + enc(word) + '&langpair=en|vi', 8000).then(function (r) { return r.json(); })
-    ]);
-    var dictRes = results[0], transRes = results[1], memRes = results[2];
+    var data = { phonetic: '', partOfSpeech: '', primaryMeaning: '', otherMeanings: [], examples: [] };
+    var done = { trans: false, dict: false, mem: false };
+    var memValue = null;
 
-    var phonetic = '', partOfSpeech = '', examples = [];
-    if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
-      var entry = dictRes.value[0];
-      phonetic = (entry && entry.phonetic) || (entry && entry.phonetics && (entry.phonetics.find(function (p) { return p.text; }) || {}).text) || '';
-      partOfSpeech = (entry && entry.meanings && entry.meanings[0] && entry.meanings[0].partOfSpeech) || '';
-      var meanings = (entry && entry.meanings) || [];
-      outer:
-      for (var i = 0; i < meanings.length; i++) {
-        var defs = meanings[i].definitions || [];
-        for (var j = 0; j < defs.length; j++) {
-          if (defs[j].example && examples.indexOf(defs[j].example) === -1) {
-            examples.push(defs[j].example);
-            if (examples.length >= 3) break outer;
-          }
-        }
+    function fresh() { return reqId === _lookupSeq && _word.toLowerCase() === key; }
+    function paint() {
+      if (!fresh()) return;
+      // Nothing worth showing yet — keep the spinner until a meaning lands
+      // or every source has given up.
+      if (!data.primaryMeaning && !(done.trans && done.dict && done.mem)) return;
+      renderDictPopup({
+        phonetic: data.phonetic, partOfSpeech: data.partOfSpeech,
+        primaryMeaning: data.primaryMeaning || 'Không tìm thấy',
+        otherMeanings: data.otherMeanings, examples: data.examples
+      });
+    }
+    function afterEach() {
+      // MyMemory needs the primary meaning to dedup against — process it
+      // once both it and Translate have settled.
+      if (done.trans && done.mem && !data._memMerged) {
+        data._memMerged = true;
+        if (memValue) { try { _mergeMyMemory(data, memValue, word); } catch (e) {} }
+      }
+      paint();
+      if (done.trans && done.dict && done.mem && fresh()) {
+        _cache.set(key, {
+          phonetic: data.phonetic, partOfSpeech: data.partOfSpeech,
+          primaryMeaning: data.primaryMeaning || 'Không tìm thấy',
+          otherMeanings: data.otherMeanings, examples: data.examples
+        });
       }
     }
 
-    var primaryMeaning = '';
-    if (transRes.status === 'fulfilled') {
-      try { primaryMeaning = (transRes.value[0][0][0] || '').trim(); } catch (e) {}
-    }
+    _fetchWithTimeout('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + enc(word), 6000)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (v) { try { if (v) data.primaryMeaning = (v[0][0][0] || '').trim(); } catch (e) {} })
+      .catch(function () {})
+      .finally(function () { done.trans = true; afterEach(); });
 
-    var otherMeanings = [];
-    if (memRes.status === 'fulfilled') {
-      var seen = {}; seen[primaryMeaning.toLowerCase()] = true;
-      var normWord = _normForMatch(word);
-      var matches = ((memRes.value && memRes.value.matches) || [])
-        .filter(function (m) { return m.translation && typeof m.translation === 'string' && m.segment; })
-        .sort(function (a, b) { return (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0); });
-      for (var k = 0; k < matches.length; k++) {
-        // Only a match whose SOURCE segment is the queried word itself is a
-        // genuine word-level meaning — sentence-level fuzzy matches are
-        // handled separately below as example candidates, not meanings.
-        if (_normForMatch(matches[k].segment) !== normWord) continue;
-        // Trim trailing punctuation left over from a comma-separated
-        // glossary-style TM segment (e.g. segment "mammal," yielding
-        // translation "động vật có vú,").
-        var val = matches[k].translation.trim().replace(/[,.;:]+$/, '').trim();
-        if (!val || val.length > 45 || seen[val.toLowerCase()]) continue;
-        if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue;
-        seen[val.toLowerCase()] = true;
-        otherMeanings.push(val);
-        if (otherMeanings.length >= 3) break;
-      }
+    _fetchWithTimeout('https://api.dictionaryapi.dev/api/v2/entries/en/' + enc(word), 6000)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (v) { try { _mergeDictApi(data, v); } catch (e) {} })
+      .catch(function () {})
+      .finally(function () { done.dict = true; afterEach(); });
 
-      // Sentence-level matches that actually contain the word as a whole
-      // word are still useful — as EXAMPLE sentences, not as "meanings".
-      // dictionaryapi.dev (Wiktionary-sourced) very often has zero example
-      // sentences even for common words, so this fills the gap.
-      if (examples.length < 3) {
-        var wordRe = new RegExp('\\b' + _escRegExp(normWord) + '\\b', 'i');
-        for (var m2 = 0; m2 < matches.length && examples.length < 3; m2++) {
-          var seg = matches[m2].segment.trim();
-          var normSeg = _normForMatch(seg);
-          if (normSeg === normWord) continue; // that's a meaning entry, not a sentence
-          if (!_looksLikeSentence(seg) || !wordRe.test(seg)) continue;
-          if (examples.indexOf(seg) === -1) examples.push(seg);
-        }
-      }
-    }
-
-    if (!primaryMeaning) primaryMeaning = 'Không tìm thấy';
-
-    var cached = { phonetic: phonetic, partOfSpeech: partOfSpeech, primaryMeaning: primaryMeaning, otherMeanings: otherMeanings, examples: examples };
-    _cache.set(key, cached);
-    if (_word.toLowerCase() === key) renderDictPopup(cached);
+    _fetchWithTimeout('https://api.mymemory.translated.net/get?q=' + enc(word) + '&langpair=en|vi', 6000)
+      .then(function (r) { return r.json(); })
+      .then(function (v) { memValue = v; })
+      .catch(function () {})
+      .finally(function () { done.mem = true; afterEach(); });
   }
 
   function renderDictPopup(data) {

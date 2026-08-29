@@ -241,10 +241,16 @@
     });
   }
 
-  // Google's unofficial endpoint is the primary (better VI quality); fall
-  // back to MyMemory so a rate-limit / block on one provider doesn't leave
-  // the student with nothing.
+  // Fire both providers at once and take the first USABLE result (each
+  // helper rejects on an empty/blocked response, so Promise.any skips it).
+  // Google usually wins the race (better VI quality too); MyMemory is the
+  // safety net — but running them in parallel means a Google timeout no
+  // longer costs a full 7s BEFORE MyMemory even starts. Falls back to a
+  // sequential attempt if the browser lacks Promise.any.
   function translateText(text) {
+    if (typeof Promise.any === 'function') {
+      return Promise.any([translateViaGoogle(text), translateViaMyMemory(text)]);
+    }
     return translateViaGoogle(text).catch(function () { return translateViaMyMemory(text); });
   }
 
