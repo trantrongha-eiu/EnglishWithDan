@@ -268,8 +268,13 @@
     }
 
     async function load() {
+      // Abort after 20s so a cold-started backend doesn't leave the page
+      // stuck on "Đang tải thông tin học phí..." with no way out.
+      const _ctrl = new AbortController();
+      const _killer = setTimeout(() => _ctrl.abort(), 20000);
       try {
-        const res  = await fetch(API + '/api/tuition/my', { headers: hdrs() });
+        const res  = await fetch(API + '/api/tuition/my', { headers: hdrs(), signal: _ctrl.signal });
+        clearTimeout(_killer);
         const data = await window.ApiClient.handleResponse(res);
         if (!data.success) throw new Error(data.message || 'Lỗi tải dữ liệu');
 
@@ -334,16 +339,26 @@
             noteEl.innerHTML = '📋 <strong>Hướng dẫn CK:</strong> ' + escHtml(settings.paymentNote).replace(/\n/g, '<br>');
           }
           if (settings.qrImageUrl) {
-            document.getElementById('qrWrap').style.display = 'block';
-            document.getElementById('qrImg').src = settings.qrImageUrl;
+            const qrWrap = document.getElementById('qrWrap');
+            const qrImg  = document.getElementById('qrImg');
+            qrImg.onerror = () => { qrWrap.style.display = 'none'; };
+            qrWrap.style.display = 'block';
+            qrImg.src = settings.qrImageUrl;
           }
         }
 
       } catch (err) {
+        clearTimeout(_killer);
+        console.error(err);
+        const aborted = err && (err.name === 'AbortError' || /abort/i.test(err.message || ''));
         const banner = document.getElementById('debtBanner');
         banner.className = 'debt-banner loading';
-        banner.innerHTML = `<div class="debt-icon">⚠️</div><div class="debt-info"><div class="debt-label" style="color:#dc2626;">${escHtml(err.message || 'Không tải được dữ liệu. Vui lòng thử lại.')}</div></div>`;
-        console.error(err);
+        banner.innerHTML = `<div class="debt-icon">⚠️</div><div class="debt-info">`
+          + `<div class="debt-label" style="color:#dc2626;">${escHtml(aborted
+              ? 'Tải quá lâu — server có thể đang khởi động.'
+              : (err.message || 'Không tải được dữ liệu. Vui lòng thử lại.'))}</div>`
+          + `<button onclick="load()" style="margin-top:8px;background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Thử lại</button>`
+          + `</div>`;
       }
     }
 

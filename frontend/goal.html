@@ -165,7 +165,7 @@
         </div>
       </div>
       <div class="goal-form-actions">
-        <button class="goal-btn goal-btn-primary" onclick="saveGoal()">Lưu mục tiêu</button>
+        <button class="goal-btn goal-btn-primary" id="goal-save-btn" onclick="saveGoal()">Lưu mục tiêu</button>
         <span class="goal-msg" id="goal-msg"></span>
       </div>
     </div>
@@ -214,7 +214,7 @@ async function loadGoal() {
   try {
     const res = await fetch(`${API}/goals`, { headers: authH() });
     const data = await window.ApiClient.handleResponse(res);
-    const g = data.goal;
+    const g = data.goal || {}; // a "no goal yet" response may omit it entirely
     if (g.currentBand != null) document.getElementById('f-current').value = g.currentBand;
     if (g.targetBand != null) document.getElementById('f-target').value = g.targetBand;
     if (g.examDate) document.getElementById('f-exam').value = g.examDate.slice(0, 10);
@@ -266,16 +266,27 @@ async function saveGoal() {
     preferredSessionMinutes: document.getElementById('f-session').value ? parseInt(document.getElementById('f-session').value, 10) : null,
     studyDays: [...selectedDays],
   };
+  // A plan can't be built without a target band — flag it here rather than
+  // letting the save "succeed" into an empty plan.
+  if (body.targetBand == null) {
+    msgEl.textContent = 'Hãy chọn band mục tiêu để Dan lập kế hoạch cho bạn.';
+    msgEl.className = 'goal-msg error';
+    return;
+  }
+  const btn = document.getElementById('goal-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang lưu…'; }
   try {
     const res = await fetch(`${API}/goals`, { method: 'PUT', headers: authH(), body: JSON.stringify(body) });
     const data = await window.ApiClient.handleResponse(res);
     msgEl.textContent = 'Đã lưu!'; msgEl.className = 'goal-msg ok';
-    renderSummary(data.goal);
+    renderSummary(data.goal || {});
     loadPlan();
     loadTodayLearning();
   } catch (e) {
     msgEl.textContent = e.message || 'Không thể lưu mục tiêu.';
     msgEl.className = 'goal-msg error';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Lưu mục tiêu'; }
   }
 }
 
@@ -364,6 +375,8 @@ async function loadTodayLearning() {
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.AuthService?.getUser?.()) { window.location.href = 'login.html'; return; }
   populateBandSelects();
+  // No point picking an exam date in the past.
+  document.getElementById('f-exam').min = new Date().toISOString().slice(0, 10);
   document.querySelectorAll('.goal-day-chip').forEach(el => el.addEventListener('click', () => toggleDay(el)));
   loadGoal();
   loadPlan();
