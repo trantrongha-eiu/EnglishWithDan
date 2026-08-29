@@ -43,7 +43,12 @@
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },
-    { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
+    { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab',
+      children: [
+        { href: 'dashboard.html',                    icon: 'fa-layer-group', label: 'Sổ từ vựng' },
+        { href: 'reading-listening-strategy.html',    icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+      ]
+    },
     { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true, badgeId: 'navInboxBadge' },
     { href: 'tuition.html',          icon: 'fa-money-bill-wave', label: 'Học phí', badge: true, badgeId: 'navTuitionBadge' },
   ];
