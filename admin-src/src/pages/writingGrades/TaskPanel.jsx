@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { EMPTY_MANUAL } from './constants';
+import { EMPTY_MANUAL, taskBandFromCriteria } from './constants';
 
 function ScoreRow({ label, score, comment }) {
   if (score == null) return null;
@@ -34,20 +34,44 @@ export function ResultBlock({ result, label, accentColor }) {
 
 export function ManualGradeForm({ value, onChange, disabled }) {
   const set = (key, subKey, val) => {
-    if (subKey) onChange({ ...value, [key]: { ...(value[key] || {}), [subKey]: val } });
-    else onChange({ ...value, [key]: val });
+    let next;
+    if (subKey) next = { ...value, [key]: { ...(value[key] || {}), [subKey]: val } };
+    else next = { ...value, [key]: val };
+    // IELTS: a task's band is the equal-weighted average of TA/CC/LR/GRA,
+    // rounded (IDP–BC). Auto-fill it whenever all four criteria are set so
+    // the teacher never has to do the arithmetic (they can still override).
+    if (['ta', 'cc', 'lr', 'gra'].includes(key) && subKey === 'score') {
+      const auto = taskBandFromCriteria(next);
+      if (auto !== '') next.bandScore = auto;
+    }
+    onChange(next);
   };
+  const autoBand = taskBandFromCriteria(value);
+  const bandIsAuto = autoBand !== '' && String(value.bandScore) === autoBand;
   return (
     <div style={{ padding: '12px 16px', background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: 10 }}>
         ✏️ Chấm thủ công
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
         <span style={{ fontSize: 12, fontWeight: 700, minWidth: 60, color: 'var(--text2)' }}>Band</span>
         <input type="number" min="0" max="9" step="0.5"
           value={value.bandScore ?? ''} onChange={e => set('bandScore', null, e.target.value)}
-          disabled={disabled} className="form-input" style={{ width: 80, padding: '4px 8px' }} placeholder="0–9" />
+          disabled={disabled} className="form-input"
+          style={{ width: 80, padding: '4px 8px', background: bandIsAuto ? 'var(--surface2)' : undefined }} placeholder="0–9" />
+        {autoBand !== '' && (
+          <span style={{ fontSize: 11, color: bandIsAuto ? 'var(--text3)' : 'var(--accent2)' }}>
+            {bandIsAuto ? 'tự tính từ 4 tiêu chí (làm tròn IDP)' : `≠ trung bình 4 tiêu chí (${autoBand})`}
+            {!bandIsAuto && !disabled && (
+              <button type="button" onClick={() => set('bandScore', null, autoBand)}
+                style={{ marginLeft: 6, background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontSize: 11, textDecoration: 'underline', padding: 0, fontFamily: 'inherit' }}>
+                dùng {autoBand}
+              </button>
+            )}
+          </span>
+        )}
       </div>
+      <div style={{ height: 8 }} />
       {[['TA', 'ta'], ['CC', 'cc'], ['LR', 'lr'], ['GRA', 'gra']].map(([label, key]) => (
         <div key={key} style={{ display: 'grid', gridTemplateColumns: '36px 72px 1fr', gap: 6, marginBottom: 6, alignItems: 'center' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)' }}>{label}</span>

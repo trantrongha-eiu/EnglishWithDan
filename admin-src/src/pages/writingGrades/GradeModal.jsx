@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
-import { STATUS, EMPTY_MANUAL } from './constants';
+import { STATUS, EMPTY_MANUAL, overallWritingBand } from './constants';
 import TaskPanel from './TaskPanel';
 
 export default function GradeModal({ attemptId, onClose, onGraded }) {
@@ -11,6 +11,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
   const [confirming, setConfirming]   = useState(false);
   const [aiOverloaded, setAiOverloaded] = useState(false);
   const [overallBand, setOverallBand] = useState('');
+  const [overallTouched, setOverallTouched] = useState(false); // teacher edited it by hand → stop auto-syncing
   const [adminNote, setAdminNote]     = useState('');
   const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
   const [manuals, setManuals] = useState({ task1: EMPTY_MANUAL(), task2: EMPTY_MANUAL() });
@@ -28,10 +29,29 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     (modes.task2 === 'manual' && manuals.task2.bandScore !== '');
 
   function calcBand(a) {
-    const scores = [a?.aiGrading?.task1?.bandScore, a?.aiGrading?.task2?.bandScore].filter(s => s != null && s > 0);
-    if (!scores.length) return '';
-    return String(Math.round((scores.reduce((x, y) => x + y, 0) / scores.length) * 2) / 2);
+    // IELTS overall Writing band from the two AI task bands (Task 2 ×2).
+    return overallWritingBand(a?.aiGrading?.task1?.bandScore, a?.aiGrading?.task2?.bandScore);
   }
+
+  // The effective band for each task right now: the manual band when that
+  // task is in manual mode (itself auto-derived from TA/CC/LR/GRA in
+  // ManualGradeForm), otherwise the AI band.
+  const effTaskBand = k =>
+    modes[k] === 'manual'
+      ? (manuals[k]?.bandScore !== '' && manuals[k]?.bandScore != null ? manuals[k].bandScore : null)
+      : (ai[k]?.bandScore != null ? ai[k].bandScore : null);
+  const autoOverall = overallWritingBand(
+    hasTask1 ? effTaskBand('task1') : null,
+    hasTask2 ? effTaskBand('task2') : null,
+  );
+
+  // Keep the overall band synced to the IELTS-weighted average of the two
+  // task bands — until the teacher types in the overall field themselves.
+  useEffect(() => {
+    if (!isEffectivelyConfirmed && !overallTouched && autoOverall !== '' && autoOverall !== overallBand) {
+      setOverallBand(autoOverall);
+    }
+  }, [autoOverall, overallTouched, isEffectivelyConfirmed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function refresh() {
     return apiFetch(`/admin/writing-attempt/${attemptId}`)
@@ -41,6 +61,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
         setOverallBand(d.attempt.grading?.overallBand
           ? String(d.attempt.grading.overallBand)
           : calcBand(d.attempt));
+        setOverallTouched(false);
       })
       .catch(e => toast(e.message, 'error'));
   }
@@ -84,6 +105,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     setManuals({ task1: mapTask(g.task1), task2: mapTask(g.task2) });
     setModes({ task1: 'manual', task2: 'manual' });
     setOverallBand(g.overallBand != null ? String(g.overallBand) : '');
+    setOverallTouched(false);
     setAdminNote(g.adminNote || '');
     setReEditing(true);
   }
@@ -256,8 +278,17 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Band tổng thể *</label>
                       <input className="form-input" type="number" step="0.5" min="0" max="9"
-                        value={overallBand} onChange={e => setOverallBand(e.target.value)}
-                        disabled={isEffectivelyConfirmed} placeholder="0–9" />
+                        value={overallBand}
+                        onChange={e => { setOverallTouched(true); setOverallBand(e.target.value); }}
+                        disabled={isEffectivelyConfirmed} placeholder="0–9"
+                        style={{ background: (!isEffectivelyConfirmed && !overallTouched && autoOverall !== '') ? 'var(--surface2)' : undefined }} />
+                      {!isEffectivelyConfirmed && autoOverall !== '' && (
+                        <div style={{ fontSize: 10.5, color: overallTouched && String(overallBand) !== autoOverall ? 'var(--accent2)' : 'var(--text3)', marginTop: 3 }}>
+                          {overallTouched && String(overallBand) !== autoOverall
+                            ? <>≠ IELTS ({autoOverall}) <button type="button" onClick={() => { setOverallTouched(false); setOverallBand(autoOverall); }} style={{ background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontSize: 10.5, textDecoration: 'underline', padding: 0, fontFamily: 'inherit' }}>dùng {autoOverall}</button></>
+                            : `= (T1 + 2·T2) ÷ 3, làm tròn IDP–BC`}
+                        </div>
+                      )}
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Ghi chú giáo viên (tuỳ chọn)</label>
