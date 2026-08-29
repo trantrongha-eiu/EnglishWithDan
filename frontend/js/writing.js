@@ -144,20 +144,26 @@ function showScreen(id) {
   const params = new URLSearchParams(location.search);
   const urlTaskType = parseInt(params.get('taskType'));
   const urlTaskId   = params.get('taskId');
+
+  // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
+  // Checked FIRST and independently of the other routes (it used to sit
+  // after the taskType branches, which `return` early, so it never fired
+  // when the reminder landed on a practice-list URL). Opens the modal over
+  // whatever screen the rest of init() then renders.
+  const rewriteId = params.get('rewrite');
+  if (rewriteId) {
+    setTimeout(() => { try { openRewrite(rewriteId); } catch (_) {} }, 250);
+  }
+
   if ((urlTaskType === 1 || urlTaskType === 2) && urlTaskId) {
     _openDirectPracticeTask(urlTaskType, urlTaskId);
     return;
   }
   if (urlTaskType === 1 || urlTaskType === 2) {
-    history.replaceState({ screen: 'practice-list', taskType: urlTaskType }, '', `writing.html?taskType=${urlTaskType}`);
+    history.replaceState({ screen: 'practice-list', taskType: urlTaskType }, '',
+      `writing.html?taskType=${urlTaskType}${rewriteId ? '&rewrite=' + encodeURIComponent(rewriteId) : ''}`);
     showScreen('screen-practice'); // switch screen now; task list loads after practiceState is defined (see deferred init below)
     return;
-  }
-
-  // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
-  if (params.get('rewrite')) {
-    setTimeout(() => { try { openRewrite(params.get('rewrite')); } catch (_) {} }, 300);
-    // fall through so the page still renders its normal landing screen behind
   }
 
   if (params.get('view') === 'samples') {
@@ -764,7 +770,11 @@ async function viewAttempt(id) {
   document.getElementById('review-modal-title').textContent = 'Đang tải...';
 
   try {
-    const data = await apiFetch(`/api/writing/attempt/${id}`);
+    const _ctrl = new AbortController();
+    const _killer = setTimeout(() => _ctrl.abort(), 15000);
+    let data;
+    try { data = await apiFetch(`/api/writing/attempt/${id}`, { signal: _ctrl.signal }); }
+    finally { clearTimeout(_killer); }
     if (!data.success) throw new Error(data.message);
 
     const a = data.attempt;
@@ -852,8 +862,12 @@ async function viewAttempt(id) {
     `;
     setupDictionaryDouble('review-modal-body', 'writing-review');
   } catch (e) {
+    const cold = e && (e.name === 'AbortError' || /abort/i.test(e.message || '') || e.coldStart || e.status === 502 || e.status === 503);
     document.getElementById('review-modal-body').innerHTML =
-      `<p style="color:#e53935;padding:20px">${escHtml(e.message || 'Không tải được bài làm.')}</p>`;
+      `<div style="padding:20px;text-align:center">
+        <p style="color:#e53935;margin-bottom:12px">${cold ? 'Tải bài quá lâu — server có thể đang khởi động. Thử lại sau vài giây.' : escHtml(e?.message || 'Không tải được bài làm.')}</p>
+        <button class="btn-primary" onclick="viewAttempt('${id}')">Thử lại</button>
+      </div>`;
   }
 }
 
@@ -937,20 +951,30 @@ async function openRewrite(attemptId) {
   }
   overlay.classList.add('open');
   body.innerHTML = `<div style="text-align:center;padding:36px"><div class="spinner"></div>
-    <div style="margin-top:14px;font-size:12.5px;color:var(--text3,#9ca3af)">Đang tải bài… nếu chờ lâu là do server đang khởi động.</div></div>`;
+    <div style="margin-top:14px;font-size:12.5px;color:var(--text3,#9ca3af)">Đang tải bài…</div></div>`;
   const submitBtn = document.getElementById('rw-submit-btn');
   if (submitBtn) submitBtn.disabled = true;
 
   try {
-    // Bound the wait — a cold-started backend can otherwise leave the modal
-    // spinning forever with no way out.
-    const data = await Promise.race([
-      apiFetch(`/api/writing/attempt/${attemptId}`),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('__rw_timeout__')), 25000)),
-    ]);
-    if (!data.success) throw new Error(data.message);
-    const a = data.attempt;
-    if (a.gradingStatus !== 'confirmed' || !a.grading) {
+    let a;
+    // Fast path: viewAttempt() just fetched this exact attempt — reuse it,
+    // no second request (this is the button students actually click, and it
+    // removes the network round-trip that was leaving the modal spinning).
+    if (_currentViewData && String(_currentViewData._id) === String(attemptId)) {
+      a = _currentViewData;
+    } else {
+      // Otherwise fetch, but ABORT after 15s so a cold-started / unreachable
+      // backend can't leave the modal spinning forever.
+      const ctrl = new AbortController();
+      const killer = setTimeout(() => ctrl.abort(), 15000);
+      let data;
+      try {
+        data = await apiFetch(`/api/writing/attempt/${attemptId}`, { signal: ctrl.signal });
+      } finally { clearTimeout(killer); }
+      if (!data || !data.success) throw new Error((data && data.message) || 'Không tải được bài.');
+      a = data.attempt;
+    }
+    if (!a || a.gradingStatus !== 'confirmed' || !a.grading) {
       throw new Error('Bài này chưa được chấm xong nên chưa thể viết lại.');
     }
 
@@ -998,9 +1022,10 @@ async function openRewrite(attemptId) {
     try { setupDictionaryDouble('rewrite-modal-body', 'writing-rewrite'); } catch (_) {}
     _rwUpdateCounts();
   } catch (e) {
-    const timedOut = e && e.message === '__rw_timeout__';
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+    const cold = aborted || e?.coldStart || e?.status === 502 || e?.status === 503;
     body.innerHTML = `<div style="padding:24px;text-align:center">
-      <p style="color:#e53935;margin-bottom:14px">${timedOut ? 'Tải bài quá lâu (server có thể đang khởi động).' : escHtml(e.message || 'Không mở được bài viết lại.')}</p>
+      <p style="color:#e53935;margin-bottom:14px">${cold ? 'Tải bài quá lâu — server có thể đang khởi động. Thử lại sau vài giây.' : escHtml(e?.message || 'Không mở được bài viết lại.')}</p>
       <button class="btn-primary" onclick="openRewrite('${attemptId}')">Thử lại</button>
       <button class="btn-secondary" style="margin-left:8px" onclick="location.reload()">Tải lại trang</button>
     </div>`;
