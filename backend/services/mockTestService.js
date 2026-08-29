@@ -92,7 +92,13 @@ async function readBand(skill, attemptId) {
 
 // Recomputes overallBand + status from whatever bands are currently on the
 // doc. Mutates in place; caller saves.
-function recomputeOverall(doc) {
+//
+// `adminManual`: the caller is a teacher hand-entering bands via the admin
+// monitor. That IS the finalisation signal for this run — the student may
+// never have walked the mock flow to its end (Speaking run live in person,
+// or they dropped off mid-test) — so finalise the status now regardless of
+// the `progress` cursor instead of leaving it stuck on 'Đang làm dở'.
+function recomputeOverall(doc, { adminManual = false } = {}) {
   // A voided / discarded run keeps its terminal status and a null overall
   // band no matter what bands sit on its steps.
   if (doc.status === 'disqualified' || doc.status === 'abandoned') {
@@ -102,15 +108,17 @@ function recomputeOverall(doc) {
   const bands = SKILL_ORDER.map(s => numericBand(doc.steps[s] && doc.steps[s].band));
   const allNumeric = bands.every(b => b !== null);
   const overall = allNumeric ? roundOverall(bands.reduce((a, b) => a + b, 0) / 4) : null;
-
-  // Run still in progress (student hasn't finished all four): a manual
-  // early edit may surface a preview overall once all four bands exist, but
-  // it must never flip the run to 'completed' before the student is done.
-  if (doc.progress !== 'done') {
-    doc.overallBand = overall;
-    return;
-  }
   doc.overallBand = overall;
+
+  // Normal path: while the student is still in the mock (progress !== 'done')
+  // a manual early edit may surface a preview overall once all four bands
+  // exist, but must never flip the run to 'completed' before they're done.
+  if (doc.progress !== 'done' && !adminManual) return;
+
+  // Admin hand-entered every skill → the run is graded and finished; move the
+  // cursor too so status/progress stay consistent. A partial manual score
+  // still lifts it out of the student-facing 'in-progress' limbo.
+  if (adminManual && allNumeric) doc.progress = 'done';
   doc.status = allNumeric ? 'completed' : 'awaiting-grading';
 }
 
@@ -546,7 +554,7 @@ async function setManualScores(id, { steps = {}, note, actorId, actorName } = {}
 
   doc.scoreEditedBy = actorId || undefined;
   doc.scoreEditedAt = new Date();
-  recomputeOverall(doc);
+  recomputeOverall(doc, { adminManual: true });
   await doc.save();
   // A step just cleared back to null should pick its auto-graded band back up.
   await refreshGrades(doc);

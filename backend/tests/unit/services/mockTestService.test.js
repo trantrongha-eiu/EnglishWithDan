@@ -340,6 +340,43 @@ describe('mockTestService.setManualScores', () => {
     expect(shape.steps.speaking.band).toBe(8);
     expect(shape.steps.speaking.manual).toBe(true);
   });
+
+  test('hand-entering every skill on an in-progress run finalises it to completed', async () => {
+    const student = await createStudent();
+    const mockId = await runThroughReading(student); // progress: 'writing', status: 'in-progress'
+
+    const shape = await mockTestService.setManualScores(mockId, {
+      steps: { writing: 6, speaking: 7 }, actorId: student._id,
+    });
+    // L 6 + R 7 + W 6 + S 7 → all four bands present.
+    expect(shape.status).toBe('completed');
+    expect(shape.progress).toBe('done');
+    expect(shape.overallBand).toBe(6.5); // 26/4 = 6.5
+  });
+
+  test('a partial hand-entered score lifts an in-progress run to awaiting-grading', async () => {
+    const student = await createStudent();
+    const mockId = await runThroughReading(student);
+
+    const shape = await mockTestService.setManualScores(mockId, {
+      steps: { writing: 6 }, actorId: student._id, // speaking still blank
+    });
+    expect(shape.status).toBe('awaiting-grading');
+    expect(shape.progress).toBe('writing'); // cursor untouched while a band is missing
+    expect(shape.overallBand).toBeNull();
+  });
+
+  test('does not resurrect a disqualified run', async () => {
+    const student = await createStudent();
+    const mockId = await runThroughReading(student);
+    await MockTestAttempt.findByIdAndUpdate(mockId, { status: 'disqualified', overallBand: null });
+
+    const shape = await mockTestService.setManualScores(mockId, {
+      steps: { writing: 6, speaking: 7 }, actorId: student._id,
+    });
+    expect(shape.status).toBe('disqualified');
+    expect(shape.overallBand).toBeNull();
+  });
 });
 
 describe('mockTestService.deleteRun', () => {
