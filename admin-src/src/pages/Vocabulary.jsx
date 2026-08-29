@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -415,9 +415,12 @@ export default function Vocabulary() {
   const load = () => apiFetch('/vocab/admin/units').then(d => setUnits(d.units || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
-  const filtered = units.filter(u =>
-    !search || u.title?.toLowerCase().includes(search.toLowerCase()) || u.level?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return units.filter(u =>
+      !search || u.title?.toLowerCase().includes(q) || u.level?.toLowerCase().includes(q)
+    );
+  }, [units, search]);
 
   async function toggleActive(id, isActive) {
     setUnits(prev => prev.map(u => (u._id === id ? { ...u, isActive: !isActive } : u)));
