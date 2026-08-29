@@ -17,7 +17,7 @@
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260908">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260922">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831">
 </head>
 <body>
@@ -64,7 +64,7 @@
     </div>
     <div class="sidebar-divider"></div>
     <div class="classroom-section">
-      <h4><i class="fas fa-chalkboard"></i> Classroom</h4>
+      <h4><i class="fas fa-chalkboard"></i> Lớp học</h4>
       <div id="classroom-list-sidebar"><!-- Rendered by JS --></div>
     </div>
   </aside>
@@ -364,7 +364,7 @@
           <div class="book-search-wrap">
             <i class="fas fa-search"></i>
             <input class="book-search-input" id="book-search" type="search"
-              placeholder="Search words..."
+              placeholder="Tìm từ..."
               oninput="filterWords(this.value)"
               autocomplete="off"/>
           </div>
@@ -606,26 +606,27 @@
 <!-- Bottom Sheet -->
 <div class="mob-sheet" id="mobSheet">
   <!-- Drag handle -->
-  <div class="sheet-handle" id="sheetHandle">
+  <div class="sheet-handle" id="sheetHandle" role="button" aria-label="Kéo để mở rộng hoặc thu gọn">
     <div class="sheet-handle-bar"></div>
+    <span class="sheet-handle-hint" id="sheetHandleHint"></span>
   </div>
 
   <!-- Sheet header -->
   <div class="sheet-header">
-    <span class="sheet-title">📚 Vocabulary</span>
+    <span class="sheet-title">📚 Từ vựng</span>
     <button class="sheet-close" onclick="closeSheet()">✕</button>
   </div>
 
   <!-- Tabs: Sổ của tôi | Học Unit | Classroom -->
   <div class="sheet-tabs">
     <button class="sheet-tab active" id="sheetTab0" onclick="switchSheetTab(0)">
-      <i class="fas fa-book"></i> Notebooks
+      <i class="fas fa-book"></i> Sổ từ vựng
     </button>
     <button class="sheet-tab" id="sheetTab1" onclick="switchSheetTab(1)">
       <i class="fas fa-graduation-cap"></i> Paraphrase
     </button>
     <button class="sheet-tab" id="sheetTab2" onclick="switchSheetTab(2)">
-      <i class="fas fa-chalkboard"></i> Classroom
+      <i class="fas fa-chalkboard"></i> Lớp học
     </button>
   </div>
 
@@ -638,11 +639,11 @@
         <!-- Render bởi JS (sync với sidebar) -->
         <div style="padding:30px;text-align:center;color:var(--text3)">
           <div style="font-size:32px;margin-bottom:8px">📭</div>
-          <div style="font-size:13px">No notebooks yet</div>
+          <div style="font-size:13px">Chưa có sổ nào</div>
         </div>
       </div>
       <div class="sheet-add-book-btn" onclick="openAddBookModal();closeSheet()">
-        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Create new notebook
+        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Tạo sổ mới
       </div>
       <div style="padding:0 12px 12px">
         <button class="sheet-difficult-btn" onclick="openDifficultWordsModal();closeSheet()">
@@ -655,7 +656,7 @@
     <!-- Panel 1: Học Unit -->
     <div class="sheet-panel" id="sheetPanel1">
       <div class="sheet-unit-section">
-        <h4><i class="fas fa-book-open"></i> Select a Unit to study</h4>
+        <h4><i class="fas fa-book-open"></i> Chọn Unit để học</h4>
         <div class="unit-picker" id="unitPickerMobile">
           <div style="position:relative">
             <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off" readonly inputmode="none">
@@ -754,22 +755,22 @@
 <div class="modal-overlay hidden" id="modal-add-book">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>Create new notebook</h3>
+      <h3>Tạo sổ mới</h3>
       <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-add-book')">×</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Notebook name *</label>
-        <input class="form-input" id="new-book-name" placeholder="e.g. IELTS Academic, Travel..." onkeypress="if(event.key==='Enter')createBook()"/>
+        <label>Tên sổ *</label>
+        <input class="form-input" id="new-book-name" placeholder="vd: IELTS Academic, Du lịch..." onkeypress="if(event.key==='Enter')createBook()"/>
       </div>
       <div class="form-group">
-        <label>Icon</label>
+        <label>Biểu tượng</label>
         <div class="emoji-picker" id="emoji-picker"></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-book')">Cancel</button>
-      <button class="btn btn-primary" onclick="createBook()">Create</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-book')">Huỷ</button>
+      <button class="btn btn-primary" onclick="createBook()">Tạo</button>
     </div>
   </div>
 </div>
@@ -777,7 +778,7 @@
 <div class="modal-overlay hidden" id="modal-save-word">
   <div class="modal-box modal-md">
     <div class="modal-header">
-      <h3>Save word to notebook</h3>
+      <h3>Lưu từ vào sổ</h3>
       <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-save-word')">×</button>
     </div>
     <div class="modal-body">
@@ -791,17 +792,17 @@
         <div style="font-size:12px;font-style:italic;color:var(--text3);margin-top:4px" id="sw-example"></div>
       </div>
       <div class="form-group">
-        <label>Select a notebook</label>
+        <label>Chọn một sổ</label>
         <div class="book-list-select" id="sw-book-list"></div>
       </div>
       <div class="form-group">
-        <label>Personal note (optional)</label>
-        <input class="form-input" id="sw-note" placeholder="e.g. found in March reading passage..."/>
+        <label>Ghi chú riêng (không bắt buộc)</label>
+        <input class="form-input" id="sw-note" placeholder="vd: gặp trong bài đọc tháng 3..."/>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Save word</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Huỷ</button>
+      <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Lưu từ</button>
     </div>
   </div>
 </div>
@@ -864,26 +865,26 @@
 <div class="modal-overlay hidden" id="modal-add-word">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>Add vocabulary</h3>
+      <h3>Thêm từ vựng</h3>
       <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-add-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>English word *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)" onkeypress="if(event.key==='Enter')document.getElementById('aw-meaning').focus()"/></div>
+      <div class="form-group"><label>Từ tiếng Anh *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)" onkeypress="if(event.key==='Enter')document.getElementById('aw-meaning').focus()"/></div>
       <div class="form-group">
-        <label>Vietnamese meaning</label>
+        <label>Nghĩa tiếng Việt</label>
         <input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('aw-example').focus()"/>
         <div id="aw-meaning-suggestions" class="example-suggestions-wrap"></div>
       </div>
       <div class="form-group">
-        <label>Example</label>
+        <label>Ví dụ</label>
         <input class="form-input" id="aw-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('aw-note').focus()"/>
         <div id="aw-example-suggestions" class="example-suggestions-wrap"></div>
       </div>
-      <div class="form-group"><label>Notes</label><input class="form-input" id="aw-note" placeholder="Optional..." onkeypress="if(event.key==='Enter')addWordManual()"/></div>
+      <div class="form-group"><label>Ghi chú</label><input class="form-input" id="aw-note" placeholder="Không bắt buộc..." onkeypress="if(event.key==='Enter')addWordManual()"/></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Cancel</button>
-      <button class="btn btn-primary" onclick="addWordManual()">Add word</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Huỷ</button>
+      <button class="btn btn-primary" onclick="addWordManual()">Thêm từ</button>
     </div>
   </div>
 </div>
@@ -891,18 +892,18 @@
 <div class="modal-overlay hidden" id="modal-edit-word">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>✏️ Edit vocabulary</h3>
+      <h3>✏️ Sửa từ vựng</h3>
       <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-edit-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>English word *</label><input class="form-input" id="ew-word" placeholder="establish" onkeypress="if(event.key==='Enter')document.getElementById('ew-phonetic').focus()"/></div>
-      <div class="form-group"><label>Phonetic</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/" onkeypress="if(event.key==='Enter')document.getElementById('ew-meaning').focus()"/></div>
-      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('ew-example').focus()"/></div>
-      <div class="form-group"><label>Example</label><input class="form-input" id="ew-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('ew-note').focus()"/></div>
-      <div class="form-group"><label>Notes</label><input class="form-input" id="ew-note" placeholder="Optional..." onkeypress="if(event.key==='Enter')saveEditWord()"/></div>
+      <div class="form-group"><label>Từ tiếng Anh *</label><input class="form-input" id="ew-word" placeholder="establish" onkeypress="if(event.key==='Enter')document.getElementById('ew-phonetic').focus()"/></div>
+      <div class="form-group"><label>Phiên âm</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/" onkeypress="if(event.key==='Enter')document.getElementById('ew-meaning').focus()"/></div>
+      <div class="form-group"><label>Nghĩa tiếng Việt</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('ew-example').focus()"/></div>
+      <div class="form-group"><label>Ví dụ</label><input class="form-input" id="ew-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('ew-note').focus()"/></div>
+      <div class="form-group"><label>Ghi chú</label><input class="form-input" id="ew-note" placeholder="Không bắt buộc..." onkeypress="if(event.key==='Enter')saveEditWord()"/></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Cancel</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Huỷ</button>
       <button class="btn btn-primary" onclick="saveEditWord()"><i class="fas fa-save"></i> Save changes</button>
     </div>
   </div>
@@ -1007,12 +1008,12 @@
   <div class="modal-box modal-sm">
     <div class="modal-body" style="text-align:center;padding:28px 24px">
       <div class="danger-icon">⚠️</div>
-      <h3 id="confirm-title" style="margin-bottom:8px">Confirm</h3>
+      <h3 id="confirm-title" style="margin-bottom:8px">Xác nhận</h3>
       <p id="confirm-msg" style="color:var(--text2);font-size:14px"></p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Cancel</button>
-      <button class="btn btn-danger" id="btn-confirm-ok">Confirm delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Huỷ</button>
+      <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận xoá</button>
     </div>
   </div>
 </div>
@@ -1059,6 +1060,7 @@
     setTimeout(function(){
       backdrop.classList.remove('active');
       sheet.classList.remove('active');
+      sheet.classList.remove('expanded'); // next open starts at the default height
     }, 320);
   };
 
@@ -1143,25 +1145,40 @@
   checkMob();
   window.addEventListener('resize', checkMob);
 
-  // ── Drag-to-close (touch swipe down) ────────────
+  // ── Drag handle: swipe UP to expand, swipe DOWN to collapse / close ──
+  //   collapsed (default 72vh)  ⇄  expanded (95vh)  → close
+  // A near-stationary press (tap) just toggles expanded, as a quick
+  // affordance for students who don't discover the drag.
   var handle   = document.getElementById('sheetHandle');
   var startY   = 0;
   var dragging = false;
   handle.addEventListener('touchstart', function(e){
     startY   = e.touches[0].clientY;
     dragging = true;
+    sheet.style.transition = 'none';
   }, {passive:true});
   handle.addEventListener('touchmove', function(e){
     if(!dragging) return;
     var dy = e.touches[0].clientY - startY;
-    if(dy > 0) sheet.style.transform = 'translateY('+dy+'px)';
+    // Live feedback only for a downward drag (toward collapse/dismiss);
+    // an upward drag just snaps to .expanded on release.
+    sheet.style.transform = dy > 0 ? 'translateY(' + Math.min(dy, 260) + 'px)' : '';
   }, {passive:true});
   handle.addEventListener('touchend', function(e){
     if(!dragging) return;
     dragging = false;
     var dy = e.changedTouches[0].clientY - startY;
+    sheet.style.transition = '';
     sheet.style.transform = '';
-    if(dy > 80) closeSheet();
+    var expanded = sheet.classList.contains('expanded');
+    if(Math.abs(dy) < 8){                 // tap → toggle
+      sheet.classList.toggle('expanded');
+    } else if(dy <= -36){                 // swipe up → grow
+      sheet.classList.add('expanded');
+    } else if(dy >= 36){                  // swipe down
+      if(expanded)      sheet.classList.remove('expanded');  // expanded → collapsed
+      else if(dy > 80)  closeSheet();                        // collapsed → close
+    }
   });
 
   // ── Patch renderBookSidebar để tự sync sheet ─────
