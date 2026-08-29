@@ -586,9 +586,16 @@ async function submitExam(statusOverride) {
   }
   overlay.style.display = 'flex';
 
+  // Abort a hung submit after 30s (a cold-started backend used to leave the
+  // "Đang nộp bài…" overlay spinning forever with no way out — reading/
+  // listening already guard this).
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 30000);
+
   try {
     const data = await apiFetch('/api/writing/submit', {
       method: 'POST',
+      signal: _ctrl.signal,
       body: JSON.stringify({
         examId:      state.exam._id,
         task1Id:     state.exam.task1?._id,
@@ -601,6 +608,7 @@ async function submitExam(statusOverride) {
         status
       })
     });
+    clearTimeout(_killer);
     overlay.style.display = 'none';
 
     if (data.success) {
@@ -639,12 +647,18 @@ async function submitExam(statusOverride) {
       showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'), 'error');
     }
   } catch (e) {
+    clearTimeout(_killer);
     state.isSubmitting = false;
     overlay.style.display = 'none';
     // /api/writing/submit is now full-access gated (BUG-A02) like /start and
     // /practice/submit — handle a mid-exam trial expiry the same way they do
     // (upgrade prompt, not a bare error toast).
     if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+    if (aborted || e?.coldStart || e?.status === 502 || e?.status === 503) {
+      showToast('Nộp bài quá lâu — server có thể đang khởi động. Bài của bạn vẫn được lưu tự động; hãy thử nộp lại sau vài giây.', 'error', 8000);
+      return;
+    }
     if (!_handleQuotaError(e)) showToast('Lỗi nộp bài: ' + e.message, 'error');
   }
 }
@@ -2308,9 +2322,12 @@ async function submitPractice() {
   const btn = document.getElementById('btn-confirm-submit-practice');
   if (btn) { btn.disabled = true; btn.textContent = 'Đang nộp...'; }
 
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 30000);
   try {
     const d = await apiFetch('/api/writing/practice/submit', {
       method: 'POST',
+      signal: _ctrl.signal,
       body: JSON.stringify({
         taskType: practiceState.taskType,
         taskId: practiceState.task?._id,
@@ -2318,6 +2335,7 @@ async function submitPractice() {
         wordCount: practiceState.wordCount
       })
     });
+    clearTimeout(_killer);
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
     if (window.showBadgeUnlocked && d.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
@@ -2336,7 +2354,10 @@ async function submitPractice() {
     document.getElementById('pw-done-label').textContent = `Đã nộp ${label}`;
     showScreen('screen-practice-done');
   } catch (e) {
+    clearTimeout(_killer);
     if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+    if (aborted) { showToast('Nộp bài quá lâu — bài vẫn được lưu tự động; thử lại sau vài giây.', 'error', 7000); return; }
     if (!_handleQuotaError(e)) showToast(e.message || 'Nộp bài thất bại', 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Nộp bài'; }

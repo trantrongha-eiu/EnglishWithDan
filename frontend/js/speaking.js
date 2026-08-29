@@ -1425,6 +1425,14 @@ async function analyzeTranscript() {
 
   const questionId = state.currentQuestion?._id;
 
+  // Abort a hung grading request after 45s (Gemini grading legitimately
+  // takes ~15-25s; the backend wraps it in its own 15s timeout, so this
+  // only fires when the HTTP layer itself stalls — a cold-started backend
+  // or a dropped connection — which otherwise leaves the loading state
+  // and the disabled button stuck forever).
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 45000);
+
   try {
     // Fetched in parallel with /analyze (not awaited first) so the
     // encouragement comparison below never adds perceptible latency to the
@@ -1434,6 +1442,7 @@ async function analyzeTranscript() {
     const [data, histData] = await Promise.all([
       apiFetch('/api/speaking/analyze', {
         method: 'POST',
+        signal: _ctrl.signal,
         body: JSON.stringify({
           transcript,
           question,
@@ -1445,6 +1454,7 @@ async function analyzeTranscript() {
       }),
       questionId ? apiFetch('/api/speaking/history').catch(() => null) : Promise.resolve(null),
     ]);
+    clearTimeout(_killer);
 
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'block';
@@ -1471,12 +1481,14 @@ async function analyzeTranscript() {
       window.SpeakingAudioStore.saveAudioRecording(data.attemptId, _lastRecordingBlob);
     }
   } catch (e) {
+    clearTimeout(_killer);
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'none';
     const errorText = document.getElementById('feedback-error-text');
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
     if (errorText) {
-      errorText.textContent = e?.coldStart
-        ? 'Server đang khởi động, vui lòng thử lại sau vài giây.'
+      errorText.textContent = (e?.coldStart || aborted)
+        ? 'Server phản hồi quá lâu (có thể đang khởi động). Vui lòng thử lại sau vài giây.'
         : (e?.message || 'Không thể phân tích. Vui lòng thử lại sau.');
     }
     if (errorBox) errorBox.classList.remove('hidden');
@@ -2193,9 +2205,13 @@ async function finishSequentialSession() {
   if (actionsEl)       actionsEl.style.display       = 'none';
   _startFeedbackLoadingMessages('seq-feedback-loading-text');
 
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 45000);
+
   try {
     const data = await apiFetch('/api/speaking/analyze', {
       method: 'POST',
+      signal: _ctrl.signal,
       body: JSON.stringify({
         transcript: combined,
         question:   questionLabel,
@@ -2204,6 +2220,7 @@ async function finishSequentialSession() {
         duration:   state.seqTotalElapsed,
       }),
     });
+    clearTimeout(_killer);
     _stopFeedbackLoadingMessages();
     if (loadingEl)    loadingEl.style.display    = 'none';
     if (feedbackBody) feedbackBody.style.display = 'block';
@@ -2222,17 +2239,33 @@ async function finishSequentialSession() {
       });
     }
   } catch (e) {
+    clearTimeout(_killer);
     console.error('finishSequentialSession:', e);
     _stopFeedbackLoadingMessages();
     if (loadingEl) loadingEl.style.display = 'none';
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+    const msg = (aborted || e?.coldStart)
+      ? 'Server phản hồi quá lâu (có thể đang khởi động). Bấm để thử lại.'
+      : 'Không thể phân tích. Vui lòng thử lại sau.';
     if (feedbackBody) {
       feedbackBody.style.display = 'block';
-      feedbackBody.innerHTML = '<div class="fb-card"><p class="fb-card-text">Không thể phân tích. Vui lòng thử lại sau.</p></div>';
+      feedbackBody.innerHTML = `<div class="fb-card"><p class="fb-card-text">${msg}</p>
+        <button class="btn-primary" style="margin-top:10px" onclick="_retrySeqAnalyze()"><i class="fas fa-rotate-right"></i> Thử lại</button></div>`;
     }
     if (actionsEl) actionsEl.style.display = 'flex';
-    showToast('Không thể phân tích. Vui lòng thử lại sau.', 'error');
+    showToast(msg, 'error');
   }
 }
+
+// Re-run the whole-session grading after a failed/aborted finishSequentialSession()
+// — the transcripts are still in state.seqAnswers, so it can just retry.
+function _retrySeqAnalyze() {
+  if (state.seqAnswers && state.seqAnswers.length) {
+    state.seqActive = false;
+    finishSequentialSession();
+  }
+}
+window._retrySeqAnalyze = _retrySeqAnalyze;
 
 function renderSeqFeedback(fb) {
   const scores = [
