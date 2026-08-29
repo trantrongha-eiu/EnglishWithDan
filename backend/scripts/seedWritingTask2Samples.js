@@ -29,6 +29,7 @@
  * continue (it only fills still-empty docs).
  *
  * Usage:
+ *   node backend/scripts/seedWritingTask2Samples.js --list                # snapshot: which topics already have analysis / sample / nothing
  *   node backend/scripts/seedWritingTask2Samples.js                       # dry run — list what it WOULD do
  *   node backend/scripts/seedWritingTask2Samples.js --apply               # Groq, all missing
  *   node backend/scripts/seedWritingTask2Samples.js --apply --verify      # grade each essay, regen once if band < 7.0
@@ -58,16 +59,39 @@ const LABEL_BY_ESSAYTYPE = Object.fromEntries(
 );
 
 function parseArgs(argv) {
-  const a = { apply: false, verify: false, engine: 'groq', limit: Infinity, delay: 2500 };
+  const a = { apply: false, verify: false, list: false, engine: 'groq', limit: Infinity, delay: 2500 };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--apply') a.apply = true;
     else if (argv[i] === '--verify') a.verify = true;
+    else if (argv[i] === '--list') a.list = true;
     else if (argv[i] === '--engine') a.engine = (argv[++i] || 'groq').toLowerCase();
     else if (argv[i] === '--limit') a.limit = parseInt(argv[++i], 10) || Infinity;
     else if (argv[i] === '--delay') a.delay = parseInt(argv[++i], 10) || 2500;
   }
   if (!['groq', 'gemini'].includes(a.engine)) a.engine = 'groq';
   return a;
+}
+
+// --list: print every active WritingTask2 bucketed by what content it has.
+// No AI, no writes — just a snapshot of the live DB.
+async function listStatus() {
+  await mongoose.connect(process.env.MONGO_URI);
+  const docs = await WritingTask2.find({ isActive: true })
+    .select('prompt analysisSections sampleSections').sort({ createdAt: 1 }).lean();
+  const has = a => Array.isArray(a) && a.length > 0;
+  const both = docs.filter(d => has(d.analysisSections) && has(d.sampleSections));
+  const analysisOnly = docs.filter(d => has(d.analysisSections) && !has(d.sampleSections));
+  const sampleOnly = docs.filter(d => !has(d.analysisSections) && has(d.sampleSections));
+  const neither = docs.filter(d => !has(d.analysisSections) && !has(d.sampleSections));
+  const show = list => list.forEach((d, i) =>
+    console.log(`  ${String(i + 1).padStart(3)}. ${d.prompt.replace(/\s+/g, ' ').slice(0, 100)}`));
+
+  console.log(`Tổng WritingTask2 (isActive): ${docs.length}\n`);
+  console.log(`✅ ĐỦ — có cả "Phân tích đề" + "Bài mẫu từ Daniel"  (${both.length})`);   show(both);
+  console.log(`\n🟡 CHỈ có "Phân tích đề", thiếu bài mẫu Daniel  (${analysisOnly.length})`); show(analysisOnly);
+  if (sampleOnly.length) { console.log(`\n🟠 chỉ có bài mẫu, thiếu phân tích  (${sampleOnly.length})`); show(sampleOnly); }
+  console.log(`\n🔴 CHƯA có gì cả  (${neither.length})`); show(neither);
+  await mongoose.disconnect();
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -95,6 +119,7 @@ function renderSkeleton(tpl) {
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.list) return listStatus();
   const generate = args.engine === 'gemini' ? generateTask2Essay : generateTask2EssayGroq;
   const gradeBand = args.engine === 'gemini' ? gradeTask2Band : gradeTask2BandGroq;
 
