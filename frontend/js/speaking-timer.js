@@ -84,16 +84,18 @@ function startSpeakCountdown() {
     if (state.speakSecondsLeft <= 0) {
       clearInterval(state.speakTimer);
       state.speakTimer = null;
-      if (state.isRecording && state.recognition) {
-        // Mark it a deliberate stop so onend doesn't try to auto-restart,
-        // then let onend -> _finishRecordingUI() run the shared teardown
-        // (stops the audio capture + saves the playback blob).
+      if (state.recognition) {
+        // Mark it a deliberate stop so onend doesn't try to auto-restart.
         state._userStoppedRecording = true;
         try { state.recognition.stop(); } catch (e) {}
-        state.isRecording = false;
       }
+      state.isRecording = false;
       showToast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');
       hideSpeakCountdown();
+      // Run teardown directly — don't wait for recognition.onend. Chrome and
+      // Brave frequently don't fire onend after stop(), which left the
+      // elapsed timer running past 2:00 and the button stuck on "Dừng".
+      if (typeof _finishRecordingUI === 'function') _finishRecordingUI();
     }
   }, 1000);
 }
@@ -120,6 +122,14 @@ function startElapsedTimer() {
   state.elapsedTimer = setInterval(() => {
     const secs = Math.floor((Date.now() - state.recordStartTime) / 1000);
     if (t) t.textContent = fmtTime(secs);
+    // Hard backstop: nothing legitimately records for >5 min (Part 2 is
+    // capped at 2). Getting here means the stop path desynced (onend never
+    // fired) — force teardown so the button/timer can't stay stuck.
+    if (secs >= 300) {
+      stopElapsedTimer();
+      if (typeof _finishRecordingUI === 'function') _finishRecordingUI();
+      if (typeof showToast === 'function') showToast('Ghi âm đã tự dừng sau 5 phút.', 'info');
+    }
   }, 1000);
 }
 

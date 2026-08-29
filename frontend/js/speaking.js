@@ -1082,8 +1082,14 @@ function setupRecognition() {
 
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro. Vui lòng cho phép trong cài đặt trình duyệt.',
-      'network':     'Lỗi mạng khi nhận dạng giọng nói.',
+      // "network" here = the browser's speech-to-text SERVICE is unreachable,
+      // not the mic. Brave / Firefox / some privacy setups block Google's
+      // speech backend entirely, so this fires every time. The recording
+      // itself is fine (it's captured separately) — the student can still gõ
+      // transcript và bấm Phân tích.
+      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Bản ghi âm vẫn được lưu — hãy gõ lời thoại vào ô Transcript rồi bấm Phân tích, hoặc mở bằng Google Chrome.',
       'audio-capture': 'Không tìm thấy micro, hoặc micro đang được ứng dụng khác sử dụng.',
+      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Bản ghi âm vẫn được lưu — hãy gõ lời thoại vào ô Transcript, hoặc dùng Google Chrome.',
     };
     const message = msgs[e.error] || `Lỗi ghi âm (${e.error}). Vui lòng thử lại.`;
     const recStatus = document.getElementById('rec-status');
@@ -1247,7 +1253,17 @@ function _startRecordingGuarded() {
   } catch (e) {
     state._recordBusy = false;
     if (btnRecord) btnRecord.disabled = false;
-    showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+    // "recognition has already started" — a previous session's recognition is
+    // still live because its onend never fired. Tear it down so the NEXT tap
+    // works, instead of just erroring on every tap.
+    if (e && e.name === 'InvalidStateError') {
+      state._userStoppedRecording = true;
+      try { state.recognition.stop(); } catch (_) {}
+      _finishRecordingUI();
+      showToast('Đã đặt lại ghi âm — bấm micro để nói lại.', 'warn');
+    } else {
+      showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+    }
   }
 }
 
@@ -1319,22 +1335,26 @@ function toggleRecord() {
   // start/stop is still settling instead of racing it.
   if (state._recordBusy) return;
 
-  if (state.isRecording) {
-    const btnRecord = document.getElementById('btn-record');
+  // A click counts as STOP whenever the UI is in the recording state — even
+  // if state.isRecording has desynced to false. That desync happens when
+  // recognition.onend doesn't fire after a stop() / the 2-min cap (Chrome
+  // and Brave both do this): the button stayed on "Dừng" with the timer
+  // running, but state.isRecording was already false, so the next click fell
+  // through to _startRecordingGuarded() and spammed "Không thể bắt đầu ghi âm".
+  const btnRecord = document.getElementById('btn-record');
+  const uiShowsRecording = !!btnRecord && btnRecord.classList.contains('recording');
+
+  if (state.isRecording || uiShowsRecording) {
     state._recordBusy = true;
     if (btnRecord) btnRecord.disabled = true;
-    state._userStoppedRecording = true;
-    state._recordingFinalized = true; // claim the one-shot audio stop before onend's _finishRecordingUI can
-    state.recognition.stop();
+    state._userStoppedRecording = true;   // deliberate stop — onend must not auto-restart
     state.isRecording = false;
-    _stopAudioCapture().then(blob => {
-      _lastRecordingBlob = blob;
-      const btn = document.getElementById('btn-playback-recording');
-      if (btn) btn.classList.toggle('hidden', !blob);
-    }).finally(() => {
-      state._recordBusy = false;
-      if (btnRecord) btnRecord.disabled = false;
-    });
+    try { state.recognition.stop(); } catch (e) {}
+    // Run the shared teardown NOW (resets the button + status, stops the
+    // elapsed timer, stops the MediaRecorder, reveals the playback button)
+    // instead of waiting for recognition.onend, which is unreliable. Safe to
+    // also run again if onend does fire — it's guarded/idempotent.
+    _finishRecordingUI();
   } else {
     _startRecordingGuarded();
   }
@@ -2036,9 +2056,14 @@ function setupSeqRecognition() {
     const recStatus = document.getElementById('seq-rec-status');
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro.',
-      'network':     'Lỗi mạng khi nhận dạng giọng nói.',
+      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Bản ghi âm vẫn được lưu — gõ lời thoại rồi bấm Ghi nhận, hoặc dùng Google Chrome.',
+      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Bản ghi âm vẫn được lưu — gõ lời thoại rồi bấm Ghi nhận, hoặc dùng Google Chrome.',
     };
-    if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+    const seqMsg = msgs[e.error] || `Lỗi: ${e.error}`;
+    if (recStatus) recStatus.textContent = seqMsg;
+    if ((e.error === 'network' || e.error === 'service-not-allowed') && typeof showToast === 'function') {
+      showToast(seqMsg, 'error', 7000);
+    }
     state._seqUserStoppedRecording = true;
     _finishSeqRecordingUI();
   };
