@@ -1291,7 +1291,7 @@ function deleteWord(wordId) {
             updateBulkBar();
             toast('Đã xoá từ');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-        } catch (err) { toast(err.message || 'Delete failed', 'error'); }
+        } catch (err) { toast(err.message || 'Xoá thất bại', 'error'); }
     });
 }
 
@@ -1375,7 +1375,7 @@ async function bulkChangeStatus(status) {
         document.getElementById('bulk-status-sel').value = '';
         toast(allOk ? 'Status updated' : 'Some updates failed', allOk ? 'success' : 'error');
         await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-    } catch (err) { toast(err.message || 'Update failed', 'error'); }
+    } catch (err) { toast(err.message || 'Cập nhật thất bại', 'error'); }
 }
 async function bulkDelete() {
     if (!selectedWordIds.size) return;
@@ -1390,7 +1390,7 @@ async function bulkDelete() {
             updateBulkBar();
             toast('Đã xoá');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-        } catch (err) { toast(err.message || 'Delete failed', 'error'); }
+        } catch (err) { toast(err.message || 'Xoá thất bại', 'error'); }
     });
 }
 
@@ -1410,7 +1410,7 @@ async function renameBook() {
         if (bEntry) bEntry.name = name;
         toast('Đã đổi tên sổ');
         await loadMyBooks();
-    } catch (err) { toast(err.message || 'Error renaming', 'error'); }
+    } catch (err) { toast(err.message || 'Đổi tên thất bại', 'error'); }
 }
 
 /* ── Book menu – action sheet ── */
@@ -2025,7 +2025,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
             syncViewUrl(push ? 'push' : 'replace', { view: 'unit', unit: newUnit.unitNumber, mode: modeOverride || 'study' });
             _activateModeNow(modeOverride || 'study');
         });
-    } catch (err) { toast(err.message || 'Unable to load Unit', 'error'); }
+    } catch (err) { toast(err.message || 'Không tải được Unit', 'error'); }
 }
 
 /* ══════════════════════════════════════════════
