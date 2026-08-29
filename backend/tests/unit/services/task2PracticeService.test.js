@@ -8,6 +8,7 @@ const svc = require('../../../services/task2PracticeService');
 const geminiService = require('../../../services/geminiService');
 const Task2Topic = require('../../../models/Task2Topic');
 const Task2Attempt = require('../../../models/Task2Attempt');
+const WritingTask2 = require('../../../models/WritingTask2');
 const { createStudent } = require('../../factories/userFactory');
 
 afterEach(() => jest.clearAllMocks());
@@ -210,5 +211,38 @@ describe('getTopicPracticeStats — "Viết bài ngay" gate data', () => {
     await Task2Attempt.create({ userId: other._id, topicId: t._id, sessionType: 'practice', totalQuestions: 10, correctCount: 10, scorePercentage: 100 });
     const stats = await svc.getTopicPracticeStats(me._id, t._id);
     expect(stats.practiced).toBe(false);
+  });
+});
+
+describe('listTopicsForWeek — self-healing "Viết bài ngay" essay link', () => {
+  test('links an unlinked topic to an existing WritingTask2 matched by prompt', async () => {
+    const wt = await WritingTask2.create({ prompt: 'Some people think X. Discuss.', instructions: 'x', isActive: true });
+    const t = await Task2Topic.create({
+      week: 3, block: 'advantages_disadvantages', orderIndex: 1, topicName: 'Reuse', essayType: 'advantages_disadvantages',
+      prompt: '  some people think x. discuss.  ', // differs only in case / whitespace
+    });
+
+    const [out] = await svc.listTopicsForWeek(3);
+    expect(String(out.writingTask2Id)).toBe(String(wt._id));
+    // persisted, not just in the response
+    const reloaded = await Task2Topic.findById(t._id).lean();
+    expect(String(reloaded.writingTask2Id)).toBe(String(wt._id));
+    // no duplicate WritingTask2 created
+    expect(await WritingTask2.countDocuments()).toBe(1);
+  });
+
+  test('creates a WritingTask2 when no prompt matches, and is a no-op on the next call', async () => {
+    const t = await Task2Topic.create({
+      week: 4, block: 'advantages_disadvantages', orderIndex: 1, topicName: 'New', essayType: 'advantages_disadvantages',
+      prompt: 'A brand new essay prompt with no match anywhere.',
+    });
+    await svc.listTopicsForWeek(4);
+    const linkedId = (await Task2Topic.findById(t._id).lean()).writingTask2Id;
+    expect(linkedId).toBeTruthy();
+    expect(await WritingTask2.countDocuments()).toBe(1);
+
+    await svc.listTopicsForWeek(4); // second load must not create another
+    expect(await WritingTask2.countDocuments()).toBe(1);
+    expect(String((await Task2Topic.findById(t._id).lean()).writingTask2Id)).toBe(String(linkedId));
   });
 });

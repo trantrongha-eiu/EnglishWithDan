@@ -9,6 +9,7 @@ const Task2Topic = require('../models/Task2Topic');
 const Task2Attempt = require('../models/Task2Attempt');
 const Task2Template = require('../models/Task2Template');
 const Task2Draft = require('../models/Task2Draft');
+const WritingTask2 = require('../models/WritingTask2');
 const { gradeT2Question } = require('./geminiService');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
 
@@ -161,11 +162,59 @@ async function listWeeks() {
   return agg.map(w => ({ week: w._id, topicCount: w.topicCount, block: w.block }));
 }
 
+// The weekly-practice "Viết bài ngay" button only shows when a topic is
+// linked to a full-essay task (Task2Topic.writingTask2Id). That link was
+// only ever created by a one-off script (scripts/seedTask2TopicEssays.js),
+// so any topic added since then had no button. This makes it self-healing:
+// on first load of a week, each unlinked topic is matched to an existing
+// WritingTask2 by prompt (or one is created) and the link is saved. Runs
+// once per topic — after that writingTask2Id is set and this is a no-op.
+// Fully best-effort: any failure just leaves that topic without the button.
+const T2_ESSAY_INSTRUCTIONS = 'You should spend about 40 minutes on this task. Write at least 250 words.';
+
+function normEssayPrompt(s) {
+  return (s || '').toLowerCase().replace(/\s+/g, ' ').replace(/[."'’,\s]+$/g, '').trim();
+}
+
+async function ensureTopicEssayLinks(topics) {
+  const unlinked = topics.filter(t => !t.writingTask2Id && (t.prompt || '').trim());
+  if (!unlinked.length) return;
+  try {
+    const existing = await WritingTask2.find({}).select('_id prompt').lean();
+    const byPrompt = new Map();
+    for (const w of existing) {
+      const k = normEssayPrompt(w.prompt);
+      if (k && !byPrompt.has(k)) byPrompt.set(k, w._id);
+    }
+    for (const t of unlinked) {
+      try {
+        const key = normEssayPrompt(t.prompt);
+        let wtId = byPrompt.get(key);
+        if (!wtId) {
+          const created = await WritingTask2.create({
+            prompt: t.prompt, instructions: T2_ESSAY_INSTRUCTIONS, isActive: true,
+          });
+          wtId = created._id;
+          byPrompt.set(key, wtId);
+        }
+        await Task2Topic.updateOne({ _id: t._id }, { $set: { writingTask2Id: wtId } });
+        t.writingTask2Id = wtId; // reflect in the response we're about to send
+      } catch (e) {
+        console.error('[task2Practice] ensureTopicEssayLinks (one topic):', e.message);
+      }
+    }
+  } catch (e) {
+    console.error('[task2Practice] ensureTopicEssayLinks:', e.message);
+  }
+}
+
 async function listTopicsForWeek(week) {
-  return Task2Topic.find({ week, isActive: true })
+  const topics = await Task2Topic.find({ week, isActive: true })
     .select('-questions -vocabularyList')
     .sort({ orderIndex: 1 })
     .lean();
+  await ensureTopicEssayLinks(topics);
+  return topics;
 }
 
 async function getTopicQuestions(topicId, level) {
