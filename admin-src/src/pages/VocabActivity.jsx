@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import Pagination from '../components/Pagination';
 import VocabDetailPanel from '../components/VocabDetailPanel';
+
+const PAGE_SIZE = 20;
 
 // Body content (mini stats + books table + activity chart) moved into
 // components/VocabDetailPanel.jsx (2026-07-25, admin panel audit finding
@@ -49,17 +52,53 @@ export default function VocabActivity() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sort, setSort] = useState('words-desc');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totals, setTotals] = useState({ activeCount: 0, totalWords: 0, totalViews: 0, totalStudied: 0 });
   const [selected, setSelected] = useState(null);
   const [remindingId, setRemindingId] = useState(null);
   const [streakActionId, setStreakActionId] = useState(null);
 
+  // Debounce the search box so each keystroke isn't a round-trip.
   useEffect(() => {
-    apiFetch('/admin/vocab-students')
-      .then(d => setStudents(d.students || []))
-      .catch(e => toast(e.message, 'error'))
-      .finally(() => setLoading(false));
-  }, []);
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Server-side search + sort + pagination — the list can be hundreds of
+  // students, and the stat cards come back as `totals` so we don't need the
+  // whole list client-side just to sum them. Reset to page 1 during render
+  // (not a post-commit effect) when the search/sort changes, so the fetch
+  // below fires once with the right page.
+  const [prevKey, setPrevKey] = useState(`${debouncedSearch}|${sort}`);
+  const key = `${debouncedSearch}|${sort}`;
+  if (key !== prevKey) {
+    setPrevKey(key);
+    if (page !== 1) setPage(1);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const qs = new URLSearchParams({ page, limit: PAGE_SIZE, sort });
+      if (debouncedSearch) qs.set('search', debouncedSearch);
+      try {
+        const d = await apiFetch(`/admin/vocab-students?${qs}`);
+        if (cancelled) return;
+        setStudents(d.students || []);
+        setTotal(d.total || 0);
+        if (d.totals) setTotals(d.totals);
+      } catch (e) {
+        if (!cancelled) toast(e.message, 'error');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [page, debouncedSearch, sort]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const displayName = s => [s.firstName, s.lastName].filter(Boolean).join(' ') || s.username || '';
 
@@ -111,43 +150,16 @@ export default function VocabActivity() {
     finally { setStreakActionId(null); }
   }
 
-  const sortFns = {
-    'words-desc': (a, b) => (b.totalWords || 0) - (a.totalWords || 0),
-    'views-desc': (a, b) => (b.totalViews || 0) - (a.totalViews || 0),
-    'streak-desc': (a, b) => (b.learningStreak || 0) - (a.learningStreak || 0),
-    'recent': (a, b) => {
-      const da = a.lastVocabActivity ? new Date(a.lastVocabActivity) : new Date(0);
-      const db = b.lastVocabActivity ? new Date(b.lastVocabActivity) : new Date(0);
-      return db - da;
-    },
-    // Was comparing `username` while the column shows the composed
-    // first+last name (falling back to username) — "Tên A → Z" silently
-    // sorted by a different value than what's on screen.
-    'name': (a, b) => displayName(a).localeCompare(displayName(b), 'vi', { numeric: true }),
-  };
-
-  const filtered = students
-    .filter(s => {
-      if (!search) return true;
-      const q = search.toLowerCase();
-      return (s.username || '').toLowerCase().includes(q)
-        || (s.email || '').toLowerCase().includes(q)
-        || (s.firstName || '').toLowerCase().includes(q)
-        || (s.lastName || '').toLowerCase().includes(q);
-    })
-    .sort(sortFns[sort] || sortFns['words-desc']);
-
-  const activeCount  = students.filter(s => (s.totalWords || 0) > 0).length;
-  const totalWords   = students.reduce((sum, s) => sum + (s.totalWords   || 0), 0);
-  const totalViews   = students.reduce((sum, s) => sum + (s.totalViews   || 0), 0);
-  const totalStudied = students.reduce((sum, s) => sum + (s.totalStudied || 0), 0);
+  // Search + sort now happen server-side; `students` is already the current
+  // page in the right order. Stat totals come back as `totals`.
+  const { activeCount, totalWords, totalViews, totalStudied } = totals;
 
   return (
     <>
       {selected && <VocabActivityModal student={selected} onClose={() => setSelected(null)} />}
 
       <div className="section-header">
-        <h2 className="section-title">Hoạt động từ vựng ({filtered.length} học sinh)</h2>
+        <h2 className="section-title">Hoạt động từ vựng ({total} học sinh)</h2>
       </div>
 
       {/* Summary stat cards */}
@@ -201,9 +213,9 @@ export default function VocabActivity() {
           <tbody>
             {loading
               ? <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
-              : filtered.length === 0
+              : students.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có dữ liệu</td></tr>
-              : filtered.map(s => {
+              : students.map(s => {
                 const name = displayName(s);
                 const mastered = (s.totalWords || 0) > 0
                   ? Math.round(((s.daThuoc || 0) / s.totalWords) * 100) : 0;
@@ -303,6 +315,8 @@ export default function VocabActivity() {
           </tbody>
         </table>
       </div>
+
+      <Pagination page={page} total={total} pageSize={PAGE_SIZE} onPage={setPage} />
     </>
   );
 }

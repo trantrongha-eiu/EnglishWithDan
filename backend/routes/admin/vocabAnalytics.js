@@ -175,7 +175,16 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
       const total = result.length;
       const start = (pageNum - 1) * limitNum;
       const paged = result.slice(start, start + limitNum);
-      return res.json({ success: true, students: paged, total, page: pageNum, totalPages: Math.max(1, Math.ceil(total / limitNum)) });
+      // Summary stat cards must reflect the whole (search-filtered) set, not
+      // just this page — compute them here so the paginated caller doesn't
+      // need the full list.
+      const totals = {
+        activeCount:  result.filter(s => s.totalWords > 0).length,
+        totalWords:   result.reduce((n, s) => n + s.totalWords, 0),
+        totalViews:   result.reduce((n, s) => n + s.totalViews, 0),
+        totalStudied: result.reduce((n, s) => n + s.totalStudied, 0),
+      };
+      return res.json({ success: true, students: paged, total, totals, page: pageNum, totalPages: Math.max(1, Math.ceil(total / limitNum)) });
     }
 
     res.json({ success: true, students: result });

@@ -5,10 +5,22 @@
 // pieces of state.
 import { useEffect, useRef, useState } from 'react';
 
-export default function StudentPicker({ students, value, onChange }) {
+// `onSearch` (optional): when provided, the picker delegates matching to the
+// parent — it debounces the query and calls onSearch(q), and renders
+// whatever `students` the parent then supplies, instead of filtering the
+// list locally. Lets a caller with thousands of students (Messages) fetch a
+// small server-side result set per keystroke rather than preloading them
+// all. Callers without it (Tuition) keep the local-filter behaviour.
+export default function StudentPicker({ students, value, onChange, onSearch }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const wrapRef = useRef();
+
+  useEffect(() => {
+    if (!onSearch) return;
+    const t = setTimeout(() => onSearch(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search, onSearch]);
 
   // Adjust-during-render (not an effect): when the parent clears the
   // selection (value -> falsy), reset the picker's own search/open UI
@@ -19,10 +31,16 @@ export default function StudentPicker({ students, value, onChange }) {
     if (!value) { setSearch(''); setOpen(false); }
   }
 
-  const selected = students.find(s => s._id === value) || null;
-  const filtered = search.trim()
-    ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
-    : students;
+  // Remember the picked student so its label survives the parent swapping
+  // `students` for a fresh (onSearch) result set that may not contain it.
+  const [pickedLabel, setPickedLabel] = useState(null);
+  const selected = students.find(s => s._id === value)
+    || (pickedLabel && pickedLabel._id === value ? pickedLabel : null);
+  const filtered = onSearch
+    ? students // parent already returns the matched set
+    : search.trim()
+      ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
+      : students;
 
   useEffect(() => {
     function handle(e) {
@@ -34,7 +52,7 @@ export default function StudentPicker({ students, value, onChange }) {
     return () => document.removeEventListener('mousedown', handle);
   }, []);
 
-  function pick(s) { onChange(s._id); setSearch(''); setOpen(false); }
+  function pick(s) { setPickedLabel(s); onChange(s._id); setSearch(''); setOpen(false); }
 
   const displayValue = open ? search : (selected ? `${selected.username} (${selected.email})` : '');
 

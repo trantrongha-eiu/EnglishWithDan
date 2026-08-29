@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
@@ -59,18 +59,20 @@ export default function Messages() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStudents();
     loadOnline();
     Promise.all([loadMessages(1), loadReceived(1), loadReports('open')])
       .finally(() => setLoading(false));
   }, []);
 
-  async function loadStudents() {
+  // Recipient picker: server-side search, 50 rows at a time, fetched only
+  // when the compose panel needs it — not a 500-student preload on mount.
+  // useCallback so StudentPicker's debounce effect has a stable dep.
+  const loadStudents = useCallback(async (q = '') => {
     try {
-      const d = await apiFetch('/admin/users?role=student&limit=500');
+      const d = await apiFetch(`/admin/users?role=student&limit=50${q ? `&search=${encodeURIComponent(q)}` : ''}`);
       setStudents(d.users || []);
     } catch { /* ignore */ }
-  }
+  }, []);
 
   async function loadMessages(p = page) {
     try {
@@ -261,6 +263,7 @@ export default function Messages() {
                   students={students}
                   value={form.toId}
                   onChange={toId => setForm(f => ({ ...f, toId }))}
+                  onSearch={loadStudents}
                 />
               </div>
             )}
