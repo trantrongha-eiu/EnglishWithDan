@@ -179,17 +179,25 @@
     try {
       var d = await _api('/user/peer/' + _peerId + '/thread');
       if (!d.success) return;
-      // AuthService's stored user object keys the id as "id", not "_id"
-      // (see authService.js's userPayload()) — using ._id here made myId
-      // always undefined, which in turn made every message's "mine" check
-      // below spuriously true (m.fromId?._id === undefined matched).
-      var myId = window.AuthService && window.AuthService.getUser ? window.AuthService.getUser().id : null;
+      // The thread endpoint tags each message with `mine` server-side
+      // (peerService.getThread) — the old client-side id compare broke
+      // whenever the cached user object was stale / missing its id, which
+      // pushed the whole thread to one side. Fall back to an id compare
+      // (string or populated) only if an old response has no `mine`.
+      var uObj = window.AuthService && window.AuthService.getUser ? (window.AuthService.getUser() || {}) : {};
+      var myId = uObj.id || uObj._id || null;
+      var isMine = function (m) {
+        if (typeof m.mine === 'boolean') return m.mine;
+        if (!myId) return false;
+        var f = (m.fromId && m.fromId._id) ? m.fromId._id : m.fromId;
+        return String(f) === String(myId);
+      };
       if (!d.messages.length) {
         list.innerHTML = '<div class="peer-chat-empty">Chưa có tin nhắn nào. Gửi lời chào đầu tiên nhé!</div>';
         return;
       }
       list.innerHTML = d.messages.map(function (m) {
-        var mine = !!myId && (m.fromId === myId || m.fromId?._id === myId);
+        var mine = isMine(m);
         var bubbleClass = mine ? 'peer-chat-bubble mine' : 'peer-chat-bubble';
         var reportBtn = mine ? '' :
           '<button class="peer-chat-report-btn" title="Báo cáo tin nhắn này" onclick="openPeerReport(\'' + m._id + '\')"><i class="fas fa-flag"></i></button>';

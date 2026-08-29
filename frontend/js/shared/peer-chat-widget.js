@@ -50,15 +50,24 @@
     return data;
   }
 
-  // AuthService stores the login response's user object as-is, and
-  // authService.js's userPayload() keys it "id", not "_id" — so u._id is
-  // always undefined here. That's not just a no-op: with myId undefined,
-  // `m.fromId._id === myId` below short-circuits to `undefined === undefined`
-  // (true) for every plain-string fromId, silently marking EVERY message in
-  // EVERY peer thread as "mine".
+  // Fallback only — the thread endpoint now tags each message with `mine`
+  // server-side (peerService.getThread). This client-side guess was
+  // fragile: userPayload() keys the id "id" not "_id", and a stale cached
+  // user object could miss it entirely, which flipped the whole thread to
+  // one side. Kept for safety if an old server response has no `mine`.
   function _myId() {
-    var u = window.AuthService.getUser();
-    return u && u.id;
+    var u = window.AuthService.getUser() || {};
+    return u.id || u._id || null;
+  }
+
+  // Is this message from the logged-in user? Trust the server's `mine` flag
+  // when present; otherwise fall back to comparing ids (string or populated).
+  function _isMine(m) {
+    if (typeof m.mine === 'boolean') return m.mine;
+    var myId = _myId();
+    if (!myId) return false;
+    var f = (m.fromId && m.fromId._id) ? m.fromId._id : m.fromId;
+    return String(f) === String(myId);
   }
 
   function _initial(name) { return (name || '?').trim().charAt(0).toUpperCase() || '?'; }
@@ -471,17 +480,15 @@
     try {
       var d = await _api('/user/peer/' + _activePeerId + '/thread');
       if (!d.success) return;
-      var myId = _myId();
       if (!d.messages.length) {
         list.innerHTML = '<div class="pcw-empty">Chưa có tin nhắn nào. Gửi lời chào đầu tiên nhé!</div>';
       } else {
         var lastMineIdx = -1;
         d.messages.forEach(function (m, i) {
-          var mine = !!myId && (m.fromId === myId || (m.fromId && m.fromId._id === myId));
-          if (mine) lastMineIdx = i;
+          if (_isMine(m)) lastMineIdx = i;
         });
         list.innerHTML = d.messages.map(function (m, i) {
-          var mine = !!myId && (m.fromId === myId || (m.fromId && m.fromId._id === myId));
+          var mine = _isMine(m);
           // Status line only under MY latest message (Messenger shows it
           // there, not repeated under every one of my messages).
           var statusHtml = (mine && i === lastMineIdx)

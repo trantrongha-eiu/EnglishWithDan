@@ -83,11 +83,18 @@ async function getThread(uid, otherId, limit = 100) {
     isPeer: true,
     $or: [{ fromId: uid, toId: otherId }, { fromId: otherId, toId: uid }],
   };
-  const [messages, otherUser] = await Promise.all([
+  const [rawMessages, otherUser] = await Promise.all([
     Message.find(filter).sort({ createdAt: -1 }).limit(limit).lean(),
     User.findById(otherId).select('lastSeen').lean(),
   ]);
-  messages.reverse();
+  rawMessages.reverse();
+
+  // Tag each message with `mine` server-side — the client used to derive it
+  // from AuthService.getUser().id vs m.fromId, which broke whenever the
+  // cached user object was stale / a different shape, making the whole
+  // thread render as one side. The server always knows who `uid` is.
+  const uidStr = String(uid);
+  const messages = rawMessages.map(m => ({ ...m, mine: String(m.fromId) === uidStr }));
 
   await Message.updateMany(
     { isPeer: true, fromId: otherId, toId: uid, isRead: false },

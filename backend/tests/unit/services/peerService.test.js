@@ -55,6 +55,12 @@ describe('peerService.sendPeerMessage / getThread / listConversations', () => {
     expect(threadForA.messages).toHaveLength(2);
     expect(threadForA.messages[0].body).toBe('Chào bạn!');
     expect(threadForA.messages[1].body).toBe('Chào, khỏe không?');
+
+    // `mine` is tagged server-side, from the caller's POV — so the two
+    // students see the SAME thread with opposite `mine` flags.
+    expect(threadForA.messages.map(m => m.mine)).toEqual([true, false]);
+    const threadForB = await peerService.getThread(b._id, a._id);
+    expect(threadForB.messages.map(m => m.mine)).toEqual([false, true]);
   });
 
   test('rejects sending to yourself', async () => {
