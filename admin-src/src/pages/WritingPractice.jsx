@@ -247,7 +247,9 @@ export default function WritingPractice() {
   const loadAttempts = () => { setAttLoading(true); return apiFetch('/admin/wp-attempts?limit=300').then(d => setAttempts((d.attempts || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))).catch(e => toast(e.message, 'error')).finally(() => setAttLoading(false)); };
 
   useEffect(() => { Promise.all([loadTopics(), loadEx()]).finally(() => setLoading(false)); }, []);
-  useEffect(() => { if (tab === 'attempts' && attempts.length === 0) loadAttempts(); }, [tab]);
+  // Attempts load lazily the first time the tab is opened — triggered from the
+  // Tab onClick (an event handler, not an effect) so `loadAttempts`'
+  // setAttLoading(true) isn't a synchronous setState inside an effect body.
 
   // Fully derivable from `exercises` + the filter fields — no need to
   // store it as its own state or recompute it in an effect.
@@ -303,7 +305,7 @@ export default function WritingPractice() {
       <div className="inner-tabs-nav">
         <Tab label="📝 Bài tập" active={tab === 'exercises'} onClick={() => setTab('exercises')} />
         <Tab label="🏷️ Chủ đề" active={tab === 'topics'} onClick={() => setTab('topics')} />
-        <Tab label="📊 Lịch sử luyện" active={tab === 'attempts'} onClick={() => { setTab('attempts'); setAttPage(1); }} />
+        <Tab label="📊 Lịch sử luyện" active={tab === 'attempts'} onClick={() => { setTab('attempts'); setAttPage(1); if (attempts.length === 0) loadAttempts(); }} />
       </div>
 
       {tab === 'exercises' && (
