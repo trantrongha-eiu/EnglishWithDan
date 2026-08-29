@@ -1021,7 +1021,7 @@ async function refreshCurrentBook() {
         renderBookContent(data.book);
     } catch (err) {
         if (currentBookId !== targetId) return;
-        toast('Error loading notebook: ' + err.message, 'error');
+        toast('Lỗi tải sổ từ vựng: ' + err.message, 'error');
     }
 }
 
@@ -1244,7 +1244,7 @@ async function updateWordStatus(wordId, status, selectEl) {
         if (w && status === 'da-thuoc') checkBookCompletion();
         if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
     } catch {
-        toast('Update error', 'error');
+        toast('Lỗi cập nhật', 'error');
         if (w && prevStatus !== undefined) {
             w.status = prevStatus;
             selectEl.className = `status-select ${prevStatus}`;
@@ -1289,7 +1289,7 @@ function deleteWord(wordId) {
             await window.ApiClient.handleResponse(res);
             selectedWordIds.delete(wordId);
             updateBulkBar();
-            toast('Word deleted');
+            toast('Đã xoá từ');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
         } catch (err) { toast(err.message || 'Delete failed', 'error'); }
     });
@@ -1312,7 +1312,7 @@ function openEditWordModal(wordId) {
 }
 async function saveEditWord() {
     const word = document.getElementById('ew-word').value.trim();
-    if (!word) { toast('Word cannot be empty', 'error'); return; }
+    if (!word) { toast('Từ không được để trống', 'error'); return; }
     try {
         const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${editingWordId}`, {
             method: 'PATCH', headers: authH(),
@@ -1326,7 +1326,7 @@ async function saveEditWord() {
         });
         await window.ApiClient.handleResponse(res);
         closeModal('modal-edit-word');
-        toast('Word updated ✅');
+        toast('Đã cập nhật từ ✅');
         await refreshCurrentBook();
     } catch (err) { toast(err.message, 'error'); }
 }
@@ -1388,7 +1388,7 @@ async function bulkDelete() {
             await window.ApiClient.handleResponse(res);
             selectedWordIds.clear();
             updateBulkBar();
-            toast('Deleted');
+            toast('Đã xoá');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
         } catch (err) { toast(err.message || 'Delete failed', 'error'); }
     });
@@ -1408,7 +1408,7 @@ async function renameBook() {
         if (currentBookData) currentBookData.name = name;
         const bEntry = myBooks.find(x => x._id === currentBookId);
         if (bEntry) bEntry.name = name;
-        toast('Notebook renamed');
+        toast('Đã đổi tên sổ');
         await loadMyBooks();
     } catch (err) { toast(err.message || 'Error renaming', 'error'); }
 }
@@ -1567,7 +1567,7 @@ async function createBook() {
         return;
     }
     const name = document.getElementById('new-book-name').value.trim();
-    if (!name) { toast('Notebook name cannot be empty', 'error'); return; }
+    if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
     try {
         const res  = await fetch(`${API}/vocabbook`, {
             method: 'POST', headers: authH(),
@@ -1575,7 +1575,7 @@ async function createBook() {
         });
         const data = await window.ApiClient.handleResponse(res);
         closeModal('modal-add-book');
-        toast('Notebook created');
+        toast('Đã tạo sổ');
         await loadMyBooks();
         openBook(data.book._id);
     } catch (err) { toast(err.message, 'error'); }
@@ -1806,8 +1806,8 @@ async function addWordManual() {
     const meaning = document.getElementById('aw-meaning').value.trim();
     const example = document.getElementById('aw-example').value.trim();
     const note    = document.getElementById('aw-note').value.trim();
-    if (!word) { toast('Enter a word to add', 'error'); return; }
-    if (!currentBookId) { toast('Please select a notebook first', 'error'); return; }
+    if (!word) { toast('Nhập từ cần thêm', 'error'); return; }
+    if (!currentBookId) { toast('Hãy chọn một sổ từ vựng trước', 'error'); return; }
     try {
         const res  = await fetch(`${API}/vocabbook/${currentBookId}/words`, {
             method: 'POST', headers: authH(),
@@ -1873,7 +1873,7 @@ function selectBookForSave(bookId, el) {
 }
 
 async function confirmSaveWord() {
-    if (!selectedBookForSave) { toast('Please select a notebook', 'error'); return; }
+    if (!selectedBookForSave) { toast('Hãy chọn một sổ từ vựng', 'error'); return; }
     const note = document.getElementById('sw-note').value.trim();
     const w    = pendingSaveWord;
     try {
@@ -1897,7 +1897,7 @@ async function confirmSaveWord() {
    FLASHCARD / PREVIEW từ sổ cá nhân
 ══════════════════════════════════════════════ */
 function openFlashcardMode() {
-    if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
+    if (!currentBookData?.words?.length) { toast('Sổ này chưa có từ nào', 'error'); return; }
     _isBookPractice = true;
     _isHardWordsSession = false;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
@@ -1908,7 +1908,7 @@ function openFlashcardMode() {
     showMode('fillBlank');
 }
 function openPreviewMode() {
-    if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
+    if (!currentBookData?.words?.length) { toast('Sổ này chưa có từ nào', 'error'); return; }
     _isBookPractice = true;
     _isHardWordsSession = false;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
@@ -1998,7 +1998,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
         // most recently-requested unit is allowed to become currentUnit.
         if (requestId !== _loadUnitSeq) return;
         if (!newUnit.words) {
-            toast('Unable to load Unit', 'error');
+            toast('Không tải được Unit', 'error');
             return;
         }
         // Assign currentUnit only after user confirms (or if not mid-practice)
@@ -2171,7 +2171,7 @@ function copyParaphraseTable() {
     const text = paraWords.map(w =>
         `${w.word}\t${w.paraphrase || ''}\t${w.meaning || ''}\t${w.explanation || ''}`
     ).join('\n');
-    navigator.clipboard.writeText(text).then(() => toast('Paraphrase table copied ✅'));
+    navigator.clipboard.writeText(text).then(() => toast('Đã copy bảng Paraphrase ✅'));
 }
 
 function openSaveWordFromUnit(wordText) {
@@ -2307,7 +2307,7 @@ function startPractice(mode) {
     // Lấy tất cả từ (vocab + paraphrase); _retryWordList is set by retryWrongWords
     const allPracticeWords = (_retryWordList || currentUnit.words).filter(w => w.word && w.meaning);
     _retryWordList = null;
-    if (!allPracticeWords.length) { toast('No words in this unit to practice', 'info'); return; }
+    if (!allPracticeWords.length) { toast('Unit này chưa có từ nào để luyện', 'info'); return; }
 
     if (mode === 'mixed') {
         // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
@@ -2740,7 +2740,7 @@ function flipCard() {
     }
 }
 function markAsRemembered() {
-    if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
+    if (!isFlipped) { toast('Lật thẻ trước đã!', 'error'); return; }
     if (answered) return; answered = true;
     correctAnswers++; playCorrectSound();
     _countAnswer();
@@ -2749,7 +2749,7 @@ function markAsRemembered() {
     setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
 }
 function markAsNotRemembered() {
-    if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
+    if (!isFlipped) { toast('Lật thẻ trước đã!', 'error'); return; }
     if (answered) return; answered = true;
     wrongAnswers++; playWrongSound();
     wrongWordSet.add(currentWord.word);
@@ -2794,7 +2794,7 @@ function checkFillBlank() {
     if (answered || !isFlipped) return;
     const ua = document.getElementById('fbInput').value.trim().toLowerCase();
     const ca = currentWord.word.toLowerCase();
-    if (!ua) { toast('Type a word first', 'error'); return; }
+    if (!ua) { toast('Nhập một từ trước đã', 'error'); return; }
     answered = true;
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
@@ -3113,7 +3113,7 @@ document.addEventListener('keydown', e => {
 function retryWrongWords() {
     if (!wrongWordSet.size) return;
     const wordsToRetry = (currentUnit.words || []).filter(w => wrongWordSet.has(w.word));
-    if (!wordsToRetry.length) { toast('No words found to retry', 'error'); return; }
+    if (!wordsToRetry.length) { toast('Không có từ nào để làm lại', 'error'); return; }
     // Use _retryWordList instead of mutating currentUnit so Restart still has the full word list
     _retryWordList = wordsToRetry;
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
