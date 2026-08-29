@@ -107,7 +107,7 @@
                   <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
                 </div>
               </div>
-              <button class="btn btn-primary" id="todays-lesson-btn">Start</button>
+              <button class="btn btn-primary" id="todays-lesson-btn">Bắt đầu</button>
             </div>
 
             <!-- IELTS Full Mock Test — random 4-skill exam, 2 sittings (js/dashboard-mocktest.js) -->
@@ -160,12 +160,12 @@
               <div class="weakness-state-icon"><i class="fas fa-seedling"></i></div>
               <div class="weakness-state-title">Personalized insights are not ready yet.</div>
               <div class="weakness-state-sub">Complete a few practice sessions to discover your weak areas.</div>
-              <a class="btn btn-primary btn-sm" href="reading.html">Start Practicing</a>
+              <a class="btn btn-primary btn-sm" href="reading.html">Luyện ngay</a>
             </div>
             <div class="weakness-state" id="weakness-error-state" style="display:none">
               <div class="weakness-state-icon weakness-state-icon--error"><i class="fas fa-triangle-exclamation"></i></div>
               <div class="weakness-state-title">Unable to load your insights.</div>
-              <button class="btn btn-ghost btn-sm" onclick="loadWeaknessProfile()">Try Again</button>
+              <button class="btn btn-ghost btn-sm" onclick="loadWeaknessProfile()">Thử lại</button>
             </div>
           </div>
 
@@ -337,7 +337,7 @@
 
         <div class="book-action-bar">
           <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()">
-            <i class="fas fa-layer-group"></i> Study with Flashcards
+            <i class="fas fa-layer-group"></i> Học bằng Flashcard
           </button>
           <button class="btn btn-ghost btn-sm" onclick="openPreviewMode()">
             <i class="fas fa-eye"></i> Preview
@@ -417,32 +417,32 @@
 
         <div id="multipleChoiceMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Quiz</h3><p>Choose the correct answer</p></div>
+            <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Quiz</h3><p>Chọn đáp án đúng</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div><div class="progress-text" id="mcProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="mcQuestionNumber"></div>
               <div class="question-text" id="mcQuestionText"></div>
               <div class="answer-options" id="mcAnswerOptions"></div>
-              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="fillBlankMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>See meaning → Recall word → Flip card</p></div>
+            <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>Xem nghĩa → Nhớ lại từ → Lật thẻ</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div><div class="progress-text" id="fbProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="fbQuestionNumber"></div>
               <div class="flashcard-wrap">
                 <div class="flashcard" id="flashcard" onclick="flipCard()">
                   <div class="fc-face fc-front">
-                    <div class="fc-label">Vietnamese Meaning</div>
+                    <div class="fc-label">Nghĩa tiếng Việt</div>
                     <div class="fc-main" id="fbMeaning"></div>
-                    <button class="btn-flip-hint">Click to flip 🔄</button>
+                    <button class="btn-flip-hint">Bấm để lật 🔄</button>
                   </div>
                   <div class="fc-face fc-back">
-                    <div class="fc-label" id="fcBackLabel">English Word</div>
+                    <div class="fc-label" id="fcBackLabel">Từ tiếng Anh</div>
                     <div class="fc-main" id="fbWord"></div>
                     <div class="fc-sub" id="fbPhonetic"></div>
                     <div class="fc-sub" id="fbParaphrase" style="display:none;color:var(--orange,#f59e0b);font-style:italic;margin-top:4px;font-size:0.9em"></div>
@@ -451,25 +451,25 @@
                 </div>
               </div>
               <div class="quick-btns" id="quick-btns" style="display:none">
-                <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Remembered</button>
-                <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Forgot</button>
+                <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Đã nhớ</button>
+                <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Chưa nhớ</button>
               </div>
               <div id="fbInputArea" style="margin-top:14px;display:none">
                 <div class="fb-input-row">
-                  <input class="fb-input" id="fbInput" placeholder="Type the word to check..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
+                  <input class="fb-input" id="fbInput" placeholder="Gõ từ để kiểm tra..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
                   <button class="btn-hint-sm" onclick="showHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i></button>
-                  <button class="btn-check" onclick="checkFillBlank()">Check</button>
+                  <button class="btn-check" onclick="checkFillBlank()">Kiểm tra</button>
                 </div>
                 <div id="fbFeedback"></div>
               </div>
-              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="listeningMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-headphones"></i> Listening Practice</h3><p>Listen and write the word</p></div>
+            <div class="practice-header"><h3><i class="fas fa-headphones"></i> Luyện Nghe</h3><p>Nghe và viết lại từ</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div><div class="progress-text" id="listenProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
@@ -479,30 +479,30 @@
               <div class="listen-hint" id="listenHint"></div>
               <div class="listen-hint" id="listenLetterHint" style="display:none"></div>
               <div class="fb-input-row">
-                <input class="listen-input" id="listenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkListening()"/>
-                <button class="btn-hint-sm" id="listenHintBtn" onclick="showListenHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i> <span id="listenHintBtnLabel">Hint (3)</span></button>
-                <button class="btn-check" onclick="checkListening()">Check</button>
+                <input class="listen-input" id="listenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
+                <button class="btn-hint-sm" id="listenHintBtn" onclick="showListenHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i> <span id="listenHintBtnLabel">Gợi ý (3)</span></button>
+                <button class="btn-check" onclick="checkListening()">Kiểm tra</button>
               </div>
               <div id="listenFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="translationMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-language"></i> Translate</h3><p>Translate the highlighted word using the example sentence</p></div>
+            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Dịch từ được tô, dựa vào câu ví dụ</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
               <div class="trans-example" id="transExample"></div>
               <div class="trans-word-highlight" id="transWordHighlight"></div>
               <div class="fb-input-row">
-                <input class="trans-input" id="transInput" placeholder="Enter the Vietnamese meaning..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
-                <button class="btn-check" onclick="checkTranslation()">Check</button>
+                <input class="trans-input" id="transInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
+                <button class="btn-check" onclick="checkTranslation()">Kiểm tra</button>
               </div>
               <div id="transFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
@@ -511,7 +511,7 @@
           <div class="practice-container">
             <div class="practice-header">
               <h3><i class="fas fa-random"></i> Mixed</h3>
-              <p>Combines Quiz · Listen · Translate – unpredictable!</p>
+              <p>Kết hợp Quiz · Nghe · Dịch – ngẫu nhiên!</p>
             </div>
             <div class="practice-progress">
               <div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div>
@@ -524,7 +524,7 @@
         <div id="resultsMode" style="display:none">
           <div class="results-wrap">
             <div class="results-card">
-              <h2>Results</h2>
+              <h2>Kết quả</h2>
               <div id="resultModeTitle" style="font-size:13px;color:var(--text2);margin-bottom:8px"></div>
               <div class="score-ring-wrap">
                 <svg width="160" height="160" viewBox="0 0 160 160">
@@ -535,7 +535,7 @@
                 </svg>
                 <div class="score-ring-text">
                   <span class="score-pct" id="scorePercent">0%</span>
-                  <span class="score-lbl">Accuracy</span>
+                  <span class="score-lbl">Độ chính xác</span>
                 </div>
               </div>
               <div class="results-counts">
@@ -1220,9 +1220,9 @@
     </div>
     <div class="quit-actions">
       <button class="quit-btn-continue" onclick="cancelQuit()">
-        <i class="fas fa-play-circle"></i> Keep studying
+        <i class="fas fa-play-circle"></i> Học tiếp
       </button>
-      <button class="quit-btn-leave" onclick="confirmQuit()">Quit</button>
+      <button class="quit-btn-leave" onclick="confirmQuit()">Thoát</button>
     </div>
   </div>
 </div>
@@ -1311,6 +1311,6 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260905"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260918"></script>
+<script src="js/dashboard.js?v=20260919"></script>
 </body>
 </html>

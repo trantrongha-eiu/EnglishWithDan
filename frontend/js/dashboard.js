@@ -417,16 +417,16 @@ function shuffleArray(a) {
    MASCOT PANDA – STREAK & MOTIVATION
 ══════════════════════════════════════════════ */
 const MASCOT_MSGS = [
-    ['🔥 {n}-day streak! Amazing – keep it up! 🌟', 7],
-    ['😤 {n} days in a row! No joke, you\'re doing great!', 3],
-    ['🥳 {n} days! Every word brings you closer to 7.0+!', 2],
-    ['💪 Keep going! Daily study builds an amazing habit!', 0],
+    ['🔥 Chuỗi {n} ngày! Tuyệt vời – giữ vững nhé! 🌟', 7],
+    ['😤 {n} ngày liên tiếp! Bạn đang làm rất tốt!', 3],
+    ['🥳 {n} ngày! Mỗi từ đưa bạn gần hơn tới 7.0+!', 2],
+    ['💪 Cố lên! Học mỗi ngày tạo nên thói quen tuyệt vời!', 0],
 ];
 function getMascotMsg(streak) {
     for (const [msg, min] of MASCOT_MSGS) {
         if (streak >= min) return msg.replace('{n}', streak);
     }
-    return '💪 Let\'s study! I believe in you!';
+    return '💪 Học thôi nào! Tớ tin ở bạn!';
 }
 function getMascotEmoji(streak) {
     if (streak >= 30) return '🐼🎉';
@@ -686,8 +686,8 @@ async function loadWeaknessProfile() {
     if (weakWords.length) {
         chips.push({
             icon: 'fa-bookmark', color: 'green', skill: 'Vocabulary',
-            label: weakWords.length >= 20 ? '20+ weak words' : `${weakWords.length} weak words`,
-            detail: 'Practice weak vocabulary', href: null, action: 'practiceWeakVocab()',
+            label: weakWords.length >= 20 ? '20+ từ yếu' : `${weakWords.length} từ yếu`,
+            detail: 'Luyện từ vựng yếu', href: null, action: 'practiceWeakVocab()',
         });
     }
 
@@ -1057,11 +1057,11 @@ function renderBookContent(book) {
         const totalEl = document.getElementById('stat-total');
         const limitEl = document.getElementById('stat-limit-label');
         if (totalEl) totalEl.textContent = filtered.length;
-        if (limitEl) limitEl.textContent = ` / ${book.words.length} words`;
+        if (limitEl) limitEl.textContent = ` / ${book.words.length} từ`;
     } else {
         renderWordsTable(book.words);
         const limitEl = document.getElementById('stat-limit-label');
-        if (limitEl) limitEl.textContent = ' / 300 words';
+        if (limitEl) limitEl.textContent = ' / 300 từ';
     }
 
     // "Mách nhỏ" — cách thêm từ. Hiện mỗi lần mở sổ cho tới khi học sinh
@@ -1146,7 +1146,7 @@ function renderWordsTable(words) {
         <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
           <span class="word-chip-main">${_esc(w.word)}</span>
           ${diffBadge}
-          <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
+          <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Phát âm">🔊</button>
         </div>
         ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${_esc(w.phonetic)}</div>` : ''}
       </td>
@@ -1213,7 +1213,7 @@ function filterWords(q) {
         const limitEl    = document.getElementById('stat-limit-label');
         const isFiltered = !!(query || currentStatusFilter);
         if (totalEl) totalEl.textContent = isFiltered ? words.length : all.length;
-        if (limitEl) limitEl.textContent = isFiltered ? ` / ${all.length} words` : ' / 300 words';
+        if (limitEl) limitEl.textContent = isFiltered ? ` / ${all.length} từ` : ' / 300 từ';
     }, 120);
 }
 
@@ -2070,11 +2070,11 @@ function showMode(mode) {
         // file) — neither of these two is a delete, so they call
         // confirmDialog() directly with a label that matches the action.
         if (mode !== currentMode) {
-            confirmDialog('Switch Learning Mode?', 'Your current progress will be lost. Do you want to switch?',
+            confirmDialog('Đổi chế độ học?', 'Tiến độ hiện tại sẽ bị mất. Bạn có muốn đổi không?',
                 () => _activateModeNow(mode), { confirmLabel: 'Switch', confirmClass: 'btn-primary' });
         } else {
             // Re-clicking the same active tab → confirm restart
-            confirmDialog('Restart Practice?', 'This will reset your current progress. Restart?',
+            confirmDialog('Làm lại từ đầu?', 'Thao tác này sẽ xoá tiến độ hiện tại. Làm lại?',
                 () => _activateModeNow(mode), { confirmLabel: 'Restart', confirmClass: 'btn-primary' });
         }
         return;
@@ -2099,7 +2099,7 @@ function renderStudyGrid() {
           <div class="vocab-card-top">
             <span class="vocab-num">${i + 1}</span>
             <span class="vocab-word-big">${_esc(w.word)}</span>
-            <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
+            <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Phát âm">🔊</button>
             ${w.partOfSpeech ? `<span class="vocab-pos">${_esc(w.partOfSpeech)}</span>` : ''}
           </div>
           ${w.phonetic ? `<div class="vocab-phonetic">${_esc(w.phonetic)}</div>` : ''}
@@ -2428,19 +2428,19 @@ function askQuitPractice(onQuit) {
     const wrongCount = wrongWordSet.size;
 
     const parts = [];
-    if (remaining > 0)   parts.push(`${remaining} words still left`);
-    if (wrongCount > 0)  parts.push(`${wrongCount} words still being reviewed`);
+    if (remaining > 0)   parts.push(`còn ${remaining} từ`);
+    if (wrongCount > 0)  parts.push(`${wrongCount} từ đang ôn lại`);
     const streakEl = document.getElementById('mascot-streak-num');
     const streak   = streakEl ? (parseInt(streakEl.textContent) || 0) : 0;
-    if (streak > 0)      parts.push(`Your ${streak}-day streak is waiting! 🔥`);
+    if (streak > 0)      parts.push(`Chuỗi ${streak} ngày đang chờ bạn! 🔥`);
 
     const titleEl = document.getElementById('quit-title');
     const subEl   = document.getElementById('quit-sub');
     const emoji   = document.getElementById('quit-mascot-emoji');
 
     if (titleEl) titleEl.textContent = wrongCount > 0
-        ? 'You still have words to review!'
-        : 'Do you want to keep studying?';
+        ? 'Bạn vẫn còn từ cần ôn!'
+        : 'Bạn có muốn học tiếp không?';
     if (subEl)   subEl.textContent   = parts.join(' · ');
     if (emoji)   emoji.textContent   = streak >= 7 ? '🐼🔥' : '🐼';
 
@@ -2498,8 +2498,8 @@ function showMixedQuestion() {
               <i class="fas fa-check-circle"></i> Multiple Choice
             </div>
             <div class="question-text" style="font-size:18px;font-weight:700;margin-bottom:20px">
-              What does "<strong>${_esc(currentWord.word)}</strong>" mean?
-              <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>
+              "<strong>${_esc(currentWord.word)}</strong>" nghĩa là gì?
+              <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>
             </div>
             <div class="answer-options" id="mixAnswerOptions">
               ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`).join('')}
@@ -2524,7 +2524,7 @@ function showMixedQuestion() {
             <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
           </div>`;
     } else {
-        const ex = currentWord.example || `The word is: ${currentWord.word}`;
+        const ex = currentWord.example || `Từ cần tìm: ${currentWord.word}`;
         const exEsc = _esc(ex);
         const wordEsc = _esc(currentWord.word);
         const exHtml = exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
@@ -2536,7 +2536,7 @@ function showMixedQuestion() {
               <i class="fas fa-language"></i> Translation
             </div>
             <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Translate: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Dịch: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
             <div class="fb-input-row">
               <input class="trans-input" id="mixTransInput" placeholder="Enter the meaning..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
@@ -2588,12 +2588,12 @@ function _checkExactWordMatch(inputId, feedbackId, nextBtnId) {
     const feedbackEl = document.getElementById(feedbackId);
     if (ok) {
         feedbackEl.innerHTML =
-            `<div class="feedback-correct">✅ Correct! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
+            `<div class="feedback-correct">✅ Đúng! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
         correctAnswers++; playCorrectSound();
     } else {
         feedbackEl.innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
-             <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Listen again</button></div>`;
+            `<div class="feedback-wrong">❌ Đáp án: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
+             <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Nghe lại</button></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -2665,11 +2665,11 @@ function checkMixedTrans() {
     const ok = _isMeaningMatch(ua, currentWord.meaning, 2);
     if (ok) {
         document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
+            `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Correct answer: <strong>${_esc(currentWord.meaning)}</strong></div>`;
+            `<div class="feedback-wrong">❌ Đáp án đúng: <strong>${_esc(currentWord.meaning)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -2682,10 +2682,10 @@ function checkMixedTrans() {
 function showMultipleChoiceQuestion() {
     answered = false;
     updateProgress('mc');
-    document.getElementById('mcQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('mcQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('mcQuestionText').innerHTML =
-        `What does "<strong>${_esc(currentWord.word)}</strong>" mean?
-        <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
+        `"<strong>${_esc(currentWord.word)}</strong>" nghĩa là gì?
+        <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     const opts      = generateOptions(currentWord);
     const container = document.getElementById('mcAnswerOptions');
     container.innerHTML = opts.map(o =>
@@ -2719,17 +2719,17 @@ function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 function showFillBlankQuestion() {
     answered = false; isFlipped = false; hintUsed = false;
     updateProgress('fb');
-    document.getElementById('fbQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('fbQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('fbMeaning').textContent  = currentWord.meaning;
     document.getElementById('fbWord').textContent     = currentWord.word;
     document.getElementById('fbPhonetic').textContent = currentWord.phonetic || '';
 
     const isPara = currentWord.type === 'paraphrase';
     const labelEl = document.getElementById('fcBackLabel');
-    if (labelEl) labelEl.textContent = isPara ? 'Text in passage' : 'English word';
+    if (labelEl) labelEl.textContent = isPara ? 'Cụm trong đoạn văn' : 'Từ tiếng Anh';
     const paraEl = document.getElementById('fbParaphrase');
     if (paraEl) {
-        paraEl.textContent = currentWord.paraphrase ? `→ Paraphrase: ${currentWord.paraphrase}` : '';
+        paraEl.textContent = currentWord.paraphrase ? `→ Diễn đạt lại: ${currentWord.paraphrase}` : '';
         paraEl.style.display = currentWord.paraphrase ? '' : 'none';
     }
 
@@ -2769,7 +2769,7 @@ function markAsRemembered() {
     if (answered) return; answered = true;
     correctAnswers++; playCorrectSound();
     _countAnswer();
-    document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Great job! You remembered this word! 🎉</div>';
+    document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Tuyệt vời! Bạn đã nhớ từ này! 🎉</div>';
     disableFlashcardBtns();
     setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
 }
@@ -2783,7 +2783,7 @@ function markAsNotRemembered() {
 
     // Hiện feedback + nút Tiếp theo ngay để học sinh tự review rồi bấm
     document.getElementById('fbFeedback').innerHTML =
-        `<div class="feedback-wrong">💪 Keep going! Word: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
+        `<div class="feedback-wrong">💪 Cố lên! Từ: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
     disableFlashcardBtns();
 
     // Hiện nút Tiếp theo ngay (học sinh tự bấm khi sẵn sàng)
@@ -2824,11 +2824,11 @@ function checkFillBlank() {
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
     if (ua === ca) {
-        document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Correct! 🎉</div>';
+        document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Đúng! 🎉</div>';
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('fbFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong></div>`;
+            `<div class="feedback-wrong">❌ Đáp án: <strong>${_esc(currentWord.word)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -2842,7 +2842,7 @@ function showListeningQuestion() {
     answered = false;
     _listenHintCount = 0;
     updateProgress('listen');
-    document.getElementById('listenQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('listenQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
     // _letterCount/_buildLetterHint come from dashboard-lesson.js (loaded
     // before this file — see dashboard.html), shared so both this Notebook
     // Listen mode and the Classroom quiz's Listen/Fill types treat a space
@@ -2860,7 +2860,7 @@ function showListeningQuestion() {
     const hintBtn = document.getElementById('listenHintBtn');
     if (hintBtn) {
         hintBtn.disabled = false;
-        document.getElementById('listenHintBtnLabel').textContent = `Hint (${LISTEN_HINT_MAX})`;
+        document.getElementById('listenHintBtnLabel').textContent = `Gợi ý (${LISTEN_HINT_MAX})`;
     }
     document.getElementById('listenInput').value   = '';
     document.getElementById('listenInput').disabled = false;
@@ -2888,7 +2888,7 @@ function showListenHint() {
     const remaining = LISTEN_HINT_MAX - _listenHintCount;
     const hintBtn = document.getElementById('listenHintBtn');
     if (hintBtn) {
-        document.getElementById('listenHintBtnLabel').textContent = remaining > 0 ? `Hint (${remaining})` : 'Hint';
+        document.getElementById('listenHintBtnLabel').textContent = remaining > 0 ? `Gợi ý (${remaining})` : 'Gợi ý';
         if (remaining <= 0) hintBtn.disabled = true;
     }
 }
@@ -2900,15 +2900,15 @@ function checkListening() {
 function showTranslationQuestion() {
     answered = false;
     updateProgress('trans');
-    document.getElementById('transQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    const ex = currentWord.example || `The word is: ${currentWord.word}`;
+    document.getElementById('transQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    const ex = currentWord.example || `Từ cần tìm: ${currentWord.word}`;
     const exEsc = _esc(ex);
     const wordEsc = _esc(currentWord.word);
     document.getElementById('transExample').innerHTML =
         exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
             `<strong class="highlight-word">${wordEsc}</strong>`);
     setupDictionaryDouble('transExample', 'vocab-quiz', () => !_vocabQuizActive);
-    document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
+    document.getElementById('transWordHighlight').innerHTML = `Dịch: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
@@ -2923,11 +2923,11 @@ function checkTranslation() {
     const ok = _isMeaningMatch(ua, currentWord.meaning, 1);
     if (ok) {
         document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
+            `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Correct answer: <strong>${_esc(currentWord.meaning)}</strong></div>`;
+            `<div class="feedback-wrong">❌ Đáp án đúng: <strong>${_esc(currentWord.meaning)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -3035,9 +3035,9 @@ function showResults(mode) {
     if (window.EWSLearning && window.EWSLearning.consumeStart('vocabulary')) {
         window.EWSLearning.showReviewPopup('vocabulary', {
             emoji: pct >= 80 ? '🎉' : '📚',
-            scoreLabel: `${correctAnswers}/${answered_} correct`,
+            scoreLabel: `${correctAnswers}/${answered_} đúng`,
             subLabel: wrongCount > 0 ? `${wrongCount} word${wrongCount === 1 ? '' : 's'} still to review` : '',
-            nextAction: wrongCount > 0 ? 'Practice your wrong words again, then continue your plan.' : 'Great result — keep it up!',
+            nextAction: wrongCount > 0 ? 'Luyện lại các từ sai, rồi tiếp tục kế hoạch.' : 'Kết quả tốt — giữ vững nhé!',
         });
     }
 }
@@ -3055,15 +3055,15 @@ function updateKbdHint() {
 
     const hints = [];
     if (currentMode === 'fillBlank') {
-        hints.push(['Space', 'Flip card']);
-        hints.push(['Enter', 'Next question']);
+        hints.push(['Space', 'Lật thẻ']);
+        hints.push(['Enter', 'Câu tiếp']);
     } else if (currentMode === 'multipleChoice' || currentMode === 'mixed') {
-        hints.push(['1 – 4', 'Choose answer']);
-        hints.push(['Enter / →', 'Next question']);
+        hints.push(['1 – 4', 'Chọn đáp án']);
+        hints.push(['Enter / →', 'Câu tiếp']);
     } else {
-        hints.push(['Enter / →', 'Next question']);
+        hints.push(['Enter / →', 'Câu tiếp']);
     }
-    hints.push(['Esc', 'Stop studying']);
+    hints.push(['Esc', 'Dừng học']);
 
     list.innerHTML = hints.map(([key, label]) => `
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;justify-content:space-between">
