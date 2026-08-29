@@ -10,7 +10,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
   const [gradingTask, setGradingTask] = useState(0);
   const [confirming, setConfirming]   = useState(false);
   const [aiOverloaded, setAiOverloaded] = useState(false);
-  const [overallBand, setOverallBand] = useState('');
+  const [overallBandInput, setOverallBandInput] = useState('');
   const [overallTouched, setOverallTouched] = useState(false); // teacher edited it by hand → stop auto-syncing
   const [adminNote, setAdminNote]     = useState('');
   const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
@@ -45,20 +45,23 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     hasTask2 ? effTaskBand('task2') : null,
   );
 
-  // Keep the overall band synced to the IELTS-weighted average of the two
-  // task bands — until the teacher types in the overall field themselves.
-  useEffect(() => {
-    if (!isEffectivelyConfirmed && !overallTouched && autoOverall !== '' && autoOverall !== overallBand) {
-      setOverallBand(autoOverall);
-    }
-  }, [autoOverall, overallTouched, isEffectivelyConfirmed]); // eslint-disable-line react-hooks/exhaustive-deps
+  // The overall band shown/submitted is DERIVED, not stored: while the grade
+  // is still open and the teacher hasn't typed in the field themselves, it
+  // tracks the IELTS-weighted average of the two task bands. Once the teacher
+  // edits it (overallTouched) — or the grade is confirmed — the stored input
+  // wins. Deriving in render instead of syncing via setState-in-useEffect
+  // avoids the cascading-render lint error and a stale first paint.
+  const overallBand =
+    (isEffectivelyConfirmed || overallTouched || autoOverall === '')
+      ? overallBandInput
+      : autoOverall;
 
   function refresh() {
     return apiFetch(`/admin/writing-attempt/${attemptId}`)
       .then(d => {
         setAttempt(d.attempt);
         setAdminNote(d.attempt.grading?.adminNote || '');
-        setOverallBand(d.attempt.grading?.overallBand
+        setOverallBandInput(d.attempt.grading?.overallBand
           ? String(d.attempt.grading.overallBand)
           : calcBand(d.attempt));
         setOverallTouched(false);
@@ -104,7 +107,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     } : EMPTY_MANUAL();
     setManuals({ task1: mapTask(g.task1), task2: mapTask(g.task2) });
     setModes({ task1: 'manual', task2: 'manual' });
-    setOverallBand(g.overallBand != null ? String(g.overallBand) : '');
+    setOverallBandInput(g.overallBand != null ? String(g.overallBand) : '');
     setOverallTouched(false);
     setAdminNote(g.adminNote || '');
     setReEditing(true);
@@ -133,7 +136,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
           ...prev, gradingStatus: 'ai_done',
           aiGrading: { ...(prev.aiGrading || {}), [taskKey]: d.result, generatedAt: new Date().toISOString() }
         };
-        setOverallBand(calcBand(updated));
+        setOverallBandInput(calcBand(updated));
         return updated;
       });
       toast(`Task ${taskNum} đã chấm xong – Band ${d.result.bandScore}`);
@@ -279,13 +282,13 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                       <label className="form-label">Band tổng thể *</label>
                       <input className="form-input" type="number" step="0.5" min="0" max="9"
                         value={overallBand}
-                        onChange={e => { setOverallTouched(true); setOverallBand(e.target.value); }}
+                        onChange={e => { setOverallTouched(true); setOverallBandInput(e.target.value); }}
                         disabled={isEffectivelyConfirmed} placeholder="0–9"
                         style={{ background: (!isEffectivelyConfirmed && !overallTouched && autoOverall !== '') ? 'var(--surface2)' : undefined }} />
                       {!isEffectivelyConfirmed && autoOverall !== '' && (
                         <div style={{ fontSize: 10.5, color: overallTouched && String(overallBand) !== autoOverall ? 'var(--accent2)' : 'var(--text3)', marginTop: 3 }}>
                           {overallTouched && String(overallBand) !== autoOverall
-                            ? <>≠ IELTS ({autoOverall}) <button type="button" onClick={() => { setOverallTouched(false); setOverallBand(autoOverall); }} style={{ background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontSize: 10.5, textDecoration: 'underline', padding: 0, fontFamily: 'inherit' }}>dùng {autoOverall}</button></>
+                            ? <>≠ IELTS ({autoOverall}) <button type="button" onClick={() => { setOverallTouched(false); setOverallBandInput(autoOverall); }} style={{ background: 'none', border: 'none', color: 'var(--blue)', cursor: 'pointer', fontSize: 10.5, textDecoration: 'underline', padding: 0, fontFamily: 'inherit' }}>dùng {autoOverall}</button></>
                             : `= (T1 + 2·T2) ÷ 3, làm tròn IDP–BC`}
                         </div>
                       )}
