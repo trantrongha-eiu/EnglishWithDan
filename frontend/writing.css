@@ -443,7 +443,7 @@ body {
    display:none regardless of .hidden — caught via live browser testing.
 ══════════════════════════════════════════════ */
 #wr-history-modal, #practice-exit-modal, #practice-submit-modal,
-#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay {
+#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay, #rewrite-modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
@@ -454,7 +454,8 @@ body {
   padding: 16px;
 }
 #wr-history-modal.open, #practice-exit-modal.open, #practice-submit-modal.open,
-#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open { display: flex; }
+#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open,
+#rewrite-modal-overlay.open { display: flex; }
 
 .review-modal {
   background: #fff;
