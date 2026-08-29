@@ -59,6 +59,21 @@ router.put('/mock-tests/:id/scores', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// DELETE /api/admin/mock-tests/:id — remove a run from the monitor (soft
+// delete: status → 'deleted', recoverable in the DB; the four per-skill
+// sub-attempts stay in their own histories). teacherOnly already 403s
+// teachers on any DELETE, so this is admin-only in practice.
+router.delete('/mock-tests/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await mockTestService.deleteRun(req.params.id, req.user._id);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    const code = err && err.statusCode ? err.statusCode : 500;
+    if (code >= 500) console.error('[admin/mock-tests DELETE]', err);
+    res.status(code).json({ success: false, message: err.message || 'Lỗi xoá lượt thi thử' });
+  }
+});
+
 // GET /api/admin/mock-tests/:id — one run with the full proctor event log.
 router.get('/mock-tests/:id', auth, teacherOnly, async (req, res) => {
   try {

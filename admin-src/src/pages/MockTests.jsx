@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 // Admin monitoring for the full 4-skill mock test. Before this page the run
@@ -246,8 +247,10 @@ function ProctorModal({ id, onClose, onSaved }) {
 
 export default function MockTests() {
   const toast = useToast();
+  const { isAdmin } = useAuth();
   const [params] = useSearchParams();
   const userId = params.get('userId') || '';
+  const [deletingId, setDeletingId] = useState(null);
 
   const [rows, setRows] = useState([]);
   const [total, setTotal] = useState(0);
@@ -282,6 +285,20 @@ export default function MockTests() {
   }
 
   useEffect(() => { load(); }, [load]);
+
+  function deleteRun(r) {
+    const who = r.user.displayName + (r.user.username ? ` (@${r.user.username})` : '');
+    if (!window.confirm(
+      `Xoá lượt thi thử này của ${who}?\n\n`
+      + 'Lượt sẽ biến mất khỏi bảng theo dõi và khỏi lịch sử của học sinh. '
+      + 'Các bài Listening / Reading / Writing / Speaking đã làm vẫn nằm trong lịch sử từng kỹ năng.'
+    )) return;
+    setDeletingId(r._id);
+    apiFetch(`/admin/mock-tests/${r._id}`, { method: 'DELETE' })
+      .then(() => { toast('Đã xoá lượt thi thử', 'success'); return load(); })
+      .catch(e => toast(e.message || 'Lỗi xoá', 'error'))
+      .finally(() => setDeletingId(null));
+  }
 
   const q = search.trim().toLowerCase();
   const shown = q
@@ -364,8 +381,16 @@ export default function MockTests() {
                         ? <span className="badge badge-red" title="Bị đánh dấu vi phạm thi cử">⚠️ {r.proctor.violationCount}</span>
                         : <span style={{ color: r.proctor.violationCount ? 'var(--yellow)' : 'var(--text3)' }}>{r.proctor.violationCount}</span>}
                     </td>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setDetailId(r._id)}>Chi tiết</button>
+                      {isAdmin && (
+                        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', marginLeft: 4 }}
+                          disabled={deletingId === r._id}
+                          onClick={() => deleteRun(r)}
+                          title="Xoá lượt thi thử khỏi bảng theo dõi và lịch sử học sinh">
+                          {deletingId === r._id ? '…' : '🗑 Xoá'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -341,3 +341,46 @@ describe('mockTestService.setManualScores', () => {
     expect(shape.steps.speaking.manual).toBe(true);
   });
 });
+
+describe('mockTestService.deleteRun', () => {
+  test('soft-deletes and drops the run from every history list', async () => {
+    const student = await createStudent();
+    await seedPools();
+    const { attempt } = await mockTestService.startMockTest(student._id);
+
+    const res = await mockTestService.deleteRun(attempt._id, student._id);
+    expect(res.deleted).toBe(true);
+
+    const doc = await MockTestAttempt.findById(attempt._id);
+    expect(doc.status).toBe('deleted');
+    expect(doc.deletedAt).toBeTruthy();
+
+    const hist = await mockTestService.getHistory(student._id, {});
+    expect(hist.items.find(i => i._id === String(attempt._id))).toBeUndefined();
+    const admin = await mockTestService.getAdminHistory({});
+    expect(admin.items.find(i => i._id === String(attempt._id))).toBeUndefined();
+    expect(await mockTestService.getHistoryDetail(student._id, attempt._id)).toBeNull();
+  });
+
+  test('is idempotent and rejects a bad id / missing run', async () => {
+    const student = await createStudent();
+    await seedPools();
+    const { attempt } = await mockTestService.startMockTest(student._id);
+    await mockTestService.deleteRun(attempt._id, student._id);
+    const again = await mockTestService.deleteRun(attempt._id, student._id);
+    expect(again.already).toBe(true);
+
+    await expect(mockTestService.deleteRun('not-an-id', student._id)).rejects.toMatchObject({ statusCode: 400 });
+    await expect(mockTestService.deleteRun('6a926ec08b5290a9341f8563', student._id)).rejects.toMatchObject({ statusCode: 404 });
+  });
+
+  test('setManualScores refuses a deleted run', async () => {
+    const student = await createStudent();
+    await seedPools();
+    const { attempt } = await mockTestService.startMockTest(student._id);
+    await mockTestService.deleteRun(attempt._id, student._id);
+    await expect(
+      mockTestService.setManualScores(attempt._id, { steps: { writing: 6 }, actorId: student._id })
+    ).rejects.toMatchObject({ statusCode: 404 });
+  });
+});

@@ -87,6 +87,11 @@ const MockTestAttemptSchema = new mongoose.Schema({
   scoreEditedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   scoreEditedAt: { type: Date },
 
+  // An admin removed this run from the monitor (soft delete — recoverable in
+  // the DB; the four per-skill sub-attempts are untouched).
+  deletedBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  deletedAt:     { type: Date },
+
   status: {
     type: String,
     // 'abandoned'    = the student discarded a still-open run from the
@@ -94,10 +99,12 @@ const MockTestAttemptSchema = new mongoose.Schema({
     // 'disqualified' = the student left the exam screen more than
     //                  MAX_VIOLATIONS times; the run is voided (no overall
     //                  band) and they must wait out a cooldown before a new
-    //                  one. Both are excluded from the "resume" lookup; the
-    //                  sub-attempts they linked to keep living in their own
-    //                  per-skill histories (no data loss).
-    enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned', 'disqualified'],
+    //                  one.
+    // 'deleted'      = an admin removed it from the monitor.
+    // All three are excluded from history + the "resume" lookup; the
+    // sub-attempts they linked to keep living in their own per-skill
+    // histories (no data loss).
+    enum: ['in-progress', 'awaiting-grading', 'completed', 'abandoned', 'disqualified', 'deleted'],
     default: 'in-progress'
   },
 

@@ -3,7 +3,7 @@
 // the advance → nav handoff, resume via /current, and the history list.
 const request = require('supertest');
 const app = require('../../app');
-const { createStudent, createPremiumStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createPremiumStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const User = require('../../models/User');
 const SpeakingAttempt = require('../../models/SpeakingAttempt');
 const WritingAttempt = require('../../models/WritingAttempt');
@@ -335,6 +335,35 @@ describe('PUT /api/admin/mock-tests/:id/scores', () => {
     const freshWa = await WritingAttempt.findById(wa._id).lean();
     expect(freshWa.grading.overallBand).toBe(6);
     expect(freshWa.gradingStatus).toBe('confirmed');
+  });
+});
+
+describe('DELETE /api/admin/mock-tests/:id', () => {
+  test('admin soft-deletes; the run then vanishes from the list', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const m = (await authed(student).post('/api/mock-test/start')).body.attempt;
+
+    const admin = authed(await createAdmin());
+    const del = await admin.del(`/api/admin/mock-tests/${m._id}`);
+    expect(del.status).toBe(200);
+    expect(del.body.deleted).toBe(true);
+
+    const list = await admin.get('/api/admin/mock-tests');
+    expect(list.body.items.find(i => i._id === m._id)).toBeUndefined();
+
+    // Student's own history no longer shows it either.
+    const hist = await authed(student).get('/api/mock-test/history');
+    expect(hist.body.items.find(i => i._id === m._id)).toBeUndefined();
+  });
+
+  test('403 for a teacher (teacherOnly blocks DELETE) and for a student', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const m = (await authed(student).post('/api/mock-test/start')).body.attempt;
+
+    expect((await authed(await createTeacher()).del(`/api/admin/mock-tests/${m._id}`)).status).toBe(403);
+    expect((await authed(student).del(`/api/admin/mock-tests/${m._id}`)).status).toBe(403);
   });
 });
 

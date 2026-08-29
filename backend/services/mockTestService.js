@@ -33,6 +33,11 @@ const NEXT = { listening: 'reading', reading: 'writing', writing: 'speaking', sp
 const MAX_VIOLATIONS = 10;
 const DQ_COOLDOWN_SECONDS = 300; // 5 minutes
 
+// Kept out of every history list (student + admin) and the resume lookup:
+// 'abandoned' = student discarded it, 'deleted' = admin removed it.
+// ('disqualified' still shows in history — voided but visible.)
+const LIST_EXCLUDED_STATUSES = ['abandoned', 'deleted'];
+
 // Valid IELTS band values a teacher may type into the manual-score editor.
 // Band 0 is deliberately excluded: numericBand() treats 0 as "not graded"
 // everywhere in this service (AI/reading attempts default overallBand to 0),
@@ -366,7 +371,7 @@ async function refreshGrades(doc) {
 async function getHistory(userId, { page = 1, limit = 10 } = {}) {
   page = Math.max(1, Number(page) || 1);
   limit = Math.min(50, Math.max(1, Number(limit) || 10));
-  const histFilter = { userId, status: { $ne: 'abandoned' } };
+  const histFilter = { userId, status: { $nin: LIST_EXCLUDED_STATUSES } };
   const [docs, total] = await Promise.all([
     MockTestAttempt.find(histFilter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
     MockTestAttempt.countDocuments(histFilter)
@@ -381,7 +386,7 @@ async function getHistory(userId, { page = 1, limit = 10 } = {}) {
 
 async function getHistoryDetail(userId, id) {
   if (!mongoose.isValidObjectId(id)) return null;
-  const doc = await MockTestAttempt.findOne({ _id: id, userId, status: { $ne: 'abandoned' } });
+  const doc = await MockTestAttempt.findOne({ _id: id, userId, status: { $nin: LIST_EXCLUDED_STATUSES } });
   if (!doc) return null;
   await refreshGrades(doc);
   return publicShape(doc);
@@ -511,6 +516,7 @@ async function setManualScores(id, { steps = {}, note, actorId, actorName } = {}
   const doc = await MockTestAttempt.findById(id)
     .populate('userId', 'username firstName lastName className');
   if (!doc) throw new NotFoundError('Không tìm thấy bài thi thử');
+  if (doc.status === 'deleted') throw new NotFoundError('Lượt thi thử đã bị xoá');
 
   let touched = false;
   const applied = []; // numeric bands set in this call → mirror onto sub-attempts
@@ -555,10 +561,28 @@ async function setManualScores(id, { steps = {}, note, actorId, actorName } = {}
   return shapeAdmin(doc);
 }
 
+// ── Admin: remove a run from the monitor (soft delete) ─────────────────
+// Marks status 'deleted' — dropped from every history list + the resume
+// lookup, recoverable straight from the DB if needed. The four per-skill
+// sub-attempts (ListeningAttempt / TestAttempt / WritingAttempt /
+// SpeakingAttempt) are NOT touched: they keep living in their own histories,
+// same as an 'abandoned' or 'disqualified' run.
+async function deleteRun(id, actorId) {
+  if (!mongoose.isValidObjectId(id)) throw new ValidationError('id không hợp lệ');
+  const doc = await MockTestAttempt.findById(id);
+  if (!doc) throw new NotFoundError('Không tìm thấy bài thi thử');
+  if (doc.status === 'deleted') return { deleted: true, id: String(doc._id), already: true };
+  doc.status = 'deleted';
+  doc.deletedBy = actorId || undefined;
+  doc.deletedAt = new Date();
+  await doc.save();
+  return { deleted: true, id: String(doc._id) };
+}
+
 async function getAdminHistory({ page = 1, limit = 20, userId = null, status = null, violatedOnly = false } = {}) {
   page = Math.max(1, Number(page) || 1);
   limit = Math.min(50, Math.max(1, Number(limit) || 20));
-  const filter = { status: { $ne: 'abandoned' } };
+  const filter = { status: { $nin: LIST_EXCLUDED_STATUSES } };
   if (userId && mongoose.isValidObjectId(userId)) filter.userId = userId;
   if (status && ['in-progress', 'awaiting-grading', 'completed', 'disqualified'].includes(status)) filter.status = status;
   if (violatedOnly) filter['proctor.violated'] = true;
@@ -567,7 +591,7 @@ async function getAdminHistory({ page = 1, limit = 20, userId = null, status = n
     MockTestAttempt.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit)
       .populate('userId', 'username firstName lastName className'),
     MockTestAttempt.countDocuments(filter),
-    MockTestAttempt.countDocuments({ status: { $ne: 'abandoned' }, 'proctor.violated': true })
+    MockTestAttempt.countDocuments({ status: { $nin: LIST_EXCLUDED_STATUSES }, 'proctor.violated': true })
   ]);
 
   const items = [];
@@ -580,7 +604,7 @@ async function getAdminHistory({ page = 1, limit = 20, userId = null, status = n
 
 async function getAdminHistoryDetail(id) {
   if (!mongoose.isValidObjectId(id)) return null;
-  const doc = await MockTestAttempt.findOne({ _id: id, status: { $ne: 'abandoned' } })
+  const doc = await MockTestAttempt.findOne({ _id: id, status: { $nin: LIST_EXCLUDED_STATUSES } })
     .populate('userId', 'username firstName lastName className');
   if (!doc) return null;
   await refreshGrades(doc);
@@ -590,7 +614,7 @@ async function getAdminHistoryDetail(id) {
 module.exports = {
   startMockTest, getCurrent, abandonCurrent, recordViolation,
   advance, getHistory, getHistoryDetail, hasActiveMockStep,
-  getAdminHistory, getAdminHistoryDetail, setManualScores,
+  getAdminHistory, getAdminHistoryDetail, setManualScores, deleteRun,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER, MAX_VIOLATIONS, DQ_COOLDOWN_SECONDS
 };
