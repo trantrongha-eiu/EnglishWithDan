@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       t.classList.toggle('plele-active', t.dataset.category === categoryParam)
     );
     setReadingMode('lele', false);
-  } else if (modeParam === 'tips') {
+  } else if (modeParam === 'tips' || modeParam === 'reading-tips') {
     history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
     setReadingMode('tips', false);
   } else {
@@ -716,6 +716,9 @@ async function _doStartExam(testId) {
   } catch (e) {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+    // Trial expired between the proactive hasPremiumAccess() check and this
+    // request — show the paywall, not a generic "Lỗi kết nối server".
+    if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
     // Mandatory Review System — same reactive pattern as the premium gate:
     // don't just show a generic error, jump straight into the pending review.
     if (e.body && e.body.code === 'REVIEW_REQUIRED') {
@@ -975,6 +978,7 @@ async function resumePractice() {
     // check as starting a new practice — without this branch, a student
     // trying to resume an old draft while a review is pending just saw a
     // confusing generic error with no explanation or way forward.
+    if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
     if (e.body && e.body.code === 'REVIEW_REQUIRED') {
       showVocabToast('Bạn cần hoàn thành review bài trước đó trước khi tiếp tục', 'warning');
       _goToPendingReview(e.body);
@@ -1326,6 +1330,7 @@ async function startPractice(passageId, category, _silent = false) {
     }
     _enterPracticeScreen(res.passage, category, passageId);
   } catch (e) {
+    if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
     if (e.body && e.body.code === 'REVIEW_REQUIRED') {
       showVocabToast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
       _goToPendingReview(e.body);
@@ -2758,7 +2763,29 @@ async function submitExam() {
   } catch (e) {
     clearTimeout(submitTimeout);
     hideOverlay();
-    // Server may have processed the request even if the network timed out
+    // A slow / timed-out request can still have completed server-side —
+    // readingService.submitTest atomically claims the attempt, so a naive
+    // retry just 404s ("không tìm thấy bài thi đang làm") and the student
+    // is stuck on the error modal even though their bài was actually
+    // graded. Try to recover the real result first (mirrors listening.html).
+    if (state.attemptId) {
+      try {
+        const rec = await apiFetch(`/api/reading/attempt/${state.attemptId}/review`);
+        if (rec.success && rec.attempt && rec.attempt.bandScore != null) {
+          clearExamStorage();
+          _testsCache = null;
+          showResult({
+            attemptId:     state.attemptId,
+            bandScore:     rec.attempt.bandScore,
+            correctCount:  rec.attempt.correctCount,
+            wrongCount:    rec.attempt.wrongCount,
+            skippedCount:  rec.attempt.skippedCount,
+            totalQuestions: rec.attempt.totalQuestions,
+          });
+          return;
+        }
+      } catch (_) { /* fall through to the error modal */ }
+    }
     openSubmitErrorModal();
   }
 }
