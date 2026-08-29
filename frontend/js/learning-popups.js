@@ -34,8 +34,8 @@
   }
 
   const CATEGORY_ICON = { reading: '📖', listening: '🎧', writing: '✍️', speaking: '🗣️', vocabulary: '📚' };
-  const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', vocabulary: 'Vocabulary' };
-  const DAY_LABEL = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
+  const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', vocabulary: 'Từ vựng' };
+  const DAY_LABEL = { mon: 'T2', tue: 'T3', wed: 'T4', thu: 'T5', fri: 'T6', sat: 'T7', sun: 'CN' };
   const BANDS = [];
   for (let b = 4.0; b <= 7.5 + 1e-9; b += 0.5) BANDS.push(Math.round(b * 10) / 10);
 
@@ -78,6 +78,11 @@
     .lp-review-icon{font-size:40px;text-align:center;margin-bottom:6px;}
     .lp-review-summary{text-align:center;font-size:15px;font-weight:600;margin-bottom:4px;}
     .lp-review-sub{text-align:center;font-size:13px;color:var(--text2,#555);}
+    .lp-goal-intro{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,rgba(79,70,229,.09),rgba(67,56,202,.06));border:1px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 14px;margin-bottom:16px;}
+    .lp-goal-intro-icon{font-size:26px;line-height:1;flex-shrink:0;}
+    .lp-goal-intro p{margin:0;font-size:13px;line-height:1.6;color:var(--text2,#444);}
+    #lp-goal-banner{margin:12px auto;max-width:1100px;width:calc(100% - 24px);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;background:linear-gradient(135deg,rgba(79,70,229,.1),rgba(67,56,202,.07));border:1px solid rgba(79,70,229,.28);color:var(--text,#1f2937);}
+    #lp-goal-banner .lp-gb-go{padding:8px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--brand,#4f46e5),var(--brand-dark,#4338ca));color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;}
   `;
   document.head.appendChild(css);
 
@@ -111,28 +116,35 @@
   // ── Goal Setup popup (§4) — reuses GET/PUT /api/goals verbatim, no
   // second validation layer: server-side errors are shown as-is. ─────────
   async function openGoalFlow(chainToToday) {
-    open('🎯 Set Your IELTS Goal');
-    body().innerHTML = '<div class="lp-empty">Loading…</div>';
+    open('🎯 Đặt mục tiêu IELTS');
+    body().innerHTML = '<div class="lp-empty">Đang tải…</div>';
     foot().innerHTML = '';
     let goal;
     try { goal = (await apiGet('/goals')).goal; } catch (e) { goal = {}; }
 
     const selectedDays = new Set(goal.studyDays || []);
-    const bandOptions = (val) => '<option value="">— Not set —</option>' + BANDS.map(b =>
+    const bandOptions = (val) => '<option value="">— Chưa đặt —</option>' + BANDS.map(b =>
       `<option value="${b}"${goal[val] === b ? ' selected' : ''}>${b.toFixed(1)}</option>`).join('');
 
     body().innerHTML = `
-      <div class="lp-field"><label>Current band (optional)</label>
+      <div class="lp-goal-intro">
+        <div class="lp-goal-intro-icon">🎯</div>
+        <p>Đặt mục tiêu để <b>thầy Dan</b> xây <b>lộ trình học cá nhân hoá</b>:
+        gợi ý <b>thời gian luyện hiệu quả cho từng kỹ năng</b>
+        (Reading · Listening · Writing · Speaking) dựa trên
+        <b>band mục tiêu</b> và <b>ngày thi</b> của bạn.</p>
+      </div>
+      <div class="lp-field"><label>Band hiện tại (không bắt buộc)</label>
         <select id="lp-current">${bandOptions('currentBand')}</select></div>
-      <div class="lp-field"><label>Target band</label>
+      <div class="lp-field"><label>Band mục tiêu</label>
         <select id="lp-target">${bandOptions('targetBand')}</select></div>
-      <div class="lp-field"><label>Exam date</label>
+      <div class="lp-field"><label>Ngày thi</label>
         <input type="date" id="lp-exam" value="${goal.examDate ? escHtml(goal.examDate.slice(0, 10)) : ''}"></div>
-      <div class="lp-field"><label>Weekly study time (minutes)</label>
-        <input type="number" id="lp-weekly" min="1" step="10" value="${goal.weeklyStudyMinutes ?? ''}" placeholder="e.g. 240"></div>
-      <div class="lp-field"><label>Minutes per session</label>
-        <input type="number" id="lp-session" min="5" max="240" step="5" value="${goal.preferredSessionMinutes ?? ''}" placeholder="e.g. 60"></div>
-      <div class="lp-field"><label>Study days</label>
+      <div class="lp-field"><label>Thời gian học mỗi tuần (phút)</label>
+        <input type="number" id="lp-weekly" min="1" step="10" value="${goal.weeklyStudyMinutes ?? ''}" placeholder="vd: 240"></div>
+      <div class="lp-field"><label>Số phút mỗi buổi học</label>
+        <input type="number" id="lp-session" min="5" max="240" step="5" value="${goal.preferredSessionMinutes ?? ''}" placeholder="vd: 60"></div>
+      <div class="lp-field"><label>Ngày học trong tuần</label>
         <div class="lp-days" id="lp-days">
           ${Object.keys(DAY_LABEL).map(d => `<span class="lp-day-chip${selectedDays.has(d) ? ' active' : ''}" data-day="${d}">${DAY_LABEL[d]}</span>`).join('')}
         </div></div>
@@ -146,7 +158,7 @@
       });
     });
 
-    foot().innerHTML = '<button class="lp-btn lp-btn-primary" id="lp-goal-save">Create My Study Plan</button>';
+    foot().innerHTML = '<button class="lp-btn lp-btn-primary" id="lp-goal-save">Tạo lộ trình học cho tôi</button>';
     document.getElementById('lp-goal-save').addEventListener('click', async () => {
       const msgEl = document.getElementById('lp-goal-msg');
       msgEl.textContent = ''; msgEl.className = 'lp-msg';
@@ -161,14 +173,15 @@
       };
       try {
         await apiPut('/goals', payload);
-        msgEl.textContent = 'Saved!'; msgEl.className = 'lp-msg ok';
+        msgEl.textContent = 'Đã lưu!'; msgEl.className = 'lp-msg ok';
+        renderGoalBanner(false); // goal now set — drop the persistent nudge
         if (chainToToday) {
           setTimeout(() => openToday(), 400);
         } else {
           setTimeout(close, 500);
         }
       } catch (e) {
-        msgEl.textContent = e.message || 'Could not save your goal.';
+        msgEl.textContent = e.message || 'Không lưu được mục tiêu.';
         msgEl.className = 'lp-msg error';
       }
     });
@@ -176,42 +189,42 @@
 
   // ── Weekly Plan popup (§5) — pure render of GET /api/study-plan/current ─
   async function openWeeklyFlow() {
-    open('📅 Your Weekly IELTS Plan');
-    body().innerHTML = '<div class="lp-empty">Loading…</div>';
-    foot().innerHTML = '<button class="lp-btn lp-btn-ghost" id="lp-back-today">← Today</button>';
+    open('📅 Lộ trình IELTS tuần này');
+    body().innerHTML = '<div class="lp-empty">Đang tải…</div>';
+    foot().innerHTML = '<button class="lp-btn lp-btn-ghost" id="lp-back-today">← Hôm nay</button>';
     document.getElementById('lp-back-today').addEventListener('click', () => openToday());
 
     let plan;
     try { plan = await apiGet('/study-plan/current'); } catch (e) {
-      body().innerHTML = '<div class="lp-empty">Unable to load your study plan.</div>';
+      body().innerHTML = '<div class="lp-empty">Không tải được lộ trình học.</div>';
       return;
     }
     if (!plan.hasPlan) {
-      body().innerHTML = `<div class="lp-empty">${escHtml(plan.message || 'Set up your study availability to generate a personalized plan.')}</div>`;
+      body().innerHTML = `<div class="lp-empty">${escHtml(plan.message || 'Thiết lập thời gian rảnh để tạo lộ trình cá nhân hoá.')}</div>`;
       return;
     }
     body().innerHTML =
-      `<div class="lp-total">Week of ${escHtml(plan.weekStart)} → ${escHtml(plan.weekEnd)} · ${plan.totalMinutes} min total</div>` +
+      `<div class="lp-total">Tuần ${escHtml(plan.weekStart)} → ${escHtml(plan.weekEnd)} · tổng ${plan.totalMinutes} phút</div>` +
       plan.sessions.filter(s => s.items.length).map(s => `
         <div class="lp-day-block">
-          <div class="lp-day-block-head">${escHtml(s.day.toUpperCase())} · ${escHtml(s.date)} · ${s.totalMinutes} min</div>
+          <div class="lp-day-block-head">${escHtml(s.day.toUpperCase())} · ${escHtml(s.date)} · ${s.totalMinutes}  phút</div>
           ${s.items.map(i => `
             <div class="lp-plan-item">
               <span>${CATEGORY_ICON[i.category] || ''} ${escHtml(CATEGORY_LABEL[i.category] || i.category)} — ${escHtml(i.reason)}</span>
               <span>${i.minutes}m</span>
             </div>`).join('')}
-        </div>`).join('') || '<div class="lp-empty">No sessions scheduled this week.</div>';
+        </div>`).join('') || '<div class="lp-empty">Chưa có buổi học nào trong tuần này.</div>';
   }
 
   // ── Today's Learning popup (§6) — the primary discovery surface ────────
   async function openToday(preloaded) {
-    open('🔔 Today\'s IELTS Practice');
-    body().innerHTML = '<div class="lp-empty">Loading…</div>';
+    open('🔔 Luyện IELTS hôm nay');
+    body().innerHTML = '<div class="lp-empty">Đang tải…</div>';
     foot().innerHTML = '';
 
     let today;
     try { today = preloaded || await apiGet('/learning/today'); } catch (e) {
-      body().innerHTML = '<div class="lp-empty">Unable to load today\'s plan.</div>';
+      body().innerHTML = '<div class="lp-empty">Không tải được kế hoạch hôm nay.</div>';
       return;
     }
 
@@ -221,9 +234,9 @@
       return;
     }
     if (!today.hasPlan || !today.isStudyDay || !today.sessions.length) {
-      body().innerHTML = `<div class="lp-empty">${escHtml(today.message || 'Nothing scheduled right now.')}</div>`;
-      const buttons = ['<button class="lp-btn lp-btn-ghost" id="lp-view-weekly">View Weekly Plan</button>'];
-      if (!today.hasPlan) buttons.unshift('<button class="lp-btn lp-btn-primary" id="lp-setup-avail">Set Up Availability</button>');
+      body().innerHTML = `<div class="lp-empty">${escHtml(today.message || 'Hiện chưa có lịch học nào.')}</div>`;
+      const buttons = ['<button class="lp-btn lp-btn-ghost" id="lp-view-weekly">Xem lộ trình tuần</button>'];
+      if (!today.hasPlan) buttons.unshift('<button class="lp-btn lp-btn-primary" id="lp-setup-avail">Thiết lập thời gian học</button>');
       foot().innerHTML = buttons.join('');
       const weeklyBtn = document.getElementById('lp-view-weekly');
       if (weeklyBtn) weeklyBtn.addEventListener('click', openWeeklyFlow);
@@ -233,18 +246,18 @@
     }
 
     body().innerHTML =
-      `<div class="lp-total">You have ${today.totalMinutes} minutes today.</div>` +
+      `<div class="lp-total">Hôm nay bạn có ${today.totalMinutes} phút.</div>` +
       today.sessions.map(s => `
         <div class="lp-session">
           <div class="lp-session-head">
             <span class="lp-session-cat">${CATEGORY_ICON[s.category] || ''} ${escHtml(CATEGORY_LABEL[s.category] || s.category)}</span>
-            <span class="lp-session-min">${s.minutes} min</span>
+            <span class="lp-session-min">${s.minutes} phút</span>
           </div>
           <div class="lp-session-action">${escHtml(s.action)}</div>
-          <div class="lp-session-reason">Why? ${escHtml(s.reason)}</div>
+          <div class="lp-session-reason">Vì sao? ${escHtml(s.reason)}</div>
           ${s.category === 'vocabulary'
-            ? `<button class="lp-session-start" data-category="vocabulary" data-rec="${escHtml(s.recommendationType || '')}">Start Vocabulary</button>`
-            : `<a class="lp-session-start" href="${escHtml(s.practiceUrl)}" data-category="${escHtml(s.category)}">Start ${escHtml(CATEGORY_LABEL[s.category] || '')}</a>`}
+            ? `<button class="lp-session-start" data-category="vocabulary" data-rec="${escHtml(s.recommendationType || '')}">Học từ vựng</button>`
+            : `<a class="lp-session-start" href="${escHtml(s.practiceUrl)}" data-category="${escHtml(s.category)}">Luyện ${escHtml(CATEGORY_LABEL[s.category] || '')}</a>`}
         </div>`).join('');
     body().querySelectorAll('a.lp-session-start').forEach(btn => {
       btn.addEventListener('click', () => markStart(btn.dataset.category));
@@ -270,7 +283,7 @@
         }
       });
     }
-    foot().innerHTML = '<button class="lp-btn lp-btn-ghost" id="lp-view-weekly">View Weekly Plan</button>';
+    foot().innerHTML = '<button class="lp-btn lp-btn-ghost" id="lp-view-weekly">Xem lộ trình tuần</button>';
     document.getElementById('lp-view-weekly').addEventListener('click', openWeeklyFlow);
   }
 
@@ -278,15 +291,15 @@
   // result data; this file never recalculates a score. ───────────────────
   function showReviewPopup(category, summary) {
     summary = summary || {};
-    open(`${CATEGORY_ICON[category] || ''} ${CATEGORY_LABEL[category] || category} Complete`);
+    open(`Hoàn thành ${CATEGORY_ICON[category] || ''} ${CATEGORY_LABEL[category] || category}`);
     const lines = [];
     if (summary.scoreLabel) lines.push(`<div class="lp-review-summary">${escHtml(summary.scoreLabel)}</div>`);
     if (summary.subLabel) lines.push(`<div class="lp-review-sub">${escHtml(summary.subLabel)}</div>`);
     body().innerHTML = `<div class="lp-review-icon">${summary.emoji || '📊'}</div>` + lines.join('') +
-      `<div class="lp-review-sub" style="margin-top:14px">${escHtml(summary.nextAction || 'Review your work, then continue your plan.')}</div>`;
+      `<div class="lp-review-sub" style="margin-top:14px">${escHtml(summary.nextAction || 'Xem lại bài làm, rồi tiếp tục lộ trình.')}</div>`;
     const buttons = [];
-    if (typeof summary.onReview === 'function') buttons.push('<button class="lp-btn lp-btn-ghost" id="lp-review-mistakes">Review Mistakes</button>');
-    buttons.push('<button class="lp-btn lp-btn-primary" id="lp-review-next">Back to Today\'s Plan</button>');
+    if (typeof summary.onReview === 'function') buttons.push('<button class="lp-btn lp-btn-ghost" id="lp-review-mistakes">Xem lại lỗi</button>');
+    buttons.push('<button class="lp-btn lp-btn-primary" id="lp-review-next">Về kế hoạch hôm nay</button>');
     foot().innerHTML = buttons.join('');
     if (typeof summary.onReview === 'function') {
       document.getElementById('lp-review-mistakes').addEventListener('click', () => { close(); summary.onReview(); });
@@ -309,20 +322,48 @@
     return false;
   }
 
+  // ── Persistent "you haven't set a goal yet" banner ────────────────────
+  // Stays on the page (dashboard) for the whole visit until a goal exists —
+  // the always-visible half of the nudge, separate from the once-per-load
+  // popup. Removed the moment a goal is saved (openGoalFlow) or here on a
+  // load where the goal already exists.
+  function renderGoalBanner(show) {
+    var existing = document.getElementById('lp-goal-banner');
+    if (!show) { if (existing) existing.remove(); return; }
+    if (existing) return;
+    var host = document.getElementById('view-mybook')
+      || document.querySelector('.dash-main')
+      || document.getElementById('globalTopNav')
+      || document.body;
+    var el = document.createElement('div');
+    el.id = 'lp-goal-banner';
+    el.innerHTML =
+      '<span>🎯 <b>Bạn chưa đặt mục tiêu IELTS.</b> Đặt ngay để <b>thầy Dan</b> ' +
+      'gợi ý lộ trình &amp; thời gian luyện hiệu quả cho 4 kỹ năng theo band mục tiêu và ngày thi.</span>' +
+      '<button type="button" class="lp-gb-go">Đặt mục tiêu</button>';
+    el.querySelector('.lp-gb-go').addEventListener('click', function () { openGoalFlow(true); });
+    if (host === document.body || host === document.getElementById('globalTopNav')) {
+      if (host.nextSibling) host.parentNode.insertBefore(el, host.nextSibling);
+      else document.body.insertBefore(el, document.body.firstChild);
+    } else {
+      host.insertBefore(el, host.firstChild);
+    }
+  }
+
   // ── Auto-show on page load (§24) — goal takes priority over today's
-  // tasks; today's tasks are gated to once per calendar day so reloading
-  // the dashboard doesn't re-nag (manual reopen stays available via the
-  // page's own "Today's Plan" entry point). ──────────────────────────────
+  // tasks. No-goal students get BOTH the persistent banner and the popup
+  // on every dashboard load (the goal flow is the gateway to every
+  // personalised suggestion, and was being ignored when shown once/session).
+  // Today's-task popup stays gated to once per calendar day. ─────────────
   async function autoShow() {
     let goal;
     try { goal = (await apiGet('/goals')).goal; } catch (e) { return; }
     if (!goal.hasGoal) {
-      let shownKey = 'ews_goal_popup_shown_session';
-      if (sessionStorage.getItem(shownKey)) return;
-      sessionStorage.setItem(shownKey, '1');
+      renderGoalBanner(true);
       openGoalFlow(true);
       return;
     }
+    renderGoalBanner(false);
     let today;
     try { today = await apiGet('/learning/today'); } catch (e) { return; }
     if (today.hasPlan && today.isStudyDay && today.sessions.length) {
