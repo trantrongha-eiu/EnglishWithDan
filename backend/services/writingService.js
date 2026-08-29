@@ -231,6 +231,79 @@ async function getAttempt(attemptId, requestingUser) {
   return { status: 'ok', attempt };
 }
 
+// ── "Viết lại" (rewrite) ─────────────────────────────────────────────
+const MAX_PENDING_REWRITES = 3;        // gate: 3+ un-rewritten confirmed essays => forced
+const REWRITE_MIN_WORDS = { 1: 150, 2: 250 }; // same minimums as the original task
+
+const countWords = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
+
+// Which tasks of this attempt were actually graded (a confirmed practice
+// attempt has just one; a confirmed exam normally has both).
+function gradedTasksOf(a) {
+  const g = a.grading || {};
+  return {
+    t1: g.task1 && g.task1.bandScore != null,
+    t2: g.task2 && g.task2.bandScore != null,
+  };
+}
+
+// The student's confirmed essays that still need a rewrite (not done, not
+// bypassed). Oldest first — that's the order the gate modal nudges them in.
+async function getPendingRewrites(userId) {
+  const docs = await WritingAttempt.find({
+    userId,
+    gradingStatus: 'confirmed',
+    'rewrite.done': { $ne: true },
+    'rewrite.bypassed': { $ne: true },
+  }).sort({ submittedAt: 1 }).select('examName submissionType submittedAt grading.overallBand grading.task1.bandScore grading.task2.bandScore').lean();
+
+  const items = docs.map(a => {
+    const gt = gradedTasksOf(a);
+    return {
+      _id: String(a._id),
+      examName: a.examName || '',
+      submissionType: a.submissionType || 'exam',
+      submittedAt: a.submittedAt,
+      overallBand: a.grading && a.grading.overallBand != null ? a.grading.overallBand : null,
+      gradedTasks: [gt.t1 && 1, gt.t2 && 2].filter(Boolean),
+    };
+  });
+  return { count: items.length, items };
+}
+
+// Student submitted (or re-submitted) a hand-written rewrite. Not graded —
+// just recorded + marked done once every graded task meets its minimum.
+async function submitRewrite(userId, attemptId, { task1 = '', task2 = '' } = {}) {
+  let attempt;
+  try { attempt = await WritingAttempt.findById(attemptId); }
+  catch (e) { return { status: 'not_found' }; }
+  if (!attempt) return { status: 'not_found' };
+  if (String(attempt.userId) !== String(userId)) return { status: 'forbidden' };
+  if (attempt.gradingStatus !== 'confirmed') return { status: 'not_confirmed' };
+
+  const graded = gradedTasksOf(attempt);
+  const t1 = String(task1 || '').trim();
+  const t2 = String(task2 || '').trim();
+  const wc1 = countWords(t1);
+  const wc2 = countWords(t2);
+
+  if (graded.t1 && wc1 < REWRITE_MIN_WORDS[1]) return { status: 'too_short', task: 1, need: REWRITE_MIN_WORDS[1], got: wc1 };
+  if (graded.t2 && wc2 < REWRITE_MIN_WORDS[2]) return { status: 'too_short', task: 2, need: REWRITE_MIN_WORDS[2], got: wc2 };
+
+  attempt.rewrite = {
+    task1: graded.t1 ? t1 : '',
+    task2: graded.t2 ? t2 : '',
+    wordCount1: graded.t1 ? wc1 : 0,
+    wordCount2: graded.t2 ? wc2 : 0,
+    submittedAt: new Date(),
+    done: true,
+    bypassed: false,
+    bypassCode: '',
+  };
+  await attempt.save();
+  return { status: 'ok', attempt: attempt.toObject() };
+}
+
 async function listSamples({ quarter, topic, taskType }) {
   const filter = { isActive: true };
   if (quarter && quarter !== 'all') filter.quarter = quarter;
@@ -251,4 +324,5 @@ module.exports = {
   startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice,
   getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, getPracticeNavCounts, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
+  getPendingRewrites, submitRewrite, MAX_PENDING_REWRITES, REWRITE_MIN_WORDS,
 };

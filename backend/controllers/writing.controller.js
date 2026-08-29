@@ -129,6 +129,21 @@ exports.getAttempt = guard(async (req, res) => {
   res.json({ success: true, attempt: result.attempt });
 });
 
+exports.getPendingRewrites = guard(async (req, res) => {
+  const data = await writingService.getPendingRewrites(req.user._id);
+  res.json({ success: true, ...data, max: writingService.MAX_PENDING_REWRITES });
+});
+
+exports.submitRewrite = guard(async (req, res) => {
+  const { task1 = '', task2 = '' } = req.body || {};
+  const r = await writingService.submitRewrite(req.user._id, req.params.id, { task1, task2 });
+  if (r.status === 'not_found')     return res.status(404).json({ success: false, message: 'Không tìm thấy bài' });
+  if (r.status === 'forbidden')     return res.status(403).json({ success: false, message: 'Không có quyền' });
+  if (r.status === 'not_confirmed') return res.status(409).json({ success: false, message: 'Bài chưa được chấm xong nên chưa thể viết lại.' });
+  if (r.status === 'too_short')     return res.status(400).json({ success: false, message: `Task ${r.task}: cần tối thiểu ${r.need} từ (hiện ${r.got} từ).`, task: r.task, need: r.need, got: r.got });
+  res.json({ success: true, attempt: r.attempt });
+});
+
 exports.listSamples = guard(async (req, res) => {
   const samples = await writingService.listSamples(req.query);
   res.json({ success: true, samples });

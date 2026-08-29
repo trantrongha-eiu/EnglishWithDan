@@ -487,6 +487,40 @@
 </div>
 
 <!-- ═══════════════════════════════════════════
+     REWRITE MODAL — left: bài đã chấm + feedback · right: viết lại (gõ tay)
+═══════════════════════════════════════════ -->
+<style>
+  #rewrite-modal-overlay .review-modal{max-width:1100px;width:96vw}
+  .rw-split{display:flex;gap:16px;align-items:stretch}
+  .rw-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:12px}
+  .rw-col-left{border-right:1px solid var(--border,#e5e7eb);padding-right:16px;max-height:66vh;overflow-y:auto}
+  .rw-task-box{border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:12px}
+  .rw-task-box h4{margin:0 0 6px;font-size:13px}
+  .rw-prompt{font-size:12.5px;color:var(--text2,#4b5563);background:var(--surface2,#f9fafb);border-radius:8px;padding:8px 10px;margin-bottom:8px;white-space:pre-wrap}
+  .rw-orig{font-size:12.5px;color:var(--text3,#6b7280);white-space:pre-wrap;line-height:1.6;max-height:160px;overflow-y:auto}
+  .rw-ta{width:100%;min-height:200px;resize:vertical;border:1.5px solid var(--border,#d1d5db);border-radius:8px;padding:10px;font:inherit;font-size:14px;line-height:1.6}
+  .rw-ta:focus{outline:none;border-color:var(--brand,#e53935)}
+  .rw-wc{font-size:12px;font-weight:700;margin-top:4px}
+  .rw-wc.ok{color:#16a34a}.rw-wc.short{color:#d97706}
+  .rw-note{font-size:12px;color:var(--text3,#6b7280);background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 10px}
+  [data-theme="dark"] .rw-note{background:#0f1e33;border-color:#1e3a5f}
+  @media(max-width:900px){.rw-split{flex-direction:column}.rw-col-left{border-right:none;border-bottom:1px solid var(--border,#e5e7eb);padding-right:0;padding-bottom:14px;max-height:none}}
+</style>
+<div class="modal-overlay" id="rewrite-modal-overlay" onclick="if(event.target===this)closeRewriteModal()">
+  <div class="review-modal">
+    <div class="review-modal-header">
+      <h3 id="rewrite-modal-title"><i class="fas fa-pen-fancy"></i> Viết lại bài</h3>
+      <button class="review-modal-close" aria-label="Đóng" onclick="closeRewriteModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="review-modal-body" id="rewrite-modal-body"><div class="spinner"></div></div>
+    <div class="review-modal-footer">
+      <button class="btn-secondary" onclick="closeRewriteModal()">Đóng</button>
+      <button class="btn-primary" id="rw-submit-btn" onclick="submitRewrite()" disabled><i class="fas fa-paper-plane"></i> Nộp bài viết lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
      CONFIRM EXIT MODAL
 ═══════════════════════════════════════════ -->
 <div class="modal-overlay" id="exit-modal-overlay">
@@ -566,6 +600,6 @@
 
 <script src="js/writing-autosave.js?v=20260831"></script>
 <script src="js/writing-tips.js?v=20260831"></script>
-<script src="js/writing.js?v=20260901"></script>
+<script src="js/writing.js?v=20260908"></script>
 </body>
 </html>

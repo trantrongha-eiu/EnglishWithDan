@@ -85,12 +85,36 @@ const WritingAttemptSchema = new mongoose.Schema({
     confirmedBy:  { type: String, default: '' }
   },
 
-  feedbackRead: { type: Boolean, default: false, index: true }
+  feedbackRead: { type: Boolean, default: false, index: true },
+
+  // "Viết lại" — after a graded (gradingStatus 'confirmed') essay is
+  // returned, the student rewrites it by hand on the site (see
+  // frontend screen-rewrite + POST /api/writing/attempt/:id/rewrite).
+  // Not re-graded — this is a self-improvement exercise the teacher
+  // monitors. `done` = every graded task has been rewritten to its
+  // minimum word count. `bypassed` = an admin-issued ReviewBypassCode
+  // cleared it (same mechanism reading/listening reviews use — see
+  // reviewService.redeemBypassCode). The requireRewriteComplete gate
+  // blocks a new submit once 3+ confirmed essays sit un-rewritten.
+  rewrite: {
+    task1:       { type: String, default: '' },
+    task2:       { type: String, default: '' },
+    wordCount1:  { type: Number, default: 0 },
+    wordCount2:  { type: Number, default: 0 },
+    submittedAt: { type: Date },
+    done:        { type: Boolean, default: false },
+    bypassed:    { type: Boolean, default: false },
+    bypassCode:  { type: String, default: '' },
+    bypassedAt:  { type: Date }
+  }
 
 }, { timestamps: true });
 
 WritingAttemptSchema.index({ userId: 1, submittedAt: -1 });
 WritingAttemptSchema.index({ examId: 1, submittedAt: -1 });
+// requireRewriteComplete gate + getPendingRewrites: "this student's
+// confirmed essays that still need a rewrite".
+WritingAttemptSchema.index({ userId: 1, gradingStatus: 1, 'rewrite.done': 1 });
 // Retention: auto-delete 3 months after the attempt was created, no
 // exception for gradingStatus/feedbackRead (confirmed decision — a
 // submission still pending/unread at 3 months is deleted like any other).

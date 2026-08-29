@@ -97,7 +97,7 @@ router.delete('/writing-exams/:id', auth, teacherOnly, async (req, res) => {
 // viên mà không có dấu hiệu gì cho biết còn bài bị cắt bớt.
 router.get('/writing-history', auth, teacherOnly, async (req, res) => {
   try {
-    const { search, status, type } = req.query;
+    const { search, status, type, rewrite } = req.query;
     // parseInt + fallback guards against ?page=abc / ?page=0 / ?page=-1, which
     // would otherwise reach .skip()/.limit() as NaN or negative and be
     // rejected by the MongoDB driver instead of just clamping to page 1.
@@ -105,6 +105,10 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 30));
     const and = [];
     if (status) and.push({ gradingStatus: status });
+    // Rewrite-monitoring filter: 'pending' = confirmed essay the student
+    // hasn't rewritten yet; 'done' = has been rewritten.
+    if (rewrite === 'pending') and.push({ gradingStatus: 'confirmed', 'rewrite.done': { $ne: true } });
+    else if (rewrite === 'done') and.push({ 'rewrite.done': true });
     if (type === 'practice') {
       and.push({ submissionType: 'practice' });
     } else if (type === 'exam') {
@@ -135,7 +139,7 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
         .sort({ submittedAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot'),
+        .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot -rewrite.task1 -rewrite.task2'),
       WritingAttempt.countDocuments(filter)
     ]);
     res.json({ success: true, attempts, total, page, limit });
@@ -149,10 +153,11 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
 // tải hết toàn bộ bài nộp về client chỉ để đếm.
 router.get('/writing-history/counts', auth, teacherOnly, async (req, res) => {
   try {
-    const rows = await WritingAttempt.aggregate([
-      { $group: { _id: '$gradingStatus', count: { $sum: 1 } } }
+    const [rows, rewritePending] = await Promise.all([
+      WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
+      WritingAttempt.countDocuments({ gradingStatus: 'confirmed', 'rewrite.done': { $ne: true } }),
     ]);
-    const counts = { pending: 0, ai_done: 0, confirmed: 0 };
+    const counts = { pending: 0, ai_done: 0, confirmed: 0, rewritePending };
     rows.forEach(r => { if (r._id in counts) counts[r._id] = r.count; });
     res.json({ success: true, counts });
   } catch (err) {

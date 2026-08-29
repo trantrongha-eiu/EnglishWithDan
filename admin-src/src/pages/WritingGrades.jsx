@@ -42,6 +42,7 @@ export default function WritingGrades() {
   const [loading, setLoading]       = useState(true);
   const [statusFilter, setStatusFilter]   = useState('');
   const [typeFilter, setTypeFilter]       = useState('');
+  const [rewriteFilter, setRewriteFilter] = useState('');
   const [search, setSearch]               = useState('');
   const [selectedId, setSelectedId]       = useState(null);
   const [viewId, setViewId]               = useState(null);
@@ -51,6 +52,7 @@ export default function WritingGrades() {
     if (search) params.set('search', search);
     if (statusFilter) params.set('status', statusFilter);
     if (typeFilter) params.set('type', typeFilter);
+    if (rewriteFilter) params.set('rewrite', rewriteFilter);
     return apiFetch(`/admin/writing-history?${params}`)
       .then(d => {
         const t = d.total || 0;
@@ -76,12 +78,12 @@ export default function WritingGrades() {
   // Adjust-during-render (not an effect): reset to page 1 whenever a filter
   // changes — same pattern as Users.jsx, so a filter edit and a pagination
   // click each cause exactly one load, never two.
-  const [prevFilters, setPrevFilters] = useState([search, statusFilter, typeFilter]);
-  if (prevFilters[0] !== search || prevFilters[1] !== statusFilter || prevFilters[2] !== typeFilter) {
-    setPrevFilters([search, statusFilter, typeFilter]);
+  const [prevFilters, setPrevFilters] = useState([search, statusFilter, typeFilter, rewriteFilter]);
+  if (prevFilters[0] !== search || prevFilters[1] !== statusFilter || prevFilters[2] !== typeFilter || prevFilters[3] !== rewriteFilter) {
+    setPrevFilters([search, statusFilter, typeFilter, rewriteFilter]);
     if (page !== 1) setPage(1);
   }
-  useEffect(() => { load(page); }, [search, statusFilter, typeFilter, page]);
+  useEffect(() => { load(page); }, [search, statusFilter, typeFilter, rewriteFilter, page]);
   useEffect(() => { loadCounts(); }, []);
 
   function delAttempt(id) {
@@ -111,6 +113,7 @@ export default function WritingGrades() {
 
   const pending = counts.pending || 0;
   const aiDone  = counts.ai_done || 0;
+  const rewritePending = counts.rewritePending || 0;
 
   return (
     <>
@@ -127,6 +130,7 @@ export default function WritingGrades() {
             {pending > 0 && aiDone > 0 && ' · '}
             {aiDone > 0 && <span style={{ color: 'var(--blue)' }}>{aiDone} AI đã chấm, chờ xác nhận</span>}
             {pending === 0 && aiDone === 0 && <span>Tất cả đã xác nhận ✓</span>}
+            {rewritePending > 0 && <span style={{ color: 'var(--yellow, #d97706)' }}>{(pending || aiDone) ? ' · ' : ''}{rewritePending} bài chưa viết lại</span>}
           </div>
         </div>
         <button className="btn btn-ghost btn-sm" onClick={refresh} disabled={loading}>
@@ -148,6 +152,11 @@ export default function WritingGrades() {
           <option value="exam">🏆 Bài thi</option>
           <option value="practice">✏️ Luyện tập</option>
         </select>
+        <select className="form-input" value={rewriteFilter} onChange={e => setRewriteFilter(e.target.value)} style={{ width: 190 }}>
+          <option value="">Viết lại: tất cả</option>
+          <option value="pending">✍️ Chưa viết lại</option>
+          <option value="done">✅ Đã viết lại</option>
+        </select>
       </div>
 
       <div className="table-wrap">
@@ -161,15 +170,16 @@ export default function WritingGrades() {
               <th>T2 (≥250w)</th>
               <th>BAND</th>
               <th>TRẠNG THÁI</th>
+              <th>VIẾT LẠI</th>
               <th>NGÀY NỘP</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {loading
-              ? <tr><td colSpan={9} className="table-empty">Đang tải...</td></tr>
+              ? <tr><td colSpan={10} className="table-empty">Đang tải...</td></tr>
               : attempts.length === 0
-                ? <tr><td colSpan={9} className="table-empty">Không có dữ liệu</td></tr>
+                ? <tr><td colSpan={10} className="table-empty">Không có dữ liệu</td></tr>
                 : attempts.map(a => {
                   const name = [a.userId?.firstName, a.userId?.lastName].filter(Boolean).join(' ') || a.userId?.username || '–';
                   const st   = STATUS[a.gradingStatus] || STATUS.pending;
@@ -192,6 +202,15 @@ export default function WritingGrades() {
                       <td>{isPracticeT1 ? dash : wcBadge(a.wordCount2, 250)}</td>
                       <td>{bandBadge(a.grading?.overallBand)}</td>
                       <td><span className={`badge ${st.cls}`}><span className="dot" />{st.label}</span></td>
+                      <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+                        {a.gradingStatus !== 'confirmed'
+                          ? dash
+                          : a.rewrite?.done
+                            ? <span style={{ color: 'var(--green)' }}>✅ đã{a.rewrite.bypassed ? ' (mã)' : ''}</span>
+                            : a.rewrite?.bypassed
+                              ? <span style={{ color: 'var(--text3)' }}>bỏ qua (mã)</span>
+                              : <span style={{ color: 'var(--accent2)' }}>✍️ chưa</span>}
+                      </td>
                       <td style={{ fontSize: 12 }}>{formatDate(a.submittedAt)}</td>
                       <td>
                         <div className="row-actions">

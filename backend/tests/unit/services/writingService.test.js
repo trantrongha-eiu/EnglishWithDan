@@ -345,3 +345,66 @@ describe('writingService.listSamples', () => {
     expect(result[0].title).toBe('S3');
   });
 });
+
+describe('writingService rewrite gate', () => {
+  const confirmed = (userId, over) => WritingAttempt.create({
+    userId, examName: 'E', submissionType: 'exam', gradingStatus: 'confirmed',
+    task1Answer: 'orig1', task2Answer: 'orig2', wordCount1: 160, wordCount2: 260,
+    task1Snapshot: { prompt: 'p1' }, task2Snapshot: { prompt: 'p2' },
+    grading: { overallBand: 6, task1: { bandScore: 6 }, task2: { bandScore: 6 } },
+    ...over,
+  });
+  const words = n => Array(n).fill('word').join(' ');
+
+  test('getPendingRewrites counts only confirmed, not-done, not-bypassed', async () => {
+    const s = await createStudent();
+    await confirmed(s._id);
+    await confirmed(s._id);
+    await confirmed(s._id, { 'rewrite.done': true });
+    await confirmed(s._id, { 'rewrite.bypassed': true });
+    await WritingAttempt.create({ userId: s._id, gradingStatus: 'ai_done', grading: { task1: { bandScore: 6 } } });
+
+    const { count, items } = await writingService.getPendingRewrites(s._id);
+    expect(count).toBe(2);
+    expect(items[0].gradedTasks).toEqual([1, 2]);
+  });
+
+  test('submitRewrite requires BOTH graded tasks to meet the minimum', async () => {
+    const s = await createStudent();
+    const a = await confirmed(s._id);
+
+    let r = await writingService.submitRewrite(s._id, a._id, { task1: words(160), task2: words(100) });
+    expect(r).toMatchObject({ status: 'too_short', task: 2, need: 250 });
+
+    r = await writingService.submitRewrite(s._id, a._id, { task1: words(160), task2: words(260) });
+    expect(r.status).toBe('ok');
+    const fresh = await WritingAttempt.findById(a._id).lean();
+    expect(fresh.rewrite.done).toBe(true);
+    expect(fresh.rewrite.wordCount2).toBe(260);
+    // now cleared from the pending list
+    expect((await writingService.getPendingRewrites(s._id)).count).toBe(0);
+  });
+
+  test('submitRewrite rejects a non-owner, and a not-yet-confirmed attempt', async () => {
+    const [owner, other] = [await createStudent(), await createStudent()];
+    const a = await confirmed(owner._id);
+    expect((await writingService.submitRewrite(other._id, a._id, {})).status).toBe('forbidden');
+
+    const pending = await WritingAttempt.create({ userId: owner._id, gradingStatus: 'ai_done', grading: { task1: { bandScore: 6 } } });
+    expect((await writingService.submitRewrite(owner._id, pending._id, { task1: words(200) })).status).toBe('not_confirmed');
+  });
+
+  test('a practice attempt only needs its one graded task rewritten', async () => {
+    const s = await createStudent();
+    const a = await WritingAttempt.create({
+      userId: s._id, submissionType: 'practice', examName: 'Task 2', gradingStatus: 'confirmed',
+      task2Answer: 'x', wordCount2: 260, task2Snapshot: { prompt: 'p' },
+      grading: { overallBand: 6, task2: { bandScore: 6 } },
+    });
+    const r = await writingService.submitRewrite(s._id, a._id, { task2: words(260) });
+    expect(r.status).toBe('ok');
+    const fresh = await WritingAttempt.findById(a._id).lean();
+    expect(fresh.rewrite.task1).toBe('');
+    expect(fresh.rewrite.done).toBe(true);
+  });
+});

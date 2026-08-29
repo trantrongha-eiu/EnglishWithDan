@@ -94,6 +94,34 @@ export default function ViewModal({ attemptId, onClose }) {
               </div>
             )}
 
+            {attempt.rewrite?.done && (
+              <div style={{ border: '1px solid var(--green)', borderRadius: 8, padding: '12px 16px' }}>
+                <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--green)', marginBottom: 8 }}>
+                  ✍️ Bài viết lại của học sinh
+                  <span style={{ color: 'var(--text3)', fontWeight: 400, marginLeft: 8 }}>
+                    · {formatDate(attempt.rewrite.submittedAt)}
+                  </span>
+                </div>
+                {attempt.rewrite.task1 && (
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', marginBottom: 4 }}>Task 1 — {attempt.rewrite.wordCount1 || 0} từ</div>
+                    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 220, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>{attempt.rewrite.task1}</div>
+                  </div>
+                )}
+                {attempt.rewrite.task2 && (
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', marginBottom: 4 }}>Task 2 — {attempt.rewrite.wordCount2 || 0} từ</div>
+                    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 280, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>{attempt.rewrite.task2}</div>
+                  </div>
+                )}
+              </div>
+            )}
+            {attempt.gradingStatus === 'confirmed' && !attempt.rewrite?.done && (
+              <div style={{ fontSize: 13, color: 'var(--accent2)', background: 'rgba(217,119,6,.08)', border: '1px solid var(--yellow, #fde68a)', borderRadius: 8, padding: '10px 14px' }}>
+                ✍️ Học sinh chưa viết lại bài này{attempt.rewrite?.bypassed ? ' (đã bỏ qua bằng mã)' : ''}.
+              </div>
+            )}
+
             {attempt.grading?.overallBand != null && (
               <div style={{ background: 'var(--surface2)', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
                 <strong>Điểm xác nhận:</strong>{' '}

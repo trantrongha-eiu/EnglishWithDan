@@ -7,6 +7,7 @@
 // existing review/history-detail endpoints).
 const AttemptReview = require('../models/AttemptReview');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
+const WritingAttempt = require('../models/WritingAttempt');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 
 // A mistake counts as "reviewed" once the core guided-review steps are
@@ -179,9 +180,12 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
 }
 
 // Redeem an admin-issued bypass code: mark every one of this student's
-// PENDING reviews as 'bypassed' so the mandatory-review gate opens again.
+// PENDING reading/listening reviews 'bypassed' AND every graded Writing
+// essay still awaiting a rewrite 'rewrite.bypassed' — so BOTH the
+// mandatory-review gate (reading/listening) and the rewrite gate (writing)
+// open again. One code clears the student's whole backlog.
 // Returns { status, ... } — 'ok' | 'not_found' | 'not_redeemable' |
-// 'already_used' | 'nothing_pending'.
+// 'already_used' | 'nothing_pending'. `cleared` = reviews + rewrites.
 async function redeemBypassCode(userId, rawCode) {
   const code = String(rawCode || '').trim().toUpperCase();
   if (!code) return { status: 'not_found' };
@@ -193,27 +197,24 @@ async function redeemBypassCode(userId, rawCode) {
     return { status: 'already_used' };
   }
 
-  const pending = await AttemptReview.find({ userId, status: 'pending' });
-  if (!pending.length) {
-    // Still consume the code — the student explicitly used it — but tell
-    // the caller there was nothing to clear.
-    doc.redemptions.push({ userId, cleared: 0 });
-    doc.usedCount += 1;
-    await doc.save();
-    return { status: 'nothing_pending', cleared: 0 };
-  }
-
   const now = new Date();
-  await AttemptReview.updateMany(
-    { userId, status: 'pending' },
-    { $set: { status: 'bypassed', bypassCode: code, bypassedAt: now } }
-  );
+  const [reviewRes, rewriteRes] = await Promise.all([
+    AttemptReview.updateMany(
+      { userId, status: 'pending' },
+      { $set: { status: 'bypassed', bypassCode: code, bypassedAt: now } }
+    ),
+    WritingAttempt.updateMany(
+      { userId, gradingStatus: 'confirmed', 'rewrite.done': { $ne: true }, 'rewrite.bypassed': { $ne: true } },
+      { $set: { 'rewrite.bypassed': true, 'rewrite.bypassCode': code, 'rewrite.bypassedAt': now } }
+    ),
+  ]);
+  const cleared = (reviewRes.modifiedCount || 0) + (rewriteRes.modifiedCount || 0);
 
-  doc.redemptions.push({ userId, cleared: pending.length });
+  doc.redemptions.push({ userId, cleared });
   doc.usedCount += 1;
   await doc.save();
 
-  return { status: 'ok', cleared: pending.length };
+  return cleared ? { status: 'ok', cleared } : { status: 'nothing_pending', cleared: 0 };
 }
 
 async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit = 20 } = {}) {

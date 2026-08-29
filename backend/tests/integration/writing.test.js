@@ -219,3 +219,52 @@ describe('GET /api/writing/attempt/:id (ownership)', () => {
     expect(res.body.success).toBe(false);
   });
 });
+
+describe('rewrite gate — requireRewriteComplete + POST /attempt/:id/rewrite', () => {
+  const words = n => Array(n).fill('word').join(' ');
+  const confirmedAttempt = (userId) => createWritingAttempt({
+    userId,
+    extra: {
+      gradingStatus: 'confirmed',
+      task1Snapshot: { prompt: 'p1' }, task2Snapshot: { prompt: 'p2' },
+      grading: { overallBand: 6, task1: { bandScore: 6 }, task2: { bandScore: 6 } },
+    },
+  });
+
+  test('3+ un-rewritten confirmed essays block a new /submit with 403 REWRITE_REQUIRED', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    for (let i = 0; i < 3; i++) await confirmedAttempt(student._id);
+    const exam = await createWritingExam();
+
+    const blocked = await request(app).post('/api/writing/submit')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ examId: String(exam._id), task1Answer: 'a', task2Answer: 'b', wordCount1: 10, wordCount2: 10 });
+    expect(blocked.status).toBe(403);
+    expect(blocked.body.code).toBe('REWRITE_REQUIRED');
+    expect(blocked.body.count).toBe(3);
+    expect(blocked.body.items).toHaveLength(3);
+  });
+
+  test('rewriting one essay (both tasks, min words) drops the count and re-opens submit', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const attempts = [];
+    for (let i = 0; i < 3; i++) attempts.push(await confirmedAttempt(student._id));
+
+    const short = await request(app).post(`/api/writing/attempt/${attempts[0]._id}/rewrite`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ task1: words(160), task2: words(50) });
+    expect(short.status).toBe(400);
+    expect(short.body.task).toBe(2);
+
+    const ok = await request(app).post(`/api/writing/attempt/${attempts[0]._id}/rewrite`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ task1: words(160), task2: words(260) });
+    expect(ok.status).toBe(200);
+    expect(ok.body.attempt.rewrite.done).toBe(true);
+
+    const pending = await request(app).get('/api/writing/pending-rewrites').set('Authorization', `Bearer ${token}`);
+    expect(pending.body.count).toBe(2);
+  });
+});

@@ -632,6 +632,7 @@ async function submitExam(statusOverride) {
     // /api/writing/submit is now full-access gated (BUG-A02) like /start and
     // /practice/submit — handle a mid-exam trial expiry the same way they do
     // (upgrade prompt, not a bare error toast).
+    if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
     if (!_handleQuotaError(e)) showToast('Lỗi nộp bài: ' + e.message, 'error');
   }
 }
@@ -682,12 +683,18 @@ function _renderHistory() {
     } else {
       scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
     }
+    const rwCell = a.gradingStatus === 'confirmed'
+      ? (a.rewrite?.done
+          ? '<span style="color:#15803d;font-size:12px;font-weight:700">✅ Đã viết lại</span>'
+          : `<button class="btn-view-attempt" style="background:#fffbeb;border-color:#fde68a;color:#92400e" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại</button>`)
+      : '<span style="color:#d1d5db">–</span>';
     return `
       <tr>
         <td>${typeBadge}${escHtml(a.examName || '–')}</td>
         <td>${t1badge}</td>
         <td>${t2badge}</td>
         <td>${scoreBadge}</td>
+        <td style="text-align:center">${rwCell}</td>
         <td style="font-size:12px;color:#6b7280">${date}</td>
         <td style="font-size:12px;color:#6b7280;text-align:center">${timeStr}</td>
         <td>
@@ -699,6 +706,10 @@ function _renderHistory() {
   }).join('');
 
   container.innerHTML = `
+    <div class="rw-pending-banner" style="display:none;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#92400e">
+      <i class="fas fa-pen-fancy"></i>
+      <span>Bạn có <b class="rw-pending-count">0</b> bài đã chấm chưa viết lại. Có 3 bài chưa viết lại sẽ bị chặn nộp bài mới.</span>
+    </div>
     <table class="history-table">
       <thead>
         <tr>
@@ -706,6 +717,7 @@ function _renderHistory() {
           <th>Task 1</th>
           <th>Task 2</th>
           <th>Band</th>
+          <th>Viết lại</th>
           <th>Ngày nộp</th>
           <th>TG</th>
           <th></th>
@@ -714,6 +726,7 @@ function _renderHistory() {
       <tbody>${rows}</tbody>
     </table>
   `;
+  _refreshRewriteBanner();
 }
 
 async function loadHistory() {
@@ -786,8 +799,23 @@ async function viewAttempt(id) {
     const showT1Section = !isPractice || (a.wordCount1 > 0) || (a.task1Answer && a.task1Answer.trim());
     const showT2Section = !isPractice || (a.wordCount2 > 0) || (a.task2Answer && a.task2Answer.trim());
 
+    // "Viết lại" CTA — only for a graded essay.
+    const rw = a.rewrite || {};
+    const rewriteCtaHtml = (a.gradingStatus === 'confirmed')
+      ? (rw.done
+          ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span><i class="fas fa-check-circle"></i> Bạn đã viết lại bài này${rw.submittedAt ? ' · ' + new Date(rw.submittedAt).toLocaleDateString('vi-VN') : ''}.</span>
+              <button class="btn-secondary" style="flex-shrink:0" onclick="openRewrite('${a._id}')">Xem / sửa lại</button>
+            </div>`
+          : `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#92400e;display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span><i class="fas fa-pen-fancy"></i> Hãy viết lại bài này dựa trên feedback để tiến bộ.</span>
+              <button class="btn-primary" style="flex-shrink:0" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại bài</button>
+            </div>`)
+      : '';
+
     document.getElementById('review-modal-body').innerHTML = `
       ${statusBannerHtml}
+      ${rewriteCtaHtml}
       ${feedbackHtml}
       ${showT1Section ? `<div class="review-task-section">
         <h4>Task 1 – ${a.wordCount1 || 0} từ</h4>
@@ -814,6 +842,171 @@ function closeReviewModal() {
   document.getElementById('review-modal-overlay').classList.remove('open');
   _currentViewData = null;
 }
+
+// ──────────────────────────────────────────────────────
+// "Viết lại" (rewrite) — left: graded essay + feedback · right: hand-typed
+// rewrite. Not re-graded; the teacher just monitors that it was done.
+// Paste is blocked (same as the Speaking transcript box) — type it yourself.
+// ──────────────────────────────────────────────────────
+const RW_MIN = { 1: 150, 2: 250 };
+let _rwState = null; // { attemptId, gradedTasks:[1,2] }
+
+function _rwPasteBlock(ta) {
+  ta.addEventListener('paste', e => {
+    e.preventDefault();
+    showToast('Không thể dán vào ô viết lại — hãy tự gõ tay bài viết lại của bạn.', 'warn', 3500);
+  });
+  ta.addEventListener('drop', e => { e.preventDefault(); showToast('Không thể kéo-thả văn bản vào đây.', 'warn', 3000); });
+  ta.addEventListener('dragover', e => e.preventDefault());
+  ta.addEventListener('input', _rwUpdateCounts);
+}
+
+function _rwUpdateCounts() {
+  if (!_rwState) return;
+  let allOk = true;
+  _rwState.gradedTasks.forEach(n => {
+    const ta = document.getElementById('rw-ta-' + n);
+    const wcEl = document.getElementById('rw-wc-' + n);
+    if (!ta || !wcEl) return;
+    const wc = countWords(ta.value);
+    const ok = wc >= RW_MIN[n];
+    if (!ok) allOk = false;
+    wcEl.textContent = `${wc} / ${RW_MIN[n]} từ tối thiểu` + (ok ? ' ✓' : '');
+    wcEl.className = 'rw-wc ' + (ok ? 'ok' : 'short');
+  });
+  const btn = document.getElementById('rw-submit-btn');
+  if (btn) btn.disabled = !allOk;
+}
+
+async function openRewrite(attemptId) {
+  document.getElementById('review-modal-overlay')?.classList.remove('open');
+  const overlay = document.getElementById('rewrite-modal-overlay');
+  const body = document.getElementById('rewrite-modal-body');
+  overlay.classList.add('open');
+  body.innerHTML = '<div class="spinner"></div>';
+  document.getElementById('rw-submit-btn').disabled = true;
+
+  try {
+    const data = await apiFetch(`/api/writing/attempt/${attemptId}`);
+    if (!data.success) throw new Error(data.message);
+    const a = data.attempt;
+    if (a.gradingStatus !== 'confirmed' || !a.grading) {
+      throw new Error('Bài này chưa được chấm xong nên chưa thể viết lại.');
+    }
+
+    const g = a.grading;
+    const gradedTasks = [
+      (g.task1 && g.task1.bandScore != null) && 1,
+      (g.task2 && g.task2.bandScore != null) && 2,
+    ].filter(Boolean);
+    _rwState = { attemptId, gradedTasks };
+
+    const t1 = a.task1Snapshot || {}, t2 = a.task2Snapshot || {};
+    const prev = a.rewrite || {};
+    const rightCol = gradedTasks.map(n => {
+      const prompt = n === 1 ? (t1.prompt || '') : (t2.prompt || '');
+      const pre = n === 1 ? (prev.task1 || '') : (prev.task2 || '');
+      return `<div class="rw-task-box">
+        <h4>Task ${n} — viết lại (tối thiểu ${RW_MIN[n]} từ)</h4>
+        ${prompt ? `<div class="rw-prompt">${escHtml(prompt)}</div>` : ''}
+        <textarea class="rw-ta" id="rw-ta-${n}" placeholder="Gõ bài viết lại của bạn ở đây... (không dán được)">${escHtml(pre)}</textarea>
+        <div class="rw-wc short" id="rw-wc-${n}">0 / ${RW_MIN[n]} từ tối thiểu</div>
+      </div>`;
+    }).join('');
+
+    const leftCol = `
+      <div class="rw-note"><i class="fas fa-lightbulb"></i> Dựa vào feedback bên dưới, viết lại bài cho tốt hơn. Bài viết lại <b>không chấm điểm</b> — giáo viên chỉ theo dõi bạn đã làm chưa.</div>
+      ${_buildStudentFeedback(g)}
+      ${gradedTasks.map(n => {
+        const orig = n === 1 ? (a.task1Answer || '') : (a.task2Answer || '');
+        return `<div class="rw-task-box"><h4>Bài gốc — Task ${n} (${n === 1 ? (a.wordCount1 || 0) : (a.wordCount2 || 0)} từ)</h4>
+          <div class="rw-orig">${escHtml(orig || '(Không có bài làm)')}</div></div>`;
+      }).join('')}`;
+
+    body.innerHTML = `<div class="rw-split">
+      <div class="rw-col rw-col-left">${leftCol}</div>
+      <div class="rw-col">${rightCol}</div>
+    </div>`;
+
+    document.getElementById('rewrite-modal-title').innerHTML =
+      `<i class="fas fa-pen-fancy"></i> Viết lại: ${escHtml(a.examName || ('Task ' + gradedTasks.join(' + ')))}`;
+    gradedTasks.forEach(n => _rwPasteBlock(document.getElementById('rw-ta-' + n)));
+    setupDictionaryDouble('rewrite-modal-body', 'writing-rewrite');
+    _rwUpdateCounts();
+  } catch (e) {
+    body.innerHTML = `<p style="color:#e53935;padding:20px">${escHtml(e.message || 'Không mở được bài viết lại.')}</p>`;
+  }
+}
+
+function closeRewriteModal() {
+  document.getElementById('rewrite-modal-overlay').classList.remove('open');
+  _rwState = null;
+}
+
+async function submitRewrite() {
+  if (!_rwState) return;
+  const btn = document.getElementById('rw-submit-btn');
+  const payload = {};
+  _rwState.gradedTasks.forEach(n => { payload['task' + n] = (document.getElementById('rw-ta-' + n)?.value || '').trim(); });
+  btn.disabled = true;
+  const old = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+  try {
+    const data = await apiFetch(`/api/writing/attempt/${_rwState.attemptId}/rewrite`, {
+      method: 'POST', body: JSON.stringify(payload),
+    });
+    if (!data.success) throw new Error(data.message);
+    showToast('✅ Đã lưu bài viết lại. Giáo viên sẽ thấy bạn đã hoàn thành.', 'success', 4000);
+    closeRewriteModal();
+    // Refresh whichever history view is on screen.
+    if (typeof loadHistory === 'function') loadHistory();
+    if (typeof loadPracticeHistory === 'function') loadPracticeHistory();
+    _refreshRewriteBanner();
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = old;
+    if (!_handleQuotaError(e)) showToast(e.body?.message || e.message || 'Không lưu được bài viết lại.', 'error', 5000);
+  } finally {
+    if (btn.innerHTML.includes('spinner')) btn.innerHTML = old;
+  }
+}
+
+// Forced-rewrite gate: /submit or /practice/submit returned 403 REWRITE_REQUIRED.
+function _openRewriteGate(gateBody) {
+  const overlay = document.getElementById('review-modal-overlay');
+  const list = (gateBody.items || []).map(it => `
+    <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:10px 12px;margin-bottom:8px">
+      <div style="min-width:0">
+        <div style="font-weight:700;font-size:13px">${escHtml(it.examName || (it.submissionType === 'practice' ? 'Bài luyện Task ' + (it.gradedTasks || []).join('+') : 'Bài thi Writing'))}</div>
+        <div style="font-size:12px;color:var(--text3,#6b7280)">Nộp ${it.submittedAt ? new Date(it.submittedAt).toLocaleDateString('vi-VN') : ''}${it.overallBand != null ? ' · Band ' + it.overallBand : ''}</div>
+      </div>
+      <button class="btn-primary" style="flex-shrink:0" onclick="closeReviewModal();openRewrite('${it._id}')"><i class="fas fa-pen-fancy"></i> Viết lại</button>
+    </div>`).join('');
+  document.getElementById('review-modal-title').textContent = 'Bạn cần viết lại bài trước';
+  document.getElementById('review-modal-body').innerHTML = `
+    <p style="font-size:13.5px;color:var(--text2,#374151);margin-bottom:12px">
+      Bạn có <b>${gateBody.count}</b> bài Writing đã được chấm nhưng chưa viết lại.
+      Hãy viết lại (rewrite) ít nhất 1 bài thì mới nộp bài mới được.
+    </p>
+    ${list}`;
+  overlay.classList.add('open');
+}
+
+// Small banner on the history views when there are pending rewrites.
+async function _refreshRewriteBanner() {
+  try {
+    const d = await apiFetch('/api/writing/pending-rewrites');
+    const n = d.count || 0;
+    document.querySelectorAll('.rw-pending-banner').forEach(el => {
+      el.style.display = n > 0 ? 'flex' : 'none';
+      const c = el.querySelector('.rw-pending-count');
+      if (c) c.textContent = n;
+    });
+  } catch (_) {}
+}
+window.openRewrite = openRewrite;
+window.closeRewriteModal = closeRewriteModal;
+window.submitRewrite = submitRewrite;
 
 function _buildStudentFeedback(g) {
   function taskCard(label, td) {
@@ -2046,6 +2239,7 @@ async function submitPractice() {
     document.getElementById('pw-done-label').textContent = `Đã nộp ${label}`;
     showScreen('screen-practice-done');
   } catch (e) {
+    if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
     if (!_handleQuotaError(e)) showToast(e.message || 'Nộp bài thất bại', 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Nộp bài'; }

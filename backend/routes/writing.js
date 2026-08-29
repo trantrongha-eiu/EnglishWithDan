@@ -3,6 +3,7 @@ const router  = express.Router();
 const rateLimit = require('express-rate-limit');
 const auth    = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
+const requireRewriteComplete = require('../middleware/requireRewriteComplete');
 const writingController = require('../controllers/writing.controller');
 const logger  = require('../utils/logger');
 
@@ -52,15 +53,17 @@ router.post('/start', auth, fullAccess, writingController.startExam);
 // runs / the attempt becomes visible to the auto-grade cron.
 // examSubmitLimiter runs before the controller too — a rate-limited request
 // never creates an attempt, so it never reaches Gemini grading.
+// requireRewriteComplete: once 3+ graded essays sit un-rewritten, a new
+// submit is blocked with 403 REWRITE_REQUIRED (mock-test Writing exempt).
 // ══════════════════════════════════════════════════
-router.post('/submit', auth, fullAccess, examSubmitLimiter, writingController.submitExam);
+router.post('/submit', auth, fullAccess, requireRewriteComplete, examSubmitLimiter, writingController.submitExam);
 
 // ══════════════════════════════════════════════════
 // PRACTICE MODE – luyện Task 1 / Task 2 lẻ
 // ══════════════════════════════════════════════════
 router.get('/practice/tasks', auth, fullAccess, writingController.listPracticeTasks);
 router.get('/practice/task', auth, fullAccess, writingController.getPracticeTask);
-router.post('/practice/submit', auth, fullAccess, practiceSubmitLimiter, writingController.submitPractice);
+router.post('/practice/submit', auth, fullAccess, requireRewriteComplete, practiceSubmitLimiter, writingController.submitPractice);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // ══════════════════════════════════════════════════
@@ -98,6 +101,14 @@ router.get('/my-history', auth, writingController.getMyHistory);
 // GET /api/writing/attempt/:id
 // ══════════════════════════════════════════════════
 router.get('/attempt/:id', auth, writingController.getAttempt);
+
+// ══════════════════════════════════════════════════
+// "Viết lại" — the student hand-types a rewrite of a graded essay.
+// GET  /api/writing/pending-rewrites   → confirmed essays still needing one
+// POST /api/writing/attempt/:id/rewrite { task1, task2 }
+// ══════════════════════════════════════════════════
+router.get('/pending-rewrites', auth, writingController.getPendingRewrites);
+router.post('/attempt/:id/rewrite', auth, fullAccess, writingController.submitRewrite);
 
 // ══════════════════════════════════════════════════
 // GET /api/writing/samples

@@ -7,6 +7,7 @@ const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const AttemptReview = require('../../models/AttemptReview');
 const ReviewBypassCode = require('../../models/ReviewBypassCode');
+const WritingAttempt = require('../../models/WritingAttempt');
 const mongoose = require('mongoose');
 
 function authed(user) {
@@ -129,5 +130,22 @@ describe('POST /api/review/bypass', () => {
     expect(res.status).toBe(200);
     expect(res.body.cleared).toBe(0);
     expect((await ReviewBypassCode.findOne({ code })).usedCount).toBe(1);
+  });
+
+  test('the SAME code also clears the writing-rewrite backlog (cleared counts both)', async () => {
+    const teacher = authed(await createTeacher());
+    const code = (await teacher.post('/api/admin/review-bypass-codes', { maxUses: 3 })).body.code.code;
+    const student = await createStudent();
+    const s = authed(student);
+    await seedPending(student._id, 2); // 2 reading reviews
+    await WritingAttempt.create({ userId: student._id, gradingStatus: 'confirmed', grading: { overallBand: 6, task2: { bandScore: 6 } } });
+    await WritingAttempt.create({ userId: student._id, gradingStatus: 'confirmed', grading: { overallBand: 6, task2: { bandScore: 6 } } });
+
+    const res = await s.post('/api/review/bypass', { code });
+    expect(res.status).toBe(200);
+    expect(res.body.cleared).toBe(4); // 2 reviews + 2 rewrites
+
+    const rw = await WritingAttempt.find({ userId: student._id });
+    expect(rw.every(a => a.rewrite.bypassed && a.rewrite.bypassCode === code)).toBe(true);
   });
 });
