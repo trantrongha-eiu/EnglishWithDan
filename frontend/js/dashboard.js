@@ -1064,6 +1064,14 @@ function renderBookContent(book) {
         if (limitEl) limitEl.textContent = ' / 300 words';
     }
 
+    // "Mách nhỏ" — cách thêm từ. Hiện mỗi lần mở sổ cho tới khi học sinh
+    // bấm × (nhớ qua localStorage).
+    const addTip = document.getElementById('book-add-tip');
+    if (addTip) {
+        const dismissed = (() => { try { return localStorage.getItem('dash_book_add_tip_dismissed') === '1'; } catch (e) { return false; } })();
+        addTip.classList.toggle('hidden', dismissed);
+    }
+
     // Cập nhật nút "Ôn lại từ hay sai" — luôn hiện khi sổ mở
     const hardBtn = document.getElementById('btn-hard-words');
     if (hardBtn) {
@@ -1077,6 +1085,14 @@ function renderBookContent(book) {
             hardBtn.classList.remove('has-hard-words');
         }
     }
+}
+
+// Student closed the "Mách nhỏ" tip — hide it and remember so it doesn't
+// come back on the next book open.
+function dismissBookAddTip() {
+    const el = document.getElementById('book-add-tip');
+    if (el) el.classList.add('hidden');
+    try { localStorage.setItem('dash_book_add_tip_dismissed', '1'); } catch (e) {}
 }
 
 function renderWordsTable(words) {
@@ -3333,6 +3349,7 @@ window.toggleDashFullscreen = toggleDashFullscreen;
 window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;
 window.openBook           = openBook;
+window.dismissBookAddTip  = dismissBookAddTip;
 window.openBookMenu          = openBookMenu;
 window.startRenameFromMenu   = startRenameFromMenu;
 window.deleteBookFromMenu    = deleteBookFromMenu;
