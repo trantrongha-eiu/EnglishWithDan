@@ -340,11 +340,17 @@ export default function Task2Topics() {
       try {
         await apiFetch(`/admin/task2/topics/${activeTopic._id}/questions/${qid}`, { method: 'DELETE' });
         showToast('Đã xóa câu hỏi', 'success');
+        const removed = (activeTopic.questions || []).find(q => q._id === qid);
         setActiveTopic(t => t ? { ...t, questions: (t.questions || []).filter(q => q._id !== qid) } : t);
-        // Reflect the new count on the topic-list row without a full re-fetch
-        // (row shows `(t.questions||[]).length câu hỏi`).
-        setTopics(prev => prev.map(x => (x._id === activeTopic._id
-          ? { ...x, questions: (x.questions || []).filter(q => q._id !== qid) } : x)));
+        // Reflect the new counts on the topic-list row (questionCount + the
+        // per-level chips) without a full re-fetch.
+        setTopics(prev => prev.map(x => {
+          if (x._id !== activeTopic._id) return x;
+          const levels = (x.levels || []).slice();
+          const li = removed ? levels.indexOf(removed.level) : -1;
+          if (li > -1) levels.splice(li, 1);
+          return { ...x, questionCount: Math.max(0, (x.questionCount ?? 1) - 1), levels };
+        }));
       } catch (e) { showToast(e.message, 'error'); }
     });
   }
@@ -426,7 +432,7 @@ export default function Task2Topics() {
                     <td><span style={{ fontWeight:700, color:'#6366f1' }}>W{t.week}</span></td>
                     <td>
                       <div style={{ fontWeight:600 }}>{t.topicEmoji} {t.topicName}</div>
-                      <div style={{ fontSize:11, color:'var(--text3)', marginTop:2 }}>{(t.questions||[]).length} câu hỏi</div>
+                      <div style={{ fontSize:11, color:'var(--text3)', marginTop:2 }}>{t.questionCount ?? (t.questions||[]).length} câu hỏi</div>
                     </td>
                     <td>
                       <span style={{ background: ESSAY_COLORS[t.essayType] + '20', color: ESSAY_COLORS[t.essayType], borderRadius:20, padding:'2px 10px', fontSize:12, fontWeight:700 }}>
@@ -436,7 +442,8 @@ export default function Task2Topics() {
                     <td style={{ textAlign:'center' }}>
                       <div style={{ display:'flex', gap:4, justifyContent:'center', flexWrap:'wrap' }}>
                         {LEVELS.map(l => {
-                          const c = (t.questions||[]).filter(q => q.level === l).length;
+                          const src = t.levels || (t.questions || []).map(q => q.level);
+                          const c = src.filter(x => x === l).length;
                           return c > 0 ? <span key={l} style={{ background: LEVEL_COLORS[l]+'22', color: LEVEL_COLORS[l], borderRadius:20, padding:'1px 8px', fontSize:11, fontWeight:700 }}>{l[0].toUpperCase()}: {c}</span> : null;
                         })}
                       </div>

@@ -24,7 +24,22 @@ router.get('/task2/topics', auth, teacherOnly, async (req, res) => {
 
     const skip = (Number(page) - 1) * Number(limit);
     const [topics, total] = await Promise.all([
-      Task2Topic.find(query).sort({ week: 1, orderIndex: 1 }).skip(skip).limit(Number(limit)).lean(),
+      // Return only questionCount, not the whole embedded `questions` array —
+      // the list just shows "N câu hỏi"; the detail panel fetches the full
+      // topic (/admin/task2/topics/:id) separately.
+      Task2Topic.aggregate([
+        { $match: query },
+        { $sort: { week: 1, orderIndex: 1 } },
+        { $skip: skip },
+        { $limit: Number(limit) },
+        { $project: {
+          topicName: 1, topicEmoji: 1, week: 1, essayType: 1, isActive: 1, orderIndex: 1,
+          questionCount: { $size: { $ifNull: ['$questions', []] } },
+          // Just the level strings, not the whole question objects — the list
+          // row shows a per-level count chip (B/I/A: n).
+          levels: { $map: { input: { $ifNull: ['$questions', []] }, as: 'q', in: '$$q.level' } },
+        } },
+      ]),
       Task2Topic.countDocuments(query)
     ]);
     res.json({ success: true, topics, total, page: Number(page), totalPages: Math.ceil(total / Number(limit)) });
