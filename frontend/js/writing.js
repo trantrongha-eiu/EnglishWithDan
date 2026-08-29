@@ -154,6 +154,12 @@ function showScreen(id) {
     return;
   }
 
+  // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
+  if (params.get('rewrite')) {
+    setTimeout(() => { try { openRewrite(params.get('rewrite')); } catch (_) {} }, 300);
+    // fall through so the page still renders its normal landing screen behind
+  }
+
   if (params.get('view') === 'samples') {
     loadWritingSamples();
     return;
@@ -683,11 +689,16 @@ function _renderHistory() {
     } else {
       scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
     }
-    const rwCell = a.gradingStatus === 'confirmed'
-      ? (a.rewrite?.done
-          ? '<span style="color:#15803d;font-size:12px;font-weight:700">✅ Đã viết lại</span>'
-          : `<button class="btn-view-attempt" style="background:#fffbeb;border-color:#fde68a;color:#92400e" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại</button>`)
-      : '<span style="color:#d1d5db">–</span>';
+    let rwCell;
+    if (a.gradingStatus !== 'confirmed') {
+      rwCell = '<span style="color:#d1d5db">–</span>';
+    } else if (a.rewrite?.done) {
+      rwCell = '<span style="color:#15803d;font-size:12px;font-weight:700">✅ Đã viết lại</span>';
+    } else if (_rewriteRequired(a)) {
+      rwCell = `<button class="btn-view-attempt" style="background:#fffbeb;border-color:#fde68a;color:#92400e" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại</button>`;
+    } else {
+      rwCell = `<button class="btn-view-attempt" style="opacity:.7" onclick="openRewrite('${a._id}')" title="Không bắt buộc">Viết lại</button>`;
+    }
     return `
       <tr>
         <td>${typeBadge}${escHtml(a.examName || '–')}</td>
@@ -801,17 +812,25 @@ async function viewAttempt(id) {
 
     // "Viết lại" CTA — only for a graded essay.
     const rw = a.rewrite || {};
-    const rewriteCtaHtml = (a.gradingStatus === 'confirmed')
-      ? (rw.done
-          ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:10px">
+    let rewriteCtaHtml = '';
+    if (a.gradingStatus === 'confirmed') {
+      if (rw.done) {
+        rewriteCtaHtml = `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:10px">
               <span><i class="fas fa-check-circle"></i> Bạn đã viết lại bài này${rw.submittedAt ? ' · ' + new Date(rw.submittedAt).toLocaleDateString('vi-VN') : ''}.</span>
               <button class="btn-secondary" style="flex-shrink:0" onclick="openRewrite('${a._id}')">Xem / sửa lại</button>
-            </div>`
-          : `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#92400e;display:flex;align-items:center;justify-content:space-between;gap:10px">
+            </div>`;
+      } else if (_rewriteRequired(a)) {
+        rewriteCtaHtml = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#92400e;display:flex;align-items:center;justify-content:space-between;gap:10px">
               <span><i class="fas fa-pen-fancy"></i> Hãy viết lại bài này dựa trên feedback để tiến bộ.</span>
               <button class="btn-primary" style="flex-shrink:0" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại bài</button>
-            </div>`)
-      : '';
+            </div>`;
+      } else {
+        rewriteCtaHtml = `<div style="background:var(--surface2,#f9fafb);border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12.5px;color:var(--text3,#6b7280);display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span>Bài trước ngày áp dụng — viết lại là <b>không bắt buộc</b>.</span>
+              <button class="btn-secondary" style="flex-shrink:0" onclick="openRewrite('${a._id}')">Viết lại (tùy chọn)</button>
+            </div>`;
+      }
+    }
 
     document.getElementById('review-modal-body').innerHTML = `
       ${statusBannerHtml}
@@ -850,6 +869,17 @@ function closeReviewModal() {
 // ──────────────────────────────────────────────────────
 const RW_MIN = { 1: 150, 2: 250 };
 let _rwState = null; // { attemptId, gradedTasks:[1,2] }
+
+// Essays graded before this date are grandfathered — rewrite is optional,
+// not counted toward the gate. Keep in sync with REWRITE_CUTOFF in
+// backend/services/writingService.js.
+const REWRITE_CUTOFF = new Date('2026-08-29T00:00:00+07:00');
+function _rewriteRequired(a) {
+  return a && a.gradingStatus === 'confirmed'
+    && a.grading && a.grading.confirmedAt
+    && new Date(a.grading.confirmedAt) >= REWRITE_CUTOFF
+    && !(a.rewrite && a.rewrite.bypassed);
+}
 
 function _rwPasteBlock(ta) {
   ta.addEventListener('paste', e => {
@@ -984,6 +1014,7 @@ async function submitRewrite() {
     if (typeof loadHistory === 'function') loadHistory();
     if (typeof loadPracticeHistory === 'function') loadPracticeHistory();
     _refreshRewriteBanner();
+    try { window.dispatchEvent(new Event('ews:rewrite-saved')); } catch (_) {}
   } catch (e) {
     btn.disabled = false;
     btn.innerHTML = old;

@@ -11,6 +11,7 @@ const WritingTask1   = require('../../models/WritingTask1');
 const WritingTask2   = require('../../models/WritingTask2');
 const WritingAttempt = require('../../models/WritingAttempt');
 const User           = require('../../models/User');
+const { REWRITE_CUTOFF } = require('../../services/writingService');
 
 const router = express.Router();
 
@@ -105,9 +106,9 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 30));
     const and = [];
     if (status) and.push({ gradingStatus: status });
-    // Rewrite-monitoring filter: 'pending' = confirmed essay the student
-    // hasn't rewritten yet; 'done' = has been rewritten.
-    if (rewrite === 'pending') and.push({ gradingStatus: 'confirmed', 'rewrite.done': { $ne: true } });
+    // Rewrite-monitoring filter: 'pending' = confirmed essay (from the
+    // cutoff onward) the student hasn't rewritten yet; 'done' = rewritten.
+    if (rewrite === 'pending') and.push({ gradingStatus: 'confirmed', 'grading.confirmedAt': { $gte: REWRITE_CUTOFF }, 'rewrite.done': { $ne: true } });
     else if (rewrite === 'done') and.push({ 'rewrite.done': true });
     if (type === 'practice') {
       and.push({ submissionType: 'practice' });
@@ -155,7 +156,7 @@ router.get('/writing-history/counts', auth, teacherOnly, async (req, res) => {
   try {
     const [rows, rewritePending] = await Promise.all([
       WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
-      WritingAttempt.countDocuments({ gradingStatus: 'confirmed', 'rewrite.done': { $ne: true } }),
+      WritingAttempt.countDocuments({ gradingStatus: 'confirmed', 'grading.confirmedAt': { $gte: REWRITE_CUTOFF }, 'rewrite.done': { $ne: true } }),
     ]);
     const counts = { pending: 0, ai_done: 0, confirmed: 0, rewritePending };
     rows.forEach(r => { if (r._id in counts) counts[r._id] = r.count; });

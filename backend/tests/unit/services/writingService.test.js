@@ -351,18 +351,22 @@ describe('writingService rewrite gate', () => {
     userId, examName: 'E', submissionType: 'exam', gradingStatus: 'confirmed',
     task1Answer: 'orig1', task2Answer: 'orig2', wordCount1: 160, wordCount2: 260,
     task1Snapshot: { prompt: 'p1' }, task2Snapshot: { prompt: 'p2' },
-    grading: { overallBand: 6, task1: { bandScore: 6 }, task2: { bandScore: 6 } },
+    grading: { overallBand: 6, confirmedAt: new Date(), task1: { bandScore: 6 }, task2: { bandScore: 6 } },
     ...over,
   });
   const words = n => Array(n).fill('word').join(' ');
 
-  test('getPendingRewrites counts only confirmed, not-done, not-bypassed', async () => {
+  test('getPendingRewrites counts only confirmed, not-done, not-bypassed, from the cutoff onward', async () => {
     const s = await createStudent();
     await confirmed(s._id);
     await confirmed(s._id);
     await confirmed(s._id, { 'rewrite.done': true });
     await confirmed(s._id, { 'rewrite.bypassed': true });
     await WritingAttempt.create({ userId: s._id, gradingStatus: 'ai_done', grading: { task1: { bandScore: 6 } } });
+    // Graded BEFORE the cutoff → grandfathered, not counted.
+    await confirmed(s._id, { 'grading.confirmedAt': new Date('2026-08-01T00:00:00Z') });
+    // Confirmed but with no confirmedAt at all → also not counted.
+    await WritingAttempt.create({ userId: s._id, examName: 'old', gradingStatus: 'confirmed', grading: { overallBand: 6, task1: { bandScore: 6 }, task2: { bandScore: 6 } } });
 
     const { count, items } = await writingService.getPendingRewrites(s._id);
     expect(count).toBe(2);
@@ -399,7 +403,7 @@ describe('writingService rewrite gate', () => {
     const a = await WritingAttempt.create({
       userId: s._id, submissionType: 'practice', examName: 'Task 2', gradingStatus: 'confirmed',
       task2Answer: 'x', wordCount2: 260, task2Snapshot: { prompt: 'p' },
-      grading: { overallBand: 6, task2: { bandScore: 6 } },
+      grading: { overallBand: 6, confirmedAt: new Date(), task2: { bandScore: 6 } },
     });
     const r = await writingService.submitRewrite(s._id, a._id, { task2: words(260) });
     expect(r.status).toBe('ok');

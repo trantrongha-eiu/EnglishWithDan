@@ -238,6 +238,10 @@ async function getAttempt(attemptId, requestingUser) {
 // ── "Viết lại" (rewrite) ─────────────────────────────────────────────
 const MAX_PENDING_REWRITES = 3;        // gate: 3+ un-rewritten confirmed essays => forced
 const REWRITE_MIN_WORDS = { 1: 150, 2: 250 }; // same minimums as the original task
+// The rewrite requirement only applies going forward — essays graded
+// BEFORE this date are grandfathered (not counted toward the gate).
+// Keep in sync with REWRITE_CUTOFF in frontend/js/writing.js.
+const REWRITE_CUTOFF = new Date('2026-08-29T00:00:00+07:00');
 
 const countWords = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
 
@@ -257,6 +261,7 @@ async function getPendingRewrites(userId) {
   const docs = await WritingAttempt.find({
     userId,
     gradingStatus: 'confirmed',
+    'grading.confirmedAt': { $gte: REWRITE_CUTOFF }, // grandfather older essays
     'rewrite.done': { $ne: true },
     'rewrite.bypassed': { $ne: true },
   }).sort({ submittedAt: 1 }).select('examName submissionType submittedAt grading.overallBand grading.task1.bandScore grading.task2.bandScore').lean();
@@ -328,5 +333,5 @@ module.exports = {
   startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice,
   getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, getPracticeNavCounts, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
-  getPendingRewrites, submitRewrite, MAX_PENDING_REWRITES, REWRITE_MIN_WORDS,
+  getPendingRewrites, submitRewrite, MAX_PENDING_REWRITES, REWRITE_MIN_WORDS, REWRITE_CUTOFF,
 };

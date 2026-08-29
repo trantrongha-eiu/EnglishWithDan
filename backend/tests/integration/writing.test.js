@@ -227,7 +227,7 @@ describe('rewrite gate — requireRewriteComplete + POST /attempt/:id/rewrite', 
     extra: {
       gradingStatus: 'confirmed',
       task1Snapshot: { prompt: 'p1' }, task2Snapshot: { prompt: 'p2' },
-      grading: { overallBand: 6, task1: { bandScore: 6 }, task2: { bandScore: 6 } },
+      grading: { overallBand: 6, confirmedAt: new Date(), task1: { bandScore: 6 }, task2: { bandScore: 6 } },
     },
   });
 
