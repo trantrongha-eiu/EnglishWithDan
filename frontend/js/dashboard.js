@@ -2609,17 +2609,42 @@ function _checkExactWordMatch(inputId, feedbackId, nextBtnId) {
 // (`filter(Boolean)`, i.e. length >= 1). Preserved here via this param
 // instead of silently unifying the two (a real, if minor, behavioural
 // difference — not something this cleanup should change).
+// Grammatical/filler words a student shouldn't be forced to type for the
+// answer to count — e.g. "phát triển" must still match "sự phát triển".
+const _MEANING_STOPWORDS = new Set([
+    'su', 'sự', 'viec', 'việc', 'cai', 'cái', 'mot', 'một', 'nhung', 'những',
+    'cac', 'các', 'nguoi', 'người', 'ke', 'kẻ', 'do', 'đồ', 'lam', 'làm',
+    'bi', 'bị', 'duoc', 'được', 'co', 'có', 'la', 'là', 'va', 'và', 'hoac',
+    'hoặc', 'cua', 'của', 'cho', 'de', 'để', 'thi', 'thì', 'ma', 'mà',
+    'to', 'a', 'an', 'the', 'of', 'for', 'be', 'being', 'someone', 'something', 'sb', 'sth',
+]);
+
 function _isMeaningMatch(userAnswer, correctMeaningRaw, minWordLen) {
     const ua    = (userAnswer || '').trim().toLowerCase();
     const caRaw = (correctMeaningRaw || '').toLowerCase();
     const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
+    // Keep spaces (was stripped, which collapsed every phrase to one token and
+    // silently disabled the per-word check below — so "từ" scored correct for
+    // "từ bỏ"). Diacritics + CJK ranges preserved; whitespace normalised.
+    const norm  = s => (s.normalize ? s.normalize('NFC') : s)
+        .replace(/[^a-z0-9\sàáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const sig = words => words.filter(w => w.length >= minWordLen && !_MEANING_STOPWORDS.has(w));
     return alts.some(alt => {
         const normAlt = norm(alt), normUa = norm(ua);
+        if (!normAlt || !normUa) return false;
         if (normUa === normAlt) return true;
-        const altWords = normAlt.split(/\s+/).filter(w => w.length >= minWordLen);
-        const uaWords  = normUa.split(/\s+/).filter(w => w.length >= minWordLen);
-        if (altWords.length === 0) return false;
+        const altWords = sig(normAlt.split(/\s+/));
+        const uaWords  = sig(normUa.split(/\s+/));
+        // Answer was all short/filler words (or a spaceless CJK string): fall
+        // back to a whole-string substring match, but only when the shorter
+        // string covers a real fraction of the longer one.
+        if (altWords.length === 0) {
+            const a = normUa.replace(/\s/g, ''), b = normAlt.replace(/\s/g, '');
+            if (Math.min(a.length, b.length) / Math.max(a.length, b.length) < 0.6) return false;
+            return a.includes(b) || b.includes(a);
+        }
         return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
     });
 }

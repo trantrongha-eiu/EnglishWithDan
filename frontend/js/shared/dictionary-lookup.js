@@ -43,6 +43,14 @@
   var _cache = new Map();
   var _pendingWordData = null;
 
+  // Insertion-ordered LRU-ish cap so a long study session can't grow either
+  // cache without bound.
+  function _cacheSet(map, key, val, max) {
+    if (map.has(key)) map.delete(key);
+    map.set(key, val);
+    while (map.size > (max || 200)) map.delete(map.keys().next().value);
+  }
+
   // MyMemory is a fuzzy-matched translation-MEMORY search, not a dictionary —
   // for a rare/short query it happily returns whole unrelated sentences that
   // merely score some fuzzy similarity (e.g. querying "inexplicably" can
@@ -177,7 +185,12 @@
     if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return '';
     if (!target || !target.contains(sel.anchorNode)) return '';
     var word = sel.toString().trim();
-    if (!/\s/.test(word)) return ''; // single word — let dblclick handle it
+    // A single-word selection is normally the dblclick handler's job — but a
+    // deliberate DRAG across one word never fires dblclick, so handle it here
+    // too. `e.detail >= 2` means this mouseup is the tail of an actual
+    // double-click, which _extractDoubleClickedWord already caught — skip it
+    // here so the popup doesn't open twice.
+    if (!/\s/.test(word) && e.detail >= 2) return '';
     if (word.split(/\s+/).length > 3 || word.length < 2) return '';
     return word;
   }
@@ -323,11 +336,11 @@
       }
       paint();
       if (done.trans && done.dict && done.mem && fresh()) {
-        _cache.set(key, {
+        _cacheSet(_cache, key, {
           phonetic: data.phonetic, partOfSpeech: data.partOfSpeech,
           primaryMeaning: data.primaryMeaning || 'Không tìm thấy',
           otherMeanings: data.otherMeanings, examples: data.examples
-        });
+        }, 200);
       }
     }
 
@@ -355,11 +368,15 @@
     var meta = [data.phonetic, data.partOfSpeech].filter(Boolean).join('  ·  ');
     document.getElementById('dict-phonetic').textContent = meta;
 
+    // Chips carry their value in a data- attribute (HTML-escaped) and get a
+    // real click listener wired below — the old inline
+    // onclick="selectDictMeaning(this,'<interpolated>')" broke (or was an
+    // injection surface) whenever a MyMemory "other meaning" contained a
+    // quote or backslash.
     var chipsHtml = data.otherMeanings.length
       ? '<div class="dict-chips-label">Nghĩa khác:</div><div class="dict-chips-wrap">' +
         data.otherMeanings.map(function (m) {
-          var safe = m.replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-          return '<button class="dict-meaning-chip" onclick="selectDictMeaning(this,\'' + safe + '\')">' + escHtml(m) + '</button>';
+          return '<button class="dict-meaning-chip" data-meaning="' + escHtml(m) + '">' + escHtml(m) + '</button>';
         }).join('') + '</div>'
       : '';
 
@@ -379,6 +396,13 @@
         '</div>' + chipsHtml + exHtml +
       '</div>' +
       '<div class="dict-tab-panel" id="dict-tab-collocations" style="display:none"></div>';
+
+    var chipEls = document.querySelectorAll('#dict-body .dict-meaning-chip');
+    for (var ci = 0; ci < chipEls.length; ci++) {
+      chipEls[ci].addEventListener('click', function () {
+        selectDictMeaning(this, this.getAttribute('data-meaning') || '');
+      });
+    }
   }
 
   // ── Collocations tab — lazy: only fetched when the student actually
@@ -417,7 +441,7 @@
       var res = await _vocabFetch('/dictionary/' + encodeURIComponent(word) + '/collocations');
       if (requestId !== _collocSeq) return;
       var list = res.collocations || [];
-      _collocCache.set(key, list);
+      _cacheSet(_collocCache, key, list, 100);
       renderCollocations(list);
     } catch (e) {
       if (requestId !== _collocSeq) return;

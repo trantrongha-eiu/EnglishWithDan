@@ -183,7 +183,9 @@
     var requestId = ++_seq;
     translateText(text).then(function (translated) {
       if (requestId !== _seq) return;
+      if (_cache.has(key)) _cache.delete(key);
       _cache.set(key, translated);
+      while (_cache.size > 150) _cache.delete(_cache.keys().next().value);
       renderResult(translated);
     }).catch(function () {
       if (requestId !== _seq) return;
