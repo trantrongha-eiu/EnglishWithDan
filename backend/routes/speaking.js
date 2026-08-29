@@ -66,6 +66,7 @@ router.get('/topics',           auth, premiumOnly, speakCtrl.getTopics);
 router.get('/random',           auth, premiumOnly, speakCtrl.getRandom);
 router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
 router.post('/analyze',         auth, premiumOnly, analyzeLimiter, speakCtrl.analyze);
+router.post('/mock-submit',     auth, premiumOnly, analyzeLimiter, speakCtrl.mockSubmit);
 router.post('/:attemptId/retry', auth, premiumOnly, analyzeLimiter, speakCtrl.retry);
 router.post('/sample-answer',   auth, premiumOnly, sampleAnswerLimiter, speakCtrl.sampleAnswer);
 router.post('/hints',           auth, premiumOnly, hintsLimiter, speakCtrl.hints);

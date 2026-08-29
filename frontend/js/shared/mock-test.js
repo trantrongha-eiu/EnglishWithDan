@@ -68,7 +68,12 @@
       var data = await window.ApiClient.handleResponse(res);
       var nav = data.nav || {};
       if (nav.done)        { location.href = 'review-history.html?view=mock'; return; }
-      if (nav.sittingBreak) { location.href = 'dashboard.html?mockbreak=1'; return; }
+      // Sitting break — back to the dashboard; the student self-starts the
+      // next skill. `breakAfter` ('reading' | 'writing') picks the copy.
+      if (nav.sittingBreak) {
+        location.href = 'dashboard.html?mockbreak=' + encodeURIComponent(nav.breakAfter || 'reading');
+        return;
+      }
       if (nav.nextSkill)   { location.href = pageUrl(nav.nextSkill, x.mockId); return; }
       location.href = 'dashboard.html';
     } catch (e) {
@@ -243,6 +248,9 @@
       fetch(url, { method: 'POST', headers: h(), body: body, keepalive: true })
         .then(function (r) { return r.json(); })
         .then(function (d) {
+          if (!_proctor) return;
+          // Server voided the run for too many exam-screen exits.
+          if (d && d.disqualified) { _disqualify(d.cooldownSeconds); return; }
           if (d && typeof d.violationCount === 'number') {
             _proctor.count = d.violationCount;
             _renderBadge();
@@ -250,6 +258,44 @@
         })
         .catch(function () {});
     } catch (_) {}
+  }
+
+  // The run has been disqualified server-side (violationCount > 10). Tear
+  // down every proctoring hook, throw up an unmissable full-screen notice,
+  // then bounce the student to the dashboard — which explains the cooldown.
+  function _disqualify(cooldownSeconds) {
+    if (!_proctor || _proctor.disqualified) return;
+    _proctor.disqualified = true;
+    _proctor.navigatingAway = true;   // silences the proctor's own beforeunload
+    _alarmOff();
+    _unlockNav();
+    try { document.removeEventListener('visibilitychange', _proctor.onVis); } catch (_) {}
+    try { window.removeEventListener('blur', _proctor.onBlur); } catch (_) {}
+    try { window.removeEventListener('focus', _proctor.onFocus); } catch (_) {}
+    // The skill page keeps its own window.onbeforeunload ("Rời trang sẽ dừng
+    // bài") armed during an exam — clear it so the forced redirect below
+    // doesn't stack a native "Leave site?" dialog on top of the notice.
+    // Nothing to save: the run is void.
+    try { window.onbeforeunload = null; } catch (_) {}
+
+    var mins = Math.max(1, Math.ceil((Number(cooldownSeconds) || 300) / 60));
+    var ov = document.createElement('div');
+    ov.id = 'mock-dq-overlay';
+    ov.style.cssText = [
+      'position:fixed', 'inset:0', 'z-index:2147483647', 'display:flex',
+      'flex-direction:column', 'align-items:center', 'justify-content:center',
+      'gap:14px', 'text-align:center', 'padding:24px',
+      'background:rgba(127,29,29,.97)', 'color:#fff', 'font:600 15px/1.55 inherit'
+    ].join(';');
+    ov.innerHTML =
+      '<div style="font-size:44px">🚫</div>' +
+      '<div style="font-size:20px;font-weight:800">Lượt thi thử đã bị huỷ</div>' +
+      '<div style="max-width:460px">Bạn đã rời khỏi màn hình thi quá nhiều lần. '
+      + 'Kết quả lượt này <b>không được tính</b>. Hãy quay lại trang chủ và đợi khoảng <b>'
+      + mins + ' phút</b> trước khi bắt đầu lượt thi mới.</div>' +
+      '<div style="opacity:.85">Đang chuyển về trang chủ…</div>';
+    (_fsRoot() || document.body).appendChild(ov);
+    setTimeout(function () { location.href = 'dashboard.html?mockvoid=1'; }, 3200);
   }
 
   // A tab switch fires blur AND visibilitychange — collapse to one "leave".
@@ -347,7 +393,7 @@
     if (!x.mockId || !x.skill || _proctor) return;
     _proctor = {
       mockId: x.mockId, skill: x.skill, count: 0,
-      lastLeaveAt: 0, navigatingAway: false, navLocked: false,
+      lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
     };

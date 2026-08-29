@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 // Admin monitoring for the full 4-skill mock test. Before this page the run
@@ -17,7 +18,13 @@ const STATUS_META = {
   'in-progress':      { label: 'Đang làm dở', cls: 'badge-gray' },
   'awaiting-grading': { label: 'Chờ chấm W/S', cls: 'badge-yellow' },
   'completed':        { label: 'Hoàn thành', cls: 'badge-green' },
+  'disqualified':     { label: 'Huỷ do vi phạm', cls: 'badge-red' },
 };
+
+// Bands a teacher may type into the manual-score editor ('' = clear / auto).
+// 0 is omitted on purpose — see BAND_VALUES in mockTestService.js.
+const BAND_OPTS = ['', '9', '8.5', '8', '7.5', '7', '6.5', '6', '5.5', '5', '4.5', '4', '3.5', '3', '2.5', '2', '1.5', '1'];
+const MOCK_SKILLS = [['listening', 'Listening'], ['reading', 'Reading'], ['writing', 'Writing'], ['speaking', 'Speaking']];
 
 function statusBadge(s) {
   const m = STATUS_META[s] || { label: s, cls: 'badge-gray' };
@@ -44,7 +51,10 @@ function SkillCell({ skill, step }) {
     skill === 'listening' && step && step.attemptId ? `/listening.html?review=${step.attemptId}`
     : skill === 'reading' && step && step.attemptId ? `/reading.html?review=${step.attemptId}`
     : null;
-  const inner = bandChip(b);
+  const manualMark = step && step.manual
+    ? <span title="Điểm giáo viên nhập tay" style={{ fontSize: 10, color: 'var(--accent2)' }}> ✎</span>
+    : null;
+  const inner = <>{bandChip(b)}{manualMark}</>;
   if (!href) return <td style={{ textAlign: 'center' }}>{inner}</td>;
   return (
     <td style={{ textAlign: 'center' }}>
@@ -58,10 +68,12 @@ function SkillCell({ skill, step }) {
 
 const PROCTOR_LABEL = { hidden: 'Ẩn tab', blur: 'Mất focus cửa sổ', 'unload-attempt': 'Định đóng tab' };
 
-function ProctorModal({ id, onClose }) {
+function ProctorModal({ id, onClose, onSaved }) {
   const toast = useToast();
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [edit, setEdit] = useState(null);   // { listening, reading, writing, speaking, note } while editing
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     apiFetch(`/admin/mock-tests/${id}`)
@@ -71,10 +83,48 @@ function ProctorModal({ id, onClose }) {
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const p = attempt?.proctor;
-  const SKILLS = [
-    ['listening', 'Listening'], ['reading', 'Reading'],
-    ['writing', 'Writing'], ['speaking', 'Speaking'],
-  ];
+  const SKILLS = MOCK_SKILLS;
+
+  const bandStr = b => (b == null ? '' : String(b));
+
+  function startEdit() {
+    setEdit({
+      listening: bandStr(attempt.steps.listening?.band),
+      reading:   bandStr(attempt.steps.reading?.band),
+      writing:   bandStr(attempt.steps.writing?.band),
+      speaking:  bandStr(attempt.steps.speaking?.band),
+      note: attempt.adminNote || '',
+    });
+  }
+
+  async function saveEdit() {
+    // Only send skills the teacher actually changed. '' on a skill that had
+    // a band clears the manual override; '' on an already-empty skill is
+    // skipped.
+    const steps = {};
+    for (const [s] of SKILLS) {
+      const orig = bandStr(attempt.steps[s]?.band);
+      if (edit[s] !== orig) steps[s] = edit[s] === '' ? null : Number(edit[s]);
+    }
+    const noteChanged = (edit.note || '') !== (attempt.adminNote || '');
+    if (Object.keys(steps).length === 0 && !noteChanged) { setEdit(null); return; }
+
+    setSaving(true);
+    try {
+      const d = await apiFetch(`/admin/mock-tests/${id}/scores`, {
+        method: 'PUT',
+        body: JSON.stringify({ steps, note: noteChanged ? edit.note : undefined }),
+      });
+      setAttempt(d.attempt);
+      setEdit(null);
+      toast('Đã lưu điểm', 'success');
+      onSaved?.();
+    } catch (e) {
+      toast(e.message || 'Lỗi lưu điểm', 'error');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -96,7 +146,47 @@ function ProctorModal({ id, onClose }) {
                 <span><strong>Band tổng:</strong> {attempt.overallBand != null ? attempt.overallBand.toFixed(1) : 'chưa đủ'}</span>
               </div>
 
-              <table className="table" style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                <strong style={{ fontSize: 13 }}>Điểm từng kỹ năng</strong>
+                {!edit && <button className="btn btn-ghost btn-sm" onClick={startEdit}>✎ Sửa / nhập điểm</button>}
+              </div>
+
+              {edit ? (
+                <div style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 12, marginBottom: 16 }}>
+                  <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
+                    Nhập band 1–9 (bước 0.5). Để trống = xoá điểm nhập tay, dùng lại điểm chấm tự động.
+                    Band tổng tính lại tự động (trung bình 4 kỹ năng, làm tròn chuẩn IELTS).
+                    Điểm Speaking / Writing nhập tay cũng được ghi vào lịch sử kỹ năng riêng của học sinh
+                    (Writing: đánh dấu đã chấm, không gửi email).
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))', gap: 10, marginBottom: 10 }}>
+                    {SKILLS.map(([s, l]) => (
+                      <label key={s} style={{ fontSize: 12, fontWeight: 700 }}>
+                        {l}
+                        <select className="form-input" value={edit[s]} disabled={saving}
+                          onChange={e => setEdit({ ...edit, [s]: e.target.value })}
+                          style={{ width: '100%', marginTop: 4 }}>
+                          {BAND_OPTS.map(o => <option key={o} value={o}>{o === '' ? '— (tự động)' : o}</option>)}
+                        </select>
+                      </label>
+                    ))}
+                  </div>
+                  <label style={{ fontSize: 12, fontWeight: 700 }}>
+                    Ghi chú (tuỳ chọn)
+                    <textarea className="form-input" rows={2} value={edit.note} disabled={saving}
+                      placeholder="VD: Speaking chấm trực tiếp 29/08"
+                      onChange={e => setEdit({ ...edit, note: e.target.value })}
+                      style={{ width: '100%', marginTop: 4, resize: 'vertical' }} />
+                  </label>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                    <button className="btn btn-primary btn-sm" onClick={saveEdit} disabled={saving}>
+                      {saving ? 'Đang lưu…' : 'Lưu điểm'}
+                    </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setEdit(null)} disabled={saving}>Huỷ</button>
+                  </div>
+                </div>
+              ) : (
+              <table className="table" style={{ marginBottom: attempt.adminNote ? 8 : 16 }}>
                 <thead><tr><th>KỸ NĂNG</th><th>ĐỀ</th><th>BAND</th><th>HOÀN THÀNH</th></tr></thead>
                 <tbody>
                   {SKILLS.map(([s, l]) => {
@@ -109,13 +199,21 @@ function ProctorModal({ id, onClose }) {
                       <tr key={s}>
                         <td>{l}</td>
                         <td style={{ fontSize: 12, color: 'var(--text2)' }}>{name || '–'}</td>
-                        <td>{bandChip(step?.band)}</td>
+                        <td>{bandChip(step?.band)}
+                          {step?.manual && <span title="Giáo viên nhập tay" style={{ fontSize: 10, color: 'var(--accent2)' }}> ✎ nhập tay</span>}
+                        </td>
                         <td style={{ fontSize: 12 }}>{step?.completedAt ? formatDate(step.completedAt) : '–'}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+              )}
+              {!edit && attempt.adminNote && (
+                <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 16 }}>
+                  <strong>Ghi chú:</strong> {attempt.adminNote}
+                </div>
+              )}
 
               <div style={{
                 background: p?.violated ? 'rgba(198,40,40,.08)' : 'var(--surface2)',
@@ -149,8 +247,10 @@ function ProctorModal({ id, onClose }) {
 
 export default function MockTests() {
   const toast = useToast();
+  const { isAdmin } = useAuth();
   const [params] = useSearchParams();
   const userId = params.get('userId') || '';
+  const [deletingId, setDeletingId] = useState(null);
 
   const [rows, setRows] = useState([]);
   const [total, setTotal] = useState(0);
@@ -186,6 +286,20 @@ export default function MockTests() {
 
   useEffect(() => { load(); }, [load]);
 
+  function deleteRun(r) {
+    const who = r.user.displayName + (r.user.username ? ` (@${r.user.username})` : '');
+    if (!window.confirm(
+      `Xoá lượt thi thử này của ${who}?\n\n`
+      + 'Lượt sẽ biến mất khỏi bảng theo dõi và khỏi lịch sử của học sinh. '
+      + 'Các bài Listening / Reading / Writing / Speaking đã làm vẫn nằm trong lịch sử từng kỹ năng.'
+    )) return;
+    setDeletingId(r._id);
+    apiFetch(`/admin/mock-tests/${r._id}`, { method: 'DELETE' })
+      .then(() => { toast('Đã xoá lượt thi thử', 'success'); return load(); })
+      .catch(e => toast(e.message || 'Lỗi xoá', 'error'))
+      .finally(() => setDeletingId(null));
+  }
+
   const q = search.trim().toLowerCase();
   const shown = q
     ? rows.filter(r =>
@@ -219,6 +333,7 @@ export default function MockTests() {
           <option value="in-progress">Đang làm dở</option>
           <option value="awaiting-grading">Chờ chấm W/S</option>
           <option value="completed">Hoàn thành</option>
+          <option value="disqualified">Huỷ do vi phạm</option>
         </select>
         <input className="form-input search-input" placeholder="Tìm học sinh / lớp…"
           value={search} onChange={e => setSearch(e.target.value)} style={{ width: 220, flex: 'none' }} />
@@ -266,8 +381,16 @@ export default function MockTests() {
                         ? <span className="badge badge-red" title="Bị đánh dấu vi phạm thi cử">⚠️ {r.proctor.violationCount}</span>
                         : <span style={{ color: r.proctor.violationCount ? 'var(--yellow)' : 'var(--text3)' }}>{r.proctor.violationCount}</span>}
                     </td>
-                    <td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setDetailId(r._id)}>Chi tiết</button>
+                      {isAdmin && (
+                        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)', marginLeft: 4 }}
+                          disabled={deletingId === r._id}
+                          onClick={() => deleteRun(r)}
+                          title="Xoá lượt thi thử khỏi bảng theo dõi và lịch sử học sinh">
+                          {deletingId === r._id ? '…' : '🗑 Xoá'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -278,7 +401,7 @@ export default function MockTests() {
         <Pagination page={page} total={total} pageSize={PAGE_SIZE} onPage={setPage} />
       </div>
 
-      {detailId && <ProctorModal id={detailId} onClose={() => setDetailId(null)} />}
+      {detailId && <ProctorModal id={detailId} onClose={() => setDetailId(null)} onSaved={load} />}
     </>
   );
 }

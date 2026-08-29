@@ -528,6 +528,17 @@ async function startSpeakingMockQuestion() {
     if (q.part === 2) {
       setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
     }
+
+    // No SpeechRecognition (Firefox / Safari / iOS): tell the student they
+    // can still record — the teacher will grade from the recording.
+    if (!state.recognition) {
+      const rs = document.getElementById('rec-status');
+      if (rs) rs.textContent = 'Trình duyệt này không tạo phụ đề tự động — bạn vẫn bấm để ghi âm, giáo viên sẽ chấm từ bản ghi.';
+    }
+    // The "finish Speaking" button is available from the start — a dead
+    // recognition service or a failed AI grade must never trap the student
+    // on this screen unable to complete the mock.
+    _ensureSpeakingMockFinish();
   } catch (e) {
     console.error('startSpeakingMockQuestion:', e);
     showToast('Không mở được câu Speaking của bài thi thử', 'error');
@@ -535,27 +546,79 @@ async function startSpeakingMockQuestion() {
   }
 }
 
-// After the mock's Speaking answer is graded, show a single "finish the
-// mock" affordance instead of leaving the student on the feedback screen
-// with no obvious next step.
-function _showSpeakingMockFinish(attemptId) {
-  if (document.getElementById('mock-finish-btn')) return;
-  // A floating pill (not a full-width bar) bottom-centre — nudged up off
-  // the very edge so it doesn't sit on the peer-chat FAB. It's the only
-  // action left on this screen in mock mode, so a single button is enough.
-  const btn = document.createElement('button');
-  btn.id = 'mock-finish-btn';
-  btn.textContent = 'Hoàn tất bài thi thử → xem kết quả';
-  btn.style.cssText = [
-    'position:fixed', 'left:50%', 'bottom:20px', 'transform:translateX(-50%)',
-    'z-index:2147483000', 'background:linear-gradient(135deg,#e53935,#c62828)',
-    'color:#fff', 'border:none', 'border-radius:999px', 'padding:13px 26px',
-    'font:800 14px inherit', 'cursor:pointer', 'box-shadow:0 6px 20px rgba(0,0,0,.3)',
-    'max-width:92vw'
-  ].join(';');
-  btn.onclick = () => { btn.disabled = true; btn.textContent = 'Đang lưu…'; window.MockTest.advance('speaking', attemptId); };
-  document.body.appendChild(btn);
-  btn.scrollIntoView({ block: 'nearest' });
+// The single "finish the Speaking step / whole mock" affordance. Idempotent
+// — created once by startSpeakingMockQuestion() and just relabelled once an
+// AI grade lands. A floating pill bottom-centre, nudged up off the peer-chat
+// FAB.
+function _ensureSpeakingMockFinish() {
+  let btn = document.getElementById('mock-finish-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'mock-finish-btn';
+    btn.style.cssText = [
+      'position:fixed', 'left:50%', 'bottom:20px', 'transform:translateX(-50%)',
+      'z-index:2147483000', 'background:linear-gradient(135deg,#e53935,#c62828)',
+      'color:#fff', 'border:none', 'border-radius:999px', 'padding:13px 26px',
+      'font:800 14px inherit', 'cursor:pointer', 'box-shadow:0 6px 20px rgba(0,0,0,.3)',
+      'max-width:92vw'
+    ].join(';');
+    btn.onclick = _finishMockSpeaking;
+    document.body.appendChild(btn);
+  }
+  btn.textContent = state._mockSpeakingAttemptId
+    ? 'Hoàn tất bài thi thử → xem kết quả'
+    : 'Nộp & hoàn tất phần Nói';
+}
+
+// Ends the mock's Speaking step. If the answer was already AI-graded
+// (analyzeTranscript set state._mockSpeakingAttemptId) we advance straight
+// away; otherwise we create the SpeakingAttempt via /api/speaking/mock-submit
+// (transcript optional — teacher grades it, or the server grades async if a
+// transcript came through) and then advance.
+async function _finishMockSpeaking() {
+  // Don't finish out from under a live recording — the blob would be lost
+  // and the mic stream would leak.
+  if (state.isRecording || _audioOnlyRecording || state._recordBusy || _audioOnlyBusy) {
+    showToast('Hãy bấm "Dừng" để kết thúc ghi âm trước khi hoàn tất phần Nói.', 'warn');
+    return;
+  }
+  const btn = document.getElementById('mock-finish-btn');
+  const ta = document.getElementById('transcript-textarea');
+  const transcript = (ta && ta.value.trim()) || state.finalTranscript?.trim() || '';
+
+  if (!state._mockSpeakingAttemptId && !transcript && !_lastRecordingBlob) {
+    if (!window.confirm('Bạn chưa ghi âm và chưa nhập câu trả lời nào. Vẫn hoàn tất phần Nói?')) return;
+  }
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang lưu…'; }
+
+  try {
+    let attemptId = state._mockSpeakingAttemptId;
+    if (!attemptId) {
+      const q = state.currentQuestion || {};
+      const data = await apiFetch('/api/speaking/mock-submit', {
+        method: 'POST',
+        body: JSON.stringify({
+          transcript,
+          question: q.question || q.cueCard || '',
+          questionId: q._id,
+          topic: q.topic,
+          part: q.part || 2,
+          duration: state._frozenDurationSeconds || 0,
+        }),
+      });
+      attemptId = data.attemptId || null;
+      // Key the local recording (if any) to this attempt for same-device
+      // playback in History later.
+      if (attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
+        window.SpeakingAudioStore.saveAudioRecording(attemptId, _lastRecordingBlob);
+      }
+    }
+    await window.MockTest.advance('speaking', attemptId);
+  } catch (e) {
+    console.error('_finishMockSpeaking:', e);
+    showToast(e?.message || 'Không hoàn tất được phần Nói. Thử lại.', 'error');
+    if (btn) { btn.disabled = false; _ensureSpeakingMockFinish(); }
+  }
 }
 
 async function loadRandomQuestion() {
@@ -814,6 +877,10 @@ function resetPractice() {
   state.recordStartTime = null;
   state._frozenDurationSeconds = 0;
   state._analyzing      = false;
+  _audioOnlyRecording   = false;
+  // A retry in mock mode must re-submit the NEW answer, not silently advance
+  // with the previously-graded attempt id.
+  state._mockSpeakingAttemptId = null;
   // Without this, an async onend still in flight from the abandoned
   // recording (recognition.stop() above is async) fires _finishRecordingUI()
   // afterward, sees the just-cleared textarea empty, and repopulates it with
@@ -939,18 +1006,16 @@ function setupRecognition() {
     if (btnRecord) { btnRecord.classList.add('recording'); btnRecord.disabled = false; }
     state._recordBusy = false;
 
-    // Only (re)start the timers — and the raw-audio capture for the
-    // playback button — on the genuine first start of this session.
+    // Only (re)start the timers on the genuine first start of this session.
     // state._recognitionEverStarted is already true by the time onstart
-    // fires again after a transparent auto-restart (see onend below), so
-    // the elapsed/countdown timers keep running through the gap instead of
-    // resetting, and we don't re-acquire a second audio-capture stream
-    // mid-answer.
+    // fires again after a transparent auto-restart (see onend below), so the
+    // elapsed/countdown timers keep running through the gap instead of
+    // resetting. (Raw-audio capture is started in _startRecordingGuarded(),
+    // independent of the recognition engine — see the comment there.)
     if (!state._recognitionEverStarted) {
       state._recognitionEverStarted = true;
       startElapsedTimer();
       startSpeakCountdown();
-      _startAudioCapture();
     }
   };
 
@@ -1047,6 +1112,7 @@ let _lastRecordingBlob = null;
 
 async function _startAudioCapture() {
   if (!('MediaRecorder' in window) || !navigator.mediaDevices?.getUserMedia) return;
+  if (_mediaRecorder) return; // idempotent — already capturing this session
   try {
     // Explicit constraints (not just `audio: true`) — without these, some
     // browsers/devices don't enable echo cancellation by default, so the
@@ -1058,10 +1124,22 @@ async function _startAudioCapture() {
     _mediaChunks = [];
     _mediaRecorder = new MediaRecorder(_mediaStream);
     _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _mediaChunks.push(e.data); };
-    _mediaRecorder.start();
+    // Timeslice: flush a chunk every second so an abrupt end (tab close,
+    // crash, forced stop) still leaves a usable blob instead of nothing.
+    _mediaRecorder.start(1000);
   } catch (e) {
-    console.warn('_startAudioCapture:', e.message);
+    console.warn('_startAudioCapture:', e.name, e.message);
     _mediaRecorder = null;
+    _mediaStream = null;
+    // Mic permission / hardware problems are the #1 "recording doesn't work"
+    // report — say what's actually wrong instead of failing silently.
+    if (e.name === 'NotAllowedError' || e.name === 'SecurityError') {
+      showToast('Trình duyệt đang chặn micro. Bấm biểu tượng khoá 🔒 trên thanh địa chỉ → cho phép Micro → tải lại trang.', 'error', 7000);
+    } else if (e.name === 'NotFoundError' || e.name === 'DevicesNotFoundError') {
+      showToast('Không tìm thấy micro nào. Hãy cắm tai nghe/micro rồi thử lại.', 'error', 6000);
+    } else if (e.name === 'NotReadableError' || e.name === 'TrackStartError') {
+      showToast('Micro đang bị ứng dụng khác chiếm (Zoom, Meet…). Đóng ứng dụng đó rồi thử lại.', 'error', 6000);
+    }
   }
 }
 
@@ -1141,12 +1219,16 @@ function _startRecordingGuarded() {
     state.isRecording = true;
     _lastRecordingBlob = null;
     document.getElementById('btn-playback-recording')?.classList.add('hidden');
-    // _startAudioCapture() itself is fired from onstart, not here —
-    // starting it only after SpeechRecognition confirms it has acquired
-    // the mic avoids two near-simultaneous getUserMedia calls contending
-    // for the same device on some browser/OS combos. state._recordBusy/
-    // btnRecord.disabled are also cleared there, not here — the click
-    // isn't "done" until the engine confirms it's actually live.
+    // Raw-audio capture (for the playback button + the mock's teacher-graded
+    // recording) runs INDEPENDENTLY of SpeechRecognition. It used to be fired
+    // from recognition.onstart, so when the browser has no SpeechRecognition
+    // (Firefox / Safari / iOS) or its recognition service is unreachable, no
+    // audio was ever captured and — in a mock — the student couldn't finish.
+    // Starting it here decouples the two. _startAudioCapture() is idempotent
+    // and best-effort, so a rare getUserMedia contention just no-ops.
+    _startAudioCapture();
+    // state._recordBusy / btnRecord.disabled are cleared in onstart, not
+    // here — the click isn't "done" until the engine confirms it's live.
 
     // Backstop for when the browser's speech engine never calls back at
     // all (e.g. can't reach its recognition service — same class of
@@ -1169,8 +1251,67 @@ function _startRecordingGuarded() {
   }
 }
 
+// Audio-only recording — no live transcript. Used ONLY in the full mock
+// test's Speaking step when the browser has no SpeechRecognition (Firefox /
+// Safari / iOS): the student must still be able to record an answer for the
+// teacher to grade. Drives the same record-button UI as the normal flow.
+let _audioOnlyRecording = false;
+let _audioOnlyBusy = false;   // start/stop still settling — ignore re-taps
+
+function _toggleAudioOnlyRecording() {
+  if (_audioOnlyBusy) return;
+  const recIcon   = document.getElementById('rec-icon');
+  const recLabel  = document.getElementById('rec-label');
+  const recStatus = document.getElementById('rec-status');
+  const btnRecord = document.getElementById('btn-record');
+
+  if (_audioOnlyRecording) {
+    _audioOnlyBusy = true;
+    _audioOnlyRecording = false;
+    state.isRecording = false;
+    state._frozenDurationSeconds = getElapsedSeconds();
+    stopElapsedTimer();
+    if (recIcon)   recIcon.className = 'fas fa-microphone rec-mic';
+    if (recLabel)  recLabel.textContent = 'Bắt đầu';
+    if (btnRecord) { btnRecord.classList.remove('recording'); btnRecord.disabled = true; }
+    if (recStatus) { recStatus.textContent = 'Đang lưu bản ghi…'; recStatus.classList.remove('live'); }
+    _stopAudioCapture().then(blob => {
+      _lastRecordingBlob = blob;
+      const pb = document.getElementById('btn-playback-recording');
+      if (pb) pb.classList.toggle('hidden', !blob);
+      if (recStatus) recStatus.textContent = blob ? '✓ Ghi âm hoàn tất' : 'Không ghi được âm thanh — kiểm tra micro';
+      _ensureSpeakingMockFinish();
+    }).finally(() => {
+      _audioOnlyBusy = false;
+      if (btnRecord) btnRecord.disabled = false;
+    });
+    return;
+  }
+
+  _audioOnlyBusy = true;
+  _audioOnlyRecording = true;
+  state.isRecording = true;
+  _lastRecordingBlob = null;
+  document.getElementById('btn-playback-recording')?.classList.add('hidden');
+  if (recIcon)   recIcon.className = 'fas fa-stop rec-mic';
+  if (recLabel)  recLabel.textContent = 'Dừng';
+  if (btnRecord) btnRecord.classList.add('recording');
+  if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm (không có phụ đề tự động)'; recStatus.classList.add('live'); }
+  startElapsedTimer();
+  // Wait for getUserMedia to actually settle before the button is live again,
+  // so a fast double-tap can't stop a capture that hasn't started yet (which
+  // would leak the mic stream).
+  Promise.resolve(_startAudioCapture()).finally(() => { _audioOnlyBusy = false; });
+}
+
 function toggleRecord() {
   if (!state.recognition) {
+    // Full mock Speaking step on a browser without SpeechRecognition — fall
+    // back to an audio-only recording so the student can still submit.
+    if (_mockMode && 'MediaRecorder' in window && navigator.mediaDevices?.getUserMedia) {
+      _toggleAudioOnlyRecording();
+      return;
+    }
     showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
     return;
   }
@@ -1300,7 +1441,8 @@ async function analyzeTranscript() {
     // combined result (advance() redirects to review-history.html?view=mock).
     if (_mockMode && window.MockTest && window.MockTest.active()) {
       toast('Đã chấm xong Speaking — đây là kỹ năng cuối của bài thi thử.', 'success');
-      _showSpeakingMockFinish(data.attemptId);
+      state._mockSpeakingAttemptId = data.attemptId || null;
+      _ensureSpeakingMockFinish();
     }
 
     // Best-effort: key the locally-captured recording (if any) to this

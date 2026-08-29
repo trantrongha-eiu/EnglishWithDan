@@ -77,6 +77,41 @@ exports.analyze = catchAsync(async (req, res) => {
   res.json({ success: true, feedback, attemptId, newlyUnlocked });
 });
 
+// ── POST /api/speaking/mock-submit ───────────────────────────
+// The full mock test's Speaking step (step 4/4). Unlike /analyze this NEVER
+// requires a transcript and never blocks on Gemini: a student whose browser
+// has no SpeechRecognition (Firefox / Safari / iOS) or whose recognition
+// service dropped out must still be able to finish the mock. We persist a
+// pending SpeakingAttempt (audio, if any, is keyed to it client-side) and
+// return its id immediately so shared/mock-test.js can advance(). If a
+// transcript did come through, grading runs fire-and-forget so the AI band
+// still fills in later via mockTestService.refreshGrades; otherwise the
+// teacher enters the band by hand from the admin mock monitor.
+exports.mockSubmit = catchAsync(async (req, res) => {
+  const { transcript, question, questionId, topic, part, duration } = req.body || {};
+  const partNum = part ? Number(part) : 2;
+  const questionText = question || 'IELTS Speaking mock';
+  const cleanTranscript = typeof transcript === 'string' ? transcript.trim() : '';
+
+  const attemptId = await speakingService.createPendingAttempt(req.user._id, {
+    questionId, topic, part: partNum, questionText,
+    transcript: cleanTranscript, duration
+  });
+
+  // Best-effort async grade — don't await, don't let a failure touch the
+  // response. mockTestService picks the band up on the next history read.
+  if (attemptId && cleanTranscript) {
+    speakingService.gradeSpeaking(questionText, cleanTranscript, partNum)
+      .then(fb => speakingService.finalizeAttempt(attemptId, fb, req.user))
+      .catch(err => {
+        console.error('[Speaking] mock-submit background grade failed:', err.message);
+        return speakingService.markAttemptError(attemptId);
+      });
+  }
+
+  res.json({ success: true, attemptId, graded: !!(attemptId && cleanTranscript) });
+});
+
 // ── POST /api/speaking/sample-answer ─────────────────────────
 // Part 1/2/3 each get their own shape — see buildSampleAnswerPrompt()
 // in geminiService.js. Part 2 additionally needs the cue card text.
