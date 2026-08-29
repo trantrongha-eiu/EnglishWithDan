@@ -5,6 +5,8 @@ const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createPremiumStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
 const User = require('../../models/User');
+const SpeakingAttempt = require('../../models/SpeakingAttempt');
+const WritingAttempt = require('../../models/WritingAttempt');
 
 // A free student whose first-24h trial window has already closed — the state
 // requirePremium() actually blocks (a brand-new createStudent() is still
@@ -303,6 +305,36 @@ describe('PUT /api/admin/mock-tests/:id/scores', () => {
     const teacher = authed(await createTeacher());
     const res = await teacher.put(`/api/admin/mock-tests/${m._id}/scores`, { steps: { writing: 6.2 } });
     expect(res.status).toBe(400);
+  });
+
+  test('mirrors the band onto the Speaking + Writing sub-attempts', async () => {
+    await seedPools();
+    const student = await createPremiumStudent();
+    const api = authed(student);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+
+    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    const ra = await createTestAttempt({ userId: student._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
+    const wa = await createWritingAttempt({ userId: student._id });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
+    const sa = await createSpeakingAttempt({ userId: student._id, part: 2 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
+
+    const teacher = authed(await createTeacher());
+    const res = await teacher.put(`/api/admin/mock-tests/${m._id}/scores`, {
+      steps: { speaking: 7, writing: 6 },
+    });
+    expect(res.status).toBe(200);
+
+    const freshSa = await SpeakingAttempt.findById(sa._id).lean();
+    expect(freshSa.aiFeedback.overallBand).toBe(7);
+    expect(freshSa.status).toBe('analyzed');
+
+    const freshWa = await WritingAttempt.findById(wa._id).lean();
+    expect(freshWa.grading.overallBand).toBe(6);
+    expect(freshWa.gradingStatus).toBe('confirmed');
   });
 });
 

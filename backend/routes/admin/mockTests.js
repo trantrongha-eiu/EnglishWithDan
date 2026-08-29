@@ -48,7 +48,8 @@ router.put('/mock-tests/:id/scores', auth, teacherOnly, async (req, res) => {
     const attempt = await mockTestService.setManualScores(req.params.id, {
       steps: steps && typeof steps === 'object' ? steps : {},
       note: typeof note === 'string' ? note : undefined,
-      actorId: req.user._id
+      actorId: req.user._id,
+      actorName: req.user.username || String(req.user._id)
     });
     res.json({ success: true, attempt });
   } catch (err) {

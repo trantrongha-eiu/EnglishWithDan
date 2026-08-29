@@ -451,14 +451,60 @@ function shapeAdmin(doc) {
   return shape;
 }
 
+// Mirror a hand-entered mock band onto the underlying per-skill attempt so
+// the student's STANDALONE skill history (Speaking / Writing) shows the same
+// number, not a stale AI draft or "chờ chấm". Best-effort — a failure here
+// never fails setManualScores (the mock step is already saved). Only fires
+// when a numeric band is set; clearing an override (band → null) does NOT
+// roll the sub-attempt back — that band was already shown to the student.
+// Listening / Reading are objective (band derives from the correct-answer
+// count) and are left mock-only on purpose.
+async function mirrorBandToSubAttempt(skill, attemptId, band, { actorName, note } = {}) {
+  if (!attemptId || numericBand(band) === null) return;
+  try {
+    if (skill === 'speaking') {
+      const sa = await SpeakingAttempt.findById(attemptId).select('aiFeedback.overallFeedback').lean();
+      const patch = { 'aiFeedback.overallBand': band, status: 'analyzed' };
+      // Don't clobber a real AI/teacher write-up if one is already there.
+      if (!sa || !sa.aiFeedback || !sa.aiFeedback.overallFeedback) {
+        patch['aiFeedback.overallFeedback'] = note
+          ? `Giáo viên chấm trực tiếp trong bài thi thử full. Ghi chú: ${note}`
+          : 'Giáo viên chấm trực tiếp trong bài thi thử full.';
+      }
+      await SpeakingAttempt.findByIdAndUpdate(attemptId, { $set: patch });
+    } else if (skill === 'writing') {
+      // Set only these fields ($set with dotted paths) so any earlier
+      // per-task AI breakdown on grading.task1/task2 is preserved. No email
+      // is sent from here — that's the dedicated Writing grading screen's
+      // job (full per-criterion feedback + notification).
+      await WritingAttempt.findByIdAndUpdate(attemptId, {
+        $set: {
+          'grading.overallBand': band,
+          'grading.adminNote': note || 'Chấm trong bài thi thử full.',
+          'grading.confirmedAt': new Date(),
+          'grading.confirmedBy': actorName || 'admin',
+          gradingStatus: 'confirmed',
+          feedbackRead: false
+        }
+      });
+    }
+  } catch (err) {
+    console.error('[mockTestService] mirrorBandToSubAttempt failed', {
+      skill, attemptId: String(attemptId), error: err.message
+    });
+  }
+}
+
 // ── Admin: manually enter / correct a run's skill bands ─────────────────
 // A teacher who ran (say) the Speaking part live, in person, types the band
 // straight in here. Any subset of the four skills may be given; a numeric
 // value pins that skill (marks it `manual` so the lazy re-grade never
 // overwrites it), `null` clears the override so the auto-graded band takes
 // over again. The overall band is recomputed with the same official-IELTS
-// rounding used everywhere else. Never touches the sub-attempt docs.
-async function setManualScores(id, { steps = {}, note, actorId } = {}) {
+// rounding used everywhere else. A numeric Speaking/Writing band is also
+// mirrored onto the sub-attempt (mirrorBandToSubAttempt) so the student's
+// per-skill history matches.
+async function setManualScores(id, { steps = {}, note, actorId, actorName } = {}) {
   if (!mongoose.isValidObjectId(id)) throw new ValidationError('id không hợp lệ');
   // Populate the student so the returned shapeAdmin() carries a real
   // `user` block (the caller drops it straight back into the admin modal).
@@ -467,6 +513,7 @@ async function setManualScores(id, { steps = {}, note, actorId } = {}) {
   if (!doc) throw new NotFoundError('Không tìm thấy bài thi thử');
 
   let touched = false;
+  const applied = []; // numeric bands set in this call → mirror onto sub-attempts
   for (const skill of SKILL_ORDER) {
     if (!Object.prototype.hasOwnProperty.call(steps, skill)) continue;
     let v = steps[skill];
@@ -481,6 +528,7 @@ async function setManualScores(id, { steps = {}, note, actorId } = {}) {
           manual: false, manualBy: undefined, manualAt: undefined }
       : { attemptId: cur.attemptId, band: v, completedAt: cur.completedAt || new Date(),
           manual: true, manualBy: actorId || undefined, manualAt: new Date() };
+    if (v !== null) applied.push(skill);
     touched = true;
   }
 
@@ -496,6 +544,14 @@ async function setManualScores(id, { steps = {}, note, actorId } = {}) {
   await doc.save();
   // A step just cleared back to null should pick its auto-graded band back up.
   await refreshGrades(doc);
+  // Push each hand-entered Speaking/Writing band onto its sub-attempt so the
+  // student's standalone skill history matches (best-effort, post-save).
+  await Promise.all(applied.map(skill => mirrorBandToSubAttempt(
+    skill,
+    doc.steps[skill] && doc.steps[skill].attemptId,
+    doc.steps[skill] && doc.steps[skill].band,
+    { actorName: actorName || (actorId ? String(actorId) : 'admin'), note: doc.adminNote }
+  )));
   return shapeAdmin(doc);
 }
 

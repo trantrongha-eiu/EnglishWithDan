@@ -6,6 +6,8 @@
 // (which aren't available at submit time).
 const mockTestService = require('../../../services/mockTestService');
 const MockTestAttempt = require('../../../models/MockTestAttempt');
+const SpeakingAttempt = require('../../../models/SpeakingAttempt');
+const WritingAttempt = require('../../../models/WritingAttempt');
 const { createStudent } = require('../../factories/userFactory');
 const {
   createReadingTest, createListeningTest, createWritingExam, createSpeakingQuestion,
@@ -297,5 +299,45 @@ describe('mockTestService.setManualScores', () => {
     const shape = await mockTestService.setManualScores(mockId, { steps: { writing: null }, actorId: student._id });
     expect(shape.steps.writing.band).toBeNull();
     expect(shape.steps.writing.manual).toBe(false);
+  });
+
+  test('mirrors a hand-entered Speaking/Writing band onto the sub-attempt', async () => {
+    const student = await createStudent();
+    await seedPools();
+    const { attempt } = await mockTestService.startMockTest(student._id);
+    const mockId = attempt._id;
+
+    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
+    const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
+    await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
+    const wa = await createWritingAttempt({ userId: student._id }); // pending, no band
+    await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
+    const sa = await createSpeakingAttempt({ userId: student._id, part: 2 }); // pending, no aiFeedback band
+    await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });
+
+    await mockTestService.setManualScores(mockId, {
+      steps: { speaking: 7.5, writing: 6.5 }, note: 'chấm trực tiếp', actorId: student._id, actorName: 'thayha',
+    });
+
+    const freshSa = await SpeakingAttempt.findById(sa._id).lean();
+    expect(freshSa.aiFeedback.overallBand).toBe(7.5);
+    expect(freshSa.status).toBe('analyzed');
+    expect(freshSa.aiFeedback.overallFeedback).toMatch(/thi thử/i);
+
+    const freshWa = await WritingAttempt.findById(wa._id).lean();
+    expect(freshWa.grading.overallBand).toBe(6.5);
+    expect(freshWa.gradingStatus).toBe('confirmed');
+    expect(freshWa.grading.confirmedBy).toBe('thayha');
+    expect(freshWa.feedbackRead).toBe(false);
+  });
+
+  test('does not mirror when the step has no sub-attempt yet (pre-entered)', async () => {
+    const student = await createStudent();
+    const mockId = await runThroughReading(student); // speaking step not reached
+    // No throw even though steps.speaking.attemptId is undefined.
+    const shape = await mockTestService.setManualScores(mockId, { steps: { speaking: 8 }, actorId: student._id });
+    expect(shape.steps.speaking.band).toBe(8);
+    expect(shape.steps.speaking.manual).toBe(true);
   });
 });

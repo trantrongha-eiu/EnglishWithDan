@@ -155,6 +155,8 @@ function ProctorModal({ id, onClose, onSaved }) {
                   <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
                     Nhập band 1–9 (bước 0.5). Để trống = xoá điểm nhập tay, dùng lại điểm chấm tự động.
                     Band tổng tính lại tự động (trung bình 4 kỹ năng, làm tròn chuẩn IELTS).
+                    Điểm Speaking / Writing nhập tay cũng được ghi vào lịch sử kỹ năng riêng của học sinh
+                    (Writing: đánh dấu đã chấm, không gửi email).
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))', gap: 10, marginBottom: 10 }}>
                     {SKILLS.map(([s, l]) => (
