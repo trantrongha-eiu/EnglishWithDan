@@ -108,6 +108,7 @@ export default function Dashboard() {
     if (isAdmin) apiFetch('/admin/db-status').then(d => d.success && setDbStatus(d.db)).catch(() => {});
 
     const id = setInterval(() => {
+      if (document.visibilityState !== 'visible') return; // don't poll a hidden tab
       apiFetch('/admin/stats').then(d => setStats(d.stats)).catch(() => {});
       apiFetch('/admin/recent-attempts?limit=10').then(d => setRecent(d.attempts || [])).catch(() => {});
       if (isAdmin) apiFetch('/admin/db-status').then(d => d.success && setDbStatus(d.db)).catch(() => {});

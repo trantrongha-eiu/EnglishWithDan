@@ -420,17 +420,23 @@ export default function Vocabulary() {
   );
 
   async function toggleActive(id, isActive) {
+    setUnits(prev => prev.map(u => (u._id === id ? { ...u, isActive: !isActive } : u)));
     try {
       await apiFetch(`/vocab/admin/units/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn unit' : 'Đã hiện unit');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setUnits(prev => prev.map(u => (u._id === id ? { ...u, isActive } : u)));
+      toast(e.message, 'error');
+    }
   }
 
   async function del(id, title) {
     confirm(`Xóa unit "${title}"? Tất cả từ vựng trong unit sẽ bị xóa.`, async () => {
-      try { await apiFetch(`/vocab/admin/units/${id}`, { method: 'DELETE' }); toast('Đã xóa'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/vocab/admin/units/${id}`, { method: 'DELETE' });
+        setUnits(prev => prev.filter(u => u._id !== id));
+        toast('Đã xóa');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 

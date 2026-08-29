@@ -32,5 +32,6 @@ router.use(require('./messages'));         // Messages
 router.use(require('./premium'));          // Plan Management, Upgrade Requests (renamed from billing.js — no payment/invoice logic here, see file header)
 router.use(require('./reviewBypass'));     // Review-gate bypass codes
 router.use(require('./mockTests'));        // Full 4-skill mock test monitoring + proctoring log
+router.use(require('./sidebarBadges'));    // GET /sidebar-badges — one call for the admin Sidebar's 6 polled counts
 
 module.exports = router;

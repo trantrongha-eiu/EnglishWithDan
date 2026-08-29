@@ -50,40 +50,25 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [mockViolations, setMockViolations] = useState(0);
 
   useEffect(() => {
-    function fetchOnline() {
-      apiFetch('/admin/online-users').then(d => setOnlineUsers((d.users || []).filter(u => u.role !== 'admin'))).catch(() => {});
-    }
-    function fetchPending() {
-      // /admin/writing-history now paginates (default 30/page) instead of
-      // returning every attempt, so counting off d.attempts would undercount
-      // as soon as there are more than one page of submissions — use the
-      // dedicated counts endpoint instead, which aggregates over the whole
-      // collection regardless of page size.
-      apiFetch('/admin/writing-history/counts').then(d => {
-        const c = d.counts || {};
-        setPendingGrades((c.pending || 0) + (c.ai_done || 0));
+    // One call for all six badge counts (was six separate polled requests).
+    function fetchBadges() {
+      apiFetch('/admin/sidebar-badges').then(d => {
+        setOnlineUsers((d.onlineUsers || []).filter(u => u.role !== 'admin'));
+        setPendingGrades(d.pendingGrades || 0);
+        setPendingUpgrades(d.pendingUpgrades || 0);
+        setPendingTuition(d.pendingTuition || 0);
+        setPendingMessages(d.pendingMessages || 0);
+        setMockViolations(d.mockViolations || 0);
       }).catch(() => {});
     }
-    function fetchUpgrades() {
-      apiFetch('/admin/upgrade-requests?status=pending&limit=1').then(d => setPendingUpgrades(d.total || 0)).catch(() => {});
-    }
-    function fetchTuition() {
-      apiFetch('/tuition/admin-summary').then(d => setPendingTuition(d.unpaidStudentCount || 0)).catch(() => {});
-    }
-    function fetchMessages() {
-      apiFetch('/admin/messages/unread-count').then(d => setPendingMessages(d.count || 0)).catch(() => {});
-    }
-    function fetchMockViolations() {
-      apiFetch('/admin/mock-tests?limit=1&violatedOnly=1').then(d => setMockViolations(d.violatedTotal || 0)).catch(() => {});
-    }
-    fetchOnline();
-    fetchPending();
-    fetchUpgrades();
-    fetchTuition();
-    fetchMessages();
-    fetchMockViolations();
-    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); fetchMessages(); fetchMockViolations(); }, 60_000);
-    return () => clearInterval(id);
+    fetchBadges();
+    // Skip the poll while the tab is hidden; refresh once on the way back.
+    const id = setInterval(() => {
+      if (document.visibilityState === 'visible') fetchBadges();
+    }, 60_000);
+    const onVis = () => { if (document.visibilityState === 'visible') fetchBadges(); };
+    document.addEventListener('visibilitychange', onVis);
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', onVis); };
   }, []);
 
   return (

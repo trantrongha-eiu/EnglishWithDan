@@ -292,17 +292,23 @@ export default function Task2Topics() {
         await apiFetch(`/admin/task2/topics/${t._id}`, { method: 'DELETE' });
         showToast('Đã xóa topic', 'success');
         if (activeTopic?._id === t._id) setActiveTopic(null);
-        forceReload();
+        // Drop it locally instead of yanking back to page 1 with a re-fetch.
+        setTopics(prev => prev.filter(x => x._id !== t._id));
+        setTotal(n => Math.max(0, n - 1));
       } catch (e) { showToast(e.message, 'error'); }
     });
   }
 
   async function toggleTopicActive(t) {
+    // Optimistic — no forceReload() (which resets to page 1 + re-fetches).
+    setTopics(prev => prev.map(x => (x._id === t._id ? { ...x, isActive: !t.isActive } : x)));
     try {
       await apiFetch(`/admin/task2/topics/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: !t.isActive }) });
       showToast(t.isActive ? 'Đã ẩn topic' : 'Đã hiện topic', 'success');
-      forceReload();
-    } catch (e) { showToast(e.message, 'error'); }
+    } catch (e) {
+      setTopics(prev => prev.map(x => (x._id === t._id ? { ...x, isActive: t.isActive } : x)));
+      showToast(e.message, 'error');
+    }
   }
 
   // The list is server-paginated (only the current page lives in `topics`),
@@ -335,7 +341,10 @@ export default function Task2Topics() {
         await apiFetch(`/admin/task2/topics/${activeTopic._id}/questions/${qid}`, { method: 'DELETE' });
         showToast('Đã xóa câu hỏi', 'success');
         setActiveTopic(t => t ? { ...t, questions: (t.questions || []).filter(q => q._id !== qid) } : t);
-        forceReload();
+        // Reflect the new count on the topic-list row without a full re-fetch
+        // (row shows `(t.questions||[]).length câu hỏi`).
+        setTopics(prev => prev.map(x => (x._id === activeTopic._id
+          ? { ...x, questions: (x.questions || []).filter(q => q._id !== qid) } : x)));
       } catch (e) { showToast(e.message, 'error'); }
     });
   }
