@@ -1600,6 +1600,17 @@ function _looksLikeSentence(seg) {
     return true;
 }
 
+// dictionaryapi.dev regularly goes into a degraded state where an uncached
+// word takes ~20s (or 522s outright). With no cap, bulk import freezes on
+// the spinner for 20s per batch and the single lookup feels broken. Abort
+// after `ms` and let the caller fall back to MyMemory / just skip the
+// example — a missing example is far better than a 20s hang.
+function _fetchWithTimeout(url, ms = 8000) {
+    const ctrl = new AbortController();
+    const killer = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(killer));
+}
+
 function openAddWordManual() {
     const wordCount = currentBookData?.words?.length ?? 0;
     if (wordCount >= 300) {
@@ -1634,7 +1645,7 @@ async function lookupNewWord(word) {
             const enc = encodeURIComponent;
             // Fetch dictionary (examples + phonetic), Google Translate (primary meaning), MyMemory (alternatives)
             const [dictRes, gtRes, memRes] = await Promise.allSettled([
-                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`),
+                _fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`),
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
                 fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null)
             ]);
@@ -3490,7 +3501,7 @@ async function parseBulkInput() {
 
 async function _fetchWordInfo(word) {
     const [dictRes, memRes] = await Promise.allSettled([
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`),
+        _fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`),
         fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null),
     ]);
 
