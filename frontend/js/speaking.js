@@ -2217,8 +2217,8 @@ async function finishSequentialSession() {
     if (window.EWSLearning && window.EWSLearning.consumeStart('speaking')) {
       window.EWSLearning.showReviewPopup('speaking', {
         emoji: '🗣️',
-        scoreLabel: 'Session Complete',
-        nextAction: 'Review your AI feedback above, then continue your plan.',
+        scoreLabel: 'Hoàn thành buổi luyện',
+        nextAction: 'Xem lại nhận xét AI ở trên, rồi tiếp tục lộ trình.',
       });
     }
   } catch (e) {

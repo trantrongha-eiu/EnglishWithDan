@@ -3036,7 +3036,7 @@ function showResults(mode) {
         window.EWSLearning.showReviewPopup('vocabulary', {
             emoji: pct >= 80 ? '🎉' : '📚',
             scoreLabel: `${correctAnswers}/${answered_} đúng`,
-            subLabel: wrongCount > 0 ? `${wrongCount} word${wrongCount === 1 ? '' : 's'} still to review` : '',
+            subLabel: wrongCount > 0 ? `${wrongCount} từ cần ôn lại` : '',
             nextAction: wrongCount > 0 ? 'Luyện lại các từ sai, rồi tiếp tục kế hoạch.' : 'Kết quả tốt — giữ vững nhé!',
         });
     }

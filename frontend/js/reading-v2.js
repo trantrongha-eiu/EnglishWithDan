@@ -1661,15 +1661,17 @@ function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
     try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch { }
   }
 
+  // Badge matches every other question type (a bare number / range) rather
+  // than the old English "Questions 3 and 4".
   let rangeLabel;
-  if (count === 1) rangeLabel = `Question ${firstNum}`;
-  else if (count === 2) rangeLabel = `Questions ${firstNum} and ${lastNum}`;
+  if (count === 1) rangeLabel = String(firstNum);
   else {
     const nums = cluster.map(q => q.questionNumber);
-    rangeLabel = `Questions ${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`;
+    const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
+    rangeLabel = contiguous ? `${firstNum}–${lastNum}` : nums.join(', ');
   }
 
-  const letterWord = count === 2 ? 'TWO' : count === 3 ? 'THREE' : count === 4 ? 'FOUR' : String(count);
+  const letterWord = String(count);
 
   const optHtml = opts.map((opt, idx) => {
     const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
@@ -2893,9 +2895,9 @@ function showResult(r) {
     const attemptId = r.attemptId;
     window.EWSLearning.showReviewPopup('reading', {
       emoji: band >= 6.5 ? '🎉' : '📊',
-      scoreLabel: `${r.correctCount}/${r.totalQuestions} correct`,
+      scoreLabel: `${r.correctCount}/${r.totalQuestions} câu đúng`,
       subLabel: r.bandScore != null ? `Band ${r.bandScore.toFixed(1)}` : '',
-      nextAction: r.wrongCount > 0 ? 'Review your incorrect answers and save useful vocabulary.' : 'Great result — keep it up!',
+      nextAction: r.wrongCount > 0 ? 'Xem lại các câu sai và lưu từ vựng hữu ích.' : 'Kết quả tốt — giữ vững nhé!',
       onReview: attemptId ? () => loadReview(attemptId) : null,
     });
   }
@@ -3035,7 +3037,7 @@ function renderReview(attempt) {
     }
   } catch { /* malformed/unavailable — just skip restoring */ }
 
-  document.getElementById('review-title').textContent = attempt.testName || 'Review';
+  document.getElementById('review-title').textContent = attempt.testName || 'Xem lại';
   const badge = document.getElementById('review-band-badge');
   if (badge) badge.textContent = `Band: ${attempt.bandScore?.toFixed(1)}`;
   const reviewImgEl = document.getElementById('review-result-img');

@@ -630,8 +630,8 @@ async function submitExam(statusOverride) {
       if (window.EWSLearning && window.EWSLearning.consumeStart('writing')) {
         window.EWSLearning.showReviewPopup('writing', {
           emoji: '✍️',
-          scoreLabel: 'Submitted',
-          nextAction: 'Self-review your response, then continue your plan. Feedback will appear here once graded.',
+          scoreLabel: 'Đã nộp',
+          nextAction: 'Tự xem lại bài viết, rồi tiếp tục lộ trình. Feedback sẽ hiện ở đây sau khi được chấm.',
         });
       }
     } else {

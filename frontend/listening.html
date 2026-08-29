@@ -2240,14 +2240,14 @@
             }
 
             // Hint text
-            const letterWord = count === 2 ? 'TWO' : count === 3 ? 'THREE' : count === 4 ? 'FOUR' : count.toString();
+            const letterWord = count.toString();
 
             return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}">
                 <div class="q-header">
                     <span class="q-badge">${rangeLabel}</span>
                     <div class="q-text">${escHtml(cluster[0].questionText || '')}</div>
                 </div>
-                <div class="checkbox-hint">Choose <strong>${letterWord}</strong> letters, A–${LETTERS[opts.length - 1] || 'E'}</div>
+                <div class="checkbox-hint">Chọn <strong>${letterWord}</strong> chữ cái, A–${LETTERS[opts.length - 1] || 'E'}</div>
                 <div class="checkbox-opts">${optHtml}</div>
                 ${reviewExtra}
             </div>`;
@@ -2547,7 +2547,7 @@
             try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch { }
             if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
             else {
-                if (arr.length >= maxCount) { toast(`You can only select ${maxCount} answers`, 'info'); return; }
+                if (arr.length >= maxCount) { toast(`Chỉ được chọn tối đa ${maxCount} đáp án`, 'info'); return; }
                 arr.push(value);
             }
             arr.sort();
@@ -3049,9 +3049,9 @@
             if (window.EWSLearning && window.EWSLearning.consumeStart('listening')) {
                 window.EWSLearning.showReviewPopup('listening', {
                     emoji: band >= 6.5 ? '🎉' : '📊',
-                    scoreLabel: `${r.correctCount}/${r.totalQuestions || 40} correct`,
+                    scoreLabel: `${r.correctCount}/${r.totalQuestions || 40} câu đúng`,
                     subLabel: r.bandScore != null ? `Band ${r.bandScore.toFixed(1)}` : '',
-                    nextAction: r.wrongCount > 0 ? 'Replay incorrect questions and review the transcript.' : 'Great result — keep it up!',
+                    nextAction: r.wrongCount > 0 ? 'Nghe lại các câu sai và xem transcript.' : 'Kết quả tốt — giữ vững nhé!',
                     onReview: () => goToReview(),
                 });
             }
@@ -3287,7 +3287,7 @@
         // ══════════════════════════════════════════════
         async function reviewFromHistory(attemptId) {
             closeModal('modal-history');
-            toast('Loading result...', 'info');
+            toast('Đang tải kết quả...', 'info');
             try {
                 const res = await fetch(`${API}/listening/history/${attemptId}`, { headers: authH() });
                 const data = await safeJson(res);
@@ -3340,7 +3340,7 @@
                         <td class="ls-td-wrong">${a.wrongCount ?? '–'}</td>
                         <td class="ls-td-skip">${a.skippedCount ?? '–'}</td>
                         <td><strong class="${bandClass}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
-                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" class="btn-review-sm">Review</button>` : ''}</td>
+                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" class="btn-review-sm">Xem lại</button>` : ''}</td>
                     </tr>`;
                 }).join('');
                 if (footer) {
@@ -3826,12 +3826,12 @@
         const qtypes   = [...new Set((s.questionGroups || []).flatMap(g =>
             (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
         ))].slice(0, 3);
-        const dur       = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} min` : '';
+        const dur       = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} phút` : '';
         const partCls   = clsMap[s.partNumber] || 'p1';
         const cardCls   = isActual ? partCls : cls;
         const cardLabel = isActual
             ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
-                <span class="practice-card-cat-badge at" style="position:static">Actual</span>
+                <span class="practice-card-cat-badge at" style="position:static">Đề thật</span>
                 <span class="practice-card-cat-badge ${partCls}" style="position:static;font-size:9px;padding:2px 6px">S${s.partNumber}</span>
                </div>`
             : `<span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>`;
