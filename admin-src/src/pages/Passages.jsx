@@ -258,34 +258,76 @@ export default function Passages() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
-  const [all, setAll] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [cat, setCat] = useState('');
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [qPassage, setQPassage] = useState(null);
   const [diff, setDiff] = useState('');
 
-  const load = () => apiFetch('/admin/passages?limit=500').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
-  useEffect(() => { load(); }, []);
+  // Debounce the search box so each keystroke isn't a round-trip.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search.trim()), 350);
+    return () => clearTimeout(t);
+  }, [search]);
 
-  // Fully derivable from `all` + the filter fields — no need to store it
-  // as its own state or recompute it in an effect.
-  const filtered = all.filter(p =>
-    (!search || p.title?.toLowerCase().includes(search.toLowerCase())) &&
-    (!cat || p.category === cat) &&
-    (!diff || p.difficulty === diff)
-  );
-  const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
+  // Server-side search + category + difficulty + pagination — the passage
+  // list can run to the hundreds and the row payload is trimmed server-side.
+  const _filterParams = () => {
+    const qs = new URLSearchParams({ page, limit: PAGE });
+    if (cat) qs.set('category', cat);
+    if (diff) qs.set('difficulty', diff);
+    if (debouncedSearch) qs.set('search', debouncedSearch);
+    return qs;
+  };
+
+  const load = () => {
+    setLoading(true);
+    return apiFetch(`/admin/passages?${_filterParams()}`)
+      .then(d => { setRows(d.passages || []); setTotal(d.total || 0); })
+      .catch(e => toast(e.message, 'error'))
+      .finally(() => setLoading(false));
+  };
+
+  // Reset to page 1 during render (not a post-commit effect) when a filter
+  // changes, so the fetch below runs once with the right page.
+  const _fkey = `${debouncedSearch}|${cat}|${diff}`;
+  const [prevFkey, setPrevFkey] = useState(_fkey);
+  if (_fkey !== prevFkey) { setPrevFkey(_fkey); if (page !== 1) setPage(1); }
+
+  // Inlined (not a bare load() call) so setLoading isn't a synchronous
+  // setState in the effect body; a cancelled flag drops a stale response
+  // that resolves after the filters moved on.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const d = await apiFetch(`/admin/passages?${_filterParams()}`);
+        if (cancelled) return;
+        setRows(d.passages || []);
+        setTotal(d.total || 0);
+      } catch (e) {
+        if (!cancelled) toast(e.message, 'error');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [page, debouncedSearch, cat, diff]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function toggleActive(id, isActive) {
-    setAll(prev => prev.map(p => (p._id === id ? { ...p, isActive: !isActive } : p)));
+    setRows(prev => prev.map(p => (p._id === id ? { ...p, isActive: !isActive } : p)));
     try {
       await apiFetch(`/admin/passages/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn bài đọc' : 'Đã hiện bài đọc');
     } catch (e) {
-      setAll(prev => prev.map(p => (p._id === id ? { ...p, isActive } : p)));
+      setRows(prev => prev.map(p => (p._id === id ? { ...p, isActive } : p)));
       toast(e.message, 'error');
     }
   }
@@ -294,23 +336,31 @@ export default function Passages() {
     confirm(`Xóa vĩnh viễn bài đọc "${title}"? Không thể phục hồi.`, async () => {
       try {
         await apiFetch(`/admin/passages/${id}/permanent`, { method: 'DELETE' });
-        setAll(prev => prev.filter(p => p._id !== id));
+        setRows(prev => prev.filter(p => p._id !== id));
+        setTotal(n => Math.max(0, n - 1));
         toast('Đã xóa vĩnh viễn');
       } catch (e) { toast(e.message, 'error'); }
     });
   }
 
-  const anyVisibleInFilter = filtered.some(p => p.isActive !== false);
+  // Only the current page is in memory, so base the direction on it: if
+  // anything visible is showing, this hides everything matching the filter;
+  // once they're all hidden the button flips to show-all.
+  const anyVisibleOnPage = rows.some(p => p.isActive !== false);
   function bulkToggle() {
-    if (filtered.length === 0) return;
-    const targetActive = !anyVisibleInFilter;
-    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} bài đọc đang lọc?`, async () => {
-      const ids = new Set(filtered.map(p => p._id));
-      setAll(prev => prev.map(p => (ids.has(p._id) ? { ...p, isActive: targetActive } : p)));
+    if (total === 0) return;
+    const targetActive = !anyVisibleOnPage;
+    const scope = (cat || diff || debouncedSearch) ? 'khớp bộ lọc' : '';
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${total} bài đọc${scope ? ' ' + scope : ''}?`, async () => {
+      setRows(prev => prev.map(p => ({ ...p, isActive: targetActive })));
       try {
-        await apiFetch('/admin/passages/bulk-active', { method: 'PUT', body: JSON.stringify({ ids: [...ids], isActive: targetActive }) });
-        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} bài đọc`);
-      } catch (e) { toast(e.message, 'error'); load(); }
+        const r = await apiFetch('/admin/passages/bulk-active', {
+          method: 'PUT',
+          body: JSON.stringify({ filter: { category: cat, search: debouncedSearch, difficulty: diff }, isActive: targetActive }),
+        });
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${r.modified ?? total} bài đọc`);
+      } catch (e) { toast(e.message, 'error'); }
+      finally { load(); }
     });
   }
 
@@ -326,10 +376,10 @@ export default function Passages() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Bài đọc ({filtered.length})</h2>
+        <h2 className="section-title">Bài đọc ({total})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
-            {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          <button className="btn btn-ghost" onClick={bulkToggle} disabled={total === 0}>
+            {anyVisibleOnPage ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
           </button>
           <button className="btn btn-primary" onClick={() => { setEditId(null); setShowModal(true); }}>+ Thêm bài đọc</button>
         </div>
@@ -337,12 +387,12 @@ export default function Passages() {
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
         <input className="form-input search-input" placeholder="Tìm bài đọc..." value={search}
-          onChange={e => { setSearch(e.target.value); setPage(1); }} style={{ maxWidth: 280 }} />
-        <select className="form-input" value={cat} onChange={e => { setCat(e.target.value); setPage(1); }} style={{ width: 160 }}>
+          onChange={e => setSearch(e.target.value)} style={{ maxWidth: 280 }} />
+        <select className="form-input" value={cat} onChange={e => setCat(e.target.value)} style={{ width: 160 }}>
           <option value="">Tất cả category</option>
           {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
-        <select className="form-input" value={diff} onChange={e => { setDiff(e.target.value); setPage(1); }} style={{ width: 140 }}>
+        <select className="form-input" value={diff} onChange={e => setDiff(e.target.value)} style={{ width: 140 }}>
           <option value="">Tất cả độ khó</option>
           <option value="easy">Dễ</option>
           <option value="medium">Trung bình</option>
@@ -354,9 +404,11 @@ export default function Passages() {
         <table className="table">
           <thead><tr><th>TIÊU ĐỀ</th><th>CATEGORY</th><th>ĐỘ KHÓ</th><th>SỐ CÂU HỎI</th><th>RANGE</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
           <tbody>
-            {paged.length === 0
+            {loading
+              ? <tr><td colSpan={8} className="table-empty">Đang tải…</td></tr>
+              : rows.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có bài đọc nào</td></tr>
-              : paged.map(p => (
+              : rows.map(p => (
                 <tr key={p._id}>
                   <td>
                     <strong>{p.title}</strong>
@@ -386,7 +438,7 @@ export default function Passages() {
         </table>
       </div>
       <div style={{ marginTop: 12 }}>
-        <Pagination page={page} total={filtered.length} pageSize={PAGE} onPage={setPage} />
+        <Pagination page={page} total={total} pageSize={PAGE} onPage={setPage} />
       </div>
     </>
   );

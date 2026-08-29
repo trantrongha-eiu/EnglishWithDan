@@ -4,7 +4,7 @@
 const express    = require('express');
 const auth       = require('../../middleware/auth');
 const { isImageDataUri } = require('../../utils/validation');
-const { teacherOnly, uploadImageDataUri } = require('./_shared');
+const { teacherOnly, uploadImageDataUri, escapeRegex } = require('./_shared');
 
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
@@ -17,10 +17,21 @@ const router = express.Router();
 // PASSAGES
 // ══════════════════════════════════════════════════
 
+// Shared by GET /passages and PUT /passages/bulk-active so the "hide/show
+// all matching the current filter" button acts on exactly the rows the
+// admin is looking at, even the ones past the current page.
+function buildPassageFilter({ category, search, difficulty }) {
+  const filter = {};
+  if (category)   filter.category   = category;
+  if (difficulty) filter.difficulty = difficulty;
+  if (search)     filter.title      = { $regex: escapeRegex(String(search)), $options: 'i' };
+  return filter;
+}
+
 router.get('/passages', auth, teacherOnly, async (req, res) => {
   try {
-    const { category, page = 1, limit = 20 } = req.query;
-    const filter = category ? { category } : {};
+    const { category, search, difficulty, page = 1, limit = 20 } = req.query;
+    const filter = buildPassageFilter({ category, search, difficulty });
     const [passages, total] = await Promise.all([
       Passage.aggregate([
         { $match: filter },
@@ -64,17 +75,32 @@ router.get('/passages/stats', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT /api/admin/passages/bulk-active  { ids: [], isActive: bool }
-// One request for "ẩn/hiện tất cả" instead of N parallel PUTs. Registered
-// before /passages/:id so "bulk-active" isn't captured as an :id.
+// PUT /api/admin/passages/bulk-active
+//   { ids: [...], isActive }            — explicit id list, or
+//   { filter: { category, search, difficulty }, isActive } — every passage
+//   matching the same filter the list view uses (so "ẩn/hiện tất cả" covers
+//   rows past the current page without the frontend shipping every id).
+// One request either way, instead of N parallel PUTs. Registered before
+// /passages/:id so "bulk-active" isn't captured as an :id.
 router.put('/passages/bulk-active', auth, teacherOnly, async (req, res) => {
   try {
-    const { ids, isActive } = req.body;
-    if (!Array.isArray(ids) || ids.length === 0)
-      return res.status(400).json({ success: false, message: 'Thiếu danh sách id' });
+    const { ids, filter, isActive } = req.body;
     if (typeof isActive !== 'boolean')
       return res.status(400).json({ success: false, message: 'isActive phải là boolean' });
-    const r = await Passage.updateMany({ _id: { $in: ids } }, { isActive });
+
+    let query;
+    if (Array.isArray(ids) && ids.length) {
+      query = { _id: { $in: ids } };
+    } else if (filter && typeof filter === 'object') {
+      // May be {} — that's the deliberate "toggle every passage" case, same
+      // as the old per-id Promise.all with no filter active. It's an update
+      // (reversible, admin-gated, confirmed with a count), never a delete.
+      query = buildPassageFilter(filter);
+    } else {
+      return res.status(400).json({ success: false, message: 'Thiếu ids hoặc filter' });
+    }
+
+    const r = await Passage.updateMany(query, { isActive });
     res.json({ success: true, matched: r.matchedCount, modified: r.modifiedCount });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
