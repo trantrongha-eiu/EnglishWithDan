@@ -629,7 +629,7 @@ function renderQuizQuestion() {
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
-                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Hint (${LESSON_QUIZ_HINT_MAX})</span></button>
+                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkFillQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -646,7 +646,7 @@ function renderQuizQuestion() {
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
             <div class="fb-input-row">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
-                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Hint (${LESSON_QUIZ_HINT_MAX})</span></button>
+                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkListenQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -740,7 +740,7 @@ function buildFillBlank(word) {
     const re = new RegExp(`\\b${word.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
     const sentence = re.test(word.example)
         ? word.example.replace(re, '_____')
-        : `${word.definition} → _____`;
+        : `${word.definition || word.meaning || ''} → _____`;
     return { sentence, meaning: word.meaning };
 }
 
@@ -838,7 +838,7 @@ function showLessonQuizHint() {
     }
     const remaining = LESSON_QUIZ_HINT_MAX - lessonState.quiz.hintCount;
     const label = document.getElementById('qHintBtnLabel');
-    if (label) label.textContent = remaining > 0 ? `Hint (${remaining})` : 'Hint';
+    if (label) label.textContent = remaining > 0 ? `Gợi ý (${remaining})` : 'Gợi ý';
     if (remaining <= 0) {
         const btn = document.getElementById('qHintBtn');
         if (btn) btn.disabled = true;

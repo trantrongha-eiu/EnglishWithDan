@@ -825,7 +825,7 @@ function renderBookSidebar() {
       <span class="book-emoji">${_esc(b.emoji)}</span>
       <span class="book-name">${_esc(b.name)}</span>
       <span class="book-count">${b.totalWords}</span>
-      <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
+      <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Tùy chọn">⋯</button>
     </div>
   `).join('');
 
@@ -865,7 +865,7 @@ function syncSheetBooks() {
       <span class="book-emoji">${_esc(b.emoji)}</span>
       <span class="book-name">${_esc(b.name)}</span>
       <span class="sheet-book-count">${b.totalWords}</span>
-      <button class="sheet-book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
+      <button class="sheet-book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Tùy chọn">⋯</button>
     </div>
   `).join('');
 }
@@ -1157,8 +1157,8 @@ function renderWordsTable(words) {
       </td>
       <td style="color:var(--text3);font-size:12px">${_esc(w.note || '')}</td>
       <td style="display:flex;gap:4px">
-        <button class="btn btn-ghost btn-sm" onclick="openEditWordModal('${w._id}')" title="Edit word">✏️</button>
-        <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Delete word">🗑</button>
+        <button class="btn btn-ghost btn-sm" onclick="openEditWordModal('${w._id}')" title="Sửa từ">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Xoá từ">🗑</button>
       </td>
     </tr>`;
     }).join('');
@@ -2517,7 +2517,7 @@ function showMixedQuestion() {
             <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 ${_letterHintMeta(currentWord.word, 'en')}</div>
             <div class="fb-input-row">
-              <input class="listen-input" id="mixListenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
+              <input class="listen-input" id="mixListenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
               <button class="btn-check" onclick="checkMixedListen()">Check</button>
             </div>
             <div id="mixListenFeedback" style="margin-top:10px"></div>
@@ -2538,7 +2538,7 @@ function showMixedQuestion() {
             <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
             <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Dịch: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
             <div class="fb-input-row">
-              <input class="trans-input" id="mixTransInput" placeholder="Enter the meaning..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
+              <input class="trans-input" id="mixTransInput" placeholder="Nhập nghĩa..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
             </div>
             <div id="mixTransFeedback" style="margin-top:10px"></div>
@@ -3014,7 +3014,7 @@ function showResults(mode) {
         if (wrongWordSet.size > 0) {
             const allWords = currentUnit?.words || [];
             const wrongWords = [...wrongWordSet].map(ws => allWords.find(x => x.word === ws) || { word: ws, meaning: '' });
-            wrongListEl.innerHTML = `<div class="wl-title">Words to review (${wrongWords.length}):</div>` +
+            wrongListEl.innerHTML = `<div class="wl-title">Từ cần ôn lại (${wrongWords.length}):</div>` +
                 wrongWords.map(w => `<div class="wl-item"><span class="wl-word">${_esc(w.word)}</span>${w.meaning ? `<span class="wl-meaning">${_esc(w.meaning)}</span>` : ''}</div>`).join('');
             wrongListEl.style.display = 'block';
         } else {
