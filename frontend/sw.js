@@ -1,7 +1,17 @@
-// App-shell cache-first service worker. Does NOT cache /api/* — this app's
-// data (test lists, vocab, band scores) is always live, never stale-served.
-// Bump CACHE_NAME on any app-shell change to invalidate old caches.
-const CACHE_NAME = 'ewd-shell-v1';
+// App-shell service worker.
+//
+// Scope of interception (deliberately tiny): ONLY versionless static assets —
+// fonts, images, and the design-token stylesheets. It NEVER touches HTML or
+// JS: those must always come straight from the network so a new deploy's
+// `<script src="...?v=YYYYMMDD">` bump (and the no-cache HTML from _headers)
+// is picked up on the very next load. A cache-first SW that also held JS/HTML
+// was the root cause of "a new feature is broken until the user manually
+// clears cache / hard-reloads" — most visibly the Writing "viết lại" modal,
+// which span forever because the browser kept running a pre-fix writing.js.
+//
+// Bump CACHE_NAME whenever this file changes so `activate` purges the old
+// cache. (v2: stop caching JS/HTML.)
+const CACHE_NAME = 'ewd-shell-v2';
 const APP_SHELL = [
   '/css/tokens.css',
   '/css/components.css',
@@ -10,6 +20,9 @@ const APP_SHELL = [
   '/img/icon-512.png',
   '/img/favicon.svg'
 ];
+
+// Genuinely-static, safe-to-cache file types. Note: NOT .js and NOT .html.
+const STATIC_RE = /\.(?:css|woff2?|ttf|otf|eot|png|jpe?g|gif|svg|webp|avif|ico)$/;
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -28,16 +41,22 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
   if (event.request.method !== 'GET') return;
-  if (url.pathname.startsWith('/api/')) return; // never cache live data
-  if (url.origin !== self.location.origin) return; // don't intercept cross-origin (Cloudinary, fonts, API host)
+
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;   // Cloudinary, fonts, API host — leave alone
+
+  // Everything that isn't a versionless static asset (all HTML, all JS, every
+  // navigation, /api/*) is left entirely to the browser — no interception,
+  // so it always hits the network and honours normal cache headers.
+  const isStatic = APP_SHELL.includes(url.pathname) || STATIC_RE.test(url.pathname);
+  if (!isStatic) return;
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((res) => {
-        if (res.ok && (APP_SHELL.includes(url.pathname) || url.pathname.endsWith('.css'))) {
+        if (res.ok) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
