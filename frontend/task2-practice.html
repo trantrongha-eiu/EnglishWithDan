@@ -793,8 +793,20 @@ function render() {
 async function apiFetch(path, opts = {}) {
   const token = window.AuthService.getToken();
   const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) };
-  const res = await fetch(API + path, { ...opts, headers: { ...headers, ...opts.headers } });
-  return window.ApiClient.handleResponse(res);
+  // opts.timeoutMs: abort the request after N ms so a cold-started backend
+  // can't leave a "Đang chấm bài..." spinner running forever.
+  let signal = opts.signal, killer;
+  if (opts.timeoutMs && !signal) {
+    const ctrl = new AbortController();
+    killer = setTimeout(() => ctrl.abort(), opts.timeoutMs);
+    signal = ctrl.signal;
+  }
+  try {
+    const res = await fetch(API + path, { ...opts, signal, headers: { ...headers, ...opts.headers } });
+    return await window.ApiClient.handleResponse(res);
+  } finally {
+    if (killer) clearTimeout(killer);
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -1905,12 +1917,19 @@ async function submitExam() {
   const app = document.getElementById('app');
   app.innerHTML = '<div style="text-align:center;padding:40px"><div class="wp-spinner"></div><p>Đang chấm bài...</p></div>';
   try {
-    const data = await apiFetch('/api/task2/exam/submit', { method: 'POST', body: JSON.stringify({ answers: state.examAnswers }) });
+    const data = await apiFetch('/api/task2/exam/submit', { method: 'POST', timeoutMs: 45000, body: JSON.stringify({ answers: state.examAnswers }) });
     if (!data.success) throw new Error(data.message);
     state.examResults = data;
     state.view = 'examDone'; render();
   } catch (e) {
-    app.innerHTML = `<p style="text-align:center;color:red;padding:40px">Lỗi chấm bài: ${e.message}</p>`;
+    const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
+    const msg = aborted
+      ? 'Chấm bài quá lâu — server có thể đang khởi động. Bài làm của bạn vẫn còn, hãy thử chấm lại.'
+      : 'Lỗi chấm bài: ' + _escHtml(e.message || '');
+    app.innerHTML = `<div style="text-align:center;padding:40px">`
+      + `<p style="color:#dc2626;margin-bottom:14px">${msg}</p>`
+      + `<button onclick="submitExam()" style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Thử chấm lại</button>`
+      + `</div>`;
   }
 }
 

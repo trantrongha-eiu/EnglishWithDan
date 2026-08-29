@@ -1620,13 +1620,20 @@ async function submitAnswer() {
   document.getElementById('submit-btn').disabled = true;
   document.getElementById('checking-loader').classList.remove('hidden');
 
+  // Abort a hung grade after 30s — a cold-started backend used to leave the
+  // "Đang chấm…" loader spinning forever with no way out.
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 30000);
+
   try {
     const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/check`, {
       method: 'POST',
+      signal: _ctrl.signal,
       headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body: JSON.stringify({ exerciseId: ex._id, userAnswer: answer })
     });
+    clearTimeout(_killer);
     const data = await safeJson(res);
     if (!data.success) throw new Error(data.message || 'Lỗi server');
     showFeedback(answer, data, ex);
@@ -1660,7 +1667,11 @@ async function submitAnswer() {
       type: ex.type
     });
   } catch (err) {
-    showToast('Lỗi khi chấm bài: ' + err.message, 'error');
+    clearTimeout(_killer);
+    const aborted = err && (err.name === 'AbortError' || /abort/i.test(err.message || ''));
+    showToast(aborted
+      ? 'Chấm bài quá lâu — server có thể đang khởi động. Hãy thử lại sau vài giây.'
+      : 'Lỗi khi chấm bài: ' + err.message, 'error', aborted ? 7000 : undefined);
     document.getElementById('submit-btn').disabled = false;
   } finally {
     document.getElementById('checking-loader').classList.add('hidden');
@@ -2071,6 +2082,11 @@ function testNextQuestion() {
 
 async function submitTest() {
   stopTestTimer();
+  // Abort a hung grade after 45s (multi-question AI grade — allow a bit
+  // longer than the single-exercise 30s) so the "Đang chấm bài..." spinner
+  // can't run forever on a cold-started backend.
+  const _ctrl = new AbortController();
+  const _killer = setTimeout(() => _ctrl.abort(), 45000);
   try {
     document.getElementById('test-in-progress').style.display = 'none';
     document.getElementById('test-results').style.display     = '';
@@ -2079,9 +2095,11 @@ async function submitTest() {
     const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/check-test`, {
       method: 'POST',
+      signal: _ctrl.signal,
       headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body: JSON.stringify({ answers: testAnswers })
     });
+    clearTimeout(_killer);
     const data = await safeJson(res);
     if (!data.success) throw new Error(data.message);
 
@@ -2117,7 +2135,14 @@ async function submitTest() {
       list.appendChild(div);
     });
   } catch (err) {
-    document.getElementById('test-score-header').innerHTML = `<p style="color:red">Lỗi chấm bài: ${err.message}</p>`;
+    clearTimeout(_killer);
+    const aborted = err && (err.name === 'AbortError' || /abort/i.test(err.message || ''));
+    const msg = aborted
+      ? 'Chấm bài quá lâu — server có thể đang khởi động. Bài làm của bạn vẫn còn, hãy thử chấm lại.'
+      : 'Lỗi chấm bài: ' + _escHtml(err.message || '');
+    document.getElementById('test-score-header').innerHTML =
+      `<p style="color:#dc2626;margin-bottom:12px">${msg}</p>` +
+      `<button onclick="submitTest()" style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Thử chấm lại</button>`;
   }
 }
 
