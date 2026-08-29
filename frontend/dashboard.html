@@ -17,7 +17,7 @@
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260906">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260908">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831">
 </head>
 <body>
@@ -319,6 +319,20 @@
             </div>
             <div class="mascot-msg" id="mascot-msg">Let's study! I believe in you! 💪</div>
           </div>
+        </div>
+
+        <!-- "Mách nhỏ" — how to add words. Shown on book open until dismissed. -->
+        <div id="book-add-tip" class="book-add-tip hidden">
+          <span class="book-add-tip-emoji">💡</span>
+          <div class="book-add-tip-body">
+            <strong>Mách nhỏ:</strong> Có nhiều cách thêm từ vào sổ này —
+            <ul>
+              <li>Khi đang <strong>làm bài</strong> (Reading, Listening, luyện tập…): <strong>double-click</strong> vào một từ hoặc <strong>bôi đen</strong> một cụm để tra nghĩa rồi lưu ngay.</li>
+              <li>Bấm <strong>+ Add word</strong> ở đây để nhập tay.</li>
+              <li>Ở các <strong>danh sách từ vựng có sẵn</strong> (bài học từ vựng), bấm <strong>“Lưu tất cả”</strong> để lưu cả danh sách vào sổ.</li>
+            </ul>
+          </div>
+          <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookAddTip()">×</button>
         </div>
 
         <div class="book-action-bar">
