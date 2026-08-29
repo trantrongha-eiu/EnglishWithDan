@@ -18,10 +18,29 @@ export function authHeaders() {
 }
 
 export async function apiFetch(path, opts = {}) {
-  const res = await fetch(`${API}${path}`, {
-    ...opts,
-    headers: { ...authHeaders(), ...(opts.headers || {}) },
-  });
+  // Abort a hung request (Render cold start, dropped connection) after 30s so
+  // a page awaiting it can't spin forever with no error. Caller can override
+  // with opts.timeout, or pass its own opts.signal to opt out.
+  const ctrl = opts.signal ? null : new AbortController();
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), opts.timeout || 30000) : null;
+
+  let res;
+  try {
+    res = await fetch(`${API}${path}`, {
+      ...opts,
+      signal: opts.signal || (ctrl && ctrl.signal),
+      headers: { ...authHeaders(), ...(opts.headers || {}) },
+    });
+  } catch (e) {
+    if (e && e.name === 'AbortError') {
+      const err = new Error('Server phản hồi quá lâu — có thể đang khởi động. Thử lại sau vài giây.');
+      err.coldStart = true;
+      throw err;
+    }
+    throw e;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 
   // Phase 5 audit finding: this used to have no 401 handling at all — an
   // expired/invalid token just became a generic thrown error with no

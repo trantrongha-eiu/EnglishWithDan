@@ -280,17 +280,23 @@ export default function Passages() {
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {
+    setAll(prev => prev.map(p => (p._id === id ? { ...p, isActive: !isActive } : p)));
     try {
       await apiFetch(`/admin/passages/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn bài đọc' : 'Đã hiện bài đọc');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setAll(prev => prev.map(p => (p._id === id ? { ...p, isActive } : p)));
+      toast(e.message, 'error');
+    }
   }
 
   async function del(id, title) {
     confirm(`Xóa vĩnh viễn bài đọc "${title}"? Không thể phục hồi.`, async () => {
-      try { await apiFetch(`/admin/passages/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/admin/passages/${id}/permanent`, { method: 'DELETE' });
+        setAll(prev => prev.filter(p => p._id !== id));
+        toast('Đã xóa vĩnh viễn');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 
@@ -299,11 +305,12 @@ export default function Passages() {
     if (filtered.length === 0) return;
     const targetActive = !anyVisibleInFilter;
     confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} bài đọc đang lọc?`, async () => {
+      const ids = new Set(filtered.map(p => p._id));
+      setAll(prev => prev.map(p => (ids.has(p._id) ? { ...p, isActive: targetActive } : p)));
       try {
-        await Promise.all(filtered.map(p => apiFetch(`/admin/passages/${p._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
-        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} bài đọc`);
-        load();
-      } catch (e) { toast(e.message, 'error'); }
+        await Promise.all([...ids].map(pid => apiFetch(`/admin/passages/${pid}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} bài đọc`);
+      } catch (e) { toast(e.message, 'error'); load(); }
     });
   }
 

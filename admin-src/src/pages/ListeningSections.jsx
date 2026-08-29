@@ -211,11 +211,14 @@ export default function ListeningSections() {
   } = useListFilter(partFiltered, { searchKeys: ['title'], initialPage: location.state?.page || 1 });
 
   async function toggleActive(id, isActive) {
+    setSections(prev => prev.map(s => (s._id === id ? { ...s, isActive: !isActive } : s)));
     try {
       await apiFetch(`/admin/listening/sections/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn section' : 'Đã hiện section');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setSections(prev => prev.map(s => (s._id === id ? { ...s, isActive } : s)));
+      toast(e.message, 'error');
+    }
   }
 
   const anyVisibleInFilter = filtered.some(s => s.isActive !== false);
@@ -223,11 +226,12 @@ export default function ListeningSections() {
     if (filtered.length === 0) return;
     const targetActive = !anyVisibleInFilter;
     confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} section đang lọc?`, async () => {
+      const ids = new Set(filtered.map(s => s._id));
+      setSections(prev => prev.map(s => (ids.has(s._id) ? { ...s, isActive: targetActive } : s)));
       try {
-        await Promise.all(filtered.map(s => apiFetch(`/admin/listening/sections/${s._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
-        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} section`);
-        load();
-      } catch (e) { toast(e.message, 'error'); }
+        await Promise.all([...ids].map(sid => apiFetch(`/admin/listening/sections/${sid}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} section`);
+      } catch (e) { toast(e.message, 'error'); load(); }
     });
   }
 
@@ -235,8 +239,8 @@ export default function ListeningSections() {
     confirm(`Xóa vĩnh viễn section "${title}"? Không thể phục hồi.`, async () => {
       try {
         await apiFetch(`/admin/listening/sections/${id}/permanent`, { method: 'DELETE' });
+        setSections(prev => prev.filter(s => s._id !== id));
         toast('Đã xóa vĩnh viễn');
-        load();
       } catch (e) { toast(e.message, 'error'); }
     });
   }

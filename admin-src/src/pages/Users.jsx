@@ -422,6 +422,13 @@ export default function Users() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  // /admin/users is a SERVER query — without debounce, every keystroke in
+  // the search box fired its own request ("nguyen" = 6 round-trips).
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 350);
+    return () => clearTimeout(t);
+  }, [search]);
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [editId, setEditId] = useState(null);
@@ -436,7 +443,7 @@ export default function Users() {
 
   function load(p = page) {
     const params = new URLSearchParams({ page: p, limit: PAGE });
-    if (search) params.set('search', search);
+    if (debouncedSearch) params.set('search', debouncedSearch);
     if (roleFilter) params.set('role', roleFilter);
     if (statusFilter === 'banned') params.set('isBanned', 'true');
     if (statusFilter === 'active') params.set('isBanned', 'false');
@@ -449,12 +456,12 @@ export default function Users() {
   // filter edit (page reset bundled into the same commit) or a plain
   // pagination click — no separate ref-based "skip the other effect" flag
   // needed.
-  const [prevFilters, setPrevFilters] = useState([search, roleFilter, statusFilter]);
-  if (prevFilters[0] !== search || prevFilters[1] !== roleFilter || prevFilters[2] !== statusFilter) {
-    setPrevFilters([search, roleFilter, statusFilter]);
+  const [prevFilters, setPrevFilters] = useState([debouncedSearch, roleFilter, statusFilter]);
+  if (prevFilters[0] !== debouncedSearch || prevFilters[1] !== roleFilter || prevFilters[2] !== statusFilter) {
+    setPrevFilters([debouncedSearch, roleFilter, statusFilter]);
     if (page !== 1) setPage(1);
   }
-  useEffect(() => { load(page); }, [search, roleFilter, statusFilter, page]);
+  useEffect(() => { load(page); }, [debouncedSearch, roleFilter, statusFilter, page]);
 
   async function toggleBan(id, username, isBanned) {
     confirm(`${isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${username}"?`, async () => {
