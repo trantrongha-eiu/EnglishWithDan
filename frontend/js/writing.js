@@ -858,7 +858,24 @@ function _rwPasteBlock(ta) {
   });
   ta.addEventListener('drop', e => { e.preventDefault(); showToast('Không thể kéo-thả văn bản vào đây.', 'warn', 3000); });
   ta.addEventListener('dragover', e => e.preventDefault());
-  ta.addEventListener('input', _rwUpdateCounts);
+  ta.addEventListener('input', () => { _rwUpdateCounts(); _rwSaveDraft(); });
+}
+
+// Local (per-device) autosave so a reload / accidental close doesn't lose a
+// long rewrite. Cleared only on a successful submit.
+function _rwDraftKey() { return _rwState ? 'rw_draft_' + _rwState.attemptId : null; }
+function _rwSaveDraft() {
+  const key = _rwDraftKey();
+  if (!key) return;
+  const d = {};
+  _rwState.gradedTasks.forEach(n => { d['task' + n] = document.getElementById('rw-ta-' + n)?.value || ''; });
+  try { localStorage.setItem(key, JSON.stringify(d)); } catch (_) {}
+}
+function _rwLoadDraft(attemptId) {
+  try { return JSON.parse(localStorage.getItem('rw_draft_' + attemptId) || 'null'); } catch (_) { return null; }
+}
+function _rwClearDraft(attemptId) {
+  try { localStorage.removeItem('rw_draft_' + attemptId); } catch (_) {}
 }
 
 function _rwUpdateCounts() {
@@ -903,9 +920,12 @@ async function openRewrite(attemptId) {
 
     const t1 = a.task1Snapshot || {}, t2 = a.task2Snapshot || {};
     const prev = a.rewrite || {};
+    // Prefill order: a previously-submitted rewrite (server) → an unsaved
+    // local draft → empty.
+    const draft = (prev.task1 || prev.task2) ? null : _rwLoadDraft(attemptId);
     const rightCol = gradedTasks.map(n => {
       const prompt = n === 1 ? (t1.prompt || '') : (t2.prompt || '');
-      const pre = n === 1 ? (prev.task1 || '') : (prev.task2 || '');
+      const pre = (n === 1 ? prev.task1 : prev.task2) || (draft && draft['task' + n]) || '';
       return `<div class="rw-task-box">
         <h4>Task ${n} — viết lại (tối thiểu ${RW_MIN[n]} từ)</h4>
         ${prompt ? `<div class="rw-prompt">${escHtml(prompt)}</div>` : ''}
@@ -945,6 +965,7 @@ function closeRewriteModal() {
 
 async function submitRewrite() {
   if (!_rwState) return;
+  const attemptId = _rwState.attemptId;
   const btn = document.getElementById('rw-submit-btn');
   const payload = {};
   _rwState.gradedTasks.forEach(n => { payload['task' + n] = (document.getElementById('rw-ta-' + n)?.value || '').trim(); });
@@ -952,10 +973,11 @@ async function submitRewrite() {
   const old = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
   try {
-    const data = await apiFetch(`/api/writing/attempt/${_rwState.attemptId}/rewrite`, {
+    const data = await apiFetch(`/api/writing/attempt/${attemptId}/rewrite`, {
       method: 'POST', body: JSON.stringify(payload),
     });
     if (!data.success) throw new Error(data.message);
+    _rwClearDraft(attemptId);
     showToast('✅ Đã lưu bài viết lại. Giáo viên sẽ thấy bạn đã hoàn thành.', 'success', 4000);
     closeRewriteModal();
     // Refresh whichever history view is on screen.
@@ -1400,7 +1422,7 @@ function closeHistoryModal() {
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   const overlay = ['wr-history-modal', 'exit-modal-overlay', 'confirm-modal-overlay',
-                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal'];
+                   'review-modal-overlay', 'rewrite-modal-overlay', 'practice-exit-modal', 'practice-submit-modal'];
   for (const id of overlay) {
     const el = document.getElementById(id);
     if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }

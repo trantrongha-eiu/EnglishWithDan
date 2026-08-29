@@ -143,7 +143,8 @@ async function submitPractice(user, { taskType, taskId, answer, wordCount }) {
 
 async function getPracticeHistory(userId) {
   return WritingAttempt.find({ userId, submissionType: 'practice' })
-    .sort({ submittedAt: -1 }).limit(20).select('-task1Answer -task2Answer').lean();
+    .sort({ submittedAt: -1 }).limit(20)
+    .select('-task1Answer -task2Answer -rewrite.task1 -rewrite.task2').lean();
 }
 
 async function getDrafts(userId) {
@@ -219,7 +220,10 @@ async function markFeedbackRead(attemptId, userId) {
 }
 
 async function getMyHistory(userId) {
-  return WritingAttempt.find({ userId }).sort({ submittedAt: -1 }).limit(50).select('-task1Answer -task2Answer').lean();
+  // Exclude the big answer/rewrite bodies — the history table only needs
+  // counts + rewrite.done. Full text comes from GET /attempt/:id.
+  return WritingAttempt.find({ userId }).sort({ submittedAt: -1 }).limit(50)
+    .select('-task1Answer -task2Answer -rewrite.task1 -rewrite.task2').lean();
 }
 
 async function getAttempt(attemptId, requestingUser) {
