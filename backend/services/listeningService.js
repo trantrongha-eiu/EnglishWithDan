@@ -150,11 +150,14 @@ function buildReviewSections(sections, reviewMap) {
 async function listAdminTests() {
   const tests = await ListeningTest.find()
     .select('name testNumber seriesName audioUrl audioDuration isActive sections createdAt')
-    .sort({ testNumber: -1 });
-  return tests.map(t => ({
-    ...t.toObject(),
-    totalQuestions: flattenQuestions(t.sections).length,
-    totalParts: t.sections.length
+    .sort({ testNumber: -1 })
+    .lean();
+  // Return the question/part counts, not the whole `sections` tree — the
+  // admin list doesn't render it and it's the bulk of the payload.
+  return tests.map(({ sections = [], ...rest }) => ({
+    ...rest,
+    totalQuestions: flattenQuestions(sections).length,
+    totalParts: sections.length,
   }));
 }
 

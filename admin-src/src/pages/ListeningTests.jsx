@@ -94,17 +94,25 @@ export default function ListeningTests() {
   useEffect(() => { load(); }, []);
 
   async function toggleActive(id, isActive) {
+    // Optimistic — see ReadingTests.jsx; re-fetching the whole list after
+    // each toggle was what made ẩn/hiện đề feel slow.
+    setTests(prev => prev.map(t => (t._id === id ? { ...t, isActive: !isActive } : t)));
     try {
       await apiFetch(`/admin/listening/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn' : 'Đã hiện');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setTests(prev => prev.map(t => (t._id === id ? { ...t, isActive } : t)));
+      toast(e.message, 'error');
+    }
   }
 
   async function del(id, name) {
     confirm(`Xóa vĩnh viễn đề listening "${name}"? Không thể khôi phục!`, async () => {
-      try { await apiFetch(`/admin/listening/tests/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
-      catch (e) { toast(e.message, 'error'); }
+      try {
+        await apiFetch(`/admin/listening/tests/${id}/permanent`, { method: 'DELETE' });
+        setTests(prev => prev.filter(t => t._id !== id));
+        toast('Đã xóa vĩnh viễn');
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 
@@ -113,11 +121,12 @@ export default function ListeningTests() {
     if (filtered.length === 0) return;
     const targetActive = !anyVisibleInFilter;
     confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} đề đang lọc?`, async () => {
+      const ids = new Set(filtered.map(t => t._id));
+      setTests(prev => prev.map(t => (ids.has(t._id) ? { ...t, isActive: targetActive } : t)));
       try {
-        await Promise.all(filtered.map(t => apiFetch(`/admin/listening/tests/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
-        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} đề`);
-        load();
-      } catch (e) { toast(e.message, 'error'); }
+        await Promise.all([...ids].map(id => apiFetch(`/admin/listening/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} đề`);
+      } catch (e) { toast(e.message, 'error'); load(); }
     });
   }
 

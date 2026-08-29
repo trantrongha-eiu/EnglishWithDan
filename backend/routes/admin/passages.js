@@ -149,7 +149,13 @@ router.delete('/passages/:id/permanent', auth, teacherOnly, async (req, res) => 
 
 router.get('/tests', auth, teacherOnly, async (req, res) => {
   try {
-    const tests = await ReadingTest.find().sort({ testNumber: -1 });
+    // The admin list only renders name/series/number/status/date — fetch just
+    // those, lean, so the whole list (and the frontend's re-fetch after every
+    // ẩn/hiện toggle) isn't a full hydrated ReadingTest scan.
+    const tests = await ReadingTest.find()
+      .select('name seriesName testNumber isActive createdAt')
+      .sort({ testNumber: -1 })
+      .lean();
     res.json({ success: true, tests });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

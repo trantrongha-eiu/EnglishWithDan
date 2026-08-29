@@ -30,19 +30,25 @@ export default function ReadingTests() {
   }, []);
 
   async function toggleActive(id, isActive) {
+    // Optimistic: flip it locally now (instant), roll back only if the PUT
+    // fails. Re-fetching the whole /admin/tests list after every toggle was
+    // what made hiding/showing feel slow.
+    setTests(prev => prev.map(t => (t._id === id ? { ...t, isActive: !isActive } : t)));
     try {
       await apiFetch(`/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn bộ đề' : 'Đã hiện bộ đề');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      setTests(prev => prev.map(t => (t._id === id ? { ...t, isActive } : t)));
+      toast(e.message, 'error');
+    }
   }
 
   async function del(id, name) {
     confirm(`Xóa vĩnh viễn bộ đề "${name}"? Không thể khôi phục!`, async () => {
       try {
         await apiFetch(`/admin/tests/${id}/permanent`, { method: 'DELETE' });
+        setTests(prev => prev.filter(t => t._id !== id));
         toast('Đã xóa vĩnh viễn');
-        load();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
@@ -55,11 +61,12 @@ export default function ReadingTests() {
     if (filtered.length === 0) return;
     const targetActive = !anyVisibleInFilter;
     confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} bộ đề đang lọc?`, async () => {
+      const ids = new Set(filtered.map(t => t._id));
+      setTests(prev => prev.map(t => (ids.has(t._id) ? { ...t, isActive: targetActive } : t)));
       try {
-        await Promise.all(filtered.map(t => apiFetch(`/admin/tests/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
-        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} bộ đề`);
-        load();
-      } catch (e) { toast(e.message, 'error'); }
+        await Promise.all([...ids].map(id => apiFetch(`/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} bộ đề`);
+      } catch (e) { toast(e.message, 'error'); load(); } // resync on partial failure
     });
   }
 
