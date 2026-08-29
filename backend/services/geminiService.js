@@ -737,6 +737,40 @@ function _sanitiseSections(arr, wantTitles) {
   return out;
 }
 
+// Parse + validate a generateTask2Essay response. Shared by the Gemini path
+// below and groqService.generateTask2EssayGroq so both engines produce the
+// identical shape. Throws on bad JSON / wrong section counts.
+function parseTask2EssayResponse(rawText) {
+  const parsed = extractJson(rawText);
+  const sampleSections = _sanitiseSections(parsed.sampleSections, true);
+  const analysisSections = _sanitiseSections(parsed.analysisSections, false);
+  if (sampleSections.length !== 4 || analysisSections.length < 3) {
+    throw new Error(`shape off: ${sampleSections.length} sample / ${analysisSections.length} analysis sections`);
+  }
+  return { sampleSections, analysisSections };
+}
+
+// Compact band-only grader for the seed script's --verify (a full checkEssay
+// call is overkill when we just need "is this ≥ 7?"). Cheap enough to run on
+// Groq too — see groqService.gradeTask2BandGroq.
+const T2_BAND_SYSTEM = 'You are a strict IELTS Writing examiner. Respond ONLY with valid JSON: {"band": <number 4-9, IELTS half-bands only>}';
+function buildT2BandPrompt(prompt, essay) {
+  return `Give the OVERALL IELTS Writing Task 2 band for this essay (weigh Task Response, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy equally; be strict — most competent essays are 6.0-7.0).
+
+Question: "${prompt}"
+
+Essay:
+<<<ESSAY_START>>>
+${essay}
+<<<ESSAY_END>>>
+
+Return exactly: {"band": <number>}`;
+}
+function parseT2Band(rawText) {
+  const b = Number(extractJson(rawText).band);
+  return Number.isFinite(b) ? b : null;
+}
+
 async function generateTask2Essay(prompt, essayTypeLabel, templateSkeleton, _attempt = 0) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
@@ -768,13 +802,7 @@ async function generateTask2Essay(prompt, essayTypeLabel, templateSkeleton, _att
   }
 
   try {
-    const parsed = extractJson(rawText);
-    const sampleSections = _sanitiseSections(parsed.sampleSections, true);
-    const analysisSections = _sanitiseSections(parsed.analysisSections, false);
-    if (sampleSections.length !== 4 || analysisSections.length < 3) {
-      throw new Error(`shape off: ${sampleSections.length} sample / ${analysisSections.length} analysis sections`);
-    }
-    return { sampleSections, analysisSections };
+    return parseTask2EssayResponse(rawText);
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('generateTask2Essay: parse/shape failed, retrying', { errorMessage: parseErr.message });
@@ -784,9 +812,42 @@ async function generateTask2Essay(prompt, essayTypeLabel, templateSkeleton, _att
   }
 }
 
+// Overall band for an essay — Gemini path. Best-effort: returns null rather
+// than throwing so the seed script's --verify can just skip on failure.
+async function gradeTask2Band(prompt, essay) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL_FAST,
+        contents: buildT2BandPrompt(prompt, essay),
+        config: {
+          systemInstruction: T2_BAND_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0,
+          maxOutputTokens: 256,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      }),
+      20000,
+      'AI phản hồi quá lâu.'
+    );
+    return parseT2Band(result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text);
+  } catch (e) {
+    logger.ai('gradeTask2Band: failed', { errorMessage: e.message });
+    return null;
+  }
+}
+
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer,
-  generateCollocations, generateTask2Essay,
+  generateCollocations, generateTask2Essay, gradeTask2Band,
+  // Exported so groqService.js can generate/grade Task 2 essays against the
+  // exact same prompts (same convention as the SPEAKING_SYSTEM group below).
+  T2_ESSAY_SYSTEM, buildTask2EssayPrompt, parseTask2EssayResponse,
+  T2_BAND_SYSTEM, buildT2BandPrompt, parseT2Band,
   // Exported for services/groqService.js's Gemini-overload fallback only —
   // not meant as general-purpose utilities for other callers.
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,

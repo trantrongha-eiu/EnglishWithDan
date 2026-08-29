@@ -6,8 +6,16 @@
  * Each essay is generated to FOLLOW the Band 7+ cloze template for its essay
  * type (the same 7 skeletons students practise at
  * task2-template.html → "Band 7+"), targets IELTS Band 7.5+, and is written
- * in natural, human-like academic English (see geminiService.generateTask2Essay
+ * in natural, human-like academic English (see geminiService.buildTask2EssayPrompt
  * for the exact rules / anti-AI-tell bans).
+ *
+ * Two engines:
+ *   --engine groq    (default) — uses Groq (openai/gpt-oss-120b). No ~20/day
+ *                     cap, so a whole backfill can run in one pass. Needs
+ *                     GROQ_API_KEY.
+ *   --engine gemini  — uses Gemini 2.5 Flash. Higher ceiling on quality but
+ *                     the free tier is ~20 requests/day on this project's key,
+ *                     so use --limit for daily batches.
  *
  * Selection: WritingTask2 docs (isActive) where analysisSections OR
  * sampleSections is empty. ONLY fills the empty field(s) — never overwrites
@@ -17,25 +25,23 @@
  * essayType). If nothing links to the doc, a light keyword heuristic on the
  * prompt is used, defaulting to 'agree_disagree'.
  *
- * IMPORTANT — Gemini free-tier quota (~20 requests/day on this project's key):
- * each doc costs 1 Gemini call (2 with --verify). Run in daily batches with
- * --limit until the bank is covered. An overload/quota error stops the run
- * cleanly; just re-run later to continue.
+ * An overload / rate-limit error stops the run cleanly; re-run later to
+ * continue (it only fills still-empty docs).
  *
  * Usage:
- *   node backend/scripts/seedWritingTask2Samples.js                  # dry run — list what it WOULD do
- *   node backend/scripts/seedWritingTask2Samples.js --apply          # generate + write
- *   node backend/scripts/seedWritingTask2Samples.js --apply --limit 12
- *   node backend/scripts/seedWritingTask2Samples.js --apply --verify # grade each essay, regen once if band < 7.0
- *   node backend/scripts/seedWritingTask2Samples.js --apply --delay 4000
+ *   node backend/scripts/seedWritingTask2Samples.js                       # dry run — list what it WOULD do
+ *   node backend/scripts/seedWritingTask2Samples.js --apply               # Groq, all missing
+ *   node backend/scripts/seedWritingTask2Samples.js --apply --verify      # grade each essay, regen once if band < 7.0
+ *   node backend/scripts/seedWritingTask2Samples.js --apply --engine gemini --limit 15
+ *   node backend/scripts/seedWritingTask2Samples.js --apply --delay 2500
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const WritingTask2 = require('../models/WritingTask2');
 const Task2Topic = require('../models/Task2Topic');
 const Task2Template = require('../models/Task2Template');
-const { generateTask2Essay } = require('../services/geminiService');
-const { gradeTaskWithAI } = require('../services/writingGradingService');
+const { generateTask2Essay, gradeTask2Band } = require('../services/geminiService');
+const { generateTask2EssayGroq, gradeTask2BandGroq } = require('../services/groqService');
 
 // Band 7+ template typeId → Task2Topic.essayType + a human label.
 const TYPE_MAP = {
@@ -52,17 +58,18 @@ const LABEL_BY_ESSAYTYPE = Object.fromEntries(
 );
 
 function parseArgs(argv) {
-  const a = { apply: false, verify: false, limit: Infinity, delay: 3500 };
+  const a = { apply: false, verify: false, engine: 'groq', limit: Infinity, delay: 2500 };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--apply') a.apply = true;
     else if (argv[i] === '--verify') a.verify = true;
+    else if (argv[i] === '--engine') a.engine = (argv[++i] || 'groq').toLowerCase();
     else if (argv[i] === '--limit') a.limit = parseInt(argv[++i], 10) || Infinity;
-    else if (argv[i] === '--delay') a.delay = parseInt(argv[++i], 10) || 3500;
+    else if (argv[i] === '--delay') a.delay = parseInt(argv[++i], 10) || 2500;
   }
+  if (!['groq', 'gemini'].includes(a.engine)) a.engine = 'groq';
   return a;
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const wc = s => (s || '').trim().split(/\s+/).filter(Boolean).length;
 
 // Very light fallback classifier — only used when no Task2Topic links to the
 // WritingTask2 doc, so we still pick a sensible template.
@@ -88,6 +95,9 @@ function renderSkeleton(tpl) {
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
+  const generate = args.engine === 'gemini' ? generateTask2Essay : generateTask2EssayGroq;
+  const gradeBand = args.engine === 'gemini' ? gradeTask2Band : gradeTask2BandGroq;
+
   await mongoose.connect(process.env.MONGO_URI);
 
   // 1. Band 7+ template skeletons, keyed by essayType.
@@ -98,7 +108,7 @@ async function run() {
     if (m) skeletonByType[m.essayType] = renderSkeleton(tpl);
   }
   const haveTemplates = Object.keys(skeletonByType).length;
-  console.log(`[seedWritingTask2Samples] loaded ${haveTemplates}/7 Band 7+ template skeletons`);
+  console.log(`[seedWritingTask2Samples] engine=${args.engine} · loaded ${haveTemplates}/7 Band 7+ template skeletons`);
   if (!haveTemplates) {
     console.error('No band7 Task2Template docs found — seed those first. Aborting.');
     await mongoose.disconnect();
@@ -144,23 +154,21 @@ async function run() {
     }
 
     try {
-      let { sampleSections, analysisSections } = await generateTask2Essay(doc.prompt, label, skeleton);
+      let { sampleSections, analysisSections } = await generate(doc.prompt, label, skeleton);
 
       if (args.verify && needSample) {
         const essayText = sampleSections.map(s => s.content).join('\n\n');
-        try {
-          const g = await gradeTaskWithAI(2, doc.prompt, essayText, wc(essayText), '');
-          if (typeof g.bandScore === 'number' && g.bandScore < 7.0) {
-            console.log(`      ↳ graded ${g.bandScore} (<7.0) — regenerating once`);
-            regen++;
-            const retry = await generateTask2Essay(doc.prompt, label, skeleton);
-            sampleSections = retry.sampleSections;
-            analysisSections = retry.analysisSections;
-          } else if (typeof g.bandScore === 'number') {
-            console.log(`      ↳ graded ${g.bandScore} ✓`);
-          }
-        } catch (ve) {
-          console.log(`      ↳ verify skipped (${ve.message})`);
+        const band = await gradeBand(doc.prompt, essayText);
+        if (typeof band === 'number' && band < 7.0) {
+          console.log(`      ↳ graded ${band} (<7.0) — regenerating once`);
+          regen++;
+          const retry = await generate(doc.prompt, label, skeleton);
+          sampleSections = retry.sampleSections;
+          analysisSections = retry.analysisSections;
+        } else if (typeof band === 'number') {
+          console.log(`      ↳ graded ${band} ✓`);
+        } else {
+          console.log('      ↳ verify skipped (grader unavailable)');
         }
       }
 
@@ -173,8 +181,8 @@ async function run() {
     } catch (err) {
       failed++;
       console.error(`FAIL  ${tag}\n      ${err.message}`);
-      if (err.isOverloaded) {
-        console.error('[seedWritingTask2Samples] AI overloaded / quota exhausted — stopping. Re-run later to continue.');
+      if (err.isOverloaded || /rate.?limit|429|quota|resource_exhausted/i.test(err.message)) {
+        console.error('[seedWritingTask2Samples] AI overloaded / rate-limited — stopping. Re-run later to continue.');
         break;
       }
     }

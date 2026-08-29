@@ -18,6 +18,8 @@ const {
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,
   SAMPLE_ANSWER_SYSTEM, buildSampleAnswerPrompt,
   IMPROVE_ANSWER_SYSTEM, buildImproveAnswerPrompt,
+  T2_ESSAY_SYSTEM, buildTask2EssayPrompt, parseTask2EssayResponse,
+  T2_BAND_SYSTEM, buildT2BandPrompt, parseT2Band,
   extractJson,
 } = require('./geminiService');
 
@@ -129,6 +131,41 @@ async function generateImprovedAnswerGroq(question, part = 1, transcript, _attem
   return { improvedAnswer };
 }
 
+// ── Task 2 "Bài mẫu từ Daniel" + "Phân tích đề" — Groq path ───────────
+// Same prompts as geminiService.generateTask2Essay. Used by the offline
+// seed script (scripts/seedWritingTask2Samples.js --engine groq) so a bulk
+// backfill isn't capped by Gemini's ~20-req/day free tier.
+async function generateTask2EssayGroq(prompt, essayTypeLabel, templateSkeleton, _attempt = 0) {
+  const rawText = await _callGroq(
+    T2_ESSAY_SYSTEM,
+    buildTask2EssayPrompt(prompt, essayTypeLabel, templateSkeleton || '(no template skeleton available)'),
+    { maxTokens: 3500, label: 'generateTask2EssayGroq' }
+  );
+  try {
+    return parseTask2EssayResponse(rawText);
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateTask2EssayGroq: parse/shape failed, retrying', { errorMessage: parseErr.message });
+      return generateTask2EssayGroq(prompt, essayTypeLabel, templateSkeleton, _attempt + 1);
+    }
+    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
+  }
+}
+
+// Overall band for an essay — Groq path. Best-effort: null on any failure.
+async function gradeTask2BandGroq(prompt, essay) {
+  try {
+    const rawText = await _callGroq(T2_BAND_SYSTEM, buildT2BandPrompt(prompt, essay), {
+      maxTokens: 256, label: 'gradeTask2BandGroq'
+    });
+    return parseT2Band(rawText);
+  } catch (e) {
+    logger.ai('gradeTask2BandGroq: failed', { errorMessage: e.message });
+    return null;
+  }
+}
+
 module.exports = {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq,
+  generateTask2EssayGroq, gradeTask2BandGroq,
 };
