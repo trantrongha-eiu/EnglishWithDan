@@ -929,12 +929,25 @@ async function openRewrite(attemptId) {
   document.getElementById('review-modal-overlay')?.classList.remove('open');
   const overlay = document.getElementById('rewrite-modal-overlay');
   const body = document.getElementById('rewrite-modal-body');
+  // Stale cached writing.html (missing the new modal markup): can't open the
+  // modal at all — tell the student to hard-reload rather than throw.
+  if (!overlay || !body) {
+    if (window.showToast) showToast('Trang đang dùng bản cũ. Nhấn Ctrl+Shift+R (hoặc Cmd+Shift+R) để tải lại rồi thử lại.', 'error', 8000);
+    return;
+  }
   overlay.classList.add('open');
-  body.innerHTML = '<div class="spinner"></div>';
-  document.getElementById('rw-submit-btn').disabled = true;
+  body.innerHTML = `<div style="text-align:center;padding:36px"><div class="spinner"></div>
+    <div style="margin-top:14px;font-size:12.5px;color:var(--text3,#9ca3af)">Đang tải bài… nếu chờ lâu là do server đang khởi động.</div></div>`;
+  const submitBtn = document.getElementById('rw-submit-btn');
+  if (submitBtn) submitBtn.disabled = true;
 
   try {
-    const data = await apiFetch(`/api/writing/attempt/${attemptId}`);
+    // Bound the wait — a cold-started backend can otherwise leave the modal
+    // spinning forever with no way out.
+    const data = await Promise.race([
+      apiFetch(`/api/writing/attempt/${attemptId}`),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('__rw_timeout__')), 25000)),
+    ]);
     if (!data.success) throw new Error(data.message);
     const a = data.attempt;
     if (a.gradingStatus !== 'confirmed' || !a.grading) {
@@ -978,13 +991,19 @@ async function openRewrite(attemptId) {
       <div class="rw-col">${rightCol}</div>
     </div>`;
 
-    document.getElementById('rewrite-modal-title').innerHTML =
+    const titleEl = document.getElementById('rewrite-modal-title');
+    if (titleEl) titleEl.innerHTML =
       `<i class="fas fa-pen-fancy"></i> Viết lại: ${escHtml(a.examName || ('Task ' + gradedTasks.join(' + ')))}`;
     gradedTasks.forEach(n => _rwPasteBlock(document.getElementById('rw-ta-' + n)));
-    setupDictionaryDouble('rewrite-modal-body', 'writing-rewrite');
+    try { setupDictionaryDouble('rewrite-modal-body', 'writing-rewrite'); } catch (_) {}
     _rwUpdateCounts();
   } catch (e) {
-    body.innerHTML = `<p style="color:#e53935;padding:20px">${escHtml(e.message || 'Không mở được bài viết lại.')}</p>`;
+    const timedOut = e && e.message === '__rw_timeout__';
+    body.innerHTML = `<div style="padding:24px;text-align:center">
+      <p style="color:#e53935;margin-bottom:14px">${timedOut ? 'Tải bài quá lâu (server có thể đang khởi động).' : escHtml(e.message || 'Không mở được bài viết lại.')}</p>
+      <button class="btn-primary" onclick="openRewrite('${attemptId}')">Thử lại</button>
+      <button class="btn-secondary" style="margin-left:8px" onclick="location.reload()">Tải lại trang</button>
+    </div>`;
   }
 }
 
