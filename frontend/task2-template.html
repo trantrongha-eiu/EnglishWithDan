@@ -775,12 +775,12 @@ const API = (window.AuthService && window.AuthService.API && window.AuthService.
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 function loadXPFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   document.getElementById('header-xp').textContent     = stored.xp     || 0;
   document.getElementById('header-streak').textContent = stored.streak  || 0;
 }
 function updateXPStorage(earned) {
-  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   stored.xp = (stored.xp || 0) + earned;
   localStorage.setItem('t2_progress', JSON.stringify(stored));
   document.getElementById('header-xp').textContent     = stored.xp;
@@ -1089,7 +1089,8 @@ function saveTplScores() {
 // latestScore always reflects the current live accuracy.
 const TYPE_SCORE_KEY = 't2_tpl_type_scores';
 const TYPE_COMPLETE_THRESHOLD = 80;
-let _typeScores = JSON.parse(localStorage.getItem(TYPE_SCORE_KEY) || '{}');
+function _safeParse(json, fallback){ if(json==null) return fallback; try{ return JSON.parse(json); }catch{ return fallback; } }
+let _typeScores = _safeParse(localStorage.getItem(TYPE_SCORE_KEY), {});
 
 // _lvlKey()'d for the same reason as _tplScores/_modeProgress — typeId is
 // shared between the Band 6+ and Band 7+ document for a given type, and

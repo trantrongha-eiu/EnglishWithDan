@@ -626,13 +626,13 @@ function initUser() {
 }
 
 function loadXPFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   document.getElementById('header-xp').textContent     = stored.xp     || 0;
   document.getElementById('header-streak').textContent = stored.streak  || 0;
 }
 
 function updateXPStorage(earned, incrementStreak = false) {
-  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   stored.xp    = (stored.xp || 0) + earned;
   if (incrementStreak) stored.streak = (stored.streak || 0) + 1;
   localStorage.setItem('t2_progress', JSON.stringify(stored));
@@ -648,7 +648,8 @@ function updateXPStorage(earned, incrementStreak = false) {
 // per-week API doesn't expose a single "total topics" count client-side).
 const TOPIC_SCORE_KEY = 't2_topic_scores';
 const TOPIC_COMPLETE_THRESHOLD = 80;
-let _topicScores = JSON.parse(localStorage.getItem(TOPIC_SCORE_KEY) || '{}');
+function _safeParse(json, fallback){ if(json==null) return fallback; try{ return JSON.parse(json); }catch{ return fallback; } }
+let _topicScores = _safeParse(localStorage.getItem(TOPIC_SCORE_KEY), {});
 
 function isTopicCompleted(topicId) { const s = _topicScores[topicId]; return !!(s && s.completed); }
 
@@ -709,8 +710,8 @@ function writeGateMessage(gate) {
 // for "has this student learned this topic's vocab" to check instead. ──
 const VOCAB_TOTAL_KEY = 't2_vocab_total';
 const VOCAB_SAVED_KEY = 't2_vocab_saved';
-let _vocabTotalMap = JSON.parse(localStorage.getItem(VOCAB_TOTAL_KEY) || '{}');
-let _vocabSavedMap  = JSON.parse(localStorage.getItem(VOCAB_SAVED_KEY) || '{}');
+let _vocabTotalMap = _safeParse(localStorage.getItem(VOCAB_TOTAL_KEY), {});
+let _vocabSavedMap  = _safeParse(localStorage.getItem(VOCAB_SAVED_KEY), {});
 
 function _savedTermsForTopic(topicId) {
   return new Set(_vocabSavedMap[topicId] || []);
@@ -746,7 +747,7 @@ function updateSessionStats() {
   const okEl = document.getElementById('mob-stat-correct');
   const pct = state.sessionDone > 0
     ? Math.round((state.sessionCorrect / state.sessionDone) * 100) + '%' : '–';
-  const xp = (JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0}').xp) || 0;
+  const xp = (_safeParse(localStorage.getItem('t2_progress'), { xp: 0 }).xp) || 0;
   if (el) el.textContent = state.sessionDone;
   if (okEl) okEl.textContent = pct;
   if (xpEl) xpEl.textContent = xp;

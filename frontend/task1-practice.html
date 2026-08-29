@@ -865,7 +865,8 @@ const SKILL_LABELS = {
 // that skill selected (currentSkill !== 'all') scores >=80% accuracy.
 const SKILL_SCORE_KEY = 't1_skill_scores';
 const SKILL_COMPLETE_THRESHOLD = 80;
-let _skillScores = JSON.parse(localStorage.getItem(SKILL_SCORE_KEY) || '{}');
+function _safeParse(json, fallback){ if(json==null) return fallback; try{ return JSON.parse(json); }catch{ return fallback; } }
+let _skillScores = _safeParse(localStorage.getItem(SKILL_SCORE_KEY), {});
 
 function isSkillCompleted(skill) { const s = _skillScores[skill]; return !!(s && s.completed); }
 
@@ -1060,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadXPFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"lastDate":""}');
+  const stored = _safeParse(localStorage.getItem('t1_progress'), { xp: 0, lastDate: "" });
   const today  = new Date().toISOString().slice(0, 10);
   if (stored.lastDate !== today) {
     stored.lastDate = today;
@@ -1071,7 +1072,7 @@ function loadXPFromStorage() {
 }
 
 function updateXPStorage(earned) {
-  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"lastDate":""}');
+  const stored = _safeParse(localStorage.getItem('t1_progress'), { xp: 0, lastDate: "" });
   stored.xp = (stored.xp || 0) + earned;
   localStorage.setItem('t1_progress', JSON.stringify(stored));
   document.getElementById('header-xp').textContent = stored.xp;

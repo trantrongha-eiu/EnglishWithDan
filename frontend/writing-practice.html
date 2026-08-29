@@ -743,7 +743,8 @@ let _isSubmitting = false;
 const WP_TOPIC_IDS = ['myself','family','hobbies','school','friends','food','technology','travel','health','environment'];
 const TOPIC_SCORE_KEY = 'wp_topic_scores';
 const TOPIC_COMPLETE_THRESHOLD = 80;
-let _wpTopicScores = JSON.parse(localStorage.getItem(TOPIC_SCORE_KEY) || '{}');
+function _safeParse(json, fallback){ if(json==null) return fallback; try{ return JSON.parse(json); }catch{ return fallback; } }
+let _wpTopicScores = _safeParse(localStorage.getItem(TOPIC_SCORE_KEY), {});
 
 function isWpTopicCompleted(topic) { const s = _wpTopicScores[topic]; return !!(s && s.completed); }
 
@@ -1150,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 'token' + 'user' + 'lastLoginAt'.
 
 function loadXPFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0,"lastDate":""}');
+  const stored = _safeParse(localStorage.getItem('wp_progress'), { xp: 0, streak: 0, lastDate: "" });
   const today  = new Date().toISOString().slice(0, 10);
   if (stored.lastDate !== today) {
     stored.todayXP = 0; stored.todayDone = 0; stored.lastDate = today;
@@ -1629,7 +1630,7 @@ function updateProgress(xpEarned, isCorrect) {
     if (badge) badge.classList.add('hidden');
   }
   updateSessionStats();
-  const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0}');
+  const stored = _safeParse(localStorage.getItem('wp_progress'), { xp: 0, streak: 0 });
   const today     = new Date().toISOString().slice(0, 10);
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   // First exercise of this calendar day → update streak
