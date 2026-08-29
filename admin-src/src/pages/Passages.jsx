@@ -308,7 +308,7 @@ export default function Passages() {
       const ids = new Set(filtered.map(p => p._id));
       setAll(prev => prev.map(p => (ids.has(p._id) ? { ...p, isActive: targetActive } : p)));
       try {
-        await Promise.all([...ids].map(pid => apiFetch(`/admin/passages/${pid}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        await apiFetch('/admin/passages/bulk-active', { method: 'PUT', body: JSON.stringify({ ids: [...ids], isActive: targetActive }) });
         toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} bài đọc`);
       } catch (e) { toast(e.message, 'error'); load(); }
     });

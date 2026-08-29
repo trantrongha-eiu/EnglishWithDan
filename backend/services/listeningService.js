@@ -184,6 +184,13 @@ async function hideAdminTest(id) {
   await ListeningTest.findByIdAndUpdate(id, { isActive: false });
 }
 
+// One request for admin "ẩn/hiện tất cả" instead of N parallel PUTs. Filter
+// is always scoped by an explicit id list — never call this with an empty
+// `ids` (the route guards that).
+async function bulkSetTestsActive(ids, isActive) {
+  return ListeningTest.updateMany({ _id: { $in: ids } }, { isActive });
+}
+
 async function deleteAdminTestPermanent(id) {
   const test = await ListeningTest.findByIdAndDelete(id);
   if (!test) throw new NotFoundError('Không tìm thấy đề nghe');
@@ -442,6 +449,10 @@ async function updateAdminSection(id, body) {
 
 async function hideAdminSection(id) {
   await ListeningSection.findByIdAndUpdate(id, { isActive: false });
+}
+
+async function bulkSetSectionsActive(ids, isActive) {
+  return ListeningSection.updateMany({ _id: { $in: ids } }, { isActive });
 }
 
 async function deleteAdminSectionPermanent(id) {
@@ -864,12 +875,12 @@ async function getPracticeHistoryDetail(attemptId, userId) {
 
 module.exports = {
   flattenQuestions, calcBandScore,
-  listAdminTests, getAdminTest, createAdminTest, updateAdminTest, hideAdminTest, deleteAdminTestPermanent,
+  listAdminTests, getAdminTest, createAdminTest, updateAdminTest, hideAdminTest, deleteAdminTestPermanent, bulkSetTestsActive,
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, saveDictationAttempt,
-  listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent,
+  listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,

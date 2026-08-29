@@ -124,7 +124,7 @@ export default function ListeningTests() {
       const ids = new Set(filtered.map(t => t._id));
       setTests(prev => prev.map(t => (ids.has(t._id) ? { ...t, isActive: targetActive } : t)));
       try {
-        await Promise.all([...ids].map(id => apiFetch(`/admin/listening/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        await apiFetch('/admin/listening/tests/bulk-active', { method: 'PUT', body: JSON.stringify({ ids: [...ids], isActive: targetActive }) });
         toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} đề`);
       } catch (e) { toast(e.message, 'error'); load(); }
     });

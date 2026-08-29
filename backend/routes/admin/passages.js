@@ -64,6 +64,23 @@ router.get('/passages/stats', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// PUT /api/admin/passages/bulk-active  { ids: [], isActive: bool }
+// One request for "ẩn/hiện tất cả" instead of N parallel PUTs. Registered
+// before /passages/:id so "bulk-active" isn't captured as an :id.
+router.put('/passages/bulk-active', auth, teacherOnly, async (req, res) => {
+  try {
+    const { ids, isActive } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'Thiếu danh sách id' });
+    if (typeof isActive !== 'boolean')
+      return res.status(400).json({ success: false, message: 'isActive phải là boolean' });
+    const r = await Passage.updateMany({ _id: { $in: ids } }, { isActive });
+    res.json({ success: true, matched: r.matchedCount, modified: r.modifiedCount });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/passages/upload-map-image
 // Body: { imageBase64 }  → upload lên Cloudinary → trả về URL
 router.post('/passages/upload-map-image', auth, teacherOnly, async (req, res) => {
@@ -159,6 +176,22 @@ router.get('/tests', auth, teacherOnly, async (req, res) => {
     res.json({ success: true, tests });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/tests/bulk-active  { ids: [], isActive: bool }
+// One request for "ẩn/hiện tất cả"; registered before /tests/:id.
+router.put('/tests/bulk-active', auth, teacherOnly, async (req, res) => {
+  try {
+    const { ids, isActive } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'Thiếu danh sách id' });
+    if (typeof isActive !== 'boolean')
+      return res.status(400).json({ success: false, message: 'isActive phải là boolean' });
+    const r = await ReadingTest.updateMany({ _id: { $in: ids } }, { isActive });
+    res.json({ success: true, matched: r.matchedCount, modified: r.modifiedCount });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
   }
 });
 

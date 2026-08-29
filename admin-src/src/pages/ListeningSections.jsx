@@ -229,7 +229,7 @@ export default function ListeningSections() {
       const ids = new Set(filtered.map(s => s._id));
       setSections(prev => prev.map(s => (ids.has(s._id) ? { ...s, isActive: targetActive } : s)));
       try {
-        await Promise.all([...ids].map(sid => apiFetch(`/admin/listening/sections/${sid}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        await apiFetch('/admin/listening/sections/bulk-active', { method: 'PUT', body: JSON.stringify({ ids: [...ids], isActive: targetActive }) });
         toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} section`);
       } catch (e) { toast(e.message, 'error'); load(); }
     });

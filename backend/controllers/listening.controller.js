@@ -50,6 +50,19 @@ exports.hideAdminTest = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
+// PUT /api/admin/listening/tests/bulk-active  { ids: [], isActive: bool }
+exports.bulkSetTestsActive = async (req, res) => {
+  try {
+    const { ids, isActive } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'Thiếu danh sách id' });
+    if (typeof isActive !== 'boolean')
+      return res.status(400).json({ success: false, message: 'isActive phải là boolean' });
+    const r = await listeningService.bulkSetTestsActive(ids, isActive);
+    res.json({ success: true, matched: r.matchedCount, modified: r.modifiedCount });
+  } catch (err) { res.status(400).json({ success: false, message: err.message }); }
+};
+
 // deleteAdminTestPermanent throws NotFoundError instead of returning null —
 // same reasoning as getAdminTest above.
 exports.deleteAdminTestPermanent = async (req, res) => {
@@ -199,6 +212,19 @@ exports.hideAdminSection = async (req, res) => {
     await listeningService.hideAdminSection(req.params.id);
     res.json({ success: true });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
+// PUT /api/admin/listening/sections/bulk-active  { ids: [], isActive: bool }
+exports.bulkSetSectionsActive = async (req, res) => {
+  try {
+    const { ids, isActive } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'Thiếu danh sách id' });
+    if (typeof isActive !== 'boolean')
+      return res.status(400).json({ success: false, message: 'isActive phải là boolean' });
+    const r = await listeningService.bulkSetSectionsActive(ids, isActive);
+    res.json({ success: true, matched: r.matchedCount, modified: r.modifiedCount });
+  } catch (err) { res.status(400).json({ success: false, message: err.message }); }
 };
 
 // deleteAdminSectionPermanent throws NotFoundError instead of returning

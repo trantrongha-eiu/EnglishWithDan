@@ -34,6 +34,8 @@ const upload = multer({
 // CRUD Tests
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/listening/tests', auth, teacherOnly, listeningController.listAdminTests);
+// bulk-active before /:id so "bulk-active" isn't captured as an id
+router.put('/listening/tests/bulk-active', auth, teacherOnly, listeningController.bulkSetTestsActive);
 router.get('/listening/tests/:id', auth, teacherOnly, listeningController.getAdminTest);
 router.post('/listening/tests', auth, teacherOnly, listeningController.createAdminTest);
 router.put('/listening/tests/:id', auth, teacherOnly, listeningController.updateAdminTest);
@@ -66,6 +68,7 @@ router.get('/listening/attempts/stats', auth, teacherOnly, listeningController.g
 // CRUD Practice Sections
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/listening/sections', auth, teacherOnly, listeningController.listAdminSections);
+router.put('/listening/sections/bulk-active', auth, teacherOnly, listeningController.bulkSetSectionsActive);
 router.get('/listening/sections/:id', auth, teacherOnly, listeningController.getAdminSection);
 router.post('/listening/sections', auth, teacherOnly, listeningController.createAdminSection);
 router.put('/listening/sections/:id', auth, teacherOnly, listeningController.updateAdminSection);

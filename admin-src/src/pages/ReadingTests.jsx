@@ -68,7 +68,7 @@ export default function ReadingTests() {
       const ids = new Set(filtered.map(t => t._id));
       setTests(prev => prev.map(t => (ids.has(t._id) ? { ...t, isActive: targetActive } : t)));
       try {
-        await Promise.all([...ids].map(id => apiFetch(`/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        await apiFetch('/admin/tests/bulk-active', { method: 'PUT', body: JSON.stringify({ ids: [...ids], isActive: targetActive }) });
         toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${ids.size} bộ đề`);
       } catch (e) { toast(e.message, 'error'); load(); } // resync on partial failure
     });
