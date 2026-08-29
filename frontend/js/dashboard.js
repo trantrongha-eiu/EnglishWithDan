@@ -1644,10 +1644,11 @@ async function lookupNewWord(word) {
         try {
             const enc = encodeURIComponent;
             // Fetch dictionary (examples + phonetic), Google Translate (primary meaning), MyMemory (alternatives)
-            const [dictRes, gtRes, memRes] = await Promise.allSettled([
+            const [dictRes, gtRes, memRes, aiExRes] = await Promise.allSettled([
                 _fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`),
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
-                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null)
+                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null),
+                fetch(`${API}/dictionary/${enc(word)}/example`, { headers: authH() }).then(r => r.ok ? r.json() : null)
             ]);
             // Guards against a slower earlier lookup (e.g. for "cat") resolving
             // AFTER a faster later one (e.g. "category") and overwriting its
@@ -1689,6 +1690,16 @@ async function lookupNewWord(word) {
                     if (!_looksLikeSentence(seg) || !wordRe.test(seg)) continue;
                     if (!examples.includes(seg)) examples.push(seg);
                 }
+            }
+
+            // Our cached AI example — reliable where the two free APIs above
+            // have nothing. Put it first so it's the default suggestion.
+            const aiExample = (aiExRes.status === 'fulfilled' && aiExRes.value && aiExRes.value.example || '').trim();
+            if (aiExample) {
+                const idx = examples.indexOf(aiExample);
+                if (idx > -1) examples.splice(idx, 1);
+                examples.unshift(aiExample);
+                examples.splice(5);
             }
 
             if (examples.length && !document.getElementById('aw-example').value) {
@@ -3481,22 +3492,64 @@ async function parseBulkInput() {
     document.getElementById('bulk-step-2').style.display = '';
     _renderBulkPreview();
 
-    // Auto-fetch examples concurrently for non-dup words
+    // Examples come from our cached AI generator (reliable, covers words the
+    // free dict APIs have nothing for); dictionaryapi.dev is now only for
+    // phonetic + part of speech, and a last-resort example if the AI call
+    // fails. Both run in parallel; _bulkPickExample() resolves the two
+    // sources so a late dict response can't clobber a good AI sentence.
+    const newWords = _bulkRows.filter(r => r.status !== 'dup').map(r => r.word);
+    const aiExamplesP = _fetchAiExamples(newWords); // resolves to { word: sentence }
+
     const fetches = _bulkRows.map((row, i) => {
         if (row.status === 'dup') return Promise.resolve();
         return _fetchWordInfo(row.word).then(info => {
-            _bulkRows[i].example      = info.example;
+            _bulkRows[i]._dictExample = info.example;
             _bulkRows[i].phonetic     = info.phonetic;
             _bulkRows[i].partOfSpeech = info.partOfSpeech;
             _bulkRows[i].status       = 'ok';
+            _bulkPickExample(i);
             _updateBulkRow(i);
         }).catch(() => {
             _bulkRows[i].status = 'ok';
             _updateBulkRow(i);
         });
     });
-    await Promise.all(fetches);
+
+    aiExamplesP.then(map => {
+        _bulkRows.forEach((row, i) => {
+            if (row.status === 'dup') return;
+            _bulkRows[i]._aiExample = map[row.word.toLowerCase()] || '';
+            _bulkRows[i].status = 'ok';
+            _bulkPickExample(i);
+            _updateBulkRow(i);
+        });
+    });
+
+    await Promise.all([...fetches, aiExamplesP]);
     _updateBulkStepInfo();
+}
+
+// AI sentence wins when we have one; the dict-API example is the fallback.
+function _bulkPickExample(i) {
+    const r = _bulkRows[i];
+    r.example = r._aiExample ? r._aiExample : (r._dictExample || '');
+}
+
+// POST the whole word list to our cached AI example endpoint in one shot.
+// Never throws — a failure (429 / 503 / offline) just yields {} and the
+// dict-API example (if any) stands.
+async function _fetchAiExamples(words) {
+    if (!words || !words.length) return {};
+    try {
+        const res = await fetch(`${API}/dictionary/examples`, {
+            method: 'POST', headers: authH(), body: JSON.stringify({ words }),
+        });
+        if (!res.ok) return {};
+        const data = await res.json();
+        return (data && data.examples) || {};
+    } catch (_) {
+        return {};
+    }
 }
 
 async function _fetchWordInfo(word) {

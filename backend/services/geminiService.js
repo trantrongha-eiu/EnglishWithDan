@@ -680,6 +680,70 @@ async function generateCollocations(word, _attempt = 0) {
   }
 }
 
+// ── Example-sentence generator ───────────────────────────────────────
+// One natural English sentence per word, for the "Ví dụ (tự động)" column
+// of the vocab-book add-word / bulk-import flow. The free dictionary APIs
+// (dictionaryapi.dev + MyMemory) miss an example for a large share of
+// perfectly common words ("escalate", "mammal", …) and go slow/502 often;
+// this is the reliable primary source. Called at most ONCE per distinct
+// word — see services/dictionaryExampleService.js for the cache wrapper.
+const EXAMPLE_SYSTEM = `You are an English-Vietnamese dictionary assistant for IELTS learners.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildExamplePrompt(word) {
+  return `English word or phrase: "${word}"
+
+Write ONE natural English example sentence that clearly shows what "${word}" means in ordinary use:
+- 8-18 words, complete sentence, everyday or light-academic register (the kind that fits IELTS Writing/Speaking).
+- Must contain "${word}" itself (an inflected form — plural / past tense / -ing — is fine).
+- Not a dictionary definition, not a proverb, no rare or archaic sense.
+
+Return this exact JSON (no other text):
+{"example": "..."}
+
+If "${word}" is not a real English word/phrase (e.g. a typo), return {"example": ""} — never invent a sentence for a non-word.`;
+}
+
+async function generateExampleSentence(word, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL_FAST,
+        contents: buildExamplePrompt(word),
+        config: {
+          systemInstruction: EXAMPLE_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.5,
+          maxOutputTokens: 120,
+        }
+      }),
+      15000,
+      'AI phản hồi quá lâu, vui lòng thử lại.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generateExampleSentence: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại.');
+  }
+
+  try {
+    const parsed = extractJson(rawText);
+    return String(parsed.example || '').trim().slice(0, 300);
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateExampleSentence: JSON parse failed, retrying', { errorMessage: parseErr.message });
+      return generateExampleSentence(word, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
+  }
+}
+
 // ── Task 2 — "Bài mẫu từ Daniel" + "Phân tích đề" generator ───────────
 // Fills a WritingTask2 doc's analysisSections (Vietnamese guide) and
 // sampleSections (a Band 7.5+ model essay). Used only by the offline seed
@@ -843,7 +907,7 @@ async function gradeTask2Band(prompt, essay) {
 
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer,
-  generateCollocations, generateTask2Essay, gradeTask2Band,
+  generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).
   T2_ESSAY_SYSTEM, buildTask2EssayPrompt, parseTask2EssayResponse,
