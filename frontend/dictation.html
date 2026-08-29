@@ -265,6 +265,26 @@ let dictSpeeds   = [1, 1.25, 1.5, 0.75];
 let dictSpeedIdx = 0;
 const audio = document.getElementById('dict-audio');
 
+// Single source of truth for the play/pause button glyph — dictGoTo(),
+// dictTogglePlay(), the timeupdate end-of-sentence stop and the audio
+// 'error' handler all need to keep it in sync, and previously each poked
+// the innerHTML directly (so navigating away mid-play left it stuck on the
+// pause icon).
+function _setDictPlayIcon(playing) {
+  document.getElementById('dict-play-btn').innerHTML =
+    playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+}
+
+// Genuine load failure (bad/missing audioUrl, network error, unsupported
+// format) — mirrors listening.html's audio 'error' listener; without it a
+// broken file just fails silently with the button stuck on "pause".
+audio.addEventListener('error', () => {
+  console.error('[dictation audio] load error:', audio.error);
+  if (!dictSection) return;
+  _setDictPlayIcon(false);
+  toast('Lỗi tải audio của bài này — vui lòng liên hệ giáo viên.', 'error');
+});
+
 // ══════════════ SAVE RESULTS (so admin's "Lịch sử làm bài" actually sees
 // dictation practice — this page previously never sent anything to the
 // server, checking answers entirely client-side). Keyed by sentenceIndex so
@@ -384,7 +404,14 @@ async function openDictSection(id) {
     backToList();
     return;
   }
+  // Reassigning .src resets playbackRate to 1 in every browser, so the speed
+  // button would otherwise keep showing a stale "1.5x" from the previous
+  // section while playback is actually 1x. Reset both together.
   audio.src = dictSection.audioUrl;
+  audio.playbackRate = 1;
+  dictSpeedIdx = 0;
+  document.getElementById('dict-speed-btn').textContent = '1x';
+  _setDictPlayIcon(false);
   dictIndex = 0;
   dictDone = new Set();
   dictSessionAnswers = [];
@@ -392,6 +419,7 @@ async function openDictSection(id) {
   document.getElementById('dict-section-title').textContent = dictSection.title;
   document.getElementById('dict-section-sub').textContent = (dictSection.isActualTest ? 'Actual Test' : 'Part ' + dictSection.partNumber) + ' · ' + dictSection.dictationSentences.length + ' câu';
   document.getElementById('dict-total-num').textContent = dictSection.dictationSentences.length;
+  document.getElementById('dict-session-score').textContent = `0/${dictSection.dictationSentences.length} ✓`;
   renderNumGrid();
   dictGoTo(0);
   syncViewUrl(id);
@@ -424,11 +452,13 @@ function dictGoTo(i) {
   const sentences = dictSection.dictationSentences;
   if (i < 0 || i >= sentences.length) return;
   audio.pause();
+  _setDictPlayIcon(false); // was left showing "pause" when navigating mid-play
   dictIndex = i;
   document.getElementById('dict-cur-num').textContent = i + 1;
   document.getElementById('dict-prev-btn').disabled = i === 0;
   document.getElementById('dict-next-btn').disabled = i === sentences.length - 1;
   document.getElementById('dict-input').value = '';
+  document.getElementById('dict-time').textContent = '0:00 / 0:00';
   document.getElementById('dict-result').classList.remove('show', 'correct', 'wrong');
   document.getElementById('dict-script-body').classList.remove('show');
   document.getElementById('dict-script-chevron').className = 'fas fa-chevron-down';
@@ -442,7 +472,12 @@ function dictGoTo(i) {
     `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>`;
   updateDictProgress(0);
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
-  document.getElementById('dict-input').focus();
+  // Only auto-focus on desktop — on mobile this yanks the on-screen keyboard
+  // up over the audio controls the moment the student opens a section or
+  // taps the sentence grid, before they've even heard anything.
+  if (window.matchMedia('(min-width: 800px)').matches) {
+    document.getElementById('dict-input').focus();
+  }
 }
 
 // Word count + first-letter-per-word hint — same UX as Task 1/2 writing
@@ -461,23 +496,30 @@ function _buildDictHint(text) {
    audio file, using this sentence's start/end timestamps) ══════════════ */
 function currentSentence() { return dictSection.dictationSentences[dictIndex]; }
 
+function _dictPlay() {
+  // audio.play() rejects on a load failure or an autoplay-policy block; without
+  // a catch the button would flip to "pause" while nothing actually plays.
+  audio.play().then(() => _setDictPlayIcon(true)).catch(() => {
+    _setDictPlayIcon(false);
+    toast('Không phát được audio — thử lại hoặc tải lại trang.', 'error');
+  });
+}
+
 function dictTogglePlay() {
   if (audio.paused) {
     if (audio.currentTime < currentSentence().start || audio.currentTime >= currentSentence().end) {
       audio.currentTime = currentSentence().start;
     }
-    audio.play();
-    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+    _dictPlay();
   } else {
     audio.pause();
-    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-play"></i>';
+    _setDictPlayIcon(false);
   }
 }
 
 function dictRestart() {
   audio.currentTime = currentSentence().start;
-  audio.play();
-  document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+  _dictPlay();
 }
 
 function dictCycleSpeed() {
@@ -498,7 +540,7 @@ audio.addEventListener('timeupdate', () => {
   document.getElementById('dict-time').textContent = fmtTime(Math.max(0, audio.currentTime - s.start)) + ' / ' + fmtTime(dur);
   if (audio.currentTime >= s.end) {
     audio.pause();
-    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-play"></i>';
+    _setDictPlayIcon(false);
   }
 });
 
