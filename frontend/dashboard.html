@@ -1095,7 +1095,11 @@
           dd.appendChild(d);
         });
       }
-      function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';render('');dd.style.display='block';isOpen=true;}
+      function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';render('');dd.style.display='block';isOpen=true;
+        // The sheet is only as tall as its content; opening the unit list
+        // inside a collapsed sheet leaves it half off-screen. Expand so the
+        // whole list is reachable (no-op when the picker isn't in #mobSheet).
+        if(sheet&&sheet.classList.contains('active'))sheet.classList.add('expanded');}
       // blur() on close — the dropdown-item mousedown handler below calls
       // e.preventDefault() (so the click reliably registers instead of the
       // input blurring first and closing the dropdown out from under the

@@ -325,7 +325,15 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
    never got it — student-reported "khung nhỏ, khó nhìn" on mobile). */
 .unit-picker-input.up-mob{padding:14px 36px 14px 16px;font-size:15.5px;border-width:1.5px;border-radius:10px;margin-bottom:10px}
 .up-mob ~ .unit-picker-caret{font-size:13px}
-.unit-picker-dd.up-mob{max-height:280px;border-radius:10px}
+/* Inside the mobile bottom sheet the dropdown CANNOT be an absolute
+   overlay: .mob-sheet is overflow:hidden and only as tall as its content,
+   so an absolutely-positioned list was clipped at the sheet's bottom edge
+   and the student had no way to scroll to it (the swipe-up "expand" did
+   nothing because .expanded only raised max-height over content that never
+   filled it). Render it inline instead — it grows the panel, .sheet-body
+   scrolls if the list is long, and opening the picker also expands the
+   sheet (see openDD in dashboard.html / open() in dashboard-lesson.js). */
+.unit-picker-dd.up-mob{position:static;box-shadow:none;margin-top:6px;max-height:280px;border-radius:10px}
 .unit-picker-dd.up-mob .up-item{padding:13px 16px;font-size:15px}
 .unit-picker-dd.up-mob .up-group-label{padding:9px 16px 5px;font-size:12px}
 .unit-picker-dd.up-mob .up-empty{padding:14px 16px;font-size:14px}
@@ -1012,11 +1020,14 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   overflow:hidden;
   flex-direction:column;
   transform:translateY(100%);
-  transition:transform .32s cubic-bezier(.32,1,.28,1), max-height .3s ease;
+  transition:transform .32s cubic-bezier(.32,1,.28,1), max-height .3s ease, height .3s ease;
 }
 .mob-sheet.open{transform:translateY(0)}
-/* Vuốt lên trên tay cầm để mở rộng — nhiều chỗ hơn để xem/chọn sổ & topic. */
-.mob-sheet.expanded{max-height:95vh;}
+/* Vuốt lên trên tay cầm để mở rộng — nhiều chỗ hơn để xem/chọn sổ & topic.
+   Needs an explicit height, not just a max-height: the Paraphrase/Classroom
+   panels have little intrinsic content, so a max-height-only rule left the
+   sheet content-sized and "expand" did nothing visible. */
+.mob-sheet.expanded{max-height:95vh;height:95vh;}
 
 /* Drag handle — larger tap target, direction-aware drag (see dashboard.html) */
 .sheet-handle{
@@ -1067,7 +1078,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 
 /* Sheet panels */
 .sheet-body{
-  flex:1;overflow-y:auto;
+  flex:1;min-height:0;overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   padding-bottom:env(safe-area-inset-bottom, 16px);
 }

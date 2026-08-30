@@ -199,7 +199,16 @@ function buildClassroomPicker(container, opts) {
     function render() {
         dd.innerHTML = _lessonPickerGroupedHtml(lessons);
     }
-    function open() { render(); dd.style.display = 'block'; isOpen = true; }
+    function open() {
+        render(); dd.style.display = 'block'; isOpen = true;
+        // Inside the mobile sheet the dropdown renders inline (css .up-mob) —
+        // expand the sheet so the full quiz list is reachable, matching the
+        // Paraphrase picker's openDD() in dashboard.html.
+        if (opts.mobileInput) {
+            const s = document.getElementById('mobSheet');
+            if (s && s.classList.contains('active')) s.classList.add('expanded');
+        }
+    }
     function close() { dd.style.display = 'none'; isOpen = false; }
     inp.addEventListener('click', () => (isOpen ? close() : open()));
     dd.addEventListener('mousedown', e => {
