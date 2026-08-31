@@ -492,21 +492,34 @@
      REWRITE MODAL — left: bài đã chấm + feedback · right: viết lại (gõ tay)
 ═══════════════════════════════════════════ -->
 <style>
-  #rewrite-modal-overlay .review-modal{max-width:1100px;width:96vw}
-  .rw-split{display:flex;gap:16px;align-items:stretch}
+  /* Rewrite = full-screen so students can read feedback + write side by side. */
+  #rewrite-modal-overlay{padding:0}
+  #rewrite-modal-overlay .review-modal{max-width:none;width:100vw;height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;border-radius:0}
+  .rw-split{display:flex;gap:22px;align-items:flex-start}
   .rw-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:12px}
-  .rw-col-left{border-right:1px solid var(--border,#e5e7eb);padding-right:16px;max-height:66vh;overflow-y:auto}
+  .rw-col-left,.rw-col-right{max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);overflow-y:auto}
+  .rw-col-left{border-right:1px solid var(--border,#e5e7eb);padding-right:20px}
   .rw-task-box{border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:12px}
   .rw-task-box h4{margin:0 0 6px;font-size:13px}
   .rw-prompt{font-size:12.5px;color:var(--text2,#4b5563);background:var(--surface2,#f9fafb);border-radius:8px;padding:8px 10px;margin-bottom:8px;white-space:pre-wrap}
-  .rw-orig{font-size:12.5px;color:var(--text3,#6b7280);white-space:pre-wrap;line-height:1.6;max-height:160px;overflow-y:auto}
-  .rw-ta{width:100%;min-height:200px;resize:vertical;border:1.5px solid var(--border,#d1d5db);border-radius:8px;padding:10px;font:inherit;font-size:14px;line-height:1.6}
+  .rw-chart-img{display:block;max-width:100%;border:1px solid var(--border,#e5e7eb);border-radius:8px;margin:0 0 10px}
+  .rw-orig{font-size:12.5px;color:var(--text3,#6b7280);white-space:pre-wrap;line-height:1.6;max-height:220px;overflow-y:auto}
+  .rw-ta{width:100%;min-height:220px;resize:vertical;border:1.5px solid var(--border,#d1d5db);border-radius:8px;padding:10px;font:inherit;font-size:14px;line-height:1.6}
   .rw-ta:focus{outline:none;border-color:var(--brand,#e53935)}
   .rw-wc{font-size:12px;font-weight:700;margin-top:4px}
   .rw-wc.ok{color:#16a34a}.rw-wc.short{color:#d97706}
   .rw-note{font-size:12px;color:var(--text3,#6b7280);background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 10px}
   [data-theme="dark"] .rw-note{background:#0f1e33;border-color:#1e3a5f}
-  @media(max-width:900px){.rw-split{flex-direction:column}.rw-col-left{border-right:none;border-bottom:1px solid var(--border,#e5e7eb);padding-right:0;padding-bottom:14px;max-height:none}}
+  /* AI's original grading — collapsed by default, teacher's stays primary. */
+  .rw-ai-fb{border:1px dashed #c7d2fe;border-radius:10px;background:#f5f7ff;margin-bottom:4px}
+  [data-theme="dark"] .rw-ai-fb{background:#0f1533;border-color:#3730a3}
+  .rw-ai-fb>summary{cursor:pointer;padding:10px 12px;font-size:12.5px;font-weight:700;color:#4338ca;list-style:none}
+  [data-theme="dark"] .rw-ai-fb>summary{color:#a5b4fc}
+  .rw-ai-fb>summary::-webkit-details-marker{display:none}
+  .rw-ai-fb>summary::before{content:"▸ "}
+  .rw-ai-fb[open]>summary::before{content:"▾ "}
+  .rw-ai-fb-inner{padding:0 12px 12px;display:flex;flex-direction:column;gap:12px}
+  @media(max-width:900px){.rw-split{flex-direction:column}.rw-col-left,.rw-col-right{max-height:none;overflow:visible}.rw-col-left{border-right:none;border-bottom:1px solid var(--border,#e5e7eb);padding-right:0;padding-bottom:14px}}
 </style>
 <div class="modal-overlay" id="rewrite-modal-overlay" onclick="if(event.target===this)closeRewriteModal()">
   <div class="review-modal">
@@ -602,6 +615,6 @@
 
 <script src="js/writing-autosave.js?v=20260831"></script>
 <script src="js/writing-tips.js?v=20260831"></script>
-<script src="js/writing.js?v=20260922"></script>
+<script src="js/writing.js?v=20260923"></script>
 </body>
 </html>

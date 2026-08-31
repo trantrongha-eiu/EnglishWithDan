@@ -1006,10 +1006,12 @@ async function openRewrite(attemptId) {
     const draft = (prev.task1 || prev.task2) ? null : _rwLoadDraft(attemptId);
     const rightCol = gradedTasks.map(n => {
       const prompt = n === 1 ? (t1.prompt || '') : (t2.prompt || '');
+      const img = n === 1 ? (t1.imageUrl || '') : '';
       const pre = (n === 1 ? prev.task1 : prev.task2) || (draft && draft['task' + n]) || '';
       return `<div class="rw-task-box">
         <h4>Task ${n} — viết lại (tối thiểu ${RW_MIN[n]} từ)</h4>
         ${prompt ? `<div class="rw-prompt">${escHtml(prompt)}</div>` : ''}
+        ${img ? `<img class="rw-chart-img" src="${escHtml(img)}" alt="Biểu đồ / hình Task ${n}" loading="lazy">` : ''}
         <textarea class="rw-ta" id="rw-ta-${n}" placeholder="Gõ bài viết lại của bạn ở đây... (không dán được)">${escHtml(pre)}</textarea>
         <div class="rw-wc short" id="rw-wc-${n}">0 / ${RW_MIN[n]} từ tối thiểu</div>
       </div>`;
@@ -1018,6 +1020,7 @@ async function openRewrite(attemptId) {
     const leftCol = `
       <div class="rw-note"><i class="fas fa-lightbulb"></i> Dựa vào feedback bên dưới, viết lại bài cho tốt hơn. Bài viết lại <b>không chấm điểm</b> — giáo viên chỉ theo dõi bạn đã làm chưa.</div>
       ${_buildStudentFeedback(g)}
+      ${_buildAiFeedbackBlock(a.aiGrading)}
       ${gradedTasks.map(n => {
         const orig = n === 1 ? (a.task1Answer || '') : (a.task2Answer || '');
         return `<div class="rw-task-box"><h4>Bài gốc — Task ${n} (${n === 1 ? (a.wordCount1 || 0) : (a.wordCount2 || 0)} từ)</h4>
@@ -1026,7 +1029,7 @@ async function openRewrite(attemptId) {
 
     body.innerHTML = `<div class="rw-split">
       <div class="rw-col rw-col-left">${leftCol}</div>
-      <div class="rw-col">${rightCol}</div>
+      <div class="rw-col rw-col-right">${rightCol}</div>
     </div>`;
 
     const titleEl = document.getElementById('rewrite-modal-title');
@@ -1119,8 +1122,10 @@ window.openRewrite = openRewrite;
 window.closeRewriteModal = closeRewriteModal;
 window.submitRewrite = submitRewrite;
 
-function _buildStudentFeedback(g) {
-  function taskCard(label, td) {
+// One task's score bars + written feedback. Shared by the teacher-confirmed
+// grading (_buildStudentFeedback) and the AI's original grading
+// (_buildAiFeedbackBlock) — both use the same taskGrade shape.
+function _fbTaskCard(label, td) {
     if (!td) return '';
     if (td.bandScore == null && !td.overallFeedback && !(td.sentenceFeedback?.length)) return '';
     const isT1 = label.includes('1');
@@ -1200,8 +1205,33 @@ function _buildStudentFeedback(g) {
       ${!sfItems.length && corrections ? `<div class="fb-section"><div class="fb-section-lbl fb-section-corr">Lỗi cần sửa</div>${corrections}</div>` : ''}
       ${!sfItems.length && suggestions ? `<div class="fb-section"><div class="fb-section-lbl fb-section-sugg">Gợi ý cải thiện</div><ul class="fb-sugg-list">${suggestions}</ul></div>` : ''}
     </div>`;
-  }
+}
 
+// AI's original grading (attempt.aiGrading) — shown collapsed under the
+// teacher's grading in the rewrite modal so students can compare, without the
+// AI draft competing with the official (teacher-confirmed) result.
+function _buildAiFeedbackBlock(ai) {
+  if (!ai) return '';
+  // Match _fbTaskCard's own render condition so we never open an empty block.
+  const hasContent = td => td && (td.bandScore != null || td.overallFeedback
+    || (td.sentenceFeedback && td.sentenceFeedback.length));
+  const has1 = hasContent(ai.task1), has2 = hasContent(ai.task2);
+  if (!has1 && !has2) return '';
+  const when = ai.generatedAt
+    ? new Date(ai.generatedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : '';
+  // Open by default — the student asked to see the AI's notes; they can collapse
+  // it if the teacher's grading above already covers everything.
+  return `<details class="rw-ai-fb" open>
+    <summary><i class="fas fa-robot"></i> Bản chấm gốc từ AI${when ? ' · ' + when : ''} — tham khảo (điểm chính thức là của giáo viên ở trên)</summary>
+    <div class="rw-ai-fb-inner">
+      ${has1 ? _fbTaskCard('Task 1', ai.task1) : ''}
+      ${has2 ? _fbTaskCard('Task 2', ai.task2) : ''}
+    </div>
+  </details>`;
+}
+
+function _buildStudentFeedback(g) {
   const dateStr = g.confirmedAt
     ? new Date(g.confirmedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
     : '';
@@ -1230,8 +1260,8 @@ function _buildStudentFeedback(g) {
       Overall = trung bình 4 tiêu chí (TA/TR, CC, LR, GRA), <strong>làm tròn xuống</strong> 0.5 gần nhất — nghiêm hơn cách quy đổi IELTS chính thức một chút, để phản ánh đúng phần em chưa chắc.
     </div>
     ${g.adminNote ? `<div class="fb-admin-note"><span class="fb-admin-note-lbl"><i class="fas fa-comment-dots"></i> Nhận xét từ giáo viên:</span> ${escHtml(g.adminNote)}</div>` : ''}
-    ${taskCard('Task 1', g.task1)}
-    ${taskCard('Task 2', g.task2)}
+    ${_fbTaskCard('Task 1', g.task1)}
+    ${_fbTaskCard('Task 2', g.task2)}
   </div>`;
 }
 
