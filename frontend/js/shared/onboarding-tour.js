@@ -486,6 +486,19 @@
     try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
     const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
     if (seen || !loggedIn) return;
-    setTimeout(function () { start(page); }, 900);
+    // The tour goes first in the shared login-popup queue (highest priority)
+    // so a brand-new student walks the tour before any goal-setup / badge /
+    // review modal appears. #ews-tour-tip is removed by endTour(), which is
+    // what releases the queue slot.
+    setTimeout(function () {
+      if (window.PopupQueue) {
+        window.PopupQueue.enqueue({
+          id: 'onboarding-tour', priority: 60, until: '#ews-tour-tip',
+          show: function () { start(page); }
+        });
+      } else {
+        start(page);
+      }
+    }, 900);
   });
 })();

@@ -59,6 +59,19 @@
   function showReviewRequiredPopup(pending, count, onGoToReview) {
     if (_popupShownThisLoad || !pending) return;
     _popupShownThisLoad = true;
+    // One-at-a-time with the other login popups (goal-setup, badge, etc.) via
+    // the shared queue; falls back to showing immediately without it.
+    if (window.PopupQueue) {
+      window.PopupQueue.enqueue({
+        id: 'review-required', priority: 40, until: '#rd-popup-backdrop',
+        show: function () { _renderReviewRequiredPopup(pending, count, onGoToReview); }
+      });
+    } else {
+      _renderReviewRequiredPopup(pending, count, onGoToReview);
+    }
+  }
+
+  function _renderReviewRequiredPopup(pending, count, onGoToReview) {
     _injectStyles();
     var backdrop = document.getElementById('rd-popup-backdrop');
     if (!backdrop) {

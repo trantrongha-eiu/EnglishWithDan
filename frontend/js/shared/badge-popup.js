@@ -43,7 +43,19 @@
   function showBadgeUnlocked(badges) {
     if (!Array.isArray(badges) || !badges.length) return;
     _queue.push.apply(_queue, badges);
-    if (!_showing) _showNext();
+    if (_showing) return;
+    // Take a turn in the shared login-popup queue so a badge unlock doesn't
+    // land on top of the goal-setup / review-required modal (and vice versa).
+    // _showNext() chains through every queued badge, then _close() hides
+    // #bp-backdrop, which is what releases the queue slot.
+    if (window.PopupQueue) {
+      window.PopupQueue.enqueue({
+        id: 'badge-unlocked', priority: 50, until: '#bp-backdrop',
+        show: function () { _showNext(); }
+      });
+    } else {
+      _showNext();
+    }
   }
 
   function _showNext() {

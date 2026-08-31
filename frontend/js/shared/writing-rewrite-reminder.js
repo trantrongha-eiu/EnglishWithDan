@@ -67,7 +67,21 @@
   function _showModal(count, firstId) {
     if (_modalShown) return;
     _modalShown = true;
+    // One-at-a-time with the other page-load popups via the shared queue
+    // (js/shared/popup-queue.js); shows immediately if that script is absent.
+    if (window.PopupQueue) {
+      window.PopupQueue.enqueue({
+        id: 'writing-rewrite', priority: 35, until: '#wrr-modal-overlay',
+        show: function () { _renderModal(count, firstId); }
+      });
+    } else {
+      _renderModal(count, firstId);
+    }
+  }
+
+  function _renderModal(count, firstId) {
     var back = document.createElement('div');
+    back.id = 'wrr-modal-overlay';
     back.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1450;display:flex;align-items:center;justify-content:center;padding:16px';
     back.innerHTML =
       '<div style="background:var(--surface,#fff);border-radius:16px;max-width:380px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)">'

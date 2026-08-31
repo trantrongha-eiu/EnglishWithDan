@@ -699,10 +699,25 @@
     return !!(el && el.classList.contains('open'));
   }
 
+  // Route a full-screen notice through the shared one-at-a-time popup queue
+  // (js/shared/popup-queue.js) so it never lands stacked on top of the
+  // goal-setup / badge / review modals. Falls back to showing immediately
+  // when the queue script isn't on the page.
+  function _queueNotice(opts) {
+    if (window.PopupQueue) window.PopupQueue.enqueue(opts);
+    else opts.show(function () {});
+  }
+
   var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';
   function _showStreak35Notice() {
     if (localStorage.getItem(STREAK35_NOTICE_KEY)) return;
-    if (_learningModalOpen()) return;
+    _queueNotice({
+      id: 'nav-streak35', priority: 10, until: '#nav-streak35-notice-overlay',
+      show: _renderStreak35Notice
+    });
+  }
+  function _renderStreak35Notice() {
+    if (localStorage.getItem(STREAK35_NOTICE_KEY)) return;
 
     var overlay = document.createElement('div');
     overlay.id = 'nav-streak35-notice-overlay';
@@ -745,9 +760,14 @@
 
     var todayStr = new Date().toDateString();
     if (localStorage.getItem(VOCAB_INACTIVITY_SHOWN_KEY) === todayStr) return;
-    if (_learningModalOpen()) return;
     localStorage.setItem(VOCAB_INACTIVITY_SHOWN_KEY, todayStr);
 
+    _queueNotice({
+      id: 'nav-vocab-inactivity', priority: 8, until: '#nav-vocab-inactivity-overlay',
+      show: function () { _renderVocabInactivityNotice(daysSince); }
+    });
+  }
+  function _renderVocabInactivityNotice(daysSince) {
     var overlay = document.createElement('div');
     overlay.id = 'nav-vocab-inactivity-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';

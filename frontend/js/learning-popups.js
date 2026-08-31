@@ -355,12 +355,21 @@
   // on every dashboard load (the goal flow is the gateway to every
   // personalised suggestion, and was being ignored when shown once/session).
   // Today's-task popup stays gated to once per calendar day. ─────────────
+  // Route the auto-shown popup through the shared one-at-a-time queue (falls
+  // back to showing immediately when popup-queue.js isn't on the page). Only
+  // the AUTO popups are queued — manual window.EWSLearning.openToday() etc.
+  // from a button click always open right away.
+  function _queue(opts) {
+    if (window.PopupQueue) window.PopupQueue.enqueue(opts);
+    else opts.show(function () {});
+  }
+
   async function autoShow() {
     let goal;
     try { goal = (await apiGet('/goals')).goal; } catch (e) { return; }
     if (!goal.hasGoal) {
       renderGoalBanner(true);
-      openGoalFlow(true);
+      _queue({ id: 'lp-goal', priority: 30, until: '#lp-overlay', show: () => openGoalFlow(true) });
       return;
     }
     renderGoalBanner(false);
@@ -370,7 +379,7 @@
       const dayKey = 'ews_today_popup_shown_' + today.date;
       if (localStorage.getItem(dayKey)) return;
       localStorage.setItem(dayKey, '1');
-      openToday(today);
+      _queue({ id: 'lp-today', priority: 15, until: '#lp-overlay', show: () => openToday(today) });
     }
   }
 
