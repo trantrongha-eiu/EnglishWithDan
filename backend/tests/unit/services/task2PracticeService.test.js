@@ -75,13 +75,25 @@ describe('getTopicQuestions — answer-key stripping and word/letter hints', () 
     });
   }
 
-  test('never exposes correctAnswer or modelAnswer before submission', async () => {
+  test('never exposes the raw correctAnswer / modelAnswer keys before submission', async () => {
     const topic = await makeTopic();
     const { questions } = await svc.getTopicQuestions(topic._id.toString(), 'all');
     for (const q of questions) {
       expect(q.correctAnswer).toBeUndefined();
       expect(q.modelAnswer).toBeUndefined();
     }
+  });
+
+  test('exposes translationAnswer for the word-by-word typing drill (topic practice only)', async () => {
+    const topic = await makeTopic();
+    const { questions } = await svc.getTopicQuestions(topic._id.toString(), 'all');
+    const t = questions.find(q => q.type === 'translation');
+    const fb = questions.find(q => q.type === 'fill_blank');
+    // Intentional, exercise-specific reveal: the "Dịch câu" drill validates
+    // every typed character in real time, so the client needs the exact
+    // sentence. Non-translation types must NOT get it.
+    expect(t.translationAnswer).toBe('Many students study online.');
+    expect(fb.translationAnswer).toBeUndefined();
   });
 
   test('adds a word-count + first-letter hint for translation, derived from the answer but not revealing it', async () => {
@@ -123,6 +135,7 @@ describe('getExam — no answer-key or hints leaked, matches "no hints" exam des
       expect(q.modelAnswer).toBeUndefined();
       expect(q.answerWordCount).toBeUndefined();
       expect(q.answerLetterHint).toBeUndefined();
+      expect(q.translationAnswer).toBeUndefined();
     }
   });
 });

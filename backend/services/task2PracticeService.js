@@ -143,6 +143,17 @@ function sanitizeQuestionForClient(q, opts = {}) {
       rest.answerLetterHint = hint.pattern;
     }
   }
+  // Word-by-word "Dịch câu" typing exercise (topic-practice flow only, i.e.
+  // includeHints) needs the exact answer client-side to validate each typed
+  // character in real time — the letter-mask above only reveals first letters.
+  // This is an intentional, exercise-specific reveal (the whole point of the
+  // drill is to reproduce the sentence verbatim, and every keystroke is still
+  // graded fresh server-side on submit). Thi thử / exam mode passes
+  // includeHints:false, so it stays fully hint-free and answer-free.
+  if (includeHints && q.type === 'translation') {
+    const answerText = correctAnswer || modelAnswer || '';
+    if (answerText) rest.translationAnswer = answerText;
+  }
   return rest;
 }
 

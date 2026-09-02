@@ -353,6 +353,98 @@
     }
     [data-theme="dark"] .t2-question-text { color: #f1f5f9; }
 
+    /* ── Word-by-word "Dịch câu" typing drill ───────────────── */
+    .t2-wbw { margin-top: 10px; }
+    .t2-wbw-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 8px; font-size: 12px;
+    }
+    .t2-wbw-count {
+      background: #f3f4f6; color: #4b5563; border-radius: 20px;
+      padding: 3px 11px; font-weight: 800; white-space: nowrap;
+      transition: background .2s, color .2s;
+    }
+    .t2-wbw-count.is-full { background: #dcfce7; color: #15803d; }
+    .t2-wbw-showall {
+      background: none; border: none; color: #6366f1; font-weight: 700;
+      font-size: 12px; cursor: pointer; padding: 2px 4px; display: inline-flex;
+      align-items: center; gap: 4px;
+    }
+    .t2-wbw-showall:hover { text-decoration: underline; }
+    .t2-wbw-words {
+      display: flex; flex-wrap: wrap; gap: 7px 8px;
+      padding: 12px; border-radius: 12px; background: #f9fafb;
+      border: 1px solid #eef0f3; min-height: 44px; align-content: flex-start;
+    }
+    .t2-wbw-word {
+      font-family: 'Courier New', ui-monospace, monospace;
+      font-size: 14px; font-weight: 700; letter-spacing: .5px;
+      padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+      background: #eef0f3; color: #9ca3af; border: 1.5px solid transparent;
+      transition: background .18s, color .18s, border-color .18s, transform .18s;
+    }
+    .t2-wbw-word.is-peek { color: #6b7280; font-style: italic; }
+    .t2-wbw-word.is-done {
+      background: #dcfce7; color: #15803d; border-color: #86efac;
+    }
+    .t2-wbw-word.just-done { animation: t2-wbw-pop .34s ease; }
+    .t2-wbw-word.is-active {
+      background: #fff; color: #111827; border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+    }
+    .t2-wbw-word.is-active .t2-wbw-star { color: #d1d5db; }
+    .t2-wbw-word.is-active.is-error {
+      border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18);
+      animation: t2-wbw-shake .24s ease;
+    }
+    .t2-wbw-err { color: #ef4444; }
+    .t2-wbw-caret {
+      display: inline-block; width: 1px; margin: 0 1px;
+      border-left: 2px solid #f59e0b; animation: t2-wbw-blink 1s step-end infinite;
+    }
+    .t2-wbw-input {
+      margin-top: 10px; width: 100%; box-sizing: border-box;
+      font-family: 'Courier New', ui-monospace, monospace;
+      font-size: 16px; font-weight: 700; letter-spacing: 1px;
+      padding: 10px 12px; border-radius: 10px;
+      border: 1.5px solid #d1d5db; background: #fff; color: #111827;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+    }
+    .t2-wbw-input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+    .t2-wbw-input.is-error {
+      border-color: #ef4444; background: #fef2f2;
+      box-shadow: 0 0 0 3px rgba(239,68,68,.18); animation: t2-wbw-shake .24s ease;
+    }
+    .t2-wbw-input:disabled { background: #f3f4f6; color: #9ca3af; }
+    [data-theme="dark"] .t2-wbw-input { background: #0d0d0d; border-color: #334155; color: #f1f5f9; }
+    [data-theme="dark"] .t2-wbw-input:disabled { background: #1e293b; color: #64748b; }
+    .t2-wbw-hint {
+      margin-top: 7px; font-size: 11.5px; color: #9ca3af;
+    }
+    .t2-wbw.hidden { display: none; }
+    @keyframes t2-wbw-shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(2px); }
+    }
+    @keyframes t2-wbw-pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+    @keyframes t2-wbw-blink { 50% { opacity: 0; } }
+    [data-theme="dark"] .t2-wbw-words { background: #0f172a; border-color: #1e293b; }
+    [data-theme="dark"] .t2-wbw-word { background: #1e293b; color: #64748b; }
+    [data-theme="dark"] .t2-wbw-word.is-done { background: #052e16; color: #4ade80; border-color: #166534; }
+    [data-theme="dark"] .t2-wbw-word.is-active { background: #0d0d0d; color: #f1f5f9; }
+    [data-theme="dark"] .t2-wbw-count { background: var(--surface, #0d0d0d); color: #94a3b8; }
+    [data-theme="dark"] .t2-wbw-count.is-full { background: #052e16; color: #4ade80; }
+    @media (max-width: 640px) {
+      .t2-wbw-word { font-size: 15px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1466,7 +1558,32 @@ function renderQuestion(q) {
     ${structureHint}
     <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
-  // translation, error_correction, short_writing, paraphrase
+  // translation → word-by-word character-typing drill (needs the exact answer,
+  // which the server now ships as q.translationAnswer for the topic-practice
+  // flow). Falls back to the plain textarea below when the answer is absent
+  // (older data, or exam mode).
+  if (q.type === 'translation' && q.translationAnswer) {
+    return `
+  <div class="wp-task-label">${typeLbl}</div>
+  <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+  ${structureHint}
+  <div class="wp-hints-row" id="hints-row"></div>
+  <div class="t2-wbw" id="wbw">
+    <div class="t2-wbw-bar">
+      <span class="t2-wbw-count" id="wbw-count">0 / 0 từ</span>
+      <button type="button" class="t2-wbw-showall" id="wbw-showall" onclick="wbwToggleShowAll()">
+        <i class="fas fa-eye"></i> <span>Hiện tất cả</span>
+      </button>
+    </div>
+    <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
+    <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
+      autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
+    <div class="t2-wbw-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.</div>
+  </div>
+  <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
+  }
+
+  // translation (no answer shipped), error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
   const answerHint = q.answerWordCount ? `
   <div class="t2-answer-hint">
@@ -1504,6 +1621,208 @@ function revealVocabHint() {
   if (btn) btn.disabled = _vocabHintCount >= maxHints;
 }
 
+// ════════════════════════════════════════════════════════
+//  WORD-BY-WORD "DỊCH CÂU" TYPING DRILL
+//  Progressive, one active word at a time, character-by-character
+//  validation. Feeds the existing #answer-box → submitPractice() flow
+//  unchanged (grading/feedback/auto-next/history all reused).
+// ════════════════════════════════════════════════════════
+let _wbw = null;
+
+function _wbwTokenize(answer) {
+  return String(answer).trim().split(/\s+/).filter(Boolean).map(raw => {
+    const target = raw.replace(/[^A-Za-z0-9]/g, '');   // chars the student types
+    let seen = false;
+    const mask = [...raw].map(ch => {
+      if (/[A-Za-z0-9]/.test(ch)) { if (!seen) { seen = true; return ch; } return '*'; }
+      return ch;                                        // punctuation stays visible
+    }).join('');
+    return { raw, target, mask };
+  }).filter(t => t.target.length > 0);                  // drop stray punctuation-only tokens
+}
+
+function wbwInit() {
+  const wrap = document.getElementById('wbw');
+  if (!wrap) { _wbw = null; return; }
+  const q = state.questions[state.currentIdx];
+  if (!q || !q.translationAnswer) { _wbw = null; return; }
+
+  const answered = ['correct', 'wrong'].includes(state.questionStatus[state.currentIdx]);
+  const tokens = _wbwTokenize(q.translationAnswer);
+  _wbw = {
+    answer: q.translationAnswer,
+    tokens,
+    activeIdx: answered ? tokens.length : 0,
+    typed: '',
+    showAll: false,
+    erroring: false,
+    done: answered,
+    locked: answered
+  };
+
+  const input = document.getElementById('wbw-input');
+  if (input) {
+    if (_wbw.locked) {
+      input.disabled = true;
+    } else {
+      input.addEventListener('keydown', _wbwKeydown);
+      input.addEventListener('input', _wbwOnInput);
+      input.addEventListener('paste', e => e.preventDefault());
+    }
+  }
+  // Reviewing an already-answered question: nothing left to reveal.
+  const showAllBtn = document.getElementById('wbw-showall');
+  if (showAllBtn) showAllBtn.style.display = _wbw.locked ? 'none' : '';
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge(_wbw.done);
+  if (!_wbw.locked) setTimeout(wbwFocus, 30);
+}
+
+function wbwFocus() {
+  if (!_wbw || _wbw.locked) return;
+  const input = document.getElementById('wbw-input');
+  if (input) input.focus();
+}
+
+function wbwToggleShowAll() {
+  if (!_wbw) return;
+  _wbw.showAll = !_wbw.showAll;
+  const btn = document.getElementById('wbw-showall');
+  if (btn) {
+    btn.querySelector('span').textContent = _wbw.showAll ? 'Ẩn bớt' : 'Hiện tất cả';
+    const ic = btn.querySelector('i');
+    if (ic) ic.className = _wbw.showAll ? 'fas fa-eye-slash' : 'fas fa-eye';
+  }
+  _wbwRenderWords();
+  wbwFocus();
+}
+
+function _wbwRenderWords() {
+  const host = document.getElementById('wbw-words');
+  if (!host || !_wbw) return;
+  const { tokens, activeIdx, typed, erroring, showAll, done } = _wbw;
+  host.innerHTML = tokens.map((t, i) => {
+    if (i < activeIdx) {
+      return `<span class="t2-wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
+    }
+    if (i === activeIdx && !done) {
+      const remaining = Math.max(0, t.target.length - typed.length);
+      const tail = erroring
+        ? `<span class="t2-wbw-err">✕</span>`
+        : `<span class="t2-wbw-caret"></span>`;
+      return `<span class="t2-wbw-word is-active${erroring ? ' is-error' : ''}" data-i="${i}">`
+        + `${_escHtml(typed)}${tail}<span class="t2-wbw-star">${'*'.repeat(remaining)}</span></span>`;
+    }
+    const text = showAll ? _escHtml(t.raw) : _escHtml(t.mask);
+    return `<span class="t2-wbw-word is-locked${showAll ? ' is-peek' : ''}" data-i="${i}">${text}</span>`;
+  }).join('');
+
+  const input = document.getElementById('wbw-input');
+  if (input && !_wbw.locked) {
+    const cur = tokens[activeIdx];
+    input.placeholder = cur ? cur.mask : '';
+  }
+}
+
+function _wbwUpdateBar() {
+  if (!_wbw) return;
+  const el = document.getElementById('wbw-count');
+  if (!el) return;
+  const total = _wbw.tokens.length;
+  const done = _wbw.done ? total : _wbw.activeIdx;
+  el.textContent = `${done} / ${total} từ`;
+  el.classList.toggle('is-full', done === total && total > 0);
+}
+
+// Mirror the completed words into the hidden #answer-box so the existing
+// checkSubmitEnabled()/getUserAnswerPractice()/submitPractice() chain keeps
+// working with zero changes.
+function _wbwSyncBridge(full) {
+  const box = document.getElementById('answer-box');
+  if (!box || !_wbw) return;
+  box.value = (full || _wbw.done)
+    ? _wbw.answer
+    : _wbw.tokens.slice(0, _wbw.activeIdx).map(t => t.raw).join(' ');
+  checkSubmitEnabled();
+}
+
+function _wbwFlashError() {
+  if (!_wbw || _wbw.erroring) return;
+  _wbw.erroring = true;
+  const input = document.getElementById('wbw-input');
+  if (input) input.classList.add('is-error');
+  _wbwRenderWords();
+  // No per-keystroke error sound — the shake + red is feedback enough, and a
+  // beep on every mistyped char gets grating fast.
+  setTimeout(() => {
+    if (!_wbw) return;
+    _wbw.erroring = false;
+    if (input) input.classList.remove('is-error');
+    _wbwRenderWords();
+  }, 260);
+}
+
+function _wbwKeydown(e) {
+  if (!_wbw || _wbw.locked || _wbw.done) return;
+  // Enter must never submit the whole exercise from here — completion
+  // auto-submits on its own. Space is a no-op (progression is automatic).
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); }
+}
+
+// Reconcile the input's value against the active word. Runs on every keystroke
+// (also covers IME / mobile / long-press). We never rewrite a wrong character
+// into a right one — a rejected char is simply removed and the student retypes.
+function _wbwOnInput() {
+  if (!_wbw || _wbw.locked || _wbw.done) return;
+  const input = document.getElementById('wbw-input');
+  if (!input) return;
+  const tok = _wbw.tokens[_wbw.activeIdx];
+  const raw = input.value.replace(/[^A-Za-z0-9]/g, '');
+
+  let good = '';
+  let rejected = false;
+  for (const ch of raw) {
+    const expected = tok.target[good.length];
+    if (expected === undefined) break;                  // don't overrun the word
+    if (ch.toLowerCase() === expected.toLowerCase()) { good += ch; }
+    else { rejected = true; break; }
+  }
+
+  _wbw.typed = good;
+  input.value = good;                                   // active-recall: never auto-fill
+
+  if (rejected) { _wbwFlashError(); return; }
+  if (good.length < tok.target.length) { _wbwRenderWords(); return; }
+
+  // ── active word complete ──
+  _wbw.activeIdx++;
+  _wbw.typed = '';
+  input.value = '';
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge();
+  const chip = document.querySelector(`#wbw-words .t2-wbw-word[data-i="${_wbw.activeIdx - 1}"]`);
+  if (chip) chip.classList.add('just-done');
+  if (typeof playOk === 'function') playOk();
+
+  if (_wbw.activeIdx >= _wbw.tokens.length) _wbwComplete();
+  else wbwFocus();
+}
+
+function _wbwComplete() {
+  if (!_wbw) return;
+  _wbw.done = true;
+  _wbw.locked = true;
+  const input = document.getElementById('wbw-input');
+  if (input) { input.disabled = true; input.blur(); }
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge(true);
+  // Hand off to the existing grading / feedback / auto-next flow, untouched.
+  setTimeout(() => { if (!state._isSubmitting) submitPractice(); }, 550);
+}
+
 function bindPractice() {
   state.rearrangeAnswer = [];
   state.rearrangeWords  = [];
@@ -1511,6 +1830,7 @@ function bindPractice() {
   const q = state.questions[state.currentIdx];
   _vocabHintCount = 0;
   _vocabHintList  = (q?.fallbackKeywords || q?.hints || []);
+  wbwInit();
   // remove previous listener before adding a new one
   if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
   _practiceKeyHandler = function(e) {
