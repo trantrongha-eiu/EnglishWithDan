@@ -127,6 +127,14 @@ function sanitizeExerciseForClient(ex, opts = {}) {
     // for fill_blank's single word/short phrase that would give away
     // almost the entire answer (e.g. "of" -> "o_").
     if (HINT_TYPES.has(ex.type)) rest.answerLetterHint = hint.pattern;
+    // Word-by-word "Dịch câu" typing drill (task1-practice.html) needs the
+    // exact target sentence in the browser to validate each keystroke —
+    // same deliberate practice-only relaxation as task2PracticeService's
+    // translationAnswer. Only for `translation` (a strict, single canonical
+    // sentence); error_correction/data_transform keep the plain textarea.
+    // Never sent in test mode (includeHints:false) and grading still
+    // re-reads the exercise from the DB on submit, so integrity is unchanged.
+    if (ex.type === 'translation') rest.translationAnswer = primaryAnswer;
   }
   return rest;
 }

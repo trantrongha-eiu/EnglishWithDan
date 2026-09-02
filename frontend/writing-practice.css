@@ -1168,3 +1168,94 @@ body {
 [data-theme="dark"] .wp-score-good { color: #4ade80; }
 [data-theme="dark"] .wp-score-mid  { color: #fbbf24; }
 [data-theme="dark"] .wp-score-bad  { color: #fca5a5; }
+
+/* ── Word-by-word "Dịch câu" typing drill ─────────────────────────────
+   Progressive, one active word at a time, character-by-character
+   validation. Ported from task2-practice.html's .t2-wbw-* block so
+   task1-practice.html and writing-practice.html (which both load this
+   shared stylesheet) can reuse the exact same widget. task2 keeps its
+   own prefixed copy. */
+.wbw { margin-top: 10px; }
+.wbw.hidden { display: none; }
+.wbw-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 8px; font-size: 12px;
+}
+.wbw-count {
+  background: #f3f4f6; color: #4b5563; border-radius: 20px;
+  padding: 3px 11px; font-weight: 800; white-space: nowrap;
+  transition: background .2s, color .2s;
+}
+.wbw-count.is-full { background: #dcfce7; color: #15803d; }
+.wbw-showall {
+  background: none; border: none; color: #6366f1; font-weight: 700;
+  font-size: 12px; cursor: pointer; padding: 2px 4px; display: inline-flex;
+  align-items: center; gap: 4px;
+}
+.wbw-showall:hover { text-decoration: underline; }
+.wbw-words {
+  display: flex; flex-wrap: wrap; gap: 7px 8px;
+  padding: 12px; border-radius: 12px; background: #f9fafb;
+  border: 1px solid #eef0f3; min-height: 44px; align-content: flex-start;
+}
+.wbw-word {
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 14px; font-weight: 700; letter-spacing: .5px;
+  padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+  background: #eef0f3; color: #9ca3af; border: 1.5px solid transparent;
+  transition: background .18s, color .18s, border-color .18s, transform .18s;
+}
+.wbw-word.is-peek { color: #6b7280; font-style: italic; }
+.wbw-word.is-done { background: #dcfce7; color: #15803d; border-color: #86efac; }
+.wbw-word.just-done { animation: wbw-pop .34s ease; }
+.wbw-word.is-active {
+  background: #fff; color: #111827; border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245,158,11,.15);
+}
+.wbw-word.is-active .wbw-star { color: #d1d5db; }
+.wbw-word.is-active.is-error {
+  border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18);
+  animation: wbw-shake .24s ease;
+}
+.wbw-err { color: #ef4444; }
+.wbw-caret {
+  display: inline-block; width: 1px; margin: 0 1px;
+  border-left: 2px solid #f59e0b; animation: wbw-blink 1s step-end infinite;
+}
+.wbw-input {
+  margin-top: 10px; width: 100%; box-sizing: border-box;
+  font-family: 'Courier New', ui-monospace, monospace;
+  font-size: 16px; font-weight: 700; letter-spacing: 1px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1.5px solid #d1d5db; background: #fff; color: #111827;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.wbw-input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+.wbw-input.is-error {
+  border-color: #ef4444; background: #fef2f2;
+  box-shadow: 0 0 0 3px rgba(239,68,68,.18); animation: wbw-shake .24s ease;
+}
+.wbw-input:disabled { background: #f3f4f6; color: #9ca3af; }
+.wbw-hint { margin-top: 7px; font-size: 11.5px; color: #9ca3af; }
+@keyframes wbw-shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+@keyframes wbw-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes wbw-blink { 50% { opacity: 0; } }
+[data-theme="dark"] .wbw-words { background: #0f172a; border-color: #1e293b; }
+[data-theme="dark"] .wbw-word { background: #1e293b; color: #64748b; }
+[data-theme="dark"] .wbw-word.is-done { background: #052e16; color: #4ade80; border-color: #166534; }
+[data-theme="dark"] .wbw-word.is-active { background: #0d0d0d; color: #f1f5f9; }
+[data-theme="dark"] .wbw-count { background: #0d0d0d; color: #94a3b8; }
+[data-theme="dark"] .wbw-count.is-full { background: #052e16; color: #4ade80; }
+[data-theme="dark"] .wbw-input { background: #0d0d0d; border-color: #334155; color: #f1f5f9; }
+[data-theme="dark"] .wbw-input:disabled { background: #1e293b; color: #64748b; }
+@media (max-width: 640px) { .wbw-word { font-size: 15px; } }

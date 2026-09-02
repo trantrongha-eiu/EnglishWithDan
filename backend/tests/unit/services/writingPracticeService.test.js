@@ -71,6 +71,32 @@ describe('writingPracticeService.saveBatch — per-topic aggregation', () => {
   });
 });
 
+describe('writingPracticeService — answer-key exposure for the word-by-word drill', () => {
+  test('practice list ships translationAnswer for translation, but never the raw sampleAnswer field', async () => {
+    await makeExercise({ type: 'translation', question: 'Xin chào', sampleAnswer: 'Hello there.' });
+    const { exercises } = await svc.listExercises({ type: 'translation' });
+    const ex = exercises.find(e => e.type === 'translation');
+    expect(ex.translationAnswer).toBe('Hello there.');
+    expect(ex.sampleAnswer).toBeUndefined();
+    // the letter-pattern scaffold still comes along too
+    expect(ex.answerWordCount).toBe(2);
+  });
+
+  test('practice list does NOT ship an answer for expand (sampleAnswer is only one valid rewrite)', async () => {
+    await makeExercise({ type: 'expand', question: 'a cat', sampleAnswer: 'There is a black cat on the mat.' });
+    const { exercises } = await svc.listExercises({ type: 'expand' });
+    const ex = exercises.find(e => e.type === 'expand');
+    expect(ex.translationAnswer).toBeUndefined();
+    expect(ex.answerWordCount).toBeGreaterThan(0); // hint scaffold unchanged
+  });
+
+  test('test mode never ships translationAnswer', async () => {
+    await makeExercise({ type: 'translation', sampleAnswer: 'Hello there.' });
+    const { exercises } = await svc.getTestQuestions({ count: 10 });
+    for (const ex of exercises) expect(ex.translationAnswer).toBeUndefined();
+  });
+});
+
 describe('writingPracticeService.getMyStats — counts sentences, not batch rows', () => {
   test('totalDone sums totalItems across multiple aggregate rows', async () => {
     const student = await createStudent();

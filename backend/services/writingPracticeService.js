@@ -25,12 +25,21 @@ const HINT_TYPES = new Set(['translation', 'expand', 'combine']);
 // task1-practice.html/task2-practice.html already show for their own
 // translation-type exercises. Computing the hint from the about-to-be-
 // stripped answer text keeps the answer itself never sent to the client.
-function sanitizeExerciseForClient(ex) {
+function sanitizeExerciseForClient(ex, opts = {}) {
+  const { includeAnswer = false } = opts;
   const { sampleAnswer, blankAnswer, alternativeAnswers, ...rest } = ex;
   if (sampleAnswer && HINT_TYPES.has(ex.type)) {
     const hint = buildAnswerHint(sampleAnswer);
     rest.answerWordCount  = hint.wordCount;
     rest.answerLetterHint = hint.pattern;
+    // Word-by-word "Dịch câu" typing drill (writing-practice.html) needs the
+    // exact target sentence client-side to validate each keystroke — same
+    // deliberate practice-only relaxation as task2PracticeService's
+    // translationAnswer. Only for `translation` (one canonical sentence);
+    // `expand` stays a plain textarea (its sampleAnswer is just one of many
+    // valid rewrites). `includeAnswer` is false for test mode, so the exam
+    // still ships nothing, and /check re-reads the answer from the DB.
+    if (includeAnswer && ex.type === 'translation') rest.translationAnswer = sampleAnswer;
   }
   return rest;
 }
@@ -161,7 +170,7 @@ async function listExercises({ level, topic, type, limit = 100, skip = 0 }) {
     WPExercise.find(query).sort({ orderIndex: 1, createdAt: 1 }).skip(Number(skip)).limit(Number(limit)).lean(),
     WPExercise.countDocuments(query)
   ]);
-  const safe = exercises.map(sanitizeExerciseForClient);
+  const safe = exercises.map(ex => sanitizeExerciseForClient(ex, { includeAnswer: true }));
   return { exercises: safe, total };
 }
 

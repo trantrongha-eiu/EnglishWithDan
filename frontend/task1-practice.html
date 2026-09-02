@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="writing-practice.css?v=20260903"/>
+  <link rel="stylesheet" href="writing-practice.css?v=20260904"/>
   <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260831"/>
   <script src="js/theme.js?v=20260831"></script>
@@ -526,6 +526,23 @@
               <span class="t1-answer-hint-pattern" id="answer-hint-pattern"></span>
             </div>
             <div class="t1-hints-row" id="hints-row"></div>
+            <!-- Word-by-word "Dịch câu" typing drill — shown for translation
+                 exercises when the server ships ex.translationAnswer (practice
+                 mode only). Same widget as task2-practice.html. Falls back to
+                 #answer-box below when absent (data_transform / error_correction
+                 / exam mode). -->
+            <div class="wbw hidden" id="wbw">
+              <div class="wbw-bar">
+                <span class="wbw-count" id="wbw-count">0 / 0 từ</span>
+                <button type="button" class="wbw-showall" id="wbw-showall" onclick="wbwToggleShowAll()">
+                  <i class="fas fa-eye"></i> <span>Hiện tất cả</span>
+                </button>
+              </div>
+              <div class="wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
+              <input class="wbw-input" id="wbw-input" type="text" autocomplete="off"
+                autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
+              <div class="wbw-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.</div>
+            </div>
             <textarea class="wp-answer-box" id="answer-box" placeholder="Viết câu trả lời của bạn tại đây..." rows="3" onkeydown="handleKeydown(event)"></textarea>
           </div>
 
@@ -1318,6 +1335,209 @@ function startPractice() {
 }
 
 // ════════════════════════════════════════════════════════
+//  WORD-BY-WORD "DỊCH CÂU" TYPING DRILL
+//  Progressive, one active word at a time, character-by-character
+//  validation. Ported from task2-practice.html (shared .wbw-* CSS lives in
+//  writing-practice.css). Feeds the existing #answer-box → submitAnswer()
+//  flow unchanged — the server still local-checks the finished sentence and
+//  returns XP / feedback / grammar point exactly as for a typed answer.
+// ════════════════════════════════════════════════════════
+let _wbw = null;
+
+function _wbwTokenize(answer) {
+  return String(answer).trim().split(/\s+/).filter(Boolean).map(raw => {
+    const target = raw.replace(/[^A-Za-z0-9]/g, '');   // chars the student actually types
+    let seen = false;
+    const mask = [...raw].map(ch => {
+      if (/[A-Za-z0-9]/.test(ch)) { if (!seen) { seen = true; return ch; } return '*'; }
+      return ch;                                        // punctuation stays visible
+    }).join('');
+    return { raw, target, mask };
+  }).filter(t => t.target.length > 0);                  // drop stray punctuation-only tokens
+}
+
+function _wbwPreventPaste(e) { e.preventDefault(); }
+
+function wbwInit(answer) {
+  const wrap = document.getElementById('wbw');
+  if (!wrap || !answer) { wbwTeardown(); return; }
+  const tokens = _wbwTokenize(answer);
+  if (!tokens.length) { wbwTeardown(); return; }
+  _wbw = { answer, tokens, activeIdx: 0, typed: '', showAll: false, erroring: false, done: false, locked: false };
+  wrap.classList.remove('hidden');
+
+  const input = document.getElementById('wbw-input');
+  if (input) {
+    input.disabled = false;
+    input.value = '';
+    // #wbw markup is static (not rebuilt per question), so drop the previous
+    // question's listeners before re-binding.
+    input.removeEventListener('keydown', _wbwKeydown);
+    input.removeEventListener('input', _wbwOnInput);
+    input.removeEventListener('paste', _wbwPreventPaste);
+    input.addEventListener('keydown', _wbwKeydown);
+    input.addEventListener('input', _wbwOnInput);
+    input.addEventListener('paste', _wbwPreventPaste);
+  }
+  const showAllBtn = document.getElementById('wbw-showall');
+  if (showAllBtn) {
+    showAllBtn.style.display = '';
+    const sp = showAllBtn.querySelector('span'); if (sp) sp.textContent = 'Hiện tất cả';
+    const ic = showAllBtn.querySelector('i');    if (ic) ic.className = 'fas fa-eye';
+  }
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge(false);
+  setTimeout(wbwFocus, 30);
+}
+
+function wbwTeardown() {
+  _wbw = null;
+  const wrap = document.getElementById('wbw');
+  if (wrap) wrap.classList.add('hidden');
+}
+
+function wbwFocus() {
+  if (!_wbw || _wbw.locked) return;
+  const input = document.getElementById('wbw-input');
+  if (input) input.focus();
+}
+
+function wbwToggleShowAll() {
+  if (!_wbw) return;
+  _wbw.showAll = !_wbw.showAll;
+  const btn = document.getElementById('wbw-showall');
+  if (btn) {
+    const sp = btn.querySelector('span'); if (sp) sp.textContent = _wbw.showAll ? 'Ẩn bớt' : 'Hiện tất cả';
+    const ic = btn.querySelector('i');    if (ic) ic.className = _wbw.showAll ? 'fas fa-eye-slash' : 'fas fa-eye';
+  }
+  _wbwRenderWords();
+  wbwFocus();
+}
+
+function _wbwRenderWords() {
+  const host = document.getElementById('wbw-words');
+  if (!host || !_wbw) return;
+  const { tokens, activeIdx, typed, erroring, showAll, done } = _wbw;
+  host.innerHTML = tokens.map((t, i) => {
+    if (i < activeIdx) {
+      return `<span class="wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
+    }
+    if (i === activeIdx && !done) {
+      const remaining = Math.max(0, t.target.length - typed.length);
+      const tail = erroring
+        ? `<span class="wbw-err">✕</span>`
+        : `<span class="wbw-caret"></span>`;
+      return `<span class="wbw-word is-active${erroring ? ' is-error' : ''}" data-i="${i}">`
+        + `${_escHtml(typed)}${tail}<span class="wbw-star">${'*'.repeat(remaining)}</span></span>`;
+    }
+    const text = showAll ? _escHtml(t.raw) : _escHtml(t.mask);
+    return `<span class="wbw-word is-locked${showAll ? ' is-peek' : ''}" data-i="${i}">${text}</span>`;
+  }).join('');
+
+  const input = document.getElementById('wbw-input');
+  if (input && !_wbw.locked) {
+    const cur = tokens[activeIdx];
+    input.placeholder = cur ? cur.mask : '';
+  }
+}
+
+function _wbwUpdateBar() {
+  if (!_wbw) return;
+  const el = document.getElementById('wbw-count');
+  if (!el) return;
+  const total = _wbw.tokens.length;
+  const done = _wbw.done ? total : _wbw.activeIdx;
+  el.textContent = `${done} / ${total} từ`;
+  el.classList.toggle('is-full', done === total && total > 0);
+}
+
+// Mirror completed words into the hidden #answer-box so the existing
+// getUserAnswer()/submitAnswer() chain works with zero changes.
+function _wbwSyncBridge(full) {
+  const box = document.getElementById('answer-box');
+  if (!box || !_wbw) return;
+  box.value = (full || _wbw.done)
+    ? _wbw.answer
+    : _wbw.tokens.slice(0, _wbw.activeIdx).map(t => t.raw).join(' ');
+}
+
+function _wbwFlashError() {
+  if (!_wbw || _wbw.erroring) return;
+  _wbw.erroring = true;
+  const input = document.getElementById('wbw-input');
+  if (input) input.classList.add('is-error');
+  _wbwRenderWords();
+  setTimeout(() => {
+    if (!_wbw) return;
+    _wbw.erroring = false;
+    if (input) input.classList.remove('is-error');
+    _wbwRenderWords();
+  }, 260);
+}
+
+function _wbwKeydown(e) {
+  if (!_wbw || _wbw.locked || _wbw.done) return;
+  // Enter / Space are no-ops — progression is automatic, completion auto-submits.
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') e.preventDefault();
+}
+
+// Runs on every keystroke (also IME / mobile / long-press). A rejected
+// character is simply removed and the student retypes — never auto-corrected.
+function _wbwOnInput() {
+  if (!_wbw || _wbw.locked || _wbw.done) return;
+  const input = document.getElementById('wbw-input');
+  if (!input) return;
+  const tok = _wbw.tokens[_wbw.activeIdx];
+  const raw = input.value.replace(/[^A-Za-z0-9]/g, '');
+
+  let good = '';
+  let rejected = false;
+  for (const ch of raw) {
+    const expected = tok.target[good.length];
+    if (expected === undefined) break;                  // don't overrun the word
+    if (ch.toLowerCase() === expected.toLowerCase()) good += ch;
+    else { rejected = true; break; }
+  }
+
+  _wbw.typed = good;
+  input.value = good;                                   // active-recall: never auto-fill
+
+  if (rejected) { _wbwFlashError(); return; }
+  if (good.length < tok.target.length) { _wbwRenderWords(); return; }
+
+  // ── active word complete ──
+  _wbw.activeIdx++;
+  _wbw.typed = '';
+  input.value = '';
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge();
+  const chip = document.querySelector(`#wbw-words .wbw-word[data-i="${_wbw.activeIdx - 1}"]`);
+  if (chip) chip.classList.add('just-done');
+  if (typeof playOk === 'function') playOk();
+
+  if (_wbw.activeIdx >= _wbw.tokens.length) _wbwComplete();
+  else wbwFocus();
+}
+
+function _wbwComplete() {
+  if (!_wbw) return;
+  _wbw.done = true;
+  _wbw.locked = true;
+  const input = document.getElementById('wbw-input');
+  if (input) { input.disabled = true; input.blur(); }
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  _wbwSyncBridge(true);
+  // Hand off to the normal submit / feedback / auto-next flow.
+  setTimeout(() => {
+    if (_isSubmitting) return;
+    submitAnswer();
+  }, 500);
+}
+
+// ════════════════════════════════════════════════════════
 //  PRACTICE – SHOW EXERCISE
 // ════════════════════════════════════════════════════════
 function showExercise(idx) {
@@ -1343,6 +1563,7 @@ function showExercise(idx) {
   // hide all views
   ['translation','rearrange','fill-blank','multiple-choice'].forEach(v =>
     document.getElementById('view-' + v).classList.add('hidden'));
+  wbwTeardown(); // drop any previous word-by-word drill; showTranslationView re-inits if needed
 
   if (['translation', 'error_correction', 'data_transform'].includes(ex.type)) {
     showTranslationView(ex);
@@ -1385,10 +1606,15 @@ function showTranslationView(ex) {
   const qEl = document.getElementById('question-text');
   qEl.textContent = ex.questionVi || ex.questionEn || '';
 
+  // Word-by-word "Dịch câu" drill for translation exercises (server ships
+  // ex.translationAnswer in practice mode only). Its own bar shows the word
+  // count, so the separate letter-pattern hint row is redundant there.
+  const useWbw = ex.type === 'translation' && !!ex.translationAnswer;
+
   // word-count + first-letter hint (translation/error_correction/data_transform
   // only — server only ever sends answerWordCount for those types)
   const hintRow = document.getElementById('answer-hint-row');
-  if (ex.answerWordCount) {
+  if (ex.answerWordCount && !useWbw) {
     document.getElementById('answer-hint-count').textContent   = `📏 ${ex.answerWordCount} từ`;
     document.getElementById('answer-hint-pattern').textContent = ex.answerLetterHint || '';
     hintRow.classList.remove('hidden');
@@ -1407,7 +1633,15 @@ function showTranslationView(ex) {
   }
 
   const box = document.getElementById('answer-box');
-  box.value = ''; box.focus();
+  box.value = '';
+  if (useWbw) {
+    box.classList.add('hidden');
+    document.getElementById('vocab-hint-btn')?.classList.add('hidden'); // typing the exact answer — a vocab hint adds nothing
+    wbwInit(ex.translationAnswer);
+  } else {
+    box.classList.remove('hidden');
+    box.focus();
+  }
 }
 
 function showRearrangeView(ex) {

@@ -57,6 +57,16 @@ describe('listExercises — answer-key stripping and word/letter hints', () => {
     expect(dataTransform.answerWordCount).toBe(8);
   });
 
+  test('ships the exact answer as translationAnswer for the word-by-word drill — translation only', async () => {
+    await seedExercises();
+    const { exercises } = await svc.listExercises({});
+    expect(exercises.find(e => e.type === 'translation').translationAnswer).toBe('Many students study online.');
+    // error_correction / data_transform keep the plain textarea — no answer shipped
+    expect(exercises.find(e => e.type === 'error_correction').translationAnswer).toBeUndefined();
+    expect(exercises.find(e => e.type === 'data_transform').translationAnswer).toBeUndefined();
+    expect(exercises.find(e => e.type === 'fill_blank').translationAnswer).toBeUndefined();
+  });
+
   test('fill_blank gets a word count (needed by showFillBlankView\'s hint-chip-count logic) but never the letter pattern', async () => {
     await seedExercises();
     const { exercises } = await svc.listExercises({});
@@ -85,6 +95,7 @@ describe('getTestQuestions — no answer-key or hints leaked, matches "no hints"
       expect(ex.correctOptionIndex).toBeUndefined();
       expect(ex.answerWordCount).toBeUndefined();
       expect(ex.answerLetterHint).toBeUndefined();
+      expect(ex.translationAnswer).toBeUndefined();
     }
   });
 });
