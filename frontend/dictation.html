@@ -466,7 +466,7 @@ function dictGoTo(i) {
   document.getElementById('dict-check-btn').disabled = false;
   const sentence = sentences[i];
   const sentenceText = sentence.text || '';
-  document.getElementById('dict-word-count').textContent = sentenceText.trim().split(/\s+/).filter(Boolean).length + ' từ';
+  document.getElementById('dict-word-count').textContent = dictWords(sentenceText).length + ' từ';
   const hint = _buildDictHint(sentenceText);
   document.getElementById('dict-script-body').innerHTML =
     `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
@@ -488,7 +488,7 @@ function dictGoTo(i) {
 // showing the literal answer let a student just read it instead of
 // transcribing what they actually heard, defeating dictation practice.
 function _buildDictHint(text) {
-  const words = text.trim().split(/\s+/).filter(Boolean);
+  const words = dictWords(text);
   const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
   return { wordCount: words.length, pattern };
 }
@@ -549,11 +549,22 @@ audio.addEventListener('timeupdate', () => {
    human-verified sentence — not the ASR's own wording) ══════════════ */
 function normWord(w) { return w.toLowerCase().replace(/[^a-z0-9']/g, ''); }
 
+// Tokenise a sentence into scorable words, dropping any token that is pure
+// punctuation (a lone "–", "-", ".", "—", "…" that the transcript writes
+// between spaces). normWord() strips those to "", so a standalone dash used
+// to be counted as its own "word" the student could never type — marking a
+// perfect transcription as "22/23". Punctuation attached to a real word
+// (e.g. "William.") still rides along and is ignored by normWord() at
+// compare time, so it never counts against the student either.
+function dictWords(text) {
+  return (text || '').trim().split(/\s+/).filter(w => normWord(w) !== '');
+}
+
 function dictCheck() {
   const typed = document.getElementById('dict-input').value.trim();
   const correct = currentSentence().text || '';
-  const typedWords = typed.split(/\s+/).filter(Boolean);
-  const correctWords = correct.split(/\s+/).filter(Boolean);
+  const typedWords = dictWords(typed);
+  const correctWords = dictWords(correct);
 
   // Simple LCS-based word diff — small sentences (a few dozen words at
   // most), so an O(n*m) table is trivial.
