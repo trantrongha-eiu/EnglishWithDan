@@ -256,6 +256,14 @@ function showScreen(id) {
   // else 'home' — screen-home is already the active screen in the static HTML.
 
   window.addEventListener('popstate', (e) => {
+    // A back/forward while the student is mid-recording must tear the
+    // recording down first — otherwise SpeechRecognition keeps filling the
+    // off-screen transcript, the 2-min countdown keeps running, and (worst)
+    // the mic stream stays live so the browser's "recording" indicator stays
+    // lit on whatever screen they land on. The in-page "Trang chủ" button
+    // (confirmGoHome) already does this; browser back/forward was the gap.
+    if (state.isRecording) resetPractice();
+
     const tab = e.state?.tab || 'home';
     if (tab === 'practice') {
       showScreen('screen-practice');
@@ -1135,6 +1143,10 @@ async function _startAudioCapture() {
     _mediaRecorder.start(1000);
   } catch (e) {
     console.warn('_startAudioCapture:', e.name, e.message);
+    // If getUserMedia already resolved but `new MediaRecorder()` then threw
+    // (unsupported container on some browsers), the mic stream is live and
+    // would leak — release it before dropping the ref.
+    try { _mediaStream?.getTracks().forEach(t => t.stop()); } catch (_) {}
     _mediaRecorder = null;
     _mediaStream = null;
     // Mic permission / hardware problems are the #1 "recording doesn't work"
