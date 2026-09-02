@@ -1844,18 +1844,47 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
     : (group.endingsConfig?.endings || []).map(e => e.text || '');
   // sentence-endings: dùng letter lưu trong DB (admin có thể xóa/đổi thứ tự)
   // matching-options: dùng vị trí A=0, B=1, C=2...
-  const optLetters = (group.groupType === 'sentence-endings' && group.endingsConfig?.endings?.length)
+  const isSentenceEndings = group.groupType === 'sentence-endings' && group.endingsConfig?.endings?.length;
+  let optLetters = isSentenceEndings
     ? group.endingsConfig.endings.map((e, i) => e.letter || String.fromCharCode(65 + i))
     : matchingOptions.map((_, i) => String.fromCharCode(65 + i));
+
+  // "Which SECTION contains…" paragraph-matching groups take their letter set
+  // from the passage's paragraphs (A–G), not from a separate options list —
+  // but that list is what we render. When the admin under-fills it (e.g. only
+  // A–E entered for a 7-paragraph passage) students literally can't pick the
+  // real answer, and review shows a "✓ G" they were never offered. Backfill
+  // any letter that the instruction's "A–X" range OR a known correctAnswer
+  // implies but the options list is missing. Position-based groups only —
+  // sentence-endings letters are authoritative as stored.
+  if (!isSentenceEndings) {
+    const rangeText = [group.instruction, group.groupTitle, ...questions.map(q => q.questionText)]
+      .filter(Boolean).join(' ');
+    const m = rangeText.match(/\b([A-Z])\s*(?:[-–—]|to)\s*([A-Z])\b/);
+    const implied = new Set();
+    if (m && m[2].charCodeAt(0) > m[1].charCodeAt(0) && m[2].charCodeAt(0) - m[1].charCodeAt(0) <= 12) {
+      for (let c = m[1].charCodeAt(0); c <= m[2].charCodeAt(0); c++) implied.add(String.fromCharCode(c));
+    }
+    questions.forEach(q => {
+      const ca = (isReview ? reviewMap[q.questionNumber]?.correctAnswer : q.correctAnswer) || '';
+      const L = ca.trim().toUpperCase();
+      if (/^[A-Z]$/.test(L)) implied.add(L);
+    });
+    const have = new Set(optLetters);
+    const extra = [...implied].filter(L => !have.has(L)).sort();
+    if (extra.length) optLetters = [...optLetters, ...extra];
+  }
   const groupId = 'mog-' + questions.map(q => q.questionNumber).join('-');
 
   // NB note (before chip bank)
   const reuseNote = matchingReuseAllowed
     ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
 
-  // Chip bank — each letter is a draggable chip
-  const chipsHtml = matchingOptions.map((opt, i) => {
-    const letter = optLetters[i];
+  // Chip bank — each letter is a draggable chip. Iterate optLetters (which may
+  // now include backfilled letters past the end of matchingOptions) and pull
+  // the description from matchingOptions by position when there is one.
+  const chipsHtml = optLetters.map((letter, i) => {
+    const opt = matchingOptions[i] || '';
     const isUsed = !isReview && !matchingReuseAllowed &&
       questions.some(q => state.answers[q.questionNumber] === letter);
     const label = opt && opt.trim().length > 1 ? `. ${escHtml(opt)}` : '';
