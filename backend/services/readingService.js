@@ -311,9 +311,21 @@ async function submitTest(attemptId, answers, user) {
   // update that already happened. This second write only fills in the
   // grading fields, which is safe unconditionally now — the atomic claim
   // above already guarantees only one caller ever reaches this point.
+  // Snapshot the passages as-submitted so a later admin edit to the live
+  // Passage doc can't retro-change this student's review. Only when the full
+  // set resolved (a passage deleted mid-session → skip, review falls back to
+  // a live read, same as an old attempt).
+  const snapshotComplete = passages.length > 0
+    && passages.length === (attempt.passagesUsed || []).length;
+  const passagesSnapshot = snapshotComplete ? passages.map(p => ({
+    _id: p._id, title: p.title, category: p.category, content: p.content,
+    questionRange: p.questionRange, questionGroups: p.questionGroups, questions: p.questions,
+  })) : undefined;
+
   await TestAttempt.findByIdAndUpdate(attempt._id, {
     answers: gradedAnswers, correctCount, wrongCount, skippedCount,
     totalQuestions, bandScore, endTime, duration,
+    ...(passagesSnapshot ? { passagesSnapshot } : {}),
   });
 
   let bonusApplied = 0;
@@ -346,12 +358,19 @@ async function submitTest(attemptId, answers, user) {
 }
 
 async function getAttemptReview(attemptId, userId) {
-  const attempt = await TestAttempt.findOne({ _id: attemptId, userId, status: 'completed' }).populate('testId', 'name testNumber');
+  const attempt = await TestAttempt.findOne({ _id: attemptId, userId, status: 'completed' }).populate('testId', 'name testNumber').lean();
   if (!attempt) return null;
 
-  const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } }).lean();
-  const idOrder = attempt.passagesUsed.map(id => id.toString());
-  const passages = idOrder.map(id => passagesRaw.find(p => p._id.toString() === id)).filter(Boolean);
+  // Prefer the as-submitted snapshot; fall back to a live read for attempts
+  // finished before passagesSnapshot existed (or where it couldn't be taken).
+  let passages;
+  if (Array.isArray(attempt.passagesSnapshot) && attempt.passagesSnapshot.length) {
+    passages = attempt.passagesSnapshot;
+  } else {
+    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } }).lean();
+    const idOrder = (attempt.passagesUsed || []).map(id => id.toString());
+    passages = idOrder.map(id => passagesRaw.find(p => p._id.toString() === id)).filter(Boolean);
+  }
 
   const answerMap = {};
   attempt.answers.forEach(a => { answerMap[a.questionNumber] = a; });
@@ -385,7 +404,7 @@ async function getHistory(userId, limit = 50) {
       .populate('testId', 'name testNumber')
       .sort({ endTime: -1 })
       .limit(limit)
-      .select('-answers -passagesUsed'),
+      .select('-answers -passagesUsed -passagesSnapshot'),
     TestAttempt.countDocuments(filter),
   ]);
   return { history, total };
@@ -582,7 +601,7 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
       .sort({ endTime: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit))
-      .select('-answers -passagesUsed'),
+      .select('-answers -passagesUsed -passagesSnapshot'),
     TestAttempt.countDocuments(filter)
   ]);
   return { attempts, total };

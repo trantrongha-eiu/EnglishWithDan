@@ -330,6 +330,57 @@ describe('readingService.getAttemptReview — ownership scoping', () => {
   });
 });
 
+describe('readingService — passage snapshot immutability', () => {
+  const Passage = require('../../../models/Passage');
+
+  test('review shows the passage as-submitted even after the live Passage doc is edited', async () => {
+    const student = await createStudent();
+    const { attempt, passage } = await makeAttempt({
+      student,
+      groups: [{
+        groupType: 'plain', interchangeableAnswers: false,
+        questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'ORIGINAL question 1', correctAnswer: 'nutmeg' }],
+      }],
+    });
+    await Passage.findByIdAndUpdate(passage._id, { content: 'ORIGINAL nutmeg passage.' });
+
+    await readingService.submitTest(attempt._id, { 1: 'nutmeg' }, student);
+
+    // Admin later rewrites the same passage doc in place.
+    await Passage.findByIdAndUpdate(passage._id, {
+      content: 'REPLACED henry moore passage.',
+      questionGroups: [{
+        groupType: 'plain', interchangeableAnswers: false,
+        questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'REPLACED question 1', correctAnswer: 'sculptor' }],
+      }],
+    });
+
+    const review = await readingService.getAttemptReview(attempt._id, student._id);
+    expect(review.passages[0].content).toBe('ORIGINAL nutmeg passage.');
+    const q = review.passages[0].questionGroups[0].questions[0];
+    expect(q.questionText).toBe('ORIGINAL question 1');
+    expect(q.correctAnswer).toBe('nutmeg');
+    expect(q.isCorrect).toBe(true);
+  });
+
+  test('falls back to the live passage for an attempt that has no snapshot (pre-migration)', async () => {
+    const student = await createStudent();
+    const { attempt } = await makeAttempt({
+      student,
+      status: 'completed',
+      groups: [{ questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Live Q1', correctAnswer: 'x' }] }],
+    });
+    // createCompletedTestAttempt-style row: completed, answers present, but no passagesSnapshot.
+    await TestAttempt.findByIdAndUpdate(attempt._id, {
+      answers: [{ questionNumber: 1, userAnswer: 'x', correctAnswer: 'x', isCorrect: true }],
+      $unset: { passagesSnapshot: 1 },
+    });
+
+    const review = await readingService.getAttemptReview(attempt._id, student._id);
+    expect(review.passages[0].questionGroups[0].questions[0].questionText).toBe('Live Q1');
+  });
+});
+
 describe('readingService.savePractice — server-side re-grading', () => {
   test('re-grades against the real passage instead of trusting client-supplied counts', async () => {
     const student = await createStudent();

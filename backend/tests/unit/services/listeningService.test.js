@@ -284,6 +284,60 @@ describe('listeningService.submitTest — grading through the real test document
     expect(result.bandScore).toBe(listeningService.calcBandScore(6));
   });
 
+  test('review shows the sections as-submitted even after the live test is edited', async () => {
+    const ListeningTest = require('../../../models/ListeningTest');
+    const student = await createStudent();
+    const test = await createListeningTest({
+      audioUrl: 'https://cdn/original.mp3',
+      sections: [{
+        partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 1 },
+        questionGroups: [{
+          groupType: 'plain', interchangeableAnswers: false,
+          questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'ORIGINAL Q1', correctAnswer: 'alpha' }],
+        }],
+      }],
+    });
+
+    const { attemptId } = await listeningService.submitTest(test._id.toString(), { answers: { 1: 'alpha' } }, student);
+
+    await ListeningTest.findByIdAndUpdate(test._id, {
+      audioUrl: 'https://cdn/replaced.mp3',
+      sections: [{
+        partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 1 },
+        questionGroups: [{
+          groupType: 'plain', interchangeableAnswers: false,
+          questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'REPLACED Q1', correctAnswer: 'omega' }],
+        }],
+      }],
+    });
+
+    const { status, result } = await listeningService.getHistoryDetail(attemptId, student._id);
+    expect(status).toBe('ok');
+    expect(result.questions[0].questionText).toBe('ORIGINAL Q1');
+    expect(result.questions[0].correctAnswer).toBe('alpha');
+    expect(result.questions[0].isCorrect).toBe(true);
+    expect(result.audioUrl).toBe('https://cdn/original.mp3');
+  });
+
+  test('getHistoryDetail falls back to the live test when the attempt has no snapshot', async () => {
+    const student = await createStudent();
+    const test = await createListeningTest({
+      sections: [{
+        partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 1 },
+        questionGroups: [{
+          groupType: 'plain', interchangeableAnswers: false,
+          questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Live Q1', correctAnswer: 'x' }],
+        }],
+      }],
+    });
+    const { attemptId } = await listeningService.submitTest(test._id.toString(), { answers: { 1: 'x' } }, student);
+    await ListeningAttempt.findByIdAndUpdate(attemptId, { $unset: { sectionsSnapshot: 1, audioUrlSnapshot: 1 } });
+
+    const { status, result } = await listeningService.getHistoryDetail(attemptId, student._id);
+    expect(status).toBe('ok');
+    expect(result.questions[0].questionText).toBe('Live Q1');
+  });
+
   test('returns null for a nonexistent test id', async () => {
     const student = await createStudent();
     const result = await listeningService.submitTest(new mongoose.Types.ObjectId().toString(), { answers: {} }, student);

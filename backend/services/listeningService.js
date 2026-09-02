@@ -271,7 +271,8 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
       .populate('testId', 'name testNumber')
       .sort({ submittedAt: -1 })
       .skip((page - 1) * limit)
-      .limit(Number(limit)),
+      .limit(Number(limit))
+      .select('-sectionsSnapshot'),
     ListeningAttempt.countDocuments(filter)
   ]);
   return { attempts, total };
@@ -650,10 +651,16 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   const total = flattenQuestions(test.sections).length;
   const bandScore = calcBandScore(correct);
 
+  // Snapshot the sections as-submitted so a later admin edit to the live
+  // ListeningTest / ListeningSection can't retro-change this student's review.
+  const testObj = typeof test.toObject === 'function' ? test.toObject() : test;
+
   const fields = {
     userId: user._id || user.id,
     testId: test._id,
     testName: test.name,
+    sectionsSnapshot: Array.isArray(testObj.sections) && testObj.sections.length ? testObj.sections : undefined,
+    audioUrlSnapshot: test.audioUrl || '',
     answers: reviewed.map(r => ({ questionNumber: r.questionNumber, userAnswer: r.userAnswer, correctAnswer: r.correctAnswer, isCorrect: r.isCorrect })),
     totalQuestions: total,
     correctCount: correct,
@@ -752,16 +759,26 @@ async function getHistory(userId, limit = 50) {
 }
 
 async function getHistoryDetail(attemptId, userId) {
-  const attempt = await ListeningAttempt.findOne({ _id: attemptId, userId });
+  const attempt = await ListeningAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return { status: 'attempt_not_found' };
 
-  const test = await ListeningTest.findById(attempt.testId);
-  if (!test) return { status: 'test_not_found' };
+  // Prefer the as-submitted snapshot; fall back to the live test for attempts
+  // finished before sectionsSnapshot existed (or where it couldn't be taken).
+  let sections, audioUrl;
+  if (Array.isArray(attempt.sectionsSnapshot) && attempt.sectionsSnapshot.length) {
+    sections = attempt.sectionsSnapshot;
+    audioUrl = attempt.audioUrlSnapshot || '';
+  } else {
+    const test = await ListeningTest.findById(attempt.testId).lean();
+    if (!test) return { status: 'test_not_found' };
+    sections = test.sections || [];
+    audioUrl = test.audioUrl || '';
+  }
 
   const reviewMap = {};
   attempt.answers.forEach(a => { reviewMap[a.questionNumber] = a; });
 
-  const allQuestions = flattenQuestions(test.sections);
+  const allQuestions = flattenQuestions(sections);
   const reviewed = allQuestions.map(q => {
     const saved = reviewMap[q.questionNumber] || {};
     return {
@@ -773,7 +790,7 @@ async function getHistoryDetail(attemptId, userId) {
 
   const reviewMap2 = {};
   reviewed.forEach(r => { reviewMap2[r.questionNumber] = r; });
-  const reviewSections = buildReviewSections(test.sections, reviewMap2);
+  const reviewSections = buildReviewSections(sections, reviewMap2);
 
   return {
     status: 'ok',
@@ -781,7 +798,7 @@ async function getHistoryDetail(attemptId, userId) {
       attemptId: attempt._id, testName: attempt.testName, bandScore: attempt.bandScore,
       correctCount: attempt.correctCount, wrongCount: attempt.wrongCount, skippedCount: attempt.skippedCount,
       totalQuestions: attempt.totalQuestions, timeTaken: attempt.timeTaken, submittedAt: attempt.submittedAt,
-      questions: reviewed, sections: reviewSections, audioUrl: test.audioUrl
+      questions: reviewed, sections: reviewSections, audioUrl
     }
   };
 }

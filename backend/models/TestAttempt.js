@@ -26,6 +26,16 @@ const TestAttemptSchema = new mongoose.Schema({
     ref: 'Passage'
   }],
 
+  // Immutable snapshot of the 3 passages (content + question groups + question
+  // text / options / correctAnswer / explanation) exactly as they were when
+  // this attempt was submitted. Before this field, only per-question
+  // correctAnswer was snapshotted (AnswerSchema.correctAnswer), so an admin
+  // editing a live Passage doc afterwards silently retro-changed the passage
+  // text and question wording every past review of that passage showed.
+  // Absent on attempts finished before this existed — getAttemptReview()
+  // falls back to reading the live Passage docs for those.
+  passagesSnapshot: { type: [mongoose.Schema.Types.Mixed], default: undefined },
+
   answers: [AnswerSchema],
 
   // Kết quả tổng hợp

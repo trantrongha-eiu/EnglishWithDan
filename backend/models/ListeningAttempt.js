@@ -24,6 +24,15 @@ const ListeningAttemptSchema = new mongoose.Schema({
   },
   testName: { type: String, default: '' },   // snapshot tên đề, tránh phải populate
 
+  // Immutable snapshot of the test's sections (question text / options /
+  // correctAnswer / explanation / group config) + audio URL exactly as they
+  // were when this attempt was submitted — so a later admin edit to the live
+  // ListeningTest / ListeningSection can't retro-change what this student's
+  // review shows. Absent on attempts finished before this existed;
+  // getHistoryDetail() falls back to reading the live test for those.
+  sectionsSnapshot: { type: [mongoose.Schema.Types.Mixed], default: undefined },
+  audioUrlSnapshot: { type: String, default: '' },
+
   answers: [ListeningAnswerSchema],
 
   // Kết quả tổng hợp
