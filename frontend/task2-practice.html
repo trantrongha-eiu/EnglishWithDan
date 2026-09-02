@@ -1628,6 +1628,9 @@ function revealVocabHint() {
 //  unchanged (grading/feedback/auto-next/history all reused).
 // ════════════════════════════════════════════════════════
 let _wbw = null;
+// Set for exactly one submitPractice() call: the drill finished the sentence,
+// so it's a verbatim match to the answer and needs no server grading.
+let _wbwVerbatimPending = false;
 
 function _wbwTokenize(answer) {
   return String(answer).trim().split(/\s+/).filter(Boolean).map(raw => {
@@ -1819,8 +1822,15 @@ function _wbwComplete() {
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(true);
-  // Hand off to the existing grading / feedback / auto-next flow, untouched.
-  setTimeout(() => { if (!state._isSubmitting) submitPractice(); }, 550);
+  // Hand off to the existing feedback / auto-next flow. The sentence was
+  // validated character-by-character, so mark it a verbatim pass and let
+  // submitPractice() skip the AI grading round-trip.
+  setTimeout(() => {
+    if (state._isSubmitting) return;
+    if (['correct', 'wrong'].includes(state.questionStatus[state.currentIdx])) return;
+    _wbwVerbatimPending = true;
+    submitPractice();
+  }, 550);
 }
 
 function bindPractice() {
@@ -1925,18 +1935,37 @@ async function submitPractice() {
   const answer = getUserAnswerPractice();
   if (answer === '' || answer === undefined) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
 
+  // The word-by-word drill validates every character against q.translationAnswer,
+  // so a finished sentence is guaranteed correct — grade it locally and skip the
+  // "✨ AI đang chấm bài..." round-trip. Only trusts the flag set by _wbwComplete()
+  // and re-checks the text is an exact match; anything else falls back to the API.
+  const wbwVerbatim = _wbwVerbatimPending && q.type === 'translation'
+    && !!q.translationAnswer && answer === q.translationAnswer;
+  _wbwVerbatimPending = false;
+
   const AI_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
   state._isSubmitting = true;
   document.getElementById('submit-btn').disabled = true;
-  const loaderText = document.getElementById('checking-loader-text');
-  if (loaderText) loaderText.textContent = AI_TYPES.has(q.type) ? '✨ AI đang chấm bài...' : 'Đang chấm bài...';
-  document.getElementById('checking-loader').classList.remove('hidden');
 
   try {
-    const data = await apiFetch('/api/task2/check', {
-      method: 'POST',
-      body: JSON.stringify({ topicId: state.selectedTopic._id, questionId: q.questionId || q._id, userAnswer: answer })
-    });
+    let data;
+    if (wbwVerbatim) {
+      data = {
+        success: true, isCorrect: true, score: 100,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: 'Chính xác! Bạn đã gõ đúng từng chữ của câu mẫu.',
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else {
+      const loaderText = document.getElementById('checking-loader-text');
+      if (loaderText) loaderText.textContent = AI_TYPES.has(q.type) ? '✨ AI đang chấm bài...' : 'Đang chấm bài...';
+      document.getElementById('checking-loader').classList.remove('hidden');
+      data = await apiFetch('/api/task2/check', {
+        method: 'POST',
+        body: JSON.stringify({ topicId: state.selectedTopic._id, questionId: q.questionId || q._id, userAnswer: answer })
+      });
+    }
     if (!data.success) throw new Error(data.message);
 
     const isOk = data.isCorrect;
