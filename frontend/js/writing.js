@@ -201,6 +201,20 @@ function showScreen(id) {
 window.addEventListener('popstate', e => {
   const s = e.state?.screen;
 
+  // Full exam in progress → a back/forward to an earlier writing.html screen
+  // state (samples/tips/key that was pushed before the exam started) must not
+  // leave the exam timer ticking in the background: it would keep autosaving
+  // and eventually fire submitExam('timeout') on a screen the student already
+  // left. Mirror forceExit() — stop everything but keep the localStorage
+  // autosave, so the restore banner offers "Tiếp tục làm". The in-page "Thoát"
+  // button and a real page-unload Back are already covered (confirmExit /
+  // window.onbeforeunload).
+  if (state.exam && !state.isSubmitting) {
+    clearInterval(state.timerInterval);
+    window.onbeforeunload = null;
+    state.exam = null;
+  }
+
   // Clean up write screen if navigating away
   if (practiceState.task) {
     stopPracticeStopwatch();
