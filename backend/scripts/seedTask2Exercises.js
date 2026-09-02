@@ -18144,6 +18144,155 @@ const topics = [
         ],
         "orderIndex": 13,
         "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q14",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"Unlike in the past, when...\"):\n\n\"Không giống như trước đây, khi thiệt hại môi trường được xem là vấn đề của từng địa phương, biến đổi khí hậu ngày nay được nhìn nhận là một tình trạng khẩn cấp toàn cầu mà không một quốc gia nào có thể tự mình giải quyết.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Unlike in the past, when environmental damage was seen as a local problem, climate change is now regarded as a global emergency that no single country can solve on its own.",
+        "explanationVi": "'Unlike in the past, when + S + V (quá khứ)' mở đầu bằng sự tương phản quá khứ – hiện tại, rất mạnh cho câu chủ đề. Mệnh đề 'when environmental damage was seen' dùng quá khứ đơn bị động; mệnh đề chính 'is now regarded as' dùng hiện tại. 'that no single country can solve on its own' là mệnh đề quan hệ bổ nghĩa cho 'emergency'.",
+        "sentenceStructure": "Unlike in the past, when + S + V (quá khứ), S + V (hiện tại) ... + mệnh đề quan hệ",
+        "modelAnswer": "Unlike in the past, when environmental damage was seen as a local problem, climate change is now regarded as a global emergency that no single country can solve on its own.",
+        "fallbackKeywords": [
+          "unlike in the past",
+          "environmental damage",
+          "climate change",
+          "global emergency",
+          "single country"
+        ],
+        "orderIndex": 14,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q15",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu điều kiện loại 2):\n\n\"Nếu mỗi hộ gia đình giảm mức tiêu thụ điện của mình đi chỉ mười phần trăm, tác động cộng gộp lên lượng khí thải carbon sẽ là rất lớn.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "If every household reduced its electricity consumption by just ten percent, the combined impact on carbon emissions would be enormous.",
+        "explanationVi": "Câu điều kiện loại 2 diễn tả tình huống giả định, không có thật ở hiện tại: 'If + quá khứ đơn' ('reduced') và mệnh đề chính 'would + V' ('would be'). Dùng khi đề xuất một kịch bản mang tính giả thuyết trong đoạn giải pháp.",
+        "sentenceStructure": "If + S + V (quá khứ đơn), S + would + V (nguyên thể) — điều kiện loại 2",
+        "modelAnswer": "If every household reduced its electricity consumption by just ten percent, the combined impact on carbon emissions would be enormous.",
+        "fallbackKeywords": [
+          "if",
+          "every household",
+          "electricity consumption",
+          "carbon emissions",
+          "would be enormous"
+        ],
+        "orderIndex": 15,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q16",
+        "level": "elementary",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"When...\"):\n\n\"Khi rừng bị chặt phá để làm nông nghiệp, đất nhanh chóng mất đi độ màu mỡ và một lượng lớn carbon tích trữ bị thải vào khí quyển.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "When forests are cleared for farming, the soil quickly loses its fertility and large amounts of stored carbon are released into the atmosphere.",
+        "explanationVi": "'When' + hiện tại đơn diễn tả một quy luật / sự thật chung. Hai mệnh đề dùng bị động ('are cleared', 'are released') vì tác nhân không quan trọng bằng hành động. 'Lose its fertility' = mất độ màu mỡ.",
+        "sentenceStructure": "When + S + be + V3 (bị động), S + V + and + S + be + V3",
+        "modelAnswer": "When forests are cleared for farming, the soil quickly loses its fertility and large amounts of stored carbon are released into the atmosphere.",
+        "fallbackKeywords": [
+          "when",
+          "forests are cleared",
+          "soil",
+          "fertility",
+          "stored carbon",
+          "atmosphere"
+        ],
+        "orderIndex": 16,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q17",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"It is high time...\"):\n\n\"Đã đến lúc các chính phủ phải coi khủng hoảng khí hậu nghiêm trọng như cách họ coi trọng các mối đe dọa đối với an ninh quốc gia.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "It is high time governments treated the climate crisis as seriously as they treat threats to national security.",
+        "explanationVi": "'It is high time + S + quá khứ đơn' ('treated') là cấu trúc giả định diễn tả 'lẽ ra việc này đã phải xảy ra rồi'. Cụm so sánh 'as seriously as' nối hai cách hành xử.",
+        "sentenceStructure": "It is high time + S + V (quá khứ đơn) — 'đã đến lúc ai đó nên làm gì'",
+        "modelAnswer": "It is high time governments treated the climate crisis as seriously as they treat threats to national security.",
+        "fallbackKeywords": [
+          "it is high time",
+          "governments",
+          "climate crisis",
+          "national security",
+          "threats"
+        ],
+        "orderIndex": 17,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q18",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc so sánh kép \"The more..., the harder...\"):\n\n\"Một quốc gia càng phụ thuộc nhiều vào điện than, thì quốc gia đó càng khó đạt được các mục tiêu cắt giảm khí thải.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "The more heavily a country relies on coal-fired power, the harder it becomes for that country to meet its emission-reduction targets.",
+        "explanationVi": "Cấu trúc so sánh kép 'The + comparative..., the + comparative...' diễn tả hai đại lượng thay đổi song song. 'The more heavily' bổ nghĩa cho động từ 'relies'; 'the harder it becomes for sb to V' là mẫu câu rất tự nhiên.",
+        "sentenceStructure": "The + comparative + S + V, the + comparative + S + V — 'càng... càng...'",
+        "modelAnswer": "The more heavily a country relies on coal-fired power, the harder it becomes for that country to meet its emission-reduction targets.",
+        "fallbackKeywords": [
+          "the more",
+          "coal-fired power",
+          "the harder",
+          "emission-reduction targets",
+          "country"
+        ],
+        "orderIndex": 18,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q19",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"Despite + cụm danh từ\"):\n\n\"Bất chấp bằng chứng khoa học ngày càng nhiều, nhiều nhà hoạch định chính sách vẫn miễn cưỡng loại bỏ dần trợ cấp cho nhiên liệu hóa thạch.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Despite mounting scientific evidence, many policymakers remain reluctant to phase out subsidies for fossil fuels.",
+        "explanationVi": "'Despite' đi với danh từ / cụm danh từ, KHÔNG đi với mệnh đề (sai: 'Despite scientific evidence is mounting'). 'Remain reluctant to V' = vẫn miễn cưỡng làm gì. 'Phase out' = loại bỏ dần.",
+        "sentenceStructure": "Despite + cụm danh từ / V-ing, S + V (nhượng bộ)",
+        "modelAnswer": "Despite mounting scientific evidence, many policymakers remain reluctant to phase out subsidies for fossil fuels.",
+        "fallbackKeywords": [
+          "despite",
+          "scientific evidence",
+          "policymakers",
+          "reluctant",
+          "phase out",
+          "subsidies"
+        ],
+        "orderIndex": 19,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_env_q20",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề quan hệ \", which...\" bình luận cả câu):\n\n\"Các thành phố ven biển đang chi hàng tỷ đô la cho hệ thống chống lũ, điều này cho thấy việc trì hoãn hành động về khí hậu đã trở nên tốn kém đến mức nào.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Coastal cities are spending billions of dollars on flood defences, which shows how costly delaying action on climate change has become.",
+        "explanationVi": "Dấu phẩy + 'which' ở đây KHÔNG bổ nghĩa cho một danh từ mà bình luận về toàn bộ mệnh đề đứng trước. 'how costly ... has become' là mệnh đề danh từ (câu hỏi gián tiếp) làm tân ngữ cho 'shows'.",
+        "sentenceStructure": "S + V + O, which + V — mệnh đề quan hệ không xác định bình luận cả câu",
+        "modelAnswer": "Coastal cities are spending billions of dollars on flood defences, which shows how costly delaying action on climate change has become.",
+        "fallbackKeywords": [
+          "coastal cities",
+          "flood defences",
+          "which shows",
+          "delaying action",
+          "costly"
+        ],
+        "orderIndex": 20,
+        "isActive": true
       }
     ]
   },
@@ -18565,6 +18714,154 @@ const topics = [
         ],
         "orderIndex": 13,
         "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q14",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"Unlike in the past, when...\"):\n\n\"Không giống như trước đây, khi người ta phải đến tận cơ quan để hoàn thành giấy tờ hành chính, ngày nay hầu hết các thủ tục có thể được xử lý trực tuyến chỉ trong vài phút.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Unlike in the past, when people had to visit an office to complete official paperwork, most procedures can now be handled online in just a few minutes.",
+        "explanationVi": "Tương phản quá khứ – hiện tại. 'had to + V' (bắt buộc trong quá khứ) đối lập với 'can now be handled' (bị động, hiện tại). 'In just a few minutes' nhấn mạnh sự tiện lợi.",
+        "sentenceStructure": "Unlike in the past, when + S + had to + V, S + can now + V (bị động)",
+        "modelAnswer": "Unlike in the past, when people had to visit an office to complete official paperwork, most procedures can now be handled online in just a few minutes.",
+        "fallbackKeywords": [
+          "unlike in the past",
+          "official paperwork",
+          "procedures",
+          "handled online",
+          "a few minutes"
+        ],
+        "orderIndex": 14,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q15",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu điều kiện loại 2 ở thể bị động):\n\n\"Nếu các nền tảng mạng xã hội phải chịu trách nhiệm pháp lý về nội dung mà họ quảng bá, việc lan truyền thông tin sai lệch sẽ giảm mạnh.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "If social media platforms were held legally responsible for the content they promote, the spread of misinformation would decline sharply.",
+        "explanationVi": "Điều kiện loại 2 ở thể bị động: 'If ... were held responsible'. Mệnh đề chính 'would decline'. 'The content they promote' là mệnh đề quan hệ rút gọn (lược bỏ 'that/which').",
+        "sentenceStructure": "If + S + were + V3, S + would + V — điều kiện loại 2 (bị động)",
+        "modelAnswer": "If social media platforms were held legally responsible for the content they promote, the spread of misinformation would decline sharply.",
+        "fallbackKeywords": [
+          "if",
+          "social media platforms",
+          "legally responsible",
+          "misinformation",
+          "would decline"
+        ],
+        "orderIndex": 15,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q16",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"When...\"):\n\n\"Khi con người dựa vào thuật toán để quyết định họ nhìn thấy tin tức nào, họ dần bị giới hạn trong một góc nhìn hẹp và một chiều về thế giới.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "When people rely on algorithms to decide which news they see, they are gradually exposed to a narrow and one-sided view of the world.",
+        "explanationVi": "'When' + hiện tại đơn nêu điều kiện lặp lại; mệnh đề chính dùng bị động 'are exposed to'. 'Which news they see' là mệnh đề danh từ làm tân ngữ cho 'decide'.",
+        "sentenceStructure": "When + S + V, S + be + V3 (kết quả)",
+        "modelAnswer": "When people rely on algorithms to decide which news they see, they are gradually exposed to a narrow and one-sided view of the world.",
+        "fallbackKeywords": [
+          "when",
+          "rely on algorithms",
+          "which news",
+          "exposed to",
+          "one-sided view"
+        ],
+        "orderIndex": 16,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q17",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng đảo ngữ \"Not only...\"):\n\n\"Tự động hóa không chỉ định hình lại thị trường lao động mà còn thay đổi những kỹ năng mà nhà tuyển dụng mong đợi ở sinh viên mới ra trường.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Not only has automation reshaped the labour market, but it has also changed the skills that employers expect from graduates.",
+        "explanationVi": "Khi 'Not only' đứng đầu câu, mệnh đề đầu phải ĐẢO NGỮ: 'has automation reshaped' (không phải 'automation has reshaped'). Mệnh đề sau giữ trật tự thường với 'but ... also'.",
+        "sentenceStructure": "Not only + trợ động từ + S + V, but + S + also + V — đảo ngữ nhấn mạnh",
+        "modelAnswer": "Not only has automation reshaped the labour market, but it has also changed the skills that employers expect from graduates.",
+        "fallbackKeywords": [
+          "not only",
+          "automation",
+          "labour market",
+          "employers",
+          "graduates",
+          "skills"
+        ],
+        "orderIndex": 17,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q18",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"such ... that ...\"):\n\n\"Điện thoại thông minh đã trở thành một phần thiết yếu của cuộc sống hằng ngày đến mức nhiều người trẻ cảm thấy lo lắng ngay khi bị tách khỏi thiết bị của mình.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Smartphones have become such an essential part of daily life that many young people feel anxious as soon as they are separated from their devices.",
+        "explanationVi": "'such + (a/an) + tính từ + danh từ + that' diễn tả mức độ dẫn đến kết quả. Phân biệt với 'so + tính từ + that' (không có danh từ). 'As soon as' = ngay khi.",
+        "sentenceStructure": "S + V + such + (a/an) + adj + N + that + S + V — 'đến mức'",
+        "modelAnswer": "Smartphones have become such an essential part of daily life that many young people feel anxious as soon as they are separated from their devices.",
+        "fallbackKeywords": [
+          "smartphones",
+          "such an essential part",
+          "daily life",
+          "anxious",
+          "separated from"
+        ],
+        "orderIndex": 18,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q19",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"While...\" chỉ sự tương phản):\n\n\"Trong khi công nghệ đã khiến việc giao tiếp trở nên nhanh hơn và rẻ hơn, nó cũng được cho là đã làm cho các mối quan hệ cá nhân trở nên hời hợt hơn.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "While technology has made communication faster and cheaper, it has arguably made personal relationships shallower.",
+        "explanationVi": "'While' đầu câu = 'trong khi / mặc dù' nêu ý tương phản. Cả hai vế dùng 'make + O + adj' ('made communication faster', 'made relationships shallower'). 'Arguably' = có thể lập luận rằng.",
+        "sentenceStructure": "While + S + V, S + V — mệnh đề nhượng bộ / tương phản",
+        "modelAnswer": "While technology has made communication faster and cheaper, it has arguably made personal relationships shallower.",
+        "fallbackKeywords": [
+          "while",
+          "technology",
+          "communication",
+          "personal relationships",
+          "shallower"
+        ],
+        "orderIndex": 19,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_tech_q20",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu chẻ giả \"What ... is ...\"):\n\n\"Điều khiến nhiều bậc phụ huynh lo lắng không phải là thời gian sử dụng màn hình mà là thiết kế gây nghiện của các ứng dụng mà con họ dùng.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "What worries many parents is not screen time itself but the addictive design of the apps their children use.",
+        "explanationVi": "'What + mệnh đề + is + ...' nhấn mạnh phần đứng sau 'is'. Cặp 'not ... but ...' đối lập hai ý. 'The apps their children use' là mệnh đề quan hệ rút gọn.",
+        "sentenceStructure": "What + S + V + is + (not) + N (+ but + N) — câu chẻ giả (pseudo-cleft)",
+        "modelAnswer": "What worries many parents is not screen time itself but the addictive design of the apps their children use.",
+        "fallbackKeywords": [
+          "what worries many parents",
+          "screen time",
+          "addictive design",
+          "apps",
+          "children use"
+        ],
+        "orderIndex": 20,
+        "isActive": true
       }
     ]
   },
@@ -18979,6 +19276,155 @@ const topics = [
           "holistic development"
         ],
         "orderIndex": 13,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q14",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"Unlike in the past, when...\"):\n\n\"Không giống như trước đây, khi một tấm bằng đại học gần như đảm bảo một sự nghiệp ổn định, sinh viên tốt nghiệp ngày nay thường phải đối mặt với sự cạnh tranh gay gắt ngay cả cho những vị trí mới vào nghề.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Unlike in the past, when a university degree almost guaranteed a stable career, graduates today often face fierce competition even for entry-level positions.",
+        "explanationVi": "Tương phản quá khứ – hiện tại làm câu chủ đề cho đoạn nguyên nhân. 'Almost guaranteed' (quá khứ đơn) đối lập 'often face' (hiện tại). 'Entry-level positions' = vị trí mới vào nghề.",
+        "sentenceStructure": "Unlike in the past, when + S + V (quá khứ), S + V (hiện tại) today",
+        "modelAnswer": "Unlike in the past, when a university degree almost guaranteed a stable career, graduates today often face fierce competition even for entry-level positions.",
+        "fallbackKeywords": [
+          "unlike in the past",
+          "university degree",
+          "stable career",
+          "fierce competition",
+          "entry-level positions"
+        ],
+        "orderIndex": 14,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q15",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu điều kiện loại 2):\n\n\"Nếu các trường học ít chú trọng vào các kỳ thi mang tính quyết định hơn, học sinh sẽ có nhiều tự do hơn để khám phá những môn học mà các em thực sự yêu thích.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "If schools placed less emphasis on high-stakes exams, students would have more freedom to explore the subjects they are truly passionate about.",
+        "explanationVi": "Điều kiện loại 2 đề xuất một kịch bản giả định: 'If ... placed less emphasis', 'students would have'. 'Place emphasis on' = chú trọng vào. 'Be passionate about' = đam mê.",
+        "sentenceStructure": "If + S + V (quá khứ đơn), S + would + V — điều kiện loại 2",
+        "modelAnswer": "If schools placed less emphasis on high-stakes exams, students would have more freedom to explore the subjects they are truly passionate about.",
+        "fallbackKeywords": [
+          "if",
+          "schools",
+          "less emphasis",
+          "high-stakes exams",
+          "would have more freedom",
+          "subjects"
+        ],
+        "orderIndex": 15,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q16",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"When...\"):\n\n\"Khi trẻ em liên tục bị đem ra so sánh với bạn bè đồng trang lứa, các em có thể mất tự tin và hình thành nỗi sợ thất bại đi theo mình đến tận khi trưởng thành.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "When children are constantly compared with their peers, they may lose confidence and develop a fear of failure that follows them into adulthood.",
+        "explanationVi": "'When' + bị động ('are compared') nêu bối cảnh; 'may lose / develop' diễn tả hệ quả có khả năng xảy ra. 'That follows them into adulthood' bổ nghĩa cho 'a fear of failure'.",
+        "sentenceStructure": "When + S + be + V3, S + may + V (+ that + mệnh đề quan hệ)",
+        "modelAnswer": "When children are constantly compared with their peers, they may lose confidence and develop a fear of failure that follows them into adulthood.",
+        "fallbackKeywords": [
+          "when",
+          "children",
+          "compared with their peers",
+          "lose confidence",
+          "fear of failure",
+          "adulthood"
+        ],
+        "orderIndex": 16,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q17",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng thức giả định \"It is essential that + S + (should) + V\"):\n\n\"Điều thiết yếu là chương trình học phải được cập nhật thường xuyên để phản ánh những kỹ năng mà thị trường lao động thực sự cần.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "It is essential that the curriculum be updated regularly so that it reflects the skills the labour market actually needs.",
+        "explanationVi": "Sau 'It is essential/vital/important that', động từ ở dạng nguyên thể không chia: 'the curriculum be updated' (không phải 'is updated'). 'So that + mệnh đề' chỉ mục đích.",
+        "sentenceStructure": "It is essential/vital that + S + (should) + V (nguyên thể) — thức giả định",
+        "modelAnswer": "It is essential that the curriculum be updated regularly so that it reflects the skills the labour market actually needs.",
+        "fallbackKeywords": [
+          "it is essential that",
+          "curriculum be updated",
+          "regularly",
+          "labour market",
+          "skills"
+        ],
+        "orderIndex": 17,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q18",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc so sánh kép \"The more..., the more likely...\"):\n\n\"Cha mẹ càng gây áp lực buộc con phải đạt điểm cao, thì những đứa trẻ đó càng dễ rơi vào tình trạng kiệt sức.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "The more pressure parents put on their children to get top grades, the more likely those children are to suffer burnout.",
+        "explanationVi": "So sánh kép với danh từ: 'The more pressure parents put on...'. Vế sau dùng mẫu 'the more likely + S + to be + to V'. 'Suffer burnout' = rơi vào kiệt sức.",
+        "sentenceStructure": "The more + N + S + V, the more likely + S + be + to V — 'càng... càng...'",
+        "modelAnswer": "The more pressure parents put on their children to get top grades, the more likely those children are to suffer burnout.",
+        "fallbackKeywords": [
+          "the more pressure",
+          "parents",
+          "top grades",
+          "the more likely",
+          "burnout"
+        ],
+        "orderIndex": 18,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q19",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"Despite + V-ing\"):\n\n\"Dù đã dành nhiều năm học thuộc lòng kiến thức để thi cử, nhiều học sinh rời ghế nhà trường mà không có những kỹ năng thực tế cần thiết cho cuộc sống hằng ngày.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Despite spending years memorising facts for exams, many students leave school without the practical skills needed for everyday life.",
+        "explanationVi": "'Despite' + V-ing ('spending') vì chủ ngữ của hai vế trùng nhau. 'Without + N' = mà không có. 'Needed for everyday life' là mệnh đề quan hệ rút gọn bổ nghĩa cho 'skills'.",
+        "sentenceStructure": "Despite + V-ing / cụm danh từ, S + V",
+        "modelAnswer": "Despite spending years memorising facts for exams, many students leave school without the practical skills needed for everyday life.",
+        "fallbackKeywords": [
+          "despite spending years",
+          "memorising facts",
+          "leave school",
+          "practical skills",
+          "everyday life"
+        ],
+        "orderIndex": 19,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_edu_q20",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề quan hệ \", which...\" bình luận cả câu):\n\n\"Ở nhiều quốc gia, nghề giáo đã trở thành một nghề bị trả lương thấp và bị xem nhẹ, điều này khiến những sinh viên tài năng ngại bước vào lĩnh vực này.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "In many countries, teaching has become an underpaid and undervalued profession, which discourages talented graduates from entering the field.",
+        "explanationVi": "', which discourages...' bình luận về toàn bộ ý phía trước. 'Discourage sb from + V-ing' = làm ai nản lòng không làm gì. 'Underpaid and undervalued' là hai tính từ ghép.",
+        "sentenceStructure": "S + V + O, which + V — mệnh đề quan hệ bình luận cả câu",
+        "modelAnswer": "In many countries, teaching has become an underpaid and undervalued profession, which discourages talented graduates from entering the field.",
+        "fallbackKeywords": [
+          "teaching",
+          "underpaid",
+          "undervalued profession",
+          "which discourages",
+          "talented graduates"
+        ],
+        "orderIndex": 20,
         "isActive": true
       }
     ]
@@ -19395,6 +19841,157 @@ const topics = [
           "childhood obesity"
         ],
         "orderIndex": 13,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q14",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"Unlike in the past, when...\" và mệnh đề \", which...\"):\n\n\"Không giống như trước đây, khi hầu hết mọi người đi bộ hoặc đạp xe đi làm, cư dân thành phố ngày nay ngồi hàng giờ trong xe hơi và văn phòng, điều này đã góp phần làm gia tăng tỷ lệ béo phì.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Unlike in the past, when most people walked or cycled to work, city residents today spend hours sitting in cars and offices, which has contributed to rising obesity rates.",
+        "explanationVi": "Kết hợp hai cấu trúc: tương phản quá khứ – hiện tại ('Unlike in the past, when ... walked or cycled') và ', which has contributed' bình luận cả câu. 'Spend hours + V-ing' = dành hàng giờ làm gì.",
+        "sentenceStructure": "Unlike in the past, when + S + V, S + V today, which + V",
+        "modelAnswer": "Unlike in the past, when most people walked or cycled to work, city residents today spend hours sitting in cars and offices, which has contributed to rising obesity rates.",
+        "fallbackKeywords": [
+          "unlike in the past",
+          "walked or cycled",
+          "city residents",
+          "sitting in cars",
+          "which has contributed",
+          "obesity rates"
+        ],
+        "orderIndex": 14,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q15",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu điều kiện loại 2 ở thể bị động):\n\n\"Nếu các thành phố được thiết kế với nhiều công viên, lối đi bộ và làn đường dành cho xe đạp hơn, cư dân sẽ thấy dễ dàng hơn nhiều khi đưa việc vận động vào thói quen hằng ngày.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "If cities were designed with more parks, footpaths and cycle lanes, residents would find it much easier to build exercise into their daily routines.",
+        "explanationVi": "Điều kiện loại 2 thể bị động: 'If cities were designed'. 'Find it + adj + to V' = thấy việc gì đó thế nào. 'Build sth into a routine' = đưa việc gì vào thói quen.",
+        "sentenceStructure": "If + S + were + V3, S + would + V — điều kiện loại 2 (bị động)",
+        "modelAnswer": "If cities were designed with more parks, footpaths and cycle lanes, residents would find it much easier to build exercise into their daily routines.",
+        "fallbackKeywords": [
+          "if",
+          "cities were designed",
+          "parks",
+          "cycle lanes",
+          "would find it easier",
+          "daily routines"
+        ],
+        "orderIndex": 15,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q16",
+        "level": "elementary",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"When...\" và \"both ... and ...\"):\n\n\"Khi không gian xanh bị thay thế bằng bê tông và các tòa nhà cao tầng, cả sức khỏe thể chất lẫn tinh thần của cư dân địa phương đều có xu hướng giảm sút.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "When green spaces are replaced by concrete and high-rise buildings, both the physical and mental health of local residents tend to suffer.",
+        "explanationVi": "'When' + bị động ('are replaced') nêu điều kiện. 'Both A and B' làm chủ ngữ số nhiều nên động từ chia số nhiều ('tend'). 'Tend to suffer' = có xu hướng giảm sút.",
+        "sentenceStructure": "When + S + be + V3, both + N + and + N + V",
+        "modelAnswer": "When green spaces are replaced by concrete and high-rise buildings, both the physical and mental health of local residents tend to suffer.",
+        "fallbackKeywords": [
+          "when",
+          "green spaces are replaced",
+          "concrete",
+          "high-rise buildings",
+          "physical and mental health",
+          "tend to suffer"
+        ],
+        "orderIndex": 16,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q17",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng đảo ngữ \"Only by + V-ing...\"):\n\n\"Chỉ bằng cách đầu tư mạnh vào chăm sóc sức khỏe dự phòng, các chính phủ mới có thể giảm được gánh nặng lâu dài đè lên những bệnh viện quá tải.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Only by investing heavily in preventive healthcare can governments reduce the long-term burden on overcrowded hospitals.",
+        "explanationVi": "'Only by + V-ing' đứng đầu câu buộc ĐẢO NGỮ: 'can governments reduce' (không phải 'governments can reduce'). 'Preventive healthcare' = chăm sóc sức khỏe dự phòng.",
+        "sentenceStructure": "Only by + V-ing + trợ động từ + S + V — đảo ngữ nhấn mạnh",
+        "modelAnswer": "Only by investing heavily in preventive healthcare can governments reduce the long-term burden on overcrowded hospitals.",
+        "fallbackKeywords": [
+          "only by investing",
+          "preventive healthcare",
+          "can governments reduce",
+          "long-term burden",
+          "overcrowded hospitals"
+        ],
+        "orderIndex": 17,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q18",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"so ... that ...\"):\n\n\"Chất lượng không khí ở một số siêu đô thị đã xấu đi nghiêm trọng đến mức cư dân được khuyến cáo ở trong nhà vào những ngày ô nhiễm nặng nhất.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Air quality in some megacities has deteriorated so severely that residents are advised to stay indoors on the most polluted days.",
+        "explanationVi": "'so + severely (trạng từ) + that' — mức độ dẫn đến kết quả, không có danh từ đi kèm (khác 'such'). 'Be advised to V' = được khuyến cáo làm gì.",
+        "sentenceStructure": "S + V + so + trạng từ/tính từ + that + S + V — 'đến mức'",
+        "modelAnswer": "Air quality in some megacities has deteriorated so severely that residents are advised to stay indoors on the most polluted days.",
+        "fallbackKeywords": [
+          "air quality",
+          "megacities",
+          "deteriorated so severely",
+          "residents are advised",
+          "stay indoors"
+        ],
+        "orderIndex": 18,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q19",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"Given that + S + V, ...\"):\n\n\"Xét đến việc dân số đô thị được dự báo sẽ tăng gấp đôi trong vài thập kỷ tới, việc quy hoạch nhà ở giá phải chăng và hệ thống vệ sinh không thể bị trì hoãn thêm nữa.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Given that urban populations are expected to double within a few decades, planning for affordable housing and sanitation can no longer be delayed.",
+        "explanationVi": "'Given that + mệnh đề' = 'xét đến việc / vì đã biết rằng'. 'Be expected to + V' = được dự báo sẽ. 'Can no longer be delayed' = không thể trì hoãn thêm.",
+        "sentenceStructure": "Given that + S + V, S + V — nêu tiền đề đã biết rồi rút ra kết luận",
+        "modelAnswer": "Given that urban populations are expected to double within a few decades, planning for affordable housing and sanitation can no longer be delayed.",
+        "fallbackKeywords": [
+          "given that",
+          "urban populations",
+          "expected to double",
+          "affordable housing",
+          "sanitation",
+          "no longer be delayed"
+        ],
+        "orderIndex": 19,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_health_q20",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"While...\" chỉ sự tương phản):\n\n\"Trong khi quá trình đô thị hóa nhanh đã thúc đẩy tăng trưởng kinh tế, nó cũng đặt một gánh nặng khổng lồ lên các dịch vụ y tế công.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "While rapid urbanisation has driven economic growth, it has also placed an enormous strain on public health services.",
+        "explanationVi": "'While' đầu câu nêu mặt tích cực trước, mệnh đề chính nêu mặt tiêu cực với 'also'. 'Place a strain on' = đặt gánh nặng lên (đồng nghĩa 'put pressure on').",
+        "sentenceStructure": "While + S + V, S + also + V — tương phản",
+        "modelAnswer": "While rapid urbanisation has driven economic growth, it has also placed an enormous strain on public health services.",
+        "fallbackKeywords": [
+          "while",
+          "rapid urbanisation",
+          "economic growth",
+          "enormous strain",
+          "public health services"
+        ],
+        "orderIndex": 20,
         "isActive": true
       }
     ]
@@ -19814,6 +20411,156 @@ const topics = [
           "substandard working conditions"
         ],
         "orderIndex": 13,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q14",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc \"Unlike in the past, when...\"):\n\n\"Không giống như trước đây, khi các cuộc khủng hoảng kinh tế thường chỉ giới hạn trong phạm vi biên giới quốc gia, một cú sốc tài chính ở một nền kinh tế lớn hiện nay có thể lan ra toàn cầu chỉ trong vài ngày.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Unlike in the past, when economic crises tended to stay within national borders, a financial shock in one major economy can now spread across the globe within days.",
+        "explanationVi": "Tương phản quá khứ – hiện tại. 'Tended to stay' (quá khứ) đối lập 'can now spread' (hiện tại). Cặp 'within national borders' / 'across the globe' tạo sự đối lập về không gian.",
+        "sentenceStructure": "Unlike in the past, when + S + V (quá khứ), S + can now + V",
+        "modelAnswer": "Unlike in the past, when economic crises tended to stay within national borders, a financial shock in one major economy can now spread across the globe within days.",
+        "fallbackKeywords": [
+          "unlike in the past",
+          "economic crises",
+          "national borders",
+          "financial shock",
+          "can now spread",
+          "within days"
+        ],
+        "orderIndex": 14,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q15",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng câu điều kiện loại 2):\n\n\"Nếu các quốc gia giàu chia sẻ công nghệ và chuyên môn một cách cởi mở hơn, các nước đang phát triển sẽ có thể công nghiệp hóa mà không lặp lại những sai lầm về môi trường tương tự.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "If wealthy nations shared technology and expertise more openly, developing countries would be able to industrialise without repeating the same environmental mistakes.",
+        "explanationVi": "Điều kiện loại 2: 'If ... shared', 'would be able to industrialise'. 'Without + V-ing' = mà không. Đây là mẫu câu lập luận phản biện điển hình trong bài agree/disagree.",
+        "sentenceStructure": "If + S + V (quá khứ đơn), S + would be able to + V — điều kiện loại 2",
+        "modelAnswer": "If wealthy nations shared technology and expertise more openly, developing countries would be able to industrialise without repeating the same environmental mistakes.",
+        "fallbackKeywords": [
+          "if",
+          "wealthy nations",
+          "shared technology",
+          "developing countries",
+          "would be able to industrialise",
+          "environmental mistakes"
+        ],
+        "orderIndex": 15,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q16",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng mệnh đề \"When...\"):\n\n\"Khi các tập đoàn đa quốc gia chuyển nhà máy đến bất cứ nơi nào có lao động rẻ nhất, người lao động ở các quốc gia có mức lương cao hơn thường bị mất việc làm.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "When multinational corporations move their factories to wherever labour is cheapest, workers in higher-wage countries are often left unemployed.",
+        "explanationVi": "'When' + hiện tại đơn nêu quy luật. 'Wherever' = bất cứ nơi nào (mệnh đề trạng ngữ). 'Be left + tính từ' = bị rơi vào tình trạng nào đó ('left unemployed').",
+        "sentenceStructure": "When + S + V, S + be + left + adj",
+        "modelAnswer": "When multinational corporations move their factories to wherever labour is cheapest, workers in higher-wage countries are often left unemployed.",
+        "fallbackKeywords": [
+          "when",
+          "multinational corporations",
+          "move their factories",
+          "wherever labour is cheapest",
+          "left unemployed"
+        ],
+        "orderIndex": 16,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q17",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"It is often argued that ..., yet ...\"):\n\n\"Người ta thường lập luận rằng toàn cầu hóa mang lại lợi ích cho người tiêu dùng nhờ giá cả thấp hơn, tuy nhiên nó cũng có thể đẩy các nhà sản xuất nhỏ ở địa phương ra khỏi thị trường.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "It is often argued that globalisation benefits consumers through lower prices, yet it can also drive small local producers out of business.",
+        "explanationVi": "'It is often argued/claimed that' là cách khách quan để dẫn một quan điểm phổ biến. 'Yet' = tuy nhiên (nối hai mệnh đề độc lập). 'Drive sb out of business' = đẩy ai khỏi thương trường.",
+        "sentenceStructure": "It is often argued that + S + V, yet + S + V — nêu quan điểm phổ biến rồi phản biện",
+        "modelAnswer": "It is often argued that globalisation benefits consumers through lower prices, yet it can also drive small local producers out of business.",
+        "fallbackKeywords": [
+          "it is often argued that",
+          "globalisation benefits consumers",
+          "lower prices",
+          "drive small local producers",
+          "out of business"
+        ],
+        "orderIndex": 17,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q18",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng cấu trúc so sánh kép \"The more..., the more vulnerable...\"):\n\n\"Một quốc gia càng hội nhập sâu vào nền kinh tế toàn cầu, thì quốc gia đó càng dễ bị tổn thương trước những đợt suy thoái bắt nguồn từ nơi khác.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "The more integrated a country becomes into the global economy, the more vulnerable it is to downturns that originate elsewhere.",
+        "explanationVi": "So sánh kép với tính từ: 'The more integrated a country becomes', 'the more vulnerable it is'. 'That originate elsewhere' bổ nghĩa cho 'downturns'.",
+        "sentenceStructure": "The more + adj + S + V, the more + adj + S + be — 'càng... càng...'",
+        "modelAnswer": "The more integrated a country becomes into the global economy, the more vulnerable it is to downturns that originate elsewhere.",
+        "fallbackKeywords": [
+          "the more integrated",
+          "global economy",
+          "the more vulnerable",
+          "downturns",
+          "originate elsewhere"
+        ],
+        "orderIndex": 18,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q19",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng \"Despite + cụm danh từ\"):\n\n\"Bất chấp lượng của cải mà thương mại toàn cầu đã tạo ra, khoảng cách giữa những công dân giàu nhất và nghèo nhất vẫn tiếp tục nới rộng ở nhiều quốc gia.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Despite the wealth that global trade has generated, the gap between the richest and poorest citizens has continued to widen in many countries.",
+        "explanationVi": "'Despite' + cụm danh từ 'the wealth that global trade has generated' (bên trong có mệnh đề quan hệ nhưng toàn bộ vẫn là một cụm danh từ). 'Continue to widen' = tiếp tục nới rộng.",
+        "sentenceStructure": "Despite + cụm danh từ (+ mệnh đề quan hệ), S + V",
+        "modelAnswer": "Despite the wealth that global trade has generated, the gap between the richest and poorest citizens has continued to widen in many countries.",
+        "fallbackKeywords": [
+          "despite the wealth",
+          "global trade",
+          "the gap",
+          "richest and poorest citizens",
+          "continued to widen"
+        ],
+        "orderIndex": 19,
+        "isActive": true
+      },
+      {
+        "questionId": "w12_trans_econ_q20",
+        "level": "intermediate",
+        "type": "translation",
+        "questionText": "Dịch câu sau sang tiếng Anh (dùng đảo ngữ \"Not only does + S + V...\"):\n\n\"Chủ nghĩa bảo hộ không chỉ làm tăng giá cả đối với người tiêu dùng bình thường mà còn kéo theo sự trả đũa từ các đối tác thương mại.\"",
+        "options": [],
+        "baseWords": [],
+        "correctAnswer": "Not only does protectionism raise prices for ordinary consumers, but it also invites retaliation from trading partners.",
+        "explanationVi": "'Not only' đầu câu + trợ động từ 'does' + chủ ngữ + động từ nguyên thể 'raise'. Vế hai: 'but it also invites'. 'Invite retaliation' = kéo theo sự trả đũa.",
+        "sentenceStructure": "Not only + trợ động từ (do/does) + S + V, but + S + also + V — đảo ngữ",
+        "modelAnswer": "Not only does protectionism raise prices for ordinary consumers, but it also invites retaliation from trading partners.",
+        "fallbackKeywords": [
+          "not only",
+          "protectionism",
+          "raise prices",
+          "ordinary consumers",
+          "invites retaliation",
+          "trading partners"
+        ],
+        "orderIndex": 20,
         "isActive": true
       }
     ]
