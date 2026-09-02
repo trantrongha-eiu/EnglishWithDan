@@ -636,7 +636,8 @@ function renderQuizQuestion() {
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(meaning)}</div>
             <div class="listen-hint">💡 ${_letterHintMeta(q.word.word, 'vi')}</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
-            <div class="fb-input-row">
+            <div id="qWbwHost"></div>
+            <div class="fb-input-row" id="qInputRow">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
                 <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkFillQuiz()">Check</button>
@@ -644,7 +645,7 @@ function renderQuizQuestion() {
             <div id="qFeedback"></div>
             <button class="btn-next" id="qBtnNext" style="display:none" onclick="nextQuizQuestion()">Next <i class="fas fa-arrow-right"></i></button>
         `);
-        document.getElementById('qFillInput')?.focus();
+        if (!_mountLessonQuizDrill('qFillInput', checkFillQuiz)) document.getElementById('qFillInput')?.focus();
     } else if (q.type === 'listen') {
         container.innerHTML = shell(`
             <div class="question-number">Listening</div>
@@ -653,7 +654,8 @@ function renderQuizQuestion() {
             <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(q.word.meaning || '')}</div>
             <div class="listen-hint">💡 ${_letterHintMeta(q.word.word, 'vi')}</div>
             <div class="listen-hint" id="qLetterHint" style="display:none"></div>
-            <div class="fb-input-row">
+            <div id="qWbwHost"></div>
+            <div class="fb-input-row" id="qInputRow">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
                 <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkListenQuiz()">Check</button>
@@ -670,6 +672,7 @@ function renderQuizQuestion() {
         });
         if (window.syncSlowSpeechBtns) window.syncSlowSpeechBtns();
         speakWord(q.word.word);
+        _mountLessonQuizDrill('qListenInput', checkListenQuiz);
     } else if (q.type === 'rearrange') {
         const tokens = q.word.example.split(/\s+/).filter(Boolean);
         const shuffled = [...tokens];
@@ -852,6 +855,31 @@ function showLessonQuizHint() {
         const btn = document.getElementById('qHintBtn');
         if (btn) btn.disabled = true;
     }
+}
+
+// Word-by-word "gõ từng chữ" drill for the Fill / Listen quiz types — the
+// student types the English word one letter at a time (wrong char → red
+// shake, correct word → green + auto-advance, last word → auto-checks). The
+// plain #qInputRow is the value bridge and stays hidden while the drill is
+// active; returns false (→ caller keeps the plain input) if the word can't
+// be drilled or WbwDrill isn't available.
+function _mountLessonQuizDrill(inputId, onDone) {
+    const host       = document.getElementById('qWbwHost');
+    const row        = document.getElementById('qInputRow');
+    const letterHint = document.getElementById('qLetterHint');
+    const q = lessonState.quiz.queue[lessonState.quiz.index];
+    const answer = q && q.word ? q.word.word : '';
+    const bridge = document.getElementById(inputId);
+    if (window.WbwDrill) window.WbwDrill.unmount(host);
+    const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
+        answer: answer,
+        bridgeInput: bridge,
+        onComplete: function () { if (!lessonState.quiz.answered) onDone(); }
+    }));
+    if (host)       host.style.display = ok ? '' : 'none';
+    if (row)        row.style.display  = ok ? 'none' : '';
+    if (ok && letterHint) letterHint.style.display = 'none';
+    return ok;
 }
 
 function checkFillQuiz() {

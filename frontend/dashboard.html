@@ -479,7 +479,11 @@
               <div class="fb-meaning-hint" id="listenMeaning" style="display:none"><i class="fas fa-language"></i> <span id="listenMeaningText"></span></div>
               <div class="listen-hint" id="listenHint"></div>
               <div class="listen-hint" id="listenLetterHint" style="display:none"></div>
-              <div class="fb-input-row">
+              <!-- Word-by-word "gõ từng chữ" drill mounts here (WbwDrill); the
+                   plain input row below is hidden while it is active and used
+                   only as the value bridge for checkListening(). -->
+              <div id="listenWbwHost"></div>
+              <div class="fb-input-row" id="listenInputRow">
                 <input class="listen-input" id="listenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
                 <button class="btn-hint-sm" id="listenHintBtn" onclick="showListenHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i> <span id="listenHintBtnLabel">Gợi ý (3)</span></button>
                 <button class="btn-check" onclick="checkListening()">Kiểm tra</button>
@@ -498,7 +502,11 @@
               <div class="question-number" id="transQuestionNumber"></div>
               <div class="trans-example" id="transExample"></div>
               <div class="trans-word-highlight" id="transWordHighlight"></div>
-              <div class="fb-input-row">
+              <!-- Word-by-word "gõ từng chữ" drill mounts here (WbwDrill); the
+                   plain input row below is hidden while it is active and used
+                   only as the value bridge for checkTranslation(). -->
+              <div id="transWbwHost"></div>
+              <div class="fb-input-row" id="transInputRow">
                 <input class="trans-input" id="transInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
                 <button class="btn-check" onclick="checkTranslation()">Kiểm tra</button>
               </div>
@@ -1306,10 +1314,11 @@
 
 <script src="js/shared/peer-profile.js?v=20260908"></script>
 <script src="js/dashboard-audio.js?v=20260906"></script>
-<script src="js/dashboard-lesson.js?v=20260920"></script>
+<script src="js/shared/wbw-drill.js?v=20260904"></script>
+<script src="js/dashboard-lesson.js?v=20260921"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260905"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260924"></script>
+<script src="js/dashboard.js?v=20260925"></script>
 </body>
 </html>

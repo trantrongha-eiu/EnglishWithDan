@@ -2034,6 +2034,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
 ══════════════════════════════════════════════ */
 function _activateModeNow(mode) {
     _clearAutoNext();
+    _unmountVocabDrills();
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode']
         .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2517,7 +2518,8 @@ function showMixedQuestion() {
             <button class="btn-play-audio" onclick="speakWord('${escH(currentWord.word)}')"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
             <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 ${_letterHintMeta(currentWord.word, 'en')}</div>
-            <div class="fb-input-row">
+            <div id="mixListenWbwHost"></div>
+            <div class="fb-input-row" id="mixListenInputRow">
               <input class="listen-input" id="mixListenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
               <button class="btn-check" onclick="checkMixedListen()">Check</button>
             </div>
@@ -2538,7 +2540,8 @@ function showMixedQuestion() {
             </div>
             <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
             <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Dịch: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
-            <div class="fb-input-row">
+            <div id="mixTransWbwHost"></div>
+            <div class="fb-input-row" id="mixTransInputRow">
               <input class="trans-input" id="mixTransInput" placeholder="Nhập nghĩa..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
             </div>
@@ -2546,6 +2549,14 @@ function showMixedQuestion() {
             <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
           </div>`;
         setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
+    }
+    // Word-by-word "gõ từng chữ" drill for the Listening / Translation
+    // sub-types (same widget as the standalone Notebook modes above).
+    if (type === 'listening') {
+        _mountVocabDrill('mixListenWbwHost', 'mixListenInputRow', currentWord.word, checkMixedListen);
+    } else if (type !== 'multipleChoice') {
+        const _mt = String(currentWord.meaning || '').split(/[\/,]/)[0].trim();
+        _mountVocabDrill('mixTransWbwHost', 'mixTransInputRow', _mt, checkMixedTrans);
     }
     if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
     setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz', () => !_vocabQuizActive);
@@ -2867,10 +2878,44 @@ function showListeningQuestion() {
     document.getElementById('listenInput').disabled = false;
     document.getElementById('listenFeedback').innerHTML = '';
     document.getElementById('listenBtnNext').style.display = 'none';
+    // Word-by-word "gõ từng chữ" drill — student types the English word one
+    // letter at a time (wrong char → red shake, correct word → green + auto
+    // advance, last word → auto-checks via checkListening()). The plain
+    // #listenInput row is the value bridge and stays hidden while the drill
+    // is active; if the word can't be drilled it falls back to that input.
+    // The "Gợi ý" letter-reveal button stays available alongside the drill.
+    _mountVocabDrill('listenWbwHost', 'listenInputRow', currentWord.word, checkListening);
     // FIX: bỏ auto-play speakWord() — người dùng tự bấm nút "Phát Âm Thanh"
     // Thiết bị Android không Google TTS sẽ crash/im lặng nếu auto-play
     if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
     setupDictionaryDouble('listeningMode', 'vocab-quiz', () => !_vocabQuizActive);
+}
+
+// ── Shared word-by-word drill wiring for the Notebook Listen/Dịch modes and
+//    their Mixed-mode sub-types. Mounts WbwDrill into `hostId`, hides the
+//    fallback input row `rowId` while it's active, and calls `onDone()` —
+//    the mode's existing check function — once the whole answer has been
+//    typed. Falls back to the plain input row when the answer is
+//    missing/untypable or WbwDrill isn't loaded.
+function _mountVocabDrill(hostId, rowId, answer, onDone) {
+    const host = document.getElementById(hostId);
+    const row  = document.getElementById(rowId);
+    if (window.WbwDrill) window.WbwDrill.unmount(host);
+    const bridge = row ? row.querySelector('input') : null;
+    if (bridge) { bridge.value = ''; bridge.disabled = false; }
+    const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
+        answer: answer,
+        bridgeInput: bridge,
+        onComplete: function () { if (!answered) onDone(); }
+    }));
+    if (host) host.style.display = ok ? '' : 'none';
+    if (row)  row.style.display  = ok ? 'none' : '';
+}
+
+function _unmountVocabDrills() {
+    if (!window.WbwDrill) return;
+    ['listenWbwHost', 'transWbwHost', 'mixListenWbwHost', 'mixTransWbwHost']
+        .forEach(id => window.WbwDrill.unmount(document.getElementById(id)));
 }
 function playAudio() { speakWord(currentWord?.word); }
 function slowAudio() { if (typeof toggleSlowSpeech === 'function') toggleSlowSpeech(currentWord?.word); }
@@ -2914,7 +2959,14 @@ function showTranslationQuestion() {
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
     document.getElementById('transBtnNext').style.display = 'none';
-    document.getElementById('transInput').focus();
+    // Word-by-word "gõ từng chữ" drill for the Vietnamese meaning. The
+    // meaning can list alternatives with "/" or "," — drill the first one
+    // (checkTranslation()'s _isMeaningMatch still accepts it as correct).
+    const _transTarget = String(currentWord.meaning || '').split(/[\/,]/)[0].trim();
+    _mountVocabDrill('transWbwHost', 'transInputRow', _transTarget, checkTranslation);
+    if (!window.WbwDrill || !window.WbwDrill.isMounted(document.getElementById('transWbwHost'))) {
+        document.getElementById('transInput').focus();
+    }
 }
 function checkTranslation() {
     if (answered) return; answered = true;
@@ -2941,6 +2993,7 @@ function checkTranslation() {
 function showResults(mode) {
     _vocabQuizActive = false;
     _clearAutoNext();
+    _unmountVocabDrills();
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';
