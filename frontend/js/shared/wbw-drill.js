@@ -114,16 +114,17 @@
     this._errorTimer = null;
     this._completeTimer = null;
 
-    this._composing = false;
     this._onInput = this._onInput.bind(this);
     this._onKeydown = this._onKeydown.bind(this);
     this._onPaste = function (e) { e.preventDefault(); };
     var self0 = this;
-    // Vietnamese Telex/VNI (and any IME) fire streams of intermediate `input`
-    // events while composing a character — wait for compositionend so we
-    // validate the finished letter, not the half-typed "aa"/"a".
-    this._onCompStart = function () { self0._composing = true; };
-    this._onCompEnd = function () { self0._composing = false; self0._onInput(); };
+    // Validate on every `input` event (real-time, same as Luyện viết Task 2's
+    // drill). We deliberately do NOT pause on compositionstart/compositionend:
+    // Android IMEs keep a whole word in composition until space/punctuation,
+    // so gating on it made each keystroke wait for the composition to end —
+    // the "check bị delay" the drill must not have. compositionend just
+    // re-runs the check as a safety net for IMEs that batch their input.
+    this._onCompEnd = function () { self0._onInput(); };
     this._focus = this.focus.bind(this);
 
     this._render();
@@ -160,7 +161,6 @@
     this.$input.addEventListener('input', this._onInput);
     this.$input.addEventListener('keydown', this._onKeydown);
     this.$input.addEventListener('paste', this._onPaste);
-    this.$input.addEventListener('compositionstart', this._onCompStart);
     this.$input.addEventListener('compositionend', this._onCompEnd);
     var self = this;
     this.$showall.addEventListener('click', function () { self._toggleShowAll(); });
@@ -173,7 +173,6 @@
       this.$input.removeEventListener('input', this._onInput);
       this.$input.removeEventListener('keydown', this._onKeydown);
       this.$input.removeEventListener('paste', this._onPaste);
-      this.$input.removeEventListener('compositionstart', this._onCompStart);
       this.$input.removeEventListener('compositionend', this._onCompEnd);
     }
     if (this.$words) this.$words.removeEventListener('click', this._focus);
@@ -260,7 +259,7 @@
   };
 
   Drill.prototype._onInput = function () {
-    if (this.done || !this.$input || this._composing) return;
+    if (this.done || !this.$input) return;
     var tok = this.tokens[this.activeIdx];
     if (!tok) return;
     var raw = nfc(this.$input.value).replace(NOT_TYPABLE, '');
