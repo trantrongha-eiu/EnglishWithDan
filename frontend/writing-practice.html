@@ -1503,6 +1503,7 @@ function _wbwOnInput() {
 
 function _wbwComplete() {
   if (!_wbw) return;
+  const mine = _wbw;
   _wbw.done = true;
   _wbw.locked = true;
   const input = document.getElementById('wbw-input');
@@ -1510,9 +1511,11 @@ function _wbwComplete() {
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(true);
-  // Hand off to the normal submit / feedback / auto-next flow.
+  // Hand off to the normal submit / feedback / auto-next flow. Bail if the
+  // drill was torn down or replaced (e.g. student hit "Bỏ qua" during this
+  // delay) — otherwise submitAnswer() would fire against the next exercise.
   setTimeout(() => {
-    if (_isSubmitting) return;
+    if (_wbw !== mine || _isSubmitting) return;
     submitAnswer();
   }, 500);
 }
@@ -1613,7 +1616,10 @@ function showTranslationView(ex) {
   if (useWbw) {
     box.classList.add('hidden');
     wbwInit(ex.translationAnswer);
-  } else {
+  }
+  if (!useWbw || !_wbw) {
+    // Plain textarea for `expand`, and as a safety net if the drill declined
+    // the answer (e.g. no typable characters).
     box.classList.remove('hidden');
     box.focus();
   }

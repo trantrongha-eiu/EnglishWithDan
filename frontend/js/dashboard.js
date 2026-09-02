@@ -2471,6 +2471,10 @@ function stopPractice() {
 function showMixedQuestion() {
     if (mixedIndex >= mixedQueue.length) { showResults('mixed'); return; }
     answered = false;
+    // Tear down the previous question's drill BEFORE #mixQuestionWrap is
+    // rebuilt below — otherwise a still-pending completion timer could fire
+    // its onComplete() (checkMixedListen/Trans) against the new question.
+    _unmountVocabDrills();
     const item = mixedQueue[mixedIndex];
     currentWord = item.word;
     const type  = item.type;
