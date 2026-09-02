@@ -1186,34 +1186,11 @@
     }
   });
 
-  // ── Patch renderBookSidebar để tự sync sheet ─────
-  // Chờ dashboard.js load xong rồi wrap
-  window.addEventListener('load', function(){
-    var orig = window.renderBookSidebar;
-    if(orig){
-      window.renderBookSidebar = function(){
-        orig();
-        if(isOpen) syncSheetBooks();
-      };
-    }
-    // Sync lần đầu sau khi units load
-    var origLoadUnits = window.loadUnits;
-    if(origLoadUnits){
-      window.loadUnits = async function(){
-        await origLoadUnits();
-        // Feed units to the custom pickers via #unitSelect options
-        var sel = document.getElementById('unitSelect');
-        if(sel && window._upSetUnits){
-          var units = Array.from(sel.options).filter(function(o){return o.value;}).map(function(o){
-            var m = o.text.match(/^Unit\s*(\d+)\s*[–-]\s*(.*)/);
-            return { unitNumber: m ? parseInt(m[1]) : parseInt(o.value), title: m ? m[2] : o.text };
-          });
-          window._upSetUnits(units);
-        }
-        syncSheetUnits();
-      };
-    }
-  });
+  // renderBookSidebar() and loadUnits() in dashboard.js already call
+  // syncSheetBooks() / _upSetUnits() + syncSheetUnits() themselves on every
+  // run, so the old load-time monkeypatch wrappers here were dead weight
+  // (and the loadUnits one re-derived unit data by regex-parsing option
+  // text, which mangled any title containing " – "). Removed.
 })();
 </script>
 
@@ -1223,7 +1200,7 @@
     const btn = document.getElementById('mainNavToggle');
     if (!nav) return;
     const open = nav.classList.toggle('nav-open');
-    btn.classList.toggle('active', open);
+    if (btn) btn.classList.toggle('active', open);
   }
 </script>
 <!-- ══ Keyboard shortcut hint panel ══ -->
@@ -1333,6 +1310,6 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260905"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260921"></script>
+<script src="js/dashboard.js?v=20260924"></script>
 </body>
 </html>

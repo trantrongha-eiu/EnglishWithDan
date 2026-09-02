@@ -4,7 +4,8 @@
 ══════════════════════════════════════════════ */
 const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 function authH() {
-    return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' };
+    const base = window.AuthService ? window.AuthService.authHeader() : {};
+    return { ...base, 'Content-Type': 'application/json' };
 }
 
 // ── UI State ──────────────────────────────────
@@ -706,9 +707,9 @@ async function loadWeaknessProfile() {
             <${tag} class="weakness-chip weakness-chip--${c.color}" ${attrs}>
                 <div class="weakness-chip-icon"><i class="fas ${c.icon}"></i></div>
                 <div class="weakness-chip-body">
-                    <div class="weakness-chip-skill">${c.skill}</div>
-                    <div class="weakness-chip-label">${c.label}</div>
-                    <div class="weakness-chip-detail">${c.detail}</div>
+                    <div class="weakness-chip-skill">${_esc(c.skill)}</div>
+                    <div class="weakness-chip-label">${_esc(c.label)}</div>
+                    <div class="weakness-chip-detail">${_esc(c.detail)}</div>
                 </div>
             </${tag}>
         `;
