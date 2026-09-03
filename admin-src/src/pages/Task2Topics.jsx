@@ -7,23 +7,44 @@ import Pagination from '../components/Pagination';
 
 const LIMIT = 15;
 const ESSAY_TYPES = ['advantages_disadvantages','cause_effect','cause_solution','effect_solution','agree_disagree','discuss_both_views'];
-const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree/Disagree', discuss_both_views:'Discuss Both Views' };
+const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree/Disagree', discuss_both_views:'Discuss Both Views', positive_or_negative_development:'Positive/Negative' };
+// Default brainstorm "side" labels per essay type — mirrors
+// backend/scripts/data/task2Augment.js SIDE_LABELS.
+const BH_SIDE_LABELS = {
+  advantages_disadvantages: ['Ưu điểm (Advantages)', 'Nhược điểm (Disadvantages)'],
+  cause_effect:             ['Nguyên nhân (Causes)', 'Hệ quả (Effects)'],
+  cause_solution:           ['Nguyên nhân (Causes)', 'Giải pháp (Solutions)'],
+  effect_solution:          ['Hệ quả (Effects)', 'Giải pháp (Solutions)'],
+  agree_disagree:           ['Lý do ĐỒNG Ý', 'Lý do KHÔNG đồng ý / phản biện'],
+  discuss_both_views:       ['Quan điểm 1 (View 1)', 'Quan điểm 2 (View 2)'],
+  positive_or_negative_development: ['Mặt tích cực (Positive)', 'Mặt tiêu cực (Negative)'],
+};
 const ESSAY_COLORS = { advantages_disadvantages:'#4CAF50', cause_effect:'#FF9800', cause_solution:'#FF9800', effect_solution:'#FF9800', agree_disagree:'#9C27B0', discuss_both_views:'#2196F3' };
 const Q_TYPES = ['essay_type_recognition','fill_blank','rearrange','translation','error_correction','topic_sentence','short_writing','paraphrase'];
 const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Điền chỗ trống', rearrange:'Sắp xếp từ', translation:'Dịch câu', error_correction:'Sửa lỗi', topic_sentence:'Chọn topic sentence', short_writing:'Viết đoạn', paraphrase:'Paraphrase' };
 const LEVELS = ['beginner','elementary','intermediate'];
 const LEVEL_COLORS = { beginner:'var(--green)', elementary:'var(--blue)', intermediate:'#a855f7' };
 
-const defaultTopic = { week: 1, block: 'advantages_disadvantages', topicName: '', topicEmoji: '📝', essayType: 'advantages_disadvantages', prompt: '', hintAdvantages: '', hintDisadvantages: '', isActive: true };
+const defaultTopic = { week: 1, block: 'advantages_disadvantages', topicName: '', topicEmoji: '📝', essayType: 'advantages_disadvantages', prompt: '', hintAdvantages: '', hintDisadvantages: '', brainstormHints: [], isActive: true };
 const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', baseWords: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0, isActive: true };
 
 function TopicModal({ topic, onClose, onSaved }) {
-  const [form, setForm] = useState(topic || defaultTopic);
+  const [form, setForm] = useState(() => {
+    const t = topic || defaultTopic;
+    // brainstormHints: keep `points` as a newline string while editing.
+    const bh = (t.brainstormHints && t.brainstormHints.length)
+      ? t.brainstormHints.map(h => ({ side: h.side || '', points: (h.points || []).join('\n') }))
+      : (BH_SIDE_LABELS[t.essayType] || ['Nhóm ý 1', 'Nhóm ý 2']).map(s => ({ side: s, points: '' }));
+    return { ...t, brainstormHints: bh };
+  });
   const [saving, setSaving] = useState(false);
   const showToast = useToast();
   const isEdit = !!topic?._id;
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })); }
+  function bhSet(i, k, v) {
+    setForm(f => ({ ...f, brainstormHints: f.brainstormHints.map((h, j) => (j === i ? { ...h, [k]: v } : h)) }));
+  }
 
   async function save() {
     if (!form.topicName.trim() || !form.prompt.trim()) return showToast('Điền tên topic và đề bài', 'error');
@@ -36,7 +57,10 @@ function TopicModal({ topic, onClose, onSaved }) {
           : form.hintAdvantages,
         hintDisadvantages: typeof form.hintDisadvantages === 'string'
           ? form.hintDisadvantages.split('\n').map(s => s.trim()).filter(Boolean)
-          : form.hintDisadvantages
+          : form.hintDisadvantages,
+        brainstormHints: (form.brainstormHints || [])
+          .map(h => ({ side: (h.side || '').trim(), points: (h.points || '').split('\n').map(s => s.trim()).filter(Boolean) }))
+          .filter(h => h.side && h.points.length)
       };
       if (isEdit) {
         await apiFetch(`/admin/task2/topics/${topic._id}`, { method: 'PUT', body: JSON.stringify(body) });
@@ -97,6 +121,17 @@ function TopicModal({ topic, onClose, onSaved }) {
               <label className="form-label">Hint Disadvantages</label>
               <textarea className="form-input" rows={3} value={typeof form.hintDisadvantages === 'string' ? form.hintDisadvantages : (form.hintDisadvantages || []).join('\n')} onChange={e => set('hintDisadvantages', e.target.value)} placeholder="lack of interaction&#10;motivation issues" />
             </div>
+          </div>
+          <div>
+            <label className="form-label">Brainstorm — bước "tự nghĩ ý trước khi luyện" (hiện trên trang luyện tập của học sinh)</label>
+            {(form.brainstormHints || []).map((h, i) => (
+              <div key={i} style={{ display:'grid', gridTemplateColumns:'190px 1fr 32px', gap:8, marginBottom:6, alignItems:'start' }}>
+                <input className="form-input" value={h.side} placeholder="Nhãn nhóm ý" onChange={e => bhSet(i, 'side', e.target.value)} />
+                <textarea className="form-input" rows={3} value={h.points} placeholder="mỗi dòng 1 ý gợi ý" onChange={e => bhSet(i, 'points', e.target.value)} />
+                <button type="button" className="btn btn-ghost btn-sm" title="Xóa nhóm ý" onClick={() => setForm(f => ({ ...f, brainstormHints: f.brainstormHints.filter((_, j) => j !== i) }))}>✕</button>
+              </div>
+            ))}
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setForm(f => ({ ...f, brainstormHints: [...(f.brainstormHints || []), { side: '', points: '' }] }))}>+ Thêm nhóm ý</button>
           </div>
           <div>
             <label className="form-label">Trạng thái</label>
