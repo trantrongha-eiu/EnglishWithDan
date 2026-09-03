@@ -5,6 +5,7 @@
 // byte-identical between /questions/topic/:topicId and /exam — verified
 // by direct comparison — so unified into sanitizeQuestionForClient()
 // below. autoGrade/keywordMatch/deriveSentenceStructure are untouched.
+const mongoose = require('mongoose');
 const Task2Topic = require('../models/Task2Topic');
 const Task2Attempt = require('../models/Task2Attempt');
 const Task2Template = require('../models/Task2Template');
@@ -432,6 +433,59 @@ async function getHistory(userId, limit) {
     .lean();
 }
 
+// One saved attempt, expanded for the student-facing review: every question
+// they answered joined back to the topic's question bank so we can show the
+// prompt text, question type, model answer and Vietnamese explanation.
+// Task2Attempt.questionsAttempted only stores {questionId, userAnswer,
+// isCorrect, score, timeSpentSeconds} — never the question itself — so
+// without this join a review could only ever say "3/5 đúng".
+// Scoped to {_id, userId} so one student can't read another's attempt.
+async function getAttemptDetail(userId, attemptId) {
+  if (!mongoose.isValidObjectId(attemptId)) return null;
+  const attempt = await Task2Attempt.findOne({ _id: attemptId, userId }).lean();
+  if (!attempt) return null;
+
+  const qMap = {};
+  if (attempt.topicId) {
+    const topic = await Task2Topic.findById(attempt.topicId).lean();
+    for (const q of (topic?.questions || [])) {
+      if (q._id) qMap[q._id.toString()] = q;
+      if (q.questionId) qMap[q.questionId] = q;
+    }
+  }
+
+  const questions = (attempt.questionsAttempted || []).map((qa, i) => {
+    const q = qMap[qa.questionId] || {};
+    return {
+      index:            i + 1,
+      questionId:       qa.questionId,
+      type:             q.type || '',
+      questionText:     q.questionText || '',
+      options:          q.options || [],
+      userAnswer:       qa.userAnswer || '',
+      isCorrect:        qa.isCorrect === true,
+      score:            Number.isFinite(qa.score) ? qa.score : null,
+      timeSpentSeconds: Number.isFinite(qa.timeSpentSeconds) ? qa.timeSpentSeconds : null,
+      modelAnswer:      q.correctAnswer || q.modelAnswer || '',
+      explanationVi:    q.explanationVi || '',
+      sentenceStructure: deriveSentenceStructure(q) || ''
+    };
+  });
+
+  return {
+    _id:             attempt._id,
+    topicName:       attempt.topicName || '',
+    week:            attempt.week || null,
+    level:           attempt.level || '',
+    sessionType:     attempt.sessionType || 'practice',
+    correctCount:    attempt.correctCount || 0,
+    totalQuestions:  attempt.totalQuestions || 0,
+    scorePercentage: attempt.scorePercentage || 0,
+    completedAt:     attempt.completedAt || attempt.createdAt,
+    questions
+  };
+}
+
 async function getProgress(userId) {
   return Task2Attempt.aggregate([
     { $match: { userId } },
@@ -508,6 +562,6 @@ async function listDrafts(userId) {
 
 module.exports = {
   listTemplates, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
-  checkAnswer, getExam, submitExam, saveAttempt, getHistory, getProgress, getWrongQuestions,
+  checkAnswer, getExam, submitExam, saveAttempt, getHistory, getAttemptDetail, getProgress, getWrongQuestions,
   getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
 };

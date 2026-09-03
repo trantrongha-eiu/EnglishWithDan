@@ -114,6 +114,16 @@ exports.getHistory = async (req, res) => {
   }
 };
 
+exports.getAttemptDetail = async (req, res) => {
+  try {
+    const attempt = await task2PracticeService.getAttemptDetail(req.user._id, req.params.attemptId);
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy lượt làm' });
+    res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.getProgress = async (req, res) => {
   try {
     const stats = await task2PracticeService.getProgress(req.user._id);

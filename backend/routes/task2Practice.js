@@ -61,6 +61,10 @@ router.post('/save-attempt', auth, premiumOnly, task2PracticeController.saveAtte
 // GET /api/task2/history  (auth required)
 router.get('/history', auth, task2PracticeController.getHistory);
 
+// GET /api/task2/attempt/:attemptId  — one saved attempt with every
+// answered question expanded for review (auth required, own attempts only)
+router.get('/attempt/:attemptId', auth, task2PracticeController.getAttemptDetail);
+
 // GET /api/task2/progress  (auth required)
 router.get('/progress', auth, task2PracticeController.getProgress);
 

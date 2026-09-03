@@ -318,6 +318,11 @@
     [data-theme="dark"] .t2-hist-entry{background:var(--bg, #000000);border-color:var(--border2, #333333)}
     [data-theme="dark"] .t2-hist-entry-name{color:#94a3b8}
     [data-theme="dark"] .t2-hist-entry-count{color:#64748b}
+    .t2-hist-entry.is-clickable{cursor:pointer;transition:border-color .15s,background .15s}
+    .t2-hist-entry.is-clickable:hover{border-color:#6366f1;background:#f5f3ff}
+    [data-theme="dark"] .t2-hist-entry.is-clickable:hover{border-color:#818cf8;background:#1e1b3a}
+    .t2-hist-entry-more{font-size:11px;font-weight:700;color:#6366f1;margin-left:auto;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+    [data-theme="dark"] .t2-hist-entry-more{color:#a5b4fc}
 
     /* ── Task2: override shared writing-practice.css to match purple theme ── */
     /* Desktop stats widget (Task 2 override: 3 boxes in a row, like task1) */
@@ -1175,6 +1180,7 @@ function renderSelect() {
         })() : ''}
         <button class="t2-btn ${state.currentMode==='exam'?'active':''}" onclick="setMode2('exam')"><i class="fas fa-clipboard-check"></i> Thi thử</button>
         <button class="t2-btn ${state.currentMode==='vocab'?'active':''}" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Từ vựng</button>
+        <button class="t2-btn" onclick="openT2History()" title="Xem lại từng câu bạn đã làm ở mỗi đề"><i class="fas fa-history"></i> Lịch sử</button>
         ${state.wrongQuestionIds.length > 0 ? `<button class="t2-btn ${state.currentMode==='retry'?'active':''}" onclick="setMode2('retry')" style="border-color:#fbbf24;color:#92400e;${state.currentMode==='retry'?'background:#fef3c7;':''}"><i class="fas fa-exclamation-circle" style="color:#f59e0b"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
       ${t.writingTask2Id && !canWriteFullEssay(t._id).ok ? `
@@ -2579,6 +2585,15 @@ function shuffle(arr) {
 }
 
 // ── Task 2 History modal ──────────────────────────────────────
+// Cached attempt list — lets the per-attempt review (openT2AttemptDetail)
+// render "← Quay lại danh sách" without refetching /api/task2/history.
+let _t2HistCache = [];
+
+function _t2HistTitle(txt) {
+  const el = document.getElementById('t2-hist-title');
+  if (el) el.textContent = txt;
+}
+
 async function openT2History() {
   if (!document.getElementById('t2-hist-overlay')) {
     const overlay = document.createElement('div');
@@ -2587,7 +2602,7 @@ async function openT2History() {
     overlay.innerHTML = `
       <div class="t2-hist-modal">
         <div class="t2-hist-hdr">
-          <h3>📝 Lịch sử Task 2 Writing</h3>
+          <h3 id="t2-hist-title">📝 Lịch sử Task 2 Writing</h3>
           <button class="t2-hist-close" onclick="document.getElementById('t2-hist-overlay').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
         <div class="t2-hist-body2" id="t2-hist-body">
@@ -2614,40 +2629,98 @@ async function openT2History() {
   try {
     const data = await apiFetch('/api/task2/history?limit=100');
     if (!data.success) throw new Error(data.message);
-    const attempts = data.attempts || [];
-    if (!attempts.length) {
+    _t2HistCache = data.attempts || [];
+    if (!_t2HistCache.length) {
       body.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><div style="font-size:40px;margin-bottom:10px">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
       return;
     }
-    const total    = attempts.length;
-    const avgScore = Math.round(attempts.reduce((s, a) => s + (a.scorePercentage || 0), 0) / total);
-    const totalQ   = attempts.reduce((s, a) => s + (a.totalQuestions || 0), 0);
-    const totalC   = attempts.reduce((s, a) => s + (a.correctCount || 0), 0);
-
-    const rows = attempts.slice(0, 40).map(a => {
-      const acc = a.scorePercentage != null ? Math.round(a.scorePercentage) : (a.totalQuestions ? Math.round((a.correctCount/a.totalQuestions)*100) : 0);
-      const cls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
-      const date = new Date(a.completedAt || a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
-      const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
-      return `<div class="t2-hist-entry">
-        <div class="t2-hist-entry-date">${date} · ${mode}</div>
-        <div class="t2-hist-entry-name">${_escHtml(a.topicName || '–')}${a.week ? ` · W${a.week}` : ''}</div>
-        <div class="t2-hist-entry-row">
-          <span class="t2-hist-entry-count">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
-          <span class="t2-hist-entry-acc ${cls}">${acc}% đúng</span>
-        </div>
-      </div>`;
-    }).join('');
-
-    body.innerHTML = `
-      <div class="t2-hist-stats">
-        <div class="t2-hist-stat"><div class="t2-hist-num">${total}</div><div class="t2-hist-lbl">Phiên học</div></div>
-        <div class="t2-hist-stat"><div class="t2-hist-num">${totalC}/${totalQ}</div><div class="t2-hist-lbl">Đúng/Tổng</div></div>
-        <div class="t2-hist-stat"><div class="t2-hist-num">${avgScore}%</div><div class="t2-hist-lbl">TB chính xác</div></div>
-      </div>
-      ${rows}`;
+    renderT2HistList();
   } catch (e) {
     body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
+  }
+}
+
+// The attempt list — split out of openT2History() so the per-attempt review
+// (openT2AttemptDetail) can render "← Quay lại danh sách" without a refetch.
+function renderT2HistList() {
+  const body = document.getElementById('t2-hist-body');
+  if (!body) return;
+  _t2HistTitle('📝 Lịch sử Task 2 Writing');
+  const attempts = _t2HistCache;
+  const total    = attempts.length;
+  const avgScore = Math.round(attempts.reduce((s, a) => s + (a.scorePercentage || 0), 0) / total);
+  const totalQ   = attempts.reduce((s, a) => s + (a.totalQuestions || 0), 0);
+  const totalC   = attempts.reduce((s, a) => s + (a.correctCount || 0), 0);
+
+  const rows = attempts.slice(0, 40).map(a => {
+    const acc = a.scorePercentage != null ? Math.round(a.scorePercentage) : (a.totalQuestions ? Math.round((a.correctCount/a.totalQuestions)*100) : 0);
+    const cls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
+    const date = new Date(a.completedAt || a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
+    const attrs = a._id
+      ? `class="t2-hist-entry is-clickable" onclick="openT2AttemptDetail('${a._id}')"`
+      : `class="t2-hist-entry"`;
+    return `<div ${attrs}>
+      <div class="t2-hist-entry-date">${date} · ${mode}</div>
+      <div class="t2-hist-entry-name">${_escHtml(a.topicName || '–')}${a.week ? ` · W${a.week}` : ''}</div>
+      <div class="t2-hist-entry-row">
+        <span class="t2-hist-entry-count">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
+        <span class="t2-hist-entry-acc ${cls}">${acc}% đúng</span>
+        ${a._id ? '<span class="t2-hist-entry-more">Xem từng câu <i class="fas fa-chevron-right"></i></span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  body.scrollTop = 0;
+  body.innerHTML = `
+    <div class="t2-hist-stats">
+      <div class="t2-hist-stat"><div class="t2-hist-num">${total}</div><div class="t2-hist-lbl">Phiên học</div></div>
+      <div class="t2-hist-stat"><div class="t2-hist-num">${totalC}/${totalQ}</div><div class="t2-hist-lbl">Đúng/Tổng</div></div>
+      <div class="t2-hist-stat"><div class="t2-hist-num">${avgScore}%</div><div class="t2-hist-lbl">TB chính xác</div></div>
+    </div>
+    ${rows}`;
+}
+
+// Drill into one saved attempt: every question the student answered, with
+// their answer, correct/incorrect, the model answer (for the ones they got
+// wrong) and the Vietnamese explanation — same review layout as the end of
+// an exam. Fetched fresh from /api/task2/attempt/:id (the history list only
+// carries summary counts).
+async function openT2AttemptDetail(id) {
+  const body = document.getElementById('t2-hist-body');
+  if (!body) return;
+  _t2HistTitle('📝 Chi tiết bài luyện tập');
+  body.scrollTop = 0;
+  body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
+  const backBtn = `<button class="t2-back-btn" onclick="renderT2HistList()" style="margin-bottom:14px"><i class="fas fa-arrow-left"></i> Quay lại danh sách</button>`;
+  try {
+    const data = await apiFetch(`/api/task2/attempt/${id}`);
+    if (!data.success) throw new Error(data.message);
+    const a = data.attempt;
+    const acc = a.scorePercentage != null ? Math.round(a.scorePercentage) : 0;
+    const cls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
+    const date = new Date(a.completedAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
+
+    const reviews = (a.questions || []).map(item => `
+      <div class="${item.isCorrect ? 'wp-wr-item-ok' : 'wp-wr-item'}">
+        <div class="${item.isCorrect ? 'wp-wr-num-ok' : 'wp-wr-num'}">
+          ${item.isCorrect ? '✅' : '❌'} Câu ${item.index}${item.type ? ` — ${Q_LABELS[item.type] || item.type}` : ''}
+          ${item.score != null ? `<span class="wp-wr-skill">${item.score} điểm</span>` : ''}
+        </div>
+        ${item.questionText ? `<div class="wp-wr-q" style="white-space:pre-line">${_escHtml(item.questionText)}</div>` : ''}
+        <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${item.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${_escHtml(item.userAnswer) || '(bỏ trống)'}</span></div>
+        ${item.modelAnswer && !item.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${_escHtml(item.modelAnswer)}</span></div>` : ''}
+        ${item.explanationVi ? `<div class="wp-wr-gp">💡 ${_escHtml(item.explanationVi)}</div>` : ''}
+      </div>`).join('');
+
+    body.innerHTML = `
+      ${backBtn}
+      <div class="t2-hist-entry-name" style="font-size:14px;margin-bottom:4px">${_escHtml(a.topicName || '–')}${a.week ? ` · W${a.week}` : ''}</div>
+      <div class="t2-hist-entry-date" style="margin-bottom:14px">${date} · ${mode} · <span class="t2-hist-entry-acc ${cls}">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu · ${acc}%</span></div>
+      ${reviews || '<p style="color:#9ca3af;text-align:center;padding:24px;font-size:13px">Lượt này được lưu trước khi hệ thống ghi lại chi tiết từng câu.</p>'}`;
+  } catch (e) {
+    body.innerHTML = `${backBtn}<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${_escHtml(e.message || '')}</p>`;
   }
 }
 

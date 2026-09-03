@@ -218,6 +218,39 @@ describe('POST /api/task2/save-attempt (server-side re-grade) + ownership scopin
   });
 });
 
+describe('GET /api/task2/attempt/:attemptId (per-question review)', () => {
+  test('expands each answered question with prompt text, model answer and explanation; scoped to owner', async () => {
+    const topic = await createTask2Topic({ questions: [question({ type: 'fill_blank', correctAnswer: 'grew', questionText: 'The city ___ rapidly.', explanationVi: 'past simple' })] });
+    const q = topic.questions[0];
+    const owner = await createPremiumStudent();
+    const other = await createPremiumStudent();
+
+    const save = await request(app).post('/api/task2/save-attempt').set('Authorization', `Bearer ${signTokenFor(owner)}`)
+      .send({ topicId: String(topic._id), topicName: topic.topicName, level: 'beginner',
+        questionsAttempted: [{ questionId: String(q._id), userAnswer: 'wrong' }] });
+    const attemptId = save.body.attempt._id;
+
+    const res = await request(app).get(`/api/task2/attempt/${attemptId}`).set('Authorization', `Bearer ${signTokenFor(owner)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.attempt.questions).toHaveLength(1);
+    expect(res.body.attempt.questions[0]).toMatchObject({
+      questionText: 'The city ___ rapidly.',
+      userAnswer: 'wrong',
+      isCorrect: false,
+      modelAnswer: 'grew',
+      explanationVi: 'past simple',
+    });
+
+    // another student can't read it
+    const forbidden = await request(app).get(`/api/task2/attempt/${attemptId}`).set('Authorization', `Bearer ${signTokenFor(other)}`);
+    expect(forbidden.status).toBe(404);
+
+    // garbage id → 404, not 500
+    const bad = await request(app).get('/api/task2/attempt/not-an-object-id').set('Authorization', `Bearer ${signTokenFor(owner)}`);
+    expect(bad.status).toBe(404);
+  });
+});
+
 describe('Draft CRUD (save/get/delete/list) — ownership scoping', () => {
   test('a saved draft is only visible/gettable by its owner', async () => {
     const topic = await createTask2Topic();
