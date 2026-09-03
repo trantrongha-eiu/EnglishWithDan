@@ -295,7 +295,8 @@
     var key = word.toLowerCase();
     _word = word;
     document.getElementById('dict-word').textContent = word;
-    document.getElementById('dict-phonetic').textContent = '';
+    var _ph = document.getElementById('dict-phonetic');
+    _ph.textContent = ''; _ph.style.display = 'none';
     positionDictPopup(x, y);
     document.getElementById('dict-popup').classList.remove('hidden');
 
@@ -363,10 +364,22 @@
       .finally(function () { done.mem = true; afterEach(); });
   }
 
+  // Show the IPA transcription wrapped in / … / (dictionaryapi.dev usually
+  // includes the slashes, but not always) so it reads as a phonetic and not
+  // as a stray Latin word.
+  function _fmtIpa(p) {
+    p = (p || '').trim();
+    if (!p) return '';
+    return /^[\/\[].*[\/\]]$/.test(p) ? p : '/' + p.replace(/^\/|\/$/g, '') + '/';
+  }
+
   function renderDictPopup(data) {
     _currentData = data;
-    var meta = [data.phonetic, data.partOfSpeech].filter(Boolean).join('  ·  ');
-    document.getElementById('dict-phonetic').textContent = meta;
+    var ipa = _fmtIpa(data.phonetic);
+    var meta = [ipa, data.partOfSpeech].filter(Boolean).join('  ·  ');
+    var phonEl = document.getElementById('dict-phonetic');
+    phonEl.textContent = meta;
+    phonEl.style.display = meta ? '' : 'none';   // don't reserve a blank line when there's no IPA
 
     // Chips carry their value in a data- attribute (HTML-escaped) and get a
     // real click listener wired below — the old inline
