@@ -534,6 +534,20 @@
       })
       .catch(function () {});
 
+    // Attendance warnings — student has hit their class's warn threshold, or
+    // has already failed it on absences. Own endpoint (mirrors
+    // /tuition/my/summary above); returns { classes: [] } for anyone with no
+    // enrollments, so it's a no-op for non-students. One banner per class.
+    fetch(API + '/classes/my/attendance-status', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        (d && d.classes || []).forEach(function (info) {
+          if (info.status === 'failed') _showAttendanceFailedBanner(info);
+          else if (info.status === 'warning') _showAttendanceWarningBanner(info);
+        });
+      })
+      .catch(function () {});
+
     // Refresh plan silently and show expiry warning if needed.
     // AuthService.refreshPlan() centralizes the "hit /auth/me, touch
     // lastLoginAt, merge plan fields into the cached user" logic that used
@@ -677,6 +691,59 @@
       document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
       banner.remove();
     });
+  }
+
+  // Attendance banners — same fixed + additive --expiry-banner-height stacking
+  // as the study/tuition banners above. Data comes from
+  // GET /api/classes/my/attendance-status (classAttendance.controller.js).
+  // Not sessionStorage-dismissed: it should reappear every visit until the
+  // student's attendance recovers or the class ends.
+  function _renderAttendanceBanner(id, bg, html) {
+    if (document.getElementById(id)) return;
+    var baseOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--expiry-banner-height')) || 0;
+    var banner = document.createElement('div');
+    banner.id = id;
+    banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:' + bg + ';box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.innerHTML = html +
+      '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
+    var afterEl = document.getElementById('nav-tuition-warning-banner') || document.getElementById('nav-study-warning-banner') || document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
+    document.body.insertBefore(banner, afterEl.nextSibling);
+
+    function applyOffset() {
+      document.documentElement.style.setProperty('--expiry-banner-height', (baseOffset + banner.offsetHeight) + 'px');
+    }
+    applyOffset();
+    window.addEventListener('resize', applyOffset);
+    banner.querySelector('button').addEventListener('click', function () {
+      window.removeEventListener('resize', applyOffset);
+      document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
+      banner.remove();
+    });
+  }
+
+  function _showAttendanceWarningBanner(info) {
+    var absent = info.absentTotal != null ? info.absentTotal : info.absenceEquivalent;
+    _renderAttendanceBanner(
+      'nav-attendance-warning-banner',
+      'linear-gradient(90deg,#b91c1c,#dc2626)',
+      '<span style="flex:1;text-align:center">⚠️ Bạn đã nghỉ <strong>' + absent + ' buổi</strong> ở lớp <strong>' + _escAttn(info.className) + '</strong>. ' +
+      'Tối đa được phép nghỉ <strong>' + info.maxAbsencesAllowed + '</strong> buổi, còn lại <strong>' + info.remaining + '</strong>. ' +
+      'Vui lòng chú ý lịch học để không bị rớt khóa.</span>'
+    );
+  }
+
+  function _showAttendanceFailedBanner(info) {
+    var absent = info.absentTotal != null ? info.absentTotal : info.absenceEquivalent;
+    _renderAttendanceBanner(
+      'nav-attendance-failed-banner',
+      'linear-gradient(90deg,#7f1d1d,#991b1b)',
+      '<span style="flex:1;text-align:center">⛔ Bạn đã không đạt yêu cầu chuyên cần của lớp <strong>' + _escAttn(info.className) + '</strong> ' +
+      '(nghỉ <strong>' + absent + '/' + info.maxAbsencesAllowed + '</strong> buổi). Vui lòng liên hệ giáo viên.</span>'
+    );
+  }
+
+  function _escAttn(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   // One-time popup explaining the new "35 words/day" streak-eligibility

@@ -1183,6 +1183,51 @@ Only `isActive:true` courses are returned, sorted by `order` then `createdAt`. `
 
 ---
 
+## Classes & Attendance
+
+Base path: `/api/classes`. Teacher class-management + per-session attendance.
+Controller `controllers/classAttendance.controller.js`, service
+`services/classAttendanceService.js` (attendance math), daily recompute cron
+`cron/classAttendanceSweep.js`. Models: `ClassGroup`, `ClassEnrollment`,
+`ClassSession`, `AttendanceRecord` (see `docs/DATABASE.md`).
+
+**Authorization:** every route needs `auth`. Staff routes additionally
+require `role ∈ {teacher, admin}` (`staffOnly`) and then `loadOwnedClass` —
+a teacher may only act on a class whose `teacherId` is their own id; an
+admin bypasses that check. The `/my/*` routes are for the logged-in student.
+
+### Staff routes
+
+| Method & path | Purpose |
+|---|---|
+| `GET /api/classes` | List my classes (admin: all). `?status=`. Each row carries `enrollmentCounts` + (admin) `teacher`. |
+| `POST /api/classes` | Create. Body: `name`* , `courseName`, `startDate`, `endDate`, `durationMonths`, `totalSessions`, `sessionsPerWeek/Month`, `policy{}`. Admin may pass `teacherId`. `policy` defaults: `maxAbsencesAllowed 3`, `warnThreshold 2`, `excusedCountsAsAbsence true`, `lateToAbsenceRatio 2`, `lateThresholdMinutes 15`, `failOnExceed true`. |
+| `GET /api/classes/:classId` | Class + `roster` (active enrollments w/ `stats`) + `formerStudents` (soft-removed). |
+| `PUT /api/classes/:classId` | Update fields / `policy` (partial). Policy change → stats recomputed. |
+| `POST /api/classes/:classId/status` | `{ status: 'active' \| 'archived' }`. |
+| `POST /api/classes/:classId/students` | Add by `{ email }` or `{ studentIds: [] }`. `→ { added, skipped }`. Re-adding an active enrollment → `409`; a fresh enrollment is created after a prior soft-remove. |
+| `DELETE /api/classes/:classId/students/:enrollmentId` | Soft-remove (`removedAt`); attendance history is kept. |
+| `PUT /api/classes/:classId/students/:enrollmentId/status` | Manual `{ status: 'active' \| 'completed' \| 'dropped', reason }`. `completed`/`dropped` are terminal (auto-math leaves them alone); `active` hands control back to the auto-math. |
+| `GET /api/classes/:classId/sessions` | Sessions (`+ markedCount`). |
+| `POST /api/classes/:classId/sessions` | `{ date*, topic, note, type: 'regular'\|'makeup', makeupForSessionId, status }`. `sessionNumber` auto = max+1. `makeup` requires a same-class `makeupForSessionId`. |
+| `PUT /api/classes/:classId/sessions/:sessionId` | Edit `date/topic/note/status/type`. A `status`/`date`/`type` change recomputes stats. |
+| `GET /api/classes/:classId/sessions/:sessionId/attendance` | Roster + current marks (prefill). |
+| `PUT /api/classes/:classId/sessions/:sessionId/attendance` | `{ marks: [{ enrollmentId, status: present\|absent\|excused\|late, lateMinutes, note }] }`. Upsert only — an existing mark is edited (append `editHistory`), never deleted. `400` for a `cancelled` session or a session dated in the future. Sets the session to `held` + `attendanceTakenAt/By`, then recomputes stats. |
+| `GET /api/classes/:classId/dashboard` | Attendance table `rows[]`. Filters `?status=&studentId=&from=&to=&includeRemoved=`. With `from`/`to`, stats are recomputed in memory for that date window; otherwise the cached `enrollment.stats` are used. |
+
+### Student routes
+
+| Method & path | Purpose |
+|---|---|
+| `GET /api/classes/my/attendance-status` | `{ classes: [{ classId, className, status, absenceEquivalent, absentTotal, heldSessions, attendanceRate, maxAbsencesAllowed, warnThreshold, remaining }] }` for the caller's active enrollments in active classes. `nav.js` shows a warning/failed banner from this. |
+| `GET /api/classes/my/enrollments` | Full per-class breakdown incl. per-session marks. |
+
+**Attendance math** (`computeEnrollmentStats`): denominator = `regular` sessions that are `held`, dated ≤ now, and marked for the student. `absent` → +1; `excused` → +1 if `policy.excusedCountsAsAbsence` else +0; `late` → attended, +`1/lateToAbsenceRatio`; `present` → +0. A `present`/`late` mark on a `makeup` session cancels (net) the absence on its linked original. Derived status: `completed`/`dropped` untouched; else `absenceEquivalent > maxAbsencesAllowed` (and `failOnExceed`) → `failed`; else `≥ warnThreshold` → `warning`; else `active`.
+
+**Error responses:** `401` (no token), `403` (`staffOnly` / not the class's teacher), `404` (class/session/enrollment), `400` (validation / bad ObjectId param), `409` (duplicate active enrollment), `500`.
+
+---
+
 ## Contact
 
 Base path: `/api/contact`.

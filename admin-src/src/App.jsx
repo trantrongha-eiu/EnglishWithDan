@@ -16,6 +16,8 @@ import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/Dashboard';
 const Users = lazy(() => import('./pages/Users'));
 const Courses = lazy(() => import('./pages/Courses'));
+const Classes = lazy(() => import('./pages/Classes'));
+const ClassDetail = lazy(() => import('./pages/ClassDetail'));
 const Passages = lazy(() => import('./pages/Passages'));
 const ReadingTests = lazy(() => import('./pages/ReadingTests'));
 const ReadingTestEdit = lazy(() => import('./pages/ReadingTestEdit'));
@@ -65,6 +67,8 @@ export default function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="users" element={<Users />} />
                 <Route path="courses" element={<Courses />} />
+                <Route path="classes" element={<Classes />} />
+                <Route path="classes/:id" element={<ClassDetail />} />
                 <Route path="passages" element={<Passages />} />
                 <Route path="reading-tests" element={<ReadingTests />} />
                 <Route path="reading-tests/:id" element={<ReadingTestEdit />} />

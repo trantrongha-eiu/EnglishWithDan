@@ -120,6 +120,7 @@ app.use('/api/badges', require('./routes/badges'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/courses',         require('./routes/courses'));
+app.use('/api/classes',         require('./routes/classAttendance'));
 app.use('/api/search',          require('./routes/search'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));

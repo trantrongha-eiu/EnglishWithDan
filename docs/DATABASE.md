@@ -349,6 +349,69 @@ Course.find({ isActive: true }).sort({ order: 1, createdAt: 1 })
 
 ---
 
+### ClassGroup / ClassEnrollment / ClassSession / AttendanceRecord
+
+**Purpose:** Teacher class-management + attendance. The first real
+teacher↔student relationship in the schema — `teacherOnly` elsewhere is just
+a role check, whereas `ClassGroup.teacherId` scopes every class-attendance
+route to its owning teacher (admin sees all). Distinct from `Course` above,
+which is presentational only.
+
+- **`ClassGroup`** — one class a teacher runs. `name`, `courseId`(ref
+  Course, optional)/`courseName`, `teacherId`(ref User, indexed),
+  `startDate`/`endDate`, `durationMonths`, `totalSessions`,
+  `sessionsPerWeek`/`Month`, `status` (`active`/`archived`), and an embedded
+  `policy`: `maxAbsencesAllowed` (fail limit), `warnThreshold`,
+  `excusedCountsAsAbsence` (default **true**), `lateToAbsenceRatio` (default
+  2 → 2 lates = 1 absence-equivalent), `lateThresholdMinutes`,
+  `failOnExceed`. Index `{ teacherId, status }`.
+- **`ClassEnrollment`** — one per (student × time enrolled). Re-taking a
+  course makes a NEW document; removing a student is a soft delete
+  (`removedAt`), so history never resets. `status`
+  `active`/`warning`/`failed`/`completed`/`dropped` — the first three are
+  auto-managed by `classAttendanceService`, the last two are terminal
+  manual states. Embedded `stats` cache (heldSessions, attendedCount,
+  absentUnexcused/Excused, lateCount, absenceEquivalent, attendanceRate,
+  remainingAllowed). Indexes `{ classId, studentId, removedAt }`,
+  `{ studentId, status }`, and a **partial-unique** `{ classId, studentId }`
+  named `uniq_active_enrollment` scoped to `removedAt: null` (one live
+  enrollment per student per class; re-enroll after removal doesn't
+  collide — same trick as `TuitionFee`'s monthly index). Carries
+  `guardAgainstMassDelete`.
+- **`ClassSession`** — one class meeting. `sessionNumber` (auto = max+1,
+  unique per class), `date`, `topic`/`note`, `type` `regular`/`makeup`
+  (+ `makeupForSessionId` ref), `status` `scheduled`/`held`/`cancelled`,
+  `attendanceTakenAt/By`. Only `held` + past + marked `regular` sessions
+  count toward attendance; a `present`/`late` mark on a `makeup` session
+  cancels (net) the linked original's absence. Indexes
+  `{ classId, sessionNumber }` unique, `{ classId, date }`.
+  `guardAgainstMassDelete`.
+- **`AttendanceRecord`** — one per (session × student). `status`
+  `present`/`absent`/`excused`/`late`, `lateMinutes`, `note`. **Never
+  deleted** — a mistyped mark is fixed with an edit that appends
+  `{from,to,byId,at}` to `editHistory` (so "không cho phép xóa lịch sử
+  điểm danh" holds by construction). `classId` denormalized off the
+  session for join-free dashboard/student queries. Index
+  `{ sessionId, studentId }` unique, `{ classId, studentId }`.
+  `guardAgainstMassDelete`.
+
+**Lifecycle:** CRUD via `routes/classAttendance.js`. No TTL — attendance is
+permanent per-student data. `cron/classAttendanceSweep.js` recomputes every
+active class's enrollment stats/status once a day so a session rolling into
+the past flips `warning`/`failed` even without a new write.
+
+**Common queries:**
+```js
+ClassGroup.find({ teacherId, status: 'active' })
+ClassEnrollment.find({ classId, removedAt: null })
+ClassEnrollment.findOne({ classId, studentId, removedAt: null })   // dup-enroll guard
+ClassSession.find({ classId }).sort({ sessionNumber: 1 })
+AttendanceRecord.find({ classId, studentId })                       // stats recompute
+AttendanceRecord.findOne({ sessionId, studentId })                  // upsert target (edit, never delete)
+```
+
+---
+
 ## Attempts
 
 Student-generated, one document per exam/practice session. As a group these carry the schema's real query load and are indexed accordingly (contrast with Content above). See "Patterns across the schema" for which of these have TTL auto-expiry and which don't.
