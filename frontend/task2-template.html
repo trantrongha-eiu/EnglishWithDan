@@ -592,6 +592,7 @@
 <script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="/js/shared/api-client.js?v=20260831"></script>
 <script src="/js/shared/dictionary-lookup.js?v=20260925"></script>
+<script src="/js/shared/wbw-drill.js?v=20260904b"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
 
 <!-- Type switch confirm modal -->
@@ -676,10 +677,10 @@
          structure exists now so later phases only need to fill the panel,
          not touch this bar again). -->
     <div class="t2-mode-tabs" id="tpl-mode-tabs" role="tablist" aria-label="Chế độ học">
-      <button class="t2-mode-tab active" data-mode="cloze" onclick="switchTplMode('cloze')" role="tab" aria-selected="true">
+      <button class="t2-mode-tab" data-mode="cloze" onclick="switchTplMode('cloze')" role="tab" aria-selected="false">
         <i class="fas fa-pen"></i> Cloze
       </button>
-      <button class="t2-mode-tab" data-mode="translation" onclick="switchTplMode('translation')" role="tab" aria-selected="false">
+      <button class="t2-mode-tab active" data-mode="translation" onclick="switchTplMode('translation')" role="tab" aria-selected="true">
         <i class="fas fa-language"></i> Dịch câu
       </button>
       <button class="t2-mode-tab" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
@@ -693,8 +694,8 @@
       </button>
     </div>
 
-    <!-- Toolbar (Cloze mode) -->
-    <div class="tpl-toolbar" id="tpl-toolbar-cloze">
+    <!-- Toolbar (Cloze mode) — hidden by default; Dịch câu is the default mode. -->
+    <div class="tpl-toolbar" id="tpl-toolbar-cloze" style="display:none">
       <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
         <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
       </button>
@@ -710,7 +711,7 @@
     </div>
 
     <!-- Toolbar (every non-Cloze mode — no VI-toggle, each mode has its own way of showing VI) -->
-    <div class="tpl-toolbar" id="tpl-toolbar-other" style="display:none">
+    <div class="tpl-toolbar" id="tpl-toolbar-other">
       <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn-other" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, một lượt duy nhất, nộp bài để xem điểm">
         <i class="fas fa-clock"></i> <span id="tpl-exam-label-other">Thi thử</span>
       </button>
@@ -1044,7 +1045,7 @@ let TPL_DATA = {
 
 // ── State ──────────────────────────────────────────────────────
 let _tplActiveType = 'type01';
-let _tplActiveMode = 'cloze'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation'
+let _tplActiveMode = 'translation'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation' — Dịch câu is the default
 let _tplActiveLevel = 'band6'; // 'band6' | 'band7' — see switchTplLevel(). Band 6+ is the default level shown on page load.
 // Populated as each level is fetched (by _loadTplTemplates or the "Xem đầy
 // đủ" modal's own on-demand fetch) so the full-view modal can show either
@@ -1173,7 +1174,7 @@ const TPL_VALID_MODES = ['cloze', 'translation', 'chunks', 'build', 'dictation']
 function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
   if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
-  if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
+  if (_tplActiveMode && _tplActiveMode !== 'translation') params.set('mode', _tplActiveMode);
   if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
   const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
   if (push) history.pushState(null, '', url);
@@ -1191,7 +1192,7 @@ window.addEventListener('popstate', async () => {
   const _urlType   = _urlParams.get('type');
   const _urlMode   = _urlParams.get('mode');
   const _urlLevel  = _urlParams.get('level');
-  const nextMode   = TPL_VALID_MODES.includes(_urlMode) ? _urlMode : 'cloze';
+  const nextMode   = TPL_VALID_MODES.includes(_urlMode) ? _urlMode : 'translation';
   const nextLevel  = (_urlLevel === 'band6' || _urlLevel === 'band7') ? _urlLevel : 'band7';
   const levelChanged = nextLevel !== _tplActiveLevel;
   // Can't reliably check _urlType against TPL_DATA until after a possible
@@ -1240,7 +1241,7 @@ window.addEventListener('popstate', async () => {
 function copyTplShareUrl() {
   const params = new URLSearchParams();
   if (_tplActiveType) params.set('type', _tplActiveType);
-  if (_tplActiveMode && _tplActiveMode !== 'cloze') params.set('mode', _tplActiveMode);
+  if (_tplActiveMode && _tplActiveMode !== 'translation') params.set('mode', _tplActiveMode);
   if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
@@ -1290,8 +1291,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (_urlType && TPL_DATA[_urlType]) _tplActiveType = _urlType;
   if (TPL_VALID_MODES.includes(_urlMode)) {
     _tplActiveMode = _urlMode;
-    _applyModeTabUI(_tplActiveMode);
   }
+  _applyModeTabUI(_tplActiveMode); // sync tab + toolbar to the active mode (default is 'translation')
   if (_urlLevel === 'band6' || _urlLevel === 'band7') {
     _tplActiveLevel = _urlLevel;
     document.querySelectorAll('.t2-level-btn').forEach(btn => {
@@ -1379,6 +1380,10 @@ function renderTabs() {
 
 // ── Render content ─────────────────────────────────────────────
 function renderTplContent() {
+  // Any mode switch tears down the translation drill (and its pending
+  // auto-submit timer) — renderTranslationMode() re-mounts it if we're
+  // staying in that mode.
+  if (window.WbwDrill) window.WbwDrill.unmount(document.getElementById('trans-wbw-host'));
   // Dispatch to the active mode — everything below this guard is the
   // original Cloze renderer, unchanged, still the default/fallback mode.
   if (_tplActiveMode === 'translation') { renderTranslationMode(); return; }
@@ -1877,6 +1882,9 @@ function renderTranslationMode() {
   const flat = _tplFlatItems(_tplActiveType);
   const area = document.getElementById('tpl-content-area');
   if (!area) return;
+  // Drop any previous card's word-by-word drill (and its pending hand-off
+  // timer) before area.innerHTML detaches its host below.
+  if (window.WbwDrill) window.WbwDrill.unmount(document.getElementById('trans-wbw-host'));
   if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
   if (_transIdx >= flat.length) _transIdx = 0;
 
@@ -1891,6 +1899,10 @@ function renderTranslationMode() {
   const target = _fullEnglishSentence(item);
   _transHintLevel = 0;
   const answerHint = _buildAnswerHint(target);
+  // Word-by-word "gõ từng chữ" drill (same widget as Luyện viết Task 2) for
+  // ordinary practice. Exam mode keeps the plain textarea — the drill needs
+  // the answer client-side, which must never happen during "Thi thử".
+  const useDrill = !alreadyOk && !_examMode && !!window.WbwDrill;
 
   area.innerHTML = `
     ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dịch câu`)}
@@ -1902,17 +1914,18 @@ function renderTranslationMode() {
       <div class="t2-trans-card">
         <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
         ${!alreadyOk ? `
-        <div class="t2-answer-hint">
+        <div class="t2-answer-hint" id="trans-answer-hint"${useDrill ? ' style="display:none"' : ''}>
           <span class="t2-answer-hint-count">📏 ${answerHint.wordCount} từ</span>
           <span class="t2-answer-hint-pattern">${escHtml(answerHint.pattern)}</span>
         </div>` : ''}
-        <textarea class="t2-trans-input" id="trans-input" placeholder="Nhập câu tiếng Anh..." ${alreadyOk ? 'disabled' : ''}
+        <div id="trans-wbw-host"></div>
+        <textarea class="t2-trans-input" id="trans-input" placeholder="Nhập câu tiếng Anh..." ${alreadyOk ? 'disabled' : ''}${useDrill ? ' style="display:none"' : ''}
           onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkTranslation()}"
         >${alreadyOk ? escHtml(target) : ''}</textarea>
         <div class="t2-trans-actions" id="trans-actions">
           ${!alreadyOk ? `
-            <button class="t2-trans-btn t2-trans-btn--check" onclick="checkTranslation()"><i class="fas fa-check"></i> Kiểm tra</button>
-            ${_examMode ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" id="trans-hint-btn" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>`}
+            <button class="t2-trans-btn t2-trans-btn--check" id="trans-check-btn" onclick="checkTranslation()"${useDrill ? ' style="display:none"' : ''}><i class="fas fa-check"></i> Kiểm tra</button>
+            ${_examMode || useDrill ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" id="trans-hint-btn" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>`}
             <button class="t2-trans-btn t2-trans-btn--skip" onclick="skipTranslation()"><i class="fas fa-forward"></i> Bỏ qua</button>
           ` : `
             <button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
@@ -1930,9 +1943,43 @@ function renderTranslationMode() {
     const resultEl = document.getElementById('trans-result');
     resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
     resultEl.innerHTML = `✅ Đã trả lời đúng câu này.<div class="t2-trans-answer"><b>Đáp án:</b> ${escHtml(target)}</div>`;
+  } else if (useDrill && _mountTransDrill(target)) {
+    /* drill mounted — it self-focuses */
   } else {
     setTimeout(() => document.getElementById('trans-input')?.focus(), 50);
   }
+}
+
+// Mount the word-by-word drill into #trans-wbw-host: the student types the
+// target sentence letter by letter (wrong char → red shake, correct word →
+// green + auto-advance, last word → auto-checks via checkTranslation()). The
+// #trans-input textarea is the value bridge and stays hidden while the drill
+// is active. Returns false — and restores the plain textarea + buttons — if
+// the drill can't run (WbwDrill missing / untypable target).
+function _mountTransDrill(target) {
+  const host  = document.getElementById('trans-wbw-host');
+  const input = document.getElementById('trans-input');
+  const cardIdx = _transIdx;
+  const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
+    answer: target,
+    bridgeInput: input,
+    onComplete: function () {
+      if (_transIdx !== cardIdx) return;            // navigated away during the hand-off delay
+      const res = document.getElementById('trans-result');
+      if (res && res.classList.contains('vis')) return;  // already graded
+      checkTranslation();
+    }
+  }));
+  if (host)  host.style.display  = ok ? '' : 'none';
+  if (input) input.style.display = ok ? 'none' : '';
+  if (!ok) {
+    ['trans-check-btn', 'trans-answer-hint'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+    setTimeout(() => document.getElementById('trans-input')?.focus(), 50);
+  }
+  return ok;
 }
 
 // Word-level diff between the target sentence and what the student typed.
