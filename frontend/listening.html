@@ -800,6 +800,9 @@
             const t = data.currentTest;
             state.currentTestId = data.currentTestId;
             state.currentTest = t;
+            if (new URLSearchParams(location.search).get('testId') !== String(data.currentTestId)) {
+                history.pushState({ screen: 'exam', testId: data.currentTestId, testName: t.name }, '', `?testId=${data.currentTestId}`);
+            }
             state.attemptId = data.attemptId || t.attemptId || null;
             state.answers = data.answers || {};
             state.partIdx = data.partIdx || 0;
@@ -909,6 +912,21 @@
 
             // Handle browser Back/Forward button
             window.addEventListener('popstate', async (e) => {
+                // Full-test exam / review deep-link states. Forward-navigating
+                // (or reloading) onto one re-opens that test/review; pressing
+                // Back while the exam/review screen is showing falls through to
+                // the list instead (the exam auto-saves + checkResumeExam()
+                // offers to resume). Mirrors reading-v2.js.
+                const _inTestFlow = ['screen-exam', 'screen-result', 'screen-review']
+                    .some(id => document.getElementById(id)?.classList.contains('active'));
+                if (!_inTestFlow && e.state?.screen === 'exam' && e.state.testId) {
+                    goToStartTest(e.state.testId);
+                    return;
+                }
+                if (!_inTestFlow && e.state?.screen === 'review' && e.state.reviewId) {
+                    reviewFromHistory(e.state.reviewId);
+                    return;
+                }
                 // Support both new {mode} and old {tab} history state keys for backward compat
                 const mode = e.state?.mode ?? e.state?.tab;
                 const part = e.state?.part ?? 1;
@@ -997,6 +1015,13 @@
         // SCREENS
         // ══════════════════════════════════════════════
         function showScreen(name) {
+            // Returning to the list from an exam/review — drop the ?testId= /
+            // ?review= param so the URL reflects the list again. Guarded on the
+            // param still being present, so this is a no-op when the popstate
+            // handler (which restores the correct ?mode= URL itself) calls us.
+            if (name === 'list' && /[?&](testId|review)=/.test(location.search)) {
+                history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
+            }
             document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); });
             const el = document.getElementById(`screen-${name}`);
             if (el) el.classList.add('active');
@@ -1438,6 +1463,13 @@
                 const t = data.test;
                 state.currentTestId = testId;
                 state.currentTest = t;
+                // Shareable / bookmarkable per-test URL, same as Reading's
+                // ?testId=. Skipped in mock-test mode (mock-test.js owns the
+                // URL there) and when we're already on this test's URL
+                // (deep-link auto-start — renderTestList()).
+                if (!_mockMode && new URLSearchParams(location.search).get('testId') !== String(testId)) {
+                    history.pushState({ screen: 'exam', testId, testName: t.name }, '', `?testId=${testId}`);
+                }
                 state.attemptId = t.attemptId || null;
                 state.answers = {};
                 state.partIdx = 0;
@@ -2348,6 +2380,12 @@
         function goToReview() {
             const r = state.reviewResult;
             if (!r) return;
+            // Shareable review URL (mirrors reading.html?review=). Don't stack a
+            // duplicate entry when we're already on this attempt's ?review= URL
+            // (i.e. arrived via a deep link, which replaceState'd it already).
+            if (r.attemptId && new URLSearchParams(location.search).get('review') !== String(r.attemptId)) {
+                history.pushState({ screen: 'review', reviewId: r.attemptId }, '', `?review=${r.attemptId}`);
+            }
             state.isReview = true;
             state.partIdx = 0;
             for (const k in partHlCacheRv) delete partHlCacheRv[k];
