@@ -1936,6 +1936,16 @@ function _applyPracticeDraft(saved) {
   practiceState.wordCount = saved.wordCount || 0;
   practiceState.seconds   = saved.seconds   || 0;
 
+  // Put the shareable ?taskType=&taskId= URL in the address bar so a teacher
+  // who resumed a draft (in-page "Tiếp tục" banner, which calls this directly)
+  // can still copy the link for students. replaceState, not push — resuming
+  // is not a new navigation step.
+  const _tid = saved.task && saved.task._id;
+  if (_tid) {
+    history.replaceState({ screen: 'practice-write', taskType: saved.taskType, taskId: String(_tid) }, '',
+      `writing.html?taskType=${saved.taskType}&taskId=${encodeURIComponent(_tid)}`);
+  }
+
   renderPracticeWriteScreen(saved.taskType, saved.task);
   const ta = document.getElementById('pw-textarea');
   if (ta) { ta.value = saved.answer || ''; onPracticeInput(); setTimeout(() => ta.focus(), 100); }
