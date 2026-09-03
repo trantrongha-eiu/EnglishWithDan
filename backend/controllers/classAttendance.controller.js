@@ -13,17 +13,11 @@ const ClassSession = require('../models/ClassSession');
 const AttendanceRecord = require('../models/AttendanceRecord');
 const User = require('../models/User');
 const svc = require('../services/classAttendanceService');
+const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
-const STAFF_ROLES = ['teacher', 'admin'];
 const ATT_STATUSES = ['present', 'absent', 'excused', 'late'];
 const MANUAL_ENROLLMENT_STATUSES = ['active', 'completed', 'dropped'];
-
-function studentName(u) {
-  if (!u) return '';
-  const full = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-  return full || u.username || '';
-}
 
 function endOfToday() {
   const d = new Date();
@@ -32,27 +26,9 @@ function endOfToday() {
 }
 
 // ── middleware ──────────────────────────────────────────────────────────
-
-function staffOnly(req, res, next) {
-  if (!STAFF_ROLES.includes(req.user.role)) {
-    return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
-  }
-  next();
-}
-
-async function loadOwnedClass(req, res, next) {
-  try {
-    const cls = await ClassGroup.findById(req.params.classId);
-    if (!cls) return res.status(404).json({ success: false, message: 'Không tìm thấy lớp' });
-    if (req.user.role !== 'admin' && !cls.teacherId.equals(req.user._id)) {
-      return res.status(403).json({ success: false, message: 'Bạn không phụ trách lớp này' });
-    }
-    req.classGroup = cls;
-    next();
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-}
+// staffOnly + loadOwnedClass now live in middleware/classAccess.js (shared
+// with the assignments feature); re-exported below so routes/classAttendance.js
+// keeps referencing them as c.staffOnly / c.loadOwnedClass.
 
 async function loadSession(req, res, next) {
   try {

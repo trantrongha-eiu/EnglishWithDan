@@ -28,6 +28,7 @@ const tuitionCron = require('./cron/tuitionReminder');
 const attemptTimeoutSweepCron = require('./cron/attemptTimeoutSweep');
 const writingAutoGradeCron = require('./cron/writingAutoGrade');
 const classAttendanceSweepCron = require('./cron/classAttendanceSweep');
+const assignmentSweepCron = require('./cron/assignmentSweep');
 
 // ── Process-level safety nets (Phase 11) ────────────────────────
 // An uncaught exception leaves the process in an unknown state — log it
@@ -200,6 +201,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'ClassAttendanceSweep cron failed to start', { errorMessage: e.message });
     }
+    // Start homework-warning daily sweep
+    try {
+      assignmentSweepCron.start();
+    } catch (e) {
+      logger.error('startup', 'AssignmentSweep cron failed to start', { errorMessage: e.message });
+    }
   })
   .catch(err => logger.error('startup', 'MongoDB initial connection failed', { errorMessage: err.message }));
 
@@ -221,6 +228,7 @@ function shutdown(signal) {
   attemptTimeoutSweepCron.stop();
   writingAutoGradeCron.stop();
   classAttendanceSweepCron.stop();
+  assignmentSweepCron.stop();
 
   server.close(async () => {
     logger.shutdown('HTTP server closed (no longer accepting new connections)');

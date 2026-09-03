@@ -17,7 +17,7 @@
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260922">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260903hw">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -25,7 +25,7 @@
 <script src="js/auth.js?v=20260831"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260923"></script>
-<script src="js/nav.js?v=20260921"></script>
+<script src="js/nav.js?v=20260903hw"></script>
 <script src="js/shared/onboarding-tour.js?v=20260831"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -87,6 +87,11 @@
             </div>
             <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
           </div>
+
+          <!-- 📚 Bài tập cần làm — homework the teacher assigned to this
+               student's class(es). Rendered by js/dashboard-homework.js;
+               hidden until it has data (or shows an empty-state). -->
+          <div id="homework-card" style="display:none"></div>
 
           <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
           <div class="home-dual-row">
@@ -1316,6 +1321,7 @@
 <script src="js/dashboard-audio.js?v=20260906"></script>
 <script src="js/shared/wbw-drill.js?v=20260904c"></script>
 <script src="js/dashboard-lesson.js?v=20260922"></script>
+<script src="js/dashboard-homework.js?v=20260903"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260905"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>

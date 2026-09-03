@@ -412,6 +412,55 @@ AttendanceRecord.findOne({ sessionId, studentId })                  // upsert ta
 
 ---
 
+### Assignment / AssignmentProgress
+
+**Purpose:** Homework — a teacher assigns work to a `ClassGroup`, a student
+completes it. Built on top of the attendance models above; adds
+`ClassGroup.policy.homeworkMissThreshold` (default 3).
+
+- **`Assignment`** — `classId`(ref ClassGroup), `teacherId`, `title`,
+  `instruction`, `deadline` (nullable), `status` (`active`/`archived` —
+  **never auto-deleted**), and `resources[]`, each an embedded subdoc with
+  its own `_id` (the stable key `AssignmentProgress` references):
+  - `kind: 'internal'` — `resourceType` + `resourceId` referencing EXISTING
+    site content (never copied), `label` = a name snapshot. `resourceId` is
+    null only for `mock_test`.
+  - `kind: 'external'` — `url`, `title`, `description`.
+  - `kind: 'image'` — `images: [{ url, publicId, width, height }]`, `title`,
+    `instruction` (Cloudinary `assignments/` folder).
+  Index `{ classId, status, createdAt }`, `{ teacherId }`.
+  `guardAgainstMassDelete`.
+- **`AssignmentProgress`** — one per **(assignment × studentId)** (keyed by
+  studentId, NOT enrollmentId, so remove-then-re-add to a class keeps
+  progress). `items[]` = `{ resourceItemId, status, source: 'auto'|'manual',
+  completedAt, attemptRef }` — `manual` for external/image ticks (durable),
+  `auto` refreshed from attempt history on each read. Caches
+  `completedCount` / `totalCount` / `allCompletedAt`. Unique
+  `{ assignmentId, studentId }`; index `{ studentId }`, `{ classId }`.
+  `guardAgainstMassDelete`.
+
+**Completion of an internal resource** is derived, not stored — see
+`services/resourceCompletionService.js`'s `REGISTRY`, which maps each
+`resourceType` to its catalog model + the attempt model / `(userField,
+idField, filter)` that means "this student did it" (e.g. `reading_test` →
+`TestAttempt {userId, testId, status:'completed'}`). One batched query per
+type; a completion counts only if dated at/after the assignment's
+`createdAt`.
+
+**Lifecycle:** CRUD via `routes/classAssignments.js` (teacher) +
+`routes/assignment.js` (student). No TTL. `cron/assignmentSweep.js` sends
+the missing-homework `Message` (≤1/week per enrollment) when a class's
+past-deadline-incomplete count reaches `policy.homeworkMissThreshold`.
+
+**Common queries:**
+```js
+Assignment.find({ classId: { $in }, status: 'active' }).sort({ createdAt: -1 })
+AssignmentProgress.findOne({ assignmentId, studentId })             // manual tick target
+AssignmentProgress.find({ studentId, assignmentId: { $in } })       // "my homework" aggregate
+```
+
+---
+
 ## Attempts
 
 Student-generated, one document per exam/practice session. As a group these carry the schema's real query load and are indexed accordingly (contrast with Content above). See "Patterns across the schema" for which of these have TTL auto-expiry and which don't.

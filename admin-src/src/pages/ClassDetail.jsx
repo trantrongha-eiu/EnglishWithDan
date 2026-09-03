@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { apiFetch, formatDate } from '../utils/api';
+import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 
@@ -19,7 +19,25 @@ const TABS = [
   { key: 'sessions', label: '📅 Buổi học' },
   { key: 'attendance', label: '✅ Điểm danh' },
   { key: 'dashboard', label: '📊 Chuyên cần' },
+  { key: 'assignments', label: '📚 Bài tập' },
 ];
+
+const RESOURCE_CATS = [
+  { type: 'reading_test', label: 'Bộ đề Reading' },
+  { type: 'listening_test', label: 'Đề Listening' },
+  { type: 'reading_practice', label: 'Bài đọc lẻ (Passage)' },
+  { type: 'listening_practice', label: 'Bài nghe lẻ (Section)' },
+  { type: 'dictation', label: 'Dictation' },
+  { type: 'writing_exam', label: 'Đề Writing' },
+  { type: 'task2', label: 'Task 2 Writing' },
+  { type: 'speaking', label: 'Speaking' },
+  { type: 'grammar', label: 'Essential Grammar' },
+  { type: 'vocabulary_lesson', label: 'Vocabulary Lessons' },
+  { type: 'mock_test', label: 'Thi thử 4 kỹ năng' },
+];
+const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
+const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red' };
+const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn' };
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -62,6 +80,7 @@ export default function ClassDetail() {
       {active.key === 'sessions' && <SessionsTab cls={cls} />}
       {active.key === 'attendance' && <AttendanceTab cls={cls} />}
       {active.key === 'dashboard' && <DashboardTab cls={cls} />}
+      {active.key === 'assignments' && <AssignmentsTab cls={cls} />}
     </>
   );
 }
@@ -566,5 +585,266 @@ function DashboardTab({ cls }) {
         </table>
       </div>
     </>
+  );
+}
+
+// ── Assignments (homework) ───────────────────────────────────────────
+
+function AssignmentsTab({ cls }) {
+  const toast = useToast();
+  const [list, setList] = useState([]);
+  const [enrolledCount, setEnrolledCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
+  const [openId, setOpenId] = useState(null);
+
+  const load = () => apiFetch(`/classes/${cls._id}/assignments`)
+    .then((d) => { setList(d.assignments || []); setEnrolledCount(d.enrolledCount || 0); })
+    .catch((e) => toast(e.message, 'error'))
+    .finally(() => setLoading(false));
+  useEffect(() => { load(); }, [cls._id]);
+
+  async function archive(a) {
+    try {
+      await apiFetch(`/classes/${cls._id}/assignments/${a._id}/status`, { method: 'POST', body: JSON.stringify({ status: a.status === 'archived' ? 'active' : 'archived' }) });
+      toast(a.status === 'archived' ? 'Đã mở lại' : 'Đã lưu trữ');
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  return (
+    <>
+      {showEditor && <AssignmentEditor cls={cls} onClose={() => setShowEditor(false)} onSaved={load} />}
+
+      <div className="section-header" style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 13, color: 'var(--text3)' }}>{list.length} bài tập · {enrolledCount} học viên</div>
+        <button className="btn btn-primary" onClick={() => setShowEditor(true)}>+ Tạo bài tập</button>
+      </div>
+
+      <div className="table-wrap">
+        <table className="table">
+          <thead>
+            <tr><th>BÀI TẬP</th><th>SỐ PHẦN</th><th>HOÀN THÀNH</th><th>DEADLINE</th><th>TRẠNG THÁI</th><th></th></tr>
+          </thead>
+          <tbody>
+            {loading ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
+              : list.length === 0 ? <tr><td colSpan={6} className="table-empty">Chưa có bài tập nào</td></tr>
+              : list.map((a) => (
+                <React.Fragment key={a._id}>
+                  <tr>
+                    <td><button onClick={() => setOpenId(openId === a._id ? null : a._id)} style={{ fontWeight: 700, color: 'var(--purple)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{a.title}</button></td>
+                    <td style={{ fontSize: 13 }}>{a.resourceCount}</td>
+                    <td style={{ fontSize: 13 }}>{a.completedStudents}/{enrolledCount}</td>
+                    <td style={{ fontSize: 13 }}>{a.deadline ? formatDate(a.deadline) : '—'}</td>
+                    <td><span className={`badge ${a.status === 'archived' ? 'badge-gray' : 'badge-green'}`}><span className="dot" />{a.status === 'archived' ? 'Lưu trữ' : 'Đang giao'}</span></td>
+                    <td>
+                      <div className="row-actions">
+                        <button className="btn btn-ghost btn-sm" onClick={() => setOpenId(openId === a._id ? null : a._id)}>{openId === a._id ? 'Ẩn' : 'Chi tiết'}</button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => archive(a)}>{a.status === 'archived' ? 'Mở lại' : 'Lưu trữ'}</button>
+                      </div>
+                    </td>
+                  </tr>
+                  {openId === a._id && (
+                    <tr>
+                      <td colSpan={6} style={{ background: 'var(--bg)' }}>
+                        <AssignmentProgressPanel cls={cls} assignmentId={a._id} />
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+}
+
+function AssignmentProgressPanel({ cls, assignmentId }) {
+  const toast = useToast();
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    apiFetch(`/classes/${cls._id}/assignments/${assignmentId}`)
+      .then(setData)
+      .catch((e) => toast(e.message, 'error'));
+  }, [cls._id, assignmentId]);
+  if (!data) return <div style={{ padding: 12, color: 'var(--text3)' }}>Đang tải…</div>;
+  return (
+    <div style={{ padding: '10px 6px' }}>
+      <table className="table" style={{ margin: 0 }}>
+        <thead><tr><th>HỌC VIÊN</th><th>HOÀN THÀNH</th><th>THIẾU</th><th>XONG LÚC</th><th>TRẠNG THÁI</th></tr></thead>
+        <tbody>
+          {data.rows.map((r) => (
+            <tr key={r.enrollmentId}>
+              <td><strong>{r.student.name || r.student.username}</strong>{r.removed && <span className="badge badge-gray" style={{ marginLeft: 6 }}>đã rời lớp</span>}</td>
+              <td style={{ fontSize: 13 }}>{r.completed}/{r.total}</td>
+              <td style={{ fontSize: 13 }}>{r.missing}</td>
+              <td style={{ fontSize: 13 }}>{r.allCompletedAt ? formatDate(r.allCompletedAt) : '—'}</td>
+              <td><span className={`badge ${ASG_STATUS[r.status] || 'badge-gray'}`}><span className="dot" />{ASG_LABEL[r.status] || r.status}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function AssignmentEditor({ cls, onClose, onSaved }) {
+  const toast = useToast();
+  const [title, setTitle] = useState('');
+  const [instruction, setInstruction] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [picked, setPicked] = useState([]);
+  const [externals, setExternals] = useState([]);
+  const [images, setImages] = useState([]);
+  const [saving, setSaving] = useState(false);
+
+  const [cat, setCat] = useState('reading_test');
+  const [search, setSearch] = useState('');
+  const [catalog, setCatalog] = useState([]);
+  const [loadingCat, setLoadingCat] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    const qs = new URLSearchParams({ type: cat });
+    if (search.trim()) qs.set('search', search.trim());
+    apiFetch(`/classes/resources/catalog?${qs}`)
+      .then((d) => { if (alive) setCatalog(d.items || []); })
+      .catch(() => { if (alive) setCatalog([]); })
+      .finally(() => { if (alive) setLoadingCat(false); });
+    return () => { alive = false; };
+  }, [cat, search]);
+
+  const keyOf = (type, id) => `${type}:${id || '*'}`;
+  function togglePick(item) {
+    const k = keyOf(cat, item._id);
+    setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
+      ? p.filter((x) => keyOf(x.resourceType, x.resourceId) !== k)
+      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, label: item.label }]);
+  }
+  const isPicked = (item) => picked.some((x) => keyOf(x.resourceType, x.resourceId) === keyOf(cat, item._id));
+
+  async function uploadImages(e) {
+    const files = [...e.target.files];
+    if (!files.length) return;
+    const fd = new FormData();
+    files.forEach((f) => fd.append('images', f));
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API}/classes/${cls._id}/assignments/images`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: fd });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.message || 'Upload lỗi');
+      setImages((im) => [...im, { kind: 'image', images: d.images, title: '', instruction: '' }]);
+    } catch (err) { toast(err.message, 'error'); }
+    e.target.value = '';
+  }
+
+  async function save() {
+    const resources = [
+      ...picked,
+      ...externals.filter((x) => x.url.trim()).map((x) => ({ kind: 'external', ...x })),
+      ...images,
+    ];
+    if (!title.trim()) return toast('Nhập tên bài tập', 'error');
+    if (!resources.length) return toast('Chọn ít nhất một tài nguyên', 'error');
+    setSaving(true);
+    try {
+      await apiFetch(`/classes/${cls._id}/assignments`, {
+        method: 'POST',
+        body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources }),
+      });
+      toast('Đã giao bài tập');
+      onSaved();
+      onClose();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setSaving(false); }
+  }
+
+  const totalRes = picked.length + externals.filter((x) => x.url.trim()).length + images.length;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 760, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Tạo bài tập — {cls.name}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '18px 22px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Tên bài tập *</label>
+            <input className="form-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Homework – Week 4" />
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Hướng dẫn</label>
+            <textarea className="form-input" rows={2} value={instruction} onChange={(e) => setInstruction(e.target.value)} />
+          </div>
+          <div className="form-group" style={{ marginBottom: 0, maxWidth: 280 }}>
+            <label className="form-label">Deadline</label>
+            <input className="form-input" type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+          </div>
+
+          <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
+            <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => setCat(e.target.value)}>
+                {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
+              </select>
+              <input className="form-input" placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
+            </div>
+            <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 6 }}>
+              {loadingCat ? <div style={{ padding: 10, color: 'var(--text3)' }}>Đang tải…</div>
+                : catalog.length === 0 ? <div style={{ padding: 10, color: 'var(--text3)' }}>Không có kết quả</div>
+                : catalog.map((item) => (
+                  <label key={String(item._id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderBottom: '1px solid var(--border)', cursor: 'pointer', fontSize: 13 }}>
+                    <input type="checkbox" checked={isPicked(item)} onChange={() => togglePick(item)} />
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {item.meta && <span style={{ fontSize: 11, color: 'var(--text3)' }}>{item.meta}</span>}
+                  </label>
+                ))}
+            </div>
+            {picked.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                {picked.map((p) => (
+                  <span key={keyOf(p.resourceType, p.resourceId)} className="badge badge-blue" style={{ cursor: 'pointer' }} onClick={() => setPicked((x) => x.filter((y) => y !== p))}>
+                    {RES_LABEL[p.resourceType]}: {p.label} ✕
+                  </span>
+                ))}
+              </div>
+            )}
+          </fieldset>
+
+          <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
+            <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Link ngoài</legend>
+            {externals.map((x, i) => (
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr auto', gap: 8, marginBottom: 6 }}>
+                <input className="form-input" placeholder="https://..." value={x.url} onChange={(e) => setExternals((a) => a.map((y, j) => (j === i ? { ...y, url: e.target.value } : y)))} />
+                <input className="form-input" placeholder="Tên bài" value={x.title} onChange={(e) => setExternals((a) => a.map((y, j) => (j === i ? { ...y, title: e.target.value } : y)))} />
+                <button className="btn btn-ghost btn-sm" onClick={() => setExternals((a) => a.filter((_, j) => j !== i))}>✕</button>
+              </div>
+            ))}
+            <button className="btn btn-ghost btn-sm" onClick={() => setExternals((a) => [...a, { url: '', title: '', description: '' }])}>+ Thêm link</button>
+          </fieldset>
+
+          <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
+            <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Hình ảnh bài tập</legend>
+            <input type="file" accept="image/png,image/jpeg,image/webp" multiple onChange={uploadImages} />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
+              {images.flatMap((g, gi) => g.images.map((im, ii) => (
+                <div key={`${gi}-${ii}`} style={{ position: 'relative' }}>
+                  <img src={im.url} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }} />
+                  <button onClick={() => setImages((a) => a.filter((_, j) => j !== gi))} style={{ position: 'absolute', top: -6, right: -6, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: 18, height: 18, cursor: 'pointer', fontSize: 11 }}>✕</button>
+                </div>
+              )))}
+            </div>
+          </fieldset>
+
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', alignItems: 'center' }}>
+            <span style={{ fontSize: 12, color: 'var(--text3)' }}>{totalRes} tài nguyên</span>
+            <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+            <button className="btn btn-primary" disabled={saving} onClick={save}>{saving ? 'Đang giao...' : '📤 Giao bài tập'}</button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

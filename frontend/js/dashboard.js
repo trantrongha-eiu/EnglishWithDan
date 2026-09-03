@@ -232,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
     loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    if (typeof loadHomework === 'function') loadHomework();
     // Double-click / drag-select word lookup on the vocab HOME screen too —
     // it was only ever wired on the notebook table / quiz / study grids, so
     // on the home view (Today's Lesson, Areas to improve, feature copy) a

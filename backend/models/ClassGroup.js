@@ -22,6 +22,10 @@ const attendancePolicySchema = new mongoose.Schema({
   lateThresholdMinutes:   { type: Number, default: 15, min: 0 },
   // Tự động chuyển "failed" khi vượt maxAbsencesAllowed.
   failOnExceed:           { type: Boolean, default: true },
+  // Homework: số "buổi" (assignment) đã quá deadline mà học viên hoàn thành
+  // < 100% — vượt con số này thì hiện cảnh báo homework + gửi 1 tin nhắn.
+  // "3" chỉ là mặc định, không hard-code (xem assignmentService).
+  homeworkMissThreshold: { type: Number, default: 3, min: 1 },
 }, { _id: false });
 
 const ClassGroupSchema = new mongoose.Schema({

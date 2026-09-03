@@ -548,6 +548,14 @@
       })
       .catch(function () {});
 
+    // Homework warning — student has missed full homework completion past
+    // their class's threshold (assignmentService). Deadline-soon / overdue
+    // live on the dashboard card, not here.
+    fetch(API + '/assignments/mine/summary', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.warn && d.warning) _showHomeworkWarningBanner(d.warning); })
+      .catch(function () {});
+
     // Refresh plan silently and show expiry warning if needed.
     // AuthService.refreshPlan() centralizes the "hit /auth/me, touch
     // lastLoginAt, merge plan fields into the cached user" logic that used
@@ -739,6 +747,24 @@
       'linear-gradient(90deg,#7f1d1d,#991b1b)',
       '<span style="flex:1;text-align:center">⛔ Bạn đã không đạt yêu cầu chuyên cần của lớp <strong>' + _escAttn(info.className) + '</strong> ' +
       '(nghỉ <strong>' + absent + '/' + info.maxAbsencesAllowed + '</strong> buổi). Vui lòng liên hệ giáo viên.</span>'
+    );
+  }
+
+  function _showHomeworkWarningBanner(w) {
+    var parts = ['⚠️ Bạn đang có <strong>' + w.missedCount + ' buổi</strong> chưa hoàn thành đầy đủ bài tập'];
+    if (w.className) parts.push(' ở lớp <strong>' + _escAttn(w.className) + '</strong>');
+    parts.push('. ');
+    if (w.incompleteCount) parts.push('Còn <strong>' + w.incompleteCount + '</strong> bài chưa xong. ');
+    if (w.nearestDeadline) {
+      var d = new Date(w.nearestDeadline);
+      parts.push('Hạn gần nhất: <strong>' + String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '</strong>. ');
+    }
+    parts.push('Vui lòng hoàn thành homework đúng hạn để theo kịp tiến độ lớp học.');
+    _renderAttendanceBanner(
+      'nav-homework-warning-banner',
+      'linear-gradient(90deg,#b45309,#d97706)',
+      '<span style="flex:1;text-align:center">' + parts.join('') + '</span>' +
+      '<a href="dashboard.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
     );
   }
 

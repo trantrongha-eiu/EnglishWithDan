@@ -1,0 +1,163 @@
+'use strict';
+/* ══════════════════════════════════════════════
+   📚 BÀI TẬP CẦN LÀM — homework the teacher assigned to this student's
+   class(es). Data: GET /api/assignments/mine (backend
+   controllers/assignment.controller.js → services/assignmentService.js).
+
+   Internal resources show their real completion (auto, from the student's
+   attempt history); external links + images have a manual "Đánh dấu hoàn
+   thành" checkbox. Card is hidden entirely if the student is in no class;
+   shows "Hiện tại không có bài tập nào." if enrolled but nothing assigned.
+
+   Globals: API / authH() (dashboard.js), escHtml() (js/shared/utils.js),
+   window.ApiClient.handleResponse.
+══════════════════════════════════════════════ */
+
+const HW_STATUS = {
+  not_started: { label: 'Chưa làm', cls: 'hw-pill--todo' },
+  in_progress: { label: 'Đang làm', cls: 'hw-pill--progress' },
+  completed:   { label: 'Đã hoàn thành', cls: 'hw-pill--done' },
+  overdue:     { label: 'Quá hạn', cls: 'hw-pill--overdue' },
+};
+
+// internal resourceType → best-effort deep link on the student site
+function hwResourceHref(r) {
+  const id = r.resourceId;
+  switch (r.resourceType) {
+    case 'reading_test':       return `reading.html?testId=${id}`;
+    case 'reading_practice':   return `reading.html?passageId=${id}`;
+    case 'listening_test':     return `listening.html?testId=${id}`;
+    case 'listening_practice': return `listening.html?sectionId=${id}`;
+    case 'dictation':          return `listening.html?sectionId=${id}&mode=dictation`;
+    case 'writing_exam':       return 'writing.html';
+    case 'task2':              return 'task2-practice.html';
+    case 'speaking':           return `speaking.html?questionId=${id}`;
+    case 'grammar':            return 'essential-grammar.html';
+    case 'vocabulary_lesson':  return `dashboard.html?view=lesson&lessonId=${id}`;
+    case 'mock_test':          return 'dashboard.html';
+    default:                   return null;
+  }
+}
+
+function hwCountdown(deadline) {
+  if (!deadline) return '';
+  const ms = new Date(deadline) - Date.now();
+  if (ms <= 0) return '<span class="hw-due hw-due--over">Đã quá hạn</span>';
+  const h = Math.floor(ms / 3600000);
+  if (h < 24) return `<span class="hw-due hw-due--soon">Còn ${h} giờ</span>`;
+  const d = Math.floor(h / 24);
+  return `<span class="hw-due">Còn ${d} ngày</span>`;
+}
+
+function hwFmtDeadline(deadline) {
+  if (!deadline) return 'Không có hạn';
+  const d = new Date(deadline);
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} · ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function hwResourceRow(assignmentId, r) {
+  const doneCls = r.completed ? 'hw-res--done' : '';
+  const check = r.completed ? '☑' : '☐';
+  let name = '';
+  let action = '';
+  if (r.kind === 'internal') {
+    name = escHtml(r.label || r.resourceType);
+    const href = hwResourceHref(r);
+    action = href
+      ? `<a class="hw-res-btn" href="${href}">${r.completed ? 'Xem lại' : 'Bắt đầu'}</a>`
+      : '<span class="hw-res-na">(nội dung không còn khả dụng)</span>';
+  } else if (r.kind === 'external') {
+    name = escHtml(r.title || r.url);
+    action = `<a class="hw-res-btn" href="${escHtml(r.url)}" target="_blank" rel="noopener">Mở link</a>`
+      + hwManualToggle(assignmentId, r);
+  } else if (r.kind === 'image') {
+    name = escHtml(r.title || 'Bài tập hình ảnh');
+    const thumbs = (r.images || []).map((im) => `<a href="${escHtml(im.url)}" target="_blank" rel="noopener"><img class="hw-res-thumb" src="${escHtml(im.url)}" alt=""></a>`).join('');
+    action = thumbs + hwManualToggle(assignmentId, r);
+  }
+  return `<div class="hw-res ${doneCls}">
+    <span class="hw-res-check">${check}</span>
+    <span class="hw-res-name">${name}${r.description ? `<span class="hw-res-desc">${escHtml(r.description)}</span>` : ''}${r.instruction ? `<span class="hw-res-desc">${escHtml(r.instruction)}</span>` : ''}</span>
+    <span class="hw-res-action">${action}</span>
+  </div>`;
+}
+
+function hwManualToggle(assignmentId, r) {
+  return `<label class="hw-manual">
+    <input type="checkbox" ${r.completed ? 'checked' : ''}
+      onchange="hwToggleItem('${assignmentId}','${r.itemId}',this.checked,this)">
+    <span>Đánh dấu hoàn thành</span>
+  </label>`;
+}
+
+function hwAssignmentBlock(a) {
+  const st = HW_STATUS[a.status] || HW_STATUS.not_started;
+  const pct = a.total ? Math.round((a.done / a.total) * 100) : 0;
+  return `<div class="hw-item" data-id="${a._id}">
+    <div class="hw-item-head">
+      <div>
+        <div class="hw-item-title">${escHtml(a.title)}</div>
+        <div class="hw-item-sub">${escHtml(a.className)}${a.teacherName ? ` · ${escHtml(a.teacherName)}` : ''}</div>
+      </div>
+      <span class="hw-pill ${st.cls}">${st.label}</span>
+    </div>
+    ${a.instruction ? `<div class="hw-item-instruction">${escHtml(a.instruction)}</div>` : ''}
+    <div class="hw-progress">
+      <div class="hw-progress-bar"><div class="hw-progress-fill" style="width:${pct}%"></div></div>
+      <span class="hw-progress-text">${a.done}/${a.total} hoàn thành</span>
+    </div>
+    <div class="hw-reslist">${a.resources.map((r) => hwResourceRow(a._id, r)).join('')}</div>
+    <div class="hw-item-foot">
+      <span class="hw-deadline">⏰ ${hwFmtDeadline(a.deadline)}</span>
+      ${a.status !== 'completed' ? hwCountdown(a.deadline) : '<span class="hw-due hw-due--ok">✔ Đã xong</span>'}
+    </div>
+  </div>`;
+}
+
+async function loadHomework() {
+  const card = document.getElementById('homework-card');
+  if (!card) return;
+  let data;
+  try {
+    const res = await fetch(`${API}/assignments/mine`, { headers: authH() });
+    data = await window.ApiClient.handleResponse(res);
+  } catch (err) {
+    console.error('loadHomework:', err);
+    return; // stay hidden on error
+  }
+  if (!data || !data.hasClasses) { card.style.display = 'none'; return; }
+
+  card.style.display = 'block';
+  const warn = data.homeworkWarning
+    ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} buổi</b> chưa hoàn thành đầy đủ bài tập${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
+    : '';
+
+  if (!data.assignments.length) {
+    card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3></div>${warn}
+      <div class="hw-empty">Hiện tại không có bài tập nào.</div>`;
+    return;
+  }
+  card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>
+      <span class="hw-count">${data.assignments.filter((a) => a.status !== 'completed').length} chưa xong</span></div>
+    ${warn}
+    <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;
+}
+
+async function hwToggleItem(assignmentId, itemId, done, el) {
+  el.disabled = true;
+  try {
+    const res = await fetch(`${API}/assignments/${assignmentId}/items/${itemId}/complete`, {
+      method: 'POST', headers: { ...authH(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ done }),
+    });
+    await window.ApiClient.handleResponse(res);
+    loadHomework(); // re-render (progress bar, status pill, ordering)
+  } catch (err) {
+    el.checked = !done;
+    if (window.showToast) window.showToast(err.message || 'Không lưu được', 'error');
+  } finally {
+    el.disabled = false;
+  }
+}
+window.hwToggleItem = hwToggleItem;
+window.loadHomework = loadHomework;

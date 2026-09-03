@@ -1228,6 +1228,43 @@ admin bypasses that check. The `/my/*` routes are for the logged-in student.
 
 ---
 
+## Homework / Assignments
+
+Teacher assigns work to a class (existing site content + external links +
+uploaded images), sets a deadline, tracks per-student completion. Internal
+resources auto-complete from the student's real attempt history; external /
+image items have a manual checkbox. Controller
+`controllers/assignment.controller.js`, services `assignmentService.js`
+(status + the student aggregate) and `resourceCompletionService.js` (the
+`REGISTRY` mapping a `resourceType` to its catalog + attempt model). Models
+`Assignment` / `AssignmentProgress` (`docs/DATABASE.md`). Daily
+`cron/assignmentSweep.js` sends the missing-homework reminder.
+
+### Teacher routes — mounted on `/api/classes` (auth + `staffOnly` + `loadOwnedClass`)
+
+| Method & path | Purpose |
+|---|---|
+| `GET /api/classes/resources/catalog?type=&search=&limit=` | Resource picker source. `type` ∈ `reading_test, listening_test, reading_practice, listening_practice, dictation, writing_exam, task2, speaking, grammar, vocabulary_lesson, mock_test`. Returns `[{ _id, label, meta }]` (`mock_test` = one synthetic row, `_id: null`). |
+| `GET /api/classes/:classId/assignments` | List + `{ resourceCount, completedStudents }` per row + `enrolledCount`. |
+| `POST /api/classes/:classId/assignments` | Create `{ title, instruction, deadline, resources: [{kind:'internal',resourceType,resourceId} \| {kind:'external',url,title,description} \| {kind:'image',images:[{url,publicId}],title,instruction}] }`. Every internal `resourceId` is verified against its catalog; `label` snapshotted. Sends a "new assignment" `Message` to every enrolled student. |
+| `GET /api/classes/:classId/assignments/:assignmentId` | Assignment + `rows` (per-student `{ completed, total, missing, status, allCompletedAt, items[] }`). |
+| `PUT /api/classes/:classId/assignments/:assignmentId` | Edit `title/instruction/deadline/resources/status`. |
+| `POST /api/classes/:classId/assignments/:assignmentId/status` | `{ status: 'active' \| 'archived' }` — never hard-deleted. |
+| `POST /api/classes/:classId/assignments/images` | `multipart/form-data`, field `images` (≤10, 5 MB, png/jpe?g/webp) → Cloudinary → `{ images: [{ url, publicId, width, height }] }`. |
+
+### Student routes — `/api/assignments/*` (auth; access = `req.user._id` + a live `ClassEnrollment` lookup)
+
+| Method & path | Purpose |
+|---|---|
+| `GET /api/assignments/mine` | `{ assignments: [{ _id, title, instruction, className, teacherName, deadline, status, done, total, resources: [{ itemId, kind, autoTracked, completed, completedAt, resourceType, resourceId, label, url, images, ... }] }], homeworkWarning, hasClasses }`. Sorted: not-done+nearest-deadline → in-progress → overdue → completed. |
+| `GET /api/assignments/mine/summary` | `{ hasClasses, incompleteCount, overdueCount, nearestDeadline, nearestTitle, warn, warning }` for `nav.js`. |
+| `GET /api/assignments/:assignmentId` | One assignment, shaped for the student. **403 unless the caller has an active enrollment in its class.** |
+| `POST /api/assignments/:assignmentId/items/:itemId/complete` | `{ done }` → tick an external/image item. **400 for an internal item** (its status only ever comes from attempt history). |
+
+**Completion:** internal item = the student has ≥1 attempt for that resource, dated at/after the assignment's `createdAt` (`resourceCompletionService.checkCompleted`, batched one query per type). Assignment status: `completed` (all items) → `overdue` (deadline passed, not all) → `in_progress` (≥1) → `not_started`. `homeworkWarning` fires when a class's count of past-deadline-incomplete assignments reaches `policy.homeworkMissThreshold` (default 3).
+
+---
+
 ## Contact
 
 Base path: `/api/contact`.

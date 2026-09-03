@@ -39,6 +39,12 @@ const ClassEnrollmentSchema = new mongoose.Schema({
   removedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   stats: { type: enrollmentStatsSchema, default: () => ({}) },
+
+  // Last time the "you've missed homework past the threshold" reminder was
+  // sent for this enrollment — so assignmentSweep doesn't re-send every day
+  // while the student stays over the line. Cleared implicitly by a new
+  // crossing (see assignmentService).
+  homeworkWarnNotifiedAt: { type: Date, default: null },
 }, { timestamps: true });
 
 // Dashboard / roster reads by class; the student-facing view reads by student.

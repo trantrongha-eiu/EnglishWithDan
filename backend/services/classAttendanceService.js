@@ -38,6 +38,7 @@ function withPolicyDefaults(policy = {}) {
     lateToAbsenceRatio:     policy.lateToAbsenceRatio && policy.lateToAbsenceRatio >= 1 ? policy.lateToAbsenceRatio : 2,
     lateThresholdMinutes:   policy.lateThresholdMinutes ?? 15,
     failOnExceed:           policy.failOnExceed ?? true,
+    homeworkMissThreshold:  policy.homeworkMissThreshold && policy.homeworkMissThreshold >= 1 ? policy.homeworkMissThreshold : 3,
   };
 }
 

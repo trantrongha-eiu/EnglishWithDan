@@ -79,11 +79,45 @@ async function seedAttendance({ teacher, student, policy, marks = [] }) {
   return { classGroup, enrollment, sessions };
 }
 
+// ── Assignments ──────────────────────────────────────────────────────
+const Assignment = require('../../models/Assignment');
+const TestAttempt = require('../../models/TestAttempt');
+const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
+
+async function createAssignment(classGroup, overrides = {}) {
+  return Assignment.create({
+    classId: classGroup._id,
+    teacherId: overrides.teacherId || classGroup.teacherId,
+    createdBy: overrides.createdBy || classGroup.teacherId,
+    title: overrides.title || unique('Homework '),
+    instruction: overrides.instruction || '',
+    deadline: overrides.deadline === undefined ? new Date(Date.now() + 3 * 864e5) : overrides.deadline,
+    resources: overrides.resources || [
+      { kind: 'external', url: 'https://bbc.co.uk/learningenglish', title: 'BBC Listening' },
+    ],
+    status: overrides.status || 'active',
+  });
+}
+
+// Write the attempt doc that makes an internal resource count as "completed"
+// for a student. Supports the two types the integration test exercises.
+async function seedInternalCompletion(type, { studentId, resourceId }) {
+  if (type === 'reading_test') {
+    return TestAttempt.create({ userId: studentId, testId: resourceId, status: 'completed', endTime: new Date() });
+  }
+  if (type === 'listening_practice') {
+    return ListeningPracticeAttempt.create({ userId: studentId, sectionId: resourceId, submittedAt: new Date() });
+  }
+  throw new Error(`seedInternalCompletion: unsupported type ${type}`);
+}
+
 module.exports = {
   createClassGroup,
   enrollStudent,
   createSession,
   markAttendance,
   seedAttendance,
+  createAssignment,
+  seedInternalCompletion,
   unique,
 };
