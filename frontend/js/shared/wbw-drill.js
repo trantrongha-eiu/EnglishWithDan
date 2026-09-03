@@ -82,6 +82,14 @@
   var TYPABLE = /[\p{L}\p{N}]/u;
   var NOT_TYPABLE = /[^\p{L}\p{N}]/gu;
 
+  // True if the string has any non-ASCII char — used to auto-enable
+  // per-word checking (Vietnamese Telex/VNI can't be validated per key).
+  function _hasNonAscii(str) {
+    str = String(str || "");
+    for (var i = 0; i < str.length; i++) if (str.charCodeAt(i) > 127) return true;
+    return false;
+  }
+
   function nfc(s) {
     s = String(s == null ? '' : s);
     return s.normalize ? s.normalize('NFC') : s;
@@ -107,6 +115,15 @@
     this.onComplete = typeof opts.onComplete === 'function' ? opts.onComplete : function () {};
     this.tokens = tokenize(this.answer);
     this.activeIdx = 0;
+    // Per-WORD checking (vs per-letter). Auto-on when the answer has non-ASCII
+    // letters, i.e. Vietnamese: Telex/VNI compose one syllable from several
+    // keystrokes ("muws" → "mứ"), so matching each keystroke against the
+    // composed target ("ư" vs the "u" Telex needs first) makes the word
+    // impossible to type. In per-word mode we accept whatever's in the box
+    // and only advance once the whole current word matches (NFC, case-insens).
+    this.perWord = (opts.perWord != null)
+      ? !!opts.perWord
+      : _hasNonAscii(this.answer);
     this.typed = '';
     this.showAll = false;
     this.erroring = false;
@@ -249,21 +266,41 @@
 
   Drill.prototype._onKeydown = function (e) {
     if (this.done) return;
-    // Enter / Space are no-ops — progression is automatic, completion fires
-    // onComplete(). Stop them from bubbling to any page-level "advance" key
-    // handler while the drill is still in progress.
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
       e.stopPropagation();
+      // Per-word mode: Space is the explicit "I've finished this word" signal
+      // (Vietnamese words aren't validated per keystroke). Check it now — a
+      // no-op if it already auto-advanced on the last `input` event.
+      if (this.perWord && e.key !== 'Enter') this._onInputWord(this.tokens[this.activeIdx], true);
     }
+  };
+
+  // Strip non-typable chars and lower-case — the comparison key for a word.
+  function _wordKey(s) { return nfc(s).replace(NOT_TYPABLE, '').toLowerCase(); }
+
+  // Advance past the just-completed active word.
+  Drill.prototype._advanceWord = function () {
+    this.activeIdx++;
+    this.typed = '';
+    if (this.$input) this.$input.value = '';
+    this._renderWords();
+    this._updateBar();
+    this._syncBridge(false);
+    var chip = this.$words.querySelector('.wbwd-word[data-i="' + (this.activeIdx - 1) + '"]');
+    if (chip) chip.classList.add('just-done');
+    if (this.activeIdx >= this.tokens.length) this._complete();
+    else this.focus();
   };
 
   Drill.prototype._onInput = function () {
     if (this.done || !this.$input) return;
     var tok = this.tokens[this.activeIdx];
     if (!tok) return;
-    var raw = nfc(this.$input.value).replace(NOT_TYPABLE, '');
 
+    if (this.perWord) { this._onInputWord(tok, false); return; }
+
+    var raw = nfc(this.$input.value).replace(NOT_TYPABLE, '');
     var good = '';
     var rejected = false;
     for (var k = 0; k < raw.length; k++) {
@@ -278,19 +315,26 @@
 
     if (rejected) { this._flashError(); return; }
     if (good.length < tok.target.length) { this._renderWords(); return; }
+    this._advanceWord();
+  };
 
-    // active word complete
-    this.activeIdx++;
-    this.typed = '';
-    this.$input.value = '';
+  // Per-word validation: never touch the box (so IME composition — Telex/VNI
+  // "muws" → "mứ" — is left alone), just watch for the whole word to match.
+  // `committed` = the student pressed Space, so a non-match is worth a shake.
+  Drill.prototype._onInputWord = function (tok, committed) {
+    if (this.done || !this.$input || !tok) return;
+    var val = nfc(this.$input.value);
+    this.typed = val.replace(/\s+$/, '');
+    var got = _wordKey(val);
+    var want = _wordKey(tok.target);
+
+    if (got === want) { this._advanceWord(); return; }
+
+    // Not matching. Stay quiet while they're still (plausibly) mid-word;
+    // shake only when they explicitly committed with Space, or clearly
+    // overshot the target length.
+    if (!this.erroring && (committed || got.length > want.length + 1)) this._flashError();
     this._renderWords();
-    this._updateBar();
-    this._syncBridge(false);
-    var chip = this.$words.querySelector('.wbwd-word[data-i="' + (this.activeIdx - 1) + '"]');
-    if (chip) chip.classList.add('just-done');
-
-    if (this.activeIdx >= this.tokens.length) this._complete();
-    else this.focus();
   };
 
   Drill.prototype._complete = function () {
