@@ -7,7 +7,6 @@
 
 const mongoose = require('mongoose');
 const Assignment = require('../models/Assignment');
-const AssignmentProgress = require('../models/AssignmentProgress');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
@@ -76,21 +75,20 @@ exports.listAssignments = async (req, res) => {
   try {
     const list = await Assignment.find({ classId: req.classGroup._id }).sort({ createdAt: -1 }).lean();
     const enrolledCount = await ClassEnrollment.countDocuments({ classId: req.classGroup._id, removedAt: null });
-    // per-assignment rollup: how many students have all items done
-    const progress = await AssignmentProgress.aggregate([
-      { $match: { assignmentId: { $in: list.map((a) => a._id) } } },
-      { $group: { _id: '$assignmentId', doneAll: { $sum: { $cond: [{ $ne: ['$allCompletedAt', null] }, 1, 0] } } } },
-    ]);
-    const doneMap = new Map(progress.map((p) => [String(p._id), p.doneAll]));
-    res.json({
-      success: true,
-      enrolledCount,
-      assignments: list.map((a) => ({
+
+    // Completion is computed LIVE (not from the AssignmentProgress cache) so
+    // the count is right even for an all-internal assignment nobody has
+    // ticked. Classes are small (≤ ~8), so a table per assignment is cheap.
+    const withCounts = await Promise.all(list.map(async (a) => {
+      const rows = await svc.getAssignmentProgressTable(a);
+      return {
         ...a,
         resourceCount: a.resources.length,
-        completedStudents: doneMap.get(String(a._id)) || 0,
-      })),
-    });
+        completedStudents: rows.filter((r) => !r.removed && r.status === 'completed').length,
+      };
+    }));
+
+    res.json({ success: true, enrolledCount, assignments: withCounts });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
@@ -208,7 +206,7 @@ exports.uploadAssignmentImages = async (req, res) => {
 // GET /api/assignments/mine
 exports.myAssignments = async (req, res) => {
   try {
-    const data = await svc.getStudentAssignments(req.user._id);
+    const data = await svc.getStudentAssignments(req.user._id, new Date(), { persist: true });
     res.json({ success: true, ...data });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

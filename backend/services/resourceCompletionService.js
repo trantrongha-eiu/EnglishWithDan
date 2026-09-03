@@ -162,7 +162,11 @@ function resourceKey(type, resourceId) {
  * @param {ObjectId} studentId
  * @param {{resourceType, resourceId}[]} internalItems
  * @param {Date} [since] only count completions at/after this time
- * @returns {Promise<Map<string, {completed, completedAt, attemptId}>>} keyed by resourceKey()
+ * @returns {Promise<Map<string, {completed, completedAt, attemptId}>>} keyed by
+ *   resourceKey(); `completedAt` is the student's LATEST attempt at that
+ *   resource — so a caller comparing it against an assignment's createdAt
+ *   correctly detects a completion done after the assignment even when the
+ *   student had also done the same resource earlier.
  */
 async function checkCompleted(studentId, internalItems, since = null) {
   const out = new Map();
@@ -184,16 +188,17 @@ async function checkCompleted(studentId, internalItems, since = null) {
     if (since) base.createdAt = { $gte: since };
 
     if (!A.idField) {
-      // mock_test — one row means "done"
-      const doc = await A.model.findOne(base).sort({ createdAt: 1 }).select('_id createdAt').lean().catch(() => null);
+      // mock_test — the most recent completed run
+      const doc = await A.model.findOne(base).sort({ createdAt: -1 }).select('_id createdAt').lean().catch(() => null);
       if (doc) out.set(resourceKey(type, null), { completed: true, completedAt: doc.createdAt, attemptId: String(doc._id) });
       return;
     }
 
     const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
     if (!ids.length) return;
+    // newest first + keep the first seen per resource id → latest attempt wins
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .select(`_id createdAt ${A.idField}`)
       .lean()
       .catch(() => []);

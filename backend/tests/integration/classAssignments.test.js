@@ -151,6 +151,45 @@ describe('completion tracking', () => {
     expect(row.status).toBe('completed');
   });
 
+  test('a completion done BEFORE the assignment was created does not count; a later one does', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+
+    // student did this test a week ago
+    const old = await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    await old.constructor.updateOne({ _id: old._id }, { $set: { createdAt: new Date(Date.now() - 7 * 864e5) } });
+
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0); // the old attempt predates the assignment
+
+    // now they do it again, after the assignment
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(1);
+    expect(row.status).toBe('completed');
+  });
+
+  test('teacher list shows completedStudents for an internal-only assignment nobody ticked', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+
+    let list = await request(app).get(`/api/classes/${cls._id}/assignments`).set(authH(t));
+    expect(list.body.assignments.find((a) => a._id === String(asg._id)).completedStudents).toBe(0);
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    list = await request(app).get(`/api/classes/${cls._id}/assignments`).set(authH(t));
+    expect(list.body.assignments.find((a) => a._id === String(asg._id)).completedStudents).toBe(1);
+  });
+
   test('student can tick external/image items, cannot tick internal', async () => {
     const t = await createTeacher();
     const s = await createStudent();

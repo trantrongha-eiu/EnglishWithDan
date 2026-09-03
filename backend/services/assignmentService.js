@@ -34,7 +34,13 @@ function deriveAssignmentStatus(assignment, completedItemIds, now = new Date()) 
 }
 
 // ── Student: all my homework across my active classes ──────────────────
-async function getStudentAssignments(studentId, now = new Date()) {
+// `persist` (only from GET /api/assignments/mine, not the nav.js summary or
+// the cron) writes an accurate completedCount/allCompletedAt back onto each
+// AssignmentProgress — a redundant-write guard means a steady-state load
+// does zero writes. This is what keeps the teacher's "X/Y hoàn thành"
+// rollup honest for assignments made only of internal resources, where the
+// student never ticks anything.
+async function getStudentAssignments(studentId, now = new Date(), { persist = false } = {}) {
   const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
   if (!enrollments.length) return { assignments: [], homeworkWarning: null, hasClasses: false };
 
@@ -63,7 +69,6 @@ async function getStudentAssignments(studentId, now = new Date()) {
   const storedMap = new Map(stored.map((p) => [String(p.assignmentId), p]));
 
   const rows = [];
-  let missedCount = 0;
   let incompleteCount = 0;
   let nearestDeadline = null;
 
@@ -98,7 +103,6 @@ async function getStudentAssignments(studentId, now = new Date()) {
 
     const { status, done, total } = deriveAssignmentStatus(a, completedItemIds, now);
     if (status !== 'completed') incompleteCount += 1;
-    if (status === 'overdue') missedCount += 1;
     if (a.deadline && status !== 'completed') {
       const dl = new Date(a.deadline);
       if (dl >= now && (!nearestDeadline || dl < nearestDeadline)) nearestDeadline = dl;
@@ -125,6 +129,31 @@ async function getStudentAssignments(studentId, now = new Date()) {
     return new Date(y.createdAt) - new Date(x.createdAt);
   });
 
+  // Write back an accurate cache (scalars only — never touch items[]).
+  if (persist && rows.length) {
+    const bySavedId = storedMap;
+    await Promise.all(rows.map((r) => {
+      const prev = bySavedId.get(String(r._id));
+      const wantAllDone = r.status === 'completed';
+      const sameCount = prev && prev.completedCount === r.done && prev.totalCount === r.total;
+      const sameAllDone = prev && (!!prev.allCompletedAt) === wantAllDone;
+      if (prev && sameCount && sameAllDone) return null; // nothing changed
+      const set = {
+        classId: r.classId,
+        completedCount: r.done,
+        totalCount: r.total,
+        lastRecomputedAt: now,
+      };
+      if (!wantAllDone) set.allCompletedAt = null;
+      else if (!prev || !prev.allCompletedAt) set.allCompletedAt = now;
+      return AssignmentProgress.updateOne(
+        { assignmentId: r._id, studentId },
+        { $set: set, $setOnInsert: { assignmentId: r._id, studentId } },
+        { upsert: true },
+      ).catch(() => {});
+    }));
+  }
+
   // homework warning — threshold is per-class; use the strictest class the
   // student is over the line in (report against that class's policy).
   let homeworkWarning = null;
@@ -135,7 +164,7 @@ async function getStudentAssignments(studentId, now = new Date()) {
     const thr = withPolicyDefaults(cls?.policy).homeworkMissThreshold;
     if (n >= thr) {
       if (!homeworkWarning || n > homeworkWarning.missedCount) {
-        homeworkWarning = { missedCount: n, threshold: thr, className: cls?.name || '', incompleteCount, nearestDeadline };
+        homeworkWarning = { classId: cid, missedCount: n, threshold: thr, className: cls?.name || '', incompleteCount, nearestDeadline };
       }
     }
   }
@@ -192,8 +221,22 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
   } else if (idx >= 0) {
     doc.items.splice(idx, 1);
   }
-  // recount against all completed items we currently know (manual + any stored auto)
+
+  // Recount against BOTH the manual ticks and the live internal completion —
+  // otherwise a fully-done assignment that mixes an internal resource with an
+  // external link would cache completedCount/allCompletedAt as if only the
+  // external part counted.
   const completedIds = new Set(doc.items.filter((it) => it.status === 'completed').map((it) => String(it.resourceItemId)));
+  const internalItems = assignment.resources.filter((r) => r.kind === 'internal')
+    .map((r) => ({ resourceType: r.resourceType, resourceId: r.resourceId }));
+  if (internalItems.length) {
+    const completion = await rcs.checkCompleted(studentId, internalItems, assignment.createdAt);
+    for (const r of assignment.resources) {
+      if (r.kind !== 'internal') continue;
+      const hit = completion.get(rcs.resourceKey(r.resourceType, r.resourceId));
+      if (hit && hit.completed) completedIds.add(String(r._id));
+    }
+  }
   doc.completedCount = assignment.resources.filter((r) => completedIds.has(String(r._id))).length;
   doc.totalCount = assignment.resources.length;
   if (doc.completedCount > 0 && !doc.firstCompletedAt) doc.firstCompletedAt = new Date();
@@ -214,8 +257,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
   const stored = await AssignmentProgress.find({ assignmentId: assignment._id }).lean();
   const storedMap = new Map(stored.map((p) => [String(p.studentId), p]));
 
-  const rows = [];
-  for (const e of enrollments) {
+  const rows = await Promise.all(enrollments.map(async (e) => {
     const completion = await rcs.checkCompleted(e.studentId, internalItems, assignment.createdAt);
     const manualCompleted = new Set(
       (storedMap.get(String(e.studentId))?.items || []).filter((it) => it.source === 'manual' && it.status === 'completed').map((it) => String(it.resourceItemId))
@@ -227,7 +269,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       if (hit && hit.completed) completedIds.add(String(r._id));
     }
     const { status, done, total } = deriveAssignmentStatus(assignment, completedIds, now);
-    rows.push({
+    return {
       enrollmentId: e._id, studentId: e.studentId, removed: !!e.removedAt,
       student: { name: displayNameOf(sMap.get(String(e.studentId))), username: sMap.get(String(e.studentId))?.username || '' },
       completed: done, total, missing: total - done, status,
@@ -236,8 +278,8 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
         itemId: r._id, kind: r.kind, label: r.label || r.title || '',
         completed: completedIds.has(String(r._id)),
       })),
-    });
-  }
+    };
+  }));
   rows.sort((a, b) => a.completed / (a.total || 1) - b.completed / (b.total || 1));
   return rows;
 }

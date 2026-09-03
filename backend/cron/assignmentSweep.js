@@ -25,8 +25,8 @@ async function runSweep(now = new Date()) {
       const enrollments = await ClassEnrollment.find({ classId: cls._id, removedAt: null, status: { $in: ['active', 'warning', 'failed'] } });
       for (const enr of enrollments) {
         const { homeworkWarning } = await assignmentService.getStudentAssignments(enr.studentId, now);
-        // only count assignments in THIS class toward this class's message
-        const overForThisClass = homeworkWarning && homeworkWarning.className === cls.name;
+        // only nag for THIS class (match by id, not name — names aren't unique)
+        const overForThisClass = homeworkWarning && String(homeworkWarning.classId) === String(cls._id);
         if (!overForThisClass) continue;
 
         const last = enr.homeworkWarnNotifiedAt ? enr.homeworkWarnNotifiedAt.getTime() : 0;
