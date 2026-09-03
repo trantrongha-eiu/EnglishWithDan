@@ -530,10 +530,87 @@ const AUG = {
     conclusion: { vi: 'Tóm lại, dù toàn cầu hóa đã giúp giảm nghèo và thúc đẩy tăng trưởng ở nhiều nơi, tôi đồng ý rằng tác động của nó không phải lúc nào cũng tích cực, bởi nó cũng làm gia tăng bất bình đẳng, gây ô nhiễm và đe dọa các nền văn hóa địa phương.',
       en: 'In conclusion, although globalisation has reduced poverty and driven growth in many places, I agree that its effects are not always positive, because it also widens inequality, causes pollution and threatens local cultures.' },
   },
+
+  // ═══ EXTRA topics added via the admin panel (not in seedTask2Exercises.js's
+  //     `topics` array) — augmented separately by scripts/augmentExtraTask2Topics.js ═══
+  'Decline in Reading Habits': {
+    a: ['Vốn từ, kiến thức nền và khả năng tập trung của giới trẻ giảm', 'Kỹ năng viết và tư duy phản biện yếu đi', 'Ít đồng cảm và hiểu biết văn hóa hơn khi thiếu tiếp xúc văn học'],
+    b: ['Trường học và thư viện tổ chức câu lạc bộ đọc, giờ đọc tự do', 'Quảng bá sách qua mạng xã hội, người có ảnh hưởng, ứng dụng đọc', 'Cha mẹ làm gương và đọc cùng con từ nhỏ'],
+    evidence: [
+      { vi: 'Ví dụ, các khảo sát của OECD cho thấy học sinh thường xuyên đọc sách để giải trí đạt điểm đọc hiểu cao hơn hẳn, bất kể hoàn cảnh gia đình.',
+        en: 'For example, OECD surveys show that students who regularly read for pleasure score markedly higher in reading comprehension, regardless of their family background.' },
+      { vi: 'Một giải pháp hiệu quả là chương trình "đọc thầm 20 phút mỗi ngày" được nhiều trường áp dụng, giúp biến việc đọc thành thói quen thay vì một nhiệm vụ.',
+        en: 'One effective solution is the "20 minutes of silent reading a day" programme used by many schools, which turns reading into a habit rather than a chore.' },
+    ],
+    conclusion: { vi: 'Tóm lại, việc giới trẻ đọc ít sách hơn làm suy giảm vốn từ, khả năng tập trung và tư duy phản biện của cả một thế hệ, nhưng nhà trường và gia đình có thể đảo ngược xu hướng này bằng cách tạo thói quen đọc mỗi ngày và quảng bá sách qua các kênh mà người trẻ yêu thích.',
+      en: 'In conclusion, young people reading fewer books weakens a whole generation\'s vocabulary, concentration and critical thinking, but schools and families can reverse this trend by building a daily reading habit and promoting books through the channels young people already use.' },
+  },
+  'Academic Pressure on Teenagers': {
+    a: ['Kỳ vọng cao từ cha mẹ và văn hóa coi trọng bằng cấp', 'Thi cử quyết định, xếp hạng, cạnh tranh vào trường tốt', 'Mạng xã hội khuếch đại việc so sánh thành tích'],
+    b: ['Giảm số kỳ thi quyết định, đánh giá đa dạng hơn (dự án, quá trình)', 'Trường cung cấp tư vấn tâm lý và dạy kỹ năng quản lý căng thẳng', 'Giáo dục cha mẹ về tác hại của việc tạo áp lực quá mức'],
+    evidence: [
+      { vi: 'Ví dụ, ở Hàn Quốc, chính phủ đã áp lệnh giới nghiêm với các trung tâm luyện thi tư nhân sau 22 giờ để giảm bớt áp lực học tập lên học sinh.',
+        en: 'For example, in South Korea the government has imposed a 10 p.m. curfew on private cram schools in an attempt to ease the academic pressure on students.' },
+      { vi: 'Ngược lại, Phần Lan giao rất ít bài tập về nhà và gần như không tổ chức thi chuẩn hóa, nhưng học sinh nước này vẫn thường xuyên nằm trong nhóm dẫn đầu thế giới.',
+        en: 'Conversely, Finland sets very little homework and holds almost no standardised tests, yet its students consistently rank among the best in the world.' },
+    ],
+    conclusion: { vi: 'Tóm lại, kỳ vọng cao của gia đình và một hệ thống thi cử quá coi trọng điểm số là những nguyên nhân chính gây áp lực học tập lên thanh thiếu niên, nhưng việc giảm bớt các kỳ thi quyết định, đánh giá đa dạng hơn và hỗ trợ tâm lý trong trường học có thể làm giảm đáng kể áp lực này.',
+      en: 'In conclusion, high family expectations and an exam system that overvalues grades are the main causes of the academic pressure on teenagers, but reducing high-stakes exams, using more varied assessment and providing counselling in schools can significantly ease it.' },
+  },
+  'Individual vs. Government Responsibility': {
+    a: ['Chỉ chính phủ và tập đoàn lớn mới tạo được thay đổi ở quy mô cần thiết', 'Hành động cá nhân quá nhỏ so với phát thải công nghiệp', 'Thiếu chính sách thì nỗ lực cá nhân dễ nản và không bền'],
+    b: ['Hàng triệu lựa chọn cá nhân cộng lại tạo ra tác động lớn', 'Người dân thay đổi tạo áp lực buộc doanh nghiệp, chính phủ hành động', 'Thói quen tiêu dùng xanh lan tỏa qua cộng đồng và thế hệ sau'],
+    evidence: [
+      { vi: 'Ví dụ, phần lớn khí thải nhà kính toàn cầu đến từ một số ít tập đoàn nhiên liệu hóa thạch, nên nếu không có quy định của chính phủ thì hành động cá nhân khó tạo ra khác biệt đáng kể.',
+        en: 'For example, the majority of global greenhouse-gas emissions come from a small number of fossil-fuel corporations, so without government regulation individual actions can make little real difference.' },
+      { vi: 'Mặt khác, khi hàng triệu hộ gia đình ở châu Âu lắp pin mặt trời áp mái và giảm ăn thịt, nhu cầu năng lượng sạch tăng vọt đã buộc cả ngành điện phải chuyển hướng.',
+        en: 'On the other hand, when millions of European households installed rooftop solar panels and cut down on meat, the surge in demand for clean options forced the whole energy industry to change course.' },
+    ],
+    conclusion: { vi: 'Tóm lại, dù hành động cá nhân đơn lẻ là nhỏ bé so với quy mô của vấn đề môi trường, tôi cho rằng chúng vẫn quan trọng, bởi hàng triệu lựa chọn cộng lại vừa cắt giảm phát thải vừa tạo áp lực chính trị buộc chính phủ và doanh nghiệp phải thay đổi.',
+      en: 'In conclusion, although a single person\'s actions are small compared with the scale of the environmental problem, I believe they still matter, because millions of choices combined both cut emissions and create the political pressure that forces governments and businesses to act.' },
+  },
+  'Car-Free Days vs. Alternative Solutions': {
+    a: ['Ngày không xe: nâng nhận thức, cho thấy phố xá không ô tô dễ chịu ra sao', 'Rẻ, dễ tổ chức, tạo động lực chính trị cho thay đổi lâu dài', 'Giảm ô nhiễm và tiếng ồn ngay trong ngày đó'],
+    b: ['Giải pháp lâu dài hiệu quả hơn: giao thông công cộng, làn xe đạp, phí ùn tắc', 'Ngày không xe chỉ mang tính biểu tượng, tác động một lần', 'Cần đầu tư hạ tầng và tiêu chuẩn khí thải để thay đổi bền vững'],
+    evidence: [
+      { vi: 'Ví dụ, thành phố Bogotá (Colombia) tổ chức "Ngày không ô tô" hằng năm và chương trình "Ciclovía" hằng tuần, giúp thay đổi thái độ của người dân với việc đi lại bằng xe đạp.',
+        en: 'For example, the city of Bogotá in Colombia runs an annual "Car-Free Day" and a weekly "Ciclovía" programme, which has helped shift residents\' attitudes towards cycling.' },
+      { vi: 'Tuy nhiên, mức giảm ô nhiễm bền vững nhất ở London lại đến từ phí ùn tắc và vùng phát thải cực thấp, chứ không phải từ những sự kiện một ngày.',
+        en: 'However, the most lasting cut in pollution in London has come from its congestion charge and ultra-low-emission zone, not from one-day events.' },
+    ],
+    conclusion: { vi: 'Tóm lại, dù ngày không xe quốc tế có ích trong việc nâng cao nhận thức, tôi cho rằng các giải pháp lâu dài như đầu tư giao thông công cộng và thu phí ùn tắc mới thực sự giảm ô nhiễm không khí, bởi chúng thay đổi thói quen đi lại hằng ngày chứ không chỉ trong một ngày.',
+      en: 'In conclusion, although international car-free days are useful for raising awareness, I believe long-term measures such as investment in public transport and congestion charging are what genuinely reduce air pollution, because they change everyday travel habits rather than behaviour for a single day.' },
+  },
+  'Lack of Fluency in Foreign Languages': {
+    a: ['Lớp học đông, tập trung ngữ pháp và thi cử hơn là giao tiếp', 'Ít cơ hội thực hành với người bản xứ, thiếu môi trường dùng thật', 'Giáo viên hạn chế về phát âm/giao tiếp; học sinh ngại mắc lỗi'],
+    b: ['Dạy theo hướng giao tiếp, giảm dịch, tăng nói và nghe', 'Lớp nhỏ hơn, dùng phim/podcast/ứng dụng trao đổi ngôn ngữ', 'Chương trình trao đổi, trại hè, và đánh giá kỹ năng nói'],
+    evidence: [
+      { vi: 'Ví dụ, các nước Bắc Âu như Hà Lan và Thụy Điển đạt trình độ tiếng Anh rất cao một phần vì họ chiếu phim và chương trình truyền hình bằng tiếng Anh có phụ đề thay vì lồng tiếng.',
+        en: 'For example, Nordic countries such as the Netherlands and Sweden reach very high levels of English partly because they show films and TV programmes in English with subtitles rather than dubbing them.' },
+      { vi: 'Ngược lại, ở nhiều nước có kết quả kém hơn, giờ học ngoại ngữ vẫn dành phần lớn thời gian cho việc chép ngữ pháp và làm bài kiểm tra viết.',
+        en: 'By contrast, in many lower-performing countries foreign-language lessons still spend most of their time on copying grammar rules and sitting written tests.' },
+    ],
+    conclusion: { vi: 'Tóm lại, việc dạy nặng ngữ pháp cùng với quá ít cơ hội thực hành nói là những nguyên nhân chính khiến học sinh không thành thạo ngoại ngữ sau nhiều năm học, nhưng chuyển sang phương pháp giao tiếp, lớp nhỏ hơn và tăng tiếp xúc với ngôn ngữ thật có thể cải thiện rõ rệt việc học ngôn ngữ.',
+      en: 'In conclusion, grammar-heavy teaching together with too few chances to actually speak are the main causes of poor fluency after years of study, but moving to a communicative approach, smaller classes and more exposure to the real language can markedly improve language education.' },
+  },
+  'Lack of Practical Life Skills': {
+    a: ['Cá nhân: nợ nần do không biết lập ngân sách, ăn uống kém do không nấu được', 'Cá nhân: lo âu, phụ thuộc cha mẹ lâu hơn, chậm tự lập', 'Xã hội: tỷ lệ vỡ nợ cá nhân và chi phí y tế do lối sống tăng'],
+    b: ['Đưa tài chính cá nhân, nấu ăn, sửa chữa cơ bản vào chương trình bắt buộc', 'Học qua dự án thực tế: tự lập ngân sách lớp, bữa ăn, kế hoạch chi tiêu', 'Cha mẹ giao việc nhà và trách nhiệm tài chính nhỏ từ sớm'],
+    evidence: [
+      { vi: 'Ví dụ, nhiều khảo sát ở Anh và Mỹ cho thấy phần lớn người trẻ mới ra trường không thể lập một bảng ngân sách hằng tháng đơn giản hay hiểu cách hoạt động của lãi kép.',
+        en: 'For example, surveys in the UK and the US find that most recent school-leavers cannot draw up a simple monthly budget or explain how compound interest works.' },
+      { vi: 'Một giải pháp đã được thử nghiệm là đưa môn "giáo dục tài chính" thành bắt buộc ở trường trung học tại một số bang của Mỹ, và các nghiên cứu cho thấy học sinh sau đó vay nợ ít rủi ro hơn.',
+        en: 'One solution that has been trialled is making "financial education" a compulsory school subject in several US states, and studies show that students later take on less risky debt.' },
+    ],
+    conclusion: { vi: 'Tóm lại, việc rời ghế nhà trường mà thiếu các kỹ năng sống cơ bản khiến nhiều người trẻ mắc nợ, phụ thuộc lâu hơn vào gia đình và tạo gánh nặng cho xã hội, nhưng đưa các kỹ năng như quản lý tài chính và nấu ăn vào chương trình bắt buộc, dạy qua dự án thực tế, có thể giải quyết vấn đề này.',
+      en: 'In conclusion, leaving education without basic life skills leaves many young people in debt, dependent on their families for longer and a burden on society, but making skills such as budgeting and cooking a compulsory, project-based part of the curriculum can address the problem.' },
+  },
 };
 
 // ── builder ──────────────────────────────────────────────────────────────
 const AI_LONG_NOTE = 'Đây là bước "chốt bài": không đưa ý mới, chỉ tóm tắt 2 luận điểm chính đã luyện rồi khẳng định lại lập trường. AI sẽ chấm dựa trên việc bạn có mở bằng "In conclusion/To sum up", có nhắc lại đúng 2 ý, và có câu chốt quan điểm hay không.';
+
+const isAugQuestion = (q) => /(?:^|[-_])aug[-_]/.test(String(q && q.questionId || ''));
 
 function augmentTopics(topics) {
   let added = 0;
@@ -547,7 +624,10 @@ function augmentTopics(topics) {
       { side: labB, points: aug.b.slice() },
     ];
 
-    const startOrder = (t.questions || []).reduce((m, q) => Math.max(m, q.orderIndex || 0), 0);
+    // Idempotent: drop any previously-appended *-aug-* questions first so a
+    // re-run replaces rather than stacks them.
+    t.questions = (t.questions || []).filter((q) => !isAugQuestion(q));
+    const startOrder = t.questions.reduce((m, q) => Math.max(m, q.orderIndex || 0), 0);
     const key = `${t.week}-${t.orderIndex}`;
     const extra = [];
 
@@ -588,10 +668,10 @@ function augmentTopics(topics) {
       isActive: true,
     });
 
-    t.questions = (t.questions || []).concat(extra);
+    t.questions = t.questions.concat(extra);
     added += extra.length;
   }
   return { topicsAugmented: Object.keys(AUG).length, questionsAdded: added };
 }
 
-module.exports = { AUG, SIDE_LABELS, augmentTopics };
+module.exports = { AUG, SIDE_LABELS, augmentTopics, isAugQuestion };
