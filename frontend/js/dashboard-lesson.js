@@ -224,19 +224,31 @@ function buildClassroomPicker(container, opts) {
     });
 }
 
+// Deterministic "lesson of the day": a stable pseudo-random pick keyed to
+// the LOCAL calendar date, so every student sees the same lesson all day and
+// a fresh one tomorrow. (Was always lessons[last] = the most recently
+// assigned one, which never changed until the teacher added a new lesson.)
+function _todaysLessonIndex(count) {
+    if (count <= 1) return 0;
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    // xorshift scramble so consecutive days don't land on adjacent indices.
+    let x = (seed ^ 0x9e3779b9) >>> 0;
+    x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+    return (x >>> 0) % count;
+}
+
 // lessonIdOverride: when a student picks a different lesson via the
 // "Đổi bài" dropdown, this card shows/starts THAT lesson instead of the
-// default "most recently assigned" one.
+// date-seeded "lesson of the day".
 async function renderTodaysLessonCard(lessonIdOverride) {
     const card = document.getElementById('todays-lesson-card');
     if (!card) return;
     const lessons = lessonState.publicLessons;
     if (!lessons.length) { card.style.display = 'none'; return; }
 
-    // Lessons are sorted ascending by `order` (teacher's session sequence) —
-    // the last one is the most recently assigned, i.e. "today's".
     const today = (lessonIdOverride && lessons.find(l => l._id === lessonIdOverride))
-        || lessons[lessons.length - 1];
+        || lessons[_todaysLessonIndex(lessons.length)];
     card.style.display = 'flex';
     document.getElementById('todays-lesson-title').textContent = today.title;
     document.getElementById('todays-lesson-meta').textContent  = `${today.difficulty} · ${today.wordCount} từ`;
