@@ -20567,8 +20567,15 @@ const topics = [
   }
 ];
 
+// Add the brainstorm hints + evidence-example / conclusion / short_writing
+// questions to every topic (backend/scripts/data/task2Augment.js). Runs once
+// at module load; keeps the exported `topics` and what gets seeded identical.
+const { augmentTopics } = require('./data/task2Augment');
+const _aug = augmentTopics(topics);
+
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
+  console.log(`[Task2Seed] augment: +${_aug.questionsAdded} questions across ${_aug.topicsAugmented} topics (brainstorm + evidence + conclusion + short_writing)`);
 
   // Use week+orderIndex as unique key
   const ops = topics.map(t => ({

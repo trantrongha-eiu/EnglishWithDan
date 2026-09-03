@@ -29,6 +29,18 @@ const vocabSchema = new mongoose.Schema({
   example:      { type: String }
 }, { _id: false });
 
+// Brainstorm scaffold surfaced on the practice screen: the student writes
+// their own ideas for each `side` first, THEN reveals `points` as a
+// checklist. Generalises the old hintAdvantages/hintDisadvantages (which
+// only fit adv/disadv essays and were never shown to students) — `side` is
+// a label chosen per essayType, e.g. "Nguyên nhân (Causes)" / "Giải pháp
+// (Solutions)" for a cause_solution topic. Populated by
+// scripts/data/task2Augment.js.
+const brainstormHintSchema = new mongoose.Schema({
+  side:   { type: String, required: true },
+  points: [{ type: String }]
+}, { _id: false });
+
 const task2TopicSchema = new mongoose.Schema({
   week:              { type: Number, required: true, min: 1, max: 18 },
   block:             { type: String, required: true },
@@ -44,6 +56,7 @@ const task2TopicSchema = new mongoose.Schema({
   writingTask2Id:    { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask2', default: null },
   hintAdvantages:    [{ type: String }],
   hintDisadvantages: [{ type: String }],
+  brainstormHints:   [brainstormHintSchema],
   questions:         [questionSchema],
   vocabularyList:    [vocabSchema],
   orderIndex:        { type: Number, default: 0 },
