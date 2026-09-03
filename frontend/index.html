@@ -34,6 +34,7 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
+  <link rel="stylesheet" href="css/motion.css?v=20260904" />
   <link rel="stylesheet" href="css/main.css?v=20260831" />
   <link rel="stylesheet" href="css/index.css?v=20260831">
   <!-- BUG-016: deferred only where a real dependency check confirmed it's
@@ -48,6 +49,7 @@
        ever called after an async course-list fetch resolves, well after any
        deferred script has finished) — safe to defer. -->
   <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/scroll-reveal.js?v=20260904"></script>
   <script src="js/shared/visit-tracker.js?v=20260831" defer></script>
   <script src="js/shared/pwa-register.js?v=20260831" defer></script>
   <script src="js/shared/auth-service.js?v=20260908"></script>
@@ -93,7 +95,7 @@
 
   <!-- ════════════════════ HERO ════════════════════ -->
   <section class="hero">
-    <div class="hero-content">
+    <div class="hero-content" data-reveal>
       <div class="hero-badge"><i class="fas fa-star"></i> Trung tâm IELTS & Giao Tiếp</div>
       <h1>Chinh phục <span class="accent">Tiếng Anh</span> cùng Daniel Hà</h1>
       <p class="hero-sub">
@@ -112,7 +114,7 @@
       </div>
     </div>
 
-    <div class="hero-img">
+    <div class="hero-img" data-reveal="right">
       <img src="img/Dan.jpg" alt="Thầy Daniel Hà"
         onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')" />
       <div class="hero-float-card">
@@ -127,7 +129,7 @@
 
   <!-- ════════════════════ WHY US ════════════════════ -->
   <section>
-    <div class="section-head" style="text-align:center;max-width:600px;margin:0 auto 48px">
+    <div class="section-head" data-reveal style="text-align:center;max-width:600px;margin:0 auto 48px">
       <div class="section-tag">Tại sao chọn chúng tôi</div>
       <h2 class="section-title">Học tiếng Anh đúng cách — hiệu quả thật sự</h2>
     </div>
@@ -158,7 +160,7 @@
 
   <!-- ════════════════════ AI WRITING FEATURE ════════════════════ -->
   <section id="ai-writing" class="ai-writing-section" style="border-radius:24px;padding:64px 48px;margin:0 auto;">
-    <div class="section-head" style="text-align:center;max-width:640px;margin:0 auto 48px">
+    <div class="section-head" data-reveal style="text-align:center;max-width:640px;margin:0 auto 48px">
       <div class="section-tag" style="background:#e0e7ff;color:#4f46e5;display:inline-block">✨ Tính năng nổi bật</div>
       <h2 class="section-title">Chấm Writing bằng <span style="color:#4f46e5">AI</span> — phản hồi như giáo viên thật</h2>
       <p class="section-sub">Nộp bài và nhận phân tích chi tiết từng câu trong vài giây. Không phải chờ đợi, không cần đoán mò điểm yếu.</p>
@@ -214,7 +216,7 @@
 
   <!-- ════════════════════ PLATFORM FEATURES ════════════════════ -->
   <section id="platform" style="padding:72px 0">
-    <div class="section-head" style="text-align:center;max-width:620px;margin:0 auto 52px">
+    <div class="section-head" data-reveal style="text-align:center;max-width:620px;margin:0 auto 52px">
       <div class="section-tag" style="background:#fce7f3;color:#be185d;display:inline-block">🚀 Nền tảng luyện thi online</div>
       <h2 class="section-title">Học viên tự luyện mọi lúc, <span style="color:var(--blue)">mọi nơi</span></h2>
       <p class="section-sub">Hệ thống tích hợp sẵn trong khóa học — không cần app ngoài, không mất thêm phí.</p>
@@ -290,13 +292,13 @@
 
   <!-- ════════════════════ COURSES ════════════════════ -->
   <section id="courses" class="courses-section">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
       <div class="section-tag">Khóa học</div>
       <h2 class="section-title">Chọn khóa học phù hợp với bạn</h2>
       <p class="section-sub">Từ mất gốc hoàn toàn đến mục tiêu 7.5+, chúng tôi có chương trình phù hợp cho mọi cấp độ.
       </p>
     </div>
-    <div class="courses-grid" id="courses-grid">
+    <div class="courses-grid" id="courses-grid" data-reveal-children>
 
       <!-- Populated by loadCoursesFromAPI() below; empty until then. -->
 
@@ -374,7 +376,7 @@
 
   <!-- ════════════════════ TESTIMONIALS ════════════════════ -->
   <section id="testimonials" class="testimonials-section">
-    <div class="section-head" style="text-align:center;max-width:560px;margin:0 auto 48px">
+    <div class="section-head" data-reveal style="text-align:center;max-width:560px;margin:0 auto 48px">
       <div class="section-tag">Học viên nói gì</div>
       <h2 class="section-title">Hàng trăm học viên đã thay đổi</h2>
     </div>
@@ -424,7 +426,7 @@
 
   <!-- ════════════════════ STUDENT RESULTS ════════════════════ -->
   <section id="results" class="results-section">
-    <div class="section-head" style="text-align:center;max-width:640px;margin:0 auto 48px">
+    <div class="section-head" data-reveal style="text-align:center;max-width:640px;margin:0 auto 48px">
       <div class="section-tag">Kết quả thật</div>
       <h2 class="section-title">Giấy báo điểm của học viên</h2>
       <p class="section-sub">Không chỉ là lời nói — đây là giấy báo điểm IELTS thật của các học viên đã học cùng thầy Daniel Hà. Bấm vào ảnh để xem rõ hơn.</p>

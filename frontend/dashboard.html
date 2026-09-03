@@ -12,9 +12,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/motion.css?v=20260904"/>
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
   <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
   <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/scroll-reveal.js?v=20260904"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
   <link rel="stylesheet" href="css/dashboard.css?v=20260903hw">
@@ -94,7 +96,7 @@
           <div id="homework-card" style="display:none"></div>
 
           <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
-          <div class="home-dual-row">
+          <div class="home-dual-row" data-reveal>
             <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
             <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
               <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>

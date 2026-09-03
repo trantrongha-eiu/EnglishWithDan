@@ -1,0 +1,101 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Motion layer
+   A small, opt-out set of micro-interactions: scroll-reveal, card hover
+   lift, button press, focus ring, gentle page fade-in.
+
+   Load AFTER css/tokens.css (uses --ease-standard, --shadow-md, --brand…).
+   Pair with js/shared/scroll-reveal.js for the [data-reveal] behaviour.
+
+   EVERYTHING here collapses to nothing under prefers-reduced-motion, and
+   [data-reveal] only hides once JS has added `.sr-ready` to <html>, so
+   content is never left invisible if the script fails to load.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Scroll reveal ───────────────────────────────────────────────────── */
+.sr-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity .55s var(--ease-standard, cubic-bezier(.4,0,.2,1)),
+    transform .55s var(--ease-standard, cubic-bezier(.4,0,.2,1));
+  will-change: opacity, transform;
+}
+.sr-ready [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+/* subtle direction variants */
+.sr-ready [data-reveal="left"]  { transform: translateX(-22px); }
+.sr-ready [data-reveal="right"] { transform: translateX(22px); }
+.sr-ready [data-reveal="zoom"]  { transform: scale(.94); }
+.sr-ready [data-reveal="left"].is-in,
+.sr-ready [data-reveal="right"].is-in,
+.sr-ready [data-reveal="zoom"].is-in { transform: none; }
+
+/* ── Hover lift for cards ────────────────────────────────────────────── */
+.mo-lift,
+.course-card,
+.wt-task-card,
+.todays-lesson-card,
+.mocktest-card,
+.weakness-card,
+#homework-card .hw-item {
+  transition:
+    transform .22s var(--ease-standard, cubic-bezier(.4,0,.2,1)),
+    box-shadow .22s var(--ease-standard, cubic-bezier(.4,0,.2,1));
+}
+.mo-lift:hover,
+.course-card:hover,
+.wt-task-card:hover,
+.todays-lesson-card:hover,
+.mocktest-card:hover,
+#homework-card .hw-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md, 0 6px 24px rgba(0,0,0,.1));
+}
+
+/* ── Button press ───────────────────────────────────────────────────── */
+button:not(:disabled):not([aria-disabled="true"]):active,
+.btn:not(:disabled):active,
+[role="button"]:active,
+a.btn:active {
+  transform: translateY(1px) scale(.985);
+}
+
+/* ── Focus ring (keyboard only) ─────────────────────────────────────── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--brand, #e53935);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 9px);
+}
+
+/* ── Gentle page fade-in ────────────────────────────────────────────── */
+@keyframes mo-page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.mo-page-in > main,
+body.mo-page-in {
+  animation: mo-page-in .4s var(--ease-standard, cubic-bezier(.4,0,.2,1)) both;
+}
+
+/* ── Soft float (opt-in, replaces jumpier keyframes on hero art) ─────── */
+@keyframes mo-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.mo-float { animation: mo-float 5s ease-in-out infinite; }
+
+/* ── Respect the user's motion preference ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .sr-ready [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .mo-lift:hover, .course-card:hover, .wt-task-card:hover,
+  .todays-lesson-card:hover, .mocktest-card:hover,
+  .weakness-card:hover, #homework-card .hw-item:hover { transform: none; }
+}
