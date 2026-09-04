@@ -40,6 +40,10 @@
 /writing/task2/:id        /writing.html?taskType=2&taskId=:id   302
 /writing/template/:type   /task2-template.html?type=:type       302
 
+# The old flat "Task 1 Grammar" page was replaced by the WT1 course
+# (writing-task1.html). Keep old bookmarks/links working.
+/task1-practice.html      /writing-task1.html                   301
+
 # ── Clean top-level aliases (simple static rewrites, no parameters) ──
 /                /index.html            200
 /about           /about.html            200
@@ -60,6 +64,7 @@
 /writing/practice /writing-practice.html 200
 /writing/templates /task2-template.html  200
 /writing/advanced-sentences /advanced-sentences.html 200
+/writing/task1-course /writing-task1.html   200
 /speaking        /speaking.html         200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────
