@@ -1979,7 +1979,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Figures A, B, C, D, E, F — sáu dạng xu hướng khác nhau",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/figures-A-F.png"
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/w_1200,h_840,c_pad,b_white,g_north/l_wt1:charts:figures-def,w_1200,c_scale/fl_layer_apply,g_south/wt1/charts/figures-abc.png"
       },
       "responseSlots": 6,
       "rubric": {
@@ -2680,8 +2680,7 @@
             "Graph 4",
             "Male and female fitness membership in Thailand between 1985 and 2015."
           ]
-        ],
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/graphs-1-4-montage.png"
+        ]
       },
       "responseSlots": 4,
       "rubric": {
@@ -2722,7 +2721,6 @@
       "stimulus": {
         "kind": "text",
         "caption": "Dùng lại 4 biểu đồ ở bài T1-L10-E03",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/graphs-1-4-montage.png",
         "note": "Bốn cách tìm đặc điểm nổi bật: (1) tất cả cùng tăng/giảm? (2) cái nào luôn cao/thấp nhất? (3) cái nào thay đổi mạnh nhất? (4) có xu hướng trái ngược không?"
       },
       "responseSlots": 4,
