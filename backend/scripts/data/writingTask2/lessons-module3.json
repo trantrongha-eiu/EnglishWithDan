@@ -1,0 +1,155 @@
+{
+  "modules": [
+    {
+      "code": "T2-M3",
+      "order": 3,
+      "title": "MODULE 3 — 12 Cấu trúc câu nâng band",
+      "titleEn": "12 Band-Raising Sentence Structures",
+      "outcomes": [
+        "Viết đúng và tự nhiên cả 12 cấu trúc câu bắt buộc phải có cho Band 7+",
+        "Dịch được câu tiếng Việt sang tiếng Anh dùng đúng cấu trúc mục tiêu, không chỉ ghép từ",
+        "Biết cắm đúng cấu trúc vào đúng vị trí trong bài (Introduction/Body/Conclusion)",
+        "Tự sửa được ba lỗi ngữ pháp mất band nhiều nhất và soát bài theo checklist 3 phút cuối giờ"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "T2-L12",
+      "moduleCode": "T2-M3",
+      "order": 12,
+      "title": "Buổi 12 — Câu phức & Câu ghép",
+      "titleEn": "Complex & Compound Sentences",
+      "durationMinutes": 45,
+      "objectives": [
+        "Viết đúng câu phức với Although/Because/Since/While/As/If, đặt đúng dấu phẩy khi mệnh đề phụ đứng trước",
+        "Nối hai mệnh đề độc lập bằng and/but/or/so/yet, hoặc dấu chấm phẩy với however/therefore/nevertheless",
+        "Không mắc lỗi comma splice — lỗi phổ biến nhất của học sinh Việt Nam"
+      ],
+      "keyLanguage": [
+        "Câu phức: Although/Because/Since/While/As/If + mệnh đề phụ, + mệnh đề chính (hoặc đảo lại). Dùng ở paraphrase Introduction, câu nhượng bộ Body 2, câu tóm tắt Conclusion.",
+        "\"Although many people advocate stricter environmental regulations, others argue that economic growth should take precedence.\"",
+        "Câu ghép: mệnh đề độc lập + , + and/but/or/so/yet + mệnh đề độc lập — hoặc …; however/therefore/nevertheless, …",
+        "Lỗi comma splice: SAI \"Technology is convenient, it saves people time.\" → ĐÚNG \"…, and it saves people time.\" hoặc \"…; it saves people time.\""
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L13",
+      "moduleCode": "T2-M3",
+      "order": 13,
+      "title": "Buổi 13 — Câu điều kiện & Câu bị động",
+      "titleEn": "Conditionals & Passive Voice",
+      "durationMinutes": 50,
+      "objectives": [
+        "Phân biệt và viết đúng ba loại câu điều kiện (loại 1/2/3) và Unless = if… not",
+        "Dùng câu điều kiện để cảnh báo hệ quả (cuối Body 1) và đề xuất giải pháp có điều kiện (Body 2)",
+        "Viết câu bị động học thuật be + V3 và mẫu It is widely believed/acknowledged that…"
+      ],
+      "keyLanguage": [
+        "Loại 1: If + hiện tại đơn, will/may/could + V. Loại 2: If + quá khứ đơn, would/could + V. Loại 3: If + had + V3, would have + V3.",
+        "\"If this trend continues, it could lead to…\" (cảnh báo hệ quả) · \"If implemented on a large scale, this measure could…\" (giải pháp)",
+        "Bị động: be + V3 (+ by + tác nhân). Mẫu học thuật: It is widely believed/acknowledged/argued that + mệnh đề.",
+        "\"Stricter regulations should be introduced to limit emissions.\" — bị động + modal nghe khách quan hơn \"the government should do…\""
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L14",
+      "moduleCode": "T2-M3",
+      "order": 14,
+      "title": "Buổi 14 — Mệnh đề quan hệ & Đảo ngữ",
+      "titleEn": "Relative Clauses & Inversion",
+      "durationMinutes": 50,
+      "objectives": [
+        "Dùng đúng who/which/that/whose/where, đặc biệt mẫu \", which + động từ\" để đẩy ý đi thêm một bước",
+        "Viết đúng ba mẫu đảo ngữ an toàn nhất: Not only…but also / Never before has-have / Only by…",
+        "Chỉ dùng MỘT câu đảo ngữ trong cả bài — tránh lạm dụng"
+      ],
+      "keyLanguage": [
+        "Mẹo nâng band nhanh nhất: viết xong câu kết quả, nối thêm \", which…\". \"This saves people time.\" → \"This saves people time, which allows them to devote more attention to their families.\"",
+        "\"Remote work reduces daily commuting, which lowers both transport costs and carbon emissions.\"",
+        "Đảo ngữ: \"Not only does this approach reduce costs, but it also improves efficiency.\" · \"Never before have so many people had access to higher education.\" · \"Only by investing in public transport can cities reduce congestion in the long term.\"",
+        "Cảnh báo: sau \"Not only\" đầu câu bắt buộc phải đảo — không phải \"Not only it reduces…\""
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L15",
+      "moduleCode": "T2-M3",
+      "order": 15,
+      "title": "Buổi 15 — Câu chẻ & Cấu trúc song song",
+      "titleEn": "Cleft Sentences & Parallel Structures",
+      "durationMinutes": 45,
+      "objectives": [
+        "Viết câu chẻ It is/was…that/who… hoặc What…is/was… để nhấn mạnh yếu tố quan trọng nhất",
+        "Đặt câu chẻ đúng chỗ: câu chủ đề của Body hoặc câu cuối Conclusion",
+        "Giữ các thành phần liệt kê cùng dạng ngữ pháp (song song) — cùng danh từ, cùng V-ing, hoặc cùng động từ nguyên mẫu"
+      ],
+      "keyLanguage": [
+        "\"It is the lack of resources that hampers progress in developing countries.\" · \"What many students lack is not intelligence but consistent practice.\"",
+        "Song song đúng: \"…to reduce costs, improve productivity and enhance customer service.\"",
+        "Lỗi song song: SAI \"…to reduce costs, improving productivity, and better customer service.\" — ba dạng khác nhau trong một phép liệt kê"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L16",
+      "moduleCode": "T2-M3",
+      "order": 16,
+      "title": "Buổi 16 — Động từ khuyết thiếu & So sánh",
+      "titleEn": "Modal Verbs & Comparatives",
+      "durationMinutes": 50,
+      "objectives": [
+        "Chọn đúng sắc thái modal: must/should (giải pháp) — may/might/could (hậu quả, dự đoán) — would (kết quả giả định)",
+        "Giữ giọng văn học thuật, thận trọng — tránh khẳng định tuyệt đối",
+        "Viết so sánh hơn nâng cao: far/significantly/considerably + so sánh hơn, the more…the more…, not nearly as…as…"
+      ],
+      "keyLanguage": [
+        "\"Governments should invest more heavily in renewable energy to combat climate change.\" · \"Prolonged screen exposure may impair children's concentration.\"",
+        "Tránh: \"This will definitely destroy society.\" → Dùng may/might/could/is likely to để thận trọng hơn.",
+        "\"Urban areas are significantly more densely populated than rural regions.\" · \"The more time children spend on screens, the less they engage in physical play.\" · \"Public transport in many cities is not nearly as reliable as it needs to be.\""
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L17",
+      "moduleCode": "T2-M3",
+      "order": 17,
+      "title": "Buổi 17 — Cụm phân từ & Cách dùng thì",
+      "titleEn": "Participle Clauses & Tense Usage",
+      "durationMinutes": 55,
+      "objectives": [
+        "Dùng thành thạo …, thereby + V-ing để nêu hệ quả trực tiếp — cụm hiệu quả nhất, dùng được ở mọi dạng đề",
+        "Phân biệt …, allowing/enabling + O + to V và Having + V3, S + V",
+        "Chọn đúng thì theo ngữ cảnh: Present Simple (sự thật chung), Present Perfect (mở đề), Past Simple (ví dụ), Future (dự đoán/hệ quả)"
+      ],
+      "keyLanguage": [
+        "Band 6: \"This saves time. As a result, people are happier.\" (hai câu ngắn) → Band 7: \"This saves time, thereby improving overall well-being.\" (một câu, gọn hơn)",
+        "\"Remote work eliminates the daily commute, thereby reducing both stress and carbon emissions.\" · \"Online platforms deliver lectures to remote areas, enabling students to study without relocating.\"",
+        "Present Simple = sự thật chung, ý kiến, phần lớn lập luận. Present Perfect = nối quá khứ với hiện tại, hoàn hảo cho câu mở đề. Past Simple = ví dụ đã kết thúc. Future/will = dự đoán và hệ quả.",
+        "Đừng đổi thì giữa chừng trong một đoạn mà không có lý do."
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L18",
+      "moduleCode": "T2-M3",
+      "order": 18,
+      "title": "Buổi 18 — Tổng ôn: bảng tra nhanh, lỗi thường gặp & checklist",
+      "titleEn": "Review — Quick Reference, Common Errors & Checklist",
+      "durationMinutes": 30,
+      "objectives": [
+        "Biết cắm đúng cấu trúc vào đúng vị trí trong bài (Introduction/Body/Conclusion)",
+        "Nhận diện và sửa 3 lỗi ngữ pháp mất band nhiều nhất: comma splice, số nhiều/chủ-vị, mạo từ",
+        "Áp dụng checklist 3 phút cuối giờ theo đúng thứ tự 6 lượt soát, mỗi lượt chỉ tìm một loại lỗi"
+      ],
+      "keyLanguage": [
+        "Lượt 1 Task Response · Lượt 2 Số nhiều · Lượt 3 Động từ · Lượt 4 Mạo từ · Lượt 5 Dấu câu · Lượt 6 Độ dài (250 từ, 4 đoạn cân đối)",
+        "Ba phút cuối là ba phút có giá trị nhất — đừng viết thêm câu, hãy sửa lỗi",
+        "Template là giàn giáo, không phải ngôi nhà. Viết đủ ba mươi bài, bạn sẽ tự nhiên viết bằng giọng của chính mình — đó là lúc bạn thật sự đạt Band 7"
+      ],
+      "gate": { "minObjectiveScorePercent": 0, "minWritingSubmissions": 0 }
+    }
+  ]
+}

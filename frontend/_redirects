@@ -44,6 +44,13 @@
 # (writing-task1.html). Keep old bookmarks/links working.
 /task1-practice.html      /writing-task1.html                   301
 
+# "Task 2 Nền tảng" (static reference) and "Viết câu nâng cao" (73
+# translation drills) were folded into the Task 2 Writing course as
+# Module 1 + Module 3 (2026-09) — one place, organized by module. Keep
+# old bookmarks/links working.
+/task2-foundations.html   /writing-task2-course.html            301
+/advanced-sentences.html  /writing-task2-course.html             301
+
 # ── Clean top-level aliases (simple static rewrites, no parameters) ──
 /                /index.html            200
 /about           /about.html            200
@@ -63,9 +70,9 @@
 /writing         /writing.html          200
 /writing/practice /writing-practice.html 200
 /writing/templates /task2-template.html  200
-/writing/advanced-sentences /advanced-sentences.html 200
+/writing/advanced-sentences /writing-task2-course.html 200
 /writing/task1-course /writing-task1.html   200
-/writing/task2-foundations /task2-foundations.html 200
+/writing/task2-foundations /writing-task2-course.html 200
 /writing/task2-course /writing-task2-course.html 200
 /speaking        /speaking.html         200
 
