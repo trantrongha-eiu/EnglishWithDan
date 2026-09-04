@@ -689,7 +689,15 @@
     // objective
     var answers = collectAnswers(ex);
     state.answered = true; btn.disabled = true;
-    if (window.playOk) { /* sound after grading */ }
+    // sentence_transform authored autoGrade:false is graded by AI (a batch
+    // Gemini call, not instant like the other objective types) — show the
+    // same spinner the writing types use so the student isn't staring at a
+    // disabled button with no feedback for a few seconds.
+    if (ex.type === 'sentence_transform' && ex.autoGrade === false) {
+      fb.className = 't1-fb';
+      fb.innerHTML = '<div style="text-align:center;padding:20px"><div class="t1-spinner"></div><p style="color:#9ca3af;margin-top:8px;font-size:13px">AI đang chấm bài...</p></div>';
+      fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
     try {
       var r = await api('/wt1/check', { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, answers: answers }) });
       stopTimer();
@@ -697,6 +705,7 @@
       showObjectiveFeedback(ex, r);
     } catch (e) {
       state.answered = false; btn.disabled = false;
+      fb.classList.add('hidden');
       toast('Lỗi chấm bài', 'error');
     }
   }

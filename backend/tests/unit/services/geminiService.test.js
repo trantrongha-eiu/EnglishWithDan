@@ -13,7 +13,7 @@ jest.mock('@google/genai', () => ({
   })),
 }));
 
-const { checkEssay, checkSpeaking, gradeT2Question, generateTask2Essay } = require('../../../services/geminiService');
+const { checkEssay, checkSpeaking, gradeT2Question, gradeSentenceBatch, generateTask2Essay } = require('../../../services/geminiService');
 
 beforeEach(() => {
   mockGenerateContent.mockReset();
@@ -248,6 +248,74 @@ describe('gradeT2Question type normalization', () => {
 
     expect(result.isCorrect).toBe(true);
     expect(result.score).toBe(80);
+  });
+});
+
+describe('gradeSentenceBatch', () => {
+  const oneItem = [{ id: 'q1', prompt: 'a hospital / northeast / the town', cue: 'In the … corner/area of …', sampleAnswers: ['In the northeast corner of the town, there was a hospital.'], userAnswer: 'There was a hospital in the northeast corner of the town.' }];
+
+  test('an empty/missing items array short-circuits to [] without calling the SDK at all', async () => {
+    const result = await gradeSentenceBatch([]);
+    expect(result).toEqual([]);
+    expect(mockGenerateContent).not.toHaveBeenCalled();
+  });
+
+  test('rejects with the "not configured" message when the key is unset, same as gradeT2Question', async () => {
+    delete process.env.GEMINI_API_KEY;
+    await expect(gradeSentenceBatch(oneItem)).rejects.toThrow('GEMINI_API_KEY chưa cấu hình');
+    process.env.GEMINI_API_KEY = 'test-key';
+  });
+
+  test('parses a {"results": [...]} response, normalizing types per item like gradeT2Question does for a single one', async () => {
+    mockGenerateContent.mockResolvedValue({
+      text: '{"results": [{"id": "q1", "isCorrect": "true", "score": 150, "feedbackVi": "Đúng cấu trúc."}]}',
+    });
+
+    const result = await gradeSentenceBatch(oneItem);
+    expect(result).toEqual([{ id: 'q1', isCorrect: true, score: 100, feedbackVi: 'Đúng cấu trúc.' }]);
+  });
+
+  test('clamps a negative score to 0 and passes a boolean-false isCorrect through unchanged', async () => {
+    mockGenerateContent.mockResolvedValue({
+      text: '{"results": [{"id": "q1", "isCorrect": false, "score": -10, "feedbackVi": "Sai cấu trúc."}]}',
+    });
+
+    const result = await gradeSentenceBatch(oneItem);
+    expect(result[0]).toMatchObject({ isCorrect: false, score: 0 });
+  });
+
+  test('grades multiple items in one call, matched back by id', async () => {
+    const items = [
+      { id: 'q1', prompt: 'p1', userAnswer: 'a1' },
+      { id: 'q2', prompt: 'p2', userAnswer: 'a2' },
+    ];
+    mockGenerateContent.mockResolvedValue({
+      text: '{"results": [{"id": "q2", "isCorrect": false, "score": 20, "feedbackVi": "sai"}, {"id": "q1", "isCorrect": true, "score": 95, "feedbackVi": "đúng"}]}',
+    });
+
+    const result = await gradeSentenceBatch(items);
+    expect(result).toHaveLength(2);
+    expect(result.find((r) => r.id === 'q1')).toMatchObject({ isCorrect: true, score: 95 });
+    expect(result.find((r) => r.id === 'q2')).toMatchObject({ isCorrect: false, score: 20 });
+  });
+
+  test('retries once when the first response has no parseable JSON, and succeeds on the second try', async () => {
+    mockGenerateContent
+      .mockResolvedValueOnce({ text: 'not json at all' })
+      .mockResolvedValueOnce({ text: '{"results": [{"id": "q1", "isCorrect": true, "score": 100, "feedbackVi": "ok"}]}' });
+
+    const result = await gradeSentenceBatch(oneItem);
+    expect(result[0].isCorrect).toBe(true);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+  });
+
+  test('uses the same overload message text as gradeT2Question on a hard API error', async () => {
+    mockGenerateContent.mockRejectedValue(Object.assign(new Error('quota'), { status: 429 }));
+
+    await expect(gradeSentenceBatch(oneItem)).rejects.toMatchObject({
+      isOverloaded: true,
+      message: 'AI đang quá tải, vui lòng thử lại.',
+    });
   });
 });
 

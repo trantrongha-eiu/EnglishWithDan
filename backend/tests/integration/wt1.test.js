@@ -188,3 +188,60 @@ describe('gate unlock + ownership', () => {
     expect(res.status).toBe(404);
   });
 });
+
+// BUG-091: a free-composition sentence_transform exercise (content author
+// marked autoGrade:false — "viết một câu hoàn chỉnh, dùng cấu trúc yêu
+// cầu", many valid phrasings) was silently graded with the same narrow
+// Levenshtein/keyword check as a one-answer translation drill, so a
+// genuinely correct-but-differently-worded answer scored 0. ST1 (seeded
+// above) is exactly this: type sentence_transform, autoGrade:false. These
+// tests run last in the file (after every other describe block) since
+// geminiService is auto-mocked at module scope with no reset hook between
+// tests — mockResolvedValueOnce/mockRejectedValueOnce keep each one
+// self-contained regardless of run order within this block.
+describe('POST /check — AI-graded sentence_transform (autoGrade:false)', () => {
+  test('a valid paraphrase Gemini judges correct passes, even though it fails the local fuzzy match against sampleAnswers', async () => {
+    geminiService.gradeSentenceBatch.mockResolvedValueOnce([
+      { id: 'q1', isCorrect: true, score: 90, feedbackVi: 'Đúng nghĩa, diễn đạt khác đáp án mẫu.' },
+    ]);
+    const u = await createPremiumStudent();
+    // Sample answer is "The number of cars was five million." — this is a
+    // legitimate paraphrase with different word order/structure, which
+    // gradeObjective's sentence_transform case (ratio<0.85, coverage<0.8)
+    // would mark wrong.
+    const res = await request(app).post('/api/wt1/check').set(bearer(u))
+      .send({ exerciseCode: 'ST1', answers: { q1: 'There were approximately five million cars in total.' } });
+    expect(res.status).toBe(200);
+    expect(res.body.score).toBe(100);
+    expect(res.body.items[0].correct).toBe(true);
+    expect(res.body.aiGraded).toBe(true);
+    // Other ST1 cases earlier in this file also route through
+    // gradeSentenceTransformBatch (falling back locally since unmocked
+    // there), so check the LAST call rather than an absolute count.
+    const [items] = geminiService.gradeSentenceBatch.mock.calls.at(-1);
+    expect(items[0]).toMatchObject({ id: 'q1', userAnswer: 'There were approximately five million cars in total.' });
+  });
+
+  test('a Gemini failure falls back to local grading instead of failing the request', async () => {
+    geminiService.gradeSentenceBatch.mockRejectedValueOnce(new Error('AI quá tải'));
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/check').set(bearer(u))
+      .send({ exerciseCode: 'ST1', answers: { q1: 'The number of cars was five million.' } }); // exact match — local fallback still grades it right
+    expect(res.status).toBe(200);
+    expect(res.body.score).toBe(100);
+    expect(res.body.aiGraded).toBe(false);
+  });
+
+  test('an autoGrade:true sentence_transform exercise (e.g. a one-answer translation drill) never calls Gemini', async () => {
+    await WT1Exercise.create({
+      code: 'ST2', lessonCode: 'T1-L02', order: 8, type: 'sentence_transform', title: 'ST2', published: true, autoGrade: true,
+      items: [{ id: 'q1', prompt: 'dịch', sampleAnswers: ['I like cats.'] }],
+    });
+    const callsBefore = geminiService.gradeSentenceBatch.mock.calls.length;
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ST2', answers: { q1: 'I like cats.' } });
+    expect(res.status).toBe(200);
+    expect(res.body.score).toBe(100);
+    expect(geminiService.gradeSentenceBatch.mock.calls.length).toBe(callsBefore);
+  });
+});
