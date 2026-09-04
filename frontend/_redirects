@@ -65,6 +65,7 @@
 /writing/templates /task2-template.html  200
 /writing/advanced-sentences /advanced-sentences.html 200
 /writing/task1-course /writing-task1.html   200
+/writing/task2-foundations /task2-foundations.html 200
 /speaking        /speaking.html         200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────
