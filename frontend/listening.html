@@ -39,7 +39,7 @@
 <script src="/js/shared/review-required-popup.js?v=20260907"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
-<script src="/js/shared/mock-test.js?v=20260905"></script>
+<script src="/js/shared/mock-test.js?v=20260906fix"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -3100,8 +3100,14 @@
             closeModal('modal-submit');
             if (state.submitted) return;
             state.submitted = true;
-            clearExamStorage(); // clear saved progress on submit
-            window.onbeforeunload = null;
+            // BUG FIX: used to clearExamStorage() right here, before the submit
+            // even reached the server. If that request then failed (network
+            // blip, a 401 mid-exam forcing a re-login, a timeout) the local
+            // backup was ALREADY gone — the student lost every answer and had
+            // to redo the whole test (reported 2026-09). Now mirrors
+            // js/reading-v2.js's submitExam(): only cleared once success (or
+            // the timeout-recovery path below) is confirmed. window.onbeforeunload
+            // also stays armed until then, so a stray reload still warns first.
             clearInterval(_asoTimer);
             audio.pause();
             audio.src = '';
@@ -3140,6 +3146,7 @@
                 clearTimeout(submitTimeout);
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
+                clearExamStorage(); // confirmed saved server-side — safe to drop the local backup now
                 overlay.style.display = 'none';
                 if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
                 if (window.showBadgeUnlocked && data.result?.newlyUnlocked?.length) window.showBadgeUnlocked(data.result.newlyUnlocked);
@@ -3158,6 +3165,7 @@
                         const rres = await fetch(`${API}/listening/history/${state.attemptId}`, { headers: authH() });
                         const rdata = await safeJson(rres);
                         if (rdata.success && rdata.result) {
+                            clearExamStorage(); // it really was saved — safe to drop the local backup now
                             overlay.style.display = 'none';
                             toast('Bài thi đã được nộp trước đó — đang hiện kết quả.', 'info');
                             _renderExamResult(rdata.result);
@@ -3165,9 +3173,16 @@
                         }
                     } catch { /* fall through to the generic error below */ }
                 }
+                // Genuinely failed (or we couldn't confirm either way) — the local
+                // backup (state.answers etc., autosaved every 10s) is deliberately
+                // left in place so checkResumeExam() offers it back next load,
+                // including after a forced re-login. Re-arm the periodic autosave
+                // too, in case the student keeps working before retrying submit.
                 overlay.style.display = 'none';
-                toast('Lỗi nộp bài: ' + err.message, 'error');
+                toast('Lỗi nộp bài: ' + err.message + ' — bài làm của bạn vẫn được lưu, hãy thử nộp lại.', 'error');
                 state.submitted = false;
+                if (!_saveInterval) _saveInterval = setInterval(saveExamToStorage, 10000);
+                saveExamToStorage();
             }
         }
 

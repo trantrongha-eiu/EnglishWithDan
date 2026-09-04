@@ -52,34 +52,139 @@
     return data.attempt || null;
   }
 
-  // Called by a skill page after it has successfully submitted its own
-  // sub-attempt. Never rejects — on any failure it bails the student back
-  // to the dashboard rather than trapping them on a finished exam screen.
+  // Where the frontend should send the student after `skill` was recorded.
+  // Shared by advance()'s success path and flushPendingAdvance() below.
+  function _navigateByResult(nav, mockId) {
+    nav = nav || {};
+    if (nav.done)         { location.href = 'review-history.html?view=mock'; return; }
+    // Sitting break — back to the dashboard; the student self-starts the
+    // next skill. `breakAfter` ('reading' | 'writing') picks the copy.
+    if (nav.sittingBreak) {
+      location.href = 'dashboard.html?mockbreak=' + encodeURIComponent(nav.breakAfter || 'reading');
+      return;
+    }
+    if (nav.nextSkill)    { location.href = pageUrl(nav.nextSkill, mockId); return; }
+    location.href = 'dashboard.html';
+  }
+
+  function _sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  // One POST /advance, never auto-logging-out on a 401 (skipAuthRedirect) —
+  // advance() and flushPendingAdvance() both need to inspect a 401
+  // themselves instead of ApiClient hard-redirecting mid-call.
+  function _postAdvanceOnce(mockId, skill, subAttemptId) {
+    return fetch(API + '/mock-test/' + encodeURIComponent(mockId) + '/advance', {
+      method: 'POST',
+      headers: h(),
+      body: JSON.stringify({ skill: skill, attemptId: subAttemptId || null })
+    }).then(function (res) { return window.ApiClient.handleResponse(res, { skipAuthRedirect: true }); });
+  }
+
+  // Bug found 2026-09: a skill page calls this right after ITS OWN /submit
+  // already succeeded (the answers are safe server-side) — this call only
+  // records the mock wrapper's "next step" bookkeeping. The old version
+  // routed every failure (a network blip, or a token that expired mid-test)
+  // straight through ApiClient's hard logout+redirect with no way back,
+  // which a student hit after submitting Listening — bounced to login and,
+  // because the wrapper's progress cursor was never advanced, told to redo
+  // Listening from scratch even though it had already been graded.
+  //
+  // Now: the intent to advance is written to localStorage BEFORE the network
+  // call (see PENDING_KEY) so it survives the tab dying mid-request; a
+  // transient failure retries with backoff; and a real 401 sends the
+  // student to log back in WITHOUT losing that intent — flushPendingAdvance()
+  // (called on every page load, see the bottom of this file) silently
+  // finishes the exact same idempotent call the moment they're signed back
+  // in, so the run resumes on the correct next skill instead of restarting.
   async function advance(skill, subAttemptId) {
     var x = params();
     if (!x.mockId) return;
     stopProctor();  // legit end-of-skill navigation must not log a violation
-    try {
-      var res = await fetch(API + '/mock-test/' + encodeURIComponent(x.mockId) + '/advance', {
-        method: 'POST',
-        headers: h(),
-        body: JSON.stringify({ skill: skill, attemptId: subAttemptId || null })
-      });
-      var data = await window.ApiClient.handleResponse(res);
-      var nav = data.nav || {};
-      if (nav.done)        { location.href = 'review-history.html?view=mock'; return; }
-      // Sitting break — back to the dashboard; the student self-starts the
-      // next skill. `breakAfter` ('reading' | 'writing') picks the copy.
-      if (nav.sittingBreak) {
-        location.href = 'dashboard.html?mockbreak=' + encodeURIComponent(nav.breakAfter || 'reading');
+    _savePending(x.mockId, skill, subAttemptId);
+
+    var data = null, lastErr = null;
+    for (var i = 0; i < 3; i++) {
+      try { data = await _postAdvanceOnce(x.mockId, skill, subAttemptId); lastErr = null; break; }
+      catch (e) {
+        lastErr = e;
+        if (e && e.status === 401) break;      // a real auth failure — retrying won't help
+        if (i < 2) await _sleep(900 * (i + 1)); // network hiccup / 5xx — brief backoff, try again
+      }
+    }
+
+    if (lastErr) {
+      if (lastErr.status === 401) {
+        try {
+          if (window.toast) window.toast(
+            'Phiên đăng nhập đã hết hạn. Bài "' + (SKILL_LABEL[skill] || skill) + '" của bạn đã được lưu — đăng nhập lại để tiếp tục.',
+            'info', 6000
+          );
+        } catch (_) {}
+        if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
+        else { try { localStorage.removeItem('token'); localStorage.removeItem('user'); } catch (_) {} }
+        // Straight to the dashboard, not back to this same skill page — the
+        // skill was already submitted, so reopening it in mock mode would
+        // start a brand-new attempt. flushPendingAdvance() finishes the
+        // bookkeeping there and the dashboard card then offers the real
+        // next step.
+        var next = (window.AuthService && window.AuthService.buildLoginUrl)
+          ? window.AuthService.buildLoginUrl('dashboard.html')
+          : ('/login.html?next=' + encodeURIComponent('dashboard.html'));
+        location.href = next;
         return;
       }
-      if (nav.nextSkill)   { location.href = pageUrl(nav.nextSkill, x.mockId); return; }
-      location.href = 'dashboard.html';
+      console.error('[MockTest] advance failed:', lastErr);
+      try { if (window.toast) window.toast('Chưa lưu được tiến độ thi thử — sẽ tự đồng bộ khi bạn quay lại trang chủ', 'error'); } catch (_) {}
+      location.href = 'dashboard.html'; // _PENDING_KEY stays set; flushed from there
+      return;
+    }
+
+    _clearPending();
+    _navigateByResult(data.nav, x.mockId);
+  }
+
+  // ── Recovery for an advance() interrupted by a session expiry ──────────
+  var PENDING_KEY = 'ews_mock_pending_advance';
+  function _savePending(mockId, skill, subAttemptId) {
+    try { localStorage.setItem(PENDING_KEY, JSON.stringify({ mockId: mockId, skill: skill, subAttemptId: subAttemptId || null, ts: Date.now() })); }
+    catch (_) {}
+  }
+  function _clearPending() { try { localStorage.removeItem(PENDING_KEY); } catch (_) {} }
+  function _readPending() {
+    try {
+      var raw = localStorage.getItem(PENDING_KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      if (!d || !d.mockId || !d.skill) { _clearPending(); return null; }
+      if (Date.now() - (d.ts || 0) > 24 * 60 * 60 * 1000) { _clearPending(); return null; } // stale — drop it
+      return d;
+    } catch (_) { return null; }
+  }
+
+  // Runs on every page that loads this file (every skill page + dashboard).
+  // A no-op almost always — only does anything when a previous advance() was
+  // interrupted by a 401. Idempotent server-side (mockTestService.advance's
+  // `alreadyDone` check), so calling it again here is always safe even if
+  // the original request actually made it through before the client saw
+  // the failure. Deliberately quiet: fixes the wrapper's progress cursor in
+  // the background and lets the dashboard card render the real state,
+  // rather than yanking the student off a page they navigated to on
+  // purpose — EXCEPT when they've landed back on the exact stale skill page
+  // (mock=&skill= still match the pending record), where staying put would
+  // otherwise silently start that already-completed skill over from zero.
+  async function flushPendingAdvance() {
+    var pending = _readPending();
+    if (!pending) return;
+    if (!(window.AuthService && window.AuthService.isLoggedIn())) return; // still signed out — retry next load
+    try {
+      var data = await _postAdvanceOnce(pending.mockId, pending.skill, pending.subAttemptId);
+      _clearPending();
+      var cur = params();
+      var onStaleSkillPage = cur.mockId === pending.mockId && cur.skill === pending.skill;
+      if (onStaleSkillPage) _navigateByResult(data.nav, pending.mockId);
     } catch (e) {
-      console.error('[MockTest] advance failed:', e);
-      try { if (window.toast) window.toast('Không lưu được tiến độ thi thử — quay lại trang chủ', 'error'); } catch (_) {}
-      location.href = 'dashboard.html';
+      if (e && e.status === 401) return;   // not really signed in yet — leave pending, try again later
+      _clearPending(); // a definitive rejection (409 wrong step / 404 run gone) — this record is stale
     }
   }
 
@@ -466,6 +571,7 @@
     pageUrl: pageUrl,
     fetchCurrent: fetchCurrent,
     advance: advance,
+    flushPendingAdvance: flushPendingAdvance,
     showBanner: showBanner,
     startProctor: startProctor,
     stopProctor: stopProctor,
@@ -473,6 +579,12 @@
     SKILL_LABEL: SKILL_LABEL,
     STEP_INDEX: STEP_INDEX
   };
+
+  // Recover a step whose /advance call was interrupted (e.g. a session
+  // expiry landed right as the student submitted a skill) — see advance()'s
+  // 401 branch above. Runs on every page load; a no-op the vast majority of
+  // the time (nothing pending).
+  flushPendingAdvance();
 
   // Auto-arm on any skill page loaded in mock mode.
   if (active()) {
