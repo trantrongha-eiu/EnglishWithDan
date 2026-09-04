@@ -283,6 +283,30 @@
   // Strip non-typable chars and lower-case — the comparison key for a word.
   function _wordKey(s) { return nfc(s).replace(NOT_TYPABLE, '').toLowerCase(); }
 
+  // Vietnamese "oa/oe/uy" diphthongs are spelled with the tone mark on
+  // either vowel depending on convention — "hoà" vs "hòa", "hoá" vs "hóa",
+  // "hoạ" vs "họa", "thuý" vs "thúy" — both spellings are in real-world use
+  // (older keyboards/textbooks vs. current dictionaries), and a meaning
+  // pulled from a dictionary lookup can land on either one independent of
+  // which one a student was taught. Compare tone-POSITION-agnostically:
+  // NFD-decompose (splits each letter into base + combining marks, so a
+  // vowel-quality mark like the horn on ơ/ư stays put and untouched), pull
+  // out the single tone-diacritic if any (one Vietnamese syllable carries
+  // at most one tone) instead of leaving it attached to whichever vowel,
+  // and re-fold everything else back to NFC. Two spellings of the same
+  // word normalize to the same key; a genuinely different tone (a wrong
+  // answer, not just a different vowel to hang the same tone off of)
+  // still does not.
+  var TONE_MARK_RE = /[\u0301\u0300\u0309\u0303\u0323]/g; // acute, grave, hook-above, tilde, dot-below
+  function _toneAgnosticKey(s) {
+    var tone = '';
+    var stripped = nfc(s).normalize('NFD').replace(TONE_MARK_RE, function (m) {
+      if (!tone) tone = m;
+      return '';
+    });
+    return (stripped.normalize ? stripped.normalize('NFC') : stripped).toLowerCase() + '#' + tone;
+  }
+
   // Advance past the just-completed active word.
   Drill.prototype._advanceWord = function () {
     this.activeIdx++;
@@ -348,6 +372,9 @@
     var want = _wordKey(tok.target);
 
     if (got === want) { this._advanceWord(); return; }
+    // Same word, tone mark just sitting on the other vowel of a diphthong
+    // ("hoạ"/"họa", "thuý"/"thúy"...) — see _toneAgnosticKey above.
+    if (got && _toneAgnosticKey(got) === _toneAgnosticKey(want)) { this._advanceWord(); return; }
 
     // Not matching. Stay quiet while they're still (plausibly) mid-word;
     // shake only when they explicitly committed with Space, or clearly
