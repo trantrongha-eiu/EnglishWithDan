@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const Task2Topic = require('../models/Task2Topic');
 const Task2Attempt = require('../models/Task2Attempt');
 const Task2Template = require('../models/Task2Template');
+const Task2TypeGuide = require('../models/Task2TypeGuide');
 const Task2Draft = require('../models/Task2Draft');
 const WritingTask2 = require('../models/WritingTask2');
 const { gradeT2Question } = require('./geminiService');
@@ -163,6 +164,12 @@ async function listTemplates(level) {
   // exactly what they always got.
   const lvl = level === 'band6' ? 'band6' : 'band7';
   return Task2Template.find({ isActive: true, level: lvl }).sort({ orderIndex: 1 }).lean();
+}
+
+// Per-type reference guides (recognise / outline / 6+→7+ upgrade table /
+// useful language / model essay / mistakes) for the Templates page.
+async function listTypeGuides() {
+  return Task2TypeGuide.find({ isActive: true }).sort({ orderIndex: 1 }).select('-__v -createdAt -updatedAt').lean();
 }
 
 async function listWeeks() {
@@ -561,7 +568,7 @@ async function listDrafts(userId) {
 }
 
 module.exports = {
-  listTemplates, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
+  listTemplates, listTypeGuides, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
   checkAnswer, getExam, submitExam, saveAttempt, getHistory, getAttemptDetail, getProgress, getWrongQuestions,
   getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
 };

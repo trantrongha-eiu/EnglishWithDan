@@ -11,6 +11,15 @@ exports.listTemplates = async (req, res) => {
   }
 };
 
+exports.listTypeGuides = async (_req, res) => {
+  try {
+    const guides = await task2PracticeService.listTypeGuides();
+    res.json({ success: true, guides });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.listWeeks = async (req, res) => {
   try {
     const weeks = await task2PracticeService.listWeeks();

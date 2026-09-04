@@ -35,6 +35,11 @@ const checkLimiter = rateLimit({
 // so it needs auth + premium like every other practice endpoint here.
 router.get('/templates', auth, premiumOnly, task2PracticeController.listTemplates);
 
+// GET /api/task2/type-guides — per-type reference material shown on the
+// Templates page (recognise / outline / 6+→7+ table / useful language /
+// model essay / mistakes). Same gate as /templates.
+router.get('/type-guides', auth, premiumOnly, task2PracticeController.listTypeGuides);
+
 // GET /api/task2/weeks
 router.get('/weeks', task2PracticeController.listWeeks);
 
