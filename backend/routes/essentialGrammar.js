@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const auth = require('../middleware/auth');
 const logger = require('../utils/logger');
 const essentialGrammarController = require('../controllers/essentialGrammar.controller');
@@ -20,7 +21,7 @@ const teacherOnly = (req, res, next) => {
 const adminWriteLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res) => {
     logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' });

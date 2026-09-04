@@ -1,5 +1,6 @@
 const router         = require('express').Router();
 const rateLimit      = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const auth           = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const logger         = require('../utils/logger');
@@ -14,7 +15,7 @@ const premiumOnly = requirePremium('Tính năng tra từ điển nâng cao chỉ
 const collocationsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 30,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res) => {
     logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau ít phút.' });
@@ -28,7 +29,7 @@ const collocationsLimiter = rateLimit({
 const exampleLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 80,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res) => {
     logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau ít phút.' });
@@ -39,7 +40,7 @@ const exampleLimiter = rateLimit({
 const exampleBulkLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res) => {
     logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau ít phút.' });

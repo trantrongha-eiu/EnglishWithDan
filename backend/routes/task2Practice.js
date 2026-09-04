@@ -1,6 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const auth    = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const task2PracticeController = require('../controllers/task2Practice.controller');
@@ -20,7 +21,7 @@ const premiumOnly = requirePremium('Bạn cần nâng cấp lên Premium để l
 const checkLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res, next) => {
     logger.security('AI check rate limit hit — falling back to keyword grading', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     req.skipAIGrading = true;
