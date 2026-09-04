@@ -1,0 +1,2365 @@
+{
+  "exercises": [
+    {
+      "code": "T1-L02-E01",
+      "lessonCode": "T1-L02",
+      "order": 1,
+      "type": "categorize",
+      "title": "Warm-up — Danh từ này đi với từ nào?",
+      "instruction": "Kéo mỗi danh từ vào đúng cột. Hỏi bản thân: đếm được hay không đếm được?",
+      "source": "added",
+      "skillTags": [
+        "noun-choice",
+        "countability"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 3,
+      "points": 12,
+      "autoGrade": true,
+      "categories": [
+        {
+          "id": "number",
+          "label": "the NUMBER of + N đếm được số nhiều"
+        },
+        {
+          "id": "amount",
+          "label": "the AMOUNT of + N không đếm được"
+        }
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "text": "cars",
+          "category": "number"
+        },
+        {
+          "id": "q2",
+          "text": "water",
+          "category": "amount"
+        },
+        {
+          "id": "q3",
+          "text": "students",
+          "category": "number"
+        },
+        {
+          "id": "q4",
+          "text": "electricity",
+          "category": "amount"
+        },
+        {
+          "id": "q5",
+          "text": "tourists",
+          "category": "number"
+        },
+        {
+          "id": "q6",
+          "text": "rice",
+          "category": "amount"
+        },
+        {
+          "id": "q7",
+          "text": "households",
+          "category": "number"
+        },
+        {
+          "id": "q8",
+          "text": "coffee",
+          "category": "amount"
+        },
+        {
+          "id": "q9",
+          "text": "accidents",
+          "category": "number"
+        },
+        {
+          "id": "q10",
+          "text": "waste",
+          "category": "amount"
+        },
+        {
+          "id": "q11",
+          "text": "factories",
+          "category": "number"
+        },
+        {
+          "id": "q12",
+          "text": "energy",
+          "category": "amount"
+        }
+      ]
+    },
+    {
+      "code": "T1-L02-E02",
+      "lessonCode": "T1-L02",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Bài tập 4 — Chọn danh từ đúng",
+      "instruction": "Điền number, amount, percentage hoặc figure vào chỗ trống.",
+      "source": "original",
+      "skillTags": [
+        "noun-choice"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "points": 8,
+      "autoGrade": true,
+      "wordBank": [
+        "number",
+        "amount",
+        "percentage",
+        "figure"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The ____ of electricity consumed in Hanoi rose in 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "electricity là danh từ không đếm được → amount."
+        },
+        {
+          "id": "q2",
+          "prompt": "The ____ of tourists visiting Da Nang was 3 million.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "tourists đếm được số nhiều → number."
+        },
+        {
+          "id": "q3",
+          "prompt": "The ____ of students choosing science subjects fell to 12%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "Kết quả là 12% → dữ liệu phần trăm."
+        },
+        {
+          "id": "q4",
+          "prompt": "The ____ for Sweden was lower than that for Norway.",
+          "blanks": [
+            {
+              "accept": [
+                "figure"
+              ]
+            }
+          ],
+          "explanation": "“the figure for + tên nước” = số liệu của nước đó. Chú ý giới từ FOR, không phải OF."
+        },
+        {
+          "id": "q5",
+          "prompt": "The ____ of coffee exported from Vietnam reached 1.5 million tonnes.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "coffee không đếm được → amount."
+        },
+        {
+          "id": "q6",
+          "prompt": "The ____ of households owning a car doubled over the period.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "households đếm được → number."
+        },
+        {
+          "id": "q7",
+          "prompt": "The ____ of rice produced in the Mekong Delta stood at 24 million tonnes.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "rice không đếm được → amount."
+        },
+        {
+          "id": "q8",
+          "prompt": "The ____ of male teachers in this school is only 15%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "15% → dữ liệu phần trăm."
+        }
+      ]
+    },
+    {
+      "code": "T1-L02-E03",
+      "lessonCode": "T1-L02",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Bổ sung — was hay were?",
+      "instruction": "Điền was hoặc were. Nhớ: chủ ngữ thật sự là “the number / the amount / the percentage”, không phải danh từ đứng sau “of”.",
+      "source": "added",
+      "skillTags": [
+        "subject-verb-agreement"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 4,
+      "points": 6,
+      "autoGrade": true,
+      "wordBank": [
+        "was",
+        "were"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of cars ____ 5 million in 2000.",
+          "blanks": [
+            {
+              "accept": [
+                "was"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ là “the number” → số ít."
+        },
+        {
+          "id": "q2",
+          "prompt": "There ____ 5 million cars in Vietnam in 2000.",
+          "blanks": [
+            {
+              "accept": [
+                "were"
+              ]
+            }
+          ],
+          "explanation": "“There + be + 5 million cars” → danh từ số nhiều → were."
+        },
+        {
+          "id": "q3",
+          "prompt": "The amount of water used ____ 5 million m³.",
+          "blanks": [
+            {
+              "accept": [
+                "was"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ là “the amount” → số ít."
+        },
+        {
+          "id": "q4",
+          "prompt": "The percentages of male and female workers ____ 60% and 40%.",
+          "blanks": [
+            {
+              "accept": [
+                "were"
+              ]
+            }
+          ],
+          "explanation": "“The percentages” số nhiều → were."
+        },
+        {
+          "id": "q5",
+          "prompt": "5 million Vietnamese people ____ using cars in 2000.",
+          "blanks": [
+            {
+              "accept": [
+                "were"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ “5 million people” → số nhiều."
+        },
+        {
+          "id": "q6",
+          "prompt": "The figure for Japan ____ much higher than that for Korea.",
+          "blanks": [
+            {
+              "accept": [
+                "was"
+              ]
+            }
+          ],
+          "explanation": "“The figure” số ít → was."
+        }
+      ]
+    },
+    {
+      "code": "T1-L02-E04",
+      "lessonCode": "T1-L02",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Bài tập 6 — Sửa lỗi",
+      "instruction": "Mỗi câu dưới đây có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "source": "original",
+      "skillTags": [
+        "noun-choice",
+        "subject-verb-agreement",
+        "there-were"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 5,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of water used in 2015 was very high.",
+          "errorSpan": "number",
+          "answer": "The amount of water used in 2015 was very high.",
+          "accept": [
+            "amount"
+          ],
+          "explanation": "water không đếm được → amount, không dùng number."
+        },
+        {
+          "id": "q2",
+          "prompt": "The amount of visitors were 2 million.",
+          "errorSpan": "amount",
+          "answer": "The number of visitors was 2 million.",
+          "accept": [
+            "number of visitors was"
+          ],
+          "explanation": "Hai lỗi cùng gốc: visitors đếm được → number; và “the number” số ít → was."
+        },
+        {
+          "id": "q3",
+          "prompt": "There were 30% of students chose French.",
+          "errorSpan": "There were",
+          "answer": "30% of students chose French.",
+          "accept": [
+            "30% of students chose French"
+          ],
+          "explanation": "Không dùng “There were” với phần trăm; và câu đã có động từ “chose” rồi."
+        },
+        {
+          "id": "q4",
+          "prompt": "The percentage of energy consumption were 40%.",
+          "errorSpan": "were",
+          "answer": "The percentage of energy consumption was 40%.",
+          "accept": [
+            "was"
+          ],
+          "explanation": "Chủ ngữ “the percentage” số ít → was."
+        },
+        {
+          "id": "q5",
+          "prompt": "The figure of Japan was higher than Korea.",
+          "errorSpan": "of Japan … than Korea",
+          "answer": "The figure for Japan was higher than that for Korea.",
+          "accept": [
+            "figure for Japan was higher than that for Korea"
+          ],
+          "explanation": "Dùng “the figure FOR + nước”; và phải so sánh số liệu với số liệu → “than that for Korea”."
+        }
+      ]
+    },
+    {
+      "code": "T1-L02-E05",
+      "lessonCode": "T1-L02",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Bài tập 5 — Đổi vị trí số liệu trong câu",
+      "instruction": "Mỗi câu đang dùng một trong ba vị trí đặt số liệu (đầu / giữa / cuối câu). Viết lại theo hai vị trí còn lại.",
+      "source": "original",
+      "skillTags": [
+        "sentence-position",
+        "paraphrasing"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 8,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of British cyclists was 4 million in 2010.",
+          "cue": "đầu câu + giữa câu",
+          "sampleAnswers": [
+            "In 2010, 4 million British people cycled.",
+            "There were 4 million cyclists in Britain in 2010."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "300,000 Japanese people visited Vietnam in 2019.",
+          "cue": "cuối câu + giữa câu",
+          "sampleAnswers": [
+            "The number of Japanese visitors to Vietnam was 300,000 in 2019.",
+            "There were 300,000 Japanese people visiting Vietnam in 2019."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "There were 12 million tonnes of waste produced in Australia.",
+          "cue": "cuối câu + đầu câu",
+          "sampleAnswers": [
+            "The amount of waste produced in Australia was 12 million tonnes.",
+            "12 million tonnes of waste were produced in Australia."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The amount of gas used by factories stood at 800 million m³.",
+          "cue": "đầu câu + giữa câu",
+          "sampleAnswers": [
+            "800 million m³ of gas were used by factories.",
+            "There were 800 million m³ of gas used by factories."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "The number/amount of … was …",
+          "[Số liệu] + N + V",
+          "There were + số liệu + N"
+        ],
+        "checklist": [
+          "Giữ nguyên toàn bộ số liệu",
+          "Không dùng lại đúng cấu trúc của câu gốc",
+          "Đúng số ít/số nhiều của động từ"
+        ],
+        "commonErrors": [
+          "The number of cars were",
+          "There were 20% of…"
+        ]
+      }
+    },
+    {
+      "code": "T1-L02-E06",
+      "lessonCode": "T1-L02",
+      "order": 6,
+      "type": "sentence_writing",
+      "title": "Bài tập 1 — Phương tiện giao thông ở Việt Nam (2005)",
+      "instruction": "Viết 4 câu mô tả số liệu dưới đây. Luân phiên cả 3 vị trí đặt số liệu, không lặp lại một cấu trúc quá 2 lần.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "sentence-variety"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Số lượng người sử dụng các phương tiện giao thông ở Việt Nam (2005)",
+        "headers": [
+          "PHƯƠNG TIỆN",
+          "SỐ LƯỢNG (triệu người)"
+        ],
+        "rows": [
+          [
+            "Xe máy (Motorbike)",
+            "20"
+          ],
+          [
+            "Ô tô (Car)",
+            "7"
+          ],
+          [
+            "Xe buýt (Bus)",
+            "2"
+          ]
+        ]
+      },
+      "wordBank": [
+        "car / bike / bus users",
+        "use bikes / cars / buses",
+        "travel by bike / car / bus"
+      ],
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 45,
+        "targetStructures": [
+          "The number of … was …",
+          "[Số liệu] + people + V",
+          "There were + số liệu + N + V-ing"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Dùng ít nhất 3 cấu trúc khác nhau trong 4 câu",
+          "Dùng number (không dùng amount) vì users đếm được",
+          "Động từ chia đúng số ít/số nhiều"
+        ],
+        "sampleAnswer": "The number of Vietnamese motorbike users was 20 million in 2005. 7 million people in Vietnam travelled by car. There were 2 million individuals using buses. The figure for bus users was the lowest of the three means of transport.",
+        "commonErrors": [
+          "The number of motorbike were",
+          "The amount of car users"
+        ]
+      }
+    },
+    {
+      "code": "T1-L02-E07",
+      "lessonCode": "T1-L02",
+      "order": 7,
+      "type": "sentence_writing",
+      "title": "Bài tập 2 — Sinh viên quốc tế (2005)",
+      "instruction": "Viết 4 câu mô tả số liệu. Dùng các động từ gợi ý để tránh lặp “studied”.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "lexical-variety"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Số lượng sinh viên quốc tế học ở nước ngoài (2005)",
+        "headers": [
+          "QUỐC GIA",
+          "SỐ LƯỢNG (triệu sinh viên)"
+        ],
+        "rows": [
+          [
+            "The UK",
+            "2"
+          ],
+          [
+            "The US",
+            "10"
+          ],
+          [
+            "Australia",
+            "4"
+          ],
+          [
+            "Canada",
+            "1"
+          ]
+        ]
+      },
+      "wordBank": [
+        "international students",
+        "studied",
+        "learned",
+        "chose to pursue a degree in",
+        "attended university in"
+      ],
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 50,
+        "targetStructures": [
+          "The number of … was …",
+          "[Số liệu] + students + V",
+          "There were + số liệu"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Dùng ít nhất 3 động từ khác nhau",
+          "Dùng ít nhất 3 vị trí đặt số liệu khác nhau",
+          "Có ít nhất 1 câu dùng “the figure for”"
+        ],
+        "sampleAnswer": "The number of international students in the US was 10 million in 2005. 4 million individuals chose to pursue a degree in Australia. There were 2 million students attending university in the UK. The figure for Canada was the lowest, at only 1 million.",
+        "commonErrors": [
+          "The amount of students"
+        ]
+      }
+    },
+    {
+      "code": "T1-L02-E08",
+      "lessonCode": "T1-L02",
+      "order": 8,
+      "type": "sentence_writing",
+      "title": "Bài tập 3 — Mức tiêu thụ đồ ăn nhanh",
+      "instruction": "Viết 4 câu mô tả dữ liệu dưới đây. Chú ý: đây là danh từ KHÔNG đếm được.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "uncountable"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Mức tiêu thụ đồ ăn nhanh (Fast Food Consumption) ở các quốc gia",
+        "headers": [
+          "QUỐC GIA",
+          "LƯỢNG TIÊU THỤ (tấn)"
+        ],
+        "rows": [
+          [
+            "UK",
+            "2,000"
+          ],
+          [
+            "US",
+            "5,000"
+          ],
+          [
+            "Việt Nam",
+            "400"
+          ],
+          [
+            "Trung Quốc",
+            "10,000"
+          ]
+        ]
+      },
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 50,
+        "targetStructures": [
+          "The amount of … was …",
+          "[Số liệu] tonnes of … were …",
+          "There were + số liệu + tonnes of …"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Dùng AMOUNT chứ không phải NUMBER (fast food không đếm được)",
+          "Dùng ít nhất 3 cấu trúc khác nhau",
+          "Có dùng “the figure for” ít nhất một lần"
+        ],
+        "sampleAnswer": "The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries. 5,000 tonnes of fast food were eaten in the US. There were 2,000 tonnes consumed in the UK. The figure for Vietnam was the lowest, at only 400 tonnes.",
+        "commonErrors": [
+          "The number of fast food"
+        ]
+      }
+    },
+    {
+      "code": "T1-L03-E01",
+      "lessonCode": "T1-L03",
+      "order": 1,
+      "type": "mcq",
+      "title": "Warm-up — “20% của cái gì?”",
+      "instruction": "Chọn câu diễn đạt đúng ý nghĩa được mô tả.",
+      "source": "added",
+      "skillTags": [
+        "percentage-interpretation",
+        "task-achievement"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 4,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Ý cần diễn đạt: 20% DÂN SỐ VIỆT NAM sử dụng Internet.",
+          "options": [
+            {
+              "id": "A",
+              "text": "20% of global Internet users came from Vietnam."
+            },
+            {
+              "id": "B",
+              "text": "20% of the Vietnamese population used the Internet."
+            },
+            {
+              "id": "C",
+              "text": "Vietnamese people made up 20% of total global Internet users."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mẫu số ở đây là dân số Việt Nam, nên “of the Vietnamese population”."
+        },
+        {
+          "id": "q2",
+          "prompt": "Ý cần diễn đạt: 20% NGƯỜI DÙNG INTERNET TOÀN CẦU là người Việt Nam.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Internet users accounted for 20% of the Vietnamese population."
+            },
+            {
+              "id": "B",
+              "text": "The percentage of Vietnamese Internet users was 20% of the total Vietnamese population."
+            },
+            {
+              "id": "C",
+              "text": "Vietnamese people made up 20% of the total global Internet users."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Mẫu số là tổng người dùng Internet toàn cầu → “of the total global Internet users”."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào SAI ngữ pháp khi mô tả phần trăm?",
+          "options": [
+            {
+              "id": "A",
+              "text": "There were 40% of workers in the service sector."
+            },
+            {
+              "id": "B",
+              "text": "Workers in the service sector accounted for 40%."
+            },
+            {
+              "id": "C",
+              "text": "40% of workers were in the service sector."
+            }
+          ],
+          "answer": "A",
+          "explanation": "Không dùng “There were” với phần trăm vì phần trăm không phải số lượng cụ thể."
+        },
+        {
+          "id": "q4",
+          "prompt": "“The figure for Japan was much higher than ____ for Korea.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "this"
+            },
+            {
+              "id": "B",
+              "text": "that"
+            },
+            {
+              "id": "C",
+              "text": "those"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“that” thay cho “the figure” (số ít) để tránh lặp."
+        }
+      ]
+    },
+    {
+      "code": "T1-L03-E02",
+      "lessonCode": "T1-L03",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Bài tập 8 — Chọn động từ phần trăm đúng",
+      "instruction": "Điền: accounted for / made up / stood at / constituted / took up. Có thể có nhiều đáp án đúng.",
+      "source": "original",
+      "skillTags": [
+        "percentage-verbs"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 5,
+      "autoGrade": true,
+      "wordBank": [
+        "accounted for",
+        "made up",
+        "stood at",
+        "constituted",
+        "took up"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Rice ____ 45% of total agricultural exports.",
+          "blanks": [
+            {
+              "accept": [
+                "accounted for",
+                "made up",
+                "constituted",
+                "took up"
+              ]
+            }
+          ],
+          "explanation": "Chủ thể chiếm bao nhiêu phần của tổng → accounted for / made up / constituted / took up."
+        },
+        {
+          "id": "q2",
+          "prompt": "The proportion of renewable energy ____ just 8% in 2005.",
+          "blanks": [
+            {
+              "accept": [
+                "stood at"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ đã là “the proportion” rồi nên chỉ dùng “stood at” (= ở mức)."
+        },
+        {
+          "id": "q3",
+          "prompt": "Women ____ over half of the workforce in this sector.",
+          "blanks": [
+            {
+              "accept": [
+                "accounted for",
+                "made up",
+                "constituted"
+              ]
+            }
+          ],
+          "explanation": "Người/nhóm chiếm bao nhiêu phần của tổng."
+        },
+        {
+          "id": "q4",
+          "prompt": "Housing costs ____ the largest share of monthly spending.",
+          "blanks": [
+            {
+              "accept": [
+                "accounted for",
+                "made up",
+                "took up",
+                "constituted"
+              ]
+            }
+          ],
+          "explanation": "“took up the largest share” rất tự nhiên với chi tiêu."
+        },
+        {
+          "id": "q5",
+          "prompt": "Students from Asia ____ one third of the total.",
+          "blanks": [
+            {
+              "accept": [
+                "accounted for",
+                "made up",
+                "constituted"
+              ]
+            }
+          ],
+          "explanation": "Nhóm người chiếm tỉ lệ của tổng."
+        }
+      ]
+    },
+    {
+      "code": "T1-L03-E03",
+      "lessonCode": "T1-L03",
+      "order": 3,
+      "type": "matching",
+      "title": "Bổ sung — Nhận diện 7 cấu trúc so sánh",
+      "instruction": "Nối tên cấu trúc với câu ví dụ tương ứng.",
+      "source": "added",
+      "skillTags": [
+        "comparison-structures"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 7,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "left": "CT1 — respectively",
+          "right": "The numbers of car and motorbike users were 5 million and 20 million, respectively."
+        },
+        {
+          "id": "q2",
+          "left": "CT2 — compared to",
+          "right": "The number of car users was 5 million, compared to 20 million motorbike users."
+        },
+        {
+          "id": "q3",
+          "left": "CT3 — while / whereas",
+          "right": "The number of car users was 5 million, while the number of motorbike users was 20 million."
+        },
+        {
+          "id": "q4",
+          "left": "CT4 — Meanwhile / By contrast",
+          "right": "5 million people used cars. Meanwhile, there were 20 million individuals travelling by motorbike."
+        },
+        {
+          "id": "q5",
+          "left": "CT5 — twice as many as",
+          "right": "The number of bike users was 10 million, which was twice as many as that of car users."
+        },
+        {
+          "id": "q6",
+          "left": "CT6 — which was … higher than",
+          "right": "There were 20 million motorbike users, which was significantly higher than that of car users, at only 5 million."
+        },
+        {
+          "id": "q7",
+          "left": "CT7 — followed by",
+          "right": "Motorbikes topped the list at 20 million, followed by that of car users, at only 5 million."
+        }
+      ]
+    },
+    {
+      "code": "T1-L03-E04",
+      "lessonCode": "T1-L03",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Bổ sung — Sửa lỗi khi so sánh",
+      "instruction": "Mỗi câu có một lỗi liên quan đến cấu trúc so sánh hoặc phần trăm. Viết lại câu đúng.",
+      "source": "added",
+      "skillTags": [
+        "comparison-structures",
+        "percentage"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 6,
+      "points": 5,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of cars was 5 million, while 20 million motorbikes.",
+          "errorSpan": "while 20 million motorbikes",
+          "answer": "The number of cars was 5 million, while the number of motorbikes was 20 million.",
+          "accept": [
+            "while the number of motorbikes was 20 million"
+          ],
+          "explanation": "Sau while/whereas phải là một mệnh đề đầy đủ (chủ ngữ + động từ)."
+        },
+        {
+          "id": "q2",
+          "prompt": "The number of bike users was twice as much as that of car users.",
+          "errorSpan": "as much as",
+          "answer": "The number of bike users was twice as many as that of car users.",
+          "accept": [
+            "as many as"
+          ],
+          "explanation": "“number” đi với danh từ đếm được → as many as, không phải as much as."
+        },
+        {
+          "id": "q3",
+          "prompt": "Respectively, the figures were 5 and 20 million.",
+          "errorSpan": "Respectively (đầu câu)",
+          "answer": "The figures were 5 and 20 million, respectively.",
+          "accept": [
+            "respectively."
+          ],
+          "explanation": "“Respectively” luôn đứng cuối câu."
+        },
+        {
+          "id": "q4",
+          "prompt": "Motorbikes topped the list at 20 million, followed by car users at only 5 million, respectively.",
+          "errorSpan": "respectively",
+          "answer": "Motorbikes topped the list at 20 million, followed by car users, at only 5 million.",
+          "accept": [
+            "at only 5 million."
+          ],
+          "explanation": "Đã dùng “followed by” thì không cần “respectively” — thừa và sai logic."
+        },
+        {
+          "id": "q5",
+          "prompt": "The percentage of students was 30%, compared with 45% for teachers, made up the majority.",
+          "errorSpan": "made up the majority",
+          "answer": "The percentage of students was 30%, compared with 45% for teachers, who made up the majority.",
+          "accept": [
+            "who made up the majority"
+          ],
+          "explanation": "Thiếu liên kết mệnh đề — thêm đại từ quan hệ hoặc tách thành hai câu."
+        }
+      ]
+    },
+    {
+      "code": "T1-L03-E05",
+      "lessonCode": "T1-L03",
+      "order": 5,
+      "type": "sentence_writing",
+      "title": "Bài tập 7 — Mỗi cấu trúc một câu",
+      "instruction": "Dùng dữ liệu sau, viết 7 câu — mỗi câu dùng một cấu trúc so sánh khác nhau (CT1 → CT7).",
+      "source": "original",
+      "skillTags": [
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 14,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Số lượng khách du lịch đến 4 quốc gia năm 2018 (triệu người)",
+        "headers": [
+          "QUỐC GIA",
+          "SỐ LƯỢNG (triệu)"
+        ],
+        "rows": [
+          [
+            "Thailand",
+            "38"
+          ],
+          [
+            "Vietnam",
+            "15"
+          ],
+          [
+            "Cambodia",
+            "6"
+          ],
+          [
+            "Laos",
+            "4"
+          ]
+        ]
+      },
+      "responseSlots": 7,
+      "rubric": {
+        "minWords": 90,
+        "targetStructures": [
+          "respectively",
+          "compared to",
+          "while / whereas",
+          "Meanwhile / By contrast",
+          "twice as many as",
+          "which was … higher than that of",
+          "followed by"
+        ],
+        "mustUse": 7,
+        "checklist": [
+          "Đủ 7 câu, mỗi câu một cấu trúc khác nhau",
+          "“respectively” đặt cuối câu",
+          "Dùng “that of” để tránh lặp “the number of”",
+          "Số liệu chính xác so với bảng"
+        ],
+        "sampleAnswer": "The numbers of tourists visiting Thailand and Vietnam were 38 million and 15 million, respectively. The figure for Cambodia was 6 million, compared to 4 million for Laos. Thailand welcomed 38 million visitors, while Vietnam received only 15 million. Cambodia attracted 6 million tourists. Meanwhile, the figure for Laos was 4 million. The number of tourists in Vietnam was 15 million, which was nearly four times as many as that of Laos. Thailand recorded 38 million arrivals, which was significantly higher than that of Vietnam, at only 15 million. Thailand topped the list at 38 million, followed by Vietnam, Cambodia and Laos, at 15, 6 and 4 million.",
+        "commonErrors": [
+          "Respectively đứng đầu câu",
+          "while + cụm danh từ không có động từ"
+        ]
+      }
+    },
+    {
+      "code": "T1-L03-E06",
+      "lessonCode": "T1-L03",
+      "order": 6,
+      "type": "sentence_writing",
+      "title": "Example 4 — So sánh từng cặp dữ liệu",
+      "instruction": "Viết 5 câu so sánh các cặp sau: UK–US ; UK–Vietnam ; US–Vietnam ; Vietnam–China ; US–China.",
+      "source": "original",
+      "skillTags": [
+        "comparison-structures",
+        "uncountable"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "The amount of fast food consumed in different countries in 1990",
+        "headers": [
+          "COUNTRY",
+          "AMOUNT (tonnes)"
+        ],
+        "rows": [
+          [
+            "The UK",
+            "2,000"
+          ],
+          [
+            "The US",
+            "5,000"
+          ],
+          [
+            "Vietnam",
+            "400"
+          ],
+          [
+            "China",
+            "10,000"
+          ]
+        ]
+      },
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "respectively",
+          "compared to",
+          "while / whereas",
+          "twice as much as",
+          "followed by"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Dùng AMOUNT không dùng NUMBER",
+          "Không lặp một cấu trúc quá 2 lần",
+          "Có ít nhất 1 câu dùng bội số (twice / five times as much as)"
+        ],
+        "sampleAnswer": "The amounts of fast food consumed in the UK and the US were 2,000 and 5,000 tonnes, respectively. The figure for the UK was 2,000 tonnes, compared to only 400 tonnes for Vietnam. The US consumed 5,000 tonnes, while Vietnam used just 400 tonnes. The amount eaten in China was 10,000 tonnes, which was 25 times as much as that of Vietnam. China topped the list at 10,000 tonnes, followed by the US, at half that figure.",
+        "commonErrors": [
+          "twice as many as + danh từ không đếm được"
+        ]
+      }
+    },
+    {
+      "code": "T1-L03-E07",
+      "lessonCode": "T1-L03",
+      "order": 7,
+      "type": "paragraph_writing",
+      "title": "Example 5 — Viết đoạn mô tả tỷ lệ dùng Internet",
+      "instruction": "Viết một đoạn mô tả và so sánh dữ liệu. Bắt đầu bằng năm; mô tả số cao nhất trước rồi so sánh với các số còn lại.",
+      "source": "original",
+      "skillTags": [
+        "percentage",
+        "paragraph-cohesion"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Percentage of the population using the Internet in different countries in 1990",
+        "headers": [
+          "COUNTRY",
+          "PERCENTAGE"
+        ],
+        "rows": [
+          [
+            "UK",
+            "55%"
+          ],
+          [
+            "US",
+            "70%"
+          ],
+          [
+            "Vietnam",
+            "10%"
+          ],
+          [
+            "Japan",
+            "25%"
+          ],
+          [
+            "Australia",
+            "40%"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 70,
+        "maxWords": 120,
+        "targetStructures": [
+          "accounted for / made up",
+          "compared to",
+          "while / whereas",
+          "Meanwhile"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Mở đầu bằng mốc thời gian (In 1990, …)",
+          "Mô tả số cao nhất trước",
+          "KHÔNG dùng “There were” với phần trăm",
+          "Dùng ít nhất 3 cấu trúc so sánh khác nhau"
+        ],
+        "sampleAnswer": "In 1990, the percentage of people who used the Internet in the US was the highest, at 70%, while the figure for the UK was slightly lower, at 55%. 25% of Japanese citizens used the Internet, compared to only 10% in Vietnam. Meanwhile, Internet users made up 40% of the total Australian population.",
+        "commonErrors": [
+          "There were 70% of Americans…",
+          "lặp “The percentage of…” ở cả 4 câu"
+        ]
+      }
+    },
+    {
+      "code": "T1-L03-E08",
+      "lessonCode": "T1-L03",
+      "order": 8,
+      "type": "paragraph_writing",
+      "title": "Bài tập 9 — Thiết bị gia đình ở Việt Nam 2020",
+      "instruction": "Viết một đoạn 4–5 câu mô tả và so sánh dữ liệu, dùng ít nhất 3 cấu trúc so sánh khác nhau.",
+      "source": "original",
+      "skillTags": [
+        "percentage",
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Tỷ lệ hộ gia đình sở hữu thiết bị ở Việt Nam năm 2020",
+        "headers": [
+          "THIẾT BỊ",
+          "TỶ LỆ"
+        ],
+        "rows": [
+          [
+            "Tivi (Television)",
+            "92%"
+          ],
+          [
+            "Điện thoại thông minh (Smartphone)",
+            "88%"
+          ],
+          [
+            "Máy điều hoà (Air conditioner)",
+            "47%"
+          ],
+          [
+            "Máy tính xách tay (Laptop)",
+            "34%"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 70,
+        "maxWords": 120,
+        "targetStructures": [
+          "accounted for / made up / stood at",
+          "compared to",
+          "while / whereas",
+          "followed by",
+          "which was … higher than that of"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "4–5 câu",
+          "Ít nhất 3 cấu trúc so sánh khác nhau",
+          "Không dùng There were với %",
+          "Có nêu cao nhất và thấp nhất"
+        ],
+        "sampleAnswer": "In 2020, televisions were the most common device in Vietnamese households, at 92%, followed closely by smartphones, at 88%. Air conditioners were owned by 47% of households, which was significantly lower than that of the two leading devices. Laptops accounted for just 34%, the smallest proportion of the four items. In other words, while almost every household had a television, only around one third possessed a laptop.",
+        "commonErrors": [
+          "There were 92% of households",
+          "lặp cấu trúc “The percentage of…”"
+        ]
+      }
+    },
+    {
+      "code": "T1-L04-E01",
+      "lessonCode": "T1-L04",
+      "order": 1,
+      "type": "gap_fill",
+      "title": "Warm-up — Diễn đạt số ước lượng",
+      "instruction": "Chọn cụm phù hợp nhất để diễn đạt số liệu trong ngoặc so với 1,000.",
+      "source": "added",
+      "skillTags": [
+        "approximation"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 4,
+      "points": 6,
+      "autoGrade": true,
+      "wordBank": [
+        "just over",
+        "just under",
+        "nearly",
+        "approximately",
+        "well over",
+        "roughly"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "1,020 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "just over"
+              ]
+            }
+          ],
+          "explanation": "Hơn một chút → just over."
+        },
+        {
+          "id": "q2",
+          "prompt": "980 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "just under",
+                "nearly"
+              ]
+            }
+          ],
+          "explanation": "Kém một chút → just under / nearly."
+        },
+        {
+          "id": "q3",
+          "prompt": "995 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "nearly",
+                "almost",
+                "just under"
+              ]
+            }
+          ],
+          "explanation": "Rất sát mốc nhưng chưa tới."
+        },
+        {
+          "id": "q4",
+          "prompt": "1,003 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "approximately",
+                "roughly",
+                "just over"
+              ]
+            }
+          ],
+          "explanation": "Gần như đúng bằng → approximately / roughly."
+        },
+        {
+          "id": "q5",
+          "prompt": "1,400 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "well over"
+              ]
+            }
+          ],
+          "explanation": "Hơn nhiều → well over."
+        },
+        {
+          "id": "q6",
+          "prompt": "1,050 → ____ 1,000",
+          "blanks": [
+            {
+              "accept": [
+                "roughly",
+                "approximately",
+                "just over"
+              ]
+            }
+          ],
+          "explanation": "Vẫn ở mức xấp xỉ."
+        }
+      ]
+    },
+    {
+      "code": "T1-L04-E02",
+      "lessonCode": "T1-L04",
+      "order": 2,
+      "type": "matching",
+      "title": "Bổ sung — Đổi phần trăm sang chữ",
+      "instruction": "Nối mỗi con số phần trăm với cách diễn đạt bằng chữ chính xác nhất.",
+      "source": "added",
+      "skillTags": [
+        "percentage-in-words"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "left": "80%",
+          "right": "four fifths"
+        },
+        {
+          "id": "q2",
+          "left": "75%",
+          "right": "three quarters"
+        },
+        {
+          "id": "q3",
+          "left": "66%",
+          "right": "two thirds"
+        },
+        {
+          "id": "q4",
+          "left": "50%",
+          "right": "half"
+        },
+        {
+          "id": "q5",
+          "left": "33%",
+          "right": "a third"
+        },
+        {
+          "id": "q6",
+          "left": "25%",
+          "right": "a quarter"
+        },
+        {
+          "id": "q7",
+          "left": "20%",
+          "right": "a fifth"
+        },
+        {
+          "id": "q8",
+          "left": "5%",
+          "right": "a twentieth / a very small minority"
+        }
+      ]
+    },
+    {
+      "code": "T1-L04-E03",
+      "lessonCode": "T1-L04",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Bổ sung — 5 cách diễn đạt nhóm tuổi",
+      "instruction": "Viết lại phần in đậm bằng cách diễn đạt nhóm tuổi được yêu cầu.",
+      "source": "added",
+      "skillTags": [
+        "age-groups"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 5,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "[People 25–30] made up 40% of car users. → dùng “aged”",
+          "answer": "People aged 25–30",
+          "accept": [
+            "people aged 25-30",
+            "people aged 25–30"
+          ],
+          "explanation": "“aged” đi ngay sau danh từ chỉ người."
+        },
+        {
+          "id": "q2",
+          "prompt": "→ dùng mệnh đề quan hệ",
+          "answer": "People who were 25–30",
+          "accept": [
+            "people who were 25-30",
+            "people who were aged 25-30"
+          ],
+          "explanation": "Trang trọng hơn."
+        },
+        {
+          "id": "q3",
+          "prompt": "→ dùng “age group”",
+          "answer": "People in the 25–30 age group",
+          "accept": [
+            "people in the 25-30 age group"
+          ],
+          "explanation": "Rất phổ biến trong Task 1."
+        },
+        {
+          "id": "q4",
+          "prompt": "→ dùng tính từ ghép",
+          "answer": "25–30-year-old people",
+          "accept": [
+            "25-30-year-old people"
+          ],
+          "explanation": "Có gạch nối và “year-old” số ít khi đứng trước danh từ."
+        },
+        {
+          "id": "q5",
+          "prompt": "→ dạng ngắn gọn nhất",
+          "answer": "25–30-year-olds",
+          "accept": [
+            "25-30-year-olds"
+          ],
+          "explanation": "“year-olds” đã danh từ hoá, không cần thêm “people”."
+        }
+      ]
+    },
+    {
+      "code": "T1-L04-E04",
+      "lessonCode": "T1-L04",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Bài tập bổ sung — Viết lại sang thì tương lai",
+      "instruction": "Chuyển các câu sau sang thì tương lai bằng các cụm dự đoán đã học (is expected / predicted / projected / likely to…). Dùng năm cho trong ngoặc.",
+      "source": "original",
+      "skillTags": [
+        "future-tense",
+        "prediction-phrases"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 8,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of electric cars in Norway was 500,000. (2035)",
+          "sampleAnswers": [
+            "The number of electric cars in Norway is expected to be 500,000 in 2035.",
+            "The number of electric cars in Norway is projected to stand at 500,000 in 2035."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Coal accounted for 30% of energy production. (2040)",
+          "sampleAnswers": [
+            "Coal is predicted to account for 30% of energy production in 2040.",
+            "In 2040, coal is likely to make up 30% of energy production."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The amount of plastic waste stood at 8 million tonnes. (2050)",
+          "sampleAnswers": [
+            "The amount of plastic waste is likely to stand at 8 million tonnes in 2050.",
+            "By 2050, the amount of plastic waste is projected to reach 8 million tonnes."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "25% of the population lived in rural areas. (2045)",
+          "sampleAnswers": [
+            "25% of the population is expected to live in rural areas in 2045.",
+            "In 2045, a quarter of the population is anticipated to live in rural areas."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "is expected to",
+          "is predicted to",
+          "is projected to",
+          "is likely to",
+          "is anticipated to"
+        ],
+        "checklist": [
+          "Không còn động từ quá khứ nào",
+          "Sau các cụm dự đoán là động từ nguyên mẫu",
+          "Có nêu năm tương lai"
+        ],
+        "commonErrors": [
+          "is expected to was",
+          "In 2050, the figure stood at…"
+        ]
+      }
+    },
+    {
+      "code": "T1-L04-E05",
+      "lessonCode": "T1-L04",
+      "order": 5,
+      "type": "paragraph_writing",
+      "title": "Homework 1 — Lượng pizza sản xuất (2005)",
+      "instruction": "Viết một đoạn mô tả và so sánh dữ liệu, dùng nhiều cấu trúc và từ vựng khác nhau.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "uncountable",
+        "comparison-structures"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Amount of pizza produced in different countries in 2005",
+        "headers": [
+          "COUNTRY",
+          "AMOUNT (grams)"
+        ],
+        "rows": [
+          [
+            "US",
+            "2,500"
+          ],
+          [
+            "UK",
+            "1,000"
+          ],
+          [
+            "China",
+            "5,500"
+          ],
+          [
+            "Australia",
+            "3,100"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 70,
+        "maxWords": 120,
+        "targetStructures": [
+          "The amount of … was …",
+          "compared to",
+          "while / whereas",
+          "followed by",
+          "respectively"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Dùng AMOUNT (pizza không đếm được)",
+          "Ít nhất 3 cấu trúc so sánh",
+          "Nêu rõ cao nhất và thấp nhất"
+        ],
+        "sampleAnswer": "In 2005, the amount of pizza produced in China was the largest, at 5,500 grams, followed by Australia, at 3,100 grams. 2,500 grams of pizza were made in the US, compared to only 1,000 grams in the UK. In other words, Chinese output was more than five times as much as that of the UK, which recorded the lowest figure of the four countries.",
+        "commonErrors": [
+          "The number of pizza"
+        ]
+      }
+    },
+    {
+      "code": "T1-L04-E06",
+      "lessonCode": "T1-L04",
+      "order": 6,
+      "type": "paragraph_writing",
+      "title": "Homework 2 — Người dùng ô tô theo nhóm tuổi (2000)",
+      "instruction": "Viết một đoạn mô tả và so sánh. Bắt buộc dùng ít nhất 3 cách diễn đạt nhóm tuổi khác nhau.",
+      "source": "original",
+      "skillTags": [
+        "age-groups",
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Number of car users in Vietnam in 2000 by age group",
+        "headers": [
+          "AGE GROUP",
+          "NUMBER (millions)"
+        ],
+        "rows": [
+          [
+            "Under 30",
+            "1.0"
+          ],
+          [
+            "30–40",
+            "2.5"
+          ],
+          [
+            "40–50",
+            "2.2"
+          ],
+          [
+            "Over 50",
+            "1.2"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 70,
+        "maxWords": 120,
+        "targetStructures": [
+          "people aged X–Y",
+          "people in the X–Y age group",
+          "X–Y-year-olds",
+          "compared to",
+          "followed by"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Ít nhất 3 cách diễn đạt nhóm tuổi khác nhau",
+          "Dùng NUMBER không dùng AMOUNT",
+          "Có so sánh chứ không chỉ liệt kê"
+        ],
+        "sampleAnswer": "In 2000, people aged 30–40 formed the largest group of car users in Vietnam, at 2.5 million, followed closely by the 40–50 age group, at 2.2 million. The number of drivers who were over 50 stood at 1.2 million, compared to only 1 million among under-30s. Overall, middle-aged Vietnamese people were roughly twice as likely to use cars as the youngest group.",
+        "commonErrors": [
+          "people age 25–30",
+          "25-30 years old people"
+        ]
+      }
+    },
+    {
+      "code": "T1-L04-E07",
+      "lessonCode": "T1-L04",
+      "order": 7,
+      "type": "paragraph_writing",
+      "title": "Homework 3 — Tiêu thụ nước sạch năm 2030",
+      "instruction": "Viết một đoạn mô tả và so sánh. LƯU Ý: đây là số liệu dự báo năm 2030 → bắt buộc dùng thì tương lai.",
+      "source": "original",
+      "skillTags": [
+        "future-tense",
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Estimated clean water consumption in major cities in 2030",
+        "headers": [
+          "CITY",
+          "CONSUMPTION (m³)"
+        ],
+        "rows": [
+          [
+            "Paris",
+            "1,200"
+          ],
+          [
+            "London",
+            "2,400"
+          ],
+          [
+            "New York",
+            "2,100"
+          ],
+          [
+            "Berlin",
+            "2,700"
+          ]
+        ],
+        "note": "Số liệu năm 2030 → phải dùng thì tương lai."
+      },
+      "rubric": {
+        "minWords": 70,
+        "maxWords": 120,
+        "targetStructures": [
+          "is expected to",
+          "is projected to",
+          "is likely to",
+          "compared to",
+          "followed by"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "KHÔNG có động từ quá khứ nào trong bài",
+          "Dùng ít nhất 2 cụm dự đoán khác nhau",
+          "Dùng AMOUNT với nước"
+        ],
+        "sampleAnswer": "In 2030, the amount of clean water consumed in Berlin is projected to be the highest of the four cities, at 2,700 m³, followed by London, at 2,400 m³. New York is expected to use 2,100 m³, whereas the figure for Paris is likely to stand at just 1,200 m³. In other words, Berlin is anticipated to consume more than twice as much water as Paris.",
+        "commonErrors": [
+          "was expected to be",
+          "In 2030, the figure stood at"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST1-A1",
+      "lessonCode": "T1-TEST1",
+      "order": 1,
+      "type": "mcq",
+      "title": "PHẦN A1 — Trắc nghiệm",
+      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "source": "original",
+      "skillTags": [
+        "module1-review"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Thời gian khuyến nghị cho Task 1 là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "15 phút"
+            },
+            {
+              "id": "B",
+              "text": "20 phút"
+            },
+            {
+              "id": "C",
+              "text": "25 phút"
+            },
+            {
+              "id": "D",
+              "text": "30 phút"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Task 1 nên hoàn thành trong 20 phút để dành 40 phút cho Task 2."
+        },
+        {
+          "id": "q2",
+          "prompt": "Viết dưới 150 từ sẽ bị trừ điểm ở tiêu chí:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Task Achievement"
+            },
+            {
+              "id": "B",
+              "text": "Coherence"
+            },
+            {
+              "id": "C",
+              "text": "Lexical Resource"
+            },
+            {
+              "id": "D",
+              "text": "Grammar"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Không đủ độ dài = không hoàn thành yêu cầu đề bài."
+        },
+        {
+          "id": "q3",
+          "prompt": "Dạng biểu đồ nào LUÔN là dữ liệu tĩnh?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Line graph"
+            },
+            {
+              "id": "B",
+              "text": "Pie chart"
+            },
+            {
+              "id": "C",
+              "text": "Bar chart"
+            },
+            {
+              "id": "D",
+              "text": "Table"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Pie chart luôn thể hiện tỷ lệ tại một thời điểm."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu đúng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "The amount of students"
+            },
+            {
+              "id": "B",
+              "text": "The number of water"
+            },
+            {
+              "id": "C",
+              "text": "The amount of water"
+            },
+            {
+              "id": "D",
+              "text": "The number of rice"
+            }
+          ],
+          "answer": "C",
+          "explanation": "water không đếm được → amount."
+        },
+        {
+          "id": "q5",
+          "prompt": "“The figure for Japan was higher than ____ for Korea.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "this"
+            },
+            {
+              "id": "B",
+              "text": "it"
+            },
+            {
+              "id": "C",
+              "text": "that"
+            },
+            {
+              "id": "D",
+              "text": "those"
+            }
+          ],
+          "answer": "C",
+          "explanation": "“that” thay cho danh từ số ít “the figure”."
+        },
+        {
+          "id": "q6",
+          "prompt": "Câu nào KHÔNG dùng được với dữ liệu phần trăm?",
+          "options": [
+            {
+              "id": "A",
+              "text": "accounted for"
+            },
+            {
+              "id": "B",
+              "text": "there were"
+            },
+            {
+              "id": "C",
+              "text": "made up"
+            },
+            {
+              "id": "D",
+              "text": "stood at"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Phần trăm không phải số lượng cụ thể nên không dùng “there were”."
+        },
+        {
+          "id": "q7",
+          "prompt": "“Respectively” thường đứng ở:",
+          "options": [
+            {
+              "id": "A",
+              "text": "đầu câu"
+            },
+            {
+              "id": "B",
+              "text": "giữa câu"
+            },
+            {
+              "id": "C",
+              "text": "cuối câu"
+            },
+            {
+              "id": "D",
+              "text": "sau chủ ngữ"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Luôn đặt cuối câu để chỉ rõ con số nào thuộc đối tượng nào."
+        },
+        {
+          "id": "q8",
+          "prompt": "Cách viết đúng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "25-30 years old people"
+            },
+            {
+              "id": "B",
+              "text": "25–30-year-old people"
+            },
+            {
+              "id": "C",
+              "text": "25–30 year-olds people"
+            },
+            {
+              "id": "D",
+              "text": "people age 25–30"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tính từ ghép phải có gạch nối và “year-old” số ít."
+        },
+        {
+          "id": "q9",
+          "prompt": "65% có thể được diễn đạt là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "two-thirds"
+            },
+            {
+              "id": "B",
+              "text": "three-quarters"
+            },
+            {
+              "id": "C",
+              "text": "a fifth"
+            },
+            {
+              "id": "D",
+              "text": "half"
+            }
+          ],
+          "answer": "A",
+          "explanation": "65% ≈ 66% = hai phần ba (có thể thêm “just under”)."
+        },
+        {
+          "id": "q10",
+          "prompt": "Số liệu năm 2050 phải dùng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "was"
+            },
+            {
+              "id": "B",
+              "text": "is predicted to be"
+            },
+            {
+              "id": "C",
+              "text": "has been"
+            },
+            {
+              "id": "D",
+              "text": "were"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Dữ liệu tương lai → cụm dự đoán + động từ nguyên mẫu."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST1-A2",
+      "lessonCode": "T1-TEST1",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "PHẦN A2 — Điền từ",
+      "instruction": "Điền number / amount / percentage / figure / proportion. Mỗi câu 1 điểm.",
+      "source": "original",
+      "skillTags": [
+        "noun-choice"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "wordBank": [
+        "number",
+        "amount",
+        "percentage",
+        "figure",
+        "proportion"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The ____ of coal burned in 2010 was 4 million tonnes.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "coal không đếm được."
+        },
+        {
+          "id": "q2",
+          "prompt": "The ____ of visitors doubled between 2000 and 2010.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "visitors đếm được."
+        },
+        {
+          "id": "q3",
+          "prompt": "The ____ for Spain was the lowest of the five countries.",
+          "blanks": [
+            {
+              "accept": [
+                "figure"
+              ]
+            }
+          ],
+          "explanation": "“the figure for + nước”."
+        },
+        {
+          "id": "q4",
+          "prompt": "The ____ of people cycling to work rose to 18%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "Kết quả là % → percentage / proportion."
+        },
+        {
+          "id": "q5",
+          "prompt": "The ____ of milk consumed per person fell steadily.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "milk không đếm được."
+        },
+        {
+          "id": "q6",
+          "prompt": "The ____ of households with Internet access reached 90%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "90% → dữ liệu phần trăm."
+        },
+        {
+          "id": "q7",
+          "prompt": "The ____ of accidents dropped from 400 to 250.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "accidents đếm được."
+        },
+        {
+          "id": "q8",
+          "prompt": "The ____ of energy produced by wind was only 6%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "6% → phần trăm."
+        },
+        {
+          "id": "q9",
+          "prompt": "A large ____ of the budget was spent on salaries.",
+          "blanks": [
+            {
+              "accept": [
+                "proportion",
+                "percentage",
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "“a large proportion of” là cụm chuẩn."
+        },
+        {
+          "id": "q10",
+          "prompt": "The ____ of factories in the area increased sharply.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "factories đếm được."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST1-A3",
+      "lessonCode": "T1-TEST1",
+      "order": 3,
+      "type": "error_correction",
+      "title": "PHẦN A3 — Sửa lỗi",
+      "instruction": "Tìm và sửa lỗi trong mỗi câu. Mỗi câu 2 điểm.",
+      "source": "original",
+      "skillTags": [
+        "module1-review"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of tourists were 2 million in 2015.",
+          "errorSpan": "were",
+          "answer": "The number of tourists was 2 million in 2015.",
+          "accept": [
+            "was"
+          ],
+          "explanation": "“The number” là chủ ngữ số ít."
+        },
+        {
+          "id": "q2",
+          "prompt": "There were 40% of workers in the service sector.",
+          "errorSpan": "There were",
+          "answer": "40% of workers were in the service sector.",
+          "accept": [
+            "40% of workers were in the service sector",
+            "Workers in the service sector accounted for 40%"
+          ],
+          "explanation": "Không dùng “There were” với phần trăm."
+        },
+        {
+          "id": "q3",
+          "prompt": "The amount of cars in Hanoi increased.",
+          "errorSpan": "amount",
+          "answer": "The number of cars in Hanoi increased.",
+          "accept": [
+            "number"
+          ],
+          "explanation": "cars đếm được → number."
+        },
+        {
+          "id": "q4",
+          "prompt": "In 2040, the population was expected to reach 12 million.",
+          "errorSpan": "was",
+          "answer": "In 2040, the population is expected to reach 12 million.",
+          "accept": [
+            "is expected"
+          ],
+          "explanation": "Mốc 2040 là tương lai → is expected."
+        },
+        {
+          "id": "q5",
+          "prompt": "The figure of the UK was twice as many as Korea.",
+          "errorSpan": "of the UK … as Korea",
+          "answer": "The figure for the UK was twice as high as that for Korea.",
+          "accept": [
+            "figure for the UK was twice as high as that for Korea",
+            "figure for the UK was twice as much as that for Korea"
+          ],
+          "explanation": "Ba lỗi: “figure for”, so sánh phải có “that for”, và “the figure” đi với as high/much chứ không as many."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST1-A4",
+      "lessonCode": "T1-TEST1",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "PHẦN A4 — Viết lại câu",
+      "instruction": "Viết lại câu dùng từ gợi ý trong ngoặc, giữ nguyên nghĩa. Mỗi câu 2 điểm.",
+      "source": "original",
+      "skillTags": [
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cars: 5 million. Motorbikes: 20 million.",
+          "cue": "respectively",
+          "sampleAnswers": [
+            "The numbers of car and motorbike users were 5 million and 20 million, respectively."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Cars: 5 million. Motorbikes: 20 million.",
+          "cue": "whereas",
+          "sampleAnswers": [
+            "The number of car users was 5 million, whereas that of motorbike users was 20 million."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Cars: 5 million. Motorbikes: 20 million.",
+          "cue": "compared to",
+          "sampleAnswers": [
+            "There were 5 million car users, compared to 20 million motorbike users."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Cars: 5 million. Motorbikes: 20 million.",
+          "cue": "followed by",
+          "sampleAnswers": [
+            "Motorbikes topped the list at 20 million, followed by cars, at only 5 million."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Cars: 5 million. Motorbikes: 10 million.",
+          "cue": "twice as many as",
+          "sampleAnswers": [
+            "The number of motorbike users was 10 million, which was twice as many as that of car users."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "respectively",
+          "whereas",
+          "compared to",
+          "followed by",
+          "twice as many as"
+        ],
+        "checklist": [
+          "Dùng đúng từ gợi ý",
+          "Số liệu chính xác",
+          "Ngữ pháp đúng: mệnh đề đầy đủ sau whereas"
+        ],
+        "commonErrors": [
+          "Respectively đứng đầu câu",
+          "twice as much as với danh từ đếm được"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST1-B",
+      "lessonCode": "T1-TEST1",
+      "order": 5,
+      "type": "full_task1",
+      "title": "PHẦN B — Bài viết mô tả bảng số liệu",
+      "instruction": "The table below shows the number of international students studying in four countries in 2005 and the amount of money each country earned from them. Describe and compare the data. Write at least 120 words. You should spend about 25 minutes on this part.",
+      "source": "original",
+      "skillTags": [
+        "module1-review",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 60,
+      "autoGrade": false,
+      "timerMinutes": 25,
+      "stimulus": {
+        "kind": "table",
+        "caption": "International students and revenue in four countries, 2005",
+        "headers": [
+          "COUNTRY",
+          "INTERNATIONAL STUDENTS (millions)",
+          "REVENUE (billion USD)"
+        ],
+        "rows": [
+          [
+            "The US",
+            "10.0",
+            "24.0"
+          ],
+          [
+            "Australia",
+            "4.0",
+            "9.5"
+          ],
+          [
+            "The UK",
+            "2.0",
+            "8.0"
+          ],
+          [
+            "Canada",
+            "1.0",
+            "3.5"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 120,
+        "targetStructures": [
+          "respectively",
+          "compared to",
+          "while / whereas",
+          "Meanwhile / By contrast",
+          "twice as many as",
+          "which was … higher than that of",
+          "followed by"
+        ],
+        "mustUse": 3,
+        "scoring": [
+          {
+            "criterion": "Dùng ít nhất 3 cấu trúc so sánh khác nhau",
+            "points": 20
+          },
+          {
+            "criterion": "Dùng đúng number / amount / percentage",
+            "points": 10
+          },
+          {
+            "criterion": "Không lặp cấu trúc câu quá 2 lần",
+            "points": 10
+          },
+          {
+            "criterion": "Ngữ pháp và chính tả chính xác",
+            "points": 20
+          }
+        ],
+        "checklist": [
+          "Có mô tả CẢ hai cột: số sinh viên (number) và doanh thu (amount/revenue)",
+          "Có so sánh giữa các nước, không chỉ liệt kê",
+          "Đủ tối thiểu 120 từ"
+        ],
+        "sampleAnswer": "In 2005, the US attracted by far the largest number of international students, at 10 million, followed by Australia and the UK, at 4 million and 2 million, respectively. Canada received only 1 million students, the lowest figure of the four countries. A similar pattern could be seen in the revenue earned. The US generated 24 billion USD from foreign students, which was significantly higher than that of Australia, at 9.5 billion. The UK earned 8 billion USD, compared to just 3.5 billion for Canada. Interestingly, although the UK hosted half as many students as Australia, the amount of money it earned was almost the same, suggesting that each student in the UK contributed considerably more than one in Australia.",
+        "commonErrors": [
+          "The amount of students",
+          "The number of tourists were",
+          "liệt kê hết số liệu mà không so sánh"
+        ]
+      }
+    }
+  ]
+}

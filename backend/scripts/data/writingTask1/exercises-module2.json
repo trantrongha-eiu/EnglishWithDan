@@ -1,0 +1,3630 @@
+{
+  "exercises": [
+    {
+      "code": "T1-L05-E01",
+      "lessonCode": "T1-L05",
+      "order": 1,
+      "type": "categorize",
+      "title": "Warm-up — Phân loại động từ xu hướng",
+      "instruction": "Kéo mỗi động từ vào đúng nhóm xu hướng.",
+      "source": "added",
+      "skillTags": [
+        "trend-vocabulary"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 4,
+      "points": 16,
+      "autoGrade": true,
+      "categories": [
+        {
+          "id": "up",
+          "label": "🟢 TĂNG"
+        },
+        {
+          "id": "down",
+          "label": "🔴 GIẢM"
+        },
+        {
+          "id": "stable",
+          "label": "🟡 ỔN ĐỊNH"
+        },
+        {
+          "id": "fluctuate",
+          "label": "🔵 DAO ĐỘNG"
+        }
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "text": "rise",
+          "category": "up"
+        },
+        {
+          "id": "q2",
+          "text": "climb",
+          "category": "up"
+        },
+        {
+          "id": "q3",
+          "text": "surge",
+          "category": "up"
+        },
+        {
+          "id": "q4",
+          "text": "rocket",
+          "category": "up"
+        },
+        {
+          "id": "q5",
+          "text": "plunge",
+          "category": "down"
+        },
+        {
+          "id": "q6",
+          "text": "dip",
+          "category": "down"
+        },
+        {
+          "id": "q7",
+          "text": "plummet",
+          "category": "down"
+        },
+        {
+          "id": "q8",
+          "text": "decline",
+          "category": "down"
+        },
+        {
+          "id": "q9",
+          "text": "level off",
+          "category": "stable"
+        },
+        {
+          "id": "q10",
+          "text": "remain unchanged",
+          "category": "stable"
+        },
+        {
+          "id": "q11",
+          "text": "hit a plateau",
+          "category": "stable"
+        },
+        {
+          "id": "q12",
+          "text": "stay stable",
+          "category": "stable"
+        },
+        {
+          "id": "q13",
+          "text": "fluctuate",
+          "category": "fluctuate"
+        },
+        {
+          "id": "q14",
+          "text": "oscillate",
+          "category": "fluctuate"
+        },
+        {
+          "id": "q15",
+          "text": "vary",
+          "category": "fluctuate"
+        },
+        {
+          "id": "q16",
+          "text": "be volatile",
+          "category": "fluctuate"
+        }
+      ]
+    },
+    {
+      "code": "T1-L05-E02",
+      "lessonCode": "T1-L05",
+      "order": 2,
+      "type": "word_form",
+      "title": "Bài tập nhanh — Viết dạng quá khứ (V2)",
+      "instruction": "Viết dạng quá khứ đơn (V2) của các động từ sau.",
+      "source": "original",
+      "skillTags": [
+        "trend-vocabulary",
+        "past-tense"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 5,
+      "points": 20,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "rise",
+          "answer": "rose",
+          "accept": [
+            "rose"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "increase",
+          "answer": "increased",
+          "accept": [
+            "increased"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "grow",
+          "answer": "grew",
+          "accept": [
+            "grew"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "climb",
+          "answer": "climbed",
+          "accept": [
+            "climbed"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "go up",
+          "answer": "went up",
+          "accept": [
+            "went up"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "jump",
+          "answer": "jumped",
+          "accept": [
+            "jumped"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "rocket",
+          "answer": "rocketed",
+          "accept": [
+            "rocketed"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "surge",
+          "answer": "surged",
+          "accept": [
+            "surged"
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "peak",
+          "answer": "peaked",
+          "accept": [
+            "peaked"
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "hit",
+          "answer": "hit",
+          "accept": [
+            "hit"
+          ]
+        },
+        {
+          "id": "q11",
+          "prompt": "fall",
+          "answer": "fell",
+          "accept": [
+            "fell"
+          ]
+        },
+        {
+          "id": "q12",
+          "prompt": "drop",
+          "answer": "dropped",
+          "accept": [
+            "dropped"
+          ]
+        },
+        {
+          "id": "q13",
+          "prompt": "decline",
+          "answer": "declined",
+          "accept": [
+            "declined"
+          ]
+        },
+        {
+          "id": "q14",
+          "prompt": "plunge",
+          "answer": "plunged",
+          "accept": [
+            "plunged"
+          ]
+        },
+        {
+          "id": "q15",
+          "prompt": "plummet",
+          "answer": "plummeted",
+          "accept": [
+            "plummeted"
+          ]
+        },
+        {
+          "id": "q16",
+          "prompt": "dip",
+          "answer": "dipped",
+          "accept": [
+            "dipped"
+          ]
+        },
+        {
+          "id": "q17",
+          "prompt": "level off",
+          "answer": "levelled off",
+          "accept": [
+            "levelled off",
+            "leveled off"
+          ]
+        },
+        {
+          "id": "q18",
+          "prompt": "fluctuate",
+          "answer": "fluctuated",
+          "accept": [
+            "fluctuated"
+          ]
+        },
+        {
+          "id": "q19",
+          "prompt": "remain",
+          "answer": "remained",
+          "accept": [
+            "remained"
+          ]
+        },
+        {
+          "id": "q20",
+          "prompt": "bottom",
+          "answer": "bottomed",
+          "accept": [
+            "bottomed"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L05-E03",
+      "lessonCode": "T1-L05",
+      "order": 3,
+      "type": "mcq",
+      "title": "Bài tập 1 — Chọn từ đúng theo mức độ",
+      "instruction": "Chọn tính từ hoặc trạng từ phù hợp nhất với dữ liệu mô tả.",
+      "source": "original",
+      "skillTags": [
+        "degree-of-change"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 6,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Sales went from 100 to 105 units. → a ____ increase",
+          "options": [
+            {
+              "id": "A",
+              "text": "slight"
+            },
+            {
+              "id": "B",
+              "text": "dramatic"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Chỉ tăng 5 đơn vị → mức rất nhỏ."
+        },
+        {
+          "id": "q2",
+          "prompt": "The population fell from 8 million to 2 million. → ____",
+          "options": [
+            {
+              "id": "A",
+              "text": "plummeted"
+            },
+            {
+              "id": "B",
+              "text": "dipped"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Giảm 75% → giảm cực mạnh."
+        },
+        {
+          "id": "q3",
+          "prompt": "The figure stayed at 40% for ten years. → ____",
+          "options": [
+            {
+              "id": "A",
+              "text": "fluctuated"
+            },
+            {
+              "id": "B",
+              "text": "remained stable"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không thay đổi suốt giai đoạn."
+        },
+        {
+          "id": "q4",
+          "prompt": "The price went up and down many times. → ____",
+          "options": [
+            {
+              "id": "A",
+              "text": "fluctuated"
+            },
+            {
+              "id": "B",
+              "text": "levelled off"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Lên xuống liên tục = dao động."
+        },
+        {
+          "id": "q5",
+          "prompt": "The number rose from 200 to 800 in one year. → increased ____",
+          "options": [
+            {
+              "id": "A",
+              "text": "gradually"
+            },
+            {
+              "id": "B",
+              "text": "dramatically"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Gấp 4 lần trong 1 năm → tăng đột biến."
+        },
+        {
+          "id": "q6",
+          "prompt": "After rising for years, the figure stopped changing. → ____",
+          "options": [
+            {
+              "id": "A",
+              "text": "levelled off"
+            },
+            {
+              "id": "B",
+              "text": "rocketed"
+            }
+          ],
+          "answer": "A",
+          "explanation": "“level off” = ổn định lại sau khi tăng hoặc giảm."
+        }
+      ]
+    },
+    {
+      "code": "T1-L05-E04",
+      "lessonCode": "T1-L05",
+      "order": 4,
+      "type": "ordering",
+      "title": "Bài tập 3 — Xếp hạng mức độ",
+      "instruction": "Sắp xếp các từ sau từ YẾU NHẤT đến MẠNH NHẤT.",
+      "source": "original",
+      "skillTags": [
+        "degree-of-change"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 3,
+      "points": 2,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "tokens": [
+            "dramatic",
+            "slight",
+            "considerable",
+            "minimal",
+            "moderate"
+          ],
+          "answer": [
+            "minimal",
+            "slight",
+            "moderate",
+            "considerable",
+            "dramatic"
+          ],
+          "explanation": "Thang mức độ: minimal → slight → moderate → significant/substantial/considerable → dramatic → enormous."
+        },
+        {
+          "id": "q2",
+          "tokens": [
+            "sharp",
+            "gradual",
+            "rapid",
+            "moderate"
+          ],
+          "answer": [
+            "gradual",
+            "moderate",
+            "rapid",
+            "sharp"
+          ],
+          "explanation": "Thang tốc độ / độ dốc: gradual → moderate → rapid → sharp → steep."
+        }
+      ]
+    },
+    {
+      "code": "T1-L05-E05",
+      "lessonCode": "T1-L05",
+      "order": 5,
+      "type": "gap_fill",
+      "title": "Bổ sung — Đỉnh và đáy",
+      "instruction": "Điền từ còn thiếu để hoàn thành cụm mô tả điểm cao nhất / thấp nhất.",
+      "source": "added",
+      "skillTags": [
+        "peak-bottom"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "wordBank": [
+        "at",
+        "of",
+        "peak",
+        "low",
+        "bottom",
+        "highest",
+        "lowest",
+        "reached"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of car users peaked ____ 10 million in 2010.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "peak (v) + AT + số liệu."
+        },
+        {
+          "id": "q2",
+          "prompt": "Internet usage reached a peak ____ 85% in 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ],
+          "explanation": "peak (n) → a peak OF + số liệu."
+        },
+        {
+          "id": "q3",
+          "prompt": "The figure hit the ____ point of 2,000 tonnes in 2015.",
+          "blanks": [
+            {
+              "accept": [
+                "highest"
+              ]
+            }
+          ],
+          "explanation": "hit the highest point of…"
+        },
+        {
+          "id": "q4",
+          "prompt": "Sales hit a ____ of 500 units in 2018.",
+          "blanks": [
+            {
+              "accept": [
+                "low"
+              ]
+            }
+          ],
+          "explanation": "hit a low of + số liệu."
+        },
+        {
+          "id": "q5",
+          "prompt": "The unemployment rate ____ a bottom of 2% in 2005.",
+          "blanks": [
+            {
+              "accept": [
+                "reached"
+              ]
+            }
+          ],
+          "explanation": "reach a bottom of…"
+        },
+        {
+          "id": "q6",
+          "prompt": "Oil prices ____ at 30 USD per barrel in 2016.",
+          "blanks": [
+            {
+              "accept": [
+                "bottomed"
+              ]
+            }
+          ],
+          "explanation": "bottom (v) + AT + số liệu."
+        },
+        {
+          "id": "q7",
+          "prompt": "The figure hit the ____ point of 1 million in 1999.",
+          "blanks": [
+            {
+              "accept": [
+                "lowest"
+              ]
+            }
+          ],
+          "explanation": "hit the lowest point of…"
+        },
+        {
+          "id": "q8",
+          "prompt": "The graph shows a ____ of almost 95,000 USD before the decline.",
+          "blanks": [
+            {
+              "accept": [
+                "peak",
+                "high"
+              ]
+            }
+          ],
+          "explanation": "“a peak / a high of…” đều dùng được."
+        }
+      ]
+    },
+    {
+      "code": "T1-L05-E06",
+      "lessonCode": "T1-L05",
+      "order": 6,
+      "type": "sentence_transform",
+      "title": "Bài tập 2 — Chuyển động từ thành danh từ",
+      "instruction": "Viết lại mỗi câu dùng cấu trúc: There was a/an + adjective + noun + in …",
+      "source": "original",
+      "skillTags": [
+        "nominalisation"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 5,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of tourists increased sharply in 2010.",
+          "sampleAnswers": [
+            "There was a sharp increase in the number of tourists in 2010."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Car sales fell slightly between 2015 and 2016.",
+          "sampleAnswers": [
+            "There was a slight fall in car sales between 2015 and 2016."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The unemployment rate fluctuated wildly.",
+          "sampleAnswers": [
+            "There was a wild fluctuation in the unemployment rate."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Rice exports grew substantially over the period.",
+          "sampleAnswers": [
+            "There was a substantial growth in rice exports over the period."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Coal production dropped dramatically after 2000.",
+          "sampleAnswers": [
+            "There was a dramatic drop in coal production after 2000."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "There was a/an + adj + noun + in …"
+        ],
+        "checklist": [
+          "Trạng từ đổi thành tính từ (sharply → sharp)",
+          "Động từ đổi thành danh từ (increased → increase)",
+          "Giữ nguyên mốc thời gian"
+        ],
+        "commonErrors": [
+          "There was a sharply increase",
+          "There were a slight fall"
+        ]
+      }
+    },
+    {
+      "code": "T1-L05-E07",
+      "lessonCode": "T1-L05",
+      "order": 7,
+      "type": "sentence_writing",
+      "title": "Homework — 8 câu mô tả xu hướng",
+      "instruction": "Với mỗi đoạn của đường biểu đồ, viết một câu hoàn chỉnh: tự nghĩ số liệu và bắt buộc có một trạng từ chỉ mức độ.",
+      "source": "original",
+      "skillTags": [
+        "trend-vocabulary",
+        "degree-of-change"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 16,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Line graph — 8 đoạn với các dạng xu hướng khác nhau (tăng dần, tăng vọt, ổn định, dao động, giảm nhẹ, giảm mạnh, đạt đỉnh, chạm đáy)",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/line-graph-AN.png"
+      },
+      "responseSlots": 8,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "S + V + adverb + by … to …",
+          "There was a/an + adj + noun + in …",
+          "S + saw / witnessed / experienced + …"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Mỗi câu có một trạng từ hoặc tính từ chỉ mức độ",
+          "Không dùng lại cùng một động từ xu hướng",
+          "Có số liệu cụ thể trong mỗi câu"
+        ],
+        "commonErrors": [
+          "increased strongly (không tự nhiên)",
+          "dùng “dramatically” cho mức tăng 2%"
+        ]
+      }
+    },
+    {
+      "code": "T1-L06-E01",
+      "lessonCode": "T1-L06",
+      "order": 1,
+      "type": "gap_fill",
+      "title": "Practice 1 — Điền giới từ",
+      "instruction": "Điền giới từ thích hợp: at · to · by · of · in · with · from · between … and … · over · around",
+      "source": "original",
+      "skillTags": [
+        "prepositions"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 20,
+      "autoGrade": true,
+      "wordBank": [
+        "at",
+        "to",
+        "by",
+        "of",
+        "in",
+        "with",
+        "from",
+        "between",
+        "and",
+        "over",
+        "around"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of visitors increased ____ 3 million in 2015.",
+          "blanks": [
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "TO = giá trị đích."
+        },
+        {
+          "id": "q2",
+          "prompt": "Sales rose ____ 500 units over the period.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            }
+          ],
+          "explanation": "BY = mức thay đổi."
+        },
+        {
+          "id": "q3",
+          "prompt": "The figure remained stable ____ 40% for a decade.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "remain stable AT."
+        },
+        {
+          "id": "q4",
+          "prompt": "Oil prices peaked ____ 120 USD per barrel.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "peak AT."
+        },
+        {
+          "id": "q5",
+          "prompt": "The rate reached a peak ____ 85% in 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ],
+          "explanation": "a peak OF."
+        },
+        {
+          "id": "q6",
+          "prompt": "There was a sharp increase ____ the number of car users.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "an increase IN + đối tượng."
+        },
+        {
+          "id": "q7",
+          "prompt": "The figure fell ____ 20% ____ 12% between 2000 and 2010.",
+          "blanks": [
+            {
+              "accept": [
+                "from"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "from … to … = từ … xuống …"
+        },
+        {
+          "id": "q8",
+          "prompt": "The number fluctuated ____ 10 ____ 15 million.",
+          "blanks": [
+            {
+              "accept": [
+                "between"
+              ]
+            },
+            {
+              "accept": [
+                "and"
+              ]
+            }
+          ],
+          "explanation": "fluctuate BETWEEN X AND Y."
+        },
+        {
+          "id": "q9",
+          "prompt": "The figure hovered ____ 30% throughout the period.",
+          "blanks": [
+            {
+              "accept": [
+                "around",
+                "at"
+              ]
+            }
+          ],
+          "explanation": "hover AROUND = dao động quanh mức."
+        },
+        {
+          "id": "q10",
+          "prompt": "The amount of waste doubled ____ the ten-year period.",
+          "blanks": [
+            {
+              "accept": [
+                "over"
+              ]
+            }
+          ],
+          "explanation": "OVER + giai đoạn."
+        },
+        {
+          "id": "q11",
+          "prompt": "Coal accounted for 30% ____ total energy production.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ],
+          "explanation": "…% OF + tổng thể."
+        },
+        {
+          "id": "q12",
+          "prompt": "The year 2010 witnessed a dramatic rise ____ tourist numbers.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "a rise IN."
+        },
+        {
+          "id": "q13",
+          "prompt": "Sales bottomed ____ 200 units in 2018.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "bottom AT."
+        },
+        {
+          "id": "q14",
+          "prompt": "There was a fall ____ 5 million ____ 15 million in car ownership.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "a fall OF (mức giảm) … TO (giá trị đích)."
+        },
+        {
+          "id": "q15",
+          "prompt": "The figure stood ____ 8% in 2005.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "stand AT."
+        },
+        {
+          "id": "q16",
+          "prompt": "Germany saw a slight decline ____ paper recycling.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "a decline IN."
+        },
+        {
+          "id": "q17",
+          "prompt": "The rate climbed ____ 3 percentage points ____ 19%.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "BY = mức tăng, TO = giá trị đích."
+        },
+        {
+          "id": "q18",
+          "prompt": "The population grew steadily ____ 1990 ____ 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "from"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "from 1990 to 2020."
+        },
+        {
+          "id": "q19",
+          "prompt": "Renewable energy started ____ just 2% of the total.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ],
+          "explanation": "start AT + điểm khởi đầu."
+        },
+        {
+          "id": "q20",
+          "prompt": "The chart compares four countries ____ terms of energy use.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "in terms of."
+        }
+      ]
+    },
+    {
+      "code": "T1-L06-E02",
+      "lessonCode": "T1-L06",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Bài tập 4 — by hay to?",
+      "instruction": "Điền by hoặc to. Nhớ: BY = tăng/giảm bao nhiêu; TO = đạt tới mức nào.",
+      "source": "original",
+      "skillTags": [
+        "prepositions"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "wordBank": [
+        "by",
+        "to",
+        "of"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The figure rose ____ 5% ____ 45% in 2010.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "Tăng thêm 5 điểm phần trăm, lên mức 45%."
+        },
+        {
+          "id": "q2",
+          "prompt": "Sales fell ____ 2,000 units in the final year, reaching 8,000.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            }
+          ],
+          "explanation": "Giảm 2,000 đơn vị → BY."
+        },
+        {
+          "id": "q3",
+          "prompt": "The population increased ____ 12 million by 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "to",
+                "by"
+              ]
+            }
+          ],
+          "explanation": "Cả hai đều đúng ngữ pháp nhưng nghĩa khác nhau: TO = đạt 12 triệu; BY = tăng thêm 12 triệu."
+        },
+        {
+          "id": "q4",
+          "prompt": "There was a drop ____ 300 tonnes ____ 1,200 tonnes.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "Sau danh từ dùng OF cho mức giảm, TO cho giá trị cuối."
+        },
+        {
+          "id": "q5",
+          "prompt": "The rate climbed ____ 3 percentage points ____ 19%.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "BY + mức, TO + đích."
+        }
+      ]
+    },
+    {
+      "code": "T1-L06-E03",
+      "lessonCode": "T1-L06",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Practice 2 — Viết lại câu theo cấu trúc đã học",
+      "instruction": "Viết lại mỗi câu bắt đầu bằng từ cho sẵn, dùng 1 trong 3 cấu trúc mô tả xu hướng.",
+      "source": "original",
+      "skillTags": [
+        "trend-structures",
+        "nominalisation"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 10,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of cars fell gradually over the period from 1990 to 2000.",
+          "starter": "The number of cars",
+          "sampleAnswers": [
+            "The number of cars experienced a gradual fall over the period from 1990 to 2000."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The research investment decreased significantly in 2005.",
+          "starter": "The year",
+          "sampleAnswers": [
+            "The year 2005 witnessed a significant decrease in research investment."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "There was a slight fall in the sales of mangos in 2006.",
+          "starter": "The sales",
+          "sampleAnswers": [
+            "The sales of mangos fell slightly in 2006."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The quality of food in supermarkets has increased sharply.",
+          "starter": "There",
+          "sampleAnswers": [
+            "There has been a sharp increase in the quality of food in supermarkets."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "There was a quick drop of 3 million USD in sugar imports in 1988.",
+          "starter": "1988",
+          "sampleAnswers": [
+            "1988 saw a quick drop of 3 million USD in sugar imports."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The price of laptops dropped quickly over the period.",
+          "starter": "A quick drop",
+          "sampleAnswers": [
+            "A quick drop was seen in the price of laptops over the period."
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "There was an upward trend in the number of visitors to the website.",
+          "starter": "The number of visitors",
+          "sampleAnswers": [
+            "The number of visitors to the website experienced an upward trend."
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "The growth rate fluctuated wildly throughout the years.",
+          "starter": "There",
+          "sampleAnswers": [
+            "There was a wild fluctuation in the growth rate throughout the years."
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "The number of students applying to the university stabilized over the decade.",
+          "starter": "A stability",
+          "sampleAnswers": [
+            "A stability was seen in the number of students applying to the university over the decade."
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "The year 2000 saw a gradual growth in the house price in London.",
+          "starter": "The house price in London",
+          "sampleAnswers": [
+            "The house price in London grew gradually in 2000."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "S + V + adverb",
+          "There was a/an + adj + noun + in …",
+          "S + saw / witnessed / experienced + …",
+          "A + noun + was seen in …"
+        ],
+        "checklist": [
+          "Bắt đầu đúng bằng từ cho sẵn",
+          "Đổi đúng adverb ⇄ adjective",
+          "Giữ nguyên số liệu và mốc thời gian"
+        ],
+        "commonErrors": [
+          "There was a sharply increase",
+          "The year 2005 witnessed decreased"
+        ]
+      }
+    },
+    {
+      "code": "T1-L06-E04",
+      "lessonCode": "T1-L06",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Bài tập 5 — Viết 3 phiên bản của cùng một xu hướng",
+      "instruction": "Với mỗi dữ liệu, viết 3 câu dùng lần lượt Cấu trúc 1, 2 và 3.",
+      "source": "original",
+      "skillTags": [
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 9,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Ba bộ dữ liệu xu hướng",
+        "headers": [
+          "DỮ LIỆU",
+          "NĂM ĐẦU",
+          "NĂM CUỐI",
+          "MỨC ĐỘ"
+        ],
+        "rows": [
+          [
+            "Hành khách đi tàu ở Nhật",
+            "2005: 8 triệu",
+            "2015: 20 triệu",
+            "tăng mạnh"
+          ],
+          [
+            "Lượng giấy tái chế ở Đức",
+            "1990: 6 triệu tấn",
+            "2000: 3 triệu tấn",
+            "giảm đáng kể"
+          ],
+          [
+            "Tỷ lệ thất nghiệp ở Tây Ban Nha",
+            "2008: 8%",
+            "2013: 26%",
+            "tăng đột ngột"
+          ]
+        ]
+      },
+      "responseSlots": 9,
+      "rubric": {
+        "minWords": 90,
+        "targetStructures": [
+          "S + V + adverb + by … to …",
+          "There was a/an + adj + noun + of … to … in …",
+          "S + saw / witnessed / experienced + a/an + adj + noun"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Mỗi bộ dữ liệu có đủ 3 câu, mỗi câu một cấu trúc",
+          "Dùng đúng BY cho mức thay đổi và TO cho giá trị đích",
+          "Dùng AMOUNT cho giấy tái chế, PERCENTAGE cho tỷ lệ thất nghiệp"
+        ],
+        "sampleAnswer": "The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015. There was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers. Japan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers.",
+        "commonErrors": [
+          "increased by to 20 million",
+          "There was a dramatically increase"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E01",
+      "lessonCode": "T1-L07",
+      "order": 1,
+      "type": "gap_fill",
+      "title": "Warm-up — Tăng theo cấp số nhân",
+      "instruction": "Điền từ thích hợp để diễn tả bội số.",
+      "source": "added",
+      "skillTags": [
+        "multiplicative"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 7,
+      "autoGrade": true,
+      "wordBank": [
+        "doubled",
+        "trebled",
+        "quadrupled",
+        "two-fold",
+        "three-fold",
+        "times",
+        "half"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The rate rose from 20% to 40%. It ____ over the period.",
+          "blanks": [
+            {
+              "accept": [
+                "doubled"
+              ]
+            }
+          ],
+          "explanation": "x2 → double (động từ)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Sales went from 100 to 300 units, so they ____.",
+          "blanks": [
+            {
+              "accept": [
+                "trebled",
+                "tripled"
+              ]
+            }
+          ],
+          "explanation": "x3 → treble / triple."
+        },
+        {
+          "id": "q3",
+          "prompt": "The figure grew from 5 to 20 million, meaning it ____.",
+          "blanks": [
+            {
+              "accept": [
+                "quadrupled"
+              ]
+            }
+          ],
+          "explanation": "x4 → quadruple."
+        },
+        {
+          "id": "q4",
+          "prompt": "There was a ____ increase in car ownership (from 10 to 20 million).",
+          "blanks": [
+            {
+              "accept": [
+                "two-fold",
+                "twofold"
+              ]
+            }
+          ],
+          "explanation": "Dạng tính từ của x2."
+        },
+        {
+          "id": "q5",
+          "prompt": "There was a ____ rise in tourist numbers (from 2 to 6 million).",
+          "blanks": [
+            {
+              "accept": [
+                "three-fold",
+                "threefold"
+              ]
+            }
+          ],
+          "explanation": "Dạng tính từ của x3."
+        },
+        {
+          "id": "q6",
+          "prompt": "The figure for China was six ____ higher than that for Vietnam.",
+          "blanks": [
+            {
+              "accept": [
+                "times"
+              ]
+            }
+          ],
+          "explanation": "x times higher / greater than…"
+        },
+        {
+          "id": "q7",
+          "prompt": "The UK consumed 1,000 tonnes, ____ the amount eaten in the US (2,000 tonnes).",
+          "blanks": [
+            {
+              "accept": [
+                "half"
+              ]
+            }
+          ],
+          "explanation": "half the amount = một nửa."
+        }
+      ]
+    },
+    {
+      "code": "T1-L07-E02",
+      "lessonCode": "T1-L07",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "Bổ sung — Một dữ liệu, bốn cách diễn đạt bội số",
+      "instruction": "Dữ liệu: A = 10 triệu (1992) → 20 triệu (1998). Viết 4 câu diễn đạt cùng ý bằng 4 cách khác nhau.",
+      "source": "added",
+      "skillTags": [
+        "multiplicative",
+        "paraphrasing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 4,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Dùng động từ “double”",
+          "sampleAnswers": [
+            "The figure for A doubled from 10 million in 1992 to 20 million in 1998."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Dùng “-fold”",
+          "sampleAnswers": [
+            "There was a two-fold increase in A, from 10 million to 20 million, between 1992 and 1998."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Dùng “times … as many as”",
+          "sampleAnswers": [
+            "In 1998, the figure for A was twice as many as that in 1992."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Dùng “by” và “to”",
+          "sampleAnswers": [
+            "A increased by 10 million to 20 million over the six-year period."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "double",
+          "-fold",
+          "twice as many as",
+          "by … to …"
+        ],
+        "checklist": [
+          "Bốn câu diễn đạt cùng một ý",
+          "Số liệu chính xác",
+          "Không lặp cấu trúc"
+        ],
+        "commonErrors": [
+          "doubled by two times",
+          "a two-fold increased"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E03",
+      "lessonCode": "T1-L07",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "Practice 3 — Mô tả xu hướng dùng Internet 1990–2000",
+      "instruction": "Viết 5 câu mô tả xu hướng của từng quốc gia. Chú ý: có nước tăng, nước giảm, nước không đổi.",
+      "source": "original",
+      "skillTags": [
+        "trend-structures",
+        "percentage"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "The percentage of Internet users across five countries, 1990 and 2000",
+        "headers": [
+          "COUNTRY",
+          "1990",
+          "2000"
+        ],
+        "rows": [
+          [
+            "The UK",
+            "55%",
+            "55%"
+          ],
+          [
+            "The US",
+            "70%",
+            "80%"
+          ],
+          [
+            "Vietnam",
+            "10%",
+            "50%"
+          ],
+          [
+            "Japan",
+            "25%",
+            "20%"
+          ],
+          [
+            "Australia",
+            "40%",
+            "10%"
+          ]
+        ]
+      },
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "remained stable at",
+          "There was a/an + adj + noun of … to … in …",
+          "S + V + adverb + by … to …",
+          "saw / witnessed / experienced"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Chọn đúng mức độ: UK = ổn định, US = tăng nhẹ, Vietnam = tăng mạnh, Japan = giảm nhẹ, Australia = giảm cực mạnh",
+          "Dùng ít nhất 3 cấu trúc khác nhau",
+          "Có dùng “by” và “to” đúng chỗ"
+        ],
+        "sampleAnswer": "In 2000, the percentage of Internet users in the UK remained stable at 55%. There was a slight increase of 10% to 80% in the proportion of Internet users in the US. Vietnam experienced a dramatic rise of 40 percentage points to 50%. Meanwhile, the figure for Japan dipped slightly by 5% to 20%. Australia saw the sharpest decline, plummeting from 40% to only 10%.",
+        "commonErrors": [
+          "dùng “dramatically” cho mức giảm 5%",
+          "There were 55% of British people"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E04",
+      "lessonCode": "T1-L07",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Practice 4 — Xu hướng 2030 → 2050 (thì tương lai)",
+      "instruction": "Viết các câu mô tả xu hướng từ 2030 đến 2050. Dùng cụm dự đoán: is expected to, will likely, is projected to, is forecasted to…",
+      "source": "original",
+      "skillTags": [
+        "future-tense",
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 12,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "The amount of clean water consumed in four megacities (m³)",
+        "headers": [
+          "CITY",
+          "2030",
+          "2050"
+        ],
+        "rows": [
+          [
+            "Paris",
+            "1,200",
+            "3,000"
+          ],
+          [
+            "London",
+            "2,400",
+            "2,000"
+          ],
+          [
+            "New York",
+            "2,100",
+            "800"
+          ],
+          [
+            "Berlin",
+            "2,700",
+            "2,900"
+          ]
+        ]
+      },
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "is expected to",
+          "will likely",
+          "is projected to",
+          "is forecasted to",
+          "while / whereas"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "KHÔNG có động từ quá khứ",
+          "Dùng ít nhất 3 cụm dự đoán khác nhau",
+          "Có 1 câu tổng kết so sánh tăng mạnh nhất và giảm mạnh nhất"
+        ],
+        "sampleAnswer": "The amount of clean water consumed in Paris is expected to increase significantly from 1,200 m³ in 2030 to 3,000 m³ in 2050. London's clean water consumption will likely decline from 2,400 m³ to 2,000 m³. New York is projected to experience a dramatic drop, from 2,100 m³ to only 800 m³. The figure for Berlin is forecasted to rise slightly to 2,900 m³. Among the four megacities, Paris is expected to see the most significant growth, while New York will face the sharpest decline.",
+        "commonErrors": [
+          "is expected to increased",
+          "In 2050, the figure was 800 m³"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E05",
+      "lessonCode": "T1-L07",
+      "order": 5,
+      "type": "paragraph_writing",
+      "title": "Practice 5 — Hai đoạn về lượng pizza",
+      "instruction": "Đoạn 1: mô tả và so sánh số liệu năm 2005. Đoạn 2: mô tả xu hướng tăng/giảm từ 2005 đến 2010.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 20,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "The amount of pizza eaten in different countries (grams)",
+        "headers": [
+          "COUNTRY",
+          "2005",
+          "2010"
+        ],
+        "rows": [
+          [
+            "China",
+            "5,500",
+            "6,000"
+          ],
+          [
+            "Australia",
+            "3,100",
+            "2,000"
+          ],
+          [
+            "US",
+            "2,500",
+            "7,500"
+          ],
+          [
+            "UK",
+            "1,000",
+            "1,100"
+          ]
+        ],
+        "note": "Gợi ý mở đầu Đ1: “In 2005, 5,500 grams of pizza were made in China, which topped the list…”. Gợi ý mở đầu Đ2: “In the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams…”"
+      },
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 140,
+        "targetStructures": [
+          "topped the list",
+          "compared to",
+          "respectively",
+          "increased by … to …",
+          "There was a … increase in …",
+          "while / whereas"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Đoạn 1 CHỈ mô tả dữ liệu năm 2005 (không nói xu hướng)",
+          "Đoạn 2 CHỈ mô tả xu hướng 2005→2010",
+          "Có phân biệt mức độ: US tăng mạnh, China và UK tăng nhẹ, Australia giảm đáng kể"
+        ],
+        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all. In the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. Chinese and British output rose only slightly, to 6,000 and 1,100 grams. By contrast, Australia experienced a considerable fall of over a third, to just 2,000 grams.",
+        "commonErrors": [
+          "trộn lẫn dữ liệu và xu hướng trong cùng một đoạn"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E06",
+      "lessonCode": "T1-L07",
+      "order": 6,
+      "type": "paragraph_writing",
+      "title": "Practice 6 — Chart 1: tiêu thụ thịt và cá ở châu Âu (1979–2004)",
+      "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh dữ liệu năm đầu tiên; Đoạn 2 mô tả và so sánh xu hướng tới năm cuối cùng.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 20,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "The consumption of fish and different kinds of meat in a European country between 1979 and 2004",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/fish-meat-1979-2004.png"
+      },
+      "wordBank": [
+        "The amount of [fish/chicken/beef/lamb] consumed by each person a week",
+        "The consumption of [fish/chicken/beef/lamb] by each person a week was …"
+      ],
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 130,
+        "targetStructures": [
+          "The amount of … was …",
+          "compared to",
+          "while / whereas",
+          "There was a … in …",
+          "the opposite trend was true for"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Đoạn 1 chỉ dữ liệu 1979",
+          "Đoạn 2 chỉ xu hướng",
+          "Dùng AMOUNT vì thịt/cá không đếm được",
+          "Nêu rõ chicken đi ngược xu hướng chung"
+        ],
+        "commonErrors": [
+          "The number of chicken consumed"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E07",
+      "lessonCode": "T1-L07",
+      "order": 7,
+      "type": "paragraph_writing",
+      "title": "Practice 6 — Chart 2: chi tiêu của một trường ở Anh (1981 & 1991)",
+      "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh tỷ lệ năm 1981; Đoạn 2 mô tả thay đổi tới 1991.",
+      "source": "original",
+      "skillTags": [
+        "percentage",
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 20,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "The changes in annual spending by a particular UK school in 1981 and 1991 (pie charts)",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/uk-school-pie-1981-1991.png"
+      },
+      "wordBank": [
+        "The percentage of budget poured into [teachers' salaries / resources] was …",
+        "The school spent / expended [? %] of their budget on [teachers' salaries / resources]"
+      ],
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 130,
+        "targetStructures": [
+          "accounted for / made up / took up",
+          "compared to",
+          "while / whereas",
+          "rose / fell by … percentage points"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "KHÔNG dùng “There were” với %",
+          "Đoạn 1 chỉ dữ liệu 1981",
+          "Dùng “percentage points” khi nói mức chênh lệch giữa hai tỷ lệ"
+        ],
+        "commonErrors": [
+          "There were 40% of the budget",
+          "increased by 40% (khi thực ra là 40 percentage points)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L07-E08",
+      "lessonCode": "T1-L07",
+      "order": 8,
+      "type": "paragraph_writing",
+      "title": "Practice 6 — Chart 3: hội viên phòng gym ở Thái Lan (1985–2015)",
+      "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh dữ liệu năm 1985; Đoạn 2 mô tả xu hướng nam và nữ tới 2015.",
+      "source": "original",
+      "skillTags": [
+        "describing-data",
+        "trend-structures",
+        "comparison-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 20,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Male and female fitness membership in Thailand between 1985 and 2015",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/gym-thailand-1985-2015.png"
+      },
+      "wordBank": [
+        "The number of male / female fitness members"
+      ],
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 130,
+        "targetStructures": [
+          "The number of … was …",
+          "respectively",
+          "while / whereas",
+          "overtook / surpassed",
+          "There was a … increase in …"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Dùng NUMBER (members đếm được)",
+          "Có nêu thời điểm hai đường giao nhau nếu có",
+          "Đoạn 2 phải có ít nhất 2 cấu trúc so sánh xu hướng"
+        ],
+        "commonErrors": [
+          "The amount of members"
+        ]
+      }
+    },
+    {
+      "code": "T1-L08-E01",
+      "lessonCode": "T1-L08",
+      "order": 1,
+      "type": "gap_fill",
+      "title": "Exercise 1 — Điền từ vào đoạn mô tả tai nạn giao thông",
+      "instruction": "Điền từ thích hợp vào chỗ trống trong đoạn văn mô tả biểu đồ “Number of road accidents in Someland, 1983–1995”.",
+      "source": "original",
+      "skillTags": [
+        "cloze",
+        "trend-vocabulary"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "wordBank": [
+        "rose",
+        "peak",
+        "before",
+        "however",
+        "then",
+        "gradually",
+        "reaching",
+        "sharply",
+        "period",
+        "remained"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of road accidents in Someland ____ steadily between 1983 and 1987.",
+          "blanks": [
+            {
+              "accept": [
+                "rose"
+              ]
+            }
+          ],
+          "explanation": "Động từ chính ở quá khứ."
+        },
+        {
+          "id": "q2",
+          "prompt": "It then climbed ____ to reach a high point in 1989.",
+          "blanks": [
+            {
+              "accept": [
+                "sharply"
+              ]
+            }
+          ],
+          "explanation": "Trạng từ đi với động từ."
+        },
+        {
+          "id": "q3",
+          "prompt": "The figure hit a ____ of just over 500 cases in that year.",
+          "blanks": [
+            {
+              "accept": [
+                "peak"
+              ]
+            }
+          ],
+          "explanation": "hit / reach a peak of."
+        },
+        {
+          "id": "q4",
+          "prompt": "____, the trend reversed after 1989.",
+          "blanks": [
+            {
+              "accept": [
+                "However"
+              ]
+            }
+          ],
+          "explanation": "Từ nối cho xu hướng trái ngược."
+        },
+        {
+          "id": "q5",
+          "prompt": "Accidents fell ____ over the next four years.",
+          "blanks": [
+            {
+              "accept": [
+                "gradually"
+              ]
+            }
+          ],
+          "explanation": "Giảm từ từ."
+        },
+        {
+          "id": "q6",
+          "prompt": "The figure ____ stable at around 300 cases from 1993 onwards.",
+          "blanks": [
+            {
+              "accept": [
+                "remained"
+              ]
+            }
+          ],
+          "explanation": "remain stable at."
+        },
+        {
+          "id": "q7",
+          "prompt": "There was a slight dip in 1991 ____ the numbers climbed back.",
+          "blanks": [
+            {
+              "accept": [
+                "before"
+              ]
+            }
+          ],
+          "explanation": "before + mệnh đề / V-ing."
+        },
+        {
+          "id": "q8",
+          "prompt": "The figure rose again, ____ a second high in 1994.",
+          "blanks": [
+            {
+              "accept": [
+                "reaching"
+              ]
+            }
+          ],
+          "explanation": "V-ing để nối xu hướng nối tiếp."
+        },
+        {
+          "id": "q9",
+          "prompt": "Overall, road accidents were higher at the end of the ____ than at the beginning.",
+          "blanks": [
+            {
+              "accept": [
+                "period"
+              ]
+            }
+          ],
+          "explanation": "the period = giai đoạn khảo sát."
+        },
+        {
+          "id": "q10",
+          "prompt": "The figure ____ levelled off until 1995.",
+          "blanks": [
+            {
+              "accept": [
+                "then"
+              ]
+            }
+          ],
+          "explanation": "and then / then để nối xu hướng cùng chiều."
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E02",
+      "lessonCode": "T1-L08",
+      "order": 2,
+      "type": "sentence_writing",
+      "title": "Exercise 2 — Mô tả và nối xu hướng (Figures A–F)",
+      "instruction": "Với mỗi biểu đồ A–F, viết 1–2 câu mô tả, nối các xu hướng bằng những cấu trúc đã học (and then / however / before V-ing / followed by).",
+      "source": "original",
+      "skillTags": [
+        "combining-trends"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 12,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Figures A, B, C, D, E, F — sáu dạng xu hướng khác nhau",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/figures-A-F.png"
+      },
+      "responseSlots": 6,
+      "rubric": {
+        "minWords": 100,
+        "targetStructures": [
+          "…, and then S continued its upward trend, reaching a peak of …",
+          "There was a … until it reached a high of …; however, S began to …",
+          "Starting at X, S + V, before V-ing …",
+          "…, followed by a …"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Mỗi hình có ít nhất một từ nối xu hướng",
+          "Không lặp lại một cấu trúc nối quá 2 lần",
+          "Có ít nhất một câu nối 3 xu hướng"
+        ],
+        "commonErrors": [
+          "dùng “and then” cho xu hướng trái ngược",
+          "dùng “however” cho hai xu hướng cùng chiều"
+        ]
+      }
+    },
+    {
+      "code": "T1-L08-E03",
+      "lessonCode": "T1-L08",
+      "order": 3,
+      "type": "paragraph_writing",
+      "title": "Exercise 3 — Biểu đồ có dự báo tương lai (1940 → 2030)",
+      "instruction": "Mô tả toàn bộ giai đoạn từ 1940 đến 2030. Cẩn thận khi chọn thì quá khứ hay tương lai.",
+      "source": "original",
+      "skillTags": [
+        "combining-trends",
+        "future-tense"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 15,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Biểu đồ có phần dữ liệu quá khứ và phần dự báo tương lai",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/forecast-1940-2030.png",
+        "note": "Xác định “năm chuyển giao” giữa dữ liệu thật và dữ liệu dự báo trước khi viết."
+      },
+      "wordBank": [
+        "mild fluctuations",
+        "a peak",
+        "a period of instability",
+        "a significant increase",
+        "a partial growth",
+        "a record high",
+        "figures climbing back",
+        "a marked rise",
+        "a dramatic decrease",
+        "a period of slight volatility",
+        "a levelling out / off",
+        "a sharp decline",
+        "a plateau",
+        "figures remaining constant"
+      ],
+      "rubric": {
+        "minWords": 120,
+        "targetStructures": [
+          "and then …, reaching …",
+          "however",
+          "before V-ing",
+          "is projected to",
+          "is expected to"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Phần quá khứ dùng thì quá khứ, phần dự báo dùng cụm dự đoán",
+          "Dùng ít nhất 4 cụm danh từ trong bảng gợi ý",
+          "Có nêu năm chuyển giao rõ ràng"
+        ],
+        "sampleAnswer": "There were mild fluctuations in the number of the XYZ radio station listeners from 1980 to 2000, ranging between 11 and 35 thousand people; however, the figure then saw a partial growth over the next ten years, reaching almost 25 thousand people by 2010.",
+        "commonErrors": [
+          "dùng “was” cho mốc 2030",
+          "dùng “will be increased”"
+        ]
+      }
+    },
+    {
+      "code": "T1-L08-E04",
+      "lessonCode": "T1-L08",
+      "order": 4,
+      "type": "paragraph_writing",
+      "title": "Exercise 4 — Advanced paraphrasing",
+      "instruction": "Viết lại mỗi đoạn bằng từ ngữ của riêng bạn, giữ nguyên toàn bộ số liệu.",
+      "source": "original",
+      "skillTags": [
+        "paraphrasing",
+        "trend-vocabulary"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 12,
+      "autoGrade": false,
+      "responseSlots": 4,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The rate of car ownership in the US made up 35% in 1999. This figure then lost momentum and shrank to just under 15% before rebounding back to 22% by 2005."
+        },
+        {
+          "id": "q2",
+          "prompt": "In the first half of 2006, the percentage of traffic accidents in New York jumped eightfold before experiencing a steep decline and reaching its rock bottom of 5% in 2010."
+        },
+        {
+          "id": "q3",
+          "prompt": "In France, the number of internet users who bought items online witnessed an unprecedented rise in 2002, at 85 (a massive rate). However, this figure then saw a slight dip 2 years later."
+        },
+        {
+          "id": "q4",
+          "prompt": "The unemployment rate plummeted from 60% to 20% in just 5 years (between 1990 and 1995), but then it levelled off until the end of the period."
+        }
+      ],
+      "rubric": {
+        "minWords": 120,
+        "targetStructures": [
+          "There was a/an + adj + noun + in …",
+          "S + saw / witnessed / experienced",
+          "before V-ing",
+          "and then"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Giữ nguyên 100% số liệu và mốc thời gian",
+          "Thay ít nhất 3 cụm từ vựng trong mỗi đoạn",
+          "Đổi ít nhất 1 cấu trúc câu trong mỗi đoạn (chủ động ↔ danh từ hoá)"
+        ],
+        "sampleAnswer": "Car ownership in the US stood at 35% in 1999, after which it declined to just under 15% before recovering to 22% by 2005.",
+        "commonErrors": [
+          "chép lại nguyên cụm gốc",
+          "đổi số liệu khi paraphrase"
+        ]
+      }
+    },
+    {
+      "code": "T1-L08-E05",
+      "lessonCode": "T1-L08",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Bài tập bổ sung — Nối ba xu hướng trong một câu",
+      "instruction": "Dùng Cấu trúc 4: “Starting at + figure, S + V, followed by … / before V-ing … / but later + V” để viết MỘT câu duy nhất cho mỗi chuỗi dữ liệu.",
+      "source": "original",
+      "skillTags": [
+        "combining-trends"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 12,
+      "points": 6,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "2000: 200 → 2005: 800 → 2010: 500",
+          "sampleAnswers": [
+            "Starting at 200 in 2000, the figure quadrupled to 800 five years later, before falling back to 500 by 2010."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "1990: 45% → 2000: 20% → 2010: 20%",
+          "sampleAnswers": [
+            "Starting at 45% in 1990, the proportion more than halved to 20% by 2000, but later remained unchanged until the end of the period."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "1980: 3 tấn → 1990: 3 tấn → 2000: 9 tấn",
+          "sampleAnswers": [
+            "Starting at 3 tonnes in 1980, the amount stayed stable for a decade, followed by a three-fold increase to 9 tonnes in 2000."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Starting at …",
+          "followed by",
+          "before V-ing",
+          "but later"
+        ],
+        "checklist": [
+          "Chỉ MỘT câu cho mỗi chuỗi",
+          "Có đủ cả 3 mốc số liệu",
+          "Chọn đúng từ nối cho xu hướng cùng chiều hoặc trái chiều"
+        ],
+        "commonErrors": [
+          "tách thành 3 câu riêng",
+          "followed by + mệnh đề đầy đủ"
+        ]
+      }
+    },
+    {
+      "code": "T1-L09-E01",
+      "lessonCode": "T1-L09",
+      "order": 1,
+      "type": "matching",
+      "title": "Warm-up — Nối keyword với cách paraphrase",
+      "instruction": "Nối từ/cụm gốc trong đề bài với cách viết lại phù hợp.",
+      "source": "added",
+      "skillTags": [
+        "paraphrasing",
+        "introduction"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 4,
+      "points": 8,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "left": "shows",
+          "right": "illustrates / compares / gives information about"
+        },
+        {
+          "id": "q2",
+          "left": "the graph",
+          "right": "the line chart / the bar chart"
+        },
+        {
+          "id": "q3",
+          "left": "the number of cars sold",
+          "right": "how many cars were sold"
+        },
+        {
+          "id": "q4",
+          "left": "the amount of energy consumed",
+          "right": "how much energy was consumed"
+        },
+        {
+          "id": "q5",
+          "left": "over a period of 15 years",
+          "right": "between the years 2000 and 2015"
+        },
+        {
+          "id": "q6",
+          "left": "the contribution of three sectors",
+          "right": "how three sectors contributed"
+        },
+        {
+          "id": "q7",
+          "left": "the proportion of people living in poverty",
+          "right": "poverty rates"
+        },
+        {
+          "id": "q8",
+          "left": "different categories of families",
+          "right": "six types of households"
+        }
+      ]
+    },
+    {
+      "code": "T1-L09-E02",
+      "lessonCode": "T1-L09",
+      "order": 2,
+      "type": "mcq",
+      "title": "Bổ sung — Introduction nào đạt chuẩn?",
+      "instruction": "Đề bài: “The graph below shows the amounts of waste produced by three companies over a period of 15 years (2000–2015).” Chọn đáp án đúng.",
+      "source": "added",
+      "skillTags": [
+        "introduction",
+        "paraphrasing"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Introduction nào TỐT NHẤT?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The graph below shows the amounts of waste produced by three companies over a period of 15 years."
+            },
+            {
+              "id": "B",
+              "text": "The line chart compares three companies in terms of their waste output between the years 2000 and 2015."
+            },
+            {
+              "id": "C",
+              "text": "This graph is about waste."
+            }
+          ],
+          "answer": "B",
+          "explanation": "A là chép nguyên đề (không được tính từ), C quá sơ sài và thiếu thông tin."
+        },
+        {
+          "id": "q2",
+          "prompt": "Lỗi lớn nhất của phương án A ở câu trên là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Sai ngữ pháp"
+            },
+            {
+              "id": "B",
+              "text": "Chép nguyên văn đề bài, không được tính vào số từ"
+            },
+            {
+              "id": "C",
+              "text": "Quá dài"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Giám khảo loại bỏ phần chép nguyên đề khi đếm từ và chấm Lexical Resource."
+        },
+        {
+          "id": "q3",
+          "prompt": "Cách viết lại nào dùng đúng phương pháp 2 (đổi dạng từ + how)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The line chart illustrates how much waste three companies produced from 2000 to 2015."
+            },
+            {
+              "id": "B",
+              "text": "The line chart compares waste output in terms of three companies."
+            },
+            {
+              "id": "C",
+              "text": "The line chart shows the waste production of three companies."
+            }
+          ],
+          "answer": "A",
+          "explanation": "“the amounts of waste produced” → “how much waste … produced”."
+        },
+        {
+          "id": "q4",
+          "prompt": "Cụm nào dùng để liệt kê các đối tượng trong Introduction?",
+          "options": [
+            {
+              "id": "A",
+              "text": "for example"
+            },
+            {
+              "id": "B",
+              "text": "namely"
+            },
+            {
+              "id": "C",
+              "text": "such that"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“namely + A, B and C” là cụm liệt kê chuẩn trong Task 1."
+        }
+      ]
+    },
+    {
+      "code": "T1-L09-E03",
+      "lessonCode": "T1-L09",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "Practice — Viết Introduction cho 5 đề",
+      "instruction": "Với mỗi đề, gạch chân keyword rồi viết Introduction bằng ÍT NHẤT 2 trong 3 phương pháp đã học.",
+      "source": "original",
+      "skillTags": [
+        "introduction",
+        "paraphrasing"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 20,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Năm đề bài",
+        "rows": [
+          [
+            "Đề 1",
+            "The chart below shows sports participation by gender in Great Britain in 1999."
+          ],
+          [
+            "Đề 2",
+            "The bar chart below shows the changes in world population by region between 1900 and 2000."
+          ],
+          [
+            "Đề 3",
+            "The graph below shows the average number of commuters in the UK between 1970 and 2000."
+          ],
+          [
+            "Đề 4",
+            "The pie charts below show the amount of electricity produced from three sources in 2010."
+          ],
+          [
+            "Đề 5",
+            "The bar chart below shows the contribution of three sectors — Agriculture, Manufacturing, and Business and Financial services — to the UK economy in the twentieth century."
+          ]
+        ]
+      },
+      "responseSlots": 10,
+      "rubric": {
+        "minWords": 100,
+        "targetStructures": [
+          "paraphrase keyword",
+          "how many / how much / how + S + V",
+          "compare(s) … in terms of …",
+          "namely + A, B and C"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Không chép nguyên bất kỳ cụm nào dài hơn 3 từ từ đề bài",
+          "Ghi rõ năm cụ thể thay vì “over a period of X years”",
+          "Nêu rõ loại biểu đồ (line chart / bar chart / pie chart / table)",
+          "Mỗi đề có 2 phiên bản khác nhau"
+        ],
+        "sampleAnswer": "The bar chart illustrates how three areas, namely Agriculture, Manufacturing, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000. / The bar chart compares three different sectors in terms of their contribution to the UK economy over the twentieth century.",
+        "commonErrors": [
+          "chép nguyên “The graph below shows”",
+          "đảo ngược thứ tự năm (from 2000 to 1970)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L09-E04",
+      "lessonCode": "T1-L09",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Homework — Introduction cho 5 biểu đồ",
+      "instruction": "Viết Introduction cho các biểu đồ sau, mỗi đề một cách paraphrase khác nhau.",
+      "source": "original",
+      "skillTags": [
+        "introduction"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 10,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Năm đề bài homework",
+        "rows": [
+          [
+            "Đề 1",
+            "Số lượng voi châu Á (Asian elephants) qua các năm"
+          ],
+          [
+            "Đề 2",
+            "Số sinh viên tốt nghiệp đại học ở Canada"
+          ],
+          [
+            "Đề 3",
+            "Chi tiêu của chính phủ Mỹ cho nghiên cứu"
+          ],
+          [
+            "Đề 4",
+            "Mức sử dụng nước ở San Diego, California và toàn thế giới"
+          ],
+          [
+            "Đề 5",
+            "Sự thay đổi các phương thức di chuyển ở Anh giai đoạn 1985–2000"
+          ]
+        ],
+        "imageUrl": null
+      },
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "illustrates / compares / gives information about",
+          "how many / how much",
+          "in terms of",
+          "namely"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "5 Introduction, mỗi cái một cách khác nhau",
+          "Nêu rõ loại biểu đồ và mốc thời gian",
+          "Không chép đề"
+        ],
+        "commonErrors": [
+          "The graph shows…",
+          "thiếu mốc thời gian"
+        ]
+      }
+    },
+    {
+      "code": "T1-L10-E01",
+      "lessonCode": "T1-L10",
+      "order": 1,
+      "type": "mcq",
+      "title": "Bài tập — Overview nào đúng?",
+      "instruction": "Đánh giá mỗi Overview: đạt chuẩn hay không đạt chuẩn?",
+      "source": "original",
+      "skillTags": [
+        "overview"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "“Overall, the number of cars rose from 5 million to 15 million.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Overview KHÔNG được chứa số liệu cụ thể. Ngoài ra chỉ nêu được 1 đặc điểm."
+        },
+        {
+          "id": "q2",
+          "prompt": "“It is clear that all three figures increased over the period. Additionally, chicken was by far the most popular meat.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Đủ 2 câu, 2 đặc điểm nổi bật, không có số liệu."
+        },
+        {
+          "id": "q3",
+          "prompt": "“The chart shows information about four countries.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Đây là câu Introduction lặp lại, không nêu được đặc điểm nổi bật nào."
+        },
+        {
+          "id": "q4",
+          "prompt": "“Overall, while the figures for A and B declined steadily, that for C showed the opposite trend.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Nêu được xu hướng chung và điểm khác biệt, không có số liệu."
+        }
+      ]
+    },
+    {
+      "code": "T1-L10-E02",
+      "lessonCode": "T1-L10",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Bổ sung — Khung câu Overview",
+      "instruction": "Điền từ còn thiếu vào hai công thức Overview chuẩn.",
+      "source": "added",
+      "skillTags": [
+        "overview"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 3,
+      "points": 6,
+      "autoGrade": true,
+      "wordBank": [
+        "clear",
+        "Additionally",
+        "Overall",
+        "noticeable",
+        "also",
+        "far"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is ____ that all three figures increased over the period.",
+          "blanks": [
+            {
+              "accept": [
+                "clear",
+                "noticeable"
+              ]
+            }
+          ],
+          "explanation": "It is clear / noticeable that…"
+        },
+        {
+          "id": "q2",
+          "prompt": "____, chicken was the most popular meat throughout.",
+          "blanks": [
+            {
+              "accept": [
+                "Additionally"
+              ]
+            }
+          ],
+          "explanation": "Nối sang đặc điểm thứ hai."
+        },
+        {
+          "id": "q3",
+          "prompt": "____, the figures for A and B rose while that for C fell.",
+          "blanks": [
+            {
+              "accept": [
+                "Overall"
+              ]
+            }
+          ],
+          "explanation": "Công thức 2 mở đầu bằng Overall."
+        },
+        {
+          "id": "q4",
+          "prompt": "It is ____ noted that C experienced the most significant change.",
+          "blanks": [
+            {
+              "accept": [
+                "also"
+              ]
+            }
+          ],
+          "explanation": "It is also clear / noticeable / noted that…"
+        },
+        {
+          "id": "q5",
+          "prompt": "The number of C was by ____ the highest during the research period.",
+          "blanks": [
+            {
+              "accept": [
+                "far"
+              ]
+            }
+          ],
+          "explanation": "“by far” nhấn mạnh vị trí dẫn đầu áp đảo."
+        },
+        {
+          "id": "q6",
+          "prompt": "It is ____ that the figure for D fluctuated throughout.",
+          "blanks": [
+            {
+              "accept": [
+                "noticeable",
+                "clear"
+              ]
+            }
+          ],
+          "explanation": "Hai từ dùng thay nhau được."
+        }
+      ]
+    },
+    {
+      "code": "T1-L10-E03",
+      "lessonCode": "T1-L10",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "Review — Viết Introduction cho 4 biểu đồ",
+      "instruction": "Viết Introduction cho 4 đề dưới đây, áp dụng 3 phương pháp paraphrasing đã học.",
+      "source": "original",
+      "skillTags": [
+        "introduction"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 8,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Bốn đề bài",
+        "rows": [
+          [
+            "Graph 1",
+            "The consumption of fish and different kinds of meat in a European country between 1979 and 2004."
+          ],
+          [
+            "Graph 2",
+            "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries."
+          ],
+          [
+            "Graph 3",
+            "The changes in annual spending by a particular UK school in 1981, 1991 and 2001."
+          ],
+          [
+            "Graph 4",
+            "Male and female fitness membership in Thailand between 1985 and 2015."
+          ]
+        ],
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/graphs-1-4-montage.png"
+      },
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "illustrates / compares",
+          "how much / how many",
+          "in terms of",
+          "namely"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Không chép đề",
+          "Nêu đúng loại biểu đồ",
+          "Có mốc thời gian đầy đủ"
+        ],
+        "commonErrors": [
+          "The graph below shows…"
+        ]
+      }
+    },
+    {
+      "code": "T1-L10-E04",
+      "lessonCode": "T1-L10",
+      "order": 4,
+      "type": "paragraph_writing",
+      "title": "Practice — Viết Overview cho 4 biểu đồ trên",
+      "instruction": "Viết Overview (2 câu, 2 đặc điểm nổi bật, KHÔNG số liệu) cho từng biểu đồ ở bài trước.",
+      "source": "original",
+      "skillTags": [
+        "overview"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 12,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Dùng lại 4 biểu đồ ở bài T1-L10-E03",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/graphs-1-4-montage.png",
+        "note": "Bốn cách tìm đặc điểm nổi bật: (1) tất cả cùng tăng/giảm? (2) cái nào luôn cao/thấp nhất? (3) cái nào thay đổi mạnh nhất? (4) có xu hướng trái ngược không?"
+      },
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "It is clear / noticeable that …. Additionally, …",
+          "Overall, …. It is also noted that …",
+          "by far the highest / lowest",
+          "the opposite trend"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "MỖI Overview đúng 2 câu",
+          "TUYỆT ĐỐI không có số liệu cụ thể",
+          "Nêu được 2 đặc điểm khác nhau (không phải 2 cách nói của cùng 1 ý)",
+          "Dùng cả 2 công thức, không lặp lại một công thức cho cả 4 bài"
+        ],
+        "sampleAnswer": "Overall, while the consumption of chicken rose steadily over the period, the opposite trend was true for the other three types of meat and fish. It is also noticeable that beef, which was the most popular food at the start, had been overtaken by chicken by the end of the period.",
+        "commonErrors": [
+          "Overview chứa số liệu",
+          "Overview chỉ nêu 1 đặc điểm",
+          "Overview lặp lại Introduction"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E01",
+      "lessonCode": "T1-L11",
+      "order": 1,
+      "type": "sentence_transform",
+      "title": "Warm-up — Nâng cấp câu mô tả xu hướng trái ngược",
+      "instruction": "Nâng cấp câu cơ bản lên mức Band 7 và Band 8 bằng các cụm học thuật.",
+      "source": "original",
+      "skillTags": [
+        "upgrading-language"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 6,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Câu cơ bản: “Additionally, while chicken consumption increased, the figures for beef, lamb, and fish all decreased from 1979 to 2004.” → nâng lên Band 7",
+          "sampleAnswers": [
+            "Additionally, while chicken consumption increased, the opposite trend was true for the figures for beef, lamb, and fish from 1979 to 2004."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "→ nâng tiếp lên Band 8",
+          "sampleAnswers": [
+            "Additionally, while chicken consumption experienced an upward trend, the reverse patterns could be seen in the figures for beef, lamb, and fish from 1979 to 2004."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "“Car sales went up but bike sales went down.” → nâng lên Band 8",
+          "sampleAnswers": [
+            "While car sales experienced an upward trend, the reverse pattern could be seen in the figure for bicycles."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "“A increased and B increased too.” → nâng lên Band 7+",
+          "sampleAnswers": [
+            "A similar upward trend could be observed in the figure for B."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "“The number went up a lot in 2005.” → nâng lên Band 7+",
+          "sampleAnswers": [
+            "The year 2005 witnessed a substantial increase in this figure."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "“It stayed the same after that.” → nâng lên Band 7+",
+          "sampleAnswers": [
+            "The figure then levelled off for the remainder of the surveyed period."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "the opposite trend was true for",
+          "the reverse pattern could be seen in",
+          "experienced an upward / downward trend",
+          "witnessed a substantial increase",
+          "for the remainder of the period"
+        ],
+        "checklist": [
+          "Không dùng lại “increase/decrease” đơn thuần",
+          "Giữ nguyên ý nghĩa và số liệu"
+        ],
+        "commonErrors": [
+          "the opposite trend was true with",
+          "reverse pattern was seen for"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E02",
+      "lessonCode": "T1-L11",
+      "order": 2,
+      "type": "mcq",
+      "title": "Bổ sung — Xác định “năm nổi bật”",
+      "instruction": "Chọn năm nên dùng để chia hai đoạn thân bài.",
+      "source": "added",
+      "skillTags": [
+        "body-paragraphs",
+        "structure"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Đường A tăng đều từ 1990, đạt đỉnh 2005, rồi giảm tới 2020. Năm nổi bật là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "1990"
+            },
+            {
+              "id": "B",
+              "text": "2005"
+            },
+            {
+              "id": "C",
+              "text": "2020"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Năm đạt đỉnh là điểm đảo chiều → chia hai đoạn tại đây."
+        },
+        {
+          "id": "q2",
+          "prompt": "Biểu đồ có dữ liệu thật đến 2024 và dự báo tới 2040. Năm nổi bật là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "2024"
+            },
+            {
+              "id": "B",
+              "text": "2040"
+            },
+            {
+              "id": "C",
+              "text": "Năm giữa hai mốc"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Năm chuyển giao giữa quá khứ và tương lai — cũng là điểm đổi thì."
+        },
+        {
+          "id": "q3",
+          "prompt": "Hai đường cắt nhau năm 1998, trước đó A cao hơn B, sau đó ngược lại. Năm nổi bật là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "1998"
+            },
+            {
+              "id": "B",
+              "text": "Năm đầu tiên"
+            },
+            {
+              "id": "C",
+              "text": "Năm cuối cùng"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Năm hai đường vượt nhau là đặc điểm nổi bật nhất."
+        },
+        {
+          "id": "q4",
+          "prompt": "Nên chọn bao nhiêu số liệu cho cả bài Task 1?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Tất cả các số liệu có trong biểu đồ"
+            },
+            {
+              "id": "B",
+              "text": "8–10 số liệu quan trọng nhất"
+            },
+            {
+              "id": "C",
+              "text": "3–4 số liệu"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mỗi đoạn thân bài 4–5 số liệu; viết hết mọi con số làm mất điểm Task Achievement và Coherence."
+        }
+      ]
+    },
+    {
+      "code": "T1-L11-E03",
+      "lessonCode": "T1-L11",
+      "order": 3,
+      "type": "paragraph_writing",
+      "title": "Practice — Viết hai đoạn thân bài",
+      "instruction": "Với biểu đồ tiêu thụ thịt và cá (1979–2004): viết Body 1 (dữ liệu năm đầu + xu hướng tới năm nổi bật) và Body 2 (năm nổi bật → năm cuối). Chỉ chọn 4–5 số liệu mỗi đoạn.",
+      "source": "original",
+      "skillTags": [
+        "body-paragraphs",
+        "data-selection"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 20,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "The consumption of fish and different kinds of meat in a European country between 1979 and 2004",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/fish-meat-1979-2004.png"
+      },
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 130,
+        "targetStructures": [
+          "the opposite trend was true for",
+          "experienced an upward / downward trend",
+          "reached a peak of",
+          "compared to",
+          "while / whereas",
+          "respectively"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Tổng cả hai đoạn chỉ 8–10 số liệu",
+          "Body 1 có mô tả dữ liệu năm đầu tiên",
+          "Body 2 bắt đầu từ năm nổi bật",
+          "Có nhóm các đối tượng cùng xu hướng lại với nhau"
+        ],
+        "commonErrors": [
+          "liệt kê hết mọi số liệu",
+          "hai đoạn trùng nội dung"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E04",
+      "lessonCode": "T1-L11",
+      "order": 4,
+      "type": "full_task1",
+      "title": "Bài viết hoàn chỉnh — 4 đoạn trong 20 phút",
+      "instruction": "Viết một bài Task 1 hoàn chỉnh (Introduction – Overview – Body 1 – Body 2) cho biểu đồ. Tối thiểu 150 từ, hoàn thành trong 20 phút.",
+      "source": "original",
+      "skillTags": [
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "The chart below shows male and female fitness membership in Thailand between 1985 and 2015.",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/gym-thailand-1985-2015.png"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "compares … in terms of",
+          "It is clear that … Additionally, …",
+          "increased by … to …",
+          "the opposite trend was true for",
+          "respectively",
+          "reached a peak of"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement — đủ 4 đoạn, có Overview, chọn lọc 8–10 số liệu",
+            "points": 10
+          },
+          {
+            "criterion": "Coherence & Cohesion — chia đoạn hợp lý, từ nối đa dạng",
+            "points": 10
+          },
+          {
+            "criterion": "Lexical Resource — từ vựng xu hướng và mức độ chính xác",
+            "points": 10
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "Introduction paraphrase, không chép đề",
+          "Overview 2 câu, KHÔNG có số liệu",
+          "Body 1 và Body 2 chia theo năm nổi bật",
+          "Tối thiểu 150 từ"
+        ],
+        "commonErrors": [
+          "thiếu Overview",
+          "Overview có số liệu",
+          "viết hết mọi con số"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST2-A1",
+      "lessonCode": "T1-TEST2",
+      "order": 1,
+      "type": "mcq",
+      "title": "PHẦN A1 — Trắc nghiệm từ vựng xu hướng",
+      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "source": "added",
+      "skillTags": [
+        "module2-review"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Từ nào diễn tả GIẢM CỰC MẠNH?",
+          "options": [
+            {
+              "id": "A",
+              "text": "dip"
+            },
+            {
+              "id": "B",
+              "text": "plummet"
+            },
+            {
+              "id": "C",
+              "text": "level off"
+            },
+            {
+              "id": "D",
+              "text": "climb"
+            }
+          ],
+          "answer": "B",
+          "explanation": "plummet = giảm rất nhanh và rất mạnh."
+        },
+        {
+          "id": "q2",
+          "prompt": "“The figure ____ at 40% for a decade.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "remained stable"
+            },
+            {
+              "id": "B",
+              "text": "fluctuated"
+            },
+            {
+              "id": "C",
+              "text": "rocketed"
+            },
+            {
+              "id": "D",
+              "text": "plunged"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Không đổi suốt 10 năm → remain stable at."
+        },
+        {
+          "id": "q3",
+          "prompt": "“Sales rose ____ 500 units, reaching 3,000.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "to"
+            },
+            {
+              "id": "B",
+              "text": "by"
+            },
+            {
+              "id": "C",
+              "text": "at"
+            },
+            {
+              "id": "D",
+              "text": "of"
+            }
+          ],
+          "answer": "B",
+          "explanation": "BY = mức tăng thêm."
+        },
+        {
+          "id": "q4",
+          "prompt": "“The rate reached a peak ____ 85%.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "at"
+            },
+            {
+              "id": "B",
+              "text": "to"
+            },
+            {
+              "id": "C",
+              "text": "of"
+            },
+            {
+              "id": "D",
+              "text": "in"
+            }
+          ],
+          "answer": "C",
+          "explanation": "peak là danh từ → a peak OF."
+        },
+        {
+          "id": "q5",
+          "prompt": "Cấu trúc nào SAI?",
+          "options": [
+            {
+              "id": "A",
+              "text": "There was a sharp increase in…"
+            },
+            {
+              "id": "B",
+              "text": "There was a sharply increase in…"
+            },
+            {
+              "id": "C",
+              "text": "The figure increased sharply."
+            },
+            {
+              "id": "D",
+              "text": "2005 witnessed a sharp increase."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Trước danh từ phải dùng tính từ, không dùng trạng từ."
+        },
+        {
+          "id": "q6",
+          "prompt": "Từ nối nào dùng cho hai xu hướng TRÁI NGƯỢC?",
+          "options": [
+            {
+              "id": "A",
+              "text": "and then"
+            },
+            {
+              "id": "B",
+              "text": "similarly"
+            },
+            {
+              "id": "C",
+              "text": "by contrast"
+            },
+            {
+              "id": "D",
+              "text": "likewise"
+            }
+          ],
+          "answer": "C",
+          "explanation": "By contrast dùng cho xu hướng ngược chiều."
+        },
+        {
+          "id": "q7",
+          "prompt": "Từ 10 lên 30 triệu, ta nói con số đã:",
+          "options": [
+            {
+              "id": "A",
+              "text": "doubled"
+            },
+            {
+              "id": "B",
+              "text": "trebled"
+            },
+            {
+              "id": "C",
+              "text": "quadrupled"
+            },
+            {
+              "id": "D",
+              "text": "halved"
+            }
+          ],
+          "answer": "B",
+          "explanation": "x3 → treble / triple."
+        },
+        {
+          "id": "q8",
+          "prompt": "Overview KHÔNG được chứa:",
+          "options": [
+            {
+              "id": "A",
+              "text": "xu hướng chung"
+            },
+            {
+              "id": "B",
+              "text": "số liệu cụ thể"
+            },
+            {
+              "id": "C",
+              "text": "so sánh cao nhất/thấp nhất"
+            },
+            {
+              "id": "D",
+              "text": "từ “overall”"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Overview chỉ nêu đặc điểm nổi bật, số liệu để dành cho Body."
+        },
+        {
+          "id": "q9",
+          "prompt": "Introduction TỐT nhất phải:",
+          "options": [
+            {
+              "id": "A",
+              "text": "chép nguyên đề cho chính xác"
+            },
+            {
+              "id": "B",
+              "text": "paraphrase và nêu rõ loại biểu đồ, thời gian"
+            },
+            {
+              "id": "C",
+              "text": "nêu 2 đặc điểm nổi bật"
+            },
+            {
+              "id": "D",
+              "text": "chứa nhiều số liệu"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Chép đề không được tính từ; nêu đặc điểm nổi bật là việc của Overview."
+        },
+        {
+          "id": "q10",
+          "prompt": "Nên dùng bao nhiêu số liệu cho mỗi đoạn thân bài?",
+          "options": [
+            {
+              "id": "A",
+              "text": "1–2"
+            },
+            {
+              "id": "B",
+              "text": "4–5"
+            },
+            {
+              "id": "C",
+              "text": "8–10"
+            },
+            {
+              "id": "D",
+              "text": "tất cả"
+            }
+          ],
+          "answer": "B",
+          "explanation": "4–5 mỗi đoạn, tổng 8–10 cho cả bài."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST2-A2",
+      "lessonCode": "T1-TEST2",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "PHẦN A2 — Điền giới từ",
+      "instruction": "Điền giới từ thích hợp. Mỗi chỗ trống 1 điểm.",
+      "source": "added",
+      "skillTags": [
+        "prepositions"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 7,
+      "points": 10,
+      "autoGrade": true,
+      "wordBank": [
+        "at",
+        "to",
+        "by",
+        "of",
+        "in",
+        "from",
+        "between",
+        "and",
+        "over"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The figure peaked ____ 12 million in 2008.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "There was a dramatic rise ____ tourist numbers.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Sales fell ____ 300 units ____ 1,200 units.",
+          "blanks": [
+            {
+              "accept": [
+                "by"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The rate hit a low ____ 3% in 2012.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The figure fluctuated ____ 20 ____ 40 million.",
+          "blanks": [
+            {
+              "accept": [
+                "between"
+              ]
+            },
+            {
+              "accept": [
+                "and"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The amount doubled ____ the fifteen-year period.",
+          "blanks": [
+            {
+              "accept": [
+                "over"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "The population grew ____ 1990 ____ 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "from"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST2-A3",
+      "lessonCode": "T1-TEST2",
+      "order": 3,
+      "type": "error_correction",
+      "title": "PHẦN A3 — Sửa lỗi",
+      "instruction": "Tìm và sửa lỗi trong mỗi câu. Mỗi câu 2 điểm.",
+      "source": "added",
+      "skillTags": [
+        "module2-review"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "There was a sharply increase in car sales.",
+          "errorSpan": "sharply",
+          "answer": "There was a sharp increase in car sales.",
+          "accept": [
+            "sharp"
+          ],
+          "explanation": "Trước danh từ dùng tính từ."
+        },
+        {
+          "id": "q2",
+          "prompt": "The figure increased by to 20 million.",
+          "errorSpan": "by to",
+          "answer": "The figure increased to 20 million.",
+          "accept": [
+            "increased to 20 million",
+            "increased by 10 million to 20 million"
+          ],
+          "explanation": "Không dùng “by” và “to” liền nhau — mỗi giới từ cần số liệu riêng."
+        },
+        {
+          "id": "q3",
+          "prompt": "The number of users peaked of 10 million.",
+          "errorSpan": "of",
+          "answer": "The number of users peaked at 10 million.",
+          "accept": [
+            "at"
+          ],
+          "explanation": "peak (động từ) + AT."
+        },
+        {
+          "id": "q4",
+          "prompt": "Overall, the figure rose from 5 million to 15 million.",
+          "errorSpan": "số liệu trong Overview",
+          "answer": "Overall, the figure showed a clear upward trend over the period.",
+          "accept": [
+            "Overall, the figure showed an upward trend"
+          ],
+          "explanation": "Overview không được chứa số liệu cụ thể."
+        },
+        {
+          "id": "q5",
+          "prompt": "In 2040, the population was projected to reach 12 million.",
+          "errorSpan": "was",
+          "answer": "In 2040, the population is projected to reach 12 million.",
+          "accept": [
+            "is projected"
+          ],
+          "explanation": "Dự báo tương lai → is projected."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST2-A4",
+      "lessonCode": "T1-TEST2",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "PHẦN A4 — Viết lại câu",
+      "instruction": "Viết lại câu dùng từ gợi ý, giữ nguyên nghĩa và số liệu. Mỗi câu 2 điểm.",
+      "source": "added",
+      "skillTags": [
+        "trend-structures"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of visitors increased sharply in 2010.",
+          "cue": "There was",
+          "sampleAnswers": [
+            "There was a sharp increase in the number of visitors in 2010."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "There was a gradual fall in car sales between 1990 and 2000.",
+          "cue": "Car sales",
+          "sampleAnswers": [
+            "Car sales fell gradually between 1990 and 2000."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Research investment dropped significantly in 2005.",
+          "cue": "The year 2005",
+          "sampleAnswers": [
+            "The year 2005 witnessed a significant drop in research investment."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The figure rose from 10 to 20 million.",
+          "cue": "double",
+          "sampleAnswers": [
+            "The figure doubled from 10 to 20 million."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "A rose while B fell over the period.",
+          "cue": "the opposite trend",
+          "sampleAnswers": [
+            "A experienced an upward trend, while the opposite trend was true for B over the period."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "There was a/an + adj + noun + in …",
+          "S + V + adverb",
+          "S saw / witnessed",
+          "double",
+          "the opposite trend was true for"
+        ],
+        "checklist": [
+          "Bắt đầu đúng bằng từ gợi ý",
+          "Giữ nguyên số liệu và thời gian",
+          "Đổi đúng adverb ⇄ adjective"
+        ],
+        "commonErrors": [
+          "There was a sharply increase"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST2-B",
+      "lessonCode": "T1-TEST2",
+      "order": 5,
+      "type": "full_task1",
+      "title": "PHẦN B — Bài viết hoàn chỉnh",
+      "instruction": "The graph below shows the proportion of the population aged 65 and over between 1940 and 2040 in three different countries. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words in about 20 minutes.",
+      "source": "original",
+      "skillTags": [
+        "full-writing",
+        "future-tense",
+        "percentage"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 60,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Proportion of the population aged 65 and over, 1940–2040, three countries",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png",
+        "note": "Biểu đồ có cả dữ liệu quá khứ và dự báo → phải chuyển thì tại năm chuyển giao."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "compares … in terms of",
+          "It is clear that … Additionally, …",
+          "increased by … to …",
+          "is projected to",
+          "the opposite trend was true for",
+          "respectively"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement — đủ 4 đoạn, có Overview không số liệu, chọn lọc số liệu",
+            "points": 15
+          },
+          {
+            "criterion": "Coherence & Cohesion — chia đoạn theo năm chuyển giao, từ nối đa dạng",
+            "points": 15
+          },
+          {
+            "criterion": "Lexical Resource — từ vựng xu hướng, mức độ, phần trăm",
+            "points": 15
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy — đặc biệt là chuyển thì quá khứ → tương lai",
+            "points": 15
+          }
+        ],
+        "checklist": [
+          "Introduction paraphrase, không chép đề",
+          "Overview 2 câu, không số liệu",
+          "Đổi thì đúng tại năm chuyển giao",
+          "Không dùng “There were” với phần trăm",
+          "Tối thiểu 150 từ"
+        ],
+        "commonErrors": [
+          "thiếu Overview",
+          "dùng thì quá khứ cho mốc 2040",
+          "There were 20% of the population"
+        ]
+      }
+    }
+  ]
+}

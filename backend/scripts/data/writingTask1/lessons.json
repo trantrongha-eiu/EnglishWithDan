@@ -1,0 +1,263 @@
+{
+  "course": {
+    "code": "IELTS-W-T1",
+    "title": "IELTS Writing Task 1 — Từ nền tảng đến Band 7.0",
+    "skill": "writing",
+    "taskType": "task1",
+    "language": "vi",
+    "targetBand": "5.5-7.0",
+    "description": "Khoá học Writing Task 1 chia 2 module: biểu đồ tĩnh (mô tả và so sánh dữ liệu) và biểu đồ động (xu hướng, introduction, overview, body paragraphs)."
+  },
+  "modules": [
+    {
+      "code": "T1-M1",
+      "order": 1,
+      "title": "MODULE 1 — Biểu đồ tĩnh",
+      "titleEn": "Static Charts",
+      "outcomes": [
+        "Phân biệt number / amount / percentage và chọn đúng danh từ đi kèm",
+        "Viết câu mô tả số liệu ở 3 vị trí khác nhau trong câu",
+        "Dùng thành thạo 7 cấu trúc so sánh trong cùng một đoạn",
+        "Mô tả dữ liệu tương lai, nhóm tuổi, số ước lượng và mốc thời gian"
+      ]
+    },
+    {
+      "code": "T1-M2",
+      "order": 2,
+      "title": "MODULE 2 — Biểu đồ động",
+      "titleEn": "Dynamic / Trend-based Charts",
+      "outcomes": [
+        "Làm chủ từ vựng xu hướng: tăng, giảm, ổn định, dao động, đỉnh, đáy",
+        "Dùng đúng giới từ by / to / in / at / of / with",
+        "Nối và so sánh nhiều xu hướng trong cùng một câu phức",
+        "Viết Introduction bằng 3 phương pháp paraphrasing",
+        "Viết Overview chuẩn Band 7.0+ và hai đoạn Body có chọn lọc số liệu",
+        "Hoàn thành một bài Task 1 trọn vẹn trong 20 phút"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "T1-L02",
+      "moduleCode": "T1-M1",
+      "order": 2,
+      "title": "Buổi 2 — Mô tả dữ liệu",
+      "titleEn": "Describing Data",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt 3 loại dữ liệu và chọn đúng danh từ đi kèm (number / amount / percentage)",
+        "Viết được câu mô tả số liệu ở 3 vị trí khác nhau trong câu",
+        "Tránh lỗi “the number of water” và “the amount of students”"
+      ],
+      "keyLanguage": [
+        "The number / quantity of + N đếm được số nhiều + V",
+        "The amount / quantity of + N không đếm được + V",
+        "The percentage / proportion / rate of + N + V",
+        "The figure for + [đối tượng]"
+      ],
+      "exerciseCount": 8
+    },
+    {
+      "code": "T1-L03",
+      "moduleCode": "T1-M1",
+      "order": 3,
+      "title": "Buổi 3 — Dữ liệu phần trăm và 7 cấu trúc so sánh",
+      "titleEn": "Percentage Data & 7 Comparison Structures",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân tích đúng “20% của cái gì” trước khi đặt bút viết",
+        "Dùng thành thạo các động từ và cấu trúc cho dữ liệu phần trăm",
+        "So sánh số liệu bằng 7 cấu trúc khác nhau trong cùng một đoạn văn"
+      ],
+      "keyLanguage": [
+        "accounted for / made up / stood at / constituted / took up / held / occupied",
+        "1. A and B were X and Y, respectively",
+        "2. A was X, compared to Y for B",
+        "3. A was X, while / whereas B was Y",
+        "4. A was X. Meanwhile / By contrast, B was Y",
+        "5. A was X, which was twice as many as that of B",
+        "6. A was X, which was significantly higher than that of B",
+        "7. A topped the list at X, followed by B, at Y"
+      ],
+      "exerciseCount": 8
+    },
+    {
+      "code": "T1-L04",
+      "moduleCode": "T1-M1",
+      "order": 4,
+      "title": "Buổi 4 — Tương lai, nhóm tuổi, số ước lượng và mốc thời gian",
+      "titleEn": "Future Tense, Age Groups, Approximation & Time References",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chuyển câu mô tả sang thì tương lai đúng chuẩn học thuật",
+        "Diễn đạt nhóm tuổi bằng 5 cách khác nhau",
+        "Ước lượng số liệu chính xác và diễn đạt phần trăm bằng chữ"
+      ],
+      "keyLanguage": [
+        "is expected / predicted / projected / anticipated / set / likely to + V",
+        "people aged 25–30 · people in the 25–30 age group · 25–30-year-olds",
+        "around / about / approximately / roughly / just over / just under / nearly",
+        "in the surveyed period · in the remainder of the period · 5 years later"
+      ],
+      "exerciseCount": 7
+    },
+    {
+      "code": "T1-TEST1",
+      "moduleCode": "T1-M1",
+      "order": 5,
+      "title": "TEST 1 — Bài kiểm tra cuối Module 1",
+      "titleEn": "Module 1 Final Test",
+      "durationMinutes": 60,
+      "isTest": true,
+      "totalPoints": 100,
+      "objectives": ["Kiểm tra toàn bộ kiến thức Module 1: loại dữ liệu, cấu trúc mô tả, 7 cấu trúc so sánh, thì tương lai"],
+      "exerciseCount": 5
+    },
+    {
+      "code": "T1-L05",
+      "moduleCode": "T1-M2",
+      "order": 6,
+      "title": "Buổi 5 — Ngôn ngữ diễn tả xu hướng",
+      "titleEn": "Language of Trends",
+      "durationMinutes": 60,
+      "objectives": [
+        "Thuộc bộ động từ và danh từ chỉ xu hướng tăng, giảm, ổn định, dao động",
+        "Phân biệt mức độ mạnh – yếu và tốc độ thay đổi",
+        "Diễn đạt điểm cao nhất và thấp nhất bằng nhiều cách khác nhau"
+      ],
+      "keyLanguage": [
+        "rise / climb / jump / surge / rocket — fall / dip / plunge / plummet",
+        "remain stable · level off · hit a plateau · fluctuate · oscillate",
+        "peak at · reach a peak of · hit a low of · bottom at",
+        "minimal < slight < moderate < significant < substantial < dramatic < enormous"
+      ],
+      "exerciseCount": 7
+    },
+    {
+      "code": "T1-L06",
+      "moduleCode": "T1-M2",
+      "order": 7,
+      "title": "Buổi 6 — Cấu trúc mô tả xu hướng và giới từ",
+      "titleEn": "Trend Structures & Prepositions",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 3 cấu trúc mô tả xu hướng (chủ động, danh từ hoá, saw/witnessed/experienced)",
+        "Dùng đúng giới từ by, to, in, at, of, with, around, between"
+      ],
+      "keyLanguage": [
+        "CT1: S + V + adverb + by … to …",
+        "CT2: There was a/an + adj + noun + of … to … + in …",
+        "CT3: [Nơi chốn/Thời gian/Chủ thể] saw / witnessed / experienced + a/an + adj + noun + in …",
+        "by = mức thay đổi · to = giá trị đích · at = đứng yên tại · of = sau danh từ"
+      ],
+      "exerciseCount": 4
+    },
+    {
+      "code": "T1-L07",
+      "moduleCode": "T1-M2",
+      "order": 8,
+      "title": "Buổi 7 — So sánh xu hướng và tăng theo cấp số nhân",
+      "titleEn": "Comparing Trends & Multiplicative Increases",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nối hai xu hướng giống nhau và trái ngược nhau trong một câu",
+        "Dùng double, treble, quadruple, x-fold, x times higher than",
+        "Viết được 2 đoạn hoàn chỉnh cho một biểu đồ có dữ liệu và xu hướng"
+      ],
+      "keyLanguage": [
+        "respectively · while / whereas · By contrast / Meanwhile / Similarly",
+        "double · treble · quadruple · a two-fold increase · six times higher than"
+      ],
+      "exerciseCount": 8
+    },
+    {
+      "code": "T1-L08",
+      "moduleCode": "T1-M2",
+      "order": 9,
+      "title": "Buổi 8 — Kết hợp nhiều xu hướng trong một câu (nâng cao)",
+      "titleEn": "Combining Multiple Trends",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nối 2 và 3 xu hướng liên tiếp bằng câu phức",
+        "Dùng 4 cấu trúc câu Band 7.0+ để tránh lặp chủ ngữ",
+        "Paraphrase lại một đoạn mô tả xu hướng có sẵn"
+      ],
+      "keyLanguage": [
+        "…, and then S continued its upward trend, reaching a peak of …",
+        "There was a … until it reached a high of …; however, S began to …",
+        "Starting at X, S + V, followed by … / before V-ing … / but later + V"
+      ],
+      "exerciseCount": 5
+    },
+    {
+      "code": "T1-L09",
+      "moduleCode": "T1-M2",
+      "order": 10,
+      "title": "Buổi 9 — Viết Introduction: nghệ thuật paraphrasing",
+      "titleEn": "Writing the Introduction",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhận diện keyword trong đề bài (subject, time frame, location)",
+        "Viết Introduction bằng 3 phương pháp paraphrasing khác nhau",
+        "Tránh chép nguyên văn đề bài"
+      ],
+      "keyLanguage": [
+        "C1: paraphrase keyword đơn thuần",
+        "C2: đổi dạng từ (noun ⇆ verb) + how many / how much / how",
+        "C3: compare(s) … in terms of …",
+        "namely + A, B and C"
+      ],
+      "exerciseCount": 4
+    },
+    {
+      "code": "T1-L10",
+      "moduleCode": "T1-M2",
+      "order": 11,
+      "title": "Buổi 10 — Viết Overview: đoạn quyết định Band 7.0",
+      "titleEn": "Writing the Overview",
+      "durationMinutes": 60,
+      "objectives": [
+        "Hiểu vì sao thiếu Overview thì không thể vượt Band 6.0",
+        "Xác định 2 đặc điểm nổi bật của bất kỳ biểu đồ nào trong 60 giây",
+        "Viết Overview theo 2 công thức chuẩn, không chứa số liệu"
+      ],
+      "keyLanguage": [
+        "It is clear / noticeable that … . Additionally, …",
+        "Overall, … . It is also noted that …",
+        "by far the highest / lowest · the most significant change · the opposite trend"
+      ],
+      "exerciseCount": 4
+    },
+    {
+      "code": "T1-L11",
+      "moduleCode": "T1-M2",
+      "order": 12,
+      "title": "Buổi 11 — Viết Body Paragraphs và bài hoàn chỉnh",
+      "titleEn": "Body Paragraphs & Full Essay",
+      "durationMinutes": 60,
+      "objectives": [
+        "Xác định “năm nổi bật” để chia hai đoạn thân bài",
+        "Chọn lọc 8–10 số liệu quan trọng nhất cho cả bài",
+        "Hoàn thành một bài Task 1 trọn vẹn 4 đoạn"
+      ],
+      "keyLanguage": [
+        "the opposite trend was true for … · the reverse pattern could be seen in …",
+        "experienced an upward / downward trend",
+        "Body 1: dữ liệu năm đầu + xu hướng tới năm nổi bật · Body 2: năm nổi bật → năm cuối"
+      ],
+      "exerciseCount": 4
+    },
+    {
+      "code": "T1-TEST2",
+      "moduleCode": "T1-M2",
+      "order": 13,
+      "title": "TEST 2 — Bài kiểm tra cuối Module 2",
+      "titleEn": "Module 2 Final Test",
+      "durationMinutes": 60,
+      "isTest": true,
+      "totalPoints": 100,
+      "objectives": ["Kiểm tra từ vựng xu hướng, giới từ, cấu trúc nối xu hướng, Introduction, Overview và bài viết hoàn chỉnh"],
+      "exerciseCount": 5
+    }
+  ]
+}
