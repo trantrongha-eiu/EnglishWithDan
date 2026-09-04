@@ -21,6 +21,15 @@ const WT1Exercise = require('../models/WT1Exercise');
 
 const DATA_DIR = path.join(__dirname, 'data', 'writingTask1');
 const read = (f) => JSON.parse(fs.readFileSync(path.join(DATA_DIR, f), 'utf8'));
+const listJson = (re) => fs.readdirSync(DATA_DIR).filter((f) => re.test(f)).sort();
+
+// Content is split across files so each module can be authored/seeded
+// independently: lessons*.json each carry { course, modules[], lessons[] }
+// (merged by `code`); exercises-*.json each carry { exercises: [] }.
+function dedupeByCode(arr) {
+  const seen = new Set();
+  return arr.filter((x) => (seen.has(x.code) ? false : seen.add(x.code)));
+}
 
 async function upsert(Model, filter, doc, label) {
   await Model.findOneAndUpdate(
@@ -77,11 +86,26 @@ function validate(exercises, lessonCodes) {
 }
 
 function load() {
-  const { course, modules, lessons } = read('lessons.json');
-  const exercises = [
-    ...read('exercises-module1.json').exercises,
-    ...read('exercises-module2.json').exercises,
-  ];
+  const lessonFiles = listJson(/^lessons.*\.json$/);
+  const exerciseFiles = listJson(/^exercises-.*\.json$/);
+  if (!lessonFiles.length) throw new Error(`Không tìm thấy lessons*.json trong ${DATA_DIR}`);
+
+  let course = null;
+  let modules = [];
+  let lessons = [];
+  for (const f of lessonFiles) {
+    const j = read(f);
+    if (j.course && !course) course = j.course;
+    modules = modules.concat(j.modules || []);
+    lessons = lessons.concat(j.lessons || []);
+  }
+  modules = dedupeByCode(modules);
+  lessons = dedupeByCode(lessons);
+
+  let exercises = [];
+  for (const f of exerciseFiles) exercises = exercises.concat(read(f).exercises || []);
+
+  console.log(`  nguồn: ${lessonFiles.join(', ')} + ${exerciseFiles.join(', ') || '(chưa có exercises-*.json)'}`);
   const lessonCodes = new Set(lessons.map((l) => l.code));
   return { course, modules, lessons, exercises, lessonCodes };
 }
