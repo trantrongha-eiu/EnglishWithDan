@@ -41,6 +41,7 @@
         { href: 'advanced-sentences.html', icon: 'fa-language',  label: 'Viết câu nâng cao' },
         { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing', badgeId: 'navTask2Badge' },
         { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
+        { href: 'task2-foundations.html', icon: 'fa-compass',  label: 'Task 2 Nền tảng' },
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },

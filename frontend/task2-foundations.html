@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 2 – Nền tảng & Ngữ pháp nâng band – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <style>
+    #app { max-width: 900px; margin: 0 auto; padding: 20px 18px 60px; }
+    .f2-h1 { font-size: 21px; font-weight: 800; margin: 0; }
+    .f2-sub { font-size: 13.5px; color: var(--text2,#6b7280); margin: 4px 0 0; line-height:1.6; }
+    .f2-part { margin-top: 26px; }
+    .f2-part-hd { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #6366f1; }
+    .f2-part-hd .en { color: var(--text3,#9ca3af); font-weight: 600; }
+    .f2-acc { border: 1px solid var(--border,#e5e7eb); border-radius: 12px; background: var(--surface,#fff); margin-top: 10px; overflow: hidden; }
+    [data-theme="dark"] .f2-acc { background: var(--surface,#0d0d0d); border-color:#27272a; }
+    .f2-acc > summary { list-style: none; cursor: pointer; padding: 13px 16px; font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; gap: 9px; color: var(--text,#111827); }
+    .f2-acc > summary::-webkit-details-marker { display: none; }
+    .f2-acc > summary::after { content: '▸'; margin-left: auto; font-weight: 900; color: #9ca3af; transition: transform .15s; }
+    .f2-acc[open] > summary::after { transform: rotate(90deg); }
+    .f2-acc[open] > summary { border-bottom: 1px solid var(--border,#eef2f7); }
+    .f2-body { padding: 12px 16px 16px; font-size: 13px; line-height: 1.75; color: var(--text2,#4b5563); }
+    [data-theme="dark"] .f2-body { color: #a1a1aa; }
+    .f2-body h4 { margin: 14px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #6366f1; }
+    .f2-body h4:first-child { margin-top: 0; }
+    .f2-body ul { margin: 4px 0; padding-left: 20px; }
+    .f2-body li { margin: 3px 0; }
+    .f2-body p { margin: 6px 0; }
+    table.f2-t { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+    table.f2-t th, table.f2-t td { border: 1px solid var(--border,#e5e7eb); padding: 7px 9px; text-align: left; vertical-align: top; line-height: 1.6; }
+    [data-theme="dark"] table.f2-t th, [data-theme="dark"] table.f2-t td { border-color:#27272a; }
+    table.f2-t th { background: var(--surface2,#f8fafc); font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; color: #6b7280; }
+    [data-theme="dark"] table.f2-t th { background:#18181b; }
+    table.f2-t td:last-child { background: rgba(99,102,241,.04); }
+    [data-theme="dark"] table.f2-t td:last-child { background: rgba(99,102,241,.1); }
+    .f2-eg { border-left: 3px solid #d1d5db; padding: 4px 0 4px 12px; margin: 6px 0; }
+    .f2-eg.b6 { border-color: #f59e0b; }
+    .f2-eg.b7 { border-color: #22c55e; }
+    .f2-eg .lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+    .f2-eg.b6 .lbl { color: #b45309; }
+    .f2-eg.b7 .lbl { color: #15803d; }
+    .f2-eg .en { color: var(--text,#111827); }
+    [data-theme="dark"] .f2-eg .en { color: #e4e4e7; }
+    .f2-eg .vi { color: var(--text3,#9ca3af); font-size: 12px; }
+    .f2-note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 9px 12px; margin: 8px 0; color: #92400e; font-size: 12px; }
+    [data-theme="dark"] .f2-note { background:#2a1f06; border-color:#4d3a0a; color:#fcd34d; }
+    .f2-formula { background: var(--surface2,#f8fafc); border-radius: 8px; padding: 8px 11px; font-size: 12px; margin: 6px 0; color: var(--text,#111827); }
+    [data-theme="dark"] .f2-formula { background:#18181b; color:#e4e4e7; }
+    .f2-cta { display:flex; align-items:center; gap:12px; background: linear-gradient(135deg, rgba(99,102,241,.09), rgba(139,92,246,.05));
+      border: 1px solid rgba(99,102,241,.25); border-radius: 14px; padding: 14px 16px; margin-top: 24px; flex-wrap: wrap; }
+    .f2-cta .t { flex:1; min-width: 200px; font-size: 13px; }
+    .f2-cta .t b { display:block; color: #4338ca; margin-bottom: 2px; }
+    .f2-cta a { background: #6366f1; color: #fff; text-decoration: none; border-radius: 9px; padding: 9px 16px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  </style>
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20260908"></script>
+<script src="js/auth.js?v=20260831"></script>
+<script src="js/upgrade-modal.js?v=20260831"></script>
+<script src="js/shared/popup-queue.js?v=20260923"></script>
+<script src="js/nav.js?v=20260904wt1"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
+
+<div id="app">
+  <h1 class="f2-h1">📚 Task 2 — Nền tảng & Ngữ pháp nâng band</h1>
+  <p class="f2-sub">Trích từ <b>Task 2 Template Bank</b> (Thầy Dan). Đọc phần này một lần thật kỹ trước khi luyện
+    <a href="task2-template.html">Template</a> và <a href="advanced-sentences.html">Viết câu nâng cao (73 câu dịch)</a>.</p>
+
+  <!-- ══════════════ PHẦN A ══════════════ -->
+  <div class="f2-part">
+    <div class="f2-part-hd">Phần A — Nền tảng <span class="en">· Foundations</span></div>
+
+    <details class="f2-acc" open>
+      <summary>A1. Luật chơi: bốn tiêu chí chấm điểm</summary>
+      <div class="f2-body">
+        <p>Điểm Writing Task 2 là trung bình của bốn tiêu chí, mỗi tiêu chí chiếm 25%. Task 2 chiếm hai phần ba tổng điểm Writing, nên đây là phần đáng đầu tư nhất.</p>
+        <table class="f2-t">
+          <thead><tr><th>Tiêu chí</th><th>Giám khảo tìm gì</th><th>Việc bạn cần làm</th></tr></thead>
+          <tbody>
+            <tr><td><b>Task Response</b><br>(Trả lời đề)</td><td>Bài có trả lời đủ mọi phần của đề không? Lập trường có rõ ràng không? Ý có được phát triển hay chỉ liệt kê?</td><td>Đọc kỹ đề, gạch chân từ khóa. Mỗi ý chính phải có giải thích và ví dụ. Viết tối thiểu 250 từ.</td></tr>
+            <tr><td><b>Coherence &amp; Cohesion</b><br>(Mạch lạc và liên kết)</td><td>Bài có chia đoạn hợp lý không? Ý có nối tiếp nhau tự nhiên không? Từ nối có bị lạm dụng không?</td><td>Mỗi đoạn một ý chính. Dùng topic sentence. Đừng nhồi Firstly, Secondly, Moreover ở mọi câu.</td></tr>
+            <tr><td><b>Lexical Resource</b><br>(Từ vựng)</td><td>Từ vựng có chính xác và đa dạng không? Có collocation tự nhiên không? Có lặp từ nhiều không?</td><td>Dùng từ đúng quan trọng hơn từ khó. Học collocation theo chủ đề, không học từ đơn lẻ.</td></tr>
+            <tr><td><b>Grammatical Range &amp; Accuracy</b><br>(Ngữ pháp)</td><td>Có đủ loại câu không: đơn, ghép, phức? Có bao nhiêu câu không lỗi?</td><td>Trộn câu ngắn và câu dài. Band 7 cần phần lớn câu không có lỗi.</td></tr>
+          </tbody>
+        </table>
+        <div class="f2-note"><b>Con số cần nhớ:</b> 40 phút cho Task 2. 250 từ là tối thiểu, viết dưới sẽ bị trừ điểm.
+          260–300 từ là vùng an toàn; quá 350 từ thường làm tăng lỗi và mất thời gian soát lại.
+          4 đoạn là cấu trúc chuẩn: Introduction – Body 1 – Body 2 – Conclusion.</div>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>A2. Khoảng cách thật giữa Band 6 và Band 7</summary>
+      <div class="f2-body">
+        <p>Rất nhiều học sinh nghĩ rằng lên Band 7 nghĩa là dùng từ khó hơn. Điều đó không đúng. Dưới đây là năm khác biệt thật sự mà giám khảo nhìn thấy.</p>
+        <table class="f2-t">
+          <thead><tr><th>Band 6 — điều đang giữ bạn lại</th><th>Band 7 — điều cần thay đổi</th></tr></thead>
+          <tbody>
+            <tr><td>Ý bị liệt kê. Nêu một ý rồi nhảy ngay sang ý khác, mỗi ý một câu.</td><td>Ý được phát triển. Mỗi ý chính đi kèm: tại sao → dẫn đến gì → ví dụ cụ thể. Hai ý sâu tốt hơn bốn ý nông.</td></tr>
+            <tr><td>Từ vựng chung chung: good, bad, big, a lot of, many problems, very important.</td><td>Từ vựng chính xác: beneficial, harmful, substantial, a considerable number of, pressing challenges, crucial.</td></tr>
+            <tr><td>Câu đơn điệu. Hầu hết là câu đơn hoặc câu ghép với and / but / so.</td><td>Câu đa dạng. Có mệnh đề quan hệ, mệnh đề trạng ngữ, cụm phân từ, thỉnh thoảng có đảo ngữ hoặc câu chẻ.</td></tr>
+            <tr><td>Từ nối bị nhồi. Firstly, Secondly, Moreover, Furthermore xuất hiện ở đầu gần như mọi câu.</td><td>Liên kết tự nhiên. Dùng đại từ (this, these, such), từ đồng nghĩa và cách sắp xếp ý để nối câu.</td></tr>
+            <tr><td>Lập trường mơ hồ. Đoạn đầu nói một kiểu, kết bài nói kiểu khác.</td><td>Lập trường nhất quán. Nêu quan điểm ngay ở Introduction, giữ nguyên xuyên suốt, nhắc lại ở Conclusion.</td></tr>
+          </tbody>
+        </table>
+        <h4>Nhìn thấy khác biệt trong một câu</h4>
+        <div class="f2-eg b6"><span class="lbl">Band 6</span><div class="en">Online learning is good because students can study at home. This saves time.</div>
+          <div class="vi">Ý đúng, ngữ pháp đúng — nhưng từ vựng chung chung, ý dừng lại quá sớm.</div></div>
+        <div class="f2-eg b7"><span class="lbl">Band 7</span><div class="en">Online learning is highly beneficial because it allows students to study from home, which eliminates the need for daily commuting. As a result, learners can devote the time they save to revision or part-time work.</div>
+          <div class="vi">Cùng một ý, nhưng: từ chính xác hơn (beneficial, eliminates), có mệnh đề quan hệ (which…), và ý được đẩy thêm một bước tới hệ quả.</div></div>
+        <div class="f2-note">Sau mỗi ý chính bạn viết, hãy tự hỏi: <b>"Why?"</b> và <b>"So what?"</b>. Nếu chưa trả lời được cả hai trong đoạn văn, ý đó chưa được phát triển đủ cho Band 7.</div>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>A3. Bộ công cụ câu — 9 chức năng câu trong mọi bài Task 2</summary>
+      <div class="f2-body">
+        <p>Mọi bài Task 2, ở bất kỳ dạng đề nào, đều được lắp từ chín loại câu sau. Nắm được chín chức năng này ở cả hai tầng, bạn có thể tự xây template cho bất kỳ dạng nào.</p>
+        <table class="f2-t">
+          <thead><tr><th>Chức năng</th><th>Band 6+</th><th>Band 7+</th></tr></thead>
+          <tbody>
+            <tr><td>1. Mở đề<br><i>General statement</i></td><td>In recent years, (topic) has become increasingly common in many parts of the world.</td><td>Over the past few decades, (topic) has emerged as one of the defining features of modern life.</td></tr>
+            <tr><td>2. Paraphrase đề<br><i>Restate the question</i></td><td>While (topic) offers several benefits, it also has some potential drawbacks.</td><td>While the merits of (topic) are widely acknowledged, its potential drawbacks deserve equal consideration.</td></tr>
+            <tr><td>3. Nêu luận điểm<br><i>Thesis statement</i></td><td>This essay will discuss the main advantages and disadvantages of (topic).</td><td>This essay will examine both dimensions of the issue before arguing that (your position).</td></tr>
+            <tr><td>4. Câu chủ đề<br><i>Topic sentence</i></td><td>One of the main advantages of (topic) is that (idea).</td><td>The most compelling argument in favour of (topic) lies in its capacity to (verb).</td></tr>
+            <tr><td>5. Giải thích<br><i>Explanation</i></td><td>This is because (explanation).</td><td>This can largely be attributed to the fact that (explanation).</td></tr>
+            <tr><td>6. Nêu kết quả<br><i>Result</i></td><td>As a result, (result).</td><td>Consequently, (result), thereby (verb-ing) (further outcome).</td></tr>
+            <tr><td>7. Đưa ví dụ<br><i>Example</i></td><td>For example, (example).</td><td>A clear illustration of this can be seen in (example), where (outcome) occurred.</td></tr>
+            <tr><td>8. Nhượng bộ<br><i>Concession</i></td><td>It is true that (other side). However, (your view).</td><td>Admittedly, (other side); nevertheless, (your view) remains the more persuasive position.</td></tr>
+            <tr><td>9. Kết bài<br><i>Conclusion</i></td><td>In conclusion, (summary of your position).</td><td>In conclusion, having weighed both perspectives, I maintain that (your position).</td></tr>
+          </tbody>
+        </table>
+        <h4>Ba chức năng quyết định band của bạn</h4>
+        <p>Trong chín chức năng trên, ba chức năng sau là nơi học sinh Band 6 thường dừng lại quá sớm. Hãy luyện riêng ba loại câu này.</p>
+        <p><b>① Câu giải thích — Explanation</b></p>
+        <div class="f2-eg b6"><span class="lbl">Band 6</span><div class="en">This is because people can complete daily tasks without leaving home.</div><div class="vi">Đúng nhưng ngắn.</div></div>
+        <div class="f2-eg b7"><span class="lbl">Band 7</span><div class="en">This can largely be attributed to the fact that digital platforms now allow people to work, shop and socialise without ever leaving home.</div><div class="vi">Cùng ý, nhưng cụ thể hơn và cấu trúc phức tạp hơn.</div></div>
+        <p><b>② Câu kết quả — Result</b></p>
+        <div class="f2-eg b6"><span class="lbl">Band 6</span><div class="en">As a result, they spend more time sitting.</div></div>
+        <div class="f2-eg b7"><span class="lbl">Band 7</span><div class="en">Consequently, sedentary behaviour has become the norm rather than the exception, thereby increasing the risk of obesity and heart disease.</div><div class="vi">Đẩy hệ quả đi thêm một bước và dùng cụm <b>thereby + V-ing</b>.</div></div>
+        <p><b>③ Câu ví dụ — Example</b></p>
+        <div class="f2-eg b6"><span class="lbl">Band 6</span><div class="en">For example, people can order food online.</div><div class="vi">Ví dụ chung chung.</div></div>
+        <div class="f2-eg b7"><span class="lbl">Band 7</span><div class="en">A clear illustration of this can be seen in large cities such as Hanoi, where food-delivery applications have made it possible to eat three meals a day without stepping outside.</div><div class="vi">Ví dụ <b>cụ thể</b>: có địa điểm, có chi tiết. Đây là điểm khác biệt lớn nhất giữa Band 6 và Band 7 ở tiêu chí Task Response.</div></div>
+        <div class="f2-note"><b>Mẹo về ví dụ:</b> Bạn không cần số liệu thật — giám khảo không kiểm tra tính chính xác. Nhưng ví dụ phải cụ thể: có tên nước, tên thành phố, một nhóm người, một tình huống rõ ràng.
+          Tránh mở đầu bằng "Research has shown that 70% of people…" nếu bạn bịa số liệu — câu này bị lạm dụng và nghe rất giả.</div>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>A4. Quy trình 40 phút trong phòng thi</summary>
+      <div class="f2-body">
+        <table class="f2-t">
+          <thead><tr><th>Thời gian</th><th>Việc cần làm</th></tr></thead>
+          <tbody>
+            <tr><td><b>Phút 0–5</b><br>Đọc đề &amp; lập dàn ý</td><td>Gạch chân từ khóa. Xác định dạng đề. Quyết định lập trường. Viết nhanh ra giấy: 2 ý cho Body 1, 2 ý cho Body 2, mỗi ý một ví dụ. Không viết câu hoàn chỉnh ở bước này.</td></tr>
+            <tr><td><b>Phút 5–10</b><br>Viết Introduction</td><td>Ba câu: mở đề → paraphrase → thesis. Không quá 45 từ.</td></tr>
+            <tr><td><b>Phút 10–22</b><br>Viết Body 1</td><td>Topic sentence → giải thích → kết quả → ví dụ. Khoảng 90–110 từ.</td></tr>
+            <tr><td><b>Phút 22–34</b><br>Viết Body 2</td><td>Cùng cấu trúc với Body 1. Khoảng 90–110 từ.</td></tr>
+            <tr><td><b>Phút 34–37</b><br>Viết Conclusion</td><td>Hai câu: tóm tắt → nhắc lại lập trường. Không thêm ý mới.</td></tr>
+            <tr><td><b>Phút 37–40</b><br>Kiểm tra lại</td><td>Soát bốn thứ: số nhiều (s), thì động từ, mạo từ a/an/the, chủ ngữ – động từ hợp nhau. Đây là bốn lỗi phổ biến nhất và sửa được nhanh nhất.</td></tr>
+          </tbody>
+        </table>
+        <div class="f2-note">Học sinh viết ngay không lập dàn ý thường mất mạch giữa bài, phải viết lại, và cuối cùng chậm hơn. <b>Năm phút lập dàn ý tiết kiệm mười phút viết.</b></div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ══════════════ PHẦN C ══════════════ -->
+  <div class="f2-part">
+    <div class="f2-part-hd">Phần C — Ngữ pháp nâng band <span class="en">· Grammar that moves you 6 → 7</span></div>
+    <p class="f2-sub" style="margin-top:8px">Tiêu chí Grammatical Range and Accuracy chiếm 25%. <b>Range</b> là sự đa dạng loại câu; <b>Accuracy</b> là số câu không lỗi. Band 7 yêu cầu cả hai.</p>
+    <div class="f2-note" style="max-width:none">
+      <b>Nguyên tắc vàng:</b> một cấu trúc phức tạp dùng sai làm hại nhiều hơn một câu đơn dùng đúng.
+      Mục tiêu thực tế cho bài 280 từ: ~4–6 câu phức rải đều, 1–2 mệnh đề quan hệ, 1 câu điều kiện, 1 câu bị động, 1 câu nhấn mạnh (đảo ngữ hoặc câu chẻ). Đừng nhồi tất cả vào một đoạn.
+    </div>
+
+    <details class="f2-acc">
+      <summary>12 cấu trúc câu bắt buộc phải có cho Band 7+</summary>
+      <div class="f2-body">
+        <h4>01. Câu phức — Complex sentences</h4>
+        <div class="f2-formula"><b>Công thức:</b> Although / Because / Since / While / As / If + mệnh đề phụ, + mệnh đề chính. (Hoặc đảo lại.)</div>
+        <div class="f2-eg"><div class="en">Although many people advocate stricter environmental regulations, others argue that economic growth should take precedence.</div></div>
+        <div class="f2-eg"><div class="en">While remote working suits experienced staff, it can leave junior employees without guidance.</div></div>
+        <p><i>Dùng ở đâu:</i> câu paraphrase ở Introduction, câu nhượng bộ ở Body 2, câu tóm tắt ở Conclusion.</p>
+
+        <h4>02. Câu ghép — Compound sentences</h4>
+        <div class="f2-formula"><b>Công thức:</b> Mệnh đề độc lập + , + and/but/or/so/yet + mệnh đề độc lập. Hoặc: … ; however/therefore/nevertheless, + mệnh đề độc lập.</div>
+        <div class="f2-eg"><div class="en">The government has introduced new policies, but public response has remained lukewarm.</div></div>
+        <div class="f2-eg"><div class="en">Digital platforms save time; however, they also reduce face-to-face interaction.</div></div>
+        <div class="f2-note"><b>Lỗi comma splice:</b> Sai — "Technology is convenient, it saves people time." Đúng — "…, and it saves people time." hoặc "…; it saves people time." Hai mệnh đề độc lập không thể nối bằng dấu phẩy đơn thuần. Đây là lỗi phổ biến nhất của học sinh Việt Nam.</div>
+
+        <h4>03. Câu điều kiện — Conditional sentences</h4>
+        <div class="f2-formula"><b>Ba loại:</b> Loại 1 (có thể xảy ra): If + hiện tại đơn, will/may/could + V. Loại 2 (trái hiện tại): If + quá khứ đơn, would/could + V. Loại 3 (trái quá khứ): If + had + V3, would have + V3. <b>Unless = if… not.</b></div>
+        <div class="f2-eg"><div class="en">If the education system is not reformed, future generations may lack essential skills.</div></div>
+        <div class="f2-eg"><div class="en">If governments invested more in public transport, congestion would fall sharply.</div></div>
+        <div class="f2-eg"><div class="en">Unless urgent action is taken, this trend will continue to worsen.</div></div>
+        <p><i>Dùng ở đâu:</i> cực hiệu quả ở cuối Body 1 dạng Cause/Effect ("If this trend continues, it could lead to…") và ở Body 2 dạng Solution ("If implemented on a large scale, this measure could…").</p>
+
+        <h4>04. Câu bị động — Passive voice</h4>
+        <div class="f2-formula"><b>Công thức:</b> be + V3 (+ by + tác nhân). Mẫu học thuật: It is widely believed / acknowledged / argued that + mệnh đề.</div>
+        <div class="f2-eg"><div class="en">Several measures were proposed by the committee to address the issue.</div></div>
+        <div class="f2-eg"><div class="en">It is widely acknowledged that early exposure to reading improves academic performance.</div></div>
+        <div class="f2-eg"><div class="en">Stricter regulations should be introduced to limit emissions.</div></div>
+        <p><i>Dùng ở đâu:</i> ở đoạn giải pháp, câu bị động với modal ("measures should be taken", "funding could be allocated") nghe khách quan và học thuật hơn "the government should do…".</p>
+
+        <h4>05. Mệnh đề quan hệ — Relative clauses</h4>
+        <div class="f2-formula"><b>Công thức:</b> who (người) · which (vật, hoặc cả mệnh đề trước) · that (không dùng sau dấu phẩy) · whose (sở hữu) · where (nơi chốn). Mẫu mạnh nhất: <b>…, which + động từ</b> — đẩy ý đi thêm một bước.</div>
+        <div class="f2-eg"><div class="en">Remote work reduces daily commuting, which lowers both transport costs and carbon emissions.</div></div>
+        <div class="f2-eg"><div class="en">Students who grow up in extended families often develop stronger social skills.</div></div>
+        <div class="f2-note"><b>Mẹo nâng band nhanh nhất:</b> viết xong một câu kết quả, thử nối thêm ", which…" để đẩy ý. "This saves people time." → "This saves people time, which allows them to devote more attention to their families."</div>
+
+        <h4>06. Đảo ngữ để nhấn mạnh — Inversion</h4>
+        <div class="f2-formula"><b>Ba mẫu an toàn nhất:</b> Not only + trợ động từ + S + V, but … also … / Never before has/have + S + V3 / Only by + V-ing + trợ động từ + S + V…</div>
+        <div class="f2-eg"><div class="en">Not only does this approach reduce costs, but it also improves efficiency.</div></div>
+        <div class="f2-eg"><div class="en">Never before have so many people had access to higher education.</div></div>
+        <div class="f2-eg"><div class="en">Only by investing in public transport can cities reduce congestion in the long term.</div></div>
+        <div class="f2-note"><b>Cảnh báo:</b> sau "Not only" đầu câu bắt buộc phải đảo ("Not only does it reduce…", không phải "Not only it reduces…"). Chỉ dùng MỘT câu đảo ngữ trong cả bài.</div>
+
+        <h4>07. Câu chẻ — Cleft sentences</h4>
+        <div class="f2-formula"><b>Công thức:</b> It is/was + phần nhấn mạnh + that/who + phần còn lại. — hoặc — What + mệnh đề + is/was + phần nhấn mạnh.</div>
+        <div class="f2-eg"><div class="en">It is the lack of resources that hampers progress in developing countries.</div></div>
+        <div class="f2-eg"><div class="en">What many students lack is not intelligence but consistent practice.</div></div>
+        <p><i>Dùng ở đâu:</i> câu chủ đề của Body hoặc câu cuối Conclusion, khi muốn nhấn mạnh yếu tố quan trọng nhất.</p>
+
+        <h4>08. Cấu trúc song song — Parallel structures</h4>
+        <div class="f2-formula"><b>Nguyên tắc:</b> các thành phần liệt kê phải cùng dạng ngữ pháp: cùng danh từ, cùng V-ing, hoặc cùng động từ nguyên mẫu.</div>
+        <div class="f2-eg"><div class="en">The proposal aims to improve healthcare accessibility, to reduce costs and to enhance patient satisfaction.</div></div>
+        <div class="f2-note"><b>Lỗi:</b> Sai — "…to reduce costs, improving productivity, and better customer service." Đúng — "…to reduce costs, improve productivity and enhance customer service."</div>
+
+        <h4>09. Động từ khuyết thiếu — Modal verbs</h4>
+        <div class="f2-formula"><b>Sắc thái:</b> must/should — bắt buộc, khuyến nghị mạnh (dùng cho giải pháp). may/might/could — khả năng (dùng cho hậu quả, dự đoán). can — khả năng chung, sự thật. would — kết quả giả định ("This would ensure that…").</div>
+        <div class="f2-eg"><div class="en">Governments should invest more heavily in renewable energy to combat climate change.</div></div>
+        <div class="f2-eg"><div class="en">Prolonged screen exposure may impair children's concentration.</div></div>
+        <div class="f2-note"><b>Giọng văn học thuật:</b> tránh khẳng định tuyệt đối ("This will definitely destroy society."). Dùng may/might/could/is likely to để thể hiện sự thận trọng.</div>
+
+        <h4>10. So sánh hơn và so sánh nhất — Comparatives and superlatives</h4>
+        <div class="f2-formula"><b>Mẫu nâng cao:</b> far/significantly/considerably + so sánh hơn. the more … the more … (hai đại lượng cùng tăng). not nearly as … as … (phủ định mức độ).</div>
+        <div class="f2-eg"><div class="en">Urban areas are significantly more densely populated than rural regions.</div></div>
+        <div class="f2-eg"><div class="en">The more time children spend on screens, the less they engage in physical play.</div></div>
+        <div class="f2-eg"><div class="en">Public transport in many cities is not nearly as reliable as it needs to be.</div></div>
+
+        <h4>11. Cụm phân từ — Participle clauses</h4>
+        <div class="f2-formula"><b>Công thức:</b> …, thereby + V-ing (nêu hệ quả trực tiếp — cụm hiệu quả nhất). …, allowing/enabling + O + to V (nêu điều nó cho phép). Having + V3, S + V (hành động xảy ra trước).</div>
+        <div class="f2-eg"><div class="en">Remote work eliminates the daily commute, thereby reducing both stress and carbon emissions.</div></div>
+        <div class="f2-eg"><div class="en">Online platforms deliver lectures to remote areas, enabling students to study without relocating.</div></div>
+        <div class="f2-note">Band 6 viết: "This saves time. As a result, people are happier." — hai câu ngắn. Band 7 viết: "This saves time, thereby improving overall well-being." — một câu, gọn hơn, thể hiện range. Chỉ cần thành thạo <b>thereby + V-ing</b>, bạn đã có một công cụ dùng được ở mọi dạng đề.</div>
+
+        <h4>12. Cách dùng thì — Tense usage</h4>
+        <table class="f2-t">
+          <thead><tr><th>Thì</th><th>Dùng khi nào trong Task 2</th></tr></thead>
+          <tbody>
+            <tr><td>Present Simple</td><td>Sự thật chung, ý kiến, phần lớn lập luận — thì chủ đạo. <i>Technology plays a central role in modern education.</i></td></tr>
+            <tr><td>Present Perfect</td><td>Nối quá khứ với hiện tại — hoàn hảo cho câu mở đề. <i>Over the past decade, remote working has become widespread.</i></td></tr>
+            <tr><td>Past Simple</td><td>Sự kiện đã kết thúc, thường trong ví dụ. <i>Unlike in the past, when most jobs required manual labour…</i></td></tr>
+            <tr><td>Future / will</td><td>Dự đoán và hệ quả. <i>If this continues, healthcare costs will rise sharply.</i></td></tr>
+          </tbody>
+        </table>
+        <div class="f2-note">Đừng đổi thì giữa chừng trong một đoạn mà không có lý do.</div>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>Bảng tra nhanh: cắm cấu trúc nào vào đâu trong bài</summary>
+      <div class="f2-body">
+        <table class="f2-t">
+          <thead><tr><th>Vị trí trong bài</th><th>Cấu trúc nên dùng</th><th>Câu mẫu</th></tr></thead>
+          <tbody>
+            <tr><td>Introduction — câu mở đề</td><td>Present Perfect</td><td>Over the past two decades, X has gained considerable momentum.</td></tr>
+            <tr><td>Introduction — paraphrase</td><td>Câu phức với While / Although</td><td>While X offers clear benefits, its drawbacks deserve attention.</td></tr>
+            <tr><td>Introduction — thesis</td><td>Câu phức + danh động từ</td><td>This essay will examine both dimensions before arguing that…</td></tr>
+            <tr><td>Body — câu chủ đề</td><td>Câu chẻ hoặc danh từ hóa</td><td>It is the lack of regulation that lies at the heart of the problem.</td></tr>
+            <tr><td>Body — giải thích</td><td>Bị động học thuật</td><td>It is widely acknowledged that…</td></tr>
+            <tr><td>Body — nêu kết quả</td><td>Cụm phân từ thereby + V-ing</td><td>This reduces commuting, thereby lowering emissions.</td></tr>
+            <tr><td>Body — đẩy ý sâu hơn</td><td>Mệnh đề quan hệ , which…</td><td>Students gain flexibility, which allows them to work part-time.</td></tr>
+            <tr><td>Body — nhấn mạnh hai lợi ích</td><td>Đảo ngữ Not only</td><td>Not only does this cut costs, but it also improves access.</td></tr>
+            <tr><td>Body — cảnh báo hệ quả</td><td>Câu điều kiện loại 1</td><td>If this trend continues, it could lead to…</td></tr>
+            <tr><td>Body — đề xuất giải pháp</td><td>Bị động + modal</td><td>Stricter regulations should be introduced.</td></tr>
+            <tr><td>Body 2 — nhượng bộ</td><td>Although / Admittedly + nevertheless</td><td>Admittedly, X has drawbacks; nevertheless,…</td></tr>
+            <tr><td>Conclusion — tóm tắt</td><td>Câu phức với Although</td><td>Although X offers…, it also entails…</td></tr>
+            <tr><td>Conclusion — chốt quan điểm</td><td>Having + V3</td><td>Having weighed both sides, I maintain that…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>Ba lỗi ngữ pháp làm mất band nhiều nhất</summary>
+      <div class="f2-body">
+        <h4>Lỗi 1 — Nối hai câu bằng dấu phẩy (comma splice)</h4>
+        <ul>
+          <li><b>Sai:</b> Many people work from home, this reduces traffic congestion.</li>
+          <li><b>Đúng:</b> Many people work from home, which reduces traffic congestion.</li>
+          <li><b>Đúng:</b> Many people work from home; this reduces traffic congestion.</li>
+          <li><b>Đúng:</b> Many people work from home, and this reduces traffic congestion.</li>
+        </ul>
+        <h4>Lỗi 2 — Danh từ số nhiều &amp; chủ ngữ – động từ</h4>
+        <ul>
+          <li>Sai: Many student prefer online learning. · Đúng: Many <b>students</b> prefer…</li>
+          <li>Sai: The number of people <b>are</b> increasing. · Đúng: The number of people <b>is</b> increasing.</li>
+          <li>Sai: Informations, advices, equipments, researches. · Đúng: đây là danh từ không đếm được — luôn số ít: information, advice, equipment, research.</li>
+        </ul>
+        <p>Khi soát bài, đọc riêng từng câu và chỉ tìm <b>s</b> ở danh từ và động từ. Chỉ việc này thôi đã sửa được phần lớn lỗi.</p>
+        <h4>Lỗi 3 — Mạo từ (articles)</h4>
+        <ul>
+          <li>Nói về sự vật nói chung → danh từ số nhiều KHÔNG "the": <i>Children need physical activity.</i></li>
+          <li>Nói về một thứ cụ thể đã xác định → dùng "the": <i>The government of Vietnam has introduced…</i></li>
+          <li>Danh từ đếm được số ít LUÔN cần mạo từ: <i>a solution</i>, <i>the solution</i> — không bao giờ đứng trần.</li>
+          <li>Sai: The technology has changed the society. · Đúng: <b>Technology</b> has changed <b>society</b>.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="f2-acc">
+      <summary>Checklist ba phút cuối giờ</summary>
+      <div class="f2-body">
+        <p>Ba phút cuối là ba phút có giá trị nhất. Đừng viết thêm câu — hãy sửa lỗi. Soát theo đúng thứ tự sau, mỗi lượt chỉ tìm một loại lỗi.</p>
+        <table class="f2-t">
+          <thead><tr><th>Lượt soát</th><th>Chỉ tìm một thứ</th></tr></thead>
+          <tbody>
+            <tr><td>Lượt 1 — Task Response</td><td>Bài đã trả lời mọi câu hỏi trong đề chưa? Lập trường có xuất hiện ở cả Introduction lẫn Conclusion không?</td></tr>
+            <tr><td>Lượt 2 — Số nhiều</td><td>Mọi danh từ đếm được số nhiều có "s" chưa? Danh từ không đếm được có bị thêm "s" nhầm không?</td></tr>
+            <tr><td>Lượt 3 — Động từ</td><td>Chủ ngữ số ít có động từ chia đúng chưa? Thì có nhất quán trong từng đoạn không?</td></tr>
+            <tr><td>Lượt 4 — Mạo từ</td><td>Danh từ đếm được số ít có mạo từ chưa? Có dùng thừa "the" trước danh từ chung không?</td></tr>
+            <tr><td>Lượt 5 — Dấu câu</td><td>Có câu nào nối hai mệnh đề độc lập chỉ bằng dấu phẩy không?</td></tr>
+            <tr><td>Lượt 6 — Độ dài</td><td>Bài có đủ 250 từ chưa? Bốn đoạn có tương đối cân đối không?</td></tr>
+          </tbody>
+        </table>
+        <div class="f2-note">Template là giàn giáo, không phải ngôi nhà. Khi bạn đã viết được ba mươi bài, bạn sẽ tự nhiên bỏ dần giàn giáo và viết bằng giọng của chính mình. Đó là lúc bạn thật sự đạt Band 7.</div>
+      </div>
+    </details>
+  </div>
+
+  <div class="f2-cta">
+    <div style="font-size:22px">✍️</div>
+    <div class="t"><b>Sẵn sàng luyện tay?</b>
+      <span>Luyện 73 câu dịch Việt–Anh cho 12 cấu trúc ở Phần C, hoặc drill khung bài cho 7 dạng đề.</span></div>
+    <a href="advanced-sentences.html">Viết câu nâng cao</a>
+    <a href="task2-template.html" style="background:#8b5cf6">Task 2 Templates</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  if (window.AuthService && !window.AuthService.isLoggedIn()) { location.href = '/login.html'; return; }
+})();
+</script>
+</body>
+</html>
