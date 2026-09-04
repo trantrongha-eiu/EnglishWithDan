@@ -14,9 +14,9 @@ async function createGroup(overrides = {}) {
   _n += 1;
   return SentenceStructureGroup.create({
     code: overrides.code || `grp-${_n}-${Date.now()}`,
-    order: overrides.order ?? _n,
+    order: overrides.order ?? ((_n % 12) || 12),
     week: overrides.week ?? 1,
-    slotInWeek: overrides.slotInWeek ?? 1,
+    slotInWeek: overrides.slotInWeek ?? ((_n % 2) || 2),
     nameVi: overrides.nameVi || 'Câu phức',
     nameEn: overrides.nameEn || 'Complex Sentences',
     emoji: overrides.emoji || '🧩',
@@ -31,24 +31,33 @@ async function createGroup(overrides = {}) {
 
 const bearer = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 
-describe('premium gate', () => {
+describe('auth + premium gate', () => {
   test('unauthenticated → 401', async () => {
     expect((await request(app).get('/api/adv-sentence/weeks')).status).toBe(401);
   });
 
-  test('free student past the 24h trial → 403 PLAN_REQUIRED', async () => {
+  test('the week grid is auth-only (a free student still sees the catalog + upgrade banner)', async () => {
+    await createGroup({ week: 2 });
     const u = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 864e5) } });
     const res = await request(app).get('/api/adv-sentence/weeks').set(bearer(u));
+    expect(res.status).toBe(200);
+    expect(res.body.weeks.some((w) => w.week === 2)).toBe(true);
+  });
+
+  test('group content IS premium-gated — free student past trial → 403 PLAN_REQUIRED', async () => {
+    const g = await createGroup();
+    const u = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 864e5) } });
+    const res = await request(app).get(`/api/adv-sentence/group/${g._id}`).set(bearer(u));
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('PLAN_REQUIRED');
   });
 
-  test('premium student passes', async () => {
-    await createGroup({ week: 2 });
+  test('premium student reaches group content', async () => {
+    const g = await createGroup();
     const u = await createPremiumStudent();
-    const res = await request(app).get('/api/adv-sentence/weeks').set(bearer(u));
+    const res = await request(app).get(`/api/adv-sentence/group/${g._id}`).set(bearer(u));
     expect(res.status).toBe(200);
-    expect(res.body.weeks.some((w) => w.week === 2)).toBe(true);
+    expect(res.body.sentences.length).toBeGreaterThan(0);
   });
 });
 

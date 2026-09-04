@@ -237,6 +237,27 @@
   <div id="dict-body" class="dict-body"></div>
 </div>
 
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header">
+      <h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+            class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════════════════════════════════
 //  Viết câu nâng cao — Advanced Sentence Translation Practice
@@ -264,7 +285,7 @@
     attempts: [],              // { sentenceId, userAnswer, isCorrect, score, modelAnswer, feedbackVi, promptVi }
     hintCount: 0,
     answered: false,
-    drill: null,
+    _drillHost: null,          // live WbwDrill host <div>, for unmountDrill()
     // exam
     examQs: [],
     examAns: {},
@@ -320,12 +341,25 @@
 
   // ── router ─────────────────────────────────────────────────────────
   var app = document.getElementById('app');
+
+  // Tear down any live word-by-word drill before its host <div> is replaced
+  // by the next innerHTML write — otherwise the old Drill keeps its input
+  // listeners + pending shake/complete timers on a detached node, and a
+  // stale timer could fire onComplete() against the wrong sentence.
+  function unmountDrill() {
+    if (state._drillHost && window.WbwDrill) {
+      try { window.WbwDrill.unmount(state._drillHost); } catch (e) {}
+    }
+    state._drillHost = null;
+  }
+
   function render() {
+    unmountDrill();
     if (state.view === 'weeks')      { app.innerHTML = renderWeeks();  bindWeeks();  }
     else if (state.view === 'groups')   { app.innerHTML = renderGroups(); bindGroups(); }
     else if (state.view === 'practice') { app.innerHTML = renderPractice(); mountPractice(); }
     else if (state.view === 'exam')     { app.innerHTML = renderExam();   bindExam(); }
-    else if (state.view === 'examResult') { app.innerHTML = renderExamResult(); }
+    else if (state.view === 'examResult') { app.innerHTML = renderExamResult(); bindExamResult(); }
   }
 
   // ── WEEKS ──────────────────────────────────────────────────────────
@@ -546,8 +580,12 @@
   }
 
   function renderPractice() {
+    if (!state.sentences.length) {
+      return '<div style="text-align:center;padding:48px;color:var(--text2,#6b7280)">Nhóm này chưa có câu nào.' +
+        '<br><button class="as-btn" style="margin-top:14px" onclick="history.length>1?history.back():location.href=\'advanced-sentences.html\'">← Quay lại</button></div>';
+    }
     var s = state.sentences[state.idx];
-    if (!s) return renderPracticeDone();
+    if (!s) { state.idx = state.sentences.length - 1; s = state.sentences[state.idx]; }
     var g = state.selectedGroup;
     var pct = Math.round(((state.idx + 1) / state.sentences.length) * 100);
     var hints = (s.hintWords || []);
@@ -580,6 +618,7 @@
   }
 
   function mountPractice() {
+    if (!state.sentences.length) return;
     var s = state.sentences[state.idx];
     if (!s) return;
     state.answered = false;
@@ -589,12 +628,17 @@
     var fallback = document.getElementById('as-fallback');
     var submitBtn = document.getElementById('as-submit-btn');
 
-    document.getElementById('as-quit-btn').addEventListener('click', confirmQuit);
+    var quitBtn = document.getElementById('as-quit-btn');
+    if (quitBtn) quitBtn.addEventListener('click', confirmQuit);
     document.querySelectorAll('.as-dot').forEach(function (d) {
       d.addEventListener('click', function () { goToIdx(parseInt(d.dataset.i)); });
     });
     var hintBtn = document.getElementById('as-hint-btn');
     if (hintBtn) hintBtn.addEventListener('click', revealHint);
+
+    // The submit button doubles as the retry button if a check request fails
+    // (in drill mode it's hidden until then), so wire it in every mode.
+    submitBtn.addEventListener('click', submitAnswer);
 
     var mounted = false;
     if (s.translationAnswer && window.WbwDrill) {
@@ -605,13 +649,13 @@
       });
     }
     if (mounted) {
+      state._drillHost = host;
       submitBtn.style.display = 'none'; // the drill auto-submits on the last letter
     } else {
       // fallback: plain textarea + manual submit (exam-style / missing answer)
       host.classList.add('hidden');
       fallback.classList.remove('hidden');
       fallback.addEventListener('input', function () { submitBtn.disabled = !fallback.value.trim(); });
-      submitBtn.addEventListener('click', submitAnswer);
     }
   }
 
@@ -651,11 +695,10 @@
         timeoutMs: 20000,
       });
     } catch (e) {
-      state.answered = false;
-      toast('Không chấm được, thử lại', 'error');
+      onCheckFailed('Không chấm được, thử lại');
       return;
     }
-    if (!data || !data.success) { state.answered = false; toast('Lỗi chấm bài', 'error'); return; }
+    if (!data || !data.success) { onCheckFailed('Lỗi chấm bài'); return; }
 
     state.status[state.idx] = data.isCorrect ? 'correct' : 'wrong';
     var existing = state.attempts.findIndex(function (a) { return String(a.sentenceId) === String(s._id); });
@@ -665,9 +708,27 @@
     };
     if (existing >= 0) state.attempts[existing] = entry; else state.attempts.push(entry);
 
-    if (window.playSound) window.playSound(data.isCorrect ? 'correct' : 'wrong');
+    if (data.isCorrect) { if (window.playOk) window.playOk(); }
+    else if (window.playWrong) window.playWrong();
+    var btn = document.getElementById('as-submit-btn');
+    if (btn) { btn.disabled = true; btn.style.display = 'none'; }
     saveDraft();
     showFeedback(data, userAnswer);
+  }
+
+  // A failed check must not leave a drill-mode student stuck (the drill is
+  // already finished + disabled, submit was hidden). Re-show the submit
+  // button as a "Thử lại" retry — the bridge input still holds the full
+  // answer, so clicking it just re-runs submitAnswer().
+  function onCheckFailed(msg) {
+    state.answered = false;
+    toast(msg, 'error');
+    var btn = document.getElementById('as-submit-btn');
+    if (btn) {
+      btn.style.display = '';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-rotate-right"></i> Thử lại';
+    }
   }
 
   function showFeedback(data, userAnswer) {
@@ -695,10 +756,8 @@
     render();
   }
 
-  function renderPracticeDone() { finishPractice(); return ''; }
-
   async function finishPractice() {
-    if (state.drill) state.drill = null;
+    unmountDrill();
     var correct = state.attempts.filter(function (a) { return a.isCorrect; }).length;
     var total = state.sentences.length;
     var score = total ? Math.round((correct / total) * 100) : 0;
@@ -820,9 +879,14 @@
         '<button class="as-submit" id="as-exam-next">' + (state.examIdx >= state.examQs.length - 1 ? 'Nộp bài' : 'Câu tiếp theo') + '</button>' +
       '</div>';
   }
+  function _restoreGroupsUrl() {
+    history.replaceState({ view: 'groups', week: state.selectedWeek }, '', 'advanced-sentences.html?week=' + state.selectedWeek);
+  }
   function bindExam() {
     document.getElementById('as-exam-quit').addEventListener('click', function () {
-      if (confirm('Thoát khỏi bài thi thử? Kết quả sẽ không được lưu.')) { stopExamTimer(); state.view = 'groups'; render(); }
+      if (confirm('Thoát khỏi bài thi thử? Kết quả sẽ không được lưu.')) {
+        stopExamTimer(); state._examSubmitting = false; _restoreGroupsUrl(); state.view = 'groups'; render();
+      }
     });
     var input = document.getElementById('as-exam-input');
     input.focus();
@@ -859,9 +923,10 @@
           totalQuestions: d.total, correctCount: d.correct,
         }),
       }).catch(function () {});
+      _restoreGroupsUrl();
       state.view = 'examResult';
       render();
-    } catch (e) { toast('Lỗi chấm bài', 'error'); state.view = 'groups'; render(); }
+    } catch (e) { toast('Lỗi chấm bài', 'error'); _restoreGroupsUrl(); state.view = 'groups'; render(); }
   }
   function renderExamResult() {
     var d = state.examResult || { results: [], correct: 0, total: 0, score: 0 };
@@ -883,6 +948,10 @@
         '<button class="as-next" style="width:auto;margin-top:16px" id="as-exam-done">Về danh sách tuần</button>' +
       '</div>' + items +
       '<div style="height:20px"></div>';
+  }
+  function bindExamResult() {
+    var b = document.getElementById('as-exam-done');
+    if (b) b.addEventListener('click', goWeeks);
   }
 
   // ── HISTORY MODAL ──────────────────────────────────────────────────
@@ -982,12 +1051,17 @@
   window.addEventListener('popstate', function (e) {
     var st = e.state || {};
     if (state.examTimer) stopExamTimer();
+    state._examSubmitting = false;
     if (st.view === 'weeks' || !st.view) { state.view = 'weeks'; render(); }
-    else if (st.view === 'groups' && st.week) {
+    else if ((st.view === 'groups' || st.view === 'exam') && st.week) {
+      // Back-navigating onto an exam entry drops into the groups screen —
+      // resuming a timed exam from history would be unfair.
       state.selectedWeek = st.week;
       api('/adv-sentence/groups/week/' + st.week).then(function (d) { state.groups = d.groups || []; state.view = 'groups'; render(); });
     } else if (st.view === 'practice' && st.groupId) {
       openGroup(st.groupId, true);
+    } else {
+      state.view = 'weeks'; render();
     }
   });
 

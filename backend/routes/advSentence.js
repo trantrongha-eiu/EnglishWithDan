@@ -23,9 +23,12 @@ const checkLimiter = rateLimit({
   skip: req => req.user?.role === 'admin',
 });
 
+// ── catalog metadata (auth only) — a free student sees the week grid +
+//    the upgrade banner, same as task2-practice's public /weeks route ──
+router.get('/weeks',              auth, ctrl.listWeeks);
+router.get('/groups/week/:week',  auth, ctrl.listGroupsForWeek);
+
 // ── content + practice (auth + premium) ──────────────────────────────
-router.get('/weeks',              auth, premiumOnly, ctrl.listWeeks);
-router.get('/groups/week/:week',  auth, premiumOnly, ctrl.listGroupsForWeek);
 router.get('/group/:groupId',     auth, premiumOnly, ctrl.getGroup);
 router.post('/check',             auth, premiumOnly, checkLimiter, ctrl.checkAnswer);
 router.get('/exam',               auth, premiumOnly, ctrl.getExam);
