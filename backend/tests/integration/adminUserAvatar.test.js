@@ -35,8 +35,14 @@ describe('POST /api/admin/users/:id/avatar (adminOnly)', () => {
   // BUG-025: a direct API call bypasses the frontend's own client-side
   // compression entirely, so the server needs its own real size cap.
   test('rejects a payload over the 5MB decoded-byte cap, no Cloudinary call made', async () => {
-    const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage');
-    const oversized = 'data:image/png;base64,' + Buffer.alloc(6 * 1024 * 1024, 1).toString('base64');
+    // stub the upload so a guard regression can't fire a real network call
+    const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage')
+      .mockResolvedValue({ secure_url: 'https://res.cloudinary.com/test/x.jpg' });
+    // just over 5 MB decoded (7 MiB of base64 → ~5.25 MB), built as one plain
+    // string — no Buffer.alloc + toString('base64') double allocation, which
+    // made this the heaviest single line in the whole suite and flaked it
+    // under memory pressure once the suite count grew.
+    const oversized = 'data:image/png;base64,' + 'A'.repeat(7 * 1024 * 1024);
     const admin = await createAdmin();
     const target = await createStudent();
     const token = signTokenFor(admin);

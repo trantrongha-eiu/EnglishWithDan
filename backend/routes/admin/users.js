@@ -127,7 +127,11 @@ router.put('/users/:id', auth, adminOnly, async (req, res) => {
 // POST /api/admin/users/:id/avatar – admin đặt/thay avatar cho user (chỉ admin)
 router.post('/users/:id/avatar', auth, adminOnly, async (req, res) => {
   try {
-    const { imageBase64 } = req.body;
+    // Express 5 leaves req.body undefined when the body parser didn't run
+    // (empty body, wrong content-type, a parse that bailed under load) —
+    // destructuring it directly would throw into the catch and 500 what
+    // should be a clean 400. Guard so a malformed request always 400s.
+    const { imageBase64 } = req.body || {};
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
     if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
     if (getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
