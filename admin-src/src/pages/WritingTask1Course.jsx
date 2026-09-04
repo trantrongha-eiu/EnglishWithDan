@@ -24,7 +24,7 @@ const OBJECTIVE_HINT = {
 };
 const EMPTY_EX = {
   code: '', order: 1, type: 'mcq', title: '', titleEn: '', instruction: '',
-  source: 'original', difficulty: 1, estimatedMinutes: 5, points: 0, autoGrade: true,
+  source: 'original', skillTags: [], difficulty: 1, estimatedMinutes: 5, points: 0, autoGrade: true,
   timerMinutes: '', needsAsset: false, published: true,
   stimulus: { kind: null, caption: '', imageUrl: '', note: '', headers: [], rows: [] },
   wordBank: [], categories: [], responseSlots: 0, items: [], rubric: null,
@@ -69,6 +69,7 @@ function ExerciseModal({ exercise, lessonCode, onClose, onSaved }) {
     return {
       code: ex.code.trim(), lessonCode, order: Number(ex.order) || 0, type: ex.type,
       title: ex.title, titleEn: ex.titleEn, instruction: ex.instruction, source: ex.source,
+      skillTags: Array.isArray(ex.skillTags) ? ex.skillTags : toArr(ex.skillTags),
       difficulty: Number(ex.difficulty) || 1, estimatedMinutes: Number(ex.estimatedMinutes) || undefined,
       points: Number(ex.points) || 0, autoGrade: !!ex.autoGrade,
       timerMinutes: ex.timerMinutes === '' ? undefined : Number(ex.timerMinutes) || undefined,
@@ -127,6 +128,10 @@ function ExerciseModal({ exercise, lessonCode, onClose, onSaved }) {
             <div className="form-group"><label className="form-label">Tiêu đề EN</label><input className="form-input" value={ex.titleEn || ''} onChange={set('titleEn')} /></div>
           </div>
           <div className="form-group"><label className="form-label">Hướng dẫn (instruction)</label><textarea className="form-input" rows={2} value={ex.instruction || ''} onChange={set('instruction')} /></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 130px', gap: 10 }}>
+            <div className="form-group"><label className="form-label">skillTags (cách nhau bằng dấu phẩy)</label><input className="form-input" value={Array.isArray(ex.skillTags) ? ex.skillTags.join(', ') : (ex.skillTags || '')} onChange={(e) => setEx((x) => ({ ...x, skillTags: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) }))} /></div>
+            <div className="form-group"><label className="form-label">source</label><select className="form-input" value={ex.source || 'original'} onChange={set('source')}><option value="original">original</option><option value="added">added</option></select></div>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: '90px 110px 110px 1fr', gap: 10, alignItems: 'end' }}>
             <div className="form-group"><label className="form-label">Độ khó</label><input className="form-input" type="number" min={1} max={3} value={ex.difficulty} onChange={set('difficulty')} /></div>
             <div className="form-group"><label className="form-label">Phút (est)</label><input className="form-input" type="number" value={ex.estimatedMinutes ?? ''} onChange={set('estimatedMinutes')} /></div>
