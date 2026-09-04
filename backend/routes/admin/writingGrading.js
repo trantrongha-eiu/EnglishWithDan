@@ -6,6 +6,7 @@
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const auth    = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
 const { gradeTaskWithAI } = require('../../services/writingGradingService');
@@ -24,7 +25,7 @@ const router = express.Router();
 const aiGradeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 60,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
   handler: (req, res) => {
     logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
     res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu chấm AI, vui lòng thử lại sau 15 phút.' });
