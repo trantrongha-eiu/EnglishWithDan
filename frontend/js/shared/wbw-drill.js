@@ -163,7 +163,7 @@
         '<div class="wbwd-words" data-role="words"></div>' +
         '<input class="wbwd-input" data-role="input" type="text" autocomplete="off" ' +
           'autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />' +
-        '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.</div>' +
+        '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.</div>' +
       '</div>';
     this.$count = this.host.querySelector('[data-role="count"]');
     this.$showall = this.host.querySelector('[data-role="showall"]');
@@ -218,7 +218,11 @@
         return '<span class="wbwd-word is-done" data-i="' + i + '">' + esc(t.raw) + '</span>';
       }
       if (i === self.activeIdx && !self.done) {
-        var remaining = Math.max(0, t.target.length - self.typed.length);
+        // Remaining-star count is by real letters/numbers only — self.typed
+        // may already include auto-filled punctuation (e.g. "energy-"), which
+        // must not shrink the star count meant for the letters still ahead.
+        var typedLetters = self.typed.replace(NOT_TYPABLE, '').length;
+        var remaining = Math.max(0, t.target.length - typedLetters);
         var tail = self.erroring
           ? '<span class="wbwd-err">✕</span>'
           : '<span class="wbwd-caret"></span>';
@@ -300,21 +304,36 @@
 
     if (this.perWord) { this._onInputWord(tok, false); return; }
 
-    var raw = nfc(this.$input.value).replace(NOT_TYPABLE, '');
+    // Walk tok.raw (the real word, punctuation and all) instead of the
+    // letters-only tok.target, so a punctuation character (hyphen,
+    // apostrophe...) is auto-filled into `good` — and shown — the instant
+    // the pointer reaches it, whether or not the student actually typed it.
+    // A punctuation keystroke they DO type (BUG-089: "energy-efficient"
+    // students pressing "-" and seeing nothing happen, thinking the drill
+    // was rejecting the key) is simply absorbed as a no-op below — never
+    // required, never rejected — so it can't get anyone stuck.
+    var typedRaw = nfc(this.$input.value);
     var good = '';
+    var pos = 0;
     var rejected = false;
-    for (var k = 0; k < raw.length; k++) {
-      var expected = tok.target[good.length];
-      if (expected === undefined) break;
-      if (raw[k].toLowerCase() === expected.toLowerCase()) good += raw[k];
+    var skipPunct = function () {
+      while (pos < tok.raw.length && !TYPABLE.test(tok.raw[pos])) { good += tok.raw[pos]; pos++; }
+    };
+    skipPunct();
+    for (var k = 0; k < typedRaw.length; k++) {
+      var ch = typedRaw[k];
+      if (!TYPABLE.test(ch)) continue; // punctuation keystroke — harmless no-op
+      var expected = tok.raw[pos];
+      if (expected === undefined) { rejected = true; break; }
+      if (ch.toLowerCase() === expected.toLowerCase()) { good += ch; pos++; skipPunct(); }
       else { rejected = true; break; }
     }
 
     this.typed = good;
-    this.$input.value = good;                 // active recall: never auto-fill
+    this.$input.value = good;                 // active recall: never auto-fill letters
 
     if (rejected) { this._flashError(); return; }
-    if (good.length < tok.target.length) { this._renderWords(); return; }
+    if (pos < tok.raw.length) { this._renderWords(); return; }
     this._advanceWord();
   };
 
