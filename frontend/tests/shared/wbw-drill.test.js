@@ -87,6 +87,35 @@ describe('WbwDrill — punctuation inside a word (BUG-089: "energy-efficient")',
   });
 });
 
+describe('WbwDrill — Vietnamese tone-mark position (BUG-090: "thảm hoạ" vs "thảm họa")', () => {
+  test('a dictionary-style meaning ("họa") is accepted when typed in the older-convention spelling ("hoạ")', () => {
+    const { host, input, onComplete } = mount('thảm họa');
+    'thảm'.split('').forEach((ch) => typeChar(input, ch));
+    expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1); // first word matched exactly
+
+    // Student types the other (equally valid) tone-mark placement.
+    'hoạ'.split('').forEach((ch) => typeChar(input, ch));
+    return new Promise((resolve) => setTimeout(() => { expect(onComplete).toHaveBeenCalled(); resolve(); }, 500));
+  }, 10000);
+
+  test('works the other way too: target spelled the older way, student types the current-dictionary way', () => {
+    const { host, onComplete, input } = mount('thảm hoạ');
+    'thảm'.split('').forEach((ch) => typeChar(input, ch));
+    'họa'.split('').forEach((ch) => typeChar(input, ch));
+    return new Promise((resolve) => setTimeout(() => { expect(onComplete).toHaveBeenCalled(); resolve(); }, 500));
+  }, 10000);
+
+  test('a genuinely different tone is still rejected, not just a different vowel placement', () => {
+    const { host, input } = mount('thảm họa'); // target tone = nặng (dot below)
+    'thảm'.split('').forEach((ch) => typeChar(input, ch));
+    // "hòa" = huyền (grave) tone, not nặng — a real wrong answer, not the
+    // same tone on the other vowel.
+    'hòa'.split('').forEach((ch) => typeChar(input, ch));
+    expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1); // still just "thảm"
+    expect(activeWordEl(host).getAttribute('data-i')).toBe('1'); // still on the 2nd word
+  });
+});
+
 describe('WbwDrill — plain words (no punctuation) unaffected', () => {
   test('normal per-letter typing still advances and completes', () => {
     const { host, input, onComplete } = mount('hello world');
