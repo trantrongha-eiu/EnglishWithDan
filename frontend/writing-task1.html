@@ -101,14 +101,58 @@
     .t1-gap-inp { display:inline-block; width: 120px; margin: 0 3px; padding: 3px 6px; border: none; border-bottom: 2px solid #0ea5e9; background: #f0f9ff; font-family: inherit; font-size: 14px; }
     .t1-mc { display:flex; gap: 8px; align-items: flex-start; padding: 6px 0; cursor: pointer; font-size: 13.5px; }
     .t1-mc input { margin-top: 3px; }
-    .t1-chip-btn { border: 1.5px solid var(--border,#d1d5db); background: var(--surface,#fff); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-family: inherit; cursor: pointer; margin: 3px; }
-    .t1-chip-btn.sel { border-color: #0ea5e9; background: #e0f2fe; color: #0369a1; }
-    .t1-chip-btn.placed { opacity: .45; }
-    .t1-bucket { border: 1.5px dashed var(--border,#cbd5e1); border-radius: 10px; padding: 8px 10px; margin: 6px 0; min-height: 40px; }
-    .t1-bucket .bl { font-size: 12px; font-weight: 800; color: var(--text2,#6b7280); margin-bottom: 4px; }
-    .t1-ord-row { display:flex; align-items:center; gap: 8px; padding: 5px 0; }
-    .t1-ord-row .txt { flex: 1; font-size: 13px; }
-    .t1-ord-row button { border: 1px solid var(--border,#d1d5db); background: var(--surface,#fff); border-radius: 6px; width: 26px; height: 26px; cursor: pointer; }
+    /* ── drag & drop (mouse + touch via Pointer Events) ── */
+    .t1-chip { display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--border,#d1d5db); background:var(--surface,#fff);
+      border-radius:10px; padding:8px 12px; font-size:13px; font-family:inherit; line-height:1.45; cursor:grab; -webkit-user-select:none; user-select:none;
+      touch-action:none; box-shadow:0 1px 2px rgba(0,0,0,.04); transition:border-color .12s, box-shadow .12s; max-width:100%; overflow-wrap:anywhere; }
+    .t1-chip:hover { border-color:#0ea5e9; }
+    .t1-chip:active { cursor:grabbing; }
+    .t1-chip.is-dragging { opacity:.3; pointer-events:none; }
+    .t1-chip.placed { border-color:#0ea5e9; background:#e0f2fe; color:#0369a1; font-weight:600; }
+    [data-theme="dark"] .t1-chip.placed { background:#0c2536; color:#7dd3fc; }
+    .t1-dnd-float { position:fixed; z-index:9999; pointer-events:none; margin:0 !important; box-shadow:0 10px 26px rgba(2,132,199,.30); transform:rotate(-1.5deg); opacity:.98; }
+    .t1-drop { border:1.5px dashed var(--border,#cbd5e1); border-radius:10px; min-height:46px; padding:6px; display:flex; flex-wrap:wrap; gap:6px;
+      align-items:center; transition:border-color .12s, background .12s; }
+    .t1-drop.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
+    [data-theme="dark"] .t1-drop.over { background:#0c2536; }
+    .t1-drop:empty::before { content:attr(data-ph); color:#b8c0cc; font-size:12px; padding:0 4px; }
+
+    /* matching — two columns */
+    .t1-match { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,220px); gap:14px; margin-top:4px; align-items:start; }
+    .t1-match-rows { display:flex; flex-direction:column; gap:10px; min-width:0; }
+    .t1-match-row { border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:10px 12px; background:var(--surface,#fff); }
+    .t1-match-left { font-size:13px; line-height:1.6; margin-bottom:7px; }
+    .t1-match-pool { position:sticky; top:8px; display:flex; flex-direction:column; gap:8px; background:var(--surface2,#f8fafc);
+      border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:10px; transition:border-color .12s, background .12s; }
+    .t1-match-pool.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
+    [data-theme="dark"] .t1-match-pool.over { background:#0c2536; }
+    .t1-match-pool .pl, .t1-cat-pool .pl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--text3,#9ca3af); width:100%; }
+    @media (max-width:640px){ .t1-match { grid-template-columns:1fr; } .t1-match-pool { position:static; flex-direction:row; flex-wrap:wrap; align-items:center; } }
+
+    /* categorize — buckets */
+    .t1-cat-pool { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px; border:1px solid var(--border,#e5e7eb); border-radius:12px;
+      background:var(--surface2,#f8fafc); margin-bottom:10px; min-height:54px; transition:border-color .12s, background .12s; }
+    .t1-cat-pool.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
+    [data-theme="dark"] .t1-cat-pool.over { background:#0c2536; }
+    .t1-cat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+    .t1-bucket { border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:10px; background:var(--surface,#fff); }
+    .t1-bucket .bl { font-size:12px; font-weight:800; color:var(--text2,#6b7280); margin-bottom:6px; }
+
+    /* ordering — draggable rows */
+    .t1-ord { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+    .t1-ord-row { display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--border,#e5e7eb); border-radius:10px;
+      background:var(--surface,#fff); font-size:13px; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; }
+    .t1-ord-row:active { cursor:grabbing; }
+    .t1-ord-row.is-dragging { opacity:.3; }
+    .t1-ord-row .grip { color:#c7ccd6; letter-spacing:-3px; font-size:15px; }
+    .t1-ord-row .txt { flex:1; }
+    .t1-ord-row .nudge { display:flex; flex-direction:column; gap:1px; flex-shrink:0; }
+    .t1-ord-row .nudge button { border:1px solid var(--border,#e5e7eb); background:var(--surface,#fff); border-radius:5px; width:24px; height:16px;
+      cursor:pointer; font-size:7px; line-height:1; color:#6b7280; padding:0; }
+
+    .t1-reset { margin-top:10px; background:none; border:1px solid var(--border,#d1d5db); color:var(--text2,#6b7280);
+      border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .t1-reset:hover { border-color:#0ea5e9; color:#0ea5e9; }
 
     .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
     .t1-submit:disabled { opacity: .5; cursor: default; }
@@ -213,8 +257,50 @@
 
   function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
 
+  // ── pointer drag-and-drop (mouse + touch); one drag at a time. A floating
+  //    clone tracks the pointer; the real node is moved into the drop zone on
+  //    release. zoneSel = CSS selector matching valid drop targets.
+  var Dnd = {
+    bind: function (el, zoneSel, onDrop) {
+      el.addEventListener('pointerdown', function (e) {
+        if (e.button != null && e.button > 0) return;
+        e.preventDefault();
+        var r = el.getBoundingClientRect();
+        var fl = el.cloneNode(true);
+        fl.classList.add('t1-dnd-float');
+        fl.style.width = r.width + 'px';
+        fl.style.left = r.left + 'px';
+        fl.style.top = r.top + 'px';
+        document.body.appendChild(fl);
+        el.classList.add('is-dragging');
+        var dx = e.clientX - r.left, dy = e.clientY - r.top, over = null;
+        try { el.setPointerCapture(e.pointerId); } catch (x) { /* older Safari */ }
+        function mv(ev) {
+          ev.preventDefault();
+          fl.style.left = (ev.clientX - dx) + 'px';
+          fl.style.top = (ev.clientY - dy) + 'px';
+          var u = document.elementFromPoint(ev.clientX, ev.clientY);
+          var z = u && u.closest(zoneSel);
+          if (z !== over) { if (over) over.classList.remove('over'); if (z) z.classList.add('over'); over = z; }
+        }
+        function up(ev) {
+          el.removeEventListener('pointermove', mv);
+          el.removeEventListener('pointerup', up);
+          el.removeEventListener('pointercancel', up);
+          fl.remove();
+          el.classList.remove('is-dragging');
+          if (over) { over.classList.remove('over'); onDrop(el, over); }
+        }
+        el.addEventListener('pointermove', mv);
+        el.addEventListener('pointerup', up);
+        el.addEventListener('pointercancel', up);
+      });
+    }
+  };
+
   function render() {
     stopTimer();
+    document.querySelectorAll('.t1-dnd-float').forEach(function (f) { f.remove(); });
     if (state.view === 'overview') { app.innerHTML = renderOverview(); bindOverview(); }
     else if (state.view === 'lesson') { app.innerHTML = renderLesson(); bindLesson(); }
     else if (state.view === 'exercise') { app.innerHTML = renderExercise(); bindExercise(); }
@@ -379,24 +465,38 @@
       }).join('');
     }
     if (t === 'categorize') {
-      var buckets = (ex.categories || []).map(function (c) {
-        return '<div class="t1-bucket" data-cat="' + esc(c.id) + '"><div class="bl">' + esc(c.label) + '</div><div class="drop"></div></div>';
+      var chips = ex.items.map(function (it) {
+        return '<div class="t1-chip" data-item="' + esc(it.id) + '">' + esc(it.text || it.prompt) + '</div>';
       }).join('');
-      var chips = ex.items.map(function (it) { return '<button type="button" class="t1-chip-btn" data-item="' + it.id + '">' + esc(it.text || it.prompt) + '</button>'; }).join('');
-      return '<div id="t1-cat-pool" style="margin-bottom:8px">' + chips + '</div>' + buckets + '<div style="font-size:11.5px;color:#9ca3af;margin-top:4px">Bấm một thẻ rồi bấm vào nhóm để đưa vào.</div>';
+      var buckets = (ex.categories || []).map(function (c) {
+        return '<div class="t1-bucket"><div class="bl">' + esc(c.label) + '</div>' +
+          '<div class="t1-drop" data-cat="' + esc(c.id) + '" data-ph="Kéo thẻ vào đây"></div></div>';
+      }).join('');
+      return '<div class="t1-cat-pool" id="t1-cat-pool"><span class="pl">Kéo mỗi thẻ vào đúng nhóm</span>' + chips + '</div>' +
+        '<div class="t1-cat-grid">' + buckets + '</div>' +
+        '<button type="button" class="t1-reset" id="t1-reset">↺ Xếp lại</button>';
     }
     if (t === 'matching') {
-      var lefts = ex.items.map(function (it) {
-        return '<div class="t1-item" data-item="' + it.id + '"><div class="q">' + esc(it.left) + '</div><div class="pick" style="font-size:12px;color:#0ea5e9;min-height:20px">— chưa chọn —</div></div>';
+      var mrows = ex.items.map(function (it) {
+        return '<div class="t1-match-row">' +
+          '<div class="t1-match-left">' + esc(it.left) + '</div>' +
+          '<div class="t1-drop" data-item="' + esc(it.id) + '" data-ph="Kéo đáp án vào đây"></div></div>';
       }).join('');
-      var rights = (ex.rightOptions || []).map(function (r) { return '<button type="button" class="t1-chip-btn" data-right="' + esc(r) + '">' + esc(r) + '</button>'; }).join('');
-      return lefts + '<div style="margin-top:10px;font-size:12px;font-weight:700;color:#6b7280">Chọn vế phải:</div><div id="t1-right-pool">' + rights + '</div>';
+      var mchips = (ex.rightOptions || []).map(function (r) {
+        return '<div class="t1-chip" data-right="' + esc(r) + '">' + esc(r) + '</div>';
+      }).join('');
+      return '<div class="t1-match">' +
+          '<div class="t1-match-rows">' + mrows + '</div>' +
+          '<div class="t1-match-pool" id="t1-right-pool"><span class="pl">Đáp án — kéo sang trái</span>' + mchips + '</div>' +
+        '</div>' +
+        '<button type="button" class="t1-reset" id="t1-reset">↺ Xếp lại</button>';
     }
     if (t === 'ordering') {
       return ex.items.map(function (it) {
-        return '<div class="t1-item"><div class="q">' + esc(it.prompt || 'Sắp xếp theo thứ tự đúng:') + '</div><div class="t1-ord" data-item="' + it.id + '">' +
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt || 'Kéo để sắp xếp đúng thứ tự:') + '</div><div class="t1-ord" data-item="' + esc(it.id) + '">' +
           (it.tokens || []).map(function (tok) {
-            return '<div class="t1-ord-row" data-tok="' + esc(tok) + '"><button type="button" class="up">▲</button><button type="button" class="down">▼</button><span class="txt">' + esc(tok) + '</span></div>';
+            return '<div class="t1-ord-row" data-tok="' + esc(tok) + '"><span class="grip">⋮⋮</span><span class="txt">' + esc(tok) + '</span>' +
+              '<span class="nudge"><button type="button" class="up" aria-label="Lên">▲</button><button type="button" class="down" aria-label="Xuống">▼</button></span></div>';
           }).join('') + '</div></div>';
       }).join('');
     }
@@ -451,50 +551,70 @@
     document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
     document.getElementById('t1-submit').addEventListener('click', submit);
 
-    // categorize: tap chip → tap bucket
+    // categorize: drag each chip into a bucket (or back to the pool)
     if (ex.type === 'categorize') {
-      var selChip = null;
-      document.querySelectorAll('#t1-cat-pool .t1-chip-btn').forEach(function (b) {
-        b.addEventListener('click', function () {
-          document.querySelectorAll('#t1-cat-pool .t1-chip-btn').forEach(function (x) { x.classList.remove('sel'); });
-          if (selChip === b) { selChip = null; return; } b.classList.add('sel'); selChip = b;
+      var catPool = document.getElementById('t1-cat-pool');
+      document.querySelectorAll('#t1-body .t1-chip').forEach(function (chip) {
+        Dnd.bind(chip, '.t1-drop,.t1-cat-pool', function (el, zone) {
+          el.classList.toggle('placed', !zone.classList.contains('t1-cat-pool'));
+          zone.appendChild(el);
         });
       });
-      document.querySelectorAll('.t1-bucket').forEach(function (bk) {
-        bk.addEventListener('click', function () {
-          if (!selChip) return;
-          selChip.dataset.cat = bk.dataset.cat;
-          selChip.classList.remove('sel'); selChip.classList.add('placed');
-          bk.querySelector('.drop').appendChild(selChip);
-          selChip = null;
-        });
+      var cr = document.getElementById('t1-reset');
+      if (cr) cr.addEventListener('click', function () {
+        document.querySelectorAll('#t1-body .t1-bucket .t1-chip').forEach(function (c) { c.classList.remove('placed'); catPool.appendChild(c); });
       });
     }
-    // matching: tap left → tap right chip
+    // matching: drag an answer chip from the right pool onto a left row
     if (ex.type === 'matching') {
-      var selLeft = null;
-      document.querySelectorAll('#t1-body .t1-item[data-item]').forEach(function (li) {
-        li.addEventListener('click', function () {
-          document.querySelectorAll('#t1-body .t1-item[data-item]').forEach(function (x) { x.style.background = ''; });
-          li.style.background = '#e0f2fe'; selLeft = li;
+      var rpool = document.getElementById('t1-right-pool');
+      document.querySelectorAll('#t1-body .t1-chip').forEach(function (chip) {
+        Dnd.bind(chip, '.t1-drop,.t1-match-pool', function (el, zone) {
+          if (zone.classList.contains('t1-match-pool')) { el.classList.remove('placed'); rpool.appendChild(el); return; }
+          var prev = zone.querySelector('.t1-chip');
+          if (prev && prev !== el) { prev.classList.remove('placed'); rpool.appendChild(prev); }
+          el.classList.add('placed'); zone.appendChild(el);
         });
       });
-      document.querySelectorAll('#t1-right-pool .t1-chip-btn').forEach(function (rb) {
-        rb.addEventListener('click', function () {
-          if (!selLeft) { toast('Chọn vế trái trước', 'info'); return; }
-          selLeft.dataset.right = rb.dataset.right;
-          selLeft.querySelector('.pick').textContent = '→ ' + rb.dataset.right;
-          selLeft.style.background = ''; selLeft = null;
-        });
+      var mr = document.getElementById('t1-reset');
+      if (mr) mr.addEventListener('click', function () {
+        document.querySelectorAll('#t1-body .t1-drop .t1-chip').forEach(function (c) { c.classList.remove('placed'); rpool.appendChild(c); });
       });
     }
-    // ordering: up/down
+    // ordering: drag rows to reorder (+ ▲▼ for fine control)
     if (ex.type === 'ordering') {
       document.querySelectorAll('.t1-ord').forEach(function (box) {
         box.addEventListener('click', function (e) {
           var row = e.target.closest('.t1-ord-row'); if (!row) return;
-          if (e.target.classList.contains('up') && row.previousElementSibling) box.insertBefore(row, row.previousElementSibling);
-          if (e.target.classList.contains('down') && row.nextElementSibling) box.insertBefore(row.nextElementSibling, row);
+          if (e.target.closest('.up') && row.previousElementSibling) box.insertBefore(row, row.previousElementSibling);
+          if (e.target.closest('.down') && row.nextElementSibling) box.insertBefore(row.nextElementSibling, row);
+        });
+        box.querySelectorAll('.t1-ord-row').forEach(function (row) {
+          row.addEventListener('pointerdown', function (e) {
+            if (e.target.closest('button') || (e.button != null && e.button > 0)) return;
+            e.preventDefault();
+            try { row.setPointerCapture(e.pointerId); } catch (x) { /* noop */ }
+            row.classList.add('is-dragging');
+            function mv(ev) {
+              var tgt = null;
+              box.querySelectorAll('.t1-ord-row:not(.is-dragging)').forEach(function (r) {
+                var rc = r.getBoundingClientRect();
+                if (ev.clientY > rc.top + rc.height / 2) tgt = r;
+              });
+              if (tgt) { if (tgt.nextSibling !== row) box.insertBefore(row, tgt.nextSibling); }
+              else if (box.firstElementChild !== row) box.insertBefore(row, box.firstElementChild);
+            }
+            function up(ev) {
+              row.classList.remove('is-dragging');
+              row.removeEventListener('pointermove', mv);
+              row.removeEventListener('pointerup', up);
+              row.removeEventListener('pointercancel', up);
+              try { row.releasePointerCapture(ev.pointerId); } catch (x) { /* noop */ }
+            }
+            row.addEventListener('pointermove', mv);
+            row.addEventListener('pointerup', up);
+            row.addEventListener('pointercancel', up);
+          });
         });
       });
     }
@@ -524,10 +644,13 @@
       var el = document.querySelector('[data-item="' + it.id + '"]'); ans[it.id] = el ? el.value.trim() : '';
     });
     else if (t === 'categorize') ex.items.forEach(function (it) {
-      var b = document.querySelector('.t1-chip-btn[data-item="' + it.id + '"]'); ans[it.id] = b ? (b.dataset.cat || null) : null;
+      var chip = document.querySelector('#t1-body .t1-chip[data-item="' + it.id + '"]');
+      var slot = chip && chip.closest('.t1-drop');
+      ans[it.id] = slot ? (slot.dataset.cat || null) : null;
     });
     else if (t === 'matching') ex.items.forEach(function (it) {
-      var li = document.querySelector('.t1-item[data-item="' + it.id + '"]'); ans[it.id] = li ? (li.dataset.right || null) : null;
+      var chip = document.querySelector('.t1-drop[data-item="' + it.id + '"] .t1-chip');
+      ans[it.id] = chip ? (chip.dataset.right || null) : null;
     });
     else if (t === 'ordering') ex.items.forEach(function (it) {
       var rows = document.querySelectorAll('.t1-ord[data-item="' + it.id + '"] .t1-ord-row');
