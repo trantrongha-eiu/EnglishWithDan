@@ -34,7 +34,7 @@
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
-  <link rel="stylesheet" href="css/motion.css?v=20260904" />
+  <link rel="stylesheet" href="css/motion.css?v=20260904b" />
   <link rel="stylesheet" href="css/main.css?v=20260831" />
   <link rel="stylesheet" href="css/index.css?v=20260831">
   <!-- BUG-016: deferred only where a real dependency check confirmed it's
@@ -49,7 +49,7 @@
        ever called after an async course-list fetch resolves, well after any
        deferred script has finished) — safe to defer. -->
   <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/scroll-reveal.js?v=20260904"></script>
+  <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831" defer></script>
   <script src="js/shared/pwa-register.js?v=20260831" defer></script>
   <script src="js/shared/auth-service.js?v=20260908"></script>
@@ -133,7 +133,7 @@
       <div class="section-tag">Tại sao chọn chúng tôi</div>
       <h2 class="section-title">Học tiếng Anh đúng cách — hiệu quả thật sự</h2>
     </div>
-    <div class="why-grid">
+    <div class="why-grid" data-reveal-children>
       <div class="why-card">
         <div class="why-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-route"></i></div>
         <h3>Lộ trình cá nhân hoá</h3>
@@ -335,7 +335,7 @@
           Phong cách giảng dạy thực tế, gần gũi và truyền cảm hứng — học viên không chỉ học từ vựng mà hiểu cách tư duy
           bằng tiếng Anh.
         </p>
-        <div class="certs-grid">
+        <div class="certs-grid" data-reveal-children>
           <div class="cert-item">
             <span class="cert-icon">🎓</span>
             <div>
@@ -380,7 +380,7 @@
       <div class="section-tag">Học viên nói gì</div>
       <h2 class="section-title">Hàng trăm học viên đã thay đổi</h2>
     </div>
-    <div class="testi-grid">
+    <div class="testi-grid" data-reveal-children>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
         <p class="testi-text">"When I came to study with Teacher Daniel, I was at a complete loss.My English was very
@@ -432,7 +432,7 @@
       <p class="section-sub">Không chỉ là lời nói — đây là giấy báo điểm IELTS thật của các học viên đã học cùng thầy Daniel Hà. Bấm vào ảnh để xem rõ hơn.</p>
     </div>
 
-    <div class="results-grid">
+    <div class="results-grid" data-reveal-children>
       <button type="button" class="result-card" onclick="openResultLightbox('img/AiVan7.5.jpg','Nguyễn Thị Ái Vân · Overall 7.5')">
         <img src="img/AiVan7.5.jpg" alt="Giấy báo điểm IELTS Overall 7.5 của học viên Nguyễn Thị Ái Vân" loading="lazy">
         <div class="result-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
