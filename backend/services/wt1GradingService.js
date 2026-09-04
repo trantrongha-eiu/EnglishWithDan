@@ -141,6 +141,62 @@ function gradeObjective(exercise, answers = {}) {
   };
 }
 
+// ── AI batch grading for open-ended sentence_transform exercises ───────
+// Content authors already mark a free-composition sentence_transform
+// exercise (e.g. "viết một câu hoàn chỉnh cho mỗi gợi ý, dùng cấu trúc
+// yêu cầu" — many valid phrasings) with autoGrade:false, vs. the narrower
+// one-answer translation drills left autoGrade:true/unset — that flag was
+// authored with intent but silently ignored by /check (BUG-091: every
+// sentence_transform exercise, autoGrade flag or not, went through the
+// exact-ish Levenshtein/keyword check above, which a free-composition
+// answer can legitimately fail while being completely correct). Honour it:
+// autoGrade:false routes through Gemini (batched, all items in the
+// exercise in one call — the runner always submits them together), same
+// "grade fairly by meaning, not exact wording" grading Task 2's weekly
+// Dịch câu practice already uses (task2PracticeService/gradeT2Question).
+function needsAiGrading(exercise) {
+  return exercise.type === 'sentence_transform' && exercise.autoGrade === false;
+}
+
+async function gradeSentenceTransformBatch(exercise, answers = {}) {
+  const items = exercise.items || [];
+  try {
+    const batchInput = items.map((it) => ({
+      id: it.id, prompt: it.prompt, cue: it.cue,
+      sampleAnswers: it.sampleAnswers, userAnswer: String(answers[it.id] || ''),
+    }));
+    const graded = await geminiService.gradeSentenceBatch(batchInput);
+    const byId = new Map(graded.map((g) => [g.id, g]));
+    let got = 0;
+    const out = items.map((it) => {
+      const g = byId.get(it.id);
+      const correct = !!(g && g.isCorrect);
+      if (correct) got += 1;
+      return {
+        id: it.id,
+        correct,
+        correctAnswer: (it.sampleAnswers || [])[0] || '',
+        explanation: (g && g.feedbackVi) || it.explanation || '',
+      };
+    });
+    const maxScore = items.length;
+    return {
+      score: maxScore ? Math.round((got / maxScore) * 100) : 0,
+      correctCount: got,
+      maxScore,
+      items: out,
+      aiGraded: true,
+    };
+  } catch (err) {
+    // Gemini unavailable/timeout/quota/malformed response — a student must
+    // never be blocked from checking their work over an AI hiccup. Fall
+    // back to the same local fuzzy check as any other sentence_transform
+    // exercise (stricter than ideal for free composition, but available).
+    const local = gradeObjective(exercise, answers);
+    return { ...local, aiGraded: false, aiError: err.message };
+  }
+}
+
 // ── local grading for sentence_writing (rubric-based, no AI) ───────────
 function gradeWritingLocal(exercise, responses = []) {
   const text = (Array.isArray(responses) ? responses : [responses]).join('\n').trim();
@@ -228,5 +284,6 @@ async function gradeWritingAI(exercise, responses = []) {
 module.exports = {
   OBJECTIVE_TYPES, AI_TYPES,
   normalize, fuzzyEqual, ratio,
-  gradeObjective, gradeWritingLocal, gradeWritingAI, buildAiPrompt,
+  gradeObjective, needsAiGrading, gradeSentenceTransformBatch,
+  gradeWritingLocal, gradeWritingAI, buildAiPrompt,
 };

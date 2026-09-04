@@ -37,7 +37,12 @@ exports.check = async (req, res) => {
     if (!grading.OBJECTIVE_TYPES.has(ex.type)) {
       return res.status(400).json({ success: false, message: 'Bài này không chấm tự động — dùng /submit-writing.' });
     }
-    const result = grading.gradeObjective(ex, answers);
+    // req.skipAIGrading: set by the /check route's rate limiter once a
+    // student hits it — go straight to the local fallback instead of
+    // calling Gemini at all (same pattern as task2Practice's checkLimiter).
+    const result = grading.needsAiGrading(ex) && !req.skipAIGrading
+      ? await grading.gradeSentenceTransformBatch(ex, answers)
+      : grading.gradeObjective(ex, answers);
     await svc.recordSubmission(req.user._id, ex, {
       answers, score: result.score, maxScore: result.maxScore,
     });
