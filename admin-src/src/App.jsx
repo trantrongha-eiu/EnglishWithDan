@@ -34,6 +34,7 @@ const EssentialGrammarLessons = lazy(() => import('./pages/EssentialGrammarLesso
 const WritingPractice = lazy(() => import('./pages/WritingPractice'));
 const Task1Exercises = lazy(() => import('./pages/Task1Exercises'));
 const AdvancedSentences = lazy(() => import('./pages/AdvancedSentences'));
+const WritingTask1Course = lazy(() => import('./pages/WritingTask1Course'));
 const Task2Topics = lazy(() => import('./pages/Task2Topics'));
 const Task2Templates = lazy(() => import('./pages/Task2Templates'));
 const StudentHistory = lazy(() => import('./pages/StudentHistory'));
@@ -86,6 +87,7 @@ export default function App() {
                 <Route path="writing-practice" element={<WritingPractice />} />
                 <Route path="task1-exercises" element={<Task1Exercises />} />
                 <Route path="advanced-sentences" element={<AdvancedSentences />} />
+                <Route path="wt1-course" element={<WritingTask1Course />} />
                 <Route path="task2-exercises" element={<Task2Topics />} />
                 <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="monitoring" element={<Monitoring />} />
