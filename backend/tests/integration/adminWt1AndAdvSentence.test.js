@@ -96,6 +96,19 @@ describe('admin/wt1 — tree + reads', () => {
     expect(list.body.exercises).toHaveLength(1);
     expect(list.body.exercises[0].code).toBe('T1-DBG-E01');
   });
+
+  test('?course= scopes the tree — the admin course toggle (Task 1 vs Task 2 Writing)', async () => {
+    await WT1Module.findOneAndUpdate({ code: 'T2-DBGM' },
+      { code: 'T2-DBGM', courseCode: 'IELTS-W-T2', order: 1, title: 'T2 module debug' }, { upsert: true });
+    const t = await createTeacher();
+    const t1 = await request(app).get('/api/admin/wt1/tree?course=IELTS-W-T1').set(bearer(t));
+    expect(t1.body.modules.map((m) => m.code)).toContain('T1-DBGM');
+    expect(t1.body.modules.map((m) => m.code)).not.toContain('T2-DBGM');
+    const t2 = await request(app).get('/api/admin/wt1/tree?course=IELTS-W-T2').set(bearer(t));
+    expect(t2.body.modules.map((m) => m.code)).toContain('T2-DBGM');
+    expect(t2.body.modules.map((m) => m.code)).not.toContain('T1-DBGM');
+    await WT1Module.deleteOne({ code: 'T2-DBGM' });
+  });
 });
 
 describe('admin/wt1 — exercise edit round-trip (data-loss check)', () => {

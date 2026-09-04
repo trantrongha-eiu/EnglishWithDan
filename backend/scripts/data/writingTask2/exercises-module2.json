@@ -1,0 +1,298 @@
+{
+  "exercises": [
+    {
+      "code": "T2-L05-E01", "lessonCode": "T2-L05", "order": 1, "type": "mcq",
+      "title": "Type 01 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Advantages & Disadvantages.",
+      "items": [
+        { "id": "q1", "prompt": "Đề nào BẮT BUỘC bạn chọn một phe?", "options": [ { "id": "A", "text": "Discuss the advantages and disadvantages of remote working." }, { "id": "B", "text": "Do the benefits of remote working outweigh the drawbacks?" }, { "id": "C", "text": "What are the advantages and disadvantages of this trend?" } ], "answer": "B", "explanation": "\"outweigh\" → phải chọn phe ở cả Introduction lẫn Conclusion." },
+        { "id": "q2", "prompt": "Advantages/Disadvantages khác Discuss Both Views ở chỗ:", "options": [ { "id": "A", "text": "nói về mặt tốt và mặt xấu của MỘT thứ (không phải quan điểm của hai nhóm người)" }, { "id": "B", "text": "không cần Conclusion" }, { "id": "C", "text": "luôn có 3 body" } ], "answer": "A", "explanation": "Discuss Both Views = quan điểm của hai nhóm người." },
+        { "id": "q3", "prompt": "Lỗi mất điểm nặng nhất ở dạng này khi đề hỏi \"outweigh\":", "options": [ { "id": "A", "text": "viết quá 300 từ" }, { "id": "B", "text": "quên chọn phe" }, { "id": "C", "text": "dùng \"For example\"" } ], "answer": "B", "explanation": "Không chọn phe = lỗi Task Response nghiêm trọng." }
+      ]
+    },
+    {
+      "code": "T2-L05-E02", "lessonCode": "T2-L05", "order": 2, "type": "ordering",
+      "title": "Type 01 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Advantages & Disadvantages theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: DISADVANTAGES", "CONCLUSION + OPINION", "INTRODUCTION", "BODY 1: ADVANTAGES" ], "answer": [ "INTRODUCTION", "BODY 1: ADVANTAGES", "BODY 2: DISADVANTAGES", "CONCLUSION + OPINION" ] } ]
+    },
+    {
+      "code": "T2-L05-E03", "lessonCode": "T2-L05", "order": 3, "type": "gap_fill",
+      "title": "Type 01 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "While the merits of (topic) are widely acknowledged, its potential drawbacks deserve equal ____.", "blanks": [ { "accept": [ "consideration" ] } ], "explanation": "6+: \"…it also has some drawbacks.\"" },
+        { "id": "g2", "prompt": "One of the most significant advantages ____ in its capacity to (verb).", "blanks": [ { "accept": [ "lies" ] } ], "explanation": "6+: \"One of the main advantages is that…\"" },
+        { "id": "g3", "prompt": "Despite its advantages, (topic) is not without its ____.", "blanks": [ { "accept": [ "limitations", "drawbacks" ] } ], "explanation": "6+: \"However, (topic) also has some disadvantages.\"" },
+        { "id": "g4", "prompt": "On ____, it can be argued that the advantages outweigh the drawbacks, provided that (condition).", "blanks": [ { "accept": [ "balance" ] } ], "explanation": "6+: \"Overall, I believe the advantages outweigh the disadvantages.\"" }
+      ]
+    },
+    {
+      "code": "T2-L05-E04", "lessonCode": "T2-L05", "order": 4, "type": "paragraph_writing",
+      "title": "Type 01 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"In some countries, many people continue to live with or very near their parents even when they are married and have their own children. Does this situation have more advantages or more disadvantages?\"  Viết ĐOẠN BODY 1 (mặt lợi ích), 90–120 từ. Mỗi ý: idea → because → result → example cụ thể.",
+      "stimulus": { "kind": "text", "note": "Nhắc: hai body sau này phải xấp xỉ bằng nhau. Hai ý sâu tốt hơn bốn ý nông." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "One of the most significant advantages", "thereby", "which plays a crucial role in", "A clear illustration of this" ],
+        "targetVocab": [ "practical and emotional support", "childcare", "family bonds" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Coherence & Cohesion", "Lexical Resource" ],
+        "checklist": [ "Có câu chủ đề nêu MỘT lợi ích chính", "Có giải thích \"tại sao\"", "Có ví dụ cụ thể (nhóm người / tình huống rõ ràng)", "Không liệt kê 3–4 lợi ích mà không phát triển ý nào" ],
+        "sampleAnswer": "One of the most significant advantages of living close to one's parents is that it provides substantial practical and emotional support. To begin with, this arrangement enables individuals to receive assistance with childcare, thereby improving work–life balance. Grandparents often help look after young children, allowing parents to maintain full-time employment or reduce financial pressure. In addition, sharing a household can contribute to stronger family bonds, which plays a crucial role in fostering emotional stability. For example, children who grow up in extended families may benefit from greater affection, guidance, and a stronger sense of cultural identity."
+      }
+    },
+
+    {
+      "code": "T2-L06-E01", "lessonCode": "T2-L06", "order": 1, "type": "mcq",
+      "title": "Type 02 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Discuss Both Views.",
+      "items": [
+        { "id": "q1", "prompt": "Dấu hiệu nhận biết dạng này:", "options": [ { "id": "A", "text": "đề nêu hai nhóm người với hai ý kiến trái ngược, gần như luôn có \"give your own opinion\"" }, { "id": "B", "text": "đề có chữ \"outweigh\"" }, { "id": "C", "text": "đề hỏi \"positive or negative\"" } ], "answer": "A", "explanation": "" },
+        { "id": "q2", "prompt": "Ở Body 1 và Body 2, khi tường thuật quan điểm người khác nên dùng:", "options": [ { "id": "A", "text": "\"I think that…\"" }, { "id": "B", "text": "\"Some people believe that…\" / \"Critics argue that…\"" }, { "id": "C", "text": "\"It is a fact that…\"" } ], "answer": "B", "explanation": "Chưa dùng \"I\" cho tới khi nêu quan điểm riêng." },
+        { "id": "q3", "prompt": "\"Both sides are right\" là:", "options": [ { "id": "A", "text": "một quan điểm hợp lệ" }, { "id": "B", "text": "KHÔNG phải một quan điểm — đồng ý một phần vẫn phải nghiêng rõ về một phía" }, { "id": "C", "text": "cách trả lời được điểm cao nhất" } ], "answer": "B", "explanation": "" }
+      ]
+    },
+    {
+      "code": "T2-L06-E02", "lessonCode": "T2-L06", "order": 2, "type": "ordering",
+      "title": "Type 02 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Discuss Both Views theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: VIEW 2", "CONCLUSION + OPINION", "INTRO + OPINION", "BODY 1: VIEW 1" ], "answer": [ "INTRO + OPINION", "BODY 1: VIEW 1", "BODY 2: VIEW 2", "CONCLUSION + OPINION" ] } ]
+    },
+    {
+      "code": "T2-L06-E03", "lessonCode": "T2-L06", "order": 3, "type": "gap_fill",
+      "title": "Type 02 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "In recent decades, the issue of (topic) has ____ increasing public attention.", "blanks": [ { "accept": [ "attracted" ] } ], "explanation": "6+: \"…has become a widely discussed issue.\"" },
+        { "id": "g2", "prompt": "While ____ of (view 1) maintain that…, critics contend that…", "blanks": [ { "accept": [ "proponents", "supporters" ] } ], "explanation": "6+: \"Some people believe that… others argue that…\"" },
+        { "id": "g3", "prompt": "There are several ____ reasons why some people support (noun / gerund).", "blanks": [ { "accept": [ "convincing", "compelling" ] } ], "explanation": "Câu mở Body 1 Band 7+." },
+        { "id": "g4", "prompt": "Personally, I believe that (stance), ____ because (reason).", "blanks": [ { "accept": [ "primarily", "mainly", "chiefly" ] } ], "explanation": "6+: \"I think that… because…\"" }
+      ]
+    },
+    {
+      "code": "T2-L06-E04", "lessonCode": "T2-L06", "order": 4, "type": "paragraph_writing",
+      "title": "Type 02 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"Some people think international car-free days are an effective way of reducing air pollution; however, others think there are some other ways. Discuss both views and give your own opinion.\"  Viết ĐOẠN BODY 1 (View 1 — ủng hộ car-free days), 90–120 từ. Tường thuật quan điểm người khác, chưa dùng \"I\".",
+      "stimulus": { "kind": "text", "note": "Body 1 và Body 2 phải cân bằng. Chưa nêu quan điểm cá nhân ở đây." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "There are several convincing reasons why some people support", "This is largely because", "As a result", "Furthermore" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Coherence & Cohesion" ],
+        "checklist": [ "Tường thuật quan điểm bằng \"some people support / argue…\", không dùng \"I\"", "Có lý do → giải thích → hệ quả", "Có ít nhất một ví dụ hoặc chi tiết cụ thể" ],
+        "sampleAnswer": "There are several convincing reasons why some people support organising international car-free days. One major reason is that removing vehicles from the road directly lowers harmful gas emissions. This is largely because road transport accounts for a substantial share of urban air pollution. As a result, cities may experience clearer skies and measurable improvements in public health, even if only for a single day. Furthermore, such initiatives often promote cycling, walking and public transport, which helps foster long-term behavioural change."
+      }
+    },
+
+    {
+      "code": "T2-L07-E01", "lessonCode": "T2-L07", "order": 1, "type": "mcq",
+      "title": "Type 03 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Cause – Solution.",
+      "items": [
+        { "id": "q1", "prompt": "Đề dạng này luôn có:", "options": [ { "id": "A", "text": "một câu hỏi" }, { "id": "B", "text": "HAI câu hỏi (nguyên nhân + giải pháp) — bỏ sót một là mất điểm Task Response" }, { "id": "C", "text": "ba câu hỏi" } ], "answer": "B", "explanation": "" },
+        { "id": "q2", "prompt": "Nếu nguyên nhân là \"người dân không nhận thức được tác hại\", giải pháp phù hợp nhất:", "options": [ { "id": "A", "text": "phạt tiền thật nặng" }, { "id": "B", "text": "giáo dục và truyền thông nâng cao nhận thức" }, { "id": "C", "text": "xây thêm đường" } ], "answer": "B", "explanation": "Giải pháp phải ăn khớp với nguyên nhân — điểm cộng lớn cho Coherence." },
+        { "id": "q3", "prompt": "Giải pháp \"The government should do something about it\" bị trừ điểm vì:", "options": [ { "id": "A", "text": "quá dài" }, { "id": "B", "text": "quá chung chung — không nói rõ ai làm gì và điều đó giúp thế nào" }, { "id": "C", "text": "dùng từ khó" } ], "answer": "B", "explanation": "" }
+      ]
+    },
+    {
+      "code": "T2-L07-E02", "lessonCode": "T2-L07", "order": 2, "type": "ordering",
+      "title": "Type 03 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Cause – Solution theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: SOLUTIONS", "CONCLUSION", "INTRODUCTION", "BODY 1: CAUSES" ], "answer": [ "INTRODUCTION", "BODY 1: CAUSES", "BODY 2: SOLUTIONS", "CONCLUSION" ] } ]
+    },
+    {
+      "code": "T2-L07-E03", "lessonCode": "T2-L07", "order": 3, "type": "gap_fill",
+      "title": "Type 03 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "There are several underlying factors ____ to (problem).", "blanks": [ { "accept": [ "contributing" ] } ], "explanation": "6+: \"There are several reasons why…\"" },
+        { "id": "g2", "prompt": "This can largely be ____ to (noun phrase).", "blanks": [ { "accept": [ "attributed" ] } ], "explanation": "6+: \"This is because…\"" },
+        { "id": "g3", "prompt": "One effective way to ____ this problem is to (verb).", "blanks": [ { "accept": [ "tackle", "address" ] } ], "explanation": "6+: \"One effective solution is to…\"" },
+        { "id": "g4", "prompt": "Not only would this help (effect 1), ____ it would also (effect 2).", "blanks": [ { "accept": [ "but" ] } ], "explanation": "6+: \"This would help people and also save money.\"" }
+      ]
+    },
+    {
+      "code": "T2-L07-E04", "lessonCode": "T2-L07", "order": 4, "type": "paragraph_writing",
+      "title": "Type 03 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"People in many countries are becoming less physically active than they used to be. What are the causes of this, and what measures could be taken to reverse the trend?\"  Viết ĐOẠN BODY 2 (SOLUTIONS — giải pháp), 90–120 từ. Mỗi giải pháp: solution → how it helps → result. Nói rõ ai làm gì.",
+      "stimulus": { "kind": "text", "note": "Giải pháp phải ăn khớp với nguyên nhân đã nêu (công nghệ tiện lợi + công việc ít vận động)." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "One effective way to tackle", "This would ensure that", "Not only would this", "Another viable approach involves", "If widely implemented" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Coherence & Cohesion", "Grammatical Range & Accuracy" ],
+        "checklist": [ "Có ít nhất 2 giải pháp, mỗi giải pháp nói rõ AI làm GÌ", "Giải thích giải pháp đó giúp thế nào (how it helps → result)", "Giải pháp ăn khớp với nguyên nhân" ],
+        "sampleAnswer": "Nevertheless, several practical measures can be taken to address this issue effectively. One effective way to tackle the problem is to redesign urban spaces so that walking and cycling become the easiest options. This would ensure that exercise is built into daily routines rather than treated as an extra task, ultimately leading to higher activity levels without any conscious effort. Not only would this improve public health, but it would also reduce traffic congestion and air pollution. Another viable approach involves requiring large employers to provide flexible hours or on-site fitness facilities. If widely implemented, such a policy could serve as a long-term solution to workplace inactivity."
+      }
+    },
+
+    {
+      "code": "T2-L08-E01", "lessonCode": "T2-L08", "order": 1, "type": "mcq",
+      "title": "Type 04 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Effect – Solution.",
+      "items": [
+        { "id": "q1", "prompt": "Effect – Solution khác Cause – Solution ở chỗ:", "options": [ { "id": "A", "text": "Body 1 nói về HẬU QUẢ thay vì nguyên nhân" }, { "id": "B", "text": "không có Body 2" }, { "id": "C", "text": "không cần Conclusion" } ], "answer": "A", "explanation": "\"What problems does this cause?\" hỏi hậu quả, không hỏi vì sao." },
+        { "id": "q2", "prompt": "Sau mỗi hậu quả nêu ra, cần:", "options": [ { "id": "A", "text": "chuyển sang hậu quả tiếp theo ngay" }, { "id": "B", "text": "trả lời \"Why does this happen?\" hoặc \"What does this lead to?\"" }, { "id": "C", "text": "cho một con số" } ], "answer": "B", "explanation": "Chỉ liệt kê hậu quả mà không giải thích là lỗi phổ biến." },
+        { "id": "q3", "prompt": "Nếu hậu quả nêu ra là về sức khỏe tinh thần thì giải pháp nên:", "options": [ { "id": "A", "text": "về kinh tế" }, { "id": "B", "text": "liên quan đến sức khỏe tinh thần" }, { "id": "C", "text": "về giao thông" } ], "answer": "B", "explanation": "Giải pháp phải nhắm vào hậu quả đã nêu." }
+      ]
+    },
+    {
+      "code": "T2-L08-E02", "lessonCode": "T2-L08", "order": 2, "type": "ordering",
+      "title": "Type 04 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Effect – Solution theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 1: EFFECTS", "CONCLUSION", "INTRODUCTION", "BODY 2: SOLUTIONS" ], "answer": [ "INTRODUCTION", "BODY 1: EFFECTS", "BODY 2: SOLUTIONS", "CONCLUSION" ] } ]
+    },
+    {
+      "code": "T2-L08-E03", "lessonCode": "T2-L08", "order": 3, "type": "gap_fill",
+      "title": "Type 04 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "This issue has given ____ to a range of significant consequences.", "blanks": [ { "accept": [ "rise" ] } ], "explanation": "6+: \"This problem can have serious effects on…\"" },
+        { "id": "g2", "prompt": "Two particularly ____ effects of this issue are (effect 1) and (effect 2).", "blanks": [ { "accept": [ "alarming" ] } ], "explanation": "6+: \"There are several negative effects of (problem).\"" },
+        { "id": "g3", "prompt": "The most ____ solution is to (verb).", "blanks": [ { "accept": [ "practical" ] } ], "explanation": "6+: \"One effective solution is to…\"" },
+        { "id": "g4", "prompt": "This approach would not only (benefit 1) ____ also (benefit 2).", "blanks": [ { "accept": [ "but" ] } ], "explanation": "" }
+      ]
+    },
+    {
+      "code": "T2-L08-E04", "lessonCode": "T2-L08", "order": 4, "type": "paragraph_writing",
+      "title": "Type 04 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"Nowadays many people complain that they have difficulties getting enough sleep. What problems can lack of sleep cause? What can be done about lack of sleep?\"  Viết ĐOẠN BODY 1 (EFFECTS — hậu quả), 90–120 từ. Mỗi hậu quả: effect → why → what it leads to.",
+      "stimulus": { "kind": "text", "note": "Đây là HẬU QUẢ, không phải nguyên nhân. Giải thích mỗi hậu quả bằng \"Why?\" và \"What does this lead to?\"." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "Two particularly alarming effects", "This is largely because", "If this situation continues", "Over time, this places considerable pressure on" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Coherence & Cohesion" ],
+        "checklist": [ "Nêu 2 hậu quả rõ ràng", "Mỗi hậu quả có giải thích \"tại sao\" và \"dẫn đến gì\"", "Không viết nguyên nhân (\"vì sao người ta thiếu ngủ\")" ],
+        "sampleAnswer": "Two particularly alarming effects of sleep deprivation stand out. To begin with, reduced cognitive performance is a major concern. This is largely because the brain consolidates memory and restores attention during deep sleep, so when rest is cut short, concentration and decision-making decline noticeably. If this situation continues over months, it may lead to poor academic results and costly errors at work. Another significant impact is on physical health. Numerous medical studies have linked long-term sleep deprivation to obesity, cardiovascular disease and weakened immunity. Over time, this places considerable pressure on public healthcare systems."
+      }
+    },
+
+    {
+      "code": "T2-L09-E01", "lessonCode": "T2-L09", "order": 1, "type": "mcq",
+      "title": "Type 05 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Cause – Effect.",
+      "items": [
+        { "id": "q1", "prompt": "Điểm khác biệt then chốt của dạng này:", "options": [ { "id": "A", "text": "đề KHÔNG hỏi giải pháp — viết giải pháp là lãng phí thời gian" }, { "id": "B", "text": "đề luôn hỏi giải pháp" }, { "id": "C", "text": "bài có 5 đoạn" } ], "answer": "A", "explanation": "Lỗi phổ biến nhất: viết giải pháp dù đề không hỏi." },
+        { "id": "q2", "prompt": "Nguyên nhân trả lời câu hỏi:", "options": [ { "id": "A", "text": "\"Chuyện này dẫn đến điều gì?\"" }, { "id": "B", "text": "\"Vì sao chuyện này xảy ra?\"" }, { "id": "C", "text": "\"Làm sao để giải quyết?\"" } ], "answer": "B", "explanation": "Hậu quả mới trả lời \"dẫn đến điều gì\"." },
+        { "id": "q3", "prompt": "Câu mở đầu Body 2 nên:", "options": [ { "id": "A", "text": "bắt đầu một chủ đề hoàn toàn mới" }, { "id": "B", "text": "nhắc lại nguyên nhân để nối mạch: \"These developments have had a marked effect on…\"" }, { "id": "C", "text": "nêu giải pháp" } ], "answer": "B", "explanation": "Hai đoạn phải liên quan — hậu quả là kết quả tự nhiên của nguyên nhân." }
+      ]
+    },
+    {
+      "code": "T2-L09-E02", "lessonCode": "T2-L09", "order": 2, "type": "ordering",
+      "title": "Type 05 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Cause – Effect theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: EFFECTS", "CONCLUSION", "INTRODUCTION", "BODY 1: CAUSES" ], "answer": [ "INTRODUCTION", "BODY 1: CAUSES", "BODY 2: EFFECTS", "CONCLUSION" ] } ]
+    },
+    {
+      "code": "T2-L09-E03", "lessonCode": "T2-L09", "order": 3, "type": "gap_fill",
+      "title": "Type 05 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "The causes of (problem) are both complex and ____.", "blanks": [ { "accept": [ "multifaceted" ] } ], "explanation": "6+: \"There are several reasons why this happens.\"" },
+        { "id": "g2", "prompt": "It is widely ____ that (clause), making it a central driver of this trend.", "blanks": [ { "accept": [ "acknowledged" ] } ], "explanation": "6+: \"Many people think that…\"" },
+        { "id": "g3", "prompt": "Not only does this trigger (effect), but it also creates a ____ effect across society.", "blanks": [ { "accept": [ "ripple" ] } ], "explanation": "6+: \"This causes many problems in society.\"" },
+        { "id": "g4", "prompt": "Over time, these effects may ____, placing substantial pressure on (group).", "blanks": [ { "accept": [ "accumulate" ] } ], "explanation": "6+: \"This puts pressure on society.\"" }
+      ]
+    },
+    {
+      "code": "T2-L09-E04", "lessonCode": "T2-L09", "order": 4, "type": "paragraph_writing",
+      "title": "Type 05 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"In many countries, people are reading fewer books than in the past. What are the causes of this trend, and what effects does it have?\"  Viết ĐOẠN BODY 1 (CAUSES — nguyên nhân), 90–120 từ. KHÔNG viết giải pháp.",
+      "stimulus": { "kind": "text", "note": "Đề không hỏi giải pháp. Nguyên nhân = \"vì sao chuyện này xảy ra\"." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "The causes of", "are both complex and multifaceted", "It is widely acknowledged that", "Not only does this", "which competes directly for" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Lexical Resource" ],
+        "checklist": [ "Nêu ít nhất 2 nguyên nhân", "Mỗi nguyên nhân có giải thích, ít nhất một ví dụ cụ thể", "Không viết giải pháp" ],
+        "sampleAnswer": "The causes of this decline are both complex and multifaceted. One primary factor is the sheer availability of digital entertainment, which competes directly for people's limited free time. It is widely acknowledged that a smartphone offers instant access to videos, games and social media, making it a far easier choice than a three-hundred-page novel at the end of a long day. For example, a commuter in Hanoi who once carried a paperback now scrolls through short videos for the same twenty minutes. Not only does this convenience displace reading, but it also gradually reshapes what people expect from entertainment: speed, novelty and constant stimulation. A second contributing factor is the intensity of modern working and studying schedules, which leaves many adults with little mental energy for sustained concentration."
+      }
+    },
+
+    {
+      "code": "T2-L10-E01", "lessonCode": "T2-L10", "order": 1, "type": "mcq",
+      "title": "Type 06 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Agree / Disagree.",
+      "items": [
+        { "id": "q1", "prompt": "Ba cách trả lời hợp lệ:", "options": [ { "id": "A", "text": "hoàn toàn đồng ý / hoàn toàn không đồng ý / đồng ý một phần" }, { "id": "B", "text": "đồng ý 50% và không đồng ý 50%" }, { "id": "C", "text": "không nêu quan điểm, để giám khảo tự hiểu" } ], "answer": "A", "explanation": "Chọn MỘT cách và giữ nguyên. \"I agree 50% and disagree 50%\" không phải quan điểm." },
+        { "id": "q2", "prompt": "Quan điểm cá nhân phải xuất hiện ở:", "options": [ { "id": "A", "text": "chỉ Conclusion" }, { "id": "B", "text": "Introduction và Conclusion, nhất quán xuyên suốt" }, { "id": "C", "text": "chỉ Body 2" } ], "answer": "B", "explanation": "Lập trường thay đổi giữa bài là lỗi Task Response nghiêm trọng." },
+        { "id": "q3", "prompt": "Nếu chưa chắc ngữ pháp câu phản biện phức tạp thì:", "options": [ { "id": "A", "text": "cứ viết, sai cũng không sao" }, { "id": "B", "text": "bỏ câu phản biện — một lý do rõ ràng có ví dụ tốt vẫn đủ cho Band 7" }, { "id": "C", "text": "viết bằng tiếng Việt" } ], "answer": "B", "explanation": "Sai cấu trúc khó trừ điểm nặng hơn dùng cấu trúc dễ đúng." }
+      ]
+    },
+    {
+      "code": "T2-L10-E02", "lessonCode": "T2-L10", "order": 2, "type": "ordering",
+      "title": "Type 06 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Agree / Disagree theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: REASON 2", "CONCLUSION + LẬP TRƯỜNG", "INTRO + LẬP TRƯỜNG", "BODY 1: REASON 1" ], "answer": [ "INTRO + LẬP TRƯỜNG", "BODY 1: REASON 1", "BODY 2: REASON 2", "CONCLUSION + LẬP TRƯỜNG" ] } ]
+    },
+    {
+      "code": "T2-L10-E03", "lessonCode": "T2-L10", "order": 3, "type": "gap_fill",
+      "title": "Type 06 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "This essay will argue that (position), ____ to its significant influence on (aspect 1) and (aspect 2).", "blanks": [ { "accept": [ "owing" ] } ], "explanation": "6+: \"I completely agree with this view because…\"" },
+        { "id": "g2", "prompt": "It is ____ that (key point) plays a crucial role in (aspect).", "blanks": [ { "accept": [ "undeniable" ] } ], "explanation": "6+: \"One of the main reasons is that…\"" },
+        { "id": "g3", "prompt": "While some may argue that (opposing view), this perspective ____ to take into account that (counterargument).", "blanks": [ { "accept": [ "fails" ] } ], "explanation": "6+: \"Some people disagree, but I think they are wrong.\"" },
+        { "id": "g4", "prompt": "____, (concession); nevertheless, the overall impact remains predominantly (positive / negative).", "blanks": [ { "accept": [ "Admittedly" ] } ], "explanation": "6+: \"It is true that… However,…\"" }
+      ]
+    },
+    {
+      "code": "T2-L10-E04", "lessonCode": "T2-L10", "order": 4, "type": "paragraph_writing",
+      "title": "Type 06 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"In the future, nobody will buy printed newspapers or books because they will be able to read everything they want online without paying. To what extent do you agree or disagree?\"  Chọn lập trường (bài mẫu: KHÔNG đồng ý — sách in sẽ không biến mất). Viết ĐOẠN BODY 1 nêu MỘT lý do, 90–120 từ.",
+      "stimulus": { "kind": "text", "note": "Giữ lập trường nhất quán với Introduction/Conclusion bạn định viết." },
+      "rubric": {
+        "minWords": 85,
+        "targetStructures": [ "One compelling reason", "This can be attributed to the fact that", "Research has consistently shown that", "thereby reinforcing the view that", "For instance" ],
+        "mustUse": 2,
+        "bandFocus": [ "Task Response", "Grammatical Range & Accuracy" ],
+        "checklist": [ "Nêu MỘT lý do rõ ràng cho lập trường", "Lý do → giải thích → bằng chứng/ví dụ", "Lập trường nhất quán, không đảo chiều giữa đoạn" ],
+        "sampleAnswer": "One compelling reason for this position is that a large number of readers continue to value the tangible experience that physical books provide. This can be attributed to the fact that printed pages create a focused, distraction-free environment which screens rarely replicate. Research has consistently shown that readers retain information more effectively from paper, thereby reinforcing the view that print serves a purpose beyond nostalgia. For instance, many universities still require students to work from printed course readers during examinations precisely because concentration is easier to sustain."
+      }
+    },
+
+    {
+      "code": "T2-L11-E01", "lessonCode": "T2-L11", "order": 1, "type": "mcq",
+      "title": "Type 07 — Nhận diện & quy tắc", "autoGrade": true, "points": 6,
+      "instruction": "Chọn đáp án đúng cho dạng Positive or Negative Development.",
+      "items": [
+        { "id": "q1", "prompt": "Dạng này khác Advantages & Disadvantages ở chỗ:", "options": [ { "id": "A", "text": "đề hỏi ĐÁNH GIÁ của bạn (tốt hay xấu) — phải chọn một phía và dành phần lớn bài bảo vệ nó" }, { "id": "B", "text": "không cần Conclusion" }, { "id": "C", "text": "phải viết cân bằng hai mặt" } ], "answer": "A", "explanation": "Nếu hai body cân bằng hoàn toàn và không nghiêng về phía nào, bạn đã trả lời sai đề." },
+        { "id": "q2", "prompt": "Body 2 nên:", "options": [ { "id": "A", "text": "dài bằng Body 1 và toàn nói mặt trái" }, { "id": "B", "text": "dành ~3 câu cho mặt trái rồi quay lại củng cố quan điểm" }, { "id": "C", "text": "bỏ hẳn, chỉ viết một body" } ], "answer": "B", "explanation": "Thừa nhận + củng cố." },
+        { "id": "q3", "prompt": "Đánh giá của bạn phải xuất hiện lần đầu ở:", "options": [ { "id": "A", "text": "Body 1" }, { "id": "B", "text": "Introduction" }, { "id": "C", "text": "Conclusion" } ], "answer": "B", "explanation": "Giám khảo cần biết bạn nghĩ gì ngay từ đoạn đầu." }
+      ]
+    },
+    {
+      "code": "T2-L11-E02", "lessonCode": "T2-L11", "order": 2, "type": "ordering",
+      "title": "Type 07 — Dàn ý", "autoGrade": true, "points": 5,
+      "instruction": "Kéo để xếp dàn ý dạng Positive or Negative Development theo đúng thứ tự.",
+      "items": [ { "id": "o1", "prompt": "Bốn phần của bài:", "tokens": [ "BODY 2: THỪA NHẬN + CỦNG CỐ", "CONCLUSION", "INTRO + ĐÁNH GIÁ", "BODY 1: HAI LÝ DO" ], "answer": [ "INTRO + ĐÁNH GIÁ", "BODY 1: HAI LÝ DO", "BODY 2: THỪA NHẬN + CỦNG CỐ", "CONCLUSION" ] } ]
+    },
+    {
+      "code": "T2-L11-E03", "lessonCode": "T2-L11", "order": 3, "type": "gap_fill",
+      "title": "Type 07 — Nâng câu 6+ → 7+", "autoGrade": true, "points": 8,
+      "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
+      "items": [
+        { "id": "g1", "prompt": "Over the past two decades, (trend) has gained considerable ____ across much of the world.", "blanks": [ { "accept": [ "momentum" ] } ], "explanation": "6+: \"In recent years, (trend) has become increasingly common.\"" },
+        { "id": "g2", "prompt": "In my view, this ____ a largely positive development, primarily because of its impact on (aspect 1) and (aspect 2).", "blanks": [ { "accept": [ "constitutes" ] } ], "explanation": "6+: \"In my view, this is a positive development because…\"" },
+        { "id": "g3", "prompt": "The most ____ reason for regarding this trend as positive lies in (reason).", "blanks": [ { "accept": [ "compelling" ] } ], "explanation": "6+: \"One of the main reasons is that…\"" },
+        { "id": "g4", "prompt": "Admittedly, this trend is not without its drawbacks. It is often ____ that (opposing point).", "blanks": [ { "accept": [ "argued" ] } ], "explanation": "6+: \"Admittedly, (trend) can also have some disadvantages.\"" }
+      ]
+    },
+    {
+      "code": "T2-L11-E04", "lessonCode": "T2-L11", "order": 4, "type": "paragraph_writing",
+      "title": "Type 07 — Viết một đoạn body", "autoGrade": false, "points": 15,
+      "instruction": "Đề: \"An increasing number of people now work from home rather than in an office. Is this a positive or a negative development?\"  Bài mẫu chọn: chủ yếu TÍCH CỰC. Viết ĐOẠN BODY 1 (hai lý do), 90–130 từ.",
+      "stimulus": { "kind": "text", "note": "Không viết thành Advantages & Disadvantages — nghiêng rõ về đánh giá của bạn." },
+      "rubric": {
+        "minWords": 90,
+        "targetStructures": [ "The most compelling reason for regarding this trend as", "This is largely because", "Consequently", "thereby", "A clear illustration of this can be seen in", "A further consideration is" ],
+        "mustUse": 3,
+        "bandFocus": [ "Task Response", "Coherence & Cohesion", "Grammatical Range & Accuracy" ],
+        "checklist": [ "Nêu 2 lý do ủng hộ đánh giá của bạn", "Mỗi lý do: reason → why → result → example", "Nghiêng rõ về một phía, không cân bằng trung lập" ],
+        "sampleAnswer": "The most compelling reason for regarding this trend as positive lies in the flexibility it grants employees. This is largely because staff are judged on output rather than on hours spent at a desk, which allows them to arrange work around family commitments. Consequently, many employees regain the two hours a day once lost to commuting, thereby improving both their productivity and their relationships at home. A clear illustration of this can be seen in large Vietnamese cities, where a worker living in an outer district may spend three hours a day travelling to and from a central office. A further consideration is the environmental benefit: fewer daily journeys mean lower emissions and less strain on transport infrastructure, which has the potential to reshape city planning in the long term."
+      }
+    }
+  ]
+}

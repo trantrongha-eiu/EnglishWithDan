@@ -16,6 +16,10 @@ const { EXERCISE_TYPES } = WT1Exercise;
 
 const router = express.Router();
 const COURSE = 'IELTS-W-T1';
+// The WT1 admin CRUD is course-agnostic too — same models/routes serve
+// every "writing course" (currently Task 1 Writing + Task 2 Writing).
+const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2']);
+function resolveCourse(code) { return COURSES.has(code) ? code : COURSE; }
 
 // ── validation (mirrors seedWritingTask1Course.js's validate()) ───────
 function validateExercise(ex) {
@@ -47,8 +51,9 @@ function validateExercise(ex) {
 // ── tree: course + modules + lessons (with exercise counts) ──────────
 router.get('/wt1/tree', auth, teacherOnly, async (req, res) => {
   try {
+    const course = resolveCourse(req.query.course);
     const [modules, lessons, counts] = await Promise.all([
-      WT1Module.find({ courseCode: COURSE }).sort({ order: 1 }).lean(),
+      WT1Module.find({ courseCode: course }).sort({ order: 1 }).lean(),
       WT1Lesson.find().sort({ order: 1 }).lean(),
       WT1Exercise.aggregate([{ $group: { _id: '$lessonCode', n: { $sum: 1 }, published: { $sum: { $cond: ['$published', 1, 0] } } } }]),
     ]);
@@ -65,7 +70,7 @@ router.get('/wt1/tree', auth, teacherOnly, async (req, res) => {
 // ── module CRUD ────────────────────────────────────────────────────
 router.post('/wt1/modules', auth, teacherOnly, async (req, res) => {
   try {
-    const m = await WT1Module.create({ ...req.body, courseCode: COURSE });
+    const m = await WT1Module.create({ ...req.body, courseCode: resolveCourse(req.body.courseCode) });
     res.status(201).json({ success: true, module: m });
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
 });

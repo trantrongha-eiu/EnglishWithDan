@@ -7,7 +7,10 @@ import { useAuth } from '../contexts/AuthContext';
 // Admin CRUD for the WT1 course (WT1Module → WT1Lesson → WT1Exercise).
 // Content is authored in backend/scripts/data/writingTask1/*.json and
 // seeded; edits here write straight to the DB and a re-seed overwrites them.
-const SEED_NOTE = 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask1Course.js sẽ ghi đè.';
+const SEED_NOTE = {
+  'IELTS-W-T1': 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask1Course.js sẽ ghi đè.',
+  'IELTS-W-T2': 'Nội dung gốc nằm ở backend/scripts/data/writingTask2/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask2Course.js sẽ ghi đè.',
+};
 const EX_TYPES = [
   'mcq', 'gap_fill', 'error_correction', 'sentence_transform', 'word_form',
   'categorize', 'matching', 'ordering', 'sentence_writing', 'paragraph_writing', 'full_task1',
@@ -268,6 +271,7 @@ export default function WritingTask1Course() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
+  const [course, setCourse] = useState('IELTS-W-T1');
   const [tree, setTree] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tick, setTick] = useState(0);
@@ -277,12 +281,18 @@ export default function WritingTask1Course() {
   const [editEx, setEditEx] = useState(null); // null=closed, 'new', or a full exercise doc
   const [open, setOpen] = useState({});
 
+  function switchCourse(c) {
+    if (c === course) return;
+    setCourse(c);
+    setSelLesson(null); setLessonDoc(null); setExercises([]); setOpen({});
+  }
+
   useEffect(() => {
     let dead = false;
     (async () => {
       setLoading(true);
       try {
-        const d = await apiFetch('/admin/wt1/tree');
+        const d = await apiFetch(`/admin/wt1/tree?course=${course}`);
         if (!dead) setTree(d.modules || []);
       } catch (e) {
         if (!dead) toast(e.message, 'error');
@@ -291,7 +301,7 @@ export default function WritingTask1Course() {
       }
     })();
     return () => { dead = true; };
-  }, [tick, toast]);
+  }, [course, tick, toast]);
 
   useEffect(() => {
     let dead = false;
@@ -338,9 +348,13 @@ export default function WritingTask1Course() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Task 1 Writing — khoá học (WT1)</h2>
+        <h2 className="section-title">{course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2)</h2>
       </div>
-      <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 14 }}>{SEED_NOTE}</div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+        <button className={`btn btn-sm ${course === 'IELTS-W-T1' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T1')}>Task 1 Writing</button>
+        <button className={`btn btn-sm ${course === 'IELTS-W-T2' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T2')}>Task 2 Writing</button>
+      </div>
+      <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 14 }}>{SEED_NOTE[course]}</div>
 
       <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
         <div style={{ width: 300, flexShrink: 0 }}>

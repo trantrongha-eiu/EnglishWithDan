@@ -8,7 +8,7 @@ const grading = require('../services/wt1GradingService');
 
 exports.getOverview = async (req, res) => {
   try {
-    res.json({ success: true, ...(await svc.getOverview(req.user._id)) });
+    res.json({ success: true, ...(await svc.getOverview(req.user._id, req.query.course)) });
   } catch (err) {
     console.error('[WT1] overview:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi server' });

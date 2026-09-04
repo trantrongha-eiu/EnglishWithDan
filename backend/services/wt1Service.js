@@ -15,6 +15,12 @@ const WT1Progress = require('../models/WT1Progress');
 const grading = require('./wt1GradingService');
 
 const COURSE_CODE = 'IELTS-W-T1';
+// The WT1 stack is course-agnostic — the same models / routes / grading /
+// page shell serve every "writing course". Add a code here to spin up a new
+// one (currently: Task 1 Writing + Task 2 Writing). Anything not in this set
+// falls back to Task 1.
+const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2']);
+function resolveCourse(code) { return COURSES.has(code) ? code : COURSE_CODE; }
 
 function gateDefaults(g = {}) {
   return {
@@ -102,13 +108,17 @@ function summariseSubmissions(subs, lessonCodesByExercise, exMeta) {
   return byLesson;
 }
 
-async function getOverview(userId) {
+async function getOverview(userId, courseCode) {
+  const cc = resolveCourse(courseCode);
   const [course, modules, lessons, counts] = await Promise.all([
-    WT1Course.findOne({ code: COURSE_CODE }).lean(),
-    WT1Module.find({ courseCode: COURSE_CODE }).sort({ order: 1 }).lean(),
+    WT1Course.findOne({ code: cc }).lean(),
+    WT1Module.find({ courseCode: cc }).sort({ order: 1 }).lean(),
     WT1Lesson.find({ published: true }).sort({ order: 1 }).lean(),
     lessonExerciseCounts(),
   ]);
+  // lessons is every course's published lessons; outModules only ever reads
+  // lessonsByModule[m.code] for THIS course's modules, so other courses'
+  // lessons are inert here (their moduleCode never matches).
 
   const lessonCodesByExercise = {};
   const typeByCode = {};
@@ -200,15 +210,17 @@ async function _recompute(userId, lessonCode) {
   const objectiveScorePercent = objScores.length ? Math.round(objScores.reduce((a, b) => a + b, 0) / objScores.length) : 0;
   const allDone = exs.length > 0 && doneCodes.length >= exs.length;
 
-  const lesson = await WT1Lesson.findOne({ code: lessonCode }).select('gate').lean();
+  const lesson = await WT1Lesson.findOne({ code: lessonCode }).select('gate moduleCode').lean();
   const g = gateDefaults(lesson && lesson.gate);
   const met = objectiveScorePercent >= g.minObjectiveScorePercent && writingSubmissions >= g.minWritingSubmissions;
+  const mod = lesson && await WT1Module.findOne({ code: lesson.moduleCode }).select('courseCode').lean();
+  const courseCode = (mod && mod.courseCode) || COURSE_CODE;
 
   await WT1Progress.findOneAndUpdate(
     { userId, lessonCode },
     {
       $set: {
-        courseCode: COURSE_CODE, completedExercises: doneCodes,
+        courseCode, completedExercises: doneCodes,
         objectiveScorePercent, writingSubmissions, unlocked: met,
         completedAt: allDone ? new Date() : null,
       },
