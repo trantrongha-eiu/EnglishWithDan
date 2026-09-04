@@ -1,0 +1,1864 @@
+{
+  "exercises": [
+    {
+      "code": "T1-L19-E01",
+      "lessonCode": "T1-L19",
+      "order": 1,
+      "type": "mcq",
+      "title": "PRACTICE 1 – Nhận diện loại quy trình và thể",
+      "instruction": "Với mỗi đề bài, xác định đây là Natural Process (N) hay Manufacturing Process (M), và chọn thể phù hợp để mô tả.",
+      "source": "original",
+      "skillTags": [
+        "process-types",
+        "voice"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 6,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"The diagram shows the life cycle of the honey bee.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → thể chủ động (active)"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → thể bị động (passive)"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vòng đời động vật = Natural / Cyclical Process → chủ động, hiện tại đơn."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"The diagram shows how bricks are manufactured.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → chủ động"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → bị động"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sản xuất gạch do con người → Manufacturing → bị động."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"The diagram shows the water cycle.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → chủ động"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → bị động"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vòng tuần hoàn nước = Natural / Cyclical → chủ động."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"The diagrams show the process of producing olive oil.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → chủ động"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → bị động"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sản xuất dầu ô liu do con người → bị động."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"The diagram shows the stages in the life of a salmon.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → chủ động"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → bị động"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vòng đời cá hồi = Natural → chủ động."
+        },
+        {
+          "id": "q6",
+          "prompt": "\"The diagram shows how coffee is produced and prepared for sale.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Natural Process → chủ động"
+            },
+            {
+              "id": "B",
+              "text": "Manufacturing Process → bị động"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sản xuất & chế biến cà phê do con người → bị động."
+        }
+      ]
+    },
+    {
+      "code": "T1-L19-E02",
+      "lessonCode": "T1-L19",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "PRACTICE 2 – Chuyển sang thể bị động (hiện tại đơn)",
+      "instruction": "Chuyển các câu sau sang thể bị động, thì hiện tại đơn — đúng như trong bài Manufacturing Process.",
+      "source": "original",
+      "skillTags": [
+        "passive-voice",
+        "process"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 6,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People crush limestone and clay.",
+          "sampleAnswers": [
+            "Limestone and clay are crushed."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Workers mix the powder in a mixer.",
+          "sampleAnswers": [
+            "The powder is mixed in a mixer."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The factory heats the mixture at a high temperature.",
+          "sampleAnswers": [
+            "The mixture is heated at a high temperature."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "They grind the material into fine cement.",
+          "sampleAnswers": [
+            "The material is ground into fine cement."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Staff package the cement into bags.",
+          "sampleAnswers": [
+            "The cement is packaged into bags."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "They deliver the bricks to construction sites.",
+          "sampleAnswers": [
+            "The bricks are delivered to construction sites."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "S + am/is/are + V3 (+ by …)"
+        ],
+        "checklist": [
+          "Thì hiện tại đơn (không phải quá khứ)",
+          "V3 đúng: ground, packaged, delivered",
+          "Bỏ chủ thể chung chung (people, workers, they)"
+        ],
+        "commonErrors": [
+          "is grinded (đúng là ground)",
+          "was crushed (sai thì)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L20-E01",
+      "lessonCode": "T1-L20",
+      "order": 1,
+      "type": "gap_fill",
+      "title": "Cement Production – điền động từ bị động cho từng bước",
+      "instruction": "Điền dạng bị động hiện tại đơn của động từ trong khung để mô tả 4 bước sản xuất xi măng.",
+      "source": "original",
+      "skillTags": [
+        "process-manufacturing",
+        "passive-voice",
+        "sequencers"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 7,
+      "points": 8,
+      "autoGrade": true,
+      "wordBank": [
+        "are crushed",
+        "is mixed",
+        "is heated",
+        "is ground",
+        "is packaged"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "First, limestone and clay ____ into powder using a crusher.",
+          "blanks": [
+            {
+              "accept": [
+                "are crushed"
+              ]
+            }
+          ],
+          "explanation": "limestone and clay (số nhiều) → are crushed."
+        },
+        {
+          "id": "q2",
+          "prompt": "Next, the powder ____ in a mixer before being fed into a rotating heater.",
+          "blanks": [
+            {
+              "accept": [
+                "is mixed"
+              ]
+            }
+          ],
+          "explanation": "the powder → is mixed."
+        },
+        {
+          "id": "q3",
+          "prompt": "Inside the heater, the mixture ____ at a high temperature.",
+          "blanks": [
+            {
+              "accept": [
+                "is heated"
+              ]
+            }
+          ],
+          "explanation": "the mixture → is heated."
+        },
+        {
+          "id": "q4",
+          "prompt": "The heated mixture ____ into fine cement.",
+          "blanks": [
+            {
+              "accept": [
+                "is ground"
+              ]
+            }
+          ],
+          "explanation": "grind → ground (V3 bất quy tắc)."
+        },
+        {
+          "id": "q5",
+          "prompt": "Finally, the cement ____ into bags and is ready for use.",
+          "blanks": [
+            {
+              "accept": [
+                "is packaged"
+              ]
+            }
+          ],
+          "explanation": "the cement → is packaged."
+        }
+      ]
+    },
+    {
+      "code": "T1-L20-E02",
+      "lessonCode": "T1-L20",
+      "order": 2,
+      "type": "word_form",
+      "title": "PRACTICE – Động từ → tên máy (đuôi -er)",
+      "instruction": "Viết tên máy móc (danh từ) tương ứng với mỗi động từ trong quy trình sản xuất.",
+      "source": "original",
+      "skillTags": [
+        "process-vocabulary",
+        "word-form"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "crush",
+          "answer": "crusher",
+          "accept": [
+            "crusher",
+            "a crusher"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "mix",
+          "answer": "mixer",
+          "accept": [
+            "mixer",
+            "a mixer"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "grind",
+          "answer": "grinder",
+          "accept": [
+            "grinder",
+            "a grinder"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "heat",
+          "answer": "heater",
+          "accept": [
+            "heater",
+            "a heater",
+            "rotating heater"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "cut (máy cắt dây trong sản xuất gạch)",
+          "answer": "wire cutter",
+          "accept": [
+            "cutter",
+            "wire cutter",
+            "a cutter"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "dry (buồng/lò sấy)",
+          "answer": "dryer",
+          "accept": [
+            "dryer",
+            "drier",
+            "a dryer",
+            "drying oven"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "roll",
+          "answer": "roller",
+          "accept": [
+            "roller",
+            "a roller"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "mix bê tông (máy trộn bê tông)",
+          "answer": "concrete mixer",
+          "accept": [
+            "concrete mixer",
+            "a concrete mixer",
+            "mixer"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L20-E03",
+      "lessonCode": "T1-L20",
+      "order": 3,
+      "type": "ordering",
+      "title": "Sắp xếp các bước sản xuất xi măng theo đúng thứ tự",
+      "instruction": "Kéo thả để sắp xếp các bước của quy trình Cement Production theo đúng trình tự.",
+      "source": "original",
+      "skillTags": [
+        "process-manufacturing",
+        "sequencing"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 4,
+      "points": 2,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "tokens": [
+            "Limestone and clay are crushed into powder.",
+            "The powder is mixed in a mixer.",
+            "The mixture is heated in a rotating heater at a high temperature.",
+            "The heated material is ground into fine cement.",
+            "The cement is packaged into bags."
+          ],
+          "answer": [
+            "Limestone and clay are crushed into powder.",
+            "The powder is mixed in a mixer.",
+            "The mixture is heated in a rotating heater at a high temperature.",
+            "The heated material is ground into fine cement.",
+            "The cement is packaged into bags."
+          ],
+          "explanation": "crush → mix → heat → grind → package."
+        }
+      ]
+    },
+    {
+      "code": "T1-L21-E01",
+      "lessonCode": "T1-L21",
+      "order": 1,
+      "type": "matching",
+      "title": "Bốn cấu trúc nối bước – nối tên với ví dụ",
+      "instruction": "Nối tên mỗi cấu trúc nối bước với câu ví dụ tương ứng.",
+      "source": "original",
+      "skillTags": [
+        "process-linking"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 5,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "left": "Once + S + V (Once = When)",
+          "right": "Once it is ready, the pulp is poured into a shallow tray."
+        },
+        {
+          "id": "q2",
+          "left": "Having + V3, S + V",
+          "right": "Having been poured into a shallow tray with some water, the pulp is then mixed by hand."
+        },
+        {
+          "id": "q3",
+          "left": "After / Before + V-ing, S + V",
+          "right": "After being soaked for an hour, the mixture is beaten for about 45 seconds."
+        },
+        {
+          "id": "q4",
+          "left": "S + V, followed by + Noun",
+          "right": "The pulp is poured into a shallow tray, followed by a hand-mixing process."
+        }
+      ]
+    },
+    {
+      "code": "T1-L21-E02",
+      "lessonCode": "T1-L21",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "PRACTICE – Nối hai bước thành một câu",
+      "instruction": "Dùng cấu trúc trong ngoặc để nối hai câu thành một câu duy nhất.",
+      "source": "original",
+      "skillTags": [
+        "process-linking"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 10,
+      "points": 6,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The clay is dug from the ground. It is put onto a metal grid.",
+          "cue": "After + V-ing",
+          "sampleAnswers": [
+            "After being dug from the ground, the clay is put onto a metal grid."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The bricks are dried in an oven. They are placed in a kiln.",
+          "cue": "Once",
+          "sampleAnswers": [
+            "Once the bricks are dried in an oven, they are placed in a kiln.",
+            "Once dried in an oven, the bricks are placed in a kiln."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The mixture is heated at a high temperature. It is ground into fine cement.",
+          "cue": "before + V-ing",
+          "sampleAnswers": [
+            "The mixture is heated at a high temperature before being ground into fine cement."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The milk is collected from the cows. It is transported to the dairy.",
+          "cue": "followed by",
+          "sampleAnswers": [
+            "The milk is collected from the cows, followed by transportation to the dairy."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The paper is soaked in water. It is beaten into a pulp.",
+          "cue": "Having been + V3",
+          "sampleAnswers": [
+            "Having been soaked in water, the paper is beaten into a pulp."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The sand and water are added to the clay. The mixture is cut by a wire cutter.",
+          "cue": "After that",
+          "sampleAnswers": [
+            "The sand and water are added to the clay. After that, the mixture is cut by a wire cutter."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "After/Before being + V3, S + V",
+          "Once + S + V",
+          "Having been + V3, S + V",
+          "…, followed by + Noun"
+        ],
+        "checklist": [
+          "Giữ nguyên thì hiện tại đơn, thể bị động",
+          "Đúng trình tự bước trước → bước sau",
+          "followed by + danh từ (không phải mệnh đề)"
+        ],
+        "commonErrors": [
+          "After being dug from the ground, workers put the clay… (đổi chủ ngữ → sai)",
+          "followed by it is transported (sai — phải là danh từ)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L21-E03",
+      "lessonCode": "T1-L21",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền từ nối chỉ trình tự",
+      "instruction": "Điền một từ / cụm từ nối chỉ trình tự phù hợp vào chỗ trống. Có thể có nhiều đáp án đúng.",
+      "source": "added",
+      "skillTags": [
+        "process-sequencers"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 6,
+      "autoGrade": true,
+      "wordBank": [
+        "To begin with",
+        "Following that",
+        "Simultaneously",
+        "Finally",
+        "At the next stage",
+        "Once"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "____ , the raw materials are collected and weighed.",
+          "blanks": [
+            {
+              "accept": [
+                "To begin with",
+                "First of all",
+                "First",
+                "At the first stage"
+              ]
+            }
+          ],
+          "explanation": "Mở đầu quy trình."
+        },
+        {
+          "id": "q2",
+          "prompt": "____ , the mixture is poured into moulds.",
+          "blanks": [
+            {
+              "accept": [
+                "Following that",
+                "After that",
+                "Next",
+                "Then",
+                "Subsequently",
+                "At the next stage"
+              ]
+            }
+          ],
+          "explanation": "Bước tiếp theo."
+        },
+        {
+          "id": "q3",
+          "prompt": "The bottles are filled with milk. ____ , they are sealed with caps.",
+          "blanks": [
+            {
+              "accept": [
+                "Simultaneously",
+                "At the same time"
+              ]
+            }
+          ],
+          "explanation": "Hai bước xảy ra cùng lúc."
+        },
+        {
+          "id": "q4",
+          "prompt": "____ , the finished products are packaged and delivered to retailers.",
+          "blanks": [
+            {
+              "accept": [
+                "Finally",
+                "Lastly",
+                "In the final step"
+              ]
+            }
+          ],
+          "explanation": "Kết thúc quy trình."
+        },
+        {
+          "id": "q5",
+          "prompt": "____ the cheese has matured, it is cut and wrapped.",
+          "blanks": [
+            {
+              "accept": [
+                "Once",
+                "When",
+                "After"
+              ]
+            }
+          ],
+          "explanation": "Once = ngay khi."
+        },
+        {
+          "id": "q6",
+          "prompt": "____ of the process, the bricks are left to cool for 48–72 hours.",
+          "blanks": [
+            {
+              "accept": [
+                "At the next stage",
+                "At the following stage",
+                "In the next step"
+              ]
+            }
+          ],
+          "explanation": "Giai đoạn tiếp theo của quy trình."
+        }
+      ]
+    },
+    {
+      "code": "T1-L22-E01",
+      "lessonCode": "T1-L22",
+      "order": 1,
+      "type": "full_task1",
+      "title": "Bài mẫu – Cement and Concrete Production (20 phút)",
+      "instruction": "The diagrams below show the stages and equipment used in the cement-making process, and how cement is used to produce concrete for building purposes. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "original",
+      "skillTags": [
+        "process-manufacturing",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Cement Production và Concrete Production (Gravel = small stones)",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image10.png"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "The diagrams illustrate the production of cement and how cement is used to make concrete.",
+          "It is clear from the diagrams that there are five stages in the process of making cement, while only two steps are required to produce concrete.",
+          "At the first stage of the process, … · This … is then … · The process continues with … · At the final stage, …",
+          "before being + V3",
+          "in the proportions of 50%, 25%, 15% and 10% respectively"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement – đủ 4 phần; Overview nêu số bước cho CẢ HAI quy trình; mô tả đủ mọi bước, không thêm bước thừa",
+            "points": 10
+          },
+          {
+            "criterion": "Coherence & Cohesion – 5 từ nối trình tự khác nhau; Body 1 = cement, Body 2 = concrete",
+            "points": 10
+          },
+          {
+            "criterion": "Lexical Resource – từ vựng quy trình (crush, mix, heat, grind, package) + tên máy đuôi -er",
+            "points": 10
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy – bị động hiện tại đơn chính xác; ít nhất một cấu trúc rút gọn (before being ground)",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "Introduction paraphrase, dùng 'the production of' hoặc 'how cement is produced'",
+          "Overview 2 câu: 5 bước cho xi măng, 2 bước cho bê tông",
+          "Toàn bài thì hiện tại đơn, thể bị động",
+          "Không mô tả 'gravel' hay tỉ lệ % như một bước riêng — gộp vào bước trộn",
+          "Tối thiểu 150 từ"
+        ],
+        "sampleAnswer": "The diagrams illustrate the production of cement and how cement is then used to make concrete. It is clear that there are five stages in the process of making cement, whereas only two steps are required to produce concrete. At the first stage of producing cement, limestone and clay are put through a machine called a crusher and become powder. This powder is then mixed and brought into a rotating heater, where it is heated at a high temperature. The process continues with the heated material being ground, after which cement is produced. Finally, the cement is packaged into bags and is ready for the production of concrete. To make concrete, four raw materials are combined: gravel, sand, cement and water in the proportions of 50%, 25%, 15% and 10% respectively. These materials are mixed thoroughly in a concrete mixer, and the mixture is then processed until it forms concrete, which can be used for building purposes.",
+        "commonErrors": [
+          "dùng thì quá khứ",
+          "coi 'cows grazing' / byproducts là một bước",
+          "thiếu Overview"
+        ]
+      }
+    },
+    {
+      "code": "T1-L22-E02",
+      "lessonCode": "T1-L22",
+      "order": 2,
+      "type": "mcq",
+      "title": "Milk production – đâu là một bước của quy trình?",
+      "instruction": "Nhìn sơ đồ quy trình sản xuất sữa. Với mỗi mục, chọn xem đó có phải một BƯỚC của quy trình hay không.",
+      "source": "original",
+      "skillTags": [
+        "process-analysis"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 6,
+      "autoGrade": true,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Quy trình sản xuất sữa (Milk production)",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image11.png"
+      },
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"Cows grazing in the field\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước của quy trình"
+            },
+            {
+              "id": "B",
+              "text": "Chỉ là thông tin nền, KHÔNG tính là bước"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Bò gặm cỏ là background information."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"Milking the cows\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vắt sữa là bước 1."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"Cheese, cream and butter\" (mũi tên vàng)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là các bước tiếp theo"
+            },
+            {
+              "id": "B",
+              "text": "Là sản phẩm phụ (byproducts), KHÔNG tính là bước"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Byproducts — không phải bước của quy trình sản xuất sữa."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"Transporting the milk to the storage facility\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vận chuyển tới kho là một bước."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"Heating (pasteurising) the milk\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Tiệt trùng là một bước."
+        },
+        {
+          "id": "q6",
+          "prompt": "\"Delivering the milk to retailers\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là bước cuối cùng"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Giao tới cửa hàng là bước cuối."
+        }
+      ]
+    },
+    {
+      "code": "T1-L22-E03",
+      "lessonCode": "T1-L22",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Brick manufacturing – điền động từ bị động cho 7 giai đoạn",
+      "instruction": "Điền dạng bị động hiện tại đơn của động từ để mô tả quy trình sản xuất gạch.",
+      "source": "original",
+      "skillTags": [
+        "process-manufacturing",
+        "passive-voice"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 8,
+      "autoGrade": true,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Brick manufacturing process",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image12.png"
+      },
+      "wordBank": [
+        "is dug",
+        "is placed",
+        "is passed",
+        "is mixed",
+        "are dried",
+        "are placed",
+        "are left"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "At the first stage, clay ____ from the ground.",
+          "blanks": [
+            {
+              "accept": [
+                "is dug"
+              ]
+            }
+          ],
+          "explanation": "dig → dug (V3)."
+        },
+        {
+          "id": "q2",
+          "prompt": "It is then ____ onto a metal grid.",
+          "blanks": [
+            {
+              "accept": [
+                "is placed",
+                "placed"
+              ]
+            }
+          ],
+          "explanation": "is placed onto a metal grid."
+        },
+        {
+          "id": "q3",
+          "prompt": "The clay ____ through a roller.",
+          "blanks": [
+            {
+              "accept": [
+                "is passed"
+              ]
+            }
+          ],
+          "explanation": "is passed through a roller."
+        },
+        {
+          "id": "q4",
+          "prompt": "Next, it ____ with sand and water.",
+          "blanks": [
+            {
+              "accept": [
+                "is mixed"
+              ]
+            }
+          ],
+          "explanation": "is mixed with sand and water."
+        },
+        {
+          "id": "q5",
+          "prompt": "After being moulded or cut, the bricks ____ in a drying oven for 24–48 hours.",
+          "blanks": [
+            {
+              "accept": [
+                "are dried",
+                "are placed"
+              ]
+            }
+          ],
+          "explanation": "bricks (số nhiều) → are dried / are placed."
+        },
+        {
+          "id": "q6",
+          "prompt": "They ____ in a kiln at between 870 and 1300 degrees.",
+          "blanks": [
+            {
+              "accept": [
+                "are placed"
+              ]
+            }
+          ],
+          "explanation": "are placed in a kiln."
+        },
+        {
+          "id": "q7",
+          "prompt": "Finally, they ____ in a cooling chamber for 48–72 hours before being packaged and delivered.",
+          "blanks": [
+            {
+              "accept": [
+                "are left",
+                "are placed"
+              ]
+            }
+          ],
+          "explanation": "are left to cool / are placed in a cooling chamber."
+        }
+      ]
+    },
+    {
+      "code": "T1-L23-E01",
+      "lessonCode": "T1-L23",
+      "order": 1,
+      "type": "matching",
+      "title": "Từ vựng dạng Process – nối tiếng Anh với nghĩa",
+      "instruction": "Nối mỗi từ / cụm chuyên dạng Process với nghĩa tiếng Việt.",
+      "source": "original",
+      "skillTags": [
+        "process-vocabulary"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "left": "to be harvested",
+          "right": "được thu hoạch"
+        },
+        {
+          "id": "q2",
+          "left": "to be sorted",
+          "right": "được phân loại"
+        },
+        {
+          "id": "q3",
+          "left": "to be moulded",
+          "right": "được đúc khuôn"
+        },
+        {
+          "id": "q4",
+          "left": "to be separated",
+          "right": "được tách ra"
+        },
+        {
+          "id": "q5",
+          "left": "to lay eggs",
+          "right": "đẻ trứng"
+        },
+        {
+          "id": "q6",
+          "left": "to hatch",
+          "right": "nở ra"
+        },
+        {
+          "id": "q7",
+          "left": "to feed on",
+          "right": "ăn (cái gì)"
+        },
+        {
+          "id": "q8",
+          "left": "to shed the outer layer",
+          "right": "thay lớp da / lớp vỏ bên ngoài"
+        },
+        {
+          "id": "q9",
+          "left": "to grow to maturity",
+          "right": "phát triển hoàn thiện / trưởng thành"
+        },
+        {
+          "id": "q10",
+          "left": "to undergo metamorphosis",
+          "right": "trải qua quá trình biến thái"
+        }
+      ]
+    },
+    {
+      "code": "T1-L23-E02",
+      "lessonCode": "T1-L23",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Vòng đời của ếch – điền động từ (chủ động, hiện tại đơn)",
+      "instruction": "Đây là Natural Process → dùng thể CHỦ ĐỘNG, thì hiện tại đơn. Điền động từ trong khung.",
+      "source": "original",
+      "skillTags": [
+        "natural-process",
+        "active-voice"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 7,
+      "points": 7,
+      "autoGrade": true,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Life cycle of a frog – sơ đồ vòng đời của ếch",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image9.png"
+      },
+      "wordBank": [
+        "lays",
+        "hatch",
+        "breathe",
+        "develops",
+        "becomes",
+        "disappears",
+        "consists"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The life cycle of a frog ____ of several stages, beginning with an egg and ending with an adult frog.",
+          "blanks": [
+            {
+              "accept": [
+                "consists"
+              ]
+            }
+          ],
+          "explanation": "consists of (chủ động, hiện tại đơn)."
+        },
+        {
+          "id": "q2",
+          "prompt": "First, the female frog ____ a large number of eggs in a pond.",
+          "blanks": [
+            {
+              "accept": [
+                "lays"
+              ]
+            }
+          ],
+          "explanation": "chủ động: the frog lays eggs."
+        },
+        {
+          "id": "q3",
+          "prompt": "After a few days, the eggs ____ into tadpoles.",
+          "blanks": [
+            {
+              "accept": [
+                "hatch"
+              ]
+            }
+          ],
+          "explanation": "the eggs hatch (chủ động)."
+        },
+        {
+          "id": "q4",
+          "prompt": "The tadpoles live underwater and ____ through gills.",
+          "blanks": [
+            {
+              "accept": [
+                "breathe"
+              ]
+            }
+          ],
+          "explanation": "breathe through gills."
+        },
+        {
+          "id": "q5",
+          "prompt": "Over time, the tadpole ____ back legs, then front legs, and its tail becomes shorter.",
+          "blanks": [
+            {
+              "accept": [
+                "develops"
+              ]
+            }
+          ],
+          "explanation": "the tadpole develops legs."
+        },
+        {
+          "id": "q6",
+          "prompt": "The tadpole then ____ a young frog that breathes through lungs.",
+          "blanks": [
+            {
+              "accept": [
+                "becomes"
+              ]
+            }
+          ],
+          "explanation": "becomes a young frog."
+        },
+        {
+          "id": "q7",
+          "prompt": "Finally, the tail ____ completely and the frog is fully grown.",
+          "blanks": [
+            {
+              "accept": [
+                "disappears"
+              ]
+            }
+          ],
+          "explanation": "the tail disappears (chủ động)."
+        }
+      ]
+    },
+    {
+      "code": "T1-L24-E01",
+      "lessonCode": "T1-L24",
+      "order": 1,
+      "type": "paragraph_writing",
+      "title": "PRACTICE – Viết Introduction + Overview + Body 1 cho vòng đời ong mật",
+      "instruction": "Dựa vào sơ đồ và dàn ý cho sẵn, viết Introduction (1 câu), Overview (1 câu) và Body 1 (3 giai đoạn đầu). Dùng thể chủ động, thì hiện tại đơn.",
+      "source": "original",
+      "skillTags": [
+        "natural-process",
+        "life-cycle"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 12,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Life cycle of a bee",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image13.png",
+        "note": "Body 1 (3 giai đoạn đầu): (1) a female bee lays 1–2 eggs every three days; (2) the eggs hatch after about 9–10 days; (3) the young bee goes through the first moulting after about 5 days."
+      },
+      "responseSlots": 3,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "The diagram illustrates the stages in the lifespan of a bee.",
+          "Overall, the life cycle of a bee consists of several stages and takes about 34–36 days to complete, beginning with eggs and ending with a fully mature adult bee.",
+          "First, … · After about … days, … · The young bee then …"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Introduction paraphrase, không chép đề",
+          "Overview nêu số giai đoạn, điểm đầu và điểm cuối, có thể nêu tổng thời gian",
+          "Dùng thể CHỦ ĐỘNG (Natural Process), thì hiện tại đơn",
+          "Có ít nhất 2 từ nối trình tự khác nhau"
+        ],
+        "sampleAnswer": "The diagram illustrates the main stages in the life cycle of a bee. Overall, the process is cyclical and consists of several stages, taking approximately 34 to 36 days to complete, beginning with an egg and ending with a fully mature adult bee. At the first stage, a female bee lays one or two eggs every three days. After roughly nine to ten days, these eggs hatch. About five days later, the young bee goes through its first moulting.",
+        "commonErrors": [
+          "dùng bị động (the eggs are hatched)",
+          "thiếu Overview",
+          "chép nguyên đề bài"
+        ]
+      }
+    },
+    {
+      "code": "T1-L24-E02",
+      "lessonCode": "T1-L24",
+      "order": 2,
+      "type": "full_task1",
+      "title": "HOMEWORK – The life cycle of the salmon (bài hoàn chỉnh)",
+      "instruction": "The diagram below shows the life cycle of the salmon. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "original",
+      "skillTags": [
+        "natural-process",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Life cycle of the salmon",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image14.png",
+        "note": "Body 1 (3 giai đoạn đầu): eggs laid in fresh water → hatch after ~3 months into alevin → alevin feeds on the yolk sac for several weeks then becomes fry. Body 2: fry (5–10 weeks) begin swimming → grow into parr with 'finger' markings → become smolt after 1–3 years and move to the sea → 1–6 years in the ocean as adult → return to fresh water to spawn and die within two weeks."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "The diagram illustrates the stages in the life of a salmon.",
+          "Overall, the life cycle of a salmon consists of several stages, beginning with eggs in fresh water and ending with adult salmon returning to spawn.",
+          "After about … , the eggs hatch and become …",
+          "The fish then grows into … before moving to …",
+          "Once … , the salmon …"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement – đủ 4 phần; Overview nêu điểm đầu/cuối; mô tả đủ mọi giai đoạn, không bỏ sót",
+            "points": 10
+          },
+          {
+            "criterion": "Coherence & Cohesion – chia thân bài 2 đoạn cân đối; ≥5 từ nối trình tự khác nhau",
+            "points": 10
+          },
+          {
+            "criterion": "Lexical Resource – từ vựng vòng đời (hatch, feed on, grow into, spawn) chính xác",
+            "points": 10
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy – CHỦ ĐỘNG, hiện tại đơn xuyên suốt; ≥1 cấu trúc nối bước (Once / before + V-ing)",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "Dùng thể CHỦ ĐỘNG (Natural Process), thì hiện tại đơn cả bài",
+          "Overview: bắt đầu từ trứng ở nước ngọt, kết thúc khi cá trưởng thành quay về đẻ trứng",
+          "Nêu các mốc thời gian (3 months, 1–3 years, 1–6 years) như trong sơ đồ",
+          "Không mô tả thông tin nền như một giai đoạn",
+          "Tối thiểu 150 từ"
+        ],
+        "commonErrors": [
+          "dùng bị động cho quy trình tự nhiên",
+          "bỏ sót giai đoạn parr / smolt",
+          "thiếu Overview"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST4-A1",
+      "lessonCode": "T1-TEST4",
+      "order": 1,
+      "type": "mcq",
+      "title": "PHẦN A1 – Trắc nghiệm (10 điểm)",
+      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "source": "original",
+      "skillTags": [
+        "module4-review"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Dạng Natural Process dùng thể:",
+          "options": [
+            {
+              "id": "A",
+              "text": "bị động"
+            },
+            {
+              "id": "B",
+              "text": "chủ động"
+            },
+            {
+              "id": "C",
+              "text": "cả hai như nhau"
+            },
+            {
+              "id": "D",
+              "text": "không dùng động từ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tự nhiên diễn ra → chủ động."
+        },
+        {
+          "id": "q2",
+          "prompt": "Bài Process dùng thì:",
+          "options": [
+            {
+              "id": "A",
+              "text": "quá khứ đơn"
+            },
+            {
+              "id": "B",
+              "text": "hiện tại đơn"
+            },
+            {
+              "id": "C",
+              "text": "hiện tại hoàn thành"
+            },
+            {
+              "id": "D",
+              "text": "tương lai"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Quy trình là sự thật cố định → hiện tại đơn."
+        },
+        {
+          "id": "q3",
+          "prompt": "Overview của bài Process cần nêu:",
+          "options": [
+            {
+              "id": "A",
+              "text": "số liệu cụ thể"
+            },
+            {
+              "id": "B",
+              "text": "số bước, bước đầu và bước cuối"
+            },
+            {
+              "id": "C",
+              "text": "ý kiến cá nhân"
+            },
+            {
+              "id": "D",
+              "text": "so sánh hai năm"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Overview dạng Process = số bước + điểm đầu + điểm cuối."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"Limestone and clay ______ into powder.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "crush"
+            },
+            {
+              "id": "B",
+              "text": "are crushed"
+            },
+            {
+              "id": "C",
+              "text": "is crushed"
+            },
+            {
+              "id": "D",
+              "text": "crushing"
+            }
+          ],
+          "answer": "B",
+          "explanation": "số nhiều + bị động hiện tại đơn → are crushed."
+        },
+        {
+          "id": "q5",
+          "prompt": "Máy trộn trong tiếng Anh là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "mixture"
+            },
+            {
+              "id": "B",
+              "text": "mixing"
+            },
+            {
+              "id": "C",
+              "text": "mixer"
+            },
+            {
+              "id": "D",
+              "text": "mixed"
+            }
+          ],
+          "answer": "C",
+          "explanation": "mix + -er = mixer (tên máy)."
+        },
+        {
+          "id": "q6",
+          "prompt": "Từ nào chỉ hai bước xảy ra CÙNG LÚC?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Finally"
+            },
+            {
+              "id": "B",
+              "text": "Simultaneously"
+            },
+            {
+              "id": "C",
+              "text": "Following that"
+            },
+            {
+              "id": "D",
+              "text": "To begin with"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Simultaneously / At the same time = đồng thời."
+        },
+        {
+          "id": "q7",
+          "prompt": "\"Once being separated\" là dạng rút gọn của:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Once it separates"
+            },
+            {
+              "id": "B",
+              "text": "Once it is separated"
+            },
+            {
+              "id": "C",
+              "text": "Once separating it"
+            },
+            {
+              "id": "D",
+              "text": "Once to separate"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Cùng chủ ngữ → bỏ chủ ngữ, đổi 'is' → 'being'."
+        },
+        {
+          "id": "q8",
+          "prompt": "Trong sơ đồ milk production, \"cows grazing\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "bước 1"
+            },
+            {
+              "id": "B",
+              "text": "bước cuối"
+            },
+            {
+              "id": "C",
+              "text": "thông tin nền"
+            },
+            {
+              "id": "D",
+              "text": "sản phẩm phụ"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Background information — không tính là bước."
+        },
+        {
+          "id": "q9",
+          "prompt": "Cấu trúc nào KHÔNG dùng để nối hai bước?",
+          "options": [
+            {
+              "id": "A",
+              "text": "After + V-ing"
+            },
+            {
+              "id": "B",
+              "text": "followed by + N"
+            },
+            {
+              "id": "C",
+              "text": "Having + V3"
+            },
+            {
+              "id": "D",
+              "text": "In contrast to + N"
+            }
+          ],
+          "answer": "D",
+          "explanation": "In contrast to = tương phản, không dùng nối bước."
+        },
+        {
+          "id": "q10",
+          "prompt": "\"The mixture is heated ______ being ground into fine cement.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "before"
+            },
+            {
+              "id": "B",
+              "text": "because"
+            },
+            {
+              "id": "C",
+              "text": "although"
+            },
+            {
+              "id": "D",
+              "text": "despite"
+            }
+          ],
+          "answer": "A",
+          "explanation": "before being + V3 = trước khi được…"
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST4-A2",
+      "lessonCode": "T1-TEST4",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "PHẦN A2 – Điền dạng đúng của động từ (10 điểm)",
+      "instruction": "Điền dạng đúng của động từ trong ngoặc (bị động hiện tại đơn, hoặc dạng V-ing / V3 theo cấu trúc).",
+      "source": "original",
+      "skillTags": [
+        "module4-review",
+        "verb-form"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The clay ____ (dig) from the ground at the beginning of the process.",
+          "blanks": [
+            {
+              "accept": [
+                "is dug"
+              ]
+            }
+          ],
+          "explanation": "bị động hiện tại đơn: is dug."
+        },
+        {
+          "id": "q2",
+          "prompt": "After ____ (wash), the tomatoes are moved to the grilling stage.",
+          "blanks": [
+            {
+              "accept": [
+                "being washed"
+              ]
+            }
+          ],
+          "explanation": "After + being + V3."
+        },
+        {
+          "id": "q3",
+          "prompt": "The powder ____ (mix) in a mixer before being fed into a rotating heater.",
+          "blanks": [
+            {
+              "accept": [
+                "is mixed"
+              ]
+            }
+          ],
+          "explanation": "is mixed."
+        },
+        {
+          "id": "q4",
+          "prompt": "Once ____ (separate), the liquid ethanol undergoes purification.",
+          "blanks": [
+            {
+              "accept": [
+                "separated",
+                "being separated",
+                "it is separated"
+              ]
+            }
+          ],
+          "explanation": "Once (being) separated / Once it is separated."
+        },
+        {
+          "id": "q5",
+          "prompt": "Having ____ (pour) into a shallow tray, the pulp is mixed by hand.",
+          "blanks": [
+            {
+              "accept": [
+                "been poured"
+              ]
+            }
+          ],
+          "explanation": "Having been + V3."
+        },
+        {
+          "id": "q6",
+          "prompt": "The female bee ____ (lay) one or two eggs every three days.",
+          "blanks": [
+            {
+              "accept": [
+                "lays"
+              ]
+            }
+          ],
+          "explanation": "Natural Process → chủ động hiện tại đơn."
+        },
+        {
+          "id": "q7",
+          "prompt": "The eggs ____ (hatch) after about nine days.",
+          "blanks": [
+            {
+              "accept": [
+                "hatch"
+              ]
+            }
+          ],
+          "explanation": "chủ động: the eggs hatch."
+        },
+        {
+          "id": "q8",
+          "prompt": "Finally, the cement ____ (package) into bags.",
+          "blanks": [
+            {
+              "accept": [
+                "is packaged"
+              ]
+            }
+          ],
+          "explanation": "bị động: is packaged."
+        },
+        {
+          "id": "q9",
+          "prompt": "The alevin ____ (feed) on the yolk sac for several weeks.",
+          "blanks": [
+            {
+              "accept": [
+                "feeds"
+              ]
+            }
+          ],
+          "explanation": "chủ động: the alevin feeds on…"
+        },
+        {
+          "id": "q10",
+          "prompt": "The bricks ____ (place) in a kiln for 24 to 48 hours.",
+          "blanks": [
+            {
+              "accept": [
+                "are placed"
+              ]
+            }
+          ],
+          "explanation": "bị động số nhiều: are placed."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST4-A3",
+      "lessonCode": "T1-TEST4",
+      "order": 3,
+      "type": "error_correction",
+      "title": "PHẦN A3 – Sửa lỗi (10 điểm)",
+      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng. Mỗi câu 2 điểm.",
+      "source": "original",
+      "skillTags": [
+        "module4-review"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 8,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The limestone is crush by a crusher.",
+          "errorSpan": "crush",
+          "answer": "The limestone is crushed by a crusher.",
+          "accept": [
+            "is crushed"
+          ],
+          "explanation": "bị động cần V3: is crushed."
+        },
+        {
+          "id": "q2",
+          "prompt": "The frog is laying eggs in the pond.",
+          "errorSpan": "is laying",
+          "answer": "The frog lays eggs in the pond.",
+          "accept": [
+            "lays"
+          ],
+          "explanation": "Process dùng hiện tại đơn, không dùng hiện tại tiếp diễn."
+        },
+        {
+          "id": "q3",
+          "prompt": "After being dried, workers put the bricks in a kiln.",
+          "errorSpan": "workers put",
+          "answer": "After being dried, the bricks are put in a kiln.",
+          "accept": [
+            "the bricks are put in a kiln"
+          ],
+          "explanation": "Mệnh đề rút gọn phải cùng chủ ngữ với mệnh đề chính (the bricks)."
+        },
+        {
+          "id": "q4",
+          "prompt": "There are five stages, begin with digging clay.",
+          "errorSpan": "begin",
+          "answer": "There are five stages, beginning with digging clay.",
+          "accept": [
+            "beginning with digging clay"
+          ],
+          "explanation": "beginning with (V-ing) chứ không phải 'begin'."
+        },
+        {
+          "id": "q5",
+          "prompt": "The mixture was heated at a high temperature.",
+          "errorSpan": "was",
+          "answer": "The mixture is heated at a high temperature.",
+          "accept": [
+            "is heated"
+          ],
+          "explanation": "Process dùng thì hiện tại đơn."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST4-A4",
+      "lessonCode": "T1-TEST4",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "PHẦN A4 – Nối câu (10 điểm)",
+      "instruction": "Nối hai câu thành một câu, dùng cấu trúc trong ngoặc. Mỗi câu 2 điểm.",
+      "source": "original",
+      "skillTags": [
+        "module4-review",
+        "process-linking"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The clay is dug from the ground. It is placed on a metal grid.",
+          "cue": "After + V-ing",
+          "sampleAnswers": [
+            "After being dug from the ground, the clay is placed on a metal grid."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The bricks are dried. They are moved to a kiln.",
+          "cue": "Once",
+          "sampleAnswers": [
+            "Once the bricks are dried, they are moved to a kiln.",
+            "Once dried, the bricks are moved to a kiln."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The milk is collected. It is transported to the dairy.",
+          "cue": "followed by",
+          "sampleAnswers": [
+            "The milk is collected, followed by transportation to the dairy."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The pulp is poured into a tray. It is mixed by hand.",
+          "cue": "Having been + V3",
+          "sampleAnswers": [
+            "Having been poured into a tray, the pulp is mixed by hand."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The eggs hatch. The young bee goes through its first moulting.",
+          "cue": "Before + V-ing",
+          "sampleAnswers": [
+            "Before going through its first moulting, the young bee hatches from the egg.",
+            "The eggs hatch before the young bee goes through its first moulting."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "After/Before + V-ing",
+          "Once + S + V",
+          "followed by + Noun",
+          "Having been + V3, S + V"
+        ],
+        "checklist": [
+          "Giữ hiện tại đơn",
+          "Cùng chủ ngữ ở mệnh đề rút gọn",
+          "followed by + danh từ"
+        ],
+        "commonErrors": [
+          "đổi chủ ngữ khi rút gọn",
+          "followed by + mệnh đề"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST4-B",
+      "lessonCode": "T1-TEST4",
+      "order": 5,
+      "type": "full_task1",
+      "title": "PHẦN B – Bài viết mô tả quy trình (60 điểm)",
+      "instruction": "The diagram below shows the process by which bricks are manufactured for the building industry. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 25 minutes on this part.",
+      "source": "original",
+      "skillTags": [
+        "module4-review",
+        "process-manufacturing",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 60,
+      "autoGrade": false,
+      "timerMinutes": 25,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Đề thi Phần B – Brick manufacturing",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image12.png",
+        "note": "Body 1: 3 giai đoạn đầu (dig clay → place on grid + roll → mix with sand/water → mould or wire-cut). Body 2: 4 giai đoạn sau (dry 24–48h → kiln 870–1300°C → cool 48–72h → package & deliver)."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "The diagram illustrates the process by which bricks are manufactured.",
+          "Overall, there are seven main stages in the process, beginning with the digging of clay and ending with delivery to customers.",
+          "At the first stage, … · After that, … · Once … · Having been … , … · Finally, …"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement – đủ 4 phần; Overview nêu số bước + điểm đầu/cuối; mô tả đủ 7 giai đoạn, không thêm bước thừa",
+            "points": 15
+          },
+          {
+            "criterion": "Coherence & Cohesion – Body 1 = 3 giai đoạn đầu, Body 2 = 4 giai đoạn sau; ≥5 từ nối trình tự khác nhau",
+            "points": 15
+          },
+          {
+            "criterion": "Lexical Resource – từ vựng quy trình (dig, roll, mould, kiln, cool) + tên máy đúng",
+            "points": 15
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy – bị động hiện tại đơn xuyên suốt; ≥1 cấu trúc nối bước (Once / Having been / before being)",
+            "points": 15
+          }
+        ],
+        "checklist": [
+          "Toàn bài thì hiện tại đơn, thể bị động (Manufacturing Process)",
+          "Overview: 7 giai đoạn, bắt đầu bằng đào đất sét, kết thúc bằng đóng gói & giao hàng",
+          "Chia thân bài 3 + 4 giai đoạn",
+          "Có nêu số liệu nhiệt độ / thời gian trong sơ đồ (24–48h, 870–1300°C, 48–72h)",
+          "Tối thiểu 150 từ"
+        ],
+        "commonErrors": [
+          "dùng chủ động (workers dig the clay)",
+          "bỏ sót giai đoạn làm nguội",
+          "thiếu Overview"
+        ]
+      }
+    }
+  ]
+}
