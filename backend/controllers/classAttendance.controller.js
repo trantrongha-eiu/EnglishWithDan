@@ -52,6 +52,7 @@ function sanitizePolicy(input = {}, base = {}) {
   if (num(input.lateToAbsenceRatio) !== undefined) out.lateToAbsenceRatio = Math.max(1, num(input.lateToAbsenceRatio));
   if (num(input.lateThresholdMinutes) !== undefined) out.lateThresholdMinutes = Math.max(0, num(input.lateThresholdMinutes));
   if (input.failOnExceed !== undefined) out.failOnExceed = !!input.failOnExceed;
+  if (num(input.homeworkMissThreshold) !== undefined) out.homeworkMissThreshold = Math.max(1, num(input.homeworkMissThreshold));
   return out;
 }
 
