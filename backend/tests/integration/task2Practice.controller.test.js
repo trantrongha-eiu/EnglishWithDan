@@ -34,6 +34,38 @@ describe('GET /api/task2/templates (premium gate)', () => {
   });
 });
 
+describe('GET /api/task2/type-guides (premium gate + shape)', () => {
+  const Task2TypeGuide = require('../../models/Task2TypeGuide');
+
+  test('unauthenticated → 401; trial-expired free student → 403 PLAN_REQUIRED', async () => {
+    expect((await request(app).get('/api/task2/type-guides')).status).toBe(401);
+    const free = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const r = await request(app).get('/api/task2/type-guides').set('Authorization', `Bearer ${signTokenFor(free)}`);
+    expect(r.status).toBe(403);
+    expect(r.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student gets the active guides ordered by orderIndex', async () => {
+    await Task2TypeGuide.deleteMany({ typeId: /^typeTEST/ });
+    await Task2TypeGuide.create([
+      { typeId: 'typeTEST2', name: 'B', orderIndex: 2, isActive: true, upgradePairs: [['a', 'b']], mistakes: ['m'] },
+      { typeId: 'typeTEST1', name: 'A', orderIndex: 1, isActive: true },
+      { typeId: 'typeTEST9', name: 'Z hidden', orderIndex: 9, isActive: false },
+    ]);
+    const user = await createPremiumStudent();
+    const res = await request(app).get('/api/task2/type-guides').set('Authorization', `Bearer ${signTokenFor(user)}`);
+    expect(res.status).toBe(200);
+    const codes = res.body.guides.map(g => g.typeId);
+    expect(codes).toContain('typeTEST1');
+    expect(codes).toContain('typeTEST2');
+    expect(codes).not.toContain('typeTEST9'); // isActive:false excluded
+    expect(codes.indexOf('typeTEST1')).toBeLessThan(codes.indexOf('typeTEST2'));
+    const t2 = res.body.guides.find(g => g.typeId === 'typeTEST2');
+    expect(t2.upgradePairs).toEqual([['a', 'b']]);
+    await Task2TypeGuide.deleteMany({ typeId: /^typeTEST/ });
+  });
+});
+
 describe('GET /api/task2/weeks and /api/task2/topics/week/:week (public metadata)', () => {
   test('weeks list is public (no auth) and reflects seeded topics', async () => {
     await createTask2Topic({ week: 3, questions: [question()] });
