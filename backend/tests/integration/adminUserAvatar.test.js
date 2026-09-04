@@ -6,6 +6,7 @@ const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const cloudinaryService = require('../../services/cloudinaryService');
+const validation = require('../../utils/validation');
 
 const TINY_PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 
@@ -34,24 +35,26 @@ describe('POST /api/admin/users/:id/avatar (adminOnly)', () => {
 
   // BUG-025: a direct API call bypasses the frontend's own client-side
   // compression entirely, so the server needs its own real size cap.
-  test('rejects a payload over the 5MB decoded-byte cap, no Cloudinary call made', async () => {
-    // stub the upload so a guard regression can't fire a real network call
+  // Force the decoded-size result rather than actually POSTing a multi-MB
+  // body — a large in-process request body made this case flake (the
+  // parser intermittently 500s the aborted stream under CI load, before
+  // the route runs at all). The size math itself is covered in
+  // tests/unit/utils/validation.test.js.
+  test('rejects an over-cap payload, no Cloudinary call made', async () => {
     const uploadSpy = jest.spyOn(cloudinaryService, 'uploadImage')
       .mockResolvedValue({ secure_url: 'https://res.cloudinary.com/test/x.jpg' });
-    // just over 5 MB decoded (7 MiB of base64 → ~5.25 MB), built as one plain
-    // string — no Buffer.alloc + toString('base64') double allocation, which
-    // made this the heaviest single line in the whole suite and flaked it
-    // under memory pressure once the suite count grew.
-    const oversized = 'data:image/png;base64,' + 'A'.repeat(7 * 1024 * 1024);
+    const sizeSpy = jest.spyOn(validation, 'getBase64PayloadByteSize').mockReturnValue(6 * 1024 * 1024);
     const admin = await createAdmin();
     const target = await createStudent();
     const token = signTokenFor(admin);
     const res = await request(app)
       .post(`/api/admin/users/${target._id}/avatar`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ imageBase64: oversized });
+      .send({ imageBase64: TINY_PNG });
     expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/quá lớn/);
     expect(uploadSpy).not.toHaveBeenCalled();
+    sizeSpy.mockRestore();
     uploadSpy.mockRestore();
   });
 

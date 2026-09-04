@@ -6,7 +6,8 @@ const bcrypt  = require('bcryptjs');
 const auth    = require('../../middleware/auth');
 const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
 const logger  = require('../../utils/logger');
-const { isImageDataUri, getBase64PayloadByteSize } = require('../../utils/validation');
+// namespace import (not destructured) so tests can spy on the size check
+const validation = require('../../utils/validation');
 // BUG-025: same cap and reasoning as the student-facing upload — see
 // controllers/user.controller.js's comment (5MB decoded stays safely
 // under app.js's global 20mb JSON body limit, which is measured on the
@@ -133,8 +134,8 @@ router.post('/users/:id/avatar', auth, adminOnly, async (req, res) => {
     // should be a clean 400. Guard so a malformed request always 400s.
     const { imageBase64 } = req.body || {};
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
-    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
-    if (getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
+    if (!validation.isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
+    if (validation.getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
       return res.status(400).json({ success: false, message: 'Ảnh quá lớn, vui lòng chọn ảnh dưới 5MB' });
     }
 
