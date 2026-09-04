@@ -1,0 +1,250 @@
+{
+  "course": {
+    "code": "IELTS-W-T2",
+    "title": "IELTS Writing Task 2 — Nền tảng đến Band 7.0",
+    "skill": "writing",
+    "taskType": "task2",
+    "language": "vi",
+    "targetBand": "5.5-7.0",
+    "description": "Khoá học Writing Task 2 dựng theo Task 2 Template Bank: Module 1 là nền tảng (4 tiêu chí, 9 chức năng câu, 3 câu quyết định band, quy trình 40 phút), Module 2 đi qua 7 dạng đề — nhận diện, dàn ý, nâng cấp câu 6+→7+ và viết body."
+  },
+  "modules": [
+    {
+      "code": "T2-M1",
+      "order": 1,
+      "title": "MODULE 1 — Nền tảng",
+      "titleEn": "Foundations",
+      "outcomes": [
+        "Hiểu bốn tiêu chí chấm và năm khác biệt thật giữa Band 6 và Band 7",
+        "Nắm 9 chức năng câu tạo nên mọi bài Task 2 ở cả hai tầng Band 6+/7+",
+        "Viết được 3 câu quyết định band: Explanation, Result, Example",
+        "Áp dụng quy trình 40 phút và nhận diện đúng 7 dạng đề"
+      ]
+    },
+    {
+      "code": "T2-M2",
+      "order": 2,
+      "title": "MODULE 2 — Bảy dạng đề",
+      "titleEn": "The Seven Essay Types",
+      "outcomes": [
+        "Nhận diện dạng đề từ câu hỏi và biết dạng nào bắt buộc chọn phe",
+        "Dựng dàn ý xương sống đúng cho từng dạng",
+        "Nâng cấp câu khung từ Band 6+ lên Band 7+",
+        "Viết một đoạn body hoàn chỉnh cho từng dạng và so với bài mẫu Band 7+"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "T2-L01",
+      "moduleCode": "T2-M1",
+      "order": 1,
+      "title": "Buổi 1 — Bốn tiêu chí & khoảng cách Band 6 → 7",
+      "titleEn": "The four criteria & the real 6→7 gap",
+      "durationMinutes": 45,
+      "objectives": [
+        "Biết mỗi tiêu chí chiếm bao nhiêu % và giám khảo tìm gì",
+        "Nhận ra năm khác biệt thật giữa Band 6 và Band 7",
+        "Nâng một câu Band 6 lên Band 7 mà không cần từ khó hơn"
+      ],
+      "keyLanguage": [
+        "Task Response · Coherence & Cohesion · Lexical Resource · Grammatical Range & Accuracy — mỗi tiêu chí 25%",
+        "250 từ tối thiểu · 260–300 từ vùng an toàn · 4 đoạn chuẩn",
+        "Sau mỗi ý chính hỏi \"Why?\" và \"So what?\""
+      ],
+      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L02",
+      "moduleCode": "T2-M1",
+      "order": 2,
+      "title": "Buổi 2 — Bộ 9 chức năng câu",
+      "titleEn": "The 9-sentence toolkit",
+      "durationMinutes": 60,
+      "objectives": [
+        "Gọi tên 9 chức năng câu và ví dụ tương ứng",
+        "Xếp 9 chức năng theo đúng vị trí trong bài 4 đoạn",
+        "Điền được câu khung Band 7+ cho từng chức năng"
+      ],
+      "keyLanguage": [
+        "General statement · Restate the question · Thesis · Topic sentence · Explanation · Result · Example · Concession · Conclusion",
+        "This can largely be attributed to the fact that…",
+        "Consequently, …, thereby + V-ing …",
+        "A clear illustration of this can be seen in …, where … occurred."
+      ],
+      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "T2-L03",
+      "moduleCode": "T2-M1",
+      "order": 3,
+      "title": "Buổi 3 — Ba câu quyết định band: Explanation · Result · Example",
+      "titleEn": "The three band-deciding sentences",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nâng câu giải thích từ \"This is because…\" lên \"This can largely be attributed to…\"",
+        "Đẩy câu kết quả đi thêm một bước bằng \"thereby + V-ing\"",
+        "Viết một ví dụ CỤ THỂ: có tên nước/thành phố, có chi tiết"
+      ],
+      "keyLanguage": [
+        "Explanation Band 7: This can largely be attributed to the fact that …",
+        "Result Band 7: Consequently, …, thereby + V-ing …",
+        "Example Band 7: A clear illustration of this can be seen in [nơi], where [chi tiết]."
+      ],
+      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L04",
+      "moduleCode": "T2-M1",
+      "order": 4,
+      "title": "Buổi 4 — Quy trình 40 phút & nhận diện 7 dạng đề",
+      "titleEn": "The 40-minute routine & spotting the 7 types",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân bổ đúng thời gian cho từng bước trong 40 phút",
+        "Nhận diện dạng đề từ câu hỏi",
+        "Biết dạng nào bắt buộc chọn phe ở Introduction lẫn Conclusion"
+      ],
+      "keyLanguage": [
+        "0–5 dàn ý · 5–10 Intro · 10–22 Body 1 · 22–34 Body 2 · 34–37 Conclusion · 37–40 soát bài",
+        "\"outweigh\" / \"more advantages or more disadvantages\" → BẮT BUỘC chọn phe",
+        "\"discuss both views and give your own opinion\" → nêu quan điểm ở Intro và Conclusion"
+      ],
+      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+    },
+
+    {
+      "code": "T2-L05",
+      "moduleCode": "T2-M2",
+      "order": 5,
+      "title": "Buổi 5 — Type 01: Advantages & Disadvantages",
+      "titleEn": "Type 01 — Advantages & Disadvantages",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhận diện đề Adv/Disadv và biết khi nào bắt buộc chọn phe",
+        "Dựng dàn ý INTRO → ADVANTAGES → DISADVANTAGES → CONCLUSION + OPINION",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "One of the most significant advantages lies in its capacity to…",
+        "Despite its advantages, (topic) is not without its limitations.",
+        "On balance, it can be argued that the advantages outweigh the drawbacks, provided that…"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L06",
+      "moduleCode": "T2-M2",
+      "order": 6,
+      "title": "Buổi 6 — Type 02: Discuss Both Views",
+      "titleEn": "Type 02 — Discuss Both Views",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhận ra \"give your own opinion\" bắt buộc nêu quan điểm ở Intro và Conclusion",
+        "Viết hai body cân bằng, tường thuật quan điểm người khác bằng \"Some people believe…\"",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "While proponents of (view 1) maintain that…, critics contend that…",
+        "There are several convincing reasons why some people support…",
+        "Personally, I believe that (stance), primarily because (reason)."
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L07",
+      "moduleCode": "T2-M2",
+      "order": 7,
+      "title": "Buổi 7 — Type 03: Cause – Solution",
+      "titleEn": "Type 03 — Cause – Solution",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời đủ HAI câu hỏi của đề (nguyên nhân + giải pháp)",
+        "Ghép giải pháp đúng với nguyên nhân đã nêu (điểm Coherence)",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "There are several underlying factors contributing to…",
+        "This can largely be attributed to…",
+        "One effective way to tackle this problem is to… This would ensure that…, ultimately leading to…"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L08",
+      "moduleCode": "T2-M2",
+      "order": 8,
+      "title": "Buổi 8 — Type 04: Effect – Solution",
+      "titleEn": "Type 04 — Effect – Solution",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt Effect – Solution với Cause – Solution (Body 1 là HẬU QUẢ)",
+        "Giải thích mỗi hậu quả bằng \"Why?\" và \"What does this lead to?\"",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "This issue has given rise to a range of significant consequences.",
+        "Two particularly alarming effects of this issue are… and…",
+        "The most practical solution is to… This approach would not only… but also…"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L09",
+      "moduleCode": "T2-M2",
+      "order": 9,
+      "title": "Buổi 9 — Type 05: Cause – Effect",
+      "titleEn": "Type 05 — Cause – Effect",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhớ dạng này KHÔNG hỏi giải pháp — viết giải pháp là lãng phí thời gian",
+        "Nối Body 2 (hậu quả) tiếp mạch từ Body 1 (nguyên nhân)",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "The causes of (problem) are both complex and multifaceted.",
+        "Not only does this trigger (effect), but it also creates a ripple effect across society.",
+        "Over time, these effects may accumulate, placing substantial pressure on (group)."
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L10",
+      "moduleCode": "T2-M2",
+      "order": 10,
+      "title": "Buổi 10 — Type 06: Agree / Disagree",
+      "titleEn": "Type 06 — Agree / Disagree",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chọn MỘT trong ba cách trả lời và giữ lập trường nhất quán",
+        "Nêu quan điểm ngay ở Introduction, nhắc lại ở Conclusion",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "This essay will argue that (position), owing to its significant influence on (aspect 1) and (aspect 2).",
+        "It is undeniable that (key point) plays a crucial role in (aspect).",
+        "While some may argue that (opposing view), this perspective fails to take into account that…"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "T2-L11",
+      "moduleCode": "T2-M2",
+      "order": 11,
+      "title": "Buổi 11 — Type 07: Positive or Negative Development",
+      "titleEn": "Type 07 — Positive or Negative Development",
+      "durationMinutes": 60,
+      "objectives": [
+        "Không nhầm với Advantages & Disadvantages — đề hỏi ĐÁNH GIÁ của bạn",
+        "Body 2 chỉ dành ~3 câu cho mặt trái rồi quay lại củng cố quan điểm",
+        "Nâng câu khung 6+ → 7+ và viết một đoạn body hoàn chỉnh"
+      ],
+      "keyLanguage": [
+        "In my view, this constitutes a largely positive/negative development, primarily because of its impact on (aspect 1) and (aspect 2).",
+        "The most compelling reason for regarding this trend as positive/negative lies in (reason).",
+        "Admittedly, this trend is not without its drawbacks. … Nevertheless, such drawbacks are largely outweighed by…"
+      ],
+      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+    }
+  ]
+}

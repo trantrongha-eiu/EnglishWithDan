@@ -1,0 +1,282 @@
+{
+  "exercises": [
+    {
+      "code": "T2-L01-E01",
+      "lessonCode": "T2-L01",
+      "order": 1,
+      "type": "mcq",
+      "title": "Luật chơi Task 2",
+      "instruction": "Chọn đáp án đúng về cách chấm điểm và yêu cầu cơ bản của Task 2.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        { "id": "q1", "prompt": "Mỗi tiêu chí chấm điểm chiếm bao nhiêu phần trăm điểm bài viết?", "options": [ { "id": "A", "text": "10%" }, { "id": "B", "text": "20%" }, { "id": "C", "text": "25%" }, { "id": "D", "text": "50%" } ], "answer": "C", "explanation": "Bốn tiêu chí, mỗi tiêu chí 25%." },
+        { "id": "q2", "prompt": "Task 2 chiếm bao nhiêu tổng điểm Writing?", "options": [ { "id": "A", "text": "một nửa" }, { "id": "B", "text": "một phần ba" }, { "id": "C", "text": "hai phần ba" }, { "id": "D", "text": "toàn bộ" } ], "answer": "C", "explanation": "Task 2 chiếm hai phần ba — đây là phần đáng đầu tư nhất." },
+        { "id": "q3", "prompt": "Số từ tối thiểu cho Task 2 là:", "options": [ { "id": "A", "text": "150" }, { "id": "B", "text": "200" }, { "id": "C", "text": "250" }, { "id": "D", "text": "300" } ], "answer": "C", "explanation": "250 từ là tối thiểu; viết dưới sẽ bị trừ điểm. 260–300 từ là vùng an toàn." },
+        { "id": "q4", "prompt": "Tiêu chí nào kiểm tra \"bài có trả lời đủ mọi phần của đề không, lập trường có rõ không\"?", "options": [ { "id": "A", "text": "Task Response" }, { "id": "B", "text": "Coherence & Cohesion" }, { "id": "C", "text": "Lexical Resource" }, { "id": "D", "text": "Grammatical Range & Accuracy" } ], "answer": "A", "explanation": "Task Response = trả lời đề, lập trường rõ, ý được phát triển chứ không chỉ liệt kê." },
+        { "id": "q5", "prompt": "Về từ nối (Firstly, Moreover, Furthermore…), giám khảo muốn thấy:", "options": [ { "id": "A", "text": "xuất hiện ở đầu mọi câu" }, { "id": "B", "text": "không dùng từ nối nào" }, { "id": "C", "text": "dùng có chọn lọc, kết hợp đại từ this/these/such và cách sắp xếp ý" }, { "id": "D", "text": "chỉ dùng ở câu đầu mỗi đoạn" } ], "answer": "C", "explanation": "Nhồi từ nối là dấu hiệu Band 6. Band 7 liên kết tự nhiên bằng nhiều cách." }
+      ]
+    },
+    {
+      "code": "T2-L01-E02",
+      "lessonCode": "T2-L01",
+      "order": 2,
+      "type": "categorize",
+      "title": "Band 6 hay Band 7?",
+      "instruction": "Kéo mỗi đặc điểm vào đúng cột: đây là dấu hiệu Band 6 hay điều Band 7 làm khác.",
+      "autoGrade": true,
+      "points": 12,
+      "categories": [ { "id": "b6", "label": "Dấu hiệu Band 6" }, { "id": "b7", "label": "Điều Band 7 làm" } ],
+      "items": [
+        { "id": "c1", "text": "Nêu một ý rồi nhảy ngay sang ý khác, mỗi ý một câu", "category": "b6" },
+        { "id": "c2", "text": "Mỗi ý chính đi kèm: tại sao → dẫn đến gì → ví dụ cụ thể", "category": "b7" },
+        { "id": "c3", "text": "Dùng good, bad, big, a lot of, very important", "category": "b6" },
+        { "id": "c4", "text": "Dùng beneficial, substantial, a considerable number of, crucial", "category": "b7" },
+        { "id": "c5", "text": "Hầu hết là câu đơn hoặc câu ghép với and / but / so", "category": "b6" },
+        { "id": "c6", "text": "Có mệnh đề quan hệ, cụm phân từ, thỉnh thoảng đảo ngữ hoặc câu chẻ", "category": "b7" },
+        { "id": "c7", "text": "Firstly, Secondly, Moreover ở đầu gần như mọi câu", "category": "b6" },
+        { "id": "c8", "text": "Nêu quan điểm ở Introduction, giữ nguyên xuyên suốt, nhắc lại ở Conclusion", "category": "b7" }
+      ]
+    },
+    {
+      "code": "T2-L01-E03",
+      "lessonCode": "T2-L01",
+      "order": 3,
+      "type": "mcq",
+      "title": "Vì sao câu này là Band 7?",
+      "instruction": "Với mỗi cặp câu, chọn lý do khiến bản Band 7 tốt hơn.",
+      "autoGrade": true,
+      "points": 6,
+      "items": [
+        { "id": "q1", "prompt": "\"Online learning is good because students can study at home.\" → \"Online learning is highly beneficial because it allows students to study from home, which eliminates the need for daily commuting. As a result, learners can devote the time they save to revision.\"  Bản Band 7 khác ở chỗ:", "options": [ { "id": "A", "text": "dài hơn nên điểm cao hơn" }, { "id": "B", "text": "từ chính xác hơn (beneficial, eliminates), có mệnh đề quan hệ, và đẩy ý tới hệ quả" }, { "id": "C", "text": "dùng nhiều từ nối hơn" }, { "id": "D", "text": "có số liệu" } ], "answer": "B", "explanation": "Lên band KHÔNG phải dùng từ khó hơn — mà là ý được phát triển và câu đa dạng hơn." },
+        { "id": "q2", "prompt": "Sau khi viết một ý chính, câu hỏi tự kiểm tra để biết ý đã đủ sâu cho Band 7 là:", "options": [ { "id": "A", "text": "\"Câu này có đúng ngữ pháp không?\"" }, { "id": "B", "text": "\"Câu này có từ khó không?\"" }, { "id": "C", "text": "\"Why?\" và \"So what?\"" }, { "id": "D", "text": "\"Đã đủ 250 từ chưa?\"" } ], "answer": "C", "explanation": "Nếu chưa trả lời được cả \"Why?\" và \"So what?\" trong đoạn, ý đó chưa đủ sâu." },
+        { "id": "q3", "prompt": "\"As a result, they spend more time sitting.\" nâng lên Band 7 tốt nhất là:", "options": [ { "id": "A", "text": "As a result, they spend much more time sitting down." }, { "id": "B", "text": "Consequently, sedentary behaviour has become the norm rather than the exception, thereby increasing the risk of obesity and heart disease." }, { "id": "C", "text": "So they sit a lot and it is very bad for health." }, { "id": "D", "text": "Therefore, sitting is a big problem nowadays." } ], "answer": "B", "explanation": "Đẩy hệ quả đi thêm một bước và dùng cụm thereby + V-ing." }
+      ]
+    },
+    {
+      "code": "T2-L01-E04",
+      "lessonCode": "T2-L01",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Nâng câu Band 6 → Band 7",
+      "instruction": "Viết lại mỗi câu Band 6 sau ở tầng Band 7: từ chính xác hơn + câu phức hơn + đẩy ý thêm một bước. Không cần thêm số liệu.",
+      "autoGrade": false,
+      "points": 9,
+      "items": [
+        { "id": "q1", "prompt": "This is because people can do many tasks without leaving home.", "cue": "This can largely be attributed to…", "sampleAnswers": [ "This can largely be attributed to the fact that digital platforms now allow people to work, shop and socialise without ever leaving home." ] },
+        { "id": "q2", "prompt": "For example, people can order food online.", "cue": "A clear illustration…", "sampleAnswers": [ "A clear illustration of this can be seen in large cities such as Hanoi, where food-delivery applications have made it possible to eat three meals a day without stepping outside." ] },
+        { "id": "q3", "prompt": "Online learning is good because students can study at home. This saves time.", "cue": "beneficial · which · as a result", "sampleAnswers": [ "Online learning is highly beneficial because it allows students to study from home, which eliminates the need for daily commuting. As a result, learners can devote the time they save to revision or part-time work." ] }
+      ]
+    },
+
+    {
+      "code": "T2-L02-E01",
+      "lessonCode": "T2-L02",
+      "order": 1,
+      "type": "matching",
+      "title": "Nối 9 chức năng câu với ví dụ",
+      "instruction": "Nối tên mỗi chức năng câu với câu ví dụ Band 6+ tương ứng.",
+      "autoGrade": true,
+      "points": 9,
+      "items": [
+        { "id": "m1", "left": "1. Mở đề (General statement)", "right": "In recent years, (topic) has become increasingly common in many parts of the world." },
+        { "id": "m2", "left": "2. Paraphrase đề (Restate the question)", "right": "While (topic) offers several benefits, it also has some potential drawbacks." },
+        { "id": "m3", "left": "3. Nêu luận điểm (Thesis)", "right": "This essay will discuss the main advantages and disadvantages of (topic)." },
+        { "id": "m4", "left": "4. Câu chủ đề (Topic sentence)", "right": "One of the main advantages of (topic) is that (idea)." },
+        { "id": "m5", "left": "5. Giải thích (Explanation)", "right": "This is because (explanation)." },
+        { "id": "m6", "left": "6. Nêu kết quả (Result)", "right": "As a result, (result)." },
+        { "id": "m7", "left": "7. Đưa ví dụ (Example)", "right": "For example, (example)." },
+        { "id": "m8", "left": "8. Nhượng bộ (Concession)", "right": "It is true that (other side). However, (your view)." },
+        { "id": "m9", "left": "9. Kết bài (Conclusion)", "right": "In conclusion, (summary of your position)." }
+      ]
+    },
+    {
+      "code": "T2-L02-E02",
+      "lessonCode": "T2-L02",
+      "order": 2,
+      "type": "ordering",
+      "title": "Xếp 9 chức năng theo đúng vị trí trong bài",
+      "instruction": "Kéo để xếp 9 chức năng câu theo thứ tự chúng xuất hiện trong một bài 4 đoạn.",
+      "autoGrade": true,
+      "points": 6,
+      "items": [
+        { "id": "o1", "prompt": "Thứ tự từ Introduction đến Conclusion:", "tokens": [ "Câu chủ đề", "Giải thích", "Mở đề", "Nêu kết quả", "Paraphrase đề", "Đưa ví dụ", "Nêu luận điểm", "Nhượng bộ", "Kết bài" ], "answer": [ "Mở đề", "Paraphrase đề", "Nêu luận điểm", "Câu chủ đề", "Giải thích", "Nêu kết quả", "Đưa ví dụ", "Nhượng bộ", "Kết bài" ] }
+      ]
+    },
+    {
+      "code": "T2-L02-E03",
+      "lessonCode": "T2-L02",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền câu khung Band 7+",
+      "instruction": "Điền từ còn thiếu vào các câu khung Band 7+ của từng chức năng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        { "id": "g1", "prompt": "Over the past few decades, (topic) has ____ as one of the defining features of modern life.", "blanks": [ { "accept": [ "emerged" ] } ], "explanation": "Mở đề Band 7+: has emerged as one of the defining features…" },
+        { "id": "g2", "prompt": "While the ____ of (topic) are widely acknowledged, its potential drawbacks deserve equal consideration.", "blanks": [ { "accept": [ "merits", "benefits" ] } ], "explanation": "Paraphrase đề Band 7+." },
+        { "id": "g3", "prompt": "This can largely be ____ to the fact that (explanation).", "blanks": [ { "accept": [ "attributed" ] } ], "explanation": "Giải thích Band 7+." },
+        { "id": "g4", "prompt": "Consequently, (result), ____ (verb-ing) (further outcome).", "blanks": [ { "accept": [ "thereby" ] } ], "explanation": "Kết quả Band 7+: thereby + V-ing." },
+        { "id": "g5", "prompt": "A clear ____ of this can be seen in (example), where (outcome) occurred.", "blanks": [ { "accept": [ "illustration" ] } ], "explanation": "Ví dụ Band 7+." },
+        { "id": "g6", "prompt": "In conclusion, having ____ both perspectives, I maintain that (your position).", "blanks": [ { "accept": [ "weighed", "examined", "considered" ] } ], "explanation": "Kết bài Band 7+." }
+      ]
+    },
+    {
+      "code": "T2-L02-E04",
+      "lessonCode": "T2-L02",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Viết câu chủ đề · giải thích · kết quả",
+      "instruction": "Chủ đề: \"làm việc từ xa (remote working)\". Viết 3 câu ở tầng Band 7+: (1) một câu chủ đề nêu lợi ích, (2) một câu giải thích, (3) một câu kết quả dùng \"thereby + V-ing\".",
+      "autoGrade": false,
+      "responseSlots": 3,
+      "points": 9,
+      "rubric": {
+        "minWords": 40,
+        "targetStructures": [ "lies in its capacity to", "This can largely be attributed to", "thereby" ],
+        "mustUse": 2,
+        "checklist": [ "Câu 1 là một câu chủ đề nêu MỘT lợi ích cụ thể", "Câu 2 giải thích \"tại sao\" bằng cụm học thuật", "Câu 3 đẩy hệ quả thêm một bước bằng thereby + V-ing" ],
+        "sampleAnswer": "One of the most significant advantages of remote working lies in its capacity to give employees control over their schedules. This can largely be attributed to the fact that staff are judged on output rather than on hours spent at a desk. Consequently, many workers reclaim the time once lost to commuting, thereby improving both their productivity and their family life."
+      }
+    },
+
+    {
+      "code": "T2-L03-E01",
+      "lessonCode": "T2-L03",
+      "order": 1,
+      "type": "mcq",
+      "title": "Nhận diện câu Band 7",
+      "instruction": "Chọn câu ở tầng Band 7 cho mỗi chức năng.",
+      "autoGrade": true,
+      "points": 6,
+      "items": [
+        { "id": "q1", "prompt": "Câu GIẢI THÍCH nào ở tầng Band 7?", "options": [ { "id": "A", "text": "This is because people can complete daily tasks without leaving home." }, { "id": "B", "text": "This can largely be attributed to the fact that digital platforms now allow people to work, shop and socialise without ever leaving home." }, { "id": "C", "text": "This happens because of technology." } ], "answer": "B", "explanation": "Cụ thể hơn và cấu trúc phức tạp hơn." },
+        { "id": "q2", "prompt": "Câu KẾT QUẢ nào ở tầng Band 7?", "options": [ { "id": "A", "text": "As a result, they spend more time sitting." }, { "id": "B", "text": "So people become less healthy over time." }, { "id": "C", "text": "Consequently, sedentary behaviour has become the norm rather than the exception, thereby increasing the risk of obesity and heart disease." } ], "answer": "C", "explanation": "Đẩy hệ quả thêm một bước + thereby + V-ing." },
+        { "id": "q3", "prompt": "Câu VÍ DỤ nào ở tầng Band 7?", "options": [ { "id": "A", "text": "For example, people can order food online." }, { "id": "B", "text": "A clear illustration of this can be seen in large cities such as Hanoi, where food-delivery applications have made it possible to eat three meals a day without stepping outside." }, { "id": "C", "text": "Research has shown that 70% of people order food online." } ], "answer": "B", "explanation": "Ví dụ cụ thể: có địa điểm, có chi tiết. Tránh số liệu bịa (\"Research has shown that 70%…\")." }
+      ]
+    },
+    {
+      "code": "T2-L03-E02",
+      "lessonCode": "T2-L03",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "Nâng câu GIẢI THÍCH",
+      "instruction": "Viết lại mỗi câu giải thích Band 6 lên Band 7. Bắt đầu bằng \"This can largely be attributed to the fact that…\".",
+      "autoGrade": false,
+      "points": 6,
+      "items": [
+        { "id": "q1", "prompt": "This is because many jobs today do not require physical movement.", "starter": "This can largely be attributed to the fact that", "sampleAnswers": [ "This can largely be attributed to the fact that most modern jobs are sedentary and keep employees seated in front of a screen for the majority of the working day." ] },
+        { "id": "q2", "prompt": "This is because students can access lessons from anywhere.", "starter": "This can largely be attributed to the fact that", "sampleAnswers": [ "This can largely be attributed to the fact that online platforms deliver the same lessons to any location with an internet connection, removing the need to live near a campus." ] }
+      ]
+    },
+    {
+      "code": "T2-L03-E03",
+      "lessonCode": "T2-L03",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Nâng câu KẾT QUẢ bằng thereby + V-ing",
+      "instruction": "Viết lại mỗi câu kết quả Band 6 lên Band 7 dùng cụm \"…, thereby + V-ing …\".",
+      "autoGrade": false,
+      "points": 6,
+      "items": [
+        { "id": "q1", "prompt": "As a result, workers save time. They are less stressed.", "cue": "thereby + V-ing", "sampleAnswers": [ "Remote work removes the daily commute, thereby reducing both stress and wasted time.", "This saves workers several hours a week, thereby lowering stress and improving well-being." ] },
+        { "id": "q2", "prompt": "As a result, the city has less traffic. The air is cleaner.", "cue": "thereby + V-ing", "sampleAnswers": [ "Fewer private journeys are made each day, thereby easing traffic congestion and improving air quality.", "This reduces the number of cars on the road, thereby cutting congestion and emissions at the same time." ] }
+      ]
+    },
+    {
+      "code": "T2-L03-E04",
+      "lessonCode": "T2-L03",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Viết ví dụ CỤ THỂ",
+      "instruction": "Viết một ví dụ Band 7 cho mỗi ý dưới đây. Bắt buộc: có tên nước hoặc thành phố, và một chi tiết rõ ràng (một nhóm người / một tình huống). KHÔNG bịa số liệu.",
+      "autoGrade": false,
+      "responseSlots": 2,
+      "points": 8,
+      "rubric": {
+        "minWords": 30,
+        "targetStructures": [ "A clear illustration of this can be seen in", "such as", "where" ],
+        "mustUse": 1,
+        "checklist": [ "Có tên một nước hoặc thành phố cụ thể", "Có một chi tiết rõ ràng (nhóm người / tình huống)", "Không mở đầu bằng \"Research has shown that X%…\"" ],
+        "sampleAnswer": "Ý 1 (giao thông công cộng kém khiến người dân đi xe máy): A clear illustration of this can be seen in Ho Chi Minh City, where the limited metro network leaves most commuters with no realistic alternative to a private motorbike for the daily journey to work.\n\nÝ 2 (mạng xã hội làm giảm giao tiếp trực tiếp): This is evident among many university students in Hanoi, who now coordinate group projects almost entirely through messaging apps and may go days without meeting a classmate in person."
+      }
+    },
+
+    {
+      "code": "T2-L04-E01",
+      "lessonCode": "T2-L04",
+      "order": 1,
+      "type": "ordering",
+      "title": "Xếp quy trình 40 phút",
+      "instruction": "Kéo để xếp 6 bước của quy trình 40 phút theo đúng thứ tự.",
+      "autoGrade": true,
+      "points": 6,
+      "items": [
+        { "id": "o1", "prompt": "Từ khi nhận đề đến khi nộp bài:", "tokens": [ "Viết Body 1", "Đọc đề & lập dàn ý", "Viết Conclusion", "Viết Introduction", "Kiểm tra lại", "Viết Body 2" ], "answer": [ "Đọc đề & lập dàn ý", "Viết Introduction", "Viết Body 1", "Viết Body 2", "Viết Conclusion", "Kiểm tra lại" ] }
+      ]
+    },
+    {
+      "code": "T2-L04-E02",
+      "lessonCode": "T2-L04",
+      "order": 2,
+      "type": "mcq",
+      "title": "Phân bổ thời gian",
+      "instruction": "Chọn đáp án đúng về quy trình 40 phút.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        { "id": "q1", "prompt": "5 phút đầu (phút 0–5) dùng để:", "options": [ { "id": "A", "text": "viết Introduction" }, { "id": "B", "text": "gạch chân từ khóa, xác định dạng đề, quyết định lập trường, ghi nhanh 2+2 ý" }, { "id": "C", "text": "đọc lại đề nhiều lần" }, { "id": "D", "text": "viết câu chủ đề cho cả hai body" } ], "answer": "B", "explanation": "Không viết câu hoàn chỉnh ở bước này — chỉ lập dàn ý." },
+        { "id": "q2", "prompt": "Mỗi body nên viết trong khoảng:", "options": [ { "id": "A", "text": "5 phút" }, { "id": "B", "text": "12 phút (phút 10–22 và 22–34)" }, { "id": "C", "text": "20 phút" }, { "id": "D", "text": "không giới hạn" } ], "answer": "B", "explanation": "Body 1: phút 10–22; Body 2: phút 22–34. Mỗi đoạn ~90–110 từ." },
+        { "id": "q3", "prompt": "3 phút cuối (phút 37–40) dùng để:", "options": [ { "id": "A", "text": "viết thêm một body nữa" }, { "id": "B", "text": "soát số nhiều (s), thì động từ, mạo từ, chủ ngữ–động từ hợp nhau" }, { "id": "C", "text": "đếm số từ" }, { "id": "D", "text": "viết lại Conclusion" } ], "answer": "B", "explanation": "Ba phút cuối để SỬA LỖI, không phải viết thêm." },
+        { "id": "q4", "prompt": "Vì sao không nên bỏ qua 5 phút lập dàn ý?", "options": [ { "id": "A", "text": "vì giám khảo chấm cả dàn ý" }, { "id": "B", "text": "vì viết ngay không dàn ý thường mất mạch giữa bài, phải viết lại, cuối cùng chậm hơn" }, { "id": "C", "text": "vì dàn ý được cộng điểm" }, { "id": "D", "text": "không có lý do, có thể bỏ qua" } ], "answer": "B", "explanation": "Năm phút lập dàn ý tiết kiệm mười phút viết." }
+      ]
+    },
+    {
+      "code": "T2-L04-E03",
+      "lessonCode": "T2-L04",
+      "order": 3,
+      "type": "categorize",
+      "title": "Nhận diện dạng đề",
+      "instruction": "Kéo mỗi câu hỏi đề vào đúng dạng bài.",
+      "autoGrade": true,
+      "points": 14,
+      "categories": [
+        { "id": "advdis", "label": "Advantages & Disadvantages" },
+        { "id": "dbv", "label": "Discuss Both Views" },
+        { "id": "causesol", "label": "Cause – Solution" },
+        { "id": "effectsol", "label": "Effect – Solution" },
+        { "id": "causeeffect", "label": "Cause – Effect" },
+        { "id": "agree", "label": "Agree / Disagree" },
+        { "id": "posneg", "label": "Positive or Negative Development" }
+      ],
+      "items": [
+        { "id": "c1", "text": "Do the benefits of this outweigh the drawbacks?", "category": "advdis" },
+        { "id": "c2", "text": "Some people think X while others believe Y. Discuss both views and give your own opinion.", "category": "dbv" },
+        { "id": "c3", "text": "What are the causes of this problem and what solutions can you suggest?", "category": "causesol" },
+        { "id": "c4", "text": "What problems does this cause and what can be done about it?", "category": "effectsol" },
+        { "id": "c5", "text": "What are the causes of this and what effects does it have?", "category": "causeeffect" },
+        { "id": "c6", "text": "To what extent do you agree or disagree?", "category": "agree" },
+        { "id": "c7", "text": "Is this a positive or negative development?", "category": "posneg" },
+        { "id": "c8", "text": "Why is this happening and what measures can be taken to tackle it?", "category": "causesol" },
+        { "id": "c9", "text": "How does this affect individuals and society? How can these effects be reduced?", "category": "effectsol" },
+        { "id": "c10", "text": "Some people believe that X. What is your opinion?", "category": "agree" }
+      ]
+    },
+    {
+      "code": "T2-L04-E04",
+      "lessonCode": "T2-L04",
+      "order": 4,
+      "type": "mcq",
+      "title": "Quy tắc nhận diện & chọn phe",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        { "id": "q1", "prompt": "Đề có chữ \"outweigh\" hoặc \"more advantages or more disadvantages\" thì bạn:", "options": [ { "id": "A", "text": "có thể trung lập, không cần quan điểm" }, { "id": "B", "text": "BẮT BUỘC chọn một phe và nói rõ ở cả Introduction lẫn Conclusion" }, { "id": "C", "text": "chỉ cần nêu quan điểm ở Conclusion" }, { "id": "D", "text": "viết cả hai phía bằng nhau, không chọn" } ], "answer": "B", "explanation": "Không chọn phe là lỗi Task Response nặng nhất ở dạng này." },
+        { "id": "q2", "prompt": "Đề \"discuss both views and give your own opinion\" yêu cầu nêu quan điểm cá nhân ở:", "options": [ { "id": "A", "text": "chỉ Conclusion" }, { "id": "B", "text": "chỉ Introduction" }, { "id": "C", "text": "cả Introduction VÀ Conclusion" }, { "id": "D", "text": "không cần nêu" } ], "answer": "C", "explanation": "Chỉ nêu ở kết bài thường bị giữ ở Band 6." },
+        { "id": "q3", "prompt": "Điểm khác biệt then chốt của dạng Cause – Effect so với Cause – Solution:", "options": [ { "id": "A", "text": "Cause – Effect KHÔNG hỏi giải pháp; viết giải pháp là lãng phí thời gian" }, { "id": "B", "text": "Cause – Effect có 5 đoạn" }, { "id": "C", "text": "Cause – Effect không cần ví dụ" }, { "id": "D", "text": "hai dạng giống hệt nhau" } ], "answer": "A", "explanation": "Đọc kỹ đề: nếu không có \"solutions / measures / what can be done\" thì đừng viết giải pháp." },
+        { "id": "q4", "prompt": "Positive or Negative Development khác Advantages & Disadvantages ở chỗ:", "options": [ { "id": "A", "text": "không khác gì, viết cân bằng hai mặt" }, { "id": "B", "text": "đề hỏi ĐÁNH GIÁ của bạn (tốt hay xấu) — phải chọn một phía và dành phần lớn bài bảo vệ nó" }, { "id": "C", "text": "chỉ viết mặt tích cực" }, { "id": "D", "text": "không cần Conclusion" } ], "answer": "B", "explanation": "Có thể thừa nhận mặt kia ở Body 2 nhưng phải quay về củng cố quan điểm." }
+      ]
+    }
+  ]
+}

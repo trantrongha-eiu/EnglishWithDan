@@ -39,9 +39,10 @@
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
         { href: 'writing-task1.html',    icon: 'fa-chart-line', label: 'Task 1 Writing' },
         { href: 'advanced-sentences.html', icon: 'fa-language',  label: 'Viết câu nâng cao' },
-        { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing', badgeId: 'navTask2Badge' },
-        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
         { href: 'task2-foundations.html', icon: 'fa-compass',  label: 'Task 2 Nền tảng' },
+        { href: 'writing-task2-course.html', icon: 'fa-edit',  label: 'Task 2 Writing' },
+        { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
+        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },
