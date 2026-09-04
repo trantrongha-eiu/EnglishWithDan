@@ -28,6 +28,7 @@ router.use(require('./writingPracticeWP')); // Writing Practice (WP) Topics/Exer
 router.use(require('./task1Exercises'));   // Task 1 Exercises CRUD
 router.use(require('./task2Topics'));      // Task 2 Topics CRUD + maintenance endpoints
 router.use(require('./task2Templates'));   // Task 2 Templates CRUD
+router.use(require('./advSentences'));     // "Viết câu nâng cao" grammar-structure groups CRUD
 router.use(require('./messages'));         // Messages
 router.use(require('./premium'));          // Plan Management, Upgrade Requests (renamed from billing.js — no payment/invoice logic here, see file header)
 router.use(require('./reviewBypass'));     // Review-gate bypass codes

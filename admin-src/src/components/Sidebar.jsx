@@ -32,6 +32,7 @@ const NAV = [
   { to: '/essential-grammar',  icon: '📘', label: 'Essential Grammar' },
   { to: '/writing-practice',   icon: '🖊️', label: 'Writing Practice' },
   { to: '/task1-exercises',    icon: '📉', label: 'Task 1 Grammar' },
+  { to: '/advanced-sentences', icon: '✍️', label: 'Viết câu nâng cao' },
   { to: '/task2-exercises',    icon: '📝', label: 'Task 2 Writing' },
   { to: '/task2-templates',    icon: '📄', label: 'Task 2 Templates' },
   { section: 'TÀI CHÍNH & HỆ THỐNG' },

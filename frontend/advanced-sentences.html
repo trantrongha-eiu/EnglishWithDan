@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Viết câu nâng cao – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
+  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <style>
+    #app { max-width: 900px; margin: 0 auto; padding-bottom: 48px; }
+    .as-head { padding: 20px 20px 8px; display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+    .as-h2 { font-size: 20px; font-weight: 800; margin: 0; }
+    .as-sub { font-size: 14px; color: var(--text2, #6b7280); margin: 2px 0 0; }
+    .as-btn {
+      display:inline-flex; align-items:center; gap:6px; background: var(--surface2, #f3f4f6);
+      color: var(--text, #111827); border: 1px solid var(--border, #e5e7eb); border-radius: 9px;
+      padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+    }
+    .as-btn:hover { border-color: #6366f1; color: #6366f1; }
+
+    /* premium banner (mirrors task2-practice #premium-promo-banner) */
+    .as-premium-banner {
+      margin: 0 20px 16px; display:flex; align-items:center; gap:14px;
+      background: linear-gradient(135deg, rgba(99,102,241,.10), rgba(139,92,246,.06));
+      border: 1px solid rgba(99,102,241,.25); border-radius: 14px; padding: 14px 18px; flex-wrap: wrap;
+    }
+    .as-premium-banner .t { flex:1; min-width: 200px; }
+    .as-premium-banner .t b { display:block; font-size: 13px; color: #6366f1; margin-bottom: 2px; }
+    .as-premium-banner .t span { font-size: 12px; color: var(--text2, #555); }
+    .as-premium-banner button {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 10px;
+      padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+    }
+
+    .as-draft-note {
+      margin: 0 20px 6px; padding: 10px 14px; background: #fffbeb; border: 1.5px solid #f59e0b;
+      border-radius: 10px; font-size: 13px; color: #92400e; display:flex; align-items:center; gap:8px;
+    }
+    [data-theme="dark"] .as-draft-note { background: #2a1c05; }
+
+    /* week grid */
+    .as-week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; padding: 12px 20px 20px; }
+    .as-week-card {
+      position: relative; border: 1.5px solid var(--border, #e5e7eb); border-radius: 14px; padding: 16px 14px;
+      cursor: pointer; background: var(--surface, #fff); transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .as-week-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(99,102,241,.15); border-color: #6366f1; }
+    .as-week-card.has-draft { border-color: #f59e0b; background: #fffdf5; }
+    [data-theme="dark"] .as-week-card.has-draft { background: #211a08; }
+    .as-week-num { font-size: 22px; font-weight: 800; color: #6366f1; }
+    .as-week-names { font-size: 13px; font-weight: 700; margin: 4px 0 6px; line-height: 1.4; }
+    .as-week-label { font-size: 11px; color: var(--text3, #9ca3af); font-weight: 600; }
+    .as-week-draft-pill {
+      margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; background: #f59e0b; color: #fff;
+      font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px;
+    }
+
+    /* breadcrumb */
+    .as-crumb { padding: 16px 20px 4px; font-size: 13px; color: var(--text3, #9ca3af); }
+    .as-crumb span { color: #6366f1; font-weight: 700; cursor: pointer; }
+    .as-crumb span:hover { text-decoration: underline; }
+
+    /* group cards */
+    .as-group-list { display: flex; flex-direction: column; gap: 12px; padding: 8px 20px 20px; }
+    .as-group-card {
+      display: flex; gap: 14px; align-items: flex-start; border: 1.5px solid var(--border, #e5e7eb);
+      border-radius: 14px; padding: 16px; cursor: pointer; background: var(--surface, #fff);
+      transition: transform .15s, box-shadow .15s, border-color .15s;
+    }
+    .as-group-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,.14); border-color: #6366f1; }
+    .as-group-card.has-draft { border-color: #f59e0b; }
+    .as-group-emoji { font-size: 30px; line-height: 1; flex-shrink: 0; }
+    .as-group-name { font-size: 16px; font-weight: 800; }
+    .as-group-en { font-size: 12px; color: var(--text3, #9ca3af); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .as-group-struct { font-size: 12.5px; color: var(--text2, #6b7280); margin-top: 6px; line-height: 1.5; }
+    .as-group-meta { font-size: 12px; color: var(--text3, #9ca3af); margin-top: 6px; }
+    .as-group-done { color: #16a34a; }
+
+    .as-mode-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 4px 20px 4px; align-items: center; }
+    .as-toggle {
+      border: 1.5px solid var(--border, #e5e7eb); background: var(--surface, #fff); color: var(--text2, #4b5563);
+      border-radius: 20px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .as-toggle.active { background: #eef2ff; border-color: #6366f1; color: #4338ca; }
+    [data-theme="dark"] .as-toggle.active { background: #1e1b3a; }
+
+    /* practice */
+    .as-ctx { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 12px; color: var(--text3, #9ca3af); flex-wrap: wrap; }
+    .as-ctx b { color: var(--text, #111827); }
+    .as-topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; }
+    .as-prompt {
+      margin: 6px 20px 0; background: #f5f6ff; border: 1px solid #e0e7ff; border-radius: 12px; padding: 14px 16px;
+    }
+    [data-theme="dark"] .as-prompt { background: #161a2e; border-color: #2b3357; }
+    .as-prompt-label { font-size: 11px; font-weight: 800; color: #4338ca; text-transform: uppercase; letter-spacing: .05em; }
+    [data-theme="dark"] .as-prompt-label { color: #a5b4fc; }
+    .as-prompt p { margin: 6px 0 0; font-size: 15px; line-height: 1.6; font-weight: 600; }
+    .as-struct-reminder {
+      margin: 8px 20px 0; font-size: 12.5px; color: #4338ca; background: #eef2ff; border-radius: 8px; padding: 7px 12px;
+    }
+    [data-theme="dark"] .as-struct-reminder { background: #1e1b3a; color: #a5b4fc; }
+    .as-note { margin: 8px 20px 0; font-size: 12px; font-weight: 700; color: var(--text2, #6b7280); }
+
+    .as-hint-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 20px 0; align-items: center; }
+    .as-hint-chip { background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    [data-theme="dark"] .as-hint-chip { background: #3a2508; color: #ffb74d; }
+    .as-hint-btn {
+      background: none; border: 1px dashed #f59e0b; color: #b45309; border-radius: 20px; padding: 4px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .as-hint-btn:disabled { opacity: .5; cursor: default; }
+
+    .as-progress-wrap { height: 6px; background: var(--surface2, #f3f4f6); border-radius: 6px; margin: 12px 20px 6px; overflow: hidden; }
+    .as-progress-bar { height: 100%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: 6px; transition: width .3s; }
+    .as-dots { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 20px 4px; }
+    .as-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--surface2, #e5e7eb); cursor: pointer; }
+    .as-dot.ok { background: #22c55e; }
+    .as-dot.err { background: #ef4444; }
+    .as-dot.cur { background: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+    .as-counter { padding: 4px 20px; font-size: 12px; color: var(--text3, #9ca3af); font-weight: 700; }
+
+    .as-card { margin: 0 20px; background: var(--surface, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: 14px; padding: 16px; }
+    .as-drill-host { margin-top: 10px; }
+    .as-textarea {
+      width: 100%; box-sizing: border-box; font-family: inherit; font-size: 15px; line-height: 1.6; padding: 12px;
+      border: 1.5px solid var(--border, #d1d5db); border-radius: 10px; resize: vertical; background: var(--surface, #fff); color: var(--text, #111827);
+    }
+    .as-textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+    .as-submit {
+      margin-top: 12px; width: 100%; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none;
+      border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+    }
+    .as-submit:disabled { opacity: .5; cursor: default; }
+
+    .as-fb { margin: 12px 20px; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border, #e5e7eb); background: var(--surface, #fff); }
+    .as-fb.ok { border-color: #86efac; background: #f0fdf4; }
+    .as-fb.bad { border-color: #fca5a5; background: #fef2f2; }
+    [data-theme="dark"] .as-fb.ok { background: #052e16; }
+    [data-theme="dark"] .as-fb.bad { background: #2a0d0d; }
+    .as-fb-banner { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+    .as-fb-row { font-size: 13.5px; line-height: 1.6; margin-top: 4px; }
+    .as-fb-row .lbl { font-weight: 700; color: var(--text2, #6b7280); }
+    .as-fb-model { color: #15803d; font-weight: 600; }
+    [data-theme="dark"] .as-fb-model { color: #4ade80; }
+    .as-next {
+      margin-top: 12px; width: 100%; background: #6366f1; color: #fff; border: none; border-radius: 10px;
+      padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+    }
+
+    /* exam */
+    .as-exam-timer { font-weight: 800; color: #6366f1; font-size: 14px; }
+    .as-exam-timer.low { color: #ef4444; }
+    .as-result-hero { text-align: center; padding: 20px; }
+    .as-result-score { font-size: 44px; font-weight: 800; color: #6366f1; }
+    .as-review-item { border: 1px solid var(--border, #e5e7eb); border-radius: 12px; padding: 12px 14px; margin: 10px 20px; }
+    .as-review-item.ok { border-color: #86efac; }
+    .as-review-item.bad { border-color: #fca5a5; }
+
+    /* history modal */
+    .as-hist-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1400; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .as-hist-modal { background: var(--surface, #fff); color: var(--text, #111827); border-radius: 16px; width: 100%; max-width: 560px; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; }
+    .as-hist-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--border, #e5e7eb); }
+    .as-hist-hdr h3 { margin: 0; font-size: 16px; font-weight: 800; }
+    .as-hist-close { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text2, #6b7280); }
+    .as-hist-body { padding: 14px 18px; overflow-y: auto; }
+    .as-hist-stats { display: flex; gap: 10px; margin-bottom: 12px; }
+    .as-hist-stat { flex: 1; background: var(--surface2, #f3f4f6); border-radius: 10px; padding: 10px; text-align: center; }
+    .as-hist-stat .n { font-size: 18px; font-weight: 800; }
+    .as-hist-stat .l { font-size: 11px; color: var(--text3, #9ca3af); }
+    .as-hist-entry { border: 1px solid var(--border, #e5e7eb); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+    .as-hist-entry.clickable { cursor: pointer; }
+    .as-hist-entry.clickable:hover { border-color: #6366f1; background: #f5f3ff; }
+    [data-theme="dark"] .as-hist-entry.clickable:hover { background: #1e1b3a; }
+    .as-hist-entry-date { font-size: 11px; color: var(--text3, #9ca3af); }
+    .as-hist-entry-name { font-size: 13.5px; font-weight: 700; margin: 2px 0; }
+    .as-hist-entry-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+    .as-acc { font-weight: 800; }
+    .as-acc.good { color: #16a34a; }
+    .as-acc.mid { color: #d97706; }
+    .as-acc.bad { color: #dc2626; }
+    .as-spinner { width: 28px; height: 28px; border: 3px solid var(--surface2, #e5e7eb); border-top-color: #6366f1; border-radius: 50%; animation: as-spin .8s linear infinite; margin: 0 auto; }
+    @keyframes as-spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20260908"></script>
+<script src="js/auth.js?v=20260831"></script>
+<script src="js/upgrade-modal.js?v=20260831"></script>
+<script src="js/shared/popup-queue.js?v=20260923"></script>
+<script src="js/nav.js?v=20260903hw"></script>
+<script src="js/shared/onboarding-tour.js?v=20260831"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260925"></script>
+<script src="js/shared/sound-effects.js?v=20260831"></script>
+<script src="js/shared/wbw-drill.js?v=20260904"></script>
+
+<!-- ── Quit modal ── -->
+<div class="as-hist-overlay hidden" id="as-quit-overlay" style="z-index:1500">
+  <div class="as-hist-modal" style="max-width:380px">
+    <div class="as-hist-body" style="text-align:center">
+      <div style="font-size:40px;margin-bottom:8px">✏️</div>
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px">Dừng luyện tập?</div>
+      <div id="as-quit-sub" style="font-size:13px;color:var(--text2,#6b7280);margin-bottom:16px"></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="as-next" id="as-quit-continue" style="margin-top:0"><i class="fas fa-arrow-left"></i> Tiếp tục học</button>
+        <button class="as-btn" id="as-quit-save" style="justify-content:center"><i class="fas fa-bookmark"></i> Thoát &amp; lưu tiến độ</button>
+        <button class="as-btn" id="as-quit-leave" style="justify-content:center;color:#dc2626;border-color:#fca5a5">Dừng lại (không lưu)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<!-- Dictionary lookup (double-click a word) -->
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="dict-body" class="dict-body"></div>
+</div>
+
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header">
+      <h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+            class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  Viết câu nâng cao — Advanced Sentence Translation Practice
+//  Mirrors the screen flow of task2-practice.html (weeks → groups →
+//  per-sentence drill + exam + history) with a lean, purpose-built page.
+// ══════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+  var LS_SCORES = 'as_group_scores';
+
+  var state = {
+    view: 'weeks',            // weeks | groups | practice | exam | examResult
+    weeks: [],
+    allDrafts: [],
+    selectedWeek: null,
+    groups: [],
+    selectedGroup: null,
+    showHints: true,           // "Có gợi ý" vs "Không gợi ý"
+    // practice session
+    sentences: [],
+    idx: 0,
+    status: [],                // 'pending' | 'correct' | 'wrong'
+    attempts: [],              // { sentenceId, userAnswer, isCorrect, score, modelAnswer, feedbackVi, promptVi }
+    hintCount: 0,
+    answered: false,
+    _drillHost: null,          // live WbwDrill host <div>, for unmountDrill()
+    // exam
+    examQs: [],
+    examAns: {},
+    examIdx: 0,
+    examTimer: null,
+    examLeft: 0,
+    examResult: null,
+  };
+
+  // ── helpers ────────────────────────────────────────────────────────
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function toast(msg, type) { if (window.showToast) window.showToast(msg, type || 'info'); }
+
+  async function api(path, opts) {
+    opts = opts || {};
+    var token = window.AuthService && window.AuthService.getToken();
+    var headers = Object.assign(
+      { 'Content-Type': 'application/json' },
+      token ? { Authorization: 'Bearer ' + token } : {},
+      opts.headers || {}
+    );
+    var signal, killer;
+    if (opts.timeoutMs) { var c = new AbortController(); killer = setTimeout(function () { c.abort(); }, opts.timeoutMs); signal = c.signal; }
+    try {
+      var res = await fetch(API + path, Object.assign({}, opts, { headers: headers, signal: signal }));
+      if (window.ApiClient && window.ApiClient.handleResponse) return await window.ApiClient.handleResponse(res);
+      return await res.json();
+    } finally { if (killer) clearTimeout(killer); }
+  }
+
+  function loadScores() { try { return JSON.parse(localStorage.getItem(LS_SCORES) || '{}'); } catch (e) { return {}; } }
+  function saveGroupScore(id, score) {
+    var s = loadScores();
+    var prev = s[id] || { best: 0 };
+    s[id] = { best: Math.max(prev.best || 0, score), completed: (prev.completed || score >= 80), at: Date.now() };
+    try { localStorage.setItem(LS_SCORES, JSON.stringify(s)); } catch (e) {}
+  }
+  function groupDone(id) { var s = loadScores()[id]; return !!(s && s.completed); }
+
+  function isPremium() {
+    return !!(window.AuthService && window.AuthService.hasPremiumAccess && window.AuthService.hasPremiumAccess());
+  }
+
+  function fmtDate(d) {
+    var x = new Date(d);
+    return String(x.getDate()).padStart(2, '0') + '/' + String(x.getMonth() + 1).padStart(2, '0') + '/' + x.getFullYear();
+  }
+  function accClass(p) { return p >= 70 ? 'good' : p >= 50 ? 'mid' : 'bad'; }
+
+  // ── router ─────────────────────────────────────────────────────────
+  var app = document.getElementById('app');
+
+  // Tear down any live word-by-word drill before its host <div> is replaced
+  // by the next innerHTML write — otherwise the old Drill keeps its input
+  // listeners + pending shake/complete timers on a detached node, and a
+  // stale timer could fire onComplete() against the wrong sentence.
+  function unmountDrill() {
+    if (state._drillHost && window.WbwDrill) {
+      try { window.WbwDrill.unmount(state._drillHost); } catch (e) {}
+    }
+    state._drillHost = null;
+  }
+
+  function render() {
+    unmountDrill();
+    if (state.view === 'weeks')      { app.innerHTML = renderWeeks();  bindWeeks();  }
+    else if (state.view === 'groups')   { app.innerHTML = renderGroups(); bindGroups(); }
+    else if (state.view === 'practice') { app.innerHTML = renderPractice(); mountPractice(); }
+    else if (state.view === 'exam')     { app.innerHTML = renderExam();   bindExam(); }
+    else if (state.view === 'examResult') { app.innerHTML = renderExamResult(); bindExamResult(); }
+  }
+
+  // ── WEEKS ──────────────────────────────────────────────────────────
+  async function loadWeeks() {
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="as-spinner"></div></div>';
+    try {
+      var params = new URLSearchParams(location.search);
+      var urlWeek = parseInt(params.get('week')) || null;
+      var urlGroup = params.get('groupId');
+
+      var results = await Promise.all([
+        api('/adv-sentence/weeks'),
+        api('/adv-sentence/drafts').catch(function () { return { drafts: [] }; }),
+      ]);
+      state.weeks = results[0].weeks || [];
+      state.allDrafts = results[1].drafts || [];
+
+      if (urlWeek) {
+        state.selectedWeek = urlWeek;
+        var gd = await api('/adv-sentence/groups/week/' + urlWeek);
+        state.groups = gd.groups || [];
+        if (urlGroup) {
+          var g = state.groups.find(function (x) { return String(x._id) === String(urlGroup); });
+          if (g) { await openGroup(g._id, true); return; }
+        }
+        state.view = 'groups';
+        history.replaceState({ view: 'groups', week: urlWeek }, '', location.href);
+        render();
+        return;
+      }
+      state.view = 'weeks';
+      history.replaceState({ view: 'weeks' }, '', location.href);
+      render();
+    } catch (e) {
+      app.innerHTML = '<p style="text-align:center;color:#dc2626;padding:40px">Lỗi tải dữ liệu. Thử tải lại trang.</p>';
+    }
+  }
+
+  function draftsByWeek() {
+    var m = {};
+    (state.allDrafts || []).forEach(function (d) {
+      var rem = ((d.sentenceIds && d.sentenceIds.length) || 0) - (d.currentIdx || 0);
+      if (rem > 0 && d.week) {
+        if (!m[d.week]) m[d.week] = { remaining: 0, groups: 0 };
+        m[d.week].remaining += rem; m[d.week].groups++;
+      }
+    });
+    return m;
+  }
+  function draftGroupIds() {
+    return new Set((state.allDrafts || []).filter(function (d) {
+      return ((d.sentenceIds && d.sentenceIds.length) || 0) - (d.currentIdx || 0) > 0;
+    }).map(function (d) { return String(d.groupId); }));
+  }
+
+  function renderWeeks() {
+    var dbw = draftsByWeek();
+    var totalDraft = Object.keys(dbw).length;
+    var wmap = {};
+    state.weeks.forEach(function (w) { wmap[w.week] = w; });
+    var cards = [1, 2, 3, 4, 5, 6].map(function (w) {
+      var d = wmap[w];
+      var has = !!d;
+      var dr = dbw[w];
+      var names = has ? (d.groupNames || []).join(' · ') : 'Sắp ra';
+      return '<div class="as-week-card' + (has ? '' : ' locked') + (dr ? ' has-draft' : '') + '" data-week="' + w + '"' +
+        (has ? '' : ' style="opacity:.45;cursor:not-allowed"') + '>' +
+        '<div class="as-week-num">W' + w + '</div>' +
+        '<div class="as-week-names">' + esc(names) + '</div>' +
+        '<div class="as-week-label">' + (has ? (d.sentenceCount + ' câu · ' + d.groupCount + ' nhóm') : '') + '</div>' +
+        (dr ? '<div class="as-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> còn ' + dr.remaining + ' câu</div>' : '') +
+        '</div>';
+    }).join('');
+    return '' +
+      '<div class="as-head">' +
+        '<div><h2 class="as-h2">✍️ Viết câu nâng cao</h2>' +
+        '<p class="as-sub">Luyện dịch Việt → Anh theo 12 nhóm cấu trúc ngữ pháp nâng band</p></div>' +
+        '<button class="as-btn" id="as-hist-btn"><i class="fas fa-history"></i> Lịch sử</button>' +
+      '</div>' +
+      (!isPremium() ? (
+        '<div class="as-premium-banner">' +
+          '<div style="font-size:22px">⭐</div>' +
+          '<div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b>' +
+          '<span>Toàn bộ 73 câu luyện dịch · 12 nhóm ngữ pháp Band 7+</span></div>' +
+          '<button id="as-upg-btn">Upgrade Premium</button>' +
+        '</div>'
+      ) : '') +
+      (totalDraft > 0 ? '<div class="as-draft-note"><i class="fas fa-bookmark" style="color:#f59e0b"></i> Bạn có bài đang dở ở ' + totalDraft + ' tuần — tuần được đánh dấu vàng. Nhấn để tiếp tục!</div>' : '') +
+      '<div class="as-week-grid">' + cards + '</div>';
+  }
+  function bindWeeks() {
+    document.querySelectorAll('.as-week-card:not(.locked)').forEach(function (el) {
+      el.addEventListener('click', function () { selectWeek(parseInt(el.dataset.week)); });
+    });
+    var hb = document.getElementById('as-hist-btn');
+    if (hb) hb.addEventListener('click', openHistory);
+    var ub = document.getElementById('as-upg-btn');
+    if (ub) ub.addEventListener('click', function () { if (window.openUpgradeModal) window.openUpgradeModal(); });
+  }
+
+  async function selectWeek(w) {
+    state.selectedWeek = w;
+    try {
+      var d = await api('/adv-sentence/groups/week/' + w);
+      state.groups = d.groups || [];
+      state.view = 'groups';
+      history.pushState({ view: 'groups', week: w }, '', 'advanced-sentences.html?week=' + w);
+      render();
+    } catch (e) { toast('Lỗi tải nhóm', 'error'); }
+  }
+
+  // ── GROUPS ─────────────────────────────────────────────────────────
+  function renderGroups() {
+    var dids = draftGroupIds();
+    var cards = state.groups.map(function (g) {
+      var dr = dids.has(String(g._id));
+      var done = groupDone(g._id);
+      return '<div class="as-group-card' + (dr ? ' has-draft' : '') + '" data-id="' + g._id + '">' +
+        '<div class="as-group-emoji">' + esc(g.emoji || '✍️') + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="as-group-en">' + esc(g.nameEn) + '</div>' +
+          '<div class="as-group-name">' + esc(g.nameVi) + '</div>' +
+          '<div class="as-group-struct">🎯 ' + esc(g.targetStructure) + '</div>' +
+          '<div class="as-group-meta">' + g.sentenceCount + ' câu' +
+            (done ? ' · <span class="as-group-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>' : '') +
+            (dr ? ' · <span style="color:#b45309"><i class="fas fa-bookmark"></i> Đang dở</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<i class="fas fa-chevron-right" style="color:#9ca3af;align-self:center"></i>' +
+      '</div>';
+    }).join('');
+    return '' +
+      '<div class="as-crumb"><span id="as-back-weeks">Tuần</span> › <b>Tuần ' + state.selectedWeek + '</b></div>' +
+      '<div class="as-head" style="padding-top:4px"><div><h2 class="as-h2" style="font-size:17px">Tuần ' + state.selectedWeek + ' — Chọn nhóm cấu trúc</h2></div></div>' +
+      '<div class="as-mode-row">' +
+        '<span style="font-size:12px;color:var(--text3,#9ca3af);font-weight:700">Chế độ:</span>' +
+        '<button class="as-toggle' + (state.showHints ? ' active' : '') + '" data-hints="1">Có gợi ý</button>' +
+        '<button class="as-toggle' + (!state.showHints ? ' active' : '') + '" data-hints="0">Không gợi ý</button>' +
+        '<button class="as-btn" id="as-exam-btn" style="margin-left:auto"><i class="fas fa-clipboard-check"></i> Thi thử cả tuần</button>' +
+      '</div>' +
+      '<div class="as-group-list">' + cards + '</div>';
+  }
+  function bindGroups() {
+    document.getElementById('as-back-weeks').addEventListener('click', goWeeks);
+    document.querySelectorAll('.as-group-card').forEach(function (el) {
+      el.addEventListener('click', function () { openGroup(el.dataset.id); });
+    });
+    document.querySelectorAll('.as-toggle[data-hints]').forEach(function (b) {
+      b.addEventListener('click', function () { state.showHints = b.dataset.hints === '1'; render(); });
+    });
+    document.getElementById('as-exam-btn').addEventListener('click', startExam);
+  }
+  function goWeeks() {
+    state.view = 'weeks';
+    history.pushState({ view: 'weeks' }, '', 'advanced-sentences.html');
+    // refresh drafts so the yellow pills reflect a session we just finished
+    api('/adv-sentence/drafts').then(function (d) { state.allDrafts = d.drafts || []; render(); }).catch(function () { render(); });
+  }
+
+  // ── PRACTICE ───────────────────────────────────────────────────────
+  async function openGroup(groupId, fromUrl) {
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="as-spinner"></div></div>';
+    try {
+      var res = await Promise.all([
+        api('/adv-sentence/group/' + groupId),
+        api('/adv-sentence/draft/' + groupId).catch(function () { return { draft: null }; }),
+      ]);
+      var data = res[0];
+      state.selectedGroup = data.group;
+      state.sentences = data.sentences || [];
+      state.selectedWeek = data.group.week;
+
+      var draft = res[1].draft;
+      if (draft && draft.mode !== 'exam' && ((draft.sentenceIds && draft.sentenceIds.length) || 0) - (draft.currentIdx || 0) > 0) {
+        if (confirm('Bạn có bài đang dở ở nhóm này (' + (draft.currentIdx || 0) + '/' + (draft.sentenceIds ? draft.sentenceIds.length : 0) + '). Tiếp tục?')) {
+          resumeDraft(draft);
+        } else {
+          await api('/adv-sentence/draft/' + groupId, { method: 'DELETE' }).catch(function () {});
+          startFresh();
+        }
+      } else {
+        startFresh();
+      }
+      var url = 'advanced-sentences.html?week=' + state.selectedWeek + '&groupId=' + groupId;
+      if (fromUrl) history.replaceState({ view: 'practice', groupId: groupId }, '', url);
+      else history.pushState({ view: 'practice', groupId: groupId }, '', url);
+    } catch (e) {
+      toast('Lỗi tải nhóm', 'error');
+      goWeeks();
+    }
+  }
+
+  function startFresh() {
+    state.idx = 0;
+    state.status = state.sentences.map(function () { return 'pending'; });
+    state.attempts = [];
+    state.answered = false;
+    state.hintCount = 0;
+    state.view = 'practice';
+    render();
+  }
+  function resumeDraft(draft) {
+    var byId = {};
+    state.sentences.forEach(function (s) { byId[String(s._id)] = s; });
+    // keep the sentence order as stored (in case admin reordered since)
+    if (draft.sentenceIds && draft.sentenceIds.length) {
+      state.sentences = draft.sentenceIds.map(function (id) { return byId[String(id)]; }).filter(Boolean);
+    }
+    state.idx = Math.min(draft.currentIdx || 0, state.sentences.length - 1);
+    state.status = state.sentences.map(function (s, i) {
+      return (draft.sentenceStatus && draft.sentenceStatus[i]) || 'pending';
+    });
+    state.attempts = (draft.sessionAttempts || []).slice();
+    state.answered = false;
+    state.hintCount = 0;
+    state.view = 'practice';
+    render();
+  }
+
+  function renderPractice() {
+    if (!state.sentences.length) {
+      return '<div style="text-align:center;padding:48px;color:var(--text2,#6b7280)">Nhóm này chưa có câu nào.' +
+        '<br><button class="as-btn" style="margin-top:14px" onclick="history.length>1?history.back():location.href=\'advanced-sentences.html\'">← Quay lại</button></div>';
+    }
+    var s = state.sentences[state.idx];
+    if (!s) { state.idx = state.sentences.length - 1; s = state.sentences[state.idx]; }
+    var g = state.selectedGroup;
+    var pct = Math.round(((state.idx + 1) / state.sentences.length) * 100);
+    var hints = (s.hintWords || []);
+    var maxHint = Math.min(3, hints.length);
+    return '' +
+      '<div class="as-topbar">' +
+        '<button class="as-btn" id="as-quit-btn"><i class="fas fa-times"></i> Thoát</button>' +
+        '<span style="font-size:12px;color:#9ca3af;font-weight:700">✏️ Luyện dịch</span>' +
+      '</div>' +
+      '<div class="as-ctx"><b>Tuần ' + state.selectedWeek + '</b> › ' + esc(g.emoji || '') + ' <b>' + esc(g.nameVi) + '</b>' +
+        (s.structureNote ? ' · <span style="color:#6366f1;font-weight:700">' + esc(s.structureNote) + '</span>' : '') + '</div>' +
+      '<div class="as-prompt"><div class="as-prompt-label">📝 Dịch câu sau sang tiếng Anh</div><p>' + esc(s.promptVi) + '</p></div>' +
+      (state.showHints ? '<div class="as-struct-reminder">🎯 ' + esc(g.targetStructure) + '</div>' : '') +
+      '<div class="as-progress-wrap"><div class="as-progress-bar" style="width:' + pct + '%"></div></div>' +
+      '<div class="as-dots">' + state.sentences.map(function (x, i) {
+        var st = state.status[i] || 'pending';
+        var c = st === 'correct' ? 'ok' : st === 'wrong' ? 'err' : (i === state.idx ? 'cur' : '');
+        return '<span class="as-dot ' + c + '" data-i="' + i + '"></span>';
+      }).join('') + '</div>' +
+      '<div class="as-counter">' + (state.idx + 1) + ' / ' + state.sentences.length + ' câu</div>' +
+      (state.showHints && hints.length
+        ? '<div class="as-hint-row" id="as-hint-row"><button class="as-hint-btn" id="as-hint-btn">💡 Gợi ý từ vựng <span id="as-hint-n">0/' + maxHint + '</span></button></div>'
+        : '') +
+      '<div class="as-card">' +
+        '<div id="as-drill-host" class="as-drill-host"></div>' +
+        '<textarea class="as-textarea hidden" id="as-fallback" rows="3" placeholder="Nhập bản dịch của bạn..."></textarea>' +
+        '<button class="as-submit" id="as-submit-btn" disabled><i class="fas fa-check"></i> Kiểm tra</button>' +
+      '</div>' +
+      '<div class="as-fb hidden" id="as-fb"></div>';
+  }
+
+  function mountPractice() {
+    if (!state.sentences.length) return;
+    var s = state.sentences[state.idx];
+    if (!s) return;
+    state.answered = false;
+    state.hintCount = 0;
+
+    var host = document.getElementById('as-drill-host');
+    var fallback = document.getElementById('as-fallback');
+    var submitBtn = document.getElementById('as-submit-btn');
+
+    var quitBtn = document.getElementById('as-quit-btn');
+    if (quitBtn) quitBtn.addEventListener('click', confirmQuit);
+    document.querySelectorAll('.as-dot').forEach(function (d) {
+      d.addEventListener('click', function () { goToIdx(parseInt(d.dataset.i)); });
+    });
+    var hintBtn = document.getElementById('as-hint-btn');
+    if (hintBtn) hintBtn.addEventListener('click', revealHint);
+
+    // The submit button doubles as the retry button if a check request fails
+    // (in drill mode it's hidden until then), so wire it in every mode.
+    submitBtn.addEventListener('click', submitAnswer);
+
+    var mounted = false;
+    if (s.translationAnswer && window.WbwDrill) {
+      mounted = window.WbwDrill.mount(host, {
+        answer: s.translationAnswer,
+        bridgeInput: fallback,
+        onComplete: function () { submitAnswer(); },
+      });
+    }
+    if (mounted) {
+      state._drillHost = host;
+      submitBtn.style.display = 'none'; // the drill auto-submits on the last letter
+    } else {
+      // fallback: plain textarea + manual submit (exam-style / missing answer)
+      host.classList.add('hidden');
+      fallback.classList.remove('hidden');
+      fallback.addEventListener('input', function () { submitBtn.disabled = !fallback.value.trim(); });
+    }
+  }
+
+  function revealHint() {
+    var s = state.sentences[state.idx];
+    var hints = s.hintWords || [];
+    var max = Math.min(3, hints.length);
+    if (state.hintCount >= max) return;
+    state.hintCount++;
+    var row = document.getElementById('as-hint-row');
+    var btn = document.getElementById('as-hint-btn');
+    // rebuild: keep the button, prepend chips
+    row.querySelectorAll('.as-hint-chip').forEach(function (c) { c.remove(); });
+    hints.slice(0, state.hintCount).forEach(function (h) {
+      var chip = document.createElement('span');
+      chip.className = 'as-hint-chip';
+      chip.textContent = h;
+      row.insertBefore(chip, btn);
+    });
+    document.getElementById('as-hint-n').textContent = state.hintCount + '/' + max;
+    if (state.hintCount >= max) btn.disabled = true;
+  }
+
+  async function submitAnswer() {
+    if (state.answered) return;
+    var s = state.sentences[state.idx];
+    var fallback = document.getElementById('as-fallback');
+    var userAnswer = (fallback && fallback.value || '').trim();
+    if (!userAnswer) return;
+    state.answered = true;
+
+    var data;
+    try {
+      data = await api('/adv-sentence/check', {
+        method: 'POST',
+        body: JSON.stringify({ groupId: state.selectedGroup._id, sentenceId: s._id, userAnswer: userAnswer }),
+        timeoutMs: 20000,
+      });
+    } catch (e) {
+      onCheckFailed('Không chấm được, thử lại');
+      return;
+    }
+    if (!data || !data.success) { onCheckFailed('Lỗi chấm bài'); return; }
+
+    state.status[state.idx] = data.isCorrect ? 'correct' : 'wrong';
+    var existing = state.attempts.findIndex(function (a) { return String(a.sentenceId) === String(s._id); });
+    var entry = {
+      sentenceId: s._id, userAnswer: userAnswer, isCorrect: data.isCorrect, score: data.score,
+      modelAnswer: data.modelAnswer, feedbackVi: data.feedbackVi, promptVi: s.promptVi,
+    };
+    if (existing >= 0) state.attempts[existing] = entry; else state.attempts.push(entry);
+
+    if (data.isCorrect) { if (window.playOk) window.playOk(); }
+    else if (window.playWrong) window.playWrong();
+    var btn = document.getElementById('as-submit-btn');
+    if (btn) { btn.disabled = true; btn.style.display = 'none'; }
+    saveDraft();
+    showFeedback(data, userAnswer);
+  }
+
+  // A failed check must not leave a drill-mode student stuck (the drill is
+  // already finished + disabled, submit was hidden). Re-show the submit
+  // button as a "Thử lại" retry — the bridge input still holds the full
+  // answer, so clicking it just re-runs submitAnswer().
+  function onCheckFailed(msg) {
+    state.answered = false;
+    toast(msg, 'error');
+    var btn = document.getElementById('as-submit-btn');
+    if (btn) {
+      btn.style.display = '';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-rotate-right"></i> Thử lại';
+    }
+  }
+
+  function showFeedback(data, userAnswer) {
+    var fb = document.getElementById('as-fb');
+    fb.className = 'as-fb ' + (data.isCorrect ? 'ok' : 'bad');
+    var last = state.idx >= state.sentences.length - 1;
+    fb.innerHTML =
+      '<div class="as-fb-banner">' + esc(data.feedbackVi) + '</div>' +
+      '<div class="as-fb-row"><span class="lbl">📝 Câu của bạn:</span> ' + esc(userAnswer) + '</div>' +
+      (!data.isCorrect && data.modelAnswer ? '<div class="as-fb-row"><span class="lbl">✅ Đáp án mẫu:</span> <span class="as-fb-model">' + esc(data.modelAnswer) + '</span></div>' : '') +
+      '<button class="as-next" id="as-next-btn">' + (last ? 'Xem kết quả' : 'Câu tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+    fb.classList.remove('hidden');
+    fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('as-next-btn').addEventListener('click', next);
+  }
+
+  function next() {
+    if (state.idx >= state.sentences.length - 1) { finishPractice(); return; }
+    state.idx++;
+    render();
+  }
+  function goToIdx(i) {
+    if (i === state.idx) return;
+    state.idx = i;
+    render();
+  }
+
+  async function finishPractice() {
+    unmountDrill();
+    var correct = state.attempts.filter(function (a) { return a.isCorrect; }).length;
+    var total = state.sentences.length;
+    var score = total ? Math.round((correct / total) * 100) : 0;
+    saveGroupScore(state.selectedGroup._id, score);
+
+    try {
+      await api('/adv-sentence/save-attempt', {
+        method: 'POST',
+        body: JSON.stringify({
+          sessionType: 'practice',
+          week: state.selectedWeek,
+          groupId: state.selectedGroup._id,
+          groupName: state.selectedGroup.nameVi,
+          sentencesAttempted: state.attempts.map(function (a) {
+            return { sentenceId: a.sentenceId, userAnswer: a.userAnswer, isCorrect: a.isCorrect, score: a.score };
+          }),
+          totalQuestions: total,
+          correctCount: correct,
+        }),
+      });
+    } catch (e) { /* non-fatal */ }
+    await api('/adv-sentence/draft/' + state.selectedGroup._id, { method: 'DELETE' }).catch(function () {});
+
+    app.innerHTML =
+      '<div class="as-result-hero">' +
+        '<div style="font-size:44px">' + (score >= 80 ? '🎉' : score >= 50 ? '👍' : '💪') + '</div>' +
+        '<div class="as-result-score">' + score + '%</div>' +
+        '<div style="color:var(--text2,#6b7280);font-size:14px">' + correct + ' / ' + total + ' câu đạt yêu cầu</div>' +
+        '<div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+          '<button class="as-btn" id="as-retry">Làm lại nhóm này</button>' +
+          '<button class="as-next" style="width:auto;margin-top:0" id="as-done">Về danh sách tuần</button>' +
+        '</div>' +
+      '</div>';
+    document.getElementById('as-retry').addEventListener('click', function () { startFresh(); });
+    document.getElementById('as-done').addEventListener('click', goWeeks);
+  }
+
+  function saveDraft() {
+    if (!state.selectedGroup) return;
+    api('/adv-sentence/draft', {
+      method: 'POST',
+      body: JSON.stringify({
+        groupId: state.selectedGroup._id,
+        groupName: state.selectedGroup.nameVi,
+        week: state.selectedWeek,
+        mode: 'practice',
+        sentenceIds: state.sentences.map(function (s) { return String(s._id); }),
+        currentIdx: state.idx + (state.answered ? 1 : 0),
+        sessionAttempts: state.attempts,
+        sentenceStatus: state.status,
+        sessionDone: state.attempts.length,
+        sessionCorrect: state.attempts.filter(function (a) { return a.isCorrect; }).length,
+      }),
+    }).catch(function () {});
+  }
+
+  // ── quit modal ─────────────────────────────────────────────────────
+  var quitOverlay = document.getElementById('as-quit-overlay');
+  function confirmQuit() {
+    var doneAny = state.attempts.length > 0;
+    document.getElementById('as-quit-sub').textContent = doneAny
+      ? 'Bạn đã làm ' + state.attempts.length + '/' + state.sentences.length + ' câu.'
+      : 'Bạn chưa làm câu nào.';
+    document.getElementById('as-quit-save').style.display = doneAny ? '' : 'none';
+    quitOverlay.classList.remove('hidden');
+  }
+  document.getElementById('as-quit-continue').addEventListener('click', function () { quitOverlay.classList.add('hidden'); });
+  document.getElementById('as-quit-save').addEventListener('click', function () {
+    saveDraft(); quitOverlay.classList.add('hidden'); goWeeks();
+  });
+  document.getElementById('as-quit-leave').addEventListener('click', function () {
+    api('/adv-sentence/draft/' + state.selectedGroup._id, { method: 'DELETE' }).catch(function () {});
+    quitOverlay.classList.add('hidden'); goWeeks();
+  });
+
+  // ── EXAM ───────────────────────────────────────────────────────────
+  async function startExam() {
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="as-spinner"></div></div>';
+    try {
+      var d = await api('/adv-sentence/exam?week=' + state.selectedWeek + '&count=12');
+      state.examQs = d.questions || [];
+      if (!state.examQs.length) { toast('Chưa có câu cho tuần này', 'error'); state.view = 'groups'; render(); return; }
+      state.examAns = {};
+      state.examIdx = 0;
+      state._examSubmitting = false;
+      state.examLeft = state.examQs.length * 90; // 90s/câu
+      state.view = 'exam';
+      history.pushState({ view: 'exam', week: state.selectedWeek }, '', 'advanced-sentences.html?week=' + state.selectedWeek + '&mode=exam');
+      render();
+      state.examTimer = setInterval(function () {
+        state.examLeft--;
+        var t = document.getElementById('as-exam-timer');
+        if (t) {
+          t.textContent = fmtMMSS(state.examLeft);
+          t.classList.toggle('low', state.examLeft <= 60);
+        }
+        if (state.examLeft <= 0) submitExam();
+      }, 1000);
+    } catch (e) { toast('Lỗi tải đề thi', 'error'); state.view = 'groups'; render(); }
+  }
+  function fmtMMSS(s) {
+    s = Math.max(0, s);
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+  function renderExam() {
+    var q = state.examQs[state.examIdx];
+    var pct = Math.round(((state.examIdx + 1) / state.examQs.length) * 100);
+    return '' +
+      '<div class="as-topbar">' +
+        '<button class="as-btn" id="as-exam-quit"><i class="fas fa-times"></i> Thoát</button>' +
+        '<span class="as-exam-timer" id="as-exam-timer">' + fmtMMSS(state.examLeft) + '</span>' +
+      '</div>' +
+      '<div class="as-ctx">🎓 Thi thử · <b>Tuần ' + state.selectedWeek + '</b> · không gợi ý</div>' +
+      '<div class="as-progress-wrap"><div class="as-progress-bar" style="width:' + pct + '%"></div></div>' +
+      '<div class="as-counter">' + (state.examIdx + 1) + ' / ' + state.examQs.length + ' câu · ' + esc(q.groupName || '') + '</div>' +
+      '<div class="as-prompt"><div class="as-prompt-label">📝 Dịch sang tiếng Anh</div><p>' + esc(q.promptVi) + '</p></div>' +
+      '<div class="as-card">' +
+        '<textarea class="as-textarea" id="as-exam-input" rows="3" placeholder="Nhập bản dịch...">' + esc(state.examAns[q._id] || '') + '</textarea>' +
+        '<button class="as-submit" id="as-exam-next">' + (state.examIdx >= state.examQs.length - 1 ? 'Nộp bài' : 'Câu tiếp theo') + '</button>' +
+      '</div>';
+  }
+  function _restoreGroupsUrl() {
+    history.replaceState({ view: 'groups', week: state.selectedWeek }, '', 'advanced-sentences.html?week=' + state.selectedWeek);
+  }
+  function bindExam() {
+    document.getElementById('as-exam-quit').addEventListener('click', function () {
+      if (confirm('Thoát khỏi bài thi thử? Kết quả sẽ không được lưu.')) {
+        stopExamTimer(); state._examSubmitting = false; _restoreGroupsUrl(); state.view = 'groups'; render();
+      }
+    });
+    var input = document.getElementById('as-exam-input');
+    input.focus();
+    document.getElementById('as-exam-next').addEventListener('click', function () {
+      var q = state.examQs[state.examIdx];
+      state.examAns[q._id] = input.value.trim();
+      if (state.examIdx >= state.examQs.length - 1) { submitExam(); return; }
+      state.examIdx++;
+      render();
+    });
+  }
+  function stopExamTimer() { if (state.examTimer) { clearInterval(state.examTimer); state.examTimer = null; } }
+
+  async function submitExam() {
+    if (state._examSubmitting) return;
+    state._examSubmitting = true;
+    stopExamTimer();
+    var input = document.getElementById('as-exam-input');
+    if (input) { var q = state.examQs[state.examIdx]; state.examAns[q._id] = input.value.trim(); }
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="as-spinner"></div><p style="color:#9ca3af;margin-top:10px">Đang chấm...</p></div>';
+    var answers = state.examQs.map(function (q) {
+      return { groupId: q.groupId, sentenceId: q._id, userAnswer: state.examAns[q._id] || '' };
+    });
+    try {
+      var d = await api('/adv-sentence/exam/submit', { method: 'POST', body: JSON.stringify({ answers: answers }), timeoutMs: 30000 });
+      state.examResult = d;
+      await api('/adv-sentence/save-attempt', {
+        method: 'POST',
+        body: JSON.stringify({
+          sessionType: 'exam', week: state.selectedWeek, groupName: 'Thi thử Tuần ' + state.selectedWeek,
+          sentencesAttempted: (d.results || []).filter(function (r) { return !r.error; }).map(function (r) {
+            return { sentenceId: r.sentenceId, userAnswer: r.userAnswer, isCorrect: r.isCorrect, score: r.score };
+          }),
+          totalQuestions: d.total, correctCount: d.correct,
+        }),
+      }).catch(function () {});
+      _restoreGroupsUrl();
+      state.view = 'examResult';
+      render();
+    } catch (e) { toast('Lỗi chấm bài', 'error'); _restoreGroupsUrl(); state.view = 'groups'; render(); }
+  }
+  function renderExamResult() {
+    var d = state.examResult || { results: [], correct: 0, total: 0, score: 0 };
+    var items = (d.results || []).map(function (r, i) {
+      if (r.error) return '';
+      return '<div class="as-review-item ' + (r.isCorrect ? 'ok' : 'bad') + '">' +
+        '<div style="font-size:12px;font-weight:800">' + (r.isCorrect ? '✅' : '❌') + ' Câu ' + (i + 1) + ' — ' + esc(r.groupName || '') +
+          (r.structureNote ? ' · ' + esc(r.structureNote) : '') + '</div>' +
+        '<div style="font-size:13px;margin-top:6px;color:var(--text2,#6b7280)">' + esc(r.promptVi) + '</div>' +
+        '<div class="as-fb-row"><span class="lbl">📝 Bạn:</span> ' + (esc(r.userAnswer) || '<i>(bỏ trống)</i>') + '</div>' +
+        (!r.isCorrect ? '<div class="as-fb-row"><span class="lbl">✅ Mẫu:</span> <span class="as-fb-model">' + esc(r.modelAnswer) + '</span></div>' : '') +
+      '</div>';
+    }).join('');
+    return '' +
+      '<div class="as-result-hero">' +
+        '<div style="font-size:44px">' + (d.score >= 70 ? '🎉' : '💪') + '</div>' +
+        '<div class="as-result-score">' + d.score + '%</div>' +
+        '<div style="color:var(--text2,#6b7280)">' + d.correct + ' / ' + d.total + ' câu đúng</div>' +
+        '<button class="as-next" style="width:auto;margin-top:16px" id="as-exam-done">Về danh sách tuần</button>' +
+      '</div>' + items +
+      '<div style="height:20px"></div>';
+  }
+  function bindExamResult() {
+    var b = document.getElementById('as-exam-done');
+    if (b) b.addEventListener('click', goWeeks);
+  }
+
+  // ── HISTORY MODAL ──────────────────────────────────────────────────
+  var histCache = [];
+  function ensureHistModal() {
+    if (document.getElementById('as-hist-overlay')) return;
+    var o = document.createElement('div');
+    o.id = 'as-hist-overlay';
+    o.className = 'as-hist-overlay hidden';
+    o.innerHTML =
+      '<div class="as-hist-modal">' +
+        '<div class="as-hist-hdr"><h3 id="as-hist-title">📝 Lịch sử luyện tập</h3>' +
+          '<button class="as-hist-close" id="as-hist-x"><i class="fas fa-times"></i></button></div>' +
+        '<div class="as-hist-body" id="as-hist-body"></div>' +
+      '</div>';
+    document.body.appendChild(o);
+    o.addEventListener('click', function (e) { if (e.target === o) o.classList.add('hidden'); });
+    document.getElementById('as-hist-x').addEventListener('click', function () { o.classList.add('hidden'); });
+  }
+  async function openHistory() {
+    ensureHistModal();
+    var o = document.getElementById('as-hist-overlay');
+    var body = document.getElementById('as-hist-body');
+    o.classList.remove('hidden');
+    body.innerHTML = '<div style="padding:32px"><div class="as-spinner"></div></div>';
+    try {
+      var d = await api('/adv-sentence/history?limit=100');
+      histCache = d.attempts || [];
+      if (!histCache.length) { body.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af">📭<br>Chưa có lịch sử luyện tập</div>'; return; }
+      renderHistList();
+    } catch (e) { body.innerHTML = '<p style="color:#dc2626;text-align:center;padding:24px">Không tải được lịch sử.</p>'; }
+  }
+  function renderHistList() {
+    var body = document.getElementById('as-hist-body');
+    document.getElementById('as-hist-title').textContent = '📝 Lịch sử luyện tập';
+    var a = histCache;
+    var total = a.length;
+    var avg = Math.round(a.reduce(function (s, x) { return s + (x.scorePercentage || 0); }, 0) / total);
+    var tq = a.reduce(function (s, x) { return s + (x.totalQuestions || 0); }, 0);
+    var tc = a.reduce(function (s, x) { return s + (x.correctCount || 0); }, 0);
+    var rows = a.slice(0, 50).map(function (x) {
+      var acc = x.scorePercentage != null ? Math.round(x.scorePercentage) : 0;
+      var mode = x.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
+      var attrs = x._id ? ' clickable" data-id="' + x._id + '"' : '"';
+      return '<div class="as-hist-entry' + attrs + '>' +
+        '<div class="as-hist-entry-date">' + fmtDate(x.completedAt) + ' · ' + mode + (x.week ? ' · Tuần ' + x.week : '') + '</div>' +
+        '<div class="as-hist-entry-name">' + esc(x.groupName || '–') + '</div>' +
+        '<div class="as-hist-entry-row"><span>' + (x.correctCount != null ? x.correctCount : '?') + '/' + (x.totalQuestions != null ? x.totalQuestions : '?') + ' câu</span>' +
+          '<span class="as-acc ' + accClass(acc) + '">' + acc + '%</span>' +
+          (x._id ? '<span style="margin-left:auto;color:#6366f1;font-weight:700">Xem chi tiết ›</span>' : '') +
+        '</div></div>';
+    }).join('');
+    body.scrollTop = 0;
+    body.innerHTML =
+      '<div class="as-hist-stats">' +
+        '<div class="as-hist-stat"><div class="n">' + total + '</div><div class="l">Phiên</div></div>' +
+        '<div class="as-hist-stat"><div class="n">' + tc + '/' + tq + '</div><div class="l">Đúng/Tổng</div></div>' +
+        '<div class="as-hist-stat"><div class="n">' + avg + '%</div><div class="l">TB</div></div>' +
+      '</div>' + rows;
+    body.querySelectorAll('.as-hist-entry.clickable').forEach(function (el) {
+      el.addEventListener('click', function () { openAttemptDetail(el.dataset.id); });
+    });
+  }
+  async function openAttemptDetail(id) {
+    var body = document.getElementById('as-hist-body');
+    document.getElementById('as-hist-title').textContent = '📝 Chi tiết lượt làm';
+    body.scrollTop = 0;
+    body.innerHTML = '<div style="padding:32px"><div class="as-spinner"></div></div>';
+    var back = '<button class="as-btn" id="as-hist-back" style="margin-bottom:12px"><i class="fas fa-arrow-left"></i> Quay lại danh sách</button>';
+    try {
+      var d = await api('/adv-sentence/attempt/' + id);
+      var a = d.attempt;
+      var acc = Math.round(a.scorePercentage || 0);
+      var items = (a.sentences || []).map(function (it) {
+        return '<div class="as-review-item ' + (it.isCorrect ? 'ok' : 'bad') + '" style="margin:8px 0">' +
+          '<div style="font-size:12px;font-weight:800">' + (it.isCorrect ? '✅' : '❌') + ' Câu ' + it.index +
+            (it.structureNote ? ' · ' + esc(it.structureNote) : '') + '</div>' +
+          (it.promptVi ? '<div style="font-size:13px;margin-top:6px;color:var(--text2,#6b7280)">' + esc(it.promptVi) + '</div>' : '') +
+          '<div class="as-fb-row"><span class="lbl">📝 Bạn:</span> ' + (esc(it.userAnswer) || '<i>(bỏ trống)</i>') + '</div>' +
+          (!it.isCorrect && it.modelAnswer ? '<div class="as-fb-row"><span class="lbl">✅ Mẫu:</span> <span class="as-fb-model">' + esc(it.modelAnswer) + '</span></div>' : '') +
+        '</div>';
+      }).join('');
+      body.innerHTML = back +
+        '<div class="as-hist-entry-name">' + esc(a.groupName || '–') + (a.week ? ' · Tuần ' + a.week : '') + '</div>' +
+        '<div class="as-hist-entry-date" style="margin-bottom:10px">' + fmtDate(a.completedAt) + ' · <span class="as-acc ' + accClass(acc) + '">' + (a.correctCount || 0) + '/' + (a.totalQuestions || 0) + ' · ' + acc + '%</span></div>' +
+        (a.targetStructure ? '<div class="as-struct-reminder" style="margin:0 0 10px">🎯 ' + esc(a.targetStructure) + '</div>' : '') +
+        (items || '<p style="color:#9ca3af;text-align:center;padding:20px">Lượt này được lưu trước khi hệ thống ghi chi tiết từng câu.</p>');
+      document.getElementById('as-hist-back').addEventListener('click', renderHistList);
+    } catch (e) {
+      body.innerHTML = back + '<p style="color:#dc2626;text-align:center;padding:24px">Không tải được.</p>';
+      var b = document.getElementById('as-hist-back');
+      if (b) b.addEventListener('click', renderHistList);
+    }
+  }
+
+  // ── popstate ───────────────────────────────────────────────────────
+  window.addEventListener('popstate', function (e) {
+    var st = e.state || {};
+    if (state.examTimer) stopExamTimer();
+    state._examSubmitting = false;
+    if (st.view === 'weeks' || !st.view) { state.view = 'weeks'; render(); }
+    else if ((st.view === 'groups' || st.view === 'exam') && st.week) {
+      // Back-navigating onto an exam entry drops into the groups screen —
+      // resuming a timed exam from history would be unfair.
+      state.selectedWeek = st.week;
+      api('/adv-sentence/groups/week/' + st.week).then(function (d) { state.groups = d.groups || []; state.view = 'groups'; render(); });
+    } else if (st.view === 'practice' && st.groupId) {
+      openGroup(st.groupId, true);
+    } else {
+      state.view = 'weeks'; render();
+    }
+  });
+
+  // ── init ───────────────────────────────────────────────────────────
+  if (window.AuthService && !window.AuthService.isLoggedIn()) {
+    location.href = '/login.html';
+  } else {
+    loadWeeks();
+  }
+})();
+</script>
+</body>
+</html>
