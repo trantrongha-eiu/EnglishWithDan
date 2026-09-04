@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IELTS Task 1 Writing – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
+  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <style>
+    #app { max-width: 940px; margin: 0 auto; padding-bottom: 48px; }
+    .t1-head { padding: 20px 20px 6px; }
+    .t1-h2 { font-size: 20px; font-weight: 800; margin: 0; }
+    .t1-sub { font-size: 14px; color: var(--text2, #6b7280); margin: 2px 0 0; }
+    .t1-btn { display:inline-flex; align-items:center; gap:6px; background: var(--surface2,#f3f4f6); color: var(--text,#111827);
+      border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .t1-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
+
+    .t1-premium { margin: 0 20px 16px; display:flex; align-items:center; gap:14px;
+      background: linear-gradient(135deg, rgba(14,165,233,.10), rgba(2,132,199,.06));
+      border: 1px solid rgba(14,165,233,.25); border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; }
+    .t1-premium .t { flex:1; min-width: 200px; }
+    .t1-premium .t b { display:block; font-size: 13px; color: #0284c7; margin-bottom: 2px; }
+    .t1-premium .t span { font-size: 12px; color: var(--text2,#555); }
+    .t1-premium button { background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px;
+      padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+
+    /* modules / lessons */
+    .t1-module { margin: 12px 20px 18px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 16px; overflow: hidden; background: var(--surface,#fff); }
+    .t1-module-hd { padding: 14px 16px; background: var(--surface2,#f8fafc); border-bottom: 1px solid var(--border,#e5e7eb); }
+    .t1-module-hd h3 { margin: 0; font-size: 15px; font-weight: 800; }
+    .t1-module-hd .en { font-size: 11px; color: var(--text3,#9ca3af); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .t1-lesson { display:flex; align-items:center; gap:12px; padding: 12px 16px; border-top: 1px solid var(--border,#eef2f7); cursor: pointer; }
+    .t1-lesson:first-child { border-top: none; }
+    .t1-lesson:hover { background: #f0f9ff; }
+    .t1-lesson.is-locked { opacity: .62; }
+    .t1-lesson-ic { width: 26px; height: 26px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 13px; flex-shrink: 0;
+      background: var(--surface2,#eef2f7); color: var(--text2,#6b7280); }
+    .t1-lesson-ic.done { background: #dcfce7; color: #16a34a; }
+    .t1-lesson-ic.prog { background: #e0f2fe; color: #0284c7; }
+    .t1-lesson-body { flex: 1; min-width: 0; }
+    .t1-lesson-title { font-size: 14px; font-weight: 700; }
+    .t1-lesson-meta { font-size: 11.5px; color: var(--text3,#9ca3af); margin-top: 2px; }
+    .t1-lesson-bar { height: 4px; background: var(--surface2,#eef2f7); border-radius: 4px; margin-top: 5px; overflow: hidden; max-width: 260px; }
+    .t1-lesson-bar > span { display:block; height:100%; background: linear-gradient(90deg,#0ea5e9,#22c55e); border-radius: 4px; }
+    .t1-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; background: #fef3c7; color: #92400e; }
+
+    .t1-crumb { padding: 16px 20px 4px; font-size: 13px; color: var(--text3,#9ca3af); }
+    .t1-crumb span { color: #0ea5e9; font-weight: 700; cursor: pointer; }
+    .t1-crumb span:hover { text-decoration: underline; }
+
+    .t1-objs { margin: 4px 20px 0; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 12px 14px; }
+    [data-theme="dark"] .t1-objs { background: #0c2536; border-color: #1e3a52; }
+    .t1-objs-t { font-size: 12px; font-weight: 800; color: #0369a1; }
+    [data-theme="dark"] .t1-objs-t { color: #7dd3fc; }
+    .t1-objs ul { margin: 6px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.6; }
+    .t1-key { margin: 8px 20px 0; }
+    .t1-key > summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #0ea5e9; list-style: none; }
+    .t1-key > summary::-webkit-details-marker { display: none; }
+    .t1-key > summary::before { content: '▸ '; font-weight: 900; }
+    .t1-key[open] > summary::before { content: '▾ '; }
+    .t1-key ul { margin: 6px 0 0; padding-left: 20px; font-size: 12.5px; line-height: 1.7; color: var(--text2,#4b5563); }
+
+    .t1-ex-list { display:flex; flex-direction: column; gap: 10px; padding: 10px 20px 20px; }
+    .t1-ex-card { display:flex; align-items:center; gap: 12px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 12px; padding: 13px 15px; cursor: pointer; background: var(--surface,#fff); }
+    .t1-ex-card:hover { border-color: #0ea5e9; background: #f0f9ff; }
+    .t1-ex-type { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing:.03em; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
+    .t1-ex-card .nm { flex:1; min-width:0; font-size: 13.5px; font-weight: 700; }
+    .t1-ex-done { color: #16a34a; }
+
+    /* exercise runner */
+    .t1-topbar { display:flex; align-items:center; justify-content:space-between; padding: 8px 20px; }
+    .t1-stim { margin: 8px 20px 0; border: 1px solid var(--border,#e5e7eb); border-radius: 12px; padding: 12px 14px; background: var(--surface2,#f8fafc); }
+    .t1-stim img { max-width: 100%; border-radius: 8px; display:block; margin: 4px 0; }
+    .t1-stim .cap { font-size: 12px; font-weight: 700; color: var(--text2,#4b5563); margin-bottom: 6px; }
+    .t1-stim .note { font-size: 12px; color: var(--text3,#6b7280); margin-top: 6px; font-style: italic; }
+    .t1-stim table { border-collapse: collapse; font-size: 12.5px; width: 100%; }
+    .t1-stim th, .t1-stim td { border: 1px solid var(--border,#d1d5db); padding: 4px 8px; text-align: left; }
+    .t1-stim th { background: var(--surface,#eef2f7); }
+
+    .t1-instr { margin: 10px 20px 0; font-size: 13.5px; line-height: 1.6; color: var(--text,#111827); }
+    .t1-wb { display:flex; flex-wrap:wrap; gap:6px; padding: 8px 20px 0; }
+    .t1-wb .chip { background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+
+    .t1-card { margin: 12px 20px 0; background: var(--surface,#fff); border: 1px solid var(--border,#e5e7eb); border-radius: 14px; padding: 14px 16px; }
+    .t1-item { padding: 10px 0; border-top: 1px dashed var(--border,#eef2f7); }
+    .t1-item:first-child { border-top: none; }
+    .t1-item .q { font-size: 13.5px; line-height: 1.7; margin-bottom: 6px; }
+    .t1-input, .t1-ta { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1.5px solid var(--border,#d1d5db); border-radius: 8px; background: var(--surface,#fff); color: var(--text,#111827); }
+    .t1-ta { line-height: 1.6; resize: vertical; }
+    .t1-input:focus, .t1-ta:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
+    .t1-gap-inp { display:inline-block; width: 120px; margin: 0 3px; padding: 3px 6px; border: none; border-bottom: 2px solid #0ea5e9; background: #f0f9ff; font-family: inherit; font-size: 14px; }
+    .t1-mc { display:flex; gap: 8px; align-items: flex-start; padding: 6px 0; cursor: pointer; font-size: 13.5px; }
+    .t1-mc input { margin-top: 3px; }
+    .t1-chip-btn { border: 1.5px solid var(--border,#d1d5db); background: var(--surface,#fff); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-family: inherit; cursor: pointer; margin: 3px; }
+    .t1-chip-btn.sel { border-color: #0ea5e9; background: #e0f2fe; color: #0369a1; }
+    .t1-chip-btn.placed { opacity: .45; }
+    .t1-bucket { border: 1.5px dashed var(--border,#cbd5e1); border-radius: 10px; padding: 8px 10px; margin: 6px 0; min-height: 40px; }
+    .t1-bucket .bl { font-size: 12px; font-weight: 800; color: var(--text2,#6b7280); margin-bottom: 4px; }
+    .t1-ord-row { display:flex; align-items:center; gap: 8px; padding: 5px 0; }
+    .t1-ord-row .txt { flex: 1; font-size: 13px; }
+    .t1-ord-row button { border: 1px solid var(--border,#d1d5db); background: var(--surface,#fff); border-radius: 6px; width: 26px; height: 26px; cursor: pointer; }
+
+    .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-submit:disabled { opacity: .5; cursor: default; }
+    .t1-next { margin-top: 12px; width: 100%; background: #0ea5e9; color: #fff; border:none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-wc { font-size: 12px; color: var(--text3,#9ca3af); margin-top: 6px; text-align: right; }
+    .t1-timer { font-weight: 800; color: #0ea5e9; }
+    .t1-timer.low { color: #ef4444; }
+
+    .t1-fb { margin: 12px 20px 0; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border,#e5e7eb); background: var(--surface,#fff); }
+    .t1-fb-score { font-size: 34px; font-weight: 800; color: #0ea5e9; text-align: center; }
+    .t1-res-item { font-size: 13px; line-height: 1.6; padding: 6px 0; border-top: 1px dashed var(--border,#eef2f7); }
+    .t1-res-item:first-child { border-top: none; }
+    .t1-ok { color: #16a34a; font-weight: 700; }
+    .t1-bad { color: #dc2626; font-weight: 700; }
+    .t1-model { color: #15803d; }
+    [data-theme="dark"] .t1-model { color: #4ade80; }
+    .t1-bands { display:flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+    .t1-band { background: var(--surface2,#f3f4f6); border-radius: 10px; padding: 8px 12px; text-align: center; min-width: 74px; }
+    .t1-band .n { font-size: 18px; font-weight: 800; }
+    .t1-band .l { font-size: 10px; color: var(--text3,#9ca3af); }
+    .t1-spinner { width: 28px; height: 28px; border: 3px solid var(--surface2,#e5e7eb); border-top-color: #0ea5e9; border-radius: 50%; animation: t1sp .8s linear infinite; margin: 0 auto; }
+    @keyframes t1sp { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20260908"></script>
+<script src="js/auth.js?v=20260831"></script>
+<script src="js/upgrade-modal.js?v=20260831"></script>
+<script src="js/shared/popup-queue.js?v=20260923"></script>
+<script src="js/nav.js?v=20260904wt1"></script>
+<script src="js/shared/onboarding-tour.js?v=20260831"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260925"></script>
+<script src="js/shared/sound-effects.js?v=20260831"></script>
+
+<div id="app"></div>
+
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="dict-body" class="dict-body"></div>
+</div>
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header"><h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button></div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40" class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  IELTS Task 1 Writing — WT1 course (Module → Lesson → Exercise)
+// ══════════════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+  var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+
+  var TYPE_LABEL = {
+    mcq: 'Trắc nghiệm', gap_fill: 'Điền chỗ trống', error_correction: 'Sửa lỗi',
+    sentence_transform: 'Viết lại câu', word_form: 'Chia dạng từ', categorize: 'Phân loại',
+    matching: 'Nối', ordering: 'Sắp xếp', sentence_writing: 'Viết câu', paragraph_writing: 'Viết đoạn',
+    full_task1: 'Bài hoàn chỉnh',
+  };
+  var OBJECTIVE = { mcq:1, gap_fill:1, error_correction:1, word_form:1, categorize:1, matching:1, ordering:1, sentence_transform:1 };
+
+  var state = { view: 'overview', overview: null, lesson: null, exercises: [], exIdx: 0, answered: false, timer: null, timeLeft: 0, _submitting: false };
+  var app = document.getElementById('app');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function toast(m, t) { if (window.showToast) window.showToast(m, t || 'info'); }
+  function isPremium() { return !!(window.AuthService && window.AuthService.hasPremiumAccess && window.AuthService.hasPremiumAccess()); }
+
+  async function api(path, opts) {
+    opts = opts || {};
+    var token = window.AuthService && window.AuthService.getToken();
+    var headers = Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: 'Bearer ' + token } : {}, opts.headers || {});
+    var res = await fetch(API + path, Object.assign({}, opts, { headers: headers }));
+    if (window.ApiClient && window.ApiClient.handleResponse) return window.ApiClient.handleResponse(res);
+    return res.json();
+  }
+
+  function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
+
+  function render() {
+    stopTimer();
+    if (state.view === 'overview') { app.innerHTML = renderOverview(); bindOverview(); }
+    else if (state.view === 'lesson') { app.innerHTML = renderLesson(); bindLesson(); }
+    else if (state.view === 'exercise') { app.innerHTML = renderExercise(); bindExercise(); }
+  }
+
+  // ── OVERVIEW ──────────────────────────────────────────────────────
+  async function loadOverview() {
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="t1-spinner"></div></div>';
+    try {
+      var d = await api('/wt1/overview');
+      state.overview = d;
+      var p = new URLSearchParams(location.search);
+      if (p.get('lesson')) { await openLesson(p.get('lesson'), p.get('ex'), true); return; }
+      state.view = 'overview';
+      history.replaceState({ view: 'overview' }, '', location.href);
+      render();
+    } catch (e) {
+      if (e && e.code === 'PLAN_REQUIRED') { renderPaywall(); return; }
+      app.innerHTML = '<p style="text-align:center;color:#dc2626;padding:40px">Lỗi tải dữ liệu. Thử tải lại trang.</p>';
+    }
+  }
+  function renderPaywall() {
+    app.innerHTML =
+      '<div class="t1-head"><h2 class="t1-h2">📊 IELTS Task 1 Writing</h2></div>' +
+      '<div class="t1-premium"><div style="font-size:22px">⭐</div>' +
+      '<div class="t"><b>Khoá học Task 1 chỉ dành cho Premium</b>' +
+      '<span>4 module · 27 buổi học · biểu đồ tĩnh, biểu đồ động, bản đồ (Maps), sơ đồ quy trình (Process)</span></div>' +
+      '<button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Nâng cấp Premium</button></div>';
+  }
+  function renderOverview() {
+    var d = state.overview || { modules: [] };
+    var mods = (d.modules || []).map(function (m) {
+      var lessons = (m.lessons || []).map(function (l) {
+        var icCls = l.done ? 'done' : (l.doneCount > 0 ? 'prog' : '');
+        var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : '🔒');
+        var pct = l.exerciseCount ? Math.round((l.doneCount / l.exerciseCount) * 100) : 0;
+        return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '">' +
+          '<div class="t1-lesson-ic ' + icCls + '">' + icTxt + '</div>' +
+          '<div class="t1-lesson-body">' +
+            '<div class="t1-lesson-title">' + esc(l.title) + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</div>' +
+            '<div class="t1-lesson-meta">' + l.doneCount + '/' + l.exerciseCount + ' bài' +
+              (l.scorePercent ? ' · TB ' + l.scorePercent + '%' : '') +
+              (l.durationMinutes ? ' · ' + l.durationMinutes + ' phút' : '') + '</div>' +
+            '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' +
+          '</div><i class="fas fa-chevron-right" style="color:#9ca3af"></i></div>';
+      }).join('');
+      return '<div class="t1-module"><div class="t1-module-hd"><div class="en">' + esc(m.titleEn || '') + '</div>' +
+        '<h3>' + esc(m.title) + '</h3></div>' + lessons + '</div>';
+    }).join('');
+    return '<div class="t1-head"><h2 class="t1-h2">📊 IELTS Task 1 Writing</h2>' +
+      '<p class="t1-sub">' + esc((d.course && d.course.description) || 'Khoá học Task 1: biểu đồ, bản đồ và quy trình') + '</p></div>' +
+      (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Toàn bộ 4 module · 27 buổi học Task 1</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
+      mods;
+  }
+  function bindOverview() {
+    document.querySelectorAll('.t1-lesson').forEach(function (el) {
+      el.addEventListener('click', function () { openLesson(el.dataset.code); });
+    });
+  }
+
+  // ── LESSON ────────────────────────────────────────────────────────
+  async function openLesson(code, exCode, fromUrl) {
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div class="t1-spinner"></div></div>';
+    try {
+      var d = await api('/wt1/lesson/' + encodeURIComponent(code));
+      state.lesson = d.lesson;
+      state.exercises = d.exercises || [];
+      var url = 'writing-task1.html?lesson=' + code;
+      if (exCode) {
+        var i = state.exercises.findIndex(function (e) { return e.code === exCode; });
+        if (i >= 0) { state.exIdx = i; state.view = 'exercise'; (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'exercise', lesson: code, ex: exCode }, '', url + '&ex=' + exCode); render(); return; }
+      }
+      state.view = 'lesson';
+      (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'lesson', lesson: code }, '', url);
+      render();
+    } catch (e) {
+      if (e && e.code === 'PLAN_REQUIRED') { renderPaywall(); return; }
+      toast('Lỗi tải buổi học', 'error'); goOverview();
+    }
+  }
+  function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', 'writing-task1.html'); loadOverview(); }
+
+  function renderLesson() {
+    var l = state.lesson || {};
+    var exs = state.exercises.map(function (ex) {
+      var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi);
+      return '<div class="t1-ex-card" data-code="' + ex.code + '">' +
+        '<span class="t1-ex-type">' + esc(TYPE_LABEL[ex.type] || ex.type) + '</span>' +
+        '<span class="nm">' + esc(ex.title) + (ex.points ? ' · ' + ex.points + 'đ' : '') + '</span>' +
+        (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
+        '</div>';
+    }).join('');
+    return '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
+      '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +
+      ((l.objectives && l.objectives.length) ? '<div class="t1-objs"><div class="t1-objs-t">🎯 Mục tiêu buổi học</div><ul>' + l.objectives.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul></div>' : '') +
+      ((l.keyLanguage && l.keyLanguage.length) ? '<details class="t1-key"><summary>🧩 Ngữ pháp / Cấu trúc cần nhớ</summary><ul>' + l.keyLanguage.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></details>' : '') +
+      '<div class="t1-ex-list">' + exs + '</div>';
+  }
+  function bindLesson() {
+    document.getElementById('t1-back-ov').addEventListener('click', goOverview);
+    document.querySelectorAll('.t1-ex-card').forEach(function (el) {
+      el.addEventListener('click', function () {
+        state.exIdx = state.exercises.findIndex(function (e) { return e.code === el.dataset.code; });
+        state.view = 'exercise';
+        history.pushState({ view: 'exercise', lesson: state.lesson.code, ex: el.dataset.code }, '', 'writing-task1.html?lesson=' + state.lesson.code + '&ex=' + el.dataset.code);
+        render();
+      });
+    });
+  }
+
+  // ── EXERCISE RUNNER ──────────────────────────────────────────────
+  function curEx() { return state.exercises[state.exIdx]; }
+
+  function renderStimulus(st) {
+    if (!st) return '';
+    var body = '';
+    if (st.caption) body += '<div class="cap">' + esc(st.caption) + '</div>';
+    if (st.kind === 'image' && st.imageUrl) body += '<img src="' + esc(st.imageUrl) + '" alt="' + esc(st.caption || 'biểu đồ') + '">';
+    if (st.kind === 'table' && st.headers) {
+      body += '<div style="overflow-x:auto"><table><thead><tr>' + (st.headers || []).map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        (st.rows || []).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+    }
+    if (st.kind === 'text' && st.rows) {
+      body += '<div style="font-size:12.5px;line-height:1.7">' + (st.rows || []).map(function (r) { return '<div>• ' + r.map(esc).join(' — ') + '</div>'; }).join('') + '</div>';
+    }
+    if (st.note) body += '<div class="note">📌 ' + esc(st.note) + '</div>';
+    return body ? '<div class="t1-stim">' + body + '</div>' : '';
+  }
+
+  function renderItemBody(ex) {
+    var t = ex.type;
+    if (t === 'mcq') {
+      return ex.items.map(function (it) {
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + '</div>' +
+          (it.options || []).map(function (o) {
+            return '<label class="t1-mc"><input type="radio" name="mc-' + it.id + '" value="' + esc(o.id) + '"> <span>' + esc(o.id) + '. ' + esc(o.text) + '</span></label>';
+          }).join('') + '</div>';
+      }).join('');
+    }
+    if (t === 'gap_fill') {
+      return ex.items.map(function (it) {
+        var n = 0;
+        var html = esc(it.prompt).replace(/____/g, function () { n++; return '<input class="t1-gap-inp" data-item="' + it.id + '" data-k="' + (n - 1) + '">'; });
+        return '<div class="t1-item"><div class="q">' + html + '</div></div>';
+      }).join('');
+    }
+    if (t === 'error_correction') {
+      return ex.items.map(function (it) {
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + '</div><input class="t1-input" data-item="' + it.id + '" placeholder="Viết lại cả câu cho đúng..."></div>';
+      }).join('');
+    }
+    if (t === 'word_form') {
+      return ex.items.map(function (it) {
+        return '<div class="t1-item" style="display:flex;gap:12px;align-items:center"><div class="q" style="flex:1;margin:0">' + esc(it.prompt) + '</div><input class="t1-input" style="max-width:200px" data-item="' + it.id + '"></div>';
+      }).join('');
+    }
+    if (t === 'sentence_transform') {
+      return ex.items.map(function (it) {
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#0ea5e9">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
+          (it.starter ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">Bắt đầu: ' + esc(it.starter) + '</div>' : '') +
+          '<textarea class="t1-ta" rows="2" data-item="' + it.id + '"></textarea></div>';
+      }).join('');
+    }
+    if (t === 'categorize') {
+      var buckets = (ex.categories || []).map(function (c) {
+        return '<div class="t1-bucket" data-cat="' + esc(c.id) + '"><div class="bl">' + esc(c.label) + '</div><div class="drop"></div></div>';
+      }).join('');
+      var chips = ex.items.map(function (it) { return '<button type="button" class="t1-chip-btn" data-item="' + it.id + '">' + esc(it.text || it.prompt) + '</button>'; }).join('');
+      return '<div id="t1-cat-pool" style="margin-bottom:8px">' + chips + '</div>' + buckets + '<div style="font-size:11.5px;color:#9ca3af;margin-top:4px">Bấm một thẻ rồi bấm vào nhóm để đưa vào.</div>';
+    }
+    if (t === 'matching') {
+      var lefts = ex.items.map(function (it) {
+        return '<div class="t1-item" data-item="' + it.id + '"><div class="q">' + esc(it.left) + '</div><div class="pick" style="font-size:12px;color:#0ea5e9;min-height:20px">— chưa chọn —</div></div>';
+      }).join('');
+      var rights = (ex.rightOptions || []).map(function (r) { return '<button type="button" class="t1-chip-btn" data-right="' + esc(r) + '">' + esc(r) + '</button>'; }).join('');
+      return lefts + '<div style="margin-top:10px;font-size:12px;font-weight:700;color:#6b7280">Chọn vế phải:</div><div id="t1-right-pool">' + rights + '</div>';
+    }
+    if (t === 'ordering') {
+      return ex.items.map(function (it) {
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt || 'Sắp xếp theo thứ tự đúng:') + '</div><div class="t1-ord" data-item="' + it.id + '">' +
+          (it.tokens || []).map(function (tok) {
+            return '<div class="t1-ord-row" data-tok="' + esc(tok) + '"><button type="button" class="up">▲</button><button type="button" class="down">▼</button><span class="txt">' + esc(tok) + '</span></div>';
+          }).join('') + '</div></div>';
+      }).join('');
+    }
+    if (t === 'sentence_writing') {
+      var slots = ex.responseSlots || 4;
+      var tas = '';
+      for (var i = 0; i < slots; i++) tas += '<textarea class="t1-ta" rows="2" data-slot="' + i + '" placeholder="Câu ' + (i + 1) + '..."></textarea>';
+      return tas + rubricHint(ex);
+    }
+    if (t === 'paragraph_writing' || t === 'full_task1') {
+      var rows = t === 'full_task1' ? 12 : 7;
+      return '<textarea class="t1-ta" id="t1-essay" rows="' + rows + '" placeholder="Viết bài của bạn ở đây..."></textarea>' +
+        '<div class="t1-wc" id="t1-wc">0 từ</div>' + rubricHint(ex);
+    }
+    return '';
+  }
+  function rubricHint(ex) {
+    var r = ex.rubric || {};
+    if (!r.checklist || !r.checklist.length) return '';
+    return '<details class="t1-key" style="margin:8px 0 0"><summary>📋 Yêu cầu (rubric)</summary><ul>' +
+      r.checklist.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') +
+      (r.targetStructures && r.targetStructures.length ? '<li><b>Cấu trúc mục tiêu:</b> ' + esc(r.targetStructures.join(' · ')) + '</li>' : '') +
+      '</ul></details>';
+  }
+
+  function renderExercise() {
+    var ex = curEx();
+    if (!ex) return renderLessonDone();
+    var isWriting = !OBJECTIVE[ex.type];
+    var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
+    return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
+      '<span style="font-size:12px;color:#9ca3af;font-weight:700">' + (state.exIdx + 1) + ' / ' + state.exercises.length + '</span>' +
+      (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + fmt(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
+      '<div class="t1-crumb" style="padding-top:0"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
+      '<div class="t1-instr">' + esc(ex.instruction || ex.title) + '</div>' +
+      renderStimulus(ex.stimulus) +
+      (ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '') +
+      '<div class="t1-card" id="t1-body">' + renderItemBody(ex) +
+        '<button class="t1-submit" id="t1-submit">' + (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra') + '</button>' +
+      '</div>' +
+      '<div class="t1-fb hidden" id="t1-fb"></div>';
+  }
+
+  function fmt(s) { s = Math.max(0, s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+
+  function bindExercise() {
+    var ex = curEx();
+    if (!ex) return;
+    state.answered = false;
+    state._submitting = false;
+    document.getElementById('t1-quit').addEventListener('click', goToLesson);
+    document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
+    document.getElementById('t1-submit').addEventListener('click', submit);
+
+    // categorize: tap chip → tap bucket
+    if (ex.type === 'categorize') {
+      var selChip = null;
+      document.querySelectorAll('#t1-cat-pool .t1-chip-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('#t1-cat-pool .t1-chip-btn').forEach(function (x) { x.classList.remove('sel'); });
+          if (selChip === b) { selChip = null; return; } b.classList.add('sel'); selChip = b;
+        });
+      });
+      document.querySelectorAll('.t1-bucket').forEach(function (bk) {
+        bk.addEventListener('click', function () {
+          if (!selChip) return;
+          selChip.dataset.cat = bk.dataset.cat;
+          selChip.classList.remove('sel'); selChip.classList.add('placed');
+          bk.querySelector('.drop').appendChild(selChip);
+          selChip = null;
+        });
+      });
+    }
+    // matching: tap left → tap right chip
+    if (ex.type === 'matching') {
+      var selLeft = null;
+      document.querySelectorAll('#t1-body .t1-item[data-item]').forEach(function (li) {
+        li.addEventListener('click', function () {
+          document.querySelectorAll('#t1-body .t1-item[data-item]').forEach(function (x) { x.style.background = ''; });
+          li.style.background = '#e0f2fe'; selLeft = li;
+        });
+      });
+      document.querySelectorAll('#t1-right-pool .t1-chip-btn').forEach(function (rb) {
+        rb.addEventListener('click', function () {
+          if (!selLeft) { toast('Chọn vế trái trước', 'info'); return; }
+          selLeft.dataset.right = rb.dataset.right;
+          selLeft.querySelector('.pick').textContent = '→ ' + rb.dataset.right;
+          selLeft.style.background = ''; selLeft = null;
+        });
+      });
+    }
+    // ordering: up/down
+    if (ex.type === 'ordering') {
+      document.querySelectorAll('.t1-ord').forEach(function (box) {
+        box.addEventListener('click', function (e) {
+          var row = e.target.closest('.t1-ord-row'); if (!row) return;
+          if (e.target.classList.contains('up') && row.previousElementSibling) box.insertBefore(row, row.previousElementSibling);
+          if (e.target.classList.contains('down') && row.nextElementSibling) box.insertBefore(row.nextElementSibling, row);
+        });
+      });
+    }
+    // essay word count + timer
+    var essay = document.getElementById('t1-essay');
+    if (essay) essay.addEventListener('input', function () {
+      document.getElementById('t1-wc').textContent = (essay.value.trim().split(/\s+/).filter(Boolean).length) + ' từ';
+    });
+    if (ex.timerMinutes) {
+      state.timeLeft = ex.timerMinutes * 60;
+      state.timer = setInterval(function () {
+        state.timeLeft--; var t = document.getElementById('t1-timer');
+        if (t) { t.textContent = fmt(state.timeLeft); t.classList.toggle('low', state.timeLeft <= 60); }
+        if (state.timeLeft <= 0) { stopTimer(); if (!state.answered) submit(); }
+      }, 1000);
+    }
+  }
+
+  function collectAnswers(ex) {
+    var t = ex.type, ans = {};
+    if (t === 'mcq') ex.items.forEach(function (it) { var c = document.querySelector('input[name="mc-' + it.id + '"]:checked'); ans[it.id] = c ? c.value : null; });
+    else if (t === 'gap_fill') ex.items.forEach(function (it) {
+      var arr = []; document.querySelectorAll('.t1-gap-inp[data-item="' + it.id + '"]').forEach(function (i) { arr[+i.dataset.k] = i.value.trim(); });
+      ans[it.id] = arr;
+    });
+    else if (t === 'error_correction' || t === 'word_form' || t === 'sentence_transform') ex.items.forEach(function (it) {
+      var el = document.querySelector('[data-item="' + it.id + '"]'); ans[it.id] = el ? el.value.trim() : '';
+    });
+    else if (t === 'categorize') ex.items.forEach(function (it) {
+      var b = document.querySelector('.t1-chip-btn[data-item="' + it.id + '"]'); ans[it.id] = b ? (b.dataset.cat || null) : null;
+    });
+    else if (t === 'matching') ex.items.forEach(function (it) {
+      var li = document.querySelector('.t1-item[data-item="' + it.id + '"]'); ans[it.id] = li ? (li.dataset.right || null) : null;
+    });
+    else if (t === 'ordering') ex.items.forEach(function (it) {
+      var rows = document.querySelectorAll('.t1-ord[data-item="' + it.id + '"] .t1-ord-row');
+      ans[it.id] = Array.prototype.map.call(rows, function (r) { return r.dataset.tok; });
+    });
+    return ans;
+  }
+
+  async function submit() {
+    if (state.answered || state._submitting) return;
+    var ex = curEx();
+    var isWriting = !OBJECTIVE[ex.type];
+    var btn = document.getElementById('t1-submit');
+    var fb = document.getElementById('t1-fb');
+
+    if (isWriting) {
+      var responses = [];
+      if (ex.type === 'sentence_writing') document.querySelectorAll('[data-slot]').forEach(function (t) { responses.push(t.value.trim()); });
+      else responses.push((document.getElementById('t1-essay') || {}).value ? document.getElementById('t1-essay').value.trim() : '');
+      if (!responses.some(function (r) { return r; })) { toast('Bạn chưa viết gì', 'info'); return; }
+      state._submitting = true; btn.disabled = true;
+      fb.className = 't1-fb'; fb.innerHTML = '<div style="text-align:center;padding:20px"><div class="t1-spinner"></div><p style="color:#9ca3af;margin-top:8px;font-size:13px">' + (ex.type === 'sentence_writing' ? 'Đang chấm...' : 'AI đang chấm bài...') + '</p></div>';
+      fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      try {
+        var d = await api('/wt1/submit-writing', { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, responses: responses }) });
+        state.answered = true; stopTimer();
+        showWritingFeedback(d);
+      } catch (e) {
+        state._submitting = false; btn.disabled = false;
+        fb.classList.add('hidden');
+        toast((e && e.message) || 'Lỗi chấm bài', 'error');
+      }
+      return;
+    }
+
+    // objective
+    var answers = collectAnswers(ex);
+    state.answered = true; btn.disabled = true;
+    if (window.playOk) { /* sound after grading */ }
+    try {
+      var r = await api('/wt1/check', { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, answers: answers }) });
+      stopTimer();
+      if (r.score >= 60) { if (window.playOk) window.playOk(); } else if (window.playWrong) window.playWrong();
+      showObjectiveFeedback(ex, r);
+    } catch (e) {
+      state.answered = false; btn.disabled = false;
+      toast('Lỗi chấm bài', 'error');
+    }
+  }
+
+  function showObjectiveFeedback(ex, r) {
+    var fb = document.getElementById('t1-fb');
+    var byId = {}; ex.items.forEach(function (it, i) { byId[it.id] = i + 1; });
+    var rows = (r.items || []).map(function (it) {
+      return '<div class="t1-res-item">' + (it.correct ? '<span class="t1-ok">✔</span>' : '<span class="t1-bad">✗</span>') +
+        ' Câu ' + (byId[it.id] || '') +
+        (!it.correct && it.correctAnswer ? ' — <span class="t1-model">' + esc(it.correctAnswer) + '</span>' : '') +
+        (it.explanation ? '<div style="color:#6b7280;margin-top:2px">' + esc(it.explanation) + '</div>' : '') + '</div>';
+    }).join('');
+    var last = state.exIdx >= state.exercises.length - 1;
+    fb.className = 't1-fb';
+    fb.innerHTML = '<div class="t1-fb-score">' + r.score + '%</div>' +
+      '<div style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px">' + r.correctCount + ' / ' + r.maxScore + ' câu đúng</div>' + rows +
+      '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+    fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('t1-next').addEventListener('click', nextExercise);
+  }
+
+  function showWritingFeedback(d) {
+    var fb = document.getElementById('t1-fb');
+    var last = state.exIdx >= state.exercises.length - 1;
+    var body;
+    if (d.graded === 'ai') {
+      var s = d.scores || {};
+      body = (d.bandEstimate != null ? '<div class="t1-fb-score">Band ' + d.bandEstimate + '</div>' : '') +
+        '<div class="t1-bands">' +
+          band('Task', s.taskAchievement) + band('Coherence', s.coherence) + band('Lexical', s.lexical) + band('Grammar', s.grammar) +
+        '</div>' +
+        (d.feedbackVi ? '<div style="font-size:13.5px;line-height:1.7">' + esc(d.feedbackVi) + '</div>' : '') +
+        ((d.corrections || []).length ? '<div style="margin-top:8px;font-size:12.5px"><b>Sửa lỗi:</b>' + d.corrections.map(function (c) {
+          return '<div style="margin-top:4px">✎ <s style="color:#dc2626">' + esc(c.original) + '</s> → <span class="t1-model">' + esc(c.corrected) + '</span>' + (c.note ? ' <span style="color:#6b7280">(' + esc(c.note) + ')</span>' : '') + '</div>';
+        }).join('') + '</div>' : '');
+    } else {
+      body = '<div class="t1-fb-score">' + (d.score != null ? d.score + '%' : '') + '</div>' +
+        (d.feedbackVi ? '<div style="text-align:center;font-size:13.5px;margin-bottom:8px">' + esc(d.feedbackVi) + '</div>' : '') +
+        (d.checklist || []).map(function (c) {
+          var mark = c.ok === true ? '<span class="t1-ok">✔</span>' : c.ok === false ? '<span class="t1-bad">✗</span>' : '•';
+          return '<div class="t1-res-item">' + mark + ' ' + esc(c.label) + (c.detail ? ' <span style="color:#9ca3af">(' + esc(c.detail) + ')</span>' : '') + '</div>';
+        }).join('') +
+        (d.sampleAnswer ? '<details class="t1-key" style="margin-top:8px"><summary>Xem bài mẫu</summary><div style="font-size:13px;line-height:1.7;margin-top:6px">' + esc(d.sampleAnswer) + '</div></details>' : '');
+    }
+    fb.className = 't1-fb';
+    fb.innerHTML = body + '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+    fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('t1-next').addEventListener('click', nextExercise);
+  }
+  function band(l, n) { return '<div class="t1-band"><div class="n">' + (n != null ? n : '–') + '</div><div class="l">' + l + '</div></div>'; }
+
+  function nextExercise() {
+    if (state.exIdx >= state.exercises.length - 1) { finishLesson(); return; }
+    state.exIdx++;
+    history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', 'writing-task1.html?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+    render();
+  }
+  function goToLesson() {
+    stopTimer(); state.view = 'lesson';
+    history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', 'writing-task1.html?lesson=' + state.lesson.code);
+    // reload lesson so done-state refreshes
+    openLesson(state.lesson.code, null, true);
+  }
+  function renderLessonDone() { finishLesson(); return ''; }
+  async function finishLesson() {
+    stopTimer();
+    app.innerHTML = '<div style="text-align:center;padding:48px"><div style="font-size:44px">🎉</div>' +
+      '<h2 class="t1-h2" style="margin-top:12px">Hoàn thành ' + esc(state.lesson.title) + '</h2>' +
+      '<div style="margin-top:18px;display:flex;gap:10px;justify-content:center">' +
+        '<button class="t1-btn" id="t1-again">Làm lại buổi này</button>' +
+        '<button class="t1-next" style="width:auto;margin-top:0" id="t1-done">Về khoá học</button>' +
+      '</div></div>';
+    document.getElementById('t1-again').addEventListener('click', function () { state.exIdx = 0; state.view = 'exercise'; render(); });
+    document.getElementById('t1-done').addEventListener('click', goOverview);
+  }
+
+  // ── popstate ────────────────────────────────────────────────────
+  window.addEventListener('popstate', function (e) {
+    var st = e.state || {}; stopTimer();
+    if (st.view === 'lesson' && st.lesson) openLesson(st.lesson, null, true);
+    else if (st.view === 'exercise' && st.lesson) openLesson(st.lesson, st.ex, true);
+    else { state.view = 'overview'; loadOverview(); }
+  });
+
+  // ── init ────────────────────────────────────────────────────────
+  if (window.AuthService && !window.AuthService.isLoggedIn()) location.href = '/login.html';
+  else loadOverview();
+})();
+</script>
+</body>
+</html>
