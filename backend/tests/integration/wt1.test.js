@@ -103,6 +103,11 @@ describe('GET /lesson/:code', () => {
     const match = res.body.exercises.find((e) => e.code === 'MATCH1');
     expect(match.rightOptions.sort()).toEqual(['R1', 'R2']);
     expect(match.items[0].right).toBeUndefined();
+    // sentence_transform IS the one deliberate exception (matches
+    // translationAnswer elsewhere in the app) — the frontend's
+    // word-by-word typing drill needs the target client-side.
+    const st = res.body.exercises.find((e) => e.code === 'ST1');
+    expect(st.items[0].translationAnswer).toBe('The number of cars was five million.');
   });
 });
 

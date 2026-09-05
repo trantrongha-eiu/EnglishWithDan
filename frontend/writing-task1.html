@@ -191,6 +191,7 @@
 <script src="js/shared/api-client.js?v=20260831"></script>
 <script src="js/shared/dictionary-lookup.js?v=20260925"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
+<script src="js/shared/wbw-drill.js?v=20260905"></script>
 
 <div id="app"></div>
 
@@ -301,6 +302,7 @@
   function render() {
     stopTimer();
     document.querySelectorAll('.t1-dnd-float').forEach(function (f) { f.remove(); });
+    if (window.WbwDrill) document.querySelectorAll('[data-wbw-host]').forEach(function (h) { window.WbwDrill.unmount(h); });
     if (state.view === 'overview') { app.innerHTML = renderOverview(); bindOverview(); }
     else if (state.view === 'lesson') { app.innerHTML = renderLesson(); bindLesson(); }
     else if (state.view === 'exercise') { app.innerHTML = renderExercise(); bindExercise(); }
@@ -458,10 +460,19 @@
       }).join('');
     }
     if (t === 'sentence_transform') {
+      // "Gõ từng chữ" typing drill (same widget as Task 2 Dịch câu tuần /
+      // Viết câu nâng cao) — student types the target letter by letter
+      // with hints instead of freely composing into a blank textarea, so
+      // "many valid phrasings" is never a grading question in the first
+      // place. #t1-wbw-<id> is the visible drill host; the textarea stays
+      // as the hidden value bridge collectAnswers() already reads via
+      // [data-item] — see bindExercise()'s WbwDrill.mount() call below,
+      // which falls back to showing this textarea if it can't mount.
       return ex.items.map(function (it) {
         return '<div class="t1-item"><div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#0ea5e9">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
           (it.starter ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">Bắt đầu: ' + esc(it.starter) + '</div>' : '') +
-          '<textarea class="t1-ta" rows="2" data-item="' + it.id + '"></textarea></div>';
+          '<div data-wbw-host="' + esc(it.id) + '"></div>' +
+          '<textarea class="t1-ta" rows="2" data-item="' + it.id + '" style="display:none"></textarea></div>';
       }).join('');
     }
     if (t === 'categorize') {
@@ -616,6 +627,20 @@
             row.addEventListener('pointercancel', up);
           });
         });
+      });
+    }
+    // sentence_transform: mount a WBW typing drill per item (server ships
+    // it.translationAnswer for exactly this — see wt1Service.sanitizeExercise).
+    // Falls back to the plain (visible) textarea if the drill can't mount
+    // (script missing / untypable answer) — same fallback WbwDrill.mount()
+    // signals everywhere else it's used.
+    if (ex.type === 'sentence_transform') {
+      ex.items.forEach(function (it) {
+        var host = document.querySelector('[data-wbw-host="' + it.id + '"]');
+        var bridge = document.querySelector('textarea[data-item="' + it.id + '"]');
+        var ok = !!(host && bridge && it.translationAnswer && window.WbwDrill &&
+          window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, onComplete: function () {} }));
+        if (!ok && bridge) bridge.style.display = '';
       });
     }
     // essay word count + timer

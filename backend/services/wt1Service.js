@@ -54,7 +54,21 @@ function sanitizeExercise(ex) {
     const base = { id: it.id, prompt: it.prompt };
     if (ex.type === 'mcq') base.options = it.options || [];
     if (ex.type === 'gap_fill') base.blankCount = (String(it.prompt || '').match(/____/g) || []).length;
-    if (ex.type === 'sentence_transform') { base.cue = it.cue || ''; base.starter = it.starter || ''; }
+    if (ex.type === 'sentence_transform') {
+      base.cue = it.cue || ''; base.starter = it.starter || '';
+      // Deliberately relaxes "never expose the answer before submission" —
+      // the frontend's word-by-word typing drill (WbwDrill, same one Task 2
+      // weekly Dịch câu and "Viết câu nâng cao" use) validates per keystroke
+      // client-side, which needs the target string in the browser. Same
+      // exception, same field name, as translationAnswer everywhere else
+      // in the app (task2PracticeService/task1PracticeService/
+      // writingPracticeService) — see docs/EXERCISE_SYSTEMS.md and
+      // [[task2_practice_dich_cau_wbw]]. Grading always re-checks against
+      // the DB copy on submit, so this doesn't weaken grading integrity —
+      // there's no separate "exam, no hints" mode in this course to leak
+      // into either.
+      base.translationAnswer = (it.sampleAnswers || [])[0] || '';
+    }
     if (ex.type === 'categorize') base.text = it.text || '';
     if (ex.type === 'matching') base.left = it.left || '';
     if (ex.type === 'ordering') base.tokens = shuffle(it.tokens || []);
