@@ -9,6 +9,8 @@ const c = require('../controllers/classAttendance.controller');
 router.get('/my/attendance-status', auth, c.myAttendanceStatus);
 router.get('/my/enrollments', auth, c.myEnrollments);
 router.get('/my/overview', auth, c.myOverview);
+router.get('/my/checkin', auth, c.myCheckinStatus);
+router.post('/my/sessions/:sessionId/checkin', auth, validateObjectIdParam('sessionId'), c.submitCheckin);
 
 // ── Everything below is staff-only (teacher | admin) ──────────────────
 router.use(auth, c.staffOnly);

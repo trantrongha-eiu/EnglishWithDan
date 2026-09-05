@@ -1719,6 +1719,19 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .ci-tile-label{font-size:11px;color:var(--text3);margin-top:2px;font-weight:600}
 @media (max-width:640px){.ci-tiles{grid-template-columns:repeat(2,1fr)}}
 
+/* Self-check-in ("tôi có mặt") for today's session — pending state uses the
+   same amber tone as .ci-reason--warning, confirmed uses green, rejected
+   uses the danger tone; all three read-only text, only the un-ticked state
+   has a button. */
+.ci-checkin{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface2);font-size:12.5px;font-weight:600;color:var(--text2)}
+.ci-checkin--pending{background:rgba(245,158,11,.12);color:#b45309}
+.ci-checkin--ok{background:rgba(22,163,74,.12);color:var(--green)}
+.ci-checkin--rejected{background:rgba(220,38,38,.1);color:var(--danger)}
+.ci-checkin-text{flex:1}
+.ci-checkin-btn{flex-shrink:0;border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:700;color:#fff;background:var(--brand,#e53935);cursor:pointer;transition:opacity .15s}
+.ci-checkin-btn:hover{opacity:.9}
+.ci-checkin-btn:disabled{opacity:.6;cursor:default}
+
 /* ══════════════════════════════════════════════
    📚 Bài tập cần làm — homework card (js/dashboard-homework.js)
 ══════════════════════════════════════════════ */

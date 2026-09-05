@@ -573,6 +573,11 @@ function AttendanceTab({ cls }) {
                           <strong>{r.student.name || r.student.username}</strong>
                           {r.removed && <span className="badge badge-gray" style={{ marginLeft: 6 }}>đã rời lớp</span>}
                           {r.edited && <span className="badge badge-yellow" style={{ marginLeft: 6 }} title="Đã từng sửa">đã sửa</span>}
+                          {r.checkin?.status === 'pending' && (
+                            <span className="badge badge-blue" style={{ marginLeft: 6 }} title={`Học viên tự điểm danh lúc ${formatDate(r.checkin.checkedInAt).slice(11)} — chờ xác nhận`}>
+                              🙋 tự điểm danh {formatDate(r.checkin.checkedInAt).slice(11)}
+                            </span>
+                          )}
                         </td>
                         <td>
                           <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>

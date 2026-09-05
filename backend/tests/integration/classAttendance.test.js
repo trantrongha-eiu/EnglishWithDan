@@ -134,6 +134,72 @@ describe('PUT /:classId/sessions/:sessionId — "Đánh dấu đã học" shortc
   });
 });
 
+describe('student self-check-in ("tôi có mặt")', () => {
+  test('happy path: student ticks in, teacher confirms via saving present → checkin becomes confirmed', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t);
+    const enr = await addStudent(t, cls._id, s);
+    const sess = await addSession(t, cls._id, { date: past(0) }); // today
+
+    const empty = await request(app).get('/api/classes/my/checkin').set(auth(s));
+    expect(empty.body.classes[0]).toMatchObject({ classId: String(cls._id), checkin: null });
+    expect(empty.body.classes[0].session._id).toBe(String(sess._id));
+
+    const tick = await request(app).post(`/api/classes/my/sessions/${sess._id}/checkin`).set(auth(s));
+    expect(tick.status).toBe(200);
+    expect(tick.body.checkin.status).toBe('pending');
+
+    // Re-ticking while still pending is fine (idempotent).
+    expect((await request(app).post(`/api/classes/my/sessions/${sess._id}/checkin`).set(auth(s))).status).toBe(200);
+
+    const roster = await request(app).get(`/api/classes/${cls._id}/sessions/${sess._id}/attendance`).set(auth(t));
+    const row = roster.body.roster.find((r) => String(r.enrollmentId) === String(enr.enrollmentId));
+    expect(row.checkin).toMatchObject({ status: 'pending' });
+
+    await mark(t, cls._id, sess._id, [{ enrollmentId: enr.enrollmentId, status: 'present' }]);
+
+    const after = await request(app).get(`/api/classes/${cls._id}/sessions/${sess._id}/attendance`).set(auth(t));
+    const rowAfter = after.body.roster.find((r) => String(r.enrollmentId) === String(enr.enrollmentId));
+    expect(rowAfter.checkin.status).toBe('confirmed');
+
+    // Locked once reviewed — can't quietly re-tick to reset it.
+    const relock = await request(app).post(`/api/classes/my/sessions/${sess._id}/checkin`).set(auth(s));
+    expect(relock.status).toBe(409);
+  });
+
+  test('teacher marks the self-checked-in student absent instead → checkin becomes rejected', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t);
+    const enr = await addStudent(t, cls._id, s);
+    const sess = await addSession(t, cls._id, { date: past(0) });
+
+    await request(app).post(`/api/classes/my/sessions/${sess._id}/checkin`).set(auth(s));
+    await mark(t, cls._id, sess._id, [{ enrollmentId: enr.enrollmentId, status: 'absent' }]);
+
+    const after = await request(app).get(`/api/classes/${cls._id}/sessions/${sess._id}/attendance`).set(auth(t));
+    const row = after.body.roster.find((r) => String(r.enrollmentId) === String(enr.enrollmentId));
+    expect(row.checkin.status).toBe('rejected');
+  });
+
+  test('cannot check in for a session not dated today, or for a class the student is not in', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const outsider = await createStudent();
+    const cls = await makeClass(t);
+    await addStudent(t, cls._id, s);
+    const pastSess = await addSession(t, cls._id, { date: past(2) });
+
+    const notToday = await request(app).post(`/api/classes/my/sessions/${pastSess._id}/checkin`).set(auth(s));
+    expect(notToday.status).toBe(400);
+
+    const todaySess = await addSession(t, cls._id, { date: past(0) });
+    const notEnrolled = await request(app).post(`/api/classes/my/sessions/${todaySess._id}/checkin`).set(auth(outsider));
+    expect(notEnrolled.status).toBe(403);
+  });
+});
+
 describe('attendance math end to end', () => {
   async function setup() {
     const t = await createTeacher();

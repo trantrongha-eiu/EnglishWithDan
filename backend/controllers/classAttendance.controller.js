@@ -11,6 +11,7 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const ClassSession = require('../models/ClassSession');
 const AttendanceRecord = require('../models/AttendanceRecord');
+const AttendanceCheckIn = require('../models/AttendanceCheckIn');
 const User = require('../models/User');
 const svc = require('../services/classAttendanceService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
@@ -30,6 +31,17 @@ function endOfToday() {
   const d = new Date();
   d.setUTCHours(23, 59, 59, 999);
   return d;
+}
+
+// [start, end] of the UTC calendar day containing `date` — same convention
+// as endOfToday/generateSessions, used to decide which session a student's
+// self-check-in "today" button actually applies to.
+function utcDayRange(date = new Date()) {
+  const start = new Date(date);
+  start.setUTCHours(0, 0, 0, 0);
+  const end = new Date(date);
+  end.setUTCHours(23, 59, 59, 999);
+  return { start, end };
 }
 
 // ── middleware ──────────────────────────────────────────────────────────
@@ -475,12 +487,15 @@ exports.updateSession = async (req, res) => {
 // ── attendance ────────────────────────────────────────────────────────
 
 async function buildRoster(classId, sessionId) {
-  const [enrollments, records] = await Promise.all([
+  const [enrollments, records, checkins] = await Promise.all([
     ClassEnrollment.find({ classId }).lean(),
     AttendanceRecord.find({ sessionId }).lean(),
+    AttendanceCheckIn.find({ sessionId }).lean(),
   ]);
   const recMap = {};
   records.forEach((r) => { recMap[String(r.enrollmentId)] = r; });
+  const checkinMap = {};
+  checkins.forEach((c) => { checkinMap[String(c.studentId)] = c; });
   const students = await User.find({ _id: { $in: enrollments.map((e) => e.studentId) } })
     .select('username firstName lastName avatar').lean();
   const sMap = {};
@@ -491,6 +506,7 @@ async function buildRoster(classId, sessionId) {
     .filter((e) => !e.removedAt || recMap[String(e._id)])
     .map((e) => {
       const r = recMap[String(e._id)];
+      const ci = checkinMap[String(e.studentId)];
       return {
         enrollmentId: e._id,
         studentId: e.studentId,
@@ -501,6 +517,9 @@ async function buildRoster(classId, sessionId) {
         lateMinutes: r?.lateMinutes ?? null,
         note: r?.note || '',
         edited: !!(r?.editHistory && r.editHistory.length),
+        // Student's own "tôi có mặt" self-report — informational only until
+        // this session's attendance is (re)saved, see saveSessionAttendance.
+        checkin: ci ? { status: ci.status, checkedInAt: ci.checkedInAt } : null,
       };
     });
 }
@@ -565,6 +584,20 @@ exports.saveSessionAttendance = async (req, res) => {
           markedAt: new Date(),
         });
       }
+
+      // Resolve a pending self-check-in now that a teacher has actually
+      // reviewed this student for this session — confirmed if the teacher
+      // agreed they were there (present/late), rejected otherwise (student
+      // ticked "có mặt" but the teacher marked them absent/excused). Only
+      // touches 'pending' so a prior confirm/reject is never silently
+      // re-flipped by a later, unrelated re-save of the same session.
+      await AttendanceCheckIn.updateOne(
+        { sessionId: session._id, studentId: e.studentId, status: 'pending' },
+        { $set: {
+          status: ['present', 'late'].includes(m.status) ? 'confirmed' : 'rejected',
+          reviewedBy: req.user._id, reviewedAt: new Date(),
+        } },
+      );
     }
 
     if (session.status !== 'held') session.status = 'held';
@@ -792,5 +825,97 @@ exports.myOverview = async (req, res) => {
     res.json({ success: true, hasClasses: out.length > 0, classes: out });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// ── student self-check-in ("tôi có mặt") ────────────────────────────────
+// A student ticks in from their own dashboard for TODAY's session; this
+// only ever creates a 'pending' AttendanceCheckIn (see that model's header)
+// — it never touches AttendanceRecord/stats directly. A teacher reviewing
+// that session on Điểm danh sees the self-report (buildRoster's `checkin`
+// field) and resolves it, confirmed or rejected, the moment they save real
+// attendance (saveSessionAttendance above).
+
+// GET /api/classes/my/checkin — for every active class, today's session (if
+// any) + this student's current check-in state for it, so the dashboard can
+// show "chưa điểm danh" / "chờ xác nhận" / "đã xác nhận có mặt" / etc.
+exports.myCheckinStatus = async (req, res) => {
+  try {
+    const enrollments = await ClassEnrollment.find({ studentId: req.user._id, removedAt: null }).lean();
+    if (!enrollments.length) return res.json({ success: true, classes: [] });
+    const classIds = enrollments.map((e) => e.classId);
+    const classes = await ClassGroup.find({ _id: { $in: classIds }, status: 'active' }).select('name').lean();
+    const clsMap = new Map(classes.map((c) => [String(c._id), c]));
+
+    const { start, end } = utcDayRange();
+    const sessions = await ClassSession.find({
+      classId: { $in: classIds }, date: { $gte: start, $lte: end }, status: { $ne: 'cancelled' },
+    }).lean();
+    const sessionByClass = new Map(sessions.map((s) => [String(s.classId), s]));
+
+    const checkins = await AttendanceCheckIn.find({
+      sessionId: { $in: sessions.map((s) => s._id) }, studentId: req.user._id,
+    }).lean();
+    const checkinBySession = new Map(checkins.map((c) => [String(c.sessionId), c]));
+
+    const out = enrollments
+      .map((e) => {
+        const c = clsMap.get(String(e.classId));
+        if (!c) return null;
+        const session = sessionByClass.get(String(e.classId)) || null;
+        const ci = session ? checkinBySession.get(String(session._id)) : null;
+        return {
+          classId: e.classId,
+          className: c.name,
+          session: session ? { _id: session._id, date: session.date, sessionNumber: session.sessionNumber, topic: session.topic } : null,
+          checkin: ci ? { status: ci.status, checkedInAt: ci.checkedInAt } : null,
+        };
+      })
+      .filter(Boolean);
+    res.json({ success: true, classes: out });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// POST /api/classes/my/sessions/:sessionId/checkin — the tick itself.
+// Re-tickable while still 'pending' (idempotent); once a teacher has
+// reviewed it (confirmed/rejected), locked — the student can't quietly
+// re-flip a rejection back to pending by tapping the button again.
+exports.submitCheckin = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.sessionId)) {
+      return res.status(400).json({ success: false, message: 'ID buổi học không hợp lệ' });
+    }
+    const session = await ClassSession.findById(req.params.sessionId).lean();
+    if (!session) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học' });
+    if (session.status === 'cancelled') return res.status(400).json({ success: false, message: 'Buổi học đã huỷ' });
+
+    const enrollment = await ClassEnrollment.findOne({ classId: session.classId, studentId: req.user._id, removedAt: null });
+    if (!enrollment) return res.status(403).json({ success: false, message: 'Bạn không thuộc lớp này' });
+
+    const { start, end } = utcDayRange();
+    const sessionDate = new Date(session.date);
+    if (sessionDate < start || sessionDate > end) {
+      return res.status(400).json({ success: false, message: 'Chỉ có thể điểm danh cho buổi học hôm nay' });
+    }
+
+    const existing = await AttendanceCheckIn.findOne({ sessionId: session._id, studentId: req.user._id });
+    if (existing && existing.status !== 'pending') {
+      return res.status(409).json({ success: false, message: 'Giáo viên đã điểm danh buổi này rồi, không thể tự điểm danh lại.' });
+    }
+
+    if (existing) {
+      existing.checkedInAt = new Date();
+      await existing.save();
+    } else {
+      await AttendanceCheckIn.create({
+        sessionId: session._id, classId: session.classId, enrollmentId: enrollment._id,
+        studentId: req.user._id, status: 'pending', checkedInAt: new Date(),
+      });
+    }
+    res.json({ success: true, checkin: { status: 'pending', checkedInAt: new Date() } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || 'Lỗi server' });
   }
 };
