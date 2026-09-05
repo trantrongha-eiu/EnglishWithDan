@@ -635,11 +635,14 @@
     // (script missing / untypable answer) — same fallback WbwDrill.mount()
     // signals everywhere else it's used.
     if (ex.type === 'sentence_transform') {
-      ex.items.forEach(function (it) {
+      ex.items.forEach(function (it, idx) {
         var host = document.querySelector('[data-wbw-host="' + it.id + '"]');
         var bridge = document.querySelector('textarea[data-item="' + it.id + '"]');
+        // Only the first item auto-focuses — every instance's own after-
+        // mount focus() fires on its own timer, so without this the LAST
+        // item mounted would steal focus from all the ones before it.
         var ok = !!(host && bridge && it.translationAnswer && window.WbwDrill &&
-          window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, onComplete: function () {} }));
+          window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, autoFocus: idx === 0, onComplete: function () {} }));
         if (!ok && bridge) bridge.style.display = '';
       });
     }

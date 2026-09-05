@@ -18,14 +18,16 @@ function typeChar(input, ch) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
-function mount(answer) {
+function mount(answer, extraOpts) {
   const host = document.createElement('div');
   document.body.appendChild(host);
   const onComplete = jest.fn();
-  const mounted = window.WbwDrill.mount(host, { answer, onComplete });
+  const mounted = window.WbwDrill.mount(host, Object.assign({ answer, onComplete }, extraOpts));
   const input = host.querySelector('[data-role="input"]');
   return { host, input, onComplete, mounted };
 }
+
+function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
 function activeWordEl(host) {
   return host.querySelector('.wbwd-word.is-active');
@@ -131,5 +133,34 @@ describe('WbwDrill — plain words (no punctuation) unaffected', () => {
     typeChar(input, 'x');
     expect(activeWordEl(host).classList.contains('is-error')).toBe(true);
     expect(input.value).toBe('h');
+  });
+});
+
+describe('WbwDrill — mounting several drills at once on one page (WT1/WT2 multi-item exercises)', () => {
+  test('every instance auto-focuses by default — the LAST one mounted wins, since each schedules its own focus() independently', async () => {
+    const one = mount('first');
+    const two = mount('second');
+    await sleep(60);
+    // Demonstrates the bug this describe block exists to guard against: with
+    // no opt-out, item 2's own after-mount timer fires after item 1's and
+    // steals focus — the opposite of the natural top-to-bottom order a
+    // multi-item exercise needs.
+    expect(document.activeElement).toBe(two.input);
+    expect(document.activeElement).not.toBe(one.input);
+  });
+
+  test('autoFocus:false opts an instance out, so mounting item 2 without it leaves item 1 focused', async () => {
+    const one = mount('first');
+    const two = mount('second', { autoFocus: false });
+    await sleep(60);
+    expect(document.activeElement).toBe(one.input);
+    expect(document.activeElement).not.toBe(two.input);
+  });
+
+  test('typing still works normally on an autoFocus:false instance once it is manually focused', () => {
+    const { input } = mount('cat', { autoFocus: false });
+    input.focus();
+    typeChar(input, 'c'); typeChar(input, 'a'); typeChar(input, 't');
+    expect(input.disabled).toBe(true); // single-word answer fully typed -> drill completes
   });
 });

@@ -227,14 +227,33 @@ describe('POST /check — AI-graded sentence_transform (autoGrade:false)', () =>
     expect(items[0]).toMatchObject({ id: 'q1', userAnswer: 'There were approximately five million cars in total.' });
   });
 
-  test('a Gemini failure falls back to local grading instead of failing the request', async () => {
-    geminiService.gradeSentenceBatch.mockRejectedValueOnce(new Error('AI quá tải'));
+  test('an exact match (e.g. the WBW typing drill was completed) never calls Gemini at all', async () => {
+    const callsBefore = geminiService.gradeSentenceBatch.mock.calls.length;
     const u = await createPremiumStudent();
     const res = await request(app).post('/api/wt1/check').set(bearer(u))
-      .send({ exerciseCode: 'ST1', answers: { q1: 'The number of cars was five million.' } }); // exact match — local fallback still grades it right
+      .send({ exerciseCode: 'ST1', answers: { q1: 'The number of cars was five million.' } }); // exact sampleAnswers[0]
     expect(res.status).toBe(200);
     expect(res.body.score).toBe(100);
     expect(res.body.aiGraded).toBe(false);
+    // The local check already agrees — no reason to spend a Gemini call
+    // confirming it (real cost/latency once most answers arrive this way
+    // via the frontend's typing drill).
+    expect(geminiService.gradeSentenceBatch.mock.calls.length).toBe(callsBefore);
+  });
+
+  test('a Gemini failure falls back to the local verdict instead of failing the request', async () => {
+    geminiService.gradeSentenceBatch.mockRejectedValueOnce(new Error('AI quá tải'));
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/check').set(bearer(u))
+      // A locally-wrong paraphrase — this is the only case that ever
+      // reaches Gemini in the first place (see the optimization test
+      // above), so it's the only case that can meaningfully exercise a
+      // Gemini failure.
+      .send({ exerciseCode: 'ST1', answers: { q1: 'There were approximately five million cars in total.' } });
+    expect(res.status).toBe(200);
+    expect(res.body.score).toBe(0); // AI couldn't be asked — stays at the local (stricter) verdict
+    expect(res.body.aiGraded).toBe(false);
+    expect(res.body.aiError).toContain('AI quá tải');
   });
 
   test('an autoGrade:true sentence_transform exercise (e.g. a one-answer translation drill) never calls Gemini', async () => {

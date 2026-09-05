@@ -160,8 +160,21 @@ function needsAiGrading(exercise) {
 
 async function gradeSentenceTransformBatch(exercise, answers = {}) {
   const items = exercise.items || [];
+  // The frontend now guides most students through an exact-copy typing
+  // drill (WbwDrill — see writing-task1.html/writing-task2-course.html)
+  // rather than free composition, so most submissions already match
+  // sampleAnswers exactly/near-exactly. Run the fast local check FIRST and
+  // only spend a Gemini call on the items it actually rejects — a
+  // genuinely different phrasing, or free-typed text that bypassed the
+  // drill. The common case (drill completed) never leaves the server at
+  // all: no latency, no API cost, for a verdict AI would reach anyway.
+  const local = gradeObjective(exercise, answers);
+  const disputedIds = new Set(local.items.filter((r) => !r.correct).map((r) => r.id));
+  if (!disputedIds.size) return { ...local, aiGraded: false };
+  const disputed = items.filter((it) => disputedIds.has(it.id));
+
   try {
-    const batchInput = items.map((it) => ({
+    const batchInput = disputed.map((it) => ({
       id: it.id, prompt: it.prompt, cue: it.cue,
       sampleAnswers: it.sampleAnswers, userAnswer: String(answers[it.id] || ''),
     }));
@@ -169,6 +182,11 @@ async function gradeSentenceTransformBatch(exercise, answers = {}) {
     const byId = new Map(graded.map((g) => [g.id, g]));
     let got = 0;
     const out = items.map((it) => {
+      if (!disputedIds.has(it.id)) {
+        const row = local.items.find((r) => r.id === it.id);
+        got += 1; // only non-disputed (i.e. locally correct) items reach here
+        return row;
+      }
       const g = byId.get(it.id);
       const correct = !!(g && g.isCorrect);
       if (correct) got += 1;
@@ -190,9 +208,8 @@ async function gradeSentenceTransformBatch(exercise, answers = {}) {
   } catch (err) {
     // Gemini unavailable/timeout/quota/malformed response — a student must
     // never be blocked from checking their work over an AI hiccup. Fall
-    // back to the same local fuzzy check as any other sentence_transform
-    // exercise (stricter than ideal for free composition, but available).
-    const local = gradeObjective(exercise, answers);
+    // back to the local verdict (the disputed items stay marked wrong,
+    // same as before AI grading existed at all).
     return { ...local, aiGraded: false, aiError: err.message };
   }
 }

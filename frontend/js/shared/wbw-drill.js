@@ -148,7 +148,13 @@
     this._bind();
     this._syncBridge(false);
     var self = this;
-    setTimeout(function () { self.focus(); }, 30);
+    // opts.autoFocus === false opts out — needed when a page mounts several
+    // drills at once (e.g. one per item in a multi-item exercise): every
+    // instance's own after-mount focus() would otherwise fire ~30ms later
+    // in mount order, so the LAST one ends up stealing focus from all the
+    // others. Single-drill pages (the common case) are unaffected — default
+    // stays true.
+    if (opts.autoFocus !== false) setTimeout(function () { self.focus(); }, 30);
   }
 
   Drill.prototype._render = function () {
