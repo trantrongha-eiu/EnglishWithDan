@@ -951,6 +951,14 @@ function clearTranscript() {
 function _finishRecordingUI() {
   state.isRecording = false;
   state._recordBusy = false;
+  // Clears a session that recognition.onerror degraded to audio-only
+  // (_audioOnlyRecording = true) and that then got force-ended through this
+  // path instead of _toggleAudioOnlyRecording()'s own stop branch — e.g. the
+  // Part 2 2-min timer or the 8s start watchdog. Without this the flag would
+  // stay stuck true, making the NEXT record click misread as "stop" instead
+  // of starting a new recording. A no-op for the ordinary (never-degraded)
+  // recognition flow, which never sets this flag to begin with.
+  _audioOnlyRecording = false;
   state._frozenDurationSeconds = getElapsedSeconds();
   stopElapsedTimer();
   hideSpeakCountdown();
@@ -1055,6 +1063,14 @@ function setupRecognition() {
   };
 
   state.recognition.onend = () => {
+    // The speech-to-text SERVICE turned out to be unreachable this session
+    // (onerror below flagged it) — recognition itself is done for good
+    // (restarting would just hit the same network/service error again), but
+    // the raw audio capture keeps running independently. Don't tear the
+    // recording down here; the student stops it manually and the click
+    // routes through _toggleAudioOnlyRecording() (see onerror).
+    if (state._recognitionUnavailable) return;
+
     // Chrome can end a "continuous" recognition session on its own — a brief
     // pause while thinking, or just a long Part 2 monologue, is enough to
     // trigger it. That's not the student choosing to stop, so transparently
@@ -1095,12 +1111,31 @@ function setupRecognition() {
       // speech backend entirely, so this fires every time. The recording
       // itself is fine (it's captured separately) — the student can still gõ
       // transcript và bấm Phân tích.
-      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Bản ghi âm vẫn được lưu — hãy gõ lời thoại vào ô Transcript rồi bấm Phân tích, hoặc mở bằng Google Chrome.',
+      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Bản ghi âm vẫn tiếp tục — cứ nói bình thường, bấm "Dừng" khi xong rồi gõ lại lời thoại vào ô Transcript.',
       'audio-capture': 'Không tìm thấy micro, hoặc micro đang được ứng dụng khác sử dụng.',
-      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Bản ghi âm vẫn được lưu — hãy gõ lời thoại vào ô Transcript, hoặc dùng Google Chrome.',
+      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Bản ghi âm vẫn tiếp tục — cứ nói bình thường, bấm "Dừng" khi xong rồi gõ lại lời thoại vào ô Transcript.',
     };
     const message = msgs[e.error] || `Lỗi ghi âm (${e.error}). Vui lòng thử lại.`;
     const recStatus = document.getElementById('rec-status');
+
+    // 'network' / 'service-not-allowed' mean only the live-transcript SERVICE
+    // is unreachable — the mic and raw audio capture (started independently
+    // in _startRecordingGuarded) are unaffected. Previously this fell through
+    // to the same _finishRecordingUI() as a real mic failure below, which
+    // stopped the raw capture within a second or two of the error (recognition
+    // hits this almost immediately when the service is blocked outright, e.g.
+    // Brave) — cutting the recording short while telling the student it "vẫn
+    // được lưu". Degrade to audio-only instead: keep the mic/elapsed timer
+    // running, and let the student's own "Dừng" click end it, same as the
+    // browsers-without-SpeechRecognition fallback (_toggleAudioOnlyRecording).
+    if ((e.error === 'network' || e.error === 'service-not-allowed') && state.isRecording && !state._recognitionUnavailable) {
+      state._recognitionUnavailable = true;
+      _audioOnlyRecording = true;
+      if (recStatus) recStatus.textContent = message;
+      showToast(message, 'error', 7000);
+      return;
+    }
+
     if (recStatus) recStatus.textContent = message;
     // Previously only the small status line above changed — easy to miss,
     // and exactly why "bấm mic nhưng không ghi âm được" looked like nothing
@@ -1230,6 +1265,7 @@ function _startRecordingGuarded() {
     state._userStoppedRecording = false;
     state._restartAttempts = 0;
     state._recognitionEverStarted = false;
+    state._recognitionUnavailable = false; // reset from any prior degraded (audio-only) session
     state._recordingFinalized = false; // guards the one-shot _stopAudioCapture()
     state._frozenDurationSeconds = 0;
     state.finalTranscript = '';
@@ -1308,7 +1344,9 @@ function _toggleAudioOnlyRecording() {
       const pb = document.getElementById('btn-playback-recording');
       if (pb) pb.classList.toggle('hidden', !blob);
       if (recStatus) recStatus.textContent = blob ? '✓ Ghi âm hoàn tất' : 'Không ghi được âm thanh — kiểm tra micro';
-      _ensureSpeakingMockFinish();
+      // The floating "finish" pill is mock-test-only UI — don't spawn it on
+      // the normal practice screen, which this fallback now also serves.
+      if (_mockMode) _ensureSpeakingMockFinish();
     }).finally(() => {
       _audioOnlyBusy = false;
       if (btnRecord) btnRecord.disabled = false;
@@ -1333,10 +1371,22 @@ function _toggleAudioOnlyRecording() {
 }
 
 function toggleRecord() {
+  // A session that recognition.onerror already degraded to audio-only
+  // mid-recording (speech-to-text service unreachable — see the
+  // 'network'/'service-not-allowed' handling above) has a dead
+  // SpeechRecognition object; route the stop click the same way the
+  // no-SpeechRecognition-at-all fallback below does, instead of falling
+  // through to the state.recognition.stop() branch further down.
+  if (_audioOnlyRecording) { _toggleAudioOnlyRecording(); return; }
   if (!state.recognition) {
-    // Full mock Speaking step on a browser without SpeechRecognition — fall
-    // back to an audio-only recording so the student can still submit.
-    if (_mockMode && 'MediaRecorder' in window && navigator.mediaDevices?.getUserMedia) {
+    // No native SpeechRecognition (Firefox never has it; some mobile
+    // in-app browsers/webviews lack it too) — fall back to an audio-only
+    // recording (no live transcript) so the student can still record and
+    // submit, typing the transcript manually. Previously this fallback only
+    // ran in _mockMode, so a normal practice-screen student on one of these
+    // browsers got nothing but a "not supported, type instead" toast with no
+    // way to actually record at all — reported as "không thể thu âm".
+    if ('MediaRecorder' in window && navigator.mediaDevices?.getUserMedia) {
       _toggleAudioOnlyRecording();
       return;
     }
