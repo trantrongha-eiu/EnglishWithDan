@@ -14,12 +14,12 @@
   <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
   <link rel="stylesheet" href="css/motion.css?v=20260904b"/>
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260905nav"/>
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260905rules">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260905reorg">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -27,8 +27,8 @@
 <script src="js/auth.js?v=20260831"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260923"></script>
-<script src="js/nav.js?v=20260905tuition"></script>
-<script src="js/shared/onboarding-tour.js?v=20260831"></script>
+<script src="js/nav.js?v=20260905nav"></script>
+<script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
@@ -101,44 +101,11 @@
                hidden until it has data (or shows an empty-state). -->
           <div id="homework-card" style="display:none"></div>
 
-          <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
-          <div class="home-dual-row" data-reveal>
-            <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
-            <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
-              <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-              <div class="todays-lesson-info">
-                <div class="todays-lesson-label-row">
-                  <div class="todays-lesson-label">Today's Lesson</div>
-                  <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
-                    <i class="fas fa-exchange-alt"></i> Đổi bài
-                  </button>
-                  <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
-                </div>
-                <div class="todays-lesson-title" id="todays-lesson-title">—</div>
-                <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
-                <div class="todays-lesson-progress-row">
-                  <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
-                  <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
-                </div>
-              </div>
-              <button class="btn btn-primary" id="todays-lesson-btn">Bắt đầu</button>
-            </div>
-
-            <!-- IELTS Full Mock Test — random 4-skill exam, 2 sittings (js/dashboard-mocktest.js) -->
-            <div class="mocktest-card" id="mocktest-card" style="display:none">
-              <div class="mocktest-icon"><i class="fas fa-graduation-cap"></i></div>
-              <div class="mocktest-info">
-                <div class="mocktest-label">IELTS Full Mock Test</div>
-                <div class="mocktest-title" id="mocktest-title">Thi thử 4 kỹ năng</div>
-                <div class="mocktest-meta" id="mocktest-meta">Đề ngẫu nhiên · Listening → Reading → Writing → Speaking</div>
-              </div>
-              <div class="mocktest-actions">
-                <button class="btn btn-primary" id="mocktest-btn">Bắt đầu thi thử</button>
-                <a class="mocktest-history-link" href="review-history.html?view=mock">Lịch sử thi thử</a>
-                <button type="button" class="mocktest-abandon-link" id="mocktest-abandon" style="display:none">Bỏ qua &amp; làm lại</button>
-              </div>
-            </div>
-          </div>
+          <!-- Reordered 2026-09 (product decision): Sổ từ vựng stats +
+               Streak/Quiz leaderboards moved up here (right after homework),
+               ahead of Today's Lesson/Mock Test and the weakness card —
+               these 4 are the "most-checked" widgets, everything below is
+               secondary/discovery. -->
 
           <!-- "My Vocabulary" — aggregate stats across ALL of the student's books
                (existing per-book counters in the sidebar/book view only ever show
@@ -159,27 +126,6 @@
             <div class="myvocab-tile">
               <div class="myvocab-tile-value myvocab-tile-value--green" id="myvocab-mastered">0</div>
               <div class="myvocab-tile-label">Đã thuộc</div>
-            </div>
-          </div>
-
-          <!-- "Điểm cần cải thiện" — weakest question type/criterion per skill,
-               derived from existing Reading/Listening/Writing/Speaking/Vocabulary
-               history. Three distinct states below (never shown at once): chips
-               (has signal), empty (not enough data yet — NOT the same as an API
-               error, see loadWeaknessProfile()), error (request actually failed). -->
-          <div class="weakness-card" id="weakness-card" style="display:none">
-            <div class="weakness-card-title"><i class="fas fa-bullseye"></i> Điểm cần cải thiện</div>
-            <div class="weakness-chips" id="weakness-chips" style="display:none"></div>
-            <div class="weakness-state" id="weakness-empty-state" style="display:none">
-              <div class="weakness-state-icon"><i class="fas fa-seedling"></i></div>
-              <div class="weakness-state-title">Personalized insights are not ready yet.</div>
-              <div class="weakness-state-sub">Complete a few practice sessions to discover your weak areas.</div>
-              <a class="btn btn-primary btn-sm" href="reading.html">Luyện ngay</a>
-            </div>
-            <div class="weakness-state" id="weakness-error-state" style="display:none">
-              <div class="weakness-state-icon weakness-state-icon--error"><i class="fas fa-triangle-exclamation"></i></div>
-              <div class="weakness-state-title">Unable to load your insights.</div>
-              <button class="btn btn-ghost btn-sm" onclick="loadWeaknessProfile()">Thử lại</button>
             </div>
           </div>
 
@@ -243,58 +189,87 @@
             </div>
           </div>
 
-          <!-- Feature highlight cards -->
-          <div class="welcome-feat-grid">
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--emerald"><i class="fas fa-file-import"></i></div>
-              <h4>Nhập hàng loạt</h4>
-              <p>Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.</p>
+          <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
+          <div class="home-dual-row" data-reveal>
+            <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
+            <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
+              <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+              <div class="todays-lesson-info">
+                <div class="todays-lesson-label-row">
+                  <div class="todays-lesson-label">Today's Lesson</div>
+                  <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
+                    <i class="fas fa-exchange-alt"></i> Đổi bài
+                  </button>
+                  <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
+                </div>
+                <div class="todays-lesson-title" id="todays-lesson-title">—</div>
+                <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
+                <div class="todays-lesson-progress-row">
+                  <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
+                  <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
+                </div>
+              </div>
+              <button class="btn btn-primary" id="todays-lesson-btn">Bắt đầu</button>
             </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--yellow"><i class="fas fa-fire-alt"></i></div>
-              <h4>Streak hàng ngày <span class="feat-badge-new">MỚI</span></h4>
-              <p>Luyện từ vựng, làm đề Reading hoặc Listening đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong> (cộng chung cho cả 3 kỹ năng), cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.</p>
-            </div>
-            <div class="welcome-feat-card welcome-feat-card--highlight">
-              <div class="welcome-feat-icon welcome-feat-icon--teal"><i class="fas fa-book-open"></i></div>
-              <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
-              <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
-            </div>
-            <div class="welcome-feat-card welcome-feat-card--highlight">
-              <div class="welcome-feat-icon-img"><img src="img/buaDaniel.jpg" alt="Búa Daniel"></div>
-              <h4>Búa Daniel <span class="feat-badge-new">MỚI</span></h4>
-              <p>Học trọn 1 Paraphrase Unit đúng <strong>≥ 90%</strong> để nhận <strong>1 búa Daniel</strong> (mỗi unit chỉ 1 lần). Nếu lỡ bỏ học và mất streak, dùng búa trong vòng <strong>3 ngày</strong> để khôi phục lại đúng số ngày đã mất!</p>
+
+            <!-- IELTS Full Mock Test — random 4-skill exam, 2 sittings (js/dashboard-mocktest.js) -->
+            <div class="mocktest-card" id="mocktest-card" style="display:none">
+              <div class="mocktest-icon"><i class="fas fa-graduation-cap"></i></div>
+              <div class="mocktest-info">
+                <div class="mocktest-label">IELTS Full Mock Test</div>
+                <div class="mocktest-title" id="mocktest-title">Thi thử 4 kỹ năng</div>
+                <div class="mocktest-meta" id="mocktest-meta">Đề ngẫu nhiên · Listening → Reading → Writing → Speaking</div>
+              </div>
+              <div class="mocktest-actions">
+                <button class="btn btn-primary" id="mocktest-btn">Bắt đầu thi thử</button>
+                <a class="mocktest-history-link" href="review-history.html?view=mock">Lịch sử thi thử</a>
+                <button type="button" class="mocktest-abandon-link" id="mocktest-abandon" style="display:none">Bỏ qua &amp; làm lại</button>
+              </div>
             </div>
           </div>
 
-          <!-- Other skills — dashboard is Vocab's home, so these link out to the rest of the app -->
-          <h3 class="welcome-section-title">Khám phá các kỹ năng khác</h3>
-          <div class="welcome-feat-grid">
-            <a class="welcome-feat-card" href="reading.html">
-              <div class="welcome-feat-icon welcome-feat-icon--blue"><i class="fas fa-book-open"></i></div>
-              <h4>Reading</h4>
-              <p>Luyện đề đọc IELTS đầy đủ hoặc từng bài lẻ, có mẹo làm bài (Reading Tips) đi kèm.</p>
-            </a>
-            <a class="welcome-feat-card" href="listening.html">
-              <div class="welcome-feat-icon welcome-feat-icon--purple"><i class="fas fa-headphones"></i></div>
-              <h4>Listening</h4>
-              <p>Luyện đề nghe IELTS, kèm bài tập Dictation chép chính tả câu và Listening Tips.</p>
-            </a>
-            <a class="welcome-feat-card" href="writing.html">
-              <div class="welcome-feat-icon welcome-feat-icon--pink"><i class="fas fa-pen-nib"></i></div>
-              <h4>Writing</h4>
-              <p>Làm bài Writing thật, nộp cho giáo viên chấm — kèm Writing Tips và bài mẫu.</p>
-            </a>
-            <a class="welcome-feat-card" href="speaking.html">
-              <div class="welcome-feat-icon welcome-feat-icon--orange"><i class="fas fa-microphone"></i></div>
-              <h4>Speaking</h4>
-              <p>Luyện nói theo Part 1-3, AI chấm điểm và nhận xét ngay sau khi ghi âm.</p>
-            </a>
-            <a class="welcome-feat-card" href="writing-practice.html">
-              <div class="welcome-feat-icon welcome-feat-icon--green"><i class="fas fa-dumbbell"></i></div>
-              <h4>Luyện viết</h4>
-              <p>Bài tập câu ngắn game hóa: Task 1, Task 2, ngữ pháp thiết yếu — luyện từng kỹ năng nhỏ.</p>
-            </a>
+          <!-- "Điểm cần cải thiện" — weakest question type/criterion per skill,
+               derived from existing Reading/Listening/Writing/Speaking/Vocabulary
+               history. Three distinct states below (never shown at once): chips
+               (has signal), empty (not enough data yet — NOT the same as an API
+               error, see loadWeaknessProfile()), error (request actually failed). -->
+          <div class="weakness-card" id="weakness-card" style="display:none">
+            <div class="weakness-card-title"><i class="fas fa-bullseye"></i> Điểm cần cải thiện</div>
+            <div class="weakness-chips" id="weakness-chips" style="display:none"></div>
+            <div class="weakness-state" id="weakness-empty-state" style="display:none">
+              <div class="weakness-state-icon"><i class="fas fa-seedling"></i></div>
+              <div class="weakness-state-title">Personalized insights are not ready yet.</div>
+              <div class="weakness-state-sub">Complete a few practice sessions to discover your weak areas.</div>
+              <a class="btn btn-primary btn-sm" href="reading.html">Luyện ngay</a>
+            </div>
+            <div class="weakness-state" id="weakness-error-state" style="display:none">
+              <div class="weakness-state-icon weakness-state-icon--error"><i class="fas fa-triangle-exclamation"></i></div>
+              <div class="weakness-state-title">Unable to load your insights.</div>
+              <button class="btn btn-ghost btn-sm" onclick="loadWeaknessProfile()">Thử lại</button>
+            </div>
+          </div>
+
+          <!-- Feature/rules chips — was 4 always-expanded text cards (streak
+               rules, búa Daniel rules, etc.); full text now lives in
+               openFeatInfo()'s data map (js/dashboard.js) and only shows in
+               the shared #modal-feat-info popup on click. -->
+          <div class="feat-chip-row">
+            <button type="button" class="feat-chip" onclick="openFeatInfo('bulk-import')"><i class="fas fa-file-import"></i> Nhập hàng loạt</button>
+            <button type="button" class="feat-chip" onclick="openFeatInfo('streak')"><i class="fas fa-fire-alt"></i> Streak hàng ngày</button>
+            <button type="button" class="feat-chip" onclick="openFeatInfo('paraphrase')"><i class="fas fa-book-open"></i> Paraphrase Cambridge</button>
+            <button type="button" class="feat-chip" onclick="openFeatInfo('hammer')"><i class="fas fa-hammer"></i> Búa Daniel</button>
+          </div>
+
+          <!-- Other skills — was 5 always-expanded cards duplicating the top
+               nav's own Reading/Listening/... links; kept as a slim
+               discovery row instead of repeating the whole nav in card form. -->
+          <div class="skills-explore-row">
+            <span class="skills-explore-label">Khám phá:</span>
+            <a class="skills-explore-link" href="reading.html"><i class="fas fa-book-open"></i> Reading</a>
+            <a class="skills-explore-link" href="listening.html"><i class="fas fa-headphones"></i> Listening</a>
+            <a class="skills-explore-link" href="writing.html"><i class="fas fa-pen-nib"></i> Writing</a>
+            <a class="skills-explore-link" href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
+            <a class="skills-explore-link" href="writing-practice.html"><i class="fas fa-dumbbell"></i> Luyện viết</a>
           </div>
 
           <div style="text-align:center;margin-top:28px">
@@ -1026,6 +1001,18 @@
   </div>
 </div>
 
+<!-- Shared popup for the homepage's compact feature/rules chips
+     (openFeatInfo() in js/dashboard.js fills title/body per chip). -->
+<div class="modal-overlay hidden" id="modal-feat-info">
+  <div class="modal-box" style="max-width:440px">
+    <div class="modal-header">
+      <h3><i class="fas fa-circle-info"></i> <span id="featInfoTitleText"></span></h3>
+      <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-feat-info')">×</button>
+    </div>
+    <div class="modal-body" id="featInfoBody" style="padding:18px 22px;font-size:14px;line-height:1.75;color:var(--text2)"></div>
+  </div>
+</div>
+
 <div class="modal-overlay hidden" id="modal-confirm">
   <div class="modal-box modal-sm">
     <div class="modal-body" style="text-align:center;padding:28px 24px">
@@ -1334,6 +1321,6 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260906fix"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260905ci2"></script>
+<script src="js/dashboard.js?v=20260905reorg"></script>
 </body>
 </html>

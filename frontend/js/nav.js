@@ -19,12 +19,23 @@
         { href: 'listening.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Listening Tips' },
       ]
     },
+    // "Luyện viết" used to be its own top-level nav item — folded into
+    // Writing's dropdown (below the divider) since it's really the same
+    // skill (practice vs. the timed "thi thật" flows above), and 8 top-level
+    // items crowded into one bar was the main source of nav clutter.
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
       children: [
         { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
         { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1', badgeId: 'navWritingTask1Badge' },
         { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2', badgeId: 'navWritingTask2Badge' },
         { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
+        { divider: true, label: 'Luyện tập' },
+        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
+        { href: 'writing-task1.html',    icon: 'fa-chart-line', label: 'Task 1 Writing (Khóa học)' },
+        { href: 'writing-task2-course.html', icon: 'fa-edit',  label: 'Task 2 Writing (Khóa học)' },
+        { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
+        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
+        { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking',
@@ -34,24 +45,25 @@
         { href: 'speaking.html?tab=speaking-tips',  icon: 'fa-lightbulb',  label: 'Speaking Tips' },
       ]
     },
-    { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
-      children: [
-        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
-        { href: 'writing-task1.html',    icon: 'fa-chart-line', label: 'Task 1 Writing' },
-        { href: 'writing-task2-course.html', icon: 'fa-edit',  label: 'Task 2 Writing' },
-        { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
-        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
-        { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
-      ]
-    },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab',
       children: [
         { href: 'dashboard.html',                    icon: 'fa-layer-group', label: 'Sổ từ vựng' },
         { href: 'reading-listening-strategy.html',    icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
       ]
     },
-    { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true, badgeId: 'navInboxBadge' },
-    { href: 'tuition.html',          icon: 'fa-money-bill-wave', label: 'Học phí', badge: true, badgeId: 'navTuitionBadge' },
+  ];
+
+  // "Hộp thư" / "Học phí" moved out of the main dropdown row into the
+  // utility icon cluster (nav-actions) — they're account/inbox utilities,
+  // not a learning skill, and this is also what freed up room in
+  // .nav-actions for them: same reasoning as folding Luyện viết above.
+  // Rendered twice from this one list — mkUtilityIcons() (desktop icon row,
+  // hidden ≤1024px) and mkUtilityMobileLinks() (mobile drawer row, so
+  // there's still a way to reach them once the icon row hides) — so href/
+  // icon/label/badgeId never drift between the two.
+  var UTILITY_LINKS = [
+    { href: 'inbox.html',   icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
+    { href: 'tuition.html', icon: 'fa-money-bill-wave', label: 'Học phí', badgeId: 'navTuitionBadge' },
   ];
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
@@ -88,11 +100,12 @@
 
   function mkDesktopLinks() {
     return LINKS.map(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return navChildActive(c.href); }));
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return !c.divider && navChildActive(c.href); }));
       var cls = isActive ? ' class="active"' : '';
       var badge = l.badgeId ? '<span id="' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       if (l.children) {
         var items = l.children.map(function (c) {
+          if (c.divider) return '<div class="nav-dd-divider">' + c.label + '</div>';
           var cc = navChildActive(c.href) ? ' class="active"' : '';
           var cbadge = c.badgeId ? '<span id="' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
           return '<a href="/' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + cbadge + '</a>';
@@ -106,12 +119,13 @@
   function mkMobileLinks() {
     var out = [];
     LINKS.forEach(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return navChildActive(c.href); }));
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return !c.divider && navChildActive(c.href); }));
       var active = isActive ? ' active' : '';
       var badge = l.badgeId ? '<span id="mob_' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       out.push('<a href="/' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
       if (l.children) {
         l.children.forEach(function (c) {
+          if (c.divider) { out.push('<div class="mobile-nav-divider-label">' + c.label + '</div>'); return; }
           var ca = navChildActive(c.href) ? ' active' : '';
           var cbadge = c.badgeId ? '<span id="mob_' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
           out.push('<a href="/' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + cbadge + '</a>');
@@ -119,6 +133,26 @@
       }
     });
     return out.join('');
+  }
+
+  // Icon-only row (nav-actions) — desktop/tablet only (.nav-action-hide-mobile
+  // hides at <=1024px, same breakpoint .nav-links disappears at); see
+  // mkUtilityMobileLinks() below for how mobile still reaches these.
+  function mkUtilityIcons() {
+    return UTILITY_LINKS.map(function (u) {
+      var badge = u.badgeId ? '<span id="' + u.badgeId + '" class="nav-bell-badge" style="display:none">0</span>' : '';
+      return '<a class="btn-dark-mode nav-action-hide-mobile" href="/' + u.href + '" title="' + u.label + '" aria-label="' + u.label + '" style="position:relative"><i class="fas ' + u.icon + '"></i>' + badge + '</a>';
+    }).join('');
+  }
+
+  // Mobile-drawer counterpart — same UTILITY_LINKS, labeled rows (matches
+  // mkMobileLinks()'s style) so Hộp thư/Học phí are still one tap away once
+  // the hamburger takes over from the icon row.
+  function mkUtilityMobileLinks() {
+    return UTILITY_LINKS.map(function (u) {
+      var badge = u.badgeId ? '<span id="mob_' + u.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
+      return '<a href="/' + u.href + '" class="mobile-nav-link"><i class="fas ' + u.icon + '" style="width:20px;text-align:center"></i> ' + u.label + badge + '</a>';
+    }).join('');
   }
 
   // ── Inject top nav ────────────────────────────────────────
@@ -147,6 +181,7 @@
           '<div class="nav-bell-panel-list" id="globalBellList"><div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div></div>' +
         '</div>' +
       '</div>' +
+      mkUtilityIcons() +
       '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
       '</a>' +
@@ -185,6 +220,7 @@
   drawer.innerHTML =
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
+    mkUtilityMobileLinks() +
     '<div class="mobile-nav-divider"></div>' +
     '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
     '<i class="fas fa-language" style="width:20px;text-align:center"></i> English</button>' +

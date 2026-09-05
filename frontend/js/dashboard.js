@@ -3782,6 +3782,41 @@ function _esc(str) {
 
 function openGuideModal() { openModal('modal-guide'); }
 window.openGuideModal    = openGuideModal;
+
+// Homepage's compact feature/rules chips (feat-chip-row) — full text used to
+// sit permanently visible in 4 large cards; now only shown in this shared
+// popup on click. Keys match the onclick="openFeatInfo('...')" calls in
+// dashboard.html's feat-chip-row.
+const FEAT_INFO = {
+  'bulk-import': {
+    icon: 'fa-file-import',
+    title: 'Nhập hàng loạt',
+    body: 'Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.',
+  },
+  streak: {
+    icon: 'fa-fire-alt',
+    title: 'Streak hàng ngày',
+    body: 'Luyện từ vựng, làm đề Reading hoặc Listening đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong> (cộng chung cho cả 3 kỹ năng), cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.',
+  },
+  paraphrase: {
+    icon: 'fa-book-open',
+    title: 'Cụm từ Paraphrase Cambridge',
+    body: 'Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!',
+  },
+  hammer: {
+    icon: 'fa-hammer',
+    title: 'Búa Daniel',
+    body: 'Học trọn 1 Paraphrase Unit đúng <strong>≥ 90%</strong> để nhận <strong>1 búa Daniel</strong> (mỗi unit chỉ 1 lần). Nếu lỡ bỏ học và mất streak, dùng búa trong vòng <strong>3 ngày</strong> để khôi phục lại đúng số ngày đã mất!',
+  },
+};
+function openFeatInfo(key) {
+  const info = FEAT_INFO[key];
+  if (!info) return;
+  document.getElementById('featInfoTitleText').textContent = info.title;
+  document.getElementById('featInfoBody').innerHTML = info.body;
+  openModal('modal-feat-info');
+}
+window.openFeatInfo = openFeatInfo;
 window.openBulkImport    = openBulkImport;
 window.parseBulkInput    = parseBulkInput;
 window.confirmBulkImport = confirmBulkImport;

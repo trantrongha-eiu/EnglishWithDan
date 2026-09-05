@@ -223,6 +223,19 @@ img { max-width: 100%; height: auto; }
   color: #fff;
 }
 
+/* Section label inside a dropdown that merges two related groups (e.g.
+   Writing's "thi thật" items above, "Luyện tập" below) — not clickable. */
+.nav-dd-divider {
+  margin: 6px 4px 4px;
+  padding: 6px 8px 2px;
+  border-top: 1px solid var(--border, #e5e7eb);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text3, #9ca3af);
+}
+
 [data-theme="dark"] .nav-dd-menu::after {
   border-bottom-color: var(--card, var(--surface, #0d0d0d));
 }
@@ -414,6 +427,16 @@ img { max-width: 100%; height: auto; }
   font-size: 13px;
   opacity: .85;
 }
+/* Non-clickable section label inside a submenu (e.g. Writing's "Luyện tập"
+   group) — mirrors .nav-dd-divider's desktop treatment. */
+.mobile-nav-divider-label {
+  padding: 10px 16px 4px 44px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text3, #9ca3af);
+}
 
 /* ── Page Content Wrapper ────────────────────────────── */
 .page-content {
@@ -548,6 +571,11 @@ img { max-width: 100%; height: auto; }
   .top-nav .nav-links { display: none; }
   .hamburger { display: flex; }
   :root { --sidebar-w: 220px; }
+
+  /* Hộp thư/Học phí icons (nav.js's mkUtilityIcons) fold into the hamburger
+     drawer at the same breakpoint .nav-links does (mkUtilityMobileLinks) —
+     keeps the icon row from getting crowded once space is already tight. */
+  .nav-action-hide-mobile { display: none; }
 
   #kbd-hint-panel {
     display: none !important;

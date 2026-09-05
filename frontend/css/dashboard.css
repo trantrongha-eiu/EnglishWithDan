@@ -1581,6 +1581,23 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .welcome-feat-icon-img img{width:100%;height:100%;object-fit:cover}
 [data-theme="dark"] .welcome-feat-icon-img{background:rgba(180,83,9,.18)}
 
+/* ── Compact feature/rules chips (js/dashboard.js's openFeatInfo) — replaced
+   4 always-expanded .welcome-feat-card text blocks; full text now only
+   shows in #modal-feat-info on click. ── */
+.feat-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.feat-chip{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.feat-chip i{color:var(--brand,#e53935);font-size:12px}
+.feat-chip:hover{background:var(--surface2);border-color:var(--brand-light,#fca5a5);color:var(--text)}
+
+/* ── Compact "khám phá kỹ năng khác" row — replaced 5 always-expanded cards
+   that just duplicated the top nav's own skill links. ── */
+.skills-explore-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.skills-explore-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px}
+.skills-explore-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none}
+.skills-explore-link i{width:14px;text-align:center;color:var(--text3)}
+.skills-explore-link:hover{color:var(--blue)}
+.skills-explore-link:hover i{color:var(--blue)}
+
 /* ── Help guide button in topbar ── */
 .btn-help-guide{
   display:inline-flex;align-items:center;justify-content:center;
