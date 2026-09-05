@@ -20,6 +20,8 @@ const ListeningTest = require('../models/ListeningTest');
 const Passage = require('../models/Passage');
 const ListeningSection = require('../models/ListeningSection');
 const WritingExam = require('../models/WritingExam');
+const WritingTask1 = require('../models/WritingTask1');
+const WritingTask2 = require('../models/WritingTask2');
 const Task2Topic = require('../models/Task2Topic');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
@@ -86,10 +88,26 @@ const REGISTRY = {
     scoreGate: { fields: 'correctCount totalSentences', percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
   },
   writing_exam: {
-    label: 'Đề Writing',
+    label: 'Đề Writing (Full Task 1+2)',
     catalog: { model: WritingExam, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: {} },
+  },
+  // Standalone "Chọn đề Task 1/2" practice prompts (writing.html) — distinct
+  // from writing_exam (the timed full Task1+2 exam) and task1_lesson (the
+  // structured WT1 course). No score gate: AI-graded IELTS band 0–9, same as
+  // writing_exam/speaking (see PASS_PERCENT's comment).
+  task1_practice: {
+    label: 'Task 1 Writing (Đề lẻ)',
+    catalog: { model: WritingTask1, filter: { isActive: true }, sort: { createdAt: -1 },
+      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
+    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice' } },
+  },
+  task2_practice: {
+    label: 'Task 2 Writing (Đề lẻ)',
+    catalog: { model: WritingTask2, filter: { isActive: true }, sort: { createdAt: -1 },
+      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
+    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice' } },
   },
   task2: {
     label: 'Task 2 Writing (Topic)',
@@ -165,8 +183,10 @@ async function listCatalog(type, search = '', limit = 100) {
   const q = { ...entry.catalog.filter };
   if (search && search.trim()) {
     const re = new RegExp(escapeRegex(search.trim()), 'i');
-    // every catalog model has one of these text fields
-    q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }];
+    // every catalog model has one of these text fields — `prompt` for
+    // WritingTask1/2 (task1_practice/task2_practice), which have no name/
+    // title/question field at all.
+    q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }, { prompt: re }];
   }
   const docs = await entry.catalog.model.find(q)
     .sort(entry.catalog.sort)

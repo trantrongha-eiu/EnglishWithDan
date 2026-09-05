@@ -6,12 +6,13 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createListeningSection } = require('../factories/contentFactory');
+const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2 } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Progress = require('../../models/WT1Progress');
+const WritingAttempt = require('../../models/WritingAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
 
 async function createWT1Lesson(overrides = {}) {
@@ -270,6 +271,45 @@ describe('completion tracking', () => {
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     row = mine.body.assignments.find((a) => a._id === String(asgId));
     expect(row.done).toBe(1);
+    expect(row.status).toBe('completed');
+  });
+
+  test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, complete on any submitted attempt (no score gate), and searching by prompt text works', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const wt1 = await createWritingTask1({ prompt: 'The chart below shows electricity generation by fuel source.' });
+    const wt2 = await createWritingTask2({ prompt: 'Some people think governments should ban advertising to children.' });
+
+    // Search matches the `prompt` text — WritingTask1/2 have no name/title field.
+    const search1 = await request(app).get('/api/classes/resources/catalog?type=task1_practice&search=electricity').set(authH(t));
+    expect(search1.body.items.some((i) => i._id === String(wt1._id))).toBe(true);
+    const search2 = await request(app).get('/api/classes/resources/catalog?type=task2_practice&search=advertising').set(authH(t));
+    expect(search2.body.items.some((i) => i._id === String(wt2._id))).toBe(true);
+
+    const asg = await createAssignment(cls, {
+      resources: [
+        { kind: 'internal', resourceType: 'task1_practice', resourceId: wt1._id },
+        { kind: 'internal', resourceType: 'task2_practice', resourceId: wt2._id },
+      ],
+    });
+
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+
+    // A low-scoring quiz would fail the 70% gate, but these are AI-graded
+    // essays (band 0-9) — any submitted attempt counts, same as writing_exam.
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: wt1._id, task1Answer: 'x'.repeat(160) });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(1);
+    expect(row.resources.find((r) => r.resourceType === 'task1_practice').completed).toBe(true);
+    expect(row.resources.find((r) => r.resourceType === 'task2_practice').completed).toBe(false);
+
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y'.repeat(260) });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.status).toBe('completed');
   });
 

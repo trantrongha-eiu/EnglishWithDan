@@ -20,6 +20,7 @@ const assignmentResourceSchema = new mongoose.Schema({
       'reading_test', 'listening_test', 'reading_practice', 'listening_practice',
       'dictation', 'writing_exam', 'task2', 'speaking',
       'grammar', 'vocabulary_lesson', 'mock_test', 'task1_lesson',
+      'task1_practice', 'task2_practice',
     ],
   },
   resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test

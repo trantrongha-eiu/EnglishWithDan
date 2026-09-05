@@ -34,6 +34,8 @@ function hwResourceHref(r) {
     // _id in `id` above — resourceCode is the snapshot taken at assign time
     // (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
     case 'task1_lesson':       return r.resourceCode ? `writing-task1.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    case 'task1_practice':     return `writing.html?taskType=1&taskId=${id}`;
+    case 'task2_practice':     return `writing.html?taskType=2&taskId=${id}`;
     case 'task2':              return 'task2-practice.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
     case 'grammar':            return 'essential-grammar.html';
