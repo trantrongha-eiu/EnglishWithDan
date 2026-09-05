@@ -163,9 +163,24 @@
     '<a href="/dashboard.html" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
-      '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh" aria-label="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
-      '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
-      '<button class="btn-dark-mode" id="globalLangBtn" data-i18n-skip title="Switch to English" aria-label="Switch to English" style="font-size:12px;font-weight:800;letter-spacing:.5px">EN</button>' +
+      // Sound / dark-mode / language / "replay tour" used to be 4 separate
+      // round icon buttons crowding .nav-actions — merged into one "Tiện
+      // ích" dropdown (hover on desktop via the shared .nav-dropdown
+      // mouseenter/mouseleave wiring below; tap-to-toggle added further
+      // down for touch, since these buttons — unlike LINKS' dropdowns —
+      // stay visible on mobile too). IDs are unchanged (globalSoundBtn/
+      // globalDarkBtn/globalLangBtn/globalTourBtn) so every existing
+      // getElementById-based listener (this file, theme.js, sound-effects.js,
+      // i18n.js, onboarding-tour.js) keeps working untouched.
+      '<div class="nav-dropdown nav-util-dropdown" id="navUtilDropdown">' +
+        '<button class="btn-dark-mode" id="navUtilTrigger" title="Tiện ích" aria-label="Tiện ích" aria-haspopup="true" aria-expanded="false"><i class="fas fa-gear"></i></button>' +
+        '<div class="nav-dd-menu nav-util-menu">' +
+          '<a href="javascript:void(0)" id="globalSoundBtn" title="Bật/tắt âm thanh" aria-label="Bật/tắt âm thanh"><i class="nav-util-emoji sound-toggle-icon">🔊</i> Âm thanh</a>' +
+          '<a href="javascript:void(0)" id="globalDarkBtn" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><i class="nav-util-emoji dark-toggle-icon">🌙</i> Giao diện tối/sáng</a>' +
+          '<a href="javascript:void(0)" id="globalLangBtn" title="Switch to English" aria-label="Switch to English"><i class="nav-util-emoji" data-i18n-skip><span class="nav-util-lang-badge">EN</span></i> Ngôn ngữ (VI/EN)</a>' +
+          '<a href="javascript:void(0)" id="globalTourBtn" title="Xem lại hướng dẫn" aria-label="Xem lại hướng dẫn" style="display:none"><i class="fas fa-circle-question"></i> Xem lại hướng dẫn</a>' +
+        '</div>' +
+      '</div>' +
       '<div class="nav-search-wrap" style="position:relative">' +
         '<button class="btn-dark-mode" id="globalSearchBtn" title="Tìm kiếm" aria-label="Tìm kiếm" aria-haspopup="true" aria-expanded="false"><i class="fas fa-search"></i></button>' +
         '<div class="nav-search-panel" id="globalSearchPanel">' +
@@ -173,7 +188,6 @@
           '<div class="nav-search-results" id="globalSearchResults"></div>' +
         '</div>' +
       '</div>' +
-      '<button class="btn-dark-mode" id="globalTourBtn" title="Xem lại hướng dẫn" aria-label="Xem lại hướng dẫn" style="display:none"><i class="fas fa-circle-question"></i></button>' +
       '<div class="nav-bell-wrap" style="position:relative">' +
         '<button class="btn-dark-mode" id="globalBellBtn" title="Thông báo" aria-label="Thông báo" aria-haspopup="true" aria-expanded="false"><i class="fas fa-bell"></i><span id="navBellBadge" class="nav-bell-badge" style="display:none">0</span></button>' +
         '<div class="nav-bell-panel" id="globalBellPanel">' +
@@ -370,6 +384,33 @@
       }, 250);
     });
   });
+
+  // ── "Tiện ích" dropdown: tap-to-toggle ──────────────────────
+  // The hover wiring above already opens this on desktop mouseover. Unlike
+  // LINKS' dropdowns (only rendered inside .nav-links, which disappears on
+  // mobile in favour of the drawer), this one lives in .nav-actions and
+  // stays visible on touch devices — which have no real "hover" — so it
+  // also needs an explicit tap handler, closed on an outside tap or Escape.
+  var utilDropdown = document.getElementById('navUtilDropdown');
+  var utilTrigger = document.getElementById('navUtilTrigger');
+  if (utilDropdown && utilTrigger) {
+    utilTrigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = utilDropdown.classList.toggle('nav-dd-open');
+      utilTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (utilDropdown.contains(e.target)) return;
+      utilDropdown.classList.remove('nav-dd-open');
+      utilTrigger.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        utilDropdown.classList.remove('nav-dd-open');
+        utilTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
   // ── Unread badges ─────────────────────────────────────────
   function showBadge(badgeId, count) {

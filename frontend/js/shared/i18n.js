@@ -702,8 +702,13 @@
     // no-op assignment can't churn the DOM (and wake the MutationObserver).
     var pill = document.getElementById('globalLangBtn');
     if (pill) {
+      // pill is now a whole dropdown row ("<icon-badge> Ngôn ngữ (VI/EN)"),
+      // not a bare "EN"/"VI" button — write into the inner badge span (nav.js)
+      // so this doesn't blow away the row's icon/label. Falls back to the
+      // pill itself if an older cached nav.js hasn't nested the badge yet.
+      var badge = pill.querySelector('.nav-util-lang-badge') || pill;
       var pillTxt = LANG === 'vi' ? 'EN' : 'VI';
-      if (pill.textContent !== pillTxt) pill.textContent = pillTxt;
+      if (badge.textContent !== pillTxt) badge.textContent = pillTxt;
       var ttl = LANG === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt';
       if (pill.getAttribute('title') !== ttl) {
         pill.setAttribute('title', ttl);

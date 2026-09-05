@@ -253,6 +253,30 @@ img { max-width: 100%; height: auto; }
   margin-left: auto;
 }
 
+/* ── "Tiện ích" dropdown (sound/dark-mode/language/replay-tour merged) ── */
+/* Emoji/lang-badge icons reuse the .nav-dd-menu a i:first-child pill, but as
+   <i> tags (for that selector) holding non-icon-font content — normalize the
+   italic slant browsers give <i> by default. */
+.nav-util-emoji { font-style: normal; }
+@media (max-width: 480px) {
+  /* Same "become a fixed, full-width sheet" treatment as .nav-search-panel/
+     .nav-bell-panel above — a dropdown centered under its trigger via
+     left:50% would otherwise clip off-screen since the trigger sits inside a
+     crowded icon row, not the viewport center. */
+  .nav-util-menu {
+    position: fixed;
+    top: var(--nav-height, 64px);
+    left: 8px;
+    right: 8px;
+    transform: none;
+    width: auto;
+    max-width: none;
+  }
+  .nav-dropdown.nav-dd-open .nav-util-menu { transform: none; }
+  .nav-util-menu::before,
+  .nav-util-menu::after { display: none; }
+}
+
 /* Dark mode toggle */
 .btn-dark-mode {
   width: 38px; height: 38px;
