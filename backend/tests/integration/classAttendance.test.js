@@ -101,6 +101,39 @@ describe('roster', () => {
   });
 });
 
+describe('PUT /:classId/sessions/:sessionId — "Đánh dấu đã học" shortcut', () => {
+  test('flipping status to held (without going through Điểm danh) seeds default present records so heldSessions counts it', async () => {
+    const t = await createTeacher();
+    const s1 = await createStudent();
+    const s2 = await createStudent();
+    const cls = await makeClass(t);
+    const enr1 = await addStudent(t, cls._id, s1);
+    await addStudent(t, cls._id, s2);
+    const sess = await addSession(t, cls._id, { date: past(2), status: 'scheduled' });
+
+    // The bug: this used to flip the session to 'held' with zero
+    // AttendanceRecords, so computeEnrollmentStats (which requires a record
+    // per student to count a held session) silently kept reporting 0 held
+    // sessions for every enrolled student even though admin's Buổi học tab
+    // showed "Đã học".
+    const upd = await request(app).put(`/api/classes/${cls._id}/sessions/${sess._id}`).set(auth(t)).send({ status: 'held' });
+    expect(upd.status).toBe(200);
+    expect(await AttendanceRecord.countDocuments({ sessionId: sess._id })).toBe(2);
+    expect(await AttendanceRecord.countDocuments({ sessionId: sess._id, status: 'present' })).toBe(2);
+
+    const e1 = await ClassEnrollment.findById(enr1.enrollmentId).lean();
+    expect(e1.stats.heldSessions).toBe(1);
+    expect(e1.stats.attendedCount).toBe(1);
+
+    // Re-run doesn't duplicate a student who was already marked (e.g. a
+    // teacher who later corrects one student on Điểm danh, then re-saves the
+    // session some other way) — idempotent on top of the unique index.
+    const upd2 = await request(app).put(`/api/classes/${cls._id}/sessions/${sess._id}`).set(auth(t)).send({ topic: 'x' });
+    expect(upd2.status).toBe(200);
+    expect(await AttendanceRecord.countDocuments({ sessionId: sess._id })).toBe(2);
+  });
+});
+
 describe('attendance math end to end', () => {
   async function setup() {
     const t = await createTeacher();

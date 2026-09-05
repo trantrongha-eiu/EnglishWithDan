@@ -172,8 +172,20 @@ async function loadHomework() {
       <div class="hw-empty">Hiện tại không có bài tập nào.</div>`;
     return;
   }
+  // The badge counts ASSIGNMENTS (the teacher's homework container — what
+  // "10 misses fails the course" above is actually measured against), not
+  // individual exercises inside one — a single assignment routinely bundles
+  // several (a quiz + an essay + an image upload, say). Students reading
+  // "1 chưa xong" while looking at 3 unchecked rows inside it kept reporting
+  // that as a miscount, so the sub-item total is now spelled out alongside
+  // it instead of silently assumed obvious.
+  const incompleteAssignments = data.assignments.filter((a) => a.status !== 'completed');
+  const incompleteItems = incompleteAssignments.reduce((sum, a) => sum + Math.max(0, a.total - a.done), 0);
+  const countLabel = incompleteItems > incompleteAssignments.length
+    ? `${incompleteAssignments.length} bài tập chưa xong · còn ${incompleteItems} mục`
+    : `${incompleteAssignments.length} chưa xong`;
   card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>
-      <span class="hw-count">${data.assignments.filter((a) => a.status !== 'completed').length} chưa xong</span></div>
+      <span class="hw-count">${countLabel}</span></div>
     ${rules}
     ${warn}
     <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;

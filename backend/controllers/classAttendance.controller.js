@@ -430,6 +430,33 @@ exports.updateSession = async (req, res) => {
       }
     }
     await s.save();
+
+    // Marking a session "held" from this Buổi học shortcut (as opposed to
+    // going through Điểm danh, which already creates a record per student —
+    // see saveSessionAttendance) used to leave the session with ZERO
+    // AttendanceRecords: computeEnrollmentStats only counts a held session
+    // toward "Buổi đã học" once a record exists for that student (by design
+    // — see that file's header comment), so a session could show "Đã học"
+    // here while every enrolled student's stats kept silently ignoring it
+    // until someone separately took attendance. Default everyone to
+    // 'present' the moment a session flips to held here too, so both entry
+    // points behave the same; the teacher can still correct individual
+    // students afterwards on Điểm danh (editing an existing record there
+    // works exactly as if it had been marked normally).
+    if (before.status !== 'held' && s.status === 'held') {
+      const enrollments = await ClassEnrollment.find({ classId: s.classId, removedAt: null }).select('_id studentId').lean();
+      const existing = await AttendanceRecord.find({ sessionId: s._id }).select('studentId').lean();
+      const already = new Set(existing.map((r) => String(r.studentId)));
+      const toCreate = enrollments
+        .filter((e) => !already.has(String(e.studentId)))
+        .map((e) => ({
+          sessionId: s._id, classId: s.classId, enrollmentId: e._id, studentId: e.studentId,
+          status: 'present', markedBy: req.user._id, markedAt: new Date(),
+        }));
+      if (toCreate.length) await AttendanceRecord.insertMany(toCreate);
+      if (!s.attendanceTakenAt) { s.attendanceTakenAt = new Date(); s.attendanceTakenBy = req.user._id; await s.save(); }
+    }
+
     const changed = before.status !== s.status || before.date !== +new Date(s.date) || before.type !== s.type;
     if (changed) await svc.refreshClass(s.classId);
     res.json({ success: true, session: s });
