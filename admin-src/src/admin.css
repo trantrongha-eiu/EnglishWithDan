@@ -61,6 +61,13 @@
       --info-bg: rgba(61, 139, 255, .16);
       --info-bg-strong: rgba(61, 139, 255, .24);
       --info-border: rgba(61, 139, 255, .45);
+      /* Without this, native browser-drawn controls (datetime-local's
+         placeholder/picker, checkboxes, <select> option lists, scrollbars)
+         don't know this app is dark by default and fall back to their own
+         light UA styling — e.g. a modal's "mm/dd/yyyy" deadline placeholder
+         and its checkbox rows render near-white-on-white, unreadable against
+         this near-black --surface. */
+      color-scheme: dark;
     }
 
     body {
@@ -1644,6 +1651,8 @@ body { display: block; }
   --info-bg:        #dce9ff;
   --info-bg-strong: #c7dcfd;
   --info-border:    #a9c8f5;
+  /* Overrides :root's color-scheme: dark — see that declaration's comment. */
+  color-scheme: light;
 }
 
 /* Fix hardcoded rgba values that invert in light mode */
