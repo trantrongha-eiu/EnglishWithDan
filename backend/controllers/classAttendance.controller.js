@@ -19,9 +19,16 @@ const logger = require('../utils/logger');
 const ATT_STATUSES = ['present', 'absent', 'excused', 'late'];
 const MANUAL_ENROLLMENT_STATUSES = ['active', 'completed', 'dropped'];
 
+// UTC calendar-day boundary — matches generateSessions below, which builds
+// session dates from UTC day keys (toISOString().slice(0,10)) rather than
+// server-local time. Using local time here instead would (on a UTC-hosted
+// server, Render's default) incorrectly refuse "chưa thể điểm danh cho buổi
+// học trong tương lai" for a session dated "today" in Vietnam (UTC+7) when
+// attendance is taken between 00:00–07:00 ICT — that's still "yesterday" by
+// UTC clock.
 function endOfToday() {
   const d = new Date();
-  d.setHours(23, 59, 59, 999);
+  d.setUTCHours(23, 59, 59, 999);
   return d;
 }
 
@@ -632,7 +639,7 @@ exports.getDashboard = async (req, res) => {
         lateCount: st.lateCount || 0,
         absenceEquivalent: st.absenceEquivalent || 0,
         attendanceRate: st.attendanceRate || 0,
-        remainingAllowed: st.remainingAllowed ?? Math.max(0, (cls.policy.maxAbsencesAllowed || 0) - (st.absenceEquivalent || 0)),
+        remainingAllowed: st.remainingAllowed ?? Math.max(0, svc.withPolicyDefaults(cls.policy).maxAbsencesAllowed - (st.absenceEquivalent || 0)),
         status: effStatus,
         removed: !!e.removedAt,
       };
