@@ -328,11 +328,20 @@ function StudentsTab({ cls, roster, onChange }) {
 
 // ── Sessions ─────────────────────────────────────────────────────────
 
+const WEEKDAYS = [
+  { v: 0, label: 'CN' }, { v: 1, label: 'T2' }, { v: 2, label: 'T3' }, { v: 3, label: 'T4' },
+  { v: 4, label: 'T5' }, { v: 5, label: 'T6' }, { v: 6, label: 'T7' },
+];
+
 function SessionsTab({ cls }) {
   const toast = useToast();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held' });
+  const [gen, setGen] = useState({
+    weekdays: [], startDate: cls.startDate ? cls.startDate.slice(0, 10) : '', endDate: cls.endDate ? cls.endDate.slice(0, 10) : '',
+  });
+  const [generating, setGenerating] = useState(false);
 
   const load = () => apiFetch(`/classes/${cls._id}/sessions`)
     .then((d) => setSessions(d.sessions || []))
@@ -360,8 +369,54 @@ function SessionsTab({ cls }) {
     } catch (err) { toast(err.message, 'error'); }
   }
 
+  function toggleWeekday(v) {
+    setGen((g) => ({ ...g, weekdays: g.weekdays.includes(v) ? g.weekdays.filter((x) => x !== v) : [...g.weekdays, v] }));
+  }
+
+  async function generate(e) {
+    e.preventDefault();
+    if (!gen.weekdays.length) return toast('Chọn ít nhất một ngày trong tuần', 'error');
+    if (!gen.startDate || !gen.endDate) return toast('Cần ngày khai giảng và kết thúc', 'error');
+    setGenerating(true);
+    try {
+      const d = await apiFetch(`/classes/${cls._id}/sessions/generate`, { method: 'POST', body: JSON.stringify(gen) });
+      toast(d.created ? `Đã tạo ${d.created} buổi học` : 'Không có buổi mới nào được tạo (đã có sẵn hết trong khoảng ngày này)');
+      load();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setGenerating(false); }
+  }
+
   return (
     <>
+      <form onSubmit={generate} className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label className="form-label">Lịch học trong tuần</label>
+          <div style={{ display: 'flex', gap: 4 }}>
+            {WEEKDAYS.map((w) => (
+              <button key={w.v} type="button" onClick={() => toggleWeekday(w.v)}
+                className={`btn btn-sm ${gen.weekdays.includes(w.v) ? 'btn-primary' : 'btn-ghost'}`} style={{ padding: '6px 10px' }}>
+                {w.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label className="form-label">Từ ngày</label>
+          <input className="form-input" type="date" value={gen.startDate} onChange={(e) => setGen((g) => ({ ...g, startDate: e.target.value }))} required />
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label className="form-label">Đến ngày</label>
+          <input className="form-input" type="date" value={gen.endDate} onChange={(e) => setGen((g) => ({ ...g, endDate: e.target.value }))} required />
+        </div>
+        <button className="btn btn-primary" disabled={generating}>{generating ? 'Đang tạo...' : '🗓️ Tạo lịch tự động'}</button>
+        <span style={{ fontSize: 11.5, color: 'var(--text3)', flexBasis: '100%' }}>
+          Tự động tạo buổi học (trạng thái "Dự kiến") vào các ngày đã chọn trong khoảng thời gian trên — bỏ qua ngày đã có buổi sẵn, không tạo trùng.
+        </span>
+      </form>
+
+      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.5px', margin: '4px 0 10px' }}>
+        Hoặc thêm 1 buổi thủ công (buổi bù, buổi lẻ ngoài lịch cố định...)
+      </div>
       <form onSubmit={create} className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div className="form-group" style={{ marginBottom: 0 }}>
           <label className="form-label">Ngày *</label>

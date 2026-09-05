@@ -37,11 +37,30 @@
 # `<script src="...?v=YYYYMMDD">` tags are picked up immediately — without
 # this, a browser holding a cached .html keeps requesting the OLD asset
 # versions and features silently break until the student hard-refreshes
-# (Ctrl+Shift+R). JS/CSS keep the CDN's default long cache: their `?v=` (or
-# admin build hash) changes every release, so a stale one is never served.
+# (Ctrl+Shift+R).
 /*.html
   Cache-Control: no-cache
 /
   Cache-Control: no-cache
 /admin/
   Cache-Control: no-cache
+
+# JS/CSS were left on the CDN's default long cache on the theory that their
+# `?v=` (or admin build hash) always changes on release — in practice a
+# shared file touched without remembering to bump every page's `?v=`, or two
+# pages loading the same script with different query strings, meant a stale
+# copy could keep being served from a browser's disk cache with NO network
+# request at all, invisible until someone hard-refreshed. `no-cache` forces
+# a revalidation request every load (a fast 304 when nothing changed) so the
+# actual file content decides freshness, not whether a human remembered to
+# edit a version string. The one exception is /admin/assets/* — Vite content-
+# hashes those filenames, so a changed file is a NEW url by construction and
+# an old one never needs to be re-fetched; those keep the long default cache
+# for that reason, and still update immediately since /admin/ (its
+# referencing index.html) is no-cache above.
+/*.js
+  Cache-Control: no-cache
+/*.css
+  Cache-Control: no-cache
+/admin/assets/*
+  Cache-Control: public, max-age=31536000, immutable

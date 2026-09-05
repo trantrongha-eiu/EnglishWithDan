@@ -182,6 +182,58 @@ describe('attendance math end to end', () => {
   });
 });
 
+describe('POST /:classId/sessions/generate — bulk session generation', () => {
+  test('creates a scheduled session on every matching weekday within the range, in order', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t);
+    // 2026-09-07 is a Monday. Ask for Mon(1)/Wed(3) through 2026-09-16 (Wed)
+    // -> Mon 7, Wed 9, Mon 14, Wed 16 = 4 sessions.
+    const res = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({
+      weekdays: [1, 3], startDate: '2026-09-07', endDate: '2026-09-16',
+    });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(4);
+    const dates = res.body.sessions.map((s) => new Date(s.date).toISOString().slice(0, 10));
+    expect(dates).toEqual(['2026-09-07', '2026-09-09', '2026-09-14', '2026-09-16']);
+    expect(res.body.sessions.every((s) => s.status === 'scheduled' && s.type === 'regular')).toBe(true);
+    expect(res.body.sessions.map((s) => s.sessionNumber)).toEqual([1, 2, 3, 4]);
+  });
+
+  test('skips a date that already has a session instead of duplicating it, and continues sessionNumber after existing ones', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t);
+    await addSession(t, cls._id, { date: '2026-09-09' }); // sessionNumber 1, manually added
+
+    const res = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({
+      weekdays: [1, 3], startDate: '2026-09-07', endDate: '2026-09-16',
+    });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(3); // the 9th was skipped — already existed
+    const dates = res.body.sessions.map((s) => new Date(s.date).toISOString().slice(0, 10));
+    expect(dates).toEqual(['2026-09-07', '2026-09-14', '2026-09-16']);
+    expect(res.body.sessions.map((s) => s.sessionNumber)).toEqual([2, 3, 4]); // continues after #1
+
+    const all = await request(app).get(`/api/classes/${cls._id}/sessions`).set(auth(t));
+    expect(all.body.sessions).toHaveLength(4); // 1 manual + 3 generated, no duplicate on the 9th
+  });
+
+  test('falls back to the class\'s own startDate/endDate when not given in the request', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t, { startDate: '2026-09-07', endDate: '2026-09-16' });
+    const res = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({ weekdays: [1] });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(2); // Mon 7 and Mon 14
+  });
+
+  test('validation: no weekdays, missing dates, or start after end all 400', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t); // no startDate/endDate set
+    expect((await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({ weekdays: [], startDate: '2026-09-07', endDate: '2026-09-16' })).status).toBe(400);
+    expect((await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({ weekdays: [1] })).status).toBe(400); // no class dates either
+    expect((await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({ weekdays: [1], startDate: '2026-09-16', endDate: '2026-09-07' })).status).toBe(400);
+  });
+});
+
 describe('student self-view', () => {
   test('GET /api/classes/my/attendance-status returns warning only for the affected student', async () => {
     const t = await createTeacher();

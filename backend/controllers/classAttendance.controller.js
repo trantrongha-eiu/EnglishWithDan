@@ -357,6 +357,58 @@ exports.createSession = async (req, res) => {
   }
 };
 
+// POST /:classId/sessions/generate — bulk-create every 'regular' session
+// between two dates that falls on one of the given weekdays (teacher just
+// ticks the class's fixed meeting days, e.g. Tue/Thu/Sat), so a whole term
+// doesn't have to be added one session at a time. Sessions land as
+// 'scheduled' (not 'held') since they haven't happened yet — the teacher
+// marks each 'Đã học' from the Buổi học tab as the term progresses, same as
+// a manually-created future session already works. Idempotent-ish: a date
+// that already has a 'regular' session (from a prior run, or a manual add)
+// is skipped rather than duplicated, so re-running after adding a weekday
+// mid-term is safe.
+const MAX_GENERATE_DAYS = 730; // ~2 years — sanity cap against a bad date range
+exports.generateSessions = async (req, res) => {
+  try {
+    const cls = req.classGroup;
+    const weekdays = Array.isArray(req.body.weekdays)
+      ? [...new Set(req.body.weekdays.map(Number).filter((n) => Number.isInteger(n) && n >= 0 && n <= 6))]
+      : [];
+    if (!weekdays.length) return res.status(400).json({ success: false, message: 'Chọn ít nhất một ngày trong tuần' });
+
+    const startRaw = req.body.startDate || cls.startDate;
+    const endRaw = req.body.endDate || cls.endDate;
+    if (!startRaw || !endRaw) return res.status(400).json({ success: false, message: 'Cần ngày bắt đầu và kết thúc' });
+    const start = new Date(startRaw);
+    const end = new Date(endRaw);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return res.status(400).json({ success: false, message: 'Ngày không hợp lệ' });
+    if (start > end) return res.status(400).json({ success: false, message: 'Ngày bắt đầu phải trước ngày kết thúc' });
+    if ((end - start) / 864e5 > MAX_GENERATE_DAYS) return res.status(400).json({ success: false, message: 'Khoảng thời gian quá dài (tối đa 2 năm)' });
+
+    const weekdaySet = new Set(weekdays);
+    const existing = await ClassSession.find({ classId: cls._id, type: 'regular' }).select('date sessionNumber').lean();
+    const existingDateKeys = new Set(existing.map((s) => new Date(s.date).toISOString().slice(0, 10)));
+    let nextNumber = existing.reduce((max, s) => Math.max(max, s.sessionNumber), 0) + 1;
+
+    const topic = (req.body.topic || '').trim();
+    const toCreate = [];
+    for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+      if (!weekdaySet.has(d.getUTCDay())) continue;
+      const key = d.toISOString().slice(0, 10);
+      if (existingDateKeys.has(key)) continue;
+      toCreate.push({
+        classId: cls._id, sessionNumber: nextNumber++, date: new Date(d),
+        topic, type: 'regular', status: 'scheduled', createdBy: req.user._id,
+      });
+    }
+    if (!toCreate.length) return res.json({ success: true, created: 0, sessions: [] });
+    const sessions = await ClassSession.insertMany(toCreate);
+    res.status(201).json({ success: true, created: sessions.length, sessions });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || 'Lỗi server' });
+  }
+};
+
 exports.updateSession = async (req, res) => {
   try {
     const s = req.classSession;

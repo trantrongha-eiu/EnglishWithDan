@@ -30,6 +30,7 @@ router.put('/:classId/students/:enrollmentId/status', validateObjectIdParam('cla
 // Sessions
 router.get('/:classId/sessions', validateObjectIdParam('classId'), c.loadOwnedClass, c.listSessions);
 router.post('/:classId/sessions', validateObjectIdParam('classId'), c.loadOwnedClass, c.createSession);
+router.post('/:classId/sessions/generate', validateObjectIdParam('classId'), c.loadOwnedClass, c.generateSessions);
 router.put('/:classId/sessions/:sessionId', validateObjectIdParam('classId'), validateObjectIdParam('sessionId'), c.loadOwnedClass, c.loadSession, c.updateSession);
 
 // Attendance for one session
