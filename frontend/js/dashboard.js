@@ -2885,9 +2885,10 @@ function showListeningQuestion() {
     // Word-by-word "gõ từng chữ" drill — student types the English word one
     // letter at a time (wrong char → red shake, correct word → green + auto
     // advance, last word → auto-checks via checkListening()). The plain
-    // #listenInput row is the value bridge and stays hidden while the drill
-    // is active; if the word can't be drilled it falls back to that input.
-    // The "Gợi ý" letter-reveal button stays available alongside the drill.
+    // #listenInput row (which also holds the "Gợi ý" letter-reveal button,
+    // #listenHintBtn) is the value bridge and stays hidden — button included
+    // — while the drill is active; if the word can't be drilled it falls
+    // back to that input, hint button and all.
     _mountVocabDrill('listenWbwHost', 'listenInputRow', currentWord.word, checkListening);
     // FIX: bỏ auto-play speakWord() — người dùng tự bấm nút "Phát Âm Thanh"
     // Thiết bị Android không Google TTS sẽ crash/im lặng nếu auto-play

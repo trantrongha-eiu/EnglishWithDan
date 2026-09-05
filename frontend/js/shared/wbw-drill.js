@@ -158,14 +158,34 @@
     this._onInput = this._onInput.bind(this);
     this._onKeydown = this._onKeydown.bind(this);
     this._onPaste = function (e) { e.preventDefault(); };
+    // True between compositionstart and compositionend — see the per-letter
+    // branch of _onInput below for why this matters (BUG: "gõ đúng theo gợi
+    // ý vẫn báo sai"). Many Android keyboards (Gboard, Samsung Keyboard,
+    // SwiftKey with autocorrect/predictive text on) run an IME COMPOSITION
+    // for plain English words too, not just Vietnamese/CJK — every keystroke
+    // while composing fires an `input` event carrying the whole in-progress
+    // word. Per-letter mode used to run its full match-and-reject logic on
+    // each of those, including forcibly overwriting the input's `.value` —
+    // writing to `.value` mid-composition can desync/cancel the IME's own
+    // composition state on several keyboards, and an in-progress composed
+    // string legitimately mismatching the target isn't a real wrong
+    // keystroke yet anyway. Before maxErrors existed a spurious reject here
+    // just meant "try that letter again" and went unnoticed; with maxErrors
+    // capping retries, the same glitch could silently burn through the cap
+    // and fail a correctly-typed word.
+    this._composing = false;
     var self0 = this;
+    this._onCompStart = function () { self0._composing = true; };
     // Validate on every `input` event (real-time, same as Luyện viết Task 2's
-    // drill). We deliberately do NOT pause on compositionstart/compositionend:
-    // Android IMEs keep a whole word in composition until space/punctuation,
-    // so gating on it made each keystroke wait for the composition to end —
-    // the "check bị delay" the drill must not have. compositionend just
-    // re-runs the check as a safety net for IMEs that batch their input.
-    this._onCompEnd = function () { self0._onInput(); };
+    // drill) EXCEPT while composing (see above) — compositionend is where a
+    // composing keyboard's batched input finally gets the real check, same
+    // as it always has for IMEs that don't fire input events mid-composition
+    // at all.
+    this._onCompEnd = function () { self0._composing = false; self0._onInput(); };
+    // Safety net: a composition that never gets a matching compositionend
+    // (e.g. the field loses focus mid-composition) must not leave _composing
+    // stuck true forever, silently freezing this word's validation.
+    this._onBlur = function () { self0._composing = false; };
     this._focus = this.focus.bind(this);
 
     this._render();
@@ -208,7 +228,9 @@
     this.$input.addEventListener('input', this._onInput);
     this.$input.addEventListener('keydown', this._onKeydown);
     this.$input.addEventListener('paste', this._onPaste);
+    this.$input.addEventListener('compositionstart', this._onCompStart);
     this.$input.addEventListener('compositionend', this._onCompEnd);
+    this.$input.addEventListener('blur', this._onBlur);
     var self = this;
     this.$showall.addEventListener('click', function () { self._toggleShowAll(); });
   };
@@ -220,7 +242,9 @@
       this.$input.removeEventListener('input', this._onInput);
       this.$input.removeEventListener('keydown', this._onKeydown);
       this.$input.removeEventListener('paste', this._onPaste);
+      this.$input.removeEventListener('compositionstart', this._onCompStart);
       this.$input.removeEventListener('compositionend', this._onCompEnd);
+      this.$input.removeEventListener('blur', this._onBlur);
     }
     if (this.$words) this.$words.removeEventListener('click', this._focus);
     this.host.innerHTML = '';
@@ -399,6 +423,11 @@
     if (!tok) return;
 
     if (this.perWord) { this._onInputWord(tok, false); return; }
+
+    // Mid-composition (see the constructor's _composing comment) — leave the
+    // box alone and skip matching entirely; compositionend re-runs this once
+    // the IME commits a final value.
+    if (this._composing) return;
 
     // Walk tok.raw (the real word, punctuation and all) instead of the
     // letters-only tok.target, so a punctuation character (hyphen,
