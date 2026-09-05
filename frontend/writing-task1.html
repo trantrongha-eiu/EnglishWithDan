@@ -329,7 +329,7 @@
       '<div class="t1-head"><h2 class="t1-h2">📊 IELTS Task 1 Writing</h2></div>' +
       '<div class="t1-premium"><div style="font-size:22px">⭐</div>' +
       '<div class="t"><b>Khoá học Task 1 chỉ dành cho Premium</b>' +
-      '<span>4 module · 27 buổi học · biểu đồ tĩnh, biểu đồ động, bản đồ (Maps), sơ đồ quy trình (Process)</span></div>' +
+      '<span>5 module · 22 buổi học + 5 bài kiểm tra · nền tảng, biểu đồ động, biểu đồ tĩnh & kết hợp, bản đồ (Maps), sơ đồ quy trình (Process)</span></div>' +
       '<button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Nâng cấp Premium</button></div>';
   }
   function renderOverview() {
@@ -354,7 +354,7 @@
     }).join('');
     return '<div class="t1-head"><h2 class="t1-h2">📊 IELTS Task 1 Writing</h2>' +
       '<p class="t1-sub">' + esc((d.course && d.course.description) || 'Khoá học Task 1: biểu đồ, bản đồ và quy trình') + '</p></div>' +
-      (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Toàn bộ 4 module · 27 buổi học Task 1</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
+      (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Toàn bộ 5 module · 22 buổi học + 5 bài kiểm tra Task 1</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
       mods;
   }
   function bindOverview() {

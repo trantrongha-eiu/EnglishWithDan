@@ -1,6 +1,261 @@
 {
   "exercises": [
     {
+      "code": "T1-L01-E01",
+      "lessonCode": "T1-L01",
+      "order": 1,
+      "type": "categorize",
+      "title": "Phân loại dạng đề: Dynamic hay Static?",
+      "instruction": "Đọc từng đề bài. Xếp vào đúng nhóm: dữ liệu động (thay đổi theo thời gian) hay dữ liệu tĩnh (tại một thời điểm).",
+      "autoGrade": true,
+      "points": 12,
+      "estimatedMinutes": 6,
+      "difficulty": 1,
+      "skillTags": [
+        "overview",
+        "chart-type"
+      ],
+      "categories": [
+        {
+          "id": "dynamic",
+          "label": "Dynamic / Trend-based"
+        },
+        {
+          "id": "static",
+          "label": "Static"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "The line graph shows the number of visitors to three museums between 1990 and 2015.",
+          "category": "dynamic"
+        },
+        {
+          "id": "c2",
+          "text": "The pie chart shows the proportion of household spending in Japan in 2018.",
+          "category": "static"
+        },
+        {
+          "id": "c3",
+          "text": "The table below shows the average monthly rainfall in four cities in 2020.",
+          "category": "static"
+        },
+        {
+          "id": "c4",
+          "text": "The bar chart compares the sales of four car brands from 2005 to 2020.",
+          "category": "dynamic"
+        },
+        {
+          "id": "c5",
+          "text": "The chart shows the percentage of men and women in five occupations in Canada in 2011.",
+          "category": "static"
+        },
+        {
+          "id": "c6",
+          "text": "The graph shows electricity production in Germany between 1980 and 2030.",
+          "category": "dynamic"
+        }
+      ]
+    },
+    {
+      "code": "T1-L01-E02",
+      "lessonCode": "T1-L01",
+      "order": 2,
+      "type": "categorize",
+      "title": "Chẩn đoán lỗi theo tiêu chí",
+      "instruction": "Với mỗi nhận xét của giám khảo, xếp vào đúng tiêu chí bị mất điểm.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "band-criteria"
+      ],
+      "categories": [
+        {
+          "id": "ta",
+          "label": "Task Achievement"
+        },
+        {
+          "id": "cc",
+          "label": "Coherence and Cohesion"
+        },
+        {
+          "id": "lr",
+          "label": "Lexical Resource"
+        },
+        {
+          "id": "gra",
+          "label": "Grammatical Range and Accuracy"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "\"The essay has no summary of the main features.\"",
+          "category": "ta"
+        },
+        {
+          "id": "c2",
+          "text": "\"The writer repeats the word 'increase' eleven times.\"",
+          "category": "lr"
+        },
+        {
+          "id": "c3",
+          "text": "\"Ideas jump between the two charts with no linking words.\"",
+          "category": "cc"
+        },
+        {
+          "id": "c4",
+          "text": "\"Frequent errors with articles and subject–verb agreement.\"",
+          "category": "gra"
+        },
+        {
+          "id": "c5",
+          "text": "\"The response is only 118 words long.\"",
+          "category": "ta"
+        }
+      ]
+    },
+    {
+      "code": "T1-L01-E03",
+      "lessonCode": "T1-L01",
+      "order": 3,
+      "type": "mcq",
+      "title": "Luật chơi Task 1",
+      "instruction": "Chọn đáp án đúng về format, thời gian và cách chấm điểm Task 1.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 5,
+      "difficulty": 1,
+      "skillTags": [
+        "overview"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Nên dành khoảng bao nhiêu thời gian cho Task 1?",
+          "options": [
+            {
+              "id": "A",
+              "text": "10 phút"
+            },
+            {
+              "id": "B",
+              "text": "20 phút"
+            },
+            {
+              "id": "C",
+              "text": "30 phút"
+            },
+            {
+              "id": "D",
+              "text": "40 phút"
+            }
+          ],
+          "answer": "B",
+          "explanation": "20 phút — vì Task 2 chiếm điểm gấp đôi Task 1."
+        },
+        {
+          "id": "q2",
+          "prompt": "Số từ tối thiểu cho Task 1 là bao nhiêu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "100"
+            },
+            {
+              "id": "B",
+              "text": "120"
+            },
+            {
+              "id": "C",
+              "text": "150"
+            },
+            {
+              "id": "D",
+              "text": "250"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Dưới 150 từ bị trừ điểm trực tiếp ở Task Achievement."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"Vùng từ an toàn\" cho một bài Task 1 là bao nhiêu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "120–150 từ"
+            },
+            {
+              "id": "B",
+              "text": "160–190 từ"
+            },
+            {
+              "id": "C",
+              "text": "200–250 từ"
+            },
+            {
+              "id": "D",
+              "text": "trên 300 từ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "160–190 từ: đủ triển khai 4 đoạn nhưng vẫn kịp giờ cho Task 2."
+        },
+        {
+          "id": "q4",
+          "prompt": "Hai nhiệm vụ chính mà mọi bài Task 1 đều là sự kết hợp của?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Kể chuyện và nêu ý kiến cá nhân"
+            },
+            {
+              "id": "B",
+              "text": "Miêu tả/so sánh số liệu và miêu tả/so sánh xu hướng"
+            },
+            {
+              "id": "C",
+              "text": "Liệt kê ưu và nhược điểm"
+            },
+            {
+              "id": "D",
+              "text": "So sánh quá khứ và tương lai"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Numerical data + trends — mọi biểu đồ chỉ là sự kết hợp của hai việc này."
+        },
+        {
+          "id": "q5",
+          "prompt": "Mỗi tiêu chí trong 4 tiêu chí chấm Task 1 chiếm bao nhiêu % tổng điểm?",
+          "options": [
+            {
+              "id": "A",
+              "text": "10%"
+            },
+            {
+              "id": "B",
+              "text": "20%"
+            },
+            {
+              "id": "C",
+              "text": "25%"
+            },
+            {
+              "id": "D",
+              "text": "50%"
+            }
+          ],
+          "answer": "C",
+          "explanation": "4 tiêu chí × 25% = 100%: Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy."
+        }
+      ]
+    },
+    {
       "code": "T1-L02-E01",
       "lessonCode": "T1-L02",
       "order": 1,

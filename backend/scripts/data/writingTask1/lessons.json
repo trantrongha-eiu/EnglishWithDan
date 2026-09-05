@@ -6,19 +6,20 @@
     "taskType": "task1",
     "language": "vi",
     "targetBand": "5.5-7.0",
-    "description": "Khoá học Writing Task 1 chia 2 module: biểu đồ tĩnh (mô tả và so sánh dữ liệu) và biểu đồ động (xu hướng, introduction, overview, body paragraphs)."
+    "description": "Khoá học Writing Task 1 chia 5 module theo đúng bản chất dữ liệu: Module 1 kiến thức nền tảng (format, 7 dạng đề, 4 tiêu chí, mô tả/so sánh số liệu), Module 2 biểu đồ động (xu hướng, introduction, overview, body), Module 3 biểu đồ tĩnh và biểu đồ kết hợp, Module 4 bản đồ (Maps), Module 5 sơ đồ quy trình (Process)."
   },
   "modules": [
     {
       "code": "T1-M1",
       "order": 1,
-      "title": "MODULE 1 — Biểu đồ tĩnh",
-      "titleEn": "Static Charts",
+      "title": "MODULE 1 — Kiến thức nền tảng về biểu đồ",
+      "titleEn": "Fundamental Knowledge about Charts",
       "outcomes": [
-        "Phân biệt number / amount / percentage và chọn đúng danh từ đi kèm",
-        "Viết câu mô tả số liệu ở 3 vị trí khác nhau trong câu",
-        "Dùng thành thạo 7 cấu trúc so sánh trong cùng một đoạn",
-        "Mô tả dữ liệu tương lai, nhóm tuổi, số ước lượng và mốc thời gian"
+        "Hiểu rõ format, 7 dạng đề và 4 tiêu chí chấm điểm của Writing Task 1",
+        "Gọi tên chính xác 3 loại dữ liệu: đếm được, không đếm được và phần trăm",
+        "Viết được câu mô tả số liệu ở cả 3 vị trí (đầu – giữa – cuối câu)",
+        "So sánh số liệu bằng 7 cấu trúc khác nhau mà không lặp từ",
+        "Xử lý được số liệu tương lai, nhóm tuổi, số ước lượng và mốc thời gian"
       ]
     },
     {
@@ -27,16 +28,79 @@
       "title": "MODULE 2 — Biểu đồ động",
       "titleEn": "Dynamic / Trend-based Charts",
       "outcomes": [
-        "Làm chủ từ vựng xu hướng: tăng, giảm, ổn định, dao động, đỉnh, đáy",
-        "Dùng đúng giới từ by / to / in / at / of / with",
+        "Làm chủ toàn bộ từ vựng xu hướng: tăng, giảm, ổn định, dao động, đỉnh, đáy",
+        "Dùng đúng giới từ by / to / in / at / of / with khi mô tả số liệu",
         "Nối và so sánh nhiều xu hướng trong cùng một câu phức",
         "Viết Introduction bằng 3 phương pháp paraphrasing",
-        "Viết Overview chuẩn Band 7.0+ và hai đoạn Body có chọn lọc số liệu",
+        "Viết Overview đúng chuẩn Band 7.0+ và hai đoạn Body có chọn lọc số liệu",
         "Hoàn thành một bài Task 1 trọn vẹn trong 20 phút"
+      ]
+    },
+    {
+      "code": "T1-M3",
+      "order": 3,
+      "title": "MODULE 3 — Biểu đồ tĩnh và biểu đồ kết hợp",
+      "titleEn": "Static Charts and Mixed Chart Types",
+      "outcomes": [
+        "Nhận ra ngay khi nào KHÔNG được dùng từ vựng tăng - giảm",
+        "Viết Overview cho bảng số liệu bằng cách so sánh hàng và cột",
+        "Chia thân bài theo cột hoặc theo hàng một cách hợp lý",
+        "Xử lý đề có hai biểu đồ cùng lúc mà không bị lan man",
+        "Hoàn thành bài Task 1 dạng tĩnh và dạng kết hợp trong 20 phút"
+      ]
+    },
+    {
+      "code": "T1-M4",
+      "order": 4,
+      "title": "MODULE 4 — Bản đồ thay đổi theo thời gian",
+      "titleEn": "Maps Changing Over Time",
+      "outcomes": [
+        "Gọi tên chính xác 8 hướng và mọi vị trí trên bản đồ bằng tiếng Anh",
+        "Sử dụng thành thạo 7 nhóm từ vựng mô tả sự thay đổi: phá dỡ, xây mới, thay thế, mở rộng, thu hẹp, di dời, giữ nguyên",
+        "Viết được Introduction một câu và Overview hai câu cho mọi đề Maps",
+        "Chọn đúng một trong hai cách chia thân bài và bảo vệ được lựa chọn đó",
+        "Hoàn thành một bài Maps 160–190 từ trong 20 phút"
+      ]
+    },
+    {
+      "code": "T1-M5",
+      "order": 5,
+      "title": "MODULE 5 — Sơ đồ quy trình",
+      "titleEn": "Process Diagrams",
+      "outcomes": [
+        "Phân biệt chắc chắn Natural Process và Manufacturing Process",
+        "Chọn đúng thì và thể cho từng loại quy trình: chủ động hay bị động",
+        "Đếm và mô tả đầy đủ mọi bước, không bỏ sót và không thêm bước thừa",
+        "Dùng thành thạo 4 cấu trúc nối bước và các từ nối chỉ trình tự",
+        "Hoàn thành một bài Process 150–180 từ trong 20 phút"
       ]
     }
   ],
   "lessons": [
+    {
+      "code": "T1-L01",
+      "moduleCode": "T1-M1",
+      "order": 1,
+      "title": "Buổi 1 — Bức tranh toàn cảnh về IELTS Writing Task 1",
+      "titleEn": "The Big Picture of IELTS Writing Task 1",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nắm được yêu cầu về thời gian và số từ",
+        "Nhận diện 7 dạng đề Task 1 và phân biệt dữ liệu động – dữ liệu tĩnh",
+        "Hiểu 4 tiêu chí chấm điểm và biết mình đang bị mất điểm ở đâu"
+      ],
+      "keyLanguage": [
+        "20 phút cho Task 1 · tối thiểu 150 từ · vùng an toàn 160–190 từ",
+        "7 dạng đề: line graph, bar chart, pie chart, table, multiple chart, map, process",
+        "Hai nhóm dữ liệu: Dynamic/Trend-based (thay đổi theo thời gian) và Static (tại một thời điểm)",
+        "Hai nhiệm vụ chính: describing/comparing numerical data + describing/comparing trends",
+        "4 tiêu chí, mỗi tiêu chí 25%: Task Achievement · Coherence and Cohesion · Lexical Resource · Grammatical Range and Accuracy"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
     {
       "code": "T1-L02",
       "moduleCode": "T1-M1",
@@ -110,13 +174,15 @@
       "durationMinutes": 60,
       "isTest": true,
       "totalPoints": 100,
-      "objectives": ["Kiểm tra toàn bộ kiến thức Module 1: loại dữ liệu, cấu trúc mô tả, 7 cấu trúc so sánh, thì tương lai"],
+      "objectives": [
+        "Kiểm tra toàn bộ kiến thức Module 1: loại dữ liệu, cấu trúc mô tả, 7 cấu trúc so sánh, thì tương lai"
+      ],
       "exerciseCount": 5
     },
     {
       "code": "T1-L05",
       "moduleCode": "T1-M2",
-      "order": 6,
+      "order": 5,
       "title": "Buổi 5 — Ngôn ngữ diễn tả xu hướng",
       "titleEn": "Language of Trends",
       "durationMinutes": 60,
@@ -130,52 +196,37 @@
         "remain stable · level off · hit a plateau · fluctuate · oscillate",
         "peak at · reach a peak of · hit a low of · bottom at",
         "minimal < slight < moderate < significant < substantial < dramatic < enormous"
-      ],
-      "exerciseCount": 7
+      ]
     },
     {
       "code": "T1-L06",
       "moduleCode": "T1-M2",
-      "order": 7,
-      "title": "Buổi 6 — Cấu trúc mô tả xu hướng và giới từ",
-      "titleEn": "Trend Structures & Prepositions",
-      "durationMinutes": 60,
+      "order": 6,
+      "title": "Buổi 6 — Cấu trúc xu hướng, giới từ và so sánh xu hướng",
+      "titleEn": "Trend Structures, Prepositions & Comparing Trends",
+      "durationMinutes": 90,
       "objectives": [
         "Dùng 3 cấu trúc mô tả xu hướng (chủ động, danh từ hoá, saw/witnessed/experienced)",
-        "Dùng đúng giới từ by, to, in, at, of, with, around, between"
-      ],
-      "keyLanguage": [
-        "CT1: S + V + adverb + by … to …",
-        "CT2: There was a/an + adj + noun + of … to … + in …",
-        "CT3: [Nơi chốn/Thời gian/Chủ thể] saw / witnessed / experienced + a/an + adj + noun + in …",
-        "by = mức thay đổi · to = giá trị đích · at = đứng yên tại · of = sau danh từ"
-      ],
-      "exerciseCount": 4
-    },
-    {
-      "code": "T1-L07",
-      "moduleCode": "T1-M2",
-      "order": 8,
-      "title": "Buổi 7 — So sánh xu hướng và tăng theo cấp số nhân",
-      "titleEn": "Comparing Trends & Multiplicative Increases",
-      "durationMinutes": 60,
-      "objectives": [
+        "Dùng đúng giới từ by, to, in, at, of, with, around, between",
         "Nối hai xu hướng giống nhau và trái ngược nhau trong một câu",
         "Dùng double, treble, quadruple, x-fold, x times higher than",
         "Viết được 2 đoạn hoàn chỉnh cho một biểu đồ có dữ liệu và xu hướng"
       ],
       "keyLanguage": [
+        "CT1: S + V + adverb + by … to …",
+        "CT2: There was a/an + adj + noun + of … to … + in …",
+        "CT3: [Nơi chốn/Thời gian/Chủ thể] saw / witnessed / experienced + a/an + adj + noun + in …",
+        "by = mức thay đổi · to = giá trị đích · at = đứng yên tại · of = sau danh từ",
         "respectively · while / whereas · By contrast / Meanwhile / Similarly",
         "double · treble · quadruple · a two-fold increase · six times higher than"
-      ],
-      "exerciseCount": 8
+      ]
     },
     {
-      "code": "T1-L08",
+      "code": "T1-L07",
       "moduleCode": "T1-M2",
-      "order": 9,
-      "title": "Buổi 8 — Kết hợp nhiều xu hướng trong một câu (nâng cao)",
-      "titleEn": "Combining Multiple Trends",
+      "order": 7,
+      "title": "Buổi 7 — Kết hợp nhiều xu hướng trong một câu (nâng cao)",
+      "titleEn": "Combining Multiple Trends (Advanced)",
       "durationMinutes": 60,
       "objectives": [
         "Nối 2 và 3 xu hướng liên tiếp bằng câu phức",
@@ -186,15 +237,14 @@
         "…, and then S continued its upward trend, reaching a peak of …",
         "There was a … until it reached a high of …; however, S began to …",
         "Starting at X, S + V, followed by … / before V-ing … / but later + V"
-      ],
-      "exerciseCount": 5
+      ]
     },
     {
-      "code": "T1-L09",
+      "code": "T1-L08",
       "moduleCode": "T1-M2",
-      "order": 10,
-      "title": "Buổi 9 — Viết Introduction: nghệ thuật paraphrasing",
-      "titleEn": "Writing the Introduction",
+      "order": 8,
+      "title": "Buổi 8 — Viết Introduction: nghệ thuật paraphrasing",
+      "titleEn": "Writing the Introduction: The Art of Paraphrasing",
       "durationMinutes": 60,
       "objectives": [
         "Nhận diện keyword trong đề bài (subject, time frame, location)",
@@ -206,57 +256,378 @@
         "C2: đổi dạng từ (noun ⇆ verb) + how many / how much / how",
         "C3: compare(s) … in terms of …",
         "namely + A, B and C"
-      ],
-      "exerciseCount": 4
+      ]
     },
     {
-      "code": "T1-L10",
+      "code": "T1-L09",
       "moduleCode": "T1-M2",
-      "order": 11,
-      "title": "Buổi 10 — Viết Overview: đoạn quyết định Band 7.0",
-      "titleEn": "Writing the Overview",
-      "durationMinutes": 60,
+      "order": 9,
+      "title": "Buổi 9 — Viết Overview, Body và bài hoàn chỉnh",
+      "titleEn": "Overview, Body Paragraphs & the Complete Essay",
+      "durationMinutes": 90,
       "objectives": [
         "Hiểu vì sao thiếu Overview thì không thể vượt Band 6.0",
         "Xác định 2 đặc điểm nổi bật của bất kỳ biểu đồ nào trong 60 giây",
-        "Viết Overview theo 2 công thức chuẩn, không chứa số liệu"
-      ],
-      "keyLanguage": [
-        "It is clear / noticeable that … . Additionally, …",
-        "Overall, … . It is also noted that …",
-        "by far the highest / lowest · the most significant change · the opposite trend"
-      ],
-      "exerciseCount": 4
-    },
-    {
-      "code": "T1-L11",
-      "moduleCode": "T1-M2",
-      "order": 12,
-      "title": "Buổi 11 — Viết Body Paragraphs và bài hoàn chỉnh",
-      "titleEn": "Body Paragraphs & Full Essay",
-      "durationMinutes": 60,
-      "objectives": [
+        "Viết Overview theo 2 công thức chuẩn, không chứa số liệu",
         "Xác định “năm nổi bật” để chia hai đoạn thân bài",
         "Chọn lọc 8–10 số liệu quan trọng nhất cho cả bài",
         "Hoàn thành một bài Task 1 trọn vẹn 4 đoạn"
       ],
       "keyLanguage": [
+        "It is clear / noticeable that … . Additionally, …",
+        "Overall, … . It is also noted that …",
+        "by far the highest / lowest · the most significant change · the opposite trend",
         "the opposite trend was true for … · the reverse pattern could be seen in …",
         "experienced an upward / downward trend",
         "Body 1: dữ liệu năm đầu + xu hướng tới năm nổi bật · Body 2: năm nổi bật → năm cuối"
-      ],
-      "exerciseCount": 4
+      ]
     },
     {
       "code": "T1-TEST2",
       "moduleCode": "T1-M2",
-      "order": 13,
+      "order": 10,
       "title": "TEST 2 — Bài kiểm tra cuối Module 2",
-      "titleEn": "Module 2 Final Test",
+      "titleEn": "Module 2 Test",
       "durationMinutes": 60,
       "isTest": true,
       "totalPoints": 100,
-      "objectives": ["Kiểm tra từ vựng xu hướng, giới từ, cấu trúc nối xu hướng, Introduction, Overview và bài viết hoàn chỉnh"],
+      "objectives": [
+        "Kiểm tra từ vựng xu hướng, giới từ, cấu trúc nối xu hướng, Introduction, Overview và bài viết hoàn chỉnh"
+      ],
+      "exerciseCount": 5
+    },
+    {
+      "code": "T1-L10",
+      "moduleCode": "T1-M3",
+      "order": 10,
+      "title": "Buổi 10 — Biểu đồ tĩnh: nguyên tắc và cấu trúc bài viết",
+      "titleEn": "Static Charts: Principles and Essay Structure",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt dứt khoát static và trend-based",
+        "Viết Overview cho bảng bằng cách so sánh hàng với cột",
+        "Chia Body theo hai cách và chọn cách phù hợp"
+      ],
+      "keyLanguage": [
+        "Static charts: KHÔNG mô tả tăng/giảm — chỉ mô tả và so sánh số liệu giữa các nhóm/hạng mục tại một thời điểm",
+        "❌ Lỗi Task Achievement nghiêm trọng nhất: dùng \"increased/decreased\" cho biểu đồ tĩnh",
+        "Overview cho bảng/dữ liệu tĩnh: so sánh CẢ hàng và CỘT, tập trung giá trị cao nhất/thấp nhất",
+        "Cách 1 — chia theo cột (dễ hơn) · Cách 2 — chia theo hàng",
+        "For + (người), ... · In terms of.../Regarding..., ...",
+        "\"was highest\" → topped the list/took the lead · \"was lowest\" → the bottom position belonged to..., with only...% choosing it"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      }
+    },
+    {
+      "code": "T1-L11",
+      "moduleCode": "T1-M3",
+      "order": 11,
+      "title": "Buổi 11 — Luyện tập biểu đồ tĩnh: bảng, cột và biểu đồ tròn",
+      "titleEn": "Static Chart Practice: Tables, Bar Charts & Pie Charts",
+      "durationMinutes": 90,
+      "objectives": [
+        "Lập kế hoạch chọn số liệu trước khi viết",
+        "Viết bài hoàn chỉnh cho bảng nhiều cột",
+        "Viết bài hoàn chỉnh cho biểu đồ cột ba nhóm và biểu đồ tròn"
+      ],
+      "keyLanguage": [
+        "Bước phân tích đề: chủ đề → đơn vị đo → có mốc thời gian không → chọn thì",
+        "Không có mốc thời gian cụ thể → mặc định dùng thì hiện tại đơn (Present Simple)",
+        "So sánh phần trăm dùng \"larger\", KHÔNG dùng \"higher\" (percentage là danh từ chỉ lượng)",
+        "Biểu đồ tròn nhiều phần: viết theo màu/nhóm nổi bật, mỗi đoạn thân bài một nhóm"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 2
+      }
+    },
+    {
+      "code": "T1-L12",
+      "moduleCode": "T1-M3",
+      "order": 12,
+      "title": "Buổi 12 — Biểu đồ kết hợp (Mixed Chart Type)",
+      "titleEn": "Mixed Chart Type",
+      "durationMinutes": 60,
+      "objectives": [
+        "Viết Introduction gồm hai mệnh đề cho hai biểu đồ",
+        "Viết Overview với mỗi câu cho một biểu đồ",
+        "Phân bổ hai đoạn Body cho hai biểu đồ mà không lan man"
+      ],
+      "keyLanguage": [
+        "Hai biểu đồ có thể cùng loại (2 pie) hoặc khác loại (line + bar)",
+        "Introduction: 2 mệnh đề nối bằng \"and\"/\"while\"/dấu phẩy — mỗi mệnh đề tả 1 biểu đồ",
+        "Overview: đúng 2 câu, mỗi câu nêu điểm nổi bật nhất của 1 biểu đồ",
+        "Body 1 = biểu đồ 1, Body 2 = biểu đồ 2 — KHÔNG cố mô tả hết số liệu, chỉ chọn điểm quan trọng nhất",
+        "illustrates / shows data on / provides information about (thay cho \"gives information about\")"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 2
+      }
+    },
+    {
+      "code": "T1-TEST3",
+      "moduleCode": "T1-M3",
+      "order": 13,
+      "title": "TEST 3 — Bài kiểm tra cuối Module 3 (Biểu đồ tĩnh & kết hợp)",
+      "titleEn": "Module 3 Test",
+      "durationMinutes": 60,
+      "isTest": true,
+      "objectives": [
+        "Tổng hợp toàn bộ Module 3: biểu đồ tĩnh, biểu đồ kết hợp"
+      ],
+      "keyLanguage": [],
+      "gate": {
+        "minObjectiveScorePercent": 70,
+        "minWritingSubmissions": 1
+      }
+    },
+    {
+      "code": "T1-L13",
+      "moduleCode": "T1-M4",
+      "order": 13,
+      "title": "Buổi 13 — Từ vựng chỉ phương hướng và vị trí trên bản đồ",
+      "titleEn": "Map Direction & Location Vocabulary",
+      "durationMinutes": 60,
+      "objectives": [
+        "Đọc và gọi tên chính xác 8 hướng trên bản đồ bằng tiếng Anh",
+        "Mô tả vị trí một công trình bằng ít nhất 3 cấu trúc khác nhau",
+        "Không còn nhầm lẫn giữa in the north of và to the north of"
+      ],
+      "keyLanguage": [
+        "North / South / East / West · Northeast (NE) · Northwest (NW) · Southeast (SE) · Southwest (SW)",
+        "top / bottom · left-hand side / right-hand side · centre · top-left corner",
+        "In the + hướng + corner/area of + địa điểm",
+        "To the + hướng + of + địa điểm",
+        "S + was located / was situated in + vị trí",
+        "There was + N + to the + hướng + of + địa điểm"
+      ]
+    },
+    {
+      "code": "T1-L14",
+      "moduleCode": "T1-M4",
+      "order": 14,
+      "title": "Buổi 14 — Bảy nhóm từ vựng mô tả sự thay đổi",
+      "titleEn": "Seven Groups of Change Vocabulary",
+      "durationMinutes": 60,
+      "objectives": [
+        "Thuộc 7 nhóm động từ mô tả thay đổi trên bản đồ",
+        "Dùng đúng bị động quá khứ cho mọi thay đổi do con người thực hiện",
+        "Hoàn thành bài điền từ dạng Maps mà không cần nhìn bảng từ vựng"
+      ],
+      "keyLanguage": [
+        "Phá dỡ: demolished / knocked down / pulled down / torn down · cut down (cây)",
+        "Xây mới: built / constructed / erected · planted · appeared",
+        "Thay thế: replaced by · converted / transformed into · built in the place of · where … once stood",
+        "Mở rộng: expanded / widened / extended / enlarged · Thu hẹp: narrowed / shortened",
+        "Di dời: moved / relocated to · Giữ nguyên: remained unchanged / still existed",
+        "Công thức thì-thể: thay đổi do người → be + V3 (quá khứ đơn bị động); tự xuất hiện → appeared/disappeared; quy hoạch → will be + V3"
+      ]
+    },
+    {
+      "code": "T1-L15",
+      "moduleCode": "T1-M4",
+      "order": 15,
+      "title": "Buổi 15 — Cấu trúc bài Maps: Introduction và Overview",
+      "titleEn": "Maps Essay Structure: Introduction & Overview",
+      "durationMinutes": 60,
+      "objectives": [
+        "Viết Introduction chỉ bằng một câu paraphrase, không chép lại đề",
+        "Viết Overview hai câu, nêu 2–3 thay đổi lớn nhất mà không liệt kê chi tiết",
+        "Thuộc ít nhất 4 mẫu câu Overview để dùng trong phòng thi"
+      ],
+      "keyLanguage": [
+        "The maps illustrate the main changes that took place in … from … to …",
+        "The maps show how [location] developed between … and …",
+        "Overall, a comparison between the two maps reveals a change from a largely rural into a mainly urban landscape.",
+        "Overall, the town has undergone a considerable transformation over the period.",
+        "Overall, there have been several changes, the most noticeable being …"
+      ]
+    },
+    {
+      "code": "T1-L16",
+      "moduleCode": "T1-M4",
+      "order": 16,
+      "title": "Buổi 16 — Thân bài: hai cách chia đoạn và từ nối",
+      "titleEn": "Body Paragraphs: Two Approaches & Linking Words",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chọn được cách chia thân bài phù hợp với từng đề (theo thời gian / theo khu vực)",
+        "Dùng thành thạo cấu trúc with + S + being + V3 để nối hai mệnh đề",
+        "Viết được hai đoạn thân bài mạch lạc cho một đề Maps"
+      ],
+      "keyLanguage": [
+        "Cách 1 – theo thời gian: Body 1 = bản đồ đầu; Body 2 = thay đổi ở bản đồ sau",
+        "Cách 2 – theo khu vực (band cao): chia theo mốc tự nhiên (sông, đường ray), Body 1 = khu vực này, Body 2 = khu vực kia",
+        "with + S + being + V3 (past participle) – bổ sung chi tiết phụ",
+        "On the … side of …, a number of developments took place.",
+        "The most noticeable change is that … · Moreover, … · Further developments included …"
+      ]
+    },
+    {
+      "code": "T1-L17",
+      "moduleCode": "T1-M4",
+      "order": 17,
+      "title": "Buổi 17 — Lập dàn ý và viết bài hoàn chỉnh (West Park Secondary School)",
+      "titleEn": "Outlining & Writing a Full Essay (West Park Secondary School)",
+      "durationMinutes": 60,
+      "objectives": [
+        "Biết cách phân tích bản đồ trước khi viết thay vì viết ngay",
+        "Hoàn thành trọn vẹn 4 phần: Introduction – Overview – Body 1 – Body 2",
+        "Đọc hiểu và bắt chước được một bài mẫu Band 7.0"
+      ],
+      "keyLanguage": [
+        "The diagrams illustrate the changes that have occurred at … from … to … (hiện tại hoàn thành)",
+        "Overall, the school has undergone significant transformations, with the removal of …, the addition of …",
+        "Initially, … · By 1980, major changes had taken place … · Over the next 30 years, …",
+        "had been + V3 (quá khứ hoàn thành) · remained unchanged / remained intact"
+      ]
+    },
+    {
+      "code": "T1-L18",
+      "moduleCode": "T1-M4",
+      "order": 18,
+      "title": "Buổi 18 — Luyện đề Maps: bốn đề thi thật",
+      "titleEn": "Maps Practice: Four Real Exam Questions",
+      "durationMinutes": 90,
+      "objectives": [
+        "Áp dụng cách chia thân bài theo khu vực cho hai đề thi thật",
+        "Viết hoàn chỉnh một bài trong 20 phút và tự chấm theo checklist",
+        "Nhận ra và sửa được lỗi lặp từ trong bài",
+        "Xử lý được đề Maps không có mốc tự nhiên để chia khu vực",
+        "Dùng đúng thì hiện tại và tương lai cho bản đồ quy hoạch",
+        "Viết bài theo dàn ý 4 đoạn do đề bài chỉ định sẵn"
+      ],
+      "keyLanguage": [
+        "has undergone significant upgrades · the introduction of …",
+        "As a result, … / Consequently, … (chỉ hậu quả)",
+        "Residential / Commercial / Industrial development",
+        "Hiện trạng → hiện tại đơn: The town centre has a main road running through it.",
+        "Quy hoạch → will be + V3 / is going to be + V3: A bus station will be built to the west of …",
+        "planned developments · how it looks in the future"
+      ]
+    },
+    {
+      "code": "T1-TEST4",
+      "moduleCode": "T1-M4",
+      "order": 19,
+      "title": "TEST 4 — Bài kiểm tra cuối Module 4 (Maps)",
+      "titleEn": "Module 4 Test (Maps)",
+      "durationMinutes": 60,
+      "isTest": true,
+      "totalPoints": 100,
+      "objectives": [
+        "Kiểm tra toàn bộ kiến thức Maps: hướng/vị trí, 7 nhóm từ vựng thay đổi, câu bị động quá khứ, cấu trúc Introduction–Overview–Body, và một bài viết hoàn chỉnh"
+      ],
+      "exerciseCount": 5
+    },
+    {
+      "code": "T1-L19",
+      "moduleCode": "T1-M5",
+      "order": 19,
+      "title": "Buổi 19 — Tổng quan dạng Process: hai loại quy trình, thì và thể",
+      "titleEn": "Process Overview: Two Process Types, Tense & Voice",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhìn vào sơ đồ là nói được ngay đây là Natural hay Manufacturing Process",
+        "Chọn đúng chủ động hay bị động cho từng loại",
+        "Kể lại được vòng đời một con ếch bằng tiếng Anh với 5 giai đoạn"
+      ],
+      "keyLanguage": [
+        "Natural Process (Cyclical) → chủ động, hiện tại đơn — vòng đời ếch/ong/cá hồi, vòng tuần hoàn nước",
+        "Manufacturing Process (Industrial) → bị động, hiện tại đơn — sản xuất xi măng/gạch/sữa/giấy",
+        "The process begins when a female frog lays eggs in a pond.",
+        "People crush limestone → Limestone is crushed."
+      ]
+    },
+    {
+      "code": "T1-L20",
+      "moduleCode": "T1-M5",
+      "order": 20,
+      "title": "Buổi 20 — Manufacturing Process: phân tích quy trình xi măng",
+      "titleEn": "Manufacturing Process: Analysing the Cement Process",
+      "durationMinutes": 60,
+      "objectives": [
+        "Đếm chính xác số bước trong một sơ đồ quy trình",
+        "Mô tả từng bước bằng câu bị động đúng ngữ pháp",
+        "Nhận biết và gọi tên máy móc bằng đuôi -er"
+      ],
+      "keyLanguage": [
+        "First, limestone and clay are crushed into powder using a crusher.",
+        "Next, the powder is mixed in a mixer before being fed into a rotating heater.",
+        "Inside the heater, the mixture is heated at a high temperature before being ground into fine cement.",
+        "Finally, the cement is packaged into bags and is ready for use.",
+        "crush → is crushed → crushing → crusher (động từ → bị động → danh từ → tên máy)"
+      ]
+    },
+    {
+      "code": "T1-L21",
+      "moduleCode": "T1-M5",
+      "order": 21,
+      "title": "Buổi 21 — Câu mẫu, từ nối và bài Manufacturing hoàn chỉnh",
+      "titleEn": "Model Sentences, Linkers & a Complete Manufacturing Essay",
+      "durationMinutes": 90,
+      "objectives": [
+        "Thuộc bộ câu mẫu cho Introduction và Overview dạng Process",
+        "Dùng được 4 cấu trúc nâng cao để nối hai bước liền nhau",
+        "Có sẵn kho từ vựng mô tả biến đổi của chất rắn, chất lỏng và chất khí",
+        "Chia sơ đồ thành các bước rời rạc trước khi viết",
+        "Viết được bài Manufacturing 150–180 từ đủ 4 phần",
+        "Biết thứ gì trong sơ đồ KHÔNG phải là một bước (thông tin nền, sản phẩm phụ)"
+      ],
+      "keyLanguage": [
+        "There are … main stages in the process of making …, beginning with … and ending with …",
+        "1. Once + S + V (Once = When) — Once it is ready, the pulp is poured into a tray.",
+        "2. Having + V3, S + V — Having been poured into a tray, the pulp is mixed by hand.",
+        "3. After / Before + V-ing, S + V — After being soaked, the mixture is beaten.",
+        "4. S + V, followed by + Noun — …, followed by a hand-mixing process.",
+        "Từ nối trình tự: To begin with · First of all · Following that · Subsequently · Simultaneously · Finally",
+        "The diagrams illustrate the production of cement and how cement is used to make concrete.",
+        "It is clear from the diagrams that there are five stages in the process of making cement.",
+        "At the first stage of the process, … · This … is then … · The process continues with … · At the final stage, …",
+        "Byproducts (cheese, cream, butter) và 'cows grazing' KHÔNG được tính là một bước."
+      ]
+    },
+    {
+      "code": "T1-L22",
+      "moduleCode": "T1-M5",
+      "order": 22,
+      "title": "Buổi 22 — Natural Process: từ vựng, vòng đời và luyện đề",
+      "titleEn": "Natural Process: Vocabulary, Life Cycles & Practice",
+      "durationMinutes": 90,
+      "objectives": [
+        "Hiểu bản chất tuần hoàn (cyclical) của Natural Process",
+        "Thuộc bộ từ vựng mô tả vòng đời động vật theo 3 giai đoạn",
+        "Viết được Introduction và Overview cho một sơ đồ vòng đời",
+        "Viết trọn vẹn một bài Natural Process theo dàn ý cho sẵn",
+        "Chia thân bài thành hai đoạn cân đối",
+        "Tự chấm bài theo checklist dạng Process"
+      ],
+      "keyLanguage": [
+        "The diagram illustrates how a/an … grows during its lifespan.",
+        "The diagram shows the stages in the lifespan of …",
+        "to lay eggs · to hatch (into) · to feed on · to shed the outer layer · to grow to maturity · to undergo metamorphosis",
+        "Overall, the life cycle of a … consists of several stages, beginning with … and ending with …",
+        "Overall, the life cycle of a bee consists of several stages and takes about 34–36 days, beginning with eggs and ending with a fully mature adult bee.",
+        "Eggs are laid in fresh water. · The eggs hatch after about 3 months and become alevin.",
+        "The fish becomes smolt after 1–3 years and moves to the sea."
+      ]
+    },
+    {
+      "code": "T1-TEST5",
+      "moduleCode": "T1-M5",
+      "order": 23,
+      "title": "TEST 5 — Bài kiểm tra cuối Module 5 (Process)",
+      "titleEn": "Module 5 Test (Process)",
+      "durationMinutes": 60,
+      "isTest": true,
+      "totalPoints": 100,
+      "objectives": [
+        "Kiểm tra toàn bộ kiến thức Process: Natural vs Manufacturing, thì/thể, từ nối trình tự, 4 cấu trúc nối bước, và một bài viết hoàn chỉnh"
+      ],
       "exerciseCount": 5
     }
   ]

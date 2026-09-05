@@ -1275,9 +1275,9 @@
       }
     },
     {
-      "code": "T1-L07-E01",
-      "lessonCode": "T1-L07",
-      "order": 1,
+      "code": "T1-L06-E05",
+      "lessonCode": "T1-L06",
+      "order": 5,
       "type": "gap_fill",
       "title": "Warm-up — Tăng theo cấp số nhân",
       "instruction": "Điền từ thích hợp để diễn tả bội số.",
@@ -1389,9 +1389,9 @@
       ]
     },
     {
-      "code": "T1-L07-E02",
-      "lessonCode": "T1-L07",
-      "order": 2,
+      "code": "T1-L06-E06",
+      "lessonCode": "T1-L06",
+      "order": 6,
       "type": "sentence_transform",
       "title": "Bổ sung — Một dữ liệu, bốn cách diễn đạt bội số",
       "instruction": "Dữ liệu: A = 10 triệu (1992) → 20 triệu (1998). Viết 4 câu diễn đạt cùng ý bằng 4 cách khác nhau.",
@@ -1453,9 +1453,9 @@
       }
     },
     {
-      "code": "T1-L07-E03",
-      "lessonCode": "T1-L07",
-      "order": 3,
+      "code": "T1-L06-E07",
+      "lessonCode": "T1-L06",
+      "order": 7,
       "type": "sentence_writing",
       "title": "Practice 3 — Mô tả xu hướng dùng Internet 1990–2000",
       "instruction": "Viết 5 câu mô tả xu hướng của từng quốc gia. Chú ý: có nước tăng, nước giảm, nước không đổi.",
@@ -1527,9 +1527,9 @@
       }
     },
     {
-      "code": "T1-L07-E04",
-      "lessonCode": "T1-L07",
-      "order": 4,
+      "code": "T1-L06-E08",
+      "lessonCode": "T1-L06",
+      "order": 8,
       "type": "sentence_writing",
       "title": "Practice 4 — Xu hướng 2030 → 2050 (thì tương lai)",
       "instruction": "Viết các câu mô tả xu hướng từ 2030 đến 2050. Dùng cụm dự đoán: is expected to, will likely, is projected to, is forecasted to…",
@@ -1597,9 +1597,9 @@
       }
     },
     {
-      "code": "T1-L07-E05",
-      "lessonCode": "T1-L07",
-      "order": 5,
+      "code": "T1-L06-E09",
+      "lessonCode": "T1-L06",
+      "order": 9,
       "type": "paragraph_writing",
       "title": "Practice 5 — Hai đoạn về lượng pizza",
       "instruction": "Đoạn 1: mô tả và so sánh số liệu năm 2005. Đoạn 2: mô tả xu hướng tăng/giảm từ 2005 đến 2010.",
@@ -1668,9 +1668,9 @@
       }
     },
     {
-      "code": "T1-L07-E06",
-      "lessonCode": "T1-L07",
-      "order": 6,
+      "code": "T1-L06-E10",
+      "lessonCode": "T1-L06",
+      "order": 10,
       "type": "paragraph_writing",
       "title": "Practice 6 — Chart 1: tiêu thụ thịt và cá ở châu Âu (1979–2004)",
       "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh dữ liệu năm đầu tiên; Đoạn 2 mô tả và so sánh xu hướng tới năm cuối cùng.",
@@ -1716,9 +1716,9 @@
       }
     },
     {
-      "code": "T1-L07-E07",
-      "lessonCode": "T1-L07",
-      "order": 7,
+      "code": "T1-L06-E11",
+      "lessonCode": "T1-L06",
+      "order": 11,
       "type": "paragraph_writing",
       "title": "Practice 6 — Chart 2: chi tiêu của một trường ở Anh (1981 & 1991)",
       "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh tỷ lệ năm 1981; Đoạn 2 mô tả thay đổi tới 1991.",
@@ -1763,9 +1763,9 @@
       }
     },
     {
-      "code": "T1-L07-E08",
-      "lessonCode": "T1-L07",
-      "order": 8,
+      "code": "T1-L06-E12",
+      "lessonCode": "T1-L06",
+      "order": 12,
       "type": "paragraph_writing",
       "title": "Practice 6 — Chart 3: hội viên phòng gym ở Thái Lan (1985–2015)",
       "instruction": "Viết 2 đoạn: Đoạn 1 mô tả và so sánh dữ liệu năm 1985; Đoạn 2 mô tả xu hướng nam và nữ tới 2015.",
@@ -1810,8 +1810,8 @@
       }
     },
     {
-      "code": "T1-L08-E01",
-      "lessonCode": "T1-L08",
+      "code": "T1-L07-E01",
+      "lessonCode": "T1-L07",
       "order": 1,
       "type": "gap_fill",
       "title": "Exercise 1 — Điền từ vào đoạn mô tả tai nạn giao thông",
@@ -1961,8 +1961,8 @@
       ]
     },
     {
-      "code": "T1-L08-E02",
-      "lessonCode": "T1-L08",
+      "code": "T1-L07-E02",
+      "lessonCode": "T1-L07",
       "order": 2,
       "type": "sentence_writing",
       "title": "Exercise 2 — Mô tả và nối xu hướng (Figures A–F)",
@@ -2003,8 +2003,8 @@
       }
     },
     {
-      "code": "T1-L08-E03",
-      "lessonCode": "T1-L08",
+      "code": "T1-L07-E03",
+      "lessonCode": "T1-L07",
       "order": 3,
       "type": "paragraph_writing",
       "title": "Exercise 3 — Biểu đồ có dự báo tương lai (1940 → 2030)",
@@ -2064,8 +2064,8 @@
       }
     },
     {
-      "code": "T1-L08-E04",
-      "lessonCode": "T1-L08",
+      "code": "T1-L07-E04",
+      "lessonCode": "T1-L07",
       "order": 4,
       "type": "paragraph_writing",
       "title": "Exercise 4 — Advanced paraphrasing",
@@ -2120,8 +2120,8 @@
       }
     },
     {
-      "code": "T1-L08-E05",
-      "lessonCode": "T1-L08",
+      "code": "T1-L07-E05",
+      "lessonCode": "T1-L07",
       "order": 5,
       "type": "sentence_transform",
       "title": "Bài tập bổ sung — Nối ba xu hướng trong một câu",
@@ -2176,8 +2176,8 @@
       }
     },
     {
-      "code": "T1-L09-E01",
-      "lessonCode": "T1-L09",
+      "code": "T1-L08-E01",
+      "lessonCode": "T1-L08",
       "order": 1,
       "type": "matching",
       "title": "Warm-up — Nối keyword với cách paraphrase",
@@ -2235,8 +2235,8 @@
       ]
     },
     {
-      "code": "T1-L09-E02",
-      "lessonCode": "T1-L09",
+      "code": "T1-L08-E02",
+      "lessonCode": "T1-L08",
       "order": 2,
       "type": "mcq",
       "title": "Bổ sung — Introduction nào đạt chuẩn?",
@@ -2334,8 +2334,8 @@
       ]
     },
     {
-      "code": "T1-L09-E03",
-      "lessonCode": "T1-L09",
+      "code": "T1-L08-E03",
+      "lessonCode": "T1-L08",
       "order": 3,
       "type": "sentence_writing",
       "title": "Practice — Viết Introduction cho 5 đề",
@@ -2399,8 +2399,8 @@
       }
     },
     {
-      "code": "T1-L09-E04",
-      "lessonCode": "T1-L09",
+      "code": "T1-L08-E04",
+      "lessonCode": "T1-L08",
       "order": 4,
       "type": "sentence_writing",
       "title": "Homework — Introduction cho 5 biểu đồ",
@@ -2463,8 +2463,8 @@
       }
     },
     {
-      "code": "T1-L10-E01",
-      "lessonCode": "T1-L10",
+      "code": "T1-L09-E01",
+      "lessonCode": "T1-L09",
       "order": 1,
       "type": "mcq",
       "title": "Bài tập — Overview nào đúng?",
@@ -2545,8 +2545,8 @@
       ]
     },
     {
-      "code": "T1-L10-E02",
-      "lessonCode": "T1-L10",
+      "code": "T1-L09-E02",
+      "lessonCode": "T1-L09",
       "order": 2,
       "type": "gap_fill",
       "title": "Bổ sung — Khung câu Overview",
@@ -2645,8 +2645,8 @@
       ]
     },
     {
-      "code": "T1-L10-E03",
-      "lessonCode": "T1-L10",
+      "code": "T1-L09-E03",
+      "lessonCode": "T1-L09",
       "order": 3,
       "type": "sentence_writing",
       "title": "Review — Viết Introduction cho 4 biểu đồ",
@@ -2703,8 +2703,8 @@
       }
     },
     {
-      "code": "T1-L10-E04",
-      "lessonCode": "T1-L10",
+      "code": "T1-L09-E04",
+      "lessonCode": "T1-L09",
       "order": 4,
       "type": "paragraph_writing",
       "title": "Practice — Viết Overview cho 4 biểu đồ trên",
@@ -2748,9 +2748,9 @@
       }
     },
     {
-      "code": "T1-L11-E01",
-      "lessonCode": "T1-L11",
-      "order": 1,
+      "code": "T1-L09-E05",
+      "lessonCode": "T1-L09",
+      "order": 5,
       "type": "sentence_transform",
       "title": "Warm-up — Nâng cấp câu mô tả xu hướng trái ngược",
       "instruction": "Nâng cấp câu cơ bản lên mức Band 7 và Band 8 bằng các cụm học thuật.",
@@ -2825,9 +2825,9 @@
       }
     },
     {
-      "code": "T1-L11-E02",
-      "lessonCode": "T1-L11",
-      "order": 2,
+      "code": "T1-L09-E06",
+      "lessonCode": "T1-L09",
+      "order": 6,
       "type": "mcq",
       "title": "Bổ sung — Xác định “năm nổi bật”",
       "instruction": "Chọn năm nên dùng để chia hai đoạn thân bài.",
@@ -2924,9 +2924,9 @@
       ]
     },
     {
-      "code": "T1-L11-E03",
-      "lessonCode": "T1-L11",
-      "order": 3,
+      "code": "T1-L09-E07",
+      "lessonCode": "T1-L09",
+      "order": 7,
       "type": "paragraph_writing",
       "title": "Practice — Viết hai đoạn thân bài",
       "instruction": "Với biểu đồ tiêu thụ thịt và cá (1979–2004): viết Body 1 (dữ liệu năm đầu + xu hướng tới năm nổi bật) và Body 2 (năm nổi bật → năm cuối). Chỉ chọn 4–5 số liệu mỗi đoạn.",
@@ -2970,9 +2970,9 @@
       }
     },
     {
-      "code": "T1-L11-E04",
-      "lessonCode": "T1-L11",
-      "order": 4,
+      "code": "T1-L09-E08",
+      "lessonCode": "T1-L09",
+      "order": 8,
       "type": "full_task1",
       "title": "Bài viết hoàn chỉnh — 4 đoạn trong 20 phút",
       "instruction": "Viết một bài Task 1 hoàn chỉnh (Introduction – Overview – Body 1 – Body 2) cho biểu đồ. Tối thiểu 150 từ, hoàn thành trong 20 phút.",
