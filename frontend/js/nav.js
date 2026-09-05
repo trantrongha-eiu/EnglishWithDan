@@ -937,7 +937,15 @@
   // GET /api/vocabbook/daily-goal). Not persistence-dismissed on purpose:
   // "nếu chưa học đủ thì liên tục nhắc nhở mỗi lần truy cập". Non-blocking
   // (not a full-screen modal) so it can appear that often without being
-  // hostile.
+  // hostile. Once the goal IS met, though, it stops for the rest of the
+  // calendar day (localStorage date-check below — survives closing the
+  // browser, unlike the old sessionStorage version) and comes back on its
+  // own the next day since the stored date no longer matches "today".
+  var VOCAB_GOAL_DONE_KEY = 'ews_vocab_goal_done_date';
+  function _todayDateStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
   function _showDailyVocabGoalNudge() {
     if (!window.AuthService) return;
     if (document.getElementById('nav-vocab-goal-nudge')) return;
@@ -956,11 +964,13 @@
           && window.AuthService.hasPremiumAccess();
 
         if (d.met) {
-          if (canReview) { _renderVocabGoalCard({ done: true, target: d.target, due: due }); return; }
-          // Nothing due + target met — small positive confirmation, once per session.
-          if (sessionStorage.getItem('ews_vocab_goal_done_toast')) return;
-          sessionStorage.setItem('ews_vocab_goal_done_toast', '1');
-          _renderVocabGoalCard({ done: true, target: d.target });
+          // Goal met — show the confirmation card (with the review-due block
+          // too, if any) once today, then stay quiet until tomorrow.
+          try {
+            if (localStorage.getItem(VOCAB_GOAL_DONE_KEY) === _todayDateStr()) return;
+            localStorage.setItem(VOCAB_GOAL_DONE_KEY, _todayDateStr());
+          } catch (e) { /* localStorage unavailable (private mode etc.) — fall through and just show it */ }
+          _renderVocabGoalCard({ done: true, target: d.target, due: canReview ? due : 0 });
           return;
         }
         _renderVocabGoalCard({
