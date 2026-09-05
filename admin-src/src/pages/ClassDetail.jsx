@@ -187,6 +187,23 @@ function OverviewTab({ cls, onSaved }) {
         </label>
       </fieldset>
 
+      <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
+        <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Quy định bài tập</legend>
+        <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
+          Tính trên số bài tập ĐANG quá hạn &amp; chưa đạt (≥70% điểm) của học viên trong lớp này — số này tự cập nhật mỗi đêm và mỗi khi điểm danh/bài tập thay đổi.
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Ngưỡng cảnh báo (bài)</label>
+            <input className="form-input" type="number" min={1} value={form.policy.homeworkWarnThreshold} onChange={setP('homeworkWarnThreshold')} />
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Số bài thiếu tối đa (rớt nếu vượt)</label>
+            <input className="form-input" type="number" min={1} value={form.policy.homeworkFailThreshold} onChange={setP('homeworkFailThreshold')} />
+          </div>
+        </div>
+      </fieldset>
+
       <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
         <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang lưu...' : '💾 Lưu thay đổi'}</button>
         <button type="button" className="btn btn-ghost" onClick={toggleArchive}>{cls.status === 'archived' ? 'Mở lại lớp' : 'Lưu trữ lớp'}</button>
@@ -244,11 +261,11 @@ function StudentsTab({ cls, roster, onChange }) {
       <div className="table-wrap">
         <table className="table">
           <thead>
-            <tr><th>HỌC VIÊN</th><th>ĐÃ HỌC</th><th>ĐÃ NGHỈ</th><th>TRỄ</th><th>CHUYÊN CẦN</th><th>CÒN ĐƯỢC NGHỈ</th><th>TRẠNG THÁI</th><th></th></tr>
+            <tr><th>HỌC VIÊN</th><th>ĐÃ HỌC</th><th>ĐÃ NGHỈ</th><th>TRỄ</th><th>CHUYÊN CẦN</th><th>CÒN ĐƯỢC NGHỈ</th><th>BT THIẾU</th><th>TRẠNG THÁI</th><th></th></tr>
           </thead>
           <tbody>
             {roster.length === 0
-              ? <tr><td colSpan={8} className="table-empty">Chưa có học viên</td></tr>
+              ? <tr><td colSpan={9} className="table-empty">Chưa có học viên</td></tr>
               : roster.map((e) => {
                 const s = e.stats || {};
                 const absent = (s.absentUnexcused || 0) + (s.absentExcused || 0);
@@ -263,6 +280,7 @@ function StudentsTab({ cls, roster, onChange }) {
                     <td style={{ fontSize: 13 }}>{s.lateCount || 0}</td>
                     <td style={{ fontSize: 13 }}>{s.attendanceRate || 0}%</td>
                     <td style={{ fontSize: 13 }}>{s.remainingAllowed ?? '–'}</td>
+                    <td style={{ fontSize: 13 }}>{s.homeworkMissedCount || 0}</td>
                     <td>
                       <span className={`badge ${ENR_BADGE[e.status] || 'badge-gray'}`}><span className="dot" />{ENR_LABEL[e.status] || e.status}</span>
                       {e.statusReason && <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>{e.statusReason}</div>}

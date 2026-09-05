@@ -39,36 +39,49 @@ const MockTestAttempt = require('../models/MockTestAttempt');
 
 const { escapeRegex } = require('../utils/strings');
 
+// A homework item is "hoàn thành" only once the student clears this % — for
+// resource types that HAVE a clean score/total (quiz-style: reading/listening
+// tests & practice, dictation, task2, grammar, vocabulary lessons). AI/band-
+// graded skills (writing_exam, speaking, mock_test — IELTS band 0–9, not a
+// %) have no `scoreGate` below and keep the old "submitted = done" rule; a
+// 70%-of-9 cutoff would be an arbitrary, undiscussed pass mark for those.
+const PASS_PERCENT = 70;
+
 const REGISTRY = {
   reading_test: {
     label: 'Bộ đề Reading',
     catalog: { model: ReadingTest, filter: { isActive: true }, sort: { testNumber: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
     attempt: { model: TestAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
+    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_test: {
     label: 'Đề Listening',
     catalog: { model: ListeningTest, filter: { isActive: true }, sort: { testNumber: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
     attempt: { model: ListeningAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
+    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   reading_practice: {
     label: 'Bài đọc lẻ (Passage)',
     catalog: { model: Passage, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.category }) },
     attempt: { model: ReadingPracticeAttempt, userField: 'userId', idField: 'passageId', filter: {} },
+    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_practice: {
     label: 'Bài nghe lẻ (Section)',
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.partNumber ? `Part ${d.partNumber}` : '' }) },
     attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
+    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   dictation: {
     label: 'Dictation (Section)',
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: 'Dictation' }) },
     attempt: { model: DictationAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
+    scoreGate: { fields: 'correctCount totalSentences', percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
   },
   writing_exam: {
     label: 'Đề Writing',
@@ -81,6 +94,10 @@ const REGISTRY = {
     catalog: { model: Task2Topic, filter: { isActive: true }, sort: { week: 1, orderIndex: 1 },
       shape: (d) => ({ _id: d._id, label: d.topicName, meta: d.week ? `Week ${d.week}` : '' }) },
     attempt: { model: Task2Attempt, userField: 'userId', idField: 'topicId', filter: {} },
+    scoreGate: {
+      fields: 'correctCount totalQuestions scorePercentage',
+      percent: (d) => (d.scorePercentage != null ? d.scorePercentage : (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0)),
+    },
   },
   speaking: {
     label: 'Speaking (Câu hỏi)',
@@ -93,12 +110,14 @@ const REGISTRY = {
     catalog: { model: EssentialGrammarLesson, filter: { isActive: true }, sort: { orderIndex: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: '' }) },
     attempt: { model: EssentialGrammarAttemptLog, userField: 'userId', idField: 'lessonId', filter: {} },
+    scoreGate: { fields: 'correct total', percent: (d) => (d.total ? (d.correct / d.total) * 100 : 0) },
   },
   vocabulary_lesson: {
     label: 'Vocabulary Lessons',
     catalog: { model: VocabularyLesson, filter: {}, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: [d.difficulty, d.targetClass && `Lớp ${d.targetClass}`].filter(Boolean).join(' · ') }) },
     attempt: { model: VocabularyLessonAttemptLog, userField: 'userId', idField: 'lessonId', filter: {} },
+    scoreGate: { fields: 'correct total', percent: (d) => (d.total ? (d.correct / d.total) * 100 : 0) },
   },
   mock_test: {
     label: 'Thi thử 4 kỹ năng',
@@ -196,15 +215,38 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
     const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
     if (!ids.length) return;
-    // newest first + keep the first seen per resource id → latest attempt wins
+    const gate = entry.scoreGate;
+    const select = `_id createdAt ${A.idField}` + (gate ? ` ${gate.fields}` : '');
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
       .sort({ createdAt: -1 })
-      .select(`_id createdAt ${A.idField}`)
+      .select(select)
       .lean()
       .catch(() => []);
+
+    if (!gate) {
+      // No score threshold for this type (AI/band-graded — see PASS_PERCENT's
+      // comment) — newest first + keep the first seen per resource id →
+      // latest attempt wins, any submission counts as done.
+      for (const r of rows) {
+        const k = resourceKey(type, r[A.idField]);
+        if (!out.has(k)) out.set(k, { completed: true, completedAt: r.createdAt, attemptId: String(r._id) });
+      }
+      return;
+    }
+
+    // Score-gated: "hoàn thành" means the student cleared PASS_PERCENT on AT
+    // LEAST ONE try since `since` — so a strong early attempt still counts
+    // even if a later, unrelated retry scored lower. Track the single best
+    // (highest %) attempt per resource id across every row.
+    const bestByKey = new Map();
     for (const r of rows) {
       const k = resourceKey(type, r[A.idField]);
-      if (!out.has(k)) out.set(k, { completed: true, completedAt: r.createdAt, attemptId: String(r._id) });
+      const pct = gate.percent(r);
+      const prev = bestByKey.get(k);
+      if (!prev || pct > prev.pct) bestByKey.set(k, { pct, r });
+    }
+    for (const [k, { pct, r }] of bestByKey) {
+      out.set(k, { completed: pct >= PASS_PERCENT, completedAt: r.createdAt, attemptId: String(r._id), scorePercent: Math.round(pct) });
     }
   }));
 
@@ -212,6 +254,6 @@ async function checkCompleted(studentId, internalItems, since = null) {
 }
 
 module.exports = {
-  REGISTRY, TYPES, isValidType,
+  REGISTRY, TYPES, isValidType, PASS_PERCENT,
   listCatalog, resourceExists, labelFor, resourceKey, checkCompleted,
 };

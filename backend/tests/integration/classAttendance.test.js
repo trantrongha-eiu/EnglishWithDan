@@ -204,6 +204,44 @@ describe('student self-view', () => {
   });
 });
 
+describe('GET /api/classes/my/overview — dashboard homepage class summary', () => {
+  test('student in no classroom → hasClasses: false', async () => {
+    const s = await createStudent();
+    const res = await request(app).get('/api/classes/my/overview').set(auth(s));
+    expect(res.body).toMatchObject({ success: true, hasClasses: false, classes: [] });
+  });
+
+  test('enrolled student sees class size, sessions held, absences, and homework miss count', async () => {
+    const t = await createTeacher();
+    const s1 = await createStudent();
+    const s2 = await createStudent();
+    const cls = await makeClass(t, { courseName: 'IELTS 6.5', policy: { maxAbsencesAllowed: 5 } });
+    const e1 = await addStudent(t, cls._id, s1);
+    await addStudent(t, cls._id, s2); // just to make classSize meaningfully > 1
+
+    const sess = await addSession(t, cls._id, { date: past(2) });
+    await mark(t, cls._id, sess._id, [
+      { enrollmentId: e1.enrollmentId, status: 'absent' },
+      { enrollmentId: (await ClassEnrollment.findOne({ classId: cls._id, studentId: s2._id }))._id, status: 'present' },
+    ]);
+
+    const res = await request(app).get('/api/classes/my/overview').set(auth(s1));
+    expect(res.body.hasClasses).toBe(true);
+    expect(res.body.classes[0]).toMatchObject({
+      className: 'Lớp Test',
+      courseName: 'IELTS 6.5',
+      teacherName: expect.any(String),
+      classSize: 2,
+      heldSessions: 1,
+      absentTotal: 1,
+      maxAbsencesAllowed: 5,
+      homeworkMissedCount: 0,
+      homeworkWarnThreshold: 5,
+      homeworkFailThreshold: 10,
+    });
+  });
+});
+
 describe('guardAgainstMassDelete', () => {
   test('AttendanceRecord / ClassEnrollment refuse an unscoped deleteMany', async () => {
     await expect(AttendanceRecord.deleteMany({})).rejects.toThrow(/unscoped filter/i);

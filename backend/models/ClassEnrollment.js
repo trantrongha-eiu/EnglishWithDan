@@ -16,6 +16,11 @@ const enrollmentStatsSchema = new mongoose.Schema({
   absenceEquivalent: { type: Number, default: 0 },
   attendanceRate:    { type: Number, default: 0 }, // %
   remainingAllowed:  { type: Number, default: 0 },
+  // Số bài tập ĐANG quá hạn & chưa đạt (>=70% điểm) trong lớp này ngay tại
+  // thời điểm tính — live snapshot từ assignmentService.getOverdueCountForClass,
+  // không phải bộ đếm cộng dồn vĩnh viễn. So với policy.homeworkWarnThreshold /
+  // homeworkFailThreshold để ra enrollment.status.
+  homeworkMissedCount: { type: Number, default: 0 },
   computedAt:        { type: Date },
 }, { _id: false });
 

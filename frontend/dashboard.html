@@ -90,6 +90,12 @@
             <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
           </div>
 
+          <!-- 🏫 Lớp học của tôi — class size / sessions / absences / homework
+               misses for a student who has been added to a classroom.
+               Rendered by js/dashboard-classinfo.js; stays hidden (so the
+               homepage looks exactly as before) for anyone in no classroom. -->
+          <div id="class-info-card" style="display:none"></div>
+
           <!-- 📚 Bài tập cần làm — homework the teacher assigned to this
                student's class(es). Rendered by js/dashboard-homework.js;
                hidden until it has data (or shows an empty-state). -->
@@ -1324,6 +1330,7 @@
 <script src="js/shared/wbw-drill.js?v=20260905"></script>
 <script src="js/dashboard-lesson.js?v=20260922"></script>
 <script src="js/dashboard-homework.js?v=20260903"></script>
+<script src="js/dashboard-classinfo.js?v=20260905"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260906fix"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>

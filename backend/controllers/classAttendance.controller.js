@@ -53,6 +53,8 @@ function sanitizePolicy(input = {}, base = {}) {
   if (num(input.lateThresholdMinutes) !== undefined) out.lateThresholdMinutes = Math.max(0, num(input.lateThresholdMinutes));
   if (input.failOnExceed !== undefined) out.failOnExceed = !!input.failOnExceed;
   if (num(input.homeworkMissThreshold) !== undefined) out.homeworkMissThreshold = Math.max(1, num(input.homeworkMissThreshold));
+  if (num(input.homeworkWarnThreshold) !== undefined) out.homeworkWarnThreshold = Math.max(1, num(input.homeworkWarnThreshold));
+  if (num(input.homeworkFailThreshold) !== undefined) out.homeworkFailThreshold = Math.max(1, num(input.homeworkFailThreshold));
   return out;
 }
 
@@ -640,6 +642,68 @@ exports.myEnrollments = async (req, res) => {
       };
     });
     res.json({ success: true, enrollments: out });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// Richer per-class summary for the student dashboard homepage (sĩ số lớp,
+// tổng buổi học, số buổi nghỉ, số lần thiếu bài tập, ...) — deliberately its
+// own endpoint rather than folded into myAttendanceStatus, which nav.js polls
+// on EVERY page for EVERY logged-in student and should stay cheap; this one
+// is only fetched once by dashboard.html.
+exports.myOverview = async (req, res) => {
+  try {
+    const enrollments = await ClassEnrollment.find({ studentId: req.user._id, removedAt: null }).lean();
+    if (!enrollments.length) return res.json({ success: true, hasClasses: false, classes: [] });
+
+    const classIds = enrollments.map((e) => e.classId);
+    const [classes, sizeAgg] = await Promise.all([
+      ClassGroup.find({ _id: { $in: classIds } })
+        .select('name courseName status policy totalSessions startDate endDate teacherId').lean(),
+      ClassEnrollment.aggregate([
+        { $match: { classId: { $in: classIds }, removedAt: null } },
+        { $group: { _id: '$classId', count: { $sum: 1 } } },
+      ]),
+    ]);
+    const activeClasses = classes.filter((c) => c.status === 'active');
+    if (!activeClasses.length) return res.json({ success: true, hasClasses: false, classes: [] });
+
+    const sizeMap = new Map(sizeAgg.map((r) => [String(r._id), r.count]));
+    const teachers = await User.find({ _id: { $in: activeClasses.map((c) => c.teacherId) } })
+      .select('username firstName lastName').lean();
+    const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
+    const clsMap = new Map(activeClasses.map((c) => [String(c._id), c]));
+
+    const out = enrollments
+      .map((e) => {
+        const c = clsMap.get(String(e.classId));
+        if (!c) return null;
+        const p = svc.withPolicyDefaults(c.policy);
+        const st = e.stats || {};
+        return {
+          classId: e.classId,
+          className: c.name,
+          courseName: c.courseName || '',
+          teacherName: studentName(teacherMap.get(String(c.teacherId))) || '',
+          startDate: c.startDate || null,
+          endDate: c.endDate || null,
+          totalSessions: c.totalSessions || 0,
+          classSize: sizeMap.get(String(e.classId)) || 0,
+          status: e.status,
+          statusReason: e.statusReason || '',
+          heldSessions: st.heldSessions || 0,
+          absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
+          absenceEquivalent: st.absenceEquivalent || 0,
+          attendanceRate: st.attendanceRate || 0,
+          maxAbsencesAllowed: p.maxAbsencesAllowed,
+          homeworkMissedCount: st.homeworkMissedCount || 0,
+          homeworkWarnThreshold: p.homeworkWarnThreshold,
+          homeworkFailThreshold: p.homeworkFailThreshold,
+        };
+      })
+      .filter(Boolean);
+    res.json({ success: true, hasClasses: out.length > 0, classes: out });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

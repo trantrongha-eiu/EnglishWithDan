@@ -8,6 +8,7 @@ const c = require('../controllers/classAttendance.controller');
 //    parsed as a class id) ──────────────────────────────────────────────
 router.get('/my/attendance-status', auth, c.myAttendanceStatus);
 router.get('/my/enrollments', auth, c.myEnrollments);
+router.get('/my/overview', auth, c.myOverview);
 
 // ── Everything below is staff-only (teacher | admin) ──────────────────
 router.use(auth, c.staffOnly);

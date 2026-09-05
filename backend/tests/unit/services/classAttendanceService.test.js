@@ -3,7 +3,7 @@
 // Pure-function tests for computeEnrollmentStats — no DB. Builds session /
 // record arrays by hand (shape matches the Mongoose lean() docs the service
 // passes in).
-const { computeEnrollmentStats } = require('../../../services/classAttendanceService');
+const { computeEnrollmentStats, deriveCombinedStatus } = require('../../../services/classAttendanceService');
 
 let idc = 0;
 const oid = () => `id${++idc}`;
@@ -116,5 +116,34 @@ describe('computeEnrollmentStats', () => {
   test('no held sessions → rate 0, active', () => {
     const out = computeEnrollmentStats({ enrollment: enr(), policy: {}, sessions: [], records: [] });
     expect(out).toMatchObject({ heldSessions: 0, attendanceRate: 0, derivedStatus: 'active' });
+  });
+});
+
+describe('deriveCombinedStatus — attendance OR homework, either alone can warn/fail', () => {
+  const cleanAttendance = { derivedStatus: 'active', absenceEquivalent: 0 };
+
+  test('good attendance, homework misses below warn threshold → active', () => {
+    expect(deriveCombinedStatus(cleanAttendance, 4, { homeworkWarnThreshold: 5, homeworkFailThreshold: 10 })).toBe('active');
+  });
+
+  test('homework misses at warn threshold → warning, even with perfect attendance', () => {
+    expect(deriveCombinedStatus(cleanAttendance, 5, { homeworkWarnThreshold: 5, homeworkFailThreshold: 10 })).toBe('warning');
+  });
+
+  test('homework misses at fail threshold → failed, even with perfect attendance', () => {
+    expect(deriveCombinedStatus(cleanAttendance, 10, { homeworkWarnThreshold: 5, homeworkFailThreshold: 10 })).toBe('failed');
+  });
+
+  test('attendance already warning is not downgraded by a clean homework record', () => {
+    expect(deriveCombinedStatus({ derivedStatus: 'warning', absenceEquivalent: 2 }, 0, { warnThreshold: 2, homeworkWarnThreshold: 5, homeworkFailThreshold: 10 })).toBe('warning');
+  });
+
+  test('attendance already failed is not undone by a clean homework record', () => {
+    expect(deriveCombinedStatus({ derivedStatus: 'failed', absenceEquivalent: 5 }, 0, { maxAbsencesAllowed: 3, failOnExceed: true, homeworkWarnThreshold: 5, homeworkFailThreshold: 10 })).toBe('failed');
+  });
+
+  test('terminal statuses (completed/dropped) are never overridden by homework misses', () => {
+    expect(deriveCombinedStatus({ derivedStatus: 'completed', absenceEquivalent: 0 }, 99, { homeworkFailThreshold: 10 })).toBe('completed');
+    expect(deriveCombinedStatus({ derivedStatus: 'dropped', absenceEquivalent: 0 }, 99, { homeworkFailThreshold: 10 })).toBe('dropped');
   });
 });

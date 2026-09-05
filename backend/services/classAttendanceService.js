@@ -21,25 +21,13 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const ClassSession = require('../models/ClassSession');
 const AttendanceRecord = require('../models/AttendanceRecord');
+const assignmentService = require('./assignmentService');
+const { withPolicyDefaults } = require('../utils/classPolicy');
 
 const TERMINAL_STATUSES = new Set(['completed', 'dropped']);
 
 function round1(n) {
   return Math.round((n + Number.EPSILON) * 10) / 10;
-}
-
-// Merge a class's stored policy with the schema defaults so a policy object
-// that predates a new field (or a partial one from a test) still computes.
-function withPolicyDefaults(policy = {}) {
-  return {
-    maxAbsencesAllowed:     policy.maxAbsencesAllowed ?? 3,
-    warnThreshold:          policy.warnThreshold ?? 2,
-    excusedCountsAsAbsence: policy.excusedCountsAsAbsence ?? true,
-    lateToAbsenceRatio:     policy.lateToAbsenceRatio && policy.lateToAbsenceRatio >= 1 ? policy.lateToAbsenceRatio : 2,
-    lateThresholdMinutes:   policy.lateThresholdMinutes ?? 15,
-    failOnExceed:           policy.failOnExceed ?? true,
-    homeworkMissThreshold:  policy.homeworkMissThreshold && policy.homeworkMissThreshold >= 1 ? policy.homeworkMissThreshold : 3,
-  };
 }
 
 /**
@@ -105,6 +93,10 @@ function computeEnrollmentStats({ enrollment, policy, sessions = [], records = [
   const attendanceRate = heldSessions ? Math.round((attendedCount / heldSessions) * 100) : 0;
   const remainingAllowed = Math.max(0, round1(p.maxAbsencesAllowed - absenceEquivalent));
 
+  // Attendance-only signal — combined with the (DB-backed, so not computable
+  // in this pure function) homework-miss count by deriveCombinedStatus below,
+  // called from applyStatsToEnrollment. Kept as its own field because it's
+  // still what this function's unit tests assert against.
   let derivedStatus;
   if (TERMINAL_STATUSES.has(enrollment?.status)) {
     derivedStatus = enrollment.status;
@@ -122,18 +114,43 @@ function computeEnrollmentStats({ enrollment, policy, sessions = [], records = [
   };
 }
 
-function autoStatusReason(stats, policy) {
+// Combines the attendance-derived status with the (separately sourced)
+// live homework-miss count — either cause alone is enough to warn/fail an
+// enrollment. Pure — takes the count as a plain number so it stays testable
+// without a DB.
+function deriveCombinedStatus(stats, homeworkMissedCount, policy) {
+  if (TERMINAL_STATUSES.has(stats.derivedStatus)) return stats.derivedStatus;
   const p = withPolicyDefaults(policy);
-  if (stats.derivedStatus === 'failed') {
-    return `Nghỉ ${stats.absenceEquivalent}/${p.maxAbsencesAllowed} buổi — vượt giới hạn cho phép.`;
-  }
-  if (stats.derivedStatus === 'warning') {
-    return `Đã nghỉ ${stats.absenceEquivalent} buổi (ngưỡng cảnh báo ${p.warnThreshold}).`;
-  }
-  return '';
+  const attendanceFail = p.failOnExceed && stats.absenceEquivalent > p.maxAbsencesAllowed;
+  const homeworkFail = homeworkMissedCount >= p.homeworkFailThreshold;
+  if (attendanceFail || homeworkFail) return 'failed';
+  const attendanceWarn = stats.absenceEquivalent >= p.warnThreshold;
+  const homeworkWarn = homeworkMissedCount >= p.homeworkWarnThreshold;
+  if (attendanceWarn || homeworkWarn) return 'warning';
+  return 'active';
 }
 
-function applyStatsToEnrollment(enrollment, stats, policy) {
+// homeworkMissedCount/status default to the attendance-only reading (0 misses,
+// stats.derivedStatus) so existing callers that only ever knew about
+// attendance keep getting the exact same text.
+function autoStatusReason(stats, policy, homeworkMissedCount = 0, status = stats.derivedStatus) {
+  const p = withPolicyDefaults(policy);
+  const attendanceFail = p.failOnExceed && stats.absenceEquivalent > p.maxAbsencesAllowed;
+  const homeworkFail = homeworkMissedCount >= p.homeworkFailThreshold;
+  const attendanceWarn = stats.absenceEquivalent >= p.warnThreshold;
+  const homeworkWarn = homeworkMissedCount >= p.homeworkWarnThreshold;
+  const reasons = [];
+  if (status === 'failed') {
+    if (attendanceFail) reasons.push(`Nghỉ ${stats.absenceEquivalent}/${p.maxAbsencesAllowed} buổi — vượt giới hạn cho phép.`);
+    if (homeworkFail) reasons.push(`Thiếu ${homeworkMissedCount} bài tập quá hạn (giới hạn ${p.homeworkFailThreshold}) — vượt giới hạn cho phép.`);
+  } else if (status === 'warning') {
+    if (attendanceWarn) reasons.push(`Đã nghỉ ${stats.absenceEquivalent} buổi (ngưỡng cảnh báo ${p.warnThreshold}).`);
+    if (homeworkWarn) reasons.push(`Đang thiếu ${homeworkMissedCount} bài tập quá hạn (ngưỡng cảnh báo ${p.homeworkWarnThreshold}).`);
+  }
+  return reasons.join(' ');
+}
+
+function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount = 0) {
   enrollment.stats = {
     heldSessions:      stats.heldSessions,
     attendedCount:     stats.attendedCount,
@@ -143,13 +160,15 @@ function applyStatsToEnrollment(enrollment, stats, policy) {
     absenceEquivalent: stats.absenceEquivalent,
     attendanceRate:    stats.attendanceRate,
     remainingAllowed:  stats.remainingAllowed,
+    homeworkMissedCount,
     computedAt:        new Date(),
   };
-  if (!TERMINAL_STATUSES.has(enrollment.status) && enrollment.status !== stats.derivedStatus) {
-    enrollment.status = stats.derivedStatus;
+  const combinedStatus = deriveCombinedStatus(stats, homeworkMissedCount, policy);
+  if (!TERMINAL_STATUSES.has(enrollment.status) && enrollment.status !== combinedStatus) {
+    enrollment.status = combinedStatus;
     enrollment.statusAuto = true;
     enrollment.statusUpdatedAt = new Date();
-    enrollment.statusReason = autoStatusReason(stats, policy);
+    enrollment.statusReason = autoStatusReason(stats, policy, homeworkMissedCount, combinedStatus);
   }
 }
 
@@ -177,7 +196,8 @@ async function refreshClass(classId) {
       enrollment: e, policy: cls.policy, sessions,
       records: byStudent.get(String(e.studentId)) || [],
     });
-    applyStatsToEnrollment(e, stats, cls.policy);
+    const homeworkMissedCount = await assignmentService.getOverdueCountForClass(e.studentId, classId);
+    applyStatsToEnrollment(e, stats, cls.policy, homeworkMissedCount);
     await e.save();
   }
 }
@@ -192,13 +212,15 @@ async function refreshEnrollment(enrollmentId) {
     AttendanceRecord.find({ classId: enrollment.classId, studentId: enrollment.studentId }).lean(),
   ]);
   const stats = computeEnrollmentStats({ enrollment, policy: cls.policy, sessions, records });
-  applyStatsToEnrollment(enrollment, stats, cls.policy);
+  const homeworkMissedCount = await assignmentService.getOverdueCountForClass(enrollment.studentId, enrollment.classId);
+  applyStatsToEnrollment(enrollment, stats, cls.policy, homeworkMissedCount);
   await enrollment.save();
   return enrollment;
 }
 
 module.exports = {
   computeEnrollmentStats,
+  deriveCombinedStatus,
   withPolicyDefaults,
   autoStatusReason,
   applyStatsToEnrollment,

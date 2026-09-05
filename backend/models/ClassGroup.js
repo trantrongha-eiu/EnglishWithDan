@@ -26,6 +26,15 @@ const attendancePolicySchema = new mongoose.Schema({
   // < 100% — vượt con số này thì hiện cảnh báo homework + gửi 1 tin nhắn.
   // "3" chỉ là mặc định, không hard-code (xem assignmentService).
   homeworkMissThreshold: { type: Number, default: 3, min: 1 },
+  // Ngưỡng đổi enrollment.status: cùng con số "bài tập đang quá hạn & chưa
+  // đạt" ở trên, nhưng đây là ngưỡng làm đổi TRẠNG THÁI học viên (cảnh báo /
+  // rớt khóa), tách khỏi homeworkMissThreshold (chỉ để nhắc nhở). Recomputed
+  // sống mỗi lần refresh (xem classAttendanceService.refreshClass/
+  // refreshEnrollment) — y hệt cách điểm danh tự "gỡ" rớt khóa khi sửa lại
+  // bản ghi, nên giáo viên gia hạn/ẩn một bài tập cũng tự kéo học viên ra
+  // khỏi cảnh báo/rớt khóa.
+  homeworkWarnThreshold: { type: Number, default: 5, min: 1 },
+  homeworkFailThreshold: { type: Number, default: 10, min: 1 },
 }, { _id: false });
 
 const ClassGroupSchema = new mongoose.Schema({

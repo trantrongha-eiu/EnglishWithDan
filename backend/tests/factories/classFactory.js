@@ -101,12 +101,18 @@ async function createAssignment(classGroup, overrides = {}) {
 
 // Write the attempt doc that makes an internal resource count as "completed"
 // for a student. Supports the two types the integration test exercises.
-async function seedInternalCompletion(type, { studentId, resourceId }) {
+// correctCount/totalQuestions default to a comfortably-passing 8/10 (80%) —
+// reading_test and listening_practice are both score-gated (>=70%, see
+// resourceCompletionService.PASS_PERCENT) now that homework only auto-
+// completes on a real passing score, not just "an attempt exists". Pass a
+// losing ratio explicitly (e.g. { correctCount: 2, totalQuestions: 10 }) to
+// exercise the "attempted but not completed" path.
+async function seedInternalCompletion(type, { studentId, resourceId, correctCount = 8, totalQuestions = 10 }) {
   if (type === 'reading_test') {
-    return TestAttempt.create({ userId: studentId, testId: resourceId, status: 'completed', endTime: new Date() });
+    return TestAttempt.create({ userId: studentId, testId: resourceId, status: 'completed', endTime: new Date(), correctCount, totalQuestions });
   }
   if (type === 'listening_practice') {
-    return ListeningPracticeAttempt.create({ userId: studentId, sectionId: resourceId, submittedAt: new Date() });
+    return ListeningPracticeAttempt.create({ userId: studentId, sectionId: resourceId, submittedAt: new Date(), correctCount, totalQuestions });
   }
   throw new Error(`seedInternalCompletion: unsupported type ${type}`);
 }

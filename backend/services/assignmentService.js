@@ -12,7 +12,10 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const User = require('../models/User');
 const rcs = require('./resourceCompletionService');
-const { withPolicyDefaults } = require('./classAttendanceService');
+// From utils/, not classAttendanceService — that service now depends on THIS
+// module (to fold homework misses into the auto status), so this can't
+// depend back on it without a require cycle.
+const { withPolicyDefaults } = require('../utils/classPolicy');
 
 const DEADLINE_SOON_MS = 24 * 60 * 60 * 1000;
 
@@ -172,6 +175,18 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   return { assignments: rows, homeworkWarning, hasClasses: true };
 }
 
+// ── Live "how many assignments is this student currently behind on, in this
+//    one class" — sourced from getStudentAssignments's per-assignment rows.
+//    Used by classAttendanceService (refreshClass/refreshEnrollment) to fold
+//    homework misses into the enrollment's warning/failed status, alongside
+//    attendance. Recomputed fresh every call, same as the rest of that
+//    status machinery — a teacher extending a deadline or archiving an
+//    assignment lowers this number on the next refresh.
+async function getOverdueCountForClass(studentId, classId, now = new Date()) {
+  const { assignments } = await getStudentAssignments(studentId, now);
+  return assignments.filter((a) => a.status === 'overdue' && String(a.classId) === String(classId)).length;
+}
+
 function displayNameOf(u) {
   if (!u) return '';
   const full = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
@@ -288,6 +303,7 @@ module.exports = {
   deriveAssignmentStatus,
   getStudentAssignments,
   getStudentHomeworkSummary,
+  getOverdueCountForClass,
   markManualItem,
   getAssignmentProgressTable,
   displayNameOf,

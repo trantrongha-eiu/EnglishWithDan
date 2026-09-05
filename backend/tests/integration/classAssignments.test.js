@@ -10,6 +10,7 @@ const { createReadingTest, createListeningSection } = require('../factories/cont
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
+const classAttendanceService = require('../../services/classAttendanceService');
 
 const authH = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 const past = (d) => new Date(Date.now() - d * 864e5).toISOString();
@@ -190,6 +191,41 @@ describe('completion tracking', () => {
     expect(list.body.assignments.find((a) => a._id === String(asg._id)).completedStudents).toBe(1);
   });
 
+  test('a quiz-style internal resource only counts once the student clears 70% — a low score stays not-done', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 2, totalQuestions: 10 }); // 20%
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+    expect(row.resources[0].completed).toBe(false);
+
+    // A later, stronger retry clears the 70% bar.
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 8, totalQuestions: 10 }); // 80%
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(1);
+    expect(row.resources[0].completed).toBe(true);
+  });
+
+  test('the BEST of several attempts counts, even if the most recent retry scored lower', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 9, totalQuestions: 10 }); // 90% — passes
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 1, totalQuestions: 10 }); // 10% — a later, weaker retry
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    const row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources[0].completed).toBe(true);
+  });
+
   test('student can tick external/image items, cannot tick internal', async () => {
     const t = await createTeacher();
     const s = await createStudent();
@@ -267,6 +303,61 @@ describe('resource catalog', () => {
     expect(res.body.items.some((i) => i.label === 'Orange Test 42')).toBe(true);
 
     expect((await request(app).get('/api/classes/resources/catalog?type=nonsense').set(authH(t))).status).toBe(400);
+  });
+});
+
+describe('homework-driven enrollment status', () => {
+  test('enough overdue, incomplete assignments push the enrollment to warning, then failed', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 2, homeworkFailThreshold: 3 } });
+    const enr = await enrollStudent(cls, s);
+    const makeOverdue = () => createAssignment(cls, { deadline: past(1) }); // default resource is an untouched external link — stays incomplete
+
+    await makeOverdue();
+    let refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(1);
+    expect(refreshed.status).toBe('active'); // below warnThreshold 2
+
+    await makeOverdue();
+    refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(2);
+    expect(refreshed.status).toBe('warning');
+
+    await makeOverdue();
+    refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(3);
+    expect(refreshed.status).toBe('failed');
+    expect(refreshed.statusReason).toMatch(/bài tập quá hạn/);
+  });
+
+  test('archiving an overdue assignment lowers the live miss count and can pull the enrollment back out of failed', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 5, homeworkFailThreshold: 1 } });
+    const enr = await enrollStudent(cls, s);
+    const asg = await createAssignment(cls, { deadline: past(1) });
+
+    let refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.status).toBe('failed');
+
+    await Assignment.updateOne({ _id: asg._id }, { $set: { status: 'archived' } });
+    refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.status).toBe('active');
+  });
+
+  test('a real pass (>=70%) does not count toward the miss tally even past the deadline', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 1, homeworkFailThreshold: 2 } });
+    const enr = await enrollStudent(cls, s);
+    const rt = await createReadingTest();
+    await createAssignment(cls, { deadline: past(1), resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id }); // default 80% — passes
+
+    const refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(0);
+    expect(refreshed.status).toBe('active');
   });
 });
 
