@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import StudentPicker from './tuition/StudentPicker';
 
 const MARK_OPTS = [
   { v: 'present', label: 'Có mặt', cls: 'badge-green' },
@@ -217,17 +218,32 @@ function OverviewTab({ cls, onSaved }) {
 function StudentsTab({ cls, roster, onChange }) {
   const toast = useToast();
   const confirm = useConfirm();
-  const [email, setEmail] = useState('');
+  const [pickedId, setPickedId] = useState('');
+  const [pool, setPool] = useState([]);
   const [adding, setAdding] = useState(false);
 
-  async function add(e) {
-    e.preventDefault();
-    if (!email.trim()) return;
+  // Same searchable picker as Học phí / Tin nhắn (tuition/StudentPicker) —
+  // server-side search over ALL students (not just this class's roster),
+  // 50 rows per query instead of preloading the whole user base.
+  const searchStudents = useCallback(async (q) => {
+    try {
+      const d = await apiFetch(`/admin/users?role=student&limit=50${q ? `&search=${encodeURIComponent(q)}` : ''}`);
+      setPool(d.users || []);
+    } catch { /* ignore */ }
+  }, []);
+  // Already-enrolled students would just 409 ("đã ở trong lớp") if picked —
+  // filter them out of the dropdown instead of letting the admin hit that.
+  const enrolledIds = new Set(roster.map((r) => String(r.studentId)));
+  const pickablePool = pool.filter((s) => !enrolledIds.has(String(s._id)));
+
+  async function add(studentId) {
+    if (!studentId) return;
+    setPickedId(studentId);
     setAdding(true);
     try {
-      const d = await apiFetch(`/classes/${cls._id}/students`, { method: 'POST', body: JSON.stringify({ email: email.trim() }) });
+      const d = await apiFetch(`/classes/${cls._id}/students`, { method: 'POST', body: JSON.stringify({ userId: studentId }) });
       toast(d.added?.length ? `Đã thêm ${d.added.length} học viên` : 'Không thêm được');
-      setEmail('');
+      setPickedId('');
       onChange();
     } catch (err) { toast(err.message, 'error'); }
     finally { setAdding(false); }
@@ -253,10 +269,12 @@ function StudentsTab({ cls, roster, onChange }) {
 
   return (
     <>
-      <form onSubmit={add} className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
-        <input className="form-input" placeholder="Email học viên cần thêm..." value={email} onChange={(e) => setEmail(e.target.value)} style={{ maxWidth: 320 }} />
-        <button className="btn btn-primary" disabled={adding}>{adding ? 'Đang thêm...' : '+ Thêm học viên'}</button>
-      </form>
+      <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div style={{ width: 320 }}>
+          <StudentPicker students={pickablePool} value={pickedId} onChange={add} onSearch={searchStudents} />
+        </div>
+        {adding && <span style={{ fontSize: 12.5, color: 'var(--text3)' }}>Đang thêm...</span>}
+      </div>
 
       <div className="table-wrap">
         <table className="table">
