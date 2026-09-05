@@ -15,43 +15,75 @@ const cloudinaryService = require('../services/cloudinaryService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
+// Content-based identity for a resource — used to carry an existing
+// subdocument's _id over into an edit's rebuilt array (see buildResources'
+// `existing` param) instead of every resource getting a fresh one on every
+// save. Without this, editing an assignment (even just adding one more
+// resource) would silently orphan AssignmentProgress.items[].resourceItemId
+// for every external/image resource a student had already manually ticked —
+// their checkbox would revert to unticked with no error shown anywhere.
+// Internal resources don't strictly need this (their completion is matched
+// by resourceType+resourceId, not _id), but keeping their _id stable too
+// avoids needlessly resetting anything else keyed off it.
+function resourceIdentityKey(r) {
+  if (r.kind === 'internal') return `internal:${r.resourceType}:${r.resourceId || ''}`;
+  if (r.kind === 'external') return `external:${r.url}`;
+  if (r.kind === 'image') return `image:${(r.images || []).map((im) => im.url).sort().join(',')}`;
+  return null;
+}
+
 // ── validation of the resources[] payload ─────────────────────────────
-async function buildResources(input) {
+// `existing` (optional, only passed on an edit): the assignment's CURRENT
+// resources[] before this save — matched ones keep their _id (see
+// resourceIdentityKey above); genuinely new resources get a fresh one as
+// Mongoose normally would.
+async function buildResources(input, existing = []) {
   if (!Array.isArray(input) || !input.length) {
     return { error: 'Bài tập cần ít nhất một tài nguyên' };
   }
+  const existingIdByKey = new Map();
+  for (const r of existing) {
+    const k = resourceIdentityKey(r);
+    if (k && !existingIdByKey.has(k)) existingIdByKey.set(k, r._id);
+  }
+
   const out = [];
   for (const r of input) {
+    let built;
     if (r.kind === 'internal') {
       if (!rcs.isValidType(r.resourceType)) return { error: `Loại tài nguyên không hợp lệ: ${r.resourceType}` };
       const ok = await rcs.resourceExists(r.resourceType, r.resourceId || null);
       if (!ok) return { error: `Tài nguyên "${r.resourceType}" không tồn tại` };
-      out.push({
+      built = {
         kind: 'internal',
         resourceType: r.resourceType,
         resourceId: r.resourceId || null,
         label: (r.label && String(r.label).slice(0, 200)) || await rcs.labelFor(r.resourceType, r.resourceId),
-      });
+        resourceCode: await rcs.deepLinkKeyFor(r.resourceType, r.resourceId),
+      };
     } else if (r.kind === 'external') {
       if (!r.url || !/^https?:\/\//i.test(r.url)) return { error: 'Link ngoài phải bắt đầu bằng http(s)://' };
-      out.push({
+      built = {
         kind: 'external',
         url: String(r.url).slice(0, 2000),
         title: String(r.title || '').slice(0, 200),
         description: String(r.description || '').slice(0, 1000),
-      });
+      };
     } else if (r.kind === 'image') {
       const images = Array.isArray(r.images) ? r.images.filter((im) => im && im.url).slice(0, 10) : [];
       if (!images.length) return { error: 'Bài tập ảnh cần ít nhất một ảnh đã upload' };
-      out.push({
+      built = {
         kind: 'image',
         images: images.map((im) => ({ url: im.url, publicId: im.publicId || '', width: im.width, height: im.height })),
         title: String(r.title || '').slice(0, 200),
         instruction: String(r.instruction || '').slice(0, 2000),
-      });
+      };
     } else {
       return { error: `kind không hợp lệ: ${r.kind}` };
     }
+    const reuseId = existingIdByKey.get(resourceIdentityKey(built));
+    if (reuseId) built._id = reuseId;
+    out.push(built);
   }
   return { resources: out };
 }
@@ -158,7 +190,11 @@ exports.updateAssignment = async (req, res) => {
     if (deadline !== undefined) assignment.deadline = deadline ? new Date(deadline) : null;
     if (status !== undefined && ['active', 'archived'].includes(status)) assignment.status = status;
     if (resources !== undefined) {
-      const built = await buildResources(resources);
+      // Pass the CURRENT resources so unchanged ones keep their _id — see
+      // buildResources'/resourceIdentityKey's comment for why (otherwise a
+      // student's existing manual ticks on external/image items would
+      // silently un-tick themselves on every edit).
+      const built = await buildResources(resources, assignment.resources);
       if (built.error) return res.status(400).json({ success: false, message: built.error });
       assignment.resources = built.resources;
     }

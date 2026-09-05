@@ -10,7 +10,17 @@ const { createReadingTest, createListeningSection } = require('../factories/cont
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
+const WT1Lesson = require('../../models/WT1Lesson');
+const WT1Progress = require('../../models/WT1Progress');
 const classAttendanceService = require('../../services/classAttendanceService');
+
+async function createWT1Lesson(overrides = {}) {
+  const code = overrides.code || `L${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+  return WT1Lesson.create({
+    code, moduleCode: overrides.moduleCode || 'M1', order: 1,
+    title: overrides.title || 'Buổi 1 — Giới thiệu', published: true, ...overrides, code,
+  });
+}
 
 const authH = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 const past = (d) => new Date(Date.now() - d * 864e5).toISOString();
@@ -226,6 +236,43 @@ describe('completion tracking', () => {
     expect(row.resources[0].completed).toBe(true);
   });
 
+  test('task1_lesson: shows up in the resource catalog, tracks completion via WT1Progress (not resourceId), and snapshots a working deep link', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const lesson = await createWT1Lesson({ code: 'BUOI-DL-1', title: 'Buổi 1 — Giới thiệu Task 1' });
+
+    // Shows up in the teacher's resource picker.
+    const catalog = await request(app).get('/api/classes/resources/catalog?type=task1_lesson').set(authH(t));
+    expect(catalog.body.items.some((i) => i._id === String(lesson._id) && i.label === lesson.title)).toBe(true);
+
+    // Created through the real endpoint (not the createAssignment factory,
+    // which writes straight to Mongo) so buildResources's deepLinkKeyFor
+    // snapshot actually runs, same as a teacher assigning it for real.
+    const created = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({
+      title: 'Task 1 homework', resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: String(lesson._id) }],
+    });
+    const asgId = created.body.assignment._id;
+    const fresh = await Assignment.findById(asgId).lean();
+    // resourceCode was snapshotted from WT1Lesson.code at assign time — the
+    // student deep link needs the code, not the Mongo _id (see
+    // resourceCompletionService.deepLinkKeyFor).
+    expect(fresh.resources[0].resourceCode).toBe('BUOI-DL-1');
+
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asgId));
+    expect(row.done).toBe(0);
+    expect(row.resources[0].resourceCode).toBe('BUOI-DL-1');
+
+    // WT1Progress is keyed by lessonCode, never resourceId/lessonId — this is
+    // what proves the _id -> code resolution in checkCompleted actually works.
+    await WT1Progress.create({ userId: s._id, courseCode: 'IELTS-W-T1', lessonCode: 'BUOI-DL-1', completedAt: new Date() });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asgId));
+    expect(row.done).toBe(1);
+    expect(row.status).toBe('completed');
+  });
+
   test('student can tick external/image items, cannot tick internal', async () => {
     const t = await createTeacher();
     const s = await createStudent();
@@ -248,6 +295,59 @@ describe('completion tracking', () => {
     expect(okTick.status).toBe(200);
     expect(okTick.body.completedCount).toBe(1);
 
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    const row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources.find((r) => r.kind === 'external').completed).toBe(true);
+  });
+});
+
+describe('edit an assignment after it has already been assigned', () => {
+  test('PUT updates title/deadline/resources', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { title: 'Old title', resources: [{ kind: 'external', url: 'https://old.com', title: 'old' }] });
+
+    const res = await request(app).put(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t)).send({
+      title: 'New title',
+      deadline: new Date(Date.now() + 5 * 864e5).toISOString(),
+      resources: [
+        { kind: 'external', url: 'https://old.com', title: 'old' },
+        { kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id) },
+      ],
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.assignment.title).toBe('New title');
+    expect(res.body.assignment.resources).toHaveLength(2);
+  });
+
+  test("editing (even just adding a resource) does NOT un-tick a student's existing manual completion on an unchanged external/image item", async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'external', url: 'https://keep.com', title: 'keep me' }] });
+    const before = await Assignment.findById(asg._id).lean();
+    const externalItemId = String(before.resources[0]._id);
+
+    await request(app).post(`/api/assignments/${asg._id}/items/${externalItemId}/complete`).set(authH(s)).send({ done: true });
+
+    // Teacher adds a second resource — the whole resources[] is resent, as
+    // the admin editor form always does (it's not a diff/patch).
+    await request(app).put(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t)).send({
+      resources: [
+        { kind: 'external', url: 'https://keep.com', title: 'keep me' },
+        { kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id) },
+      ],
+    });
+
+    const after = await Assignment.findById(asg._id).lean();
+    const stillSameItemId = String(after.resources.find((r) => r.kind === 'external')._id);
+    // The unchanged resource's _id must be preserved across the edit...
+    expect(stillSameItemId).toBe(externalItemId);
+
+    // ...so the student's earlier tick (matched by that _id) still reads as
+    // completed instead of silently reverting to un-ticked.
     const mine = await request(app).get('/api/assignments/mine').set(authH(s));
     const row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.resources.find((r) => r.kind === 'external').completed).toBe(true);

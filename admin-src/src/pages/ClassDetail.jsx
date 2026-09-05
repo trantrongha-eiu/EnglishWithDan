@@ -30,6 +30,7 @@ const RESOURCE_CATS = [
   { type: 'listening_practice', label: 'Bài nghe lẻ (Section)' },
   { type: 'dictation', label: 'Dictation' },
   { type: 'writing_exam', label: 'Đề Writing' },
+  { type: 'task1_lesson', label: 'Writing Task 1 (Buổi học)' },
   { type: 'task2', label: 'Task 2 Writing' },
   { type: 'speaking', label: 'Speaking' },
   { type: 'grammar', label: 'Essential Grammar' },
@@ -632,6 +633,9 @@ function AssignmentsTab({ cls }) {
   const [enrolledCount, setEnrolledCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
+  // The full assignment row (already carries resources[] from GET .../assignments'
+  // .lean() spread) to pre-fill the editor with — null = creating a new one.
+  const [editing, setEditing] = useState(null);
   const [openId, setOpenId] = useState(null);
 
   const load = () => apiFetch(`/classes/${cls._id}/assignments`)
@@ -648,13 +652,15 @@ function AssignmentsTab({ cls }) {
     } catch (e) { toast(e.message, 'error'); }
   }
 
+  function closeEditor() { setShowEditor(false); setEditing(null); }
+
   return (
     <>
-      {showEditor && <AssignmentEditor cls={cls} onClose={() => setShowEditor(false)} onSaved={load} />}
+      {showEditor && <AssignmentEditor cls={cls} assignment={editing} onClose={closeEditor} onSaved={load} />}
 
       <div className="section-header" style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 13, color: 'var(--text3)' }}>{list.length} bài tập · {enrolledCount} học viên</div>
-        <button className="btn btn-primary" onClick={() => setShowEditor(true)}>+ Tạo bài tập</button>
+        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowEditor(true); }}>+ Tạo bài tập</button>
       </div>
 
       <div className="table-wrap">
@@ -675,6 +681,7 @@ function AssignmentsTab({ cls }) {
                     <td><span className={`badge ${a.status === 'archived' ? 'badge-gray' : 'badge-green'}`}><span className="dot" />{a.status === 'archived' ? 'Lưu trữ' : 'Đang giao'}</span></td>
                     <td>
                       <div className="row-actions">
+                        <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(a); setShowEditor(true); }}>Sửa</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => setOpenId(openId === a._id ? null : a._id)}>{openId === a._id ? 'Ẩn' : 'Chi tiết'}</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => archive(a)}>{a.status === 'archived' ? 'Mở lại' : 'Lưu trữ'}</button>
                       </div>
@@ -725,14 +732,35 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
   );
 }
 
-function AssignmentEditor({ cls, onClose, onSaved }) {
+// Local datetime-local value (YYYY-MM-DDTHH:mm) from a stored ISO deadline —
+// same "browser-local wall clock" convention the create form's own input
+// already writes, so round-tripping an existing deadline into the editor
+// doesn't shift it.
+function toDatetimeLocalValue(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+// `assignment` (optional): the full row from GET .../assignments (already
+// carries resources[] — see listAssignments' .lean() spread) to edit in
+// place instead of creating a new one.
+function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const toast = useToast();
-  const [title, setTitle] = useState('');
-  const [instruction, setInstruction] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [picked, setPicked] = useState([]);
-  const [externals, setExternals] = useState([]);
-  const [images, setImages] = useState([]);
+  const isEdit = !!assignment;
+  const [title, setTitle] = useState(assignment?.title || '');
+  const [instruction, setInstruction] = useState(assignment?.instruction || '');
+  const [deadline, setDeadline] = useState(toDatetimeLocalValue(assignment?.deadline));
+  const [picked, setPicked] = useState(() => (assignment?.resources || [])
+    .filter((r) => r.kind === 'internal')
+    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, label: r.label })));
+  const [externals, setExternals] = useState(() => (assignment?.resources || [])
+    .filter((r) => r.kind === 'external')
+    .map((r) => ({ url: r.url, title: r.title, description: r.description || '' })));
+  const [images, setImages] = useState(() => (assignment?.resources || [])
+    .filter((r) => r.kind === 'image')
+    .map((r) => ({ kind: 'image', images: r.images, title: r.title || '', instruction: r.instruction || '' })));
   const [saving, setSaving] = useState(false);
 
   const [cat, setCat] = useState('reading_test');
@@ -785,11 +813,12 @@ function AssignmentEditor({ cls, onClose, onSaved }) {
     if (!resources.length) return toast('Chọn ít nhất một tài nguyên', 'error');
     setSaving(true);
     try {
-      await apiFetch(`/classes/${cls._id}/assignments`, {
-        method: 'POST',
+      const url = isEdit ? `/classes/${cls._id}/assignments/${assignment._id}` : `/classes/${cls._id}/assignments`;
+      await apiFetch(url, {
+        method: isEdit ? 'PUT' : 'POST',
         body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources }),
       });
-      toast('Đã giao bài tập');
+      toast(isEdit ? 'Đã lưu thay đổi' : 'Đã giao bài tập');
       onSaved();
       onClose();
     } catch (err) { toast(err.message, 'error'); }
@@ -802,7 +831,7 @@ function AssignmentEditor({ cls, onClose, onSaved }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth: 760, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">Tạo bài tập — {cls.name}</h3>
+          <h3 className="modal-title">{isEdit ? 'Sửa bài tập' : 'Tạo bài tập'} — {cls.name}</h3>
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '18px 22px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -877,7 +906,9 @@ function AssignmentEditor({ cls, onClose, onSaved }) {
           <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', alignItems: 'center' }}>
             <span style={{ fontSize: 12, color: 'var(--text3)' }}>{totalRes} tài nguyên</span>
             <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
-            <button className="btn btn-primary" disabled={saving} onClick={save}>{saving ? 'Đang giao...' : '📤 Giao bài tập'}</button>
+            <button className="btn btn-primary" disabled={saving} onClick={save}>
+              {saving ? (isEdit ? 'Đang lưu...' : 'Đang giao...') : (isEdit ? '💾 Lưu thay đổi' : '📤 Giao bài tập')}
+            </button>
           </div>
         </div>
       </div>

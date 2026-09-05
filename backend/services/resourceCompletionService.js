@@ -24,6 +24,7 @@ const Task2Topic = require('../models/Task2Topic');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
 const VocabularyLesson = require('../models/VocabularyLesson');
+const WT1Lesson = require('../models/WT1Lesson');
 
 const TestAttempt = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -36,6 +37,7 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const MockTestAttempt = require('../models/MockTestAttempt');
+const WT1Progress = require('../models/WT1Progress');
 
 const { escapeRegex } = require('../utils/strings');
 
@@ -124,6 +126,26 @@ const REGISTRY = {
     catalog: null, // synthetic — a single pickable entry, no id
     attempt: { model: MockTestAttempt, userField: 'userId', idField: null, filter: { status: 'completed' } },
   },
+  task1_lesson: {
+    label: 'Writing Task 1 (Buổi học)',
+    // WT1Lesson's real Mongo _id is used as the assignment's resourceId (so
+    // it fits the same ObjectId-keyed schema every other type uses), but the
+    // course itself tracks progress by `code` — a re-seeding-safe id, not
+    // _id (see WT1Lesson.js/WT1Progress.js) — and that's also what the
+    // student-facing deep link (writing-task1.html?lesson=<code>) needs.
+    // deepLinkKey lets the controller snapshot that at assign time
+    // (Assignment.resources[].resourceCode) without every other type's
+    // labelFor/resourceExists plumbing having to know about it.
+    catalog: { model: WT1Lesson, filter: { published: true }, sort: { moduleCode: 1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
+      deepLinkKey: (d) => d.code },
+    // No score gate: a lesson mixes objective (quiz) AND AI-graded essay
+    // exercises, so a single % doesn't apply the way it does to a pure quiz
+    // — instead this reuses WT1Progress.completedAt, which the WT1 course's
+    // own service already only sets once EVERY exercise in the lesson has
+    // been attempted (wt1Service.js's _recompute/allDone).
+    attempt: { model: WT1Progress, custom: true },
+  },
 };
 
 const TYPES = Object.keys(REGISTRY);
@@ -171,6 +193,17 @@ async function labelFor(type, resourceId) {
   return doc ? entry.catalog.shape(doc).label : '';
 }
 
+// For the few types whose student-facing deep link isn't keyed by resourceId
+// (task1_lesson links by WT1Lesson.code) — snapshotted onto
+// Assignment.resources[].resourceCode at assign time, same pattern as label.
+// '' for every other type.
+async function deepLinkKeyFor(type, resourceId) {
+  const entry = REGISTRY[type];
+  if (!entry || !entry.catalog || !entry.catalog.deepLinkKey) return '';
+  const doc = await entry.catalog.model.findById(resourceId).lean();
+  return doc ? entry.catalog.deepLinkKey(doc) : '';
+}
+
 // key used to match an assignment resource against a completion result
 function resourceKey(type, resourceId) {
   return `${type}:${resourceId || '*'}`;
@@ -203,6 +236,27 @@ async function checkCompleted(studentId, internalItems, since = null) {
   await Promise.all([...byType.entries()].map(async ([type, idSet]) => {
     const entry = REGISTRY[type];
     const A = entry.attempt;
+
+    if (A.custom) {
+      // task1_lesson: resourceId is WT1Lesson._id, but WT1Progress (the
+      // completion record) is keyed by lessonCode, not an ObjectId ref — the
+      // WT1 course intentionally never refs content by _id (re-seeding
+      // safety, see WT1Lesson.js). Resolve _id -> code first, then query.
+      const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
+      if (!ids.length) return;
+      const lessons = await WT1Lesson.find({ _id: { $in: ids } }).select('_id code').lean();
+      const codeToId = new Map(lessons.map((l) => [l.code, String(l._id)]));
+      const codes = [...codeToId.keys()];
+      if (!codes.length) return;
+      const filter = { userId: studentId, lessonCode: { $in: codes }, completedAt: since ? { $gte: since } : { $ne: null } };
+      const rows = await A.model.find(filter).select('lessonCode completedAt').lean().catch(() => []);
+      for (const r of rows) {
+        const lid = codeToId.get(r.lessonCode);
+        if (lid) out.set(resourceKey(type, lid), { completed: true, completedAt: r.completedAt });
+      }
+      return;
+    }
+
     const base = { [A.userField]: studentId, ...A.filter };
     if (since) base.createdAt = { $gte: since };
 
@@ -255,5 +309,5 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
 module.exports = {
   REGISTRY, TYPES, isValidType, PASS_PERCENT,
-  listCatalog, resourceExists, labelFor, resourceKey, checkCompleted,
+  listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
 };

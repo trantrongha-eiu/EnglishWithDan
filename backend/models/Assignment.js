@@ -19,11 +19,16 @@ const assignmentResourceSchema = new mongoose.Schema({
     enum: [
       'reading_test', 'listening_test', 'reading_practice', 'listening_practice',
       'dictation', 'writing_exam', 'task2', 'speaking',
-      'grammar', 'vocabulary_lesson', 'mock_test',
+      'grammar', 'vocabulary_lesson', 'mock_test', 'task1_lesson',
     ],
   },
   resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test
   label:      { type: String, default: '' },            // name snapshot at assign time
+  // Deep-link key snapshot for types whose student-facing URL isn't keyed by
+  // resourceId — task1_lesson links by WT1Lesson.code (re-seeding-safe id),
+  // not the Mongo _id stored above. '' for every other type (see
+  // resourceCompletionService.deepLinkKeyFor).
+  resourceCode: { type: String, default: '' },
 
   // external
   url:         { type: String, default: '' },

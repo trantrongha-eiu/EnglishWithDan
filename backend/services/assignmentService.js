@@ -98,7 +98,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       if (completed) completedItemIds.add(String(r._id));
       return {
         itemId: r._id, kind: r.kind, autoTracked, completed, completedAt,
-        resourceType: r.resourceType || null, resourceId: r.resourceId || null,
+        resourceType: r.resourceType || null, resourceId: r.resourceId || null, resourceCode: r.resourceCode || '',
         label: r.label || r.title || '', url: r.url || '', description: r.description || '',
         images: r.images || [], title: r.title || '', instruction: r.instruction || '',
       };

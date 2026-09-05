@@ -30,6 +30,10 @@ function hwResourceHref(r) {
     case 'listening_practice': return `listening.html?sectionId=${id}`;
     case 'dictation':          return `listening.html?sectionId=${id}&mode=dictation`;
     case 'writing_exam':       return 'writing.html';
+    // WT1 lessons are looked up by `code` (re-seeding-safe), not the Mongo
+    // _id in `id` above — resourceCode is the snapshot taken at assign time
+    // (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
+    case 'task1_lesson':       return r.resourceCode ? `writing-task1.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
     case 'task2':              return 'task2-practice.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
     case 'grammar':            return 'essential-grammar.html';
