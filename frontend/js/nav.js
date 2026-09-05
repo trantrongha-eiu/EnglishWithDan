@@ -576,7 +576,11 @@
         // Same escalation pattern, tuition side — auto-clears itself once
         // the student has no unpaid fees left (tuitionService.js), unlike
         // the study one above which needs an admin to manually reset it.
-        if ((u.tuitionReminderCount || 0) >= 3) _showTuitionWarningBanner(u.tuitionReminderCount);
+        // Threshold is 1 (not the study banner's 3): a tuition reminder only
+        // ever fires for a real unpaid fee (admin click or the auto-remind
+        // cron), so there's no "maybe it's nothing yet" grace period to give
+        // — every reminder means money is actually owed.
+        if ((u.tuitionReminderCount || 0) >= 1) _showTuitionWarningBanner(u.tuitionReminderCount);
 
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
@@ -683,7 +687,7 @@
     banner.id = 'nav-tuition-warning-banner';
     banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b45309,#d97706);box-shadow:0 2px 8px rgba(0,0,0,.15)';
     banner.innerHTML =
-      '<span style="flex:1;text-align:center">💰 Bạn đã được nhắc <strong>' + count + ' lần</strong> về học phí chưa thanh toán. Vui lòng kiểm tra và xác nhận chuyển khoản nhé!</span>' +
+      '<span style="flex:1;text-align:center">💰 Bạn có học phí chưa thanh toán (đã nhắc <strong>' + count + ' lần</strong>). Vui lòng kiểm tra và xác nhận chuyển khoản nhé!</span>' +
       '<a href="tuition.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem học phí</a>' +
       '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     var afterEl = document.getElementById('nav-study-warning-banner') || document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');

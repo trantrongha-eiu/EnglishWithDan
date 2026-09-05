@@ -112,6 +112,16 @@
       font-size: 13px; color: #1e40af; line-height: 1.8;
     }
 
+    /* Fixed payment-deadline policy — always shown regardless of debt status,
+       distinct from .payment-note (the bank-transfer memo/reference text). */
+    .policy-note {
+      margin-bottom: 24px; padding: 12px 18px;
+      background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3);
+      border-radius: 10px; font-size: 13.5px; color: #92400e; line-height: 1.6;
+      display: flex; align-items: center; gap: 10px;
+    }
+    [data-theme="dark"] .policy-note { background: rgba(245,158,11,.14); color: #fbbf24; border-color: rgba(245,158,11,.3); }
+
     .qr-wrap { text-align: center; }
     .qr-wrap img {
       max-width: 220px; max-height: 220px; border-radius: 10px;
@@ -153,7 +163,7 @@
   <script src="js/auth.js?v=20260831"></script>
   <script src="js/upgrade-modal.js?v=20260831"></script>
   <script src="js/shared/popup-queue.js?v=20260923"></script>
-  <script src="js/nav.js?v=20260903hw"></script>
+  <script src="js/nav.js?v=20260905tuition"></script>
   <script src="js/shared/sound-effects.js?v=20260831"></script>
   <script src="js/shared/toast.js?v=20260831"></script>
   <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
@@ -161,6 +171,12 @@
   <script src="js/shared/utils.js?v=20260831"></script>
 
   <div class="tuition-layout">
+
+    <!-- Fixed payment-deadline policy notice -->
+    <div class="policy-note">
+      <i class="fas fa-circle-info"></i>
+      <span>Học viên vui lòng thanh toán học phí trong vòng 2 tuần kể từ ngày khai giảng khóa học.</span>
+    </div>
 
     <!-- Debt summary banner -->
     <div class="debt-banner loading" id="debtBanner">
