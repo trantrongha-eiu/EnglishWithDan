@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // than awaiting all 10 up front means a reload mid-unit/mid-lesson shows
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
-    loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadMyVocabStats(); loadWeaknessProfile();
+    loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadWeaknessProfile();
     if (typeof loadHomework === 'function') loadHomework();
     if (typeof loadClassInfo === 'function') loadClassInfo();
     // Double-click / drag-select word lookup on the vocab HOME screen too —
@@ -565,29 +565,6 @@ async function useHammer() {
         loadWeeklyProgress();
     } catch (err) { toast(err.message || 'Không thể dùng búa lúc này', 'error'); }
     finally { if (btn) btn.disabled = false; }
-}
-
-// "My Vocabulary" stat tiles — aggregate totals across ALL of a student's
-// books (GET /vocabbook/stats), distinct from the per-book counters already
-// shown in the sidebar/book-detail view (those only ever reflect ONE book).
-// Hidden entirely rather than showing all-zero tiles when a brand new
-// student has no words saved anywhere yet.
-async function loadMyVocabStats() {
-    const wrap = document.getElementById('myvocab-stats');
-    if (!wrap) return;
-    try {
-        const res = await fetch(`${API}/vocabbook/stats`, { headers: authH() });
-        const data = await window.ApiClient.handleResponse(res);
-        const s = data.stats || {};
-        if (!s.totalWords) { wrap.style.display = 'none'; return; }
-        document.getElementById('myvocab-saved').textContent = s.totalWords;
-        document.getElementById('myvocab-review').textContent = s.dueToday;
-        document.getElementById('myvocab-weak').textContent = s.weak;
-        document.getElementById('myvocab-mastered').textContent = s.mastered;
-        wrap.style.display = '';
-    } catch {
-        wrap.style.display = 'none';
-    }
 }
 
 // Vietnamese labels for the raw enum values weaknessService returns —
@@ -1075,6 +1052,15 @@ function renderBookContent(book) {
         addTip.classList.toggle('hidden', dismissed);
     }
 
+    // "Mách nhỏ" — nhắc xếp loại mức độ nhớ (Not yet/So-so/Mastered). Same
+    // show-until-dismissed-once pattern as book-add-tip above, own
+    // localStorage key so dismissing one doesn't hide the other.
+    const classifyTip = document.getElementById('book-classify-tip');
+    if (classifyTip) {
+        const dismissed = (() => { try { return localStorage.getItem('dash_book_classify_tip_dismissed') === '1'; } catch (e) { return false; } })();
+        classifyTip.classList.toggle('hidden', dismissed);
+    }
+
     // Cập nhật nút "Ôn lại từ hay sai" — luôn hiện khi sổ mở
     const hardBtn = document.getElementById('btn-hard-words');
     if (hardBtn) {
@@ -1096,6 +1082,12 @@ function dismissBookAddTip() {
     const el = document.getElementById('book-add-tip');
     if (el) el.classList.add('hidden');
     try { localStorage.setItem('dash_book_add_tip_dismissed', '1'); } catch (e) {}
+}
+
+function dismissBookClassifyTip() {
+    const el = document.getElementById('book-classify-tip');
+    if (el) el.classList.add('hidden');
+    try { localStorage.setItem('dash_book_classify_tip_dismissed', '1'); } catch (e) {}
 }
 
 function renderWordsTable(words) {
@@ -1242,7 +1234,6 @@ async function updateWordStatus(wordId, status, selectEl) {
             body: JSON.stringify({ status })
         });
         const data = await window.ApiClient.handleResponse(res);
-        if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
         // Confetti only after server confirms — not on optimistic update
         if (w && status === 'da-thuoc') checkBookCompletion();
         if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
@@ -3265,7 +3256,6 @@ async function _syncPracticeEvidence() {
     }
     if (!calls.length) return;
     await Promise.all(calls);
-    if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
 }
 
 /* ══════════════════════════════════════════════
@@ -3477,6 +3467,7 @@ window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;
 window.openBook           = openBook;
 window.dismissBookAddTip  = dismissBookAddTip;
+window.dismissBookClassifyTip = dismissBookClassifyTip;
 window.openBookMenu          = openBookMenu;
 window.startRenameFromMenu   = startRenameFromMenu;
 window.deleteBookFromMenu    = deleteBookFromMenu;

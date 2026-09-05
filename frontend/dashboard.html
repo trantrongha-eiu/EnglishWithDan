@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260905reorg">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260905tip">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -101,33 +101,15 @@
                hidden until it has data (or shows an empty-state). -->
           <div id="homework-card" style="display:none"></div>
 
-          <!-- Reordered 2026-09 (product decision): Sổ từ vựng stats +
-               Streak/Quiz leaderboards moved up here (right after homework),
-               ahead of Today's Lesson/Mock Test and the weakness card —
-               these 4 are the "most-checked" widgets, everything below is
-               secondary/discovery. -->
-
-          <!-- "My Vocabulary" — aggregate stats across ALL of the student's books
-               (existing per-book counters in the sidebar/book view only ever show
-               ONE book's numbers) -->
-          <div class="myvocab-stats" id="myvocab-stats" style="display:none">
-            <div class="myvocab-tile">
-              <div class="myvocab-tile-value" id="myvocab-saved">0</div>
-              <div class="myvocab-tile-label">Đã lưu</div>
-            </div>
-            <div class="myvocab-tile myvocab-tile--clickable" onclick="openReviewDueModal()">
-              <div class="myvocab-tile-value myvocab-tile-value--blue" id="myvocab-review">0</div>
-              <div class="myvocab-tile-label">Cần ôn lại</div>
-            </div>
-            <div class="myvocab-tile myvocab-tile--clickable" id="myvocab-weak-tile" onclick="practiceWeakVocab()">
-              <div class="myvocab-tile-value myvocab-tile-value--red" id="myvocab-weak">0</div>
-              <div class="myvocab-tile-label">Từ yếu</div>
-            </div>
-            <div class="myvocab-tile">
-              <div class="myvocab-tile-value myvocab-tile-value--green" id="myvocab-mastered">0</div>
-              <div class="myvocab-tile-label">Đã thuộc</div>
-            </div>
-          </div>
+          <!-- Reordered 2026-09 (product decision): Streak/Quiz leaderboards
+               moved up here (right after homework), ahead of Today's
+               Lesson/Mock Test and the weakness card — these are the
+               "most-checked" widgets, everything below is secondary/
+               discovery. (The "My Vocabulary" aggregate-stats tiles that
+               used to sit here too — Đã lưu/Cần ôn lại/Từ yếu/Đã thuộc —
+               were removed outright per a later product decision: the
+               per-book counters already in the sidebar/book view were
+               judged sufficient, and this was one card too many.) -->
 
           <div class="dash-home-grid">
             <!-- Left column: intro + streak mascot -->
@@ -322,6 +304,17 @@
             </ul>
           </div>
           <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookAddTip()">×</button>
+        </div>
+
+        <!-- "Mách nhỏ" — remember to classify each word's mức độ nhớ. Shown
+             on book open until dismissed (own localStorage key, independent
+             of book-add-tip above). -->
+        <div id="book-classify-tip" class="book-add-tip hidden">
+          <span class="book-add-tip-emoji">🏷️</span>
+          <div class="book-add-tip-body">
+            <strong>Mách nhỏ:</strong> Đừng quên xếp loại mức độ nhớ cho từng từ! Bấm vào ô trạng thái (<span class="status-select-hint chua-thuoc">Not yet</span> / <span class="status-select-hint nho-so-so">So-so</span> / <span class="status-select-hint da-thuoc">Mastered</span>) ở mỗi từ trong bảng bên dưới — càng cập nhật đúng, hệ thống càng nhắc ôn tập chính xác hơn.
+          </div>
+          <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookClassifyTip()">×</button>
         </div>
 
         <div class="book-action-bar">
@@ -1321,6 +1314,6 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/shared/mock-test.js?v=20260906fix"></script>
 <script src="js/dashboard-mocktest.js?v=20260903"></script>
-<script src="js/dashboard.js?v=20260905reorg"></script>
+<script src="js/dashboard.js?v=20260905tip"></script>
 </body>
 </html>
