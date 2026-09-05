@@ -65,10 +65,14 @@ function hwCountdown(deadline) {
   if (!deadline) return '';
   const ms = new Date(deadline) - Date.now();
   if (ms <= 0) return '<span class="hw-due hw-due--over">Đã quá hạn</span>';
-  const h = Math.floor(ms / 3600000);
-  if (h < 24) return `<span class="hw-due hw-due--soon">Còn ${h} giờ</span>`;
-  const d = Math.floor(h / 24);
-  return `<span class="hw-due">Còn ${d} ngày</span>`;
+  // Ceiling, not floor: with floor, 47h left (nearly 2 full days) rounded
+  // DOWN to "Còn 1 ngày" — reads as "barely any time left" for something
+  // that's actually almost 2 days out, which is exactly backwards from what
+  // "còn N ngày" should reassure a student of. Ceiling always rounds up to
+  // "at least this many days/hours left", never understating it.
+  const totalHours = ms / 3600000;
+  if (totalHours < 24) return `<span class="hw-due hw-due--soon">Còn ${Math.ceil(totalHours)} giờ</span>`;
+  return `<span class="hw-due">Còn ${Math.ceil(totalHours / 24)} ngày</span>`;
 }
 
 function hwFmtDeadline(deadline) {
