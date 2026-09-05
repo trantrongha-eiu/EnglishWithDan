@@ -294,7 +294,14 @@ exports.getHistory = async (req, res) => {
 
 exports.getHistoryDetail = async (req, res) => {
   try {
-    const { status, result } = await listeningService.getHistoryDetail(req.params.attemptId, req.user._id || req.user.id);
+    // A teacher/admin opens this exact route from the mock-test monitor's
+    // "Xem lại" deep link (MockTests.jsx SkillCell) as THEMSELVES, not the
+    // student — scoping strictly by userId there always 404'd. Any other
+    // student's attemptId is still just as unguessable (Mongo ObjectId) as
+    // before, and teacher/admin already see all student attempt data via
+    // the other admin monitoring surfaces.
+    const isStaff = ['teacher', 'admin'].includes(req.user.role);
+    const { status, result } = await listeningService.getHistoryDetail(req.params.attemptId, isStaff ? null : (req.user._id || req.user.id));
     if (status === 'attempt_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     if (status === 'test_not_found') return res.status(404).json({ success: false, message: 'Đề thi không tồn tại' });
     res.json({ success: true, result });

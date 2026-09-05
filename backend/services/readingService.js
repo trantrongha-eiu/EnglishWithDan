@@ -357,8 +357,10 @@ async function submitTest(attemptId, answers, user) {
   };
 }
 
+// userId === null means "don't scope by owner" — the teacher/admin
+// mock-test-monitor review deep link (see the controller's comment).
 async function getAttemptReview(attemptId, userId) {
-  const attempt = await TestAttempt.findOne({ _id: attemptId, userId, status: 'completed' }).populate('testId', 'name testNumber').lean();
+  const attempt = await TestAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}), status: 'completed' }).populate('testId', 'name testNumber').lean();
   if (!attempt) return null;
 
   // Prefer the as-submitted snapshot; fall back to a live read for attempts

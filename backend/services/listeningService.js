@@ -758,8 +758,10 @@ async function getHistory(userId, limit = 50) {
   return { attempts, total };
 }
 
+// userId === null means "don't scope by owner" — the teacher/admin
+// mock-test-monitor review deep link (see the controller's comment).
 async function getHistoryDetail(attemptId, userId) {
-  const attempt = await ListeningAttempt.findOne({ _id: attemptId, userId }).lean();
+  const attempt = await ListeningAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}) }).lean();
   if (!attempt) return { status: 'attempt_not_found' };
 
   // Prefer the as-submitted snapshot; fall back to the live test for attempts

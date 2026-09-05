@@ -319,6 +319,26 @@ describe('listeningService.submitTest — grading through the real test document
     expect(result.audioUrl).toBe('https://cdn/original.mp3');
   });
 
+  test('getHistoryDetail(attemptId, null) finds the attempt regardless of owner — the teacher/admin mock-test-monitor deep link', async () => {
+    const student = await createStudent();
+    const other = await createStudent();
+    const test = await createListeningTest({
+      sections: [{
+        partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 1 },
+        questionGroups: [{
+          groupType: 'plain', interchangeableAnswers: false,
+          questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q1', correctAnswer: 'x' }],
+        }],
+      }],
+    });
+    const { attemptId } = await listeningService.submitTest(test._id.toString(), { answers: { 1: 'x' } }, student);
+
+    expect((await listeningService.getHistoryDetail(attemptId, null)).status).toBe('ok');
+    // Ownership is still enforced for an ordinary (non-null) userId — a
+    // student can't read another student's attempt this way.
+    expect((await listeningService.getHistoryDetail(attemptId, other._id)).status).toBe('attempt_not_found');
+  });
+
   test('getHistoryDetail falls back to the live test when the attempt has no snapshot', async () => {
     const student = await createStudent();
     const test = await createListeningTest({

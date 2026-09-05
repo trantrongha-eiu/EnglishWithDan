@@ -40,7 +40,11 @@ exports.submitTest = guard(null, async (req, res) => {
 });
 
 exports.getAttemptReview = guard(null, async (req, res) => {
-  const attempt = await readingService.getAttemptReview(req.params.id, req.user._id);
+  // Same fix as listening's getHistoryDetail: a teacher/admin opens this
+  // route from the mock-test monitor's "Xem lại" deep link as THEMSELVES,
+  // not the student, so scoping strictly by userId always 404'd for them.
+  const isStaff = ['teacher', 'admin'].includes(req.user.role);
+  const attempt = await readingService.getAttemptReview(req.params.id, isStaff ? null : req.user._id);
   if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
   res.json({ success: true, attempt });
 });

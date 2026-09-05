@@ -328,6 +328,19 @@ describe('readingService.getAttemptReview — ownership scoping', () => {
     const review = await readingService.getAttemptReview(attempt._id, intruder._id);
     expect(review).toBeNull();
   });
+
+  test('userId=null finds the attempt regardless of owner — the teacher/admin mock-test-monitor deep link', async () => {
+    const owner = await createStudent();
+    const { attempt } = await makeAttempt({
+      student: owner,
+      status: 'completed',
+      groups: [{ questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q1', correctAnswer: 'x' }] }],
+    });
+
+    const review = await readingService.getAttemptReview(attempt._id, null);
+    expect(review).not.toBeNull();
+    expect(review._id.toString()).toBe(attempt._id.toString());
+  });
 });
 
 describe('readingService — passage snapshot immutability', () => {
