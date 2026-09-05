@@ -18,6 +18,22 @@
        bridgeInput: <input>,        // optional: its .value is kept in sync so an
                                     //   existing check function can read it
        onComplete:  () => {...},    // called once, after the last word
+       maxErrors:   3,              // optional: fail out after this many wrong
+                                    //   attempts (a rejected letter in per-letter
+                                    //   mode, a committed mismatch in per-word
+                                    //   mode) — used by the vocab drills (VocabBook
+                                    //   + vocabulary-lesson quiz) so a student can't
+                                    //   just try every letter until it turns green;
+                                    //   omitted (default) = unlimited, unchanged
+                                    //   behavior for the Task 2/Task 1/WT1/WT2
+                                    //   "Dịch câu" drills.
+       onFail:      () => {...},    // called once instead of onComplete when
+                                    //   maxErrors is exceeded — the drill reveals
+                                    //   the correct answer and disables itself;
+                                    //   the caller is expected to grade this as
+                                    //   wrong (NOT re-check the bridge input,
+                                    //   which now holds the correct answer purely
+                                    //   for display).
      });
      WbwDrill.unmount(hostEl);
      WbwDrill.isActive(hostEl) -> bool   // mounted and not yet completed
@@ -41,6 +57,7 @@
     '.wbwd-word.is-active{background:#fff;color:#111827;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}',
     '.wbwd-word.is-active .wbwd-star{color:#d1d5db}',
     '.wbwd-word.is-active.is-error{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.18);animation:wbwd-shake .24s ease}',
+    '.wbwd-word.is-wrong{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}',
     '.wbwd-err{color:#ef4444}',
     '.wbwd-caret{display:inline-block;width:1px;margin:0 1px;border-left:2px solid #f59e0b;animation:wbwd-blink 1s step-end infinite}',
     '.wbwd-input{margin-top:10px;width:100%;box-sizing:border-box;font-family:"Courier New",ui-monospace,monospace;font-size:16px;font-weight:700;letter-spacing:1px;padding:10px 12px;border-radius:10px;border:1.5px solid #d1d5db;background:#fff;color:#111827;transition:border-color .18s,box-shadow .18s,background .18s}',
@@ -54,6 +71,7 @@
     '[data-theme="dark"] .wbwd-words{background:#0f172a;border-color:#1e293b}',
     '[data-theme="dark"] .wbwd-word{background:#1e293b;color:#64748b}',
     '[data-theme="dark"] .wbwd-word.is-done{background:#052e16;color:#4ade80;border-color:#166534}',
+    '[data-theme="dark"] .wbwd-word.is-wrong{background:#450a0a;color:#fca5a5;border-color:#7f1d1d}',
     '[data-theme="dark"] .wbwd-word.is-active{background:#0d0d0d;color:#f1f5f9}',
     '[data-theme="dark"] .wbwd-count{background:#0d0d0d;color:#94a3b8}',
     '[data-theme="dark"] .wbwd-count.is-full{background:#052e16;color:#4ade80}',
@@ -113,6 +131,12 @@
     this.answer = nfc(opts.answer);
     this.bridgeInput = opts.bridgeInput || null;
     this.onComplete = typeof opts.onComplete === 'function' ? opts.onComplete : function () {};
+    this.onFail = typeof opts.onFail === 'function' ? opts.onFail : null;
+    // 0 = unlimited (default) — every non-vocab caller (Task 2/Task 1/WT1/WT2
+    // "Dịch câu") omits this and keeps its current no-cap behavior.
+    this.maxErrors = (typeof opts.maxErrors === 'number' && opts.maxErrors > 0) ? opts.maxErrors : 0;
+    this.wrongCount = 0;
+    this.failed = false;
     this.tokens = tokenize(this.answer);
     this.activeIdx = 0;
     // Per-WORD checking (vs per-letter). Auto-on when the answer has non-ASCII
@@ -223,6 +247,12 @@
       if (i < self.activeIdx) {
         return '<span class="wbwd-word is-done" data-i="' + i + '">' + esc(t.raw) + '</span>';
       }
+      // The word being typed when maxErrors was exceeded — call out in red,
+      // separately from the plain reveal the still-untouched words after it
+      // get below (self.showAll's peek styling).
+      if (self.failed && i === self.activeIdx) {
+        return '<span class="wbwd-word is-wrong" data-i="' + i + '">' + esc(t.raw) + '</span>';
+      }
       if (i === self.activeIdx && !self.done) {
         // Remaining-star count is by real letters/numbers only — self.typed
         // may already include auto-filled punctuation (e.g. "energy-"), which
@@ -235,8 +265,11 @@
         return '<span class="wbwd-word is-active' + (self.erroring ? ' is-error' : '') + '" data-i="' + i + '">' +
           esc(self.typed) + tail + '<span class="wbwd-star">' + repeat('*', remaining) + '</span></span>';
       }
-      var text = self.showAll ? esc(t.raw) : esc(t.mask);
-      return '<span class="wbwd-word is-locked' + (self.showAll ? ' is-peek' : '') + '" data-i="' + i + '">' + text + '</span>';
+      // After a fail, reveal the remaining (never-attempted) words too — same
+      // greyed "peek" look as Hiện tất cả, since showAll itself isn't touched.
+      var reveal = self.showAll || self.failed;
+      var text = reveal ? esc(t.raw) : esc(t.mask);
+      return '<span class="wbwd-word is-locked' + (reveal ? ' is-peek' : '') + '" data-i="' + i + '">' + text + '</span>';
     }).join('');
     if (this.$input && !this.done) {
       var cur = this.tokens[this.activeIdx];
@@ -248,7 +281,9 @@
     var total = this.tokens.length;
     var done = this.done ? total : this.activeIdx;
     this.$count.textContent = done + ' / ' + total + ' từ';
-    if (done === total && total > 0) this.$count.classList.add('is-full');
+    // The green "is-full" pill reads as success — never show it for a failed
+    // drill even though `done` counts as `total` there too.
+    if (done === total && total > 0 && !this.failed) this.$count.classList.add('is-full');
     else this.$count.classList.remove('is-full');
   };
 
@@ -264,14 +299,45 @@
   Drill.prototype._flashError = function () {
     if (this.erroring) return;
     this.erroring = true;
+    this.wrongCount++;
     if (this.$input) this.$input.classList.add('is-error');
     this._renderWords();
     var self = this;
+    // maxErrors exceeded (vocab drills only — see the constructor comment):
+    // stop giving the student more tries to guess the next letter and fail
+    // the whole question out instead of just shaking and waiting for a retry.
+    if (this.maxErrors && this.wrongCount > this.maxErrors) {
+      this._errorTimer = setTimeout(function () { self._fail(); }, 260);
+      return;
+    }
     this._errorTimer = setTimeout(function () {
       self.erroring = false;
       if (self.$input) self.$input.classList.remove('is-error');
       self._renderWords();
     }, 260);
+  };
+
+  // Reveals the correct answer and disables the drill — used when maxErrors
+  // is exceeded. Deliberately separate from _complete(): the bridge input
+  // still gets the full correct answer (for display / History), but callers
+  // must grade this via onFail, not by re-checking the bridge value, since
+  // the student never actually typed it correctly.
+  Drill.prototype._fail = function () {
+    this.done = true;
+    this.failed = true;
+    this.erroring = false;
+    if (this.$input) {
+      this.$input.classList.remove('is-error');
+      this.$input.disabled = true;
+      this.$input.blur();
+    }
+    this._renderWords();
+    this._updateBar();
+    this._syncBridge(true);
+    var self = this;
+    this._completeTimer = setTimeout(function () {
+      if (self.onFail) self.onFail();
+    }, 450);
   };
 
   Drill.prototype._onKeydown = function (e) {

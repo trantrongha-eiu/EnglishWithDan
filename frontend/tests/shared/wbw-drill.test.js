@@ -136,6 +136,61 @@ describe('WbwDrill — plain words (no punctuation) unaffected', () => {
   });
 });
 
+describe('WbwDrill — maxErrors / onFail (vocab drills fail out after too many wrong attempts)', () => {
+  function mountWithLimit(answer, maxErrors) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const onComplete = jest.fn();
+    const onFail = jest.fn();
+    const mounted = window.WbwDrill.mount(host, { answer, onComplete, onFail, maxErrors });
+    const input = host.querySelector('[data-role="input"]');
+    return { host, input, onComplete, onFail, mounted };
+  }
+
+  test('omitting maxErrors (Task 2/Task 1/WT1/WT2 "Dịch câu") keeps unlimited attempts — repeated wrong letters never fail the drill', async () => {
+    const { host, input, onComplete } = mount('cat'); // no maxErrors passed
+    for (let i = 0; i < 5; i++) {
+      typeChar(input, 'x');
+      await sleep(300);
+    }
+    expect(input.disabled).toBe(false);
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(host.querySelector('.wbwd-word.is-wrong')).toBeNull();
+  }, 10000);
+
+  test('a wrong letter entered more than 3 times (maxErrors: 3) fails the question, reveals the answer, and calls onFail instead of onComplete', async () => {
+    const { host, input, onComplete, onFail } = mountWithLimit('cat', 3);
+    // Attempts 1-3 stay within the limit — still an ordinary error flash, no
+    // fail yet. Spaced past the 260ms error-flash debounce so each keystroke
+    // counts as its own distinct wrong attempt.
+    for (let i = 0; i < 3; i++) {
+      typeChar(input, 'x');
+      await sleep(300);
+      expect(onFail).not.toHaveBeenCalled();
+      expect(input.disabled).toBe(false);
+    }
+    // 4th wrong attempt exceeds maxErrors: 3.
+    typeChar(input, 'x');
+    await sleep(800);
+    expect(onFail).toHaveBeenCalledTimes(1);
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(input.disabled).toBe(true);
+    expect(host.querySelector('.wbwd-word.is-wrong')).not.toBeNull();
+    // The green "X / X từ" pill would misread as success — must not show it.
+    expect(host.querySelector('[data-role="count"]').classList.contains('is-full')).toBe(false);
+  }, 10000);
+
+  test('correctly finishing the word before the limit is hit still completes normally', async () => {
+    const { host, input, onComplete, onFail } = mountWithLimit('cat', 3);
+    typeChar(input, 'x');
+    await sleep(300);
+    typeChar(input, 'c'); typeChar(input, 'a'); typeChar(input, 't');
+    await sleep(600);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onFail).not.toHaveBeenCalled();
+  }, 10000);
+});
+
 describe('WbwDrill — mounting several drills at once on one page (WT1/WT2 multi-item exercises)', () => {
   test('every instance auto-focuses by default — the LAST one mounted wins, since each schedules its own focus() independently', async () => {
     const one = mount('first');

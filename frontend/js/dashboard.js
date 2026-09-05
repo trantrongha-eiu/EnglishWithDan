@@ -2596,12 +2596,17 @@ function _checkMCAnswer(btn, selected, correct, optionsSelector, nextBtnId) {
     document.getElementById(nextBtnId).style.display = 'flex';
 }
 
-function _checkExactWordMatch(inputId, feedbackId, nextBtnId) {
+// forceWrong: the WbwDrill gave up on this question (maxErrors exceeded —
+// see _mountVocabDrill) and already revealed the answer itself; grade it wrong
+// unconditionally instead of comparing `ua` (which, coming from the drill's
+// bridge input, only ever holds correctly-typed letters and would otherwise
+// read as correct no matter how many wrong letters preceded the give-up).
+function _checkExactWordMatch(inputId, feedbackId, nextBtnId, forceWrong) {
     if (answered) return; answered = true;
     const inputEl = document.getElementById(inputId);
     const ua = inputEl?.value.trim().toLowerCase() || '';
     inputEl.disabled = true;
-    const ok = ua === currentWord.word.toLowerCase();
+    const ok = !forceWrong && ua === currentWord.word.toLowerCase();
     const feedbackEl = document.getElementById(feedbackId);
     if (ok) {
         feedbackEl.innerHTML =
@@ -2670,16 +2675,18 @@ function checkMixedMC(btn, selected, correct) {
     _checkMCAnswer(btn, selected, correct, '#mixAnswerOptions', 'mixBtnNext');
 }
 
-function checkMixedListen() {
-    _checkExactWordMatch('mixListenInput', 'mixListenFeedback', 'mixBtnNext');
+function checkMixedListen(forceWrong) {
+    _checkExactWordMatch('mixListenInput', 'mixListenFeedback', 'mixBtnNext', forceWrong);
 }
 
-function checkMixedTrans() {
+// forceWrong: see _checkExactWordMatch's comment — the drill already gave up
+// and revealed the answer, so grade wrong unconditionally.
+function checkMixedTrans(forceWrong) {
     if (answered) return; answered = true;
     const inputEl = document.getElementById('mixTransInput');
     const ua = inputEl?.value.trim().toLowerCase() || '';
     inputEl.disabled = true;
-    const ok = _isMeaningMatch(ua, currentWord.meaning, 2);
+    const ok = !forceWrong && _isMeaningMatch(ua, currentWord.meaning, 2);
     if (ok) {
         document.getElementById('mixTransFeedback').innerHTML =
             `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;
@@ -2902,6 +2909,15 @@ function showListeningQuestion() {
 //    the mode's existing check function — once the whole answer has been
 //    typed. Falls back to the plain input row when the answer is
 //    missing/untypable or WbwDrill isn't loaded.
+// maxErrors: 3 — a wrong letter/word entered more than 3 times fails the
+// question out immediately instead of letting the student keep guessing
+// letter-by-letter until it turns green (a wrong letter always shakes and is
+// rejected, so without a cap this drill degenerates into "try every letter",
+// never real recall). onDone(true) below routes to each check function's own
+// "wrong answer" branch — see checkListening/checkTranslation/checkMixedListen/
+// checkMixedTrans's new `forceWrong` param. Vocab-only: the Task 2/Task 1/WT1/
+// WT2 "Dịch câu" drills mount WbwDrill directly (not through this helper) and
+// keep their unlimited-attempts behavior unchanged.
 function _mountVocabDrill(hostId, rowId, answer, onDone) {
     const host = document.getElementById(hostId);
     const row  = document.getElementById(rowId);
@@ -2911,7 +2927,9 @@ function _mountVocabDrill(hostId, rowId, answer, onDone) {
     const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
         answer: answer,
         bridgeInput: bridge,
-        onComplete: function () { if (!answered) onDone(); }
+        maxErrors: 3,
+        onComplete: function () { if (!answered) onDone(); },
+        onFail: function () { if (!answered) onDone(true); }
     }));
     if (host) host.style.display = ok ? '' : 'none';
     if (row)  row.style.display  = ok ? 'none' : '';
@@ -2943,8 +2961,8 @@ function showListenHint() {
         if (remaining <= 0) hintBtn.disabled = true;
     }
 }
-function checkListening() {
-    _checkExactWordMatch('listenInput', 'listenFeedback', 'listenBtnNext');
+function checkListening(forceWrong) {
+    _checkExactWordMatch('listenInput', 'listenFeedback', 'listenBtnNext', forceWrong);
 }
 
 /* ── Translation ── */
@@ -2973,12 +2991,14 @@ function showTranslationQuestion() {
         document.getElementById('transInput').focus();
     }
 }
-function checkTranslation() {
+// forceWrong: see _checkExactWordMatch's comment — the drill already gave up
+// and revealed the answer, so grade wrong unconditionally.
+function checkTranslation(forceWrong) {
     if (answered) return; answered = true;
     const inputEl = document.getElementById('transInput');
     const ua = inputEl.value.trim().toLowerCase();
     inputEl.disabled = true;
-    const ok = _isMeaningMatch(ua, currentWord.meaning, 1);
+    const ok = !forceWrong && _isMeaningMatch(ua, currentWord.meaning, 1);
     if (ok) {
         document.getElementById('transFeedback').innerHTML =
             `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;

@@ -875,6 +875,10 @@ function showLessonQuizHint() {
 // plain #qInputRow is the value bridge and stays hidden while the drill is
 // active; returns false (→ caller keeps the plain input) if the word can't
 // be drilled or WbwDrill isn't available.
+// maxErrors: 3 — a wrong letter/word entered more than 3 times fails the
+// question out immediately (onDone(true) → checkFillQuiz/checkListenQuiz's
+// forceWrong) instead of letting the student keep guessing letter-by-letter
+// until it turns green.
 function _mountLessonQuizDrill(inputId, onDone) {
     const host       = document.getElementById('qWbwHost');
     const row        = document.getElementById('qInputRow');
@@ -886,7 +890,9 @@ function _mountLessonQuizDrill(inputId, onDone) {
     const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
         answer: answer,
         bridgeInput: bridge,
-        onComplete: function () { if (!lessonState.quiz.answered) onDone(); }
+        maxErrors: 3,
+        onComplete: function () { if (!lessonState.quiz.answered) onDone(); },
+        onFail: function () { if (!lessonState.quiz.answered) onDone(true); }
     }));
     if (host)       host.style.display = ok ? '' : 'none';
     if (row)        row.style.display  = ok ? 'none' : '';
@@ -894,13 +900,16 @@ function _mountLessonQuizDrill(inputId, onDone) {
     return ok;
 }
 
-function checkFillQuiz() {
+// forceWrong: the drill already gave up (maxErrors exceeded) and revealed the
+// answer itself — grade wrong unconditionally instead of reading `val` (the
+// drill's bridge input only ever holds correctly-typed letters).
+function checkFillQuiz(forceWrong) {
     if (lessonState.quiz.answered) return;
     const q = lessonState.quiz.queue[lessonState.quiz.index];
     const input = document.getElementById('qFillInput');
     const val = (input?.value || '').trim();
-    if (!val) return;
-    const correct = val.toLowerCase() === q.word.word.toLowerCase();
+    if (!forceWrong && !val) return;
+    const correct = !forceWrong && val.toLowerCase() === q.word.word.toLowerCase();
     lessonState.quiz.answered = true;
     if (input) input.disabled = true;
     showQuizFeedback(correct, q.word, q.word.word);
@@ -908,13 +917,13 @@ function checkFillQuiz() {
     document.getElementById('qBtnNext').style.display = 'flex';
 }
 
-function checkListenQuiz() {
+function checkListenQuiz(forceWrong) {
     if (lessonState.quiz.answered) return;
     const q = lessonState.quiz.queue[lessonState.quiz.index];
     const input = document.getElementById('qListenInput');
     const val = (input?.value || '').trim();
-    if (!val) return;
-    const correct = val.toLowerCase() === q.word.word.toLowerCase();
+    if (!forceWrong && !val) return;
+    const correct = !forceWrong && val.toLowerCase() === q.word.word.toLowerCase();
     lessonState.quiz.answered = true;
     if (input) input.disabled = true;
     showQuizFeedback(correct, q.word, q.word.word);
