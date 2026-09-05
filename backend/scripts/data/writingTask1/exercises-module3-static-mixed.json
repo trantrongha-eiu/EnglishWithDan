@@ -1,0 +1,940 @@
+{
+  "exercises": [
+    {
+      "code": "T1-L10-E01",
+      "lessonCode": "T1-L10",
+      "order": 1,
+      "type": "categorize",
+      "title": "Static hay Dynamic?",
+      "instruction": "Xếp mỗi đề bài vào đúng nhóm dữ liệu.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "static-chart",
+        "chart-type"
+      ],
+      "categories": [
+        {
+          "id": "static",
+          "label": "Static — so sánh/mô tả"
+        },
+        {
+          "id": "dynamic",
+          "label": "Dynamic — tăng/giảm"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "The pie chart shows household spending in Korea in 2015.",
+          "category": "static"
+        },
+        {
+          "id": "c2",
+          "text": "The line graph shows rainfall in Hanoi from 1990 to 2020.",
+          "category": "dynamic"
+        },
+        {
+          "id": "c3",
+          "text": "The table compares five airlines in terms of punctuality in 2019.",
+          "category": "static"
+        },
+        {
+          "id": "c4",
+          "text": "The bar chart shows sales of four products between 2000 and 2010.",
+          "category": "dynamic"
+        }
+      ]
+    },
+    {
+      "code": "T1-L10-E02",
+      "lessonCode": "T1-L10",
+      "order": 2,
+      "type": "error_correction",
+      "title": "Sửa lỗi dùng sai từ xu hướng cho biểu đồ tĩnh",
+      "instruction": "Các câu sau viết cho biểu đồ tĩnh nhưng dùng nhầm từ vựng xu hướng (increase/fall/rise). Viết lại cho đúng — bỏ động từ xu hướng, dùng cách mô tả/so sánh tĩnh.",
+      "autoGrade": true,
+      "points": 9,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "static-chart",
+        "verb-choice"
+      ],
+      "items": [
+        {
+          "id": "e1",
+          "prompt": "In 2010, football increased to 87% among boys aged 6–11.",
+          "answer": "In 2010, football accounted for 87% among boys aged 6–11.",
+          "accept": [
+            "Football was the most popular sport among boys aged 6-11, at 87%.",
+            "In 2010, football topped the list at 87% among boys aged 6-11."
+          ],
+          "explanation": "Biểu đồ tĩnh không có mốc thay đổi — dùng \"accounted for\"/\"topped the list\", không dùng \"increased\"."
+        },
+        {
+          "id": "e2",
+          "prompt": "Swimming fell to only 19% in both age groups.",
+          "answer": "Swimming was the least popular sport, at only 19% in both age groups.",
+          "accept": [
+            "The bottom position belonged to swimming, with only 19% in both age groups."
+          ],
+          "explanation": "\"fell\" là từ xu hướng — dùng \"was lowest\"/\"the bottom position belonged to\"."
+        },
+        {
+          "id": "e3",
+          "prompt": "Cricket rose to 45% for younger boys.",
+          "answer": "Cricket accounted for 45% of younger boys.",
+          "accept": [
+            "Cricket made up 45% of younger boys."
+          ],
+          "explanation": "\"rose\" là từ xu hướng — dùng \"accounted for\"/\"made up\"."
+        }
+      ]
+    },
+    {
+      "code": "T1-L10-E03",
+      "lessonCode": "T1-L10",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "Viết Overview cho bảng thể thao học sinh nam",
+      "instruction": "Dựa vào bảng số liệu, viết 2 câu Overview: một câu so sánh 2 nhóm tuổi (cột), một câu nêu môn thể thao phổ biến nhất (hàng).",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 8,
+      "difficulty": 2,
+      "skillTags": [
+        "overview",
+        "static-chart"
+      ],
+      "responseSlots": 2,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Tỷ lệ học sinh nam tham gia 5 môn thể thao tại Anh, năm 2010 (%)",
+        "headers": [
+          "Môn thể thao",
+          "6–11 tuổi",
+          "12–16 tuổi"
+        ],
+        "rows": [
+          [
+            "Football",
+            "87",
+            "78"
+          ],
+          [
+            "Basketball",
+            "35",
+            "25"
+          ],
+          [
+            "Cricket",
+            "45",
+            "34"
+          ],
+          [
+            "Rugby",
+            "23",
+            "21"
+          ],
+          [
+            "Swimming",
+            "19",
+            "19"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 20,
+        "targetStructures": [
+          "boys aged X were generally more likely to Y than",
+          "was the most popular",
+          "topped the list",
+          "It is clear that"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "So sánh được cả hàng (môn thể thao) và cột (nhóm tuổi)",
+          "Không dùng từ vựng xu hướng (increase/decrease)",
+          "Đúng 2 câu, không đi vào chi tiết từng số liệu"
+        ],
+        "sampleAnswer": "It is clear from the table that boys aged 6-11 were generally more likely to play sports than the other group. Additionally, football was the most popular type of sport for both age groups."
+      }
+    },
+    {
+      "code": "T1-L10-E04",
+      "lessonCode": "T1-L10",
+      "order": 4,
+      "type": "paragraph_writing",
+      "title": "Viết Body 1 (nhóm 6–11 tuổi)",
+      "instruction": "Dùng bảng số liệu ở bài trước, viết đoạn Body 1 mô tả và so sánh 5 số liệu của nhóm 6–11 tuổi. Dùng ít nhất 3 cấu trúc so sánh khác nhau.",
+      "autoGrade": false,
+      "points": 15,
+      "estimatedMinutes": 12,
+      "difficulty": 2,
+      "skillTags": [
+        "body-paragraph",
+        "static-chart"
+      ],
+      "stimulus": {
+        "kind": "table",
+        "caption": "Tỷ lệ học sinh nam tham gia 5 môn thể thao tại Anh, năm 2010 (%)",
+        "headers": [
+          "Môn thể thao",
+          "6–11 tuổi",
+          "12–16 tuổi"
+        ],
+        "rows": [
+          [
+            "Football",
+            "87",
+            "78"
+          ],
+          [
+            "Basketball",
+            "35",
+            "25"
+          ],
+          [
+            "Cricket",
+            "45",
+            "34"
+          ],
+          [
+            "Rugby",
+            "23",
+            "21"
+          ],
+          [
+            "Swimming",
+            "19",
+            "19"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 40,
+        "targetStructures": [
+          "...was highest, at...%, while the figure for...was significantly lower",
+          "accounted for...% of the total group",
+          "the percentages of...were lowest, at...and...respectively"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Nêu đủ 5 số liệu của nhóm 6–11 tuổi",
+          "Không dùng từ vựng xu hướng",
+          "Dùng ít nhất 3 cấu trúc câu khác nhau"
+        ],
+        "sampleAnswer": "For the 6-11 age group, the rate of boys playing football was highest, at 87%, while the figure for basketball was significantly lower, at 35%. Boys who took part in playing cricket accounted for 45% of the total group. Meanwhile, the percentages of boys who participated in rugby and swimming were lowest, at 23% and 19% respectively."
+      }
+    },
+    {
+      "code": "T1-L11-E01",
+      "lessonCode": "T1-L11",
+      "order": 1,
+      "type": "full_task1",
+      "title": "Question 1 — Consumer spending table",
+      "instruction": "The table below gives information on consumer spending on different items in five different countries in 2002. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 2,
+      "skillTags": [
+        "static-chart",
+        "full-essay",
+        "table"
+      ],
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Percentage of national consumer expenditure by category – 2002",
+        "headers": [
+          "Country",
+          "Food/Drinks/Tobacco",
+          "Clothing/Footwear",
+          "Leisure/Education"
+        ],
+        "rows": [
+          [
+            "Ireland",
+            "28.91%",
+            "6.43%",
+            "2.21%"
+          ],
+          [
+            "Italy",
+            "16.36%",
+            "9.00%",
+            "3.20%"
+          ],
+          [
+            "Spain",
+            "18.80%",
+            "6.51%",
+            "1.98%"
+          ],
+          [
+            "Sweden",
+            "15.77%",
+            "5.40%",
+            "3.22%"
+          ],
+          [
+            "Turkey",
+            "32.14%",
+            "6.63%",
+            "4.35%"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Overview: nothing particularly notable across rows; F/D/T highest, L/E lowest across all 5 countries",
+          "Body 1: Food/Drinks/Tobacco column (5 figures) — highest vs second highest, remaining three almost equal",
+          "Body 2: Clothing/Footwear + Leisure/Education columns — Italy/Sweden highest for C/F, Turkey/Spain lowest for L/E"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Coherence and Cohesion"
+        ],
+        "checklist": [
+          "Overview so sánh cả 5 hàng (nước) và 3 cột (hạng mục), không đi vào số liệu",
+          "Body 1 dành riêng cho cột Food/Drinks/Tobacco (quan trọng nhất)",
+          "Body 2 gộp 2 cột còn lại, chỉ chọn số liệu cao nhất/thấp nhất mỗi cột",
+          "Không dùng từ vựng xu hướng (increase/decrease)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E02",
+      "lessonCode": "T1-L11",
+      "order": 2,
+      "type": "full_task1",
+      "title": "Question 2 — Housing preferences in the UK",
+      "instruction": "The following chart shows the results of a British survey taken in 2009 related to housing preferences of UK people. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "static-chart",
+        "full-essay",
+        "bar-chart"
+      ],
+      "timerMinutes": 20,
+      "needsAsset": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Housing preferences in the UK, 2009 — Liverpool, London, Manchester"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Present Simple (no specific time period beyond the single year 2009)",
+          "Overview: apartments most popular in Liverpool; semi-detached houses most popular in London and Manchester; terraced houses least popular everywhere",
+          "Body 1: Liverpool + Manchester",
+          "Body 2: London"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Lexical Resource"
+        ],
+        "checklist": [
+          "Paraphrase đề: \"housing preferences among people who lived in Liverpool, London, and Manchester\"",
+          "Overview nêu cao nhất (apartments ở Liverpool ~60%, semi-detached ở London/Manchester) và thấp nhất (terraced houses, cả 3 thành phố)",
+          "Body chia theo 2 nhóm thành phố có đặc điểm giống nhau (Liverpool+Manchester / London riêng)",
+          "Dùng đúng thì hiện tại đơn"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E03",
+      "lessonCode": "T1-L11",
+      "order": 3,
+      "type": "full_task1",
+      "title": "Homework 1 — Recycling in Sydney, Melbourne and worldwide",
+      "instruction": "The pie charts below show recycling in Sydney, Melbourne and worldwide. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "static-chart",
+        "full-essay",
+        "pie-chart"
+      ],
+      "timerMinutes": 20,
+      "needsAsset": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Recycling of plastics, glass and paper — Sydney, Melbourne, worldwide"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Present Simple (no time period given)",
+          "Body chia 3 đoạn — mỗi đoạn 1 loại vật liệu (Plastics/Glass/Paper)",
+          "larger (KHÔNG dùng higher) khi so sánh phần trăm"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Grammatical Range and Accuracy"
+        ],
+        "checklist": [
+          "Overview nêu vật liệu được tái chế nhiều nhất và ở đâu",
+          "Thân bài chia theo 3 loại vật liệu, không theo 3 địa điểm",
+          "Mỗi đoạn: nêu tỷ lệ cao nhất trước, sau đó so sánh với các con số còn lại",
+          "Dùng thì hiện tại đơn, dùng \"larger\" khi so sánh %"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E04",
+      "lessonCode": "T1-L11",
+      "order": 4,
+      "type": "full_task1",
+      "title": "Homework 2 — Australian household energy and emissions",
+      "instruction": "The first chart below shows how energy is used in an average Australian household. The second chart shows the greenhouse gas emissions which result from this energy use. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "static-chart",
+        "full-essay",
+        "pie-chart",
+        "mixed-chart"
+      ],
+      "timerMinutes": 20,
+      "needsAsset": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Australian household energy use and resulting greenhouse gas emissions"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Body 1 = biểu đồ năng lượng tiêu thụ, Body 2 = biểu đồ khí thải",
+          "Overview: Heating chiếm nhiều năng lượng nhất, nhưng Water heating tạo khí thải nhiều nhất"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Coherence and Cohesion"
+        ],
+        "checklist": [
+          "Overview làm nổi bật 1 đặc điểm chính cho MỖI biểu đồ tròn (không phải cùng 1 hạng mục)",
+          "Thân bài 2 đoạn, mỗi đoạn 1 biểu đồ",
+          "Dùng thì hiện tại đơn, \"larger\" khi so sánh %"
+        ]
+      }
+    },
+    {
+      "code": "T1-L11-E05",
+      "lessonCode": "T1-L11",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Chuyển câu sang thì hiện tại đơn",
+      "instruction": "Biểu đồ không có mốc thời gian cụ thể — chuyển các câu sau (đang ở quá khứ) sang thì hiện tại đơn.",
+      "autoGrade": true,
+      "points": 6,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "tense",
+        "static-chart"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Heating accounted for 42% of household energy use.",
+          "cue": "Present Simple",
+          "sampleAnswers": [
+            "Heating accounts for 42% of household energy use."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Water heating made up 32% of emissions.",
+          "cue": "Present Simple",
+          "sampleAnswers": [
+            "Water heating makes up 32% of emissions."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Refrigeration took up 7% of the total energy consumed.",
+          "cue": "Present Simple",
+          "sampleAnswers": [
+            "Refrigeration takes up 7% of the total energy consumed."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L12-E01",
+      "lessonCode": "T1-L12",
+      "order": 1,
+      "type": "sentence_transform",
+      "title": "Viết Introduction kết hợp hai biểu đồ",
+      "instruction": "Dùng \"and\"/\"while\"/dấu phẩy để nối hai mệnh đề mô tả hai biểu đồ thành một câu Introduction.",
+      "autoGrade": false,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "mixed-chart",
+        "introduction"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "line graph: compares the number of UK residents travelling abroad and overseas visitors coming to the UK / bar chart: shows the most popular countries visited by UK residents",
+          "cue": "..., while ...",
+          "sampleAnswers": [
+            "The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "line graph: monthly average temperature in three cities / table: annual average sunshine hours in the same three cities",
+          "cue": "..., while ...",
+          "sampleAnswers": [
+            "The line graph illustrates the monthly average temperatures in three cities, while the table shows the average annual sunshine hours in the same three cities."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L12-E02",
+      "lessonCode": "T1-L12",
+      "order": 2,
+      "type": "full_task1",
+      "title": "The charts below give information about travel to and from the UK",
+      "instruction": "The charts below give information about travel to and from the UK, and about the most popular countries for UK residents to visit. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "mixed-chart",
+        "full-essay"
+      ],
+      "timerMinutes": 20,
+      "needsAsset": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Travel to and from the UK (1979–1999) and the most popular destinations for UK residents"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Introduction: 1 câu, 2 mệnh đề nối bằng \"while\"",
+          "Overview: đúng 2 câu — 1 câu/biểu đồ",
+          "Body 1 = line graph (bắt đầu bằng số liệu ban đầu, mô tả xu hướng đến năm cuối)",
+          "Body 2 = bar chart (bắt đầu từ nước cao nhất — France — rồi so sánh các nước còn lại)"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Coherence and Cohesion"
+        ],
+        "checklist": [
+          "Overview đúng 2 câu, không lẫn số liệu",
+          "Body 1 mô tả biểu đồ đường: số liệu đầu kỳ + xu hướng tăng đến cuối kỳ",
+          "Body 2 mô tả biểu đồ cột: France cao nhất, so sánh Spain/USA/Greece/Turkey",
+          "Không cố mô tả hết mọi số liệu — chỉ chọn điểm quan trọng nhất mỗi biểu đồ"
+        ],
+        "sampleAnswer": "The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents. It is clear that both the numbers of UK residents travelling abroad and overseas visitors coming to the UK increased over the period. Additionally, France was the most popular country among UK travellers. In 1979, around 28 million UK residents travelled abroad, compared to 9 million overseas visitors to the UK. Both figures increased steadily throughout the period, and by 1999, the number of UK residents travelling abroad had reached about 54 million, while the number of foreign visitors rose to approximately 25 million. As for the most popular destinations, France topped the list, attracting over 11 million UK visitors. Spain came next with around 9 million visitors, while the figures for the USA, Greece, and Turkey were considerably lower, at around 4 million, 3 million, and 2 million respectively."
+      }
+    },
+    {
+      "code": "T1-L12-E03",
+      "lessonCode": "T1-L12",
+      "order": 3,
+      "type": "full_task1",
+      "title": "Homework — Temperature and sunshine in three cities",
+      "instruction": "The line graph and table below give information about temperature and sunshine hours in London, New York and Sydney. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 20,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "mixed-chart",
+        "full-essay"
+      ],
+      "timerMinutes": 20,
+      "needsAsset": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Average monthly temperature and annual sunshine hours — London, New York, Sydney"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Body 1 (line graph): so sánh nhiệt độ tháng 1 → giải thích xu hướng đến điểm cao/thấp nhất → xu hướng giữa năm đến cuối năm",
+          "Body 2 (table): thành phố nhiều nắng nhất → thứ 2 → ít nắng nhất (London)"
+        ],
+        "bandFocus": [
+          "Task Achievement",
+          "Lexical Resource"
+        ],
+        "checklist": [
+          "Overview: London/New York đạt đỉnh nhiệt độ tháng 6-8; Sydney thấp nhất cùng giai đoạn",
+          "Overview thứ 2: London có ít giờ nắng nhất trong 3 thành phố",
+          "Body 1 chỉ mô tả biểu đồ đường, Body 2 chỉ mô tả bảng",
+          "Không nhầm giữa hai biểu đồ trong cùng một đoạn"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST3-A1",
+      "lessonCode": "T1-TEST3",
+      "order": 1,
+      "type": "mcq",
+      "title": "Phần A1 — Trắc nghiệm",
+      "instruction": "Chọn đáp án đúng (2 điểm/câu).",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "static-chart",
+        "mixed-chart",
+        "test"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Với biểu đồ tĩnh, động từ nào KHÔNG được dùng?",
+          "options": [
+            {
+              "id": "A",
+              "text": "accounted for"
+            },
+            {
+              "id": "B",
+              "text": "increased"
+            },
+            {
+              "id": "C",
+              "text": "made up"
+            },
+            {
+              "id": "D",
+              "text": "topped the list"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"increased\" là từ xu hướng — biểu đồ tĩnh không có sự thay đổi theo thời gian."
+        },
+        {
+          "id": "q2",
+          "prompt": "Khi đề không có mốc thời gian, ta dùng thì:",
+          "options": [
+            {
+              "id": "A",
+              "text": "quá khứ đơn"
+            },
+            {
+              "id": "B",
+              "text": "hiện tại đơn"
+            },
+            {
+              "id": "C",
+              "text": "tương lai"
+            },
+            {
+              "id": "D",
+              "text": "hiện tại hoàn thành"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không có mốc thời gian cụ thể → mặc định thì hiện tại đơn."
+        },
+        {
+          "id": "q3",
+          "prompt": "So sánh phần trăm nên dùng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "higher"
+            },
+            {
+              "id": "B",
+              "text": "taller"
+            },
+            {
+              "id": "C",
+              "text": "larger"
+            },
+            {
+              "id": "D",
+              "text": "longer"
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"percentage\" là danh từ chỉ lượng — dùng \"larger\", không dùng \"higher\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Overview cho bảng số liệu cần so sánh:",
+          "options": [
+            {
+              "id": "A",
+              "text": "chỉ các hàng"
+            },
+            {
+              "id": "B",
+              "text": "chỉ các cột"
+            },
+            {
+              "id": "C",
+              "text": "cả hàng và cột"
+            },
+            {
+              "id": "D",
+              "text": "không cần so sánh"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Overview cho bảng luôn so sánh cả hai chiều: hàng và cột."
+        },
+        {
+          "id": "q5",
+          "prompt": "Với đề có hai biểu đồ, Overview nên gồm:",
+          "options": [
+            {
+              "id": "A",
+              "text": "1 câu"
+            },
+            {
+              "id": "B",
+              "text": "2 câu, mỗi câu cho một biểu đồ"
+            },
+            {
+              "id": "C",
+              "text": "4 câu"
+            },
+            {
+              "id": "D",
+              "text": "không cần Overview"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mỗi biểu đồ 1 câu nêu điểm nổi bật nhất."
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST3-A2",
+      "lessonCode": "T1-TEST3",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "Phần A2 — Viết lại câu cho biểu đồ tĩnh",
+      "instruction": "Viết lại câu, thay cụm gạch chân bằng cách diễn đạt nâng cấp (2 điểm/câu).",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 8,
+      "difficulty": 2,
+      "skillTags": [
+        "static-chart",
+        "test"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Football was highest, at 87%.",
+          "cue": "topped the list",
+          "sampleAnswers": [
+            "Football topped the list, at 87%."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Swimming was lowest, at 19%.",
+          "cue": "the bottom position belonged to",
+          "sampleAnswers": [
+            "The bottom position belonged to swimming, with only 19%."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "45% of boys played cricket.",
+          "cue": "accounted for",
+          "sampleAnswers": [
+            "Cricket accounted for 45% of boys."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Apartments were the most popular in Liverpool.",
+          "cue": "topped the list",
+          "sampleAnswers": [
+            "Apartments topped the list in Liverpool."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Terraced houses got the fewest votes.",
+          "cue": "the bottom position belonged to",
+          "sampleAnswers": [
+            "The bottom position belonged to terraced houses."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-TEST3-A3",
+      "lessonCode": "T1-TEST3",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "Phần A3 — Lập dàn ý",
+      "instruction": "Cho bảng số liệu 4 hàng x 3 cột. Đề xuất hai cách chia Body, cho biết bạn chọn cách nào và vì sao.",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "outline",
+        "static-chart",
+        "test"
+      ],
+      "responseSlots": 1,
+      "rubric": {
+        "minWords": 25,
+        "targetStructures": [
+          "chia theo cột",
+          "chia theo hàng"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Nêu được cả 2 cách chia Body (theo cột và theo hàng)",
+          "Chọn 1 cách cụ thể và giải thích lý do chọn"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST3-A4",
+      "lessonCode": "T1-TEST3",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "Phần A4 — Viết Introduction cho đề kết hợp",
+      "instruction": "Đề: The pie chart shows the sources of household water in Vietnam in 2020, and the bar chart shows water consumption by four sectors in the same year. Viết Introduction (1 câu, 2 mệnh đề).",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "introduction",
+        "mixed-chart",
+        "test"
+      ],
+      "responseSlots": 1,
+      "rubric": {
+        "minWords": 15,
+        "targetStructures": [
+          "illustrates/shows data on/provides information about",
+          "..., while ..."
+        ],
+        "mustUse": 1,
+        "checklist": [
+          "Paraphrase đúng cả hai biểu đồ trong 1 câu",
+          "Nối hai mệnh đề bằng and/while/dấu phẩy",
+          "Đúng thì hiện tại đơn (không có mốc thời gian ngoài \"2020\")"
+        ]
+      }
+    },
+    {
+      "code": "T1-TEST3-B",
+      "lessonCode": "T1-TEST3",
+      "order": 5,
+      "type": "full_task1",
+      "title": "Phần B — Bài viết hoàn chỉnh",
+      "instruction": "The table below shows the percentage of household income spent on five categories in three countries in 2015. Summarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "autoGrade": false,
+      "points": 60,
+      "estimatedMinutes": 20,
+      "difficulty": 3,
+      "skillTags": [
+        "static-chart",
+        "full-essay",
+        "test"
+      ],
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Percentage of household income spent on five categories — 2015",
+        "headers": [
+          "Category",
+          "Japan",
+          "Brazil",
+          "Nigeria"
+        ],
+        "rows": [
+          [
+            "Food",
+            "18%",
+            "27%",
+            "46%"
+          ],
+          [
+            "Housing",
+            "26%",
+            "22%",
+            "15%"
+          ],
+          [
+            "Transport",
+            "15%",
+            "18%",
+            "12%"
+          ],
+          [
+            "Education",
+            "12%",
+            "9%",
+            "6%"
+          ],
+          [
+            "Leisure",
+            "14%",
+            "8%",
+            "4%"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 150,
+        "scoring": [
+          {
+            "criterion": "Introduction paraphrase tốt, đúng thì",
+            "points": 10
+          },
+          {
+            "criterion": "Overview so sánh cả hàng và cột, không có số liệu",
+            "points": 15
+          },
+          {
+            "criterion": "Body chia hợp lý theo cột hoặc theo hàng",
+            "points": 15
+          },
+          {
+            "criterion": "Không dùng từ vựng xu hướng sai chỗ",
+            "points": 10
+          },
+          {
+            "criterion": "Đa dạng cấu trúc, ngữ pháp chính xác",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "Overview so sánh cả hàng (hạng mục) và cột (quốc gia), không có số liệu cụ thể",
+          "Body chia hợp lý — theo cột (mỗi nước 1 đoạn) hoặc theo hàng (nhóm hạng mục)",
+          "Không dùng increase/decrease — đây là dữ liệu tĩnh (1 năm duy nhất)"
+        ]
+      }
+    }
+  ]
+}

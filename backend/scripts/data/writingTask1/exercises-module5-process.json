@@ -646,9 +646,9 @@
       ]
     },
     {
-      "code": "T1-L22-E01",
-      "lessonCode": "T1-L22",
-      "order": 1,
+      "code": "T1-L21-E04",
+      "lessonCode": "T1-L21",
+      "order": 4,
       "type": "full_task1",
       "title": "Bài mẫu – Cement and Concrete Production (20 phút)",
       "instruction": "The diagrams below show the stages and equipment used in the cement-making process, and how cement is used to produce concrete for building purposes. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
@@ -712,9 +712,9 @@
       }
     },
     {
-      "code": "T1-L22-E02",
-      "lessonCode": "T1-L22",
-      "order": 2,
+      "code": "T1-L21-E05",
+      "lessonCode": "T1-L21",
+      "order": 5,
       "type": "mcq",
       "title": "Milk production – đâu là một bước của quy trình?",
       "instruction": "Nhìn sơ đồ quy trình sản xuất sữa. Với mỗi mục, chọn xem đó có phải một BƯỚC của quy trình hay không.",
@@ -832,9 +832,9 @@
       ]
     },
     {
-      "code": "T1-L22-E03",
-      "lessonCode": "T1-L22",
-      "order": 3,
+      "code": "T1-L21-E06",
+      "lessonCode": "T1-L21",
+      "order": 6,
       "type": "gap_fill",
       "title": "Brick manufacturing – điền động từ bị động cho 7 giai đoạn",
       "instruction": "Điền dạng bị động hiện tại đơn của động từ để mô tả quy trình sản xuất gạch.",
@@ -953,8 +953,8 @@
       ]
     },
     {
-      "code": "T1-L23-E01",
-      "lessonCode": "T1-L23",
+      "code": "T1-L22-E01",
+      "lessonCode": "T1-L22",
       "order": 1,
       "type": "matching",
       "title": "Từ vựng dạng Process – nối tiếng Anh với nghĩa",
@@ -1021,8 +1021,8 @@
       ]
     },
     {
-      "code": "T1-L23-E02",
-      "lessonCode": "T1-L23",
+      "code": "T1-L22-E02",
+      "lessonCode": "T1-L22",
       "order": 2,
       "type": "gap_fill",
       "title": "Vòng đời của ếch – điền động từ (chủ động, hiện tại đơn)",
@@ -1139,9 +1139,9 @@
       ]
     },
     {
-      "code": "T1-L24-E01",
-      "lessonCode": "T1-L24",
-      "order": 1,
+      "code": "T1-L22-E03",
+      "lessonCode": "T1-L22",
+      "order": 3,
       "type": "paragraph_writing",
       "title": "PRACTICE – Viết Introduction + Overview + Body 1 cho vòng đời ong mật",
       "instruction": "Dựa vào sơ đồ và dàn ý cho sẵn, viết Introduction (1 câu), Overview (1 câu) và Body 1 (3 giai đoạn đầu). Dùng thể chủ động, thì hiện tại đơn.",
@@ -1185,9 +1185,9 @@
       }
     },
     {
-      "code": "T1-L24-E02",
-      "lessonCode": "T1-L24",
-      "order": 2,
+      "code": "T1-L22-E04",
+      "lessonCode": "T1-L22",
+      "order": 4,
       "type": "full_task1",
       "title": "HOMEWORK – The life cycle of the salmon (bài hoàn chỉnh)",
       "instruction": "The diagram below shows the life cycle of the salmon. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
@@ -1251,8 +1251,8 @@
       }
     },
     {
-      "code": "T1-TEST4-A1",
-      "lessonCode": "T1-TEST4",
+      "code": "T1-TEST5-A1",
+      "lessonCode": "T1-TEST5",
       "order": 1,
       "type": "mcq",
       "title": "PHẦN A1 – Trắc nghiệm (10 điểm)",
@@ -1509,8 +1509,8 @@
       ]
     },
     {
-      "code": "T1-TEST4-A2",
-      "lessonCode": "T1-TEST4",
+      "code": "T1-TEST5-A2",
+      "lessonCode": "T1-TEST5",
       "order": 2,
       "type": "gap_fill",
       "title": "PHẦN A2 – Điền dạng đúng của động từ (10 điểm)",
@@ -1650,8 +1650,8 @@
       ]
     },
     {
-      "code": "T1-TEST4-A3",
-      "lessonCode": "T1-TEST4",
+      "code": "T1-TEST5-A3",
+      "lessonCode": "T1-TEST5",
       "order": 3,
       "type": "error_correction",
       "title": "PHẦN A3 – Sửa lỗi (10 điểm)",
@@ -1718,8 +1718,8 @@
       ]
     },
     {
-      "code": "T1-TEST4-A4",
-      "lessonCode": "T1-TEST4",
+      "code": "T1-TEST5-A4",
+      "lessonCode": "T1-TEST5",
       "order": 4,
       "type": "sentence_transform",
       "title": "PHẦN A4 – Nối câu (10 điểm)",
@@ -1796,8 +1796,8 @@
       }
     },
     {
-      "code": "T1-TEST4-B",
-      "lessonCode": "T1-TEST4",
+      "code": "T1-TEST5-B",
+      "lessonCode": "T1-TEST5",
       "order": 5,
       "type": "full_task1",
       "title": "PHẦN B – Bài viết mô tả quy trình (60 điểm)",
