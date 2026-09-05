@@ -6,7 +6,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2 } = require('../factories/contentFactory');
+const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
@@ -274,10 +274,8 @@ describe('completion tracking', () => {
     expect(row.status).toBe('completed');
   });
 
-  test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, complete on any submitted attempt (no score gate), and searching by prompt text works', async () => {
+  test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, and searching by prompt text works', async () => {
     const t = await createTeacher();
-    const s = await createStudent();
-    const { cls } = await makeClassWith(t, [s]);
     const wt1 = await createWritingTask1({ prompt: 'The chart below shows electricity generation by fuel source.' });
     const wt2 = await createWritingTask2({ prompt: 'Some people think governments should ban advertising to children.' });
 
@@ -286,6 +284,14 @@ describe('completion tracking', () => {
     expect(search1.body.items.some((i) => i._id === String(wt1._id))).toBe(true);
     const search2 = await request(app).get('/api/classes/resources/catalog?type=task2_practice&search=advertising').set(authH(t));
     expect(search2.body.items.some((i) => i._id === String(wt2._id))).toBe(true);
+  });
+
+  test('writing_exam / task1_practice / task2_practice: no score gate (AI band), but a submission only counts once it meets the real minimum word count', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const wt1 = await createWritingTask1();
+    const wt2 = await createWritingTask2();
 
     const asg = await createAssignment(cls, {
       resources: [
@@ -298,16 +304,40 @@ describe('completion tracking', () => {
     let row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.done).toBe(0);
 
-    // A low-scoring quiz would fail the 70% gate, but these are AI-graded
-    // essays (band 0-9) — any submitted attempt counts, same as writing_exam.
-    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: wt1._id, task1Answer: 'x'.repeat(160) });
+    // Submitted, but under the 150/250-word minimum — a low-scoring quiz
+    // attempt would still count for a band-graded skill, but a too-short
+    // essay must not, or "must meet the real minimum" would be a no-op.
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: wt1._id, task1Answer: 'x'.repeat(50), wordCount1: 80 });
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y'.repeat(50), wordCount2: 200 });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     row = mine.body.assignments.find((a) => a._id === String(asg._id));
-    expect(row.done).toBe(1);
-    expect(row.resources.find((r) => r.resourceType === 'task1_practice').completed).toBe(true);
+    expect(row.done).toBe(0);
+    expect(row.resources.find((r) => r.resourceType === 'task1_practice').completed).toBe(false);
     expect(row.resources.find((r) => r.resourceType === 'task2_practice').completed).toBe(false);
 
-    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y'.repeat(260) });
+    // A later attempt that actually clears 150/250 words counts, even though
+    // an earlier (still on record) attempt didn't.
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: wt1._id, task1Answer: 'x'.repeat(160), wordCount1: 160 });
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y'.repeat(260), wordCount2: 260 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.status).toBe('completed');
+  });
+
+  test('writing_exam requires BOTH task word counts to meet their minimum, not just one', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const exam = await createWritingExam();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'writing_exam', resourceId: exam._id }] });
+
+    // Task 1 clears 150, but Task 2 falls short of 250 — must not count yet.
+    await WritingAttempt.create({ userId: s._id, examId: exam._id, examName: exam.name, wordCount1: 160, wordCount2: 100 });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+
+    await WritingAttempt.create({ userId: s._id, examId: exam._id, examName: exam.name, wordCount1: 160, wordCount2: 260 });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.status).toBe('completed');

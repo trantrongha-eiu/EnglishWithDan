@@ -20,6 +20,22 @@ const HW_STATUS = {
   overdue:     { label: 'Quá hạn', cls: 'hw-pill--overdue' },
 };
 
+// Per-type "how this one counts as done" tag + hint, shown on each resource
+// row so a student doesn't have to remember the rule from the notice above —
+// mirrors backend/services/resourceCompletionService.js's scoreGate (≥70%)
+// vs wordCountGate (real minimum word count, not just "submitted") split.
+// Types with neither (speaking, task1_lesson, mock_test, external/image) get
+// no tag — "submitted/ticked = done" needs no extra explanation.
+const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'grammar', 'vocabulary_lesson', 'task2']);
+const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
+const HW_WORD_MIN = { task1_practice: MIN_WORDS_T1, task2_practice: MIN_WORDS_T2 };
+function hwRuleTag(resourceType) {
+  if (HW_QUIZ_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ 70% số điểm trở lên mới tính hoàn thành">≥70%</span>';
+  if (resourceType === 'writing_exam') return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ Task 1 ≥${MIN_WORDS_T1} từ và Task 2 ≥${MIN_WORDS_T2} từ">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span>`;
+  if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
+  return '';
+}
+
 // internal resourceType → best-effort deep link on the student site
 function hwResourceHref(r) {
   const id = r.resourceId;
@@ -81,9 +97,10 @@ function hwResourceRow(assignmentId, r) {
     const thumbs = (r.images || []).map((im) => `<a href="${escHtml(im.url)}" target="_blank" rel="noopener"><img class="hw-res-thumb" src="${escHtml(im.url)}" alt=""></a>`).join('');
     action = thumbs + hwManualToggle(assignmentId, r);
   }
+  const ruleTag = r.kind === 'internal' ? hwRuleTag(r.resourceType) : '';
   return `<div class="hw-res ${doneCls}">
     <span class="hw-res-check">${check}</span>
-    <span class="hw-res-name">${name}${r.description ? `<span class="hw-res-desc">${escHtml(r.description)}</span>` : ''}${r.instruction ? `<span class="hw-res-desc">${escHtml(r.instruction)}</span>` : ''}</span>
+    <span class="hw-res-name">${name}${ruleTag}${r.description ? `<span class="hw-res-desc">${escHtml(r.description)}</span>` : ''}${r.instruction ? `<span class="hw-res-desc">${escHtml(r.instruction)}</span>` : ''}</span>
     <span class="hw-res-action">${action}</span>
   </div>`;
 }
@@ -137,6 +154,14 @@ async function loadHomework() {
   const warn = data.homeworkWarning
     ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} buổi</b> chưa hoàn thành đầy đủ bài tập${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
     : '';
+  const rules = `<details class="hw-rules">
+    <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
+    <ul>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz: cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
+      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>.</li>
+    </ul>
+  </details>`;
 
   if (!data.assignments.length) {
     card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3></div>${warn}
@@ -145,6 +170,7 @@ async function loadHomework() {
   }
   card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>
       <span class="hw-count">${data.assignments.filter((a) => a.status !== 'completed').length} chưa xong</span></div>
+    ${rules}
     ${warn}
     <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;
 }

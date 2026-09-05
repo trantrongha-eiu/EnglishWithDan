@@ -51,6 +51,13 @@ const { escapeRegex } = require('../utils/strings');
 // 70%-of-9 cutoff would be an arbitrary, undiscussed pass mark for those.
 const PASS_PERCENT = 70;
 
+// Writing tasks have no score to gate on, but DO have a real pass/fail bar
+// students already see on the page itself (writing.html's "Tối thiểu 150/250
+// từ") — completion requires actually meeting it, not just clicking submit.
+// Fixed site-wide minimums (not stored per-prompt on WritingTask1/2 — their
+// `instructions` field is free text) matching the standard IELTS requirement.
+const MIN_WORDS = { task1: 150, task2: 250 };
+
 const REGISTRY = {
   reading_test: {
     label: 'Bộ đề Reading',
@@ -92,22 +99,32 @@ const REGISTRY = {
     catalog: { model: WritingExam, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: {} },
+    // No score gate (AI-graded band, not a %) — but a submission only counts
+    // once BOTH tasks meet their real minimum word count, not just "clicked
+    // submit" (an exam attempt always carries both wordCount1 and wordCount2).
+    wordCountGate: {
+      fields: 'wordCount1 wordCount2',
+      ok: (d) => (d.wordCount1 || 0) >= MIN_WORDS.task1 && (d.wordCount2 || 0) >= MIN_WORDS.task2,
+    },
   },
   // Standalone "Chọn đề Task 1/2" practice prompts (writing.html) — distinct
   // from writing_exam (the timed full Task1+2 exam) and task1_lesson (the
-  // structured WT1 course). No score gate: AI-graded IELTS band 0–9, same as
-  // writing_exam/speaking (see PASS_PERCENT's comment).
+  // structured WT1 course). No score gate (AI-graded IELTS band 0–9, same as
+  // speaking — see PASS_PERCENT's comment), but wordCountGate below still
+  // requires actually meeting the task's real minimum, not just submitting.
   task1_practice: {
     label: 'Task 1 Writing (Đề lẻ)',
     catalog: { model: WritingTask1, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice' } },
+    wordCountGate: { fields: 'wordCount1', ok: (d) => (d.wordCount1 || 0) >= MIN_WORDS.task1 },
   },
   task2_practice: {
     label: 'Task 2 Writing (Đề lẻ)',
     catalog: { model: WritingTask2, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice' } },
+    wordCountGate: { fields: 'wordCount2', ok: (d) => (d.wordCount2 || 0) >= MIN_WORDS.task2 },
   },
   task2: {
     label: 'Task 2 Writing (Topic)',
@@ -290,12 +307,33 @@ async function checkCompleted(studentId, internalItems, since = null) {
     const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
     if (!ids.length) return;
     const gate = entry.scoreGate;
-    const select = `_id createdAt ${A.idField}` + (gate ? ` ${gate.fields}` : '');
+    const wcGate = entry.wordCountGate;
+    const extraFields = gate ? gate.fields : (wcGate ? wcGate.fields : '');
+    const select = `_id createdAt ${A.idField}` + (extraFields ? ` ${extraFields}` : '');
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
       .sort({ createdAt: -1 })
       .select(select)
       .lean()
       .catch(() => []);
+
+    if (wcGate) {
+      // Writing tasks: "hoàn thành" means at least one submission since
+      // `since` actually met the real minimum word count — not just any
+      // submission (see wordCountGate's comment). rows is newest-first, so
+      // absent a passing one, the most recent still-short attempt is kept
+      // (completed: false) purely for completedAt/attemptId display.
+      const bestByKey = new Map();
+      for (const r of rows) {
+        const k = resourceKey(type, r[A.idField]);
+        const passes = wcGate.ok(r);
+        const prev = bestByKey.get(k);
+        if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
+      }
+      for (const [k, { passes, r }] of bestByKey) {
+        out.set(k, { completed: passes, completedAt: r.createdAt, attemptId: String(r._id) });
+      }
+      return;
+    }
 
     if (!gate) {
       // No score threshold for this type (AI/band-graded — see PASS_PERCENT's
