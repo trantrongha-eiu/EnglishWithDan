@@ -13,7 +13,18 @@ const AssignmentProgress = require('../../models/AssignmentProgress');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Progress = require('../../models/WT1Progress');
 const WritingAttempt = require('../../models/WritingAttempt');
+const TestAttempt = require('../../models/TestAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
+
+// Backdate a document's createdAt. Mongoose's timestamps plugin marks
+// createdAt immutable, so every Mongoose-level write (findByIdAndUpdate,
+// updateOne, even with { timestamps: false }) silently strips it from the
+// update before it reaches Mongo — confirmed empirically (updateOne comes
+// back { acknowledged: false }, i.e. a no-op). Only the native driver
+// (Model.collection, bypassing Mongoose casting entirely) actually writes it.
+async function setCreatedAt(Model, id, date) {
+  await Model.collection.updateOne({ _id: id }, { $set: { createdAt: date } });
+}
 
 async function createWT1Lesson(overrides = {}) {
   const code = overrides.code || `L${Date.now()}${Math.floor(Math.random() * 1e6)}`;
@@ -100,6 +111,65 @@ describe('create assignment', () => {
     });
     const inbox = await request(app).get('/api/user/messages').set(authH(s1));
     expect(inbox.body.messages.some((m) => m.subject.includes('Bài tập mới'))).toBe(true);
+  });
+});
+
+describe('cross-assignment completion (shared resource, different createdAt cutoffs)', () => {
+  test('a later, lower-but-still-passing attempt completes a newer assignment even when an earlier attempt scored higher', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const res = [{ kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id) }];
+
+    // Two assignments re-use the SAME resource — getStudentAssignments
+    // batches the completion check for a student's assignments behind one
+    // shared `checkCompleted` call (using the earliest assignment's
+    // createdAt as `since`), then re-derives each assignment's own
+    // completed/overdue status by comparing against ITS OWN createdAt.
+    const a1 = await createAssignment(cls, { resources: res });
+    await setCreatedAt(Assignment, a1._id, new Date(Date.now() - 10 * 864e5));
+    const a2 = await createAssignment(cls, { resources: res });
+    await setCreatedAt(Assignment, a2._id, new Date(Date.now() - 5 * 864e5));
+
+    // Attempt 1: high score (95%) but BEFORE a2 existed.
+    const attempt1 = await TestAttempt.create({ userId: s._id, testId: rt._id, status: 'completed', endTime: new Date(), correctCount: 19, totalQuestions: 20 });
+    await setCreatedAt(TestAttempt, attempt1._id, new Date(Date.now() - 8 * 864e5));
+    // Attempt 2: lower score (70%, still a pass) but AFTER a2 was created.
+    const attempt2 = await TestAttempt.create({ userId: s._id, testId: rt._id, status: 'completed', endTime: new Date(), correctCount: 14, totalQuestions: 20 });
+    await setCreatedAt(TestAttempt, attempt2._id, new Date(Date.now() - 1 * 864e5));
+
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    const row2 = mine.body.assignments.find((a) => a._id === String(a2._id));
+    // Bug (fixed): the shared completion map used to collapse to the single
+    // BEST-SCORING attempt (attempt1, 95%) regardless of when it happened,
+    // so a2 (created after attempt1 but before attempt2) read attempt1's
+    // date, failed the "completed since a2.createdAt" check, and showed as
+    // incomplete/overdue despite attempt2 genuinely passing afterwards.
+    expect(row2.status).toBe('completed');
+    expect(row2.done).toBe(1);
+  });
+});
+
+describe('assignment progress table de-dupes removed-then-re-added enrollments', () => {
+  test('a student with an old removed enrollment + a new active one appears once, as the active enrollment', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t);
+    // AssignmentProgress/completion are keyed by studentId, not enrollmentId
+    // (so progress survives a remove + re-add) — getAssignmentProgressTable
+    // used to list every ClassEnrollment for the class with no removedAt
+    // filter, so this student rendered as two rows with identical data.
+    await enrollStudent(cls, s, { removedAt: new Date(Date.now() - 5 * 864e5) });
+    const activeEnr = await enrollStudent(cls, s);
+    const asg = await createAssignment(cls);
+
+    const res = await request(app).get(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t));
+    expect(res.status).toBe(200);
+    const rowsForStudent = res.body.rows.filter((r) => String(r.studentId) === String(s._id));
+    expect(rowsForStudent).toHaveLength(1);
+    expect(String(rowsForStudent[0].enrollmentId)).toBe(String(activeEnr._id));
+    expect(rowsForStudent[0].removed).toBe(false);
   });
 });
 

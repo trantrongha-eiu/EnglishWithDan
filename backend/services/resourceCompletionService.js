@@ -348,17 +348,35 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
     // Score-gated: "hoàn thành" means the student cleared PASS_PERCENT on AT
     // LEAST ONE try since `since` — so a strong early attempt still counts
-    // even if a later, unrelated retry scored lower. Track the single best
-    // (highest %) attempt per resource id across every row.
+    // even if a later, unrelated retry scored lower (`completed`/
+    // `scorePercent` below track the single best-scoring attempt per
+    // resource id for that reason). `completedAt` is tracked SEPARATELY as
+    // the latest passing attempt (rows is newest-first, so that's just the
+    // first passing row seen per key) rather than the best-scoring one's
+    // date — assignmentService.getStudentAssignments batches this call
+    // across every one of a student's assignments with one shared `since`,
+    // then re-checks the SAME map entry against each assignment's own
+    // createdAt; if completedAt pointed at an early high-scoring attempt,
+    // a later assignment (created after that attempt but before a second,
+    // lower-but-still-passing retry) would wrongly read as incomplete even
+    // though the student passed again after being assigned it.
     const bestByKey = new Map();
+    const latestPassAtByKey = new Map();
     for (const r of rows) {
       const k = resourceKey(type, r[A.idField]);
       const pct = gate.percent(r);
       const prev = bestByKey.get(k);
       if (!prev || pct > prev.pct) bestByKey.set(k, { pct, r });
+      if (pct >= PASS_PERCENT && !latestPassAtByKey.has(k)) latestPassAtByKey.set(k, r.createdAt);
     }
     for (const [k, { pct, r }] of bestByKey) {
-      out.set(k, { completed: pct >= PASS_PERCENT, completedAt: r.createdAt, attemptId: String(r._id), scorePercent: Math.round(pct) });
+      const passed = pct >= PASS_PERCENT;
+      out.set(k, {
+        completed: passed,
+        completedAt: passed ? latestPassAtByKey.get(k) : r.createdAt,
+        attemptId: String(r._id),
+        scorePercent: Math.round(pct),
+      });
     }
   }));
 

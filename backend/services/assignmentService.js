@@ -262,7 +262,22 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
 
 // ── Teacher: per-student progress table for one assignment ─────────────
 async function getAssignmentProgressTable(assignment, now = new Date()) {
-  const enrollments = await ClassEnrollment.find({ classId: assignment.classId }).lean();
+  // Unlike the roster tab (which intentionally lists every enrollment ever,
+  // removed ones included, as an audit trail), a removed-then-re-added
+  // student must collapse to ONE row here: AssignmentProgress/completion are
+  // keyed by studentId (not enrollmentId, deliberately — see this file's
+  // header comment), so the old removed enrollment and the new active one
+  // would otherwise render as two rows with byte-identical completion data.
+  // Prefer the active enrollment; among two with the same active/removed
+  // status (e.g. removed twice, never currently active), keep the most
+  // recently created one.
+  const allEnrollments = await ClassEnrollment.find({ classId: assignment.classId }).sort({ createdAt: 1 }).lean();
+  const byStudent = new Map();
+  for (const e of allEnrollments) {
+    const prev = byStudent.get(String(e.studentId));
+    if (!prev || !e.removedAt || prev.removedAt) byStudent.set(String(e.studentId), e);
+  }
+  const enrollments = [...byStudent.values()];
   const students = await User.find({ _id: { $in: enrollments.map((e) => e.studentId) } })
     .select('username firstName lastName').lean();
   const sMap = new Map(students.map((s) => [String(s._id), s]));
