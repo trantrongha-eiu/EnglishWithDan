@@ -76,14 +76,70 @@ router.delete('/speaking/questions/:id/permanent', auth, teacherOnly, async (req
 // Mirrors the Vocabulary Lessons import flow. Format documented in
 // services/speakingImportParser.js. Nothing is saved until /import.
 
+const normQ = s => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+// Cross-check a valid parse against what's already in the question bank and
+// append non-blocking warnings: a topic name that already exists (import
+// will merge into it), an identical { part, question } that already lives
+// under a DIFFERENT topic (likely an accidental duplicate). Exact
+// same-topic matches are covered by the topic-level warning, so they're not
+// repeated per question.
+async function warnAboutExisting(parsed) {
+  if (!parsed.valid || !parsed.topics.length) return parsed;
+  const existing = await SpeakingQuestion
+    .find({ isActive: { $ne: false } })
+    .select('topic part question')
+    .lean();
+
+  const topicCount = new Map();               // topicLc -> # existing questions
+  const topicOriginal = new Map();            // topicLc -> original-cased name
+  const qToTopics = new Map();                // "part|normQ" -> Set(topicLc)
+  for (const e of existing) {
+    const tLc = String(e.topic || '').trim().toLowerCase();
+    topicCount.set(tLc, (topicCount.get(tLc) || 0) + 1);
+    if (!topicOriginal.has(tLc)) topicOriginal.set(tLc, e.topic);
+    const k = `${e.part}|${normQ(e.question)}`;
+    if (!qToTopics.has(k)) qToTopics.set(k, new Set());
+    qToTopics.get(k).add(tLc);
+  }
+
+  const warnings = parsed.warnings.slice();
+  for (const t of parsed.topics) {
+    const tLc = t.topic.trim().toLowerCase();
+    const topicExists = topicCount.has(tLc);
+    if (topicExists) {
+      warnings.push(`Topic "${t.topic}": đã có sẵn trên web (${topicCount.get(tLc)} câu) — import sẽ cập nhật / bổ sung vào topic này`);
+    }
+    const parts = [
+      ...t.part1.map(q => [1, q]),
+      ...(t.part2 ? [[2, t.part2.question]] : []),
+      ...t.part3.map(q => [3, q]),
+    ];
+    for (const [part, q] of parts) {
+      const owners = qToTopics.get(`${part}|${normQ(q)}`);
+      if (!owners) continue;
+      const others = [...owners].filter(o => o !== tLc);
+      if (others.length) {
+        warnings.push(`Part ${part} — "${q.slice(0, 60)}${q.length > 60 ? '…' : ''}": câu hỏi này đã tồn tại ở topic khác ("${topicOriginal.get(others[0])}")`);
+      } else if (!topicExists) {
+        // same question, same topic name, but the topic-level warning above
+        // didn't fire (shouldn't really happen) — flag it anyway.
+        warnings.push(`Part ${part} — "${q.slice(0, 60)}${q.length > 60 ? '…' : ''}": đã tồn tại, import sẽ cập nhật (không tạo câu mới)`);
+      }
+    }
+  }
+  return { ...parsed, warnings };
+}
+
 // POST /api/admin/speaking/questions/parse  — validate only, no writes
-router.post('/speaking/questions/parse', auth, teacherOnly, (req, res) => {
+router.post('/speaking/questions/parse', auth, teacherOnly, async (req, res) => {
   const { text } = req.body || {};
   if (typeof text !== 'string' || !text.trim()) {
     return res.status(400).json({ success: false, message: 'Thiếu nội dung' });
   }
   try {
-    res.json({ success: true, ...parseSpeakingText(text) });
+    const parsed = await warnAboutExisting(parseSpeakingText(text));
+    res.json({ success: true, ...parsed });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

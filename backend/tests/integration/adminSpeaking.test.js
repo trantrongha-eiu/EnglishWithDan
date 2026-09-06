@@ -405,6 +405,34 @@ describe('POST /api/admin/speaking/questions/parse (teacherOnly)', () => {
       .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({});
     expect(res.status).toBe(400);
   });
+
+  test('warns when the pasted topic name already exists in the bank', async () => {
+    const teacher = await createTeacher();
+    await createSpeakingQuestion({ topic: 'A TV programme you enjoy', part: 1, question: 'Some other existing question?' });
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(200);
+    expect(res.body.valid).toBe(true);
+    expect(res.body.warnings.join(' ')).toMatch(/đã có sẵn trên web/);
+  });
+
+  test('warns when an identical question already exists under a different topic', async () => {
+    const teacher = await createTeacher();
+    await createSpeakingQuestion({ topic: 'Television', part: 1, question: 'What kinds of TV programmes do you like?' });
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(200);
+    expect(res.body.warnings.join(' ')).toMatch(/đã tồn tại ở topic khác \("Television"\)/);
+  });
+
+  test('no "existing" warnings for a genuinely new topic', async () => {
+    const teacher = await createTeacher();
+    await createSpeakingQuestion({ topic: 'Completely unrelated', part: 1, question: 'Anything at all?' });
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(200);
+    expect(res.body.warnings.join(' ')).not.toMatch(/đã có sẵn trên web|đã tồn tại/);
+  });
 });
 
 describe('POST /api/admin/speaking/questions/import (teacherOnly)', () => {
