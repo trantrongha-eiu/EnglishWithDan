@@ -164,4 +164,219 @@ function splitTranscriptIntoSentences(rawTranscript) {
   return mergeTinyFragments(sentences);
 }
 
-module.exports = { splitTranscriptIntoSentences, mergeTinyFragments, MIN_UNIT_WORDS, stripQuestionAnnotations };
+// ── splitting an already-aligned dictation unit that plays for too long ──
+// A single dictation clip much longer than a few seconds is hard to hold in
+// working memory while typing (real complaint: a 12s / 37-word clip). This
+// takes one aligned unit { text, start, end } (seconds into the audio) and,
+// if it runs longer than `triggerSec`, breaks it into consecutive
+// sub-clips of at most ~`targetSec` each — cutting at the most natural
+// in-sentence boundary near each target point (a comma/semicolon/dash, then
+// a coordinating/subordinating conjunction, then — only if neither exists
+// in the window — a plain word gap). Sub-clip start/end are interpolated
+// across the parent's real [start,end] weighted by characters spoken, which
+// is close enough for a play-this-slice player (speakers don't pause evenly,
+// but a slightly-early cut beats a 12-second wall). Idempotent: a unit
+// already within bounds is returned unchanged, so re-running is a no-op.
+// Words that almost always START a new clause, so cutting just before one
+// gives a clean break. Deliberately excludes words that are far more often
+// prepositions or complementisers in speech ("for", "as", "that", "since",
+// "before", "after", "until") — treating those as clause boundaries pulled
+// cuts to the wrong place (e.g. "a competition | for the kids").
+const CONJUNCTIONS = new Set([
+  'and', 'but', 'so', 'or', 'yet', 'because', 'which', 'who', 'whom', 'whose',
+  'when', 'while', 'where', 'if', 'unless', 'though', 'although', 'whereas',
+  'however',
+]);
+const MIN_PIECE_WORDS = 3;
+// A dictation clip shorter than this is too brief to hear-and-type as its
+// own unit — it gets folded into an adjacent clip instead.
+const MIN_CLIP_SEC = 1.2;
+// Hysteresis: a split must leave every piece comfortably above MIN_CLIP_SEC,
+// not merely at it — otherwise char-proportional rounding can nudge a piece
+// just under MIN_CLIP_SEC, the merge step folds it straight back, and the
+// split never sticks (so re-running the migration keeps "changing" it).
+const SPLIT_MIN_CLIP_SEC = MIN_CLIP_SEC + 0.15;
+
+// score a candidate cut *after* word index i (0-based) — higher is better
+function boundaryScore(words, i) {
+  const w = words[i] || '';
+  const next = words[i + 1] || '';
+  if (/[.!?]["')\]]?$/.test(w)) return 5;
+  if (/[;:]["')\]]?$/.test(w)) return 4;
+  if (/[—–]$/.test(w) || next === '—' || next === '–') return 3.5;
+  if (/,["')\]]?$/.test(w)) return 3;
+  if (CONJUNCTIONS.has(next.toLowerCase().replace(/[^a-z]/g, ''))) return 2;
+  return 0;
+}
+
+// one pass: cut `words` into up to `nPieces` spans at the best nearby
+// boundary, timings interpolated char-proportionally across [start,end].
+function splitOnce(words, start, end, nPieces) {
+  const dur = end - start;
+  const targetWords = words.length / nPieces;
+
+  // char-weighted cumulative lengths — used to interpolate timings AND to
+  // estimate how long a candidate piece would play.
+  const cum = [0];
+  for (let i = 0; i < words.length; i++) cum.push(cum[i] + words[i].length + 1);
+  const totalChars = cum[words.length];
+  const estDur = (a, b) => dur * (cum[b] - cum[a]) / totalChars;
+
+  const cuts = [0];
+  for (let p = 1; p < nPieces; p++) {
+    const prev = cuts[cuts.length - 1];
+    const ideal = Math.round(p * targetWords);
+    let best = -1, bestScore = -Infinity;
+    const lo = Math.max(prev + MIN_PIECE_WORDS - 1, ideal - 5);
+    const hi = Math.min(words.length - MIN_PIECE_WORDS - 1, ideal + 5);
+    for (let i = lo; i <= hi; i++) {
+      // never pick a cut that leaves the piece just closed — or the whole
+      // remainder — near the minimum clip length: that stub just gets merged
+      // straight back, so the split wouldn't stick.
+      if (estDur(prev, i + 1) < SPLIT_MIN_CLIP_SEC || estDur(i + 1, words.length) < SPLIT_MIN_CLIP_SEC) continue;
+      const sc = boundaryScore(words, i) - Math.abs(i - ideal) * 0.15;
+      if (sc > bestScore) { bestScore = sc; best = i; }
+    }
+    if (best < 0 || best + 1 <= prev) continue; // no viable cut in this window
+    cuts.push(best + 1);
+  }
+  cuts.push(words.length);
+
+  const out = [];
+  for (let k = 0; k < cuts.length - 1; k++) {
+    const a = cuts[k], b = cuts[k + 1];
+    if (b <= a) continue;
+    const s = k === 0 ? start : +(start + dur * (cum[a] / totalChars)).toFixed(2);
+    const e = k === cuts.length - 2 ? end : +(start + dur * (cum[b] / totalChars)).toFixed(2);
+    out.push({ words: words.slice(a, b), start: s, end: Math.max(e, s + 0.3) });
+  }
+  return out;
+}
+
+function splitLongUnit(unit, opts = {}) {
+  const targetSec = opts.targetSec != null ? opts.targetSec : 4;
+  const triggerSec = opts.triggerSec != null ? opts.triggerSec : targetSec + 1;
+  // Above this, a "sentence" this long is a sign the forced-alignment for it
+  // drifted rather than real speech — slicing it by character-proportion
+  // would just spread the error over several clips, so leave it whole.
+  const maxSplittableSec = opts.maxSplittableSec != null ? opts.maxSplittableSec : Infinity;
+  const text = String(unit && unit.text || '').trim();
+  const start = Number(unit && unit.start);
+  const end = Number(unit && unit.end);
+  const dur = end - start;
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!text || !isFinite(dur) || dur <= triggerSec || dur > maxSplittableSec ||
+      words.length < MIN_PIECE_WORDS * 2) {
+    return [{ text, start, end }];
+  }
+
+  // Char-proportional timing means a first pass can still leave a piece over
+  // target (long words soak up more of the clock than their word-count
+  // share). Re-split any such piece until every piece is within bounds or
+  // can't be divided further — so the result is a fixpoint and re-running
+  // the migration is a genuine no-op. A pass that fails to divide a piece
+  // (no usable interior boundary) returns it unchanged and ends recursion.
+  function recur(w, s, e, depth) {
+    const d = e - s;
+    if (d <= triggerSec || w.length < MIN_PIECE_WORDS * 2 || depth > 6) {
+      return [{ text: w.join(' '), start: s, end: e }];
+    }
+    const pieces = splitOnce(w, s, e, Math.max(2, Math.ceil(d / targetSec)));
+    if (pieces.length <= 1) return [{ text: w.join(' '), start: s, end: e }];
+    const res = [];
+    for (const p of pieces) res.push(...recur(p.words, p.start, p.end, depth + 1));
+    return res;
+  }
+  const out = recur(words, start, end, 0);
+
+  // Char-proportional timing can hand a stub clause a sub-second slice that's
+  // useless to hear and type — fold any piece shorter than MIN_CLIP_SEC into
+  // its neighbour (previous by default; the next one if it's the first).
+  // Safe to do unconditionally here: every piece came from one parent unit so
+  // they're all contiguous in the audio.
+  for (let i = 0; i < out.length && out.length > 1; ) {
+    if (out[i].end - out[i].start >= MIN_CLIP_SEC) { i++; continue; }
+    if (i === 0) {
+      out[1].text = out[0].text + ' ' + out[1].text;
+      out[1].start = out[0].start;
+      out.splice(0, 1);
+    } else {
+      out[i - 1].text += ' ' + out[i].text;
+      out[i - 1].end = out[i].end;
+      out.splice(i, 1);
+    }
+  }
+  return out;
+}
+
+function splitLongUnits(units, opts) {
+  const out = [];
+  for (const u of units || []) out.push(...splitLongUnit(u, opts));
+  return out;
+}
+
+// Fold any dictation clip shorter than `minClipSec` into an adjacent clip —
+// but ONLY when the two are actually contiguous in the audio (the next clip
+// starts about where this one ends). A short clip sitting across a timing
+// gap from its neighbours — e.g. a spelled-out name the aligner stretched,
+// with dropped sentences on either side — is left alone rather than glued to
+// a neighbour with seconds of unrelated audio in between. Merges toward
+// whichever neighbour is contiguous (previous first), so re-running is a
+// no-op once every clip is either long enough or isolated.
+function mergeShortUnits(units, minClipSec = MIN_CLIP_SEC) {
+  const GAP_TOL = 0.6; // seconds; two clips this close count as contiguous
+  const out = (units || []).map(u => ({
+    text: String(u.text || ''), start: Number(u.start), end: Number(u.end),
+  }));
+  for (let i = 0; i < out.length && out.length > 1; ) {
+    const cur = out[i];
+    if (!(cur.end - cur.start < minClipSec)) { i++; continue; }
+    const prev = out[i - 1];
+    const next = out[i + 1];
+    const prevContig = prev && Math.abs(cur.start - prev.end) <= GAP_TOL;
+    const nextContig = next && Math.abs(next.start - cur.end) <= GAP_TOL;
+    if (prevContig) {
+      prev.text = (prev.text + ' ' + cur.text).trim();
+      prev.end = cur.end;
+      out.splice(i, 1); // re-check prev (now longer, but was already ok) — fine to move on
+    } else if (nextContig) {
+      next.text = (cur.text + ' ' + next.text).trim();
+      next.start = cur.start;
+      out.splice(i, 1); // stay at i to re-check the merged next clip
+    } else {
+      i++; // isolated short clip — nothing safe to merge into
+    }
+  }
+  return out;
+}
+
+// Full normalise for a section's dictationSentences: split anything over
+// ~maxSec, then fold away sub-second stubs, repeated to a fixpoint (each is
+// individually convergent; together they can ping-pong once at the boundary,
+// so a couple of passes settles it). Used by the one-off migration and by
+// the bulk-alignment pipeline so new and existing content obey the same
+// "no clip longer than ~maxSec, none shorter than MIN_CLIP_SEC" rule.
+function normalizeDictationUnits(units, opts = {}) {
+  const maxSec = opts.maxSec != null ? opts.maxSec : 4;
+  const splitOpts = {
+    targetSec: maxSec, triggerSec: maxSec,
+    maxSplittableSec: opts.maxSplittableSec != null ? opts.maxSplittableSec : 25,
+  };
+  let cur = (units || []).map(u => ({ text: String(u.text || ''), start: Number(u.start), end: Number(u.end) }));
+  for (let pass = 0; pass < 4; pass++) {
+    const next = mergeShortUnits(splitLongUnits(cur, splitOpts), MIN_CLIP_SEC);
+    if (next.length === cur.length && next.every((u, i) =>
+      u.text === cur[i].text && u.start === cur[i].start && u.end === cur[i].end)) {
+      return next;
+    }
+    cur = next;
+  }
+  return cur;
+}
+
+module.exports = {
+  splitTranscriptIntoSentences, mergeTinyFragments, MIN_UNIT_WORDS,
+  stripQuestionAnnotations, splitLongUnit, splitLongUnits,
+  mergeShortUnits, normalizeDictationUnits, MIN_CLIP_SEC,
+};

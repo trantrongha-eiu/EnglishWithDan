@@ -61,7 +61,7 @@ function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 async function run() {
   const mongoose = require('mongoose');
   const ListeningSection = require('../models/ListeningSection');
-  const { splitTranscriptIntoSentences } = require('../services/listeningTranscriptSplitter');
+  const { splitTranscriptIntoSentences, normalizeDictationUnits } = require('../services/listeningTranscriptSplitter');
   const { transcribeWithWordTimestamps, alignSentences, selectDictationSentences } = require('../services/listeningAlignmentService');
 
   const args = parseArgs(process.argv.slice(2));
@@ -132,7 +132,15 @@ async function run() {
 
       const asrWords = await transcribeWithWordTimestamps(audioBuffer, 'section.mp3');
       const aligned = alignSentences(sentences, asrWords);
-      const { kept, dropped } = selectDictationSentences(aligned);
+      const sel = selectDictationSentences(aligned);
+      const dropped = sel.dropped;
+      // A single clip that plays for much longer than a few seconds is hard
+      // to hold in working memory while typing it back — break any kept unit
+      // over ~4s into consecutive sub-clips at the nearest natural in-sentence
+      // boundary, then fold away any sub-second stub (normalizeDictationUnits).
+      // Done AFTER selectDictationSentences so its MIN_DICTATION_WORDS /
+      // words-per-second gates judge the real aligned sentences, not fragments.
+      const kept = normalizeDictationUnits(sel.kept, { maxSec: 4 });
 
       if (kept.length < MIN_SECTION_SENTENCES) {
         rejected++;

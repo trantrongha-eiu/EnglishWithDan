@@ -91,6 +91,9 @@ const ListeningSectionSchema = new mongoose.Schema({
   // doesn't re-attempt the same doomed section every single time, unlike a
   // content-validation rejection which a transcript-cleaning fix might fix.
   dictationSkipPermanent: { type: Boolean, default: false },
+  // Set by scripts/splitLongDictationSentences.js when it re-sliced one or
+  // more over-long (> ~4s) clips in this section into shorter sub-clips.
+  dictationSplitLongAt: { type: Date, default: null },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });
