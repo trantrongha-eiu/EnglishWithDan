@@ -94,6 +94,9 @@ const ListeningSectionSchema = new mongoose.Schema({
   // Set by scripts/splitLongDictationSentences.js when it re-sliced one or
   // more over-long (> ~4s) clips in this section into shorter sub-clips.
   dictationSplitLongAt: { type: Date, default: null },
+  // Set by scripts/dropNameHeavyDictation.js when it removed sentence(s)
+  // built around an unspellable proper name / spelled-out name.
+  dictationNamesFilteredAt: { type: Date, default: null },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });

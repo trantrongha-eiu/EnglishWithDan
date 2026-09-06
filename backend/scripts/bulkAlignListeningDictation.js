@@ -63,6 +63,7 @@ async function run() {
   const ListeningSection = require('../models/ListeningSection');
   const { splitTranscriptIntoSentences, normalizeDictationUnits } = require('../services/listeningTranscriptSplitter');
   const { transcribeWithWordTimestamps, alignSentences, selectDictationSentences } = require('../services/listeningAlignmentService');
+  const { dropNameHeavySentences, buildLexicon } = require('../services/dictationNameFilter');
 
   const args = parseArgs(process.argv.slice(2));
 
@@ -134,13 +135,21 @@ async function run() {
       const aligned = alignSentences(sentences, asrWords);
       const sel = selectDictationSentences(aligned);
       const dropped = sel.dropped;
-      // A single clip that plays for much longer than a few seconds is hard
-      // to hold in working memory while typing it back — break any kept unit
-      // over ~4s into consecutive sub-clips at the nearest natural in-sentence
-      // boundary, then fold away any sub-second stub (normalizeDictationUnits).
-      // Done AFTER selectDictationSentences so its MIN_DICTATION_WORDS /
-      // words-per-second gates judge the real aligned sentences, not fragments.
-      const kept = normalizeDictationUnits(sel.kept, { maxSec: 4 });
+      // Remove sentences built around an unspellable proper name / a name
+      // spelled out letter by letter — a dictation exercise grades exact
+      // spelling, and there's no way to get "Wivenhoe" or "J-A-M-I-E-S-O-N"
+      // from the audio. Lexicon from this section's own transcript so a word
+      // it uses in lowercase still counts as spellable.
+      const nameLex = buildLexicon(sentences);
+      const nf = dropNameHeavySentences(sel.kept, nameLex);
+      nf.dropped.forEach(d => dropped.push({ index: -1, text: d.text, reason: d.reason }));
+      // Then: any clip that plays much longer than a few seconds is hard to
+      // hold in working memory while typing back — break kept units over ~4s
+      // at the nearest natural boundary and fold away sub-second stubs
+      // (normalizeDictationUnits). Both run AFTER selectDictationSentences so
+      // its MIN_DICTATION_WORDS / words-per-second gates judge real aligned
+      // sentences, not fragments.
+      const kept = normalizeDictationUnits(nf.kept, { maxSec: 4 });
 
       if (kept.length < MIN_SECTION_SENTENCES) {
         rejected++;
