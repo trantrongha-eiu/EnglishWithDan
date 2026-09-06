@@ -21,6 +21,14 @@
     .t1-head { padding: 20px 20px 6px; }
     .t1-h2 { font-size: 20px; font-weight: 800; margin: 0; }
     .t1-sub { font-size: 14px; color: var(--text2, #6b7280); margin: 2px 0 0; }
+    .t1-hero { margin: 16px 20px 10px; border: 1.5px solid #bae6fd; border-left: 4px solid #0ea5e9; border-radius: 16px;
+      padding: 18px 20px; background: linear-gradient(135deg, #f0f9ff, var(--surface,#fff)); }
+    [data-theme="dark"] .t1-hero { background:#0c2536; border-color:#1e3a52; border-left-color:#0ea5e9; }
+    .t1-hero h2 { font-size: 20px; font-weight: 800; margin: 0; }
+    .t1-hero p { font-size: 12.5px; color: var(--text2,#6b7280); margin: 8px 0 0; line-height: 1.65; }
+    .t1-hero .stats { display:flex; gap:7px; margin-top:12px; flex-wrap:wrap; }
+    .t1-hero .stats span { font-size:11px; font-weight:800; color:#0369a1; background:#e0f2fe; border-radius:20px; padding:4px 11px; }
+    [data-theme="dark"] .t1-hero .stats span { background:#0c2536; color:#7dd3fc; }
     .t1-btn { display:inline-flex; align-items:center; gap:6px; background: var(--surface2,#f3f4f6); color: var(--text,#111827);
       border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .t1-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
@@ -401,8 +409,12 @@
         '<h3>' + esc(m.title) + '</h3>' +
         '<div style="font-size:11px;color:var(--text3,#9ca3af);margin-top:3px">' + doneL + '/' + (m.lessons || []).length + ' buổi hoàn thành</div></div>' + lessons + '</div>';
     }).join('');
-    return '<div class="t1-head"><h2 class="t1-h2">✍️ IELTS Task 2 Writing</h2>' +
-      '<p class="t1-sub">' + esc((d.course && d.course.description) || 'Khoá học Task 2: nền tảng 4 tiêu chí + 9 chức năng câu, và 7 dạng đề') + '</p></div>' +
+    var nMod = (d.modules || []).length, nLes = 0, nEx = 0;
+    (d.modules || []).forEach(function (m) { (m.lessons || []).forEach(function (l) { nLes++; nEx += (l.exerciseCount || 0); }); });
+    return '<div class="t1-hero"><h2>✍️ IELTS Task 2 Writing</h2>' +
+      '<p>' + esc((d.course && d.course.description) || 'Khoá học Task 2: nền tảng 4 tiêu chí + 9 chức năng câu, và 7 dạng đề') + '</p>' +
+      (nLes ? '<div class="stats"><span>' + nMod + ' module</span><span>' + nLes + ' buổi</span><span>' + nEx + ' bài</span></div>' : '') +
+      '</div>' +
       (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Toàn bộ 3 module · 18 buổi học Task 2</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
       mods;
   }

@@ -21,6 +21,14 @@
     .t1-head { padding: 20px 20px 6px; }
     .t1-h2 { font-size: 20px; font-weight: 800; margin: 0; }
     .t1-sub { font-size: 14px; color: var(--text2, #6b7280); margin: 2px 0 0; }
+    .sc-hero { margin: 16px 20px 10px; border: 1.5px solid #fecdd3; border-left: 4px solid #f43f5e; border-radius: 16px;
+      padding: 18px 20px; background: linear-gradient(135deg, #fff5f6, var(--surface,#fff)); }
+    [data-theme="dark"] .sc-hero { background:#241016; border-color:#5c2233; border-left-color:#f43f5e; }
+    .sc-hero h2 { font-size: 20px; font-weight: 800; margin: 0; }
+    .sc-hero p { font-size: 12.5px; color: var(--text2,#6b7280); margin: 8px 0 0; line-height: 1.65; }
+    .sc-hero .stats { display:flex; gap:7px; margin-top:12px; flex-wrap:wrap; }
+    .sc-hero .stats span { font-size:11px; font-weight:800; color:#be123c; background:#ffe4e6; border-radius:20px; padding:4px 11px; }
+    [data-theme="dark"] .sc-hero .stats span { background:#3f1424; color:#fda4af; }
     .t1-btn { display:inline-flex; align-items:center; gap:6px; background: var(--surface2,#f3f4f6); color: var(--text,#111827);
       border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .t1-btn:hover { border-color: #f43f5e; color: #f43f5e; }
@@ -615,8 +623,13 @@
       return '<div class="t1-module p' + pm + '"><div class="t1-module-hd"><div class="en">' + esc(m.titleEn || '') + '</div>' +
         '<h3>' + esc(m.title) + '</h3></div>' + lessons + '</div>';
     }).join('');
-    return '<div class="t1-head"><h2 class="t1-h2">🎤 IELTS Speaking — Khóa học</h2>' +
-      '<p class="t1-sub">' + esc((d.course && d.course.description) || 'Khoá học Speaking theo sách Daniel Ha — trọn bộ 3 phần, 45 buổi') + '</p></div>' +
+    var nMod = (d.modules || []).length;
+    var nLes = 0, nEx = 0, nSpk = 0;
+    (d.modules || []).forEach(function (m) { (m.lessons || []).forEach(function (l) { nLes++; nEx += (l.exerciseCount || 0); }); });
+    return '<div class="sc-hero"><h2>🎤 IELTS Speaking — Khóa học</h2>' +
+      '<p>' + esc((d.course && d.course.description) || 'Khoá học Speaking theo sách Daniel Ha — trọn bộ 3 phần, 45 buổi.') + '</p>' +
+      (nLes ? '<div class="stats"><span>' + nMod + ' module</span><span>' + nLes + ' buổi</span><span>' + nEx + ' bài</span><span>Part 1 · 2 · 3</span></div>' : '') +
+      '</div>' +
       (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Trọn bộ 45 buổi Part 1 · Part 2 · Part 3, mỗi buổi có bài NÓI được AI chấm</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
       mods;
   }
