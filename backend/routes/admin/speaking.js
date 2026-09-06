@@ -3,12 +3,13 @@
 
 const express    = require('express');
 const auth       = require('../../middleware/auth');
-const { teacherOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
+const { teacherOnly, adminOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
 
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const SpeakingMaterial = require('../../models/SpeakingMaterial');
 const SpeakingAttempt  = require('../../models/SpeakingAttempt');
 const User             = require('../../models/User');
+const { parseSpeakingText } = require('../../services/speakingImportParser');
 
 const router = express.Router();
 
@@ -66,6 +67,95 @@ router.delete('/speaking/questions/:id/permanent', auth, teacherOnly, async (req
   try {
     await SpeakingQuestion.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Đã xóa vĩnh viễn câu hỏi' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ── Import: paste "EnglishWithDan Speaking Format", parse + upsert ──
+// Mirrors the Vocabulary Lessons import flow. Format documented in
+// services/speakingImportParser.js. Nothing is saved until /import.
+
+// POST /api/admin/speaking/questions/parse  — validate only, no writes
+router.post('/speaking/questions/parse', auth, teacherOnly, (req, res) => {
+  const { text } = req.body || {};
+  if (typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ success: false, message: 'Thiếu nội dung' });
+  }
+  try {
+    res.json({ success: true, ...parseSpeakingText(text) });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/speaking/questions/import
+// Upsert keyed on { topic, part, question } (same key as
+// scripts/seedSpeakingQuestions.js): re-importing the same quarter updates
+// cue cards and revives any question that was soft-deleted, and never
+// clobbers a sampleAnswer that Gemini/a bulk script generated later.
+router.post('/speaking/questions/import', auth, teacherOnly, async (req, res) => {
+  const { text } = req.body || {};
+  if (typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ success: false, message: 'Thiếu nội dung' });
+  }
+  try {
+    const parsed = parseSpeakingText(text);
+    if (!parsed.valid) {
+      return res.status(400).json({ success: false, message: `${parsed.errors.length} lỗi — chưa thể import`, errors: parsed.errors });
+    }
+    const ops = parsed.questionDocs.map(d => ({
+      updateOne: {
+        filter: { topic: d.topic, part: d.part, question: d.question },
+        update: {
+          $set: { topic: d.topic, part: d.part, question: d.question, cueCard: d.cueCard || '', isActive: true },
+        },
+        upsert: true,
+      },
+    }));
+    const result = await SpeakingQuestion.bulkWrite(ops, { ordered: false });
+    const created = result.upsertedCount || 0;
+    const matched = result.matchedCount || 0;
+    res.status(201).json({
+      success: true,
+      message: `Đã import ${parsed.counts.topics} topic — ${created} câu mới, ${matched} câu cập nhật`,
+      counts: parsed.counts,
+      created,
+      matched,
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PATCH /api/admin/speaking/questions/hide-all  (admin only)
+// Soft-hide every active question, optionally scoped to one part.
+router.patch('/speaking/questions/hide-all', auth, adminOnly, async (req, res) => {
+  try {
+    const filter = { isActive: { $ne: false } };
+    const part = Number(req.query.part || req.body?.part);
+    if ([1, 2, 3].includes(part)) filter.part = part;
+    const r = await SpeakingQuestion.updateMany(filter, { $set: { isActive: false } });
+    res.json({ success: true, message: `Đã ẩn ${r.modifiedCount} câu hỏi`, modified: r.modifiedCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/speaking/questions/delete-all  (admin only, requires confirm)
+// Hard-delete every question (or one part). SpeakingQuestion is
+// admin-authored content re-creatable via the import / seed script — not
+// per-student data — so a full wipe here is a legitimate, recoverable op.
+router.post('/speaking/questions/delete-all', auth, adminOnly, async (req, res) => {
+  try {
+    if (req.body?.confirm !== true) {
+      return res.status(400).json({ success: false, message: 'Thiếu xác nhận (confirm: true)' });
+    }
+    const filter = {};
+    const part = Number(req.body?.part);
+    if ([1, 2, 3].includes(part)) filter.part = part;
+    const r = await SpeakingQuestion.deleteMany(filter);
+    res.json({ success: true, message: `Đã xóa vĩnh viễn ${r.deletedCount} câu hỏi`, deleted: r.deletedCount });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

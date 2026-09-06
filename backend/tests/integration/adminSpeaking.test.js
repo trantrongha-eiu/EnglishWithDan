@@ -354,3 +354,171 @@ describe('GET /api/admin/speaking/history (teacherOnly)', () => {
     expect(res.body.attempts).toHaveLength(2);
   });
 });
+
+// ── Import (parse / import) ──────────────────────────────────────────────
+const SAMPLE_IMPORT = `@topic
+topic=A TV programme you enjoy
+
+@part1
+What kinds of TV programmes do you like?
+How often do you watch television?
+
+@part2
+cue=what it is about | how often you watch it | why you enjoy it
+Describe a TV or online programme that you enjoy watching
+
+@part3
+Why do people spend so much time watching TV?
+Are TV habits different across generations?
+`;
+
+describe('POST /api/admin/speaking/questions/parse (teacherOnly)', () => {
+  test('a student is blocked with 403', async () => {
+    const student = await createStudent();
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(403);
+  });
+
+  test('validates without writing anything', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(200);
+    expect(res.body.valid).toBe(true);
+    expect(res.body.counts).toMatchObject({ topics: 1, part1: 2, part2: 1, part3: 2, total: 5 });
+    expect(await SpeakingQuestion.countDocuments()).toBe(0);
+  });
+
+  test('reports errors for a malformed paste', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: '@part1\nWhat is your name?' });
+    expect(res.status).toBe(200);
+    expect(res.body.valid).toBe(false);
+    expect(res.body.errors.length).toBeGreaterThan(0);
+  });
+
+  test('400 with no text', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({});
+    expect(res.status).toBe(400);
+  });
+});
+
+describe('POST /api/admin/speaking/questions/import (teacherOnly)', () => {
+  test('imports every part as SpeakingQuestion docs', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/import')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(5);
+    const docs = await SpeakingQuestion.find({ topic: 'A TV programme you enjoy' }).sort({ part: 1 });
+    expect(docs).toHaveLength(5);
+    const p2 = docs.find(d => d.part === 2);
+    expect(p2.question).toMatch(/Describe a TV/);
+    expect(p2.cueCard).toBe('You should say:\n- what it is about\n- how often you watch it\n- why you enjoy it');
+    expect(docs.filter(d => d.part === 1)).toHaveLength(2);
+    expect(docs.filter(d => d.part === 3)).toHaveLength(2);
+  });
+
+  test('re-import updates cue cards and revives a soft-deleted question without clobbering sampleAnswer', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion({
+      topic: 'A TV programme you enjoy', part: 1,
+      question: 'What kinds of TV programmes do you like?',
+      isActive: false, sampleAnswer: 'A cached model answer.',
+    });
+    const res = await request(app).post('/api/admin/speaking/questions/import')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({ text: SAMPLE_IMPORT });
+    expect(res.status).toBe(201);
+    const revived = await SpeakingQuestion.findOne({ topic: 'A TV programme you enjoy', part: 1, question: 'What kinds of TV programmes do you like?' });
+    expect(revived.isActive).toBe(true);
+    expect(revived.sampleAnswer).toBe('A cached model answer.');
+    expect(res.body.matched).toBeGreaterThanOrEqual(1);
+  });
+
+  test('400 with the error list on an invalid paste', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/import')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text: '@topic\n@part2\nOnly a cue card question.' });
+    expect(res.status).toBe(400);
+    expect(Array.isArray(res.body.errors)).toBe(true);
+    expect(await SpeakingQuestion.countDocuments()).toBe(0);
+  });
+});
+
+// ── Hide all / delete all ────────────────────────────────────────────────
+describe('PATCH /api/admin/speaking/questions/hide-all (adminOnly)', () => {
+  test('a teacher gets 403', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).patch('/api/admin/speaking/questions/hide-all')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({});
+    expect(res.status).toBe(403);
+  });
+
+  test('an admin hides every active question', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion({ topic: 'A', part: 1 });
+    await createSpeakingQuestion({ topic: 'B', part: 2 });
+    const res = await request(app).patch('/api/admin/speaking/questions/hide-all')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({});
+    expect(res.status).toBe(200);
+    expect(res.body.modified).toBe(2);
+    expect(await SpeakingQuestion.countDocuments({ isActive: { $ne: false } })).toBe(0);
+    expect(await SpeakingQuestion.countDocuments()).toBe(2); // still there, just hidden
+  });
+
+  test('?part= scopes the hide to one part', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion({ topic: 'A', part: 1 });
+    await createSpeakingQuestion({ topic: 'B', part: 3 });
+    const res = await request(app).patch('/api/admin/speaking/questions/hide-all?part=1')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({});
+    expect(res.status).toBe(200);
+    expect(res.body.modified).toBe(1);
+    expect((await SpeakingQuestion.findOne({ part: 3 })).isActive).toBe(true);
+  });
+});
+
+describe('POST /api/admin/speaking/questions/delete-all (adminOnly, confirm required)', () => {
+  test('a teacher gets 403', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).post('/api/admin/speaking/questions/delete-all')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ confirm: true });
+    expect(res.status).toBe(403);
+  });
+
+  test('400 without confirm: true', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion();
+    const res = await request(app).post('/api/admin/speaking/questions/delete-all')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({});
+    expect(res.status).toBe(400);
+    expect(await SpeakingQuestion.countDocuments()).toBe(1);
+  });
+
+  test('an admin with confirm:true hard-deletes every question', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion({ topic: 'A' });
+    await createSpeakingQuestion({ topic: 'B', isActive: false });
+    const res = await request(app).post('/api/admin/speaking/questions/delete-all')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({ confirm: true });
+    expect(res.status).toBe(200);
+    expect(res.body.deleted).toBe(2);
+    expect(await SpeakingQuestion.countDocuments()).toBe(0);
+  });
+
+  test('part-scoped delete only removes that part', async () => {
+    const admin = await createAdmin();
+    await createSpeakingQuestion({ topic: 'A', part: 1 });
+    await createSpeakingQuestion({ topic: 'B', part: 2 });
+    const res = await request(app).post('/api/admin/speaking/questions/delete-all')
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`).send({ confirm: true, part: 1 });
+    expect(res.status).toBe(200);
+    expect(res.body.deleted).toBe(1);
+    expect(await SpeakingQuestion.countDocuments()).toBe(1);
+    expect((await SpeakingQuestion.findOne()).part).toBe(2);
+  });
+});

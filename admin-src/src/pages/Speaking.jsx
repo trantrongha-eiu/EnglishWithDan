@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -316,8 +317,10 @@ function MaterialModal({ material, onClose, onSaved }) {
 export default function Speaking() {
   const toast = useToast();
   const confirm = useConfirm();
+  const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [tab, setTab] = useState('questions');
+  const [bulkBusy, setBulkBusy] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [materials, setMaterials] = useState([]);
   const [search, setSearch] = useState('');
@@ -389,6 +392,40 @@ export default function Speaking() {
     });
   }
 
+  // "Ẩn tất cả" / "Xóa tất cả" — scoped to the current Part filter when one
+  // is set, otherwise every question. Admin only (see backend adminOnly).
+  const partScope = [1, 2, 3].includes(Number(partFilter)) ? Number(partFilter) : null;
+  const scopeLabel = partScope ? `Part ${partScope}` : 'tất cả part';
+
+  function hideAll() {
+    confirm(`Ẩn ${scopeLabel} câu hỏi Speaking? (có thể import lại hoặc bỏ ẩn từng câu sau)`, async () => {
+      setBulkBusy(true);
+      try {
+        const d = await apiFetch('/admin/speaking/questions/hide-all', {
+          method: 'PATCH', body: JSON.stringify(partScope ? { part: partScope } : {}),
+        });
+        toast(d.message);
+        loadQ();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { setBulkBusy(false); }
+    });
+  }
+
+  function deleteAll() {
+    const n = partScope ? filteredQ.length : questions.length;
+    confirm(`XÓA VĨNH VIỄN ${scopeLabel} câu hỏi Speaking (${n} câu đang hiển thị)? Không thể hoàn tác — chỉ khôi phục được bằng cách import / seed lại.`, async () => {
+      setBulkBusy(true);
+      try {
+        const d = await apiFetch('/admin/speaking/questions/delete-all', {
+          method: 'POST', body: JSON.stringify({ confirm: true, ...(partScope ? { part: partScope } : {}) }),
+        });
+        toast(d.message);
+        loadQ();
+      } catch (e) { toast(e.message, 'error'); }
+      finally { setBulkBusy(false); }
+    });
+  }
+
   const filteredQ = questions.filter(q => {
     if (partFilter && String(q.part) !== partFilter) return false;
     if (search && !q.question?.toLowerCase().includes(search.toLowerCase()) && !q.topic?.toLowerCase().includes(search.toLowerCase())) return false;
@@ -413,7 +450,16 @@ export default function Speaking() {
       <div className="section-header">
         <h2 className="section-title">Speaking</h2>
         {tab === 'questions' && (
-          <button className="btn btn-primary" onClick={() => { setEditQuestion(null); setShowQModal(true); }}>+ Thêm câu hỏi</button>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button className="btn btn-ghost" onClick={() => navigate('/speaking/import')}>📥 Import đề</button>
+            {isAdmin && (
+              <button className="btn btn-ghost" onClick={hideAll} disabled={bulkBusy || questions.length === 0}>🙈 Ẩn tất cả</button>
+            )}
+            {isAdmin && (
+              <button className="btn btn-danger" onClick={deleteAll} disabled={bulkBusy || questions.length === 0}>🗑 Xóa tất cả</button>
+            )}
+            <button className="btn btn-primary" onClick={() => { setEditQuestion(null); setShowQModal(true); }}>+ Thêm câu hỏi</button>
+          </div>
         )}
         {tab === 'materials' && (
           <button className="btn btn-primary" onClick={() => { setEditMaterial(null); setShowMModal(true); }}>+ Upload PDF</button>

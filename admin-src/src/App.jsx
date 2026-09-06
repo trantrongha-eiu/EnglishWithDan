@@ -27,6 +27,7 @@ const ListeningSections = lazy(() => import('./pages/ListeningSections'));
 const ListeningSectionEdit = lazy(() => import('./pages/ListeningSectionEdit'));
 const WritingTests = lazy(() => import('./pages/WritingTests'));
 const Speaking = lazy(() => import('./pages/Speaking'));
+const SpeakingImport = lazy(() => import('./pages/SpeakingImport'));
 const Vocabulary = lazy(() => import('./pages/Vocabulary'));
 const VocabularyLessons = lazy(() => import('./pages/VocabularyLessons'));
 const VocabularyLessonImport = lazy(() => import('./pages/VocabularyLessonImport'));
@@ -80,6 +81,7 @@ export default function App() {
                 <Route path="listening-sections/:id" element={<ListeningSectionEdit />} />
                 <Route path="writing-tests" element={<WritingTests />} />
                 <Route path="speaking" element={<Speaking />} />
+                <Route path="speaking/import" element={<SpeakingImport />} />
                 <Route path="vocabulary" element={<Vocabulary />} />
                 <Route path="vocabulary-lessons" element={<VocabularyLessons />} />
                 <Route path="vocabulary-lessons/import" element={<VocabularyLessonImport />} />
