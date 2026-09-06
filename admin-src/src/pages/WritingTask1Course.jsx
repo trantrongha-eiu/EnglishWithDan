@@ -10,10 +10,12 @@ import { useAuth } from '../contexts/AuthContext';
 const SEED_NOTE = {
   'IELTS-W-T1': 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask1Course.js sẽ ghi đè.',
   'IELTS-W-T2': 'Nội dung gốc nằm ở backend/scripts/data/writingTask2/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask2Course.js sẽ ghi đè.',
+  'IELTS-SPEAKING': 'Nội dung gốc nằm ở backend/scripts/data/speakingCourse/ — sửa ở đây ghi thẳng vào DB; chạy lại seedSpeakingCourse.js sẽ ghi đè.',
 };
 const EX_TYPES = [
   'mcq', 'gap_fill', 'error_correction', 'sentence_transform', 'word_form',
   'categorize', 'matching', 'ordering', 'sentence_writing', 'paragraph_writing', 'full_task1',
+  'speaking_response',
 ];
 const OBJECTIVE_HINT = {
   mcq: '[{id,prompt,options:[{id,text}],answer,explanation}]',
@@ -348,11 +350,12 @@ export default function WritingTask1Course() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">{course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2)</h2>
+        <h2 className="section-title">{course === 'IELTS-SPEAKING' ? 'Speaking' : course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2/Speaking)</h2>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
         <button className={`btn btn-sm ${course === 'IELTS-W-T1' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T1')}>Task 1 Writing</button>
         <button className={`btn btn-sm ${course === 'IELTS-W-T2' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T2')}>Task 2 Writing</button>
+        <button className={`btn btn-sm ${course === 'IELTS-SPEAKING' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-SPEAKING')}>Speaking</button>
       </div>
       <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 14 }}>{SEED_NOTE[course]}</div>
 

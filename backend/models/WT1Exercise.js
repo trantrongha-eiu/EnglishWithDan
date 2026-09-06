@@ -18,6 +18,12 @@ const EXERCISE_TYPES = [
   'sentence_writing',
   'paragraph_writing',
   'full_task1',
+  // Speaking course (courseCode IELTS-SPEAKING): student records a spoken
+  // answer, the transcript is graded by speakingService.gradeSpeaking
+  // (fluency / vocabulary / grammar / pronunciation bands) — NOT an
+  // objective type, NOT one of the writing AI types. See
+  // wt1.controller.submitSpeaking + routes/wt1.js '/submit-speaking'.
+  'speaking_response',
 ];
 
 // Item = câu hỏi con (chỉ dùng cho các dạng chấm tự động). Dùng chung cho
@@ -94,6 +100,12 @@ const WT1ExerciseSchema = new Schema(
     points: { type: Number, default: 0 },
     autoGrade: { type: Boolean, default: true },
     timerMinutes: Number,
+
+    // speaking_response only — which IELTS Speaking part this drills (1/2/3,
+    // passed to speakingService.gradeSpeaking) and how many seconds of prep
+    // the UI gives before recording (Part 2 cue cards = 60).
+    speakingPart: { type: Number, enum: [1, 2, 3] },
+    speakingPrepSeconds: Number,
 
     // true = còn thiếu ảnh biểu đồ, chưa nên publish
     needsAsset: { type: Boolean, default: false },

@@ -1,0 +1,344 @@
+{
+  "course": {
+    "code": "IELTS-SPEAKING",
+    "title": "IELTS Speaking — Khóa học theo sách Daniel Ha",
+    "skill": "speaking",
+    "taskType": "part1",
+    "language": "vi",
+    "targetBand": "4.5-8.0",
+    "description": "Khoá học Speaking dựng theo sách IELTS Speaking Student's Book của Daniel Ha — trọn bộ 3 phần, 45 buổi. PHẦN I Part 1 Foundation (14 buổi): O.R.E., filler, lý do & ví dụ, nâng band 5→6→7. PHẦN II Part 2 Individual Long Turn (15 buổi): khung 4 phần, keyword notes, 7 nhóm cue card, kéo dài đến 2 phút, đề lạ. PHẦN III Part 3 Two-way Discussion (16 buổi): 6 khung lập luận và 9 topic banks, tư duy cân bằng đến Band 8. Mỗi buổi có bài tập chấm tự động và một bài NÓI được AI chấm theo 4 tiêu chí (Fluency · Vocabulary · Grammar · Pronunciation)."
+  },
+  "modules": [
+    {
+      "code": "SPK-P1-M1",
+      "order": 1,
+      "title": "PHẦN I · Phase 1 — Kỹ năng nền tảng",
+      "titleEn": "Part 1 · Core Skills",
+      "outcomes": [
+        "Trả lời câu hỏi Part 1 theo công thức O.R.E. (Opinion → Reason → Example) trong 15–25 giây",
+        "Dùng 4–5 filler tự nhiên để câu giờ thay vì im lặng",
+        "Nêu lý do bằng nhiều cách ngoài \"because\" và đưa ví dụ CỤ THỂ",
+        "Nâng câu trả lời của mình từ Band 5 lên Band 6 rồi Band 7 mà không cần từ khó"
+      ]
+    },
+    {
+      "code": "SPK-P1-M2",
+      "order": 2,
+      "title": "PHẦN I · Phase 2 — Kỹ năng + Chủ đề",
+      "titleEn": "Part 1 · Topic + Skill",
+      "outcomes": [
+        "Giới thiệu bản thân (Work/Study) đủ WHERE + HOW LONG + WHAT trong 20–25 giây",
+        "Mô tả nơi chốn theo khung Location → Look/Feel → Highlight → Opinion",
+        "Nói về sở thích, thói quen, trải nghiệm quá khứ và sự thay đổi bằng đúng thì và đúng cấu trúc",
+        "Trả lời hai chiều có chốt lập trường, và xử lý câu hỏi bất ngờ mà không nói \"I don't know\""
+      ]
+    },
+    {
+      "code": "SPK-P1-M3",
+      "order": 3,
+      "title": "PHẦN I · Đánh giá — Thi thử Part 1",
+      "titleEn": "Part 1 · Mock Test & Self-Assessment",
+      "outcomes": [
+        "Hoàn thành một bộ Part 1 đầy đủ (3 chủ đề × 4 câu) theo điều kiện thi thật",
+        "Tự chấm mình theo 4 tiêu chí IELTS và nhận diện 2 lỗi lặp lại của bản thân"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "SPK-P1-L01",
+      "moduleCode": "SPK-P1-M1",
+      "order": 1,
+      "title": "Buổi 1 — Cách trả lời Part 1: công thức O.R.E.",
+      "titleEn": "How to Answer Part 1 — the O.R.E. formula",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời thẳng câu hỏi Yes/No ngay ở câu đầu tiên",
+        "Thêm 1 lý do và 1 ví dụ theo công thức O.R.E.",
+        "Giữ câu trả lời trong khoảng 15–25 giây (2–4 câu)",
+        "Trả lời câu hỏi Part 1 quen thuộc mà không đọc thuộc lòng"
+      ],
+      "keyLanguage": [
+        "O — Opinion: Yes, I do. / Not really. / Personally, I prefer…",
+        "R — Reason: …because it helps me… / …since it allows me to…",
+        "E — Example: For example, … / Like last week, … / For instance, …",
+        "Present simple cho thói quen / sở thích — nhớ đuôi -s: It helps me relax. (KHÔNG \"It help\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P1-L02",
+      "moduleCode": "SPK-P1-M1",
+      "order": 2,
+      "title": "Buổi 2 — Filler & cách mở đầu tự nhiên",
+      "titleEn": "Fillers & Natural Openings",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 4–5 filler tự nhiên để câu giờ thay vì im lặng",
+        "Phân biệt filler dùng ĐÚNG chỗ và filler nhồi máy móc",
+        "Mở đầu câu trả lời mà không lặp lại y nguyên câu hỏi",
+        "Giữ mạch nói khi gặp câu hỏi chưa nghĩ ra ý — không im quá 3 giây"
+      ],
+      "keyLanguage": [
+        "Well,… · To be honest,… · Actually,… · Let me think… · I'd say… · I mean,…",
+        "Nguyên tắc: tối đa 1 filler / câu trả lời; câu sau dùng filler khác",
+        "Filler đứng đầu câu, có dấu phẩy, KHÔNG thay chủ ngữ / động từ",
+        "Ngắt hơi rất ngắn (~0,3 giây) sau filler rồi giọng đi tiếp"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P1-L03",
+      "moduleCode": "SPK-P1-M1",
+      "order": 3,
+      "title": "Buổi 3 — Nêu lý do & đưa ví dụ",
+      "titleEn": "Giving Reasons & Examples",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 4 cách khác nhau để đưa lý do, không chỉ \"because\"",
+        "Đưa ví dụ CỤ THỂ (có thời gian, địa điểm, con người) thay vì ví dụ chung chung",
+        "Nối Answer → Reason → Example thành một mạch liền",
+        "Trả lời câu \"Why…?\" dài 20–25 giây"
+      ],
+      "keyLanguage": [
+        "Lý do: because… · since… · mainly because… · one reason is that… · that's why…",
+        "Ví dụ: For example,… · For instance,… · Like last week,… · Take … for example",
+        "Ví dụ \"thật\" trả lời được ít nhất một câu: Khi nào? Ở đâu? Với ai?",
+        "\"because\" + mệnh đề; \"because of\" + danh từ — không dùng \"because\" hai lần trong một câu"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P1-L04",
+      "moduleCode": "SPK-P1-M1",
+      "order": 4,
+      "title": "Buổi 4 — Mở rộng câu trả lời ngắn: Band 5 → 6 → 7",
+      "titleEn": "Extending a Short Answer — Band 5 → 6 → 7",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhận ra vì sao một câu trả lời chỉ ở Band 5",
+        "Nâng lên Band 6 bằng 2 thao tác: thêm lý do cụ thể + thêm ví dụ có chi tiết",
+        "Nâng lên Band 7 bằng chi tiết cá nhân thật + một ý đối lập",
+        "Tự đánh giá câu trả lời theo thang 5 / 6 / 7"
+      ],
+      "keyLanguage": [
+        "What I like most is… · That said,… · Having said that,… · …, which is why…",
+        "It's one of those things that… · …, which says a lot about…",
+        "Band 7 ở Part 1 đến từ độ tự nhiên và độ cụ thể, KHÔNG từ độ hiếm của từ",
+        "Câu ghép: so · which · although — nối ý thay vì chấm câu liên tục"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P1-L05",
+      "moduleCode": "SPK-P1-M2",
+      "order": 5,
+      "title": "Buổi 5 — Work / Study: giới thiệu bản thân",
+      "titleEn": "Work / Study — Introducing Yourself",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời \"Are you a student or do you work?\" trôi chảy trong 20 giây",
+        "Dùng đúng các cụm cốt lõi về học tập / công việc",
+        "Thêm đủ WHERE + HOW LONG + WHAT vào câu giới thiệu",
+        "Nói được cả mặt tích cực và tiêu cực về công việc / việc học của mình"
+      ],
+      "keyLanguage": [
+        "major in · academic workload · hand in assignments · work long hours",
+        "job satisfaction · career prospects · gain experience · work-life balance",
+        "Khung: WHERE (học/làm ở đâu, ngành gì) → HOW LONG (bao lâu rồi) → WHAT (làm gì mỗi ngày)",
+        "I've been there for two years / since 2023 — KHÔNG \"I am working here since 2 years\""
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L06",
+      "moduleCode": "SPK-P1-M2",
+      "order": 6,
+      "title": "Buổi 6 — Hometown & Home",
+      "titleEn": "Hometown & Home",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt hometown (nơi sinh ra / lớn lên) và the area where you live (nơi đang sống)",
+        "Mô tả một nơi theo trình tự Location → Look/Feel → Highlight → Opinion",
+        "Dùng present perfect để nói về thay đổi của quê hương",
+        "Trả lời 4 câu Hometown / Home mà không lặp lại cùng một tính từ"
+      ],
+      "keyLanguage": [
+        "bustling city · pace of life · local cuisine · close-knit community",
+        "residential area · within walking distance · local amenities · good transport links",
+        "Hometown: I was born and raised in… (past + present perfect). Area: I currently live in… (present simple)",
+        "My hometown has changed a lot over the past few years — KHÔNG \"My hometown change a lot\""
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L07",
+      "moduleCode": "SPK-P1-M2",
+      "order": 7,
+      "title": "Buổi 7 — Mô tả nơi chốn: Describe · Reason · Compare",
+      "titleEn": "Describing Places — Describe · Reason · Compare",
+      "durationMinutes": 60,
+      "objectives": [
+        "Mô tả bất kỳ nơi nào theo 4 lớp: Location → Atmosphere → Facilities → Opinion",
+        "So sánh hai nơi bằng ít nhất 2 cấu trúc khác nhau",
+        "Chuyển từ vựng nơi chốn sang một chủ đề chưa học",
+        "Trả lời câu hỏi về nơi công cộng và bảo tàng mà không cần học riêng từng chủ đề"
+      ],
+      "keyLanguage": [
+        "public spaces · a lively / peaceful atmosphere · facilities · interactive displays · cultural heritage · a hidden gem",
+        "So sánh: far more … than · not as … as · nowhere near as … as · whereas",
+        "There are plenty of green spaces around here — KHÔNG \"Have many parks in my area\"",
+        "quieter than (KHÔNG \"more quiet than\") · the same as (KHÔNG \"same as\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L08",
+      "moduleCode": "SPK-P1-M2",
+      "order": 8,
+      "title": "Buổi 8 — Sở thích & lựa chọn",
+      "titleEn": "Preferences & Choices",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cách khác nhau để nói sở thích, không chỉ \"I like\"",
+        "Nêu hai tiêu chí và chọn một (comfort vs appearance, price vs quality…)",
+        "Dùng \"It depends on…\" đúng cách, có kèm điều kiện cụ thể",
+        "Trả lời câu hỏi so sánh trong 20–25 giây"
+      ],
+      "keyLanguage": [
+        "I prefer A to B · I tend to… · I'd rather … than … · I prioritise X over Y · It depends on…",
+        "Khung 3 bước: nêu 2 tiêu chí → chọn 1 + lý do → điều kiện đảo chiều (\"That said, if…\")",
+        "I prefer X to Y (KHÔNG \"more than\") · I'd rather go (KHÔNG \"I'd rather to go\")",
+        "\"It depends\" phải nói rõ phụ thuộc vào cái gì"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L09",
+      "moduleCode": "SPK-P1-M2",
+      "order": 9,
+      "title": "Buổi 9 — Thói quen & tần suất",
+      "titleEn": "Habits & Frequency",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 6 trạng từ tần suất chính xác, đúng vị trí trong câu",
+        "Nói về thói quen mà không lặp \"usually\" ba lần",
+        "Thêm hoàn cảnh (when / whenever / after…) để câu trả lời dài tự nhiên hơn",
+        "Trả lời câu hỏi \"How often…?\" trong 20 giây"
+      ],
+      "keyLanguage": [
+        "tend to · occasionally · every now and then · hardly ever · once in a blue moon",
+        "take a break · recharge my energy · clear my head · avoid burnout",
+        "Khung: Frequency → Context → Reason → Example",
+        "Trạng từ tần suất TRƯỚC động từ thường, SAU \"to be\": I usually go / I am usually tired"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L10",
+      "moduleCode": "SPK-P1-M2",
+      "order": 10,
+      "title": "Buổi 10 — Trải nghiệm quá khứ: kể chuyện mini",
+      "titleEn": "Past Experiences — Mini-Storytelling",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời câu \"Have you ever…?\" bằng một câu chuyện nhỏ 4 bước",
+        "Dùng past simple và \"used to\" chính xác",
+        "Thêm cảm xúc vào câu chuyện thay vì chỉ kể sự việc",
+        "Rút ra một bài học hoặc nhận xét ở cuối câu trả lời"
+      ],
+      "keyLanguage": [
+        "Khung mini-story: WHEN → WHAT HAPPENED → HOW I FELT → WHAT I LEARNED",
+        "used to + V · I remember… · At the time, I felt… · Looking back,…",
+        "used to go (KHÔNG \"use to go\") · didn't use to go (KHÔNG \"didn't used to\")",
+        "Đuôi -ed: /t/ walked · /d/ lived · /ɪd/ chỉ sau /t,d/: visited, wanted, decided"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L11",
+      "moduleCode": "SPK-P1-M2",
+      "order": 11,
+      "title": "Buổi 11 — Sự thay đổi: Past → Present → Result",
+      "titleEn": "Changes — Past → Present → Result",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời mọi câu \"How has X changed?\" theo khung Past → Present → Result",
+        "Dùng chính xác present perfect và \"used to\" trong cùng một câu trả lời",
+        "Dùng 5 trạng từ mức độ để mô tả thay đổi (considerably, dramatically, slightly…)",
+        "Nêu được hệ quả của thay đổi, không chỉ mô tả thay đổi"
+      ],
+      "keyLanguage": [
+        "used to be · nowadays / these days · has become increasingly… · there are far more / fewer…",
+        "Trạng từ mức độ: dramatically · considerably · steadily · slightly · has stayed much the same",
+        "Hệ quả: as a result · which means… · a marked shift towards…",
+        "My hometown has changed (KHÔNG \"is changed\") · far more crowded (KHÔNG \"more crowded more\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L12",
+      "moduleCode": "SPK-P1-M2",
+      "order": 12,
+      "title": "Buổi 12 — Trả lời hai chiều: Yes, but… / It depends",
+      "titleEn": "Balanced Answers — Yes, but… / It depends",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời hai chiều bằng 4 cấu trúc khác nhau",
+        "Dùng \"It depends on…\" kèm điều kiện cụ thể, không nói trống",
+        "Giữ được lập trường rõ ràng dù đã nêu cả hai mặt",
+        "Trả lời câu hỏi có tính đánh giá trong 25 giây"
+      ],
+      "keyLanguage": [
+        "Yes, but… · No, although… · It depends on… · On the one hand… on the other hand… · To be fair,…",
+        "Khung: Mặt A → Mặt B (nhượng bộ) → CHỐT lập trường",
+        "Cụm CHỐT: So on balance,… · All things considered,… · So overall, I'd say…",
+        "although + mệnh đề (KHÔNG kèm \"but\") · despite + danh từ / V-ing (KHÔNG + mệnh đề)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L13",
+      "moduleCode": "SPK-P1-M2",
+      "order": 13,
+      "title": "Buổi 13 — Câu hỏi bất ngờ: thoát khỏi học thuộc",
+      "titleEn": "Surprise Questions — Beating the Memorised Answer",
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời một chủ đề chưa từng học trong 5 giây suy nghĩ",
+        "Dùng 4 \"chiến lược cứu nguy\" khi không có ý tưởng",
+        "Chuyển từ vựng của chủ đề đã học sang chủ đề lạ",
+        "Tuyệt đối không nói \"I don't know\""
+      ],
+      "keyLanguage": [
+        "I've never really been into… · It's not something I've thought about much, but… · I suppose…",
+        "I can see why some people… · If I had to guess, I'd say…",
+        "4 chiến lược: (1) thú nhận rồi rẽ hướng (2) nói về người khác (3) đoán có căn cứ (4) nhìn từ góc khác",
+        "Câu điều kiện loại 2: If + past simple, would + V — If I had more free time, I would…"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P1-L14",
+      "moduleCode": "SPK-P1-M3",
+      "order": 14,
+      "title": "Buổi 14 — Thi thử Part 1 & Tự đánh giá",
+      "titleEn": "Part 1 Mock Test & Self-Assessment",
+      "isTest": true,
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời một bộ Part 1 hoàn chỉnh (4–5 phút) theo đúng điều kiện thi",
+        "Tự chấm mình theo 4 tiêu chí của IELTS",
+        "Nhận diện 2 lỗi lặp lại của bản thân",
+        "Lập kế hoạch ôn 4 tuần dựa trên kết quả"
+      ],
+      "keyLanguage": [
+        "Ôn tập toàn bộ Buổi 1–13: O.R.E. · filler · lý do & ví dụ · nâng band · các khung chủ đề",
+        "4 tiêu chí: Fluency · Vocabulary · Grammar · Pronunciation (mỗi tiêu chí 25%)",
+        "Không im quá 3 giây · ≥3 target phrases · đúng thì và đuôi -s/-ed · xuống giọng cuối câu",
+        "Nếu đạt ≥4/5 tiêu chí ở phiếu chấm → sẵn sàng sang Phần II (Part 2)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    }
+  ]
+}

@@ -1,0 +1,4951 @@
+{
+  "exercises": [
+    {
+      "code": "SPK-P3-L01-E01",
+      "lessonCode": "SPK-P3-L01",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung REASON × 3",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khung REASON × 3 gồm những bước nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "MỞ (báo trước nhiều lý do) → TÂM LÝ → THỰC TẾ → XÃ HỘI → KẾT"
+            },
+            {
+              "id": "B",
+              "text": "Opinion → Reason → Example"
+            },
+            {
+              "id": "C",
+              "text": "Cause → Effect → Solution"
+            },
+            {
+              "id": "D",
+              "text": "Past → Present → Future"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Ba lý do phải thuộc BA TẦNG khác nhau."
+        },
+        {
+          "id": "q2",
+          "prompt": "Lý do \"People want to escape the feeling of being stuck in one place\" thuộc tầng nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Tâm lý (trong đầu người ta)"
+            },
+            {
+              "id": "B",
+              "text": "Thực tế (trong ví và trong lịch)"
+            },
+            {
+              "id": "C",
+              "text": "Xã hội (giữa người với người)"
+            },
+            {
+              "id": "D",
+              "text": "Không thuộc tầng nào"
+            }
+          ],
+          "answer": "A",
+          "explanation": "escape, sense of control, stress → tâm lý."
+        },
+        {
+          "id": "q3",
+          "prompt": "Ba lý do nào cho thấy bài chỉ ở Band 6?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một lý do tâm lý, một thực tế, một xã hội"
+            },
+            {
+              "id": "B",
+              "text": "\"It is cheap, it saves money, and it is not expensive\" (ba lý do cùng một tầng)"
+            },
+            {
+              "id": "C",
+              "text": "Ba lý do có câu triển khai"
+            },
+            {
+              "id": "D",
+              "text": "Ba lý do dùng cụm chuyển tầng"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ba lý do cùng một tầng → chưa đủ chiều sâu."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "This stems from people work too much."
+            },
+            {
+              "id": "B",
+              "text": "This stems from a change in working habits."
+            },
+            {
+              "id": "C",
+              "text": "It can be attributed by poor planning."
+            },
+            {
+              "id": "D",
+              "text": "This can be attributed to people they work too much."
+            }
+          ],
+          "answer": "B",
+          "explanation": "stems from / attributed to + DANH TỪ hoặc V-ing."
+        },
+        {
+          "id": "q5",
+          "prompt": "Vì sao KHÔNG trả lời câu WHY bằng \"Because I like it\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Vì \"because\" bị cấm"
+            },
+            {
+              "id": "B",
+              "text": "Vì Part 3 hỏi về NGƯỜI TA nói chung, không hỏi về bản thân bạn"
+            },
+            {
+              "id": "C",
+              "text": "Vì quá dài"
+            },
+            {
+              "id": "D",
+              "text": "Vì thiếu ví dụ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Part 3 là lập luận trừu tượng về xã hội."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L01-E02",
+      "lessonCode": "SPK-P3-L01",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm nêu nguyên nhân với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "for several reasons",
+          "right": "vì một vài lý do"
+        },
+        {
+          "id": "m2",
+          "left": "stems from",
+          "right": "bắt nguồn từ"
+        },
+        {
+          "id": "m3",
+          "left": "can be attributed to",
+          "right": "có thể quy cho"
+        },
+        {
+          "id": "m4",
+          "left": "from a practical standpoint",
+          "right": "xét về mặt thực tế"
+        },
+        {
+          "id": "m5",
+          "left": "psychologically speaking",
+          "right": "xét về mặt tâm lý"
+        },
+        {
+          "id": "m6",
+          "left": "on a social level",
+          "right": "ở tầng xã hội"
+        },
+        {
+          "id": "m7",
+          "left": "a contributing factor is",
+          "right": "một yếu tố góp phần là"
+        },
+        {
+          "id": "m8",
+          "left": "this largely explains why",
+          "right": "điều này phần lớn giải thích vì sao"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L01-E03",
+      "lessonCode": "SPK-P3-L01",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung REASON × 3",
+      "instruction": "Kéo để xếp các câu theo đúng 5 bước của khung (câu hỏi: Why do people enjoy spending time in natural places?).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự REASON × 3:",
+          "tokens": [
+            "From a practical standpoint, natural settings are an ideal backdrop for physical activity, which improves fitness and sleep.",
+            "People are drawn to natural environments for several interconnected reasons.",
+            "For all these reasons, I think access to natural spaces is genuinely important for well-being, not just a luxury.",
+            "On a social level, visiting parks is often a shared experience that satisfies a deeply human need for connection.",
+            "Psychologically speaking, nature has a well-documented calming effect and reduces stress."
+          ],
+          "answer": [
+            "People are drawn to natural environments for several interconnected reasons.",
+            "Psychologically speaking, nature has a well-documented calming effect and reduces stress.",
+            "From a practical standpoint, natural settings are an ideal backdrop for physical activity, which improves fitness and sleep.",
+            "On a social level, visiting parks is often a shared experience that satisfies a deeply human need for connection.",
+            "For all these reasons, I think access to natural spaces is genuinely important for well-being, not just a luxury."
+          ],
+          "explanation": "MỞ → TÂM LÝ → THỰC TẾ → XÃ HỘI → KẾT."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L01-E04",
+      "lessonCode": "SPK-P3-L01",
+      "order": 4,
+      "type": "categorize",
+      "title": "Lý do này thuộc tầng nào?",
+      "instruction": "Kéo mỗi lý do (câu hỏi: Why do people move to big cities?) vào đúng tầng.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "tl",
+          "label": "TÂM LÝ"
+        },
+        {
+          "id": "tt",
+          "label": "THỰC TẾ"
+        },
+        {
+          "id": "xh",
+          "label": "XÃ HỘI"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "There are far more job opportunities.",
+          "category": "tt"
+        },
+        {
+          "id": "c2",
+          "text": "People want to escape the feeling of being stuck in one place.",
+          "category": "tl"
+        },
+        {
+          "id": "c3",
+          "text": "Their friends and relatives have already moved there.",
+          "category": "xh"
+        },
+        {
+          "id": "c4",
+          "text": "Public transport and hospitals are much better.",
+          "category": "tt"
+        },
+        {
+          "id": "c5",
+          "text": "Living in a city carries a certain social status.",
+          "category": "xh"
+        },
+        {
+          "id": "c6",
+          "text": "People feel more anonymous and freer to be themselves.",
+          "category": "tl"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L01-E05",
+      "lessonCode": "SPK-P3-L01",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu WHY theo khung REASON × 3",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 60–75 giây. Bắt đầu bằng câu báo trước nhiều lý do, nêu đủ ba tầng (tâm lý / thực tế / xã hội), mỗi lý do có một câu triển khai, và một câu kết luận.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do people take photographs of almost everything nowadays?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Why do people enjoy watching sport rather than playing it?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "People do X for several reasons.",
+          "Psychologically speaking,… · From a practical standpoint,… · On a social level,…",
+          "For all these reasons, I think…"
+        ],
+        "checklist": [
+          "Câu mở báo trước sẽ có nhiều lý do",
+          "Có đủ ba tầng: tâm lý, thực tế, xã hội",
+          "Mỗi lý do có ít nhất một câu triển khai (ví dụ / hệ quả / so sánh)",
+          "Dùng ít nhất 2 cụm ★ (stems from, can be attributed to, a contributing factor is…)",
+          "Có câu kết luận, không dừng đột ngột; không dùng \"because\" quá 1 lần"
+        ],
+        "commonErrors": [
+          "Ba lý do đều cùng một tầng",
+          "Dùng \"because\" năm lần trong một câu trả lời",
+          "Nêu lý do rồi dừng, không triển khai",
+          "Trả lời bằng trải nghiệm cá nhân (\"Because I like it\")"
+        ],
+        "sampleAnswer": "People photograph almost everything now for several interconnected reasons. Psychologically speaking, taking a picture gives a sense of holding onto a moment that would otherwise slip away — it's a very human response to the feeling that time passes too quickly. From a practical standpoint, the barrier has essentially disappeared: everyone carries a high-quality camera, storage is effectively unlimited, and it costs nothing, so there's no reason not to. And on a social level, photos have become a form of communication in themselves — a way of showing where you are and who you're with, rather than describing it. For all these reasons, I think the habit is less about photography in the traditional sense and more about documenting and sharing a life."
+      }
+    },
+    {
+      "code": "SPK-P3-L02-E01",
+      "lessonCode": "SPK-P3-L02",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung NUANCED OPINION",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cách trả lời nào MẤT điểm nặng nhất ở câu Opinion?",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"To a certain extent, yes — but…\""
+            },
+            {
+              "id": "B",
+              "text": "\"Yes, I think so.\" rồi im"
+            },
+            {
+              "id": "C",
+              "text": "Nêu hai mặt rồi chốt bên có điều kiện"
+            },
+            {
+              "id": "D",
+              "text": "Dùng cụm hedging"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không có lập luận, giám khảo phải hỏi lại."
+        },
+        {
+          "id": "q2",
+          "prompt": "Khung NUANCED OPINION là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "SẮC THÁI → MỘT MẶT (+ ví dụ) → MẶT KIA (+ ví dụ) → CÂN BẰNG (kết luận có điều kiện)"
+            },
+            {
+              "id": "B",
+              "text": "Yes → No → Maybe"
+            },
+            {
+              "id": "C",
+              "text": "Reason 1 → Reason 2 → Reason 3"
+            },
+            {
+              "id": "D",
+              "text": "Problem → Solution → Limit"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu kết Opinion nên là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một câu tóm tắt lại cả hai mặt"
+            },
+            {
+              "id": "B",
+              "text": "Một câu chọn bên NHƯNG có điều kiện (\"…, provided that…\" / \"…only when…\")"
+            },
+            {
+              "id": "C",
+              "text": "\"Maybe yes, maybe no.\""
+            },
+            {
+              "id": "D",
+              "text": "\"I completely agree, one hundred percent.\""
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "Hedging chồng chất (\"Maybe it can perhaps possibly be quite good\") bị lỗi gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không lỗi"
+            },
+            {
+              "id": "B",
+              "text": "Nghe thiếu tự tin — chỉ dùng MỘT lớp hedging cho một khẳng định"
+            },
+            {
+              "id": "C",
+              "text": "Quá chắc chắn"
+            },
+            {
+              "id": "D",
+              "text": "Sai ngữ pháp"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"I would stop short of saying\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "tôi chưa đến mức nói rằng…"
+            },
+            {
+              "id": "B",
+              "text": "tôi hoàn toàn đồng ý rằng…"
+            },
+            {
+              "id": "C",
+              "text": "tôi không hiểu câu hỏi"
+            },
+            {
+              "id": "D",
+              "text": "tôi sẽ nói ngắn thôi"
+            }
+          ],
+          "answer": "A",
+          "explanation": "I would stop short of saying it should be compulsory."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L02-E02",
+      "lessonCode": "SPK-P3-L02",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm hedging với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "to a certain extent",
+          "right": "ở một mức độ nhất định"
+        },
+        {
+          "id": "m2",
+          "left": "generally speaking",
+          "right": "nói chung"
+        },
+        {
+          "id": "m3",
+          "left": "it depends on",
+          "right": "còn tuỳ vào"
+        },
+        {
+          "id": "m4",
+          "left": "on balance",
+          "right": "xét toàn cục"
+        },
+        {
+          "id": "m5",
+          "left": "while it is true that",
+          "right": "tuy đúng là"
+        },
+        {
+          "id": "m6",
+          "left": "I would argue that",
+          "right": "tôi cho rằng"
+        },
+        {
+          "id": "m7",
+          "left": "all things considered",
+          "right": "cân nhắc mọi mặt"
+        },
+        {
+          "id": "m8",
+          "left": "arguably",
+          "right": "có thể lập luận rằng"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L02-E03",
+      "lessonCode": "SPK-P3-L02",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung NUANCED OPINION",
+      "instruction": "Kéo để xếp các câu theo đúng 4 bước (câu hỏi: Is it important for children to learn a musical instrument?).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự NUANCED OPINION:",
+          "tokens": [
+            "On the other hand, forcing every child to learn an instrument could easily backfire and create resentment rather than appreciation.",
+            "To a certain extent, yes — but I'd stop short of saying it should be compulsory for everyone.",
+            "On balance, music education is valuable, but its benefits only really materialise when children engage with it willingly.",
+            "On one hand, the cognitive benefits are well-established — reading notation and sustaining focus transfer to academic performance."
+          ],
+          "answer": [
+            "To a certain extent, yes — but I'd stop short of saying it should be compulsory for everyone.",
+            "On one hand, the cognitive benefits are well-established — reading notation and sustaining focus transfer to academic performance.",
+            "On the other hand, forcing every child to learn an instrument could easily backfire and create resentment rather than appreciation.",
+            "On balance, music education is valuable, but its benefits only really materialise when children engage with it willingly."
+          ],
+          "explanation": "SẮC THÁI → MỘT MẶT → MẶT KIA → CÂN BẰNG (kết luận có điều kiện)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L02-E04",
+      "lessonCode": "SPK-P3-L02",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Chuyển Yes/No thành câu có sắc thái",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu trả lời nghèo nàn thành một câu mở có sắc thái, dùng cụm hedging.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Yes, technology is good.",
+          "explanation": "Trả lời câu hỏi nhưng không tuyệt đối.",
+          "sampleAnswers": [
+            "Generally speaking, technology has been beneficial, but it depends on how it is used."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "No, exams are not useful.",
+          "explanation": "Nêu sắc thái thay vì phủ định thẳng.",
+          "sampleAnswers": [
+            "To a certain extent exams are useful, but I would stop short of saying they measure everything that matters."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Yes, everyone should recycle.",
+          "explanation": "Chọn bên nhưng thừa nhận giới hạn.",
+          "sampleAnswers": [
+            "On balance recycling is worthwhile, though its impact is often overstated."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Although it is expensive, but it is worth it.",
+          "explanation": "Không dùng although và but cùng lúc.",
+          "sampleAnswers": [
+            "Although it is expensive, it is worth it."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L02-E05",
+      "lessonCode": "SPK-P3-L02",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu Opinion có sắc thái",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 60–80 giây. Câu mở phải có sắc thái (KHÔNG Yes/No đơn lẻ), nêu một mặt ủng hộ có ví dụ và một mặt giới hạn, kết bằng câu chọn bên có điều kiện.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you think people today are happier than people were fifty years ago?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you think it is important for adults to keep learning new skills?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "To a certain extent, yes — but I would stop short of saying…",
+          "On one hand,… (+ ví dụ) → On the other hand,… (+ ví dụ)",
+          "On balance, I believe…, provided that… / …only when…"
+        ],
+        "checklist": [
+          "Câu mở có sắc thái, không phải Yes/No",
+          "Có ít nhất một lập luận ủng hộ có ví dụ",
+          "Có ít nhất một lập luận giới hạn",
+          "Dùng ít nhất 2 cụm hedging",
+          "Kết luận có chọn bên VÀ có điều kiện kèm theo; không dùng \"I think\" quá 2 lần"
+        ],
+        "commonErrors": [
+          "Trả lời \"Yes, I think so.\" rồi im",
+          "Nói cực đoan một chiều",
+          "Dùng \"I think\" mở đầu năm câu liên tiếp",
+          "Nêu hai mặt nhưng không chọn bên nào ở cuối"
+        ],
+        "sampleAnswer": "To a certain extent, yes, but I'd stop short of saying it's a straightforward improvement. On one hand, people today have access to things that materially improve quality of life — better healthcare, more personal freedom, and far more choice in how they live. Someone with a chronic illness fifty years ago simply had fewer options. On the other hand, rates of anxiety and loneliness appear to have risen, partly because the same freedom that expands choice also removes the ready-made communities people used to belong to. On balance, I'd say people are better off in objective terms, but whether they feel happier depends heavily on whether they've managed to rebuild the sense of belonging that older, less mobile societies provided by default."
+      }
+    },
+    {
+      "code": "SPK-P3-L03-E01",
+      "lessonCode": "SPK-P3-L03",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung BENEFIT–DRAWBACK–BALANCE",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Thế nào là một BẤT LỢI THẬT?",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"The disadvantage is that it is not perfect.\""
+            },
+            {
+              "id": "B",
+              "text": "Bất lợi có NGƯỜI CHỊU THIỆT cụ thể và một cơ chế rõ ràng"
+            },
+            {
+              "id": "C",
+              "text": "Một danh sách 5 bất lợi liệt kê nhanh"
+            },
+            {
+              "id": "D",
+              "text": "\"It is not always good.\""
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mẹo: sau khi nêu bất lợi, hỏi \"Ai khổ vì điều này?\""
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu hỏi \"What are the drawbacks of standardised testing?\" thuộc dạng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Opinion"
+            },
+            {
+              "id": "B",
+              "text": "Advantages / Disadvantages"
+            },
+            {
+              "id": "C",
+              "text": "Compare"
+            },
+            {
+              "id": "D",
+              "text": "Why"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hỏi \"drawbacks\" → dạng AD, không trả lời \"I think it is good\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu kết dạng AD nên:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Đếm: \"three advantages and two disadvantages, so it is good\""
+            },
+            {
+              "id": "B",
+              "text": "Nêu một điều kiện đánh đổi (\"…, provided that…\") hoặc định nghĩa lại sự đánh đổi"
+            },
+            {
+              "id": "C",
+              "text": "Lặp lại câu mở đầu"
+            },
+            {
+              "id": "D",
+              "text": "\"So there are good things and bad things.\""
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào dùng whereas ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Remote work is good, whereas it is bad."
+            },
+            {
+              "id": "B",
+              "text": "Older workers value stability, whereas younger ones prioritise flexibility."
+            },
+            {
+              "id": "C",
+              "text": "Although it is expensive, but whereas it is worth it."
+            },
+            {
+              "id": "D",
+              "text": "Whereas remote work, new employees lose out."
+            }
+          ],
+          "answer": "B",
+          "explanation": "whereas nối HAI CHỦ THỂ khác nhau."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"at the expense of\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "đánh đổi bằng, phải hy sinh"
+            },
+            {
+              "id": "B",
+              "text": "được bù lại bởi"
+            },
+            {
+              "id": "C",
+              "text": "lớn hơn, vượt trội"
+            },
+            {
+              "id": "D",
+              "text": "phản tác dụng"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Speed is often achieved at the expense of quality."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L03-E02",
+      "lessonCode": "SPK-P3-L03",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm lợi–hại với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "the main benefit is",
+          "right": "lợi ích chính là"
+        },
+        {
+          "id": "m2",
+          "left": "a significant drawback",
+          "right": "một bất lợi đáng kể"
+        },
+        {
+          "id": "m3",
+          "left": "outweigh",
+          "right": "lớn hơn, vượt trội"
+        },
+        {
+          "id": "m4",
+          "left": "at the expense of",
+          "right": "đánh đổi bằng"
+        },
+        {
+          "id": "m5",
+          "left": "the trade-off is",
+          "right": "sự đánh đổi là"
+        },
+        {
+          "id": "m6",
+          "left": "a double-edged sword",
+          "right": "con dao hai lưỡi"
+        },
+        {
+          "id": "m7",
+          "left": "offset by",
+          "right": "được bù lại bởi"
+        },
+        {
+          "id": "m8",
+          "left": "counterproductive",
+          "right": "phản tác dụng"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L03-E03",
+      "lessonCode": "SPK-P3-L03",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung BENEFIT–DRAWBACK–BALANCE",
+      "instruction": "Kéo để xếp các câu theo đúng 4 bước (câu hỏi: advantages and disadvantages of working from home).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự BENEFIT–DRAWBACK–BALANCE:",
+          "tokens": [
+            "That said, it comes at a cost: a significant drawback is that new employees lose the informal learning that happens in an office, so they develop more slowly.",
+            "Remote working is very much a double-edged sword.",
+            "On balance, the benefits outweigh the drawbacks, provided that companies deliberately design in the contact that used to happen naturally.",
+            "The main benefit is autonomy — people organise their day around when they work best, and in a big city the recovered commuting time can be two hours a day."
+          ],
+          "answer": [
+            "Remote working is very much a double-edged sword.",
+            "The main benefit is autonomy — people organise their day around when they work best, and in a big city the recovered commuting time can be two hours a day.",
+            "That said, it comes at a cost: a significant drawback is that new employees lose the informal learning that happens in an office, so they develop more slowly.",
+            "On balance, the benefits outweigh the drawbacks, provided that companies deliberately design in the contact that used to happen naturally."
+          ],
+          "explanation": "MỞ → LỢI ÍCH → BẤT LỢI (có người chịu thiệt) → CÂN BẰNG (provided that…)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L03-E04",
+      "lessonCode": "SPK-P3-L03",
+      "order": 4,
+      "type": "categorize",
+      "title": "Câu hỏi này là OPINION hay ADV/DISADV?",
+      "instruction": "Kéo mỗi câu hỏi vào đúng dạng.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "op",
+          "label": "OPINION"
+        },
+        {
+          "id": "ad",
+          "label": "ADV / DISADV"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Do you think online shopping is a good thing?",
+          "category": "op"
+        },
+        {
+          "id": "c2",
+          "text": "What are the drawbacks of living in a large city?",
+          "category": "ad"
+        },
+        {
+          "id": "c3",
+          "text": "Is it important for everyone to learn a foreign language?",
+          "category": "op"
+        },
+        {
+          "id": "c4",
+          "text": "What benefits does tourism bring to a small town?",
+          "category": "ad"
+        },
+        {
+          "id": "c5",
+          "text": "Do you agree that exams put too much pressure on students?",
+          "category": "op"
+        },
+        {
+          "id": "c6",
+          "text": "What are the advantages and disadvantages of having a car in the city?",
+          "category": "ad"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L03-E05",
+      "lessonCode": "SPK-P3-L03",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu Advantages / Disadvantages",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 70–90 giây. Nêu hai lợi ích (ít nhất một có ví dụ), một bất lợi THẬT có người chịu thiệt, dùng while hoặc whereas, và kết bằng điều kiện đánh đổi.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "What are the advantages and disadvantages of children using tablets at school?"
+        },
+        {
+          "id": "s2",
+          "prompt": "What are the advantages and disadvantages of tourism for a small town?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "[X] brings both clear benefits and some real drawbacks / is a double-edged sword.",
+          "The main benefit is… · A significant drawback is…",
+          "While A…, B… · On balance, …, provided that…"
+        ],
+        "checklist": [
+          "Câu mở báo trước hai mặt",
+          "Có hai lợi ích, ít nhất một có ví dụ",
+          "Bất lợi nêu rõ ai chịu thiệt (có cơ chế cụ thể)",
+          "Dùng while hoặc whereas ít nhất một lần",
+          "Kết luận có điều kiện, không đếm số lượng"
+        ],
+        "commonErrors": [
+          "Liệt kê 5 lợi ích và 5 bất lợi kiểu danh sách",
+          "Bất lợi giả: \"The disadvantage is that it is not perfect.\"",
+          "Kết luận kiểu đếm: \"three advantages and two disadvantages, so it is good\"",
+          "Nhầm sang dạng Opinion"
+        ],
+        "sampleAnswer": "Using tablets in class is very much a double-edged sword. The main benefit is access — a single device replaces a whole shelf of textbooks, and interactive material can adapt to a child's level in a way a printed page can't. There's also an equity argument: schools that lend devices can put resources in the hands of children whose families couldn't afford them. That said, it comes at a cost. A significant drawback is that constant screen access makes sustained attention harder, and the children hit hardest are those who already struggle to focus — for them the tablet becomes a source of distraction rather than learning. On balance, I'd say tablets are worth using, provided that schools are deliberate about when screens are on and when they're off, rather than treating the device as a default."
+      }
+    },
+    {
+      "code": "SPK-P3-L04-E01",
+      "lessonCode": "SPK-P3-L04",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung COMPARE FRAMEWORK",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"So sánh theo hàng\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Mô tả xong hết A rồi mới sang B"
+            },
+            {
+              "id": "B",
+              "text": "So sánh A và B theo TỪNG KHÍA CẠNH một (tốc độ, chi phí…), mỗi khía cạnh nói cả A lẫn B"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ nói về A"
+            },
+            {
+              "id": "D",
+              "text": "Đọc thành hai cột trên giấy"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nói theo cột (hết A rồi B) làm người nghe phải tự ghép → mất Coherence."
+        },
+        {
+          "id": "q2",
+          "prompt": "Dấu hiệu Band 7+ trong câu so sánh là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Chỉ dùng \"more\" và \"better\""
+            },
+            {
+              "id": "B",
+              "text": "Nêu được một ĐIỂM CHUNG giữa hai đối tượng đối lập"
+            },
+            {
+              "id": "C",
+              "text": "Mô tả thật nhiều chi tiết A"
+            },
+            {
+              "id": "D",
+              "text": "Không kết luận"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"That said, they do share some common ground…\""
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Online shopping is more better and more convenient."
+            },
+            {
+              "id": "B",
+              "text": "Cities are very higher priced than the countryside."
+            },
+            {
+              "id": "C",
+              "text": "Cities are considerably more expensive than the countryside."
+            },
+            {
+              "id": "D",
+              "text": "This is more easier than the old system."
+            }
+          ],
+          "answer": "C",
+          "explanation": "much / far / considerably + so sánh hơn; KHÔNG \"very higher\", KHÔNG \"more better\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu kết dạng COMPARE nên:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Tóm tắt lại cả hai đối tượng"
+            },
+            {
+              "id": "B",
+              "text": "Chọn ra MỘT khác biệt quan trọng nhất (\"the most significant shift is in…\")"
+            },
+            {
+              "id": "C",
+              "text": "\"So they are different.\""
+            },
+            {
+              "id": "D",
+              "text": "Lặp lại câu mở"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"nowhere near as … as\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "kém xa, không hề bằng"
+            },
+            {
+              "id": "B",
+              "text": "gần bằng"
+            },
+            {
+              "id": "C",
+              "text": "hơn hẳn"
+            },
+            {
+              "id": "D",
+              "text": "ở ngay gần"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Public transport here is nowhere near as reliable as in Japan."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L04-E02",
+      "lessonCode": "SPK-P3-L04",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm so sánh với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "differ in several significant ways",
+          "right": "khác nhau ở vài điểm đáng kể"
+        },
+        {
+          "id": "m2",
+          "left": "in terms of",
+          "right": "xét về mặt"
+        },
+        {
+          "id": "m3",
+          "left": "by comparison",
+          "right": "so với đó"
+        },
+        {
+          "id": "m4",
+          "left": "share some common ground",
+          "right": "có điểm chung"
+        },
+        {
+          "id": "m5",
+          "left": "nowhere near as",
+          "right": "không hề bằng"
+        },
+        {
+          "id": "m6",
+          "left": "the overriding priority",
+          "right": "ưu tiên bao trùm"
+        },
+        {
+          "id": "m7",
+          "left": "the most significant shift is in",
+          "right": "thay đổi lớn nhất nằm ở"
+        },
+        {
+          "id": "m8",
+          "left": "undergone a dramatic transformation",
+          "right": "đã trải qua biến đổi mạnh mẽ"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L04-E03",
+      "lessonCode": "SPK-P3-L04",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung COMPARE",
+      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: How has the way people shop changed compared to the past?).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự COMPARE FRAMEWORK:",
+          "tokens": [
+            "In terms of information, customers in the past relied on the shop assistant, whereas today they can read hundreds of reviews before deciding.",
+            "Shopping has undergone a dramatic transformation over the past twenty years.",
+            "Ultimately, the most significant shift is that customers now have far more information than sellers do.",
+            "That said, the two still share some common ground — many people research online but buy in the shop because they want to see the product.",
+            "In terms of speed, shopping used to be a slow process of visiting markets and comparing by hand, whereas now you can order in one minute."
+          ],
+          "answer": [
+            "Shopping has undergone a dramatic transformation over the past twenty years.",
+            "In terms of speed, shopping used to be a slow process of visiting markets and comparing by hand, whereas now you can order in one minute.",
+            "In terms of information, customers in the past relied on the shop assistant, whereas today they can read hundreds of reviews before deciding.",
+            "That said, the two still share some common ground — many people research online but buy in the shop because they want to see the product.",
+            "Ultimately, the most significant shift is that customers now have far more information than sellers do."
+          ],
+          "explanation": "MỞ → KHÍA CẠNH 1 → KHÍA CẠNH 2 → ĐIỂM CHUNG → TỔNG QUÁT (một khác biệt lớn nhất)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L04-E04",
+      "lessonCode": "SPK-P3-L04",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi so sánh nâng cao",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cities are more expensive more than the countryside.",
+          "answer": "Cities are considerably more expensive than the countryside.",
+          "explanation": "much / far / considerably + so sánh hơn."
+        },
+        {
+          "id": "q2",
+          "prompt": "This is not as good like the old system.",
+          "answer": "This is nowhere near as good as the old system.",
+          "accept": [
+            "This is not as good as the old system."
+          ],
+          "explanation": "not as … as (không \"as … like\")."
+        },
+        {
+          "id": "q3",
+          "prompt": "Online courses are more cheaper.",
+          "answer": "Online courses are significantly cheaper.",
+          "explanation": "\"cheaper\" đã là so sánh — không thêm \"more\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Rural schools receive very less funding than city schools.",
+          "answer": "Rural schools receive far less funding than city schools.",
+          "explanation": "\"very\" không đi với so sánh — dùng \"far\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L04-E05",
+      "lessonCode": "SPK-P3-L04",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu Compare / Contrast",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 70–90 giây. So sánh theo KHÍA CẠNH (ít nhất 2), nêu một điểm chung, và kết bằng nhận định về khác biệt quan trọng nhất. Không dùng \"better\".",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "How is the way people communicate with friends today different from twenty years ago?"
+        },
+        {
+          "id": "s2",
+          "prompt": "How is city life different from life in the countryside?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "…differ in several significant ways / …has undergone a dramatic transformation",
+          "In terms of…, A… whereas B… · By comparison,…",
+          "That said, they share some common ground… → Ultimately, the most significant shift is in…"
+        ],
+        "checklist": [
+          "So sánh theo khía cạnh, không mô tả lần lượt hai đối tượng",
+          "Nêu rõ ít nhất hai khía cạnh (tốc độ / chi phí / con người / quyền lực)",
+          "Dùng ít nhất 2 cụm ★ (in terms of, by comparison, nowhere near as…)",
+          "Có nêu một điểm chung",
+          "Câu kết chọn một khác biệt quan trọng nhất; không dùng \"better\""
+        ],
+        "commonErrors": [
+          "Mô tả xong hết A rồi mới sang B",
+          "Chỉ dùng \"more\" và \"better\": \"more better and more convenient\"",
+          "So sánh mà không nói rõ so sánh về mặt gì",
+          "Quên hoàn toàn điểm chung"
+        ],
+        "sampleAnswer": "The way friends communicate has changed considerably over the past twenty years, mainly because of smartphones. In terms of frequency, contact used to be occasional — a phone call or a meet-up — whereas now it's almost continuous, a low-level stream of messages throughout the day. In terms of depth, though, the picture is more mixed: earlier conversations were fewer but longer and more focused, whereas a lot of messaging today is fragmented and easy to half-ignore. That said, the two still share common ground — when something serious happens, people still reach for a call, because they instinctively know text isn't enough. Ultimately, the most significant shift is that friendship no longer requires deliberate effort to maintain contact, which sounds convenient but arguably makes each individual exchange feel less valuable."
+      }
+    },
+    {
+      "code": "SPK-P3-L05-E01",
+      "lessonCode": "SPK-P3-L05",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung Problem / Solution & vai trò chính phủ",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Giải pháp \"People should be more aware\" bị lỗi gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không lỗi"
+            },
+            {
+              "id": "B",
+              "text": "Không có CHỦ THỂ — ai làm cho họ nhận thức, bằng cách nào?"
+            },
+            {
+              "id": "C",
+              "text": "Quá dài"
+            },
+            {
+              "id": "D",
+              "text": "Quá cực đoan"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mỗi giải pháp phải trả lời AI LÀM và LÀM GÌ."
+        },
+        {
+          "id": "q2",
+          "prompt": "Kẹt xe ở đô thị — đâu là NGUYÊN NHÂN GỐC (không phải triệu chứng)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Có quá nhiều xe máy trên đường"
+            },
+            {
+              "id": "B",
+              "text": "Đường quá hẹp"
+            },
+            {
+              "id": "C",
+              "text": "Nhà ở gần nơi làm việc quá đắt nên người ta phải đi làm xa"
+            },
+            {
+              "id": "D",
+              "text": "Mọi người ra khỏi nhà cùng một giờ"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Nguyên nhân cấu trúc, không phải triệu chứng bề mặt."
+        },
+        {
+          "id": "q3",
+          "prompt": "Khung 5B (câu hỏi về chính phủ) gồm:",
+          "options": [
+            {
+              "id": "A",
+              "text": "VAI TRÒ → CHỈ CHÍNH PHỦ LÀM ĐƯỢC → GIỚI HẠN → GIẢI PHÁP CÂN BẰNG → TRÁCH NHIỆM BA BÊN"
+            },
+            {
+              "id": "B",
+              "text": "Ban → Phạt → Cấm → Kết"
+            },
+            {
+              "id": "C",
+              "text": "Reason 1 → 2 → 3"
+            },
+            {
+              "id": "D",
+              "text": "Past → Present → Future"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q4",
+          "prompt": "Cụm nào nên tránh khi đề xuất giải pháp?",
+          "options": [
+            {
+              "id": "A",
+              "text": "incentivise rather than penalise"
+            },
+            {
+              "id": "B",
+              "text": "The government should just ban it."
+            },
+            {
+              "id": "C",
+              "text": "create the right framework and let businesses innovate"
+            },
+            {
+              "id": "D",
+              "text": "tackle the problem at source"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Lệnh cấm là cực đoan, không phân tích hệ quả (public backlash)."
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu bị động nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Emissions should cut."
+            },
+            {
+              "id": "B",
+              "text": "Emissions should be cut far more aggressively."
+            },
+            {
+              "id": "C",
+              "text": "Emissions should to be cut."
+            },
+            {
+              "id": "D",
+              "text": "Emissions be should cut."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Bị động luôn cần be + V3."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L05-E02",
+      "lessonCode": "SPK-P3-L05",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm giải pháp / vai trò với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "the root cause is",
+          "right": "nguyên nhân gốc rễ là"
+        },
+        {
+          "id": "m2",
+          "left": "address the underlying issue",
+          "right": "giải quyết vấn đề cốt lõi"
+        },
+        {
+          "id": "m3",
+          "left": "a more effective approach might be",
+          "right": "một cách hiệu quả hơn có thể là"
+        },
+        {
+          "id": "m4",
+          "left": "incentivise rather than penalise",
+          "right": "khuyến khích thay vì phạt"
+        },
+        {
+          "id": "m5",
+          "left": "generate public backlash",
+          "right": "gây phản ứng dữ dội từ dân"
+        },
+        {
+          "id": "m6",
+          "left": "a short-term fix",
+          "right": "giải pháp tạm thời"
+        },
+        {
+          "id": "m7",
+          "left": "a three-way responsibility",
+          "right": "trách nhiệm ba bên"
+        },
+        {
+          "id": "m8",
+          "left": "create the right framework",
+          "right": "tạo ra khuôn khổ phù hợp"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L05-E03",
+      "lessonCode": "SPK-P3-L05",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung 5B (chính phủ)",
+      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: Should the government do more to protect the environment?).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự ROLE–RESPONSIBILITY–LIMIT:",
+          "tokens": [
+            "However, I would be cautious about policies that restrict what people can do without giving them viable alternatives, because that usually generates public backlash.",
+            "I think the government has an important role to play, but it should not be the only actor responsible.",
+            "Ultimately I think it is a three-way responsibility between government, business and individuals.",
+            "A more effective approach might be to incentivise rather than penalise — tax breaks for clean energy, for example.",
+            "On one hand, only governments have the authority to set emissions targets and the money to invest in renewable infrastructure."
+          ],
+          "answer": [
+            "I think the government has an important role to play, but it should not be the only actor responsible.",
+            "On one hand, only governments have the authority to set emissions targets and the money to invest in renewable infrastructure.",
+            "However, I would be cautious about policies that restrict what people can do without giving them viable alternatives, because that usually generates public backlash.",
+            "A more effective approach might be to incentivise rather than penalise — tax breaks for clean energy, for example.",
+            "Ultimately I think it is a three-way responsibility between government, business and individuals."
+          ],
+          "explanation": "VAI TRÒ → CHỈ CHÍNH PHỦ LÀM ĐƯỢC → GIỚI HẠN → GIẢI PHÁP CÂN BẰNG → TRÁCH NHIỆM BA BÊN."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L05-E04",
+      "lessonCode": "SPK-P3-L05",
+      "order": 4,
+      "type": "categorize",
+      "title": "Triệu chứng hay nguyên nhân gốc?",
+      "instruction": "Kéo mỗi câu (vấn đề: Traffic congestion in large cities) vào đúng cột.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "tc",
+          "label": "TRIỆU CHỨNG"
+        },
+        {
+          "id": "nn",
+          "label": "NGUYÊN NHÂN GỐC"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "There are too many motorbikes on the road.",
+          "category": "tc"
+        },
+        {
+          "id": "c2",
+          "text": "Cities were built without proper public transport networks.",
+          "category": "nn"
+        },
+        {
+          "id": "c3",
+          "text": "People leave home at the same time every morning.",
+          "category": "tc"
+        },
+        {
+          "id": "c4",
+          "text": "Housing near workplaces is unaffordable, so people commute long distances.",
+          "category": "nn"
+        },
+        {
+          "id": "c5",
+          "text": "The roads are too narrow.",
+          "category": "tc"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L05-E05",
+      "lessonCode": "SPK-P3-L05",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu Problem / Solution",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Nêu nguyên nhân GỐC (không phải triệu chứng), một giải pháp CÓ CHỦ THỂ rõ ràng, một giới hạn của giải pháp, và một câu về trách nhiệm nhiều bên.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "What can be done to reduce the level of stress people experience at work?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Should the government be responsible for providing housing for low-income families?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "The root cause, I think, is…",
+          "A more effective approach might be to… — and that would have to come from [schools / employers / city planners]",
+          "Of course, that alone would not solve everything, because… → Ultimately, it requires…"
+        ],
+        "checklist": [
+          "Nêu được nguyên nhân gốc, không phải triệu chứng",
+          "Giải pháp có chủ thể rõ ràng (trả lời được AI LÀM và LÀM GÌ)",
+          "Có nêu giới hạn của giải pháp",
+          "Dùng ít nhất 2 cụm ★ (root cause, address the underlying issue, incentivise rather than penalise…)",
+          "Có câu kết về trách nhiệm nhiều bên; tránh từ \"ban\" và \"force\""
+        ],
+        "commonErrors": [
+          "Giải pháp không có chủ thể: \"People should be more aware.\"",
+          "Giải pháp bằng lệnh cấm: \"The government should ban it.\"",
+          "Nhầm triệu chứng với nguyên nhân",
+          "Nêu giải pháp rồi dừng, không nói giới hạn"
+        ],
+        "sampleAnswer": "The root cause of workplace stress, I think, isn't individual time management but the way work is structured. In many organisations, staff are given more responsibility than the hours actually allow, and the culture treats long hours as a sign of commitment. A more effective approach might be for employers to redesign workloads around realistic capacity and to protect time off explicitly — but that has to come from senior management, not from individual employees, because a single person taking evenings off in a culture that rewards overwork simply falls behind. Of course, that alone wouldn't solve everything, because some stress comes from economic insecurity that no employer can fix. Ultimately it requires a combination of company policy, sensible regulation on working hours, and a broader cultural shift away from equating exhaustion with dedication."
+      }
+    },
+    {
+      "code": "SPK-P3-L06-E01",
+      "lessonCode": "SPK-P3-L06",
+      "order": 1,
+      "type": "mcq",
+      "title": "Khung Past · Present · Future",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Dự đoán \"In the future, everything will be better\" bị lỗi gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không lỗi"
+            },
+            {
+              "id": "B",
+              "text": "Dự đoán trống — không có LỰC ĐẨY, không có bằng chứng"
+            },
+            {
+              "id": "C",
+              "text": "Quá bi quan"
+            },
+            {
+              "id": "D",
+              "text": "Sai thì"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Có lực đẩy mới là lập luận, không có lực đẩy chỉ là phỏng đoán."
+        },
+        {
+          "id": "q2",
+          "prompt": "4 lực đẩy dùng được cho mọi câu dự đoán:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Công nghệ · dân số · kinh tế · môi trường/văn hoá"
+            },
+            {
+              "id": "B",
+              "text": "Vui · buồn · giận · sợ"
+            },
+            {
+              "id": "C",
+              "text": "Sáng · trưa · chiều · tối"
+            },
+            {
+              "id": "D",
+              "text": "Đọc · viết · nghe · nói"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Sau mỗi dự đoán nên có:",
+          "options": [
+            {
+              "id": "A",
+              "text": "một câu \"but I am not sure\""
+            },
+            {
+              "id": "B",
+              "text": "một câu thận trọng (caveat) có LÝ DO cụ thể"
+            },
+            {
+              "id": "C",
+              "text": "một con số"
+            },
+            {
+              "id": "D",
+              "text": "\"That's all.\""
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"It is difficult to predict with any certainty, because…\""
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "People use to write letters."
+            },
+            {
+              "id": "B",
+              "text": "People used to writing letters."
+            },
+            {
+              "id": "C",
+              "text": "People used to write letters."
+            },
+            {
+              "id": "D",
+              "text": "People used write letters."
+            }
+          ],
+          "answer": "C",
+          "explanation": "used to + V nguyên thể (thói quen quá khứ, nay không còn)."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"I used to live there\" khác \"I am used to living there\" thế nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Giống hệt nhau"
+            },
+            {
+              "id": "B",
+              "text": "\"used to live\" = trước kia sống ở đó; \"be used to living\" = đã quen với việc sống ở đó"
+            },
+            {
+              "id": "C",
+              "text": "\"am used to\" luôn sai"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ khác về thời gian"
+            }
+          ],
+          "answer": "B"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L06-E02",
+      "lessonCode": "SPK-P3-L06",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm dự đoán / thay đổi với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "it seems likely that",
+          "right": "có vẻ khả năng cao là"
+        },
+        {
+          "id": "m2",
+          "left": "driven by",
+          "right": "được thúc đẩy bởi"
+        },
+        {
+          "id": "m3",
+          "left": "if this continues",
+          "right": "nếu điều này tiếp diễn"
+        },
+        {
+          "id": "m4",
+          "left": "it is difficult to predict with any certainty",
+          "right": "rất khó dự đoán chắc chắn"
+        },
+        {
+          "id": "m5",
+          "left": "a more cautious view might be",
+          "right": "một cách nhìn thận trọng hơn là"
+        },
+        {
+          "id": "m6",
+          "left": "an oversimplification to say",
+          "right": "quá đơn giản hoá khi nói rằng"
+        },
+        {
+          "id": "m7",
+          "left": "on the cusp of",
+          "right": "đang ở ngưỡng của"
+        },
+        {
+          "id": "m8",
+          "left": "shaped by",
+          "right": "được định hình bởi"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L06-E03",
+      "lessonCode": "SPK-P3-L06",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu trả lời theo khung THEN–NOW–NEXT",
+      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: How will cities change in the future?).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự THEN–NOW–NEXT:",
+          "tokens": [
+            "This shift is largely driven by concerns about pollution and public health.",
+            "In the past, cities were designed around cars — wide roads, huge car parks, everything spread out.",
+            "That said, it is difficult to predict with any certainty, because these changes depend heavily on politics; a more cautious view might be that only wealthy cities will manage it.",
+            "Today that is already changing, with more bike lanes and pedestrian areas.",
+            "If this continues, it seems likely that many city centres will become almost car-free within twenty or thirty years."
+          ],
+          "answer": [
+            "In the past, cities were designed around cars — wide roads, huge car parks, everything spread out.",
+            "Today that is already changing, with more bike lanes and pedestrian areas.",
+            "This shift is largely driven by concerns about pollution and public health.",
+            "If this continues, it seems likely that many city centres will become almost car-free within twenty or thirty years.",
+            "That said, it is difficult to predict with any certainty, because these changes depend heavily on politics; a more cautious view might be that only wealthy cities will manage it."
+          ],
+          "explanation": "TRƯỚC KIA → HIỆN NAY → LỰC ĐẨY → DỰ ĐOÁN → THẬN TRỌNG."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L06-E04",
+      "lessonCode": "SPK-P3-L06",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi used to / dự đoán",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People use to write letters.",
+          "explanation": "khẳng định quá khứ: used to (có -d).",
+          "sampleAnswers": [
+            "People used to write letters."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "People used to writing letters.",
+          "explanation": "used to + V nguyên thể.",
+          "sampleAnswers": [
+            "People used to write letters."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "If this will continue, entire industries could disappear.",
+          "explanation": "Sau \"if\" không dùng will.",
+          "sampleAnswers": [
+            "If this continues, entire industries could disappear."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "In the future everything will be better because of technology.",
+          "explanation": "Thêm lực đẩy + tránh \"will\" trần + thêm caveat.",
+          "sampleAnswers": [
+            "Driven by advances in automation, many routine tasks are likely to disappear, though it is hard to say how far this will go."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L06-E05",
+      "lessonCode": "SPK-P3-L06",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu Past · Present · Future",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có đủ ba mốc (trước kia / hiện nay / tương lai), dự đoán có LỰC ĐẨY cụ thể, KHÔNG dùng \"will\" trần cho mọi dự đoán, và một câu thận trọng kèm lý do.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "How has the way people spend their free time changed, and how might it change in the future?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do young and old people have different attitudes towards money?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "[X] used to be… → Today, by comparison,… → This shift is largely driven by…",
+          "If this continues, it seems likely that… / Cities are likely to become…",
+          "That said, it is difficult to predict with any certainty, because… · A more cautious view might be that…"
+        ],
+        "checklist": [
+          "Có đủ ba mốc: trước kia, hiện nay, tương lai",
+          "Dự đoán có lực đẩy cụ thể (công nghệ / dân số / kinh tế / văn hoá)",
+          "Không dùng \"will\" trần cho mọi dự đoán (dùng be likely to / could well / it seems likely that)",
+          "Có câu thận trọng kèm lý do (không chỉ \"but I am not sure\")",
+          "Dùng ít nhất 2 cụm ★; với câu về thế hệ, có câu \"it would be an oversimplification to say…\""
+        ],
+        "commonErrors": [
+          "Dự đoán trống: \"everything will be better\"",
+          "Dùng \"will\" cho mọi dự đoán → nghe chắc chắn quá mức",
+          "Tuyệt đối hoá: \"All young people are lazy.\"",
+          "Bỏ hẳn mốc quá khứ"
+        ],
+        "sampleAnswer": "The way people spend their free time has shifted noticeably over the past few decades. It used to be organised around shared physical activities — sport, cinemas, visiting relatives. Today, by comparison, a large share of leisure time is spent alone with a screen, streaming or scrolling. This shift is largely driven by two things: the affordability of devices and the way entertainment platforms are engineered to hold attention. If this continues, it seems likely that leisure will become even more personalised and on-demand, with fewer fixed schedules. That said, it is difficult to predict with any certainty, because there are early signs of a backlash — a growing interest in offline hobbies and 'digital detox'. A more cautious view might be that we settle into a mix, using screens for convenience but deliberately protecting some time for the shared, physical activities people seem to miss."
+      }
+    },
+    {
+      "code": "SPK-P3-L07-E01",
+      "lessonCode": "SPK-P3-L07",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC EDUCATION — chọn khung & lập luận",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Câu \"Why do parents put so much pressure on their children academically?\" dùng khung:",
+          "options": [
+            {
+              "id": "A",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "B",
+              "text": "NUANCED OPINION"
+            },
+            {
+              "id": "C",
+              "text": "COMPARE FRAMEWORK"
+            },
+            {
+              "id": "D",
+              "text": "THEN–NOW–NEXT"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Câu \"Why…?\" → REASON × 3."
+        },
+        {
+          "id": "q2",
+          "prompt": "Lỗi nào KHÔNG nên mắc ở chủ đề Education?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói về hệ thống giáo dục nói chung"
+            },
+            {
+              "id": "B",
+              "text": "Kể chuyện trường mình: \"In my school, my teacher is very strict…\""
+            },
+            {
+              "id": "C",
+              "text": "Dùng cụm học thuật"
+            },
+            {
+              "id": "D",
+              "text": "Chọn đúng khung"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Part 3 hỏi về hệ thống, không hỏi về bạn."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "In school, children learn many knowledges."
+            },
+            {
+              "id": "B",
+              "text": "Schools should foster critical thinking skills from an early age."
+            },
+            {
+              "id": "C",
+              "text": "Students should be more knowledge."
+            },
+            {
+              "id": "D",
+              "text": "Education gives many knowledges."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"knowledge\" không đếm được — không có \"knowledges\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"rote learning\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "học vẹt"
+            },
+            {
+              "id": "B",
+              "text": "tư duy phản biện"
+            },
+            {
+              "id": "C",
+              "text": "giáo dục toàn diện"
+            },
+            {
+              "id": "D",
+              "text": "hoạt động ngoại khoá"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Mệnh đề quan hệ rút gọn của \"Students who are taught to question\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Students taught to question"
+            },
+            {
+              "id": "B",
+              "text": "Students teaching to question"
+            },
+            {
+              "id": "C",
+              "text": "Students they taught to question"
+            },
+            {
+              "id": "D",
+              "text": "Students to question taught"
+            }
+          ],
+          "answer": "A",
+          "explanation": "bị động rút gọn: bỏ \"who are\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L07-E02",
+      "lessonCode": "SPK-P3-L07",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Education với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "critical thinking skills",
+          "right": "kỹ năng tư duy phản biện"
+        },
+        {
+          "id": "m2",
+          "left": "rote learning",
+          "right": "học vẹt"
+        },
+        {
+          "id": "m3",
+          "left": "academic pressure",
+          "right": "áp lực học tập"
+        },
+        {
+          "id": "m4",
+          "left": "a well-rounded education",
+          "right": "giáo dục toàn diện"
+        },
+        {
+          "id": "m5",
+          "left": "foster creativity",
+          "right": "nuôi dưỡng sáng tạo"
+        },
+        {
+          "id": "m6",
+          "left": "student-centred approach",
+          "right": "phương pháp lấy học sinh làm trung tâm"
+        },
+        {
+          "id": "m7",
+          "left": "standardised testing",
+          "right": "thi cử chuẩn hoá"
+        },
+        {
+          "id": "m8",
+          "left": "intellectual independence",
+          "right": "sự độc lập trong tư duy"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L07-E03",
+      "lessonCode": "SPK-P3-L07",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Education với dạng / khung",
+      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "How can education help children develop their own ideas?",
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+        },
+        {
+          "id": "m2",
+          "left": "Do children usually share the same opinions as their parents?",
+          "right": "Dạng 2 — NUANCED OPINION"
+        },
+        {
+          "id": "m3",
+          "left": "Why do parents put so much academic pressure on their children?",
+          "right": "Dạng 1 — REASON × 3"
+        },
+        {
+          "id": "m4",
+          "left": "What are the drawbacks of standardised testing?",
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+        },
+        {
+          "id": "m5",
+          "left": "How is school today different from school fifty years ago?",
+          "right": "Dạng 4 — COMPARE FRAMEWORK"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L07-E04",
+      "lessonCode": "SPK-P3-L07",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Nâng cấp từ vựng & sửa lỗi Education",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Students just remember things without understanding.",
+          "explanation": "rote learning.",
+          "sampleAnswers": [
+            "Rote learning encourages students to memorise without genuine understanding."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Students have too much stress from studying.",
+          "explanation": "academic pressure.",
+          "sampleAnswers": [
+            "Students are often subjected to excessive academic pressure."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Schools should teach students to think for themselves.",
+          "explanation": "cụm học thuật.",
+          "sampleAnswers": [
+            "Schools should foster intellectual independence and critical thinking skills."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "In school children learn many knowledges.",
+          "explanation": "\"knowledge\" không đếm được.",
+          "sampleAnswers": [
+            "In school children acquire a great deal of knowledge."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L07-E05",
+      "lessonCode": "SPK-P3-L07",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Education",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 70–85 giây. Gọi tên dạng câu hỏi trước khi nói, dùng đúng khung của dạng đó, nói về HỆ THỐNG (không kể chuyện trường mình), dùng ít nhất 3 cụm ★.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do some students perform much better than others in the same class?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Should schools teach subjects like cooking and money management?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "prioritise questioning over memorisation",
+          "the process of thinking over the content of the answer",
+          "cụm chuyển tầng / cụm cân bằng của khung tương ứng"
+        ],
+        "checklist": [
+          "Nhận đúng dạng câu hỏi và dùng đúng khung",
+          "Dùng ít nhất 3 cụm ★ chủ đề Education",
+          "Nói về hệ thống giáo dục, không kể chuyện trường mình",
+          "Có đủ các bước của khung tương ứng",
+          "Nói đủ 70 giây, dùng danh từ ghép với trọng âm đúng (CRItical thinking skills)"
+        ],
+        "commonErrors": [
+          "Kể chuyện trường mình: \"In my school, my teacher is very strict…\"",
+          "Dùng \"study\" cho mọi thứ thay vì \"academic pressure is intense\"",
+          "Chọn nhầm khung",
+          "\"many knowledges\""
+        ],
+        "sampleAnswer": "That's a 'why' question, so I'll give a few reasons at different levels. Psychologically, some students carry a heavier fear of failure — often tied to how their family talks about grades — and that anxiety actually interferes with performance rather than driving it. From a practical standpoint, out-of-school support is unevenly distributed: a child with quiet study space and access to private tuition has a structural advantage over one who doesn't, regardless of ability. And on a social level, classrooms tend to develop expectations — a student labelled early as 'weak' often internalises that and disengages. For all these reasons, I'd argue that gaps within a single class are less about raw talent and more about the conditions surrounding the child, which is why a genuinely student-centred approach tries to identify and remove those specific obstacles."
+      }
+    },
+    {
+      "code": "SPK-P3-L08-E01",
+      "lessonCode": "SPK-P3-L08",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC TECHNOLOGY — lập luận hai chiều",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Kỹ thuật Band 8 \"tự phản bác chính mình\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Sau một lập luận mạnh, thêm ngay \"However, I would push back on that idea slightly…\""
+            },
+            {
+              "id": "B",
+              "text": "Nói cả bài một chiều"
+            },
+            {
+              "id": "C",
+              "text": "Đổi ý kiến giữa chừng"
+            },
+            {
+              "id": "D",
+              "text": "Không có ý kiến gì"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Đây là dấu hiệu tư duy sắc bén — dùng MỘT lần."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"amplify existing tendencies rather than create new ones\" — ý là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Công nghệ KHUẾCH ĐẠI xu hướng sẵn có, không TẠO RA cái mới"
+            },
+            {
+              "id": "B",
+              "text": "Công nghệ tạo ra mọi vấn đề"
+            },
+            {
+              "id": "C",
+              "text": "Công nghệ không ảnh hưởng gì"
+            },
+            {
+              "id": "D",
+              "text": "Công nghệ luôn tốt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"A motivated person uses it to achieve more; a less motivated one uses it to avoid effort.\""
+        },
+        {
+          "id": "q3",
+          "prompt": "Lỗi nào nên tránh?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nêu loại công nghệ cụ thể (navigation apps, autocorrect, streaming)"
+            },
+            {
+              "id": "B",
+              "text": "Dùng \"technology\" như một khối duy nhất, không nói rõ loại nào"
+            },
+            {
+              "id": "C",
+              "text": "Lập luận hai chiều"
+            },
+            {
+              "id": "D",
+              "text": "Dùng cụm danh hoá"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "Danh hoá của \"people depend on technology too much\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "technological dependency"
+            },
+            {
+              "id": "B",
+              "text": "technology depending"
+            },
+            {
+              "id": "C",
+              "text": "the depend on technology"
+            },
+            {
+              "id": "D",
+              "text": "dependencing on technology"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Trọng âm ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "AU-to-ma-tion"
+            },
+            {
+              "id": "B",
+              "text": "au-to-MA-tion"
+            },
+            {
+              "id": "C",
+              "text": "au-TO-ma-tion"
+            },
+            {
+              "id": "D",
+              "text": "au-to-ma-TION"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Đuôi -tion → trọng âm rơi vào âm tiết ngay trước."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L08-E02",
+      "lessonCode": "SPK-P3-L08",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Technology với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "digital divide",
+          "right": "khoảng cách số"
+        },
+        {
+          "id": "m2",
+          "left": "technological dependency",
+          "right": "sự phụ thuộc vào công nghệ"
+        },
+        {
+          "id": "m3",
+          "left": "privacy concerns",
+          "right": "lo ngại quyền riêng tư"
+        },
+        {
+          "id": "m4",
+          "left": "automation",
+          "right": "tự động hoá"
+        },
+        {
+          "id": "m5",
+          "left": "social media algorithms",
+          "right": "thuật toán mạng xã hội"
+        },
+        {
+          "id": "m6",
+          "left": "disruptive innovation",
+          "right": "đổi mới đột phá"
+        },
+        {
+          "id": "m7",
+          "left": "cybersecurity threats",
+          "right": "mối đe doạ an ninh mạng"
+        },
+        {
+          "id": "m8",
+          "left": "free up cognitive bandwidth",
+          "right": "giải phóng năng lực tư duy"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L08-E03",
+      "lessonCode": "SPK-P3-L08",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Technology với dạng / khung",
+      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Does technology make people lazier?",
+          "right": "Dạng 2 — NUANCED OPINION"
+        },
+        {
+          "id": "m2",
+          "left": "What are the drawbacks of children using smartphones?",
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+        },
+        {
+          "id": "m3",
+          "left": "How will artificial intelligence change the way we work?",
+          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT"
+        },
+        {
+          "id": "m4",
+          "left": "Why are older people often reluctant to use new technology?",
+          "right": "Dạng 1 — REASON × 3"
+        },
+        {
+          "id": "m5",
+          "left": "Should governments control what people post online?",
+          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L08-E04",
+      "lessonCode": "SPK-P3-L08",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Danh hoá & sửa lỗi Technology",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People depend on technology too much.",
+          "explanation": "depend → dependency.",
+          "sampleAnswers": [
+            "Excessive technological dependency is a growing concern."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Poor people cannot access the internet.",
+          "explanation": "digital divide.",
+          "sampleAnswers": [
+            "The digital divide leaves lower-income households without reliable internet access."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Machines are taking over factory jobs.",
+          "explanation": "workforce automation.",
+          "sampleAnswers": [
+            "Workforce automation is replacing many routine factory roles."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The website decides what you see.",
+          "explanation": "social media algorithms.",
+          "sampleAnswers": [
+            "Social media algorithms shape what users see far more than they realise."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L08-E05",
+      "lessonCode": "SPK-P3-L08",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Technology",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Lập luận HAI CHIỀU, nêu ít nhất 2 loại công nghệ cụ thể (không nói \"technology\" chung chung), có ít nhất một câu tự phản bác, và một câu kết có sắc thái.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you think people rely too much on their smartphones?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Will people still need to learn foreign languages in the future?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "There is a reasonable argument that… However, I would push back on that idea slightly…",
+          "amplify existing tendencies rather than create new ones",
+          "the tool is neutral — the user is not"
+        ],
+        "checklist": [
+          "Trả lời hai chiều, không một chiều",
+          "Nêu ít nhất 2 loại công nghệ cụ thể (navigation apps, autocorrect, streaming, translation apps…)",
+          "Có ít nhất một câu tự phản bác",
+          "Dùng ít nhất 3 cụm ★; phát âm đúng trọng âm automation / technology",
+          "Có câu kết có sắc thái"
+        ],
+        "commonErrors": [
+          "Khen một chiều hoặc chê một chiều",
+          "Dùng \"technology\" như một khối duy nhất",
+          "Nhầm giữa nguyên nhân và khuếch đại",
+          "Mở đầu câu bằng \"Because\""
+        ],
+        "sampleAnswer": "To a certain extent, yes, but I don't think it's as simple as over-reliance. In some respects the smartphone has clearly reduced effort: navigation apps mean we don't memorise routes, autocorrect compensates for weak spelling, and translation apps do a lot of work that used to require real study. There is a reasonable argument that this steady reduction in friction lowers our tolerance for difficulty. However, I would push back on calling that dependence, because the same device also frees up attention that routine tasks used to consume — whether people spend that freed-up time well is a question of discipline, not of the phone. On balance, I'd say the smartphone amplifies existing tendencies rather than creating new ones: a motivated person uses it to do more, and a distracted person uses it to avoid things. The tool is fairly neutral — the user isn't."
+      }
+    },
+    {
+      "code": "SPK-P3-L09-E01",
+      "lessonCode": "SPK-P3-L09",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC ENVIRONMENT — cá nhân vs hệ thống",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Bài chỉ có TRỤC CÁ NHÂN (recycling, túi vải, tiết kiệm nước) nghe:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Band 8"
+            },
+            {
+              "id": "B",
+              "text": "ngây thơ, Band 6"
+            },
+            {
+              "id": "C",
+              "text": "quá bi quan"
+            },
+            {
+              "id": "D",
+              "text": "cân bằng"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Cần cả trục hệ thống (regulation, industrial emissions, corporate accountability)."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"necessary but not sufficient\" — dùng để nói:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Hành động cá nhân là CẦN nhưng CHƯA ĐỦ"
+            },
+            {
+              "id": "B",
+              "text": "Hành động cá nhân là vô dụng"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ cần hành động cá nhân là đủ"
+            },
+            {
+              "id": "D",
+              "text": "Không cần làm gì"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "\"the focus on personal responsibility can function as a deflection\" — ý là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nhấn mạnh trách nhiệm cá nhân có thể là cách ĐÁNH LẠC HƯỚNG khỏi trách nhiệm của tập đoàn / chính phủ"
+            },
+            {
+              "id": "B",
+              "text": "Cá nhân phải làm nhiều hơn"
+            },
+            {
+              "id": "C",
+              "text": "Chính phủ không có vai trò gì"
+            },
+            {
+              "id": "D",
+              "text": "Không ai chịu trách nhiệm"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu bị động vô nhân xưng nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Emissions must cut."
+            },
+            {
+              "id": "B",
+              "text": "It is believed by many people that recycling helps."
+            },
+            {
+              "id": "C",
+              "text": "Emissions must be cut far more aggressively."
+            },
+            {
+              "id": "D",
+              "text": "Emissions cutting must be."
+            }
+          ],
+          "answer": "C",
+          "explanation": "bị động luôn cần be + V3; \"by many people\" là thừa với bị động vô nhân xưng."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"greenwashing\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "giả vờ thân thiện môi trường"
+            },
+            {
+              "id": "B",
+              "text": "rửa xanh nhà cửa"
+            },
+            {
+              "id": "C",
+              "text": "trồng cây"
+            },
+            {
+              "id": "D",
+              "text": "tái chế"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L09-E02",
+      "lessonCode": "SPK-P3-L09",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Environment với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "carbon emissions",
+          "right": "khí thải carbon"
+        },
+        {
+          "id": "m2",
+          "left": "sustainable development",
+          "right": "phát triển bền vững"
+        },
+        {
+          "id": "m3",
+          "left": "biodiversity loss",
+          "right": "mất đa dạng sinh học"
+        },
+        {
+          "id": "m4",
+          "left": "renewable energy transition",
+          "right": "chuyển đổi năng lượng tái tạo"
+        },
+        {
+          "id": "m5",
+          "left": "greenwashing",
+          "right": "giả vờ thân thiện môi trường"
+        },
+        {
+          "id": "m6",
+          "left": "single-use plastics",
+          "right": "nhựa dùng một lần"
+        },
+        {
+          "id": "m7",
+          "left": "stringent regulation",
+          "right": "quy định nghiêm ngặt"
+        },
+        {
+          "id": "m8",
+          "left": "ecological footprint",
+          "right": "dấu chân sinh thái"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L09-E03",
+      "lessonCode": "SPK-P3-L09",
+      "order": 3,
+      "type": "categorize",
+      "title": "Hành động này là CÁ NHÂN hay HỆ THỐNG?",
+      "instruction": "Kéo mỗi hành động vào đúng cột.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "cn",
+          "label": "CÁ NHÂN"
+        },
+        {
+          "id": "ht",
+          "label": "HỆ THỐNG"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Bringing your own bag to the supermarket.",
+          "category": "cn"
+        },
+        {
+          "id": "c2",
+          "text": "A national tax on carbon emissions.",
+          "category": "ht"
+        },
+        {
+          "id": "c3",
+          "text": "Choosing to travel by train instead of by plane.",
+          "category": "cn"
+        },
+        {
+          "id": "c4",
+          "text": "Requiring all new buildings to be energy-efficient.",
+          "category": "ht"
+        },
+        {
+          "id": "c5",
+          "text": "Switching to a plant-based diet.",
+          "category": "cn"
+        },
+        {
+          "id": "c6",
+          "text": "Banning industrial waste from being dumped in rivers.",
+          "category": "ht"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L09-E04",
+      "lessonCode": "SPK-P3-L09",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Bị động vô nhân xưng & sửa lỗi Environment",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The government must cut carbon emissions.",
+          "explanation": "bị động: must be cut.",
+          "sampleAnswers": [
+            "Carbon emissions must be cut far more aggressively."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Companies should recycle industrial waste.",
+          "explanation": "should be + V3.",
+          "sampleAnswers": [
+            "Industrial waste should be recycled."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "People believe that recycling helps a lot.",
+          "explanation": "bị động vô nhân xưng: It is believed that…",
+          "sampleAnswers": [
+            "It is widely believed that recycling helps."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "We must protect the environment for our future generation.",
+          "explanation": "Tránh khẩu hiệu rỗng — nêu việc cụ thể ở dạng bị động.",
+          "sampleAnswers": [
+            "Far more could be done to protect coastal and forest ecosystems."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L09-E05",
+      "lessonCode": "SPK-P3-L09",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Environment",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có cả trục CÁ NHÂN và trục HỆ THỐNG, ít nhất một câu bị động vô nhân xưng, dùng thuật ngữ chính xác, KHÔNG dùng khẩu hiệu rỗng.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do some people not take environmental problems seriously?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Should companies be legally responsible for the environmental damage they cause?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "when enough consumers … , producers adapt",
+          "a disproportionate share of emissions comes from a small number of industrial actors",
+          "individual action is necessary but not sufficient"
+        ],
+        "checklist": [
+          "Dùng ít nhất 3 cụm ★ chính xác về thuật ngữ (carbon emissions, biodiversity loss, stringent regulation…)",
+          "Có cả trục cá nhân và trục hệ thống",
+          "Có ít nhất một câu bị động vô nhân xưng",
+          "Không dùng khẩu hiệu rỗng (\"protect the environment for future generations\")",
+          "Nói đủ 75 giây"
+        ],
+        "commonErrors": [
+          "Khẩu hiệu rỗng",
+          "Chỉ nói về rác và túi nilon — bỏ qua năng lượng, giao thông, công nghiệp",
+          "Dùng \"pollution\" cho mọi vấn đề",
+          "Nói cá nhân giải quyết được tất cả, hoặc cá nhân hoàn toàn vô dụng"
+        ],
+        "sampleAnswer": "There are a few reasons, and they operate at different levels. Psychologically, the threat feels abstract and distant — biodiversity loss and rising emissions don't produce an immediate, visible consequence for most people, so the brain deprioritises them. From a practical standpoint, acting sustainably often costs more or takes more effort, and for households already under financial pressure that trade-off isn't realistic. And on a systemic level, there's a fair amount of greenwashing, which leaves people cynical about whether anything they do matters. It's also worth noting that responsibility is often framed as purely individual, when a disproportionate share of emissions actually comes from a small number of large industrial actors. So I'd say the indifference is partly rational: people sense that individual action is necessary but not sufficient, and without visible stringent regulation, the incentive to bother is weak."
+      }
+    },
+    {
+      "code": "SPK-P3-L10-E01",
+      "lessonCode": "SPK-P3-L10",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC SOCIETY — cộng đồng & điều kiện kinh tế",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Đoạn đẩy bài Society lên Band 8 thường là đoạn:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Đạo đức hoá: \"People must help each other, it is our duty.\""
+            },
+            {
+              "id": "B",
+              "text": "Từ chối đạo đức hoá và chỉ ra ĐIỀU KIỆN KINH TẾ (\"someone working two jobs simply has less time\")"
+            },
+            {
+              "id": "C",
+              "text": "Liệt kê các hoạt động tình nguyện"
+            },
+            {
+              "id": "D",
+              "text": "Nói cộng đồng rất quan trọng"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q2",
+          "prompt": "Ba lực làm suy yếu cộng đồng hiện đại:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Đô thị hoá · kết nối số · lối sống di động"
+            },
+            {
+              "id": "B",
+              "text": "Vui · buồn · giận"
+            },
+            {
+              "id": "C",
+              "text": "Trường · nhà · công ty"
+            },
+            {
+              "id": "D",
+              "text": "Sáng · trưa · tối"
+            }
+          ],
+          "answer": "A",
+          "explanation": "→ higher loneliness, reduced social trust."
+        },
+        {
+          "id": "q3",
+          "prompt": "Mệnh đề nhấn mạnh nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "What makes communities resilient it is the network of mutual obligation."
+            },
+            {
+              "id": "B",
+              "text": "What makes communities resilient is the network of mutual obligation."
+            },
+            {
+              "id": "C",
+              "text": "The fact that people move every few years, so nobody invests."
+            },
+            {
+              "id": "D",
+              "text": "What I find striking how quickly this happened."
+            }
+          ],
+          "answer": "B",
+          "explanation": "What + S + V + is + … (không thừa \"it\")."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"the social fabric\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "kết cấu xã hội"
+            },
+            {
+              "id": "B",
+              "text": "vải may đồng phục"
+            },
+            {
+              "id": "C",
+              "text": "mạng xã hội"
+            },
+            {
+              "id": "D",
+              "text": "tầng lớp xã hội"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"The fact that people move every few years ___ nobody invests in a place.\" — điền:",
+          "options": [
+            {
+              "id": "A",
+              "text": "so"
+            },
+            {
+              "id": "B",
+              "text": "means"
+            },
+            {
+              "id": "C",
+              "text": "because"
+            },
+            {
+              "id": "D",
+              "text": "and"
+            }
+          ],
+          "answer": "B",
+          "explanation": "The fact that + mệnh đề + ĐỘNG TỪ CHÍNH (means)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L10-E02",
+      "lessonCode": "SPK-P3-L10",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Society với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "a sense of belonging",
+          "right": "cảm giác thuộc về"
+        },
+        {
+          "id": "m2",
+          "left": "social cohesion",
+          "right": "sự gắn kết xã hội"
+        },
+        {
+          "id": "m3",
+          "left": "urban isolation",
+          "right": "sự cô lập ở đô thị"
+        },
+        {
+          "id": "m4",
+          "left": "civic responsibility",
+          "right": "trách nhiệm công dân"
+        },
+        {
+          "id": "m5",
+          "left": "social mobility",
+          "right": "dịch chuyển xã hội"
+        },
+        {
+          "id": "m6",
+          "left": "marginalised communities",
+          "right": "cộng đồng bị gạt ra lề"
+        },
+        {
+          "id": "m7",
+          "left": "the social fabric",
+          "right": "kết cấu xã hội"
+        },
+        {
+          "id": "m8",
+          "left": "networks of mutual obligation",
+          "right": "mạng lưới trách nhiệm tương hỗ"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L10-E03",
+      "lessonCode": "SPK-P3-L10",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Society với dạng / khung",
+      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "How important is it for people to help their local community?",
+          "right": "Dạng 2 — NUANCED OPINION"
+        },
+        {
+          "id": "m2",
+          "left": "How are neighbourhoods today different from in the past?",
+          "right": "Dạng 4 — COMPARE FRAMEWORK"
+        },
+        {
+          "id": "m3",
+          "left": "What can be done to reduce loneliness in large cities?",
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+        },
+        {
+          "id": "m4",
+          "left": "Why do fewer people know their neighbours nowadays?",
+          "right": "Dạng 1 — REASON × 3"
+        },
+        {
+          "id": "m5",
+          "left": "Should young people be required to do community service?",
+          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L10-E04",
+      "lessonCode": "SPK-P3-L10",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Mệnh đề nhấn mạnh & sửa lỗi Society",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu bằng \"What… is…\" hoặc \"The fact that… means…\".",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Loneliness is the most serious problem in big cities.",
+          "explanation": "What… is… để nhấn mạnh.",
+          "sampleAnswers": [
+            "What is really at stake in big cities is loneliness.",
+            "What is most serious in big cities is loneliness."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "People move house every few years, so nobody knows their neighbours.",
+          "explanation": "The fact that + mệnh đề + means + …",
+          "sampleAnswers": [
+            "The fact that people move house every few years means nobody gets to know their neighbours."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "What I find striking it is how quickly this happened.",
+          "explanation": "thừa \"it\".",
+          "sampleAnswers": [
+            "What I find striking is how quickly this happened."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "People must help each other, it is our duty.",
+          "explanation": "Tránh đạo đức hoá — nêu cơ chế.",
+          "sampleAnswers": [
+            "Community involvement functions as a kind of social infrastructure, building the ties a neighbourhood needs when a crisis occurs."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L10-E05",
+      "lessonCode": "SPK-P3-L10",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Society & Community",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Nêu CƠ CHẾ (không chỉ hiện tượng), có ít nhất một mệnh đề What… hoặc The fact that…, có nhắc đến ĐIỀU KIỆN KINH TẾ, và KHÔNG đạo đức hoá.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do fewer people know their neighbours than in the past?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Should young people be required to do a period of community service?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "urbanisation / digital connectivity / mobile lifestyles have weakened the social fabric",
+          "functions as a kind of social infrastructure",
+          "capacity to engage is shaped by economic circumstances"
+        ],
+        "checklist": [
+          "Dùng ít nhất 3 cụm ★ chủ đề Society",
+          "Nêu được cơ chế, không chỉ nêu hiện tượng",
+          "Có ít nhất một mệnh đề What… hoặc The fact that…",
+          "Có nhắc đến điều kiện kinh tế",
+          "Không đạo đức hoá; nói theo nhịp thay vì đều đều"
+        ],
+        "commonErrors": [
+          "Đạo đức hoá: \"People must help each other, it is our duty.\"",
+          "Chỉ nói rằng cộng đồng suy yếu, không nói VÌ SAO",
+          "Bỏ qua yếu tố kinh tế",
+          "Dùng \"society\" và \"community\" lẫn lộn"
+        ],
+        "sampleAnswer": "There are a few structural reasons. Urbanisation means most people now live where the work is rather than where their family is, so the neighbourhood is a temporary base, not a community. Digital connectivity partly fills the gap, but online contact tends to be with people who are already friends, not with the person next door. And mobile lifestyles — the fact that people move every few years — means nobody has the incentive to invest in local relationships that they'll leave behind anyway. The result is measurable: higher loneliness and lower social trust. I'd also add that the capacity to engage is heavily shaped by economic circumstances — someone working long hours or two jobs simply doesn't have the evenings free that neighbourly contact tends to require, so this isn't really a question of people caring less."
+      }
+    },
+    {
+      "code": "SPK-P3-L11-E01",
+      "lessonCode": "SPK-P3-L11",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC HEALTH — rào cản cấu trúc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Nên giải thích hành vi sức khoẻ bằng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "ý chí: \"People are just lazy.\""
+            },
+            {
+              "id": "B",
+              "text": "RÀO CẢN CẤU TRÚC: thời gian, chi phí, môi trường"
+            },
+            {
+              "id": "C",
+              "text": "trải nghiệm bản thân: \"I go to the gym three times a week.\""
+            },
+            {
+              "id": "D",
+              "text": "chỉ nói về ăn uống và tập thể dục"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q2",
+          "prompt": "Ba loại rào cản là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "THỜI GIAN · CHI PHÍ · MÔI TRƯỜNG"
+            },
+            {
+              "id": "B",
+              "text": "Ăn · ngủ · tập"
+            },
+            {
+              "id": "C",
+              "text": "Sáng · trưa · tối"
+            },
+            {
+              "id": "D",
+              "text": "Nhà · trường · công ty"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu điều kiện loại 0 (quy luật xã hội) là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "If fresh food costs more, low-income families buy processed food."
+            },
+            {
+              "id": "B",
+              "text": "If food will cost more, people buy less."
+            },
+            {
+              "id": "C",
+              "text": "If schools removed sugary drinks, children will consume less."
+            },
+            {
+              "id": "D",
+              "text": "If I had time, I would exercise more."
+            }
+          ],
+          "answer": "A",
+          "explanation": "loại 0: If + present, present."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu kết vàng của chủ đề Health:",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"People should try harder.\""
+            },
+            {
+              "id": "B",
+              "text": "\"Telling people what they should do, without changing the environment in which they decide, rarely produces lasting change.\""
+            },
+            {
+              "id": "C",
+              "text": "\"So health is very important.\""
+            },
+            {
+              "id": "D",
+              "text": "\"That's all I know about health.\""
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"sedentary lifestyle\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "lối sống ít vận động"
+            },
+            {
+              "id": "B",
+              "text": "y tế dự phòng"
+            },
+            {
+              "id": "C",
+              "text": "sức khoẻ tinh thần"
+            },
+            {
+              "id": "D",
+              "text": "tuổi thọ trung bình"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L11-E02",
+      "lessonCode": "SPK-P3-L11",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Health với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "sedentary lifestyle",
+          "right": "lối sống ít vận động"
+        },
+        {
+          "id": "m2",
+          "left": "preventive healthcare",
+          "right": "y tế dự phòng"
+        },
+        {
+          "id": "m3",
+          "left": "work-related stress",
+          "right": "căng thẳng do công việc"
+        },
+        {
+          "id": "m4",
+          "left": "mental health awareness",
+          "right": "nhận thức về sức khoẻ tinh thần"
+        },
+        {
+          "id": "m5",
+          "left": "well-being",
+          "right": "sức khoẻ tổng thể"
+        },
+        {
+          "id": "m6",
+          "left": "life expectancy",
+          "right": "tuổi thọ trung bình"
+        },
+        {
+          "id": "m7",
+          "left": "structural barriers",
+          "right": "rào cản cấu trúc"
+        },
+        {
+          "id": "m8",
+          "left": "public health campaigns",
+          "right": "chiến dịch y tế công cộng"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L11-E03",
+      "lessonCode": "SPK-P3-L11",
+      "order": 3,
+      "type": "categorize",
+      "title": "Rào cản này thuộc loại nào?",
+      "instruction": "Kéo mỗi rào cản (với việc duy trì lối sống lành mạnh) vào đúng loại.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "tg",
+          "label": "THỜI GIAN"
+        },
+        {
+          "id": "cp",
+          "label": "CHI PHÍ"
+        },
+        {
+          "id": "mt",
+          "label": "MÔI TRƯỜNG"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Long working hours and a two-hour daily commute.",
+          "category": "tg"
+        },
+        {
+          "id": "c2",
+          "text": "Fresh food costs more per calorie than processed food.",
+          "category": "cp"
+        },
+        {
+          "id": "c3",
+          "text": "There is no safe place to walk or cycle in the neighbourhood.",
+          "category": "mt"
+        },
+        {
+          "id": "c4",
+          "text": "Caring for young children and elderly parents at the same time.",
+          "category": "tg"
+        },
+        {
+          "id": "c5",
+          "text": "A gym membership and time off work both cost money.",
+          "category": "cp"
+        },
+        {
+          "id": "c6",
+          "text": "The office canteen only sells fried food.",
+          "category": "mt"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L11-E04",
+      "lessonCode": "SPK-P3-L11",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Từ ý chí sang cấu trúc & câu điều kiện",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu đổ lỗi ý chí thành một câu nêu rào cản cấu trúc.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People are too lazy to cook at home.",
+          "explanation": "rào cản thời gian.",
+          "sampleAnswers": [
+            "Long working hours leave many people with little time or energy to cook at home."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "People choose fast food because they do not care about health.",
+          "explanation": "rào cản chi phí.",
+          "sampleAnswers": [
+            "Processed food is often cheaper per calorie, so it is the realistic choice for lower-income households."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "If food will cost more, people buy less.",
+          "explanation": "sau \"if\" không dùng will (loại 0).",
+          "sampleAnswers": [
+            "If fresh food costs more than processed food, low-income families tend to buy processed food."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "If schools removed sugary drinks, children will consume less.",
+          "explanation": "không lẫn loại 1 và loại 2.",
+          "sampleAnswers": [
+            "If schools remove sugary drinks, children will consume less sugar."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L11-E05",
+      "lessonCode": "SPK-P3-L11",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Health",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. KHÔNG đổ lỗi cho ý chí; nêu ít nhất hai loại rào cản khác nhau (thời gian / chi phí / môi trường), có ít nhất một câu điều kiện, và một kết luận ở tầm chính sách hoặc môi trường.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why is work-related stress becoming more common in many countries?"
+        },
+        {
+          "id": "s2",
+          "prompt": "What can governments do to improve public health?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "It is tempting to say people simply lack willpower, but the reasons are more structural.",
+          "If a neighbourhood has no safe pavements, people simply do not walk.",
+          "changing the environment in which decisions are made"
+        ],
+        "checklist": [
+          "Không đổ lỗi cho ý chí cá nhân",
+          "Nêu ít nhất hai loại rào cản khác nhau",
+          "Dùng ít nhất 3 cụm ★ chủ đề Health",
+          "Có ít nhất một câu điều kiện đúng loại",
+          "Có kết luận ở tầm chính sách hoặc môi trường"
+        ],
+        "commonErrors": [
+          "Đổ lỗi ý chí: \"People are just lazy.\"",
+          "Chỉ nói về ăn uống và tập thể dục — bỏ qua giấc ngủ, stress, sức khoẻ tinh thần",
+          "Nói về bản thân: \"I go to the gym three times a week.\"",
+          "Lẫn câu điều kiện loại 0 và loại 1"
+        ],
+        "sampleAnswer": "It's tempting to say people just don't manage their time well, but the reasons are more structural. Time pressure is the main one: in economies where long hours are normalised and commuting eats up two hours a day, the space for recovery simply isn't there. There's also a cost dimension — proper time off, counselling, or even a quieter place to live all cost money, so the people most exposed to work-related stress are often least able to buy their way out of it. And the environment reinforces it: if a workplace culture treats being constantly available as a sign of commitment, then switching off carries a real career risk. If employers rewarded output rather than hours, a lot of this would ease. So I'd argue the solution is less about individual resilience and more about redesigning the environment in which people make these decisions."
+      }
+    },
+    {
+      "code": "SPK-P3-L12-E01",
+      "lessonCode": "SPK-P3-L12",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC WORK & ECONOMY — ba tầng động lực",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Ba tầng động lực làm việc là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "CÁ NHÂN (recognition, autonomy) · KINH TẾ (income inequality) · XÃ HỘI (normative pressure)"
+            },
+            {
+              "id": "B",
+              "text": "Tiền · tiền · tiền"
+            },
+            {
+              "id": "C",
+              "text": "Sáng · trưa · tối"
+            },
+            {
+              "id": "D",
+              "text": "Đọc · viết · nói"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bài chỉ nói tầng cá nhân → Band 6.5."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"less about desire and more about necessity\" — dùng khi:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Ở nước bất bình đẳng cao, tham vọng ít vì mong muốn mà nhiều vì bắt buộc"
+            },
+            {
+              "id": "B",
+              "text": "Ai cũng muốn giàu"
+            },
+            {
+              "id": "C",
+              "text": "Không ai có tham vọng"
+            },
+            {
+              "id": "D",
+              "text": "Tham vọng luôn tốt"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Mệnh đề rút gọn nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Having grown up during a recession, it made them cautious."
+            },
+            {
+              "id": "B",
+              "text": "Having grown up during a recession, younger workers value security differently."
+            },
+            {
+              "id": "C",
+              "text": "Given automation is advancing, retraining is essential."
+            },
+            {
+              "id": "D",
+              "text": "Grown up during a recession, younger workers cautious."
+            }
+          ],
+          "answer": "B",
+          "explanation": "chủ ngữ hai vế phải trùng nhau; \"Given that\" khi theo sau là mệnh đề."
+        },
+        {
+          "id": "q4",
+          "prompt": "Trọng âm phân biệt: \"There has been a sharp ___ in demand, and prices will ___ further.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "INcrease (danh) … inCREASE (động)"
+            },
+            {
+              "id": "B",
+              "text": "inCREASE (danh) … INcrease (động)"
+            },
+            {
+              "id": "C",
+              "text": "INcrease … INcrease"
+            },
+            {
+              "id": "D",
+              "text": "inCREASE … inCREASE"
+            }
+          ],
+          "answer": "A",
+          "explanation": "danh từ nhấn đầu, động từ nhấn sau."
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào KHÔNG nên có trong bài Band 8 về tham vọng?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một câu về mặt trái (ambition that crowds out health, relationships)"
+            },
+            {
+              "id": "B",
+              "text": "\"My cousin works twelve hours a day because he wants a house.\" (ví dụ cá nhân)"
+            },
+            {
+              "id": "C",
+              "text": "Cụm normative pressure"
+            },
+            {
+              "id": "D",
+              "text": "Ba tầng động lực"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Part 3 hỏi về thị trường lao động, không hỏi về người quen."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L12-E02",
+      "lessonCode": "SPK-P3-L12",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Work & Economy với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "the job market",
+          "right": "thị trường lao động"
+        },
+        {
+          "id": "m2",
+          "left": "the gig economy",
+          "right": "nền kinh tế việc tự do"
+        },
+        {
+          "id": "m3",
+          "left": "income inequality",
+          "right": "bất bình đẳng thu nhập"
+        },
+        {
+          "id": "m4",
+          "left": "workforce automation",
+          "right": "tự động hoá lực lượng lao động"
+        },
+        {
+          "id": "m5",
+          "left": "work-life balance",
+          "right": "cân bằng công việc và cuộc sống"
+        },
+        {
+          "id": "m6",
+          "left": "career development",
+          "right": "phát triển sự nghiệp"
+        },
+        {
+          "id": "m7",
+          "left": "job security",
+          "right": "sự ổn định công việc"
+        },
+        {
+          "id": "m8",
+          "left": "normative pressure",
+          "right": "áp lực chuẩn mực nhóm"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L12-E03",
+      "lessonCode": "SPK-P3-L12",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Work với dạng / khung",
+      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Why are some people very ambitious at work?",
+          "right": "Dạng 1 — REASON × 3"
+        },
+        {
+          "id": "m2",
+          "left": "What are the advantages and disadvantages of the gig economy?",
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+        },
+        {
+          "id": "m3",
+          "left": "How will automation change the kinds of jobs people do?",
+          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT"
+        },
+        {
+          "id": "m4",
+          "left": "Do you think people should stay in one job for their whole career?",
+          "right": "Dạng 2 — NUANCED OPINION"
+        },
+        {
+          "id": "m5",
+          "left": "How is work today different from work in your parents' generation?",
+          "right": "Dạng 4 — COMPARE FRAMEWORK"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L12-E04",
+      "lessonCode": "SPK-P3-L12",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Mệnh đề rút gọn & sửa lỗi Work",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Rút gọn mỗi câu bằng Having… hoặc Given that…",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Because they grew up during a recession, young workers value security less.",
+          "explanation": "Having + V3, chủ ngữ trùng.",
+          "sampleAnswers": [
+            "Having grown up during a recession, young workers value security less."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Because automation is advancing quickly, many routine jobs will disappear.",
+          "explanation": "\"Given that\" + mệnh đề.",
+          "sampleAnswers": [
+            "Given that automation is advancing quickly, many routine jobs will disappear."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "After they had worked remotely for two years, many staff refused to return.",
+          "explanation": "rút gọn: Having + V3.",
+          "sampleAnswers": [
+            "Having worked remotely for two years, many staff refused to return."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Having grown up during a recession, it made them cautious.",
+          "explanation": "chủ ngữ hai vế phải trùng — không dùng \"it\".",
+          "sampleAnswers": [
+            "Having grown up during a recession, they became cautious."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L12-E05",
+      "lessonCode": "SPK-P3-L12",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Work & Economy",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có ít nhất hai tầng động lực khác nhau, có nhắc đến yếu tố KINH TẾ cụ thể, dùng job / career / profession đúng nghĩa, và một câu về mặt trái hoặc giới hạn.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do many young people prefer flexible work to a permanent job?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Will people still work five days a week in fifty years?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "At the individual level,… · Economically,… · There is also a social dimension…",
+          "less about desire and more about necessity",
+          "Having grown up during… / Given that… (mệnh đề rút gọn)"
+        ],
+        "checklist": [
+          "Có ít nhất hai tầng động lực khác nhau (cá nhân / kinh tế / xã hội)",
+          "Có nhắc đến yếu tố kinh tế cụ thể",
+          "Dùng job / career / profession đúng nghĩa",
+          "Dùng ít nhất 3 cụm ★",
+          "Có một câu về mặt trái hoặc giới hạn"
+        ],
+        "commonErrors": [
+          "Nói về công việc mơ ước của bản thân thay vì thị trường lao động",
+          "Chỉ nói tiền, bỏ qua ý nghĩa công việc và quyền tự chủ",
+          "Dùng \"job\" cho mọi thứ",
+          "Dự đoán về automation mà không có caveat"
+        ],
+        "sampleAnswer": "There are a few reasons operating at different levels. At the individual level, younger workers tend to prioritise autonomy — they want to decide when and where they work, which matters more to them than it did to their parents. Economically, the traditional bargain has weakened: a permanent job used to guarantee security and a rising income, but given that wages have stagnated and layoffs are common, flexibility now looks like a fairer trade — you give up stability you might not have had anyway, and gain control. And socially, having grown up watching the gig economy normalise, they simply don't see a permanent contract as the default marker of a successful career. That said, this preference is partly a rationalisation of insecurity — many would take a stable, well-paid permanent role if one were genuinely on offer."
+      }
+    },
+    {
+      "code": "SPK-P3-L13-E01",
+      "lessonCode": "SPK-P3-L13",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC TRAVEL & TOURISM — ai hưởng lợi, ai chịu thiệt",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Bài Band 7 chủ đề Travel phải nêu:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Lợi ích và chi phí của du lịch rơi vào các NHÓM DÂN CƯ khác nhau"
+            },
+            {
+              "id": "B",
+              "text": "Chuyến đi của bản thân"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ lợi ích kinh tế"
+            },
+            {
+              "id": "D",
+              "text": "Du lịch tốt cho \"the city\" như một khối đồng nhất"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q2",
+          "prompt": "Nhóm nào thường CHỊU THIỆT vì du lịch quá tải?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Chủ khách sạn"
+            },
+            {
+              "id": "B",
+              "text": "Cư dân lâu năm bị đẩy ra khỏi nơi ở (priced out)"
+            },
+            {
+              "id": "C",
+              "text": "Cơ quan quản lý di sản"
+            },
+            {
+              "id": "D",
+              "text": "Ngân sách thuế quốc gia"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q3",
+          "prompt": "Lượng từ nào chính xác, thay cho \"many people\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "a lot of"
+            },
+            {
+              "id": "B",
+              "text": "a significant proportion of / the vast majority of / a small minority of"
+            },
+            {
+              "id": "C",
+              "text": "some"
+            },
+            {
+              "id": "D",
+              "text": "much"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "\"price local residents out\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "đẩy dân địa phương ra khỏi nơi ở vì giá quá cao"
+            },
+            {
+              "id": "B",
+              "text": "giảm giá cho dân địa phương"
+            },
+            {
+              "id": "C",
+              "text": "niêm yết giá cho khách"
+            },
+            {
+              "id": "D",
+              "text": "định giá di sản"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"erodes the very authenticity that made a place attractive\" — ý là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Du lịch đại trà làm mất chính nét chân thực đã tạo nên sức hút của nơi đó"
+            },
+            {
+              "id": "B",
+              "text": "Du lịch làm nơi đó đẹp hơn"
+            },
+            {
+              "id": "C",
+              "text": "Nơi đó không có gì hấp dẫn"
+            },
+            {
+              "id": "D",
+              "text": "Khách không đến nữa"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L13-E02",
+      "lessonCode": "SPK-P3-L13",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Travel với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "over-tourism",
+          "right": "du lịch quá tải"
+        },
+        {
+          "id": "m2",
+          "left": "sustainable tourism",
+          "right": "du lịch bền vững"
+        },
+        {
+          "id": "m3",
+          "left": "cultural exchange",
+          "right": "giao lưu văn hoá"
+        },
+        {
+          "id": "m4",
+          "left": "heritage preservation",
+          "right": "bảo tồn di sản"
+        },
+        {
+          "id": "m5",
+          "left": "the local economy",
+          "right": "kinh tế địa phương"
+        },
+        {
+          "id": "m6",
+          "left": "strain infrastructure",
+          "right": "gây quá tải hạ tầng"
+        },
+        {
+          "id": "m7",
+          "left": "price local residents out",
+          "right": "đẩy dân địa phương ra khỏi nơi ở"
+        },
+        {
+          "id": "m8",
+          "left": "form a virtuous cycle",
+          "right": "tạo thành vòng tuần hoàn tích cực"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L13-E03",
+      "lessonCode": "SPK-P3-L13",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Travel với dạng / khung",
+      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "What advantages can tourism bring to a city?",
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+        },
+        {
+          "id": "m2",
+          "left": "How can cities manage the problems caused by mass tourism?",
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+        },
+        {
+          "id": "m3",
+          "left": "Why do people travel abroad rather than within their own country?",
+          "right": "Dạng 1 — REASON × 3"
+        },
+        {
+          "id": "m4",
+          "left": "Do you think tourism does more harm than good?",
+          "right": "Dạng 2 — NUANCED OPINION"
+        },
+        {
+          "id": "m5",
+          "left": "How has the way people travel changed in the past thirty years?",
+          "right": "Dạng 4 — COMPARE FRAMEWORK"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L13-E04",
+      "lessonCode": "SPK-P3-L13",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Lượng từ chính xác & sửa lỗi Travel",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Many people travel abroad every year.",
+          "explanation": "lượng từ chính xác.",
+          "sampleAnswers": [
+            "A growing number of people travel abroad every year.",
+            "A significant proportion of people travel abroad every year."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "A lot of tourists visit only three streets.",
+          "explanation": "the vast majority of.",
+          "sampleAnswers": [
+            "The vast majority of tourists visit only three streets."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Some residents have moved away.",
+          "explanation": "lượng từ + cụm ★.",
+          "sampleAnswers": [
+            "A significant proportion of long-term residents have been priced out and moved away."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Tourism is good for the city.",
+          "explanation": "Không nói \"the city\" như một khối — nêu nhóm hưởng lợi và nhóm chịu thiệt.",
+          "sampleAnswers": [
+            "Tourism benefits hotel owners and transport operators, whereas long-term residents are often priced out."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L13-E05",
+      "lessonCode": "SPK-P3-L13",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Travel & Tourism",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Phân tích lợi ích và chi phí theo NHÓM DÂN CƯ (nêu rõ ai hưởng lợi, ai chịu thiệt), dùng lượng từ chính xác, KHÔNG kể chuyến đi của mình.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "What problems can too many tourists cause for a small town?"
+        },
+        {
+          "id": "s2",
+          "prompt": "What advantages can tourism bring to a city?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "benefits are distributed unevenly and come with real costs",
+          "The most direct advantage is economic… / There are softer benefits too…",
+          "Over-tourism prices local residents out… and erodes the very authenticity that made a place attractive"
+        ],
+        "checklist": [
+          "Phân tích lợi ích và chi phí theo NHÓM DÂN CƯ",
+          "Nêu rõ ít nhất một nhóm hưởng lợi và một nhóm chịu thiệt",
+          "Dùng lượng từ chính xác (a significant proportion of, the vast majority of…)",
+          "Dùng ít nhất 3 cụm ★ chủ đề Travel",
+          "Không kể chuyến đi của mình; nói đủ 75 giây"
+        ],
+        "commonErrors": [
+          "Kể chuyến đi của mình: \"Last summer I went to Da Lat…\"",
+          "Chỉ nói lợi ích kinh tế, bỏ qua văn hoá và môi trường",
+          "Dùng \"many people\" và \"a lot of\" cho mọi lượng",
+          "Nói du lịch tốt cho \"the city\" như thể thành phố là một khối đồng nhất"
+        ],
+        "sampleAnswer": "Too many tourists tend to cause problems that fall on residents rather than on the town as a whole. Economically, the benefits are real but unevenly distributed — a significant proportion is captured by property owners and large operators, while ordinary residents face the downsides. As short-term rentals spread, long-term residents are gradually priced out of the centre; peak-season crowds strain infrastructure that was built for a much smaller population; and the character that made the town attractive in the first place slowly erodes as shops shift to serving visitors rather than locals. There are social costs too: a sense that the place no longer belongs to the people who live there. So the core problem is not tourism itself but the fact that a small town has little capacity to absorb sudden, concentrated demand."
+      }
+    },
+    {
+      "code": "SPK-P3-L14-E01",
+      "lessonCode": "SPK-P3-L14",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC MEDIA — cơ chế thiết kế nền tảng",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Điểm khác biệt lớn nhất giữa Band 7 và Band 8 ở chủ đề Media là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nêu được CƠ CHẾ (engagement-driven design) đằng sau hành vi, không chỉ mô tả hành vi"
+            },
+            {
+              "id": "B",
+              "text": "Chê mạng xã hội nhiều hơn"
+            },
+            {
+              "id": "C",
+              "text": "Nói nhanh hơn"
+            },
+            {
+              "id": "D",
+              "text": "Dùng từ \"fake news\" nhiều hơn"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q2",
+          "prompt": "\"misinformation\" khác \"disinformation\" thế nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "misinformation = chia sẻ tin sai mà KHÔNG biết; disinformation = CỐ TÌNH bịa để lừa"
+            },
+            {
+              "id": "B",
+              "text": "Giống hệt nhau"
+            },
+            {
+              "id": "C",
+              "text": "misinformation là tin thật"
+            },
+            {
+              "id": "D",
+              "text": "disinformation là tin cũ"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Mệnh đề nhượng bộ nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Despite news is more accessible, trust has fallen."
+            },
+            {
+              "id": "B",
+              "text": "Despite the fact that news is more accessible, trust has fallen sharply."
+            },
+            {
+              "id": "C",
+              "text": "Although news is accessible, but trust has fallen."
+            },
+            {
+              "id": "D",
+              "text": "Despite news being more accessible although trust fell."
+            }
+          ],
+          "answer": "B",
+          "explanation": "despite + danh từ / V-ing; muốn dùng mệnh đề → \"despite the fact that\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Lỗi nào nên tránh?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nêu cả mặt trao quyền (visibility for marginalised voices)"
+            },
+            {
+              "id": "B",
+              "text": "Dùng \"the media\" như một chủ thể có ý chí thống nhất"
+            },
+            {
+              "id": "C",
+              "text": "Nêu cơ chế thiết kế"
+            },
+            {
+              "id": "D",
+              "text": "Dùng thuật ngữ chính xác"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"designed to maximise engagement, not well-being\" — ý là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nền tảng được thiết kế để tối đa TƯƠNG TÁC, không phải PHÚC LỢI người dùng"
+            },
+            {
+              "id": "B",
+              "text": "Nền tảng chăm sóc sức khoẻ người dùng"
+            },
+            {
+              "id": "C",
+              "text": "Nền tảng không có thiết kế gì"
+            },
+            {
+              "id": "D",
+              "text": "Nền tảng chỉ để giải trí"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L14-E02",
+      "lessonCode": "SPK-P3-L14",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Media với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "misinformation",
+          "right": "thông tin sai lệch"
+        },
+        {
+          "id": "m2",
+          "left": "media literacy",
+          "right": "năng lực đọc hiểu truyền thông"
+        },
+        {
+          "id": "m3",
+          "left": "echo chambers",
+          "right": "buồng vang"
+        },
+        {
+          "id": "m4",
+          "left": "algorithmic bias",
+          "right": "thiên kiến thuật toán"
+        },
+        {
+          "id": "m5",
+          "left": "public discourse",
+          "right": "diễn ngôn công cộng"
+        },
+        {
+          "id": "m6",
+          "left": "digital footprint",
+          "right": "dấu vết số"
+        },
+        {
+          "id": "m7",
+          "left": "marginalised voices",
+          "right": "tiếng nói bị gạt ra lề"
+        },
+        {
+          "id": "m8",
+          "left": "engagement-driven design",
+          "right": "thiết kế hướng tương tác"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L14-E03",
+      "lessonCode": "SPK-P3-L14",
+      "order": 3,
+      "type": "categorize",
+      "title": "Mô tả này là thuật ngữ nào?",
+      "instruction": "Kéo mỗi mô tả vào đúng thuật ngữ.",
+      "autoGrade": true,
+      "points": 12,
+      "categories": [
+        {
+          "id": "misinfo",
+          "label": "misinformation"
+        },
+        {
+          "id": "disinfo",
+          "label": "disinformation"
+        },
+        {
+          "id": "echo",
+          "label": "echo chamber"
+        },
+        {
+          "id": "algobias",
+          "label": "algorithmic bias"
+        },
+        {
+          "id": "footprint",
+          "label": "digital footprint"
+        },
+        {
+          "id": "literacy",
+          "label": "media literacy"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Sharing something false without knowing it is false.",
+          "category": "misinfo"
+        },
+        {
+          "id": "c2",
+          "text": "Deliberately spreading false information to mislead people.",
+          "category": "disinfo"
+        },
+        {
+          "id": "c3",
+          "text": "Only ever seeing opinions that match your own.",
+          "category": "echo"
+        },
+        {
+          "id": "c4",
+          "text": "A recommendation system that reproduces existing prejudice.",
+          "category": "algobias"
+        },
+        {
+          "id": "c5",
+          "text": "The permanent trace of everything you have posted.",
+          "category": "footprint"
+        },
+        {
+          "id": "c6",
+          "text": "The skill of judging whether a source is reliable.",
+          "category": "literacy"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L14-E04",
+      "lessonCode": "SPK-P3-L14",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Nhượng bộ nâng cao & sửa lỗi Media",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Nối hai vế bằng Whilst / Despite the fact that / Admittedly cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Platforms give marginalised people a voice. They also amplify hatred.",
+          "explanation": "Whilst + mệnh đề.",
+          "sampleAnswers": [
+            "Whilst platforms give marginalised people a voice, they also amplify hostility."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Despite news is more accessible, trust has fallen.",
+          "explanation": "despite + danh từ / V-ing; mệnh đề → \"despite the fact that\".",
+          "sampleAnswers": [
+            "Despite the fact that news is more accessible, trust has fallen sharply."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Although fact-checking has improved, but false stories still travel faster.",
+          "explanation": "không dùng although + but.",
+          "sampleAnswers": [
+            "Although fact-checking has improved, false stories still travel faster."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The media wants people to be angry.",
+          "explanation": "Không nói \"the media\" như một chủ thể — nêu cơ chế.",
+          "sampleAnswers": [
+            "Because these platforms are designed to maximise engagement, the algorithm rewards outrage over calm discussion."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L14-E05",
+      "lessonCode": "SPK-P3-L14",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Media & Communication",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 80–95 giây. Nêu CƠ CHẾ (engagement-driven design), có cả mặt trao quyền và mặt gây hại, dùng thuật ngữ chính xác (không nói \"fake news\" cho mọi thứ), và có ít nhất một mệnh đề nhượng bộ nâng cao.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why does false information spread so quickly online?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Should governments regulate what people can publish online?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "these platforms are designed to maximise engagement, not well-being",
+          "Whilst public discourse has never been more accessible, it has arguably never been less thoughtful",
+          "an algorithmically curated feed rewards outrage / simplification over nuance"
+        ],
+        "checklist": [
+          "Nêu được cơ chế, không chỉ mô tả hiện tượng",
+          "Dùng thuật ngữ chính xác (misinformation / echo chambers / algorithmic bias), không nói \"fake news\" cho mọi thứ",
+          "Có cả mặt trao quyền và mặt gây hại",
+          "Có ít nhất một mệnh đề nhượng bộ nâng cao (Whilst / Despite the fact that / Admittedly)",
+          "Dùng ít nhất 3 cụm ★"
+        ],
+        "commonErrors": [
+          "Chỉ chê mạng xã hội — bỏ qua visibility for marginalised voices",
+          "Nói \"fake news\" cho mọi vấn đề thông tin",
+          "Mô tả hành vi mà không nói vì sao nền tảng khuyến khích nó",
+          "Dùng \"the media\" như một chủ thể có ý chí thống nhất"
+        ],
+        "sampleAnswer": "It spreads quickly because the structure of the platforms rewards it. These systems are designed to maximise engagement rather than well-being, so an algorithmically curated feed favours whatever provokes a strong reaction — and false or exaggerated claims tend to be more surprising, and therefore more shareable, than careful corrections. There's also a timing asymmetry: a dramatic claim reaches a large audience within hours, whereas a fact-check arrives days later to a fraction of the same people. Add algorithmic bias and echo chambers, and users mostly encounter information that already fits their existing beliefs, which lowers their guard. Whilst it's true that the same openness has given genuine visibility to marginalised voices and enabled real citizen journalism, the same mechanism that empowers those voices also accelerates misinformation — the design doesn't distinguish between the two."
+      }
+    },
+    {
+      "code": "SPK-P3-L15-E01",
+      "lessonCode": "SPK-P3-L15",
+      "order": 1,
+      "type": "mcq",
+      "title": "TOPIC FAMILY & ARTS — lực đẩy & giá trị",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Lực đẩy chính khiến gia đình hạt nhân truyền thống suy giảm là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Phụ nữ tham gia lực lượng lao động quy mô lớn (thay đổi kinh tế hộ gia đình)"
+            },
+            {
+              "id": "B",
+              "text": "Mọi người lười đi"
+            },
+            {
+              "id": "C",
+              "text": "Thời tiết thay đổi"
+            },
+            {
+              "id": "D",
+              "text": "Không có lý do nào"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q2",
+          "prompt": "Lập luận cốt lõi ủng hộ tài trợ nghệ thuật là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nghệ thuật tạo ra GIÁ TRỊ XÃ HỘI mà thị trường luôn định giá thấp (underprices)"
+            },
+            {
+              "id": "B",
+              "text": "Nghệ thuật kiếm được nhiều tiền"
+            },
+            {
+              "id": "C",
+              "text": "Nghệ thuật làm cuộc sống đẹp hơn"
+            },
+            {
+              "id": "D",
+              "text": "Ai cũng thích nghệ thuật"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q3",
+          "prompt": "Lỗi nào nên tránh?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói về xu hướng gia đình nói chung"
+            },
+            {
+              "id": "B",
+              "text": "Cho rằng mô hình gia đình phương Tây là chuẩn chung cho cả thế giới"
+            },
+            {
+              "id": "C",
+              "text": "Nhắc đến khác biệt văn hoá"
+            },
+            {
+              "id": "D",
+              "text": "Nêu lực đẩy kinh tế"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ở nhiều xã hội tập thể, gia đình mở rộng vẫn thiết yếu về kinh tế."
+        },
+        {
+          "id": "q4",
+          "prompt": "Cấu trúc \"not so much X as Y\" dùng để:",
+          "options": [
+            {
+              "id": "A",
+              "text": "ĐỊNH KHUNG LẠI vấn đề (thao tác tư duy Band 8), hợp làm câu kết"
+            },
+            {
+              "id": "B",
+              "text": "liệt kê"
+            },
+            {
+              "id": "C",
+              "text": "nêu ví dụ"
+            },
+            {
+              "id": "D",
+              "text": "câu giờ"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The problem is not so much money but time."
+            },
+            {
+              "id": "B",
+              "text": "Less about money than more about time."
+            },
+            {
+              "id": "C",
+              "text": "The problem is not so much a lack of money as a lack of time."
+            },
+            {
+              "id": "D",
+              "text": "Not money but as time."
+            }
+          ],
+          "answer": "C",
+          "explanation": "not so much X as Y."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L15-E02",
+      "lessonCode": "SPK-P3-L15",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm chủ đề Family & Arts với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "nuclear family",
+          "right": "gia đình hạt nhân"
+        },
+        {
+          "id": "m2",
+          "left": "extended family",
+          "right": "gia đình mở rộng"
+        },
+        {
+          "id": "m3",
+          "left": "intergenerational relationships",
+          "right": "quan hệ giữa các thế hệ"
+        },
+        {
+          "id": "m4",
+          "left": "social support network",
+          "right": "mạng lưới hỗ trợ xã hội"
+        },
+        {
+          "id": "m5",
+          "left": "cultural identity",
+          "right": "bản sắc văn hoá"
+        },
+        {
+          "id": "m6",
+          "left": "artistic freedom",
+          "right": "tự do nghệ thuật"
+        },
+        {
+          "id": "m7",
+          "left": "cultural homogenisation",
+          "right": "đồng hoá văn hoá"
+        },
+        {
+          "id": "m8",
+          "left": "intangible cultural heritage",
+          "right": "di sản văn hoá phi vật thể"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L15-E03",
+      "lessonCode": "SPK-P3-L15",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối câu hỏi Family / Arts với khung",
+      "instruction": "Nối mỗi câu hỏi với khung phải dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "How have family structures changed in recent decades?",
+          "right": "THEN–NOW–NEXT"
+        },
+        {
+          "id": "m2",
+          "left": "Are family relationships weaker than in the past?",
+          "right": "COMPARE FRAMEWORK"
+        },
+        {
+          "id": "m3",
+          "left": "Should governments fund the arts?",
+          "right": "ROLE–RESPONSIBILITY–LIMIT"
+        },
+        {
+          "id": "m4",
+          "left": "Why is traditional culture disappearing in many countries?",
+          "right": "REASON × 3"
+        },
+        {
+          "id": "m5",
+          "left": "Do you think globalisation makes cultures more similar?",
+          "right": "NUANCED OPINION"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L15-E04",
+      "lessonCode": "SPK-P3-L15",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "not so much X as Y & sửa lỗi Family/Arts",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu bằng cấu trúc \"not so much X as Y\" hoặc \"less about X and more about Y\".",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The problem is not really money — it is time.",
+          "explanation": "not so much X as Y.",
+          "sampleAnswers": [
+            "The problem is not so much a lack of money as a lack of time."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Families are not weaker; they are just more spread out.",
+          "explanation": "less about X and more about Y.",
+          "sampleAnswers": [
+            "Families are less about proximity now and more about deliberate contact."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Culture is not disappearing; it is changing form.",
+          "explanation": "định khung lại vấn đề.",
+          "sampleAnswers": [
+            "It is not so much that culture is disappearing as that it is changing form."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The West family model is the normal one for the whole world.",
+          "explanation": "Chống giả định phổ quát.",
+          "sampleAnswers": [
+            "In many collectivist societies, the extended family remains not merely valued but economically essential."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L15-E05",
+      "lessonCode": "SPK-P3-L15",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: câu hỏi Family & Arts",
+      "instruction": "15 giây suy nghĩ, ghi âm nói 80–95 giây. Nêu ít nhất hai lực đẩy (kinh tế / văn hoá), có một câu về khác biệt giữa các nền văn hoá, KHÔNG kể chuyện gia đình mình. Với chủ đề Arts, dùng lập luận \"giá trị thị trường không định giá được\".",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do some traditional art forms disappear while others survive?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you think globalisation is making cultures too similar?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "the arts generate social value the market consistently underprices",
+          "compensate for the reduced capacity of the family",
+          "the real challenge is not so much preserving the old model as building the services that…"
+        ],
+        "checklist": [
+          "Nêu được ít nhất hai lực đẩy (kinh tế / văn hoá)",
+          "Có một câu về khác biệt giữa các nền văn hoá (không đồng đều)",
+          "Không kể chuyện gia đình hoặc trải nghiệm cá nhân",
+          "Dùng ít nhất 3 cụm ★",
+          "Với chủ đề Arts: có lập luận về giá trị thị trường không định giá được"
+        ],
+        "commonErrors": [
+          "Nói gia đình mình thay vì xu hướng chung",
+          "Cho rằng mô hình gia đình phương Tây là chuẩn chung cho cả thế giới",
+          "Nói nghệ thuật \"làm cuộc sống đẹp hơn\" mà không nêu giá trị cụ thể",
+          "Quên rằng thay đổi gia đình KHÔNG đồng đều giữa các nền văn hoá"
+        ],
+        "sampleAnswer": "It largely comes down to whether an art form can find a place in the modern economy. Traditional forms that can be adapted for performance, tourism or teaching tend to survive, because they generate revenue that funds their continuation. Forms that depended on a specific social ritual — a particular festival, a craft tied to a way of life that no longer exists — lose their function and fade, because the market simply doesn't price the social value they carried. Economically, younger people migrate to cities for work and the apprenticeship chains that transmitted these skills break. It's worth adding that this isn't uniform: in societies with strong state heritage protection or a deliberate cultural policy, forms survive that would disappear elsewhere. So the real question is not so much whether a tradition is 'valuable' as whether anyone has created the conditions — funding, teaching, visibility — in which it can still be practised."
+      }
+    },
+    {
+      "code": "SPK-P3-L16-E01",
+      "lessonCode": "SPK-P3-L16",
+      "order": 1,
+      "type": "mcq",
+      "title": "WARM-UP — nhận diện dạng câu hỏi trong 2 giây",
+      "instruction": "Với mỗi câu hỏi, chọn ĐÚNG dạng / khung phải dùng.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"Why do people find it hard to save money?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "B",
+              "text": "NUANCED OPINION"
+            },
+            {
+              "id": "C",
+              "text": "COMPARE"
+            },
+            {
+              "id": "D",
+              "text": "TREND–PREDICTION–CAVEAT"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q2",
+          "prompt": "\"Do you think schools should teach financial skills?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "B",
+              "text": "NUANCED OPINION"
+            },
+            {
+              "id": "C",
+              "text": "CAUSE–EFFECT–SOLUTION"
+            },
+            {
+              "id": "D",
+              "text": "COMPARE"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q3",
+          "prompt": "\"What are the drawbacks of paying for everything by card?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "BENEFIT–DRAWBACK–BALANCE"
+            },
+            {
+              "id": "B",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "C",
+              "text": "NUANCED OPINION"
+            },
+            {
+              "id": "D",
+              "text": "TREND–PREDICTION–CAVEAT"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q4",
+          "prompt": "\"How is shopping today different from twenty years ago?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "COMPARE FRAMEWORK"
+            },
+            {
+              "id": "B",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "C",
+              "text": "ROLE–RESPONSIBILITY–LIMIT"
+            },
+            {
+              "id": "D",
+              "text": "NUANCED OPINION"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"What can be done to help families in financial difficulty?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "CAUSE–EFFECT–SOLUTION"
+            },
+            {
+              "id": "B",
+              "text": "COMPARE"
+            },
+            {
+              "id": "C",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "D",
+              "text": "TREND–PREDICTION–CAVEAT"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q6",
+          "prompt": "\"Will cash still exist in thirty years?\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "TREND–PREDICTION–CAVEAT"
+            },
+            {
+              "id": "B",
+              "text": "BENEFIT–DRAWBACK–BALANCE"
+            },
+            {
+              "id": "C",
+              "text": "REASON × 3"
+            },
+            {
+              "id": "D",
+              "text": "COMPARE"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P3-L16-E02",
+      "lessonCode": "SPK-P3-L16",
+      "order": 2,
+      "type": "speaking_response",
+      "title": "THI THỬ — Bộ đề 1: Education & Work",
+      "instruction": "Điều kiện thi: giám khảo hỏi liên tiếp, KHÔNG dừng giữa chừng. Ghi âm trả lời cả 5 câu hỏi, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung cho từng câu.",
+      "autoGrade": false,
+      "points": 15,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "1. Why do so many young people want to go to university?"
+        },
+        {
+          "id": "q2",
+          "prompt": "2. Do you think a university degree is still necessary to get a good job?"
+        },
+        {
+          "id": "q3",
+          "prompt": "3. What are the advantages and disadvantages of studying while working?"
+        },
+        {
+          "id": "q4",
+          "prompt": "4. How is the job market today different from your parents' generation?"
+        },
+        {
+          "id": "q5",
+          "prompt": "5. How do you think work will change in the next twenty years?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "REASON × 3 (câu 1) · NUANCED OPINION (câu 2) · BENEFIT–DRAWBACK–BALANCE (câu 3)",
+          "COMPARE FRAMEWORK (câu 4) · TREND–PREDICTION–CAVEAT (câu 5)",
+          "cụm chuyển tầng / cụm cân bằng / caveat có lý do"
+        ],
+        "checklist": [
+          "Fluency & Coherence: mỗi câu 60–90 giây, không dừng quá 3 giây",
+          "Lexical Resource: ≥3 collocation chuyên đề mỗi câu; không lặp từ",
+          "Grammatical Range: câu phức, bị động, mệnh đề quan hệ; lỗi không cản trở hiểu",
+          "Pronunciation: rõ ràng, có nhấn nhá, trọng âm từ đúng",
+          "Nhận đúng dạng cho cả 5 câu và dùng đúng khung; có câu kết mỗi câu"
+        ],
+        "commonErrors": [
+          "Nhận diện sai dạng → dùng nhầm khung cho cả bài",
+          "Trả lời câu đầu quá dài rồi hụt hơi ở ba câu sau",
+          "Bỏ câu kết ở những câu cuối vì mệt",
+          "Khi gặp câu khó thì im lặng thay vì dùng cụm câu giờ"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7–8 ở các buổi Part 3: Buổi 1 (REASON × 3) cho câu 1, Buổi 2 (NUANCED OPINION) cho câu 2, Buổi 3 (BENEFIT–DRAWBACK) cho câu 3, Buổi 4 (COMPARE) cho câu 4, Buổi 6 (TREND–PREDICTION–CAVEAT) cho câu 5, kết hợp từ vựng chuyên đề Education (Buổi 7) và Work & Economy (Buổi 12). Mỗi câu mở đúng khung, mỗi ý có một câu triển khai, mỗi câu có kết luận có sắc thái."
+      }
+    },
+    {
+      "code": "SPK-P3-L16-E03",
+      "lessonCode": "SPK-P3-L16",
+      "order": 3,
+      "type": "speaking_response",
+      "title": "THI THỬ — Bộ đề 2: Environment & Community",
+      "instruction": "Giám khảo hỏi liên tiếp, không dừng giữa chừng. Ghi âm trả lời cả 5 câu, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung.",
+      "autoGrade": false,
+      "points": 15,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "1. Why are some people not interested in environmental issues?"
+        },
+        {
+          "id": "q2",
+          "prompt": "2. Do you think individuals can make a real difference to the environment?"
+        },
+        {
+          "id": "q3",
+          "prompt": "3. What can local governments do to reduce waste in cities?"
+        },
+        {
+          "id": "q4",
+          "prompt": "4. How have attitudes towards the environment changed in your country?"
+        },
+        {
+          "id": "q5",
+          "prompt": "5. Will cities be greener or more polluted in fifty years?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "REASON × 3 (câu 1) · NUANCED OPINION (câu 2) · CAUSE–EFFECT–SOLUTION (câu 3)",
+          "COMPARE / THEN–NOW–NEXT (câu 4) · TREND–PREDICTION–CAVEAT (câu 5)",
+          "necessary but not sufficient · a more effective approach might be · driven by / a more cautious view might be"
+        ],
+        "checklist": [
+          "Mỗi câu 60–90 giây, không dừng quá 3 giây",
+          "≥3 cụm ★ chuyên đề Environment / Society mỗi câu, dùng đúng thuật ngữ",
+          "Câu 2: có cả trục cá nhân và hệ thống · Câu 3: giải pháp có chủ thể + giới hạn",
+          "Câu 5: dự đoán có lực đẩy + caveat có lý do, không dùng \"will\" trần",
+          "Nhận đúng dạng cả 5 câu; có câu kết mỗi câu"
+        ],
+        "commonErrors": [
+          "Khẩu hiệu rỗng (\"protect the environment for future generations\")",
+          "Giải pháp không có chủ thể",
+          "Dự đoán trống, không có lực đẩy",
+          "Trả lời câu đầu quá dài rồi hụt hơi"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 8 ở Buổi 9 (Environment) và Buổi 10 (Society): câu 1 theo REASON × 3, câu 2 theo NUANCED OPINION có \"necessary but not sufficient\", câu 3 theo CAUSE–EFFECT–SOLUTION với giải pháp có chủ thể (\"local governments could…\") và một giới hạn, câu 4 theo COMPARE / THEN–NOW–NEXT, câu 5 dự đoán có lực đẩy khí hậu + caveat lịch sử."
+      }
+    },
+    {
+      "code": "SPK-P3-L16-E04",
+      "lessonCode": "SPK-P3-L16",
+      "order": 4,
+      "type": "speaking_response",
+      "title": "THI THỬ — Bộ đề 3: Technology & Society",
+      "instruction": "Giám khảo hỏi liên tiếp, không dừng giữa chừng. Ghi âm trả lời cả 5 câu, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung.",
+      "autoGrade": false,
+      "points": 15,
+      "speakingPart": 3,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "1. Why do people spend so much time on social media?"
+        },
+        {
+          "id": "q2",
+          "prompt": "2. Do you think technology has brought people closer together?"
+        },
+        {
+          "id": "q3",
+          "prompt": "3. What are the benefits and drawbacks of working with artificial intelligence?"
+        },
+        {
+          "id": "q4",
+          "prompt": "4. How is the way people make friends today different from in the past?"
+        },
+        {
+          "id": "q5",
+          "prompt": "5. How might communication change in the next generation?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "REASON × 3 (câu 1) · NUANCED OPINION (câu 2) · BENEFIT–DRAWBACK–BALANCE (câu 3)",
+          "COMPARE FRAMEWORK (câu 4) · TREND–PREDICTION–CAVEAT (câu 5)",
+          "engagement-driven design · amplify existing tendencies rather than create new ones · Whilst / Admittedly"
+        ],
+        "checklist": [
+          "Mỗi câu 60–90 giây, không dừng quá 3 giây",
+          "≥3 cụm ★ chuyên đề Technology / Media mỗi câu, thuật ngữ chính xác",
+          "Câu 2 & 3: lập luận hai chiều, có ít nhất một câu tự phản bác trong cả bộ đề",
+          "Nêu loại công nghệ cụ thể, không nói \"technology\" chung chung",
+          "Nhận đúng dạng cả 5 câu; có câu kết mỗi câu"
+        ],
+        "commonErrors": [
+          "Khen một chiều hoặc chê một chiều",
+          "Dùng \"technology\" như một khối duy nhất",
+          "Nói \"fake news\" cho mọi vấn đề thông tin",
+          "Bỏ câu kết ở những câu cuối vì mệt"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 8 ở Buổi 8 (Technology) và Buổi 14 (Media): câu 1 theo REASON × 3, câu 2 theo NUANCED OPINION có câu tự phản bác (\"There is a reasonable argument that… However, I would push back…\"), câu 3 theo BENEFIT–DRAWBACK–BALANCE với bất lợi có người chịu thiệt, câu 4 theo COMPARE (khía cạnh: tốc độ / độ sâu / quyền lực), câu 5 dự đoán có lực đẩy công nghệ + caveat."
+      }
+    }
+  ]
+}

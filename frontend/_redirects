@@ -75,6 +75,7 @@
 /writing/task2-foundations /writing-task2-course.html 200
 /writing/task2-course /writing-task2-course.html 200
 /speaking        /speaking.html         200
+/speaking/course /speaking-course.html  200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────
 /*  /404.html  404
