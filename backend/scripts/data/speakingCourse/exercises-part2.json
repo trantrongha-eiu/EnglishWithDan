@@ -534,7 +534,11 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a place you often go to in your free time. You should say: where it is · what it looks like · what you do there. And explain why you like going there."
+          "prompt": "Describe a building you often see or visit. You should say: where it is · what it looks like · how it is used. And explain how you feel about it."
+        },
+        {
+          "id": "s2",
+          "prompt": "Describe a place you often go to in your free time."
         }
       ],
       "rubric": {
@@ -2598,7 +2602,11 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a skill you would like to improve. You should say: what the skill is · how you first started · how you practise it now. And explain why you want to improve it."
+          "prompt": "Describe a good habit you want to develop. You should say: what the habit is · when you started it · how often you do it. And explain why you want to develop it."
+        },
+        {
+          "id": "s2",
+          "prompt": "Describe a skill you would like to improve."
         }
       ],
       "rubric": {

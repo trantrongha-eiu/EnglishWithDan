@@ -3963,11 +3963,11 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Do you think tourism does more harm than good for a city?"
+          "prompt": "What problems can too many tourists cause for a small town?"
         },
         {
           "id": "s2",
-          "prompt": "What can be done to reduce the problems caused by mass tourism?"
+          "prompt": "What advantages can tourism bring to a city?"
         }
       ],
       "rubric": {
@@ -3989,7 +3989,7 @@
           "Dùng \"many people\" và \"a lot of\" cho mọi lượng",
           "Nói du lịch tốt cho \"the city\" như thể thành phố là một khối đồng nhất"
         ],
-        "sampleAnswer": "I think the honest answer is that it depends on who you ask, because the benefits and costs fall on different groups. The clearest benefit is economic: visitor spending supports hotels, restaurants and transport, and creates jobs across a wide range of skill levels, while heritage institutions often depend on tourism revenue for conservation. But a significant proportion of that benefit is captured by property owners and large operators, and the costs land elsewhere. Over-tourism prices long-term residents out of central neighbourhoods as short-term rentals spread, strains infrastructure during peak season, and gradually erodes the very authenticity that attracted visitors in the first place. So on balance I wouldn't say tourism does more harm than good in the abstract — it does more good for some groups and more harm for others, and whether the overall outcome is positive depends entirely on how the money and the pressure are managed."
+        "sampleAnswer": "Too many tourists tend to cause problems that fall on residents rather than on the town as a whole. Economically, the benefits are real but unevenly distributed — a significant proportion is captured by property owners and large operators, while ordinary residents face the downsides. As short-term rentals spread, long-term residents are gradually priced out of the centre; peak-season crowds strain infrastructure that was built for a much smaller population; and the character that made the town attractive in the first place slowly erodes as shops shift to serving visitors rather than locals. There are social costs too: a sense that the place no longer belongs to the people who live there. So the core problem is not tourism itself but the fact that a small town has little capacity to absorb sudden, concentrated demand."
       }
     },
     {
