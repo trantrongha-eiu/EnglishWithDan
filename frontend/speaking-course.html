@@ -23,48 +23,51 @@
     .t1-sub { font-size: 14px; color: var(--text2, #6b7280); margin: 2px 0 0; }
     .t1-btn { display:inline-flex; align-items:center; gap:6px; background: var(--surface2,#f3f4f6); color: var(--text,#111827);
       border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
-    .t1-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
+    .t1-btn:hover { border-color: #f43f5e; color: #f43f5e; }
 
     .t1-premium { margin: 0 20px 16px; display:flex; align-items:center; gap:14px;
-      background: linear-gradient(135deg, rgba(14,165,233,.10), rgba(2,132,199,.06));
-      border: 1px solid rgba(14,165,233,.25); border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; }
+      background: linear-gradient(135deg, rgba(244,63,94,.10), rgba(225,29,72,.06));
+      border: 1px solid rgba(244,63,94,.25); border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; }
     .t1-premium .t { flex:1; min-width: 200px; }
-    .t1-premium .t b { display:block; font-size: 13px; color: #0284c7; margin-bottom: 2px; }
+    .t1-premium .t b { display:block; font-size: 13px; color: #e11d48; margin-bottom: 2px; }
     .t1-premium .t span { font-size: 12px; color: var(--text2,#555); }
-    .t1-premium button { background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px;
+    .t1-premium button { background: linear-gradient(135deg,#f43f5e,#e11d48); color:#fff; border:none; border-radius:10px;
       padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
 
     /* modules / lessons */
-    .t1-module { margin: 12px 20px 18px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 16px; overflow: hidden; background: var(--surface,#fff); }
+    .t1-module { margin: 12px 20px 18px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 16px; overflow: hidden; background: var(--surface,#fff); border-left-width: 4px; }
+    .t1-module.p1 { border-left-color: #f43f5e; }
+    .t1-module.p2 { border-left-color: #f59e0b; }
+    .t1-module.p3 { border-left-color: #8b5cf6; }
     .t1-module-hd { padding: 14px 16px; background: var(--surface2,#f8fafc); border-bottom: 1px solid var(--border,#e5e7eb); }
     .t1-module-hd h3 { margin: 0; font-size: 15px; font-weight: 800; }
     .t1-module-hd .en { font-size: 11px; color: var(--text3,#9ca3af); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
     .t1-lesson { display:flex; align-items:center; gap:12px; padding: 12px 16px; border-top: 1px solid var(--border,#eef2f7); cursor: pointer; }
     .t1-lesson:first-child { border-top: none; }
-    .t1-lesson:hover { background: #f0f9ff; }
+    .t1-lesson:hover { background: #fff1f2; }
     .t1-lesson.is-locked { opacity: .62; }
     .t1-lesson-ic { width: 26px; height: 26px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 13px; flex-shrink: 0;
       background: var(--surface2,#eef2f7); color: var(--text2,#6b7280); }
     .t1-lesson-ic.done { background: #dcfce7; color: #16a34a; }
-    .t1-lesson-ic.prog { background: #e0f2fe; color: #0284c7; }
+    .t1-lesson-ic.prog { background: #ffe4e6; color: #e11d48; }
     .t1-lesson-body { flex: 1; min-width: 0; }
     .t1-lesson-title { font-size: 14px; font-weight: 700; }
     .t1-lesson-meta { font-size: 11.5px; color: var(--text3,#9ca3af); margin-top: 2px; }
     .t1-lesson-bar { height: 4px; background: var(--surface2,#eef2f7); border-radius: 4px; margin-top: 5px; overflow: hidden; max-width: 260px; }
-    .t1-lesson-bar > span { display:block; height:100%; background: linear-gradient(90deg,#0ea5e9,#22c55e); border-radius: 4px; }
+    .t1-lesson-bar > span { display:block; height:100%; background: linear-gradient(90deg,#f43f5e,#22c55e); border-radius: 4px; }
     .t1-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; background: #fef3c7; color: #92400e; }
 
     .t1-crumb { padding: 16px 20px 4px; font-size: 13px; color: var(--text3,#9ca3af); }
-    .t1-crumb span { color: #0ea5e9; font-weight: 700; cursor: pointer; }
+    .t1-crumb span { color: #f43f5e; font-weight: 700; cursor: pointer; }
     .t1-crumb span:hover { text-decoration: underline; }
 
-    .t1-objs { margin: 4px 20px 0; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 12px 14px; }
-    [data-theme="dark"] .t1-objs { background: #0c2536; border-color: #1e3a52; }
-    .t1-objs-t { font-size: 12px; font-weight: 800; color: #0369a1; }
-    [data-theme="dark"] .t1-objs-t { color: #7dd3fc; }
+    .t1-objs { margin: 4px 20px 0; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 12px; padding: 12px 14px; }
+    [data-theme="dark"] .t1-objs { background: #3f1424; border-color: #5c2233; }
+    .t1-objs-t { font-size: 12px; font-weight: 800; color: #be123c; }
+    [data-theme="dark"] .t1-objs-t { color: #fda4af; }
     .t1-objs ul { margin: 6px 0 0; padding-left: 20px; font-size: 13px; line-height: 1.6; }
     .t1-key { margin: 8px 20px 0; }
-    .t1-key > summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #0ea5e9; list-style: none; }
+    .t1-key > summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #f43f5e; list-style: none; }
     .t1-key > summary::-webkit-details-marker { display: none; }
     .t1-key > summary::before { content: '▸ '; font-weight: 900; }
     .t1-key[open] > summary::before { content: '▾ '; }
@@ -72,8 +75,11 @@
 
     .t1-ex-list { display:flex; flex-direction: column; gap: 10px; padding: 10px 20px 20px; }
     .t1-ex-card { display:flex; align-items:center; gap: 12px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 12px; padding: 13px 15px; cursor: pointer; background: var(--surface,#fff); }
-    .t1-ex-card:hover { border-color: #0ea5e9; background: #f0f9ff; }
-    .t1-ex-type { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing:.03em; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
+    .t1-ex-card:hover { border-color: #f43f5e; background: #fff1f2; }
+    .t1-ex-type { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing:.03em; color: #e11d48; background: #ffe4e6; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
+    .t1-ex-type.spk { color:#fff; background:linear-gradient(135deg,#f43f5e,#e11d48); }
+    .t1-ex-card.spk { border-color:#fecdd3; background:linear-gradient(180deg,#fff,#fff5f6); }
+    [data-theme="dark"] .t1-ex-card.spk { background:var(--surface,#1a1a1a); border-color:#5c2233; }
     .t1-ex-card .nm { flex:1; min-width:0; font-size: 13.5px; font-weight: 700; }
     .t1-ex-done { color: #16a34a; }
 
@@ -97,24 +103,24 @@
     .t1-item .q { font-size: 13.5px; line-height: 1.7; margin-bottom: 6px; }
     .t1-input, .t1-ta { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1.5px solid var(--border,#d1d5db); border-radius: 8px; background: var(--surface,#fff); color: var(--text,#111827); }
     .t1-ta { line-height: 1.6; resize: vertical; }
-    .t1-input:focus, .t1-ta:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
-    .t1-gap-inp { display:inline-block; width: 120px; margin: 0 3px; padding: 3px 6px; border: none; border-bottom: 2px solid #0ea5e9; background: #f0f9ff; font-family: inherit; font-size: 14px; }
+    .t1-input:focus, .t1-ta:focus { outline: none; border-color: #f43f5e; box-shadow: 0 0 0 3px rgba(244,63,94,.15); }
+    .t1-gap-inp { display:inline-block; width: 120px; margin: 0 3px; padding: 3px 6px; border: none; border-bottom: 2px solid #f43f5e; background: #fff1f2; font-family: inherit; font-size: 14px; }
     .t1-mc { display:flex; gap: 8px; align-items: flex-start; padding: 6px 0; cursor: pointer; font-size: 13.5px; }
     .t1-mc input { margin-top: 3px; }
     /* ── drag & drop (mouse + touch via Pointer Events) ── */
     .t1-chip { display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--border,#d1d5db); background:var(--surface,#fff);
       border-radius:10px; padding:8px 12px; font-size:13px; font-family:inherit; line-height:1.45; cursor:grab; -webkit-user-select:none; user-select:none;
       touch-action:none; box-shadow:0 1px 2px rgba(0,0,0,.04); transition:border-color .12s, box-shadow .12s; max-width:100%; overflow-wrap:anywhere; }
-    .t1-chip:hover { border-color:#0ea5e9; }
+    .t1-chip:hover { border-color:#f43f5e; }
     .t1-chip:active { cursor:grabbing; }
     .t1-chip.is-dragging { opacity:.3; pointer-events:none; }
-    .t1-chip.placed { border-color:#0ea5e9; background:#e0f2fe; color:#0369a1; font-weight:600; }
-    [data-theme="dark"] .t1-chip.placed { background:#0c2536; color:#7dd3fc; }
-    .t1-dnd-float { position:fixed; z-index:9999; pointer-events:none; margin:0 !important; box-shadow:0 10px 26px rgba(2,132,199,.30); transform:rotate(-1.5deg); opacity:.98; }
+    .t1-chip.placed { border-color:#f43f5e; background:#ffe4e6; color:#be123c; font-weight:600; }
+    [data-theme="dark"] .t1-chip.placed { background:#3f1424; color:#fda4af; }
+    .t1-dnd-float { position:fixed; z-index:9999; pointer-events:none; margin:0 !important; box-shadow:0 10px 26px rgba(225,29,72,.30); transform:rotate(-1.5deg); opacity:.98; }
     .t1-drop { border:1.5px dashed var(--border,#cbd5e1); border-radius:10px; min-height:46px; padding:6px; display:flex; flex-wrap:wrap; gap:6px;
       align-items:center; transition:border-color .12s, background .12s; }
-    .t1-drop.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
-    [data-theme="dark"] .t1-drop.over { background:#0c2536; }
+    .t1-drop.over { border-color:#f43f5e; border-style:solid; background:#fff1f2; }
+    [data-theme="dark"] .t1-drop.over { background:#3f1424; }
     .t1-drop:empty::before { content:attr(data-ph); color:#b8c0cc; font-size:12px; padding:0 4px; }
 
     /* matching — two columns */
@@ -124,16 +130,16 @@
     .t1-match-left { font-size:13px; line-height:1.6; margin-bottom:7px; }
     .t1-match-pool { position:sticky; top:8px; display:flex; flex-direction:column; gap:8px; background:var(--surface2,#f8fafc);
       border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:10px; transition:border-color .12s, background .12s; }
-    .t1-match-pool.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
-    [data-theme="dark"] .t1-match-pool.over { background:#0c2536; }
+    .t1-match-pool.over { border-color:#f43f5e; border-style:solid; background:#fff1f2; }
+    [data-theme="dark"] .t1-match-pool.over { background:#3f1424; }
     .t1-match-pool .pl, .t1-cat-pool .pl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--text3,#9ca3af); width:100%; }
     @media (max-width:640px){ .t1-match { grid-template-columns:1fr; } .t1-match-pool { position:static; flex-direction:row; flex-wrap:wrap; align-items:center; } }
 
     /* categorize — buckets */
     .t1-cat-pool { display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px; border:1px solid var(--border,#e5e7eb); border-radius:12px;
       background:var(--surface2,#f8fafc); margin-bottom:10px; min-height:54px; transition:border-color .12s, background .12s; }
-    .t1-cat-pool.over { border-color:#0ea5e9; border-style:solid; background:#f0f9ff; }
-    [data-theme="dark"] .t1-cat-pool.over { background:#0c2536; }
+    .t1-cat-pool.over { border-color:#f43f5e; border-style:solid; background:#fff1f2; }
+    [data-theme="dark"] .t1-cat-pool.over { background:#3f1424; }
     .t1-cat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
     .t1-bucket { border:1px solid var(--border,#e5e7eb); border-radius:12px; padding:10px; background:var(--surface,#fff); }
     .t1-bucket .bl { font-size:12px; font-weight:800; color:var(--text2,#6b7280); margin-bottom:6px; }
@@ -152,17 +158,17 @@
 
     .t1-reset { margin-top:10px; background:none; border:1px solid var(--border,#d1d5db); color:var(--text2,#6b7280);
       border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
-    .t1-reset:hover { border-color:#0ea5e9; color:#0ea5e9; }
+    .t1-reset:hover { border-color:#f43f5e; color:#f43f5e; }
 
-    .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#f43f5e,#e11d48); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
     .t1-submit:disabled { opacity: .5; cursor: default; }
-    .t1-next { margin-top: 12px; width: 100%; background: #0ea5e9; color: #fff; border:none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-next { margin-top: 12px; width: 100%; background: #f43f5e; color: #fff; border:none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
     .t1-wc { font-size: 12px; color: var(--text3,#9ca3af); margin-top: 6px; text-align: right; }
-    .t1-timer { font-weight: 800; color: #0ea5e9; }
+    .t1-timer { font-weight: 800; color: #f43f5e; }
     .t1-timer.low { color: #ef4444; }
 
     .t1-fb { margin: 12px 20px 0; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border,#e5e7eb); background: var(--surface,#fff); }
-    .t1-fb-score { font-size: 34px; font-weight: 800; color: #0ea5e9; text-align: center; }
+    .t1-fb-score { font-size: 34px; font-weight: 800; color: #f43f5e; text-align: center; }
     .t1-res-item { font-size: 13px; line-height: 1.6; padding: 6px 0; border-top: 1px dashed var(--border,#eef2f7); }
     .t1-res-item:first-child { border-top: none; }
     .t1-ok { color: #16a34a; font-weight: 700; }
@@ -173,29 +179,91 @@
     .t1-band { background: var(--surface2,#f3f4f6); border-radius: 10px; padding: 8px 12px; text-align: center; min-width: 74px; }
     .t1-band .n { font-size: 18px; font-weight: 800; }
     .t1-band .l { font-size: 10px; color: var(--text3,#9ca3af); }
-    .t1-spinner { width: 28px; height: 28px; border: 3px solid var(--surface2,#e5e7eb); border-top-color: #0ea5e9; border-radius: 50%; animation: t1sp .8s linear infinite; margin: 0 auto; }
+    .t1-spinner { width: 28px; height: 28px; border: 3px solid var(--surface2,#e5e7eb); border-top-color: #f43f5e; border-radius: 50%; animation: t1sp .8s linear infinite; margin: 0 auto; }
     @keyframes t1sp { to { transform: rotate(360deg); } }
     .hidden { display: none !important; }
 
-    /* speaking_response */
-    .sc-qs { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+    /* ── speaking_response ──────────────────────────────────────────── */
+    .sc-partbadge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; text-transform:uppercase;
+      letter-spacing:.04em; color:#be123c; background:#ffe4e6; border-radius:20px; padding:3px 10px; margin-bottom:10px; }
+    [data-theme="dark"] .sc-partbadge { background:#3f1424; color:#fda4af; }
+    .sc-qs { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
     .sc-q { display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.6; background:var(--surface2,#f8fafc);
-      border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:9px 12px; }
-    .sc-qn { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:#e0f2fe; color:#0284c7; font-weight:800;
-      font-size:12px; display:flex; align-items:center; justify-content:center; }
-    .sc-prep { font-size:12px; color:var(--text3,#6b7280); font-style:italic; margin-bottom:10px; }
-    .sc-rec { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .sc-rec-btn { display:inline-flex; align-items:center; gap:8px; background:#0ea5e9; color:#fff; border:none;
-      border-radius:10px; padding:11px 18px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit; }
-    .sc-rec-btn.recording { background:#dc2626; animation:scpulse 1.3s ease-in-out infinite; }
-    @keyframes scpulse { 0%,100% { box-shadow:0 0 0 0 rgba(220,38,38,.45); } 50% { box-shadow:0 0 0 8px rgba(220,38,38,0); } }
-    .sc-time { font-weight:800; color:#0ea5e9; font-size:16px; font-variant-numeric:tabular-nums; }
-    .sc-interim { min-height:18px; font-size:13px; color:var(--text3,#9ca3af); font-style:italic; margin:8px 0 4px; }
-    .sc-ta-label { display:block; font-size:12px; font-weight:700; color:var(--text2,#4b5563); margin:8px 0 4px; }
-    .sc-note { font-size:12px; color:#b45309; margin-top:6px; }
-    [data-theme="dark"] .sc-note { color:#fbbf24; }
-    .sc-band-fb { font-size:13.5px; line-height:1.7; }
-    .sc-band-fb ul { margin:6px 0 0; padding-left:20px; }
+      border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:10px 12px; cursor:pointer; transition:border-color .12s,background .12s; }
+    .sc-q:hover { border-color:#fda4af; }
+    .sc-q.cur { border-color:#f43f5e; background:#fff1f2; }
+    [data-theme="dark"] .sc-q.cur { background:#3f1424; }
+    .sc-qn { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:#ffe4e6; color:#e11d48; font-weight:800;
+      font-size:12px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+    .sc-q.cur .sc-qn { background:#f43f5e; color:#fff; }
+    .sc-q.said .sc-qn { background:#dcfce7; color:#16a34a; }
+
+    /* recorder panel */
+    .sc-panel { border:1.5px solid var(--border,#e5e7eb); border-radius:16px; padding:16px; background:var(--surface,#fff);
+      display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .sc-mic { position:relative; width:76px; height:76px; border-radius:50%; border:none; cursor:pointer; flex-shrink:0;
+      background:linear-gradient(135deg,#f43f5e,#e11d48); color:#fff; font-size:28px; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 6px 18px rgba(244,63,94,.35); transition:transform .1s; font-family:inherit; }
+    .sc-mic:active { transform:scale(.94); }
+    .sc-mic:disabled { opacity:.45; cursor:default; box-shadow:none; }
+    .sc-mic.rec { background:linear-gradient(135deg,#ef4444,#b91c1c); }
+    .sc-mic.rec::before, .sc-mic.rec::after { content:''; position:absolute; inset:0; border-radius:50%; border:2px solid rgba(239,68,68,.5); animation:scring 1.8s ease-out infinite; }
+    .sc-mic.rec::after { animation-delay:.9s; }
+    @keyframes scring { 0% { transform:scale(1); opacity:.7; } 100% { transform:scale(1.7); opacity:0; } }
+    .sc-mic-label { font-size:13px; font-weight:700; color:var(--text2,#4b5563); }
+    .sc-time { font-weight:800; font-size:30px; color:var(--text,#111827); font-variant-numeric:tabular-nums; letter-spacing:1px; }
+    .sc-time .u { font-size:14px; color:var(--text3,#9ca3af); font-weight:700; }
+    /* length guide bar */
+    .sc-lenwrap { width:100%; max-width:360px; }
+    .sc-lenbar { position:relative; height:8px; border-radius:6px; background:var(--surface2,#eef2f7); overflow:hidden; }
+    .sc-lenbar > span { display:block; height:100%; width:0; border-radius:6px; background:#f59e0b; transition:width .3s linear, background .3s; }
+    .sc-lenbar.ok > span { background:#22c55e; }
+    .sc-lenwrap .sc-lentext { font-size:11px; color:var(--text3,#9ca3af); margin-top:4px; text-align:center; }
+    .sc-lenwrap .sc-lentext b { color:var(--text2,#6b7280); }
+    /* prep countdown */
+    .sc-prep { width:100%; text-align:center; background:#fff1f2; border:1px solid #fecdd3; border-radius:12px; padding:12px; }
+    [data-theme="dark"] .sc-prep { background:#3f1424; border-color:#5c2233; }
+    .sc-prep-n { font-size:34px; font-weight:800; color:#e11d48; line-height:1; }
+    .sc-prep-t { font-size:12px; color:var(--text3,#6b7280); margin:4px 0 8px; }
+    .sc-prep-skip { background:none; border:1px solid #fda4af; color:#e11d48; border-radius:8px; padding:5px 14px;
+      font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .sc-interim { width:100%; min-height:20px; font-size:13px; color:var(--text3,#9ca3af); font-style:italic; text-align:center; }
+    .sc-audio { width:100%; max-width:360px; margin-top:2px; }
+    .sc-redo { background:none; border:1px solid var(--border,#d1d5db); color:var(--text2,#6b7280); border-radius:8px;
+      padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .sc-redo:hover { border-color:#f43f5e; color:#e11d48; }
+    .sc-ts { margin-top:12px; }
+    .sc-ts > summary { cursor:pointer; font-size:12px; font-weight:700; color:var(--text2,#4b5563); list-style:none; }
+    .sc-ts > summary::-webkit-details-marker { display:none; }
+    .sc-ts > summary::before { content:'▸ '; font-weight:900; color:#f43f5e; }
+    .sc-ts[open] > summary::before { content:'▾ '; }
+    .sc-note { font-size:12px; color:#b45309; margin-top:8px; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:8px 10px; }
+    [data-theme="dark"] .sc-note { color:#fbbf24; background:#3a2e12; border-color:#5c4a1c; }
+
+    /* speaking feedback */
+    .scf-ring { width:88px; height:88px; border-radius:50%; margin:0 auto 4px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; color:#fff; font-weight:800; }
+    .scf-ring .n { font-size:26px; line-height:1; } .scf-ring .l { font-size:9px; text-transform:uppercase; letter-spacing:.05em; opacity:.9; }
+    .scf-ring.lo { background:linear-gradient(135deg,#f87171,#dc2626); }
+    .scf-ring.mid { background:linear-gradient(135deg,#fbbf24,#d97706); }
+    .scf-ring.hi { background:linear-gradient(135deg,#34d399,#059669); }
+    .scf-bars { display:flex; flex-direction:column; gap:9px; margin:14px 0 4px; }
+    .scf-bar { display:grid; grid-template-columns:96px 1fr 34px; align-items:center; gap:10px; font-size:12.5px; }
+    .scf-bar .lb { font-weight:700; color:var(--text2,#4b5563); }
+    .scf-bar .tk { height:8px; border-radius:6px; background:var(--surface2,#eef2f7); overflow:hidden; }
+    .scf-bar .tk > span { display:block; height:100%; border-radius:6px; }
+    .scf-bar .v { font-weight:800; text-align:right; }
+    .scf-sec { margin-top:12px; font-size:13px; line-height:1.7; }
+    .scf-sec > .h { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--text3,#9ca3af); margin-bottom:4px; }
+    .scf-sec ul { margin:2px 0 0; padding-left:18px; }
+    .scf-fix { margin-top:4px; font-size:12.5px; }
+    .scf-model { margin-top:12px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 12px; }
+    [data-theme="dark"] .scf-model { background:#0d2818; border-color:#1f4d33; }
+    .scf-model > summary { cursor:pointer; font-size:12.5px; font-weight:800; color:#15803d; list-style:none; }
+    [data-theme="dark"] .scf-model > summary { color:#4ade80; }
+    .scf-model > summary::-webkit-details-marker { display:none; }
+    .scf-model > summary::before { content:'📄 '; }
+    .scf-model .body { font-size:13px; line-height:1.75; margin-top:8px; white-space:pre-wrap; color:var(--text,#111827); }
   </style>
 </head>
 <body>
@@ -322,39 +390,109 @@
     }
   };
 
-  // ── mini speech recorder for speaking_response ─────────────────────
-  //   SpeechRecognition → live transcript into #sc-transcript (+ interim
-  //   line); MediaRecorder → a local playback blob. Best-effort: if either
-  //   API is missing the student just types the transcript by hand.
+  // target answer length per IELTS part — drives the live length-guide bar
+  function speakGuide(part) {
+    if (part === 2) return { lo: 90, hi: 120, txt: '1 phút 30 – 2 phút' };
+    if (part === 3) return { lo: 45, hi: 90, txt: '45–90 giây / câu' };
+    return { lo: 15, hi: 25, txt: '15–25 giây / câu' };
+  }
+
+  // ── speech recorder for speaking_response ──────────────────────────
+  //   Prep countdown → mic toggle → live elapsed + length-guide bar →
+  //   SpeechRecognition transcript (into #sc-transcript) + MediaRecorder
+  //   playback blob. Best-effort: if an API is missing the student types
+  //   the transcript by hand (the <details> opens automatically).
   var SpeakingRec = {
     rec: null, mr: null, stream: null, chunks: [], t0: 0, tick: null,
-    finalText: '', recording: false,
+    prepT: null, finalText: '', recording: false, guide: null,
     supported: function () { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
     mount: function () {
-      var btn = document.getElementById('sc-rec-btn');
-      var note = document.getElementById('sc-note');
-      if (!btn) return;
+      var self = this, ex = curEx();
+      var mic = document.getElementById('sc-mic');
+      if (!mic) return;
       this.finalText = '';
-      if (!this.supported() && note) {
-        note.textContent = 'Trình duyệt này không hỗ trợ nhận diện giọng nói (thường là Chrome trên máy tính mới có). Bạn vẫn ghi âm được để nghe lại, nhưng hãy tự gõ lại nội dung bài nói vào ô trên trước khi nộp.';
+      this.guide = speakGuide((ex && ex.speakingPart) || 1);
+
+      // let the student mark which question they're answering (multi-item sets)
+      document.querySelectorAll('#sc-body .sc-q, .sc-q').forEach(function (q) {
+        q.addEventListener('click', function () {
+          document.querySelectorAll('.sc-q').forEach(function (x) { x.classList.remove('cur'); });
+          q.classList.add('cur');
+          document.querySelectorAll('.sc-q').forEach(function (x, i) {
+            if (i < +q.dataset.qi) x.classList.add('said');
+          });
+        });
+      });
+
+      if (!this.supported()) this.showNote('Trình duyệt này không tự nhận diện giọng nói (Chrome trên máy tính thường có). Bạn vẫn ghi âm được để nghe lại — hãy mở mục "Bản ghi lời nói" bên dưới và tự gõ nội dung trước khi nộp.', true);
+
+      mic.addEventListener('click', function () { self.recording ? self.stop() : self.start(); });
+      var skip = document.getElementById('sc-prep-skip');
+      if (skip) skip.addEventListener('click', function () { self.endPrep(); });
+      var redo = document.getElementById('sc-redo');
+      if (redo) redo.addEventListener('click', function () { self.reset(); });
+
+      // prep countdown
+      var prepEl = document.getElementById('sc-prep');
+      if (prepEl) {
+        var left = parseInt(document.getElementById('sc-prep-n').textContent, 10) || 0;
+        this.prepT = setInterval(function () {
+          left--;
+          var n = document.getElementById('sc-prep-n');
+          if (n) n.textContent = left;
+          if (left <= 0) self.endPrep();
+        }, 1000);
       }
-      var self = this;
-      btn.addEventListener('click', function () { self.recording ? self.stop() : self.start(); });
+    },
+    endPrep: function () {
+      if (this.prepT) { clearInterval(this.prepT); this.prepT = null; }
+      var p = document.getElementById('sc-prep'); if (p) p.remove();
+      var mic = document.getElementById('sc-mic'); if (mic) mic.disabled = false;
+      var lab = document.getElementById('sc-mic-label'); if (lab) lab.textContent = 'Bấm để bắt đầu ghi âm';
+    },
+    showNote: function (msg) {
+      var n = document.getElementById('sc-note');
+      if (n) { n.textContent = msg; n.classList.remove('hidden'); }
+      var ts = document.getElementById('sc-ts'); if (ts) ts.open = true;
+    },
+    reset: function () {
+      this.stop();
+      this.finalText = ''; this.t0 = 0;
+      var ta = document.getElementById('sc-transcript'); if (ta) ta.value = '';
+      var au = document.getElementById('sc-audio'); if (au) { au.hidden = true; au.removeAttribute('src'); }
+      var t = document.getElementById('sc-time'); if (t) t.hidden = true;
+      var lw = document.getElementById('sc-lenwrap'); if (lw) lw.hidden = true;
+      var redo = document.getElementById('sc-redo'); if (redo) redo.hidden = true;
+      var mic = document.getElementById('sc-mic'); if (mic) { mic.classList.remove('rec'); mic.innerHTML = '<i class="fas fa-microphone"></i>'; }
+      var lab = document.getElementById('sc-mic-label'); if (lab) lab.textContent = 'Bấm để bắt đầu ghi âm';
     },
     start: function () {
       var self = this;
-      var btn = document.getElementById('sc-rec-btn');
+      var mic = document.getElementById('sc-mic');
+      var lab = document.getElementById('sc-mic-label');
       var timeEl = document.getElementById('sc-time');
+      var lenWrap = document.getElementById('sc-lenwrap');
+      var lenBar = document.getElementById('sc-lenbar');
       var interim = document.getElementById('sc-interim');
       var ta = document.getElementById('sc-transcript');
+      var au = document.getElementById('sc-audio');
       this.finalText = (ta && ta.value.trim()) ? ta.value.trim() + ' ' : '';
       this.recording = true;
-      if (btn) { btn.classList.add('recording'); btn.innerHTML = '<i class="fas fa-stop"></i> Dừng ghi âm'; }
-      if (timeEl) { timeEl.hidden = false; timeEl.textContent = '00:00'; }
+      if (au) { au.hidden = true; au.removeAttribute('src'); }
+      if (mic) { mic.classList.add('rec'); mic.innerHTML = '<i class="fas fa-stop"></i>'; }
+      if (lab) lab.textContent = 'Đang ghi âm — bấm để dừng';
+      if (timeEl) { timeEl.hidden = false; timeEl.firstChild.textContent = '0:00'; }
+      if (lenWrap) lenWrap.hidden = false;
       this.t0 = Date.now();
       this.tick = setInterval(function () {
-        if (timeEl) timeEl.textContent = fmt(Math.floor((Date.now() - self.t0) / 1000));
-      }, 500);
+        var s = Math.floor((Date.now() - self.t0) / 1000);
+        if (timeEl) timeEl.firstChild.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+        if (lenBar) {
+          var g = self.guide, pc = Math.min(100, Math.round(s / g.hi * 100));
+          lenBar.firstElementChild.style.width = pc + '%';
+          lenBar.classList.toggle('ok', s >= g.lo);
+        }
+      }, 250);
 
       // audio capture (optional)
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
@@ -364,7 +502,6 @@
             self.mr = new MediaRecorder(s);
             self.mr.ondataavailable = function (e) { if (e.data && e.data.size) self.chunks.push(e.data); };
             self.mr.onstop = function () {
-              var au = document.getElementById('sc-audio');
               if (au && self.chunks.length) {
                 au.src = URL.createObjectURL(new Blob(self.chunks, { type: self.chunks[0].type || 'audio/webm' }));
                 au.hidden = false;
@@ -372,7 +509,7 @@
             };
             self.mr.start();
           } catch (e) { /* ignore — transcription still works */ }
-        }).catch(function () { /* mic denied — SpeechRecognition may still work */ });
+        }).catch(function () { self.showNote('Không truy cập được micro — hãy cho phép quyền micro, hoặc tự gõ lại nội dung bài nói vào ô "Bản ghi lời nói".'); });
       }
 
       // speech-to-text
@@ -391,8 +528,8 @@
           if (ta) ta.value = (self.finalText + live).replace(/\s+/g, ' ').trim();
         };
         r.onerror = function (ev) {
-          if ((ev.error === 'not-allowed' || ev.error === 'service-not-allowed') && document.getElementById('sc-note')) {
-            document.getElementById('sc-note').textContent = 'Không truy cập được micro / dịch vụ nhận diện giọng nói. Hãy tự gõ lại nội dung bài nói.';
+          if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+            self.showNote('Không dùng được dịch vụ nhận diện giọng nói. Hãy tự gõ lại nội dung bài nói vào ô "Bản ghi lời nói".');
           }
         };
         r.onend = function () { if (self.recording) { try { r.start(); } catch (e) { /* noop */ } } };
@@ -400,11 +537,16 @@
       }
     },
     stop: function () {
+      if (!this.recording && !this.rec && !this.mr) return;
       this.recording = false;
-      var btn = document.getElementById('sc-rec-btn');
+      var mic = document.getElementById('sc-mic');
+      var lab = document.getElementById('sc-mic-label');
       var interim = document.getElementById('sc-interim');
-      if (btn) { btn.classList.remove('recording'); btn.innerHTML = '<i class="fas fa-microphone"></i> Ghi âm lại'; }
+      var redo = document.getElementById('sc-redo');
+      if (mic) { mic.classList.remove('rec'); mic.innerHTML = '<i class="fas fa-microphone"></i>'; }
+      if (lab) lab.textContent = 'Đã ghi ' + this.elapsed() + ' giây — nghe lại, hoặc nộp cho AI chấm';
       if (interim) interim.textContent = '';
+      if (redo) redo.hidden = false;
       if (this.tick) { clearInterval(this.tick); this.tick = null; }
       if (this.rec) { try { this.rec.stop(); } catch (e) { /* noop */ } this.rec = null; }
       if (this.mr && this.mr.state !== 'inactive') { try { this.mr.stop(); } catch (e) { /* noop */ } }
@@ -412,6 +554,7 @@
     },
     elapsed: function () { return this.t0 ? Math.round((Date.now() - this.t0) / 1000) : 0; },
     teardown: function () {
+      if (this.prepT) { clearInterval(this.prepT); this.prepT = null; }
       if (this.recording || this.rec || this.mr || this.stream) this.stop();
       this.finalText = ''; this.t0 = 0; this.chunks = [];
     }
@@ -468,7 +611,8 @@
             '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' +
           '</div><i class="fas fa-chevron-right" style="color:#9ca3af"></i></div>';
       }).join('');
-      return '<div class="t1-module"><div class="t1-module-hd"><div class="en">' + esc(m.titleEn || '') + '</div>' +
+      var pm = (String(m.code).match(/SPK-P(\d)/) || [])[1] || '1';
+      return '<div class="t1-module p' + pm + '"><div class="t1-module-hd"><div class="en">' + esc(m.titleEn || '') + '</div>' +
         '<h3>' + esc(m.title) + '</h3></div>' + lessons + '</div>';
     }).join('');
     return '<div class="t1-head"><h2 class="t1-h2">🎤 IELTS Speaking — Khóa học</h2>' +
@@ -508,9 +652,12 @@
     var l = state.lesson || {};
     var exs = state.exercises.map(function (ex) {
       var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi);
-      return '<div class="t1-ex-card" data-code="' + ex.code + '">' +
-        '<span class="t1-ex-type">' + esc(TYPE_LABEL[ex.type] || ex.type) + '</span>' +
-        '<span class="nm">' + esc(ex.title) + (ex.points ? ' · ' + ex.points + 'đ' : '') + '</span>' +
+      var spk = ex.type === 'speaking_response';
+      return '<div class="t1-ex-card' + (spk ? ' spk' : '') + '" data-code="' + ex.code + '">' +
+        '<span class="t1-ex-type' + (spk ? ' spk' : '') + '">' + (spk ? '<i class="fas fa-microphone"></i> ' : '') + esc(TYPE_LABEL[ex.type] || ex.type) + '</span>' +
+        '<span class="nm">' + esc(ex.title) +
+          (spk && ex.speakingPart ? ' <span style="font-weight:600;color:var(--text3,#9ca3af)">· Part ' + ex.speakingPart + ' · AI chấm</span>' : (ex.points ? ' · ' + ex.points + 'đ' : '')) +
+        '</span>' +
         (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
         '</div>';
     }).join('');
@@ -588,7 +735,7 @@
       // [data-item] — see bindExercise()'s WbwDrill.mount() call below,
       // which falls back to showing this textarea if it can't mount.
       return ex.items.map(function (it) {
-        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#0ea5e9">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
+        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#f43f5e">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
           (it.starter ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">Bắt đầu: ' + esc(it.starter) + '</div>' : '') +
           '<div data-wbw-host="' + esc(it.id) + '"></div>' +
           '<textarea class="t1-ta" rows="2" data-item="' + it.id + '" style="display:none"></textarea></div>';
@@ -642,21 +789,33 @@
         '<div class="t1-wc" id="t1-wc">0 từ</div>' + rubricHint(ex);
     }
     if (t === 'speaking_response') {
+      var part = ex.speakingPart || 1;
+      var G = speakGuide(part);
+      var multi = (ex.items || []).length > 1;
       var qs = (ex.items || []).map(function (it, i) {
-        return '<div class="sc-q"><span class="sc-qn">' + (i + 1) + '</span><span>' + esc(it.prompt) + '</span></div>';
+        return '<div class="sc-q' + (i === 0 ? ' cur' : '') + '" data-qi="' + i + '"><span class="sc-qn">' + (i + 1) + '</span><span>' + esc(it.prompt) + '</span></div>';
       }).join('');
       var prep = ex.speakingPrepSeconds || 0;
-      return '<div class="sc-qs">' + qs + '</div>' +
-        (prep ? '<div class="sc-prep">⏱️ Trong phòng thi bạn có ~' + prep + ' giây chuẩn bị. Ở đây cứ suy nghĩ rồi bấm ghi âm.</div>' : '') +
-        '<div class="sc-rec">' +
-          '<button type="button" class="sc-rec-btn" id="sc-rec-btn"><i class="fas fa-microphone"></i> Bắt đầu ghi âm</button>' +
-          '<span class="sc-time" id="sc-time" hidden>00:00</span>' +
-          '<audio id="sc-audio" controls hidden style="display:block;margin-top:8px;width:100%"></audio>' +
+      return '<div class="sc-partbadge"><i class="fas fa-microphone"></i> IELTS Speaking · Part ' + part + '</div>' +
+        (multi ? '<div style="font-size:12px;color:var(--text3,#9ca3af);margin-bottom:6px">' + (part === 1 ? 'Trả lời lần lượt từng câu (mỗi câu ' + G.txt + '). Bấm vào câu để đánh dấu bạn đang trả lời câu nào — ghi âm một mạch cho cả bộ.' : 'Trả lời lần lượt các câu trong một lần ghi âm liên tục.') + '</div>' : '') +
+        '<div class="sc-qs">' + qs + '</div>' +
+        '<div class="sc-panel" id="sc-panel">' +
+          (prep ? '<div class="sc-prep" id="sc-prep"><div class="sc-prep-n" id="sc-prep-n">' + prep + '</div>' +
+            '<div class="sc-prep-t">giây chuẩn bị (ghi từ khoá ra giấy) — hết giờ sẽ tự bật ghi âm</div>' +
+            '<button type="button" class="sc-prep-skip" id="sc-prep-skip">Bỏ qua, ghi âm ngay</button></div>' : '') +
+          '<button type="button" class="sc-mic" id="sc-mic"' + (prep ? ' disabled' : '') + '><i class="fas fa-microphone"></i></button>' +
+          '<div class="sc-mic-label" id="sc-mic-label">' + (prep ? 'Đang chuẩn bị…' : 'Bấm để bắt đầu ghi âm') + '</div>' +
+          '<div class="sc-time" id="sc-time" hidden>0:00<span class="u"> giây</span></div>' +
+          '<div class="sc-lenwrap" id="sc-lenwrap" hidden><div class="sc-lenbar" id="sc-lenbar"><span></span></div>' +
+            '<div class="sc-lentext">Mục tiêu độ dài: <b>' + G.txt + '</b></div></div>' +
+          '<div class="sc-interim" id="sc-interim"></div>' +
+          '<audio id="sc-audio" class="sc-audio" controls hidden></audio>' +
+          '<button type="button" class="sc-redo" id="sc-redo" hidden><i class="fas fa-rotate-left"></i> Ghi âm lại</button>' +
         '</div>' +
-        '<div class="sc-interim" id="sc-interim"></div>' +
-        '<label class="sc-ta-label">Bản ghi lời nói (bạn có thể sửa lỗi chính tả trước khi nộp):</label>' +
-        '<textarea class="t1-ta" id="sc-transcript" rows="5" placeholder="Nội dung bài nói của bạn sẽ hiện ở đây khi ghi âm. Nếu trình duyệt không hỗ trợ nhận diện giọng nói, hãy tự gõ lại."></textarea>' +
-        '<div class="sc-note" id="sc-note"></div>' +
+        '<details class="sc-ts" id="sc-ts"><summary>Bản ghi lời nói — AI dùng ô này để chấm (có thể sửa lỗi chính tả)</summary>' +
+          '<textarea class="t1-ta" id="sc-transcript" rows="5" style="margin-top:6px" placeholder="Lời nói của bạn sẽ tự hiện ở đây khi ghi âm. Nếu trình duyệt không nhận diện được giọng nói, hãy tự gõ lại nội dung bài nói."></textarea>' +
+        '</details>' +
+        '<div class="sc-note hidden" id="sc-note"></div>' +
         rubricHint(ex) +
         ((ex.rubric && ex.rubric.commonErrors && ex.rubric.commonErrors.length)
           ? '<details class="t1-key" style="margin:6px 0 0"><summary>⚠️ Lỗi thường gặp cần tránh</summary><ul>' +
@@ -680,9 +839,11 @@
     var isWriting = !OBJECTIVE[ex.type];
     var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
     return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
-      '<span style="font-size:12px;color:#9ca3af;font-weight:700">' + (state.exIdx + 1) + ' / ' + state.exercises.length + '</span>' +
+      '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length + '</span>' +
       (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + fmt(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
-      '<div class="t1-crumb" style="padding-top:0"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
+      '<div style="margin:0 20px;height:4px;border-radius:4px;background:var(--surface2,#eef2f7);overflow:hidden">' +
+        '<span style="display:block;height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f43f5e,#22c55e);border-radius:4px"></span></div>' +
+      '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
       '<div class="t1-instr">' + esc(ex.instruction || ex.title) + '</div>' +
       renderStimulus(ex.stimulus) +
       (ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '') +
@@ -970,29 +1131,45 @@
     return '<div style="margin-top:8px;font-size:12.5px"><b>' + title + '</b><ul style="margin:4px 0 0;padding-left:20px">' +
       items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></div>';
   }
+  function scfBar(label, n) {
+    var v = (n == null || isNaN(n)) ? 0 : Math.max(0, Math.min(9, n));
+    var col = v >= 7 ? '#22c55e' : v >= 5 ? '#f59e0b' : '#ef4444';
+    return '<div class="scf-bar"><span class="lb">' + label + '</span>' +
+      '<span class="tk"><span style="width:' + Math.round(v / 9 * 100) + '%;background:' + col + '"></span></span>' +
+      '<span class="v" style="color:' + col + '">' + (n != null && !isNaN(n) ? n : '–') + '</span></div>';
+  }
   function showSpeakingFeedback(f, ex) {
     var fb = document.getElementById('t1-fb');
     var last = state.exIdx >= state.exercises.length - 1;
     var mistakes = f.mistakes || f.corrections || [];
+    var b = f.overallBand;
+    var ringCls = (b >= 7) ? 'hi' : (b >= 5) ? 'mid' : 'lo';
     var body =
-      (f.overallBand != null ? '<div class="t1-fb-score">Band ' + f.overallBand + '</div>' : '') +
-      '<div class="t1-bands">' +
-        band('Fluency', f.fluency) + band('Vocabulary', f.vocabulary) + band('Grammar', f.grammar) + band('Pronunciation', f.pronunciation) +
+      (b != null ? '<div class="scf-ring ' + ringCls + '"><span class="n">' + b + '</span><span class="l">Band</span></div>' +
+        '<div style="text-align:center;font-size:12px;color:var(--text3,#9ca3af);margin-top:2px">Điểm ước lượng cho phần nói này</div>' : '') +
+      '<div class="scf-bars">' +
+        scfBar('Fluency', f.fluency) + scfBar('Vocabulary', f.vocabulary) + scfBar('Grammar', f.grammar) + scfBar('Pronunciation', f.pronunciation) +
       '</div>' +
-      (f.overallFeedback ? '<div class="sc-band-fb">' + esc(f.overallFeedback) + '</div>' : '') +
-      scList(f.strengths, 'Điểm mạnh') +
-      (mistakes.length ? '<div style="margin-top:8px;font-size:12.5px"><b>Sửa lỗi:</b>' + mistakes.map(function (c) {
-        return '<div style="margin-top:4px">✎ <s style="color:#dc2626">' + esc(c.original) + '</s> → <span class="t1-model">' + esc(c.corrected) + '</span>' + (c.reason || c.note || c.explanation ? ' <span style="color:#6b7280">(' + esc(c.reason || c.note || c.explanation) + ')</span>' : '') + '</div>';
+      (f.overallFeedback ? '<div class="scf-sec"><div class="h">Nhận xét chung</div>' + esc(f.overallFeedback) + '</div>' : '') +
+      (scfSec('Điểm mạnh', f.strengths, '✅')) +
+      (mistakes.length ? '<div class="scf-sec"><div class="h">Sửa lỗi</div>' + mistakes.map(function (c) {
+        return '<div class="scf-fix">✎ <s style="color:#dc2626">' + esc(c.original) + '</s> → <span class="t1-model">' + esc(c.corrected) + '</span>' + (c.reason || c.note || c.explanation ? ' <span style="color:#6b7280">(' + esc(c.reason || c.note || c.explanation) + ')</span>' : '') + '</div>';
       }).join('') + '</div>' : '') +
-      scList(f.improvements || f.suggestions, 'Gợi ý cải thiện') +
-      (f.todaysFocus ? '<div style="margin-top:8px;font-size:12.5px"><b>Trọng tâm hôm nay:</b> ' + esc(f.todaysFocus) + '</div>' : '') +
+      (scfSec('Gợi ý cải thiện', f.improvements || f.suggestions, '💡')) +
+      (f.todaysFocus ? '<div class="scf-sec"><div class="h">Trọng tâm luyện tiếp</div>' + esc(f.todaysFocus) + '</div>' : '') +
       ((ex && ex.rubric && ex.rubric.sampleAnswer)
-        ? '<details class="t1-key" style="margin-top:10px"><summary>Xem bài mẫu Band 7</summary><div style="font-size:13px;line-height:1.7;margin-top:6px">' + esc(ex.rubric.sampleAnswer) + '</div></details>'
+        ? '<details class="scf-model"><summary>Xem bài mẫu Band 7/8</summary><div class="body">' + esc(ex.rubric.sampleAnswer) + '</div></details>'
         : '');
     fb.className = 't1-fb';
     fb.innerHTML = body + '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
     fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     document.getElementById('t1-next').addEventListener('click', nextExercise);
+  }
+  function scfSec(title, arr, icon) {
+    var items = (arr || []).map(scStr).filter(Boolean);
+    if (!items.length) return '';
+    return '<div class="scf-sec"><div class="h">' + title + '</div><ul>' +
+      items.map(function (i) { return '<li>' + (icon || '') + ' ' + esc(i) + '</li>'; }).join('') + '</ul></div>';
   }
 
   function nextExercise() {
