@@ -237,15 +237,19 @@ function showScreen(id) {
   const tabParam = urlParams.get('tab') || 'home';
   const partParam = urlParams.get('part');
   const topicParam = urlParams.get('topic');
-  history.replaceState({ tab: tabParam, part: partParam, topic: topicParam }, '', location.href);
+  // ?questionId=<id> — deep link from the homework card (dashboard-homework.js's
+  // hwResourceHref) straight into ONE assigned question, no `tab=` needed.
+  const questionIdParam = urlParams.get('questionId');
+  history.replaceState({ tab: tabParam, part: partParam, topic: topicParam, questionId: questionIdParam }, '', location.href);
 
   if (tabParam === 'materials') {
     showScreen('screen-materials');
     loadMaterialFilters();
     loadMaterials();
-  } else if (tabParam === 'practice') {
+  } else if (tabParam === 'practice' || questionIdParam) {
     showScreen('screen-practice');
-    initPractice({ part: partParam, topic: topicParam });
+    await initPractice({ part: partParam, topic: topicParam });
+    if (questionIdParam) await openQuestionById(questionIdParam);
   } else if (tabParam === 'history') {
     showScreen('screen-history');
     loadHistory();
@@ -265,9 +269,10 @@ function showScreen(id) {
     if (state.isRecording) resetPractice();
 
     const tab = e.state?.tab || 'home';
-    if (tab === 'practice') {
+    if (tab === 'practice' || e.state?.questionId) {
       showScreen('screen-practice');
       initPractice({ part: e.state?.part, topic: e.state?.topic });
+      if (e.state?.questionId) openQuestionById(e.state.questionId);
     } else if (tab === 'history') {
       showScreen('screen-history');
       loadHistory();
@@ -483,6 +488,26 @@ function filterQuestionList() {
     item.question.toLowerCase().includes(q) || (item.topic || '').toLowerCase().includes(q)
   );
   renderQuestionItems(filtered, 'Không tìm thấy câu hỏi phù hợp');
+}
+
+// Deep-link entry point — homework's "Bắt đầu" button on a Speaking item
+// (dashboard-homework.js) links to speaking.html?questionId=<id> expecting
+// to land directly in that question's recording screen; init() above was
+// only ever wired for ?tab=practice&part=&topic=, so a homework question
+// used to silently fall through to the plain home screen. Reuses the same
+// /api/speaking/questions?questionId= lookup the mock-test flow already
+// uses, then hands off to the normal selectQuestion() (no itemEl — nothing
+// to highlight in a sidebar list the student didn't click through).
+async function openQuestionById(qid) {
+  try {
+    const data = await apiFetch(`/api/speaking/questions?questionId=${encodeURIComponent(qid)}`);
+    const q = data.question || (data.questions && data.questions[0]);
+    if (!q) throw new Error('question not found');
+    selectQuestion(q);
+  } catch (e) {
+    console.error('openQuestionById:', e);
+    showToast('Không tìm thấy câu hỏi này — có thể đã bị xoá.', 'error');
+  }
 }
 
 function selectQuestion(q, itemEl) {
