@@ -462,13 +462,30 @@
     this._advanceWord();
   };
 
-  // Per-word validation: never touch the box (so IME composition — Telex/VNI
-  // "muws" → "mứ" — is left alone), just watch for the whole word to match.
-  // `committed` = the student pressed Space, so a non-match is worth a shake.
+  // Per-word validation: never touch the box directly (so IME composition —
+  // Telex/VNI "muws" → "mứ" — is left alone), just watch for the whole word
+  // to match. `committed` = the student pressed Space, so a non-match is
+  // worth a shake.
   Drill.prototype._onInputWord = function (tok, committed) {
     if (this.done || !this.$input || !tok) return;
     var val = nfc(this.$input.value);
     this.typed = val.replace(/\s+$/, '');
+
+    // Mid-composition (see the constructor's _composing comment — same bug
+    // class, multi-word case): BUG "gõ 'danh' đúng rồi mà từ 2 lại thành
+    // 'danhti'". When a multi-word Vietnamese answer is typed with no pause
+    // between words, an IME can keep composing straight through what this
+    // drill treats as a word boundary — so an intermediate composed string
+    // can spuriously equal a short target word ("danh") a keystroke or two
+    // before the IME actually finishes that syllable. Advancing right then
+    // clears the box via _advanceWord(), which the still-live composition
+    // then overwrites back to its OWN buffered text on the next keystroke —
+    // bleeding word 1's letters into word 2. Defer the match/advance to
+    // compositionend (which re-runs this via _onInput once composing is
+    // false), same principle as per-letter mode; still render so the box
+    // itself keeps showing whatever the student is mid-typing.
+    if (this._composing && !committed) { this._renderWords(); return; }
+
     var got = _wordKey(val);
     var want = _wordKey(tok.target);
 
