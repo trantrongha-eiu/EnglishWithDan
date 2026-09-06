@@ -1,0 +1,377 @@
+{
+  "modules": [
+    {
+      "code": "SPK-P3-M1",
+      "order": 8,
+      "title": "PHẦN III · Phase 1 — Sáu dạng câu hỏi",
+      "titleEn": "Part 3 · The Six Question Types",
+      "outcomes": [
+        "Nhận diện dạng câu hỏi Part 3 (WHY · OPINION · ADV/DISADV · COMPARE · PROBLEM · PAST-PRESENT-FUTURE) trong 2 giây",
+        "Dựng lập luận theo đúng khung của từng dạng, mỗi ý có một câu triển khai",
+        "Nêu ý theo nhiều tầng (tâm lý / thực tế / xã hội), tránh ba lý do cùng một tầng",
+        "Trả lời trừu tượng về NGƯỜI TA, không kể trải nghiệm cá nhân"
+      ]
+    },
+    {
+      "code": "SPK-P3-M2",
+      "order": 9,
+      "title": "PHẦN III · Phase 2 — Chín topic banks",
+      "titleEn": "Part 3 · Nine Topic Banks",
+      "outcomes": [
+        "Nạp 12 cụm chuyên đề mỗi chủ đề: Education · Technology · Environment · Society · Health · Work & Economy · Travel · Media · Family & Arts",
+        "Nhận ra một câu hỏi chủ đề thuộc dạng nào và chọn đúng khung của Phase 1",
+        "Dùng danh hoá, bị động vô nhân xưng và mệnh đề nhấn mạnh cho giọng học thuật",
+        "Trả lời 75–95 giây có cả hai mặt, một câu tự phản bác và một câu kết có sắc thái"
+      ]
+    },
+    {
+      "code": "SPK-P3-M3",
+      "order": 10,
+      "title": "PHẦN III · Đánh giá — Thi thử Part 3",
+      "titleEn": "Part 3 · Mock Test & Self-Assessment",
+      "outcomes": [
+        "Trả lời một chuỗi 5 câu hỏi Part 3 liên tục như thi thật, mỗi câu 60–90 giây",
+        "Tự nhận diện dạng câu hỏi trong 2 giây và tự chấm theo 4 tiêu chí IELTS"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "SPK-P3-L01",
+      "moduleCode": "SPK-P3-M1",
+      "order": 30,
+      "title": "Buổi 1 — DẠNG 1: WHY / REASONS",
+      "titleEn": "Type 1 — Why / Reasons",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nhận diện câu hỏi dạng WHY trong vòng 2 giây",
+        "Dựng ba lý do thuộc ba tầng khác nhau: tâm lý, thực tế, xã hội",
+        "Dùng 5 cụm ★ nêu nguyên nhân thay vì lặp lại \"because\"",
+        "Trả lời liên tục 60–75 giây theo khung REASON × 3"
+      ],
+      "keyLanguage": [
+        "for several reasons · stems from · can be attributed to · from a practical standpoint · psychologically speaking · on a social level",
+        "Khung REASON × 3: MỞ (People do X for several reasons) → TÂM LÝ → THỰC TẾ → XÃ HỘI → KẾT",
+        "TÂM LÝ = trong đầu người ta · THỰC TẾ = trong ví và trong lịch · XÃ HỘI = giữa người với người",
+        "because + MỆNH ĐỀ · stems from / attributed to / due to + DANH TỪ hoặc V-ing"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L02",
+      "moduleCode": "SPK-P3-M1",
+      "order": 31,
+      "title": "Buổi 2 — DẠNG 2: OPINION",
+      "titleEn": "Type 2 — Opinion",
+      "durationMinutes": 60,
+      "objectives": [
+        "Không bao giờ trả lời Yes/No đơn lẻ cho câu hỏi Opinion",
+        "Dùng 5 cụm ★ hedging để tạo sắc thái",
+        "Nêu một lập luận ủng hộ VÀ một lập luận giới hạn cho cùng một quan điểm",
+        "Kết bằng một câu có điều kiện, không phải một câu tóm tắt"
+      ],
+      "keyLanguage": [
+        "To a certain extent, yes · Generally speaking · It depends on · On one hand / On the other hand · On balance · I would stop short of saying",
+        "Khung NUANCED OPINION: SẮC THÁI → MỘT MẶT (+ ví dụ) → MẶT KIA (+ ví dụ) → CÂN BẰNG (kết luận có điều kiện)",
+        "Hedging: young people tend to… · this is arguably… · it seems likely that… — chỉ MỘT lớp hedging cho một khẳng định",
+        "Ngữ điệu nhượng bộ xuống-lên: \"To a certain extent, ↘↗ yes — but…\""
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L03",
+      "moduleCode": "SPK-P3-M1",
+      "order": 32,
+      "title": "Buổi 3 — DẠNG 3: ADVANTAGES / DISADVANTAGES",
+      "titleEn": "Type 3 — Advantages / Disadvantages",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt câu hỏi Adv/Disadv với câu hỏi Opinion (rất hay bị nhầm)",
+        "Nêu lợi ích và bất lợi bằng danh từ hoá thay vì câu đơn giản",
+        "Dùng cấu trúc cân bằng while / whereas trong một câu",
+        "Kết luận bằng ĐIỀU KIỆN, không bằng phép cộng trừ số lượng"
+      ],
+      "keyLanguage": [
+        "the main benefit is · a significant drawback · outweigh · at the expense of · comes at a cost · a double-edged sword · the trade-off is",
+        "Khung: MỞ (both benefits and drawbacks) → LỢI ÍCH (2, ít nhất 1 có ví dụ) → BẤT LỢI (1 bất lợi THẬT có người chịu thiệt) → CÂN BẰNG (provided that…)",
+        "Bất lợi thật phải trả lời được: \"Ai khổ vì điều này?\"",
+        "While remote work suits experienced staff, it disadvantages new employees · Older workers value stability, whereas younger ones prioritise flexibility"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L04",
+      "moduleCode": "SPK-P3-M1",
+      "order": 33,
+      "title": "Buổi 4 — DẠNG 4: COMPARE / CONTRAST",
+      "titleEn": "Type 4 — Compare / Contrast",
+      "durationMinutes": 60,
+      "objectives": [
+        "So sánh theo KHÍA CẠNH thay vì mô tả lần lượt hai đối tượng",
+        "Dùng 5 cụm ★ so sánh nâng cao thay vì \"more\" và \"better\"",
+        "Nêu được một điểm chung giữa hai đối tượng đối lập",
+        "Kết bằng nhận định về khác biệt QUAN TRỌNG NHẤT, không tóm tắt cả hai"
+      ],
+      "keyLanguage": [
+        "differ in several significant ways · in terms of · by comparison · nowhere near as · share some common ground · the most significant shift is in",
+        "Khung COMPARE: MỞ → KHÍA CẠNH 1 (while A…, B…) → KHÍA CẠNH 2 (in terms of…, A… whereas B…) → ĐIỂM CHUNG → TỔNG QUÁT",
+        "4 khía cạnh dùng được cho mọi so sánh: tốc độ/thời gian · chi phí/khả năng tiếp cận · con người/quan hệ · quyền lực/lựa chọn",
+        "much · far · considerably · significantly + so sánh hơn (KHÔNG \"very higher\", KHÔNG \"more better\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L05",
+      "moduleCode": "SPK-P3-M1",
+      "order": 34,
+      "title": "Buổi 5 — DẠNG 5: PROBLEMS / SOLUTIONS & vai trò chính phủ",
+      "titleEn": "Type 5 — Problems / Solutions & the Role of Government",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt nguyên nhân gốc với triệu chứng bề mặt",
+        "Đề xuất giải pháp có CHỦ THỂ THỰC HIỆN rõ ràng, không nói chung chung",
+        "Dùng khung ROLE–RESPONSIBILITY–LIMIT cho câu hỏi về chính phủ",
+        "Nêu được giới hạn của giải pháp mình vừa đề xuất"
+      ],
+      "keyLanguage": [
+        "the root cause is · address the underlying issue · a more effective approach might be · incentivise rather than penalise · has an important role to play · it should not be the only actor",
+        "Khung 5A CAUSE–EFFECT–SOLUTION · Khung 5B ROLE–RESPONSIBILITY–LIMIT (vai trò → chỉ chính phủ làm được → giới hạn → giải pháp cân bằng → trách nhiệm ba bên)",
+        "Giải pháp phải trả lời AI LÀM và LÀM GÌ: \"Schools could make media literacy compulsory from age twelve\" (không \"People should be more aware\")",
+        "Bị động nêu việc cần làm: Emissions should be cut far more aggressively · More could be done to support small businesses"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L06",
+      "moduleCode": "SPK-P3-M1",
+      "order": 35,
+      "title": "Buổi 6 — DẠNG 6: PAST · PRESENT · FUTURE",
+      "titleEn": "Type 6 — Past · Present · Future",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dựng trục thời gian ba mốc thay vì chỉ nói quá khứ và hiện tại",
+        "Dự đoán tương lai kèm LỰC ĐẨY, không dự đoán trống",
+        "Luôn kèm một câu thận trọng (caveat) có lý do sau mỗi dự đoán",
+        "Xử lý câu hỏi về khoảng cách thế hệ bằng cùng một trục thời gian"
+      ],
+      "keyLanguage": [
+        "used to · it seems likely that · driven by · if this continues · it is difficult to predict with any certainty · a more cautious view might be · an oversimplification to say",
+        "Khung 6A THEN–NOW–NEXT · Khung 6B GENERATION GAP (nêu khác biệt → thế hệ trẻ + bối cảnh → thế hệ trước + bối cảnh → chống tuyệt đối → kết)",
+        "4 lực đẩy cho mọi dự đoán: công nghệ · dân số · kinh tế · môi trường/văn hoá",
+        "used to + V nguyên thể (thói quen quá khứ) ≠ be used to + V-ing (đã quen) · cities are likely to become denser · we could well see…"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P3-L07",
+      "moduleCode": "SPK-P3-M2",
+      "order": 36,
+      "title": "Buổi 7 — TOPIC 1: EDUCATION",
+      "titleEn": "Topic 1 — Education",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề giáo dục thay vì từ vựng đời thường",
+        "Nhận ra một câu hỏi Education thuộc dạng nào và chọn đúng khung",
+        "Nói về hệ thống giáo dục nói chung, không kể chuyện trường mình",
+        "Trả lời 70–85 giây cho ba câu hỏi Education thuộc ba dạng khác nhau"
+      ],
+      "keyLanguage": [
+        "critical thinking skills · rote learning · academic pressure · a well-rounded education · foster creativity · student-centred approach · standardised testing",
+        "prioritise questioning over memorisation · value the process of thinking over the content of the answer",
+        "Ngân hàng ý: tâm lý (fear of failure, parental expectations) · thực tế (limited university places, cost of tuition) · xã hội (education as social mobility, family reputation)",
+        "Mệnh đề quan hệ rút gọn: Students who are taught to question → Students taught to question · \"knowledge\" không đếm được (KHÔNG \"many knowledges\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L08",
+      "moduleCode": "SPK-P3-M2",
+      "order": 37,
+      "title": "Buổi 8 — TOPIC 2: TECHNOLOGY",
+      "titleEn": "Topic 2 — Technology",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề công nghệ ở dạng danh từ hoá",
+        "Lập luận hai chiều về công nghệ thay vì khen hoặc chê một chiều",
+        "Phân biệt \"công nghệ gây ra\" và \"công nghệ khuếch đại\" khi lập luận",
+        "Trả lời 75–90 giây có một câu tự phản bác chính mình"
+      ],
+      "keyLanguage": [
+        "digital divide · technological dependency · privacy concerns · automation · social media algorithms · disruptive innovation · engagement-driven design",
+        "amplify existing tendencies rather than create new ones · the tool is neutral, the user is not",
+        "Kỹ thuật Band 8 tự phản bác: \"There is a reasonable argument that… However, I would push back on that idea slightly…\" (dùng MỘT lần)",
+        "Danh hoá: people depend on technology → technological dependency · machines replace workers → workforce automation"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L09",
+      "moduleCode": "SPK-P3-M2",
+      "order": 38,
+      "title": "Buổi 9 — TOPIC 3: ENVIRONMENT",
+      "titleEn": "Topic 3 — Environment",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề môi trường ở mức chính xác thuật ngữ",
+        "Phân biệt hành động cá nhân và hành động hệ thống trong lập luận",
+        "Dùng bị động vô nhân xưng để nói về việc cần làm",
+        "Trả lời 80–90 giây có cả giải pháp và giới hạn"
+      ],
+      "keyLanguage": [
+        "carbon emissions · sustainable development · biodiversity loss · renewable energy transition · greenwashing · single-use plastics · stringent regulation",
+        "necessary but not sufficient · the focus on personal responsibility can function as a deflection",
+        "TRỤC CÁ NHÂN: consumer choices · recycling · diet · transport — TRỤC HỆ THỐNG: industrial emissions · regulation · corporate accountability",
+        "Bị động vô nhân xưng: Emissions must be cut far more aggressively · It is widely believed that recycling has limited impact"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L10",
+      "moduleCode": "SPK-P3-M2",
+      "order": 39,
+      "title": "Buổi 10 — TOPIC 4: SOCIETY & COMMUNITY",
+      "titleEn": "Topic 4 — Society & Community",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề cộng đồng thay vì \"people help each other\"",
+        "Nêu được ĐIỀU KIỆN KINH TẾ khi bàn về hành vi xã hội",
+        "Dùng mệnh đề danh ngữ với What… và The fact that… để nhấn mạnh",
+        "Trả lời 80–90 giây có cả giá trị và giới hạn, không đạo đức hoá"
+      ],
+      "keyLanguage": [
+        "a sense of belonging · social cohesion · urban isolation · civic responsibility · social mobility · the social fabric · networks of mutual obligation",
+        "functions as a kind of social infrastructure · shaped by economic circumstances",
+        "3 lực làm suy yếu cộng đồng: đô thị hoá · kết nối số · lối sống di động → higher loneliness, reduced social trust",
+        "What makes communities resilient is… · The fact that people move every few years means nobody invests in a place"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L11",
+      "moduleCode": "SPK-P3-M2",
+      "order": 40,
+      "title": "Buổi 11 — TOPIC 5: HEALTH",
+      "titleEn": "Topic 5 — Health",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề sức khoẻ ở mức thuật ngữ chính xác",
+        "Giải thích hành vi sức khoẻ bằng RÀO CẢN CẤU TRÚC thay vì bằng ý chí",
+        "Dùng câu điều kiện loại 0 và 1 để diễn đạt quan hệ nhân quả",
+        "Trả lời 80–90 giây có ba tầng rào cản (thời gian, chi phí, môi trường)"
+      ],
+      "keyLanguage": [
+        "sedentary lifestyle · preventive healthcare · work-related stress · mental health awareness · well-being · structural barriers · time pressure",
+        "swimming against a very strong current · changing the environment in which decisions are made",
+        "3 loại rào cản: THỜI GIAN (long hours, long commutes) · CHI PHÍ (fresh food costs more per calorie) · MÔI TRƯỜNG (no safe place to exercise, unhealthy canteen)",
+        "Loại 0 (quy luật): If fresh food costs more, low-income families buy processed food · Loại 1 (giải pháp): If schools remove sugary drinks, children will consume less sugar"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L12",
+      "moduleCode": "SPK-P3-M2",
+      "order": 41,
+      "title": "Buổi 12 — TOPIC 6: WORK & ECONOMY",
+      "titleEn": "Topic 6 — Work & Economy",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề công việc và kinh tế",
+        "Giải thích động lực làm việc bằng ba tầng: cá nhân, kinh tế, xã hội",
+        "Dùng mệnh đề trạng ngữ rút gọn (Having… / Given that…) cho câu gọn và học thuật",
+        "Trả lời 80–90 giây câu hỏi về tương lai việc làm có lực đẩy và caveat"
+      ],
+      "keyLanguage": [
+        "the job market · the gig economy · income inequality · workforce automation · work-life balance · job security · normative pressure",
+        "less about desire and more about necessity · ambition becomes harmful when it crowds out other values",
+        "3 tầng động lực: CÁ NHÂN (need for recognition, autonomy) · KINH TẾ (income inequality makes the gap enormous) · XÃ HỘI (normative pressure makes ambition contagious)",
+        "job / career / profession / workforce có sắc thái khác nhau · Having grown up during a recession, younger workers value security differently"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L13",
+      "moduleCode": "SPK-P3-M2",
+      "order": 42,
+      "title": "Buổi 13 — TOPIC 7: TRAVEL & TOURISM",
+      "titleEn": "Topic 7 — Travel & Tourism",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề du lịch bền vững",
+        "Nêu được lợi ích và chi phí của du lịch rơi vào các nhóm dân cư khác nhau",
+        "Dùng lượng từ chính xác thay vì \"many people\" và \"a lot of\"",
+        "Trả lời 80–90 giây có nêu ai hưởng lợi và ai chịu thiệt"
+      ],
+      "keyLanguage": [
+        "over-tourism · sustainable tourism · cultural exchange · heritage preservation · the local economy · strain infrastructure · price local residents out",
+        "form a virtuous cycle · erodes the very authenticity that made a place attractive",
+        "HƯỞNG LỢI: hotel owners · restaurants & transport · heritage institutions · tax revenue — CHỊU THIỆT: long-term residents priced out · seasonal workers · fragile sites",
+        "Lượng từ: a significant proportion of · the vast majority of · a small minority of · a growing number of (KHÔNG \"many people\", \"a lot of\")"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L14",
+      "moduleCode": "SPK-P3-M2",
+      "order": 43,
+      "title": "Buổi 14 — TOPIC 8: MEDIA & COMMUNICATION",
+      "titleEn": "Topic 8 — Media & Communication",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề truyền thông ở mức thuật ngữ chính xác",
+        "Phân tích ĐỘNG CƠ THIẾT KẾ của nền tảng thay vì chỉ mô tả hành vi người dùng",
+        "Dùng mệnh đề nhượng bộ nâng cao (Whilst / Despite the fact that / Admittedly)",
+        "Trả lời 85–95 giây có cả mặt trao quyền và mặt gây hại"
+      ],
+      "keyLanguage": [
+        "misinformation · media literacy · echo chambers · algorithmic bias · public discourse · engagement-driven design · marginalised voices",
+        "designed to maximise engagement, not well-being · the collapse of the distinction between private and public",
+        "MẶT TRAO QUYỀN: lower barriers to expression · visibility for marginalised voices — MẶT GÂY HẠI: echo chambers · outrage rewarded over nuance · misinformation outruns correction",
+        "misinformation (chia sẻ sai mà không biết) ≠ disinformation (cố tình bịa) · Despite the fact that news is more accessible, trust has fallen"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L15",
+      "moduleCode": "SPK-P3-M2",
+      "order": 44,
+      "title": "Buổi 15 — TOPIC 9: FAMILY & ARTS",
+      "titleEn": "Topic 9 — Family & Arts",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ chủ đề gia đình và 5 cụm chủ đề nghệ thuật",
+        "Giải thích thay đổi cấu trúc gia đình bằng lực đẩy kinh tế và văn hoá",
+        "Lập luận về tài trợ nghệ thuật bằng khái niệm giá trị thị trường không định giá được",
+        "Trả lời 85–95 giây cho hai câu hỏi thuộc hai chủ đề khác nhau, có câu về khác biệt văn hoá"
+      ],
+      "keyLanguage": [
+        "nuclear family · extended family · intergenerational relationships · social support network · cultural identity · artistic freedom · cultural homogenisation",
+        "social value the market consistently underprices · compensate for the reduced capacity of the family",
+        "Trục chung: thiết chế đang đổi → lực đẩy kinh tế (women in workforce, market pressure) → hệ quả → bù đắp bằng gì → khác biệt văn hoá (KHÔNG đồng đều)",
+        "not so much X as Y / less about X and more about Y — dùng để ĐỊNH KHUNG LẠI vấn đề (thao tác Band 8)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P3-L16",
+      "moduleCode": "SPK-P3-M3",
+      "order": 45,
+      "title": "Buổi 16 — Thi thử Part 3 & Tự đánh giá",
+      "titleEn": "Part 3 Mock Test & Self-Assessment",
+      "isTest": true,
+      "durationMinutes": 60,
+      "objectives": [
+        "Trả lời một chuỗi 5 câu hỏi Part 3 liên tục như thi thật, mỗi câu 60–90 giây",
+        "Tự nhận diện dạng câu hỏi trong 2 giây mà không cần nhắc",
+        "Tự chấm bài của mình theo bốn tiêu chí IELTS",
+        "Lập kế hoạch bốn tuần dựa trên điểm yếu thật của bản thân"
+      ],
+      "keyLanguage": [
+        "Toàn bộ 80 cụm ★ của Phần III và sáu khung của Phase 1",
+        "4 tiêu chí: Fluency & Coherence · Lexical Resource · Grammatical Range · Pronunciation",
+        "Câu giờ tự nhiên khi gặp câu khó (dùng tối đa MỘT lần): \"That is an interesting question — I haven't thought about it in those terms before\" · \"There are a couple of ways of looking at that\"",
+        "Nhận diện sai dạng → dùng nhầm khung cho cả bài; đừng trả lời câu đầu quá dài rồi hụt hơi ở ba câu sau"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    }
+  ]
+}

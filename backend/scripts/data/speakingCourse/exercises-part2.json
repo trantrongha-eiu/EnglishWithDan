@@ -1,0 +1,4379 @@
+{
+  "exercises": [
+    {
+      "code": "SPK-P2-L01-E01",
+      "lessonCode": "SPK-P2-L01",
+      "order": 1,
+      "type": "mcq",
+      "title": "Cơ chế Part 2 & khung 4 phần",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Part 2 diễn ra thế nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không có thời gian chuẩn bị, nói ngay 3 phút"
+            },
+            {
+              "id": "B",
+              "text": "1 phút chuẩn bị với giấy bút → nói 1–2 phút → 1–2 câu hỏi phụ"
+            },
+            {
+              "id": "C",
+              "text": "5 phút chuẩn bị → nói 5 phút"
+            },
+            {
+              "id": "D",
+              "text": "Giám khảo và thí sinh cùng thảo luận"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Đây là phần duy nhất thí sinh nói một mình, không ai đỡ lời."
+        },
+        {
+          "id": "q2",
+          "prompt": "Khung 4 phần của một long turn là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "INTRODUCTION → DESCRIPTION → WHY IT IS SPECIAL → CONCLUSION"
+            },
+            {
+              "id": "B",
+              "text": "Opinion → Reason → Example → Conclusion"
+            },
+            {
+              "id": "C",
+              "text": "Past → Present → Future → Wish"
+            },
+            {
+              "id": "D",
+              "text": "Who → What → When → Where"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Học một lần, dùng cho cả 34 cue card."
+        },
+        {
+          "id": "q3",
+          "prompt": "Nên phân bổ 60 giây chuẩn bị thế nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dùng 40 giây để chọn đề tài hay nhất"
+            },
+            {
+              "id": "B",
+              "text": "Viết nguyên câu hoàn chỉnh cho cả bài"
+            },
+            {
+              "id": "C",
+              "text": "10s đọc đề & chọn · 30s ghi từ khoá 4 phần · 15s quyết câu mở/kết · 5s hít thở"
+            },
+            {
+              "id": "D",
+              "text": "Không cần ghi gì, chỉ nghĩ trong đầu"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Chọn đề ngay, ghi từ khoá chứ không ghi câu."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu mở đầu nào nên tránh?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I'd like to talk about my cousin Linh, who…"
+            },
+            {
+              "id": "B",
+              "text": "I want to talk about my cousin."
+            },
+            {
+              "id": "C",
+              "text": "The person I'd like to describe is…"
+            },
+            {
+              "id": "D",
+              "text": "Something that immediately came to mind is…"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"I want to talk about…\" nghe như thuyết trình lớp 6."
+        },
+        {
+          "id": "q5",
+          "prompt": "Vì sao KHÔNG viết nguyên câu trong 1 phút chuẩn bị?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Vì không đủ giấy"
+            },
+            {
+              "id": "B",
+              "text": "Vì sẽ đọc lại y nguyên và giám khảo nghe ra ngay"
+            },
+            {
+              "id": "C",
+              "text": "Vì bị cấm viết"
+            },
+            {
+              "id": "D",
+              "text": "Vì mất điểm chính tả"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ghi từ khoá để liếc 1 giây rồi ngẩng lên nói tự nhiên."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L01-E02",
+      "lessonCode": "SPK-P2-L01",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối phần bài nói với mẫu câu mở đầu",
+      "instruction": "Nối mỗi phần của khung với câu mở đầu điển hình.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "1. INTRODUCTION (10–15s)",
+          "right": "I'd like to talk about… · This is… · I chose this because…"
+        },
+        {
+          "id": "m2",
+          "left": "2. DESCRIPTION (40–50s)",
+          "right": "First of all,… · What I remember most is… · For example,…"
+        },
+        {
+          "id": "m3",
+          "left": "3. WHY IT IS SPECIAL (30–40s)",
+          "right": "The reason I chose this is that… · It means a lot to me because… · Since then,…"
+        },
+        {
+          "id": "m4",
+          "left": "4. CONCLUSION (10–15s)",
+          "right": "Overall,… · I'll always remember… · I'd definitely recommend…"
+        },
+        {
+          "id": "m5",
+          "left": "Giây 1–10 của phần chuẩn bị",
+          "right": "Đọc cue card, xác định đối tượng chính, chọn ngay không đắn đo"
+        },
+        {
+          "id": "m6",
+          "left": "Giây 40–55 của phần chuẩn bị",
+          "right": "Quyết định câu mở đầu và câu kết, nhẩm trong đầu một lần"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L01-E03",
+      "lessonCode": "SPK-P2-L01",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp một long turn theo đúng khung",
+      "instruction": "Kéo để xếp các câu theo thứ tự một bài nói hoàn chỉnh (cue card: Describe a person you enjoy spending time with).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự từ mở đến kết:",
+          "tokens": [
+            "First of all, Linh is incredibly easy-going, and we usually meet for coffee two or three times a month.",
+            "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most.",
+            "Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by.",
+            "The reason I chose Linh is that she's one of the very few people I can be completely honest with."
+          ],
+          "answer": [
+            "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most.",
+            "First of all, Linh is incredibly easy-going, and we usually meet for coffee two or three times a month.",
+            "The reason I chose Linh is that she's one of the very few people I can be completely honest with.",
+            "Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by."
+          ],
+          "explanation": "INTRODUCTION → DESCRIPTION → WHY IT IS SPECIAL → CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L01-E04",
+      "lessonCode": "SPK-P2-L01",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi câu mở đầu",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I'd like to talking about my cousin.",
+          "answer": "I'd like to talk about my cousin.",
+          "explanation": "would like to + V nguyên thể, không V-ing."
+        },
+        {
+          "id": "q2",
+          "prompt": "I like to tell about a time when I was very happy.",
+          "answer": "I'd like to tell you about a time when I was very happy.",
+          "explanation": "\"I'd like to tell you about…\" — đủ \"you\" và \"about\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "I will talk about my headphones.",
+          "answer": "I'd like to talk about my headphones.",
+          "accept": [
+            "I'm going to talk about my headphones."
+          ],
+          "explanation": "\"I will talk about…\" nghe cứng như thuyết trình."
+        },
+        {
+          "id": "q4",
+          "prompt": "That is my person. That's all.",
+          "answer": "Overall, she's more of a sister than a cousin to me.",
+          "explanation": "CẤM kết bằng \"That's all\" — dùng một câu tổng kết."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L01-E05",
+      "lessonCode": "SPK-P2-L01",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: long turn theo khung 4 phần",
+      "instruction": "Chỉ 30 giây chuẩn bị (ghi từ khoá), rồi ghi âm nói liên tục ít nhất 75 giây theo đủ 4 phần. AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 30,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a friend you have known for a long time. You should say: who this person is · how you met · what you usually do together. And explain why this friendship matters to you."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I'd like to talk about…, who…",
+          "First of all,… / What I remember most is…",
+          "The reason I chose this is that… → Overall,…"
+        ],
+        "checklist": [
+          "Nói đủ 75 giây, không dừng quá 3 giây",
+          "Mở đầu bằng \"I'd like to talk about…\" hoặc tương đương (KHÔNG \"I want to talk about\")",
+          "Có ít nhất 3 chi tiết cụ thể (tên / thời gian / nơi chốn)",
+          "Có phần WHY IT IS SPECIAL rõ ràng",
+          "Có câu kết, không tắt lịm giữa chừng"
+        ],
+        "commonErrors": [
+          "Trả lời lần lượt 4 gạch đầu dòng như trả bài, mỗi ý một câu rồi hết",
+          "Dừng ở 40–50 giây vì \"hết ý\" — thiếu phần WHY IT IS SPECIAL",
+          "Đọc lại nguyên văn câu chuẩn bị",
+          "Kết bằng \"that's all\""
+        ],
+        "sampleAnswer": "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most. She's two years older than me and we grew up in the same neighbourhood. What I remember most is that she never checks her phone when we're talking — which sounds like a small thing, but it makes you feel genuinely listened to. Last month I was stressed about an exam and she sat with me for almost three hours, just listening. The reason I chose Linh is that she's one of the very few people I can be completely honest with; I don't have to pretend I'm doing fine. Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by."
+      }
+    },
+    {
+      "code": "SPK-P2-L02-E01",
+      "lessonCode": "SPK-P2-L02",
+      "order": 1,
+      "type": "mcq",
+      "title": "Keyword notes",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Trong 60 giây chuẩn bị, học sinh nên viết:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một bài nói hoàn chỉnh"
+            },
+            {
+              "id": "B",
+              "text": "6–8 từ khoá theo 4 phần của khung"
+            },
+            {
+              "id": "C",
+              "text": "Ghi chú bằng tiếng Việt"
+            },
+            {
+              "id": "D",
+              "text": "15–20 từ khoá để chắc chắn không bí"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ghi quá nhiều làm mất thời gian đọc trong lúc nói, mạch nói đứt."
+        },
+        {
+          "id": "q2",
+          "prompt": "Kỹ thuật biến 1 từ khoá thành 20–25 giây nói là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói to hơn"
+            },
+            {
+              "id": "B",
+              "text": "Mở rộng danh từ qua các lớp: + tính từ → + vị trí → + mệnh đề quan hệ → + chi tiết giác quan"
+            },
+            {
+              "id": "C",
+              "text": "Lặp lại từ khoá nhiều lần"
+            },
+            {
+              "id": "D",
+              "text": "Dịch từ khoá sang tiếng Việt rồi giải thích"
+            }
+          ],
+          "answer": "B",
+          "explanation": "6 từ khoá mở rộng đủ lớp là đủ cho 2 phút."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào mở rộng đủ \"lớp 4\" (thêm mệnh đề quan hệ)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "a café"
+            },
+            {
+              "id": "B",
+              "text": "a small, quiet café"
+            },
+            {
+              "id": "C",
+              "text": "a small, quiet café near my house"
+            },
+            {
+              "id": "D",
+              "text": "a small, quiet café near my house that has been there for years"
+            }
+          ],
+          "answer": "D",
+          "explanation": "Lớp 4 = + mệnh đề quan hệ."
+        },
+        {
+          "id": "q4",
+          "prompt": "Ghi chú kiểu \"I often go to a café near my house.\" bị lỗi gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không lỗi gì"
+            },
+            {
+              "id": "B",
+              "text": "Là câu hoàn chỉnh → sẽ bị đọc lại y nguyên, giọng đều"
+            },
+            {
+              "id": "C",
+              "text": "Quá ngắn"
+            },
+            {
+              "id": "D",
+              "text": "Thiếu tính từ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ghi từ khoá \"café / 5 phút đi bộ / nhỏ, yên\" mới đúng."
+        },
+        {
+          "id": "q5",
+          "prompt": "Trật tự tính từ đúng là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "a wooden old small lovely table"
+            },
+            {
+              "id": "B",
+              "text": "a lovely small old wooden table"
+            },
+            {
+              "id": "C",
+              "text": "a small lovely wooden old table"
+            },
+            {
+              "id": "D",
+              "text": "an old wooden small lovely table"
+            }
+          ],
+          "answer": "B",
+          "explanation": "[ý kiến] + [kích thước] + [tuổi] + [chất liệu] + danh từ."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L02-E02",
+      "lessonCode": "SPK-P2-L02",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối mục đích với mẫu câu mở rộng",
+      "instruction": "Nối mỗi mục đích với cụm dùng để mở rộng danh từ khi nói.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Thêm vị trí",
+          "right": "which is located… / a five-minute walk from… / just around the corner from…"
+        },
+        {
+          "id": "m2",
+          "left": "Thêm thời gian",
+          "right": "I first went there when… / I have been going there since…"
+        },
+        {
+          "id": "m3",
+          "left": "Thêm chi tiết giác quan",
+          "right": "What strikes you first is… / The moment you walk in, you…"
+        },
+        {
+          "id": "m4",
+          "left": "Thêm câu chuyện",
+          "right": "I remember one time when… / There was this one occasion when…"
+        },
+        {
+          "id": "m5",
+          "left": "Thêm ý nghĩa",
+          "right": "It has become a sort of… / For me it is more than just a…"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L02-E03",
+      "lessonCode": "SPK-P2-L02",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp các lớp mở rộng danh từ",
+      "instruction": "Kéo để xếp các phiên bản của cụm danh từ từ TRẦN NHẤT đến CHI TIẾT NHẤT.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Từ lớp 1 đến lớp 5:",
+          "tokens": [
+            "a small, quiet café near my house",
+            "a café",
+            "a small, quiet café near my house that has been there for years, where the smell of roasted coffee hits you the moment you walk in",
+            "a small, quiet café",
+            "a small, quiet café near my house that has been there for years"
+          ],
+          "answer": [
+            "a café",
+            "a small, quiet café",
+            "a small, quiet café near my house",
+            "a small, quiet café near my house that has been there for years",
+            "a small, quiet café near my house that has been there for years, where the smell of roasted coffee hits you the moment you walk in"
+          ],
+          "explanation": "danh từ trần → + tính từ → + vị trí → + mệnh đề quan hệ → + chi tiết giác quan."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L02-E04",
+      "lessonCode": "SPK-P2-L02",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi trật tự tính từ & hiện tại hoàn thành",
+      "instruction": "Viết lại cả cụm/câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "a wooden old small box",
+          "answer": "a small old wooden box",
+          "explanation": "kích thước → tuổi → chất liệu → danh từ."
+        },
+        {
+          "id": "q2",
+          "prompt": "a near my house small café",
+          "answer": "a small café near my house",
+          "explanation": "Vị trí đứng SAU danh từ."
+        },
+        {
+          "id": "q3",
+          "prompt": "It is in my family for thirty years.",
+          "answer": "It has been in my family for thirty years.",
+          "explanation": "for + khoảng thời gian → present perfect."
+        },
+        {
+          "id": "q4",
+          "prompt": "It has been in my family since thirty years.",
+          "answer": "It has been in my family for thirty years.",
+          "accept": [
+            "It has been in my family since 1989."
+          ],
+          "explanation": "since + MỐC thời gian, for + KHOẢNG thời gian."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L02-E05",
+      "lessonCode": "SPK-P2-L02",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: từ 6 từ khoá thành 90 giây",
+      "instruction": "30 giây ghi chú CHỈ từ khoá (tối đa 8), rồi ghi âm nói 90 giây phát triển từ đúng trang ghi chú đó. Liếc giấy tối đa 3 lần.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 30,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a place you often go to in your free time. You should say: where it is · what it looks like · what you do there. And explain why you like going there."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "which is located… / a five-minute walk from…",
+          "The moment you walk in, you…",
+          "It has become a sort of…"
+        ],
+        "checklist": [
+          "Ghi chú chỉ có từ khoá, không có câu hoàn chỉnh; không quá 8 từ khoá",
+          "Nói đủ 90 giây, liếc giấy không quá 3 lần",
+          "Có ít nhất 1 chi tiết giác quan (mùi / âm thanh / ánh sáng)",
+          "Mở rộng ít nhất 3 danh từ (thêm tính từ + vị trí + chi tiết)",
+          "Có câu kết"
+        ],
+        "commonErrors": [
+          "Ghi thành câu → đọc lại y nguyên",
+          "Ghi quá nhiều (15–20 từ) → mạch nói đứt",
+          "Sáu câu đơn rời rạc, mỗi câu một danh từ trần",
+          "Ghi bằng tiếng Việt rồi vừa nói vừa dịch"
+        ],
+        "sampleAnswer": "I'd like to talk about a small café on Nguyen Hue Street, which is only about a five-minute walk from my house. It's quite a modest place — dark wooden furniture, maybe eight tables, and they play old jazz records rather than pop music. The moment you walk in, the smell of roasted coffee hits you, and somehow the noise of the street just disappears. I usually go there on Sunday mornings and stay for about three hours studying — I get more done there than in a whole day at home. What makes it special is the owner, an elderly woman who's run the place for over twenty years and started remembering my name after a few months. Overall, it's become a sort of second living room for me, and I honestly can't imagine my weekends without it."
+      }
+    },
+    {
+      "code": "SPK-P2-L03-E01",
+      "lessonCode": "SPK-P2-L03",
+      "order": 1,
+      "type": "mcq",
+      "title": "Mở đầu & câu kết",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"Paraphrase đề bài\" ở câu mở đầu nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Đọc lại nguyên văn cue card"
+            },
+            {
+              "id": "B",
+              "text": "Diễn đạt lại đề bằng từ khác, không lặp từ chính của đề"
+            },
+            {
+              "id": "C",
+              "text": "Dịch đề sang tiếng Việt"
+            },
+            {
+              "id": "D",
+              "text": "Bỏ qua đề, nói thẳng vào nội dung"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Người paraphrase được nổi bật ngay câu đầu."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu kết nào BỊ CẤM?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Overall, it was a really memorable experience."
+            },
+            {
+              "id": "B",
+              "text": "Looking back, I think it taught me a lot."
+            },
+            {
+              "id": "C",
+              "text": "That's all. / I think that's it."
+            },
+            {
+              "id": "D",
+              "text": "I'd definitely recommend it to anyone who…"
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"That's all / Finished / I think that's it\" mất điểm ngay lập tức."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu mở đầu Band 6.5+ thường có:",
+          "options": [
+            {
+              "id": "A",
+              "text": "một con số"
+            },
+            {
+              "id": "B",
+              "text": "một mệnh đề quan hệ với which / who"
+            },
+            {
+              "id": "C",
+              "text": "một câu hỏi tu từ"
+            },
+            {
+              "id": "D",
+              "text": "một câu cảm thán"
+            }
+          ],
+          "answer": "B",
+          "explanation": "…my headphones, which I use pretty much every day."
+        },
+        {
+          "id": "q4",
+          "prompt": "Sau dấu phẩy trong mệnh đề quan hệ, dùng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "that (my headphones, that I use…)"
+            },
+            {
+              "id": "B",
+              "text": "which / who (my headphones, which I use…)"
+            },
+            {
+              "id": "C",
+              "text": "what"
+            },
+            {
+              "id": "D",
+              "text": "không cần đại từ quan hệ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Có dấu phẩy → which / who, KHÔNG dùng that."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"Câu kết dự phòng\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một câu kết vạn năng chuẩn bị sẵn trong 60 giây để chèn vào khi giám khảo ra hiệu dừng"
+            },
+            {
+              "id": "B",
+              "text": "Một câu xin lỗi vì nói chưa xong"
+            },
+            {
+              "id": "C",
+              "text": "Câu hỏi ngược lại giám khảo"
+            },
+            {
+              "id": "D",
+              "text": "Nhắc lại nguyên văn câu mở đầu"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Ví dụ: \"Overall, it's one of those things I'd find really hard to imagine my life without.\""
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L03-E02",
+      "lessonCode": "SPK-P2-L03",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối kiểu câu kết với nhóm chủ đề",
+      "instruction": "Nối mỗi kiểu câu kết với nhóm cue card hợp nhất.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Tổng kết đánh giá: Overall, it was a truly [adj] experience.",
+          "right": "Mọi nhóm — an toàn nhất"
+        },
+        {
+          "id": "m2",
+          "left": "Nhìn lại / suy ngẫm: Looking back, I think it taught me…",
+          "right": "EVENTS, ACTIVITIES"
+        },
+        {
+          "id": "m3",
+          "left": "Khuyến nghị: I'd definitely recommend it to anyone who…",
+          "right": "PLACES, CULTURE / MEDIA"
+        },
+        {
+          "id": "m4",
+          "left": "Cam kết tương lai: I'll always remember… / I hope to… one day.",
+          "right": "PEOPLE, OBJECTS"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L03-E03",
+      "lessonCode": "SPK-P2-L03",
+      "order": 3,
+      "type": "categorize",
+      "title": "Câu kết TỐT hay câu kết BỊ CẤM?",
+      "instruction": "Kéo mỗi câu kết vào đúng cột.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "good",
+          "label": "Câu kết TỐT"
+        },
+        {
+          "id": "banned",
+          "label": "Câu kết BỊ CẤM"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Overall, they've quietly reshaped how I get through my day.",
+          "category": "good"
+        },
+        {
+          "id": "c2",
+          "text": "That's all.",
+          "category": "banned"
+        },
+        {
+          "id": "c3",
+          "text": "Looking back, that visit is probably why I still enjoy old maps.",
+          "category": "good"
+        },
+        {
+          "id": "c4",
+          "text": "Yeah… so… (rồi im lặng)",
+          "category": "banned"
+        },
+        {
+          "id": "c5",
+          "text": "I'd definitely recommend it to anyone visiting the area.",
+          "category": "good"
+        },
+        {
+          "id": "c6",
+          "text": "Sorry, I don't know what else to say.",
+          "category": "banned"
+        },
+        {
+          "id": "c7",
+          "text": "All in all, it's one of those things I'd struggle to live without.",
+          "category": "good"
+        },
+        {
+          "id": "c8",
+          "text": "Finished.",
+          "category": "banned"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L03-E04",
+      "lessonCode": "SPK-P2-L03",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi mệnh đề quan hệ mở đầu",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I'd like to talk about my cousin Linh, which is two years older than me.",
+          "explanation": "người → who, không dùng which.",
+          "sampleAnswers": [
+            "I'd like to talk about my cousin Linh, who is two years older than me."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "I'd like to talk about my headphones, that I use every day.",
+          "explanation": "Sau dấu phẩy không dùng that.",
+          "sampleAnswers": [
+            "I'd like to talk about my headphones, which I use every day."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Describe a book you read. OK, a book I read is a novel.",
+          "explanation": "Đừng đọc lại nguyên văn cue card — paraphrase.",
+          "sampleAnswers": [
+            "I'd like to talk about a novel that had a real impact on me."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "My topic today is my favourite object.",
+          "explanation": "\"My topic today is…\" nghe như thuyết trình PowerPoint.",
+          "sampleAnswers": [
+            "The object I'd like to describe is something I use more than anything else I own."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L03-E05",
+      "lessonCode": "SPK-P2-L03",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: chú trọng 15 giây đầu và 15 giây cuối",
+      "instruction": "30 giây chuẩn bị, ghi âm nói 60–75 giây. Câu mở phải paraphrase đề + có mệnh đề quan hệ; câu kết bắt đầu bằng Overall / Looking back / All in all, giọng xuống dứt khoát.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 30,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a photograph you like. You should say: what is in the photo · when and where it was taken · who took it. And explain why you like it."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "The [thing] I'd like to describe is…, which…",
+          "When I saw this question, I immediately thought of…",
+          "Overall,… / Looking back,… / All in all,…"
+        ],
+        "checklist": [
+          "Câu mở có paraphrase đề bài (không lặp từ chính của đề)",
+          "Không dùng \"I want to talk about\"",
+          "Câu mở có mệnh đề quan hệ với which / who",
+          "Có câu kết bắt đầu bằng Overall / Looking back / All in all",
+          "Giọng xuống dứt khoát ở câu cuối"
+        ],
+        "commonErrors": [
+          "Đọc lại nguyên văn cue card",
+          "Mở đầu bằng \"My topic today is…\"",
+          "Kết bằng \"That's all\" / im lặng nhỏ dần",
+          "Giọng lên ở câu kết → giám khảo tưởng còn nói tiếp"
+        ],
+        "sampleAnswer": "The photograph I'd like to describe is one that has been on my desk for years, which is a picture of my grandmother in her garden. It was taken about ten years ago, on a bright winter morning, and my uncle took it without her noticing — she's half-laughing at something off-camera. What I like most about it is that it captures her exactly as I remember her, rather than the posed way people usually appear in family photos. Overall, it's a small, ordinary picture, but it's the one possession I would genuinely be upset to lose."
+      }
+    },
+    {
+      "code": "SPK-P2-L04-E01",
+      "lessonCode": "SPK-P2-L04",
+      "order": 1,
+      "type": "mcq",
+      "title": "NHÓM PEOPLE — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cách tả tính cách nào đạt Band 7?",
+          "options": [
+            {
+              "id": "A",
+              "text": "She is kind, friendly, helpful and nice."
+            },
+            {
+              "id": "B",
+              "text": "One of her most outstanding qualities is her genuine kindness — when I failed a test she stayed after class for an hour to explain it again."
+            },
+            {
+              "id": "C",
+              "text": "She is a very good person."
+            },
+            {
+              "id": "D",
+              "text": "She is tall and has long hair."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Mỗi tính từ phải có một câu bằng chứng cụ thể."
+        },
+        {
+          "id": "q2",
+          "prompt": "Template nhóm PEOPLE gồm 5 phần:",
+          "options": [
+            {
+              "id": "A",
+              "text": "INTRODUCTION → WHO THEY ARE → WHAT THEY ARE LIKE → HOW THEY INFLUENCED YOU → CONCLUSION"
+            },
+            {
+              "id": "B",
+              "text": "Name → Age → Job → Family → Goodbye"
+            },
+            {
+              "id": "C",
+              "text": "Past → Present → Future → Opinion → Wish"
+            },
+            {
+              "id": "D",
+              "text": "Problem → Cause → Effect → Solution → Result"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Một template dùng cho bảy đề nhóm PEOPLE."
+        },
+        {
+          "id": "q3",
+          "prompt": "Lỗi nào KHÔNG nên mắc?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nhắc lại tên nhân vật vài lần"
+            },
+            {
+              "id": "B",
+              "text": "Kể một giai thoại minh hoạ cho tính cách"
+            },
+            {
+              "id": "C",
+              "text": "Dùng \"he/she\" liên tục 2 phút, không nhắc lại tên"
+            },
+            {
+              "id": "D",
+              "text": "Có phần nói về ảnh hưởng lên bản thân"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Giám khảo mất dấu ai là ai."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"down-to-earth\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "có sức lôi cuốn"
+            },
+            {
+              "id": "B",
+              "text": "chân chất, không kiêu ngạo"
+            },
+            {
+              "id": "C",
+              "text": "hướng ngoại"
+            },
+            {
+              "id": "D",
+              "text": "kiên cường"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Despite being famous, she's very down-to-earth."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"a person which I admire\" sai ở đâu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Thiếu động từ"
+            },
+            {
+              "id": "B",
+              "text": "Người → dùng who / whom, không dùng which"
+            },
+            {
+              "id": "C",
+              "text": "Thừa \"which\""
+            },
+            {
+              "id": "D",
+              "text": "Không sai"
+            }
+          ],
+          "answer": "B",
+          "explanation": "a person whom I admire / who I admire."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L04-E02",
+      "lessonCode": "SPK-P2-L04",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm tả người với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "charismatic",
+          "right": "có sức lôi cuốn"
+        },
+        {
+          "id": "m2",
+          "left": "down-to-earth",
+          "right": "chân chất, không kiêu ngạo"
+        },
+        {
+          "id": "m3",
+          "left": "outgoing personality",
+          "right": "tính cách hướng ngoại"
+        },
+        {
+          "id": "m4",
+          "left": "look up to",
+          "right": "ngưỡng mộ, noi gương"
+        },
+        {
+          "id": "m5",
+          "left": "genuine kindness",
+          "right": "sự tốt bụng thật sự"
+        },
+        {
+          "id": "m6",
+          "left": "resilient",
+          "right": "kiên cường"
+        },
+        {
+          "id": "m7",
+          "left": "leave a lasting impression",
+          "right": "để lại ấn tượng lâu dài"
+        },
+        {
+          "id": "m8",
+          "left": "a real eye-opener",
+          "right": "điều làm mở mang tầm nhìn"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L04-E03",
+      "lessonCode": "SPK-P2-L04",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm PEOPLE theo template",
+      "instruction": "Kéo để xếp các câu theo đúng 5 phần của template PEOPLE.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template PEOPLE:",
+          "tokens": [
+            "One of her most outstanding qualities is her patience — I remember failing a test and expecting a lecture; instead she sat with me for an hour.",
+            "I'd like to talk about my old maths teacher, Mrs Hoa, who taught me in high school.",
+            "Overall, she left a lasting impression not because she was brilliant, but because she was unshakeably patient.",
+            "Mrs Hoa is a retired teacher now and had been teaching for over thirty years when I met her.",
+            "She made me believe I could actually do maths, and I've approached difficult subjects differently ever since."
+          ],
+          "answer": [
+            "I'd like to talk about my old maths teacher, Mrs Hoa, who taught me in high school.",
+            "Mrs Hoa is a retired teacher now and had been teaching for over thirty years when I met her.",
+            "One of her most outstanding qualities is her patience — I remember failing a test and expecting a lecture; instead she sat with me for an hour.",
+            "She made me believe I could actually do maths, and I've approached difficult subjects differently ever since.",
+            "Overall, she left a lasting impression not because she was brilliant, but because she was unshakeably patient."
+          ],
+          "explanation": "INTRODUCTION → WHO THEY ARE → WHAT THEY ARE LIKE (+ giai thoại) → HOW THEY INFLUENCED YOU → CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L04-E04",
+      "lessonCode": "SPK-P2-L04",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi mệnh đề quan hệ who / whom / whose",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "a traveller named Jack, which I met last summer",
+          "answer": "a traveller named Jack, whom I met last summer",
+          "accept": [
+            "a traveller named Jack, who I met last summer"
+          ],
+          "explanation": "người + có chủ ngữ theo sau → whom (Band 7)."
+        },
+        {
+          "id": "q2",
+          "prompt": "my friend who she is a doctor",
+          "answer": "my friend who is a doctor",
+          "explanation": "Sau who đã có động từ → không thêm chủ ngữ \"she\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "my neighbour, who son studies with me",
+          "answer": "my neighbour, whose son studies with me",
+          "explanation": "sở hữu → whose."
+        },
+        {
+          "id": "q4",
+          "prompt": "She is kind, friendly, helpful and nice.",
+          "answer": "She's incredibly down-to-earth — she never made students feel stupid for asking questions.",
+          "explanation": "Liệt kê tính từ mà không chứng minh → thay bằng 1 tính từ + bằng chứng."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L04-E05",
+      "lessonCode": "SPK-P2-L04",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một người (nhóm PEOPLE)",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template PEOPLE. Mỗi tính từ phải có bằng chứng; có phần ảnh hưởng lên bản thân.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a friend who is important to you. You should say: who this person is · how long you have known them · what they are like. And explain why this person is important to you."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I'd like to talk about…, who…",
+          "One of their most outstanding qualities is… For example,…",
+          "This person inspires me because… → Overall,…"
+        ],
+        "checklist": [
+          "Dùng được ít nhất 2 cụm ★ (charismatic, down-to-earth, genuine kindness, resilient…)",
+          "Mỗi tính từ đều có một câu bằng chứng cụ thể",
+          "Có ít nhất một giai thoại cụ thể (thời gian / nơi chốn / hành động)",
+          "Có phần nói về ảnh hưởng lên bản thân",
+          "Nói đủ 75 giây, nhắc lại tên nhân vật ít nhất 2 lần"
+        ],
+        "commonErrors": [
+          "Liệt kê tính từ mà không chứng minh",
+          "Chỉ mô tả ngoại hình (tall, thin, long hair)",
+          "Nói về người nổi tiếng mà không có kết nối cá nhân",
+          "Dùng \"he/she\" suốt 2 phút, không nhắc lại tên"
+        ],
+        "sampleAnswer": "The person I'd like to describe is my old maths teacher, Mrs Hoa — someone whose influence I only really understood years after I left her class. What stood out was her genuine kindness: she had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture; instead she sat with me for an hour and worked through it as if we had all the time in the world. Looking back, Mrs Hoa left a lasting impression not because she was a brilliant mathematician, but because she was unshakeably patient — and that patience is genuinely the reason I stopped being afraid of subjects I found hard."
+      }
+    },
+    {
+      "code": "SPK-P2-L05-E01",
+      "lessonCode": "SPK-P2-L05",
+      "order": 1,
+      "type": "mcq",
+      "title": "NHÓM PLACES — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "4 lớp mô tả nơi chốn là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Location → Atmosphere → Facilities → Opinion"
+            },
+            {
+              "id": "B",
+              "text": "Name → Weather → Food → Goodbye"
+            },
+            {
+              "id": "C",
+              "text": "Size → Age → Colour → Material"
+            },
+            {
+              "id": "D",
+              "text": "Who → What → When → Why"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Ở đâu → không khí → có gì → bạn nghĩ sao."
+        },
+        {
+          "id": "q2",
+          "prompt": "Điều gì biến bài giới thiệu du lịch thành trải nghiệm thật?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói vị trí địa lý thật chi tiết"
+            },
+            {
+              "id": "B",
+              "text": "Một chi tiết cá nhân (\"I've been back twice since that first visit\")"
+            },
+            {
+              "id": "C",
+              "text": "Lặp \"beautiful\" nhiều lần"
+            },
+            {
+              "id": "D",
+              "text": "Liệt kê hết các điểm tham quan"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Cần trả lời \"why is it special TO YOU\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Nên dùng bao nhiêu chi tiết giác quan?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Cả năm giác quan"
+            },
+            {
+              "id": "B",
+              "text": "Hai là đủ (ví dụ âm thanh + mùi)"
+            },
+            {
+              "id": "C",
+              "text": "Không cần giác quan nào"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ thị giác"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Chỉ cần HAI chi tiết giác quan là bài nói khác hẳn."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Da Nang, which is located at central Vietnam"
+            },
+            {
+              "id": "B",
+              "text": "I live in Nguyen Hue Street"
+            },
+            {
+              "id": "C",
+              "text": "Da Nang, which is located in central Vietnam"
+            },
+            {
+              "id": "D",
+              "text": "It is more quiet than the park"
+            }
+          ],
+          "answer": "C",
+          "explanation": "in + vùng/quốc gia; on + đường; at + điểm cụ thể."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"steeped in history\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "đông khách du lịch"
+            },
+            {
+              "id": "B",
+              "text": "đậm đặc lịch sử"
+            },
+            {
+              "id": "C",
+              "text": "yên bình"
+            },
+            {
+              "id": "D",
+              "text": "được bảo trì tốt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hoi An is steeped in history and culture."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L05-E02",
+      "lessonCode": "SPK-P2-L05",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm tả nơi chốn với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "breathtaking scenery",
+          "right": "cảnh đẹp ngoạn mục"
+        },
+        {
+          "id": "m2",
+          "left": "pristine beaches",
+          "right": "bãi biển hoang sơ, sạch đẹp"
+        },
+        {
+          "id": "m3",
+          "left": "lively and vibrant",
+          "right": "sôi động, nhộn nhịp"
+        },
+        {
+          "id": "m4",
+          "left": "iconic landmark",
+          "right": "công trình biểu tượng"
+        },
+        {
+          "id": "m5",
+          "left": "a perfect mix of…",
+          "right": "sự kết hợp hoàn hảo của…"
+        },
+        {
+          "id": "m6",
+          "left": "serene and tranquil",
+          "right": "yên bình, thanh tịnh"
+        },
+        {
+          "id": "m7",
+          "left": "a hidden gem",
+          "right": "nơi tuyệt vời ít ai biết"
+        },
+        {
+          "id": "m8",
+          "left": "off the beaten track",
+          "right": "xa khỏi chỗ đông người"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L05-E03",
+      "lessonCode": "SPK-P2-L05",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm PLACES theo template",
+      "instruction": "Kéo để xếp các câu theo đúng 5 phần của template PLACES.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template PLACES:",
+          "tokens": [
+            "Da Nang is a medium-sized city with a perfect mix of natural beauty and modern infrastructure, and what really stands out is the contrast between beach and mountains.",
+            "I'd like to talk about Da Nang, which is located in central Vietnam.",
+            "Overall, Da Nang is a dynamic city that I'd recommend to anyone looking for an unforgettable trip.",
+            "The first time I visited was three years ago, and the moment I felt the sea breeze on My Khe Beach I was completely blown away.",
+            "I chose Da Nang because it genuinely has something for everyone, and I've been back twice since that first visit."
+          ],
+          "answer": [
+            "I'd like to talk about Da Nang, which is located in central Vietnam.",
+            "The first time I visited was three years ago, and the moment I felt the sea breeze on My Khe Beach I was completely blown away.",
+            "Da Nang is a medium-sized city with a perfect mix of natural beauty and modern infrastructure, and what really stands out is the contrast between beach and mountains.",
+            "I chose Da Nang because it genuinely has something for everyone, and I've been back twice since that first visit.",
+            "Overall, Da Nang is a dynamic city that I'd recommend to anyone looking for an unforgettable trip."
+          ],
+          "explanation": "INTRODUCTION → FIRST IMPRESSION → DESCRIPTION → WHY IT'S SPECIAL → CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L05-E04",
+      "lessonCode": "SPK-P2-L05",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi giới từ nơi chốn & so sánh",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Da Nang, which is located at central Vietnam",
+          "answer": "Da Nang, which is located in central Vietnam",
+          "explanation": "in + vùng / quốc gia."
+        },
+        {
+          "id": "q2",
+          "prompt": "I live in Nguyen Hue Street.",
+          "answer": "I live on Nguyen Hue Street.",
+          "explanation": "on + tên đường."
+        },
+        {
+          "id": "q3",
+          "prompt": "It is more quiet than the city.",
+          "answer": "It is quieter than the city.",
+          "explanation": "quiet 1 âm tiết → quieter."
+        },
+        {
+          "id": "q4",
+          "prompt": "The city is very beautiful and the people are nice.",
+          "answer": "The city has a lively, vibrant atmosphere, and the people are remarkably welcoming.",
+          "explanation": "Thay \"beautiful / nice\" bằng cụm cụ thể."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L05-E05",
+      "lessonCode": "SPK-P2-L05",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một nơi (nhóm PLACES)",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template PLACES. Có ≥1 chi tiết giác quan, một lý do cá nhân, KHÔNG dùng \"beautiful\" hay \"nice\".",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a natural place you have visited. You should say: where it is · what it looks like · what you did there. And explain how you felt when you were there."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "…, which is located in… / on… / at…",
+          "The moment I stepped… I was… · What really stands out is…",
+          "I chose this place because… → Overall,…"
+        ],
+        "checklist": [
+          "Đúng 4 lớp: Location → Atmosphere → Facilities → Opinion",
+          "Có ít nhất 1 chi tiết giác quan (âm thanh / mùi / ánh sáng)",
+          "Không dùng từ \"beautiful\" hay \"nice\"",
+          "Có lý do CÁ NHÂN, không chỉ mô tả khách quan",
+          "Dùng được ít nhất 2 cụm ★"
+        ],
+        "commonErrors": [
+          "Đọc như bài giới thiệu du lịch, không có trải nghiệm cá nhân",
+          "Chỉ nói vị trí địa lý suốt 40 giây",
+          "Lặp \"beautiful\" 5 lần",
+          "Không trả lời được \"why is it special TO YOU\""
+        ],
+        "sampleAnswer": "I'd like to talk about Da Nang, roughly halfway between Hanoi and Ho Chi Minh City. The moment I stepped onto My Khe Beach and felt the sea breeze, I was completely blown away — the water was crystal clear and the whole atmosphere was incredibly refreshing after months of fast-paced urban life. What really stands out, though, is the contrast: you can spend the morning on a pristine beach and be in a mountain resort thirty minutes later. I've been back twice since that first visit and I still find something new each time, which is why it's the one place I keep recommending to friends."
+      }
+    },
+    {
+      "code": "SPK-P2-L06-E01",
+      "lessonCode": "SPK-P2-L06",
+      "order": 1,
+      "type": "mcq",
+      "title": "NHÓM OBJECTS — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Nên dành bao nhiêu thời gian cho phần mô tả HÌNH DÁNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Tối đa 20 giây"
+            },
+            {
+              "id": "B",
+              "text": "Khoảng 60 giây"
+            },
+            {
+              "id": "C",
+              "text": "Toàn bộ bài"
+            },
+            {
+              "id": "D",
+              "text": "Không cần mô tả hình dáng"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Còn lại dành cho câu chuyện và giá trị tinh thần."
+        },
+        {
+          "id": "q2",
+          "prompt": "Điểm nhấn Band 7 của bài OBJECTS thường là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Liệt kê mọi tính năng"
+            },
+            {
+              "id": "B",
+              "text": "Chèn MỘT câu trích trực tiếp lời ai đó về đồ vật"
+            },
+            {
+              "id": "C",
+              "text": "Nói giá tiền chính xác"
+            },
+            {
+              "id": "D",
+              "text": "Mô tả màu sắc thật kỹ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"he handed it to me and said, 'Technology changes, but a good photograph lasts forever.'\""
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is in my family for thirty years."
+            },
+            {
+              "id": "B",
+              "text": "It has been in my family since thirty years."
+            },
+            {
+              "id": "C",
+              "text": "It has been in my family for over thirty years."
+            },
+            {
+              "id": "D",
+              "text": "It was in my family for thirty years now."
+            }
+          ],
+          "answer": "C",
+          "explanation": "for + khoảng thời gian → present perfect."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"sentimental value\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "giá trị tinh thần / kỷ niệm"
+            },
+            {
+              "id": "B",
+              "text": "giá trị tiền bạc"
+            },
+            {
+              "id": "C",
+              "text": "công nghệ tiên tiến"
+            },
+            {
+              "id": "D",
+              "text": "thiết kế tinh xảo"
+            }
+          ],
+          "answer": "A",
+          "explanation": "It has great sentimental value for my family."
+        },
+        {
+          "id": "q5",
+          "prompt": "Lỗi nào nên tránh khi tả đồ vật?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Kể câu chuyện gắn với vật"
+            },
+            {
+              "id": "B",
+              "text": "Dùng \"thing\" liên tục thay vì gọi tên vật"
+            },
+            {
+              "id": "C",
+              "text": "Nêu mốc thời gian với for/since"
+            },
+            {
+              "id": "D",
+              "text": "Nói về giá trị tinh thần"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Gọi đúng tên vật (a Canon film camera), không nói \"this thing\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L06-E02",
+      "lessonCode": "SPK-P2-L06",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm tả đồ vật với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "sentimental value",
+          "right": "giá trị tinh thần / kỷ niệm"
+        },
+        {
+          "id": "m2",
+          "left": "pass down / hand down",
+          "right": "truyền lại cho thế hệ sau"
+        },
+        {
+          "id": "m3",
+          "left": "a keepsake",
+          "right": "vật lưu niệm"
+        },
+        {
+          "id": "m4",
+          "left": "worn with age",
+          "right": "cũ đi theo thời gian"
+        },
+        {
+          "id": "m5",
+          "left": "irreplaceable",
+          "right": "không thể thay thế được"
+        },
+        {
+          "id": "m6",
+          "left": "heirloom",
+          "right": "đồ gia bảo, di vật"
+        },
+        {
+          "id": "m7",
+          "left": "tell the story of…",
+          "right": "kể lại lịch sử của…"
+        },
+        {
+          "id": "m8",
+          "left": "state-of-the-art",
+          "right": "công nghệ tiên tiến nhất"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L06-E03",
+      "lessonCode": "SPK-P2-L06",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm OBJECTS theo template",
+      "instruction": "Kéo để xếp các câu theo đúng các phần của template OBJECTS.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template OBJECTS:",
+          "tokens": [
+            "My father bought it in the late eighties before he travelled to Europe, and he handed it to me when I was about ten.",
+            "I'd like to talk about an old Canon film camera that has been in my family for over thirty years.",
+            "It's silver and black, quite compact by today's standards, with a few small scratches that tell the story of all the places it's been.",
+            "Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on one day.",
+            "I still take it out on special occasions because film photography makes you think carefully about every picture."
+          ],
+          "answer": [
+            "I'd like to talk about an old Canon film camera that has been in my family for over thirty years.",
+            "It's silver and black, quite compact by today's standards, with a few small scratches that tell the story of all the places it's been.",
+            "My father bought it in the late eighties before he travelled to Europe, and he handed it to me when I was about ten.",
+            "I still take it out on special occasions because film photography makes you think carefully about every picture.",
+            "Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on one day."
+          ],
+          "explanation": "INTRODUCTION → APPEARANCE → HOW YOU GOT IT → HOW YOU USE IT → EMOTIONAL VALUE / CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L06-E04",
+      "lessonCode": "SPK-P2-L06",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi trật tự tính từ & for/since",
+      "instruction": "Viết lại cả cụm/câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "a wooden old small box",
+          "answer": "a small old wooden box",
+          "explanation": "kích thước → tuổi → chất liệu → danh từ."
+        },
+        {
+          "id": "q2",
+          "prompt": "a leather brown old beautiful bag",
+          "answer": "a beautiful old brown leather bag",
+          "explanation": "ý kiến → tuổi → màu → chất liệu → danh từ."
+        },
+        {
+          "id": "q3",
+          "prompt": "We have it since 1989.",
+          "answer": "We have had it since 1989.",
+          "explanation": "since + mốc → present perfect (have had)."
+        },
+        {
+          "id": "q4",
+          "prompt": "I want to talk about this thing. It is my father's thing.",
+          "answer": "I'd like to talk about an old film camera that belonged to my father.",
+          "explanation": "Gọi tên vật, không nói \"this thing\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L06-E05",
+      "lessonCode": "SPK-P2-L06",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một đồ vật (nhóm OBJECTS)",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây. Mô tả hình dáng ≤20 giây; có mốc thời gian (for/since) và một câu chuyện hoặc kỷ niệm cụ thể.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe something you own that is important to you. You should say: what it is · how you got it · how long you have had it. And explain why it is important to you."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "…that has been in my family for… / I have had it since…",
+          "…and he/she said, '…' (câu trích trực tiếp)",
+          "It's not just a…, it's a… → Overall,…"
+        ],
+        "checklist": [
+          "Mô tả hình dáng không quá 20 giây",
+          "Có mốc thời gian rõ ràng (for / since)",
+          "Có một câu chuyện hoặc kỷ niệm cụ thể gắn với vật",
+          "Dùng được ít nhất 2 cụm ★ (sentimental value, keepsake, heirloom…)",
+          "Gọi đúng tên vật, không nói \"this thing\""
+        ],
+        "commonErrors": [
+          "Mô tả hình dáng suốt 60 giây rồi hết ý",
+          "Trật tự tính từ sai: a wooden old small box",
+          "Chọn đồ vật không có kỷ niệm",
+          "Dùng \"thing\" liên tục"
+        ],
+        "sampleAnswer": "I'd like to talk about an old Canon film camera that's been in my family for over thirty years. It's compact by today's standards, with a few small scratches that tell the story of all the places it's been. My father bought it in the late eighties, and when I was about ten he handed it to me and said, 'Technology changes, but a good photograph lasts forever.' That was the moment I fell in love with photography. I still take it out on special occasions, because having a limited number of shots makes you think more carefully about every picture. Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on to my own children one day."
+      }
+    },
+    {
+      "code": "SPK-P2-L07-E01",
+      "lessonCode": "SPK-P2-L07",
+      "order": 1,
+      "type": "mcq",
+      "title": "EVENTS I — khung kể chuyện 6 bước",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khung kể chuyện 6 bước là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Intro → Background → Key moment → Resolution → Reflection → Conclusion"
+            },
+            {
+              "id": "B",
+              "text": "Opinion → Reason → Example → Conclusion → Wish → Goodbye"
+            },
+            {
+              "id": "C",
+              "text": "Who → What → When → Where → Why → How"
+            },
+            {
+              "id": "D",
+              "text": "Cause → Effect → Solution → Result → Limit → Kết"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Phần Key moment chiếm nhiều thời gian nhất (30–40 giây)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Lỗi cấu trúc nào làm hỏng bài kể?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dành 60s cho BACKGROUND rồi chỉ còn 20s cho KEY MOMENT"
+            },
+            {
+              "id": "B",
+              "text": "Có câu báo hiệu cao trào"
+            },
+            {
+              "id": "C",
+              "text": "Rút ra bài học ở phần Reflection"
+            },
+            {
+              "id": "D",
+              "text": "Dùng past simple cho hành động chính"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Ngược tỉ lệ hoàn toàn — Key moment phải dài nhất."
+        },
+        {
+          "id": "q3",
+          "prompt": "Cấu trúc vàng cho bước Key moment:",
+          "options": [
+            {
+              "id": "A",
+              "text": "I was [V-ing] when suddenly [S + V-ed]"
+            },
+            {
+              "id": "B",
+              "text": "If I [V-ed], I would [V]"
+            },
+            {
+              "id": "C",
+              "text": "I have [V3] since…"
+            },
+            {
+              "id": "D",
+              "text": "It is [adj] that…"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Past continuous = nền; past simple = biến cố cắt ngang."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "While I waited for the bus, I was realising I had no money."
+            },
+            {
+              "id": "B",
+              "text": "While I was waiting for the bus, I realised I had no money."
+            },
+            {
+              "id": "C",
+              "text": "While I wait for the bus, I realise I have no money."
+            },
+            {
+              "id": "D",
+              "text": "While I was waiting for the bus, I was realise I had no money."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nền = continuous, biến cố = simple."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"it dawned on me\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "tôi chợt nhận ra"
+            },
+            {
+              "id": "B",
+              "text": "trời sáng"
+            },
+            {
+              "id": "C",
+              "text": "tôi lấy hết can đảm"
+            },
+            {
+              "id": "D",
+              "text": "cuối cùng thì"
+            }
+          ],
+          "answer": "A",
+          "explanation": "It suddenly dawned on me that I had left my wallet."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L07-E02",
+      "lessonCode": "SPK-P2-L07",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm kể chuyện với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "it all started when…",
+          "right": "mọi chuyện bắt đầu khi…"
+        },
+        {
+          "id": "m2",
+          "left": "a turning point",
+          "right": "bước ngoặt"
+        },
+        {
+          "id": "m3",
+          "left": "I was caught off guard",
+          "right": "tôi bị bất ngờ"
+        },
+        {
+          "id": "m4",
+          "left": "it dawned on me",
+          "right": "tôi chợt nhận ra"
+        },
+        {
+          "id": "m5",
+          "left": "to make matters worse",
+          "right": "tệ hơn nữa là"
+        },
+        {
+          "id": "m6",
+          "left": "before I knew it",
+          "right": "chưa kịp nhận ra thì"
+        },
+        {
+          "id": "m7",
+          "left": "in hindsight",
+          "right": "nhìn lại từ hiện tại"
+        },
+        {
+          "id": "m8",
+          "left": "it was well worth it",
+          "right": "hoàn toàn xứng đáng"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L07-E03",
+      "lessonCode": "SPK-P2-L07",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp câu chuyện theo khung 6 bước",
+      "instruction": "Kéo để xếp các câu theo đúng 6 bước kể chuyện.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự 6 bước:",
+          "tokens": [
+            "We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times.",
+            "I'd like to tell you about a time when I got lost in Hanoi Old Quarter.",
+            "It happened about two years ago when my friend and I decided to walk back to our hotel instead of taking a taxi.",
+            "In the end, an elderly woman at a tea stall noticed us arguing over a paper map and simply walked us the whole way there.",
+            "Looking back, being lost turned out to be the only reason I have that memory at all.",
+            "Overall, it was a small disaster at the time, but it's the part of the trip I talk about most."
+          ],
+          "answer": [
+            "I'd like to tell you about a time when I got lost in Hanoi Old Quarter.",
+            "It happened about two years ago when my friend and I decided to walk back to our hotel instead of taking a taxi.",
+            "We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times.",
+            "In the end, an elderly woman at a tea stall noticed us arguing over a paper map and simply walked us the whole way there.",
+            "Looking back, being lost turned out to be the only reason I have that memory at all.",
+            "Overall, it was a small disaster at the time, but it's the part of the trip I talk about most."
+          ],
+          "explanation": "Intro → Background → Key moment → Resolution → Reflection → Conclusion."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L07-E04",
+      "lessonCode": "SPK-P2-L07",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi past simple / past continuous",
+      "instruction": "Viết lại cả câu cho đúng, chú ý thì.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I walk through the market when someone calls my name.",
+          "answer": "I was walking through the market when someone called my name.",
+          "explanation": "nền = continuous, biến cố = simple."
+        },
+        {
+          "id": "q2",
+          "prompt": "While I studied for my exams, I am very stressed.",
+          "answer": "While I was studying for my exams, I was very stressed.",
+          "explanation": "Cả câu ở quá khứ; \"while\" + past continuous."
+        },
+        {
+          "id": "q3",
+          "prompt": "So I go there and I see my old friend.",
+          "answer": "So I went there and I saw my old friend.",
+          "explanation": "Kể chuyện quá khứ — không dùng present simple."
+        },
+        {
+          "id": "q4",
+          "prompt": "It rain heavily when we finally arrive at the station.",
+          "answer": "It was raining heavily when we finally arrived at the station.",
+          "explanation": "nền = was raining, biến cố = arrived."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L07-E05",
+      "lessonCode": "SPK-P2-L07",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: kể một sự việc (nhóm EVENTS)",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây theo khung 6 bước. Phần Key moment phải dài nhất; không lẫn thì hiện tại; có phần Reflection.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a time when you helped someone. You should say: when it happened · who you helped · what you did. And explain how you felt afterwards."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "It all started when… / I'd like to tell you about a time when…",
+          "I was [V-ing] when suddenly [S + V-ed]",
+          "In the end,… → Looking back,…"
+        ],
+        "checklist": [
+          "Có đủ 6 bước: Intro → Background → Key moment → Resolution → Reflection → Conclusion",
+          "Phần Key moment dài nhất (ít nhất 30 giây)",
+          "Không lẫn thì hiện tại — kể nhất quán ở quá khứ",
+          "Dùng được ít nhất 2 cụm ★ (it all started when, it dawned on me, to make matters worse…)",
+          "Có phần Reflection rút ra bài học"
+        ],
+        "commonErrors": [
+          "Kể theo thứ tự thời gian đều đều, không có cao trào",
+          "Dùng present simple để kể chuyện quá khứ",
+          "Bỏ qua phần Reflection",
+          "Kể quá nhiều nhân vật, giám khảo không theo kịp"
+        ],
+        "sampleAnswer": "It all started when my friend and I decided to walk back to our hotel in Hanoi instead of taking a taxi. At the time we were both quite confident we knew the way. We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times — and to make matters worse, my phone battery died right at that moment. The key moment came when an elderly woman at a tea stall noticed us arguing over a paper map, laughed, and simply started walking, expecting us to follow. She led us the whole way and refused to take anything. Looking back, being lost turned out to be the only reason I have that memory at all — I still think about her kindness whenever people say strangers in big cities don't help each other."
+      }
+    },
+    {
+      "code": "SPK-P2-L08-E01",
+      "lessonCode": "SPK-P2-L08",
+      "order": 1,
+      "type": "mcq",
+      "title": "EVENTS II — cảm xúc & chiều sâu",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Công thức cảm xúc ba lớp là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Cảm xúc → Nguyên nhân → Biểu hiện cơ thể / hành vi"
+            },
+            {
+              "id": "B",
+              "text": "Happy → Sad → Angry"
+            },
+            {
+              "id": "C",
+              "text": "Trước → Trong → Sau"
+            },
+            {
+              "id": "D",
+              "text": "Nói → Nghĩ → Làm"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"I was nervous — because I'd never spoken to that many people — I remember my hands shaking so badly I could barely hold the paper.\""
+        },
+        {
+          "id": "q2",
+          "prompt": "Past perfect (had + V3) dùng khi:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Kể toàn bộ câu chuyện"
+            },
+            {
+              "id": "B",
+              "text": "Nói về việc xảy ra TRƯỚC biến cố chính trong quá khứ"
+            },
+            {
+              "id": "C",
+              "text": "Nói về tương lai"
+            },
+            {
+              "id": "D",
+              "text": "Nói về thói quen hiện tại"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"By the time I got the result, I had already spent two weekends on it.\""
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào là biểu hiện cơ thể (lớp 3)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I was very happy."
+            },
+            {
+              "id": "B",
+              "text": "I felt good."
+            },
+            {
+              "id": "C",
+              "text": "I couldn't stop smiling on the way home."
+            },
+            {
+              "id": "D",
+              "text": "It was nice."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Một chi tiết cơ thể cụ thể thuyết phục hơn năm tính từ cảm xúc."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu past perfect nào SAI?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I was nervous because I had never spoken in public before."
+            },
+            {
+              "id": "B",
+              "text": "I had gone to school and then I had eaten lunch."
+            },
+            {
+              "id": "C",
+              "text": "By the time I arrived, the meeting had already started."
+            },
+            {
+              "id": "D",
+              "text": "I hadn't expected anything — and then she praised me."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không dùng past perfect cho toàn bộ chuỗi sự kiện."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"a bittersweet feeling\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "vừa vui vừa buồn"
+            },
+            {
+              "id": "B",
+              "text": "rất vui"
+            },
+            {
+              "id": "C",
+              "text": "rất tức giận"
+            },
+            {
+              "id": "D",
+              "text": "khó chịu"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Graduating had a bittersweet feeling."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L08-E02",
+      "lessonCode": "SPK-P2-L08",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cách diễn đạt cảm xúc với sắc thái",
+      "instruction": "Nối mỗi cụm với ý nghĩa của nó.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "I was over the moon",
+          "right": "rất vui, phấn khích"
+        },
+        {
+          "id": "m2",
+          "left": "it left a lasting impression",
+          "right": "để lại ấn tượng lâu dài"
+        },
+        {
+          "id": "m3",
+          "left": "I came to realise",
+          "right": "dần dần nhận ra"
+        },
+        {
+          "id": "m4",
+          "left": "it blew me away",
+          "right": "choáng ngợp, sững sờ"
+        },
+        {
+          "id": "m5",
+          "left": "I was genuinely moved",
+          "right": "thực sự xúc động"
+        },
+        {
+          "id": "m6",
+          "left": "I have mixed feelings about it",
+          "right": "cảm xúc lẫn lộn"
+        },
+        {
+          "id": "m7",
+          "left": "it stopped me in my tracks",
+          "right": "khiến tôi sững lại"
+        },
+        {
+          "id": "m8",
+          "left": "it shaped who I am today",
+          "right": "định hình con người tôi"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L08-E03",
+      "lessonCode": "SPK-P2-L08",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp một câu cảm xúc từ lớp 1 đến lớp 3",
+      "instruction": "Kéo để xếp các câu từ CẢM XÚC TRẦN đến CẢM XÚC + NGUYÊN NHÂN + BIỂU HIỆN.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Từ lớp 1 đến lớp 3:",
+          "tokens": [
+            "I was really nervous because I had never spoken in front of that many people.",
+            "I was really nervous.",
+            "I was really nervous — I remember my hands shaking so badly that I could barely hold the paper."
+          ],
+          "answer": [
+            "I was really nervous.",
+            "I was really nervous because I had never spoken in front of that many people.",
+            "I was really nervous — I remember my hands shaking so badly that I could barely hold the paper."
+          ],
+          "explanation": "Cảm xúc → + nguyên nhân → + biểu hiện cơ thể."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L08-E04",
+      "lessonCode": "SPK-P2-L08",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi past perfect & câu cảm xúc",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I spent two weekends on the essay. Then she praised it. (nối thành 1 câu, dùng past perfect)",
+          "explanation": "việc xảy ra trước → had + V3.",
+          "sampleAnswers": [
+            "By the time she praised it, I had already spent two weekends on the essay."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "I was nervous because I never travelled alone.",
+          "explanation": "lý do có sẵn từ trước → past perfect.",
+          "sampleAnswers": [
+            "I was nervous because I had never travelled alone before."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "I had woken up, I had eaten breakfast, I had gone to school.",
+          "explanation": "Chuỗi sự kiện thường → past simple, không past perfect.",
+          "sampleAnswers": [
+            "I woke up, ate breakfast and went to school."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "When I heard the news I was very happy.",
+          "explanation": "Thay \"very happy\" bằng cụm mạnh + biểu hiện.",
+          "sampleAnswers": [
+            "When I heard the news, I was absolutely over the moon — I couldn't stop smiling for the rest of the day."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L08-E05",
+      "lessonCode": "SPK-P2-L08",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: kể một sự việc có chiều sâu cảm xúc",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây. Dùng ≥3 cách diễn đạt cảm xúc KHÁC NHAU, ≥1 biểu hiện cơ thể, ≥1 câu past perfect, và một câu suy ngẫm ở cuối. KHÔNG dùng happy / sad / good / bad.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a time when you received good news. You should say: what the news was · how you found out · who told you. And explain how you felt about it."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I was over the moon / genuinely moved / a bittersweet feeling",
+          "By the time…, I had already… / I had never … before",
+          "I came to realise… / Looking back,…"
+        ],
+        "checklist": [
+          "Dùng ít nhất 3 cách diễn đạt cảm xúc khác nhau",
+          "KHÔNG dùng \"happy\", \"sad\", \"good\", \"bad\"",
+          "Có ít nhất 1 biểu hiện cơ thể hoặc hành vi",
+          "Có ít nhất 1 câu past perfect đúng",
+          "Có câu suy ngẫm ở cuối"
+        ],
+        "commonErrors": [
+          "Chỉ kể \"what happened\", không kể \"how I felt\"",
+          "Dùng \"I felt happy\" ba lần trong một bài",
+          "Nói cảm xúc mà không có nguyên nhân",
+          "Dùng past perfect cho toàn bộ chuỗi sự kiện"
+        ],
+        "sampleAnswer": "I'd like to talk about the day I found out I'd been accepted onto an exchange programme. I'd been telling myself for weeks not to get my hopes up, because hundreds of students had applied and only a handful of places existed. The hardest part was the waiting. When the email finally arrived, I read it three times before I believed it — my hands were actually shaking. I was over the moon, but there was also a bittersweet feeling, because accepting meant leaving my family for a year. My mother just went very quiet, which was somehow harder than if she'd said anything. Looking back, I came to realise that moment was less about the programme itself and more about the first time I'd made a big decision that only I had to live with."
+      }
+    },
+    {
+      "code": "SPK-P2-L09-E01",
+      "lessonCode": "SPK-P2-L09",
+      "order": 1,
+      "type": "mcq",
+      "title": "ACTIVITIES / SKILLS — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Phần học sinh Việt hay bỏ qua nhất — cũng là phần dễ ăn điểm nhất — là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Mô tả QUY TRÌNH luyện tập cụ thể (30 phút, scales, chia nhỏ từng đoạn…)"
+            },
+            {
+              "id": "B",
+              "text": "Nói mình thích hoạt động đó"
+            },
+            {
+              "id": "C",
+              "text": "Nói hoạt động đó vui"
+            },
+            {
+              "id": "D",
+              "text": "Nói mình muốn giỏi hơn"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"I like it because it is fun\" — không có quy trình cụ thể."
+        },
+        {
+          "id": "q2",
+          "prompt": "Trục thời gian tiến bộ gồm ba mốc:",
+          "options": [
+            {
+              "id": "A",
+              "text": "at first → over time → nowadays"
+            },
+            {
+              "id": "B",
+              "text": "yesterday → today → tomorrow"
+            },
+            {
+              "id": "C",
+              "text": "easy → medium → hard"
+            },
+            {
+              "id": "D",
+              "text": "start → middle → end"
+            }
+          ],
+          "answer": "A",
+          "explanation": "So sánh mốc cuối với mốc đầu."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I am good at to play guitar."
+            },
+            {
+              "id": "B",
+              "text": "I am good at playing guitar."
+            },
+            {
+              "id": "C",
+              "text": "I am good at play guitar."
+            },
+            {
+              "id": "D",
+              "text": "I am good at played guitar."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sau MỌI giới từ dùng V-ing."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"I'm looking forward to ___ the club.\" — điền:",
+          "options": [
+            {
+              "id": "A",
+              "text": "join"
+            },
+            {
+              "id": "B",
+              "text": "joining"
+            },
+            {
+              "id": "C",
+              "text": "to join"
+            },
+            {
+              "id": "D",
+              "text": "joined"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"look forward to\" — \"to\" là giới từ → V-ing."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"get the hang of it\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "quen tay, nắm được"
+            },
+            {
+              "id": "B",
+              "text": "bỏ cuộc"
+            },
+            {
+              "id": "C",
+              "text": "treo lên"
+            },
+            {
+              "id": "D",
+              "text": "chờ đợi"
+            }
+          ],
+          "answer": "A",
+          "explanation": "It took a month, but I finally got the hang of it."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L09-E02",
+      "lessonCode": "SPK-P2-L09",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm hoạt động / kỹ năng với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "pick up a new skill",
+          "right": "học một kỹ năng mới"
+        },
+        {
+          "id": "m2",
+          "left": "a natural flair for",
+          "right": "năng khiếu tự nhiên về"
+        },
+        {
+          "id": "m3",
+          "left": "hone one's skills",
+          "right": "mài giũa kỹ năng"
+        },
+        {
+          "id": "m4",
+          "left": "stress-relieving",
+          "right": "giải toả căng thẳng"
+        },
+        {
+          "id": "m5",
+          "left": "build discipline",
+          "right": "xây dựng kỷ luật"
+        },
+        {
+          "id": "m6",
+          "left": "push oneself to the limit",
+          "right": "thúc đẩy bản thân đến giới hạn"
+        },
+        {
+          "id": "m7",
+          "left": "go from strength to strength",
+          "right": "ngày càng tiến bộ"
+        },
+        {
+          "id": "m8",
+          "left": "second nature",
+          "right": "thành phản xạ tự nhiên"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L09-E03",
+      "lessonCode": "SPK-P2-L09",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm ACTIVITIES theo template",
+      "instruction": "Kéo để xếp các câu theo đúng các phần của template ACTIVITIES.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template ACTIVITIES:",
+          "tokens": [
+            "At first, I could barely change between two chords without stopping; over time I worked out that breaking a song into small sections works far better; nowadays chord transitions are more or less second nature.",
+            "I'd like to talk about playing the guitar, which I've been trying to improve for the past two years.",
+            "Overall, I think music is one of the most rewarding skills a person can develop, and I intend to keep playing.",
+            "A typical session now is about thirty minutes every evening — scales, chord transitions, and one new song.",
+            "What I love most is that playing is genuinely stress-relieving after a long day of studying."
+          ],
+          "answer": [
+            "I'd like to talk about playing the guitar, which I've been trying to improve for the past two years.",
+            "A typical session now is about thirty minutes every evening — scales, chord transitions, and one new song.",
+            "At first, I could barely change between two chords without stopping; over time I worked out that breaking a song into small sections works far better; nowadays chord transitions are more or less second nature.",
+            "What I love most is that playing is genuinely stress-relieving after a long day of studying.",
+            "Overall, I think music is one of the most rewarding skills a person can develop, and I intend to keep playing."
+          ],
+          "explanation": "INTRODUCTION → WHAT IT IS (quy trình) → YOUR PROGRESS (3 mốc) → WHY YOU ENJOY IT → CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L09-E04",
+      "lessonCode": "SPK-P2-L09",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi V-ing sau giới từ",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I am good at to play badminton.",
+          "answer": "I am good at playing badminton.",
+          "explanation": "sau \"at\" (giới từ) → V-ing."
+        },
+        {
+          "id": "q2",
+          "prompt": "She improved by practise thirty minutes every day.",
+          "answer": "She improved by practising thirty minutes every day.",
+          "explanation": "sau \"by\" → V-ing."
+        },
+        {
+          "id": "q3",
+          "prompt": "Instead of rush through the song, break it into sections.",
+          "answer": "Instead of rushing through the song, break it into sections.",
+          "explanation": "sau \"instead of\" → V-ing."
+        },
+        {
+          "id": "q4",
+          "prompt": "I'm looking forward to join the climbing club.",
+          "answer": "I'm looking forward to joining the climbing club.",
+          "explanation": "\"look forward to\" — \"to\" là giới từ → V-ing."
+        },
+        {
+          "id": "q5",
+          "prompt": "He gave up to try after two weeks.",
+          "answer": "He gave up trying after two weeks.",
+          "explanation": "\"give up\" + V-ing."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L09-E05",
+      "lessonCode": "SPK-P2-L09",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một kỹ năng / hoạt động",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template ACTIVITIES. Mô tả quy trình luyện tập với ít nhất 3 bước; đủ 3 mốc at first / over time / nowadays; không sai V-ing sau giới từ.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a skill you would like to improve. You should say: what the skill is · how you first started · how you practise it now. And explain why you want to improve it."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I've been trying to improve … for …",
+          "A typical session involves… / The way I practise now is…",
+          "At first… → Over time… → Nowadays…"
+        ],
+        "checklist": [
+          "Có mô tả quy trình luyện tập với ít nhất 3 bước cụ thể",
+          "Có đủ 3 mốc: at first / over time / nowadays",
+          "Dùng được ít nhất 2 cụm ★ (pick up a skill, hone one's skills, get the hang of it…)",
+          "Không sai V-ing sau giới từ",
+          "Nói đủ 75 giây"
+        ],
+        "commonErrors": [
+          "Chỉ nói \"I like it because it is fun\" — không mô tả quy trình",
+          "Quên trục thời gian → nghe như mọi thứ luôn dễ dàng",
+          "\"I am good at to play guitar\"",
+          "Chọn hoạt động chưa từng làm mà không dùng ngôn ngữ giả định"
+        ],
+        "sampleAnswer": "I'd like to talk about playing the guitar, which I've been trying to improve for about two years. I discovered I had a natural flair for it at fifteen, picking up basic chords from YouTube. The way I practise now is more structured — about thirty minutes every evening on scales, chord transitions and one new song, and I break each difficult part into eight-bar sections rather than rushing through the whole piece. At first I could barely change between two chords without stopping; over time I worked out that slow repetition beats speed; and nowadays chord transitions are more or less second nature. What I love most is that it's genuinely stress-relieving. I want to improve specifically so I can play and sing at the same time, which is much harder than it sounds."
+      }
+    },
+    {
+      "code": "SPK-P2-L10-E01",
+      "lessonCode": "SPK-P2-L10",
+      "order": 1,
+      "type": "mcq",
+      "title": "NATURE / SCIENCE — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Tỉ lệ cân bằng mục tiêu trong bài NATURE / SCIENCE là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "100% thông tin khách quan như Wikipedia"
+            },
+            {
+              "id": "B",
+              "text": "Khoảng 60 giây thông tin / 40 giây trải nghiệm cá nhân"
+            },
+            {
+              "id": "C",
+              "text": "100% \"I like animals\""
+            },
+            {
+              "id": "D",
+              "text": "Chỉ số liệu thống kê"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Lệch quá về một phía là mất cân bằng."
+        },
+        {
+          "id": "q2",
+          "prompt": "Khi không chắc thông tin, nên nói:",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"I don't know anything about this.\""
+            },
+            {
+              "id": "B",
+              "text": "\"From what I know…\" / \"I'm not entirely sure of the exact figure, but I believe…\""
+            },
+            {
+              "id": "C",
+              "text": "Bịa một con số cụ thể"
+            },
+            {
+              "id": "D",
+              "text": "Im lặng"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Câu an toàn biến sự thiếu chắc chắn thành ngôn ngữ Band 7."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu bị động nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The snow leopard is classify as vulnerable."
+            },
+            {
+              "id": "B",
+              "text": "The snow leopard is classified as vulnerable."
+            },
+            {
+              "id": "C",
+              "text": "The snow leopard classifying as vulnerable."
+            },
+            {
+              "id": "D",
+              "text": "The forest destroyed every year."
+            }
+          ],
+          "answer": "B",
+          "explanation": "be + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"on the verge of extinction\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "trên bờ vực tuyệt chủng"
+            },
+            {
+              "id": "B",
+              "text": "đang phục hồi"
+            },
+            {
+              "id": "C",
+              "text": "loài săn mồi đầu bảng"
+            },
+            {
+              "id": "D",
+              "text": "được bảo tồn tốt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Many species are on the verge of extinction."
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu kết Band 7 của bài NATURE nên là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "một sự thật khoa học"
+            },
+            {
+              "id": "B",
+              "text": "một ý kiến khái quát (\"a reminder that the planet still holds wild places worth protecting\")"
+            },
+            {
+              "id": "C",
+              "text": "một con số"
+            },
+            {
+              "id": "D",
+              "text": "\"That's all I know.\""
+            }
+          ],
+          "answer": "B",
+          "explanation": "Câu kết là ý kiến, không phải một sự thật."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L10-E02",
+      "lessonCode": "SPK-P2-L10",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm môi trường / khoa học với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "biodiversity",
+          "right": "đa dạng sinh học"
+        },
+        {
+          "id": "m2",
+          "left": "ecosystem",
+          "right": "hệ sinh thái"
+        },
+        {
+          "id": "m3",
+          "left": "habitat loss",
+          "right": "mất môi trường sống"
+        },
+        {
+          "id": "m4",
+          "left": "conservation efforts",
+          "right": "nỗ lực bảo tồn"
+        },
+        {
+          "id": "m5",
+          "left": "renewable energy",
+          "right": "năng lượng tái tạo"
+        },
+        {
+          "id": "m6",
+          "left": "apex predator",
+          "right": "loài săn mồi đầu bảng"
+        },
+        {
+          "id": "m7",
+          "left": "carbon footprint",
+          "right": "lượng khí thải carbon"
+        },
+        {
+          "id": "m8",
+          "left": "an elusive creature",
+          "right": "sinh vật bí ẩn, khó thấy"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L10-E03",
+      "lessonCode": "SPK-P2-L10",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm NATURE theo template",
+      "instruction": "Kéo để xếp các câu theo đúng các phần của template NATURE / SCIENCE.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template NATURE:",
+          "tokens": [
+            "From what I know, snow leopards are classified as 'vulnerable', with fewer than 7,000 estimated to remain, threatened mainly by poaching and habitat loss.",
+            "I'd like to talk about the snow leopard, a wild animal I've always been fascinated by.",
+            "Overall, I think the snow leopard is a reminder that the planet still holds genuinely wild places worth protecting.",
+            "The snow leopard is a large wild cat native to the mountains of Central Asia, perfectly adapted for life at extreme altitudes.",
+            "My interest started when I was about twelve — I watched a documentary where a crew spent months trying to film one and barely succeeded."
+          ],
+          "answer": [
+            "I'd like to talk about the snow leopard, a wild animal I've always been fascinated by.",
+            "The snow leopard is a large wild cat native to the mountains of Central Asia, perfectly adapted for life at extreme altitudes.",
+            "My interest started when I was about twelve — I watched a documentary where a crew spent months trying to film one and barely succeeded.",
+            "From what I know, snow leopards are classified as 'vulnerable', with fewer than 7,000 estimated to remain, threatened mainly by poaching and habitat loss.",
+            "Overall, I think the snow leopard is a reminder that the planet still holds genuinely wild places worth protecting."
+          ],
+          "explanation": "INTRODUCTION → WHAT IT IS → WHY YOU'RE INTERESTED → WHAT YOU KNOW → CONCLUSION (ý kiến)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L10-E04",
+      "lessonCode": "SPK-P2-L10",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi câu bị động",
+      "instruction": "Viết lại cả câu ở dạng bị động cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The snow leopard is classify as vulnerable.",
+          "answer": "The snow leopard is classified as vulnerable.",
+          "explanation": "be + V3 (classified)."
+        },
+        {
+          "id": "q2",
+          "prompt": "The forest destroyed every year.",
+          "answer": "The forest is destroyed every year.",
+          "explanation": "Bị động luôn cần \"be\": is destroyed."
+        },
+        {
+          "id": "q3",
+          "prompt": "People classify many species as endangered. (đổi sang bị động)",
+          "answer": "Many species are classified as endangered.",
+          "explanation": "chủ động → bị động, bỏ \"people\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Scientists have discovered a new species. (đổi sang bị động)",
+          "answer": "A new species has been discovered.",
+          "explanation": "hiện tại hoàn thành bị động: has been + V3."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L10-E05",
+      "lessonCode": "SPK-P2-L10",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một chủ đề thiên nhiên / khoa học",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template NATURE. Cân bằng thông tin và cá nhân; có ≥1 câu bị động, ≥1 câu an toàn (From what I know…), và một ý kiến ở cuối.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a natural landscape that impressed you. You should say: where it is · what it looks like · when you saw it. And explain why it impressed you."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "This is something I've always been fascinated by because…",
+          "From what I know,… / I remember watching a documentary which said…",
+          "…is classified as… / …is threatened by…"
+        ],
+        "checklist": [
+          "Có ít nhất 1 câu bị động đúng",
+          "Có nguồn gốc quan tâm cá nhân (sách / phim / trải nghiệm)",
+          "Có ít nhất 1 câu an toàn (From what I know…)",
+          "Có ý kiến cá nhân ở cuối, không phải một sự thật",
+          "Dùng được ít nhất 2 cụm ★"
+        ],
+        "commonErrors": [
+          "Đọc như bài Wikipedia — không có câu nào về bản thân",
+          "Chỉ nói \"I like nature\" suốt 90 giây",
+          "Bịa số liệu chi tiết rồi tự mâu thuẫn",
+          "Câu bị động sai: \"is classify\""
+        ],
+        "sampleAnswer": "I'd like to talk about the snow leopard, which is a wild animal I've always been deeply fascinated by. It's a large cat native to the mountain ranges of Central and South Asia, solitary and elusive, with thick pale-grey fur that gives it excellent camouflage. My interest started when I was around twelve — I watched a documentary where a camera crew spent months in the Himalayas trying to film one, and they barely succeeded. That level of rarity made it instantly captivating. From what I know, snow leopards are classified as 'vulnerable', with fewer than seven thousand estimated to remain in the wild, threatened mainly by poaching and habitat loss. Overall, I think the snow leopard represents something precious — a reminder that our planet still holds wild, mysterious places worth protecting."
+      }
+    },
+    {
+      "code": "SPK-P2-L11-E01",
+      "lessonCode": "SPK-P2-L11",
+      "order": 1,
+      "type": "mcq",
+      "title": "CULTURE / MEDIA — nguyên tắc",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Phần tóm tắt nội dung tác phẩm nên dài tối đa:",
+          "options": [
+            {
+              "id": "A",
+              "text": "3 câu / 25 giây, không kể cái kết"
+            },
+            {
+              "id": "B",
+              "text": "90 giây, kể toàn bộ cốt truyện"
+            },
+            {
+              "id": "C",
+              "text": "Không cần tóm tắt"
+            },
+            {
+              "id": "D",
+              "text": "Kể hết tên mọi nhân vật"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Phần lớn thời lượng dành cho phản ứng và thông điệp."
+        },
+        {
+          "id": "q2",
+          "prompt": "Công thức nén cốt truyện là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "[Ai] + [gặp chuyện gì] + [vấn đề trung tâm]"
+            },
+            {
+              "id": "B",
+              "text": "Mở → thân → kết"
+            },
+            {
+              "id": "C",
+              "text": "Nhân vật 1 → nhân vật 2 → nhân vật 3"
+            },
+            {
+              "id": "D",
+              "text": "Cảnh 1 → cảnh 2 → cảnh 3 → cảnh 4"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"It follows an elderly man who fled Vietnam as a refugee and spent twenty years rebuilding his life in New York.\""
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu thông điệp nào QUÁ CHUNG (không đạt)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I believe its message is that ordinary life is actually a gift."
+            },
+            {
+              "id": "B",
+              "text": "The message is that we should be good people."
+            },
+            {
+              "id": "C",
+              "text": "It made me think about how much I take for granted."
+            },
+            {
+              "id": "D",
+              "text": "Its message is that resilience is quieter than we imagine."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"be a good person\" quá chung, không có nội dung."
+        },
+        {
+          "id": "q4",
+          "prompt": "Tóm tắt nội dung PHIM dùng thì nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "quá khứ"
+            },
+            {
+              "id": "B",
+              "text": "hiện tại (present simple)"
+            },
+            {
+              "id": "C",
+              "text": "tương lai"
+            },
+            {
+              "id": "D",
+              "text": "hiện tại hoàn thành"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"The video features an elderly man who fled Vietnam…\""
+        },
+        {
+          "id": "q5",
+          "prompt": "Mệnh đề What… nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "What I found most captivating it was the way he spoke."
+            },
+            {
+              "id": "B",
+              "text": "What I liked the film."
+            },
+            {
+              "id": "C",
+              "text": "What I found most captivating was the way he described gratitude."
+            },
+            {
+              "id": "D",
+              "text": "What I found most captivating were the honesty."
+            }
+          ],
+          "answer": "C",
+          "explanation": "What + S + V + was/is + … (to be số ít)."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L11-E02",
+      "lessonCode": "SPK-P2-L11",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm văn hoá / truyền thông với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "thought-provoking",
+          "right": "gợi suy nghĩ sâu sắc"
+        },
+        {
+          "id": "m2",
+          "left": "resonated with me",
+          "right": "tạo cảm xúc đồng cảm"
+        },
+        {
+          "id": "m3",
+          "left": "went viral",
+          "right": "lan truyền rộng rãi"
+        },
+        {
+          "id": "m4",
+          "left": "raise awareness",
+          "right": "nâng cao nhận thức"
+        },
+        {
+          "id": "m5",
+          "left": "cultural significance",
+          "right": "ý nghĩa văn hoá"
+        },
+        {
+          "id": "m6",
+          "left": "reflect society",
+          "right": "phản ánh xã hội"
+        },
+        {
+          "id": "m7",
+          "left": "spark a conversation",
+          "right": "khơi dậy cuộc trò chuyện"
+        },
+        {
+          "id": "m8",
+          "left": "narrative arc",
+          "right": "cung bậc câu chuyện"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L11-E03",
+      "lessonCode": "SPK-P2-L11",
+      "order": 3,
+      "type": "ordering",
+      "title": "Xếp bài nói nhóm CULTURE/MEDIA theo template",
+      "instruction": "Kéo để xếp các câu theo đúng các phần của template CULTURE / MEDIA.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự template CULTURE / MEDIA:",
+          "tokens": [
+            "It made me think about how much I take for granted — stable housing, education, the freedom to make plans.",
+            "I'd like to talk about a short video I came across on YouTube about three months ago, part of a series called 'Humans of New York'.",
+            "Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York.",
+            "I'd highly recommend searching for it — it's the kind of content that reminds you what really matters.",
+            "I believe its message is that ordinary life is a gift, which feels especially relevant in a world full of complaints and comparisons."
+          ],
+          "answer": [
+            "I'd like to talk about a short video I came across on YouTube about three months ago, part of a series called 'Humans of New York'.",
+            "Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York.",
+            "It made me think about how much I take for granted — stable housing, education, the freedom to make plans.",
+            "I believe its message is that ordinary life is a gift, which feels especially relevant in a world full of complaints and comparisons.",
+            "I'd highly recommend searching for it — it's the kind of content that reminds you what really matters."
+          ],
+          "explanation": "INTRODUCTION → WHAT IT IS ABOUT (≤25s) → WHY IT IMPRESSED YOU → WHAT IT MEANS → CONCLUSION."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L11-E04",
+      "lessonCode": "SPK-P2-L11",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi mệnh đề What… & thì tóm tắt",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "What I found most captivating it was the way he described gratitude.",
+          "explanation": "thừa \"it\".",
+          "sampleAnswers": [
+            "What I found most captivating was the way he described gratitude."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "What I liked the film.",
+          "explanation": "thiếu động từ to be.",
+          "sampleAnswers": [
+            "What I liked most about the film was its honesty."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The film was about a man who went to America and his life became better.",
+          "explanation": "tóm tắt phim dùng present simple.",
+          "sampleAnswers": [
+            "The film is about a man who moves to America and slowly rebuilds his life."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The message is that we should be good people.",
+          "explanation": "Thay thông điệp chung chung bằng thông điệp cụ thể.",
+          "sampleAnswers": [
+            "I believe its message is that ordinary life is a gift we tend to overlook."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L11-E05",
+      "lessonCode": "SPK-P2-L11",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một tác phẩm (nhóm CULTURE / MEDIA)",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây. Tóm tắt ≤25 giây; có ít nhất 1 mệnh đề bắt đầu bằng What…; có một câu thông điệp CỤ THỂ.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a piece of creative work you like (a film, a song or a book). You should say: what it is · what it is about · when you came across it. And explain why it means something to you."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I first came across it when…",
+          "Essentially, it is about… (≤3 câu)",
+          "What I found most captivating was… → I believe its message is that…"
+        ],
+        "checklist": [
+          "Phần tóm tắt không quá 25 giây, không kể cái kết",
+          "Dùng được ít nhất 2 cụm ★ (thought-provoking, resonated with me, cultural significance…)",
+          "Có ít nhất 1 mệnh đề bắt đầu bằng What…",
+          "Có câu thông điệp cụ thể, không phải \"be a good person\"",
+          "Nói được vì sao nó quan trọng với BẠN"
+        ],
+        "commonErrors": [
+          "Kể lại toàn bộ cốt truyện 90 giây",
+          "Nói \"the message is that we should be good people\"",
+          "Chọn tác phẩm chưa xem/đọc thật",
+          "Dùng thì quá khứ để tóm tắt nội dung phim"
+        ],
+        "sampleAnswer": "I'd like to talk about a short video from the series 'Humans of New York', which I came across quite randomly about three months ago. Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York. What I found most captivating was the way he described gratitude — he said something like, 'Every ordinary day here feels like a miracle, because I remember the days when ordinary felt impossible.' That line genuinely stopped me in my tracks. It made me think about how much I take for granted — stable housing, education, the freedom to make plans. I believe its message is that ordinary life is a gift, which feels especially relevant when social media is flooded with complaints, and I'd highly recommend searching for it."
+      }
+    },
+    {
+      "code": "SPK-P2-L12-E01",
+      "lessonCode": "SPK-P2-L12",
+      "order": 1,
+      "type": "mcq",
+      "title": "Storytelling & Emotions",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Một micro-story trong Part 2 nên dài:",
+          "options": [
+            {
+              "id": "A",
+              "text": "20–30 giây, ba câu (SETUP – BIẾN CỐ – PHẢN ỨNG)"
+            },
+            {
+              "id": "B",
+              "text": "60 giây"
+            },
+            {
+              "id": "C",
+              "text": "Toàn bộ bài"
+            },
+            {
+              "id": "D",
+              "text": "Một câu"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bài Part 2 hay = bài mô tả có CHÈN một câu chuyện nhỏ."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào dùng so… that ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It was so a good film that I watched it twice."
+            },
+            {
+              "id": "B",
+              "text": "It was such quiet that I could hear my footsteps."
+            },
+            {
+              "id": "C",
+              "text": "It was so quiet that I could hear my own footsteps."
+            },
+            {
+              "id": "D",
+              "text": "It was so much beautiful that I stopped."
+            }
+          ],
+          "answer": "C",
+          "explanation": "so + tính từ (không có danh từ) + that."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu nào dùng such a… that ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It was such a small shop that you could walk past it."
+            },
+            {
+              "id": "B",
+              "text": "It was so a small shop that…"
+            },
+            {
+              "id": "C",
+              "text": "It was such small shop that…"
+            },
+            {
+              "id": "D",
+              "text": "It was a such small shop that…"
+            }
+          ],
+          "answer": "A",
+          "explanation": "such a + tính từ + danh từ đếm được + that."
+        },
+        {
+          "id": "q4",
+          "prompt": "Mẹo phân biệt so / such:",
+          "options": [
+            {
+              "id": "A",
+              "text": "có DANH TỪ → such; không có danh từ → so"
+            },
+            {
+              "id": "B",
+              "text": "luôn dùng so"
+            },
+            {
+              "id": "C",
+              "text": "luôn dùng such"
+            },
+            {
+              "id": "D",
+              "text": "so cho câu ngắn, such cho câu dài"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Kỹ thuật tốc độ khi kể nên dùng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Cả ba (chậm lại, dừng, đổi giọng) cùng lúc, nhiều lần"
+            },
+            {
+              "id": "B",
+              "text": "Một lần cao trào là đủ"
+            },
+            {
+              "id": "C",
+              "text": "Nói nhanh đều toàn bài"
+            },
+            {
+              "id": "D",
+              "text": "Không cần thay đổi tốc độ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Dùng liên tục nghe như đóng kịch."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L12-E02",
+      "lessonCode": "SPK-P2-L12",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối câu micro-story với chức năng",
+      "instruction": "Nối mỗi câu với vai trò của nó trong micro-story ba câu.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "m1",
+          "left": "There was this one time when the power went out across the whole district.",
+          "right": "Câu 1 — SETUP (dựng bối cảnh)"
+        },
+        {
+          "id": "m2",
+          "left": "…and then, within about ten minutes, almost every household had put a candle out on the pavement.",
+          "right": "Câu 2 — BIẾN CỐ (điều bất ngờ)"
+        },
+        {
+          "id": "m3",
+          "left": "I just stood at our gate watching it — I still think about that evening.",
+          "right": "Câu 3 — PHẢN ỨNG (cảm xúc / hệ quả)"
+        },
+        {
+          "id": "m4",
+          "left": "It was so lively that you could barely walk in a straight line.",
+          "right": "Câu nhấn mạnh so… that (tăng sức nặng)"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L12-E03",
+      "lessonCode": "SPK-P2-L12",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền so / such / such a",
+      "instruction": "Điền so, such hoặc such a vào mỗi chỗ trống.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "It was ____ quiet that I could hear my own footsteps.",
+          "blanks": [
+            {
+              "accept": [
+                "so"
+              ]
+            }
+          ],
+          "explanation": "so + tính từ (không danh từ)."
+        },
+        {
+          "id": "g2",
+          "prompt": "She is ____ patient teacher that nobody is afraid to ask questions.",
+          "blanks": [
+            {
+              "accept": [
+                "such a"
+              ]
+            }
+          ],
+          "explanation": "such a + tính từ + danh từ đếm được."
+        },
+        {
+          "id": "g3",
+          "prompt": "They were ____ kind people that I still keep in touch.",
+          "blanks": [
+            {
+              "accept": [
+                "such"
+              ]
+            }
+          ],
+          "explanation": "such + danh từ số nhiều."
+        },
+        {
+          "id": "g4",
+          "prompt": "The bag was ____ heavy that I had to stop three times.",
+          "blanks": [
+            {
+              "accept": [
+                "so"
+              ]
+            }
+          ],
+          "explanation": "so + tính từ."
+        },
+        {
+          "id": "g5",
+          "prompt": "It was ____ small shop that most people walk straight past it.",
+          "blanks": [
+            {
+              "accept": [
+                "such a"
+              ]
+            }
+          ],
+          "explanation": "such a + tính từ + danh từ."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L12-E04",
+      "lessonCode": "SPK-P2-L12",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi so / such",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It was so a good film that I watched it twice.",
+          "answer": "It was such a good film that I watched it twice.",
+          "explanation": "có danh từ (film) → such a."
+        },
+        {
+          "id": "q2",
+          "prompt": "It was such quiet that I had to whisper.",
+          "answer": "It was so quiet that I had to whisper.",
+          "explanation": "không có danh từ → so."
+        },
+        {
+          "id": "q3",
+          "prompt": "It was so much beautiful that everyone stopped.",
+          "answer": "It was so beautiful that everyone stopped.",
+          "explanation": "so + tính từ, không \"so much\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "They were so kind people that I sent them cards.",
+          "answer": "They were such kind people that I sent them cards.",
+          "explanation": "danh từ số nhiều → such."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L12-E05",
+      "lessonCode": "SPK-P2-L12",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: chèn một micro-story vào bài",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 90 giây. Trong bài phải có MỘT micro-story dài 20–30 giây (đủ SETUP – BIẾN CỐ – PHẢN ỨNG), ít nhất 1 cấu trúc so… that / such a… that, và một lần đổi tốc độ ở câu biến cố.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a person who taught you something important. You should say: who they are · what they taught you · when this happened. And explain why it was important."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "There was this one time when… → and then, out of nowhere,… → I just stood there…",
+          "so + adj + that / such a + adj + noun + that",
+          "…, which is exactly why I still think about it"
+        ],
+        "checklist": [
+          "Có một micro-story dài 20–30 giây",
+          "Micro-story có đủ SETUP – BIẾN CỐ – PHẢN ỨNG",
+          "Có ít nhất 1 cấu trúc so… that hoặc such a… that",
+          "Có thay đổi tốc độ (chậm lại 30%) ở câu biến cố",
+          "Nói đủ 90 giây, micro-story liên quan đến ý đang nói"
+        ],
+        "commonErrors": [
+          "Kể micro-story dài 60 giây → lệch trọng tâm cue card",
+          "Micro-story không liên quan đến ý đang nói",
+          "Nói cả bài với một tốc độ duy nhất",
+          "Dùng so… that sai: \"It was so a good film that…\""
+        ],
+        "sampleAnswer": "The person I'd like to talk about is my grandfather, who taught me patience without ever using the word. He was so calm that watching him repair things felt almost meditative. There was this one time, when I was about nine, when I broke a small clock he'd kept for decades. I expected him to be furious. Instead — and I still remember this clearly — he sat down, spread the pieces on the table, and quietly asked me to help him put it back together. It took the whole afternoon. I just sat there, half-terrified, handing him parts. Looking back, that afternoon taught me more about how to respond to mistakes than anything anyone ever said to me, which is exactly why I still think about it whenever something goes wrong."
+      }
+    },
+    {
+      "code": "SPK-P2-L13-E01",
+      "lessonCode": "SPK-P2-L13",
+      "order": 1,
+      "type": "mcq",
+      "title": "Kéo dài đến 2 phút",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Bốn kỹ thuật kéo dài là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "ZOOM IN / COMPARE / IMAGINE / IMPACT"
+            },
+            {
+              "id": "B",
+              "text": "Nói nhanh hơn / to hơn / dài hơn / chậm hơn"
+            },
+            {
+              "id": "C",
+              "text": "Lặp ý cũ bằng từ khác"
+            },
+            {
+              "id": "D",
+              "text": "Thêm nhiều ý mới"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Chỉ cần đào sâu ý đã có, không cần nghĩ thêm ý mới."
+        },
+        {
+          "id": "q2",
+          "prompt": "Kỹ thuật IMPACT là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Thêm chi tiết cụ thể hơn vào điểm vừa nói"
+            },
+            {
+              "id": "B",
+              "text": "So sánh với thứ khác"
+            },
+            {
+              "id": "C",
+              "text": "Nói về ảnh hưởng lên cuộc sống sau đó (Since then, I've started to…)"
+            },
+            {
+              "id": "D",
+              "text": "Nói về điều mình ước"
+            }
+          ],
+          "answer": "C"
+        },
+        {
+          "id": "q3",
+          "prompt": "Ở giây thứ 60, học sinh nên tự hỏi:",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"Mình đã dùng kỹ thuật nào chưa?\""
+            },
+            {
+              "id": "B",
+              "text": "\"Mình nên dừng chưa?\""
+            },
+            {
+              "id": "C",
+              "text": "\"Câu này đúng ngữ pháp chưa?\""
+            },
+            {
+              "id": "D",
+              "text": "\"Mình đã đủ từ khó chưa?\""
+            }
+          ],
+          "answer": "A",
+          "explanation": "Nếu chưa dùng kỹ thuật nào → bấm ZOOM IN ngay."
+        },
+        {
+          "id": "q4",
+          "prompt": "Bị giám khảo dừng giữa câu ở khoảng 2 phút:",
+          "options": [
+            {
+              "id": "A",
+              "text": "bị trừ điểm nặng"
+            },
+            {
+              "id": "B",
+              "text": "KHÔNG bị trừ điểm — dừng sớm mới bị trừ"
+            },
+            {
+              "id": "C",
+              "text": "phải xin lỗi"
+            },
+            {
+              "id": "D",
+              "text": "phải nói lại từ đầu"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Although it rained the whole weekend, but we enjoyed it."
+            },
+            {
+              "id": "B",
+              "text": "Despite it rained."
+            },
+            {
+              "id": "C",
+              "text": "Even though it rained the whole weekend, we still enjoyed it."
+            },
+            {
+              "id": "D",
+              "text": "Although but it rained, we enjoyed it."
+            }
+          ],
+          "answer": "C",
+          "explanation": "although / even though + mệnh đề, KHÔNG kèm \"but\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L13-E02",
+      "lessonCode": "SPK-P2-L13",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối kỹ thuật kéo dài với mẫu câu mở đầu",
+      "instruction": "Nối mỗi kỹ thuật với câu mở đầu và việc nó làm.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "m1",
+          "left": "ZOOM IN",
+          "right": "To give you an idea,… / More specifically,… — thêm chi tiết cụ thể hơn vào điểm vừa nói"
+        },
+        {
+          "id": "m2",
+          "left": "COMPARE",
+          "right": "Compared to… / Unlike… / It used to be… — so sánh với thứ khác hoặc với quá khứ"
+        },
+        {
+          "id": "m3",
+          "left": "IMAGINE",
+          "right": "If I could go back, I would… / Next time, I'd love to… — nói về điều mình ước hoặc dự định"
+        },
+        {
+          "id": "m4",
+          "left": "IMPACT",
+          "right": "Since then, I've started to… / It changed the way I… — nói về ảnh hưởng lên cuộc sống sau đó"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L13-E03",
+      "lessonCode": "SPK-P2-L13",
+      "order": 3,
+      "type": "categorize",
+      "title": "Câu mở rộng này dùng kỹ thuật nào?",
+      "instruction": "Kéo mỗi câu (mở rộng từ \"The sunset was beautiful\") vào đúng kỹ thuật.",
+      "autoGrade": true,
+      "points": 8,
+      "categories": [
+        {
+          "id": "zoom",
+          "label": "ZOOM IN"
+        },
+        {
+          "id": "compare",
+          "label": "COMPARE"
+        },
+        {
+          "id": "imagine",
+          "label": "IMAGINE"
+        },
+        {
+          "id": "impact",
+          "label": "IMPACT"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "To give you an idea, the colours ranged from deep orange to pale violet, and for about five minutes the whole sky looked like it was on fire.",
+          "category": "zoom"
+        },
+        {
+          "id": "c2",
+          "text": "Compared to the sunsets I'd seen in the city, where buildings cut everything off, this was completely uninterrupted from one side to the other.",
+          "category": "compare"
+        },
+        {
+          "id": "c3",
+          "text": "If I could go back, I'd definitely stay another night just to see whether it happens every evening.",
+          "category": "imagine"
+        },
+        {
+          "id": "c4",
+          "text": "Since that trip, I've started making a point of getting up for sunrise whenever I travel.",
+          "category": "impact"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L13-E04",
+      "lessonCode": "SPK-P2-L13",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi nối mệnh đề dài",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Although it rained, but we enjoyed it.",
+          "answer": "Although it rained, we enjoyed it.",
+          "accept": [
+            "It rained, but we enjoyed it."
+          ],
+          "explanation": "không dùng although + but cùng lúc."
+        },
+        {
+          "id": "q2",
+          "prompt": "Despite it rained, we still went out.",
+          "answer": "Despite the rain, we still went out.",
+          "accept": [
+            "Despite the fact that it rained, we still went out."
+          ],
+          "explanation": "despite + danh từ / V-ing."
+        },
+        {
+          "id": "q3",
+          "prompt": "The wifi is slow. Nobody stays too long. (nối bằng which is why)",
+          "answer": "The wifi is deliberately slow, which is why nobody stays too long.",
+          "explanation": "\", which is why…\" kéo dài câu thay vì chấm câu."
+        },
+        {
+          "id": "q4",
+          "prompt": "I left an hour early so I would not to rush.",
+          "answer": "I left an hour early so that I wouldn't have to rush.",
+          "explanation": "so that + S + would + V."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L13-E05",
+      "lessonCode": "SPK-P2-L13",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: nói đủ 120 giây bằng 4 kỹ thuật",
+      "instruction": "60 giây chuẩn bị, ghi âm nói ĐỦ 120 giây, không dừng quá 3 giây. Dùng ít nhất 3 trong 4 kỹ thuật ZOOM IN / COMPARE / IMAGINE / IMPACT. Không lặp lại ý.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 60,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a day out that you enjoyed. You should say: where you went · who you went with · what you did. And explain why you enjoyed it."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "To give you an idea,… (ZOOM IN)",
+          "Compared to… (COMPARE) · If I could go back, I'd… (IMAGINE)",
+          "Since then, I've started to… (IMPACT)"
+        ],
+        "checklist": [
+          "Nói đủ 120 giây",
+          "Dùng ít nhất 3 trong 4 kỹ thuật (ZOOM IN / COMPARE / IMAGINE / IMPACT)",
+          "Không dừng quá 3 giây lần nào",
+          "Không lặp lại ý đã nói",
+          "Có câu kết đàng hoàng nếu chưa bị dừng"
+        ],
+        "commonErrors": [
+          "Lặp lại ý cũ bằng từ khác để câu giờ",
+          "Im lặng 4–5 giây rồi mới tìm ý mới",
+          "Nói nhanh hơn để \"lấp\" thời gian",
+          "Kết bài ở giây thứ 70 rồi ngồi im"
+        ],
+        "sampleAnswer": "I'd like to talk about a trip to Da Lat with my family last summer. To give you an idea, the weather was surprisingly cold for Vietnam — around fifteen degrees at night — and we spent the first evening at the night market, mostly eating grilled meat off a charcoal grill with plastic stools. Compared to Ho Chi Minh City, where you eat surrounded by traffic noise, sitting outdoors in that cool air felt like a completely different country. The next day we visited a flower garden and a lake, and honestly the highlight was just the slower pace. If I could go back, I'd stay in one of the small guesthouses outside town rather than a hotel in the centre, because the parts I remember most were the quiet ones. Since that trip, I've actually started planning holidays around cooler places, which is something I would never have considered before. Overall, it wasn't a dramatic trip, but it changed how I think about where I want to spend my free time."
+      }
+    },
+    {
+      "code": "SPK-P2-L14-E01",
+      "lessonCode": "SPK-P2-L14",
+      "order": 1,
+      "type": "mcq",
+      "title": "Cue card lạ",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khi gặp cue card chưa từng trải qua, việc ĐẦU TIÊN cần làm là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Phân trần: \"Oh, this is difficult, I have never…\""
+            },
+            {
+              "id": "B",
+              "text": "Đổi đề khác"
+            },
+            {
+              "id": "C",
+              "text": "Quy đề về một trong 7 nhóm đã học và lấy template tương ứng"
+            },
+            {
+              "id": "D",
+              "text": "Im lặng đọc lại cue card 4 lần"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Không có cue card nào thật sự \"mới\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "Nguồn \"trải nghiệm vay mượn\" nào KHÔNG hợp lệ?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Phim tài liệu / video đã xem"
+            },
+            {
+              "id": "B",
+              "text": "Câu chuyện của bạn bè, người thân"
+            },
+            {
+              "id": "C",
+              "text": "Bịa một trải nghiệm chi tiết như thật"
+            },
+            {
+              "id": "D",
+              "text": "Một trải nghiệm gần giống của chính bạn"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Bịa xong sẽ tự mâu thuẫn ở phần hỏi thêm."
+        },
+        {
+          "id": "q3",
+          "prompt": "Câu điều kiện nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "If I would have the chance, I would try it."
+            },
+            {
+              "id": "B",
+              "text": "If I will have the chance, I would try it."
+            },
+            {
+              "id": "C",
+              "text": "If I had the chance, I would definitely try it."
+            },
+            {
+              "id": "D",
+              "text": "If I have the chance, I would tried it."
+            }
+          ],
+          "answer": "C",
+          "explanation": "If + past simple, would + V (loại 2)."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu bắt đầu ngay khi gặp đề lạ:",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"That's an interesting one — the first thing that comes to mind is…\""
+            },
+            {
+              "id": "B",
+              "text": "\"I have never done this, sorry.\""
+            },
+            {
+              "id": "C",
+              "text": "\"Can I have another topic?\""
+            },
+            {
+              "id": "D",
+              "text": "\"Ummmmm……\""
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"If I were you\" thay vì \"If I was you\" — vì sao?",
+          "options": [
+            {
+              "id": "A",
+              "text": "\"were\" dùng cho mọi ngôi ở văn trang trọng / câu điều kiện loại 2"
+            },
+            {
+              "id": "B",
+              "text": "\"was\" luôn sai ngữ pháp"
+            },
+            {
+              "id": "C",
+              "text": "Không có khác biệt"
+            },
+            {
+              "id": "D",
+              "text": "\"were\" chỉ dùng số nhiều"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L14-E02",
+      "lessonCode": "SPK-P2-L14",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cue card lạ với nhóm chủ đề",
+      "instruction": "Nối mỗi cue card lạ với nhóm chủ đề (và template) nên dùng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Describe a piece of advice you were given",
+          "right": "EVENTS — Storytelling 6 bước"
+        },
+        {
+          "id": "m2",
+          "left": "Describe a law you think is useful",
+          "right": "CULTURE / MEDIA — Nội dung → phản ứng → thông điệp"
+        },
+        {
+          "id": "m3",
+          "left": "Describe a water sport you want to try",
+          "right": "ACTIVITIES — Template hoạt động + IMAGINE"
+        },
+        {
+          "id": "m4",
+          "left": "Describe an app that helps you",
+          "right": "OBJECTS — Template đồ vật"
+        },
+        {
+          "id": "m5",
+          "left": "Describe a sound you like",
+          "right": "PLACES / OBJECTS — Mô tả + chi tiết giác quan"
+        },
+        {
+          "id": "m6",
+          "left": "Describe a person who solved a problem",
+          "right": "PEOPLE — Template người + giai thoại"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L14-E03",
+      "lessonCode": "SPK-P2-L14",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối chiến lược IMAGINE với mẫu câu",
+      "instruction": "Nối mỗi cách với mẫu câu tương ứng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Thừa nhận rồi chuyển sang mong muốn",
+          "right": "Although I haven't tried this personally, I've always wanted to…"
+        },
+        {
+          "id": "m2",
+          "left": "Dùng kiến thức gián tiếp",
+          "right": "I've watched a documentary about… and it seems…"
+        },
+        {
+          "id": "m3",
+          "left": "Chuyển sang câu chuyện của người khác",
+          "right": "A friend of mine once told me about… and ever since then…"
+        },
+        {
+          "id": "m4",
+          "left": "Câu điều kiện loại 2 giả định",
+          "right": "If I had the chance, I imagine it would feel…"
+        },
+        {
+          "id": "m5",
+          "left": "Bắc cầu sang trải nghiệm gần giống",
+          "right": "I can't say I've done this myself, but the closest thing was…"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L14-E04",
+      "lessonCode": "SPK-P2-L14",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi câu điều kiện loại 2 & câu mở đề lạ",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "If I would have the chance, I would try it.",
+          "explanation": "Mệnh đề \"if\" dùng past simple, không \"would\".",
+          "sampleAnswers": [
+            "If I had the chance, I would try it."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "If I was braver, I might sign up tomorrow.",
+          "explanation": "\"were\" cho mọi ngôi — trang trọng hơn.",
+          "sampleAnswers": [
+            "If I were braver, I might sign up tomorrow.",
+            "If I was braver, I might sign up tomorrow."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "I never try water sport. Maybe surfing.",
+          "explanation": "Không phân trần bằng \"I never try…\" — dùng mẫu IMAGINE.",
+          "sampleAnswers": [
+            "Although I haven't tried it personally, the water sport I'd most like to try is surfing."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "I have no experience about that. That's all I know.",
+          "explanation": "Bắc cầu sang trải nghiệm gần giống, nói tiếp.",
+          "sampleAnswers": [
+            "I can't say I've done this myself, but the closest thing was body-boarding at the beach."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L14-E05",
+      "lessonCode": "SPK-P2-L14",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: một cue card hoàn toàn xa lạ",
+      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây. Bắt đầu nói trong 3 giây, KHÔNG phân trần. Dùng ít nhất 1 mẫu IMAGINE / trải nghiệm vay mượn và 1 câu điều kiện loại 2 đúng.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 45,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Describe a sound you find pleasant. You should say: what the sound is · where and when you usually hear it · how it makes you feel. And explain why you find it pleasant."
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "That's an interesting one — the first thing that comes to mind is…",
+          "Although I haven't … personally, … / A friend of mine once told me…",
+          "If I had the chance, I imagine it would feel…"
+        ],
+        "checklist": [
+          "Bắt đầu nói trong vòng 3 giây sau khi hết giờ chuẩn bị",
+          "Không phân trần về việc chưa có trải nghiệm",
+          "Dùng ít nhất 1 mẫu IMAGINE hoặc trải nghiệm vay mượn",
+          "Có ít nhất 1 câu điều kiện loại 2 đúng",
+          "Nói đủ 90 giây, không im quá 3 giây"
+        ],
+        "commonErrors": [
+          "Nói \"I have never done this, sorry\" rồi dừng",
+          "Bịa một trải nghiệm chi tiết rồi tự mâu thuẫn",
+          "Dùng câu điều kiện sai: \"If I would have the chance…\"",
+          "Mất 20 giây đầu để phân trần"
+        ],
+        "sampleAnswer": "That's an interesting one — the first thing that comes to mind is the sound of rain on a metal roof. I mainly associate it with my grandmother's house in the countryside, where the roof was corrugated iron, and in the rainy season the sound would build from a light tapping to something almost deafening. It's oddly calming — it makes the house feel very safe and closed off from everything outside. I've read that this kind of steady, low-frequency noise helps people sleep, and I can believe it, because I've never fallen asleep faster than during those storms. If I had the chance, I'd love to record it properly one day and play it back in the city, though I suspect it wouldn't feel the same without the actual house around it. Overall, it's a small, ordinary sound, but it's tied to a place and a person I don't get to visit often enough."
+      }
+    },
+    {
+      "code": "SPK-P2-L15-E01",
+      "lessonCode": "SPK-P2-L15",
+      "order": 1,
+      "type": "mcq",
+      "title": "Phiếu chấm Part 2 — 4 tiêu chí",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Ở Fluency & Coherence, Band 7 nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dừng nhiều, nói dưới 60 giây"
+            },
+            {
+              "id": "B",
+              "text": "Nói đủ 2 phút, ngập ngừng tự nhiên, có discourse markers"
+            },
+            {
+              "id": "C",
+              "text": "Nói thật nhanh không nghỉ"
+            },
+            {
+              "id": "D",
+              "text": "Đọc thuộc trơn tru"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q2",
+          "prompt": "Trong mock test, học sinh KHÔNG được:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nhìn giấy ghi chú"
+            },
+            {
+              "id": "B",
+              "text": "Dừng giữa chừng để hỏi từ vựng"
+            },
+            {
+              "id": "C",
+              "text": "Nói đủ 2 phút"
+            },
+            {
+              "id": "D",
+              "text": "Có câu mở và câu kết"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q3",
+          "prompt": "Ở Lexical Resource, Band 7 nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Từ vựng cơ bản, lặp nhiều"
+            },
+            {
+              "id": "B",
+              "text": "Dùng collocation và cách diễn đạt ít gặp một cách tự nhiên"
+            },
+            {
+              "id": "C",
+              "text": "Nhồi từ khó không đúng ngữ cảnh"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ dùng \"good\", \"nice\", \"beautiful\""
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "Ở phiếu tick nhanh, một bài đạt cần:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Bắt đầu nói trong 3 giây · câu mở paraphrase · đủ 4 phần · ≥100 giây · ≥1 micro-story · câu kết rõ ràng"
+            },
+            {
+              "id": "B",
+              "text": "Chỉ cần nói được 30 giây"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ cần đúng ngữ pháp"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ cần nói to"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Khi nào sẵn sàng sang Phần III?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Khi đạt ≥4/5 tiêu chí ở phiếu chấm"
+            },
+            {
+              "id": "B",
+              "text": "Ngay lập tức"
+            },
+            {
+              "id": "C",
+              "text": "Khi học thuộc 10 bài mẫu"
+            },
+            {
+              "id": "D",
+              "text": "Khi nói được trên 3 phút mỗi bài"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P2-L15-E02",
+      "lessonCode": "SPK-P2-L15",
+      "order": 2,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test A (Người có ảnh hưởng)",
+      "instruction": "Điều kiện thi: 1 phút chuẩn bị, KHÔNG dừng để hỏi từ vựng. Ghi âm trả lời cue card rồi trả lời tiếp 2 câu hỏi phụ. AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 14,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 60,
+      "items": [
+        {
+          "id": "a1",
+          "prompt": "CUE CARD — Describe a person who has had an important influence on your life. You should say: who this person is · how you know them · what they have done. And explain why they have influenced you."
+        },
+        {
+          "id": "a2",
+          "prompt": "Follow-up 1 — Do you think people are influenced more by family or by friends?"
+        },
+        {
+          "id": "a3",
+          "prompt": "Follow-up 2 — Is it important to have role models when you are young?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Template PEOPLE 5 phần",
+          "One of their most outstanding qualities is… For example,…",
+          "This person inspires me because… → Overall,…"
+        ],
+        "checklist": [
+          "Bắt đầu nói trong 3 giây; câu mở paraphrase đề bài",
+          "Có đủ 4 phần của khung bài nói, nói được ít nhất 100 giây",
+          "Có ít nhất 1 micro-story hoặc giai thoại cụ thể; mỗi tính từ có bằng chứng",
+          "Dùng ít nhất 3 collocation đã học; không im quá 3 giây",
+          "Có câu kết rõ ràng; trả lời được 2 câu hỏi phụ"
+        ],
+        "commonErrors": [
+          "Dừng giữa chừng để hỏi từ vựng",
+          "Trả lời 4 gạch đầu dòng rồi hết",
+          "Nhìn giấy ghi chú liên tục",
+          "Bỏ câu kết vì mệt"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở Buổi 4 (PEOPLE) và Buổi 12 (chèn micro-story): mở bằng \"The person I'd like to describe is…, who…\", nêu MỘT phẩm chất kèm một giai thoại 20–30 giây, một câu về ảnh hưởng thật lên bạn, rồi \"Overall,…\". Hai câu hỏi phụ trả lời ngắn 20–30 giây, có sắc thái (\"It depends on…\" / \"On balance,…\")."
+      }
+    },
+    {
+      "code": "SPK-P2-L15-E03",
+      "lessonCode": "SPK-P2-L15",
+      "order": 3,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test B (Việc không như dự tính)",
+      "instruction": "1 phút chuẩn bị, ghi âm trả lời cue card rồi 2 câu hỏi phụ, không dừng giữa chừng. AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 14,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 60,
+      "items": [
+        {
+          "id": "b1",
+          "prompt": "CUE CARD — Describe an occasion when something did not go as planned. You should say: when it happened · what you had planned · what actually happened. And explain how you dealt with the situation."
+        },
+        {
+          "id": "b2",
+          "prompt": "Follow-up 1 — Do you think it is better to plan everything or to be flexible?"
+        },
+        {
+          "id": "b3",
+          "prompt": "Follow-up 2 — How do people in your country usually react when plans change?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Khung kể chuyện 6 bước",
+          "I was [V-ing] when suddenly [S + V-ed] · By the time…, I had already…",
+          "In the end,… → Looking back,…"
+        ],
+        "checklist": [
+          "Bắt đầu nói trong 3 giây; đủ 6 bước kể chuyện",
+          "Phần Key moment dài nhất; thì quá khứ nhất quán",
+          "Có ít nhất 1 câu past perfect; ≥3 collocation đã học",
+          "Có phần Reflection; câu kết rõ ràng; ≥100 giây",
+          "Trả lời được 2 câu hỏi phụ"
+        ],
+        "commonErrors": [
+          "Kể đều đều không có cao trào",
+          "Lẫn thì hiện tại giữa chừng",
+          "Bỏ qua phần Reflection",
+          "Trả lời câu phụ chỉ một câu rồi im"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở Buổi 7 và 8 (EVENTS): \"It all started when…\", nền bằng past continuous, biến cố bằng past simple, một câu past perfect ở phần Background, phần Key moment dài nhất, rồi \"In the end,… Looking back,…\". Câu phụ về \"plan vs flexible\" trả lời hai chiều có chốt: \"On balance, I'd say a loose plan works best — enough structure to feel prepared, enough flexibility to adapt.\""
+      }
+    },
+    {
+      "code": "SPK-P2-L15-E04",
+      "lessonCode": "SPK-P2-L15",
+      "order": 4,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test C (Nơi giới thiệu cho khách)",
+      "instruction": "1 phút chuẩn bị, ghi âm trả lời cue card rồi 2 câu hỏi phụ, không dừng giữa chừng. AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 14,
+      "speakingPart": 2,
+      "speakingPrepSeconds": 60,
+      "items": [
+        {
+          "id": "c1",
+          "prompt": "CUE CARD — Describe a place you would recommend to a visitor to your country. You should say: where it is · what people can do there · who you would recommend it to. And explain why you would recommend it."
+        },
+        {
+          "id": "c2",
+          "prompt": "Follow-up 1 — Has tourism changed your country in recent years?"
+        },
+        {
+          "id": "c3",
+          "prompt": "Follow-up 2 — Do you think tourists should learn about local culture before travelling?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Template PLACES 5 phần",
+          "The moment I… I was… · What really stands out is…",
+          "I'd recommend it to anyone who… → Overall,…"
+        ],
+        "checklist": [
+          "Bắt đầu nói trong 3 giây; đủ 4 lớp Location → Atmosphere → Facilities → Opinion",
+          "Có ít nhất 1 chi tiết giác quan; không dùng \"beautiful\"/\"nice\"",
+          "Có lý do CÁ NHÂN, không chỉ mô tả khách quan; ≥3 collocation",
+          "Câu kết rõ ràng; ≥100 giây; không im quá 3 giây",
+          "Trả lời được 2 câu hỏi phụ"
+        ],
+        "commonErrors": [
+          "Đọc như bài giới thiệu du lịch, không có trải nghiệm cá nhân",
+          "Chỉ nói vị trí địa lý suốt 40 giây",
+          "Lặp \"beautiful\"",
+          "Trả lời câu phụ về tourism một chiều, không chốt"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở Buổi 5 (PLACES): \"I'd like to talk about…, which is located in…\", một câu FIRST IMPRESSION có giác quan, \"What really stands out is…\", một chi tiết cá nhân (\"I've been back twice since…\"), rồi \"Overall,… I'd recommend it to anyone who…\". Câu phụ về tourism trả lời theo Buổi 13 Part 3 (Adv/Disadv): nêu ai hưởng lợi, ai chịu thiệt, chốt bằng \"provided that…\"."
+      }
+    }
+  ]
+}

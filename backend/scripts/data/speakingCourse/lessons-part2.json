@@ -1,0 +1,368 @@
+{
+  "modules": [
+    {
+      "code": "SPK-P2-M1",
+      "order": 4,
+      "title": "PHẦN II · Phase 1 — Cơ chế Part 2",
+      "titleEn": "Part 2 · How the Long Turn Works",
+      "outcomes": [
+        "Nói theo khung 4 phần: INTRODUCTION → DESCRIPTION → WHY IT IS SPECIAL → CONCLUSION",
+        "Ghi chú keyword trong 60 giây và mở rộng một danh từ thành 20–25 giây nói",
+        "Dùng 4 kiểu câu mở đầu paraphrase đề bài và 4 kiểu câu kết có sức nặng",
+        "Nói liên tục 75–90 giây, liếc giấy tối đa 3 lần"
+      ]
+    },
+    {
+      "code": "SPK-P2-M2",
+      "order": 5,
+      "title": "PHẦN II · Phase 2 — 7 nhóm cue card",
+      "titleEn": "Part 2 · The Seven Cue-Card Groups",
+      "outcomes": [
+        "Áp một template cho mỗi nhóm: PEOPLE, PLACES, OBJECTS, EVENTS (I & II), ACTIVITIES, NATURE/SCIENCE, CULTURE/MEDIA",
+        "Chứng minh mỗi tính từ bằng một giai thoại cụ thể thay vì liệt kê tính từ",
+        "Kể chuyện theo khung 6 bước, thêm cảm xúc ba lớp và câu bị động cho thông tin khách quan",
+        "Nói 100–110 giây cho bất kỳ cue card nào thuộc bảy nhóm"
+      ]
+    },
+    {
+      "code": "SPK-P2-M3",
+      "order": 6,
+      "title": "PHẦN II · Phase 3 — Chiều sâu & độ dài",
+      "titleEn": "Part 2 · Depth & Length",
+      "outcomes": [
+        "Chèn một micro-story 20–30 giây vào mọi nhóm cue card",
+        "Kéo dài bài nói đủ 2 phút bằng 4 kỹ thuật ZOOM IN / COMPARE / IMAGINE / IMPACT",
+        "Xử lý cue card chưa từng trải qua bằng công thức IMAGINE và trải nghiệm vay mượn",
+        "Không có khoảng lặng nào quá 3 giây trong suốt 2 phút"
+      ]
+    },
+    {
+      "code": "SPK-P2-M4",
+      "order": 7,
+      "title": "PHẦN II · Đánh giá — Thi thử Part 2",
+      "titleEn": "Part 2 · Mock Test & Self-Assessment",
+      "outcomes": [
+        "Hoàn thành một lượt Part 2 đầy đủ (1 cue card + 2 câu hỏi phụ) theo điều kiện thi",
+        "Tự chấm theo 4 tiêu chí IELTS và nhận diện 2 lỗi lặp lại của bản thân"
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "SPK-P2-L01",
+      "moduleCode": "SPK-P2-M1",
+      "order": 15,
+      "title": "Buổi 1 — Cơ chế Part 2 & 1 phút chuẩn bị",
+      "titleEn": "Part 2 Fundamentals & 1-Minute Prep",
+      "durationMinutes": 60,
+      "objectives": [
+        "Mô tả đúng luật chơi Part 2: 1 phút chuẩn bị, 1–2 phút nói, 1–2 câu hỏi phụ",
+        "Nói theo khung 4 phần INTRODUCTION → DESCRIPTION → WHY IT IS SPECIAL → CONCLUSION",
+        "Phân bổ 60 giây chuẩn bị theo mốc 10 / 30 / 15 / 5 giây",
+        "Nói liên tục tối thiểu 75 giây về một cue card quen thuộc"
+      ],
+      "keyLanguage": [
+        "I'd like to talk about… · First of all,… · What stands out is… · The reason I chose this is that… · Overall,…",
+        "would like to + V nguyên thể (KHÔNG V-ing): I'd like to talk about my cousin",
+        "Khung: INTRODUCTION 10–15s → DESCRIPTION 40–50s → WHY IT IS SPECIAL 30–40s → CONCLUSION 10–15s",
+        "Không bắt đầu bằng \"I want to talk about…\"; không kết bằng \"That's all\""
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P2-L02",
+      "moduleCode": "SPK-P2-M1",
+      "order": 16,
+      "title": "Buổi 2 — Keyword notes: ghi chú để nói được 2 phút",
+      "titleEn": "Keyword Notes",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân biệt ghi chú bằng từ khoá và ghi chú bằng câu hoàn chỉnh",
+        "Viết 6–8 từ khoá trong 30 giây theo 4 phần của khung bài nói",
+        "Biến một từ khoá thành 2–3 câu nói bằng kỹ thuật mở rộng danh từ (5 lớp)",
+        "Nói 90 giây chỉ nhìn ghi chú tối đa 3 lần"
+      ],
+      "keyLanguage": [
+        "Mở rộng danh từ 5 lớp: a café → a small quiet café → …near my house → …that has been there for years → …where the smell of coffee hits you",
+        "Trật tự tính từ: [ý kiến] + [kích thước] + [tuổi] + [màu] + [chất liệu] + DANH TỪ",
+        "which is located… · a five-minute walk from… · The moment you walk in, you… · It has become a sort of…",
+        "Ghi từ khoá, KHÔNG ghi câu hoàn chỉnh — câu sẽ bị đọc lại y nguyên"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P2-L03",
+      "moduleCode": "SPK-P2-M1",
+      "order": 17,
+      "title": "Buổi 3 — Cách mở đầu & câu kết: 15 giây đầu, 15 giây cuối",
+      "titleEn": "How to Start & End",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 4 kiểu câu mở đầu khác nhau, không lặp \"I want to talk about\"",
+        "Paraphrase lại đề bài trong câu mở đầu thay vì đọc lại nguyên văn",
+        "Kết bài bằng một câu tổng kết có sức nặng, không tắt lịm",
+        "Nói 90 giây có mở và kết rõ ràng, giọng xuống dứt khoát ở câu cuối"
+      ],
+      "keyLanguage": [
+        "Mở đầu: I'd like to talk about… · The [person] I'd like to describe is… · Something that immediately came to mind is… · When I saw this question, I immediately thought of…",
+        "Kết: Overall,… · Looking back, I think it taught me… · I'd definitely recommend it to anyone who… · I'll always remember…",
+        "Câu mở Band 6.5+ thường có mệnh đề quan hệ: …my headphones, which I use every day",
+        "CẤM kết bằng: That's all / Finished / I think that's it / Sorry, I don't know what else to say"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+    },
+    {
+      "code": "SPK-P2-L04",
+      "moduleCode": "SPK-P2-M2",
+      "order": 18,
+      "title": "Buổi 4 — NHÓM 1: PEOPLE (Người)",
+      "titleEn": "Group 1 — People",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ mô tả tính cách thay vì chỉ nói nice / good / kind",
+        "Nói theo template 5 phần của nhóm PEOPLE",
+        "Kể một giai thoại ngắn (2–3 câu) minh hoạ cho một tính cách",
+        "Nói 100 giây, có phần nói về ảnh hưởng lên bản thân"
+      ],
+      "keyLanguage": [
+        "charismatic · down-to-earth · outgoing personality · look up to · genuine kindness · resilient · leave a lasting impression",
+        "Template: INTRODUCTION → WHO THEY ARE → WHAT THEY ARE LIKE (+ giai thoại) → HOW THEY INFLUENCED YOU → CONCLUSION",
+        "One of their most outstanding qualities is… · What immediately impressed me was…",
+        "Mệnh đề quan hệ: a traveller named Jack, whom I met last summer (whom = tân ngữ, Band 7)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L05",
+      "moduleCode": "SPK-P2-M2",
+      "order": 19,
+      "title": "Buổi 5 — NHÓM 2: PLACES (Địa điểm)",
+      "titleEn": "Group 2 — Places",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ mô tả cảnh quan và không khí thay vì beautiful / nice",
+        "Nói theo template PLACES 5 phần",
+        "Thêm 2 chi tiết giác quan (âm thanh, mùi, ánh sáng) vào phần mô tả",
+        "Nói 100 giây có một lý do CÁ NHÂN, không chỉ mô tả khách quan"
+      ],
+      "keyLanguage": [
+        "breathtaking scenery · pristine beaches · lively and vibrant · iconic landmark · a perfect mix of… · steeped in history · a hidden gem",
+        "Template: INTRODUCTION → FIRST IMPRESSION → DESCRIPTION (+ What really stands out is…) → WHY IT'S SPECIAL → CONCLUSION",
+        "3 giác quan: âm thanh (the sound of waves) · mùi (sea salt in the air) · ánh sáng (the late afternoon light) — chỉ cần 2",
+        "…, which is located in central Vietnam (in + vùng/quốc gia) · on the coast · at the top of the hill"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L06",
+      "moduleCode": "SPK-P2-M2",
+      "order": 20,
+      "title": "Buổi 6 — NHÓM 3: OBJECTS (Đồ vật)",
+      "titleEn": "Group 3 — Objects",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ nói về giá trị tinh thần của đồ vật",
+        "Mô tả vật theo trật tự tính từ chuẩn (size – age – colour – material)",
+        "Kể câu chuyện gắn với đồ vật, không chỉ mô tả hình dáng (tối đa 20 giây cho hình dáng)",
+        "Nói 100 giây, có mốc thời gian rõ ràng (for / since)"
+      ],
+      "keyLanguage": [
+        "sentimental value · pass down / hand down · a keepsake · worn with age · irreplaceable · heirloom · tell the story of…",
+        "Template: INTRODUCTION → APPEARANCE → HOW YOU GOT IT → HOW YOU USE IT → EMOTIONAL VALUE → CONCLUSION",
+        "It has been in my family for over thirty years (for + khoảng thời gian) · since 1989 (since + mốc)",
+        "Chèn MỘT câu trích trực tiếp: he handed it to me and said, 'Technology changes, but a good photograph lasts forever.'"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L07",
+      "moduleCode": "SPK-P2-M2",
+      "order": 21,
+      "title": "Buổi 7 — NHÓM 4: EVENTS I — Khung kể chuyện 6 bước",
+      "titleEn": "Group 4 — Events I: The 6-Step Story",
+      "durationMinutes": 60,
+      "objectives": [
+        "Nói theo khung 6 bước: Intro → Background → Key moment → Resolution → Reflection → Conclusion",
+        "Dùng 5 cụm ★ nối các bước trong câu chuyện",
+        "Phân biệt past simple (hành động chính) và past continuous (bối cảnh)",
+        "Nói 110 giây, phần Key moment chiếm ít nhất 30 giây"
+      ],
+      "keyLanguage": [
+        "it all started when… · a turning point · I was caught off guard · in the end… · looking back… · it dawned on me · to make matters worse",
+        "Khung: INTRO 10s → BACKGROUND 20s → KEY MOMENT 30–40s → RESOLUTION 15s → REFLECTION 20s → CONCLUSION 10s",
+        "Cấu trúc vàng bước 3: I was [V-ing] when suddenly [S + V-ed]",
+        "Đuôi -ed: /t/ walked, missed · /d/ realised, arrived · /ɪd/ waited, decided"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L08",
+      "moduleCode": "SPK-P2-M2",
+      "order": 22,
+      "title": "Buổi 8 — NHÓM 4: EVENTS II — Cảm xúc & chiều sâu",
+      "titleEn": "Group 4 — Events II: Emotion & Depth",
+      "durationMinutes": 60,
+      "objectives": [
+        "Diễn đạt cảm xúc bằng 8–10 cách khác nhau thay vì happy / sad / good",
+        "Thêm cảm xúc ba lớp: cảm xúc → nguyên nhân → biểu hiện cơ thể",
+        "Dùng past perfect để kể lùi bối cảnh trước biến cố",
+        "Nói 110 giây, phần cảm xúc và bài học chiếm ít nhất 40 giây"
+      ],
+      "keyLanguage": [
+        "I was over the moon · it left a lasting impression · a bittersweet feeling · I came to realise · it blew me away · I have mixed feelings about it",
+        "Công thức cảm xúc 3 lớp: I was really nervous → …because I had never spoken to that many people → …I remember my hands shaking so badly I could barely hold the paper",
+        "Past perfect: By the time I arrived, the meeting had already started · I was nervous because I had never spoken in public before",
+        "Ngân hàng biểu hiện cơ thể: my mouth went dry · I could feel my face going red · I just stood there without saying anything"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L09",
+      "moduleCode": "SPK-P2-M2",
+      "order": 23,
+      "title": "Buổi 9 — NHÓM 5: ACTIVITIES / SKILLS",
+      "titleEn": "Group 5 — Activities / Skills",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ nói về việc học và rèn một kỹ năng",
+        "Mô tả một buổi luyện tập điển hình với ít nhất 3 bước cụ thể",
+        "Nói về tiến bộ theo trục thời gian: at first → over time → nowadays",
+        "Nói 100 giây, không sai V-ing sau giới từ"
+      ],
+      "keyLanguage": [
+        "pick up a new skill · a natural flair for · hone one's skills · stress-relieving · build discipline · get the hang of it · second nature",
+        "Template: INTRODUCTION → WHAT IT IS (+ a typical session involves…) → YOUR PROGRESS → WHY YOU ENJOY IT → CONCLUSION",
+        "Trục 3 mốc: At first, I could barely… → Over time, I gradually… → Nowadays, I can…",
+        "V-ing sau MỌI giới từ: good at playing · interested in learning · by practising · look forward to joining (to = giới từ)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L10",
+      "moduleCode": "SPK-P2-M2",
+      "order": 24,
+      "title": "Buổi 10 — NHÓM 6: NATURE / ANIMALS / SCIENCE",
+      "titleEn": "Group 6 — Nature / Animals / Science",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ về môi trường và khoa học ở mức thuật ngữ chính xác",
+        "Cân bằng giữa thông tin khách quan và trải nghiệm cá nhân (~60s / ~40s)",
+        "Dùng câu bị động để trình bày thông tin khách quan",
+        "Nói 100 giây mà không cần kiến thức chuyên sâu, dùng câu an toàn khi không chắc"
+      ],
+      "keyLanguage": [
+        "biodiversity · ecosystem · habitat loss · conservation efforts · renewable energy · on the verge of extinction · an elusive creature",
+        "Template: INTRODUCTION → WHAT IT IS → WHY YOU'RE INTERESTED → WHAT YOU KNOW → CONCLUSION (ý kiến cá nhân)",
+        "Câu an toàn: From what I know,… · I remember watching a documentary which said… · I'm not entirely sure of the exact figure, but…",
+        "Câu bị động: The snow leopard is classified as vulnerable · They are threatened by poaching and habitat loss"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L11",
+      "moduleCode": "SPK-P2-M2",
+      "order": 25,
+      "title": "Buổi 11 — NHÓM 7: CULTURE / MEDIA / STORIES",
+      "titleEn": "Group 7 — Culture / Media / Stories",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 5 cụm ★ về văn hoá và truyền thông",
+        "Tóm tắt nội dung một tác phẩm trong tối đa 3 câu / 25 giây, không kể cái kết",
+        "Nói được THÔNG ĐIỆP và Ý NGHĨA, không chỉ nội dung",
+        "Nói 100 giây, có ít nhất một mệnh đề bắt đầu bằng What…"
+      ],
+      "keyLanguage": [
+        "thought-provoking · resonated with me · went viral · raise awareness · cultural significance · spark a conversation · narrative arc",
+        "Template: INTRODUCTION 15s → WHAT IT IS ABOUT (≤25s) → WHY IT IMPRESSED YOU 25s → WHAT IT MEANS 25s → CONCLUSION 10s",
+        "Công thức nén cốt truyện: [Ai] + [gặp chuyện gì] + [vấn đề trung tâm] — tối đa 3 câu",
+        "Mệnh đề What…: What I found most captivating was the way he described gratitude (to be luôn số ít)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L12",
+      "moduleCode": "SPK-P2-M3",
+      "order": 26,
+      "title": "Buổi 12 — Storytelling & Emotions: chèn chuyện vào MỌI nhóm",
+      "titleEn": "Storytelling & Emotions",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chèn một micro-story 20–30 giây vào bài nói thuộc nhóm PEOPLE, PLACES hoặc OBJECTS",
+        "Dùng cấu trúc nhấn mạnh so… that / such a… that",
+        "Thay đổi tốc độ và điểm dừng để tạo hiệu ứng kể chuyện (dùng MỘT lần)",
+        "Nói 110 giây có ít nhất một đoạn kể chuyện có cao trào"
+      ],
+      "keyLanguage": [
+        "Micro-story 3 câu: SETUP (There was this one time when…) → BIẾN CỐ (and then, out of nowhere,…) → PHẢN ỨNG (I just stood there…)",
+        "so + tính từ + that: It was so quiet that I could hear my own footsteps",
+        "such a + tính từ + danh từ + that: It was such a small shop that you could walk past it",
+        "Mẹo: có DANH TỪ → such; không có danh từ → so"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L13",
+      "moduleCode": "SPK-P2-M3",
+      "order": 27,
+      "title": "Buổi 13 — Kéo dài đến 2 phút: bốn kỹ thuật",
+      "titleEn": "Extending to 2 Minutes",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng 4 kỹ thuật ZOOM IN / COMPARE / IMAGINE / IMPACT để thêm 20–30 giây mỗi lần",
+        "Nhận ra thời điểm sắp \"hết ý\" và triển khai kỹ thuật trước khi im lặng",
+        "Nối các đoạn bằng liên từ dài (which is why · so that) thay vì dừng hẳn",
+        "Nói đủ 120 giây liên tục mà không lặp lại ý"
+      ],
+      "keyLanguage": [
+        "ZOOM IN: To give you an idea,… / More specifically,… — thêm 20–30s",
+        "COMPARE: Compared to… / Unlike… / It used to be… — thêm 20–25s",
+        "IMAGINE: If I could go back, I would… / Next time, I'd love to… — thêm 15–20s",
+        "IMPACT: Since then, I've started to… / It changed the way I… — thêm 20–25s"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L14",
+      "moduleCode": "SPK-P2-M3",
+      "order": 28,
+      "title": "Buổi 14 — Cue card lạ: xử lý đề chưa từng trải qua",
+      "titleEn": "Unexpected Cue Cards",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng công thức IMAGINE để nói về điều chưa từng làm",
+        "Mượn trải nghiệm gián tiếp (phim, sách, người quen) một cách hợp lệ",
+        "Quy một cue card lạ về một trong 7 nhóm đã học trong 10 giây",
+        "Nói 110 giây về một cue card hoàn toàn xa lạ, bắt đầu nói trong 3 giây"
+      ],
+      "keyLanguage": [
+        "Although I haven't tried this personally, I've always wanted to… · I've watched a documentary about… and it seems… · A friend of mine once told me…",
+        "If I had the chance, I imagine it would feel… (câu điều kiện loại 2: If + past simple, would + V)",
+        "4 nguồn vay mượn hợp lệ: phim tài liệu · câu chuyện của người quen · sách báo · trải nghiệm gần giống của bạn",
+        "Câu bắt đầu ngay: \"That's an interesting one — the first thing that comes to mind is…\" (không phân trần)"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    },
+    {
+      "code": "SPK-P2-L15",
+      "moduleCode": "SPK-P2-M4",
+      "order": 29,
+      "title": "Buổi 15 — Thi thử Part 2 & Tự đánh giá",
+      "titleEn": "Part 2 Mock Test & Self-Assessment",
+      "isTest": true,
+      "durationMinutes": 60,
+      "objectives": [
+        "Hoàn thành một lượt Part 2 đầy đủ (1 cue card + 2 câu hỏi phụ) theo điều kiện thi",
+        "Tự chấm theo 4 tiêu chí của IELTS",
+        "Nhận diện 2 lỗi lặp lại của bản thân",
+        "Lập kế hoạch ôn 4 tuần dựa trên kết quả"
+      ],
+      "keyLanguage": [
+        "Ôn tập toàn bộ Buổi 1–14: khung 4 phần · keyword notes · mở/kết · 7 template nhóm · micro-story · 4 kỹ thuật kéo dài · IMAGINE",
+        "4 tiêu chí: Fluency & Coherence · Lexical Resource · Grammatical Range · Pronunciation",
+        "Bắt đầu nói trong 3 giây · câu mở paraphrase đề · đủ 4 phần · ≥100 giây · ≥1 micro-story · ≥3 collocation · câu kết rõ ràng",
+        "Nếu đạt ≥4/5 tiêu chí ở phiếu chấm → sẵn sàng sang Phần III"
+      ],
+      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+    }
+  ]
+}

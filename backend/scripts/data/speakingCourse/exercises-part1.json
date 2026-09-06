@@ -1,0 +1,4787 @@
+{
+  "exercises": [
+    {
+      "code": "SPK-P1-L01-E01",
+      "lessonCode": "SPK-P1-L01",
+      "order": 1,
+      "type": "mcq",
+      "title": "Luật chơi Part 1 & công thức O.R.E.",
+      "instruction": "Chọn đáp án đúng về cách trả lời Part 1.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Phần Part 1 của bài thi Speaking thường kéo dài bao lâu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "1–2 phút"
+            },
+            {
+              "id": "B",
+              "text": "4–5 phút"
+            },
+            {
+              "id": "C",
+              "text": "8–10 phút"
+            },
+            {
+              "id": "D",
+              "text": "11–14 phút"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Part 1 kéo dài 4–5 phút, hỏi về chủ đề quen thuộc: công việc, học tập, quê hương, sở thích."
+        },
+        {
+          "id": "q2",
+          "prompt": "Một câu trả lời Part 1 tốt nên dài khoảng bao nhiêu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dưới 5 giây"
+            },
+            {
+              "id": "B",
+              "text": "15–25 giây (2–4 câu)"
+            },
+            {
+              "id": "C",
+              "text": "30–45 giây"
+            },
+            {
+              "id": "D",
+              "text": "Trên 60 giây"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Dưới 5 giây là quá cụt; trên 45 giây giám khảo sẽ cắt lời."
+        },
+        {
+          "id": "q3",
+          "prompt": "O.R.E. là viết tắt của:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Opinion – Reason – Example"
+            },
+            {
+              "id": "B",
+              "text": "Overview – Result – Evidence"
+            },
+            {
+              "id": "C",
+              "text": "Opinion – Result – Effect"
+            },
+            {
+              "id": "D",
+              "text": "Order – Reason – Example"
+            }
+          ],
+          "answer": "A",
+          "explanation": "O = trả lời thẳng, R = vì sao, E = ví dụ cụ thể."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào là phần \"E\" (Example) đạt yêu cầu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "For example, it is very good."
+            },
+            {
+              "id": "B",
+              "text": "Last Sunday I spent two hours making phở for my family."
+            },
+            {
+              "id": "C",
+              "text": "Because it helps me relax."
+            },
+            {
+              "id": "D",
+              "text": "I really enjoy it."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ví dụ thật phải có thời gian / địa điểm / con người. \"It is very good\" chỉ là ý kiến."
+        },
+        {
+          "id": "q5",
+          "prompt": "Thói quen nào KHIẾN câu trả lời nghe như học thuộc lòng?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Có ngập ngừng tự nhiên"
+            },
+            {
+              "id": "B",
+              "text": "Giọng có lên xuống"
+            },
+            {
+              "id": "C",
+              "text": "Bắt đầu MỌI câu bằng \"I think\", giọng đều đều"
+            },
+            {
+              "id": "D",
+              "text": "Dùng từ đơn giản nhưng chính xác"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Mắt nhìn lên trần, giọng đều, mở đầu câu nào cũng \"I think\" — dấu hiệu đọc thuộc."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L01-E02",
+      "lessonCode": "SPK-P1-L01",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối các mảnh của công thức O.R.E.",
+      "instruction": "Nối mỗi ký hiệu / yêu cầu với mô tả đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "O — Opinion",
+          "right": "Trả lời thẳng câu hỏi: Yes, I do. / Not really. / Personally, I prefer…",
+          "explanation": "Câu đầu tiên phải trả lời trực tiếp Yes/No."
+        },
+        {
+          "id": "m2",
+          "left": "R — Reason",
+          "right": "Nói vì sao: …because it helps me… / …since it allows me to…",
+          "explanation": "Một lý do là đủ cho Part 1."
+        },
+        {
+          "id": "m3",
+          "left": "E — Example",
+          "right": "Đưa ví dụ cụ thể: For example, … / Like last week, … / For instance, …",
+          "explanation": "Ví dụ phải có chi tiết thật."
+        },
+        {
+          "id": "m4",
+          "left": "Độ dài mục tiêu",
+          "right": "Khoảng 15–25 giây, tức 2–4 câu",
+          "explanation": "Đủ dài để phát triển ý, đủ ngắn để không bị cắt lời."
+        },
+        {
+          "id": "m5",
+          "left": "Giọng nói tự nhiên",
+          "right": "Có ngập ngừng nhẹ, có lên xuống — không đều đều như đọc bài",
+          "explanation": "Fluency không có nghĩa là nói nhanh không nghỉ."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L01-E03",
+      "lessonCode": "SPK-P1-L01",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền từ nối theo công thức O.R.E.",
+      "instruction": "Điền MỘT từ vào mỗi chỗ trống để hoàn thành câu trả lời mẫu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I prefer studying alone ____ it helps me concentrate better.",
+          "blanks": [
+            {
+              "accept": [
+                "because"
+              ]
+            }
+          ],
+          "explanation": "R — nêu lý do bằng \"because\"."
+        },
+        {
+          "id": "g2",
+          "prompt": "____ example, I can finish my homework much faster when there are no distractions.",
+          "blanks": [
+            {
+              "accept": [
+                "For"
+              ]
+            }
+          ],
+          "explanation": "E — mở đầu ví dụ bằng \"For example\"."
+        },
+        {
+          "id": "g3",
+          "prompt": "Not really, to be honest. I don't have much free time ____ I work six days a week.",
+          "blanks": [
+            {
+              "accept": [
+                "since"
+              ]
+            }
+          ],
+          "explanation": "\"since\" = \"because\", nghe đa dạng hơn."
+        },
+        {
+          "id": "g4",
+          "prompt": "____, I prefer listening to music while I study.",
+          "blanks": [
+            {
+              "accept": [
+                "Personally"
+              ]
+            }
+          ],
+          "explanation": "O — mở đầu ý kiến nhẹ nhàng, tránh lặp \"I think\"."
+        },
+        {
+          "id": "g5",
+          "prompt": "Yes, I really enjoy cooking. ____ last Sunday, I spent two hours making phở for my family.",
+          "blanks": [
+            {
+              "accept": [
+                "Like"
+              ]
+            }
+          ],
+          "explanation": "\"Like last week/Sunday, …\" là cách mở ví dụ rất tự nhiên."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L01-E04",
+      "lessonCode": "SPK-P1-L01",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi present simple",
+      "instruction": "Viết lại cả câu cho đúng. Lỗi nặng nhất của học sinh Việt là thiếu đuôi -s.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It help me relax.",
+          "answer": "It helps me relax.",
+          "explanation": "Ngôi thứ ba số ít → thêm -s: helps."
+        },
+        {
+          "id": "q2",
+          "prompt": "My brother work at a bank.",
+          "answer": "My brother works at a bank.",
+          "explanation": "\"My brother\" = he → works."
+        },
+        {
+          "id": "q3",
+          "prompt": "I not really enjoy it.",
+          "answer": "I don't really enjoy it.",
+          "accept": [
+            "I do not really enjoy it."
+          ],
+          "explanation": "Phủ định present simple cần \"don't\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "She don't like coffee.",
+          "answer": "She doesn't like coffee.",
+          "accept": [
+            "She does not like coffee."
+          ],
+          "explanation": "Ngôi thứ ba → doesn't."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L01-E05",
+      "lessonCode": "SPK-P1-L01",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời theo O.R.E.",
+      "instruction": "Ghi âm câu trả lời của bạn cho từng câu hỏi dưới đây. Mỗi câu 15–25 giây, đủ Opinion → Reason → Example. AI sẽ chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 10,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you like cooking?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you enjoy watching films?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you like weekends more than weekdays?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Yes, I do / Not really",
+          "because… / since…",
+          "For example, … / For instance, …"
+        ],
+        "checklist": [
+          "Trả lời thẳng câu hỏi ngay câu đầu (Yes, I do. / Not really.)",
+          "Có đủ 1 lý do (R) và 1 ví dụ CỤ THỂ (E) có thời gian / địa điểm / con người",
+          "Dài 15–25 giây, khoảng 2–4 câu",
+          "Present simple đúng — nhớ đuôi -s (It helps me…)",
+          "Không đọc thuộc lòng, không bắt đầu mọi câu bằng \"I think\""
+        ],
+        "commonErrors": [
+          "Trả lời cụt: \"Yes.\" / \"I like it.\" rồi dừng lại",
+          "Trả lời dài như Part 2 (trên 45 giây)",
+          "Bắt đầu MỌI câu bằng \"I think\"",
+          "Thiếu đuôi -s: \"It help me relax\""
+        ],
+        "sampleAnswer": "Yes, definitely. I find cooking quite therapeutic — it's one of the few times in the day when I'm not looking at a screen. Last Sunday, for instance, I spent the whole afternoon making phở from scratch, and honestly the process was more enjoyable than the meal itself."
+      }
+    },
+    {
+      "code": "SPK-P1-L02-E01",
+      "lessonCode": "SPK-P1-L02",
+      "order": 1,
+      "type": "mcq",
+      "title": "Filler dùng thế nào cho đúng",
+      "instruction": "Chọn đáp án đúng về cách dùng filler.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Filler dùng để làm gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Câu giờ tự nhiên khi cần nghĩ, thay vì im lặng"
+            },
+            {
+              "id": "B",
+              "text": "Nhét vào đầu mọi câu để nghe \"Tây\" hơn"
+            },
+            {
+              "id": "C",
+              "text": "Thay cho lý do và ví dụ"
+            },
+            {
+              "id": "D",
+              "text": "Kéo dài câu trả lời cho đủ 30 giây"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Filler mua cho bạn 1–2 giây suy nghĩ và giữ mạch nói."
+        },
+        {
+          "id": "q2",
+          "prompt": "Nguyên tắc số lượng filler trong MỘT câu trả lời là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Càng nhiều càng tốt"
+            },
+            {
+              "id": "B",
+              "text": "Tối đa 1 filler; câu sau dùng filler khác, không lặp"
+            },
+            {
+              "id": "C",
+              "text": "Đúng 3 filler mỗi câu"
+            },
+            {
+              "id": "D",
+              "text": "Không bao giờ dùng filler"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nhồi \"To be honest\" vào mọi câu nghe như robot."
+        },
+        {
+          "id": "q3",
+          "prompt": "Filler nào an toàn nhất để MỞ ĐẦU bất kỳ câu trả lời nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Off the top of my head,…"
+            },
+            {
+              "id": "B",
+              "text": "Well,…"
+            },
+            {
+              "id": "C",
+              "text": "Ummm…"
+            },
+            {
+              "id": "D",
+              "text": "Do I like music? Do I like music…"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"Well,…\" hợp với mọi câu; \"ummm\" kéo dài là tiếng Việt hoá."
+        },
+        {
+          "id": "q4",
+          "prompt": "Cách câu giờ nào bị TRỪ điểm Fluency?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Well, I'd say…"
+            },
+            {
+              "id": "B",
+              "text": "Let me think…"
+            },
+            {
+              "id": "C",
+              "text": "Im lặng 5–7 giây rồi mới nói (dead air)"
+            },
+            {
+              "id": "D",
+              "text": "That's a good question, actually…"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Khoảng lặng quá 3 giây là dấu hiệu mất trôi chảy."
+        },
+        {
+          "id": "q5",
+          "prompt": "Filler đứng ở đâu trong câu?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Đứng đầu câu, có dấu phẩy, không thay chủ ngữ / động từ"
+            },
+            {
+              "id": "B",
+              "text": "Thay cho chủ ngữ: \"Well usually go out.\""
+            },
+            {
+              "id": "C",
+              "text": "Cuối câu, sau dấu chấm"
+            },
+            {
+              "id": "D",
+              "text": "Giữa động từ và tân ngữ"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"Well, I usually go out with my friends.\" — filler + dấu phẩy + câu đầy đủ."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L02-E02",
+      "lessonCode": "SPK-P1-L02",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối filler với tình huống dùng",
+      "instruction": "Nối mỗi filler với thời điểm nên dùng nó.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Well,…",
+          "right": "Mở đầu bất kỳ câu trả lời nào — an toàn nhất",
+          "explanation": "Well, I'd say I prefer coffee."
+        },
+        {
+          "id": "m2",
+          "left": "To be honest,…",
+          "right": "Khi đưa ý kiến thẳng thắn, hơi tiêu cực",
+          "explanation": "To be honest, I'm not a big fan of pop music."
+        },
+        {
+          "id": "m3",
+          "left": "Actually,…",
+          "right": "Khi bổ sung hoặc đính chính điều vừa nói",
+          "explanation": "I thought it'd be boring. Actually, it was great."
+        },
+        {
+          "id": "m4",
+          "left": "Let me think…",
+          "right": "Khi cần 2–3 giây suy nghĩ thật sự",
+          "explanation": "Let me think… probably my grandmother."
+        },
+        {
+          "id": "m5",
+          "left": "I mean,…",
+          "right": "Khi muốn giải thích rõ hơn ý vừa nói",
+          "explanation": "It's convenient. I mean, you can buy anything with one click."
+        },
+        {
+          "id": "m6",
+          "left": "Off the top of my head,…",
+          "right": "Nói ngay một con số / câu trả lời mà không cần nghĩ lâu",
+          "explanation": "Off the top of my head, I'd say two or three times a week."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L02-E03",
+      "lessonCode": "SPK-P1-L02",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Chọn filler đúng",
+      "instruction": "Điền MỘT filler phù hợp vào mỗi chỗ trống (Well / Actually / To be honest / Let me think / I mean).",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "____ honest, I'm not really into sports. I'd much rather read a book.",
+          "blanks": [
+            {
+              "accept": [
+                "To be"
+              ]
+            }
+          ],
+          "explanation": "\"To be honest,…\" — ý kiến thẳng thắn."
+        },
+        {
+          "id": "g2",
+          "prompt": "I don't use social media much. ____, I deleted Facebook last year.",
+          "blanks": [
+            {
+              "accept": [
+                "Actually"
+              ]
+            }
+          ],
+          "explanation": "\"Actually,…\" — bổ sung một chi tiết."
+        },
+        {
+          "id": "g3",
+          "prompt": "____ think… I'd probably choose Da Nang, because of the beaches.",
+          "blanks": [
+            {
+              "accept": [
+                "Let me"
+              ]
+            }
+          ],
+          "explanation": "\"Let me think…\" — cần vài giây suy nghĩ thật."
+        },
+        {
+          "id": "g4",
+          "prompt": "____, it depends on how much free time I have that week.",
+          "blanks": [
+            {
+              "accept": [
+                "Well"
+              ]
+            }
+          ],
+          "explanation": "\"Well,…\" — mở đầu an toàn."
+        },
+        {
+          "id": "g5",
+          "prompt": "It's quite convenient. ____, everything is within walking distance.",
+          "blanks": [
+            {
+              "accept": [
+                "I mean"
+              ]
+            }
+          ],
+          "explanation": "\"I mean,…\" — giải thích rõ hơn ý vừa nói."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L02-E04",
+      "lessonCode": "SPK-P1-L02",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa câu dùng filler máy móc / sai vị trí",
+      "instruction": "Viết lại cho tự nhiên. Chỉ giữ MỘT filler và đặt đúng vị trí.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "To be honest, I like my hometown. To be honest, it is quiet. To be honest, the people are friendly.",
+          "answer": "To be honest, I like my hometown — it's quiet and the people are friendly.",
+          "explanation": "Chỉ một filler ở đầu; nối các ý lại thành một câu."
+        },
+        {
+          "id": "q2",
+          "prompt": "Well I usually go out with my friends.",
+          "answer": "Well, I usually go out with my friends.",
+          "explanation": "Filler cần dấu phẩy ngăn cách với mệnh đề."
+        },
+        {
+          "id": "q3",
+          "prompt": "To be honest I not enjoy it much.",
+          "answer": "To be honest, I don't enjoy it much.",
+          "explanation": "Thiếu dấu phẩy + phủ định sai (\"not enjoy\" → \"don't enjoy\")."
+        },
+        {
+          "id": "q4",
+          "prompt": "Actually, I change my mind last year.",
+          "answer": "Actually, I changed my mind last year.",
+          "explanation": "\"last year\" → past simple: changed."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L02-E05",
+      "lessonCode": "SPK-P1-L02",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: không có khoảng lặng",
+      "instruction": "Ghi âm câu trả lời cho từng câu. Luật: không im quá 3 giây — nếu bí, dùng filler. Mỗi câu 15–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 5,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "What do you usually do to relax?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you prefer texting or calling?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you usually remember your dreams?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Well,… / To be honest,…",
+          "Let me think… / I'd say…",
+          "Having said that, …"
+        ],
+        "checklist": [
+          "Không có khoảng lặng nào quá 3 giây",
+          "Dùng đúng 1 filler ở đầu, câu sau dùng filler khác (không lặp)",
+          "Vẫn có 1 lý do + 1 ví dụ, dài 15–25 giây",
+          "Ngắt hơi ngắn sau filler rồi giọng đi tiếp — không đọc dính \"Welliprefer…\"",
+          "Không dùng \"ummm\" kéo dài kiểu tiếng Việt"
+        ],
+        "commonErrors": [
+          "Nhồi \"To be honest\" vào mọi câu",
+          "Im lặng 5–7 giây rồi mới nói",
+          "Lặp nguyên văn câu hỏi để câu giờ",
+          "Dùng \"ummm\" thay vì filler tiếng Anh"
+        ],
+        "sampleAnswer": "Well… let me think. Probably texting, actually — I mean, calling puts you on the spot, doesn't it? With a message I can take my time and word things properly. Having said that, if it's something emotional, I'd always call."
+      }
+    },
+    {
+      "code": "SPK-P1-L03-E01",
+      "lessonCode": "SPK-P1-L03",
+      "order": 1,
+      "type": "mcq",
+      "title": "Lý do & ví dụ — nhận diện",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Một ví dụ chỉ được TÍNH là ví dụ khi nó trả lời được ít nhất một câu:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nó có đúng ngữ pháp không?"
+            },
+            {
+              "id": "B",
+              "text": "Khi nào? Ở đâu? Với ai?"
+            },
+            {
+              "id": "C",
+              "text": "Nó có dùng từ khó không?"
+            },
+            {
+              "id": "D",
+              "text": "Nó có dài hơn 10 từ không?"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ví dụ thật luôn có thời gian, địa điểm hoặc con người cụ thể."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào là ví dụ CỤ THỂ (được tính)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "For example, it is very nice."
+            },
+            {
+              "id": "B",
+              "text": "For example, many people like it."
+            },
+            {
+              "id": "C",
+              "text": "For example, last Sunday I sat there for two hours with my sister."
+            },
+            {
+              "id": "D",
+              "text": "For example, it is useful."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Có thời gian (last Sunday), thời lượng (two hours), con người (my sister)."
+        },
+        {
+          "id": "q3",
+          "prompt": "Lỗi nào là lỗi \"because đứng riêng thành câu\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I like it because it's cheap."
+            },
+            {
+              "id": "B",
+              "text": "I like it. Because it is nice."
+            },
+            {
+              "id": "C",
+              "text": "I like it since it's close to my house."
+            },
+            {
+              "id": "D",
+              "text": "One reason is that the food is fantastic."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"Because…\" phải nối vào mệnh đề chính, không đứng một mình."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào SAI về \"because of\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Because of the low price, I bought two."
+            },
+            {
+              "id": "B",
+              "text": "I chose it because of the career prospects."
+            },
+            {
+              "id": "C",
+              "text": "Because of it is cheap."
+            },
+            {
+              "id": "D",
+              "text": "Because of the atmosphere, I keep going back."
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"because of\" + danh từ; \"because\" + mệnh đề. \"Because of it is cheap\" sai."
+        },
+        {
+          "id": "q5",
+          "prompt": "Cách nói lý do nào KHÔNG phải là \"because\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "since… / mainly because… / one reason is that…"
+            },
+            {
+              "id": "B",
+              "text": "for example… / for instance…"
+            },
+            {
+              "id": "C",
+              "text": "in conclusion…"
+            },
+            {
+              "id": "D",
+              "text": "on the other hand…"
+            }
+          ],
+          "answer": "A",
+          "explanation": "since / mainly because / one reason is that đều thay được cho \"because\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L03-E02",
+      "lessonCode": "SPK-P1-L03",
+      "order": 2,
+      "type": "categorize",
+      "title": "Cụm này nêu LÝ DO hay đưa VÍ DỤ?",
+      "instruction": "Kéo mỗi cụm vào đúng cột.",
+      "autoGrade": true,
+      "points": 10,
+      "categories": [
+        {
+          "id": "reason",
+          "label": "Nêu LÝ DO"
+        },
+        {
+          "id": "example",
+          "label": "Đưa VÍ DỤ"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "since…",
+          "category": "reason"
+        },
+        {
+          "id": "c2",
+          "text": "mainly because…",
+          "category": "reason"
+        },
+        {
+          "id": "c3",
+          "text": "one reason is that…",
+          "category": "reason"
+        },
+        {
+          "id": "c4",
+          "text": "that's why…",
+          "category": "reason"
+        },
+        {
+          "id": "c5",
+          "text": "For instance, …",
+          "category": "example"
+        },
+        {
+          "id": "c6",
+          "text": "Like last week, …",
+          "category": "example"
+        },
+        {
+          "id": "c7",
+          "text": "Take my street for example",
+          "category": "example"
+        },
+        {
+          "id": "c8",
+          "text": "A good case in point is…",
+          "category": "example"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L03-E03",
+      "lessonCode": "SPK-P1-L03",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cách nói lý do / ví dụ",
+      "instruction": "Điền từ còn thiếu vào mỗi câu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I don't go out much ____ I work six days a week.",
+          "blanks": [
+            {
+              "accept": [
+                "since"
+              ]
+            }
+          ],
+          "explanation": "\"since\" = because."
+        },
+        {
+          "id": "g2",
+          "prompt": "I chose it ____ because of the career prospects.",
+          "blanks": [
+            {
+              "accept": [
+                "mainly"
+              ]
+            }
+          ],
+          "explanation": "\"mainly because…\" nhấn lý do chính."
+        },
+        {
+          "id": "g3",
+          "prompt": "One ____ is that the food there is fantastic.",
+          "blanks": [
+            {
+              "accept": [
+                "reason"
+              ]
+            }
+          ],
+          "explanation": "\"One reason is that…\"."
+        },
+        {
+          "id": "g4",
+          "prompt": "Take my street ____ example — it's completely different now.",
+          "blanks": [
+            {
+              "accept": [
+                "for"
+              ]
+            }
+          ],
+          "explanation": "\"Take … for example\" — mở một ví dụ cụ thể."
+        },
+        {
+          "id": "g5",
+          "prompt": "It's very quiet — ____ why I can concentrate.",
+          "blanks": [
+            {
+              "accept": [
+                "that's",
+                "thats"
+              ]
+            }
+          ],
+          "explanation": "\"…, that's why…\" nối lý do vào kết quả."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L03-E04",
+      "lessonCode": "SPK-P1-L03",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa 3 lỗi kinh điển của mệnh đề nguyên nhân",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I like it. Because it is cheap.",
+          "explanation": "\"Because\" không đứng riêng thành câu.",
+          "sampleAnswers": [
+            "I like it because it's cheap.",
+            "I like it because it is cheap."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Because of it is cheap, I bought two.",
+          "explanation": "\"because of\" + danh từ; \"because\" + mệnh đề.",
+          "sampleAnswers": [
+            "Because it's cheap, I bought two.",
+            "Because of the low price, I bought two.",
+            "Because it is cheap, I bought two."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "For example, it is very good.",
+          "explanation": "Ví dụ chung chung không tính — thêm thời gian / nơi chốn / con người.",
+          "sampleAnswers": [
+            "For example, last Sunday I sat there for two hours with my sister.",
+            "For instance, I went there twice last month."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "I like it because it's cheap because I don't have money.",
+          "explanation": "Không dùng \"because\" hai lần trong một câu.",
+          "sampleAnswers": [
+            "I like it because it's cheap, and since I'm a student, that matters a lot."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L03-E05",
+      "lessonCode": "SPK-P1-L03",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu \"Why…?\"",
+      "instruction": "Ghi âm câu trả lời cho mỗi câu \"Why…?\". Dài 20–25 giây, đủ Answer → Reason → Example, và KHÔNG dùng \"because\".",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 10,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Why do you enjoy your favourite food?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Why do you like your hometown?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Why do you study English?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "since… / mainly because… / one reason is that…",
+          "For instance, … / Like last week, …",
+          "Take … for example"
+        ],
+        "checklist": [
+          "Trả lời trực tiếp câu hỏi ngay câu đầu",
+          "Có 1 lý do — KHÔNG dùng \"because\" (dùng since / mainly because / one reason is that)",
+          "Có 1 ví dụ có thời gian, địa điểm HOẶC con người",
+          "Nối Answer → Reason → Example thành một mạch liền, dài 20–25 giây",
+          "Không lặp cùng một từ nối"
+        ],
+        "commonErrors": [
+          "\"Because\" đứng thành câu riêng: \"I like it. Because it is nice.\"",
+          "Ví dụ chung chung: \"For example, it is very good.\"",
+          "Lặp \"because\" 3 lần trong một câu trả lời",
+          "Dùng \"Because of\" + mệnh đề"
+        ],
+        "sampleAnswer": "I'd say it's the pace of life more than anything. One reason is that everything is within walking distance, so you're not spending an hour a day stuck in traffic. Take my street for example — the same five families have lived there for twenty years, and that kind of continuity is something you simply don't get in a big city."
+      }
+    },
+    {
+      "code": "SPK-P1-L04-E01",
+      "lessonCode": "SPK-P1-L04",
+      "order": 1,
+      "type": "mcq",
+      "title": "Công thức nâng band",
+      "instruction": "Chọn đáp án đúng về cách nâng câu trả lời Band 5 → 6 → 7.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Để nâng từ Band 5 lên Band 6, hai thao tác là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Thêm lý do cụ thể + thêm ví dụ có chi tiết"
+            },
+            {
+              "id": "B",
+              "text": "Thêm từ khó + nói dài hơn"
+            },
+            {
+              "id": "C",
+              "text": "Thêm 3 từ nối + một câu hỏi đuôi"
+            },
+            {
+              "id": "D",
+              "text": "Lặp lại ý bằng từ khác"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Không thao tác nào là \"thêm từ khó\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "Để nâng từ Band 6 lên Band 7, hai thao tác là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói nhanh hơn + to hơn"
+            },
+            {
+              "id": "B",
+              "text": "Thêm chi tiết cá nhân thật + thêm một ý đối lập (That said,…)"
+            },
+            {
+              "id": "C",
+              "text": "Thêm số liệu thống kê"
+            },
+            {
+              "id": "D",
+              "text": "Thêm 2 thành ngữ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Band 7 ở Part 1 đến từ độ cụ thể và độ tự nhiên."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"That said,…\" dùng để làm gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Bắt đầu một ví dụ"
+            },
+            {
+              "id": "B",
+              "text": "Thêm một ý đối lập ở cuối"
+            },
+            {
+              "id": "C",
+              "text": "Nêu lý do"
+            },
+            {
+              "id": "D",
+              "text": "Kết thúc và chào giám khảo"
+            }
+          ],
+          "answer": "B",
+          "explanation": "That said / Having said that = đảo chiều, thêm mặt còn lại."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ở tầng Band 7?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Yes, I like my hometown. It is nice and the people are friendly."
+            },
+            {
+              "id": "B",
+              "text": "It's quiet. I can study. I like it."
+            },
+            {
+              "id": "C",
+              "text": "What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. That said, it can get a bit too quiet."
+            },
+            {
+              "id": "D",
+              "text": "My hometown is beautiful and I like it very much."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Có chọn một điểm nổi bật, chi tiết so sánh, và ý đối lập ở cuối."
+        },
+        {
+          "id": "q5",
+          "prompt": "Cách nâng band nào là SAI lầm?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Thêm chi tiết cá nhân thật"
+            },
+            {
+              "id": "B",
+              "text": "Nối câu đơn rời rạc bằng so / which / although"
+            },
+            {
+              "id": "C",
+              "text": "Nhét từ khó vào cho \"sang\""
+            },
+            {
+              "id": "D",
+              "text": "Thêm một nhận xét khái quát ở cuối"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Nhét từ khó → câu nghe gượng và sai ngữ cảnh."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L04-E02",
+      "lessonCode": "SPK-P1-L04",
+      "order": 2,
+      "type": "ordering",
+      "title": "Xếp câu trả lời từ Band 5 lên Band 7",
+      "instruction": "Kéo để xếp các mảnh theo thứ tự một câu trả lời phát triển dần: trả lời → lý do cụ thể → ví dụ chi tiết → chi tiết cá nhân → ý đối lập.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Thứ tự xây một câu trả lời Band 7 (câu hỏi: Do you like your hometown?):",
+          "tokens": [
+            "That said, it can get a bit too quiet, so I'm not sure I could live there forever.",
+            "What I like most is the pace of life.",
+            "My grandmother still lives on the same street she was born on, which says something about the place.",
+            "I can walk to the market in five minutes instead of losing an hour in traffic.",
+            "Yes, definitely."
+          ],
+          "answer": [
+            "Yes, definitely.",
+            "What I like most is the pace of life.",
+            "I can walk to the market in five minutes instead of losing an hour in traffic.",
+            "My grandmother still lives on the same street she was born on, which says something about the place.",
+            "That said, it can get a bit too quiet, so I'm not sure I could live there forever."
+          ],
+          "explanation": "Trả lời thẳng → chọn điểm nổi bật → ví dụ cụ thể → chi tiết cá nhân thật → ý đối lập."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L04-E03",
+      "lessonCode": "SPK-P1-L04",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cụm dùng để nâng band",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "____ I like most is the pace of life.",
+          "blanks": [
+            {
+              "accept": [
+                "What"
+              ]
+            }
+          ],
+          "explanation": "\"What I like most is…\" — chọn ra một điểm nổi bật."
+        },
+        {
+          "id": "g2",
+          "prompt": "That ____, it can get a bit too quiet.",
+          "blanks": [
+            {
+              "accept": [
+                "said"
+              ]
+            }
+          ],
+          "explanation": "\"That said, …\" — thêm ý đối lập."
+        },
+        {
+          "id": "g3",
+          "prompt": "It's quiet enough to study in, ____ is exactly why I've stayed here for three years.",
+          "blanks": [
+            {
+              "accept": [
+                "which"
+              ]
+            }
+          ],
+          "explanation": "\"…, which is why…\" nối lý do mượt hơn."
+        },
+        {
+          "id": "g4",
+          "prompt": "Having ____ that, I wouldn't want to live there forever.",
+          "blanks": [
+            {
+              "accept": [
+                "said"
+              ]
+            }
+          ],
+          "explanation": "\"Having said that, …\" — đối lập, trang trọng hơn \"That said\"."
+        },
+        {
+          "id": "g5",
+          "prompt": "The same five families have lived there for twenty years, ____ says a lot about the place.",
+          "blanks": [
+            {
+              "accept": [
+                "which"
+              ]
+            }
+          ],
+          "explanation": "\"…, which says a lot about…\" — rút ra nhận xét khái quát."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L04-E04",
+      "lessonCode": "SPK-P1-L04",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Nối câu đơn rời rạc thành câu ghép",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại thành MỘT câu, dùng so / which / although.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is quiet. I can study. I like it.",
+          "explanation": "Band 5 hay viết ba câu đơn rời rạc — Band 6–7 nối chúng lại.",
+          "sampleAnswers": [
+            "It's quiet, so I can study easily, and that's why I like it.",
+            "It's quiet enough to study in, which is why I like it."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "I like coffee. It is delicious.",
+          "explanation": "Thêm lý do cụ thể thay vì tính từ trống nghĩa.",
+          "sampleAnswers": [
+            "I like coffee because it's delicious and it helps me wake up.",
+            "I like coffee, which I find delicious and energising."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "It is noisy. I like it.",
+          "explanation": "\"although\" nối hai ý trái chiều — không kèm \"but\".",
+          "sampleAnswers": [
+            "Although it's noisy, I like it.",
+            "It's noisy, although I still like it."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L04-E05",
+      "lessonCode": "SPK-P1-L04",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: nâng câu trả lời của bạn lên Band 7",
+      "instruction": "Ghi âm câu trả lời ở mức cao nhất bạn có thể: lý do cụ thể + ví dụ chi tiết + 1 chi tiết cá nhân thật + 1 ý đối lập. 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you enjoy the area where you live?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you like the weather here?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you often use public transport?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "What I like most is…",
+          "That said, … / Having said that, …",
+          "…, which is why… / …, which says a lot about…"
+        ],
+        "checklist": [
+          "Tối thiểu Band 6: có lý do cụ thể + ví dụ chi tiết",
+          "Hướng tới Band 7: thêm 1 chi tiết cá nhân thật (điều chỉ bạn mới nói được)",
+          "Có 1 ý đối lập (That said,… / Having said that,…)",
+          "Dài 20–25 giây, câu được nối bằng so / which / although",
+          "Không dùng từ khó mà bản thân chưa chắc nghĩa"
+        ],
+        "commonErrors": [
+          "Nâng band bằng cách nhét từ khó → câu nghe gượng",
+          "Nâng band bằng cách nói dài hơn nhưng lặp ý",
+          "Dùng \"That said\" khi không có ý đối lập nào",
+          "Ba câu đơn rời rạc, không nối"
+        ],
+        "sampleAnswer": "Yes, definitely. What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. My grandmother still lives on the same street she was born on, which says something about the place. That said, it can get a bit too quiet, so I'm not sure I could live there forever."
+      }
+    },
+    {
+      "code": "SPK-P1-L05-E01",
+      "lessonCode": "SPK-P1-L05",
+      "order": 1,
+      "type": "mcq",
+      "title": "Giới thiệu bản thân — Work / Study",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Câu \"Are you a student or do you work?\" cần mấy mảnh thông tin?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Một: chỉ cần nói \"I study\" hoặc \"I work\""
+            },
+            {
+              "id": "B",
+              "text": "Ba: WHERE + HOW LONG + WHAT"
+            },
+            {
+              "id": "C",
+              "text": "Hai: tên trường + điểm số"
+            },
+            {
+              "id": "D",
+              "text": "Bốn: WHERE + WHEN + WHY + WHO"
+            }
+          ],
+          "answer": "B",
+          "explanation": "WHERE (ở đâu, ngành gì) + HOW LONG (bao lâu rồi) + WHAT (làm gì mỗi ngày)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào ĐÚNG về độ dài thời gian?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I am working here since 2 years."
+            },
+            {
+              "id": "B",
+              "text": "I working here for 2 years."
+            },
+            {
+              "id": "C",
+              "text": "I've been there for almost two years."
+            },
+            {
+              "id": "D",
+              "text": "I am here since two years ago."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Present perfect + for/since: \"I've been there for two years / since 2023\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Thay cho \"boring\", nên dùng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "monotonous / repetitive / mind-numbing"
+            },
+            {
+              "id": "B",
+              "text": "very very boring"
+            },
+            {
+              "id": "C",
+              "text": "not fun"
+            },
+            {
+              "id": "D",
+              "text": "so-so"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"a mind-numbing job — the same thing every day\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Khi được hỏi về lương, nên nói:",
+          "options": [
+            {
+              "id": "A",
+              "text": "I earn 12 million a month."
+            },
+            {
+              "id": "B",
+              "text": "The pay is quite competitive / well-paid."
+            },
+            {
+              "id": "C",
+              "text": "It's a secret."
+            },
+            {
+              "id": "D",
+              "text": "I don't want to answer."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tránh nói con số cụ thể — dùng \"quite competitive\" / \"well-paid\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"major in\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "làm thêm giờ"
+            },
+            {
+              "id": "B",
+              "text": "chuyên ngành về (một môn)"
+            },
+            {
+              "id": "C",
+              "text": "nộp bài tập"
+            },
+            {
+              "id": "D",
+              "text": "dự bài giảng"
+            }
+          ],
+          "answer": "B",
+          "explanation": "I'm majoring in business administration."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L05-E02",
+      "lessonCode": "SPK-P1-L05",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cụm Work / Study với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "academic workload",
+          "right": "khối lượng học tập"
+        },
+        {
+          "id": "m2",
+          "left": "hand in assignments",
+          "right": "nộp bài tập"
+        },
+        {
+          "id": "m3",
+          "left": "work long hours",
+          "right": "làm việc nhiều giờ"
+        },
+        {
+          "id": "m4",
+          "left": "job satisfaction",
+          "right": "sự hài lòng với công việc"
+        },
+        {
+          "id": "m5",
+          "left": "career prospects",
+          "right": "triển vọng nghề nghiệp"
+        },
+        {
+          "id": "m6",
+          "left": "gain experience",
+          "right": "tích lũy kinh nghiệm"
+        },
+        {
+          "id": "m7",
+          "left": "work-life balance",
+          "right": "cân bằng công việc – cuộc sống"
+        },
+        {
+          "id": "m8",
+          "left": "challenging yet rewarding",
+          "right": "thử thách nhưng đáng làm"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L05-E03",
+      "lessonCode": "SPK-P1-L05",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cụm đúng vào câu giới thiệu",
+      "instruction": "Điền cụm còn thiếu (major in · academic workload · hand in · career prospects · gain experience · job satisfaction).",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I ____ ____ computer science, mainly because of the career prospects in the tech industry.",
+          "blanks": [
+            {
+              "accept": [
+                "major"
+              ]
+            },
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "\"major in [subject]\"."
+        },
+        {
+          "id": "g2",
+          "prompt": "The ____ ____ this semester is heavier than last year.",
+          "blanks": [
+            {
+              "accept": [
+                "academic"
+              ]
+            },
+            {
+              "accept": [
+                "workload"
+              ]
+            }
+          ],
+          "explanation": "\"academic workload\" — khối lượng học tập."
+        },
+        {
+          "id": "g3",
+          "prompt": "I have to ____ ____ two essays every week.",
+          "blanks": [
+            {
+              "accept": [
+                "hand"
+              ]
+            },
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ],
+          "explanation": "\"hand in assignments\" — nộp bài."
+        },
+        {
+          "id": "g4",
+          "prompt": "I took an internship last summer, mostly to ____ ____ before I graduate.",
+          "blanks": [
+            {
+              "accept": [
+                "gain"
+              ]
+            },
+            {
+              "accept": [
+                "experience"
+              ]
+            }
+          ],
+          "explanation": "\"gain experience\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L05-E04",
+      "lessonCode": "SPK-P1-L05",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi thì & giới từ khi giới thiệu bản thân",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I am working here since 2 years.",
+          "answer": "I've been working here for two years.",
+          "accept": [
+            "I have been working here for two years."
+          ],
+          "explanation": "present perfect + for + khoảng thời gian."
+        },
+        {
+          "id": "q2",
+          "prompt": "I study at English university.",
+          "answer": "I study English at university.",
+          "accept": [
+            "I study at an English university."
+          ],
+          "explanation": "Sai trật tự / thiếu mạo từ."
+        },
+        {
+          "id": "q3",
+          "prompt": "I am study for my finals this month.",
+          "answer": "I'm studying for my finals this month.",
+          "accept": [
+            "I am studying for my finals this month."
+          ],
+          "explanation": "\"this month\" = giai đoạn tạm thời → present continuous."
+        },
+        {
+          "id": "q4",
+          "prompt": "It is a boring job. The same thing every day.",
+          "answer": "It's honestly a mind-numbing job — the same thing every day.",
+          "explanation": "Thay \"boring\" bằng cụm mạnh hơn và nối câu."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L05-E05",
+      "lessonCode": "SPK-P1-L05",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: giới thiệu bản thân",
+      "instruction": "Ghi âm câu trả lời. Câu giới thiệu phải đủ WHERE + HOW LONG + WHAT và dùng ít nhất 2 target phrases. 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Are you a student or do you work?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Why did you choose that major / that job?"
+        },
+        {
+          "id": "s3",
+          "prompt": "What do you do on a typical day?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I'm a … at … / I work as a … for …",
+          "I've been there for … / I started …",
+          "job satisfaction / career prospects / work-life balance"
+        ],
+        "checklist": [
+          "Câu giới thiệu dài 20–25 giây",
+          "Có đủ WHERE + HOW LONG + WHAT",
+          "Dùng ít nhất 2 target phrases (major in, academic workload, job satisfaction…)",
+          "Không dùng từ \"boring\"",
+          "Đúng thì: present simple / continuous / present perfect + for/since"
+        ],
+        "commonErrors": [
+          "Chỉ nói \"I study\" hoặc \"I work\" rồi dừng",
+          "\"I am working here since 2 years\" → for two years",
+          "Nói lương quá cụ thể",
+          "\"I study at English university\" — sai/thừa giới từ"
+        ],
+        "sampleAnswer": "I work, actually. I'm an office worker at a local bank called Techcombank and I've been there for almost two years. I spend most of my day handling paperwork for clients and helping them with financial transactions. It's a challenging yet rewarding job — I meet people from all walks of life, so no two days are quite the same. That said, I do work long hours, and my work-life balance is far from perfect."
+      }
+    },
+    {
+      "code": "SPK-P1-L06-E01",
+      "lessonCode": "SPK-P1-L06",
+      "order": 1,
+      "type": "mcq",
+      "title": "Hometown ≠ The area where you live",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"Hometown\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nơi bạn đang sống hiện tại"
+            },
+            {
+              "id": "B",
+              "text": "Nơi bạn sinh ra / lớn lên"
+            },
+            {
+              "id": "C",
+              "text": "Thủ đô của nước bạn"
+            },
+            {
+              "id": "D",
+              "text": "Nơi bạn đi du lịch nhiều nhất"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hometown = nơi sinh ra/lớn lên; the area where you live = nơi đang sống."
+        },
+        {
+          "id": "q2",
+          "prompt": "Nói về hometown thường dùng thì nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Chỉ present continuous"
+            },
+            {
+              "id": "B",
+              "text": "Past simple + present perfect"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ future"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ present simple"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"I was born and raised in…\" + \"It has changed a lot…\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Khung mô tả nơi chốn 4 bước là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Location → Look/Feel → Highlight → Opinion"
+            },
+            {
+              "id": "B",
+              "text": "Name → Weather → Food → Goodbye"
+            },
+            {
+              "id": "C",
+              "text": "Problem → Cause → Solution → Result"
+            },
+            {
+              "id": "D",
+              "text": "Past → Present → Future → Wish"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Vị trí → trông/cảm giác thế nào → điểm nổi bật (chọn MỘT) → cảm nghĩ."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu hỏi \"Do you know your neighbours well?\" thuộc:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Hometown"
+            },
+            {
+              "id": "B",
+              "text": "The area where you live"
+            },
+            {
+              "id": "C",
+              "text": "Cả hai"
+            },
+            {
+              "id": "D",
+              "text": "Không thuộc chủ đề nào"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hàng xóm, tiện ích, giao thông → nơi đang sống."
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào ĐÚNG khi nói về thay đổi của quê hương?",
+          "options": [
+            {
+              "id": "A",
+              "text": "My hometown change a lot."
+            },
+            {
+              "id": "B",
+              "text": "My hometown is changed a lot."
+            },
+            {
+              "id": "C",
+              "text": "My hometown has changed a lot over the past few years."
+            },
+            {
+              "id": "D",
+              "text": "My hometown changing a lot now."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Thay đổi từ quá khứ đến hiện tại → present perfect."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L06-E02",
+      "lessonCode": "SPK-P1-L06",
+      "order": 2,
+      "type": "categorize",
+      "title": "Câu hỏi này về HOMETOWN hay AREA?",
+      "instruction": "Kéo mỗi câu hỏi vào đúng cột.",
+      "autoGrade": true,
+      "points": 12,
+      "categories": [
+        {
+          "id": "hometown",
+          "label": "HOMETOWN (nơi lớn lên)"
+        },
+        {
+          "id": "area",
+          "label": "THE AREA WHERE YOU LIVE"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "Where did you grow up?",
+          "category": "hometown"
+        },
+        {
+          "id": "c2",
+          "text": "Is it easy to get around your neighbourhood?",
+          "category": "area"
+        },
+        {
+          "id": "c3",
+          "text": "Has your hometown changed much?",
+          "category": "hometown"
+        },
+        {
+          "id": "c4",
+          "text": "Do you know your neighbours well?",
+          "category": "area"
+        },
+        {
+          "id": "c5",
+          "text": "Would you like to move back there one day?",
+          "category": "hometown"
+        },
+        {
+          "id": "c6",
+          "text": "What facilities are there near your house?",
+          "category": "area"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L06-E03",
+      "lessonCode": "SPK-P1-L06",
+      "order": 3,
+      "type": "matching",
+      "title": "Nối cụm mô tả nơi chốn với nghĩa",
+      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "autoGrade": true,
+      "points": 12,
+      "items": [
+        {
+          "id": "m1",
+          "left": "bustling city",
+          "right": "thành phố nhộn nhịp"
+        },
+        {
+          "id": "m2",
+          "left": "pace of life",
+          "right": "nhịp sống"
+        },
+        {
+          "id": "m3",
+          "left": "local cuisine",
+          "right": "ẩm thực địa phương"
+        },
+        {
+          "id": "m4",
+          "left": "close-knit community",
+          "right": "cộng đồng gắn kết"
+        },
+        {
+          "id": "m5",
+          "left": "residential area",
+          "right": "khu dân cư"
+        },
+        {
+          "id": "m6",
+          "left": "within walking distance",
+          "right": "đi bộ tới được"
+        },
+        {
+          "id": "m7",
+          "left": "local amenities",
+          "right": "tiện ích quanh nhà"
+        },
+        {
+          "id": "m8",
+          "left": "good transport links",
+          "right": "giao thông thuận tiện"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L06-E04",
+      "lessonCode": "SPK-P1-L06",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi khi mô tả quê hương",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "My hometown change a lot.",
+          "explanation": "Thay đổi từ quá khứ đến nay → present perfect.",
+          "sampleAnswers": [
+            "My hometown has changed a lot over the past few years.",
+            "My hometown has changed a lot."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "I live in a house have two floors.",
+          "explanation": "Thiếu mệnh đề quan hệ which/that has.",
+          "sampleAnswers": [
+            "I live in a house which has two floors.",
+            "I live in a house that has two floors."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "My hometown is very beautiful.",
+          "explanation": "Thay tính từ trống nghĩa bằng cụm cụ thể.",
+          "sampleAnswers": [
+            "My hometown is known for its breathtaking scenery.",
+            "My hometown has breathtaking scenery."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The people are very nice.",
+          "explanation": "\"nice\" → cụm cụ thể hơn.",
+          "sampleAnswers": [
+            "There's a strong sense of community, and people still look out for each other.",
+            "It has a close-knit community."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L06-E05",
+      "lessonCode": "SPK-P1-L06",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả quê hương và khu bạn ở",
+      "instruction": "Ghi âm câu trả lời. Theo đúng khung Location → Look/Feel → Highlight → Opinion, và KHÔNG dùng \"beautiful\" hay \"nice\". 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Can you describe your hometown?"
+        },
+        {
+          "id": "s2",
+          "prompt": "What's the area where you live like?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Has your hometown changed much in recent years?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I was born and raised in… / I currently live in…",
+          "What it's really known for is…",
+          "It has changed considerably / over the past few years"
+        ],
+        "checklist": [
+          "Đúng khung Location → Look/Feel → Highlight → Opinion",
+          "Dùng ≥2 target phrases (pace of life, local cuisine, residential area, local amenities…)",
+          "Không dùng \"beautiful\" hay \"nice\"",
+          "Câu về thay đổi dùng đúng present perfect",
+          "Dài 20–25 giây, không lặp lại cùng một tính từ"
+        ],
+        "commonErrors": [
+          "Chỉ nói tên thành phố rồi dừng",
+          "Lặp \"beautiful\" 4 lần trong một câu trả lời",
+          "Nhầm hometown với nơi đang sống → trả lời lệch câu hỏi",
+          "\"I live in a house have two floors\" — thiếu which/that has"
+        ],
+        "sampleAnswer": "I was born and raised in Da Lat — a small city up in the Central Highlands, about eight hours from here. What strikes most visitors is the pace of life: people genuinely sit down for coffee for an hour, which is unthinkable in Saigon. It's also known for its local cuisine, though I'd say the real draw is the weather — it's the one place in Vietnam where you actually need a jacket. That said, it has become far more crowded since tourism took off."
+      }
+    },
+    {
+      "code": "SPK-P1-L07-E01",
+      "lessonCode": "SPK-P1-L07",
+      "order": 1,
+      "type": "mcq",
+      "title": "Mô tả nơi chốn & so sánh",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "4 lớp mô tả dùng được cho MỌI nơi chốn là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Location → Atmosphere → Facilities → Opinion"
+            },
+            {
+              "id": "B",
+              "text": "Size → Price → Colour → Age"
+            },
+            {
+              "id": "C",
+              "text": "Who → What → When → Why"
+            },
+            {
+              "id": "D",
+              "text": "Intro → Body → Body → Conclusion"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Ở đâu → không khí → có gì → bạn nghĩ sao."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu so sánh nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is more quiet than the park."
+            },
+            {
+              "id": "B",
+              "text": "It's quieter than the park near my house."
+            },
+            {
+              "id": "C",
+              "text": "It is quietest than the park."
+            },
+            {
+              "id": "D",
+              "text": "It is more quieter than the park."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tính từ 1 âm tiết → thêm -er: quieter."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"nowhere near as … as\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "gần như bằng"
+            },
+            {
+              "id": "B",
+              "text": "kém xa, không bằng chút nào"
+            },
+            {
+              "id": "C",
+              "text": "hơn hẳn"
+            },
+            {
+              "id": "D",
+              "text": "ở ngay gần đó"
+            }
+          ],
+          "answer": "B",
+          "explanation": "The new mall is nowhere near as lively as the old market."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Have many parks in my area."
+            },
+            {
+              "id": "B",
+              "text": "There are plenty of green spaces around here."
+            },
+            {
+              "id": "C",
+              "text": "It has many facility."
+            },
+            {
+              "id": "D",
+              "text": "In my area have a lot of park."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Dùng \"There is/are…\", không mở đầu bằng \"Have…\"; \"facilities\" số nhiều."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"a hidden gem\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "một nơi rất đắt đỏ"
+            },
+            {
+              "id": "B",
+              "text": "nơi hay mà ít người biết"
+            },
+            {
+              "id": "C",
+              "text": "một viện bảo tàng đá quý"
+            },
+            {
+              "id": "D",
+              "text": "một nơi nguy hiểm"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"a bit of a hidden gem\" — viên ngọc ẩn."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L07-E02",
+      "lessonCode": "SPK-P1-L07",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cấu trúc so sánh với ví dụ",
+      "instruction": "Nối mỗi cấu trúc với câu ví dụ dùng nó.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "far more … than",
+          "right": "It's far more crowded than the park near my house."
+        },
+        {
+          "id": "m2",
+          "left": "not as … as",
+          "right": "It's not as peaceful as it used to be."
+        },
+        {
+          "id": "m3",
+          "left": "nowhere near as … as",
+          "right": "The new mall is nowhere near as lively as the old market."
+        },
+        {
+          "id": "m4",
+          "left": "whereas",
+          "right": "The park is quiet in the morning, whereas it gets packed after five."
+        },
+        {
+          "id": "m5",
+          "left": "What you do find is…",
+          "right": "What you do find is a lot of small family-run cafés, which I much prefer."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L07-E03",
+      "lessonCode": "SPK-P1-L07",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cụm mô tả nơi chốn",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "The library has a really ____ atmosphere — perfect for studying.",
+          "blanks": [
+            {
+              "accept": [
+                "peaceful"
+              ]
+            }
+          ],
+          "explanation": "\"a peaceful atmosphere\" cho nơi yên tĩnh."
+        },
+        {
+          "id": "g2",
+          "prompt": "The night market has a very ____ atmosphere at the weekend.",
+          "blanks": [
+            {
+              "accept": [
+                "lively"
+              ]
+            }
+          ],
+          "explanation": "\"a lively atmosphere\" cho chợ, phố đi bộ."
+        },
+        {
+          "id": "g3",
+          "prompt": "The museum has lots of ____ displays, so children don't get bored.",
+          "blanks": [
+            {
+              "accept": [
+                "interactive"
+              ]
+            }
+          ],
+          "explanation": "\"interactive displays\" — trưng bày tương tác."
+        },
+        {
+          "id": "g4",
+          "prompt": "There are far ____ green spaces downtown than in the suburbs.",
+          "blanks": [
+            {
+              "accept": [
+                "more",
+                "fewer"
+              ]
+            }
+          ],
+          "explanation": "\"far more/fewer … than\" — so sánh số lượng."
+        },
+        {
+          "id": "g5",
+          "prompt": "The old park is ____ near as busy as the one by the river.",
+          "blanks": [
+            {
+              "accept": [
+                "nowhere"
+              ]
+            }
+          ],
+          "explanation": "\"nowhere near as … as\" — kém xa."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L07-E04",
+      "lessonCode": "SPK-P1-L07",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi khi mô tả & so sánh",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It has many facility.",
+          "answer": "It has many facilities.",
+          "explanation": "\"facilities\" luôn ở số nhiều."
+        },
+        {
+          "id": "q2",
+          "prompt": "It is more quiet than the library.",
+          "answer": "It is quieter than the library.",
+          "explanation": "\"quiet\" 1 âm tiết → quieter."
+        },
+        {
+          "id": "q3",
+          "prompt": "It is same as my area.",
+          "answer": "It is the same as my area.",
+          "explanation": "\"the same as\" — cần mạo từ \"the\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Have many parks in my area.",
+          "answer": "There are many parks in my area.",
+          "explanation": "Không mở đầu bằng \"Have…\"; dùng \"There are…\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L07-E05",
+      "lessonCode": "SPK-P1-L07",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: mô tả một nơi công cộng",
+      "instruction": "Ghi âm câu trả lời. Đủ 4 lớp (Location → Atmosphere → Facilities → Opinion) và có ít nhất 1 câu so sánh. 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Are there enough public spaces in your city?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you often visit museums?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you prefer quiet places or lively places?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Location → Atmosphere → Facilities → Opinion",
+          "far more … than / not as … as / nowhere near as … as",
+          "a peaceful / lively atmosphere · a hidden gem"
+        ],
+        "checklist": [
+          "Có đủ 4 lớp mô tả",
+          "Có ≥1 câu so sánh với một cấu trúc rõ ràng",
+          "Dùng ≥2 target phrases",
+          "Không lặp lại tính từ nào hai lần",
+          "Dùng \"There is/are…\", không mở đầu bằng \"Have…\""
+        ],
+        "commonErrors": [
+          "Mô tả chỉ có tính từ, không có sự vật cụ thể",
+          "\"It has many facility\" — thiếu số nhiều",
+          "\"It is more quiet than…\" → quieter than",
+          "\"It is same as…\" → the same as"
+        ],
+        "sampleAnswer": "It really depends on my mood, but on the whole I gravitate towards quieter places. There's a small park about ten minutes from my house — nowhere near as impressive as the big ones downtown, but it's well-maintained and almost empty before eight in the morning, which makes it a bit of a hidden gem. Having said that, when I'm with friends I want the opposite: noise, people, a lively atmosphere."
+      }
+    },
+    {
+      "code": "SPK-P1-L08-E01",
+      "lessonCode": "SPK-P1-L08",
+      "order": 1,
+      "type": "mcq",
+      "title": "Nói về sở thích & lựa chọn",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Câu nào ĐÚNG cấu trúc?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I prefer trainers more than formal shoes."
+            },
+            {
+              "id": "B",
+              "text": "I prefer trainers to formal shoes."
+            },
+            {
+              "id": "C",
+              "text": "I prefer trainers than formal shoes."
+            },
+            {
+              "id": "D",
+              "text": "I prefer to trainers formal shoes."
+            }
+          ],
+          "answer": "B",
+          "explanation": "prefer A to B — KHÔNG dùng \"more than\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "Sau \"I'd rather\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "to + V (I'd rather to go)"
+            },
+            {
+              "id": "B",
+              "text": "V nguyên thể, không \"to\" (I'd rather go)"
+            },
+            {
+              "id": "C",
+              "text": "V-ing (I'd rather going)"
+            },
+            {
+              "id": "D",
+              "text": "danh từ (I'd rather a taxi)"
+            }
+          ],
+          "answer": "B",
+          "explanation": "would rather + V bare: I'd rather walk than take a taxi."
+        },
+        {
+          "id": "q3",
+          "prompt": "Công thức \"2 tiêu chí → chọn 1\" gồm mấy bước?",
+          "options": [
+            {
+              "id": "A",
+              "text": "1 bước: chọn ngay"
+            },
+            {
+              "id": "B",
+              "text": "3 bước: nêu 2 tiêu chí → chọn 1 + lý do → điều kiện đảo chiều"
+            },
+            {
+              "id": "C",
+              "text": "2 bước: thích và không thích"
+            },
+            {
+              "id": "D",
+              "text": "4 bước: intro → body → body → kết"
+            }
+          ],
+          "answer": "B",
+          "explanation": "For me it comes down to X versus Y → I prioritise X because… → That said, if…"
+        },
+        {
+          "id": "q4",
+          "prompt": "\"It depends\" nói thế nào cho đúng?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Chỉ cần nói \"It depends.\" rồi dừng"
+            },
+            {
+              "id": "B",
+              "text": "Phải nói rõ phụ thuộc vào cái gì (It depends on where I'm going.)"
+            },
+            {
+              "id": "C",
+              "text": "It depends of the weather."
+            },
+            {
+              "id": "D",
+              "text": "Depend on my mood."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Luôn kèm điều kiện cụ thể sau \"on\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"quality over quantity\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "số lượng quan trọng hơn chất lượng"
+            },
+            {
+              "id": "B",
+              "text": "chất hơn lượng"
+            },
+            {
+              "id": "C",
+              "text": "vừa chất vừa lượng"
+            },
+            {
+              "id": "D",
+              "text": "rẻ hơn thì tốt hơn"
+            }
+          ],
+          "answer": "B",
+          "explanation": "one decent pair that lasts two years > three cheap pairs."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L08-E02",
+      "lessonCode": "SPK-P1-L08",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cấu trúc nói sở thích với lưu ý",
+      "instruction": "Nối mỗi cấu trúc với lưu ý dùng đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "I prefer A to B",
+          "right": "Dùng \"to\", KHÔNG dùng \"more than\""
+        },
+        {
+          "id": "m2",
+          "left": "I tend to…",
+          "right": "Nghe tự nhiên hơn \"I usually\""
+        },
+        {
+          "id": "m3",
+          "left": "I'd rather … than …",
+          "right": "Sau \"rather\" là V nguyên thể, không \"to\""
+        },
+        {
+          "id": "m4",
+          "left": "I prioritise X over Y",
+          "right": "Rất mạnh — dùng 1 lần trong câu trả lời là đủ"
+        },
+        {
+          "id": "m5",
+          "left": "It depends on…",
+          "right": "PHẢI nói rõ phụ thuộc vào cái gì"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L08-E03",
+      "lessonCode": "SPK-P1-L08",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cấu trúc sở thích",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I prefer trainers ____ formal shoes.",
+          "blanks": [
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ],
+          "explanation": "prefer A to B."
+        },
+        {
+          "id": "g2",
+          "prompt": "I'd rather walk ____ take a taxi.",
+          "blanks": [
+            {
+              "accept": [
+                "than"
+              ]
+            }
+          ],
+          "explanation": "would rather … than …"
+        },
+        {
+          "id": "g3",
+          "prompt": "I ____ comfort over appearance because I'm on my feet all day.",
+          "blanks": [
+            {
+              "accept": [
+                "prioritise",
+                "prioritize"
+              ]
+            }
+          ],
+          "explanation": "\"I prioritise X over Y\"."
+        },
+        {
+          "id": "g4",
+          "prompt": "It ____ on where I'm going and how long I'll be out.",
+          "blanks": [
+            {
+              "accept": [
+                "depends"
+              ]
+            }
+          ],
+          "explanation": "\"It depends on…\" + điều kiện."
+        },
+        {
+          "id": "g5",
+          "prompt": "I try to strike a good ____ between comfort and style.",
+          "blanks": [
+            {
+              "accept": [
+                "balance"
+              ]
+            }
+          ],
+          "explanation": "\"strike a good balance between\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L08-E04",
+      "lessonCode": "SPK-P1-L08",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi cấu trúc sở thích",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I prefer coffee more than tea.",
+          "answer": "I prefer coffee to tea.",
+          "explanation": "prefer A to B."
+        },
+        {
+          "id": "q2",
+          "prompt": "I very like comfortable shoes.",
+          "answer": "I really like comfortable shoes.",
+          "accept": [
+            "I'm very fond of comfortable shoes."
+          ],
+          "explanation": "Không dùng \"very\" trước động từ \"like\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "I'd rather to stay at home.",
+          "answer": "I'd rather stay at home.",
+          "explanation": "would rather + V nguyên thể."
+        },
+        {
+          "id": "q4",
+          "prompt": "I prefer because it is cheaper.",
+          "answer": "I prefer it because it's cheaper.",
+          "explanation": "Thiếu tân ngữ \"it\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "It depends.",
+          "answer": "It depends on how much time I have.",
+          "explanation": "\"It depends\" phải kèm điều kiện."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L08-E05",
+      "lessonCode": "SPK-P1-L08",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu hỏi lựa chọn",
+      "instruction": "Ghi âm câu trả lời theo 3 bước: nêu 2 tiêu chí → chọn 1 + lý do → điều kiện đảo chiều. 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 10,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you prefer paying by cash or by card?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you prefer comfortable shoes or stylish shoes?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you prefer eating out or cooking at home?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "For me it comes down to X versus Y",
+          "I prioritise X over Y / I'd rather … than …",
+          "That said, if…"
+        ],
+        "checklist": [
+          "Dùng đúng \"prefer A to B\" hoặc \"I'd rather … than …\"",
+          "Nêu 2 lý do",
+          "Có 1 điều kiện đảo chiều (\"That said, if…\")",
+          "Không nói \"It depends\" mà bỏ trống điều kiện",
+          "Dài 20–25 giây, không lặp cùng một cấu trúc preference"
+        ],
+        "commonErrors": [
+          "\"I prefer X more than Y\" → I prefer X to Y",
+          "\"I'd rather to go\" → I'd rather go",
+          "\"I prefer because…\" — thiếu tân ngữ \"it\"",
+          "\"It depends\" nói trống"
+        ],
+        "sampleAnswer": "For me it really comes down to comfort versus appearance, and I tend to prioritise comfort over appearance because I spend most of the day on my feet. That said, I still try to find shoes that strike a good balance — I'd rather buy one decent pair that lasts two years than three cheap pairs that wear out in a month. So I suppose it's quality over quantity."
+      }
+    },
+    {
+      "code": "SPK-P1-L09-E01",
+      "lessonCode": "SPK-P1-L09",
+      "order": 1,
+      "type": "mcq",
+      "title": "Thói quen & tần suất",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Trạng từ tần suất đứng ở đâu so với động từ THƯỜNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Sau động từ: I go usually to school."
+            },
+            {
+              "id": "B",
+              "text": "Trước động từ: I usually go to school."
+            },
+            {
+              "id": "C",
+              "text": "Cuối câu: I go to school usually."
+            },
+            {
+              "id": "D",
+              "text": "Trước chủ ngữ: Usually I to school go."
+            }
+          ],
+          "answer": "B",
+          "explanation": "TRƯỚC động từ thường."
+        },
+        {
+          "id": "q2",
+          "prompt": "Trạng từ tần suất đứng ở đâu so với động từ \"to be\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Trước: I usually am tired."
+            },
+            {
+              "id": "B",
+              "text": "Sau: I am usually tired by five."
+            },
+            {
+              "id": "C",
+              "text": "Cả hai đều được"
+            },
+            {
+              "id": "D",
+              "text": "Không đứng cạnh \"to be\""
+            }
+          ],
+          "answer": "B",
+          "explanation": "SAU động từ \"to be\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"every day\" (2 chữ) và \"everyday\" (1 chữ) khác nhau thế nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Giống hệt nhau"
+            },
+            {
+              "id": "B",
+              "text": "\"every day\" = trạng ngữ (hằng ngày); \"everyday\" = tính từ (thường ngày)"
+            },
+            {
+              "id": "C",
+              "text": "\"everyday\" là trạng ngữ; \"every day\" là tính từ"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ \"everyday\" mới đúng"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Everyday I go → sai; Every day I go → đúng."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu nào SAI?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I hardly ever go out on weeknights."
+            },
+            {
+              "id": "B",
+              "text": "I hardly ever don't go out."
+            },
+            {
+              "id": "C",
+              "text": "I rarely eat out."
+            },
+            {
+              "id": "D",
+              "text": "I never take naps during the day."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"hardly ever\" đã mang nghĩa phủ định — không thêm \"don't\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "Khung trả lời \"How often…?\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Frequency → Context → Reason → Example"
+            },
+            {
+              "id": "B",
+              "text": "Yes → No → Maybe"
+            },
+            {
+              "id": "C",
+              "text": "Past → Present → Future"
+            },
+            {
+              "id": "D",
+              "text": "Name → Time → Place"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Tần suất cụ thể → khi nào → vì sao → ví dụ."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L09-E02",
+      "lessonCode": "SPK-P1-L09",
+      "order": 2,
+      "type": "ordering",
+      "title": "Xếp thang tần suất từ nhiều đến ít",
+      "instruction": "Kéo để xếp các cụm tần suất từ THƯỜNG XUYÊN NHẤT xuống ÍT NHẤT.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "o1",
+          "prompt": "Từ ≈100% xuống 0%:",
+          "tokens": [
+            "hardly ever",
+            "always",
+            "occasionally",
+            "usually",
+            "never"
+          ],
+          "answer": [
+            "always",
+            "usually",
+            "occasionally",
+            "hardly ever",
+            "never"
+          ],
+          "explanation": "always ≈100% · usually ≈80% · occasionally ≈40% · hardly ever ≈15% · never 0%."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L09-E03",
+      "lessonCode": "SPK-P1-L09",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền trạng từ / cụm thói quen",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I ____ to take a short break after lunch.",
+          "blanks": [
+            {
+              "accept": [
+                "tend"
+              ]
+            }
+          ],
+          "explanation": "\"I tend to…\" — nghe tự nhiên hơn \"I usually\"."
+        },
+        {
+          "id": "g2",
+          "prompt": "I ____ ever go out on weeknights — maybe once a month.",
+          "blanks": [
+            {
+              "accept": [
+                "hardly"
+              ]
+            }
+          ],
+          "explanation": "\"hardly ever\" ≈ 15%."
+        },
+        {
+          "id": "g3",
+          "prompt": "A ten-minute walk is enough to ____ my energy.",
+          "blanks": [
+            {
+              "accept": [
+                "recharge"
+              ]
+            }
+          ],
+          "explanation": "\"recharge my energy\"."
+        },
+        {
+          "id": "g4",
+          "prompt": "Stepping away from my desk helps me ____ my head.",
+          "blanks": [
+            {
+              "accept": [
+                "clear"
+              ]
+            }
+          ],
+          "explanation": "\"clear my head\"."
+        },
+        {
+          "id": "g5",
+          "prompt": "I go clubbing once in a blue ____.",
+          "blanks": [
+            {
+              "accept": [
+                "moon"
+              ]
+            }
+          ],
+          "explanation": "\"once in a blue moon\" = rất hiếm khi."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L09-E04",
+      "lessonCode": "SPK-P1-L09",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa vị trí trạng từ tần suất",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I go usually to bed at eleven.",
+          "answer": "I usually go to bed at eleven.",
+          "explanation": "TRƯỚC động từ thường."
+        },
+        {
+          "id": "q2",
+          "prompt": "I am usually take a break after lunch.",
+          "answer": "I usually take a break after lunch.",
+          "explanation": "Thừa \"am\" — \"take\" là động từ thường."
+        },
+        {
+          "id": "q3",
+          "prompt": "Everyday I water my plants.",
+          "answer": "Every day I water my plants.",
+          "explanation": "\"every day\" (2 chữ) là trạng ngữ."
+        },
+        {
+          "id": "q4",
+          "prompt": "I hardly ever don't use social media.",
+          "answer": "I hardly ever use social media.",
+          "explanation": "\"hardly ever\" đã phủ định."
+        },
+        {
+          "id": "q5",
+          "prompt": "Occasionally, I am going to the park.",
+          "answer": "Occasionally, I go to the park.",
+          "explanation": "Thói quen → present simple, không phải continuous."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L09-E05",
+      "lessonCode": "SPK-P1-L09",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu \"How often…?\"",
+      "instruction": "Ghi âm câu trả lời theo khung Frequency → Context → Reason → Example. Không lặp trạng từ tần suất. ~20 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 10,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "How often do you go somewhere green — a park or a garden?"
+        },
+        {
+          "id": "s2",
+          "prompt": "How often do you take a break during the day?"
+        },
+        {
+          "id": "s3",
+          "prompt": "How often do you talk to your neighbours?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I'd say two or three times a week",
+          "whenever… / after…",
+          "tend to · occasionally · hardly ever"
+        ],
+        "checklist": [
+          "Có tần suất cụ thể, không nói chung chung",
+          "Trạng từ tần suất đúng vị trí",
+          "Có hoàn cảnh (when / whenever / after…)",
+          "Có 1 ví dụ cụ thể, dài khoảng 20 giây",
+          "Không lặp \"usually\" quá 1 lần"
+        ],
+        "commonErrors": [
+          "\"I go usually to school\" — sai vị trí trạng từ",
+          "\"I am usually go\" — thừa \"am\"",
+          "\"Everyday I go\" → \"Every day I go\"",
+          "Lặp \"usually\" 3–4 lần"
+        ],
+        "sampleAnswer": "Probably two or three times a day, though it varies. I tend to step away from my desk whenever I notice I've been reading the same sentence twice — that's usually the signal. A ten-minute walk is enough to recharge my energy, and honestly it saves me time in the long run. Having said that, on busy days I hardly ever manage it, which is probably how burnout starts."
+      }
+    },
+    {
+      "code": "SPK-P1-L10-E01",
+      "lessonCode": "SPK-P1-L10",
+      "order": 1,
+      "type": "mcq",
+      "title": "Kể chuyện mini về quá khứ",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khung mini-story 4 bước là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "WHEN → WHAT HAPPENED → HOW I FELT → WHAT I LEARNED"
+            },
+            {
+              "id": "B",
+              "text": "WHO → WHERE → WHY → WHEN"
+            },
+            {
+              "id": "C",
+              "text": "Intro → Body → Body → Conclusion"
+            },
+            {
+              "id": "D",
+              "text": "Problem → Cause → Effect → Solution"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bối cảnh → sự việc (chỉ MỘT) → cảm xúc → bài học."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "I use to go to school on foot."
+            },
+            {
+              "id": "B",
+              "text": "I used to go to school on foot."
+            },
+            {
+              "id": "C",
+              "text": "I am used to go to school on foot."
+            },
+            {
+              "id": "D",
+              "text": "I did used to go to school on foot."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Khẳng định: used to + V."
+        },
+        {
+          "id": "q3",
+          "prompt": "Phủ định của \"used to\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "I didn't used to go."
+            },
+            {
+              "id": "B",
+              "text": "I didn't use to go."
+            },
+            {
+              "id": "C",
+              "text": "I usen't to go."
+            },
+            {
+              "id": "D",
+              "text": "I don't used to go."
+            }
+          ],
+          "answer": "B",
+          "explanation": "didn't use to (bỏ -d)."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"would\" dùng cho thói quen quá khứ nhưng KHÔNG dùng cho:",
+          "options": [
+            {
+              "id": "A",
+              "text": "hành động lặp lại (She would tell me stories.)"
+            },
+            {
+              "id": "B",
+              "text": "trạng thái (I would be shy.)"
+            },
+            {
+              "id": "C",
+              "text": "thói quen hằng ngày"
+            },
+            {
+              "id": "D",
+              "text": "việc xảy ra nhiều lần"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Trạng thái → dùng \"used to\": I used to be shy."
+        },
+        {
+          "id": "q5",
+          "prompt": "Đuôi -ed nào phát âm là /ɪd/ (thêm một âm tiết)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "walked, finished, asked"
+            },
+            {
+              "id": "B",
+              "text": "lived, learned, called"
+            },
+            {
+              "id": "C",
+              "text": "visited, wanted, decided"
+            },
+            {
+              "id": "D",
+              "text": "enjoyed, played, stayed"
+            }
+          ],
+          "answer": "C",
+          "explanation": "/ɪd/ chỉ sau /t/ hoặc /d/."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L10-E02",
+      "lessonCode": "SPK-P1-L10",
+      "order": 2,
+      "type": "categorize",
+      "title": "Đuôi -ed: /t/, /d/ hay /ɪd/?",
+      "instruction": "Kéo mỗi động từ vào đúng cách phát âm đuôi -ed.",
+      "autoGrade": true,
+      "points": 12,
+      "categories": [
+        {
+          "id": "t",
+          "label": "/t/"
+        },
+        {
+          "id": "d",
+          "label": "/d/"
+        },
+        {
+          "id": "id",
+          "label": "/ɪd/"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "walked",
+          "category": "t"
+        },
+        {
+          "id": "c2",
+          "text": "finished",
+          "category": "t"
+        },
+        {
+          "id": "c3",
+          "text": "watched",
+          "category": "t"
+        },
+        {
+          "id": "c4",
+          "text": "lived",
+          "category": "d"
+        },
+        {
+          "id": "c5",
+          "text": "learned",
+          "category": "d"
+        },
+        {
+          "id": "c6",
+          "text": "enjoyed",
+          "category": "d"
+        },
+        {
+          "id": "c7",
+          "text": "visited",
+          "category": "id"
+        },
+        {
+          "id": "c8",
+          "text": "wanted",
+          "category": "id"
+        },
+        {
+          "id": "c9",
+          "text": "decided",
+          "category": "id"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L10-E03",
+      "lessonCode": "SPK-P1-L10",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cụm kể chuyện",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "When I was in secondary school, I ____ to visit an elderly neighbour every Sunday.",
+          "blanks": [
+            {
+              "accept": [
+                "used"
+              ]
+            }
+          ],
+          "explanation": "\"used to\" — thói quen quá khứ nay không còn."
+        },
+        {
+          "id": "g2",
+          "prompt": "I ____ one room full of old maps, and I spent almost the whole visit in there.",
+          "blanks": [
+            {
+              "accept": [
+                "remember"
+              ]
+            }
+          ],
+          "explanation": "\"I remember…\" mở phần WHAT HAPPENED."
+        },
+        {
+          "id": "g3",
+          "prompt": "At the ____, I found it fascinating.",
+          "blanks": [
+            {
+              "accept": [
+                "time"
+              ]
+            }
+          ],
+          "explanation": "\"At the time, I felt…\" — bước HOW I FELT."
+        },
+        {
+          "id": "g4",
+          "prompt": "____ back, I think those Sundays taught me a lot.",
+          "blanks": [
+            {
+              "accept": [
+                "Looking"
+              ]
+            }
+          ],
+          "explanation": "\"Looking back, …\" — bước WHAT I LEARNED."
+        },
+        {
+          "id": "g5",
+          "prompt": "That visit has ____ with me ever since.",
+          "blanks": [
+            {
+              "accept": [
+                "stuck"
+              ]
+            }
+          ],
+          "explanation": "\"it has stuck with me ever since\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L10-E04",
+      "lessonCode": "SPK-P1-L10",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi past simple / used to",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "I use to go to the museum with my school.",
+          "answer": "I used to go to the museum with my school.",
+          "explanation": "Khẳng định: used to + V."
+        },
+        {
+          "id": "q2",
+          "prompt": "I didn't used to like history.",
+          "answer": "I didn't use to like history.",
+          "explanation": "Sau \"didn't\" → use to (bỏ -d)."
+        },
+        {
+          "id": "q3",
+          "prompt": "Yes, I visited a museum. It was interesting. I go with my school.",
+          "answer": "Yes, I visited a museum. It was interesting, and I went with my school.",
+          "explanation": "Trộn thì — \"I go\" phải là \"I went\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "When I was young, I am very shy.",
+          "answer": "When I was young, I was very shy.",
+          "explanation": "Cả câu ở quá khứ → was."
+        },
+        {
+          "id": "q5",
+          "prompt": "I would be shy when I was a child.",
+          "answer": "I used to be shy when I was a child.",
+          "explanation": "\"would\" không dùng cho TRẠNG THÁI — dùng \"used to be\"."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L10-E05",
+      "lessonCode": "SPK-P1-L10",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: kể một câu chuyện nhỏ",
+      "instruction": "Ghi âm câu trả lời theo đủ 4 bước: When → What happened → How I felt → What I learned. Khoảng 25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Tell me about something you used to do when you were younger."
+        },
+        {
+          "id": "s2",
+          "prompt": "Tell me about a place you visited as a child."
+        },
+        {
+          "id": "s3",
+          "prompt": "Have you ever learned something from a much older person?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "When I was about ten… / A couple of years ago…",
+          "I remember… / What happened was…",
+          "At the time, I felt… → Looking back, …"
+        ],
+        "checklist": [
+          "Đủ 4 bước: When → What → How I felt → What I learned",
+          "Dùng đúng \"used to\" và past simple, thì nhất quán",
+          "Có ít nhất 1 câu cảm xúc (absolutely thrilled / completely absorbed…)",
+          "Có một câu bài học / nhận xét ở cuối",
+          "Đuôi -ed phát âm đúng (walked /t/, lived /d/, visited /ɪd/)"
+        ],
+        "commonErrors": [
+          "Trả lời \"Have you ever…?\" bằng \"Yes, I have.\" rồi dừng",
+          "\"I use to go\" → \"I used to go\"",
+          "Trộn thì: bắt đầu past simple rồi chuyển sang present",
+          "Chỉ kể sự việc, không có cảm xúc"
+        ],
+        "sampleAnswer": "A few times, yes. My school took us to the History Museum when I was about ten. I remember one room full of old maps — I spent almost the whole visit in there instead of following the group, and the teacher had to come and find me. I was completely absorbed; it was the first time history felt like something real rather than a subject I had to pass. Looking back, that's probably why I still can't walk past a secondhand map stall."
+      }
+    },
+    {
+      "code": "SPK-P1-L11-E01",
+      "lessonCode": "SPK-P1-L11",
+      "order": 1,
+      "type": "mcq",
+      "title": "Mô tả sự thay đổi",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khung trả lời câu \"How has X changed?\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Past → Present → Result"
+            },
+            {
+              "id": "B",
+              "text": "Opinion → Reason → Example"
+            },
+            {
+              "id": "C",
+              "text": "Location → Atmosphere → Facilities"
+            },
+            {
+              "id": "D",
+              "text": "When → What → How I felt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Trước đây → bây giờ → hệ quả của thay đổi."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "My hometown is changed a lot."
+            },
+            {
+              "id": "B",
+              "text": "My hometown has changed a lot."
+            },
+            {
+              "id": "C",
+              "text": "My hometown change a lot."
+            },
+            {
+              "id": "D",
+              "text": "My hometown was change a lot."
+            }
+          ],
+          "answer": "B",
+          "explanation": "present perfect, KHÔNG bị động (\"is changed\")."
+        },
+        {
+          "id": "q3",
+          "prompt": "Trạng từ mức độ nào MẠNH nhất?",
+          "options": [
+            {
+              "id": "A",
+              "text": "slightly"
+            },
+            {
+              "id": "B",
+              "text": "steadily"
+            },
+            {
+              "id": "C",
+              "text": "dramatically"
+            },
+            {
+              "id": "D",
+              "text": "marginally"
+            }
+          ],
+          "answer": "C",
+          "explanation": "dramatically / drastically = rất mạnh."
+        },
+        {
+          "id": "q4",
+          "prompt": "Cụm nào để nêu HỆ QUẢ?",
+          "options": [
+            {
+              "id": "A",
+              "text": "used to be"
+            },
+            {
+              "id": "B",
+              "text": "nowadays"
+            },
+            {
+              "id": "C",
+              "text": "as a result / which means…"
+            },
+            {
+              "id": "D",
+              "text": "there are far more…"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Bước RESULT: as a result / which means…"
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào ĐÚNG về nhấn mức độ trước so sánh hơn?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It has become more crowded more."
+            },
+            {
+              "id": "B",
+              "text": "It has become far more crowded than before."
+            },
+            {
+              "id": "C",
+              "text": "It has very changed."
+            },
+            {
+              "id": "D",
+              "text": "It is more crowded more and more."
+            }
+          ],
+          "answer": "B",
+          "explanation": "much / far / considerably + so sánh hơn."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L11-E02",
+      "lessonCode": "SPK-P1-L11",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối trạng từ mức độ với nghĩa",
+      "instruction": "Nối mỗi trạng từ mức độ với mô tả đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "dramatically",
+          "right": "thay đổi rất mạnh (House prices have risen dramatically.)"
+        },
+        {
+          "id": "m2",
+          "left": "considerably",
+          "right": "thay đổi mạnh (has changed considerably over the past few years)"
+        },
+        {
+          "id": "m3",
+          "left": "steadily",
+          "right": "thay đổi đều, trung bình (has grown steadily since 2015)"
+        },
+        {
+          "id": "m4",
+          "left": "slightly",
+          "right": "thay đổi nhẹ (has improved slightly)"
+        },
+        {
+          "id": "m5",
+          "left": "has stayed much the same",
+          "right": "gần như không đổi"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L11-E03",
+      "lessonCode": "SPK-P1-L11",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Chia thì đúng khi nói về thay đổi",
+      "instruction": "Điền dạng đúng của động từ / cụm còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "My neighbourhood ____ changed considerably over the past few years.",
+          "blanks": [
+            {
+              "accept": [
+                "has"
+              ]
+            }
+          ],
+          "explanation": "present perfect: has + V3."
+        },
+        {
+          "id": "g2",
+          "prompt": "There ____ to be a small cinema on that corner.",
+          "blanks": [
+            {
+              "accept": [
+                "used"
+              ]
+            }
+          ],
+          "explanation": "\"There used to be…\" — quá khứ."
+        },
+        {
+          "id": "g3",
+          "prompt": "These days there ____ far more high-rise buildings than before.",
+          "blanks": [
+            {
+              "accept": [
+                "are"
+              ]
+            }
+          ],
+          "explanation": "\"there are far more … than…\"."
+        },
+        {
+          "id": "g4",
+          "prompt": "The cost of living has ____ dramatically since I moved here.",
+          "blanks": [
+            {
+              "accept": [
+                "risen"
+              ]
+            }
+          ],
+          "explanation": "rise – rose – risen."
+        },
+        {
+          "id": "g5",
+          "prompt": "As a ____, a lot of young people have moved away.",
+          "blanks": [
+            {
+              "accept": [
+                "result"
+              ]
+            }
+          ],
+          "explanation": "\"As a result, …\" — nêu hệ quả."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L11-E04",
+      "lessonCode": "SPK-P1-L11",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa lỗi present perfect & so sánh",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "My hometown is changed a lot.",
+          "explanation": "present perfect chủ động, không bị động.",
+          "sampleAnswers": [
+            "My hometown has changed a lot."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "In the past, there is more trees.",
+          "explanation": "\"In the past\" → past simple: there were.",
+          "sampleAnswers": [
+            "In the past, there were more trees."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "It becomes more crowded more and more.",
+          "explanation": "Thừa \"more and more\"; dùng \"far more\" + present perfect.",
+          "sampleAnswers": [
+            "It has become far more crowded."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "It has very changed.",
+          "explanation": "Không dùng \"very\" với động từ — dùng trạng từ mức độ.",
+          "sampleAnswers": [
+            "It has changed dramatically."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L11-E05",
+      "lessonCode": "SPK-P1-L11",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: X đã thay đổi thế nào?",
+      "instruction": "Ghi âm câu trả lời theo đủ Past → Present → Result. Dùng đúng present perfect ít nhất 1 lần và ≥1 trạng từ mức độ. 20–25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "How has the way you study or work changed in the last few years?"
+        },
+        {
+          "id": "s2",
+          "prompt": "How has your hometown changed in recent years?"
+        },
+        {
+          "id": "s3",
+          "prompt": "How has the way people communicate changed?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "It used to be… → These days it has become…",
+          "has become increasingly… / there are far more/fewer…",
+          "As a result, … / which means…"
+        ],
+        "checklist": [
+          "Đủ Past → Present → Result",
+          "Dùng đúng present perfect ít nhất 1 lần",
+          "≥1 trạng từ mức độ (dramatically / considerably / steadily / slightly)",
+          "Có nêu HỆ QUẢ, không chỉ mô tả thay đổi",
+          "Dài 20–25 giây"
+        ],
+        "commonErrors": [
+          "\"My hometown is changed\" → has changed",
+          "\"In the past, there is more trees\" — sai thì",
+          "Chỉ mô tả thay đổi mà không nói hệ quả",
+          "\"It has very changed\" — dùng trạng từ mức độ thay cho \"very\""
+        ],
+        "sampleAnswer": "Quite dramatically, actually. When I was at primary school the road behind my house was still unpaved, and there were maybe two shops on the whole street. These days it has become increasingly built-up — there are three convenience stores within a hundred metres. As a result, it's far more convenient, but a lot of that close-knit feeling has gone, and I'm honestly not sure the trade-off has been worth it."
+      }
+    },
+    {
+      "code": "SPK-P1-L12-E01",
+      "lessonCode": "SPK-P1-L12",
+      "order": 1,
+      "type": "mcq",
+      "title": "Trả lời hai chiều",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Lỗi lớn nhất của học sinh khá khi trả lời hai chiều là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nêu cả hai mặt rồi KHÔNG chốt lập trường"
+            },
+            {
+              "id": "B",
+              "text": "Chốt quá nhanh"
+            },
+            {
+              "id": "C",
+              "text": "Dùng quá nhiều ví dụ"
+            },
+            {
+              "id": "D",
+              "text": "Nói quá to"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Giám khảo cần nghe lập trường cuối cùng của bạn."
+        },
+        {
+          "id": "q2",
+          "prompt": "Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Although it is noisy, but I like it."
+            },
+            {
+              "id": "B",
+              "text": "Although it is noisy, I like it."
+            },
+            {
+              "id": "C",
+              "text": "Although but it is noisy, I like it."
+            },
+            {
+              "id": "D",
+              "text": "It is noisy although but I like it."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"although\" + mệnh đề, KHÔNG kèm \"but\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Sau \"despite / in spite of\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "một mệnh đề (despite it is noisy)"
+            },
+            {
+              "id": "B",
+              "text": "danh từ hoặc V-ing (despite the noise / despite being noisy)"
+            },
+            {
+              "id": "C",
+              "text": "\"that\" + mệnh đề"
+            },
+            {
+              "id": "D",
+              "text": "một câu hỏi"
+            }
+          ],
+          "answer": "B",
+          "explanation": "despite + N / V-ing; although + mệnh đề."
+        },
+        {
+          "id": "q4",
+          "prompt": "Cụm nào dùng để CHỐT lập trường?",
+          "options": [
+            {
+              "id": "A",
+              "text": "On the one hand…"
+            },
+            {
+              "id": "B",
+              "text": "To be fair,…"
+            },
+            {
+              "id": "C",
+              "text": "So on balance, I'd say… / All things considered,…"
+            },
+            {
+              "id": "D",
+              "text": "For example,…"
+            }
+          ],
+          "answer": "C",
+          "explanation": "So on balance / All things considered / So overall, I'd say…"
+        },
+        {
+          "id": "q5",
+          "prompt": "\"It depends on…\" phải:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói trống: \"It depends.\""
+            },
+            {
+              "id": "B",
+              "text": "Kèm điều kiện cụ thể (It depends on what time of day you go.)"
+            },
+            {
+              "id": "C",
+              "text": "Luôn đứng cuối câu trả lời"
+            },
+            {
+              "id": "D",
+              "text": "Thay cho phần chốt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Luôn nêu rõ phụ thuộc vào cái gì."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L12-E02",
+      "lessonCode": "SPK-P1-L12",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối cấu trúc hai chiều với sắc thái",
+      "instruction": "Nối mỗi cấu trúc với sắc thái của nó.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "m1",
+          "left": "Yes, but…",
+          "right": "Đồng ý có điều kiện"
+        },
+        {
+          "id": "m2",
+          "left": "No, although…",
+          "right": "Không đồng ý nhưng vẫn công bằng với ý kia"
+        },
+        {
+          "id": "m3",
+          "left": "It depends on…",
+          "right": "Trung lập — PHẢI nêu điều kiện"
+        },
+        {
+          "id": "m4",
+          "left": "On the one hand… on the other hand…",
+          "right": "Cân bằng rõ ràng hai vế"
+        },
+        {
+          "id": "m5",
+          "left": "To be fair, …",
+          "right": "Thừa nhận ý đối lập có lý"
+        },
+        {
+          "id": "m6",
+          "left": "So on balance, I'd say…",
+          "right": "Câu CHỐT lập trường cuối cùng"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L12-E03",
+      "lessonCode": "SPK-P1-L12",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cấu trúc hai chiều & cụm chốt",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "____ said that, after an hour I start to feel overwhelmed.",
+          "blanks": [
+            {
+              "accept": [
+                "Having"
+              ]
+            }
+          ],
+          "explanation": "\"Having said that, …\" — đảo chiều."
+        },
+        {
+          "id": "g2",
+          "prompt": "On the one hand it's convenient; on the ____ hand, it's exhausting.",
+          "blanks": [
+            {
+              "accept": [
+                "other"
+              ]
+            }
+          ],
+          "explanation": "Vế hai phải là \"on the other hand\"."
+        },
+        {
+          "id": "g3",
+          "prompt": "To be ____, the rules are there for a reason.",
+          "blanks": [
+            {
+              "accept": [
+                "fair"
+              ]
+            }
+          ],
+          "explanation": "\"To be fair, …\" — thừa nhận ý đối lập."
+        },
+        {
+          "id": "g4",
+          "prompt": "So on ____, I'd say I like them in small doses.",
+          "blanks": [
+            {
+              "accept": [
+                "balance"
+              ]
+            }
+          ],
+          "explanation": "\"So on balance, …\" — câu chốt."
+        },
+        {
+          "id": "g5",
+          "prompt": "It depends ____ what time of day you go.",
+          "blanks": [
+            {
+              "accept": [
+                "on"
+              ]
+            }
+          ],
+          "explanation": "\"It depends on…\" + điều kiện."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L12-E04",
+      "lessonCode": "SPK-P1-L12",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi câu nhượng bộ",
+      "instruction": "Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Although it is noisy, but I like it.",
+          "answer": "Although it is noisy, I like it.",
+          "accept": [
+            "It is noisy, but I like it."
+          ],
+          "explanation": "Chỉ dùng MỘT trong \"although\" / \"but\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "Despite it is noisy, I enjoy living there.",
+          "answer": "Despite the noise, I enjoy living there.",
+          "accept": [
+            "Despite being noisy, I enjoy living there."
+          ],
+          "explanation": "despite + danh từ / V-ing."
+        },
+        {
+          "id": "q3",
+          "prompt": "On the one hand it is cheap. On the one hand it is slow.",
+          "answer": "On the one hand it is cheap; on the other hand, it is slow.",
+          "explanation": "Vế hai là \"on the other hand\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Yes and no.",
+          "answer": "It depends on how long I have to stay.",
+          "explanation": "\"Yes and no\" / \"It depends\" nói trống — thêm điều kiện."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L12-E05",
+      "lessonCode": "SPK-P1-L12",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: trả lời câu hỏi có tính đánh giá",
+      "instruction": "Ghi âm câu trả lời theo khung Mặt A → Mặt B → CHỐT. Phải kết bằng một cụm chốt lập trường. ~25 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 15,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Are rules at school necessary?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you like crowded places?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Do you mind lending things to friends?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I do enjoy … to a point / to a point, yes",
+          "Having said that, … / To be fair, …",
+          "So on balance, I'd say… / All things considered, …"
+        ],
+        "checklist": [
+          "Nêu đủ hai mặt (A và B)",
+          "Có 1 cấu trúc nhượng bộ (although / having said that / to be fair)",
+          "KẾT bằng một cụm CHỐT lập trường",
+          "Không nói \"It depends\" mà bỏ trống điều kiện",
+          "Dài khoảng 25 giây"
+        ],
+        "commonErrors": [
+          "Nêu hai mặt rồi không chốt lập trường",
+          "\"Although it is noisy, but I like it\" — dùng cả hai",
+          "\"On the one hand… on the one hand…\"",
+          "Cân bằng đến mức không có ý kiến nào cả"
+        ],
+        "sampleAnswer": "Honestly, it depends on why I'm there. If I'm out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I'm just trying to get somewhere, the same crowd is exhausting; I'll happily walk an extra ten minutes to avoid the main road at rush hour. So on balance, I'd say I like crowds when they're part of the experience, not when they're an obstacle."
+      }
+    },
+    {
+      "code": "SPK-P1-L13-E01",
+      "lessonCode": "SPK-P1-L13",
+      "order": 1,
+      "type": "mcq",
+      "title": "Xử lý câu hỏi bất ngờ",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Khi gặp chủ đề chưa từng học, điều TUYỆT ĐỐI không được làm là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dùng filler để câu giờ 2 giây"
+            },
+            {
+              "id": "B",
+              "text": "Nói \"I don't know\" / \"I have no idea\" rồi im"
+            },
+            {
+              "id": "C",
+              "text": "Nói về một người quen"
+            },
+            {
+              "id": "D",
+              "text": "Đoán có căn cứ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Giám khảo chấm NGÔN NGỮ, không chấm kiến thức — vẫn phải nói tiếp."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"Chiến lược 1 — thú nhận rồi rẽ hướng\" bắt đầu bằng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "I've never really been into…, but…"
+            },
+            {
+              "id": "B",
+              "text": "In conclusion,…"
+            },
+            {
+              "id": "C",
+              "text": "For example,…"
+            },
+            {
+              "id": "D",
+              "text": "Firstly,… Secondly,…"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Thú nhận chưa biết → nói về thứ liên quan mà bạn CÓ biết."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"If I had to guess, I'd say…\" là chiến lược:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Nói về người khác"
+            },
+            {
+              "id": "B",
+              "text": "Đoán có căn cứ"
+            },
+            {
+              "id": "C",
+              "text": "Thú nhận rồi im"
+            },
+            {
+              "id": "D",
+              "text": "Đổi câu hỏi"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Đưa một phỏng đoán hợp lý kèm lý do."
+        },
+        {
+          "id": "q4",
+          "prompt": "Câu điều kiện loại 2 dùng cho giả định là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "If + present simple, will + V"
+            },
+            {
+              "id": "B",
+              "text": "If + past simple, would + V"
+            },
+            {
+              "id": "C",
+              "text": "If + would + V, past simple"
+            },
+            {
+              "id": "D",
+              "text": "If + will + V, would + V"
+            }
+          ],
+          "answer": "B",
+          "explanation": "If I had more free time, I would take up gardening."
+        },
+        {
+          "id": "q5",
+          "prompt": "Vì sao cả khoá gộp chủ đề theo KỸ NĂNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Để học ít từ hơn"
+            },
+            {
+              "id": "B",
+              "text": "Để bộ từ vựng đã học dùng được cho chủ đề CHƯA học"
+            },
+            {
+              "id": "C",
+              "text": "Để tiết kiệm thời gian của giáo viên"
+            },
+            {
+              "id": "D",
+              "text": "Để thi nhanh hơn"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Một bộ từ vựng dùng cho nhiều chủ đề — đây là kỹ năng quan trọng nhất."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L13-E02",
+      "lessonCode": "SPK-P1-L13",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối chiến lược cứu nguy với cụm mở đầu",
+      "instruction": "Nối mỗi chiến lược với cụm mở đầu tương ứng.",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "m1",
+          "left": "1. Thú nhận rồi rẽ hướng",
+          "right": "I've never really been into…, but…"
+        },
+        {
+          "id": "m2",
+          "left": "2. Nói về người khác",
+          "right": "I don't, but my sister does — she…"
+        },
+        {
+          "id": "m3",
+          "left": "3. Đoán có căn cứ",
+          "right": "If I had to guess, I'd say…"
+        },
+        {
+          "id": "m4",
+          "left": "4. Nhìn từ góc khác",
+          "right": "I can see why some people…"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L13-E03",
+      "lessonCode": "SPK-P1-L13",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền cụm mở đầu cho chủ đề lạ",
+      "instruction": "Điền từ còn thiếu.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "g1",
+          "prompt": "I've never really been ____ collecting things, to be honest.",
+          "blanks": [
+            {
+              "accept": [
+                "into"
+              ]
+            }
+          ],
+          "explanation": "\"be into something\" = thích/quan tâm."
+        },
+        {
+          "id": "g2",
+          "prompt": "It's not something I've thought ____ much, but…",
+          "blanks": [
+            {
+              "accept": [
+                "about"
+              ]
+            }
+          ],
+          "explanation": "\"thought about\"."
+        },
+        {
+          "id": "g3",
+          "prompt": "If I had to ____, I'd say it would be books.",
+          "blanks": [
+            {
+              "accept": [
+                "guess",
+                "choose",
+                "pick"
+              ]
+            }
+          ],
+          "explanation": "\"If I had to guess/choose, I'd say…\"."
+        },
+        {
+          "id": "g4",
+          "prompt": "I can see ____ some people enjoy it.",
+          "blanks": [
+            {
+              "accept": [
+                "why"
+              ]
+            }
+          ],
+          "explanation": "\"I can see why some people…\" — nhìn từ góc khác."
+        },
+        {
+          "id": "g5",
+          "prompt": "I ____ it would be quite relaxing, actually.",
+          "blanks": [
+            {
+              "accept": [
+                "suppose"
+              ]
+            }
+          ],
+          "explanation": "\"I suppose…\" — giọng không chắc chắn, rất tự nhiên."
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L13-E04",
+      "lessonCode": "SPK-P1-L13",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Sửa câu điều kiện loại 2 & câu \"bí ý\"",
+      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "autoGrade": true,
+      "points": 8,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "If I would have time, I would take up gardening.",
+          "explanation": "Mệnh đề \"if\" dùng past simple, không \"would\".",
+          "sampleAnswers": [
+            "If I had time, I would take up gardening."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "No. I don't know about stamps. Sorry.",
+          "explanation": "Không nói \"I don't know\" rồi dừng — dùng chiến lược cứu nguy.",
+          "sampleAnswers": [
+            "Well, I've never really been into collecting things, but my uncle collects old coins."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "If I was you, I wouldn't worry about it.",
+          "explanation": "\"were\" cho mọi ngôi — trang trọng hơn \"was\".",
+          "sampleAnswers": [
+            "If I were you, I wouldn't worry about it.",
+            "If I was you, I wouldn't worry about it."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "I have no experience about that.",
+          "explanation": "Thừa nhận rồi vẫn nói tiếp.",
+          "sampleAnswers": [
+            "It's not something I've thought about much, but I suppose it could be interesting."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L13-E05",
+      "lessonCode": "SPK-P1-L13",
+      "order": 5,
+      "type": "speaking_response",
+      "title": "Nói: chủ đề bất ngờ",
+      "instruction": "Ghi âm câu trả lời NGAY, chỉ 5 giây suy nghĩ. Không nói \"I don't know\". Dùng ít nhất 1 chiến lược cứu nguy. ~15–20 giây.",
+      "autoGrade": false,
+      "points": 10,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 5,
+      "items": [
+        {
+          "id": "s1",
+          "prompt": "Do you ever write letters by hand?"
+        },
+        {
+          "id": "s2",
+          "prompt": "Do you enjoy collecting stamps or coins?"
+        },
+        {
+          "id": "s3",
+          "prompt": "Are you interested in astronomy?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "I've never really been into…, but…",
+          "If I had to guess, I'd say… / I suppose…",
+          "I can see why some people…"
+        ],
+        "checklist": [
+          "Bắt đầu nói trong 3 giây — không im",
+          "Dùng ít nhất 1 chiến lược cứu nguy (thú nhận rồi rẽ hướng / nói về người khác / đoán / góc khác)",
+          "Mượn ít nhất 1 cụm từ vựng của bài khác",
+          "Không nói \"I don't know\" / \"I have no idea\"",
+          "Dài 15–20 giây, mạch lạc"
+        ],
+        "commonErrors": [
+          "Nói \"I don't know\" hoặc \"I have no idea\" rồi im",
+          "Im lặng 5–8 giây trước khi nói",
+          "Bịa một câu trả lời dài dòng nhưng lạc đề",
+          "\"If I would have time…\" → \"If I had time…\""
+        ],
+        "sampleAnswer": "Well… stamps specifically, no — it's not something I've ever thought about much. But I can see the appeal: my uncle collects old coins, and watching him sort through them is oddly calming, a bit like gardening. If I had to pick something myself, it'd probably be books — I've got about three hundred at home, which I suppose technically makes me a collector already."
+      }
+    },
+    {
+      "code": "SPK-P1-L14-E01",
+      "lessonCode": "SPK-P1-L14",
+      "order": 1,
+      "type": "mcq",
+      "title": "Phiếu chấm — 4 tiêu chí IELTS Speaking",
+      "instruction": "Chọn đáp án đúng để biết giám khảo nghe gì ở mỗi tiêu chí.",
+      "autoGrade": true,
+      "points": 10,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Ở tiêu chí Fluency, giám khảo muốn nghe:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Không im quá 3 giây; có filler tự nhiên; câu trả lời 15–25 giây"
+            },
+            {
+              "id": "B",
+              "text": "Nói thật nhanh, không nghỉ"
+            },
+            {
+              "id": "C",
+              "text": "Dùng thật nhiều từ nối"
+            },
+            {
+              "id": "D",
+              "text": "Đọc thuộc trơn tru"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q2",
+          "prompt": "Ở tiêu chí Vocabulary, dấu hiệu TỐT là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Lặp cùng một tính từ nhiều lần"
+            },
+            {
+              "id": "B",
+              "text": "Có ≥3 target phrases; không dùng \"very + tính từ trống\""
+            },
+            {
+              "id": "C",
+              "text": "Nhồi từ khó không đúng ngữ cảnh"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ dùng \"good / nice / beautiful\""
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q3",
+          "prompt": "Ở tiêu chí Grammar, giám khảo kiểm tra:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Giọng có hay không"
+            },
+            {
+              "id": "B",
+              "text": "Đúng thì; đuôi -s và -ed; trạng từ đúng vị trí; có câu ghép"
+            },
+            {
+              "id": "C",
+              "text": "Tốc độ nói"
+            },
+            {
+              "id": "D",
+              "text": "Số lượng ví dụ"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q4",
+          "prompt": "Ở tiêu chí Pronunciation, giám khảo nghe:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Trọng âm từ đúng; xuống giọng cuối câu khẳng định; nối âm cơ bản"
+            },
+            {
+              "id": "B",
+              "text": "Giọng bản xứ hoàn hảo, không được có accent"
+            },
+            {
+              "id": "C",
+              "text": "Nói to nhất có thể"
+            },
+            {
+              "id": "D",
+              "text": "Đọc từng từ tách rời"
+            }
+          ],
+          "answer": "A"
+        },
+        {
+          "id": "q5",
+          "prompt": "Ở phần Structure, một câu trả lời tốt cần:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Chỉ Opinion"
+            },
+            {
+              "id": "B",
+              "text": "Opinion + Reason + Example; có chốt lập trường khi câu hỏi có tính đánh giá"
+            },
+            {
+              "id": "C",
+              "text": "Càng nhiều ý càng tốt, không cần phát triển"
+            },
+            {
+              "id": "D",
+              "text": "Luôn dài trên 45 giây"
+            }
+          ],
+          "answer": "B"
+        },
+        {
+          "id": "q6",
+          "prompt": "Sau mock test, khi nào bạn sẵn sàng sang Phần II (Part 2)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Khi đạt ≥4/5 tiêu chí ở phiếu chấm"
+            },
+            {
+              "id": "B",
+              "text": "Ngay lập tức, bất kể kết quả"
+            },
+            {
+              "id": "C",
+              "text": "Khi học thuộc được 10 bài mẫu"
+            },
+            {
+              "id": "D",
+              "text": "Khi nói được trên 60 giây mỗi câu"
+            }
+          ],
+          "answer": "A"
+        }
+      ]
+    },
+    {
+      "code": "SPK-P1-L14-E02",
+      "lessonCode": "SPK-P1-L14",
+      "order": 2,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test A",
+      "instruction": "Điều kiện thi: KHÔNG dừng để hỏi từ vựng. Ghi âm liên tục, trả lời lần lượt từng câu như một bộ Part 1 thật (khoảng 4–5 phút). AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 5,
+      "items": [
+        {
+          "id": "a1",
+          "prompt": "Work / Study — Are you a student or do you work?"
+        },
+        {
+          "id": "a2",
+          "prompt": "Work / Study — Why did you choose that?"
+        },
+        {
+          "id": "a3",
+          "prompt": "Work / Study — What do you do on a typical day?"
+        },
+        {
+          "id": "a4",
+          "prompt": "Work / Study — Would you change it if you could?"
+        },
+        {
+          "id": "a5",
+          "prompt": "Hometown — Where is your hometown?"
+        },
+        {
+          "id": "a6",
+          "prompt": "Hometown — What is it known for?"
+        },
+        {
+          "id": "a7",
+          "prompt": "Hometown — Has it changed much in recent years?"
+        },
+        {
+          "id": "a8",
+          "prompt": "Hometown — Would you like to live there in the future?"
+        },
+        {
+          "id": "a9",
+          "prompt": "Taking a break — How often do you take breaks during the day?"
+        },
+        {
+          "id": "a10",
+          "prompt": "Taking a break — What do you usually do to relax?"
+        },
+        {
+          "id": "a11",
+          "prompt": "Taking a break — Do you think people take enough breaks?"
+        },
+        {
+          "id": "a12",
+          "prompt": "Taking a break — Did you relax differently when you were younger?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "O.R.E. mỗi câu",
+          "filler tự nhiên, không im quá 3 giây",
+          "các khung: WHERE+HOW LONG+WHAT · Past→Present→Result · Frequency→Context→Reason→Example"
+        ],
+        "checklist": [
+          "Fluency: không im quá 3 giây; mỗi câu 15–25 giây",
+          "Vocabulary: ≥3 target phrases xuyên suốt; không lặp một tính từ; không \"very + tính từ trống\"",
+          "Grammar: đúng thì; đuôi -s và -ed; trạng từ đúng vị trí; có câu ghép",
+          "Pronunciation: trọng âm từ đúng; xuống giọng cuối câu khẳng định; nối âm cơ bản",
+          "Structure: mỗi câu có Opinion + Reason + Example; câu đánh giá có chốt lập trường"
+        ],
+        "commonErrors": [
+          "Dừng giữa chừng để hỏi từ vựng",
+          "Trả lời cụt hoặc dài như Part 2",
+          "Trộn thì giữa các câu",
+          "Đọc thuộc lòng — giọng đều đều"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở các buổi 5, 6 và 9 (Work/Study, Hometown, Habits) — mỗi câu trả lời đủ O.R.E., đúng khung của chủ đề, có 1 chi tiết cá nhân thật và 1 ý đối lập ở cuối khi câu hỏi mang tính đánh giá."
+      }
+    },
+    {
+      "code": "SPK-P1-L14-E03",
+      "lessonCode": "SPK-P1-L14",
+      "order": 3,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test B",
+      "instruction": "Ghi âm liên tục, trả lời lần lượt từng câu như một bộ Part 1 thật. Không dừng lại. AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 5,
+      "items": [
+        {
+          "id": "b1",
+          "prompt": "Work / Study — Do you work or are you a student?"
+        },
+        {
+          "id": "b2",
+          "prompt": "Work / Study — What do you like best about it?"
+        },
+        {
+          "id": "b3",
+          "prompt": "Work / Study — Is it what you expected?"
+        },
+        {
+          "id": "b4",
+          "prompt": "Work / Study — What are your plans afterwards?"
+        },
+        {
+          "id": "b5",
+          "prompt": "Home / Area — Can you describe the place where you live?"
+        },
+        {
+          "id": "b6",
+          "prompt": "Home / Area — What do you like about your neighbourhood?"
+        },
+        {
+          "id": "b7",
+          "prompt": "Home / Area — Are there enough public spaces nearby?"
+        },
+        {
+          "id": "b8",
+          "prompt": "Home / Area — Would you like to move somewhere else?"
+        },
+        {
+          "id": "b9",
+          "prompt": "Shoes / Clothes — Do you prefer comfortable or stylish shoes?"
+        },
+        {
+          "id": "b10",
+          "prompt": "Shoes / Clothes — How often do you buy new clothes?"
+        },
+        {
+          "id": "b11",
+          "prompt": "Shoes / Clothes — Have your tastes changed over the years?"
+        },
+        {
+          "id": "b12",
+          "prompt": "Shoes / Clothes — Do you think people spend too much on clothes?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Location → Atmosphere → Facilities → Opinion",
+          "prefer A to B / I'd rather … than …",
+          "Past → Present → Result với present perfect"
+        ],
+        "checklist": [
+          "Fluency: không im quá 3 giây; mỗi câu 15–25 giây",
+          "Vocabulary: ≥3 target phrases; không lặp một tính từ; không dùng \"boring\"",
+          "Grammar: đúng cấu trúc preference; present perfect cho thay đổi; đúng thì",
+          "Pronunciation: trọng âm đúng (caREER PROSpects…); xuống giọng cuối câu",
+          "Structure: mỗi câu có O.R.E.; câu \"too much\" có chốt lập trường"
+        ],
+        "commonErrors": [
+          "\"I prefer X more than Y\" → I prefer X to Y",
+          "Mô tả nơi ở chỉ bằng tính từ, không có sự vật cụ thể",
+          "\"My tastes is changed\" → have changed",
+          "Nêu hai mặt rồi không chốt"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở các buổi 7, 8 và 11 (Places, Preferences, Changes) — đủ 4 lớp mô tả, cấu trúc so sánh / preference đúng, present perfect khi nói về thay đổi, và câu chốt khi câu hỏi mang tính đánh giá."
+      }
+    },
+    {
+      "code": "SPK-P1-L14-E04",
+      "lessonCode": "SPK-P1-L14",
+      "order": 4,
+      "type": "speaking_response",
+      "title": "THI THỬ — Test C (có chủ đề bất ngờ)",
+      "instruction": "Ghi âm liên tục. Nhóm chủ đề cuối (Art) là chủ đề bất ngờ — dùng chiến lược cứu nguy, KHÔNG nói \"I don't know\". AI chấm theo 4 tiêu chí.",
+      "autoGrade": false,
+      "points": 12,
+      "speakingPart": 1,
+      "speakingPrepSeconds": 5,
+      "items": [
+        {
+          "id": "c1",
+          "prompt": "Work / Study — Are you working or studying at the moment?"
+        },
+        {
+          "id": "c2",
+          "prompt": "Work / Study — How long have you been doing that?"
+        },
+        {
+          "id": "c3",
+          "prompt": "Work / Study — What is the most difficult part?"
+        },
+        {
+          "id": "c4",
+          "prompt": "Work / Study — Do you get on well with the people there?"
+        },
+        {
+          "id": "c5",
+          "prompt": "Crowded places — Do you like crowded places?"
+        },
+        {
+          "id": "c6",
+          "prompt": "Crowded places — When was the last time you were somewhere very busy?"
+        },
+        {
+          "id": "c7",
+          "prompt": "Crowded places — Do you avoid certain places at certain times?"
+        },
+        {
+          "id": "c8",
+          "prompt": "Crowded places — Has your city become more crowded?"
+        },
+        {
+          "id": "c9",
+          "prompt": "Surprise topic (Art) — Do you like art?"
+        },
+        {
+          "id": "c10",
+          "prompt": "Surprise topic (Art) — Did you do art at school?"
+        },
+        {
+          "id": "c11",
+          "prompt": "Surprise topic (Art) — Are there many galleries where you live?"
+        },
+        {
+          "id": "c12",
+          "prompt": "Surprise topic (Art) — Do you think art should be taught to every child?"
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "How long have you…? → present perfect: I've been … for/since",
+          "Yes, but… / It depends on… → So on balance, …",
+          "I've never really been into…, but… / I can see why some people…"
+        ],
+        "checklist": [
+          "Fluency: bắt đầu nói trong 3 giây kể cả ở chủ đề bất ngờ",
+          "Vocabulary: mượn từ vựng bài khác cho chủ đề Art; ≥3 target phrases toàn bài",
+          "Grammar: present perfect với \"How long…?\"; câu điều kiện loại 2 khi giả định",
+          "Pronunciation: xuống giọng cuối câu; nối âm; không \"ừm\" tiếng Việt",
+          "Structure: câu đánh giá (\"should be taught to every child\") có chốt lập trường"
+        ],
+        "commonErrors": [
+          "Nói \"I don't know\" ở nhóm chủ đề Art rồi im",
+          "\"I have been doing that since 2 years\" → for two years",
+          "Trả lời hai chiều mà không chốt",
+          "Im lặng dài trước khi bắt đầu"
+        ],
+        "sampleAnswer": "Tham khảo bài mẫu Band 7 ở các buổi 12 và 13 (Balanced answers, Surprise questions) — với nhóm Art, thú nhận thẳng rồi rẽ hướng sang thứ liên quan bạn có biết, mượn cụm \"cultural heritage / interactive displays\" của buổi 7, và chốt lập trường ở câu cuối."
+      }
+    }
+  ]
+}

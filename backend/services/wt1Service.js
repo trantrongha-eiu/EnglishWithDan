@@ -16,10 +16,11 @@ const grading = require('./wt1GradingService');
 
 const COURSE_CODE = 'IELTS-W-T1';
 // The WT1 stack is course-agnostic — the same models / routes / grading /
-// page shell serve every "writing course". Add a code here to spin up a new
-// one (currently: Task 1 Writing + Task 2 Writing). Anything not in this set
-// falls back to Task 1.
-const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2']);
+// page shell serve every course built on it (Task 1 Writing, Task 2 Writing,
+// and the Speaking course, which adds the speaking_response exercise type —
+// see wt1.controller.submitSpeaking). Add a code here to spin up a new one.
+// Anything not in this set falls back to Task 1.
+const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
 function resolveCourse(code) { return COURSES.has(code) ? code : COURSE_CODE; }
 
 function gateDefaults(g = {}) {
@@ -49,6 +50,15 @@ function sanitizeExercise(ex) {
       scoring: ex.rubric.scoring || [], bandFocus: ex.rubric.bandFocus || [],
     }
     : undefined;
+
+  // speaking_response has no auto-graded answer key to protect — the
+  // student records a spoken answer and Gemini bands it — so the Band 7
+  // model answer and the common-errors list stay visible as learning aids
+  // (same call the frontend's "Xem bài mẫu Band 7" panel reads).
+  if (rubric && ex.type === 'speaking_response') {
+    rubric.sampleAnswer = ex.rubric.sampleAnswer || '';
+    rubric.commonErrors = ex.rubric.commonErrors || [];
+  }
 
   const items = (ex.items || []).map((it) => {
     const base = { id: it.id, prompt: it.prompt };
@@ -81,6 +91,7 @@ function sanitizeExercise(ex) {
     title: ex.title, titleEn: ex.titleEn, instruction: ex.instruction,
     difficulty: ex.difficulty, estimatedMinutes: ex.estimatedMinutes, points: ex.points,
     autoGrade: ex.autoGrade, timerMinutes: ex.timerMinutes,
+    speakingPart: ex.speakingPart || null, speakingPrepSeconds: ex.speakingPrepSeconds || 0,
     stimulus: ex.stimulus || null, wordBank: ex.wordBank || [],
     categories: ex.categories || [], responseSlots: ex.responseSlots || 0,
     items, rubric,

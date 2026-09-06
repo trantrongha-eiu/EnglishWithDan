@@ -46,6 +46,9 @@ router.get('/overview',        auth, premiumOnly, ctrl.getOverview);
 router.get('/lesson/:code',    auth, premiumOnly, ctrl.getLesson);
 router.post('/check',          auth, premiumOnly, checkLimiter, ctrl.check);
 router.post('/submit-writing', auth, premiumOnly, writeLimiter, ctrl.submitWriting);
+// speaking_response exercises (Speaking course) — also a real per-call
+// Gemini cost, so it shares /submit-writing's hard rate limit.
+router.post('/submit-speaking', auth, premiumOnly, writeLimiter, ctrl.submitSpeaking);
 
 // ── progress / review (auth only) ──────────────────────────────────
 router.get('/progress',            auth, ctrl.getProgress);

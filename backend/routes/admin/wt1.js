@@ -17,8 +17,8 @@ const { EXERCISE_TYPES } = WT1Exercise;
 const router = express.Router();
 const COURSE = 'IELTS-W-T1';
 // The WT1 admin CRUD is course-agnostic too — same models/routes serve
-// every "writing course" (currently Task 1 Writing + Task 2 Writing).
-const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2']);
+// every course built on the stack (Task 1 Writing, Task 2 Writing, Speaking).
+const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
 function resolveCourse(code) { return COURSES.has(code) ? code : COURSE; }
 
 // ── validation (mirrors seedWritingTask1Course.js's validate()) ───────
