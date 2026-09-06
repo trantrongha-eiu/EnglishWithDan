@@ -14,11 +14,17 @@
 // word (an-array-of-english-words) AND NOT in the KNOWN_PROPER allowlist
 // below AND (when a corpus lexicon is supplied) never seen lowercase there.
 
+// Vendored English word list (services/data/englishWords.json — every
+// lowercase 2-18 letter word from an-array-of-english-words). Kept as a
+// committed data file rather than an npm dependency so it can't drift the
+// lockfile / break `npm ci` on CI, and behaves identically on every
+// platform. Used only to tell a real word ("hemisphere", "prescription")
+// from an opaque name ("Bishlama", "Wivenhoe").
 let ENGLISH;
 try {
-  ENGLISH = new Set(require('an-array-of-english-words'));
+  ENGLISH = new Set(require('./data/englishWords.json'));
 } catch (_) {
-  ENGLISH = new Set(); // dependency missing → fall back to allowlist + lexicon only
+  ENGLISH = new Set(); // list missing → fall back to allowlist + lexicon only
 }
 
 // letter-by-letter spelling: "W-O-O-D", "W O O D", "K-I-double-P-A-X"
