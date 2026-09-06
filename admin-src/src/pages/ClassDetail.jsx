@@ -838,7 +838,12 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const [speakTopics, setSpeakTopics] = useState([]);
 
   useEffect(() => {
-    if (cat !== 'speaking') { setSpeakTopics([]); return; }
+    // No synchronous setState here for the cat !== 'speaking' case — that's
+    // handled by the category <select>'s onChange (which already resets
+    // speakPart/speakTopic) also clearing speakTopics directly, so this
+    // effect body only ever does its state update inside the async
+    // apiFetch callback below.
+    if (cat !== 'speaking') return;
     let alive = true;
     const qs = speakPart ? `?part=${speakPart}` : '';
     apiFetch(`/speaking/topics${qs}`)
@@ -951,7 +956,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>
             <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => { setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); }}>
+              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => { setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); }}>
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
               <input className="form-input" style={{ flex: 1, minWidth: 140 }} placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
