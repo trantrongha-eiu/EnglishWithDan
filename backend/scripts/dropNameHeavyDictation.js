@@ -1,6 +1,10 @@
 // One-off migration: drop dictation sentences that hinge on an unspellable
 // proper name.
 //
+// SUPERSEDED by scripts/rebuildDictationSentences.js (2026-09), which folds
+// this same name filter (dictationNameFilter) into a fuller rebuild. Kept
+// for history; prefer the rebuild script.
+//
 // A dictation exercise checks exact spelling of what you heard. A sentence
 // built around an invented/foreign place or person name ("Bishlama",
 // "Wivenhoe", "Antikythera", "Santander", "Prensky") or one that spells a

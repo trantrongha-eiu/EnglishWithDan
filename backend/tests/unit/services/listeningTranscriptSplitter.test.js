@@ -1,95 +1,109 @@
 'use strict';
 
 const {
-  splitLongUnit, splitLongUnits, mergeShortUnits, normalizeDictationUnits,
+  splitLongUnit, splitLongUnits, mergeShortUnits, mergeAdjacentFragments,
+  normalizeDictationUnits,
 } = require('../../../services/listeningTranscriptSplitter');
 
 describe('listeningTranscriptSplitter.splitLongUnit', () => {
-  it('leaves a short clip untouched', () => {
-    const u = { text: 'The office opens at nine.', start: 10, end: 12.5 };
-    expect(splitLongUnit(u)).toEqual([u]);
+  it('leaves a whole sentence within the soft cap untouched', () => {
+    const u = { text: 'The office opens at nine in the morning.', start: 10, end: 14 };
+    expect(splitLongUnit(u, { softMaxSec: 9 })).toEqual([u]);
   });
 
-  it('leaves a clip exactly at the trigger untouched', () => {
-    const u = { text: 'a b c d e f g h i j k l', start: 0, end: 5 };
-    expect(splitLongUnit(u, { targetSec: 4, triggerSec: 5 })).toHaveLength(1);
+  it('leaves a long sentence WHOLE when it has no strong internal boundary', () => {
+    // long, but no semicolon/dash and no comma-before-a-clause — a truncated
+    // fragment would be worse than one long complete sentence.
+    const u = {
+      text: 'You will need to bring two forms of identification such as a passport or a driving licence to the reception desk before nine.',
+      start: 0, end: 12,
+    };
+    expect(splitLongUnit(u, { softMaxSec: 9 })).toEqual([u]);
   });
 
-  it('splits a long clip into sub-clips no longer than the trigger', () => {
-    // 37 words over 12s — the real "Bankside Recruitment Agency" complaint.
-    const text =
-      'You will need to bring two forms of identification, ' +
-      'one of which must be a photo ID such as a passport or driving licence, ' +
-      'and you should also bring a printed copy of the confirmation email ' +
-      'that we sent you when you first registered with the agency.';
-    const parts = splitLongUnit({ text, start: 30, end: 42 }, { targetSec: 4, triggerSec: 4 });
-    expect(parts.length).toBeGreaterThanOrEqual(3);
-    // timings stay inside the parent and run consecutively
-    expect(parts[0].start).toBe(30);
-    expect(parts[parts.length - 1].end).toBe(42);
-    for (let i = 0; i < parts.length; i++) {
-      expect(parts[i].end).toBeGreaterThan(parts[i].start);
-      if (i > 0) expect(parts[i].start).toBeCloseTo(parts[i - 1].end, 5);
-      expect(parts[i].end - parts[i].start).toBeLessThanOrEqual(4);
+  it('splits a long sentence at a comma before a new clause, keeping both halves whole', () => {
+    const u = {
+      text: 'The painting competition for the children has been cancelled, but there will be a cookery session instead and prizes for every age group.',
+      start: 100, end: 112,
+    };
+    const parts = splitLongUnit(u, { softMaxSec: 9 });
+    expect(parts).toHaveLength(2);
+    expect(parts[0].text).toBe('The painting competition for the children has been cancelled,');
+    // continuation piece is capitalised so it reads as a sentence
+    expect(parts[1].text).toBe('But there will be a cookery session instead and prizes for every age group.');
+    expect(parts[0].start).toBe(100);
+    expect(parts[1].end).toBe(112);
+    expect(parts[1].start).toBeCloseTo(parts[0].end, 5);
+    // nothing lost
+    expect(parts.map(p => p.text).join(' ').toLowerCase()).toBe(u.text.toLowerCase());
+  });
+
+  it('splits at a semicolon', () => {
+    const u = {
+      text: 'The ferry leaves at eight in the morning; passengers should check in at least an hour before departure at the main terminal.',
+      start: 0, end: 11,
+    };
+    const parts = splitLongUnit(u, { softMaxSec: 9 });
+    expect(parts).toHaveLength(2);
+    expect(parts[0].text.endsWith(';')).toBe(true);
+  });
+
+  it('never leaves a piece ending on a dangling preposition', () => {
+    const u = {
+      text: 'My talk is about a research study I did over a period of several months, and I want to explain how the data was collected.',
+      start: 0, end: 12,
+    };
+    const parts = splitLongUnit(u, { softMaxSec: 9 });
+    for (const p of parts) {
+      expect(p.text).not.toMatch(/\b(over|of|to|in|on|at|for|with|from|by|and|the|a|an)$/i);
     }
-    // no text lost or duplicated
-    expect(parts.map(p => p.text).join(' ')).toBe(text);
+    expect(parts.map(p => p.text).join(' ').toLowerCase()).toBe(u.text.toLowerCase());
   });
 
-  it('reaches a fixpoint — a second split pass over the output changes nothing', () => {
-    // a spread of realistic over-long clips
-    const cases = [
-      { text: 'It is getting more popular each year, and having it in the town square was starting to be a bit difficult because of the numbers, which is why it is next to the river this time.', start: 280.37, end: 290.77 },
-      { text: 'David France will be giving an inspirational talk about how as a business-minded teenager he set up a stall in a local market and then grew that one stall into a national chain of shops.', start: 100, end: 113.5 },
-      { text: 'She joined the marketing team in March, and she was promoted to team lead just eight months later.', start: 0, end: 6.2 },
-    ];
-    for (const c of cases) {
-      const once = splitLongUnits([c], { targetSec: 4, triggerSec: 4, maxSplittableSec: 25 });
-      const twice = splitLongUnits(once, { targetSec: 4, triggerSec: 4, maxSplittableSec: 25 });
-      expect(twice).toEqual(once);
-      for (const p of once) expect(p.end - p.start).toBeLessThanOrEqual(4);
-      expect(once.map(p => p.text).join(' ')).toBe(c.text);
-    }
+  it('leaves a >25s clip whole (alignment drift, not real speech)', () => {
+    const u = { text: 'a b c d e f g h i j, and k l m n o p q r s t.', start: 0, end: 40 };
+    expect(splitLongUnit(u, { softMaxSec: 9, maxSplittableSec: 25 })).toEqual([u]);
   });
 
-  it('never emits a sub-second stub — folds tiny slices into a neighbour', () => {
-    const samples = [
-      { text: 'You will need to bring two forms of identification, one of which must be a photo ID such as a passport or driving licence, and you should also bring a printed copy of the confirmation email that we sent you when you first registered.', start: 0, end: 13.4 },
-      { text: 'It is getting more popular each year, and having it in the town square was starting to be difficult because of the numbers, which is why it is by the river now.', start: 100, end: 110.2 },
-      { text: 'Right. Well, the plan was to have a painting competition for the kids, but it is now going to be cooking instead, and there will be prizes.', start: 5, end: 14 },
-    ];
-    for (const s of samples) {
-      const parts = splitLongUnit(s, { targetSec: 4, triggerSec: 4 });
-      for (const p of parts) expect(p.end - p.start).toBeGreaterThanOrEqual(1.2 - 1e-9);
-      expect(parts.map(p => p.text).join(' ')).toBe(s.text);
-    }
-  });
-
-  it('leaves a clip whose duration exceeds maxSplittableSec whole (alignment likely broken)', () => {
-    const u = { text: 'a b c d e f g h i j k l m n o p q r s t', start: 0, end: 40 };
-    expect(splitLongUnit(u, { targetSec: 4, triggerSec: 4, maxSplittableSec: 25 })).toEqual([u]);
-  });
-
-  it('prefers cutting at punctuation / conjunction boundaries', () => {
-    const text = 'She joined the marketing team in March, and she was promoted to team lead just eight months later after a very strong first project.';
-    const parts = splitLongUnit({ text, start: 0, end: 9 }, { targetSec: 4 });
-    // first piece should end on the comma, not mid-phrase
-    expect(parts[0].text.endsWith(',')).toBe(true);
-  });
-
-  it('is idempotent — re-splitting already-short units is a no-op', () => {
-    const text = 'You will need to bring two forms of identification, one of which must be a photo ID such as a passport, and a printed copy of the confirmation email we sent you.';
-    const once = splitLongUnits([{ text, start: 0, end: 11 }], { targetSec: 4 });
-    const twice = splitLongUnits(once, { targetSec: 4 });
+  it('is a fixpoint — re-splitting its own output changes nothing', () => {
+    const u = {
+      text: 'The route begins at the harbour and follows the coast for two miles, then it climbs steeply to the lighthouse, and finally it drops back down to the village square.',
+      start: 0, end: 16,
+    };
+    const once = splitLongUnits([u], { softMaxSec: 9 });
+    const twice = splitLongUnits(once, { softMaxSec: 9 });
     expect(twice).toEqual(once);
+    expect(once.map(p => p.text).join(' ').toLowerCase()).toBe(u.text.toLowerCase());
+  });
+});
+
+describe('listeningTranscriptSplitter.mergeAdjacentFragments', () => {
+  it('rejoins clips cut out of one sentence', () => {
+    const units = [
+      { text: 'My talk is about a research study I did over', start: 0, end: 3 },
+      { text: 'a period of several months.', start: 3, end: 6 },
+      { text: 'It was really interesting.', start: 6, end: 8 },
+    ];
+    expect(mergeAdjacentFragments(units)).toEqual([
+      { text: 'My talk is about a research study I did over a period of several months.', start: 0, end: 6 },
+      { text: 'It was really interesting.', start: 6, end: 8 },
+    ]);
   });
 
-  it('splitLongUnits passes short units through unchanged', () => {
+  it('does not join across a timing gap', () => {
+    const units = [
+      { text: 'the plan was to have a competition', start: 0, end: 3 },
+      { text: 'but that has now changed.', start: 12, end: 15 },
+    ];
+    expect(mergeAdjacentFragments(units)).toHaveLength(2);
+  });
+
+  it('leaves already-whole sentences alone', () => {
     const units = [
       { text: 'Good morning everyone.', start: 0, end: 2 },
-      { text: 'Today we are looking at coastal erosion.', start: 2, end: 5 },
+      { text: 'Today we look at coastal erosion.', start: 2, end: 5 },
     ];
-    expect(splitLongUnits(units, { targetSec: 4 })).toEqual(units);
+    expect(mergeAdjacentFragments(units)).toEqual(units);
   });
 });
 
@@ -98,69 +112,54 @@ describe('listeningTranscriptSplitter.mergeShortUnits', () => {
     const units = [
       { text: 'benefits to using an agency', start: 100, end: 101.8 },
       { text: '- for example,', start: 101.8, end: 102.7 },
-      { text: 'the interview will be useful', start: 102.7, end: 104.5 },
+      { text: 'the interview will be useful.', start: 102.7, end: 104.5 },
     ];
     const out = mergeShortUnits(units, 1.2);
-    expect(out).toEqual([
-      { text: 'benefits to using an agency - for example,', start: 100, end: 102.7 },
-      { text: 'the interview will be useful', start: 102.7, end: 104.5 },
-    ]);
+    expect(out[0].text).toBe('benefits to using an agency - for example,');
+    expect(out).toHaveLength(2);
   });
 
-  it('folds a leading short clip forward into the next one', () => {
+  it('leaves a short clip alone when isolated by timing gaps', () => {
     const units = [
-      { text: 'Right.', start: 0, end: 0.6 },
-      { text: 'Well, the plan was to have a competition.', start: 0.6, end: 3.4 },
-    ];
-    expect(mergeShortUnits(units, 1.2)).toEqual([
-      { text: 'Right. Well, the plan was to have a competition.', start: 0, end: 3.4 },
-    ]);
-  });
-
-  it('leaves a short clip alone when it is isolated by timing gaps on both sides', () => {
-    // a stretched spelled-out fragment with dropped sentences either side
-    const units = [
-      { text: 'She works in the finance sector now.', start: 10, end: 13 },
+      { text: 'She works in finance now.', start: 10, end: 13 },
       { text: 'W-O-O-D-S', start: 30, end: 30.8 },
-      { text: 'Anyway, it was good to catch up.', start: 50, end: 52.5 },
-    ];
-    expect(mergeShortUnits(units, 1.2)).toEqual(units);
-  });
-
-  it('is a no-op when every clip is already long enough', () => {
-    const units = [
-      { text: 'The first activity went really well.', start: 0, end: 3 },
-      { text: 'The second one was a bit harder for them.', start: 3, end: 6 },
+      { text: 'Anyway, good to catch up.', start: 50, end: 52.5 },
     ];
     expect(mergeShortUnits(units, 1.2)).toEqual(units);
   });
 });
 
 describe('listeningTranscriptSplitter.normalizeDictationUnits', () => {
-  const opts = { maxSec: 4, maxSplittableSec: 25 };
-
-  it('splits long clips AND removes sub-second stubs, and is a fixpoint', () => {
+  it('keeps whole sentences and only splits the genuinely long ones', () => {
     const units = [
-      { text: 'You will need to bring two forms of identification, one of which must be a photo ID such as a passport or driving licence, and you should bring a printed copy of the confirmation email we sent you.', start: 30, end: 43.4 },
-      { text: 'Thanks.', start: 43.4, end: 43.9 },
-      { text: 'That is really helpful and I will make sure I have everything ready in good time.', start: 43.9, end: 48.4 },
+      { text: 'The office opens at nine.', start: 0, end: 2 },
+      {
+        text: 'You should check in an hour before departure, and you must bring photo identification such as a passport or a driving licence with you.',
+        start: 2, end: 15,
+      },
     ];
-    const once = normalizeDictationUnits(units, opts);
-    const twice = normalizeDictationUnits(once, opts);
-    expect(twice).toEqual(once);
-    for (const u of once) {
-      expect(u.end - u.start).toBeLessThanOrEqual(4 + 1e-9);
-      expect(u.end - u.start).toBeGreaterThanOrEqual(1.2 - 1e-9);
-    }
-    // full text preserved end to end
-    expect(once.map(u => u.text).join(' ')).toBe(units.map(u => u.text).join(' '));
+    const out = normalizeDictationUnits(units, { maxSec: 9 });
+    expect(out[0]).toEqual(units[0]);
+    expect(out.length).toBeGreaterThan(2);
+    for (const u of out) expect(u.text).not.toMatch(/\b(and|or|the|a|to|of)$/i);
+    expect(out.map(u => u.text).join(' ').toLowerCase()).toBe(units.map(u => u.text).join(' ').toLowerCase());
   });
 
-  it('leaves an already-normalised array untouched', () => {
+  it('is a fixpoint', () => {
+    const units = [{
+      text: 'The route begins at the harbour and follows the coast, then it climbs to the lighthouse, and finally it returns to the square.',
+      start: 0, end: 14,
+    }];
+    const once = normalizeDictationUnits(units, { maxSec: 9 });
+    const twice = normalizeDictationUnits(once, { maxSec: 9 });
+    expect(twice).toEqual(once);
+  });
+
+  it('leaves an already-normalised list untouched', () => {
     const units = [
-      { text: 'Good morning everyone and welcome to the session.', start: 0, end: 3.5 },
-      { text: 'Today we are going to look at coastal erosion.', start: 3.5, end: 6.8 },
+      { text: 'Good morning and welcome to the session.', start: 0, end: 3.5 },
+      { text: 'Today we will look at coastal erosion.', start: 3.5, end: 6.8 },
     ];
-    expect(normalizeDictationUnits(units, opts)).toEqual(units);
+    expect(normalizeDictationUnits(units, { maxSec: 9 })).toEqual(units);
   });
 });

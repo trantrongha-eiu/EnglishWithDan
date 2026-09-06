@@ -165,100 +165,93 @@ function splitTranscriptIntoSentences(rawTranscript) {
 }
 
 // ── splitting an already-aligned dictation unit that plays for too long ──
-// A single dictation clip much longer than a few seconds is hard to hold in
-// working memory while typing (real complaint: a 12s / 37-word clip). This
-// takes one aligned unit { text, start, end } (seconds into the audio) and,
-// if it runs longer than `triggerSec`, breaks it into consecutive
-// sub-clips of at most ~`targetSec` each — cutting at the most natural
-// in-sentence boundary near each target point (a comma/semicolon/dash, then
-// a coordinating/subordinating conjunction, then — only if neither exists
-// in the window — a plain word gap). Sub-clip start/end are interpolated
-// across the parent's real [start,end] weighted by characters spoken, which
-// is close enough for a play-this-slice player (speakers don't pause evenly,
-// but a slightly-early cut beats a 12-second wall). Idempotent: a unit
-// already within bounds is returned unchanged, so re-running is a no-op.
-// Words that almost always START a new clause, so cutting just before one
-// gives a clean break. Deliberately excludes words that are far more often
-// prepositions or complementisers in speech ("for", "as", "that", "since",
-// "before", "after", "until") — treating those as clause boundaries pulled
-// cuts to the wrong place (e.g. "a competition | for the kids").
-const CONJUNCTIONS = new Set([
-  'and', 'but', 'so', 'or', 'yet', 'because', 'which', 'who', 'whom', 'whose',
-  'when', 'while', 'where', 'if', 'unless', 'though', 'although', 'whereas',
-  'however',
+// A dictation clip should be a WHOLE, self-contained sentence. Only when one
+// runs much longer than `softMaxSec` is it broken up — and then ONLY at a
+// strong internal boundary (a semicolon / colon / dash, an internal
+// sentence break, or a comma immediately before a word that clearly starts a
+// new clause) so that every resulting piece is still a complete, meaningful
+// chunk — never a fragment cut off mid-thought ("...a research study I did
+// over |"). If a long sentence has no such boundary it is left whole: a long
+// complete sentence beats a truncated one. Sub-clip start/end are
+// interpolated across the parent's real [start,end] by characters spoken.
+// Idempotent: a clip within bounds, or with nowhere clean to cut, is
+// returned unchanged.
+
+// Words that genuinely open a new clause — cutting just before one, right
+// after a comma, gives a piece that ends cleanly and a piece that stands on
+// its own. Excludes words that are usually prepositions/complementisers in
+// speech.
+const CLAUSE_OPENERS = new Set([
+  'and', 'but', 'so', 'or', 'nor', 'yet', 'plus',
+  'because', 'although', 'though', 'while', 'whilst', 'whereas', 'since',
+  'unless', 'if', 'as',
+  'which', 'who', 'whom', 'whose',
+  'however', 'therefore', 'meanwhile', 'then',
+  'i', 'we', 'you', 'they', 'he', 'she', 'it',
 ]);
-const MIN_PIECE_WORDS = 3;
+const MIN_PIECE_WORDS = 4;
+const MIN_PIECE_SEC = 1.8;
+// Above this a clip is a run-on that must be broken even if it has no
+// punctuation boundary — a softer "before a bare coordinator + a new
+// subject" cut is then allowed.
+const RUNON_SEC = 12;
 // A dictation clip shorter than this is too brief to hear-and-type as its
 // own unit — it gets folded into an adjacent clip instead.
 const MIN_CLIP_SEC = 1.2;
-// Hysteresis: a split must leave every piece comfortably above MIN_CLIP_SEC,
-// not merely at it — otherwise char-proportional rounding can nudge a piece
-// just under MIN_CLIP_SEC, the merge step folds it straight back, and the
-// split never sticks (so re-running the migration keeps "changing" it).
-const SPLIT_MIN_CLIP_SEC = MIN_CLIP_SEC + 0.15;
+// Words that can only begin a fresh clause (a subject / wh-word), used to
+// confirm a bare "and/but/so" really starts a new clause in a run-on.
+const CLAUSE_SUBJECTS = new Set([
+  'i', 'we', 'you', 'they', 'he', 'she', 'it', 'there', 'this', 'that', 'these', 'those',
+  'what', 'which', 'who', 'when', 'where', 'the', 'a', 'an', 'my', 'your', 'his', 'her',
+  'our', 'their', 'people', 'everyone', 'someone', 'nobody', 'everything',
+]);
 
-// score a candidate cut *after* word index i (0-based) — higher is better
-function boundaryScore(words, i) {
+// Is a cut *after* word index i a strong, meaning-preserving boundary?
+function isStrongBoundary(words, i) {
   const w = words[i] || '';
-  const next = words[i + 1] || '';
-  if (/[.!?]["')\]]?$/.test(w)) return 5;
-  if (/[;:]["')\]]?$/.test(w)) return 4;
-  if (/[—–]$/.test(w) || next === '—' || next === '–') return 3.5;
-  if (/,["')\]]?$/.test(w)) return 3;
-  if (CONJUNCTIONS.has(next.toLowerCase().replace(/[^a-z]/g, ''))) return 2;
-  return 0;
+  const next = (words[i + 1] || '').toLowerCase().replace(/[^a-z']/g, '');
+  if (!next) return false;
+  if (/[.!?][")'’”\]]*$/.test(w)) return true;               // internal sentence end
+  if (/[;:][")'’”\]]*$/.test(w)) return true;                 // semicolon / colon
+  // a dash break — em/en dash, or a hyphen used as one ("volunteer- people")
+  if (/[—–]$/.test(w) || /\w-$/.test(w) || words[i + 1] === '—' || words[i + 1] === '–' || words[i + 1] === '-') return true;
+  if (/,[")'’”\]]*$/.test(w) && CLAUSE_OPENERS.has(next)) return true;
+  return false;
 }
 
-// one pass: cut `words` into up to `nPieces` spans at the best nearby
-// boundary, timings interpolated char-proportionally across [start,end].
-function splitOnce(words, start, end, nPieces) {
-  const dur = end - start;
-  const targetWords = words.length / nPieces;
+// A weaker boundary for run-ons only (no punctuation to lean on): cut just
+// before a word that clearly opens a fresh clause —
+//   • a bare "and/but/so/or" followed by a subject / wh-word, or
+//   • a bare subordinator (because / although / while / when / …), or
+//   • a bare relative "which / who".
+const RUNON_SUBORDINATORS = new Set([
+  'because', 'although', 'though', 'while', 'whilst', 'whereas', 'since',
+  'unless', 'when', 'whenever', 'wherever',
+]);
+function isRunonBoundary(words, i) {
+  const w = words[i] || '';
+  if (/[.,!?;:—–]$/.test(w)) return false;                   // handled as a strong boundary
+  const next = (words[i + 1] || '').toLowerCase().replace(/[^a-z']/g, '');
+  const after = (words[i + 2] || '').toLowerCase().replace(/[^a-z']/g, '');
+  if ((next === 'and' || next === 'but' || next === 'so' || next === 'or') && CLAUSE_SUBJECTS.has(after)) return true;
+  if (RUNON_SUBORDINATORS.has(next) && after) return true;
+  if ((next === 'which' || next === 'who') && after) return true;
+  return false;
+}
 
-  // char-weighted cumulative lengths — used to interpolate timings AND to
-  // estimate how long a candidate piece would play.
-  const cum = [0];
-  for (let i = 0; i < words.length; i++) cum.push(cum[i] + words[i].length + 1);
-  const totalChars = cum[words.length];
-  const estDur = (a, b) => dur * (cum[b] - cum[a]) / totalChars;
-
-  const cuts = [0];
-  for (let p = 1; p < nPieces; p++) {
-    const prev = cuts[cuts.length - 1];
-    const ideal = Math.round(p * targetWords);
-    let best = -1, bestScore = -Infinity;
-    const lo = Math.max(prev + MIN_PIECE_WORDS - 1, ideal - 5);
-    const hi = Math.min(words.length - MIN_PIECE_WORDS - 1, ideal + 5);
-    for (let i = lo; i <= hi; i++) {
-      // never pick a cut that leaves the piece just closed — or the whole
-      // remainder — near the minimum clip length: that stub just gets merged
-      // straight back, so the split wouldn't stick.
-      if (estDur(prev, i + 1) < SPLIT_MIN_CLIP_SEC || estDur(i + 1, words.length) < SPLIT_MIN_CLIP_SEC) continue;
-      const sc = boundaryScore(words, i) - Math.abs(i - ideal) * 0.15;
-      if (sc > bestScore) { bestScore = sc; best = i; }
-    }
-    if (best < 0 || best + 1 <= prev) continue; // no viable cut in this window
-    cuts.push(best + 1);
-  }
-  cuts.push(words.length);
-
-  const out = [];
-  for (let k = 0; k < cuts.length - 1; k++) {
-    const a = cuts[k], b = cuts[k + 1];
-    if (b <= a) continue;
-    const s = k === 0 ? start : +(start + dur * (cum[a] / totalChars)).toFixed(2);
-    const e = k === cuts.length - 2 ? end : +(start + dur * (cum[b] / totalChars)).toFixed(2);
-    out.push({ words: words.slice(a, b), start: s, end: Math.max(e, s + 0.3) });
-  }
-  return out;
+// Capitalise the first letter of a mid-sentence piece so a split
+// continuation ("but it's now cooking instead…") still reads as a sentence.
+function capFirst(s) {
+  return s.replace(/^([^A-Za-z]*)([a-z])/, (_, pre, c) => pre + c.toUpperCase());
 }
 
 function splitLongUnit(unit, opts = {}) {
-  const targetSec = opts.targetSec != null ? opts.targetSec : 4;
-  const triggerSec = opts.triggerSec != null ? opts.triggerSec : targetSec + 1;
-  // Above this, a "sentence" this long is a sign the forced-alignment for it
-  // drifted rather than real speech — slicing it by character-proportion
-  // would just spread the error over several clips, so leave it whole.
+  // `softMaxSec` (was `targetSec`/`triggerSec`) — only consider splitting a
+  // clip longer than this. Kept flexible for callers/tests.
+  const softMaxSec = opts.softMaxSec != null ? opts.softMaxSec
+    : opts.targetSec != null ? opts.targetSec : 9;
+  // Above this, a "sentence" this long means the forced-alignment drifted,
+  // not real speech — leave it whole and let the caller flag it.
   const maxSplittableSec = opts.maxSplittableSec != null ? opts.maxSplittableSec : Infinity;
   const text = String(unit && unit.text || '').trim();
   const start = Number(unit && unit.start);
@@ -266,53 +259,79 @@ function splitLongUnit(unit, opts = {}) {
   const dur = end - start;
 
   const words = text.split(/\s+/).filter(Boolean);
-  if (!text || !isFinite(dur) || dur <= triggerSec || dur > maxSplittableSec ||
+  if (!text || !isFinite(dur) || dur <= softMaxSec || dur > maxSplittableSec ||
       words.length < MIN_PIECE_WORDS * 2) {
     return [{ text, start, end }];
   }
 
-  // Char-proportional timing means a first pass can still leave a piece over
-  // target (long words soak up more of the clock than their word-count
-  // share). Re-split any such piece until every piece is within bounds or
-  // can't be divided further — so the result is a fixpoint and re-running
-  // the migration is a genuine no-op. A pass that fails to divide a piece
-  // (no usable interior boundary) returns it unchanged and ends recursion.
-  function recur(w, s, e, depth) {
-    const d = e - s;
-    if (d <= triggerSec || w.length < MIN_PIECE_WORDS * 2 || depth > 6) {
-      return [{ text: w.join(' '), start: s, end: e }];
-    }
-    const pieces = splitOnce(w, s, e, Math.max(2, Math.ceil(d / targetSec)));
-    if (pieces.length <= 1) return [{ text: w.join(' '), start: s, end: e }];
-    const res = [];
-    for (const p of pieces) res.push(...recur(p.words, p.start, p.end, depth + 1));
-    return res;
-  }
-  const out = recur(words, start, end, 0);
+  const cum = [0];
+  for (let i = 0; i < words.length; i++) cum.push(cum[i] + words[i].length + 1);
+  const totalChars = cum[words.length];
+  const estDur = (a, b) => dur * (cum[b] - cum[a]) / totalChars;
+  const at = idx => +(start + dur * (cum[idx] / totalChars)).toFixed(2);
 
-  // Char-proportional timing can hand a stub clause a sub-second slice that's
-  // useless to hear and type — fold any piece shorter than MIN_CLIP_SEC into
-  // its neighbour (previous by default; the next one if it's the first).
-  // Safe to do unconditionally here: every piece came from one parent unit so
-  // they're all contiguous in the audio.
-  for (let i = 0; i < out.length && out.length > 1; ) {
-    if (out[i].end - out[i].start >= MIN_CLIP_SEC) { i++; continue; }
-    if (i === 0) {
-      out[1].text = out[0].text + ' ' + out[1].text;
-      out[1].start = out[0].start;
-      out.splice(0, 1);
-    } else {
-      out[i - 1].text += ' ' + out[i].text;
-      out[i - 1].end = out[i].end;
-      out.splice(i, 1);
+  // one cut, at the strong boundary nearest the time-midpoint that leaves
+  // both sides big enough; recurse on any half still too long.
+  function recur(a, b, s, e, depth) {
+    const d = e - s;
+    if (d <= softMaxSec || (b - a) < MIN_PIECE_WORDS * 2 || depth > 6) {
+      return [{ text: words.slice(a, b).join(' '), start: s, end: e }];
     }
+    const mid = (cum[a] + cum[b]) / 2;
+    const pick = test => {
+      let best = -1, bestDelta = Infinity;
+      for (let i = a + MIN_PIECE_WORDS - 1; i <= b - MIN_PIECE_WORDS - 1; i++) {
+        if (!test(words, i)) continue;
+        if (estDur(a, i + 1) < MIN_PIECE_SEC || estDur(i + 1, b) < MIN_PIECE_SEC) continue;
+        const delta = Math.abs(cum[i + 1] - mid);
+        if (delta < bestDelta) { bestDelta = delta; best = i; }
+      }
+      return best;
+    };
+    // strong (punctuation) boundary first; for a run-on with none, fall back
+    // to a bare-coordinator boundary rather than leave a 16s wall.
+    let best = pick(isStrongBoundary);
+    if (best < 0 && d > RUNON_SEC) best = pick(isRunonBoundary);
+    if (best < 0) return [{ text: words.slice(a, b).join(' '), start: s, end: e }];
+    const cutTime = at(best + 1);
+    return [
+      ...recur(a, best + 1, s, cutTime, depth + 1),
+      ...recur(best + 1, b, cutTime, e, depth + 1),
+    ];
   }
-  return out;
+  const pieces = recur(0, words.length, start, end, 0);
+  // every piece after the first is a mid-sentence continuation — capitalise
+  // its first letter so it still reads as a sentence on its own.
+  for (let i = 1; i < pieces.length; i++) pieces[i].text = capFirst(pieces[i].text);
+  return pieces;
 }
 
 function splitLongUnits(units, opts) {
   const out = [];
   for (const u of units || []) out.push(...splitLongUnit(u, opts));
+  return out;
+}
+
+const ENDS_SENTENCE = /[.!?]["'”’)\]]*\s*$/;
+
+// Glue back together clips that an earlier, more aggressive splitter cut out
+// of one sentence: whenever a clip does NOT end on sentence-final
+// punctuation and the next clip starts right where it ends (contiguous
+// audio), they were one sentence — join them. Leaves genuinely separate
+// sentences alone. Used once, to undo mid-thought fragments already saved to
+// the DB before whole-sentence clips were the rule.
+function mergeAdjacentFragments(units, gapTol = 0.6) {
+  const out = [];
+  for (const u of units || []) {
+    const cur = { text: String(u.text || '').trim(), start: Number(u.start), end: Number(u.end) };
+    const last = out[out.length - 1];
+    if (last && !ENDS_SENTENCE.test(last.text) && Math.abs(cur.start - last.end) <= gapTol) {
+      last.text = (last.text + ' ' + cur.text).replace(/\s+/g, ' ').trim();
+      last.end = cur.end;
+    } else {
+      out.push(cur);
+    }
+  }
   return out;
 }
 
@@ -351,16 +370,16 @@ function mergeShortUnits(units, minClipSec = MIN_CLIP_SEC) {
   return out;
 }
 
-// Full normalise for a section's dictationSentences: split anything over
-// ~maxSec, then fold away sub-second stubs, repeated to a fixpoint (each is
-// individually convergent; together they can ping-pong once at the boundary,
-// so a couple of passes settles it). Used by the one-off migration and by
-// the bulk-alignment pipeline so new and existing content obey the same
-// "no clip longer than ~maxSec, none shorter than MIN_CLIP_SEC" rule.
+// Full normalise for a section's dictationSentences: keep whole sentences,
+// break only ones running well over ~maxSec and only at a strong internal
+// boundary, then fold away any sub-second stub. Repeated to a fixpoint (both
+// steps are individually convergent). Used by the one-off migration and by
+// the bulk-alignment pipeline so new and existing content follow the same
+// "whole meaningful sentences, nothing truncated, nothing tiny" rule.
 function normalizeDictationUnits(units, opts = {}) {
-  const maxSec = opts.maxSec != null ? opts.maxSec : 4;
+  const softMaxSec = opts.maxSec != null ? opts.maxSec : 9;
   const splitOpts = {
-    targetSec: maxSec, triggerSec: maxSec,
+    softMaxSec,
     maxSplittableSec: opts.maxSplittableSec != null ? opts.maxSplittableSec : 25,
   };
   let cur = (units || []).map(u => ({ text: String(u.text || ''), start: Number(u.start), end: Number(u.end) }));
@@ -378,5 +397,5 @@ function normalizeDictationUnits(units, opts = {}) {
 module.exports = {
   splitTranscriptIntoSentences, mergeTinyFragments, MIN_UNIT_WORDS,
   stripQuestionAnnotations, splitLongUnit, splitLongUnits,
-  mergeShortUnits, normalizeDictationUnits, MIN_CLIP_SEC,
+  mergeShortUnits, mergeAdjacentFragments, normalizeDictationUnits, MIN_CLIP_SEC,
 };

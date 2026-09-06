@@ -1,5 +1,10 @@
 // One-off migration: normalise dictation clip lengths.
 //
+// SUPERSEDED by scripts/rebuildDictationSentences.js (2026-09) — the ~4s cap
+// this script enforced chopped sentences mid-thought; the rebuild script
+// rejoins those and only splits genuinely long sentences at strong
+// boundaries. Kept for history; do not run.
+//
 // Some already-aligned ListeningSection.dictationSentences entries play for
 // 8-12+ seconds (e.g. "Bankside Recruitment Agency", câu 10 = 37 words / 12s),
 // which is hard to hold in working memory while typing back. This walks every

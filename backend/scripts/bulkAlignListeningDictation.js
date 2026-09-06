@@ -143,13 +143,13 @@ async function run() {
       const nameLex = buildLexicon(sentences);
       const nf = dropNameHeavySentences(sel.kept, nameLex);
       nf.dropped.forEach(d => dropped.push({ index: -1, text: d.text, reason: d.reason }));
-      // Then: any clip that plays much longer than a few seconds is hard to
-      // hold in working memory while typing back — break kept units over ~4s
-      // at the nearest natural boundary and fold away sub-second stubs
-      // (normalizeDictationUnits). Both run AFTER selectDictationSentences so
-      // its MIN_DICTATION_WORDS / words-per-second gates judge real aligned
-      // sentences, not fragments.
-      const kept = normalizeDictationUnits(nf.kept, { maxSec: 4 });
+      // Then: keep whole sentences, but a sentence running well over ~9s is
+      // broken at a strong internal boundary (semicolon / dash / comma-
+      // before-a-new-clause) so no piece is left mid-thought; sub-second
+      // stubs are folded away (normalizeDictationUnits). Both run AFTER
+      // selectDictationSentences so its MIN_DICTATION_WORDS / words-per-
+      // second gates judge real aligned sentences, not fragments.
+      const kept = normalizeDictationUnits(nf.kept, { maxSec: 9 });
 
       if (kept.length < MIN_SECTION_SENTENCES) {
         rejected++;
