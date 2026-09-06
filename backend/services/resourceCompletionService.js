@@ -190,14 +190,18 @@ function isValidType(t) {
 }
 
 // Teacher resource picker. Returns [{ _id, label, meta }]. For mock_test,
-// one synthetic row with _id null.
-async function listCatalog(type, search = '', limit = 100) {
+// one synthetic row with _id null. `extraFilters` (e.g. { part, topic } for
+// 'speaking') is merged straight into the Mongo query — harmless for types
+// whose catalog model has no such field (no doc has a stray null-only path
+// to spuriously match), so callers only ever pass it for the types they
+// know support it (see getResourceCatalog).
+async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
   if (!entry.catalog) {
     return [{ _id: null, label: entry.label, meta: 'Đề ngẫu nhiên mỗi lần làm' }];
   }
-  const q = { ...entry.catalog.filter };
+  const q = { ...entry.catalog.filter, ...extraFilters };
   if (search && search.trim()) {
     const re = new RegExp(escapeRegex(search.trim()), 'i');
     // every catalog model has one of these text fields — `prompt` for

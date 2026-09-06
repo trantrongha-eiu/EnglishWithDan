@@ -6,7 +6,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam } = require('../factories/contentFactory');
+const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
@@ -543,6 +543,27 @@ describe('resource catalog', () => {
     expect(res.body.items.some((i) => i.label === 'Orange Test 42')).toBe(true);
 
     expect((await request(app).get('/api/classes/resources/catalog?type=nonsense').set(authH(t))).status).toBe(400);
+  });
+
+  test('speaking catalog supports part+topic filtering — bulk-picking a whole topic group', async () => {
+    const t = await createTeacher();
+    await createSpeakingQuestion({ part: 1, topic: 'Watching TV', question: 'Do you like watching TV?' });
+    await createSpeakingQuestion({ part: 1, topic: 'Watching TV', question: 'What TV shows do you watch?' });
+    await createSpeakingQuestion({ part: 1, topic: 'Cooking', question: 'Do you like cooking?' });
+    await createSpeakingQuestion({ part: 2, topic: 'Watching TV', question: 'Describe a TV show you enjoy.' });
+
+    const res = await request(app).get('/api/classes/resources/catalog?type=speaking&part=1&topic=Watching TV').set(authH(t));
+    expect(res.status).toBe(200);
+    expect(res.body.items).toHaveLength(2);
+    expect(res.body.items.every((i) => i.meta === 'Watching TV')).toBe(true);
+
+    // part alone (no topic) — every Part 1 question regardless of topic.
+    const partOnly = await request(app).get('/api/classes/resources/catalog?type=speaking&part=1').set(authH(t));
+    expect(partOnly.body.items.length).toBeGreaterThanOrEqual(3);
+
+    // A non-speaking type must ignore part/topic rather than erroring.
+    const ignored = await request(app).get('/api/classes/resources/catalog?type=reading_test&part=1&topic=x').set(authH(t));
+    expect(ignored.status).toBe(200);
   });
 });
 

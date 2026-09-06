@@ -829,17 +829,55 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const [search, setSearch] = useState('');
   const [catalog, setCatalog] = useState([]);
   const [loadingCat, setLoadingCat] = useState(false);
+  // Speaking-only: filter the picker down to one Part + topic (e.g. Part 1 /
+  // "Watching TV") so "Chọn tất cả" below can assign that whole group in one
+  // click, instead of hunting down and ticking each question one at a time —
+  // free-text `search` only ever matched the question wording, not the topic.
+  const [speakPart, setSpeakPart] = useState('');
+  const [speakTopic, setSpeakTopic] = useState('');
+  const [speakTopics, setSpeakTopics] = useState([]);
+
+  useEffect(() => {
+    if (cat !== 'speaking') { setSpeakTopics([]); return; }
+    let alive = true;
+    const qs = speakPart ? `?part=${speakPart}` : '';
+    apiFetch(`/speaking/topics${qs}`)
+      .then((d) => { if (alive) setSpeakTopics(d.topics || []); })
+      .catch(() => { if (alive) setSpeakTopics([]); });
+    return () => { alive = false; };
+  }, [cat, speakPart]);
 
   useEffect(() => {
     let alive = true;
     const qs = new URLSearchParams({ type: cat });
     if (search.trim()) qs.set('search', search.trim());
+    if (cat === 'speaking') {
+      if (speakPart) qs.set('part', speakPart);
+      if (speakTopic) qs.set('topic', speakTopic);
+      // Default cap (100) can be less than a whole Part's question count —
+      // "Chọn cả nhóm" below must see every matching question, not a
+      // silently-truncated slice of them. 300 is listCatalog's own ceiling.
+      qs.set('limit', '300');
+    }
     apiFetch(`/classes/resources/catalog?${qs}`)
       .then((d) => { if (alive) setCatalog(d.items || []); })
       .catch(() => { if (alive) setCatalog([]); })
       .finally(() => { if (alive) setLoadingCat(false); });
     return () => { alive = false; };
-  }, [cat, search]);
+  }, [cat, search, speakPart, speakTopic]);
+
+  // Adds every item currently listed (i.e. already filtered by search/part/
+  // topic above) that isn't picked yet — the "assign this whole topic group"
+  // action. Plain single-item toggling stays available for a mixed pick.
+  function pickAllListed() {
+    setPicked((p) => {
+      const already = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
+      const additions = catalog
+        .filter((item) => !already.has(keyOf(cat, item._id)))
+        .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, label: item.label }));
+      return [...p, ...additions];
+    });
+  }
 
   const keyOf = (type, id) => `${type}:${id || '*'}`;
   function togglePick(item) {
@@ -912,12 +950,33 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
 
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => setCat(e.target.value)}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => { setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); }}>
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
-              <input className="form-input" placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <input className="form-input" style={{ flex: 1, minWidth: 140 }} placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              {cat === 'speaking' && (
+                <>
+                  <select className="form-input" style={{ width: 90 }} value={speakPart} onChange={(e) => { setSpeakPart(e.target.value); setSpeakTopic(''); }}>
+                    <option value="">Part</option>
+                    <option value="1">Part 1</option>
+                    <option value="2">Part 2</option>
+                    <option value="3">Part 3</option>
+                  </select>
+                  <select className="form-input" style={{ width: 200 }} value={speakTopic} onChange={(e) => setSpeakTopic(e.target.value)}>
+                    <option value="">Tất cả chủ đề</option>
+                    {speakTopics.map((t) => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </>
+              )}
             </div>
+            {cat === 'speaking' && speakPart && catalog.length > 0 && (
+              <div style={{ marginBottom: 8 }}>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
+                  ✓ Chọn cả nhóm ({catalog.length} câu — Part {speakPart}{speakTopic ? `, "${speakTopic}"` : ', tất cả chủ đề'})
+                </button>
+              </div>
+            )}
             <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 6 }}>
               {loadingCat ? <div style={{ padding: 10, color: 'var(--text3)' }}>Đang tải…</div>
                 : catalog.length === 0 ? <div style={{ padding: 10, color: 'var(--text3)' }}>Không có kết quả</div>
