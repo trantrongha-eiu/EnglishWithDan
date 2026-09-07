@@ -439,6 +439,11 @@
             flex: 1;
             overflow-y: auto;
             padding: 16px 20px 24px;
+            /* center the question column instead of stretching edge-to-edge —
+               tables/note-forms hug their own content width, so on a wide
+               screen they were stranding on the left with a huge blank gap */
+            max-width: 880px;
+            margin: 0 auto;
         }
         #screen-practice.active {
             display: flex;
