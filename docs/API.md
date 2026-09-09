@@ -975,7 +975,7 @@ Duplicate word (case-insensitive) is, again, a `200` with `success:false`, not a
 ```json
 { "success": false, "message": "\"resilient\" đã có trong sổ này" }
 ```
-If the caller is a `student`, this also fire-and-forget logs a daily `wordsAdded` activity count and updates the learning streak.
+If the caller is a `student`, this fire-and-forget logs a daily `wordsAdded` activity count (for admin analytics + the profile heatmap). Saving words does **not** count toward the daily vocab goal or the learning streak — only actual studying (`wordsStudied`: book-quiz runs, "đã thuộc" status changes, and Vocabulary Lesson quizzes) does.
 
 **Error responses**
 - `400` — `word` missing/blank.

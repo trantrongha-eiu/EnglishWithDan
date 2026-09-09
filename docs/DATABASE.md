@@ -697,7 +697,7 @@ VocabUnit.findOne().sort({ unitNumber: -1 }).select('unitNumber').lean()   // ne
 
 **Purpose:** A daily activity counter per student — one document per `(userId, date)` pair, incremented as the student interacts with the vocab feature. Powers admin analytics (engagement over time), not shown to the student directly.
 
-**Key fields:** `date` (truncated to UTC midnight — the grouping key), `viewCount` (vocab page opens), `wordsAdded`, `wordsStudied` (status-update actions).
+**Key fields:** `date` (truncated to UTC midnight — the grouping key), `viewCount` (vocab page opens), `wordsAdded` (words saved into a book), `wordsStudied` (words actually studied: book-quiz answers, manual "đã thuộc" status changes, Vocabulary Lesson quiz questions). Only `wordsStudied` counts toward the daily vocab goal / streak (`streakBonusService`); `wordsAdded` is analytics + heatmap only.
 
 **Relationships:** References `User`. Referenced by nothing.
 

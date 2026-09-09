@@ -385,12 +385,16 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
   // exactly as before, unaffected by this.
   if (user.role === 'student') {
     try {
-      if (await reachedDailyWordThreshold(user._id, { wordsAdded: 1 })) {
-        user.updateStreak();
-        await user.save();
-      }
+      // Record the add on today's VocabActivity (admin analytics + profile
+      // heatmap). Saving words is NOT studying them, so it no longer counts
+      // toward the daily goal or the streak — reachedDailyWordThreshold only
+      // gates on `wordsStudied` now (see its comment). We still call it here
+      // purely for the $inc; the return value can't be true from an add
+      // alone, and a streak earned by real study today already fired in
+      // completePractice / submitAttempt.
+      await reachedDailyWordThreshold(user._id, { wordsAdded: 1 });
     } catch (err) {
-      console.error('[VocabBook] addWord: streak bookkeeping failed after a successful save:', err.message);
+      console.error('[VocabBook] addWord: activity bookkeeping failed after a successful save:', err.message);
     }
   }
 
@@ -497,10 +501,10 @@ async function bulkAddWords(bookId, user, words) {
   if (addedCount > 0) {
     await book.save();
     if (user.role === 'student') {
-      if (await reachedDailyWordThreshold(user._id, { wordsAdded: addedCount })) {
-        user.updateStreak();
-        await user.save();
-      }
+      // Records the bulk add on today's VocabActivity for analytics/heatmap
+      // only — saving words never advances the daily goal or the streak
+      // (reachedDailyWordThreshold gates on wordsStudied, not wordsAdded).
+      await reachedDailyWordThreshold(user._id, { wordsAdded: addedCount });
     }
   }
 

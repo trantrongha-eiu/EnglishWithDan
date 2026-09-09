@@ -251,6 +251,33 @@ describe('submitAttempt / getAttempt', () => {
     expect(attempt.timeSpent).toBe(30);
   });
 
+  test('a real quiz run (>=5 questions) credits today\'s vocab goal + keeps the streak alive', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent(); // no targetBand → daily target 35
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const { vocabStudiedToday } = require('../../../services/streakBonusService');
+    const User = require('../../../models/User');
+
+    // Below the >=5 floor → nothing credited toward the daily goal.
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 3, totalCount: 4, timeSpent: 10 }, student);
+    expect(await vocabStudiedToday(student._id)).toBe(0);
+
+    // A 35-question run reaches the daily target → studied counter + streak.
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 30, totalCount: 35, timeSpent: 200 }, student);
+    expect(await vocabStudiedToday(student._id)).toBe(35);
+    const fresh = await User.findById(student._id);
+    expect(fresh.learningStreak).toBe(1);
+    expect(fresh.lastVocabStudyDate).not.toBeNull();
+  });
+
+  test('a teacher/admin test submission never touches the streak', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const { vocabStudiedToday } = require('../../../services/streakBonusService');
+    await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 30, totalCount: 35, timeSpent: 200 }, teacher);
+    expect(await vocabStudiedToday(teacher._id)).toBe(0);
+  });
+
   test('bestScore only ever increases; attemptCount and timeSpent accumulate', async () => {
     const teacher = await createTeacher();
     const student = await createStudent();

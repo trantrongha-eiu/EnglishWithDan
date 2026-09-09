@@ -111,14 +111,15 @@ describe('DELETE /api/vocabbook/:id/words', () => {
 });
 
 describe('GET /api/vocabbook/daily-goal', () => {
-  test('target scales with targetBand; reports today\'s progress; free students allowed', async () => {
+  test('target scales with targetBand; only wordsStudied counts, not wordsAdded; free students allowed', async () => {
     const student = await createStudent({ extra: { targetBand: 7.0 } }); // → 70/day
     const token = signTokenFor(student);
+    // 12 saved words + 8 studied — only the 8 count toward the daily goal.
     await VocabActivity.create({ userId: student._id, date: todayVNDate(), wordsAdded: 12, wordsStudied: 8 });
 
     const res = await request(app).get('/api/vocabbook/daily-goal').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ success: true, target: 70, studied: 20, remaining: 50, met: false, targetBand: 7 });
+    expect(res.body).toMatchObject({ success: true, target: 70, studied: 8, remaining: 62, met: false, targetBand: 7 });
   });
 
   test('no targetBand → default 35; met:true once reached', async () => {

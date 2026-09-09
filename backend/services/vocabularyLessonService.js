@@ -6,6 +6,12 @@ const VocabularyLessonAttempt = require('../models/VocabularyLessonAttempt');
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const VocabularyLessonImportLog = require('../models/VocabularyLessonImportLog');
 const parser = require('./vocabularyLessonParser');
+const { reachedDailyWordThreshold } = require('./streakBonusService');
+
+// A quiz run under this many questions doesn't count toward the daily vocab
+// goal / streak — same >=5 floor completePractice() uses for book quizzes,
+// so a 1-word lesson can't farm the streak.
+const MIN_STUDIED_QUESTIONS = 5;
 
 const MAX_WRONG_WORDS_LOGGED = 300; // matches MAX_WORDS_PER_LESSON — never more wrong words than a lesson can have
 
@@ -50,7 +56,7 @@ async function getAttempt(userId, lessonId) {
   return VocabularyLessonAttempt.findOne({ userId, lessonId }).lean();
 }
 
-async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongWords }) {
+async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongWords }, user = null) {
   const total = Math.max(0, Number(totalCount) || 0);
   const correct = Math.max(0, Math.min(Number(correctCount) || 0, total));
   const wrong = total - correct;
@@ -83,6 +89,24 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
       userId, lessonId, score, correct, wrong, total, timeSpent: spent, wrongWords: safeWrongWords,
     }),
   ]);
+
+  // Completing a Vocabulary Lesson quiz IS studying vocab — credit it to
+  // today's daily goal + keep the streak alive, exactly like a book-quiz
+  // run (vocabBookService.completePractice). Best-effort: the attempt is
+  // already saved above, so a hiccup here must not turn a successful submit
+  // into a 500. Needs the full user doc (updateStreak lives on the model) —
+  // callers that don't pass it (e.g. some tests) just skip this.
+  if (user && user.role === 'student' && total >= MIN_STUDIED_QUESTIONS) {
+    try {
+      user.lastVocabStudyDate = new Date();
+      const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: total });
+      if (qualifiesToday) user.updateStreak();
+      await user.save();
+    } catch (err) {
+      console.error('[VocabularyLesson] submitAttempt: streak bookkeeping failed after a saved attempt:', err.message);
+    }
+  }
+
   return attempt;
 }
 

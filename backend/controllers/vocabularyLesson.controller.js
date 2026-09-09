@@ -79,7 +79,7 @@ exports.submitAttempt = async (req, res) => {
     if (totalCount > maxQuestions) {
       return res.status(400).json({ success: false, message: 'totalCount vượt quá số từ của bài học' });
     }
-    const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongWords });
+    const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongWords }, req.user);
     res.json({ success: true, attempt });
   } catch (err) {
     console.error('[VocabularyLesson]', err);

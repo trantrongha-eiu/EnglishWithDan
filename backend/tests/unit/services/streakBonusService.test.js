@@ -80,9 +80,23 @@ describe('daily vocab word target (scales with IELTS target band)', () => {
     expect(await reachedDailyWordThreshold(student._id, { wordsStudied: 30 })).toBe(true);
   });
 
-  test('a band-5 student still unlocks at 35', async () => {
+  test('a band-5 student unlocks at 35 STUDIED words', async () => {
     const student = await createStudent(); // no targetBand → 35
-    expect(await reachedDailyWordThreshold(student._id, { wordsAdded: 34 })).toBe(false);
-    expect(await reachedDailyWordThreshold(student._id, { wordsAdded: 1 })).toBe(true);
+    expect(await reachedDailyWordThreshold(student._id, { wordsStudied: 34 })).toBe(false);
+    expect(await reachedDailyWordThreshold(student._id, { wordsStudied: 1 })).toBe(true);
+  });
+
+  test('saving words (wordsAdded) never unlocks the day or shows in the goal', async () => {
+    const student = await createStudent(); // target 35
+    // Any number of saved words still leaves the day un-unlocked...
+    expect(await reachedDailyWordThreshold(student._id, { wordsAdded: 100 })).toBe(false);
+    // ...and the daily-goal nudge shows 0 studied, not 100.
+    expect(await vocabStudiedToday(student._id)).toBe(0);
+    // The add IS still recorded on the activity doc (analytics / heatmap).
+    const doc = await VocabActivity.findOne({ userId: student._id, date: todayVNDate() });
+    expect(doc.wordsAdded).toBe(100);
+    // Only real studying moves it.
+    expect(await reachedDailyWordThreshold(student._id, { wordsStudied: 35 })).toBe(true);
+    expect(await vocabStudiedToday(student._id)).toBe(35);
   });
 });
