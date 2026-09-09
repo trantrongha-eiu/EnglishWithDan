@@ -8,6 +8,7 @@ const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require(
 const {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
+const { checkSpeakingMistral } = require('./mistralService');
 const badgeService = require('./badgeService');
 
 async function listTopics(part) {
@@ -79,8 +80,9 @@ async function listQuestions({ topic, part, userId }) {
 // path (Gemini succeeding), and a failure this app can recover from beats
 // one it can't, regardless of why Gemini specifically failed. If Groq
 // isn't configured, or also fails, the student sees Gemini's original
-// error message rather than a confusing second one. Used by every Speaking
-// AI call below (analyze, sample answer, hints, improve).
+// error message rather than a confusing second one. Used by the non-grading
+// Speaking AI calls (sample answer, hints, improve). Grading has its own
+// three-tier chain — see _gradeSpeakingFallback.
 async function _withGroqFallback(geminiFn, groqFn, label, args) {
   try {
     return await geminiFn(...args);
@@ -88,17 +90,42 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
     if (!process.env.GROQ_API_KEY) throw geminiErr;
     try {
       console.warn(`[Speaking] Gemini failed (${geminiErr.message}) — falling back to Groq (${label})`);
-      const out = await groqFn(...args);
-      // Tag so callers can tell the result came from the transcript-only
-      // fallback engine (e.g. Speaking grading's "was pronunciation actually
-      // heard" flag — Groq has no audio input).
-      if (out && typeof out === 'object') out.__viaGroqFallback = true;
-      return out;
+      return await groqFn(...args);
     } catch (groqErr) {
       console.error(`[Speaking] Groq fallback also failed (${label}):`, groqErr.message);
       throw geminiErr;
     }
   }
+}
+
+// Grading fallback chain, tried in order after Gemini fails:
+//   1. Mistral / Voxtral — opt-in via MISTRAL_API_KEY (free "Experiment"
+//      tier). Audio-native, so on this tier Pronunciation can still be
+//      graded from the recording (unlike Groq). Skipped if the key is unset.
+//   2. Groq — opt-in via GROQ_API_KEY. Llama, transcript-only.
+// If neither is configured (or both also fail) the caller re-throws
+// Gemini's original error. Each engine tags the result with `_heardAudio`
+// so gradeSpeaking knows whether Pronunciation was really heard.
+async function _gradeSpeakingFallback(question, transcript, part, audio, primaryErr) {
+  if (process.env.MISTRAL_API_KEY) {
+    try {
+      console.warn(`[Speaking] Gemini failed (${primaryErr.message}) — trying Mistral/Voxtral`);
+      return await checkSpeakingMistral(question, transcript, part, audio);
+    } catch (mistralErr) {
+      console.warn('[Speaking] Mistral fallback failed:', mistralErr.message);
+    }
+  }
+  if (process.env.GROQ_API_KEY) {
+    try {
+      console.warn('[Speaking] falling back to Groq (transcript-only)');
+      const out = await checkSpeakingGroq(question, transcript, part, audio);
+      if (out && typeof out === 'object') out._heardAudio = false;
+      return out;
+    } catch (groqErr) {
+      console.error('[Speaking] Groq fallback also failed:', groqErr.message);
+    }
+  }
+  throw primaryErr;
 }
 
 // Turn an uploaded recording (multer memoryStorage buffer + its browser
@@ -143,19 +170,28 @@ function roundToHalfBand(n) {
 }
 
 // `audio` (optional): { data: <base64>, mimeType } — the student's real
-// recording. Passed straight through to Gemini's multimodal checkSpeaking so
-// Pronunciation is graded from what's actually heard. The Groq fallback
-// ignores it (no audio input on Llama) and grades transcript-only.
+// recording. Fed to the multimodal engine (Gemini, or Mistral/Voxtral on the
+// fallback path) so Pronunciation is graded from what's actually heard. Groq
+// (last-resort fallback) is transcript-only.
 async function gradeSpeaking(questionText, transcript, partNum, audio = null) {
-  const feedback = await _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum, audio]);
+  let feedback;
+  try {
+    feedback = await checkSpeaking(questionText, transcript, partNum, audio);
+  } catch (primaryErr) {
+    feedback = await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr);
+  }
   const fluency = feedback.fluency || 0;
   const vocabulary = feedback.vocabulary || 0;
   const grammar = feedback.grammar || 0;
   const pronunciation = feedback.pronunciation || 0;
   feedback.overallBand = roundToHalfBand((fluency + vocabulary + grammar + pronunciation) / 4);
-  // Whether Pronunciation was actually heard: audio was provided AND grading
-  // ran on Gemini (the Groq fallback never receives the recording).
-  feedback.pronunciationFromAudio = !!(audio && audio.data) && !feedback.__viaGroqFallback;
+  // Whether Pronunciation was actually heard: audio was provided AND the
+  // engine that graded it took the recording (Gemini always; Mistral only
+  // for non-webm; never Groq). Each engine reports this as `_heardAudio`;
+  // fall back to "audio present" when a mocked/older result omits it.
+  const heard = feedback._heardAudio === undefined ? !!(audio && audio.data) : feedback._heardAudio;
+  feedback.pronunciationFromAudio = !!(audio && audio.data) && heard !== false;
+  delete feedback._heardAudio; // internal signal — don't leak it in the API response
   return feedback;
 }
 

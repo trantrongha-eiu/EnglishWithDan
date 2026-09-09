@@ -10,8 +10,10 @@ const { createSpeakingQuestion } = require('../../factories/contentFactory');
 // broadened Groq-fallback trigger can be exercised deterministically.
 jest.mock('../../../services/geminiService');
 jest.mock('../../../services/groqService');
+jest.mock('../../../services/mistralService');
 const geminiService = require('../../../services/geminiService');
 const groqService = require('../../../services/groqService');
+const mistralService = require('../../../services/mistralService');
 
 // The sampleAnswer/hints cache writes in speakingService are deliberately
 // fire-and-forget (SpeakingQuestion.updateOne(...).catch(...), never
@@ -284,10 +286,14 @@ describe('speakingService pending attempt flow', () => {
 
 describe('speakingService.gradeSpeaking', () => {
   const ORIGINAL_GROQ_KEY = process.env.GROQ_API_KEY;
+  const ORIGINAL_MISTRAL_KEY = process.env.MISTRAL_API_KEY;
+  beforeEach(() => { delete process.env.MISTRAL_API_KEY; }); // opt-in; off unless a test sets it
   afterEach(() => {
     jest.clearAllMocks();
     if (ORIGINAL_GROQ_KEY === undefined) delete process.env.GROQ_API_KEY;
     else process.env.GROQ_API_KEY = ORIGINAL_GROQ_KEY;
+    if (ORIGINAL_MISTRAL_KEY === undefined) delete process.env.MISTRAL_API_KEY;
+    else process.env.MISTRAL_API_KEY = ORIGINAL_MISTRAL_KEY;
   });
 
   test('recomputes overallBand as the rounded average of the 4 sub-scores, ignoring a divergent self-reported value', async () => {
@@ -353,6 +359,50 @@ describe('speakingService.gradeSpeaking', () => {
     expect(speakingService.normalizeAudioForGemini(null, 'audio/webm')).toBeNull();
     expect(speakingService.normalizeAudioForGemini(Buffer.alloc(0), 'audio/webm')).toBeNull();
     expect(speakingService.normalizeAudioForGemini(buf, 'audio/webm').data).toBe(buf.toString('base64'));
+  });
+
+  test('Mistral is tried before Groq on a Gemini failure, and can still report audio was heard', async () => {
+    process.env.MISTRAL_API_KEY = 'test-key';
+    process.env.GROQ_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('gemini down'));
+    mistralService.checkSpeakingMistral.mockResolvedValue({
+      overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: 'from mistral', strengths: [], mistakes: [], improvements: [],
+      _heardAudio: true,
+    });
+    const audio = { data: 'x', mimeType: 'audio/ogg' };
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, audio);
+
+    expect(mistralService.checkSpeakingMistral).toHaveBeenCalledWith('Q', 'transcript', 1, audio);
+    expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
+    expect(result.overallFeedback).toBe('from mistral');
+    expect(result.pronunciationFromAudio).toBe(true);
+  });
+
+  test('falls through Mistral to Groq when Mistral also fails', async () => {
+    process.env.MISTRAL_API_KEY = 'test-key';
+    process.env.GROQ_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('gemini down'));
+    mistralService.checkSpeakingMistral.mockRejectedValue(new Error('mistral down'));
+    groqService.checkSpeakingGroq.mockResolvedValue({
+      overallBand: 5, fluency: 5, vocabulary: 5, grammar: 5, pronunciation: 5,
+      overallFeedback: 'from groq', strengths: [], mistakes: [], improvements: [],
+    });
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, { data: 'x', mimeType: 'audio/ogg' });
+    expect(result.overallFeedback).toBe('from groq');
+    expect(result.pronunciationFromAudio).toBe(false); // Groq never hears audio
+  });
+
+  test('Mistral is skipped entirely when MISTRAL_API_KEY is unset', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('gemini down'));
+    groqService.checkSpeakingGroq.mockResolvedValue({
+      overallBand: 5, fluency: 5, vocabulary: 5, grammar: 5, pronunciation: 5,
+      overallFeedback: 'from groq', strengths: [], mistakes: [], improvements: [],
+    });
+    await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(mistralService.checkSpeakingMistral).not.toHaveBeenCalled();
+    expect(groqService.checkSpeakingGroq).toHaveBeenCalled();
   });
 
   test('falls back to Groq on a plain (non-overloaded) Gemini error when GROQ_API_KEY is set', async () => {

@@ -29,6 +29,7 @@ module.exports = {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
     geminiApiKey: process.env.GEMINI_API_KEY,
     groqApiKey: process.env.GROQ_API_KEY,
+    mistralApiKey: process.env.MISTRAL_API_KEY,
   },
 
   google: {
