@@ -64,13 +64,35 @@ export default function ClassDetail() {
   if (loading) return <div className="route-loading">Đang tải…</div>;
   if (!cls) return <div className="section-header"><h2 className="section-title">Không tìm thấy lớp</h2></div>;
 
+  const kpi = {
+    total: roster.length,
+    active: roster.filter((r) => r.status === 'active').length,
+    warning: roster.filter((r) => r.status === 'warning').length,
+    failed: roster.filter((r) => r.status === 'failed').length,
+  };
+  const dateRange = [cls.startDate, cls.endDate].filter(Boolean).map((d) => formatDate(d).slice(0, 10)).join(' – ');
+
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">
-          <Link to="/classes" style={{ color: 'var(--text3)', textDecoration: 'none' }}>Lớp</Link> › {cls.name}
-          {cls.status === 'archived' && <span className="badge badge-gray" style={{ marginLeft: 8 }}>Lưu trữ</span>}
-        </h2>
+        <div>
+          <h2 className="section-title">
+            <Link to="/classes" style={{ color: 'var(--text3)', textDecoration: 'none' }}>Lớp</Link> › {cls.name}
+            {cls.status === 'archived' && <span className="badge badge-gray" style={{ marginLeft: 8 }}>Lưu trữ</span>}
+          </h2>
+          {(cls.courseName || dateRange) && (
+            <div style={{ fontSize: 13, color: 'var(--text3)', marginTop: 4 }}>
+              {[cls.courseName, dateRange].filter(Boolean).join(' · ')}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="stats-row" style={{ marginBottom: 20 }}>
+        <div className="stat-card blue"><div className="stat-label">Sĩ số lớp</div><div className="stat-value">{kpi.total}</div></div>
+        <div className="stat-card green"><div className="stat-label">Đang học</div><div className="stat-value">{kpi.active}</div></div>
+        <div className="stat-card yellow"><div className="stat-label">Cảnh báo</div><div className="stat-value">{kpi.warning}</div></div>
+        <div className="stat-card red"><div className="stat-label">Rớt khóa</div><div className="stat-value">{kpi.failed}</div></div>
       </div>
 
       <div className="inner-tabs-nav" style={{ marginBottom: 18 }}>
@@ -959,7 +981,14 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>
             <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-              <select className="form-input" style={{ width: 200 }} value={cat} onChange={(e) => { setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); }}>
+              <select className="form-input" style={{ width: 200 }} value={cat}
+                onChange={(e) => {
+                  // Clear the old category's rows + show loading immediately so
+                  // the list never shows the previous type's items (wrong
+                  // labels/meta) until the new fetch resolves.
+                  setCatalog([]); setLoadingCat(true);
+                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]);
+                }}>
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
               <input className="form-input" style={{ flex: 1, minWidth: 140 }} placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -1026,7 +1055,12 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
               {images.flatMap((g, gi) => g.images.map((im, ii) => (
                 <div key={`${gi}-${ii}`} style={{ position: 'relative' }}>
                   <img src={im.url} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' }} />
-                  <button onClick={() => setImages((a) => a.filter((_, j) => j !== gi))} style={{ position: 'absolute', top: -6, right: -6, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: 18, height: 18, cursor: 'pointer', fontSize: 11 }}>✕</button>
+                  <button
+                    onClick={() => setImages((a) => a
+                      .map((g2, j) => (j === gi ? { ...g2, images: g2.images.filter((_, k) => k !== ii) } : g2))
+                      .filter((g2) => g2.images.length))}
+                    style={{ position: 'absolute', top: -6, right: -6, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: 18, height: 18, cursor: 'pointer', fontSize: 11 }}
+                  >✕</button>
                 </div>
               )))}
             </div>

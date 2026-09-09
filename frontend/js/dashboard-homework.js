@@ -128,7 +128,7 @@ function hwManualToggle(assignmentId, r) {
 function hwAssignmentBlock(a) {
   const st = HW_STATUS[a.status] || HW_STATUS.not_started;
   const pct = a.total ? Math.round((a.done / a.total) * 100) : 0;
-  return `<div class="hw-item" data-id="${a._id}">
+  return `<div class="hw-item" data-id="${a._id}" data-status="${a.status || 'not_started'}">
     <div class="hw-item-head">
       <div>
         <div class="hw-item-title">${escHtml(a.title)}</div>

@@ -25,8 +25,9 @@ function ciFmtDate(d) {
   return `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth() + 1).padStart(2, '0')}/${dt.getFullYear()}`;
 }
 
-function ciTile(value, label, extraCls) {
+function ciTile(icon, value, label, extraCls) {
   return `<div class="ci-tile ${extraCls || ''}">
+    <div class="ci-tile-icon">${icon}</div>
     <div class="ci-tile-value">${value}</div>
     <div class="ci-tile-label">${label}</div>
   </div>`;
@@ -98,10 +99,10 @@ function ciClassCard(c, ck) {
     </div>
     ${reason}
     <div class="ci-tiles">
-      ${ciTile(c.classSize, 'Sĩ số lớp')}
-      ${ciTile(`${c.heldSessions}${c.totalSessions ? `/${c.totalSessions}` : ''}`, 'Buổi đã học')}
-      ${ciTile(c.absentTotal, 'Buổi nghỉ', c.absentTotal >= c.maxAbsencesAllowed ? 'ci-tile--danger' : '')}
-      ${ciTile(c.homeworkMissedCount, 'BT thiếu', c.homeworkMissedCount >= c.homeworkWarnThreshold ? 'ci-tile--danger' : '')}
+      ${ciTile('👥', c.classSize, 'Sĩ số lớp', 'ci-tile--indigo')}
+      ${ciTile('📅', `${c.heldSessions}${c.totalSessions ? `/${c.totalSessions}` : ''}`, 'Buổi đã học', 'ci-tile--blue')}
+      ${ciTile('🚪', c.absentTotal, 'Buổi nghỉ', 'ci-tile--amber' + (c.maxAbsencesAllowed > 0 && c.absentTotal >= c.maxAbsencesAllowed ? ' ci-tile--danger' : ''))}
+      ${ciTile('📌', c.homeworkMissedCount, 'BT thiếu', 'ci-tile--rose' + (c.homeworkWarnThreshold > 0 && c.homeworkMissedCount >= c.homeworkWarnThreshold ? ' ci-tile--danger' : ''))}
     </div>
     ${ciCheckinBlock(ck)}
   </div>`;

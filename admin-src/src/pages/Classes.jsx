@@ -132,6 +132,12 @@ export default function Classes() {
   useEffect(() => { load(); }, []);
 
   const rows = classes.filter((c) => (showArchived ? true : c.status !== 'archived'));
+  const kpi = {
+    active: classes.filter((c) => c.status !== 'archived').length,
+    archived: classes.filter((c) => c.status === 'archived').length,
+    students: classes.reduce((n, c) => n + (c.enrollmentCounts?.total || 0), 0),
+    atRisk: classes.reduce((n, c) => n + (c.enrollmentCounts?.warning || 0) + (c.enrollmentCounts?.failed || 0), 0),
+  };
 
   return (
     <>
@@ -141,6 +147,15 @@ export default function Classes() {
         <h2 className="section-title">Lớp & Điểm danh ({rows.length})</h2>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ Tạo lớp</button>
       </div>
+
+      {!loading && classes.length > 0 && (
+        <div className="stats-row" style={{ marginBottom: 20 }}>
+          <div className="stat-card blue"><div className="stat-label">Lớp đang học</div><div className="stat-value">{kpi.active}</div></div>
+          <div className="stat-card green"><div className="stat-label">Tổng học viên</div><div className="stat-value">{kpi.students}</div></div>
+          <div className="stat-card yellow"><div className="stat-label">Cảnh báo / Rớt</div><div className="stat-value">{kpi.atRisk}</div></div>
+          <div className="stat-card red"><div className="stat-label">Đã lưu trữ</div><div className="stat-value">{kpi.archived}</div></div>
+        </div>
+      )}
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, alignItems: 'center' }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text2)' }}>
