@@ -991,10 +991,31 @@
   function _showDailyVocabGoalNudge() {
     if (!window.AuthService) return;
     if (document.getElementById('nav-vocab-goal-nudge')) return;
-    // Don't pile on top of a blocking overlay this load — it re-checks next load.
-    if (_learningModalOpen()
+
+    // Route the floating card through the shared popup queue with the LOWEST
+    // priority: it renders only after every blocking one-time modal in this
+    // load's burst (streak-rule announcement, goal-setup modal, badge, …)
+    // has been shown AND dismissed, then releases the queue immediately
+    // (it's a non-blocking corner card, not an attention modal). Previously
+    // it fired its own async /daily-goal fetch independently of the queue,
+    // so on a fast response it rendered first and the queued streak35 modal
+    // dropped on top of it — the exact "dismiss button peeking out from
+    // behind" case the queue exists to prevent. Falls back to running
+    // immediately when the queue script isn't on the page.
+    if (window.PopupQueue) {
+      window.PopupQueue.enqueue({ id: 'vocab-goal-nudge', priority: -100, show: _runDailyVocabGoalNudge });
+    } else {
+      _runDailyVocabGoalNudge(function () {});
+    }
+  }
+
+  function _runDailyVocabGoalNudge(done) {
+    // Cheap early-out; the queue already guarantees no modal is up by now,
+    // but a page without the queue relies on this.
+    if (document.getElementById('nav-vocab-goal-nudge')
+      || _learningModalOpen()
       || document.getElementById('nav-vocab-inactivity-overlay')
-      || document.getElementById('nav-streak35-notice-overlay')) return;
+      || document.getElementById('nav-streak35-notice-overlay')) { done(); return; }
 
     fetch(API + '/vocabbook/daily-goal', { headers: window.AuthService.authHeader() })
       .then(function (r) { return r.json(); })
@@ -1020,7 +1041,8 @@
           due: canReview ? due : 0
         });
       })
-      .catch(function () {});
+      .catch(function () {})
+      .then(function () { done(); }); // release the queue whatever happened
   }
 
   function _goReviewDue() {
