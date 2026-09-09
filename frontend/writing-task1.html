@@ -825,10 +825,20 @@
 
   function showObjectiveFeedback(ex, r) {
     var fb = document.getElementById('t1-fb');
-    var byId = {}; ex.items.forEach(function (it, i) { byId[it.id] = i + 1; });
+    // Map each result item back to what the student actually saw on screen.
+    // For categorize/matching the on-screen order is the student's own drag
+    // order and the chips carry no visible number, so a bare "Câu 1" tells
+    // them nothing — show the sentence/prompt text and put the ✔/✗ next to it.
+    var meta = {};
+    ex.items.forEach(function (it, i) {
+      meta[it.id] = { n: i + 1, text: it.text || it.left || it.prompt || '' };
+    });
+    var showText = ex.type === 'categorize' || ex.type === 'matching';
     var rows = (r.items || []).map(function (it) {
+      var m = meta[it.id] || {};
+      var label = (showText && m.text) ? esc(m.text) : ('Câu ' + (m.n || ''));
       return '<div class="t1-res-item">' + (it.correct ? '<span class="t1-ok">✔</span>' : '<span class="t1-bad">✗</span>') +
-        ' Câu ' + (byId[it.id] || '') +
+        ' ' + label +
         (!it.correct && it.correctAnswer ? ' — <span class="t1-model">' + esc(it.correctAnswer) + '</span>' : '') +
         (it.explanation ? '<div style="color:#6b7280;margin-top:2px">' + esc(it.explanation) + '</div>' : '') + '</div>';
     }).join('');
