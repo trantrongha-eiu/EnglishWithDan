@@ -76,11 +76,19 @@ async function main() {
 
     if (!s) continue; // exercise not in the seed (admin-added) — leave alone
 
-    if ((dbHasStim && !seedHasStim) || (dbHasWB && !seedHasWB)) {
+    // Per-field: a field is "stray" only when the seed doesn't define it.
+    // An exercise whose seed HAS a real stimulus (e.g. T1-L22-E03's bee
+    // diagram) but also picked up a stray wordBank gets only the wordBank
+    // cleared — its own stimulus is left alone.
+    const strayStim = dbHasStim && !seedHasStim;
+    const strayWB = dbHasWB && !seedHasWB;
+
+    if (strayStim || strayWB) {
       stray.push({
         code: ex.code, type: ex.type, title: ex.title,
-        dbStimulus: dbHasStim ? (ex.stimulus.imageUrl || ex.stimulus.kind) : null,
-        dbWordBank: dbHasWB ? ex.wordBank : null,
+        strayStim, strayWB,
+        dbStimulus: strayStim ? (ex.stimulus.imageUrl || ex.stimulus.kind) : null,
+        dbWordBank: strayWB ? ex.wordBank : null,
       });
     } else if (seedHasStim && dbHasStim && s.stimulus.imageUrl && ex.stimulus.imageUrl && s.stimulus.imageUrl !== ex.stimulus.imageUrl) {
       diff.push({ code: ex.code, seed: s.stimulus.imageUrl, db: ex.stimulus.imageUrl });
@@ -99,18 +107,22 @@ async function main() {
     console.log(`⚠️  ${stray.length} exercise mang stimulus/wordBank mà seed KHÔNG hề khai báo:`);
     stray.forEach((x) => {
       console.log(`   ${x.code} (${x.type}) — ${x.title || ''}`);
-      if (x.dbStimulus) console.log(`      stimulus lạc: ${x.dbStimulus}`);
-      if (x.dbWordBank) console.log(`      wordBank lạc: ${JSON.stringify(x.dbWordBank)}`);
+      if (x.strayStim) console.log(`      → sẽ $unset stimulus (đang là: ${x.dbStimulus})`);
+      if (x.strayWB) console.log(`      → sẽ $unset wordBank (đang là: ${JSON.stringify(x.dbWordBank)})`);
     });
     console.log();
 
     if (!dry) {
-      const codes = stray.map((x) => x.code);
-      const res = await WT1Exercise.updateMany(
-        { code: { $in: codes } },
-        { $unset: { stimulus: 1, wordBank: 1 } }
-      );
-      console.log(`✏️  Đã $unset stimulus + wordBank trên ${res.modifiedCount}/${codes.length} exercise: ${codes.join(', ')}`);
+      let n = 0;
+      for (const x of stray) {
+        const unset = {};
+        if (x.strayStim) unset.stimulus = 1;
+        if (x.strayWB) unset.wordBank = 1;
+        const res = await WT1Exercise.updateOne({ code: x.code }, { $unset: unset });
+        if (res.modifiedCount) n++;
+        console.log(`   ✏️  ${x.code}: $unset ${Object.keys(unset).join(' + ')}`);
+      }
+      console.log(`\n✅ Đã dọn ${n}/${stray.length} exercise.`);
     } else {
       console.log('   (DRY RUN — chạy lại không có --dry để áp dụng $unset)');
     }
