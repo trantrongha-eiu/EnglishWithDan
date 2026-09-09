@@ -305,6 +305,15 @@
     document.body.classList.remove('has-global-nav');
     document.documentElement.style.setProperty('--nav-height', '0px');
     _toggleExamAids(true);
+    // A nav.js announcement / nudge that raced onto the list screen (its
+    // PopupQueue slot fired in the ~500ms before the student tapped a test)
+    // must not linger over the exam that just opened. Drop it — it re-checks
+    // on the next page load, and none of these persist a "seen" flag unless
+    // the student actually closes them.
+    ['nav-streak35-notice-overlay', 'nav-vocab-inactivity-overlay', 'nav-vocab-goal-nudge'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.remove();
+    });
   };
   window.showTopNav = function () {
     var n = document.getElementById('globalTopNav');
@@ -875,6 +884,19 @@
     return !!(el && el.classList.contains('open'));
   }
 
+  // A full-screen skill activity is on screen (Reading/Listening exam, full
+  // mock test, answer review, or a vocab quiz). Every such screen calls
+  // window.hideTopNav(), which drops body.has-global-nav — a reliable
+  // cross-page signal. nav.js's one-time announcement / nudge popups must
+  // not drop a backdrop over a live timed exam (or an answer-review screen);
+  // they re-check on the student's next page load instead (none mark
+  // themselves "seen" unless they actually render).
+  function _fullscreenActivityActive() {
+    if (document.body && !document.body.classList.contains('has-global-nav')) return true;
+    try { if (typeof window._isActivePractice === 'function' && window._isActivePractice()) return true; } catch (e) {}
+    return false;
+  }
+
   // Route a full-screen notice through the shared one-at-a-time popup queue
   // (js/shared/popup-queue.js) so it never lands stacked on top of the
   // goal-setup / badge / review modals. Falls back to showing immediately
@@ -894,6 +916,7 @@
   }
   function _renderStreak35Notice() {
     if (localStorage.getItem(STREAK35_NOTICE_KEY)) return;
+    if (_fullscreenActivityActive()) return; // don't cover a live exam — retries next load
 
     var overlay = document.createElement('div');
     overlay.id = 'nav-streak35-notice-overlay';
@@ -944,6 +967,7 @@
     });
   }
   function _renderVocabInactivityNotice(daysSince) {
+    if (_fullscreenActivityActive()) return; // don't cover a live exam — retries next load
     var overlay = document.createElement('div');
     overlay.id = 'nav-vocab-inactivity-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
@@ -1014,6 +1038,7 @@
     // but a page without the queue relies on this.
     if (document.getElementById('nav-vocab-goal-nudge')
       || _learningModalOpen()
+      || _fullscreenActivityActive()
       || document.getElementById('nav-vocab-inactivity-overlay')
       || document.getElementById('nav-streak35-notice-overlay')) { done(); return; }
 
