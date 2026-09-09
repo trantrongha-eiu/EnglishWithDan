@@ -362,8 +362,10 @@ const WEEKDAYS = [
 
 function SessionsTab({ cls }) {
   const toast = useToast();
+  const confirm = useConfirm();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [wiping, setWiping] = useState(false);
   const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held' });
   const [gen, setGen] = useState({
     weekdays: [], startDate: cls.startDate ? cls.startDate.slice(0, 10) : '', endDate: cls.endDate ? cls.endDate.slice(0, 10) : '',
@@ -413,6 +415,25 @@ function SessionsTab({ cls }) {
     finally { setGenerating(false); }
   }
 
+  const scheduledCount = sessions.filter((s) => s.status === 'scheduled').length;
+  const heldCount = sessions.filter((s) => s.status === 'held').length;
+
+  function wipeSchedule() {
+    if (!scheduledCount) return;
+    const msg = heldCount > 0
+      ? `Xoá ${scheduledCount} buổi "Dự kiến" để tạo lại lịch mới? ${heldCount} buổi "Đã học" và toàn bộ điểm danh được GIỮ NGUYÊN. Không thể hoàn tác.`
+      : `Xoá toàn bộ ${scheduledCount} buổi "Dự kiến"? Dùng khi cần tạo lại lịch tự động. Không thể hoàn tác.`;
+    confirm(msg, async () => {
+      setWiping(true);
+      try {
+        const d = await apiFetch(`/classes/${cls._id}/sessions`, { method: 'DELETE', body: JSON.stringify({ scope: 'scheduled' }) });
+        toast(`Đã xoá ${d.deleted} buổi Dự kiến`);
+        load();
+      } catch (err) { toast(err.message, 'error'); }
+      finally { setWiping(false); }
+    });
+  }
+
   return (
     <>
       <form onSubmit={generate} className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-end' }}>
@@ -436,8 +457,13 @@ function SessionsTab({ cls }) {
           <input className="form-input" type="date" value={gen.endDate} onChange={(e) => setGen((g) => ({ ...g, endDate: e.target.value }))} required />
         </div>
         <button className="btn btn-primary" disabled={generating}>{generating ? 'Đang tạo...' : '🗓️ Tạo lịch tự động'}</button>
+        <button type="button" className="btn btn-ghost" disabled={wiping || !scheduledCount} onClick={wipeSchedule}
+          title={scheduledCount ? `Xoá ${scheduledCount} buổi Dự kiến` : 'Không có buổi Dự kiến để xoá'}>
+          {wiping ? 'Đang xoá...' : `🗑️ Xoá lịch cũ${scheduledCount ? ` (${scheduledCount})` : ''}`}
+        </button>
         <span style={{ fontSize: 11.5, color: 'var(--text3)', flexBasis: '100%' }}>
           Tự động tạo buổi học (trạng thái "Dự kiến") vào các ngày đã chọn trong khoảng thời gian trên — bỏ qua ngày đã có buổi sẵn, không tạo trùng.
+          {' '}<b>Xoá lịch cũ</b> gỡ toàn bộ buổi "Dự kiến" để bạn tạo lại — buổi "Đã học" và điểm danh không bị ảnh hưởng.
         </span>
       </form>
 

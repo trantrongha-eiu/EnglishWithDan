@@ -134,6 +134,69 @@ describe('PUT /:classId/sessions/:sessionId — "Đánh dấu đã học" shortc
   });
 });
 
+describe('DELETE /:classId/sessions — bulk wipe to re-generate a schedule', () => {
+  test('scope "scheduled" (default) removes only Dự kiến sessions, keeps held + its attendance', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t);
+    const enr = await addStudent(t, cls._id, s);
+
+    const held = await addSession(t, cls._id, { date: past(3), status: 'scheduled' });
+    await mark(t, cls._id, held._id, [{ enrollmentId: enr.enrollmentId, status: 'present' }]);
+    await request(app).put(`/api/classes/${cls._id}/sessions/${held._id}`).set(auth(t)).send({ status: 'held' });
+    await addSession(t, cls._id, { date: future(1), status: 'scheduled' });
+    await addSession(t, cls._id, { date: future(3), status: 'scheduled' });
+
+    const gen = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t))
+      .send({ weekdays: [0, 1, 2, 3, 4, 5, 6], startDate: future(5).slice(0, 10), endDate: future(12).slice(0, 10) });
+    expect(gen.body.created).toBeGreaterThan(0);
+
+    const del = await request(app).delete(`/api/classes/${cls._id}/sessions`).set(auth(t)).send({ scope: 'scheduled' });
+    expect(del.status).toBe(200);
+    expect(del.body.deleted).toBe(2 + gen.body.created);
+    expect(del.body.attendanceDeleted).toBe(0);
+
+    const after = await request(app).get(`/api/classes/${cls._id}/sessions`).set(auth(t));
+    expect(after.body.sessions).toHaveLength(1);
+    expect(after.body.sessions[0]._id).toBe(String(held._id));
+    expect(await AttendanceRecord.countDocuments({ sessionId: held._id })).toBe(1);
+
+    // re-generating afterwards works and numbers from 1 again (only the held one is left)
+    const regen = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t))
+      .send({ weekdays: [1, 3], startDate: future(20).slice(0, 10), endDate: future(34).slice(0, 10) });
+    expect(regen.status).toBe(201);
+    expect(regen.body.created).toBeGreaterThan(0);
+  });
+
+  test('scope "all" also removes held sessions and their AttendanceRecords', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t);
+    const enr = await addStudent(t, cls._id, s);
+    const held = await addSession(t, cls._id, { date: past(2), status: 'scheduled' });
+    await mark(t, cls._id, held._id, [{ enrollmentId: enr.enrollmentId, status: 'present' }]);
+    await request(app).put(`/api/classes/${cls._id}/sessions/${held._id}`).set(auth(t)).send({ status: 'held' });
+    await addSession(t, cls._id, { date: future(1), status: 'scheduled' });
+
+    const del = await request(app).delete(`/api/classes/${cls._id}/sessions`).set(auth(t)).send({ scope: 'all' });
+    expect(del.status).toBe(200);
+    expect(del.body.deleted).toBe(2);
+    expect(del.body.attendanceDeleted).toBe(1);
+    expect((await request(app).get(`/api/classes/${cls._id}/sessions`).set(auth(t))).body.sessions).toHaveLength(0);
+    expect(await AttendanceRecord.countDocuments({ classId: cls._id })).toBe(0);
+  });
+
+  test('empty is a no-op, and a teacher cannot wipe another teacher\'s class', async () => {
+    const a = await createTeacher();
+    const b = await createTeacher();
+    const clsA = await makeClass(a);
+    const noop = await request(app).delete(`/api/classes/${clsA._id}/sessions`).set(auth(a)).send({ scope: 'scheduled' });
+    expect(noop.status).toBe(200);
+    expect(noop.body.deleted).toBe(0);
+    expect((await request(app).delete(`/api/classes/${clsA._id}/sessions`).set(auth(b)).send({ scope: 'all' })).status).toBe(403);
+  });
+});
+
 describe('student self-check-in ("tôi có mặt")', () => {
   test('happy path: student ticks in, teacher confirms via saving present → checkin becomes confirmed', async () => {
     const t = await createTeacher();

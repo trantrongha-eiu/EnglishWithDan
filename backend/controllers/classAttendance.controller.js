@@ -428,6 +428,40 @@ exports.generateSessions = async (req, res) => {
   }
 };
 
+// Bulk-remove sessions so a teacher can wipe a wrong auto-schedule and
+// regenerate. scope 'scheduled' (default) only touches 'Dự kiến' sessions —
+// the safe common case, since those carry no attendance. scope 'all' also
+// removes held/cancelled sessions AND their AttendanceRecords/CheckIns, for
+// a full reset. Every deleteMany here is scoped to this class's session ids.
+exports.deleteSessions = async (req, res) => {
+  try {
+    const cls = req.classGroup;
+    const scope = req.body.scope === 'all' ? 'all' : 'scheduled';
+    const filter = { classId: cls._id };
+    if (scope === 'scheduled') filter.status = 'scheduled';
+
+    const targets = await ClassSession.find(filter).select('_id').lean();
+    if (!targets.length) return res.json({ success: true, deleted: 0, attendanceDeleted: 0, scope });
+    const ids = targets.map((s) => s._id);
+
+    const [att, chk] = await Promise.all([
+      AttendanceRecord.deleteMany({ sessionId: { $in: ids } }),
+      AttendanceCheckIn.deleteMany({ sessionId: { $in: ids } }),
+    ]);
+    const del = await ClassSession.deleteMany({ _id: { $in: ids } });
+    await svc.refreshClass(cls._id);
+
+    res.json({
+      success: true,
+      deleted: del.deletedCount,
+      attendanceDeleted: att.deletedCount + chk.deletedCount,
+      scope,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message || 'Lỗi server' });
+  }
+};
+
 exports.updateSession = async (req, res) => {
   try {
     const s = req.classSession;
