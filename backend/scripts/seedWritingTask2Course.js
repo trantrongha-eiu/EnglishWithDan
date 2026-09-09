@@ -172,7 +172,13 @@ async function main() {
   console.log('\nXong.');
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
+
+// Exported so an already-connected process (e.g. the local dev harness) can
+// reuse the loader + upsert without triggering main()'s own connect/disconnect.
+module.exports = { load, runSeed, validate, tally };
