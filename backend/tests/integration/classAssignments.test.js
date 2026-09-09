@@ -15,6 +15,7 @@ const WT1Module = require('../../models/WT1Module');
 const WT1Progress = require('../../models/WT1Progress');
 const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
+const Task2Topic = require('../../models/Task2Topic');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
@@ -415,6 +416,24 @@ describe('completion tracking', () => {
     await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80, completedAt: new Date() });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     expect(mine.body.assignments.find((a) => a._id === String(asgId)).status).toBe('completed');
+  });
+
+  test('task2 (weekly topic): week snapshotted into resourceCode so the homework link can jump straight to the topic', async () => {
+    const t = await createTeacher();
+    const topic = await Task2Topic.create({
+      week: 4, block: 'agree_disagree', topicName: 'Remote Work as the Future',
+      essayType: 'agree_disagree', prompt: 'Working from home will become the norm. Do you agree?',
+      isActive: true, questions: [],
+    });
+
+    const { cls } = await makeClassWith(t);
+    const created = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({
+      title: 'Task 2 quiz hw', resources: [{ kind: 'internal', resourceType: 'task2', resourceId: String(topic._id) }],
+    });
+    expect(created.status).toBe(201);
+    // task2-practice.html needs BOTH ?week & ?topicId — without the week it
+    // just dumps the student on the week picker (reported bug).
+    expect((await Assignment.findById(created.body.assignment._id).lean()).resources[0].resourceCode).toBe('4');
   });
 
   test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, and searching by prompt text works', async () => {

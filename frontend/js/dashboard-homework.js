@@ -57,7 +57,9 @@ function hwResourceHref(r) {
     case 'speaking_course_lesson': return r.resourceCode ? `speaking-course.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
     case 'task1_practice':     return `writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice':     return `writing.html?taskType=2&taskId=${id}`;
-    case 'task2':              return 'task2-practice.html';
+    // task2-practice.html jumps to a topic only with BOTH ?week & ?topicId —
+    // resourceCode is the week (snapshot at assign time, see resourceCompletionService).
+    case 'task2':              return r.resourceCode ? `task2-practice.html?week=${encodeURIComponent(r.resourceCode)}&topicId=${id}` : 'task2-practice.html';
     // advanced-sentences.html won't open a group without its week — resourceCode
     // is the week number (deepLinkKey), id is the SentenceStructureGroup _id.
     case 'advanced_sentences': return r.resourceCode ? `advanced-sentences.html?week=${encodeURIComponent(r.resourceCode)}&groupId=${id}` : 'advanced-sentences.html';

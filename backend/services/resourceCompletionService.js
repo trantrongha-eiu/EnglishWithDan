@@ -131,8 +131,14 @@ const REGISTRY = {
   },
   task2: {
     label: 'Task 2 Writing (Topic)',
+    // task2-practice.html only jumps straight to a topic when it has BOTH
+    // ?week & ?topicId (loadWeeks: `if (urlWeek && urlTopicId)`), so snapshot
+    // the week into resourceCode at assign time — same pattern as
+    // advanced_sentences. Without this the homework "Bắt đầu" link had no
+    // params and just dumped the student on the week picker.
     catalog: { model: Task2Topic, filter: { isActive: true }, sort: { week: 1, orderIndex: 1 },
-      shape: (d) => ({ _id: d._id, label: d.topicName, meta: d.week ? `Week ${d.week}` : '' }) },
+      shape: (d) => ({ _id: d._id, label: d.topicName, meta: d.week ? `Week ${d.week}` : '' }),
+      deepLinkKey: (d) => String(d.week || '') },
     attempt: { model: Task2Attempt, userField: 'userId', idField: 'topicId', filter: {} },
     scoreGate: {
       fields: 'correctCount totalQuestions scorePercentage',

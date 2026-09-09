@@ -945,7 +945,7 @@ async function loadWeeks() {
   app.innerHTML = '<div style="text-align:center;padding:40px"><div class="wp-spinner"></div><p>Đang tải...</p></div>';
   try {
     const params = new URLSearchParams(location.search);
-    const urlWeek    = parseInt(params.get('week')) || null;
+    let   urlWeek    = parseInt(params.get('week')) || null;
     const urlTopicId = params.get('topicId');
     const urlMode    = params.get('mode');
     if (urlMode)  state.currentMode   = urlMode;
@@ -957,6 +957,19 @@ async function loadWeeks() {
     ]);
     state.weeks = data.weeks || [];
     state.allDrafts = allDraftsData.drafts || [];
+
+    // Deep link with only ?topicId= (older homework assignments, before the
+    // week was snapshotted into resourceCode) — find which week owns it so
+    // the ?week & ?topicId path below can run.
+    if (urlTopicId && !urlWeek) {
+      try {
+        const perWeek = await Promise.all(
+          state.weeks.map(w => apiFetch(`/api/task2/topics/week/${w.week}`).then(td => ({ week: w.week, topics: td.topics || [] })).catch(() => null))
+        );
+        const hit = perWeek.find(x => x && x.topics.some(t => t._id === urlTopicId));
+        if (hit) urlWeek = hit.week;
+      } catch {}
+    }
 
     if (urlWeek && urlTopicId) {
       state.selectedWeek = urlWeek;
