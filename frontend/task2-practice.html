@@ -106,6 +106,11 @@
     .t2-structure-hint{display:flex;align-items:flex-start;gap:6px;background:#eff6ff;border-left:3px solid #3b82f6;border-radius:0 6px 6px 0;padding:6px 10px;margin:8px 0 6px;font-size:12px;color:#1d4ed8;line-height:1.5}
     .t2-structure-hint-label{font-weight:700;white-space:nowrap;flex-shrink:0}
     [data-theme="dark"] .t2-structure-hint{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}
+    .t2-kw-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 6px}
+    .t2-kw-label{font-size:11px;font-weight:800;letter-spacing:.03em;color:#92400e;text-transform:uppercase;flex-shrink:0}
+    .t2-kw-chip{font-size:12.5px;font-weight:600;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:20px;padding:2px 10px}
+    [data-theme="dark"] .t2-kw-label{color:#fcd34d}
+    [data-theme="dark"] .t2-kw-chip{background:#3a2c0a;border-color:#5c4611;color:#fcd34d}
 
     /* ── Answer word-count / letter-pattern hint ── */
     .t2-answer-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px;font-size:12px}
@@ -602,6 +607,10 @@ function _escHtml(s) {
 const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree / Disagree', discuss_both_views:'Discuss Both Views', positive_or_negative_development:'Positive or Negative Dev' };
 const ESSAY_BADGE_CLASS = { advantages_disadvantages:'et-badge et-adv', cause_effect:'et-badge et-cause', cause_solution:'et-badge et-cause', effect_solution:'et-badge et-cause', agree_disagree:'et-badge et-opinion', discuss_both_views:'et-badge et-discuss', positive_or_negative_development:'et-badge et-posneg' };
 const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Điền chỗ trống', rearrange:'Sắp xếp từ', translation:'Dịch câu', error_correction:'Sửa lỗi', topic_sentence:'Chọn topic sentence', short_writing:'Viết đoạn', paraphrase:'Paraphrase' };
+// Types that run the word-by-word "Dịch câu" typing drill (server ships a
+// model sentence as q.translationAnswer for each). translation + paraphrase
+// + the conclusion / short-writing prompts.
+const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
 // ════════════════════════════════════════════════════════
@@ -1531,7 +1540,6 @@ function renderPractice() {
     <div class="wp-card" style="margin:0 20px" id="qcard">
       ${renderQuestion(q)}
       <div style="display:flex;gap:8px;margin-top:12px">
-        ${q.type === 'translation' && (q.fallbackKeywords||q.hints||[]).length ? `<button class="wp-vocab-hint-btn" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)"><i class="fas fa-lightbulb"></i> <span id="vocab-hint-count"></span></button>` : ''}
         <button class="wp-submit-btn" id="submit-btn" onclick="submitPractice()" style="flex:1" disabled>
           <i class="fas fa-check"></i> Kiểm tra
         </button>
@@ -1564,12 +1572,20 @@ function renderQuestion(q) {
   const structureHint = q.sentenceStructure
     ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${_escHtml(q.sentenceStructure)}</span></div>`
     : '';
+  // Keyword hints shown for every question that has them (không giấu sau nút
+  // gợi ý nữa) — the MCQ types carry none so this stays empty there.
+  const kw = q.fallbackKeywords && q.fallbackKeywords.length ? q.fallbackKeywords
+    : (q.hints && q.hints.length ? q.hints : []);
+  const keywordRow = kw.length
+    ? `<div class="t2-kw-row"><span class="t2-kw-label">🔑 Từ khóa</span>${kw.map(w => `<span class="t2-kw-chip">${_escHtml(w)}</span>`).join('')}</div>`
+    : '';
 
   if (['essay_type_recognition', 'topic_sentence'].includes(q.type)) {
     const letters = ['A','B','C','D'];
     return `
     <div class="wp-task-label">${typeLbl}</div>
     <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+    ${keywordRow}
     <div class="t2-mc-options">
       ${(q.options||[]).map((opt,i) => `
         <button class="t2-mc-option" data-idx="${i}" onclick="selectMC(${i}, this)">
@@ -1599,6 +1615,7 @@ function renderQuestion(q) {
     <div class="wp-task-label">${typeLbl}</div>
     <div class="t2-question-text">${_escHtml(displayText)}</div>
     ${structureHint}
+    ${keywordRow}
     <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)">
       <span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>
     </div>
@@ -1612,17 +1629,20 @@ function renderQuestion(q) {
     <div class="wp-task-label">${typeLbl}</div>
     <div class="t2-question-text">${_escHtml(q.questionText)}</div>
     ${structureHint}
+    ${keywordRow}
     <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
-  // translation → word-by-word character-typing drill (needs the exact answer,
-  // which the server now ships as q.translationAnswer for the topic-practice
-  // flow). Falls back to the plain textarea below when the answer is absent
-  // (older data, or exam mode).
-  if (q.type === 'translation' && q.translationAnswer) {
+  // translation / paraphrase / conclusion (short_writing) → word-by-word
+  // character-typing drill. Needs the exact model sentence, which the server
+  // ships as q.translationAnswer for the topic-practice flow. Falls back to
+  // the plain textarea below when the answer is absent (older data, exam mode).
+  if (WBW_TYPES.has(q.type) && q.translationAnswer) {
+    const para = q.type !== 'translation';
     return `
   <div class="wp-task-label">${typeLbl}</div>
   <div class="t2-question-text">${_escHtml(q.questionText)}</div>
   ${structureHint}
+  ${keywordRow}
   <div class="wp-hints-row" id="hints-row"></div>
   <div class="t2-wbw" id="wbw">
     <div class="t2-wbw-bar">
@@ -1634,12 +1654,13 @@ function renderQuestion(q) {
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.</div>
+    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo. Bấm “Hiện tất cả” nếu cần xem trước.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.'}</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
 
-  // translation (no answer shipped), error_correction, short_writing, paraphrase
+  // fallbacks: translation/paraphrase/short_writing with no model shipped,
+  // plus error_correction
   const isLong = ['short_writing','paraphrase'].includes(q.type);
   const answerHint = q.answerWordCount ? `
   <div class="t2-answer-hint">
@@ -1651,6 +1672,7 @@ function renderQuestion(q) {
   <div class="t2-question-text">${_escHtml(q.questionText)}</div>
   ${answerHint}
   ${structureHint}
+  ${keywordRow}
   ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
   <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
   ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
@@ -1995,7 +2017,7 @@ async function submitPractice() {
   // so a finished sentence is guaranteed correct — grade it locally and skip the
   // "✨ AI đang chấm bài..." round-trip. Only trusts the flag set by _wbwComplete()
   // and re-checks the text is an exact match; anything else falls back to the API.
-  const wbwVerbatim = _wbwVerbatimPending && q.type === 'translation'
+  const wbwVerbatim = _wbwVerbatimPending && WBW_TYPES.has(q.type)
     && !!q.translationAnswer && answer === q.translationAnswer;
   _wbwVerbatimPending = false;
 

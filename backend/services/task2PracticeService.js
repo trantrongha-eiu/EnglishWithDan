@@ -28,6 +28,11 @@ const AUTO_DERIVE_TYPES = new Set(['translation', 'rearrange', 'error_correction
 // paragraph-length short_writing/paraphrase types (a letter-blanked hint
 // pattern for a whole paragraph would be unreadable, not helpful).
 const HINT_TYPES = new Set(['translation', 'error_correction']);
+// Practice-mode types that run the word-by-word "Dịch câu" typing drill —
+// each ships its model sentence as `translationAnswer` so the client can
+// validate every keystroke. translation + paraphrase + the conclusion /
+// short-writing prompts.
+const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
 
 function deriveSentenceStructure(q) {
   if (q.sentenceStructure) return q.sentenceStructure;
@@ -137,6 +142,10 @@ function sanitizeQuestionForClient(q, opts = {}) {
     rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
   }
   rest.sentenceStructure = deriveSentenceStructure(q) || undefined;
+  // Keyword hints (fallbackKeywords/hints) are a practice-mode aid — the
+  // client now renders them inline on every question. Thi thử / exam mode
+  // (includeHints:false) must stay hint-free, so drop them there.
+  if (!includeHints) { delete rest.fallbackKeywords; delete rest.hints; }
   if (includeHints && HINT_TYPES.has(q.type)) {
     const answerText = correctAnswer || modelAnswer || '';
     if (answerText) {
@@ -145,14 +154,16 @@ function sanitizeQuestionForClient(q, opts = {}) {
       rest.answerLetterHint = hint.pattern;
     }
   }
-  // Word-by-word "Dịch câu" typing exercise (topic-practice flow only, i.e.
+  // Word-by-word "Dịch câu" typing drill (topic-practice flow only, i.e.
   // includeHints) needs the exact answer client-side to validate each typed
   // character in real time — the letter-mask above only reveals first letters.
-  // This is an intentional, exercise-specific reveal (the whole point of the
-  // drill is to reproduce the sentence verbatim, and every keystroke is still
+  // Applies to translation, paraphrase and the conclusion/short-writing
+  // prompts: all three ship a model sentence the student reproduces with the
+  // same drill. This is an intentional, exercise-specific reveal (the whole
+  // point is to reproduce the model verbatim, and every keystroke is still
   // graded fresh server-side on submit). Thi thử / exam mode passes
   // includeHints:false, so it stays fully hint-free and answer-free.
-  if (includeHints && q.type === 'translation') {
+  if (includeHints && WBW_TYPES.has(q.type)) {
     const answerText = correctAnswer || modelAnswer || '';
     if (answerText) rest.translationAnswer = answerText;
   }
