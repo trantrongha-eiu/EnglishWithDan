@@ -1,10 +1,31 @@
 const router         = require('express').Router();
 const rateLimit      = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
+const multer         = require('multer');
 const auth           = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const speakCtrl      = require('../controllers/speaking.controller');
 const logger         = require('../utils/logger');
+
+// /analyze can now carry the student's recording (multipart) so Gemini
+// grades Pronunciation from the real audio. Optional — a plain JSON body
+// (no recording) still works and grades transcript-only. memoryStorage: the
+// buffer goes straight to Gemini as a base64 inlineData part, never to disk.
+const audioUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 12 * 1024 * 1024 }, // ~12MB — minutes of opus; well clear of a real answer
+});
+// Wrap so a multer error (file too large, etc.) doesn't 500 — the audio is
+// optional, so just drop it and let grading proceed transcript-only.
+const optionalAudio = (field) => (req, res, next) => {
+  audioUpload.single(field)(req, res, (err) => {
+    if (err) {
+      logger.ai('speaking/analyze: audio upload rejected, grading transcript-only', { errorMessage: err.message });
+      req.file = undefined;
+    }
+    next();
+  });
+};
 
 // Chỉ premium / teacher / admin mới được dùng speaking
 const premiumOnly = requirePremium('Tính năng Speaking chỉ dành cho thành viên Premium.');
@@ -66,7 +87,7 @@ const improveLimiter = rateLimit({
 router.get('/topics',           auth, premiumOnly, speakCtrl.getTopics);
 router.get('/random',           auth, premiumOnly, speakCtrl.getRandom);
 router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
-router.post('/analyze',         auth, premiumOnly, analyzeLimiter, speakCtrl.analyze);
+router.post('/analyze',         auth, premiumOnly, analyzeLimiter, optionalAudio('audio'), speakCtrl.analyze);
 router.post('/mock-submit',     auth, premiumOnly, analyzeLimiter, speakCtrl.mockSubmit);
 router.post('/:attemptId/retry', auth, premiumOnly, analyzeLimiter, speakCtrl.retry);
 router.post('/sample-answer',   auth, premiumOnly, sampleAnswerLimiter, speakCtrl.sampleAnswer);

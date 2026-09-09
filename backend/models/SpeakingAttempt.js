@@ -13,6 +13,9 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     vocabulary:       { type: Number, default: 0 },
     grammar:          { type: Number, default: 0 },
     pronunciation:    { type: Number, default: 0 },
+    // true when Pronunciation was graded from the student's real audio
+    // recording (multimodal), false when it's the transcript-only estimate.
+    pronunciationFromAudio: { type: Boolean, default: false },
     overallFeedback:  { type: String, default: '' },
     correctedVersion: { type: String, default: '' }, // Stage 1 (analyze) no longer populates this — kept for old attempts + optional future use
     todaysFocus:      { type: String, default: '' },

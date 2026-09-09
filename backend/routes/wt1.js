@@ -2,10 +2,22 @@ const express = require('express');
 const router  = express.Router();
 const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
+const multer  = require('multer');
 const auth    = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const ctrl    = require('../controllers/wt1.controller');
 const logger  = require('../utils/logger');
+
+// speaking_response can carry the student's recording (multipart 'audio')
+// so Gemini grades Pronunciation from real audio. Optional — plain JSON
+// still works (transcript-only). Same shape as routes/speaking.js.
+const audioUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 12 * 1024 * 1024 } });
+const optionalAudio = (field) => (req, res, next) => {
+  audioUpload.single(field)(req, res, (err) => {
+    if (err) { logger.ai('wt1/submit-speaking: audio upload rejected, grading transcript-only', { errorMessage: err.message }); req.file = undefined; }
+    next();
+  });
+};
 
 const premiumOnly = requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.');
 
@@ -48,7 +60,7 @@ router.post('/check',          auth, premiumOnly, checkLimiter, ctrl.check);
 router.post('/submit-writing', auth, premiumOnly, writeLimiter, ctrl.submitWriting);
 // speaking_response exercises (Speaking course) — also a real per-call
 // Gemini cost, so it shares /submit-writing's hard rate limit.
-router.post('/submit-speaking', auth, premiumOnly, writeLimiter, ctrl.submitSpeaking);
+router.post('/submit-speaking', auth, premiumOnly, writeLimiter, optionalAudio('audio'), ctrl.submitSpeaking);
 
 // ── progress / review (auth only) ──────────────────────────────────
 router.get('/progress',            auth, ctrl.getProgress);

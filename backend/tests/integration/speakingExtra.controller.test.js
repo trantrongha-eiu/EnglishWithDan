@@ -92,6 +92,53 @@ describe('POST /api/speaking/analyze', () => {
     expect(historyRes.body.attempts[0].status).toBe('analyzed');
   });
 
+  test('multipart with an audio file: passes it to Gemini and persists pronunciationFromAudio', async () => {
+    geminiService.checkSpeaking.mockReset();
+    geminiService.checkSpeaking.mockResolvedValue(feedback());
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+
+    const res = await request(app)
+      .post('/api/speaking/analyze')
+      .set('Authorization', `Bearer ${token}`)
+      .field('transcript', 'I enjoy reading books in my free time.')
+      .field('question', 'What do you like to do?')
+      .field('part', '1')
+      .attach('audio', Buffer.from('fake-opus-bytes'), { filename: 'answer.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.feedback.pronunciationFromAudio).toBe(true);
+    // 4th arg is the { data, mimeType } audio part (webm → video/webm for Gemini).
+    const call = geminiService.checkSpeaking.mock.calls[0];
+    expect(call[3]).toMatchObject({ mimeType: 'video/webm' });
+    expect(typeof call[3].data).toBe('string');
+
+    const historyRes = await request(app).get('/api/speaking/history').set('Authorization', `Bearer ${token}`);
+    expect(historyRes.body.attempts[0].aiFeedback.pronunciationFromAudio).toBe(true);
+  });
+
+  test('audio-path grading failure retries transcript-only and still returns 200', async () => {
+    geminiService.checkSpeaking.mockReset();
+    geminiService.checkSpeaking
+      .mockRejectedValueOnce(new Error('unsupported audio container'))
+      .mockResolvedValueOnce(feedback());
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+
+    const res = await request(app)
+      .post('/api/speaking/analyze')
+      .set('Authorization', `Bearer ${token}`)
+      .field('transcript', 'I enjoy reading books in my free time.')
+      .field('part', '1')
+      .attach('audio', Buffer.from('bad-bytes'), { filename: 'answer.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(200);
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(2);
+    expect(geminiService.checkSpeaking.mock.calls[0][3]).toBeTruthy();   // 1st: with audio
+    expect(geminiService.checkSpeaking.mock.calls[1][3]).toBeNull();     // retry: transcript-only
+    expect(res.body.feedback.pronunciationFromAudio).toBe(false);
+  });
+
   test('AI overload error surfaces as 503, and marks the pending attempt as error', async () => {
     const overloadErr = new Error('Model overloaded');
     overloadErr.isOverloaded = true;

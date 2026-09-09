@@ -1512,13 +1512,40 @@ async function analyzeTranscript() {
 
   const questionId = state.currentQuestion?._id;
 
-  // Abort a hung grading request after 45s (Gemini grading legitimately
-  // takes ~15-25s; the backend wraps it in its own 15s timeout, so this
-  // only fires when the HTTP layer itself stalls — a cold-started backend
-  // or a dropped connection — which otherwise leaves the loading state
-  // and the disabled button stuck forever).
+  // Build the request body. When we captured the student's audio, send it
+  // as multipart so the server can hand it to Gemini and grade Pronunciation
+  // from the real recording; otherwise a plain JSON body grades from the
+  // transcript only (unchanged behaviour).
+  const _hasAudio = _lastRecordingBlob && _lastRecordingBlob.size > 0;
+  let _reqBody;
+  if (_hasAudio) {
+    const fd = new FormData();
+    fd.append('transcript', transcript);
+    fd.append('question', question);
+    if (questionId) fd.append('questionId', questionId);
+    if (state.currentQuestion?.topic) fd.append('topic', state.currentQuestion.topic);
+    if (state.currentQuestion?.part != null) fd.append('part', state.currentQuestion.part);
+    fd.append('duration', duration || 0);
+    const _t = _lastRecordingBlob.type || '';
+    const _ext = _t.includes('ogg') ? 'ogg' : _t.includes('mp4') ? 'm4a' : 'webm';
+    fd.append('audio', _lastRecordingBlob, `answer.${_ext}`);
+    _reqBody = fd;
+  } else {
+    _reqBody = JSON.stringify({
+      transcript, question, questionId,
+      topic: state.currentQuestion?.topic,
+      part:  state.currentQuestion?.part,
+      duration,
+    });
+  }
+
+  // Abort a hung grading request (Gemini grading legitimately takes ~15-25s,
+  // longer with an audio part; the backend wraps it in its own timeout, so
+  // this only fires when the HTTP layer itself stalls — a cold-started
+  // backend or a dropped connection — which otherwise leaves the loading
+  // state and the disabled button stuck forever).
   const _ctrl = new AbortController();
-  const _killer = setTimeout(() => _ctrl.abort(), 45000);
+  const _killer = setTimeout(() => _ctrl.abort(), _hasAudio ? 75000 : 45000);
 
   try {
     // Fetched in parallel with /analyze (not awaited first) so the
@@ -1530,14 +1557,7 @@ async function analyzeTranscript() {
       apiFetch('/api/speaking/analyze', {
         method: 'POST',
         signal: _ctrl.signal,
-        body: JSON.stringify({
-          transcript,
-          question,
-          questionId,
-          topic: state.currentQuestion?.topic,
-          part:  state.currentQuestion?.part,
-          duration,
-        }),
+        body: _reqBody,
       }),
       questionId ? apiFetch('/api/speaking/history').catch(() => null) : Promise.resolve(null),
     ]);
@@ -1602,6 +1622,21 @@ function renderFeedback(fb, previousBand) {
     el.textContent = val != null ? val : '—';
     el.dataset.band = val != null ? bandColor(val) : '';
   });
+
+  // Pronunciation source note — heard from the real recording (multimodal)
+  // vs the transcript-only estimate.
+  const pronNoteText = document.getElementById('fb-pron-note-text');
+  const pronNoteIcon = document.getElementById('fb-pron-note-icon');
+  if (pronNoteText) {
+    if (fb.pronunciationFromAudio) {
+      pronNoteText.textContent = 'Điểm Pronunciation được chấm trực tiếp từ bản ghi âm của bạn — âm tiết, trọng âm từ/câu, ngữ điệu, nhịp điệu và nối âm. Vẫn nên kết hợp nhận xét phát âm từ giáo viên.';
+      if (pronNoteIcon) pronNoteIcon.className = 'fas fa-circle-check';
+      if (pronNoteIcon) pronNoteIcon.style.color = '#22c55e';
+    } else {
+      pronNoteText.textContent = 'Điểm Pronunciation được AI ước tính dựa trên văn bản chuyển giọng nói (từ nối, ngập ngừng, lựa chọn từ), không phân tích trực tiếp âm thanh phát âm của bạn. Coi đây là tham khảo, không thay thế đánh giá phát âm từ giáo viên.';
+      if (pronNoteIcon) { pronNoteIcon.className = 'fas fa-circle-info'; pronNoteIcon.style.color = ''; }
+    }
+  }
 
   // Comparison against this same question's own previous attempt — a
   // light, positive-framed encouragement signal (not a streak/mascot

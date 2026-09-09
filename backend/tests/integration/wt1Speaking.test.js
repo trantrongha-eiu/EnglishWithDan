@@ -79,7 +79,7 @@ describe('Speaking course on the WT1 stack', () => {
     expect(res.status).toBe(200);
     expect(res.body.graded).toBe('speaking');
     expect(res.body.feedback.overallBand).toBe(6.5);
-    expect(speakingService.gradeSpeaking).toHaveBeenCalledWith(expect.stringContaining('cooking'), expect.any(String), 1);
+    expect(speakingService.gradeSpeaking).toHaveBeenCalledWith(expect.stringContaining('cooking'), expect.any(String), 1, null);
 
     const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E2' });
     expect(sub).toBeTruthy();

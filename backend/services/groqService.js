@@ -81,7 +81,11 @@ async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, lab
   return data.choices?.[0]?.message?.content || '';
 }
 
-async function checkSpeakingGroq(question, transcript, part = 1, _attempt = 0) {
+// `_audio` is accepted (and ignored) only so this stays call-compatible
+// with geminiService.checkSpeaking's (question, transcript, part, audio,
+// _attempt) signature via _withGroqFallback's shared args array — Groq
+// (Llama) has no audio input, so it always grades transcript-only.
+async function checkSpeakingGroq(question, transcript, part = 1, _audio = null, _attempt = 0) {
   const rawText = await _callGroq(
     SPEAKING_SYSTEM, buildSpeakingGradingPrompt(question, transcript, part),
     { maxTokens: 1024, label: 'checkSpeakingGroq' } // matches geminiService.checkSpeaking's budget — same schema, same headroom need
@@ -91,7 +95,7 @@ async function checkSpeakingGroq(question, transcript, part = 1, _attempt = 0) {
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('checkSpeakingGroq: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return checkSpeakingGroq(question, transcript, part, _attempt + 1);
+      return checkSpeakingGroq(question, transcript, part, _audio, _attempt + 1);
     }
     throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }

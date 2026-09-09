@@ -117,13 +117,26 @@ exports.submitSpeaking = async (req, res) => {
       || ex.instruction || ex.title || 'IELTS Speaking practice';
     const part = ex.speakingPart || 1;
 
+    // Optional recording (multipart 'audio') → Pronunciation graded from
+    // real audio; see routes/wt1.js optionalAudio.
+    const audio = req.file
+      ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
+      : null;
+
     let feedback;
     try {
-      feedback = await speakingService.gradeSpeaking(questionText, text, part);
+      feedback = await speakingService.gradeSpeaking(questionText, text, part, audio);
     } catch (aiErr) {
-      console.warn('[WT1] speaking AI grading failed:', aiErr.message);
-      const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể phân tích lúc này. Vui lòng thử lại.';
-      return res.status(503).json({ success: false, message: msg });
+      if (audio && !aiErr.isOverloaded) {
+        console.warn('[WT1] audio speaking grading failed, retrying transcript-only:', aiErr.message);
+        try { feedback = await speakingService.gradeSpeaking(questionText, text, part, null); }
+        catch (retryErr) { aiErr = retryErr; }
+      }
+      if (!feedback) {
+        console.warn('[WT1] speaking AI grading failed:', aiErr.message);
+        const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể phân tích lúc này. Vui lòng thử lại.';
+        return res.status(503).json({ success: false, message: msg });
+      }
     }
 
     await svc.recordSubmission(req.user._id, ex, {

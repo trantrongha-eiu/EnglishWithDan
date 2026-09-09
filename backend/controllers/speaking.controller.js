@@ -45,6 +45,14 @@ exports.analyze = catchAsync(async (req, res) => {
   const partNum = part ? Number(part) : 1;
   const questionText = question || 'General speaking practice';
 
+  // Optional: the student's real recording (multipart 'audio' field) — lets
+  // Gemini grade Pronunciation from what it actually hears instead of a
+  // transcript-only estimate. Absent for browsers without MediaRecorder, or
+  // if the upload was dropped (see routes/speaking.js optionalAudio).
+  const audio = req.file
+    ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
+    : null;
+
   // Persisted BEFORE grading (status: 'pending') so the submission is
   // visible to the student/admin right away — Part 2/3's longer
   // transcripts are most likely to hit Gemini's JSON-truncation retry
@@ -57,14 +65,27 @@ exports.analyze = catchAsync(async (req, res) => {
 
   let feedback;
   try {
-    feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum);
+    feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum, audio);
   } catch (aiErr) {
-    console.error('[Speaking] Gemini error:', aiErr.message);
-    if (pendingId) await speakingService.markAttemptError(pendingId);
-    if (aiErr.isOverloaded) {
-      return res.status(503).json({ success: false, message: aiErr.message });
+    // If the audio part is what tripped grading up (unsupported container,
+    // corrupt blob, size), don't lose the whole grade — retry once
+    // transcript-only before surfacing an error.
+    if (audio && !aiErr.isOverloaded) {
+      console.warn('[Speaking] audio grading failed, retrying transcript-only:', aiErr.message);
+      try {
+        feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum, null);
+      } catch (retryErr) {
+        aiErr = retryErr;
+      }
     }
-    return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
+    if (!feedback) {
+      console.error('[Speaking] Gemini error:', aiErr.message);
+      if (pendingId) await speakingService.markAttemptError(pendingId);
+      if (aiErr.isOverloaded) {
+        return res.status(503).json({ success: false, message: aiErr.message });
+      }
+      return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
+    }
   }
 
   const { attemptId, newlyUnlocked } = pendingId

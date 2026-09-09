@@ -2082,16 +2082,17 @@ Note: this controller's shared `guard()` wrapper deliberately leaks the raw `err
 **Auth:** Bearer token + premium
 **Rate limit:** 20 requests / 15 min per user (`skip` for `role==='admin'`) → 429 `{ success:false, message:'Quá nhiều yêu cầu phân tích, vui lòng thử lại sau 15 phút.' }`
 
-**Request**
-- Body: `{ "transcript": "I think that...", "question": "Describe a memorable trip.", "questionId": "...", "topic": "Travel", "part": 2, "duration": 118 }`
+**Request** — either:
+- JSON body: `{ "transcript": "I think that...", "question": "Describe a memorable trip.", "questionId": "...", "topic": "Travel", "part": 2, "duration": 118 }`, **or**
+- `multipart/form-data`: the same fields as form parts **plus an optional `audio` file** (the student's recording, ≤12MB). When present, Gemini grades **Pronunciation from the real audio** (multimodal) instead of a transcript-only estimate; `feedback.pronunciationFromAudio` reports which happened. Unsupported/corrupt audio → the server retries transcript-only rather than failing. Browsers without MediaRecorder just send the JSON form.
 
 **Response** (200)
 ```json
-{ "success": true, "feedback": { "overall_band": 6.5, "fluency": 7, "vocabulary": 6, "grammar": 6, "pronunciation": 7, "corrected": "...", "overall_feedback": "...", "strengths": ["..."], "improvements": ["..."], "errors": [{ "wrong":"...", "right":"...", "tip":"..." }] } }
+{ "success": true, "feedback": { "overallBand": 6.5, "fluency": 7, "vocabulary": 6, "grammar": 6, "pronunciation": 7, "pronunciationFromAudio": true, "overallFeedback": "...", "todaysFocus": "...", "strengths": ["..."], "improvements": ["..."], "mistakes": [{ "original":"...", "corrected":"...", "reason":"..." }], "vocabUpgrades": [{ "original":"...", "upgrade":"...", "reason":"..." }] }, "attemptId": "...", "newlyUnlocked": [] }
 ```
 
 **Validation**
-- `transcript` required (non-empty after trim); `part` defaults to `1` if omitted; `question` defaults to `'General speaking practice'` if omitted.
+- `transcript` required (non-empty after trim); `part` defaults to `1` if omitted; `question` defaults to `'General speaking practice'` if omitted; `audio` optional.
 - Prompt-injection defense: the transcript is wrapped in `<<<TRANSCRIPT_START>>>`/`<<<TRANSCRIPT_END>>>` delimiters before being sent to Gemini (see `ARCHITECTURE.md` § AI grading workflow).
 - **This is an AI-graded endpoint with genuine real-time grading** (unlike Task 2's `/check`, see below) — a Gemini failure is not silently swallowed.
 - Saving the resulting `SpeakingAttempt` is best-effort: if the DB write fails after a successful AI call, the failure is logged and swallowed — the student still receives their `feedback` in the response.

@@ -88,12 +88,43 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
     if (!process.env.GROQ_API_KEY) throw geminiErr;
     try {
       console.warn(`[Speaking] Gemini failed (${geminiErr.message}) — falling back to Groq (${label})`);
-      return await groqFn(...args);
+      const out = await groqFn(...args);
+      // Tag so callers can tell the result came from the transcript-only
+      // fallback engine (e.g. Speaking grading's "was pronunciation actually
+      // heard" flag — Groq has no audio input).
+      if (out && typeof out === 'object') out.__viaGroqFallback = true;
+      return out;
     } catch (groqErr) {
       console.error(`[Speaking] Groq fallback also failed (${label}):`, groqErr.message);
       throw geminiErr;
     }
   }
+}
+
+// Turn an uploaded recording (multer memoryStorage buffer + its browser
+// mimetype) into the { data, mimeType } shape checkSpeaking() feeds Gemini
+// as an inlineData part. Returns null when there's nothing usable.
+//
+// Gemini's inline audio types are wav/mp3/aac/ogg/flac/aiff; it does NOT
+// take audio/webm. Chrome's MediaRecorder almost always produces
+// webm/opus, so that (and any mp4/m4a) is handed to Gemini as *video* —
+// its video pipeline reads the audio track fine and this is the reliable
+// cross-browser path. Firefox's real ogg/opus goes through as audio/ogg.
+// If the format is genuinely unknown we still try video/webm rather than
+// dropping the audio; the controller falls back to transcript-only grading
+// if Gemini rejects it anyway.
+function normalizeAudioForGemini(buffer, mimetype) {
+  if (!buffer || !buffer.length) return null;
+  const m = String(mimetype || '').toLowerCase();
+  let mimeType;
+  if (m.includes('ogg')) mimeType = 'audio/ogg';
+  else if (m.includes('wav')) mimeType = 'audio/wav';
+  else if (m.includes('mpeg') || m.includes('mp3')) mimeType = 'audio/mp3';
+  else if (m.includes('flac')) mimeType = 'audio/flac';
+  else if (m.includes('aac')) mimeType = 'audio/aac';
+  else if (m.includes('mp4') || m.includes('m4a')) mimeType = 'video/mp4';
+  else mimeType = 'video/webm'; // webm/opus (Chrome) + unknown
+  return { data: buffer.toString('base64'), mimeType };
 }
 
 // Same rounding convention as Writing's server-side recompute (see
@@ -111,13 +142,20 @@ function roundToHalfBand(n) {
   return Math.round(n * 2) / 2;
 }
 
-async function gradeSpeaking(questionText, transcript, partNum) {
-  const feedback = await _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum]);
+// `audio` (optional): { data: <base64>, mimeType } — the student's real
+// recording. Passed straight through to Gemini's multimodal checkSpeaking so
+// Pronunciation is graded from what's actually heard. The Groq fallback
+// ignores it (no audio input on Llama) and grades transcript-only.
+async function gradeSpeaking(questionText, transcript, partNum, audio = null) {
+  const feedback = await _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum, audio]);
   const fluency = feedback.fluency || 0;
   const vocabulary = feedback.vocabulary || 0;
   const grammar = feedback.grammar || 0;
   const pronunciation = feedback.pronunciation || 0;
   feedback.overallBand = roundToHalfBand((fluency + vocabulary + grammar + pronunciation) / 4);
+  // Whether Pronunciation was actually heard: audio was provided AND grading
+  // ran on Gemini (the Groq fallback never receives the recording).
+  feedback.pronunciationFromAudio = !!(audio && audio.data) && !feedback.__viaGroqFallback;
   return feedback;
 }
 
@@ -226,6 +264,7 @@ function mapFeedbackToAiFeedback(feedback) {
     vocabulary: feedback.vocabulary || 0,
     grammar: feedback.grammar || 0,
     pronunciation: feedback.pronunciation || 0,
+    pronunciationFromAudio: !!feedback.pronunciationFromAudio,
     overallFeedback: feedback.overallFeedback || '',
     correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
     todaysFocus: feedback.todaysFocus || '',
@@ -398,5 +437,5 @@ module.exports = {
   listTopics, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
   createPendingAttempt, finalizeAttempt, markAttemptError, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
-  getSpeakingHints,
+  getSpeakingHints, normalizeAudioForGemini,
 };

@@ -310,6 +310,51 @@ describe('speakingService.gradeSpeaking', () => {
     expect(result.overallBand).toBe(6.5);
   });
 
+  test('passes the audio part through to Gemini and flags pronunciationFromAudio', async () => {
+    geminiService.checkSpeaking.mockResolvedValue({
+      overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: '', strengths: [], mistakes: [], improvements: [],
+    });
+    const audio = { data: 'YmFzZTY0', mimeType: 'video/webm' };
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, audio);
+    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Q', 'transcript', 1, audio);
+    expect(result.pronunciationFromAudio).toBe(true);
+  });
+
+  test('pronunciationFromAudio is false when audio was provided but grading fell back to Groq (no audio input)', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('gemini down'));
+    groqService.checkSpeakingGroq.mockResolvedValue({
+      overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: 'from groq', strengths: [], mistakes: [], improvements: [],
+    });
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, { data: 'x', mimeType: 'video/webm' });
+    expect(result.overallFeedback).toBe('from groq');
+    expect(result.pronunciationFromAudio).toBe(false);
+  });
+
+  test('pronunciationFromAudio is false for a transcript-only grade', async () => {
+    geminiService.checkSpeaking.mockResolvedValue({
+      overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: '', strengths: [], mistakes: [], improvements: [],
+    });
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(result.pronunciationFromAudio).toBe(false);
+  });
+
+  test('normalizeAudioForGemini maps browser mimetypes to Gemini-friendly ones', () => {
+    const buf = Buffer.from('hello');
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/webm;codecs=opus').mimeType).toBe('video/webm');
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/ogg;codecs=opus').mimeType).toBe('audio/ogg');
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/mp4').mimeType).toBe('video/mp4');
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/wav').mimeType).toBe('audio/wav');
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/mpeg').mimeType).toBe('audio/mp3');
+    expect(speakingService.normalizeAudioForGemini(buf, 'weird/thing').mimeType).toBe('video/webm');
+    expect(speakingService.normalizeAudioForGemini(null, 'audio/webm')).toBeNull();
+    expect(speakingService.normalizeAudioForGemini(Buffer.alloc(0), 'audio/webm')).toBeNull();
+    expect(speakingService.normalizeAudioForGemini(buf, 'audio/webm').data).toBe(buf.toString('base64'));
+  });
+
   test('falls back to Groq on a plain (non-overloaded) Gemini error when GROQ_API_KEY is set', async () => {
     process.env.GROQ_API_KEY = 'test-key';
     const plainErr = new Error('Malformed JSON response');
@@ -488,7 +533,8 @@ describe('speakingService.retryGrading', () => {
 
     const result = await speakingService.retryGrading(attempt._id, student);
     expect(result.status).toBe('ok');
-    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2);
+    // 4th arg is the optional audio (null on a stored-transcript re-grade).
+    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2, null);
 
     const saved = await SpeakingAttempt.findById(attempt._id).lean();
     expect(saved.status).toBe('analyzed');

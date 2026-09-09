@@ -52,7 +52,7 @@
         <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Luyện Speaking Part 1, 2, 3 với đề thi thật</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Chấm band score tự động bằng Gemini AI</span></li>
-          <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Nhận feedback: Fluency, Vocabulary, Grammar, Pronunciation (ước tính từ văn bản)</span></li>
+          <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Nhận feedback: Fluency, Vocabulary, Grammar &amp; Pronunciation chấm trực tiếp từ bản ghi âm</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Phiên bản cải thiện và danh sách lỗi cần sửa</span></li>
           <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px"><span style="color:#22c55e;font-size:16px;flex-shrink:0">✓</span><span>Tài liệu Speaking PDF theo quý</span></li>
         </ul>
@@ -389,9 +389,9 @@
                  on this exact question exists. -->
             <div id="fb-compare-note" style="display:none"></div>
 
-            <div style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--text2,#555);background:var(--surface2,#f9fafb);border-radius:10px;padding:10px 14px;margin-top:10px">
-              <i class="fas fa-circle-info" style="margin-top:2px;flex-shrink:0"></i>
-              <span>Điểm Pronunciation được AI ước tính dựa trên văn bản chuyển giọng nói (từ nối, ngập ngừng, lựa chọn từ), không phân tích trực tiếp âm thanh phát âm của bạn. Coi đây là tham khảo, không thay thế đánh giá phát âm từ giáo viên.</span>
+            <div id="fb-pron-note" style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--text2,#555);background:var(--surface2,#f9fafb);border-radius:10px;padding:10px 14px;margin-top:10px">
+              <i class="fas fa-circle-info" id="fb-pron-note-icon" style="margin-top:2px;flex-shrink:0"></i>
+              <span id="fb-pron-note-text">Điểm Pronunciation được AI ước tính dựa trên văn bản chuyển giọng nói (từ nối, ngập ngừng, lựa chọn từ), không phân tích trực tiếp âm thanh phát âm của bạn. Coi đây là tham khảo, không thay thế đánh giá phát âm từ giáo viên.</span>
             </div>
 
             <!-- Today's Focus — the ONE biggest thing to fix next. Placed
@@ -744,6 +744,6 @@
 <script src="js/speaking-timer.js?v=20260915"></script>
 <script src="js/speaking-audio-store.js?v=20260831"></script>
 <script src="js/speaking-tips.js?v=20260831"></script>
-<script src="js/speaking.js?v=20260924"></script>
+<script src="js/speaking.js?v=20260929spkaudio"></script>
 </body>
 </html>

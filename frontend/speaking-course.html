@@ -349,7 +349,9 @@
   async function api(path, opts) {
     opts = opts || {};
     var token = window.AuthService && window.AuthService.getToken();
-    var headers = Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: 'Bearer ' + token } : {}, opts.headers || {});
+    // FormData sets its own multipart Content-Type (with boundary) — never override it.
+    var base = (opts.body instanceof FormData) ? {} : { 'Content-Type': 'application/json' };
+    var headers = Object.assign(base, token ? { Authorization: 'Bearer ' + token } : {}, opts.headers || {});
     var res = await fetch(API + path, Object.assign({}, opts, { headers: headers }));
     if (window.ApiClient && window.ApiClient.handleResponse) return window.ApiClient.handleResponse(res);
     return res.json();
@@ -561,6 +563,13 @@
       if (this.stream) { this.stream.getTracks().forEach(function (t) { t.stop(); }); this.stream = null; }
     },
     elapsed: function () { return this.t0 ? Math.round((Date.now() - this.t0) / 1000) : 0; },
+    // The recorded audio Blob (once stop() has run), or null. Sent to the
+    // server so Gemini grades Pronunciation from the real recording.
+    blob: function () {
+      if (!this.chunks || !this.chunks.length) return null;
+      try { return new Blob(this.chunks, { type: this.chunks[0].type || 'audio/webm' }); }
+      catch (e) { return null; }
+    },
     teardown: function () {
       if (this.prepT) { clearInterval(this.prepT); this.prepT = null; }
       if (this.recording || this.rec || this.mr || this.stream) this.stop();
@@ -1024,7 +1033,22 @@
       fb.innerHTML = '<div style="text-align:center;padding:20px"><div class="t1-spinner"></div><p style="color:#9ca3af;margin-top:8px;font-size:13px">AI đang chấm phần nói của bạn...</p></div>';
       fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       try {
-        var sd = await api('/wt1/submit-speaking', { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, transcript: transcript, duration: SpeakingRec.elapsed() }) });
+        // Send the recording (if we captured one) as multipart so the AI can
+        // grade pronunciation from real audio; fall back to JSON otherwise.
+        var _blob = SpeakingRec.blob();
+        var _opts;
+        if (_blob && _blob.size > 0) {
+          var _fd = new FormData();
+          _fd.append('exerciseCode', ex.code);
+          _fd.append('transcript', transcript);
+          _fd.append('duration', SpeakingRec.elapsed());
+          var _ext = (_blob.type || '').indexOf('ogg') >= 0 ? 'ogg' : (_blob.type || '').indexOf('mp4') >= 0 ? 'm4a' : 'webm';
+          _fd.append('audio', _blob, 'answer.' + _ext);
+          _opts = { method: 'POST', body: _fd };
+        } else {
+          _opts = { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, transcript: transcript, duration: SpeakingRec.elapsed() }) };
+        }
+        var sd = await api('/wt1/submit-speaking', _opts);
         state.answered = true; stopTimer();
         if (window.playOk) window.playOk();
         showSpeakingFeedback(sd.feedback || {}, ex);
@@ -1172,6 +1196,9 @@
         '<div style="text-align:center;font-size:12px;color:var(--text3,#9ca3af);margin-top:2px">Điểm ước lượng cho phần nói này</div>' : '') +
       '<div class="scf-bars">' +
         scfBar('Fluency', f.fluency) + scfBar('Vocabulary', f.vocabulary) + scfBar('Grammar', f.grammar) + scfBar('Pronunciation', f.pronunciation) +
+      '</div>' +
+      '<div style="font-size:11.5px;color:var(--text3,#9ca3af);margin:4px 0 2px">' +
+        (f.pronunciationFromAudio ? '🔊 Pronunciation chấm trực tiếp từ bản ghi âm của bạn.' : 'ℹ️ Pronunciation ước lượng từ transcript (không có bản ghi âm để nghe).') +
       '</div>' +
       (f.overallFeedback ? '<div class="scf-sec"><div class="h">Nhận xét chung</div>' + esc(f.overallFeedback) + '</div>' : '') +
       (scfSec('Điểm mạnh', f.strengths, '✅')) +
