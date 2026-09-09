@@ -45,6 +45,20 @@
   var current = null;
   var armed   = false;       // has the collection window elapsed at least once
   var arming  = false;       // collection window scheduled, not yet elapsed
+  var HOLD_MS = 1500;        // re-check interval while a fullscreen activity holds the queue
+
+  // A full-screen skill activity (Reading/Listening exam, full mock test,
+  // answer review, vocab quiz) is on screen. Every such screen calls
+  // nav.js's window.hideTopNav(), which drops body.has-global-nav — the one
+  // cross-page signal available here. None of these attention popups
+  // (streak announcement, badge unlock, "review a pending test first", the
+  // rewrite reminder, the onboarding tour) should drop a backdrop over a
+  // live, timed exam, so the queue simply waits until the activity ends.
+  function _fullscreenBusy() {
+    try {
+      return !!document.body && !document.body.classList.contains('has-global-nav');
+    } catch (e) { return false; }
+  }
 
   function enqueue(opts) {
     opts = opts || {};
@@ -68,6 +82,10 @@
 
   function next() {
     if (running || !armed || !queue.length) return;
+    // Hold the whole queue while a fullscreen exam/quiz/review is up — don't
+    // drop an attention modal over it. Re-check on a short timer; the queued
+    // jobs keep their order and run once the activity screen exits.
+    if (_fullscreenBusy()) { setTimeout(next, HOLD_MS); return; }
     queue.sort(function (a, b) { return b.priority - a.priority; });
     var job = queue.shift();
     current = job;
