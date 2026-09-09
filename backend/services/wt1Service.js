@@ -66,6 +66,11 @@ function sanitizeExercise(ex) {
     if (ex.type === 'gap_fill') base.blankCount = (String(it.prompt || '').match(/____/g) || []).length;
     if (ex.type === 'sentence_transform') {
       base.cue = it.cue || ''; base.starter = it.starter || '';
+      // Optional Vietnamese target sentence, shown above the keyword prompt
+      // for the "gợi ý từ khóa → viết câu" style items (e.g. T1-L13-E02) so
+      // the student knows exactly what sentence to produce. Display-only —
+      // grading still re-checks against the DB copy on submit.
+      base.promptVi = it.promptVi || '';
       // Deliberately relaxes "never expose the answer before submission" —
       // the frontend's word-by-word typing drill (WbwDrill, same one Task 2
       // weekly Dịch câu and "Viết câu nâng cao" use) validates per keystroke

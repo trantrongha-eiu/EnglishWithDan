@@ -128,6 +128,7 @@
       "items": [
         {
           "id": "q1",
+          "promptVi": "Ở góc phía đông bắc của thị trấn có một bệnh viện.",
           "prompt": "a hospital / northeast / the town",
           "cue": "In the … corner/area of …",
           "sampleAnswers": [
@@ -137,6 +138,7 @@
         },
         {
           "id": "q2",
+          "promptVi": "Nhà ga xe lửa nằm ở phía tây con sông.",
           "prompt": "the railway station / to the west of / the river",
           "cue": "To the … of …",
           "sampleAnswers": [
@@ -145,6 +147,7 @@
         },
         {
           "id": "q3",
+          "promptVi": "Có hai nhà máy ở góc dưới bên phải của bản đồ.",
           "prompt": "two factories / bottom right-hand corner / the map",
           "cue": "There was/were … in …",
           "sampleAnswers": [
@@ -153,6 +156,7 @@
         },
         {
           "id": "q4",
+          "promptVi": "Một công viên lớn nằm ở trung tâm ngôi làng.",
           "prompt": "a large park / in the centre of / the village",
           "cue": "S + was located/situated in …",
           "sampleAnswers": [
@@ -161,6 +165,7 @@
         },
         {
           "id": "q5",
+          "promptVi": "Có một bãi đỗ xe ở phía nam ngôi trường.",
           "prompt": "a car park / to the south of / the school",
           "cue": "There was + N + to the … of …",
           "sampleAnswers": [

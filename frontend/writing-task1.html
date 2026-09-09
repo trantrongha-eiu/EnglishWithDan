@@ -103,6 +103,11 @@
     .t1-item { padding: 10px 0; border-top: 1px dashed var(--border,#eef2f7); }
     .t1-item:first-child { border-top: none; }
     .t1-item .q { font-size: 13.5px; line-height: 1.7; margin-bottom: 6px; }
+    .t1-item .t1-vi { font-size: 14px; font-weight: 700; line-height: 1.6; color: var(--text,#111827); background: #f0f9ff; border-left: 3px solid #0ea5e9; border-radius: 6px; padding: 7px 10px; margin-bottom: 6px; }
+    [data-theme="dark"] .t1-item .t1-vi { background: #0c2536; color: #e5eef5; border-left-color: #0ea5e9; }
+    .t1-item .t1-vi-tag { display:inline-block; font-size: 10px; font-weight: 800; letter-spacing: .05em; color: #0369a1; background: #e0f2fe; border-radius: 4px; padding: 1px 6px; margin-right: 7px; vertical-align: 1px; }
+    [data-theme="dark"] .t1-item .t1-vi-tag { background: #0c3049; color: #7dd3fc; }
+    .t1-item .t1-vi + .q { color: var(--text3,#9ca3af); font-size: 12.5px; }
     .t1-input, .t1-ta { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1.5px solid var(--border,#d1d5db); border-radius: 8px; background: var(--surface,#fff); color: var(--text,#111827); }
     .t1-ta { line-height: 1.6; resize: vertical; }
     .t1-input:focus, .t1-ta:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.15); }
@@ -530,7 +535,9 @@
       // [data-item] — see bindExercise()'s WbwDrill.mount() call below,
       // which falls back to showing this textarea if it can't mount.
       return ex.items.map(function (it) {
-        return '<div class="t1-item"><div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#0ea5e9">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
+        return '<div class="t1-item">' +
+          (it.promptVi ? '<div class="t1-vi"><span class="t1-vi-tag">DỊCH</span>' + esc(it.promptVi) + '</div>' : '') +
+          '<div class="q">' + esc(it.prompt) + (it.cue ? ' <em style="color:#0ea5e9">(' + esc(it.cue) + ')</em>' : '') + '</div>' +
           (it.starter ? '<div style="font-size:12px;color:#6b7280;margin-bottom:4px">Bắt đầu: ' + esc(it.starter) + '</div>' : '') +
           '<div data-wbw-host="' + esc(it.id) + '"></div>' +
           '<textarea class="t1-ta" rows="2" data-item="' + it.id + '" style="display:none"></textarea></div>';
