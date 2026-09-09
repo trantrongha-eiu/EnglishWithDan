@@ -14,6 +14,10 @@ const questionSchema = new mongoose.Schema({
   options:          [{ type: String }],
   baseWords:        [{ type: String }],
   correctAnswer:    { type: String },
+  // Vietnamese translation of the target sentence, shown above the chips on
+  // "Sắp xếp từ" questions (data/task2RearrangeVi.js). Practice mode only —
+  // sanitizeQuestionForClient strips it in Thi thử.
+  promptVi:         { type: String },
   explanationVi:    { type: String },
   explanationEn:    { type: String },
   modelAnswer:      { type: String },

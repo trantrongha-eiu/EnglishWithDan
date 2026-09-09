@@ -20574,9 +20574,25 @@ const topics = [
 const { augmentTopics } = require('./data/task2Augment');
 const _aug = augmentTopics(topics);
 
+// Attach the Vietnamese translation to every "Sắp xếp từ" (rearrange)
+// target sentence so the practice page can show it above the word chips —
+// keyed by the exact English correctAnswer. Runs once at module load, so
+// the exported `topics` and what gets seeded stay identical.
+const REARRANGE_VI = require('./data/task2RearrangeVi');
+let _rearrangeViHits = 0;
+for (const t of topics) {
+  for (const q of t.questions || []) {
+    if (q.type === 'rearrange' && REARRANGE_VI[q.correctAnswer]) {
+      q.promptVi = REARRANGE_VI[q.correctAnswer];
+      _rearrangeViHits++;
+    }
+  }
+}
+
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
   console.log(`[Task2Seed] augment: +${_aug.questionsAdded} questions across ${_aug.topicsAugmented} topics (brainstorm + evidence + conclusion + short_writing)`);
+  console.log(`[Task2Seed] rearrange promptVi attached to ${_rearrangeViHits} questions`);
 
   // Use week+orderIndex as unique key
   const ops = topics.map(t => ({

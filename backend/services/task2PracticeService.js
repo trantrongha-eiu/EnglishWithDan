@@ -142,10 +142,10 @@ function sanitizeQuestionForClient(q, opts = {}) {
     rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
   }
   rest.sentenceStructure = deriveSentenceStructure(q) || undefined;
-  // Keyword hints (fallbackKeywords/hints) are a practice-mode aid — the
-  // client now renders them inline on every question. Thi thử / exam mode
-  // (includeHints:false) must stay hint-free, so drop them there.
-  if (!includeHints) { delete rest.fallbackKeywords; delete rest.hints; }
+  // Keyword hints (fallbackKeywords/hints) and the "Sắp xếp từ" Vietnamese
+  // gloss (promptVi) are practice-mode aids the client renders inline. Thi
+  // thử / exam mode (includeHints:false) must stay hint-free, so drop them.
+  if (!includeHints) { delete rest.fallbackKeywords; delete rest.hints; delete rest.promptVi; }
   if (includeHints && HINT_TYPES.has(q.type)) {
     const answerText = correctAnswer || modelAnswer || '';
     if (answerText) {
