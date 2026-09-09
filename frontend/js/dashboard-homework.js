@@ -24,9 +24,10 @@ const HW_STATUS = {
 // row so a student doesn't have to remember the rule from the notice above —
 // mirrors backend/services/resourceCompletionService.js's scoreGate (≥70%)
 // vs wordCountGate (real minimum word count, not just "submitted") split.
-// Types with neither (speaking, task1_lesson, mock_test, external/image) get
-// no tag — "submitted/ticked = done" needs no extra explanation.
-const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'grammar', 'vocabulary_lesson', 'task2']);
+// Types with neither (speaking, task1_lesson / task2_course_lesson /
+// speaking_course_lesson, mock_test, external/image) get no tag —
+// "submitted/ticked = done" needs no extra explanation.
+const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'grammar', 'vocabulary_lesson', 'task2', 'advanced_sentences']);
 const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
 const HW_WORD_MIN = { task1_practice: MIN_WORDS_T1, task2_practice: MIN_WORDS_T2 };
 function hwRuleTag(resourceType) {
@@ -46,13 +47,20 @@ function hwResourceHref(r) {
     case 'listening_practice': return `listening.html?sectionId=${id}`;
     case 'dictation':          return `listening.html?sectionId=${id}&mode=dictation`;
     case 'writing_exam':       return 'writing.html';
-    // WT1 lessons are looked up by `code` (re-seeding-safe), not the Mongo
-    // _id in `id` above — resourceCode is the snapshot taken at assign time
-    // (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
-    case 'task1_lesson':       return r.resourceCode ? `writing-task1.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    // WT1-stack lessons are looked up by `code` (re-seeding-safe), not the
+    // Mongo _id in `id` above — resourceCode is the snapshot taken at assign
+    // time (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
+    // task1_lesson / task2_course_lesson / speaking_course_lesson are the same
+    // course stack, one per student-facing page.
+    case 'task1_lesson':          return r.resourceCode ? `writing-task1.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    case 'task2_course_lesson':   return r.resourceCode ? `writing-task2-course.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    case 'speaking_course_lesson': return r.resourceCode ? `speaking-course.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
     case 'task1_practice':     return `writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice':     return `writing.html?taskType=2&taskId=${id}`;
     case 'task2':              return 'task2-practice.html';
+    // advanced-sentences.html won't open a group without its week — resourceCode
+    // is the week number (deepLinkKey), id is the SentenceStructureGroup _id.
+    case 'advanced_sentences': return r.resourceCode ? `advanced-sentences.html?week=${encodeURIComponent(r.resourceCode)}&groupId=${id}` : 'advanced-sentences.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
     case 'grammar':            return 'essential-grammar.html';
     case 'vocabulary_lesson':  return `dashboard.html?view=lesson&lessonId=${id}`;

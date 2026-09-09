@@ -27,6 +27,8 @@ const SpeakingQuestion = require('../models/SpeakingQuestion');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
 const VocabularyLesson = require('../models/VocabularyLesson');
 const WT1Lesson = require('../models/WT1Lesson');
+const WT1Module = require('../models/WT1Module');
+const SentenceStructureGroup = require('../models/SentenceStructureGroup');
 
 const TestAttempt = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -40,6 +42,7 @@ const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const MockTestAttempt = require('../models/MockTestAttempt');
 const WT1Progress = require('../models/WT1Progress');
+const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
 
 const { escapeRegex } = require('../utils/strings');
 
@@ -171,7 +174,14 @@ const REGISTRY = {
     // deepLinkKey lets the controller snapshot that at assign time
     // (Assignment.resources[].resourceCode) without every other type's
     // labelFor/resourceExists plumbing having to know about it.
-    catalog: { model: WT1Lesson, filter: { published: true }, sort: { moduleCode: 1, order: 1 },
+    // courseScope: the WT2 and Speaking courses reuse this exact stack and
+    // their lessons live in the SAME WT1Lesson collection (see wt1Service
+    // COURSES) — without scoping, the picker would list all three and a
+    // "Buổi 1" from Speaking would deep-link into writing-task1.html.
+    // WT1Lesson has no courseCode of its own; it's only reachable through
+    // WT1Module.courseCode, so the scope is resolved to a moduleCode $in.
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: 'IELTS-W-T1',
+      sort: { moduleCode: 1, order: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
       deepLinkKey: (d) => d.code },
     // No score gate: a lesson mixes objective (quiz) AND AI-graded essay
@@ -180,6 +190,45 @@ const REGISTRY = {
     // own service already only sets once EVERY exercise in the lesson has
     // been attempted (wt1Service.js's _recompute/allDone).
     attempt: { model: WT1Progress, custom: true },
+  },
+  // The WT2 and Speaking "khóa học" pages (writing-task2-course.html /
+  // speaking-course.html) are the SAME multi-tier stack as task1_lesson —
+  // their lessons live in WT1Lesson, progress in WT1Progress (by lessonCode,
+  // course-agnostic) — just a different courseScope and a different
+  // student-facing page for the deep link. checkCompleted's `custom` branch
+  // is already course-agnostic so nothing there needs to change.
+  task2_course_lesson: {
+    label: 'Writing Task 2 (Buổi học)',
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: 'IELTS-W-T2',
+      sort: { moduleCode: 1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
+      deepLinkKey: (d) => d.code },
+    attempt: { model: WT1Progress, custom: true },
+  },
+  speaking_course_lesson: {
+    label: 'Speaking (Buổi học)',
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: 'IELTS-SPEAKING',
+      sort: { moduleCode: 1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
+      deepLinkKey: (d) => d.code },
+    attempt: { model: WT1Progress, custom: true },
+  },
+  // "Viết câu nâng cao" (advanced-sentences.html) — one pickable row per
+  // SentenceStructureGroup (a "cấu trúc", 2 per week). AdvSentenceAttempt
+  // mirrors Task2Attempt field-for-field, so the scoreGate is the same shape
+  // as `task2`. The student page needs BOTH ?week & ?groupId (it won't open a
+  // group without the week), so deepLinkKey snapshots the week number into
+  // resourceCode and the client builds ?week=<code>&groupId=<id>.
+  advanced_sentences: {
+    label: 'Viết câu nâng cao',
+    catalog: { model: SentenceStructureGroup, filter: { isActive: true }, sort: { week: 1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.nameVi, meta: d.week ? `Tuần ${d.week}` : '' }),
+      deepLinkKey: (d) => String(d.week || '') },
+    attempt: { model: AdvSentenceAttempt, userField: 'userId', idField: 'groupId', filter: {} },
+    scoreGate: {
+      fields: 'correctCount totalQuestions scorePercentage',
+      percent: (d) => (d.scorePercentage != null ? d.scorePercentage : (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0)),
+    },
   },
 };
 
@@ -195,6 +244,14 @@ function isValidType(t) {
 // whose catalog model has no such field (no doc has a stray null-only path
 // to spuriously match), so callers only ever pass it for the types they
 // know support it (see getResourceCatalog).
+// WT1Lesson (and the WT2/Speaking courses that share its collection) carries
+// no courseCode — resolve a course to the set of its module codes so a
+// `moduleCode $in [...]` clause can scope a lesson query to one course.
+async function wt1ModuleCodesForCourse(courseCode) {
+  const mods = await WT1Module.find({ courseCode }).select('code').lean();
+  return mods.map((m) => m.code);
+}
+
 async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
@@ -202,12 +259,16 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
     return [{ _id: null, label: entry.label, meta: 'Đề ngẫu nhiên mỗi lần làm' }];
   }
   const q = { ...entry.catalog.filter, ...extraFilters };
+  if (entry.catalog.courseScope) {
+    q.moduleCode = { $in: await wt1ModuleCodesForCourse(entry.catalog.courseScope) };
+  }
   if (search && search.trim()) {
     const re = new RegExp(escapeRegex(search.trim()), 'i');
     // every catalog model has one of these text fields — `prompt` for
     // WritingTask1/2 (task1_practice/task2_practice), which have no name/
     // title/question field at all.
-    q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }, { prompt: re }];
+    q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }, { prompt: re },
+      { nameVi: re }, { nameEn: re }]; // nameVi/En: SentenceStructureGroup (advanced_sentences)
   }
   const docs = await entry.catalog.model.find(q)
     .sort(entry.catalog.sort)
@@ -223,7 +284,11 @@ async function resourceExists(type, resourceId) {
   if (!entry) return false;
   if (!entry.catalog) return resourceId == null; // mock_test: only the null id is valid
   if (!mongoose.isValidObjectId(resourceId)) return false;
-  return !!(await entry.catalog.model.exists({ _id: resourceId, ...entry.catalog.filter }));
+  const scope = {};
+  if (entry.catalog.courseScope) {
+    scope.moduleCode = { $in: await wt1ModuleCodesForCourse(entry.catalog.courseScope) };
+  }
+  return !!(await entry.catalog.model.exists({ _id: resourceId, ...entry.catalog.filter, ...scope }));
 }
 
 async function labelFor(type, resourceId) {

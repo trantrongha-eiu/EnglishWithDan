@@ -11,7 +11,10 @@ const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletio
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
 const WT1Lesson = require('../../models/WT1Lesson');
+const WT1Module = require('../../models/WT1Module');
 const WT1Progress = require('../../models/WT1Progress');
+const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
+const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
@@ -28,8 +31,17 @@ async function setCreatedAt(Model, id, date) {
 
 async function createWT1Lesson(overrides = {}) {
   const code = overrides.code || `L${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+  const moduleCode = overrides.moduleCode || 'M1';
+  // task1_lesson's catalog is scoped to the IELTS-W-T1 course, resolved via
+  // WT1Module.courseCode (WT1Lesson has none of its own) — so a bare lesson
+  // with no parent module is now invisible to the picker. Ensure one exists.
+  await WT1Module.updateOne(
+    { code: moduleCode },
+    { $setOnInsert: { code: moduleCode, courseCode: overrides.courseCode || 'IELTS-W-T1', order: 1, title: 'Test module' } },
+    { upsert: true },
+  );
   return WT1Lesson.create({
-    code, moduleCode: overrides.moduleCode || 'M1', order: 1,
+    code, moduleCode, order: 1,
     title: overrides.title || 'Buổi 1 — Giới thiệu', published: true, ...overrides, code,
   });
 }
@@ -342,6 +354,67 @@ describe('completion tracking', () => {
     row = mine.body.assignments.find((a) => a._id === String(asgId));
     expect(row.done).toBe(1);
     expect(row.status).toBe('completed');
+  });
+
+  test('WT1-stack sibling courses: task2_course_lesson / speaking_course_lesson are course-scoped and never leak into task1_lesson', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+
+    const t1 = await createWT1Lesson({ code: 'T1-A', title: 'T1 Buổi 1', moduleCode: 'MOD-T1', courseCode: 'IELTS-W-T1' });
+    const t2 = await createWT1Lesson({ code: 'T2-A', title: 'T2 Buổi 1', moduleCode: 'MOD-T2', courseCode: 'IELTS-W-T2' });
+    const spk = await createWT1Lesson({ code: 'SPK-A', title: 'SPK Buổi 1', moduleCode: 'MOD-SPK', courseCode: 'IELTS-SPEAKING' });
+
+    const ids = (r) => r.body.items.map((i) => i._id);
+    const cat1 = await request(app).get('/api/classes/resources/catalog?type=task1_lesson').set(authH(t));
+    const cat2 = await request(app).get('/api/classes/resources/catalog?type=task2_course_lesson').set(authH(t));
+    const catS = await request(app).get('/api/classes/resources/catalog?type=speaking_course_lesson').set(authH(t));
+    // The reported bug: a Speaking "Buổi" showing up under Writing Task 1.
+    expect(ids(cat1)).toContain(String(t1._id));
+    expect(ids(cat1)).not.toContain(String(t2._id));
+    expect(ids(cat1)).not.toContain(String(spk._id));
+    expect(ids(cat2)).toEqual([String(t2._id)]);
+    expect(ids(catS)).toEqual([String(spk._id)]);
+
+    // Completion for a sibling course still flows through WT1Progress (by
+    // lessonCode) exactly like task1_lesson.
+    const created = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({
+      title: 'Speaking course hw', resources: [{ kind: 'internal', resourceType: 'speaking_course_lesson', resourceId: String(spk._id) }],
+    });
+    const asgId = created.body.assignment._id;
+    expect((await Assignment.findById(asgId).lean()).resources[0].resourceCode).toBe('SPK-A');
+    await WT1Progress.create({ userId: s._id, courseCode: 'IELTS-SPEAKING', lessonCode: 'SPK-A', completedAt: new Date() });
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asgId)).status).toBe('completed');
+  });
+
+  test('advanced_sentences: one row per group, ≥70% score gate, week snapshotted for the deep link', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const grp = await SentenceStructureGroup.create({
+      code: 'grp-adv-1', order: 3, week: 2, slotInWeek: 1,
+      nameVi: 'Câu phức', nameEn: 'Complex Sentences', isActive: true,
+      sentences: [{ promptVi: 'Tôi đi học.', answerEn: 'I go to school.' }],
+    });
+
+    const cat = await request(app).get('/api/classes/resources/catalog?type=advanced_sentences&search=Complex').set(authH(t));
+    expect(cat.body.items.some((i) => i._id === String(grp._id) && i.meta === 'Tuần 2')).toBe(true);
+
+    const created = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({
+      title: 'Adv sentence hw', resources: [{ kind: 'internal', resourceType: 'advanced_sentences', resourceId: String(grp._id) }],
+    });
+    const asgId = created.body.assignment._id;
+    // resourceCode carries the week — the student page needs ?week=&groupId=.
+    expect((await Assignment.findById(asgId).lean()).resources[0].resourceCode).toBe('2');
+
+    await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 3, totalQuestions: 10, scorePercentage: 30, completedAt: new Date() });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asgId)).done).toBe(0);
+
+    await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80, completedAt: new Date() });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asgId)).status).toBe('completed');
   });
 
   test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, and searching by prompt text works', async () => {
