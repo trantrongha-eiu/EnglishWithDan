@@ -81,7 +81,11 @@ exports.submitWriting = async (req, res) => {
       ai = await grading.gradeWritingAI(ex, arr);
     } catch (aiErr) {
       console.warn('[WT1] AI grading failed:', aiErr.message);
-      return res.status(503).json({ success: false, message: aiErr.message || 'AI đang quá tải, vui lòng thử lại sau.' });
+      // Only overload errors carry a user-safe message; anything else
+      // (missing key, SDK parse failure, …) gets a generic one so we don't
+      // leak internals to the student — same rule as submitSpeaking below.
+      const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể chấm bài lúc này. Vui lòng thử lại sau.';
+      return res.status(503).json({ success: false, message: msg });
     }
     await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai });
     res.json({ success: true, ...ai });
