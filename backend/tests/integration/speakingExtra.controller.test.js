@@ -139,6 +139,56 @@ describe('POST /api/speaking/analyze', () => {
     expect(res.body.feedback.pronunciationFromAudio).toBe(false);
   });
 
+  // Mobile Safari/iOS / in-app webviews have no client speech-to-text — the
+  // recording is uploaded with NO transcript and Gemini transcribes it.
+  test('audio file + NO transcript: grades from the recording, returns + persists the server transcript', async () => {
+    geminiService.checkSpeaking.mockReset();
+    geminiService.checkSpeaking.mockResolvedValue(feedback({ transcript: 'I usually spend my weekends hiking with friends.' }));
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+
+    const res = await request(app)
+      .post('/api/speaking/analyze')
+      .set('Authorization', `Bearer ${token}`)
+      .field('question', 'What do you do on weekends?')
+      .field('part', '1')
+      .attach('audio', Buffer.from('fake-opus-bytes'), { filename: 'answer.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.transcript).toBe('I usually spend my weekends hiking with friends.');
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(1);           // no transcript-only retry
+    expect(geminiService.checkSpeaking.mock.calls[0][1]).toBe('');          // graded with an empty client transcript
+    expect(geminiService.checkSpeaking.mock.calls[0][3]).toBeTruthy();      // audio part present
+
+    const historyRes = await request(app).get('/api/speaking/history').set('Authorization', `Bearer ${token}`);
+    expect(historyRes.body.attempts[0].transcript).toBe('I usually spend my weekends hiking with friends.');
+    expect(historyRes.body.attempts[0].status).toBe('analyzed');
+  });
+
+  test('audio file + NO transcript + grading fails: no transcript-only retry (nothing to fall back to), 500', async () => {
+    geminiService.checkSpeaking.mockReset();
+    geminiService.checkSpeaking.mockRejectedValue(new Error('audio decode failed'));
+    const user = await createPremiumStudent();
+
+    const res = await request(app)
+      .post('/api/speaking/analyze')
+      .set('Authorization', `Bearer ${signTokenFor(user)}`)
+      .field('part', '1')
+      .attach('audio', Buffer.from('bad'), { filename: 'answer.webm', contentType: 'audio/webm' });
+
+    expect(res.status).toBe(500);
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(1); // NOT retried transcript-only
+  });
+
+  test('no transcript AND no audio → 400 (nothing to analyze)', async () => {
+    const user = await createPremiumStudent();
+    const res = await request(app)
+      .post('/api/speaking/analyze')
+      .set('Authorization', `Bearer ${signTokenFor(user)}`)
+      .send({ transcript: '   ', part: 1 });
+    expect(res.status).toBe(400);
+  });
+
   test('AI overload error surfaces as 503, and marks the pending attempt as error', async () => {
     const overloadErr = new Error('Model overloaded');
     overloadErr.isOverloaded = true;

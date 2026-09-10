@@ -393,11 +393,18 @@ async function createPendingAttempt(userId, { questionId, topic, part, questionT
 // req.user document) is optional — retryGrading()'s only caller always has
 // it, but pass-through call sites shouldn't be forced to fetch one just to
 // finalize a grade.
-async function finalizeAttempt(attemptId, feedback, user) {
+async function finalizeAttempt(attemptId, feedback, user, resolvedTranscript) {
   try {
+    const update = { status: 'analyzed', aiFeedback: mapFeedbackToAiFeedback(feedback) };
+    // The audio path (mobile with no client speech-to-text) transcribes
+    // server-side — write that back so the attempt + History show real text
+    // instead of the empty string createPendingAttempt() stored.
+    if (typeof resolvedTranscript === 'string' && resolvedTranscript.trim()) {
+      update.transcript = resolvedTranscript.trim();
+    }
     const updated = await SpeakingAttempt.findByIdAndUpdate(
       attemptId,
-      { status: 'analyzed', aiFeedback: mapFeedbackToAiFeedback(feedback) },
+      update,
       { new: true, runValidators: true }
     );
     const newlyUnlocked = updated ? await _creditStreakForAnalyzedAttempt(user) : [];

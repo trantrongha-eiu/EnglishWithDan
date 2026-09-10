@@ -730,6 +730,10 @@ function setQuestion(q) {
 
   setupDictionaryDouble('question-card', 'speaking-question');
   setupDictionaryDouble('transcript-textarea', 'speaking-transcript');
+
+  // Slide the new question card in.
+  const qCard = document.getElementById('question-card');
+  if (qCard) { qCard.classList.remove('sp-q-enter'); void qCard.offsetWidth; qCard.classList.add('sp-q-enter'); }
 }
 
 // ──────────────────────────────────────────────────────
@@ -1001,6 +1005,18 @@ function _finishRecordingUI() {
       _lastRecordingBlob = blob;
       const pb = document.getElementById('btn-playback-recording');
       if (pb) pb.classList.toggle('hidden', !blob);
+      // Audio captured but no live transcript (mobile Safari/iOS, flaky
+      // mobile STT, blocked recognition service) — the student can still
+      // analyze: the server transcribes the recording. Enable the button
+      // and say so, since the blob only resolves here, after the sync
+      // button-enable check below has already run.
+      const _ta  = document.getElementById('transcript-textarea');
+      const _btn = document.getElementById('btn-analyze');
+      const _rs  = document.getElementById('rec-status');
+      if (blob && blob.size > 0 && _btn && (!_ta || !_ta.value.trim())) {
+        _btn.disabled = false;
+        if (_rs) _rs.textContent = '✓ Ghi âm hoàn tất — bấm "Phân tích" để AI nghe và chép lại lời thoại';
+      }
     });
   }
 
@@ -1017,12 +1033,19 @@ function _finishRecordingUI() {
   if (recStatus) recStatus.classList.remove('live');
   if (btnRecord) { btnRecord.classList.remove('recording'); btnRecord.disabled = false; }
   if (interimEl) interimEl.textContent = '';
+  if (ta) ta.classList.remove('sp-rec-live');
 
   if (ta && !ta.value.trim() && state.finalTranscript.trim()) ta.value = state.finalTranscript.trim();
 
   if (ta && ta.value.trim()) {
     if (btn) btn.disabled = false;
     if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất';
+  } else if (_lastRecordingBlob && _lastRecordingBlob.size > 0) {
+    // No transcript but we have audio → analyzable (server transcribes).
+    // The blob may also land a moment later via the _stopAudioCapture()
+    // promise above, which repeats this enable.
+    if (btn) btn.disabled = false;
+    if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất — bấm "Phân tích" để AI nghe và chép lại lời thoại';
   } else {
     if (recStatus) recStatus.textContent = 'Ghi âm đã dừng';
   }
@@ -1045,6 +1068,7 @@ function setupRecognition() {
     if (recLabel)  recLabel.textContent = 'Dừng';
     if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
     if (btnRecord) { btnRecord.classList.add('recording'); btnRecord.disabled = false; }
+    document.getElementById('transcript-textarea')?.classList.add('sp-rec-live');
     state._recordBusy = false;
 
     // Only (re)start the timers on the genuine first start of this session.
@@ -1364,11 +1388,21 @@ function _toggleAudioOnlyRecording() {
     if (recLabel)  recLabel.textContent = 'Bắt đầu';
     if (btnRecord) { btnRecord.classList.remove('recording'); btnRecord.disabled = true; }
     if (recStatus) { recStatus.textContent = 'Đang lưu bản ghi…'; recStatus.classList.remove('live'); }
+    document.getElementById('transcript-textarea')?.classList.remove('sp-rec-live');
     _stopAudioCapture().then(blob => {
       _lastRecordingBlob = blob;
       const pb = document.getElementById('btn-playback-recording');
       if (pb) pb.classList.toggle('hidden', !blob);
-      if (recStatus) recStatus.textContent = blob ? '✓ Ghi âm hoàn tất' : 'Không ghi được âm thanh — kiểm tra micro';
+      const _ta  = document.getElementById('transcript-textarea');
+      const _btn = document.getElementById('btn-analyze');
+      if (blob && blob.size > 0) {
+        // Audio-only recording (no live transcript) — still analyzable: the
+        // server transcribes the recording.
+        if (_btn && (!_ta || !_ta.value.trim())) _btn.disabled = false;
+        if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất — bấm "Phân tích" để AI nghe và chép lại lời thoại';
+      } else if (recStatus) {
+        recStatus.textContent = 'Không ghi được âm thanh — kiểm tra micro';
+      }
       // The floating "finish" pill is mock-test-only UI — don't spawn it on
       // the normal practice screen, which this fallback now also serves.
       if (_mockMode) _ensureSpeakingMockFinish();
@@ -1387,7 +1421,8 @@ function _toggleAudioOnlyRecording() {
   if (recIcon)   recIcon.className = 'fas fa-stop rec-mic';
   if (recLabel)  recLabel.textContent = 'Dừng';
   if (btnRecord) btnRecord.classList.add('recording');
-  if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm (không có phụ đề tự động)'; recStatus.classList.add('live'); }
+  if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm (AI sẽ tự chép lại lời thoại)'; recStatus.classList.add('live'); }
+  document.getElementById('transcript-textarea')?.classList.add('sp-rec-live');
   startElapsedTimer();
   // Wait for getUserMedia to actually settle before the button is live again,
   // so a fast double-tap can't stop a capture that hasn't started yet (which
@@ -1488,7 +1523,10 @@ async function analyzeTranscript() {
   if (state.isRecording) { toast('Hãy dừng ghi âm trước khi phân tích.', 'warn'); return; }
   const ta         = document.getElementById('transcript-textarea');
   const transcript = ta ? ta.value.trim() : '';
-  if (!transcript) return;
+  const _audioForAnalyze = _lastRecordingBlob && _lastRecordingBlob.size > 0;
+  // No typed/STT transcript is fine as long as we have a recording — the
+  // server transcribes it (mobile Safari/iOS, flaky mobile STT, etc.).
+  if (!transcript && !_audioForAnalyze) return;
 
   const question = state.currentQuestion?.question || '';
   // Frozen at the moment recording stopped, not live — see the
@@ -1502,7 +1540,7 @@ async function analyzeTranscript() {
   const btnAnalyze = document.getElementById('btn-analyze');
 
   state._analyzing = true;
-  if (btnAnalyze) btnAnalyze.disabled = true;
+  if (btnAnalyze) { btnAnalyze.disabled = true; btnAnalyze.classList.add('sp-analyzing'); }
   if (section) section.style.display = 'block';
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
@@ -1571,6 +1609,18 @@ async function analyzeTranscript() {
       const prev = (histData.attempts || []).find(a => a.status === 'analyzed' && String(a.questionId) === String(questionId));
       previousBand = prev?.aiFeedback?.overallBand ?? null;
     }
+    // Audio-only submission (mobile with no local speech-to-text): the
+    // server transcribed the recording — show it so the student can read
+    // and check what the AI heard.
+    const _serverTranscript = String(data.transcript || data.feedback?.transcript || '').trim();
+    if (!transcript && _serverTranscript && ta) {
+      ta.value = _serverTranscript;
+      state.finalTranscript = _serverTranscript + ' ';
+      const _btn = document.getElementById('btn-analyze');
+      if (_btn) _btn.disabled = false;
+      toast('AI đã nghe bản ghi âm và chép lại lời thoại của bạn.', 'info', 4000);
+    }
+
     renderFeedback(data.feedback || {}, previousBand);
     if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
 
@@ -1603,11 +1653,40 @@ async function analyzeTranscript() {
   } finally {
     _stopFeedbackLoadingMessages();
     state._analyzing = false;
-    if (btnAnalyze) btnAnalyze.disabled = !ta?.value.trim();
+    if (btnAnalyze) {
+      btnAnalyze.classList.remove('sp-analyzing');
+      btnAnalyze.disabled = !(ta?.value.trim() || (_lastRecordingBlob && _lastRecordingBlob.size > 0));
+    }
   }
 }
 
+// Animate a number from 0 → target over ~600ms, one decimal, honouring
+// prefers-reduced-motion (jump straight to the value).
+function _spCountUp(el, target) {
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || typeof target !== 'number' || !isFinite(target)) { el.textContent = target != null ? target : '—'; return; }
+  const start = performance.now();
+  const dur = 620;
+  el.classList.add('sp-counting');
+  const step = (now) => {
+    const p = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = (Math.round(target * eased * 2) / 2).toFixed(1).replace(/\.0$/, '');
+    if (p < 1) requestAnimationFrame(step);
+    else { el.textContent = target; el.classList.remove('sp-counting'); }
+  };
+  requestAnimationFrame(step);
+}
+
 function renderFeedback(fb, previousBand) {
+  // Retrigger the staggered reveal animation on every render.
+  const resultsEl = document.getElementById('feedback-results');
+  if (resultsEl) {
+    resultsEl.classList.remove('sp-reveal');
+    void resultsEl.offsetWidth; // force reflow so the animation restarts
+    resultsEl.classList.add('sp-reveal');
+  }
+
   // Scores
   const scores = [
     ['overall',       fb.overallBand],
@@ -1619,8 +1698,8 @@ function renderFeedback(fb, previousBand) {
   scores.forEach(([key, val]) => {
     const el = document.getElementById(`score-${key}`);
     if (!el) return;
-    el.textContent = val != null ? val : '—';
     el.dataset.band = val != null ? bandColor(val) : '';
+    _spCountUp(el, val != null ? val : null);
   });
 
   // Pronunciation source note — heard from the real recording (multimodal)

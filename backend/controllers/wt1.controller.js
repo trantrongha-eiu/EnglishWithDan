@@ -116,11 +116,17 @@ exports.submitWriting = async (req, res) => {
 exports.submitSpeaking = async (req, res) => {
   const { exerciseCode, transcript, duration } = req.body;
   const text = String(transcript || '').trim();
-  if (!exerciseCode || !text) {
-    return res.status(400).json({ success: false, message: 'Thiếu exerciseCode hoặc nội dung bài nói' });
+  if (!exerciseCode) {
+    return res.status(400).json({ success: false, message: 'Thiếu exerciseCode' });
   }
-  if (text.length < 15 || text.split(/\s+/).filter(Boolean).length < 5) {
-    return res.status(400).json({ success: false, message: 'Bài nói quá ngắn để chấm — hãy nói ít nhất một câu hoàn chỉnh.' });
+  // A recording with no client speech-to-text (mobile Safari/iOS, in-app
+  // webviews) is valid — Gemini transcribes the uploaded audio itself.
+  // Only require a "long enough" typed answer when there is NO audio.
+  if (!req.file && (text.length < 15 || text.split(/\s+/).filter(Boolean).length < 5)) {
+    return res.status(400).json({
+      success: false,
+      message: text ? 'Bài nói quá ngắn để chấm — hãy nói ít nhất một câu hoàn chỉnh.' : 'Chưa có nội dung — hãy ghi âm hoặc nhập lời thoại.',
+    });
   }
   try {
     const ex = await WT1Exercise.findOne({ code: exerciseCode, published: true }).lean();
@@ -143,7 +149,9 @@ exports.submitSpeaking = async (req, res) => {
     try {
       feedback = await speakingService.gradeSpeaking(questionText, text, part, audio);
     } catch (aiErr) {
-      if (audio && !aiErr.isOverloaded) {
+      // Transcript-only retry is only possible when we actually have a
+      // transcript — an audio-only submission has nothing to fall back to.
+      if (audio && text && !aiErr.isOverloaded) {
         console.warn('[WT1] audio speaking grading failed, retrying transcript-only:', aiErr.message);
         try { feedback = await speakingService.gradeSpeaking(questionText, text, part, null); }
         catch (retryErr) { aiErr = retryErr; }
@@ -155,8 +163,14 @@ exports.submitSpeaking = async (req, res) => {
       }
     }
 
+    // Audio path: prefer the student's own STT text, else Gemini's own
+    // transcription of the recording.
+    const finalText = text
+      || (typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '')
+      || '';
+
     await svc.recordSubmission(req.user._id, ex, {
-      responses: [text],
+      responses: [finalText],
       aiFeedback: {
         model: 'gemini',
         scores: {
@@ -174,14 +188,14 @@ exports.submitSpeaking = async (req, res) => {
     // Best-effort: mirror into SpeakingAttempt (history / monitoring / streak).
     try {
       await speakingService.saveAttempt(req.user, {
-        topic: ex.title || '', part, questionText, transcript: text,
+        topic: ex.title || '', part, questionText, transcript: finalText,
         duration: Number(duration) || 0, feedback,
       });
     } catch (mirrorErr) {
       console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);
     }
 
-    res.json({ success: true, graded: 'speaking', feedback });
+    res.json({ success: true, graded: 'speaking', feedback, transcript: finalText });
   } catch (err) {
     console.error('[WT1] submitSpeaking:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi chấm bài' });

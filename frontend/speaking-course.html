@@ -842,7 +842,7 @@
           '<button type="button" class="sc-redo" id="sc-redo" hidden><i class="fas fa-rotate-left"></i> Ghi âm lại</button>' +
         '</div>' +
         '<details class="sc-ts" id="sc-ts"><summary>Bản ghi lời nói — AI dùng ô này để chấm (có thể sửa lỗi chính tả)</summary>' +
-          '<textarea class="t1-ta" id="sc-transcript" rows="5" style="margin-top:6px" placeholder="Lời nói của bạn sẽ tự hiện ở đây khi ghi âm. Nếu trình duyệt không nhận diện được giọng nói, hãy tự gõ lại nội dung bài nói."></textarea>' +
+          '<textarea class="t1-ta" id="sc-transcript" rows="5" style="margin-top:6px" placeholder="Lời nói của bạn sẽ tự hiện ở đây khi ghi âm. Nếu trình duyệt không tạo phụ đề, cứ nói bình thường — AI sẽ nghe bản ghi âm và chép lại lời thoại khi bạn nộp bài."></textarea>' +
         '</details>' +
         '<div class="sc-note hidden" id="sc-note"></div>' +
         rubricHint(ex) +
@@ -1031,8 +1031,12 @@
       if (SpeakingRec.recording) SpeakingRec.stop();
       var ta = document.getElementById('sc-transcript');
       var transcript = ta ? ta.value.trim() : '';
-      if (transcript.split(/\s+/).filter(Boolean).length < 5) {
-        toast('Bài nói quá ngắn — hãy nói (hoặc gõ) ít nhất một câu hoàn chỉnh.', 'info');
+      var _scBlob = SpeakingRec.blob();
+      var _scHasAudio = _scBlob && _scBlob.size > 0;
+      // No local speech-to-text is OK as long as we recorded audio — the
+      // server transcribes it (mobile Safari/iOS, in-app webviews).
+      if (!_scHasAudio && transcript.split(/\s+/).filter(Boolean).length < 5) {
+        toast(transcript ? 'Bài nói quá ngắn — hãy nói (hoặc gõ) ít nhất một câu hoàn chỉnh.' : 'Chưa có nội dung — hãy ghi âm hoặc gõ lời thoại.', 'info');
         return;
       }
       state._submitting = true; btn.disabled = true;
@@ -1042,7 +1046,7 @@
       try {
         // Send the recording (if we captured one) as multipart so the AI can
         // grade pronunciation from real audio; fall back to JSON otherwise.
-        var _blob = SpeakingRec.blob();
+        var _blob = _scBlob;
         var _opts;
         if (_blob && _blob.size > 0) {
           var _fd = new FormData();
@@ -1058,6 +1062,12 @@
         var sd = await api('/wt1/submit-speaking', _opts);
         state.answered = true; stopTimer();
         if (window.playOk) window.playOk();
+        // Audio-only submit: show the transcript the AI produced from the recording.
+        if (!transcript && sd.transcript && ta) {
+          ta.value = sd.transcript;
+          var _scDetails = ta.closest('details'); if (_scDetails) _scDetails.open = true;
+          toast('AI đã nghe bản ghi âm và chép lại lời thoại của bạn.', 'info');
+        }
         showSpeakingFeedback(sd.feedback || {}, ex);
       } catch (e) {
         state._submitting = false; btn.disabled = false;
