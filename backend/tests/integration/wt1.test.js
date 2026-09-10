@@ -165,6 +165,26 @@ describe('POST /submit-writing', () => {
     const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'PW1' }).lean();
     expect(sub.aiFeedback.bandEstimate).toBe(5.5);
   });
+
+  test('paragraph_writing: AI overloaded → falls back to rubric grading, still records the submission', async () => {
+    geminiService.checkEssay.mockRejectedValue(Object.assign(new Error('AI quá tải'), { isOverloaded: true }));
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/submit-writing').set(bearer(u))
+      .send({ exerciseCode: 'PW1', responses: [('word '.repeat(50)).trim()] });
+
+    expect(res.status).toBe(200);
+    expect(res.body.graded).toBe('local');
+    expect(res.body.aiUnavailable).toBe(true);
+    expect(typeof res.body.score).toBe('number');
+    expect(res.body.sampleAnswer).toBe('hidden sample'); // model answer still returned
+    expect(Array.isArray(res.body.checklist)).toBe(true);
+
+    // recorded → counts toward the lesson's writing-submission gate
+    const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'PW1' }).lean();
+    expect(sub).toBeTruthy();
+    expect(sub.score).toBe(res.body.score);
+    expect(sub.aiFeedback?.bandEstimate == null).toBe(true); // no AI band — graded locally
+  });
 });
 
 describe('gate unlock + ownership', () => {

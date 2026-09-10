@@ -80,17 +80,24 @@ exports.submitWriting = async (req, res) => {
       return res.json({ success: true, ...result });
     }
 
-    // paragraph_writing / full_task1 → Gemini
+    // paragraph_writing / full_task1 → Gemini. If the AI is overloaded /
+    // unavailable, fall back to the same rubric-based local grader that
+    // sentence_writing uses (target-structure coverage + word count) rather
+    // than 503-ing: the student still gets a provisional score, the model
+    // answer, and a recorded submission that counts toward the lesson gate.
     let ai;
     try {
       ai = await grading.gradeWritingAI(ex, arr);
     } catch (aiErr) {
-      console.warn('[WT1] AI grading failed:', aiErr.message);
-      // Only overload errors carry a user-safe message; anything else
-      // (missing key, SDK parse failure, …) gets a generic one so we don't
-      // leak internals to the student — same rule as submitSpeaking below.
-      const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể chấm bài lúc này. Vui lòng thử lại sau.';
-      return res.status(503).json({ success: false, message: msg });
+      console.warn('[WT1] AI grading unavailable — grading against the rubric instead:', aiErr.message);
+      const local = grading.gradeWritingLocal(ex, arr);
+      await svc.recordSubmission(req.user._id, ex, { responses: arr, score: local.score });
+      // `aiUnavailable` drives the "AI đang bận — điểm sơ bộ theo rubric"
+      // banner in showWritingFeedback (all 3 course pages). `local` already
+      // carries score / checklist / sampleAnswer in the same shape
+      // sentence_writing returns, so the existing local-feedback branch
+      // renders it unchanged.
+      return res.json({ success: true, ...local, sampleAnswer, aiUnavailable: true, aiOverloaded: !!aiErr.isOverloaded });
     }
     await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai });
     res.json({ success: true, ...ai, sampleAnswer });

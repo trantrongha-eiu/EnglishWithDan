@@ -886,7 +886,8 @@
           used.map(function (x) { return '<span class="c used">✓ ' + esc(scStr(x)) + '</span>'; }).join('') +
           miss.map(function (x) { return '<span class="c miss">✗ ' + esc(scStr(x)) + '</span>'; }).join('') + '</div></div>' : '');
     } else {
-      body = '<div class="t1-fb-score">' + (d.score != null ? d.score + '%' : '') + '</div>' +
+      body = (d.aiUnavailable ? '<div style="background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.55;margin-bottom:10px">AI chấm chi tiết đang bận. Đây là điểm sơ bộ theo rubric — nộp lại sau để được AI chấm theo band.</div>' : '') +
+        '<div class="t1-fb-score">' + (d.score != null ? d.score + '%' : '') + '</div>' +
         (d.feedbackVi ? '<div style="text-align:center;font-size:13.5px;margin-bottom:8px">' + esc(d.feedbackVi) + '</div>' : '') +
         (d.checklist || []).map(function (c) {
           var mark = c.ok === true ? '<span class="t1-ok">✔</span>' : c.ok === false ? '<span class="t1-bad">✗</span>' : '•';
