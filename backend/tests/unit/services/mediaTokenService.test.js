@@ -76,9 +76,11 @@ describe('sealMediaUrl / openMediaToken', () => {
   });
 });
 
-// P4 — the media-token secret must be its OWN value in production and must
-// NOT silently fall back to JWT_SECRET there. config/index.js is the only
-// place the fallback is expressed; these tests drive it via NODE_ENV +
+// P4 — MEDIA_TOKEN_SECRET is a dedicated media-signing secret. When set it
+// is used exclusively (never JWT_SECRET); when unset it falls back to
+// JWT_SECRET (so a deploy can never boot with an empty media key —
+// server.js just logs a loud production warning). config/index.js is the
+// only place the fallback is expressed; these tests drive it via
 // jest.resetModules() (same technique as the "different key" test above).
 describe('P4 — MEDIA_TOKEN_SECRET vs JWT_SECRET fallback (config.media.tokenSecret)', () => {
   const KEYS = ['MEDIA_TOKEN_SECRET', 'NODE_ENV', 'JWT_SECRET'];
@@ -126,19 +128,14 @@ describe('P4 — MEDIA_TOKEN_SECRET vs JWT_SECRET fallback (config.media.tokenSe
     expect(verifySvc.openMediaToken(token)).toEqual({ ok: false, reason: 'malformed' });
   });
 
-  test('3. production + no MEDIA_TOKEN_SECRET → media key is EMPTY (no JWT_SECRET fallback); signing then throws', () => {
-    const cfg = loadConfig({ nodeEnv: 'production', mediaSecret: undefined, jwtSecret: 'jwt-only-in-env' });
-    expect(cfg.media.tokenSecret).toBe('');
-    expect(cfg.media.tokenSecret).not.toBe('jwt-only-in-env');
-
-    const svc = require('../../../services/mediaTokenService');
-    expect(() => svc.sealMediaUrl(CLOUD, 'u1')).toThrow(/media\.tokenSecret is not configured/);
-  });
-
-  test('dev/test convenience preserved: NON-production + no MEDIA_TOKEN_SECRET → falls back to JWT_SECRET', () => {
-    for (const nodeEnv of ['development', 'test', undefined]) {
+  test('3. no MEDIA_TOKEN_SECRET (any env incl. production) → falls back to JWT_SECRET; signing still works', () => {
+    for (const nodeEnv of ['production', 'development', 'test', undefined]) {
       const cfg = loadConfig({ nodeEnv, mediaSecret: undefined, jwtSecret: 'jwt-fallback-value' });
-      expect(cfg.media.tokenSecret).toBe('jwt-fallback-value');
+      expect(cfg.media.tokenSecret).toBe('jwt-fallback-value'); // never empty → no 500 on the listening review
+
+      const svc = require('../../../services/mediaTokenService');
+      expect(svc.openMediaToken(svc.sealMediaUrl(CLOUD, 'u1'))).toEqual({ ok: true, url: CLOUD, userId: 'u1' });
+      jest.resetModules();
     }
   });
 });
