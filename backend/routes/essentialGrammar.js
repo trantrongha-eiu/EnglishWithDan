@@ -29,8 +29,32 @@ const adminWriteLimiter = rateLimit({
   skip: req => req.user?.role === 'admin'
 });
 
-// PUBLIC — nội dung tra cứu, không cần đăng nhập (giữ nguyên hành vi cũ).
-router.get('/lessons', essentialGrammarController.listLessons);
+// Shared read limiter for the student lesson endpoints. `/lessons` now
+// returns metadata only; `/lessons/:id` returns one lesson's blocks (the
+// answer-carrying content, graded client-side) and the page fetches it
+// once per lesson opened. A genuine session is ~1 list + a handful of
+// detail fetches (cached in-memory after first open); this cap only bites
+// a logged-in scraper looping every lesson. Runs AFTER `auth` so the key
+// is always a user id. Admins/teachers exempt (content-management previews).
+const lessonsReadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 80,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
+  handler: (req, res) => {
+    logger.security('Essential Grammar lessons read rate limit exceeded', { userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau ít phút.' });
+  },
+  skip: req => ['admin', 'teacher'].includes(req.user?.role)
+});
+
+// Học sinh — danh sách bài học (metadata, KHÔNG kèm blocks) + chi tiết 1
+// bài (kèm blocks). `auth` là đủ, KHÔNG cần premium: đây là nội dung tra
+// cứu "miễn phí" trong 24h trial trở lên. `auth` + tách metadata/chi tiết
+// để đáp án quiz/practice (chấm ở client) không còn bị scrape hàng loạt
+// qua một request (audit 2026-09-10). Trang HTML vốn đã bị chặn bởi
+// page-load guard trong frontend/js/auth.js.
+router.get('/lessons', auth, lessonsReadLimiter, essentialGrammarController.listLessons);
+router.get('/lessons/:id', auth, lessonsReadLimiter, essentialGrammarController.getLesson);
 
 // ══════════════════════════════════════════════════════
 // ADMIN — CRUD (chỉ metadata/hiển thị — không sửa blocks[], xem service).

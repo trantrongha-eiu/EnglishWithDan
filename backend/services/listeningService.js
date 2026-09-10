@@ -21,6 +21,28 @@ const { bandScoreTable } = require('../utils/bandScore');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 
+// Mongoose `.select()` string that strips a section's answer key
+// (correctAnswer + explanation per question). Single source so the
+// pre-submission fetch (getPracticeSectionById) and the practice-history
+// review can't drift apart — both must withhold the key. (P1
+// regression-audit fix: an expired-premium user was re-pulling full answer
+// keys via /practice/history/:attemptId.) `transcript` is intentionally
+// NOT stripped here — it isn't the answer key and getPracticeSectionById
+// already ships it to the review UI.
+const PRACTICE_SECTION_SAFE_FIELDS =
+  '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation';
+
+// Drops `correctAnswer` from each persisted practice answer row
+// (PracticeAnswerSchema = { questionNumber, userAnswer, correctAnswer,
+// isCorrect }). `isCorrect` stays — the right/wrong flag is fine to show,
+// the answer string is what must not leak post-access.
+function stripAnswerKeyFromAttempt(attempt) {
+  if (attempt && Array.isArray(attempt.answers)) {
+    attempt.answers = attempt.answers.map(({ correctAnswer, ...rest }) => rest); // eslint-disable-line no-unused-vars
+  }
+  return attempt;
+}
+
 function flattenQuestions(sections) {
   return sections.flatMap(s => s.questionGroups.flatMap(g => g.questions));
 }
@@ -365,7 +387,7 @@ async function getPracticeSectionById(id) {
   // reads it off this same pre-fetched object post-submission rather than
   // re-fetching, so stripping it here would break that display.
   return ListeningSection.findOne({ _id: id, isActive: true })
-    .select('-questionGroups.questions.correctAnswer -questionGroups.questions.explanation')
+    .select(PRACTICE_SECTION_SAFE_FIELDS)
     .lean();
 }
 
@@ -885,11 +907,18 @@ async function getPracticeHistory(userId) {
   return ListeningPracticeAttempt.find({ userId }).select('-answers').sort({ submittedAt: -1 }).limit(50).lean();
 }
 
+// Ownership-scoped ({ _id, userId }). Withholds the answer key: the raw
+// `section` doc (correctAnswer + explanation per question) and the
+// `correctAnswer` frozen onto each `attempt.answers` row — so it can't be
+// used to harvest answer keys after premium/trial access lapses (P1
+// regression finding). The review UI re-fetches the key from GET
+// /practice/answer-key/:id, which is itself requirePremium-gated.
+// (audioUrl is still proxied via protectListeningAudio in the controller.)
 async function getPracticeHistoryDetail(attemptId, userId) {
   const attempt = await ListeningPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return null;
-  const section = await ListeningSection.findById(attempt.sectionId).lean();
-  return { attempt, section };
+  const section = await ListeningSection.findById(attempt.sectionId).select(PRACTICE_SECTION_SAFE_FIELDS).lean();
+  return { attempt: stripAnswerKeyFromAttempt(attempt), section };
 }
 
 module.exports = {

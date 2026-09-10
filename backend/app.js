@@ -106,6 +106,7 @@ app.use('/api/vocabulary-lessons', require('./routes/vocabularyLesson'));
 app.use('/api/reading',  require('./routes/reading'));
 app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/listening',require('./routes/listening'));
+app.use('/api/media',    require('./routes/media'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/mock-test', require('./routes/mockTest'));

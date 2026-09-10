@@ -67,7 +67,13 @@ a diff or PR review.
 
 1. Ensure `backend/.env.example` is up to date if you added/removed any
    environment variable this change depends on (see
-   `docs/RELEASE_CHECKLIST.md`).
+   `docs/RELEASE_CHECKLIST.md`). Note: as of the media-token hardening,
+   `MEDIA_TOKEN_SECRET` is — like `JWT_SECRET` — a **hard startup
+   requirement in production**: `server.js` calls `process.exit(1)` if
+   `NODE_ENV=production` and it is unset (it does *not* fall back to
+   `JWT_SECRET` there). Set it on the Render backend service before the
+   first deploy that includes this change, or the deploy will crash-loop.
+   See `docs/ENVIRONMENT_VARIABLES.md` › "Protected media delivery".
 2. Push (or merge a PR) to the branch the Render Web Service is configured
    to track. Render picks up the push automatically and runs its own build
    (`npm install` in `backend/`) and start command (`npm start`, i.e.

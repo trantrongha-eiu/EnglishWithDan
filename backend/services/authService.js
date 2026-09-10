@@ -10,8 +10,53 @@ const crypto = require('crypto');
 const config = require('../config');
 const { escapeHtml } = require('../utils/escapeHtml');
 const logger = require('../utils/logger');
+const { sendEmail } = require('./emailService');
+const { isDisposableEmail } = require('../utils/disposableEmailDomains');
 
 const MAX_OTP_ATTEMPTS = 5;
+const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // link valid 24h
+
+// Email delivery is optional infrastructure in this app (config/index.js
+// never throws on missing vars). When it isn't configured we can't run a
+// verify-email step at all, so registration degrades to the previous
+// behavior: account is auto-verified and the 24h trial runs from
+// createdAt. On a properly configured deployment this is always true and
+// the anti-farming gate is enforced.
+function emailConfigured() {
+  return !!(config.email.user && config.email.pass);
+}
+
+function hashVerifyToken(raw) {
+  return crypto.createHash('sha256').update(String(raw)).digest('hex');
+}
+
+// Public site origin for links we email out. FRONTEND_URL is set in prod;
+// the hard fallback keeps the verification link absolute (and clickable
+// from an inbox) even if the env var is ever missing — a relative link in
+// an email is dead.
+const PUBLIC_SITE_URL = 'https://ieltsthayha.com';
+
+async function sendVerificationEmail(user, rawToken) {
+  const base = (config.frontendUrl || process.env.FRONTEND_URL || PUBLIC_SITE_URL).replace(/\/$/, '');
+  const link = `${base}/verify-email.html?token=${rawToken}`;
+  const name = escapeHtml(user.firstName || user.username || '');
+  return sendEmail(
+    user.email,
+    'Xác minh email - EnglishWithDan',
+    `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; background: #f9f9f9; border-radius: 10px;">
+        <h2 style="color: #667eea;">EnglishWithDan</h2>
+        <p>Xin chào <strong>${name}</strong>,</p>
+        <p>Nhấn nút bên dưới để xác minh email và kích hoạt <strong>1 ngày dùng thử miễn phí</strong> của bạn:</p>
+        <p style="text-align:center;margin:24px 0;">
+          <a href="${link}" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:700;display:inline-block;">Xác minh email</a>
+        </p>
+        <p style="color:#888;font-size:13px;">Hoặc mở liên kết này: <br>${link}</p>
+        <p style="color:#888;font-size:12px;">Liên kết có hiệu lực trong <strong>24 giờ</strong>. Nếu bạn không tạo tài khoản này, hãy bỏ qua email.</p>
+      </div>
+    `
+  );
+}
 
 // Fixed dummy hash so the "no such account"/"social-only account" login
 // paths still pay bcrypt's ~80-150ms cost — without this, those paths
@@ -45,7 +90,12 @@ function userPayload(user) {
     // Anchor for the free-plan 24h trial window (backend/utils/plan.js's
     // hasFullAccess) — the frontend needs this to compute
     // AuthService.hasPremiumAccess() without a round trip per check.
-    createdAt: user.createdAt || null
+    createdAt: user.createdAt || null,
+    // Anti trial-farming: an unverified local account has no trial until
+    // the email is confirmed; trialStartedAt (verification time) is the
+    // trial anchor when present. Mirrored in AuthService.isWithinTrial().
+    emailVerified: user.emailVerified !== false,
+    trialStartedAt: user.trialStartedAt || null
   };
 }
 
@@ -73,7 +123,10 @@ async function findOrCreateGoogleUser(profile) {
       firstName: profile.name?.givenName || '',
       lastName: profile.name?.familyName || '',
       avatar: profile.photos?.[0]?.value || '',
-      authProvider: 'google'
+      authProvider: 'google',
+      // Google has already proven ownership of this address — no
+      // verify-email step, trial runs from createdAt as before.
+      emailVerified: true
     });
   }
   await user.save();
@@ -81,14 +134,86 @@ async function findOrCreateGoogleUser(profile) {
 }
 
 async function registerUser({ firstName, lastName, username, email, password }) {
+  // Anti trial-farming: block registration from known throwaway-mailbox
+  // providers so "one disposable inbox per account" stops being a cheap
+  // way to reset the 24h trial. Real providers are never on this list.
+  if (isDisposableEmail(email)) {
+    logger.auth('Blocked registration from disposable email domain', { email });
+    return { status: 'disposable' };
+  }
+
   const existing = await User.findOne({ $or: [{ email }, { username }] });
   if (existing) return { status: 'duplicate' };
 
   const hashed = await bcrypt.hash(password, 10);
   const user = new User({ firstName, lastName, username, email, password: hashed });
+
+  // Anti trial-farming: when email delivery is configured, a new local
+  // account starts UNVERIFIED and gets no 24h trial until the emailed
+  // link is used (which also sets trialStartedAt). Client never sees the
+  // token or a session — it must go verify. If email isn't configured
+  // (dev / misconfigured deploy) we fall back to the old behavior so the
+  // product still works.
+  if (emailConfigured()) {
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    user.emailVerified = false;
+    user.emailVerifyTokenHash = hashVerifyToken(rawToken);
+    user.emailVerifyExpires = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
+    await user.save();
+    const sent = await sendVerificationEmail(user, rawToken);
+    if (!sent) {
+      // Transient SMTP failure — the account exists and stays unverified;
+      // the user recovers via POST /resend-verification. Log loudly.
+      logger.auth('Verification email failed to send at registration', { userId: String(user._id) });
+    }
+    return { status: 'ok', needsEmailVerification: true, email: user.email };
+  }
+
+  user.emailVerified = true; // no way to verify → don't strand the user
+  await user.save();
+  logger.auth('Registered without email verification (email not configured)', { userId: String(user._id) });
+  return { status: 'ok', needsEmailVerification: false, token: signToken(user._id), user: userPayload(user) };
+}
+
+// Consumes a raw verification token from the emailed link. Single-use
+// (the hash is cleared on success), time-limited (emailVerifyExpires),
+// and it's what starts the 24h trial clock (trialStartedAt). Returns a
+// fresh session on success so the client can go straight into the app.
+async function verifyEmailToken(rawToken) {
+  if (!rawToken || typeof rawToken !== 'string') return { status: 'invalid' };
+  const user = await User.findOne({
+    emailVerifyTokenHash: hashVerifyToken(rawToken),
+    emailVerifyExpires: { $gt: new Date() },
+  }).select('+emailVerifyTokenHash');
+  // Covers wrong token, expired token, and a token already consumed
+  // (hash cleared) — all indistinguishable to the caller, no user
+  // enumeration.
+  if (!user) return { status: 'invalid' };
+
+  if (!user.trialStartedAt) user.trialStartedAt = new Date(); // start the trial once, now
+  user.emailVerified = true;
+  user.emailVerifyTokenHash = '';
+  user.emailVerifyExpires = null;
   await user.save();
 
+  logger.auth('Email verified', { userId: String(user._id) });
   return { status: 'ok', token: signToken(user._id), user: userPayload(user) };
+}
+
+// Re-sends the verification link. Always reports the same generic
+// outcome to the caller (see controller) so it can't be used to probe
+// which emails exist or which are already verified.
+async function resendVerification(email) {
+  if (!emailConfigured()) return { status: 'noop' };
+  const user = await User.findOne({ email });
+  if (!user || user.emailVerified || user.authProvider !== 'local') return { status: 'noop' };
+
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  user.emailVerifyTokenHash = hashVerifyToken(rawToken);
+  user.emailVerifyExpires = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
+  await user.save();
+  await sendVerificationEmail(user, rawToken);
+  return { status: 'sent' };
 }
 
 async function loginUser({ email, password }) {
@@ -254,6 +379,7 @@ async function logoutAllSessions(userId) {
 
 module.exports = {
   signToken, userPayload, findOrCreateGoogleUser,
-  registerUser, loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
+  registerUser, verifyEmailToken, resendVerification,
+  loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
   logoutAllSessions,
 };

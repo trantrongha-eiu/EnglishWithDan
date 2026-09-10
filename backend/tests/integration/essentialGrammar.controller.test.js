@@ -4,33 +4,71 @@
 // same middleware, same "teacher can't DELETE" rule), student
 // attempt/history flow, and ownership scoping.
 //
-// SUSPECTED BUG (flagged, not fixed — see report): unlike every other
-// content-serving controller audited in this pass (vocab.controller.js's
-// /unit/:number, task1/task2/writingPractice's exercise/question routes,
-// all gated by requirePremium), GET /api/essential-grammar/lessons has NO
-// auth middleware at all AND essentialGrammarService.listLessons() returns
-// full lesson docs including `blocks` (quiz questions + correct
-// answerIndex + explanations) with only `-__v` excluded. The route's own
-// comment claims this is deliberate ("PUBLIC — nội dung tra cứu, không
-// cần đăng nhập (giữ nguyên hành vi cũ)"), but it means the entire
-// Essential Grammar question bank — answers included — is fetchable by
-// anyone, logged in or not, premium or not. The test below captures this
-// AS CURRENT BEHAVIOR (asserting the 200 + full blocks it actually
-// returns) rather than asserting what it "should" do.
+// FIXED 2026-09-10: GET /api/essential-grammar/lessons now requires `auth`
+// (no premium gate — it stays "free" for any logged-in user, including an
+// expired-trial free account). Previously it had no middleware at all and
+// listLessons() returns full lesson docs including `blocks` (quiz
+// questions + correct answerIndex + explanations, graded client-side), so
+// the whole question bank was scrapable by anyone with `curl`. The tests
+// below now assert 401-without-token and 200-with-any-token.
+//
+// SPLIT 2026-09-10: GET /lessons returns metadata only (no `blocks`); a
+// lesson's blocks — which carry the client-graded quiz/practice answer
+// keys — are fetched one at a time via GET /lessons/:id. Both share a
+// per-account read limiter so a logged-in scraper can't pull the whole
+// bank in one request.
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const { createEssentialGrammarLesson } = require('../factories/contentFactory');
 
-describe('GET /api/essential-grammar/lessons — current (unauthenticated) behavior', () => {
-  test('SUSPECTED BUG: is reachable with no token at all and returns full quiz content including answerIndex', async () => {
+describe('GET /api/essential-grammar/lessons — auth-gated metadata list (no premium gate, no blocks)', () => {
+  test('rejects an unauthenticated request (401) — question bank is no longer publicly scrapable', async () => {
     await createEssentialGrammarLesson({ title: 'Present Simple' });
     const res = await request(app).get('/api/essential-grammar/lessons');
+    expect(res.status).toBe(401);
+  });
+
+  test('a plain free-plan student (expired trial, no premium) gets the list — metadata only, NO blocks', async () => {
+    await createEssentialGrammarLesson({ title: 'Present Simple' });
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) } });
+    const res = await request(app)
+      .get('/api/essential-grammar/lessons')
+      .set('Authorization', `Bearer ${signTokenFor(user)}`);
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.lessons).toHaveLength(1);
-    const quizBlock = res.body.lessons[0].blocks.find(b => b.type === 'quiz');
+    expect(res.body.lessons[0].title).toBe('Present Simple');
+    // The answer-carrying content must not be in the list payload anymore.
+    expect(res.body.lessons[0].blocks).toBeUndefined();
+  });
+});
+
+describe('GET /api/essential-grammar/lessons/:id — auth-gated lesson detail (blocks included)', () => {
+  test('rejects an unauthenticated request (401)', async () => {
+    const lesson = await createEssentialGrammarLesson();
+    const res = await request(app).get(`/api/essential-grammar/lessons/${lesson._id}`);
+    expect(res.status).toBe(401);
+  });
+
+  test('a plain free-plan student gets one lesson WITH its blocks (incl. quiz answerIndex)', async () => {
+    const lesson = await createEssentialGrammarLesson({ title: 'Present Simple' });
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) } });
+    const res = await request(app)
+      .get(`/api/essential-grammar/lessons/${lesson._id}`)
+      .set('Authorization', `Bearer ${signTokenFor(user)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.lesson._id).toBe(String(lesson._id));
+    const quizBlock = res.body.lesson.blocks.find(b => b.type === 'quiz');
     expect(quizBlock.data.questions[0].answerIndex).toBeDefined();
+  });
+
+  test('404 for a nonexistent id, and for an inactive lesson', async () => {
+    const user = await createStudent();
+    const token = `Bearer ${signTokenFor(user)}`;
+    expect((await request(app).get('/api/essential-grammar/lessons/000000000000000000000000').set('Authorization', token)).status).toBe(404);
+    const hidden = await createEssentialGrammarLesson({ isActive: false });
+    expect((await request(app).get(`/api/essential-grammar/lessons/${hidden._id}`).set('Authorization', token)).status).toBe(404);
   });
 });
 

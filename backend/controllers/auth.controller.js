@@ -73,12 +73,56 @@ exports.register = async (req, res) => {
     if (result.status === 'duplicate') {
       return res.status(400).json({ success: false, message: 'Email hoặc Username đã tồn tại' });
     }
+    if (result.status === 'disposable') {
+      return res.status(400).json({ success: false, message: 'Vui lòng dùng địa chỉ email thật — email tạm thời không được chấp nhận.' });
+    }
+
+    // Email verification required: account created but no session issued —
+    // the client is told to go check their inbox. The 24h trial does not
+    // start until the emailed link is used.
+    if (result.needsEmailVerification) {
+      return res.status(201).json({
+        success: true,
+        needsEmailVerification: true,
+        email: result.email,
+        message: 'Tài khoản đã được tạo. Vui lòng kiểm tra email để xác minh và kích hoạt bản dùng thử.',
+      });
+    }
 
     res.status(201).json({ success: true, token: result.token, user: result.user });
   } catch (err) {
     console.error('[Auth] register error:', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
+};
+
+// ── POST /api/auth/verify-email ─────────────────────────────
+// Body: { token }. Consumes the emailed link, marks the account verified,
+// starts the 24h trial, and returns a session.
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const result = await authService.verifyEmailToken(token);
+    if (result.status === 'invalid') {
+      return res.status(400).json({ success: false, message: 'Liên kết xác minh không hợp lệ hoặc đã hết hạn.' });
+    }
+    res.json({ success: true, token: result.token, user: result.user });
+  } catch (err) {
+    console.error('[Auth] verifyEmail error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// ── POST /api/auth/resend-verification ─────────────────────
+// Body: { email }. Deliberately returns the same response whether or not
+// the address exists / is already verified (no user enumeration).
+exports.resendVerification = async (req, res) => {
+  try {
+    await authService.resendVerification(req.body.email);
+  } catch (err) {
+    console.error('[Auth] resendVerification error:', err);
+  }
+  res.json({ success: true, message: 'Nếu email chưa được xác minh, chúng tôi đã gửi lại liên kết xác minh.' });
 };
 
 // ── POST /api/auth/login ────────────────────────────────────

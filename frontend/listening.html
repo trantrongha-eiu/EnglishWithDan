@@ -2265,8 +2265,7 @@
                     return `<div class="q-mistake-block" id="qfb-${q.questionNumber}" data-qnum="${q.questionNumber}">
                         <div class="q-correct-ans ${ok ? 'right' : qUA ? 'wrong' : 'skip'}" style="margin-top:4px">
                             Q${q.questionNumber}: ${ok ? '✓ Đúng'
-                              : qUA ? `✗ Sai — Đáp án: <strong>${escHtml(qCA)}</strong>`
-                                    : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(qCA)}</strong>`}
+                              : (qUA ? '✗ Sai' : '⊘ Bỏ qua') + (qCA ? ` — Đáp án: <strong>${escHtml(qCA)}</strong>` : '')}
                         </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}
                     </div>`;
                 }).join('');
@@ -2308,7 +2307,7 @@
             const showText = !['sentence-completion', 'matching'].includes(q.type);
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}">
-                    ${ok ? '✓ Đúng' : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>` : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
+                    ${ok ? '✓ Đúng' : (ua ? '✗ Sai' : '⊘ Bỏ qua') + (ca ? ` — Đáp án: <strong>${escHtml(ca)}</strong>` : '')}
                 </div>
                 ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}` : '';
 
@@ -2440,6 +2439,15 @@
             _mountInlineReviews('listening', r.attemptId, _reviewAllQs);
         }
 
+        // Shown atop the review question list when the server withheld the
+        // answer key (correctAnswer + explanation) — account no longer has
+        // full access. Scores / band / right-wrong are still shown.
+        function _ltReviewLockedNotice() {
+            return `<div class="review-locked-notice" style="background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.5">
+                🔒 Bản dùng thử / Premium đã hết hạn — bạn vẫn xem được kết quả và câu đúng/sai, nhưng <strong>đáp án đúng và giải thích chi tiết</strong> chỉ dành cho tài khoản Premium.
+            </div>`;
+        }
+
         function renderReviewPartQuestions(partIdx) {
             const r = state.reviewResult;
             if (!r) return;
@@ -2449,7 +2457,7 @@
             const reviewMap = {};
             (r.questions || []).forEach(q => { reviewMap[q.questionNumber] = q; });
 
-            let html = `
+            let html = (state.reviewAnswerKeyWithheld ? _ltReviewLockedNotice() : '') + `
                 <div class="section-header-card">
                     <div class="section-part-label">Part ${section.partNumber}</div>
                     <div class="section-title-text">${escHtml(section.title)}</div>
@@ -3038,8 +3046,9 @@
         // path (fetches the same shape from GET /listening/history/:attemptId
         // when a resubmit is correctly rejected because the exam was actually
         // already saved server-side).
-        function _renderExamResult(r) {
+        function _renderExamResult(r, answerKeyWithheld) {
             state.reviewResult = r;
+            state.reviewAnswerKeyWithheld = !!answerKeyWithheld;
             state.submitted = true;
             // refresh test list để cập nhật trạng thái đã làm — bỏ qua ở
             // mock mode vì sắp điều hướng sang trang kỹ năng kế tiếp ngay.
@@ -3168,7 +3177,7 @@
                             clearExamStorage(); // it really was saved — safe to drop the local backup now
                             overlay.style.display = 'none';
                             toast('Bài thi đã được nộp trước đó — đang hiện kết quả.', 'info');
-                            _renderExamResult(rdata.result);
+                            _renderExamResult(rdata.result, rdata.answerKeyWithheld);
                             return;
                         }
                     } catch { /* fall through to the generic error below */ }
@@ -3347,6 +3356,7 @@
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 state.reviewResult = data.result;
+                state.reviewAnswerKeyWithheld = !!data.answerKeyWithheld;
                 goToReview();
             } catch (err) {
                 toast('Lỗi tải kết quả: ' + err.message, 'error');
@@ -4555,6 +4565,19 @@
             if (!data.success || !data.section) { toast('Không tải được bài đã làm.', 'error'); return; }
             const { attempt, section } = data;
 
+            // The history endpoint no longer ships the answer key (backend
+            // getPracticeHistoryDetail — P1 fix). Re-fetch it from the
+            // requirePremium-gated answer-key endpoint, exactly like
+            // _doSubmitLTPractice(). A free/expired user gets 403 → keyMap
+            // stays empty → the review shows their answers + score without
+            // correct-answer hints.
+            const keyMap = {};
+            try {
+                const keyRes  = await fetch(`${API}/listening/practice/answer-key/${attempt.sectionId}`, { headers: authH() });
+                const keyData = await safeJson(keyRes);
+                if (keyData.success && keyData.answerKey) Object.assign(keyMap, keyData.answerKey);
+            } catch (e) { /* 403 for lapsed access, or transient — degrade to no key */ }
+
             // Restore highlights saved locally while this practice attempt was
             // taken (see _saveLtPracticeHighlightsToStorage).
             let _savedLtHl = null;
@@ -4573,17 +4596,14 @@
                     const saved = answerMap[q.questionNumber];
                     q.userAnswer = saved?.userAnswer || '';
                     q.isCorrect  = saved?.isCorrect  || false;
-                    // ListeningPracticeAttempt.answers[] freezes correctAnswer
-                    // as of when this attempt was actually graded — `section`
-                    // above is the LIVE, possibly-since-edited document. Without
-                    // this, isCorrect (frozen, correct) could contradict the
-                    // displayed "correct answer" text (live, since changed):
-                    // e.g. an admin fixes a typo'd answer key after a student
-                    // attempted it, and the review then shows the student's
-                    // answer marked ✗ wrong while displaying a "correct answer"
-                    // identical to what they typed — reads as a bug even though
-                    // each half was accurate for its own point in time.
+                    // correctAnswer/explanation no longer come from the history
+                    // response — take them from the premium-gated key fetch
+                    // above (empty for a lapsed-access user). Prefer the
+                    // attempt's frozen value if an older payload still has it.
+                    const k = keyMap[q.questionNumber];
                     if (saved?.correctAnswer !== undefined) q.correctAnswer = saved.correctAnswer;
+                    else if (k?.correctAnswer !== undefined) q.correctAnswer = k.correctAnswer;
+                    if (k?.explanation !== undefined) q.explanation = k.explanation;
                 }
             }
 

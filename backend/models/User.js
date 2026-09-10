@@ -133,6 +133,24 @@ const UserSchema = new mongoose.Schema({
   resetOTP:           { type: String, default: '' },
   resetOTPExpires:    { type: Date, default: null },
   resetOTPAttempts:   { type: Number, default: 0 },
+  // ── Email verification (anti trial-farming) ───────────────────────────
+  // default:true is deliberate — every account that predates this field
+  // (no `emailVerified` stored) hydrates as verified, so nothing changes
+  // for existing users, and social logins (Google — email already proven)
+  // stay verified too. Only local registration explicitly writes `false`
+  // (authService.registerUser), and only when email delivery is actually
+  // configured. utils/plan.js's isWithinTrial() denies the 24h trial while
+  // this is `false`.
+  emailVerified:        { type: Boolean, default: true },
+  // sha256 of the raw token that was emailed (never the raw token itself);
+  // select:false so it can't leak through an incidental query.
+  emailVerifyTokenHash: { type: String, default: '', select: false },
+  emailVerifyExpires:   { type: Date, default: null },
+  // The trial clock's start point for accounts that go through the
+  // verify-email flow: set once, at successful verification. null for
+  // every pre-feature / social account, where isWithinTrial() falls back
+  // to `createdAt` exactly as before.
+  trialStartedAt:       { type: Date, default: null },
   lastSeen:           { type: Date, default: null },
   // Subscription plan. Free-plan gating is a single rule now, computed live
   // from `createdAt` (see backend/utils/plan.js's hasFullAccess): full

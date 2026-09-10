@@ -12,6 +12,15 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+// Media-token signing must use its OWN secret in production — never fall
+// back to JWT_SECRET (config/index.js only allows that fallback outside
+// production). A single leaked secret must not compromise both auth JWTs
+// and media tokens. Dev/test may run without it.
+if (process.env.NODE_ENV === 'production' && !process.env.MEDIA_TOKEN_SECRET) {
+  logger.error('startup', 'MEDIA_TOKEN_SECRET is not set — refusing to start (production must not fall back to JWT_SECRET for media-token signing)');
+  process.exit(1);
+}
+
 // Cloudinary config
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({

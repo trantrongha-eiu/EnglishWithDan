@@ -20,7 +20,12 @@ const User = require('../../models/User');
 const { createStudent, createUser, signTokenFor, unique } = require('../factories/userFactory');
 
 describe('POST /api/auth/register', () => {
-  test('creates a new account and returns a token + user payload', async () => {
+  // NOTE: this file blanks EMAIL_USER/EMAIL_PASS (top of file), so
+  // authService sees email delivery as unconfigured and registration
+  // gracefully degrades to the pre-verification behavior: account is
+  // auto-verified and a session is returned. The verify-email flow itself
+  // (email configured) is covered in authEmailVerification.test.js.
+  test('with email delivery not configured: auto-verifies and returns a token + user payload', async () => {
     const username = unique('newuser');
     const res = await request(app).post('/api/auth/register').send({
       username,
@@ -32,13 +37,16 @@ describe('POST /api/auth/register', () => {
 
     expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
+    expect(res.body.needsEmailVerification).toBeFalsy();
     expect(typeof res.body.token).toBe('string');
     expect(res.body.user.username).toBe(username);
     expect(res.body.user.role).toBe('student');
+    expect(res.body.user.emailVerified).toBe(true);
 
     const saved = await User.findOne({ username });
     expect(saved).toBeTruthy();
     expect(saved.role).toBe('student');
+    expect(saved.emailVerified).toBe(true);
   });
 
   test('rejects a duplicate email with 400', async () => {

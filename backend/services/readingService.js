@@ -16,6 +16,27 @@ const { bandScoreTable } = require('../utils/bandScore');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 
+// Mongoose `.select()` string that strips a passage's answer key
+// (correctAnswer + explanation, on both the modern questionGroups shape
+// and the legacy flat `questions` array). Single source so the
+// pre-submission fetch and the practice-history review can't drift apart —
+// both must withhold the key (see BUG-001 for the pre-submission one, and
+// the P1 regression-audit fix for practice-history: an expired-premium
+// user was re-pulling full answer keys via /practice/history/:attemptId).
+const PRACTICE_PASSAGE_SAFE_FIELDS =
+  '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation -questions.correctAnswer -questions.explanation';
+
+// Drops `correctAnswer` from each persisted practice answer row
+// (PracticeAnswerSchema = { questionNumber, userAnswer, correctAnswer,
+// isCorrect }). `isCorrect` stays — "you got Q3 wrong" is fine to show,
+// "the answer is B" is the part that must not leak post-access.
+function stripAnswerKeyFromAttempt(attempt) {
+  if (attempt && Array.isArray(attempt.answers)) {
+    attempt.answers = attempt.answers.map(({ correctAnswer, ...rest }) => rest); // eslint-disable-line no-unused-vars
+  }
+  return attempt;
+}
+
 // questionNumber -> type, built from the passages already loaded for
 // grading — reading's gradedAnswers[] doesn't carry `type` (unlike
 // listening's, which gets it via extraFields), so this is the one piece of
@@ -446,8 +467,7 @@ async function getPracticePassageById(id) {
   // question's correctAnswer + explanation, both `required` fields) was
   // sent straight to the client before the student had answered anything
   // — visible in a DevTools Network tab or by just replaying the request.
-  const safeFields = '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation -questions.correctAnswer -questions.explanation';
-  return Passage.findOne({ _id: id, isActive: true }).select(safeFields).lean();
+  return Passage.findOne({ _id: id, isActive: true }).select(PRACTICE_PASSAGE_SAFE_FIELDS).lean();
 }
 
 // Reveals a practice passage's answer key (correctAnswer + explanation per
@@ -560,11 +580,19 @@ async function getPracticeHistory(userId, limit = 50) {
   return { attempts, total };
 }
 
+// Ownership-scoped ({ _id, userId }) — a user only ever sees their own
+// attempts. The response deliberately withholds the answer key: the raw
+// `passage` doc (correctAnswer + explanation per question) and the
+// `correctAnswer` frozen onto each `attempt.answers` row. Without this a
+// user could keep pulling full answer keys for passages they practised
+// long after their premium/trial access lapsed (P1 regression finding).
+// The review UI re-fetches the key from GET /practice/answer-key/:id,
+// which is itself requirePremium-gated.
 async function getPracticeHistoryDetail(attemptId, userId) {
   const attempt = await ReadingPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return null;
-  const passage = await Passage.findById(attempt.passageId).lean();
-  return { attempt, passage };
+  const passage = await Passage.findById(attempt.passageId).select(PRACTICE_PASSAGE_SAFE_FIELDS).lean();
+  return { attempt: stripAnswerKeyFromAttempt(attempt), passage };
 }
 
 // Same field-stripping as getPracticePassageById() above (security audit

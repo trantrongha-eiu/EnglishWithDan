@@ -4,10 +4,28 @@ const essentialGrammarService = require('../services/essentialGrammarService');
 
 exports.listLessons = async (req, res) => {
   try {
-    // Public (no auth on this route), fixed handbook content — safe to cache briefly.
-    res.set('Cache-Control', 'public, max-age=120');
+    // Auth-gated (see routes/essentialGrammar.js) — `private` so a shared
+    // cache/CDN can't hand a copy to an unauthenticated client and undo the
+    // gate. Still cacheable per-browser since the content is identical for
+    // every user.
+    res.set('Cache-Control', 'private, max-age=120');
     const lessons = await essentialGrammarService.listLessons();
     res.json({ success: true, lessons });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// GET /lessons/:id — one lesson's full content (blocks). The list route
+// deliberately omits `blocks`; the student page calls this when a lesson
+// is opened so the answer-carrying content is fetched one lesson at a
+// time (rate-limited) instead of the whole handbook at once.
+exports.getLesson = async (req, res) => {
+  try {
+    const lesson = await essentialGrammarService.getActiveLessonWithBlocks(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    res.set('Cache-Control', 'private, max-age=120');
+    res.json({ success: true, lesson });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

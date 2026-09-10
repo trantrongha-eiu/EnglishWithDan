@@ -90,6 +90,36 @@ describe('isWithinTrial', () => {
     expect(isWithinTrial(null)).toBe(false);
     expect(isWithinTrial(undefined)).toBe(false);
   });
+
+  // ── Email-verification gate (anti trial-farming) ──
+  test('false for an unverified account even if created just now', () => {
+    expect(isWithinTrial({ createdAt: new Date(), emailVerified: false })).toBe(false);
+  });
+
+  test('true for a verified account created just now (explicit emailVerified:true)', () => {
+    expect(isWithinTrial({ createdAt: new Date(), emailVerified: true })).toBe(true);
+  });
+
+  test('emailVerified absent (pre-feature / social account) is treated as verified — unchanged behavior', () => {
+    expect(isWithinTrial({ createdAt: new Date() })).toBe(true);
+  });
+
+  test('trialStartedAt is the anchor when present — trial runs from verification time, not createdAt', () => {
+    // Account created 5 days ago but only verified 1h ago → still in trial.
+    expect(isWithinTrial({
+      createdAt: new Date(Date.now() - 5 * DAY_MS),
+      emailVerified: true,
+      trialStartedAt: new Date(Date.now() - 60 * 60 * 1000),
+    })).toBe(true);
+  });
+
+  test('trialStartedAt anchor also expires after 24h', () => {
+    expect(isWithinTrial({
+      createdAt: new Date(),
+      emailVerified: true,
+      trialStartedAt: new Date(Date.now() - 25 * 60 * 60 * 1000),
+    })).toBe(false);
+  });
 });
 
 describe('hasFullAccess', () => {

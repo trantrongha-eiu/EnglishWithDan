@@ -65,6 +65,13 @@ is not the how-to.
 | `CLOUDINARY_API_KEY` | Optional (see above) | Cloudinary auth | same as above | Same as above. |
 | `CLOUDINARY_API_SECRET` | Optional (see above) | Cloudinary auth | same as above | Same as above. **Currently an unrotated leaked secret — see warning above.** |
 
+## Protected media delivery
+
+| Variable | Required? | Purpose | Used in | If missing |
+|---|---|---|---|---|
+| `MEDIA_TOKEN_SECRET` | **Required in production** (optional in dev/test) | Server-only secret that seals/verifies the short-lived media tokens which replace permanent Cloudinary URLs (AES-256-GCM). Deliberately **separate from `JWT_SECRET`** — leaking one must not compromise the other. Used identically for both sealing and verifying (one `key()` in `backend/services/mediaTokenService.js`), so there is never a two-secret mismatch. | `backend/config/index.js` (`media.tokenSecret`), `backend/services/mediaTokenService.js`, `backend/server.js` (startup guard) | **Production:** `backend/server.js` refuses to start (`logger.error('startup', 'MEDIA_TOKEN_SECRET is not set …')` → `process.exit(1)`) — it does **not** silently fall back to `JWT_SECRET`. **Dev/test (`NODE_ENV !== 'production'`):** falls back to `JWT_SECRET` so nothing new needs setting locally. Generate with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`. |
+| `MEDIA_URL_TTL_SECONDS` | Optional (defaults to `3600` = 1h) | Lifetime of a signed media URL / token | `backend/config/index.js` (`media.urlTtlSeconds`), `backend/services/mediaTokenService.js` | Falls back to 3600s. Clamped to a 60s floor per token. |
+
 ## AI grading (optional — features degrade gracefully)
 
 | Variable | Required? | Purpose | Used in | If missing |

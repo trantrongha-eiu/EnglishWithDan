@@ -24,7 +24,7 @@
   // ── Xác định trang hiện tại ───────────────────────────────
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-  const PUBLIC_PAGES = ['login.html', 'register.html', 'index.html', ''];
+  const PUBLIC_PAGES = ['login.html', 'register.html', 'verify-email.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
 
   AS.installBannedInterceptor(isPublic);

@@ -19,7 +19,18 @@ function computePlanExpiry(currentExpiresAt, months) {
 const TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
 
 function isWithinTrial(user) {
-  return !!user?.createdAt && (Date.now() - new Date(user.createdAt).getTime()) < TRIAL_DURATION_MS;
+  if (!user) return false;
+  // A local account created through the verify-email flow gets NO trial
+  // until the email is confirmed — this is the anti trial-farming gate.
+  // `emailVerified` is only ever explicitly `false` on such accounts;
+  // every pre-feature doc (field absent → schema default true) and every
+  // social login reads as verified, so this line is inert for them.
+  if (user.emailVerified === false) return false;
+  // Trial clock starts at email verification for post-feature accounts
+  // (trialStartedAt), and falls back to account creation for everyone
+  // else — identical behavior to before this change.
+  const anchor = user.trialStartedAt || user.createdAt;
+  return !!anchor && (Date.now() - new Date(anchor).getTime()) < TRIAL_DURATION_MS;
 }
 
 // The single source of truth for "can this user use a gated feature right

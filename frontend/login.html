@@ -291,6 +291,14 @@
                 // this page hand-rolling the same 3 lines auth-callback.html
                 // also used to (Phase 5).
                 window.AuthService.login(data.token, data.user);
+                // Registered but never clicked the verification link: the
+                // account has no 24h trial yet. Send them to the verify
+                // page (resend link + "continue anyway") instead of a
+                // dashboard full of locked features with no explanation.
+                if (data.user && data.user.emailVerified === false) {
+                    window.location.href = 'verify-email.html?email=' + encodeURIComponent(data.user.email || '');
+                    return;
+                }
                 // getPostLoginRedirect() centralizes the role-matched
                 // next= handling that used to be duplicated inline here
                 // and in auth-callback.html.
