@@ -11,19 +11,44 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const requireReviewComplete = require('../middleware/requireReviewComplete');
+const { userRateLimiter } = require('../middleware/rateLimit');
 const listeningController = require('../controllers/listening.controller');
+
+// Mirrors routes/reading.js. See middleware/rateLimit.js — per-user key,
+// IP fallback, staff bypass, 429 { success:false, message }. These are a
+// scraping speed bump layered on top of the existing auth / requirePremium
+// / requireReviewComplete gates, not a replacement for any of them.
+//   - content   60/15min : one fetch per section OPENED (+ reloads/retries)
+//   - answerKey  30/15min : one fetch per practice completed; no human does 30/15min
+//   - start      10/15min : full-test payload; matches reading's /start (admin-only bypass)
+const contentLimiter = userRateLimiter({
+  max: 60,
+  message: 'Bạn đang tải nội dung quá nhanh, vui lòng chậm lại và thử lại sau ít phút.',
+  name: 'listening:content',
+});
+const answerKeyLimiter = userRateLimiter({
+  max: 30,
+  message: 'Bạn đang tải nội dung quá nhanh, vui lòng chậm lại và thử lại sau ít phút.',
+  name: 'listening:answer-key',
+});
+const startLimiter = userRateLimiter({
+  max: 10,
+  message: 'Quá nhiều yêu cầu, thử lại sau 15 phút.',
+  skipRoles: ['admin'],
+  name: 'listening:start',
+});
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Danh sách đề (kèm lịch sử làm bài của user)
 // STUDENT – Bài lẻ practice
 // ══════════════════════════════════════════════════════════════════════════════
-router.get('/practice/list', auth, listeningController.listPracticeSections);
-router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('listening'), listeningController.getPracticeSectionById);
-router.get('/practice/answer-key/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getSectionAnswerKey);
+router.get('/practice/list', auth, contentLimiter, listeningController.listPracticeSections);
+router.get('/practice/by-id/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('listening'), listeningController.getPracticeSectionById);
+router.get('/practice/answer-key/:id', auth, answerKeyLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getSectionAnswerKey);
 
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
 // sections have already been through scripts/bulkAlignListeningDictation.js.
-router.get('/dictation/list', auth, listeningController.listDictationSections);
+router.get('/dictation/list', auth, contentLimiter, listeningController.listDictationSections);
 // Fetch one section's full data (audioUrl + dictationSentences + transcript)
 // for the dictation player. Dedicated route — same content + premium gate as
 // /practice/by-id/:id, but WITHOUT requireReviewComplete: dictation is an
@@ -32,7 +57,7 @@ router.get('/dictation/list', auth, listeningController.listDictationSections);
 // /practice/by-id/:id?purpose=dictation, i.e. a client-supplied query param
 // switching off the gate — replaced so nothing turns the gate off from the
 // request side (audit finding BUG-A01).
-router.get('/dictation/section/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
+router.get('/dictation/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
 // requirePremium added (audit finding BUG-A11) — this creates a real
 // DictationAttempt (feeds admin's "Lịch sử làm bài" + dictation stats), yet
 // was the one practice-save route with no plan gate. Same posture as
@@ -46,7 +71,7 @@ router.get('/tests', auth, listeningController.listStudentTests);
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Lấy full đề để làm bài (yêu cầu Premium)
 // ══════════════════════════════════════════════════════════════════════════════
-router.post('/tests/:id/start', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), requireReviewComplete('listening'), listeningController.startTest);
+router.post('/tests/:id/start', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), requireReviewComplete('listening'), listeningController.startTest);
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Nộp bài, chấm điểm & lưu attempt

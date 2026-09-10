@@ -29,15 +29,19 @@ const authLimiter = (max) => rateLimit({
   }
 });
 
-const loginLimiter          = authLimiter(10);
-const registerLimiter       = authLimiter(5);
-const forgotPasswordLimiter = authLimiter(5);
-const verifyOtpLimiter      = authLimiter(10);
-const resetPasswordLimiter  = authLimiter(10);
+const loginLimiter             = authLimiter(10);
+const registerLimiter          = authLimiter(5);
+const forgotPasswordLimiter    = authLimiter(5);
+const verifyOtpLimiter         = authLimiter(10);
+const resetPasswordLimiter     = authLimiter(10);
+const verifyEmailLimiter       = authLimiter(20); // token is 64 hex chars — brute force infeasible; this just caps noise
+const resendVerificationLimiter = authLimiter(5);
 
 // ── Local auth ────────────────────────────────────────────────
 router.post('/register', registerLimiter, authCtrl.register);
 router.post('/login',           loginLimiter,          authCtrl.login);
+router.post('/verify-email',         verifyEmailLimiter,        authCtrl.verifyEmail);
+router.post('/resend-verification',  resendVerificationLimiter, authCtrl.resendVerification);
 router.post('/forgot-password', forgotPasswordLimiter, authCtrl.forgotPassword);
 router.post('/verify-otp',      verifyOtpLimiter,       authCtrl.verifyOTP);
 router.post('/reset-password',  resetPasswordLimiter,   authCtrl.resetPassword);

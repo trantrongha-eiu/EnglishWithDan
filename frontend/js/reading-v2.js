@@ -1703,8 +1703,7 @@ function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
       return `<div class="q-mistake-block" id="qfb-${q.questionNumber}" data-qnum="${q.questionNumber}">
         <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}" style="margin-top:4px">
           Q${q.questionNumber}: ${ok ? '✓ Đúng'
-            : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`
-                 : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
+            : (ua ? '✗ Sai' : '⊘ Bỏ qua') + (ca ? ` — Đáp án: <strong>${escHtml(ca)}</strong>` : '')}
         </div>${r?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>` : ''}
       </div>`;
     }).join('');
@@ -2114,8 +2113,7 @@ function renderSingleQuestion(q, isReview, reviewMap) {
   const reviewFeedback = isReview && review
     ? `<div class="q-correct-ans ${review.isCorrect ? 'right' : _ua ? 'wrong' : 'skip'}">
         ${review.isCorrect ? '✓ Đúng'
-          : _ua ? `✗ Sai — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`
-                : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`}
+          : (_ua ? '✗ Sai' : '⊘ Bỏ qua') + (review.correctAnswer ? ` — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>` : '')}
        </div>
        ${review.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(review.explanation)}</div>` : ''}` : '';
 
@@ -2948,8 +2946,17 @@ async function loadReview(attemptId) {
     if (!location.search.includes(`review=${attemptId}`)) {
       history.pushState({ screen: 'review', reviewId: attemptId }, '', `?review=${attemptId}`);
     }
-    renderReview(res.attempt);
+    renderReview(res.attempt, res.answerKeyWithheld);
   } catch (e) { showVocabToast('Lỗi tải bài review. Thử lại sau.'); }
+}
+
+// Shown at the top of the review question list when the server withheld
+// the answer key (correctAnswer + explanation) because the account no
+// longer has full access. Scores / band / right-wrong are still shown.
+function _reviewLockedNotice() {
+  return `<div class="review-locked-notice" style="background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:13px;line-height:1.5">
+    🔒 Bản dùng thử / Premium đã hết hạn — bạn vẫn xem được kết quả và câu đúng/sai, nhưng <strong>đáp án đúng và giải thích chi tiết</strong> chỉ dành cho tài khoản Premium.
+  </div>`;
 }
 
 async function loadReviewByTest(testId) {
@@ -3042,8 +3049,9 @@ function _runInlineReviewMountPass() {
   });
 }
 
-function renderReview(attempt) {
+function renderReview(attempt, answerKeyWithheld) {
   state.isReview = true;
+  state.reviewAnswerKeyWithheld = !!answerKeyWithheld;
   state.passages = attempt.passages;
   state.currentPassageIdx = 0;
   for (const k in reviewHlCache) delete reviewHlCache[k];
@@ -3137,7 +3145,8 @@ function switchReviewPassage(idx) {
      <div class="passage-text">${p.content || ''}</div>`;
     }
     if (rvQuestionsInner) {
-      rvQuestionsInner.innerHTML = renderPassageQuestions(p, true, reviewMap);
+      rvQuestionsInner.innerHTML = (state.reviewAnswerKeyWithheld ? _reviewLockedNotice() : '')
+        + renderPassageQuestions(p, true, reviewMap);
       const savedTexts = _pendingReviewQuestionHl[idx];
       if (savedTexts && savedTexts.length) _reapplyTextHighlights(rvQuestionsInner, savedTexts);
     }
@@ -3599,20 +3608,36 @@ async function loadPracticeReview(attemptId) {
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài', 'error'); return; }
     const { attempt, passage } = res;
 
+    // The history endpoint no longer ships the answer key (backend
+    // getPracticeHistoryDetail — P1 fix: it was an answer-key faucet for
+    // lapsed-access users). Re-fetch it from the requirePremium-gated
+    // answer-key endpoint, exactly like _doSubmitRetry() does. A
+    // free/expired user gets 403 here → keyMap stays empty → the review
+    // renders with their answers + score but no correct-answer hints.
+    const keyMap = {};
+    try {
+      const keyRes = await apiFetch(`/api/reading/practice/answer-key/${attempt.passageId}`);
+      if (keyRes && keyRes.success && keyRes.answerKey) {
+        Object.entries(keyRes.answerKey).forEach(([qNum, v]) => { keyMap[qNum] = v; });
+      }
+    } catch (e) { /* 403 for a lapsed-access user, or transient — degrade to no key */ }
+
     // Build reviewMap from saved answers
     const reviewMap = {};
     (attempt.answers || []).forEach(a => {
       reviewMap[a.questionNumber] = {
         userAnswer:    a.userAnswer    || '',
-        correctAnswer: a.correctAnswer || '',
+        correctAnswer: a.correctAnswer || keyMap[a.questionNumber]?.correctAnswer || '',
         isCorrect:     !!a.isCorrect,
         explanation:   ''
       };
     });
-    // Merge explanation từ passage questions (DB lưu trên question, không phải trên attempt.answers)
+    // Merge explanation — passage doc no longer carries it, so take it from
+    // the answer-key fetch above (present only for a premium/trial user).
     getAllQuestionsFromPassage(passage).forEach(q => {
-      if (reviewMap[q.questionNumber] && q.explanation) {
-        reviewMap[q.questionNumber].explanation = q.explanation;
+      const expl = q.explanation || keyMap[q.questionNumber]?.explanation;
+      if (reviewMap[q.questionNumber] && expl) {
+        reviewMap[q.questionNumber].explanation = expl;
       }
     });
 
@@ -3630,7 +3655,7 @@ async function loadPracticeReview(attemptId) {
       isReview: false,
       currentPassageIdx: 0,
       correctMap: Object.fromEntries(
-        (attempt.answers || []).map(a => [a.questionNumber, a.correctAnswer])
+        (attempt.answers || []).map(a => [a.questionNumber, a.correctAnswer ?? keyMap[a.questionNumber]?.correctAnswer])
       ),
       isPractice:         true,
       practicePassageId:  attempt.passageId,

@@ -6,12 +6,19 @@
 // security fix), and Google OAuth user linking/creation.
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const authService = require('../../../services/authService');
 const User = require('../../../models/User');
 const { createUser, createStudent, unique } = require('../../factories/userFactory');
 
-describe('authService.registerUser', () => {
-  test('creates a new user and returns a token on success', async () => {
+const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
+
+// This file does NOT blank EMAIL_USER/EMAIL_PASS (unlike auth.test.js), and
+// the repo .env sets them, so authService sees email as "configured" and
+// registration takes the verify-email branch (no session until the emailed
+// link is used). nodemailer is mocked globally in setupTestDb.js.
+describe('authService.registerUser (email verification required)', () => {
+  test('creates an UNVERIFIED user, no token/session, and a hashed verify token on the doc', async () => {
     const email = `${unique('reg')}@test.local`;
     const username = unique('reguser');
     const result = await authService.registerUser({
@@ -19,15 +26,17 @@ describe('authService.registerUser', () => {
     });
 
     expect(result.status).toBe('ok');
-    expect(typeof result.token).toBe('string');
-    expect(result.user.email).toBe(email);
-    expect(result.user.username).toBe(username);
-    expect(result.user.plan).toBe('free');
+    expect(result.needsEmailVerification).toBe(true);
+    expect(result.token).toBeUndefined();
+    expect(result.user).toBeUndefined();
 
-    const saved = await User.findOne({ email }).select('+password');
+    const saved = await User.findOne({ email }).select('+password +emailVerifyTokenHash');
     expect(saved).not.toBeNull();
-    expect(saved.password).not.toBe('Sup3rSecret!'); // must be hashed
-    expect(await bcrypt.compare('Sup3rSecret!', saved.password)).toBe(true);
+    expect(saved.emailVerified).toBe(false);
+    expect(saved.trialStartedAt).toBeNull();
+    expect(saved.emailVerifyTokenHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(saved.emailVerifyExpires.getTime()).toBeGreaterThan(Date.now());
+    expect(await bcrypt.compare('Sup3rSecret!', saved.password)).toBe(true); // still hashed
   });
 
   test('rejects registration with a duplicate email', async () => {
@@ -48,6 +57,114 @@ describe('authService.registerUser', () => {
       firstName: 'A', lastName: 'B', username, email: `${unique('new')}@test.local`, password: 'x',
     });
     expect(result.status).toBe('duplicate');
+  });
+
+  test('rejects a disposable-email domain before creating anything', async () => {
+    const username = unique('disp');
+    const result = await authService.registerUser({
+      firstName: 'A', lastName: 'B', username, email: 'throwaway@mailinator.com', password: 'Test1234!',
+    });
+    expect(result.status).toBe('disposable');
+    expect(await User.findOne({ username })).toBeNull();
+  });
+});
+
+describe('authService.verifyEmailToken', () => {
+  // Helper: register, then read the raw token back is impossible (only the
+  // hash is stored) — so mint the account directly with a known raw token.
+  async function makeUnverified(rawToken, { expiresInMs = 60 * 60 * 1000, extra = {} } = {}) {
+    return User.create({
+      username: unique('vet'), email: `${unique('vet')}@test.local`,
+      password: await bcrypt.hash('x', 4),
+      emailVerified: false,
+      emailVerifyTokenHash: sha256(rawToken),
+      emailVerifyExpires: new Date(Date.now() + expiresInMs),
+      ...extra,
+    });
+  }
+
+  test('valid token → verifies, starts the trial clock, returns a session, single-uses the token', async () => {
+    const raw = crypto.randomBytes(32).toString('hex');
+    const user = await makeUnverified(raw);
+
+    const result = await authService.verifyEmailToken(raw);
+    expect(result.status).toBe('ok');
+    expect(typeof result.token).toBe('string');
+    expect(jwt.verify(result.token, process.env.JWT_SECRET).id).toBe(String(user._id));
+    expect(result.user.emailVerified).toBe(true);
+
+    const saved = await User.findById(user._id).select('+emailVerifyTokenHash');
+    expect(saved.emailVerified).toBe(true);
+    expect(saved.emailVerifyTokenHash).toBe('');
+    expect(saved.emailVerifyExpires).toBeNull();
+    expect(saved.trialStartedAt).toBeInstanceOf(Date);
+    expect(Math.abs(saved.trialStartedAt.getTime() - Date.now())).toBeLessThan(10000);
+  });
+
+  test('reusing the same token fails (single-use — hash cleared on first success)', async () => {
+    const raw = crypto.randomBytes(32).toString('hex');
+    await makeUnverified(raw);
+
+    expect((await authService.verifyEmailToken(raw)).status).toBe('ok');
+    expect((await authService.verifyEmailToken(raw)).status).toBe('invalid');
+  });
+
+  test('expired token → invalid, account stays unverified', async () => {
+    const raw = crypto.randomBytes(32).toString('hex');
+    const user = await makeUnverified(raw, { expiresInMs: -1000 });
+
+    expect((await authService.verifyEmailToken(raw)).status).toBe('invalid');
+    const saved = await User.findById(user._id);
+    expect(saved.emailVerified).toBe(false);
+    expect(saved.trialStartedAt).toBeNull();
+  });
+
+  test('unknown / malformed token → invalid (no throw)', async () => {
+    expect((await authService.verifyEmailToken('not-a-real-token')).status).toBe('invalid');
+    expect((await authService.verifyEmailToken('')).status).toBe('invalid');
+    expect((await authService.verifyEmailToken(null)).status).toBe('invalid');
+  });
+
+  test('does not re-anchor trialStartedAt if it was somehow already set', async () => {
+    const raw = crypto.randomBytes(32).toString('hex');
+    const earlier = new Date(Date.now() - 5 * 60 * 1000);
+    const user = await makeUnverified(raw, { extra: { trialStartedAt: earlier } });
+
+    await authService.verifyEmailToken(raw);
+    const saved = await User.findById(user._id);
+    expect(saved.trialStartedAt.getTime()).toBe(earlier.getTime());
+  });
+});
+
+describe('authService.resendVerification', () => {
+  test('unverified local account → issues a fresh token (status "sent")', async () => {
+    const user = await User.create({
+      username: unique('rsv'), email: `${unique('rsv')}@test.local`,
+      password: await bcrypt.hash('x', 4), emailVerified: false,
+    });
+    const result = await authService.resendVerification(user.email);
+    expect(result.status).toBe('sent');
+    const saved = await User.findById(user._id).select('+emailVerifyTokenHash');
+    expect(saved.emailVerifyTokenHash).toMatch(/^[a-f0-9]{64}$/);
+    expect(saved.emailVerifyExpires.getTime()).toBeGreaterThan(Date.now());
+  });
+
+  test('already-verified account → noop (no token issued)', async () => {
+    const user = await createStudent(); // factory → emailVerified defaults true
+    const result = await authService.resendVerification(user.email);
+    expect(result.status).toBe('noop');
+  });
+
+  test('unknown email → noop (no user enumeration)', async () => {
+    expect((await authService.resendVerification('nobody@test.local')).status).toBe('noop');
+  });
+
+  test('social (google) account → noop', async () => {
+    const user = await User.create({
+      username: unique('gsv'), email: `${unique('gsv')}@test.local`,
+      authProvider: 'google', googleId: unique('gid'), emailVerified: false,
+    });
+    expect((await authService.resendVerification(user.email)).status).toBe('noop');
   });
 });
 

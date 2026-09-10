@@ -4,6 +4,8 @@
 // fallback (console.error + generic 500 'Lỗi server'), so — unlike
 // listening.js — this one file could safely use a single shared guard.
 const readingService = require('../services/readingService');
+const { hasFullAccess } = require('../utils/plan');
+const { stripReviewAnswerKey } = require('../utils/reviewAnswerKey');
 
 function guard(logTag, handler) {
   return async (req, res) => {
@@ -46,7 +48,13 @@ exports.getAttemptReview = guard(null, async (req, res) => {
   const isStaff = ['teacher', 'admin'].includes(req.user.role);
   const attempt = await readingService.getAttemptReview(req.params.id, isStaff ? null : req.user._id);
   if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
-  res.json({ success: true, attempt });
+  // auth-only route (review your own past result). Withhold the answer key
+  // (correctAnswer + explanation) from a user without full access so this
+  // can't be used to harvest answer keys after premium/trial lapses —
+  // scores / band / right-wrong flags are still returned.
+  const full = hasFullAccess(req.user);
+  if (!full) stripReviewAnswerKey(attempt);
+  res.json({ success: true, attempt, answerKeyWithheld: !full });
 });
 
 exports.getHistory = guard(null, async (req, res) => {

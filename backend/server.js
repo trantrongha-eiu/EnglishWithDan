@@ -12,6 +12,16 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+// Media-token signing SHOULD use its own dedicated secret in production so
+// a single leaked secret can't compromise both auth JWTs and media tokens.
+// This is a loud warning, not a hard stop: config/index.js falls back to
+// JWT_SECRET when MEDIA_TOKEN_SECRET is unset so a deploy can never boot
+// with an empty media key. Set MEDIA_TOKEN_SECRET on the backend service
+// to activate full key separation (see docs/ENVIRONMENT_VARIABLES.md).
+if (process.env.NODE_ENV === 'production' && !process.env.MEDIA_TOKEN_SECRET) {
+  logger.error('startup', 'MEDIA_TOKEN_SECRET is not set — media tokens are falling back to JWT_SECRET. Set a dedicated MEDIA_TOKEN_SECRET on the backend service.');
+}
+
 // Cloudinary config
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({

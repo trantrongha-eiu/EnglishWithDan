@@ -310,10 +310,19 @@
                     body: JSON.stringify(formData)
                 });
 
-                await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
+                const data = await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
 
-                showToast("Đăng ký thành công! Mời bạn đăng nhập.", "success", 2500);
-                setTimeout(function () { window.location.href = "login.html"; }, 2000);
+                if (data && data.needsEmailVerification) {
+                    // Account created but no session — server needs the
+                    // emailed link used before the 24h trial starts.
+                    showToast("Đăng ký thành công! Vui lòng kiểm tra email để xác minh và kích hoạt bản dùng thử.", "success", 3500);
+                    setTimeout(function () {
+                        window.location.href = "verify-email.html?email=" + encodeURIComponent(email);
+                    }, 2200);
+                } else {
+                    showToast("Đăng ký thành công! Mời bạn đăng nhập.", "success", 2500);
+                    setTimeout(function () { window.location.href = "login.html"; }, 2000);
+                }
             } catch (err) {
                 console.error('Register error:', err);
                 if (err.coldStart) {

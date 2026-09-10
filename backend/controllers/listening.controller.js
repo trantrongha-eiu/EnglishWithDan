@@ -9,6 +9,9 @@
 // error text.
 const listeningService = require('../services/listeningService');
 const { isImageDataUri } = require('../utils/validation');
+const { protectListeningAudio } = require('../utils/protectMediaUrls');
+const { hasFullAccess } = require('../utils/plan');
+const { stripReviewAnswerKey } = require('../utils/reviewAnswerKey');
 
 // ── Admin – CRUD Tests ──────────────────────────────────────────────────
 exports.listAdminTests = async (req, res) => {
@@ -140,7 +143,7 @@ exports.getPracticeSectionById = async (req, res) => {
   try {
     const section = await listeningService.getPracticeSectionById(req.params.id);
     if (!section) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
-    res.json({ success: true, section });
+    res.json({ success: true, section: protectListeningAudio(section, req.user._id) });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
@@ -267,7 +270,7 @@ exports.startTest = async (req, res) => {
   try {
     const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
-    res.json({ success: true, test });
+    res.json({ success: true, test: protectListeningAudio(test, req.user._id) });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
@@ -279,7 +282,7 @@ exports.submitTest = async (req, res) => {
     // same generic phrasing readingService's equivalent path uses, since
     // it's accurate for both "test not found" and "not in progress".
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi đang làm' });
-    res.json({ success: true, result });
+    res.json({ success: true, result: protectListeningAudio(result, req.user._id) });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
@@ -304,7 +307,15 @@ exports.getHistoryDetail = async (req, res) => {
     const { status, result } = await listeningService.getHistoryDetail(req.params.attemptId, isStaff ? null : (req.user._id || req.user.id));
     if (status === 'attempt_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     if (status === 'test_not_found') return res.status(404).json({ success: false, message: 'Đề thi không tồn tại' });
-    res.json({ success: true, result });
+    // This route is auth-only (no requirePremium) so a lapsed user can
+    // still review their own past results — but a user without full access
+    // must NOT get (a) a fresh audio token minted (P2) or (b) the answer
+    // key (correctAnswer + explanation). Server-side plan check; never
+    // trust the client. Scores / band / right-wrong flags stay.
+    const full = hasFullAccess(req.user);
+    const safe = protectListeningAudio(result, req.user._id, full);
+    if (!full) stripReviewAnswerKey(safe);
+    res.json({ success: true, result: safe, answerKeyWithheld: !full });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
@@ -338,7 +349,10 @@ exports.getPracticeHistoryDetail = async (req, res) => {
   try {
     const result = await listeningService.getPracticeHistoryDetail(req.params.attemptId, req.user._id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
-    res.json({ success: true, attempt: result.attempt, section: result.section });
+    // Same as getHistoryDetail — auth-only route, so withhold a fresh
+    // audio token from a lapsed user while keeping the rest of the review.
+    const safe = protectListeningAudio({ attempt: result.attempt, section: result.section }, req.user._id, hasFullAccess(req.user));
+    res.json({ success: true, attempt: safe.attempt, section: safe.section });
   } catch (err) {
     console.error('[Listening practice history detail]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });

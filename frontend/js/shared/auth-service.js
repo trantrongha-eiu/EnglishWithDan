@@ -80,8 +80,14 @@
   // until the next refreshPlan() call fills it in.
   function isWithinTrial(userOverride) {
     var u = userOverride || getUser();
-    if (!u || !u.createdAt) return false;
-    return (Date.now() - new Date(u.createdAt).getTime()) < TRIAL_DURATION_MS;
+    if (!u) return false;
+    // Mirrors backend/utils/plan.js: an unverified local account has no
+    // trial until its email is confirmed; the trial clock then runs from
+    // trialStartedAt (verification time), else from createdAt.
+    if (u.emailVerified === false) return false;
+    var anchor = u.trialStartedAt || u.createdAt;
+    if (!anchor) return false;
+    return (Date.now() - new Date(anchor).getTime()) < TRIAL_DURATION_MS;
   }
   // Staff (admin/teacher) always has full access, matching the server-side
   // rule in backend/utils/plan.js's hasFullAccess — premium OR staff OR
@@ -115,6 +121,9 @@
         // before this field existed self-heals here on their very next
         // page load (nav.js already calls refreshPlan() unconditionally).
         u.createdAt = d.user.createdAt || u.createdAt || null;
+        // Email-verification / trial-anchor fields (isWithinTrial mirror).
+        if (typeof d.user.emailVerified === 'boolean') u.emailVerified = d.user.emailVerified;
+        u.trialStartedAt = d.user.trialStartedAt || u.trialStartedAt || null;
         setUser(u);
         return u;
       })

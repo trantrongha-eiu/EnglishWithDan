@@ -7,10 +7,16 @@ const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog
 
 const MAX_WRONG_QUESTIONS_LOGGED = 50; // a lesson realistically has far fewer than this many gradeable items
 
+// List view = metadata ONLY, no `blocks`. `blocks` carries the quiz/
+// practice answer keys (graded client-side), and shipping every lesson's
+// blocks in one response made the whole handbook — answers included —
+// scrapable in a single request. The student page now lazy-loads one
+// lesson's blocks at a time via getActiveLessonWithBlocks() when it's
+// opened, so a bulk pull costs one rate-limited request per lesson.
 async function listLessons() {
   return EssentialGrammarLesson.find({ isActive: true })
     .sort({ orderIndex: 1 })
-    .select('-__v')
+    .select('category lessonKey title icon summary orderIndex isActive createdAt updatedAt')
     .lean();
 }
 
@@ -19,6 +25,14 @@ async function listLessons() {
 // ══════════════════════════════════════════════════════
 
 async function getLessonById(id) {
+  return EssentialGrammarLesson.findOne({ _id: id, isActive: true }).select('-__v').lean();
+}
+
+// One active lesson WITH its blocks — the per-lesson detail fetch the
+// student page makes when a lesson is opened. Returns null for a missing
+// or hidden lesson (same contract as getLessonById).
+async function getActiveLessonWithBlocks(id) {
+  if (!mongoose.Types.ObjectId.isValid(id)) return null;
   return EssentialGrammarLesson.findOne({ _id: id, isActive: true }).select('-__v').lean();
 }
 
@@ -216,6 +230,7 @@ async function exportLessonStudentsCsv(lessonId) {
 
 module.exports = {
   listLessons,
+  getActiveLessonWithBlocks,
   getLessonById,
   getAttempt,
   submitAttempt,

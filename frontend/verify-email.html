@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, follow">
+  <title>Xác minh email - EnglishWithDan</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/tokens.css?v=20260831">
+  <link rel="stylesheet" href="css/components.css?v=20260831">
+  <script src="js/theme.js?v=20260831"></script>
+  <style>
+    body { background: #f4f5fb; font-family: 'Inter', system-ui, sans-serif; }
+    [data-theme="dark"] body { background: #0b0b0f; }
+    .ve-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .ve-card {
+      width: 100%; max-width: 440px; background: #fff; border-radius: 16px;
+      padding: 34px 30px; box-shadow: 0 12px 40px rgba(30, 27, 75, .12); text-align: center;
+    }
+    [data-theme="dark"] .ve-card { background: #16161c; box-shadow: none; border: 1px solid #2a2a33; }
+    .ve-icon { font-size: 46px; margin-bottom: 14px; }
+    .ve-spin { color: #6366f1; }
+    .ve-ok { color: #16a34a; }
+    .ve-bad { color: #dc2626; }
+    .ve-title { font-size: 20px; font-weight: 800; margin: 0 0 8px; color: #1e1b4b; }
+    [data-theme="dark"] .ve-title { color: #e2e8f0; }
+    .ve-msg { font-size: 14px; line-height: 1.6; color: #4b5563; margin: 0 0 20px; }
+    [data-theme="dark"] .ve-msg { color: #9ca3af; }
+    .ve-form { display: none; margin-top: 8px; }
+    .ve-form.show { display: block; }
+    .ve-form input {
+      width: 100%; padding: 11px 13px; border: 1.5px solid #e5e7eb; border-radius: 9px;
+      font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box; margin-bottom: 10px;
+      background: #fff; color: #111827;
+    }
+    [data-theme="dark"] .ve-form input { background: #0b0b0f; border-color: #2a2a33; color: #e2e8f0; }
+    .ve-form input:focus { border-color: #6366f1; }
+    .ve-btn {
+      width: 100%; padding: 11px 16px; border: none; border-radius: 9px; cursor: pointer;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+    }
+    .ve-btn:disabled { opacity: .55; cursor: not-allowed; }
+    .ve-links { margin-top: 18px; font-size: 13px; }
+    .ve-links a { color: #6366f1; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <script src="js/shared/toast.js?v=20260831"></script>
+  <script src="js/shared/safe-redirect.js?v=20260831"></script>
+  <script src="js/shared/auth-service.js?v=20260908"></script>
+
+  <div class="ve-wrap">
+    <div class="ve-card">
+      <div class="ve-icon" id="ve-icon"><i class="fas fa-spinner fa-spin ve-spin"></i></div>
+      <h1 class="ve-title" id="ve-title">Đang xác minh…</h1>
+      <p class="ve-msg" id="ve-msg">Vui lòng chờ trong giây lát.</p>
+
+      <form class="ve-form" id="ve-form">
+        <input type="email" id="ve-email" placeholder="Nhập email của bạn" autocomplete="email" required>
+        <button type="submit" class="ve-btn" id="ve-submit">Gửi lại liên kết xác minh</button>
+      </form>
+
+      <div class="ve-links">
+        <a href="login.html" id="ve-back">← Quay lại đăng nhập</a>
+        <a href="/dashboard.html" id="ve-continue" style="display:none">Tiếp tục vào trang học →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+      var params = new URLSearchParams(location.search);
+      var token = params.get('token');
+      var emailHint = params.get('email') || '';
+
+      var iconEl = document.getElementById('ve-icon');
+      var titleEl = document.getElementById('ve-title');
+      var msgEl = document.getElementById('ve-msg');
+      var formEl = document.getElementById('ve-form');
+      var emailEl = document.getElementById('ve-email');
+      var submitEl = document.getElementById('ve-submit');
+
+      if (emailHint) emailEl.value = emailHint;
+
+      // Arrived here already logged in (unverified account, redirected from
+      // login) — offer a way through instead of trapping them.
+      if (window.AuthService && window.AuthService.isLoggedIn()) {
+        document.getElementById('ve-back').style.display = 'none';
+        document.getElementById('ve-continue').style.display = '';
+        var u = window.AuthService.getUser();
+        if (u && u.email && !emailEl.value) emailEl.value = u.email;
+      }
+
+      function setState(icon, cls, title, msg) {
+        iconEl.innerHTML = '<i class="fas ' + icon + ' ' + cls + '"></i>';
+        titleEl.textContent = title;
+        msgEl.textContent = msg;
+      }
+      function showResendForm() { formEl.classList.add('show'); }
+
+      // ── Resend flow (always generic response — no user enumeration) ──
+      formEl.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var email = emailEl.value.trim();
+        if (!email) return;
+        submitEl.disabled = true;
+        submitEl.textContent = 'Đang gửi…';
+        try {
+          await fetch(API + '/auth/resend-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          });
+          if (typeof showToast === 'function') showToast('Nếu email chưa xác minh, chúng tôi đã gửi lại liên kết.', 'success', 4000);
+          msgEl.textContent = 'Đã gửi. Hãy kiểm tra hộp thư (và mục spam) của bạn.';
+        } catch (err) {
+          if (typeof showToast === 'function') showToast('Không kết nối được server, vui lòng thử lại.', 'error');
+        } finally {
+          submitEl.disabled = false;
+          submitEl.textContent = 'Gửi lại liên kết xác minh';
+        }
+      });
+
+      // ── No token → just show the "check your inbox" + resend view ──
+      if (!token) {
+        setState('fa-envelope-open-text', 've-spin', 'Kiểm tra hộp thư của bạn',
+          'Chúng tôi đã gửi một liên kết xác minh tới email của bạn. Mở email đó để kích hoạt bản dùng thử miễn phí 1 ngày. Không thấy email? Gửi lại bên dưới.');
+        showResendForm();
+        return;
+      }
+
+      // ── Token present → verify it ──
+      (async function () {
+        try {
+          var res = await fetch(API + '/auth/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token })
+          });
+          var data = await res.json().catch(function () { return {}; });
+
+          if (res.ok && data.success && data.token) {
+            if (window.AuthService) window.AuthService.login(data.token, data.user);
+            setState('fa-circle-check', 've-ok', 'Xác minh thành công!',
+              'Bản dùng thử miễn phí 1 ngày của bạn đã được kích hoạt. Đang chuyển đến trang học…');
+            setTimeout(function () { window.location.href = '/dashboard.html'; }, 1600);
+            return;
+          }
+
+          setState('fa-circle-xmark', 've-bad', 'Liên kết không hợp lệ',
+            (data && data.message) || 'Liên kết xác minh không hợp lệ hoặc đã hết hạn. Nhập email để nhận liên kết mới.');
+          showResendForm();
+        } catch (err) {
+          setState('fa-triangle-exclamation', 've-bad', 'Có lỗi xảy ra',
+            'Không kết nối được server. Vui lòng thử lại sau ít phút.');
+          showResendForm();
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

@@ -9,6 +9,7 @@ Allow: /
 # by filename only.
 Disallow: /dashboard
 Disallow: /dashboard.html
+Disallow: /essential-grammar.html
 Disallow: /vocabulary
 Disallow: /profile
 Disallow: /profile.html

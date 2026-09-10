@@ -42,4 +42,18 @@ module.exports = {
     pass: process.env.EMAIL_PASS,
     resendApiKey: process.env.RESEND_API_KEY,
   },
+
+  // Protected media delivery (services/mediaTokenService.js). The token
+  // secret is server-only and never sent to the client. It SHOULD be its
+  // own value — a leak of the auth JWT secret must not also compromise
+  // media tokens, and vice-versa — but it falls back to JWT_SECRET when
+  // unset so a deploy can never end up with an empty media key (that would
+  // 500 every listening review). server.js logs a loud startup warning in
+  // production while the fallback is in effect. urlTtlSeconds is how long a
+  // signed media URL stays valid — long enough for one full listening test
+  // + a review re-listen, short enough that a shared link dies quickly.
+  media: {
+    tokenSecret: process.env.MEDIA_TOKEN_SECRET || process.env.JWT_SECRET || '',
+    urlTtlSeconds: parseInt(process.env.MEDIA_URL_TTL_SECONDS, 10) || 3600,
+  },
 };

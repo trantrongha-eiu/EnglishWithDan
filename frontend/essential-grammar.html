@@ -5,18 +5,22 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Essential Grammar – EnglishWithDan</title>
-  <meta name="description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập, hoàn toàn miễn phí." />
+  <meta name="description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập." />
+  <!-- Login-walled app page since 2026-09-10 (auth on the lessons API +
+       js/auth.js page guard) — de-index so an already-crawled copy drops
+       out of results; robots.txt Disallow only blocks re-crawling. -->
+  <meta name="robots" content="noindex, follow" />
   <link rel="canonical" href="https://ieltsthayha.com/essential-grammar.html" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="EnglishWithDan" />
   <meta property="og:locale" content="vi_VN" />
   <meta property="og:url" content="https://ieltsthayha.com/essential-grammar.html" />
   <meta property="og:title" content="Essential Grammar – EnglishWithDan" />
-  <meta property="og:description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập, hoàn toàn miễn phí." />
+  <meta property="og:description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập." />
   <meta property="og:image" content="https://ieltsthayha.com/img/big_logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Essential Grammar – EnglishWithDan" />
-  <meta name="twitter:description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập, hoàn toàn miễn phí." />
+  <meta name="twitter:description" content="Ngữ pháp tiếng Anh thiết yếu cho IELTS — các bài học ngắn gọn, dễ hiểu, kèm bài tập luyện tập." />
   <meta name="twitter:image" content="https://ieltsthayha.com/img/big_logo.png" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
@@ -368,7 +372,21 @@ function lessonUrl(lesson) {
 
 async function initEssentialGrammar() {
   try {
-    const res = await fetch(API + '/api/essential-grammar/lessons');
+    // Endpoint is auth-gated now (audit 2026-09-10). The page-load guard in
+    // js/auth.js already bounced any logged-out visitor to /login.html
+    // before this runs, so a token is normally present — but handle a 401
+    // (stale/cleared token mid-session) by sending them to log in again
+    // rather than showing the generic error box.
+    const res = await fetch(API + '/api/essential-grammar/lessons', {
+      headers: (window.AuthService && window.AuthService.authHeader()) || {}
+    });
+    if (res.status === 401) {
+      if (window.AuthService) {
+        window.location.href = window.AuthService.buildLoginUrl(
+          location.pathname + location.search + location.hash);
+      }
+      return;
+    }
     const data = await res.json();
     if (!data.success) throw new Error('load failed');
     allLessons = data.lessons || [];
@@ -485,17 +503,40 @@ function toggleCategory(cat) {
   renderSidebar();
 }
 
-let _renderedLessonKey = null; // last lesson actually passed to renderLessonContent() — distinct from currentKey, which init sets before the first render happens
-function selectLesson(key, skipScroll, pushHistory = true) {
+let _renderedLessonKey = null; // last lesson actually rendered — distinct from currentKey, which is set the moment a lesson is picked (before its blocks may have finished loading)
+let _loadSeq = 0;              // bumped on every selectLesson; a stale in-flight block fetch checks this before touching the DOM
+
+// The list endpoint ships metadata only now — a lesson's `blocks` (which
+// carry the client-graded quiz/practice answer keys) are fetched one
+// lesson at a time, the first time it's opened, then cached on the object.
+async function ensureBlocks(lesson) {
+  if (Array.isArray(lesson.blocks)) return true;
+  const res = await fetch(API + '/api/essential-grammar/lessons/' + lesson._id, {
+    headers: (window.AuthService && window.AuthService.authHeader()) || {}
+  });
+  if (res.status === 401) {
+    if (window.AuthService) window.location.href = window.AuthService.buildLoginUrl(location.pathname + location.search + location.hash);
+    return false;
+  }
+  const data = await res.json();
+  if (!data.success || !data.lesson) throw new Error('load failed');
+  lesson.blocks = data.lesson.blocks || [];
+  return true;
+}
+
+async function selectLesson(key, skipScroll, pushHistory = true) {
   // Re-clicking the already-open lesson (easy to do — its sidebar entry
   // stays a normal enabled button while .active) would otherwise fully
   // re-render it via renderLessonContent(), silently discarding any
-  // in-progress mini-quiz answers.
-  if (key === _renderedLessonKey) { closeEgSheet(); if (!skipScroll) window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  // in-progress mini-quiz answers. Guard also checks currentKey so that if
+  // another lesson's block fetch is mid-flight (currentKey moved on but
+  // _renderedLessonKey hasn't), clicking back falls through and re-renders
+  // rather than leaving the stale "Đang tải..." spinner up.
+  if (key === _renderedLessonKey && key === currentKey) { closeEgSheet(); if (!skipScroll) window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   const lesson = allLessons.find(l => keyOf(l) === key);
   if (!lesson) return;
   currentKey = key;
-  _renderedLessonKey = key;
+  const seq = ++_loadSeq;
   localStorage.setItem(LAST_LESSON_KEY, key);
   // pushHistory is false for the initial page render and for popstate
   // restores (initEssentialGrammar already set/synced the URL for those);
@@ -503,9 +544,25 @@ function selectLesson(key, skipScroll, pushHistory = true) {
   // uses the default true and gets its own history entry.
   if (pushHistory) history.pushState({ lessonKey: lesson.lessonKey }, '', lessonUrl(lesson));
   renderSidebar();
-  renderLessonContent(lesson);
   closeEgSheet();
   if (!skipScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (!Array.isArray(lesson.blocks)) {
+    document.getElementById('eg-main-content').innerHTML =
+      '<div class="eg-loading"><div class="eg-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải bài học...</div>';
+  }
+  try {
+    const ok = await ensureBlocks(lesson);
+    if (!ok || seq !== _loadSeq) return; // 401 redirect, or a newer selection superseded this one
+  } catch (err) {
+    if (seq !== _loadSeq) return;
+    document.getElementById('eg-main-content').innerHTML =
+      '<div class="eg-loading"><div class="eg-loading-icon">⚠️</div>Không tải được bài học này. Vui lòng thử lại.</div>';
+    if (typeof showToast === 'function') showToast('Không tải được bài học', 'error');
+    return;
+  }
+  _renderedLessonKey = key;
+  renderLessonContent(lesson);
 }
 
 function renderLessonContent(lesson) {

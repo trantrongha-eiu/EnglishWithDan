@@ -17,7 +17,10 @@ describe('registration cannot set role', () => {
       role: 'admin',
     });
     expect(res.status).toBe(201);
-    expect(res.body.user.role).toBe('student');
+    // Depending on whether email delivery is configured, register either
+    // returns a session (res.body.user) or asks for email verification
+    // (no session) — the DB doc is the invariant that matters here.
+    if (res.body.user) expect(res.body.user.role).toBe('student');
 
     const fromDb = await User.findOne({ username });
     expect(fromDb.role).toBe('student');
