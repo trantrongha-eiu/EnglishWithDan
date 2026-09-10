@@ -812,7 +812,8 @@
         "checklist": [
           "Nêu được cả 2 cách chia Body (theo cột và theo hàng)",
           "Chọn 1 cách cụ thể và giải thích lý do chọn"
-        ]
+        ],
+        "sampleAnswer": "There are two possible ways to organise the Body. The first is to divide it by column, describing each time period in turn across all four rows. The second is to divide it by row, describing each item across the three columns. I would split the Body by column, because the table has only three columns but four rows, so grouping by column produces two balanced paragraphs and makes the comparison over time clearer."
       }
     },
     {
@@ -843,7 +844,8 @@
           "Paraphrase đúng cả hai biểu đồ trong 1 câu",
           "Nối hai mệnh đề bằng and/while/dấu phẩy",
           "Đúng thì hiện tại đơn (không có mốc thời gian ngoài \"2020\")"
-        ]
+        ],
+        "sampleAnswer": "The pie chart provides information about where households in Vietnam obtained their water in 2020, while the bar chart shows how much water four different sectors consumed in the same year."
       }
     },
     {

@@ -690,6 +690,7 @@
           "Không dùng lại cùng một động từ xu hướng",
           "Có số liệu cụ thể trong mỗi câu"
         ],
+        "sampleAnswer": "The figure rose steadily by 15 points to 65 over the first stage. There was a sharp increase in the following years, with the number climbing from 20 to 90. It then remained largely stable, hovering around 88 for a long period. Afterwards, the figure fluctuated moderately between 70 and 95. It subsequently dipped slightly, edging down by 5 to 83, before falling markedly to just 40. Later, the number witnessed a strong recovery, peaking at 110 at the end of the period. Finally, the figure plunged to a low of 12, its lowest point on the graph.",
         "commonErrors": [
           "increased strongly (không tự nhiên)",
           "dùng “dramatically” cho mức tăng 2%"
@@ -1996,6 +1997,7 @@
           "Không lặp lại một cấu trúc nối quá 2 lần",
           "Có ít nhất một câu nối 3 xu hướng"
         ],
+        "sampleAnswer": "In Figure A, starting at 10%, the figure rose gradually to 25%, before levelling off for the rest of the period. In Figure B, there was a steep climb until the value reached a high of 80 million; however, it then began to fall back. The figure in C increased slowly to 40, and then continued its upward trend, reaching a peak of 75. In D, the number dropped from 60 to 30, followed by a modest recovery to 45. Beginning at 5 units, the figure in E surged to 50, before dipping to 35 and finally stabilising at that level. Figure F showed a period of fluctuation around 20, followed by a sharp and sustained decline to almost zero.",
         "commonErrors": [
           "dùng “and then” cho xu hướng trái ngược",
           "dùng “however” cho hai xu hướng cùng chiều"
@@ -2456,6 +2458,7 @@
           "Nêu rõ loại biểu đồ và mốc thời gian",
           "Không chép đề"
         ],
+        "sampleAnswer": "The line graph illustrates how the population of Asian elephants changed over a period of five decades. The bar chart compares the number of university graduates in Canada in terms of gender between 1992 and 2012. The line graph gives information about how much the US government spent on scientific research each year from 1980 to 2010. The chart provides data on water usage in three areas, namely San Diego, the state of California and the world as a whole, in 2020. Finally, the pie charts illustrate the changes in how people travelled in the UK, namely by car, bus, rail and bicycle, between 1985 and 2000.",
         "commonErrors": [
           "The graph shows…",
           "thiếu mốc thời gian"
@@ -2697,6 +2700,7 @@
           "Nêu đúng loại biểu đồ",
           "Có mốc thời gian đầy đủ"
         ],
+        "sampleAnswer": "The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040. The bar chart illustrates how a particular UK school divided its annual spending across three years, namely 1981, 1991 and 2001. The line graph compares fitness club membership in Thailand in terms of gender between 1985 and 2015.",
         "commonErrors": [
           "The graph below shows…"
         ]
