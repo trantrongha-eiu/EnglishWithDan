@@ -1243,6 +1243,7 @@
           "Không mô tả thông tin nền như một giai đoạn",
           "Tối thiểu 150 từ"
         ],
+        "sampleAnswer": "The diagram illustrates the stages in the life of a salmon, from egg to spawning adult.\n\nOverall, the life cycle of a salmon consists of several stages, beginning with eggs laid in fresh water and ending with adult salmon returning from the sea to spawn and then die.\n\nAt the first stage, the female salmon lays her eggs in the gravel of a slow-moving freshwater river. After about three months, the eggs hatch and become alevins, tiny fish that stay among the stones and feed on the attached yolk sac for several weeks before developing into fry.\n\nThe fry then spend around five to ten weeks swimming in the river and grow into parr, which are recognisable by the finger-like markings on their sides. Once they are one to three years old, the parr become smolt and migrate downstream to the ocean. They remain at sea as adults for a further one to six years before returning to the same freshwater river to spawn, after which they die within two weeks.",
         "commonErrors": [
           "dùng bị động cho quy trình tự nhiên",
           "bỏ sót giai đoạn parr / smolt",
@@ -1853,6 +1854,7 @@
           "Có nêu số liệu nhiệt độ / thời gian trong sơ đồ (24–48h, 870–1300°C, 48–72h)",
           "Tối thiểu 150 từ"
         ],
+        "sampleAnswer": "The diagram illustrates the process by which bricks are manufactured for the building industry.\n\nOverall, there are seven main stages in the process, beginning with the digging of clay from the ground and ending with the delivery of the finished bricks to customers.\n\nAt the first stage, clay is dug out of the ground using a digger and placed onto a metal grid, where it is broken up by a roller and any large stones are removed. The clay is then mixed with sand and water, after which it is shaped into bricks either by a mould or by a wire cutter.\n\nOnce the bricks have been formed, they are left to dry in an oven for 24 to 48 hours. Having been dried, they are fired in a kiln, first at a moderate temperature of 200 to 980°C and then at a high temperature of 870 to 1,300°C. The bricks are subsequently cooled in a chamber for 48 to 72 hours before being packaged and, finally, delivered to their destination.",
         "commonErrors": [
           "dùng chủ động (workers dig the clay)",
           "bỏ sót giai đoạn làm nguội",

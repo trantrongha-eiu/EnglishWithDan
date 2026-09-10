@@ -27,12 +27,18 @@ const fs = require('fs');
 
 const DATA_DIR = path.join(__dirname, 'data', 'writingTask1');
 
-// The 8 codes this patch is responsible for. Listed explicitly so the
+// The codes this patch is responsible for. Listed explicitly so the
 // script's blast radius is auditable and a future seed sample answer added
 // for some OTHER exercise doesn't silently get pushed by this script.
 const CODES = [
+  // batch 1 — sentence_writing / planning exercises
   'T1-L05-E07', 'T1-L07-E02', 'T1-L08-E04', 'T1-L09-E03',
   'T1-TEST3-A3', 'T1-TEST3-A4', 'T1-L14-E04', 'T1-L15-E03',
+  // batch 2 — paragraph_writing / full_task1 model essays
+  'T1-L06-E10', 'T1-L06-E11', 'T1-L06-E12', 'T1-L09-E07', 'T1-L09-E08', 'T1-TEST2-B',
+  'T1-L11-E01', 'T1-L11-E02', 'T1-L11-E03', 'T1-L11-E04', 'T1-L12-E03', 'T1-TEST3-B',
+  'T1-L18-E01', 'T1-L18-E02', 'T1-L18-E04', 'T1-L18-E05', 'T1-TEST4-B',
+  'T1-L22-E04', 'T1-TEST5-B',
 ];
 
 function loadSeedSampleAnswers() {
