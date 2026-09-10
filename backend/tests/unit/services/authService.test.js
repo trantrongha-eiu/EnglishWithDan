@@ -4,6 +4,15 @@
 // timing-mitigation dummy-hash path), the full OTP password-reset flow
 // (including the atomic findOneAndUpdate-based lockout added in a recent
 // security fix), and Google OAuth user linking/creation.
+// Force email delivery "configured" BEFORE anything requires config/index.js
+// (authService → config reads process.env at module load). Locally the
+// repo .env sets these; CI has no .env, so without this authService would
+// see email as unconfigured and registration would take the degraded
+// auto-verify branch instead of the verify-email branch these tests cover.
+// nodemailer is mocked globally in setupTestDb.js, so nothing is sent.
+process.env.EMAIL_USER = process.env.EMAIL_USER || 'test-mailer@example.com';
+process.env.EMAIL_PASS = process.env.EMAIL_PASS || 'test-pass';
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -12,11 +21,6 @@ const User = require('../../../models/User');
 const { createUser, createStudent, unique } = require('../../factories/userFactory');
 
 const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
-
-// This file does NOT blank EMAIL_USER/EMAIL_PASS (unlike auth.test.js), and
-// the repo .env sets them, so authService sees email as "configured" and
-// registration takes the verify-email branch (no session until the emailed
-// link is used). nodemailer is mocked globally in setupTestDb.js.
 describe('authService.registerUser (email verification required)', () => {
   test('creates an UNVERIFIED user, no token/session, and a hashed verify token on the doc', async () => {
     const email = `${unique('reg')}@test.local`;
