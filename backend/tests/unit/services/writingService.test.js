@@ -59,8 +59,8 @@ describe('writingService.submitExam', () => {
 
     const { attemptId } = await writingService.submitExam(student, {
       examId: exam._id, task1Id: task1._id, task2Id: task2._id,
-      task1Answer: 'my task1 answer', task2Answer: 'my task2 answer',
-      wordCount1: 160, wordCount2: 270, timeTaken: -50,
+      task1Answer: 'my task1 answer', task2Answer: 'my task2 answer here',
+      wordCount1: 160, wordCount2: 270, timeTaken: -50, // wordCounts spoofed — must be ignored
     });
 
     expect(attemptId).toBeTruthy();
@@ -70,6 +70,8 @@ describe('writingService.submitExam', () => {
     expect(saved.task1Snapshot.prompt).toBe('Describe the chart.');
     expect(saved.task2Snapshot.prompt).toBe('Discuss both views.');
     expect(saved.task1Answer).toBe('my task1 answer');
+    expect(saved.wordCount1).toBe(3); // counted server-side, not the client's 160
+    expect(saved.wordCount2).toBe(4);
     expect(saved.timeTaken).toBe(0); // negative input clamped to 0
   });
 });
@@ -78,31 +80,33 @@ describe('writingService.submitPractice', () => {
   test('creates a task1 practice attempt with the right field mapping', async () => {
     const student = await createStudent();
     const task1 = await createWritingTask1({ prompt: 'Practice prompt 1' });
+    const answer = 'one two three four five'; // 5 words
 
     const { attemptId } = await writingService.submitPractice(student, {
-      taskType: 1, taskId: task1._id, answer: 'my answer', wordCount: 155.9,
+      taskType: 1, taskId: task1._id, answer, wordCount: 155.9, // spoofed — must be ignored
     });
 
     const saved = await WritingAttempt.findById(attemptId).lean();
     expect(saved.submissionType).toBe('practice');
     expect(saved.examName).toBe('Luyện Task 1');
     expect(saved.task1Snapshot.prompt).toBe('Practice prompt 1');
-    expect(saved.task1Answer).toBe('my answer');
-    expect(saved.wordCount1).toBe(155); // floored
+    expect(saved.task1Answer).toBe(answer);
+    expect(saved.wordCount1).toBe(5); // counted server-side from `answer`, not the client's 155
   });
 
   test('creates a task2 practice attempt with the right field mapping', async () => {
     const student = await createStudent();
     const task2 = await createWritingTask2({ prompt: 'Practice prompt 2' });
+    const answer = '  alpha beta   gamma\ndelta '; // 4 words after normalising whitespace
 
     const { attemptId } = await writingService.submitPractice(student, {
-      taskType: 2, taskId: task2._id, answer: 'my essay', wordCount: 300,
+      taskType: 2, taskId: task2._id, answer, wordCount: 300, // spoofed — must be ignored
     });
 
     const saved = await WritingAttempt.findById(attemptId).lean();
     expect(saved.task2Snapshot.prompt).toBe('Practice prompt 2');
-    expect(saved.task2Answer).toBe('my essay');
-    expect(saved.wordCount2).toBe(300);
+    expect(saved.task2Answer).toBe(answer);
+    expect(saved.wordCount2).toBe(4);
   });
 });
 

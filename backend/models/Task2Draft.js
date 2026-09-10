@@ -29,6 +29,10 @@ const task2DraftSchema = new Schema({
 });
 
 task2DraftSchema.index({ userId: 1, topicId: 1 }, { unique: true });
-task2DraftSchema.index({ savedAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
+// 30-day TTL (matches WritingDraft) — a homework deadline can sit further
+// out than a week, and a student who does half a Task 2 topic then comes
+// back after 8 days shouldn't find the draft silently gone. Changing this
+// number does NOT retro-update the live index — run scripts/bumpDraftTtl.js.
+task2DraftSchema.index({ savedAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('Task2Draft', task2DraftSchema);

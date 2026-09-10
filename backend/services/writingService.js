@@ -22,6 +22,15 @@ async function randomDoc(Model) {
   return Model.findOne({ isActive: true }).skip(Math.floor(Math.random() * count)).lean();
 }
 
+// Count words server-side from the actual answer text — never trust the
+// client's number. The homework completion gate for Task 1/2 essays
+// (resourceCompletionService.wordCountGate) is purely "wrote at least the
+// minimum", so a spoofed wordCount would mark a 5-word essay complete.
+// Same tokeniser the grading path already uses (fillWritingAnalysis).
+function countWords(s) {
+  return String(s || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
 function buildTask1Snapshot(t1) {
   return t1 ? { imageUrl: t1.imageUrl || '', instructions: t1.instructions || '', prompt: t1.prompt || '' } : {};
 }
@@ -51,8 +60,8 @@ async function startExam(examId) {
 async function submitExam(user, body) {
   const {
     examId, task1Id, task2Id, task1Answer = '', task2Answer = '',
-    wordCount1 = 0, wordCount2 = 0, timeTaken = 0, status = 'completed'
-  } = body;
+    timeTaken = 0, status = 'completed'
+  } = body; // wordCount1/2 from the client are ignored — recomputed below
 
   // exam/task1/task2 lookups are independent — run in parallel. (In the rare
   // case the exam doesn't exist, this does two now-unneeded lookups instead of
@@ -70,7 +79,7 @@ async function submitExam(user, body) {
     task1Id: task1Id || undefined, task2Id: task2Id || undefined,
     task1Snapshot: buildTask1Snapshot(t1), task2Snapshot: buildTask2Snapshot(t2),
     task1Answer, task2Answer,
-    wordCount1: Number(wordCount1), wordCount2: Number(wordCount2),
+    wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
     timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
     submittedAt: new Date(), status
   });
@@ -106,10 +115,11 @@ async function getPracticeTask(taskType) {
   return randomDoc(Model);
 }
 
-async function submitPractice(user, { taskType, taskId, answer, wordCount }) {
+async function submitPractice(user, { taskType, taskId, answer }) {
   const tNum = taskType;
   const Model = tNum === 1 ? WritingTask1 : WritingTask2;
   const task = taskId ? await Model.findById(taskId).lean() : null;
+  const wc = countWords(answer); // server-side, not the client's wordCount
 
   const attempt = new WritingAttempt({
     userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum}`,
@@ -117,12 +127,12 @@ async function submitPractice(user, { taskType, taskId, answer, wordCount }) {
       task1Id: taskId || undefined,
       task1Snapshot: buildTask1Snapshot(task),
       task1Answer: answer,
-      wordCount1: Math.max(0, Math.floor(Number(wordCount))),
+      wordCount1: wc,
     } : {
       task2Id: taskId || undefined,
       task2Snapshot: buildTask2Snapshot(task),
       task2Answer: answer,
-      wordCount2: Math.max(0, Math.floor(Number(wordCount))),
+      wordCount2: wc,
     }),
     submittedAt: new Date(), status: 'completed'
   });
@@ -242,8 +252,6 @@ const REWRITE_MIN_WORDS = { 1: 150, 2: 250 }; // same minimums as the original t
 // BEFORE this date are grandfathered (not counted toward the gate).
 // Keep in sync with REWRITE_CUTOFF in frontend/js/writing.js.
 const REWRITE_CUTOFF = new Date('2026-08-29T00:00:00+07:00');
-
-const countWords = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
 
 // Which tasks of this attempt were actually graded (a confirmed practice
 // attempt has just one; a confirmed exam normally has both).

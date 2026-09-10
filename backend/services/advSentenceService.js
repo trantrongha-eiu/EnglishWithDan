@@ -303,15 +303,25 @@ async function getAttemptDetail(userId, attemptId) {
 }
 
 // ── drafts ────────────────────────────────────────────────────────────
+// Keep resumable drafts for up to N groups per user (was effectively 1 —
+// every save wiped the user's other groups, destroying progress on a
+// parallel assignment). Old ones age out via the 30-day TTL. Mirrors
+// task2PracticeService.MAX_DRAFTS_PER_USER.
+const MAX_DRAFTS_PER_USER = 12;
+
 async function saveDraft(userId, body) {
   const { groupId, groupName, week, mode, sentenceIds, currentIdx, sessionAttempts, sentenceStatus, sessionDone, sessionCorrect } = body;
-  // Enforce max-1 draft: drop drafts for the user's OTHER groups first.
-  await AdvSentenceDraft.deleteMany({ userId, groupId: { $ne: groupId } });
   await AdvSentenceDraft.findOneAndUpdate(
     { userId, groupId },
     { groupId, groupName, week, mode, sentenceIds, currentIdx, sessionAttempts, sentenceStatus, sessionDone, sessionCorrect, savedAt: new Date() },
     { upsert: true, new: true },
   );
+  const stale = await AdvSentenceDraft.find({ userId })
+    .sort({ savedAt: -1 })
+    .skip(MAX_DRAFTS_PER_USER)
+    .select('_id')
+    .lean();
+  if (stale.length) await AdvSentenceDraft.deleteMany({ _id: { $in: stale.map(d => d._id) } });
 }
 
 async function getDraft(userId, groupId) {

@@ -55,12 +55,12 @@ exports.getPracticeTask = guard(async (req, res) => {
 });
 
 exports.submitPractice = guard(async (req, res) => {
-  const { taskType, taskId, answer = '', wordCount = 0 } = req.body;
+  const { taskType, taskId, answer = '' } = req.body; // wordCount ignored — server counts it
   const tNum = parseInt(taskType);
   if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
   if (!answer.trim()) return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
 
-  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, wordCount });
+  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer });
   res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
 

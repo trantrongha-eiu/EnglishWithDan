@@ -144,6 +144,13 @@ const REGISTRY = {
       fields: 'correctCount totalQuestions scorePercentage',
       percent: (d) => (d.scorePercentage != null ? d.scorePercentage : (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0)),
     },
+    // A partial session (do 2 easy questions, hit "Xem kết quả") posts an
+    // attempt whose scorePercentage is 2/2 = 100% — enough to clear the
+    // scoreGate above even though the student never did the topic. Require
+    // the passing attempt to also have covered most of the topic's
+    // questions in one sitting. `arrayField` is the question bank on the
+    // catalog doc; `minRatio` of it must be present in attempt.totalQuestions.
+    coverage: { model: Task2Topic, arrayField: 'questions', field: 'totalQuestions', minRatio: 0.8 },
   },
   speaking: {
     label: 'Speaking (Câu hỏi)',
@@ -235,6 +242,9 @@ const REGISTRY = {
       fields: 'correctCount totalQuestions scorePercentage',
       percent: (d) => (d.scorePercentage != null ? d.scorePercentage : (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0)),
     },
+    // Same subset-gaming guard as `task2` — jumping to the last sentence and
+    // answering just that one posts a 1/1 = 100% attempt otherwise.
+    coverage: { model: SentenceStructureGroup, arrayField: 'sentences', field: 'totalQuestions', minRatio: 0.8 },
   },
 };
 
@@ -383,8 +393,11 @@ async function checkCompleted(studentId, internalItems, since = null) {
     if (!ids.length) return;
     const gate = entry.scoreGate;
     const wcGate = entry.wordCountGate;
+    const cov = entry.coverage;
     const extraFields = gate ? gate.fields : (wcGate ? wcGate.fields : '');
-    const select = `_id createdAt ${A.idField}` + (extraFields ? ` ${extraFields}` : '');
+    const select = `_id createdAt ${A.idField}`
+      + (extraFields ? ` ${extraFields}` : '')
+      + (cov && !(extraFields || '').includes(cov.field) ? ` ${cov.field}` : '');
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
       .sort({ createdAt: -1 })
       .select(select)
@@ -421,6 +434,25 @@ async function checkCompleted(studentId, internalItems, since = null) {
       return;
     }
 
+    // Coverage gate (task2 / advanced_sentences): a passing attempt must also
+    // have spanned most of the resource's question bank in one sitting, so a
+    // cherry-picked 2-of-8 subset at 100% doesn't read as "hoàn thành".
+    // covNeed maps resourceId -> minimum questions required.
+    let covNeed = null;
+    if (cov) {
+      const covDocs = await cov.model.find({ _id: { $in: ids } }).select(cov.arrayField).lean().catch(() => []);
+      covNeed = new Map(covDocs.map((d) => {
+        const total = Array.isArray(d[cov.arrayField]) ? d[cov.arrayField].length : 0;
+        return [String(d._id), total > 0 ? Math.max(1, Math.ceil(total * cov.minRatio)) : 0];
+      }));
+    }
+    const coverageOk = (r) => {
+      if (!covNeed) return true;
+      const need = covNeed.get(String(r[A.idField]));
+      if (!need) return true; // resource has no question bank / unknown — don't block
+      return (Number(r[cov.field]) || 0) >= need;
+    };
+
     // Score-gated: "hoàn thành" means the student cleared PASS_PERCENT on AT
     // LEAST ONE try since `since` — so a strong early attempt still counts
     // even if a later, unrelated retry scored lower (`completed`/
@@ -440,15 +472,19 @@ async function checkCompleted(studentId, internalItems, since = null) {
     for (const r of rows) {
       const k = resourceKey(type, r[A.idField]);
       const pct = gate.percent(r);
+      const passes = pct >= PASS_PERCENT && coverageOk(r);
       const prev = bestByKey.get(k);
-      if (!prev || pct > prev.pct) bestByKey.set(k, { pct, r });
-      if (pct >= PASS_PERCENT && !latestPassAtByKey.has(k)) latestPassAtByKey.set(k, r.createdAt);
+      // A qualifying attempt always beats a non-qualifying one; between two of
+      // the same kind, the higher score wins (keeps the old best-scoring pick).
+      if (!prev || (passes && !prev.passes) || (passes === prev.passes && pct > prev.pct)) {
+        bestByKey.set(k, { pct, r, passes });
+      }
+      if (passes && !latestPassAtByKey.has(k)) latestPassAtByKey.set(k, r.createdAt);
     }
-    for (const [k, { pct, r }] of bestByKey) {
-      const passed = pct >= PASS_PERCENT;
+    for (const [k, { pct, r, passes }] of bestByKey) {
       out.set(k, {
-        completed: passed,
-        completedAt: passed ? latestPassAtByKey.get(k) : r.createdAt,
+        completed: passes,
+        completedAt: passes ? latestPassAtByKey.get(k) : r.createdAt,
         attemptId: String(r._id),
         scorePercent: Math.round(pct),
       });

@@ -167,15 +167,13 @@ exports.saveDraft = async (req, res) => {
     //  1) sessionAttempts/questionIds/questionStatus not being real arrays
     //     used to hit a raw Mongoose CastError deep in findOneAndUpdate,
     //     surfacing as a generic 500.
-    //  2) WORSE: a missing/malformed topicId used to reach
-    //     saveDraft()'s Task2Draft.deleteMany({userId, topicId:{$ne:topicId}})
-    //     BEFORE that cast error — with topicId undefined, that filter's
-    //     $ne effectively matches everything, silently deleting every one
-    //     of the student's saved drafts across ALL topics, not just "other"
-    //     topics, before the request then still 500'd. Verified directly
-    //     against a real Mongo query. Requiring a real non-empty topicId
-    //     string up front closes this entirely — the deleteMany can never
-    //     run with a filter that matches more than intended.
+    //  2) WORSE (historical): a missing/malformed topicId used to reach an
+    //     unscoped Task2Draft.deleteMany({userId, topicId:{$ne:topicId}}) —
+    //     with topicId undefined the $ne matched everything and wiped every
+    //     one of the student's drafts before the request still 500'd.
+    //     saveDraft() no longer does that cross-topic delete at all (drafts
+    //     are now capped, not mutually exclusive), but a real non-empty
+    //     topicId is still required up front.
     const { topicId, questionIds, sessionAttempts, questionStatus } = req.body;
     if (typeof topicId !== 'string' || !topicId.trim()) {
       return res.status(400).json({ success: false, message: 'Thiếu topicId' });

@@ -16,6 +16,7 @@ const WT1Progress = require('../../models/WT1Progress');
 const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const Task2Topic = require('../../models/Task2Topic');
+const Task2Attempt = require('../../models/Task2Attempt');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
@@ -396,7 +397,7 @@ describe('completion tracking', () => {
     const grp = await SentenceStructureGroup.create({
       code: 'grp-adv-1', order: 3, week: 2, slotInWeek: 1,
       nameVi: 'Câu phức', nameEn: 'Complex Sentences', isActive: true,
-      sentences: [{ promptVi: 'Tôi đi học.', answerEn: 'I go to school.' }],
+      sentences: Array.from({ length: 10 }, (_, i) => ({ promptVi: `Câu ${i}.`, answerEn: `Sentence ${i}.` })),
     });
 
     const cat = await request(app).get('/api/classes/resources/catalog?type=advanced_sentences&search=Complex').set(authH(t));
@@ -411,6 +412,12 @@ describe('completion tracking', () => {
 
     await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 3, totalQuestions: 10, scorePercentage: 30, completedAt: new Date() });
     let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asgId)).done).toBe(0);
+
+    // Coverage gate: a 2-of-10 subset at 100% must NOT count — the student
+    // has to actually work through the group, not cherry-pick two.
+    await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 2, totalQuestions: 2, scorePercentage: 100, completedAt: new Date() });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
     expect(mine.body.assignments.find((a) => a._id === String(asgId)).done).toBe(0);
 
     await AdvSentenceAttempt.create({ userId: s._id, groupId: grp._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80, completedAt: new Date() });
@@ -434,6 +441,30 @@ describe('completion tracking', () => {
     // task2-practice.html needs BOTH ?week & ?topicId — without the week it
     // just dumps the student on the week picker (reported bug).
     expect((await Assignment.findById(created.body.assignment._id).lean()).resources[0].resourceCode).toBe('4');
+  });
+
+  test('task2 (weekly topic): 70% AND covered most of the topic — a cherry-picked subset does not count', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const topic = await Task2Topic.create({
+      week: 4, block: 'agree_disagree', topicName: 'Remote Work', essayType: 'agree_disagree',
+      prompt: 'Working from home will become the norm.', isActive: true,
+      questions: Array.from({ length: 10 }, (_, i) => ({
+        level: 'beginner', type: 'fill_blank', questionText: `Q${i}`, correctAnswer: `a${i}`,
+      })),
+    });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task2', resourceId: topic._id }] });
+
+    // 2 of 10 questions, 100% — clears the score bar but not the coverage bar.
+    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 2, totalQuestions: 2, scorePercentage: 100 });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).done).toBe(0);
+
+    // A full run at 80% — both bars cleared.
+    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
   });
 
   test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, and searching by prompt text works', async () => {

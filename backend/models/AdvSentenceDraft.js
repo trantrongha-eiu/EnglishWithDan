@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Resume-able in-progress session for "Viết câu nâng cao". Mirrors
-// Task2Draft.js — max one draft per (user, group); a save for a new group
-// wipes the drafts for the user's other groups (scoped $ne, see
-// advSentenceService.saveDraft). 7-day TTL on savedAt.
+// Task2Draft.js — the most recent drafts per user are kept (see
+// advSentenceService.saveDraft). 30-day TTL on savedAt.
 const attemptEntrySchema = new Schema({
   sentenceId:  String,
   userAnswer:  String,
@@ -31,6 +30,8 @@ const advSentenceDraftSchema = new Schema({
 });
 
 advSentenceDraftSchema.index({ userId: 1, groupId: 1 }, { unique: true });
-advSentenceDraftSchema.index({ savedAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
+// See Task2Draft.js — changing this does NOT retro-update the live index;
+// run scripts/bumpDraftTtl.js.
+advSentenceDraftSchema.index({ savedAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('AdvSentenceDraft', advSentenceDraftSchema);

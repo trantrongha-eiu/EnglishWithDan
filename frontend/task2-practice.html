@@ -2176,7 +2176,16 @@ function quitPractice() {
   if (state.sessionDone > 0) {
     askT2Quit(() => {
       cleanup();
-      savePracticeAttempt();
+      // Only a session that actually reached the last question records a real
+      // attempt. Quitting part-way through saves a resumable draft instead —
+      // otherwise a 2-of-8 subset at 100% would count as "hoàn thành" for a
+      // homework assignment (server also enforces this, see
+      // resourceCompletionService coverage gate).
+      if (state.sessionDone >= state.questions.length) {
+        savePracticeAttempt();
+      } else {
+        saveDraft();
+      }
       state.view = 'done'; render();
     }, {
       mascot: '✏️',

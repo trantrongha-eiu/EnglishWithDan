@@ -171,7 +171,7 @@ describe('drafts', () => {
     expect(await AdvSentenceDraft.countDocuments({ userId: u._id })).toBe(1);
   });
 
-  test('saving a draft for a new group wipes drafts for the user other groups only', async () => {
+  test('saving a draft for a new group keeps the other groups drafts (parallel homework)', async () => {
     const u = await createPremiumStudent();
     const other = await createStudent();
     const g1 = await createGroup();
@@ -183,9 +183,22 @@ describe('drafts', () => {
       groupId: String(g2._id), sentenceIds: ['x', 'y'], currentIdx: 0, sessionAttempts: [], sentenceStatus: [],
     });
     expect(res.status).toBe(200);
-    expect(await AdvSentenceDraft.countDocuments({ userId: u._id })).toBe(1);
+    expect(await AdvSentenceDraft.countDocuments({ userId: u._id })).toBe(2); // both kept
+    expect(await AdvSentenceDraft.countDocuments({ userId: u._id, groupId: String(g1._id) })).toBe(1);
     expect(await AdvSentenceDraft.countDocuments({ userId: u._id, groupId: String(g2._id) })).toBe(1);
     expect(await AdvSentenceDraft.countDocuments({ userId: other._id })).toBe(1); // untouched
+  });
+
+  test('drafts are capped at 12 most-recent per user', async () => {
+    const u = await createPremiumStudent();
+    for (let i = 0; i < 14; i++) {
+      const g = await createGroup();
+      const res = await request(app).post('/api/adv-sentence/draft').set(bearer(u)).send({
+        groupId: String(g._id), sentenceIds: ['x'], currentIdx: 0, sessionAttempts: [], sentenceStatus: [],
+      });
+      expect(res.status).toBe(200);
+    }
+    expect(await AdvSentenceDraft.countDocuments({ userId: u._id })).toBe(12);
   });
 });
 

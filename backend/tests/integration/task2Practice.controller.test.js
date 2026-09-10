@@ -370,7 +370,7 @@ describe('Draft CRUD (save/get/delete/list) — ownership scoping', () => {
       await expectRejectedAndTopicAIntact(token, topicA, { topicId: String(topicB._id), questionStatus: {} });
     });
 
-    test('a valid save with real arrays still works, and correctly replaces the draft for the OTHER topic (max-1-draft rule intact)', async () => {
+    test('a valid save with real arrays still works, and KEEPS the draft for the OTHER topic (parallel homework)', async () => {
       const { topicA, topicB, token } = await setUp();
       const res = await request(app).post('/api/task2/draft').set('Authorization', `Bearer ${token}`)
         .send({
@@ -379,11 +379,12 @@ describe('Draft CRUD (save/get/delete/list) — ownership scoping', () => {
         });
       expect(res.status).toBe(200);
 
-      // Max-1-draft rule (unchanged, pre-existing behavior): saving a NEW
-      // topic's draft correctly replaces the old one this time — this is
-      // the real, intentional deleteMany, distinct from the bug above.
-      const aGone = await request(app).get(`/api/task2/draft/${topicA._id}`).set('Authorization', `Bearer ${token}`);
-      expect(aGone.body.draft).toBeNull();
+      // A student can have an in-progress draft on more than one Task 2 topic
+      // at once (was "max 1 draft", which silently wiped progress on a
+      // parallel assignment — see task2PracticeService.MAX_DRAFTS_PER_USER).
+      const aStill = await request(app).get(`/api/task2/draft/${topicA._id}`).set('Authorization', `Bearer ${token}`);
+      expect(aStill.body.draft).not.toBeNull();
+      expect(aStill.body.draft.currentIdx).toBe(1);
       const bThere = await request(app).get(`/api/task2/draft/${topicB._id}`).set('Authorization', `Bearer ${token}`);
       expect(bThere.body.draft.questionIds).toEqual(['q1', 'q2']);
     });

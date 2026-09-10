@@ -553,15 +553,28 @@ async function getWrongQuestions(userId, topicId) {
   return Object.entries(latestResult).filter(([, ok]) => !ok).map(([id]) => id);
 }
 
+// How many in-progress topics a student may keep a resumable draft for.
+// Was effectively 1 (each save wiped every other topic's draft), which
+// silently destroyed progress when a student had >1 Task 2 assignment and
+// opened the second. High enough to cover a term's worth of parallel
+// homework; old drafts still age out via the 30-day TTL.
+const MAX_DRAFTS_PER_USER = 12;
+
 async function saveDraft(userId, body) {
   const { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect } = body;
-  // Enforce max-1 draft: delete any drafts for other topics before saving
-  await Task2Draft.deleteMany({ userId, topicId: { $ne: topicId } });
   await Task2Draft.findOneAndUpdate(
     { userId, topicId },
     { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect, savedAt: new Date() },
     { upsert: true, new: true }
   );
+  // Trim to the most-recently-saved N (the one just upserted has the newest
+  // savedAt, so it's always kept).
+  const stale = await Task2Draft.find({ userId })
+    .sort({ savedAt: -1 })
+    .skip(MAX_DRAFTS_PER_USER)
+    .select('_id')
+    .lean();
+  if (stale.length) await Task2Draft.deleteMany({ _id: { $in: stale.map(d => d._id) } });
 }
 
 async function getDraft(userId, topicId) {
