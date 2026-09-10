@@ -75,17 +75,21 @@ describe('userMessageService.replyToMessage', () => {
   });
 });
 
-describe('userMessageService.getRecentNotifications', () => {
+// The standalone "Thông báo" bell (getRecentNotifications) was merged into
+// "Hộp thư" — it was listMessages() page 1 with an identical filter. These
+// checks moved onto listMessages(), which had no direct coverage before.
+describe('userMessageService.listMessages', () => {
   test('includes personal messages addressed to the user and site-wide broadcasts', async () => {
     const teacher = await createTeacher();
     const student = await createStudent();
     await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: 'Riêng', type: 'reminder' });
     await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: null, isBroadcast: true, body: 'Thông báo chung', type: 'broadcast' });
 
-    const notifications = await userMessageService.getRecentNotifications(student._id);
+    const { messages, total } = await userMessageService.listMessages(student._id, 1, 30);
 
-    expect(notifications).toHaveLength(2);
-    expect(notifications.map(n => n.type).sort()).toEqual(['broadcast', 'reminder']);
+    expect(messages).toHaveLength(2);
+    expect(total).toBe(2);
+    expect(messages.map(n => n.type).sort()).toEqual(['broadcast', 'reminder']);
   });
 
   test('excludes peer (student-to-student) chat messages', async () => {
@@ -93,8 +97,8 @@ describe('userMessageService.getRecentNotifications', () => {
     const studentB = await createStudent();
     await Message.create({ fromId: studentB._id, fromName: studentB.username, toId: studentA._id, body: 'Chào bạn', isPeer: true });
 
-    const notifications = await userMessageService.getRecentNotifications(studentA._id);
-    expect(notifications).toHaveLength(0);
+    const { messages } = await userMessageService.listMessages(studentA._id, 1, 30);
+    expect(messages).toHaveLength(0);
   });
 
   test('excludes a message this user has soft-deleted', async () => {
@@ -103,8 +107,8 @@ describe('userMessageService.getRecentNotifications', () => {
     const msg = await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: 'Xoá đi' });
     await Message.updateOne({ _id: msg._id }, { $addToSet: { deletedBy: student._id } });
 
-    const notifications = await userMessageService.getRecentNotifications(student._id);
-    expect(notifications).toHaveLength(0);
+    const { messages } = await userMessageService.listMessages(student._id, 1, 30);
+    expect(messages).toHaveLength(0);
   });
 
   test('does not leak another student\'s personal message', async () => {
@@ -113,19 +117,20 @@ describe('userMessageService.getRecentNotifications', () => {
     const studentB = await createStudent();
     await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: studentB._id, body: 'Chỉ cho B' });
 
-    const notifications = await userMessageService.getRecentNotifications(studentA._id);
-    expect(notifications).toHaveLength(0);
+    const { messages } = await userMessageService.listMessages(studentA._id, 1, 30);
+    expect(messages).toHaveLength(0);
   });
 
-  test('respects the limit parameter and sorts newest first', async () => {
+  test('paginates and sorts newest first', async () => {
     const teacher = await createTeacher();
     const student = await createStudent();
     for (let i = 0; i < 5; i++) {
       await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: `msg${i}` });
     }
 
-    const notifications = await userMessageService.getRecentNotifications(student._id, 3);
-    expect(notifications).toHaveLength(3);
-    expect(notifications[0].createdAt.getTime()).toBeGreaterThanOrEqual(notifications[2].createdAt.getTime());
+    const { messages, total } = await userMessageService.listMessages(student._id, 1, 3);
+    expect(messages).toHaveLength(3);
+    expect(total).toBe(5);
+    expect(messages[0].createdAt.getTime()).toBeGreaterThanOrEqual(messages[2].createdAt.getTime());
   });
 });

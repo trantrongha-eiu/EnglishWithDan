@@ -122,13 +122,6 @@ exports.getUnreadMessageCount = messageGuard(async (req, res) => {
   res.json({ success: true, count });
 });
 
-// ── GET /api/user/notifications — bell dropdown feed (nav.js) ──
-exports.getRecentNotifications = messageGuard(async (req, res) => {
-  const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 15));
-  const notifications = await userMessageService.getRecentNotifications(req.user._id, limit);
-  res.json({ success: true, notifications });
-});
-
 // ── GET /api/user/messages ────────────────────────────────────
 exports.listMessages = messageGuard(async (req, res) => {
   const { page = 1, limit = 30 } = req.query;

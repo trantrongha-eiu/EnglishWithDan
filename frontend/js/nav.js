@@ -190,13 +190,9 @@
           '<div class="nav-search-results" id="globalSearchResults"></div>' +
         '</div>' +
       '</div>' +
-      '<div class="nav-bell-wrap" style="position:relative">' +
-        '<button class="btn-dark-mode" id="globalBellBtn" title="Thông báo" aria-label="Thông báo" aria-haspopup="true" aria-expanded="false"><i class="fas fa-bell"></i><span id="navBellBadge" class="nav-bell-badge" style="display:none">0</span></button>' +
-        '<div class="nav-bell-panel" id="globalBellPanel">' +
-          '<div class="nav-bell-panel-header">Thông báo</div>' +
-          '<div class="nav-bell-panel-list" id="globalBellList"><div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div></div>' +
-        '</div>' +
-      '</div>' +
+      // "Thông báo" (bell) was merged into "Hộp thư" — same feed, same badge
+      // count, and every bell item just deep-linked to inbox.html anyway.
+      // One mailbox now: the fa-envelope utility icon below.
       mkUtilityIcons() +
       '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
@@ -495,76 +491,10 @@
     });
   }
 
-  // ── Notification bell ──────────────────────────────────────
-  // Deliberately does NOT excludes/re-fetches on its own poll loop — the
-  // badge count reuses the exact same /user/messages/unread-count response
-  // _pollInboxBadge() already fetches every 20s for navInboxBadge, so this
-  // is just a second showBadge() call, not a second network request. The
-  // dropdown LIST (a different, richer payload) is fetched lazily, only
-  // when the student actually opens the panel.
-  var NOTIF_TYPE_ICON = { broadcast: '📢', reminder: '⏰', gift: '🎁', personal: '✉️' };
-  var bellBtn = document.getElementById('globalBellBtn');
-  var bellPanel = document.getElementById('globalBellPanel');
-  var bellList = document.getElementById('globalBellList');
-  var _bellLoaded = false;
-
-  function _renderBellList(notifications) {
-    if (!notifications.length) {
-      bellList.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--text3);font-size:13px">🔔<br><br>Chưa có thông báo nào</div>';
-      return;
-    }
-    bellList.innerHTML = notifications.map(function (n) {
-      var icon = NOTIF_TYPE_ICON[n.type] || '✉️';
-      var subject = n.subject || (n.isBroadcast ? 'Thông báo chung' : 'Tin nhắn');
-      var date = new Date(n.createdAt).toLocaleDateString('vi-VN');
-      var unreadCls = !n.isRead ? ' unread' : '';
-      var snippet = (n.body || '').replace(/\s+/g, ' ').trim();
-      if (snippet.length > 80) snippet = snippet.slice(0, 80) + '…';
-      return '<a href="inbox.html" class="nav-bell-item' + unreadCls + '">' +
-        '<span class="nav-bell-icon">' + icon + '</span>' +
-        '<span class="nav-bell-item-body">' +
-          '<span class="nav-bell-item-subject">' + subject + '</span>' +
-          '<span class="nav-bell-item-snippet">' + snippet + '</span>' +
-          '<span class="nav-bell-item-date">' + date + '</span>' +
-        '</span>' +
-      '</a>';
-    }).join('');
-  }
-
-  function _loadBellList() {
-    bellList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
-    var headers = window.AuthService ? window.AuthService.authHeader() : {};
-    fetch(API + '/user/notifications?limit=15', { headers: headers })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { _renderBellList(d.notifications || []); })
-      .catch(function () {
-        bellList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Không thể tải thông báo.</div>';
-      });
-  }
-
-  function openBellPanel() {
-    bellPanel.classList.add('open');
-    bellBtn.setAttribute('aria-expanded', 'true');
-    if (!_bellLoaded) { _bellLoaded = true; _loadBellList(); }
-  }
-  function closeBellPanel() {
-    bellPanel.classList.remove('open');
-    bellBtn.setAttribute('aria-expanded', 'false');
-  }
-  if (bellBtn) {
-    bellBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (bellPanel.classList.contains('open')) closeBellPanel(); else openBellPanel();
-    });
-    document.addEventListener('click', function (e) {
-      if (!bellPanel.classList.contains('open')) return;
-      if (bellPanel.contains(e.target) || bellBtn.contains(e.target)) return;
-      closeBellPanel();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeBellPanel();
-    });
-  }
+  // The separate "Thông báo" bell dropdown was removed — it fed off the same
+  // messages (getRecentNotifications == listMessages page 1) with the same
+  // unread badge, and its items only linked to inbox.html. "Hộp thư"
+  // (inbox.html, the fa-envelope utility icon) is the single mailbox now.
 
   var token = window.AuthService ? window.AuthService.getToken() : localStorage.getItem('token');
   if (token) {
@@ -583,7 +513,6 @@
         .then(function (r) { return r.json(); })
         .then(function (d) {
           showBadge('navInboxBadge', d.count || 0);
-          showBadge('navBellBadge', d.count || 0);
         })
         .catch(function () {});
     }
