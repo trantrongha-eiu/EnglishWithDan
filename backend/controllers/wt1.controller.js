@@ -69,6 +69,11 @@ exports.submitWriting = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Bài này chấm tự động — dùng /check.' });
     }
 
+    // The model answer is safe to return now (student has submitted) — the
+    // pre-submit payload from wt1Service.sanitizeExercise strips it. Shown
+    // under "Xem bài mẫu" in the feedback panel for every writing type.
+    const sampleAnswer = (ex.rubric && ex.rubric.sampleAnswer) || '';
+
     if (ex.type === 'sentence_writing') {
       const result = grading.gradeWritingLocal(ex, arr);
       await svc.recordSubmission(req.user._id, ex, { responses: arr, score: result.score });
@@ -88,7 +93,7 @@ exports.submitWriting = async (req, res) => {
       return res.status(503).json({ success: false, message: msg });
     }
     await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai });
-    res.json({ success: true, ...ai });
+    res.json({ success: true, ...ai, sampleAnswer });
   } catch (err) {
     console.error('[WT1] submitWriting:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi chấm bài' });

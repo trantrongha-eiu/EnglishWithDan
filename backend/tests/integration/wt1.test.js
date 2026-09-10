@@ -268,4 +268,20 @@ describe('POST /check — AI-graded sentence_transform (autoGrade:false)', () =>
     expect(res.body.score).toBe(100);
     expect(geminiService.gradeSentenceBatch.mock.calls.length).toBe(callsBefore);
   });
+
+  // A few sentence_transform items were authored in the error_correction
+  // shape (answer + accept, no sampleAnswers) — the grader used to score
+  // them against an empty key so every submission was wrong (T1-L04-E03).
+  test('sentence_transform authored with answer/accept (no sampleAnswers) still grades', async () => {
+    await WT1Exercise.create({
+      code: 'ST3', lessonCode: 'T1-L02', order: 9, type: 'sentence_transform', title: 'ST3', published: true, autoGrade: true,
+      items: [{ id: 'q1', prompt: 'dùng "aged"', answer: 'People aged 25-30', accept: ['people aged 25–30'] }],
+    });
+    const u = await createPremiumStudent();
+    const right = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ST3', answers: { q1: 'People aged 25-30' } });
+    expect(right.body.score).toBe(100);
+    expect(right.body.items[0].correctAnswer).toBe('People aged 25-30');
+    const wrong = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ST3', answers: { q1: 'totally unrelated text' } });
+    expect(wrong.body.score).toBe(0);
+  });
 });

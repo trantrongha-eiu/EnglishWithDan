@@ -82,7 +82,11 @@ function sanitizeExercise(ex) {
       // the DB copy on submit, so this doesn't weaken grading integrity —
       // there's no separate "exam, no hints" mode in this course to leak
       // into either.
-      base.translationAnswer = (it.sampleAnswers || [])[0] || '';
+      // Falls back to answer/accept for items authored in the
+      // error_correction shape (no sampleAnswers) so the typing drill still
+      // has a target string — grading (wt1GradingService) accepts the same
+      // union on submit.
+      base.translationAnswer = (it.sampleAnswers || [])[0] || it.answer || (it.accept || [])[0] || '';
     }
     if (ex.type === 'categorize') base.text = it.text || '';
     if (ex.type === 'matching') base.left = it.left || '';

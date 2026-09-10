@@ -97,9 +97,9 @@ function gradeObjective(exercise, answers = {}) {
       }
       case 'matching': {
         // items carry the correct pairing in order; the right column is
-        // shuffled client-side and sends back the chosen right-item id.
+        // shuffled client-side and sends back the chosen right-side text.
         correctAnswer = it.right || '';
-        correct = a != null && normalize(a) === normalize(it.right) || String(a) === String(it.id);
+        correct = a != null && normalize(a) === normalize(it.right);
         break;
       }
       case 'ordering': {
@@ -111,7 +111,15 @@ function gradeObjective(exercise, answers = {}) {
         break;
       }
       case 'sentence_transform': {
-        const samples = it.sampleAnswers || [];
+        // Most items carry `sampleAnswers`, but a few were authored in the
+        // error_correction/word_form shape (`answer` + `accept`) — accept
+        // either so a mis-shaped item isn't graded against an empty key
+        // (which marked every submission wrong — e.g. T1-L04-E03).
+        const samples = [
+          ...(it.sampleAnswers || []),
+          ...(it.answer ? [it.answer] : []),
+          ...(it.accept || []),
+        ].filter(Boolean);
         correctAnswer = samples[0] || '';
         const best = samples.reduce((m, s) => Math.max(m, ratio(a, s)), 0);
         if (best >= 0.85) correct = true;
@@ -120,7 +128,7 @@ function gradeObjective(exercise, answers = {}) {
           const cw = contentWords(correctAnswer);
           const u = normalize(a);
           const cov = cw.length ? cw.filter((w) => u.includes(w)).length / cw.length : 0;
-          correct = cov >= 0.8;
+          correct = cw.length > 0 && cov >= 0.8;
         }
         break;
       }

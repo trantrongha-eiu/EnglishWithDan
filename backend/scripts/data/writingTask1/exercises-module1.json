@@ -1665,7 +1665,12 @@
             "people aged 25-30",
             "people aged 25–30"
           ],
-          "explanation": "“aged” đi ngay sau danh từ chỉ người."
+          "explanation": "“aged” đi ngay sau danh từ chỉ người.",
+          "sampleAnswers": [
+            "People aged 25–30",
+            "people aged 25-30",
+            "people aged 25–30"
+          ]
         },
         {
           "id": "q2",
@@ -1675,7 +1680,12 @@
             "people who were 25-30",
             "people who were aged 25-30"
           ],
-          "explanation": "Trang trọng hơn."
+          "explanation": "Trang trọng hơn.",
+          "sampleAnswers": [
+            "People who were 25–30",
+            "people who were 25-30",
+            "people who were aged 25-30"
+          ]
         },
         {
           "id": "q3",
@@ -1684,7 +1694,11 @@
           "accept": [
             "people in the 25-30 age group"
           ],
-          "explanation": "Rất phổ biến trong Task 1."
+          "explanation": "Rất phổ biến trong Task 1.",
+          "sampleAnswers": [
+            "People in the 25–30 age group",
+            "people in the 25-30 age group"
+          ]
         },
         {
           "id": "q4",
@@ -1693,7 +1707,11 @@
           "accept": [
             "25-30-year-old people"
           ],
-          "explanation": "Có gạch nối và “year-old” số ít khi đứng trước danh từ."
+          "explanation": "Có gạch nối và “year-old” số ít khi đứng trước danh từ.",
+          "sampleAnswers": [
+            "25–30-year-old people",
+            "25-30-year-old people"
+          ]
         },
         {
           "id": "q5",
@@ -1702,7 +1720,11 @@
           "accept": [
             "25-30-year-olds"
           ],
-          "explanation": "“year-olds” đã danh từ hoá, không cần thêm “people”."
+          "explanation": "“year-olds” đã danh từ hoá, không cần thêm “people”.",
+          "sampleAnswers": [
+            "25–30-year-olds",
+            "25-30-year-olds"
+          ]
         }
       ]
     },

@@ -891,9 +891,9 @@
         (d.checklist || []).map(function (c) {
           var mark = c.ok === true ? '<span class="t1-ok">✔</span>' : c.ok === false ? '<span class="t1-bad">✗</span>' : '•';
           return '<div class="t1-res-item">' + mark + ' ' + esc(c.label) + (c.detail ? ' <span style="color:#9ca3af">(' + esc(c.detail) + ')</span>' : '') + '</div>';
-        }).join('') +
-        (d.sampleAnswer ? '<details class="t1-key" style="margin-top:8px"><summary>Xem bài mẫu</summary><div style="font-size:13px;line-height:1.7;margin-top:6px">' + esc(d.sampleAnswer) + '</div></details>' : '');
+        }).join('');
     }
+    if (d.sampleAnswer) body += '<details class="t1-key" style="margin-top:10px"><summary>Xem bài mẫu</summary><div style="font-size:13px;line-height:1.7;margin-top:6px;white-space:pre-wrap">' + esc(d.sampleAnswer) + '</div></details>';
     fb.className = 't1-fb';
     fb.innerHTML = body + '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
     fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
