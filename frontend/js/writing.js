@@ -122,6 +122,39 @@ function showScreen(id) {
 }
 
 // ──────────────────────────────────────────────────────
+// Chống dán bài từ ngoài vào — người học phải tự gõ bài Task 1 / Task 2.
+// Chặn cả paste (Ctrl+V / menu chuột phải) và kéo-thả văn bản. Cùng cách
+// làm với ô "Viết lại" (_rwPasteBlock) và ô transcript của Speaking.
+// Áp cho ô thi (#answer-textarea) và ô luyện tập (#pw-textarea) — cả hai
+// đều là phần tử tĩnh trong writing.html nên gắn một lần là đủ.
+// ──────────────────────────────────────────────────────
+function _blockPasteInto(ta) {
+  if (!ta || ta.dataset.pasteBlocked) return;
+  ta.dataset.pasteBlocked = '1';
+  ta.addEventListener('paste', e => {
+    e.preventDefault();
+    if (window.showToast) showToast('Không thể dán vào đây — hãy tự gõ bài viết của bạn.', 'warn', 3500);
+  });
+  ta.addEventListener('drop', e => {
+    e.preventDefault();
+    if (window.showToast) showToast('Không thể kéo-thả văn bản vào đây — hãy tự gõ bài viết của bạn.', 'warn', 3000);
+  });
+  ta.addEventListener('dragover', e => e.preventDefault());
+}
+
+(function _initPasteGuard() {
+  const attach = () => {
+    _blockPasteInto(document.getElementById('answer-textarea'));
+    _blockPasteInto(document.getElementById('pw-textarea'));
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attach);
+  } else {
+    attach();
+  }
+})();
+
+// ──────────────────────────────────────────────────────
 // Init
 // ──────────────────────────────────────────────────────
 (function init() {
