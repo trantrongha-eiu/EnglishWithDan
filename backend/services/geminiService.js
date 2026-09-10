@@ -884,9 +884,13 @@ Produce TWO things.
 1) "sampleSections" — a model essay, EXACTLY four objects in this order:
    {"title":"Introduction", ...}, {"title":"Body 1", ...}, {"title":"Body 2", ...}, {"title":"Conclusion", ...}
    Requirements for the essay:
-   - Target IELTS Band 7.5-8.0. Total length 270-320 words across the four sections.
+   - Target IELTS Band 7.5-8.0. Total length 300-340 words across the four sections. Introduction ~45 words, each body 115-140 words, Conclusion ~45 words. A thin body under 100 words is the single most common failure here — do not do it.
    - Fully answer every part of the question. Take ONE clear position and keep it consistent (for discuss-both-views, present both sides fairly in the bodies, then give your own view in the conclusion; for two-question prompts, one body per question).
-   - Each body paragraph: one clear topic sentence, ONE developed reason, and ONE concrete, specific example (a real-sounding situation — a named field, a plausible everyday scenario — never "for example, studies show" or an invented statistic).
+   - Each body paragraph develops ONE idea only (not two crammed together) and MUST work through all four stages of PEEC as flowing prose:
+     • POINT — one clear topic sentence naming the idea.
+     • EXPLAIN — 2-3 sentences that actually walk through the reasoning: the step-by-step mechanism (why does this cause lead to that outcome? how exactly does it work?). This is the part usually missing — never jump straight from the point to the example.
+     • EXAMPLE — one concrete, specific, real-sounding situation: a named country/city/field, a plausible everyday scenario, a specific named scheme or product. NEVER an invented statistic, "about 60% of...", "a study found", "research shows", "surveys indicate", or a fabricated figure of any kind.
+     • CONSEQUENCE — 1-2 sentences spelling out what follows: for a cause, what it leads to next; for an effect, exactly who is harmed and how badly; for a solution, what concretely improves and for whom. End the paragraph on this "so what", not on the example.
    - Human, natural academic English — NOT AI-flavoured. Hard bans: "In today's fast-paced world", "In this modern era", "It is undeniable that", "plays a pivotal/crucial role", "double-edged sword", "delve into", "navigate the complexities", "when it comes to", "Furthermore/Moreover" opening more than one sentence total. Vary sentence length (mix short punchy sentences with longer complex ones). Use natural collocations and 1-2 precise, non-flashy pieces of higher-level vocabulary per paragraph, not a thesaurus dump. At most ONE linking phrase per paragraph.
    - British spelling (behaviour, recognise, organisation). No contractions (formal essay). No headings or bullet points inside the "content" — plain prose only.
 
