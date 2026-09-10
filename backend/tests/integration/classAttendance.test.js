@@ -99,6 +99,24 @@ describe('roster', () => {
     expect(enr2.enrollmentId).not.toBe(enr1.enrollmentId);
     expect(await ClassEnrollment.countDocuments({ classId: cls._id, studentId: s._id })).toBe(2);
   });
+
+  test('GET /:id roster rows carry enrollmentId, and removing by that id works', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t);
+    await addStudent(t, cls._id, s);
+
+    const detail = await request(app).get(`/api/classes/${cls._id}`).set(auth(t));
+    expect(detail.status).toBe(200);
+    const row = detail.body.roster[0];
+    expect(row.enrollmentId).toBeTruthy();
+    expect(String(row.enrollmentId)).toMatch(/^[a-f0-9]{24}$/);
+
+    // The admin trash button hits exactly this — used to send `undefined`
+    // because the roster shape omitted enrollmentId.
+    const rm = await request(app).delete(`/api/classes/${cls._id}/students/${row.enrollmentId}`).set(auth(t));
+    expect(rm.status).toBe(200);
+  });
 });
 
 describe('PUT /:classId/sessions/:sessionId — "Đánh dấu đã học" shortcut', () => {

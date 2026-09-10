@@ -189,6 +189,12 @@ exports.getClass = async (req, res) => {
 
     const shape = (e) => ({
       ...e,
+      // The admin roster UI keys rows by `enrollmentId` and uses it for the
+      // remove / set-status calls (DELETE .../students/:enrollmentId). Every
+      // other roster builder in this controller sets it explicitly; this one
+      // only spread the raw doc (which has `_id`, not `enrollmentId`), so the
+      // trash button sent `.../students/undefined` → "enrollmentId không hợp lệ".
+      enrollmentId: e._id,
       student: sMap[String(e.studentId)]
         ? { _id: e.studentId, name: studentName(sMap[String(e.studentId)]), username: sMap[String(e.studentId)].username, email: sMap[String(e.studentId)].email, avatar: sMap[String(e.studentId)].avatar }
         : { _id: e.studentId, name: '(đã xoá tài khoản)', username: '', email: '' },
