@@ -1,0 +1,1330 @@
+{
+  "exercises": [
+    {
+      "code": "NP-L04-E01",
+      "lessonCode": "NP-L04",
+      "order": 1,
+      "type": "mcq",
+      "title": "Noun phrase & Head noun — lý thuyết",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 5,
+      "difficulty": 1,
+      "skillTags": [
+        "foundation"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Noun phrase là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "một câu hoàn chỉnh có chủ ngữ và động từ"
+            },
+            {
+              "id": "B",
+              "text": "một nhóm từ xoay quanh một danh từ chính (head noun)"
+            },
+            {
+              "id": "C",
+              "text": "một mệnh đề quan hệ"
+            },
+            {
+              "id": "D",
+              "text": "một cụm động từ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Head noun là danh từ quan trọng nhất."
+        },
+        {
+          "id": "q2",
+          "prompt": "Noun phrase có main verb chia thì không?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Có, luôn luôn"
+            },
+            {
+              "id": "B",
+              "text": "Không — nó có thể chứa V-ing/V3 như participle bổ nghĩa"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ khi dài hơn 5 từ"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ trong Task 2"
+            }
+          ],
+          "answer": "B",
+          "explanation": "V-ing/V3 trong noun phrase là participle, không phải main verb."
+        },
+        {
+          "id": "q3",
+          "prompt": "Trong \"the rapidly growing number of university students\", head noun là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "students"
+            },
+            {
+              "id": "B",
+              "text": "university"
+            },
+            {
+              "id": "C",
+              "text": "number"
+            },
+            {
+              "id": "D",
+              "text": "growing"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Cụm xoay quanh \"number\" (the number of…)."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"Students are dropping out of university.\" là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "noun phrase"
+            },
+            {
+              "id": "B",
+              "text": "clause (có main verb \"are dropping\")"
+            },
+            {
+              "id": "C",
+              "text": "participle phrase"
+            },
+            {
+              "id": "D",
+              "text": "sentence fragment"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"are dropping\" là verb phrase chia thì → đây là clause."
+        },
+        {
+          "id": "q5",
+          "prompt": "Công thức cơ bản của noun phrase?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Verb + Object + Adverb"
+            },
+            {
+              "id": "B",
+              "text": "Determiner + Adjective + NOUN + extra information"
+            },
+            {
+              "id": "C",
+              "text": "Subject + Verb + Complement"
+            },
+            {
+              "id": "D",
+              "text": "Preposition + Article + Noun"
+            }
+          ],
+          "answer": "B",
+          "explanation": "many + university + students + from rural areas."
+        }
+      ]
+    },
+    {
+      "code": "NP-L04-E02",
+      "lessonCode": "NP-L04",
+      "order": 2,
+      "type": "matching",
+      "title": "Nối noun phrase với head noun",
+      "instruction": "Nối mỗi noun phrase với head noun của nó.",
+      "autoGrade": true,
+      "points": 7,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "head-noun"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "left": "the increasing cost of living",
+          "right": "cost"
+        },
+        {
+          "id": "q2",
+          "left": "a significant rise in unemployment",
+          "right": "rise"
+        },
+        {
+          "id": "q3",
+          "left": "the growing number of university students",
+          "right": "number"
+        },
+        {
+          "id": "q4",
+          "left": "widespread use of social media",
+          "right": "use"
+        },
+        {
+          "id": "q5",
+          "left": "the rapid development of technology",
+          "right": "development"
+        },
+        {
+          "id": "q6",
+          "left": "the decision to study abroad",
+          "right": "decision"
+        },
+        {
+          "id": "q7",
+          "left": "the decline in traditional values",
+          "right": "decline"
+        }
+      ]
+    },
+    {
+      "code": "NP-L04-E03",
+      "lessonCode": "NP-L04",
+      "order": 3,
+      "type": "categorize",
+      "title": "Clause hay Noun phrase?",
+      "instruction": "Xếp mỗi cụm/câu vào đúng nhóm.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "clause-vs-phrase"
+      ],
+      "categories": [
+        {
+          "id": "clause",
+          "label": "Clause (có main verb chia thì)"
+        },
+        {
+          "id": "phrase",
+          "label": "Noun phrase (không có main verb)"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "students dropping out of university",
+          "category": "phrase"
+        },
+        {
+          "id": "c2",
+          "text": "Students are dropping out of university.",
+          "category": "clause"
+        },
+        {
+          "id": "c3",
+          "text": "the rapidly growing number of students",
+          "category": "phrase"
+        },
+        {
+          "id": "c4",
+          "text": "The number of students is rising.",
+          "category": "clause"
+        },
+        {
+          "id": "c5",
+          "text": "young people using social media",
+          "category": "phrase"
+        },
+        {
+          "id": "c6",
+          "text": "Young people use social media every day.",
+          "category": "clause"
+        },
+        {
+          "id": "c7",
+          "text": "the increasing pressure placed on students",
+          "category": "phrase"
+        },
+        {
+          "id": "c8",
+          "text": "More pressure is placed on students.",
+          "category": "clause"
+        }
+      ]
+    },
+    {
+      "code": "NP-L04-E04",
+      "lessonCode": "NP-L04",
+      "order": 4,
+      "type": "gap_fill",
+      "title": "Tìm head noun",
+      "instruction": "Điền HEAD NOUN của cụm được nêu.",
+      "autoGrade": true,
+      "points": 6,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "head-noun"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Head noun của \"many young people\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "people"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Head noun của \"the increasing demand for skilled workers\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "demand"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Head noun của \"government investment in education\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "investment"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Head noun của \"the widespread availability of online courses\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "availability"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Head noun của \"the growing dependence on private vehicles\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "dependence"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Head noun của \"students from low-income families\" là: ____",
+          "blanks": [
+            {
+              "accept": [
+                "students"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L04-E05",
+      "lessonCode": "NP-L04",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Clause → Noun phrase",
+      "instruction": "Biến mỗi clause thành một noun phrase (dùng participle V-ing/V3, bỏ main verb).",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 8,
+      "difficulty": 2,
+      "skillTags": [
+        "nominalisation",
+        "participle"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Students drop out of university.",
+          "sampleAnswers": [
+            "students dropping out of university"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Young people use social media.",
+          "sampleAnswers": [
+            "young people using social media"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The cost of living is increasing.",
+          "sampleAnswers": [
+            "the increasing cost of living"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Technology is developing rapidly.",
+          "sampleAnswers": [
+            "the rapid development of technology",
+            "the rapidly developing technology"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "More pressure is placed on students.",
+          "sampleAnswers": [
+            "the increasing pressure placed on students"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The number of university students is growing.",
+          "sampleAnswers": [
+            "the growing number of university students"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L04-E06",
+      "lessonCode": "NP-L04",
+      "order": 6,
+      "type": "ordering",
+      "title": "Xây noun phrase đúng thứ tự",
+      "instruction": "Sắp xếp các thành phần theo công thức: Determiner + Adjective + NOUN + extra information.",
+      "autoGrade": true,
+      "points": 4,
+      "estimatedMinutes": 3,
+      "difficulty": 2,
+      "skillTags": [
+        "word-order"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "tokens": [
+            "university",
+            "many",
+            "from disadvantaged backgrounds",
+            "students"
+          ],
+          "answer": [
+            "many",
+            "university",
+            "students",
+            "from disadvantaged backgrounds"
+          ],
+          "explanation": "Determiner (many) + Adjective (university) + NOUN (students) + extra (from…)."
+        },
+        {
+          "id": "q2",
+          "tokens": [
+            "young",
+            "the",
+            "living with their parents",
+            "number of people"
+          ],
+          "answer": [
+            "the",
+            "number of people",
+            "young",
+            "living with their parents"
+          ],
+          "explanation": "the + [growing] number of + young people + living with their parents — head noun là \"number\"."
+        }
+      ]
+    },
+    {
+      "code": "NP-L05-E01",
+      "lessonCode": "NP-L05",
+      "order": 1,
+      "type": "word_form",
+      "title": "Verb → Noun (bộ nền tảng)",
+      "instruction": "Viết dạng danh từ (noun) của mỗi động từ.",
+      "autoGrade": true,
+      "points": 17,
+      "estimatedMinutes": 6,
+      "difficulty": 1,
+      "skillTags": [
+        "word-form",
+        "nominalisation"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "grow",
+          "answer": "growth",
+          "accept": [
+            "growth"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "develop",
+          "answer": "development",
+          "accept": [
+            "development"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "improve",
+          "answer": "improvement",
+          "accept": [
+            "improvement"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "reduce",
+          "answer": "reduction",
+          "accept": [
+            "reduction"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "decide",
+          "answer": "decision",
+          "accept": [
+            "decision"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "choose",
+          "answer": "choice",
+          "accept": [
+            "choice"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "educate",
+          "answer": "education",
+          "accept": [
+            "education"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "employ",
+          "answer": "employment",
+          "accept": [
+            "employment"
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "achieve",
+          "answer": "achievement",
+          "accept": [
+            "achievement"
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "fail",
+          "answer": "failure",
+          "accept": [
+            "failure"
+          ]
+        },
+        {
+          "id": "q11",
+          "prompt": "migrate",
+          "answer": "migration",
+          "accept": [
+            "migration"
+          ]
+        },
+        {
+          "id": "q12",
+          "prompt": "pollute",
+          "answer": "pollution",
+          "accept": [
+            "pollution"
+          ]
+        },
+        {
+          "id": "q13",
+          "prompt": "consume",
+          "answer": "consumption",
+          "accept": [
+            "consumption"
+          ]
+        },
+        {
+          "id": "q14",
+          "prompt": "behave",
+          "answer": "behaviour",
+          "accept": [
+            "behaviour",
+            "behavior"
+          ]
+        },
+        {
+          "id": "q15",
+          "prompt": "invest",
+          "answer": "investment",
+          "accept": [
+            "investment"
+          ]
+        },
+        {
+          "id": "q16",
+          "prompt": "communicate",
+          "answer": "communication",
+          "accept": [
+            "communication"
+          ]
+        },
+        {
+          "id": "q17",
+          "prompt": "rely",
+          "answer": "reliance",
+          "accept": [
+            "reliance",
+            "dependence"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L05-E02",
+      "lessonCode": "NP-L05",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "Verb → noun phrase",
+      "instruction": "Biến mỗi câu thành một noun phrase (không phải câu hoàn chỉnh).",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 10,
+      "difficulty": 2,
+      "skillTags": [
+        "nominalisation",
+        "paraphrasing"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "More students study abroad.",
+          "sampleAnswers": [
+            "the growing number of students studying abroad",
+            "the increasing number of students studying abroad"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "More people use private cars.",
+          "sampleAnswers": [
+            "the increasing number of people using private cars",
+            "the increasing use of private cars"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "University tuition fees are increasing.",
+          "sampleAnswers": [
+            "the increase in university tuition fees",
+            "the rise in university tuition fees"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "More young people live with their parents.",
+          "sampleAnswers": [
+            "the growing number of young people living with their parents"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "People are becoming increasingly dependent on technology.",
+          "sampleAnswers": [
+            "the growing dependence on technology",
+            "the increasing dependence on technology"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "More children are using smartphones.",
+          "sampleAnswers": [
+            "the increasing number of children using smartphones"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "Governments are investing more in renewable energy.",
+          "sampleAnswers": [
+            "increased government investment in renewable energy",
+            "the growing government investment in renewable energy"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "More people are shopping online.",
+          "sampleAnswers": [
+            "the growing popularity of online shopping",
+            "the increasing number of people shopping online"
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "The number of people without jobs is increasing.",
+          "sampleAnswers": [
+            "the rising number of unemployed people",
+            "the increase in unemployment"
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "Fewer people use public transport.",
+          "sampleAnswers": [
+            "the decline in public transport use",
+            "the fall in the number of people using public transport"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L05-E03",
+      "lessonCode": "NP-L05",
+      "order": 3,
+      "type": "ordering",
+      "title": "Quy trình 4 bước Task 2",
+      "instruction": "Sắp xếp 4 bước theo đúng thứ tự: VERB → NOUN → NOUN PHRASE → IELTS SENTENCE.",
+      "autoGrade": true,
+      "points": 4,
+      "estimatedMinutes": 3,
+      "difficulty": 1,
+      "skillTags": [
+        "process"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "tokens": [
+            "Xây noun phrase: the increasing use of private cars",
+            "Tìm verb chính: People use private cars.",
+            "Đưa vào câu: The increasing use of private cars has contributed to traffic congestion.",
+            "Đổi verb thành noun: use"
+          ],
+          "answer": [
+            "Tìm verb chính: People use private cars.",
+            "Đổi verb thành noun: use",
+            "Xây noun phrase: the increasing use of private cars",
+            "Đưa vào câu: The increasing use of private cars has contributed to traffic congestion."
+          ],
+          "explanation": "VERB → NOUN → NOUN PHRASE → IELTS SENTENCE."
+        }
+      ]
+    },
+    {
+      "code": "NP-L05-E04",
+      "lessonCode": "NP-L05",
+      "order": 4,
+      "type": "mcq",
+      "title": "Paraphrase Task 2: không word-by-word",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "paraphrasing",
+        "tips"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Với \"More and more people are using social media.\", cách paraphrase TỐT nhất là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "more → increasingly; people → individuals; using → utilising"
+            },
+            {
+              "id": "B",
+              "text": "the increasing use of social media"
+            },
+            {
+              "id": "C",
+              "text": "A lot of persons are utilising social media platforms"
+            },
+            {
+              "id": "D",
+              "text": "Social media is used by many"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Đổi cấu trúc thành noun phrase, không thay từng từ."
+        },
+        {
+          "id": "q2",
+          "prompt": "Bước ĐẦU TIÊN trong quy trình Task 2 là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "nghĩ synonym"
+            },
+            {
+              "id": "B",
+              "text": "tìm verb chính"
+            },
+            {
+              "id": "C",
+              "text": "viết Introduction"
+            },
+            {
+              "id": "D",
+              "text": "đếm số từ"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tìm verb chính trước khi nghĩ synonym."
+        },
+        {
+          "id": "q3",
+          "prompt": "Noun phrase giúp gì cho Grammatical Range?",
+          "options": [
+            {
+              "id": "A",
+              "text": "giúp viết câu dài vô nghĩa"
+            },
+            {
+              "id": "B",
+              "text": "giúp nominalisation và giảm lặp subject + verb"
+            },
+            {
+              "id": "C",
+              "text": "giúp dùng nhiều dấu phẩy hơn"
+            },
+            {
+              "id": "D",
+              "text": "không liên quan"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nominalisation + tránh lặp \"people + verb\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"the failure to complete a degree\" — head noun là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "degree"
+            },
+            {
+              "id": "B",
+              "text": "failure"
+            },
+            {
+              "id": "C",
+              "text": "complete"
+            },
+            {
+              "id": "D",
+              "text": "to"
+            }
+          ],
+          "answer": "B",
+          "explanation": "the failure to + V."
+        }
+      ]
+    },
+    {
+      "code": "NP-L05-E05",
+      "lessonCode": "NP-L05",
+      "order": 5,
+      "type": "sentence_writing",
+      "title": "Viết câu IELTS từ noun phrase mục tiêu",
+      "instruction": "Cho câu gốc và noun phrase mục tiêu, viết một câu IELTS Task 2 hoàn chỉnh (có mệnh đề chính, ý nghĩa academic). Làm cả 4 câu.",
+      "source": "original",
+      "autoGrade": false,
+      "points": 12,
+      "estimatedMinutes": 14,
+      "difficulty": 3,
+      "skillTags": [
+        "academic-sentence"
+      ],
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "the increasing use of private cars",
+          "the growing number of students studying online",
+          "the growing dependence on smartphones",
+          "increased government investment in renewable energy"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Câu 1: dùng \"the increasing use of private cars\" + hệ quả (traffic congestion)",
+          "Câu 2: dùng \"the growing number of students studying online\" + tác động",
+          "Câu 3: dùng \"the growing dependence on smartphones\" + tác động",
+          "Câu 4: dùng \"increased government investment in renewable energy\" + kết quả",
+          "Mỗi câu là một câu hoàn chỉnh, giữ nguyên meaning"
+        ],
+        "sampleAnswer": "The increasing use of private cars has contributed to traffic congestion in many major cities. The growing number of students studying online has changed the way higher education is delivered. The growing dependence on smartphones can reduce face-to-face interaction among young people. Increased government investment in renewable energy can accelerate the transition to cleaner power sources.",
+        "commonErrors": [
+          "the increasing use private cars",
+          "the growing number of student"
+        ]
+      }
+    },
+    {
+      "code": "NP-L05-E06",
+      "lessonCode": "NP-L05",
+      "order": 6,
+      "type": "error_correction",
+      "title": "Sửa lỗi noun phrase trong câu Task 2",
+      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 6,
+      "estimatedMinutes": 7,
+      "difficulty": 3,
+      "skillTags": [
+        "error-correction"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The increasing use private cars causes congestion.",
+          "errorSpan": "use private cars",
+          "answer": "The increasing use of private cars causes congestion.",
+          "accept": [
+            "increasing use of private cars"
+          ],
+          "explanation": "Thiếu OF."
+        },
+        {
+          "id": "q2",
+          "prompt": "The growing number of student living with parents is a concern.",
+          "errorSpan": "student",
+          "answer": "The growing number of students living with their parents is a concern.",
+          "accept": [
+            "students living with their parents"
+          ],
+          "explanation": "Sau \"the number of\" phải là danh từ số nhiều."
+        },
+        {
+          "id": "q3",
+          "prompt": "The growing dependence of technology can be harmful.",
+          "errorSpan": "of technology",
+          "answer": "The growing dependence on technology can be harmful.",
+          "accept": [
+            "dependence on technology"
+          ],
+          "explanation": "dependence ON, không phải OF."
+        },
+        {
+          "id": "q4",
+          "prompt": "The rise of tuition fees has discouraged many applicants.",
+          "errorSpan": "of tuition fees",
+          "answer": "The rise in tuition fees has discouraged many applicants.",
+          "accept": [
+            "rise in tuition fees"
+          ],
+          "explanation": "rise IN + N."
+        },
+        {
+          "id": "q5",
+          "prompt": "The decision leave university early is often financial.",
+          "errorSpan": "decision leave",
+          "answer": "The decision to leave university early is often financial.",
+          "accept": [
+            "decision to leave university early"
+          ],
+          "explanation": "the decision TO + V."
+        },
+        {
+          "id": "q6",
+          "prompt": "The increasing number of people shopping online have changed retail.",
+          "errorSpan": "have",
+          "answer": "The increasing number of people shopping online has changed retail.",
+          "accept": [
+            "has"
+          ],
+          "explanation": "Head noun \"number\" số ít → has."
+        }
+      ]
+    },
+    {
+      "code": "NP-L06-E01",
+      "lessonCode": "NP-L06",
+      "order": 1,
+      "type": "matching",
+      "title": "Nối pattern với ví dụ",
+      "instruction": "Nối mỗi pattern noun phrase với câu ví dụ đúng.",
+      "autoGrade": true,
+      "points": 7,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "patterns"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "left": "the growing number of + N + V-ing",
+          "right": "the growing number of young people using social media"
+        },
+        {
+          "id": "q2",
+          "left": "the rise in + N",
+          "right": "the rise in tuition fees"
+        },
+        {
+          "id": "q3",
+          "left": "the decline in + N",
+          "right": "the decline in academic performance"
+        },
+        {
+          "id": "q4",
+          "left": "the increasing pressure on + N",
+          "right": "the increasing pressure on university students"
+        },
+        {
+          "id": "q5",
+          "left": "the growing dependence on + N",
+          "right": "the growing dependence on technology"
+        },
+        {
+          "id": "q6",
+          "left": "the widespread use of + N",
+          "right": "the widespread use of social media"
+        },
+        {
+          "id": "q7",
+          "left": "the decision to + V",
+          "right": "the decision to study abroad"
+        }
+      ]
+    },
+    {
+      "code": "NP-L06-E02",
+      "lessonCode": "NP-L06",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Điền giới từ cho pattern",
+      "instruction": "Điền giới từ đúng: in, on, for, to, of.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "prepositions",
+        "patterns"
+      ],
+      "wordBank": [
+        "in",
+        "on",
+        "for",
+        "to",
+        "of"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "the rise ____ tuition fees",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "the growing dependence ____ technology",
+          "blanks": [
+            {
+              "accept": [
+                "on"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "the increasing demand ____ skilled workers",
+          "blanks": [
+            {
+              "accept": [
+                "for"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "the decision ____ study abroad",
+          "blanks": [
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "the widespread use ____ social media",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "the increasing pressure ____ university students",
+          "blanks": [
+            {
+              "accept": [
+                "on"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "the decline ____ academic performance",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "the failure ____ complete a degree",
+          "blanks": [
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L06-E03",
+      "lessonCode": "NP-L06",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Paraphrase câu Task 2 bằng noun phrase",
+      "instruction": "Paraphrase mỗi câu bằng một noun phrase (không phải câu hoàn chỉnh).",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 9,
+      "difficulty": 3,
+      "skillTags": [
+        "paraphrasing",
+        "patterns"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "More and more people are using social media.",
+          "sampleAnswers": [
+            "the increasing use of social media",
+            "the growing use of social media"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Obesity is becoming more common.",
+          "sampleAnswers": [
+            "the increasing prevalence of obesity",
+            "the rising prevalence of obesity"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Academic performance is falling.",
+          "sampleAnswers": [
+            "the decline in academic performance"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Universities are demanding more skilled workers.",
+          "sampleAnswers": [
+            "the increasing demand for skilled workers"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "People rely on private vehicles more and more.",
+          "sampleAnswers": [
+            "the growing dependence on private vehicles",
+            "the growing reliance on private vehicles"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Many students fail to finish their degree.",
+          "sampleAnswers": [
+            "the failure to complete a degree"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L06-E04",
+      "lessonCode": "NP-L06",
+      "order": 4,
+      "type": "categorize",
+      "title": "Task 1 hay Task 2?",
+      "instruction": "Xếp mỗi prompt vào Task 1 (mô tả số liệu tĩnh của một biểu đồ) hay Task 2 (xu hướng xã hội cần bàn luận).",
+      "autoGrade": true,
+      "points": 12,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "sorting"
+      ],
+      "categories": [
+        {
+          "id": "t1",
+          "label": "Task 1"
+        },
+        {
+          "id": "t2",
+          "label": "Task 2"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "fast food consumption in Vietnam, 2000–2020",
+          "category": "t1"
+        },
+        {
+          "id": "c2",
+          "text": "More people are using private cars.",
+          "category": "t2"
+        },
+        {
+          "id": "c3",
+          "text": "electricity consumption in the UK",
+          "category": "t1"
+        },
+        {
+          "id": "c4",
+          "text": "People are increasingly dependent on technology.",
+          "category": "t2"
+        },
+        {
+          "id": "c5",
+          "text": "car ownership in Australia",
+          "category": "t1"
+        },
+        {
+          "id": "c6",
+          "text": "More students are choosing vocational education.",
+          "category": "t2"
+        }
+      ]
+    },
+    {
+      "code": "NP-L06-E05",
+      "lessonCode": "NP-L06",
+      "order": 5,
+      "type": "sentence_writing",
+      "title": "Paraphrase đề Task 2 bằng 3 noun phrase",
+      "instruction": "Đề: \"In several countries, a growing number of university students leave higher education before completing their degree. What are the causes and effects?\" Viết 3 câu, mỗi câu dùng MỘT noun phrase khác nhau để nói về hiện tượng / nguyên nhân / hệ quả.",
+      "source": "original",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 12,
+      "difficulty": 3,
+      "skillTags": [
+        "paraphrasing",
+        "patterns"
+      ],
+      "responseSlots": 3,
+      "rubric": {
+        "minWords": 60,
+        "targetStructures": [
+          "the increasing university dropout rate",
+          "the failure to complete a degree",
+          "the financial burden of higher education",
+          "limited employment opportunities after graduation"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Mỗi câu dùng một noun phrase khác nhau (rate / failure / burden / pressure / opportunities…)",
+          "Không chép nguyên văn đề",
+          "Giữ nguyên meaning: hiện tượng bỏ học đại học",
+          "Câu hoàn chỉnh, tự nhiên, đúng collocation"
+        ],
+        "sampleAnswer": "The increasing university dropout rate has become a growing concern in several countries. In many cases, the failure to complete a degree stems from the financial burden of higher education, which forces students to prioritise paid work. This trend also has social consequences, as limited employment opportunities after graduation can leave dropouts trapped in low-paid jobs.",
+        "commonErrors": [
+          "a growing number of student",
+          "the decision leave university"
+        ]
+      }
+    },
+    {
+      "code": "NP-L06-E06",
+      "lessonCode": "NP-L06",
+      "order": 6,
+      "type": "paragraph_writing",
+      "title": "Viết Introduction Task 2 bằng noun phrase",
+      "instruction": "Viết một Introduction (2–3 câu) cho đề: \"In several countries, a growing number of university students leave higher education before completing their degree program. What are the main causes of this trend, and what effects does it have on society?\" Dùng ít nhất 2 pattern noun phrase và nêu rõ hai nhiệm vụ (causes + effects).",
+      "source": "original",
+      "autoGrade": false,
+      "points": 12,
+      "estimatedMinutes": 15,
+      "difficulty": 3,
+      "skillTags": [
+        "introduction",
+        "patterns"
+      ],
+      "rubric": {
+        "minWords": 55,
+        "targetStructures": [
+          "the increasing rate of university dropout",
+          "the growing number of university students",
+          "the decision to leave university prematurely",
+          "raising concerns about … and …"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Paraphrase đề, KHÔNG chép nguyên văn",
+          "Dùng ít nhất 2 pattern noun phrase (rate / number of / decision to …)",
+          "Nêu rõ sẽ bàn cả nguyên nhân và hệ quả",
+          "Đúng thì hiện tại hoàn thành / hiện tại đơn cho xu hướng"
+        ],
+        "sampleAnswer": "In recent years, the increasing rate of university dropout has become a growing concern in several countries. A significant proportion of students now make the decision to leave higher education before completing their degree, raising questions about what lies behind this trend and how it affects wider society. This essay will examine the main causes of university non-completion and its consequences for both individuals and the community.",
+        "commonErrors": [
+          "Nowadays, more and more students leave university… (chép ý đề, chưa nominalise)",
+          "the rate of university dropout are increasing"
+        ]
+      }
+    }
+  ]
+}

@@ -20,7 +20,7 @@ const COURSE_CODE = 'IELTS-W-T1';
 // and the Speaking course, which adds the speaking_response exercise type —
 // see wt1.controller.submitSpeaking). Add a code here to spin up a new one.
 // Anything not in this set falls back to Task 1.
-const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
+const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'NOUN-PHRASE-WRITING']);
 function resolveCourse(code) { return COURSES.has(code) ? code : COURSE_CODE; }
 
 function gateDefaults(g = {}) {

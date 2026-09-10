@@ -1,0 +1,176 @@
+{
+  "course": {
+    "code": "NOUN-PHRASE-WRITING",
+    "title": "Noun Phrase in Writing",
+    "skill": "writing",
+    "taskType": "task1",
+    "language": "vi",
+    "targetBand": "5.5-7.0",
+    "description": "Khoá chuyên đề Noun Phrase (cụm danh từ) cho IELTS Writing, bám sát tài liệu \"Noun Phrase Masterclass\". Module 1 — Noun Phrase in Task 1: phân biệt the number of / the amount of và 3 chiến thuật biến đổi (Amount/Number + V-ing/V3, Noun + of, Word form + synonym). Module 2 — Noun Phrase in Task 2: quy trình Verb → Noun → Noun Phrase → IELTS Sentence, tìm head noun, và các pattern paraphrase ăn điểm."
+  },
+  "modules": [
+    {
+      "code": "NP-M1",
+      "order": 1,
+      "title": "Noun Phrase in Task 1",
+      "titleEn": "Noun Phrase in IELTS Writing Task 1",
+      "outcomes": [
+        "Phân biệt chính xác the number of (đếm được) và the amount of (không đếm được)",
+        "Biến tiêu đề biểu đồ thành subject tự nhiên bằng 3 chiến thuật: Amount/Number + V-ing/V3, Noun + of, Word form + synonym",
+        "Dùng đúng \"the figure for + đối tượng\"; tránh \"the number of water\", \"There were 20% of…\"",
+        "Paraphrase tiêu đề biểu đồ giữ nguyên meaning, ưu tiên accuracy"
+      ]
+    },
+    {
+      "code": "NP-M2",
+      "order": 2,
+      "title": "Noun Phrase in Task 2",
+      "titleEn": "Noun Phrase in IELTS Writing Task 2",
+      "outcomes": [
+        "Định nghĩa noun phrase, tìm head noun, phân biệt noun phrase với clause",
+        "Đổi verb → noun rồi xây noun phrase theo quy trình 4 bước",
+        "Nhận diện V-ing/V3 là participle bổ nghĩa cho noun, không phải main verb",
+        "Dùng pattern paraphrase ăn điểm để paraphrase đề và tránh lặp \"people + verb\""
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "NP-L01",
+      "moduleCode": "NP-M1",
+      "order": 1,
+      "title": "Buổi 1 — the number of hay the amount of?",
+      "titleEn": "The number of vs. the amount of",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân loại danh từ đếm được / không đếm được, chọn đúng the number of / the amount of",
+        "Dùng \"the figure for + tên nước/đối tượng\" (giới từ FOR) và \"the percentage / proportion of\" cho dữ liệu %",
+        "Chia đúng số ít cho chủ ngữ \"the number / the amount / the percentage\""
+      ],
+      "keyLanguage": [
+        "The number of + N đếm được số nhiều + V số ít: the number of cars was…",
+        "The amount of + N không đếm được + V3: the amount of water consumed…",
+        "The percentage / proportion / rate of + N + V: the proportion of students who…",
+        "The figure for + [đối tượng]: the figure for Sweden was higher than that for Norway",
+        "Đếm được: people, students, cars, households, tourists · Không đếm được: water, electricity, oil, energy, waste, fast food"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "NP-L02",
+      "moduleCode": "NP-M1",
+      "order": 2,
+      "title": "Buổi 2 — Ba chiến thuật biến đổi noun phrase Task 1",
+      "titleEn": "Three Task 1 transformation strategies",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chiến thuật 1: the amount/number of + N + V-ing/V3 (participle bổ nghĩa)",
+        "Chiến thuật 2: đổi \"N + N\" thành \"the + noun + of + object\" (fast food consumption → the consumption of fast food)",
+        "Chiến thuật 3: đổi word form + synonym hợp meaning (consumption → consumed → used/eaten)"
+      ],
+      "keyLanguage": [
+        "the number of cars sold in Japan · the amount of electricity consumed in the UK",
+        "the consumption of electricity · the use of public transport · the production of waste · the ownership of cars",
+        "consumption → consumed · production → produced/generated · use → used/using · ownership → owned",
+        "Synonym phải hợp meaning — không thay từ chỉ vì trông học thuật hơn"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "NP-L03",
+      "moduleCode": "NP-M1",
+      "order": 3,
+      "title": "Buổi 3 — Paraphrase tiêu đề biểu đồ & sửa lỗi",
+      "titleEn": "Paraphrasing chart titles & error correction",
+      "durationMinutes": 60,
+      "objectives": [
+        "Quy trình: tìm head noun → đổi word form → xây noun phrase → đưa vào câu",
+        "Paraphrase tiêu đề biểu đồ giữ nguyên meaning, không word-by-word",
+        "Tự sửa lỗi countability, word form, \"There were + %\", \"the figure of\" → \"the figure for\""
+      ],
+      "keyLanguage": [
+        "Fast food consumption in Vietnam, 2000–2020 → the amount of fast food consumed in Vietnam between 2000 and 2020",
+        "Accuracy first, variation second — không cố paraphrase mọi từ",
+        "Checklist: head noun? number vs amount? danh từ số nhiều sau number? V3/V-ing bổ nghĩa đúng noun? collocation tự nhiên?"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    },
+    {
+      "code": "NP-L04",
+      "moduleCode": "NP-M2",
+      "order": 4,
+      "title": "Buổi 4 — Noun phrase & Head noun là gì?",
+      "titleEn": "What is a noun phrase? Finding the head noun",
+      "durationMinutes": 60,
+      "objectives": [
+        "Định nghĩa noun phrase = nhóm từ xoay quanh một danh từ chính (HEAD NOUN)",
+        "Tìm head noun; phân biệt noun phrase với clause (có main verb chia thì)",
+        "Nhận ra V-ing/V3 trong noun phrase là participle bổ nghĩa, không phải main verb"
+      ],
+      "keyLanguage": [
+        "FORMULA: Determiner + Adjective + NOUN + extra information",
+        "Clause: Students are dropping out of university. → Noun phrase: students dropping out of university",
+        "the rapidly growing number of university students → head noun = number",
+        "Quy tắc vàng: đừng chỉ nhìn V-ing/V3 — hãy tìm HEAD NOUN"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "NP-L05",
+      "moduleCode": "NP-M2",
+      "order": 5,
+      "title": "Buổi 5 — Verb → Noun → Noun Phrase → Câu Task 2",
+      "titleEn": "Verb → Noun → Noun Phrase → IELTS Sentence",
+      "durationMinutes": 60,
+      "objectives": [
+        "Thuộc bộ word form nền tảng: grow→growth, decide→decision, consume→consumption, fail→failure…",
+        "Quy trình 4 bước: tìm verb chính → đổi thành noun → xây noun phrase → đưa vào câu",
+        "Paraphrase không word-by-word: More and more people are using social media → the increasing use of social media"
+      ],
+      "keyLanguage": [
+        "develop → development · reduce → reduction · pollute → pollution · invest → investment · communicate → communication",
+        "People use private cars → the increasing use of private cars → The increasing use of private cars has contributed to traffic congestion.",
+        "Mục tiêu: giữ nguyên meaning và tạo cấu trúc tự nhiên hơn"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    },
+    {
+      "code": "NP-L06",
+      "moduleCode": "NP-M2",
+      "order": 6,
+      "title": "Buổi 6 — Pattern ăn điểm & Paraphrase đề Task 2",
+      "titleEn": "High-value patterns & paraphrasing Task 2 prompts",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng thành thạo: the growing number of + N + V-ing · the rise/increase in + N · the decline in + N",
+        "Dùng: the increasing pressure on + N · the growing dependence on + N · the widespread use of + N · the decision/failure to + V",
+        "Paraphrase đề Task 2 và viết Introduction bằng noun phrase, tránh lặp \"people + verb\""
+      ],
+      "keyLanguage": [
+        "the growing number of young people using social media · the rise in tuition fees · the decline in academic performance",
+        "the increasing prevalence of obesity · the growing dependence on technology · the widespread use of social media",
+        "the decision to study abroad · the failure to complete a degree",
+        "In recent years, the increasing rate of university dropout has become a growing concern in several countries."
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    }
+  ]
+}

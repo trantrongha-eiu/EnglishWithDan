@@ -1,0 +1,1422 @@
+{
+  "exercises": [
+    {
+      "code": "NP-L01-E01",
+      "lessonCode": "NP-L01",
+      "order": 1,
+      "type": "categorize",
+      "title": "Đếm được → NUMBER, không đếm được → AMOUNT",
+      "instruction": "Kéo mỗi danh từ vào đúng nhóm: dùng \"the number of\" (đếm được, số nhiều) hay \"the amount of\" (không đếm được).",
+      "autoGrade": true,
+      "points": 12,
+      "estimatedMinutes": 6,
+      "difficulty": 1,
+      "skillTags": [
+        "countability",
+        "noun-choice"
+      ],
+      "categories": [
+        {
+          "id": "number",
+          "label": "the NUMBER of (đếm được)"
+        },
+        {
+          "id": "amount",
+          "label": "the AMOUNT of (không đếm được)"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "tourists",
+          "category": "number"
+        },
+        {
+          "id": "c2",
+          "text": "electricity",
+          "category": "amount"
+        },
+        {
+          "id": "c3",
+          "text": "students",
+          "category": "number"
+        },
+        {
+          "id": "c4",
+          "text": "waste",
+          "category": "amount"
+        },
+        {
+          "id": "c5",
+          "text": "cars",
+          "category": "number"
+        },
+        {
+          "id": "c6",
+          "text": "oil",
+          "category": "amount"
+        },
+        {
+          "id": "c7",
+          "text": "households",
+          "category": "number"
+        },
+        {
+          "id": "c8",
+          "text": "energy",
+          "category": "amount"
+        },
+        {
+          "id": "c9",
+          "text": "employees",
+          "category": "number"
+        },
+        {
+          "id": "c10",
+          "text": "fast food",
+          "category": "amount"
+        },
+        {
+          "id": "c11",
+          "text": "people",
+          "category": "number"
+        },
+        {
+          "id": "c12",
+          "text": "water",
+          "category": "amount"
+        }
+      ]
+    },
+    {
+      "code": "NP-L01-E02",
+      "lessonCode": "NP-L01",
+      "order": 2,
+      "type": "mcq",
+      "title": "Luật number / amount / figure / percentage",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 5,
+      "difficulty": 1,
+      "skillTags": [
+        "noun-choice"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Điền: \"The ____ of coffee exported from Vietnam reached 1.5 million tonnes.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "number"
+            },
+            {
+              "id": "B",
+              "text": "amount"
+            },
+            {
+              "id": "C",
+              "text": "figure"
+            },
+            {
+              "id": "D",
+              "text": "percentage"
+            }
+          ],
+          "answer": "B",
+          "explanation": "coffee không đếm được → the amount of."
+        },
+        {
+          "id": "q2",
+          "prompt": "Điền: \"The ____ of households owning a car doubled over the period.\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "amount"
+            },
+            {
+              "id": "B",
+              "text": "number"
+            },
+            {
+              "id": "C",
+              "text": "figure"
+            },
+            {
+              "id": "D",
+              "text": "proportion"
+            }
+          ],
+          "answer": "B",
+          "explanation": "households đếm được số nhiều → the number of."
+        },
+        {
+          "id": "q3",
+          "prompt": "Cụm nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "the figure of Japan"
+            },
+            {
+              "id": "B",
+              "text": "the figure for Japan"
+            },
+            {
+              "id": "C",
+              "text": "the figure in Japan"
+            },
+            {
+              "id": "D",
+              "text": "the figure about Japan"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"the figure FOR + đối tượng\" — giới từ FOR, không phải OF."
+        },
+        {
+          "id": "q4",
+          "prompt": "Sau \"the number of\" thì danh từ phải ở dạng nào và động từ chia ra sao?",
+          "options": [
+            {
+              "id": "A",
+              "text": "số nhiều + động từ số nhiều"
+            },
+            {
+              "id": "B",
+              "text": "số ít + động từ số ít"
+            },
+            {
+              "id": "C",
+              "text": "số nhiều + động từ số ít"
+            },
+            {
+              "id": "D",
+              "text": "số ít + động từ số nhiều"
+            }
+          ],
+          "answer": "C",
+          "explanation": "the number of cars WAS… — danh từ số nhiều nhưng head noun \"number\" số ít nên động từ số ít."
+        },
+        {
+          "id": "q5",
+          "prompt": "Với kết quả là 12%, ta dùng danh từ nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "the number of"
+            },
+            {
+              "id": "B",
+              "text": "the amount of"
+            },
+            {
+              "id": "C",
+              "text": "the percentage / proportion of"
+            },
+            {
+              "id": "D",
+              "text": "the figure of"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Dữ liệu phần trăm → the percentage / proportion / rate of."
+        }
+      ]
+    },
+    {
+      "code": "NP-L01-E03",
+      "lessonCode": "NP-L01",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền number / amount / percentage / figure",
+      "instruction": "Điền một trong: number, amount, percentage, figure.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 1,
+      "skillTags": [
+        "noun-choice"
+      ],
+      "wordBank": [
+        "number",
+        "amount",
+        "percentage",
+        "figure"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The ____ of electricity consumed in Hanoi rose sharply in 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "electricity không đếm được."
+        },
+        {
+          "id": "q2",
+          "prompt": "The ____ of tourists visiting Da Nang was around 3 million.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "tourists đếm được số nhiều."
+        },
+        {
+          "id": "q3",
+          "prompt": "The ____ of students choosing science subjects fell to 12%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "Kết quả là 12% → dữ liệu phần trăm."
+        },
+        {
+          "id": "q4",
+          "prompt": "The ____ for Sweden was lower than that for Norway.",
+          "blanks": [
+            {
+              "accept": [
+                "figure"
+              ]
+            }
+          ],
+          "explanation": "\"the figure for + tên nước\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "The ____ of rice produced in the Mekong Delta stood at 24 million tonnes.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "rice không đếm được."
+        },
+        {
+          "id": "q6",
+          "prompt": "The ____ of cars sold in Japan declined between 2008 and 2012.",
+          "blanks": [
+            {
+              "accept": [
+                "number"
+              ]
+            }
+          ],
+          "explanation": "cars đếm được số nhiều."
+        },
+        {
+          "id": "q7",
+          "prompt": "The ____ of waste generated by factories increased every year.",
+          "blanks": [
+            {
+              "accept": [
+                "amount"
+              ]
+            }
+          ],
+          "explanation": "waste không đếm được."
+        },
+        {
+          "id": "q8",
+          "prompt": "The ____ of male teachers in the school was only 15%.",
+          "blanks": [
+            {
+              "accept": [
+                "percentage",
+                "proportion"
+              ]
+            }
+          ],
+          "explanation": "15% → dữ liệu phần trăm."
+        }
+      ]
+    },
+    {
+      "code": "NP-L01-E04",
+      "lessonCode": "NP-L01",
+      "order": 4,
+      "type": "error_correction",
+      "title": "Sửa lỗi countability & agreement",
+      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "countability",
+        "subject-verb-agreement",
+        "there-were"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of electricity consumed increased.",
+          "errorSpan": "number",
+          "answer": "The amount of electricity consumed increased.",
+          "accept": [
+            "amount"
+          ],
+          "explanation": "electricity không đếm được → amount."
+        },
+        {
+          "id": "q2",
+          "prompt": "The amount of students studying abroad increased.",
+          "errorSpan": "amount",
+          "answer": "The number of students studying abroad increased.",
+          "accept": [
+            "number"
+          ],
+          "explanation": "students đếm được → number."
+        },
+        {
+          "id": "q3",
+          "prompt": "The consumption fast food increased in Vietnam.",
+          "errorSpan": "consumption fast food",
+          "answer": "The consumption of fast food increased in Vietnam.",
+          "accept": [
+            "consumption of fast food"
+          ],
+          "explanation": "Thiếu giới từ OF: the consumption OF fast food."
+        },
+        {
+          "id": "q4",
+          "prompt": "The number of fast food eaten increased.",
+          "errorSpan": "number",
+          "answer": "The amount of fast food eaten increased.",
+          "accept": [
+            "amount"
+          ],
+          "explanation": "fast food không đếm được → amount."
+        },
+        {
+          "id": "q5",
+          "prompt": "The figure of Japan was higher than Korea.",
+          "errorSpan": "of Japan … than Korea",
+          "answer": "The figure for Japan was higher than that for Korea.",
+          "accept": [
+            "figure for Japan was higher than that for Korea"
+          ],
+          "explanation": "\"the figure FOR + nước\"; so sánh số liệu với số liệu → \"than that for Korea\"."
+        },
+        {
+          "id": "q6",
+          "prompt": "There were 30% of students chose French.",
+          "errorSpan": "There were",
+          "answer": "30% of students chose French.",
+          "accept": [
+            "30% of students chose French"
+          ],
+          "explanation": "Không dùng \"There were\" với %; câu đã có động từ \"chose\"."
+        }
+      ]
+    },
+    {
+      "code": "NP-L01-E05",
+      "lessonCode": "NP-L01",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Bare phrase → the number/amount of …",
+      "instruction": "Viết lại cụm cho trước thành \"the number of …\" hoặc \"the amount of …\" (kèm V-ing/V3 nếu có).",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 8,
+      "difficulty": 2,
+      "skillTags": [
+        "countability",
+        "participle"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "students studying overseas",
+          "sampleAnswers": [
+            "the number of students studying overseas"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "electricity consumed",
+          "sampleAnswers": [
+            "the amount of electricity consumed"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "people using public transport",
+          "sampleAnswers": [
+            "the number of people using public transport"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "water used by households",
+          "sampleAnswers": [
+            "the amount of water used by households"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "cars sold",
+          "sampleAnswers": [
+            "the number of cars sold"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "oil imported",
+          "sampleAnswers": [
+            "the amount of oil imported"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "households with internet access",
+          "sampleAnswers": [
+            "the number of households with internet access"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "waste produced by households",
+          "sampleAnswers": [
+            "the amount of waste produced by households"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L01-E06",
+      "lessonCode": "NP-L01",
+      "order": 6,
+      "type": "sentence_writing",
+      "title": "Bài viết — Mức tiêu thụ đồ ăn nhanh (1990)",
+      "instruction": "Viết 4 câu mô tả bảng dưới đây. Bắt buộc dùng cả \"the number of\" và \"the amount of\" đúng chỗ, và ít nhất một câu dùng \"the figure for\".",
+      "source": "original",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 10,
+      "difficulty": 2,
+      "skillTags": [
+        "describing-data",
+        "countability"
+      ],
+      "stimulus": {
+        "kind": "table",
+        "caption": "The amount of fast food consumed in four countries in 1990",
+        "headers": [
+          "COUNTRY",
+          "AMOUNT (tonnes)"
+        ],
+        "rows": [
+          [
+            "The UK",
+            "2,000"
+          ],
+          [
+            "The US",
+            "5,000"
+          ],
+          [
+            "Vietnam",
+            "400"
+          ],
+          [
+            "China",
+            "10,000"
+          ]
+        ]
+      },
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 55,
+        "targetStructures": [
+          "The amount of … was …",
+          "[Số liệu] tonnes of … were …",
+          "the consumption of …",
+          "The figure for …"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Dùng AMOUNT (fast food không đếm được), KHÔNG dùng NUMBER",
+          "Ít nhất một câu dùng \"the figure for + tên nước\"",
+          "Không lặp một cấu trúc quá 2 lần",
+          "Động từ chia đúng số ít/số nhiều"
+        ],
+        "sampleAnswer": "The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries. 5,000 tonnes of fast food were eaten in the US. The consumption of fast food in the UK stood at 2,000 tonnes. The figure for Vietnam was the lowest, at only 400 tonnes.",
+        "commonErrors": [
+          "The number of fast food",
+          "The amount of countries"
+        ]
+      }
+    },
+    {
+      "code": "NP-L02-E01",
+      "lessonCode": "NP-L02",
+      "order": 1,
+      "type": "matching",
+      "title": "Nối chiến thuật với ví dụ",
+      "instruction": "Nối tên chiến thuật biến đổi với câu ví dụ tương ứng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "transformation"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "left": "Chiến thuật 1 — Amount/Number + V-ing/V3",
+          "right": "the amount of electricity consumed in the UK"
+        },
+        {
+          "id": "q2",
+          "left": "Chiến thuật 2 — Noun + of",
+          "right": "the consumption of electricity in the UK"
+        },
+        {
+          "id": "q3",
+          "left": "Chiến thuật 3 — Word form + synonym",
+          "right": "the amount of electricity used in the UK"
+        },
+        {
+          "id": "q4",
+          "left": "Chiến thuật 1 (đếm được)",
+          "right": "the number of people using public transport"
+        },
+        {
+          "id": "q5",
+          "left": "Chiến thuật 2 (ownership)",
+          "right": "the ownership of cars in Australia"
+        }
+      ]
+    },
+    {
+      "code": "NP-L02-E02",
+      "lessonCode": "NP-L02",
+      "order": 2,
+      "type": "word_form",
+      "title": "Noun → V3 / V-ing",
+      "instruction": "Viết dạng participle (V3 hoặc V-ing) tương ứng của danh từ.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 5,
+      "difficulty": 1,
+      "skillTags": [
+        "word-form"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "consumption",
+          "answer": "consumed",
+          "accept": [
+            "consumed",
+            "consuming"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "production",
+          "answer": "produced",
+          "accept": [
+            "produced",
+            "producing",
+            "generated"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "use",
+          "answer": "used",
+          "accept": [
+            "used",
+            "using"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "generation",
+          "answer": "generated",
+          "accept": [
+            "generated",
+            "generating",
+            "produced"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "ownership",
+          "answer": "owned",
+          "accept": [
+            "owned",
+            "owning"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "employment",
+          "answer": "employed",
+          "accept": [
+            "employed"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "import",
+          "answer": "imported",
+          "accept": [
+            "imported",
+            "importing"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "export",
+          "answer": "exported",
+          "accept": [
+            "exported",
+            "exporting"
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "investment",
+          "answer": "invested",
+          "accept": [
+            "invested",
+            "investing"
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "sale",
+          "answer": "sold",
+          "accept": [
+            "sold"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L02-E03",
+      "lessonCode": "NP-L02",
+      "order": 3,
+      "type": "gap_fill",
+      "title": "Điền OF vào cấu trúc Noun + of",
+      "instruction": "Điền đúng danh từ (consumption / use / production / ownership / import) vào chỗ trống.",
+      "autoGrade": true,
+      "points": 6,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "noun-of"
+      ],
+      "wordBank": [
+        "consumption",
+        "use",
+        "production",
+        "ownership",
+        "import"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "electricity consumption → the ____ of electricity",
+          "blanks": [
+            {
+              "accept": [
+                "consumption"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "public transport use → the ____ of public transport",
+          "blanks": [
+            {
+              "accept": [
+                "use"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "waste production → the ____ of waste",
+          "blanks": [
+            {
+              "accept": [
+                "production"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "car ownership → the ____ of cars",
+          "blanks": [
+            {
+              "accept": [
+                "ownership"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "oil imports → the ____ of oil",
+          "blanks": [
+            {
+              "accept": [
+                "import"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L02-E04",
+      "lessonCode": "NP-L02",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Chiến thuật 2 — đổi thành \"the … of …\"",
+      "instruction": "Viết lại cụm \"N + N\" thành cấu trúc \"the + noun + of + object\".",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 8,
+      "difficulty": 2,
+      "skillTags": [
+        "noun-of",
+        "paraphrasing"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "electricity consumption",
+          "sampleAnswers": [
+            "the consumption of electricity"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "water consumption",
+          "sampleAnswers": [
+            "the consumption of water"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "car ownership",
+          "sampleAnswers": [
+            "the ownership of cars"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "public transport use",
+          "sampleAnswers": [
+            "the use of public transport"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "waste production",
+          "sampleAnswers": [
+            "the production of waste"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "energy consumption",
+          "sampleAnswers": [
+            "the consumption of energy"
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "oil imports",
+          "sampleAnswers": [
+            "the import of oil",
+            "oil imports"
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "goods exports",
+          "sampleAnswers": [
+            "the export of goods",
+            "goods exports"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L02-E05",
+      "lessonCode": "NP-L02",
+      "order": 5,
+      "type": "sentence_transform",
+      "title": "Chiến thuật 3 — Word form + synonym",
+      "instruction": "Đổi danh từ hoá thành cụm \"the amount/number of + N + V3\", dùng synonym hợp nghĩa nếu tự nhiên hơn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 8,
+      "difficulty": 3,
+      "skillTags": [
+        "word-form",
+        "synonym"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "water consumption",
+          "sampleAnswers": [
+            "the amount of water consumed",
+            "the amount of water used"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "electricity production",
+          "sampleAnswers": [
+            "the amount of electricity produced",
+            "the amount of electricity generated"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "fast food consumption",
+          "sampleAnswers": [
+            "the amount of fast food consumed",
+            "the amount of fast food eaten"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "goods imported",
+          "sampleAnswers": [
+            "the amount of goods imported",
+            "the amount of goods brought into the country"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "cars sold",
+          "sampleAnswers": [
+            "the number of cars sold"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "houses built",
+          "sampleAnswers": [
+            "the number of houses built"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NP-L02-E06",
+      "lessonCode": "NP-L02",
+      "order": 6,
+      "type": "sentence_writing",
+      "title": "Viết 3 phiên bản cho một tiêu đề",
+      "instruction": "Cho tiêu đề \"Electricity consumption in the UK increased from 2000 to 2010.\" Viết 3 phiên bản: (1) Amount/Number + V3, (2) Noun + of, (3) Word form / synonym.",
+      "source": "original",
+      "autoGrade": false,
+      "points": 9,
+      "estimatedMinutes": 10,
+      "difficulty": 2,
+      "skillTags": [
+        "transformation",
+        "paraphrasing"
+      ],
+      "responseSlots": 3,
+      "rubric": {
+        "minWords": 30,
+        "targetStructures": [
+          "the amount of electricity consumed",
+          "the consumption of electricity",
+          "the amount of electricity used"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Câu 1 dùng \"the amount of electricity consumed/used …\"",
+          "Câu 2 dùng \"the consumption of electricity …\"",
+          "Câu 3 đổi word form hoặc synonym hợp nghĩa (used/generated)",
+          "Giữ nguyên meaning và mốc thời gian 2000–2010"
+        ],
+        "sampleAnswer": "The amount of electricity consumed in the UK increased between 2000 and 2010. The consumption of electricity in the UK rose over the same period. The amount of electricity used in the UK went up from 2000 to 2010.",
+        "commonErrors": [
+          "The number of electricity",
+          "The consumption electricity"
+        ]
+      }
+    },
+    {
+      "code": "NP-L03-E01",
+      "lessonCode": "NP-L03",
+      "order": 1,
+      "type": "sentence_transform",
+      "title": "Paraphrase tiêu đề biểu đồ",
+      "instruction": "Paraphrase mỗi tiêu đề biểu đồ thành một noun phrase mô tả, giữ nguyên meaning.",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 12,
+      "difficulty": 3,
+      "skillTags": [
+        "paraphrasing",
+        "chart-title"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Fast food consumption in Vietnam, 2000–2020",
+          "sampleAnswers": [
+            "the amount of fast food consumed in Vietnam between 2000 and 2020",
+            "the consumption of fast food in Vietnam from 2000 to 2020"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Electricity consumption in four countries",
+          "sampleAnswers": [
+            "the amount of electricity consumed in four countries",
+            "the consumption of electricity in four countries"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Car ownership in Australia",
+          "sampleAnswers": [
+            "the number of cars owned in Australia",
+            "the number of people owning cars in Australia"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Public transport use among adults",
+          "sampleAnswers": [
+            "the number of adults using public transport",
+            "the use of public transport among adults"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Water consumption by households",
+          "sampleAnswers": [
+            "the amount of water consumed by households",
+            "the consumption of water by households"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Online shopping among young people",
+          "sampleAnswers": [
+            "the number of young people shopping online",
+            "the number of young people purchasing goods online"
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "the amount of + N + V3",
+          "the number of + N + V-ing",
+          "the + noun + of + object"
+        ],
+        "checklist": [
+          "Giữ nguyên đối tượng và mốc thời gian",
+          "Dùng number cho đếm được, amount cho không đếm được",
+          "Không word-by-word"
+        ],
+        "commonErrors": [
+          "the amount of cars",
+          "the consumption fast food"
+        ]
+      }
+    },
+    {
+      "code": "NP-L03-E02",
+      "lessonCode": "NP-L03",
+      "order": 2,
+      "type": "error_correction",
+      "title": "Sửa lỗi tổng hợp",
+      "instruction": "Mỗi câu có đúng một lỗi noun phrase. Viết lại cả câu cho đúng.",
+      "autoGrade": true,
+      "points": 6,
+      "estimatedMinutes": 7,
+      "difficulty": 3,
+      "skillTags": [
+        "error-correction"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The increasing use private cars causes congestion.",
+          "errorSpan": "use private cars",
+          "answer": "The increasing use of private cars causes congestion.",
+          "accept": [
+            "increasing use of private cars"
+          ],
+          "explanation": "Thiếu OF: the increasing use OF private cars."
+        },
+        {
+          "id": "q2",
+          "prompt": "The number of waste produced by factories increased.",
+          "errorSpan": "number",
+          "answer": "The amount of waste produced by factories increased.",
+          "accept": [
+            "amount"
+          ],
+          "explanation": "waste không đếm được → amount."
+        },
+        {
+          "id": "q3",
+          "prompt": "The amount of people owning cars rose steadily.",
+          "errorSpan": "amount",
+          "answer": "The number of people owning cars rose steadily.",
+          "accept": [
+            "number"
+          ],
+          "explanation": "people đếm được → number."
+        },
+        {
+          "id": "q4",
+          "prompt": "The number of cars sold in Japan were falling.",
+          "errorSpan": "were",
+          "answer": "The number of cars sold in Japan was falling.",
+          "accept": [
+            "was"
+          ],
+          "explanation": "Head noun \"number\" số ít → was."
+        },
+        {
+          "id": "q5",
+          "prompt": "The consumption of electricity increased. The number of it doubled by 2010.",
+          "errorSpan": "The number of it",
+          "answer": "The consumption of electricity increased. The figure doubled by 2010.",
+          "accept": [
+            "The figure doubled by 2010",
+            "It doubled by 2010"
+          ],
+          "explanation": "Không dùng \"the number of it\" — dùng \"the figure\" hoặc \"it\" để tránh lặp."
+        },
+        {
+          "id": "q6",
+          "prompt": "There was 45% of respondents preferred online classes.",
+          "errorSpan": "There was",
+          "answer": "45% of respondents preferred online classes.",
+          "accept": [
+            "45% of respondents preferred online classes"
+          ],
+          "explanation": "Không dùng \"There was/were\" với %."
+        }
+      ]
+    },
+    {
+      "code": "NP-L03-E03",
+      "lessonCode": "NP-L03",
+      "order": 3,
+      "type": "mcq",
+      "title": "10 điều phải nhớ — Task 1",
+      "instruction": "Chọn đáp án đúng theo phần Tips Task 1.",
+      "autoGrade": true,
+      "points": 10,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "tips"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Nhóm từ nào đi với \"the amount of\"?",
+          "options": [
+            {
+              "id": "A",
+              "text": "people / students / cars"
+            },
+            {
+              "id": "B",
+              "text": "water / electricity / oil / energy / waste"
+            },
+            {
+              "id": "C",
+              "text": "households / tourists / employees"
+            },
+            {
+              "id": "D",
+              "text": "countries / cities / regions"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Danh từ không đếm được."
+        },
+        {
+          "id": "q2",
+          "prompt": "Cấu trúc \"The amount of + object + V3\" hữu ích nhất khi nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "khi mô tả xu hướng tương lai"
+            },
+            {
+              "id": "B",
+              "text": "khi biến một danh từ hoá thành subject: the amount of water consumed"
+            },
+            {
+              "id": "C",
+              "text": "khi so sánh hai quốc gia"
+            },
+            {
+              "id": "D",
+              "text": "khi viết Overview"
+            }
+          ],
+          "answer": "B",
+          "explanation": "V3 là participle bổ nghĩa cho danh từ."
+        },
+        {
+          "id": "q3",
+          "prompt": "Khi nào KHÔNG nên dùng synonym?",
+          "options": [
+            {
+              "id": "A",
+              "text": "khi nó làm câu dài hơn"
+            },
+            {
+              "id": "B",
+              "text": "khi nó làm thay đổi meaning"
+            },
+            {
+              "id": "C",
+              "text": "khi nó khó phát âm"
+            },
+            {
+              "id": "D",
+              "text": "khi giáo viên không thích"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Synonym phải hợp meaning."
+        },
+        {
+          "id": "q4",
+          "prompt": "Trong Task 1, ưu tiên nào quan trọng hơn?",
+          "options": [
+            {
+              "id": "A",
+              "text": "vocabulary show-off"
+            },
+            {
+              "id": "B",
+              "text": "accuracy"
+            },
+            {
+              "id": "C",
+              "text": "câu càng phức tạp càng tốt"
+            },
+            {
+              "id": "D",
+              "text": "paraphrase mọi từ trong tiêu đề"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Accuracy first, variation second."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"consumption\" đổi sang participle là gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "consumpted"
+            },
+            {
+              "id": "B",
+              "text": "consuming only"
+            },
+            {
+              "id": "C",
+              "text": "consumed"
+            },
+            {
+              "id": "D",
+              "text": "consumption-ed"
+            }
+          ],
+          "answer": "C",
+          "explanation": "consume → consumed."
+        }
+      ]
+    },
+    {
+      "code": "NP-L03-E04",
+      "lessonCode": "NP-L03",
+      "order": 4,
+      "type": "ordering",
+      "title": "Sắp xếp quy trình biến đổi",
+      "instruction": "Sắp xếp các bước theo đúng thứ tự khi biến một tiêu đề thành câu mô tả.",
+      "autoGrade": true,
+      "points": 4,
+      "estimatedMinutes": 3,
+      "difficulty": 1,
+      "skillTags": [
+        "process"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "tokens": [
+            "Xây noun phrase hoàn chỉnh",
+            "Tìm head noun",
+            "Đưa noun phrase vào câu mô tả số liệu",
+            "Đổi word form (verb ⇄ noun ⇄ V3)"
+          ],
+          "answer": [
+            "Tìm head noun",
+            "Đổi word form (verb ⇄ noun ⇄ V3)",
+            "Xây noun phrase hoàn chỉnh",
+            "Đưa noun phrase vào câu mô tả số liệu"
+          ],
+          "explanation": "Head noun → word form → noun phrase → câu."
+        },
+        {
+          "id": "q2",
+          "tokens": [
+            "many",
+            "from rural areas",
+            "students",
+            "university"
+          ],
+          "answer": [
+            "many",
+            "university",
+            "students",
+            "from rural areas"
+          ],
+          "explanation": "FORMULA: Determiner + Adjective + NOUN + extra information."
+        }
+      ]
+    },
+    {
+      "code": "NP-L03-E05",
+      "lessonCode": "NP-L03",
+      "order": 5,
+      "type": "sentence_writing",
+      "title": "Mini writing challenge — 4 cấu trúc khác nhau",
+      "instruction": "Cho biểu đồ giả định về giao thông đô thị. Viết 4 câu, mỗi câu dùng MỘT cấu trúc khác nhau: (1) the number of, (2) the amount of, (3) noun + of, (4) noun phrase có V-ing/V3.",
+      "source": "original",
+      "autoGrade": false,
+      "points": 10,
+      "estimatedMinutes": 12,
+      "difficulty": 3,
+      "skillTags": [
+        "sentence-variety"
+      ],
+      "stimulus": {
+        "kind": "table",
+        "caption": "Giao thông đô thị (số liệu giả định, năm 2020)",
+        "headers": [
+          "CHỈ SỐ",
+          "GIÁ TRỊ"
+        ],
+        "rows": [
+          [
+            "Người dùng xe buýt",
+            "1.2 triệu"
+          ],
+          [
+            "Nhiên liệu tiêu thụ",
+            "800 triệu lít"
+          ],
+          [
+            "Xe máy bán ra",
+            "250,000"
+          ],
+          [
+            "Người đi bộ đến nơi làm",
+            "400,000"
+          ]
+        ]
+      },
+      "responseSlots": 4,
+      "rubric": {
+        "minWords": 50,
+        "targetStructures": [
+          "the number of + N + V",
+          "the amount of + N + V3",
+          "the + noun + of + object",
+          "N + V-ing/V3 (participle)"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Đúng 4 câu, mỗi câu một cấu trúc khác nhau",
+          "number cho đếm được, amount cho không đếm được",
+          "Có ít nhất một participle (V-ing/V3) bổ nghĩa cho noun",
+          "Số liệu chính xác so với bảng"
+        ],
+        "sampleAnswer": "The number of bus users in the city was 1.2 million in 2020. The amount of fuel consumed reached 800 million litres. The sale of motorbikes stood at 250,000 units. There were 400,000 people walking to work.",
+        "commonErrors": [
+          "the amount of bus users",
+          "the number of fuel"
+        ]
+      }
+    },
+    {
+      "code": "NP-L03-E06",
+      "lessonCode": "NP-L03",
+      "order": 6,
+      "type": "paragraph_writing",
+      "title": "Introduction + câu mô tả cho biểu đồ Task 1",
+      "instruction": "Viết Introduction (1 câu, paraphrase đề) và 2 câu mô tả số liệu cho đề: \"The chart below shows fast food consumption in Vietnam, the UK and the US between 2000 and 2020.\" Dùng ít nhất 3 cấu trúc noun phrase khác nhau.",
+      "source": "original",
+      "autoGrade": false,
+      "points": 12,
+      "estimatedMinutes": 15,
+      "difficulty": 3,
+      "skillTags": [
+        "introduction",
+        "describing-data"
+      ],
+      "rubric": {
+        "minWords": 55,
+        "targetStructures": [
+          "illustrates / shows",
+          "the amount of … consumed",
+          "the consumption of …",
+          "the figure for …"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Introduction chỉ 1 câu, đã paraphrase, không chép đề",
+          "Dùng AMOUNT (fast food không đếm được)",
+          "Ít nhất 3 cấu trúc noun phrase khác nhau, không lặp quá 2 lần",
+          "Không đưa quá nhiều số liệu — chọn 3–4 con số nổi bật"
+        ],
+        "sampleAnswer": "The line graph illustrates how much fast food was consumed in Vietnam, the UK and the US over a twenty-year period from 2000 to 2020. The amount of fast food consumed in the US was the highest throughout the period, rising to around 6,000 tonnes by 2020. The consumption of fast food in Vietnam, by contrast, remained the lowest, and the figure for the UK sat between the other two.",
+        "commonErrors": [
+          "The graph shows fast food consumption… (chép đề)",
+          "the number of fast food"
+        ]
+      }
+    }
+  ]
+}
