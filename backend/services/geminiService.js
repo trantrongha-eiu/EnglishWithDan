@@ -287,6 +287,10 @@ PRONUNCIATION — grade ONLY from the audio you can hear (not the transcript spe
 When you cite pronunciation issues in "mistakes"/"improvements", quote the word as you HEARD it, e.g. {"original":"\"comfortable\" (heard as com-FOR-ta-ble)","corrected":"\"COMF-ter-ble\" — stress the first syllable, swallow the middle","reason":"..."}.`;
 
 function buildSpeakingGradingPrompt(question, transcript, part, hasAudio = false) {
+  // When the client had no speech-to-text (mobile Safari/iOS, in-app
+  // webviews, blocked recognition service) it still uploads the raw audio.
+  // Gemini then transcribes it itself and grades from that.
+  const needTranscribe = hasAudio && !String(transcript || '').trim();
   return `${SPEAKING_BAND_DESCRIPTORS}
 ${hasAudio ? PRONUNCIATION_AUDIO_RUBRIC : ''}
 
@@ -297,7 +301,9 @@ ${question}
 IELTS Part
 ${part}
 
-Candidate Transcript${hasAudio ? ' (auto speech-to-text — the real audio recording is attached separately; trust the audio where they disagree)' : ''}
+Candidate Transcript${needTranscribe
+    ? ' — NONE PROVIDED. Transcribe the attached audio recording yourself (verbatim, standard spelling, light punctuation, no timestamps or speaker labels) and grade from your own transcription.'
+    : hasAudio ? ' (auto speech-to-text — the real audio recording is attached separately; trust the audio where they disagree)' : ''}
 <<<TRANSCRIPT_START>>>
 ${transcript}
 <<<TRANSCRIPT_END>>>
@@ -308,7 +314,7 @@ Return exactly this JSON schema:
   "fluency": number,
   "vocabulary": number,
   "grammar": number,
-  "pronunciation": number,
+  "pronunciation": number,${hasAudio ? '\n  "transcript": "",' : ''}
   "overallFeedback": "",
   "todaysFocus": "",
   "strengths": [],
@@ -317,7 +323,11 @@ Return exactly this JSON schema:
   "improvements": []
 }
 
-Rules:
+Rules:${hasAudio
+    ? `\n- transcript: ${needTranscribe
+        ? 'your verbatim transcription of the attached audio (this is what grading is based on). If the audio is silent / unintelligible / has no real answer, set it to "".'
+        : 'a lightly cleaned version of the candidate transcript above, corrected only where the attached audio makes the intended words unambiguous (fix mis-transcriptions, keep the candidate\'s own grammar/vocabulary). Never blank unless there is genuinely no speech.'}`
+    : ''}
 - "fluency"/"vocabulary"/"grammar"/"pronunciation" map to Fluency and Coherence / Lexical Resource / Grammatical Range and Accuracy / Pronunciation above, each scored independently against the descriptors.
 ${hasAudio
     ? '- pronunciation: score it from the ATTACHED AUDIO using the PRONUNCIATION checklist above; the number must reflect what you actually heard. Put at least one concrete, heard pronunciation observation in "improvements" (or "mistakes" if it is an error), quoting the word as pronounced.'
@@ -361,7 +371,7 @@ async function checkSpeaking(question, transcript, part = 1, audio = null, _atte
           systemInstruction: speakingSystemInstruction(hasAudio),
           responseMimeType: 'application/json',
           temperature: 0.3,
-          maxOutputTokens: 2048, // was 1024 (before that 768) — still not enough headroom for Part 2/3 transcripts, whose longer answers produce richer strengths/mistakes/vocabUpgrades arrays that were hitting the cap and triggering the parse-failure retry (each retry adds a full ~30s round trip). A second truncation makes grading throw; speaking.controller.js's analyze() persists a 'pending' attempt BEFORE grading and marks it 'error' on failure, so the submission is no longer lost when that happens — but the student still gets no feedback, so the headroom matters.
+          maxOutputTokens: hasAudio ? 3072 : 2048, // was 1024 (before that 768) — still not enough headroom for Part 2/3 transcripts, whose longer answers produce richer strengths/mistakes/vocabUpgrades arrays that were hitting the cap and triggering the parse-failure retry (each retry adds a full ~30s round trip). A second truncation makes grading throw; speaking.controller.js's analyze() persists a 'pending' attempt BEFORE grading and marks it 'error' on failure, so the submission is no longer lost when that happens — but the student still gets no feedback, so the headroom matters. The audio path also returns a "transcript" field (Gemini's own transcription), which needs its own headroom on Part 2.
           // Audio grading benefits from actual phonetic reasoning — give the
           // model a bounded thinking budget on that path only (accuracy over
           // a couple of seconds of latency, per the product ask). The

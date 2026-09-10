@@ -1927,3 +1927,131 @@ button:focus-visible {
   .practice-actions .btn-primary { width: 100%; justify-content: center; }
   .modal-score-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Practice animations & polish (2026-09) — decorative only; all of it
+   is disabled under prefers-reduced-motion at the bottom of this block.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Recording: breathing mic + layered rings + live textarea glow ── */
+.btn-record.recording .rec-mic { animation: sp-mic-breathe 1.4s ease-in-out infinite; }
+@keyframes sp-mic-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.14); }
+}
+.btn-record.recording::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 3px solid rgba(229,57,53,.28);
+  animation: pulse-ring 1.4s ease-out .7s infinite; /* offset from .rec-ring */
+}
+.transcript-textarea.sp-rec-live {
+  border-color: #f44336;
+  box-shadow: 0 0 0 4px rgba(244,67,54,.14), 0 0 18px rgba(244,67,54,.18);
+  animation: sp-live-glow 1.8s ease-in-out infinite;
+}
+@keyframes sp-live-glow {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(244,67,54,.12), 0 0 14px rgba(244,67,54,.14); }
+  50%      { box-shadow: 0 0 0 5px rgba(244,67,54,.20), 0 0 24px rgba(244,67,54,.24); }
+}
+/* interim (live) transcript gets a soft blinking caret while it fills */
+.transcript-interim:not(:empty)::after {
+  content: "▍";
+  margin-left: 1px;
+  animation: sp-caret 1s steps(1) infinite;
+  color: #e53935;
+}
+@keyframes sp-caret { 50% { opacity: 0; } }
+
+/* ── Analyzing: sound-wave loader (in addition to the existing spinner) ── */
+.sp-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 30px;
+  margin: 0 auto 4px;
+}
+.sp-wave span {
+  width: 5px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  animation: sp-wave-bounce 1s ease-in-out infinite;
+}
+.sp-wave span:nth-child(1) { animation-delay: -.9s; }
+.sp-wave span:nth-child(2) { animation-delay: -.75s; }
+.sp-wave span:nth-child(3) { animation-delay: -.6s; }
+.sp-wave span:nth-child(4) { animation-delay: -.45s; }
+.sp-wave span:nth-child(5) { animation-delay: -.3s; }
+@keyframes sp-wave-bounce {
+  0%, 100% { height: 8px;  opacity: .55; }
+  50%      { height: 30px; opacity: 1; }
+}
+.feedback-loading .spinner { display: none; } /* superseded by .sp-wave */
+
+/* ── Feedback reveal: staggered fade-up of score + feedback cards ── */
+#feedback-results.sp-reveal .score-card,
+#feedback-results.sp-reveal .fb-card,
+#feedback-results.sp-reveal #fb-compare-note,
+#feedback-results.sp-reveal #fb-pron-note {
+  opacity: 0;
+  animation: sp-fade-up .5s cubic-bezier(.2,.7,.3,1) forwards;
+}
+#feedback-results.sp-reveal .score-card:nth-child(1) { animation-delay: .02s; }
+#feedback-results.sp-reveal .score-card:nth-child(2) { animation-delay: .08s; }
+#feedback-results.sp-reveal .score-card:nth-child(3) { animation-delay: .14s; }
+#feedback-results.sp-reveal .score-card:nth-child(4) { animation-delay: .20s; }
+#feedback-results.sp-reveal .score-card:nth-child(5) { animation-delay: .26s; }
+#feedback-results.sp-reveal #fb-pron-note   { animation-delay: .30s; }
+#feedback-results.sp-reveal #fb-compare-note{ animation-delay: .32s; }
+#feedback-results.sp-reveal .fb-card        { animation-delay: .36s; }
+@keyframes sp-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* the overall-band card gets a gentle pop + a soft halo when revealed */
+#feedback-results.sp-reveal .score-overall {
+  animation: sp-fade-up .5s cubic-bezier(.2,.7,.3,1) forwards, sp-band-pop .6s ease .28s;
+}
+@keyframes sp-band-pop {
+  0%   { box-shadow: 0 0 0 0 rgba(99,102,241,.45); }
+  60%  { box-shadow: 0 0 0 14px rgba(99,102,241,0); }
+  100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+}
+.score-value.sp-counting { transition: none; }
+
+/* ── New question slides in ── */
+#question-card.sp-q-enter {
+  animation: sp-q-in .45s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes sp-q-in {
+  from { opacity: 0; transform: translateY(10px) scale(.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── "AI is transcribing your recording" affordance on the analyze btn ── */
+.btn-analyze.sp-analyzing i { animation: spin .7s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-record.recording .rec-mic,
+  .btn-record.recording::after,
+  .transcript-textarea.sp-rec-live,
+  .transcript-interim:not(:empty)::after,
+  .sp-wave span,
+  #feedback-results.sp-reveal .score-card,
+  #feedback-results.sp-reveal .fb-card,
+  #feedback-results.sp-reveal #fb-compare-note,
+  #feedback-results.sp-reveal #fb-pron-note,
+  #feedback-results.sp-reveal .score-overall,
+  #question-card.sp-q-enter,
+  .btn-analyze.sp-analyzing i {
+    animation: none !important;
+  }
+  .transcript-textarea.sp-rec-live { box-shadow: 0 0 0 3px rgba(244,67,54,.18); }
+  #feedback-results.sp-reveal .score-card,
+  #feedback-results.sp-reveal .fb-card,
+  #feedback-results.sp-reveal #fb-compare-note,
+  #feedback-results.sp-reveal #fb-pron-note { opacity: 1; }
+}

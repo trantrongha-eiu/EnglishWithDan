@@ -38,8 +38,13 @@ exports.getQuestions = catchAsync(async (req, res) => {
 // handles.
 exports.analyze = catchAsync(async (req, res) => {
   const { transcript, question, questionId, topic, part, duration } = req.body;
-  if (!transcript || !transcript.trim()) {
-    return res.status(400).json({ success: false, message: 'Transcript trống' });
+  const clientTranscript = typeof transcript === 'string' ? transcript.trim() : '';
+  // A recording with NO client speech-to-text (mobile Safari/iOS, in-app
+  // webviews, a blocked recognition service) is valid — Gemini transcribes
+  // the uploaded audio itself and grades from that. Only reject when there
+  // is neither a transcript nor an audio file.
+  if (!clientTranscript && !req.file) {
+    return res.status(400).json({ success: false, message: 'Chưa có nội dung để phân tích — hãy ghi âm hoặc nhập lời thoại.' });
   }
 
   const partNum = part ? Number(part) : 1;
@@ -47,8 +52,7 @@ exports.analyze = catchAsync(async (req, res) => {
 
   // Optional: the student's real recording (multipart 'audio' field) — lets
   // Gemini grade Pronunciation from what it actually hears instead of a
-  // transcript-only estimate. Absent for browsers without MediaRecorder, or
-  // if the upload was dropped (see routes/speaking.js optionalAudio).
+  // transcript-only estimate, and transcribe when the client had no STT.
   const audio = req.file
     ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
     : null;
@@ -60,20 +64,21 @@ exports.analyze = catchAsync(async (req, res) => {
   // grading succeeded, so a slow/failed grade meant the attempt was
   // invisible or silently lost. May be null (never blocks grading below).
   const pendingId = await speakingService.createPendingAttempt(req.user._id, {
-    questionId, topic, part: partNum, questionText, transcript, duration
+    questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration
   });
 
   let feedback;
   try {
-    feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum, audio);
+    feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, audio);
   } catch (aiErr) {
     // If the audio part is what tripped grading up (unsupported container,
     // corrupt blob, size), don't lose the whole grade — retry once
-    // transcript-only before surfacing an error.
-    if (audio && !aiErr.isOverloaded) {
+    // transcript-only. Only possible when we actually HAVE a transcript;
+    // an audio-only submission has nothing to fall back to.
+    if (audio && clientTranscript && !aiErr.isOverloaded) {
       console.warn('[Speaking] audio grading failed, retrying transcript-only:', aiErr.message);
       try {
-        feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum, null);
+        feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, null);
       } catch (retryErr) {
         aiErr = retryErr;
       }
@@ -88,14 +93,19 @@ exports.analyze = catchAsync(async (req, res) => {
     }
   }
 
-  const { attemptId, newlyUnlocked } = pendingId
-    ? await speakingService.finalizeAttempt(pendingId, feedback, req.user)
-    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript, duration, feedback });
+  // Audio path: prefer the student's own STT text, else the transcription
+  // Gemini produced from the recording. This is what gets stored + shown.
+  const resolvedTranscript = clientTranscript
+    || (feedback && typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '')
+    || '';
 
-  // attemptId lets the frontend key a locally-stored (IndexedDB) audio
-  // recording to this exact attempt, so History can offer same-device
-  // playback later — see js/speaking-audio-store.js.
-  res.json({ success: true, feedback, attemptId, newlyUnlocked });
+  const { attemptId, newlyUnlocked } = pendingId
+    ? await speakingService.finalizeAttempt(pendingId, feedback, req.user, resolvedTranscript)
+    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback });
+
+  // `transcript` lets a client that had no local speech-to-text show what
+  // was actually said; `attemptId` keys the locally-stored audio recording.
+  res.json({ success: true, feedback, attemptId, newlyUnlocked, transcript: resolvedTranscript });
 });
 
 // ── POST /api/speaking/mock-submit ───────────────────────────
