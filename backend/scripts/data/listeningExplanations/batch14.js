@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a53b2975c459ab074ce48ae',
+    title: 'The Impact of Technology on Young People',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi giới thiệu quan điểm của Prensky.\n\nTranscript: "they\'ve changed in fundamental ways. He believes they\'re evolving differently, and as a result, process information differently from previous generations."\n\nPhân tích: Prensky cho rằng công nghệ đã thay đổi cách tư duy của giới trẻ (altered their thinking patterns) → đáp án A.' },
+      { questionNumber: 32, explanation: 'Vị trí: Khi so sánh "digital immigrants" với "digital natives".\n\nTranscript: "the immigrants are usually, in varying degrees, not quite as effective at speaking the digital language as the natives are."\n\nPhân tích: Người nhập cư số kém hiệu quả hơn (less efficiently) so với người bản địa số → đáp án B.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi cho ví dụ về "digital accent".\n\nTranscript: "scanning a manual for a computer program, rather than assuming the program itself will teach you how to use it."\n\nPhân tích: Ví dụ là làm theo cách cũ, truyền thống (doing things the old-fashioned way) → đáp án B.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi giới thiệu quan điểm của James.\n\nTranscript: "Samuel James, from Sydney University, agrees with Prensky\'s predictions. He believes that educators are no longer successful in the way they teach."\n\nPhân tích: James cho rằng cách dạy hiện tại không còn hiệu quả → đáp án B (James).' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi giới thiệu quan điểm của Vander.\n\nTranscript: "Vander argues that a typical classroom is more varied than Prensky believes... a large percentage of these students are not necessarily proficient with technology."\n\nPhân tích: Vander cho rằng nhiều học sinh không thực sự am hiểu công nghệ → đáp án C (Vander).' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi giới thiệu quan điểm của Allen.\n\nTranscript: "Allen adds that even though most students today have easy access to technology, some just don\'t find the digital medium appealing."\n\nPhân tích: Allen cho rằng không phải học sinh nào cũng hứng thú với công nghệ → đáp án A (Allen).' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi James phản bác.\n\nTranscript: "James believes our younger students can communicate with their digital immigrant teachers and can still learn using methods which have proven to be successful in the past."\n\nPhân tích: James cho rằng học sinh vẫn học tốt theo cách truyền thống → đáp án B (James).' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi Allen mở rộng quan điểm.\n\nTranscript: "Allen maintains that while most young students are proficient in playing computer games... they\'re not used to using the computer at advanced levels. For example, to conduct complex information searches."\n\nPhân tích: Allen cho rằng học sinh vẫn cần học kỹ năng tìm kiếm thông tin nâng cao → đáp án A (Allen).' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về vai trò của trò chơi điện tử trong giáo dục.\n\nTranscript: "James believes it\'s possible for computer games to play a major role in making classroom learning more stimulating."\n\nPhân tích: James ủng hộ dùng game để dạy học → đáp án B (James).' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "Vander asserts that rather than focusing on developing games, we should think of better ways to assist teachers. Because no computer program comes close to doing what a human teacher does every day."\n\nPhân tích: Vander cho rằng máy tính không thể thay thế giáo viên con người → đáp án C (Vander).' },
+    ],
+  },
+  {
+    sectionId: '6a53baa45c459ab074ce6525',
+    title: 'Student Accommodation',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về giá phòng ký túc xá.\n\nTranscript: "Or 3,834 pounds if you want an en suite."\n\nPhân tích: Giá phòng có phòng tắm riêng (en-suite) là 3.834 bảng → đáp án 3834.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it\'s for 36 weeks. It doesn\'t include holidays. You have to vacate the room then."\n\nPhân tích: Phòng không có sẵn trong kỳ nghỉ (holidays) → đáp án holidays.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi giới thiệu lựa chọn ở cùng gia đình.\n\nTranscript: "We call this arrangement \'Home Welcome\'."\n\nPhân tích: Tên chương trình ở cùng gia đình là "Home Welcome" → đáp án Home Welcome.' },
+      { questionNumber: 4, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Is there a contract? Do you have to stay for the whole year? — No, it\'s flexible."\n\nPhân tích: Thời hạn ở linh hoạt (flexible) → đáp án flexible.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi bàn về thuê nhà riêng.\n\nTranscript: "You can get what we call a studio."\n\nPhân tích: Lựa chọn không ở ghép là một căn studio → đáp án studio.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về chi phí gas/điện.\n\nTranscript: "This year, it\'ll probably be somewhere in the region of 48 pounds."\n\nPhân tích: Chi phí gas và điện năm nay khoảng 48 bảng → đáp án 48.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "you have to pay for water, and that\'ll probably be around 9 pounds."\n\nPhân tích: Chi phí nước (water) khoảng 9 bảng → đáp án water.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I guess I\'d have to pay for transportation, too. — That\'s right."\n\nPhân tích: Sinh viên còn phải trả tiền đi lại (transportation) → đáp án transportation.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi bàn về hợp đồng thuê tư nhân.\n\nTranscript: "you have to pay a deposit."\n\nPhân tích: Cần đặt cọc (a deposit) → đáp án a deposit.' },
+      { questionNumber: 10, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "you\'d have to provide references. They want two from someone in this country."\n\nPhân tích: Cần 2 thư giới thiệu (references) từ người trong nước → đáp án references.' },
+    ],
+  },
+  {
+    sectionId: '6a53bc495c459ab074ce6a26',
+    title: 'Global Museum',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu triển lãm trang phục.\n\nTranscript: "People who live in the area have spent two years preparing this exhibition."\n\nPhân tích: Triển lãm do cư dân địa phương (local residents) thực hiện → đáp án B.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "show the clothes being modeled by the real people who wear them in the course of their everyday lives."\n\nPhân tích: Ảnh chụp chính người mặc trang phục đó (their owners), không phải người mẫu chuyên nghiệp → đáp án A.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi giới thiệu "Toys from the Past".\n\nTranscript: "will be here for 10 weeks only."\n\nPhân tích: Triển lãm chỉ trưng bày trong thời gian giới hạn (on show for a limited time) → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The gigantic board games... are one of the most popular activities in the exhibition and should not be missed."\n\nPhân tích: Khách được khuyên nên xem trò chơi cờ khổng lồ (see the board games) → đáp án C.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi nói về đồ chơi mini.\n\nTranscript: "These small objects are on loan from countries all over the world."\n\nPhân tích: Đồ chơi mini được mượn (borrowed) từ nhiều nước → đáp án C.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi giới thiệu Biscuit Gallery.\n\nTranscript: "The factory made tins – round, square, triangular, hexagonal."\n\nPhân tích: Hộp bánh có nhiều hình dạng khác nhau (of different shapes) → đáp án B.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi nói về loại bánh được yêu thích nhất.\n\nTranscript: "people\'s favorite biscuit was not... a chocolate biscuit, or one filled with jam and cream, but a plain savory one."\n\nPhân tích: Bánh yêu thích nhất là loại không ngọt (an unsweetened one) → đáp án A.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi nói về hoạt động trải nghiệm.\n\nTranscript: "Your job is to fill a tin with biscuits."\n\nPhân tích: Hoạt động là xếp bánh vào hộp (pack a biscuit tin) → đáp án C.' },
+      { questionNumber: 19, explanation: 'Vị trí: Cuối bài, khi nói về cửa hàng lưu niệm.\n\nTranscript: "there is a museum gift shop selling postcards, souvenirs, and handmade pottery, next to the information desk on the ground floor."\n\nPhân tích: Cửa hàng nằm cạnh quầy thông tin (information desk) → đáp án information desk.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "please make use of the free lockers provided by the museum."\n\nPhân tích: Bảo tàng có tủ khóa (lockers) miễn phí cho khách → đáp án lockers.' },
+    ],
+  },
+  {
+    sectionId: '6a53bf415c459ab074ce7369',
+    title: 'Pacific Tapa Cloth',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu bài, khi Helen giới thiệu đề tài.\n\nTranscript: "what sets Pacific tapa apart is the incredible variety of roles it\'s played in this region."\n\nPhân tích: Điểm khác biệt là tapa Thái Bình Dương được dùng cho rất nhiều mục đích (a wide range of uses) → đáp án C.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về cây dâu tằm giấy.\n\nTranscript: "it wasn\'t originally found in the islands, but was carried in their canoes by the first migrants."\n\nPhân tích: Cây này không phải bản địa của Thái Bình Dương (not native to the Pacific) → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về người Maori.\n\nTranscript: "they found the flax plant, which is superior to tapa because it makes a stronger fabric."\n\nPhân tích: Người Maori ngừng làm tapa vì tìm được chất liệu tốt hơn (a better material) → đáp án C.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về quy trình sản xuất.\n\nTranscript: "the different pieces are glued together using an adhesive paste made from the arrowroot tuber."\n\nPhân tích: Các mảnh vải được dán lại với nhau (stuck together) → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về Samoa.\n\nTranscript: "Samoans wear siapo robes to add significance and meaning to the ceremony" (births, funerals, weddings, đăng quang tù trưởng).\n\nPhân tích: Vải tapa ở Samoa mang ý nghĩa tâm linh/nghi lễ (spiritual) → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về Tonga.\n\nTranscript: "suitable for all sorts of everyday functions around the house like bed covers, mosquito nets, and curtains."\n\nPhân tích: Vải tapa ở Tonga dùng cho mục đích thực tế hàng ngày (practical) → đáp án B.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về Cook Islands.\n\nTranscript: "used to mark the entrances to places of worship, so it was highly regarded in local culture."\n\nPhân tích: Vải tapa đánh dấu lối vào nơi thờ cúng, mang tính tâm linh (spiritual) → đáp án C.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về Fiji.\n\nTranscript: "tapa was actually used as a currency there. Fijians used to... exchange tapa for other commodities."\n\nPhân tích: Vải tapa được dùng như tiền tệ, mang tính thương mại (commercial) → đáp án D.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về Tahiti.\n\nTranscript: "People enjoy wearing bright robes, especially for dancing and competitive games, and do it just for fun."\n\nPhân tích: Vải tapa ở Tahiti dùng cho mục đích giải trí (recreational) → đáp án A.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối bài, khi bàn về Tikopia.\n\nTranscript: "it\'s commonplace to see people wearing clothes made of tapa cloth... you see people working in the gardens wearing tapa."\n\nPhân tích: Ở Tikopia vải tapa được mặc hàng ngày cho công việc thực tế (practical) → đáp án B.' },
+    ],
+  },
+];
