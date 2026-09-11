@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014185e01d9821f44c25',
+    title: 'Cam 16 - Test 2 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về yêu cầu ảnh.\n\nTranscript: "the photos must all be separate, they mustn\'t be stuck into an album." và trước đó: "some of them are in a frame - should I take them out before I send them? — Yes please."\n\nPhân tích: Ảnh không được để trong khung (frame) hoặc album → đáp án frame.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi bàn về giá.\n\nTranscript: "We charge £195 for 300 to 400 photos for the basic service."\n\nPhân tích: Chi phí cho 360 ảnh là 195 bảng → đáp án 195.' },
+      { questionNumber: 3, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we won\'t need anything until we\'ve actually copied the pictures. Then we\'ll let you know how much it is, and once we\'ve received the payment, we\'ll send the parcel off to you."\n\nPhân tích: Cần thanh toán (payment) trước khi gói hàng được gửi → đáp án payment.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về việc phân nhóm ảnh.\n\nTranscript: "So I could have one called \'Grandparents\' for instance? — Exactly."\n\nPhân tích: Ví dụ tên thư mục là "Grandparents" → đáp án Grandparents.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi bàn về cải thiện ảnh.\n\nTranscript: "we can sometimes touch up the colour a bit, or improve the contrast."\n\nPhân tích: Màu sắc (colour) và độ tương phản có thể được cải thiện → đáp án colour/color.' },
+      { questionNumber: 6, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "if any look particularly fragile, we\'d do them by hand."\n\nPhân tích: Ảnh dễ hỏng sẽ được quét thủ công (by hand) → đáp án hand.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi bàn về dịch vụ chỉnh sửa đặc biệt.\n\nTranscript: "if you want to remove an object from a photo, or maybe alter the background, we can do that."\n\nPhân tích: Có thể thay đổi phông nền (background) của ảnh → đáp án background.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I\'ve got a few that aren\'t properly in focus. Can you do anything to make that better? — No, I\'m afraid that\'s one thing we can\'t do."\n\nPhân tích: Ảnh không đúng tiêu điểm (focus) không thể sửa được → đáp án focus.' },
+      { questionNumber: 9, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "We aim to get the copying done in ten days."\n\nPhân tích: Đơn hàng hoàn thành trong 10 ngày (ten days) → đáp án ten days/10 days.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "If you\'ve got a strong cardboard box, that\'s best. We\'ve found that plastic ones sometimes break in the post."\n\nPhân tích: Không nên dùng hộp nhựa (plastic) vì dễ vỡ → đáp án plastic.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014185e01d9821f44c31',
+    title: 'Cam 16 - Test 2 – Part 2',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi kể lịch sử tòa nhà Dartfield House.\n\nTranscript: "His heir chose to sell it to the local council, who turned it into offices."\n\nPhân tích: Trước đây tòa nhà từng là văn phòng của hội đồng địa phương (local council building) → đáp án C.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi bàn về khu trường tiểu học (lower school).\n\nTranscript: "Developers will construct houses on the existing lower school site."\n\nPhân tích: Khu đất trường tiểu học hiện tại sẽ được xây nhà ở (new homes) → đáp án B.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về nhà ăn.\n\nTranscript: "there\'s only one serving point, so most pupils have to wait a considerable time to be served."\n\nPhân tích: Thay đổi do thời gian xếp hàng chờ đợi lâu (long queuing times) → đáp án A.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về Food Hall mới.\n\nTranscript: "we ask you to do... is to discuss with your children each morning which type of food they want to eat that day, so they can go straight to the relevant serving point."\n\nPhân tích: Phụ huynh được yêu cầu giúp con quyết định trước điểm phục vụ nào sẽ dùng → đáp án A.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi bàn về nhà ăn cũ.\n\nTranscript: "pupils can eat food from the Food Hall or lunch they\'ve brought from home."\n\nPhân tích: Học sinh có thể mang đồ ăn vào nhà ăn cũ (take their food into it) → đáp án C.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi mô tả điểm phục vụ World Adventures.\n\nTranscript: "This will serve a different country\'s cuisine each day... The menus will be planned for a week at a time, so pupils will know what\'s going to be available the whole of the week."\n\nPhân tích: Thực đơn thay đổi hàng ngày trong tuần (daily change in menu) → đáp án D.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi mô tả điểm phục vụ Street Life.\n\nTranscript: "We\'ll ask pupils to make suggestions, so perhaps sometimes there\'ll be food from Thailand, Ethiopia and Mexico."\n\nPhân tích: Học sinh giúp lên kế hoạch thực đơn (pupils help to plan menus) → đáp án A.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi mô tả điểm phục vụ Speedy Italian.\n\nTranscript: "The Speedy Italian serving point will cater particularly for the many pupils who don\'t eat meat or fish: they can be sure that all the food served there is suitable for them."\n\nPhân tích: Chỉ phục vụ đồ chay (only vegetarian food) → đáp án B.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi bàn về lớp học ngoại khóa.\n\nTranscript: "a former pupil has given a magnificent grand piano to the school, so a few pupils will be able to learn at the school."\n\nPhân tích: Lớp học piano (piano) là hoạt động mới → đáp án B.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we\'re going to start drama classes in there, too. Pupils will be able to join in just for fun or work up to taking part in a play."\n\nPhân tích: Lớp kịch/diễn xuất (acting) mới bắt đầu → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014185e01d9821f44c3f',
+    title: 'Assignment on sleep and dreams',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi Luke nói về việc quên giấc mơ.\n\nTranscript: "if we remembered everything, we might get mixed up about what actually happened and what we dreamed. So it\'s a sort of protection."\n\nPhân tích: Ta quên giấc mơ để tránh nhầm lẫn giữa thực và mơ (confused about what is real) → đáp án B.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về giấc mơ tiên đoán tương lai.\n\nTranscript: "for each dream that comes true, we have thousands that don\'t, but we don\'t notice those... — Right. So it\'s just a coincidence really."\n\nPhân tích: Cả hai đồng ý đó chỉ là sự trùng hợp ngẫu nhiên (due to chance) → đáp án A.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về nghiên cứu giấc ngủ trưa của trẻ.\n\nTranscript: "They spent a lot of time working out the most appropriate methodology, but the results didn\'t seem to show any obvious patterns."\n\nPhân tích: Nghiên cứu không đạt được kết luận rõ ràng (failed to reach any clear conclusions) → đáp án C.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về bài tập lần trước.\n\nTranscript: "I was OK with the planning, but I got marked down for the self-assessment as well." (Luke: "where we had to describe and justify how successful we thought we\'d been... I struggled a bit with the action plan too.")\n\nPhân tích: Cả hai gặp khó khăn ở phần tự đánh giá (self-assessment) → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi lên kế hoạch mẫu nghiên cứu.\n\nTranscript: "Let\'s use people from a different department. What about history? — Yes, they might have interesting dreams!"\n\nPhân tích: Họ chọn sinh viên từ khoa lịch sử (history) → đáp án history.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về quy trình thu thập dữ liệu.\n\nTranscript: "paper might be better as they\'ll be doing it straight after they wake up."\n\nPhân tích: Người tham gia trả lời trên giấy (paper) → đáp án paper.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về đạo đức nghiên cứu.\n\nTranscript: "because our experiment involves humans, so there are special regulations."\n\nPhân tích: Cần kiểm tra hướng dẫn đạo đức khi nghiên cứu liên quan tới con người (humans) → đáp án humans/people.' },
+      { questionNumber: 28, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "another section on making sure they aren\'t put under any unnecessary stress."\n\nPhân tích: Cần đảm bảo mức độ căng thẳng (stress) được giảm thiểu → đáp án stress.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về phân tích dữ liệu.\n\nTranscript: "we have to analyse it and calculate the correlation... and then present our results visually in a graph."\n\nPhân tích: Kết quả được trình bày bằng biểu đồ (graph) → đáp án graph.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "the final thing is to think about our research and evaluate it."\n\nPhân tích: Bước cuối là đánh giá (evaluate) nghiên cứu → đáp án evaluate.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014185e01d9821f44c4c',
+    title: 'Health benefits of dance',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Khi bàn về thí nghiệm với sinh viên đại học.\n\nTranscript: "The result showed that those who chose to dance showed much more creativity when doing problem-solving tasks."\n\nPhân tích: Nhảy múa giúp tăng khả năng sáng tạo (creativity) → đáp án creativity.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "He thinks dance should be prescribed as therapy to help people overcome issues such as depression."\n\nPhân tích: Nhảy múa có thể được kê như một liệu pháp (therapy) → đáp án therapy.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi bàn về lợi ích cho người lớn tuổi.\n\nTranscript: "there are no barriers to participation. Anyone can have a go, even those whose standard of fitness is quite low."\n\nPhân tích: Dễ tiếp cận với người có thể lực (fitness) thấp → đáp án fitness.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "there\'s plenty of evidence which suggests that dancing lowers the risk of falls... by helping people to improve their balance."\n\nPhân tích: Khả năng giữ thăng bằng (balance) tốt hơn giúp giảm nguy cơ té ngã → đáp án balance.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "this kind of activity is especially important because it forces their brain to process things more quickly."\n\nPhân tích: Nhảy múa giúp não bộ (brain) xử lý thông tin nhanh hơn → đáp án brain.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về cảm giác hạnh phúc.\n\nTranscript: "Participants report feeling less tired and having greater motivation to be more active."\n\nPhân tích: Người tham gia có nhiều động lực (motivation) hơn để vận động → đáp án motivation.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi bàn về khiêu vũ nhóm.\n\nTranscript: "This helps to develop new relationships and can reduce older people\'s sense of isolation, which is a huge problem in many countries."\n\nPhân tích: Giảm cảm giác cô lập (isolation) ở người lớn tuổi → đáp án isolation.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi bàn về Zumba.\n\nTranscript: "a class lasting 40 minutes burns about 370 calories. This is similar to moderately intense exercises."\n\nPhân tích: Zumba đốt lượng calo (calories) tương đương các bài tập cường độ vừa → đáp án calories.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về nghiên cứu của American Journal of Health Behavior.\n\nTranscript: "when women with obesity did Zumba three times a week for 16 weeks, they lost an average of 1.2 kilos."\n\nPhân tích: Phụ nữ mắc bệnh béo phì (obesity) hưởng lợi từ Zumba → đáp án obesity.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "the women enjoyed the class so much that they made it a habit and continued to attend classes at least once a week."\n\nPhân tích: Zumba trở thành thói quen (habit) của người tham gia → đáp án habit.' },
+    ],
+  },
+];
