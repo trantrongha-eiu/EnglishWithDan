@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a2d0b13e40be522868a86eb',
+    title: 'Rental Property Application Form',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi Peter hỏi số điện thoại.\n\nTranscript: "And your phone number? — It\'s 614381997."\n\nPhân tích: Susan đọc trực tiếp số điện thoại di động của mình → đáp án 614381997.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "What\'s your email address then? — It\'s susansmith at post dot com."\n\nPhân tích: Địa chỉ email là susansmith@post.com → đáp án post.com.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi Peter hỏi về nghề nghiệp.\n\nTranscript: "Are you a nurse? — Most people assume that or think I\'m a doctor, but actually I\'m a chemist."\n\nPhân tích: Susan không phải y tá hay bác sĩ (bẫy) mà là dược sĩ (chemist) → đáp án chemist.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về loại nhà mong muốn.\n\nTranscript: "my dream would be a house that has its own garden."\n\nPhân tích: Lựa chọn đầu tiên là một ngôi nhà có vườn riêng (garden) → đáp án garden.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó, khi nói về phương án thay thế.\n\nTranscript: "if you could find me one with a large balcony, I\'d be happy."\n\nPhân tích: Nếu là căn hộ thì cần có ban công lớn (balcony) → đáp án balcony.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về đồ đạc cần có sẵn.\n\nTranscript: "All I really need in the place is a fridge. I don\'t have one, so we\'ll definitely need one."\n\nPhân tích: Susan mang theo hầu hết đồ đạc, chỉ cần tủ lạnh (fridge) có sẵn → đáp án fridge.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi bàn về giá thuê.\n\nTranscript: "You definitely won\'t need to pay more than $400 for something like that."\n\nPhân tích: Mức giá tối đa Susan có thể trả là 400 đô la → đáp án 400.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về vị trí mong muốn.\n\nTranscript: "I\'m a mad keen surfer, so it\'s important for me to be close to the beach."\n\nPhân tích: Susan muốn ở gần bãi biển (beach) hơn là gần bệnh viện nơi làm việc → đáp án beach.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "wherever I live, we\'ll need to have parking close to the door so I won\'t have to walk far at night."\n\nPhân tích: Cần có chỗ đỗ xe (parking) gần cửa nhà → đáp án parking.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "It\'d be great if electricity was part of the rent."\n\nPhân tích: Susan muốn tiền điện (electricity) được bao gồm trong giá thuê → đáp án electricity.' },
+    ],
+  },
+  {
+    sectionId: '6a2d1e46e40be522868ab904',
+    title: 'The Pre-school Family Centre',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu trung tâm.\n\nTranscript: "it\'s a childhood education centre for children from 3 months up to 5 years old."\n\nPhân tích: Trung tâm nhận trẻ từ 3 tháng tuổi → đáp án 3 months.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the Preschool Family Centre is organised as a cooperative by the parents."\n\nPhân tích: Trung tâm hoạt động theo mô hình hợp tác xã (cooperative) do chính phụ huynh điều hành → đáp án cooperative.' },
+      { questionNumber: 13, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we offer training for parents teaching them the skills they need to work with children."\n\nPhân tích: Phụ huynh được đào tạo (training) để có kỹ năng làm việc với trẻ → đáp án training.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về hoạt động của trẻ.\n\nTranscript: "these are all done in groups of mixed ages because we believe that by learning to play together..."\n\nPhân tích: Trẻ được xếp theo nhóm độ tuổi trộn lẫn (mixed) → đáp án mixed.' },
+      { questionNumber: 15, explanation: 'Vị trí: Đoạn nói về lịch các buổi học.\n\nTranscript: "an extra session on Thursday afternoons... to help prepare them for reading before they start school."\n\nPhân tích: Buổi chiều thứ Năm giúp trẻ lớn chuẩn bị kỹ năng đọc (reading) trước khi vào lớp 1 → đáp án reading.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "before you enroll your child in the centre you need to make at least five visits with your child."\n\nPhân tích: Phụ huynh cần đưa con tới thăm (visits) trung tâm ít nhất 5 lần trước khi đăng ký → đáp án visits.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "each centre is entitled to funding from the government."\n\nPhân tích: Mỗi trung tâm được công nhận chính thức và nhận tài trợ từ chính phủ (government) → đáp án government.' },
+      { questionNumber: 18, explanation: 'Vị trí: Đoạn nói về trách nhiệm của phụ huynh.\n\nTranscript: "you will be asked to choose a particular job like secretary or gardener or librarian."\n\nPhân tích: Phụ huynh phải nhận một công việc/vai trò (job) cụ thể trong trung tâm → đáp án job.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we have a meeting which we use to plan the program and each parent is expected to attend this."\n\nPhân tích: Phụ huynh phải tham dự một cuộc họp (meeting) để lên kế hoạch chương trình → đáp án meeting.' },
+      { questionNumber: 20, explanation: 'Vị trí: Đoạn lời khuyên thực tế cuối bài.\n\nTranscript: "This way you\'ll get to know other parents well and your child will develop confidence while he or she is here."\n\nPhân tích: Tham dự đều đặn giúp trẻ phát triển sự tự tin (confidence) → đáp án confidence.' },
+    ],
+  },
+  {
+    sectionId: '6a2d21a8e40be522868abb7a',
+    title: 'Presentation on foot injuries among sports players',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại.\n\nTranscript: "we\'ve organised our presentations in the same way, but the types of sports we\'ve chosen to illustrate the possible injuries aren\'t the same."\n\nPhân tích: Cấu trúc và thứ tự trình bày giống nhau, chỉ khác về ví dụ minh họa (môn thể thao được chọn) → đáp án A.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về phần giải phẫu (anatomy).\n\nTranscript: "I do think we should limit this section though. We don\'t want to spend much time on anatomy when the main focus is on the treatment."\n\nPhân tích: Cả hai đồng ý nên rút ngắn phần này lại → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "maybe the two of us could show how some of these therapies actually work. I could be the patient and you could do the treatment."\n\nPhân tích: Họ đồng ý sẽ trình diễn cách điều trị (demonstrations of treatment) chứ không phải phỏng vấn bệnh nhân (do thiếu thời gian) → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về các loại chấn thương gót chân.\n\nTranscript: "these vary enormously in how bad they are. It might be just a pulled muscle or a bone injury which needs surgery."\n\nPhân tích: Mức độ nghiêm trọng của chấn thương rất khác nhau (một số nặng hơn số khác) → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về nguyên nhân chấn thương.\n\nTranscript: "they\'re all relevant, but for simplicity, let\'s just pick one cause."\n\nPhân tích: Họ quyết định chỉ tập trung vào một nguyên nhân duy nhất (thay đổi thói quen luyện tập đột ngột) → đáp án A.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi Kath nói về kỹ thuật kéo giãn cơ.\n\nTranscript: "you have to be careful not to overstretch and to stretch only when your muscles are warmed up... Otherwise, you could do yourself more harm than good."\n\nPhân tích: Kath nhấn mạnh việc kéo giãn cơ tiềm ẩn rủi ro nếu làm sai cách → đáp án A.' },
+      { questionNumber: 27, explanation: 'Vị trí: Đoạn về trường hợp nữ vận động viên chạy bộ.\n\nTranscript: "Initially, she rested the injury. This did help to reduce the swelling."\n\nPhân tích: Nghỉ ngơi (rest) giúp giảm sưng, được xem là hiệu quả → đáp án C. (Chườm đá và siêu âm sau đó được nói là không hiệu quả.)' },
+      { questionNumber: 28, explanation: 'Vị trí: Cùng đoạn, sau khi nghỉ ngơi và chườm đá không còn tác dụng.\n\nTranscript: "she was shown how to use deep tissue massage techniques and was surprised at how much freedom of movement this created."\n\nPhân tích: Kỹ thuật xoa bóp sâu (massage) mang lại hiệu quả rõ rệt → đáp án A.' },
+      { questionNumber: 29, explanation: 'Vị trí: Đoạn về trường hợp nam vận động viên chạy nước rút.\n\nTranscript: "if he used light weights, he could train without pain."\n\nPhân tích: Tập tạ nhẹ (weight-training) giúp anh tập luyện mà không đau → đáp án B.' },
+      { questionNumber: 30, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "He also tried cycling and found this beneficial, as his foot was not making contact with the ground."\n\nPhân tích: Đạp xe (cycling) có lợi vì chân không phải chịu lực tiếp đất → đáp án D. (Chạy trên cỏ, nhảy và bơi đều gây đau hoặc làm nặng thêm chấn thương.)' },
+    ],
+  },
+  {
+    sectionId: '6a2ffc5fad243a17c3919a48',
+    title: 'Different Types of Supermarket Layout',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đoạn mô tả layout dạng lưới (grid).\n\nTranscript: "this layout helps to manage traffic flow, as it encourages people to all walk in one direction."\n\nPhân tích: Layout dạng lưới giúp kiểm soát luồng di chuyển của khách (traffic flow) → đáp án Traffic flows.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó, nhược điểm của layout grid.\n\nTranscript: "it is easier for customers to rush through the supermarket without lingering."\n\nPhân tích: Khách hàng dễ đi lướt qua (rush), không dừng lại lâu → đáp án rush.' },
+      { questionNumber: 33, explanation: 'Vị trí: Đoạn mô tả layout freeform.\n\nTranscript: "Here, displays and aisles are arranged in a random pattern."\n\nPhân tích: Layout freeform được sắp xếp ngẫu nhiên (random) → đáp án random.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "customers tend to spend more time in the store as they wander about looking for different products."\n\nPhân tích: Khách hàng cần nhiều thời gian (time) hơn để tìm sản phẩm trong layout này → đáp án time.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó, nhược điểm của freeform.\n\nTranscript: "Its main weakness is the inefficient use of space, which means it is less cost effective."\n\nPhân tích: Sử dụng không gian kém hiệu quả khiến layout này kém về mặt chi phí (cost effective) → đáp án cost effective.' },
+      { questionNumber: 36, explanation: 'Vị trí: Đoạn mô tả layout boutique.\n\nTranscript: "The advantage of this layout is that it divides parts of the store into smaller areas."\n\nPhân tích: Layout boutique chia cửa hàng thành các khu vực nhỏ (small areas) theo từng loại sản phẩm → đáp án small areas.' },
+      { questionNumber: 37, explanation: 'Vị trí: Đoạn nói về vị trí sản phẩm trong cửa hàng.\n\nTranscript: "Items which consumers tend to spend more time considering before buying, such as cosmetics, are usually placed away from the busy areas, so that people can look at them in comfort."\n\nPhân tích: Khu vực yên tĩnh dành cho sản phẩm cần cân nhắc kỹ trước khi mua (products requiring careful selection) → đáp án E.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "supermarket managers often place products which are not selling quickly enough in these positions [end of aisles]."\n\nPhân tích: Cuối dãy kệ thường là nơi đặt hàng bán chậm (slow-moving products), dù khách hay lầm tưởng đó là hàng khuyến mãi → đáp án F.' },
+      { questionNumber: 39, explanation: 'Vị trí: Đoạn nói về cách sắp xếp trên kệ.\n\nTranscript: "the things which cost more are placed here [kệ ngang tầm mắt], while cheaper products are placed on higher or lower shelves."\n\nPhân tích: Kệ giữa (ngang tầm mắt) dành cho sản phẩm đắt tiền hơn (more expensive products) → đáp án A.' },
+      { questionNumber: 40, explanation: 'Vị trí: Đoạn gần cuối, về khu vực gần lối vào.\n\nTranscript: "the fruit and vegetable department is the first shoppers come to as they enter the store. These, together with flowers, produce a greater profit than any other department."\n\nPhân tích: Khu vực gần lối vào dành cho những mặt hàng mang lại lợi nhuận cao nhất (most profitable products) → đáp án B.' },
+    ],
+  },
+];

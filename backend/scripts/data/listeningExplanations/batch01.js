@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a21384fce7f626cb9746d3e',
+    title: 'BEECHEN FESTIVAL',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu đoạn hội thoại, khi nói về buổi hòa nhạc ngày 19/6.\n\nTranscript: "Is it in the theatre like last year?" — "Yes, that\'s right."\n\nPhân tích: Người đàn ông hỏi buổi hòa nhạc có diễn ra ở nhà hát (theatre) như năm ngoái không, và được xác nhận "Yes" → đáp án theatre/theater.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi nói về hoạt động tour ngày 20/6.\n\nTranscript: "it does say on the tickets that it\'s a 3.40 start, but that\'s an error... it should say 4.30 instead."\n\nPhân tích: Vé ghi giờ bắt đầu là 3:40 nhưng đây là lỗi in ấn — giờ đúng là 4:30 → đáp án 4.30 p.m. (3:40 là bẫy).' },
+      { questionNumber: 3, explanation: 'Vị trí: Ngay sau đoạn nói về tour.\n\nTranscript: "just turn up at the station where the guide will be waiting."\n\nPhân tích: Người tham gia tour chỉ cần đến thẳng nhà ga (station), hướng dẫn viên sẽ đợi sẵn ở đó → đáp án station.' },
+      { questionNumber: 4, explanation: 'Vị trí: Đoạn nói về sự kiện dành cho trẻ em ngày 21/6.\n\nTranscript: "the plan was to have a painting competition for the kids, but it\'s now going to be cooking instead."\n\nPhân tích: Kế hoạch ban đầu là thi vẽ tranh nhưng đã đổi thành thi nấu ăn → đáp án cooking, không phải painting (bẫy).' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó, khi nói về cuộc thi nấu ăn.\n\nTranscript: "they\'ll need to have a plate to put whatever they\'ve made on so they can display it and then take it home."\n\nPhân tích: Trẻ em cần mang theo một chiếc đĩa (plate) để bày món ăn đã làm → đáp án plate.' },
+      { questionNumber: 6, explanation: 'Vị trí: Đoạn nói về pháo hoa buổi tối 21/6.\n\nTranscript: "having it in the town square was starting to be a bit difficult because of the numbers, which is why it\'s next to the river this time."\n\nPhân tích: Vì quảng trường thị trấn quá đông nên năm nay pháo hoa được chuyển tới cạnh sông → đáp án river.' },
+      { questionNumber: 7, explanation: 'Vị trí: Đoạn nói về việc kiểm soát tiếng ồn ban đêm.\n\nTranscript: "this year, evening events won\'t go on beyond 11.15."\n\nPhân tích: Năm nay các hoạt động buổi tối sẽ không kéo dài quá 11:15 → đáp án 11.15 (không phải 11.45, đó là quy định của năm trước — bẫy).' },
+      { questionNumber: 8, explanation: 'Vị trí: Đoạn nói về thay đổi liên quan tới bãi đỗ xe.\n\nTranscript: "because of high visitor numbers, parking in the town centre isn\'t going to be allowed."\n\nPhân tích: Do lượng khách đông, việc đỗ xe (parking) ở trung tâm thị trấn sẽ không được phép → đáp án parking.' },
+      { questionNumber: 9, explanation: 'Vị trí: Cuối đoạn hội thoại.\n\nTranscript: "you can look at www.events.com and you\'ll be able to comment on what activities you enjoyed."\n\nPhân tích: Địa chỉ trang web được nêu trực tiếp là www.events.com → đáp án events.' },
+      { questionNumber: 10, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "what would really help the organizers would be if people could use the website to give feedback about what they enjoyed."\n\nPhân tích: Ban tổ chức muốn nhận phản hồi (feedback) qua website → đáp án feedback.' },
+    ],
+  },
+  {
+    sectionId: '6a24260d8ed60e97784f15c3',
+    title: 'Walking Holiday',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi mô tả phà Prince Regent.\n\nTranscript: "As well as the crew of 160, it can accommodate about 2,000 people and 600 cars."\n\nPhân tích: Phà chở được khoảng 2.000 hành khách (160 là số thủy thủ đoàn, 600 là số xe — hai con số gây nhiễu) → đáp án C.' },
+      { questionNumber: 12, explanation: 'Vị trí: Đoạn nói về việc lên/xuống xe buýt trên phà.\n\nTranscript: "you\'ll have to take everything that you\'re likely to need with you, like toiletries or books and magazines... it\'s probably a good idea to put these things in a separate bag beforehand."\n\nPhân tích: Sách/tạp chí (reading material) cần được để riêng vì không được vào khu để xe trong lúc phà chạy → đáp án B. Đồ ăn không cần mang vì bữa ăn đã có sẵn trên phà.' },
+      { questionNumber: 13, explanation: 'Vị trí: Đoạn mô tả nhà nghỉ (hostel) ở La Vega de Liébana.\n\nTranscript: "the bathrooms and showers are of a high standard."\n\nPhân tích: Phòng tắm và vòi sen đạt tiêu chuẩn cao → đáp án A. Nhà nghỉ không có phòng chơi game hay phòng đơn (B, C sai).' },
+      { questionNumber: 14, explanation: 'Vị trí: Đoạn nói về nội quy nhà nghỉ.\n\nTranscript: "the doors are locked after midnight out of consideration for other guests who are trying to sleep."\n\nPhân tích: Cửa bị khóa sau nửa đêm nghĩa là khách không được vào sau một giờ nhất định → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Đoạn nói về trang bị (equipment) cần mang theo.\n\nTranscript: "It\'s important to bring spare socks."\n\nPhân tích: Cần mang thêm tất (spare socks) dự phòng → đáp án socks.' },
+      { questionNumber: 16, explanation: 'Vị trí: Đoạn nói về kem chống nắng.\n\nTranscript: "make sure you get what\'s known as total block. Even factor 25 isn\'t good enough."\n\nPhân tích: Cần loại kem chống nắng mức bảo vệ cao nhất, gọi là "total block" → đáp án total block.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó, khi nói về việc đựng bản đồ.\n\nTranscript: "bring a folder to keep your map and other papers in, you know, one of those plastic ones."\n\nPhân tích: Cần một chiếc bìa nhựa (plastic folder) để đựng bản đồ và giấy tờ → đáp án plastic.' },
+      { questionNumber: 18, explanation: 'Vị trí: Đoạn mô tả dãy núi Picos de Europa.\n\nTranscript: "the highest peaks are more than 2,600 metres high and have year-round snow caps."\n\nPhân tích: Bài nói đề cập độ cao (altitude) của các đỉnh núi → A đúng. (Q18-20 cùng chọn 3 trong 6 lựa chọn, không tính theo thứ tự xuất hiện.)' },
+      { questionNumber: 19, explanation: 'Vị trí: Cùng đoạn mô tả Picos de Europa.\n\nTranscript: "you\'ve got alpine plants... meadows that are full of wild flowers... the northern slopes are covered by woodlands."\n\nPhân tích: Bài nói mô tả thảm thực vật (vegetation: cây núi cao, đồng cỏ hoa dại, rừng) → E đúng.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cùng đoạn.\n\nTranscript: "giving homes to rare species such as wolves and bears."\n\nPhân tích: Bài nói nhắc tới các loài động vật hoang dã quý hiếm (wildlife: sói, gấu) → F đúng.' },
+    ],
+  },
+  {
+    sectionId: '6a24504a264cf66ced3c577c',
+    title: 'Peer Assessment',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu bài, khi Sally nói về quan điểm của các sinh viên khác.\n\nTranscript: "a lot of the other students are pretty sceptical about its value... They think the tutors are in favour of it because they don\'t have to spend so long marking."\n\nPhân tích: Nhiều sinh viên cho rằng peer assessment chỉ giúp giảng viên đỡ mất thời gian chấm bài → đáp án A.' },
+      { questionNumber: 22, explanation: 'Vị trí: Sau khi Sally giải thích lợi ích thật sự của peer assessment.\n\nTranscript: "the students learn to stand back and assess their own assignments objectively" — Steve: "It gives them an opportunity to reflect on their own performance."\n\nPhân tích: Cả hai đồng ý lợi ích là giúp sinh viên tự nhìn nhận lại bản thân khách quan hơn (self-awareness) → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi Steve hỏi về trường hợp điểm có vẻ sai.\n\nTranscript: "the tutor would have to remark all those assignments and then go through the marking criteria really carefully with the students."\n\nPhân tích: Nếu điểm có vẻ không chính xác, giảng viên (tutor) sẽ phải chấm lại chứ không phải để sinh viên tự chấm lại → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Đoạn mô tả nghiên cứu peer assessment.\n\nTranscript: "Each of these presentations was assessed individually by all the participants, both students and lecturers."\n\nPhân tích: Tất cả người tham gia — cả sinh viên lẫn giảng viên — đều chấm mọi bài thuyết trình → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi Steve và Sally bàn về yếu tố giới tính.\n\nTranscript: "Quite the reverse, actually. They were harder on the female presenters than on the males."\n\nPhân tích: Nam sinh chấm điểm khắt khe hơn (harder = điểm thấp hơn) với nữ thuyết trình → đáp án B.' },
+      { questionNumber: 26, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Did female students show any bias towards male presenters? — Interestingly not."\n\nPhân tích: Nữ sinh không thiên vị khi chấm nam thuyết trình → điểm không khác biệt đáng kể → đáp án C.' },
+      { questionNumber: 27, explanation: 'Vị trí: Cùng đoạn.\n\nTranscript: "the results showed that when women marked other women, this didn\'t affect the grades they gave."\n\nPhân tích: Khi nữ chấm cho nữ, kết quả không bị ảnh hưởng đáng kể → đáp án C.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về yếu tố độ tuổi.\n\nTranscript: "we found the marks awarded to them by their younger peers were rather more generous."\n\nPhân tích: Sinh viên trẻ tuổi chấm điểm hào phóng hơn (điểm cao hơn) cho các thuyết trình viên lớn tuổi → đáp án A.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về việc sinh viên khác trường.\n\nTranscript: "It didn\'t seem to influence marking one way or the other, which is quite encouraging."\n\nPhân tích: Việc đến từ trường khác không ảnh hưởng tới điểm số → không khác biệt đáng kể → đáp án C.' },
+      { questionNumber: 30, explanation: 'Vị trí: Gần cuối bài.\n\nTranscript: "the students who\'d been asked to help devise the criteria for the marking scheme... were actually the toughest markers of all, marking consistently below the tutors."\n\nPhân tích: Nhóm sinh viên từng giúp xây dựng tiêu chí chấm điểm lại là nhóm chấm khắt khe nhất (điểm thấp hơn cả giảng viên) → đáp án B.' },
+    ],
+  },
+  {
+    sectionId: '6a245978264cf66ced3c5bcb',
+    title: 'Bislama - The Pidgin English Language of Vanuatu',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi liệt kê số ngôn ngữ ở Vanuatu.\n\nTranscript: "There are a further 17 local languages that are in danger of dying out and 8 that have been identified as extinct."\n\nPhân tích: 8 ngôn ngữ được xác định là đã tuyệt chủng (extinct) → đáp án extinct.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó, khi nói về tiếng Anh.\n\nTranscript: "English is the most important and has official status largely because it is the medium for all education purposes."\n\nPhân tích: Tiếng Anh được dùng làm ngôn ngữ giảng dạy trong hệ thống giáo dục (education) → đáp án education.' },
+      { questionNumber: 33, explanation: 'Vị trí: Đoạn nói về thái độ trong quá khứ với Bislama.\n\nTranscript: "for many years it was commonly referred to as a broken language and its use was discouraged."\n\nPhân tích: Trước đây Bislama từng bị gọi là ngôn ngữ "không hoàn chỉnh" (broken language) → đáp án broken.' },
+      { questionNumber: 34, explanation: 'Vị trí: Đoạn lịch sử phát triển Bislama, sau năm 1860.\n\nTranscript: "from about 1860, a lot of people from Vanuatu travelled to Australia to work on the new plantations as labourers."\n\nPhân tích: Sau 1860, người Vanuatu sang Úc làm việc tại các đồn điền (plantation) → đáp án plantation.' },
+      { questionNumber: 35, explanation: 'Vị trí: Đoạn nói về giai đoạn sau 1950.\n\nTranscript: "Vanuatu experienced a significant migration of its people from small villages into the city."\n\nPhân tích: Người dân di cư từ làng quê ra thành phố (city) → đáp án city.' },
+      { questionNumber: 36, explanation: 'Vị trí: Đoạn mô tả tổng quan về Bislama.\n\nTranscript: "linguists prefer to describe Bishlama as a developed Pidgin because it has more rules and ideas than most simple Pidgin languages."\n\nPhân tích: Các nhà ngôn ngữ học gọi Bislama là một pidgin "phát triển" (developed) → đáp án developed.' },
+      { questionNumber: 37, explanation: 'Vị trí: Đoạn nói về từ vựng.\n\nTranscript: "the word from in Bishlama can also mean because of, so we need to be aware that words can have a wider range of meanings in Bishlama."\n\nPhân tích: Một từ như "from" có thể mang nhiều nghĩa (meanings) hơn trong Bislama → đáp án meanings.' },
+      { questionNumber: 38, explanation: 'Vị trí: Cùng đoạn từ vựng.\n\nTranscript: "there are some words, around 5-10%, that are derived from French."\n\nPhân tích: Dưới 10% từ vựng có nguồn gốc từ tiếng Pháp (French) → đáp án French.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "...or to describe some aspect of the culture that is unique to the country."\n\nPhân tích: Từ gốc Thái Bình Dương thường mô tả thiên nhiên hoặc văn hóa (culture) đặc trưng của đất nước → đáp án culture.' },
+      { questionNumber: 40, explanation: 'Vị trí: Đoạn nói về ngữ pháp, gần cuối bài.\n\nTranscript: "the word long... is almost the only preposition in Bishlama and may be used in place of a whole range of English words such as at, to, with, on, in."\n\nPhân tích: Từ "long" đóng vai trò gần như là giới từ (preposition) duy nhất trong Bislama → đáp án preposition.' },
+    ],
+  },
+];

@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a27a043ac84aea4f54b07f4',
+    title: 'Bankside Recruitment Agency',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi William cho Amber tên người đại diện.\n\nTranscript: "Becky Jamieson. J-A-M-I-E-S-O-N."\n\nPhân tích: William đánh vần trực tiếp họ của Becky → đáp án Jamieson.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau khi cho số điện thoại.\n\nTranscript: "I wouldn\'t call her until the afternoon if I were you – she\'s always really busy in the morning."\n\nPhân tích: Nên gọi vào buổi chiều (afternoon) vì buổi sáng cô ấy rất bận → đáp án afternoon.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi William nói về yêu cầu công việc lễ tân.\n\nTranscript: "what\'s important for that kind of job isn\'t so much having business skills... it\'s communication that really matters."\n\nPhân tích: Kỹ năng quan trọng nhất là giao tiếp (communication), không phải kỹ năng kinh doanh hay máy tính → đáp án communication.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về thời hạn công việc tạm thời.\n\nTranscript: "you\'re more likely to be offered something for a week at first, which might get extended."\n\nPhân tích: Công việc thường được giao trong một tuần (week) trước, sau đó có thể gia hạn → đáp án week.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi nói về mức lương.\n\nTranscript: "The hourly rate is about £10, 11 if you\'re lucky."\n\nPhân tích: Mức lương theo giờ khoảng 10 bảng → đáp án 10/ten.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi Amber nói về trang phục cho buổi phỏng vấn.\n\nTranscript: "I can probably borrow a suit from Mum."\n\nPhân tích: Amber định mượn một bộ suit từ mẹ để mặc đi phỏng vấn → đáp án suit.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi Amber hỏi cần mang giấy tờ gì.\n\nTranscript: "What about my passport? — Oh yes – they will ask to see that."\n\nPhân tích: Cô cần mang theo hộ chiếu (passport) tới buổi phỏng vấn → đáp án passport.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi William mô tả nội dung phỏng vấn.\n\nTranscript: "there are questions about personality that they always ask candidates – fairly basic ones."\n\nPhân tích: Họ sẽ hỏi về tính cách (personality) của ứng viên → đáp án personality.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi William nói về lợi ích của việc dùng agency.\n\nTranscript: "the interview will be useful because they\'ll give you feedback on your performance so you can improve next time."\n\nPhân tích: Ứng viên sẽ nhận được phản hồi (feedback) về màn thể hiện của mình → đáp án feedback.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "finding a temporary job this way takes a lot less time – it\'s much easier than ringing up individual companies."\n\nPhân tích: Tìm việc qua agency tốn ít thời gian (time) hơn nhiều so với tự liên hệ từng công ty → đáp án time.' },
+    ],
+  },
+  {
+    sectionId: '6a27a877ac84aea4f54b0bca',
+    title: 'Matthews Island Holidays',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu công ty.\n\nTranscript: "more than almost any other rail holiday company" — công ty dựa vào kinh nghiệm nhiều năm hơn hầu hết đối thủ.\n\nPhân tích: Công ty nhấn mạnh kinh nghiệm lâu năm hơn (has been in business for longer), không phải số điểm đến hay số khách hàng → đáp án A.' },
+      { questionNumber: 12, explanation: 'Vị trí: Đầu đoạn giới thiệu kỳ nghỉ Isle of Man.\n\nTranscript: "Our holiday starts in Heysham, where your tour manager will meet you."\n\nPhân tích: Khách gặp trưởng đoàn tại Heysham (Luton và Liverpool chỉ là các lựa chọn di chuyển khác) → đáp án B.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi nói về các bữa ăn trong giá tour.\n\nTranscript: "lunch on the three days when there are organised trips: day four is free."\n\nPhân tích: Giá tour bao gồm 3 bữa trưa (ba ngày có hoạt động tổ chức) → đáp án A.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về chính sách đặt tour.\n\nTranscript: "If you make a booking then need to change the start date... you\'re welcome to change... for a small administrative fee."\n\nPhân tích: Khách phải trả thêm phí nếu đổi sang ngày khởi hành khác → đáp án C. (Đặt gấp và phòng đơn không tính phụ phí, theo đoạn trước đó.)' },
+      { questionNumber: 15, explanation: 'Vị trí: Ngày 1 trong lịch trình.\n\nTranscript: "The dining room looks out at the river, close to where it flows into the harbour."\n\nPhân tích: Phòng ăn của khách sạn nhìn ra sông (river) → đáp án river.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngày 2, khi nói về nghị viện Tynwald.\n\nTranscript: "the earliest surviving reference to it is from 1422, so perhaps it isn\'t quite as old as it claims."\n\nPhân tích: Bằng chứng sớm nhất về Tynwald chỉ có từ năm 1422, không phải 979 như người ta vẫn tuyên bố → đáp án 1422.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngày 3, chuyến đi tới núi Snaefell.\n\nTranscript: "it\'s an eight-kilometre ride in the Snaefell Mountain Railway to the top."\n\nPhân tích: Tàu hỏa leo núi đưa khách lên tới đỉnh (top) núi Snaefell → đáp án top.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngày 4, ngày tự do.\n\nTranscript: "Day four is free for you to explore, using the pass which we\'ll give you."\n\nPhân tích: Công ty phát cho khách một tấm vé/thẻ (pass) để đi lại và vào các di tích miễn phí → đáp án pass.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngày 5.\n\nTranscript: "The last full day... with a ride on the steam railway, from Douglas to Port Erin."\n\nPhân tích: Khách đi tàu hơi nước (steam railway) → đáp án steam.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối ngày 5.\n\nTranscript: "Castletown, which used to be the capital of the Isle of Man, and its mediaeval castle."\n\nPhân tích: Castletown từng là thủ phủ (capital) của đảo Isle of Man → đáp án capital.' },
+    ],
+  },
+  {
+    sectionId: '6a28e04643e81aceaa2b5a35',
+    title: 'Personality Traits',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu bài, khi bàn về con cả (eldest child).\n\nTranscript: "some studies claimed that they were thought to be good a nurturing... they would have been expected to look after the younger ones."\n\nPhân tích: Con cả được cho là biết chăm sóc, quan tâm người khác (caring) → đáp án G.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về con giữa (middle child).\n\nTranscript: "Generally eager to please and helpful."\n\nPhân tích: Con giữa được mô tả là dễ hợp tác, hay giúp đỡ (co-operative) → đáp án F.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi Ed nói về bản thân (con út).\n\nTranscript: "I\'m supposed to have been a sociable and confident child who made friends easily."\n\nPhân tích: Con út được cho là hòa đồng, dễ kết bạn (outgoing) → đáp án A.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về các cặp song sinh (twins).\n\nTranscript: "a twin is likely to be quite shy in social situations because they always have their twin around to depend on for support."\n\nPhân tích: Trẻ song sinh được cho là nhút nhát trong giao tiếp xã hội (introverted) → đáp án E.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về con một (only child).\n\nTranscript: "a lot of studies have branded them as loners who think the world revolves around them."\n\nPhân tích: Con một bị coi là ích kỷ, chỉ nghĩ đến bản thân (selfish) → đáp án B.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về trẻ có anh chị lớn hơn nhiều tuổi.\n\nTranscript: "these children grow up more quickly and are expected to do basic things for themselves – like getting dressed."\n\nPhân tích: Những đứa trẻ này phải tự lập sớm hơn (independent) → đáp án C.' },
+      { questionNumber: 27, explanation: 'Vị trí: Gần cuối bài, khi bàn về hạn chế của các nghiên cứu.\n\nTranscript: "what many of them didn\'t take into consideration was family size."\n\nPhân tích: Nhiều nghiên cứu đã bỏ sót yếu tố quy mô gia đình (family size) → đáp án C.' },
+      { questionNumber: 28, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s that they benefit from being teachers for their younger siblings, by verbalising processes."\n\nPhân tích: Ruth thấy bất ngờ vì lý do chính là vai trò "người dạy" cho em nhỏ, không phải sự quan tâm từ cha mẹ → đáp án A.' },
+      { questionNumber: 29, explanation: 'Vị trí: Cuối bài, khi hai người tổng kết về mâu thuẫn anh chị em.\n\nTranscript: "I know how to defend myself... but we had to put up with each other."\n\nPhân tích: "defend myself" = học cách đứng lên bảo vệ bản thân (learning to stand up for oneself) → đáp án B.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cùng đoạn.\n\nTranscript: "we had to put up with each other and most of the time we co-existed amicably enough."\n\nPhân tích: "put up with each other" = học cách khoan dung, chịu đựng (learning to be tolerant) → đáp án D.' },
+    ],
+  },
+  {
+    sectionId: '6a28e38d43e81aceaa2b6569',
+    title: 'The Eucalyptus Tree in Australia',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi nói về tầm quan trọng của cây eucalyptus.\n\nTranscript: "it gives shelter to creatures like birds and bats."\n\nPhân tích: Cây cung cấp nơi trú ẩn (shelter) cho các loài vật → đáp án shelter.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we can kill germs with a disinfectant made from oil extracted from eucalyptus leaves."\n\nPhân tích: Dầu (oil) chiết xuất từ lá cây được dùng làm chất khử trùng → đáp án oil.' },
+      { questionNumber: 33, explanation: 'Vị trí: Đoạn nói về bệnh "Mundulla Yellows".\n\nTranscript: "the cause of the problem was lime... which was being used in the construction of roads."\n\nPhân tích: Vôi dùng để làm đường (roads) bị rửa trôi vào đất, ảnh hưởng tới rễ cây → đáp án roads.' },
+      { questionNumber: 34, explanation: 'Vị trí: Đoạn nói về bệnh "Bell-miner Associated Die-back".\n\nTranscript: "insects settle on the leaves and eat their way round them... they secrete a solution which has sugar in it."\n\nPhân tích: Côn trùng (insects) ăn lá và tiết ra chất có đường thu hút chim bell-miner → đáp án insects.' },
+      { questionNumber: 35, explanation: 'Vị trí: Đoạn về giả thuyết cháy rừng của William Jackson.\n\nTranscript: "If there are very frequent bushfires in a region, this encourages grass to grow afterwards."\n\nPhân tích: Cháy rừng thường xuyên khiến cỏ (grass) mọc lên thay vì rừng eucalyptus → đáp án grass(es).' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi giải thích vì sao cháy rừng vừa phải lại có lợi.\n\nTranscript: "the fire stops the growth of other species which would consume water needed by eucalyptus trees."\n\nPhân tích: Cháy rừng ngăn các loài cây khác cạnh tranh nước (water) với eucalyptus → đáp án water.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they harm the eucalyptus in another way, by affecting the composition of the soil."\n\nPhân tích: Các loài cây mọc nhanh khác làm hại tới thành phần đất (soil) → đáp án soil.' },
+      { questionNumber: 38, explanation: 'Vị trí: Đoạn nói về cháy rừng tần suất thấp.\n\nTranscript: "this reduced frequency of bushfires to low levels had led to what\'s known as \'dry rainforest\'."\n\nPhân tích: Cháy rừng ít dẫn tới hiện tượng "rừng mưa khô" (dry rainforest) → đáp án dry.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "unlike tropical rainforest which is a rich ecosystem, this type of ecosystem is usually a simple one."\n\nPhân tích: Hệ sinh thái "rừng mưa khô" đơn giản (simple), ít đa dạng loài → đáp án simple.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "one species that does find it ideal is the bell-miner bird, which builds its nests in the undergrowth there."\n\nPhân tích: Chim bell-miner làm tổ (nest) trong lớp cây bụi rậm rạp đó → đáp án nest(s).' },
+    ],
+  },
+];
