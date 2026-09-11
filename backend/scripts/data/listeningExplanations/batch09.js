@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a4b5bcd5934e78bb4ff7a63',
+    title: 'Superior Home Appliances – Customer Complaint Form',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi hỏi về loại tủ lạnh.\n\nTranscript: "Is it a top mount, a bottom mount, or a side-by-side? — The freezer is on top."\n\nPhân tích: Ngăn đông ở phía trên (top mount) → đáp án top.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Okay, so it\'s silver in color. — That\'s right. I thought it was so much nicer than the usual white ones."\n\nPhân tích: Màu tủ lạnh là bạc (silver) → đáp án silver.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi tra cứu ngày mua hàng.\n\nTranscript: "It says here you bought it on January the 12th."\n\nPhân tích: Ngày mua thực tế theo hồ sơ là 12/1 (6/2 chỉ là ngày giao hàng theo lời Jessica nhớ — bẫy) → đáp án January 12/12 January.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi mô tả sự cố.\n\nTranscript: "my fridge is fitted with an alarm, and it started to go off. It made an awful noise."\n\nPhân tích: Chuông báo động (alarm) trong tủ kêu lên → đáp án alarm.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "when I went to check the freezer, it felt pretty warm. It\'s 10 degrees, and it should be minus 18."\n\nPhân tích: Nhiệt độ ngăn đông đo được là 10 độ (thay vì -18) → đáp án 10.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về trung tâm sửa chữa gần nhất.\n\nTranscript: "one near the station, and another one in the shopping center. — the station one would be closer."\n\nPhân tích: Trung tâm gần ga tàu (station) được chọn vì gần hơn → đáp án station.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi Jessica nói về công việc kinh doanh.\n\nTranscript: "This is going to affect my business. I run a sandwich shop, and that\'s where I keep my stock."\n\nPhân tích: Cô kinh doanh quán bánh sandwich (sandwich shop) → đáp án sandwich.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I\'ve just filled it with $180 worth of meat and salad."\n\nPhân tích: Giá trị hàng hóa trong tủ là 180 đô la → đáp án 180.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi Jessica yêu cầu nói chuyện với cấp trên.\n\nTranscript: "I can ask my manager to ring you back by close of business today."\n\nPhân tích: Người sẽ gọi lại là quản lý (manager) → đáp án manager.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "The door has a dent in it, on the left-hand side... I\'d like that replaced too."\n\nPhân tích: Bộ phận bị hỏng cần thay là cửa tủ (door) → đáp án door.' },
+    ],
+  },
+  {
+    sectionId: '6a4b5ea25934e78bb4ff8392',
+    title: 'Connections',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu vai trò host.\n\nTranscript: "no money is involved, as all our hosts are unpaid."\n\nPhân tích: Người làm host không được trả tiền (do not receive payment) → đáp án B.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi mô tả đối tượng chương trình hướng tới.\n\nTranscript: "some people rarely get the opportunity to socialize. There may be language problems or feelings of shyness... people can become quite lonely or isolated."\n\nPhân tích: Chương trình dành cho người khó kết bạn (have difficulty making friends) → đáp án A.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi nói về trải nghiệm của khách (guest).\n\nTranscript: "be able to ask questions about things which interest you or perhaps even puzzle you."\n\nPhân tích: Khách có thể trao đổi về những điều mình quan tâm (discuss matters of personal interest) → đáp án C.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về lợi ích lâu dài.\n\nTranscript: "we all become more aware of the ways in which people in different countries live their lives."\n\nPhân tích: Lợi ích lâu dài là tăng hiểu biết giữa các nền văn hóa (an increased understanding between cultures) → đáp án A.' },
+      { questionNumber: 15, explanation: 'Vị trí: Đầu quy trình đăng ký.\n\nTranscript: "we ask you to make a phone call to our vetting people."\n\nPhân tích: Bước đầu là gọi cho bộ phận thẩm tra (vetting) → đáp án vetting.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we require a reference... This will be used for an identity check."\n\nPhân tích: Thư giới thiệu dùng để xác minh danh tính (identity) → đáp án identity.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "return it with two recent passport-sized photographs... One photo will be held in our records, and the other will be sent to your host family."\n\nPhân tích: Một ảnh được lưu vào hồ sơ (records) → đáp án records.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Our center manager will get back to you within a week of receiving your form to let you know that we have it."\n\nPhân tích: Người đăng ký nhận được xác nhận (acknowledgement) trong vòng 1 tuần → đáp án acknowledgement.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "someone from our interview team will contact you for a face-to-face meeting with a member of staff."\n\nPhân tích: Người đăng ký sẽ có một buổi phỏng vấn (an interview) trực tiếp → đáp án an interview.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "you can expect to hear the result from us in a couple of days."\n\nPhân tích: Người đăng ký nhận được quyết định cuối cùng (a final decision) bằng văn bản → đáp án decision.' },
+    ],
+  },
+  {
+    sectionId: '6a4b65fb5934e78bb4ff95cd',
+    title: 'Climate change and allergies',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi Beth bàn về vitamin D.\n\nTranscript: "it was only in Britain that cod liver oil was so popular. So that argument doesn\'t really make sense."\n\nPhân tích: Beth không tin lý giải này vì bằng chứng chỉ đúng ở Anh (the evidence only applies in Britain) → đáp án C.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về CO2.\n\nTranscript: "CO2 helps stimulate plant growth. And several recent studies have shown that when plants are exposed to more CO2, they produce more pollen."\n\nPhân tích: CO2 khiến cây tạo ra nhiều phấn hoa hơn (higher quantities of pollen) → đáp án C.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về thời điểm mùa xuân đến.\n\nTranscript: "that doesn\'t mean that spring will come earlier every year. Look at last winter... the pollen season was delayed. Whereas this year, spring came earlier."\n\nPhân tích: Không có xu hướng ngắn hạn rõ ràng cho việc mùa xuân đến sớm hay muộn (no clear short-term trend) → đáp án A.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về cỏ phấn hương (ragweed).\n\nTranscript: "we\'re starting to see it grow in Europe for the first time."\n\nPhân tích: Ragweed đang lan sang nhiều quốc gia hơn (spreading to more countries) → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về phấn hoa ở thành phố.\n\nTranscript: "there are so many hard surfaces around. And the pollen doesn\'t get absorbed so much, just stays in the air."\n\nPhân tích: Bề mặt cứng khiến phấn hoa không được hấp thụ (less to absorb the tree pollen) → đáp án B.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về dữ liệu nước Áo.\n\nTranscript: "here we\'ve only got data for birch pollen."\n\nPhân tích: Chỉ có dữ liệu về phấn hoa cây bạch dương (information only available for birch pollen) → đáp án G.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về Pháp.\n\nTranscript: "The pollen season starts earlier for both oak and birch, but it doesn\'t start any earlier for grass."\n\nPhân tích: Chỉ 2 loại phấn hoa (sồi và bạch dương) thay đổi (changes identified for two pollen types only) → đáp án B.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về Hà Lan.\n\nTranscript: "oak pollen is starting much earlier. 18 days in fact... That\'s unusual. There\'s not such a big difference in other countries."\n\nPhân tích: Thay đổi lớn nhất được ghi nhận là ở phấn hoa cây sồi (greatest change... for oak pollen) → đáp án A.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về Thụy Sĩ.\n\nTranscript: "The pollen season starts here earlier than in the past for oak, birch and grass."\n\nPhân tích: Cả 3 loại phấn hoa đều bắt đầu sớm hơn (earlier start dates for all pollen types) → đáp án D.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về Anh (UK).\n\nTranscript: "wet summers have extended the grass pollen season from five weeks to eight weeks."\n\nPhân tích: Mùa phấn hoa cỏ kéo dài hơn (a longer season for grass pollen) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a4b694e5934e78bb4ffa24a',
+    title: 'The influence of children on adult diet',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi nói về khảo sát quốc gia.\n\nTranscript: "total fat consumption is highest among teenagers, and there is a clear correlation with the consumption of fast food."\n\nPhân tích: Nhóm tuổi tiêu thụ nhiều chất béo nhất là thanh thiếu niên (teenagers) → đáp án teenagers.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the fat intakes of husbands and wives, and of parents and children who cohabit are remarkably similar."\n\nPhân tích: Các thành viên sống chung có mức tiêu thụ chất béo tương đồng (similar) → đáp án similar.' },
+      { questionNumber: 33, explanation: 'Vị trí: Đoạn mô tả phương pháp nghiên cứu.\n\nTranscript: "Other secondary variables included the age of the adult, their educational level, ethnic background, income, and foreign-born status."\n\nPhân tích: Một biến số phụ là thu nhập (income) → đáp án income.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we invited them to mobile examination centers where surveys were conducted."\n\nPhân tích: Các cuộc khảo sát (surveys) được thực hiện tại trung tâm khám lưu động → đáp án surveys.' },
+      { questionNumber: 35, explanation: 'Vị trí: Đoạn kết quả nghiên cứu.\n\nTranscript: "there is a significantly higher percentage of adults in this group who drink milk."\n\nPhân tích: Người lớn sống cùng trẻ em có xu hướng uống sữa (drink milk) nhiều hơn → đáp án drink milk.' },
+      { questionNumber: 36, explanation: 'Vị trí: Đoạn giải thích nguyên nhân.\n\nTranscript: "Hectic schedules, where parents try to balance work, family, and leisure, put time at a premium."\n\nPhân tích: Cha mẹ có rất ít thời gian (little time) vì lịch trình bận rộn → đáp án time.' },
+      { questionNumber: 37, explanation: 'Vị trí: Đoạn hạn chế của nghiên cứu.\n\nTranscript: "we did not take into account the number of minors in each household."\n\nPhân tích: Nghiên cứu chưa xét đến số lượng (number) trẻ em trong mỗi gia đình → đáp án number.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "this study does not take into account the specific relationship of the adult to the minor."\n\nPhân tích: Nghiên cứu chưa xét đến mối quan hệ (relationship) cụ thể giữa người lớn và trẻ → đáp án relationship.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the influence a child has on an adult may lessen depending on the age of the child."\n\nPhân tích: Ảnh hưởng có thể giảm theo độ tuổi (age) của trẻ → đáp án age.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài, phần khuyến nghị.\n\nTranscript: "there is a need for even further research into the influence that friends can have on our fat intake."\n\nPhân tích: Cần nghiên cứu thêm về ảnh hưởng của bạn bè (friends) → đáp án friends.' },
+    ],
+  },
+];
