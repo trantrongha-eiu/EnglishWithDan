@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c013f85e01d9821f44b8c',
+    title: 'Cam 15 - Test 3 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi giới thiệu công việc thứ nhất.\n\nTranscript: "They\'re called Home Solutions and they design and make furniture."\n\nPhân tích: Công ty thiết kế và sản xuất đồ nội thất (furniture) → đáp án furniture.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi liệt kê trách nhiệm.\n\nTranscript: "they expect the person they appoint to attend meetings and take notes there."\n\nPhân tích: Người được tuyển phải tham dự các cuộc họp (meetings) và ghi chép → đáp án meetings.' },
+      { questionNumber: 3, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "in my last job I also had to manage the diary. — Excellent. That\'s something they want here too."\n\nPhân tích: Công việc bao gồm quản lý lịch làm việc (diary) → đáp án diary.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi liệt kê yêu cầu.\n\nTranscript: "they want someone who is careful and takes care with details."\n\nPhân tích: Yêu cầu là cẩn thận và chú ý tới chi tiết (detail) → đáp án detail/details.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi bàn về kinh nghiệm.\n\nTranscript: "they\'re only asking for at least one year, so that\'s great."\n\nPhân tích: Yêu cầu tối thiểu là một năm (1/one year) kinh nghiệm teleconferencing → đáp án 1/one year.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi giới thiệu công việc thứ hai.\n\nTranscript: "they want someone who can manage the stock, obviously, and also deliveries."\n\nPhân tích: Trách nhiệm bao gồm quản lý việc giao hàng (deliveries) → đáp án deliveries.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they want someone who\'s well organised. — And tidy? — Yes, they go together really."\n\nPhân tích: Yêu cầu là có tổ chức và gọn gàng (tidy) → đáp án tidy.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "one of the things I enjoyed most was being part of a team. — Excellent. Yes, they do mention that they want someone who\'s used to that."\n\nPhân tích: Yêu cầu là quen làm việc nhóm (team) → đáp án team.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "So you\'re OK moving heavy things? — Sure. I\'m quite strong."\n\nPhân tích: Cần xử lý được các vật nặng (heavy) → đáp án heavy.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại, khi liệt kê kinh nghiệm cần có.\n\nTranscript: "the final thing they mention is customer service."\n\nPhân tích: Kinh nghiệm cuối cùng cần có là dịch vụ khách hàng (customer service) → đáp án customer.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013f85e01d9821f44b98',
+    title: 'Street Play Scheme',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi Alice nói về thời điểm bắt đầu.\n\nTranscript: "it took at least two years of campaigning before we were actually able to make it happen. So the scheme\'s been up and running for three years now."\n\nPhân tích: Chương trình đã hoạt động được 3 năm → đáp án B.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "At the moment it\'s just once a week."\n\nPhân tích: Hiện tại đường phố đóng cửa một lần mỗi tuần (once a week) → đáp án A.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi mô tả cách vận hành.\n\nTranscript: "We have volunteer wardens, mostly parents but some elderly residents too, who block off our road at either end."\n\nPhân tích: Các tình nguyện viên (local wardens) chịu trách nhiệm chặn đường → đáp án C.' },
+      { questionNumber: 14, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "only residents\' cars are allowed... as long as they drive at under 20 kilometres per hour."\n\nPhân tích: Cư dân được lái xe nếu đi rất chậm (dưới 20km/h) → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi bàn về nhu cầu chương trình.\n\nTranscript: "especially those who live on busy roads. It\'s here that demand is greatest."\n\nPhân tích: Nhu cầu cao nhất ở khu vực nhiều xe cộ (heavy traffic) → đáp án C.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "everyone is very supportive and say they\'re very happy to see children out on the street."\n\nPhân tích: Cư dân không phải phụ huynh cũng vui khi thấy trẻ chơi ngoài đường → đáp án B.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi bàn về lợi ích cho trẻ em.\n\nTranscript: "for me the biggest advantage is that kids develop confidence in themselves to be outside without their parents."\n\nPhân tích: Lợi ích lớn là trẻ phát triển sự tự tin, độc lập (increased sense of independence) → đáp án B.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "children get to know the adults in the street – it\'s like having a big extended family."\n\nPhân tích: Trẻ hòa nhập với cộng đồng hàng xóm (part of a community) → đáp án D.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi bàn về thí nghiệm King Street.\n\nTranscript: "we were actually amazed that sales in the shops went up considerably that day – we thought there\'d be fewer people out shopping – not more."\n\nPhân tích: Điều bất ngờ là có nhiều người mua sắm hơn (more shoppers) → đáp án A.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "what I hadn\'t expected was how much quieter it would be – even with the buses still running."\n\nPhân tích: Điều bất ngờ khác là mức độ giảm tiếng ồn (less noise pollution) → đáp án E.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013f85e01d9821f44ba6',
+    title: 'Cam 15 - Test 3 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu phần liệt kê các yếu tố cần so sánh.\n\nTranscript: "there\'s the question of which page of the newspaper the item appears on."\n\nPhân tích: Cần xem xét bài viết nằm ở trang nào (page) → đáp án page.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Then there\'s the size – how many column inches the story is given... And I suppose that includes the headline. — It certainly does."\n\nPhân tích: Cần xem xét kích thước bài viết (size), gồm cả tiêu đề → đáp án size.' },
+      { questionNumber: 23, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "What about graphics – whether there\'s anything visual in addition to the text? — Yes, you need to consider those, too."\n\nPhân tích: Cần xem xét hình ảnh minh họa (graphics) đi kèm → đáp án graphic/graphics.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "you\'ll need to look at how the item is put together: what structure is it given?"\n\nPhân tích: Cần xem xét cấu trúc bài viết (structure) → đáp án structure.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về mục đích người viết.\n\nTranscript: "what\'s the writer\'s purpose, or at least the most important one, if they have several."\n\nPhân tích: Cần xem xét mục đích chính của người viết (purpose) → đáp án purpose.' },
+      { questionNumber: 26, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the writer may make assumptions about the reader. — That\'s right – about their knowledge of the subject, their attitudes."\n\nPhân tích: Cần xem xét những giả định (assumptions) người viết đặt ra về độc giả → đáp án assumption/assumptions.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi Hazel nói về chủ đề chính trị.\n\nTranscript: "a national news item would be worth analysing – I\'m quite keen on politics, so I\'ll try and find a suitable topic."\n\nPhân tích: Hazel quyết định chắc chắn sẽ tìm một bài chính trị quốc gia → đáp án A.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về bài xã luận (editorial).\n\nTranscript: "I wanted to compare editorials in different papers, but when I started looking, I couldn\'t find two on the same topic... — In that case, I won\'t even bother to look."\n\nPhân tích: Hazel quyết định chắc chắn sẽ không tìm bài xã luận → đáp án C.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về câu chuyện nhân văn (human interest).\n\nTranscript: "I usually find stories like that raise quite strong feelings in me! I\'ll avoid that."\n\nPhân tích: Hazel quyết định chắc chắn sẽ tránh chủ đề này → đáp án C.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối bài, khi bàn về chủ đề nghệ thuật.\n\nTranscript: "Perhaps I\'ll choose an arts topic, like different reviews of a film... I\'ll think about that."\n\nPhân tích: Hazel còn đang cân nhắc (chưa chắc chắn) về chủ đề nghệ thuật → đáp án B.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013f85e01d9821f44bb3',
+    title: 'Early history of keeping clean',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi nói về thời tiền sử.\n\nTranscript: "the earliest people lived near water and knew something about its cleansing properties – at least that it rinsed mud off their hands."\n\nPhân tích: Nước được dùng để rửa sạch bùn đất (mud) khỏi tay → đáp án mud.' },
+      { questionNumber: 32, explanation: 'Vị trí: Khi nói về Babylon cổ đại.\n\nTranscript: "Archaeologists discovered cylinders made of clay, with inscriptions on them saying that fats were boiled with askes."\n\nPhân tích: Vật liệu giống xà phòng được tìm thấy trong các ống trụ bằng đất sét (clay) → đáp án clay.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi nói về Hy Lạp cổ đại.\n\nTranscript: "scraped off the oil and dirt with a metal instrument known as a strigil."\n\nPhân tích: Dụng cụ cạo (strigil) được làm bằng kim loại (metal) → đáp án metal.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi nói về người Đức và Gaul cổ đại.\n\nTranscript: "They used this mixture to tint their hair red."\n\nPhân tích: Họ dùng hỗn hợp xà phòng để nhuộm tóc (hair) màu đỏ → đáp án hair.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi nói về La Mã cổ đại.\n\nTranscript: "The first of the famous Roman baths, supplied with water from their aqueducts, was built around 312 BC."\n\nPhân tích: Nước được dẫn tới các nhà tắm La Mã (Roman baths) qua hệ thống dẫn nước → đáp án bath/baths.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi nói về châu Âu thời Trung cổ.\n\nTranscript: "This lack of personal cleanliness and related unsanitary living conditions were major factors in the outbreaks of disease in the Middle Ages."\n\nPhân tích: Việc giảm tắm rửa góp phần gây ra dịch bệnh (disease) → đáp án disease/diseases.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Vegetable and animal oils were used with ashes of plants, along with perfume, apparently for the first time."\n\nPhân tích: Nước hoa (perfume) bắt đầu được thêm vào xà phòng → đáp án perfume.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi nói về Leblanc 1791.\n\nTranscript: "a French chemist, Nicholas Leblanc, patented a process for turning salt into soda ash, or sodium carbonate."\n\nPhân tích: Leblanc tìm ra cách biến muối (salt) thành soda ash → đáp án salt.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi nói về Chevreul đầu thế kỷ 19.\n\nTranscript: "His studies established the basis for both fat and soap chemistry, and soapmaking became a science."\n\nPhân tích: Việc làm xà phòng trở thành một môn khoa học (science) → đáp án science.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "a development that was reinforced when the high tax was removed."\n\nPhân tích: Thuế cao đánh vào xà phòng (tax) được bãi bỏ → đáp án tax.' },
+    ],
+  },
+];
