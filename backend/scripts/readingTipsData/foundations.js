@@ -14,6 +14,7 @@ module.exports = [
     category: CATEGORY, lessonKey: 'skimming', title: 'Skimming – Đọc lấy ý chính', icon: '🏃', orderIndex: -4,
     summaryText: 'Đọc nhanh Title + câu đầu mỗi đoạn + từ khóa lặp lại để nắm ý chính, không đọc từng từ.',
     blocks: [
+      callout('📌 Trước khi học kỹ năng', 'Vốn từ vựng chính là chìa khóa để nâng band trước khi học bất kỳ kỹ năng nào — hãy dành 20–30 phút mỗi ngày để học từ trong sổ từ vựng (Vocab) của bạn.'),
       overview('Skimming = đọc nhanh để hiểu nội dung chính của bài, không đọc từng từ.\nMục tiêu: biết bài nói về chủ đề gì, xác định ý chính của từng đoạn, hiểu cấu trúc và hướng phát triển của bài, và tìm được đoạn có khả năng chứa câu trả lời.\nSkimming ≠ đọc nhanh từng câu. Skimming = đọc có chọn lọc.'),
       list('Chỉ cần tập trung vào 4 thứ (không cần đọc toàn bài)', [
         'Title — tiêu đề, giúp đoán ngay chủ đề. VD: "The Rise of Electric Vehicles" → bài chắc chắn nói về electric vehicles, development, advantages/disadvantages, environmental impact, future.',

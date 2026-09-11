@@ -14,6 +14,7 @@ module.exports = [
     category: CATEGORY, lessonKey: 'keyword-highlighting', title: 'Highlight keyword đúng cách', icon: '🖊️', orderIndex: -4,
     summaryText: 'Chỉ đánh dấu từ giúp biết cần nghe gì, paraphrase nào có thể xuất hiện, và đáp án thuộc loại thông tin nào.',
     blocks: [
+      callout('📌 Trước khi học kỹ năng', 'Vốn từ vựng chính là chìa khóa để nâng band trước khi học bất kỳ kỹ năng nào — hãy dành 20–30 phút mỗi ngày để học từ trong sổ từ vựng (Vocab) của bạn.'),
       overview('Khi đọc câu hỏi, KHÔNG highlight cả câu. Chỉ đánh dấu những từ giúp mình: biết đang cần nghe thông tin gì, biết từ nào có thể xuất hiện dưới dạng paraphrase, và biết câu trả lời thuộc loại thông tin nào.\nVD: "The museum will be closed on _____." → chỉ highlight museum – closed – day/date; không cần "The / will be / on".'),
       list('3 loại keyword', [
         '🔴 Anchor keywords (từ neo) — giúp định vị thông tin trong audio, thường là tên riêng, rất dễ nghe. VD: "The meeting will take place at the Central Library." → Central Library.',
