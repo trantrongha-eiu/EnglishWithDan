@@ -64,10 +64,13 @@ exports.changePassword = catchAsync(async (req, res) => {
 exports.uploadAvatar = catchAsync(async (req, res) => {
   const { imageBase64 } = req.body;
   if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
-  if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
-  if (getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
+  // Size check (cheap: string-length arithmetic only) BEFORE the format
+  // regex (which must scan the whole string) — an oversized payload is
+  // rejected without ever running the more expensive check against it.
+  if (typeof imageBase64 !== 'string' || getBase64PayloadByteSize(imageBase64) > MAX_AVATAR_BYTES) {
     return res.status(400).json({ success: false, message: 'Ảnh quá lớn, vui lòng chọn ảnh dưới 5MB' });
   }
+  if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
   const { avatar, user } = await userService.uploadAvatar(req.user._id, imageBase64);
   res.json({ success: true, avatar, user });

@@ -1,20 +1,24 @@
 'use strict';
 
-// NOTE: two sections in this batch have real, pre-existing data problems
-// (found while writing explanations, not introduced here) — see the chat
-// report. Both are deliberately left INCOMPLETE here rather than papered
-// over with a fabricated explanation:
-//   - "Planning a party" (6a43ec06e56e021a6ea684d8): transcript is
-//     truncated — it stops right after Q4 mid-conversation. Q5-Q10 have
-//     nothing in the transcript to cite, so only Q1-Q4 are done.
-//   - "Aims of the geography lesson" (6a43fbfbe56e021a6ea6b49f): Q28 does
-//     not exist in the document at all (questionRange says 21-30 but the
-//     actual questions jump 27 -> 29 -> 30 -> 31); Q23's stored
-//     correctAnswer ("D" = "the teacher coordination") contradicts what the
-//     transcript actually supports (Dean/Hannah explicitly say they
-//     coordinated well as a team — the problem they identify is student
-//     grouping, "B"). Q23 and Q24 are skipped pending a correctAnswer
-//     review; do not just invent a justification for the stored answer.
+// NOTE: two sections in this batch had real, pre-existing data problems
+// (found while writing explanations, not introduced here) — both are now
+// FIXED (see backend/scripts/fixPlanningAPartyTranscript.js and
+// fixGeographyLessonSection.js, already run against prod) and fully
+// explained below:
+//   - "Planning a party" (6a43ec06e56e021a6ea684d8): transcript stopped
+//     mid-conversation right after Q4. Extended with the real continuation
+//     (transcribed from the section's own audio via Groq Whisper, verified
+//     against every one of Q5-Q10's existing correctAnswer) — see the fix
+//     script for the full text now stored.
+//   - "Aims of the geography lesson" (6a43fbfbe56e021a6ea6b49f): the last
+//     three items of the "Questions 25-30" flow-chart group were numbered
+//     29/30/31 instead of 28/29/30 (an off-by-one slip that both invented a
+//     nonexistent Q31 outside the section's declared range and left Q28
+//     missing) — renumbered. Q23's stored correctAnswer was "D" ("the
+//     teacher coordination"), contradicted by the transcript (Dean says
+//     "Neither of us was too dominant, and we supported each other" —
+//     coordination was fine; the actual identified problem is student
+//     grouping) — corrected to "B".
 
 module.exports = [
   {
@@ -25,6 +29,12 @@ module.exports = [
       { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó, khi đổi ngày tổ chức.\n\nTranscript: "Would the 26th of September work for you? — No problem. That date\'s still open."\n\nPhân tích: Ngày mới được chốt là 26 tháng 9 → đáp án 26th September.' },
       { questionNumber: 3, explanation: 'Vị trí: Khi bàn về phòng tổ chức.\n\nTranscript: "And the King Room, right? — Actually, we recently renovated that room... Shall I book it for you? — Sure."\n\nPhân tích: Phòng được chọn là King Room → đáp án King.' },
       { questionNumber: 4, explanation: 'Vị trí: Cuối đoạn, khi bàn về nhạc.\n\nTranscript: "We can arrange for a group to play jazz, or one to play the latest pop. — my wife is a jazz fan, so let\'s book that."\n\nPhân tích: Nhạc được chọn là jazz vì vợ anh thích jazz → đáp án jazz.' },
+      { questionNumber: 5, explanation: 'Vị trí: Sau khi chốt xong phần nhạc.\n\nTranscript: "we need to talk about the type of service you want for the dinner. We have two options. A self-service buffet or table? — Let\'s go with the last choice."\n\nPhân tích: "The last choice" trong hai lựa chọn buffet tự phục vụ / phục vụ tại bàn (table) chính là table → đáp án table.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về bánh sinh nhật.\n\nTranscript: "What flavor would you like? — Well, it would have to be lemon. I really love chocolate, but it is her day, so let\'s go with her favorite."\n\nPhân tích: Anh chọn vị chanh (lemon) vì đó là vị vợ thích, dù bản thân thích chocolate hơn (bẫy) → đáp án lemon.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I would like to have something special written on it. But let\'s keep it simple. How about congratulations?"\n\nPhân tích: Chữ được viết trên bánh là "congratulations" (chúc mừng) → đáp án congratulations.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về thanh toán.\n\nTranscript: "What\'s the 16-digit account number? — 5544 1200 4326 8887, and it expires in November."\n\nPhân tích: Số thẻ Mastercard được đọc trực tiếp → đáp án 5544120043268887.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Is there another name on the card beside Brian Troy? A middle name or initial? — Yes, Sebastian. I\'ll spell it for you. S-E-B-A-S-T-I-A-N."\n\nPhân tích: Tên đệm trên thẻ là Sebastian, được đánh vần rõ ràng → đáp án SEBASTIAN.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "you need to be aware of an additional fee. For large groups, there is an extra charge which covers service."\n\nPhân tích: Phụ phí thêm là phí dịch vụ (service) cho nhóm đông người → đáp án service.' },
     ],
   },
   {
@@ -49,12 +59,14 @@ module.exports = [
     explanations: [
       { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về mục tiêu bài học.\n\nTranscript: "getting the class to think about how people in different parts of the world are connected to each other through the things they buy and sell."\n\nPhân tích: Mục tiêu liên quan tới sự phụ thuộc lẫn nhau toàn cầu (global interdependency) → đáp án A.' },
       { questionNumber: 22, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we also wanted to get the class thinking about how things are moved around the world in different ways, from the farms and the mines to the factories and then the stores."\n\nPhân tích: Mục tiêu còn lại liên quan tới hệ thống vận chuyển (transport systems) → đáp án D.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi hai người tự đánh giá bài dạy.\n\nTranscript: "Neither of us was too dominant, and we supported each other... At the time, I seem to remember we both thought that organizing the children in sets of six didn\'t work very well, and that pairs would have been better."\n\nPhân tích: Họ khẳng định phối hợp với nhau rất tốt (không phải vấn đề), còn cách chia nhóm 6 học sinh thì không hiệu quả → vấn đề thực sự là cách chia nhóm (the student grouping) → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "the thing I think we didn\'t get right was the way we paced things. Some things seemed to be rushed, and others seemed to drag out too long. — Hm, the same as you."\n\nPhân tích: Cả hai đồng ý vấn đề còn lại là cách phân bổ thời gian (the timing) → đáp án E.' },
       { questionNumber: 25, explanation: 'Vị trí: Khi Hannah tóm tắt lại trình tự bài học.\n\nTranscript: "we talked about which countries produce most of these materials... mark the location of those on a map of the world."\n\nPhân tích: Bước đầu tiên là xác định vị trí các nước sản xuất (producers) hàng đầu trên bản đồ → đáp án producers.' },
       { questionNumber: 26, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we brainstormed all the different ways of getting goods from one place to another, and what the advantages and disadvantages of each one would be."\n\nPhân tích: Học sinh thảo luận ưu nhược điểm của các phương thức vận chuyển (methods of transport) → đáp án methods transport.' },
       { questionNumber: 27, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "each group represented each of the countries on the map... to decide an itinerary for sending their raw materials to the USA, specifying the different ports and places on the way there."\n\nPhân tích: Học sinh xác định tuyến đường xuất khẩu (export routes) sang Mỹ → đáp án export routes.' },
-      { questionNumber: 29, explanation: 'Vị trí: Sau giờ giải lao.\n\nTranscript: "they had to imagine they were pencil manufacturers in Chicago and fill in details on a worksheet about how they\'d dispatch their pencils to different parts of the country."\n\nPhân tích: Học sinh hoàn thành một phiếu bài tập (worksheet) về phân phối bút chì → đáp án worksheet.' },
-      { questionNumber: 30, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "a class discussion about whether people will still be using pencils in 2050, and whether the design of pencils is likely to change."\n\nPhân tích: Học sinh thảo luận về tương lai (future) của bút chì → đáp án future.' },
-      { questionNumber: 31, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "the kids had to spend 10 minutes planning a short presentation for another class about possible developments."\n\nPhân tích: Học sinh chuẩn bị một bài thuyết trình ngắn (a talk) → đáp án talk.' },
+      { questionNumber: 28, explanation: 'Vị trí: Sau giờ giải lao.\n\nTranscript: "they had to imagine they were pencil manufacturers in Chicago and fill in details on a worksheet about how they\'d dispatch their pencils to different parts of the country."\n\nPhân tích: Học sinh hoàn thành một phiếu bài tập (worksheet) về phân phối bút chì → đáp án worksheet. (Câu này ban đầu bị lưu nhầm số thứ tự là Q29 — đã đổi lại đúng thành Q28, xem fixGeographyLessonSection.js.)' },
+      { questionNumber: 29, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "a class discussion about whether people will still be using pencils in 2050, and whether the design of pencils is likely to change."\n\nPhân tích: Học sinh thảo luận về tương lai (future) của bút chì → đáp án future. (Đã đổi số thứ tự từ Q30 cũ thành Q29 đúng.)' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "the kids had to spend 10 minutes planning a short presentation for another class about possible developments."\n\nPhân tích: Học sinh chuẩn bị một bài thuyết trình ngắn (a talk) → đáp án talk. (Đã đổi số thứ tự từ Q31 cũ thành Q30 đúng.)' },
     ],
   },
   {
