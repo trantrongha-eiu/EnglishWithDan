@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014085e01d9821f44bf2',
+    title: 'Cam 16 - Test 1 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi mô tả hoạt động của Tiny Engineers.\n\nTranscript: "they work together to design a special cover that goes round an egg, so that when it\'s inside they can drop it from a height and it doesn\'t break."\n\nPhân tích: Trẻ thiết kế vỏ bọc bảo vệ quả trứng (egg) → đáp án egg.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they have a competition to see who can make the highest tower."\n\nPhân tích: Cuộc thi xây tháp (tower) cao nhất → đáp án tower.' },
+      { questionNumber: 3, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they design and build a car that\'s attached to a balloon, and the force of the air in that actually powers the car."\n\nPhân tích: Trẻ chế tạo xe (car) chạy bằng lực bóng bay → đáp án car.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi mô tả hoạt động Junior Engineers.\n\nTranscript: "they work out how to build model vehicles, things like cars and trucks, but also how to construct animals using the same sorts of material and technique."\n\nPhân tích: Trẻ cũng chế tạo mô hình động vật (animals) → đáp án animals.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it\'s to use recycled materials like card and wood to build a bridge, and the longest one gets a prize."\n\nPhân tích: Cuộc thi xây cầu (bridge) dài nhất → đáp án bridge.' },
+      { questionNumber: 6, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they have something a bit different, which is to think up an idea for a five-minute movie and then film it, using special animation software."\n\nPhân tích: Trẻ làm một bộ phim ngắn (movie/film) → đáp án movie/film.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "they also build a robot in the shape of a human, and they decorate it and program it."\n\nPhân tích: Trẻ xây dựng, trang trí (decorate) và lập trình robot → đáp án decorate.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về lịch học.\n\nTranscript: "we found it didn\'t give our staff enough time to clear up after the first workshop, so we moved them to Wednesdays."\n\nPhân tích: Lớp học được chuyển sang thứ Tư (Wednesdays) → đáp án Wednesdays.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi bàn về địa điểm.\n\nTranscript: "that\'s in Fradstone Industrial Estate. — Fradstone - that\'s F-R-A-D-S-T-O-N-E."\n\nPhân tích: Địa điểm là khu công nghiệp Fradstone → đáp án Fradstone.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "will I have any parking problems there? — No, there\'s always plenty available."\n\nPhân tích: Có nhiều chỗ đỗ xe (parking) → đáp án parking.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014085e01d9821f44bfe',
+    title: "Stevenson's",
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi kể lịch sử công ty.\n\nTranscript: "He set up this company when he finished his apprenticeship, in 1926."\n\nPhân tích: Công ty được thành lập năm 1926 → đáp án C.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Stevenson was given the opportunity to make goods for hospitals and other players in the healthcare industry, so that\'s what we did for the first five years."\n\nPhân tích: Ban đầu công ty sản xuất hàng cho ngành y tế (healthcare) → đáp án A.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về cơ sở vật chất.\n\nTranscript: "we were lucky that the site is big enough, so moving to a new location has never been necessary."\n\nPhân tích: Công ty chưa từng cần chuyển địa điểm, không có kế hoạch chuyển đi → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về chương trình thực tập.\n\nTranscript: "Most mornings you\'ll have a presentation from one of the managers, to learn about their department."\n\nPhân tích: Chương trình gồm các buổi thuyết trình từ nhân viên (talks by staff) → đáp án C.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả bản đồ.\n\nTranscript: "the door facing you at the end is the entrance to the coffee room. This looks out onto the main road on one side, and some trees on the other."\n\nPhân tích: Phòng cà phê ở cuối hành lang, nhìn ra đường chính và cây cối → đáp án H.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Next to it is the warehouse, which can be accessed by lorries... You can get to the warehouse by crossing to the far side of the courtyard, and then the door is on your right."\n\nPhân tích: Nhà kho cạnh xưởng, phía xa của sân trong → đáp án C.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the staff canteen. This is right next to reception... The windows on one side look onto a corridor and courtyard... and on the other onto the access road."\n\nPhân tích: Căng tin nằm ngay cạnh khu tiếp tân → đáp án G.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "you\'ll find it by walking along the corridor to the left of the courtyard, and continuing along it to the end. The meeting room is the last one on the right."\n\nPhân tích: Phòng họp ở cuối hành lang bên trái sân trong, phòng cuối cùng bên phải → đáp án B.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The human resources department is all the front of this building, so you head to the left along the corridor from reception, and it\'s the second room you come to. It looks out onto the main road."\n\nPhân tích: Phòng nhân sự là phòng thứ hai dọc hành lang bên trái, nhìn ra đường chính → đáp án I.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối phần mô tả bản đồ.\n\nTranscript: "the boardroom... it looks out on to the trees. Go along the corridor past the courtyard, right to the end. The boardroom is on the left, next to the factory."\n\nPhân tích: Phòng họp hội đồng cạnh xưởng, nhìn ra cây cối → đáp án A.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014085e01d9821f44c0b',
+    title: 'Cam 16 - Test 1 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về chuyến đi bảo tàng.\n\nTranscript: "Yeah, I liked all the stuff about evolution there. — ... Much less use than the trip to the Natural History Museum."\n\nPhân tích: Cả hai đồng ý chuyến thăm Bảo tàng Lịch sử Tự nhiên hữu ích → đáp án C.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay đầu hội thoại.\n\nTranscript: "When they gave us all those handouts with details of books and websites to look at, I was really put off, but the more I read, the more interested I got. — Me too."\n\nPhân tích: Cả hai đồng ý tài liệu tham khảo (handouts) hữu ích → đáp án E.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về thay đổi đề xuất.\n\nTranscript: "I\'m going to do back to my proposal to make it a bit more vague. — Really? OK, I\'ll change that too then."\n\nPhân tích: Cả hai quyết định làm kết quả dự án bớt cụ thể hơn (less specific about the outcome) → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "I\'ve realised the notes from my research are almost all just descriptions, I haven\'t actually evaluated anything... — Oh, I didn\'t know we had to do that. I\'ll have to look at that too."\n\nPhân tích: Cả hai sẽ bổ sung đánh giá (evaluative) vào ghi chú → đáp án E.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về bức tranh chim ưng của Landseer.\n\nTranscript: "he seems to be staring straight at you. But I can\'t just say it\'s a bit scary, can I? — You could talk about the possible danger suggested by the bird\'s look."\n\nPhân tích: Ý nghĩa được chọn là mối đe dọa tiềm ẩn (a potential threat) → đáp án D.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về bức Fish hawk của Audubon.\n\nTranscript: "It\'s swooping over the water with a fish in its talons... I think I\'ll concentrate on the impression of rapid motion it gives."\n\nPhân tích: Ý nghĩa được chọn là chuyển động nhanh (fast movement) → đáp án C.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về bức chim bói cá của van Gogh.\n\nTranscript: "I\'ve actually chosen it because I saw a real kingfisher once when I was litter, I was out walking with my grandfather, and I\'ve never forgotten it."\n\nPhân tích: Ý nghĩa gắn với ký ức tuổi thơ (a childhood memory) → đáp án A.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về chân dung William Wells.\n\nTranscript: "his expression, and the way he\'s holding the bird in his hand suggests he\'s not sure about what he\'s done. To me it\'s about how ambiguous people are in the way they exploit the natural world."\n\nPhân tích: Ý nghĩa là thái độ mâu thuẫn với thiên nhiên (a confused attitude to nature) → đáp án H.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về bức Vairumati của Gauguin.\n\nTranscript: "what I\'m interested in is what idea this bird refers to. Apparently, it\'s a reference to the never-ending cycle of existence."\n\nPhân tích: Ý nghĩa là sự tiếp diễn của sự sống (the continuity of life) → đáp án F.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về chân dung Giovanni de Medici.\n\nTranscript: "He\'s holding a tiny bird in one fist. I like the way he\'s holding it carefully so he doesn\'t hurt it."\n\nPhân tích: Ý nghĩa là sự bảo vệ thiên nhiên (protection of nature) → đáp án G.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014185e01d9821f44c19',
+    title: 'Stoicism',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài.\n\nTranscript: "Stoicism, which, in my opinion, is the most practical of all philosophies and therefore the most appealing."\n\nPhân tích: Chủ nghĩa khắc kỷ hấp dẫn vì tính thực tế (practical) của nó → đáp án practical.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "despite the fact that the most famous Stoics never wrote anything down for publication."\n\nPhân tích: Các ý tưởng nổi tiếng dù không được viết ra để xuất bản (publication) → đáp án publication.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi trích lời Epictetus.\n\nTranscript: "external events I cannot control, but the choices I make with regard to them, I do control."\n\nPhân tích: Con người kiểm soát được lựa chọn (choices) của mình → đáp án choices.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi định nghĩa Stoic theo Taleb.\n\nTranscript: "a different perspective on experience which most of us would see as wholly negative."\n\nPhân tích: Người theo chủ nghĩa khắc kỷ nhìn nhận khác về trải nghiệm mà người khác coi là tiêu cực (negative) → đáp án negative.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi bàn về George Washington.\n\nTranscript: "later, put on a play based on the life of Cato to inspire his men."\n\nPhân tích: Washington dàn dựng một vở kịch (play) về Cato → đáp án play.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về Adam Smith.\n\nTranscript: "The economist Adam Smith\'s theories on capitalism were significantly influenced by the Stoicism."\n\nPhân tích: Lý thuyết của Adam Smith về chủ nghĩa tư bản (capitalism) chịu ảnh hưởng chủ nghĩa khắc kỷ → đáp án capitalism.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi bàn về Liệu pháp Nhận thức Hành vi.\n\nTranscript: "It\'s most commonly used to treat depression."\n\nPhân tích: CBT thường được dùng để điều trị trầm cảm (depression) → đáp án depression.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we can take control of our lives by challenging the irrational belief that create our faulty thinking... by using logic instead."\n\nPhân tích: Người bệnh học cách dựa vào logic (logic) thay vì niềm tin phi lý → đáp án logic.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về ứng dụng trong kinh doanh.\n\nTranscript: "Stoics teach turning obstacles into opportunity."\n\nPhân tích: Người theo chủ nghĩa khắc kỷ biến trở ngại thành cơ hội (opportunity) → đáp án opportunity.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "This is not as easy as it sounds and will require considerable practice - it can take a lifetime to master."\n\nPhân tích: Cần luyện tập (practice) rất nhiều để áp dụng thành công → đáp án practice/practise.' },
+    ],
+  },
+];
