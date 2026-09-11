@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c013e85e01d9821f44b58',
+    title: 'Cam 15 - Test 2 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Khi nói về sự kiện ngày 18.\n\nTranscript: "The next day, the 18th, there\'s a performance by a ballet company called Eustatis."\n\nPhân tích: Tên công ty múa ba lê được đánh vần rõ (E-U-S-T-A-T-I-S) → đáp án Eustatis.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi nói về vở kịch Jemima.\n\nTranscript: "I haven\'t seen it myself, but the review in the local paper was very good."\n\nPhân tích: Vở kịch nhận được bài đánh giá (review) tốt trên báo địa phương → đáp án review.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi nói về sự kiện tối ngày 20.\n\nTranscript: "A professional company is putting on a show of modern pieces, with electronic music... it\'s got the rather strange name, Chat."\n\nPhân tích: Đây là buổi biểu diễn múa (dance) đương đại → đáp án dance.' },
+      { questionNumber: 4, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it\'s got the rather strange name, Chat."\n\nPhân tích: Tên buổi biểu diễn múa là "Chat" → đáp án Chat.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi nói về workshop nấu ăn.\n\nTranscript: "It\'s going to focus on how to make food part of a healthy lifestyle."\n\nPhân tích: Workshop tập trung làm món ăn lành mạnh (healthy) → đáp án healthy.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi nói về workshop dành cho trẻ em.\n\nTranscript: "Another workshop is just for children, and that\'s on creating posters to reflect the history of the town."\n\nPhân tích: Trẻ em làm áp phích (posters) → đáp án posters.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi nói về workshop làm đồ chơi.\n\nTranscript: "participants will be making toys out of wood, so there\'ll be a lot of sharp chisels and other tools around."\n\nPhân tích: Đồ chơi được làm từ gỗ (wood) → đáp án wood.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi nói về bơi lội hoang dã.\n\nTranscript: "there\'s a beautiful one just outside the town, and that\'ll be the venue for the swimming... Oh OK. In a lake, for instance. — Yes."\n\nPhân tích: Bơi lội diễn ra ở hồ (lake) → đáp án lake.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi nói về đi bộ trong rừng.\n\nTranscript: "The leader is an expert on insects. He\'ll show some that live in the woods."\n\nPhân tích: Người dẫn đoàn là chuyên gia về côn trùng (insects) → đáp án insects.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "the festival organizer is keeping a blog."\n\nPhân tích: Ban tổ chức duy trì một blog để cập nhật thông tin → đáp án blog.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013e85e01d9821f44b65',
+    title: 'Minster Park',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu nguồn gốc công viên.\n\nTranscript: "Minster was some waste land, which people living nearby started planting with flowers in 1892."\n\nPhân tích: Công viên bắt đầu từ việc người dân địa phương tự trồng hoa trên đất hoang → hình thành từ cộng đồng (C).' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi giới thiệu bức tượng Diane Gosforth.\n\nTranscript: "Diane Gosforth was one of those people, and she organised petitions and demonstrations, which eventually made the council change its mind."\n\nPhân tích: Bà tổ chức kiến nghị/biểu tình để phản đối bán đất → dẫn dắt một chiến dịch (A).' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi nói về Thế chiến I.\n\nTranscript: "most of the park was dug up and planted with vegetables, which were sold locally."\n\nPhân tích: Công viên chủ yếu được dùng trồng rau (growing vegetables) → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về quá trình cải tạo gần đây.\n\nTranscript: "The changes finally got going in 2016, and were finished on schedule last year."\n\nPhân tích: Việc cải tạo thực sự bắt đầu năm 2016 → đáp án C.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả bản đồ.\n\nTranscript: "it\'s now immediately to the north of the lily pond, almost in the centre of the park."\n\nPhân tích: Tượng nằm ngay phía bắc ao hoa súng, gần trung tâm bản đồ → đáp án E.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "There\'s a new area of wooden sculptures, which are on the river bank, where the path from the east gate makes a sharp bend."\n\nPhân tích: Tượng gỗ nằm bên bờ sông, chỗ đường từ cổng đông rẽ gấp → đáp án C.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The playground has been enlarged and improved, and that\'s between the river and the path that leads from the pond to the river."\n\nPhân tích: Sân chơi nằm giữa sông và đường nối ao-sông → đáp án B.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "there\'s a new maze... That\'s near the west gate – you go north from there towards the river and then turn left."\n\nPhân tích: Mê cung gần cổng tây → đáp án A.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "There have been tennis courts... They\'re still in the south-west corner of the park, where there\'s a right-angle bend in the path."\n\nPhân tích: Sân tennis ở góc tây nam, chỗ đường gấp khúc vuông góc → đáp án G.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối phần mô tả bản đồ.\n\nTranscript: "the new fitness area. This is right next to the lily pond on the same side as the west gate."\n\nPhân tích: Khu tập thể dục cạnh ao hoa súng, cùng phía cổng tây → đáp án D.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013f85e01d9821f44b72',
+    title: 'Cam 15 - Test 2 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về đối tượng tham quan.\n\nTranscript: "this year it\'s going to be part of an open day... It\'ll be publicised in the city, to encourage people to come."\n\nPhân tích: Sự kiện được quảng bá trong thành phố, hướng tới cư dân địa phương → đáp án B.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it\'s included in the information that\'s sent to people who are considering applying to study here next year."\n\nPhân tích: Thông tin được gửi tới người có thể nộp đơn nhập học (potential new students) → đáp án D.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn lý do chọn Dickens.\n\nTranscript: "his novels show the awful conditions that most people had to live in... he wanted to shock people into doing something about it."\n\nPhân tích: Ông dùng tác phẩm để gây chú ý tới vấn đề xã hội → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "Most people have heard of him, and have probably read some of his novels, or seen films based on them."\n\nPhân tích: Tác phẩm của ông nổi tiếng, được nhiều người biết đến hiện nay → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về The Pickwick Papers.\n\nTranscript: "there\'s a character who keeps falling asleep, and that medical condition was named after the book – Pickwickian Syndrome."\n\nPhân tích: Hội chứng y khoa liên quan tới giấc ngủ → chủ đề "medicine" → đáp án G.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về Oliver Twist.\n\nTranscript: "Oliver is taught how to steal... very few children went to school, particularly not poor children, so they learnt in other ways."\n\nPhân tích: Chủ đề liên quan tới việc trẻ em không được đến trường → giáo dục (education) → đáp án B.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về Nicholas Nickleby.\n\nTranscript: "there\'s also the company of touring actors that Nicholas joins. We could do something on theatres and other amusements of the time."\n\nPhân tích: Chủ đề là nhà hát/giải trí (entertainment) → đáp án D.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về Martin Chuzzlewit.\n\nTranscript: "He goes to the USA... Dickens himself had been there a year before, and drew on his experience there."\n\nPhân tích: Chủ đề gắn với chuyến đi của Dickens (Dickens\'s travels) → đáp án C.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về Bleak House.\n\nTranscript: "think about Esther, the heroine. As a child she lives with someone she doesn\'t know is her aunt... at the end she gets married."\n\nPhân tích: Chủ đề xoay quanh cuộc đời của nhân vật nữ Esther → "a woman\'s life" → đáp án H.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về Little Dorrit.\n\nTranscript: "focusing on the part when Mr Dorrit inherits a fortune, and he starts pretending he\'s always been rich."\n\nPhân tích: Chủ đề liên quan tới việc ông Dorrit trở nên giàu có → "wealth" → đáp án F.' },
+    ],
+  },
+  {
+    sectionId: '6a6c013f85e01d9821f44b80',
+    title: 'Agricultural programme in Mozambique',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu phần mô tả chương trình.\n\nTranscript: "the programme focused primarily on making use of existing water resources from the Limpopo River by setting up systems of irrigation, which would provide a dependable water supply."\n\nPhân tích: Ưu tiên hàng đầu là hệ thống tưới tiêu (Irrigation) → đáp án Irrigation.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it was notable that in general, women formed the majority of the workforce."\n\nPhân tích: Phần lớn lực lượng lao động trong các hiệp hội nông dân là phụ nữ (women) → đáp án women.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi nói về hàng rào.\n\nTranscript: "The community was responsible for creating these fences, but the programme provided the necessary wire for making them."\n\nPhân tích: Chương trình cung cấp dây thép gai (wire) làm hàng rào → đáp án wire/wires.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "vegetables and cereals appropriate to the climate could be grown, and the programme provided the necessary seeds for this."\n\nPhân tích: Chương trình cung cấp hạt giống (seeds) phù hợp cây trồng → đáp án seed/seeds.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the labour was all provided by local people, and they also provided and put up the posts that supported the fences around the fields."\n\nPhân tích: Người dân cung cấp cột (posts) chống đỡ hàng rào → đáp án posts.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về khó khăn tiêu thụ nông sản.\n\nTranscript: "getting the produce to places where it could be marketed was sometimes a problem, as the farmers did not have access to transport."\n\nPhân tích: Thiếu phương tiện vận chuyển (transport) → đáp án transport.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it was decided that in order to prevent food from being spoiled, the farmers needed to learn techniques for its preservation."\n\nPhân tích: Nông dân được đào tạo kỹ thuật bảo quản (preservation) thực phẩm → đáp án preservation.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi nói về sáng kiến nuôi cá.\n\nTranscript: "farmers started to dig holes for tanks in the fenced-off areas and to fill these with water and use them for breeding fish."\n\nPhân tích: Họ đào hố chứa nước để nuôi cá (fish) → đáp án fish/fishes.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "They decided to try setting up colonies of bees, which would provide honey."\n\nPhân tích: Người dân đề xuất nuôi ong (bees) lấy mật → đáp án bees.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài, phần bài học rút ra.\n\nTranscript: "it\'s important to set realistic timelines for each phase of the programme, especially for its design, as mistakes made at this stage may be hard to correct later on."\n\nPhân tích: Cần dành đủ thời gian đặc biệt cho giai đoạn thiết kế (design) → đáp án design.' },
+    ],
+  },
+];
