@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014185e01d9821f44c58',
+    title: 'Cam 16 - Test 3 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi mô tả Level 5.\n\nTranscript: "they\'re taken to ride in the park, away from the traffic."\n\nPhân tích: Trẻ tập luyện đầu tiên tại công viên (park) → đáp án park.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi bàn về người hướng dẫn.\n\nTranscript: "the instructors themselves are in blue shirts, and one of these is responsible for each class."\n\nPhân tích: Người hướng dẫn (instructor) mặc áo xanh dương (blue) → đáp án blue.' },
+      { questionNumber: 3, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "all our instructors have to submit a reference from someone who\'s seen them work with children."\n\nPhân tích: Người hướng dẫn cần có thư giới thiệu (reference) → đáp án reference.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về lớp học.\n\nTranscript: "they have quiet times too, where their instructor might tell them a story that\'s got something to do with cycling."\n\nPhân tích: Giờ nghỉ có thể là kể chuyện (story) → đáp án story.' },
+      { questionNumber: 5, explanation: 'Vị trí: Khi hỏi về thời tiết xấu.\n\nTranscript: "what happens if there\'s rain? Do the classes still run? — Oh yes."\n\nPhân tích: Lớp học vẫn diễn ra kể cả khi có mưa (rain) → đáp án rain.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về đồ cần mang theo.\n\nTranscript: "And a snack for break time."\n\nPhân tích: Cần mang theo đồ ăn nhẹ (snack) → đáp án snack.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Charlie has to take medication every few hours, so I\'ll make sure he has that."\n\nPhân tích: Cần mang theo thuốc (medication) của Charlie → đáp án medication.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về ngày đầu tiên.\n\nTranscript: "we have a very careful check to make sure that every child\'s helmet fits properly."\n\nPhân tích: Mũ bảo hiểm (helmet) sẽ được kiểm tra trước lớp học → đáp án helmet.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "all the instructors will be waiting to meet their classes, and they\'ll meet up in the tent."\n\nPhân tích: Trẻ gặp người hướng dẫn tại lều (tent) → đáp án tent.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "One hundred ninety-nine dollars."\n\nPhân tích: Chi phí khóa học là 199 đô/tuần → đáp án 199.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014185e01d9821f44c64',
+    title: 'Cam 16 - Test 3 – Part 2',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi bàn về lợi ích công việc nông nghiệp.\n\nTranscript: "there are certainly health benefits, especially in jobs where you\'re not sitting all day looking at a screen - a big plus for many people."\n\nPhân tích: Lối sống năng động (active lifestyle) là một lợi thế → đáp án A.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "they often offer opportunities for those who don\'t want to be stuck with a 40-hour week, but need to juggle work with other responsibilities such as child care."\n\nPhân tích: Cơ hội làm việc linh hoạt (flexible working) → đáp án C.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về bất lợi của công việc ngoài trời.\n\nTranscript: "if you like a lively city environment surrounded by lots of people, these jobs are probably not for you - they\'re often in pretty remote areas."\n\nPhân tích: Địa điểm làm việc thường yên tĩnh, hẻo lánh (very quiet location) → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "It\'s fine in summer, but can be extremely unpleasant when it\'s cold and windy."\n\nPhân tích: Thời tiết khó khăn theo mùa (difficult weather conditions) → đáp án C.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả vị trí quản lý thực phẩm tươi.\n\nTranscript: "They operate in a very fast-paced environment with low profit margins - the staff there work hard, but they play hard as well."\n\nPhân tích: Công việc căng thẳng nhưng cũng vui vẻ (intensive work but also fun) → đáp án D.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi mô tả vị trí agronomist.\n\nTranscript: "There are good opportunities for the right person to quickly make their way up the career ladder."\n\nPhân tích: Cơ hội thăng tiến nhanh (chance for rapid promotion) → đáp án F.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi mô tả vị trí người mua nông sản tươi.\n\nTranscript: "who is available for a 12-month maternity cover contract."\n\nPhân tích: Đây là công việc tạm thời, không cố định (not a permanent job) → đáp án A.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi mô tả vị trí quản lý bán hàng trung tâm vườn.\n\nTranscript: "You will be visiting centres in the region to ensure their high levels of customer service are maintained."\n\nPhân tích: Công việc liên quan đến di chuyển trong khu vực (local travel involved) → đáp án H.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi mô tả vị trí kỹ thuật viên cây.\n\nTranscript: "A year\'s experience would be preferred but the company might be prepared to consider someone who has just completed an appropriate training course."\n\nPhân tích: Kinh nghiệm không bắt buộc (experience not essential) → đáp án C.' },
+      { questionNumber: 20, explanation: 'Vị trí: Khi mô tả vị trí công nhân trang trại.\n\nTranscript: "Perks of the job include the possibility of renting a small cottage on the estate."\n\nPhân tích: Có sẵn chỗ ở (accommodation available) → đáp án G.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014285e01d9821f44c72',
+    title: 'Cam 16 - Test 3 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi Adam nói về thí nghiệm.\n\nTranscript: "It was hard to keep track of it all, especially as I had so many people doing it."\n\nPhân tích: Thí nghiệm có mẫu lớn người tham gia (a large sample of people) → đáp án C.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "especially how I could make sure that people didn\'t know which drink I was giving them."\n\nPhân tích: Người tham gia không biết họ đang uống gì (unaware of what they were drinking) → đáp án D.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi Rosie nói về thí nghiệm đo chất béo trong hạt.\n\nTranscript: "I think I should probably have ground up the nuts more than I did."\n\nPhân tích: Hạt chưa được nghiền đủ mịn (did not grind the nuts finely enough) → đáp án C.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s possible that the scales for weighing the fat weren\'t accurate enough, too."\n\nPhân tích: Cân đo có thể không chính xác (the weighing scales may have been unsuitable) → đáp án E.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về thực đơn nhà hàng.\n\nTranscript: "if you put the low-calorie items at the beginning and end of the menu, people will probably go for the food with fewer calories."\n\nPhân tích: Cách sắp xếp thực đơn (organised in a particular way) giúp giảm béo phì → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về nhãn calo.\n\nTranscript: "when manufacturers put calorie counts of a food on the label, they\'re sometimes really confusing and I suspect they do it on purpose."\n\nPhân tích: Nhà sản xuất cố tình làm nhãn calo khó hiểu (make calorie counts hard to understand) → đáp án A.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về mức độ tập thể dục ở Anh.\n\nTranscript: "about 40% of men and 30% of women say they do this, but when you objectively measure... only 6% of men and 4% of women do the recommended amount."\n\nPhân tích: Người dân đánh giá quá cao lượng vận động thực tế (overestimate how much they do) → đáp án B.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về vị trí cầu thang.\n\nTranscript: "If people reach the stairs before they reach the escalator... they\'re more likely to take the stairs... It\'s an unconscious process and influenced by minor modifications in their environment."\n\nPhân tích: Đây là ví dụ về thay đổi thực tế ảnh hưởng hành vi con người (practical changes that can influence behaviour) → đáp án A.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về việc có nên đưa chủ đề tập thể dục vào bài thuyết trình.\n\nTranscript: "our tutor did say that we need to focus on causes and solutions in terms of nutrition. — I suppose so... that will be simpler."\n\nPhân tích: Cả hai đồng ý bỏ phần vận động ra khỏi bài thuyết trình (leave it out) → đáp án A.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "Let\'s think about what we\'re going to include and what will go where. Then we can decide what slides we need."\n\nPhân tích: Việc tiếp theo là quyết định nội dung và cách sắp xếp (decide on its content and organisation) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014285e01d9821f44c80',
+    title: 'Hand knitting',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài.\n\nTranscript: "we might well picture an elderly person - a grandmother perhaps - sitting by the fire knitting garments."\n\nPhân tích: Hình ảnh thường liên tưởng là bà (grandmother) → đáp án grandmother.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "during the previous decade, it was one of the skills that was predicted to vanish from everyday life."\n\nPhân tích: Một thập kỷ (decade) trước, đan len được dự đoán sẽ biến mất → đáp án decade.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we\'re also seeing an increase in the sales figures for knitting equipment."\n\nPhân tích: Doanh số bán dụng cụ (equipment) đan len tăng → đáp án equipment.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi bàn về lợi ích của đan len.\n\nTranscript: "it\'s still true today that knitting can be helpful if you\'re experiencing economic hardship."\n\nPhân tích: Đan len hỗ trợ trong thời kỳ khó khăn kinh tế (economic) → đáp án economic.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the skills you need to get going are really quite basic and the financial outlay is minimal."\n\nPhân tích: Chỉ cần kỹ năng cơ bản (basic) để bắt đầu → đáp án basic.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về đồ đan cổ.\n\nTranscript: "the earliest pieces of clothing that have been found suggest that most of the items produced were round rather than flat."\n\nPhân tích: Đồ đan cổ chủ yếu có hình tròn (round) → đáp án round.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the very first needles people used were hand carved out of wood and other natural materials, like bone."\n\nPhân tích: Kim đan đầu tiên làm từ gỗ và xương (bone) → đáp án bone.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Ancient people knitted using yarns made from linen, hemp, cotton and wool, and these were often very rough on the skin."\n\nPhân tích: Sợi len cổ xưa thường thô ráp (rough) khi chạm vào da → đáp án rough.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về khác biệt vùng miền.\n\nTranscript: "because it was practised in so many parts of the world for so many purposes, regional differences in style developed."\n\nPhân tích: Mỗi vùng có phong cách (style) đan len riêng → đáp án style.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "men, women and children took every opportunity to knit, for example, while watching over sheep, walking to market or riding in boats."\n\nPhân tích: Người dân đan len trong khi trông coi cừu (sheep) → đáp án sheep.' },
+    ],
+  },
+];
