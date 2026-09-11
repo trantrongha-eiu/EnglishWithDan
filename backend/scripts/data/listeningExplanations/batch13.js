@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a5131e02bf801f4090e95b1',
+    title: 'Extinction of Species',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi nói về mất môi trường sống.\n\nTranscript: "many species of frog are losing their habitat as a direct result of this urban development."\n\nPhân tích: Ếch (frog) mất môi trường sống do đô thị hóa → đáp án frog.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "fewer insects are surviving. Many species depend upon these as a food source, birds in particular, and so their numbers are declining as well."\n\nPhân tích: Chim (birds) đặc biệt bị ảnh hưởng vì phụ thuộc côn trùng làm thức ăn → đáp án birds.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi nói về nông nghiệp.\n\nTranscript: "when our farmers choose to grow large amounts of one staple crop each year, corn is a perfect example."\n\nPhân tích: Ngô (corn) là ví dụ điển hình về cây trồng độc canh gây hại cho động vật hoang dã → đáp án corn.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi bàn về thái độ với động vật nguy cấp.\n\nTranscript: "it is easy to get people interested in animals such as the panda. Thanks to the attention it is given in the media."\n\nPhân tích: Sự chú ý của truyền thông (media) khiến gấu trúc dễ được ủng hộ → đáp án media.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it is not so easy to attract sympathy for those essential smaller species such as insects."\n\nPhân tích: Loài nhỏ như côn trùng (insects) ít được quan tâm hơn → đáp án insects.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi liệt kê lý do con người phớt lờ một số loài.\n\nTranscript: "we might do this because of fear. That is the normal reaction when people see a shark or a snake."\n\nPhân tích: Nỗi sợ hãi (fear) là lý do đầu tiên → đáp án fear.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we believe that certain animals are rivals when it comes to food. Locusts and even mice could come into this category."\n\nPhân tích: Một số loài bị coi là đối thủ tranh giành thức ăn (rivals) → đáp án rivals.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi bàn về lý do bảo tồn loài.\n\nTranscript: "the more complex the ecosystem is, the more stable it is."\n\nPhân tích: Hệ sinh thái càng phức tạp (complex) càng ổn định → đáp án complex.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the presence or absence of certain plants can alert us to changes in our environment."\n\nPhân tích: Một số loài thực vật (plants) có thể cảnh báo thay đổi môi trường → đáp án plants.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài, về ứng dụng trong y học.\n\nTranscript: "The cobwebs they make can be used to assist with certain blood disorders. It actually helps blood to clot."\n\nPhân tích: Mạng nhện giúp điều trị các rối loạn về máu (blood) → đáp án blood.' },
+    ],
+  },
+  {
+    sectionId: '6a53a9085c459ab074ce322a',
+    title: 'Joining a wildlife conservation society',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi hỏi biết đến hội qua đâu.\n\nTranscript: "It was a radio program. Then I just got your number from the phone book."\n\nPhân tích: Người đàn ông biết đến hội qua một chương trình radio → đáp án a radio program/radio program.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi hỏi mã bưu điện.\n\nTranscript: "do you know your postcode? — Yes, it\'s uh, LS14 2JW."\n\nPhân tích: Mã bưu điện được đọc trực tiếp → đáp án LS142JW.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi hỏi địa chỉ email.\n\nTranscript: "It\'s mj@hennings.co.uk"\n\nPhân tích: Địa chỉ email đầy đủ → đáp án hennings.co.uk (phần sau @).' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi hỏi thời hạn thành viên.\n\nTranscript: "We do two, three, and five-year memberships... — I think I\'ll just get the minimum length this time around."\n\nPhân tích: Ông chọn thời hạn ngắn nhất là 2 năm (two/2) → đáp án two/2.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I think I\'ll get the joint one because my wife will probably want to do the activities with me."\n\nPhân tích: Loại thành viên được chọn là "joint" (đôi) → đáp án joint.' },
+      { questionNumber: 6, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "That\'ll be 49 pounds altogether then, please."\n\nPhân tích: Phí thành viên là 49 bảng → đáp án 49.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi hỏi thông tin ngân hàng.\n\nTranscript: "Can you give me the name first? — It\'s the Union Bank."\n\nPhân tích: Tên ngân hàng là The Union Bank → đáp án The Union Bank.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi hỏi ngày thanh toán đầu tiên.\n\nTranscript: "Next month, on the 1st of October, or... — Can you make it the 15th instead? — No problem."\n\nPhân tích: Ngày thanh toán đầu tiên được đổi thành 15/10 → đáp án 15 October/October 15.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I\'ll just give you a reference number... It\'s JYZ 37."\n\nPhân tích: Mã tham chiếu là JYZ37 → đáp án JYZ37.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "There\'s also a video we can send you if you like, there\'s no charge. — Yes, please."\n\nPhân tích: Yêu cầu thêm là gửi một video → đáp án video.' },
+    ],
+  },
+  {
+    sectionId: '6a53ac9d5c459ab074ce3850',
+    title: 'Yorktown Tourism',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu màn bắn pháo hoa.\n\nTranscript: "there\'ll be a huge firework display down by the lake."\n\nPhân tích: Pháo hoa diễn ra gần hồ (lake) → đáp án lake.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "bring along a picnic and a blanket, as it could get chilly in the evening."\n\nPhân tích: Khán giả nên mang theo đồ ăn dã ngoại (picnic) và chăn → đáp án picnic.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi giới thiệu triển lãm ở Central Park.\n\nTranscript: "the amazing collection of flowers on show in Central Park throughout the festival."\n\nPhân tích: Triển lãm hoa (flowers) tại Central Park → đáp án flowers.' },
+      { questionNumber: 14, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Special buses will run from the town centre to the show at 20-minute intervals."\n\nPhân tích: Xe buýt chạy mỗi 20 phút → đáp án 20.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi giới thiệu triển lãm ô tô.\n\nTranscript: "head over to the Motor Show at the Exhibition Centre."\n\nPhân tích: Sự kiện tên là Motor Show → đáp án Motor.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi giới thiệu triển lãm ảnh.\n\nTranscript: "\'Grow Your Imagination\'... will be held at the Art Gallery."\n\nPhân tích: Triển lãm ảnh tổ chức tại phòng trưng bày nghệ thuật (art gallery) → đáp án art gallery.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi giới thiệu buổi biểu diễn nhạc.\n\nTranscript: "you should come and hear the Australian Philharmonic Orchestra performing \'Swing in Spring\' at the Concert Hall."\n\nPhân tích: Buổi hòa nhạc diễn ra tại nhà hát hòa nhạc (concert hall) → đáp án concert hall.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "both evenings start at 7 p.m., and a matinee performance at 2:30 on the Saturday."\n\nPhân tích: Suất diễn buổi chiều thứ Bảy bắt đầu lúc 2:30 → đáp án 2:30.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi giới thiệu giải thưởng cuộc thi.\n\nTranscript: "one lucky person will get the chance to go up in one of these balloons absolutely free."\n\nPhân tích: Giải thưởng là một chuyến bay khinh khí cầu (a flight in a hot air balloon) → đáp án C.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "you\'ll need to fill out the entry form in today\'s edition of the Yorktown News."\n\nPhân tích: Phiếu dự thi lấy từ tờ báo (the newspaper) → đáp án B.' },
+    ],
+  },
+  {
+    sectionId: '6a53aed05c459ab074ce401c',
+    title: 'Discussion on Archaeology Course',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về việc kết hợp môn học.\n\nTranscript: "you can combine it with any other subject, apart from classical history."\n\nPhân tích: Duy nhất môn lịch sử cổ điển (classical history) không thể kết hợp do trùng lịch → đáp án classical history.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về các học phần.\n\nTranscript: "in the first semester, there are three. All of them are compulsory."\n\nPhân tích: Cả 3 học phần kỳ đầu đều bắt buộc (compulsory) → đáp án compulsory.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi giới thiệu học phần 1.\n\nTranscript: "It\'s called \'Object Matters\', and it\'s taught by Dr. Morris."\n\nPhân tích: Tên học phần 1 là "Object Matters" → đáp án Object matters.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "First of all, recording material, then classification, then interpretation of the data."\n\nPhân tích: Bước tiếp theo sau ghi chép là phân loại (classification) → đáp án classification.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi hỏi về cách đánh giá học phần 1.\n\nTranscript: "how is the module assessed? Is there an exam? — No, it\'s all based on coursework."\n\nPhân tích: Học phần 1 được đánh giá qua bài tập trong khóa (coursework) → đáp án coursework.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi giới thiệu học phần 2.\n\nTranscript: "the second module, that\'s the one called \'Towns and Cities\', is taught by our department head, Professor Elliot."\n\nPhân tích: Tên học phần 2 là "Towns and Cities" → đáp án Towns and cities.' },
+      { questionNumber: 27, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the module\'s about the origins of built environments and how they developed."\n\nPhân tích: Học phần nói về nguồn gốc (origins) của các công trình xây dựng → đáp án origins.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về cách đánh giá học phần 2.\n\nTranscript: "the assessment\'s by examination... it\'s an oral rather than a written exam."\n\nPhân tích: Học phần 2 được đánh giá bằng thi vấn đáp (oral) → đáp án oral.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về học phần 3.\n\nTranscript: "it\'s half lab work and half seminars. There aren\'t any lectures."\n\nPhân tích: Học phần 3 gồm một nửa thực hành phòng lab, một nửa hội thảo (seminars) → đáp án seminars.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "The date for that is week beginning the 10th of March, but I can\'t tell you the location yet. That\'ll be announced later."\n\nPhân tích: Địa điểm (location) khảo sát thực địa sẽ được công bố sau → đáp án location.' },
+    ],
+  },
+];
