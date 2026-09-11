@@ -96,9 +96,17 @@
   // (called on every page load, see the bottom of this file) silently
   // finishes the exact same idempotent call the moment they're signed back
   // in, so the run resumes on the correct next skill instead of restarting.
-  async function advance(skill, subAttemptId) {
+  // Does the actual work described above and returns the server's `nav`
+  // decision on success — `null` on any failure (every failure branch
+  // already navigates away itself, so there's nothing left for a caller to
+  // do with a null return). Split out of advance() so a caller that wants
+  // to show its own screen before moving on (listening.html's post-review
+  // waiting screen, see advanceWithoutNav below) can get the same
+  // battle-tested 401/retry/pending-recovery handling without also being
+  // forced into the immediate auto-navigate on success.
+  async function _advanceCore(skill, subAttemptId) {
     var x = params();
-    if (!x.mockId) return;
+    if (!x.mockId) return null;
     stopProctor();  // legit end-of-skill navigation must not log a violation
     _savePending(x.mockId, skill, subAttemptId);
 
@@ -131,16 +139,31 @@
           ? window.AuthService.buildLoginUrl('dashboard.html')
           : ('/login.html?next=' + encodeURIComponent('dashboard.html'));
         location.href = next;
-        return;
+        return null;
       }
       console.error('[MockTest] advance failed:', lastErr);
       try { if (window.toast) window.toast('Chưa lưu được tiến độ thi thử — sẽ tự đồng bộ khi bạn quay lại trang chủ', 'error'); } catch (_) {}
       location.href = 'dashboard.html'; // _PENDING_KEY stays set; flushed from there
-      return;
+      return null;
     }
 
     _clearPending();
-    _navigateByResult(data.nav, x.mockId);
+    return data.nav;
+  }
+
+  async function advance(skill, subAttemptId) {
+    var nav = await _advanceCore(skill, subAttemptId);
+    if (nav) _navigateByResult(nav, params().mockId);
+  }
+
+  // Same as advance(), but on success returns the server's `nav` decision to
+  // the caller instead of auto-navigating — for a skill page that wants to
+  // show its own screen (instructions, a manual "continue" button) before
+  // moving on. Failure paths (401 / persistent error) still navigate
+  // immediately, exactly like advance() — those are "you can't stay here"
+  // states either way.
+  async function advanceWithoutNav(skill, subAttemptId) {
+    return _advanceCore(skill, subAttemptId);
   }
 
   // ── Recovery for an advance() interrupted by a session expiry ──────────
@@ -571,6 +594,7 @@
     pageUrl: pageUrl,
     fetchCurrent: fetchCurrent,
     advance: advance,
+    advanceWithoutNav: advanceWithoutNav,
     flushPendingAdvance: flushPendingAdvance,
     showBanner: showBanner,
     startProctor: startProctor,

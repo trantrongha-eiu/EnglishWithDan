@@ -286,6 +286,7 @@
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/paste-guard.js?v=20260912"></script>
 <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
 <script src="js/shared/dictionary-lookup.js?v=20260911para"></script>
@@ -427,6 +428,15 @@
       if (!mic) return;
       this.finalText = '';
       this.guide = speakGuide((ex && ex.speakingPart) || 1);
+
+      // Anti-cheat: the transcript is speech-to-text output the student may
+      // hand-correct, never a pre-written answer pasted in — same rule (and
+      // meme) as Speaking's standalone flow (js/speaking.js) and Writing's
+      // essay boxes, via js/shared/paste-guard.js.
+      if (window.PasteGuard) {
+        var scTa = document.getElementById('sc-transcript');
+        if (scTa) window.PasteGuard.attach(scTa, { hint: 'hãy nói hoặc gõ trực tiếp câu trả lời của bạn' });
+      }
 
       // let the student mark which question they're answering (multi-item sets)
       document.querySelectorAll('#sc-body .sc-q, .sc-q').forEach(function (q) {

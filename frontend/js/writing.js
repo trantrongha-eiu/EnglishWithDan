@@ -124,22 +124,14 @@ function showScreen(id) {
 // ──────────────────────────────────────────────────────
 // Chống dán bài từ ngoài vào — người học phải tự gõ bài Task 1 / Task 2.
 // Chặn cả paste (Ctrl+V / menu chuột phải) và kéo-thả văn bản. Cùng cách
-// làm với ô "Viết lại" (_rwPasteBlock) và ô transcript của Speaking.
+// làm với ô "Viết lại" (_rwPasteBlock) và ô transcript của Speaking — cả 3
+// dùng chung js/shared/paste-guard.js (meme + thông báo hài hước thay vì
+// toast khô khan như trước).
 // Áp cho ô thi (#answer-textarea) và ô luyện tập (#pw-textarea) — cả hai
 // đều là phần tử tĩnh trong writing.html nên gắn một lần là đủ.
 // ──────────────────────────────────────────────────────
 function _blockPasteInto(ta) {
-  if (!ta || ta.dataset.pasteBlocked) return;
-  ta.dataset.pasteBlocked = '1';
-  ta.addEventListener('paste', e => {
-    e.preventDefault();
-    if (window.showToast) showToast('Không thể dán vào đây — hãy tự gõ bài viết của bạn.', 'warn', 3500);
-  });
-  ta.addEventListener('drop', e => {
-    e.preventDefault();
-    if (window.showToast) showToast('Không thể kéo-thả văn bản vào đây — hãy tự gõ bài viết của bạn.', 'warn', 3000);
-  });
-  ta.addEventListener('dragover', e => e.preventDefault());
+  if (window.PasteGuard) window.PasteGuard.attach(ta, { hint: 'hãy tự gõ bài viết của bạn' });
 }
 
 (function _initPasteGuard() {
@@ -957,12 +949,7 @@ function _rewriteRequired(a) {
 }
 
 function _rwPasteBlock(ta) {
-  ta.addEventListener('paste', e => {
-    e.preventDefault();
-    showToast('Không thể dán vào ô viết lại — hãy tự gõ tay bài viết lại của bạn.', 'warn', 3500);
-  });
-  ta.addEventListener('drop', e => { e.preventDefault(); showToast('Không thể kéo-thả văn bản vào đây.', 'warn', 3000); });
-  ta.addEventListener('dragover', e => e.preventDefault());
+  if (window.PasteGuard) window.PasteGuard.attach(ta, { hint: 'hãy tự gõ tay bài viết lại của bạn' });
   ta.addEventListener('input', () => { _rwUpdateCounts(); _rwSaveDraft(); });
 }
 

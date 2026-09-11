@@ -804,6 +804,10 @@ const _PRACTICE_KEY = 'ews_reading_practice';
 function saveExamToStorage() {
   if (!state.attemptId || state.submitted || _practiceMode) return;
   try {
+    // Tag the backup with the mock run it belongs to (if any) so
+    // checkResumeExam() can tell a stale backup — left behind by a run that
+    // later got disqualified/abandoned — from a genuinely resumable one.
+    const mockId = (window.MockTest && window.MockTest.active()) ? window.MockTest.params().mockId : null;
     localStorage.setItem(_EXAM_KEY, JSON.stringify({
       attemptId: state.attemptId,
       testId: state.testId,
@@ -811,6 +815,7 @@ function saveExamToStorage() {
       passages: state.passages,      // full passage data (no correct answers)
       answers: state.answers,
       secondsLeft: state.secondsLeft,
+      mockId: mockId,
       savedAt: Date.now()
     }));
     const lbl = document.getElementById('exam-autosave');
@@ -822,7 +827,7 @@ function clearExamStorage() {
   localStorage.removeItem(_EXAM_KEY);
 }
 
-function checkResumeExam() {
+async function checkResumeExam() {
   try {
     const raw = localStorage.getItem(_EXAM_KEY);
     if (!raw) return;
@@ -830,13 +835,45 @@ function checkResumeExam() {
     if (!data.attemptId || !data.passages?.length) { clearExamStorage(); return; }
     // Expire after 70 min (exam is 60 min)
     if (Date.now() - data.savedAt > 70 * 60 * 1000) { clearExamStorage(); return; }
+
+    // Backup was made mid mock-test — only worth offering if that mock run
+    // is still actually alive server-side. MockTest.fetchCurrent() (GET
+    // /mock-test/current) only ever returns a doc while status is
+    // 'in-progress' or 'awaiting-grading' — so a null/mismatched _id here
+    // means the run was disqualified (10 "gậy"), abandoned ("Bỏ qua & làm
+    // lại" from the dashboard), or already finished. Rather than chase down
+    // every place a mock run can end and remember to clearExamStorage()
+    // there too, validate lazily right here against the one source of
+    // truth that actually knows: the server.
+    if (data.mockId) {
+      try {
+        const current = await window.MockTest.fetchCurrent();
+        if (!current || String(current._id) !== String(data.mockId)) { clearExamStorage(); return; }
+      } catch (_) { /* offline / API hiccup — offer the stale backup rather than losing it outright */ }
+    }
+
+    // BUG FIX (reported 2026-09-11): the clock keeps running in the real
+    // world even while the tab is closed/reloaded, but resumeExam() used to
+    // hand the countdown timer the exact secondsLeft last saved and start
+    // ticking from there — so closing the tab (or losing wifi, or the phone
+    // locking) for N minutes and coming back granted N free minutes of extra
+    // time. That's how a 60-minute Reading test could show 91 real minutes
+    // of wall-clock duration. Deduct the elapsed gap here so both this
+    // banner and resumeExam() (which reuses this same mutated `data`) show
+    // the TRUE remaining time — if it's already run out, startTimer()'s
+    // existing <=0 check auto-submits within the first tick, exactly like
+    // running out of time never having left the page.
+    const elapsedSec = Math.floor((Date.now() - data.savedAt) / 1000);
+    data.secondsLeft = Math.max(0, (data.secondsLeft || 0) - elapsedSec);
     const banner = document.getElementById('resume-banner');
     if (!banner) return;
     document.getElementById('resume-test-name').textContent = data.testName || 'bài thi';
-    const totalSec = data.secondsLeft || 0;
+    const totalSec = data.secondsLeft;
     const rm = Math.floor(totalSec / 60);
     const rs = totalSec % 60;
-    document.getElementById('resume-time-left').textContent = rs > 0 ? `còn ${rm} phút ${rs} giây` : `còn ${rm} phút`;
+    document.getElementById('resume-time-left').textContent = totalSec <= 0
+      ? 'đã hết giờ — bài sẽ được nộp ngay khi bạn tiếp tục'
+      : (rs > 0 ? `còn ${rm} phút ${rs} giây` : `còn ${rm} phút`);
     banner._resumeData = data;
     banner.style.display = 'flex';
   } catch { clearExamStorage(); }
@@ -2777,10 +2814,13 @@ async function submitExam() {
   const submitTimeout = setTimeout(() => controller.abort(), 30000);
 
   try {
+    // skipAuthRedirect: a 401 here (session expired mid-exam) must not let
+    // ApiClient hard-redirect to login right now — see the 401 branch below.
     const res = await apiFetch('/api/reading/submit', {
       method: 'POST',
       body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers }),
-      signal: controller.signal
+      signal: controller.signal,
+      skipAuthRedirect: true
     });
     clearTimeout(submitTimeout);
     hideOverlay();
@@ -2799,7 +2839,7 @@ async function submitExam() {
     // graded. Try to recover the real result first (mirrors listening.html).
     if (state.attemptId) {
       try {
-        const rec = await apiFetch(`/api/reading/attempt/${state.attemptId}/review`);
+        const rec = await apiFetch(`/api/reading/attempt/${state.attemptId}/review`, { skipAuthRedirect: true });
         if (rec.success && rec.attempt && rec.attempt.bandScore != null) {
           clearExamStorage();
           _testsCache = null;
@@ -2815,6 +2855,29 @@ async function submitExam() {
         }
       } catch (_) { /* fall through to the error modal */ }
     }
+
+    // BUG FIX (mirrors listening.html, reported 2026-09-11 for that page):
+    // a 401 here means the session expired mid-exam. Without skipAuthRedirect
+    // above, ApiClient would already have force-navigated to login while, in
+    // mock mode, js/shared/mock-test.js's proctor beforeunload listener was
+    // still armed (stopProctor() only runs after a successful submit reaches
+    // MockTest.advance()) — tripping the browser's native "Leave site?"
+    // dialog and wiping the token before the student could do anything.
+    // Disarm the proctor ourselves, explain plainly, and send them to log
+    // back in on this same page — the local backup (never cleared) is still
+    // here waiting, so checkResumeExam() offers it back to retry submit.
+    if (e && e.status === 401) {
+      if (window.MockTest && window.MockTest.stopProctor) window.MockTest.stopProctor();
+      (window.showToast || showVocabToast)('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
+      if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
+      state.submitted = false;
+      const next = (window.AuthService && window.AuthService.buildLoginUrl)
+        ? window.AuthService.buildLoginUrl(location.pathname + location.search)
+        : ('/login.html?next=' + encodeURIComponent(location.pathname + location.search));
+      location.href = next;
+      return;
+    }
+
     openSubmitErrorModal();
   }
 }
@@ -3994,17 +4057,21 @@ function requireAuth() {
 // apiFetch keeps its own request-building (URL-prefix handling unchanged)
 // and delegates response-handling to js/shared/api-client.js (Phase 3 audit).
 async function apiFetch(url, opts = {}) {
+  // skipAuthRedirect is ours, not fetch()'s — pull it out before spreading
+  // the rest into RequestInit, and forward it to ApiClient so a caller can
+  // opt OUT of the automatic hard-logout-on-401 (see submitExam()'s use).
+  const { skipAuthRedirect, ...fetchOpts } = opts;
   // Prepend API base for relative paths
   const fullUrl = url.startsWith('/api/') ? API + url.slice(4) : url;
   const res = await fetch(fullUrl, {
-    ...opts,
+    ...fetchOpts,
     headers: {
       'Content-Type': 'application/json',
       ...window.AuthService.authHeader(),
-      ...(opts.headers || {})
+      ...(fetchOpts.headers || {})
     }
   });
-  return window.ApiClient.handleResponse(res);
+  return window.ApiClient.handleResponse(res, { skipAuthRedirect });
 }
 
 /* ══════════════════════════════════════════════════════════════════════

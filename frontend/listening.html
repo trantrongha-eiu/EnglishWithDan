@@ -200,6 +200,19 @@
             </div>
         </div>
 
+        <!-- Full mock test only: shown after Listening is graded (either the
+             4-minute post-audio review window ran out, or the student
+             submitted early) so Reading's own clock only starts once the
+             student is actually ready — see continueToReadingFromMock(). -->
+        <div id="listening-done-overlay" class="audio-start-overlay hidden">
+            <div class="aso-card">
+                <div class="aso-icon"><i class="fas fa-circle-check" style="color:#22c55e"></i></div>
+                <p class="aso-text">Đã hoàn thành <strong>Listening</strong>!<br>Tiếp theo là <strong>Reading</strong> — 60 phút, 3 bài đọc, 40 câu hỏi.</p>
+                <p class="aso-sub">Đồng hồ Reading sẽ bắt đầu chạy ngay khi bạn bấm nút bên dưới — hãy chắc chắn bạn đã sẵn sàng.</p>
+                <button class="aso-play-btn" onclick="continueToReadingFromMock()"><i class="fas fa-book-open"></i> Bắt đầu Reading</button>
+            </div>
+        </div>
+
         <div class="exam-body">
             <div class="exam-toolbar" id="exam-toolbar">
                 <span class="toolbar-label">Công cụ</span>
@@ -744,6 +757,11 @@
         function saveExamToStorage() {
             if (!state.currentTestId || state.submitted) return;
             try {
+                // Tag the backup with the mock run it belongs to (if any) so
+                // checkResumeExam() can tell a stale backup — left behind by a
+                // run that later got disqualified/abandoned — from a
+                // genuinely resumable one.
+                const mockId = (window.MockTest && window.MockTest.active()) ? window.MockTest.params().mockId : null;
                 localStorage.setItem(_LS_KEY, JSON.stringify({
                     currentTestId: state.currentTestId,
                     currentTest: state.currentTest,
@@ -752,6 +770,7 @@
                     partIdx: state.partIdx,
                     audioTime: audio.currentTime,
                     startTime: state.startTime,
+                    mockId: mockId,
                     savedAt: Date.now()
                 }));
                 const lbl = document.getElementById('exam-autosave');
@@ -765,13 +784,29 @@
             _saveInterval = null;
         }
 
-        function checkResumeExam() {
+        async function checkResumeExam() {
             try {
                 const raw = localStorage.getItem(_LS_KEY);
                 if (!raw) return;
                 const data = JSON.parse(raw);
                 if (!data.currentTestId || !data.currentTest) { clearExamStorage(); return; }
                 if (Date.now() - data.savedAt > _LS_MAX_MS) { clearExamStorage(); return; }
+
+                // Backup was made mid mock-test — only worth offering if that
+                // mock run is still actually alive server-side. See the
+                // identical check + comment in js/reading-v2.js's
+                // checkResumeExam() (same bug class, fixed together
+                // 2026-09-11): MockTest.fetchCurrent() only ever returns a
+                // doc while status is 'in-progress'/'awaiting-grading', so a
+                // null/mismatched _id here means the run was disqualified
+                // (10 "gậy"), abandoned, or already finished elsewhere.
+                if (data.mockId) {
+                    try {
+                        const current = await window.MockTest.fetchCurrent();
+                        if (!current || String(current._id) !== String(data.mockId)) { clearExamStorage(); return; }
+                    } catch (_) { /* offline / API hiccup — offer the stale backup rather than losing it outright */ }
+                }
+
                 const banner = document.getElementById('resume-banner');
                 if (!banner) return;
                 const allQs = (data.currentTest.sections || [])
@@ -1437,8 +1472,10 @@
         // session during a 40-60min listening exam) triggers the same
         // logout+redirect-to-login as every other page, instead of silently
         // surfacing as a generic error forever (student UI audit, 2026-07-25).
-        async function safeJson(res) {
-            return window.ApiClient.handleResponse(res);
+        // `opts` lets submitExam() opt OUT of that auto-redirect (see its own
+        // comment) — everywhere else keeps the default hard-logout behavior.
+        async function safeJson(res, opts) {
+            return window.ApiClient.handleResponse(res, opts);
         }
 
         // ══════════════════════════════════════════════
@@ -1541,6 +1578,11 @@
             });
             audio.addEventListener('ended', () => {
                 if (!state.isReview) updateExamAudioStatus(false);
+                // Full mock test only: audio is over, nothing left to play —
+                // give the student a 4-minute window to check their answers
+                // before the exam force-submits. Standalone practice keeps
+                // today's behavior (submit whenever they like, no timer).
+                if (!state.isReview && _mockMode) _startListeningReviewCountdown();
             });
             // Genuine load failure (bad/missing audioUrl, network error,
             // unsupported format) — previously nothing listened for this at
@@ -3042,6 +3084,58 @@
         // ══════════════════════════════════════════════
         function confirmSubmit() { updateFooter(); openModal('modal-submit'); }
 
+        // Full mock test only: 4-minute "check your answers" window after
+        // the audio finishes, then a forced auto-submit — mirrors
+        // reading-v2.js's time's-up auto-submit for the 60-minute Reading
+        // clock. A manual "Nộp bài" click at any point (before audio ends,
+        // or during this window) short-circuits straight to submitExam(),
+        // which clears this timer itself.
+        const LISTENING_REVIEW_SECONDS = 4 * 60;
+        let _reviewTimer = null;
+
+        function _startListeningReviewCountdown() {
+            if (_reviewTimer || state.submitted) return;
+            let secondsLeft = LISTENING_REVIEW_SECONDS;
+            _renderReviewBanner(secondsLeft);
+            _reviewTimer = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    clearInterval(_reviewTimer);
+                    _reviewTimer = null;
+                    _hideReviewBanner();
+                    if (!state.submitted) submitExam();
+                } else {
+                    _renderReviewBanner(secondsLeft);
+                }
+            }, 1000);
+        }
+
+        function _renderReviewBanner(secondsLeft) {
+            let el = document.getElementById('listening-review-banner');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'listening-review-banner';
+                el.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:2147483600;'
+                    + 'background:#111827;color:#fff;font:700 13px/1.35 inherit;padding:10px 16px;border-radius:10px;'
+                    + 'box-shadow:0 6px 20px rgba(0,0,0,.3);max-width:90vw;text-align:center;pointer-events:none';
+                (document.fullscreenElement || document.body).appendChild(el);
+            }
+            const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+            const s = String(secondsLeft % 60).padStart(2, '0');
+            el.innerHTML = `<i class="fas fa-clock"></i> Audio đã kết thúc — kiểm tra lại đáp án: ${m}:${s}`;
+        }
+
+        function _hideReviewBanner() {
+            const el = document.getElementById('listening-review-banner');
+            if (el) el.remove();
+        }
+
+        // Full mock test only: the student clicked through the waiting
+        // screen shown after Listening was graded — start Reading now.
+        function continueToReadingFromMock() {
+            location.href = window.MockTest.pageUrl('reading', window.MockTest.params().mockId);
+        }
+
         // Shared by submitExam()'s success path and its timeout-retry recovery
         // path (fetches the same shape from GET /listening/history/:attemptId
         // when a resubmit is correctly rejected because the exam was actually
@@ -3083,11 +3177,16 @@
             }
             showScreen('result');
 
-            // Full mock test: don't stop at the result screen — record this
-            // sub-attempt and move the student on to Reading (step 2/4).
+            // Full mock test: don't auto-navigate to Reading — record this
+            // sub-attempt in the background (advanceWithoutNav still runs
+            // stopProctor() + the same 401/retry/pending-recovery handling
+            // as advance(), it just doesn't self-navigate on success) and
+            // show a waiting screen so Reading's own 60-minute clock only
+            // starts once the student clicks through on their own terms.
             if (_mockMode && window.MockTest && window.MockTest.active()) {
-                toast('Đã xong Listening — chuyển sang Reading…', 'success');
-                setTimeout(() => window.MockTest.advance('listening', state.attemptId), 1200);
+                window.MockTest.advanceWithoutNav('listening', state.attemptId);
+                const ov = document.getElementById('listening-done-overlay');
+                if (ov) { ov.classList.remove('hidden'); (document.fullscreenElement || document.body).appendChild(ov); }
                 return;
             }
 
@@ -3118,6 +3217,7 @@
             // the timeout-recovery path below) is confirmed. window.onbeforeunload
             // also stays armed until then, so a stray reload still warns first.
             clearInterval(_asoTimer);
+            if (_reviewTimer) { clearInterval(_reviewTimer); _reviewTimer = null; _hideReviewBanner(); }
             audio.pause();
             audio.src = '';
 
@@ -3153,7 +3253,10 @@
                     signal: controller.signal
                 });
                 clearTimeout(submitTimeout);
-                const data = await safeJson(res);
+                // skipAuthRedirect: a 401 here (session expired mid-exam) must
+                // NOT let ApiClient hard-redirect to login right now — see the
+                // 401 branch in the catch block below for why.
+                const data = await safeJson(res, { skipAuthRedirect: true });
                 if (!data.success) throw new Error(data.message);
                 clearExamStorage(); // confirmed saved server-side — safe to drop the local backup now
                 overlay.style.display = 'none';
@@ -3172,7 +3275,9 @@
                 if (state.attemptId) {
                     try {
                         const rres = await fetch(`${API}/listening/history/${state.attemptId}`, { headers: authH() });
-                        const rdata = await safeJson(rres);
+                        // Same skipAuthRedirect as the submit call above — an
+                        // expired token 401s this recovery check too.
+                        const rdata = await safeJson(rres, { skipAuthRedirect: true });
                         if (rdata.success && rdata.result) {
                             clearExamStorage(); // it really was saved — safe to drop the local backup now
                             overlay.style.display = 'none';
@@ -3182,12 +3287,42 @@
                         }
                     } catch { /* fall through to the generic error below */ }
                 }
+                overlay.style.display = 'none';
+
+                // BUG FIX (reported 2026-09-11): a 401 here means the session
+                // expired mid-exam (Listening + Reading back-to-back in a mock
+                // sitting can outlast the token). Before the skipAuthRedirect
+                // change above, safeJson()'s ApiClient.handleResponse would
+                // immediately window.location.href to login — while, in mock
+                // mode, js/shared/mock-test.js's proctor beforeunload listener
+                // was STILL ARMED (stopProctor() only ever runs after a
+                // successful submit reaches MockTest.advance(), which a failed
+                // submit never reaches). That forced navigation tripped the
+                // proctor's own beforeunload handler, popping the browser's
+                // native "Leave site? Changes may not be saved" dialog — and
+                // AuthService.logout() had already wiped the token by then, so
+                // the student was stuck: no way to submit, no clear reason why.
+                // Now: disarm the proctor ourselves, explain plainly what
+                // happened, and send them to log back in on THIS SAME page —
+                // the local backup (never cleared) is still here waiting, so
+                // checkResumeExam() offers it back and they can retry submit.
+                if (err.status === 401) {
+                    if (window.MockTest && window.MockTest.stopProctor) window.MockTest.stopProctor();
+                    (window.showToast || toast)('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
+                    if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
+                    state.submitted = false;
+                    const next = (window.AuthService && window.AuthService.buildLoginUrl)
+                        ? window.AuthService.buildLoginUrl(location.pathname + location.search)
+                        : ('/login.html?next=' + encodeURIComponent(location.pathname + location.search));
+                    location.href = next;
+                    return;
+                }
+
                 // Genuinely failed (or we couldn't confirm either way) — the local
                 // backup (state.answers etc., autosaved every 10s) is deliberately
                 // left in place so checkResumeExam() offers it back next load,
                 // including after a forced re-login. Re-arm the periodic autosave
                 // too, in case the student keeps working before retrying submit.
-                overlay.style.display = 'none';
                 toast('Lỗi nộp bài: ' + err.message + ' — bài làm của bạn vẫn được lưu, hãy thử nộp lại.', 'error');
                 state.submitted = false;
                 if (!_saveInterval) _saveInterval = setInterval(saveExamToStorage, 10000);

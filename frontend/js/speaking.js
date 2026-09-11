@@ -208,15 +208,8 @@ function showScreen(id) {
     // in from elsewhere. Block paste (Ctrl+V, right-click "Paste", middle-
     // click on Linux — all fire the same 'paste' event) and dragging text in
     // from another window/tab; typing and editing in place are untouched.
-    ta.addEventListener('paste', function(e) {
-      e.preventDefault();
-      showToast('Không thể dán văn bản vào đây — hãy nói hoặc gõ trực tiếp câu trả lời của bạn.', 'warn', 3000);
-    });
-    ta.addEventListener('drop', function(e) {
-      e.preventDefault();
-      showToast('Không thể kéo-thả văn bản vào đây — hãy nói hoặc gõ trực tiếp câu trả lời của bạn.', 'warn', 3000);
-    });
-    ta.addEventListener('dragover', function(e) { e.preventDefault(); });
+    // Shared with writing.js's essay boxes via js/shared/paste-guard.js.
+    if (window.PasteGuard) window.PasteGuard.attach(ta, { hint: 'hãy nói hoặc gõ trực tiếp câu trả lời của bạn' });
   }
 
   // Navigate to the right screen/tab per the URL, also restoring the exact
