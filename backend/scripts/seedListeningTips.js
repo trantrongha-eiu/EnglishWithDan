@@ -2,10 +2,12 @@
 
 // Seeds the Listening Tips strategy articles shown on the Listening page.
 // Same upsert-by-{category,lessonKey} pattern as seedReadingTips.js.
+const foundations = require("./listeningTipsData/foundations");
 const byQuestionType = require("./listeningTipsData/byQuestionType");
 const byBand = require("./listeningTipsData/byBand");
 
 const lessons = [
+  ...foundations,
   ...byQuestionType,
   ...byBand,
 ];
