@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a301448b14c593213711ea9',
+    title: 'Riverdale Pre-school',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi nói về hai lớp.\n\nTranscript: "The first group is taught by Mrs. Oliver and the second group is taken by Mrs. Keogh." — được đánh vần K-E-O-G-H.\n\nPhân tích: Tên giáo viên nhóm thứ hai là Keogh → đáp án keogh.' },
+      { questionNumber: 2, explanation: 'Vị trí: Khi nói về số ngày/giờ học của Suzie.\n\nTranscript: "The older ones, like Suzy, are here for three days, which means 15 hours a week."\n\nPhân tích: Suzie học 3 ngày/tuần, tổng cộng 15 giờ → đáp án 15.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi nói về khu vui chơi ngoài trời.\n\nTranscript: "we\'re now making plans for a garden where the children will be able to grow flowers and vegetables."\n\nPhân tích: Trường đang lên kế hoạch làm một khu vườn (garden) → đáp án garden.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi nói về hoạt động trong nhà.\n\nTranscript: "This year, the children seem to be very interested in music, so the teachers are doing a lot of activities related to that."\n\nPhân tích: Năm nay trẻ hứng thú với âm nhạc (music) → đáp án music.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we always make time for a story each day."\n\nPhân tích: Mỗi ngày trẻ đều được nghe kể chuyện (story) → đáp án story.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi nói về học phí.\n\nTranscript: "it used to be $420 for the term, but it\'s just gone up to $470."\n\nPhân tích: Học phí hiện tại là 470 đô la mỗi kỳ → đáp án 470.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó, khi nói về chuyến đi được bao gồm trong học phí.\n\nTranscript: "we\'ll be going to a farm this year instead."\n\nPhân tích: Năm nay trường sẽ đi trang trại (farm) thay vì sở thú như năm ngoái → đáp án farm.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Children can borrow a toy and keep it for a week and choose a different one the following week."\n\nPhân tích: Trẻ được mượn một món đồ chơi (toy) mỗi tuần từ thư viện đặc biệt → đáp án toy.' },
+      { questionNumber: 9, explanation: 'Vị trí: Đoạn nói về giờ nghỉ trưa.\n\nTranscript: "we advise parents to pack a pillow in the child\'s bag as we don\'t provide one."\n\nPhân tích: Phụ huynh cần chuẩn bị gối (pillow) cho con vì trường không cung cấp → đáp án pillow.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "It\'s 091-463-8520."\n\nPhân tích: Sally đọc số điện thoại của lớp học để đặt lịch tham quan → đáp án 0914638520.' },
+    ],
+  },
+  {
+    sectionId: '6a301864b14c593213712218',
+    title: 'Job Centre',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi nói về sinh viên quốc tế.\n\nTranscript: "if you are a student from overseas, there may be particular conditions attached to working in this country."\n\nPhân tích: Sinh viên nước ngoài (overseas) có thể phải tuân theo các điều kiện riêng → đáp án overseas.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi giới thiệu về Job Centre.\n\nTranscript: "It\'s based in the Student Services Building on the campus called Woodside."\n\nPhân tích: Trung tâm việc làm nằm ở khuôn viên Woodside → đáp án WOODSIDE.' },
+      { questionNumber: 13, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s open six days a week... from ten in the morning until eight at night."\n\nPhân tích: Trung tâm mở cửa tới 8 giờ tối mỗi ngày → đáp án 8/eight.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về luật sư tư vấn việc làm.\n\nTranscript: "a professional employment lawyer is on hand every Tuesday if you want any advice."\n\nPhân tích: Luật sư chỉ có mặt vào thứ Ba (Tuesday) → đáp án Tuesday.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi nói về nơi tìm việc làm.\n\nTranscript: "they are advertised on the university website, which you can access through the library."\n\nPhân tích: Việc làm được đăng thường xuyên trên website của trường → đáp án website.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi liệt kê các công việc hiện có.\n\nTranscript: "they\'re looking for people to check that all the vehicles using the university car parks have got up to date permits."\n\nPhân tích: Công việc hiện tại là kiểm tra giấy phép xe ở bãi đỗ xe (car parks) → đáp án C.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi nói về ngày hội tuyển dụng.\n\nTranscript: "recruitment open days which are held regularly during the year."\n\nPhân tích: Các ngày hội tuyển dụng diễn ra đều đặn suốt cả năm (throughout the year), không chỉ học kỳ đầu → đáp án C.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi nói về lợi ích của việc làm bán thời gian.\n\nTranscript: "it\'s also a valuable way of building up an employment record that reflects your skills and capabilities."\n\nPhân tích: Việc làm thêm giúp xây dựng hồ sơ kinh nghiệm hữu ích cho tương lai (a useful work record) → đáp án B.' },
+      { questionNumber: 19, explanation: 'Vị trí: Đoạn nói về vấn đề tài chính.\n\nTranscript: "An employer will deduct tax from what you earn."\n\nPhân tích: Sinh viên làm thêm sẽ bị khấu trừ thuế (will be taxed) → đáp án A.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối bài, khi nói về liên lạc với nhà tuyển dụng.\n\nTranscript: "If you are ill or cannot get into work... make sure your employer knows in good time. That shouldn\'t be a problem now that everyone has a mobile phone."\n\nPhân tích: Nên có điện thoại di động (mobile phone) để liên lạc kịp thời → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a301ba4b14c5932137124d5',
+    title: 'Research Project',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại.\n\nTranscript: "I found a report in the college library about an investigation that was done ten years ago, and I thought it would be interesting to do a parallel one."\n\nPhân tích: John chọn đề tài vì đọc được một nghiên cứu tương tự đã thực hiện trước đó (not vì hứng thú đặc biệt hay vì lợi ích quy hoạch đô thị) → đáp án C.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi John dự đoán kết quả.\n\nTranscript: "I\'d guess that older people are using the sports center more often than they used to."\n\nPhân tích: John dự đoán một nhóm người (người lớn tuổi) đã thay đổi thói quen sử dụng dịch vụ công → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về việc dùng số liệu chính thức.\n\nTranscript: "There might not be as much information as you\'d like, but it would certainly be the easiest kind of data to work with."\n\nPhân tích: Vấn đề của số liệu chính thức là có thể thiếu chi tiết (lacking in detail) → đáp án A.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi giảng viên bàn về việc dùng bảng hỏi.\n\nTranscript: "it\'ll be good to get experience, because next year you\'ll have to do something similar for your final dissertation on a bigger scale."\n\nPhân tích: Giảng viên cho rằng kinh nghiệm này sẽ hữu ích cho luận văn năm sau → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về các biến số cần khảo sát.\n\nTranscript: "Are you going to look at people\'s level of education? Whether they have a degree, for example? — ...that\'ll tie in nicely with my plans to analyze the kind of work people do."\n\nPhân tích: John đồng ý thêm biến trình độ học vấn/bằng cấp (qualifications) → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về số lượng bảng hỏi.\n\nTranscript: "I don\'t think I can really analyze more than 50, working by myself, so I should probably distribute about 80 questionnaires altogether to allow for wastage."\n\nPhân tích: John phát ra 80 bảng hỏi nhiều hơn số 50 anh cần để phân tích, để bù hao hụt → đáp án B.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về cách tăng tỷ lệ phản hồi.\n\nTranscript: "I could enclose a stamped envelope for the return post."\n\nPhân tích: John sẽ gửi kèm phong bì có tem để gửi trả (providing return envelopes) → đáp án D.' },
+      { questionNumber: 28, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "to make sure that your questions make sense, you should try them out beforehand. — My friends will help."\n\nPhân tích: John sẽ thử nghiệm bảng hỏi với bạn bè trước (trialling the questionnaire on friends) → đáp án E. (Giao tận tay và ẩn danh đều bị từ chối vì lý do đã nêu trong bài.)' },
+      { questionNumber: 29, explanation: 'Vị trí: Cuối bài, khi giảng viên góp ý về bảng hỏi.\n\nTranscript: "don\'t forget you\'ll need to get a bit of information about your subjects, what age group they\'re in and perhaps how long they\'ve lived in the area."\n\nPhân tích: Cần có câu hỏi thu thập thông tin cá nhân người trả lời (Some questions should elicit personal information) → đáp án B.' },
+      { questionNumber: 30, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "Would it be a good idea to have a short paragraph at the top explaining what I\'m doing and why? — Definitely."\n\nPhân tích: Cần có đoạn giới thiệu mục đích khảo sát ở đầu bảng hỏi (an introduction to explain the survey\'s purpose) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a301eddb14c593213712897',
+    title: 'Driverless vehicle competition',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi giới thiệu dự án.\n\nTranscript: "the engineering school will be collaborating with the computer science department."\n\nPhân tích: Khoa kỹ thuật hợp tác với khoa khoa học máy tính (computer science) — khoa thiết kế ô tô chưa chắc chắn tham gia → đáp án computer science.' },
+      { questionNumber: 32, explanation: 'Vị trí: Khi mô tả thử thách của cuộc đua.\n\nTranscript: "avoid unexpected hazards. Things like rocks, for example."\n\nPhân tích: Xe phải tránh chướng ngại vật như đá (rocks) → đáp án rocks.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi mô tả chiếc xe nổi bật năm nay.\n\nTranscript: "That particular vehicle built a three dimensional picture of its surroundings using video cameras and lasers."\n\nPhân tích: Xe dùng camera video (video cameras), laser và máy tính xách tay để dựng bản đồ môi trường xung quanh → đáp án video cameras.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi nói về mục đích của cuộc thi.\n\nTranscript: "The sponsors are hoping to see innovative design ideas that they can transfer into commercial production."\n\nPhân tích: Mục đích chính là tìm ra các ý tưởng thiết kế mới hữu ích (find useful new design features) → đáp án C.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi nói về yếu tố quyết định thành công.\n\nTranscript: "Programing skills will decide who eventually wins first prize."\n\nPhân tích: Kỹ năng lập trình (software design), không phải hình dáng hay cơ khí, quyết định người chiến thắng → đáp án A.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi nói về cuộc thi năm nay.\n\nTranscript: "many of the teams were amazed that the vehicles did what they wanted them to do at all because so many things can go wrong on the day."\n\nPhân tích: Các đội ngạc nhiên vì xe hoạt động tốt đến mức đó (were as successful as they were) → đáp án B.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi nói về lịch trình đầu tháng 5.\n\nTranscript: "at the beginning of May, we\'ll be scheduling a seminar to introduce the project to anyone who might be interested."\n\nPhân tích: Có một buổi hội thảo giới thiệu (seminar) đầu tháng 5 → đáp án seminar.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi nói về bài luận cuối tháng 5.\n\nTranscript: "You\'ll need to tell us about any particular skills that you have and can bring to the team and any experience you may have had in the field."\n\nPhân tích: Bài luận cần nêu kỹ năng (skills) liên quan và kinh nghiệm → đáp án skills.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi nói về hội thảo tháng 9.\n\nTranscript: "a weekend workshop to share ideas and see computer aided design demonstrations."\n\nPhân tích: Hội thảo dùng để chia sẻ ý tưởng (ideas) → đáp án ideas.' },
+      { questionNumber: 40, explanation: 'Vị trí: Khi nói về tháng 1 năm sau.\n\nTranscript: "the following month will choose the team and start work in earnest."\n\nPhân tích: Tháng Giêng là lúc chọn đội (team) chính thức → đáp án team.' },
+    ],
+  },
+];

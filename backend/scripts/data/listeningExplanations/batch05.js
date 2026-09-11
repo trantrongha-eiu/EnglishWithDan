@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a354f1a4aea0c7482ca46ff',
+    title: 'Music Alive Agency',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi Jim giải thích cách hoạt động của agency.\n\nTranscript: "We have all our members on our database, the type of music they play."\n\nPhân tích: Thông tin hội viên được lưu trong cơ sở dữ liệu (database) → đáp án database.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó, khi nói về thể loại nhạc.\n\nTranscript: "We deal with modern music, especially rock, which is what most people seem to enjoy around here. But we do also represent some jazz musicians."\n\nPhân tích: Nhạc rock là thể loại chính bên cạnh jazz → đáp án rock.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi bàn về bản tin.\n\nTranscript: "Is it weekly? — No, every month."\n\nPhân tích: Bản tin ra hàng tháng (month), không phải hàng tuần → đáp án month.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về phí thành viên.\n\nTranscript: "so to join is just £35... that\'s the discounted rate for young musicians under 18s. The standard rate is £45."\n\nPhân tích: Người phụ nữ trên 18 tuổi nên phải trả mức phí chuẩn 45 bảng → đáp án 45.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó, khi bàn về số lượng thành viên.\n\nTranscript: "Our membership\'s gone up recently from 700 to 750."\n\nPhân tích: Số thành viên hiện tại là 750 → đáp án 750.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi nói về cơ sở vật chất.\n\nTranscript: "we\'ve just opened a studio, a small one."\n\nPhân tích: Cơ sở gồm phòng tập và một phòng thu (studio) mới mở → đáp án studio.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó, về dịch vụ miễn phí.\n\nTranscript: "we can offer legal advice if you need it, for contracts and things like that."\n\nPhân tích: Dịch vụ tư vấn pháp lý (legal advice) là miễn phí → đáp án legal.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi nói về cách đăng ký thành viên.\n\nTranscript: "send us a letter with your contact details and a recording made within the last couple of months."\n\nPhân tích: Cần gửi kèm một bản ghi âm (recording) gần đây → đáp án recording.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi cho địa chỉ.\n\nTranscript: "We\'re at 707 Kippax Street, Marbury." — được đánh vần K-I-double-P-A-X.\n\nPhân tích: Tên đường là Kippax → đáp án KIPPAX.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại, khi cho địa chỉ email.\n\nTranscript: "it\'s music.talent at bsu.co.uk."\n\nPhân tích: Địa chỉ email là music.talent@bsu.co.uk → đáp án talent.' },
+    ],
+  },
+  {
+    sectionId: '6a3552784aea0c7482ca49fb',
+    title: 'Information for participants in the Albany fishing competition',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi nói về đăng ký.\n\nTranscript: "we\'ll need to see some form of identification today. So make sure you show that at the desk."\n\nPhân tích: Người tham gia cần mang theo giấy tờ tùy thân (identification) tới bàn đăng ký → đáp án A.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi nói về những gì phí tham gia bao gồm.\n\nTranscript: "This is a fully catered competition, so whenever you\'re hungry, either today or tomorrow, just go down to the dining tent."\n\nPhân tích: Phí tham gia đã bao gồm toàn bộ đồ ăn cho cả hai ngày → đáp án B. (Dụng cụ câu cá và xăng thuyền không được bao gồm.)' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi nói về giấy phép câu cá.\n\nTranscript: "If you don\'t have one, don\'t worry, you can always go online and they\'ll issue you one immediately."\n\nPhân tích: Người chưa có giấy phép được khuyên đăng ký qua mạng (internet) vì nhanh nhất → đáp án C.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi nói về lịch trình ngày Chủ nhật.\n\nTranscript: "at 6pm exactly, the judges will start weighing the fish to see how heavy they are in order to choose the winners."\n\nPhân tích: 6 giờ tối là lúc giám khảo cân cá để chấm điểm (not lúc trao giải hay lúc dừng câu — dừng câu là 5:30pm) → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi hướng dẫn tới khu đăng ký.\n\nTranscript: "go to the roundabout... take the road that heads to the east. You\'ll find the registration desk on that road. It\'s a nice shady area surrounded by trees."\n\nPhân tích: Khu đăng ký nằm trên đường phía đông của vòng xuyến, giữa cây cối → đáp án G (theo bản đồ).' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi hướng dẫn khu câu từ bờ.\n\nTranscript: "You\'ll find the area directly to the north of the skate park."\n\nPhân tích: Khu câu từ bờ nằm ngay phía bắc công viên trượt ván → đáp án A.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi hướng dẫn khu hạ thuyền.\n\nTranscript: "go to the roundabout and take the road that\'s on the right. Follow that road to the beach and that\'s where you launch your boat."\n\nPhân tích: Khu hạ thuyền ở cuối con đường bên phải vòng xuyến, dẫn ra bãi biển → đáp án C.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi hướng dẫn khu chấm điểm.\n\nTranscript: "head out from the car park and take the first road on your left. Go past the first aid tent and the judging area will be set up down there."\n\nPhân tích: Khu chấm điểm nằm qua khỏi lều sơ cứu, trên con đường đầu tiên rẽ trái từ bãi đỗ xe → đáp án H.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi hướng dẫn khu ăn uống.\n\nTranscript: "go to the roundabout and take the road that leads west... where there\'s a sharp bend, you\'ll find where you can eat."\n\nPhân tích: Khu ăn uống nằm trên đường phía tây, tại khúc cua gấp → đáp án D.' },
+      { questionNumber: 20, explanation: 'Vị trí: Khi hướng dẫn khu trao giải.\n\nTranscript: "It\'s north of the roundabout, past the playground. The prize-giving area is at the end of that road, right on the beach."\n\nPhân tích: Khu trao giải nằm ở phía bắc vòng xuyến, qua sân chơi, cuối đường ra bãi biển → đáp án B.' },
+    ],
+  },
+  {
+    sectionId: '6a3556904aea0c7482ca4c58',
+    title: 'Preparing for the end-of-year art exhibition',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại.\n\nTranscript: "I\'m excited about letting my friends and family see all the stuff I\'ve produced. — Me too."\n\nPhân tích: Cả hai đều mong chờ được cho mọi người xem tác phẩm của mình (showing people their work) → đáp án A.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi nhắc lại triển lãm năm ngoái.\n\nTranscript: "What sticks in my mind are those 10 wooden reproductions one student made... it was really delicate work."\n\nPhân tích: Cả hai đều ấn tượng với loạt mô hình gỗ (a series of wooden models) → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi Max đặt tên cho triển lãm của mình.\n\nTranscript: "I\'ve gone for Mother Nature in the end, though I did think about the name Seasons."\n\nPhân tích: Max chọn tên cuối cùng là "Mother Nature" (không phải "Seasons" hay "Views of Farmland") → đáp án A.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi Abby nói về mối lo của mình.\n\nTranscript: "I\'m more concerned about how long it will take me to put everything in place."\n\nPhân tích: Abby lo lắng nhất về việc có đủ thời gian sắp đặt triển lãm hay không → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về bài tóm tắt.\n\nTranscript: "We\'ve got a strict word limit to stick to, but I\'ve got so much to say it won\'t be easy to say it in so few words."\n\nPhân tích: Abby lo khó viết ngắn gọn trong giới hạn từ cho phép → đáp án B.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về công việc tổ chức khác.\n\nTranscript: "One thing to do is copy a load of comment forms so people can write what they think of the exhibition."\n\nPhân tích: Việc chuẩn bị phiếu góp ý (comment forms) do chính họ tự làm, còn ánh sáng do "the technical guys" phụ trách → đáp án C.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi Abby nói về triển lãm "On the Water".\n\nTranscript: "The way the artist used the brush strokes in the oil painting to create a sense of movement was amazing."\n\nPhân tích: Điểm ấn tượng là kỹ thuật vẽ (nét cọ) → đáp án D (the painting technique).' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về triển lãm "City Life".\n\nTranscript: "although the paintings themselves were of busy places, the display itself wasn\'t crowded at all... created a more open feeling."\n\nPhân tích: Điểm ấn tượng là cảm giác không gian thoáng đãng (the sense of space) → đáp án B.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về triển lãm "Faces".\n\nTranscript: "what I did like was the way the artist managed to reproduce the exact tones of the skin and hair of the people in the pictures."\n\nPhân tích: Điểm ấn tượng là màu sắc chân thực (the realistic colours) → đáp án A.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về triển lãm "Moods".\n\nTranscript: "I expected that to show emotions, people laughing, crying... But it was about plants."\n\nPhân tích: Điểm ấn tượng là cách diễn giải chủ đề bất ngờ (the unusual interpretation of the theme) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a355d2c4aea0c7482ca51dd',
+    title: 'The Mangrove Regeneration Project',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi giới thiệu rừng ngập mặn.\n\nTranscript: "they prevent flooding by acting as a barrier between the land and sea."\n\nPhân tích: Rừng ngập mặn bảo vệ vùng ven biển khỏi lũ lụt (flooding) → đáp án flooding.' },
+      { questionNumber: 32, explanation: 'Vị trí: Đoạn nói về các vấn đề trong quá khứ.\n\nTranscript: "Many of the mangrove trees were initially burnt as firewood by local farmers."\n\nPhân tích: Cây bị đốt làm củi (firewood) → đáp án firewood.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the farmers used fertilizer to increase crop yields and this started to seep into the water, eventually killing part of the mangrove forest."\n\nPhân tích: Phân bón (fertilizer) ngấm vào nước làm chết rừng ngập mặn → đáp án fertilizer.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the area started to be used as somewhere to dump trash."\n\nPhân tích: Khu vực bị biến thành nơi đổ rác (trash) → đáp án trash.' },
+      { questionNumber: 35, explanation: 'Vị trí: Đoạn nói về hành động bảo vệ rừng.\n\nTranscript: "The conservationists involved decided to construct a sand barrier around the forests, but unfortunately this proved to be ineffective."\n\nPhân tích: Hàng rào chắn làm bằng cát (sand) đã không hiệu quả → đáp án sand.' },
+      { questionNumber: 36, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it is the gray mangroves that we are concerned with here."\n\nPhân tích: Loài được chọn để gieo hạt là cây đước xám (gray mangrove) → đáp án gray/grey.' },
+      { questionNumber: 37, explanation: 'Vị trí: Đoạn nói về lô hạt giống đầu tiên.\n\nTranscript: "The first set of seedlings was planted in small pots and left to germinate in a hothouse."\n\nPhân tích: Cây con được ươm trong nhà kính (hothouse) → đáp án hothouse.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "They had, in fact, only been watered with rainwater."\n\nPhân tích: Cây con chỉ được tưới bằng nước mưa (rain water), chưa được làm quen với nước mặn → đáp án rain.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it was necessary to protect them not from the large number of wading birds... but from the large rabbit colony living in the area."\n\nPhân tích: Mối đe dọa chính là đàn thỏ (rabbit), không phải chim → đáp án rabbit.' },
+      { questionNumber: 40, explanation: 'Vị trí: Đoạn nói về lô hạt giống thứ hai.\n\nTranscript: "this method did not prove very successful, and the vast majority of these seedlings were washed away in a storm."\n\nPhân tích: Cây con lô thứ hai bị cuốn trôi trong một cơn bão (storm) → đáp án storm.' },
+    ],
+  },
+];
