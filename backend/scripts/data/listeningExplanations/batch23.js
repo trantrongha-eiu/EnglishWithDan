@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014285e01d9821f44c8c',
+    title: 'Cam 16 - Test 4 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về Granary Cottage.\n\nTranscript: "It\'s free the week beginning the 28th, though, for seven nights."\n\nPhân tích: Granary Cottage trống vào tuần bắt đầu ngày 28 → đáp án 28th.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "That\'s the beginning of high season, so it\'d be £550 for the week."\n\nPhân tích: Giá thuê tuần đó là 550 bảng → đáp án 550.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi giới thiệu ngôi nhà mới.\n\nTranscript: "we\'ve just finished converting another building into a cottage, which we\'re calling Chervil Cottage."\n\nPhân tích: Ngôi nhà mới tên là Chervil Cottage → đáp án Chervil.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi mô tả Chervil Cottage.\n\nTranscript: "The building was built as a garage."\n\nPhân tích: Tòa nhà ban đầu là một ga-ra (garage) → đáp án garage.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Does it have a garden? — Yes, you get to it from the living room through French doors."\n\nPhân tích: Từ phòng khách có cửa dẫn ra vườn (garden) → đáp án garden.' },
+      { questionNumber: 6, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "parking isn\'t a problem - there\'s plenty of room at the front for that."\n\nPhân tích: Có nhiều chỗ đỗ xe (parking) phía trước nhà → đáp án parking.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi bàn về sưởi ấm.\n\nTranscript: "if you want to light a fire, there\'s a stove. We can provide all the wood you need for it."\n\nPhân tích: Lò sưởi đốt bằng củi (wood) → đáp án wood.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về tầm nhìn.\n\nTranscript: "There\'s a famous stone bridge - it\'s one of the oldest in the region, and you can see it from the living room."\n\nPhân tích: Từ phòng khách nhìn thấy cây cầu (bridge) cổ → đáp án bridge.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The bedroom window... has a lovely view of the hills and the monument at the top."\n\nPhân tích: Từ phòng ngủ nhìn thấy đài tưởng niệm (monument) trên đồi → đáp án monument.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "You\'re coming in May, so the last day of March, please."\n\nPhân tích: Hạn thanh toán cuối cùng là cuối tháng 3 (March) → đáp án March.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014285e01d9821f44c98',
+    title: 'Local council report on traffic and highways',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi báo cáo khảo sát giao thông.\n\nTranscript: "a significant number of people complained about the increasing number of heavy vehicles using our local roads to avoid traffic elsewhere."\n\nPhân tích: Mối quan tâm chính là sự thay đổi loại xe cộ lưu thông (changes in the type of traffic) → đáp án C.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi bàn về đường xe đạp ven sông.\n\nTranscript: "overtaking can be a problem so we\'re going to add a bit on the side to make it wider."\n\nPhân tích: Đường sẽ được mở rộng (widened) → đáp án A.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về vạch qua đường cho người đi bộ.\n\nTranscript: "the Highways Department have told us that it would be dangerous to have a pedestrian crossing where we\'d originally planned it as there\'s a bend in the road there."\n\nPhân tích: Kế hoạch bị hoãn vì vị trí đề xuất không an toàn (unsafe) → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về đường tàu.\n\nTranscript: "we\'ve now got signs up requesting them not to leave their engines running at that time."\n\nPhân tích: Biển báo yêu cầu tài xế tắt máy khi chờ tàu (switch off engines) → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả bản đồ khu vui chơi.\n\nTranscript: "we\'re suggesting a new car park on the opposite side of the Community Hall, right next to it."\n\nPhân tích: Bãi đỗ xe mới ngay cạnh Community Hall, phía đối diện → đáp án C.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we plan to move it away from its current location... into this new area beyond the line of trees."\n\nPhân tích: Sân cricket mới nằm phía sau hàng cây (beyond the trees) → đáp án F.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "a children\'s playground which will be accessible by a footpath from the Community Hall and will be alongside the river."\n\nPhân tích: Sân chơi trẻ em nằm cạnh sông, gần Community Hall → đáp án A.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we decided to have it in the southeast corner near the road."\n\nPhân tích: Đường trượt ván ở góc đông nam, gần đường → đáp án I.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The pavilion... will stay where it is now - to the left of the line of trees and near to the river."\n\nPhân tích: Nhà thi đấu (pavilion) nằm gần sông, bên trái hàng cây → đáp án E.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối phần mô tả bản đồ.\n\nTranscript: "a new notice board for local information, and that will be directly on people\'s right as they go from the road into the recreation ground."\n\nPhân tích: Bảng thông báo nằm bên phải lối vào từ đường → đáp án H.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014285e01d9821f44ca5',
+    title: 'Cam 16 - Test 4 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về lợi ích chia sẻ xe đạp.\n\nTranscript: "helped to cut the number of cars on the road significantly. — Which is the main point."\n\nPhân tích: Cả hai đồng ý giảm ùn tắc giao thông (reducing traffic congestion) là lợi ích quan trọng → đáp án B.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "doesn\'t the impact of reduced emissions on air pollution have a more significant effect on people\'s health? — Certainly, in some cities bike-sharing had made a big contribution to that."\n\nPhân tích: Cải thiện chất lượng không khí (improving air quality) cũng là lợi ích quan trọng → đáp án C.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về khuyến nghị.\n\nTranscript: "some technical things are really important - like a fully functional app - so people can make payments and book bikes easily."\n\nPhân tích: Ứng dụng dễ sử dụng (app easy to use) là yếu tố cần thiết → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "What does matter though - is having a big publicity campaign."\n\nPhân tích: Cần nâng cao nhận thức cộng đồng (public awareness raised) → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về Amsterdam.\n\nTranscript: "In a way it\'s strange that there was such a demand for bike-sharing because you\'d have thought most people would have used their own bikes. — And yet it\'s one of the best-used schemes."\n\nPhân tích: Cả hai ngạc nhiên vì chương trình rất thành công dù có nghịch lý (surprised it has been so successful) → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về Dublin.\n\nTranscript: "It must be because the public transport system\'s quite limited. — Not really... I\'d say price has a lot to do with it."\n\nPhân tích: Hai người không đồng ý về lý do thành công (disagree about the reasons for its success) → đáp án F.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về London.\n\nTranscript: "it isn\'t expanding quickly enough. — Basically, not enough\'s been spent on increasing the number of cycle lanes."\n\nPhân tích: Cả hai đồng ý cần đầu tư nhiều hơn (more investment is required) → đáp án D.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về Buenos Aires.\n\nTranscript: "They built a huge network of cycle lanes to support the introduction of the scheme there... An example of good planning."\n\nPhân tích: Hệ thống được thiết kế tốt (well designed) → đáp án E.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về New York.\n\nTranscript: "it was more than ten times the price of most other schemes... I think the organisers lacked vision and ambition there."\n\nPhân tích: Cả hai đồng ý chương trình nên rẻ hơn (should be cheaper) → đáp án B.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về Sydney.\n\nTranscript: "I can\'t quite work out why it hasn\'t been an instant success like some of the others. It\'s a shame really."\n\nPhân tích: Cả hai đồng ý kết quả đáng thất vọng (disappointing) → đáp án A.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014285e01d9821f44cb3',
+    title: 'THE EXTINCTION OF THE DODO BIRD',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi kể lịch sử.\n\nTranscript: "the first Portuguese ships stopped at the island. The sailors were carrying spices back to Europe."\n\nPhân tích: Tàu Bồ Đào Nha chở gia vị (spices) → đáp án spice/spices.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "in 1638 the Dutch arrived and set up a colony there."\n\nPhân tích: Người Hà Lan lập thuộc địa (colony) trên đảo → đáp án colony/settlement.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi bàn về mô tả ngoại hình.\n\nTranscript: "The best-known picture is a Dutch painting in which the bird appears to be extremely fat."\n\nPhân tích: Bức tranh Hà Lan cho thấy chim rất béo (fat) → đáp án fat.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "only one example of soft tissue from the dodo survives, a dodo head."\n\nPhân tích: Mô mềm duy nhất còn lại là chiếc đầu (head) khô → đáp án head.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi bàn về nghiên cứu khoa học mới.\n\nTranscript: "scientists now believe the bird\'s strong knee joints would have made it capable of movement which was not slow, but actually quite fast."\n\nPhân tích: Chim dodo có thể di chuyển (movement) nhanh → đáp án movement.' },
+      { questionNumber: 36, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the scientists suggest that these were probably employed for balance while going over uneven ground."\n\nPhân tích: Đôi cánh nhỏ dùng để giữ thăng bằng (balance) → đáp án balance/balancing.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi bàn về nghiên cứu hộp sọ.\n\nTranscript: "which suggested the bird\'s brain was not small, but average in size."\n\nPhân tích: Não (brain) của chim dodo có kích thước trung bình → đáp án brain.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "one sense which was particularly well-developed was that of smell."\n\nPhân tích: Khứu giác (smell) giúp chim tìm thức ăn → đáp án smell.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về nguyên nhân tuyệt chủng.\n\nTranscript: "the ships also brought another type of creature - rats, which came to land from the ships... they were a particular danger to the dodos because they consumed their eggs."\n\nPhân tích: Chuột (rats) ăn trứng chim dodo → đáp án rats.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "the forest that has once covered all the island, and that had provided a perfect home for the dodo, was cut down so that crops such as sugar could be grown."\n\nPhân tích: Rừng (forest) bị chặt phá để trồng trọt, phá hủy môi trường sống → đáp án forest.' },
+    ],
+  },
+];
