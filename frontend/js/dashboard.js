@@ -157,6 +157,13 @@ function _countAnswer() {
     // answer's outcome — the single hook point where "this word was seen
     // this session" can be recorded without touching each mode individually.
     if (currentWord?._id) _vocabWordsSeen.set(currentWord._id, currentWord);
+    // Paraphrase items have no _id (embedded in VocabUnit.words[]) so they
+    // can't ride _vocabWordsSeen — record them for the parallel paraphrase-
+    // SRS sync (js/dashboard-paraphrase.js) that showResults() fires. Covers
+    // both a normal Paraphrase Unit quiz and the cross-unit "Ôn Paraphrase".
+    if (currentWord?.type === 'paraphrase' && typeof window.noteParaphraseAnswered === 'function') {
+        window.noteParaphraseAnswered(currentWord, !wrongWordSet.has(currentWord.word));
+    }
     if (sessionAnsweredCount - _lastReportedAnsweredCount >= 5) {
         _reportSessionStreak();
     }
@@ -286,6 +293,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (params.get('action') === 'review-due' && typeof openReviewDueModal === 'function') {
         history.replaceState(history.state, '', location.pathname);
         openReviewDueModal();
+    }
+    // ?action=review-paraphrase — same, for the paraphrase due-review row in
+    // nav.js's daily nudge.
+    if (params.get('action') === 'review-paraphrase' && typeof window.openParaphraseReviewModal === 'function') {
+        history.replaceState(history.state, '', location.pathname);
+        window.openParaphraseReviewModal();
     }
 });
 
@@ -2108,16 +2121,17 @@ function renderStudyGrid() {
 
     grid.innerHTML = html;
 
-    // ── Paraphrase table (below grid, full width) ──
+    // ── Paraphrase study block ──────────────────────────────────────────────
+    // js/dashboard-paraphrase.js owns the "Thẻ ⇄ Bảng" toggle: an active-
+    // recall flip-card view (feeds the per-student SRS) plus the original
+    // scan/copy table. It renders #paraphrase-table-section itself (and
+    // removes any stale one) so double-click/drag-select lookup — wired on
+    // #studyMode just below — reaches the cards and table alike.
     const existingTable = document.getElementById('paraphrase-table-section');
     if (existingTable) existingTable.remove();
 
-    if (paraWords.length) {
-        const section = document.createElement('div');
-        section.id = 'paraphrase-table-section';
-        section.className = 'paraphrase-section';
-        section.innerHTML = renderParaphraseTable(paraWords, currentUnit.title);
-        grid.parentElement.insertBefore(section, grid.nextSibling);
+    if (paraWords.length && typeof window.mountParaphraseStudy === 'function') {
+        window.mountParaphraseStudy(paraWords, currentUnit, grid);
     }
 
     setupDictionaryDouble('studyMode', 'vocab-study');
@@ -2159,6 +2173,10 @@ function renderParaphraseTable(words, title) {
         </table>
     </div>`;
 }
+
+// Exposed for js/dashboard-paraphrase.js's "Bảng" (scan) view — the file
+// loads before this one but only calls this at render time.
+window.renderParaphraseTable = renderParaphraseTable;
 
 function copyParaphraseTable() {
     if (!currentUnit?.words) return;
@@ -2285,6 +2303,7 @@ function startPractice(mode) {
     requeuedWords.clear();
     _vocabWordsSeen.clear();
     _persistedThisSession = false;
+    if (typeof window.resetParaphraseEvidence === 'function') window.resetParaphraseEvidence();
     _isDifficultPractice = false;
     mixedQueue = [];
     mixedIndex = 0;
@@ -3100,6 +3119,9 @@ function showResults(mode) {
         _persistedThisSession = true;
         _syncPracticeEvidence();
     }
+    // Parallel path for paraphrase items (no _id, so not in _vocabWordsSeen):
+    // push each answered pair's binary outcome into the per-student SRS.
+    if (typeof window.syncParaphraseEvidence === 'function') window.syncParaphraseEvidence();
     if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
 
     // Priority 2C — only for a session launched via the Today's Learning

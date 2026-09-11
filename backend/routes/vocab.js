@@ -24,6 +24,16 @@ const teacherOnly = (req, res, next) => {
 router.get('/units', auth, vocabController.listUnits);
 router.get('/unit/:number', auth, requirePremium(), vocabController.getUnit);
 
+// ── Paraphrase spaced-repetition (per student) ─────────────────────────────
+// Declared before /unit/:number-style param routes is unnecessary (distinct
+// first segment) but kept grouped with the content routes they belong to.
+// due-count is auth-only (no content, powers the daily nudge for everyone);
+// everything that returns paraphrase answers is premium-gated like /unit.
+router.get('/paraphrase/due-count', auth, vocabController.paraphraseDueCount);
+router.get('/paraphrase/review-queue', auth, requirePremium(), vocabController.paraphraseReviewQueue);
+router.get('/paraphrase/progress/:unitId', auth, requirePremium(), vocabController.paraphraseProgress);
+router.post('/paraphrase/review', auth, requirePremium(), vocabController.reviewParaphrase);
+
 // ══════════════════════════════════════════════════════
 // ADMIN – quản lý vocab units
 // ══════════════════════════════════════════════════════

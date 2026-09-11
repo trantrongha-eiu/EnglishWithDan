@@ -199,11 +199,24 @@
   // Reading/Listening, where double-click lookup only fires while their own
   // toolbar "Dict" tool is toggled on and a review/practice/retry screen is
   // active. Callers that don't pass a gate get the old unconditional behavior.
+  // Pointer coords from either a mouse event or a touch event (touchend
+  // carries no clientX/Y of its own — the last touch point is on
+  // changedTouches). Falls back to the viewport centre so positionDictPopup
+  // never gets NaN.
+  function _evtXY(e) {
+    if (typeof e.clientX === 'number' && e.clientX) return { x: e.clientX, y: e.clientY };
+    if (e.changedTouches && e.changedTouches.length) {
+      return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    }
+    return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  }
+
   function setupDictionaryDouble(containerId, source, gate) {
     var el = document.getElementById(containerId);
     if (!el) return;
     if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
     if (el._dictMouseupHandler) el.removeEventListener('mouseup', el._dictMouseupHandler);
+    if (el._dictTouchHandler) el.removeEventListener('touchend', el._dictTouchHandler);
     el._dictSource = source || 'other';
     el._dictGate = gate || null;
     el._dictHandler = function (e) {
@@ -211,17 +224,30 @@
       var word = _extractDoubleClickedWord(e);
       if (!word) return;
       _source = el._dictSource;
-      lookupWord(word, e.clientX, e.clientY);
+      var p = _evtXY(e);
+      lookupWord(word, p.x, p.y);
     };
-    el._dictMouseupHandler = function (e) {
+    // Shared by mouseup (desktop drag-select) and touchend (mobile "bôi
+    // đen" — double-tap-and-drag / long-press selection): both leave a
+    // non-collapsed window.getSelection() behind, which is all
+    // _extractDragSelectedPhrase reads. A 400ms debounce stops a synthesized
+    // mouseup right after a real touchend from opening the popup twice.
+    function runDragSelect(e) {
       if (el._dictGate && !el._dictGate()) return;
+      var now = Date.now();
+      if (now - (el._dictLastLookup || 0) < 400) return;
       var word = _extractDragSelectedPhrase(e);
       if (!word) return;
+      el._dictLastLookup = now;
       _source = el._dictSource;
-      lookupWord(word, e.clientX, e.clientY);
-    };
+      var p = _evtXY(e);
+      lookupWord(word, p.x, p.y);
+    }
+    el._dictMouseupHandler = runDragSelect;
+    el._dictTouchHandler = runDragSelect;
     el.addEventListener('dblclick', el._dictHandler);
     el.addEventListener('mouseup', el._dictMouseupHandler);
+    el.addEventListener('touchend', el._dictTouchHandler);
   }
 
   // Pull phonetic / part-of-speech / example sentences out of a

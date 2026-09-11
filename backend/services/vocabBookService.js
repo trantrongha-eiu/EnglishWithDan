@@ -612,4 +612,7 @@ module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
   getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
+  // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
+  // reuses the exact same Leitner box maths instead of a second copy.
+  computeSrs, SRS_INTERVAL_DAYS,
 };

@@ -42,7 +42,7 @@
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking',
       children: [
         { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
-        { href: 'speaking.html',                    icon: 'fa-microphone', label: 'Luyện tập' },
+        { href: 'speaking.html',                    icon: 'fa-microphone', label: 'Speaking forecast' },
         { href: 'speaking.html?tab=materials',      icon: 'fa-book-open',  label: 'Tài liệu' },
         { href: 'speaking.html?tab=speaking-tips',  icon: 'fa-lightbulb',  label: 'Speaking Tips' },
       ]
@@ -972,14 +972,24 @@
       || document.getElementById('nav-vocab-inactivity-overlay')
       || document.getElementById('nav-streak35-notice-overlay')) { done(); return; }
 
-    fetch(API + '/vocabbook/daily-goal', { headers: window.AuthService.authHeader() })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
+    var hdr = { headers: window.AuthService.authHeader() };
+    Promise.all([
+      fetch(API + '/vocabbook/daily-goal', hdr).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      // Paraphrase items on their own Leitner schedule (GET
+      // /api/vocab/paraphrase/due-count). Separate count, separate "Ôn ngay"
+      // row on the same nudge card.
+      fetch(API + '/vocab/paraphrase/due-count', hdr).then(function (r) { return r.json(); }).catch(function () { return null; }),
+    ])
+      .then(function (res) {
+        var d = res[0];
+        var p = res[1];
         if (!d || !d.success || typeof d.target !== 'number') return;
 
+        var hasPremium = window.AuthService.hasPremiumAccess && window.AuthService.hasPremiumAccess();
         var due = d.dueForReview || 0;
-        var canReview = due > 0 && window.AuthService.hasPremiumAccess
-          && window.AuthService.hasPremiumAccess();
+        var canReview = due > 0 && hasPremium;
+        var paraDue = (p && p.success && p.count) || 0;
+        var canParaReview = paraDue > 0 && hasPremium;
 
         if (d.met) {
           // Goal met — show the confirmation card (with the review-due block
@@ -988,12 +998,12 @@
             if (localStorage.getItem(VOCAB_GOAL_DONE_KEY) === _todayDateStr()) return;
             localStorage.setItem(VOCAB_GOAL_DONE_KEY, _todayDateStr());
           } catch (e) { /* localStorage unavailable (private mode etc.) — fall through and just show it */ }
-          _renderVocabGoalCard({ done: true, target: d.target, due: canReview ? due : 0 });
+          _renderVocabGoalCard({ done: true, target: d.target, due: canReview ? due : 0, paraDue: canParaReview ? paraDue : 0 });
           return;
         }
         _renderVocabGoalCard({
           done: false, target: d.target, studied: d.studied || 0, remaining: d.remaining,
-          due: canReview ? due : 0
+          due: canReview ? due : 0, paraDue: canParaReview ? paraDue : 0
         });
       })
       .catch(function () {})
@@ -1005,6 +1015,11 @@
     // otherwise navigate there with the trigger param (dashboard.js reads it).
     if (typeof window.openReviewDueModal === 'function') { window.openReviewDueModal(); return; }
     location.href = '/dashboard.html?action=review-due';
+  }
+
+  function _goParaphraseReviewDue() {
+    if (typeof window.openParaphraseReviewModal === 'function') { window.openParaphraseReviewModal(); return; }
+    location.href = '/dashboard.html?action=review-paraphrase';
   }
 
   function _renderVocabGoalCard(o) {
@@ -1022,14 +1037,32 @@
     ].join(';');
 
     // A reusable "N từ đến hạn ôn" block — MochiMochi-style golden-hour nudge.
-    var reviewRow = o.due > 0
-      ? '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border,#e5e7eb)">' +
-          '<div style="font-size:13px;color:var(--text2,#6b7280);line-height:1.5;margin-bottom:8px">' +
-            '🔁 Bạn có <strong style="color:var(--text,#111827)">' + o.due + ' từ</strong> đến hạn ôn hôm nay.' +
-          '</div>' +
-          '<button id="nav-vocab-review-go" style="width:100%;background:var(--surface2,#f3f4f6);color:var(--text,#111827);border:1px solid var(--border,#e5e7eb);border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🔁 Ôn ngay</button>' +
-        '</div>'
-      : '';
+    // Two independent rows: notebook words (o.due) and paraphrase pairs
+    // (o.paraDue), each with its own "Ôn ngay" button.
+    var _revBtnCss = 'width:100%;background:var(--surface2,#f3f4f6);color:var(--text,#111827);border:1px solid var(--border,#e5e7eb);border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit';
+    var reviewRow = '';
+    if (o.due > 0 || o.paraDue > 0) {
+      reviewRow = '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border,#e5e7eb);display:flex;flex-direction:column;gap:10px">';
+      if (o.due > 0) {
+        reviewRow +=
+          '<div>' +
+            '<div style="font-size:13px;color:var(--text2,#6b7280);line-height:1.5;margin-bottom:8px">' +
+              '🔁 Bạn có <strong style="color:var(--text,#111827)">' + o.due + ' từ</strong> đến hạn ôn hôm nay.' +
+            '</div>' +
+            '<button id="nav-vocab-review-go" style="' + _revBtnCss + '">🔁 Ôn từ vựng</button>' +
+          '</div>';
+      }
+      if (o.paraDue > 0) {
+        reviewRow +=
+          '<div>' +
+            '<div style="font-size:13px;color:var(--text2,#6b7280);line-height:1.5;margin-bottom:8px">' +
+              '🔁 Bạn có <strong style="color:var(--text,#111827)">' + o.paraDue + ' cụm paraphrase</strong> đến hạn ôn.' +
+            '</div>' +
+            '<button id="nav-vocab-para-review-go" style="' + _revBtnCss + '">🔁 Ôn paraphrase</button>' +
+          '</div>';
+      }
+      reviewRow += '</div>';
+    }
 
     if (o.done) {
       // Target met. Either a plain ✅ (auto-fade) or ✅ + the review row (kept).
@@ -1112,6 +1145,8 @@
     });
     var rev = card.querySelector('#nav-vocab-review-go');
     if (rev) rev.addEventListener('click', _goReviewDue);
+    var paraRev = card.querySelector('#nav-vocab-para-review-go');
+    if (paraRev) paraRev.addEventListener('click', function () { close(); _goParaphraseReviewDue(); });
     // Auto-dismiss only the pure ✅ confirmation (nothing actionable on it).
     if (!keep) setTimeout(close, 4000);
   }

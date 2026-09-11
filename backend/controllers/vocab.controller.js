@@ -5,6 +5,7 @@
 // no {success} wrapper at all, unlike every admin route in this file;
 // that's the original API contract, not an oversight.
 const vocabService = require('../services/vocabService');
+const paraphraseSrsService = require('../services/paraphraseSrsService');
 
 exports.listUnits = async (req, res) => {
   try {
@@ -25,6 +26,66 @@ exports.getUnit = async (req, res) => {
     res.json(unit);
   } catch (err) {
     res.status(500).json({ message: 'Cannot load unit' });
+  }
+};
+
+// ── Paraphrase spaced-repetition (per student) ─────────────────────────────
+// Study "cards" view + a cross-unit "Ôn Paraphrase" due-review queue, using
+// the same Leitner scheduler as the notebook words.
+
+// POST /api/vocab/paraphrase/review  { unitId, word, paraphrase, meaning,
+//   explanation, rating }  → updated SRS box + next review date.
+exports.reviewParaphrase = async (req, res) => {
+  try {
+    const { unitId, word, paraphrase, meaning, explanation, rating } = req.body || {};
+    const result = await paraphraseSrsService.recordReview(
+      req.user._id, unitId, { word, paraphrase, meaning, explanation }, rating
+    );
+    if (result.status === 'bad_rating') return res.status(400).json({ success: false, message: 'Mức đánh giá không hợp lệ' });
+    if (result.status === 'bad_unit') return res.status(400).json({ success: false, message: 'Unit không hợp lệ' });
+    if (result.status === 'bad_item') return res.status(400).json({ success: false, message: 'Thiếu nội dung paraphrase' });
+    res.json({
+      success: true,
+      srsBox: result.srsBox,
+      nextReviewAt: result.nextReviewAt,
+      itemStatus: result.itemStatus,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET /api/vocab/paraphrase/progress/:unitId  → { map, seen, mastered }
+exports.paraphraseProgress = async (req, res) => {
+  try {
+    const data = await paraphraseSrsService.getUnitProgress(req.user._id, req.params.unitId);
+    res.json({ success: true, ...data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET /api/vocab/paraphrase/due-count  → { count }. Auth only (cheap, no
+// content) so the daily nudge can show it for every student; the frontend
+// gates the review action itself on premium.
+exports.paraphraseDueCount = async (req, res) => {
+  try {
+    const count = await paraphraseSrsService.countDue(req.user._id);
+    res.json({ success: true, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// GET /api/vocab/paraphrase/review-queue  → { items }. Premium-gated: it
+// returns the paraphrase answers, same access bar as /unit/:number.
+exports.paraphraseReviewQueue = async (req, res) => {
+  try {
+    const limit = Number(req.query.limit) || 40;
+    const items = await paraphraseSrsService.getDueQueue(req.user._id, limit);
+    res.json({ success: true, items });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
