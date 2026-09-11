@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a3c98973bbe61faa8a05bd0',
+    title: 'Holiday rental',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về ngày thuê Aster Cottage.\n\nTranscript: "it\'s already booked that week. You could have it the previous week, from the 14th."\n\nPhân tích: Aster Cottage còn trống tuần bắt đầu từ ngày 14 tháng 9 → đáp án 14 September.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "That would be $835."\n\nPhân tích: Giá thuê Aster Cottage một tuần là 835 đô la → đáp án 835.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi mô tả Periwinkle Cottage.\n\nTranscript: "it\'s part of a historic building that was originally a school a hundred years ago."\n\nPhân tích: Tòa nhà ban đầu từng là một trường học (school) → đáp án School.' },
+      { questionNumber: 4, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "From the living room, you can go out onto the deck, which is a great place to have your meals."\n\nPhân tích: Phòng khách dẫn ra sân hiên (deck) → đáp án Deck.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Can you see the river that flows through the town from the cottage? — You sure can. You can see it from the bedroom."\n\nPhân tích: Có thể nhìn thấy con sông (river) từ phòng ngủ → đáp án river.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về đồ dùng cần mang theo.\n\nTranscript: "we make a small charge for towels, unless you bring your own."\n\nPhân tích: Khách nên tự mang khăn tắm (towel) để khỏi mất phí → đáp án Towel.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "is there a garage that we can use? — I\'m afraid there isn\'t one."\n\nPhân tích: Nhà không có gara (garage), chỉ có chỗ đỗ xe trên phố → đáp án Garage.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về nhà hàng trong thị trấn.\n\nTranscript: "the Chinese restaurant has got to be the best for miles around."\n\nPhân tích: Chủ nhà giới thiệu nhà hàng Trung Hoa (Chinese) là ngon nhất vùng → đáp án Chinese.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi bàn về thanh toán.\n\nTranscript: "We ask for a deposit of $200."\n\nPhân tích: Tiền đặt cọc là 200 đô la → đáp án 200.' },
+      { questionNumber: 10, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "let\'s say no later than the last day of July."\n\nPhân tích: Hạn thanh toán cuối cùng là ngày cuối tháng 7 (July) → đáp án July.' },
+    ],
+  },
+  {
+    sectionId: '6a3d2ab0b3716e444f8e7710',
+    title: 'Bridge to Brisbane Fun Run',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi bàn về chỗ đỗ xe.\n\nTranscript: "Probably the best option is the Jack Gray sports field in Barker Street."\n\nPhân tích: Người nói khuyên đỗ xe ở sân thể thao (sports ground), không phải bờ sông (bị cấm) hay khu mua sắm (bị kéo xe) → đáp án A.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi nói về thiết bị của người chạy.\n\nTranscript: "The timing chip, which records the runner\'s time, needs to be clipped onto one of their shoes."\n\nPhân tích: Chip định giờ được kẹp vào giày (a shoe) → đáp án B.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi nói về thứ tự xuất phát.\n\nTranscript: "the yellow group are our elite athletes. We\'d like them to start the race."\n\nPhân tích: Nhóm vàng (yellow) — vận động viên chuyên nghiệp — xuất phát trước tiên → đáp án A.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về tình nguyện viên còn thiếu.\n\nTranscript: "we\'ll still desperately need volunteers along the race course to distribute water bottles to the runners."\n\nPhân tích: Vẫn cần thêm người phát nước (handing out water) — sơ cứu đã có St John\'s Ambulance đảm nhận → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả khu vực làng đua.\n\nTranscript: "you\'ll see the stage on the right. That\'s where the winners will receive their medals."\n\nPhân tích: Sân khấu trao huy chương nằm bên phải đường đi → đáp án F.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "get their finishes t shirts from the t shirt stand at the end of those paths."\n\nPhân tích: Quầy áo về đích nằm ở cuối hai lối đi gần vạch đích → đáp án A.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi nói về khu giữ đồ.\n\nTranscript: "all bags are kept in the building on Bowen Road. It\'s quite close to the exit in the top left hand corner."\n\nPhân tích: Khu giữ hành lý nằm ở góc trên bên trái bản đồ, gần lối ra → đáp án B.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi nói về trung tâm thông tin.\n\nTranscript: "That\'s the building in the center of the map, not far from the finish line. It\'s just below it on your map."\n\nPhân tích: Trung tâm thông tin nằm ở giữa bản đồ, ngay dưới vạch đích → đáp án H.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi nói về hộp bốc thăm trúng thưởng.\n\nTranscript: "The entry box is between the shade tents and the corporate catering buildings."\n\nPhân tích: Hộp bốc thăm nằm giữa khu lều che và khu ẩm thực doanh nghiệp → đáp án G.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối bài, khi nói về trạm nước.\n\nTranscript: "the main water station in the village is just beside the third exit through to Gregory Terrace... to the left of the corporate catering area."\n\nPhân tích: Trạm nước chính nằm cạnh lối ra thứ ba, bên trái khu ẩm thực doanh nghiệp → đáp án I.' },
+    ],
+  },
+  {
+    sectionId: '6a3d2e6db3716e444f8e8341',
+    title: 'Farmers’ attitudes to new developments in agriculture',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về tên đề tài.\n\nTranscript: "I\'d specify where they are then."\n\nPhân tích: Dr Owen khuyên nên nêu rõ vị trí địa lý của các trang trại (location of the farms) trong tiêu đề → đáp án A.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về lý do phỏng vấn trực tiếp.\n\nTranscript: "a lot of farmers don\'t like talking on the phone, so they\'ll be more likely to talk freely if I see them in person."\n\nPhân tích: Joel muốn có câu trả lời đầy đủ, chân thực hơn (to get fuller answers) → đáp án C.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về cách hỏi nguồn thông tin nông dân sử dụng.\n\nTranscript: "It might be more useful to ask them rather than show them a list. A spontaneous response to one or two open questions might give you a more accurate picture. — All right, I\'ll do that then."\n\nPhân tích: Joel đồng ý sẽ hỏi câu hỏi mở (asking them open questions) thay vì đưa danh sách → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về cách chính phủ liên lạc với nông dân.\n\nTranscript: "the government sends out the same information to all of them... So they get all this information, but half of it doesn\'t actually apply to them. — Exactly."\n\nPhân tích: Cả hai đồng ý phần lớn thông tin không liên quan tới từng nông dân (much of it is irrelevant) → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về chi phí thay đổi.\n\nTranscript: "farmers in Britain aren\'t, in principle, against investing money... but they\'re actually just too busy to work out what the financial implications are."\n\nPhân tích: Nông dân Anh không thiếu thời gian tính toán chi phí đầu tư mới (have too little time to calculate the costs) → đáp án B.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về nghiên cứu ở Úc.\n\nTranscript: "the majority of Australian sheep farmers are willing to risk adopting new practices on the basis of just a few pieces of research."\n\nPhân tích: Phần lớn nông dân nuôi cừu Úc thay đổi dựa trên rất ít nghiên cứu (make changes based on limited research) → đáp án B.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về "Contemporary Farming Manual".\n\nTranscript: "it covers a lot of things a farmer might want to know, but it\'s so dull."\n\nPhân tích: Sách bị chê là nhàm chán (It\'s boring) → đáp án G.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về "Running a Small Farm".\n\nTranscript: "a lot of the information is either misleading or simply wrong."\n\nPhân tích: Sách chứa thông tin không chính xác (It\'s inaccurate) → đáp án E.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về "Agriculture and Economics".\n\nTranscript: "that\'s why it\'s a required textbook for anyone studying agriculture."\n\nPhân tích: Sách được xem là tài liệu bắt buộc phải đọc (It\'s essential reading) → đáp án D.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về "How to Survive in Farming".\n\nTranscript: "it turned out to have been written years ago... it\'s badly in need of a new edition."\n\nPhân tích: Sách đã lỗi thời (It\'s out of date) → đáp án B.' },
+    ],
+  },
+  {
+    sectionId: '6a3d3124b3716e444f8e8d96',
+    title: 'Aboriginal Textile Design',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi nói về Ernabella Arts Centre.\n\nTranscript: "the artists crafted rugs working with wool."\n\nPhân tích: Ban đầu các nghệ nhân làm thảm từ len (wool) → đáp án wool.' },
+      { questionNumber: 32, explanation: 'Vị trí: Khi nói về Tiwi Designs.\n\nTranscript: "they incorporated bird motifs into their early designs."\n\nPhân tích: Thiết kế ban đầu có họa tiết chim (bird) → đáp án bird.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "some textile designs are chosen because they are thought to cause rain."\n\nPhân tích: Một số họa tiết được cho là có thể gọi mưa (rain) → đáp án rain.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi nói về Jimmy Pike.\n\nTranscript: "greatly influenced by the Australian landscape, in particular that of the desert."\n\nPhân tích: Tác phẩm của ông chịu ảnh hưởng lớn từ sa mạc (desert) → đáp án desert.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Jimmy Pike\'s life as an artist began in prison, where he was serving a sentence for murder."\n\nPhân tích: Ông bắt đầu vẽ khi đang ở trong tù (prison) → đáp án prison.' },
+      { questionNumber: 36, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "he decided to bring his artwork onto textiles, which were used to produce clothing."\n\nPhân tích: Vải in họa tiết của ông được dùng để may quần áo (clothing) → đáp án clothing.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi nói về Bronwyn Bancroft.\n\nTranscript: "Her work reflects her Aboriginal roots, but always with a contemporary, fresh view of family and the natural environment."\n\nPhân tích: Tác phẩm của bà mang góc nhìn hiện đại về gia đình (family) và thiên nhiên → đáp án family.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi nói về sự kiện năm 1995.\n\nTranscript: "she added a rainbow which represents the optimism that Cathy symbolizes for all Aboriginal people."\n\nPhân tích: Bà vẽ thêm hình cầu vồng (rainbow) tượng trưng cho sự lạc quan → đáp án rainbow.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi nói về sự kiện năm 2001.\n\nTranscript: "It featured the image of a snake that had no head or tail to represent an ongoing culture."\n\nPhân tích: Trang phục có hình con rắn (snake) không đầu không đuôi → đáp án snake.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài, khi nói về vấn đề bản quyền.\n\nTranscript: "The carpet case, as it became known, was taken to court, where luckily the artist won."\n\nPhân tích: Vụ kiện được biết đến với tên "The Carpet Case" (vụ án tấm thảm) → đáp án Carpet.' },
+    ],
+  },
+];
