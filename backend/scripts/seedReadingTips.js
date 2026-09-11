@@ -2,10 +2,12 @@
 
 // Seeds the Reading Tips strategy articles shown on the Reading page.
 // Same upsert-by-{category,lessonKey} pattern as seedEssentialGrammar.js.
+const foundations = require("./readingTipsData/foundations");
 const byQuestionType = require("./readingTipsData/byQuestionType");
 const byBand = require("./readingTipsData/byBand");
 
 const lessons = [
+  ...foundations,
   ...byQuestionType,
   ...byBand,
 ];
