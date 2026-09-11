@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014385e01d9821f44cf3',
+    title: 'Cam 17 - Test 2 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về thư viện.\n\nTranscript: "one thing you could do is get involved in collecting them – if you\'ve got a car, that is."\n\nPhân tích: Cần giúp thu gom (collecting) sách → đáp án collecting.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Another thing is the records that we keep of the books... It would be very useful to have another person to help keep them up to date."\n\nPhân tích: Cần giúp cập nhật hồ sơ (records) → đáp án records.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi hỏi về vị trí thư viện.\n\nTranscript: "we simply have the use of a room in the village hall, the West Room."\n\nPhân tích: Thư viện ở phòng West Room → đáp án West.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về câu lạc bộ ăn trưa.\n\nTranscript: "I could help with transport, if that\'s of any use. — Ooo definitely."\n\nPhân tích: Cần giúp về phương tiện đi lại (transport) → đáp án transport.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I could get involved in one or two, particularly if there are any art groups."\n\nPhân tích: Frank quan tâm nhóm nghệ thuật (art) → đáp án art.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về giúp đỡ cá nhân.\n\nTranscript: "She needs a lift to the hospital next week."\n\nPhân tích: Bà Carroll cần đưa tới bệnh viện (hospital) → đáp án hospital.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "if you could do some weeding in his garden, that would be wonderful."\n\nPhân tích: Cần giúp làm cỏ trong vườn (garden) → đáp án garden.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về sự kiện 19/10.\n\nTranscript: "on the 19th of October, we\'re holding a quiz."\n\nPhân tích: Sự kiện ngày 19/10 là buổi đố vui (quiz) → đáp án quiz.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi bàn về sự kiện 18/11.\n\nTranscript: "having an extra person to check them at the door, as people arrive, would be good" (referring to tickets).\n\nPhân tích: Cần giúp kiểm tra vé (tickets) tại cửa → đáp án tickets.' },
+      { questionNumber: 10, explanation: 'Vị trí: Khi bàn về tiệc năm mới.\n\nTranscript: "The one thing we haven\'t got yet is a poster. That isn\'t something you could do, by any chance, is it?"\n\nPhân tích: Cần giúp thiết kế áp phích (poster) → đáp án poster.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014385e01d9821f44d00',
+    title: 'Oniton Hall',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu lịch sử điền trang.\n\nTranscript: "Almost all of them have left their mark, generally by adding new rooms, like the ballroom and conservatory, or by demolishing others."\n\nPhân tích: Các chủ sở hữu chủ yếu thay đổi ngôi nhà (the house) → đáp án B.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi kể về Sir Edward Downes.\n\nTranscript: "he... hosted meeting of creative and literary people, like painters and poets."\n\nPhân tích: Ông muốn có nơi dành cho nghệ sĩ và nhà văn (artists and writers) → đáp án C.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về người hầu.\n\nTranscript: "you\'ll see volunteers dressed up as nineteenth-century servants, going about their work. They\'ll explain what they\'re doing."\n\nPhân tích: Khách tìm hiểu qua những người đóng vai (people in costume) → đáp án C.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về hoạt động cho trẻ em.\n\nTranscript: "Our latest addition is child-sized tractors, that you can drive around the grounds."\n\nPhân tích: Điểm mới nhất là máy kéo mini (mini tractors) → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả nhà làm sữa.\n\nTranscript: "It\'s now the place to go for lunch, or afternoon tea, or just a cup of coffee and a slice of homemade cake."\n\nPhân tích: Nhà làm sữa hiện là nơi ăn uống (eating and drinking) → đáp án D.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "in here is our collection of agricultural tools. These were used in the past to plough the earth, sow seeds."\n\nPhân tích: Nhà kho lớn trưng bày dụng cụ nông nghiệp cổ (seeing old farming equipment) → đáp án C.' },
+      { questionNumber: 17, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "There\'s a small barn... where you can groom the donkeys and horses, to keep their coats clean."\n\nPhân tích: Nhà kho nhỏ là nơi chăm sóc động vật (helping to look after animals) → đáp án G.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "which instead is the place to go to buy gifts, books, our own jams and pickles, and clothes and blankets."\n\nPhân tích: Chuồng ngựa hiện là nơi mua sắm (shopping) → đáp án A.' },
+      { questionNumber: 19, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Outside the shed... you can climb into a horse-drawn carriage for a lovely, relaxing tour."\n\nPhân tích: Nhà kho (shed) là nơi bắt đầu chuyến tham quan (starting a trip) → đáp án E.' },
+      { questionNumber: 20, explanation: 'Vị trí: Cuối phần mô tả trang trại.\n\nTranscript: "You\'ll see types of cattle and sheep that are hardly ever found on farms these days."\n\nPhân tích: Khu công viên có các giống vật nuôi hiếm (rare breeds of animals) → đáp án F.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014485e01d9821f44d0d',
+    title: 'Cam 17 - Test 2 – Part 3',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về nội dung bài review.\n\nTranscript: "part of that means talking about the emotional impact the performance had on us. I think that\'s important."\n\nPhân tích: Cả hai đồng ý cần đưa cảm nhận cá nhân (a personal reaction) vào bài viết → đáp án D.' },
+      { questionNumber: 22, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we should definitely mention how well the director handled important bits of the play – like when Romeo climbs onto Juliet\'s balcony. — And the fight between Mercutio and Tybalt."\n\nPhân tích: Cả hai đồng ý cần nhắc tới các cảnh cụ thể (particular scenes) → đáp án E.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về sân khấu.\n\nTranscript: "I\'d say that was probably the most memorable thing about this production. — You\'re right. The set design was really amazing."\n\nPhân tích: Cả hai đồng ý đây là điểm mạnh nổi bật (a major strength) → đáp án D.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về ánh sáng.\n\nTranscript: "It helped to change the mood of the quieter scenes. — That\'s a good point."\n\nPhân tích: Cả hai đồng ý ánh sáng tạo đúng không khí (created the right atmosphere) → đáp án C.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về trang phục.\n\nTranscript: "I was a bit surprised by the contemporary dress... I had assumed it would be more conventional."\n\nPhân tích: Cả hai đều kỳ vọng trang phục truyền thống hơn (expected this to be more traditional) → đáp án A.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về âm nhạc.\n\nTranscript: "I thought they were wasted because the music didn\'t have much impact in Acts 2 and 3. — Yes – that was a shame."\n\nPhân tích: Cả hai đều thất vọng về phần âm nhạc (disappointed by this) → đáp án E.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về cách diễn viên đọc lời thoại.\n\nTranscript: "They were speaking too fast. — It was a problem I agree, but I thought it was because they weren\'t speaking loudly enough."\n\nPhân tích: Hai người bất đồng về lý do gây ra vấn đề (disagree about why this was an issue) → đáp án F.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về tính thời sự của vở kịch.\n\nTranscript: "There are always disagreements and tension between teenagers and their parents."\n\nPhân tích: Vở kịch phản ánh vấn đề gia đình mà giới trẻ trải qua (problems that families experience) → đáp án B.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về xem vở kịch dịch.\n\nTranscript: "The ending was pretty powerful. — Yes. That somehow intensified the emotion for me."\n\nPhân tích: Cả hai cảm thấy xúc động (moving) khi xem bản dịch → đáp án C.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối hội thoại, khi bàn về sức hút quốc tế của Shakespeare.\n\nTranscript: "they can also be understood on different levels. The characters have such depth. — Which allows directors to experiment and find new angles."\n\nPhân tích: Kịch có thể được diễn giải theo nhiều cách (can be interpreted in many ways) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014485e01d9821f44d1b',
+    title: 'The impact of digital technology on the Icelandic language',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài.\n\nTranscript: "which is spoken by around 321,000 people."\n\nPhân tích: Tiếng Iceland có khoảng 321.000 người nói → đáp án 321,000.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the vocabulary of Icelandic is continually increasing."\n\nPhân tích: Vốn từ vựng (vocabulary) của tiếng Iceland vẫn đang phát triển → đáp án vocabulary.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Then there\'s an Icelandic word for podcast – which is too hard to pronounce!"\n\nPhân tích: Tiếng Iceland có từ riêng cho "podcast" → đáp án podcast.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi bàn về giới trẻ.\n\nTranscript: "Think about smartphones... today young people use them all the time."\n\nPhân tích: Giới trẻ sử dụng nhiều điện thoại thông minh (smartphones) → đáp án smartphones.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "this is a good thing in many respects because it promotes their bilingual skills."\n\nPhân tích: Giới trẻ trở nên song ngữ (bilingual) rất nhanh → đáp án bilingual.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về vấn đề của giới trẻ.\n\nTranscript: "playground conversations in Icelandic secondary schools can be conducted entirely in English."\n\nPhân tích: Cuộc trò chuyện ở sân chơi (playground) diễn ra hoàn toàn bằng tiếng Anh → đáp án playground.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "teachers of much younger children have reported situations where their classes find it easier to say what is in a picture using English."\n\nPhân tích: Trẻ dễ miêu tả nội dung một bức tranh (picture) bằng tiếng Anh hơn → đáp án picture.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi bàn về các công ty công nghệ.\n\nTranscript: "The other drawback of Icelandic is the grammar, which is significantly more complex than in most languages."\n\nPhân tích: Ngữ pháp (grammar) tiếng Iceland phức tạp khiến công ty công nghệ ngại đầu tư → đáp án grammar.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về lo ngại của chính phủ.\n\nTranscript: "will young Icelanders lose their sense of their own identity?"\n\nPhân tích: Chính phủ lo ngại giới trẻ mất bản sắc (identity) → đáp án identity.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "If children are learning two languages through different routes, neither of which they are fully fluent in, will they be able to express themselves properly?"\n\nPhân tích: Chính phủ lo ngại trẻ không thông thạo (fluent) hoàn toàn ngôn ngữ nào → đáp án fluent.' },
+    ],
+  },
+];
