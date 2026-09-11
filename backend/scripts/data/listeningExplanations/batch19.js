@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014085e01d9821f44bbf',
+    title: 'Cam 15 - Test 4 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi hỏi nghề nghiệp.\n\nTranscript: "would you mind telling me what you do? — I\'m a journalist."\n\nPhân tích: Sophie làm nhà báo (journalist) → đáp án journalist.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Actually, it\'s my day off. I came here to do some shopping."\n\nPhân tích: Lý do đến đây hôm nay là đi mua sắm (shopping) → đáp án shopping.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi hỏi về ga trở về.\n\nTranscript: "can you tell me which station you\'re travelling back to? — Staunfirth, where I live."\n\nPhân tích: Ga trở về là Staunfirth → đáp án Staunfirth.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi hỏi về loại vé.\n\nTranscript: "I just got a normal return ticket."\n\nPhân tích: Loại vé là vé khứ hồi thông thường (return) → đáp án return.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "I paid £23.70."\n\nPhân tích: Giá vé là 23.70 bảng → đáp án 23.70.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi hỏi về nơi mua vé.\n\nTranscript: "I got an e-ticket online."\n\nPhân tích: Vé được mua trực tuyến (online) → đáp án online.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi hỏi điều chưa hài lòng về chuyến đi.\n\nTranscript: "today there was a delay; the train was about 15 minutes behind schedule."\n\nPhân tích: Điều chưa hài lòng là sự chậm trễ (delay) của chuyến tàu → đáp án delay.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi hỏi điều hài lòng nhất về ga.\n\nTranscript: "the best thing is that they\'ve improved the amount of information about train times etc. that\'s given to passengers."\n\nPhân tích: Điều hài lòng nhất là lượng thông tin (information) cung cấp cho hành khách → đáp án information.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi hỏi điều chưa hài lòng về ga.\n\nTranscript: "there aren\'t enough places to sit down, especially on the platforms."\n\nPhân tích: Thiếu chỗ ngồi, đặc biệt trên sân ga (platform) → đáp án platform/platforms.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "What about the parking at the station? — I don\'t really have an opinion as I never use it. — So, neither satisfied nor dissatisfied for that then."\n\nPhân tích: Sophie không có ý kiến về khu đỗ xe (parking) → đáp án parking.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014085e01d9821f44bcb',
+    title: 'Cam 15 - Test 4 – Part 2',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi mô tả bản đồ.\n\nTranscript: "The café continues to serve an assortment of drinks and snacks and is still in the same place, looking out over the lake and next to the old museum."\n\nPhân tích: Quán cà phê nằm cạnh bảo tàng cũ, nhìn ra hồ → đáp án D.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "We\'re hoping to change the location of the toilets... they\'re a bit out of the way at present, near the adventure playground, in the corner of your map."\n\nPhân tích: Nhà vệ sinh (vị trí hiện tại) ở gần khu vui chơi mạo hiểm, góc bản đồ → đáp án C.' },
+      { questionNumber: 13, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we\'re now used the space near the south gate – between the park boundary and the path that goes past the lake towards the old museum."\n\nPhân tích: Vườn hoa nằm gần cổng nam, giữa ranh giới công viên và lối đi tới bảo tàng → đáp án G.' },
+      { questionNumber: 14, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s by the glass houses, just to the right of the path from the south gate."\n\nPhân tích: Phòng gym ngoài trời cạnh nhà kính, bên phải lối từ cổng nam → đáp án H.' },
+      { questionNumber: 15, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s near the old museum, at the end of a little path that leads off from the main path between the lake and the museum."\n\nPhân tích: Đường trượt ván gần bảo tàng cũ, cuối một lối nhỏ → đáp án A.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "It\'s on a bend in the path that goes round the east side of the lake, just south of the adventure playground."\n\nPhân tích: Khu hoa dại ở khúc cua phía đông hồ, ngay phía nam khu vui chơi mạo hiểm → đáp án E.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi bàn về khu vui chơi mạo hiểm.\n\nTranscript: "we do ask adults not to leave them on their own there."\n\nPhân tích: Trẻ em cần có người lớn giám sát (must be supervised) → đáp án A.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "entrance is completely free."\n\nPhân tích: Vào cửa hoàn toàn miễn phí (no payment required) → đáp án D.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi bàn về nhà kính.\n\nTranscript: "At present the glass houses are open from 10am to 3pm Mondays to Thursdays, and it\'s hoped to extend this to the weekend soon."\n\nPhân tích: Nhà kính hiện đóng cửa vào cuối tuần (closed at weekends) → đáp án A.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "A huge amount of work has been done on them to repair the damage following the disastrous fire that recently destroyed their western side."\n\nPhân tích: Nhà kính bị hư hại nặng do hỏa hoạn (badly damaged by fire) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014085e01d9821f44bd9',
+    title: 'Presentation about refrigeration',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi Annie nói về nhà chứa băng.\n\nTranscript: "I didn\'t realise that insulating the blocks with straw or sawdust meant they didn\'t melt for months."\n\nPhân tích: Điều Annie phát hiện là cách giữ băng không tan (how the ice was kept frozen) → đáp án B.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về La Mã cổ đại.\n\nTranscript: "Both the ice and the snow were then sold. The ice cost more than the snow."\n\nPhân tích: Băng/tuyết được bán ra như một hoạt động thương mại (became a commercial business) → đáp án A.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về tủ lạnh hiện đại.\n\nTranscript: "some people just dump old fridges in the countryside. — It\'s hard to see how they can be stopped unfortunately."\n\nPhân tích: Cả hai đều lo ngại việc vứt tủ lạnh cũ bừa bãi, thiếu trách nhiệm (disposed of irresponsibly) → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "if you divide the cost by the number of years you can use a fridge, they\'re not expensive, compared with some household appliances."\n\nPhân tích: Cả hai đồng ý tủ lạnh có giá trị tốt so với chi phí (good value for money) → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi phân công chủ đề "các mặt hàng được bảo quản lạnh".\n\nTranscript: "How about starting with how useful refrigeration is, and the range of goods that are refrigerated... I could do that, unless you particularly want to. — No, that\'s fine by me."\n\nPhân tích: Annie nhận làm chủ đề này → đáp án A.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi phân công chủ đề "ảnh hưởng sức khỏe".\n\nTranscript: "Do you fancy dealing with that? — I\'m not terribly keen... — Oh, all right then, I\'ll do you a favour."\n\nPhân tích: Annie miễn cưỡng nhận chủ đề này → đáp án A.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi phân công chủ đề "ảnh hưởng tới nhà sản xuất nông sản".\n\nTranscript: "What about the effects on food producers... Something for you, maybe? — I don\'t mind. It should be quite interesting."\n\nPhân tích: Jack nhận làm chủ đề này → đáp án B.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi phân công chủ đề "ảnh hưởng tới các thành phố".\n\nTranscript: "I had a quick look at an economics book in the library that\'s got a chapter about this sort of thing... — Not particularly... — OK, leave it to me, then."\n\nPhân tích: Jack nhận làm chủ đề này → đáp án B.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi phân công chủ đề "vận chuyển lạnh".\n\nTranscript: "there\'s transport, and the difference that refrigerated trucks have made. I wouldn\'t mind having a go at that."\n\nPhân tích: Annie nhận làm chủ đề vận tải → đáp án A.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối hội thoại, khi phân công chủ đề "tủ lạnh gia đình".\n\nTranscript: "What about splitting it into two? You could investigate 19th- and 20th-century fridges, and I\'ll concentrate on what\'s available these days."\n\nPhân tích: Chủ đề này được chia làm hai phần, cả hai cùng làm (both Annie and Jack) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014085e01d9821f44be6',
+    title: 'How the Industrial Revolution affected life in Britain',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài.\n\nTranscript: "it was in the 19th century that the quantity and quality of people\'s possessions was used as an indication of the wealth of the country."\n\nPhân tích: Của cải người dân được dùng để đo lường sự giàu có (wealth) của đất nước → đáp án wealth.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "improvements in how goods were made as well as in technology triggered massive social changes."\n\nPhân tích: Cải tiến sản xuất và công nghệ (technology) đã làm thay đổi cuộc sống → đáp án technology.' },
+      { questionNumber: 33, explanation: 'Vị trí: Khi bàn về sản xuất.\n\nTranscript: "the Industrial Revolution couldn\'t have taken place at all if it weren\'t for these new sources of power."\n\nPhân tích: Cách mạng công nghiệp không thể xảy ra nếu thiếu các nguồn năng lượng (power) mới → đáp án power.' },
+      { questionNumber: 34, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The most advanced industry for much of the 19th century was textiles. This meant that fashionable fabrics... were made available to everyone."\n\nPhân tích: Ngành công nghiệp dẫn đầu là dệt may (textile) → đáp án textile/textiles.' },
+      { questionNumber: 35, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "enormous new machines were now being created that could produce the goods faster... So large factories were built... forcing workers to travel to work."\n\nPhân tích: Các máy móc mới (machines) khiến nhà máy cần thiết, kéo theo di dân vào thành phố → đáp án machines.' },
+      { questionNumber: 36, explanation: 'Vị trí: Khi bàn về giao thông.\n\nTranscript: "significantly, they included newspapers, which meant that thousands of people were... more knowledgeable about what was going on... could also read about what was available in the shops."\n\nPhân tích: Việc tiếp cận báo chí (newspapers) giúp người dân biết rõ hơn về hàng hóa có thể mua → đáp án newspapers.' },
+      { questionNumber: 37, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "goods could now be sold all over the country, instead of just in the local market."\n\nPhân tích: Người mua không còn giới hạn ở hàng hóa địa phương (local) → đáp án local.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi bàn về bán lẻ.\n\nTranscript: "improved lighting inside greatly increased the visibility of the goods for sale."\n\nPhân tích: Hàng hóa dễ thấy hơn trong cửa hàng nhờ ánh sáng (lighting) tốt hơn → đáp án lighting.' },
+      { questionNumber: 39, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "the use of plate glass, which made it possible for windows to be much larger than previously."\n\nPhân tích: Hàng hóa dễ thấy từ bên ngoài nhờ cửa sổ (windows) lớn hơn → đáp án windows.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối phần bán lẻ.\n\nTranscript: "now there was an explosion in advertising trying to persuade people to go shopping."\n\nPhân tích: Quảng cáo (Advertising) mang tính thuyết phục trở nên phổ biến hơn → đáp án Advertising.' },
+    ],
+  },
+];
