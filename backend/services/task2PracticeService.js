@@ -521,9 +521,14 @@ async function getProgress(userId) {
 // gate on task2-practice.html (needs practised + best score >= 70%). Only
 // 'practice' sessions with real questions count; 'exam' (Thi thử) doesn't.
 async function getTopicPracticeStats(userId, topicId) {
+  // Secondary sort by _id: completedAt defaults to Date.now(), so two
+  // attempts created within the same millisecond (routine under fast/CI
+  // test timing) tie on completedAt and Mongo's tiebreak order is
+  // undefined. _id is monotonically increasing even within a millisecond,
+  // so it reliably preserves creation order for "which one was last".
   const rows = await Task2Attempt.find({
     userId, topicId, sessionType: 'practice', totalQuestions: { $gt: 0 }
-  }).select('scorePercentage correctCount totalQuestions completedAt').sort({ completedAt: 1 }).lean();
+  }).select('scorePercentage correctCount totalQuestions completedAt').sort({ completedAt: 1, _id: 1 }).lean();
 
   if (!rows.length) {
     return { practiced: false, attempts: 0, bestScore: 0, lastScore: 0, cumulativeScore: 0 };
