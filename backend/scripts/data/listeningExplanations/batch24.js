@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014285e01d9821f44cbf',
+    title: 'Cam 17 - Test 1 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi bàn về hoạt động dọn bãi biển.\n\nTranscript: "One of the regular ones is trying to keep the beach free of litter."\n\nPhân tích: Hoạt động là dọn rác (litter) trên bãi biển → đáp án litter.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Is it OK to take dogs? — I\'m afraid not, as they\'re banned from the beach itself."\n\nPhân tích: Không được mang chó (dogs) ra bãi biển → đáp án dogs.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi bàn về khu bảo tồn thiên nhiên.\n\nTranscript: "next we\'re going to work on encouraging insects – they\'re important for the biodiversity of the reserve."\n\nPhân tích: Nhiệm vụ tiếp theo là thu hút côn trùng (insects) → đáp án insects.' },
+      { questionNumber: 4, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "we\'re also running a project to identify the different species of butterflies that visit the reserve."\n\nPhân tích: Dự án nhận diện các loài bướm (butterflies) → đáp án butterflies.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Another job we\'re doing at the reserve is replacing the wall on the southern side... It was badly damaged in a storm last month."\n\nPhân tích: Công việc là xây lại bức tường (wall) bị hư hại → đáp án wall.' },
+      { questionNumber: 6, explanation: 'Vị trí: Khi bàn về chuyến đi bộ.\n\nTranscript: "The next walk is to Ruston Island... that\'s when the sands are dry enough for us to walk to the island without getting wet."\n\nPhân tích: Đoàn sẽ đi bộ tới hòn đảo (island) → đáp án island.' },
+      { questionNumber: 7, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "make sure your boots are waterproof."\n\nPhân tích: Cần mang giày bốt (boots) chống thấm nước → đáp án boots.' },
+      { questionNumber: 8, explanation: 'Vị trí: Khi bàn về buổi làm mộc.\n\nTranscript: "Is it OK for beginners to take part? — Definitely."\n\nPhân tích: Buổi học phù hợp cho người mới bắt đầu (beginners) → đáp án beginners.' },
+      { questionNumber: 9, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "You\'ll be starting with wooden spoons."\n\nPhân tích: Người tham gia sẽ làm thìa gỗ (spoons) → đáp án spoons.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "There\'s a charge of £35, including lunch, or £40 if you want to camp in the wood."\n\nPhân tích: Chi phí không cắm trại là 35 bảng → đáp án 35/thirty five.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014385e01d9821f44ccb',
+    title: 'Boat trip round Tasmania',
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi giới thiệu về thuyền.\n\nTranscript: "if there are more than nine people on either side of the boat, we\'ll move some of you over."\n\nPhân tích: Giới hạn tối đa 9 người mỗi bên thuyền → đáp án A.' },
+      { questionNumber: 12, explanation: 'Vị trí: Khi bàn về màu sắc thuyền.\n\nTranscript: "our new ones now have these comfortable dark red seats and a light-green exterior."\n\nPhân tích: Vỏ ngoài thuyền có màu xanh nhạt (light green) → đáp án C.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về hộp cơm trưa.\n\nTranscript: "Lunchbox 2 contains a cheddar cheese roll."\n\nPhân tích: Hộp cơm số 2 (bánh phô mai) không có thịt hay cá → đáp án B.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về rác thải.\n\nTranscript: "Jess, myself or Ray, our other guide, will collect it from you after lunch."\n\nPhân tích: Nhân viên sẽ thu gom rác từ khách (hand it to a member of staff) → đáp án B.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi mô tả về ngọn hải đăng.\n\nTranscript: "It was built in 1838 to protect sailors as a number of shipwrecks had led to significant loss of life."\n\nPhân tích: Lou nhắc tới lý do xây dựng hải đăng (why it was built) → đáp án A.' },
+      { questionNumber: 16, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "These workers were mainly prison convicts until the middle of that century when ordinary families willing to live in such circumstances took over."\n\nPhân tích: Lou nhắc tới ai đã làm việc ở đó (who staffed it) → đáp án D.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi bàn về các sinh vật gần thuyền.\n\nTranscript: "When we get to the rocky area inhabited by fur seals, we\'ll stop and watch them swimming around the coast."\n\nPhân tích: Hải cẩu lông (fur seals) có thể lại gần thuyền → đáp án B.' },
+      { questionNumber: 18, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Dolphins, on the other hand, can sometimes approach on their own or in groups as they ride the waves beside us."\n\nPhân tích: Cá heo (dolphins) có thể tới gần thuyền → đáp án C.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi bàn về hang động.\n\nTranscript: "you can take a kayak into the area on another day and one of our staff will give you more information on that... we\'ll talk to you about what lies beyond."\n\nPhân tích: Nhân viên sẽ giải thích những gì bên trong hang (explain what is inside them) → đáp án D.' },
+      { questionNumber: 20, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "They can only be approached by sea."\n\nPhân tích: Hang động chỉ có thể tiếp cận bằng đường biển, không thể đi bộ tới (cannot be reached on foot) → đáp án E.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014385e01d9821f44cda',
+    title: 'Work experience for veterinary science students',
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi bàn về khó khăn tìm nơi thực tập.\n\nTranscript: "they don\'t seem to have websites, do they. I found mine through a friend of my mother\'s, but it wasn\'t easy. — ...finding the right sort of farm to apply to wasn\'t easy."\n\nPhân tích: Cả hai gặp khó khăn khi liên hệ ban đầu với nông trại (make initial contact) → đáp án A.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi Tim kể về việc giúp cừu sinh con.\n\nTranscript: "It wasn\'t a straightforward birth, but I managed. It was a great feeling to see the lamb stagger to its feet."\n\nPhân tích: Tim vui vì giúp được cừu mẹ sinh khó (a sheep that was having difficult giving birth) → đáp án B.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi Diana bàn về cừu trên trang trại của mình.\n\nTranscript: "So were they bred for their meat? — Mostly, yes."\n\nPhân tích: Cừu chủ yếu được nuôi để lấy thịt (mainly reared for their meat) → đáp án B.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về thức ăn bổ sung cho gà.\n\nTranscript: "he didn\'t give them as a matter of routine, just at times when the chickens seemed to particularly require them."\n\nPhân tích: Chỉ bổ sung khi thực sự cần thiết (only given if specially needed) → đáp án A.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi Diana kể về sai sót với bò sữa.\n\nTranscript: "I poured some milk from the wrong cow in with the milk for humans, so the whole lot had to be thrown away."\n\nPhân tích: Diana mắc lỗi khi bảo quản/trộn sữa sai (made a mistake when storing milk) → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về vai trò của bác sĩ thú y.\n\nTranscript: "some of the stuff the vets do, like minor operations, he\'d be quite capable of doing himself... My farmer said the same."\n\nPhân tích: Cả hai nông dân đều nói một số việc có thể do nông dân tự làm thay vì cần bác sĩ thú y (could be done by the farmer) → đáp án C.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về môn thuật ngữ y khoa.\n\nTranscript: "I\'d thought it\'d be hard, but actually I found it all quite straightforward."\n\nPhân tích: Tim thấy môn này dễ hơn dự kiến (found this easier than expected) → đáp án A.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về môn dinh dưỡng.\n\nTranscript: "there\'s such limited checking into whether or not it\'s contaminated... I thought that was terrible."\n\nPhân tích: Tim sốc trước điều học được ở môn này (shocked at something he learned) → đáp án E.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về môn bệnh động vật.\n\nTranscript: "scientists don\'t know much about the diseases that affect them... I thought they\'d know a lot about ways of controlling and eradicating those diseases, but that\'s not the case at all."\n\nPhân tích: Cả hai ngạc nhiên vì hiểu biết còn hạn chế về các bệnh này (surprised how little is known) → đáp án F.' },
+      { questionNumber: 30, explanation: 'Vị trí: Khi bàn về môn y học động vật hoang dã.\n\nTranscript: "I thought I might write my dissertation on something connected with that."\n\nPhân tích: Diana có thể viết luận văn về chủ đề này (may do some further study on this) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014385e01d9821f44ce7',
+    title: 'Labyrinths',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Khi so sánh mê cung và labyrinth.\n\nTranscript: "A maze is quite different as it is a kind of puzzle with an intricate network of paths."\n\nPhân tích: Mê cung (maze) là một dạng câu đố (puzzle) → đáp án puzzle.' },
+      { questionNumber: 32, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Entering a maze usually involves getting lost a few times before using logic to work out the pattern."\n\nPhân tích: Cần dùng logic (logic) để tìm đường trong mê cung → đáp án logic.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The word \'maze\' is believed to come from a Scandinavian word for a state of confusion."\n\nPhân tích: Từ "maze" bắt nguồn từ từ chỉ trạng thái bối rối (confusion) → đáp án confusion.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi bàn về ý nghĩa của labyrinth.\n\nTranscript: "Labyrinths are thought to encourage a feeling of calm and have been used as a meditation and prayer tool."\n\nPhân tích: Labyrinth được dùng trong thiền định (meditation) và cầu nguyện → đáp án meditation.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi bàn về các ví dụ sớm nhất.\n\nTranscript: "The earliest examples of the labyrinth spiral pattern have been found carved into stone."\n\nPhân tích: Hình xoắn ốc được khắc trên đá (stone) → đáp án stone.' },
+      { questionNumber: 36, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "In Ancient Greece, the labyrinth spiral was used on coins around four thousand years ago."\n\nPhân tích: Người Hy Lạp cổ dùng hình xoắn ốc trên đồng xu (coins) → đáp án coins.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi bàn về labyrinth để đi bộ.\n\nTranscript: "the largest one at Saffron Walden, England, which used to have a large tree in the middle of it."\n\nPhân tích: Labyrinth lớn nhất từng có một cây lớn (tree) ở giữa → đáp án tree.' },
+      { questionNumber: 38, explanation: 'Vị trí: Khi bàn về lợi ích hiện đại.\n\nTranscript: "which include slower breathing and a restored sense of balance and perspective."\n\nPhân tích: Đi labyrinth giúp làm chậm nhịp thở (breathing) → đáp án breathing.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về bệnh viện.\n\nTranscript: "patients who can\'t walk can have a paper \'finger labyrinth\' brought to their bed."\n\nPhân tích: Labyrinth ngón tay được làm từ giấy (paper) → đáp án paper.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "one study found that walking a labyrinth provided \'short-term calming, relaxation, and relief from anxiety\' for Alzheimer\'s patients."\n\nPhân tích: Bệnh nhân Alzheimer giảm bớt lo âu (anxiety) → đáp án anxiety.' },
+    ],
+  },
+];
