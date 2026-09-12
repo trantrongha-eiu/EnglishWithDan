@@ -49,9 +49,10 @@ const { escapeRegex } = require('../utils/strings');
 // A homework item is "hoàn thành" only once the student clears this % — for
 // resource types that HAVE a clean score/total (quiz-style: reading/listening
 // tests & practice, dictation, task2, grammar, vocabulary lessons). AI/band-
-// graded skills (writing_exam, speaking, mock_test — IELTS band 0–9, not a
-// %) have no `scoreGate` below and keep the old "submitted = done" rule; a
-// 70%-of-9 cutoff would be an arbitrary, undiscussed pass mark for those.
+// graded skills (writing_exam, mock_test — IELTS band 0–9, not a %) have no
+// `scoreGate` below and keep the old "submitted = done" rule; a 70%-of-9
+// cutoff would be an arbitrary, undiscussed pass mark for those. `speaking`
+// uses `bandGate` instead (see MIN_SPEAKING_BAND) since it has a real band.
 const PASS_PERCENT = 70;
 
 // Writing tasks have no score to gate on, but DO have a real pass/fail bar
@@ -60,6 +61,12 @@ const PASS_PERCENT = 70;
 // Fixed site-wide minimums (not stored per-prompt on WritingTask1/2 — their
 // `instructions` field is free text) matching the standard IELTS requirement.
 const MIN_WORDS = { task1: 150, task2: 250 };
+
+// Speaking is AI-graded on the real IELTS 0–9 band scale (SpeakingAttempt.
+// aiFeedback.overallBand), so unlike writing_exam/mock_test it CAN gate on a
+// real pass bar instead of "submitted = done": a recording that's just
+// silence/gibberish still gets analyzed and shouldn't count as "hoàn thành".
+const MIN_SPEAKING_BAND = 5;
 
 const REGISTRY = {
   reading_test: {
@@ -157,6 +164,13 @@ const REGISTRY = {
     catalog: { model: SpeakingQuestion, filter: { isActive: true }, sort: { part: 1, createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: `Part ${d.part}: ${String(d.question || '').slice(0, 70)}`, meta: d.topic || '' }) },
     attempt: { model: SpeakingAttempt, userField: 'userId', idField: 'questionId', filter: {} },
+    // "Hoàn thành" requires the AI grading to have actually finished AND
+    // scored at least MIN_SPEAKING_BAND — a 'pending'/'error' attempt (still
+    // grading, or the AI call failed) or a low-band recording doesn't count.
+    bandGate: {
+      fields: 'status aiFeedback.overallBand',
+      ok: (d) => d.status === 'analyzed' && Number(d?.aiFeedback?.overallBand || 0) >= MIN_SPEAKING_BAND,
+    },
   },
   grammar: {
     label: 'Essential Grammar',
@@ -393,8 +407,10 @@ async function checkCompleted(studentId, internalItems, since = null) {
     if (!ids.length) return;
     const gate = entry.scoreGate;
     const wcGate = entry.wordCountGate;
+    const bandGate = entry.bandGate;
+    const boolGate = wcGate || bandGate; // same "ok(r) -> pass/fail" shape as wordCountGate
     const cov = entry.coverage;
-    const extraFields = gate ? gate.fields : (wcGate ? wcGate.fields : '');
+    const extraFields = gate ? gate.fields : (boolGate ? boolGate.fields : '');
     const select = `_id createdAt ${A.idField}`
       + (extraFields ? ` ${extraFields}` : '')
       + (cov && !(extraFields || '').includes(cov.field) ? ` ${cov.field}` : '');
@@ -404,16 +420,16 @@ async function checkCompleted(studentId, internalItems, since = null) {
       .lean()
       .catch(() => []);
 
-    if (wcGate) {
-      // Writing tasks: "hoàn thành" means at least one submission since
-      // `since` actually met the real minimum word count — not just any
-      // submission (see wordCountGate's comment). rows is newest-first, so
-      // absent a passing one, the most recent still-short attempt is kept
+    if (boolGate) {
+      // Writing tasks (wordCountGate) / speaking (bandGate): "hoàn thành"
+      // means at least one submission since `since` actually cleared the
+      // real bar — not just any submission. rows is newest-first, so absent
+      // a passing one, the most recent still-failing attempt is kept
       // (completed: false) purely for completedAt/attemptId display.
       const bestByKey = new Map();
       for (const r of rows) {
         const k = resourceKey(type, r[A.idField]);
-        const passes = wcGate.ok(r);
+        const passes = boolGate.ok(r);
         const prev = bestByKey.get(k);
         if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
       }

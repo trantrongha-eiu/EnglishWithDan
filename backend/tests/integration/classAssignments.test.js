@@ -6,7 +6,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion } = require('../factories/contentFactory');
+const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion, createSpeakingAttempt } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
@@ -531,6 +531,33 @@ describe('completion tracking', () => {
     expect(row.done).toBe(0);
 
     await WritingAttempt.create({ userId: s._id, examId: exam._id, examName: exam.name, wordCount1: 160, wordCount2: 260 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.status).toBe('completed');
+  });
+
+  test('speaking requires the AI grading to have finished AND scored at least band 5 — a low band or still-pending attempt does not count', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const q = await createSpeakingQuestion({ part: 1, topic: 'Hobbies', question: 'Do you have a hobby?' });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'speaking', resourceId: q._id }] });
+
+    // Below band 5 — must not count even though it's fully graded.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, aiFeedback: { overallBand: 4 } } });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+
+    // Still grading (pending) with a band already on record (e.g. a retry
+    // reusing the row) must not count until status flips to 'analyzed'.
+    await createSpeakingAttempt({ userId: s._id, status: 'pending', extra: { questionId: q._id, aiFeedback: { overallBand: 9 } } });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+
+    // Analyzed and >= band 5 — counts.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, aiFeedback: { overallBand: 5 } } });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.status).toBe('completed');
