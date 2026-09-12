@@ -334,6 +334,30 @@ button:focus-visible {
 .part-tab:hover { color: #e53935; }
 .part-tab.active { color: #e53935; border-bottom-color: #e53935; }
 
+/* Group filter — tappable pills, not a dropdown (see speaking.html's
+   comment on #group-tabs): every one of the 7 cue-card groups is visible
+   and one tap away instead of hidden behind an opened <select>. */
+.group-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.group-pill {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.group-pill:hover { border-color: #e53935; color: #e53935; }
+.group-pill.active { background: #e53935; border-color: #e53935; color: #fff; }
+
 .sidebar-section {
   padding: 14px 16px;
   border-bottom: 1px solid #f0f0f0;
@@ -1815,6 +1839,8 @@ button:focus-visible {
 [data-theme="dark"] .practice-sidebar      { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .part-tab              { color: #9ca3af; }
 [data-theme="dark"] .part-tab.active       { color: #e53935; }
+[data-theme="dark"] .group-pill            { background: #111827; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .group-pill.active     { background: #e53935; border-color: #e53935; color: #fff; }
 [data-theme="dark"] .sidebar-section       { border-color: #374151; }
 [data-theme="dark"] .sidebar-label         { color: #6b7280; }
 [data-theme="dark"] .sp-select             { background: #111827; color: #f9fafb; border-color: #374151; }

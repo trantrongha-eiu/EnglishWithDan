@@ -382,19 +382,36 @@ function onTopicFilterChange() {
   syncUrlState();
 }
 
-// ── Group filter (Part 2/3 only) — narrows #sel-topic to the chosen group's
-// topics, then reloads questions the same way changing the topic would. ──
-function onGroupFilterChange() {
-  state.groupFilter = document.getElementById('sel-group').value;
-  const group = state.groups.find(g => (g.code == null ? '__ungrouped__' : g.code) === state.groupFilter);
+// ── Group filter (Part 2/3 only) — tappable pills (see speaking.html's
+// comment on #group-tabs), not a <select>. Selecting one narrows #sel-topic
+// to that group's topics, then reloads questions the same way changing the
+// topic would. `code` is the raw button value: a real group code, or
+// '__ungrouped__' for the trailing "Khác" bucket, or 'all'.
+function selectGroupTab(code) {
+  state.groupFilter = code;
+  document.querySelectorAll('#group-tabs .group-pill').forEach(b => b.classList.toggle('active', b.dataset.code === code));
+  const group = state.groups.find(g => (g.code == null ? '__ungrouped__' : g.code) === code);
   populateTopicSelect(group ? group.topics : state.groups.flatMap(g => g.topics), 'all');
   loadQuestions();
   syncUrlState();
 }
 
+// Renders the "Nhóm chủ đề" pill row into #group-tabs from state.groups —
+// every group is one tap away instead of hidden inside an opened dropdown.
+function renderGroupTabs() {
+  const box = document.getElementById('group-tabs');
+  if (!box) return;
+  const pill = (code, label) => `<button type="button" class="group-pill${code === state.groupFilter ? ' active' : ''}" data-code="${code}">${escHtml(label)}</button>`;
+  box.innerHTML = pill('all', 'Tất cả') +
+    state.groups.map(g => pill(g.code == null ? '__ungrouped__' : g.code, g.label)).join('');
+  box.querySelectorAll('.group-pill').forEach(btn => {
+    btn.addEventListener('click', () => selectGroupTab(btn.dataset.code));
+  });
+}
+
 // Fills #sel-topic with the given topic list (sorted already by the caller),
 // selecting `prev` if it's still one of the options. Shared by loadTopics()
-// (full list for the part) and onGroupFilterChange() (one group's subset).
+// (full list for the part) and selectGroupTab() (one group's subset).
 function populateTopicSelect(topics, prev) {
   const sel = document.getElementById('sel-topic');
   sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
@@ -412,16 +429,7 @@ async function loadTopics() {
     const qs = state.partFilter !== 'all' ? `?part=${state.partFilter}` : '';
     const data = await apiFetch(`/api/speaking/topics${qs}`);
     state.groups = data.groups || [];
-    const groupSel = document.getElementById('sel-group');
-    if (groupSel) {
-      groupSel.innerHTML = '<option value="all">Tất cả nhóm</option>';
-      state.groups.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.code == null ? '__ungrouped__' : g.code;
-        opt.textContent = g.label;
-        groupSel.appendChild(opt);
-      });
-    }
+    renderGroupTabs();
     // A pending topic from the URL (first load only, cleared right after
     // use) takes priority over preserving whatever was previously selected;
     // only applied if it's actually a real topic for this part.
@@ -526,7 +534,7 @@ async function loadQuestions() {
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   // '__ungrouped__' (the trailing "Khác" bucket) has no clean server-side
   // filter value — #sel-topic is already narrowed to just that bucket's
-  // topics above (onGroupFilterChange), so it's a no-op to skip here.
+  // topics above (selectGroupTab), so it's a no-op to skip here.
   else if (state.groupFilter !== 'all' && state.groupFilter !== '__ungrouped__') params.push(`group=${encodeURIComponent(state.groupFilter)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 

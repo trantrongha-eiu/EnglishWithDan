@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="css/components.css?v=20260831" />
-  <link rel="stylesheet" href="speaking.css?v=20260831" />
+  <link rel="stylesheet" href="speaking.css?v=20260913grpui" />
   <link rel="stylesheet" href="css/pdf-viewer.css?v=20260831" />
   <link rel="stylesheet" href="css/mobile.css?v=20260910inbox" />
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925" />
@@ -190,12 +190,14 @@
            Speaking textbook (same taxonomy the paid Speaking course teaches
            — see backend/services/speakingService.js's SPEAKING_GROUPS).
            Hidden for Part 1, whose everyday small-talk topics don't fit
-           this "describe a X" monologue scheme. -->
+           this "describe a X" monologue scheme. Rendered as tappable pill
+           buttons (renderGroupTabs() in js/speaking.js), not a <select> —
+           every group is visible and one tap away, matching the reference
+           UI this was modeled on instead of hiding the choice behind a
+           dropdown the student has to open first. -->
       <div class="sidebar-section" id="sidebar-group-section" style="display:none">
         <label class="sidebar-label">Nhóm chủ đề</label>
-        <select class="sp-select full-width" id="sel-group" onchange="onGroupFilterChange()">
-          <option value="all">Tất cả nhóm</option>
-        </select>
+        <div class="group-tabs" id="group-tabs"></div>
       </div>
 
       <!-- Topic filter -->
@@ -777,6 +779,6 @@
 <script src="js/speaking-timer.js?v=20260915"></script>
 <script src="js/speaking-audio-store.js?v=20260831"></script>
 <script src="js/speaking-tips.js?v=20260831"></script>
-<script src="js/speaking.js?v=20260929spkaudio"></script>
+<script src="js/speaking.js?v=20260913grpui"></script>
 </body>
 </html>
