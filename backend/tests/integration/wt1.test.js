@@ -108,6 +108,12 @@ describe('GET /lesson/:code', () => {
     // word-by-word typing drill needs the target client-side.
     const st = res.body.exercises.find((e) => e.code === 'ST1');
     expect(st.items[0].translationAnswer).toBe('The number of cars was five million.');
+    // gap_fill's drag-drop word bank is Speaking-course-only (typing is fine
+    // for a Writing Task 1 drill) — this course must not get it, or leak the
+    // blanks' accept[] answer key another way.
+    const gap = res.body.exercises.find((e) => e.code === 'GAP1');
+    expect(gap.gapBank).toBeUndefined();
+    expect(gap.items[0].blanks).toBeUndefined();
   });
 });
 

@@ -41,7 +41,13 @@ function shuffle(arr) {
 }
 
 // Strip everything that would leak the answer key before submission.
-function sanitizeExercise(ex) {
+// `courseCode` only matters for gap_fill: the Speaking course renders it as
+// drag-and-drop from a word bank instead of free typing (typing the correct
+// spelling is an unrelated barrier for a drill about picking the right
+// linking word/filler), which needs the exercise's correct answers sent up
+// front the same way `matching`'s rightOptions already are below. Every
+// other course keeps free typing.
+function sanitizeExercise(ex, courseCode) {
   const rubric = ex.rubric
     ? {
       minWords: ex.rubric.minWords, maxWords: ex.rubric.maxWords,
@@ -107,6 +113,11 @@ function sanitizeExercise(ex) {
   };
   if (ex.type === 'matching') {
     out.rightOptions = shuffle((ex.items || []).map((it) => it.right).filter(Boolean));
+  }
+  // One chip per blank across the whole exercise (not deduped — two blanks
+  // that both want "and" need two chips or the drag-drop is unsolvable).
+  if (ex.type === 'gap_fill' && courseCode === 'IELTS-SPEAKING') {
+    out.gapBank = shuffle((ex.items || []).flatMap((it) => (it.blanks || []).map((b) => (b.accept || [])[0] || '')).filter(Boolean));
   }
   return out;
 }
@@ -212,6 +223,10 @@ async function getLesson(code, userId) {
     .select('exerciseCode score maxScore aiFeedback status createdAt').sort({ createdAt: -1 }).lean();
   const lastByCode = {};
   for (const s of subs) if (!lastByCode[s.exerciseCode]) lastByCode[s.exerciseCode] = s;
+  // Needed only to gate gap_fill's drag-drop word bank (Speaking course) vs
+  // free typing (every other course) in sanitizeExercise — see COURSES above.
+  const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('courseCode').lean();
+  const courseCode = (mod && mod.courseCode) || COURSE_CODE;
 
   return {
     lesson: {
@@ -221,7 +236,7 @@ async function getLesson(code, userId) {
       totalPoints: lesson.totalPoints,
     },
     exercises: exercises.map((ex) => {
-      const s = sanitizeExercise(ex);
+      const s = sanitizeExercise(ex, courseCode);
       const last = lastByCode[ex.code];
       s.lastAttempt = last ? { score: last.score ?? null, hasAi: !!last.aiFeedback, at: last.createdAt } : null;
       return s;

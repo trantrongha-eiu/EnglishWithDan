@@ -130,6 +130,10 @@
     .t1-drop.over { border-color:#f43f5e; border-style:solid; background:#fff1f2; }
     [data-theme="dark"] .t1-drop.over { background:#3f1424; }
     .t1-drop:empty::before { content:attr(data-ph); color:#b8c0cc; font-size:12px; padding:0 4px; }
+    /* gap_fill drag-drop (Speaking course): blanks sit inline inside the
+       sentence text, not as a full-width block like other .t1-drop zones. */
+    .t1-gap-drop { display:inline-flex; min-width:84px; min-height:1px; vertical-align:middle; margin:0 3px; padding:3px 6px; }
+    .t1-gap-drop .t1-chip { cursor:grab; padding:4px 10px; }
 
     /* matching — two columns */
     .t1-match { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,220px); gap:14px; margin-top:4px; align-items:start; }
@@ -561,8 +565,20 @@
         try { r.start(); this.rec = r; } catch (e) { /* noop */ }
       }
     },
+    // Returns a Promise that resolves once the recorded audio is actually
+    // ready in this.chunks. MediaRecorder.stop() is asynchronous — its
+    // buffered audio only lands via 'dataavailable' right before the 'stop'
+    // event fires, both AFTER stop() returns. blob() used to be called
+    // synchronously on the very next line in submit(), so this.chunks was
+    // always still empty at that point — the real recording was silently
+    // dropped every single time (never a timing coincidence), submit()
+    // fell back to the transcript-only path, and if speech-to-text hadn't
+    // caught anything either the AI graded an effectively empty answer.
+    // Callers that don't care about the blob (mic click, reset, teardown)
+    // can still call this without awaiting — every synchronous UI update
+    // below still happens immediately, only the returned Promise is async.
     stop: function () {
-      if (!this.recording && !this.rec && !this.mr) return;
+      if (!this.recording && !this.rec && !this.mr) return Promise.resolve();
       this.recording = false;
       var mic = document.getElementById('sc-mic');
       var lab = document.getElementById('sc-mic-label');
@@ -574,12 +590,25 @@
       if (redo) redo.hidden = false;
       if (this.tick) { clearInterval(this.tick); this.tick = null; }
       if (this.rec) { try { this.rec.stop(); } catch (e) { /* noop */ } this.rec = null; }
-      if (this.mr && this.mr.state !== 'inactive') { try { this.mr.stop(); } catch (e) { /* noop */ } }
+      var mr = this.mr, donePromise = Promise.resolve();
+      if (mr && mr.state !== 'inactive') {
+        donePromise = new Promise(function (resolve) {
+          var settled = false;
+          var finish = function () { if (settled) return; settled = true; clearTimeout(to); resolve(); };
+          // Safety net — if 'stop' never fires (rare browser bug), don't
+          // hang submit() forever; blob() just returns whatever was queued.
+          var to = setTimeout(finish, 1500);
+          mr.addEventListener('stop', finish, { once: true });
+          try { mr.stop(); } catch (e) { finish(); }
+        });
+      }
       if (this.stream) { this.stream.getTracks().forEach(function (t) { t.stop(); }); this.stream = null; }
+      return donePromise;
     },
     elapsed: function () { return this.t0 ? Math.round((Date.now() - this.t0) / 1000) : 0; },
-    // The recorded audio Blob (once stop() has run), or null. Sent to the
-    // server so Gemini grades Pronunciation from the real recording.
+    // The recorded audio Blob, or null. Sent to the server so Gemini grades
+    // Pronunciation from the real recording. Only reliable after the Promise
+    // from stop() has resolved — see its comment.
     blob: function () {
       if (!this.chunks || !this.chunks.length) return null;
       try { return new Blob(this.chunks, { type: this.chunks[0].type || 'audio/webm' }); }
@@ -748,6 +777,27 @@
       }).join('');
     }
     if (t === 'gap_fill') {
+      // Drag-and-drop word bank (server sends ex.gapBank — see
+      // wt1Service.sanitizeExercise) instead of free typing: correct
+      // spelling isn't the point of a linking-word/filler drill, and typing
+      // it from memory was an unrelated barrier for Speaking students. Every
+      // other course still gets no gapBank and falls through to plain
+      // inputs below.
+      if (ex.gapBank && ex.gapBank.length) {
+        var chips = ex.gapBank.map(function (w, i) {
+          return '<div class="t1-chip" data-val="' + esc(w) + '" data-ci="' + i + '">' + esc(w) + '</div>';
+        }).join('');
+        var dndBody = ex.items.map(function (it) {
+          var n = 0;
+          var html = esc(it.prompt).replace(/____/g, function () {
+            var k = n++;
+            return '<span class="t1-drop t1-gap-drop" data-item="' + esc(it.id) + '" data-k="' + k + '" data-ph="?"></span>';
+          });
+          return '<div class="t1-item"><div class="q">' + html + '</div></div>';
+        }).join('');
+        return '<div class="t1-cat-pool t1-gap-pool" id="t1-gap-pool"><span class="pl">Kéo từ vào đúng chỗ trống</span>' + chips + '</div>' +
+          dndBody + '<button type="button" class="t1-reset" id="t1-reset">↺ Xếp lại</button>';
+      }
       return ex.items.map(function (it) {
         var n = 0;
         var html = esc(it.prompt).replace(/____/g, function () { n++; return '<input class="t1-gap-inp" data-item="' + it.id + '" data-k="' + (n - 1) + '">'; });
@@ -919,6 +969,23 @@
         document.querySelectorAll('#t1-body .t1-bucket .t1-chip').forEach(function (c) { c.classList.remove('placed'); catPool.appendChild(c); });
       });
     }
+    // gap_fill (Speaking course only — see renderItemBody): drag a word-bank
+    // chip into a blank, one chip per blank, evicting whatever was there.
+    if (ex.type === 'gap_fill' && ex.gapBank && ex.gapBank.length) {
+      var gpool = document.getElementById('t1-gap-pool');
+      document.querySelectorAll('#t1-body .t1-chip').forEach(function (chip) {
+        Dnd.bind(chip, '.t1-gap-drop,.t1-gap-pool', function (el, zone) {
+          if (zone.classList.contains('t1-gap-pool')) { el.classList.remove('placed'); gpool.appendChild(el); return; }
+          var prev = zone.querySelector('.t1-chip');
+          if (prev && prev !== el) { prev.classList.remove('placed'); gpool.appendChild(prev); }
+          el.classList.add('placed'); zone.appendChild(el);
+        });
+      });
+      var gr = document.getElementById('t1-reset');
+      if (gr) gr.addEventListener('click', function () {
+        document.querySelectorAll('#t1-body .t1-gap-drop .t1-chip').forEach(function (c) { c.classList.remove('placed'); gpool.appendChild(c); });
+      });
+    }
     // matching: drag an answer chip from the right pool onto a left row
     if (ex.type === 'matching') {
       var rpool = document.getElementById('t1-right-pool');
@@ -1008,7 +1075,14 @@
     var t = ex.type, ans = {};
     if (t === 'mcq') ex.items.forEach(function (it) { var c = document.querySelector('input[name="mc-' + it.id + '"]:checked'); ans[it.id] = c ? c.value : null; });
     else if (t === 'gap_fill') ex.items.forEach(function (it) {
-      var arr = []; document.querySelectorAll('.t1-gap-inp[data-item="' + it.id + '"]').forEach(function (i) { arr[+i.dataset.k] = i.value.trim(); });
+      var arr = [];
+      if (ex.gapBank && ex.gapBank.length) {
+        document.querySelectorAll('.t1-gap-drop[data-item="' + it.id + '"]').forEach(function (z) {
+          var chip = z.querySelector('.t1-chip'); arr[+z.dataset.k] = chip ? chip.dataset.val : '';
+        });
+      } else {
+        document.querySelectorAll('.t1-gap-inp[data-item="' + it.id + '"]').forEach(function (i) { arr[+i.dataset.k] = i.value.trim(); });
+      }
       ans[it.id] = arr;
     });
     else if (t === 'error_correction' || t === 'word_form' || t === 'sentence_transform') ex.items.forEach(function (it) {
@@ -1038,7 +1112,9 @@
     var fb = document.getElementById('t1-fb');
 
     if (isSpeaking(ex)) {
-      if (SpeakingRec.recording) SpeakingRec.stop();
+      // Must await — see SpeakingRec.stop()'s comment: reading blob() before
+      // the MediaRecorder's 'stop' event fires always returns null.
+      if (SpeakingRec.recording) await SpeakingRec.stop();
       var ta = document.getElementById('sc-transcript');
       var transcript = ta ? ta.value.trim() : '';
       var _scBlob = SpeakingRec.blob();
@@ -1155,9 +1231,13 @@
     fb.className = 't1-fb';
     fb.innerHTML = '<div class="t1-fb-score">' + r.score + '%</div>' +
       '<div style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px">' + r.correctCount + ' / ' + r.maxScore + ' câu đúng</div>' + rows +
-      '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+      '<div style="display:flex;gap:8px;margin-top:12px">' +
+        '<button class="t1-btn" id="t1-retry" style="flex:none"><i class="fas fa-rotate-left"></i> Làm lại</button>' +
+        '<button class="t1-next" id="t1-next" style="flex:1;margin-top:0">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>' +
+      '</div>';
     fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     document.getElementById('t1-next').addEventListener('click', nextExercise);
+    document.getElementById('t1-retry').addEventListener('click', retryExercise);
   }
 
   function showWritingFeedback(d) {
@@ -1187,9 +1267,13 @@
     }
     if (d.sampleAnswer) body += '<details class="t1-key" style="margin-top:10px"><summary>Xem bài mẫu</summary><div style="font-size:13px;line-height:1.7;margin-top:6px;white-space:pre-wrap">' + esc(d.sampleAnswer) + '</div></details>';
     fb.className = 't1-fb';
-    fb.innerHTML = body + '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+    fb.innerHTML = body + '<div style="display:flex;gap:8px;margin-top:12px">' +
+        '<button class="t1-btn" id="t1-retry" style="flex:none"><i class="fas fa-rotate-left"></i> Làm lại</button>' +
+        '<button class="t1-next" id="t1-next" style="flex:1;margin-top:0">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>' +
+      '</div>';
     fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     document.getElementById('t1-next').addEventListener('click', nextExercise);
+    document.getElementById('t1-retry').addEventListener('click', retryExercise);
   }
   function band(l, n) { return '<div class="t1-band"><div class="n">' + (n != null ? n : '–') + '</div><div class="l">' + l + '</div></div>'; }
 
@@ -1243,9 +1327,13 @@
         ? '<details class="scf-model"><summary>Xem bài mẫu Band 7/8</summary><div class="body">' + esc(ex.rubric.sampleAnswer) + '</div></details>'
         : '');
     fb.className = 't1-fb';
-    fb.innerHTML = body + '<button class="t1-next" id="t1-next">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>';
+    fb.innerHTML = body + '<div style="display:flex;gap:8px;margin-top:12px">' +
+        '<button class="t1-btn" id="t1-retry" style="flex:none"><i class="fas fa-rotate-left"></i> Làm lại</button>' +
+        '<button class="t1-next" id="t1-next" style="flex:1;margin-top:0">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>' +
+      '</div>';
     fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     document.getElementById('t1-next').addEventListener('click', nextExercise);
+    document.getElementById('t1-retry').addEventListener('click', retryExercise);
   }
   function scfSec(title, arr, icon) {
     var items = (arr || []).map(scStr).filter(Boolean);
@@ -1260,6 +1348,12 @@
     history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', 'speaking-course.html?lesson=' + state.lesson.code + '&ex=' + curEx().code);
     render();
   }
+  // "Làm lại" on the feedback screen — redo the SAME exercise right away
+  // instead of forcing a student who scored low back through the whole
+  // lesson's "Làm lại buổi này" reset (finishLesson's onRetry/#t1-again).
+  // render() rebuilds #t1-body from scratch for curEx(), so this alone
+  // clears every blank/answer; state.exIdx is untouched.
+  function retryExercise() { render(); }
   function goToLesson() {
     stopTimer(); state.view = 'lesson';
     history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', 'speaking-course.html?lesson=' + state.lesson.code);

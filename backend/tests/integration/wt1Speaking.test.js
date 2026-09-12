@@ -44,6 +44,11 @@ async function seedSpeakingCourse() {
       autoGrade: false, speakingPart: 1,
       items: [{ id: 's1', prompt: 'Do you like cooking?' }],
       rubric: { checklist: ['O.R.E.'], sampleAnswer: 'Yes, definitely. I find cooking therapeutic...', commonErrors: ['Trả lời cụt'] } },
+    { code: 'SPKT-L1-E3', lessonCode: 'SPKT-L1', order: 3, type: 'gap_fill', title: 'Điền chỗ trống', published: true, autoGrade: true,
+      items: [
+        { id: 'g1', prompt: 'I prefer studying alone ____ it helps me concentrate better.', blanks: [{ accept: ['because'] }] },
+        { id: 'g2', prompt: '____ example, I can finish my homework faster.', blanks: [{ accept: ['For'] }] },
+      ] },
   ]);
 }
 
@@ -70,6 +75,21 @@ describe('Speaking course on the WT1 stack', () => {
     expect(ex.speakingPart).toBe(1);
     expect(ex.rubric.sampleAnswer).toMatch(/therapeutic/);
     expect(ex.rubric.commonErrors).toContain('Trả lời cụt');
+  });
+
+  test('gap_fill in the Speaking course ships a shuffled gapBank (one chip per blank) instead of free typing, and grading is unaffected', async () => {
+    const u = await createPremiumStudent();
+    const res = await request(app).get('/api/wt1/lesson/SPKT-L1').set(bearer(u));
+    const ex = res.body.exercises.find((e) => e.code === 'SPKT-L1-E3');
+    expect(ex.gapBank.sort()).toEqual(['For', 'because']);
+    // the answer key itself is still gone from the item, same as every
+    // other objective type — only the pooled/shuffled gapBank carries it.
+    expect(ex.items[0].blanks).toBeUndefined();
+
+    const ok = await request(app).post('/api/wt1/check').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E3', answers: { g1: ['because'], g2: ['For'] } });
+    expect(ok.status).toBe(200);
+    expect(ok.body.score).toBe(100);
   });
 
   test('submit-speaking bands the transcript, records a submission, and counts toward the gate', async () => {
