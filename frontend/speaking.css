@@ -2011,6 +2011,18 @@ button:focus-visible {
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
   }
+  /* The 7 group pills wrapping to 3-4 rows ate most of the sidebar's
+     capped 320px height on mobile, leaving the actual question list
+     barely visible below it (reported as "can't see the questions at
+     all"). One horizontally-scrollable row keeps the same footprint the
+     single-line <select> it replaced had. */
+  .group-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .group-pill { flex-shrink: 0; }
   .practice-main {
     overflow: visible;
     padding: 20px 16px;
