@@ -70,6 +70,8 @@ const state = {
   groupFilter:      'all', // Part 2/3 only — one of speakingService.SPEAKING_GROUPS' codes, or 'all'
   groups:           [],    // last /api/speaking/topics response's `groups` (part 2/3 only)
   hideAnswered:     false, // "Ẩn câu đã trả lời" toggle — client-side view filter, doesn't touch lastQuestionList
+  selectedTopic:    'all', // which topic's .tc-card is scrolled-to/highlighted — a jump target, not a filter (see scrollToTopicCard())
+  seqTopicQueue:    [],    // set by openTopicPreviewModalFor(), read by startSequentialSession()
   _analyzing:       false,
   materialFilter:   { quarter: 'all', topic: 'all' },
   _pendingTopicFromUrl: null,
@@ -356,8 +358,7 @@ function syncUrlState() {
   const url = new URL(location.href);
   url.searchParams.set('tab', 'practice');
   url.searchParams.set('part', state.partFilter);
-  const topic = document.getElementById('sel-topic')?.value;
-  if (topic && topic !== 'all') url.searchParams.set('topic', topic);
+  if (state.selectedTopic && state.selectedTopic !== 'all') url.searchParams.set('topic', state.selectedTopic);
   else url.searchParams.delete('topic');
   history.replaceState(null, '', url);
 }
@@ -366,32 +367,24 @@ function syncUrlState() {
 async function setPartFilter(part, el) {
   state.partFilter = part;
   state.groupFilter = 'all'; // groups are part-specific — a stale group from the other part makes no sense
+  state.selectedTopic = 'all';
   document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
   const groupSection = document.getElementById('sidebar-group-section');
   if (groupSection) groupSection.style.display = (part === '2' || part === '3') ? 'block' : 'none';
-  // Awaited so syncUrlState() below reads #sel-topic's settled value —
-  // loadTopics() repopulates (and can reset) it asynchronously.
   await loadTopics();
   syncUrlState();
 }
 
-// ── Topic filter (wraps loadQuestions() so #sel-topic's onchange also syncs the URL) ──
-function onTopicFilterChange() {
-  loadQuestions();
-  syncUrlState();
-}
-
 // ── Group filter (Part 2/3 only) — tappable pills (see speaking.html's
-// comment on #group-tabs), not a <select>. Selecting one narrows #sel-topic
-// to that group's topics, then reloads questions the same way changing the
-// topic would. `code` is the raw button value: a real group code, or
-// '__ungrouped__' for the trailing "Khác" bucket, or 'all'.
+// comment on #group-tabs), not a <select>. `code` is the raw button value:
+// a real group code, or '__ungrouped__' for the trailing "Khác" bucket, or
+// 'all'. Reloads the full question set for the new group and resets which
+// topic is scrolled-to/highlighted — a topic from the old group makes no sense.
 function selectGroupTab(code) {
   state.groupFilter = code;
+  state.selectedTopic = 'all';
   document.querySelectorAll('#group-tabs .group-pill').forEach(b => b.classList.toggle('active', b.dataset.code === code));
-  const group = state.groups.find(g => (g.code == null ? '__ungrouped__' : g.code) === code);
-  populateTopicSelect(group ? group.topics : state.groups.flatMap(g => g.topics), 'all');
   loadQuestions();
   syncUrlState();
 }
@@ -409,20 +402,6 @@ function renderGroupTabs() {
   });
 }
 
-// Fills #sel-topic with the given topic list (sorted already by the caller),
-// selecting `prev` if it's still one of the options. Shared by loadTopics()
-// (full list for the part) and selectGroupTab() (one group's subset).
-function populateTopicSelect(topics, prev) {
-  const sel = document.getElementById('sel-topic');
-  sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
-  topics.forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t; opt.textContent = t;
-    if (t === prev) opt.selected = true;
-    sel.appendChild(opt);
-  });
-}
-
 // ── Topics ──
 async function loadTopics() {
   try {
@@ -430,129 +409,149 @@ async function loadTopics() {
     const data = await apiFetch(`/api/speaking/topics${qs}`);
     state.groups = data.groups || [];
     renderGroupTabs();
-    // A pending topic from the URL (first load only, cleared right after
-    // use) takes priority over preserving whatever was previously selected;
-    // only applied if it's actually a real topic for this part.
-    const pending = state._pendingTopicFromUrl;
-    state._pendingTopicFromUrl = null;
-    const prev = pending || document.getElementById('sel-topic').value;
-    populateTopicSelect(data.topics || [], prev);
   } catch (e) {
     console.error('loadTopics:', e);
   }
   await loadQuestions();
+  // A pending topic from the URL (first load only) scrolls to that topic's
+  // card once the feed has actually rendered — silently ignored if it
+  // doesn't exist in this part/group (e.g. a stale/bad link).
+  const pending = state._pendingTopicFromUrl;
+  state._pendingTopicFromUrl = null;
+  if (pending) scrollToTopicCard(pending);
 }
 
 // ── Questions ──
-function appendQuestionItem(container, q) {
-  const item = document.createElement('div');
-  item.className = 'question-item';
-  item.dataset.id = q._id;
-  item.dataset.q  = JSON.stringify(q);
-
-  const badgeClass = `p${q.part}`;
-  item.innerHTML = `
-    <div class="q-item-meta">
-      <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
-      ${q.attempted ? '<span class="q-item-attempted-badge" title="Bạn đã luyện câu này rồi — bấm để làm lại"><i class="fas fa-check-circle"></i> Đã luyện · Làm lại</span>' : ''}
-    </div>
-    <div class="q-item-text">${escHtml(q.question)}</div>`;
-  item.onclick = () => selectQuestion(q, item);
-  container.appendChild(item);
+// Turns an arbitrary topic string into a safe DOM id for #topic-feed's
+// per-card anchors (scrollToTopicCard()) — topics are free text and can
+// contain spaces/punctuation/diacritics.
+function topicSlug(topic) {
+  return 'tc-' + String(topic).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
-function renderTopicBox(list, topic, questions) {
-  const box = document.createElement('div');
-  box.className = 'q-topic-group';
-  box.innerHTML = `<div class="q-topic-group-header">${escHtml(topic)}</div>`;
-  list.appendChild(box);
-  questions.forEach(q => appendQuestionItem(box, q));
+// Groups `questions` by topic, in first-seen order — shared by
+// renderTopicIndex() (left) and renderTopicFeed() (right) so both always
+// agree on which topics exist and in what order.
+function groupByTopic(questions) {
+  const order = [];
+  const byTopic = new Map();
+  questions.forEach(q => {
+    if (!byTopic.has(q.topic)) { byTopic.set(q.topic, []); order.push(q.topic); }
+    byTopic.get(q.topic).push(q);
+  });
+  return { order, byTopic };
 }
 
-// Renders a question list into #question-list — shared by loadQuestions()
-// (server-filtered by part/topic/group) and applyListFilters() (client-side
-// search + hide-answered over the already-cached state.lastQuestionList, no
-// re-fetch). Part 2/3's "browse everything" state (no topic or group picked)
-// additionally clusters topics under their 7 cue-card group headers — see
-// SPEAKING_GROUPS — instead of one long alphabetical topic list; any other
-// filter state (a topic or group chosen, or Part 1) falls back to the plain
-// per-topic list it always had.
-function renderQuestionItems(questions, emptyMessage) {
+// Left sidebar — plain topic-name rows (jump-to index, not a filter —
+// clicking one scrolls #topic-feed to that topic's card via
+// scrollToTopicCard(), it never hides any other topic). Grouped under the 7
+// cue-card group headers when browsing a whole part with no single group
+// picked; Part 1 and a specific group both just get a flat topic list.
+function renderTopicIndex(questions, emptyMessage) {
   const list = document.getElementById('question-list');
-  if (!list) { updateSeqButtonVisibility(); return; }
+  if (!list) return;
   if (!questions.length) {
     list.innerHTML = `<div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">${emptyMessage || 'Không có câu hỏi'}</div>`;
-    updateSeqButtonVisibility();
     return;
   }
-  list.innerHTML = '';
+  const { order, byTopic } = groupByTopic(questions);
+  const row = (topic) => `<div class="topic-row${topic === state.selectedTopic ? ' active' : ''}" data-topic="${escHtml(topic)}" title="${escHtml(topic)}">${escHtml(topic)}</div>`;
 
-  const browsingEverything = (state.partFilter === '2' || state.partFilter === '3')
-    && document.getElementById('sel-topic')?.value === 'all'
-    && state.groupFilter === 'all'
-    && state.groups.length > 0;
-
-  if (browsingEverything) {
-    const byTopic = new Map();
-    questions.forEach(q => {
-      if (!byTopic.has(q.topic)) byTopic.set(q.topic, []);
-      byTopic.get(q.topic).push(q);
-    });
+  const showGroups = state.groupFilter === 'all' && state.groups.length > 0;
+  let html = '';
+  if (showGroups) {
     state.groups.forEach(g => {
       const topicsHere = g.topics.filter(t => byTopic.has(t));
       if (!topicsHere.length) return;
-      const header = document.createElement('div');
-      header.className = 'q-group-header';
-      header.textContent = g.label;
-      list.appendChild(header);
-      topicsHere.forEach(t => renderTopicBox(list, t, byTopic.get(t)));
+      html += `<div class="q-group-header">${escHtml(g.label)}</div>`;
+      topicsHere.forEach(t => { html += row(t); });
     });
   } else {
-    // Consecutive same-topic questions are already adjacent (loadQuestions()
-    // sorts server-side by part then topic; applyListFilters() preserves
-    // that order) — bucket them by topic (in that same order) and render one
-    // box per topic, instead of repeating the topic badge on every card.
-    const topicOrder = [];
-    const byTopicKey = new Map();
-    questions.forEach(q => {
-      const topicKey = `${q.part}::${q.topic}`;
-      if (!byTopicKey.has(topicKey)) { byTopicKey.set(topicKey, { topic: q.topic, items: [] }); topicOrder.push(topicKey); }
-      byTopicKey.get(topicKey).items.push(q);
-    });
-    topicOrder.forEach(key => {
-      const { topic, items } = byTopicKey.get(key);
-      renderTopicBox(list, topic, items);
-    });
+    order.forEach(t => { html += row(t); });
   }
-  updateSeqButtonVisibility();
+  list.innerHTML = html;
+  list.querySelectorAll('.topic-row').forEach(el => {
+    el.addEventListener('click', () => scrollToTopicCard(el.dataset.topic));
+  });
+}
+
+// Right panel — every topic stacked as its own card with a grid of its
+// questions + a "Luyện topic này" button (reference UI this was modeled
+// on), replacing the old bare "Chọn câu hỏi" placeholder.
+function renderTopicFeed(questions, emptyMessage) {
+  const feed = document.getElementById('topic-feed');
+  if (!feed) return;
+  if (!questions.length) {
+    feed.innerHTML = `<div class="tc-empty">${emptyMessage || 'Không có câu hỏi'}</div>`;
+    return;
+  }
+  const { order, byTopic } = groupByTopic(questions);
+  feed.innerHTML = order.map(topic => {
+    const items = byTopic.get(topic);
+    const boxes = items.map(q => `
+      <div class="tc-qbox${q.attempted ? ' done' : ''}" data-id="${q._id}">
+        <span>${escHtml(q.question)}</span>
+        ${q.attempted ? '<span class="tc-done-badge">Đã luyện</span>' : ''}
+      </div>`).join('');
+    const startBtn = items.length >= 2
+      ? `<button type="button" class="tc-start-btn" data-topic="${escHtml(topic)}"><i class="fas fa-bullseye"></i> Luyện topic này</button>`
+      : '';
+    return `<div class="tc-card${topic === state.selectedTopic ? ' active' : ''}" id="${topicSlug(topic)}">
+      <div class="tc-title">${escHtml(topic)}</div>
+      <div class="tc-grid">${boxes}</div>
+      ${startBtn}
+    </div>`;
+  }).join('');
+
+  feed.querySelectorAll('.tc-qbox').forEach(box => {
+    const q = questions.find(x => String(x._id) === box.dataset.id);
+    if (q) box.addEventListener('click', () => selectQuestion(q, box));
+  });
+  feed.querySelectorAll('.tc-start-btn').forEach(btn => {
+    btn.addEventListener('click', () => openTopicPreviewModalFor(btn.dataset.topic));
+  });
+}
+
+// Scrolls #topic-feed to the given topic's card and highlights both it and
+// its row in the left index — the left list is a jump-to index, not a
+// filter (every topic's questions stay visible in the feed at all times).
+function scrollToTopicCard(topic) {
+  state.selectedTopic = topic;
+  document.querySelectorAll('.topic-row').forEach(el => el.classList.toggle('active', el.dataset.topic === topic));
+  document.querySelectorAll('.tc-card').forEach(el => el.classList.toggle('active', el.id === topicSlug(topic)));
+  // Clicking a topic in the left index while a specific question is open
+  // (#practice-content showing) goes back to browsing that topic's card —
+  // a no-op if the feed was already showing.
+  const content = document.getElementById('practice-content');
+  if (content && content.style.display !== 'none') content.style.display = 'none';
+  const feed = document.getElementById('topic-feed');
+  if (feed) feed.style.display = '';
+  document.getElementById(topicSlug(topic))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  syncUrlState();
 }
 
 async function loadQuestions() {
-  const topic = document.getElementById('sel-topic').value;
   const params = [];
   if (state.partFilter !== 'all') params.push(`part=${state.partFilter}`);
-  if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
-  // '__ungrouped__' (the trailing "Khác" bucket) has no clean server-side
-  // filter value — #sel-topic is already narrowed to just that bucket's
-  // topics above (selectGroupTab), so it's a no-op to skip here.
-  else if (state.groupFilter !== 'all' && state.groupFilter !== '__ungrouped__') params.push(`group=${encodeURIComponent(state.groupFilter)}`);
+  if (state.groupFilter !== 'all' && state.groupFilter !== '__ungrouped__') params.push(`group=${encodeURIComponent(state.groupFilter)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
   const list = document.getElementById('question-list');
+  const feed = document.getElementById('topic-feed');
   if (list) list.innerHTML = '<div class="spinner"></div>';
+  if (feed) feed.innerHTML = '<div class="spinner"></div>';
   const searchInput = document.getElementById('q-search-input');
-  if (searchInput) searchInput.value = ''; // reset search whenever the part/topic filter changes
+  if (searchInput) searchInput.value = ''; // reset search whenever the part/group filter changes
 
   try {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
-    const questions = data.questions || [];
-    state.lastQuestionList = questions;
+    state.lastQuestionList = data.questions || [];
     applyListFilters();
   } catch (e) {
     if (list) list.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
+    if (feed) feed.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
     console.error('loadQuestions:', e);
     state.lastQuestionList = [];
-    updateSeqButtonVisibility();
   }
 }
 
@@ -572,7 +571,9 @@ function applyListFilters() {
   const emptyMessage = state.hideAnswered
     ? 'Bạn đã trả lời hết câu hỏi ở đây rồi — bỏ chọn "Ẩn câu đã trả lời" để xem lại.'
     : 'Không tìm thấy câu hỏi phù hợp';
-  renderQuestionItems(filtered, (q || state.hideAnswered) ? emptyMessage : undefined);
+  const msg = (q || state.hideAnswered) ? emptyMessage : undefined;
+  renderTopicIndex(filtered, msg);
+  renderTopicFeed(filtered, msg);
 }
 
 function filterQuestionList() { applyListFilters(); }
@@ -604,14 +605,21 @@ async function openQuestionById(qid) {
 
 function selectQuestion(q, itemEl) {
   // Highlight selected
-  document.querySelectorAll('.question-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.tc-qbox').forEach(i => i.classList.remove('active'));
   if (itemEl) itemEl.classList.add('active');
+  // Keep the left topic-index in sync with whichever question was actually
+  // opened — it can differ from state.selectedTopic if the student clicked
+  // a question from a topic they hadn't jumped to via the left list.
+  if (q?.topic) {
+    state.selectedTopic = q.topic;
+    document.querySelectorAll('.topic-row').forEach(el => el.classList.toggle('active', el.dataset.topic === q.topic));
+  }
 
   setQuestion(q);
   resetPractice();
 
   // Show practice content
-  document.getElementById('practice-empty').style.display   = 'none';
+  document.getElementById('topic-feed').style.display       = 'none';
   document.getElementById('practice-content').style.display = 'block';
 
   // On mobile, scroll to practice area
@@ -648,7 +656,7 @@ async function startSpeakingMockQuestion() {
 
     setQuestion(q);
     resetPractice();
-    document.getElementById('practice-empty').style.display   = 'none';
+    document.getElementById('topic-feed').style.display       = 'none';
     document.getElementById('practice-content').style.display = 'block';
     if (q.part === 2) {
       setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
@@ -747,25 +755,21 @@ async function _finishMockSpeaking() {
 }
 
 async function loadRandomQuestion() {
-  const topic = document.getElementById('sel-topic').value;
+  // Deliberately part-only (not scoped to the current group/topic) — the
+  // backend's /random endpoint has no group filter, and "Random" reading
+  // "any question in this Part" is the same behavior this always had.
   const params = [];
   if (state.partFilter !== 'all') params.push(`part=${state.partFilter}`);
-  if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
   try {
     const data = await apiFetch(`/api/speaking/random${qs}`);
     if (!data.question) { showToast('Không tìm thấy câu hỏi phù hợp.', 'warn'); return; }
 
-    // Highlight in list
-    const listItem = document.querySelector(`.question-item[data-id="${data.question._id}"]`);
-    document.querySelectorAll('.question-item').forEach(i => i.classList.remove('active'));
-    if (listItem) listItem.classList.add('active');
-
     setQuestion(data.question);
     resetPractice();
 
-    document.getElementById('practice-empty').style.display   = 'none';
+    document.getElementById('topic-feed').style.display       = 'none';
     document.getElementById('practice-content').style.display = 'block';
 
     // Same mobile auto-scroll as selectQuestion() — without this, tapping
@@ -2052,20 +2056,6 @@ async function showImprovedAnswer() {
 // endpoint and the same score-card/fb-card CSS classes.
 // ══════════════════════════════════════════════════════
 
-function updateSeqButtonVisibility() {
-  const btn   = document.getElementById('btn-start-topic-session');
-  const label = document.getElementById('btn-seq-start-label');
-  if (!btn) return;
-  const topic = document.getElementById('sel-topic')?.value;
-  const n = state.lastQuestionList.length;
-  if (topic && topic !== 'all' && n >= 2) {
-    if (label) label.textContent = `Luyện topic này (${n} câu)`;
-    btn.style.display = 'flex';
-  } else {
-    btn.style.display = 'none';
-  }
-}
-
 function seqPartLabel(queue) {
   const parts = [...new Set(queue.map(q => q.part))].sort();
   return parts.length > 1 ? parts.join('+') : String(parts[0]);
@@ -2075,10 +2065,15 @@ function seqPartLabel(queue) {
 // ('topic' | 'fullmock') so its single "Bắt Đầu" button knows which start
 // function to dispatch to — see confirmStartFromPreview() below.
 
-function openTopicPreviewModal() {
-  const topic = document.getElementById('sel-topic')?.value;
-  const queue = state.lastQuestionList;
-  if (!topic || topic === 'all' || queue.length < 2) return;
+// Opens the preview for one topic's "Luyện topic này" button (rendered per
+// .tc-card in renderTopicFeed()) — `topic` is passed explicitly since there
+// is no longer a single global topic selection to read. Filters the FULL
+// (unfiltered) state.lastQuestionList so a session always covers every
+// question in the topic regardless of the search/hide-answered view filters.
+function openTopicPreviewModalFor(topic) {
+  const queue = state.lastQuestionList.filter(q => q.topic === topic);
+  if (queue.length < 2) return;
+  state.seqTopicQueue = queue;
 
   state.seqPreviewMode = 'topic';
   const title = document.getElementById('seq-preview-title');
@@ -2137,11 +2132,12 @@ function beginSeqRun(queue, headerTitle) {
 }
 
 function startSequentialSession() {
-  if (state.lastQuestionList.length < 2) return;
+  const queue = state.seqTopicQueue || [];
+  if (queue.length < 2) return;
   closeSeqPreviewModal();
   state.seqIsFullMock = false;
-  const topic = document.getElementById('sel-topic')?.value || '';
-  beginSeqRun([...state.lastQuestionList], `PART ${seqPartLabel(state.lastQuestionList)} — ${topic}`);
+  const topic = queue[0]?.topic || '';
+  beginSeqRun([...queue], `PART ${seqPartLabel(queue)} — ${topic}`);
 }
 
 // ──────────────────────────────────────────────────────

@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="css/components.css?v=20260831" />
-  <link rel="stylesheet" href="speaking.css?v=20260913grpui2" />
+  <link rel="stylesheet" href="speaking.css?v=20260913topicgrid" />
   <link rel="stylesheet" href="css/pdf-viewer.css?v=20260831" />
   <link rel="stylesheet" href="css/mobile.css?v=20260910inbox" />
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925" />
@@ -200,21 +200,14 @@
         <div class="group-tabs" id="group-tabs"></div>
       </div>
 
-      <!-- Topic filter -->
-      <div class="sidebar-section">
-        <label class="sidebar-label">Chủ đề</label>
-        <select class="sp-select full-width" id="sel-topic" onchange="onTopicFilterChange()">
-          <option value="all">Tất cả chủ đề</option>
-        </select>
-        <button class="btn-seq-start" id="btn-start-topic-session" style="display:none" onclick="openTopicPreviewModal()">
-          <i class="fas fa-bullseye"></i> <span id="btn-seq-start-label">Luyện topic này</span>
-        </button>
-      </div>
-
-      <!-- Question list -->
+      <!-- Topic index — plain topic-name rows (renderTopicIndex() in
+           js/speaking.js), grouped by cue-card group for Part 2/3. Clicking
+           one scrolls #topic-feed (right) to that topic's card instead of
+           filtering it out — every topic's questions stay one scroll away,
+           matching the reference this was modeled on. -->
       <div class="sidebar-section sidebar-questions">
         <div class="sidebar-q-header">
-          <label class="sidebar-label" style="margin-bottom:0">Câu hỏi</label>
+          <label class="sidebar-label" style="margin-bottom:0">Chủ đề</label>
           <button class="btn-random-sm" onclick="loadRandomQuestion()">
             <i class="fas fa-random"></i> Random
           </button>
@@ -235,14 +228,13 @@
     <!-- RIGHT: Practice area -->
     <div class="practice-main">
 
-      <!-- Empty state -->
-      <div class="practice-empty" id="practice-empty">
-        <div class="practice-empty-icon">🎯</div>
-        <p class="practice-empty-title">Chọn câu hỏi để bắt đầu</p>
-        <p class="practice-empty-desc">Chọn từ danh sách bên trái hoặc nhấn Random để lấy câu ngẫu nhiên</p>
-        <button class="btn-primary" style="margin-top:20px" onclick="loadRandomQuestion()">
-          <i class="fas fa-random"></i> Lấy câu ngẫu nhiên
-        </button>
+      <!-- Topic feed — every topic (for the current part/group/search/hide
+           filters) stacked as its own card with its questions
+           (renderTopicFeed() in js/speaking.js) — the default view,
+           replacing the old bare "Chọn câu hỏi để bắt đầu" placeholder.
+           Hidden once a specific question is opened below. -->
+      <div class="topic-feed" id="topic-feed">
+        <div class="spinner"></div>
       </div>
 
       <!-- Practice content (shown after question selected) -->
@@ -779,6 +771,6 @@
 <script src="js/speaking-timer.js?v=20260915"></script>
 <script src="js/speaking-audio-store.js?v=20260831"></script>
 <script src="js/speaking-tips.js?v=20260831"></script>
-<script src="js/speaking.js?v=20260913grpui"></script>
+<script src="js/speaking.js?v=20260913topicgrid"></script>
 </body>
 </html>

@@ -312,37 +312,47 @@ button:focus-visible {
   flex-direction: column;
 }
 
-/* Part tabs */
+/* Part tabs — rounded pills (active = filled), not underline tabs. */
 .part-tabs {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
   border-bottom: 1px solid #e5e7eb;
   flex-shrink: 0;
 }
 .part-tab {
-  flex: 1;
-  padding: 10px 4px;
+  padding: 8px 16px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: #6b7280;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
   cursor: pointer;
-  transition: color .15s, border-color .15s;
+  transition: background .15s, color .15s, border-color .15s;
   white-space: nowrap;
+  font-family: inherit;
 }
-.part-tab:hover { color: #e53935; }
-.part-tab.active { color: #e53935; border-bottom-color: #e53935; }
+.part-tab:hover { border-color: #e53935; color: #e53935; }
+.part-tab.active { background: #e53935; border-color: #e53935; color: #fff; }
 
 /* Group filter — tappable pills, not a dropdown (see speaking.html's
    comment on #group-tabs): every one of the 7 cue-card groups is visible
-   and one tap away instead of hidden behind an opened <select>. */
+   and one tap away instead of hidden behind an opened <select>. Single
+   horizontally-scrollable row (not wrapped to several lines) — wrapping
+   used to eat most of the sidebar's capped mobile height, and a scrolling
+   strip is also what the reference UI this was modeled on uses. */
 .group-tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 6px;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
 }
 .group-pill {
+  flex-shrink: 0;
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -539,29 +549,78 @@ button:focus-visible {
   gap: 20px;
 }
 
-/* Empty state */
-.practice-empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 20px;
+/* Topic index rows (left sidebar) — plain topic names, not full question
+   cards (renderTopicIndex()). Clicking one scrolls #topic-feed to the
+   matching .tc-card (scrollToTopicCard()) instead of filtering anything out. */
+.topic-row {
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: #374151;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.practice-empty-icon { font-size: 56px; margin-bottom: 16px; line-height: 1; }
-.practice-empty-title {
-  font-size: 18px;
-  font-weight: 700;
+.topic-row:hover { background: #f3f4f6; }
+.topic-row.active { background: #ede9fe; color: #6d28d9; font-weight: 700; }
+
+/* Topic feed (right panel) — every topic stacked as its own card with a
+   grid of its questions, replacing the old bare "Chọn câu hỏi" placeholder. */
+.topic-feed { display: flex; flex-direction: column; gap: 20px; }
+.tc-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  transition: border-color .15s;
+  scroll-margin-top: 16px; /* clears the sticky-ish top edge on scrollIntoView */
+}
+.tc-card.active { border-color: #7c3aed; }
+.tc-title { font-size: 17px; font-weight: 800; color: #111; margin-bottom: 14px; }
+.tc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.tc-qbox {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  min-height: 70px;
+  font-size: 13.5px;
   color: #111;
-  margin-bottom: 8px;
-}
-.practice-empty-desc {
-  font-size: 14px;
-  color: #6b7280;
-  max-width: 300px;
   line-height: 1.5;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 }
+.tc-qbox:hover { border-color: #e53935; }
+.tc-qbox.done { background: #f9fafb; }
+.tc-done-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: #fff;
+  white-space: nowrap;
+}
+.tc-start-btn {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #ec4899;
+  background: #fff;
+  color: #ec4899;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tc-start-btn:hover { background: #fdf2f8; }
+.tc-empty { text-align: center; padding: 60px 20px; color: #6b7280; font-size: 14px; }
 
 /* Mobile-only "jump back to question list" affordance — hidden on desktop
    where the sidebar is always visible alongside the practice content. */
@@ -1837,10 +1896,20 @@ button:focus-visible {
 [data-theme="dark"] .sp-page-header-title  { color: #f9fafb; }
 
 [data-theme="dark"] .practice-sidebar      { background: #1f2937; border-color: #374151; }
-[data-theme="dark"] .part-tab              { color: #9ca3af; }
-[data-theme="dark"] .part-tab.active       { color: #e53935; }
+[data-theme="dark"] .part-tab              { background: #111827; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .part-tab.active       { background: #e53935; border-color: #e53935; color: #fff; }
 [data-theme="dark"] .group-pill            { background: #111827; border-color: #374151; color: #9ca3af; }
 [data-theme="dark"] .group-pill.active     { background: #e53935; border-color: #e53935; color: #fff; }
+[data-theme="dark"] .topic-row:hover       { background: #111827; }
+[data-theme="dark"] .topic-row.active      { background: #3730a3; color: #e0e7ff; }
+[data-theme="dark"] .tc-card               { border-color: #374151; }
+[data-theme="dark"] .tc-card.active        { border-color: #a78bfa; }
+[data-theme="dark"] .tc-title              { color: #f9fafb; }
+[data-theme="dark"] .tc-qbox               { border-color: #374151; color: #e5e7eb; }
+[data-theme="dark"] .tc-qbox:hover         { border-color: #e53935; }
+[data-theme="dark"] .tc-qbox.done          { background: #111827; }
+[data-theme="dark"] .tc-start-btn          { background: #1f2937; }
+[data-theme="dark"] .tc-empty              { color: #9ca3af; }
 [data-theme="dark"] .sidebar-section       { border-color: #374151; }
 [data-theme="dark"] .sidebar-label         { color: #6b7280; }
 [data-theme="dark"] .sp-select             { background: #111827; color: #f9fafb; border-color: #374151; }
@@ -1857,11 +1926,6 @@ button:focus-visible {
 [data-theme="dark"] .q-topic-group-header  { color: #fbbf24; }
 
 [data-theme="dark"] .practice-main         { background: #111827; }
-/* .practice-empty-title had no dark override — near-black #111 text on
-   the #111827 dark background made it invisible (student UI audit,
-   Nhóm 2, 2026-07-25). .practice-empty-desc's #6b7280 is already
-   dark-mode-safe (same muted gray reused as-is elsewhere in dark mode). */
-[data-theme="dark"] .practice-empty-title  { color: #f9fafb; }
 [data-theme="dark"] .mob-change-q-btn      { background: #111827; border-color: #374151; color: #e5e7eb; }
 [data-theme="dark"] .mob-change-q-btn:active { background: #374151; }
 [data-theme="dark"] .question-card         { background: #1f2937; border-color: #374151; }
@@ -2011,22 +2075,11 @@ button:focus-visible {
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
   }
-  /* The 7 group pills wrapping to 3-4 rows ate most of the sidebar's
-     capped 320px height on mobile, leaving the actual question list
-     barely visible below it (reported as "can't see the questions at
-     all"). One horizontally-scrollable row keeps the same footprint the
-     single-line <select> it replaced had. */
-  .group-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .group-pill { flex-shrink: 0; }
   .practice-main {
     overflow: visible;
     padding: 20px 16px;
   }
+  .tc-grid { grid-template-columns: 1fr; }
   .mob-change-q-btn {
     display: flex;
     align-items: center;
