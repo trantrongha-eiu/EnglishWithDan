@@ -186,6 +186,21 @@ function getVNDay(date) {
 // already enforced before calling this. `lastActivityDate` always advances on
 // a qualifying activity call even when bonus is 0, so a low-accuracy session
 // still keeps the day-chain alive without growing it.
+//
+// NOT called by any activity-crediting service anymore (see git history) —
+// mutating this in-memory then relying on a later `user.save()` let two
+// activities finishing close together race: each loaded its own snapshot,
+// computed its own new streak fields, and saved independently, so whichever
+// save landed last in Mongo silently discarded the other's advance —
+// including its lastActivityDate. That stale lastActivityDate then tripped
+// resetIfStale()'s >=2-day check on a LATER visit even though the student
+// had genuinely studied every day in between — the "chưa hết ngày mà bị mất
+// streak" reports. utils/streak.js's applyStreakActivity() is the race-safe
+// replacement (one atomic MongoDB update pipeline, no read-modify-write
+// gap) and implements these exact same day-chain rules; this method is kept
+// only as the plain-JS reference the day-math tests (tests/unit/models/
+// User.test.js) exercise, and for callers that already hold an in-memory
+// document they're about to save anyway with no concurrency exposure.
 UserSchema.methods.updateStreak = function (bonus = 1, { allowSameDayStack = false } = {}) {
   // Studying again ends the "just lost a streak" mascot state immediately,
   // whether this continues a streak, restarts one, or is a same-day no-op.

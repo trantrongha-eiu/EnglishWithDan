@@ -7,6 +7,8 @@ const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog
 const VocabularyLessonImportLog = require('../models/VocabularyLessonImportLog');
 const parser = require('./vocabularyLessonParser');
 const { reachedDailyWordThreshold } = require('./streakBonusService');
+const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 
 // A quiz run under this many questions doesn't count toward the daily vocab
 // goal / streak — same >=5 floor completePractice() uses for book quizzes,
@@ -100,7 +102,10 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
     try {
       user.lastVocabStudyDate = new Date();
       const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: total });
-      if (qualifiesToday) user.updateStreak();
+      // Atomic (see applyStreakActivity's comment) — kept separate from the
+      // .save() below so a concurrent activity's own streak update can
+      // never be clobbered by this one (or vice versa).
+      if (qualifiesToday) await applyStreakActivity(User, user._id).catch(() => {});
       await user.save();
     } catch (err) {
       console.error('[VocabularyLesson] submitAttempt: streak bookkeeping failed after a saved attempt:', err.message);

@@ -440,15 +440,27 @@ describe('authService.findOrCreateGoogleUser', () => {
 });
 
 describe('authService.completeGoogleLogin', () => {
-  test('returns a token and user payload, and updates the streak on the in-memory user', async () => {
+  test('returns a token and user payload, and credits the streak (atomically, fire-and-forget)', async () => {
     const user = await createStudent({ extra: { learningStreak: 0, lastActivityDate: null } });
 
     const result = authService.completeGoogleLogin(user);
     expect(typeof result.token).toBe('string');
     expect(result.user.id.toString()).toBe(user._id.toString());
-    // updateStreak() runs synchronously before the fire-and-forget save().
-    expect(user.learningStreak).toBe(1);
-    expect(user.lastActivityDate).not.toBeNull();
+
+    // applyStreakActivity() is atomic (a single findOneAndUpdate) and fired
+    // without awaiting — it's a real async DB round-trip, not synchronous
+    // in-memory mutation (which is why it's race-safe: nothing ever mutates
+    // an in-memory snapshot for a later .save() to clobber). Poll instead of
+    // a single tick/fixed sleep, since exactly how long that round-trip
+    // takes isn't something this test should have to guess at.
+    let fresh;
+    for (let i = 0; i < 20; i++) {
+      fresh = await User.findById(user._id).select('learningStreak lastActivityDate');
+      if (fresh.learningStreak > 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+    expect(fresh.learningStreak).toBe(1);
+    expect(fresh.lastActivityDate).not.toBeNull();
 
     const decoded = jwt.verify(result.token, process.env.JWT_SECRET);
     expect(decoded.id.toString()).toBe(user._id.toString());

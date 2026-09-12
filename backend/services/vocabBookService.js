@@ -9,6 +9,8 @@ const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWord
 const VocabPracticeSession = require('../models/VocabPracticeSession');
 const { escapeRegex } = require('../utils/strings');
 const badgeService = require('./badgeService');
+const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
 // _reportSessionStreak()) so the 35-word/day engagement threshold stays
@@ -141,9 +143,18 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   // without growing it. Below the word threshold, skip entirely: today
   // shouldn't count as "studied" yet.
   let appliedBonus = 0;
+  let updatedStreak = user.learningStreak;
   if (qualifiesToday) {
     appliedBonus = await reserveStreakBonusForSession(user._id, sessionId, wordsAnswered, correctAnswered, accuracy);
-    user.updateStreak(appliedBonus, { allowSameDayStack: true });
+    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
+    // save() here used to race a concurrent activity's own save and lose
+    // lastActivityDate's advance, causing a spurious "missed a day" reset
+    // days later even though the student studied every day. Not mutating
+    // `user` in-memory also means the .save() below (for lastVocabStudyDate/
+    // hammerAwardedUnits/streakHammers) can no longer clobber it either —
+    // Mongoose only persists paths actually set on the document.
+    const streakDoc = await applyStreakActivity(User, user._id, appliedBonus, { allowSameDayStack: true }).catch(() => null);
+    if (streakDoc) updatedStreak = streakDoc.learningStreak;
   }
 
   // Búa Daniel: earns 1 hammer only once EVERY word in the Paraphrase
@@ -176,7 +187,7 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
   return {
     status: 'ok',
-    streak: user.learningStreak,
+    streak: updatedStreak,
     bonusApplied: appliedBonus,
     hammerEarned,
     streakHammers: user.streakHammers,
@@ -444,8 +455,9 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
 
   if (hadStatusChange && user.role === 'student') {
     if (await reachedDailyWordThreshold(user._id, { wordsStudied: 1 })) {
-      user.updateStreak();
-      await user.save();
+      // Atomic (see applyStreakActivity's comment) — avoids the same
+      // read-modify-write race a plain updateStreak()+save() had here.
+      await applyStreakActivity(User, user._id).catch(() => {});
     }
   }
 

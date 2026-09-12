@@ -10,6 +10,8 @@ const {
 } = require('./groqService');
 const { checkSpeakingMistral } = require('./mistralService');
 const badgeService = require('./badgeService');
+const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 
 // Daniel's Speaking textbook's 7 Part 2 cue-card groups — same taxonomy
 // speaking-course.html's Part 2 module (SPK-P2-M2, "Buổi 4-11") already
@@ -394,10 +396,11 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
 // saw the day marked "done" there yet had their streak quietly die anyway.
 async function _creditStreakForAnalyzedAttempt(user) {
   if (!user || user.role !== 'student') return [];
-  user.updateStreak();
-  // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
-  // the streak fresh from the DB, so the save must actually land first.
-  await user.save().catch(() => {});
+  // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
+  // save() here used to race a concurrent activity's own save and lose
+  // lastActivityDate's advance, causing a spurious "missed a day" reset
+  // days later even though the student studied every day.
+  await applyStreakActivity(User, user._id).catch(() => {});
   const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
   return newlyUnlocked;
 }

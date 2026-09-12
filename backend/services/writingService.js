@@ -15,6 +15,8 @@ const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample = require('../models/WritingSample');
 const WritingDraft = require('../models/WritingDraft');
 const badgeService = require('./badgeService');
+const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 
 async function randomDoc(Model) {
   const count = await Model.countDocuments({ isActive: true });
@@ -95,10 +97,11 @@ async function submitExam(user, body) {
   // "done" in the activity heatmap yet had their streak quietly die anyway.
   let newlyUnlocked = [];
   if (user.role === 'student') {
-    user.updateStreak();
-    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
-    // the streak fresh from the DB, so the save must actually land first.
-    await user.save().catch(() => {});
+    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
+    // save() here used to race a concurrent activity's own save and lose
+    // lastActivityDate's advance, causing a spurious "missed a day" reset
+    // days later even though the student studied every day.
+    await applyStreakActivity(User, user._id).catch(() => {});
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
@@ -141,10 +144,11 @@ async function submitPractice(user, { taskType, taskId, answer }) {
   // See submitExam()'s comment above — same flat, once-a-day streak credit.
   let newlyUnlocked = [];
   if (user.role === 'student') {
-    user.updateStreak();
-    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
-    // the streak fresh from the DB, so the save must actually land first.
-    await user.save().catch(() => {});
+    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
+    // save() here used to race a concurrent activity's own save and lose
+    // lastActivityDate's advance, causing a spurious "missed a day" reset
+    // days later even though the student studied every day.
+    await applyStreakActivity(User, user._id).catch(() => {});
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 

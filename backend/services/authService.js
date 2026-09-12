@@ -12,6 +12,7 @@ const { escapeHtml } = require('../utils/escapeHtml');
 const logger = require('../utils/logger');
 const { sendEmail } = require('./emailService');
 const { isDisposableEmail } = require('../utils/disposableEmailDomains');
+const { applyStreakActivity } = require('../utils/streak');
 
 const MAX_OTP_ATTEMPTS = 5;
 const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // link valid 24h
@@ -362,10 +363,11 @@ async function resetPassword(resetToken, newPassword) {
 }
 
 // Synchronous (not async) — matches the original googleCallback, which
-// fire-and-forgets the save (`user.save().catch(console.error)`, never awaited).
+// fire-and-forgets the streak update, never awaited. Atomic (see
+// applyStreakActivity's comment) instead of the old updateStreak()+save()
+// pattern, which could race a concurrent activity's own save.
 function completeGoogleLogin(user) {
-  user.updateStreak();
-  user.save().catch(console.error);
+  applyStreakActivity(User, user._id).catch(console.error);
   return { token: signToken(user._id), user: userPayload(user) };
 }
 

@@ -18,6 +18,8 @@ const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
+const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 
@@ -723,16 +725,19 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
 
   let bonusApplied = 0;
   let newlyUnlocked = [];
+  let streak = user.learningStreak;
   if (user.role === 'student') {
     // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
     // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
     const accuracy = total > 0 ? correct / total : 0;
     const rawBonus = bonusForAccuracy(accuracy);
     bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
-    user.updateStreak(bonusApplied, { allowSameDayStack: true });
-    // Awaited (was fire-and-forget) — checkAndAwardNewBadges below re-reads
-    // the streak fresh from the DB, so the save must actually land first.
-    await user.save().catch(() => {});
+    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
+    // save() here used to race a concurrent activity's own save and lose
+    // lastActivityDate's advance, causing a spurious "missed a day" reset
+    // days later even though the student studied every day.
+    const streakDoc = await applyStreakActivity(User, user._id, bonusApplied, { allowSameDayStack: true }).catch(() => null);
+    if (streakDoc) streak = streakDoc.learningStreak;
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
@@ -755,7 +760,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
     attemptId: attempt._id, testName: test.name, totalQuestions: total,
     correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken,
     questions: reviewed, sections: reviewSections, audioUrl: test.audioUrl,
-    bonusApplied, streak: user.learningStreak, newlyUnlocked,
+    bonusApplied, streak, newlyUnlocked,
   };
 }
 
