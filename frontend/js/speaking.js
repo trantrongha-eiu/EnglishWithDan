@@ -67,6 +67,9 @@ const state = {
   speakSecondsLeft: 120,
   practiceInited:   false,
   partFilter:       '1',
+  groupFilter:      'all', // Part 2/3 only — one of speakingService.SPEAKING_GROUPS' codes, or 'all'
+  groups:           [],    // last /api/speaking/topics response's `groups` (part 2/3 only)
+  hideAnswered:     false, // "Ẩn câu đã trả lời" toggle — client-side view filter, doesn't touch lastQuestionList
   _analyzing:       false,
   materialFilter:   { quarter: 'all', topic: 'all' },
   _pendingTopicFromUrl: null,
@@ -333,6 +336,8 @@ async function initPractice(opts = {}) {
     document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
     document.getElementById('ptab-' + opts.part)?.classList.add('active');
   }
+  const groupSection = document.getElementById('sidebar-group-section');
+  if (groupSection) groupSection.style.display = (state.partFilter === '2' || state.partFilter === '3') ? 'block' : 'none';
   // Consumed once by loadTopics() below (applied only after the real topic
   // list has loaded, so it can validate the URL's topic actually exists).
   state._pendingTopicFromUrl = opts.topic || null;
@@ -360,8 +365,11 @@ function syncUrlState() {
 // ── Part filter ──
 async function setPartFilter(part, el) {
   state.partFilter = part;
+  state.groupFilter = 'all'; // groups are part-specific — a stale group from the other part makes no sense
   document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
+  const groupSection = document.getElementById('sidebar-group-section');
+  if (groupSection) groupSection.style.display = (part === '2' || part === '3') ? 'block' : 'none';
   // Awaited so syncUrlState() below reads #sel-topic's settled value —
   // loadTopics() repopulates (and can reset) it asynchronously.
   await loadTopics();
@@ -374,25 +382,53 @@ function onTopicFilterChange() {
   syncUrlState();
 }
 
+// ── Group filter (Part 2/3 only) — narrows #sel-topic to the chosen group's
+// topics, then reloads questions the same way changing the topic would. ──
+function onGroupFilterChange() {
+  state.groupFilter = document.getElementById('sel-group').value;
+  const group = state.groups.find(g => (g.code == null ? '__ungrouped__' : g.code) === state.groupFilter);
+  populateTopicSelect(group ? group.topics : state.groups.flatMap(g => g.topics), 'all');
+  loadQuestions();
+  syncUrlState();
+}
+
+// Fills #sel-topic with the given topic list (sorted already by the caller),
+// selecting `prev` if it's still one of the options. Shared by loadTopics()
+// (full list for the part) and onGroupFilterChange() (one group's subset).
+function populateTopicSelect(topics, prev) {
+  const sel = document.getElementById('sel-topic');
+  sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
+  topics.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    if (t === prev) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
 // ── Topics ──
 async function loadTopics() {
   try {
     const qs = state.partFilter !== 'all' ? `?part=${state.partFilter}` : '';
     const data = await apiFetch(`/api/speaking/topics${qs}`);
-    const sel = document.getElementById('sel-topic');
+    state.groups = data.groups || [];
+    const groupSel = document.getElementById('sel-group');
+    if (groupSel) {
+      groupSel.innerHTML = '<option value="all">Tất cả nhóm</option>';
+      state.groups.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.code == null ? '__ungrouped__' : g.code;
+        opt.textContent = g.label;
+        groupSel.appendChild(opt);
+      });
+    }
     // A pending topic from the URL (first load only, cleared right after
     // use) takes priority over preserving whatever was previously selected;
     // only applied if it's actually a real topic for this part.
     const pending = state._pendingTopicFromUrl;
     state._pendingTopicFromUrl = null;
-    const prev = pending || sel.value;
-    sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
-    (data.topics || []).forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t; opt.textContent = t;
-      if (t === prev) opt.selected = true;
-      sel.appendChild(opt);
-    });
+    const prev = pending || document.getElementById('sel-topic').value;
+    populateTopicSelect(data.topics || [], prev);
   } catch (e) {
     console.error('loadTopics:', e);
   }
@@ -400,9 +436,39 @@ async function loadTopics() {
 }
 
 // ── Questions ──
+function appendQuestionItem(container, q) {
+  const item = document.createElement('div');
+  item.className = 'question-item';
+  item.dataset.id = q._id;
+  item.dataset.q  = JSON.stringify(q);
+
+  const badgeClass = `p${q.part}`;
+  item.innerHTML = `
+    <div class="q-item-meta">
+      <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
+      ${q.attempted ? '<span class="q-item-attempted-badge" title="Bạn đã luyện câu này rồi — bấm để làm lại"><i class="fas fa-check-circle"></i> Đã luyện · Làm lại</span>' : ''}
+    </div>
+    <div class="q-item-text">${escHtml(q.question)}</div>`;
+  item.onclick = () => selectQuestion(q, item);
+  container.appendChild(item);
+}
+
+function renderTopicBox(list, topic, questions) {
+  const box = document.createElement('div');
+  box.className = 'q-topic-group';
+  box.innerHTML = `<div class="q-topic-group-header">${escHtml(topic)}</div>`;
+  list.appendChild(box);
+  questions.forEach(q => appendQuestionItem(box, q));
+}
+
 // Renders a question list into #question-list — shared by loadQuestions()
-// (server-filtered by part/topic) and filterQuestionList() (client-side
-// text search over the already-cached state.lastQuestionList, no re-fetch).
+// (server-filtered by part/topic/group) and applyListFilters() (client-side
+// search + hide-answered over the already-cached state.lastQuestionList, no
+// re-fetch). Part 2/3's "browse everything" state (no topic or group picked)
+// additionally clusters topics under their 7 cue-card group headers — see
+// SPEAKING_GROUPS — instead of one long alphabetical topic list; any other
+// filter state (a topic or group chosen, or Part 1) falls back to the plain
+// per-topic list it always had.
 function renderQuestionItems(questions, emptyMessage) {
   const list = document.getElementById('question-list');
   if (!list) { updateSeqButtonVisibility(); return; }
@@ -411,39 +477,45 @@ function renderQuestionItems(questions, emptyMessage) {
     updateSeqButtonVisibility();
     return;
   }
-
   list.innerHTML = '';
-  // Consecutive same-topic questions are already adjacent (loadQuestions()
-  // sorts server-side by part then topic; filterQuestionList() preserves
-  // that order) — group them under one shared header instead of repeating
-  // the topic badge on every single card.
-  let currentGroup = null;
-  let currentTopicKey = null;
-  questions.forEach(q => {
-    const topicKey = `${q.part}::${q.topic}`;
-    if (topicKey !== currentTopicKey) {
-      currentTopicKey = topicKey;
-      currentGroup = document.createElement('div');
-      currentGroup.className = 'q-topic-group';
-      currentGroup.innerHTML = `<div class="q-topic-group-header">${escHtml(q.topic)}</div>`;
-      list.appendChild(currentGroup);
-    }
 
-    const item = document.createElement('div');
-    item.className = 'question-item';
-    item.dataset.id = q._id;
-    item.dataset.q  = JSON.stringify(q);
+  const browsingEverything = (state.partFilter === '2' || state.partFilter === '3')
+    && document.getElementById('sel-topic')?.value === 'all'
+    && state.groupFilter === 'all'
+    && state.groups.length > 0;
 
-    const badgeClass = `p${q.part}`;
-    item.innerHTML = `
-      <div class="q-item-meta">
-        <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
-        ${q.attempted ? '<span class="q-item-attempted-badge" title="Bạn đã luyện câu này rồi — bấm để làm lại"><i class="fas fa-check-circle"></i> Đã luyện · Làm lại</span>' : ''}
-      </div>
-      <div class="q-item-text">${escHtml(q.question)}</div>`;
-    item.onclick = () => selectQuestion(q, item);
-    currentGroup.appendChild(item);
-  });
+  if (browsingEverything) {
+    const byTopic = new Map();
+    questions.forEach(q => {
+      if (!byTopic.has(q.topic)) byTopic.set(q.topic, []);
+      byTopic.get(q.topic).push(q);
+    });
+    state.groups.forEach(g => {
+      const topicsHere = g.topics.filter(t => byTopic.has(t));
+      if (!topicsHere.length) return;
+      const header = document.createElement('div');
+      header.className = 'q-group-header';
+      header.textContent = g.label;
+      list.appendChild(header);
+      topicsHere.forEach(t => renderTopicBox(list, t, byTopic.get(t)));
+    });
+  } else {
+    // Consecutive same-topic questions are already adjacent (loadQuestions()
+    // sorts server-side by part then topic; applyListFilters() preserves
+    // that order) — bucket them by topic (in that same order) and render one
+    // box per topic, instead of repeating the topic badge on every card.
+    const topicOrder = [];
+    const byTopicKey = new Map();
+    questions.forEach(q => {
+      const topicKey = `${q.part}::${q.topic}`;
+      if (!byTopicKey.has(topicKey)) { byTopicKey.set(topicKey, { topic: q.topic, items: [] }); topicOrder.push(topicKey); }
+      byTopicKey.get(topicKey).items.push(q);
+    });
+    topicOrder.forEach(key => {
+      const { topic, items } = byTopicKey.get(key);
+      renderTopicBox(list, topic, items);
+    });
+  }
   updateSeqButtonVisibility();
 }
 
@@ -452,6 +524,10 @@ async function loadQuestions() {
   const params = [];
   if (state.partFilter !== 'all') params.push(`part=${state.partFilter}`);
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
+  // '__ungrouped__' (the trailing "Khác" bucket) has no clean server-side
+  // filter value — #sel-topic is already narrowed to just that bucket's
+  // topics above (onGroupFilterChange), so it's a no-op to skip here.
+  else if (state.groupFilter !== 'all' && state.groupFilter !== '__ungrouped__') params.push(`group=${encodeURIComponent(state.groupFilter)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
   const list = document.getElementById('question-list');
@@ -463,7 +539,7 @@ async function loadQuestions() {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
     const questions = data.questions || [];
     state.lastQuestionList = questions;
-    renderQuestionItems(questions);
+    applyListFilters();
   } catch (e) {
     if (list) list.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
     console.error('loadQuestions:', e);
@@ -474,13 +550,28 @@ async function loadQuestions() {
 
 // Client-side text search over the already-loaded list — no network call,
 // keeps the (up to 565-question) flat list actually browsable.
-function filterQuestionList() {
+// Applies both the search box and "Ẩn câu đã trả lời" toggle over the
+// already-loaded state.lastQuestionList (no re-fetch) — never mutates
+// lastQuestionList itself, so turning either filter back off restores the
+// full list. Shared by the search input's oninput and the toggle's onchange.
+function applyListFilters() {
   const q = (document.getElementById('q-search-input')?.value || '').trim().toLowerCase();
-  if (!q) { renderQuestionItems(state.lastQuestionList); return; }
-  const filtered = state.lastQuestionList.filter(item =>
+  let filtered = state.lastQuestionList;
+  if (state.hideAnswered) filtered = filtered.filter(item => !item.attempted);
+  if (q) filtered = filtered.filter(item =>
     item.question.toLowerCase().includes(q) || (item.topic || '').toLowerCase().includes(q)
   );
-  renderQuestionItems(filtered, 'Không tìm thấy câu hỏi phù hợp');
+  const emptyMessage = state.hideAnswered
+    ? 'Bạn đã trả lời hết câu hỏi ở đây rồi — bỏ chọn "Ẩn câu đã trả lời" để xem lại.'
+    : 'Không tìm thấy câu hỏi phù hợp';
+  renderQuestionItems(filtered, (q || state.hideAnswered) ? emptyMessage : undefined);
+}
+
+function filterQuestionList() { applyListFilters(); }
+
+function onHideAnsweredChange() {
+  state.hideAnswered = !!document.getElementById('chk-hide-answered')?.checked;
+  applyListFilters();
 }
 
 // Deep-link entry point — homework's "Bắt đầu" button on a Speaking item
@@ -940,6 +1031,7 @@ function resetPractice() {
   if (elapsed)    elapsed.classList.add('hidden');
   if (recIcon)    { recIcon.className = 'fas fa-microphone rec-mic'; }
   if (recLabel)   recLabel.textContent = 'Bắt đầu';
+  setTranscriptView('editable');
 
   // New question → any previous recording no longer applies
   _lastRecordingBlob = null;
@@ -959,6 +1051,67 @@ function clearTranscript() {
   if (ta) ta.value = '';
   const btn = document.getElementById('btn-analyze');
   if (btn) btn.disabled = true;
+  setTranscriptView('editable');
+}
+
+// #transcript-box has three view modes (see the comment on it in
+// speaking.html): 'editable' (default — plain textarea, student can type),
+// 'locked' (recording or waiting on the AI — nothing shown, so the student
+// isn't reading a live caption of their own speech, or quietly fixing a
+// mis-heard word before it's graded), 'result' (AI graded it — read-only
+// #transcript-display with mistakes highlighted inline + score pills).
+function setTranscriptView(mode) {
+  const box = document.getElementById('transcript-box');
+  if (!box) return;
+  box.classList.remove('tb-locked', 'tb-result');
+  if (mode === 'locked' || mode === 'result') box.classList.add(mode === 'locked' ? 'tb-locked' : 'tb-result');
+  // The live interim caption sits outside #transcript-box (see
+  // speaking.html) — hide it for the same reason 'locked' hides the
+  // textarea, so recording no longer live-captions the student's speech.
+  document.getElementById('transcript-interim')?.classList.toggle('hidden', mode === 'locked');
+}
+
+// Wraps each fb.mistakes[i].original occurrence found in `text` with a
+// struck-through span followed by the corrected text, so the graded
+// transcript reads like "...laid my hand ~~at~~ on a pencil..." instead of
+// a separate list the student has to cross-reference against the sentence.
+// Matches are found against the plain text first (not iteratively against
+// already-HTML'd output) and applied non-overlapping, oldest-first, so two
+// mistakes can't corrupt each other's markup or double-claim the same words.
+// A mistake whose `original` doesn't literally appear in the transcript
+// (paraphrased by the AI) is silently skipped here — it still shows in the
+// "Lỗi cần sửa" list below, just without the inline highlight.
+function buildHighlightedTranscript(text, mistakes) {
+  if (!text) return '';
+  if (!mistakes || !mistakes.length) return escHtml(text);
+  const claimed = [];
+  const overlaps = (s, e) => claimed.some(([cs, ce]) => s < ce && e > cs);
+  mistakes.forEach(m => {
+    const needle = String(m.original || '').trim();
+    if (!needle) return;
+    let idx = text.indexOf(needle);
+    while (idx !== -1 && overlaps(idx, idx + needle.length)) idx = text.indexOf(needle, idx + 1);
+    if (idx === -1) return;
+    claimed.push([idx, idx + needle.length, m]);
+  });
+  claimed.sort((a, b) => a[0] - b[0]);
+  let out = '', cursor = 0;
+  claimed.forEach(([s, e, m]) => {
+    out += escHtml(text.slice(cursor, s));
+    out += `<s class="tb-err">${escHtml(text.slice(s, e))}</s> <span class="tb-fix">${escHtml(m.corrected || '')}</span>`;
+    cursor = e;
+  });
+  out += escHtml(text.slice(cursor));
+  return out;
+}
+
+function renderTranscriptScorePills(fb) {
+  const items = [
+    ['Trôi chảy', fb.fluency], ['Từ vựng', fb.vocabulary],
+    ['Ngữ pháp', fb.grammar], ['Phát âm', fb.pronunciation],
+  ].filter(([, v]) => v != null);
+  return items.map(([label, val]) =>
+    `<span class="tb-scorepill" data-band="${bandColor(val)}">${escHtml(label)}: ${val}</span>`).join('');
 }
 
 // Prep timer, speak countdown, and elapsed timer moved to
@@ -1440,6 +1593,7 @@ function toggleRecord() {
     // browsers got nothing but a "not supported, type instead" toast with no
     // way to actually record at all — reported as "không thể thu âm".
     if ('MediaRecorder' in window && navigator.mediaDevices?.getUserMedia) {
+      setTranscriptView('locked');
       _toggleAudioOnlyRecording();
       return;
     }
@@ -1471,6 +1625,7 @@ function toggleRecord() {
     // also run again if onend does fire — it's guarded/idempotent.
     _finishRecordingUI();
   } else {
+    setTranscriptView('locked');
     _startRecordingGuarded();
   }
 }
@@ -1538,6 +1693,10 @@ async function analyzeTranscript() {
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
   if (errorBox) errorBox.classList.add('hidden');
+  // Still 'locked' from recording — just swap the placeholder copy so it
+  // doesn't keep telling the student to click a button they already clicked.
+  const _lockedMsg = document.getElementById('tb-locked-msg');
+  if (_lockedMsg) _lockedMsg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI đang nghe và phân tích bài nói của bạn...';
   _startFeedbackLoadingMessages('feedback-loading-text');
   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -1634,6 +1793,10 @@ async function analyzeTranscript() {
     clearTimeout(_killer);
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'none';
+    // Grading failed — still locked (never reached renderFeedback), so put
+    // the "click Phân tích" copy back for the retry the student is about to do.
+    const _lockedMsg = document.getElementById('tb-locked-msg');
+    if (_lockedMsg) _lockedMsg.innerHTML = '<i class="fas fa-microphone-lines"></i> Transcript được ẩn trong lúc ghi âm — bấm "Phân tích với Gemini AI" để xem lại kèm lỗi được đánh dấu.';
     const errorText = document.getElementById('feedback-error-text');
     const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
     if (errorText) {
@@ -1672,6 +1835,17 @@ function _spCountUp(el, target) {
 }
 
 function renderFeedback(fb, previousBand) {
+  // Reveal the transcript now that it's graded — mistakes highlighted right
+  // in the sentence instead of only in the "Lỗi cần sửa" list below, plus a
+  // quick score-pill row. See setTranscriptView()'s comment for why it was
+  // hidden up to this point.
+  const _taForDisplay = document.getElementById('transcript-textarea');
+  const _display = document.getElementById('transcript-display');
+  if (_display) _display.innerHTML = buildHighlightedTranscript(_taForDisplay?.value.trim() || '', fb.mistakes);
+  const _pills = document.getElementById('tb-scorepills');
+  if (_pills) _pills.innerHTML = renderTranscriptScorePills(fb);
+  setTranscriptView('result');
+
   // Retrigger the staggered reveal animation on every render.
   const resultsEl = document.getElementById('feedback-results');
   if (resultsEl) {

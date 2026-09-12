@@ -2,9 +2,10 @@ const speakingService = require('../services/speakingService');
 const catchAsync = require('../middleware/catchAsync');
 
 // ── GET /api/speaking/topics ─────────────────────────────────
+// `groups` is only non-empty for part 2/3 — see SPEAKING_GROUPS.
 exports.getTopics = catchAsync(async (req, res) => {
-  const topics = await speakingService.listTopics(req.query.part);
-  res.json({ success: true, topics });
+  const { topics, groups } = await speakingService.listTopics(req.query.part);
+  res.json({ success: true, topics, groups });
 });
 
 // ── GET /api/speaking/random ─────────────────────────────────
@@ -19,13 +20,13 @@ exports.getRandom = catchAsync(async (req, res) => {
 // ?questionId=<id> → single question (used by the full mock test's Speaking
 // step, which assigned one specific Part 2 cue card at start).
 exports.getQuestions = catchAsync(async (req, res) => {
-  const { topic, part, questionId } = req.query;
+  const { topic, part, group, questionId } = req.query;
   if (questionId) {
     const question = await speakingService.getQuestionById(questionId);
     if (!question) return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
     return res.json({ success: true, questions: [question], question });
   }
-  const questions = await speakingService.listQuestions({ topic, part, userId: req.user._id });
+  const questions = await speakingService.listQuestions({ topic, part, group, userId: req.user._id });
   res.json({ success: true, questions });
 });
 

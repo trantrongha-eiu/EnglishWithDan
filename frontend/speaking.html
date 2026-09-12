@@ -186,6 +186,18 @@
         <button class="part-tab" id="ptab-3" onclick="setPartFilter('3',this)">Part 3</button>
       </div>
 
+      <!-- Group filter — Part 2/3 only. The 7 cue-card groups from Daniel's
+           Speaking textbook (same taxonomy the paid Speaking course teaches
+           — see backend/services/speakingService.js's SPEAKING_GROUPS).
+           Hidden for Part 1, whose everyday small-talk topics don't fit
+           this "describe a X" monologue scheme. -->
+      <div class="sidebar-section" id="sidebar-group-section" style="display:none">
+        <label class="sidebar-label">Nhóm chủ đề</label>
+        <select class="sp-select full-width" id="sel-group" onchange="onGroupFilterChange()">
+          <option value="all">Tất cả nhóm</option>
+        </select>
+      </div>
+
       <!-- Topic filter -->
       <div class="sidebar-section">
         <label class="sidebar-label">Chủ đề</label>
@@ -207,6 +219,11 @@
         </div>
         <input type="text" class="sp-select full-width q-search-input" id="q-search-input"
                placeholder="🔍 Tìm câu hỏi..." oninput="filterQuestionList()">
+        <label class="q-hide-answered">
+          <input type="checkbox" id="chk-hide-answered" onchange="onHideAnsweredChange()">
+          <span class="q-toggle-track"><span class="q-toggle-thumb"></span></span>
+          Ẩn câu đã trả lời
+        </label>
         <div class="question-list" id="question-list">
           <div class="spinner"></div>
         </div>
@@ -317,14 +334,28 @@
           <div class="transcript-interim" id="transcript-interim"></div>
         </div>
 
-        <!-- Transcript input -->
-        <div class="transcript-box">
+        <!-- Transcript input. Three view modes toggled via #transcript-box's
+             class (see setTranscriptView() in js/speaking.js):
+             - editable (default): plain textarea, student can type manually
+             - tb-locked: recording or waiting on AI — textarea hidden, only
+               #tb-locked-msg shows, so the student isn't reading a live
+               caption of their own speech or fixing it before grading
+             - tb-result: AI graded it — read-only #transcript-display shows
+               the transcript with mistakes highlighted inline (+ score
+               pills), textarea hidden -->
+        <div class="transcript-box" id="transcript-box">
           <div class="transcript-box-header">
             <span class="box-label"><i class="fas fa-file-alt"></i> Transcript</span>
-            <span class="transcript-hint">Chỉnh sửa nếu cần trước khi phân tích</span>
+            <span class="transcript-hint">Ẩn khi đang ghi âm — hiện lại kèm lỗi được đánh dấu sau khi AI chấm</span>
+          </div>
+          <div class="tb-locked-msg" id="tb-locked-msg">
+            <i class="fas fa-microphone-lines"></i>
+            Transcript được ẩn trong lúc ghi âm — bấm "Phân tích với Gemini AI" để xem lại kèm lỗi được đánh dấu.
           </div>
           <textarea class="transcript-textarea" id="transcript-textarea"
             placeholder="Transcript sẽ hiện ở đây khi bạn nói... hoặc gõ thủ công."></textarea>
+          <div class="transcript-display" id="transcript-display"></div>
+          <div class="tb-scorepills" id="tb-scorepills"></div>
           <div class="transcript-footer">
             <button class="btn-clear" onclick="clearTranscript()">
               <i class="fas fa-trash-alt"></i> Xóa

@@ -11,11 +11,49 @@ const {
 const { checkSpeakingMistral } = require('./mistralService');
 const badgeService = require('./badgeService');
 
+// Daniel's Speaking textbook's 7 Part 2 cue-card groups — same taxonomy
+// speaking-course.html's Part 2 module (SPK-P2-M2, "Buổi 4-11") already
+// teaches. Order here drives display order everywhere groups are listed.
+const SPEAKING_GROUPS = [
+  { code: 'people', label: 'Nhóm 1: People (Người)' },
+  { code: 'places', label: 'Nhóm 2: Places (Địa điểm)' },
+  { code: 'objects', label: 'Nhóm 3: Objects (Đồ vật)' },
+  { code: 'events', label: 'Nhóm 4: Events (Sự kiện)' },
+  { code: 'activities_skills', label: 'Nhóm 5: Activities / Skills' },
+  { code: 'nature_science', label: 'Nhóm 6: Nature / Animals / Science' },
+  { code: 'culture_media', label: 'Nhóm 7: Culture / Media / Stories' },
+];
+
+// `topics`: flat sorted list (unchanged shape, still used by any caller that
+// just wants the plain list). `groups`: only populated for part 2/3 — each
+// topic bucketed into one of the 7 SPEAKING_GROUPS above (plus a trailing
+// "Khác" bucket for any topic not yet tagged with a group, so a new topic
+// added before someone assigns it a group still shows up rather than
+// silently disappearing from the grouped view).
 async function listTopics(part) {
   const filter = { isActive: true };
   if (part && part !== 'all') filter.part = Number(part);
   const topics = await SpeakingQuestion.distinct('topic', filter);
-  return topics.sort();
+  topics.sort();
+
+  let groups = [];
+  if (Number(part) === 2 || Number(part) === 3) {
+    const rows = await SpeakingQuestion.find(filter).select('topic group').lean();
+    const groupByTopic = new Map();
+    for (const r of rows) if (!groupByTopic.has(r.topic)) groupByTopic.set(r.topic, r.group || null);
+    const topicsByGroup = new Map(SPEAKING_GROUPS.map(g => [g.code, []]));
+    const ungrouped = [];
+    for (const [topic, g] of groupByTopic) {
+      if (g && topicsByGroup.has(g)) topicsByGroup.get(g).push(topic);
+      else ungrouped.push(topic);
+    }
+    groups = SPEAKING_GROUPS
+      .map(g => ({ ...g, topics: topicsByGroup.get(g.code).sort() }))
+      .filter(g => g.topics.length);
+    if (ungrouped.length) groups.push({ code: null, label: 'Khác', topics: ungrouped.sort() });
+  }
+
+  return { topics, groups };
 }
 
 // Excluded from both student-facing listing queries below (security audit
@@ -53,10 +91,13 @@ async function getQuestionById(id) {
 
 // userId is optional (some callers may not have an authenticated user), in
 // which case every question is simply reported as not-yet-attempted.
-async function listQuestions({ topic, part, userId }) {
+// `group` (part 2/3 only, see SPEAKING_GROUPS) narrows to one of the 7
+// cue-card groups — combines with `topic` the same way `part` does.
+async function listQuestions({ topic, part, group, userId }) {
   const filter = { isActive: true };
   if (topic && topic !== 'all') filter.topic = topic;
   if (part && part !== 'all') filter.part = Number(part);
+  if (group && group !== 'all') filter.group = group;
   const questions = await SpeakingQuestion.find(filter).select(LISTING_EXCLUDED_FIELDS).sort({ part: 1, topic: 1 }).lean();
 
   let attemptedIds = new Set();
@@ -477,7 +518,7 @@ async function getMaterialFilters() {
 }
 
 module.exports = {
-  listTopics, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
+  listTopics, SPEAKING_GROUPS, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
   createPendingAttempt, finalizeAttempt, markAttemptError, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints, normalizeAudioForGemini,

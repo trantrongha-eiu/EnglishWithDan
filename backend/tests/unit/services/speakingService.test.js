@@ -38,11 +38,25 @@ describe('speakingService.listTopics', () => {
     await createSpeakingQuestion({ topic: 'Mango', part: 2 });
     await createSpeakingQuestion({ topic: 'Inactive', part: 1, isActive: false });
 
-    const part1Topics = await speakingService.listTopics(1);
-    expect(part1Topics).toEqual(['Apple', 'Zebra']);
+    const part1 = await speakingService.listTopics(1);
+    expect(part1.topics).toEqual(['Apple', 'Zebra']);
+    expect(part1.groups).toEqual([]); // groups are part 2/3 only
 
-    const allTopics = await speakingService.listTopics('all');
-    expect(allTopics.sort()).toEqual(['Apple', 'Mango', 'Zebra'].sort());
+    const all = await speakingService.listTopics('all');
+    expect(all.topics.sort()).toEqual(['Apple', 'Mango', 'Zebra'].sort());
+  });
+
+  test('part 2/3 bucket topics into the 7 cue-card groups, with an ungrouped topic landing in a trailing "Khác" bucket', async () => {
+    await createSpeakingQuestion({ topic: 'A famous person to meet', part: 2, group: 'people' });
+    await createSpeakingQuestion({ topic: 'A city you enjoy visiting', part: 2, group: 'places' });
+    await createSpeakingQuestion({ topic: 'Not yet tagged', part: 2 }); // group left null
+
+    const { groups } = await speakingService.listTopics(2);
+    const byCode = Object.fromEntries(groups.map(g => [g.code, g.topics]));
+    expect(byCode.people).toEqual(['A famous person to meet']);
+    expect(byCode.places).toEqual(['A city you enjoy visiting']);
+    expect(byCode[null]).toEqual(['Not yet tagged']);
+    expect(groups[groups.length - 1].label).toBe('Khác');
   });
 });
 

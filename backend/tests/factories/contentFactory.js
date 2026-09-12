@@ -299,6 +299,7 @@ async function createSpeakingQuestion(overrides = {}) {
   return SpeakingQuestion.create({
     topic: overrides.topic || unique('Topic'),
     part: overrides.part ?? 1,
+    group: overrides.group ?? null,
     question: overrides.question || 'Describe your hometown.',
     cueCard: overrides.cueCard || '',
     isActive: overrides.isActive ?? true,

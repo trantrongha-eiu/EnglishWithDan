@@ -3,6 +3,16 @@ const mongoose = require('mongoose');
 const SpeakingQuestionSchema = new mongoose.Schema({
   topic:    { type: String, required: true },
   part:     { type: Number, enum: [1, 2, 3], default: 1 },
+  // Part 2/3 only — Daniel's Speaking textbook's 7 cue-card groups (same
+  // taxonomy speaking-course.html's Part 2 module already teaches). Part 1
+  // topics (everyday small talk) don't fit this monologue-cue-card scheme,
+  // so they're left ungrouped — see services/speakingService.js's
+  // SPEAKING_GROUPS for the canonical list/labels.
+  group: {
+    type: String,
+    enum: ['people', 'places', 'objects', 'events', 'activities_skills', 'nature_science', 'culture_media', null],
+    default: null,
+  },
   question: { type: String, required: true },
   cueCard:  { type: String, default: '' },   // Part 2 cue card bullet points
   isActive: { type: Boolean, default: true },
