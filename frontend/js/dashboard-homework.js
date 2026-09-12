@@ -45,7 +45,7 @@ function hwResourceHref(r) {
     case 'reading_practice':   return `reading.html?passageId=${id}`;
     case 'listening_test':     return `listening.html?testId=${id}`;
     case 'listening_practice': return `listening.html?sectionId=${id}`;
-    case 'dictation':          return `listening.html?sectionId=${id}&mode=dictation`;
+    case 'dictation':          return `dictation.html?sectionId=${id}`;
     case 'writing_exam':       return 'writing.html';
     // WT1-stack lessons are looked up by `code` (re-seeding-safe), not the
     // Mongo _id in `id` above — resourceCode is the snapshot taken at assign
