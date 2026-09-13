@@ -881,42 +881,82 @@
         /* ══════════════════════════════════════════════════════════════════
            Gap-fill screen (#screen-gapfill in listening.html) — full
            transcript rendered with inline blank <input>s, played back
-           continuously via its own #gf-audio element.
+           continuously via its own #gf-audio element. Own body wrapper
+           (.gf-body, NOT .lt-practice-body) — that class is a flex ROW
+           container built for the exam screen's toolbar+passage+questions
+           3-pane layout, which was squashing/left-aligning this screen's
+           single centered column instead of letting max-width+margin:auto
+           center it.
            ══════════════════════════════════════════════════════════════════ */
+        .gf-body { overflow-y: auto; padding: 4px 16px 32px; }
+
+        @keyframes gfFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        @keyframes gfPop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
+        @media (prefers-reduced-motion: reduce) { .gf-transcript, .gf-turn, .gf-blank.gf-correct, .gf-blank.gf-wrong, .gf-result-bar { animation: none !important; } }
+
         .gf-transcript {
-          max-width: 760px; margin: 0 auto; padding: 20px 4px 40px;
-          font-size: 15px; line-height: 2.1; color: var(--text2, #1f2937);
-          white-space: pre-wrap;
+          max-width: 720px; margin: 18px auto 40px; padding: 26px 30px;
+          font-size: 15.5px; line-height: 2; color: var(--text2, #1f2937);
+          background: var(--surface, #fff); border: 1px solid var(--border, #eef0f3);
+          border-radius: 20px; box-shadow: 0 10px 30px rgba(124, 58, 237, .07), 0 2px 8px rgba(0,0,0,.04);
+          animation: gfFadeUp .4s cubic-bezier(.2,.7,.3,1) both;
         }
+        [data-theme="dark"] .gf-transcript { background: var(--surface, #16181d); border-color: var(--border2, #2a2d34); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+
+        .gf-turn { margin: 0 0 14px; padding-left: 12px; border-left: 3px solid rgba(124, 58, 237, .18); }
+        .gf-turn:last-child { margin-bottom: 0; }
+        .gf-speaker {
+          display: inline-block; font-weight: 800; color: #7c3aed;
+          font-size: 12.5px; letter-spacing: .03em; text-transform: uppercase;
+          background: rgba(124, 58, 237, .1); border-radius: 999px;
+          padding: 2px 10px; margin: 0 6px 3px 0; vertical-align: 2px;
+        }
+        [data-theme="dark"] .gf-speaker { color: #c4b5fd; background: rgba(167, 139, 250, .15); }
+
         .gf-blank-wrap { display: inline-block; }
         .gf-blank {
-          width: 110px; max-width: 40vw;
-          margin: 0 2px; padding: 2px 6px;
-          font-size: 14px; font-family: inherit; text-align: center;
-          border: none; border-bottom: 2px solid #7c3aed;
+          width: 118px; max-width: 42vw;
+          margin: 0 3px; padding: 5px 12px;
+          font-size: 14px; font-weight: 600; font-family: inherit; text-align: center;
+          border: 1.5px solid rgba(124, 58, 237, .35); border-radius: 999px;
           background: rgba(124, 58, 237, .06);
-          border-radius: 3px 3px 0 0;
-          color: inherit;
+          color: #6d28d9;
+          transition: background .18s, border-color .18s, box-shadow .18s, transform .12s;
         }
-        .gf-blank:focus { outline: none; background: rgba(124, 58, 237, .12); }
-        .gf-blank.gf-correct { border-bottom-color: #16a34a; background: rgba(22, 163, 74, .1); color: #15803d; font-weight: 600; }
-        .gf-blank.gf-wrong   { border-bottom-color: #dc2626; background: rgba(220, 38, 38, .1); color: #b91c1c; text-decoration: line-through; }
-        .gf-answer-hint { margin: 0 4px; font-size: 12.5px; font-weight: 600; color: #16a34a; white-space: nowrap; }
-        [data-theme="dark"] .gf-blank { background: rgba(196, 181, 253, .1); border-bottom-color: #a78bfa; }
+        .gf-blank::placeholder { color: rgba(124, 58, 237, .35); }
+        .gf-blank:hover { border-color: rgba(124, 58, 237, .55); }
+        .gf-blank:focus {
+          outline: none; background: #fff; border-color: #7c3aed;
+          box-shadow: 0 0 0 4px rgba(124, 58, 237, .15); transform: translateY(-1px);
+        }
+        .gf-blank.gf-correct { animation: gfPop .35s ease-out; border-color: #16a34a; background: rgba(22, 163, 74, .1); color: #15803d; font-weight: 700; }
+        .gf-blank.gf-wrong   { animation: gfPop .35s ease-out; border-color: #dc2626; background: rgba(220, 38, 38, .1); color: #b91c1c; text-decoration: line-through; }
+        .gf-answer-hint { margin: 0 4px; font-size: 12.5px; font-weight: 700; color: #16a34a; white-space: nowrap; }
+        [data-theme="dark"] .gf-blank { background: rgba(196, 181, 253, .1); border-color: rgba(167, 139, 250, .4); color: #ddd6fe; }
+        [data-theme="dark"] .gf-blank:focus { background: rgba(255,255,255,.04); border-color: #a78bfa; box-shadow: 0 0 0 4px rgba(167, 139, 250, .2); }
         [data-theme="dark"] .gf-blank.gf-correct { background: rgba(34, 197, 94, .15); color: #4ade80; }
         [data-theme="dark"] .gf-blank.gf-wrong   { background: rgba(248, 113, 113, .15); color: #f87171; }
         [data-theme="dark"] .gf-answer-hint { color: #4ade80; }
 
         .gf-result-bar {
-          max-width: 760px; margin: 0 auto 6px; padding: 10px 16px;
-          background: #ede9fe; border: 1.5px solid #ddd6fe; border-radius: 8px;
-          font-size: 14px; color: #5b21b6; text-align: center;
+          max-width: 720px; margin: 0 auto 6px; padding: 12px 18px;
+          background: linear-gradient(135deg, #ede9fe, #f5f3ff); border: 1.5px solid #ddd6fe; border-radius: 999px;
+          font-size: 14.5px; font-weight: 600; color: #5b21b6; text-align: center;
+          box-shadow: 0 4px 14px rgba(124, 58, 237, .12);
+          animation: gfFadeUp .35s cubic-bezier(.2,.7,.3,1) both;
         }
-        [data-theme="dark"] .gf-result-bar { background: #2e1065; border-color: #4c1d95; color: #c4b5fd; }
+        [data-theme="dark"] .gf-result-bar { background: linear-gradient(135deg, #2e1065, #3b0764); border-color: #4c1d95; color: #c4b5fd; }
 
         .gf-speed-btn {
-          padding: 6px 12px; font-size: 12px; font-weight: 700;
-          border: 1px solid var(--border2, #d1d5db); border-radius: 6px;
+          padding: 6px 14px; font-size: 12px; font-weight: 700;
+          border: 1px solid var(--border2, #d1d5db); border-radius: 999px;
           background: var(--surface, #fff); color: var(--text2, #1f2937); cursor: pointer;
+          transition: background .15s, transform .1s;
         }
         .gf-speed-btn:hover { background: var(--surface2, #f3f4f6); }
+        .gf-speed-btn:active { transform: scale(.94); }
+
+        @media (max-width: 600px) {
+          .gf-transcript { padding: 18px 16px; margin: 12px auto 24px; border-radius: 16px; }
+          .gf-blank { width: 92px; }
+        }

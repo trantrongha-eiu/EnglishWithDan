@@ -419,7 +419,7 @@
             <button class="audio-skip-btn" onclick="gfSkip(10)">10s <i class="fas fa-forward"></i></button>
             <button class="gf-speed-btn" id="gf-speed-btn" onclick="gfCycleSpeed()">1x</button>
         </div>
-        <div class="lt-practice-body">
+        <div class="gf-body">
             <div id="gf-result-bar" class="gf-result-bar" style="display:none"></div>
             <div id="gf-transcript" class="gf-transcript"></div>
         </div>
@@ -4434,19 +4434,59 @@
 
     function _gfAudioEl() { return document.getElementById('gf-audio'); }
 
-    function _gfRenderTranscript(template) {
-        const parts = String(template || '').split(/\[\[(\d+)\]\]/g);
-        // split() with a capturing group yields [text, num, text, num, ..., text]
+    // Some source transcripts embed authoring annotations marking where a
+    // real exam question's answer falls (e.g. "...harbour. Q1" or "...raw
+    // (31) materials") — generateGapFillBlanks keeps these verbatim (the
+    // transcript-fidelity requirement), but they're meaningless clutter in
+    // a gap-fill drill, whose blanks aren't tied to those question numbers.
+    // Stripped here for DISPLAY only — grading still uses the real template.
+    function _gfCleanAnnotations(s) {
+        return String(s || '')
+            .replace(/[ \t]*\(\d{1,3}\)/g, '')
+            .replace(/[ \t]*\bQ\d{1,3}\b\.?/g, '');
+    }
+
+    // [[n]] blank tokens -> real <input>, everything else HTML-escaped.
+    function _gfRenderInline(text) {
+        const parts = text.split(/\[\[(\d+)\]\]/g);
         let html = '';
         for (let i = 0; i < parts.length; i++) {
             if (i % 2 === 0) {
-                html += escHtml(parts[i]).replace(/\n/g, '<br>');
+                html += escHtml(parts[i]);
             } else {
                 const idx = parseInt(parts[i], 10) - 1;
-                html += `<span class="gf-blank-wrap"><input type="text" class="gf-blank" data-idx="${idx}" autocomplete="off" autocapitalize="off" spellcheck="false"></span>`;
+                html += `<span class="gf-blank-wrap"><input type="text" class="gf-blank" data-idx="${idx}" placeholder="•••" autocomplete="off" autocapitalize="off" spellcheck="false"></span>`;
             }
         }
         return html;
+    }
+
+    // Groups the transcript into per-speaker-turn <p> blocks instead of one
+    // wall of text joined by <br> — handles both authoring conventions seen
+    // in real content: "LEON:   dialogue" all on one line (turns separated
+    // by a blank line), and "Woman:" alone on its own line followed by the
+    // dialogue on the next line(s). A line only counts as a speaker label
+    // when every word in it starts with a capital letter (up to 3 words) —
+    // rejects ordinary sentences that happen to contain an early colon
+    // (e.g. "It costs: 60 pounds", "costs" isn't capitalized so no match).
+    const GF_SPEAKER_RE = /^\s*([A-Z][A-Za-z'.-]*(?:\s+[A-Z][A-Za-z'.-]*){0,2}):\s*(.*)$/;
+    function _gfRenderTranscript(template) {
+        const lines = _gfCleanAnnotations(template).split('\n');
+        const turns = [];
+        let cur = null;
+        function flush() { if (cur && (cur.speaker || cur.lines.some(l => l.trim()))) turns.push(cur); cur = null; }
+        lines.forEach(line => {
+            if (!line.trim()) { flush(); return; }
+            const m = line.match(GF_SPEAKER_RE);
+            if (m) { flush(); cur = { speaker: m[1], lines: m[2] ? [m[2]] : [] }; }
+            else { if (!cur) cur = { speaker: null, lines: [] }; cur.lines.push(line); }
+        });
+        flush();
+        return turns.map(t => {
+            const body = _gfRenderInline(t.lines.join('\n')).replace(/\n/g, '<br>');
+            const speakerHtml = t.speaker ? `<span class="gf-speaker">${escHtml(t.speaker)}</span> ` : '';
+            return `<p class="gf-turn">${speakerHtml}${body}</p>`;
+        }).join('');
     }
 
     function _enterGapFillScreen(section) {
