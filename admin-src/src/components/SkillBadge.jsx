@@ -19,6 +19,10 @@ export const SKILL_META = {
   'essential-grammar':  { color: '#0ea5e9', label: '📘 Ngữ pháp' },
   'vocabulary-lesson':  { color: '#14b8a6', label: '🗂 Từ vựng' },
   'dictation':          { color: '#22d3ee', label: '🎧 Dictation' },
+  // Task 1/Task 2/Speaking/Noun Phrase course exercises all share one
+  // collection (WT1Submission) — testMeta carries the lessonCode so a
+  // teacher can still tell which course/lesson a row belongs to.
+  'wt1-course':         { color: '#0284c7', label: '📖 Khoá học (T1/T2)' },
 };
 
 export function skillBadge(skill) {

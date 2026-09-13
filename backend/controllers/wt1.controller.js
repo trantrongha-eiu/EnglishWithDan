@@ -210,6 +210,16 @@ exports.getProgress = async (req, res) => {
   }
 };
 
+exports.getExerciseHistory = async (req, res) => {
+  try {
+    const history = await svc.getExerciseHistory(req.user._id, req.params.code, req.query.limit);
+    res.json({ success: true, history });
+  } catch (err) {
+    console.error('[WT1] exercise history:', err.message);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.getAttempt = async (req, res) => {
   try {
     const data = await svc.getAttemptDetail(req.user._id, req.params.attemptId);

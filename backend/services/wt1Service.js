@@ -293,6 +293,23 @@ async function recordSubmission(userId, exercise, payload) {
   return saved;
 }
 
+// List of past attempts for ONE exercise (newest first) — powers the
+// "Lịch sử" button on the exercise runner. Summary fields only (score,
+// band if AI-graded, date); a row's full detail (answers/responses/full
+// aiFeedback) is fetched on demand via the existing getAttemptDetail/
+// GET /wt1/attempt/:id, same as clicking into one attempt already works.
+async function getExerciseHistory(userId, exerciseCode, limit = 50) {
+  const subs = await WT1Submission.find({ userId, exerciseCode })
+    .select('attempt score maxScore status aiFeedback.bandEstimate createdAt')
+    .sort({ attempt: -1 })
+    .limit(Math.min(Math.max(Number(limit) || 50, 1), 200))
+    .lean();
+  return subs.map((s) => ({
+    id: s._id, attempt: s.attempt, score: s.score ?? null, maxScore: s.maxScore ?? null,
+    band: s.aiFeedback?.bandEstimate ?? null, status: s.status, createdAt: s.createdAt,
+  }));
+}
+
 async function getAttemptDetail(userId, id) {
   if (!mongoose.isValidObjectId(id)) return null;
   const sub = await WT1Submission.findOne({ _id: id, userId }).lean();
@@ -312,5 +329,5 @@ async function getProgress(userId) {
 
 module.exports = {
   COURSE_CODE, sanitizeExercise, gateDefaults,
-  getOverview, getLesson, recordSubmission, getAttemptDetail, getProgress,
+  getOverview, getLesson, recordSubmission, getAttemptDetail, getExerciseHistory, getProgress,
 };

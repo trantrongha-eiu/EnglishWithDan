@@ -19,6 +19,8 @@ const Task2TemplateAttempt      = require('../../models/Task2TemplateAttempt');
 const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
 const DictationAttempt = require('../../models/DictationAttempt');
+const WT1Submission    = require('../../models/WT1Submission');
+const WT1Exercise      = require('../../models/WT1Exercise');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
@@ -182,8 +184,9 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
 });
 
 // GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening +
-// Writing + Speaking + Task1/Task2 + Task2 Templates + Essential Grammar + Vocabulary Lessons + Dictation)
-// Fans out across 13 heterogeneous attempt collections (no single-collection
+// Writing + Speaking + Task1/Task2 + Task2 Templates + Essential Grammar + Vocabulary Lessons +
+// Dictation + WT1-stack courses [Task 1/Task 2/Speaking/Noun Phrase course exercises])
+// Fans out across 14 heterogeneous attempt collections (no single-collection
 // union to page against), so this can't do textbook skip/limit pagination —
 // each collection is queried for its own top-LIMIT rows, merged, sorted,
 // then capped again in JS. What THIS fixes (StudentHistory.jsx admin-panel
@@ -240,6 +243,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      WT1Submission.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
@@ -251,7 +255,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
 
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
-           task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts] = await Promise.all([
+           task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts,
+           wt1Submissions] = await Promise.all([
       TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -325,8 +330,24 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => [])
+        .catch(() => []),
+      // Every WT1-stack course (Task 1 Writing, Task 2 Writing, Speaking
+      // course, Noun Phrase course) shares this one collection — exerciseCode
+      // is a string code (not a $ref), so there's no populate; titles are
+      // resolved below via a separate WT1Exercise lookup instead.
+      WT1Submission.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-answers -responses').lean()
+        .catch(() => []),
     ]);
+
+    const wt1ExerciseTitles = {};
+    if (wt1Submissions.length) {
+      const codes = [...new Set(wt1Submissions.map(s => s.exerciseCode).filter(Boolean))];
+      const exs = await WT1Exercise.find({ code: { $in: codes } }).select('code title').lean().catch(() => []);
+      exs.forEach(e => { wt1ExerciseTitles[e.code] = e.title; });
+    }
 
     // Group Task1Attempt's flat per-question docs into per-session rows —
     // same grouping the student's own history view already does client-side
@@ -500,6 +521,18 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correctCount,
         totalQuestions: h.totalSentences,
         duration: null
+      })),
+      ...wt1Submissions.map(h => ({
+        _id: h._id, skill: 'wt1-course',
+        testName: wt1ExerciseTitles[h.exerciseCode] || h.exerciseCode || '–',
+        testMeta: `${h.lessonCode || ''}${h.attempt > 1 ? ` · lượt ${h.attempt}` : ''}`,
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: h.aiFeedback?.bandEstimate ?? null,
+        status: h.status,
+        correctCount: h.score,
+        totalQuestions: h.maxScore,
+        duration: h.timeSpentSeconds || null
       }))
     ];
 
