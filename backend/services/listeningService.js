@@ -16,6 +16,8 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
+const GapFillAttempt = require('../models/GapFillAttempt');
+const geminiService = require('./geminiService');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const User = require('../models/User');
@@ -33,6 +35,14 @@ const badgeService = require('./badgeService');
 // already ships it to the review UI.
 const PRACTICE_SECTION_SAFE_FIELDS =
   '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation';
+
+function normalizeGapFillAnswer(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[.,!?;:]+$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 // Drops `correctAnswer` from each persisted practice answer row
 // (PracticeAnswerSchema = { questionNumber, userAnswer, correctAnswer,
@@ -350,7 +360,7 @@ async function listPracticeSections(query, userId) {
     sortBy = { createdAt: -1 };
   }
   const sections = await ListeningSection.find(filter)
-    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups')
+    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished')
     .sort(sortBy)
     .lean();
   const safe = sections.map(s => ({
@@ -364,7 +374,8 @@ async function listPracticeSections(query, userId) {
     questionGroups: (s.questionGroups || []).map(g => ({
       groupType: g.groupType,
       questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
-    }))
+    })),
+    hasGapFill: s.gapFillPublished === true,
   }));
   const sectionIds = sections.map(s => s._id);
   const attemptStats = await ListeningPracticeAttempt.aggregate([
@@ -452,6 +463,109 @@ async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answe
   });
 
   return { attemptId: attempt._id, correctCount, totalSentences: safeAnswers.length };
+}
+
+// ── Gap-fill practice (full transcript, blanks while listening) ─────────
+// Same review-exempt drill shape as Dictation above: its own gate-free
+// content route (GET /listening/gapfill/section/:id, no
+// requireReviewComplete), its own save route, its own attempt collection —
+// never creates a pending review. Only sections an admin has explicitly
+// reviewed and published (gapFillPublished) are ever listed/fetched here.
+async function listGapFillSections() {
+  const sections = await ListeningSection.find({
+    isActive: true,
+    gapFillPublished: true,
+  })
+    .select('_id title partNumber audioDuration isActualTest gapFillAnswers')
+    .sort({ partNumber: 1, title: 1 })
+    .lean();
+  return sections.map(s => ({
+    _id: s._id,
+    title: s.title,
+    partNumber: s.partNumber,
+    audioDuration: s.audioDuration,
+    isActualTest: s.isActualTest,
+    blankCount: (s.gapFillAnswers || []).length,
+  }));
+}
+
+async function getGapFillSectionById(id) {
+  return ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
+    .select('_id title partNumber audioUrl audioDuration gapFillTemplate')
+    .lean();
+}
+
+async function saveGapFillAttempt({ sectionId, sectionTitle, partNumber, answers }, userId) {
+  const section = await ListeningSection.findOne({ _id: sectionId, gapFillPublished: true })
+    .select('_id title partNumber gapFillAnswers')
+    .lean();
+  if (!section) return null;
+
+  const correctAnswers = section.gapFillAnswers || [];
+  const safeAnswers = (answers || [])
+    .map(a => ({ blankIndex: Number(a.blankIndex), userAnswer: String(a.userAnswer || '') }))
+    .filter(a => Number.isInteger(a.blankIndex) && a.blankIndex >= 0 && a.blankIndex < correctAnswers.length);
+  if (!safeAnswers.length) return null;
+
+  const gradedAnswers = safeAnswers.map(a => {
+    const correctAnswer = correctAnswers[a.blankIndex];
+    const isCorrect = normalizeGapFillAnswer(a.userAnswer) === normalizeGapFillAnswer(correctAnswer);
+    return { blankIndex: a.blankIndex, userAnswer: a.userAnswer, isCorrect, correctAnswer };
+  });
+  const correctCount = gradedAnswers.filter(a => a.isCorrect).length;
+
+  const attempt = await GapFillAttempt.create({
+    userId,
+    sectionId,
+    sectionTitle: sectionTitle || section.title || '',
+    partNumber: partNumber || section.partNumber || 1,
+    answers: gradedAnswers.map(({ blankIndex, userAnswer, isCorrect }) => ({ blankIndex, userAnswer, isCorrect })),
+    totalBlanks: correctAnswers.length,
+    correctCount,
+    submittedAt: new Date()
+  });
+
+  return {
+    attemptId: attempt._id,
+    correctCount,
+    totalBlanks: correctAnswers.length,
+    answers: gradedAnswers.map(({ blankIndex, isCorrect, correctAnswer }) => ({ blankIndex, isCorrect, correctAnswer })),
+  };
+}
+
+// ── Admin – Gap-fill generation & review ─────────────────────────────────
+async function generateSectionGapFill(id) {
+  const section = await ListeningSection.findById(id).select('_id transcript');
+  if (!section) throw new NotFoundError('Không tìm thấy section');
+  if (!section.transcript || !section.transcript.trim()) {
+    const err = new Error('Section chưa có transcript');
+    err.status = 400;
+    throw err;
+  }
+
+  const { template, answers } = await geminiService.generateGapFillBlanks(section.transcript);
+
+  section.gapFillTemplate = template;
+  section.gapFillAnswers = answers;
+  section.gapFillGeneratedAt = new Date();
+  // Regenerating always resets publish state — an admin must re-review
+  // before students see the new content.
+  section.gapFillPublished = false;
+  section.gapFillSkippedAt = null;
+  section.gapFillSkipReason = '';
+  await section.save();
+
+  return { gapFillTemplate: template, gapFillAnswers: answers, gapFillGeneratedAt: section.gapFillGeneratedAt, gapFillPublished: false };
+}
+
+async function updateSectionGapFill(id, { gapFillTemplate, gapFillAnswers, gapFillPublished }) {
+  const section = await ListeningSection.findByIdAndUpdate(
+    id,
+    { gapFillTemplate, gapFillAnswers, gapFillPublished: gapFillPublished === true },
+    { new: true, runValidators: true }
+  ).select('gapFillTemplate gapFillAnswers gapFillPublished gapFillGeneratedAt');
+  if (!section) throw new NotFoundError('Không tìm thấy section');
+  return section;
 }
 
 async function listAdminSections() {
@@ -933,6 +1047,7 @@ module.exports = {
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, saveDictationAttempt,
+  listGapFillSections, getGapFillSectionById, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
   listStudentTests, startTest, submitTest,

@@ -397,6 +397,42 @@
         </div>
     </div>
 
+    <!-- Gap-fill screen — full-transcript fill-in-the-blank drill, continuous
+         audio (no per-sentence seeking like dictation.html), self-contained
+         (own <audio>, own JS below) so it never touches the shared `audio`
+         element/state used by screen-exam/screen-review/screen-practice. -->
+    <div id="screen-gapfill" class="screen">
+        <div class="exam-topbar">
+            <button class="exam-exit-btn" onclick="closeGapFillScreen()" title="Thoát"><i class="fas fa-times"></i></button>
+            <span class="exam-title" id="gf-title" style="flex:1">Gap-fill</span>
+        </div>
+        <div class="audio-bar">
+            <button class="audio-play-btn" id="gf-play-btn" onclick="gfTogglePlay()"><i class="fas fa-play" id="gf-play-icon"></i></button>
+            <button class="audio-skip-btn" onclick="gfSkip(-10)"><i class="fas fa-backward"></i> 10s</button>
+            <div class="audio-seek-wrap">
+                <input type="range" class="audio-seek" id="gf-seek" value="0" min="0" max="100" step="0.1" oninput="gfSeekInput(this.value)" />
+                <div class="audio-time">
+                    <span id="gf-time-cur">00:00</span>
+                    <span id="gf-time-total">00:00</span>
+                </div>
+            </div>
+            <button class="audio-skip-btn" onclick="gfSkip(10)">10s <i class="fas fa-forward"></i></button>
+            <button class="gf-speed-btn" id="gf-speed-btn" onclick="gfCycleSpeed()">1x</button>
+        </div>
+        <div class="lt-practice-body">
+            <div id="gf-result-bar" class="gf-result-bar" style="display:none"></div>
+            <div id="gf-transcript" class="gf-transcript"></div>
+        </div>
+        <div class="exam-footer">
+            <div class="exam-footer-btns">
+                <button class="btn-ghost" onclick="closeGapFillScreen()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+                <button class="btn-ghost" onclick="gfRetry()"><i class="fas fa-redo"></i> Làm lại</button>
+                <button class="btn-primary" id="gf-submit-btn" onclick="gfSubmit()"><i class="fas fa-check"></i> Nộp bài</button>
+            </div>
+        </div>
+        <audio id="gf-audio" preload="metadata"></audio>
+    </div>
+
     <!-- Settings panel – ở body level để dùng được cho cả exam và practice khi fullscreen -->
     <div id="settings-panel" class="settings-panel hidden">
         <div class="settings-row">
@@ -4053,6 +4089,7 @@
             <div class="practice-card-body">
                 <div class="practice-card-title">${escHtml(s.title)}</div>
                 <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur"><i class="fas fa-music"></i> ${dur}</small>` : ''}</div>
+                ${s.hasGapFill ? `<button class="practice-card-btn-gapfill" onclick="event.stopPropagation();startGapFillSection('${s._id}')"><i class="fas fa-pen"></i> Gap-fill</button>` : ''}
                 <button class="${btnCls}" onclick="event.stopPropagation();startPracticeSection('${s._id}',${partArg})">${btnText}</button>
             </div>
         </div>`;
@@ -4347,6 +4384,174 @@
         }
 
         showScreen('practice');
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       GAP-FILL — full-transcript fill-in-the-blank drill. Self-contained:
+       its own <audio id="gf-audio"> and its own state below, deliberately
+       NOT sharing the page's global `audio` element/state used by
+       screen-exam/screen-review/screen-practice, since this screen can be
+       entered from the section grid independently of those. Continuous
+       playback (no per-sentence seeking like dictation.html) — student
+       plays/pauses/seeks the whole audio freely while typing into blanks
+       inline in the flowing transcript.
+       ══════════════════════════════════════════════════════════════════ */
+    let _gfSection = null;
+    let _gfSubmitted = false;
+    const _gfSpeeds = [1, 0.75, 1.25, 1.5];
+    let _gfSpeedIdx = 0;
+
+    async function startGapFillSection(sectionId) {
+        if (!window.AuthService.hasPremiumAccess()) { openUpgradeModal(); return; }
+        const clickedCard = document.querySelector(`#lt-section-list .practice-card[data-pid="${sectionId}"]`);
+        const gfBtn = clickedCard ? clickedCard.querySelector('.practice-card-btn-gapfill') : null;
+        if (gfBtn) { gfBtn._origText = gfBtn.innerHTML; gfBtn.innerHTML = '⏳ Đang tải...'; }
+        try {
+            const res  = await fetch(`${API}/listening/gapfill/section/${sectionId}`, { headers: authH() });
+            const data = await safeJson(res);
+            if (!data.success || !data.section) { toast('Không tải được bài Gap-fill', 'error'); return; }
+            _enterGapFillScreen(data.section);
+        } catch (e) {
+            toast('Lỗi: ' + (e?.message || 'Không xác định'), 'error');
+            console.error('[startGapFillSection]', e);
+        } finally {
+            if (gfBtn && gfBtn._origText) { gfBtn.innerHTML = gfBtn._origText; gfBtn._origText = null; }
+        }
+    }
+
+    function _gfAudioEl() { return document.getElementById('gf-audio'); }
+
+    function _gfRenderTranscript(template) {
+        const parts = String(template || '').split(/\[\[(\d+)\]\]/g);
+        // split() with a capturing group yields [text, num, text, num, ..., text]
+        let html = '';
+        for (let i = 0; i < parts.length; i++) {
+            if (i % 2 === 0) {
+                html += escHtml(parts[i]).replace(/\n/g, '<br>');
+            } else {
+                const idx = parseInt(parts[i], 10) - 1;
+                html += `<span class="gf-blank-wrap"><input type="text" class="gf-blank" data-idx="${idx}" autocomplete="off" autocapitalize="off" spellcheck="false"></span>`;
+            }
+        }
+        return html;
+    }
+
+    function _enterGapFillScreen(section) {
+        _gfSection = section;
+        _gfSubmitted = false;
+        _gfSpeedIdx = 0;
+
+        document.getElementById('gf-title').innerHTML = `<i class="fas fa-pen"></i> Gap-fill: ${escHtml(section.title || '')}`;
+        document.getElementById('gf-transcript').innerHTML = _gfRenderTranscript(section.gapFillTemplate);
+        const resultBar = document.getElementById('gf-result-bar');
+        resultBar.style.display = 'none';
+        resultBar.innerHTML = '';
+        document.getElementById('gf-submit-btn').disabled = false;
+        document.getElementById('gf-submit-btn').innerHTML = '<i class="fas fa-check"></i> Nộp bài';
+
+        const tArea = document.getElementById('gf-transcript');
+        // Block paste — same anti-cheat convention as dictation.html's #dict-input.
+        tArea.querySelectorAll('.gf-blank').forEach(inp => {
+            inp.addEventListener('paste', e => e.preventDefault());
+        });
+
+        const gfAudio = _gfAudioEl();
+        gfAudio.pause();
+        gfAudio.src = section.audioUrl || '';
+        gfAudio.playbackRate = 1;
+        gfAudio.load();
+        document.getElementById('gf-play-icon').className = 'fas fa-play';
+        document.getElementById('gf-speed-btn').textContent = '1x';
+
+        showScreen('gapfill');
+    }
+
+    function gfTogglePlay() {
+        const gfAudio = _gfAudioEl();
+        if (gfAudio.paused) gfAudio.play().catch(() => toast('Không phát được audio.', 'error'));
+        else gfAudio.pause();
+    }
+    function gfSkip(secs) {
+        const gfAudio = _gfAudioEl();
+        gfAudio.currentTime = Math.max(0, Math.min(gfAudio.duration || 0, gfAudio.currentTime + secs));
+    }
+    function gfSeekInput(val) { _gfAudioEl().currentTime = parseFloat(val); }
+    function gfCycleSpeed() {
+        _gfSpeedIdx = (_gfSpeedIdx + 1) % _gfSpeeds.length;
+        _gfAudioEl().playbackRate = _gfSpeeds[_gfSpeedIdx];
+        document.getElementById('gf-speed-btn').textContent = _gfSpeeds[_gfSpeedIdx] + 'x';
+    }
+    (function _wireGfAudioEvents() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const gfAudio = _gfAudioEl();
+            if (!gfAudio) return;
+            gfAudio.addEventListener('play',  () => { document.getElementById('gf-play-icon').className = 'fas fa-pause'; });
+            gfAudio.addEventListener('pause', () => { document.getElementById('gf-play-icon').className = 'fas fa-play'; });
+            gfAudio.addEventListener('loadedmetadata', () => {
+                const seek = document.getElementById('gf-seek');
+                if (seek) seek.max = gfAudio.duration || 0;
+                document.getElementById('gf-time-total').textContent = `${pad(Math.floor((gfAudio.duration||0)/60))}:${pad(Math.floor((gfAudio.duration||0)%60))}`;
+            });
+            gfAudio.addEventListener('timeupdate', () => {
+                const seek = document.getElementById('gf-seek');
+                if (seek) seek.value = gfAudio.currentTime;
+                document.getElementById('gf-time-cur').textContent = `${pad(Math.floor(gfAudio.currentTime/60))}:${pad(Math.floor(gfAudio.currentTime%60))}`;
+            });
+        });
+    })();
+
+    async function gfSubmit() {
+        if (!_gfSection || _gfSubmitted) return;
+        const inputs = Array.from(document.querySelectorAll('#gf-transcript .gf-blank'));
+        if (!inputs.length) return;
+        const answers = inputs.map(inp => ({ blankIndex: parseInt(inp.dataset.idx, 10), userAnswer: inp.value }));
+        const btn = document.getElementById('gf-submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Đang chấm...';
+        try {
+            const res = await fetch(`${API}/listening/gapfill/save-attempt`, {
+                method: 'POST', headers: authH(),
+                body: JSON.stringify({ sectionId: _gfSection._id, sectionTitle: _gfSection.title, partNumber: _gfSection.partNumber, answers })
+            });
+            const data = await safeJson(res);
+            if (!data.success) { toast('Không chấm được bài, thử lại.', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Nộp bài'; return; }
+            _gfSubmitted = true;
+            const byIdx = {};
+            (data.answers || []).forEach(a => { byIdx[a.blankIndex] = a; });
+            inputs.forEach(inp => {
+                const g = byIdx[parseInt(inp.dataset.idx, 10)];
+                if (!g) return;
+                inp.readOnly = true;
+                inp.classList.add(g.isCorrect ? 'gf-correct' : 'gf-wrong');
+                if (!g.isCorrect) {
+                    const hint = document.createElement('span');
+                    hint.className = 'gf-answer-hint';
+                    hint.textContent = `→ ${g.correctAnswer}`;
+                    inp.insertAdjacentElement('afterend', hint);
+                }
+            });
+            const resultBar = document.getElementById('gf-result-bar');
+            resultBar.style.display = '';
+            resultBar.innerHTML = `Bạn đúng <strong>${data.correctCount}/${data.totalBlanks}</strong> chỗ trống`;
+            btn.innerHTML = '<i class="fas fa-check"></i> Đã nộp';
+        } catch (e) {
+            toast('Lỗi: ' + (e?.message || 'Không xác định'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> Nộp bài';
+        }
+    }
+
+    function gfRetry() {
+        if (!_gfSection) return;
+        _enterGapFillScreen(_gfSection);
+    }
+
+    function closeGapFillScreen() {
+        const gfAudio = _gfAudioEl();
+        gfAudio.pause();
+        gfAudio.src = '';
+        _gfSection = null;
+        showScreen('list');
     }
 
     /* ── Submit + grade ──────────────────────────────────────────────────── */

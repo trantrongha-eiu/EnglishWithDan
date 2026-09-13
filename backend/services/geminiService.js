@@ -616,7 +616,7 @@ const T2_TYPE_VI = {
  * Returns the parsed JSON object; callers normalise/reshape their own
  * fields afterward.
  */
-async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens, timeoutMessage, logLabel, _attempt = 0 }) {
+async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens, timeoutMessage, logLabel, model = MODEL_FAST, timeoutMs = 30000, _attempt = 0 }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa cấu hình');
   const ai = new GoogleGenAI({ apiKey });
@@ -625,7 +625,7 @@ async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens
   try {
     const result = await withTimeout(
       ai.models.generateContent({
-        model: MODEL_FAST,
+        model,
         contents: prompt,
         config: {
           systemInstruction,
@@ -634,7 +634,7 @@ async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens
           maxOutputTokens
         }
       }),
-      30000,
+      timeoutMs,
       timeoutMessage
     );
     rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -648,7 +648,7 @@ async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai(`${logLabel}: JSON parse failed, retrying`, { errorMessage: parseErr.message });
-      return _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens, timeoutMessage, logLabel, _attempt: _attempt + 1 });
+      return _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens, timeoutMessage, logLabel, model, timeoutMs, _attempt: _attempt + 1 });
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
@@ -738,6 +738,87 @@ Trả về JSON: {"results": [{"id": string, "isCorrect": boolean, "score": numb
     score: Math.min(100, Math.max(0, Number(p.score) || 0)),
     feedbackVi: String(p.feedbackVi || ''),
   }));
+}
+
+// ── Listening Gap-fill generation ───────────────────────────────────
+// Turns a section's full, human-verified transcript into a fill-in-the-blank
+// drill: the ENTIRE transcript stays word-for-word identical, with ~1-2
+// content words/phrases per sentence swapped out for sequential [[1]],
+// [[2]], ... tokens (numbers, names, key nouns/verbs/adjectives — never
+// filler words), mirroring real IELTS Listening gap-fill answer keys.
+// Uses the higher-quality MODEL (not MODEL_FAST) since this only runs
+// per-section, admin-triggered (script or "Sinh Gap-fill" button), not
+// per-student-answer — accuracy matters far more than latency/cost here.
+const GAPFILL_SYSTEM = `You are an IELTS Listening exam content creator, specialised in turning a full listening transcript into a gap-fill practice drill.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function normalizeGapFillText(s) {
+  return String(s || '').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Rebuilds the original transcript from a generated {template, answers} pair
+ * by substituting each [[n]] token with answers[n-1], for validation against
+ * the real transcript. Returns null if a token has no matching answer.
+ */
+function reconstructFromGapFillTemplate(template, answers) {
+  let missing = false;
+  const rebuilt = String(template || '').replace(/\[\[(\d+)\]\]/g, (_m, n) => {
+    const ans = answers[Number(n) - 1];
+    if (ans === undefined || ans === null) { missing = true; return ''; }
+    return ans;
+  });
+  return missing ? null : rebuilt;
+}
+
+function buildGapFillPrompt(transcript) {
+  return `Đây là transcript đầy đủ của một bài Listening IELTS:
+<<<TRANSCRIPT_START>>>
+${transcript}
+<<<TRANSCRIPT_END>>>
+
+Nhiệm vụ: tạo bài tập gap-fill (điền từ vào chỗ trống) từ TOÀN BỘ transcript trên, theo đúng phong cách answer key thi IELTS Listening thật.
+
+QUY TẮC BẮT BUỘC:
+1. "template" PHẢI giữ nguyên 100% văn bản gốc — từng từ, dấu câu, khoảng trắng, xuống dòng, nhãn người nói (vd "Man:", "Woman:") — CHỈ thay các từ/cụm từ bị chọn đục lỗ bằng token [[1]], [[2]], [[3]], ... theo đúng thứ tự xuất hiện, đánh số liên tục bắt đầu từ 1. Không thêm/bớt bất kỳ ký tự nào khác ngoài việc thay thế đó.
+2. Chọn khoảng 1-2 chỗ trống cho mỗi câu có nội dung thông tin (bỏ qua các câu giao tiếp thuần xã giao như "Hello", "OK", "Right"). Chỉ đục các từ/cụm mang thông tin: số liệu, ngày tháng, tên riêng, danh từ, động từ, tính từ quan trọng — KHÔNG đục từ nối, mạo từ, giới từ, trợ động từ.
+3. Mỗi đáp án tối đa 3 từ và/hoặc 1 số (giống format "NO MORE THAN THREE WORDS AND/OR A NUMBER" của đề thi thật).
+4. "answers" là mảng string theo đúng thứ tự token, answers[0] ứng với [[1]], answers[1] ứng với [[2]], v.v. — đây phải là NGUYÊN VĂN đoạn text đã bị thay thế trong transcript gốc (để khi ghép lại đúng y hệt bản gốc).
+
+Trả về JSON: {"template": string, "answers": string[]}`;
+}
+
+async function generateGapFillBlanks(transcript, _attempt = 0) {
+  const clean = String(transcript || '').trim();
+  if (!clean) throw new Error('Transcript rỗng');
+
+  const parsed = await _gradeWithGeminiJson({
+    prompt: buildGapFillPrompt(clean),
+    systemInstruction: GAPFILL_SYSTEM,
+    maxOutputTokens: Math.max(2000, Math.ceil(clean.length * 2)),
+    timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.',
+    logLabel: 'generateGapFillBlanks',
+    model: MODEL,
+    // Longer than the default 30s: this generates a full transcript's worth
+    // of output (can be thousands of tokens for a long section), which
+    // legitimately takes longer than a short per-answer grading call.
+    timeoutMs: 90000,
+  });
+
+  const template = String(parsed.template || '');
+  const answers = Array.isArray(parsed.answers) ? parsed.answers.map(a => String(a)) : [];
+  const rebuilt = reconstructFromGapFillTemplate(template, answers);
+
+  const matches = rebuilt !== null && normalizeGapFillText(rebuilt) === normalizeGapFillText(clean);
+  if (!matches) {
+    if (_attempt < 1) {
+      logger.ai('generateGapFillBlanks: reconstructed text did not match transcript, retrying');
+      return generateGapFillBlanks(clean, _attempt + 1);
+    }
+    throw new Error('AI không giữ nguyên transcript gốc sau 2 lần thử — vui lòng thử lại hoặc kiểm tra transcript.');
+  }
+
+  return { template, answers };
 }
 
 // ── Dictionary Collocations ─────────────────────────────────────────
@@ -1043,6 +1124,7 @@ async function gradeTask2Band(prompt, essay) {
 
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
+  generateGapFillBlanks,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).

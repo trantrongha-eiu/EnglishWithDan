@@ -100,6 +100,23 @@ const ListeningSectionSchema = new mongoose.Schema({
   // Set by scripts/rebuildDictationSentences.js when it rejoined clips an
   // earlier ~4s split had cut mid-sentence and re-normalised the section.
   dictationRebuiltAt: { type: Date, default: null },
+
+  // Full-transcript gap-fill drill ("nghe và điền từ vào chỗ trống, giữ
+  // nguyên mạch transcript"). `gapFillTemplate` is a copy of `transcript`
+  // with the blanked words/phrases replaced by sequential [[1]], [[2]], ...
+  // tokens; `gapFillAnswers[i]` is the answer for token [[i+1]]. Generated
+  // by scripts/generateListeningGapFill.js (or the admin "Sinh Gap-fill"
+  // button), which validates that swapping the tokens back for the answers
+  // reproduces `transcript` exactly — see geminiService.generateGapFillBlanks.
+  gapFillTemplate: { type: String, default: '' },
+  gapFillAnswers:  { type: [String], default: [] },
+  // Content is AI-generated, so it never reaches students until an admin
+  // reviews the preview and flips this on (see ListeningSectionEdit.jsx).
+  // Regenerating always resets this to false, forcing a re-review.
+  gapFillPublished:   { type: Boolean, default: false },
+  gapFillGeneratedAt: { type: Date, default: null },
+  gapFillSkippedAt:   { type: Date, default: null },
+  gapFillSkipReason:  { type: String, default: '' },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });

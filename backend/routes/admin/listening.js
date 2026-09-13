@@ -76,6 +76,13 @@ router.delete('/listening/sections/:id', auth, teacherOnly, listeningController.
 router.delete('/listening/sections/:id/permanent', auth, teacherOnly, listeningController.deleteAdminSectionPermanent);
 router.post('/listening/sections/:id/audio', auth, teacherOnly, upload.single('audio'), listeningController.uploadSectionAudio);
 
+// ══════════════════════════════════════════════════════════════════════════════
+// Gap-fill generation & review (AI-generated — admin must review & publish
+// before students can see it; see GapFill card in ListeningSectionEdit.jsx)
+// ══════════════════════════════════════════════════════════════════════════════
+router.post('/listening/sections/:id/gapfill/generate', auth, teacherOnly, listeningController.generateSectionGapFill);
+router.put('/listening/sections/:id/gapfill', auth, teacherOnly, listeningController.updateSectionGapFill);
+
 // POST /api/admin/listening/assemble – tạo ListeningTest từ 4 ListeningSection
 router.post('/listening/assemble', auth, teacherOnly, listeningController.assembleTest);
 

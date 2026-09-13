@@ -65,6 +65,15 @@ router.get('/dictation/section/:id', auth, contentLimiter, requirePremium('Bạn
 // just above: full access for a free account's first 24h, then locked.
 router.post('/dictation/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveDictationAttempt);
 
+// STUDENT – Gap-fill practice (điền từ vào chỗ trống trên toàn bộ transcript
+// trong khi nghe liên tục) — cùng shape review-exempt drill với Dictation ở
+// trên: chỉ list/fetch những section admin đã duyệt & publish
+// (gapFillPublished), không có requireReviewComplete vì đây là bài luyện bổ
+// trợ không tạo pending review.
+router.get('/gapfill/list', auth, contentLimiter, listeningController.listGapFillSections);
+router.get('/gapfill/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getGapFillSectionById);
+router.post('/gapfill/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveGapFillAttempt);
+
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, listeningController.listStudentTests);
 

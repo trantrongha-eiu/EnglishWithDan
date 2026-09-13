@@ -180,6 +180,36 @@ exports.saveDictationAttempt = async (req, res) => {
   }
 };
 
+exports.listGapFillSections = async (req, res) => {
+  try {
+    const sections = await listeningService.listGapFillSections();
+    res.json({ success: true, sections });
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+};
+
+exports.getGapFillSectionById = async (req, res) => {
+  try {
+    const section = await listeningService.getGapFillSectionById(req.params.id);
+    if (!section) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, section: protectListeningAudio(section, req.user._id) });
+  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+};
+
+exports.saveGapFillAttempt = async (req, res) => {
+  try {
+    const { sectionId, sectionTitle, partNumber, answers } = req.body;
+    if (!sectionId || !Array.isArray(answers) || !answers.length) {
+      return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+    }
+    const result = await listeningService.saveGapFillAttempt({ sectionId, sectionTitle, partNumber, answers }, req.user._id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    console.error('[GapFill save]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // ── Admin CRUD for practice sections ─────────────────────────────────────
 exports.listAdminSections = async (req, res) => {
   try {
@@ -208,6 +238,21 @@ exports.updateAdminSection = async (req, res) => {
     const s = await listeningService.updateAdminSection(req.params.id, req.body);
     res.json({ success: true, section: s });
   } catch (err) { res.status(400).json({ success: false, message: err.message }); }
+};
+
+exports.generateSectionGapFill = async (req, res) => {
+  try {
+    const result = await listeningService.generateSectionGapFill(req.params.id);
+    res.json({ success: true, ...result });
+  } catch (err) { res.status(err.status || 500).json({ success: false, message: err.message }); }
+};
+
+exports.updateSectionGapFill = async (req, res) => {
+  try {
+    const { gapFillTemplate, gapFillAnswers, gapFillPublished } = req.body;
+    const section = await listeningService.updateSectionGapFill(req.params.id, { gapFillTemplate, gapFillAnswers, gapFillPublished });
+    res.json({ success: true, section });
+  } catch (err) { res.status(err.status || 500).json({ success: false, message: err.message }); }
 };
 
 exports.hideAdminSection = async (req, res) => {
