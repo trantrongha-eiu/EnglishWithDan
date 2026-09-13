@@ -6,6 +6,7 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 import { useListFilter } from '../hooks/useListFilter';
+import GapFillPanel from '../components/GapFillPanel';
 
 function AssembleModal({ sections, onClose, onSuccess }) {
   const toast = useToast();
@@ -182,6 +183,34 @@ function AudioUploadModal({ section, onClose, onUploaded }) {
   );
 }
 
+function GapFillModal({ section, onClose, onSaved }) {
+  const [gapFill, setGapFill] = useState({
+    template: section.gapFillTemplate || '',
+    answers: section.gapFillAnswers || [],
+    published: section.gapFillPublished === true,
+    generatedAt: section.gapFillGeneratedAt || null,
+  });
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 680, maxHeight: '85vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Gap-fill – {section.title}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '20px 24px' }}>
+          <GapFillPanel
+            sectionId={section._id}
+            transcript={section.transcript}
+            value={gapFill}
+            onChange={next => { setGapFill(next); onSaved(section._id, next); }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ListeningSections() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -191,6 +220,7 @@ export default function ListeningSections() {
   const [sections, setSections] = useState([]);
   const [partFilter, setPartFilter] = useState('all');
   const [audioSection, setAudioSection] = useState(null);
+  const [gapFillSection, setGapFillSection] = useState(null);
   const [showAssemble, setShowAssemble] = useState(false);
 
   const load = () =>
@@ -255,10 +285,32 @@ export default function ListeningSections() {
     return (s.questionGroups || []).reduce((sum, g) => sum + (g.questions?.length || 0), 0);
   }
 
+  function gapFillStatus(s) {
+    if (s.gapFillPublished) return { label: 'Đã publish', cls: 'badge-green' };
+    if (s.gapFillTemplate) return { label: 'Chờ duyệt', cls: 'badge-yellow' };
+    return { label: 'Chưa sinh', cls: 'badge-gray' };
+  }
+
+  // Applies a GapFillPanel change (from the modal) straight onto the row in
+  // local state, so the status badge updates immediately without a full
+  // reload — mirrors toggleActive()'s optimistic-update pattern above.
+  function onGapFillSaved(sectionId, next) {
+    setSections(prev => prev.map(s => (s._id === sectionId ? {
+      ...s,
+      gapFillTemplate: next.template,
+      gapFillAnswers: next.answers,
+      gapFillPublished: next.published,
+      gapFillGeneratedAt: next.generatedAt,
+    } : s)));
+  }
+
   return (
     <>
       {audioSection && (
         <AudioUploadModal section={audioSection} onClose={() => setAudioSection(null)} onUploaded={load} />
+      )}
+      {gapFillSection && (
+        <GapFillModal section={gapFillSection} onClose={() => setGapFillSection(null)} onSaved={onGapFillSaved} />
       )}
       {showAssemble && (
         <AssembleModal
@@ -304,12 +356,13 @@ export default function ListeningSections() {
               <th>SỐ CÂU</th>
               <th>DẢI CÂU</th>
               <th>TRẠNG THÁI</th>
+              <th>GAP-FILL</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {paged.length === 0
-              ? <tr><td colSpan={8} className="table-empty">Không có section nào</td></tr>
+              ? <tr><td colSpan={9} className="table-empty">Không có section nào</td></tr>
               : paged.map(s => {
                 const pc = PART_COLOR[s.partNumber] || PART_COLOR[1];
                 return (
@@ -349,6 +402,14 @@ export default function ListeningSections() {
                       <span className={`badge ${s.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
                         <span className="dot" />{s.isActive !== false ? 'Hoạt động' : 'Ẩn'}
                       </span>
+                    </td>
+                    <td>
+                      {(() => { const gf = gapFillStatus(s); return (
+                        <span className={`badge ${gf.cls}`} style={{ cursor: 'pointer' }}
+                          onClick={() => setGapFillSection(s)} title="Click để sinh/duyệt Gap-fill">
+                          <span className="dot" />{gf.label}
+                        </span>
+                      ); })()}
                     </td>
                     <td>
                       <div className="row-actions">
