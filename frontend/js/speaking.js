@@ -1745,9 +1745,16 @@ async function analyzeTranscript() {
   // longer with an audio part; the backend wraps it in its own timeout, so
   // this only fires when the HTTP layer itself stalls — a cold-started
   // backend or a dropped connection — which otherwise leaves the loading
-  // state and the disabled button stuck forever).
+  // state and the disabled button stuck forever). Must comfortably exceed
+  // the server's own worst case, which is NOT just Gemini's timeout — on a
+  // Gemini failure, speakingService.gradeSpeaking() falls back to Groq
+  // (up to 20s, plus one retry on a JSON-parse failure = another 20s)
+  // before giving up. Worst case ≈ 55s (audio) or 30s (no audio) for
+  // Gemini + up to 40s for the Groq fallback. A shorter client timeout was
+  // aborting (and showing a false "AI failed" error) while the server was
+  // still legitimately mid-fallback and would otherwise have succeeded.
   const _ctrl = new AbortController();
-  const _killer = setTimeout(() => _ctrl.abort(), _hasAudio ? 75000 : 45000);
+  const _killer = setTimeout(() => _ctrl.abort(), _hasAudio ? 120000 : 90000);
 
   try {
     // Fetched in parallel with /analyze (not awaited first) so the
@@ -2267,8 +2274,8 @@ function loadSeqQuestion() {
   const qCue        = document.getElementById('seq-q-cue');
   const toggleIcon  = document.getElementById('seq-toggle-icon');
   const toggleLabel = document.getElementById('seq-toggle-label');
-  const interimEl   = document.getElementById('seq-transcript-interim');
   const recIndicator = document.getElementById('seq-rec-indicator');
+  const recIcon       = document.getElementById('seq-rec-icon');
   const recStatus     = document.getElementById('seq-rec-status');
 
   // Dict lookup was never wired up on this screen at all — off during a
@@ -2290,12 +2297,9 @@ function loadSeqQuestion() {
   }
   if (toggleIcon)  toggleIcon.className = 'fas fa-eye';
   if (toggleLabel) toggleLabel.textContent = 'Hiện câu hỏi';
-  if (interimEl)   interimEl.textContent = '';
   if (recIndicator) recIndicator.classList.remove('recording');
+  if (recIcon)       recIcon.className = 'fas fa-microphone rec-mic';
   if (recStatus)     { recStatus.classList.remove('live'); recStatus.textContent = 'Đang chuẩn bị...'; }
-
-  const manualInput = document.getElementById('seq-manual-input');
-  if (manualInput) manualInput.value = '';
 
   // Briefly disable "Ghi nhận câu trả lời" right after a new question loads
   // so a leftover/rapid double-click from advancing the previous question
@@ -2341,11 +2345,12 @@ function toggleSeqQuestionText() {
   if (toggleLabel)  toggleLabel.textContent = state.seqTextRevealed ? 'Ẩn câu hỏi' : 'Hiện câu hỏi';
 }
 
-// Typing a manual answer counts as "not silent" — cancel the 3s auto-advance
-// grace timer the same way real speech (onresult) does.
-function onSeqManualInput() {
-  const val = document.getElementById('seq-manual-input')?.value || '';
-  if (val.trim()) clearSeqSilenceTimer();
+// The big mic indicator doubles as a manual stop control — voice-only, so
+// there's no separate "pause"/"resume" state: tapping it while recording
+// just does exactly what "Ghi nhận câu trả lời" does (stop + submit this
+// answer, advance to the next question). Ignored while not recording.
+function onSeqRecIndicatorClick() {
+  if (state.seqIsRecording) confirmSeqAnswer();
 }
 
 function replaySeqQuestion() {
@@ -2360,8 +2365,10 @@ function _finishSeqRecordingUI() {
   stopSeqElapsedTimer();
   hideSeqSpeakCountdown();
   const recIndicator = document.getElementById('seq-rec-indicator');
+  const recIcon      = document.getElementById('seq-rec-icon');
   const recStatus    = document.getElementById('seq-rec-status');
   if (recIndicator) recIndicator.classList.remove('recording');
+  if (recIcon)      recIcon.className = 'fas fa-microphone rec-mic';
   if (recStatus) {
     recStatus.classList.remove('live');
     recStatus.textContent = state.seqFinalTranscript.trim() ? '✓ Ghi âm hoàn tất' : 'Chưa ghi âm';
@@ -2380,9 +2387,11 @@ function setupSeqRecognition() {
   state.seqRecognition.onstart = () => {
     state.seqIsRecording = true;
     const recIndicator = document.getElementById('seq-rec-indicator');
+    const recIcon      = document.getElementById('seq-rec-icon');
     const recStatus    = document.getElementById('seq-rec-status');
     if (recIndicator) recIndicator.classList.add('recording');
-    if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
+    if (recIcon)      recIcon.className = 'fas fa-stop rec-mic';
+    if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm... (bấm vào mic để dừng)'; recStatus.classList.add('live'); }
     // Only (re)start timers on the genuine first start — see the matching
     // comment in setupRecognition(); same Chrome auto-stop concern applies here.
     if (!state._seqRecognitionEverStarted) {
@@ -2399,14 +2408,15 @@ function setupSeqRecognition() {
     // on real speech so routine Chrome auto-restarts during a long, healthy
     // answer don't exhaust the dead-mic cap and cut the recording off early.
     state._seqRestartAttempts = 0;
+    // Deliberately NOT rendered anywhere while recording — the student's
+    // transcript only becomes visible after the whole session is submitted
+    // (finishSequentialSession's results screen), never live as they speak.
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) state.seqFinalTranscript += t + ' ';
       else interim += t;
     }
-    const interimEl = document.getElementById('seq-transcript-interim');
-    if (interimEl) interimEl.textContent = interim;
     if (state.seqFinalTranscript.trim() || interim.trim()) clearSeqSilenceTimer();
   };
 
@@ -2440,8 +2450,8 @@ function setupSeqRecognition() {
     const recStatus = document.getElementById('seq-rec-status');
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro.',
-      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Bản ghi âm vẫn được lưu — gõ lời thoại rồi bấm Ghi nhận, hoặc dùng Google Chrome.',
-      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Bản ghi âm vẫn được lưu — gõ lời thoại rồi bấm Ghi nhận, hoặc dùng Google Chrome.',
+      'network':     'Trình duyệt không kết nối được dịch vụ nhận dạng giọng nói (hay gặp trên Brave/Firefox). Vui lòng dùng Google Chrome, hoặc bấm "Ghi nhận câu trả lời" để bỏ qua câu này.',
+      'service-not-allowed': 'Dịch vụ nhận dạng giọng nói bị chặn trong trình duyệt này. Vui lòng dùng Google Chrome, hoặc bấm "Ghi nhận câu trả lời" để bỏ qua câu này.',
     };
     const seqMsg = msgs[e.error] || `Lỗi: ${e.error}`;
     if (recStatus) recStatus.textContent = seqMsg;
@@ -2455,7 +2465,7 @@ function setupSeqRecognition() {
 
 function startSeqRecording() {
   if (!state.seqRecognition) {
-    showToast('Trình duyệt không hỗ trợ ghi âm. Gõ câu trả lời rồi nhấn Ghi nhận câu trả lời.', 'warn');
+    showToast('Trình duyệt không hỗ trợ ghi âm cho phần luyện nói này. Vui lòng dùng Google Chrome.', 'warn');
     return;
   }
   if (state.seqIsRecording) return;
@@ -2484,8 +2494,7 @@ function confirmSeqAnswer() {
     hideSeqPrepTimer();
     hideSeqSpeakCountdown();
 
-    const manualVal = document.getElementById('seq-manual-input')?.value.trim() || '';
-    const transcript = state.seqFinalTranscript.trim() || manualVal;
+    const transcript = state.seqFinalTranscript.trim();
     if (state.seqIsRecording && state.seqRecognition) {
       state._seqUserStoppedRecording = true; // moving to the next question — don't auto-restart this session
       try { state.seqRecognition.stop(); } catch (e) {}
@@ -2577,8 +2586,14 @@ async function finishSequentialSession() {
   if (actionsEl)       actionsEl.style.display       = 'none';
   _startFeedbackLoadingMessages('seq-feedback-loading-text');
 
+  // Same worst-case reasoning as the single-question flow above: Gemini's
+  // own ~30s timeout, plus up to ~40s more if it fails over to Groq
+  // (speakingService.gradeSpeaking's fallback chain) — this flow never
+  // attaches audio, but the combined multi-question transcript can still
+  // take a while to grade. A 45s client timeout was aborting (and showing
+  // a false "AI failed" error) before the server's own fallback finished.
   const _ctrl = new AbortController();
-  const _killer = setTimeout(() => _ctrl.abort(), 45000);
+  const _killer = setTimeout(() => _ctrl.abort(), 90000);
 
   try {
     const data = await apiFetch('/api/speaking/analyze', {
@@ -2710,6 +2725,24 @@ function renderSeqFeedback(fb) {
       <div class="fb-card-title"><i class="fas fa-lightbulb"></i> Gợi ý cải thiện</div>
       <ul class="fb-list">${fb.improvements.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>
     </div>`;
+  }
+
+  // What the student actually said is only ever shown here — after the
+  // whole session is submitted and graded, alongside the feedback above.
+  // While recording (setupSeqRecognition's onresult), it's deliberately
+  // never rendered live.
+  if (state.seqAnswers?.length) {
+    html += `
+    <details class="fb-card seq-transcript-review">
+      <summary><i class="fas fa-file-alt"></i> Xem lại lời nói của bạn</summary>
+      <div class="seq-transcript-list">
+        ${state.seqAnswers.map((a, i) => `
+          <div class="seq-transcript-item">
+            <div class="seq-transcript-q">Câu ${i + 1} (Part ${a.part}): ${escHtml(a.question)}</div>
+            <div class="seq-transcript-a">${a.transcript ? escHtml(a.transcript) : '<em>(Không trả lời)</em>'}</div>
+          </div>`).join('')}
+      </div>
+    </details>`;
   }
 
   const feedbackBody = document.getElementById('seq-feedback-body');

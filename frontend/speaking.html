@@ -546,9 +546,9 @@
 
     <div class="record-section">
       <div class="record-area">
-        <div class="btn-record" id="seq-rec-indicator">
+        <div class="btn-record" id="seq-rec-indicator" onclick="onSeqRecIndicatorClick()" role="button" tabindex="0" title="Bấm để dừng ghi âm và ghi nhận câu trả lời">
           <span class="rec-ring" id="seq-rec-ring"></span>
-          <i class="fas fa-microphone rec-mic"></i>
+          <i class="fas fa-microphone rec-mic" id="seq-rec-icon"></i>
         </div>
         <div class="rec-info">
           <div class="rec-status" id="seq-rec-status">Đang chuẩn bị...</div>
@@ -564,16 +564,6 @@
           </div>
         </div>
       </div>
-      <div class="transcript-interim" id="seq-transcript-interim"></div>
-    </div>
-
-    <!-- Manual typing fallback — mic may be unsupported/blocked; matches the
-         single-question flow's #transcript-textarea resilience. -->
-    <div class="seq-manual-fallback">
-      <label class="seq-manual-label" for="seq-manual-input">Hoặc gõ câu trả lời (nếu không ghi âm được)</label>
-      <textarea class="seq-manual-textarea" id="seq-manual-input"
-                placeholder="Gõ câu trả lời của bạn ở đây nếu micro không hoạt động..."
-                oninput="onSeqManualInput()"></textarea>
     </div>
 
     <div class="seq-confirm-row">
