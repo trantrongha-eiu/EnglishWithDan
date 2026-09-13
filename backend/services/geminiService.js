@@ -780,10 +780,12 @@ ${transcript}
 Nhiệm vụ: tạo bài tập gap-fill (điền từ vào chỗ trống) từ TOÀN BỘ transcript trên, theo đúng phong cách answer key thi IELTS Listening thật.
 
 QUY TẮC BẮT BUỘC:
-1. "template" PHẢI giữ nguyên 100% văn bản gốc — từng từ, dấu câu, khoảng trắng, xuống dòng, nhãn người nói (vd "Man:", "Woman:") — CHỈ thay các từ/cụm từ bị chọn đục lỗ bằng token [[1]], [[2]], [[3]], ... theo đúng thứ tự xuất hiện, đánh số liên tục bắt đầu từ 1. Không thêm/bớt bất kỳ ký tự nào khác ngoài việc thay thế đó.
+1. "template" PHẢI giữ nguyên 100% văn bản gốc — TỪ KÝ TỰ ĐẦU TIÊN ĐẾN KÝ TỰ CUỐI CÙNG, bao gồm CẢ những dòng tiêu đề/nhãn ở đầu transcript nếu có (ví dụ dòng "❓ Transcript", dòng tên bài như "Walking holiday") — đây KHÔNG phải phần cần lược bỏ, phải copy y nguyên vào đầu "template". Giữ nguyên từng từ, dấu câu, khoảng trắng, xuống dòng, nhãn người nói (vd "Man:", "Woman:"). CHỈ thay các từ/cụm từ bị chọn đục lỗ bằng token [[1]], [[2]], [[3]], ... theo đúng thứ tự xuất hiện, đánh số liên tục bắt đầu từ 1. Không thêm/bớt/rút gọn/lược bỏ bất kỳ ký tự hay dòng nào khác ngoài việc thay thế đó — kể cả những dòng tưởng như không quan trọng.
 2. Chọn khoảng 1-2 chỗ trống cho mỗi câu có nội dung thông tin (bỏ qua các câu giao tiếp thuần xã giao như "Hello", "OK", "Right"). Chỉ đục các từ/cụm mang thông tin: số liệu, ngày tháng, tên riêng, danh từ, động từ, tính từ quan trọng — KHÔNG đục từ nối, mạo từ, giới từ, trợ động từ.
 3. Mỗi đáp án tối đa 3 từ và/hoặc 1 số (giống format "NO MORE THAN THREE WORDS AND/OR A NUMBER" của đề thi thật).
 4. "answers" là mảng string theo đúng thứ tự token, answers[0] ứng với [[1]], answers[1] ứng với [[2]], v.v. — đây phải là NGUYÊN VĂN đoạn text đã bị thay thế trong transcript gốc (để khi ghép lại đúng y hệt bản gốc).
+
+Trước khi trả lời, tự kiểm tra: nếu ghép "template" lại (thay mỗi [[n]] bằng answers[n-1]) thì kết quả phải giống HỆT transcript gốc ở trên, kể cả các dòng đầu tiên.
 
 Trả về JSON: {"template": string, "answers": string[]}`;
 }
@@ -798,7 +800,14 @@ async function generateGapFillBlanks(transcript, _attempt = 0) {
     maxOutputTokens: Math.max(2000, Math.ceil(clean.length * 2)),
     timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.',
     logLabel: 'generateGapFillBlanks',
-    model: MODEL,
+    // MODEL (gemini-2.5-flash) free-tier quota is only 20 requests/DAY —
+    // unusable for bulk-seeding a whole catalogue of sections. MODEL_FAST
+    // already handles high-volume per-answer grading in production (much
+    // higher daily quota) and is reliable at structured JSON tasks; the
+    // strict reconstruct-and-compare validation above is what actually
+    // guarantees transcript fidelity, not the model choice, so the lite
+    // model is an acceptable trade here.
+    model: MODEL_FAST,
     // Longer than the default 30s: this generates a full transcript's worth
     // of output (can be thousands of tokens for a long section), which
     // legitimately takes longer than a short per-answer grading call.
