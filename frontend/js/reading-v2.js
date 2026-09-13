@@ -70,6 +70,26 @@ let _practiceElapsedSec = 0;
 const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
 const reviewHlCache = {};   // review mode: { passageIdx: passageInnerHTML }
 
+/* switchPassage()/switchReviewPassage() skip re-rendering when `idx` already
+   equals state.currentPassageIdx (see the guard in each) — deliberately, so
+   a redundant click on the already-open tab doesn't wipe in-progress
+   highlights. That guard alone can't tell that apart from "a brand-new
+   startExam()/resumeExam()/renderReview() call just reset currentPassageIdx
+   back to 0 while #passage-inner/#review-passage-inner still holds a
+   DIFFERENT passage's markup from the previous session" — idx(0) ===
+   currentPassageIdx(0) is true either way, so the guard fired and the stale
+   DOM was never replaced, silently "stuck" on whatever passage was showing
+   before (reported bug: reviewing a new attempt, or starting a new exam,
+   right after finishing one in the same page load, could leave the last
+   passage's content on screen while every nav button/state thought passage
+   1 was active). Tracking which `state.passages` ARRAY each panel was last
+   rendered from — not just the index — lets the guard tell a genuine same-
+   tab re-click (array unchanged) apart from a fresh session reusing index 0
+   by coincidence (a new array, even if by chance also stopped at index 0).
+   Each function updates its own var once it actually renders `idx`. */
+let _passageInnerRenderedFor = null;
+let _reviewPassageInnerRenderedFor = null;
+
 /* ── Highlights surviving submission (localStorage, keyed by attemptId) ──
    Exam-mode highlights lived only in passageHlCache/reviewHlCache — both
    in-memory and both wiped the moment exam mode ended, so anything a
@@ -1524,8 +1544,10 @@ function switchPassage(idx) {
   const passageInner = document.getElementById('passage-inner');
   const questionsInner = document.getElementById('questions-inner');
 
-  // Guard: same tab click should not re-render (would erase highlights)
-  if (idx === state.currentPassageIdx && passageInner?.innerHTML?.trim()) {
+  // Guard: same tab click (within the SAME exam session — see
+  // _passageInnerRenderedFor's comment above) should not re-render (would
+  // erase highlights).
+  if (idx === state.currentPassageIdx && state.passages === _passageInnerRenderedFor && passageInner?.innerHTML?.trim()) {
     return;
   }
 
@@ -1559,6 +1581,7 @@ function switchPassage(idx) {
     restoreAnswers(false);
     initDropZones();
   }
+  _passageInnerRenderedFor = state.passages;
 
   // Scroll both panels to top when switching to a new passage
   const splitPassage = document.getElementById('split-passage');
@@ -3170,8 +3193,10 @@ function switchReviewPassage(idx) {
   const rvPassageInner = document.getElementById('review-passage-inner');
   const rvQuestionsInner = document.getElementById('review-questions-inner');
 
-  // Guard: same tab click should not re-render (would erase highlights)
-  if (idx === state.currentPassageIdx && rvPassageInner?.innerHTML?.trim()) {
+  // Guard: same tab click (within the SAME review session — see
+  // _reviewPassageInnerRenderedFor's comment above) should not re-render
+  // (would erase highlights).
+  if (idx === state.currentPassageIdx && state.passages === _reviewPassageInnerRenderedFor && rvPassageInner?.innerHTML?.trim()) {
     return;
   }
 
@@ -3214,6 +3239,7 @@ function switchReviewPassage(idx) {
       if (savedTexts && savedTexts.length) _reapplyTextHighlights(rvQuestionsInner, savedTexts);
     }
   }
+  _reviewPassageInnerRenderedFor = state.passages;
   // Whichever branch ran above, #review-questions-inner's HTML was just
   // replaced wholesale (either freshly rendered or restored from a cached
   // string) — any inline review toggle/form event listeners from before

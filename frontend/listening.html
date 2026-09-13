@@ -3028,9 +3028,22 @@
         function scrollToQ(num) {
             // Nếu câu thuộc part khác → switch part trước
             const sections = getSortedSections(state.isReview);
-            const partIdx = sections.findIndex(s =>
+            let partIdx = sections.findIndex(s =>
                 s.questionRange && num >= s.questionRange.start && num <= s.questionRange.end
             );
+            if (partIdx < 0) {
+                // questionRange missing/stale on this section (known to happen —
+                // see b2affd66) silently broke jump-to-question across parts:
+                // findIndex above returned -1, needSwitch stayed false, and
+                // switchPart() was never called, leaving whichever part was
+                // already on screen "stuck". Fall back to scanning each
+                // section's actual authored question numbers instead of
+                // trusting the range metadata (same approach reading-v2.js
+                // already uses via getAllQuestionsFromPassage).
+                partIdx = sections.findIndex(s =>
+                    (s.questionGroups || []).some(g => (g.questions || []).some(q => q.questionNumber === num))
+                );
+            }
             const needSwitch = partIdx >= 0 && partIdx !== state.partIdx;
             if (needSwitch) {
                 switchPart(partIdx, state.isReview);
