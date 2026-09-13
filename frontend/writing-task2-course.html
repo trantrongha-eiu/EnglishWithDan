@@ -765,6 +765,18 @@
     // (script missing / untypable answer) — same fallback WbwDrill.mount()
     // signals everywhere else it's used.
     if (ex.type === 'sentence_transform') {
+      // Auto-submit once every item's drill is finished — matches how this
+      // same WbwDrill component behaves everywhere else it's used (Task 2
+      // weekly Dịch câu, Task 2 Templates, Viết câu nâng cao all grade
+      // immediately on completion). This page used to leave onComplete as a
+      // no-op, so finishing the typing did nothing and the student had to
+      // separately find and click "Kiểm tra" — reported as "bấm nút nộp bài
+      // không được" (having just finished typing, a student expects that
+      // to BE the submit, the same as it is on every other Dịch câu screen).
+      // Skipped if ANY item's drill failed to mount (untypable answer,
+      // script not loaded) — that item fell back to a manual textarea, so
+      // the student still needs to review/type it and click submit themself.
+      var wbwTotal = 0, wbwDone = 0, wbwMountFailed = false;
       ex.items.forEach(function (it, idx) {
         var host = document.querySelector('[data-wbw-host="' + it.id + '"]');
         var bridge = document.querySelector('textarea[data-item="' + it.id + '"]');
@@ -772,8 +784,12 @@
         // mount focus() fires on its own timer, so without this the LAST
         // item mounted would steal focus from all the ones before it.
         var ok = !!(host && bridge && it.translationAnswer && window.WbwDrill &&
-          window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, autoFocus: idx === 0, onComplete: function () {} }));
-        if (!ok && bridge) bridge.style.display = '';
+          window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, autoFocus: idx === 0, onComplete: function () {
+            wbwDone++;
+            if (!wbwMountFailed && wbwDone >= wbwTotal && !state.answered && !state._submitting) submit();
+          } }));
+        if (ok) wbwTotal++;
+        else { wbwMountFailed = true; if (bridge) bridge.style.display = ''; }
       });
     }
     // chart / stimulus lightbox
