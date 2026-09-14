@@ -5106,7 +5106,20 @@
                 <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
 
             _mountInlineReviews('listening-practice', attemptId, _ltGetAllQs(reviewSection), 'lt-practice-questions-inner');
-        } catch (e) { console.error(e); toast('Không tải được bài đã làm.', 'error'); }
+        } catch (e) {
+            console.error(e);
+            // Backend detected the section behind this review was permanently
+            // deleted and already auto-resolved the pending review for it —
+            // refresh the banner/popup so it stops pointing at this now-cleared
+            // item (a student stuck here previously had no way forward: every
+            // "Tiếp tục Review" click retried this exact same unloadable attempt).
+            if (e && e.status === 410 && e.body && e.body.code === 'CONTENT_REMOVED') {
+                toast('Bài nghe này đã bị gỡ khỏi hệ thống — đã tự động bỏ qua review này.', 'info');
+                if (typeof _checkPendingReviewBanner === 'function') _checkPendingReviewBanner();
+            } else {
+                toast('Không tải được bài đã làm.', 'error');
+            }
+        }
     }
 
     function copyLtPracticeLink(sectionId, partNum) {

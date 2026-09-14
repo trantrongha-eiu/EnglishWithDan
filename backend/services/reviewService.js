@@ -217,6 +217,22 @@ async function redeemBypassCode(userId, rawCode) {
   return cleared ? { status: 'ok', cleared } : { status: 'nothing_pending', cleared: 0 };
 }
 
+// Called by reading/listeningService.getPracticeHistoryDetail the moment a
+// Bài lẻ review's passage/section resolves to null (permanently deleted by
+// an admin after the student's attempt). Unlike full-test reviews, practice
+// reviews carry no content snapshot, so once this happens the review can
+// never be shown again — left 'pending', it would sit forever as the
+// oldest item getPendingReviews/_goToPendingReview always points a student
+// at, hard-blocking new practice with no way to ever clear it (every
+// "Tiếp tục Review" click reruns the same failing lookup). A no-op if the
+// review was already resolved some other way (redeemed code, TTL-expired).
+async function resolveOrphanedReview(attemptType, attemptId) {
+  await AttemptReview.updateOne(
+    { attemptType, attemptId, status: 'pending' },
+    { $set: { status: 'unavailable', completedAt: new Date() } }
+  );
+}
+
 async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit = 20 } = {}) {
   const filter = { userId, status: 'completed' };
   if (attemptType) filter.attemptType = attemptType;
@@ -235,5 +251,5 @@ async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit
 module.exports = {
   createReviewIfNeeded, getPendingReviews, getReviewStatusMap, MAX_PENDING_REVIEWS,
   getReviewDetail, getReviewByAttempt, updateMistake, getReviewHistory,
-  redeemBypassCode,
+  redeemBypassCode, resolveOrphanedReview,
 };

@@ -394,6 +394,15 @@ exports.getPracticeHistoryDetail = async (req, res) => {
   try {
     const result = await listeningService.getPracticeHistoryDetail(req.params.attemptId, req.user._id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    // The section backing this attempt was permanently deleted since — the
+    // service already auto-resolved any pending review for it (it can never
+    // load again); tell the client explicitly so it stops treating this as
+    // a generic transient failure (previously silently returned
+    // success:true/section:null, which the frontend only surfaced as a
+    // dead-end "Không tải được bài" toast with no path forward).
+    if (!result.section) {
+      return res.status(410).json({ success: false, code: 'CONTENT_REMOVED', message: 'Bài nghe này đã bị gỡ khỏi hệ thống nên không thể xem lại.' });
+    }
     // Same as getHistoryDetail — auth-only route, so withhold a fresh
     // audio token from a lapsed user while keeping the rest of the review.
     const safe = protectListeningAudio({ attempt: result.attempt, section: result.section }, req.user._id, hasFullAccess(req.user));

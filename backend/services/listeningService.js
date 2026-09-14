@@ -1037,6 +1037,12 @@ async function getPracticeHistoryDetail(attemptId, userId) {
   const attempt = await ListeningPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return null;
   const section = await ListeningSection.findById(attempt.sectionId).select(PRACTICE_SECTION_SAFE_FIELDS).lean();
+  // No content snapshot for Bài lẻ practice attempts (unlike ListeningAttempt's
+  // sectionsSnapshot) — if the section was permanently deleted since this
+  // attempt, the review can never render again. Auto-resolve any pending
+  // mandatory review pointing at it so a student doesn't stay stuck behind
+  // an unloadable "Tiếp tục Review" forever (see reviewService.resolveOrphanedReview).
+  if (!section) await reviewService.resolveOrphanedReview('listening-practice', attemptId);
   return { attempt: stripAnswerKeyFromAttempt(attempt), section };
 }
 

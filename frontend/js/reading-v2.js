@@ -3831,7 +3831,17 @@ async function loadPracticeReview(attemptId) {
     _mountInlineReviews('reading-practice', attemptId, getAllQuestionsFromPassage(passage), 'retry-questions-inner');
   } catch (e) {
     console.error(e);
-    showVocabToast('Lỗi tải bài xem lại', 'error');
+    // Backend detected the passage behind this review was permanently
+    // deleted and already auto-resolved the pending review for it — refresh
+    // the banner/popup so it stops pointing at this now-cleared item (a
+    // student stuck here previously had no way forward: every "Tiếp tục
+    // Review" click retried this exact same unloadable attempt).
+    if (e && e.status === 410 && e.body && e.body.code === 'CONTENT_REMOVED') {
+      showVocabToast('Bài đọc này đã bị gỡ khỏi hệ thống — đã tự động bỏ qua review này.', 'info');
+      _checkPendingReviewBanner();
+    } else {
+      showVocabToast('Lỗi tải bài xem lại', 'error');
+    }
   }
 }
 

@@ -74,7 +74,15 @@ const AttemptReviewSchema = new mongoose.Schema({
   // doing the guided review (see reviewService.redeemBypassCode). Excluded
   // from getPendingReviews' count like 'completed', but never counts as a
   // real review in history.
-  status: { type: String, enum: ['pending', 'completed', 'bypassed'], default: 'pending' },
+  // 'unavailable' = the underlying Bài lẻ passage/section this review points
+  // at was permanently deleted by an admin after the student's attempt —
+  // reading/listening practice reviews have no content snapshot (unlike
+  // full-test attempts' passagesSnapshot/sectionsSnapshot), so this review
+  // can never load again. Auto-set by reviewService.resolveOrphanedReview
+  // (called from reading/listeningService.getPracticeHistoryDetail the
+  // moment the missing content is detected) so the student isn't stuck
+  // forever behind a "Tiếp tục Review" button that can never load.
+  status: { type: String, enum: ['pending', 'completed', 'bypassed', 'unavailable'], default: 'pending' },
   mistakes: [MistakeSchema],
 
   // Set alongside status:'bypassed' — which code cleared this one.

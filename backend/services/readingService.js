@@ -597,6 +597,12 @@ async function getPracticeHistoryDetail(attemptId, userId) {
   const attempt = await ReadingPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return null;
   const passage = await Passage.findById(attempt.passageId).select(PRACTICE_PASSAGE_SAFE_FIELDS).lean();
+  // No content snapshot for Bài lẻ practice attempts (unlike TestAttempt's
+  // passagesSnapshot) — if the passage was permanently deleted since this
+  // attempt, the review can never render again. Auto-resolve any pending
+  // mandatory review pointing at it so a student doesn't stay stuck behind
+  // an unloadable "Tiếp tục Review" forever (see reviewService.resolveOrphanedReview).
+  if (!passage) await reviewService.resolveOrphanedReview('reading-practice', attemptId);
   return { attempt: stripAnswerKeyFromAttempt(attempt), passage };
 }
 

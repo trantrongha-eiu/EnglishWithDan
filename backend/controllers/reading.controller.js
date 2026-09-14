@@ -105,6 +105,15 @@ exports.getPracticeHistory = guard('[Reading practice history]', async (req, res
 exports.getPracticeHistoryDetail = guard('[Reading practice history detail]', async (req, res) => {
   const result = await readingService.getPracticeHistoryDetail(req.params.attemptId, req.user._id);
   if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+  // The passage backing this attempt was permanently deleted since — the
+  // service already auto-resolved any pending review for it (it can never
+  // load again); tell the client explicitly so it stops treating this as a
+  // generic transient failure (previously silently returned
+  // success:true/passage:null, which the frontend only surfaced as a dead-
+  // end "Không tải được bài" toast with no path forward).
+  if (!result.passage) {
+    return res.status(410).json({ success: false, code: 'CONTENT_REMOVED', message: 'Bài đọc này đã bị gỡ khỏi hệ thống nên không thể xem lại.' });
+  }
   res.json({ success: true, attempt: result.attempt, passage: result.passage });
 });
 
