@@ -45,7 +45,7 @@ exports.check = async (req, res) => {
       ? await grading.gradeSentenceTransformBatch(ex, answers)
       : grading.gradeObjective(ex, answers);
     await svc.recordSubmission(req.user._id, ex, {
-      answers, score: result.score, maxScore: result.maxScore,
+      answers, score: result.score, correctCount: result.correctCount, maxScore: result.maxScore,
     });
     res.json({ success: true, ...result });
   } catch (err) {

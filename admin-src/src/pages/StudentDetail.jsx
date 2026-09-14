@@ -201,9 +201,14 @@ export default function StudentDetail() {
               <option value="task2-practice">📝 Task 2 Practice</option>
               <option value="speaking">🎤 Speaking</option>
               <option value="task2-template">📚 Task 2 Templates</option>
+              <option value="wt1-t1">📘 Khoá học Task 1</option>
+              <option value="wt1-t2">📗 Khoá học Task 2</option>
+              <option value="wt1-speaking">🎤 Khoá học Speaking</option>
+              <option value="wt1-noun-phrase">🔤 Khoá học Noun Phrase</option>
               <option value="essential-grammar">📘 Ngữ pháp</option>
               <option value="vocabulary-lesson">🗂 Từ vựng</option>
               <option value="dictation">🎧 Dictation</option>
+              <option value="listening-gapfill">📝 Gap-fill</option>
             </select>
           </div>
           {attempts.length < attemptsTotal && (

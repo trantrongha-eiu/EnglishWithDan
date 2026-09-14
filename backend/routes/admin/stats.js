@@ -19,6 +19,7 @@ const Task2TemplateAttempt      = require('../../models/Task2TemplateAttempt');
 const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
 const DictationAttempt = require('../../models/DictationAttempt');
+const GapFillAttempt = require('../../models/GapFillAttempt');
 const WT1Submission    = require('../../models/WT1Submission');
 const WT1Exercise      = require('../../models/WT1Exercise');
 const User            = require('../../models/User');
@@ -244,6 +245,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       WT1Submission.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      GapFillAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
@@ -256,7 +258,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
            task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts,
-           wt1Submissions] = await Promise.all([
+           wt1Submissions, gapFillAttempts] = await Promise.all([
       TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -340,6 +342,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-answers -responses').lean()
         .catch(() => []),
+      GapFillAttempt.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-answers').lean()
+        .catch(() => []),
     ]);
 
     const wt1ExerciseTitles = {};
@@ -357,6 +364,18 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     // endpoint can span every student — sessionId (a client Date.now()
     // string) is not guaranteed unique across different students.
     const TPL_MODE_LABELS = { cloze: 'Cloze', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
+    // The WT1-stack shares one collection across 4 different courses (Task 1,
+    // Task 2, Speaking, Noun Phrase) — lessonCode's prefix is the only thing
+    // that tells them apart (WT1Lesson.code / WT1Module.code follow this same
+    // T1-/T2-/SPK-/NP- convention; see WT1Module seed data). Without this,
+    // every course showed the same generic "Khoá học (T1/T2)" badge, so a
+    // Speaking-course row looked like it belonged to Task 1/2 (BUG report:
+    // dashboard mislabelled Speaking submissions as "Khoá học (T1/T2)").
+    const WT1_PREFIX_SKILL = [['SPK-', 'wt1-speaking'], ['NP-', 'wt1-noun-phrase'], ['T2-', 'wt1-t2'], ['T1-', 'wt1-t1']];
+    const wt1SkillFromLessonCode = (code) => {
+      const found = WT1_PREFIX_SKILL.find(([prefix]) => String(code || '').startsWith(prefix));
+      return found ? found[1] : 'wt1-course';
+    };
     const TASK1_SKILL_LABELS = {
       noun_phrase: 'Noun Phrase', data_description: 'Mô tả Data',
       comparison: 'So sánh', trend_language: 'Xu hướng',
@@ -522,16 +541,33 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         totalQuestions: h.totalSentences,
         duration: null
       })),
+      ...gapFillAttempts.map(h => ({
+        _id: h._id, skill: 'listening-gapfill',
+        testName: h.sectionTitle || '–',
+        testMeta: `Part ${h.partNumber || '?'}`,
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: null,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalBlanks,
+        duration: null
+      })),
       ...wt1Submissions.map(h => ({
-        _id: h._id, skill: 'wt1-course',
+        _id: h._id, skill: wt1SkillFromLessonCode(h.lessonCode),
         testName: wt1ExerciseTitles[h.exerciseCode] || h.exerciseCode || '–',
         testMeta: `${h.lessonCode || ''}${h.attempt > 1 ? ` · lượt ${h.attempt}` : ''}`,
         userId: normUser(h.userId),
         date: h.createdAt,
         bandScore: h.aiFeedback?.bandEstimate ?? null,
         status: h.status,
-        correctCount: h.score,
-        totalQuestions: h.maxScore,
+        // `score` is a 0-100 percentage (see WT1Submission.js), NOT a raw
+        // correct count — dividing it by maxScore (item count) produced
+        // nonsense like "100/5" or "60/5". `correctCount` is the actual
+        // number of items answered correctly (only set on objective-type
+        // submissions going forward; older rows / AI-graded writing &
+        // speaking submissions have neither and correctly fall back to '–').
+        correctCount: h.correctCount ?? null,
+        totalQuestions: h.correctCount != null ? h.maxScore : null,
         duration: h.timeSpentSeconds || null
       }))
     ];

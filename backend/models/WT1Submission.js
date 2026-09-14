@@ -11,9 +11,14 @@ const WT1SubmissionSchema = new Schema(
     lessonCode: { type: String, index: true },
     attempt: { type: Number, default: 1 },
 
-    // Bài khách quan
+    // Bài khách quan — `score` is a 0-100 PERCENTAGE (got/maxScore*100, see
+    // wt1GradingService.gradeObjective), used for lesson-gate averaging;
+    // `correctCount` is the raw number of items answered correctly, kept
+    // separately so admin reporting can show a true "x/maxScore" instead of
+    // dividing a percentage by an item count (was showing e.g. "100/5").
     answers: Schema.Types.Mixed, // { q1: "amount", q2: ["a","b"] }
     score: Number,
+    correctCount: Number,
     maxScore: Number,
 
     // Bài AI chấm

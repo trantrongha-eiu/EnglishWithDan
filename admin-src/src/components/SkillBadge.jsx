@@ -19,10 +19,19 @@ export const SKILL_META = {
   'essential-grammar':  { color: '#0ea5e9', label: '📘 Ngữ pháp' },
   'vocabulary-lesson':  { color: '#14b8a6', label: '🗂 Từ vựng' },
   'dictation':          { color: '#22d3ee', label: '🎧 Dictation' },
+  'listening-gapfill':  { color: '#06b6d4', label: '📝 Gap-fill' },
   // Task 1/Task 2/Speaking/Noun Phrase course exercises all share one
-  // collection (WT1Submission) — testMeta carries the lessonCode so a
-  // teacher can still tell which course/lesson a row belongs to.
-  'wt1-course':         { color: '#0284c7', label: '📖 Khoá học (T1/T2)' },
+  // collection (WT1Submission) — the backend tells them apart by the
+  // lessonCode prefix (T1-/T2-/SPK-/NP-) and reports a distinct `skill` per
+  // course (see routes/admin/stats.js wt1SkillFromLessonCode) so a Speaking
+  // submission no longer shows up mislabelled as "Khoá học (T1/T2)".
+  // testMeta still carries the raw lessonCode for the exact lesson.
+  'wt1-t1':             { color: '#0284c7', label: '📘 Khoá học Task 1' },
+  'wt1-t2':             { color: '#0891b2', label: '📗 Khoá học Task 2' },
+  'wt1-speaking':       { color: 'var(--purple)', label: '🎤 Khoá học Speaking' },
+  'wt1-noun-phrase':    { color: '#8b5cf6', label: '🔤 Khoá học Noun Phrase' },
+  // Fallback only — a lessonCode that doesn't match any known prefix.
+  'wt1-course':         { color: '#0284c7', label: '📖 Khoá học (khác)' },
 };
 
 export function skillBadge(skill) {
