@@ -64,12 +64,13 @@ async function run() {
 
   console.log(`[gapfill] ${totalMissing} section(s) need gap-fill generation; processing ${sections.length} this run.`);
 
-  let ok = 0, failed = 0;
+  let ok = 0, failed = 0, flaggedCount = 0;
   const failedList = [];
+  const flaggedList = [];
   for (const [i, section] of sections.entries()) {
     const tag = `[${i + 1}/${sections.length}] "${section.title}"`;
     try {
-      const { template, answers } = await geminiService.generateGapFillBlanks(section.transcript);
+      const { template, answers, flaggedNames } = await geminiService.generateGapFillBlanks(section.transcript);
       await ListeningSection.updateOne(
         { _id: section._id },
         { $set: {
@@ -82,7 +83,13 @@ async function run() {
           }
         }
       );
-      console.log(`${tag} OK — ${answers.length} blank(s) generated (chưa publish, cần admin duyệt)`);
+      if (flaggedNames && flaggedNames.length) {
+        flaggedCount++;
+        flaggedList.push({ title: section.title, id: String(section._id), names: flaggedNames, blanks: answers.length });
+        console.log(`${tag} OK — ${answers.length} blank(s), but ${flaggedNames.length} still look like a name/place after retries: ${flaggedNames.join(', ')} (needs manual review before publish)`);
+      } else {
+        console.log(`${tag} OK — ${answers.length} blank(s) generated (chưa publish, cần admin duyệt)`);
+      }
       ok++;
     } catch (err) {
       if (err.isOverloaded) {
@@ -104,6 +111,10 @@ async function run() {
   if (failedList.length) {
     console.log(`[gapfill] ${failedList.length} section(s) failed — marked skipped, won't be retried by default (use --include-skipped or --force):`);
     failedList.forEach(r => console.log(`  - "${r.title}": ${r.reason}`));
+  }
+  if (flaggedList.length) {
+    console.log(`[gapfill] ${flaggedCount} section(s) still have a suspected person/place-name answer after the built-in retries — review manually before publishing:`);
+    flaggedList.forEach(r => console.log(`  - "${r.title}" (${r.id}): ${r.names.join(', ')}`));
   }
 
   await mongoose.disconnect();

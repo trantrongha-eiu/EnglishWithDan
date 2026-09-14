@@ -771,7 +771,17 @@ function reconstructFromGapFillTemplate(template, answers) {
   return missing ? null : rebuilt;
 }
 
-function buildGapFillPrompt(transcript) {
+// wordCount drives the 25-30 target's only real exception (a genuinely
+// short transcript); flaggedNames is populated on a retry after the local
+// heuristic in generateGapFillBlanks() catches a name/place-looking answer
+// the model picked anyway, and is named explicitly so the retry can't just
+// reach for a near-identical proper noun instead.
+function buildGapFillPrompt(transcript, { wordCount, flaggedNames } = {}) {
+  const shortTranscript = wordCount != null && wordCount < 300;
+  const retryBlock = flaggedNames && flaggedNames.length
+    ? `\n\n⚠️ LẦN THỬ TRƯỚC bạn đã chọn các đáp án sau, và đó là tên riêng của người/địa danh — TUYỆT ĐỐI KHÔNG được chọn lại các từ này hay bất kỳ tên riêng nào khác làm đáp án lần này: ${flaggedNames.map(n => `"${n}"`).join(', ')}. Ở những câu chứa các từ này, hãy chọn một từ vựng/collocation khác trong CÙNG câu đó, hoặc bỏ qua câu đó hoàn toàn (không đục chỗ trống nào trong câu đó) nếu không còn từ nào phù hợp.`
+    : '';
+
   return `Đây là transcript đầy đủ của một bài Listening IELTS:
 <<<TRANSCRIPT_START>>>
 ${transcript}
@@ -781,21 +791,59 @@ Nhiệm vụ: tạo bài tập gap-fill (điền từ vào chỗ trống) từ T
 
 QUY TẮC BẮT BUỘC:
 1. "template" PHẢI giữ nguyên 100% văn bản gốc — TỪ KÝ TỰ ĐẦU TIÊN ĐẾN KÝ TỰ CUỐI CÙNG, bao gồm CẢ những dòng tiêu đề/nhãn ở đầu transcript nếu có (ví dụ dòng "❓ Transcript", dòng tên bài như "Walking holiday") — đây KHÔNG phải phần cần lược bỏ, phải copy y nguyên vào đầu "template". Giữ nguyên từng từ, dấu câu, khoảng trắng, xuống dòng, nhãn người nói (vd "Man:", "Woman:"), VÀ bất kỳ số thứ tự câu hỏi nào chèn ngay trong câu dạng (31), (12), ... (đây là một phần của văn bản gốc cần copy y nguyên, TUYỆT ĐỐI không được xóa dù trông giống chú thích thừa). CHỈ thay các từ/cụm từ bị chọn đục lỗ bằng token [[1]], [[2]], [[3]], ... theo đúng thứ tự xuất hiện, đánh số liên tục bắt đầu từ 1 — số trong token [[n]] là số thứ tự CHỖ TRỐNG, khác với số thứ tự câu hỏi (NN) nói trên, không được nhầm lẫn hay gộp hai loại số này. Không thêm/bớt/rút gọn/lược bỏ bất kỳ ký tự hay dòng nào khác ngoài việc thay thế đó — kể cả những dòng/ký hiệu tưởng như không quan trọng.
-2. Chọn khoảng 25-30 chỗ trống cho TOÀN BỘ transcript (không phải theo từng câu) — rải đều xuyên suốt bài, không dồn cụm vào một đoạn. Nếu transcript ngắn, không đủ từ vựng hay để đục đủ 25-30 chỗ chất lượng thì chọn ít hơn cũng được — ưu tiên CHẤT LƯỢNG từng chỗ trống hơn là cố đạt đủ số lượng. Ưu tiên đục các TỪ VỰNG HAY hoặc COLLOCATION đáng học (tính từ/danh từ/động từ ít gặp, cụm động từ, cụm danh từ-tính từ tự nhiên mà học sinh IELTS nên học) — mục tiêu là bài luyện từ vựng, không phải luyện nghe số liệu. HẠN CHẾ đục tên riêng của người và tên địa danh/địa điểm (ví dụ tên người, tên thành phố, tên phố, tên công ty) — chỉ đục nếu thực sự không còn lựa chọn từ vựng nào khác trong cả câu đó. Có thể đục số liệu/ngày tháng nhưng không lạm dụng — ưu tiên vocab/collocation trước. KHÔNG đục từ nối, mạo từ, giới từ, trợ động từ.
-3. Mỗi đáp án tối đa 3 từ và/hoặc 1 số (giống format "NO MORE THAN THREE WORDS AND/OR A NUMBER" của đề thi thật).
-4. "answers" là mảng string theo đúng thứ tự token, answers[0] ứng với [[1]], answers[1] ứng với [[2]], v.v. — đây phải là NGUYÊN VĂN đoạn text đã bị thay thế trong transcript gốc (để khi ghép lại đúng y hệt bản gốc).
+2. BẮT BUỘC chọn ĐÚNG 25 đến 30 chỗ trống cho TOÀN BỘ transcript (không phải theo từng câu) — đây là yêu cầu cứng, không phải gợi ý. Một transcript IELTS Listening tiêu chuẩn (500-900 từ) LUÔN đủ dài để đục đủ 25-30 chỗ chất lượng, nên KHÔNG được viện lý do "transcript ngắn" hay "muốn ưu tiên chất lượng" để chọn ít hơn 25.${shortTranscript ? ' Ngoại lệ DUY NHẤT: transcript này dưới 300 từ, nên được phép chọn ít hơn 25 nếu thực sự không đủ từ vựng phù hợp — nhưng vẫn phải cố đạt càng gần 25 càng tốt.' : ' Transcript này đủ dài — KHÔNG áp dụng ngoại lệ transcript ngắn.'} Rải đều 25-30 chỗ trống xuyên suốt toàn bài, không dồn cụm vào một đoạn.
+3. Ưu tiên đục các TỪ VỰNG HAY hoặc COLLOCATION đáng học (tính từ/danh từ/động từ ít gặp, cụm động từ, cụm danh từ-tính từ tự nhiên mà học sinh IELTS nên học) — mục tiêu là bài luyện TỪ VỰNG, không phải luyện nghe tên riêng hay số liệu. TUYỆT ĐỐI KHÔNG được chọn tên riêng của người (họ, tên, tên đầy đủ) hoặc tên địa danh/địa điểm (thành phố, đường phố, quốc gia, tòa nhà, công ty, trường học, tên riêng của địa điểm) làm đáp án — kể cả khi đó là từ nổi bật duy nhất trong câu. Nếu một câu chỉ có tên riêng làm điểm nhấn, hãy chọn một từ vựng/collocation khác trong câu đó, hoặc bỏ qua không đục chỗ trống nào trong câu đó — KHÔNG có ngoại lệ cho quy tắc này. Có thể đục số liệu/ngày tháng nhưng không lạm dụng — ưu tiên vocab/collocation trước. KHÔNG đục từ nối, mạo từ, giới từ, trợ động từ.
+4. Mỗi đáp án tối đa 3 từ và/hoặc 1 số (giống format "NO MORE THAN THREE WORDS AND/OR A NUMBER" của đề thi thật).
+5. "answers" là mảng string theo đúng thứ tự token, answers[0] ứng với [[1]], answers[1] ứng với [[2]], v.v. — đây phải là NGUYÊN VĂN đoạn text đã bị thay thế trong transcript gốc (để khi ghép lại đúng y hệt bản gốc).${retryBlock}
 
-Trước khi trả lời, tự kiểm tra: nếu ghép "template" lại (thay mỗi [[n]] bằng answers[n-1]) thì kết quả phải giống HỆT transcript gốc ở trên, kể cả các dòng đầu tiên.
+Trước khi trả lời, tự kiểm tra 2 việc: (a) nếu ghép "template" lại (thay mỗi [[n]] bằng answers[n-1]) thì kết quả phải giống HỆT transcript gốc ở trên, kể cả các dòng đầu tiên; (b) ĐẾM lại số phần tử trong "answers" — phải nằm trong khoảng 25-30${shortTranscript ? ' (trừ khi transcript quá ngắn để đủ)' : ''}, và không phần tử nào là tên riêng của người/địa danh.
 
 Trả về JSON: {"template": string, "answers": string[]}`;
 }
 
-async function generateGapFillBlanks(transcript, _attempt = 0) {
+const GAPFILL_NON_NAME_CAPITALIZED = new Set([
+  'i', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+  'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august',
+  'september', 'october', 'november', 'december',
+]);
+
+// Best-effort heuristic (not real NER) flagging an answer as a likely
+// person/place name — every word Title-Case and not a common non-name
+// capitalized word (weekday/month/"I"). Used to steer bulk generation away
+// from proper nouns (prompt rule 3), which a text instruction alone doesn't
+// always get the model to follow. False positives are possible (a genuine
+// proper adjective used as vocab, say) — treated as a retry hint, never a
+// hard reject; anything still flagged after the retry budget is reported to
+// the caller for a human to judge rather than silently kept or dropped.
+function looksLikeProperNounAnswer(answer) {
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return false;
+  return words.every((w) => {
+    const clean = w.replace(/[^A-Za-z]/g, '');
+    if (clean.length < 2) return false; // number/punctuation-only token — not a name
+    if (GAPFILL_NON_NAME_CAPITALIZED.has(clean.toLowerCase())) return false;
+    return /^[A-Z][a-z]+$/.test(clean);
+  });
+}
+
+// Retries up to twice (3 calls total) — admin/script-triggered bulk
+// generation, not a per-student request, so the extra cost/latency for
+// meaningfully better compliance is worth it. Two independent failure modes
+// both retry through the same counter: (1) the reconstruct-and-compare
+// mismatch check (unchanged, guarantees transcript fidelity), and (2) a
+// quality check — too few blanks for a transcript long enough to support
+// the 25-30 target, or a likely person/place name chosen as an answer.
+// `flaggedNames` on the returned object is non-empty only when a suspected
+// name/place answer survived every retry — callers (generateListeningGapFill.js)
+// must surface that for a human to review, never auto-publish it silently.
+async function generateGapFillBlanks(transcript, _attempt = 0, _retryHint = null) {
   const clean = String(transcript || '').trim();
   if (!clean) throw new Error('Transcript rỗng');
+  const wordCount = clean.split(/\s+/).filter(Boolean).length;
+  const MAX_ATTEMPTS = 2;
 
   const parsed = await _gradeWithGeminiJson({
-    prompt: buildGapFillPrompt(clean),
+    prompt: buildGapFillPrompt(clean, { wordCount, flaggedNames: _retryHint && _retryHint.flaggedNames }),
     systemInstruction: GAPFILL_SYSTEM,
     maxOutputTokens: Math.max(2000, Math.ceil(clean.length * 2)),
     timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.',
@@ -804,9 +852,9 @@ async function generateGapFillBlanks(transcript, _attempt = 0) {
     // unusable for bulk-seeding a whole catalogue of sections. MODEL_FAST
     // already handles high-volume per-answer grading in production (much
     // higher daily quota) and is reliable at structured JSON tasks; the
-    // strict reconstruct-and-compare validation above is what actually
-    // guarantees transcript fidelity, not the model choice, so the lite
-    // model is an acceptable trade here.
+    // strict reconstruct-and-compare validation above (plus the quality
+    // retries below) is what actually guarantees fidelity/compliance, not
+    // the model choice, so the lite model is an acceptable trade here.
     model: MODEL_FAST,
     // Longer than the default 30s: this generates a full transcript's worth
     // of output (can be thousands of tokens for a long section), which
@@ -817,17 +865,25 @@ async function generateGapFillBlanks(transcript, _attempt = 0) {
   const template = String(parsed.template || '');
   const answers = Array.isArray(parsed.answers) ? parsed.answers.map(a => String(a)) : [];
   const rebuilt = reconstructFromGapFillTemplate(template, answers);
-
   const matches = rebuilt !== null && normalizeGapFillText(rebuilt) === normalizeGapFillText(clean);
+
   if (!matches) {
-    if (_attempt < 1) {
+    if (_attempt < MAX_ATTEMPTS) {
       logger.ai('generateGapFillBlanks: reconstructed text did not match transcript, retrying');
-      return generateGapFillBlanks(clean, _attempt + 1);
+      return generateGapFillBlanks(clean, _attempt + 1, _retryHint);
     }
-    throw new Error('AI không giữ nguyên transcript gốc sau 2 lần thử — vui lòng thử lại hoặc kiểm tra transcript.');
+    throw new Error('AI không giữ nguyên transcript gốc sau nhiều lần thử — vui lòng thử lại hoặc kiểm tra transcript.');
   }
 
-  return { template, answers };
+  const tooFewBlanks = wordCount >= 300 && answers.length < 25;
+  const flaggedNames = [...new Set(answers.filter(looksLikeProperNounAnswer))];
+
+  if ((tooFewBlanks || flaggedNames.length) && _attempt < MAX_ATTEMPTS) {
+    logger.ai('generateGapFillBlanks: quality check failed, retrying', { tooFewBlanks, blankCount: answers.length, flaggedNames });
+    return generateGapFillBlanks(clean, _attempt + 1, { flaggedNames });
+  }
+
+  return { template, answers, flaggedNames };
 }
 
 // ── Dictionary Collocations ─────────────────────────────────────────
