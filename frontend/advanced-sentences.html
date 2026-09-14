@@ -1065,6 +1065,12 @@
     }
   });
 
+  // #app is a stable container that render() only ever innerHTML's into —
+  // one registration here covers every view (weeks/exercise/...). Script/
+  // markup/CSS for this were already loaded on the page but never
+  // actually wired up.
+  setupDictionaryDouble('app', 'advanced-sentences');
+
   // ── init ───────────────────────────────────────────────────────────
   if (window.AuthService && !window.AuthService.isLoggedIn()) {
     location.href = '/login.html';

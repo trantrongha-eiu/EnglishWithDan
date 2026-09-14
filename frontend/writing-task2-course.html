@@ -1039,6 +1039,12 @@
     if (e.target.id === 't1-hist-modal') closeHistory();
   });
 
+  // #app is a stable container that render() only ever innerHTML's into —
+  // one registration here covers every view (overview/lesson/exercise/...).
+  // Script/markup/CSS for this were already loaded on the page but never
+  // actually wired up.
+  setupDictionaryDouble('app', 'writing-task2-course');
+
   // ── init ────────────────────────────────────────────────────────
   if (window.AuthService && !window.AuthService.isLoggedIn()) location.href = '/login.html';
   else loadOverview();
