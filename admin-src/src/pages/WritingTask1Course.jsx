@@ -164,9 +164,17 @@ function ExerciseModal({ exercise, lessonCode, onClose, onSaved }) {
             )}
             {ex.stimulus?.kind === 'table' && (
               <div className="form-group">
-                <label className="form-label">headers (mỗi dòng 1) + rows (JSON mảng-của-mảng)</label>
+                <label className="form-label">headers (mỗi dòng 1)</label>
                 <textarea className="form-input" rows={2} value={lines(ex.stimulus?.headers)} onChange={(e) => setEx((x) => ({ ...x, stimulus: { ...x.stimulus, headers: toArr(e.target.value) } }))} />
-                <textarea className="form-input" style={{ marginTop: 6, fontFamily: 'monospace', fontSize: 12 }} rows={4}
+              </div>
+            )}
+            {(ex.stimulus?.kind === 'table' || ex.stimulus?.kind === 'text') && (
+              <div className="form-group">
+                <label className="form-label">
+                  rows (JSON mảng-của-mảng)
+                  {ex.stimulus?.kind === 'text' && ' — mỗi dòng [label, mô tả] hoặc [label, mô tả, imageUrl] để hiện ảnh thu nhỏ bên cạnh'}
+                </label>
+                <textarea className="form-input" style={{ marginTop: 6, fontFamily: 'monospace', fontSize: 12 }} rows={ex.stimulus?.kind === 'text' ? 7 : 4}
                   defaultValue={pretty(ex.stimulus?.rows || [])}
                   onBlur={(e) => { try { const v = JSON.parse(e.target.value || '[]'); setEx((x) => ({ ...x, stimulus: { ...x.stimulus, rows: v } })); setJsonErr(''); } catch { setJsonErr('rows (stimulus) JSON không hợp lệ'); } }} />
               </div>

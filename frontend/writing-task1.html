@@ -94,6 +94,13 @@
     .t1-stim table { border-collapse: collapse; font-size: 12.5px; width: 100%; }
     .t1-stim th, .t1-stim td { border: 1px solid var(--border,#d1d5db); padding: 4px 8px; text-align: left; }
     .t1-stim th { background: var(--surface,#eef2f7); }
+    /* multi-topic text stimulus (e.g. "4 đề bài") where each row also carries
+       its own chart thumbnail — one row per topic, image + description side
+       by side, so the student sees real data instead of a one-line summary. */
+    .t1-stim-row { display:flex; gap:12px; align-items:flex-start; padding:8px 0; border-top:1px dashed var(--border,#e5e7eb); }
+    .t1-stim-row:first-child { border-top:none; padding-top:0; }
+    .t1-stim-thumb { width:112px; max-width:34%; height:auto; border-radius:8px; flex-shrink:0; display:block; margin:0; border:1px solid var(--border,#e5e7eb); }
+    .t1-stim-row-text { font-size:12.5px; line-height:1.6; }
 
     .t1-instr { margin: 10px 20px 0; font-size: 13.5px; line-height: 1.6; color: var(--text,#111827); }
     .t1-wb { display:flex; flex-wrap:wrap; gap:6px; padding: 8px 20px 0; }
@@ -556,7 +563,17 @@
         (st.rows || []).map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
     }
     if (st.kind === 'text' && st.rows) {
-      body += '<div style="font-size:12.5px;line-height:1.7">' + (st.rows || []).map(function (r) { return '<div>• ' + r.map(esc).join(' — ') + '</div>'; }).join('') + '</div>';
+      // Row shape is [label, description] or, when a real chart image exists
+      // for that topic, [label, description, imageUrl] — shown as a small
+      // zoomable thumbnail next to the text (same lightbox as a full-size
+      // stimulus image, via the shared ".t1-stim img[data-zoom]" handler).
+      var hasThumbs = st.rows.some(function (r) { return r[2]; });
+      body += hasThumbs
+        ? (st.rows || []).map(function (r) {
+            var img = r[2] ? '<img class="t1-stim-thumb" src="' + esc(r[2]) + '" alt="' + esc(r[0]) + '" data-zoom title="Bấm để phóng to">' : '';
+            return '<div class="t1-stim-row">' + img + '<div class="t1-stim-row-text">• <b>' + esc(r[0]) + '</b> — ' + esc(r[1]) + '</div></div>';
+          }).join('')
+        : '<div style="font-size:12.5px;line-height:1.7">' + (st.rows || []).map(function (r) { return '<div>• ' + r.map(esc).join(' — ') + '</div>'; }).join('') + '</div>';
     }
     if (st.note) body += '<div class="note">📌 ' + esc(st.note) + '</div>';
     return body ? '<div class="t1-stim">' + body + '</div>' : '';
@@ -652,6 +669,18 @@
     if (t === 'paragraph_writing' || t === 'full_task1') {
       var rows = t === 'full_task1' ? 14 : 8;
       var minW = (ex.rubric && ex.rubric.minWords) || (t === 'full_task1' ? 150 : 40);
+      var pSlots = ex.responseSlots || 1;
+      // A review exercise covering several topics at once (responseSlots > 1,
+      // e.g. "Overview cho 4 biểu đồ") needs one box per topic, same as
+      // sentence_writing above — a single shared textarea made it impossible
+      // to tell which paragraph answered which chart. minWords stays a
+      // combined target across all boxes (the rubric counts total length).
+      if (pSlots > 1) {
+        var pTas = '';
+        for (var pi = 0; pi < pSlots; pi++) pTas += '<textarea class="t1-ta t1-para-slot" rows="4" data-slot="' + pi + '" placeholder="Đoạn ' + (pi + 1) + '..."></textarea>';
+        return pTas + '<div class="t1-wcmeter" id="t1-wcmeter" data-minw="' + minW + '"><div class="bar"><span></span></div><span class="n" id="t1-wc">0</span>' +
+          '<span>/ mục tiêu ≥ ' + minW + ' từ (tổng ' + pSlots + ' đoạn)</span></div>' + rubricHint(ex);
+      }
       return '<textarea class="t1-ta" id="t1-essay" rows="' + rows + '" data-minw="' + minW + '" placeholder="Viết bài của bạn ở đây..."></textarea>' +
         '<div class="t1-wcmeter" id="t1-wcmeter"><div class="bar"><span></span></div><span class="n" id="t1-wc">0</span>' +
         '<span>/ mục tiêu ≥ ' + minW + ' từ</span></div>' + rubricHint(ex);
@@ -812,18 +841,23 @@
 
     // essay word-count meter + timer
     var essay = document.getElementById('t1-essay');
-    if (essay) {
+    var paraSlots = document.querySelectorAll('.t1-para-slot');
+    var wcBoxes = essay ? [essay] : Array.prototype.slice.call(paraSlots);
+    if (wcBoxes.length) {
       var meter = document.getElementById('t1-wcmeter');
-      var minW = +essay.dataset.minw || 40;
+      var minW = +(essay ? essay.dataset.minw : (meter && meter.dataset.minw)) || 40;
       var upd = function () {
-        var n = essay.value.trim() ? essay.value.trim().split(/\s+/).filter(Boolean).length : 0;
+        var n = wcBoxes.reduce(function (sum, box) {
+          return sum + (box.value.trim() ? box.value.trim().split(/\s+/).filter(Boolean).length : 0);
+        }, 0);
         document.getElementById('t1-wc').textContent = n;
         if (meter) {
           meter.classList.toggle('ok', n >= minW);
           meter.querySelector('.bar > span').style.width = Math.min(100, Math.round(n / minW * 100)) + '%';
         }
       };
-      essay.addEventListener('input', upd); upd();
+      wcBoxes.forEach(function (box) { box.addEventListener('input', upd); });
+      upd();
     }
     if (ex.timerMinutes) {
       state.timeLeft = ex.timerMinutes * 60;
@@ -870,7 +904,11 @@
 
     if (isWriting) {
       var responses = [];
-      if (ex.type === 'sentence_writing') document.querySelectorAll('[data-slot]').forEach(function (t) { responses.push(t.value.trim()); });
+      // Multi-slot paragraph_writing (responseSlots > 1) shares the same
+      // [data-slot] textarea pattern sentence_writing uses, so one check
+      // covers both instead of branching on ex.type.
+      var slotBoxes = document.querySelectorAll('[data-slot]');
+      if (slotBoxes.length) slotBoxes.forEach(function (t) { responses.push(t.value.trim()); });
       else responses.push((document.getElementById('t1-essay') || {}).value ? document.getElementById('t1-essay').value.trim() : '');
       if (!responses.some(function (r) { return r; })) { toast('Bạn chưa viết gì', 'info'); return; }
       state._submitting = true; btn.disabled = true;
