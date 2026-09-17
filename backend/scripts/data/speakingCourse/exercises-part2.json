@@ -805,7 +805,8 @@
           "explanation": "người → who, không dùng which.",
           "sampleAnswers": [
             "I'd like to talk about my cousin Linh, who is two years older than me."
-          ]
+          ],
+          "promptVi": "Tôi muốn kể về người em họ tên là Linh, hơn tôi hai tuổi."
         },
         {
           "id": "q2",
@@ -813,7 +814,8 @@
           "explanation": "Sau dấu phẩy không dùng that.",
           "sampleAnswers": [
             "I'd like to talk about my headphones, which I use every day."
-          ]
+          ],
+          "promptVi": "Tôi muốn kể về chiếc tai nghe mà tôi dùng mỗi ngày."
         },
         {
           "id": "q3",
@@ -821,7 +823,8 @@
           "explanation": "Đừng đọc lại nguyên văn cue card — paraphrase.",
           "sampleAnswers": [
             "I'd like to talk about a novel that had a real impact on me."
-          ]
+          ],
+          "promptVi": "Tôi muốn chia sẻ về một cuốn tiểu thuyết đã để lại cho tôi ấn tượng sâu sắc."
         },
         {
           "id": "q4",
@@ -829,7 +832,8 @@
           "explanation": "\"My topic today is…\" nghe như thuyết trình PowerPoint.",
           "sampleAnswers": [
             "The object I'd like to describe is something I use more than anything else I own."
-          ]
+          ],
+          "promptVi": "Mồ đồ vật mà tôi muốn miêu tả là thứ tôi dùng nhiều hơn bất cứ món đồ nào khác mà tôi sở hữu."
         }
       ]
     },
@@ -2264,7 +2268,8 @@
           "explanation": "việc xảy ra trước → had + V3.",
           "sampleAnswers": [
             "By the time she praised it, I had already spent two weekends on the essay."
-          ]
+          ],
+          "promptVi": "Đến lúc cô ấy khen thì tôi đã mất tận hai cuối tuần để viết bài luận đó rồi."
         },
         {
           "id": "q2",
@@ -2272,7 +2277,8 @@
           "explanation": "lý do có sẵn từ trước → past perfect.",
           "sampleAnswers": [
             "I was nervous because I had never travelled alone before."
-          ]
+          ],
+          "promptVi": "Tôi hồi hộp vì chưa bao giờ đi du lịch một mình trước đó."
         },
         {
           "id": "q3",
@@ -2280,7 +2286,8 @@
           "explanation": "Chuỗi sự kiện thường → past simple, không past perfect.",
           "sampleAnswers": [
             "I woke up, ate breakfast and went to school."
-          ]
+          ],
+          "promptVi": "Tôi thức dậy, ăn sáng rồi đi học."
         },
         {
           "id": "q4",
@@ -2288,7 +2295,8 @@
           "explanation": "Thay \"very happy\" bằng cụm mạnh + biểu hiện.",
           "sampleAnswers": [
             "When I heard the news, I was absolutely over the moon — I couldn't stop smiling for the rest of the day."
-          ]
+          ],
+          "promptVi": "Khi nghe tin đó, tôi sướng điên lên — cười suốt cả ngày không ngớt."
         }
       ]
     },
@@ -3152,7 +3160,8 @@
           "explanation": "thừa \"it\".",
           "sampleAnswers": [
             "What I found most captivating was the way he described gratitude."
-          ]
+          ],
+          "promptVi": "Điều làm tôi thấy thu hút nhất chính là cách anh ấy diễn tả lòng biết ơn."
         },
         {
           "id": "q2",
@@ -3160,7 +3169,8 @@
           "explanation": "thiếu động từ to be.",
           "sampleAnswers": [
             "What I liked most about the film was its honesty."
-          ]
+          ],
+          "promptVi": "Điểm tôi thích nhất ở bộ phim là sự chân thật của nó."
         },
         {
           "id": "q3",
@@ -3168,7 +3178,8 @@
           "explanation": "tóm tắt phim dùng present simple.",
           "sampleAnswers": [
             "The film is about a man who moves to America and slowly rebuilds his life."
-          ]
+          ],
+          "promptVi": "Bộ phim kể về một người đàn ông chuyển đến Mỹ sống và từng bước gầy dựng lại cuộc đời."
         },
         {
           "id": "q4",
@@ -3176,7 +3187,8 @@
           "explanation": "Thay thông điệp chung chung bằng thông điệp cụ thể.",
           "sampleAnswers": [
             "I believe its message is that ordinary life is a gift we tend to overlook."
-          ]
+          ],
+          "promptVi": "Tôi nghĩ thông điệp của phim là cuộc sống bình dị vốn là một món quà mà chúng ta hay quên lãng."
         }
       ]
     },
@@ -4047,7 +4059,8 @@
           "explanation": "Mệnh đề \"if\" dùng past simple, không \"would\".",
           "sampleAnswers": [
             "If I had the chance, I would try it."
-          ]
+          ],
+          "promptVi": "Nếu có cơ hội, tôi sẽ thử liền."
         },
         {
           "id": "q2",
@@ -4056,7 +4069,8 @@
           "sampleAnswers": [
             "If I were braver, I might sign up tomorrow.",
             "If I was braver, I might sign up tomorrow."
-          ]
+          ],
+          "promptVi": "Nếu can đảm hơn, có lẽ tôi sẽ đăng ký ngay ngày mai."
         },
         {
           "id": "q3",
@@ -4064,7 +4078,8 @@
           "explanation": "Không phân trần bằng \"I never try…\" — dùng mẫu IMAGINE.",
           "sampleAnswers": [
             "Although I haven't tried it personally, the water sport I'd most like to try is surfing."
-          ]
+          ],
+          "promptVi": "Dù chưa từng tự mình trải nghiệm, môn thể thao dưới nước mà tôi muốn thử nhất là lướt sóng."
         },
         {
           "id": "q4",
@@ -4072,7 +4087,8 @@
           "explanation": "Bắc cầu sang trải nghiệm gần giống, nói tiếp.",
           "sampleAnswers": [
             "I can't say I've done this myself, but the closest thing was body-boarding at the beach."
-          ]
+          ],
+          "promptVi": "Tôi chưa làm điều này bao giờ, nhưng trải nghiệm gần giống nhất là lướt sóng thân người ở bãi biển."
         }
       ]
     },

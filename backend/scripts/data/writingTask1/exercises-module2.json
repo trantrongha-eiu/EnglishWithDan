@@ -608,35 +608,40 @@
           "prompt": "The number of tourists increased sharply in 2010.",
           "sampleAnswers": [
             "There was a sharp increase in the number of tourists in 2010."
-          ]
+          ],
+          "promptVi": "Số lượng khách du lịch đã tăng mạnh vào năm 2010."
         },
         {
           "id": "q2",
           "prompt": "Car sales fell slightly between 2015 and 2016.",
           "sampleAnswers": [
             "There was a slight fall in car sales between 2015 and 2016."
-          ]
+          ],
+          "promptVi": "Doanh số bán ô tô đã giảm nhẹ trong khoảng thời gian từ năm 2015 đến năm 2016."
         },
         {
           "id": "q3",
           "prompt": "The unemployment rate fluctuated wildly.",
           "sampleAnswers": [
             "There was a wild fluctuation in the unemployment rate."
-          ]
+          ],
+          "promptVi": "Tỷ lệ thất nghiệp đã trải qua những biến động mạnh."
         },
         {
           "id": "q4",
           "prompt": "Rice exports grew substantially over the period.",
           "sampleAnswers": [
             "There was a substantial growth in rice exports over the period."
-          ]
+          ],
+          "promptVi": "Xuất khẩu gạo đã chứng kiến sự tăng trưởng đáng kể trong suốt giai đoạn này."
         },
         {
           "id": "q5",
           "prompt": "Coal production dropped dramatically after 2000.",
           "sampleAnswers": [
             "There was a dramatic drop in coal production after 2000."
-          ]
+          ],
+          "promptVi": "Sản lượng than đã sụt giảm nghiêm trọng sau năm 2000."
         }
       ],
       "rubric": {
@@ -1116,7 +1121,8 @@
           "starter": "The number of cars",
           "sampleAnswers": [
             "The number of cars experienced a gradual fall over the period from 1990 to 2000."
-          ]
+          ],
+          "promptVi": "Số lượng ô tô đã giảm dần trong suốt giai đoạn từ năm 1990 đến năm 2000."
         },
         {
           "id": "q2",
@@ -1124,7 +1130,8 @@
           "starter": "The year",
           "sampleAnswers": [
             "The year 2005 witnessed a significant decrease in research investment."
-          ]
+          ],
+          "promptVi": "Năm 2005 chứng kiến sự sụt giảm đáng kể trong đầu tư nghiên cứu."
         },
         {
           "id": "q3",
@@ -1132,7 +1139,8 @@
           "starter": "The sales",
           "sampleAnswers": [
             "The sales of mangos fell slightly in 2006."
-          ]
+          ],
+          "promptVi": "Doanh số bán xoài đã giảm nhẹ vào năm 2006."
         },
         {
           "id": "q4",
@@ -1140,7 +1148,8 @@
           "starter": "There",
           "sampleAnswers": [
             "There has been a sharp increase in the quality of food in supermarkets."
-          ]
+          ],
+          "promptVi": "Chất lượng thực phẩm trong các siêu thị đã tăng lên một cách rõ rệt."
         },
         {
           "id": "q5",
@@ -1148,7 +1157,8 @@
           "starter": "1988",
           "sampleAnswers": [
             "1988 saw a quick drop of 3 million USD in sugar imports."
-          ]
+          ],
+          "promptVi": "Năm 1988 chứng kiến sự sụt giảm nhanh chóng 3 triệu USD trong lượng đường nhập khẩu."
         },
         {
           "id": "q6",
@@ -1156,7 +1166,8 @@
           "starter": "A quick drop",
           "sampleAnswers": [
             "A quick drop was seen in the price of laptops over the period."
-          ]
+          ],
+          "promptVi": "Một sự sụt giảm nhanh chóng đã được ghi nhận ở giá laptop trong suốt giai đoạn này."
         },
         {
           "id": "q7",
@@ -1164,7 +1175,8 @@
           "starter": "The number of visitors",
           "sampleAnswers": [
             "The number of visitors to the website experienced an upward trend."
-          ]
+          ],
+          "promptVi": "Số lượng lượt truy cập trang web đã trải qua xu hướng đi lên."
         },
         {
           "id": "q8",
@@ -1172,7 +1184,8 @@
           "starter": "There",
           "sampleAnswers": [
             "There was a wild fluctuation in the growth rate throughout the years."
-          ]
+          ],
+          "promptVi": "Tốc độ tăng trưởng đã trải qua những biến động mạnh trong suốt những năm đó."
         },
         {
           "id": "q9",
@@ -1180,7 +1193,8 @@
           "starter": "A stability",
           "sampleAnswers": [
             "A stability was seen in the number of students applying to the university over the decade."
-          ]
+          ],
+          "promptVi": "Số lượng học sinh nộp đơn vào trường đại học đã duy trì sự ổn định trong suốt thập kỷ qua."
         },
         {
           "id": "q10",
@@ -1188,7 +1202,8 @@
           "starter": "The house price in London",
           "sampleAnswers": [
             "The house price in London grew gradually in 2000."
-          ]
+          ],
+          "promptVi": "Giá nhà ở London đã tăng từ từ vào năm 2000."
         }
       ],
       "rubric": {
@@ -1411,28 +1426,32 @@
           "prompt": "Dùng động từ “double”",
           "sampleAnswers": [
             "The figure for A doubled from 10 million in 1992 to 20 million in 1998."
-          ]
+          ],
+          "promptVi": "Số liệu cho mục A đã tăng gấp đôi từ 10 triệu vào năm 1992 lên 20 triệu vào năm 1998."
         },
         {
           "id": "q2",
           "prompt": "Dùng “-fold”",
           "sampleAnswers": [
             "There was a two-fold increase in A, from 10 million to 20 million, between 1992 and 1998."
-          ]
+          ],
+          "promptVi": "Đã có sự gia tăng gấp đôi ở mục A, từ 10 triệu lên 20 triệu, trong khoảng thời gian từ năm 1992 đến năm 1998."
         },
         {
           "id": "q3",
           "prompt": "Dùng “times … as many as”",
           "sampleAnswers": [
             "In 1998, the figure for A was twice as many as that in 1992."
-          ]
+          ],
+          "promptVi": "Vào năm 1998, số liệu cho mục A nhiều gấp đôi so với năm 1992."
         },
         {
           "id": "q4",
           "prompt": "Dùng “by” và “to”",
           "sampleAnswers": [
             "A increased by 10 million to 20 million over the six-year period."
-          ]
+          ],
+          "promptVi": "Mục A đã tăng thêm 10 triệu để đạt mức 20 triệu trong suốt giai đoạn 6 năm đó."
         }
       ],
       "rubric": {
@@ -2145,21 +2164,24 @@
           "prompt": "2000: 200 → 2005: 800 → 2010: 500",
           "sampleAnswers": [
             "Starting at 200 in 2000, the figure quadrupled to 800 five years later, before falling back to 500 by 2010."
-          ]
+          ],
+          "promptVi": "Bắt đầu ở mức 200 vào năm 2000, số liệu này đã tăng gấp bốn lần lên 800 sau đó năm năm, trước khi giảm trở lại mức 500 vào năm 2010."
         },
         {
           "id": "q2",
           "prompt": "1990: 45% → 2000: 20% → 2010: 20%",
           "sampleAnswers": [
             "Starting at 45% in 1990, the proportion more than halved to 20% by 2000, but later remained unchanged until the end of the period."
-          ]
+          ],
+          "promptVi": "Bắt đầu ở mức 45% vào năm 1990, tỷ lệ này đã giảm hơn một nửa xuống còn 20% vào năm 2000, nhưng sau đó giữ nguyên không đổi cho đến cuối kỳ."
         },
         {
           "id": "q3",
           "prompt": "1980: 3 tấn → 1990: 3 tấn → 2000: 9 tấn",
           "sampleAnswers": [
             "Starting at 3 tonnes in 1980, the amount stayed stable for a decade, followed by a three-fold increase to 9 tonnes in 2000."
-          ]
+          ],
+          "promptVi": "Bắt đầu ở mức 3 tấn vào năm 1980, khối lượng này giữ nguyên ổn định trong một thập kỷ, tiếp theo là mức tăng gấp ba lần lên 9 tấn vào năm 2000."
         }
       ],
       "rubric": {
@@ -2801,42 +2823,48 @@
           "prompt": "Câu cơ bản: “Additionally, while chicken consumption increased, the figures for beef, lamb, and fish all decreased from 1979 to 2004.” → nâng lên Band 7",
           "sampleAnswers": [
             "Additionally, while chicken consumption increased, the opposite trend was true for the figures for beef, lamb, and fish from 1979 to 2004."
-          ]
+          ],
+          "promptVi": "Thêm vào đó, trong khi lượng tiêu thụ thịt gà tăng lên thì xu hướng ngược lại lại đúng với số liệu của thịt bò, thịt cừu và cá từ năm 1979 đến năm 2004."
         },
         {
           "id": "q2",
           "prompt": "→ nâng tiếp lên Band 8",
           "sampleAnswers": [
             "Additionally, while chicken consumption experienced an upward trend, the reverse patterns could be seen in the figures for beef, lamb, and fish from 1979 to 2004."
-          ]
+          ],
+          "promptVi": "Ngoài ra, trong khi lượng tiêu thụ thịt gà trải qua xu hướng tăng, các mô hình ngược lại có thể được thấy ở số liệu của thịt bò, thịt cừu và cá từ năm 1979 đến năm 2004."
         },
         {
           "id": "q3",
           "prompt": "“Car sales went up but bike sales went down.” → nâng lên Band 8",
           "sampleAnswers": [
             "While car sales experienced an upward trend, the reverse pattern could be seen in the figure for bicycles."
-          ]
+          ],
+          "promptVi": "Trong khi doanh số bán ô tô trải qua xu hướng tăng, mô hình ngược lại có thể được nhìn thấy ở số lượng xe đạp."
         },
         {
           "id": "q4",
           "prompt": "“A increased and B increased too.” → nâng lên Band 7+",
           "sampleAnswers": [
             "A similar upward trend could be observed in the figure for B."
-          ]
+          ],
+          "promptVi": "Một xu hướng tăng tương tự có thể được quan sát thấy ở số liệu cho mục B."
         },
         {
           "id": "q5",
           "prompt": "“The number went up a lot in 2005.” → nâng lên Band 7+",
           "sampleAnswers": [
             "The year 2005 witnessed a substantial increase in this figure."
-          ]
+          ],
+          "promptVi": "Năm 2005 chứng kiến sự gia tăng đáng kể ở số liệu này."
         },
         {
           "id": "q6",
           "prompt": "“It stayed the same after that.” → nâng lên Band 7+",
           "sampleAnswers": [
             "The figure then levelled off for the remainder of the surveyed period."
-          ]
+          ],
+          "promptVi": "Số liệu sau đó chững lại trong thời gian còn lại của giai đoạn được khảo sát."
         }
       ],
       "rubric": {
@@ -3538,7 +3566,8 @@
           "cue": "There was",
           "sampleAnswers": [
             "There was a sharp increase in the number of visitors in 2010."
-          ]
+          ],
+          "promptVi": "Đã có một sự gia tăng đột ngột về lượng du khách vào năm 2010."
         },
         {
           "id": "q2",
@@ -3546,7 +3575,8 @@
           "cue": "Car sales",
           "sampleAnswers": [
             "Car sales fell gradually between 1990 and 2000."
-          ]
+          ],
+          "promptVi": "Doanh số bán ô tô đã giảm dần trong khoảng thời gian từ năm 1990 đến năm 2000."
         },
         {
           "id": "q3",
@@ -3554,7 +3584,8 @@
           "cue": "The year 2005",
           "sampleAnswers": [
             "The year 2005 witnessed a significant drop in research investment."
-          ]
+          ],
+          "promptVi": "Năm 2005 chứng kiến một sự sụt giảm đáng kể trong đầu tư cho nghiên cứu."
         },
         {
           "id": "q4",
@@ -3562,7 +3593,8 @@
           "cue": "double",
           "sampleAnswers": [
             "The figure doubled from 10 to 20 million."
-          ]
+          ],
+          "promptVi": "Con số này đã tăng gấp đôi từ 10 lên 20 triệu."
         },
         {
           "id": "q5",
@@ -3570,7 +3602,8 @@
           "cue": "the opposite trend",
           "sampleAnswers": [
             "A experienced an upward trend, while the opposite trend was true for B over the period."
-          ]
+          ],
+          "promptVi": "A có xu hướng tăng, trong khi xu hướng ngược lại xảy ra với B trong suốt giai đoạn này."
         }
       ],
       "rubric": {

@@ -532,42 +532,48 @@
           "prompt": "They removed the old factory in 2005. (demolish)",
           "sampleAnswers": [
             "The old factory was demolished in 2005."
-          ]
+          ],
+          "promptVi": "Nhà máy cũ đã bị phá bỏ vào năm 2005."
         },
         {
           "id": "q2",
           "prompt": "The council made the small park into a car park. (convert)",
           "sampleAnswers": [
             "The small park was converted into a car park."
-          ]
+          ],
+          "promptVi": "Công viên nhỏ đã được quy hoạch thành bãi đỗ xe."
         },
         {
           "id": "q3",
           "prompt": "Workers made the shopping centre bigger. (extend)",
           "sampleAnswers": [
             "The shopping centre was extended."
-          ]
+          ],
+          "promptVi": "Trung tâm thương mại đã được mở rộng."
         },
         {
           "id": "q4",
           "prompt": "They moved the stadium to the north of the river. (relocate)",
           "sampleAnswers": [
             "The stadium was relocated to the north of the river."
-          ]
+          ],
+          "promptVi": "Sân vận động đã được dời ra phía bắc con sông."
         },
         {
           "id": "q5",
           "prompt": "A supermarket took the place of the woodland. (replace)",
           "sampleAnswers": [
             "The woodland was replaced by a supermarket."
-          ]
+          ],
+          "promptVi": "Khu rừng đã bị thay thế bằng một siêu thị."
         },
         {
           "id": "q6",
           "prompt": "They planted many trees around the new hospital. (plant)",
           "sampleAnswers": [
             "Many trees were planted around the new hospital."
-          ]
+          ],
+          "promptVi": "Nhiều cây xanh đã được trồng xung quanh bệnh viện mới."
         }
       ],
       "rubric": {
@@ -892,35 +898,40 @@
           "prompt": "The residential area was redeveloped. Many old houses were knocked down.",
           "sampleAnswers": [
             "The residential area was redeveloped, with many old houses being knocked down."
-          ]
+          ],
+          "promptVi": "Khu dân cư đã được quy hoạch lại, với nhiều ngôi nhà cũ bị đập bỏ."
         },
         {
           "id": "q2",
           "prompt": "The city centre changed dramatically. A shopping mall was constructed in the north.",
           "sampleAnswers": [
             "The city centre changed dramatically, with a shopping mall being constructed in the north."
-          ]
+          ],
+          "promptVi": "Trung tâm thành phố đã thay đổi chóng mặt, với một trung tâm thương mại được xây dựng ở phía bắc."
         },
         {
           "id": "q3",
           "prompt": "The park was made smaller. Half of the trees were cut down.",
           "sampleAnswers": [
             "The park was made smaller, with half of the trees being cut down."
-          ]
+          ],
+          "promptVi": "Công viên đã bị thu nhỏ lại, với một nửa số cây bị chặt hạ."
         },
         {
           "id": "q4",
           "prompt": "The seaside resort was upgraded. A new ferry terminal was added.",
           "sampleAnswers": [
             "The seaside resort was upgraded, with a new ferry terminal being added."
-          ]
+          ],
+          "promptVi": "Khu nghỉ dưỡng ven biển đã được nâng cấp, với một bến phà mới được xây thêm."
         },
         {
           "id": "q5",
           "prompt": "The school site was reorganised. The farmland was converted into a sports field.",
           "sampleAnswers": [
             "The school site was reorganised, with the farmland being converted into a sports field."
-          ]
+          ],
+          "promptVi": "Khuôn viên trường học đã được sắp xếp lại, trong đó phần đất nông nghiệp được chuyển thành sân thể thao."
         }
       ],
       "rubric": {
@@ -2010,7 +2021,8 @@
           "sampleAnswers": [
             "A stadium was built in the place of the trees.",
             "A stadium was built in the place of the woodland that had been cut down."
-          ]
+          ],
+          "promptVi": "Một sân vận động đã được xây lên thay cho hàng cây."
         },
         {
           "id": "q2",
@@ -2018,7 +2030,8 @@
           "cue": "with + S + being + V3",
           "sampleAnswers": [
             "The town centre was modernised, with many old buildings being demolished."
-          ]
+          ],
+          "promptVi": "Trung tâm thị trấn đã được hiện đại hóa, với nhiều tòa nhà cổ bị phá bỏ."
         },
         {
           "id": "q3",
@@ -2026,7 +2039,8 @@
           "cue": "where … once stood",
           "sampleAnswers": [
             "A supermarket was built where a school once stood."
-          ]
+          ],
+          "promptVi": "Một siêu thị đã được xây dựng ngay vị trí từng là ngôi trường."
         },
         {
           "id": "q4",
@@ -2034,7 +2048,8 @@
           "cue": "extend",
           "sampleAnswers": [
             "The shopping centre was extended."
-          ]
+          ],
+          "promptVi": "Trung tâm thương mại đã được mở rộng."
         },
         {
           "id": "q5",
@@ -2043,7 +2058,8 @@
           "sampleAnswers": [
             "The airport remained unchanged.",
             "The airport remained intact throughout the period."
-          ]
+          ],
+          "promptVi": "Khu vực sân bay vẫn giữ nguyên không thay đổi."
         }
       ],
       "rubric": {

@@ -540,7 +540,8 @@
           "explanation": "Trả lời câu hỏi nhưng không tuyệt đối.",
           "sampleAnswers": [
             "Generally speaking, technology has been beneficial, but it depends on how it is used."
-          ]
+          ],
+          "promptVi": "Nhìn chung, công nghệ mang lại nhiều lợi ích, nhưng còn tùy thuộc vào cách nó được sử dụng."
         },
         {
           "id": "q2",
@@ -548,7 +549,8 @@
           "explanation": "Nêu sắc thái thay vì phủ định thẳng.",
           "sampleAnswers": [
             "To a certain extent exams are useful, but I would stop short of saying they measure everything that matters."
-          ]
+          ],
+          "promptVi": "Ở mức độ nào đó, các kỳ thi cũng hữu ích, nhưng nói rằng chúng đánh giá được mọi thứ quan trọng thì không hẳn."
         },
         {
           "id": "q3",
@@ -556,7 +558,8 @@
           "explanation": "Chọn bên nhưng thừa nhận giới hạn.",
           "sampleAnswers": [
             "On balance recycling is worthwhile, though its impact is often overstated."
-          ]
+          ],
+          "promptVi": "Xét toàn diện thì việc tái chế rất đáng làm, dù tác động của nó thường bị thổi phồng."
         },
         {
           "id": "q4",
@@ -564,7 +567,8 @@
           "explanation": "Không dùng although và but cùng lúc.",
           "sampleAnswers": [
             "Although it is expensive, it is worth it."
-          ]
+          ],
+          "promptVi": "Dù đắt đỏ nhưng rất đáng tiền."
         }
       ]
     },
@@ -1747,7 +1751,8 @@
           "explanation": "khẳng định quá khứ: used to (có -d).",
           "sampleAnswers": [
             "People used to write letters."
-          ]
+          ],
+          "promptVi": "Ngày trước mọi người thường viết thư."
         },
         {
           "id": "q2",
@@ -1755,7 +1760,8 @@
           "explanation": "used to + V nguyên thể.",
           "sampleAnswers": [
             "People used to write letters."
-          ]
+          ],
+          "promptVi": "Ngày trước mọi người thường viết thư."
         },
         {
           "id": "q3",
@@ -1763,7 +1769,8 @@
           "explanation": "Sau \"if\" không dùng will.",
           "sampleAnswers": [
             "If this continues, entire industries could disappear."
-          ]
+          ],
+          "promptVi": "Nếu tình trạng này tiếp tục, toàn bộ các ngành nghề có thể biến mất."
         },
         {
           "id": "q4",
@@ -1771,7 +1778,8 @@
           "explanation": "Thêm lực đẩy + tránh \"will\" trần + thêm caveat.",
           "sampleAnswers": [
             "Driven by advances in automation, many routine tasks are likely to disappear, though it is hard to say how far this will go."
-          ]
+          ],
+          "promptVi": "Được thúc đẩy bởi những tiến bộ trong tự động hóa, nhiều công việc lặp đi lặp lại có khả năng biến mất, dù rất khó để nói điều này sẽ đi đến đâu."
         }
       ]
     },
@@ -2054,7 +2062,8 @@
           "explanation": "rote learning.",
           "sampleAnswers": [
             "Rote learning encourages students to memorise without genuine understanding."
-          ]
+          ],
+          "promptVi": "Việc học vẹt khuyến khích học sinh ghi nhớ mà không thực sự hiểu bản chất."
         },
         {
           "id": "q2",
@@ -2062,7 +2071,8 @@
           "explanation": "academic pressure.",
           "sampleAnswers": [
             "Students are often subjected to excessive academic pressure."
-          ]
+          ],
+          "promptVi": "Học sinh thường phải chịu áp lực học tập quá mức."
         },
         {
           "id": "q3",
@@ -2070,7 +2080,8 @@
           "explanation": "cụm học thuật.",
           "sampleAnswers": [
             "Schools should foster intellectual independence and critical thinking skills."
-          ]
+          ],
+          "promptVi": "Nhà trường nên nuôi dưỡng tính độc lập trong tư duy và các kỹ năng tư duy phản biện."
         },
         {
           "id": "q4",
@@ -2078,7 +2089,8 @@
           "explanation": "\"knowledge\" không đếm được.",
           "sampleAnswers": [
             "In school children acquire a great deal of knowledge."
-          ]
+          ],
+          "promptVi": "Ở trường, trẻ em tiếp thu rất nhiều kiến thức."
         }
       ]
     },
@@ -2360,7 +2372,8 @@
           "explanation": "depend → dependency.",
           "sampleAnswers": [
             "Excessive technological dependency is a growing concern."
-          ]
+          ],
+          "promptVi": "Sự phụ thuộc quá mức vào công nghệ là một vấn đề đáng lo ngại ngày càng tăng."
         },
         {
           "id": "q2",
@@ -2368,7 +2381,8 @@
           "explanation": "digital divide.",
           "sampleAnswers": [
             "The digital divide leaves lower-income households without reliable internet access."
-          ]
+          ],
+          "promptVi": "Khoảng cách số khiến các hộ gia đình có thu nhập thấp không thể tiếp cận internet ổn định."
         },
         {
           "id": "q3",
@@ -2376,7 +2390,8 @@
           "explanation": "workforce automation.",
           "sampleAnswers": [
             "Workforce automation is replacing many routine factory roles."
-          ]
+          ],
+          "promptVi": "Tự động hóa lực lượng lao động đang thay thế nhiều công việc lặp đi lặp lại trong nhà máy."
         },
         {
           "id": "q4",
@@ -2384,7 +2399,8 @@
           "explanation": "social media algorithms.",
           "sampleAnswers": [
             "Social media algorithms shape what users see far more than they realise."
-          ]
+          ],
+          "promptVi": "Các thuật toán mạng xã hội định hình những gì người dùng nhìn thấy nhiều hơn rất nhiều so với họ nhận ra."
         }
       ]
     },
@@ -2680,7 +2696,8 @@
           "explanation": "bị động: must be cut.",
           "sampleAnswers": [
             "Carbon emissions must be cut far more aggressively."
-          ]
+          ],
+          "promptVi": "Lượng khí thải carbon phải được cắt giảm mạnh mẽ và quyết liệt hơn nữa."
         },
         {
           "id": "q2",
@@ -2688,7 +2705,8 @@
           "explanation": "should be + V3.",
           "sampleAnswers": [
             "Industrial waste should be recycled."
-          ]
+          ],
+          "promptVi": "Rác thải công nghiệp nên được tái chế."
         },
         {
           "id": "q3",
@@ -2696,7 +2714,8 @@
           "explanation": "bị động vô nhân xưng: It is believed that…",
           "sampleAnswers": [
             "It is widely believed that recycling helps."
-          ]
+          ],
+          "promptVi": "Nhiều người tin rằng việc tái chế rất hữu ích."
         },
         {
           "id": "q4",
@@ -2704,7 +2723,8 @@
           "explanation": "Tránh khẩu hiệu rỗng — nêu việc cụ thể ở dạng bị động.",
           "sampleAnswers": [
             "Far more could be done to protect coastal and forest ecosystems."
-          ]
+          ],
+          "promptVi": "Chúng ta còn có thể làm nhiều điều hơn nữa để bảo vệ các hệ sinh thái ven biển và rừng."
         }
       ]
     },
@@ -2987,7 +3007,8 @@
           "sampleAnswers": [
             "What is really at stake in big cities is loneliness.",
             "What is most serious in big cities is loneliness."
-          ]
+          ],
+          "promptVi": "Vấn đề thực sự bị đe dọa ở các thành phố lớn chính là sự cô đơn."
         },
         {
           "id": "q2",
@@ -2995,7 +3016,8 @@
           "explanation": "The fact that + mệnh đề + means + …",
           "sampleAnswers": [
             "The fact that people move house every few years means nobody gets to know their neighbours."
-          ]
+          ],
+          "promptVi": "Việc mọi người chuyển nhà vài năm một lần khiến chẳng ai có cơ hội làm quen với hàng xóm."
         },
         {
           "id": "q3",
@@ -3003,7 +3025,8 @@
           "explanation": "thừa \"it\".",
           "sampleAnswers": [
             "What I find striking is how quickly this happened."
-          ]
+          ],
+          "promptVi": "Điều khiến tôi ấn tượng là chuyện này diễn ra quá nhanh."
         },
         {
           "id": "q4",
@@ -3011,7 +3034,8 @@
           "explanation": "Tránh đạo đức hoá — nêu cơ chế.",
           "sampleAnswers": [
             "Community involvement functions as a kind of social infrastructure, building the ties a neighbourhood needs when a crisis occurs."
-          ]
+          ],
+          "promptVi": "Sự tham gia của cộng đồng hoạt động như một dạng cơ sở hạ tầng xã hội, giúp xây dựng các mối liên kết cần thiết cho khunet khi khủng hoảng xảy ra."
         }
       ]
     },
@@ -3310,7 +3334,8 @@
           "explanation": "rào cản thời gian.",
           "sampleAnswers": [
             "Long working hours leave many people with little time or energy to cook at home."
-          ]
+          ],
+          "promptVi": "Thời gian làm việc kéo dài khiến nhiều người còn rất ít thời gian hoặc năng lượng để nấu ăn ở nhà."
         },
         {
           "id": "q2",
@@ -3318,7 +3343,8 @@
           "explanation": "rào cản chi phí.",
           "sampleAnswers": [
             "Processed food is often cheaper per calorie, so it is the realistic choice for lower-income households."
-          ]
+          ],
+          "promptVi": "Thức ăn chế biến sẵn thường rẻ hơn tính trên mỗi lượng calo, thế nên đó là lựa chọn thực tế cho các hộ gia đình thu nhập thấp."
         },
         {
           "id": "q3",
@@ -3326,7 +3352,8 @@
           "explanation": "sau \"if\" không dùng will (loại 0).",
           "sampleAnswers": [
             "If fresh food costs more than processed food, low-income families tend to buy processed food."
-          ]
+          ],
+          "promptVi": "Nếu thực phẩm tươi sống đắt hơn thực phẩm chế biến sẵn, các gia đình thu nhập thấp có xu hướng mua thực phẩm chế biến sẵn."
         },
         {
           "id": "q4",
@@ -3334,7 +3361,8 @@
           "explanation": "không lẫn loại 1 và loại 2.",
           "sampleAnswers": [
             "If schools remove sugary drinks, children will consume less sugar."
-          ]
+          ],
+          "promptVi": "Nếu các trường học loại bỏ đồ uống có đường, trẻ em sẽ tiêu thụ ít đường hơn."
         }
       ]
     },
@@ -3617,7 +3645,8 @@
           "explanation": "Having + V3, chủ ngữ trùng.",
           "sampleAnswers": [
             "Having grown up during a recession, young workers value security less."
-          ]
+          ],
+          "promptVi": "Lớn lên trong thời kỳ suy thoái, những người lao động trẻ tuổi ít coi trọng sự ổn định hơn."
         },
         {
           "id": "q2",
@@ -3625,7 +3654,8 @@
           "explanation": "\"Given that\" + mệnh đề.",
           "sampleAnswers": [
             "Given that automation is advancing quickly, many routine jobs will disappear."
-          ]
+          ],
+          "promptVi": "Với việc tự động hóa đang tiến躞 nhanh chóng, nhiều công việc lặp đi lặp lại sẽ biến mất."
         },
         {
           "id": "q3",
@@ -3633,7 +3663,8 @@
           "explanation": "rút gọn: Having + V3.",
           "sampleAnswers": [
             "Having worked remotely for two years, many staff refused to return."
-          ]
+          ],
+          "promptVi": "Đã làm việc từ xa trong hai năm, nhiều nhân viên từ chối quay lại công ty."
         },
         {
           "id": "q4",
@@ -3641,7 +3672,8 @@
           "explanation": "chủ ngữ hai vế phải trùng — không dùng \"it\".",
           "sampleAnswers": [
             "Having grown up during a recession, they became cautious."
-          ]
+          ],
+          "promptVi": "Lớn lên trong thời kỳ suy thoái, họ đã trở nên thận trọng."
         }
       ]
     },
@@ -3921,7 +3953,8 @@
           "sampleAnswers": [
             "A growing number of people travel abroad every year.",
             "A significant proportion of people travel abroad every year."
-          ]
+          ],
+          "promptVi": "Ngày càng có nhiều người đi du lịch nước ngoài mỗi năm."
         },
         {
           "id": "q2",
@@ -3929,7 +3962,8 @@
           "explanation": "the vast majority of.",
           "sampleAnswers": [
             "The vast majority of tourists visit only three streets."
-          ]
+          ],
+          "promptVi": "Đại đa số khách du lịch chỉ ghé thăm ba con phố."
         },
         {
           "id": "q3",
@@ -3937,7 +3971,8 @@
           "explanation": "lượng từ + cụm ★.",
           "sampleAnswers": [
             "A significant proportion of long-term residents have been priced out and moved away."
-          ]
+          ],
+          "promptVi": "Một tỷ lệ lớn cư dân lâu năm đã bị đẩy giá ra khỏi thị trường nhà ở và phải chuyển đi nơi khác."
         },
         {
           "id": "q4",
@@ -3945,7 +3980,8 @@
           "explanation": "Không nói \"the city\" như một khối — nêu nhóm hưởng lợi và nhóm chịu thiệt.",
           "sampleAnswers": [
             "Tourism benefits hotel owners and transport operators, whereas long-term residents are often priced out."
-          ]
+          ],
+          "promptVi": "Du lịch mang lại lợi ích cho chủ khách sạn và các nhà vận tải, trong khi cư dân lâu năm thường bị đẩy ra xa vì giá cả đắt đỏ."
         }
       ]
     },
@@ -4256,7 +4292,8 @@
           "explanation": "Whilst + mệnh đề.",
           "sampleAnswers": [
             "Whilst platforms give marginalised people a voice, they also amplify hostility."
-          ]
+          ],
+          "promptVi": "Mặc dù các nền tảng mạng xã hội trao tiếng nói cho những người yếu thế, chúng đồng thời cũng làm gia tăng sự thù địch."
         },
         {
           "id": "q2",
@@ -4264,7 +4301,8 @@
           "explanation": "despite + danh từ / V-ing; mệnh đề → \"despite the fact that\".",
           "sampleAnswers": [
             "Despite the fact that news is more accessible, trust has fallen sharply."
-          ]
+          ],
+          "promptVi": "Mặc dù tin tức ngày càng dễ tiếp cận hơn, niềm tin đã sụt giảm nghiêm trọng."
         },
         {
           "id": "q3",
@@ -4272,7 +4310,8 @@
           "explanation": "không dùng although + but.",
           "sampleAnswers": [
             "Although fact-checking has improved, false stories still travel faster."
-          ]
+          ],
+          "promptVi": "Mặc dù việc kiểmース tơi thông tin đã được cải thiện, những câu chuyện sai sự thật vẫn lan truyền nhanh hơn."
         },
         {
           "id": "q4",
@@ -4280,7 +4319,8 @@
           "explanation": "Không nói \"the media\" như một chủ thể — nêu cơ chế.",
           "sampleAnswers": [
             "Because these platforms are designed to maximise engagement, the algorithm rewards outrage over calm discussion."
-          ]
+          ],
+          "promptVi": "Vì các nền tảng này được thiết kế để tối đa hóa lượng tương tác, thuật toán ưu tiên sự phẫn nộ hơn là thảo luận ôn hòa."
         }
       ]
     },
@@ -4561,7 +4601,8 @@
           "explanation": "not so much X as Y.",
           "sampleAnswers": [
             "The problem is not so much a lack of money as a lack of time."
-          ]
+          ],
+          "promptVi": "Vấn đề không phải là thiếu tiền mà là thiếu thời gian."
         },
         {
           "id": "q2",
@@ -4569,7 +4610,8 @@
           "explanation": "less about X and more about Y.",
           "sampleAnswers": [
             "Families are less about proximity now and more about deliberate contact."
-          ]
+          ],
+          "promptVi": "Gia đình giờ đây ít phụ thuộc vào sự gần gũi về địa lý mà chú trọng hơn đến việc chủ động giữ liên lạc."
         },
         {
           "id": "q3",
@@ -4577,7 +4619,8 @@
           "explanation": "định khung lại vấn đề.",
           "sampleAnswers": [
             "It is not so much that culture is disappearing as that it is changing form."
-          ]
+          ],
+          "promptVi": "Vấn đề không hẳn là văn hóa đang biến mất mà là nó đang thay đổi hình thức."
         },
         {
           "id": "q4",
@@ -4585,7 +4628,8 @@
           "explanation": "Chống giả định phổ quát.",
           "sampleAnswers": [
             "In many collectivist societies, the extended family remains not merely valued but economically essential."
-          ]
+          ],
+          "promptVi": "Trong nhiều xã hội coi trọng tập thể, đại gia đình không chỉ được coi trọng mà còn mang ý nghĩa thiết yếu về kinh tế."
         }
       ]
     },

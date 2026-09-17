@@ -654,7 +654,8 @@
           "sampleAnswers": [
             "In 2010, 4 million British people cycled.",
             "There were 4 million cyclists in Britain in 2010."
-          ]
+          ],
+          "promptVi": "Vào năm 2010, có 4 triệu người Anh đi xe đạp."
         },
         {
           "id": "q2",
@@ -663,7 +664,8 @@
           "sampleAnswers": [
             "The number of Japanese visitors to Vietnam was 300,000 in 2019.",
             "There were 300,000 Japanese people visiting Vietnam in 2019."
-          ]
+          ],
+          "promptVi": "Số lượng du khách Nhật Bản đến Việt Nam là 300.000 người vào năm 2019."
         },
         {
           "id": "q3",
@@ -672,7 +674,8 @@
           "sampleAnswers": [
             "The amount of waste produced in Australia was 12 million tonnes.",
             "12 million tonnes of waste were produced in Australia."
-          ]
+          ],
+          "promptVi": "Lượng rác thải được tạo ra ở Úc là 12 triệu tấn."
         },
         {
           "id": "q4",
@@ -681,7 +684,8 @@
           "sampleAnswers": [
             "800 million m³ of gas were used by factories.",
             "There were 800 million m³ of gas used by factories."
-          ]
+          ],
+          "promptVi": "800 triệu mét khối khí đốt đã được các nhà máy sử dụng."
         }
       ],
       "rubric": {
@@ -1751,7 +1755,8 @@
           "sampleAnswers": [
             "The number of electric cars in Norway is expected to be 500,000 in 2035.",
             "The number of electric cars in Norway is projected to stand at 500,000 in 2035."
-          ]
+          ],
+          "promptVi": "Số lượng ô tô điện ở Na Uy được dự kiến là 500.000 chiếc vào năm 2035."
         },
         {
           "id": "q2",
@@ -1759,7 +1764,8 @@
           "sampleAnswers": [
             "Coal is predicted to account for 30% of energy production in 2040.",
             "In 2040, coal is likely to make up 30% of energy production."
-          ]
+          ],
+          "promptVi": "Than đá được dự đoán sẽ chiếm 30% sản lượng năng lượng vào năm 2040."
         },
         {
           "id": "q3",
@@ -1767,7 +1773,8 @@
           "sampleAnswers": [
             "The amount of plastic waste is likely to stand at 8 million tonnes in 2050.",
             "By 2050, the amount of plastic waste is projected to reach 8 million tonnes."
-          ]
+          ],
+          "promptVi": "Lượng rác thải nhựa có khả năng sẽ ở mức 8 triệu tấn vào năm 2050."
         },
         {
           "id": "q4",
@@ -1775,7 +1782,8 @@
           "sampleAnswers": [
             "25% of the population is expected to live in rural areas in 2045.",
             "In 2045, a quarter of the population is anticipated to live in rural areas."
-          ]
+          ],
+          "promptVi": "25% dân số dự kiến sẽ sinh sống ở các vùng nông thôn vào năm 2045."
         }
       ],
       "rubric": {
@@ -2493,7 +2501,8 @@
           "cue": "respectively",
           "sampleAnswers": [
             "The numbers of car and motorbike users were 5 million and 20 million, respectively."
-          ]
+          ],
+          "promptVi": "Số lượng người dùng ô tô và xe máy lần lượt là 5 triệu và 20 triệu."
         },
         {
           "id": "q2",
@@ -2501,7 +2510,8 @@
           "cue": "whereas",
           "sampleAnswers": [
             "The number of car users was 5 million, whereas that of motorbike users was 20 million."
-          ]
+          ],
+          "promptVi": "Số lượng người dùng ô tô là 5 triệu, trong khi con số này ở xe máy là 20 triệu."
         },
         {
           "id": "q3",
@@ -2509,7 +2519,8 @@
           "cue": "compared to",
           "sampleAnswers": [
             "There were 5 million car users, compared to 20 million motorbike users."
-          ]
+          ],
+          "promptVi": "Có 5 triệu người dùng ô tô, trong khi con số này ở xe máy là 20 triệu."
         },
         {
           "id": "q4",
@@ -2517,7 +2528,8 @@
           "cue": "followed by",
           "sampleAnswers": [
             "Motorbikes topped the list at 20 million, followed by cars, at only 5 million."
-          ]
+          ],
+          "promptVi": "Xe máy đứng đầu danh sách với 20 triệu người, theo sau là ô tô với chỉ 5 triệu người."
         },
         {
           "id": "q5",
@@ -2525,7 +2537,8 @@
           "cue": "twice as many as",
           "sampleAnswers": [
             "The number of motorbike users was 10 million, which was twice as many as that of car users."
-          ]
+          ],
+          "promptVi": "Số lượng người dùng xe máy là 10 triệu, gấp đôi số lượng người dùng ô tô."
         }
       ],
       "rubric": {

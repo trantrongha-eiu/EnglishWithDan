@@ -402,12 +402,6 @@
       transition: background .2s, color .2s;
     }
     .t2-wbw-count.is-full { background: #dcfce7; color: #15803d; }
-    .t2-wbw-showall {
-      background: none; border: none; color: #6366f1; font-weight: 700;
-      font-size: 12px; cursor: pointer; padding: 2px 4px; display: inline-flex;
-      align-items: center; gap: 4px;
-    }
-    .t2-wbw-showall:hover { text-decoration: underline; }
     .t2-wbw-words {
       display: flex; flex-wrap: wrap; gap: 7px 8px;
       padding: 12px; border-radius: 12px; background: #f9fafb;
@@ -420,7 +414,6 @@
       background: #eef0f3; color: #9ca3af; border: 1.5px solid transparent;
       transition: background .18s, color .18s, border-color .18s, transform .18s;
     }
-    .t2-wbw-word.is-peek { color: #6b7280; font-style: italic; }
     .t2-wbw-word.is-done {
       background: #dcfce7; color: #15803d; border-color: #86efac;
     }
@@ -1662,24 +1655,25 @@ function renderQuestion(q) {
   // ships as q.translationAnswer for the topic-practice flow. Falls back to
   // the plain textarea below when the answer is absent (older data, exam mode).
   if (WBW_TYPES.has(q.type) && q.translationAnswer) {
+    // 'translation' already has the Vietnamese source baked into
+    // questionText — the gloss is only useful for paraphrase/short_writing,
+    // whose source is English (see viRow's own comment above).
     const para = q.type !== 'translation';
     return `
   <div class="wp-task-label">${typeLbl}</div>
   <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+  ${para ? viRow : ''}
   ${structureHint}
   ${keywordRow}
   <div class="wp-hints-row" id="hints-row"></div>
   <div class="t2-wbw" id="wbw">
     <div class="t2-wbw-bar">
       <span class="t2-wbw-count" id="wbw-count">0 / 0 từ</span>
-      <button type="button" class="t2-wbw-showall" id="wbw-showall" onclick="wbwToggleShowAll()">
-        <i class="fas fa-eye"></i> <span>Hiện tất cả</span>
-      </button>
     </div>
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo. Bấm “Hiện tất cả” nếu cần xem trước.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.'}</div>
+    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.'}</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
@@ -1760,7 +1754,6 @@ function wbwInit() {
     tokens,
     activeIdx: answered ? tokens.length : 0,
     typed: '',
-    showAll: false,
     erroring: false,
     done: answered,
     locked: answered
@@ -1776,9 +1769,6 @@ function wbwInit() {
       input.addEventListener('paste', e => e.preventDefault());
     }
   }
-  // Reviewing an already-answered question: nothing left to reveal.
-  const showAllBtn = document.getElementById('wbw-showall');
-  if (showAllBtn) showAllBtn.style.display = _wbw.locked ? 'none' : '';
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(_wbw.done);
@@ -1791,23 +1781,10 @@ function wbwFocus() {
   if (input) input.focus();
 }
 
-function wbwToggleShowAll() {
-  if (!_wbw) return;
-  _wbw.showAll = !_wbw.showAll;
-  const btn = document.getElementById('wbw-showall');
-  if (btn) {
-    btn.querySelector('span').textContent = _wbw.showAll ? 'Ẩn bớt' : 'Hiện tất cả';
-    const ic = btn.querySelector('i');
-    if (ic) ic.className = _wbw.showAll ? 'fas fa-eye-slash' : 'fas fa-eye';
-  }
-  _wbwRenderWords();
-  wbwFocus();
-}
-
 function _wbwRenderWords() {
   const host = document.getElementById('wbw-words');
   if (!host || !_wbw) return;
-  const { tokens, activeIdx, typed, erroring, showAll, done } = _wbw;
+  const { tokens, activeIdx, typed, erroring, done } = _wbw;
   host.innerHTML = tokens.map((t, i) => {
     if (i < activeIdx) {
       return `<span class="t2-wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
@@ -1820,8 +1797,7 @@ function _wbwRenderWords() {
       return `<span class="t2-wbw-word is-active${erroring ? ' is-error' : ''}" data-i="${i}">`
         + `${_escHtml(typed)}${tail}<span class="t2-wbw-star">${'*'.repeat(remaining)}</span></span>`;
     }
-    const text = showAll ? _escHtml(t.raw) : _escHtml(t.mask);
-    return `<span class="t2-wbw-word is-locked${showAll ? ' is-peek' : ''}" data-i="${i}">${text}</span>`;
+    return `<span class="t2-wbw-word is-locked" data-i="${i}">${_escHtml(t.mask)}</span>`;
   }).join('');
 
   const input = document.getElementById('wbw-input');

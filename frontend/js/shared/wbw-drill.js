@@ -47,8 +47,6 @@
     '.wbwd-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:12px}',
     '.wbwd-count{background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 11px;font-weight:800;white-space:nowrap;transition:background .2s,color .2s}',
     '.wbwd-count.is-full{background:#dcfce7;color:#15803d}',
-    '.wbwd-showall{background:none;border:none;color:#6366f1;font-weight:700;font-size:12px;cursor:pointer;padding:2px 4px;display:inline-flex;align-items:center;gap:4px}',
-    '.wbwd-showall:hover{text-decoration:underline}',
     '.wbwd-words{display:flex;flex-wrap:wrap;gap:7px 8px;padding:12px;border-radius:12px;background:#f9fafb;border:1px solid #eef0f3;min-height:44px;align-content:flex-start}',
     '.wbwd-word{font-family:"Courier New",ui-monospace,monospace;font-size:14px;font-weight:700;letter-spacing:.5px;padding:5px 10px;border-radius:8px;white-space:nowrap;background:#eef0f3;color:#9ca3af;border:1.5px solid transparent;transition:background .18s,color .18s,border-color .18s,transform .18s}',
     '.wbwd-word.is-peek{color:#6b7280;font-style:italic}',
@@ -149,7 +147,6 @@
       ? !!opts.perWord
       : _hasNonAscii(this.answer);
     this.typed = '';
-    this.showAll = false;
     this.erroring = false;
     this.done = false;
     this._errorTimer = null;
@@ -206,9 +203,6 @@
       '<div class="wbwd">' +
         '<div class="wbwd-bar">' +
           '<span class="wbwd-count" data-role="count">0 / 0 từ</span>' +
-          '<button type="button" class="wbwd-showall" data-role="showall">' +
-            '<i class="fas fa-eye"></i> <span>Hiện tất cả</span>' +
-          '</button>' +
         '</div>' +
         '<div class="wbwd-words" data-role="words"></div>' +
         '<input class="wbwd-input" data-role="input" type="text" autocomplete="off" ' +
@@ -216,7 +210,6 @@
         '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.</div>' +
       '</div>';
     this.$count = this.host.querySelector('[data-role="count"]');
-    this.$showall = this.host.querySelector('[data-role="showall"]');
     this.$words = this.host.querySelector('[data-role="words"]');
     this.$input = this.host.querySelector('[data-role="input"]');
     this.$words.addEventListener('click', this._focus);
@@ -231,8 +224,6 @@
     this.$input.addEventListener('compositionstart', this._onCompStart);
     this.$input.addEventListener('compositionend', this._onCompEnd);
     this.$input.addEventListener('blur', this._onBlur);
-    var self = this;
-    this.$showall.addEventListener('click', function () { self._toggleShowAll(); });
   };
 
   Drill.prototype.destroy = function () {
@@ -255,16 +246,6 @@
     this.$input.focus();
   };
 
-  Drill.prototype._toggleShowAll = function () {
-    this.showAll = !this.showAll;
-    var sp = this.$showall.querySelector('span');
-    var ic = this.$showall.querySelector('i');
-    if (sp) sp.textContent = this.showAll ? 'Ẩn bớt' : 'Hiện tất cả';
-    if (ic) ic.className = this.showAll ? 'fas fa-eye-slash' : 'fas fa-eye';
-    this._renderWords();
-    this.focus();
-  };
-
   Drill.prototype._renderWords = function () {
     var self = this;
     this.$words.innerHTML = this.tokens.map(function (t, i) {
@@ -273,7 +254,7 @@
       }
       // The word being typed when maxErrors was exceeded — call out in red,
       // separately from the plain reveal the still-untouched words after it
-      // get below (self.showAll's peek styling).
+      // get below (self.failed's peek styling).
       if (self.failed && i === self.activeIdx) {
         return '<span class="wbwd-word is-wrong" data-i="' + i + '">' + esc(t.raw) + '</span>';
       }
@@ -289,9 +270,9 @@
         return '<span class="wbwd-word is-active' + (self.erroring ? ' is-error' : '') + '" data-i="' + i + '">' +
           esc(self.typed) + tail + '<span class="wbwd-star">' + repeat('*', remaining) + '</span></span>';
       }
-      // After a fail, reveal the remaining (never-attempted) words too — same
-      // greyed "peek" look as Hiện tất cả, since showAll itself isn't touched.
-      var reveal = self.showAll || self.failed;
+      // After a maxErrors fail, reveal the remaining (never-attempted) words
+      // too — there's no other way left to see them once the drill locks.
+      var reveal = self.failed;
       var text = reveal ? esc(t.raw) : esc(t.mask);
       return '<span class="wbwd-word is-locked' + (reveal ? ' is-peek' : '') + '" data-i="' + i + '">' + text + '</span>';
     }).join('');

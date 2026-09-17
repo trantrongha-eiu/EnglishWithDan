@@ -457,7 +457,8 @@
           "cue": "Present Simple",
           "sampleAnswers": [
             "Heating accounts for 42% of household energy use."
-          ]
+          ],
+          "promptVi": "Việc sưởi ấm chiếm 42% lượng năng lượng tiêu thụ trong các hộ gia đình."
         },
         {
           "id": "q2",
@@ -465,7 +466,8 @@
           "cue": "Present Simple",
           "sampleAnswers": [
             "Water heating makes up 32% of emissions."
-          ]
+          ],
+          "promptVi": "Việc đun nước chiếm 32% lượng khí thải."
         },
         {
           "id": "q3",
@@ -473,7 +475,8 @@
           "cue": "Present Simple",
           "sampleAnswers": [
             "Refrigeration takes up 7% of the total energy consumed."
-          ]
+          ],
+          "promptVi": "Tủ lạnh tiêu thụ 7% tổng năng lượng."
         }
       ]
     },
@@ -499,7 +502,8 @@
           "cue": "..., while ...",
           "sampleAnswers": [
             "The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents."
-          ]
+          ],
+          "promptVi": "Biểu đồ đường so sánh số lượng du khách đến và rời khỏi Vương quốc Anh, còn biểu đồ cột minh họa các quốc gia được người dân Anh ghé thăm nhiều nhất."
         },
         {
           "id": "q2",
@@ -507,7 +511,8 @@
           "cue": "..., while ...",
           "sampleAnswers": [
             "The line graph illustrates the monthly average temperatures in three cities, while the table shows the average annual sunshine hours in the same three cities."
-          ]
+          ],
+          "promptVi": "Biểu đồ đường thể hiện nhiệt độ trung bình hàng tháng ở ba thành phố, trong khi bảng số liệu cho biết tổng số giờ có nắng trung bình trong năm của cả ba thành phố đó."
         }
       ]
     },
@@ -754,7 +759,8 @@
           "cue": "topped the list",
           "sampleAnswers": [
             "Football topped the list, at 87%."
-          ]
+          ],
+          "promptVi": "Bóng đá đứng đầu danh sách với 87%."
         },
         {
           "id": "q2",
@@ -762,7 +768,8 @@
           "cue": "the bottom position belonged to",
           "sampleAnswers": [
             "The bottom position belonged to swimming, with only 19%."
-          ]
+          ],
+          "promptVi": "Vị trí bét bảng thuộc về môn bơi lội, chỉ chiếm 19%."
         },
         {
           "id": "q3",
@@ -770,7 +777,8 @@
           "cue": "accounted for",
           "sampleAnswers": [
             "Cricket accounted for 45% of boys."
-          ]
+          ],
+          "promptVi": "Môn cricket chiếm 45% ở các bé trai."
         },
         {
           "id": "q4",
@@ -778,7 +786,8 @@
           "cue": "topped the list",
           "sampleAnswers": [
             "Apartments topped the list in Liverpool."
-          ]
+          ],
+          "promptVi": "Căn hộ đứng đầu danh sách ở Liverpool."
         },
         {
           "id": "q5",
@@ -786,7 +795,8 @@
           "cue": "the bottom position belonged to",
           "sampleAnswers": [
             "The bottom position belonged to terraced houses."
-          ]
+          ],
+          "promptVi": "Vị trí cuối cùng thuộc về nhà liền kề."
         }
       ]
     },

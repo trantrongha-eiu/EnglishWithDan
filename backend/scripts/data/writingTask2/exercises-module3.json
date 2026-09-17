@@ -25,7 +25,8 @@
           "sampleAnswers": [
             "Although online education offers flexibility, it cannot completely replace face-to-face interaction between teachers and students."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Mặc dù giáo dục trực tuyến mang lại sự linh hoạt, nó không thể thay thế hoàn toàn sự tương tác trực tiếp giữa giáo viên và học sinh."
         },
         {
           "id": "q2",
@@ -34,7 +35,8 @@
           "sampleAnswers": [
             "Because public transport systems in many cities are still underdeveloped, many people are forced to use private vehicles."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Vì hệ thống giao thông công cộng ở nhiều thành phố vẫn chưa phát triển đầy đủ, nhiều người buộc phải sử dụng phương tiện cá nhân."
         },
         {
           "id": "q3",
@@ -43,7 +45,8 @@
           "sampleAnswers": [
             "While technology can help students access information quickly, excessive use of it may reduce their ability to concentrate."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Mặc dù công nghệ có thể giúp học sinh tiếp cận thông tin nhanh chóng, việc lạm dụng nó có thể làm giảm khả năng tập trung của các em."
         },
         {
           "id": "q4",
@@ -52,7 +55,8 @@
           "sampleAnswers": [
             "If governments do not take effective measures, air pollution may become more serious in the future."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu các chính phủ không đưa ra các biện pháp hiệu quả, ô nhiễm không khí có thể trở nên nghiêm trọng hơn trong tương lai."
         },
         {
           "id": "q5",
@@ -61,7 +65,8 @@
           "sampleAnswers": [
             "Although many people want to live in large cities, the high cost of living makes urban life difficult for some families."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Mặc dù nhiều người muốn sống ở các thành phố lớn, chi phí sinh hoạt đắt đỏ khiến cuộc sống đô thị trở nên khó khăn đối với một số gia đình."
         }
       ]
     },
@@ -90,7 +95,8 @@
           "sampleAnswers": [
             "The government has invested a large amount of money in public transport systems, but traffic congestion has not improved significantly."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính phủ đã đầu tư một khoản tiền lớn vào các hệ thống giao thông công cộng, nhưng tình trạng tắc nghẽn giao thông vẫn chưa được cải thiện đáng kể."
         },
         {
           "id": "q2",
@@ -99,7 +105,8 @@
           "sampleAnswers": [
             "Social media enables people to stay in touch with one another, but it can also reduce the quality of face-to-face relationships."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Mạng xã hội giúp mọi người giữ liên lạc với nhau, nhưng nó cũng có thể làm giảm chất lượng của các mối quan hệ trực tiếp."
         },
         {
           "id": "q3",
@@ -108,7 +115,8 @@
           "sampleAnswers": [
             "Many students want to pursue higher education, so universities are facing an increasing number of applications."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều học sinh muốn theo học bậc cao đẳng và đại học, vì vậy các trường đại học đang phải đối mặt với số lượng hồ sơ nộp vào ngày càng tăng."
         },
         {
           "id": "q4",
@@ -117,7 +125,8 @@
           "sampleAnswers": [
             "Electric vehicles produce fewer emissions; however, their high cost still prevents many people from purchasing them."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Xe điện thải ra ít khí thải hơn; tuy nhiên, giá thành cao của chúng vẫn khiến nhiều người không thể mua được."
         },
         {
           "id": "q5",
@@ -126,7 +135,8 @@
           "sampleAnswers": [
             "Urban populations are growing rapidly, and this places considerable pressure on housing and public services."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Dân số thành thị đang tăng lên nhanh chóng, điều này tạo ra áp lực đáng kể lên nhà ở và các dịch vụ công cộng."
         }
       ]
     },
@@ -155,7 +165,8 @@
           "sampleAnswers": [
             "If governments invested more in public education, every child would have access to higher-quality education."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu chính phủ đầu tư nhiều hơn vào giáo dục công lập, mọi đứa trẻ sẽ có cơ hội tiếp cận nền giáo dục chất lượng cao hơn."
         },
         {
           "id": "q2",
@@ -164,7 +175,8 @@
           "sampleAnswers": [
             "If people continue to rely on private cars, traffic congestion will become more serious."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu người dân tiếp tục phụ thuộc vào xe hơi cá nhân, tình trạng tắc nghẽn giao thông sẽ ngày càng trở nên nghiêm trọng hơn."
         },
         {
           "id": "q3",
@@ -173,7 +185,8 @@
           "sampleAnswers": [
             "If cities invested more in metro systems, emissions from transportation could be reduced significantly."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu các thành phố đầu tư nhiều hơn vào hệ thống tàu điện ngầm, lượng khí thải từ giao thông có thể được giảm đáng kể."
         },
         {
           "id": "q4",
@@ -182,7 +195,8 @@
           "sampleAnswers": [
             "If companies allowed employees to work remotely, many people would achieve a better work-life balance."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu các công ty cho phép nhân viên làm việc từ xa, nhiều người sẽ đạt được sự cân bằng tốt hơn giữa công việc và cuộc sống."
         },
         {
           "id": "q5",
@@ -191,7 +205,8 @@
           "sampleAnswers": [
             "Unless strict measures are taken, the amount of plastic waste will continue to increase in the coming years."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Trừ khi các biện pháp nghiêm ngặt được thực hiện, lượng rác thải nhựa sẽ tiếp tục tăng trong những năm tới."
         },
         {
           "id": "q6",
@@ -200,7 +215,8 @@
           "sampleAnswers": [
             "If governments had addressed this issue earlier, many negative consequences could have been prevented."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu chính phủ giải quyết vấn đề này sớm hơn, nhiều hệ lụy tiêu cực đã có thể được ngăn chặn."
         }
       ]
     },
@@ -229,7 +245,8 @@
           "sampleAnswers": [
             "Stricter regulations should be introduced to reduce emissions from factories."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Cần ban hành các quy định nghiêm ngặt hơn để giảm lượng khí thải từ các nhà máy."
         },
         {
           "id": "q2",
@@ -238,7 +255,8 @@
           "sampleAnswers": [
             "A number of measures have been proposed to address the housing shortage in large cities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều biện pháp đã được đề xuất nhằm giải quyết tình trạng thiếu nhà ở tại các thành phố lớn."
         },
         {
           "id": "q3",
@@ -247,7 +265,8 @@
           "sampleAnswers": [
             "It is widely acknowledged that education plays an important role in the development of a country."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều người công nhận rằng giáo dục đóng một vai trò quan trọng trong sự phát triển của một quốc gia."
         },
         {
           "id": "q4",
@@ -256,7 +275,8 @@
           "sampleAnswers": [
             "Many simple jobs may be replaced by artificial intelligence in the future."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều công việc đơn giản có thể bị thay thế bởi trí tuệ nhân tạo trong tương lai."
         },
         {
           "id": "q5",
@@ -265,7 +285,8 @@
           "sampleAnswers": [
             "More funding should be allocated to public healthcare systems."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Cần phân bổ thêm nguồn vốn cho hệ thống y tế công cộng."
         },
         {
           "id": "q6",
@@ -274,7 +295,8 @@
           "sampleAnswers": [
             "It is often believed that children should be encouraged to read from an early age."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Người ta thường tin rằng trẻ em nên được khuyến khích đọc sách từ khi còn nhỏ."
         }
       ]
     },
@@ -303,7 +325,8 @@
           "sampleAnswers": [
             "Remote working helps employees save commuting time, which can improve their quality of life."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Làm việc từ xa giúp nhân viên tiết kiệm thời gian di chuyển, từ đó có thể cải thiện chất lượng cuộc sống."
         },
         {
           "id": "q2",
@@ -312,7 +335,8 @@
           "sampleAnswers": [
             "Students who have access to modern technology often have more learning opportunities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Những học sinh có điều kiện tiếp cận công nghệ hiện đại thường có nhiều cơ hội học tập hơn."
         },
         {
           "id": "q3",
@@ -321,7 +345,8 @@
           "sampleAnswers": [
             "Many people want to move to large cities, where there are more employment opportunities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều người muốn chuyển đến các thành phố lớn, nơi có nhiều cơ hội việc làm hơn."
         },
         {
           "id": "q4",
@@ -330,7 +355,8 @@
           "sampleAnswers": [
             "The use of bicycles is becoming increasingly popular, which can help reduce air pollution."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Việc sử dụng xe đạp đang ngày càng trở nên phổ biến, điều này có thể giúp giảm ô nhiễm không khí."
         },
         {
           "id": "q5",
@@ -339,7 +365,8 @@
           "sampleAnswers": [
             "Children whose parents regularly read with them tend to develop better language skills."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Trẻ em có cha mẹ thường xuyên đọc sách cùng có xu hướng phát triển kỹ năng ngôn ngữ tốt hơn."
         },
         {
           "id": "q6",
@@ -348,7 +375,8 @@
           "sampleAnswers": [
             "Many countries are investing in renewable energy, which helps reduce their dependence on fossil fuels."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nhiều quốc gia đang đầu tư vào năng lượng tái tạo, giúp giảm sự phụ thuộc vào nhiên liệu hóa thạch."
         }
       ]
     },
@@ -377,7 +405,8 @@
           "sampleAnswers": [
             "Not only does this policy help reduce traffic congestion, but it also improves air quality in large cities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính sách này không chỉ giúp giảm ùn tắc giao thông mà còn cải thiện chất lượng không khí ở các thành phố lớn."
         },
         {
           "id": "q2",
@@ -386,7 +415,8 @@
           "sampleAnswers": [
             "Never before have people had access to such a vast amount of information."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chưa bao giờ con người lại có thể tiếp cận với lượng thông tin khổng lồ đến vậy."
         },
         {
           "id": "q3",
@@ -395,7 +425,8 @@
           "sampleAnswers": [
             "Only by investing in public transport can cities solve the problem of traffic congestion in the long term."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chỉ bằng cách đầu tư vào giao thông công cộng, các thành phố mới có thể giải quyết tận gốc vấn đề ùn tắc giao thông trong dài hạn."
         },
         {
           "id": "q4",
@@ -404,7 +435,8 @@
           "sampleAnswers": [
             "Not only has technology changed the way people work, but it has also transformed the way they communicate."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Công nghệ không chỉ thay đổi cách mọi người làm việc mà còn chuyển đổi cả cách họ giao tiếp."
         },
         {
           "id": "q5",
@@ -413,7 +445,8 @@
           "sampleAnswers": [
             "Only by raising public awareness can we encourage people to protect the environment."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chỉ bằng cách nâng cao nhận thức cộng đồng, chúng ta mới có thể khuyến khích mọi người bảo vệ môi trường."
         }
       ]
     },
@@ -442,7 +475,8 @@
           "sampleAnswers": [
             "It is the lack of affordable housing that makes it difficult for many young people to live in cities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính sự thiếu hụt nhà ở giá rẻ khiến nhiều người trẻ khó sinh sống ở các thành phố lớn."
         },
         {
           "id": "q2",
@@ -451,7 +485,8 @@
           "sampleAnswers": [
             "What many students need is not more homework but more effective guidance from teachers."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Điều mà nhiều học sinh cần không phải là thêm bài tập về nhà mà là sự hướng dẫn hiệu quả hơn từ giáo viên."
         },
         {
           "id": "q3",
@@ -460,7 +495,8 @@
           "sampleAnswers": [
             "It is the rapid development of technology that has changed the way people access education."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính sự phát triển vũ bão của công nghệ đã làm thay đổi cách con người tiếp cận giáo dục."
         },
         {
           "id": "q4",
@@ -469,7 +505,8 @@
           "sampleAnswers": [
             "What cities need to do is invest more in public infrastructure."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Điều mà các thành phố cần làm là đầu tư nhiều hơn vào cơ sở hạ tầng công cộng."
         },
         {
           "id": "q5",
@@ -478,7 +515,8 @@
           "sampleAnswers": [
             "It is the lack of time that prevents many people from maintaining a healthy lifestyle."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính sự thiếu thốn thời gian đã ngăn cản nhiều người duy trì lối sống lành mạnh."
         }
       ]
     },
@@ -507,7 +545,8 @@
           "sampleAnswers": [
             "Governments should invest in improving the education system, reducing unemployment, and enhancing people's quality of life."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Các chính phủ nên đầu tư nâng cao hệ thống giáo dục, giảm thiểu thất nghiệp và cải thiện chất lượng cuộc sống của người dân."
         },
         {
           "id": "q2",
@@ -516,7 +555,8 @@
           "sampleAnswers": [
             "This programme aims to reduce waste, protect the environment, and encourage people to recycle."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chương trình này nhằm mục đích giảm thiểu rác thải, bảo vệ môi trường và khuyến khích mọi người tái chế."
         },
         {
           "id": "q3",
@@ -525,7 +565,8 @@
           "sampleAnswers": [
             "Higher education can help students develop specialised knowledge, improve their critical-thinking skills, and expand their career opportunities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Giáo dục đại học có thể giúp sinh viên phát triển kiến thức chuyên môn, cải thiện kỹ năng tư duy phản biện và mở rộng cơ hội nghề nghiệp."
         },
         {
           "id": "q4",
@@ -534,7 +575,8 @@
           "sampleAnswers": [
             "An efficient transport system needs to be fast, reliable, and affordable."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Một hệ thống giao thông hiệu quả cần phải nhanh chóng, đáng tin cậy và có mức giá phải chăng."
         },
         {
           "id": "q5",
@@ -543,7 +585,8 @@
           "sampleAnswers": [
             "Companies should encourage employees to work more efficiently, use their time more effectively, and maintain a healthy work-life balance."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Các công ty nên khuyến khích nhân viên làm việc hiệu quả hơn, sử dụng thời gian hợp lý hơn và duy trì sự cân bằng lành mạnh giữa công việc và cuộc sống."
         }
       ]
     },
@@ -572,7 +615,8 @@
           "sampleAnswers": [
             "Governments should invest more in renewable energy to reduce their dependence on fossil fuels."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính phủ nên đầu tư nhiều hơn vào năng lượng tái tạo để giảm sự phụ thuộc vào nhiên liệu hóa thạch."
         },
         {
           "id": "q2",
@@ -581,7 +625,8 @@
           "sampleAnswers": [
             "Excessive use of social media may negatively affect young people's well-being."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Việc sử dụng mạng xã hội quá mức có thể tác động tiêu cực đến sức khỏe tinh thần và thể chất của giới trẻ."
         },
         {
           "id": "q3",
@@ -590,7 +635,8 @@
           "sampleAnswers": [
             "Cities must take effective measures to address the problem of traffic congestion."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Các thành phố phải thực hiện các biện pháp hiệu quả để giải quyết vấn đề ùn tắc giao thông."
         },
         {
           "id": "q4",
@@ -599,7 +645,8 @@
           "sampleAnswers": [
             "If implemented on a large scale, this policy could improve people's quality of life."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Nếu được triển khai trên diện rộng, chính sách này có thể cải thiện chất lượng cuộc sống của người dân."
         },
         {
           "id": "q5",
@@ -608,7 +655,8 @@
           "sampleAnswers": [
             "Online education can provide more opportunities for people living in rural areas."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Giáo dục trực tuyến có thể mang lại nhiều cơ hội hơn cho những người sống ở vùng nông thôn."
         },
         {
           "id": "q6",
@@ -617,7 +665,8 @@
           "sampleAnswers": [
             "Increasing taxes on tobacco could reduce the number of smokers."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Tăng thuế thuốc lá có thể làm giảm số lượng người hút thuốc."
         }
       ]
     },
@@ -646,7 +695,8 @@
           "sampleAnswers": [
             "Public transport in developed countries is often significantly more efficient than that in developing countries."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Giao thông công cộng ở các nước phát triển thường hiệu quả hơn đáng kể so với ở các nước đang phát triển."
         },
         {
           "id": "q2",
@@ -655,7 +705,8 @@
           "sampleAnswers": [
             "The more time children spend on electronic devices, the less they participate in physical activities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Trẻ càng dành nhiều thời gian cho các thiết bị điện tử thì càng ít tham gia các hoạt động thể chất."
         },
         {
           "id": "q3",
@@ -664,7 +715,8 @@
           "sampleAnswers": [
             "Living in a large city is often considerably more expensive than living in rural areas."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Sống ở thành phố lớn thường đắt đỏ hơn đáng kể so với việc sống ở vùng nông thôn."
         },
         {
           "id": "q4",
@@ -673,7 +725,8 @@
           "sampleAnswers": [
             "Online education is not nearly as reliable as traditional education in some practical fields."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Giáo dục trực tuyến không đáng tin cậy bằng giáo dục truyền thống trong một số lĩnh vực thực tiễn."
         },
         {
           "id": "q5",
@@ -682,7 +735,8 @@
           "sampleAnswers": [
             "The more people use public transport, the more carbon emissions can be reduced."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Càng nhiều người sử dụng phương tiện công cộng, lượng khí thải carbon càng có thể được giảm bớt."
         },
         {
           "id": "q6",
@@ -691,7 +745,8 @@
           "sampleAnswers": [
             "In many cases, preventing diseases is far more important than treating them after they have developed."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Trong nhiều trường hợp, việc phòng bệnh quan trọng hơn rất nhiều so với việc chữa bệnh sau khi chúng đã phát triển."
         }
       ]
     },
@@ -720,7 +775,8 @@
           "sampleAnswers": [
             "Remote working eliminates the need for employees to commute every day, thereby reducing stress and carbon emissions."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Làm việc từ xa giúp nhân viên không phải di chuyển đi lại mỗi ngày, từ đó giảm bớt căng thẳng và lượng khí thải carbon."
         },
         {
           "id": "q2",
@@ -729,7 +785,8 @@
           "sampleAnswers": [
             "Online courses provide students with access to knowledge from anywhere, allowing them to study without moving to large cities."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Các khóa học trực tuyến giúp học sinh tiếp cận kiến thức từ bất cứ đâu mà không cần phải chuyển lên các thành phố lớn."
         },
         {
           "id": "q3",
@@ -738,7 +795,8 @@
           "sampleAnswers": [
             "The government has built more metro lines, thereby helping to reduce the number of cars on the roads."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Chính phủ đã xây dựng thêm nhiều tuyến metro, qua đó giúp giảm số lượng ô tô trên đường."
         },
         {
           "id": "q4",
@@ -747,7 +805,8 @@
           "sampleAnswers": [
             "Having invested heavily in education, the country has made significant economic progress."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Đã đầu tư mạnh mẽ vào giáo dục, đất nước này đã đạt được những tiến bộ kinh tế đáng kể."
         },
         {
           "id": "q5",
@@ -756,7 +815,8 @@
           "sampleAnswers": [
             "The use of solar energy reduces dependence on fossil fuels, thereby limiting negative impacts on the environment."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Việc sử dụng năng lượng mặt trời giúp giảm sự phụ thuộc vào nhiên liệu hóa thạch, từ đó hạn chế những tác động tiêu cực đến môi trường."
         },
         {
           "id": "q6",
@@ -765,7 +825,8 @@
           "sampleAnswers": [
             "Health applications provide users with useful information, allowing them to monitor their health more easily."
           ],
-          "explanation": ""
+          "explanation": "",
+          "promptVi": "Các ứng dụng chăm sóc sức khỏe cung cấp cho người dùng thông tin hữu ích, giúp họ theo dõi sức khỏe của mình dễ dàng hơn."
         }
       ]
     },
@@ -794,7 +855,8 @@
           "sampleAnswers": [
             "Technology plays an increasingly important role in modern education."
           ],
-          "explanation": "A. Present Simple"
+          "explanation": "A. Present Simple",
+          "promptVi": "Công nghệ ngày càng đóng vai trò quan trọng trong nền giáo dục hiện đại."
         },
         {
           "id": "q2",
@@ -803,7 +865,8 @@
           "sampleAnswers": [
             "Many people believe that public transport is an effective solution to traffic congestion."
           ],
-          "explanation": "A. Present Simple"
+          "explanation": "A. Present Simple",
+          "promptVi": "Nhiều người tin rằng giao thông công cộng là một giải pháp hiệu quả cho vấn nạn ùn tắc giao thông."
         },
         {
           "id": "q3",
@@ -812,7 +875,8 @@
           "sampleAnswers": [
             "Economic development often leads to a higher standard of living."
           ],
-          "explanation": "A. Present Simple"
+          "explanation": "A. Present Simple",
+          "promptVi": "Phát triển kinh tế thường dẫn đến mức sống cao hơn."
         },
         {
           "id": "q4",
@@ -821,7 +885,8 @@
           "sampleAnswers": [
             "Over the past decade, online learning has become increasingly popular around the world."
           ],
-          "explanation": "B. Present Perfect"
+          "explanation": "B. Present Perfect",
+          "promptVi": "Trong thập kỷ qua, việc học trực tuyến đã trở nên ngày càng phổ biến trên toàn thế giới."
         },
         {
           "id": "q5",
@@ -830,7 +895,8 @@
           "sampleAnswers": [
             "Technology has significantly changed the way people communicate and work."
           ],
-          "explanation": "B. Present Perfect"
+          "explanation": "B. Present Perfect",
+          "promptVi": "Công nghệ đã thay đổi đáng kể cách con người giao tiếp và làm việc."
         },
         {
           "id": "q6",
@@ -839,7 +905,8 @@
           "sampleAnswers": [
             "In recent years, many cities have invested heavily in public transport."
           ],
-          "explanation": "B. Present Perfect"
+          "explanation": "B. Present Perfect",
+          "promptVi": "Trong những năm gần đây, nhiều thành phố đã đầu tư mạnh mẽ vào giao thông công cộng."
         },
         {
           "id": "q7",
@@ -848,7 +915,8 @@
           "sampleAnswers": [
             "In the past, most people relied on books and libraries to search for information."
           ],
-          "explanation": "C. Past Simple"
+          "explanation": "C. Past Simple",
+          "promptVi": "Trước đây, hầu hết mọi người phải dựa vào sách vở và thư viện để tìm kiếm thông tin."
         },
         {
           "id": "q8",
@@ -857,7 +925,8 @@
           "sampleAnswers": [
             "In the past, many young people left their hometowns to seek employment opportunities in large cities."
           ],
-          "explanation": "C. Past Simple"
+          "explanation": "C. Past Simple",
+          "promptVi": "Trong quá khứ, nhiều bạn trẻ đã rời quê hương để tìm kiếm cơ hội việc làm tại các thành phố lớn."
         },
         {
           "id": "q9",
@@ -866,7 +935,8 @@
           "sampleAnswers": [
             "The government introduced several new policies to address unemployment last year."
           ],
-          "explanation": "C. Past Simple"
+          "explanation": "C. Past Simple",
+          "promptVi": "Năm ngoái, chính phủ đã ban hành một vài chính sách mới để giải quyết vấn đề thất nghiệp."
         },
         {
           "id": "q10",
@@ -875,7 +945,8 @@
           "sampleAnswers": [
             "If this trend continues, cities will face more serious housing problems in the future."
           ],
-          "explanation": "D. Future"
+          "explanation": "D. Future",
+          "promptVi": "Nếu xu hướng này tiếp tục, các thành phố sẽ phải đối mặt với nhiều vấn đề nhà ở nghiêm trọng hơn trong tương lai."
         },
         {
           "id": "q11",
@@ -884,7 +955,8 @@
           "sampleAnswers": [
             "Technology is likely to continue transforming the labour market in the coming decades."
           ],
-          "explanation": "D. Future"
+          "explanation": "D. Future",
+          "promptVi": "Công nghệ có khả năng sẽ tiếp tục làm biến đổi thị trường lao động trong những thập kỷ tới."
         },
         {
           "id": "q12",
@@ -893,7 +965,8 @@
           "sampleAnswers": [
             "Without timely action, climate change will affect the lives of millions of people."
           ],
-          "explanation": "D. Future"
+          "explanation": "D. Future",
+          "promptVi": "Nếu không có hành động kịp thời, biến đổi khí hậu sẽ ảnh hưởng đến cuộc sống của hàng triệu người."
         }
       ]
     },

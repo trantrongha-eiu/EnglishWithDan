@@ -954,7 +954,8 @@
           "sampleAnswers": [
             "I like it because it's cheap.",
             "I like it because it is cheap."
-          ]
+          ],
+          "promptVi": "Tôi thích nó vì nó rẻ."
         },
         {
           "id": "q2",
@@ -964,7 +965,8 @@
             "Because it's cheap, I bought two.",
             "Because of the low price, I bought two.",
             "Because it is cheap, I bought two."
-          ]
+          ],
+          "promptVi": "Vì nó rẻ nên tôi đã mua hai cái."
         },
         {
           "id": "q3",
@@ -973,7 +975,8 @@
           "sampleAnswers": [
             "For example, last Sunday I sat there for two hours with my sister.",
             "For instance, I went there twice last month."
-          ]
+          ],
+          "promptVi": "Ví dụ, chủ nhật tuần trước tôi đã ngồi ở đó suốt hai tiếng đồng hồ với chị gái mình."
         },
         {
           "id": "q4",
@@ -981,7 +984,8 @@
           "explanation": "Không dùng \"because\" hai lần trong một câu.",
           "sampleAnswers": [
             "I like it because it's cheap, and since I'm a student, that matters a lot."
-          ]
+          ],
+          "promptVi": "Tôi thích nó vì nó rẻ, và vì tôi là sinh viên nên điều đó rất quan trọng."
         }
       ]
     },
@@ -1284,7 +1288,8 @@
           "sampleAnswers": [
             "It's quiet, so I can study easily, and that's why I like it.",
             "It's quiet enough to study in, which is why I like it."
-          ]
+          ],
+          "promptVi": "Nó rất yên tĩnh nên tôi có thể học tập dễ dàng, và đó là lý do tại sao tôi thích nó."
         },
         {
           "id": "q2",
@@ -1293,7 +1298,8 @@
           "sampleAnswers": [
             "I like coffee because it's delicious and it helps me wake up.",
             "I like coffee, which I find delicious and energising."
-          ]
+          ],
+          "promptVi": "Tôi thích cà phê vì nó ngon và giúp tôi tỉnh táo."
         },
         {
           "id": "q3",
@@ -1302,7 +1308,8 @@
           "sampleAnswers": [
             "Although it's noisy, I like it.",
             "It's noisy, although I still like it."
-          ]
+          ],
+          "promptVi": "Mặc dù ồn ào nhưng tôi vẫn thích nó."
         }
       ]
     },
@@ -1962,7 +1969,8 @@
           "sampleAnswers": [
             "My hometown has changed a lot over the past few years.",
             "My hometown has changed a lot."
-          ]
+          ],
+          "promptVi": "Quê tôi đã thay đổi rất nhiều trong vài năm qua."
         },
         {
           "id": "q2",
@@ -1971,7 +1979,8 @@
           "sampleAnswers": [
             "I live in a house which has two floors.",
             "I live in a house that has two floors."
-          ]
+          ],
+          "promptVi": "Tôi sống trong một ngôi nhà có hai tầng."
         },
         {
           "id": "q3",
@@ -1980,7 +1989,8 @@
           "sampleAnswers": [
             "My hometown is known for its breathtaking scenery.",
             "My hometown has breathtaking scenery."
-          ]
+          ],
+          "promptVi": "Quê tôi nổi tiếng với phong cảnh tuyệt đẹp."
         },
         {
           "id": "q4",
@@ -1989,7 +1999,8 @@
           "sampleAnswers": [
             "There's a strong sense of community, and people still look out for each other.",
             "It has a close-knit community."
-          ]
+          ],
+          "promptVi": "Mọi người ở đây gắn kết rất chặt chẽ với nhau và luôn quan tâm đến nhau."
         }
       ]
     },
@@ -3644,7 +3655,8 @@
           "explanation": "present perfect chủ động, không bị động.",
           "sampleAnswers": [
             "My hometown has changed a lot."
-          ]
+          ],
+          "promptVi": "Quê tôi đã thay đổi rất nhiều."
         },
         {
           "id": "q2",
@@ -3652,7 +3664,8 @@
           "explanation": "\"In the past\" → past simple: there were.",
           "sampleAnswers": [
             "In the past, there were more trees."
-          ]
+          ],
+          "promptVi": "Trước đây có nhiều cây xanh hơn."
         },
         {
           "id": "q3",
@@ -3660,7 +3673,8 @@
           "explanation": "Thừa \"more and more\"; dùng \"far more\" + present perfect.",
           "sampleAnswers": [
             "It has become far more crowded."
-          ]
+          ],
+          "promptVi": "Nơi này đã trở nên đông đúc hơn hẳn."
         },
         {
           "id": "q4",
@@ -3668,7 +3682,8 @@
           "explanation": "Không dùng \"very\" với động từ — dùng trạng từ mức độ.",
           "sampleAnswers": [
             "It has changed dramatically."
-          ]
+          ],
+          "promptVi": "Nó đã thay đổi một cách chóng mặt."
         }
       ]
     },
@@ -4308,7 +4323,8 @@
           "explanation": "Mệnh đề \"if\" dùng past simple, không \"would\".",
           "sampleAnswers": [
             "If I had time, I would take up gardening."
-          ]
+          ],
+          "promptVi": "Nếu có thời gian, tôi sẽ tập làm vườn."
         },
         {
           "id": "q2",
@@ -4316,7 +4332,8 @@
           "explanation": "Không nói \"I don't know\" rồi dừng — dùng chiến lược cứu nguy.",
           "sampleAnswers": [
             "Well, I've never really been into collecting things, but my uncle collects old coins."
-          ]
+          ],
+          "promptVi": "À, thực ra tôi không thích sưu tầm đồ đạc cho lắm, nhưng chú tôi lại sưu tầm tiền xu cổ."
         },
         {
           "id": "q3",
@@ -4325,7 +4342,8 @@
           "sampleAnswers": [
             "If I were you, I wouldn't worry about it.",
             "If I was you, I wouldn't worry about it."
-          ]
+          ],
+          "promptVi": "Nếu tôi là bạn, tôi sẽ không lo lắng về chuyện đó đâu."
         },
         {
           "id": "q4",
@@ -4333,7 +4351,8 @@
           "explanation": "Thừa nhận rồi vẫn nói tiếp.",
           "sampleAnswers": [
             "It's not something I've thought about much, but I suppose it could be interesting."
-          ]
+          ],
+          "promptVi": "Đó không phải là điều tôi nghĩ đến nhiều, nhưng tôi đoán nó cũng khá thú vị."
         }
       ]
     },

@@ -446,56 +446,64 @@
           "prompt": "students studying overseas",
           "sampleAnswers": [
             "the number of students studying overseas"
-          ]
+          ],
+          "promptVi": "số lượng học sinh sinh viên đi du học"
         },
         {
           "id": "q2",
           "prompt": "electricity consumed",
           "sampleAnswers": [
             "the amount of electricity consumed"
-          ]
+          ],
+          "promptVi": "lượng điện tiêu thụ"
         },
         {
           "id": "q3",
           "prompt": "people using public transport",
           "sampleAnswers": [
             "the number of people using public transport"
-          ]
+          ],
+          "promptVi": "số lượng người sử dụng phương tiện giao thông công cộng"
         },
         {
           "id": "q4",
           "prompt": "water used by households",
           "sampleAnswers": [
             "the amount of water used by households"
-          ]
+          ],
+          "promptVi": "lượng nước sinh hoạt được sử dụng bởi các hộ gia đình"
         },
         {
           "id": "q5",
           "prompt": "cars sold",
           "sampleAnswers": [
             "the number of cars sold"
-          ]
+          ],
+          "promptVi": "số lượng ô tô được bán ra"
         },
         {
           "id": "q6",
           "prompt": "oil imported",
           "sampleAnswers": [
             "the amount of oil imported"
-          ]
+          ],
+          "promptVi": "lượng dầu được nhập khẩu"
         },
         {
           "id": "q7",
           "prompt": "households with internet access",
           "sampleAnswers": [
             "the number of households with internet access"
-          ]
+          ],
+          "promptVi": "số lượng hộ gia đình có kết nối internet"
         },
         {
           "id": "q8",
           "prompt": "waste produced by households",
           "sampleAnswers": [
             "the amount of waste produced by households"
-          ]
+          ],
+          "promptVi": "lượng rác thải do các hộ gia đình tạo ra"
         }
       ]
     },
@@ -813,42 +821,48 @@
           "prompt": "electricity consumption",
           "sampleAnswers": [
             "the consumption of electricity"
-          ]
+          ],
+          "promptVi": "lượng điện tiêu thụ"
         },
         {
           "id": "q2",
           "prompt": "water consumption",
           "sampleAnswers": [
             "the consumption of water"
-          ]
+          ],
+          "promptVi": "lượng nước tiêu thụ"
         },
         {
           "id": "q3",
           "prompt": "car ownership",
           "sampleAnswers": [
             "the ownership of cars"
-          ]
+          ],
+          "promptVi": "tỷ lệ sở hữu ô tô"
         },
         {
           "id": "q4",
           "prompt": "public transport use",
           "sampleAnswers": [
             "the use of public transport"
-          ]
+          ],
+          "promptVi": "mức độ sử dụng phương tiện giao thông công cộng"
         },
         {
           "id": "q5",
           "prompt": "waste production",
           "sampleAnswers": [
             "the production of waste"
-          ]
+          ],
+          "promptVi": "lượng rác thải sản ra"
         },
         {
           "id": "q6",
           "prompt": "energy consumption",
           "sampleAnswers": [
             "the consumption of energy"
-          ]
+          ],
+          "promptVi": "lượng năng lượng tiêu thụ"
         },
         {
           "id": "q7",
@@ -856,7 +870,8 @@
           "sampleAnswers": [
             "the import of oil",
             "oil imports"
-          ]
+          ],
+          "promptVi": "lượng dầu nhập khẩu"
         },
         {
           "id": "q8",
@@ -864,7 +879,8 @@
           "sampleAnswers": [
             "the export of goods",
             "goods exports"
-          ]
+          ],
+          "promptVi": "lượng hàng hóa xuất khẩu"
         }
       ]
     },
@@ -890,7 +906,8 @@
           "sampleAnswers": [
             "the amount of water consumed",
             "the amount of water used"
-          ]
+          ],
+          "promptVi": "lượng nước được tiêu thụ"
         },
         {
           "id": "q2",
@@ -898,7 +915,8 @@
           "sampleAnswers": [
             "the amount of electricity produced",
             "the amount of electricity generated"
-          ]
+          ],
+          "promptVi": "lượng điện được sản xuất"
         },
         {
           "id": "q3",
@@ -906,7 +924,8 @@
           "sampleAnswers": [
             "the amount of fast food consumed",
             "the amount of fast food eaten"
-          ]
+          ],
+          "promptVi": "lượng thức ăn nhanh được tiêu thụ"
         },
         {
           "id": "q4",
@@ -914,21 +933,24 @@
           "sampleAnswers": [
             "the amount of goods imported",
             "the amount of goods brought into the country"
-          ]
+          ],
+          "promptVi": "lượng hàng hóa được nhập khẩu"
         },
         {
           "id": "q5",
           "prompt": "cars sold",
           "sampleAnswers": [
             "the number of cars sold"
-          ]
+          ],
+          "promptVi": "số lượng ô tô được bán ra"
         },
         {
           "id": "q6",
           "prompt": "houses built",
           "sampleAnswers": [
             "the number of houses built"
-          ]
+          ],
+          "promptVi": "số lượng nhà được xây dựng"
         }
       ]
     },
@@ -992,7 +1014,8 @@
           "sampleAnswers": [
             "the amount of fast food consumed in Vietnam between 2000 and 2020",
             "the consumption of fast food in Vietnam from 2000 to 2020"
-          ]
+          ],
+          "promptVi": "lượng thức ăn nhanh tiêu thụ ở Việt Nam trong khoảng thời gian từ năm 2000 đến năm 2020"
         },
         {
           "id": "q2",
@@ -1000,7 +1023,8 @@
           "sampleAnswers": [
             "the amount of electricity consumed in four countries",
             "the consumption of electricity in four countries"
-          ]
+          ],
+          "promptVi": "lượng điện tiêu thụ ở bốn quốc gia"
         },
         {
           "id": "q3",
@@ -1008,7 +1032,8 @@
           "sampleAnswers": [
             "the number of cars owned in Australia",
             "the number of people owning cars in Australia"
-          ]
+          ],
+          "promptVi": "số lượng ô tô sở hữu ở Úc"
         },
         {
           "id": "q4",
@@ -1016,7 +1041,8 @@
           "sampleAnswers": [
             "the number of adults using public transport",
             "the use of public transport among adults"
-          ]
+          ],
+          "promptVi": "số lượng người trưởng thành sử dụng phương tiện giao thông công cộng"
         },
         {
           "id": "q5",
@@ -1024,7 +1050,8 @@
           "sampleAnswers": [
             "the amount of water consumed by households",
             "the consumption of water by households"
-          ]
+          ],
+          "promptVi": "lượng nước mà các hộ gia đình tiêu thụ"
         },
         {
           "id": "q6",
@@ -1032,7 +1059,8 @@
           "sampleAnswers": [
             "the number of young people shopping online",
             "the number of young people purchasing goods online"
-          ]
+          ],
+          "promptVi": "số lượng người trẻ mua sắm trực tuyến"
         }
       ],
       "rubric": {

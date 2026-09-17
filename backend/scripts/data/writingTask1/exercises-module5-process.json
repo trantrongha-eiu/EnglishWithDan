@@ -137,42 +137,48 @@
           "prompt": "People crush limestone and clay.",
           "sampleAnswers": [
             "Limestone and clay are crushed."
-          ]
+          ],
+          "promptVi": "Đá vôi và đất sét được nghiền nhỏ."
         },
         {
           "id": "q2",
           "prompt": "Workers mix the powder in a mixer.",
           "sampleAnswers": [
             "The powder is mixed in a mixer."
-          ]
+          ],
+          "promptVi": "Bột được trộn đều trong máy trộn."
         },
         {
           "id": "q3",
           "prompt": "The factory heats the mixture at a high temperature.",
           "sampleAnswers": [
             "The mixture is heated at a high temperature."
-          ]
+          ],
+          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao."
         },
         {
           "id": "q4",
           "prompt": "They grind the material into fine cement.",
           "sampleAnswers": [
             "The material is ground into fine cement."
-          ]
+          ],
+          "promptVi": "Nguyên liệu được nghiền thành xi măng mịn."
         },
         {
           "id": "q5",
           "prompt": "Staff package the cement into bags.",
           "sampleAnswers": [
             "The cement is packaged into bags."
-          ]
+          ],
+          "promptVi": "Xi măng được đóng vào các bao."
         },
         {
           "id": "q6",
           "prompt": "They deliver the bricks to construction sites.",
           "sampleAnswers": [
             "The bricks are delivered to construction sites."
-          ]
+          ],
+          "promptVi": "Gạch được vận chuyển đến các công trường xây dựng."
         }
       ],
       "rubric": {
@@ -470,7 +476,8 @@
           "cue": "After + V-ing",
           "sampleAnswers": [
             "After being dug from the ground, the clay is put onto a metal grid."
-          ]
+          ],
+          "promptVi": "Sau khi được đào lên từ mặt đất, đất sét được đặt lên một tấm lưới kim loại."
         },
         {
           "id": "q2",
@@ -479,7 +486,8 @@
           "sampleAnswers": [
             "Once the bricks are dried in an oven, they are placed in a kiln.",
             "Once dried in an oven, the bricks are placed in a kiln."
-          ]
+          ],
+          "promptVi": "Khi gạch đã được làm khô trong lò sấy, chúng được chuyển vào lò nung."
         },
         {
           "id": "q3",
@@ -487,7 +495,8 @@
           "cue": "before + V-ing",
           "sampleAnswers": [
             "The mixture is heated at a high temperature before being ground into fine cement."
-          ]
+          ],
+          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao trước khi được nghiền thành xi măng mịn."
         },
         {
           "id": "q4",
@@ -495,7 +504,8 @@
           "cue": "followed by",
           "sampleAnswers": [
             "The milk is collected from the cows, followed by transportation to the dairy."
-          ]
+          ],
+          "promptVi": "Sữa được vắt từ bò, tiếp theo là được vận chuyển đến nhà máy sữa."
         },
         {
           "id": "q5",
@@ -503,7 +513,8 @@
           "cue": "Having been + V3",
           "sampleAnswers": [
             "Having been soaked in water, the paper is beaten into a pulp."
-          ]
+          ],
+          "promptVi": "Sau khi được ngâm trong nước, giấy được nghiền thành bột."
         },
         {
           "id": "q6",
@@ -511,7 +522,8 @@
           "cue": "After that",
           "sampleAnswers": [
             "The sand and water are added to the clay. After that, the mixture is cut by a wire cutter."
-          ]
+          ],
+          "promptVi": "Cát và nước được cho vào đất sét. Sau đó, hỗn hợp được cắt bằng một dụng cụ cắt dây."
         }
       ],
       "rubric": {
@@ -1741,7 +1753,8 @@
           "cue": "After + V-ing",
           "sampleAnswers": [
             "After being dug from the ground, the clay is placed on a metal grid."
-          ]
+          ],
+          "promptVi": "Sau khi được khai thác từ lòng đất, đất sét được đặt lên một tấm lưới kim loại."
         },
         {
           "id": "q2",
@@ -1750,7 +1763,8 @@
           "sampleAnswers": [
             "Once the bricks are dried, they are moved to a kiln.",
             "Once dried, the bricks are moved to a kiln."
-          ]
+          ],
+          "promptVi": "Sau khi gạch được phơi khô, chúng được chuyển đến lò nung."
         },
         {
           "id": "q3",
@@ -1758,7 +1772,8 @@
           "cue": "followed by",
           "sampleAnswers": [
             "The milk is collected, followed by transportation to the dairy."
-          ]
+          ],
+          "promptVi": "Sữa được thu gom và sau đó được vận chuyển đến nhà máy sữa."
         },
         {
           "id": "q4",
@@ -1766,7 +1781,8 @@
           "cue": "Having been + V3",
           "sampleAnswers": [
             "Having been poured into a tray, the pulp is mixed by hand."
-          ]
+          ],
+          "promptVi": "Sau khi được đổ vào khay, phần bột giấy được trộn đều bằng tay."
         },
         {
           "id": "q5",
@@ -1775,7 +1791,8 @@
           "sampleAnswers": [
             "Before going through its first moulting, the young bee hatches from the egg.",
             "The eggs hatch before the young bee goes through its first moulting."
-          ]
+          ],
+          "promptVi": "Trước khi trải qua lần lột xác đầu tiên, ong non nở ra từ trứng."
         }
       ],
       "rubric": {

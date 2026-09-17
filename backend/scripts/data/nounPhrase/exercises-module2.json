@@ -360,21 +360,24 @@
           "prompt": "Students drop out of university.",
           "sampleAnswers": [
             "students dropping out of university"
-          ]
+          ],
+          "promptVi": "sinh viên bỏ học đại học"
         },
         {
           "id": "q2",
           "prompt": "Young people use social media.",
           "sampleAnswers": [
             "young people using social media"
-          ]
+          ],
+          "promptVi": "giới trẻ sử dụng mạng xã hội"
         },
         {
           "id": "q3",
           "prompt": "The cost of living is increasing.",
           "sampleAnswers": [
             "the increasing cost of living"
-          ]
+          ],
+          "promptVi": "chi phí sinh hoạt ngày càng tăng"
         },
         {
           "id": "q4",
@@ -382,21 +385,24 @@
           "sampleAnswers": [
             "the rapid development of technology",
             "the rapidly developing technology"
-          ]
+          ],
+          "promptVi": "sự phát triển nhanh chóng của công nghệ"
         },
         {
           "id": "q5",
           "prompt": "More pressure is placed on students.",
           "sampleAnswers": [
             "the increasing pressure placed on students"
-          ]
+          ],
+          "promptVi": "áp lực ngày càng tăng đặt lên vai học sinh sinh viên"
         },
         {
           "id": "q6",
           "prompt": "The number of university students is growing.",
           "sampleAnswers": [
             "the growing number of university students"
-          ]
+          ],
+          "promptVi": "số lượng sinh viên đại học ngày càng tăng"
         }
       ]
     },
@@ -627,7 +633,8 @@
           "sampleAnswers": [
             "the growing number of students studying abroad",
             "the increasing number of students studying abroad"
-          ]
+          ],
+          "promptVi": "số lượng học sinh đi du học ngày càng tăng"
         },
         {
           "id": "q2",
@@ -635,7 +642,8 @@
           "sampleAnswers": [
             "the increasing number of people using private cars",
             "the increasing use of private cars"
-          ]
+          ],
+          "promptVi": "số lượng người sử dụng xe hơi cá nhân ngày càng tăng"
         },
         {
           "id": "q3",
@@ -643,14 +651,16 @@
           "sampleAnswers": [
             "the increase in university tuition fees",
             "the rise in university tuition fees"
-          ]
+          ],
+          "promptVi": "sự tăng lên của học phí đại học"
         },
         {
           "id": "q4",
           "prompt": "More young people live with their parents.",
           "sampleAnswers": [
             "the growing number of young people living with their parents"
-          ]
+          ],
+          "promptVi": "số lượng người trẻ sống cùng cha mẹ ngày càng tăng"
         },
         {
           "id": "q5",
@@ -658,14 +668,16 @@
           "sampleAnswers": [
             "the growing dependence on technology",
             "the increasing dependence on technology"
-          ]
+          ],
+          "promptVi": "sự phụ thuộc ngày càng nhiều vào công nghệ"
         },
         {
           "id": "q6",
           "prompt": "More children are using smartphones.",
           "sampleAnswers": [
             "the increasing number of children using smartphones"
-          ]
+          ],
+          "promptVi": "số lượng trẻ em sử dụng điện thoại thông minh ngày càng tăng"
         },
         {
           "id": "q7",
@@ -673,7 +685,8 @@
           "sampleAnswers": [
             "increased government investment in renewable energy",
             "the growing government investment in renewable energy"
-          ]
+          ],
+          "promptVi": "việc chính phủ tăng cường đầu tư vào năng lượng tái tạo"
         },
         {
           "id": "q8",
@@ -681,7 +694,8 @@
           "sampleAnswers": [
             "the growing popularity of online shopping",
             "the increasing number of people shopping online"
-          ]
+          ],
+          "promptVi": "sự phổ biến ngày càng tăng của việc mua sắm trực tuyến"
         },
         {
           "id": "q9",
@@ -689,7 +703,8 @@
           "sampleAnswers": [
             "the rising number of unemployed people",
             "the increase in unemployment"
-          ]
+          ],
+          "promptVi": "số lượng người thất nghiệp ngày càng tăng"
         },
         {
           "id": "q10",
@@ -697,7 +712,8 @@
           "sampleAnswers": [
             "the decline in public transport use",
             "the fall in the number of people using public transport"
-          ]
+          ],
+          "promptVi": "sự sụt giảm trong việc sử dụng phương tiện giao thông công cộng"
         }
       ]
     },
@@ -1151,7 +1167,8 @@
           "sampleAnswers": [
             "the increasing use of social media",
             "the growing use of social media"
-          ]
+          ],
+          "promptVi": "việc sử dụng mạng xã hội ngày càng tăng"
         },
         {
           "id": "q2",
@@ -1159,21 +1176,24 @@
           "sampleAnswers": [
             "the increasing prevalence of obesity",
             "the rising prevalence of obesity"
-          ]
+          ],
+          "promptVi": "tình trạng béo phì ngày càng phổ biến"
         },
         {
           "id": "q3",
           "prompt": "Academic performance is falling.",
           "sampleAnswers": [
             "the decline in academic performance"
-          ]
+          ],
+          "promptVi": "sự suy giảm về thành tích học tập"
         },
         {
           "id": "q4",
           "prompt": "Universities are demanding more skilled workers.",
           "sampleAnswers": [
             "the increasing demand for skilled workers"
-          ]
+          ],
+          "promptVi": "nhu cầu ngày càng tăng đối với lao động có tay nghề"
         },
         {
           "id": "q5",
@@ -1181,14 +1201,16 @@
           "sampleAnswers": [
             "the growing dependence on private vehicles",
             "the growing reliance on private vehicles"
-          ]
+          ],
+          "promptVi": "sự phụ thuộc ngày càng lớn vào các phương tiện cá nhân"
         },
         {
           "id": "q6",
           "prompt": "Many students fail to finish their degree.",
           "sampleAnswers": [
             "the failure to complete a degree"
-          ]
+          ],
+          "promptVi": "việc không hoàn thành bậc đại học"
         }
       ]
     },
