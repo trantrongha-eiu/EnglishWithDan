@@ -31,7 +31,7 @@
 
 const ROWS = [
   ['Graph 1', 'The consumption of fish and different kinds of meat in a European country between 1979 and 2004.',
-    'https://res.cloudinary.com/dnexal8zv/image/upload/v1788518183/wt1/charts/fish-meat-1979-2004.png'],
+    'https://res.cloudinary.com/dnexal8zv/image/upload/v1789613304/wt1/charts/fish-meat-1979-2004.png'],
   ['Graph 2', 'The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.',
     'https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png'],
   ['Graph 3', 'The changes in annual spending by a particular UK school in 1981 and 1991.',

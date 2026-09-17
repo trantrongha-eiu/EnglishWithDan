@@ -102,6 +102,15 @@
     .t1-stim-thumb { width:112px; max-width:34%; height:auto; border-radius:8px; flex-shrink:0; display:block; margin:0; border:1px solid var(--border,#e5e7eb); }
     .t1-stim-row-text { font-size:12.5px; line-height:1.6; }
 
+    /* one full-size chart + its own answer box per topic (renderPairedImageSlots)
+       — image, read the trend, write, right underneath, instead of a wall of
+       thumbnails up top and unlabelled boxes further down the page. */
+    .t1-graph-items { display:flex; flex-direction:column; gap:18px; margin:8px 20px 0; }
+    .t1-graph-item { background:var(--surface,#fff); border:1px solid var(--border,#e5e7eb); border-radius:14px; padding:16px; }
+    .t1-graph-img { display:block; width:100%; height:auto; border-radius:10px; margin-bottom:10px; cursor:zoom-in; transition:filter .12s; }
+    .t1-graph-img:hover { filter:brightness(.96); }
+    .t1-graph-desc { font-size:13px; line-height:1.6; color:var(--text2,#4b5563); margin-bottom:10px; }
+
     .t1-instr { margin: 10px 20px 0; font-size: 13.5px; line-height: 1.6; color: var(--text,#111827); }
     .t1-wb { display:flex; flex-wrap:wrap; gap:6px; padding: 8px 20px 0; }
     .t1-wb .chip { background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
@@ -566,7 +575,7 @@
       // Row shape is [label, description] or, when a real chart image exists
       // for that topic, [label, description, imageUrl] — shown as a small
       // zoomable thumbnail next to the text (same lightbox as a full-size
-      // stimulus image, via the shared ".t1-stim img[data-zoom]" handler).
+      // stimulus image, via the shared "img[data-zoom]" handler).
       var hasThumbs = st.rows.some(function (r) { return r[2]; });
       body += hasThumbs
         ? (st.rows || []).map(function (r) {
@@ -577,6 +586,50 @@
     }
     if (st.note) body += '<div class="note">📌 ' + esc(st.note) + '</div>';
     return body ? '<div class="t1-stim">' + body + '</div>' : '';
+  }
+
+  // Caption + note only, no rows — used ahead of renderPairedImageSlots(),
+  // which renders each row's image/description/textarea itself instead.
+  function renderStimulusHeader(st) {
+    if (!st) return '';
+    var body = '';
+    if (st.caption) body += '<div class="cap">' + esc(st.caption) + '</div>';
+    if (st.note) body += '<div class="note">📌 ' + esc(st.note) + '</div>';
+    return body ? '<div class="t1-stim">' + body + '</div>' : '';
+  }
+
+  // True when the stimulus is a per-topic image list (see renderStimulus's
+  // "text" branch) AND there's exactly one response slot per row — the shape
+  // needed to write directly under each chart instead of scrolling between
+  // a stimulus block up top and a stack of textareas further down.
+  function hasPairedImageSlots(ex) {
+    var st = ex.stimulus;
+    return !!(st && st.kind === 'text' && Array.isArray(st.rows) && st.rows.length &&
+      st.rows.every(function (r) { return r[2]; }) &&
+      (ex.type === 'sentence_writing' || ex.type === 'paragraph_writing') &&
+      ex.responseSlots === st.rows.length);
+  }
+
+  // Each chart image + its description sits directly above its own answer
+  // box — image, read the trend, write, right there — instead of a block of
+  // 4 images up top followed by 4 unlabelled textareas further down the
+  // page, which made it easy to lose track of which box answered which
+  // chart and forced scrolling back and forth to re-check a chart.
+  function renderPairedImageSlots(ex) {
+    var st = ex.stimulus;
+    var isSentence = ex.type === 'sentence_writing';
+    var items = st.rows.map(function (r, i) {
+      return '<div class="t1-graph-item">' +
+        '<img class="t1-graph-img" src="' + esc(r[2]) + '" alt="' + esc(r[0]) + '" data-zoom title="Bấm để phóng to">' +
+        '<div class="t1-graph-desc"><b>' + esc(r[0]) + '</b> — ' + esc(r[1]) + '</div>' +
+        '<textarea class="t1-ta' + (isSentence ? '' : ' t1-para-slot') + '" rows="' + (isSentence ? 2 : 4) + '" data-slot="' + i + '" placeholder="' + (isSentence ? 'Câu ' : 'Đoạn ') + (i + 1) + '..."></textarea>' +
+        '</div>';
+    }).join('');
+    var minW = (ex.rubric && ex.rubric.minWords) || 40;
+    var meter = isSentence ? '' :
+      '<div class="t1-wcmeter" id="t1-wcmeter" data-minw="' + minW + '"><div class="bar"><span></span></div><span class="n" id="t1-wc">0</span>' +
+      '<span>/ mục tiêu ≥ ' + minW + ' từ (tổng ' + st.rows.length + ' đoạn)</span></div>';
+    return '<div class="t1-graph-items">' + items + '</div>' + meter + rubricHint(ex);
   }
 
   function renderItemBody(ex) {
@@ -700,7 +753,9 @@
     var ex = curEx();
     if (!ex) return renderLessonDone();
     var isWriting = !OBJECTIVE[ex.type];
+    var paired = hasPairedImageSlots(ex);
     var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
+    var submitBtn = '<button class="t1-submit" id="t1-submit">' + (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra') + '</button>';
     return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
       '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
       '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i></button></span>' +
@@ -708,11 +763,11 @@
       '<div class="t1-prog"><span style="width:' + pct + '%"></span></div>' +
       '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
       '<div class="t1-instr">' + esc(ex.instruction || ex.title) + '</div>' +
-      renderStimulus(ex.stimulus) +
+      (paired ? renderStimulusHeader(ex.stimulus) : renderStimulus(ex.stimulus)) +
       (ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '') +
-      '<div class="t1-card" id="t1-body">' + renderItemBody(ex) +
-        '<button class="t1-submit" id="t1-submit">' + (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra') + '</button>' +
-      '</div>' +
+      (paired
+        ? '<div id="t1-body">' + renderPairedImageSlots(ex) + submitBtn + '</div>'
+        : '<div class="t1-card" id="t1-body">' + renderItemBody(ex) + submitBtn + '</div>') +
       '<div class="t1-fb hidden" id="t1-fb"></div>';
   }
 
@@ -829,7 +884,10 @@
       });
     }
     // chart / stimulus lightbox
-    document.querySelectorAll('.t1-stim img[data-zoom]').forEach(function (img) {
+    // Not scoped to .t1-stim — renderPairedImageSlots()'s big per-topic
+    // images (.t1-graph-img) live outside that wrapper and use the same
+    // zoomable lightbox.
+    document.querySelectorAll('img[data-zoom]').forEach(function (img) {
       img.addEventListener('click', function () {
         var lb = document.createElement('div');
         lb.className = 't1-lb';
