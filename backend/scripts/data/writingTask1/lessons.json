@@ -511,9 +511,31 @@
       ]
     },
     {
-      "code": "T1-TEST4",
+      "code": "T1-L18B",
       "moduleCode": "T1-M4",
       "order": 19,
+      "title": "Phụ lục — Dạng Layout (sơ đồ mặt bằng)",
+      "titleEn": "Appendix — Layout Maps (Floor Plans)",
+      "durationMinutes": 30,
+      "objectives": [
+        "Nhận diện 2 biến thể của dạng Layout: hai phương án cùng lúc vs hiện tại → tương lai",
+        "Dùng đúng cấu trúc so sánh (whereas/while/unlike/Both... have) cho dạng hai phương án cùng lúc, không lẫn thì quá khứ/tương lai",
+        "Dùng lại từ vựng mô tả thay đổi (Buổi 1) ở thì tương lai cho dạng hiện tại → tương lai",
+        "Viết hoàn chỉnh một bài Layout theo dàn ý 4 đoạn"
+      ],
+      "keyLanguage": [
+        "In Plan A, ..., whereas in Plan B, ...",
+        "While Plan A has/features ..., Plan B has/features ... instead",
+        "Unlike Plan A, Plan B ...",
+        "Both plans have/share ...",
+        "at the front/back of the room · in the corner / in the centre / along the wall",
+        "positioned in rows / in a U-shape / in a circle"
+      ]
+    },
+    {
+      "code": "T1-TEST4",
+      "moduleCode": "T1-M4",
+      "order": 20,
       "title": "TEST 4 — Bài kiểm tra cuối Module 4 (Maps)",
       "titleEn": "Module 4 Test (Maps)",
       "durationMinutes": 60,

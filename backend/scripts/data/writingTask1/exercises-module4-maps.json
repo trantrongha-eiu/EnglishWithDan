@@ -1518,6 +1518,237 @@
       ]
     },
     {
+      "code": "T1-L18B-E01",
+      "lessonCode": "T1-L18B",
+      "order": 1,
+      "type": "mcq",
+      "title": "Nhận diện dạng Layout — 2 biến thể",
+      "instruction": "Đọc đề bài hoặc câu ví dụ, xác định đúng biến thể của dạng Layout và cách viết phù hợp.",
+      "source": "original",
+      "skillTags": [
+        "maps-layout",
+        "recognition"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "\"The plans below show two different seating layout options, Plan A and Plan B, for the same seminar room.\" — Đây là biến thể nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Hai phương án cùng lúc — dùng thì hiện tại + từ so sánh (whereas/while/unlike)"
+            },
+            {
+              "id": "B",
+              "text": "Hiện tại → tương lai — dùng thì tương lai (will be + V3)"
+            },
+            {
+              "id": "C",
+              "text": "Bản đồ thay đổi theo thời gian — dùng thì quá khứ"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"Plan A, Plan B\" không có mốc thời gian → 2 phương án tồn tại song song, không phải một biến đổi theo thời gian."
+        },
+        {
+          "id": "q2",
+          "prompt": "\"The plans below show the present layout of an office building and its planned layout in the future.\" — Đây là biến thể nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Hai phương án cùng lúc — dùng whereas/while/unlike"
+            },
+            {
+              "id": "B",
+              "text": "Hiện tại → tương lai — dùng thì tương lai (will be + V3) cho mặt bằng tương lai"
+            },
+            {
+              "id": "C",
+              "text": "Không xác định được vì đề không nêu mốc thời gian cụ thể"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Có \"present\" và \"planned ... in the future\" → viết như dạng \"thay đổi theo thời gian\", chia thì tương lai cho phần quy hoạch."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"In Plan A, the podium is positioned at the front of the room, whereas in Plan B, the morning tea area is located there instead.\" — Câu này minh hoạ cấu trúc nào?",
+          "options": [
+            {
+              "id": "A",
+              "text": "whereas — so sánh hai phương án tồn tại song song"
+            },
+            {
+              "id": "B",
+              "text": "with + S + being + V3 — bổ sung chi tiết phụ"
+            },
+            {
+              "id": "C",
+              "text": "will be + V3 — mô tả quy hoạch tương lai"
+            }
+          ],
+          "answer": "A",
+          "explanation": "whereas nối hai vế tương phản ở cùng một thì hiện tại — đúng cho dạng \"hai phương án cùng lúc\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Đề thuộc dạng \"hai phương án cùng lúc\". Câu nào ĐÚNG?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The whiteboard was moved closer to the entrance in Plan B."
+            },
+            {
+              "id": "B",
+              "text": "The whiteboard will be moved closer to the entrance in Plan B."
+            },
+            {
+              "id": "C",
+              "text": "The whiteboard is placed closer to the entrance in Plan B."
+            }
+          ],
+          "answer": "C",
+          "explanation": "Không có yếu tố thời gian → KHÔNG dùng was/were hay will be để nối 2 vế; dùng hiện tại đơn (is placed)."
+        }
+      ]
+    },
+    {
+      "code": "T1-L18B-E02",
+      "lessonCode": "T1-L18B",
+      "order": 2,
+      "type": "full_task1",
+      "title": "PRACTICE — Bài hoàn chỉnh: Hai phương án bố trí phòng hội thảo (Plan A vs Plan B)",
+      "instruction": "The plans below show two different seating layout options, Plan A and Plan B, for the same seminar room. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "original",
+      "skillTags": [
+        "maps-layout",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Two seating layout options for the same seminar room — Plan A and Plan B",
+        "note": "Introduction: paraphrase đề bài. Overview: nêu 1–2 khác biệt lớn nhất giữa Plan A và Plan B (vị trí bàn tiệc trà, hướng bàn ghế, có/không bục phát biểu). Body 1: mô tả chi tiết Plan A (entrance, podium, whiteboard, bàn ghế, khu morning tea). Body 2: mô tả Plan B, bắt buộc dùng ít nhất 1 cấu trúc so sánh (whereas/Unlike Plan A...).",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/v1789626227/wt1/maps-process/layout-seminar-plan-ab.png"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "In Plan A, ..., whereas in Plan B, ...",
+          "While Plan A features ..., Plan B features ... instead",
+          "Unlike Plan A, Plan B ...",
+          "Both plans have/share ..."
+        ],
+        "mustUse": 2,
+        "scoring": [
+          {
+            "criterion": "Task Achievement – đủ 4 phần; Overview nêu đúng 1–2 khác biệt lớn nhất; mô tả đủ các khu vực chính của cả 2 phương án",
+            "points": 10
+          },
+          {
+            "criterion": "Coherence & Cohesion – Body 1/Body 2 chia rõ theo từng phương án; dùng ít nhất 1 cấu trúc so sánh để nối 2 đoạn",
+            "points": 10
+          },
+          {
+            "criterion": "Lexical Resource – từ vựng vị trí trong không gian nhỏ (in the corner, along the wall, facing, positioned in rows...) chính xác",
+            "points": 10
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy – dùng thì HIỆN TẠI xuyên suốt (không chia quá khứ/tương lai vì đây là 2 phương án song song)",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "KHÔNG dùng thì quá khứ hoặc tương lai để nối 2 phương án — chỉ dùng hiện tại đơn + từ so sánh",
+          "Overview nêu 1–2 khác biệt lớn nhất, không liệt kê hết chi tiết",
+          "Body 2 dùng ít nhất 1 cấu trúc so sánh (whereas/while/unlike) để nhấn mạnh điểm khác với Plan A",
+          "Tối thiểu 150 từ"
+        ],
+        "sampleAnswer": "The plans illustrate two alternative seating arrangements, labelled Plan A and Plan B, for the same seminar room.\n\nOverall, while both layouts share an identical entrance and two rows of chairs flanking the central tables, they differ mainly in the location of the morning tea area and the seating capacity of the rear table.\n\nIn Plan A, visitors enter at the top right of the room, facing a podium and a whiteboard positioned side by side at the front. Two rectangular tables stand in the middle of the room, each flanked by three chairs facing inwards. Towards the back, a single long table is set out with four chairs placed along one side, and the morning tea area occupies the whole width of the room at the very back.\n\nPlan B retains the same entrance and the two central tables with their six chairs, but several features have been rearranged. Rather than being located at the back, the morning tea area is now positioned in the top left corner, close to the entrance. The whiteboard has been moved towards the centre of the room, whereas in Plan A it was fixed at the front alongside the podium. Unlike Plan A, the rear table in Plan B is surrounded by chairs on both sides, seating six people instead of four.",
+        "commonErrors": [
+          "dùng was/were hoặc will be để nối 2 phương án (sai vì không có yếu tố thời gian)",
+          "liệt kê hết chi tiết ở Overview thay vì chỉ nêu 1–2 khác biệt lớn nhất",
+          "không dùng cấu trúc so sánh nào ở Body 2"
+        ]
+      }
+    },
+    {
+      "code": "T1-L18B-E03",
+      "lessonCode": "T1-L18B",
+      "order": 3,
+      "type": "full_task1",
+      "title": "HOMEWORK — Bài hoàn chỉnh: Văn phòng hiện tại và tương lai (Present vs Future)",
+      "instruction": "The plans below show the present layout of an office building and its planned layout in the future. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "original",
+      "skillTags": [
+        "maps-layout",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Present Office Building and Future Office Building",
+        "note": "Đây là bài tổng hợp cuối cùng — áp dụng lại cả từ vựng mô tả thay đổi (Buổi 1) lẫn cấu trúc liên kết câu (Buổi 2). Introduction: paraphrase đề bài. Overview (2 câu): nêu 1–2 thay đổi lớn nhất trong kế hoạch tương lai, không nêu chi tiết. Body 1 (Present): mô tả mặt bằng hiện tại. Body 2 (Future): mô tả những thay đổi so với hiện tại.",
+        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/v1789626230/wt1/maps-process/layout-office-present-future.png"
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "will be removed and replaced by ...",
+          "will remain unchanged",
+          "will be added",
+          "will be relocated to ...",
+          "with + being + V3",
+          "followed by + N"
+        ],
+        "mustUse": 4,
+        "scoring": [
+          {
+            "criterion": "Task Achievement – đủ 4 phần; Overview nêu 1–2 thay đổi lớn nhất; mô tả đủ các khu vực thay đổi và không đổi",
+            "points": 10
+          },
+          {
+            "criterion": "Coherence & Cohesion – Body 1 (hiện tại) và Body 2 (tương lai) chia rõ; dùng ít nhất 1 từ nối chuyển đoạn (Moreover/However/Meanwhile)",
+            "points": 10
+          },
+          {
+            "criterion": "Lexical Resource – dùng ít nhất 3 động từ/cụm từ mô tả thay đổi khác nhau (remove, replace, add, relocate, remain...)",
+            "points": 10
+          },
+          {
+            "criterion": "Grammatical Range & Accuracy – thì TƯƠNG LAI (will be + V3) xuyên suốt phần mô tả kế hoạch; dùng ít nhất 1 cấu trúc \"with + being + V3\" hoặc \"followed by + N\"",
+            "points": 10
+          }
+        ],
+        "checklist": [
+          "Từ vựng thay đổi (Buổi 1): dùng ít nhất 3 động từ/cụm từ khác nhau",
+          "Liên kết câu (Buổi 2): dùng ít nhất 1 cấu trúc \"with + being + V3\" hoặc \"followed by + N\", và ít nhất 1 từ nối chuyển đoạn",
+          "Thì đúng: dùng thì tương lai (will be + V3) xuyên suốt phần mô tả kế hoạch tương lai, không lẫn thì quá khứ",
+          "Độ dài tối thiểu 150 từ"
+        ],
+        "sampleAnswer": "The plans compare the current layout of an office building with its planned layout in the future.\n\nOverall, several offices will be converted into different facilities, and the grassed area to the left of the building will be replaced by a seating space for staff and visitors.\n\nAt present, the building has a kitchen, a canteen and a storeroom along the top, with a small WCs beside them, while grass borders both the left and right sides of the building. Four offices occupy the bottom row, next to the main entrance to the south.\n\nIn the future, the kitchen and the canteen will be removed and replaced by two additional offices, with the storeroom remaining unchanged. A coffee machine will be added next to the WCs. Moreover, the grass to the left will be converted into an outdoor seating area with chairs, while two of the four offices at the bottom will be replaced by a meeting area, also furnished with chairs, with the remaining offices staying in roughly the same position.",
+        "commonErrors": [
+          "chia thì quá khứ hoặc hiện tại cho phần mô tả kế hoạch tương lai thay vì will be + V3",
+          "bỏ sót Storeroom \"remains unchanged\" — chỉ liệt kê phần thay đổi",
+          "không dùng cấu trúc \"with + being + V3\" hoặc \"followed by + N\" nào"
+        ]
+      }
+    },
+    {
       "code": "T1-TEST4-A1",
       "lessonCode": "T1-TEST4",
       "order": 1,
