@@ -1870,6 +1870,24 @@ button:focus-visible {
 }
 
 .seq-results {
+  /* #screen-sequential.active is a fixed-height flex column with
+     overflow:hidden (so the recording/prep phase never causes page
+     scroll — .seq-body handles its own scroll for that phase via
+     flex:1+overflow-y:auto below). This results panel is the OTHER
+     child of that same flex column, shown once grading finishes — it
+     needs the identical flex:1+overflow-y:auto treatment, or any
+     result long enough to exceed the fixed viewport height (score
+     grid + overall feedback + focus + strengths + mistakes + vocab
+     upgrades + improvements + transcript review easily is) gets
+     silently clipped by the ancestor's overflow:hidden with no
+     scrollbar to reach the rest — confirmed bug: "Lỗi cần sửa" and
+     everything after it just never appeared on a fresh grading,
+     2026-09-17. min-height:0 is required too — a flex item's default
+     min-height is its content size, which defeats overflow-y:auto
+     inside a constrained flex parent. */
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   max-width: 640px;
   margin: 24px auto;
   width: calc(100% - 48px);
