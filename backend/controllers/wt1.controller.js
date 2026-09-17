@@ -145,15 +145,16 @@ exports.submitSpeaking = async (req, res) => {
       ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
       : null;
 
+    const durationSec = Number(duration) || 0;
     let feedback;
     try {
-      feedback = await speakingService.gradeSpeaking(questionText, text, part, audio);
+      feedback = await speakingService.gradeSpeaking(questionText, text, part, audio, durationSec);
     } catch (aiErr) {
       // Transcript-only retry is only possible when we actually have a
       // transcript — an audio-only submission has nothing to fall back to.
       if (audio && text && !aiErr.isOverloaded) {
         console.warn('[WT1] audio speaking grading failed, retrying transcript-only:', aiErr.message);
-        try { feedback = await speakingService.gradeSpeaking(questionText, text, part, null); }
+        try { feedback = await speakingService.gradeSpeaking(questionText, text, part, null, durationSec); }
         catch (retryErr) { aiErr = retryErr; }
       }
       if (!feedback) {

@@ -149,11 +149,11 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
 // If neither is configured (or both also fail) the caller re-throws
 // Gemini's original error. Each engine tags the result with `_heardAudio`
 // so gradeSpeaking knows whether Pronunciation was really heard.
-async function _gradeSpeakingFallback(question, transcript, part, audio, primaryErr) {
+async function _gradeSpeakingFallback(question, transcript, part, audio, primaryErr, durationSec = 0) {
   if (process.env.MISTRAL_API_KEY) {
     try {
       console.warn(`[Speaking] Gemini failed (${primaryErr.message}) — trying Mistral/Voxtral`);
-      return await checkSpeakingMistral(question, transcript, part, audio);
+      return await checkSpeakingMistral(question, transcript, part, audio, durationSec);
     } catch (mistralErr) {
       console.warn('[Speaking] Mistral fallback failed:', mistralErr.message);
     }
@@ -161,7 +161,7 @@ async function _gradeSpeakingFallback(question, transcript, part, audio, primary
   if (process.env.GROQ_API_KEY) {
     try {
       console.warn('[Speaking] falling back to Groq (transcript-only)');
-      const out = await checkSpeakingGroq(question, transcript, part, audio);
+      const out = await checkSpeakingGroq(question, transcript, part, audio, durationSec);
       if (out && typeof out === 'object') out._heardAudio = false;
       return out;
     } catch (groqErr) {
@@ -216,12 +216,15 @@ function roundToHalfBand(n) {
 // recording. Fed to the multimodal engine (Gemini, or Mistral/Voxtral on the
 // fallback path) so Pronunciation is graded from what's actually heard. Groq
 // (last-resort fallback) is transcript-only.
-async function gradeSpeaking(questionText, transcript, partNum, audio = null) {
+// `durationSec` (optional): real elapsed recording seconds from the client's
+// live timer — feeds the MINIMUM BAND FLOOR rules in
+// geminiService.buildSpeakingGradingPrompt (same prompt on every engine).
+async function gradeSpeaking(questionText, transcript, partNum, audio = null, durationSec = 0) {
   let feedback;
   try {
-    feedback = await checkSpeaking(questionText, transcript, partNum, audio);
+    feedback = await checkSpeaking(questionText, transcript, partNum, audio, durationSec);
   } catch (primaryErr) {
-    feedback = await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr);
+    feedback = await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr, durationSec);
   }
   const fluency = feedback.fluency || 0;
   const vocabulary = feedback.vocabulary || 0;
@@ -484,7 +487,7 @@ async function retryGrading(attemptId, user) {
   if (attempt.status === 'analyzed') return { status: 'already_analyzed' };
 
   try {
-    const feedback = await gradeSpeaking(attempt.question, attempt.transcript, attempt.part);
+    const feedback = await gradeSpeaking(attempt.question, attempt.transcript, attempt.part, null, attempt.duration);
     await finalizeAttempt(attempt._id, feedback, user);
     return { status: 'ok', feedback, attemptId: attempt._id };
   } catch (aiErr) {

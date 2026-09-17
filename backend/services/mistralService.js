@@ -35,13 +35,13 @@ function _voxtralFormat(mimeType) {
   return null; // webm / unknown
 }
 
-async function checkSpeakingMistral(question, transcript, part = 1, audio = null, _attempt = 0) {
+async function checkSpeakingMistral(question, transcript, part = 1, audio = null, durationSec = 0, _attempt = 0) {
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) throw new Error('MISTRAL_API_KEY chưa được cấu hình');
 
   const fmt = audio && audio.data ? _voxtralFormat(audio.mimeType) : null;
   const hasAudio = !!fmt;
-  const promptText = buildSpeakingGradingPrompt(question, transcript, part, hasAudio);
+  const promptText = buildSpeakingGradingPrompt(question, transcript, part, hasAudio, durationSec);
   const userContent = hasAudio
     ? [
         { type: 'text', text: promptText },
@@ -91,7 +91,7 @@ async function checkSpeakingMistral(question, transcript, part = 1, audio = null
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('checkSpeakingMistral: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return checkSpeakingMistral(question, transcript, part, audio, _attempt + 1);
+      return checkSpeakingMistral(question, transcript, part, audio, durationSec, _attempt + 1);
     }
     throw new Error('Mistral không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }

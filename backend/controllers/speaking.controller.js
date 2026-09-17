@@ -68,9 +68,10 @@ exports.analyze = catchAsync(async (req, res) => {
     questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration
   });
 
+  const durationSec = Number(duration) || 0;
   let feedback;
   try {
-    feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, audio);
+    feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, audio, durationSec);
   } catch (aiErr) {
     // If the audio part is what tripped grading up (unsupported container,
     // corrupt blob, size), don't lose the whole grade — retry once
@@ -79,7 +80,7 @@ exports.analyze = catchAsync(async (req, res) => {
     if (audio && clientTranscript && !aiErr.isOverloaded) {
       console.warn('[Speaking] audio grading failed, retrying transcript-only:', aiErr.message);
       try {
-        feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, null);
+        feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, null, durationSec);
       } catch (retryErr) {
         aiErr = retryErr;
       }
@@ -133,7 +134,7 @@ exports.mockSubmit = catchAsync(async (req, res) => {
   // Best-effort async grade — don't await, don't let a failure touch the
   // response. mockTestService picks the band up on the next history read.
   if (attemptId && cleanTranscript) {
-    speakingService.gradeSpeaking(questionText, cleanTranscript, partNum)
+    speakingService.gradeSpeaking(questionText, cleanTranscript, partNum, null, Number(duration) || 0)
       .then(fb => speakingService.finalizeAttempt(attemptId, fb, req.user))
       .catch(err => {
         console.error('[Speaking] mock-submit background grade failed:', err.message);

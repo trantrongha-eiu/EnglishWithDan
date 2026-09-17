@@ -337,7 +337,7 @@ describe('speakingService.gradeSpeaking', () => {
     });
     const audio = { data: 'YmFzZTY0', mimeType: 'video/webm' };
     const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, audio);
-    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Q', 'transcript', 1, audio);
+    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Q', 'transcript', 1, audio, 0);
     expect(result.pronunciationFromAudio).toBe(true);
   });
 
@@ -387,7 +387,7 @@ describe('speakingService.gradeSpeaking', () => {
     const audio = { data: 'x', mimeType: 'audio/ogg' };
     const result = await speakingService.gradeSpeaking('Q', 'transcript', 1, audio);
 
-    expect(mistralService.checkSpeakingMistral).toHaveBeenCalledWith('Q', 'transcript', 1, audio);
+    expect(mistralService.checkSpeakingMistral).toHaveBeenCalledWith('Q', 'transcript', 1, audio, 0);
     expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
     expect(result.overallFeedback).toBe('from mistral');
     expect(result.pronunciationFromAudio).toBe(true);
@@ -597,8 +597,8 @@ describe('speakingService.retryGrading', () => {
 
     const result = await speakingService.retryGrading(attempt._id, student);
     expect(result.status).toBe('ok');
-    // 4th arg is the optional audio (null on a stored-transcript re-grade).
-    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2, null);
+    // 4th arg is the optional audio (null on a stored-transcript re-grade); 5th is the stored duration.
+    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2, null, 0);
 
     const saved = await SpeakingAttempt.findById(attempt._id).lean();
     expect(saved.status).toBe('analyzed');

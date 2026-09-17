@@ -294,11 +294,17 @@ PRONUNCIATION — grade ONLY from the audio you can hear (not the transcript spe
 6. Intelligibility & accent: how much listener effort is needed? Does the L1 accent ever actually obscure meaning (vs just being noticeable)?
 When you cite pronunciation issues in "mistakes"/"improvements", quote the word as you HEARD it, e.g. {"original":"\"comfortable\" (heard as com-FOR-ta-ble)","corrected":"\"COMF-ter-ble\" — stress the first syllable, swallow the middle","reason":"..."}.`;
 
-function buildSpeakingGradingPrompt(question, transcript, part, hasAudio = false) {
+// Minimum duration (seconds) for a Part 2 long turn to count as "sustained
+// for essentially the full 2 minutes" for the MINIMUM BAND FLOOR rule below
+// — a little under 120 to allow for the live timer stopping a beat early.
+const PART2_FULL_DURATION_SEC = 110;
+
+function buildSpeakingGradingPrompt(question, transcript, part, hasAudio = false, durationSec = 0) {
   // When the client had no speech-to-text (mobile Safari/iOS, in-app
   // webviews, blocked recognition service) it still uploads the raw audio.
   // Gemini then transcribes it itself and grades from that.
   const needTranscribe = hasAudio && !String(transcript || '').trim();
+  const partNum = Number(part);
   return `${SPEAKING_BAND_DESCRIPTORS}
 ${hasAudio ? PRONUNCIATION_AUDIO_RUBRIC : ''}
 
@@ -308,6 +314,7 @@ ${question}
 
 IELTS Part
 ${part}
+${durationSec ? `\nCandidate speaking duration (from a live recording timer, NOT a word count): ${durationSec} seconds` : ''}
 
 Candidate Transcript${needTranscribe
     ? ' — NONE PROVIDED. Transcribe the attached audio recording yourself (verbatim, standard spelling, light punctuation, no timestamps or speaker labels) and grade from your own transcription.'
@@ -347,7 +354,7 @@ ${hasAudio
 - improvements: 2-3 concrete, actionable suggestions tied to what actually happened in this transcript — not generic advice like "practice more" that would apply to any answer. At least one of these must be a specific sentence-structure or cohesive-device suggestion (e.g. a relative clause, a linking phrase, a way to extend a short answer into a longer turn) that would help the candidate sustain a longer, more fluent turn and raise Grammatical Range or Fluency — tie it to their actual answer, not abstract advice like "use more complex sentences".
 - todaysFocus: maximum 1 sentence, must name the ONE specific thing to fix next (quote an example if it helps), not a general encouragement.
 - "fluency"/"vocabulary"/"grammar"/"pronunciation" must each be a whole or half band (…, 5, 5.5, 6, 6.5, …) — never 6.2, 6.7, 7.3, etc.
-- overallBand = the mean of the 4 scores above, rounded to the nearest whole or half band using the official IELTS convention: .25 rounds UP to the next half band (e.g. 6.25→6.5), .75 rounds UP to the next whole band (e.g. 6.75→7), anything else rounds to the nearest whole/half band. Never round down.
+${partNum === 2 && durationSec >= PART2_FULL_DURATION_SEC ? `- MINIMUM BAND FLOOR (Part 2): the candidate sustained speech for essentially the full 2-minute long turn (${durationSec}s). That alone already clears the Band 5-6 "usually/able to keep going" fluency threshold, so the four sub-scores must average to at least 5.5 (none below Band 5) even if other weaknesses (limited range, hesitation, errors) are present — UNLESS the transcript falls under the "no genuine answer" rule below (essentially blank, or not a real attempt at the topic despite the time used), in which case that rule wins instead.\n` : ''}${(partNum === 1 || partNum === 3) ? `- MINIMUM BAND FLOOR (Part ${partNum}): if the transcript has at least 3 complete sentences that genuinely address the question (not wandering onto an unrelated topic), the four sub-scores must average to at least 5.5 (none below Band 5) even if other weaknesses are present — same "no genuine answer" exception as above.\n` : ''}- overallBand = the mean of the 4 scores above, rounded to the nearest whole or half band using the official IELTS convention: .25 rounds UP to the next half band (e.g. 6.25→6.5), .75 rounds UP to the next whole band (e.g. 6.75→7), anything else rounds to the nearest whole/half band. Never round down.
 If there's no genuine answer to grade (empty, just repeats the question, or an explicit "no answer" placeholder), say so only in overallFeedback, set strengths/mistakes/vocabUpgrades/improvements to [], and todaysFocus to "Hãy trả lời câu hỏi để nhận đánh giá." — don't repeat the explanation in other fields.`;
 }
 
@@ -357,15 +364,19 @@ If there's no genuine answer to grade (empty, just repeats the question, or an e
  * `audio` (optional): { data: <base64>, mimeType: 'audio/webm'|... } — the
  * candidate's real recording. When given, Pronunciation is graded from the
  * audio itself (multimodal); otherwise it stays a transcript-only estimate.
+ * `durationSec` (optional): the recording's real elapsed seconds, from the
+ * client's live timer — feeds the MINIMUM BAND FLOOR rules in
+ * buildSpeakingGradingPrompt (Part 2 full-length long turn / Part 1 answers
+ * with 3+ on-topic sentences).
  */
-async function checkSpeaking(question, transcript, part = 1, audio = null, _attempt = 0) {
+async function checkSpeaking(question, transcript, part = 1, audio = null, durationSec = 0, _attempt = 0) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
 
   const ai = new GoogleGenAI({ apiKey });
 
   const hasAudio = !!(audio && audio.data);
-  const promptText = buildSpeakingGradingPrompt(question, transcript, part, hasAudio);
+  const promptText = buildSpeakingGradingPrompt(question, transcript, part, hasAudio, durationSec);
   const content = hasAudio
     ? [{ text: promptText }, { inlineData: { mimeType: audio.mimeType || 'audio/webm', data: audio.data } }]
     : promptText;
@@ -402,7 +413,7 @@ async function checkSpeaking(question, transcript, part = 1, audio = null, _atte
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('checkSpeaking: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return checkSpeaking(question, transcript, part, audio, _attempt + 1);
+      return checkSpeaking(question, transcript, part, audio, durationSec, _attempt + 1);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
