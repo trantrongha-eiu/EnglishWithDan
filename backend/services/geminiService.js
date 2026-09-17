@@ -1213,4 +1213,8 @@ module.exports = {
   SAMPLE_ANSWER_SYSTEM, buildSampleAnswerPrompt,
   IMPROVE_ANSWER_SYSTEM, buildImproveAnswerPrompt,
   extractJson,
+  // Exported so speakingService.gradeSpeaking can enforce the MINIMUM BAND
+  // FLOOR rule itself as a deterministic backstop, rather than trusting the
+  // AI to always follow the prompt instruction (see applyMinimumBandFloor).
+  PART2_FULL_DURATION_SEC,
 };

@@ -4,7 +4,7 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require('./geminiService');
+const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, PART2_FULL_DURATION_SEC } = require('./geminiService');
 const {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
@@ -212,6 +212,54 @@ function roundToHalfBand(n) {
   return Math.round(n * 2) / 2;
 }
 
+// Deterministic backstop for the MINIMUM BAND FLOOR rules that
+// geminiService.buildSpeakingGradingPrompt already asks the AI to apply
+// itself — confirmed on 2026-09-17 (real student "MlemQueen", two Part 2
+// answers at 2m03s/2m01s, both well past the 110s threshold) that the AI
+// doesn't reliably follow that instruction: both scored 5.0 instead of the
+// promised 5.5 floor. A prompt rule is advisory; this makes it actually
+// hold, by adjusting the sub-scores in code once grading returns.
+// - Part 2: floor applies once durationSec clears PART2_FULL_DURATION_SEC.
+// - Part 1/3: no duration signal (short Q&A), so this approximates "3+
+//   on-topic sentences" with the best signal available in code — 3+
+//   transcript sentences of at least 3 words each. Imperfect (can't judge
+//   "on-topic" the way the AI can), but a floor that sometimes fires one
+//   sentence too early beats one that silently never fires at all.
+// - Escape hatch: mirrors the prompt's own "no genuine answer" rule — when
+//   ALL FOUR of strengths/mistakes/vocabUpgrades/improvements come back
+//   empty, the AI is telling us it already judged this as no real answer
+//   (that's the only condition under which the prompt allows all four to be
+//   empty for a real attempt), so the floor is skipped.
+function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
+  const partN = Number(partNum);
+  const hasRealContent = [feedback.strengths, feedback.mistakes, feedback.vocabUpgrades, feedback.improvements]
+    .some(arr => Array.isArray(arr) && arr.length > 0);
+  if (!hasRealContent) return;
+
+  let qualifies = false;
+  if (partN === 2) {
+    qualifies = Number(durationSec) >= PART2_FULL_DURATION_SEC;
+  } else if (partN === 1 || partN === 3) {
+    const sentenceCount = String(transcript || '')
+      .split(/[.!?]+/)
+      .map(s => s.trim().split(/\s+/).filter(Boolean))
+      .filter(words => words.length >= 3)
+      .length;
+    qualifies = sentenceCount >= 3;
+  }
+  if (!qualifies) return;
+
+  const KEYS = ['fluency', 'vocabulary', 'grammar', 'pronunciation'];
+  for (const k of KEYS) feedback[k] = Math.max(feedback[k] || 0, 5);
+  let avg = KEYS.reduce((s, k) => s + feedback[k], 0) / 4;
+  let guard = 0;
+  while (avg < 5.5 && guard++ < 20) {
+    const lowestKey = KEYS.reduce((a, b) => (feedback[a] <= feedback[b] ? a : b));
+    feedback[lowestKey] += 0.5;
+    avg = KEYS.reduce((s, k) => s + feedback[k], 0) / 4;
+  }
+}
+
 // `audio` (optional): { data: <base64>, mimeType } — the student's real
 // recording. Fed to the multimodal engine (Gemini, or Mistral/Voxtral on the
 // fallback path) so Pronunciation is graded from what's actually heard. Groq
@@ -226,11 +274,12 @@ async function gradeSpeaking(questionText, transcript, partNum, audio = null, du
   } catch (primaryErr) {
     feedback = await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr, durationSec);
   }
-  const fluency = feedback.fluency || 0;
-  const vocabulary = feedback.vocabulary || 0;
-  const grammar = feedback.grammar || 0;
-  const pronunciation = feedback.pronunciation || 0;
-  feedback.overallBand = roundToHalfBand((fluency + vocabulary + grammar + pronunciation) / 4);
+  feedback.fluency = feedback.fluency || 0;
+  feedback.vocabulary = feedback.vocabulary || 0;
+  feedback.grammar = feedback.grammar || 0;
+  feedback.pronunciation = feedback.pronunciation || 0;
+  applyMinimumBandFloor(feedback, partNum, transcript, durationSec);
+  feedback.overallBand = roundToHalfBand((feedback.fluency + feedback.vocabulary + feedback.grammar + feedback.pronunciation) / 4);
   // Whether Pronunciation was actually heard: audio was provided AND the
   // engine that graded it took the recording (Gemini always; Mistral only
   // for non-webm; never Groq). Each engine reports this as `_heardAudio`;
