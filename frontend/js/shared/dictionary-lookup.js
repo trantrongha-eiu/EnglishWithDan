@@ -135,6 +135,41 @@
   // case double-click lookup silently did nothing on every quiz answer.
   var ANSWER_BUTTON_SELECTOR = '.answer-option, .rearrange-tile, .rearrange-slot-tile';
 
+  // Drag-and-drop tiles (Task 1/2, Speaking, Noun Phrase course "classify
+  // into groups" / "reorder" exercises — .t1-chip, .t1-ord-row) set
+  // user-select:none so a mouse-drag doesn't also start a text selection.
+  // That CSS property also silently blocks the browser's own native
+  // double-click word-selection, so window.getSelection() below returns
+  // nothing and the popup never opened for any word inside one of these
+  // tiles. Detected generically via computed style (inherited, so it
+  // still matches a nested span/text node) rather than a hardcoded class
+  // list, so it covers this pattern wherever it's used, not just today's
+  // known tiles. caretRangeFromPoint/caretPositionFromPoint find the exact
+  // character under the click regardless of user-select, then the word
+  // around it is extracted by hand.
+  function _wordAtPoint(x, y) {
+    var range = null;
+    try {
+      if (document.caretRangeFromPoint) {
+        range = document.caretRangeFromPoint(x, y);
+      } else if (document.caretPositionFromPoint) {
+        var pos = document.caretPositionFromPoint(x, y);
+        if (pos && pos.offsetNode) {
+          range = document.createRange();
+          range.setStart(pos.offsetNode, pos.offset);
+        }
+      }
+    } catch (e) { return ''; }
+    if (!range || !range.startContainer || range.startContainer.nodeType !== 3) return '';
+    var text = range.startContainer.textContent || '';
+    var offset = range.startOffset;
+    var isWordChar = function (c) { return /[A-Za-z'-]/.test(c); };
+    var start = offset, end = offset;
+    while (start > 0 && isWordChar(text.charAt(start - 1))) start--;
+    while (end < text.length && isWordChar(text.charAt(end))) end++;
+    return text.slice(start, end);
+  }
+
   function _extractDoubleClickedWord(e) {
     var target = e.target;
     var raw = '';
@@ -158,6 +193,9 @@
       // nothing (there's no text under an image to look up).
       if (sel && sel.rangeCount && target && target.contains(sel.anchorNode)) {
         raw = sel.toString();
+      }
+      if (!raw && target && getComputedStyle(target).userSelect === 'none') {
+        raw = _wordAtPoint(e.clientX, e.clientY);
       }
     }
     var word = raw.trim();

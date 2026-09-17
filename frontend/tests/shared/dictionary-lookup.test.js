@@ -62,3 +62,33 @@ test('renders the meaning as soon as Google Translate returns, before the slow c
   expect(document.getElementById('dict-body').textContent).toContain('con cáo');
   expect(document.getElementById('dict-body').textContent).not.toContain('Đang tra');
 });
+
+// Task 1/2, Speaking and Noun Phrase course drag-to-classify/reorder tiles
+// (.t1-chip, .t1-ord-row) set user-select:none so dragging doesn't also
+// start a text selection — but that also blocks the browser's own native
+// double-click word-selection, so window.getSelection() returns nothing
+// there and the popup used to silently never open. Regression test for the
+// caretRangeFromPoint fallback that fixes it.
+test('falls back to caretRangeFromPoint when the target has user-select:none (drag tiles)', async () => {
+  global.fetch = jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve([[['con cáo', 'fox', null, null, 1]]]) }));
+
+  window.setupDictionaryDouble('lookup-container', 'test');
+  // Selection API returns nothing — this is what really happens on a
+  // user-select:none element, since the browser never lets a selection
+  // form there in the first place.
+  window.getSelection = () => ({ rangeCount: 0, isCollapsed: true, toString: () => '' });
+  window.getComputedStyle = () => ({ userSelect: 'none' });
+
+  const el = document.getElementById('lookup-container');
+  const textNode = el.firstChild; // "the quick brown fox"
+  document.caretRangeFromPoint = () => ({
+    startContainer: textNode,
+    startOffset: textNode.textContent.indexOf('fox') + 1, // land mid-word
+  });
+
+  el.dispatchEvent(new window.MouseEvent('dblclick', { bubbles: true, clientX: 10, clientY: 10 }));
+  await flush();
+
+  expect(document.getElementById('dict-word').textContent).toBe('fox');
+  expect(document.getElementById('dict-body').textContent).toContain('con cáo');
+});

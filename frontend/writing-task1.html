@@ -304,7 +304,7 @@
 <script src="js/shared/toast.js?v=20260831"></script>
 <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260911para"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
 <script src="js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="js/shared/score-message.js?v=20260910"></script>
@@ -1174,7 +1174,16 @@
   // one registration here covers every view (overview/lesson/exercise/...).
   // Script/markup/CSS for this were already loaded on the page but never
   // actually wired up.
-  setupDictionaryDouble('app', 'writing-task1-course');
+  // Blocked while a timed "Kiểm tra" (isTest lesson) exercise is still
+  // running (timerMinutes set, not yet answered) — same rule task1-practice.
+  // html/task2-template.html already apply to their own exam screens; this
+  // course's timed tests had no such gate until now, so a student could
+  // double-click for the meaning of a word mid-timer during a self-check
+  // test, defeating the point of timing it.
+  setupDictionaryDouble('app', 'writing-task1-course', function () {
+    var ex = state.view === 'exercise' ? curEx() : null;
+    return !(ex && ex.timerMinutes && !state.answered);
+  });
 
   // ── init ────────────────────────────────────────────────────────
   if (window.AuthService && !window.AuthService.isLoggedIn()) location.href = '/login.html';

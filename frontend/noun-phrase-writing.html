@@ -271,7 +271,7 @@
 <script src="js/shared/toast.js?v=20260831"></script>
 <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260911para"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
 <script src="js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="js/shared/score-message.js?v=20260910"></script>
@@ -1010,7 +1010,13 @@
   // one registration here covers every view (overview/lesson/exercise/...).
   // Script/markup/CSS for this were already loaded on the page but never
   // actually wired up.
-  setupDictionaryDouble('app', 'noun-phrase-course');
+  // Blocked while a timed "Kiểm tra" (isTest lesson) exercise is still
+  // running (timerMinutes set, not yet answered) — see writing-task1.html's
+  // identical fix for why.
+  setupDictionaryDouble('app', 'noun-phrase-course', function () {
+    var ex = state.view === 'exercise' ? curEx() : null;
+    return !(ex && ex.timerMinutes && !state.answered);
+  });
 
   // ── init ────────────────────────────────────────────────────────
   if (window.AuthService && !window.AuthService.isLoggedIn()) location.href = '/login.html';
