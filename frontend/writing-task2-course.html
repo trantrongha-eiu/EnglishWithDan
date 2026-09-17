@@ -30,8 +30,10 @@
     .t1-hero .stats span { font-size:11px; font-weight:800; color:#0369a1; background:#e0f2fe; border-radius:20px; padding:4px 11px; }
     [data-theme="dark"] .t1-hero .stats span { background:#0c2536; color:#7dd3fc; }
     .t1-btn { display:inline-flex; align-items:center; gap:6px; background: var(--surface2,#f3f4f6); color: var(--text,#111827);
-      border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+      border: 1px solid var(--border,#e5e7eb); border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+      transition: border-color .15s, color .15s, transform .1s; }
     .t1-btn:hover { border-color: #0ea5e9; color: #0ea5e9; }
+    .t1-btn:active { transform: scale(.96); }
 
     .t1-premium { margin: 0 20px 16px; display:flex; align-items:center; gap:14px;
       background: linear-gradient(135deg, rgba(14,165,233,.10), rgba(2,132,199,.06));
@@ -79,8 +81,11 @@
     .t1-key ul { margin: 6px 0 0; padding-left: 20px; font-size: 12.5px; line-height: 1.7; color: var(--text2,#4b5563); }
 
     .t1-ex-list { display:flex; flex-direction: column; gap: 10px; padding: 10px 20px 20px; }
-    .t1-ex-card { display:flex; align-items:center; gap: 12px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 12px; padding: 13px 15px; cursor: pointer; background: var(--surface,#fff); }
-    .t1-ex-card:hover { border-color: #0ea5e9; background: #f0f9ff; }
+    .t1-ex-card { display:flex; align-items:center; gap: 12px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 12px; padding: 13px 15px; cursor: pointer; background: var(--surface,#fff);
+      transition: border-color .15s, background .15s, transform .15s, box-shadow .15s; }
+    .t1-ex-card:hover { border-color: #0ea5e9; background: #f0f9ff; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(14,165,233,.12); }
+    .t1-ex-card:active { transform: translateY(-2px) scale(.98); }
+    @media (prefers-reduced-motion: reduce) { .t1-ex-card:hover, .t1-ex-card:active { transform: none; } }
     .t1-ex-type { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing:.03em; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
     .t1-ex-card .nm { flex:1; min-width:0; font-size: 13.5px; font-weight: 700; }
     .t1-ex-done { color: #16a34a; }
@@ -167,9 +172,16 @@
       border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
     .t1-reset:hover { border-color:#0ea5e9; color:#0ea5e9; }
 
-    .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-submit { margin-top: 12px; width: 100%; background: linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+      transition: transform .12s, box-shadow .15s, filter .15s; }
+    .t1-submit:hover:not(:disabled) { filter: brightness(1.06); box-shadow: 0 6px 18px rgba(14,165,233,.35); }
+    .t1-submit:active:not(:disabled) { transform: scale(.98); }
     .t1-submit:disabled { opacity: .5; cursor: default; }
-    .t1-next { margin-top: 12px; width: 100%; background: #0ea5e9; color: #fff; border:none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .t1-next { margin-top: 12px; width: 100%; background: #0ea5e9; color: #fff; border:none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+      transition: transform .12s, filter .15s; }
+    .t1-next:hover { filter: brightness(1.08); }
+    .t1-next:active { transform: scale(.98); }
+    @media (prefers-reduced-motion: reduce) { .t1-submit, .t1-next { transition: none; } .t1-submit:active:not(:disabled), .t1-next:active { transform: none; } }
     .t1-wc { font-size: 12px; color: var(--text3,#9ca3af); margin-top: 6px; text-align: right; }
     .t1-timer { font-weight: 800; color: #0ea5e9; }
     .t1-timer.low { color: #ef4444; }
@@ -191,6 +203,13 @@
     .t1-hist-date { font-size: 11.5px; color: var(--text3,#9ca3af); margin-top: 2px; }
     .t1-hist-empty, .t1-hist-loading { text-align: center; color: var(--text3,#9ca3af); font-size: 13px; padding: 24px 0; }
 
+    /* Every view swap (overview → lesson → exercise → next exercise) — the
+       #app container gets this class re-added (with a forced reflow, see
+       render()) on every render() call, so it replays on every navigation
+       instead of just once on page load. */
+    @keyframes t1ViewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    #app.t1-view-anim { animation: t1ViewIn .28s cubic-bezier(.4,0,.2,1) both; }
+    @media (prefers-reduced-motion: reduce) { #app.t1-view-anim { animation: none; } }
     @keyframes t1fbIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
     @keyframes t1scorePop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
     .t1-fb { margin: 12px 20px 0; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border,#e5e7eb); background: var(--surface,#fff); animation: t1fbIn .34s cubic-bezier(.4,0,.2,1) both; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
@@ -395,6 +414,13 @@
     if (state.view === 'overview') { app.innerHTML = renderOverview(); bindOverview(); }
     else if (state.view === 'lesson') { app.innerHTML = renderLesson(); bindLesson(); }
     else if (state.view === 'exercise') { app.innerHTML = renderExercise(); bindExercise(); }
+    // Replay the entrance animation on every navigation, not just once on
+    // load — removing then re-adding the class (with a reflow in between,
+    // since a class re-added on the same tick is a no-op to the CSS engine)
+    // restarts the CSS animation each time.
+    app.classList.remove('t1-view-anim');
+    void app.offsetWidth;
+    app.classList.add('t1-view-anim');
   }
 
   // ── OVERVIEW ──────────────────────────────────────────────────────

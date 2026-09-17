@@ -25,8 +25,10 @@
       display:inline-flex; align-items:center; gap:6px; background: var(--surface2, #f3f4f6);
       color: var(--text, #111827); border: 1px solid var(--border, #e5e7eb); border-radius: 9px;
       padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+      transition: border-color .15s, color .15s, transform .1s;
     }
     .as-btn:hover { border-color: #6366f1; color: #6366f1; }
+    .as-btn:active { transform: scale(.96); }
 
     /* premium banner (mirrors task2-practice #premium-promo-banner) */
     .as-premium-banner {
@@ -139,8 +141,12 @@
     .as-submit {
       margin-top: 12px; width: 100%; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none;
       border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+      transition: transform .12s, box-shadow .15s, filter .15s;
     }
+    .as-submit:hover:not(:disabled) { filter: brightness(1.06); box-shadow: 0 6px 18px rgba(99,102,241,.35); }
+    .as-submit:active:not(:disabled) { transform: scale(.98); }
     .as-submit:disabled { opacity: .5; cursor: default; }
+    @media (prefers-reduced-motion: reduce) { .as-submit, .as-btn { transition: none; } .as-submit:active:not(:disabled), .as-btn:active { transform: none; } }
 
     .as-fb { margin: 12px 20px; border-radius: 14px; padding: 14px 16px; border: 1px solid var(--border, #e5e7eb); background: var(--surface, #fff); }
     .as-fb.ok { border-color: #86efac; background: #f0fdf4; }
@@ -190,6 +196,13 @@
     .as-acc.bad { color: #dc2626; }
     .as-spinner { width: 28px; height: 28px; border: 3px solid var(--surface2, #e5e7eb); border-top-color: #6366f1; border-radius: 50%; animation: as-spin .8s linear infinite; margin: 0 auto; }
     @keyframes as-spin { to { transform: rotate(360deg); } }
+    /* Every view swap (week grid → group list → practice) — the #app
+       container gets this class re-added (with a forced reflow, see
+       render()) on every render() call, so it replays on every navigation
+       instead of just once on page load. */
+    @keyframes as-viewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    #app.as-view-anim { animation: as-viewIn .28s cubic-bezier(.4,0,.2,1) both; }
+    @media (prefers-reduced-motion: reduce) { #app.as-view-anim { animation: none; } }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -360,6 +373,13 @@
     else if (state.view === 'practice') { app.innerHTML = renderPractice(); mountPractice(); }
     else if (state.view === 'exam')     { app.innerHTML = renderExam();   bindExam(); }
     else if (state.view === 'examResult') { app.innerHTML = renderExamResult(); bindExamResult(); }
+    // Replay the entrance animation on every navigation, not just once on
+    // load — removing then re-adding the class (with a reflow in between,
+    // since a class re-added on the same tick is a no-op to the CSS engine)
+    // restarts the CSS animation each time.
+    app.classList.remove('as-view-anim');
+    void app.offsetWidth;
+    app.classList.add('as-view-anim');
   }
 
   // ── WEEKS ──────────────────────────────────────────────────────────
