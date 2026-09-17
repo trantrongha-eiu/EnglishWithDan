@@ -449,6 +449,7 @@ button:focus-visible {
   padding: 14px 2px 2px;
   border-top: 1px solid #e5e7eb;
   margin-top: 6px;
+  flex-shrink: 0; /* see .topic-row's flex-shrink comment above */
 }
 .q-group-header:first-child { border-top: none; margin-top: 0; padding-top: 2px; }
 
@@ -562,6 +563,12 @@ button:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* .question-list is a flex column that scrolls (overflow-y:auto) once
+     content overflows it — but flex items shrink by default, so without
+     this, once enough rows exist to overflow the sidebar's bounded height,
+     flexbox squashes every row's height instead of scrolling, clipping
+     the text (see .q-group-header below for the same fix). */
+  flex-shrink: 0;
 }
 .topic-row:hover { background: #f3f4f6; }
 .topic-row.active { background: #ede9fe; color: #6d28d9; font-weight: 700; }
