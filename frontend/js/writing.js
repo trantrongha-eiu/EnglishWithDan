@@ -92,7 +92,11 @@ const state = {
   timerHidden: false,
   isSubmitting: false,
   currentAttemptId: null,    // set after submit
-  currentAttemptData: null   // for download
+  currentAttemptData: null,  // for download
+  // 'practice' (default) | 'simulation' — see reading-v2.js's identical
+  // field for the full rationale.
+  mode: 'practice',
+  simAttemptId: null,        // Test Simulation only — the placeholder WritingAttempt's _id from /api/writing/start
 };
 
 // Set when this page is step 3/4 of a full mock test (?mock=<id>&skill=writing)
@@ -105,12 +109,24 @@ let _mockWritingExamId = null;
 // ──────────────────────────────────────────────────────
 // Screen management
 // ──────────────────────────────────────────────────────
-// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
-// help during the live timed full-mock exam (#screen-exam) — writing.js
-// has no dict-lookup gate of its own to mirror (dictionary-lookup.js's
-// pw-* call sites here are all ungated, unlike task1/task2-practice), so
-// this checks the exam screen's own active/inactive state directly.
-window.__ewsExamActive = () => !!document.getElementById('screen-exam')?.classList.contains('active');
+// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — and, since
+// this feature shipped, dictionary-lookup.js's own double-click popup on the
+// exam screen too (see the setupDictionaryDouble('exam-left-panel'/
+// 'answer-textarea', ...) calls further down) — must not help while the
+// live full exam is genuinely exam-like: the 4-skill Full Mock Test
+// (_mockMode, always exam-like regardless of anything else) or a standalone
+// Test Simulation attempt (state.mode === 'simulation'). Practice mode
+// (state.mode === 'practice', the default) now allows both, even on the
+// full #screen-exam — previously this screen always blocked hints outright
+// with no mode concept at all; see reading-v2.js's identical gate for the
+// full Practice/Test Simulation rationale. Also covers the separate
+// per-task practice screen (#screen-practice-write) — its own
+// practiceState.mode, checked here too, since the sentence-lookup owl
+// reads this one global flag regardless of which screen is showing.
+window.__ewsExamActive = () => (
+  (!!document.getElementById('screen-exam')?.classList.contains('active') && (_mockMode || state.mode !== 'practice'))
+  || (!!document.getElementById('screen-practice-write')?.classList.contains('active') && practiceState.mode === 'simulation')
+);
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -316,18 +332,35 @@ async function _openDirectPracticeTask(taskType, taskId) {
 // reading-v2.js's startPractice() idiom; _handleQuotaError above is the
 // reactive fallback if the trial expires mid-session.)
 // ──────────────────────────────────────────────────────
-async function startExam() {
+async function startExam(mode) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
   }
+  // Full Mock Test (_mockMode) never shows this popup — it always runs
+  // 'practice' mode (it has its own, separate proctoring already armed by
+  // mock-test.js's own auto-start; see launchExam()'s guard below). A
+  // standalone "Bắt đầu làm bài" click always asks first.
+  if (!_mockMode && !mode && window.ExamModeSelect) {
+    window.ExamModeSelect.open({
+      skill: 'writing',
+      onPractice: () => startExam('practice'),
+      onSimulation: () => startExam('simulation'),
+    });
+    return;
+  }
+  mode = _mockMode ? 'practice' : (mode || 'practice');
+
   const btn = document.getElementById('btn-start');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
 
   try {
     const data = await apiFetch('/api/writing/start', {
       method: 'POST',
-      body: JSON.stringify(_mockMode && _mockWritingExamId ? { examId: _mockWritingExamId } : {})
+      body: JSON.stringify(Object.assign(
+        _mockMode && _mockWritingExamId ? { examId: _mockWritingExamId } : {},
+        { mode }
+      ))
     });
 
     if (!data.success) {
@@ -339,6 +372,8 @@ async function startExam() {
     state.answers = { 1: '', 2: '' };
     state.flags   = { 1: false, 2: false };
     state.currentTask = 1;
+    state.mode = data.mode || mode;
+    state.simAttemptId = data.attemptId || null;
     // null, not 0 — launchExam() below tells "fresh start" apart from "restored
     // exam that had already timed out at secondsLeft:0" by whether this is set
     // yet at all; 0 is a real, meaningful value for the latter case.
@@ -346,6 +381,10 @@ async function startExam() {
 
     launchExam();
   } catch (e) {
+    if (e && e.status === 429 && e.body && e.body.code === 'SIMULATION_COOLDOWN') {
+      showToast(e.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
+      return;
+    }
     if (!_handleQuotaError(e)) showToast(e.message, 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-pen"></i> Bắt đầu làm bài'; }
@@ -383,6 +422,35 @@ function launchExam() {
 
   showScreen('screen-exam');
   window.onbeforeunload = e => { if (state.exam) { e.preventDefault(); e.returnValue = ''; } };
+
+  // Dictionary lookup on the exam screen — previously never wired up at
+  // all here (only the separate practice screen's pw-* containers were),
+  // which incidentally blocked hints but for the wrong reason (no gate,
+  // not a deliberate one) and left Practice mode with no dictionary access
+  // on a full exam even though the feature spec requires it. Gated by the
+  // same window.__ewsExamActive() this page already exposes for the "tra
+  // câu" owl — idempotent (removes any previous listener), safe to call on
+  // every launchExam().
+  setupDictionaryDouble('exam-left-panel', 'writing-exam', () => !window.__ewsExamActive());
+  setupDictionaryDouble('answer-textarea', 'writing-exam', () => !window.__ewsExamActive());
+
+  // Full Mock Test (_mockMode) has its own proctoring already armed by
+  // mock-test.js's own auto-start — never double-arm both engines. Guarded
+  // against re-arming on every launchExam() call (restoreExam() calls this
+  // too, e.g. on a page refresh) since ExamProctor.start() is already a
+  // no-op while one is active, but isActive() lets this skip the (harmless
+  // but pointless) call entirely.
+  if (state.mode === 'simulation' && !_mockMode && window.ExamProctor && !window.ExamProctor.isActive()) {
+    window.ExamProctor.start({
+      skill: 'writing', attemptType: 'full', attemptId: state.simAttemptId,
+      onDisqualified: () => {
+        clearInterval(state.timerInterval);
+        window.onbeforeunload = null;
+        clearAutoSave();
+        location.href = 'writing.html';
+      },
+    });
+  }
 }
 
 // ──────────────────────────────────────────────────────
@@ -644,13 +712,17 @@ async function submitExam(statusOverride) {
         wordCount1:  wc1,
         wordCount2:  wc2,
         timeTaken,
-        status
+        status,
+        // Test Simulation only — undefined for Practice/Mock, so the
+        // backend takes the exact same insert path it always has.
+        attemptId: state.mode === 'simulation' ? state.simAttemptId : undefined,
       })
     });
     clearTimeout(_killer);
     overlay.style.display = 'none';
 
     if (data.success) {
+      if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
       clearAutoSave();
       state.currentAttemptId = data.attemptId;
       if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
@@ -1594,7 +1666,11 @@ const practiceState = {
   page: 1,
   wordCount: 0,
   stopwatchInterval: null,
-  seconds: 0
+  seconds: 0,
+  // 'practice' (default) | 'simulation' — see state.mode (the full-exam
+  // equivalent) for the full rationale.
+  mode: 'practice',
+  simAttemptId: null,
 };
 
 // ── Practice task list – pagination ─────────────────────
@@ -2163,13 +2239,54 @@ function filterWritingTasks(query) {
   _renderTaskPage();
 }
 
-function startPracticeTask(taskType, taskId, pushHistory = true) {
+function startPracticeTask(taskType, taskId, pushHistory = true, mode = null) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
   }
+  // Show the Practice/Test Simulation popup once per fresh start — not on
+  // a popstate/URL-resume (pushHistory=false) or the recursive call this
+  // popup's own callbacks make with `mode` already decided.
+  if (pushHistory && !mode && window.ExamModeSelect) {
+    window.ExamModeSelect.open({
+      skill: 'writing',
+      onPractice: () => startPracticeTask(taskType, taskId, pushHistory, 'practice'),
+      onSimulation: () => startPracticeTask(taskType, taskId, pushHistory, 'simulation'),
+    });
+    return;
+  }
+  mode = mode || 'practice';
+
   const task = practiceState.tasks.find(t => String(t._id) === String(taskId));
   if (!task) { showToast('Không tìm thấy đề bài', 'error'); return; }
+
+  _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, mode);
+}
+
+async function _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, mode) {
+  // Test Simulation mode: get a server-tracked attempt row up front (so a
+  // strike has something to attach to, and the ~20/40min per-task
+  // exam-condition timer is server-anchored) before entering the practice
+  // screen — see reading-v2.js's identical startPractice() flow.
+  let simAttemptId = null, simDurationSec = null;
+  if (mode === 'simulation') {
+    try {
+      const simRes = await apiFetch('/api/writing/practice/start-simulation', {
+        method: 'POST',
+        body: JSON.stringify({ taskType, taskId })
+      });
+      if (!simRes.success) { showToast(simRes.message || 'Không thể bắt đầu Test Simulation', 'error'); return; }
+      simAttemptId = simRes.attemptId;
+      simDurationSec = simRes.duration;
+    } catch (simErr) {
+      if (simErr.status === 429 && simErr.body && simErr.body.code === 'SIMULATION_COOLDOWN') {
+        showToast(simErr.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
+      } else {
+        showToast('Lỗi kết nối server', 'error');
+      }
+      return;
+    }
+  }
 
   if (pushHistory) {
     history.pushState({ screen: 'practice-write', taskType, taskId }, '',
@@ -2179,6 +2296,8 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
   practiceState.task      = task;
   practiceState.wordCount = 0;
   practiceState.seconds   = 0;
+  practiceState.mode        = mode;
+  practiceState.simAttemptId = simAttemptId;
 
   // Clear any stale draft when starting fresh — both the local copy AND the
   // server-synced one (discardPracticeAutoSave does the same pair). Missing
@@ -2189,11 +2308,23 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
   deleteDraftFromServer(taskType, taskId);
   renderPracticeWriteScreen(taskType, task);
   showScreen('screen-practice-write');
-  startPracticeStopwatch(0);
+  startPracticeStopwatch(0, mode === 'simulation' ? simDurationSec : null);
   window.onbeforeunload = e => {
     if (practiceState.task) { e.preventDefault(); e.returnValue = ''; }
   };
   setTimeout(() => { const ta = document.getElementById('pw-textarea'); if (ta) ta.focus(); }, 100);
+
+  if (mode === 'simulation' && window.ExamProctor) {
+    window.ExamProctor.start({
+      skill: 'writing', attemptType: 'practice', attemptId: simAttemptId,
+      onDisqualified: () => {
+        stopPracticeStopwatch();
+        window.onbeforeunload = null;
+        clearPracticeAutoSave(taskType, taskId);
+        location.href = 'writing.html';
+      },
+    });
+  }
 }
 
 function renderPracticeWriteScreen(taskType, task) {
@@ -2234,11 +2365,14 @@ function renderPracticeWriteScreen(taskType, task) {
   }
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
-  // exam — setupDictionaryDouble() is idempotent (removes any previous
-  // listener first), so calling it on every render here is safe.
-  setupDictionaryDouble('pw-left-panel', 'writing-practice');
-  setupDictionaryDouble('pw-textarea', 'writing-practice');
-  setupDictionaryDouble('pw-instructions-label', 'writing-practice');
+  // exam (that screen has its own separate wiring — see launchExam()) or a
+  // Test Simulation attempt on THIS screen — setupDictionaryDouble() is
+  // idempotent (removes any previous listener first), so calling it on
+  // every render here is safe.
+  const _pwDictGate = () => practiceState.mode !== 'simulation';
+  setupDictionaryDouble('pw-left-panel', 'writing-practice', _pwDictGate);
+  setupDictionaryDouble('pw-textarea', 'writing-practice', _pwDictGate);
+  setupDictionaryDouble('pw-instructions-label', 'writing-practice', _pwDictGate);
 
   // Show/hide sample toggle bar based on whether sample exists
   const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
@@ -2337,7 +2471,11 @@ function onPracticeInput() {
   _practiceSaveDebounce = setTimeout(savePracticeToStorage, 800);
 }
 
-function startPracticeStopwatch(startSeconds = 0) {
+// `limitSec` (Test Simulation only — undefined for Practice, exactly
+// today's behavior): once reached, auto-submits, same "time's up"
+// convention the full exam's own countdown and Reading practice's
+// identical addition use. Still a count-UP stopwatch (unchanged UI).
+function startPracticeStopwatch(startSeconds = 0, limitSec) {
   clearInterval(practiceState.stopwatchInterval);
   practiceState.seconds = startSeconds;
   // Render immediately
@@ -2352,6 +2490,11 @@ function startPracticeStopwatch(startSeconds = 0) {
     if (el) el.textContent = `${m}:${s}`;
     if (practiceState.seconds % 30 === 0) savePracticeToStorage();
     if (practiceState.seconds % 300 === 0) saveDraftToServer();
+    if (limitSec && practiceState.seconds >= limitSec) {
+      clearInterval(practiceState.stopwatchInterval);
+      showToast('Hết giờ Test Simulation — tự động nộp bài.', 'warning', 4000);
+      submitPractice();
+    }
   }, 1000);
 }
 
@@ -2406,12 +2549,16 @@ async function submitPractice() {
         taskType: practiceState.taskType,
         taskId: practiceState.task?._id,
         answer,
-        wordCount: practiceState.wordCount
+        wordCount: practiceState.wordCount,
+        // Test Simulation only — undefined for Practice, so the backend
+        // takes the exact same insert path it always has.
+        attemptId: practiceState.mode === 'simulation' ? practiceState.simAttemptId : undefined,
       })
     });
     clearTimeout(_killer);
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
+    if (practiceState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
     if (window.showBadgeUnlocked && d.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
     stopPracticeStopwatch();
     clearPracticeAutoSave(practiceState.taskType, practiceState.task?._id);

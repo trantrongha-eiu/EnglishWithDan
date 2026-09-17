@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const proctorSchema = require('./shared/proctorSchema');
 
 const PracticeAnswerSchema = new mongoose.Schema({
   questionNumber: Number,
@@ -21,6 +22,27 @@ const ReadingPracticeAttemptSchema = new mongoose.Schema({
 
   timeTaken:   { type: Number, default: 0 },
   submittedAt: { type: Date, default: Date.now },
+
+  // The fields below only apply to Test Simulation mode. Practice mode
+  // (mode:'practice', the default — every row before this field existed)
+  // never sets them; the /practice/save write path is otherwise completely
+  // unchanged (still a plain insert with no upfront row).
+  //
+  // 'in-progress' is written at POST /practice/start-simulation, before the
+  // student has answered anything — so a strike (examSimulationService.
+  // recordViolation) has a row to attach to, matching TestAttempt's
+  // (full-test) existing start-then-submit shape. 'disqualified' = 5+
+  // strikes voided the run.
+  status: { type: String, enum: ['in-progress', 'completed', 'disqualified'], default: 'completed' },
+  mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  proctor: { type: proctorSchema, default: () => ({}) },
+  // Simulation-only exam-condition timer — a single passage has no official
+  // IELTS time limit, so this is the platform's own ~20min/passage
+  // convention (examSimulationService.READING_PRACTICE_DURATION_SEC),
+  // snapshotted here rather than recomputed so a later constant change
+  // never retroactively changes what an already-started run enforced.
+  startTime: { type: Date },
+  duration: { type: Number },
 
   // BUG-A07: idempotency key, one UUID per practice attempt on the client.
   // /practice/save is fire-and-forget from the review screen — a double

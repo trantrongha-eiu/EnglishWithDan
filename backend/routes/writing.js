@@ -65,6 +65,11 @@ router.post('/submit', auth, fullAccess, requireRewriteComplete, examSubmitLimit
 router.get('/practice/tasks', auth, fullAccess, writingController.listPracticeTasks);
 router.get('/practice/task', auth, fullAccess, writingController.getPracticeTask);
 router.post('/practice/submit', auth, fullAccess, requireRewriteComplete, practiceSubmitLimiter, writingController.submitPractice);
+
+// POST /api/writing/practice/start-simulation — Test Simulation mode only,
+// see writingService.startPracticeSimulation. Same gates as the full exam's
+// own /start.
+router.post('/practice/start-simulation', auth, fullAccess, writingController.startPracticeSimulation);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // ══════════════════════════════════════════════════

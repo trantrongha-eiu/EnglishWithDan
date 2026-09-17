@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { bandScoreTable } = require('../utils/bandScore');
+const proctorSchema = require('./shared/proctorSchema');
 
 // ── Per-question answer record ────────────────────────────────────────────────
 const ListeningAnswerSchema = new mongoose.Schema({
@@ -53,9 +54,14 @@ const ListeningAttemptSchema = new mongoose.Schema({
     // was persisted until /submit, so an abandoned mock test left zero
     // trace anywhere, including admin). Matches TestAttempt's (Reading)
     // enum/default exactly.
-    enum: ['in-progress', 'completed', 'timeout'],
+    // 'disqualified' = Test Simulation mode only — see TestAttempt's
+    // identical addition for why.
+    enum: ['in-progress', 'completed', 'timeout', 'disqualified'],
     default: 'in-progress'
-  }
+  },
+
+  mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  proctor: { type: proctorSchema, default: () => ({}) }
 }, { timestamps: true });
 
 // ── Band score IELTS Listening (thang chính thức) ────────────────────────────

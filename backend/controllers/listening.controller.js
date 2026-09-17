@@ -313,10 +313,17 @@ exports.listStudentTests = async (req, res) => {
 
 exports.startTest = async (req, res) => {
   try {
-    const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id);
+    const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id, req.body && req.body.mode);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
     res.json({ success: true, test: protectListeningAudio(test, req.user._id) });
-  } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+  } catch (err) {
+    // Test Simulation cooldown after a 5-strike disqualification — same
+    // convention mockTest.controller.js's own cooldown handling uses.
+    if (err && err.statusCode === 429 && err.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: err.cooldownSeconds, message: err.message });
+    }
+    console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
 };
 
 exports.submitTest = async (req, res) => {
@@ -367,15 +374,38 @@ exports.getHistoryDetail = async (req, res) => {
 // ── Practice attempts ──────────────────────────────────────────────────────
 exports.savePractice = async (req, res) => {
   try {
-    const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey } = req.body;
+    const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId } = req.body;
     if (!sectionId || !Array.isArray(answers)) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey }, req.user._id);
-    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId }, req.user._id);
+    if (!result) {
+      // null means either "section not found" or — only possible when the
+      // request carried a Simulation attemptId — "disqualified/already
+      // submitted" (see listeningService.savePractice's update branch).
+      if (attemptId) return res.status(409).json({ success: false, message: 'Bài làm này đã bị huỷ hoặc đã nộp trước đó.' });
+      return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    }
     res.json({ success: true, ...result });
   } catch (err) {
     console.error('[Listening practice save]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// POST /api/listening/practice/start-simulation   body: { sectionId, sectionTitle, partNumber }
+exports.startPracticeSimulation = async (req, res) => {
+  try {
+    const { sectionId, sectionTitle, partNumber } = req.body;
+    if (!sectionId) return res.status(400).json({ success: false, message: 'Thiếu sectionId' });
+    const result = await listeningService.startPracticeSimulation(sectionId, sectionTitle, partNumber, req.user._id);
+    if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.status(201).json({ success: true, attemptId: result.attemptId });
+  } catch (err) {
+    if (err && err.statusCode === 429 && err.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: err.cooldownSeconds, message: err.message });
+    }
+    console.error('[Listening practice start-simulation]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };

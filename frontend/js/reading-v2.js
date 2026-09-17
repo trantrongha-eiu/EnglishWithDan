@@ -37,6 +37,11 @@ const state = {
   isReview: false,
   submitted: false,
   reviewData: null,
+  // 'practice' (default, today's only behavior) | 'simulation' (Test
+  // Simulation mode — dictionary/lookup blocked, ExamProctor armed). Set by
+  // startExam()/_enterPracticeScreen() from the server's own echoed mode,
+  // never trusted from anywhere else client-side.
+  mode: 'practice',
 };
 
 let allTests = [];
@@ -216,7 +221,13 @@ function _saveRetryHighlightsToStorage() {
 }
 
 /* ── Stopwatch helpers ──────────────────────────────────────────────── */
-function _startPracticeTimer(totalQ) {
+// `limitSec` (Test Simulation only — undefined/null for Practice, exactly
+// today's behavior): once elapsed reaches this, auto-submits the attempt,
+// same "time's up" convention the full-test exam's own countdown already
+// uses. Still shown as a count-UP stopwatch (unchanged UI) rather than a
+// new countdown widget — the enforcement is what makes this exam-condition
+// timing, not which direction the display counts.
+function _startPracticeTimer(totalQ, limitSec) {
   _practiceStartTime = Date.now();
   _practiceElapsedSec = 0;
   _clearPracticeTimer();
@@ -241,6 +252,18 @@ function _startPracticeTimer(totalQ) {
       swEl.className = secs >= 1200 ? 'practice-stopwatch sw-slow'
                      : secs >= 600  ? 'practice-stopwatch sw-medium'
                      : 'practice-stopwatch';
+    }
+    // Bypasses submitRetry()'s "answer at least 1 question" guard and
+    // calls _doSubmitRetry() directly — same unconditional-submit-at-
+    // timeout convention the full-test exam's own countdown uses
+    // (startTimer() above calls submitExam() with no such guard either).
+    // The `secs >= limitSec` check would otherwise refire every tick once
+    // past the threshold; _clearPracticeTimer() makes this genuinely
+    // one-shot.
+    if (limitSec && secs >= limitSec) {
+      _clearPracticeTimer();
+      showVocabToast('Hết giờ Test Simulation — tự động nộp bài.', 'warning', 4000);
+      _doSubmitRetry().catch(e => { console.error('[_startPracticeTimer timeout]', e); showVocabToast('Lỗi hiển thị kết quả: ' + e.message, 'error'); });
     }
   }, 1000);
 }
@@ -715,16 +738,41 @@ function goToStartTest(testId, testName) {
   state.testId = testId;
   state.testName = testName;
   history.pushState({ screen: 'starting', testId, testName }, '', `?testId=${testId}`);
-  _doStartExam(testId);
+  // Full Mock Test (_mockMode) never reaches this function at all — it
+  // jumps straight into _doStartExam() from the mock-detection block above,
+  // bypassing the list screen entirely — so this popup only ever shows for
+  // a standalone student-initiated start, exactly where it belongs.
+  if (window.ExamModeSelect) {
+    window.ExamModeSelect.open({
+      skill: 'reading',
+      onPractice: () => _doStartExam(testId, 'practice'),
+      onSimulation: () => _doStartExam(testId, 'simulation'),
+    });
+  } else {
+    _doStartExam(testId, 'practice');
+  }
 }
 
-async function _doStartExam(testId) {
+// Reading's own equivalent of the 4-skill Mock Test's disqualify handoff
+// (mock-test.js's _disqualify redirects to dashboard.html) — there's no
+// dashboard hand-off needed for a standalone Simulation attempt, so this
+// just abandons the exam UI and reloads the page fresh once
+// ExamProctor's own full-screen notice has had time to be read.
+function _onSimulationDisqualified() {
+  clearInterval(state.timer);
+  state.submitted = true;
+  window.onbeforeunload = null;
+  clearExamStorage();
+  location.href = 'reading.html';
+}
+
+async function _doStartExam(testId, mode = 'practice') {
   const btn = document.querySelector(`#tcard-${testId} .btn-do-test`);
   if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
   try {
     const res = await apiFetch(`/api/reading/start${_mockMode ? '?purpose=mocktest' : ''}`, {
       method: 'POST',
-      body: JSON.stringify({ testId })
+      body: JSON.stringify({ testId, mode })
     });
     if (!res.success) {
       showVocabToast(res.message || 'Không thể bắt đầu bài thi', 'error');
@@ -736,6 +784,11 @@ async function _doStartExam(testId) {
   } catch (e) {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+    // Test Simulation cooldown after a 5-strike disqualification.
+    if (e.status === 429 && e.body && e.body.code === 'SIMULATION_COOLDOWN') {
+      showVocabToast(e.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error', 6000);
+      return;
+    }
     // Trial expired between the proactive hasPremiumAccess() check and this
     // request — show the paywall, not a generic "Lỗi kết nối server".
     if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
@@ -836,6 +889,12 @@ function saveExamToStorage() {
       answers: state.answers,
       secondsLeft: state.secondsLeft,
       mockId: mockId,
+      // Test Simulation mode — without this, a page refresh mid-Simulation
+      // would silently fall back to state's default 'practice' on resume
+      // (a fresh script load re-initializes state from scratch), wrongly
+      // re-enabling dictionary lookup and never re-arming the proctor. See
+      // writing-autosave.js's identical fix for the full rationale.
+      mode: state.mode,
       savedAt: Date.now()
     }));
     const lbl = document.getElementById('exam-autosave');
@@ -915,12 +974,24 @@ function resumeExam() {
   state.currentPassageIdx = 0;
   state.isReview = false;
   state.submitted = false;
+  // Restore the mode the attempt actually started as — pre-existing saved
+  // payloads (from before this field existed) have no `mode` key, so this
+  // correctly falls back to 'practice', matching their real mode.
+  state.mode = data.mode || 'practice';
 
   document.getElementById('exam-title').textContent = state.testName;
   renderPassageTabs('toolbar-passage-tabs', false);
   switchPassage(0);
   buildQNavFooter();
   startTimer();
+  _updateExamToolbarForMode();
+
+  if (state.mode === 'simulation' && !_mockMode && window.ExamProctor && !window.ExamProctor.isActive()) {
+    window.ExamProctor.start({
+      skill: 'reading', attemptType: 'full', attemptId: state.attemptId,
+      onDisqualified: _onSimulationDisqualified,
+    });
+  }
   setTool('none'); // exam screen has no dict/highlight toolbar — clear any tool left active from a prior review/practice session
   showScreen('exam');
   window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
@@ -956,6 +1027,12 @@ function savePracticeToStorage() {
       category:  _retryState.practiceCategory,
       title:     passage.title || '',
       answers:   state.answers,
+      // Test Simulation mode — see saveExamToStorage()'s identical fix for
+      // the full rationale (without this, resumePractice() below would
+      // silently reopen a Simulation attempt as Practice).
+      mode:          _retryState.mode,
+      simAttemptId:  _retryState.simAttemptId,
+      simDurationSec: _retryState.simDurationSec,
       savedAt:   Date.now()
     }));
   } catch { /* quota – ignore */ }
@@ -1017,7 +1094,7 @@ async function resumePractice() {
       '',
       `?passageId=${data.passageId}&category=${encodeURIComponent(data.category)}`
     );
-    _enterPracticeScreen(res.passage, data.category, data.passageId);
+    _enterPracticeScreen(res.passage, data.category, data.passageId, data.mode || 'practice', data.simAttemptId || null, data.simDurationSec || null);
     const savedAnswers = data.answers || {};
     if (Object.keys(savedAnswers).length > 0) {
       state.answers = savedAnswers;
@@ -1362,10 +1439,23 @@ async function loadPracticePassages(category, tabEl) {
   }
 }
 
-async function startPractice(passageId, category, _silent = false) {
+async function startPractice(passageId, category, _silent = false, mode = null) {
   if (!window.AuthService.hasPremiumAccess()) {
     openUpgradeModal(); return;
   }
+
+  // Show the Practice/Test Simulation popup once per fresh start — not on
+  // a popstate/URL-resume (_silent) or on the recursive call this popup's
+  // own callbacks make with `mode` already decided.
+  if (!_silent && !mode && window.ExamModeSelect) {
+    window.ExamModeSelect.open({
+      skill: 'reading',
+      onPractice: () => startPractice(passageId, category, _silent, 'practice'),
+      onSimulation: () => startPractice(passageId, category, _silent, 'simulation'),
+    });
+    return;
+  }
+  mode = mode || 'practice';
 
   _practiceCategory = category;
 
@@ -1378,6 +1468,30 @@ async function startPractice(passageId, category, _silent = false) {
   try {
     const res = await apiFetch(`/api/reading/practice/by-id/${passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
+
+    // Test Simulation mode: get a server-tracked attempt row up front (so a
+    // strike has something to attach to, and the ~20min exam-condition
+    // timer is server-anchored) before entering the practice screen at all.
+    let simAttemptId = null, simDurationSec = null;
+    if (mode === 'simulation') {
+      try {
+        const simRes = await apiFetch('/api/reading/practice/start-simulation', {
+          method: 'POST',
+          body: JSON.stringify({ passageId, passageTitle: res.passage.title || '', category })
+        });
+        if (!simRes.success) { showVocabToast(simRes.message || 'Không thể bắt đầu Test Simulation', 'error'); return; }
+        simAttemptId = simRes.attemptId;
+        simDurationSec = simRes.duration;
+      } catch (simErr) {
+        if (simErr.status === 429 && simErr.body && simErr.body.code === 'SIMULATION_COOLDOWN') {
+          showVocabToast(simErr.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error', 6000);
+          return;
+        }
+        showVocabToast('Lỗi kết nối server', 'error');
+        return;
+      }
+    }
+
     if (!_silent) {
       history.pushState(
         { screen: 'practice', passageId, category },
@@ -1385,7 +1499,7 @@ async function startPractice(passageId, category, _silent = false) {
         `?passageId=${passageId}&category=${encodeURIComponent(category)}`
       );
     }
-    _enterPracticeScreen(res.passage, category, passageId);
+    _enterPracticeScreen(res.passage, category, passageId, mode, simAttemptId, simDurationSec);
   } catch (e) {
     if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
     if (e.body && e.body.code === 'REVIEW_REQUIRED') {
@@ -1400,7 +1514,7 @@ async function startPractice(passageId, category, _silent = false) {
   }
 }
 
-function _enterPracticeScreen(passage, category, passageId) {
+function _enterPracticeScreen(passage, category, passageId, mode = 'practice', simAttemptId = null, simDurationSec = null) {
   _practiceMode = true;
   // Stop any running exam timer to prevent practice answers contaminating exam localStorage
   if (state.timer && state.attemptId && !state.submitted) {
@@ -1434,12 +1548,29 @@ function _enterPracticeScreen(passage, category, passageId) {
     isPractice: true,
     practiceCategory: category,
     practicePassageId: passageId || passage._id,
+    // Test Simulation only — practice mode leaves these null/undefined,
+    // same as before this field existed.
+    mode,
+    simAttemptId,
+    simDurationSec,
   };
 
   state.passages = [cleanPassage];
   state.answers = {};
   state.isReview = false;
   state.currentPassageIdx = 0;
+
+  if (mode === 'simulation' && window.ExamProctor) {
+    window.ExamProctor.start({
+      skill: 'reading', attemptType: 'practice', attemptId: simAttemptId,
+      onDisqualified: () => {
+        clearPracticeStorage();
+        window.onbeforeunload = null;
+        _clearPracticeTimer();
+        location.href = 'reading.html';
+      },
+    });
+  }
 
   const catLabel = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
   const label = passage.title || catLabel[category] || 'Passage';
@@ -1475,7 +1606,7 @@ function _enterPracticeScreen(passage, category, passageId) {
 
   // Start stopwatch + progress HUD (practice mode only)
   const totalQ = getAllQuestionsFromPassage(cleanPassage).length;
-  _startPracticeTimer(totalQ);
+  _startPracticeTimer(totalQ, mode === 'simulation' ? simDurationSec : null);
 
   // Save initial state immediately and guard against accidental navigation
   savePracticeToStorage();
@@ -1518,16 +1649,28 @@ function startExam(data) {
   state.currentPassageIdx = 0;
   state.isReview = false;
   state.submitted = false;
+  state.mode = data.mode || 'practice';
 
   document.getElementById('exam-title').textContent = state.testName;
   renderPassageTabs('toolbar-passage-tabs', false);
   switchPassage(0);
   buildQNavFooter();
   startTimer();
-  setTool('none'); // exam screen has no dict/highlight toolbar — clear any tool left active from a prior review/practice session
+  setTool('none'); // clear any tool left active from a prior review/practice session
+  _updateExamToolbarForMode();
   showScreen('exam');
   saveExamToStorage();         // Save initial state immediately
   window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
+
+  // Full Mock Test (_mockMode) has its own proctoring already armed by
+  // mock-test.js's own auto-start — never double-arm both engines on the
+  // same page.
+  if (state.mode === 'simulation' && !_mockMode && window.ExamProctor) {
+    window.ExamProctor.start({
+      skill: 'reading', attemptType: 'full', attemptId: state.attemptId,
+      onDisqualified: _onSimulationDisqualified,
+    });
+  }
 }
 
 function renderPassageTabs(containerId, isReview) {
@@ -2848,6 +2991,7 @@ async function submitExam() {
     clearTimeout(submitTimeout);
     hideOverlay();
     if (!res.success) { showVocabToast('Lỗi nộp bài: ' + res.message); return; }
+    if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
     clearExamStorage();
     _testsCache = null; // force a fresh /api/reading/tests fetch next time so the new lastAttempt badge isn't stale
     if (window.showBadgeUnlocked && res.result?.newlyUnlocked?.length) window.showBadgeUnlocked(res.result.newlyUnlocked);
@@ -2891,6 +3035,7 @@ async function submitExam() {
     // here waiting, so checkResumeExam() offers it back to retry submit.
     if (e && e.status === 401) {
       if (window.MockTest && window.MockTest.stopProctor) window.MockTest.stopProctor();
+      if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
       (window.showToast || showVocabToast)('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
       if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
       state.submitted = false;
@@ -3493,7 +3638,11 @@ async function _doSubmitRetry() {
 
   // Stop stopwatch, build time display for practice mode
   const fromPractice = _retryState?.isPractice;
-  if (fromPractice) { clearPracticeStorage(); window.onbeforeunload = null; }
+  if (fromPractice) {
+    clearPracticeStorage();
+    window.onbeforeunload = null;
+    if (_retryState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+  }
   let elapsed = 0;
   let timeLine = '';
   if (fromPractice) {
@@ -3533,7 +3682,10 @@ async function _doSubmitRetry() {
         correctCount: correct,
         wrongCount:   wrong,
         skippedCount: skipped,
-        timeTaken:    elapsed
+        timeTaken:    elapsed,
+        // Test Simulation only — undefined for Practice, so the backend
+        // takes the exact same plain-insert path it always has.
+        attemptId: _retryState.mode === 'simulation' ? _retryState.simAttemptId : undefined,
       })
     }).catch(() => {
       showVocabToast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
@@ -3858,14 +4010,37 @@ function fetchWithTimeout(url, ms = 7000) {
   return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
 }
 
-setupDictionaryDouble('pageBody', 'reading',
-  () => state.tool === 'dict' && (state.isReview || _practiceMode || _retryState));
+// Individual-passage practice (_practiceMode/_retryState) is now ALSO
+// gated by mode: _retryState.mode is 'simulation' only when
+// _enterPracticeScreen() was entered via the Test Simulation choice (see
+// startPractice()) — undefined/'practice' for every other case (real
+// practice, and "retry wrong questions from a reviewed exam", which was
+// never a timed/monitored flow and stays hint-enabled exactly as before).
+// `!_mockMode && state.mode === 'practice'` extends this to the FULL-TEST
+// exam screen too (previously that screen always blocked hints outright,
+// full stop — the Practice/Test Simulation split now makes that
+// conditional: per the feature spec, Practice mode allows dictionary/
+// translate even for a full test, Test Simulation does not). Excludes the
+// 4-skill Full Mock Test (_mockMode) explicitly — that flow always starts
+// Reading with mode defaulted to 'practice' server-side (it never offers
+// this mode-select popup at all, see goToStartTest), so without this
+// exclusion the Mock Test's Reading sitting would wrongly gain dictionary
+// access it never had and must never have.
+setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
+  state.isReview
+  || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
+  || (!_mockMode && state.mode === 'practice')
+));
 
 // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
-// help during a live timed attempt — same review/practice/retry condition
-// as the dictionary-lookup gate above, just without that feature's own
-// "Dict tool toggled on" requirement (the icon isn't tied to that toolbar).
-window.__ewsExamActive = () => !(state.isReview || _practiceMode || _retryState);
+// help during a live timed attempt — same condition as the dictionary-
+// lookup gate above, just without that feature's own "Dict tool toggled
+// on" requirement (the icon isn't tied to that toolbar).
+window.__ewsExamActive = () => !(
+  state.isReview
+  || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
+  || (!_mockMode && state.mode === 'practice')
+);
 
 /* ══════════════════════════════════════════════════════════════════════
    TRANSLATE POPUP  (T key / toolbar button)
@@ -3873,7 +4048,11 @@ window.__ewsExamActive = () => !(state.isReview || _practiceMode || _retryState)
    so window.getSelection() works the same for both code paths.
 ══════════════════════════════════════════════════════════════════════ */
 async function translateSelected() {
-  if (!state.isReview && !_practiceMode && !_retryState) return;
+  // Same Practice/Test Simulation gating as the dictionary-lookup and
+  // "tra câu" gates above (window.__ewsExamActive) — this toolbar "T"
+  // translate popup is the same class of hint tool and must be blocked
+  // under the identical conditions.
+  if (window.__ewsExamActive && window.__ewsExamActive()) return;
 
   const sel = window.getSelection();
   const text = sel ? sel.toString().trim() : '';
@@ -3947,6 +4126,19 @@ document.addEventListener('mousedown', e => {
 /* ══════════════════════════════════════════════════════════════════════
    HIGHLIGHT
 ══════════════════════════════════════════════════════════════════════ */
+// The exam screen's Tra từ/Dịch toolbar buttons only exist to be clickable
+// when they'd actually work — hidden outright during Test Simulation and
+// the 4-skill Full Mock Test (same condition setupDictionaryDouble's own
+// gate uses, window.__ewsExamActive), shown for a Practice-mode full test.
+// Called from startExam()/resumeExam() after state.mode is set.
+function _updateExamToolbarForMode() {
+  const show = !_mockMode && state.mode === 'practice';
+  const dictBtn = document.getElementById('tool-dict-exam');
+  const translateBtn = document.getElementById('tool-translate-exam');
+  if (dictBtn) dictBtn.style.display = show ? '' : 'none';
+  if (translateBtn) translateBtn.style.display = show ? '' : 'none';
+}
+
 function setTool(tool) {
   const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
   state.tool = next;
@@ -3954,7 +4146,7 @@ function setTool(tool) {
     const b = document.getElementById(id);
     if (b) b.classList.toggle('active', next === 'highlight');
   });
-  ['tool-dict', 'tool-dict-rt'].forEach(id => {
+  ['tool-dict', 'tool-dict-rt', 'tool-dict-exam'].forEach(id => {
     const td = document.getElementById(id);
     if (td) td.classList.toggle('active', next === 'dict');
   });

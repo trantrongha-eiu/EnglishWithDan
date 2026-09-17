@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const proctorSchema = require('./shared/proctorSchema');
 
 const PracticeAnswerSchema = new mongoose.Schema({
   questionNumber: Number,
@@ -21,6 +22,16 @@ const ListeningPracticeAttemptSchema = new mongoose.Schema({
 
   timeTaken:   { type: Number, default: 0 },
   submittedAt: { type: Date, default: Date.now },
+
+  // Test Simulation mode only — see ReadingPracticeAttempt.js's identical
+  // addition for the full rationale. No separate duration/startTime field
+  // here: a single-play, no-pause/no-rewind audio section already has its
+  // own natural time limit (its length), so unlike Reading practice there's
+  // no artificial countdown to snapshot — status/mode/proctor exist purely
+  // so a strike has an in-progress row to attach to.
+  status: { type: String, enum: ['in-progress', 'completed', 'disqualified'], default: 'completed' },
+  mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  proctor: { type: proctorSchema, default: () => ({}) },
 
   // BUG-A07 — see ReadingPracticeAttempt.js for the full rationale. One UUID
   // per practice attempt on the client; when present the service upserts on

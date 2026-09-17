@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { bandScoreTable } = require('../utils/bandScore');
+const proctorSchema = require('./shared/proctorSchema');
 
 const AnswerSchema = new mongoose.Schema({
   questionNumber: Number,
@@ -52,9 +53,19 @@ const TestAttemptSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['in-progress', 'completed', 'timeout'],
+    // 'disqualified' = Test Simulation mode only — the student left the exam
+    // screen 5+ times (examSimulationService.recordViolation) and the run
+    // was voided; see `proctor` below and User.simulationCooldownUntil.
+    enum: ['in-progress', 'completed', 'timeout', 'disqualified'],
     default: 'in-progress'
-  }
+  },
+
+  // 'practice' (default, today's only behavior — dictionary/translation
+  // allowed, no monitoring) vs 'simulation' (Test Simulation mode — no
+  // hints, proctor armed, 5 strikes voids the run). See
+  // backend/services/examSimulationService.js.
+  mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  proctor: { type: proctorSchema, default: () => ({}) }
 }, { timestamps: true });
 
 // ─── Indexes ───────────────────────────────────────────────────────────────

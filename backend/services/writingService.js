@@ -17,6 +17,7 @@ const WritingDraft = require('../models/WritingDraft');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const examSimulationService = require('./examSimulationService');
 
 async function randomDoc(Model) {
   const count = await Model.countDocuments({ isActive: true });
@@ -44,7 +45,18 @@ function buildTask2Snapshot(t2) {
 // start and passes it here so the Writing sitting opens exactly that exam
 // instead of "the newest one". Ignored (falls back to default) if the id
 // doesn't resolve to an active exam.
-async function startExam(examId) {
+//
+// `userId`/`mode`: Test Simulation only. Unlike Reading/Listening's full
+// test, a standalone Writing exam persists nothing at all until /submit —
+// Simulation needs a row to exist from the START (a strike has to attach
+// to something, and the placeholder makes an abandoned/voided run visible
+// instead of leaving no trace, same reasoning as Reading/Listening's own
+// start-time persistence). `attemptId` is returned only when mode is
+// 'simulation'; submitExam() below must be given it back so it updates
+// this same row instead of creating a second one.
+async function startExam(examId, userId, mode = 'practice') {
+  if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
+
   const [task1, task2] = await Promise.all([randomDoc(WritingTask1), randomDoc(WritingTask2)]);
   if (!task1) return { status: 'no_task1' };
   if (!task2) return { status: 'no_task2' };
@@ -54,7 +66,18 @@ async function startExam(examId) {
   if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 }).lean();
   if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
 
-  return { status: 'ok', exam: { _id: exam._id, name: exam.name, duration: exam.duration, task1, task2 } };
+  let attemptId = null;
+  if (mode === 'simulation') {
+    const placeholder = await WritingAttempt.create({
+      userId, examId: exam._id, examName: exam.name,
+      task1Id: task1._id, task2Id: task2._id,
+      task1Snapshot: buildTask1Snapshot(task1), task2Snapshot: buildTask2Snapshot(task2),
+      status: 'in-progress', mode: 'simulation',
+    });
+    attemptId = placeholder._id;
+  }
+
+  return { status: 'ok', exam: { _id: exam._id, name: exam.name, duration: exam.duration, task1, task2 }, attemptId, mode };
 }
 
 // `user` is the full req.user Mongoose document (not just an id) — needed
@@ -62,7 +85,12 @@ async function startExam(examId) {
 async function submitExam(user, body) {
   const {
     examId, task1Id, task2Id, task1Answer = '', task2Answer = '',
-    timeTaken = 0, status = 'completed'
+    timeTaken = 0, status = 'completed',
+    // Test Simulation mode only — the placeholder row's _id from
+    // startExam(). When present this UPDATES that same in-progress row
+    // instead of inserting a second one. Practice/exam mode never sends
+    // this, so the branch below is unreachable for them.
+    attemptId: simulationAttemptId
   } = body; // wordCount1/2 from the client are ignored — recomputed below
 
   // exam/task1/task2 lookups are independent — run in parallel. (In the rare
@@ -76,16 +104,35 @@ async function submitExam(user, body) {
   ]);
   if (!exam) return null;
 
-  const attempt = new WritingAttempt({
-    userId: user._id, examId, examName: exam.name,
-    task1Id: task1Id || undefined, task2Id: task2Id || undefined,
-    task1Snapshot: buildTask1Snapshot(t1), task2Snapshot: buildTask2Snapshot(t2),
-    task1Answer, task2Answer,
-    wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
-    timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
-    submittedAt: new Date(), status
-  });
-  await attempt.save();
+  let attempt;
+  if (simulationAttemptId) {
+    // Atomic claim, same pattern as Reading/Listening's own Simulation
+    // submit path — a late strike report flipping status to 'disqualified'
+    // right before this lands makes the update match nothing, so a voided
+    // run can't still be submitted for a real result.
+    attempt = await WritingAttempt.findOneAndUpdate(
+      { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
+      {
+        task1Answer, task2Answer,
+        wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
+        timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
+        submittedAt: new Date(), status
+      },
+      { new: true }
+    );
+    if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+  } else {
+    attempt = new WritingAttempt({
+      userId: user._id, examId, examName: exam.name,
+      task1Id: task1Id || undefined, task2Id: task2Id || undefined,
+      task1Snapshot: buildTask1Snapshot(t1), task2Snapshot: buildTask2Snapshot(t2),
+      task1Answer, task2Answer,
+      wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
+      timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
+      submittedAt: new Date(), status
+    });
+    await attempt.save();
+  }
 
   // Writing (unlike Reading/Listening) isn't auto-graded at submission time
   // — a teacher may not score it for days — so there's no accuracy to tier
@@ -118,28 +165,66 @@ async function getPracticeTask(taskType) {
   return randomDoc(Model);
 }
 
-async function submitPractice(user, { taskType, taskId, answer }) {
+// Test Simulation mode only — per-task practice otherwise never persists
+// anything until submitPractice() below. See startExam()'s identical
+// reasoning. `duration` (seconds) is the IELTS-standard per-task time
+// budget (Task 1 = 20min, Task 2 = 40min) — informational for the client's
+// countdown; the server doesn't itself enforce a hard cutoff beyond the
+// attempt existing (same as every other exam timer on this platform, all
+// of which are client-driven with the server as the source of truth for
+// strikes/disqualification, not for auto-submitting on timeout).
+async function startPracticeSimulation(user, { taskType, taskId }) {
+  await examSimulationService.assertNotOnCooldown(user._id);
+  const tNum = taskType;
+  const Model = tNum === 1 ? WritingTask1 : WritingTask2;
+  const task = taskId ? await Model.findById(taskId).lean() : null;
+  if (!task) return { status: 'not_found' };
+
+  const attempt = await WritingAttempt.create({
+    userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum} (Simulation)`,
+    status: 'in-progress', mode: 'simulation',
+    ...(tNum === 1
+      ? { task1Id: taskId, task1Snapshot: buildTask1Snapshot(task) }
+      : { task2Id: taskId, task2Snapshot: buildTask2Snapshot(task) }),
+  });
+  const duration = examSimulationService.WRITING_TASK_DURATION_SEC[tNum] || examSimulationService.WRITING_TASK_DURATION_SEC[2];
+  return { status: 'ok', attemptId: attempt._id, duration };
+}
+
+async function submitPractice(user, { taskType, taskId, answer, attemptId: simulationAttemptId }) {
   const tNum = taskType;
   const Model = tNum === 1 ? WritingTask1 : WritingTask2;
   const task = taskId ? await Model.findById(taskId).lean() : null;
   const wc = countWords(answer); // server-side, not the client's wordCount
 
-  const attempt = new WritingAttempt({
-    userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum}`,
-    ...(tNum === 1 ? {
-      task1Id: taskId || undefined,
-      task1Snapshot: buildTask1Snapshot(task),
-      task1Answer: answer,
-      wordCount1: wc,
-    } : {
-      task2Id: taskId || undefined,
-      task2Snapshot: buildTask2Snapshot(task),
-      task2Answer: answer,
-      wordCount2: wc,
-    }),
-    submittedAt: new Date(), status: 'completed'
-  });
-  await attempt.save();
+  let attempt;
+  if (simulationAttemptId) {
+    attempt = await WritingAttempt.findOneAndUpdate(
+      { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
+      tNum === 1
+        ? { task1Answer: answer, wordCount1: wc, submittedAt: new Date(), status: 'completed' }
+        : { task2Answer: answer, wordCount2: wc, submittedAt: new Date(), status: 'completed' },
+      { new: true }
+    );
+    if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+  } else {
+    attempt = new WritingAttempt({
+      userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum}`,
+      ...(tNum === 1 ? {
+        task1Id: taskId || undefined,
+        task1Snapshot: buildTask1Snapshot(task),
+        task1Answer: answer,
+        wordCount1: wc,
+      } : {
+        task2Id: taskId || undefined,
+        task2Snapshot: buildTask2Snapshot(task),
+        task2Answer: answer,
+        wordCount2: wc,
+      }),
+      submittedAt: new Date(), status: 'completed'
+    });
+    await attempt.save();
+  }
 
   // See submitExam()'s comment above — same flat, once-a-day streak credit.
   let newlyUnlocked = [];
@@ -342,7 +427,7 @@ async function getSampleFilters() {
 }
 
 module.exports = {
-  startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice,
+  startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice, startPracticeSimulation,
   getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, getPracticeNavCounts, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
   getPendingRewrites, submitRewrite, MAX_PENDING_REWRITES, REWRITE_MIN_WORDS, REWRITE_CUTOFF,

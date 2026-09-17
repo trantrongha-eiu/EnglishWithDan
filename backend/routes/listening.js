@@ -104,6 +104,11 @@ router.get('/history/:attemptId', auth, listeningController.getHistoryDetail);
 // directly with any sectionId, including one they never legitimately
 // fetched (practice/by-id/:id, already premium-gated).
 router.post('/practice/save', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.savePractice);
+
+// POST /api/listening/practice/start-simulation — Test Simulation mode
+// only, see listeningService.startPracticeSimulation.
+router.post('/practice/start-simulation', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('listening'), listeningController.startPracticeSimulation);
+
 router.get('/practice/history', auth, listeningController.getPracticeHistory);
 router.get('/practice/history/:attemptId', auth, listeningController.getPracticeHistoryDetail);
 

@@ -24,6 +24,7 @@ const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
+const examSimulationService = require('./examSimulationService');
 
 // Mongoose `.select()` string that strips a section's answer key
 // (correctAnswer + explanation per question). Single source so the
@@ -713,7 +714,9 @@ async function listStudentTests(userId) {
   }));
 }
 
-async function startTest(id, userId) {
+async function startTest(id, userId, mode = 'practice') {
+  if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
+
   const test = await ListeningTest.findOne({ _id: id, isActive: true });
   if (!test) return null;
 
@@ -734,12 +737,15 @@ async function startTest(id, userId) {
   // this fix must not introduce. The reused row's own already-persisted
   // fields (startTime included) are left untouched — a resumed session
   // keeps its real elapsed time, not a reset clock.
-  let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress' });
+  // Scoped to `mode` too — a still-open Practice attempt must never be
+  // silently resumed as a Simulation one (or vice versa). See Reading's
+  // startTest() for the identical reasoning.
+  let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress', mode });
   if (!attempt) {
     const totalQuestions = test.sections.reduce((sum, s) =>
       sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
     attempt = await ListeningAttempt.create({
-      userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date()
+      userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date(), mode
     });
   }
 
@@ -758,7 +764,7 @@ async function startTest(id, userId) {
       }))
     }))
   }));
-  return { _id: test._id, attemptId: attempt._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections };
+  return { _id: test._id, attemptId: attempt._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections, mode };
 }
 
 async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId }, user) {
@@ -966,8 +972,28 @@ async function getSectionAnswerKey(id) {
   return answerKey;
 }
 
+// Test Simulation mode only — see readingService.startPracticeSimulation
+// for the full rationale. No artificial timer here (unlike Reading's ~20min
+// passage convention): a single-play, no-pause/no-rewind audio section
+// already has its own natural time limit, so this only exists to give a
+// strike (examSimulationService.recordViolation) an in-progress row to
+// attach to. Practice mode never calls this.
+async function startPracticeSimulation(sectionId, sectionTitle, partNumber, userId) {
+  await examSimulationService.assertNotOnCooldown(userId);
+  const section = await ListeningSection.findById(sectionId).select('_id title partNumber').lean();
+  if (!section) return { status: 'not_found' };
+
+  const attempt = await ListeningPracticeAttempt.create({
+    userId, sectionId,
+    sectionTitle: sectionTitle || section.title || '',
+    partNumber: partNumber || section.partNumber || 1,
+    status: 'in-progress', mode: 'simulation',
+  });
+  return { status: 'ok', attemptId: attempt._id };
+}
+
 // ── Practice attempts (single-section, no premium gate) ─────────────────
-async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey }, userId) {
+async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId: simulationAttemptId }, userId) {
   const section = await ListeningSection.findById(sectionId).lean();
   if (!section) return null;
 
@@ -989,27 +1015,45 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
   const gradedAnswers = reviewed.map(r => ({ questionNumber: r.questionNumber, userAnswer: r.userAnswer, correctAnswer: r.correctAnswer, isCorrect: r.isCorrect }));
 
   let attempt;
-  try {
-    attempt = await ListeningPracticeAttempt.create({
-      userId,
-      sectionId,
-      sectionTitle: sectionTitle || section.title || '',
-      partNumber: partNumber || section.partNumber || 1,
-      answers: gradedAnswers,
-      totalQuestions: gradedAnswers.length,
-      correctCount: correct,
-      wrongCount: _wrong,
-      skippedCount: _skipped,
-      timeTaken: timeTaken || 0,
-      submittedAt: new Date(),
-      ...(key ? { clientKey: key } : {}),
-    });
-  } catch (err) {
-    if (err.code === 11000 && key) {
-      const winner = await ListeningPracticeAttempt.findOne({ userId, clientKey: key }).select('_id correctCount totalQuestions').lean();
-      if (winner) return { attemptId: winner._id, correctCount: winner.correctCount, totalQuestions: winner.totalQuestions, deduped: true };
+  if (simulationAttemptId) {
+    // Atomic claim, same pattern as Reading's startPracticeSimulation update
+    // path — a late strike report flipping status to 'disqualified' right
+    // before this lands makes the update match nothing.
+    attempt = await ListeningPracticeAttempt.findOneAndUpdate(
+      { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
+      {
+        sectionTitle: sectionTitle || section.title || '',
+        partNumber: partNumber || section.partNumber || 1,
+        answers: gradedAnswers, totalQuestions: gradedAnswers.length,
+        correctCount: correct, wrongCount: _wrong, skippedCount: _skipped,
+        timeTaken: timeTaken || 0, submittedAt: new Date(), status: 'completed',
+      },
+      { new: true }
+    );
+    if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+  } else {
+    try {
+      attempt = await ListeningPracticeAttempt.create({
+        userId,
+        sectionId,
+        sectionTitle: sectionTitle || section.title || '',
+        partNumber: partNumber || section.partNumber || 1,
+        answers: gradedAnswers,
+        totalQuestions: gradedAnswers.length,
+        correctCount: correct,
+        wrongCount: _wrong,
+        skippedCount: _skipped,
+        timeTaken: timeTaken || 0,
+        submittedAt: new Date(),
+        ...(key ? { clientKey: key } : {}),
+      });
+    } catch (err) {
+      if (err.code === 11000 && key) {
+        const winner = await ListeningPracticeAttempt.findOne({ userId, clientKey: key }).select('_id correctCount totalQuestions').lean();
+        if (winner) return { attemptId: winner._id, correctCount: winner.correctCount, totalQuestions: winner.totalQuestions, deduped: true };
+      }
+      throw err;
     }
-    throw err;
   }
 
   const questionTypeMap = {};
@@ -1058,5 +1102,5 @@ module.exports = {
   assembleTest,
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,
-  savePractice, getPracticeHistory, getPracticeHistoryDetail,
+  savePractice, startPracticeSimulation, getPracticeHistory, getPracticeHistoryDetail,
 };

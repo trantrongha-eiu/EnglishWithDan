@@ -40,6 +40,8 @@
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/mock-test.js?v=20260906fix"></script>
+<script src="/js/shared/exam-proctor.js?v=20260917"></script>
+<script src="/js/shared/exam-mode-select.js?v=20260917"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -218,6 +220,16 @@
                 <span class="toolbar-label">Công cụ</span>
                 <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
                     <i class="fas fa-highlighter"></i><small>Bôi màu</small>
+                </button>
+                <!-- Hidden by default — shown only for a Practice-mode full
+                     test (never Test Simulation or the 4-skill Full Mock
+                     Test), see _updateExamToolbarForMode(). setToolExam()
+                     above already had a 'dict' branch wired to this exact
+                     id with no button to click — Test Simulation mode is
+                     what finally adds one, now that Practice allows
+                     dictionary/translate even on a full test. -->
+                <button class="tool-btn" id="tool-dict-exam" onclick="setToolExam('dict')" style="display:none">
+                    <i class="fas fa-book"></i><small>Tra từ</small>
                 </button>
             </div>
             <div class="questions-panel" id="questions-panel"></div>
@@ -687,7 +699,10 @@
             tool: 'none',
             dictWord: '', dictMeaning: '', dictExample: '',
             submitted: false,
-            startTime: null
+            startTime: null,
+            // 'practice' (default) | 'simulation' — see reading-v2.js's
+            // identical field for the full rationale.
+            mode: 'practice',
         };
 
         // Set when this page was opened as step 1 of a full mock test
@@ -807,6 +822,12 @@
                     audioTime: audio.currentTime,
                     startTime: state.startTime,
                     mockId: mockId,
+                    // Test Simulation mode — see reading-v2.js's identical
+                    // fix (saveExamToStorage/resumeExam) for the full
+                    // rationale: without this, a page refresh
+                    // mid-Simulation would silently fall back to 'practice'
+                    // on resume.
+                    mode: state.mode,
                     savedAt: Date.now()
                 }));
                 const lbl = document.getElementById('exam-autosave');
@@ -880,6 +901,11 @@
             state.submitted = false;
             state.isReview = false;
             state.startTime = data.startTime || new Date().toISOString();
+            // Restore the mode the attempt actually started as — pre-
+            // existing saved payloads (from before this field existed)
+            // have no `mode` key, so this correctly falls back to
+            // 'practice', matching their real mode.
+            state.mode = data.mode || 'practice';
             for (const k in partHlCache) delete partHlCache[k];
             for (const k in partHlCacheRv) delete partHlCacheRv[k];
             clearInterval(_asoTimer);
@@ -903,6 +929,7 @@
             renderQNav('q-nav-grid', false);
             updateFooter();
             setToolExam('none');
+            _updateExamToolbarForMode();
             showScreen('exam');
 
             // Resume mode: skip overlay, auto-play after 5s countdown
@@ -924,6 +951,13 @@
             clearInterval(_saveInterval);
             _saveInterval = setInterval(saveExamToStorage, 10000);
             window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+
+            if (state.mode === 'simulation' && !_mockMode && window.ExamProctor && !window.ExamProctor.isActive()) {
+                window.ExamProctor.start({
+                    skill: 'listening', attemptType: 'full', attemptId: state.attemptId,
+                    onDisqualified: _onSimulationDisqualified,
+                });
+            }
         }
 
         function dismissResume() {
@@ -1495,7 +1529,33 @@
             // correctly used hasPremiumAccess().
             if (!window.AuthService.hasPremiumAccess()) { openUpgradeModal(); return; }
             state.pendingTestId = testId;
-            startTest(testId);
+            // Full Mock Test (_mockMode) never reaches this function — it
+            // calls startTest(tid) directly from the mock-detection block,
+            // bypassing the list screen entirely — so this popup only ever
+            // shows for a standalone student-initiated start.
+            if (window.ExamModeSelect) {
+                window.ExamModeSelect.open({
+                    skill: 'listening',
+                    onPractice: () => startTest(testId, 'practice'),
+                    onSimulation: () => startTest(testId, 'simulation'),
+                });
+            } else {
+                startTest(testId, 'practice');
+            }
+        }
+
+        // Listening's own equivalent of the 4-skill Mock Test's disqualify
+        // handoff — see reading-v2.js's _onSimulationDisqualified for why
+        // this just abandons the exam UI and reloads rather than redirecting
+        // to a dashboard.
+        function _onSimulationDisqualified() {
+            clearInterval(_asoTimer);
+            clearInterval(_saveInterval);
+            try { audio.pause(); } catch (_) {}
+            state.submitted = true;
+            window.onbeforeunload = null;
+            clearExamStorage();
+            location.href = 'listening.html';
         }
 
         // Premium upgrade modal (openUpgradeModal, closeUpgradeModal,
@@ -1517,7 +1577,7 @@
         // ══════════════════════════════════════════════
         // START EXAM
         // ══════════════════════════════════════════════
-        async function startTest(testId) {
+        async function startTest(testId, mode = 'practice') {
             // Guards against clicking "Bắt đầu" on test B before test A's
             // /start request resolves — without this, whichever response
             // arrives last wins and silently overwrites state.currentTest/
@@ -1528,7 +1588,7 @@
                 clearExamStorage(); // clear any previous in-progress exam
                 const res = await fetch(`${API}/listening/tests/${testId}/start${_mockMode ? '?purpose=mocktest' : ''}`, {
                     method: 'POST', headers: authH(),
-                    body: JSON.stringify({})
+                    body: JSON.stringify({ mode })
                 });
                 const data = await safeJson(res);
                 if (testId !== state.pendingTestId) return; // superseded by a later startTest() call
@@ -1549,6 +1609,7 @@
                 state.submitted = false;
                 state.isReview = false;
                 state.startTime = new Date().toISOString();
+                state.mode = t.mode || mode;
                 for (const k in partHlCache) delete partHlCache[k];
                 for (const k in partHlCacheRv) delete partHlCacheRv[k];
                 clearInterval(_asoTimer);
@@ -1562,6 +1623,7 @@
                 renderQNav('q-nav-grid', false);
                 updateFooter();
                 setToolExam('none');
+                _updateExamToolbarForMode();
                 showScreen('exam');
                 // Show overlay — học sinh đọc cảnh báo rồi tự bấm để bắt đầu đếm ngược
                 document.getElementById('audio-start-overlay').classList.remove('hidden');
@@ -1572,9 +1634,21 @@
                 // Start periodic auto-save every 10s
                 clearInterval(_saveInterval);
                 _saveInterval = setInterval(saveExamToStorage, 10000);
+
+                // Full Mock Test (_mockMode) has its own proctoring already
+                // armed by mock-test.js's own auto-start — never double-arm
+                // both engines on the same page.
+                if (state.mode === 'simulation' && !_mockMode && window.ExamProctor) {
+                    window.ExamProctor.start({
+                        skill: 'listening', attemptType: 'full', attemptId: state.attemptId,
+                        onDisqualified: _onSimulationDisqualified,
+                    });
+                }
             } catch (err) {
                 if (testId !== state.pendingTestId) return; // superseded — don't surface a stale error
-                if (err.body && err.body.code === 'REVIEW_REQUIRED') {
+                if (err.status === 429 && err.body && err.body.code === 'SIMULATION_COOLDOWN') {
+                    toast(err.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
+                } else if (err.body && err.body.code === 'REVIEW_REQUIRED') {
                     toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
                     _goToPendingReview(err.body);
                 } else {
@@ -3269,6 +3343,7 @@
             if (_reviewTimer) { clearInterval(_reviewTimer); _reviewTimer = null; _hideReviewBanner(); }
             audio.pause();
             audio.src = '';
+            if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
 
             // Show loading overlay (works in both normal and fullscreen mode)
             let overlay = document.getElementById('submit-loading-overlay');
@@ -3429,16 +3504,30 @@
         // lookup fires only while the "Dict" toolbar tool is on, in review/
         // lt-practice mode) via setupDictionaryDouble(containerId, source, gate).
         // ══════════════════════════════════════════════
+        // lt-practice (isLtPracticeActive/isLtPracticeSubmitted) is now ALSO
+        // gated by mode: _ltPracticeMode is 'simulation' only when
+        // _enterLTPracticeScreen() was entered via the Test Simulation
+        // choice (see startPracticeSection()) — 'practice' for every other
+        // case. `!_mockMode && state.mode === 'practice'` extends this to
+        // the FULL-TEST exam screen too (previously always blocked hints
+        // outright — see reading-v2.js's identical gate for the full
+        // rationale, incl. why the 4-skill Full Mock Test is excluded).
         function _ltDictGate() {
-            return state.tool === 'dict' &&
-                (state.isReview || window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.());
+            return state.tool === 'dict' && (
+                state.isReview
+                || ((window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.()) && _ltPracticeMode !== 'simulation')
+                || (!_mockMode && state.mode === 'practice')
+            );
         }
 
         // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
         // help during a live timed attempt — same condition as _ltDictGate
         // above, minus its own "Dict tool toggled on" requirement.
-        window.__ewsExamActive = () =>
-            !(state.isReview || window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.());
+        window.__ewsExamActive = () => !(
+            state.isReview
+            || ((window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.()) && _ltPracticeMode !== 'simulation')
+            || (!_mockMode && state.mode === 'practice')
+        );
 
         // Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
         function fetchWithTimeout(url, ms = 7000) {
@@ -3449,7 +3538,10 @@
 
         // ── Translate Popup ────────────────────────────────────────────────
         async function translateSelected() {
-            if (!state.isReview && !_ltPracticeSubmitted && !_ltPracticeActive) return;
+            // Same Practice/Test Simulation gating as _ltDictGate/
+            // window.__ewsExamActive above — this toolbar "T" translate
+            // popup is the same class of hint tool.
+            if (window.__ewsExamActive && window.__ewsExamActive()) return;
             const sel = window.getSelection();
             const text = sel ? sel.toString().trim() : '';
             if (!text) return;
@@ -3517,6 +3609,16 @@
             // reads window.getSelection(), which the browser never populates
             // while user-select:none is in effect.
             document.body.classList.toggle('tool-hl', next === 'highlight' || next === 'dict');
+        }
+
+        // The exam screen's Tra từ button only exists to be clickable when
+        // it'd actually work — see reading-v2.js's identical helper for
+        // the full rationale. Called from startTest()/resumeExam() after
+        // state.mode is set.
+        function _updateExamToolbarForMode() {
+            const show = !_mockMode && state.mode === 'practice';
+            const dictBtn = document.getElementById('tool-dict-exam');
+            if (dictBtn) dictBtn.style.display = show ? '' : 'none';
         }
 
         function setToolExam(tool) {
@@ -3771,6 +3873,13 @@
     let _ltPracticeElapsed  = 0;
     let _ltPracticeSubmitted= false; // true after submitLTPractice() so dict/highlight work in result view
     let _ltPracticeActive   = false; // true while practice screen is open (before submit)
+    // Test Simulation mode — 'practice' (default) | 'simulation'; set by
+    // _enterLTPracticeScreen() from what the student chose in
+    // startPracticeSection()'s ExamModeSelect popup. simAttemptId is the
+    // server-tracked ListeningPracticeAttempt row's _id (Simulation only —
+    // see listeningService.startPracticeSimulation).
+    let _ltPracticeMode        = 'practice';
+    let _ltPracticeSimAttemptId = null;
 
     /* ── Helper ──────────────────────────────────────────────────────────── */
     // Mirrors reading-v2.js's identical helper. Table/note-form/summary-
@@ -4260,10 +4369,23 @@
     }
 
     /* ── Start practice for one section ─────────────────────────────────── */
-    async function startPracticeSection(sectionId, partNum, _silent = false) {
+    async function startPracticeSection(sectionId, partNum, _silent = false, mode = null) {
         if (!window.AuthService.hasPremiumAccess()) {
             openUpgradeModal(); return;
         }
+
+        // Show the Practice/Test Simulation popup once per fresh start — not
+        // on a popstate/URL-resume (_silent) or the recursive call this
+        // popup's own callbacks make with `mode` already decided.
+        if (!_silent && !mode && window.ExamModeSelect) {
+            window.ExamModeSelect.open({
+                skill: 'listening',
+                onPractice: () => startPracticeSection(sectionId, partNum, _silent, 'practice'),
+                onSimulation: () => startPracticeSection(sectionId, partNum, _silent, 'simulation'),
+            });
+            return;
+        }
+        mode = mode || 'practice';
 
         const cards = document.querySelectorAll('#lt-section-list .practice-card');
         const clickedCard = document.querySelector(`#lt-section-list .practice-card[data-pid="${sectionId}"]`);
@@ -4281,6 +4403,31 @@
             const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
             const data = await safeJson(res);
             if (!data.success || !data.section) { toast('Không tải được bài luyện tập', 'error'); return; }
+
+            // Test Simulation mode: get a server-tracked attempt row up
+            // front (so a strike has something to attach to) before
+            // entering the practice screen — see reading-v2.js's identical
+            // startPractice() flow for the full rationale.
+            let simAttemptId = null;
+            if (mode === 'simulation') {
+                try {
+                    const simRes = await fetch(`${API}/listening/practice/start-simulation`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json', ...authH() },
+                        body: JSON.stringify({ sectionId, sectionTitle: data.section.title || '', partNumber: partNum })
+                    });
+                    const simData = await safeJson(simRes);
+                    if (!simData.success) { toast(simData.message || 'Không thể bắt đầu Test Simulation', 'error'); return; }
+                    simAttemptId = simData.attemptId;
+                } catch (simErr) {
+                    if (simErr.status === 429 && simErr.body && simErr.body.code === 'SIMULATION_COOLDOWN') {
+                        toast(simErr.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
+                    } else {
+                        toast('Lỗi kết nối server', 'error');
+                    }
+                    return;
+                }
+            }
+
             if (!_silent) {
                 history.pushState(
                     { screen: 'practice', sectionId, part: partNum },
@@ -4288,7 +4435,7 @@
                     `?sectionId=${sectionId}&part=${partNum}`
                 );
             }
-            _enterLTPracticeScreen(data.section, partNum, sectionId);
+            _enterLTPracticeScreen(data.section, partNum, sectionId, mode, simAttemptId);
         } catch(e) {
             if (e.body && e.body.code === 'REVIEW_REQUIRED') {
                 toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
@@ -4309,12 +4456,23 @@
     }
 
     /* ── Enter practice screen ───────────────────────────────────────────── */
-    function _enterLTPracticeScreen(section, partNum, sectionId) {
+    function _enterLTPracticeScreen(section, partNum, sectionId, mode = 'practice', simAttemptId = null) {
         _ltOrigSection       = section;
         _ltPracticePartNum   = partNum;
         _ltPracticeSectionId = sectionId;
         _ltPracticeSubmitted = false;
         _ltPracticeActive    = true;
+        _ltPracticeMode        = mode;
+        _ltPracticeSimAttemptId = simAttemptId;
+        if (mode === 'simulation' && window.ExamProctor) {
+            window.ExamProctor.start({
+                skill: 'listening', attemptType: 'practice', attemptId: simAttemptId,
+                onDisqualified: () => {
+                    window.onbeforeunload = null;
+                    location.href = 'listening.html';
+                },
+            });
+        }
         // BUG-A07: fresh idempotency key per practice attempt — the save is
         // fire-and-forget, so a double fire must not duplicate the row.
         _ltPracticeClientKey = (crypto.randomUUID && crypto.randomUUID())
@@ -4796,13 +4954,17 @@
                 userAnswer:    q.userAnswer || ''
             }))
         );
+        if (_ltPracticeMode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
         _ltSavePracticeResult({
             clientKey:    _ltPracticeClientKey,
             sectionId:    _ltPracticeSectionId,
             sectionTitle: _ltOrigSection.title || '',
             partNumber:   _ltPracticePartNum || 1,
             answers:      answersToSave,
-            timeTaken:    elapsed
+            timeTaken:    elapsed,
+            // Test Simulation only — undefined for Practice, so the
+            // backend takes the exact same plain-insert path it always has.
+            attemptId: _ltPracticeMode === 'simulation' ? _ltPracticeSimAttemptId : undefined,
         });
 
         // Update footer

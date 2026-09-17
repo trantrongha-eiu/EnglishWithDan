@@ -24,15 +24,29 @@ exports.listTests = guard(null, async (req, res) => {
   res.json({ success: true, tests, userPlan: req.user.plan || 'free', planExpiresAt: req.user.planExpiresAt || null });
 });
 
-exports.startTest = guard(null, async (req, res) => {
-  const { testId } = req.body;
-  const result = await readingService.startTest(testId, req.user._id);
-  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
-  if (result.status === 'insufficient_data') {
-    return res.status(400).json({ success: false, message: 'Database chưa đủ bài đọc (cần ít nhất 1 bài ở mỗi category)' });
+exports.startTest = async (req, res) => {
+  try {
+    const { testId, mode } = req.body;
+    const result = await readingService.startTest(testId, req.user._id, mode);
+    if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
+    if (result.status === 'insufficient_data') {
+      return res.status(400).json({ success: false, message: 'Database chưa đủ bài đọc (cần ít nhất 1 bài ở mỗi category)' });
+    }
+    res.json({
+      success: true, attemptId: result.attemptId, testName: result.testName,
+      passages: result.passages, duration: result.duration, mode: result.mode
+    });
+  } catch (e) {
+    // Test Simulation cooldown after a 5-strike disqualification — surface
+    // a machine-readable code + remaining seconds, same convention
+    // mockTest.controller.js's own cooldown handling uses.
+    if (e && e.statusCode === 429 && e.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: e.cooldownSeconds, message: e.message });
+    }
+    console.error(e);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
-  res.json({ success: true, attemptId: result.attemptId, testName: result.testName, passages: result.passages, duration: result.duration });
-});
+};
 
 exports.submitTest = guard(null, async (req, res) => {
   const { attemptId, answers } = req.body;
@@ -93,8 +107,31 @@ exports.savePractice = guard('[Reading practice save]', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
   }
   const attemptId = await readingService.savePractice(req.body, req.user._id);
+  // null only happens on the Test Simulation update path (see
+  // readingService.savePractice) when the attempt was disqualified (or
+  // already submitted) before this request landed.
+  if (req.body.attemptId && !attemptId) {
+    return res.status(409).json({ success: false, message: 'Bài làm này đã bị huỷ hoặc đã nộp trước đó.' });
+  }
   res.json({ success: true, attemptId });
 });
+
+// POST /api/reading/practice/start-simulation   body: { passageId, passageTitle, category }
+exports.startPracticeSimulation = async (req, res) => {
+  try {
+    const { passageId, passageTitle, category } = req.body;
+    if (!passageId) return res.status(400).json({ success: false, message: 'Thiếu passageId' });
+    const result = await readingService.startPracticeSimulation(passageId, passageTitle, category, req.user._id);
+    if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy bài đọc' });
+    res.status(201).json({ success: true, attemptId: result.attemptId, duration: result.duration });
+  } catch (e) {
+    if (e && e.statusCode === 429 && e.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: e.cooldownSeconds, message: e.message });
+    }
+    console.error('[Reading practice start-simulation]', e);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 exports.getPracticeHistory = guard('[Reading practice history]', async (req, res) => {
   const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);

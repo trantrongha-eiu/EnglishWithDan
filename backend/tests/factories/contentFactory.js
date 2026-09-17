@@ -215,6 +215,7 @@ async function createReadingPracticeAttempt(overrides = {}) {
     wrongCount: overrides.wrongCount ?? 5,
     skippedCount: overrides.skippedCount ?? 0,
     submittedAt: overrides.submittedAt || new Date(),
+    ...overrides.extra,
   });
 }
 
@@ -231,6 +232,7 @@ async function createListeningAttempt(overrides = {}) {
     bandScore: overrides.bandScore ?? 6.5,
     submittedAt: overrides.submittedAt || new Date(),
     status: overrides.status || 'completed',
+    ...overrides.extra,
   });
 }
 

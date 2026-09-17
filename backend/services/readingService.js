@@ -17,6 +17,7 @@ const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
+const examSimulationService = require('./examSimulationService');
 
 // Mongoose `.select()` string that strips a passage's answer key
 // (correctAnswer + explanation, on both the modern questionGroups shape
@@ -218,7 +219,9 @@ async function listTestsForUser(userId) {
   return tests.map(t => ({ ...t, isFixed: (t.passageIds || []).length === 3, lastAttempt: attemptMap[t._id.toString()] || null }));
 }
 
-async function startTest(testId, userId) {
+async function startTest(testId, userId, mode = 'practice') {
+  if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
+
   const test = await ReadingTest.findById(testId);
   if (!test) return { status: 'not_found' };
 
@@ -241,7 +244,10 @@ async function startTest(testId, userId) {
   // not introduce. Checked BEFORE passage selection — a resumed attempt
   // must show the SAME 3 passages it started with, not a freshly
   // re-randomized set from the $sample branch below.
-  const existingAttempt = await TestAttempt.findOne({ userId, testId, status: 'in-progress' });
+  // Scoped to `mode` too — a still-open Practice attempt must never be
+  // silently resumed as a Simulation one (or vice versa): they're two
+  // different modes with different rules, not the same run.
+  const existingAttempt = await TestAttempt.findOne({ userId, testId, status: 'in-progress', mode });
 
   let passages;
   if (existingAttempt) {
@@ -268,7 +274,7 @@ async function startTest(testId, userId) {
 
   let attempt = existingAttempt;
   if (!attempt) {
-    attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date() });
+    attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date(), mode });
     await attempt.save();
   }
 
@@ -278,7 +284,7 @@ async function startTest(testId, userId) {
     questions: (p.questions || []).map(safeQ)
   }));
 
-  return { status: 'ok', attemptId: attempt._id, testName: test.name, passages: safePassages, duration: 3600 };
+  return { status: 'ok', attemptId: attempt._id, testName: test.name, passages: safePassages, duration: 3600, mode };
 }
 
 async function submitTest(attemptId, answers, user) {
@@ -499,9 +505,36 @@ async function getPassageAnswerKey(id) {
   return answerKey;
 }
 
+// Test Simulation mode only — a "lẻ" practice attempt is otherwise never
+// persisted until /practice/save (see savePractice below), but Simulation
+// needs a row to exist from the START so a strike
+// (examSimulationService.recordViolation) has something to attach to, and
+// so the ~20min exam-condition timer is anchored server-side rather than
+// trusted from the client. Practice mode is completely untouched by this —
+// it never calls this endpoint and savePractice's default insert-only path
+// (no attemptId in the body) behaves exactly as it always has.
+async function startPracticeSimulation(passageId, passageTitle, category, userId) {
+  await examSimulationService.assertNotOnCooldown(userId);
+  const passage = await Passage.findOne({ _id: passageId, isActive: true }).select('_id').lean();
+  if (!passage) return { status: 'not_found' };
+
+  const attempt = await ReadingPracticeAttempt.create({
+    userId, passageId, passageTitle: passageTitle || '', category: category || '',
+    status: 'in-progress', mode: 'simulation',
+    startTime: new Date(), duration: examSimulationService.READING_PRACTICE_DURATION_SEC,
+  });
+  return { status: 'ok', attemptId: attempt._id, duration: examSimulationService.READING_PRACTICE_DURATION_SEC };
+}
+
 async function savePractice(body, userId) {
   const { passageId, passageTitle, category, answers, timeTaken } = body;
   const clientKey = typeof body.clientKey === 'string' && body.clientKey ? body.clientKey : null;
+  // Test Simulation mode: the client holds the attemptId returned by
+  // startPracticeSimulation() and passes it back here at submit time so
+  // this UPDATES that same in-progress row instead of inserting a second
+  // one. Practice mode never sends this field, so it's always undefined
+  // there and every existing behavior below is unchanged.
+  const simulationAttemptId = typeof body.attemptId === 'string' && body.attemptId ? body.attemptId : null;
 
   // BUG-A07: /practice/save is fire-and-forget from the review screen and
   // isn't idempotent — a double fire / retry used to create duplicate rows
@@ -539,23 +572,40 @@ async function savePractice(body, userId) {
   }
 
   let attempt;
-  try {
-    attempt = await ReadingPracticeAttempt.create({
-      userId, passageId, passageTitle: passageTitle || '', category: category || '',
-      answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
-      wrongCount, skippedCount, timeTaken: timeTaken || 0,
-      submittedAt: new Date(),
-      ...(clientKey ? { clientKey } : {}),
-    });
-  } catch (err) {
-    // Lost a race against a concurrent identical submit — the (userId,
-    // clientKey) unique index rejected the second insert. Return the winner,
-    // don't create a second review.
-    if (err.code === 11000 && clientKey) {
-      const winner = await ReadingPracticeAttempt.findOne({ userId, clientKey }).select('_id').lean();
-      if (winner) return winner._id;
+  if (simulationAttemptId) {
+    // Atomic claim, same pattern as the full-test submitTest() above — a
+    // late report from recordViolation() flipping status to 'disqualified'
+    // right before this lands makes the update match nothing, so a voided
+    // Simulation run can't still be submitted for a real result.
+    attempt = await ReadingPracticeAttempt.findOneAndUpdate(
+      { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
+      {
+        answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
+        wrongCount, skippedCount, timeTaken: timeTaken || 0,
+        submittedAt: new Date(), status: 'completed',
+      },
+      { new: true }
+    );
+    if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+  } else {
+    try {
+      attempt = await ReadingPracticeAttempt.create({
+        userId, passageId, passageTitle: passageTitle || '', category: category || '',
+        answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
+        wrongCount, skippedCount, timeTaken: timeTaken || 0,
+        submittedAt: new Date(),
+        ...(clientKey ? { clientKey } : {}),
+      });
+    } catch (err) {
+      // Lost a race against a concurrent identical submit — the (userId,
+      // clientKey) unique index rejected the second insert. Return the winner,
+      // don't create a second review.
+      if (err.code === 11000 && clientKey) {
+        const winner = await ReadingPracticeAttempt.findOne({ userId, clientKey }).select('_id').lean();
+        if (winner) return winner._id;
+      }
+      throw err;
     }
-    throw err;
   }
 
   if (passage) {
@@ -684,6 +734,7 @@ async function getAdminAttemptsStats(testId) {
 module.exports = {
   listTestsForUser, startTest, submitTest, getAttemptReview, getHistory,
   listPracticePassages, getPracticePassageById, getPassageAnswerKey, savePractice,
+  startPracticeSimulation,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
   listAdminAttempts, getAdminAttemptsStats,
 };

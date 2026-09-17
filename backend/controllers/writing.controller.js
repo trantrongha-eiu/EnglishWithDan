@@ -23,18 +23,35 @@ function guard(handler) {
   };
 }
 
-exports.startExam = guard(async (req, res) => {
-  const result = await writingService.startExam(req.body?.examId);
-  if (result.status === 'no_task1') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 1 nào. Vui lòng liên hệ giáo viên.' });
-  if (result.status === 'no_task2') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 2 nào. Vui lòng liên hệ giáo viên.' });
-  res.json({ success: true, exam: result.exam });
-});
+exports.startExam = async (req, res) => {
+  try {
+    const result = await writingService.startExam(req.body?.examId, req.user._id, req.body?.mode);
+    if (result.status === 'no_task1') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 1 nào. Vui lòng liên hệ giáo viên.' });
+    if (result.status === 'no_task2') return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 2 nào. Vui lòng liên hệ giáo viên.' });
+    res.json({ success: true, exam: result.exam, attemptId: result.attemptId, mode: result.mode });
+  } catch (err) {
+    // Test Simulation cooldown after a 5-strike disqualification — same
+    // convention mockTest.controller.js's own cooldown handling uses.
+    if (err && err.statusCode === 429 && err.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: err.cooldownSeconds, message: err.message });
+    }
+    console.error(`[Writing] ${req.method} ${req.originalUrl}:`, err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 exports.submitExam = guard(async (req, res) => {
   const { examId } = req.body;
   if (!examId) return res.status(400).json({ success: false, message: 'Thiếu examId' });
   const result = await writingService.submitExam(req.user, req.body);
-  if (!result?.attemptId) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+  if (!result?.attemptId) {
+    // Distinguish "no such exam" (practice/exam mode) from "this Simulation
+    // run was disqualified or already submitted" (attemptId was given but
+    // the atomic claim in submitExam() matched nothing) — see
+    // writingService.submitExam's Simulation branch.
+    if (req.body.attemptId) return res.status(409).json({ success: false, message: 'Bài làm này đã bị huỷ hoặc đã nộp trước đó.' });
+    return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+  }
   res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
 
@@ -55,14 +72,38 @@ exports.getPracticeTask = guard(async (req, res) => {
 });
 
 exports.submitPractice = guard(async (req, res) => {
-  const { taskType, taskId, answer = '' } = req.body; // wordCount ignored — server counts it
+  const { taskType, taskId, answer = '', attemptId } = req.body; // wordCount ignored — server counts it
   const tNum = parseInt(taskType);
   if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
   if (!answer.trim()) return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
 
-  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer });
+  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, attemptId });
+  if (!result) {
+    // Only reachable via the Test Simulation update path (attemptId given
+    // but disqualified/already submitted) — see writingService.submitPractice.
+    return res.status(409).json({ success: false, message: 'Bài làm này đã bị huỷ hoặc đã nộp trước đó.' });
+  }
   res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
+
+// POST /api/writing/practice/start-simulation   body: { taskType, taskId }
+exports.startPracticeSimulation = async (req, res) => {
+  try {
+    const { taskType, taskId } = req.body;
+    const tNum = parseInt(taskType);
+    if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
+    if (!taskId) return res.status(400).json({ success: false, message: 'Thiếu taskId' });
+    const result = await writingService.startPracticeSimulation(req.user, { taskType: tNum, taskId });
+    if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy đề bài' });
+    res.status(201).json({ success: true, attemptId: result.attemptId, duration: result.duration });
+  } catch (err) {
+    if (err && err.statusCode === 429 && err.cooldownSeconds != null) {
+      return res.status(429).json({ success: false, code: 'SIMULATION_COOLDOWN', cooldownSeconds: err.cooldownSeconds, message: err.message });
+    }
+    console.error('[Writing] practice/start-simulation:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 exports.getPracticeHistory = guard(async (req, res) => {
   const attempts = await writingService.getPracticeHistory(req.user._id);

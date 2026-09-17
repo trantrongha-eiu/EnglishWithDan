@@ -37,6 +37,15 @@ const UserSchema = new mongoose.Schema({
   // this app), matching how a password change already invalidates
   // sessions everywhere in most real-world apps.
   tokenValidAfter: { type: Date, default: null },
+  // Test Simulation mode (Reading/Listening/Writing — see
+  // backend/services/examSimulationService.js): set to now+5min the moment
+  // a simulation run is disqualified for 5+ proctor violations. Global
+  // across all 3 skills by design (not per-skill) — a student who gets
+  // disqualified in one skill can't just immediately start a Simulation in
+  // a different one. Checked server-side at the top of every simulation
+  // "start" call, so it can't be bypassed by refresh, logout/login, or
+  // calling the start API directly.
+  simulationCooldownUntil: { type: Date, default: null },
   // Social auth
   googleId:       { type: String, default: '' },
   facebookId:     { type: String, default: '' },

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const proctorSchema = require('./shared/proctorSchema');
 
 const taskGradeSubSchema = {
   bandScore: { type: Number },
@@ -60,9 +61,18 @@ const WritingAttemptSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['completed', 'timeout'],
+    // 'in-progress'/'disqualified' are Test Simulation mode only — that mode
+    // persists a placeholder attempt at START (unlike every other
+    // submissionType, which only ever writes at submit time), so a strike
+    // has somewhere to attach and an unfinished/voided run is visible
+    // rather than leaving no trace. 'disqualified' = 5+ strikes
+    // (examSimulationService.recordViolation) voided the run.
+    enum: ['in-progress', 'completed', 'timeout', 'disqualified'],
     default: 'completed'
   },
+
+  mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  proctor: { type: proctorSchema, default: () => ({}) },
 
   gradingStatus: {
     type: String,

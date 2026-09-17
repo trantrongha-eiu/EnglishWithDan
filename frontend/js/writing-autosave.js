@@ -25,6 +25,15 @@ function saveToStorage() {
       answers:     state.answers,
       flags:       state.flags,
       secondsLeft: state.secondsLeft,
+      // Test Simulation mode — without persisting these, a page refresh
+      // mid-Simulation-attempt would silently fall back to state's default
+      // 'practice' on restore (a fresh script load re-initializes state
+      // from scratch), wrongly re-enabling dictionary lookup and never
+      // re-arming the proctor. That would make refreshing an actual way to
+      // "escape" Simulation mode, which is exactly the kind of
+      // client-side-only gap this feature exists to not have.
+      mode:         state.mode,
+      simAttemptId: state.simAttemptId,
       savedAt:     Date.now()
     }));
     const lbl = document.getElementById('btn-autosave');
@@ -83,6 +92,12 @@ function restoreExam() {
   state.secondsLeft = saved.secondsLeft ?? 3600;
   state.totalSeconds = state.exam.duration ? state.exam.duration * 60 : 3600;
   state.currentTask  = 1;
+  // Restore the mode the attempt actually started as — see saveToStorage()'s
+  // comment for why this can't be left to state's own default. Pre-existing
+  // saved payloads (from before this field existed) have neither key, so
+  // this correctly falls back to 'practice'/null, matching their real mode.
+  state.mode = saved.mode || 'practice';
+  state.simAttemptId = saved.simAttemptId || null;
   document.getElementById('restore-banner').style.display = 'none';
   launchExam();
 }

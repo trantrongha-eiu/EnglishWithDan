@@ -41,6 +41,8 @@
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/mock-test.js?v=20260906fix"></script>
+<script src="/js/shared/exam-proctor.js?v=20260917"></script>
+<script src="/js/shared/exam-mode-select.js?v=20260917"></script>
 
   <!-- ════════════════════════════════════════════════════════
      SCREEN 1 – DANH SÁCH TEST
@@ -197,6 +199,21 @@
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl" onclick="setTool('highlight')">
         <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
+      </button>
+      <!-- Tra từ / Dịch — hidden by default (style set here matches every
+           other screen's toolbar markup), shown only for a Practice-mode
+           full test (never Test Simulation or the 4-skill Full Mock Test —
+           see launchExam()'s toggle of this same pair). The exam screen
+           never had these at all before Test Simulation mode shipped, since
+           dictionary/translate were always blocked here unconditionally;
+           now that Practice mode allows them even on a full test, the
+           toolbar needs an actual way to turn "Dict" on, matching the
+           review/retry screens' identical tool-dict-rv/tool-dict-rt pattern. -->
+      <button class="tool-btn" id="tool-dict-exam" onclick="setTool('dict')" style="display:none">
+        <i class="fas fa-book"></i> <small>Tra từ (D)</small>
+      </button>
+      <button class="tool-btn" id="tool-translate-exam" onmousedown="event.preventDefault()" onclick="translateSelected()" style="display:none">
+        <i class="fas fa-language"></i> <small>Dịch (T)</small>
       </button>
       <div class="toolbar-passage-tabs" id="toolbar-passage-tabs"></div>
     </div>

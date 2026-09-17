@@ -77,6 +77,12 @@ router.get('/practice/answer-key/:id', auth, answerKeyLimiter, requirePremium('B
 // fetched (practice/by-id/:id, already premium-gated).
 router.post('/practice/save', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), readingController.savePractice);
 
+// POST /api/reading/practice/start-simulation — Test Simulation mode only,
+// see readingService.startPracticeSimulation. Same premium gate + limiter
+// as /start (full test) since this is the equivalent "begin a monitored
+// attempt" action for a single passage.
+router.post('/practice/start-simulation', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('reading'), readingController.startPracticeSimulation);
+
 // GET /api/reading/practice/history
 // (MUST be before /practice/:category to avoid wildcard match)
 router.get('/practice/history', auth, readingController.getPracticeHistory);
