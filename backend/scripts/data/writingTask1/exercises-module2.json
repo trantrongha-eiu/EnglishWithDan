@@ -1051,20 +1051,19 @@
         },
         {
           "id": "q3",
-          "prompt": "The population increased ____ 12 million by 2020.",
+          "prompt": "The population increased ____ 12 million to reach 46 million by 2020.",
           "blanks": [
             {
               "accept": [
-                "to",
                 "by"
               ]
             }
           ],
-          "explanation": "Cả hai đều đúng ngữ pháp nhưng nghĩa khác nhau: TO = đạt 12 triệu; BY = tăng thêm 12 triệu."
+          "explanation": "Đích đến đã cho rõ là 46 triệu (\"reach 46 million\") → 12 triệu chỉ có thể là MỨC TĂNG → BY."
         },
         {
           "id": "q4",
-          "prompt": "There was a drop ____ 300 tonnes ____ 1,200 tonnes.",
+          "prompt": "There was a drop ____ 300 tonnes, from 1,500 tonnes ____ 1,200 tonnes.",
           "blanks": [
             {
               "accept": [
@@ -1077,11 +1076,11 @@
               ]
             }
           ],
-          "explanation": "Sau danh từ dùng OF cho mức giảm, TO cho giá trị cuối."
+          "explanation": "Sau danh từ dùng OF cho mức giảm (300 tấn); điểm xuất phát 1,500 tấn đã cho rõ nên chỗ trống còn lại chỉ có thể là TO cho giá trị cuối (1,200 tấn)."
         },
         {
           "id": "q5",
-          "prompt": "The rate climbed ____ 3 percentage points ____ 19%.",
+          "prompt": "Starting at 16%, the rate climbed ____ 3 percentage points ____ 19%.",
           "blanks": [
             {
               "accept": [
@@ -1094,7 +1093,7 @@
               ]
             }
           ],
-          "explanation": "BY + mức, TO + đích."
+          "explanation": "Điểm xuất phát 16% đã cho rõ, nên BY cho mức tăng (3 điểm %) và TO cho đích đến (19%) là hai đáp án duy nhất hợp lý."
         }
       ]
     },
