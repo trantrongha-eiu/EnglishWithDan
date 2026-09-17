@@ -221,10 +221,13 @@ function roundToHalfBand(n) {
 // hold, by adjusting the sub-scores in code once grading returns.
 // - Part 2: floor applies once durationSec clears PART2_FULL_DURATION_SEC.
 // - Part 1/3: no duration signal (short Q&A), so this approximates "3+
-//   on-topic sentences" with the best signal available in code — 3+
-//   transcript sentences of at least 3 words each. Imperfect (can't judge
-//   "on-topic" the way the AI can), but a floor that sometimes fires one
-//   sentence too early beats one that silently never fires at all.
+//   on-topic sentences" with a word-count threshold rather than splitting
+//   on sentence punctuation — real speech-to-text transcripts here
+//   routinely carry ZERO periods/question marks at all (confirmed from
+//   production data), so a punctuation split silently never fires for a
+//   normal single-question answer. Word count is punctuation-independent.
+//   Imperfect (can't judge "on-topic" the way the AI can), but a floor
+//   that sometimes fires a little early beats one that never fires.
 // - Escape hatch: mirrors the prompt's own "no genuine answer" rule — when
 //   ALL FOUR of strengths/mistakes/vocabUpgrades/improvements come back
 //   empty, the AI is telling us it already judged this as no real answer
@@ -240,12 +243,16 @@ function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
   if (partN === 2) {
     qualifies = Number(durationSec) >= PART2_FULL_DURATION_SEC;
   } else if (partN === 1 || partN === 3) {
-    const sentenceCount = String(transcript || '')
-      .split(/[.!?]+/)
-      .map(s => s.trim().split(/\s+/).filter(Boolean))
-      .filter(words => words.length >= 3)
-      .length;
-    qualifies = sentenceCount >= 3;
+    // Strip echoed "Qn (Part n): ...?" question lines — the standalone
+    // practice page's grouped 3-question format prepends these — so only
+    // the student's own spoken words are counted.
+    const ownWordCount = String(transcript || '')
+      .split('\n')
+      .filter(line => !/^Q\d+\s*\(Part/i.test(line.trim()))
+      .join(' ')
+      .split(/\s+/)
+      .filter(Boolean).length;
+    qualifies = ownWordCount >= 25; // ~3 short spoken sentences worth
   }
   if (!qualifies) return;
 
