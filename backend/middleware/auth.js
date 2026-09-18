@@ -51,7 +51,10 @@ module.exports = async (req, res, next) => {
     // frontend/js/nav.js's _showTrialExpiredModalOnce().
     if (user.plan === 'premium' && user.planExpiresAt && user.planExpiresAt < new Date()) {
       user.plan = 'free';
-      User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
+      // Awaited (unlike lastSeen below) — callers read the DB right after
+      // a gated request completes to confirm the downgrade stuck; a
+      // fire-and-forget write here raced that read intermittently in CI.
+      await User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
     }
 
     req.user = user;
