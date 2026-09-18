@@ -395,6 +395,17 @@ async function recordSubmission(userId, exercise, payload) {
 // pushes into the current draft, falling back to starting fresh if none
 // exists (e.g. the client reloaded mid-sequence and skipped item 0).
 //
+// BUG (found before this shipped): re-recording an already-graded item
+// ("Ghi âm lại câu này" on anything but the first question) used to
+// $push a SECOND entry for the same itemIndex instead of replacing the
+// first — itemResults.length then reached totalItems one item early, on
+// a duplicate rather than the real remaining question, silently
+// finalizing the exercise with the LAST question never actually asked.
+// Replacing any existing entry for this itemIndex before appending (and
+// re-sorting by itemIndex, since a replace-by-filter-then-push can
+// reorder the array) keeps exactly one result per item regardless of how
+// many times any single one was retried.
+//
 // Returns the aggregate feedback object (same shape speakingService.
 // gradeSpeaking returns, so the frontend can reuse showSpeakingFeedback
 // unchanged for the finished-exercise summary screen) once `itemPayload`
@@ -413,12 +424,15 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
   if (itemIndex === 0) {
     doc = await startFreshDraft();
   } else {
-    doc = await WT1Submission.findOneAndUpdate(
-      { userId, exerciseCode: exercise.code, status: 'draft' },
-      { $push: { itemResults: itemPayload } },
-      { sort: { attempt: -1 }, new: true },
-    );
-    if (!doc) doc = await startFreshDraft();
+    doc = await WT1Submission.findOne({ userId, exerciseCode: exercise.code, status: 'draft' }).sort({ attempt: -1 });
+    if (!doc) {
+      doc = await startFreshDraft();
+    } else {
+      doc.itemResults = doc.itemResults.filter((r) => r.itemIndex !== itemIndex);
+      doc.itemResults.push(itemPayload);
+      doc.itemResults.sort((a, b) => a.itemIndex - b.itemIndex);
+      await doc.save();
+    }
   }
 
   if (doc.itemResults.length < totalItems) return null;

@@ -223,4 +223,71 @@ describe('submit-speaking — per-item grading (multi-item exercises)', () => {
     expect(stillGraded.status).toBe('graded');
     expect(stillGraded.itemResults).toHaveLength(3);
   });
+
+  // A student who quits mid-recording (submits item 0, then "Thoát" without
+  // finishing) leaves an orphaned draft behind — findOneAndUpdate's
+  // {status:'draft'} filter alone would match BOTH that stale row and a
+  // genuinely-in-progress new attempt if one existed at the same time. The
+  // `sort: {attempt: -1}` on that query is what keeps a later item landing
+  // in the CURRENT attempt instead of silently resurrecting/corrupting an
+  // abandoned one — this pins that behavior down explicitly.
+  test('an orphaned draft from a previously abandoned attempt never absorbs a later item from a new one', async () => {
+    const u = await createPremiumStudent();
+    await WT1Submission.create({
+      userId: u._id, exerciseCode: 'SPKT-L1-E4', lessonCode: 'SPKT-L1', attempt: 1, status: 'draft',
+      itemResults: [{
+        itemIndex: 0, prompt: 'Do you like cooking?', transcript: 'an old abandoned answer from before',
+        feedback: { scores: { fluency: 1, vocabulary: 1, grammar: 1, pronunciation: 1 }, bandEstimate: 1, feedbackVi: '', corrections: [], strengths: [], improvements: [] },
+      }],
+    });
+
+    // Starts a genuinely fresh attempt (itemIndex 0 always does) — attempt 2.
+    await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 0, transcript: ANSWER });
+    const drafts = await WT1Submission.find({ userId: u._id, exerciseCode: 'SPKT-L1-E4', status: 'draft' }).lean();
+    expect(drafts.map((d) => d.attempt).sort()).toEqual([1, 2]);
+
+    // Item 1 must land in attempt 2 (the current one), not attempt 1 (the orphan).
+    await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 1, transcript: ANSWER });
+
+    const orphan = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4', attempt: 1 });
+    const current = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4', attempt: 2 });
+    expect(orphan.itemResults).toHaveLength(1); // untouched
+    expect(current.itemResults).toHaveLength(2); // got both new items
+  });
+
+  // BUG (caught before shipping): re-recording an already-graded item via
+  // "Ghi âm lại câu này" — anything but the very first question — used to
+  // $push a SECOND entry for that same itemIndex instead of replacing the
+  // first, so itemResults.length reached totalItems one item early, on a
+  // duplicate rather than the actual remaining question. The exercise
+  // finalized immediately, silently skipping the real last question.
+  test('retrying a middle item (not item 0) replaces its result instead of duplicating it, and does not finalize early', async () => {
+    const u = await createPremiumStudent();
+    await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 0, transcript: ANSWER });
+    const first = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 1, transcript: ANSWER });
+    expect(first.body.isLast).toBe(false);
+
+    // "Ghi âm lại câu này" on question 2 — re-submits itemIndex 1 again,
+    // BEFORE ever answering question 3 (itemIndex 2).
+    const retry = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 1, transcript: ANSWER });
+    expect(retry.status).toBe(200);
+    expect(retry.body.isLast).toBe(false); // question 3 still outstanding — must NOT finalize here
+
+    const draft = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4' });
+    expect(draft.status).toBe('draft');
+    expect(draft.itemResults.map((r) => r.itemIndex)).toEqual([0, 1]); // no duplicate
+
+    // Answering the real question 3 now correctly finalizes with all 3 items.
+    const last = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 2, transcript: ANSWER });
+    expect(last.body.isLast).toBe(true);
+    const graded = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4' });
+    expect(graded.status).toBe('graded');
+    expect(graded.itemResults.map((r) => r.itemIndex)).toEqual([0, 1, 2]);
+  });
 });
