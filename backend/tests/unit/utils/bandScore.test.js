@@ -6,7 +6,7 @@
 // from ieltsidpindia.com (2026): Reading 15→5 / 23→6 / 30→7 / 35→8 (+ IDP
 // "29 correct = 6.5"); Listening 32-34→7.5 / 30-31→7 / 26-29→6.5 /
 // 23-25→6 / 18-22→5.5 / 16-17→5 / 13-15→4.5 / 11-12→4.
-const { bandScoreTable } = require('../../../utils/bandScore');
+const { bandScoreTable, entranceBand, roundIeltsHalf } = require('../../../utils/bandScore');
 
 describe('bandScoreTable - listening (IDP published chart)', () => {
   test.each([
@@ -74,5 +74,46 @@ describe('reading and listening are now DIFFERENT charts', () => {
     for (const c of [40, 35, 30, 23]) {
       expect(bandScoreTable('reading', c)).toBe(bandScoreTable('listening', c));
     }
+  });
+});
+
+// entranceBand() — the IELTS Entrance Test's own internal placement scales
+// (25-question Grammar / 13-question Reading / 10-question Listening),
+// transcribed directly from the feature spec's tables — NOT the same charts
+// as bandScoreTable above (those are calibrated to a 40-question paper).
+describe('entranceBand - grammar (25 questions)', () => {
+  test.each([
+    [0, 1.0], [3, 1.0], [4, 1.5], [5, 1.5], [6, 2.0], [7, 2.0],
+    [8, 2.5], [9, 2.5], [10, 3.0], [11, 3.0], [12, 3.5], [13, 3.5],
+    [14, 4.0], [15, 4.0], [16, 4.5], [17, 4.5], [18, 5.0], [19, 5.0],
+    [20, 5.5], [21, 6.0], [22, 6.5], [23, 7.0], [24, 7.0], [25, 7.0],
+  ])('%i correct -> band %f', (correct, band) => {
+    expect(entranceBand('grammar', correct)).toBe(band);
+  });
+});
+
+describe('entranceBand - reading13 (13 questions)', () => {
+  test.each([
+    [0, 1.0], [2, 1.0], [3, 2.0], [4, 2.5], [5, 3.0], [6, 3.5],
+    [7, 4.0], [8, 4.5], [9, 5.0], [10, 5.5], [11, 6.0], [12, 6.5], [13, 7.0],
+  ])('%i correct -> band %f', (correct, band) => {
+    expect(entranceBand('reading13', correct)).toBe(band);
+  });
+});
+
+describe('entranceBand - listening10 (10 questions)', () => {
+  test.each([
+    [0, 1.0], [1, 1.0], [2, 2.0], [3, 2.5], [4, 3.0], [5, 3.5],
+    [6, 4.0], [7, 4.5], [8, 5.5], [9, 6.5], [10, 7.0],
+  ])('%i correct -> band %f', (correct, band) => {
+    expect(entranceBand('listening10', correct)).toBe(band);
+  });
+});
+
+describe('roundIeltsHalf', () => {
+  test.each([
+    [5.125, 5.0], [5.25, 5.5], [5.375, 5.5], [5.625, 5.5], [5.75, 6.0], [6.0, 6.0],
+  ])('%f -> %f', (avg, rounded) => {
+    expect(roundIeltsHalf(avg)).toBe(rounded);
   });
 });

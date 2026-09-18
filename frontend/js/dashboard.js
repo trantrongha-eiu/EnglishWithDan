@@ -248,7 +248,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // owl worked there. #book-welcome is a sibling of #book-content
     // (#words-tbody lives there), so this never double-binds. Idempotent.
     if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('book-welcome', 'dashboard-home');
-    if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
     // Goal-setup nudge (once per browser session, if no goal set yet) or
     // today's recommended study plan (once per calendar day, if a goal
     // exists and there are sessions scheduled today) — self-gated inside

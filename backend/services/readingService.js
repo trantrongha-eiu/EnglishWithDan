@@ -737,4 +737,8 @@ module.exports = {
   startPracticeSimulation,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
   listAdminAttempts, getAdminAttemptsStats,
+  // Exported for entranceTestService.js, which grades a single Passage's
+  // questionGroups against a plain answersMap the exact same way a normal
+  // Reading attempt does — no reason to re-implement this logic a third time.
+  gradeGroups,
 };

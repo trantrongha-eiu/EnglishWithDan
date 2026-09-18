@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Full Mock Test – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/motion.css?v=20260904b"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <!-- .mocktest-card and friends are defined in dashboard.css — reused here
+       verbatim (via dashboard-mocktest.js's own #mocktest-* DOM ids) rather
+       than duplicated, since this page hosts exactly the same card, just
+       full-page instead of embedded in the dashboard's home screen. -->
+  <link rel="stylesheet" href="css/dashboard.css?v=20260911para">
+  <link rel="stylesheet" href="css/entrance-test.css?v=20260918">
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20260908"></script>
+<script src="js/auth.js?v=20260831"></script>
+<script src="js/nav.js?v=20260911para"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
+
+<div class="et-shell">
+  <div class="et-hero">
+    <h1><i class="fas fa-graduation-cap"></i> Full Mock Test</h1>
+    <p>Bài thi thử đầy đủ 4 kỹ năng IELTS (Listening, Reading, Writing, Speaking) với đề ngẫu nhiên,
+      làm trong 2 lượt (Listening+Reading, sau đó Writing+Speaking) và có giám sát trong suốt quá trình làm bài.</p>
+  </div>
+  <div class="et-card">
+    <!-- Same markup dashboard.html used to embed — js/dashboard-mocktest.js's
+         renderMockTestCard() drives it purely by these #mocktest-* ids, so
+         it works identically here, full-page. -->
+    <div class="mocktest-card" id="mocktest-card" style="display:none">
+      <div class="mocktest-icon"><i class="fas fa-graduation-cap"></i></div>
+      <div class="mocktest-info">
+        <div class="mocktest-label">IELTS Full Mock Test</div>
+        <div class="mocktest-title" id="mocktest-title">Thi thử 4 kỹ năng</div>
+        <div class="mocktest-meta" id="mocktest-meta">Đề ngẫu nhiên · Listening → Reading → Writing → Speaking</div>
+      </div>
+      <div class="mocktest-actions">
+        <button class="btn btn-primary" id="mocktest-btn">Bắt đầu thi thử</button>
+        <a class="mocktest-history-link" href="review-history.html?view=mock">Lịch sử thi thử</a>
+        <button type="button" class="mocktest-abandon-link" id="mocktest-abandon" style="display:none">Bỏ qua &amp; làm lại</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/shared/mock-test.js?v=20260906fix"></script>
+<script src="js/dashboard-mocktest.js?v=20260903"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.AuthService || !window.AuthService.isLoggedIn()) {
+      var next = 'mock-test.html';
+      location.href = (window.AuthService && window.AuthService.buildLoginUrl) ? window.AuthService.buildLoginUrl(next) : 'login.html?next=' + encodeURIComponent(next);
+      return;
+    }
+    if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
+  });
+</script>
+</body>
+</html>

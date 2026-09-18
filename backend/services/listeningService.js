@@ -1103,4 +1103,8 @@ module.exports = {
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,
   savePractice, startPracticeSimulation, getPracticeHistory, getPracticeHistoryDetail,
+  // Exported for entranceTestService.js, which grades a single
+  // ListeningSection's questionGroups the exact same way a normal Listening
+  // attempt does — no reason to re-implement this logic a third time.
+  gradeQuestionGroups,
 };

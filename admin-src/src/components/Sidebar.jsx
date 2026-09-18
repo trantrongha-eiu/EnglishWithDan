@@ -18,6 +18,7 @@ const NAV = [
   { section: 'THEO DÕI HỌC SINH' },
   { to: '/classes',            icon: '🗓️', label: 'Lớp & Điểm danh' },
   { to: '/monitoring',         icon: '📈', label: 'Theo dõi luyện tập', mockBadge: true },
+  { to: '/entrance-test',      icon: '🚪', label: 'Test đầu vào' },
   { to: '/writing-grades',     icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/messages',           icon: '✉️', label: 'Hộp thư', messagesBadge: true },
   { section: 'NỘI DUNG' },

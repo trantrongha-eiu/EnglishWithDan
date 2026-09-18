@@ -52,6 +52,18 @@
         { href: 'reading-listening-strategy.html',    icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
       ]
     },
+    // Both thi-thử ("mock test") features live under one dropdown: the new
+    // 70-minute placement Entrance Test, and the existing 4-skill Full Mock
+    // Test — which used to be reachable ONLY from a Dashboard card
+    // (js/dashboard-mocktest.js) and now also has its own standalone page
+    // (mock-test.html) so this link lands somewhere self-explanatory
+    // instead of mid-dashboard.
+    { href: 'mock-test.html',        icon: 'fa-graduation-cap', label: 'Mocktest',
+      children: [
+        { href: 'entrance-test.html', icon: 'fa-door-open',   label: 'Test đầu vào' },
+        { href: 'mock-test.html',     icon: 'fa-layer-group', label: 'Full Mock Test' },
+      ]
+    },
   ];
 
   // "Hộp thư" / "Học phí" moved out of the main dropdown row into the

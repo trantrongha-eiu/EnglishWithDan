@@ -57,14 +57,16 @@
   function _navigateByResult(nav, mockId) {
     nav = nav || {};
     if (nav.done)         { location.href = 'review-history.html?view=mock'; return; }
-    // Sitting break — back to the dashboard; the student self-starts the
-    // next skill. `breakAfter` ('reading' | 'writing') picks the copy.
+    // Sitting break — back to the mock-test card page; the student self-
+    // starts the next skill. `breakAfter` ('reading' | 'writing') picks the
+    // copy. (Was 'dashboard.html?mockbreak=' before the card moved to its
+    // own page under the "Mocktest" nav dropdown.)
     if (nav.sittingBreak) {
-      location.href = 'dashboard.html?mockbreak=' + encodeURIComponent(nav.breakAfter || 'reading');
+      location.href = 'mock-test.html?mockbreak=' + encodeURIComponent(nav.breakAfter || 'reading');
       return;
     }
     if (nav.nextSkill)    { location.href = pageUrl(nav.nextSkill, mockId); return; }
-    location.href = 'dashboard.html';
+    location.href = 'mock-test.html';
   }
 
   function _sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
@@ -130,20 +132,20 @@
         } catch (_) {}
         if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
         else { try { localStorage.removeItem('token'); localStorage.removeItem('user'); } catch (_) {} }
-        // Straight to the dashboard, not back to this same skill page — the
-        // skill was already submitted, so reopening it in mock mode would
-        // start a brand-new attempt. flushPendingAdvance() finishes the
-        // bookkeeping there and the dashboard card then offers the real
+        // Straight to the mock-test card page, not back to this same skill
+        // page — the skill was already submitted, so reopening it in mock
+        // mode would start a brand-new attempt. flushPendingAdvance()
+        // finishes the bookkeeping there and the card then offers the real
         // next step.
         var next = (window.AuthService && window.AuthService.buildLoginUrl)
-          ? window.AuthService.buildLoginUrl('dashboard.html')
-          : ('/login.html?next=' + encodeURIComponent('dashboard.html'));
+          ? window.AuthService.buildLoginUrl('mock-test.html')
+          : ('/login.html?next=' + encodeURIComponent('mock-test.html'));
         location.href = next;
         return null;
       }
       console.error('[MockTest] advance failed:', lastErr);
-      try { if (window.toast) window.toast('Chưa lưu được tiến độ thi thử — sẽ tự đồng bộ khi bạn quay lại trang chủ', 'error'); } catch (_) {}
-      location.href = 'dashboard.html'; // _PENDING_KEY stays set; flushed from there
+      try { if (window.toast) window.toast('Chưa lưu được tiến độ thi thử — sẽ tự đồng bộ khi bạn quay lại trang Mocktest', 'error'); } catch (_) {}
+      location.href = 'mock-test.html'; // _PENDING_KEY stays set; flushed from there
       return null;
     }
 
@@ -419,11 +421,11 @@
       '<div style="font-size:44px">🚫</div>' +
       '<div style="font-size:20px;font-weight:800">Lượt thi thử đã bị huỷ</div>' +
       '<div style="max-width:460px">Bạn đã rời khỏi màn hình thi quá nhiều lần. '
-      + 'Kết quả lượt này <b>không được tính</b>. Hãy quay lại trang chủ và đợi khoảng <b>'
+      + 'Kết quả lượt này <b>không được tính</b>. Hãy quay lại trang Mocktest và đợi khoảng <b>'
       + mins + ' phút</b> trước khi bắt đầu lượt thi mới.</div>' +
-      '<div style="opacity:.85">Đang chuyển về trang chủ…</div>';
+      '<div style="opacity:.85">Đang chuyển về trang Mocktest…</div>';
     (_fsRoot() || document.body).appendChild(ov);
-    setTimeout(function () { location.href = 'dashboard.html?mockvoid=1'; }, 3200);
+    setTimeout(function () { location.href = 'mock-test.html?mockvoid=1'; }, 3200);
   }
 
   // A tab switch fires blur AND visibilitychange — collapse to one "leave".

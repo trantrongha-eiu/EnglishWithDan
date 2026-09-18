@@ -41,6 +41,7 @@ const Task2Templates = lazy(() => import('./pages/Task2Templates'));
 const StudentHistory = lazy(() => import('./pages/StudentHistory'));
 const Monitoring = lazy(() => import('./pages/Monitoring'));
 const MockTests = lazy(() => import('./pages/MockTests'));
+const EntranceTest = lazy(() => import('./pages/EntranceTest'));
 const ReadingStats = lazy(() => import('./pages/ReadingStats'));
 const ListeningStats = lazy(() => import('./pages/ListeningStats'));
 const VocabActivity = lazy(() => import('./pages/VocabActivity'));
@@ -94,6 +95,7 @@ export default function App() {
                 <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="monitoring" element={<Monitoring />} />
                 <Route path="mock-tests" element={<MockTests />} />
+                <Route path="entrance-test" element={<EntranceTest />} />
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="review-bypass" element={<ReviewBypassCodes />} />
                 <Route path="reading-stats" element={<ReadingStats />} />

@@ -46,6 +46,12 @@ const UserSchema = new mongoose.Schema({
   // "start" call, so it can't be bypassed by refresh, logout/login, or
   // calling the start API directly.
   simulationCooldownUntil: { type: Date, default: null },
+  // Same idea as simulationCooldownUntil above, but for the IELTS Entrance
+  // Test (backend/services/entranceTestService.js) — kept as its own field
+  // rather than sharing simulationCooldownUntil so a disqualified Entrance
+  // Test attempt doesn't also lock the student out of ordinary Reading/
+  // Listening/Writing Simulation practice, and vice versa.
+  entranceTestCooldownUntil: { type: Date, default: null },
   // Social auth
   googleId:       { type: String, default: '' },
   facebookId:     { type: String, default: '' },

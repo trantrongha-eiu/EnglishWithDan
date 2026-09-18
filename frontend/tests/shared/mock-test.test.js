@@ -55,11 +55,11 @@ describe('MockTest.advance — success', () => {
     expect(JSON.parse(opts.body)).toEqual({ skill: 'listening', attemptId: 'sub1' });
   });
 
-  test('nav.sittingBreak sends the student to the dashboard break screen', async () => {
+  test('nav.sittingBreak sends the student to the mock-test card break screen', async () => {
     global.fetch = fetchOnce({ status: 200, body: { success: true, nav: { sittingBreak: true, breakAfter: 'reading' } } });
     await withMockLocation('?mock=M1&skill=reading', async (loc) => {
       await window.MockTest.advance('reading', 'sub2');
-      expect(loc.href).toBe('dashboard.html?mockbreak=reading');
+      expect(loc.href).toBe('mock-test.html?mockbreak=reading');
     });
   });
 
@@ -73,17 +73,18 @@ describe('MockTest.advance — success', () => {
 });
 
 describe('MockTest.advance — a 401 mid-submit does not strand or wipe the student', () => {
-  test('preserves the pending-advance record, clears the session, and sends them to login with next=dashboard (not back to the just-finished skill page)', async () => {
+  test('preserves the pending-advance record, clears the session, and sends them to login with next=mock-test.html (not back to the just-finished skill page)', async () => {
     localStorage.setItem('token', 'stale-token');
     localStorage.setItem('user', JSON.stringify({ _id: 'u1' }));
     global.fetch = fetchOnce({ status: 401, body: { success: false, message: 'Unauthorized' } });
 
     await withMockLocation('?mock=M1&skill=listening', async (loc) => {
       await window.MockTest.advance('listening', 'sub1');
-      // Bounced to login — but crucially to resume on the dashboard, not
-      // back onto listening.html?mock=&skill=listening (which would start
-      // a brand-new Listening attempt and redo an already-graded skill).
-      expect(loc.href).toBe('/login.html?next=' + encodeURIComponent('dashboard.html'));
+      // Bounced to login — but crucially to resume on the mock-test card
+      // page, not back onto listening.html?mock=&skill=listening (which
+      // would start a brand-new Listening attempt and redo an already-
+      // graded skill).
+      expect(loc.href).toBe('/login.html?next=' + encodeURIComponent('mock-test.html'));
     });
 
     // The session was cleared (a real 401 means the token really is dead)...

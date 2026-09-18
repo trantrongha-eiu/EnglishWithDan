@@ -24,6 +24,7 @@ const TITLES = {
   '/task2-templates':        'Task 2 Templates',
   '/monitoring':             'Theo dõi luyện tập',
   '/mock-tests':             'Thi thử Full 4 kỹ năng',
+  '/entrance-test':          'IELTS Entrance Test (Test đầu vào)',
   '/history':                'Lịch sử làm bài',
   '/review-bypass':          'Mã bỏ qua Review',
   '/reading-stats':          'Thống kê Reading',

@@ -1,0 +1,212 @@
+[
+  {
+    "order": 1, "topic": "Present Simple vs Present Continuous", "type": "mcq",
+    "prompt": "My brother usually ______ to work by bus, but this week he ______ his bicycle.",
+    "options": [
+      { "id": "A", "text": "goes / is riding" },
+      { "id": "B", "text": "is going / rides" },
+      { "id": "C", "text": "goes / rides" },
+      { "id": "D", "text": "is going / is riding" }
+    ],
+    "answer": "A",
+    "explanation": "Habitual action (usually) → present simple 'goes'. A temporary arrangement this week → present continuous 'is riding'."
+  },
+  {
+    "order": 2, "topic": "Present Perfect", "type": "mcq",
+    "prompt": "She ______ in Hanoi since 2015.",
+    "options": [
+      { "id": "A", "text": "lives" },
+      { "id": "B", "text": "has lived" },
+      { "id": "C", "text": "lived" },
+      { "id": "D", "text": "is living" }
+    ],
+    "answer": "B",
+    "explanation": "'since + a point in time' signals present perfect for a state continuing to now."
+  },
+  {
+    "order": 3, "topic": "Past Simple vs Past Continuous", "type": "mcq",
+    "prompt": "While I ______ dinner, the phone ______.",
+    "options": [
+      { "id": "A", "text": "cooked / rang" },
+      { "id": "B", "text": "was cooking / rang" },
+      { "id": "C", "text": "was cooking / was ringing" },
+      { "id": "D", "text": "cook / rings" }
+    ],
+    "answer": "B",
+    "explanation": "A longer background action (was cooking) interrupted by a shorter past event (rang)."
+  },
+  {
+    "order": 4, "topic": "Past Perfect", "type": "mcq",
+    "prompt": "By the time the train arrived, we ______ waiting for an hour.",
+    "options": [
+      { "id": "A", "text": "had been" },
+      { "id": "B", "text": "have been" },
+      { "id": "C", "text": "were" },
+      { "id": "D", "text": "are" }
+    ],
+    "answer": "A",
+    "explanation": "An action lasting up to a past moment ('by the time') needs the past perfect (continuous)."
+  },
+  {
+    "order": 5, "topic": "Future (Be Going To vs Will)", "type": "mcq",
+    "prompt": "Look at those clouds! It ______ rain.",
+    "options": [
+      { "id": "A", "text": "will" },
+      { "id": "B", "text": "is going to" },
+      { "id": "C", "text": "is raining" },
+      { "id": "D", "text": "rains" }
+    ],
+    "answer": "B",
+    "explanation": "A prediction based on present evidence uses 'be going to', not 'will'."
+  },
+  {
+    "order": 6, "topic": "First Conditional", "type": "mcq",
+    "prompt": "If it ______ tomorrow, we ______ the picnic.",
+    "options": [
+      { "id": "A", "text": "rains / will cancel" },
+      { "id": "B", "text": "will rain / cancel" },
+      { "id": "C", "text": "rains / cancel" },
+      { "id": "D", "text": "rained / would cancel" }
+    ],
+    "answer": "A",
+    "explanation": "First conditional: if + present simple, ... will + base verb."
+  },
+  {
+    "order": 7, "topic": "Modal Verbs", "type": "mcq",
+    "prompt": "You ______ smoke in the hospital; it's against the rules.",
+    "options": [
+      { "id": "A", "text": "mustn't" },
+      { "id": "B", "text": "don't have to" },
+      { "id": "C", "text": "can" },
+      { "id": "D", "text": "should" }
+    ],
+    "answer": "A",
+    "explanation": "'mustn't' expresses a prohibition; 'don't have to' would wrongly mean 'no obligation'."
+  },
+  {
+    "order": 8, "topic": "Passive Voice", "type": "mcq",
+    "prompt": "The new library ______ next year.",
+    "options": [
+      { "id": "A", "text": "will build" },
+      { "id": "B", "text": "will be built" },
+      { "id": "C", "text": "builds" },
+      { "id": "D", "text": "is building" }
+    ],
+    "answer": "B",
+    "explanation": "The library doesn't build itself — passive voice: will be + past participle."
+  },
+  {
+    "order": 9, "topic": "Relative Clauses", "type": "mcq",
+    "prompt": "The man ______ car was stolen called the police.",
+    "options": [
+      { "id": "A", "text": "who" },
+      { "id": "B", "text": "whose" },
+      { "id": "C", "text": "which" },
+      { "id": "D", "text": "whom" }
+    ],
+    "answer": "B",
+    "explanation": "'whose' shows possession — the car belongs to the man."
+  },
+  {
+    "order": 10, "topic": "Articles", "type": "mcq",
+    "prompt": "______ Mekong is ______ longest river in Vietnam.",
+    "options": [
+      { "id": "A", "text": "The / the" },
+      { "id": "B", "text": "A / the" },
+      { "id": "C", "text": "The / a" },
+      { "id": "D", "text": "— / the" }
+    ],
+    "answer": "A",
+    "explanation": "Rivers take 'the'; superlatives ('longest') always take 'the'."
+  },
+  {
+    "order": 11, "topic": "Past Perfect (Gap-fill)", "type": "gap_fill",
+    "prompt": "By the time we arrived at the cinema, the film ______ (already / start).",
+    "accept": ["had already started"],
+    "explanation": "An action completed before another past action/time needs the past perfect."
+  },
+  {
+    "order": 12, "topic": "Second Conditional", "type": "gap_fill",
+    "prompt": "If I ______ (know) his number, I would call him now.",
+    "accept": ["knew"],
+    "explanation": "Second conditional (unreal present): if + past simple, ... would + base verb."
+  },
+  {
+    "order": 13, "topic": "Passive Voice (Gap-fill)", "type": "gap_fill",
+    "prompt": "This report ______ (write) by the marketing team last week.",
+    "accept": ["was written"],
+    "explanation": "Past simple passive: was/were + past participle."
+  },
+  {
+    "order": 14, "topic": "Present Perfect (Gap-fill)", "type": "gap_fill",
+    "prompt": "I ______ (live) in this city for more than five years.",
+    "accept": ["have lived", "have been living"],
+    "explanation": "'for + a duration' with an ongoing state accepts present perfect simple or continuous."
+  },
+  {
+    "order": 15, "topic": "Reported Speech (Gap-fill)", "type": "gap_fill",
+    "prompt": "She said she ______ (finish) the project the next day.",
+    "accept": ["would finish"],
+    "explanation": "Reported speech shifts 'will' back to 'would' when the reporting verb is past."
+  },
+  {
+    "order": 16, "topic": "Passive Voice (Transformation)", "type": "sentence_transform",
+    "prompt": "Rewrite in the passive voice: \"People speak English in many countries.\"",
+    "accept": ["English is spoken in many countries."],
+    "explanation": "Object of the active sentence ('English') becomes the subject of the passive one."
+  },
+  {
+    "order": 17, "topic": "So...That / Comparisons", "type": "sentence_transform",
+    "prompt": "Rewrite using 'so...that': \"She is too young to drive.\"",
+    "accept": ["She is so young that she can't drive.", "She is so young that she cannot drive."],
+    "explanation": "'too + adjective + to' rephrases as 'so + adjective + that + can't'."
+  },
+  {
+    "order": 18, "topic": "Reported Speech", "type": "sentence_transform",
+    "prompt": "Rewrite in reported speech: He said, \"I am tired.\"",
+    "accept": ["He said (that) he was tired.", "He said he was tired.", "He said that he was tired."],
+    "explanation": "First person 'I am' shifts to third person 'he was' in reported speech."
+  },
+  {
+    "order": 19, "topic": "Linking Words - Contrast", "type": "sentence_transform",
+    "prompt": "Rewrite using 'despite' or 'in spite of': \"Although it was raining, we went out.\"",
+    "accept": ["Despite the rain, we went out.", "In spite of the rain, we went out.", "Despite the fact that it was raining, we went out."],
+    "explanation": "'Despite/in spite of' are followed by a noun phrase, unlike 'although' which takes a clause."
+  },
+  {
+    "order": 20, "topic": "Present Perfect (Transformation)", "type": "sentence_transform",
+    "prompt": "Rewrite with the same meaning: \"It's a long time since I last saw my friend.\"",
+    "accept": ["I haven't seen my friend for a long time.", "I have not seen my friend for a long time."],
+    "explanation": "'It's a long time since...' and the negative present perfect 'haven't...for' express the same idea."
+  },
+  {
+    "order": 21, "topic": "First Conditional (VN-EN)", "type": "vn_to_en",
+    "prompt": "Nếu ngày mai trời mưa, chúng tôi sẽ ở nhà.",
+    "accept": ["If it rains tomorrow, we will stay at home.", "If it rains tomorrow, we'll stay at home.", "If it rains tomorrow, we will stay home."],
+    "explanation": "First conditional: if + present simple, ... will + base verb."
+  },
+  {
+    "order": 22, "topic": "Present Perfect (VN-EN)", "type": "vn_to_en",
+    "prompt": "Cô ấy đã sống ở Hà Nội được năm năm rồi.",
+    "accept": ["She has lived in Hanoi for five years.", "She has been living in Hanoi for five years."],
+    "explanation": "A state continuing up to now, with a duration ('for five years'), needs the present perfect."
+  },
+  {
+    "order": 23, "topic": "Asking for Directions (VN-EN)", "type": "vn_to_en",
+    "prompt": "Bạn có thể chỉ đường đến bưu điện gần nhất không?",
+    "accept": ["Can you show me the way to the nearest post office?", "Could you tell me how to get to the nearest post office?", "Could you show me the way to the nearest post office?"],
+    "explanation": "A polite request for directions using 'can/could you show/tell me...'."
+  },
+  {
+    "order": 24, "topic": "Present Perfect - Just (VN-EN)", "type": "vn_to_en",
+    "prompt": "Anh ấy vừa mới hoàn thành bài tập về nhà.",
+    "accept": ["He has just finished his homework."],
+    "explanation": "'vừa mới' (just) + a recently completed action → present perfect with 'just'."
+  },
+  {
+    "order": 25, "topic": "Cause & Effect (VN-EN)", "type": "vn_to_en",
+    "prompt": "Cửa hàng này đóng cửa vì trời mưa to.",
+    "accept": ["This shop is closed because of the heavy rain.", "This shop is closed because it is raining heavily.", "This shop is closed because it rains heavily."],
+    "explanation": "'because of + noun phrase' or 'because + clause' both express cause."
+  }
+]

@@ -110,6 +110,7 @@ app.use('/api/media',    require('./routes/media'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/mock-test', require('./routes/mockTest'));
+app.use('/api/entrance-test', require('./routes/entranceTest'));
 app.use('/api/exam-simulation', require('./routes/examSimulation'));
 app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/weakness', require('./routes/weakness'));

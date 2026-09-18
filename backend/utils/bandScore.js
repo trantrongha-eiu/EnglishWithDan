@@ -51,4 +51,43 @@ function bandScoreTable(skill, correctCount) {
   return FLOOR[skill];
 }
 
-module.exports = { bandScoreTable };
+// IELTS Entrance Test ("Test đầu vào") internal placement scales — NOT an
+// official IELTS conversion table. The entrance test's sections are much
+// shorter than a real 40-question paper (25 Grammar / 13 Reading / 10
+// Listening), so the tables above (calibrated to a 40-question raw score)
+// can't be reused as-is. These thresholds come directly from the product
+// spec for the entrance test and exist only to produce a rough internal
+// placement band, displayed to students as "Estimated Entrance Level" /
+// "EnglishWithDan Placement Band" — never as an official IELTS band.
+const ENTRANCE_TABLES = {
+  grammar: [
+    [23, 7.0], [22, 6.5], [21, 6.0], [20, 5.5], [18, 5.0], [16, 4.5],
+    [14, 4.0], [12, 3.5], [10, 3.0], [8, 2.5], [6, 2.0], [4, 1.5], [0, 1.0],
+  ],
+  reading13: [
+    [13, 7.0], [12, 6.5], [11, 6.0], [10, 5.5], [9, 5.0], [8, 4.5],
+    [7, 4.0], [6, 3.5], [5, 3.0], [4, 2.5], [3, 2.0], [0, 1.0],
+  ],
+  listening10: [
+    [10, 7.0], [9, 6.5], [8, 5.5], [7, 4.5], [6, 4.0], [5, 3.5],
+    [4, 3.0], [3, 2.5], [2, 2.0], [0, 1.0],
+  ],
+};
+
+function entranceBand(section, correctCount) {
+  const table = ENTRANCE_TABLES[section];
+  if (!table) throw new Error(`Unknown entrance-test section: ${section}`);
+  for (const [minCorrect, band] of table) {
+    if (correctCount >= minCorrect) return band;
+  }
+  return 1.0;
+}
+
+// IELTS-style nearest-half-band rounding (matches mockTestService's own
+// roundOverall — duplicated here as a one-liner rather than importing across
+// feature boundaries): 5.125→5.0, 5.25→5.5, 5.375→5.5, 5.625→5.5, 5.75→6.0.
+function roundIeltsHalf(avg) {
+  return Math.round(avg * 2) / 2;
+}
+
+module.exports = { bandScoreTable, entranceBand, roundIeltsHalf };

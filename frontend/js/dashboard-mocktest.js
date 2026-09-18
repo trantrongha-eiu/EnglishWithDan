@@ -1,6 +1,9 @@
 'use strict';
 /* ══════════════════════════════════════════════════════════════════
-   IELTS Full Mock Test card on the dashboard home screen.
+   IELTS Full Mock Test card — was on the dashboard home screen, now
+   its own standalone page (mock-test.html), reached from the "Mocktest"
+   nav dropdown. Purely #mocktest-* DOM-id driven, so it works unchanged
+   wherever that markup lives.
 
    - No open run     → "Bắt đầu thi thử"  → POST /mock-test/start → go to
                        listening.html in mock mode.
