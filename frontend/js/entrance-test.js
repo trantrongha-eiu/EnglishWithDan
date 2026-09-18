@@ -222,48 +222,167 @@
   }
 
   // ── Question-group renderer (shared shape between Reading & Listening) ──
+  // Mirrors the groupType dispatch reading-v2.js's/listening.html's own
+  // "đề lẻ" (single passage/section) renderers use — ported rather than
+  // shared, since neither source file exposes this as a reusable module;
+  // both are ~700-line renderers duplicated almost line-for-line and
+  // tightly coupled to their own page's globals/DOM ids. Drag-and-drop
+  // chip interactions are deliberately simplified to plain
+  // <input>/<select data-q data-kind> elements instead — they produce a
+  // real 'input'/'change' DOM event, so the existing delegated autosave
+  // listener in wireSectionInputs() picks them up with no extra wiring.
+  // Appropriate scope for a placement test, not a full replica of the
+  // richly-interactive practice UI's chip-and-drop-zone machinery.
+
+  function letterFor(i) { return String.fromCharCode(65 + i); }
+
+  // Ported from reading-v2.js/listening.html's resolvePlaceholders(): swaps
+  // every __Qn__ token in `text` for an inline answer input. Matches by the
+  // real questionNumber first, falling back to the nth question in the
+  // group by document order — table/note-form authors sometimes write
+  // __Qn__ using a local index rather than the absolute question number.
+  function resolvePlaceholders(text, questions, savedByNum, kind) {
+    var sorted = (questions || []).slice().sort(function (a, b) { return a.questionNumber - b.questionNumber; });
+    return esc(text || '').replace(/__Q(\d+)__/g, function (_, numStr) {
+      var idx = parseInt(numStr, 10);
+      var q = (questions || []).filter(function (x) { return x.questionNumber === idx; })[0];
+      if (!q && idx >= 1 && idx <= sorted.length) q = sorted[idx - 1];
+      if (!q) return '[Q' + idx + ']';
+      var val = savedByNum[q.questionNumber] || '';
+      return '<span class="et-inline-q"><span class="et-inline-badge">' + q.questionNumber + '</span>'
+        + '<input type="text" class="et-inline-input" data-q="' + q.questionNumber + '" data-kind="' + kind + '" value="' + esc(val) + '" placeholder="Q' + q.questionNumber + '"></span>';
+    });
+  }
+
+  // One flat question — true-false-ng/yes-no-ng/multiple-choice as radios,
+  // checkbox as a "choose N" checkbox set (JSON-array answer, matching the
+  // backend's matchSingleAnswer checkbox branch), everything else
+  // (fill-blank/sentence-completion/map-labelling/matching-info/
+  // multi-answer-group) as a plain text input.
+  function renderSingleQuestionHTML(q, savedByNum, kind) {
+    var val = savedByNum[q.questionNumber] || '';
+    var input;
+    if (q.type === 'true-false-ng' || q.type === 'yes-no-ng') {
+      var opts = q.type === 'true-false-ng' ? ['True', 'False', 'Not Given'] : ['Yes', 'No', 'Not Given'];
+      input = '<div class="et-options">' + opts.map(function (o) {
+        var checked = val.toLowerCase() === o.toLowerCase() ? 'checked' : '';
+        return '<label class="et-option"><input type="radio" name="q-' + q.questionNumber + '" value="' + o + '" ' + checked
+          + ' data-q="' + q.questionNumber + '" data-kind="' + kind + '"> ' + o + '</label>';
+      }).join('') + '</div>';
+    } else if (q.type === 'multiple-choice' && q.options && q.options.length) {
+      input = '<div class="et-options">' + q.options.map(function (o, oi) {
+        var letter = letterFor(oi);
+        var checked = val === letter ? 'checked' : '';
+        return '<label class="et-option"><input type="radio" name="q-' + q.questionNumber + '" value="' + letter + '" ' + checked
+          + ' data-q="' + q.questionNumber + '" data-kind="' + kind + '"> ' + letter + '. ' + esc(o) + '</label>';
+      }).join('') + '</div>';
+    } else if (q.type === 'checkbox') {
+      var checkedArr = [];
+      try { checkedArr = JSON.parse(val || '[]'); } catch (e) { checkedArr = []; }
+      input = '<div class="et-options">' + (q.options || []).map(function (o, oi) {
+        var letter = letterFor(oi);
+        var isChecked = checkedArr.indexOf(letter) !== -1;
+        return '<label class="et-option"><input type="checkbox" value="' + letter + '" ' + (isChecked ? 'checked' : '')
+          + ' data-checkbox-q="' + q.questionNumber + '" data-kind="' + kind + '"> ' + letter + '. ' + esc(o) + '</label>';
+      }).join('') + '</div>';
+    } else {
+      input = '<input type="text" class="et-text-input" data-q="' + q.questionNumber + '" data-kind="' + kind + '" value="' + esc(val) + '" placeholder="Nhập câu trả lời…">';
+    }
+    return '<div class="et-question"><div class="et-q-num">Câu ' + q.questionNumber + '</div>'
+      + '<div class="et-q-prompt">' + esc(q.questionText || '') + '</div>' + input + '</div>';
+  }
+
+  // One question answered by picking a letter/heading from a fixed list
+  // (matching-headings / matching-options / sentence-endings) — a <select>
+  // instead of the practice UI's drag-and-drop chip, same data-q/data-kind
+  // convention as every other input here.
+  function renderMatchQuestionHTML(q, options, savedByNum, kind) {
+    var val = savedByNum[q.questionNumber] || '';
+    var opts = '<option value="">—</option>' + options.map(function (o) {
+      return '<option value="' + esc(o.letter) + '"' + (val === o.letter ? ' selected' : '') + '>' + esc(o.letter) + '</option>';
+    }).join('');
+    return '<div class="et-question"><div class="et-q-num">Câu ' + q.questionNumber + '</div>'
+      + '<div class="et-q-prompt">' + esc(q.questionText || '') + '</div>'
+      + '<select class="et-text-input" data-q="' + q.questionNumber + '" data-kind="' + kind + '">' + opts + '</select></div>';
+  }
+
+  function renderQuestionGroup(g, savedByNum, kind) {
+    var head = '';
+    if (g.groupTitle) head += '<div class="et-group-title">' + esc(g.groupTitle) + '</div>';
+    if (g.instruction) head += '<div class="et-group-instruction">' + esc(g.instruction) + '</div>';
+
+    var groupType = g.groupType || 'plain';
+    var body = '';
+
+    if (groupType === 'table' && g.tableConfig) {
+      var headers = g.tableConfig.headers || [];
+      var rows = g.tableConfig.rows || [];
+      body = '<table class="et-inline-table">'
+        + (headers.length ? '<thead><tr>' + headers.map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead>' : '')
+        + '<tbody>' + rows.map(function (row) {
+          return '<tr>' + (row || []).map(function (cell) { return '<td>' + resolvePlaceholders(cell, g.questions, savedByNum, kind) + '</td>'; }).join('') + '</tr>';
+        }).join('') + '</tbody></table>';
+    } else if (groupType === 'note-form' && g.noteConfig) {
+      body = (g.noteConfig.title ? '<div class="et-note-title">' + esc(g.noteConfig.title) + '</div>' : '')
+        + '<div class="et-note-lines">' + (g.noteConfig.lines || []).map(function (line) {
+          return '<div class="et-note-line">' + resolvePlaceholders(line, g.questions, savedByNum, kind) + '</div>';
+        }).join('') + '</div>';
+    } else if (groupType === 'bullet-list' && g.bulletConfig) {
+      body = '<ul class="et-bullet-list">' + (g.bulletConfig.items || []).map(function (item) {
+        return '<li>' + resolvePlaceholders(item, g.questions, savedByNum, kind) + '</li>';
+      }).join('') + '</ul>';
+    } else if (groupType === 'summary-completion' && g.summaryConfig) {
+      body = '<div class="et-summary-text">' + resolvePlaceholders(g.summaryConfig.text, g.questions, savedByNum, kind) + '</div>';
+      if (g.summaryConfig.wordBank && g.summaryConfig.wordBank.length) {
+        body += '<div class="et-word-bank"><strong>Word bank:</strong> ' + g.summaryConfig.wordBank.map(function (w) {
+          return esc(w.letter) + '. ' + esc(w.word);
+        }).join(' &nbsp; ') + '</div>';
+      }
+    } else if (groupType === 'matching-headings' && g.headingsConfig) {
+      var headings = g.headingsConfig.headings || [];
+      var headingOpts = headings.map(function (h) { return { letter: h.numeral, text: h.text }; });
+      body = '<div class="et-matching-options">' + headingOpts.map(function (h) { return '<div>' + esc(h.letter) + '. ' + esc(h.text) + '</div>'; }).join('') + '</div>'
+        + (g.questions || []).map(function (q) { return renderMatchQuestionHTML(q, headingOpts, savedByNum, kind); }).join('');
+    } else if (groupType === 'matching-options' || groupType === 'sentence-endings') {
+      var optList = groupType === 'sentence-endings'
+        ? (g.endingsConfig && g.endingsConfig.endings || []).map(function (e, i) { return { letter: letterFor(i), text: e.text }; })
+        : (g.matchingOptions || []).map(function (o, i) { return { letter: letterFor(i), text: o }; });
+      if (g.matchingOptionsTitle) body += '<div class="et-group-instruction">' + esc(g.matchingOptionsTitle) + '</div>';
+      body += '<div class="et-matching-options">' + optList.map(function (o) { return '<div>' + esc(o.letter) + '. ' + esc(o.text) + '</div>'; }).join('') + '</div>';
+      body += (g.questions || []).map(function (q) { return renderMatchQuestionHTML(q, optList, savedByNum, kind); }).join('');
+    } else if (groupType === 'map') {
+      if (g.imageUrl) body += '<img class="et-task-image" src="' + esc(g.imageUrl) + '" style="margin-bottom:12px">';
+      if (g.dragDropConfig && g.dragDropConfig.text) {
+        body += '<div class="et-summary-text">' + resolvePlaceholders(g.dragDropConfig.text, g.questions, savedByNum, kind) + '</div>';
+      } else {
+        body += (g.questions || []).map(function (q) { return renderSingleQuestionHTML(q, savedByNum, kind); }).join('');
+      }
+    } else {
+      // 'plain' and any unrecognized groupType — flat per-question
+      // rendering (also today's fallback for multi-answer-group clusters:
+      // each slot as its own text input rather than replicating the
+      // shared-checkbox-cluster UI for a type this simple renderer
+      // doesn't special-case).
+      body = (g.questions || []).map(function (q) { return renderSingleQuestionHTML(q, savedByNum, kind); }).join('');
+    }
+
+    return '<div class="et-group">' + head + body + '</div>';
+  }
 
   function renderQuestionGroups(groups, savedByNum, kind) {
-    return (groups || []).map(function (g) {
-      var head = '';
-      if (g.groupTitle) head += '<div class="et-group-title">' + esc(g.groupTitle) + '</div>';
-      if (g.instruction) head += '<div class="et-group-instruction">' + esc(g.instruction) + '</div>';
-      if (g.matchingOptions && g.matchingOptions.length) {
-        head += '<div class="et-matching-options">' + g.matchingOptions.map(function (o) { return '<div>' + esc(o) + '</div>'; }).join('') + '</div>';
-      }
-      var qs = (g.questions || []).map(function (q) {
-        var val = savedByNum[q.questionNumber] || '';
-        var input;
-        if (q.type === 'true-false-ng' || q.type === 'yes-no-ng') {
-          var opts = q.type === 'true-false-ng' ? ['True', 'False', 'Not Given'] : ['Yes', 'No', 'Not Given'];
-          input = '<div class="et-options">' + opts.map(function (o) {
-            var checked = val.toLowerCase() === o.toLowerCase() ? 'checked' : '';
-            return '<label class="et-option"><input type="radio" name="q-' + q.questionNumber + '" value="' + o + '" ' + checked
-              + ' data-q="' + q.questionNumber + '" data-kind="' + kind + '"> ' + o + '</label>';
-          }).join('') + '</div>';
-        } else if (q.type === 'multiple-choice' && q.options && q.options.length) {
-          input = '<div class="et-options">' + q.options.map(function (o, oi) {
-            var letter = String.fromCharCode(65 + oi);
-            var checked = val === letter ? 'checked' : '';
-            return '<label class="et-option"><input type="radio" name="q-' + q.questionNumber + '" value="' + letter + '" ' + checked
-              + ' data-q="' + q.questionNumber + '" data-kind="' + kind + '"> ' + letter + '. ' + esc(o) + '</label>';
-          }).join('') + '</div>';
-        } else {
-          input = '<input type="text" class="et-text-input" data-q="' + q.questionNumber + '" data-kind="' + kind + '" value="' + esc(val) + '" placeholder="Nhập câu trả lời…">';
-        }
-        return '<div class="et-question"><div class="et-q-num">Câu ' + q.questionNumber + '</div>'
-          + '<div class="et-q-prompt">' + esc(q.questionText) + '</div>' + input + '</div>';
-      }).join('');
-      return '<div class="et-group">' + head + qs + '</div>';
-    }).join('');
+    return (groups || []).map(function (g) { return renderQuestionGroup(g, savedByNum, kind); }).join('');
   }
 
   function renderReading(rSection) {
     var savedByNum = {};
     (rSection.answers || []).forEach(function (a) { savedByNum[a.questionNumber] = a.userAnswer; });
     var passage = rSection.passage || {};
+    // passage.content is real admin-authored HTML (paragraphs, <strong>,
+    // etc.) — inject it as-is, matching reading-v2.js's switchPassage()
+    // (only the title is escaped). Escaping it here was the bug: it made
+    // students see literal "<p><strong>...</strong></p>" tags on screen.
     var content = '<div class="et-passage"><h3>' + esc(passage.title || '') + '</h3>'
-      + '<div class="et-passage-content">' + esc(passage.content || '').split('\n').map(function (p) { return '<p>' + p + '</p>'; }).join('') + '</div></div>';
+      + '<div class="et-passage-content">' + (passage.content || '') + '</div></div>';
     var groups = passage.questionGroups && passage.questionGroups.length
       ? passage.questionGroups
       : [{ groupType: 'plain', questions: passage.questions || [] }];
@@ -341,7 +460,19 @@
     body._etWired = true;
     body.addEventListener('change', function (e) {
       var t = e.target;
-      if (!t || !t.dataset || !t.dataset.kind) return;
+      if (!t || !t.dataset) return;
+      // A 'checkbox'-type question ("choose N") is several checkboxes
+      // sharing one data-checkbox-q — the saved answer is the JSON array of
+      // every currently-checked option's letter, matching the backend's
+      // matchSingleAnswer() checkbox branch.
+      if (t.dataset.checkboxQ) {
+        var qnum = Number(t.dataset.checkboxQ);
+        var checked = Array.prototype.slice.call(body.querySelectorAll('[data-checkbox-q="' + qnum + '"]:checked'))
+          .map(function (el) { return el.value; });
+        saveAnswer({ section: t.dataset.kind, questionNumber: qnum, answer: JSON.stringify(checked) });
+        return;
+      }
+      if (!t.dataset.kind) return;
       if (t.dataset.kind === 'grammar') {
         saveAnswer({ section: 'grammar', questionId: t.dataset.q, answer: t.value });
       } else {
