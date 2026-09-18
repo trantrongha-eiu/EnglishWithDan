@@ -182,14 +182,120 @@
     .st-ref li{font-size:13.5px;color:var(--st-ink2);line-height:1.7;}
     .st-ref .st-ref-note{font-size:13px;color:var(--st-ink3);font-style:italic;margin-top:5px;}
 
+    /* ══════════ 7-week timetable tracker ══════════ */
+    .tt-hero{
+      margin:28px 0 30px;padding:30px 28px;border-radius:18px;
+      background:linear-gradient(135deg,var(--st-accent-soft),transparent 70%),var(--st-surface);
+      border:1px solid var(--st-hair);
+    }
+    .tt-hero-eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent);margin-bottom:10px;}
+    .tt-hero h1{margin:0;font-size:clamp(20px,3.2vw,27px);font-weight:800;line-height:1.28;color:var(--st-ink);text-wrap:balance;}
+    .tt-hero .tt-hero-sub{margin:8px 0 0;font-size:14px;font-weight:600;color:var(--st-ink2);}
+    .tt-hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+    .tt-hero-meta span{
+      font-size:12px;font-weight:700;color:var(--st-ink2);background:var(--st-surface);
+      border:1px solid var(--st-hair);border-radius:20px;padding:5px 12px;
+    }
+
+    /* Stat tiles */
+    .tt-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0;}
+    .tt-stat{background:var(--st-surface);border:1px solid var(--st-hair);border-radius:12px;padding:14px 10px;text-align:center;}
+    .tt-stat .tt-stat-num{font-size:23px;font-weight:800;color:var(--st-accent);line-height:1.2;}
+    .tt-stat .tt-stat-label{font-size:11.5px;color:var(--st-ink3);margin-top:3px;font-weight:600;}
+
+    /* Overall progress bar */
+    .tt-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+    .tt-progress-row .tt-progress-txt{font-size:12.5px;font-weight:700;color:var(--st-ink2);white-space:nowrap;}
+    .tt-progress-track{flex:1;height:10px;border-radius:6px;background:var(--st-ground);border:1px solid var(--st-hair);overflow:hidden;}
+    .tt-progress-fill{height:100%;background:var(--st-accent);border-radius:6px;transition:width .25s ease;width:0%;}
+
+    /* Week cards */
+    .tt-week{background:var(--st-surface);border:1px solid var(--st-hair);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+    .tt-week[open]{border-color:var(--st-accent);}
+    .tt-week summary{
+      list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:12px;
+    }
+    .tt-week summary::-webkit-details-marker{display:none;}
+    .tt-week-badge{
+      flex-shrink:0;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+      background:var(--st-accent);color:#fff;font-weight:800;font-size:13px;
+    }
+    .tt-week-head{min-width:0;flex:1;}
+    .tt-week-head .tt-week-title{display:block;font-weight:800;font-size:14.5px;color:var(--st-ink);}
+    .tt-week-head .tt-week-goal{display:block;font-size:12.5px;color:var(--st-ink3);margin-top:2px;}
+    .tt-week-count{
+      flex-shrink:0;font-size:12px;font-weight:800;color:var(--st-accent);background:var(--st-accent-soft);
+      border-radius:20px;padding:4px 11px;
+    }
+    .tt-week-count.done{color:var(--st-green);background:rgba(21,128,61,.12);}
+    .tt-week summary i.fa-chevron-down{flex-shrink:0;color:var(--st-ink3);transition:transform .18s;}
+    .tt-week[open] summary i.fa-chevron-down{transform:rotate(180deg);}
+    .tt-week-body{padding:0 18px 18px;}
+
+    /* Session checklist rows */
+    .tt-session{display:flex;gap:11px;padding:10px 0;border-bottom:1px dashed var(--st-hair);align-items:flex-start;}
+    .tt-session:last-of-type{border-bottom:none;}
+    .tt-session input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--st-accent);cursor:pointer;flex-shrink:0;}
+    .tt-session-body{min-width:0;}
+    .tt-session-format{
+      display:inline-block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+      color:var(--st-accent);background:var(--st-accent-soft);padding:2px 8px;border-radius:20px;margin-bottom:4px;
+    }
+    .tt-session-title{font-weight:700;font-size:13.5px;color:var(--st-ink);}
+    .tt-session-content{font-size:13px;color:var(--st-ink2);line-height:1.6;margin-top:3px;}
+    .tt-session.done .tt-session-title{text-decoration:line-through;color:var(--st-ink3);}
+    .tt-session.done .tt-session-content{opacity:.65;}
+
+    /* Log tracker */
+    .tt-log-form{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+    .tt-log-form select,.tt-log-form input{
+      font-family:inherit;font-size:13px;padding:9px 11px;border:1px solid var(--st-hair);border-radius:9px;
+      background:var(--st-ground);color:var(--st-ink);
+    }
+    .tt-log-form .tt-log-label{width:170px;max-width:100%;}
+    .tt-log-form .tt-log-week{width:78px;}
+    .tt-log-form .tt-log-mistake{flex:1 1 180px;min-width:140px;}
+    .tt-log-form button{
+      background:var(--st-accent);color:#fff;border:none;border-radius:9px;padding:9px 18px;
+      font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;
+    }
+    .tt-log-form button:hover{filter:brightness(1.08);}
+    .tt-log-table-wrap{overflow-x:auto;border:1px solid var(--st-hair);border-radius:12px;}
+    table.tt-log-table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px;}
+    table.tt-log-table th,table.tt-log-table td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--st-hair);vertical-align:middle;}
+    table.tt-log-table th{background:var(--st-ground);font-weight:800;color:var(--st-ink);white-space:nowrap;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;}
+    table.tt-log-table td{color:var(--st-ink2);}
+    table.tt-log-table tr:last-child td{border-bottom:none;}
+    .tt-log-skill-badge{
+      font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:capitalize;white-space:nowrap;
+      background:var(--st-accent-soft);color:var(--st-accent);
+    }
+    .tt-log-reviewed{width:18px;height:18px;accent-color:var(--st-green);cursor:pointer;}
+    .tt-log-del{background:none;border:none;color:var(--st-red);cursor:pointer;font-size:14px;padding:4px 6px;border-radius:6px;}
+    .tt-log-del:hover{background:var(--st-amber-bg);}
+    .tt-log-empty{padding:22px;text-align:center;color:var(--st-ink3);font-size:13px;}
+
+    /* Simple grid for Task 1 checklist */
+    .tt-t1-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+    .tt-t1-card{background:var(--st-ground);border:1px solid var(--st-hair);border-radius:12px;padding:13px 15px;}
+    .tt-t1-card h4{margin:0 0 8px;font-size:13.5px;font-weight:800;color:var(--st-ink);}
+    .tt-t1-card ul{margin:0;padding-left:16px;}
+    .tt-t1-card li{font-size:12.5px;color:var(--st-ink2);line-height:1.7;}
+
     .st-mob-toc{display:none;}
 
     @media (max-width:960px){
       .st-sidebar{display:none;}
+      /* .st-layout is a flex ROW (sidebar/mob-toc/main as siblings); without
+         wrap, .st-mob-toc becoming display:block here still only claims its
+         own content width as a flex item and squeezes .st-main into the
+         leftover space instead of stacking above it full-width. */
+      .st-layout{flex-wrap:wrap;}
       .st-mob-toc{
-        display:block;margin:16px clamp(12px,4vw,20px) 0;background:var(--st-surface);
+        display:block;flex:1 1 100%;margin:16px clamp(12px,4vw,20px) 0;background:var(--st-surface);
         border:1px solid var(--st-hair);border-radius:12px;overflow:hidden;
       }
+      .st-main{flex:1 1 100%;}
       .st-mob-toc summary{
         list-style:none;cursor:pointer;padding:12px 16px;font-weight:800;font-size:13.5px;color:var(--st-ink);
         display:flex;justify-content:space-between;align-items:center;
@@ -210,6 +316,7 @@
 <script src="js/nav.js?v=20260911para"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
 <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -219,6 +326,7 @@
   <aside class="st-sidebar">
     <p class="st-sidebar-title">Mục lục</p>
     <nav class="st-toc" id="st-toc">
+      <a href="#sec-timetable"><span class="st-toc-num">🗓️</span> Lộ trình luyện đề 7 tuần</a>
       <a href="#sec-read"><span class="st-toc-num">I</span> Cách luyện đề Reading</a>
       <a href="#sec-listen"><span class="st-toc-num">II</span> Cách luyện đề Listening</a>
       <a href="#sec-track"><span class="st-toc-num">III</span> Sau mỗi đề: đừng chỉ ghi điểm</a>
@@ -234,6 +342,7 @@
   <details class="st-mob-toc">
     <summary>Mục lục <i class="fas fa-chevron-down"></i></summary>
     <nav class="st-toc">
+      <a href="#sec-timetable"><span class="st-toc-num">🗓️</span> Lộ trình luyện đề 7 tuần</a>
       <a href="#sec-read"><span class="st-toc-num">I</span> Cách luyện đề Reading</a>
       <a href="#sec-listen"><span class="st-toc-num">II</span> Cách luyện đề Listening</a>
       <a href="#sec-track"><span class="st-toc-num">III</span> Sau mỗi đề: đừng chỉ ghi điểm</a>
@@ -255,6 +364,141 @@
         <p>Reading &amp; Listening không phải hai kỹ năng tăng điểm chỉ nhờ cày thật nhiều đề.
         Quy trình đúng: <b>làm đề → phát hiện lỗi → hiểu nguyên nhân → sửa lỗi → gặp lại → kiểm tra lại</b>.</p>
       </header>
+
+      <!-- ══════════ 0. 7-WEEK TIMETABLE ══════════ -->
+      <section class="st-sec" id="sec-timetable">
+        <header class="tt-hero">
+          <div class="tt-hero-eyebrow">🗓️ 7-Week Timetable to Conquer the IELTS</div>
+          <h1>Lộ trình luyện đề 7 tuần cuối trước kỳ thi</h1>
+          <p class="tt-hero-sub">Hoàn thiện kỹ năng → sửa lỗi → luyện đề → ổn định phong độ trước ngày thi.</p>
+          <div class="tt-hero-meta">
+            <span><i class="fas fa-calendar-week"></i> Mỗi tuần: 3 buổi tại lớp + 3 buổi tự học</span>
+            <span><i class="fas fa-clock"></i> ~2 giờ / buổi</span>
+            <span><i class="fas fa-flag-checkered"></i> 7 tuần · 42 buổi</span>
+          </div>
+        </header>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-chart-simple"></i> Tiến độ của bạn</div>
+          <div class="tt-progress-row">
+            <span class="tt-progress-txt" id="tt-progress-txt">0/42 buổi</span>
+            <div class="tt-progress-track"><div class="tt-progress-fill" id="tt-progress-fill"></div></div>
+          </div>
+          <div class="tt-stats">
+            <div class="tt-stat"><div class="tt-stat-num" id="tt-stat-sessions">0</div><div class="tt-stat-label">Buổi đã hoàn thành</div></div>
+            <div class="tt-stat"><div class="tt-stat-num" id="tt-stat-tests">0</div><div class="tt-stat-label">Đề đã luyện</div></div>
+            <div class="tt-stat"><div class="tt-stat-num" id="tt-stat-reviewed">0</div><div class="tt-stat-label">Đề đã review</div></div>
+          </div>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-table"></i> Tổng quan 7 tuần</div>
+          <div class="st-table-wrap">
+            <table class="st-table">
+              <thead><tr><th>Tuần</th><th>Trọng tâm</th><th>Reading</th><th>Listening</th><th>Speaking</th><th>Writing T2</th><th>Writing T1</th></tr></thead>
+              <tbody>
+                <tr><td><b>W1</b></td><td>Làm quen giai đoạn nước rút</td><td>P1–P2: dạng câu hỏi + tìm đáp án</td><td>S1–S2</td><td>P1–P2 Forecast</td><td>Type 01: Adv/Disadv</td><td>Dynamic Chart</td></tr>
+                <tr><td><b>W2</b></td><td>Phát triển ý + xử lý bài</td><td>P1–P2: paraphrase + locating</td><td>S1–S2</td><td>P1–P2 Forecast</td><td>Type 02: Discuss Both</td><td>Static Chart</td></tr>
+                <tr><td><b>W3</b></td><td>Cause/Solution</td><td>P1–P2: T/F/NG, Matching</td><td>S2–S4</td><td>P1–P2 Forecast</td><td>Type 03: Cause–Solution</td><td>Process</td></tr>
+                <tr><td><b>W4</b></td><td>Effect + Cause/Effect</td><td>P1–P2: Matching, MC</td><td>S1–S2–S4</td><td>P1–P2 Forecast</td><td>Type 04 + 05</td><td>Map</td></tr>
+                <tr><td><b>W5</b></td><td>Opinion + lập trường</td><td>P1–P2 tổng hợp</td><td>S1–S2–S4 tổng hợp</td><td>P1–P2 Forecast</td><td>Type 06: Agree/Disagree</td><td>Dynamic + Static</td></tr>
+                <tr><td><b>W6</b></td><td>Tổng hợp 7 dạng</td><td>P1–P2 full practice</td><td>S1–S2–S4 full practice</td><td>P1–P2 Forecast</td><td>Type 07 + review</td><td>Process + Map</td></tr>
+                <tr><td><b>W7</b></td><td>Final Review + Exam Simulation</td><td>P1–P2 + lỗi cá nhân</td><td>S1–S2–S4 + lỗi cá nhân</td><td>P1–P2 Forecast</td><td>Review cả 7 dạng</td><td>Review cả 4 dạng</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-list-check"></i> Chi tiết từng tuần — tick vào từng buổi khi hoàn thành</div>
+          <div id="tt-weeks"><p class="tt-log-empty">Đang tải...</p></div>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-arrows-spin"></i> Weekly Study Cycle</div>
+          <p>Lặp lại cùng một chu trình trong cả 7 tuần:</p>
+          <div class="st-flow">
+            <span class="st-chip">① TEST</span><span class="st-flow-sep">→</span>
+            <span class="st-chip">② CHECK</span><span class="st-flow-sep">→</span>
+            <span class="st-chip">③ ANALYSE</span><span class="st-flow-sep">→</span>
+            <span class="st-chip">④ REWRITE</span><span class="st-flow-sep">→</span>
+            <span class="st-chip">⑤ LEARN</span><span class="st-flow-sep">→</span>
+            <span class="st-chip">⑥ RETEST</span>
+          </div>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-pen-ruler"></i> Writing checklist — 7 tuần</div>
+          <p><b>TASK 2</b> — học sinh phải nhận diện và viết được cả 7 dạng:</p>
+          <div class="st-table-wrap">
+            <table class="st-table">
+              <thead><tr><th>Type</th><th>Dạng bài</th></tr></thead>
+              <tbody>
+                <tr><td><b>01</b></td><td>Advantages &amp; Disadvantages</td></tr>
+                <tr><td><b>02</b></td><td>Discuss Both Views</td></tr>
+                <tr><td><b>03</b></td><td>Cause–Solution</td></tr>
+                <tr><td><b>04</b></td><td>Effect–Solution</td></tr>
+                <tr><td><b>05</b></td><td>Cause–Effect</td></tr>
+                <tr><td><b>06</b></td><td>Agree/Disagree</td></tr>
+                <tr><td><b>07</b></td><td>Positive/Negative Development</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:10px">Với mỗi body paragraph: <b>IDEA → WHY → HOW/WHO → RESULT → FURTHER RESULT → EXAMPLE</b>
+          (không cần dùng hết — mục tiêu là biết <i>giải thích và phát triển ý</i>, không chỉ nêu ý).</p>
+          <p style="margin-top:14px"><b>TASK 1</b> — cần luyện đủ 4 dạng:</p>
+          <div class="tt-t1-grid" style="margin-top:8px">
+            <div class="tt-t1-card"><h4>① Dynamic Chart</h4><ul><li>Xác định xu hướng</li><li>So sánh</li><li>Gom nhóm số liệu</li><li>Chọn highlights</li><li>Chia Body 1/2</li></ul></div>
+            <div class="tt-t1-card"><h4>② Static Chart</h4><ul><li>Tìm số liệu lớn/nhỏ</li><li>So sánh</li><li>Gom nhóm</li><li>Chọn highlights</li><li>Chia body hợp lý</li></ul></div>
+            <div class="tt-t1-card"><h4>③ Process</h4><ul><li>Xác định số bước</li><li>Beginning→middle→end</li><li>Gom bước liên quan</li><li>Từ chỉ trình tự</li><li>Viết overview</li></ul></div>
+            <div class="tt-t1-card"><h4>④ Map</h4><ul><li>Xác định thay đổi chính</li><li>Gom nhóm khu vực</li><li>So sánh before/after</li><li>Chọn features nổi bật</li><li>Chia Body 1/2</li></ul></div>
+          </div>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-headphones-simple"></i> Reading · Listening · Speaking focus</div>
+          <p><b>Reading</b> — ưu tiên Passage 1 + 2. Quy trình: <b>Question → Keyword → Paraphrase → Locate → Check → Answer</b>.
+          Sau mỗi bài ghi: sai câu nào? vì sao sai? keyword ở đâu? paraphrase là gì? lần sau tránh lỗi thế nào?</p>
+          <p><b>Listening</b> — ưu tiên Section 1 → 2 → 4. Luyện: prediction, keyword, paraphrase, distractors, signposting, spelling, singular/plural, number/date/name.
+          Sau khi chữa: nghe lại → check transcript → tìm đoạn chứa đáp án → xác định vì sao chưa bắt được đáp án.</p>
+          <p><b>Speaking</b> — Part 1 + Part 2 Forecast. Mỗi tuần: học topic → chuẩn bị vocabulary/collocations → luyện trả lời → ghi âm → nghe lại → sửa pronunciation/grammar/fluency → nói lại lần 2.
+          Không học thuộc bài mẫu — mục tiêu là có ý tưởng + vocabulary + cách phát triển câu trả lời.</p>
+        </div>
+
+        <div class="st-callout">
+          <div class="st-callout-t"><i class="fas fa-star"></i> Final 7-Week Rule</div>
+          <p><b>Tại lớp:</b> Chữa lỗi → Rewrite → Học mới → Mock Test &nbsp;·&nbsp; <b>Ở nhà:</b> Practice → Analyse → Repeat<br>
+          Mỗi tuần phải có 3 thứ: <b>① Mock score · ② Error log · ③ Rewritten answers</b>.</p>
+        </div>
+
+        <div class="st-block">
+          <div class="st-block-label"><i class="fas fa-clipboard-list"></i> Nhật ký luyện đề — tự quản lý &amp; theo dõi</div>
+          <p>Ghi lại mỗi đề bạn luyện trên website: đã review chưa, và lỗi hay mắc phải. Đừng chỉ hỏi "được bao nhiêu điểm" — hãy hỏi "tuần này đã sửa được lỗi gì".</p>
+          <form class="tt-log-form" id="tt-log-form">
+            <select id="tt-log-skill" required>
+              <option value="reading">Reading</option>
+              <option value="listening">Listening</option>
+              <option value="writing">Writing</option>
+              <option value="speaking">Speaking</option>
+              <option value="full">Full Mock</option>
+            </select>
+            <select id="tt-log-week" class="tt-log-week">
+              <option value="">Tuần?</option>
+              <option value="1">W1</option><option value="2">W2</option><option value="3">W3</option>
+              <option value="4">W4</option><option value="5">W5</option><option value="6">W6</option><option value="7">W7</option>
+            </select>
+            <input type="text" id="tt-log-label" class="tt-log-label" maxlength="120" placeholder="Tên đề (VD: Cambridge 18 Test 2)">
+            <input type="text" id="tt-log-mistake" class="tt-log-mistake" maxlength="500" placeholder="Lỗi hay mắc phải (tuỳ chọn)">
+            <button type="submit"><i class="fas fa-plus"></i> Thêm</button>
+          </form>
+          <div class="tt-log-table-wrap">
+            <table class="tt-log-table">
+              <thead><tr><th>Ngày</th><th>Tuần</th><th>Kỹ năng</th><th>Tên đề</th><th>Lỗi hay mắc phải</th><th>Đã review</th><th></th></tr></thead>
+              <tbody id="tt-log-tbody"><tr><td colspan="7" class="tt-log-empty">Chưa có đề nào — thêm đề đầu tiên ở trên.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
       <!-- ══════════ I. READING ══════════ -->
       <section class="st-sec" id="sec-read">
@@ -667,6 +911,307 @@
       if (d) d.removeAttribute('open');
     });
   });
+</script>
+
+<!-- 7-week timetable tracker: renders the weekly checklist + wires the
+     personal test-log widget to /api/exam-timetable. Kept as its own
+     script block (separate from the TOC/scroll-spy script above) since it
+     owns a clearly separate concern. -->
+<script>
+(function () {
+  'use strict';
+  if (!(window.AuthService && window.AuthService.requirePageAuth)) return;
+
+  var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  async function api(path, opts) {
+    opts = opts || {};
+    var token = window.AuthService && window.AuthService.getToken();
+    var headers = Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: 'Bearer ' + token } : {}, opts.headers || {});
+    var res = await fetch(API + '/exam-timetable' + path, Object.assign({}, opts, { headers: headers }));
+    if (window.ApiClient && window.ApiClient.handleResponse) return window.ApiClient.handleResponse(res);
+    return res.json();
+  }
+
+  var SKILL_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', full: 'Full Mock' };
+
+  var TIMETABLE_WEEKS = [
+    { n: 1, title: 'Build the Foundation', goal: 'Ổn định cách làm bài, bắt đầu thói quen làm → chữa → rewrite.',
+      focus: { t2: 'Type 01 – Advantages & Disadvantages', t1: 'Dynamic Chart → chọn highlights + chia nhóm số liệu.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần trước', c: 'Chữa Reading P1–P2 + Listening S1–S2 của test trước. Phân tích lỗi. Rewrite câu trả lời sai ngay tại lớp.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Reading/Listening + Type 01', c: 'Reading P1–P2: keyword, paraphrase, locating. Listening S1–S2: keyword + prediction. Writing Type 01 – Adv/Disadv.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills', c: 'Full Listening + Reading + Writing + Speaking.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading P1 + P2', c: 'Sau khi chấm: ghi lại lý do sai, không chỉ ghi đáp án.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Listening + Speaking', c: 'Listening S1 + S2 + check transcript. Speaking P1–P2 Forecast.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing', c: '1 Task 1 Dynamic Chart + 1 Task 2 Adv/Disadv.' },
+      ] },
+    { n: 2, title: 'Develop Ideas', goal: 'Phát triển ý và xử lý bài tốt hơn.',
+      focus: { t2: 'Type 02 – Discuss Both Views', t1: 'Static Chart → grouping + chia Body 1/2 + chọn highlights.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần 1', c: 'Chữa Reading + Listening tuần 1. Phân tích lỗi + rewrite toàn bộ câu sai quan trọng.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Reading/Listening + Type 02', c: 'Reading P1–P2: paraphrase + locating. Listening S1–S2: prediction + distractors. Writing Type 02 – Discuss Both Views. Speaking P1–P2 Forecast.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills', c: 'Full 4 skills.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading P1–P2', c: 'Tập trung paraphrase và locating.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Listening + Speaking', c: 'Listening S1–S2 + Speaking P1–P2 Forecast.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing', c: 'Static Chart + Task 2 Discuss Both Views.' },
+      ] },
+    { n: 3, title: 'Cause & Solution', goal: 'Làm chủ dạng Cause–Solution.',
+      focus: { t2: 'Type 03 – Cause–Solution', t1: 'Process → xác định stages, sequence, nhóm các bước.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần 2', c: 'Chữa Reading + Listening tuần 2 + rewrite. Tổng hợp các lỗi lặp lại.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Reading/Listening + Type 03', c: 'Reading P1–P2: T/F/NG + Matching. Listening S2–S4: prediction + keyword + signposting. Writing Type 03 – Cause–Solution.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills', c: 'Full 4 skills.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading P1–P2', c: 'T/F/NG + Matching.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Listening + Speaking', c: 'Listening S2 + S4 + Speaking P1–P2 Forecast.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing', c: 'Process + Task 2 Cause–Solution.' },
+      ] },
+    { n: 4, title: 'Effect & Cause–Effect', goal: 'Xử lý Effect–Solution và Cause–Effect.',
+      focus: { t2: 'Type 04 – Effect–Solution + Type 05 – Cause–Effect', t1: 'Map → identify changes, group locations, viết overview.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần 3', c: 'Chữa Reading + Listening tuần 3 + rewrite. Tập trung lỗi do paraphrase và distractor.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Reading/Listening + Type 04+05', c: 'Reading P1–P2: Multiple Choice + Matching. Listening S1–S2–S4. Writing Type 04 + Type 05. Task 1 Map.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills', c: 'Full 4 skills.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading P1–P2', c: 'Mixed question types.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Listening + Speaking', c: 'Listening S1–S2–S4 + Speaking P1–P2 Forecast.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing', c: 'Map + Task 2 Cause–Effect / Effect–Solution.' },
+      ] },
+    { n: 5, title: 'Opinion & Position', goal: 'Vững lập trường ở dạng Agree/Disagree.',
+      focus: { t2: 'Type 06 – Agree/Disagree', t1: 'Dynamic + Static Chart → grouping + body division + highlights.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần 4', c: 'Chữa Reading + Listening tuần 4 + rewrite. Cá nhân hóa error log.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Reading/Listening tổng hợp + Type 06', c: 'Reading P1–P2 tổng hợp. Listening S1–S2–S4 tổng hợp. Writing Type 06 – Agree/Disagree. Speaking P1–P2 Forecast.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills', c: 'Full 4 skills.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading full practice', c: 'Reading P1–P2 full practice + error analysis.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Listening + Speaking', c: 'Listening S1–S2–S4 + Speaking P1–P2 Forecast.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing', c: 'Dynamic/Static Chart + Agree/Disagree essay.' },
+      ] },
+    { n: 6, title: 'Master All Question Types', goal: 'Tổng hợp cả 7 dạng Task 2.',
+      focus: { t2: 'Type 07 – Positive/Negative Development + review 7 dạng', t1: 'Process + Map review.' },
+      sessions: [
+        { k: 'class1', fmt: 'Chữa test', t: 'Chữa test tuần 5', c: 'Chữa Reading + Listening tuần 5 + rewrite. Tập trung lỗi cá nhân.' },
+        { k: 'class2', fmt: 'Kiến thức mới', t: 'Review 7 dạng + Type 07', c: 'Review toàn bộ 7 dạng Task 2. Writing Type 07 – Positive/Negative Development. Task 1 Process + Map.' },
+        { k: 'class3', fmt: 'Full Mock', t: 'Full 4 skills (điều kiện thi thật)', c: 'Full 4 skills dưới điều kiện thi thật.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading + Listening', c: 'Reading P1–P2 + Listening S1–S2–S4.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Speaking', c: 'Speaking P1–P2 Forecast + tự ghi âm và tự sửa.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Writing ngẫu nhiên', c: 'Chọn ngẫu nhiên 1 trong 7 dạng Task 2 + 1 Task 1 bất kỳ.' },
+      ] },
+    { n: 7, title: 'Final Exam Simulation', goal: 'Không học kiến thức mới — chỉ ổn định phong độ và sửa lỗi cá nhân.',
+      focus: { t2: 'Review cả 7 dạng Task 2', t1: 'Review cả 4 dạng Task 1' },
+      sessions: [
+        { k: 'class1', fmt: 'Final Review', t: 'Chữa Mock tuần 6', c: 'Chữa Reading + Listening Mock tuần 6. Rewrite lỗi quan trọng. Ôn error log cá nhân.' },
+        { k: 'class2', fmt: 'Final Review', t: 'Review Writing + Speaking', c: 'Review Writing 7 dạng + Task 1 4 dạng. Speaking P1–P2 Forecast. Chiến thuật xử lý thời gian.' },
+        { k: 'class3', fmt: 'Final Mock', t: 'FINAL MOCK', c: 'Full 4 skills dưới điều kiện gần giống phòng thi thật.' },
+        { k: 'home1', fmt: '2h tự học', t: 'Reading + Listening', c: 'Chỉ tập trung dạng học sinh thường sai.' },
+        { k: 'home2', fmt: '2h tự học', t: 'Speaking + Writing', c: 'Speaking P1–P2 Forecast + Writing Task 2: 1 đề bất kỳ trong 7 dạng.' },
+        { k: 'home3', fmt: '2h tự học', t: 'Final Light Practice', c: '1 Task 1 + review template + vocabulary + error log. Không làm quá tải.' },
+      ] },
+  ];
+
+  var state = { checklist: {}, testLogs: [], stats: { totalChecked: 0, totalItems: 42, totalLogs: 0, totalReviewed: 0 } };
+
+  function renderStats() {
+    var pct = state.stats.totalItems ? Math.round((state.stats.totalChecked / state.stats.totalItems) * 100) : 0;
+    var fill = document.getElementById('tt-progress-fill');
+    var txt = document.getElementById('tt-progress-txt');
+    if (fill) fill.style.width = pct + '%';
+    if (txt) txt.textContent = state.stats.totalChecked + '/' + state.stats.totalItems + ' buổi (' + pct + '%)';
+    var elS = document.getElementById('tt-stat-sessions'); if (elS) elS.textContent = state.stats.totalChecked;
+    var elT = document.getElementById('tt-stat-tests'); if (elT) elT.textContent = state.stats.totalLogs;
+    var elR = document.getElementById('tt-stat-reviewed'); if (elR) elR.textContent = state.stats.totalReviewed;
+  }
+
+  function weekDoneCount(w) {
+    var n = 0;
+    w.sessions.forEach(function (s) { if (state.checklist['w' + w.n + '-' + s.k]) n++; });
+    return n;
+  }
+
+  function renderWeeks() {
+    var host = document.getElementById('tt-weeks');
+    if (!host) return;
+    host.innerHTML = TIMETABLE_WEEKS.map(function (w) {
+      var done = weekDoneCount(w);
+      var countCls = done === w.sessions.length ? 'tt-week-count done' : 'tt-week-count';
+      var sessionsHtml = w.sessions.map(function (s) {
+        var key = 'w' + w.n + '-' + s.k;
+        var checked = !!state.checklist[key];
+        return '' +
+          '<div class="tt-session' + (checked ? ' done' : '') + '" data-key="' + key + '">' +
+            '<input type="checkbox" data-tt-check="' + key + '"' + (checked ? ' checked' : '') + '>' +
+            '<div class="tt-session-body">' +
+              '<div class="tt-session-format">' + esc(s.fmt) + '</div>' +
+              '<div class="tt-session-title">' + esc(s.t) + '</div>' +
+              '<div class="tt-session-content">' + esc(s.c) + '</div>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+      return '' +
+        '<details class="tt-week" id="tt-week-' + w.n + '"' + (w.n === 1 ? ' open' : '') + '>' +
+          '<summary>' +
+            '<span class="tt-week-badge">W' + w.n + '</span>' +
+            '<span class="tt-week-head"><span class="tt-week-title">' + esc(w.title) + '</span><span class="tt-week-goal">' + esc(w.goal) + '</span></span>' +
+            '<span class="' + countCls + '">' + done + '/' + w.sessions.length + '</span>' +
+            '<i class="fas fa-chevron-down"></i>' +
+          '</summary>' +
+          '<div class="tt-week-body">' +
+            sessionsHtml +
+            '<div class="st-callout" style="margin-top:12px">' +
+              '<div class="st-callout-t"><i class="fas fa-pen-nib"></i> Writing focus</div>' +
+              '<p><b>Task 2:</b> ' + esc(w.focus.t2) + '<br><b>Task 1:</b> ' + esc(w.focus.t1) + '</p>' +
+            '</div>' +
+          '</div>' +
+        '</details>';
+    }).join('');
+
+    host.querySelectorAll('[data-tt-check]').forEach(function (cb) {
+      cb.addEventListener('change', function () { onToggleSession(cb.getAttribute('data-tt-check'), cb.checked); });
+    });
+  }
+
+  // Updates one week's "x/6" badge in place, without touching innerHTML —
+  // a full renderWeeks() re-render would reset every <details> back to its
+  // default open/closed state, collapsing whichever week the student is
+  // actually looking at right when they check something off.
+  function updateWeekBadge(weekNum) {
+    var w = TIMETABLE_WEEKS.filter(function (x) { return x.n === weekNum; })[0];
+    if (!w) return;
+    var badge = document.querySelector('#tt-week-' + weekNum + ' .tt-week-count');
+    if (!badge) return;
+    var done = weekDoneCount(w);
+    badge.textContent = done + '/' + w.sessions.length;
+    badge.classList.toggle('done', done === w.sessions.length);
+  }
+
+  function applyChecklistUi(key, checked) {
+    var row = document.querySelector('.tt-session[data-key="' + key + '"]');
+    if (row) {
+      row.classList.toggle('done', checked);
+      var cb = row.querySelector('input[type="checkbox"]');
+      if (cb) cb.checked = checked;
+    }
+    var weekNum = parseInt((key.match(/^w(\d+)-/) || [])[1], 10);
+    if (weekNum) updateWeekBadge(weekNum);
+  }
+
+  async function onToggleSession(key, checked) {
+    state.checklist[key] = checked;
+    applyChecklistUi(key, checked);
+    renderStats();
+    try {
+      var data = await api('/checklist/' + encodeURIComponent(key), { method: 'PUT', body: JSON.stringify({ checked: checked }) });
+      if (data && data.success) { state = Object.assign(state, data); renderStats(); }
+    } catch (e) {
+      // Revert on failure — the optimistic UI update above shouldn't lie.
+      state.checklist[key] = !checked;
+      applyChecklistUi(key, !checked);
+      renderStats();
+      if (window.showToast) window.showToast('Không lưu được, thử lại nhé', 'error');
+    }
+  }
+
+  function fmtDate(d) {
+    try { return new Date(d).toLocaleDateString('vi-VN'); } catch (e) { return ''; }
+  }
+
+  function renderLogs() {
+    var tbody = document.getElementById('tt-log-tbody');
+    if (!tbody) return;
+    if (!state.testLogs.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="tt-log-empty">Chưa có đề nào — thêm đề đầu tiên ở trên.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.testLogs.map(function (l) {
+      return '' +
+        '<tr data-log-id="' + l.id + '">' +
+          '<td>' + esc(fmtDate(l.date)) + '</td>' +
+          '<td>' + (l.week ? 'W' + l.week : '—') + '</td>' +
+          '<td><span class="tt-log-skill-badge">' + esc(SKILL_LABEL[l.skill] || l.skill) + '</span></td>' +
+          '<td>' + esc(l.label || '—') + '</td>' +
+          '<td>' + esc(l.mistake || '—') + '</td>' +
+          '<td><input type="checkbox" class="tt-log-reviewed" data-log-reviewed="' + l.id + '"' + (l.reviewed ? ' checked' : '') + '></td>' +
+          '<td><button type="button" class="tt-log-del" data-log-del="' + l.id + '" title="Xoá"><i class="fas fa-trash"></i></button></td>' +
+        '</tr>';
+    }).join('');
+
+    tbody.querySelectorAll('[data-log-reviewed]').forEach(function (cb) {
+      cb.addEventListener('change', function () { onToggleReviewed(cb.getAttribute('data-log-reviewed'), cb.checked); });
+    });
+    tbody.querySelectorAll('[data-log-del]').forEach(function (btn) {
+      btn.addEventListener('click', function () { onDeleteLog(btn.getAttribute('data-log-del')); });
+    });
+  }
+
+  async function onToggleReviewed(logId, reviewed) {
+    try {
+      var data = await api('/logs/' + logId, { method: 'PATCH', body: JSON.stringify({ reviewed: reviewed }) });
+      if (data && data.success) { state = Object.assign(state, data); renderLogs(); renderStats(); }
+    } catch (e) {
+      if (window.showToast) window.showToast('Không lưu được, thử lại nhé', 'error');
+    }
+  }
+
+  async function onDeleteLog(logId) {
+    try {
+      var data = await api('/logs/' + logId, { method: 'DELETE' });
+      if (data && data.success) { state = Object.assign(state, data); renderLogs(); renderStats(); }
+    } catch (e) {
+      if (window.showToast) window.showToast('Không xoá được, thử lại nhé', 'error');
+    }
+  }
+
+  function wireLogForm() {
+    var form = document.getElementById('tt-log-form');
+    if (!form) return;
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var skill = document.getElementById('tt-log-skill').value;
+      var week = document.getElementById('tt-log-week').value;
+      var label = document.getElementById('tt-log-label').value.trim();
+      var mistake = document.getElementById('tt-log-mistake').value.trim();
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+      try {
+        var data = await api('/logs', { method: 'POST', body: JSON.stringify({ skill: skill, week: week || null, label: label, mistake: mistake }) });
+        if (data && data.success) {
+          state = Object.assign(state, data);
+          renderLogs();
+          renderStats();
+          document.getElementById('tt-log-label').value = '';
+          document.getElementById('tt-log-mistake').value = '';
+          document.getElementById('tt-log-week').value = '';
+          if (window.showToast) window.showToast('Đã thêm vào nhật ký luyện đề', 'success');
+        }
+      } catch (e2) {
+        if (window.showToast) window.showToast('Không thêm được, thử lại nhé', 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+
+  async function init() {
+    renderWeeks();
+    wireLogForm();
+    try {
+      var data = await api('', { method: 'GET' });
+      if (data && data.success) {
+        state = Object.assign(state, data);
+        renderWeeks();
+        renderLogs();
+        renderStats();
+      }
+    } catch (e) {
+      // Not logged in / offline — the static plan content above still
+      // renders fine, just without saved progress.
+      renderLogs();
+    }
+  }
+
+  init();
+})();
 </script>
 
 <!-- Double-click word lookup popup + "save to vocab book" modal

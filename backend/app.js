@@ -132,6 +132,7 @@ app.use('/api/task2',           require('./routes/task2Practice'));
 app.use('/api/task2template',   require('./routes/task2Template'));
 app.use('/api/adv-sentence',    require('./routes/advSentence'));
 app.use('/api/wt1',             require('./routes/wt1'));
+app.use('/api/exam-timetable',  require('./routes/examTimetable'));
 app.use('/api/essential-grammar', require('./routes/essentialGrammar'));
 app.use('/api/reading-tips',    require('./routes/readingTip'));
 app.use('/api/listening-tips',  require('./routes/listeningTip'));
