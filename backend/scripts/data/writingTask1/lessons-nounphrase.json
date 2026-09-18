@@ -1,0 +1,73 @@
+{
+  "lessons": [
+    {
+      "code": "T1-L09B",
+      "moduleCode": "T1-M2",
+      "order": 9.1,
+      "title": "Phụ lục Noun Phrase (1/3) — the number of hay the amount of?",
+      "titleEn": "The number of vs. the amount of",
+      "durationMinutes": 60,
+      "objectives": [
+        "Phân loại danh từ đếm được / không đếm được, chọn đúng the number of / the amount of",
+        "Dùng \"the figure for + tên nước/đối tượng\" (giới từ FOR) và \"the percentage / proportion of\" cho dữ liệu %",
+        "Chia đúng số ít cho chủ ngữ \"the number / the amount / the percentage\""
+      ],
+      "keyLanguage": [
+        "The number of + N đếm được số nhiều + V số ít: the number of cars was…",
+        "The amount of + N không đếm được + V3: the amount of water consumed…",
+        "The percentage / proportion / rate of + N + V: the proportion of students who…",
+        "The figure for + [đối tượng]: the figure for Sweden was higher than that for Norway",
+        "Đếm được: people, students, cars, households, tourists · Không đếm được: water, electricity, oil, energy, waste, fast food"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "T1-L09C",
+      "moduleCode": "T1-M2",
+      "order": 9.2,
+      "title": "Phụ lục Noun Phrase (2/3) — Ba chiến thuật biến đổi noun phrase",
+      "titleEn": "Three Task 1 transformation strategies",
+      "durationMinutes": 60,
+      "objectives": [
+        "Chiến thuật 1: the amount/number of + N + V-ing/V3 (participle bổ nghĩa)",
+        "Chiến thuật 2: đổi \"N + N\" thành \"the + noun + of + object\" (fast food consumption → the consumption of fast food)",
+        "Chiến thuật 3: đổi word form + synonym hợp meaning (consumption → consumed → used/eaten)"
+      ],
+      "keyLanguage": [
+        "the number of cars sold in Japan · the amount of electricity consumed in the UK",
+        "the consumption of electricity · the use of public transport · the production of waste · the ownership of cars",
+        "consumption → consumed · production → produced/generated · use → used/using · ownership → owned",
+        "Synonym phải hợp meaning — không thay từ chỉ vì trông học thuật hơn"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "T1-L09D",
+      "moduleCode": "T1-M2",
+      "order": 9.3,
+      "title": "Phụ lục Noun Phrase (3/3) — Paraphrase tiêu đề biểu đồ & sửa lỗi",
+      "titleEn": "Paraphrasing chart titles & error correction",
+      "durationMinutes": 60,
+      "objectives": [
+        "Quy trình: tìm head noun → đổi word form → xây noun phrase → đưa vào câu",
+        "Paraphrase tiêu đề biểu đồ giữ nguyên meaning, không word-by-word",
+        "Tự sửa lỗi countability, word form, \"There were + %\", \"the figure of\" → \"the figure for\""
+      ],
+      "keyLanguage": [
+        "Fast food consumption in Vietnam, 2000–2020 → the amount of fast food consumed in Vietnam between 2000 and 2020",
+        "Accuracy first, variation second — không cố paraphrase mọi từ",
+        "Checklist: head noun? number vs amount? danh từ số nhiều sau number? V3/V-ing bổ nghĩa đúng noun? collocation tự nhiên?"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    }
+  ]
+}

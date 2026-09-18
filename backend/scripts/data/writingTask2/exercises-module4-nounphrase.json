@@ -1,8 +1,8 @@
 {
   "exercises": [
     {
-      "code": "NP-L04-E01",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E01",
+      "lessonCode": "T2-L19",
       "order": 1,
       "type": "mcq",
       "title": "Noun phrase & Head noun — lý thuyết",
@@ -138,8 +138,8 @@
       ]
     },
     {
-      "code": "NP-L04-E02",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E02",
+      "lessonCode": "T2-L19",
       "order": 2,
       "type": "matching",
       "title": "Nối noun phrase với head noun",
@@ -190,8 +190,8 @@
       ]
     },
     {
-      "code": "NP-L04-E03",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E03",
+      "lessonCode": "T2-L19",
       "order": 3,
       "type": "categorize",
       "title": "Clause hay Noun phrase?",
@@ -257,8 +257,8 @@
       ]
     },
     {
-      "code": "NP-L04-E04",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E04",
+      "lessonCode": "T2-L19",
       "order": 4,
       "type": "gap_fill",
       "title": "Tìm head noun",
@@ -340,8 +340,8 @@
       ]
     },
     {
-      "code": "NP-L04-E05",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E05",
+      "lessonCode": "T2-L19",
       "order": 5,
       "type": "sentence_transform",
       "title": "Clause → Noun phrase",
@@ -407,8 +407,8 @@
       ]
     },
     {
-      "code": "NP-L04-E06",
-      "lessonCode": "NP-L04",
+      "code": "T2-L19-E06",
+      "lessonCode": "T2-L19",
       "order": 6,
       "type": "ordering",
       "title": "Xây noun phrase đúng thứ tự",
@@ -456,8 +456,8 @@
       ]
     },
     {
-      "code": "NP-L05-E01",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E01",
+      "lessonCode": "T2-L20",
       "order": 1,
       "type": "word_form",
       "title": "Verb → Noun (bộ nền tảng)",
@@ -612,8 +612,8 @@
       ]
     },
     {
-      "code": "NP-L05-E02",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E02",
+      "lessonCode": "T2-L20",
       "order": 2,
       "type": "sentence_transform",
       "title": "Verb → noun phrase",
@@ -718,8 +718,8 @@
       ]
     },
     {
-      "code": "NP-L05-E03",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E03",
+      "lessonCode": "T2-L20",
       "order": 3,
       "type": "ordering",
       "title": "Quy trình 4 bước Task 2",
@@ -751,8 +751,8 @@
       ]
     },
     {
-      "code": "NP-L05-E04",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E04",
+      "lessonCode": "T2-L20",
       "order": 4,
       "type": "mcq",
       "title": "Paraphrase Task 2: không word-by-word",
@@ -865,8 +865,8 @@
       ]
     },
     {
-      "code": "NP-L05-E05",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E05",
+      "lessonCode": "T2-L20",
       "order": 5,
       "type": "sentence_writing",
       "title": "Viết câu IELTS từ noun phrase mục tiêu",
@@ -904,8 +904,8 @@
       }
     },
     {
-      "code": "NP-L05-E06",
-      "lessonCode": "NP-L05",
+      "code": "T2-L20-E06",
+      "lessonCode": "T2-L20",
       "order": 6,
       "type": "error_correction",
       "title": "Sửa lỗi noun phrase trong câu Task 2",
@@ -981,8 +981,8 @@
       ]
     },
     {
-      "code": "NP-L06-E01",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E01",
+      "lessonCode": "T2-L21",
       "order": 1,
       "type": "matching",
       "title": "Nối pattern với ví dụ",
@@ -1033,8 +1033,8 @@
       ]
     },
     {
-      "code": "NP-L06-E02",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E02",
+      "lessonCode": "T2-L21",
       "order": 2,
       "type": "gap_fill",
       "title": "Điền giới từ cho pattern",
@@ -1146,8 +1146,8 @@
       ]
     },
     {
-      "code": "NP-L06-E03",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E03",
+      "lessonCode": "T2-L21",
       "order": 3,
       "type": "sentence_transform",
       "title": "Paraphrase câu Task 2 bằng noun phrase",
@@ -1215,8 +1215,8 @@
       ]
     },
     {
-      "code": "NP-L06-E04",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E04",
+      "lessonCode": "T2-L21",
       "order": 4,
       "type": "categorize",
       "title": "Task 1 hay Task 2?",
@@ -1272,8 +1272,8 @@
       ]
     },
     {
-      "code": "NP-L06-E05",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E05",
+      "lessonCode": "T2-L21",
       "order": 5,
       "type": "sentence_writing",
       "title": "Paraphrase đề Task 2 bằng 3 noun phrase",
@@ -1311,8 +1311,8 @@
       }
     },
     {
-      "code": "NP-L06-E06",
-      "lessonCode": "NP-L06",
+      "code": "T2-L21-E06",
+      "lessonCode": "T2-L21",
       "order": 6,
       "type": "paragraph_writing",
       "title": "Viết Introduction Task 2 bằng noun phrase",

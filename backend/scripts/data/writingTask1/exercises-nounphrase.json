@@ -1,8 +1,8 @@
 {
   "exercises": [
     {
-      "code": "NP-L01-E01",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E01",
+      "lessonCode": "T1-L09B",
       "order": 1,
       "type": "categorize",
       "title": "Đếm được → NUMBER, không đếm được → AMOUNT",
@@ -89,8 +89,8 @@
       ]
     },
     {
-      "code": "NP-L01-E02",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E02",
+      "lessonCode": "T1-L09B",
       "order": 2,
       "type": "mcq",
       "title": "Luật number / amount / figure / percentage",
@@ -226,8 +226,8 @@
       ]
     },
     {
-      "code": "NP-L01-E03",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E03",
+      "lessonCode": "T1-L09B",
       "order": 3,
       "type": "gap_fill",
       "title": "Điền number / amount / percentage / figure",
@@ -347,8 +347,8 @@
       ]
     },
     {
-      "code": "NP-L01-E04",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E04",
+      "lessonCode": "T1-L09B",
       "order": 4,
       "type": "error_correction",
       "title": "Sửa lỗi countability & agreement",
@@ -426,8 +426,8 @@
       ]
     },
     {
-      "code": "NP-L01-E05",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E05",
+      "lessonCode": "T1-L09B",
       "order": 5,
       "type": "sentence_transform",
       "title": "Bare phrase → the number/amount of …",
@@ -508,8 +508,8 @@
       ]
     },
     {
-      "code": "NP-L01-E06",
-      "lessonCode": "NP-L01",
+      "code": "T1-L09B-E06",
+      "lessonCode": "T1-L09B",
       "order": 6,
       "type": "sentence_writing",
       "title": "Bài viết — Mức tiêu thụ đồ ăn nhanh (1990)",
@@ -573,8 +573,8 @@
       }
     },
     {
-      "code": "NP-L02-E01",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E01",
+      "lessonCode": "T1-L09C",
       "order": 1,
       "type": "matching",
       "title": "Nối chiến thuật với ví dụ",
@@ -615,8 +615,8 @@
       ]
     },
     {
-      "code": "NP-L02-E02",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E02",
+      "lessonCode": "T1-L09C",
       "order": 2,
       "type": "word_form",
       "title": "Noun → V3 / V-ing",
@@ -722,8 +722,8 @@
       ]
     },
     {
-      "code": "NP-L02-E03",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E03",
+      "lessonCode": "T1-L09C",
       "order": 3,
       "type": "gap_fill",
       "title": "Điền OF vào cấu trúc Noun + of",
@@ -801,8 +801,8 @@
       ]
     },
     {
-      "code": "NP-L02-E04",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E04",
+      "lessonCode": "T1-L09C",
       "order": 4,
       "type": "sentence_transform",
       "title": "Chiến thuật 2 — đổi thành \"the … of …\"",
@@ -885,8 +885,8 @@
       ]
     },
     {
-      "code": "NP-L02-E05",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E05",
+      "lessonCode": "T1-L09C",
       "order": 5,
       "type": "sentence_transform",
       "title": "Chiến thuật 3 — Word form + synonym",
@@ -955,8 +955,8 @@
       ]
     },
     {
-      "code": "NP-L02-E06",
-      "lessonCode": "NP-L02",
+      "code": "T1-L09C-E06",
+      "lessonCode": "T1-L09C",
       "order": 6,
       "type": "sentence_writing",
       "title": "Viết 3 phiên bản cho một tiêu đề",
@@ -993,8 +993,8 @@
       }
     },
     {
-      "code": "NP-L03-E01",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E01",
+      "lessonCode": "T1-L09D",
       "order": 1,
       "type": "sentence_transform",
       "title": "Paraphrase tiêu đề biểu đồ",
@@ -1081,8 +1081,8 @@
       }
     },
     {
-      "code": "NP-L03-E02",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E02",
+      "lessonCode": "T1-L09D",
       "order": 2,
       "type": "error_correction",
       "title": "Sửa lỗi tổng hợp",
@@ -1159,8 +1159,8 @@
       ]
     },
     {
-      "code": "NP-L03-E03",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E03",
+      "lessonCode": "T1-L09D",
       "order": 3,
       "type": "mcq",
       "title": "10 điều phải nhớ — Task 1",
@@ -1296,8 +1296,8 @@
       ]
     },
     {
-      "code": "NP-L03-E04",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E04",
+      "lessonCode": "T1-L09D",
       "order": 4,
       "type": "ordering",
       "title": "Sắp xếp quy trình biến đổi",
@@ -1345,8 +1345,8 @@
       ]
     },
     {
-      "code": "NP-L03-E05",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E05",
+      "lessonCode": "T1-L09D",
       "order": 5,
       "type": "sentence_writing",
       "title": "Mini writing challenge — 4 cấu trúc khác nhau",
@@ -1409,8 +1409,8 @@
       }
     },
     {
-      "code": "NP-L03-E06",
-      "lessonCode": "NP-L03",
+      "code": "T1-L09D-E06",
+      "lessonCode": "T1-L09D",
       "order": 6,
       "type": "paragraph_writing",
       "title": "Introduction + câu mô tả cho biểu đồ Task 1",

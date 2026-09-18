@@ -1,0 +1,86 @@
+{
+  "modules": [
+    {
+      "code": "T2-M4",
+      "order": 2.5,
+      "title": "MODULE 4 — Noun Phrase trong Task 2",
+      "titleEn": "Noun Phrase in Task 2",
+      "outcomes": [
+        "Định nghĩa noun phrase, tìm head noun, phân biệt noun phrase với clause",
+        "Đổi verb → noun rồi xây noun phrase theo quy trình 4 bước",
+        "Nhận diện V-ing/V3 là participle bổ nghĩa cho noun, không phải main verb",
+        "Dùng pattern paraphrase ăn điểm để paraphrase đề và tránh lặp \"people + verb\""
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "code": "T2-L19",
+      "moduleCode": "T2-M4",
+      "order": 11.1,
+      "title": "Phụ lục Noun Phrase (1/3) — Noun phrase & Head noun là gì?",
+      "titleEn": "What is a noun phrase? Finding the head noun",
+      "durationMinutes": 60,
+      "objectives": [
+        "Định nghĩa noun phrase = nhóm từ xoay quanh một danh từ chính (HEAD NOUN)",
+        "Tìm head noun; phân biệt noun phrase với clause (có main verb chia thì)",
+        "Nhận ra V-ing/V3 trong noun phrase là participle bổ nghĩa, không phải main verb"
+      ],
+      "keyLanguage": [
+        "FORMULA: Determiner + Adjective + NOUN + extra information",
+        "Clause: Students are dropping out of university. → Noun phrase: students dropping out of university",
+        "the rapidly growing number of university students → head noun = number",
+        "Quy tắc vàng: đừng chỉ nhìn V-ing/V3 — hãy tìm HEAD NOUN"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      }
+    },
+    {
+      "code": "T2-L20",
+      "moduleCode": "T2-M4",
+      "order": 11.2,
+      "title": "Phụ lục Noun Phrase (2/3) — Verb → Noun → Noun Phrase → Câu Task 2",
+      "titleEn": "Verb → Noun → Noun Phrase → IELTS Sentence",
+      "durationMinutes": 60,
+      "objectives": [
+        "Thuộc bộ word form nền tảng: grow→growth, decide→decision, consume→consumption, fail→failure…",
+        "Quy trình 4 bước: tìm verb chính → đổi thành noun → xây noun phrase → đưa vào câu",
+        "Paraphrase không word-by-word: More and more people are using social media → the increasing use of social media"
+      ],
+      "keyLanguage": [
+        "develop → development · reduce → reduction · pollute → pollution · invest → investment · communicate → communication",
+        "People use private cars → the increasing use of private cars → The increasing use of private cars has contributed to traffic congestion.",
+        "Mục tiêu: giữ nguyên meaning và tạo cấu trúc tự nhiên hơn"
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    },
+    {
+      "code": "T2-L21",
+      "moduleCode": "T2-M4",
+      "order": 11.3,
+      "title": "Phụ lục Noun Phrase (3/3) — Pattern ăn điểm & Paraphrase đề Task 2",
+      "titleEn": "High-value patterns & paraphrasing Task 2 prompts",
+      "durationMinutes": 60,
+      "objectives": [
+        "Dùng thành thạo: the growing number of + N + V-ing · the rise/increase in + N · the decline in + N",
+        "Dùng: the increasing pressure on + N · the growing dependence on + N · the widespread use of + N · the decision/failure to + V",
+        "Paraphrase đề Task 2 và viết Introduction bằng noun phrase, tránh lặp \"people + verb\""
+      ],
+      "keyLanguage": [
+        "the growing number of young people using social media · the rise in tuition fees · the decline in academic performance",
+        "the increasing prevalence of obesity · the growing dependence on technology · the widespread use of social media",
+        "the decision to study abroad · the failure to complete a degree",
+        "In recent years, the increasing rate of university dropout has become a growing concern in several countries."
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      }
+    }
+  ]
+}

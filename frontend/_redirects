@@ -51,6 +51,12 @@
 /task2-foundations.html   /writing-task2-course.html            301
 /advanced-sentences.html  /writing-task2-course.html             301
 
+# The standalone "Noun Phrase in Writing" course was folded into the
+# Task 1 and Task 2 Writing courses (2026-09-18) — Module NP-M1 spliced
+# into T1's Module 2 (after "Viết Overview"), NP-M2 became T2's Module 4
+# (after "12 Cấu trúc câu nâng band"). Keep old bookmarks/links working.
+/noun-phrase-writing.html /writing-task1.html                   301
+
 # ── Clean top-level aliases (simple static rewrites, no parameters) ──
 /                /index.html            200
 /about           /about.html            200
