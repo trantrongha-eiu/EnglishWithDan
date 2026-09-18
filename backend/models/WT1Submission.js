@@ -34,6 +34,32 @@ const WT1SubmissionSchema = new Schema(
       rawTokens: Number,
     },
 
+    // speaking_response with multiple items only (see wt1Service.
+    // recordSpeakingItem) — each sub-question of the exercise is recorded
+    // and AI-graded on its own instead of one combined take covering the
+    // whole exercise. Accumulates one entry per item as the student
+    // progresses (status stays 'draft' until every item has one); once
+    // complete, `aiFeedback` above holds the averaged/aggregate result
+    // (same shape every other WT1Submission's aiFeedback uses, so history/
+    // admin views need no special-casing) and status flips to 'graded'.
+    itemResults: [{
+      itemIndex: Number,
+      prompt: String,
+      transcript: String,
+      feedback: {
+        scores: Schema.Types.Mixed, // { fluency, vocabulary, grammar, pronunciation }
+        bandEstimate: Number,
+        feedbackVi: String,
+        corrections: [{ original: String, corrected: String, note: String }],
+        strengths: [String],
+        improvements: [String],
+      },
+    }],
+
+    // 'draft' = a speaking_response attempt still missing one or more
+    // itemResults — deliberately excluded from every gate/history/admin
+    // query (see wt1Service's subs queries) so an unfinished multi-item
+    // recording never counts as "done" or shows up as a real attempt.
     status: { type: String, enum: ['draft', 'submitted', 'graded'], default: 'submitted' },
     timeSpentSeconds: Number,
   },

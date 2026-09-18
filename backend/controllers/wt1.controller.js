@@ -115,12 +115,40 @@ exports.submitWriting = async (req, res) => {
   }
 };
 
+// Shared by the legacy single-shot path and the per-item path below —
+// grades one answer (whole exercise, or one item) with the same
+// audio-then-transcript-only-retry fallback both need. Throws the original
+// (or retry) error on total failure; callers turn that into a 503.
+async function _gradeOneAnswer(questionText, text, part, audio, durationSec) {
+  try {
+    return await speakingService.gradeSpeaking(questionText, text, part, audio, durationSec);
+  } catch (aiErr) {
+    // Transcript-only retry is only possible when we actually have a
+    // transcript — an audio-only submission has nothing to fall back to.
+    if (audio && text && !aiErr.isOverloaded) {
+      try { return await speakingService.gradeSpeaking(questionText, text, part, null, durationSec); }
+      catch (retryErr) { throw retryErr; }
+    }
+    throw aiErr;
+  }
+}
+
 // POST /api/wt1/submit-speaking — speaking_response exercises. The client
 // records a spoken answer (SpeechRecognition transcript + optional audio),
 // we band it with speakingService.gradeSpeaking (the same Gemini path the
-// standalone Speaking practice uses), store a WT1Submission so it counts
-// toward the lesson gate, and also save a SpeakingAttempt so the answer
-// shows in Speaking history / admin monitoring and keeps the streak alive.
+// standalone Speaking practice uses).
+//
+// Three request shapes share this one endpoint:
+//  - { exerciseCode, transcript, duration } (+ optional multipart 'audio'),
+//    no itemIndex — legacy single-shot path: the WHOLE exercise (all items
+//    joined into one prompt) is graded and stored as ONE WT1Submission in
+//    one call. Still used for single-item exercises (e.g. Part 2 cue
+//    cards), where there's nothing to split per-item anyway.
+//  - { exerciseCode, itemIndex, transcript, duration } (+ optional audio) —
+//    multi-item exercise, one question at a time: grades ONLY that item's
+//    prompt and returns the feedback WITHOUT writing anything to the DB yet
+//    (see wt1Service.recordSpeakingItem, called below — it persists the
+//    already-graded result and reports back once every item is in).
 exports.submitSpeaking = async (req, res) => {
   const { exerciseCode, transcript, duration } = req.body;
   const text = String(transcript || '').trim();
@@ -144,33 +172,79 @@ exports.submitSpeaking = async (req, res) => {
     }
     await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
 
-    const questionText = (ex.items || []).map((it) => it.prompt).filter(Boolean).join(' | ')
-      || ex.instruction || ex.title || 'IELTS Speaking practice';
+    const items = ex.items || [];
     const part = ex.speakingPart || 1;
-
-    // Optional recording (multipart 'audio') → Pronunciation graded from
-    // real audio; see routes/wt1.js optionalAudio.
     const audio = req.file
       ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
       : null;
-
     const durationSec = Number(duration) || 0;
-    let feedback;
-    try {
-      feedback = await speakingService.gradeSpeaking(questionText, text, part, audio, durationSec);
-    } catch (aiErr) {
-      // Transcript-only retry is only possible when we actually have a
-      // transcript — an audio-only submission has nothing to fall back to.
-      if (audio && text && !aiErr.isOverloaded) {
-        console.warn('[WT1] audio speaking grading failed, retrying transcript-only:', aiErr.message);
-        try { feedback = await speakingService.gradeSpeaking(questionText, text, part, null, durationSec); }
-        catch (retryErr) { aiErr = retryErr; }
+
+    // itemIndex only makes sense (and is only ever sent by the frontend)
+    // for a multi-item exercise — a single-item one always takes the
+    // legacy path below, same as before this feature existed.
+    const rawIdx = req.body.itemIndex;
+    const itemIndex = rawIdx != null && rawIdx !== '' ? parseInt(rawIdx, 10) : null;
+    if (items.length > 1 && itemIndex != null) {
+      if (!Number.isInteger(itemIndex) || itemIndex < 0 || itemIndex >= items.length) {
+        return res.status(400).json({ success: false, message: 'itemIndex không hợp lệ' });
       }
-      if (!feedback) {
-        console.warn('[WT1] speaking AI grading failed:', aiErr.message);
+      const questionText = items[itemIndex].prompt || ex.instruction || ex.title || 'IELTS Speaking practice';
+      let feedback;
+      try {
+        feedback = await _gradeOneAnswer(questionText, text, part, audio, durationSec);
+      } catch (aiErr) {
+        console.warn('[WT1] speaking item AI grading failed:', aiErr.message);
         const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể phân tích lúc này. Vui lòng thử lại.';
         return res.status(503).json({ success: false, message: msg });
       }
+      const finalText = text || (typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '') || '';
+
+      const itemPayload = {
+        itemIndex, prompt: questionText, transcript: finalText,
+        feedback: {
+          scores: {
+            fluency: feedback.fluency || 0, vocabulary: feedback.vocabulary || 0,
+            grammar: feedback.grammar || 0, pronunciation: feedback.pronunciation || 0,
+          },
+          bandEstimate: feedback.overallBand || 0,
+          feedbackVi: feedback.overallFeedback || '',
+          corrections: (feedback.mistakes || []).map((m) => ({ original: m.original, corrected: m.corrected, note: m.reason })),
+          strengths: feedback.strengths || [],
+          improvements: feedback.improvements || [],
+        },
+      };
+      const aggregate = await svc.recordSpeakingItem(req.user._id, ex, itemIndex, itemPayload, items.length);
+
+      if (aggregate) {
+        // Last item — mirror the FULL exercise into SpeakingAttempt once,
+        // same as the legacy path does (history / monitoring / streak).
+        try {
+          await speakingService.saveAttempt(req.user, {
+            topic: ex.title || '', part,
+            questionText: items.map((it) => it.prompt).filter(Boolean).join(' | '),
+            transcript: finalText, duration: durationSec, feedback: aggregate,
+          });
+        } catch (mirrorErr) {
+          console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);
+        }
+      }
+
+      return res.json({
+        success: true, graded: 'speaking-item', itemIndex, feedback, transcript: finalText,
+        isLast: !!aggregate, aggregate: aggregate || undefined,
+      });
+    }
+
+    // ── Legacy single-shot path (single-item exercises) — unchanged ──
+    const questionText = items.map((it) => it.prompt).filter(Boolean).join(' | ')
+      || ex.instruction || ex.title || 'IELTS Speaking practice';
+    let feedback;
+    try {
+      feedback = await _gradeOneAnswer(questionText, text, part, audio, durationSec);
+    } catch (aiErr) {
+      console.warn('[WT1] speaking AI grading failed:', aiErr.message);
+      const msg = aiErr.isOverloaded ? aiErr.message : 'AI không thể phân tích lúc này. Vui lòng thử lại.';
+      return res.status(503).json({ success: false, message: msg });
     }
 
     // Audio path: prefer the student's own STT text, else Gemini's own
@@ -199,7 +273,7 @@ exports.submitSpeaking = async (req, res) => {
     try {
       await speakingService.saveAttempt(req.user, {
         topic: ex.title || '', part, questionText, transcript: finalText,
-        duration: Number(duration) || 0, feedback,
+        duration: durationSec, feedback,
       });
     } catch (mirrorErr) {
       console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);

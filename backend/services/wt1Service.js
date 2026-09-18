@@ -226,7 +226,10 @@ async function getOverview(userId, courseCode) {
     meta.codes.forEach((c, i) => { lessonCodesByExercise[c] = lc; typeByCode[c] = meta.types[i]; });
   }
 
-  const subs = await WT1Submission.find({ userId }).select('exerciseCode score maxScore aiFeedback status').lean();
+  // 'draft' = a multi-item speaking_response attempt still mid-recording
+  // (see recordSpeakingItem) — must never count toward a lesson's done/
+  // score state until every item has actually been graded.
+  const subs = await WT1Submission.find({ userId, status: { $ne: 'draft' } }).select('exerciseCode score maxScore aiFeedback status').lean();
   const perLesson = summariseSubmissions(
     subs.map((s) => ({ ...s, lessonCode: lessonCodesByExercise[s.exerciseCode] })),
     lessonCodesByExercise, { typeByCode },
@@ -274,7 +277,7 @@ async function assertLessonUnlocked(userId, lessonCode) {
   for (const [lc, meta] of Object.entries(counts)) {
     meta.codes.forEach((c, i) => { lessonCodesByExercise[c] = lc; typeByCode[c] = meta.types[i]; });
   }
-  const subs = await WT1Submission.find({ userId }).select('exerciseCode score maxScore aiFeedback status').lean();
+  const subs = await WT1Submission.find({ userId, status: { $ne: 'draft' } }).select('exerciseCode score maxScore aiFeedback status').lean();
   const perLesson = summariseSubmissions(
     subs.map((s) => ({ ...s, lessonCode: lessonCodesByExercise[s.exerciseCode] })),
     lessonCodesByExercise, { typeByCode },
@@ -300,7 +303,7 @@ async function getLesson(code, userId) {
   if (!lesson) return null;
   await assertLessonUnlocked(userId, code);
   const exercises = await WT1Exercise.find({ lessonCode: code, published: true }).sort({ order: 1 }).lean();
-  const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exercises.map((e) => e.code) } })
+  const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exercises.map((e) => e.code) }, status: { $ne: 'draft' } })
     .select('exerciseCode score maxScore aiFeedback status createdAt').sort({ createdAt: -1 }).lean();
   const lastByCode = {};
   for (const s of subs) if (!lastByCode[s.exerciseCode]) lastByCode[s.exerciseCode] = s;
@@ -329,7 +332,7 @@ async function getLesson(code, userId) {
 async function _recompute(userId, lessonCode) {
   const exs = await WT1Exercise.find({ lessonCode, published: true }).select('code type').lean();
   const codeType = Object.fromEntries(exs.map((e) => [e.code, e.type]));
-  const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exs.map((e) => e.code) } })
+  const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exs.map((e) => e.code) }, status: { $ne: 'draft' } })
     .select('exerciseCode score status').lean();
   const best = {};
   for (const s of subs) if (!best[s.exerciseCode] || (s.score || 0) > (best[s.exerciseCode].score || 0)) best[s.exerciseCode] = s;
@@ -374,13 +377,84 @@ async function recordSubmission(userId, exercise, payload) {
   return saved;
 }
 
+// One item (sub-question) of a multi-item speaking_response exercise has
+// just been recorded and AI-graded (by the caller, via speakingService —
+// this function only persists the already-graded result, it never calls
+// Gemini itself). Accumulates into an in-progress ('draft') WT1Submission
+// for this exercise; once every item has a result, computes the aggregate
+// (averaged 4-criteria scores, merged corrections) FROM THE SERVER'S OWN
+// STORED itemResults — never from client-supplied numbers, so a tampered
+// client can't fake a band score by editing a "finalize" payload — marks
+// the submission 'graded', and runs the normal gate recompute exactly like
+// recordSubmission does.
+//
+// itemIndex === 0 always starts a FRESH draft (a new attempt number, same
+// as recordSubmission) rather than resuming any stale one — resuming a
+// half-finished recording across a lost session/reload is out of scope;
+// the student just starts that exercise over from item 1. Any other index
+// pushes into the current draft, falling back to starting fresh if none
+// exists (e.g. the client reloaded mid-sequence and skipped item 0).
+//
+// Returns the aggregate feedback object (same shape speakingService.
+// gradeSpeaking returns, so the frontend can reuse showSpeakingFeedback
+// unchanged for the finished-exercise summary screen) once `itemPayload`
+// completes the set, or null while items are still outstanding.
+async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, totalItems) {
+  async function startFreshDraft() {
+    const last = await WT1Submission.findOne({ userId, exerciseCode: exercise.code })
+      .sort({ attempt: -1 }).select('attempt').lean();
+    return WT1Submission.create({
+      userId, exerciseCode: exercise.code, lessonCode: exercise.lessonCode,
+      attempt: (last?.attempt || 0) + 1, status: 'draft', itemResults: [itemPayload],
+    });
+  }
+
+  let doc;
+  if (itemIndex === 0) {
+    doc = await startFreshDraft();
+  } else {
+    doc = await WT1Submission.findOneAndUpdate(
+      { userId, exerciseCode: exercise.code, status: 'draft' },
+      { $push: { itemResults: itemPayload } },
+      { sort: { attempt: -1 }, new: true },
+    );
+    if (!doc) doc = await startFreshDraft();
+  }
+
+  if (doc.itemResults.length < totalItems) return null;
+
+  const KEYS = ['fluency', 'vocabulary', 'grammar', 'pronunciation'];
+  const results = doc.itemResults;
+  const scores = {};
+  for (const k of KEYS) scores[k] = results.reduce((s, r) => s + (Number(r.feedback?.scores?.[k]) || 0), 0) / results.length;
+  const bandEstimate = Math.round(((scores.fluency + scores.vocabulary + scores.grammar + scores.pronunciation) / 4) * 2) / 2;
+  const corrections = results.flatMap((r) => r.feedback?.corrections || []);
+  const feedbackVi = results
+    .map((r, i) => (r.feedback?.feedbackVi ? `Câu ${i + 1}: ${r.feedback.feedbackVi}` : ''))
+    .filter(Boolean).join(' ');
+  const strengths = results.flatMap((r) => r.feedback?.strengths || []);
+  const improvements = results.flatMap((r) => r.feedback?.improvements || []);
+
+  doc.status = 'graded';
+  doc.responses = results.map((r) => r.transcript || '');
+  doc.aiFeedback = { model: 'gemini', scores, bandEstimate, feedbackVi, corrections };
+  await doc.save();
+  await _recompute(userId, exercise.lessonCode);
+
+  return {
+    fluency: scores.fluency, vocabulary: scores.vocabulary, grammar: scores.grammar, pronunciation: scores.pronunciation,
+    overallBand: bandEstimate, overallFeedback: feedbackVi, strengths, improvements,
+    mistakes: corrections.map((c) => ({ original: c.original, corrected: c.corrected, reason: c.note })),
+  };
+}
+
 // List of past attempts for ONE exercise (newest first) — powers the
 // "Lịch sử" button on the exercise runner. Summary fields only (score,
 // band if AI-graded, date); a row's full detail (answers/responses/full
 // aiFeedback) is fetched on demand via the existing getAttemptDetail/
 // GET /wt1/attempt/:id, same as clicking into one attempt already works.
 async function getExerciseHistory(userId, exerciseCode, limit = 50) {
-  const subs = await WT1Submission.find({ userId, exerciseCode })
+  const subs = await WT1Submission.find({ userId, exerciseCode, status: { $ne: 'draft' } })
     .select('attempt score maxScore status aiFeedback.bandEstimate createdAt')
     .sort({ attempt: -1 })
     .limit(Math.min(Math.max(Number(limit) || 50, 1), 200))
@@ -410,6 +484,6 @@ async function getProgress(userId) {
 
 module.exports = {
   COURSE_CODE, sanitizeExercise, gateDefaults,
-  getOverview, getLesson, recordSubmission, getAttemptDetail, getExerciseHistory, getProgress,
+  getOverview, getLesson, recordSubmission, recordSpeakingItem, getAttemptDetail, getExerciseHistory, getProgress,
   assertLessonUnlocked,
 };

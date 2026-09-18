@@ -238,8 +238,7 @@
     [data-theme="dark"] .sc-partbadge { background:#3f1424; color:#fda4af; }
     .sc-qs { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
     .sc-q { display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.6; background:var(--surface2,#f8fafc);
-      border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:10px 12px; cursor:pointer; transition:border-color .12s,background .12s; }
-    .sc-q:hover { border-color:#fda4af; }
+      border:1px solid var(--border,#e5e7eb); border-radius:10px; padding:10px 12px; transition:border-color .12s,background .12s; }
     .sc-q.cur { border-color:#f43f5e; background:#fff1f2; }
     [data-theme="dark"] .sc-q.cur { background:#3f1424; }
     .sc-qn { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:#ffe4e6; color:#e11d48; font-weight:800;
@@ -493,17 +492,6 @@
         var scTa = document.getElementById('sc-transcript');
         if (scTa) window.PasteGuard.attach(scTa, { hint: 'hãy nói hoặc gõ trực tiếp câu trả lời của bạn' });
       }
-
-      // let the student mark which question they're answering (multi-item sets)
-      document.querySelectorAll('#sc-body .sc-q, .sc-q').forEach(function (q) {
-        q.addEventListener('click', function () {
-          document.querySelectorAll('.sc-q').forEach(function (x) { x.classList.remove('cur'); });
-          q.classList.add('cur');
-          document.querySelectorAll('.sc-q').forEach(function (x, i) {
-            if (i < +q.dataset.qi) x.classList.add('said');
-          });
-        });
-      });
 
       if (!this.supported()) this.showNote('Trình duyệt này không tự nhận diện giọng nói (Chrome trên máy tính thường có). Bạn vẫn ghi âm được để nghe lại — hãy mở mục "Bản ghi lời nói" bên dưới và tự gõ nội dung trước khi nộp.', true);
 
@@ -773,6 +761,11 @@
       state.lesson = d.lesson;
       state.exercises = d.exercises || [];
       state.results = [];
+      // A previous exercise's in-progress question index must never bleed
+      // into a fresh lesson entry (e.g. "Thoát" mid-way through a 3-item
+      // set, then opening a different multi-item exercise straight from
+      // the lesson list).
+      state._scItemIdx = 0;
       var url = 'speaking-course.html?lesson=' + code;
       if (exCode) {
         var i = state.exercises.findIndex(function (e) { return e.code === exCode; });
@@ -955,13 +948,22 @@
     if (t === 'speaking_response') {
       var part = ex.speakingPart || 1;
       var G = speakGuide(part);
-      var multi = (ex.items || []).length > 1;
-      var qs = (ex.items || []).map(function (it, i) {
-        return '<div class="sc-q' + (i === 0 ? ' cur' : '') + '" data-qi="' + i + '"><span class="sc-qn">' + (i + 1) + '</span><span>' + esc(it.prompt) + '</span></div>';
+      var items = ex.items || [];
+      var multi = items.length > 1;
+      // Multi-item sets now record + AI-grade ONE question at a time — mic
+      // shows directly under the current question, "Nộp câu này" grades
+      // just it, then the next question opens. state._scItemIdx tracks
+      // which one; clamped defensively in case a previous exercise left it
+      // pointing past this one's (possibly shorter) item list.
+      var curIdx = multi ? Math.min(state._scItemIdx || 0, items.length - 1) : 0;
+      var qs = items.map(function (it, i) {
+        var cls = i === curIdx ? ' cur' : (i < curIdx ? ' said' : '');
+        var num = i < curIdx ? '<i class="fas fa-check"></i>' : (i + 1);
+        return '<div class="sc-q' + cls + '" data-qi="' + i + '"><span class="sc-qn">' + num + '</span><span>' + esc(it.prompt) + '</span></div>';
       }).join('');
       var prep = ex.speakingPrepSeconds || 0;
       return '<div class="sc-partbadge"><i class="fas fa-microphone"></i> IELTS Speaking · Part ' + part + '</div>' +
-        (multi ? '<div style="font-size:12px;color:var(--text3,#9ca3af);margin-bottom:6px">' + (part === 1 ? 'Trả lời lần lượt từng câu (mỗi câu ' + G.txt + '). Bấm vào câu để đánh dấu bạn đang trả lời câu nào — ghi âm một mạch cho cả bộ.' : 'Trả lời lần lượt các câu trong một lần ghi âm liên tục.') + '</div>' : '') +
+        (multi ? '<div style="font-size:12px;color:var(--text3,#9ca3af);margin-bottom:6px">Câu ' + (curIdx + 1) + '/' + items.length + ' — ghi âm và nộp riêng câu này để AI chấm ngay, rồi mới qua câu tiếp theo.</div>' : '') +
         '<div class="sc-qs">' + qs + '</div>' +
         '<div class="sc-panel" id="sc-panel">' +
           (prep ? '<div class="sc-prep" id="sc-prep"><div class="sc-prep-n" id="sc-prep-n">' + prep + '</div>' +
@@ -1216,6 +1218,9 @@
         toast(transcript ? 'Bài nói quá ngắn — hãy nói (hoặc gõ) ít nhất một câu hoàn chỉnh.' : 'Chưa có nội dung — hãy ghi âm hoặc gõ lời thoại.', 'info');
         return;
       }
+      var items = ex.items || [];
+      var multi = items.length > 1;
+      var curIdx = multi ? Math.min(state._scItemIdx || 0, items.length - 1) : 0;
       state._submitting = true; btn.disabled = true;
       fb.className = 't1-fb';
       fb.innerHTML = '<div style="text-align:center;padding:20px"><div class="t1-spinner"></div><p style="color:#9ca3af;margin-top:8px;font-size:13px">AI đang chấm phần nói của bạn...</p></div>';
@@ -1230,14 +1235,16 @@
           _fd.append('exerciseCode', ex.code);
           _fd.append('transcript', transcript);
           _fd.append('duration', SpeakingRec.elapsed());
+          if (multi) _fd.append('itemIndex', curIdx);
           var _ext = (_blob.type || '').indexOf('ogg') >= 0 ? 'ogg' : (_blob.type || '').indexOf('mp4') >= 0 ? 'm4a' : 'webm';
           _fd.append('audio', _blob, 'answer.' + _ext);
           _opts = { method: 'POST', body: _fd };
         } else {
-          _opts = { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, transcript: transcript, duration: SpeakingRec.elapsed() }) };
+          var _body = { exerciseCode: ex.code, transcript: transcript, duration: SpeakingRec.elapsed() };
+          if (multi) _body.itemIndex = curIdx;
+          _opts = { method: 'POST', body: JSON.stringify(_body) };
         }
         var sd = await api('/wt1/submit-speaking', _opts);
-        state.answered = true; stopTimer();
         if (window.playOk) window.playOk();
         // Audio-only submit: show the transcript the AI produced from the recording.
         if (!transcript && sd.transcript && ta) {
@@ -1245,7 +1252,23 @@
           var _scDetails = ta.closest('details'); if (_scDetails) _scDetails.open = true;
           toast('AI đã nghe bản ghi âm và chép lại lời thoại của bạn.', 'info');
         }
-        showSpeakingFeedback(sd.feedback || {}, ex);
+        // Multi-item, not the last question yet — show THIS item's feedback
+        // and wire "Câu tiếp theo" to advance within the SAME exercise,
+        // instead of finishing it. isLast (or a single-item exercise, which
+        // never sends itemIndex at all) falls through to the normal
+        // whole-exercise result screen below. Deliberately leave
+        // _submitting/btn.disabled alone here — the OLD recording panel
+        // (and its "Nộp bài nói" button) for THIS item must stay disabled
+        // until "Câu tiếp theo" re-renders a fresh one for the next item;
+        // re-enabling it would let a stray extra click re-submit the same
+        // (already-consumed) recording and start a second, orphaned draft.
+        if (multi && sd.graded === 'speaking-item' && !sd.isLast) {
+          showSpeakingItemFeedback(sd.feedback || {}, curIdx, items.length);
+          return;
+        }
+        state._submitting = false; btn.disabled = false;
+        state.answered = true; stopTimer();
+        showSpeakingFeedback((multi ? sd.aggregate : sd.feedback) || {}, ex);
       } catch (e) {
         state._submitting = false; btn.disabled = false;
         fb.classList.add('hidden');
@@ -1433,7 +1456,60 @@
       items.map(function (i) { return '<li>' + (icon || '') + ' ' + esc(i) + '</li>'; }).join('') + '</ul></div>';
   }
 
+  // One question of a multi-item speaking_response exercise has just been
+  // AI-graded on its own (see submit()'s itemIndex path) — same rich
+  // feedback layout as showSpeakingFeedback, but "next" advances to the
+  // NEXT QUESTION within this same exercise (state._scItemIdx++) instead of
+  // the next exercise, and "Làm lại" only re-records this one question.
+  // The whole-exercise summary (showSpeakingFeedback) only appears once the
+  // server reports the last item's aggregate — see submit()'s isLast check.
+  function showSpeakingItemFeedback(f, idx, total) {
+    var fb = document.getElementById('t1-fb');
+    var mistakes = f.mistakes || f.corrections || [];
+    var b = f.overallBand;
+    var ringCls = (b >= 7) ? 'hi' : (b >= 5) ? 'mid' : 'lo';
+    var body =
+      '<div style="text-align:center;font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--text3,#9ca3af);margin-bottom:6px">CÂU ' + (idx + 1) + ' / ' + total + '</div>' +
+      (b != null ? '<div class="scf-ring ' + ringCls + '"><span class="n">' + b + '</span><span class="l">Band</span></div>' +
+        '<div style="text-align:center;font-size:12px;color:var(--text3,#9ca3af);margin-top:2px">Điểm ước lượng cho câu này</div>' : '') +
+      '<div class="scf-bars">' +
+        scfBar('Fluency', f.fluency) + scfBar('Vocabulary', f.vocabulary) + scfBar('Grammar', f.grammar) + scfBar('Pronunciation', f.pronunciation) +
+      '</div>' +
+      '<div style="font-size:11.5px;color:var(--text3,#9ca3af);margin:4px 0 2px">' +
+        (f.pronunciationFromAudio ? '🔊 Pronunciation chấm trực tiếp từ bản ghi âm của bạn.' : 'ℹ️ Pronunciation ước lượng từ transcript (không có bản ghi âm để nghe).') +
+      '</div>' +
+      (f.overallFeedback ? '<div class="scf-sec"><div class="h">Nhận xét</div>' + esc(f.overallFeedback) + '</div>' : '') +
+      (scfSec('Điểm mạnh', f.strengths, '✅')) +
+      (mistakes.length ? '<div class="scf-sec"><div class="h">Sửa lỗi</div>' + mistakes.map(function (c) {
+        return '<div class="scf-fix">✎ <s style="color:#dc2626">' + esc(c.original) + '</s> → <span class="t1-model">' + esc(c.corrected) + '</span>' + (c.reason || c.note || c.explanation ? ' <span style="color:#6b7280">(' + esc(c.reason || c.note || c.explanation) + ')</span>' : '') + '</div>';
+      }).join('') + '</div>' : '') +
+      (scfSec('Gợi ý cải thiện', f.improvements || f.suggestions, '💡'));
+    fb.className = 't1-fb';
+    fb.innerHTML = body + '<div style="display:flex;gap:8px;margin-top:12px">' +
+        '<button class="t1-btn" id="t1-retry-item" style="flex:none"><i class="fas fa-rotate-left"></i> Ghi âm lại câu này</button>' +
+        '<button class="t1-next" id="t1-next-item" style="flex:1;margin-top:0">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>' +
+      '</div>';
+    fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Both buttons just re-render the current exercise — render() calls
+    // SpeakingRec.teardown() + rebuilds #t1-body from renderItemBody(ex)
+    // fresh, which is exactly "reset the mic panel for whichever item
+    // state._scItemIdx now points at". "Làm lại" leaves the index alone
+    // (same question); "tiếp theo" advances it first.
+    document.getElementById('t1-next-item').addEventListener('click', function () {
+      state._scItemIdx = idx + 1;
+      render();
+    });
+    document.getElementById('t1-retry-item').addEventListener('click', function () {
+      render();
+    });
+  }
+
   function nextExercise() {
+    // A finished exercise's item index is stale for whatever comes next
+    // (e.g. a 3-item set followed by a single-item cue card, or another
+    // multi-item set that must start at its own question 1) — harmless to
+    // reset for every exercise type, only speaking_response reads it.
+    state._scItemIdx = 0;
     if (state.exIdx >= state.exercises.length - 1) { finishLesson(); return; }
     state.exIdx++;
     history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', 'speaking-course.html?lesson=' + state.lesson.code + '&ex=' + curEx().code);
@@ -1443,8 +1519,11 @@
   // instead of forcing a student who scored low back through the whole
   // lesson's "Làm lại buổi này" reset (finishLesson's onRetry/#t1-again).
   // render() rebuilds #t1-body from scratch for curEx(), so this alone
-  // clears every blank/answer; state.exIdx is untouched.
-  function retryExercise() { render(); }
+  // clears every blank/answer; state.exIdx is untouched. For a multi-item
+  // speaking_response, "Làm lại" is reached from the FINAL summary screen
+  // (showSpeakingFeedback) — restart at question 1, not wherever the last
+  // per-item retry left off.
+  function retryExercise() { state._scItemIdx = 0; render(); }
   function goToLesson() {
     stopTimer(); state.view = 'lesson';
     history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', 'speaking-course.html?lesson=' + state.lesson.code);

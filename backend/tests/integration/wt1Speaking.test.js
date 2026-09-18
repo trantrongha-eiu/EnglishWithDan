@@ -49,6 +49,15 @@ async function seedSpeakingCourse() {
         { id: 'g1', prompt: 'I prefer studying alone ____ it helps me concentrate better.', blanks: [{ accept: ['because'] }] },
         { id: 'g2', prompt: '____ example, I can finish my homework faster.', blanks: [{ accept: ['For'] }] },
       ] },
+    // Multi-item Part 1 set — one mic/AI-grade per question (see the "per-item
+    // speaking grading" describe block below), not one combined recording.
+    { code: 'SPKT-L1-E4', lessonCode: 'SPKT-L1', order: 4, type: 'speaking_response', title: 'Nói (nhiều câu)', published: true,
+      autoGrade: false, speakingPart: 1,
+      items: [
+        { id: 's1', prompt: 'Do you like cooking?' },
+        { id: 's2', prompt: 'Do you enjoy watching films?' },
+        { id: 's3', prompt: 'Do you like weekends more than weekdays?' },
+      ] },
   ]);
 }
 
@@ -122,5 +131,96 @@ describe('Speaking course on the WT1 stack', () => {
     const res = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
       .send({ exerciseCode: 'SPKT-L1-E1', transcript: 'this is a long enough sentence to pass the length guard' });
     expect(res.status).toBe(400);
+  });
+});
+
+// Multi-item speaking_response exercises: a mic + AI grade per question,
+// instead of one continuous recording covering the whole set. Each item is
+// its own POST (itemIndex) that grades and returns feedback immediately;
+// nothing is written to WT1Submission until every item has one, at which
+// point the SERVER (not the client) computes the averaged aggregate from
+// what it already persisted — see wt1Service.recordSpeakingItem.
+describe('submit-speaking — per-item grading (multi-item exercises)', () => {
+  const ANSWER = 'Yes I really enjoy this because it helps me relax after a long day.';
+
+  test('grades each item as its own call, writes nothing until the last one, then finalizes with a server-computed average', async () => {
+    const u = await createPremiumStudent();
+
+    const r0 = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 0, transcript: ANSWER, duration: 18 });
+    expect(r0.status).toBe(200);
+    expect(r0.body).toMatchObject({ graded: 'speaking-item', itemIndex: 0, isLast: false });
+    expect(r0.body.feedback.overallBand).toBe(6.5);
+    expect(r0.body.aggregate).toBeUndefined();
+
+    // Not counted toward the lesson gate yet — only 1 of 3 items graded.
+    let prog = await WT1Progress.findOne({ userId: u._id, lessonCode: 'SPKT-L1' });
+    expect(prog?.writingSubmissions || 0).toBe(0);
+    let draft = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4' });
+    expect(draft.status).toBe('draft');
+    expect(draft.itemResults).toHaveLength(1);
+
+    const r1 = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 1, transcript: ANSWER, duration: 20 });
+    expect(r1.body).toMatchObject({ graded: 'speaking-item', itemIndex: 1, isLast: false });
+
+    const r2 = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 2, transcript: ANSWER, duration: 19 });
+    expect(r2.status).toBe(200);
+    expect(r2.body.isLast).toBe(true);
+    // Every item graded identically by the mock (6/7/6/7 -> band 6.5) — the
+    // aggregate must equal that, proving it's a real average, not a copy of
+    // one item's raw feedback.
+    expect(r2.body.aggregate).toMatchObject({ fluency: 6, vocabulary: 7, grammar: 6, pronunciation: 7, overallBand: 6.5 });
+
+    const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4' });
+    expect(sub.status).toBe('graded');
+    expect(sub.itemResults).toHaveLength(3);
+    expect(sub.aiFeedback.bandEstimate).toBe(6.5);
+    expect(sub.responses).toHaveLength(3);
+
+    // NOW it counts toward the gate — exactly once, not 3 times.
+    prog = await WT1Progress.findOne({ userId: u._id, lessonCode: 'SPKT-L1' });
+    expect(prog.writingSubmissions).toBe(1);
+
+    // Mirrored into SpeakingAttempt exactly once (on the final item only).
+    expect(speakingService.saveAttempt).toHaveBeenCalledTimes(1);
+  });
+
+  test('an invalid itemIndex is rejected before calling Gemini', async () => {
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 9, transcript: ANSWER });
+    expect(res.status).toBe(400);
+    expect(speakingService.gradeSpeaking).not.toHaveBeenCalled();
+  });
+
+  test('a too-short answer on one item is rejected the same way the legacy path rejects it', async () => {
+    const u = await createPremiumStudent();
+    const res = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 0, transcript: 'Yes I do.' });
+    expect(res.status).toBe(400);
+    expect(speakingService.gradeSpeaking).not.toHaveBeenCalled();
+  });
+
+  test('retrying from item 0 after finishing once starts a fresh attempt, not a collision with the graded one', async () => {
+    const u = await createPremiumStudent();
+    for (let i = 0; i < 3; i++) {
+      await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+        .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: i, transcript: ANSWER });
+    }
+    const firstDone = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4', status: 'graded' });
+    expect(firstDone.attempt).toBe(1);
+
+    const retry = await request(app).post('/api/wt1/submit-speaking').set(bearer(u))
+      .send({ exerciseCode: 'SPKT-L1-E4', itemIndex: 0, transcript: ANSWER });
+    expect(retry.status).toBe(200);
+
+    const draft2 = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4', status: 'draft' });
+    expect(draft2.attempt).toBe(2);
+    // The first (already-graded) attempt is untouched.
+    const stillGraded = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SPKT-L1-E4', attempt: 1 });
+    expect(stillGraded.status).toBe('graded');
+    expect(stillGraded.itemResults).toHaveLength(3);
   });
 });

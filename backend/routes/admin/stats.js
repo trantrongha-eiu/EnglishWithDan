@@ -251,7 +251,9 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      WT1Submission.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      // 'draft' = a multi-item speaking_response attempt still mid-recording
+      // (see wt1Service.recordSpeakingItem) — never a real attempt yet.
+      WT1Submission.countDocuments({ status: { $ne: 'draft' }, ...(uid && { userId: uid }) }).catch(() => 0),
       GapFillAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
@@ -344,7 +346,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       // course, Noun Phrase course) shares this one collection — exerciseCode
       // is a string code (not a $ref), so there's no populate; titles are
       // resolved below via a separate WT1Exercise lookup instead.
-      WT1Submission.find({ ...(uid && { userId: uid }) })
+      WT1Submission.find({ status: { $ne: 'draft' }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-answers -responses').lean()
