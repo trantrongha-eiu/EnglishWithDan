@@ -18,6 +18,12 @@ function typeChar(input, ch) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
+// Simulates pressing Space/Enter — the per-word "I've finished this word"
+// commit gesture WbwDrill listens for via 'keydown' (see _onKeydown).
+function pressKey(input, key) {
+  input.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+}
+
 function mount(answer, extraOpts) {
   const host = document.createElement('div');
   document.body.appendChild(host);
@@ -115,6 +121,87 @@ describe('WbwDrill — Vietnamese tone-mark position (BUG-090: "thảm hoạ" vs
     'hòa'.split('').forEach((ch) => typeChar(input, ch));
     expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1); // still just "thảm"
     expect(activeWordEl(host).getAttribute('data-i')).toBe('1'); // still on the 2nd word
+  });
+});
+
+// BUG: "check từ vựng" (vocab drills, maxErrors:3) for Vietnamese meanings —
+// a student who typed a word's base letters correctly but whose tone mark
+// hasn't landed yet (real Telex/VNI lag: typing "kem" then "s" converts it
+// to "kém" a keystroke later) got marked wrong the moment they pressed
+// Space/Enter to move on, even though nothing they typed was actually
+// wrong — just not finished yet. Repeating that (out of habit, since
+// nothing visibly happened) burned through maxErrors and failed the whole
+// question before the student ever got to type the missing letter/tone.
+describe('WbwDrill — committing (Space/Enter) on a still-in-progress word must not count as wrong', () => {
+  function mountWithLimit(answer, maxErrors) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const onComplete = jest.fn();
+    const onFail = jest.fn();
+    window.WbwDrill.mount(host, { answer, onComplete, onFail, maxErrors });
+    const input = host.querySelector('[data-role="input"]');
+    return { host, input, onComplete, onFail };
+  }
+
+  test('repeatedly pressing Space on "kem" (tone not yet applied to "kém") never fails the drill', async () => {
+    const { host, input, onFail } = mountWithLimit('kém', 3);
+    'kem'.split('').forEach((ch) => typeChar(input, ch));
+    for (let i = 0; i < 5; i++) {
+      pressKey(input, ' ');
+      await sleep(300);
+    }
+    expect(onFail).not.toHaveBeenCalled();
+    expect(input.disabled).toBe(false);
+    expect(activeWordEl(host).classList.contains('is-error')).toBe(false);
+    // Finishing the word (typing the tone) still completes normally.
+    input.value = 'ké'; input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.value = 'kém'; input.dispatchEvent(new Event('input', { bubbles: true }));
+    await sleep(500);
+    expect(host.querySelector('.wbwd-word.is-done')).not.toBeNull();
+  }, 20000);
+
+  test('the same repeated-Space scenario, but now via Enter (previously a silent no-op) — also never fails', async () => {
+    const { host, input, onFail } = mountWithLimit('kém', 3);
+    'kem'.split('').forEach((ch) => typeChar(input, ch));
+    for (let i = 0; i < 5; i++) {
+      pressKey(input, 'Enter');
+      await sleep(300);
+    }
+    expect(onFail).not.toHaveBeenCalled();
+    expect(input.disabled).toBe(false);
+  }, 20000);
+
+  test('Enter now also commits a fully-typed word immediately, same as Space', async () => {
+    const { host, input, onComplete } = mountWithLimit('kém quả', 3);
+    'kém'.split('').forEach((ch) => typeChar(input, ch));
+    expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1); // auto-advanced on exact match already
+    'qua'.split('').forEach((ch) => typeChar(input, ch)); // tone-pending "qua" of "quả"
+    pressKey(input, 'Enter');
+    await sleep(300);
+    expect(activeWordEl(host).getAttribute('data-i')).toBe('1'); // still waiting, not advanced, not failed
+    input.value = 'quả'; input.dispatchEvent(new Event('input', { bubbles: true }));
+    await sleep(500);
+    expect(onComplete).toHaveBeenCalled();
+  }, 20000);
+
+  test('a genuinely wrong word still flashes an error and still fails after the cap, committed via Space', async () => {
+    const { host, input, onFail } = mountWithLimit('kém', 3);
+    for (let i = 0; i < 4; i++) {
+      input.value = 'xyz'; input.dispatchEvent(new Event('input', { bubbles: true }));
+      pressKey(input, ' ');
+      await sleep(300);
+    }
+    expect(input.disabled).toBe(true); // _fail() already ran, synchronously
+    await sleep(500); // onFail() itself fires via a separate 450ms timer after _fail()
+    expect(onFail).toHaveBeenCalledTimes(1);
+  }, 20000);
+
+  test('committing extra/overshooting letters (not just a missing tone) still flashes an error', async () => {
+    const { host, input } = mountWithLimit('kém', 3);
+    'kemxx'.split('').forEach((ch) => typeChar(input, ch)); // way past "kém"'s length
+    pressKey(input, ' ');
+    await sleep(50);
+    expect(activeWordEl(host).classList.contains('is-error')).toBe(true);
   });
 });
 

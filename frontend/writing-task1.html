@@ -345,6 +345,24 @@
     <div class="t1-hist-body" id="t1-hist-body"></div>
   </div>
 </div>
+<!-- Test-lesson unlock: a locked "Kiểm tra" lesson (isTest) needs a code an
+     admin/teacher issues (ReviewBypassCode kind:'wt1-test-unlock') — see
+     wt1Service.assertLessonUnlocked. -->
+<div id="t1-code-modal" class="t1-hist-modal hidden">
+  <div class="t1-hist-box" style="max-width:360px">
+    <div class="t1-hist-header"><h3><i class="fas fa-lock"></i> Mã mở khoá bài kiểm tra</h3>
+      <button class="t1-hist-close" id="t1-code-close-btn"><i class="fas fa-times"></i></button></div>
+    <div style="padding:16px">
+      <p style="font-size:13px;color:var(--text2,#4b5563);margin:0 0 12px">Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.</p>
+      <div style="display:flex;gap:8px">
+        <input id="t1-code-input" maxlength="16" placeholder="NHẬP MÃ" autocomplete="off" spellcheck="false"
+          style="flex:1;min-width:0;padding:9px 11px;border:1.5px solid var(--border,#e5e7eb);border-radius:8px;font-size:14px;font-family:inherit;text-transform:uppercase;letter-spacing:1px;background:var(--bg,#fff);color:var(--text,#111827)">
+        <button id="t1-code-submit" class="t1-btn" style="white-space:nowrap">Áp dụng</button>
+      </div>
+      <div id="t1-code-msg" style="font-size:12px;margin-top:8px;min-height:16px"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════════════
@@ -468,9 +486,16 @@
     var mods = (d.modules || []).map(function (m, mi) {
       var lessons = (m.lessons || []).map(function (l) {
         var icCls = l.done ? 'done' : (l.doneCount > 0 ? 'prog' : '');
-        var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : '🔒');
+        var lockIcon = l.needsTestCode ? '🎫' : '🔒';
+        var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : lockIcon);
         var pct = l.exerciseCount ? Math.round((l.doneCount / l.exerciseCount) * 100) : 0;
-        return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '">' +
+        // data-locked/data-needs-code drive bindOverview()'s click guard — a
+        // locked lesson card used to still open on click despite showing 🔒,
+        // since openLesson() ran unconditionally. Server-side, getLesson/
+        // check/submitWriting/submitSpeaking now also hard-enforce this
+        // (wt1Service.assertLessonUnlocked), so this is UX, not the only gate.
+        return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '"' +
+          (l.unlocked ? '' : ' data-locked="1"') + (l.needsTestCode ? ' data-needs-code="1"' : '') + '>' +
           '<div class="t1-lesson-ic ' + icCls + '">' + icTxt + '</div>' +
           '<div class="t1-lesson-body">' +
             '<div class="t1-lesson-title">' + esc(l.title) + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</div>' +
@@ -496,7 +521,14 @@
   }
   function bindOverview() {
     document.querySelectorAll('.t1-lesson').forEach(function (el) {
-      el.addEventListener('click', function () { openLesson(el.dataset.code); });
+      el.addEventListener('click', function () {
+        if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
+        if (el.dataset.locked === '1') {
+          toast('Hoàn thành buổi trước (đạt yêu cầu điểm) để mở khoá buổi này.', 'warning');
+          return;
+        }
+        openLesson(el.dataset.code);
+      });
     });
   }
 
@@ -575,6 +607,43 @@
     }
   }
   function closeHistory() { document.getElementById('t1-hist-modal').classList.add('hidden'); }
+
+  // ── test-lesson unlock code ───────────────────────────────────────
+  function openTestCodeModal(lessonCode) {
+    var modal = document.getElementById('t1-code-modal');
+    var input = document.getElementById('t1-code-input');
+    var msg = document.getElementById('t1-code-msg');
+    modal.dataset.lessonCode = lessonCode;
+    input.value = '';
+    msg.textContent = ''; msg.style.color = '';
+    modal.classList.remove('hidden');
+    input.focus();
+  }
+  function closeTestCodeModal() { document.getElementById('t1-code-modal').classList.add('hidden'); }
+  async function submitTestCode() {
+    var modal = document.getElementById('t1-code-modal');
+    var input = document.getElementById('t1-code-input');
+    var msg = document.getElementById('t1-code-msg');
+    var btn = document.getElementById('t1-code-submit');
+    var code = (input.value || '').trim().toUpperCase();
+    if (!code) { msg.style.color = '#dc2626'; msg.textContent = 'Nhập mã trước đã.'; return; }
+    btn.disabled = true;
+    try {
+      var d = await api('/review/bypass', { method: 'POST', body: JSON.stringify({ code: code }) });
+      msg.style.color = '#16a34a';
+      msg.textContent = d.message || 'Đã mở khoá!';
+      var lessonCode = d.lessonCode || modal.dataset.lessonCode;
+      setTimeout(function () {
+        closeTestCodeModal();
+        openLesson(lessonCode);
+      }, 700);
+    } catch (e) {
+      msg.style.color = '#dc2626';
+      msg.textContent = (e && e.message) || 'Mã không hợp lệ.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
   function renderHistoryList(rows) {
     var body = document.getElementById('t1-hist-body');
     if (!rows.length) { body.innerHTML = '<div class="t1-hist-empty">Bạn chưa làm bài này lần nào.</div>'; return; }
@@ -1133,9 +1202,32 @@
     openLesson(state.lesson.code, null, true);
   }
   function renderLessonDone() { finishLesson(); return ''; }
+  // Best-effort — re-fetches the overview to see whether finishing this
+  // lesson just met its gate and unlocked the next one in the module, then
+  // pops a floating toast announcing it. Fire-and-forget from finishLesson()
+  // so a slow/failed fetch never delays or breaks the result screen itself.
+  async function _notifyIfNextLessonUnlocked(lessonCode) {
+    try {
+      var ov = await api('/wt1/overview');
+      state.overview = ov;
+      var mods = ov.modules || [];
+      for (var mi = 0; mi < mods.length; mi++) {
+        var mlessons = mods[mi].lessons || [];
+        var idx = mlessons.findIndex(function (x) { return x.code === lessonCode; });
+        if (idx < 0) continue;
+        var next = mlessons[idx + 1];
+        if (next && next.unlocked && window.showToastWithTitle) {
+          window.showToastWithTitle('success', '🎉 Đã hoàn thành buổi học!', 'Đã mở khoá: ' + next.title, 5000);
+        }
+        return;
+      }
+    } catch (e) { /* silent — this is a nice-to-have notification, not core flow */ }
+  }
   async function finishLesson() {
     stopTimer();
     state.view = 'done';
+    var lessonCode = state.lesson && state.lesson.code;
+    if (lessonCode) _notifyIfNextLessonUnlocked(lessonCode);
     if (window.CourseResult) {
       window.CourseResult.renderLessonComplete({
         mount: app,
@@ -1168,6 +1260,16 @@
   document.getElementById('t1-hist-close-btn').addEventListener('click', closeHistory);
   document.getElementById('t1-hist-modal').addEventListener('click', function (e) {
     if (e.target.id === 't1-hist-modal') closeHistory();
+  });
+
+  // ── test-code modal (static markup, bound once) ───────────────────
+  document.getElementById('t1-code-close-btn').addEventListener('click', closeTestCodeModal);
+  document.getElementById('t1-code-modal').addEventListener('click', function (e) {
+    if (e.target.id === 't1-code-modal') closeTestCodeModal();
+  });
+  document.getElementById('t1-code-submit').addEventListener('click', submitTestCode);
+  document.getElementById('t1-code-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') submitTestCode();
   });
 
   // #app is a stable container that render() only ever innerHTML's into —

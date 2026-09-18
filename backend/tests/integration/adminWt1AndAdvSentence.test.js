@@ -250,3 +250,30 @@ describe('admin/adv-sentence — CRUD + sentence-bank round-trip', () => {
     expect((await request(app).delete(`/api/admin/adv-sentence/groups/${g._id}`).set(bearer(admin))).status).toBe(200);
   });
 });
+
+// GET /api/admin/wt1/test-lessons — powers the "which test does this code
+// unlock" picker on the Review Bypass admin page (ReviewBypassCode
+// kind:'wt1-test-unlock'; see routes/admin/reviewBypass.js).
+describe('GET /api/admin/wt1/test-lessons', () => {
+  test('returns every isTest lesson across all 3 WT1-stack courses, with course/module context, and skips non-test lessons', async () => {
+    const t = await createTeacher();
+    // IELTS-W-T1 (title 'WT1') already exists — seeded by this file's own
+    // seed() helper (used by the wt1/tree tests above).
+    await WT1Module.create({ code: 'TL-M1', courseCode: 'IELTS-W-T1', order: 99, title: 'Module debug 2' });
+    await WT1Lesson.create({ code: 'TL-L1', moduleCode: 'TL-M1', order: 1, title: 'Buổi 1', isTest: false });
+    await WT1Lesson.create({ code: 'TL-TEST1', moduleCode: 'TL-M1', order: 2, title: 'TEST 1', isTest: true });
+
+    const res = await request(app).get('/api/admin/wt1/test-lessons').set(bearer(t));
+    expect(res.status).toBe(200);
+    expect(res.body.lessons.map((l) => l.code)).not.toContain('TL-L1');
+    const row = res.body.lessons.find((l) => l.code === 'TL-TEST1');
+    expect(row).toMatchObject({
+      title: 'TEST 1', courseCode: 'IELTS-W-T1', courseTitle: 'WT1', moduleTitle: 'Module debug 2',
+    });
+  });
+
+  test('a student cannot reach this admin endpoint', async () => {
+    const s = await createStudent();
+    expect((await request(app).get('/api/admin/wt1/test-lessons').set(bearer(s))).status).toBe(403);
+  });
+});

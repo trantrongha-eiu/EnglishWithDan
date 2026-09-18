@@ -1,12 +1,16 @@
 'use strict';
 // Admin CRUD for ReviewBypassCode — codes a teacher hands a student to
-// skip the mandatory post-test Review gate (see
-// backend/services/reviewService.redeemBypassCode).
+// unlock something they can't unlock themselves. Two kinds share this one
+// page/collection (see backend/models/ReviewBypassCode.js): the default
+// 'review-bypass' skips the mandatory post-test Review gate (see
+// backend/services/reviewService.redeemBypassCode); 'wt1-test-unlock'
+// opens one specific WT1 course `isTest` lesson.
 
 const express = require('express');
 const auth = require('../../middleware/auth');
 const { teacherOnly, adminOnly } = require('./_shared');
 const ReviewBypassCode = require('../../models/ReviewBypassCode');
+const WT1Lesson = require('../../models/WT1Lesson');
 
 const router = express.Router();
 
@@ -23,6 +27,8 @@ function publicShape(d) {
     _id: String(d._id),
     code: d.code,
     label: d.label || '',
+    kind: d.kind || 'review-bypass',
+    targetLessonCode: d.targetLessonCode || null,
     maxUses: d.maxUses,
     usedCount: d.usedCount,
     remaining: d.maxUses === 0 ? null : Math.max(0, d.maxUses - d.usedCount),
@@ -44,10 +50,23 @@ router.get('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/review-bypass-codes   { label?, maxUses?, expiresAt?, code? }
+// POST /api/admin/review-bypass-codes   { label?, maxUses?, expiresAt?, code?, kind?, targetLessonCode? }
 router.post('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
   try {
     const { label = '', maxUses, expiresAt } = req.body || {};
+    const kind = req.body.kind === 'wt1-test-unlock' ? 'wt1-test-unlock' : 'review-bypass';
+
+    let targetLessonCode = null;
+    if (kind === 'wt1-test-unlock') {
+      targetLessonCode = String(req.body.targetLessonCode || '').trim();
+      if (!targetLessonCode) {
+        return res.status(400).json({ success: false, message: 'Chọn buổi kiểm tra cần mở khoá.' });
+      }
+      const lesson = await WT1Lesson.findOne({ code: targetLessonCode }).select('isTest').lean();
+      if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học này.' });
+      if (!lesson.isTest) return res.status(400).json({ success: false, message: 'Buổi này không phải bài kiểm tra.' });
+    }
+
     let code = String(req.body.code || '').trim().toUpperCase();
     if (code && !/^[A-Z0-9]{4,16}$/.test(code)) {
       return res.status(400).json({ success: false, message: 'Mã chỉ gồm chữ và số, 4–16 ký tự.' });
@@ -63,10 +82,13 @@ router.post('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
       return res.status(409).json({ success: false, message: 'Mã này đã tồn tại.' });
     }
 
+    // A test-unlock code is normally handed to one specific student — 1
+    // use is the sensible default, same as review-bypass's own default.
     const mu = maxUses === undefined || maxUses === null || maxUses === '' ? 1 : Math.max(0, parseInt(maxUses, 10) || 0);
     const doc = await ReviewBypassCode.create({
       code,
       label: String(label || '').slice(0, 120),
+      kind, targetLessonCode,
       maxUses: mu,
       expiresAt: expiresAt ? new Date(expiresAt) : null,
       createdBy: req.user._id,

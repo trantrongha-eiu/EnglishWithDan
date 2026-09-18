@@ -10,6 +10,7 @@ const WT1Module = require('../../models/WT1Module');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Exercise = require('../../models/WT1Exercise');
 const WT1Submission = require('../../models/WT1Submission');
+const ReviewBypassCode = require('../../models/ReviewBypassCode');
 
 const bearer = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 let _n = 0;
@@ -27,8 +28,15 @@ async function seedCourse() {
     code: 'T1-L03', moduleCode: 'T1-M1', order: 3, title: 'Buổi 3', published: true,
     gate: { minObjectiveScorePercent: 70, minWritingSubmissions: 0 },
   }, { upsert: true });
+  // isTest lesson at the end of the module — sequentially reachable once
+  // T1-L03's own gate is met, but ADDITIONALLY needs an admin-issued
+  // wt1-test-unlock code (see the "hard lock enforcement" describe block).
+  await WT1Lesson.findOneAndUpdate({ code: 'T1-L04' }, {
+    code: 'T1-L04', moduleCode: 'T1-M1', order: 4, title: 'TEST 1', published: true, isTest: true,
+    gate: { minObjectiveScorePercent: 0, minWritingSubmissions: 0 },
+  }, { upsert: true });
 
-  await WT1Exercise.deleteMany({ lessonCode: { $in: ['T1-L02', 'T1-L03'] } });
+  await WT1Exercise.deleteMany({ lessonCode: { $in: ['T1-L02', 'T1-L03', 'T1-L04'] } });
   await WT1Exercise.create([
     {
       code: 'MCQ1', lessonCode: 'T1-L02', order: 1, type: 'mcq', title: 'MCQ', published: true, autoGrade: true,
@@ -64,7 +72,27 @@ async function seedCourse() {
       instruction: 'Describe the chart.', stimulus: { kind: 'image', imageUrl: 'https://example.com/x.png' },
       rubric: { minWords: 40, checklist: ['use comparison'], sampleAnswer: 'hidden sample' },
     },
+    {
+      code: 'MCQ2', lessonCode: 'T1-L03', order: 1, type: 'mcq', title: 'MCQ2', published: true, autoGrade: true,
+      items: [{ id: 'q1', prompt: 'Pick', options: [{ id: 'A', text: 'wrong' }, { id: 'B', text: 'right' }], answer: 'B', explanation: 'B is right' }],
+    },
+    {
+      code: 'MCQ3', lessonCode: 'T1-L04', order: 1, type: 'mcq', title: 'MCQ3', published: true, autoGrade: true,
+      items: [{ id: 'q1', prompt: 'Pick', options: [{ id: 'A', text: 'wrong' }, { id: 'B', text: 'right' }], answer: 'B', explanation: 'B is right' }],
+    },
   ]);
+}
+
+// Drives a premium student through every T1-L02 exercise correctly, meeting
+// its gate — shared setup for tests further down the chain (T1-L03, T1-L04).
+async function passLesson02(u) {
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ1', answers: { q1: 'B' } });
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'GAP1', answers: { q1: ['amount'] } });
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'CAT1', answers: { q1: 'up', q2: 'down' } });
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ORD1', answers: { q1: ['a', 'b', 'c'] } });
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MATCH1', answers: { q1: 'R1', q2: 'R2' } });
+  await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ST1', answers: { q1: 'The number of cars was five million.' } });
+  await request(app).post('/api/wt1/submit-writing').set(bearer(u)).send({ exerciseCode: 'SW1', responses: ['The number of cars was five million in 2005. There were two million bikes.'] });
 }
 
 beforeEach(seedCourse);
@@ -90,7 +118,11 @@ describe('gate + auth', () => {
 });
 
 describe('GET /lesson/:code', () => {
-  test('strips answer keys; soft-locked lesson still 200s', async () => {
+  // T1-L02 is the first lesson in its module — always unlocked regardless
+  // of gate state (see wt1Service.computeLessonStatuses) — so this only
+  // exercises answer-key stripping, not lock enforcement (see the "hard
+  // lock enforcement" describe block below for that).
+  test('strips answer keys', async () => {
     const u = await createPremiumStudent();
     const res = await request(app).get('/api/wt1/lesson/T1-L02').set(bearer(u));
     expect(res.status).toBe(200);
@@ -196,14 +228,7 @@ describe('POST /submit-writing', () => {
 describe('gate unlock + ownership', () => {
   test('meeting T1-L02 gate flips T1-L03 unlocked', async () => {
     const u = await createPremiumStudent();
-    // pass all objective exercises + 1 writing submission
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ1', answers: { q1: 'B' } });
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'GAP1', answers: { q1: ['amount'] } });
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'CAT1', answers: { q1: 'up', q2: 'down' } });
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ORD1', answers: { q1: ['a', 'b', 'c'] } });
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MATCH1', answers: { q1: 'R1', q2: 'R2' } });
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'ST1', answers: { q1: 'The number of cars was five million.' } });
-    await request(app).post('/api/wt1/submit-writing').set(bearer(u)).send({ exerciseCode: 'SW1', responses: ['The number of cars was five million in 2005. There were two million bikes.'] });
+    await passLesson02(u);
 
     const res = await request(app).get('/api/wt1/overview').set(bearer(u));
     const lessons = res.body.modules.find((m) => m.code === 'T1-M1').lessons;
@@ -217,6 +242,76 @@ describe('gate unlock + ownership', () => {
     const sub = await WT1Submission.findOne({ userId: owner._id }).lean();
     const res = await request(app).get(`/api/wt1/attempt/${sub._id}`).set(bearer(other));
     expect(res.status).toBe(404);
+  });
+});
+
+// The gate used to be display-only ("Gate is SOFT" — a lesson card showed a
+// 🔒 but nothing stopped openLesson()/check/submit-writing/submit-speaking
+// from working on it anyway). getLesson/check/submit-writing/submit-speaking
+// now all call wt1Service.assertLessonUnlocked first, so a locked lesson is
+// genuinely unreachable — not just hidden behind CSS.
+describe('hard lock enforcement', () => {
+  test('T1-L03 (locked — T1-L02 gate not yet met) 403s on GET /lesson and POST /check', async () => {
+    const u = await createPremiumStudent();
+    const lessonRes = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
+    expect(lessonRes.status).toBe(403);
+    expect(lessonRes.body.code).toBe('LESSON_LOCKED');
+
+    const checkRes = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
+    expect(checkRes.status).toBe(403);
+    expect(checkRes.body.code).toBe('LESSON_LOCKED');
+    // Rejected before grading — no submission should have been recorded.
+    expect(await WT1Submission.countDocuments({ userId: u._id, exerciseCode: 'MCQ2' })).toBe(0);
+  });
+
+  test('T1-L03 opens once T1-L02\'s gate is met', async () => {
+    const u = await createPremiumStudent();
+    await passLesson02(u);
+    const res = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
+    expect(res.status).toBe(200);
+  });
+
+  test('an isTest lesson (T1-L04) stays locked behind a code even once sequentially reachable', async () => {
+    const u = await createPremiumStudent();
+    await passLesson02(u);
+    // Meet T1-L03's own (trivial: 70%/0) gate too, so T1-L04 is sequentially
+    // reachable — the ONLY thing left standing between the student and it
+    // should be the missing test-unlock code.
+    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
+
+    const before = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
+    expect(before.status).toBe(403);
+    expect(before.body.code).toBe('TEST_CODE_REQUIRED');
+
+    const overview = await request(app).get('/api/wt1/overview').set(bearer(u));
+    const l04 = overview.body.modules.find((m) => m.code === 'T1-M1').lessons.find((l) => l.code === 'T1-L04');
+    expect(l04.unlocked).toBe(false);
+    expect(l04.needsTestCode).toBe(true);
+
+    // Admin issues a code scoped to exactly this lesson (mirrors POST
+    // /api/admin/review-bypass-codes with kind:'wt1-test-unlock') — the
+    // student redeems it through the SAME public endpoint review-bypass
+    // codes use.
+    await ReviewBypassCode.create({ code: 'TESTUNLOCK1', kind: 'wt1-test-unlock', targetLessonCode: 'T1-L04', maxUses: 1 });
+    const redeemRes = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'TESTUNLOCK1' });
+    expect(redeemRes.status).toBe(200);
+    expect(redeemRes.body.kind).toBe('wt1-test-unlock');
+    expect(redeemRes.body.lessonCode).toBe('T1-L04');
+
+    const after = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
+    expect(after.status).toBe(200);
+
+    // One redemption per student, same rule as review-bypass codes.
+    const secondRedeem = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'TESTUNLOCK1' });
+    expect(secondRedeem.status).toBe(400);
+
+    // A DIFFERENT student never redeemed it — still locked for them.
+    const other = await createPremiumStudent();
+    await passLesson02(other);
+    await request(app).post('/api/wt1/check').set(bearer(other)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
+    const otherRes = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(other));
+    expect(otherRes.status).toBe(403);
+    expect(otherRes.body.code).toBe('TEST_CODE_REQUIRED');
   });
 });
 

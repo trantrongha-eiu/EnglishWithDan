@@ -22,6 +22,10 @@ exports.getLesson = async (req, res) => {
     if (!data) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học' });
     res.json({ success: true, ...data });
   } catch (err) {
+    // svc.getLesson throws AuthorizationError (403, err.code LESSON_LOCKED
+    // / TEST_CODE_REQUIRED) when the lesson isn't unlocked yet — an
+    // expected, student-facing condition, not a server error.
+    if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     console.error('[WT1] lesson:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
@@ -38,6 +42,7 @@ exports.check = async (req, res) => {
     if (!grading.OBJECTIVE_TYPES.has(ex.type)) {
       return res.status(400).json({ success: false, message: 'Bài này không chấm tự động — dùng /submit-writing.' });
     }
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
     // req.skipAIGrading: set by the /check route's rate limiter once a
     // student hits it — go straight to the local fallback instead of
     // calling Gemini at all (same pattern as task2Practice's checkLimiter).
@@ -49,6 +54,7 @@ exports.check = async (req, res) => {
     });
     res.json({ success: true, ...result });
   } catch (err) {
+    if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     console.error('[WT1] check:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi chấm bài' });
   }
@@ -68,6 +74,7 @@ exports.submitWriting = async (req, res) => {
     if (!WRITING.has(ex.type)) {
       return res.status(400).json({ success: false, message: 'Bài này chấm tự động — dùng /check.' });
     }
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
 
     // The model answer is safe to return now (student has submitted) — the
     // pre-submit payload from wt1Service.sanitizeExercise strips it. Shown
@@ -102,6 +109,7 @@ exports.submitWriting = async (req, res) => {
     await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai });
     res.json({ success: true, ...ai, sampleAnswer });
   } catch (err) {
+    if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     console.error('[WT1] submitWriting:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi chấm bài' });
   }
@@ -134,6 +142,7 @@ exports.submitSpeaking = async (req, res) => {
     if (ex.type !== 'speaking_response') {
       return res.status(400).json({ success: false, message: 'Bài này không phải bài nói.' });
     }
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
 
     const questionText = (ex.items || []).map((it) => it.prompt).filter(Boolean).join(' | ')
       || ex.instruction || ex.title || 'IELTS Speaking practice';
@@ -198,6 +207,7 @@ exports.submitSpeaking = async (req, res) => {
 
     res.json({ success: true, graded: 'speaking', feedback, transcript: finalText });
   } catch (err) {
+    if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     console.error('[WT1] submitSpeaking:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi chấm bài' });
   }

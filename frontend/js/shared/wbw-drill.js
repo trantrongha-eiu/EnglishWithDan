@@ -350,10 +350,16 @@
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault();
       e.stopPropagation();
-      // Per-word mode: Space is the explicit "I've finished this word" signal
-      // (Vietnamese words aren't validated per keystroke). Check it now — a
-      // no-op if it already auto-advanced on the last `input` event.
-      if (this.perWord && e.key !== 'Enter') this._onInputWord(this.tokens[this.activeIdx], true);
+      // Per-word mode: Space AND Enter are both an explicit "I've finished
+      // this word" signal (Vietnamese words aren't validated per keystroke)
+      // — check it now, a no-op if it already auto-advanced on the last
+      // `input` event. Enter used to be excluded here and did nothing at
+      // all, which just meant a student pressing it (a natural "confirm"
+      // reflex) got zero feedback; now safe to treat the same as Space
+      // since a committed check on a still-in-progress word (tone mark not
+      // landed yet) no longer counts as a wrong attempt — see the
+      // isPendingPrefix guard in _onInputWord.
+      if (this.perWord) this._onInputWord(this.tokens[this.activeIdx], true);
     }
   };
 
@@ -382,6 +388,14 @@
       return '';
     });
     return (stripped.normalize ? stripped.normalize('NFC') : stripped).toLowerCase() + '#' + tone;
+  }
+
+  // Same NFD-strip as _toneAgnosticKey, but drops the tone entirely instead
+  // of tracking it — used to recognize an IN-PROGRESS word (see
+  // _onInputWord's `isPendingPrefix` below), not to judge a finished one.
+  function _stripTone(s) {
+    var stripped = nfc(s).normalize('NFD').replace(TONE_MARK_RE, '');
+    return (stripped.normalize ? stripped.normalize('NFC') : stripped).toLowerCase();
   }
 
   // Advance past the just-completed active word.
@@ -475,9 +489,25 @@
     // ("hoạ"/"họa", "thuý"/"thúy"...) — see _toneAgnosticKey above.
     if (got && _toneAgnosticKey(got) === _toneAgnosticKey(want)) { this._advanceWord(); return; }
 
+    // BUG: a committed (Space, or Enter — see _onKeydown) press used to
+    // flash-error/count-wrong on ANY non-exact match, including a
+    // genuinely in-progress word whose tone mark simply hasn't landed yet
+    // (real Telex/VNI lag: "kem" appears before the "s" keystroke converts
+    // it to "kém" — same base letters, same length, tone just pending).
+    // With maxErrors set (vocab drills), a student who typed the word
+    // correctly but committed (out of habit, or before the IME's tone
+    // conversion caught up) a few times while waiting could burn through
+    // the whole cap and get failed on a word they never actually typed
+    // wrong. Recognize this case — same tone-stripped letters up to
+    // however much has been typed, not yet the full word — as "still
+    // typing", not a wrong answer: no error, no advance, just keep waiting.
+    var isPendingPrefix = got.length > 0 && got.length <= want.length &&
+      _stripTone(got) === _stripTone(want.slice(0, got.length));
+    if (committed && isPendingPrefix) { this._renderWords(); return; }
+
     // Not matching. Stay quiet while they're still (plausibly) mid-word;
-    // shake only when they explicitly committed with Space, or clearly
-    // overshot the target length.
+    // shake only when they explicitly committed with Space/Enter, or
+    // clearly overshot the target length.
     if (!this.erroring && (committed || got.length > want.length + 1)) this._flashError();
     this._renderWords();
   };

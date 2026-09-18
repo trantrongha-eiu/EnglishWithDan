@@ -79,6 +79,12 @@
     .t1-key > summary::before { content: '▸ '; font-weight: 900; }
     .t1-key[open] > summary::before { content: '▾ '; }
     .t1-key ul { margin: 6px 0 0; padding-left: 20px; font-size: 12.5px; line-height: 1.7; color: var(--text2,#4b5563); }
+    .t1-tpl-drill { margin: 12px 20px 0; background: #fefce8; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; }
+    [data-theme="dark"] .t1-tpl-drill { background: #2a2410; border-color: #4d3f13; }
+    .t1-tpl-drill-t { font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 8px; }
+    [data-theme="dark"] .t1-tpl-drill-t { color: #fbbf24; }
+    .t1-tpl-drill-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .t1-tpl-drill-links .t1-btn { text-decoration: none; }
 
     .t1-ex-list { display:flex; flex-direction: column; gap: 10px; padding: 10px 20px 20px; }
     .t1-ex-card { display:flex; align-items:center; gap: 12px; border: 1.5px solid var(--border,#e5e7eb); border-radius: 12px; padding: 13px 15px; cursor: pointer; background: var(--surface,#fff);
@@ -329,6 +335,24 @@
     <div class="t1-hist-body" id="t1-hist-body"></div>
   </div>
 </div>
+<!-- Test-lesson unlock: a locked "Kiểm tra" lesson (isTest) needs a code an
+     admin/teacher issues (ReviewBypassCode kind:'wt1-test-unlock') — see
+     wt1Service.assertLessonUnlocked. -->
+<div id="t1-code-modal" class="t1-hist-modal hidden">
+  <div class="t1-hist-box" style="max-width:360px">
+    <div class="t1-hist-header"><h3><i class="fas fa-lock"></i> Mã mở khoá bài kiểm tra</h3>
+      <button class="t1-hist-close" id="t1-code-close-btn"><i class="fas fa-times"></i></button></div>
+    <div style="padding:16px">
+      <p style="font-size:13px;color:var(--text2,#4b5563);margin:0 0 12px">Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.</p>
+      <div style="display:flex;gap:8px">
+        <input id="t1-code-input" maxlength="16" placeholder="NHẬP MÃ" autocomplete="off" spellcheck="false"
+          style="flex:1;min-width:0;padding:9px 11px;border:1.5px solid var(--border,#e5e7eb);border-radius:8px;font-size:14px;font-family:inherit;text-transform:uppercase;letter-spacing:1px;background:var(--bg,#fff);color:var(--text,#111827)">
+        <button id="t1-code-submit" class="t1-btn" style="white-space:nowrap">Áp dụng</button>
+      </div>
+      <div id="t1-code-msg" style="font-size:12px;margin-top:8px;min-height:16px"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════════════
@@ -345,6 +369,20 @@
     full_task1: 'Bài hoàn chỉnh',
   };
   var OBJECTIVE = { mcq:1, gap_fill:1, error_correction:1, word_form:1, categorize:1, matching:1, ordering:1, sentence_transform:1 };
+
+  // Module 2 (Bảy dạng đề) lessons T2-L05..T2-L11 map 1:1 onto the 7
+  // typeId's already seeded into Task2Template (type01..type07 — see
+  // backend/scripts/seedTask2TemplatesBand6.js). Rather than re-authoring
+  // that template content inside the WT1-course exercise system, each of
+  // those 7 lessons links straight into the existing task2-template.html
+  // drills (deep-linked via its own ?type=&mode= URL params) for "Dịch câu"
+  // / "Chunks" practice on that essay type's templates. Free extra
+  // practice, not a course exercise — doesn't touch lesson completion or
+  // the unlock gate.
+  var LESSON_TPL_TYPE = {
+    'T2-L05': 'type01', 'T2-L06': 'type02', 'T2-L07': 'type03', 'T2-L08': 'type04',
+    'T2-L09': 'type05', 'T2-L10': 'type06', 'T2-L11': 'type07',
+  };
 
   var state = { view: 'overview', overview: null, lesson: null, exercises: [], exIdx: 0, answered: false, timer: null, timeLeft: 0, _submitting: false, results: [] };
   var app = document.getElementById('app');
@@ -452,9 +490,16 @@
     var mods = (d.modules || []).map(function (m, mi) {
       var lessons = (m.lessons || []).map(function (l) {
         var icCls = l.done ? 'done' : (l.doneCount > 0 ? 'prog' : '');
-        var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : '🔒');
+        var lockIcon = l.needsTestCode ? '🎫' : '🔒';
+        var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : lockIcon);
         var pct = l.exerciseCount ? Math.round((l.doneCount / l.exerciseCount) * 100) : 0;
-        return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '">' +
+        // data-locked/data-needs-code drive bindOverview()'s click guard — a
+        // locked lesson card used to still open on click despite showing 🔒,
+        // since openLesson() ran unconditionally. Server-side, getLesson/
+        // check/submitWriting/submitSpeaking now also hard-enforce this
+        // (wt1Service.assertLessonUnlocked), so this is UX, not the only gate.
+        return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '"' +
+          (l.unlocked ? '' : ' data-locked="1"') + (l.needsTestCode ? ' data-needs-code="1"' : '') + '>' +
           '<div class="t1-lesson-ic ' + icCls + '">' + icTxt + '</div>' +
           '<div class="t1-lesson-body">' +
             '<div class="t1-lesson-title">' + esc(l.title) + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</div>' +
@@ -480,7 +525,14 @@
   }
   function bindOverview() {
     document.querySelectorAll('.t1-lesson').forEach(function (el) {
-      el.addEventListener('click', function () { openLesson(el.dataset.code); });
+      el.addEventListener('click', function () {
+        if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
+        if (el.dataset.locked === '1') {
+          toast('Hoàn thành buổi trước (đạt yêu cầu điểm) để mở khoá buổi này.', 'warning');
+          return;
+        }
+        openLesson(el.dataset.code);
+      });
     });
   }
 
@@ -517,10 +569,19 @@
         (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
         '</div>';
     }).join('');
+    var tplType = LESSON_TPL_TYPE[l.code];
+    var tplBlock = tplType
+      ? '<div class="t1-tpl-drill"><div class="t1-tpl-drill-t">🧠 Luyện thuộc template dạng này</div>' +
+        '<div class="t1-tpl-drill-links">' +
+        '<a class="t1-btn" href="task2-template.html?type=' + tplType + '&mode=translation" target="_blank" rel="noopener"><i class="fas fa-language"></i> Luyện Dịch câu</a>' +
+        '<a class="t1-btn" href="task2-template.html?type=' + tplType + '&mode=chunks" target="_blank" rel="noopener"><i class="fas fa-puzzle-piece"></i> Luyện Chunks</a>' +
+        '</div></div>'
+      : '';
     return '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
       '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +
       ((l.objectives && l.objectives.length) ? '<div class="t1-objs"><div class="t1-objs-t">🎯 Mục tiêu buổi học</div><ul>' + l.objectives.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul></div>' : '') +
       ((l.keyLanguage && l.keyLanguage.length) ? '<details class="t1-key"><summary>🧩 Ngữ pháp / Cấu trúc cần nhớ</summary><ul>' + l.keyLanguage.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></details>' : '') +
+      tplBlock +
       '<div class="t1-ex-list">' + exs + '</div>';
   }
   function bindLesson() {
@@ -559,6 +620,43 @@
     }
   }
   function closeHistory() { document.getElementById('t1-hist-modal').classList.add('hidden'); }
+
+  // ── test-lesson unlock code ───────────────────────────────────────
+  function openTestCodeModal(lessonCode) {
+    var modal = document.getElementById('t1-code-modal');
+    var input = document.getElementById('t1-code-input');
+    var msg = document.getElementById('t1-code-msg');
+    modal.dataset.lessonCode = lessonCode;
+    input.value = '';
+    msg.textContent = ''; msg.style.color = '';
+    modal.classList.remove('hidden');
+    input.focus();
+  }
+  function closeTestCodeModal() { document.getElementById('t1-code-modal').classList.add('hidden'); }
+  async function submitTestCode() {
+    var modal = document.getElementById('t1-code-modal');
+    var input = document.getElementById('t1-code-input');
+    var msg = document.getElementById('t1-code-msg');
+    var btn = document.getElementById('t1-code-submit');
+    var code = (input.value || '').trim().toUpperCase();
+    if (!code) { msg.style.color = '#dc2626'; msg.textContent = 'Nhập mã trước đã.'; return; }
+    btn.disabled = true;
+    try {
+      var d = await api('/review/bypass', { method: 'POST', body: JSON.stringify({ code: code }) });
+      msg.style.color = '#16a34a';
+      msg.textContent = d.message || 'Đã mở khoá!';
+      var lessonCode = d.lessonCode || modal.dataset.lessonCode;
+      setTimeout(function () {
+        closeTestCodeModal();
+        openLesson(lessonCode);
+      }, 700);
+    } catch (e) {
+      msg.style.color = '#dc2626';
+      msg.textContent = (e && e.message) || 'Mã không hợp lệ.';
+    } finally {
+      btn.disabled = false;
+    }
+  }
   function renderHistoryList(rows) {
     var body = document.getElementById('t1-hist-body');
     if (!rows.length) { body.innerHTML = '<div class="t1-hist-empty">Bạn chưa làm bài này lần nào.</div>'; return; }
@@ -1035,9 +1133,32 @@
     openLesson(state.lesson.code, null, true);
   }
   function renderLessonDone() { finishLesson(); return ''; }
+  // Best-effort — re-fetches the overview to see whether finishing this
+  // lesson just met its gate and unlocked the next one in the module, then
+  // pops a floating toast announcing it. Fire-and-forget from finishLesson()
+  // so a slow/failed fetch never delays or breaks the result screen itself.
+  async function _notifyIfNextLessonUnlocked(lessonCode) {
+    try {
+      var ov = await api('/wt1/overview?course=IELTS-W-T2');
+      state.overview = ov;
+      var mods = ov.modules || [];
+      for (var mi = 0; mi < mods.length; mi++) {
+        var mlessons = mods[mi].lessons || [];
+        var idx = mlessons.findIndex(function (x) { return x.code === lessonCode; });
+        if (idx < 0) continue;
+        var next = mlessons[idx + 1];
+        if (next && next.unlocked && window.showToastWithTitle) {
+          window.showToastWithTitle('success', '🎉 Đã hoàn thành buổi học!', 'Đã mở khoá: ' + next.title, 5000);
+        }
+        return;
+      }
+    } catch (e) { /* silent — this is a nice-to-have notification, not core flow */ }
+  }
   async function finishLesson() {
     stopTimer();
     state.view = 'done';
+    var lessonCode = state.lesson && state.lesson.code;
+    if (lessonCode) _notifyIfNextLessonUnlocked(lessonCode);
     if (window.CourseResult) {
       window.CourseResult.renderLessonComplete({
         mount: app,
@@ -1070,6 +1191,16 @@
   document.getElementById('t1-hist-close-btn').addEventListener('click', closeHistory);
   document.getElementById('t1-hist-modal').addEventListener('click', function (e) {
     if (e.target.id === 't1-hist-modal') closeHistory();
+  });
+
+  // ── test-code modal (static markup, bound once) ───────────────────
+  document.getElementById('t1-code-close-btn').addEventListener('click', closeTestCodeModal);
+  document.getElementById('t1-code-modal').addEventListener('click', function (e) {
+    if (e.target.id === 't1-code-modal') closeTestCodeModal();
+  });
+  document.getElementById('t1-code-submit').addEventListener('click', submitTestCode);
+  document.getElementById('t1-code-input').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') submitTestCode();
   });
 
   // #app is a stable container that render() only ever innerHTML's into —

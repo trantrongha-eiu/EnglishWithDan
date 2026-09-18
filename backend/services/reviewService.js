@@ -179,13 +179,21 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   };
 }
 
-// Redeem an admin-issued bypass code: mark every one of this student's
-// PENDING reading/listening reviews 'bypassed' AND every graded Writing
-// essay still awaiting a rewrite 'rewrite.bypassed' — so BOTH the
-// mandatory-review gate (reading/listening) and the rewrite gate (writing)
-// open again. One code clears the student's whole backlog.
+// Redeem an admin-issued code. Two kinds share this one code pool (see
+// models/ReviewBypassCode.js):
+//
+//  - 'review-bypass' (default): marks every one of this student's PENDING
+//    reading/listening reviews 'bypassed' AND every graded Writing essay
+//    still awaiting a rewrite 'rewrite.bypassed' — so BOTH the
+//    mandatory-review gate (reading/listening) and the rewrite gate
+//    (writing) open again. One code clears the student's whole backlog.
+//  - 'wt1-test-unlock': opens the code's one `targetLessonCode` WT1 test
+//    lesson for this student — see wt1Service.assertLessonUnlocked. No
+//    other collection is touched; the redemption itself IS the unlock.
+//
 // Returns { status, ... } — 'ok' | 'not_found' | 'not_redeemable' |
-// 'already_used' | 'nothing_pending'. `cleared` = reviews + rewrites.
+// 'already_used' | 'nothing_pending' (review-bypass only, when there was
+// nothing to clear). `cleared` = reviews + rewrites (review-bypass only).
 async function redeemBypassCode(userId, rawCode) {
   const code = String(rawCode || '').trim().toUpperCase();
   if (!code) return { status: 'not_found' };
@@ -195,6 +203,13 @@ async function redeemBypassCode(userId, rawCode) {
   if (!doc.isRedeemable()) return { status: 'not_redeemable' };
   if (doc.redemptions.some(r => String(r.userId) === String(userId))) {
     return { status: 'already_used' };
+  }
+
+  if (doc.kind === 'wt1-test-unlock') {
+    doc.redemptions.push({ userId });
+    doc.usedCount += 1;
+    await doc.save();
+    return { status: 'ok', kind: 'wt1-test-unlock', lessonCode: doc.targetLessonCode };
   }
 
   const now = new Date();

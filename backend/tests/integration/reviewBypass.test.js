@@ -8,6 +8,7 @@ const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../
 const AttemptReview = require('../../models/AttemptReview');
 const ReviewBypassCode = require('../../models/ReviewBypassCode');
 const WritingAttempt = require('../../models/WritingAttempt');
+const WT1Lesson = require('../../models/WT1Lesson');
 const mongoose = require('mongoose');
 
 function authed(user) {
@@ -64,6 +65,46 @@ describe('admin review-bypass-codes CRUD', () => {
     expect(off.body.code.active).toBe(false);
     expect((await t.del(`/api/admin/review-bypass-codes/${c._id}`)).status).toBe(403);
     expect((await authed(await createAdmin()).del(`/api/admin/review-bypass-codes/${c._id}`)).status).toBe(200);
+  });
+});
+
+// kind:'wt1-test-unlock' shares this same admin CRUD + redeem endpoint —
+// see backend/models/ReviewBypassCode.js and wt1Service.assertLessonUnlocked.
+// The core unlock-flow (locked → redeem → open) is covered end-to-end in
+// wt1.test.js's "hard lock enforcement" block; this file only covers the
+// admin-route-level validation that's specific to creating this kind of code.
+describe('admin review-bypass-codes CRUD — kind:"wt1-test-unlock"', () => {
+  test('requires targetLessonCode, and it must be a real isTest lesson', async () => {
+    const t = authed(await createTeacher());
+    const missing = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-test-unlock' });
+    expect(missing.status).toBe(400);
+
+    const notFound = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-test-unlock', targetLessonCode: 'NOPE' });
+    expect(notFound.status).toBe(404);
+
+    await WT1Lesson.create({ code: 'RB-L1', moduleCode: 'RB-M1', order: 1, title: 'Buổi 1', isTest: false });
+    const notTest = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-test-unlock', targetLessonCode: 'RB-L1' });
+    expect(notTest.status).toBe(400);
+  });
+
+  test('creates and lists a valid wt1-test-unlock code with its target lesson', async () => {
+    const t = authed(await createTeacher());
+    await WT1Lesson.create({ code: 'RB-TEST1', moduleCode: 'RB-M1', order: 2, title: 'TEST 1', isTest: true });
+
+    const created = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-test-unlock', targetLessonCode: 'RB-TEST1' });
+    expect(created.status).toBe(201);
+    expect(created.body.code).toMatchObject({ kind: 'wt1-test-unlock', targetLessonCode: 'RB-TEST1' });
+
+    const list = await t.get('/api/admin/review-bypass-codes');
+    const row = list.body.codes.find(c => c.code === created.body.code.code);
+    expect(row).toMatchObject({ kind: 'wt1-test-unlock', targetLessonCode: 'RB-TEST1' });
+  });
+
+  test('a plain review-bypass code (no kind given) keeps its default shape', async () => {
+    const t = authed(await createTeacher());
+    const created = await t.post('/api/admin/review-bypass-codes', { label: 'default kind' });
+    expect(created.body.code.kind).toBe('review-bypass');
+    expect(created.body.code.targetLessonCode).toBeNull();
   });
 });
 

@@ -4,9 +4,14 @@ import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useConfirm } from '../components/ConfirmDialog';
 
-// Codes a teacher hands a student to skip the mandatory post-test Review
-// gate. Redeeming one (public POST /api/review/bypass) marks all that
-// student's pending reviews 'bypassed'. Full mock test is unaffected.
+// Codes a teacher hands a student to unlock something they can't unlock
+// themselves. Two kinds share this one page/collection:
+//  - 'review-bypass' (default): skips the mandatory post-test Review gate.
+//    Redeeming one (public POST /api/review/bypass) marks all that
+//    student's pending reviews 'bypassed'. Full mock test is unaffected.
+//  - 'wt1-test-unlock': opens one specific `isTest` lesson (e.g. "TEST 1 —
+//    Bài kiểm tra cuối Module 1") in the Task 1/2 Writing or Speaking
+//    course for the redeeming student — see wt1Service.assertLessonUnlocked.
 export default function ReviewBypassCodes() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -17,7 +22,8 @@ export default function ReviewBypassCodes() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [tick, setTick] = useState(0);
-  const [form, setForm] = useState({ label: '', code: '', maxUses: '1', expiresAt: '' });
+  const [form, setForm] = useState({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '' });
+  const [testLessons, setTestLessons] = useState([]);
 
   const reload = () => setTick(t => t + 1);
 
@@ -37,19 +43,36 @@ export default function ReviewBypassCodes() {
     return () => { cancelled = true; };
   }, [tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Powers the "which test does this code unlock" dropdown — every isTest
+  // lesson across all 3 WT1-stack courses, with course/module context for
+  // a readable label. Loaded once; test lessons are static course content,
+  // not something that changes while this page is open.
+  useEffect(() => {
+    apiFetch('/admin/wt1/test-lessons')
+      .then(d => setTestLessons(d.lessons || []))
+      .catch(() => {});
+  }, []);
+  const lessonByCode = Object.fromEntries(testLessons.map(l => [l.code, l]));
+
   async function create(e) {
     e.preventDefault();
+    if (form.kind === 'wt1-test-unlock' && !form.targetLessonCode) {
+      toast('Chọn buổi kiểm tra cần mở khoá.', 'error');
+      return;
+    }
     setCreating(true);
     try {
       const body = {
         label: form.label.trim(),
         maxUses: form.maxUses === '' ? 1 : Number(form.maxUses),
         expiresAt: form.expiresAt || null,
+        kind: form.kind,
       };
+      if (form.kind === 'wt1-test-unlock') body.targetLessonCode = form.targetLessonCode;
       if (form.code.trim()) body.code = form.code.trim();
       const d = await apiFetch('/admin/review-bypass-codes', { method: 'POST', body: JSON.stringify(body) });
       toast(`Đã tạo mã ${d.code.code}`);
-      setForm({ label: '', code: '', maxUses: '1', expiresAt: '' });
+      setForm({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '' });
       reload();
     } catch (e) { toast(e.message, 'error'); }
     finally { setCreating(false); }
@@ -100,7 +123,9 @@ export default function ReviewBypassCodes() {
         <span style={{ fontSize: 18, lineHeight: 1.3 }}>🎫</span>
         <div>
           Mã cho học sinh nhập để <strong style={{ color: 'var(--text)' }}>bỏ qua yêu cầu Review</strong> (ép
-          review sau mỗi 3 bài). Học sinh nhập ở màn hình bị chặn của Reading / Listening.
+          review sau mỗi 3 bài) hoặc <strong style={{ color: 'var(--text)' }}>mở khoá một bài kiểm tra</strong> cuối
+          module (Task 1/2 Writing, Speaking) — chọn loại mã bên dưới. Học sinh nhập ở màn hình bị chặn tương ứng
+          (Reading/Listening cho loại đầu, thẻ bài kiểm tra đang khoá cho loại sau).
           Mỗi học sinh chỉ dùng được <strong style={{ color: 'var(--text)' }}>1 lần / mã</strong>.
           <br />
           Thi thử Full 4 kỹ năng không bị ràng buộc bởi review nên không cần mã.
@@ -111,6 +136,26 @@ export default function ReviewBypassCodes() {
       <form onSubmit={create} style={{ ...PANEL, padding: 18 }}>
         <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.5px', color: 'var(--text3)', marginBottom: 14 }}>
           Tạo mã mới
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, alignItems: 'end', marginBottom: form.kind === 'wt1-test-unlock' ? 14 : 0 }}>
+          <Field label="Loại mã">
+            <select className="form-input" value={form.kind}
+              onChange={e => setForm(f => ({ ...f, kind: e.target.value, targetLessonCode: '' }))}>
+              <option value="review-bypass">Bỏ qua Review</option>
+              <option value="wt1-test-unlock">Mở khoá bài kiểm tra</option>
+            </select>
+          </Field>
+          {form.kind === 'wt1-test-unlock' && (
+            <Field label="Bài kiểm tra">
+              <select className="form-input" value={form.targetLessonCode}
+                onChange={e => setForm(f => ({ ...f, targetLessonCode: e.target.value }))}>
+                <option value="">— Chọn buổi —</option>
+                {testLessons.map(l => (
+                  <option key={l.code} value={l.code}>{l.courseTitle} · {l.title}</option>
+                ))}
+              </select>
+            </Field>
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, alignItems: 'end' }}>
           <Field label="Ghi chú">
@@ -156,6 +201,7 @@ export default function ReviewBypassCodes() {
             <thead>
               <tr>
                 <th>Mã</th>
+                <th>Loại</th>
                 <th>Ghi chú</th>
                 <th>Lượt dùng</th>
                 <th>Hết hạn</th>
@@ -166,9 +212,9 @@ export default function ReviewBypassCodes() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={7} className="table-empty">Đang tải…</td></tr>
+                <tr><td colSpan={8} className="table-empty">Đang tải…</td></tr>
               ) : codes.length === 0 ? (
-                <tr><td colSpan={7} className="table-empty">Chưa có mã nào. Tạo mã đầu tiên ở trên.</td></tr>
+                <tr><td colSpan={8} className="table-empty">Chưa có mã nào. Tạo mã đầu tiên ở trên.</td></tr>
               ) : codes.map(c => (
                 <tr key={c._id} style={{ opacity: c.active ? 1 : 0.5 }}>
                   <td>
@@ -180,6 +226,15 @@ export default function ReviewBypassCodes() {
                     >
                       {c.code}<span style={{ opacity: 0.6 }}>📋</span>
                     </button>
+                  </td>
+                  <td>
+                    {c.kind === 'wt1-test-unlock'
+                      ? <span className="badge badge-purple" title={lessonByCode[c.targetLessonCode]
+                          ? `${lessonByCode[c.targetLessonCode].courseTitle} · ${lessonByCode[c.targetLessonCode].title}`
+                          : c.targetLessonCode}>
+                          🎫 {lessonByCode[c.targetLessonCode]?.title || c.targetLessonCode || 'Mở khoá test'}
+                        </span>
+                      : <span className="badge badge-blue">Bỏ qua Review</span>}
                   </td>
                   <td>{c.label || <span style={{ color: 'var(--text3)' }}>—</span>}</td>
                   <td style={{ fontVariantNumeric: 'tabular-nums' }}>

@@ -9,6 +9,7 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const { teacherOnly, adminOnly } = require('./_shared');
 
+const WT1Course = require('../../models/WT1Course');
 const WT1Module = require('../../models/WT1Module');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Exercise = require('../../models/WT1Exercise');
@@ -64,6 +65,34 @@ router.get('/wt1/tree', auth, teacherOnly, async (req, res) => {
       success: true,
       modules: modules.map((m) => ({ ...m, lessons: (byModule[m.code] || []).sort((a, b) => a.order - b.order) })),
     });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// GET /api/admin/wt1/test-lessons — every `isTest` lesson across ALL 3
+// courses on the WT1 stack, with enough course/module context for a
+// dropdown label. Powers the "which test does this code unlock" picker on
+// the Review Bypass admin page (ReviewBypassCode kind:'wt1-test-unlock').
+router.get('/wt1/test-lessons', auth, teacherOnly, async (req, res) => {
+  try {
+    const [courses, modules, lessons] = await Promise.all([
+      WT1Course.find({ code: { $in: [...COURSES] } }).select('code title').lean(),
+      WT1Module.find({ courseCode: { $in: [...COURSES] } }).select('code title courseCode').lean(),
+      WT1Lesson.find({ isTest: true }).select('code title moduleCode').sort({ order: 1 }).lean(),
+    ]);
+    const courseTitleByCode = Object.fromEntries(courses.map((c) => [c.code, c.title]));
+    const moduleById = Object.fromEntries(modules.map((m) => [m.code, m]));
+    const rows = lessons
+      .map((l) => {
+        const mod = moduleById[l.moduleCode];
+        if (!mod) return null; // orphaned lesson (module deleted/renamed) — skip rather than show a broken label
+        return {
+          code: l.code, title: l.title,
+          courseCode: mod.courseCode, courseTitle: courseTitleByCode[mod.courseCode] || mod.courseCode,
+          moduleTitle: mod.title,
+        };
+      })
+      .filter(Boolean);
+    res.json({ success: true, lessons: rows });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
