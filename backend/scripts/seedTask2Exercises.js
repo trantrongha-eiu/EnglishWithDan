@@ -2339,7 +2339,7 @@ const topics = [
     ]
   },
   {
-    "week": 3,
+    "week": 9,
     "block": "cause_effect",
     "topicName": "High Rates of University Dropout",
     "topicEmoji": "🎓",
@@ -2857,7 +2857,7 @@ const topics = [
     ]
   },
   {
-    "week": 3,
+    "week": 9,
     "block": "cause_effect",
     "topicName": "Decline in STEM Course Enrolments",
     "topicEmoji": "🔬",
@@ -3374,7 +3374,7 @@ const topics = [
     ]
   },
   {
-    "week": 4,
+    "week": 10,
     "block": "cause_effect",
     "topicName": "Online Learning and Student Motivation",
     "topicEmoji": "📚",
@@ -3913,7 +3913,7 @@ const topics = [
     ]
   },
   {
-    "week": 4,
+    "week": 10,
     "block": "cause_effect",
     "topicName": "Dropout Rates in Higher Education",
     "topicEmoji": "🎓",
@@ -8523,7 +8523,7 @@ const topics = [
     ]
   },
   {
-    "week": 9,
+    "week": 11,
     "block": "agree_disagree",
     "topicName": "Shorter Work Week",
     "topicEmoji": "💼",
@@ -9106,7 +9106,7 @@ const topics = [
     ]
   },
   {
-    "week": 9,
+    "week": 11,
     "block": "agree_disagree",
     "topicName": "Remote Work as the Future",
     "topicEmoji": "🧑‍💻",
@@ -9777,7 +9777,7 @@ const topics = [
     ]
   },
   {
-    "week": 10,
+    "week": 12,
     "block": "agree_disagree",
     "topicName": "Job Satisfaction vs. Salary",
     "topicEmoji": "📈",
@@ -10449,7 +10449,7 @@ const topics = [
     ]
   },
   {
-    "week": 10,
+    "week": 12,
     "block": "agree_disagree",
     "topicName": "Unenjoyable Employment vs. Unemployment",
     "topicEmoji": "😔",
@@ -10964,7 +10964,7 @@ const topics = [
     ]
   },
   {
-    "week": 11,
+    "week": 3,
     "block": "discuss_both_views",
     "topicName": "Public Health Promotion: Healthy Food Subsidies vs. Junk Food Taxes",
     "topicEmoji": "🏛️",
@@ -11482,7 +11482,7 @@ const topics = [
     ]
   },
   {
-    "week": 11,
+    "week": 3,
     "block": "discuss_both_views",
     "topicName": "Funding Priorities: Free Public Libraries vs. Internet Infrastructure",
     "topicEmoji": "📚",
@@ -11991,7 +11991,7 @@ const topics = [
     ]
   },
   {
-    "week": 12,
+    "week": 4,
     "block": "discuss_both_views",
     "topicName": "National Fitness Funding: Elite Athletes vs. Grassroots Sports",
     "topicEmoji": "🏅",
@@ -12499,7 +12499,7 @@ const topics = [
     ]
   },
   {
-    "week": 12,
+    "week": 4,
     "block": "discuss_both_views",
     "topicName": "Economic Support: Higher Education vs. Vocational Training",
     "topicEmoji": "🎓",

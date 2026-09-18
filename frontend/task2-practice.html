@@ -1017,13 +1017,17 @@ function renderWeeks() {
   // Each essay type now spans 2 consecutive weeks (1 theme each, no theme
   // repeated across blocks) — see restructure notes (2026). Weeks 15-18
   // stay "Ôn tập" (mixed review content, unchanged since the old 9-12).
+  // Ordered Type01→Type07 (matches Task2Topic.week reassignment in
+  // seedTask2Exercises.js and the WT1 Task 2 course's Module 2 lesson
+  // order) — was previously scrambled (Type05/06/02 sat at weeks 3-4/9-10/
+  // 11-12 instead of their type-numbered slots).
   const weekNames = {
     1:'Adv & Disadv · Technology', 2:'Adv & Disadv · Technology',
-    3:'Cause & Effect · Education', 4:'Cause & Effect · Education',
+    3:'Discuss Both · Government', 4:'Discuss Both · Government',
     5:'Cause & Solution · Health', 6:'Cause & Solution · Health',
     7:'Effect & Solution · Transport', 8:'Effect & Solution · Transport',
-    9:'Agree/Disagree · Work', 10:'Agree/Disagree · Work',
-    11:'Discuss Both · Government', 12:'Discuss Both · Government',
+    9:'Cause & Effect · Education', 10:'Cause & Effect · Education',
+    11:'Agree/Disagree · Work', 12:'Agree/Disagree · Work',
     13:'Positive/Negative · Environment', 14:'Positive/Negative · Environment',
     15:'Ôn tập', 16:'Ôn tập', 17:'Ôn tập', 18:'Ôn tập'
   };
