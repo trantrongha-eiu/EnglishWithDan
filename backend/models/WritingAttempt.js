@@ -61,13 +61,17 @@ const WritingAttemptSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    // 'in-progress'/'disqualified' are Test Simulation mode only — that mode
-    // persists a placeholder attempt at START (unlike every other
-    // submissionType, which only ever writes at submit time), so a strike
-    // has somewhere to attach and an unfinished/voided run is visible
-    // rather than leaving no trace. 'disqualified' = 5+ strikes
-    // (examSimulationService.recordViolation) voided the run.
-    enum: ['in-progress', 'completed', 'timeout', 'disqualified'],
+    // 'in-progress'/'disqualified'/'cancelled' are Test Simulation mode
+    // only — that mode persists a placeholder attempt at START (unlike
+    // every other submissionType, which only ever writes at submit time),
+    // so a strike has somewhere to attach and an unfinished/voided run is
+    // visible rather than leaving no trace. 'disqualified' = 5+ strikes
+    // (examSimulationService.recordViolation) voided the run. 'cancelled'
+    // = the student exited via "Thoát" without submitting (BUG-109 —
+    // exiting without cancelling left the placeholder stuck at
+    // 'in-progress' with wordCount 0, which the history views then showed
+    // exactly like a real submission awaiting grading).
+    enum: ['in-progress', 'completed', 'timeout', 'disqualified', 'cancelled'],
     default: 'completed'
   },
 

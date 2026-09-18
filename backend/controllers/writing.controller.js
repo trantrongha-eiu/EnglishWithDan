@@ -86,6 +86,14 @@ exports.submitPractice = guard(async (req, res) => {
   res.status(201).json({ success: true, attemptId: result.attemptId, newlyUnlocked: result.newlyUnlocked });
 });
 
+// POST /api/writing/cancel-simulation   body: { attemptId }
+// Called from both the full-exam and per-task-practice "Thoát" flows — same
+// WritingAttempt collection either way, so one endpoint covers both (BUG-109).
+exports.cancelSimulationAttempt = guard(async (req, res) => {
+  await writingService.cancelSimulationAttempt(req.user._id, req.body.attemptId);
+  res.json({ success: true });
+});
+
 // POST /api/writing/practice/start-simulation   body: { taskType, taskId }
 exports.startPracticeSimulation = async (req, res) => {
   try {

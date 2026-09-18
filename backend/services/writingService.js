@@ -191,6 +191,21 @@ async function startPracticeSimulation(user, { taskType, taskId }) {
   return { status: 'ok', attemptId: attempt._id, duration };
 }
 
+// Called when a student exits (via "Thoát") a Simulation attempt — full
+// exam or per-task practice, same WritingAttempt collection either way —
+// without submitting. Only ever touches an 'in-progress' row owned by this
+// user, so it's a no-op (not an error) if the attempt already resolved
+// (submitted, timed out, disqualified) or never existed — a stray/late
+// cancel call racing a submit must never clobber a real result.
+async function cancelSimulationAttempt(userId, attemptId) {
+  if (!attemptId) return { status: 'ok' };
+  await WritingAttempt.updateOne(
+    { _id: attemptId, userId, status: 'in-progress', mode: 'simulation' },
+    { status: 'cancelled' }
+  );
+  return { status: 'ok' };
+}
+
 async function submitPractice(user, { taskType, taskId, answer, attemptId: simulationAttemptId }) {
   const tNum = taskType;
   const Model = tNum === 1 ? WritingTask1 : WritingTask2;
@@ -240,8 +255,18 @@ async function submitPractice(user, { taskType, taskId, answer, attemptId: simul
   return { attemptId: attempt._id, newlyUnlocked };
 }
 
+// Excludes 'in-progress' (a session still literally open elsewhere right
+// now — or, pre-BUG-109-fix, one abandoned via "Thoát" that never got
+// marked 'cancelled') and 'cancelled' itself — neither is a real
+// submission, but the frontend history table only ever looks at
+// gradingStatus (defaults to 'pending' for every doc regardless of
+// `status`), so either one rendered exactly like a genuine essay sitting
+// at "Chờ chấm" with 0 words. 'completed'/'timeout'/'disqualified' stay
+// visible — all three represent a real attempt that actually happened.
+const HISTORY_VISIBLE_STATUSES = { $nin: ['in-progress', 'cancelled'] };
+
 async function getPracticeHistory(userId) {
-  return WritingAttempt.find({ userId, submissionType: 'practice' })
+  return WritingAttempt.find({ userId, submissionType: 'practice', status: HISTORY_VISIBLE_STATUSES })
     .sort({ submittedAt: -1 }).limit(20)
     .select('-task1Answer -task2Answer -rewrite.task1 -rewrite.task2').lean();
 }
@@ -321,7 +346,9 @@ async function markFeedbackRead(attemptId, userId) {
 async function getMyHistory(userId) {
   // Exclude the big answer/rewrite bodies — the history table only needs
   // counts + rewrite.done. Full text comes from GET /attempt/:id.
-  return WritingAttempt.find({ userId }).sort({ submittedAt: -1 }).limit(50)
+  // status filter: see getPracticeHistory's comment (same reasoning,
+  // covers the full-exam Simulation placeholder too).
+  return WritingAttempt.find({ userId, status: HISTORY_VISIBLE_STATUSES }).sort({ submittedAt: -1 }).limit(50)
     .select('-task1Answer -task2Answer -rewrite.task1 -rewrite.task2').lean();
 }
 
@@ -427,7 +454,7 @@ async function getSampleFilters() {
 }
 
 module.exports = {
-  startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice, startPracticeSimulation,
+  startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice, startPracticeSimulation, cancelSimulationAttempt,
   getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, getPracticeNavCounts, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
   getPendingRewrites, submitRewrite, MAX_PENDING_REWRITES, REWRITE_MIN_WORDS, REWRITE_CUTOFF,

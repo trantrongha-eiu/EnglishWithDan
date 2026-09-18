@@ -110,6 +110,48 @@ describe('writingService.submitPractice', () => {
   });
 });
 
+describe('writingService.getPracticeHistory (BUG-109)', () => {
+  test('excludes in-progress/cancelled Simulation placeholders, keeps real outcomes', async () => {
+    const student = await createStudent();
+    await WritingAttempt.create({ userId: student._id, submissionType: 'practice', status: 'completed', examName: 'Real' });
+    await WritingAttempt.create({ userId: student._id, submissionType: 'practice', status: 'timeout', examName: 'Timeout' });
+    await WritingAttempt.create({ userId: student._id, submissionType: 'practice', status: 'in-progress', mode: 'simulation', examName: 'Open' });
+    await WritingAttempt.create({ userId: student._id, submissionType: 'practice', status: 'cancelled', mode: 'simulation', examName: 'Cancelled' });
+    // A different student's rows must never leak in either.
+    const other = await createStudent();
+    await WritingAttempt.create({ userId: other._id, submissionType: 'practice', status: 'completed', examName: 'NotMine' });
+
+    const history = await writingService.getPracticeHistory(student._id);
+    expect(history.map((a) => a.examName).sort()).toEqual(['Real', 'Timeout']);
+  });
+});
+
+describe('writingService.cancelSimulationAttempt (BUG-109)', () => {
+  test('flips an in-progress Simulation placeholder to cancelled', async () => {
+    const student = await createStudent();
+    const attempt = await WritingAttempt.create({ userId: student._id, status: 'in-progress', mode: 'simulation' });
+
+    await writingService.cancelSimulationAttempt(student._id, attempt._id);
+
+    const fresh = await WritingAttempt.findById(attempt._id).lean();
+    expect(fresh.status).toBe('cancelled');
+  });
+
+  test('is a silent no-op for a non-simulation attempt, a wrong owner, or a missing id', async () => {
+    const student = await createStudent();
+    const other = await createStudent();
+    const practiceAttempt = await WritingAttempt.create({ userId: student._id, status: 'in-progress', mode: 'practice' });
+    const someonesAttempt = await WritingAttempt.create({ userId: other._id, status: 'in-progress', mode: 'simulation' });
+
+    await writingService.cancelSimulationAttempt(student._id, practiceAttempt._id);
+    await writingService.cancelSimulationAttempt(student._id, someonesAttempt._id);
+    await expect(writingService.cancelSimulationAttempt(student._id, null)).resolves.toEqual({ status: 'ok' });
+
+    expect((await WritingAttempt.findById(practiceAttempt._id).lean()).status).toBe('in-progress');
+    expect((await WritingAttempt.findById(someonesAttempt._id).lean()).status).toBe('in-progress');
+  });
+});
+
 describe('writingService.markFeedbackRead', () => {
   test('returns not_found for a missing attempt', async () => {
     const result = await writingService.markFeedbackRead(new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId());

@@ -197,6 +197,94 @@ describe('GET /api/writing/my-history (ownership scoping)', () => {
     expect(res.body.attempts.length).toBe(1);
     expect(res.body.attempts[0].examName).toBe('Mine');
   });
+
+  // BUG-109: an exited-not-submitted Simulation attempt sat at
+  // status:'in-progress' forever with wordCount 0 — the frontend history
+  // table only ever reads gradingStatus (defaults to 'pending' regardless
+  // of `status`), so it rendered exactly like a real submission stuck at
+  // "Chờ chấm". Same for 'cancelled' (what /cancel-simulation now sets it
+  // to). 'completed'/'timeout'/'disqualified' are real attempts and must
+  // still show.
+  test('excludes in-progress and cancelled Simulation placeholders, keeps every real outcome', async () => {
+    const student = await createStudent();
+    await createWritingAttempt({ userId: student._id, examName: 'Real submit', status: 'completed' });
+    await createWritingAttempt({ userId: student._id, examName: 'Timed out', status: 'timeout' });
+    await createWritingAttempt({ userId: student._id, examName: 'Disqualified', status: 'disqualified', extra: { mode: 'simulation' } });
+    await createWritingAttempt({ userId: student._id, examName: 'Still open', status: 'in-progress', extra: { mode: 'simulation' } });
+    await createWritingAttempt({ userId: student._id, examName: 'Cancelled', status: 'cancelled', extra: { mode: 'simulation' } });
+
+    const token = signTokenFor(student);
+    const res = await request(app).get('/api/writing/my-history').set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const names = res.body.attempts.map((a) => a.examName).sort();
+    expect(names).toEqual(['Disqualified', 'Real submit', 'Timed out']);
+  });
+});
+
+describe('POST /api/writing/cancel-simulation (BUG-109)', () => {
+  test('cancels an in-progress Simulation attempt the caller owns', async () => {
+    const student = await createStudent();
+    const attempt = await createWritingAttempt({
+      userId: student._id, status: 'in-progress', extra: { mode: 'simulation' },
+    });
+    const token = signTokenFor(student);
+
+    const res = await request(app)
+      .post('/api/writing/cancel-simulation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ attemptId: attempt._id });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    const fresh = await WritingAttempt.findById(attempt._id).lean();
+    expect(fresh.status).toBe('cancelled');
+  });
+
+  test('never touches an already-completed attempt (a late/duplicate cancel call must not clobber a real submission)', async () => {
+    const student = await createStudent();
+    const attempt = await createWritingAttempt({
+      userId: student._id, status: 'completed', extra: { mode: 'simulation' },
+    });
+    const token = signTokenFor(student);
+
+    const res = await request(app)
+      .post('/api/writing/cancel-simulation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ attemptId: attempt._id });
+
+    expect(res.status).toBe(200);
+    const fresh = await WritingAttempt.findById(attempt._id).lean();
+    expect(fresh.status).toBe('completed');
+  });
+
+  test("cannot cancel another student's attempt", async () => {
+    const owner = await createStudent();
+    const attacker = await createStudent();
+    const attempt = await createWritingAttempt({
+      userId: owner._id, status: 'in-progress', extra: { mode: 'simulation' },
+    });
+    const token = signTokenFor(attacker);
+
+    const res = await request(app)
+      .post('/api/writing/cancel-simulation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ attemptId: attempt._id });
+
+    expect(res.status).toBe(200); // always-200 no-op, same as an unknown id — never leaks whether it exists
+    const fresh = await WritingAttempt.findById(attempt._id).lean();
+    expect(fresh.status).toBe('in-progress');
+  });
+
+  test('a missing attemptId is a harmless no-op, not a 500', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const res = await request(app)
+      .post('/api/writing/cancel-simulation')
+      .set('Authorization', `Bearer ${token}`)
+      .send({});
+    expect(res.status).toBe(200);
+  });
 });
 
 describe('GET /api/writing/attempt/:id (ownership)', () => {

@@ -72,6 +72,15 @@ router.post('/practice/submit', auth, fullAccess, requireRewriteComplete, practi
 router.post('/practice/start-simulation', auth, fullAccess, writingController.startPracticeSimulation);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
+// POST /api/writing/cancel-simulation — student exited a live Simulation
+// attempt (full exam OR practice, same collection) via "Thoát" without
+// submitting; marks it 'cancelled' instead of leaving it stuck
+// 'in-progress' forever (BUG-109). auth-only, not fullAccess: this is
+// cleanup on the student's own already-started attempt, not a new gated
+// action — see cancelSimulationAttempt's own userId+status scoping for why
+// a stray/duplicate call is always safe.
+router.post('/cancel-simulation', auth, writingController.cancelSimulationAttempt);
+
 // ══════════════════════════════════════════════════
 // DRAFT – lưu nháp luyện viết lên server (tối đa 2 nháp mỗi taskType)
 // ══════════════════════════════════════════════════

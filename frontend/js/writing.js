@@ -1661,6 +1661,16 @@ function forceExit() {
   // "Thoát" kept the badge, violation counting and nav-lock armed
   // indefinitely (BUG-108).
   if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+  // BUG-109: the Simulation placeholder attempt (created at start, so a
+  // strike has somewhere to attach) stayed 'in-progress' forever if the
+  // student exited instead of submitting — gradingStatus defaults to
+  // 'pending' regardless of `status`, so it then showed up in "Lịch sử
+  // luyện tập" looking exactly like a real 0-word submission stuck at
+  // "Chờ chấm". Cancel it server-side, fire-and-forget — nothing here
+  // needs to wait for the response.
+  if (state.mode === 'simulation' && state.simAttemptId) {
+    apiFetch('/api/writing/cancel-simulation', { method: 'POST', body: JSON.stringify({ attemptId: state.simAttemptId }) }).catch(() => {});
+  }
   closeExitModal();
   // Thoát fullscreen nếu đang bật
   if (document.fullscreenElement) document.exitFullscreen();
@@ -2564,6 +2574,12 @@ function exitPracticeWrite() {
   // Same fix as forceExit() above — abandoning a Simulation practice
   // attempt via "Thoát" must disarm the proctor, not just submitting it.
   if (practiceState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+  // BUG-109: same fix as forceExit() — cancel the placeholder attempt
+  // server-side instead of leaving it 'in-progress' forever (which then
+  // showed up in "Lịch sử luyện tập" as a fake 0-word "Chờ chấm" entry).
+  if (practiceState.mode === 'simulation' && practiceState.simAttemptId) {
+    apiFetch('/api/writing/cancel-simulation', { method: 'POST', body: JSON.stringify({ attemptId: practiceState.simAttemptId }) }).catch(() => {});
+  }
   practiceState.task = null;
   showPracticeMode(); // handles pushState, split-mode cleanup, title reset, history load
 }
