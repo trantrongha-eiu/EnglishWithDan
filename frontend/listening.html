@@ -3512,22 +3512,38 @@
         // the FULL-TEST exam screen too (previously always blocked hints
         // outright — see reading-v2.js's identical gate for the full
         // rationale, incl. why the 4-skill Full Mock Test is excluded).
+        //
+        // BUG: state.mode defaults to 'practice' and is only ever reassigned
+        // by the full-test start/resume paths — lt-practice never touches
+        // it. So during an lt-practice Test Simulation attempt
+        // (_ltPracticeMode === 'simulation'), state.mode was still sitting
+        // at its untouched default 'practice', and this third clause —
+        // meant ONLY for the full-test screen — fired anyway and handed
+        // back dictionary/translate access despite the (correctly
+        // evaluating) second clause already blocking it. Requiring
+        // `!inLtPractice` makes the third clause fire only when we're
+        // genuinely NOT in an lt-practice session, i.e. only for the real
+        // full-test screen state.mode actually describes.
         function _ltDictGate() {
+            const inLtPractice = window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.();
             return state.tool === 'dict' && (
                 state.isReview
-                || ((window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.()) && _ltPracticeMode !== 'simulation')
-                || (!_mockMode && state.mode === 'practice')
+                || (inLtPractice && _ltPracticeMode !== 'simulation')
+                || (!inLtPractice && !_mockMode && state.mode === 'practice')
             );
         }
 
         // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
         // help during a live timed attempt — same condition as _ltDictGate
         // above, minus its own "Dict tool toggled on" requirement.
-        window.__ewsExamActive = () => !(
-            state.isReview
-            || ((window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.()) && _ltPracticeMode !== 'simulation')
-            || (!_mockMode && state.mode === 'practice')
-        );
+        window.__ewsExamActive = () => {
+            const inLtPractice = window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.();
+            return !(
+                state.isReview
+                || (inLtPractice && _ltPracticeMode !== 'simulation')
+                || (!inLtPractice && !_mockMode && state.mode === 'practice')
+            );
+        };
 
         // Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
         function fetchWithTimeout(url, ms = 7000) {

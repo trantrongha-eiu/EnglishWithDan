@@ -2340,6 +2340,12 @@ function renderPracticeWriteScreen(taskType, task) {
   if (si) { si.textContent = ''; }
 
   const leftPanel = document.getElementById('pw-left-panel');
+  // Same Test Simulation gate as the dictionary lookup below (practiceState.
+  // mode === 'simulation') — a sample essay or a "which stance to pick"
+  // breakdown of the prompt is exactly the kind of hint real exam
+  // conditions must not offer, so both get suppressed here too, not just
+  // dictionary/translate.
+  const isSimulation = practiceState.mode === 'simulation';
   // Prompt text first, then the chart/diagram — matches the actual IELTS
   // paper layout (read the instructions, then look at the graph), not the
   // other way round.
@@ -2353,7 +2359,7 @@ function renderPracticeWriteScreen(taskType, task) {
   // below the prompt/image (toggled open/closed) instead of a modal — a
   // covering modal hid the prompt itself, which defeats the point of
   // reading the analysis WHILE looking at the chart/question.
-  const hasAnalysis = Array.isArray(task.analysisSections) && task.analysisSections.some(s => s.content?.trim());
+  const hasAnalysis = !isSimulation && Array.isArray(task.analysisSections) && task.analysisSections.some(s => s.content?.trim());
   if (hasAnalysis) {
     const analysisHtml = task.analysisSections.filter(s => s.content?.trim()).map(s => `
       <div class="pw-analysis-section">
@@ -2374,8 +2380,9 @@ function renderPracticeWriteScreen(taskType, task) {
   setupDictionaryDouble('pw-textarea', 'writing-practice', _pwDictGate);
   setupDictionaryDouble('pw-instructions-label', 'writing-practice', _pwDictGate);
 
-  // Show/hide sample toggle bar based on whether sample exists
-  const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
+  // Show/hide sample toggle bar based on whether sample exists — suppressed
+  // during Test Simulation, same as "Phân tích đề" above (isSimulation).
+  const hasSample = !isSimulation && Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
   const bar = document.getElementById('pw-sample-bar');
   if (bar) bar.style.display = hasSample ? '' : 'none';
 
@@ -2390,7 +2397,7 @@ function renderPracticeWriteScreen(taskType, task) {
         </div>
         <div class="pw-sample-section-body">${escHtml(s.content)}</div>
       </div>`).join('');
-    setupDictionaryDouble('pw-sample-panel', 'writing-practice-sample');
+    setupDictionaryDouble('pw-sample-panel', 'writing-practice-sample', _pwDictGate);
   } else if (panel) {
     panel.innerHTML = '';
   }

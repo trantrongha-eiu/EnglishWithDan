@@ -4026,10 +4026,21 @@ function fetchWithTimeout(url, ms = 7000) {
 // this mode-select popup at all, see goToStartTest), so without this
 // exclusion the Mock Test's Reading sitting would wrongly gain dictionary
 // access it never had and must never have.
+//
+// BUG: state.mode defaults to 'practice' and is ONLY ever reassigned by the
+// full-test start/resume paths — individual-passage practice never touches
+// it. So during a "lẻ" passage Test Simulation attempt (_retryState.mode
+// === 'simulation'), state.mode was still sitting at its untouched default
+// 'practice', and this third clause — meant ONLY for the full-test screen —
+// fired anyway and handed back full dictionary/translate access despite the
+// (correctly evaluating) second clause already blocking it. `!_practiceMode
+// && !_retryState` makes the third clause fire only when we're genuinely
+// NOT in a "lẻ" practice/retry session, i.e. only for the real full-test
+// screen state.mode actually describes.
 setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
   state.isReview
   || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
-  || (!_mockMode && state.mode === 'practice')
+  || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
 ));
 
 // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
@@ -4039,7 +4050,7 @@ setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
 window.__ewsExamActive = () => !(
   state.isReview
   || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
-  || (!_mockMode && state.mode === 'practice')
+  || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
 );
 
 /* ══════════════════════════════════════════════════════════════════════
