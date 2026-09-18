@@ -17,6 +17,10 @@ const Message = require('../../models/Message');
 const UpgradeRequest = require('../../models/UpgradeRequest');
 const WritingAttempt = require('../../models/WritingAttempt');
 const MockTestAttempt = require('../../models/MockTestAttempt');
+const TestAttempt = require('../../models/TestAttempt');
+const ListeningAttempt = require('../../models/ListeningAttempt');
+const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
+const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
 const TuitionFee = require('../../models/TuitionFee');
 const { REWRITE_CUTOFF } = require('../../services/writingService');
 
@@ -30,11 +34,20 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
     const isAdmin = req.user.role === 'admin';
     const onlineSince = new Date(Date.now() - 5 * 60 * 1000);
 
+    // Standalone Reading/Listening/Writing "Test Simulation" mode (see
+    // examSimulationService.js) — same proctor{violated} shape as
+    // MockTestAttempt, but spread across 5 collections instead of one
+    // (full test + "lẻ" practice, per skill). Counted the same way
+    // mockViolations already is below, so a teacher gets one combined
+    // signal that violated runs exist, not just for the 4-skill Mock Test.
+    const simViolationFilter = { mode: 'simulation', 'proctor.violated': true };
+
     const [
       onlineUsers,
       writingRows,
       pendingMessages,
       mockViolations,
+      simViolationCounts,
       pendingUpgrades,
       unpaidStudentIds,
     ] = await Promise.all([
@@ -42,6 +55,13 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
       Message.countDocuments({ toId: req.user._id, isRead: false, deletedBy: { $ne: req.user._id } }),
       MockTestAttempt.countDocuments({ status: { $nin: MOCK_EXCLUDED }, 'proctor.violated': true }),
+      Promise.all([
+        TestAttempt.countDocuments(simViolationFilter),
+        ListeningAttempt.countDocuments(simViolationFilter),
+        WritingAttempt.countDocuments(simViolationFilter),
+        ReadingPracticeAttempt.countDocuments(simViolationFilter),
+        ListeningPracticeAttempt.countDocuments(simViolationFilter),
+      ]),
       // Admin-only surfaces — a plain teacher's individual fetches to these
       // already 403'd (and the badge stayed 0), so don't leak them here.
       isAdmin ? UpgradeRequest.countDocuments({ status: 'pending' }) : Promise.resolve(0),
@@ -59,6 +79,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       pendingTuition: unpaidStudentIds.length,
       pendingMessages,
       mockViolations,
+      simViolations: simViolationCounts.reduce((a, b) => a + b, 0),
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

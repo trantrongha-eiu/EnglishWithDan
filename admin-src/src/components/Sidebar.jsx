@@ -51,6 +51,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [pendingTuition, setPendingTuition] = useState(0);
   const [pendingMessages, setPendingMessages] = useState(0);
   const [mockViolations, setMockViolations] = useState(0);
+  const [simViolations, setSimViolations] = useState(0);
 
   useEffect(() => {
     // One call for all six badge counts (was six separate polled requests).
@@ -62,6 +63,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
         setPendingTuition(d.pendingTuition || 0);
         setPendingMessages(d.pendingMessages || 0);
         setMockViolations(d.mockViolations || 0);
+        setSimViolations(d.simViolations || 0);
       }).catch(() => {});
     }
     fetchBadges();
@@ -150,9 +152,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 {item.messagesBadge && pendingMessages > 0 && (
                   <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
                 )}
-                {item.mockBadge && mockViolations > 0 && (
-                  <span className="nav-badge nav-badge--warn" title="Lượt thi thử bị đánh dấu vi phạm proctoring">
-                    {mockViolations > 99 ? '99+' : mockViolations}
+                {item.mockBadge && (mockViolations + simViolations) > 0 && (
+                  <span className="nav-badge nav-badge--warn" title="Lượt thi thử / Test Simulation bị đánh dấu vi phạm proctoring">
+                    {(mockViolations + simViolations) > 99 ? '99+' : mockViolations + simViolations}
                   </span>
                 )}
               </NavLink>

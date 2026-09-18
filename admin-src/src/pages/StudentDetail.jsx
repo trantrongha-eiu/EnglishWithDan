@@ -68,6 +68,23 @@ function formatDur(sec) {
   return `${m}m${String(s).padStart(2, '0')}s`;
 }
 
+// See StudentHistory.jsx's simBadge — same Test Simulation proctor data,
+// duplicated here rather than shared since these two pages already
+// duplicate bandBadge/formatDur independently.
+function simBadge(h) {
+  if (h.mode !== 'simulation') return null;
+  return (
+    <div style={{ marginTop: 3, display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+      <span className="badge badge-blue" style={{ fontSize: 10 }} title="Bài làm ở chế độ Test Simulation (có giám sát)">🔒 Simulation</span>
+      {h.disqualified
+        ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Lượt này đã bị huỷ do vi phạm giám sát quá số lần cho phép">🚫 Huỷ · {h.violationCount} gậy</span>
+        : h.violated
+          ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Bị đánh dấu vi phạm giám sát (rời màn hình thi)">⚠️ {h.violationCount} gậy</span>
+          : null}
+    </div>
+  );
+}
+
 export default function StudentDetail() {
   const { id } = useParams();
   const toast = useToast();
@@ -237,6 +254,7 @@ export default function StudentDetail() {
                           <td>
                             {h.testName || '–'}
                             {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
+                            {simBadge(h)}
                           </td>
                           <td style={{ fontSize: 12 }}>{formatDate(h.date)}</td>
                           <td>{formatDur(h.duration)}</td>

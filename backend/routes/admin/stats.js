@@ -230,9 +230,16 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       ]).catch(() => []);
       return result[0]?.total || 0;
     }
+    // Test Simulation mode voids a run by flipping status to 'disqualified'
+    // instead of 'completed' (see examSimulationService.recordViolation) —
+    // filtering to only 'completed' here silently hid every disqualified
+    // Reading/Listening full-test run from the admin feed, so a teacher had
+    // no way to see that a run happened at all, let alone that it was voided
+    // for proctoring violations. Both terminal states now count/show.
+    const READING_LISTENING_VISIBLE_STATUSES = ['completed', 'disqualified'];
     const counts = await Promise.all([
-      TestAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }),
-      ListeningAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }).catch(() => 0),
+      TestAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }),
+      ListeningAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }).catch(() => 0),
       WritingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
@@ -259,12 +266,12 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
            task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts,
            wt1Submissions, gapFillAttempts] = await Promise.all([
-      TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
+      TestAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
         .sort({ endTime: -1 }).limit(LIMIT)
         .select('-answers -passagesUsed').lean(),
-      ListeningAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
+      ListeningAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
@@ -408,6 +415,24 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         };
       });
 
+    // Test Simulation mode (Reading/Listening/Writing, full test + "lẻ"
+    // practice — see backend/services/examSimulationService.js) writes
+    // mode:'simulation' + a proctor{violationCount,violated} sub-doc onto
+    // these 5 collections, same shape as MockTestAttempt's own `proctor`.
+    // The .select() calls above only exclude answer bodies, so mode/proctor
+    // were already coming back from Mongo — they just weren't being copied
+    // into the row objects the frontend actually renders, so a teacher had
+    // no way to see a "gậy" (violation) count or even that a run was a
+    // monitored Simulation rather than ordinary practice. Mirrors
+    // MockTests.jsx's `r.proctor.violationCount` / `r.proctor.violated`.
+    function simFields(h) {
+      return {
+        mode: h.mode === 'simulation' ? 'simulation' : 'practice',
+        violationCount: h.proctor?.violationCount || 0,
+        violated: !!h.proctor?.violated,
+        disqualified: h.status === 'disqualified'
+      };
+    }
     const rows = [
       ...reading.map(h => ({
         _id: h._id, skill: 'reading',
@@ -417,7 +442,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: h.bandScore,
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
-        duration: h.duration
+        duration: h.duration,
+        ...simFields(h)
       })),
       ...listening.map(h => ({
         _id: h._id, skill: 'listening',
@@ -427,7 +453,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: h.bandScore,
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
-        duration: h.timeTaken
+        duration: h.timeTaken,
+        ...simFields(h)
       })),
       ...writing.map(h => ({
         _id: h._id, skill: 'writing',
@@ -437,7 +464,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: h.grading?.overallBand ?? null,
         correctCount: null,
         totalQuestions: null,
-        duration: h.timeTaken || null
+        duration: h.timeTaken || null,
+        ...simFields(h)
       })),
       ...listeningPractice.map(h => ({
         _id: h._id, skill: 'listening-practice',
@@ -448,7 +476,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: null,
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
-        duration: h.timeTaken
+        duration: h.timeTaken,
+        ...simFields(h)
       })),
       ...readingPractice.map(h => ({
         _id: h._id, skill: 'reading-practice',
@@ -459,7 +488,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: null,
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
-        duration: h.timeTaken
+        duration: h.timeTaken,
+        ...simFields(h)
       })),
       ...wpAttempts.map(h => ({
         _id: h._id, skill: 'writing-practice',
