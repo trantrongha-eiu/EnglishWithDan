@@ -39,16 +39,21 @@ function getToken() { return window.AuthService ? window.AuthService.getToken() 
 // parsing, error normalization) to the shared js/shared/api-client.js —
 // single source of truth for that logic (Phase 3 audit).
 async function apiFetch(path, opts = {}) {
+  // skipAuthRedirect is ours, not fetch()'s — pull it out before spreading
+  // the rest into RequestInit, and forward it to ApiClient so a caller can
+  // opt OUT of the automatic hard-logout-on-401 (see submitExam()'s and
+  // submitPractice()'s use — mirrors reading-v2.js's apiFetch).
+  const { skipAuthRedirect, ...fetchOpts } = opts;
   const token = getToken();
   const res = await fetch(API + path, {
-    ...opts,
+    ...fetchOpts,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
-      ...(opts.headers || {})
+      ...(fetchOpts.headers || {})
     }
   });
-  return window.ApiClient.handleResponse(res);
+  return window.ApiClient.handleResponse(res, { skipAuthRedirect });
 }
 
 // showToast() moved to js/shared/toast.js (single source of truth —
@@ -700,9 +705,16 @@ async function submitExam(statusOverride) {
   const _killer = setTimeout(() => _ctrl.abort(), 30000);
 
   try {
+    // skipAuthRedirect: a 401 here (session expired mid-exam) must not let
+    // ApiClient hard-redirect to login right now — see the 401 branch below
+    // (mirrors reading-v2.js / listening.html, see incident memory: a
+    // proctor's beforeunload listener staying armed through a 401-triggered
+    // redirect pops the browser's native "leave site" dialog and strands
+    // the student with a wiped token).
     const data = await apiFetch('/api/writing/submit', {
       method: 'POST',
       signal: _ctrl.signal,
+      skipAuthRedirect: true,
       body: JSON.stringify({
         examId:      state.exam._id,
         task1Id:     state.exam.task1?._id,
@@ -768,6 +780,26 @@ async function submitExam(statusOverride) {
     const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
     if (aborted || e?.coldStart || e?.status === 502 || e?.status === 503) {
       showToast('Nộp bài quá lâu — server có thể đang khởi động. Bài của bạn vẫn được lưu tự động; hãy thử nộp lại sau vài giây.', 'error', 8000);
+      return;
+    }
+    // A 401 here means the session expired mid-exam (mirrors reading-v2.js /
+    // listening.html — see incident memory). Without skipAuthRedirect above,
+    // ApiClient would already have hard-redirected to login while a proctor's
+    // own beforeunload listener was still armed (Mock's stopProctor()/
+    // Simulation's ExamProctor.stop() only ever run after a successful
+    // submit), tripping the native "Leave site?" dialog and losing the token
+    // before the student could react. Disarm both proctors ourselves,
+    // explain plainly, and send them to log back in on THIS SAME page — the
+    // autosaved draft is untouched, so they can resume and retry submit.
+    if (e && e.status === 401) {
+      if (window.MockTest && window.MockTest.stopProctor) window.MockTest.stopProctor();
+      if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+      showToast('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
+      if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
+      const next = (window.AuthService && window.AuthService.buildLoginUrl)
+        ? window.AuthService.buildLoginUrl(location.pathname + location.search)
+        : ('/login.html?next=' + encodeURIComponent(location.pathname + location.search));
+      location.href = next;
       return;
     }
     if (!_handleQuotaError(e)) showToast('Lỗi nộp bài: ' + e.message, 'error');
@@ -1624,6 +1656,11 @@ function closeExitModal() {
 function forceExit() {
   clearInterval(state.timerInterval);
   window.onbeforeunload = null;
+  // Leaving without submitting must disarm proctoring too — only the
+  // submit path did this before, so a Simulation attempt abandoned via
+  // "Thoát" kept the badge, violation counting and nav-lock armed
+  // indefinitely (BUG-108).
+  if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
   closeExitModal();
   // Thoát fullscreen nếu đang bật
   if (document.fullscreenElement) document.exitFullscreen();
@@ -2524,6 +2561,9 @@ function exitPracticeWrite() {
   savePracticeToStorage();
   saveDraftToServer();
   window.onbeforeunload = null;
+  // Same fix as forceExit() above — abandoning a Simulation practice
+  // attempt via "Thoát" must disarm the proctor, not just submitting it.
+  if (practiceState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
   practiceState.task = null;
   showPracticeMode(); // handles pushState, split-mode cleanup, title reset, history load
 }
@@ -2549,9 +2589,13 @@ async function submitPractice() {
   const _ctrl = new AbortController();
   const _killer = setTimeout(() => _ctrl.abort(), 30000);
   try {
+    // skipAuthRedirect: same reasoning as submitExam() above — a 401 here
+    // must not hard-redirect while a Simulation practice attempt's proctor
+    // is still armed.
     const d = await apiFetch('/api/writing/practice/submit', {
       method: 'POST',
       signal: _ctrl.signal,
+      skipAuthRedirect: true,
       body: JSON.stringify({
         taskType: practiceState.taskType,
         taskId: practiceState.task?._id,
@@ -2586,6 +2630,19 @@ async function submitPractice() {
     if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
     const aborted = e && (e.name === 'AbortError' || /abort/i.test(e.message || ''));
     if (aborted) { showToast('Nộp bài quá lâu — bài vẫn được lưu tự động; thử lại sau vài giây.', 'error', 7000); return; }
+    // Same 401-mid-exam fix as submitExam() — disarm the proctor ourselves
+    // before the forced redirect, explain plainly, send them back to THIS
+    // page (the practice autosave is untouched) instead of losing context.
+    if (e && e.status === 401) {
+      if (practiceState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+      showToast('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
+      if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
+      const next = (window.AuthService && window.AuthService.buildLoginUrl)
+        ? window.AuthService.buildLoginUrl(location.pathname + location.search)
+        : ('/login.html?next=' + encodeURIComponent(location.pathname + location.search));
+      location.href = next;
+      return;
+    }
     if (!_handleQuotaError(e)) showToast(e.message || 'Nộp bài thất bại', 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Nộp bài'; }

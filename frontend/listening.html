@@ -3432,6 +3432,11 @@
                 // checkResumeExam() offers it back and they can retry submit.
                 if (err.status === 401) {
                     if (window.MockTest && window.MockTest.stopProctor) window.MockTest.stopProctor();
+                    // Same fix as reading-v2.js's equivalent 401 branch — this file's
+                    // own Test Simulation engine (ExamProctor) is a SEPARATE proctor
+                    // from MockTest's; stopping only the latter left the former's
+                    // beforeunload listener armed through this exact forced redirect.
+                    if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
                     (window.showToast || toast)('Phiên đăng nhập đã hết hạn — bài làm của bạn vẫn được lưu, hãy đăng nhập lại để nộp bài.', 'info', 6000);
                     if (window.AuthService && window.AuthService.clearSession) window.AuthService.clearSession();
                     state.submitted = false;
@@ -3729,6 +3734,11 @@
         function confirmExit() { openModal('modal-exit'); }
         async function forceExit() {
             closeModal('modal-exit');
+            // Leaving without submitting must disarm proctoring too — only the
+            // submit path did this before, so a Simulation attempt abandoned
+            // via "Thoát" kept the badge, violation counting and nav-lock
+            // armed indefinitely (BUG-108).
+            if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
             if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
             // Save current position so resume banner appears on list screen
             saveExamToStorage();
@@ -5008,6 +5018,11 @@
 
     /* ── Close practice → back to section list ───────────────────────────── */
     function closeLTPractice() {
+        // Leaving without submitting must disarm proctoring too — only the
+        // submit path did this before, so a Simulation "lẻ" attempt
+        // abandoned via "Thoát" kept the badge, violation counting and
+        // nav-lock armed indefinitely (BUG-108).
+        if (_ltPracticeMode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();

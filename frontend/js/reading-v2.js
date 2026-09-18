@@ -3534,6 +3534,11 @@ function closeRetry() {
   _hidePracticeHUD();
   if (fromPractice) clearPracticeStorage();
   window.onbeforeunload = null;
+  // Leaving without submitting must disarm proctoring too — only the
+  // submit path did this before, so a Simulation "lẻ" attempt abandoned
+  // via "Thoát" kept the badge, violation counting and nav-lock armed
+  // indefinitely (BUG-108). Read mode before _retryState is nulled below.
+  if (_retryState?.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
   if (_retryState) {
     if (!fromPractice) {
       state.passages = _retryState.passages;
@@ -4239,6 +4244,11 @@ function handleKeyShortcuts(e) {
 function confirmExit() { openModal('modal-exit'); }
 function forceExit() {
   closeModal('modal-exit');
+  // Leaving without submitting must disarm proctoring too — only the
+  // submit path did this before, so a Simulation attempt abandoned via
+  // "Thoát" kept the badge, violation counting and nav-lock armed
+  // indefinitely (BUG-108).
+  if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
   saveExamToStorage();
   clearInterval(state.timer);
   window.onbeforeunload = null;
