@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate, API, FRONTEND_URL } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -444,7 +445,14 @@ export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
-  const [tab, setTab] = useState('exams');
+  // Deep link from elsewhere (e.g. the Entrance Test admin page's "Sửa nội
+  // dung Task 1" link): ?tab=task1&edit=<id> opens straight into the Task 1
+  // editor for that prompt. Lazy initializers per this codebase's lint rule
+  // against synchronous setState-in-effect; the param strip + id resolution
+  // (task1 loads asynchronously) both happen below.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => searchParams.get('tab') || 'exams');
+  const [pendingEditTask1Id, setPendingEditTask1Id] = useState(() => searchParams.get('edit'));
   const [task1, setTask1] = useState([]);
   const [task2, setTask2] = useState([]);
   const [samples, setSamples] = useState([]);
@@ -476,6 +484,27 @@ export default function WritingTests() {
   const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(e => toast(e.message, 'error'));
 
   useEffect(() => { loadT1(); loadT2(); loadSamples(); loadExams(); }, []);
+
+  // Strip the deep-link params from the URL right after mount so a refresh
+  // or Back doesn't keep reopening the editor.
+  useEffect(() => {
+    if (!searchParams.get('tab') && !searchParams.get('edit')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('tab');
+    next.delete('edit');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Adjust-during-render (not an effect): once task1 has loaded, resolve
+  // the pending deep-link id against it and open the editor. Same pattern
+  // this codebase's other pages use for reset-on-filter-change (e.g.
+  // Passages.jsx's prevFkey) — guarded so it only fires once.
+  if (pendingEditTask1Id && task1.length > 0) {
+    const found = task1.find(t => t._id === pendingEditTask1Id);
+    setPendingEditTask1Id(null);
+    if (found) setEditTask1(found);
+  }
 
   async function toggleActive(pool, id, isActive) {
     const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;

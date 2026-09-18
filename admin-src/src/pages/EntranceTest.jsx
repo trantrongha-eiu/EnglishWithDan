@@ -92,6 +92,12 @@ function ConfigTab() {
             <option key={p._id} value={p._id}>{p.title}{p.isActive === false ? ' (đã ẩn)' : ''}</option>
           ))}
         </select>
+        {form.readingPassageId && (
+          <div style={{ marginTop: 6, display: 'flex', gap: 14 }}>
+            <Link to={`/passages?edit=${form.readingPassageId}`} style={{ fontSize: 12 }}>✎ Sửa nội dung bài đọc</Link>
+            <Link to={`/passages?editQuestions=${form.readingPassageId}`} style={{ fontSize: 12 }}>✎ Sửa câu hỏi</Link>
+          </div>
+        )}
       </label>
 
       <label style={{ display: 'block', marginBottom: 14 }}>
@@ -103,6 +109,11 @@ function ConfigTab() {
             <option key={s._id} value={s._id}>Part {s.partNumber} — {s.title}{s.isActive === false ? ' (đã ẩn)' : ''}</option>
           ))}
         </select>
+        {form.listeningSectionId && (
+          <div style={{ marginTop: 6 }}>
+            <Link to={`/listening-sections/${form.listeningSectionId}`} style={{ fontSize: 12 }}>✎ Sửa nội dung + câu hỏi (audio, transcript...)</Link>
+          </div>
+        )}
       </label>
 
       <label style={{ display: 'block', marginBottom: 14 }}>
@@ -114,6 +125,11 @@ function ConfigTab() {
             <option key={t._id} value={t._id}>{(t.prompt || '').slice(0, 70)}{t.isActive === false ? ' (đã ẩn)' : ''}</option>
           ))}
         </select>
+        {form.writingTask1Id && (
+          <div style={{ marginTop: 6 }}>
+            <Link to={`/writing-tests?tab=task1&edit=${form.writingTask1Id}`} style={{ fontSize: 12 }}>✎ Sửa nội dung đề Task 1</Link>
+          </div>
+        )}
       </label>
 
       <label style={{ display: 'block', marginBottom: 18 }}>
@@ -121,8 +137,11 @@ function ConfigTab() {
         <input className="form-input" style={{ width: '100%' }} value={form.grammarSetKey}
           onChange={e => setForm({ ...form, grammarSetKey: e.target.value })} placeholder="default" />
         <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 4 }}>
-          Đang dùng {grammarCount} câu ở bộ &quot;{config?.grammarSetKey || 'default'}&quot; (quản lý ở tab &quot;Ngân hàng Grammar&quot;).
+          Đang dùng {grammarCount} câu ở bộ &quot;{config?.grammarSetKey || 'default'}&quot;.
           25 câu isActive đầu tiên (theo thứ tự) của bộ này sẽ được dùng cho mỗi lượt làm bài mới.
+        </div>
+        <div style={{ marginTop: 6 }}>
+          <Link to="/entrance-test?tab=grammar" style={{ fontSize: 12 }}>✎ Sửa / thêm câu hỏi Grammar</Link>
         </div>
       </label>
 

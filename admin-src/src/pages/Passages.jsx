@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -265,10 +266,36 @@ export default function Passages() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [cat, setCat] = useState('');
-  const [editId, setEditId] = useState(null);
+  // Deep links from elsewhere (e.g. the Entrance Test admin page's "Sửa nội
+  // dung"/"Sửa câu hỏi" links) — ?edit=<id> opens the metadata modal,
+  // ?editQuestions=<id> opens the question-groups modal. Lazy initializers
+  // (not an effect + setState) per this codebase's lint rule against
+  // synchronous setState-in-effect.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [editId, setEditId] = useState(() => searchParams.get('edit'));
   const [showModal, setShowModal] = useState(false);
   const [qPassage, setQPassage] = useState(null);
   const [diff, setDiff] = useState('');
+
+  // ?editQuestions=<id> needs the passage's title (PassageQuestionsModal
+  // takes the whole row, not just an id), so it's resolved with its own
+  // fetch rather than a lazy initializer. Both params are stripped from the
+  // URL right after being read so a refresh/Back doesn't keep reopening them.
+  useEffect(() => {
+    const editQId = searchParams.get('editQuestions');
+    const hadEdit = searchParams.get('edit');
+    if (!editQId && !hadEdit) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('edit');
+    next.delete('editQuestions');
+    setSearchParams(next, { replace: true });
+    if (editQId) {
+      apiFetch(`/admin/passages/${editQId}`)
+        .then(d => { if (d.passage) setQPassage(d.passage); })
+        .catch(e => toast(e.message, 'error'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Debounce the search box so each keystroke isn't a round-trip.
   useEffect(() => {
