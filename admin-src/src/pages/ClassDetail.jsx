@@ -324,7 +324,7 @@ function StudentsTab({ cls, roster, onChange }) {
                     <td style={{ fontSize: 13 }}>{s.attendedCount || 0}/{s.heldSessions || 0}</td>
                     <td style={{ fontSize: 13 }}>{absent}{s.absentExcused ? ` (${s.absentExcused} có phép)` : ''}</td>
                     <td style={{ fontSize: 13 }}>{s.lateCount || 0}</td>
-                    <td style={{ fontSize: 13 }}>{s.attendanceRate || 0}%</td>
+                    <td style={{ fontSize: 13 }}>{s.heldSessions ? `${s.attendanceRate || 0}%` : '—'}</td>
                     <td style={{ fontSize: 13 }}>{s.remainingAllowed ?? '–'}</td>
                     <td style={{ fontSize: 13 }}>{s.homeworkMissedCount || 0}</td>
                     <td>
@@ -726,7 +726,13 @@ function DashboardTab({ cls }) {
                   <td style={{ fontSize: 13 }}>{r.attendedCount}/{r.heldSessions}</td>
                   <td style={{ fontSize: 13 }}>{r.absentTotal}{r.absentExcused ? ` (${r.absentExcused} có phép)` : ''}</td>
                   <td style={{ fontSize: 13 }}>{r.lateCount}</td>
-                  <td style={{ fontSize: 13, fontWeight: 700, color: r.attendanceRate >= 85 ? 'var(--green)' : r.attendanceRate >= 70 ? 'var(--amber, #d97706)' : 'var(--danger)' }}>{r.attendanceRate}%</td>
+                  {/* heldSessions === 0 (brand-new enrollment, no class held yet) must read as
+                      "no data" rather than a 0% attendance-rate alarm — the backend still
+                      returns a real 0 for attendanceRate in that case (see
+                      classAttendanceService.js), so this is purely a display-layer fix. */}
+                  <td style={{ fontSize: 13, fontWeight: 700, color: !r.heldSessions ? 'var(--text3)' : r.attendanceRate >= 85 ? 'var(--green)' : r.attendanceRate >= 70 ? 'var(--amber, #d97706)' : 'var(--danger)' }}>
+                    {r.heldSessions ? `${r.attendanceRate}%` : '—'}
+                  </td>
                   <td style={{ fontSize: 13 }}>{r.remainingAllowed}</td>
                   <td><span className={`badge ${ENR_BADGE[r.status] || 'badge-gray'}`}><span className="dot" />{ENR_LABEL[r.status] || r.status}</span></td>
                 </tr>
