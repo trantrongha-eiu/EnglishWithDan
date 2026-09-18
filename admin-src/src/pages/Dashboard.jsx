@@ -174,7 +174,13 @@ export default function Dashboard() {
                         : <strong>{h.userId?.displayName || '–'}</strong>}
                     </td>
                     <td>{skillBadge(h.skill)}</td>
-                    <td>{h.testName || '–'}</td>
+                    <td>
+                      {h.skill === 'writing'
+                        ? <Link to={`/writing-grades?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
+                        : h.skill === 'speaking'
+                          ? <Link to={`/speaking?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
+                          : (h.testName || '–')}
+                    </td>
                     <td>{formatDate(h.date)}</td>
                     <td>{scoreEl}</td>
                     <td>{correct}</td>

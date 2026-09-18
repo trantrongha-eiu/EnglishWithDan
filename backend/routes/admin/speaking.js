@@ -322,4 +322,19 @@ router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/speaking/attempts/:id — one attempt by id, for deep-linking
+// straight to it (e.g. from Dashboard's "Bài nộp gần nhất" table) without
+// the admin having to hunt it down in the paginated/filtered history list
+// first. Same doc shape /speaking/history's rows already have, so the
+// frontend's existing AttemptModal needs no changes to render it.
+router.get('/speaking/attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempt = await SpeakingAttempt.findById(req.params.id).populate('userId', 'username email plan');
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm' });
+    res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

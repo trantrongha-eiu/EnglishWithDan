@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -45,7 +46,24 @@ export default function WritingGrades() {
   const [rewriteFilter, setRewriteFilter] = useState('');
   const [search, setSearch]               = useState('');
   const [selectedId, setSelectedId]       = useState(null);
-  const [viewId, setViewId]               = useState(null);
+  const [searchParams, setSearchParams]   = useSearchParams();
+  // Deep link from Dashboard's "Bài nộp gần nhất" table (and anywhere else
+  // that links straight to one submission) — ?viewAttempt=<id> opens the
+  // read-only viewer on load without the admin having to hunt the row down
+  // in this page's own paginated/filtered list first. Lazy initializer
+  // (not an effect + setState) per this codebase's lint rule against
+  // synchronous setState-in-effect.
+  const [viewId, setViewId]               = useState(() => searchParams.get('viewAttempt'));
+
+  // Cleared from the URL right after mount so a refresh or Back doesn't
+  // keep re-opening it.
+  useEffect(() => {
+    if (!searchParams.get('viewAttempt')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('viewAttempt');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function load(p = page) {
     const params = new URLSearchParams({ page: p, limit: PAGE });

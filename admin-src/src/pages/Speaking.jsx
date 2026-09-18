@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -319,7 +319,8 @@ export default function Speaking() {
   const confirm = useConfirm();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
-  const [tab, setTab] = useState('questions');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => (searchParams.get('viewAttempt') ? 'history' : 'questions'));
   const [bulkBusy, setBulkBusy] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -365,6 +366,24 @@ export default function Speaking() {
       loadHistory(1);
     }
   }, [tab]);
+
+  // Deep link from Dashboard's "Bài nộp gần nhất" table (and anywhere else
+  // that links straight to one submission) — ?viewAttempt=<id> opens
+  // AttemptModal on load without the admin having to search/paginate the
+  // history list to find that exact row. AttemptModal needs the full doc,
+  // not just an id, so this fetches it directly rather than reusing
+  // whatever page of /speaking/history happens to already be loaded.
+  useEffect(() => {
+    const id = searchParams.get('viewAttempt');
+    if (!id) return;
+    apiFetch(`/admin/speaking/attempts/${id}`)
+      .then((d) => { if (d.attempt) setSelectedAttempt(d.attempt); })
+      .catch((e) => toast(e.message, 'error'));
+    const next = new URLSearchParams(searchParams);
+    next.delete('viewAttempt');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Search/part filter now runs server-side (see loadHistory) — it used to
   // only filter whichever single 40-row page was already loaded, so a

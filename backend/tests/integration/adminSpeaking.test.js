@@ -355,6 +355,46 @@ describe('GET /api/admin/speaking/history (teacherOnly)', () => {
   });
 });
 
+describe('GET /api/admin/speaking/attempts/:id (teacherOnly) — deep link from Dashboard', () => {
+  test('401 without a token', async () => {
+    const attempt = await createSpeakingAttempt({ userId: (await createStudent())._id });
+    const res = await request(app).get(`/api/admin/speaking/attempts/${attempt._id}`);
+    expect(res.status).toBe(401);
+  });
+
+  test('a student is blocked with 403', async () => {
+    const student = await createStudent();
+    const attempt = await createSpeakingAttempt({ userId: student._id });
+    const res = await request(app)
+      .get(`/api/admin/speaking/attempts/${attempt._id}`)
+      .set('Authorization', `Bearer ${signTokenFor(student)}`);
+    expect(res.status).toBe(403);
+  });
+
+  test('returns the full attempt with the student populated', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent({ username: 'deep_link_target' });
+    const attempt = await createSpeakingAttempt({ userId: student._id, topic: 'Travel', transcript: 'I love travelling.' });
+
+    const res = await request(app)
+      .get(`/api/admin/speaking/attempts/${attempt._id}`)
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.attempt._id).toBe(String(attempt._id));
+    expect(res.body.attempt.transcript).toBe('I love travelling.');
+    expect(res.body.attempt.userId.username).toBe('deep_link_target');
+  });
+
+  test('a non-existent id returns 404, not a 500', async () => {
+    const teacher = await createTeacher();
+    const fakeId = '507f1f77bcf86cd799439011';
+    const res = await request(app)
+      .get(`/api/admin/speaking/attempts/${fakeId}`)
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(res.status).toBe(404);
+  });
+});
+
 // ── Import (parse / import) ──────────────────────────────────────────────
 const SAMPLE_IMPORT = `@topic
 topic=A TV programme you enjoy
