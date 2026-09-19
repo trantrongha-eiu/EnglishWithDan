@@ -181,12 +181,20 @@
     .t1-ord-row { display:flex; align-items:center; gap:10px; padding:9px 11px; border:1px solid var(--border,#e5e7eb); border-radius:10px;
       background:var(--surface,#fff); font-size:13px; cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none; }
     .t1-ord-row:active { cursor:grabbing; }
-    .t1-ord-row.is-dragging { opacity:.3; }
+    .t1-ord-row.is-dragging { opacity:1; box-shadow:0 10px 22px rgba(0,0,0,.16); border-color:#0ea5e9; z-index:5; }
     .t1-ord-row .grip { color:#c7ccd6; letter-spacing:-3px; font-size:15px; }
     .t1-ord-row .txt { flex:1; }
-    .t1-ord-row .nudge { display:flex; flex-direction:column; gap:1px; flex-shrink:0; }
-    .t1-ord-row .nudge button { border:1px solid var(--border,#e5e7eb); background:var(--surface,#fff); border-radius:5px; width:24px; height:16px;
-      cursor:pointer; font-size:7px; line-height:1; color:#6b7280; padding:0; }
+    .t1-ord-item { display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap; }
+    .t1-ord-main { flex:1 1 220px; min-width:180px; }
+    .t1-ord-result { flex:1 1 200px; min-width:180px; align-self:stretch; display:flex; flex-direction:column; justify-content:center; gap:2px;
+      font-size:12.5px; line-height:1.6; padding:9px 12px; border-radius:10px; border:1px dashed var(--border,#e5e7eb);
+      background:var(--surface2,#f8fafc); color:#9ca3af; }
+    .t1-ord-result:empty { display:none; }
+    .t1-ord-result.ok { border-style:solid; border-color:#bbf7d0; background:#f0fdf4; color:#15803d; }
+    .t1-ord-result.bad { border-style:solid; border-color:#fecaca; background:#fef2f2; color:#b91c1c; }
+    [data-theme="dark"] .t1-ord-result.ok { background:#0f2a1a; border-color:#16532f; color:#4ade80; }
+    [data-theme="dark"] .t1-ord-result.bad { background:#2a1414; border-color:#5c2323; color:#f87171; }
+    @media (max-width:520px) { .t1-ord-result { flex-basis:100%; } }
 
     .t1-reset { margin-top:10px; background:none; border:1px solid var(--border,#d1d5db); color:var(--text2,#6b7280);
       border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
@@ -930,11 +938,10 @@
     }
     if (t === 'ordering') {
       return ex.items.map(function (it) {
-        return '<div class="t1-item"><div class="q">' + esc(it.prompt || 'Kéo để sắp xếp đúng thứ tự:') + '</div><div class="t1-ord" data-item="' + esc(it.id) + '">' +
+        return '<div class="t1-item t1-ord-item"><div class="t1-ord-main"><div class="q">' + esc(it.prompt || 'Kéo để sắp xếp đúng thứ tự:') + '</div><div class="t1-ord" data-item="' + esc(it.id) + '">' +
           (it.tokens || []).map(function (tok) {
-            return '<div class="t1-ord-row" data-tok="' + esc(tok) + '"><span class="grip">⋮⋮</span><span class="txt">' + esc(tok) + '</span>' +
-              '<span class="nudge"><button type="button" class="up" aria-label="Lên">▲</button><button type="button" class="down" aria-label="Xuống">▼</button></span></div>';
-          }).join('') + '</div></div>';
+            return '<div class="t1-ord-row" data-tok="' + esc(tok) + '"><span class="grip">⋮⋮</span><span class="txt">' + esc(tok) + '</span></div>';
+          }).join('') + '</div></div><div class="t1-ord-result" data-item="' + esc(it.id) + '"></div></div>';
       }).join('');
     }
     if (t === 'sentence_writing') {
@@ -1082,39 +1089,76 @@
         document.querySelectorAll('#t1-body .t1-drop .t1-chip').forEach(function (c) { c.classList.remove('placed'); rpool.appendChild(c); });
       });
     }
-    // ordering: drag rows to reorder (+ ▲▼ for fine control)
+    // ordering: press a row anywhere and drag — it tracks the pointer via a
+    // live transform (instead of only jumping once the cursor crosses a
+    // sibling's midpoint), and displaced siblings slide into their new slot
+    // with a short FLIP transition instead of snapping instantly.
     if (ex.type === 'ordering') {
       document.querySelectorAll('.t1-ord').forEach(function (box) {
-        box.addEventListener('click', function (e) {
-          var row = e.target.closest('.t1-ord-row'); if (!row) return;
-          if (e.target.closest('.up') && row.previousElementSibling) box.insertBefore(row, row.previousElementSibling);
-          if (e.target.closest('.down') && row.nextElementSibling) box.insertBefore(row.nextElementSibling, row);
-        });
         box.querySelectorAll('.t1-ord-row').forEach(function (row) {
           row.addEventListener('pointerdown', function (e) {
-            if (e.target.closest('button') || (e.button != null && e.button > 0)) return;
+            if (e.button != null && e.button > 0) return;
             e.preventDefault();
-            try { row.setPointerCapture(e.pointerId); } catch (x) { /* noop */ }
+            // No setPointerCapture: capturing the row and then reparenting it
+            // via insertBefore below silently releases capture in Chromium the
+            // moment it moves, so every pointermove after the first reorder
+            // would go nowhere — the drag would just die mid-gesture. Binding
+            // on document instead sidesteps that entirely.
+            var pid = e.pointerId;
+            var startY = e.clientY;
+            var startTop = row.getBoundingClientRect().top;
             row.classList.add('is-dragging');
             function mv(ev) {
+              if (ev.pointerId !== pid) return;
+              // Reorder first (using the raw pointer position against every
+              // OTHER row's rect, which never depends on the dragged row's
+              // own transform) so the FLIP-animated siblings settle into
+              // their new slots...
+              var siblings = box.querySelectorAll('.t1-ord-row:not(.is-dragging)');
               var tgt = null;
-              box.querySelectorAll('.t1-ord-row:not(.is-dragging)').forEach(function (r) {
+              siblings.forEach(function (r) {
                 var rc = r.getBoundingClientRect();
                 if (ev.clientY > rc.top + rc.height / 2) tgt = r;
               });
-              if (tgt) { if (tgt.nextSibling !== row) box.insertBefore(row, tgt.nextSibling); }
-              else if (box.firstElementChild !== row) box.insertBefore(row, box.firstElementChild);
+              var want = tgt ? tgt.nextSibling : box.firstElementChild;
+              var before = new Map();
+              siblings.forEach(function (r) { before.set(r, r.getBoundingClientRect().top); });
+              box.insertBefore(row, want);
+              siblings.forEach(function (r) {
+                var d = before.get(r) - r.getBoundingClientRect().top;
+                if (!d) return;
+                r.style.transition = 'none';
+                r.style.transform = 'translateY(' + d + 'px)';
+                r.getBoundingClientRect(); // force a synchronous reflow so the browser
+                // registers the "from" position before the transition below kicks
+                // in — rAF here would race a later mv() call reading this row's
+                // rect before the reset lands, corrupting the reorder math.
+                r.style.transition = 'transform .16s ease';
+                r.style.transform = '';
+              });
+              // ...THEN position the dragged row itself off its fresh natural
+              // slot, clamped so it never visually escapes its own list (over
+              // the question text above it, or the next question below). Doing
+              // this after the reorder (not before) matters: the row's own
+              // natural position just shifted along with everyone else's.
+              row.style.transform = '';
+              var naturalTop = row.getBoundingClientRect().top;
+              var rowH = row.getBoundingClientRect().height;
+              var boxRect = box.getBoundingClientRect();
+              var desiredTop = Math.max(boxRect.top, Math.min(boxRect.bottom - rowH, startTop + (ev.clientY - startY)));
+              row.style.transform = 'translateY(' + (desiredTop - naturalTop) + 'px)';
             }
             function up(ev) {
+              if (ev.pointerId !== pid) return;
               row.classList.remove('is-dragging');
-              row.removeEventListener('pointermove', mv);
-              row.removeEventListener('pointerup', up);
-              row.removeEventListener('pointercancel', up);
-              try { row.releasePointerCapture(ev.pointerId); } catch (x) { /* noop */ }
+              row.style.transform = '';
+              document.removeEventListener('pointermove', mv);
+              document.removeEventListener('pointerup', up);
+              document.removeEventListener('pointercancel', up);
             }
-            row.addEventListener('pointermove', mv);
-            row.addEventListener('pointerup', up);
-            row.addEventListener('pointercancel', up);
+            document.addEventListener('pointermove', mv);
+            document.addEventListener('pointerup', up);
+            document.addEventListener('pointercancel', up);
           });
         });
       });
@@ -1336,7 +1380,21 @@
       meta[it.id] = { n: i + 1, text: it.text || it.left || it.prompt || '' };
     });
     var showText = ex.type === 'categorize' || ex.type === 'matching';
-    var rows = (r.items || []).map(function (it) {
+    var isOrdering = ex.type === 'ordering';
+    if (isOrdering) {
+      // Ordering exercises hold several sub-items in one card, sitting one
+      // above another — a shared answer list stuck below all of them left
+      // students hunting for which line matched which box. Drop each result
+      // straight into the panel next to its own box instead.
+      (r.items || []).forEach(function (it) {
+        var panel = document.querySelector('.t1-ord-result[data-item="' + it.id + '"]');
+        if (!panel) return;
+        panel.className = 't1-ord-result ' + (it.correct ? 'ok' : 'bad');
+        panel.innerHTML = (it.correct ? '<span class="t1-ok">✔ Chính xác</span>' : '<span class="t1-bad">✗ Đúng là:</span> <span class="t1-model">' + esc(it.correctAnswer) + '</span>') +
+          (it.explanation ? '<div style="color:#6b7280;margin-top:4px;font-weight:400">' + esc(it.explanation) + '</div>' : '');
+      });
+    }
+    var rows = isOrdering ? '' : (r.items || []).map(function (it) {
       var m = meta[it.id] || {};
       var label = (showText && m.text) ? esc(m.text) : ('Câu ' + (m.n || ''));
       return '<div class="t1-res-item">' + (it.correct ? '<span class="t1-ok">✔</span>' : '<span class="t1-bad">✗</span>') +
