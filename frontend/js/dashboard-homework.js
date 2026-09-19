@@ -100,7 +100,7 @@ function hwResourceRow(assignmentId, r) {
     name = escHtml(r.label || r.resourceType);
     const href = hwResourceHref(r);
     action = href
-      ? `<a class="hw-res-btn" href="${href}">${r.completed ? 'Xem lại' : 'Bắt đầu'}</a>`
+      ? `<a class="hw-res-btn" href="${href}" target="_blank" rel="noopener">${r.completed ? 'Xem lại' : 'Bắt đầu'}</a>`
       : '<span class="hw-res-na">(nội dung không còn khả dụng)</span>';
   } else if (r.kind === 'external') {
     name = escHtml(r.title || r.url);
