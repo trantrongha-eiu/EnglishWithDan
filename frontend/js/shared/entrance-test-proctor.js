@@ -184,10 +184,13 @@
       '<div style="opacity:.85">Đang quay lại…</div>';
     (_fsRoot() || document.body).appendChild(ov);
 
-    var onDisqualified = _proctor.onDisqualified;
-    setTimeout(function () {
-      if (typeof onDisqualified === 'function') { try { onDisqualified(cooldownSeconds); } catch (_) {} }
-    }, 2800);
+    // A real navigation, not a JS-only screen swap: guarantees the overlay
+    // (appended directly to <body>/the fullscreen root, outside the app's
+    // own et-landing/et-runner/et-result containers) actually goes away —
+    // a soft "hide this screen, show that one" callback left it stuck on
+    // top of the page forever, since nothing ever removed the node itself.
+    // Matches js/shared/mock-test.js's own disqualify redirect.
+    setTimeout(function () { location.href = 'entrance-test.html?voided=1'; }, 2800);
   }
 
   function _onLeave(type) {
@@ -265,14 +268,13 @@
     }
   }
 
-  // opts: { attemptId, onDisqualified(cooldownSeconds), maxViolations
-  // (default 5), lockNav (default true) }
+  // opts: { attemptId, maxViolations (default 5), lockNav (default true) }
   function start(opts) {
     opts = opts || {};
     if (_proctor || !opts.attemptId) return;
     _proctor = {
       attemptId: opts.attemptId,
-      onDisqualified: opts.onDisqualified, maxViolations: opts.maxViolations || 5,
+      maxViolations: opts.maxViolations || 5,
       count: 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null

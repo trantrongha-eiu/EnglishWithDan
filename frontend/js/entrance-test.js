@@ -145,10 +145,7 @@
 
     showScreen('et-runner');
     if (window.EntranceTestProctor && !window.EntranceTestProctor.isActive()) {
-      window.EntranceTestProctor.start({
-        attemptId: state.attemptId,
-        onDisqualified: function () { showScreen('et-landing'); initLanding(); },
-      });
+      window.EntranceTestProctor.start({ attemptId: state.attemptId });
     }
     renderProgress(attempt.currentSection);
     renderSection(attempt);
@@ -616,6 +613,15 @@
       location.href = (window.AuthService && window.AuthService.buildLoginUrl) ? window.AuthService.buildLoginUrl(next) : 'login.html?next=' + encodeURIComponent(next);
       return;
     }
+    // Landed here via the proctor's disqualify redirect (a real navigation,
+    // not a JS screen swap — see shared/entrance-test-proctor.js) — surface
+    // what happened, then drop the param so a refresh doesn't re-toast.
+    try {
+      if (new URLSearchParams(location.search).get('voided') === '1') {
+        toast('Lượt Test đầu vào đã bị huỷ do vi phạm giám sát nhiều lần. Kết quả không được tính — hãy đợi khoảng 5 phút rồi bắt đầu lượt mới.', 'error', 8000);
+        history.replaceState(null, '', location.pathname);
+      }
+    } catch (_) {}
     initLanding();
   }
 
