@@ -473,7 +473,7 @@
       history.replaceState({ view: 'overview' }, '', location.href);
       render();
     } catch (e) {
-      if (e && e.code === 'PLAN_REQUIRED') { renderPaywall(); return; }
+      if (e && e.body && e.body.code === 'PLAN_REQUIRED') { renderPaywall(); return; }
       app.innerHTML = '<p style="text-align:center;color:#dc2626;padding:40px">Lỗi tải dữ liệu. Thử tải lại trang.</p>';
     }
   }
@@ -553,7 +553,10 @@
       (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'lesson', lesson: code }, '', url);
       render();
     } catch (e) {
-      if (e && e.code === 'PLAN_REQUIRED') { renderPaywall(); return; }
+      var errCode = e && e.body && e.body.code;
+      if (errCode === 'PLAN_REQUIRED') { renderPaywall(); return; }
+      if (errCode === 'TEST_CODE_REQUIRED') { openTestCodeModal(code); return; }
+      if (errCode === 'LESSON_LOCKED') { toast((e.body && e.body.message) || 'Bạn cần hoàn thành buổi học trước đó.', 'warning'); goOverview(); return; }
       toast('Lỗi tải buổi học', 'error'); goOverview();
     }
   }

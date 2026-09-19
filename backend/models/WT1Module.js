@@ -11,6 +11,12 @@ const WT1ModuleSchema = new Schema(
     title: String,
     titleEn: String,
     outcomes: [String],
+    // When true, the sequential lesson-gate (assertLessonUnlocked /
+    // computeLessonStatuses in wt1Service.js) is skipped for every lesson in
+    // this module — all its lessons stay open regardless of order or prior
+    // scores, for modules meant as free-practice reference material rather
+    // than a graded progression.
+    freePractice: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

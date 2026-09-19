@@ -957,24 +957,36 @@ async function loadWeeks() {
     state.weeks = data.weeks || [];
     state.allDrafts = allDraftsData.drafts || [];
 
-    // Deep link with only ?topicId= (older homework assignments, before the
-    // week was snapshotted into resourceCode) — find which week owns it so
-    // the ?week & ?topicId path below can run.
-    if (urlTopicId && !urlWeek) {
+    // Scans every week's topic list to find which one currently owns
+    // `topicId`. Used both when a deep link has no ?week= at all (older
+    // homework assignments, before the week was snapshotted into
+    // resourceCode) and when the ?week= it does have is stale — a homework
+    // link snapshots the topic's week at assign time (resourceCompletionService
+    // task2 catalog's deepLinkKey), and an admin can later move that topic
+    // into a different week, leaving the link pointing nowhere.
+    async function findWeekForTopic(topicId) {
       try {
         const perWeek = await Promise.all(
           state.weeks.map(w => apiFetch(`/api/task2/topics/week/${w.week}`).then(td => ({ week: w.week, topics: td.topics || [] })).catch(() => null))
         );
-        const hit = perWeek.find(x => x && x.topics.some(t => t._id === urlTopicId));
-        if (hit) urlWeek = hit.week;
-      } catch {}
+        return perWeek.find(x => x && x.topics.some(t => t._id === topicId)) || null;
+      } catch { return null; }
+    }
+
+    if (urlTopicId && !urlWeek) {
+      const hit = await findWeekForTopic(urlTopicId);
+      if (hit) urlWeek = hit.week;
     }
 
     if (urlWeek && urlTopicId) {
       state.selectedWeek = urlWeek;
       const td = await apiFetch(`/api/task2/topics/week/${urlWeek}`);
       state.topics = td.topics || [];
-      const topic = state.topics.find(t => t._id === urlTopicId);
+      let topic = state.topics.find(t => t._id === urlTopicId);
+      if (!topic) {
+        const hit = await findWeekForTopic(urlTopicId);
+        if (hit) { urlWeek = hit.week; state.selectedWeek = urlWeek; state.topics = hit.topics; topic = hit.topics.find(t => t._id === urlTopicId); }
+      }
       if (topic) {
         state.selectedTopic = topic;
         state.topicStats = null;

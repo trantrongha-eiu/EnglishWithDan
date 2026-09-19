@@ -184,7 +184,7 @@ async function getUnlockedTestLessonCodes(userId, testLessonCodes) {
 // shows as unlocked must be exactly the same lesson the submit endpoints
 // will accept). `unlockedTestLessons` = getUnlockedTestLessonCodes()'s
 // result for this module's isTest lessons.
-function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons) {
+function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, freePractice) {
   let prevMetGate = true; // first lesson of a module is always unlocked
   return mlessons.map((l) => {
     const cnt = counts[l.code] || { count: 0 };
@@ -195,7 +195,9 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons)
       ? Math.round(sum.objScores.reduce((x, y) => x + y, 0) / sum.objScores.length) : 0;
     const g = gateDefaults(l.gate);
     const metGate = objAvg >= g.minObjectiveScorePercent && sum.writingCount >= g.minWritingSubmissions;
-    const sequenceUnlocked = prevMetGate;  // this lesson is reachable if the previous one met its gate
+    // A freePractice module (e.g. a reference/type library students dip in
+    // and out of) has no sequence to enforce — every lesson stays reachable.
+    const sequenceUnlocked = freePractice || prevMetGate;  // this lesson is reachable if the previous one met its gate
     const needsTestCode = !!l.isTest && !unlockedTestLessons.has(l.code);
     const unlocked = sequenceUnlocked && !needsTestCode;
     prevMetGate = metGate;                 // …and THIS lesson, in turn, unlocks the next one when ITS gate is met
@@ -246,7 +248,7 @@ async function getOverview(userId, courseCode) {
 
   const outModules = modules.map((m) => {
     const mlessons = (lessonsByModule[m.code] || []).sort((a, b) => a.order - b.order);
-    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons);
+    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, m.freePractice);
     return {
       code: m.code, title: m.title, titleEn: m.titleEn, order: m.order,
       outcomes: m.outcomes || [], lessons: outLessons,
@@ -270,6 +272,7 @@ async function assertLessonUnlocked(userId, lessonCode) {
   const lesson = await WT1Lesson.findOne({ code: lessonCode, published: true }).lean();
   if (!lesson) throw new NotFoundError('Không tìm thấy buổi học');
 
+  const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('freePractice').lean();
   const mlessons = await WT1Lesson.find({ moduleCode: lesson.moduleCode, published: true }).sort({ order: 1 }).lean();
   const counts = await lessonExerciseCounts();
   const lessonCodesByExercise = {};
@@ -285,7 +288,7 @@ async function assertLessonUnlocked(userId, lessonCode) {
   const unlockedTestLessons = await getUnlockedTestLessonCodes(
     userId, mlessons.filter((l) => l.isTest).map((l) => l.code),
   );
-  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons);
+  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, mod && mod.freePractice);
   const st = statuses.find((s) => s.code === lessonCode);
   if (!st || st.unlocked) return;
 

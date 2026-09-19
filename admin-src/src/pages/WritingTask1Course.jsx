@@ -332,6 +332,16 @@ export default function WritingTask1Course() {
 
   const reload = () => setTick((t) => t + 1);
 
+  async function toggleFreePractice(m) {
+    try {
+      await apiFetch(`/admin/wt1/modules/${m._id}`, {
+        method: 'PUT', body: JSON.stringify({ freePractice: !m.freePractice }),
+      });
+      toast(m.freePractice ? 'Đã khoá lại thứ tự học' : 'Đã mở khoá — học sinh luyện tự do trong module này');
+      reload();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
   async function openEx(code) {
     try {
       const d = await apiFetch(`/admin/wt1/exercises/${code}`);
@@ -371,9 +381,15 @@ export default function WritingTask1Course() {
         <div style={{ width: 300, flexShrink: 0 }}>
           {loading ? <div style={{ color: 'var(--text2)' }}>Đang tải…</div> : tree.map((m) => (
             <div key={m.code} style={{ marginBottom: 10, border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
-              <div style={{ padding: '10px 12px', background: 'var(--surface2)', cursor: 'pointer', fontWeight: 700, fontSize: 13 }}
-                onClick={() => setOpen((o) => ({ ...o, [m.code]: !o[m.code] }))}>
-                {open[m.code] ? '▾' : '▸'} {m.title}
+              <div style={{ padding: '10px 12px', background: 'var(--surface2)', display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, fontSize: 13 }}>
+                <span style={{ cursor: 'pointer', flex: 1 }} onClick={() => setOpen((o) => ({ ...o, [m.code]: !o[m.code] }))}>
+                  {open[m.code] ? '▾' : '▸'} {m.title}
+                </span>
+                <label title="Bỏ khoá tuần tự — học sinh mở buổi bất kỳ trong module này để luyện tự do"
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 400, fontSize: 11, color: 'var(--text3)', cursor: 'pointer' }}
+                  onClick={(e) => e.stopPropagation()}>
+                  <input type="checkbox" checked={!!m.freePractice} onChange={() => toggleFreePractice(m)} /> luyện tự do
+                </label>
               </div>
               {open[m.code] && (m.lessons || []).map((l) => (
                 <div key={l.code}
