@@ -109,11 +109,27 @@ let _pendingReviewQuestionHl = {}; // passageIdx -> string[], consumed once by s
 
 function _readingHlStorageKey(attemptId) { return `ews_reading_hl_${attemptId}`; }
 
+// A plain `.includes('class="hl"')` substring check misses a colored
+// highlight — its class attribute renders as class="hl hl-green" (a space,
+// not a closing quote, right after "hl"), so the exact substring never
+// occurs. Matches either shape.
+function _hasAnyHl(html) { return !!html && /class="hl(?:"|\s)/.test(html); }
+
+// Returns a plain string for a default-colored highlight (unchanged shape,
+// so old localStorage data and code that doesn't know about colors keep
+// working) or { text, colorKey } when the student picked a non-default
+// color via js/shared/highlight-remove.js — _reapplyTextHighlights below
+// accepts either.
 function _extractHlTexts(html) {
   if (!html) return [];
   const div = document.createElement('div');
   div.innerHTML = html;
-  return Array.from(div.querySelectorAll('.hl')).map(el => el.textContent).filter(Boolean);
+  return Array.from(div.querySelectorAll('.hl')).map(el => {
+    const text = el.textContent;
+    if (!text) return null;
+    const m = el.className.match(/hl-(green|purple|pink|orange)/);
+    return m ? { text, colorKey: m[1] } : text;
+  }).filter(Boolean);
 }
 
 // Finds the first still-unhighlighted occurrence of `text` in `container`
@@ -122,9 +138,11 @@ function _extractHlTexts(html) {
 // questions markup. Best-effort: a highlight whose text no longer appears
 // verbatim (or that spanned multiple text nodes) is silently skipped
 // rather than breaking the render.
-function _reapplyTextHighlights(container, texts) {
-  if (!container || !texts || !texts.length) return;
-  texts.forEach(text => {
+function _reapplyTextHighlights(container, items) {
+  if (!container || !items || !items.length) return;
+  items.forEach(item => {
+    const text = typeof item === 'string' ? item : item.text;
+    const colorKey = typeof item === 'string' ? '' : (item.colorKey || '');
     if (!text || !text.trim()) return;
     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
@@ -143,7 +161,7 @@ function _reapplyTextHighlights(container, texts) {
       range.setStart(node, idx);
       range.setEnd(node, idx + text.length);
       const span = document.createElement('span');
-      span.className = 'hl';
+      span.className = colorKey ? 'hl hl-' + colorKey : 'hl';
       range.surroundContents(span);
     } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
   });
@@ -177,7 +195,7 @@ function _saveReadingHighlightsToStorage() {
   for (const idx in cache) {
     const entry = cache[idx];
     const questionTexts = _extractHlTexts(entry.questions);
-    const hasPassageHl = !!(entry.passage && entry.passage.includes('class="hl"'));
+    const hasPassageHl = _hasAnyHl(entry.passage);
     if (hasPassageHl || questionTexts.length) {
       data[idx] = { passage: hasPassageHl ? entry.passage : null, questionTexts };
       hasAny = true;
@@ -209,7 +227,7 @@ function _saveRetryHighlightsToStorage() {
   const questionsInner = document.getElementById('retry-questions-inner');
   const passageHtml = passageInner ? passageInner.innerHTML : '';
   const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
-  const hasPassageHl = passageHtml.includes('class="hl"');
+  const hasPassageHl = _hasAnyHl(passageHtml);
   try {
     const key = _retryHlStorageKey(passageId);
     if (hasPassageHl || questionTexts.length) {
@@ -3089,7 +3107,8 @@ function resultImgSrcForBand(band) {
        : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
        : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
        : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-       :                'img/verylowscore.jpg';
+       : band >= 1.0 ? 'img/listening_readingbelow30%25.jpg'
+       :                'img/listening_readingbelow20%25.jpg';
 }
 
 function showResult(r) {
@@ -3701,8 +3720,9 @@ async function _doSubmitRetry() {
                       : pct >= 60 ? 'img/band_6_7.jpg'
                       : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
                       : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                      : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
-                      : 'img/verylowscore.jpg';
+                      : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
+                      : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
+                      : 'img/listening_readingbelow20%25.jpg';
   const rdPracImgHtml = fromPractice
     ? `<img src="${rdPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
     : '';
@@ -3958,8 +3978,9 @@ async function loadPracticeReview(attemptId) {
                         : pct >= 60 ? 'img/band_6_7.jpg'
                         : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
                         : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                        : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
-                        : 'img/verylowscore.jpg';
+                        : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
+                        : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
+                        : 'img/listening_readingbelow20%25.jpg';
     inner.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
         <img src="${rdHistImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
@@ -4194,6 +4215,16 @@ document.addEventListener('mouseup', e => {
   span.className = 'hl';
   try { range.surroundContents(span); } catch { }
   sel.removeAllRanges();
+  if (_retryState) _saveRetryHighlightsToStorage();
+  else _saveReadingHighlightsToStorage();
+});
+
+// Fired by js/shared/highlight-remove.js after the student re-colors or
+// deletes an EXISTING highlight (the click handler there is self-contained
+// and doesn't know about this page's save functions) — same routing as the
+// mouseup handler right above, so a recolor/removal persists exactly like
+// a fresh highlight does.
+document.addEventListener('hl:changed', () => {
   if (_retryState) _saveRetryHighlightsToStorage();
   else _saveReadingHighlightsToStorage();
 });

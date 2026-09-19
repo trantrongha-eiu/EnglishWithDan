@@ -74,7 +74,7 @@
       : pct >= 70 ? 'img/above7.5.jpg'
         : pct >= 50 ? 'img/vocab50_70%25.jpg'
           : pct >= 20 ? 'img/vocabbelow50%25.jpg'
-            : 'img/verylowscore.jpg';
+            : 'img/listening_readingbelow20%25.jpg';
   }
 
   function ringColor(pct) {

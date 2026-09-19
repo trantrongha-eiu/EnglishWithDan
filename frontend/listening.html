@@ -726,16 +726,34 @@
 
         function _lHlStorageKey(attemptId) { return `ews_listening_hl_${attemptId}`; }
 
+        // A plain `.includes('class="hl"')` substring check misses a colored
+        // highlight — its class attribute renders as class="hl hl-green" (a
+        // space, not a closing quote, right after "hl"), so the exact
+        // substring never occurs. Matches either shape.
+        function _hasAnyHl(html) { return !!html && /class="hl(?:"|\s)/.test(html); }
+
+        // Returns a plain string for a default-colored highlight (unchanged
+        // shape, so old localStorage data and code that doesn't know about
+        // colors keep working) or { text, colorKey } when the student picked
+        // a non-default color via js/shared/highlight-remove.js —
+        // _reapplyTextHighlights below accepts either.
         function _extractHlTexts(html) {
             if (!html) return [];
             const div = document.createElement('div');
             div.innerHTML = html;
-            return Array.from(div.querySelectorAll('.hl')).map(el => el.textContent).filter(Boolean);
+            return Array.from(div.querySelectorAll('.hl')).map(el => {
+                const text = el.textContent;
+                if (!text) return null;
+                const m = el.className.match(/hl-(green|purple|pink|orange)/);
+                return m ? { text, colorKey: m[1] } : text;
+            }).filter(Boolean);
         }
 
-        function _reapplyTextHighlights(container, texts) {
-            if (!container || !texts || !texts.length) return;
-            texts.forEach(text => {
+        function _reapplyTextHighlights(container, items) {
+            if (!container || !items || !items.length) return;
+            items.forEach(item => {
+                const text = typeof item === 'string' ? item : item.text;
+                const colorKey = typeof item === 'string' ? '' : (item.colorKey || '');
                 if (!text || !text.trim()) return;
                 const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
                     acceptNode(node) {
@@ -754,7 +772,7 @@
                     range.setStart(node, idx);
                     range.setEnd(node, idx + text.length);
                     const span = document.createElement('span');
-                    span.className = 'hl';
+                    span.className = colorKey ? 'hl hl-' + colorKey : 'hl';
                     range.surroundContents(span);
                 } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
             });
@@ -777,7 +795,7 @@
                 for (const idx in partHlCacheRv) {
                     const entry = partHlCacheRv[idx];
                     const questionTexts = _extractHlTexts(entry.questions);
-                    const hasTranscriptHl = !!(entry.transcript && entry.transcript.includes('class="hl"'));
+                    const hasTranscriptHl = _hasAnyHl(entry.transcript);
                     if (hasTranscriptHl || questionTexts.length) {
                         data[idx] = { transcript: hasTranscriptHl ? entry.transcript : null, questionTexts };
                         hasAny = true;
@@ -2525,7 +2543,8 @@
                  : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
                  : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
                  : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-                 :                'img/verylowscore.jpg';
+                 : band >= 1.0 ? 'img/listening_readingbelow30%25.jpg'
+                 :                'img/listening_readingbelow20%25.jpg';
         }
 
         function goToReview() {
@@ -3501,6 +3520,25 @@
                 if (inPracticeQ || inPracticeTb) window._saveLtPracticeHighlightsToStorage?.();
                 else _saveListeningHighlightsToStorage();
             });
+
+            // Fired by js/shared/highlight-remove.js after the student re-colors
+            // or deletes an EXISTING highlight (that module is self-contained and
+            // doesn't know about this page's two separate highlight-storage
+            // systems). 'hl:willChange' fires first, span still attached, so the
+            // same practice-vs-main routing as the mouseup handler above can run;
+            // 'hl:changed' fires after the DOM mutation, once the span may already
+            // be detached (removal unwraps it) — that's when the actual save runs.
+            var _hlChangeIsPractice = false;
+            document.addEventListener('hl:willChange', e => {
+                const span = e.detail && e.detail.span;
+                const pq  = document.getElementById('lt-practice-questions-inner');
+                const ptb = document.getElementById('lt-practice-transcript-body');
+                _hlChangeIsPractice = !!span && ((pq && pq.contains(span)) || (ptb && ptb.contains(span)));
+            });
+            document.addEventListener('hl:changed', () => {
+                if (_hlChangeIsPractice) window._saveLtPracticeHighlightsToStorage?.();
+                else _saveListeningHighlightsToStorage();
+            });
         }
 
         // ══════════════════════════════════════════════
@@ -3961,7 +3999,7 @@
         const transcriptInner = document.getElementById('lt-practice-transcript-body');
         const transcriptHtml = transcriptInner ? transcriptInner.innerHTML : '';
         const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
-        const hasTranscriptHl = transcriptHtml.includes('class="hl"');
+        const hasTranscriptHl = _hasAnyHl(transcriptHtml);
         try {
             const key = _ltHlStorageKey(sectionId);
             if (hasTranscriptHl || questionTexts.length) {
@@ -4912,8 +4950,9 @@
                             : pct >= 60 ? 'img/band_6_7.jpg'
                             : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
                             : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                            : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
-                            : 'img/verylowscore.jpg';
+                            : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
+                            : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
+                            : 'img/listening_readingbelow20%25.jpg';
         let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
             <img src="${ltPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
@@ -5225,8 +5264,9 @@
                                 : pct >= 60 ? 'img/band_6_7.jpg'
                                 : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
                                 : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                                : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
-                                : 'img/verylowscore.jpg';
+                                : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
+                                : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
+                                : 'img/listening_readingbelow20%25.jpg';
 
             let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
                 <img src="${ltHistImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">

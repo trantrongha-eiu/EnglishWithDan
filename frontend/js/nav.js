@@ -914,7 +914,7 @@
     overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
     overlay.innerHTML =
       '<div style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:400px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
-        '<div style="font-size:44px;margin-bottom:10px">📖😴</div>' +
+        '<img src="img/forget%20to%20learn%20vocab%20after%202%20days.jpg" alt="" style="display:block;width:100%;max-width:180px;border-radius:12px;margin:0 auto 12px;object-fit:cover">' +
         '<h3 style="font-size:18px;font-weight:800;margin-bottom:10px">Đã ' + daysSince + ' ngày bạn chưa học từ vựng!</h3>' +
         '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px">' +
           'Ôn tập đều đặn giúp bạn nhớ từ lâu hơn. Chọn một sổ từ vựng và học ngay nào!' +
@@ -1092,6 +1092,7 @@
     var pct = o.target ? Math.min(100, Math.round(o.studied / o.target * 100)) : 0;
     card.innerHTML =
       '<button aria-label="Đóng" style="position:absolute;top:6px;right:8px;background:none;border:none;font-size:16px;line-height:1;color:var(--text3,#9ca3af);cursor:pointer;padding:4px">&times;</button>' +
+      '<img src="img/forget%20to%20learn%20vocab%20after%202%20days.jpg" alt="" style="display:block;max-width:110px;border-radius:10px;margin:0 auto 10px;object-fit:cover">' +
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
         '<span style="font-size:20px">📖</span>' +
         '<div style="font-size:14px;font-weight:800">Từ vựng hôm nay</div>' +

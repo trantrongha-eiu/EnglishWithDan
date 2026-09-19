@@ -634,6 +634,30 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .hl { background: #b45309; color: #fef3c7; }
 [data-theme="dark"] .hl:hover { background: #92400e; }
 
+/* Alternate highlight colors — pick one by clicking an existing highlight
+   (see js/shared/highlight-remove.js). Default (no modifier class) stays
+   the original yellow above, unchanged for every highlight saved before
+   this palette existed. */
+.hl-green { background: #4ade80; }
+.hl-green:hover { background: #22c55e; }
+[data-theme="dark"] .hl-green { background: #15803d; color: #dcfce7; }
+[data-theme="dark"] .hl-green:hover { background: #166534; }
+
+.hl-purple { background: #c084fc; }
+.hl-purple:hover { background: #a855f7; }
+[data-theme="dark"] .hl-purple { background: #7e22ce; color: #f3e8ff; }
+[data-theme="dark"] .hl-purple:hover { background: #6b21a8; }
+
+.hl-pink { background: #f472b6; }
+.hl-pink:hover { background: #ec4899; }
+[data-theme="dark"] .hl-pink { background: #be185d; color: #fce7f3; }
+[data-theme="dark"] .hl-pink:hover { background: #9d174d; }
+
+.hl-orange { background: #fb923c; }
+.hl-orange:hover { background: #f97316; }
+[data-theme="dark"] .hl-orange { background: #c2410c; color: #ffedd5; }
+[data-theme="dark"] .hl-orange:hover { background: #9a3412; }
+
 /* exam-footer-listening removed – replaced by fixed section nav bar */
 
 /* ══════════════════════════════════════════════
