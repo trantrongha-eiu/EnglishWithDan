@@ -198,8 +198,13 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
     // A freePractice module (e.g. a reference/type library students dip in
     // and out of) has no sequence to enforce — every lesson stays reachable.
     const sequenceUnlocked = freePractice || prevMetGate;  // this lesson is reachable if the previous one met its gate
-    const needsTestCode = !!l.isTest && !unlockedTestLessons.has(l.code);
-    const unlocked = sequenceUnlocked && !needsTestCode;
+    const hasTestCode = !!l.isTest && unlockedTestLessons.has(l.code);
+    const needsTestCode = !!l.isTest && !hasTestCode;
+    // An admin-issued unlock code for this specific test lesson grants access
+    // outright, bypassing the earlier-lessons sequence gate — that's the
+    // whole point of the code (sit the end-of-course test without first
+    // clearing every prior lesson's score/writing requirement).
+    const unlocked = hasTestCode || (sequenceUnlocked && !needsTestCode);
     prevMetGate = metGate;                 // …and THIS lesson, in turn, unlocks the next one when ITS gate is met
     return {
       code: l.code, title: l.title, titleEn: l.titleEn, order: l.order,
