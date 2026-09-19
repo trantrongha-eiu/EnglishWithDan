@@ -116,12 +116,19 @@
 
   // ── Runner ───────────────────────────────────────────────────────────
 
-  function loadRunner() {
+  // Retries transient failures (a network blip, a Render cold start) rather
+  // than bouncing the student back to the landing screen — this is the
+  // function timer expiry relies on to actually collect a section the
+  // instant time runs out, so a single failed request here must not look
+  // like "your attempt is gone" when the attempt is perfectly safe server-
+  // side the whole time.
+  function loadRunner(retryCount) {
+    retryCount = retryCount || 0;
     apiFetch('/entrance-test/' + state.attemptId).then(function (d) {
       onAttemptLoaded(d.attempt);
     }).catch(function (e) {
-      toast((e && e.message) || 'Không tải được bài làm', 'error');
-      showScreen('et-landing');
+      if (retryCount < 6) { setTimeout(function () { loadRunner(retryCount + 1); }, 2000); return; }
+      toast((e && e.message) || 'Mất kết nối — vui lòng tải lại trang để tiếp tục bài làm', 'error', 8000);
     });
   }
 
@@ -160,6 +167,8 @@
     stopTimer();
     var section = attempt.sections[attempt.currentSection];
     var expiresAt = new Date(section.sectionExpiresAt).getTime();
+    state.currentSectionExpiresAt = expiresAt; // read by the visibilitychange re-sync below
+    var firedExpiry = false;
     function tick() {
       var now = Date.now() + state.serverOffsetMs;
       var remainingSec = Math.max(0, Math.round((expiresAt - now) / 1000));
@@ -170,8 +179,9 @@
         el.classList.toggle('et-timer-warn', remainingSec <= 120 && remainingSec > 0);
         el.classList.toggle('et-timer-danger', remainingSec === 0);
       }
-      if (remainingSec <= 0) {
-        stopTimer();
+      if (remainingSec <= 0 && !firedExpiry) {
+        firedExpiry = true; // stopTimer() below already prevents a second tick, but a
+        stopTimer();        // visibilitychange re-sync (see boot()) could race a pending tick
         toast('Hết giờ phần ' + SECTION_LABEL[attempt.currentSection] + ' — đang tự động chuyển sang phần tiếp theo…', 'info', 4000);
         loadRunner();
       }
@@ -180,6 +190,22 @@
     state.timerHandle = setInterval(tick, 1000);
   }
   function stopTimer() { if (state.timerHandle) { clearInterval(state.timerHandle); state.timerHandle = null; } }
+
+  // Browsers throttle (or fully suspend) setInterval timers in a
+  // backgrounded tab — a student who tabs away right as a section's time
+  // runs out could otherwise sit on an expired section for well past 0:00
+  // before the next tick actually fires. This re-syncs against the server
+  // the instant the tab becomes visible again, so "collect immediately and
+  // move on" holds even after the interval itself got throttled. Only acts
+  // once the client-computed deadline has actually passed (not on every
+  // ordinary tab switch), and armed once for the whole page lifetime.
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible' || !state.attemptId) return;
+    var runnerEl = $('et-runner');
+    if (!runnerEl || runnerEl.classList.contains('hidden')) return;
+    var now = Date.now() + state.serverOffsetMs;
+    if (state.currentSectionExpiresAt && now >= state.currentSectionExpiresAt) loadRunner();
+  });
 
   function renderSection(attempt) {
     var body = $('et-section-body');
