@@ -514,7 +514,7 @@
         },
         {
           "id": "q3",
-          "prompt": "The figure hit the ____ point of 2,000 tonnes in 2015.",
+          "prompt": "After several years of steady growth, the figure hit the ____ point of 2,000 tonnes in 2015.",
           "blanks": [
             {
               "accept": [
@@ -526,7 +526,7 @@
         },
         {
           "id": "q4",
-          "prompt": "Sales hit a ____ of 500 units in 2018.",
+          "prompt": "After falling sharply for three years, sales hit a ____ of 500 units in 2018.",
           "blanks": [
             {
               "accept": [
@@ -550,7 +550,7 @@
         },
         {
           "id": "q6",
-          "prompt": "Oil prices ____ at 30 USD per barrel in 2016.",
+          "prompt": "After falling for months, oil prices ____ at 30 USD per barrel in 2016.",
           "blanks": [
             {
               "accept": [
@@ -562,7 +562,7 @@
         },
         {
           "id": "q7",
-          "prompt": "The figure hit the ____ point of 1 million in 1999.",
+          "prompt": "Following a long decline, the figure hit the ____ point of 1 million in 1999.",
           "blanks": [
             {
               "accept": [
