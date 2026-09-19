@@ -106,6 +106,18 @@
     return false;
   }
 
+  // A unit like "m²"/"m³" (IELTS Task 1: square/cubic metres) uses a
+  // superscript digit no physical or on-screen keyboard can type directly —
+  // a student was stuck unable to finish the word at all. Map superscript
+  // digits to their plain-digit equivalent so typing the plain "2"/"3" is
+  // accepted as the same character everywhere this drill compares typed
+  // input against the target.
+  var SUPERSCRIPT_DIGITS = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9' };
+  var SUPERSCRIPT_RE = /[⁰¹²³⁴-⁹]/g;
+  function _deSup(s) {
+    return String(s == null ? '' : s).replace(SUPERSCRIPT_RE, function (m) { return SUPERSCRIPT_DIGITS[m]; });
+  }
+
   function nfc(s) {
     s = String(s == null ? '' : s);
     return s.normalize ? s.normalize('NFC') : s;
@@ -339,6 +351,7 @@
     this._renderWords();
     this._updateBar();
     this._syncBridge(true);
+    if (typeof window !== 'undefined' && typeof window.playWrong === 'function') window.playWrong();
     var self = this;
     this._completeTimer = setTimeout(function () {
       if (self.onFail) self.onFail();
@@ -364,7 +377,7 @@
   };
 
   // Strip non-typable chars and lower-case — the comparison key for a word.
-  function _wordKey(s) { return nfc(s).replace(NOT_TYPABLE, '').toLowerCase(); }
+  function _wordKey(s) { return _deSup(nfc(s).replace(NOT_TYPABLE, '')).toLowerCase(); }
 
   // Vietnamese "oa/oe/uy" diphthongs are spelled with the tone mark on
   // either vowel depending on convention — "hoà" vs "hòa", "hoá" vs "hóa",
@@ -445,7 +458,7 @@
       if (!TYPABLE.test(ch)) continue; // punctuation keystroke — harmless no-op
       var expected = tok.raw[pos];
       if (expected === undefined) { rejected = true; break; }
-      if (ch.toLowerCase() === expected.toLowerCase()) { good += ch; pos++; skipPunct(); }
+      if (_deSup(ch).toLowerCase() === _deSup(expected).toLowerCase()) { good += ch; pos++; skipPunct(); }
       else { rejected = true; break; }
     }
 
@@ -518,6 +531,11 @@
     this._renderWords();
     this._updateBar();
     this._syncBridge(true);
+    // A finished drill (this sentence/word typed correctly) is itself a
+    // "correct" moment — students were getting zero audio feedback for it,
+    // only hearing anything once every item in a multi-item exercise later
+    // triggered the page's own submit()-level playOk/playWrong.
+    if (typeof window !== 'undefined' && typeof window.playOk === 'function') window.playOk();
     var self = this;
     this._completeTimer = setTimeout(function () { self.onComplete(); }, 450);
   };
