@@ -3662,7 +3662,10 @@ async function _doSubmitRetry() {
   let correct = 0, wrong = 0, skipped = 0;
   const retryReviewMap = {};
 
-  allQ.forEach(q => {
+  // Per-question grading (unchanged from before) — used directly for a
+  // non-interchangeable question, and as the fallback inside a group that
+  // isn't eligible for pool-matching (see the group loop below).
+  function gradeOneRetryQuestion(q) {
     const qNum = q.questionNumber;
     const userAns = state.answers[qNum] || '';
     const correctAns = correctMap[qNum] || '';
@@ -3697,6 +3700,56 @@ async function _doSubmitRetry() {
       isCorrect,
       explanation: q.explanation || '',
     };
+  }
+
+  // Group-aware grading — mirrors backend readingService.gradeGroups()'s
+  // interchangeableAnswers pool-match exactly, so a "Choose TWO/THREE
+  // letters" group (each slot its own single-letter sub-question) accepts
+  // either order here too, not just in the server's post-submit re-grade.
+  // Without this, a student who picked both correct letters into the
+  // "wrong" slot saw an on-screen "Sai" even though savePractice() would
+  // score it correctly once persisted (audit finding — screenshot showed
+  // "Luyện: Procrastination" Q25/26 rejecting a valid swapped-order answer).
+  // getAllQuestionsFromPassage() shallow-copies each question ({...q}), so
+  // allQ's entries — not the raw passage.questionGroups[].questions objects
+  // — are the ones carrying the `explanation` mutated in above (from the
+  // practice answer-key fetch). Resolve each group's question NUMBERS
+  // against allQ so grading here sees the same explanation/type data the
+  // rest of this function already fetched.
+  const allQByNum = new Map(allQ.map(q => [q.questionNumber, q]));
+  const groups = passage.questionGroups?.length
+    ? passage.questionGroups
+    : [{ interchangeableAnswers: false, questions: passage.questions || [] }];
+
+  groups.forEach(group => {
+    const qs = (group.questions || []).map(q => allQByNum.get(q.questionNumber) || q);
+    const isTFNG = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+    const isMultiAnswerGroup = qs.some(q => q.type === 'multi-answer-group');
+
+    if (group.interchangeableAnswers && qs.length > 0 && !isTFNG && !isMultiAnswerGroup) {
+      const correctPool = qs.map(q => (correctMap[q.questionNumber] || '').trim().toLowerCase());
+      const remainingPool = [...correctPool];
+      qs.forEach(q => {
+        const qNum = q.questionNumber;
+        const userAns = state.answers[qNum] || '';
+        const correctAns = correctMap[qNum] || '';
+        const rawUser = (userAns === '[]' ? '' : userAns).trim();
+        const poolIdx = rawUser !== '' ? remainingPool.indexOf(rawUser.toLowerCase()) : -1;
+        let isCorrect = false;
+        if (rawUser === '') {
+          skipped++;
+        } else if (poolIdx !== -1) {
+          remainingPool.splice(poolIdx, 1);
+          isCorrect = true;
+          correct++;
+        } else {
+          wrong++;
+        }
+        retryReviewMap[qNum] = { userAnswer: userAns, correctAnswer: correctAns, isCorrect, explanation: q.explanation || '' };
+      });
+    } else {
+      qs.forEach(gradeOneRetryQuestion);
+    }
   });
 
   const total = allQ.length;
