@@ -34,6 +34,42 @@ describe('passageToParagraphs', () => {
     const paras = I.passageToParagraphs('It was that summer. People knew it.\n\nJune was the warmest month.');
     expect(paras.map(p => p.n)).toEqual([1, 2]);
   });
+
+  test('bold letters opening a paragraph on the same line are labels ("<strong>A.</strong> Around…", "<b>B</b> Most…")', () => {
+    const paras = I.passageToParagraphs('<p>Mark Rowe investigates elms</p><p><strong>A.</strong> Around 25 million elms died.</p><p><b>B</b> Most social scientists resist.</p>');
+    expect(paras.map(p => [p.label, p.text])).toEqual([
+      [null, 'Mark Rowe investigates elms'], ['A', 'Around 25 million elms died.'], ['B', 'Most social scientists resist.']]);
+  });
+
+  test('plain-text "A. …" counts as a label only when the letters run A, B, C…', () => {
+    const seq = I.passageToParagraphs('<p>A. First point here.</p><p>B. Second point here.</p><p>C. Third point here.</p>');
+    expect(seq.map(p => p.label)).toEqual(['A', 'B', 'C']);
+    const initials = I.passageToParagraphs('<p>Some intro sentence here.</p><p>A. J. Smith argued otherwise.</p>');
+    expect(initials.map(p => p.label)).toEqual([null, null]);
+    expect(initials[1].text).toBe('A. J. Smith argued otherwise.');
+  });
+});
+
+describe('classifyGroup', () => {
+  const q = (n, type, key, extra = {}) => ({ questionNumber: n, type, questionText: `Q${n}`, correctAnswer: key, ...extra });
+  test.each([
+    ['tfng', { questions: [q(1, 'true-false-ng', 'TRUE'), q(2, 'true-false-ng', 'NOT GIVEN')] }],
+    ['ynng', { questions: [q(1, 'yes-no-ng', 'NO'), q(2, 'yes-no-ng', 'NOT GIVEN')] }],
+    [null, { questions: [q(1, 'true-false-ng', 'YES'), q(2, 'true-false-ng', 'NO')] }], // type/keys disagree
+    ['headings', { headingsConfig: { headings: [{ numeral: 'i', text: 'a' }, { numeral: 'ii', text: 'b' }, { numeral: 'iii', text: 'c' }] }, questions: [q(1, 'matching-headings', 'ii')] }],
+    ['mcq', { questions: [q(1, 'multiple-choice', 'C', { options: ['a', 'b', 'c', 'd'] })] }],
+    [null, { instruction: 'Choose TWO letters, A–E.', questions: [q(1, 'multiple-choice', 'C', { options: ['a', 'b', 'c', 'd', 'e'] })] }],
+    [null, { groupType: 'matching-options', instruction: 'Complete each sentence with the correct ending, A–F, below.', matchingOptions: ['x x', 'y y'], questions: [q(1, 'matching-info', 'A')] }],
+    [null, { instruction: 'Complete the summary using the list of words, A–J, below.', questions: [q(1, 'fill-blank', 'E')] }],
+    ['matching_info', { instruction: 'Which section contains the following information?', matchingOptions: ['A', 'B', 'C'], questions: [q(1, 'matching-info', 'B')] }],
+    ['matching_info', { matchingOptions: [], questions: [q(1, 'matching-info', 'D')] }],
+    ['matching_features', { matchingOptions: ['Dan Macon', 'Julie Young'], questions: [q(1, 'matching-info', 'B')] }],
+    [null, { instruction: 'Classify the following developments as A early, B middle or C late.', questions: [q(1, 'matching-info', 'B')] }],
+    [null, { interchangeableAnswers: true, matchingOptions: ['Ben Novak', 'Beth Shapiro'], questions: [q(1, 'matching-info', 'B')] }],
+    ['typed', { questions: [q(1, 'fill-blank', 'harbour'), q(2, 'sentence-completion', '1906')] }],
+  ])('%s', (expected, group) => {
+    expect(I.classifyGroup(group)).toBe(expected);
+  });
 });
 
 describe('locateQuotes / locateEvidence', () => {

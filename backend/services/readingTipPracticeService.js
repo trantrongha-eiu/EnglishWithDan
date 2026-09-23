@@ -30,10 +30,19 @@ const ReadingTip = require('../models/ReadingTip');
 const { gradeGroups } = require('./readingService');
 
 // lessonKey (ReadingTip.lessonKey) → practice definition. Only tips listed
-// here get a practice section; Phase 2 adds the question-type tips.
+// here get a practice section.
+const QUESTION_TYPE_DEFAULTS = { kind: 'questions', maxQuestions: 7, minQuestions: 3, preferQuestions: 5 };
 const PRACTICE_CONFIG = {
   skimming: { kind: 'skimming', maxQuestions: 5, maxPerPassage: 2 },
   scanning: { kind: 'scanning', maxQuestions: 6, minQuestions: 3, preferQuestions: 5 },
+  'true-false-not-given': { ...QUESTION_TYPE_DEFAULTS, questionType: 'tfng' },
+  'yes-no-not-given': { ...QUESTION_TYPE_DEFAULTS, questionType: 'ynng' },
+  'matching-headings': { ...QUESTION_TYPE_DEFAULTS, questionType: 'headings' },
+  'matching-information': { ...QUESTION_TYPE_DEFAULTS, questionType: 'matching_info' },
+  'matching-features': { ...QUESTION_TYPE_DEFAULTS, questionType: 'matching_features' },
+  'sentence-summary-note-completion': { ...QUESTION_TYPE_DEFAULTS, questionType: 'completion' },
+  'multiple-choice': { ...QUESTION_TYPE_DEFAULTS, questionType: 'mcq' },
+  'short-answer-questions': { ...QUESTION_TYPE_DEFAULTS, questionType: 'short_answer' },
 };
 
 const CATEGORY_LABEL = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
@@ -129,6 +138,11 @@ function passageToParagraphs(html) {
   let s = String(html || '')
     .replace(/<!DOCTYPE[^>]*>/gi, '')
     .replace(/<(head|script|style)[\s\S]*?<\/\1>/gi, '');
+  // A bold letter opening a block ("<p><strong>A.</strong> Around\u2026",
+  // "<p><b>A</b> Most\u2026", "<p><strong>A</strong><br>\u2026") is that paragraph's
+  // label \u2014 mark it before the tags are stripped.
+  s = s.replace(/(<(?:p|div|h[1-6])(?:\s[^>]*)?>)\s*<(strong|b)(?:\s[^>]*)?>\s*(?:(?:paragraph|section)\s+)?\(?([A-J])[.):]?\s*<\/\2>/gi,
+    (m, open, em, letter) => `${open}\uE001${letter.toUpperCase()}\uE001 `);
   // Flag blocks that are entirely bold/italic (a standfirst, or a label
   // like "<p><strong>A.</strong></p>") before the tags are stripped.
   s = s.replace(/<(p|div|h[1-6])(\s[^>]*)?>\s*<(strong|b|em|i)(\s[^>]*)?>((?:(?!<\/\3>)[\s\S])*)<\/\3>\s*<\/\1>/gi,
@@ -145,18 +159,41 @@ function passageToParagraphs(html) {
     const emphasized = block.includes('\uE000');
     block = block.replace(/\uE000/g, '').trim();
     if (!block) continue;
+    let label = null;
+    let plainLabel = false;
+    const marked = block.match(/^([A-J])\s*([\s\S]*)$/);
+    if (marked) {
+      if (!marked[2].trim()) { pendingLabel = marked[1]; continue; }
+      label = marked[1];
+      block = marked[2];
+    }
     // Section/paragraph letter on its own ("A", "A.", "Paragraph B") or on
     // its own line above the text — attach it to the paragraph it labels.
-    const own = block.match(/^(?:(?:paragraph|section)\s+)?\(?([A-J])[.):]?$/i);
+    const own = !label && block.match(/^(?:(?:paragraph|section)\s+)?\(?([A-J])[.):]?$/i);
     if (own) { pendingLabel = own[1].toUpperCase(); continue; }
-    let label = null;
-    const lead = block.match(/^(?:(?:paragraph|section)\s+)?\(?([A-J])[.):]?[ \t]*\n\s*([\s\S]+)$/i);
+    const lead = !label && block.match(/^(?:(?:paragraph|section)\s+)?\(?([A-J])[.):]?[ \t]*\n\s*([\s\S]+)$/i);
     if (lead) { label = lead[1].toUpperCase(); block = lead[2]; }
+    // Plain-text "A. Around…" — only trusted if the letters come out as a
+    // clean A, B, C… sequence (checked below), since "A. J. Smith…" exists.
+    const inline = !label && !pendingLabel && block.match(/^([A-J])\.\s+(?=\S)([\s\S]+)$/);
+    if (inline) { label = inline[1]; block = inline[2]; plainLabel = true; }
     block = block.replace(/\s+/g, ' ').trim();
     if (!block) continue;
     if (!label && pendingLabel) label = pendingLabel;
     pendingLabel = null;
-    blocks.push({ text: block, label, emphasized });
+    blocks.push({ text: block, label, emphasized, plainLabel, raw: inline ? inline[0] : null });
+  }
+
+  // Plain-text labels must read A, B, C… (at least three, in order);
+  // otherwise they were just text ("A. J. Smith…") — put them back.
+  if (blocks.some(b => b.plainLabel)) {
+    const seq = blocks.filter(b => b.label).map(b => b.label);
+    const ordered = seq.length >= 3 && seq.every((l, i) => l.charCodeAt(0) === 65 + i);
+    if (!ordered) {
+      for (const b of blocks) {
+        if (b.plainLabel) { b.text = b.raw.replace(/\s+/g, ' ').trim(); b.label = null; b.plainLabel = false; }
+      }
+    }
   }
 
   // A bold/italic block before the first real paragraph is the standfirst
@@ -528,6 +565,26 @@ function extractAnchors(stem, passageText, passageNorm) {
   return found.slice(0, 4);
 }
 
+// Evidence for a typed (copied-from-the-passage) answer, or null when the
+// data contradicts itself. The sentence the teacher's explanation quotes
+// must contain the answer (the bank had answer keys copied from the
+// neighbouring question — explanation right, answer wrong), and the
+// evidence must sit next to what the question tells you to look for.
+// Without a locatable quote, the passage sentence holding the answer is
+// the evidence.
+function typedEvidence(q, paragraphs, anchors) {
+  const quotes = locateQuotes(q.explanation, paragraphs);
+  const quoted = quotes.find(qt => answerInPassage(q.correctAnswer, normalizeForMatch(evidenceSentences(qt, paragraphs))));
+  if (quotes.length && !quoted) return null;
+  const evidence = quoted || answerSentence(q.correctAnswer, paragraphs, anchors);
+  if (!evidence) return null;
+  if (anchors.length) {
+    const near = normalizeForMatch(paragraphs.filter(p => Math.abs(p.i - evidence.paragraphIndex) <= 1).map(p => p.text).join(' '));
+    if (!anchors.some(a => containsTerm(near, a))) return null;
+  }
+  return evidence;
+}
+
 function scanItemsForPassage(passage) {
   const paragraphs = passageToParagraphs(passage.content);
   if (!paragraphs.some(p => !p.heading)) return { paragraphs, items: [] };
@@ -549,20 +606,148 @@ function scanItemsForPassage(passage) {
       if (wordsOutsideBlanks(stem) < 4 || stem.length > 260) continue;
       const anchors = extractAnchors(stem.replace(/_____|…/g, ' '), passageText, passageNorm);
       if (!anchors.length && !/\d/.test(String(q.correctAnswer || ''))) continue;
-      // Consistency with the teacher's own explanation: the sentence it
-      // quotes must contain the answer (the bank has answer keys copied
-      // from the neighbouring question — explanation right, answer
-      // wrong), and the evidence must sit next to what the question tells
-      // you to scan for. Without a locatable quote, the passage sentence
-      // holding the answer is the evidence.
-      const quotes = locateQuotes(q.explanation, paragraphs);
-      const quoted = quotes.find(qt => answerInPassage(q.correctAnswer, normalizeForMatch(evidenceSentences(qt, paragraphs))));
-      if (quotes.length && !quoted) continue;
-      const evidence = quoted || answerSentence(q.correctAnswer, paragraphs, anchors);
+      const evidence = typedEvidence(q, paragraphs, anchors);
       if (!evidence) continue;
-      const near = normalizeForMatch(paragraphs.filter(p => Math.abs(p.i - evidence.paragraphIndex) <= 1).map(p => p.text).join(' '));
-      if (anchors.length && !anchors.some(a => containsTerm(near, a))) continue;
       items.push({ group, q, stem, anchors, evidence, wordLimit: wordLimit(group) });
+    }
+  }
+  items.sort((a, b) => a.q.questionNumber - b.q.questionNumber);
+  return { paragraphs, items };
+}
+
+// ── Question-type practices (the 8 "Chiến thuật theo dạng bài" tips) ───
+
+const TFNG_KEYS = ['TRUE', 'FALSE', 'NOT GIVEN'];
+const YNNG_KEYS = ['YES', 'NO', 'NOT GIVEN'];
+
+function groupText(group) {
+  return `${group.groupTitle || ''} ${group.instruction || ''}`.replace(/\s+/g, ' ');
+}
+
+// What a student actually faces in this group, judged from its content
+// (instruction wording, options, answer shape) — `type` only has to agree
+// with the answer family for TFNG/YNNG. null = not one of the practised
+// types (sentence endings, "Choose TWO letters", word-list completion, a
+// classification whose category list isn't stored, …) or inconsistent.
+function classifyGroup(group) {
+  const qs = group.questions || [];
+  if (!qs.length || group.interchangeableAnswers) return null;
+  const text = groupText(group);
+  const keys = qs.map(q => String(q.correctAnswer || '').trim().toUpperCase());
+
+  const allNG = keys.every(k => k === 'NOT GIVEN');
+  const allType = (t) => qs.every(q => q.type === t);
+  if (keys.every(k => TFNG_KEYS.includes(k)) && (!allNG || allType('true-false-ng'))) return allType('true-false-ng') ? 'tfng' : null;
+  if (keys.every(k => YNNG_KEYS.includes(k))) return allType('yes-no-ng') ? 'ynng' : null;
+
+  const headings = (group.headingsConfig && group.headingsConfig.headings) || [];
+  if (headings.length >= 3 && keys.every(k => /^[IVX]+$/.test(k))) return 'headings';
+
+  if (/choose\s+(?:two|three|four)\b|which\s+(?:two|three|four)\b/i.test(text) || qs.some(q => q.type === 'multi-answer-group')) return null;
+  if (group.groupType === 'sentence-endings' || /correct ending/i.test(text)) return null;
+  if ((group.summaryConfig && (group.summaryConfig.wordBank || []).length) || /list of (?:words|phrases)|using the list/i.test(text)) return null;
+
+  if (keys.every(k => /^[A-H]$/.test(k)) && qs.every(q => (q.options || []).filter(o => String(o || '').trim()).length >= 3)) return 'mcq';
+
+  if (keys.every(k => /^[A-J]$/.test(k))) {
+    const named = (group.matchingOptions || []).map(o => String(o || '').trim()).filter(o => o.length > 1);
+    if (/which\s+(?:paragraph|section)|contains the following information/i.test(text)) return named.length ? null : 'matching_info';
+    if (named.length >= 2) return 'matching_features';
+    // "Classify…/Match each… with the list below" but no list stored.
+    if (/classify|match each|list of|look at the following/i.test(text)) return null;
+    return 'matching_info'; // letters with no list = paragraph letters
+  }
+
+  if (keys.every(k => k && !isChoiceAnswer(k))) return 'typed';
+  return null;
+}
+
+const CHOICE_SETS = { tfng: TFNG_KEYS, ynng: YNNG_KEYS };
+
+// One practice question of `qType` from question `q`, or null when its data
+// doesn't hold together (key outside its own option list, headings question
+// naming a paragraph the passage doesn't label, explanation quoting another
+// paragraph than the key, typed answer not in the passage, …).
+function typeItem(qType, group, q, ctx) {
+  const key = String(q.correctAnswer || '').trim();
+  const text = isPlaceholderText(q.questionText) ? '' : stripOwnNumber(q.questionText, q.questionNumber);
+  const letterIdx = key.toUpperCase().charCodeAt(0) - 65;
+  switch (qType) {
+    case 'tfng':
+    case 'ynng':
+      return text ? { text, input: 'choice', choices: CHOICE_SETS[qType].map(k => ({ key: k, label: '' })) } : null;
+    case 'mcq': {
+      const options = (q.options || []).map(o => String(o || '').trim());
+      if (!text || options.some(o => !o) || letterIdx < 0 || letterIdx >= options.length) return null;
+      return { text, input: 'choice', choices: options.map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })) };
+    }
+    case 'matching_features': {
+      const options = (group.matchingOptions || []).map(o => String(o || '').trim());
+      if (!text || options.some(o => !o) || letterIdx < 0 || letterIdx >= options.length) return null;
+      return {
+        text, input: 'choice', listTitle: String(group.matchingOptionsTitle || '').trim(),
+        choices: options.map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })),
+      };
+    }
+    case 'matching_info': {
+      const letter = key.toUpperCase();
+      if (!text || ctx.labels.length < 3 || !ctx.labels.includes(letter)) return null;
+      const quote = locateEvidence(q.explanation, ctx.paragraphs);
+      const quotedPara = quote && ctx.paragraphs.find(p => p.i === quote.paragraphIndex);
+      if (quotedPara && quotedPara.label && quotedPara.label !== letter) return null;
+      const keyPara = ctx.paragraphs.find(p => p.label === letter);
+      return {
+        text, input: 'choice', choices: ctx.labels.map(l => ({ key: l, label: '' })),
+        evidence: quote || { paragraphIndex: keyPara.i, text: keyPara.text },
+      };
+    }
+    case 'headings': {
+      const headings = ((group.headingsConfig && group.headingsConfig.headings) || [])
+        .map(h => ({ key: String(h.numeral || '').trim().toLowerCase(), label: String(h.text || '').trim() }))
+        .filter(h => h.key && h.label);
+      const m = text.match(/\b(?:paragraph|section)\s+([A-J])\b/i);
+      const target = m && ctx.paragraphs.find(p => p.label === m[1].toUpperCase());
+      if (!target || !headings.some(h => h.key === key.toLowerCase())) return null;
+      return { text, input: 'choice', listTitle: 'List of Headings', choices: headings, targetParagraph: target.i };
+    }
+    case 'completion':
+    case 'short_answer': {
+      const stem = questionStem(group, q);
+      if (!stem) return null;
+      const isQuestion = /\?\s*$/.test(stem);
+      if (qType === 'short_answer' ? !isQuestion : (isQuestion || !stem.includes('_____'))) return null;
+      if (wordsOutsideBlanks(stem) < 3 || stem.length > 300) return null;
+      if (!answerInPassage(q.correctAnswer, ctx.passageNorm)) return null;
+      const anchors = extractAnchors(stem.replace(/_____|…/g, ' '), ctx.passageText, ctx.passageNorm);
+      const evidence = typedEvidence(q, ctx.paragraphs, anchors);
+      return evidence ? { text: stem, input: 'text', evidence } : null;
+    }
+    default:
+      return null;
+  }
+}
+
+// Every usable question of `qType` in a passage, in original order — the
+// reusable "passage → filter by type" step every question-type tip uses.
+function questionTypeItems(passage, qType) {
+  const paragraphs = passageToParagraphs(passage.content);
+  if (!paragraphs.some(p => !p.heading)) return { paragraphs, items: [] };
+  const passageText = paragraphs.map(p => p.text).join(' ');
+  const ctx = {
+    paragraphs,
+    labels: [...new Set(paragraphs.filter(p => p.label).map(p => p.label))],
+    passageText,
+    passageNorm: normalizeForMatch(passageText),
+  };
+  const typed = qType === 'completion' || qType === 'short_answer';
+  const items = [];
+  for (const group of nonEmptyGroups(passage)) {
+    const cls = classifyGroup(group);
+    if (typed ? cls !== 'typed' : cls !== qType) continue;
+    const instruction = String(group.instruction || '').replace(/\s+/g, ' ').trim();
+    for (const q of group.questions) {
+      const item = typeItem(qType, group, q, ctx);
+      if (item) items.push({ group, q, instruction, wordLimit: typed ? wordLimit(group) : null, ...item });
     }
   }
   items.sort((a, b) => a.q.questionNumber - b.q.questionNumber);
@@ -655,28 +840,60 @@ async function buildSkimming(cfg, rng) {
   };
 }
 
-async function buildScanning(cfg, rng) {
+// One existing passage with enough usable questions: at least
+// cfg.minQuestions, preferring cfg.preferQuestions+, random within the tier.
+// Its first cfg.maxQuestions questions are kept, in original order.
+async function pickPassage(cfg, rng, itemsOf) {
   const candidates = (await loadActivePassages())
-    .map(p => ({ passage: p, ...scanItemsForPassage(p) }))
+    .map(p => ({ passage: p, ...itemsOf(p) }))
     .filter(c => c.items.length >= cfg.minQuestions);
   if (!candidates.length) return null;
   const preferred = candidates.filter(c => c.items.length >= cfg.preferQuestions);
   const tier = preferred.length ? preferred : candidates;
   const pick = tier[Math.floor(rng() * tier.length)];
-  const items = pick.items.slice(0, cfg.maxQuestions);
-
   const names = await sourceNames([pick.passage]);
   return {
-    kind: 'scanning',
     passageId: String(pick.passage._id),
     passageTitle: pick.passage.title,
     sourceName: names[String(pick.passage._id)],
     paragraphs: pick.paragraphs.map(publicParagraph),
+    items: pick.items.slice(0, cfg.maxQuestions),
+  };
+}
+
+async function buildScanning(cfg, rng) {
+  const pick = await pickPassage(cfg, rng, scanItemsForPassage);
+  if (!pick) return null;
+  const { items, ...base } = pick;
+  return {
+    kind: 'scanning',
+    ...base,
     questions: items.map(it => ({
       questionNumber: it.q.questionNumber,
       text: it.stem,
       anchors: it.anchors,
       wordLimit: it.wordLimit,
+    })),
+  };
+}
+
+async function buildQuestionType(cfg, rng) {
+  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, cfg.questionType));
+  if (!pick) return null;
+  const { items, ...base } = pick;
+  return {
+    kind: 'questions',
+    questionType: cfg.questionType,
+    ...base,
+    questions: items.map(it => ({
+      questionNumber: it.q.questionNumber,
+      text: it.text,
+      input: it.input,
+      choices: it.choices || null,
+      listTitle: it.listTitle || null,
+      instruction: it.instruction || null,
+      wordLimit: it.wordLimit || null,
+      targetParagraph: it.targetParagraph != null ? it.targetParagraph : null,
     })),
   };
 }
@@ -698,7 +915,8 @@ async function getPractice(lessonKey, { rng = Math.random } = {}) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
   const cfg = PRACTICE_CONFIG[lessonKey];
-  const practice = cfg.kind === 'skimming' ? await buildSkimming(cfg, rng) : await buildScanning(cfg, rng);
+  const build = { skimming: buildSkimming, scanning: buildScanning, questions: buildQuestionType }[cfg.kind];
+  const practice = await build(cfg, rng);
   return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
 }
 
@@ -713,14 +931,21 @@ async function checkAnswer(lessonKey, { passageId, questionNumber, answer }) {
   if (!passage) return { status: 'not_found' };
 
   const qNum = Number(questionNumber);
-  const entry = cfg.kind === 'skimming'
-    ? skimItemsForPassage(passage).find(it => it.q.questionNumber === qNum)
-    : scanItemsForPassage(passage).items.find(it => it.q.questionNumber === qNum);
+  let entry;
+  let paragraphs;
+  if (cfg.kind === 'skimming') {
+    entry = skimItemsForPassage(passage).find(it => it.q.questionNumber === qNum);
+    paragraphs = entry && entry.paragraphs;
+  } else {
+    const res = cfg.kind === 'scanning' ? scanItemsForPassage(passage) : questionTypeItems(passage, cfg.questionType);
+    entry = res.items.find(it => it.q.questionNumber === qNum);
+    paragraphs = res.paragraphs;
+  }
   if (!entry) return { status: 'not_in_practice' };
 
   const userAnswer = String(answer == null ? '' : answer).slice(0, 200);
   const { gradedAnswers } = gradeGroups([{ questions: [entry.q] }], { [qNum]: userAnswer });
-  const evidence = entry.evidence || locateEvidence(entry.q.explanation, entry.paragraphs);
+  const evidence = entry.evidence || locateEvidence(entry.q.explanation, paragraphs);
   return {
     status: 'ok',
     result: {
@@ -740,7 +965,7 @@ module.exports = {
   checkAnswer,
   // Exported for unit tests / the read-only data audit.
   _internals: {
-    locateQuotes,
+    locateQuotes, classifyGroup, questionTypeItems,
     passageToParagraphs, locateEvidence, answerSentence, splitSentences, extractAnchors, normalizeForMatch,
     skimItemsForPassage, scanItemsForPassage, questionStem, isChoiceAnswer, answerInPassage, wordLimit, htmlToLines,
   },

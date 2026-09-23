@@ -131,6 +131,37 @@
 .rtp-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .rtp-nav-right { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 
+/* Question-type practices: "Trước khi làm" tutorial + question extras */
+.rtp-intro {
+  border: 1.5px solid #bae6fd; background: #f0f9ff; border-radius: 12px; padding: 16px 18px;
+  color: #0c4a6e; font-size: 13.5px; line-height: 1.65;
+}
+[data-theme="dark"] .rtp-intro { background: #0c1a24; border-color: #164e63; color: #bae6fd; }
+.rtp-intro-title { font-size: 15px; font-weight: 900; margin-bottom: 10px; }
+.rtp-intro .rtp-btn { margin-top: 12px; }
+.rtp-intro-meta { margin-top: 10px; font-size: 12.5px; color: #475569; }
+[data-theme="dark"] .rtp-intro-meta { color: #94a3b8; }
+.rtp-steps { margin: 6px 0; padding-left: 20px; }
+.rtp-defs { display: grid; gap: 6px; margin: 4px 0 10px; }
+.rtp-def { display: flex; gap: 10px; align-items: baseline; }
+.rtp-def b {
+  flex-shrink: 0; min-width: 92px; text-align: center; font-size: 12px; padding: 2px 8px;
+  border-radius: 6px; background: #fff; border: 1px solid #bae6fd; color: #0369a1;
+}
+[data-theme="dark"] .rtp-def b { background: #0f172a; border-color: #164e63; color: #7dd3fc; }
+.rtp-warning {
+  margin-top: 8px; padding: 8px 12px; border-radius: 8px; background: #fff7ed;
+  border: 1px solid #fed7aa; color: #9a3412; font-size: 12.5px; line-height: 1.6;
+}
+[data-theme="dark"] .rtp-warning { background: #2a1208; border-color: #7c2d12; color: #fdba74; }
+.rtp-guide .rtp-defs { margin-top: 8px; }
+.rtp-instruction { font-size: 12px; font-style: italic; color: #6b7280; margin-bottom: 6px; line-height: 1.5; }
+[data-theme="dark"] .rtp-instruction { color: #94a3b8; }
+.rtp-list-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #6b7280; margin: 4px 0 6px; }
+.rtp-letter-opts .tfng-opt { flex: 0 0 auto; min-width: 46px; padding: 8px 12px; }
+.rtp-para-target { outline: 2px solid #fca5a5; outline-offset: 4px; border-radius: 6px; }
+[data-theme="dark"] .rtp-para-target { outline-color: #7c2d12; }
+
 /* Result */
 .rtp-result { text-align: center; padding: 10px 0 4px; }
 .rtp-result-icon { font-size: 40px; }

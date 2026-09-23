@@ -27,6 +27,132 @@
       name: 'Scanning',
       desc: 'Tìm thật nhanh tên riêng, con số, năm… trong một bài đọc thật để điền đáp án. Đừng đọc cả bài trước — xác định keyword rồi scan.',
     },
+    'true-false-not-given': {
+      name: 'True / False / Not Given',
+      desc: 'Làm các câu T/F/NG thật trong một bài đọc từ đề: tìm thông tin, so sánh ý nghĩa rồi chọn TRUE / FALSE / NOT GIVEN.',
+    },
+    'yes-no-not-given': {
+      name: 'Yes / No / Not Given',
+      desc: 'Xác định quan điểm của tác giả trong một bài đọc thật rồi chọn YES / NO / NOT GIVEN.',
+    },
+    'matching-headings': {
+      name: 'Matching Headings',
+      desc: 'Chọn heading cho từng đoạn của một bài đọc thật — đoạn cần làm được đánh dấu sẵn, chỉ cần skim đoạn đó.',
+    },
+    'matching-information': {
+      name: 'Matching Information',
+      desc: 'Tìm đoạn văn (A, B, C…) chứa từng thông tin trong một bài đọc thật.',
+    },
+    'matching-features': {
+      name: 'Matching Features',
+      desc: 'Ghép từng thông tin với đúng người / nhóm / đặc điểm trong một bài đọc thật.',
+    },
+    'sentence-summary-note-completion': {
+      name: 'Sentence / Summary / Note Completion',
+      desc: 'Điền từ vào câu, ghi chú, bảng của một bài đọc thật — chép đúng từ trong bài, đúng giới hạn số từ.',
+    },
+    'multiple-choice': {
+      name: 'Multiple Choice',
+      desc: 'Trả lời câu hỏi trắc nghiệm của một bài đọc thật dựa trên evidence trong bài, không dựa vào hiểu biết chung.',
+    },
+    'short-answer-questions': {
+      name: 'Short Answer Questions',
+      desc: 'Trả lời câu hỏi ngắn bằng từ lấy từ một bài đọc thật, đúng giới hạn số từ.',
+    },
+  };
+  // "Trước khi làm" mini tutorial per question type (shown before Q1, and
+  // collapsible on every question).
+  const TYPE_GUIDE = {
+    tfng: {
+      defs: [
+        ['TRUE', 'Statement có cùng ý nghĩa với thông tin trong bài.'],
+        ['FALSE', 'Bài đọc nói NGƯỢC lại statement (mâu thuẫn).'],
+        ['NOT GIVEN', 'Bài đọc không cung cấp đủ thông tin để xác nhận hay bác bỏ statement.'],
+      ],
+      steps: [
+        'Xác định keyword trong statement (tên riêng, số liệu, từ khó thay thế).',
+        'Tìm phần liên quan trong bài bằng keyword hoặc cách diễn đạt tương đương.',
+        'Đọc kỹ câu chứa thông tin và 1–2 câu xung quanh.',
+        'So sánh Ý NGHĨA, không so từng chữ — chú ý từ hạn định: all / some, always / usually, only.',
+        'Kết luận: cùng nghĩa → TRUE · ngược nghĩa → FALSE · bài không nói tới → NOT GIVEN.',
+      ],
+      warning: 'NOT GIVEN không có nghĩa là “không tìm thấy keyword”. Keyword có thể có trong bài, nhưng bài không nói gì về đúng điều statement khẳng định. VD: bài viết “The museum attracted 2 million visitors in 2010.”, statement “The museum was the most popular attraction in 2010.” → NOT GIVEN: bài có số khách nhưng không so sánh với điểm tham quan nào khác.',
+    },
+    ynng: {
+      defs: [
+        ['YES', 'Statement khớp với quan điểm / nhận định của tác giả.'],
+        ['NO', 'Statement trái với quan điểm của tác giả.'],
+        ['NOT GIVEN', 'Không thể biết tác giả nghĩ gì về điều này.'],
+      ],
+      steps: [
+        'Xác định ý kiến / nhận định (claim) trong statement — thường có tính từ đánh giá, so sánh, “should”.',
+        'Tìm đoạn liên quan trong bài.',
+        'Đọc kỹ câu thể hiện QUAN ĐIỂM của tác giả (tín hiệu: I believe, arguably, clearly, unfortunately, it is likely…).',
+        'So sánh quan điểm tác giả với statement — ý kiến của người khác được trích dẫn chưa chắc là quan điểm tác giả.',
+        'Phân biệt NO (tác giả nói ngược lại) với NOT GIVEN (tác giả không bày tỏ quan điểm về điểm đó).',
+      ],
+      warning: 'YES / NO / NOT GIVEN hỏi về QUAN ĐIỂM của tác giả; TRUE / FALSE / NOT GIVEN hỏi về THÔNG TIN trong bài.',
+    },
+    headings: {
+      steps: [
+        'Đọc lướt đoạn cần tìm heading (có viền đỏ) — câu đầu (tô vàng) và câu cuối thường chứa ý chính.',
+        'Tự tóm tắt ý chính của đoạn bằng một câu ngắn.',
+        'Bỏ qua chi tiết hỗ trợ: ví dụ, số liệu, tên riêng.',
+        'So nghĩa từng heading với ý chính — heading đúng thường là cách diễn đạt khác của ý chính.',
+        'Loại heading gây nhiễu: chỉ khớp một chi tiết hoặc chỉ lặp lại một từ có trong đoạn.',
+      ],
+      warning: 'Heading phải bao quát CẢ đoạn. Heading chỉ đúng với một câu trong đoạn thường là bẫy.',
+    },
+    matching_info: {
+      steps: [
+        'Xác định loại thông tin cần tìm (a reference to / an example of / a description of / a comparison…) và keyword đặc trưng.',
+        'Dự đoán cách bài có thể diễn đạt lại keyword.',
+        'Scan từng đoạn tìm đúng chi tiết đó — đây là CHI TIẾT, không phải ý chính của đoạn.',
+        'Đọc kỹ câu tìm được để chắc đúng loại thông tin (ví dụ ≠ lý do ≠ so sánh).',
+        'Chọn chữ cái của đoạn chứa thông tin — một đoạn có thể được dùng nhiều lần.',
+      ],
+      warning: 'Thứ tự câu hỏi KHÔNG theo thứ tự đoạn văn — làm trước những câu có keyword dễ tìm (tên riêng, số liệu).',
+    },
+    matching_features: {
+      steps: [
+        'Đọc danh sách lựa chọn (người / nơi / nhóm / đặc điểm).',
+        'Scan tìm từng tên trong bài và để ý mọi lần tên đó xuất hiện.',
+        'Đọc ý kiến hoặc đặc điểm gắn với tên đó (kể cả he / she / they ngay sau).',
+        'So sánh với câu cần ghép — thường là cách diễn đạt khác.',
+        'Kiểm tra thông tin khớp đúng người / nhóm, tránh nhầm với người được nhắc ngay gần đó.',
+      ],
+      warning: 'Câu hỏi không theo thứ tự bài đọc, và một lựa chọn có thể được dùng nhiều lần.',
+    },
+    completion: {
+      steps: [
+        'Đọc câu có chỗ trống, xác định yêu cầu ngữ pháp (sau a / the → danh từ; sau very → tính từ…).',
+        'Dự đoán loại từ cần điền: danh từ, số, tính từ, động từ.',
+        'Scan keyword trong câu để tìm vị trí evidence — câu hỏi thường theo thứ tự bài.',
+        'Chép CHÍNH XÁC từ trong bài: không đổi dạng từ, không tự dùng từ đồng nghĩa.',
+        'Kiểm tra giới hạn số từ và câu sau khi điền có đúng ngữ pháp không.',
+      ],
+      warning: 'Viết quá giới hạn từ (VD: 3 từ khi đề yêu cầu NO MORE THAN TWO WORDS) là sai, dù nội dung đúng.',
+    },
+    mcq: {
+      steps: [
+        'Đọc câu hỏi (chưa vội đọc đáp án) và xác định keyword.',
+        'Tìm đoạn chứa evidence — câu hỏi thường theo thứ tự bài.',
+        'Đọc kỹ evidence rồi mới đối chiếu từng đáp án.',
+        'Loại đáp án sai: không có trong bài, sai chi tiết, hoặc đúng nhưng không trả lời câu hỏi.',
+        'Chọn đáp án dựa trên evidence, không dựa vào hiểu biết chung.',
+      ],
+      warning: 'Đáp án lặp lại nhiều từ y hệt bài đọc thường là bẫy — đáp án đúng hay được diễn đạt khác.',
+    },
+    short_answer: {
+      steps: [
+        'Xác định keyword của câu hỏi.',
+        'Dự đoán loại đáp án từ từ để hỏi: Who → người, When → thời gian, Where → nơi chốn, How many / much → số.',
+        'Scan tìm keyword hoặc cách diễn đạt tương đương — câu hỏi thường theo thứ tự bài.',
+        'Chép chính xác từ trong bài.',
+        'Kiểm tra giới hạn số từ.',
+      ],
+      warning: 'Không cần viết câu hoàn chỉnh — chỉ viết từ / cụm từ trả lời câu hỏi, đúng giới hạn từ.',
+    },
   };
   const FOCUS_LABEL = {
     main_idea: 'Main idea — Ý chính của đoạn',
@@ -109,6 +235,7 @@
       answers: st.answers.map(a => ({ value: a.value, result: a.result, seconds: a.seconds, hint: a.hint })),
       idx: st.idx,
       showFull: st.showFull,
+      introSeen: st.introSeen,
       finished: st.finished,
       counted: st.counted,
     };
@@ -169,7 +296,8 @@
 
   function paraHtml(p, opts) {
     const ranges = [];
-    if (opts.lead && p.leadEnd > 0 && !p.heading) ranges.push({ start: 0, end: p.leadEnd, cls: 'rtp-lead' });
+    const isTarget = opts.target != null && opts.target === p.i;
+    if ((opts.lead || isTarget) && p.leadEnd > 0 && !p.heading) ranges.push({ start: 0, end: p.leadEnd, cls: 'rtp-lead' });
     (opts.hits || []).forEach(t => findTerm(p.text, t).forEach(r => ranges.push({ ...r, cls: 'rtp-hit' })));
     if (opts.evidence && opts.evidence.paragraphIndex === p.i) {
       const at = p.text.indexOf(opts.evidence.text);
@@ -177,6 +305,7 @@
     }
     const label = p.heading ? '' : `<span class="rtp-para-label">${esc(p.label || p.n)}</span>`;
     const cls = ['rtp-para', p.heading ? 'rtp-para-heading' : '', opts.dim && !p.heading ? 'rtp-dim' : '',
+      isTarget ? 'rtp-para-target' : '',
       opts.evidence && opts.evidence.paragraphIndex === p.i ? 'rtp-para-ev' : ''].filter(Boolean).join(' ');
     return `<p class="${cls}" data-pi="${p.i}">${label}${highlight(p.text, ranges)}</p>`;
   }
@@ -313,7 +442,7 @@
     const items = itemsOf(practice);
     st = {
       lesson, practice, kind: practice.kind, items,
-      idx: 0, showFull: false, finished: false, counted: false,
+      idx: 0, showFull: false, introSeen: false, finished: false, counted: false,
       answers: freshAnswers(items),
     };
     persist();
@@ -333,7 +462,7 @@
     st = {
       lesson, practice: rec.practice, kind: rec.practice.kind, items,
       idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
-      showFull: !!rec.showFull, finished: !!rec.finished, counted: !!rec.counted,
+      showFull: !!rec.showFull, introSeen: !!rec.introSeen, finished: !!rec.finished, counted: !!rec.counted,
       answers: rec.answers.map(a => ({
         value: (a && a.value) || '', result: (a && a.result) || null,
         seconds: a && a.seconds != null ? a.seconds : null, hint: !!(a && a.hint),
@@ -352,7 +481,7 @@
     const done = st.answers.filter(a => a.result).length;
     return `<div class="rtp-head">
       <div class="rtp-head-top">
-        <div class="rtp-title">🎯 Luyện tập: ${esc(COPY[st.kind].name)}</div>
+        <div class="rtp-title">🎯 Luyện tập: ${esc(COPY[st.lesson.lessonKey].name)}</div>
         <button type="button" class="rtp-link" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
       </div>
       ${sourceLine ? `<div class="rtp-source">Nguồn: ${sourceLine}</div>` : ''}
@@ -395,7 +524,10 @@
 
   function renderQuestion() {
     stopTimer();
-    if (st.kind === 'skimming') renderSkim(); else renderScan();
+    if (st.kind === 'skimming') renderSkim();
+    else if (st.kind === 'scanning') renderScan();
+    else if (!st.introSeen) renderTypeIntro();
+    else renderTypeQuestion();
   }
 
   function renderSkim() {
@@ -522,6 +654,100 @@
     }
   }
 
+  // ── Question-type practices (8 "Chiến thuật theo dạng bài" tips) ─────
+
+  const sameKey = (a, b) => String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+
+  function guideHtml(g, open) {
+    return `<details class="rtp-guide" ${open ? 'open' : ''}>
+      <summary>📋 Cách làm dạng này</summary>
+      ${g.defs ? `<div class="rtp-defs">${g.defs.map(([k, v]) => `<div class="rtp-def"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('')}</div>` : ''}
+      <ol>${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      ${g.warning ? `<div class="rtp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
+    </details>`;
+  }
+
+  // Mini tutorial before the first question.
+  function renderTypeIntro() {
+    const pr = st.practice;
+    const g = TYPE_GUIDE[pr.questionType] || { steps: [] };
+    const name = COPY[st.lesson.lessonKey].name;
+    showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
+      + `<div class="rtp-intro">
+        <div class="rtp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(name)}</div>
+        ${g.defs ? `<div class="rtp-defs">${g.defs.map(([k, v]) => `<div class="rtp-def"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('')}</div>` : ''}
+        <ol class="rtp-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+        ${g.warning ? `<div class="rtp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
+        <div class="rtp-intro-meta">Bài luyện gồm ${st.items.length} câu ${esc(name)} lấy nguyên từ đề thật, giữ đúng thứ tự như trong đề.</div>
+        <button type="button" class="rtp-btn rtp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+      </div>`);
+  }
+
+  function renderTypeQuestion() {
+    const pr = st.practice;
+    const q = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const r = a.result;
+    const g = TYPE_GUIDE[pr.questionType] || { steps: [] };
+    const target = q.targetParagraph;
+    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence: r && r.evidence, target })).join('');
+
+    let inputHtml;
+    let correctLabel = '';
+    if (q.input === 'text') {
+      const cls = r ? (r.isCorrect ? 'correct' : 'incorrect') : '';
+      inputHtml = `<input class="fill-input rtp-input ${cls}" value="${esc(a.value)}" ${r ? 'readonly' : ''}
+        placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />`;
+    } else {
+      const choices = q.choices || [];
+      const pickCls = (c) => {
+        if (!r) return sameKey(a.value, c.key) ? 'selected' : '';
+        if (sameKey(r.correctAnswer, c.key)) return 'correct-ans';
+        return sameKey(a.value, c.key) ? 'wrong-ans' : '';
+      };
+      const attrs = (c) => (r ? '' : `data-act="pick" data-val="${esc(c.key)}"`);
+      if (choices.every(c => !c.label)) {
+        // TRUE/FALSE/NOT GIVEN, YES/NO/NOT GIVEN, paragraph letters.
+        const letters = choices.every(c => c.key.length === 1);
+        inputHtml = `<div class="tfng-opts rtp-key-opts${letters ? ' rtp-letter-opts' : ''}">${choices.map(c =>
+          `<div class="tfng-opt ${pickCls(c)}" ${attrs(c)}>${esc(c.key)}</div>`).join('')}</div>`;
+      } else {
+        inputHtml = (q.listTitle ? `<div class="rtp-list-title">${esc(q.listTitle)}</div>` : '')
+          + `<div class="q-options">${choices.map(c => `<label class="radio-opt ${pickCls(c)}" ${attrs(c)}>
+            <span class="radio-dot"></span><span class="radio-letter">${esc(c.key)}.</span> ${esc(c.label)}</label>`).join('')}</div>`;
+      }
+      const hit = r && choices.find(c => sameKey(c.key, r.correctAnswer));
+      if (hit) correctLabel = hit.label ? `${hit.key}. ${hit.label}` : hit.key;
+    }
+
+    showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
+      + guideHtml(g, false)
+      + `<div class="rtp-split">
+        <div class="rtp-passage">
+          <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span></div>
+          <div class="rtp-passage-scroll">${paras}</div>
+        </div>
+        <div class="rtp-question">
+          <div class="question-item">
+            <div class="q-num-label"><span class="q-badge">${q.questionNumber}</span></div>
+            ${q.instruction ? `<div class="rtp-instruction">${esc(q.instruction)}</div>` : ''}
+            <div class="q-text">${esc(q.text)}</div>
+            ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
+            ${inputHtml}
+          </div>
+          ${feedbackHtml(a, { correctLabel })}
+          ${navHtml()}
+        </div>
+      </div>`);
+    const panel = panelEl();
+    if (r && r.evidence) scrollPassageTo(panel, '.rtp-ev') || scrollPassageTo(panel, '.rtp-para-ev');
+    else if (target != null) scrollPassageTo(panel, '.rtp-para-target');
+    if (!r && q.input === 'text') {
+      const input = panel && panel.querySelector('.rtp-input');
+      if (input && window.matchMedia('(min-width: 900px)').matches) input.focus({ preventScroll: true });
+    }
+  }
+
   function syncCheckBtn() {
     const btn = document.querySelector('#rtp-panel [data-act="check"]');
     if (btn) btn.disabled = !String(st.answers[st.idx].value || '').trim();
@@ -579,7 +805,7 @@
     }).join('');
     showPanelState(`<div class="rtp-result">
       <div class="rtp-result-icon">🎉</div>
-      <div class="rtp-result-title">Hoàn thành luyện tập ${esc(COPY[st.kind].name)}</div>
+      <div class="rtp-result-title">Hoàn thành luyện tập ${esc(COPY[st.lesson.lessonKey].name)}</div>
       <div class="rtp-score">${score} / ${n}</div>
       <div class="rtp-result-msg">${esc(msg)}</div>
       ${total}
@@ -611,6 +837,7 @@
       case 'prev': if (st.idx > 0) st.idx--; break;
       case 'next': if (st.idx < st.items.length - 1) st.idx++; break;
       case 'finish': renderResult(); return;
+      case 'intro-done': st.introSeen = true; break;
       case 'hint': st.answers[st.idx].hint = true; break;
       case 'toggle-full': st.showFull = !st.showFull; break;
       case 'goto': st.idx = Math.min(Math.max(Number(el.dataset.idx) || 0, 0), st.items.length - 1); break;
