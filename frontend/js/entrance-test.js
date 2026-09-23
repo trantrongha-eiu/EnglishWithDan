@@ -55,6 +55,17 @@
       var el = $(x);
       if (el) el.classList.toggle('hidden', x !== id);
     });
+    if (id !== 'et-runner') setWideShell(false);
+  }
+
+  // Reading/Writing are split-screen (two panes side by side) — inside the
+  // default 880px shell each pane is only ~400px wide, so the passage,
+  // questions, chart and answer box all render cramped. Let the shell span
+  // the full viewport for those two sections only; Grammar/Listening are
+  // single-column lists that read better at the normal width.
+  function setWideShell(on) {
+    var shell = document.querySelector('.et-shell');
+    if (shell) shell.classList.toggle('et-shell-wide', !!on);
   }
 
   // ── Landing ──────────────────────────────────────────────────────────
@@ -257,6 +268,7 @@
     var prevAudio = $('et-listening-audio');
     if (prevAudio) prevAudio.pause();
     clearInterval(state.audioCountdownHandle);
+    setWideShell(section === 'reading' || section === 'writing');
     if (section === 'grammar') body.innerHTML = renderGrammar(attempt.sections.grammar);
     else if (section === 'reading') body.innerHTML = renderReading(attempt.sections.reading);
     else if (section === 'listening') { body.innerHTML = renderListening(attempt.sections.listening); setupLockedAudio(); }
