@@ -180,38 +180,59 @@ function buildClassroomPicker(container, opts) {
     // one consistent component instead of two differently-sized ones.
     const mobCls = opts.mobileInput ? ' up-mob' : '';
     container.innerHTML = `
-        ${opts.heading ? `<h4><i class="fas fa-book"></i> ${escHtml(opts.heading)}</h4>` : ''}
+        ${opts.heading ? `<h4><i class="fas fa-layer-group"></i> ${escHtml(opts.heading)}</h4>` : ''}
         <div class="unit-picker">
             <div style="position:relative">
                 <input class="unit-picker-input${mobCls}" placeholder="-- Chọn bài Quiz --" autocomplete="off" readonly inputmode="none">
                 <i class="fas fa-book unit-picker-caret" style="font-style:normal"></i>
             </div>
-            <div class="unit-picker-dd${mobCls}"></div>
+            <div class="unit-picker-dd${mobCls} classroom-picker-dd">
+                <div class="up-search-row">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="up-search-input" placeholder="Tìm bài quiz theo tên..." autocomplete="off">
+                </div>
+                <div class="up-search-results"></div>
+            </div>
         </div>
     `;
     const inp = container.querySelector('.unit-picker-input');
     const dd = container.querySelector('.unit-picker-dd');
+    const searchInp = container.querySelector('.up-search-input');
+    const resultsEl = container.querySelector('.up-search-results');
     let isOpen = false;
     // Grouped by targetClass so a student picking from a list that spans
     // several classes can actually tell which quiz is theirs — previously
     // every lesson (own class + other classes + unscoped) was one flat list
-    // with only a difficulty badge, no class indicator at all.
-    function render() {
-        dd.innerHTML = _lessonPickerGroupedHtml(lessons);
+    // with only a difficulty badge, no class indicator at all. The search
+    // box filters this same grouped list live by title, so a student with
+    // many assigned quizzes doesn't have to scroll/scan the whole thing.
+    function render(query) {
+        const filtered = query
+            ? lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase()))
+            : lessons;
+        resultsEl.innerHTML = (query && !filtered.length)
+            ? '<div class="up-empty">Không tìm thấy bài quiz nào</div>'
+            : _lessonPickerGroupedHtml(filtered);
     }
     function open() {
-        render(); dd.style.display = 'block'; isOpen = true;
+        searchInp.value = '';
+        render('');
+        dd.style.display = 'block'; isOpen = true;
         // Inside the mobile sheet the dropdown renders inline (css .up-mob) —
         // expand the sheet so the full quiz list is reachable, matching the
         // Paraphrase picker's openDD() in dashboard.html.
         if (opts.mobileInput) {
             const s = document.getElementById('mobSheet');
             if (s && s.classList.contains('active')) s.classList.add('expanded');
+        } else {
+            searchInp.focus();
         }
     }
     function close() { dd.style.display = 'none'; isOpen = false; }
     inp.addEventListener('click', () => (isOpen ? close() : open()));
-    dd.addEventListener('mousedown', e => {
+    searchInp.addEventListener('input', () => render(searchInp.value));
+    searchInp.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    resultsEl.addEventListener('mousedown', e => {
         const item = e.target.closest('.up-item');
         if (!item) return;
         e.preventDefault();
