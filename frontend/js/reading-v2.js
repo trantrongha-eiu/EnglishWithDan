@@ -3249,7 +3249,44 @@ async function _mountInlineReviews(attemptType, attemptId, allQuestions, contain
     // cache-restore branch) without another round-trip.
     state.inlineReviewCtx = { reviewId: review._id, mistakesByQNum, qByNum, containerId };
     _runInlineReviewMountPass();
+    _updatePassageTabBadges();
   } catch { /* server-side gate stands regardless */ }
+}
+
+// A multi-passage full test's review screen only ever mounts ONE passage's
+// mistakes at a time (tab-switched — see switchReviewPassage), with nothing
+// on the tabs themselves indicating the OTHER tabs still have unreviewed
+// mistakes. A student who fully reviews just the (default-active) first
+// tab has no way to know passages 2/3 need attention too — confirmed as
+// the actual cause of "I reviewed everything but the gate still blocks me"
+// reports: the mandatory-review gate itself was working correctly the
+// whole time, the student just never discovered the other tabs' mistakes.
+// Badges each passage tab with its own still-pending count so that's no
+// longer invisible. No-op for single-passage practice (nothing to badge).
+function _updatePassageTabBadges() {
+  const ctx = state.inlineReviewCtx;
+  const tabsWrap = document.getElementById('toolbar-passage-tabs-rv');
+  if (!ctx || !tabsWrap || !Array.isArray(state.passages) || state.passages.length < 2) return;
+  const buttons = tabsWrap.querySelectorAll('.passage-tab-btn');
+  state.passages.forEach((p, i) => {
+    const btn = buttons[i];
+    if (!btn) return;
+    const remaining = getAllQuestionsFromPassage(p).filter(q => {
+      const m = ctx.mistakesByQNum[q.questionNumber];
+      return m && !m.completedAt;
+    }).length;
+    let dot = btn.querySelector('.passage-tab-pending-dot');
+    if (remaining > 0) {
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'passage-tab-pending-dot';
+        btn.appendChild(dot);
+      }
+      dot.textContent = String(remaining);
+    } else if (dot) {
+      dot.remove();
+    }
+  });
 }
 
 // The actual DOM pass — separated from the fetch above so a passage-tab
@@ -3273,7 +3310,12 @@ function _runInlineReviewMountPass() {
     const q = ctx.qByNum[qnum];
     window.ReviewInline.mount(anchorEl, mistake, {
       skill: 'reading', mode, reviewId: ctx.reviewId, questionType: q && q.type,
-      onSaved: () => _checkPendingReviewBanner(),
+      // review-inline.js's _submit() hands back the server's updated mistake
+      // (with completedAt now set) as the first arg — ctx.mistakesByQNum
+      // must be updated with it, not just left pointing at the original
+      // (still-incomplete) object, or _updatePassageTabBadges() recomputes
+      // "still pending" from stale data and the badge count never budges.
+      onSaved: (updated) => { ctx.mistakesByQNum[qnum] = updated; _checkPendingReviewBanner(); _updatePassageTabBadges(); },
     });
   }
 
@@ -3420,6 +3462,7 @@ function switchReviewPassage(idx) {
   if (rvQPanel) rvQPanel.scrollTop = 0;
 
   renderPassageTabs('toolbar-passage-tabs-rv', true);
+  _updatePassageTabBadges(); // renderPassageTabs above rebuilds the tab buttons from scratch, wiping any badge from before this switch
 }
 
 function buildReviewQNav(attempt, reviewMap) {

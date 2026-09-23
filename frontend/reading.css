@@ -743,6 +743,28 @@ body.eye-protection .split-questions {
   border-color: #1a237e;
 }
 
+/* Review-screen only: how many of this passage's mistakes still need the
+   "Review lỗi này" form filled in — see _updatePassageTabBadges() in
+   reading-v2.js. Without this a student who only reviews the (default-
+   active) first tab has no way to know other tabs still block the gate. */
+.passage-tab-pending-dot {
+  display: inline-block;
+  margin-left: 5px;
+  min-width: 15px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 15px;
+  text-align: center;
+}
+.passage-tab-btn.active .passage-tab-pending-dot {
+  background: #fff;
+  color: #ef4444;
+}
+
 /* ══════════════════════════════════════════════
    SPLIT LAYOUT (resizable)
 ══════════════════════════════════════════════ */

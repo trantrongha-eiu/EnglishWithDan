@@ -337,6 +337,28 @@ body {
   min-width: 110px;
   color: rgba(255,255,255,.55);
   user-select: none;
+  position: relative;
+}
+/* Review screen only: how many of this section's mistakes still need the
+   "Review lỗi này" form filled in — see _updatePartTabBadges() below.
+   Without this a student who only reviews the (default-active) Section 1
+   tab has no way to know other sections still block the mandatory-review
+   gate. Same fix/reasoning as reading.css's .passage-tab-pending-dot. */
+.snf-section-pending-dot {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 2px #1a1f2e;
 }
 .snf-section-btn:hover {
   border-color: rgba(61,139,255,.7);
