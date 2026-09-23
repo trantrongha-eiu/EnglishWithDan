@@ -46,7 +46,12 @@ function hwResourceHref(r) {
     case 'listening_test':     return `listening.html?testId=${id}`;
     case 'listening_practice': return `listening.html?sectionId=${id}`;
     case 'dictation':          return `dictation.html?sectionId=${id}`;
-    case 'writing_exam':       return 'writing.html';
+    // writing.js reads ?examId= and forwards it to POST /api/writing/start so
+    // the ASSIGNED WritingExam opens — without it, startExam()'s no-examId
+    // fallback (most-recently-created active exam) decides instead, which is
+    // not necessarily the one the teacher picked. Same class of bug as the
+    // grammar case above.
+    case 'writing_exam':       return `writing.html?examId=${id}`;
     // WT1-stack lessons are looked up by `code` (re-seeding-safe), not the
     // Mongo _id in `id` above — resourceCode is the snapshot taken at assign
     // time (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
@@ -64,7 +69,13 @@ function hwResourceHref(r) {
     // is the week number (deepLinkKey), id is the SentenceStructureGroup _id.
     case 'advanced_sentences': return r.resourceCode ? `advanced-sentences.html?week=${encodeURIComponent(r.resourceCode)}&groupId=${id}` : 'advanced-sentences.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
-    case 'grammar':            return 'essential-grammar.html';
+    // essential-grammar.html opens a specific lesson via ?lesson=<lessonKey>
+    // (falling back to the student's last-viewed lesson, then the very first
+    // lesson, if no key given) — resourceCode is the lessonKey snapshot taken
+    // at assign time (deepLinkKeyFor in resourceCompletionService.js).
+    // Without it, "Bắt đầu" opened whichever lesson that fallback landed on
+    // instead of the one actually assigned (e.g. Past Simple → Present Simple).
+    case 'grammar':            return r.resourceCode ? `essential-grammar.html?lesson=${encodeURIComponent(r.resourceCode)}` : 'essential-grammar.html';
     case 'vocabulary_lesson':  return `dashboard.html?view=lesson&lessonId=${id}`;
     case 'mock_test':          return 'dashboard.html';
     default:                   return null;

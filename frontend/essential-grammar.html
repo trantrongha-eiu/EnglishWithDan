@@ -403,6 +403,14 @@ async function initEssentialGrammar() {
     // on this device.
     const urlKey = lessonKeyFromUrl();
     const urlLesson = urlKey && allLessons.find(l => l.lessonKey === urlKey);
+    // A ?lesson= key that matches nothing (assigned lesson was since deleted/
+    // renamed) must say so, not silently open a different lesson as if it
+    // were the one assigned — a student ticking "done" on the wrong lesson
+    // with no warning is exactly the failure mode this deep link exists to
+    // prevent (see dashboard-homework.js's grammar case).
+    if (urlKey && !urlLesson && typeof showToast === 'function') {
+      showToast('Bài được giao không còn tồn tại — đang mở bài học khác.', 'error', 6000);
+    }
     const savedKey = localStorage.getItem(LAST_LESSON_KEY);
     const savedLesson = savedKey && allLessons.find(l => keyOf(l) === savedKey);
     const initialLesson = urlLesson || savedLesson || allLessons[0] || null;

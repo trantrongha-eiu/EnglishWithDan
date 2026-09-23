@@ -15,6 +15,24 @@ const cloudinaryService = require('../services/cloudinaryService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
+// The admin's <input type="datetime-local"> sends a naive "YYYY-MM-DDTHH:mm"
+// string with no timezone offset. `new Date(naiveString)` parses a
+// date-time string lacking an offset in the RUNNING PROCESS's local
+// timezone (ECMA-262 Date Time String Format) — i.e. the backend server's
+// TZ, not the teacher's browser. If the server isn't pinned to Vietnam time
+// (e.g. a cloud host defaulting to UTC), every deadline silently shifts by
+// the server/VN offset. The whole Classroom feature already commits to
+// Asia/Ho_Chi_Minh elsewhere (see utils/streak.js / userService.js's
+// '+07:00' day-bucketing), so anchor a naive string to that same offset
+// before parsing; a string that already carries its own offset/Z is left as-is.
+function parseVnDeadline(input) {
+  if (!input) return null;
+  const s = String(input).trim();
+  const hasOffset = /Z$|[+-]\d{2}:?\d{2}$/.test(s);
+  const d = new Date(hasOffset ? s : `${s}+07:00`);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
 // Content-based identity for a resource — used to carry an existing
 // subdocument's _id over into an edit's rebuilt array (see buildResources'
 // `existing` param) instead of every resource getting a fresh one on every
@@ -149,7 +167,7 @@ exports.createAssignment = async (req, res) => {
       createdBy: req.user._id,
       title: String(title).trim(),
       instruction: String(instruction).trim(),
-      deadline: deadline ? new Date(deadline) : null,
+      deadline: parseVnDeadline(deadline),
       resources: built.resources,
     });
 
@@ -158,7 +176,7 @@ exports.createAssignment = async (req, res) => {
     const enrollments = await ClassEnrollment.find({ classId: req.classGroup._id, removedAt: null }).select('studentId').lean();
     if (enrollments.length) {
       const dl = assignment.deadline
-        ? ` Hạn nộp: ${assignment.deadline.toLocaleDateString('vi-VN')} ${assignment.deadline.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}.`
+        ? ` Hạn nộp: ${assignment.deadline.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })} ${assignment.deadline.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' })}.`
         : '';
       await Message.insertMany(enrollments.map((e) => ({
         fromId: req.user._id,
@@ -196,7 +214,7 @@ exports.updateAssignment = async (req, res) => {
     const { title, instruction, deadline, resources, status } = req.body;
     if (title !== undefined) assignment.title = String(title).trim();
     if (instruction !== undefined) assignment.instruction = String(instruction).trim();
-    if (deadline !== undefined) assignment.deadline = deadline ? new Date(deadline) : null;
+    if (deadline !== undefined) assignment.deadline = parseVnDeadline(deadline);
     if (status !== undefined && ['active', 'archived'].includes(status)) assignment.status = status;
     if (resources !== undefined) {
       // Pass the CURRENT resources so unchanged ones keep their _id — see

@@ -191,6 +191,16 @@ function _blockPasteInto(ta) {
   const urlTaskType = parseInt(params.get('taskType'));
   const urlTaskId   = params.get('taskId');
 
+  // ?examId=<id> — deep link from a teacher's Classroom assignment (see
+  // dashboard-homework.js's hwResourceHref 'writing_exam' case), forcing
+  // startExam() to open exactly that WritingExam instead of whichever one
+  // its no-examId fallback (most-recently-created active exam) would pick.
+  // Reuses _mockWritingExamId (not _mockMode — this is a normal exam
+  // screen, not the full mock-test flow) since startExam() already forwards
+  // whatever this variable holds.
+  const urlExamId = params.get('examId');
+  if (urlExamId) _mockWritingExamId = urlExamId;
+
   // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
   // Checked FIRST and independently of the other routes (it used to sit
   // after the taskType branches, which `return` early, so it never fired
@@ -363,7 +373,7 @@ async function startExam(mode) {
     const data = await apiFetch('/api/writing/start', {
       method: 'POST',
       body: JSON.stringify(Object.assign(
-        _mockMode && _mockWritingExamId ? { examId: _mockWritingExamId } : {},
+        _mockWritingExamId ? { examId: _mockWritingExamId } : {},
         { mode }
       ))
     });
