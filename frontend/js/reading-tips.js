@@ -119,7 +119,13 @@ function rtRenderLessonContent(lesson) {
     + '<h1 class="rt-hero-title">' + (lesson.icon || '📖') + ' ' + escHtml(lesson.title) + '</h1>'
     + '</div>';
   html += '<div class="rt-content">' + lesson.blocks.map(rtRenderBlock).join('') + '</div>';
+  // "🎯 Luyện tập" at the end of the tip (js/reading-tips-practice.js) —
+  // only an entry card here; nothing is fetched until the student clicks.
+  const withPractice = window.RTPractice && window.RTPractice.supports(lesson);
+  if (withPractice) html += '<div class="rt-practice-slot" id="rt-practice-slot"></div>';
   document.getElementById('rt-main-content').innerHTML = html;
+  // Always called, so a practice left running on the previous tip is reset.
+  if (window.RTPractice) window.RTPractice.mount(lesson, withPractice ? document.getElementById('rt-practice-slot') : null);
 }
 
 function rtRenderBlock(block) {

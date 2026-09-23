@@ -1,0 +1,162 @@
+/* Reading Tips → "🎯 Luyện tập" (js/reading-tips-practice.js).
+   Question/option/explanation boxes reuse reading.css's own
+   .question-item / .radio-opt / .fill-input / .q-explanation so the
+   practice looks like the real Reading practice; only the practice
+   chrome (entry card, passage pane, highlights, result) lives here. */
+
+.rt-practice-slot { padding: 0 26px 28px; }
+.rtp-section { border-top: 2px dashed #fecaca; padding-top: 22px; }
+[data-theme="dark"] .rtp-section { border-top-color: #7c2d12; }
+
+.rtp-entry {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: linear-gradient(135deg, #fff7ed, #fef2f2);
+  border: 1.5px solid #fecaca; border-radius: 14px; padding: 16px 18px;
+}
+[data-theme="dark"] .rtp-entry { background: linear-gradient(135deg, #2a1208, #1f0d0d); border-color: #7c2d12; }
+.rtp-entry-icon { font-size: 30px; flex-shrink: 0; }
+.rtp-entry-text { flex: 1; min-width: 220px; }
+.rtp-entry-title { font-size: 16px; font-weight: 800; color: #b91c1c; margin-bottom: 3px; }
+[data-theme="dark"] .rtp-entry-title { color: #fca5a5; }
+.rtp-entry-desc { font-size: 13px; color: #6b7280; line-height: 1.6; }
+[data-theme="dark"] .rtp-entry-desc { color: #94a3b8; }
+.rtp-entry-stats { font-size: 12.5px; color: #374151; margin-top: 6px; }
+[data-theme="dark"] .rtp-entry-stats { color: #cbd5e1; }
+.rtp-entry-stats b { color: #b91c1c; }
+[data-theme="dark"] .rtp-entry-stats b { color: #fca5a5; }
+.rtp-entry-note { color: #9ca3af; font-size: 11.5px; }
+.rtp-entry-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+
+.rtp-btn {
+  border: 1.5px solid #e5e7eb; background: #fff; color: #374151; border-radius: 999px;
+  padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s;
+  white-space: nowrap; text-decoration: none; display: inline-block; font-family: inherit;
+}
+.rtp-btn:hover:not(:disabled) { border-color: #e53935; color: #e53935; }
+.rtp-btn:disabled { opacity: .5; cursor: not-allowed; }
+.rtp-btn-primary { background: #e53935; border-color: #e53935; color: #fff; }
+.rtp-btn-primary:hover:not(:disabled) { background: #c62828; border-color: #c62828; color: #fff; }
+[data-theme="dark"] .rtp-btn:not(.rtp-btn-primary) { background: var(--bg, #000); border-color: #333; color: #e5e7eb; }
+.rtp-link {
+  background: none; border: none; color: #e53935; font-size: 12.5px; font-weight: 700;
+  cursor: pointer; padding: 2px 4px; font-family: inherit;
+}
+[data-theme="dark"] .rtp-link { color: #fca5a5; }
+
+.rtp-panel { margin-top: 16px; }
+.rtp-state {
+  text-align: center; padding: 34px 16px; color: #6b7280; font-size: 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.rtp-state-icon { font-size: 28px; }
+.rtp-state-error { color: #b91c1c; }
+
+/* Header + progress */
+.rtp-head { margin-bottom: 12px; }
+.rtp-head-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rtp-title { font-size: 17px; font-weight: 900; color: #111827; }
+[data-theme="dark"] .rtp-title { color: #f1f5f9; }
+.rtp-source { font-size: 12.5px; color: #6b7280; margin: 2px 0 8px; }
+.rtp-progress { display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 700; color: #374151; }
+[data-theme="dark"] .rtp-progress { color: #cbd5e1; }
+.rtp-bar { flex: 1; height: 7px; background: #f3f4f6; border-radius: 999px; overflow: hidden; }
+[data-theme="dark"] .rtp-bar { background: #1f2937; }
+.rtp-bar i { display: block; height: 100%; background: linear-gradient(90deg, #ff8a65, #e53935); transition: width .3s; }
+.rtp-done { color: #9ca3af; font-weight: 600; }
+
+/* Scanning 5-step guide */
+.rtp-guide {
+  background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px;
+  padding: 8px 14px; margin-bottom: 12px; font-size: 13px; color: #0c4a6e;
+}
+[data-theme="dark"] .rtp-guide { background: #0c1a24; border-color: #164e63; color: #bae6fd; }
+.rtp-guide summary { cursor: pointer; font-weight: 800; }
+.rtp-guide ol { margin: 8px 0 4px; padding-left: 20px; line-height: 1.7; }
+
+/* Passage | question */
+.rtp-split { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.rtp-passage { border: 1.5px solid #e5e7eb; border-radius: 12px; background: #fcfcfd; padding: 12px 14px; }
+[data-theme="dark"] .rtp-passage { background: var(--bg, #000); border-color: #333; }
+.rtp-passage-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.rtp-chip {
+  background: #fee2e2; color: #b91c1c; font-size: 11.5px; font-weight: 800; padding: 3px 10px;
+  border-radius: 999px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+[data-theme="dark"] .rtp-chip { background: #3f1414; color: #fca5a5; }
+.rtp-timer { font-size: 12px; font-weight: 800; color: #0369a1; font-variant-numeric: tabular-nums; }
+.rtp-timer.late { color: #c2410c; }
+.rtp-tip { font-size: 12.5px; color: #92400e; background: #fffbeb; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; line-height: 1.5; }
+[data-theme="dark"] .rtp-tip { background: #1c1917; color: #fcd34d; }
+/* position:relative so a paragraph's offsetTop is relative to this pane
+   (scrollPassageTo scrolls only the pane, never the page). */
+.rtp-passage-scroll { position: relative; max-height: 460px; overflow-y: auto; padding-right: 6px; }
+.rtp-para { font-size: 14.5px; line-height: 1.8; color: #1f2937; margin: 0 0 12px; }
+[data-theme="dark"] .rtp-para { color: #e2e8f0; }
+.rtp-para-heading { font-weight: 800; font-size: 14px; }
+.rtp-para-label {
+  display: inline-block; min-width: 20px; margin-right: 6px; font-size: 11px; font-weight: 800; color: #fff;
+  background: #9ca3af; border-radius: 5px; text-align: center; padding: 0 4px; vertical-align: 2px;
+}
+.rtp-para.rtp-dim { color: #b6bcc6; }
+[data-theme="dark"] .rtp-para.rtp-dim { color: #4b5563; }
+
+/* Highlights: topic sentence, scan hits / anchors, located evidence */
+.rtp-lead { background: #fef9c3; border-radius: 3px; }
+.rtp-para.rtp-dim .rtp-lead { color: #1f2937; }
+[data-theme="dark"] .rtp-lead { background: #3f3a12; }
+[data-theme="dark"] .rtp-para.rtp-dim .rtp-lead { color: #f1f5f9; }
+.rtp-hit, .rtp-anchor { background: #dbeafe; color: #1e3a8a; border-radius: 3px; font-weight: 700; }
+[data-theme="dark"] .rtp-hit, [data-theme="dark"] .rtp-anchor { background: #1e3a8a; color: #dbeafe; }
+.rtp-ev { background: #bbf7d0; color: #14532d; border-radius: 3px; box-shadow: 0 0 0 2px #bbf7d0; }
+[data-theme="dark"] .rtp-ev { background: #14532d; color: #bbf7d0; box-shadow: 0 0 0 2px #14532d; }
+
+/* Question side */
+.rtp-question .question-item { margin-bottom: 12px; }
+.rtp-focus { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #7c3aed; margin-bottom: 6px; }
+[data-theme="dark"] .rtp-focus { color: #c4b5fd; }
+.rtp-anchors { font-size: 12.5px; color: #1e3a8a; margin: 4px 0 8px; line-height: 1.8; }
+[data-theme="dark"] .rtp-anchors { color: #bfdbfe; }
+.rtp-anchor-chip { display: inline-block; background: #dbeafe; color: #1e3a8a; border-radius: 999px; padding: 0 9px; margin: 0 4px 2px 0; font-weight: 700; }
+[data-theme="dark"] .rtp-anchor-chip { background: #1e3a8a; color: #dbeafe; }
+.rtp-limit { font-size: 12.5px; color: #6b7280; margin-bottom: 8px; }
+.rtp-hint-btn { margin-top: 8px; }
+.rtp-feedback { margin-bottom: 12px; }
+.rtp-time { font-size: 12.5px; font-weight: 700; color: #0369a1; margin: 6px 0; }
+.rtp-evidence {
+  margin-top: 10px; padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #22c55e;
+  border-radius: 0 8px 8px 0; font-size: 13px; line-height: 1.6; color: #14532d; font-style: italic;
+}
+[data-theme="dark"] .rtp-evidence { background: #052e16; color: #bbf7d0; }
+.rtp-evidence-label { font-style: normal; font-weight: 800; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
+.rtp-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.rtp-nav-right { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+
+/* Result */
+.rtp-result { text-align: center; padding: 10px 0 4px; }
+.rtp-result-icon { font-size: 40px; }
+.rtp-result-title { font-size: 18px; font-weight: 900; color: #111827; margin: 4px 0; }
+[data-theme="dark"] .rtp-result-title { color: #f1f5f9; }
+.rtp-score { font-size: 38px; font-weight: 900; color: #e53935; }
+.rtp-result-msg { font-size: 13.5px; color: #6b7280; margin-bottom: 8px; }
+.rtp-result-list { display: flex; flex-direction: column; gap: 6px; text-align: left; margin: 14px auto; max-width: 620px; }
+.rtp-result-row {
+  display: flex; gap: 10px; align-items: flex-start; border: 1px solid #e5e7eb; background: #fff;
+  border-radius: 10px; padding: 8px 12px; font-size: 13px; cursor: pointer; text-align: left; color: #374151; font-family: inherit;
+}
+[data-theme="dark"] .rtp-result-row { background: var(--bg, #000); border-color: #333; color: #cbd5e1; }
+.rtp-result-row.ok > span:first-child { color: #16a34a; font-weight: 900; }
+.rtp-result-row.bad > span:first-child { color: #dc2626; font-weight: 900; }
+.rtp-result-q { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.rtp-result-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 1100px) {
+  .rtp-split { grid-template-columns: minmax(0, 1fr); }
+  .rtp-passage-scroll { max-height: 55vh; }
+}
+@media (max-width: 900px) {
+  .rt-practice-slot { padding: 0 16px 22px; }
+  .rtp-entry { padding: 14px; }
+  .rtp-entry-actions { width: 100%; }
+  .rtp-entry .rtp-btn { width: 100%; text-align: center; white-space: normal; }
+  .rtp-para { font-size: 14px; }
+}
