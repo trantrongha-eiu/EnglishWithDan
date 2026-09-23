@@ -519,13 +519,18 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       ...speakingAttempts.map(h => ({
         _id: h._id, skill: 'speaking',
         testName: h.topic || 'Speaking',
-        testMeta: `Part ${h.part}`,
+        // noGenuineAnswer: the AI judged there was nothing to grade (silent
+        // recording, mic issue) — surfaced here instead of a bare "Part N"
+        // so this doesn't read in the admin table like a real completed
+        // attempt that just happened to score 0.
+        testMeta: h.aiFeedback?.noGenuineAnswer ? `Part ${h.part} · Không phát hiện nội dung` : `Part ${h.part}`,
         userId: normUser(h.userId),
         date: h.createdAt,
         // aiFeedback.overallBand schema-defaults to 0 (not null) on a
         // still-pending/failed row — only trust it once grading actually
         // completed, mirroring Writing's ungraded-row handling below.
-        bandScore: h.status === 'analyzed' ? (h.aiFeedback?.overallBand ?? null) : null,
+        // Also null (not a real 0) when noGenuineAnswer — see above.
+        bandScore: (h.status === 'analyzed' && !h.aiFeedback?.noGenuineAnswer) ? (h.aiFeedback?.overallBand ?? null) : null,
         status: h.status,
         correctCount: null,
         totalQuestions: null,

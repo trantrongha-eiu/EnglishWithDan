@@ -1292,6 +1292,20 @@
           _opts = { method: 'POST', body: JSON.stringify(_body) };
         }
         var sd = await api('/wt1/submit-speaking', _opts);
+        // No genuine answer detected (silent recording, mic issue, nothing
+        // actually said) — the server deliberately did NOT persist this as a
+        // graded attempt (would have baked a phantom Band 0.0 into this
+        // item/exercise that a student could never fix without redoing the
+        // whole thing from item 1). Reset the recorder for the SAME
+        // question instead of advancing or finishing — confirmed real
+        // incident: a student's Band 0.0 on this exact exercise type.
+        if (sd.noGenuineAnswer) {
+          state._submitting = false; btn.disabled = false;
+          fb.classList.add('hidden');
+          toast(sd.message || 'Không phát hiện được nội dung trả lời — hãy ghi âm lại.', 'error');
+          SpeakingRec.reset();
+          return;
+        }
         if (window.playOk) window.playOk();
         // Audio-only submit: show the transcript the AI produced from the recording.
         if (!transcript && sd.transcript && ta) {

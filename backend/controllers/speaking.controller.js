@@ -101,6 +101,22 @@ exports.analyze = catchAsync(async (req, res) => {
     || (feedback && typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '')
     || '';
 
+  // No genuine answer detected (silent recording, mic issue, nothing
+  // actually said) — don't finalize the pending attempt as a real graded
+  // 0.0: that would persist a phantom score (polluting history, streak
+  // credit, and any average-band views) for a recording that had nothing
+  // to grade. Discard it and tell the client to let the student retry
+  // instead of showing a score. Confirmed real incident: exactly this
+  // path produced a demoralizing "Band 0.0" after a normal-looking
+  // recording attempt.
+  if (feedback.noGenuineAnswer) {
+    if (pendingId) await speakingService.discardPendingAttempt(pendingId);
+    return res.json({
+      success: true, noGenuineAnswer: true, feedback,
+      message: 'Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và thử ghi âm lại.',
+    });
+  }
+
   const { attemptId, newlyUnlocked } = pendingId
     ? await speakingService.finalizeAttempt(pendingId, feedback, req.user, resolvedTranscript)
     : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback });

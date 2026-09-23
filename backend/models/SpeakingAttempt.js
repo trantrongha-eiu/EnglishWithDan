@@ -16,6 +16,12 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     // true when Pronunciation was graded from the student's real audio
     // recording (multimodal), false when it's the transcript-only estimate.
     pronunciationFromAudio: { type: Boolean, default: false },
+    // true when the AI judged there was no real answer to assess (silent
+    // recording, mic issue, nothing actually said) — the 4 scores above are
+    // all 0 in this case too, but that's NOT a genuine Band 0 assessment;
+    // history/admin views should show "Không phát hiện nội dung" instead of
+    // a bare 0.0. See speakingService.hasRealContent.
+    noGenuineAnswer: { type: Boolean, default: false },
     overallFeedback:  { type: String, default: '' },
     correctedVersion: { type: String, default: '' }, // Stage 1 (analyze) no longer populates this — kept for old attempts + optional future use
     todaysFocus:      { type: String, default: '' },

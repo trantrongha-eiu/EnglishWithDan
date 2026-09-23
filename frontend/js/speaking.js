@@ -1686,7 +1686,17 @@ async function analyzeTranscript() {
   const _audioForAnalyze = _lastRecordingBlob && _lastRecordingBlob.size > 0;
   // No typed/STT transcript is fine as long as we have a recording — the
   // server transcribes it (mobile Safari/iOS, flaky mobile STT, etc.).
-  if (!transcript && !_audioForAnalyze) return;
+  // Silently doing nothing here (audit finding) left a student who clicked
+  // "Phân tích" right after a recording that somehow captured neither a
+  // transcript nor a usable audio blob (flaky mic, recognition degraded
+  // mid-session, a MediaRecorder race) with zero feedback at all — no
+  // spinner, no toast, nothing — looking exactly like a dead button. The
+  // course page's equivalent guard (speaking-course.html's submit()) always
+  // toasted here; this one just never got the same fix.
+  if (!transcript && !_audioForAnalyze) {
+    toast('Chưa ghi được nội dung nào — hãy kiểm tra micro rồi ghi âm lại, hoặc tự gõ câu trả lời.', 'warn');
+    return;
+  }
 
   const question = state.currentQuestion?.question || '';
   // Frozen at the moment recording stopped, not live — see the
@@ -1790,6 +1800,23 @@ async function analyzeTranscript() {
       const _btn = document.getElementById('btn-analyze');
       if (_btn) _btn.disabled = false;
       toast('AI đã nghe bản ghi âm và chép lại lời thoại của bạn.', 'info', 4000);
+    }
+
+    // No genuine answer detected (silent recording, mic issue, nothing
+    // actually said) — confirmed real incident: a student's Band 0.0 after
+    // what they believed was a normal recording. The AI correctly graded
+    // "nothing to assess" as 0 across all 4 criteria, but rendering that
+    // through the normal score grid read exactly like a real (and
+    // devastating) assessment. Skip the score UI entirely and let the
+    // student retry instead.
+    if (data.feedback?.noGenuineAnswer) {
+      if (loading) loading.style.display = 'none';
+      if (section) section.style.display = 'none';
+      toast('Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và thử ghi âm lại.', 'error', 6000);
+      state._analyzing = false;
+      if (btnAnalyze) { btnAnalyze.disabled = false; btnAnalyze.classList.remove('sp-analyzing'); }
+      setTranscriptView('editable');
+      return;
     }
 
     renderFeedback(data.feedback || {}, previousBand);

@@ -199,6 +199,23 @@ exports.submitSpeaking = async (req, res) => {
       }
       const finalText = text || (typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '') || '';
 
+      // No genuine answer detected (silent recording, mic issue, nothing
+      // actually said) — confirmed real incident: a student's Band 0.0 on
+      // this exact multi-item exercise type traced back to exactly this.
+      // Persisting it via recordSpeakingItem would have permanently baked a
+      // phantom 0 into this item's slot, dragging down the whole exercise's
+      // average with no way to fix it short of restarting from item 0 — so
+      // this item is neither recorded nor advanced; the student re-records
+      // the SAME item instead. No itemIndex/graded key on this response on
+      // purpose, so the client's existing `sd.graded === 'speaking-item'`
+      // branch can't mistake it for a real graded step.
+      if (feedback.noGenuineAnswer) {
+        return res.json({
+          success: true, noGenuineAnswer: true, itemIndex,
+          message: 'Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và ghi âm lại câu này.',
+        });
+      }
+
       const itemPayload = {
         itemIndex, prompt: questionText, transcript: finalText,
         feedback: {
@@ -252,6 +269,18 @@ exports.submitSpeaking = async (req, res) => {
     const finalText = text
       || (typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '')
       || '';
+
+    // Same reasoning as the multi-item branch above: don't record a
+    // no-genuine-answer grade as a completed submission — it would mark this
+    // (single-item) exercise "done" with a phantom Band 0.0 the student
+    // can't distinguish from a real one, and could block lesson progression
+    // on a technical mic hiccup rather than an actual weak attempt.
+    if (feedback.noGenuineAnswer) {
+      return res.json({
+        success: true, noGenuineAnswer: true,
+        message: 'Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và ghi âm lại.',
+      });
+    }
 
     await svc.recordSubmission(req.user._id, ex, {
       responses: [finalText],

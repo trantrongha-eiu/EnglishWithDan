@@ -14,8 +14,18 @@ const SpeakingMaterial = require('../../models/SpeakingMaterial');
 jest.mock('../../services/geminiService');
 const geminiService = require('../../services/geminiService');
 
+// `strengths` non-empty by default — a real Gemini response for a genuine
+// attempt always includes at least one, per the grading prompt's own
+// contract (see speakingService.hasRealContent); without it here, every
+// call using this fixture unintentionally looked like the new "no genuine
+// answer" case (silent recording / nothing to grade) that speakingService
+// now detects and refuses to persist as a real score.
 function feedback(overrides = {}) {
-  return { fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6, overallFeedback: 'Good job', ...overrides };
+  return {
+    fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6, overallFeedback: 'Good job',
+    strengths: ['Clear pronunciation'], mistakes: [], vocabUpgrades: [], improvements: [],
+    ...overrides,
+  };
 }
 
 describe('GET /api/speaking/random', () => {

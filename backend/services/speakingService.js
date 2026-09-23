@@ -233,11 +233,20 @@ function roundToHalfBand(n) {
 //   empty, the AI is telling us it already judged this as no real answer
 //   (that's the only condition under which the prompt allows all four to be
 //   empty for a real attempt), so the floor is skipped.
+// The grading prompt's own contract (see geminiService.buildSpeakingGradingPrompt):
+// strengths/mistakes/vocabUpgrades/improvements are ALL left empty ONLY when
+// the AI judged there was no real answer to assess — never for a genuine
+// attempt, however weak. Shared by applyMinimumBandFloor (skips the floor)
+// and gradeSpeaking (tags the result so the frontend can tell "no content
+// detected" apart from "a real Band 0 attempt").
+function hasRealContent(feedback) {
+  return [feedback.strengths, feedback.mistakes, feedback.vocabUpgrades, feedback.improvements]
+    .some(arr => Array.isArray(arr) && arr.length > 0);
+}
+
 function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
   const partN = Number(partNum);
-  const hasRealContent = [feedback.strengths, feedback.mistakes, feedback.vocabUpgrades, feedback.improvements]
-    .some(arr => Array.isArray(arr) && arr.length > 0);
-  if (!hasRealContent) return;
+  if (!hasRealContent(feedback)) return;
 
   let qualifies = false;
   if (partN === 2) {
@@ -285,6 +294,14 @@ async function gradeSpeaking(questionText, transcript, partNum, audio = null, du
   feedback.vocabulary = feedback.vocabulary || 0;
   feedback.grammar = feedback.grammar || 0;
   feedback.pronunciation = feedback.pronunciation || 0;
+  // Surfaced to the frontend so it can show a clear "we couldn't detect an
+  // answer" message instead of a numeric Band 0.0 that reads as a real (and
+  // devastating) assessment of the student's spoken English — confirmed as
+  // the actual cause behind reports of students getting a 0.0 band after
+  // what they believed was a normal recording (silent mic, permissions
+  // issue, a flaky capture — the AI correctly graded "nothing to assess",
+  // but that got displayed exactly like a genuine low score).
+  feedback.noGenuineAnswer = !hasRealContent(feedback);
   applyMinimumBandFloor(feedback, partNum, transcript, durationSec);
   feedback.overallBand = roundToHalfBand((feedback.fluency + feedback.vocabulary + feedback.grammar + feedback.pronunciation) / 4);
   // Whether Pronunciation was actually heard: audio was provided AND the
@@ -403,6 +420,7 @@ function mapFeedbackToAiFeedback(feedback) {
     grammar: feedback.grammar || 0,
     pronunciation: feedback.pronunciation || 0,
     pronunciationFromAudio: !!feedback.pronunciationFromAudio,
+    noGenuineAnswer: !!feedback.noGenuineAnswer,
     overallFeedback: feedback.overallFeedback || '',
     correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
     todaysFocus: feedback.todaysFocus || '',
@@ -529,6 +547,20 @@ async function markAttemptError(attemptId) {
   }
 }
 
+// Discards a pending attempt whose grading came back "no genuine answer"
+// (see hasRealContent) — deleted rather than finalized/error'd, since
+// neither status fits: it isn't a technical grading failure, and finalizing
+// it would persist a phantom Band 0.0 (polluting history, streak credit,
+// and any average-score views) for a recording that had nothing to grade
+// in the first place. Best-effort: never throws.
+async function discardPendingAttempt(attemptId) {
+  try {
+    await SpeakingAttempt.findByIdAndDelete(attemptId);
+  } catch (err) {
+    console.error('[Speaking] Discard pending attempt failed:', err.message);
+  }
+}
+
 // Re-grades an already-submitted attempt against its own stored transcript
 // — no new recording/transcript needed from the client. Used by the
 // history tab's "Thử chấm lại" button for attempts stuck 'pending' (swept
@@ -581,7 +613,7 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, SPEAKING_GROUPS, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
-  createPendingAttempt, finalizeAttempt, markAttemptError, retryGrading,
+  createPendingAttempt, finalizeAttempt, markAttemptError, discardPendingAttempt, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints, normalizeAudioForGemini,
 };
