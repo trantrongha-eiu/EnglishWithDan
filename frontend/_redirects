@@ -31,6 +31,19 @@
 /reading/review/*    /reading.html    200
 /listening/test/*    /listening.html  200
 
+# Added 2026-09-23 (routing audit — same treatment as the block above):
+# essential-grammar.html, writing-task1.html, writing-task2-course.html,
+# speaking-course.html and dictation.html now also read their id/lesson-key
+# out of location.pathname (RouteParams.match(), with a fromCleanPath guard
+# so the initial-load URL normalization doesn't immediately clobber the
+# clean path back into its ?query= form).
+/essential-grammar/*        /essential-grammar.html      200
+/writing/task1-course/*     /writing-task1.html          200
+/writing/task2-course/*     /writing-task2-course.html   200
+/speaking/course/*          /speaking-course.html        200
+/dictation/*                /dictation.html              200
+/task2-practice/*           /task2-practice.html         200
+
 # ── Dynamic resource links (redirect to the existing, working
 #    query-string URL — address bar normalizes after landing, but the
 #    link itself is permanent and always resolves correctly) ──────────
@@ -39,6 +52,7 @@
 /writing/task1/:id        /writing.html?taskType=1&taskId=:id   302
 /writing/task2/:id        /writing.html?taskType=2&taskId=:id   302
 /writing/template/:type   /task2-template.html?type=:type       302
+/vocab/lesson/:id         /dashboard.html?view=lesson&lessonId=:id 302
 
 # The old flat "Task 1 Grammar" page was replaced by the WT1 course
 # (writing-task1.html). Keep old bookmarks/links working.
@@ -82,6 +96,10 @@
 /writing/task2-course /writing-task2-course.html 200
 /speaking        /speaking.html         200
 /speaking/course /speaking-course.html  200
+/essential-grammar /essential-grammar.html 200
+/entrance-test   /entrance-test.html    200
+/dictation       /dictation.html        200
+/task2-practice  /task2-practice.html   200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────
 /*  /404.html  404

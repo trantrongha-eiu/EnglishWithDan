@@ -27,13 +27,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="writing-practice.css?v=20260903"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="/writing-practice.css?v=20260903"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=20260910inbox"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     body{background:#f9fafb}
     [data-theme="dark"] body{background:var(--bg, #000000)}
@@ -243,17 +243,18 @@
   </style>
 </head>
 <body>
-<script src="js/shared/auth-service.js?v=20260908"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/upgrade-modal.js?v=20260831"></script>
-<script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20260911para"></script>
-<script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
-<script src="js/shared/utils.js?v=20260831"></script>
-<script src="js/shared/toast.js?v=20260831"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
-<script src="js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/auth-service.js?v=20260908"></script>
+<script src="/js/auth.js?v=20260831"></script>
+<script src="/js/upgrade-modal.js?v=20260831"></script>
+<script src="/js/shared/popup-queue.js?v=20260909exam"></script>
+<script src="/js/nav.js?v=20260911para"></script>
+<script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
+<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/toast.js?v=20260831"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="/js/shared/route-params.js?v=20260923"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
+<script src="/js/shared/sound-effects.js?v=20260831"></script>
 
 <!-- ── Mini stats widget (lesson progress/sound) — floats top-right,
      shared global nav (js/nav.js) now handles page navigation and dark
@@ -364,7 +365,23 @@ function keyOf(l) { return l.category + '||' + l.lessonKey; }
 // doubles as a clean, shareable URL identifier on its own without needing
 // the category too.
 function lessonKeyFromUrl() {
-  return new URLSearchParams(location.search).get('lesson');
+  // Clean path /essential-grammar/:lessonKey (a _redirects 200 rewrite to
+  // this same file) — same additive pattern as reading-v2.js/listening.html's
+  // RouteParams.match(): checked first, falls back to ?lesson= unchanged.
+  var clean = window.RouteParams ? window.RouteParams.match([
+    { pattern: /^\/essential-grammar\/([^/?#]+)$/, param: 'lessonKey' }
+  ]) : null;
+  return (clean && clean.lessonKey) || new URLSearchParams(location.search).get('lesson');
+}
+// True when the page was reached via the clean /essential-grammar/:lessonKey
+// path rather than a plain ?lesson= query string — checked so the initial-
+// load URL normalization below doesn't immediately clobber a clean, shareable
+// URL back into its query-string form (same fromCleanPath idiom reading-v2.js
+// uses for /reading/test/:id).
+function isFromCleanPath() {
+  return !!(window.RouteParams && window.RouteParams.match([
+    { pattern: /^\/essential-grammar\/([^/?#]+)$/, param: 'lessonKey' }
+  ]));
 }
 function lessonUrl(lesson) {
   return 'essential-grammar.html?lesson=' + encodeURIComponent(lesson.lessonKey);
@@ -419,8 +436,13 @@ async function initEssentialGrammar() {
     // Normalize the URL for this initial render (adds ?lesson=... if it
     // was missing/stale) without adding a history entry — same idiom as
     // dashboard.js's replaceState-on-load — so popstate has a well-formed
-    // starting point to compare against.
-    if (initialLesson) history.replaceState({ lessonKey: initialLesson.lessonKey }, '', lessonUrl(initialLesson));
+    // starting point to compare against. Skipped when the clean
+    // /essential-grammar/:lessonKey path already resolved to exactly the
+    // lesson being shown — the whole point of that URL is that it keeps
+    // showing the clean path forever, so this must not overwrite it.
+    if (initialLesson && !(isFromCleanPath() && initialLesson === urlLesson)) {
+      history.replaceState({ lessonKey: initialLesson.lessonKey }, '', lessonUrl(initialLesson));
+    }
 
     renderSidebarShell();
     if (currentKey) selectLesson(currentKey, true, false);

@@ -10,12 +10,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=20260910inbox"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     #app { max-width: 940px; margin: 0 auto; padding-bottom: 48px; }
     .t1-head { padding: 20px 20px 6px; }
@@ -302,21 +302,22 @@
   </style>
 </head>
 <body>
-<script src="js/shared/auth-service.js?v=20260908"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/upgrade-modal.js?v=20260831"></script>
-<script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20260911para"></script>
-<script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
-<script src="js/shared/utils.js?v=20260831"></script>
-<script src="js/shared/toast.js?v=20260831"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
-<script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
-<script src="js/shared/sound-effects.js?v=20260831"></script>
-<script src="js/shared/wbw-drill.js?v=20260917novi"></script>
-<script src="js/shared/score-message.js?v=20260910"></script>
-<script src="js/shared/course-result.js?v=20260910"></script>
+<script src="/js/shared/auth-service.js?v=20260908"></script>
+<script src="/js/auth.js?v=20260831"></script>
+<script src="/js/upgrade-modal.js?v=20260831"></script>
+<script src="/js/shared/popup-queue.js?v=20260909exam"></script>
+<script src="/js/nav.js?v=20260911para"></script>
+<script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
+<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/toast.js?v=20260831"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="/js/shared/api-client.js?v=20260831"></script>
+<script src="/js/shared/route-params.js?v=20260923"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
+<script src="/js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/wbw-drill.js?v=20260917novi"></script>
+<script src="/js/shared/score-message.js?v=20260910"></script>
+<script src="/js/shared/course-result.js?v=20260910"></script>
 
 <div id="app"></div>
 
@@ -471,8 +472,15 @@
     try {
       var d = await api('/wt1/overview');
       state.overview = d;
+      // Clean path /writing/task1-course/:lesson (a _redirects 200 rewrite to
+      // this same file) — same additive pattern as reading-v2.js/listening.html's
+      // RouteParams.match(): checked first, falls back to ?lesson= unchanged.
+      var cleanLesson = window.RouteParams ? window.RouteParams.match([
+        { pattern: /^\/writing\/task1-course\/([^/?#]+)$/, param: 'lesson' }
+      ]) : null;
       var p = new URLSearchParams(location.search);
-      if (p.get('lesson')) { await openLesson(p.get('lesson'), p.get('ex'), true); return; }
+      var lessonParam = (cleanLesson && cleanLesson.lesson) || p.get('lesson');
+      if (lessonParam) { await openLesson(lessonParam, p.get('ex'), true, !!cleanLesson); return; }
       state.view = 'overview';
       history.replaceState({ view: 'overview' }, '', location.href);
       render();
@@ -541,20 +549,28 @@
   }
 
   // ── LESSON ────────────────────────────────────────────────────────
-  async function openLesson(code, exCode, fromUrl) {
+  async function openLesson(code, exCode, fromUrl, fromCleanPath) {
     app.innerHTML = '<div style="text-align:center;padding:48px"><div class="t1-spinner"></div></div>';
     try {
       var d = await api('/wt1/lesson/' + encodeURIComponent(code));
       state.lesson = d.lesson;
       state.exercises = d.exercises || [];
       state.results = [];
-      var url = 'writing-task1.html?lesson=' + code;
+      var url = '/writing-task1.html?lesson=' + code;
       if (exCode) {
         var i = state.exercises.findIndex(function (e) { return e.code === exCode; });
+        // A clean /writing/task1-course/:lesson path only encodes the lesson,
+        // never an exercise index, so an exCode always needs the query-string
+        // form regardless of fromCleanPath.
         if (i >= 0) { state.exIdx = i; state.view = 'exercise'; (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'exercise', lesson: code, ex: exCode }, '', url + '&ex=' + exCode); render(); return; }
       }
       state.view = 'lesson';
-      (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'lesson', lesson: code }, '', url);
+      // Skip the replaceState when the clean path already resolved to this
+      // exact lesson — that URL is meant to keep showing forever, same
+      // fromCleanPath idiom reading-v2.js uses for /reading/test/:id.
+      if (!fromCleanPath) {
+        (fromUrl ? history.replaceState : history.pushState).call(history, { view: 'lesson', lesson: code }, '', url);
+      }
       render();
     } catch (e) {
       var errCode = e && e.body && e.body.code;
@@ -564,7 +580,7 @@
       toast('Lỗi tải buổi học', 'error'); goOverview();
     }
   }
-  function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', 'writing-task1.html'); loadOverview(); }
+  function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', '/writing-task1.html'); loadOverview(); }
 
   function renderLesson() {
     var l = state.lesson || {};
@@ -588,7 +604,7 @@
       el.addEventListener('click', function () {
         state.exIdx = state.exercises.findIndex(function (e) { return e.code === el.dataset.code; });
         state.view = 'exercise';
-        history.pushState({ view: 'exercise', lesson: state.lesson.code, ex: el.dataset.code }, '', 'writing-task1.html?lesson=' + state.lesson.code + '&ex=' + el.dataset.code);
+        history.pushState({ view: 'exercise', lesson: state.lesson.code, ex: el.dataset.code }, '', '/writing-task1.html?lesson=' + state.lesson.code + '&ex=' + el.dataset.code);
         render();
       });
     });
@@ -1261,7 +1277,7 @@
   function nextExercise() {
     if (state.exIdx >= state.exercises.length - 1) { finishLesson(); return; }
     state.exIdx++;
-    history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', 'writing-task1.html?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+    history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', '/writing-task1.html?lesson=' + state.lesson.code + '&ex=' + curEx().code);
     render();
   }
   // "Làm lại" on the feedback screen — redo the SAME exercise right away
@@ -1271,7 +1287,7 @@
   function retryExercise() { render(); }
   function goToLesson() {
     stopTimer(); state.view = 'lesson';
-    history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', 'writing-task1.html?lesson=' + state.lesson.code);
+    history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', '/writing-task1.html?lesson=' + state.lesson.code);
     // reload lesson so done-state refreshes
     openLesson(state.lesson.code, null, true);
   }

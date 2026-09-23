@@ -9,7 +9,10 @@ Allow: /
 # by filename only.
 Disallow: /dashboard
 Disallow: /dashboard.html
+Disallow: /essential-grammar
 Disallow: /essential-grammar.html
+Disallow: /entrance-test
+Disallow: /entrance-test.html
 Disallow: /vocabulary
 Disallow: /profile
 Disallow: /profile.html
@@ -29,9 +32,11 @@ Disallow: /writing-practice.html
 Disallow: /task2-template.html
 Disallow: /speaking
 Disallow: /speaking.html
+Disallow: /dictation
 Disallow: /dictation.html
 Disallow: /goal.html
 Disallow: /task1-practice.html
+Disallow: /task2-practice
 Disallow: /task2-practice.html
 Disallow: /review-history.html
 Disallow: /auth-callback.html

@@ -11,12 +11,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=20260910inbox"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     body { background: var(--bg); }
     .dict-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
@@ -155,17 +155,18 @@
 </head>
 
 <body>
-<script src="js/shared/auth-service.js?v=20260908"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/upgrade-modal.js?v=20260831"></script>
-<script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20260911para"></script>
-<script src="js/shared/sound-effects.js?v=20260831"></script>
-<script src="js/shared/utils.js?v=20260831"></script>
-<script src="js/shared/toast.js?v=20260831"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
-<script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
+<script src="/js/shared/auth-service.js?v=20260908"></script>
+<script src="/js/auth.js?v=20260831"></script>
+<script src="/js/upgrade-modal.js?v=20260831"></script>
+<script src="/js/shared/popup-queue.js?v=20260909exam"></script>
+<script src="/js/nav.js?v=20260911para"></script>
+<script src="/js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/toast.js?v=20260831"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="/js/shared/api-client.js?v=20260831"></script>
+<script src="/js/shared/route-params.js?v=20260923"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
 
 <div class="dict-wrap">
 
@@ -359,7 +360,7 @@ function renderDictList() {
 
 /* ══════════════ OPEN A SECTION ══════════════ */
 let _openDictSeq = 0;
-async function openDictSection(id) {
+async function openDictSection(id, fromCleanPath) {
   // Same free-plan gate as reading/listening tests — browsing the list
   // above stays free, but actually opening a section to practice requires
   // premium (backend also enforces this on /listening/practice/by-id/:id).
@@ -423,7 +424,10 @@ async function openDictSection(id) {
   document.getElementById('dict-session-score').textContent = `0/${dictSection.dictationSentences.length} ✓`;
   renderNumGrid();
   dictGoTo(0);
-  syncViewUrl(id);
+  // Skip when the clean /dictation/:sectionId path already resolved to this
+  // exact section — that URL is meant to keep showing forever, same
+  // fromCleanPath idiom reading-v2.js uses for /reading/test/:id.
+  if (!fromCleanPath) syncViewUrl(id);
 }
 
 function backToList() {
@@ -432,7 +436,7 @@ function backToList() {
   audio.pause();
   document.getElementById('screen-practice').classList.remove('active');
   document.getElementById('screen-list').classList.remove('hidden');
-  history.replaceState({}, '', 'dictation.html');
+  history.replaceState({}, '', '/dictation.html');
 }
 
 function syncViewUrl(id) {
@@ -667,9 +671,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const promoBanner = document.getElementById('premium-promo-banner');
   if (promoBanner) promoBanner.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
 
-  const sectionId = new URLSearchParams(location.search).get('sectionId');
+  // Clean path /dictation/:sectionId (a _redirects 200 rewrite to this same
+  // file) — same additive pattern as reading-v2.js/listening.html's
+  // RouteParams.match(): checked first, falls back to ?sectionId= unchanged.
+  const cleanSection = window.RouteParams ? window.RouteParams.match([
+    { pattern: /^\/dictation\/([^/?#]+)$/, param: 'sectionId' }
+  ]) : null;
+  const sectionId = (cleanSection && cleanSection.sectionId) || new URLSearchParams(location.search).get('sectionId');
   loadDictList().then(() => {
-    if (sectionId) openDictSection(sectionId);
+    if (sectionId) openDictSection(sectionId, !!cleanSection);
   });
 });
 </script>

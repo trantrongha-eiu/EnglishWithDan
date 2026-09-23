@@ -10,13 +10,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="writing-practice.css?v=20260903"/>
-  <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925"/>
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="/writing-practice.css?v=20260903"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=20260910inbox"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     /* ── Essay type badge colors ── */
     .et-badge{display:inline-block;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -478,21 +478,22 @@
   </style>
 </head>
 <body>
-<script src="js/shared/auth-service.js?v=20260908"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/upgrade-modal.js?v=20260831"></script>
-<script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20260911para"></script>
-<script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
-<script src="js/shared/utils.js?v=20260831"></script>
-<script src="js/shared/toast.js?v=20260831"></script>
-<script src="js/shared/review-required-popup.js?v=20260908"></script>
-<script src="js/shared/writing-rewrite-reminder.js?v=20260908"></script>
-<script src="js/shared/peer-chat-widget.js?v=20260908"></script>
-<script src="js/shared/api-client.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
-<script src="js/shared/score-message.js?v=20260831"></script>
-<script src="js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/auth-service.js?v=20260908"></script>
+<script src="/js/auth.js?v=20260831"></script>
+<script src="/js/upgrade-modal.js?v=20260831"></script>
+<script src="/js/shared/popup-queue.js?v=20260909exam"></script>
+<script src="/js/nav.js?v=20260911para"></script>
+<script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
+<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/toast.js?v=20260831"></script>
+<script src="/js/shared/review-required-popup.js?v=20260908"></script>
+<script src="/js/shared/writing-rewrite-reminder.js?v=20260908"></script>
+<script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
+<script src="/js/shared/api-client.js?v=20260831"></script>
+<script src="/js/shared/route-params.js?v=20260923"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
+<script src="/js/shared/score-message.js?v=20260831"></script>
+<script src="/js/shared/sound-effects.js?v=20260831"></script>
 
 
 <!-- ── Quit modal ── -->
@@ -945,7 +946,19 @@ async function loadWeeks() {
   try {
     const params = new URLSearchParams(location.search);
     let   urlWeek    = parseInt(params.get('week')) || null;
-    const urlTopicId = params.get('topicId');
+    // Clean path /task2-practice/:topicId (a _redirects 200 rewrite to this
+    // same file) — same additive pattern as reading-v2.js/listening.html's
+    // RouteParams.match(): checked first, falls back to ?topicId= unchanged.
+    // No fromCleanPath guard needed here (unlike the other pages this audit
+    // touched) since the replaceState below reuses location.href as-is
+    // rather than rebuilding a ?query= string, so it never clobbers a clean
+    // path. Week doesn't need to come along either — the existing
+    // urlTopicId-without-urlWeek fallback a few lines down already resolves
+    // it via findWeekForTopic().
+    const cleanTopic = window.RouteParams ? window.RouteParams.match([
+      { pattern: /^\/task2-practice\/([^/?#]+)$/, param: 'topicId' }
+    ]) : null;
+    const urlTopicId = (cleanTopic && cleanTopic.topicId) || params.get('topicId');
     const urlMode    = params.get('mode');
     if (urlMode)  state.currentMode   = urlMode;
 
@@ -1107,7 +1120,7 @@ async function selectWeek(w) {
     const data = await apiFetch(`/api/task2/topics/week/${w}`);
     state.topics = data.topics || [];
     state.view = 'topics';
-    history.pushState({ view: 'topics', week: w }, '', `task2-practice.html?week=${w}`);
+    history.pushState({ view: 'topics', week: w }, '', `/task2-practice.html?week=${w}`);
     render();
   } catch { showToast('Lỗi tải topics', 'error'); }
 }
@@ -1187,7 +1200,7 @@ async function selectTopic(id) {
   state.draft = null;
   state.topicStats = null;
   const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, mode: state.currentMode });
-  history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
+  history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `/task2-practice.html?${_p}`);
   // Guards against rapidly clicking between topics resolving out of order —
   // only the most recently-selected topic's wrong-questions/draft response
   // is allowed to apply, so a slow response for a topic the user already
@@ -1346,7 +1359,7 @@ function goWriteFullEssay() {
     if (gate.code === 'not_practiced' || gate.code === 'low_accuracy') setMode2('practice');
     return;
   }
-  window.location.href = `writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
+  window.location.href = `/writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
 }
 function setExamCount(n) { state.examCount = n; render(); }
 function setAutoNext(v) { state.autoNext = v; }
@@ -2567,12 +2580,12 @@ function retryWrong() {
 //  NAVIGATION HELPERS
 // ════════════════════════════════════════════════════════
 function goWeeks() {
-  history.pushState({ view: 'weeks' }, '', 'task2-practice.html');
+  history.pushState({ view: 'weeks' }, '', '/task2-practice.html');
   state.view = 'weeks';
   render();
 }
 function goTopics() {
-  history.pushState({ view: 'topics', week: state.selectedWeek }, '', `task2-practice.html?week=${state.selectedWeek}`);
+  history.pushState({ view: 'topics', week: state.selectedWeek }, '', `/task2-practice.html?week=${state.selectedWeek}`);
   state.view = 'topics';
   render();
 }
@@ -2717,7 +2730,7 @@ async function openT2History() {
     body.innerHTML = `<div style="text-align:center;padding:40px;color:#9ca3af">
       <div style="font-size:40px;margin-bottom:12px">🔒</div>
       <p style="font-size:14px;margin-bottom:16px">Vui lòng đăng nhập để xem lịch sử luyện tập</p>
-      <a href="login.html" class="t2-start-btn" style="display:inline-block;text-decoration:none;font-size:14px;padding:10px 24px">
+      <a href="/login.html" class="t2-start-btn" style="display:inline-block;text-decoration:none;font-size:14px;padding:10px 24px">
         <i class="fas fa-sign-in-alt"></i> Đăng nhập
       </a>
     </div>`;
