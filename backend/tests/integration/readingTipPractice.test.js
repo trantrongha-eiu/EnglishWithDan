@@ -28,7 +28,7 @@ async function seedTips() {
   await ReadingTip.create([
     { category: 'Kỹ thuật', lessonKey: 'skimming', title: 'Skimming – Đọc lấy ý chính', blocks: [] },
     { category: 'Kỹ thuật', lessonKey: 'scanning', title: 'Scanning – Tìm thông tin cụ thể', blocks: [] },
-    { category: 'Kỹ thuật', lessonKey: 'keyword-to-paraphrase', title: 'Paraphrase', blocks: [] },
+    { category: 'Theo band', lessonKey: 'band-6', title: 'Band 6.0', blocks: [] },
   ]);
 }
 
@@ -62,7 +62,7 @@ describe('access', () => {
   });
 
   test('a tip without a practice (or an unknown key) is a clean 404', async () => {
-    expect((await get('keyword-to-paraphrase')).status).toBe(404);
+    expect((await get('band-6')).status).toBe(404);
     expect((await get('no-such-tip')).body.code).toBe('NO_PRACTICE');
   });
 

@@ -22,7 +22,11 @@
 // practice), and only that response reveals the answer, explanation and
 // the located evidence. checkAnswer() re-validates that the question is
 // actually part of this tip's pool, so the endpoint can't be used to pull
-// the key for arbitrary questions.
+// the key for arbitrary questions. The one deliberate exception is the
+// worked example ("I do"): the first question of a question-type practice
+// carries its own answer + explanation, flagged isGuidedExample; the
+// second ("We do") only gets hints (keywords, location, evidence
+// sentence), never its key.
 
 const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
@@ -35,6 +39,8 @@ const QUESTION_TYPE_DEFAULTS = { kind: 'questions', maxQuestions: 7, minQuestion
 const PRACTICE_CONFIG = {
   skimming: { kind: 'skimming', maxQuestions: 5, maxPerPassage: 2 },
   scanning: { kind: 'scanning', maxQuestions: 6, minQuestions: 3, preferQuestions: 5 },
+  'keyword-to-paraphrase': { kind: 'paraphrase', maxQuestions: 6, maxPerPassage: 2 },
+  'skim-scan-workflow': { kind: 'workflow', details: 3 },
   'true-false-not-given': { ...QUESTION_TYPE_DEFAULTS, questionType: 'tfng' },
   'yes-no-not-given': { ...QUESTION_TYPE_DEFAULTS, questionType: 'ynng' },
   'matching-headings': { ...QUESTION_TYPE_DEFAULTS, questionType: 'headings' },
@@ -319,6 +325,79 @@ function answerSentence(correctAnswer, paragraphs, anchors) {
   return fallback;
 }
 
+// The paragraphs of a (lean, per-request) passage object, parsed once.
+const paragraphCache = new WeakMap();
+function paragraphsOf(passage) {
+  if (!paragraphCache.has(passage)) paragraphCache.set(passage, passageToParagraphs(passage.content));
+  return paragraphCache.get(passage);
+}
+
+// The whole sentence(s) of a paragraph around a located evidence fragment,
+// as one exact substring of the paragraph (for display + highlighting).
+function evidenceSpan(evidence, paragraphs) {
+  const p = evidence && paragraphs.find(x => x.i === evidence.paragraphIndex);
+  if (!p) return null;
+  const at = p.text.indexOf(evidence.text);
+  if (at === -1) return { paragraphIndex: p.i, text: evidence.text };
+  const endAt = at + evidence.text.length;
+  const ends = sentenceEnds(p.text);
+  const start = ends.filter(e => e <= at).pop() || 0;
+  const end = ends.find(e => e >= endAt) || p.text.length;
+  return { paragraphIndex: p.i, text: p.text.slice(start, end).trim() };
+}
+
+// ── Keywords (for guided steps) ─────────────────────────────────────────
+
+const STOPWORDS = new Set(('a an the and or but if of to in on at by for with from as is are was were be been being this that these '
+  + 'those it its their there they them he she his her we our you your not no nor so than then too very can could may might must '
+  + 'should would will shall do does did done have has had having about above after again against all am any because before below '
+  + 'between both during each few further here how into more most other out over own same some such only which who whom why what '
+  + 'when where while up down off once under until also just every many much one two three first second new way ways thing things '
+  + 'according following statement writer passage paragraph section '
+  // question-frame words ("What point does the writer make…", "a reference to…")
+  + 'point make makes say says suggest suggests mention mentions describe describes reviewer author writers text '
+  + 'information reference example examples description explanation').split(' '));
+
+function contentWords(text) {
+  return (String(text || '').toLowerCase().match(/[\p{L}][\p{L}'’-]*/gu) || [])
+    .filter(w => w.length >= 3 && !STOPWORDS.has(w));
+}
+
+// Crude stem so "affected"/"affects", "species"/"specie" meet.
+function wordStem(w) {
+  return w.replace(/['’]s$/, '').replace(/(?:ing|ed|es|s|ly)$/, '');
+}
+
+// Keywords a student should pick out of a question: its names / numbers /
+// quoted terms, then its content words that the evidence sentence repeats.
+function stemKeywords(stem, evidenceText, ctx) {
+  const clean = String(stem || '').replace(/_____|…/g, ' ');
+  const picked = extractAnchors(clean, ctx.passageText, ctx.passageNorm);
+  const evidenceStems = new Set(contentWords(evidenceText).map(wordStem));
+  for (const w of contentWords(clean)) {
+    if (picked.length >= 5) break;
+    if (evidenceStems.has(wordStem(w)) && !picked.some(p => p.toLowerCase().includes(w))) picked.push(w);
+  }
+  if (!picked.length) {
+    [...new Set(contentWords(clean))].sort((a, b) => b.length - a.length).slice(0, 3).forEach(w => picked.push(w));
+  }
+  return picked;
+}
+
+// The sentence of paragraph `p` sharing the most keywords.
+function bestSentence(p, keywords) {
+  const stems = keywords.flatMap(k => contentWords(k)).map(wordStem);
+  let best = null;
+  let from = 0;
+  for (const to of sentenceEnds(p.text)) {
+    const text = p.text.slice(from, to).trim();
+    const score = contentWords(text).filter(w => stems.includes(wordStem(w))).length;
+    if (text && (!best || score > best.score)) best = { score, text };
+    from = to;
+  }
+  return best ? { paragraphIndex: p.i, text: best.text } : null;
+}
+
 // ── Question helpers ────────────────────────────────────────────────────
 
 function nonEmptyGroups(passage) {
@@ -506,7 +585,7 @@ function isSkimQuestion(group, q) {
 }
 
 function skimItemsForPassage(passage) {
-  const paragraphs = passageToParagraphs(passage.content);
+  const paragraphs = paragraphsOf(passage);
   if (!paragraphs.some(p => !p.heading)) return [];
   const items = [];
   for (const group of nonEmptyGroups(passage)) {
@@ -586,7 +665,7 @@ function typedEvidence(q, paragraphs, anchors) {
 }
 
 function scanItemsForPassage(passage) {
-  const paragraphs = passageToParagraphs(passage.content);
+  const paragraphs = paragraphsOf(passage);
   if (!paragraphs.some(p => !p.heading)) return { paragraphs, items: [] };
   const passageText = paragraphs.map(p => p.text).join(' ');
   const passageNorm = normalizeForMatch(passageText);
@@ -730,7 +809,7 @@ function typeItem(qType, group, q, ctx) {
 // Every usable question of `qType` in a passage, in original order — the
 // reusable "passage → filter by type" step every question-type tip uses.
 function questionTypeItems(passage, qType) {
-  const paragraphs = passageToParagraphs(passage.content);
+  const paragraphs = paragraphsOf(passage);
   if (!paragraphs.some(p => !p.heading)) return { paragraphs, items: [] };
   const passageText = paragraphs.map(p => p.text).join(' ');
   const ctx = {
@@ -841,15 +920,18 @@ async function buildSkimming(cfg, rng) {
 }
 
 // One existing passage with enough usable questions: at least
-// cfg.minQuestions, preferring cfg.preferQuestions+, random within the tier.
-// Its first cfg.maxQuestions questions are kept, in original order.
-async function pickPassage(cfg, rng, itemsOf) {
+// cfg.minQuestions, preferring cfg.preferQuestions+ (and, when `prefer` is
+// given, passages it accepts first), random within the best non-empty
+// tier. Its first cfg.maxQuestions questions are kept, in original order.
+async function pickPassage(cfg, rng, itemsOf, prefer) {
   const candidates = (await loadActivePassages())
     .map(p => ({ passage: p, ...itemsOf(p) }))
     .filter(c => c.items.length >= cfg.minQuestions);
   if (!candidates.length) return null;
-  const preferred = candidates.filter(c => c.items.length >= cfg.preferQuestions);
-  const tier = preferred.length ? preferred : candidates;
+  const big = (c) => c.items.length >= cfg.preferQuestions;
+  const good = prefer ? candidates.filter(prefer) : [];
+  const tiers = [good.filter(big), good, candidates.filter(big), candidates];
+  const tier = tiers.find(t => t.length);
   const pick = tier[Math.floor(rng() * tier.length)];
   const names = await sourceNames([pick.passage]);
   return {
@@ -877,24 +959,237 @@ async function buildScanning(cfg, rng) {
   };
 }
 
+function textContext(paragraphs) {
+  const passageText = paragraphs.map(p => p.text).join(' ');
+  return { passageText, passageNorm: normalizeForMatch(passageText) };
+}
+
+// Step-by-step guidance for one question (Phase 3, "I do / We do"):
+// keywords of the question, the paragraph to scan and the evidence
+// sentence — all taken from the question, the passage and the teacher's
+// existing explanation, no AI. null when there is no reliable evidence.
+function guideFor(item, qType, paragraphs) {
+  const ctx = textContext(paragraphs);
+  let evidence;
+  if (qType === 'headings') {
+    const p = paragraphs.find(x => x.i === item.targetParagraph);
+    evidence = p ? { paragraphIndex: p.i, text: p.text.slice(0, p.leadEnd).trim() } : null;
+  } else {
+    evidence = item.evidence || locateEvidence(item.q.explanation, paragraphs);
+    const p = evidence && paragraphs.find(x => x.i === evidence.paragraphIndex);
+    // Matching information falls back to its whole key paragraph; narrow it
+    // to the sentence that best matches the statement.
+    if (p && evidence.text === p.text) evidence = bestSentence(p, stemKeywords(item.text, p.text, ctx));
+    evidence = evidenceSpan(evidence, paragraphs);
+  }
+  if (!evidence || !evidence.text) return null;
+  return { keywords: stemKeywords(item.text, evidence.text, ctx), evidence };
+}
+
 async function buildQuestionType(cfg, rng) {
-  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, cfg.questionType));
+  const qType = cfg.questionType;
+  // Prefer passages whose first two questions can be walked through.
+  const guidable = (c) => c.items.length >= 2 && guideFor(c.items[0], qType, c.paragraphs) && guideFor(c.items[1], qType, c.paragraphs);
+  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, qType), guidable);
   if (!pick) return null;
   const { items, ...base } = pick;
   return {
     kind: 'questions',
-    questionType: cfg.questionType,
+    questionType: qType,
     ...base,
-    questions: items.map(it => ({
-      questionNumber: it.q.questionNumber,
-      text: it.text,
-      input: it.input,
-      choices: it.choices || null,
-      listTitle: it.listTitle || null,
-      instruction: it.instruction || null,
-      wordLimit: it.wordLimit || null,
-      targetParagraph: it.targetParagraph != null ? it.targetParagraph : null,
-    })),
+    questions: items.map((it, i) => {
+      const q = {
+        questionNumber: it.q.questionNumber,
+        text: it.text,
+        input: it.input,
+        choices: it.choices || null,
+        listTitle: it.listTitle || null,
+        instruction: it.instruction || null,
+        wordLimit: it.wordLimit || null,
+        targetParagraph: it.targetParagraph != null ? it.targetParagraph : null,
+      };
+      const guide = i < 2 ? guideFor(it, qType, base.paragraphs) : null;
+      if (guide && i === 0) {
+        // "I do": a worked example — the only question whose key is sent.
+        q.isGuidedExample = true;
+        q.guided = { mode: 'example', ...guide, answer: it.q.correctAnswer, explanation: it.q.explanation || '' };
+      } else if (guide) {
+        q.guided = { mode: 'hint', ...guide }; // "We do": hints, no key
+      }
+      return q;
+    }),
+  };
+}
+
+// ── Keyword → Paraphrase ────────────────────────────────────────────────
+
+// Teacher explanations pair a question phrase with its passage wording:
+// “inability to fly” khớp với “flightless”, “weather” = “climatic
+// conditions”… Only pairs whose one side is in the question, the other in
+// the passage (and not in the question) and which really differ are kept.
+const PAIR_CONNECTOR = '(?:khớp với|tương ứng với|tương ứng|tương đương với|tương đương|đồng nghĩa với|được paraphrase thành|'
+  + 'paraphrase của|paraphrase cho|được diễn đạt lại là|được hiểu là|chính là|=|≈|~|↔|⇔|->|→)';
+const PAIR_RE = new RegExp(`[“"]([^“”"\\n]{2,90}?)[”"]\\s*(?:\\([^)]{0,60}\\)\\s*)?${PAIR_CONNECTOR}\\s*(?:với\\s*)?[“"]([^“”"\\n]{2,90}?)[”"]`, 'gu');
+
+function paraphrasePairs(passage) {
+  const paragraphs = paragraphsOf(passage);
+  const normParas = paragraphs.map(p => normalizeForMatch(p.text));
+  const passageNorm = normParas.join(' ');
+  const out = [];
+  for (const group of nonEmptyGroups(passage)) {
+    for (const q of group.questions) {
+      const stem = questionStem(group, q);
+      const texts = [stem, ...(q.options || []).map(o => String(o || '').trim())].filter(Boolean);
+      const seen = new Set();
+      let k = 0;
+      let m;
+      PAIR_RE.lastIndex = 0;
+      while ((m = PAIR_RE.exec(String(q.explanation || '')))) {
+        const [a, b] = [m[1], m[2]].map(s => s.replace(/[.…,;:]+$/, '').trim());
+        const na = normalizeForMatch(a);
+        const nb = normalizeForMatch(b);
+        const inQuestion = (n) => texts.find(t => containsTerm(normalizeForMatch(t), n));
+        let keyword;
+        let phraseNorm;
+        let context;
+        if ((context = inQuestion(na)) && containsTerm(passageNorm, nb) && !containsTerm(passageNorm, na)) { keyword = a; phraseNorm = nb; }
+        else if ((context = inQuestion(nb)) && containsTerm(passageNorm, na) && !containsTerm(passageNorm, nb)) { keyword = b; phraseNorm = na; }
+        if (!keyword || seen.has(phraseNorm)) continue;
+        const kw = contentWords(keyword);
+        const ph = contentWords(phraseNorm);
+        const overlap = kw.filter(w => ph.map(wordStem).includes(wordStem(w))).length;
+        if (!kw.length || !ph.length || keyword.split(/\s+/).length > 7 || phraseNorm.split(/\s+/).length > 8
+          || overlap / Math.max(kw.length, 1) >= 0.5) continue;
+        const pi = normParas.findIndex(np => containsTerm(np, phraseNorm));
+        if (pi === -1) continue;
+        const start = normParas[pi].indexOf(phraseNorm);
+        const phrase = paragraphs[pi].text.substr(start, phraseNorm.length);
+        const sentence = evidenceSpan({ paragraphIndex: paragraphs[pi].i, text: phrase }, paragraphs);
+        if (!sentence || sentence.text.split(/\s+/).length > 70) continue;
+        seen.add(phraseNorm);
+        const question = context === stem ? stem : `${stem} — ${context}`;
+        out.push({ group, q, k: k++, keyword, phrase, question, sentence });
+      }
+    }
+  }
+  return out;
+}
+
+// A highlighted span counts if it covers most of the passage phrase's
+// content words without dragging in much else.
+function gradePhraseSelection(selected, phrase) {
+  const target = contentWords(phrase).map(wordStem);
+  const picked = contentWords(selected).map(wordStem);
+  if (normalizeForMatch(selected) === normalizeForMatch(phrase)) return true;
+  if (!target.length || !picked.length) return false;
+  const covered = target.filter(s => picked.includes(s)).length / target.length;
+  const extra = picked.filter(s => !target.includes(s)).length;
+  return covered >= 0.6 && extra <= 2;
+}
+
+async function buildParaphrase(cfg, rng) {
+  const passages = await loadActivePassages();
+  const pool = passages.flatMap(p => paraphrasePairs(p).map(pair => ({ passage: p, ...pair })));
+  if (!pool.length) return null;
+  const chosen = [];
+  const perPassage = {};
+  for (const it of shuffle(pool, rng)) {
+    const key = String(it.passage._id);
+    if (chosen.length >= cfg.maxQuestions || (perPassage[key] || 0) >= cfg.maxPerPassage) continue;
+    if (chosen.some(c => c.passage === it.passage && c.q === it.q)) continue; // one pair per question
+    chosen.push(it);
+    perPassage[key] = (perPassage[key] || 0) + 1;
+  }
+  const names = await sourceNames([...new Set(chosen.map(it => it.passage))]);
+  return {
+    kind: 'paraphrase',
+    items: chosen.map(it => {
+      const p = paragraphsOf(it.passage).find(x => x.i === it.sentence.paragraphIndex);
+      return {
+        passageId: String(it.passage._id),
+        questionNumber: it.q.questionNumber,
+        pairIndex: it.k,
+        passageTitle: it.passage.title,
+        sourceName: names[String(it.passage._id)],
+        question: it.question,
+        keyword: it.keyword,
+        sentence: it.sentence.text,
+        paragraphLabel: p ? (p.label || (p.n ? String(p.n) : '')) : '',
+      };
+    }),
+  };
+}
+
+// ── Quy trình làm bài (the 7-step workflow on one passage) ──────────────
+
+const WORKFLOW_DETAIL_TYPES = ['tfng', 'ynng', 'mcq', 'completion', 'short_answer'];
+
+// A passage's main-idea question (a real skimming MCQ or a headings
+// question) and its detail questions whose evidence paragraph is known —
+// the paragraph the student is asked to find in step 6. Only question
+// types where the paragraph isn't itself the answer.
+function workflowItems(passage) {
+  const paragraphs = paragraphsOf(passage);
+  const skim = skimItemsForPassage(passage).map(it => ({
+    q: it.q, kind: 'mcq', text: it.stem,
+    choices: (it.q.options || []).filter(o => String(o || '').trim()).map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })),
+    targetParagraph: it.target.scope === 'paragraph' ? it.target.index : null,
+  }));
+  const heads = questionTypeItems(passage, 'headings').items.map(it => ({
+    q: it.q, kind: 'headings', text: it.text, choices: it.choices, listTitle: it.listTitle, targetParagraph: it.targetParagraph,
+  }));
+  const main = skim[0] || heads[0] || null;
+  const details = WORKFLOW_DETAIL_TYPES
+    .flatMap(t => questionTypeItems(passage, t).items.map(it => ({ ...it, questionType: t })))
+    .filter(it => !main || it.q.questionNumber !== main.q.questionNumber) // step 3 already asks it
+    .map(it => ({ ...it, evidence: it.evidence || locateEvidence(it.q.explanation, paragraphs) }))
+    .filter(it => it.evidence)
+    .sort((a, b) => a.q.questionNumber - b.q.questionNumber);
+  return { paragraphs, main, details };
+}
+
+async function buildWorkflow(cfg, rng) {
+  const candidates = (await loadActivePassages())
+    .map(p => ({ passage: p, ...workflowItems(p) }))
+    .filter(c => c.main && c.details.length >= 2);
+  if (!candidates.length) return null;
+  const pick = candidates[Math.floor(rng() * candidates.length)];
+  // Spread the detail questions over different paragraphs where possible,
+  // then restore the original order.
+  const chosen = [];
+  for (const d of pick.details) {
+    if (chosen.length < cfg.details && !chosen.some(c => c.evidence.paragraphIndex === d.evidence.paragraphIndex)) chosen.push(d);
+  }
+  for (const d of pick.details) if (chosen.length < cfg.details && !chosen.includes(d)) chosen.push(d);
+  chosen.sort((a, b) => a.q.questionNumber - b.q.questionNumber);
+
+  const ctx = textContext(pick.paragraphs);
+  const names = await sourceNames([pick.passage]);
+  const m = pick.main;
+  return {
+    kind: 'workflow',
+    passageId: String(pick.passage._id),
+    passageTitle: pick.passage.title,
+    sourceName: names[String(pick.passage._id)],
+    paragraphs: pick.paragraphs.map(publicParagraph),
+    main: {
+      questionNumber: m.q.questionNumber, kind: m.kind, text: m.text, choices: m.choices,
+      listTitle: m.listTitle || null, targetParagraph: m.targetParagraph,
+    },
+    questions: chosen.map(d => {
+      const span = evidenceSpan(d.evidence, pick.paragraphs);
+      return {
+        questionNumber: d.q.questionNumber,
+        questionType: d.questionType,
+        text: d.text,
+        input: d.input,
+        choices: d.choices || null,
+        wordLimit: d.wordLimit || null,
+        instruction: d.instruction || null,
+        keywords: stemKeywords(d.text, span ? span.text : '', ctx),
+        locationParagraph: d.evidence.paragraphIndex,
+      };
+    }),
   };
 }
 
@@ -915,13 +1210,16 @@ async function getPractice(lessonKey, { rng = Math.random } = {}) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
   const cfg = PRACTICE_CONFIG[lessonKey];
-  const build = { skimming: buildSkimming, scanning: buildScanning, questions: buildQuestionType }[cfg.kind];
+  const build = {
+    skimming: buildSkimming, scanning: buildScanning, questions: buildQuestionType,
+    paraphrase: buildParaphrase, workflow: buildWorkflow,
+  }[cfg.kind];
   const practice = await build(cfg, rng);
   return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.
-async function checkAnswer(lessonKey, { passageId, questionNumber, answer }) {
+async function checkAnswer(lessonKey, { passageId, questionNumber, answer, pairIndex }) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
   const cfg = PRACTICE_CONFIG[lessonKey];
@@ -931,11 +1229,34 @@ async function checkAnswer(lessonKey, { passageId, questionNumber, answer }) {
   if (!passage) return { status: 'not_found' };
 
   const qNum = Number(questionNumber);
+  const userAnswer = String(answer == null ? '' : answer).slice(0, 200);
+
+  if (cfg.kind === 'paraphrase') {
+    const pair = paraphrasePairs(passage).find(p => p.q.questionNumber === qNum && p.k === Number(pairIndex));
+    if (!pair) return { status: 'not_in_practice' };
+    const at = pair.sentence.text.indexOf(pair.phrase);
+    return {
+      status: 'ok',
+      result: {
+        questionNumber: qNum,
+        isCorrect: gradePhraseSelection(userAnswer, pair.phrase),
+        correctAnswer: pair.phrase,
+        keyword: pair.keyword,
+        explanation: pair.q.explanation || '',
+        evidence: { paragraphIndex: pair.sentence.paragraphIndex, text: at === -1 ? pair.sentence.text : pair.phrase },
+      },
+    };
+  }
+
   let entry;
   let paragraphs;
   if (cfg.kind === 'skimming') {
     entry = skimItemsForPassage(passage).find(it => it.q.questionNumber === qNum);
     paragraphs = entry && entry.paragraphs;
+  } else if (cfg.kind === 'workflow') {
+    const w = workflowItems(passage);
+    entry = [w.main, ...w.details].find(it => it && it.q.questionNumber === qNum);
+    paragraphs = w.paragraphs;
   } else {
     const res = cfg.kind === 'scanning' ? scanItemsForPassage(passage) : questionTypeItems(passage, cfg.questionType);
     entry = res.items.find(it => it.q.questionNumber === qNum);
@@ -943,7 +1264,6 @@ async function checkAnswer(lessonKey, { passageId, questionNumber, answer }) {
   }
   if (!entry) return { status: 'not_in_practice' };
 
-  const userAnswer = String(answer == null ? '' : answer).slice(0, 200);
   const { gradedAnswers } = gradeGroups([{ questions: [entry.q] }], { [qNum]: userAnswer });
   const evidence = entry.evidence || locateEvidence(entry.q.explanation, paragraphs);
   return {
@@ -965,7 +1285,8 @@ module.exports = {
   checkAnswer,
   // Exported for unit tests / the read-only data audit.
   _internals: {
-    locateQuotes, classifyGroup, questionTypeItems,
+    locateQuotes, classifyGroup, questionTypeItems, guideFor, stemKeywords, evidenceSpan,
+    paraphrasePairs, gradePhraseSelection, workflowItems,
     passageToParagraphs, locateEvidence, answerSentence, splitSentences, extractAnchors, normalizeForMatch,
     skimItemsForPassage, scanItemsForPassage, questionStem, isChoiceAnswer, answerInPassage, wordLimit, htmlToLines,
   },

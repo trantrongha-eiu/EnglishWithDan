@@ -27,6 +27,14 @@
       name: 'Scanning',
       desc: 'Tìm thật nhanh tên riêng, con số, năm… trong một bài đọc thật để điền đáp án. Đừng đọc cả bài trước — xác định keyword rồi scan.',
     },
+    'keyword-to-paraphrase': {
+      name: 'Keyword → Paraphrase',
+      desc: 'Xem keyword trong câu hỏi thật, rồi bôi chọn cụm có nghĩa tương đương (paraphrase) trong câu của bài đọc — các cặp lấy từ lời giải của đề.',
+    },
+    'skim-scan-workflow': {
+      name: 'Quy trình làm bài',
+      desc: 'Làm trọn 7 bước trên một bài đọc thật: đọc tiêu đề → skim → ý chính → đọc câu hỏi → tìm keyword → scan → kiểm tra evidence.',
+    },
     'true-false-not-given': {
       name: 'True / False / Not Given',
       desc: 'Làm các câu T/F/NG thật trong một bài đọc từ đề: tìm thông tin, so sánh ý nghĩa rồi chọn TRUE / FALSE / NOT GIVEN.',
@@ -209,7 +217,18 @@
   }
 
   function itemsOf(practice) {
-    return practice && (practice.kind === 'skimming' ? practice.items : practice.questions);
+    if (!practice) return null;
+    return practice.kind === 'skimming' || practice.kind === 'paraphrase' ? practice.items : practice.questions;
+  }
+
+  // Per-question state that survives a reload (timers / in-flight flags don't).
+  const SAVED_ANSWER_FIELDS = ['value', 'result', 'seconds', 'hint', 'viewed', 'gStep', 'hintLevel', 'sel', 'kw', 'kwDone', 'loc', 'wfStep'];
+  function savedAnswer(a) {
+    const out = {};
+    SAVED_ANSWER_FIELDS.forEach(k => { if (a && a[k] !== undefined) out[k] = a[k]; });
+    if (out.value == null) out.value = '';
+    if (out.result === undefined) out.result = null;
+    return out;
   }
 
   // The saved record for a tip, with its practice dropped if it's stale or
@@ -232,12 +251,15 @@
       ...(all[st.lesson.lessonKey] || {}), // keeps last / best / attempts
       savedAt: Date.now(),
       practice: st.practice,
-      answers: st.answers.map(a => ({ value: a.value, result: a.result, seconds: a.seconds, hint: a.hint })),
+      answers: st.answers.map(savedAnswer),
       idx: st.idx,
       showFull: st.showFull,
       introSeen: st.introSeen,
       finished: st.finished,
       counted: st.counted,
+      stage: st.stage,
+      main: st.main ? savedAnswer(st.main) : null,
+      guess: st.guess || '',
     };
     writeStore(all);
   }
@@ -307,7 +329,8 @@
     const cls = ['rtp-para', p.heading ? 'rtp-para-heading' : '', opts.dim && !p.heading ? 'rtp-dim' : '',
       isTarget ? 'rtp-para-target' : '',
       opts.evidence && opts.evidence.paragraphIndex === p.i ? 'rtp-para-ev' : ''].filter(Boolean).join(' ');
-    return `<p class="${cls}" data-pi="${p.i}">${label}${highlight(p.text, ranges)}</p>`;
+    const act = opts.clickable && !p.heading ? ' data-act="wf-loc"' : '';
+    return `<p class="${cls}" data-pi="${p.i}"${act}>${label}${highlight(p.text, ranges)}</p>`;
   }
 
   // Scrolls only the passage pane (it's position:relative, so offsetTop is
@@ -343,9 +366,13 @@
       if (e.key === 'Enter' && e.target.matches('.rtp-input')) { e.preventDefault(); checkCurrent(); }
     });
     section.addEventListener('input', (e) => {
-      if (e.target.matches('.rtp-input') && st) {
-        st.answers[st.idx].value = e.target.value;
+      if (!st) return;
+      if (e.target.matches('.rtp-input')) {
+        activeAnswer().value = e.target.value;
         syncCheckBtn();
+        persistSoon();
+      } else if (e.target.matches('.rtp-wf-guess')) {
+        st.guess = e.target.value;
         persistSoon();
       }
     });
@@ -444,6 +471,7 @@
       lesson, practice, kind: practice.kind, items,
       idx: 0, showFull: false, introSeen: false, finished: false, counted: false,
       answers: freshAnswers(items),
+      stage: 0, main: { value: '', result: null }, guess: '',
     };
     persist();
     renderEntry(lesson);
@@ -463,10 +491,10 @@
       lesson, practice: rec.practice, kind: rec.practice.kind, items,
       idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
       showFull: !!rec.showFull, introSeen: !!rec.introSeen, finished: !!rec.finished, counted: !!rec.counted,
-      answers: rec.answers.map(a => ({
-        value: (a && a.value) || '', result: (a && a.result) || null,
-        seconds: a && a.seconds != null ? a.seconds : null, hint: !!(a && a.hint),
-      })),
+      answers: rec.answers.map(savedAnswer),
+      stage: Number(rec.stage) || 0,
+      main: rec.main ? savedAnswer(rec.main) : { value: '', result: null },
+      guess: rec.guess || '',
     };
     renderEntry(lesson);
     if (st.finished) renderResult(); else renderQuestion();
@@ -476,9 +504,14 @@
 
   // ── Question screens ──────────────────────────────────────────────────
 
+  // Phase 3 "I do": the worked example isn't answered — it counts as done
+  // once walked through, and is left out of the score.
+  const isExample = (i) => !!(st.items[i] && st.items[i].guided && st.items[i].guided.mode === 'example');
+  const isDone = (i) => !!(st.answers[i] && (st.answers[i].result || (isExample(i) && st.answers[i].viewed)));
+
   function headerHtml(sourceLine) {
     const n = st.items.length;
-    const done = st.answers.filter(a => a.result).length;
+    const done = st.answers.filter((a, i) => isDone(i)).length;
     return `<div class="rtp-head">
       <div class="rtp-head-top">
         <div class="rtp-title">🎯 Luyện tập: ${esc(COPY[st.lesson.lessonKey].name)}</div>
@@ -500,21 +533,23 @@
     return `<div class="rtp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
       <div class="q-correct-ans ${r.isCorrect ? 'right' : 'wrong'}">${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${answerLine}</div>
       ${extra.timeLine || ''}
-      ${r.evidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence trong bài</div>“${esc(r.evidence.text)}”</div>` : ''}
+      ${r.evidence && !extra.noEvidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence trong bài</div>“${esc(r.evidence.text)}”</div>` : ''}
       ${r.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
     </div>`;
   }
 
   function navHtml() {
     const a = st.answers[st.idx];
+    const done = isDone(st.idx);
     const last = st.idx === st.items.length - 1;
-    const allDone = st.answers.every(x => x.result);
-    const checkBtn = a.result ? '' : `<button type="button" class="rtp-btn rtp-btn-primary" data-act="check" ${String(a.value || '').trim() ? '' : 'disabled'}>Kiểm tra</button>`;
-    const firstOpen = st.answers.findIndex(x => !x.result);
+    const allDone = st.answers.every((x, i) => isDone(i));
+    const checkBtn = done || isExample(st.idx) ? ''
+      : `<button type="button" class="rtp-btn rtp-btn-primary" data-act="check" ${String(a.value || '').trim() ? '' : 'disabled'}>Kiểm tra</button>`;
+    const firstOpen = st.answers.findIndex((x, i) => !isDone(i));
     let nextBtn;
-    if (!last) nextBtn = `<button type="button" class="rtp-btn ${a.result ? 'rtp-btn-primary' : ''}" data-act="next">Câu tiếp →</button>`;
+    if (!last) nextBtn = `<button type="button" class="rtp-btn ${done ? 'rtp-btn-primary' : ''}" data-act="next">Câu tiếp →</button>`;
     else if (allDone) nextBtn = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="finish">Xem kết quả 🎉</button>`;
-    else if (a.result) nextBtn = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="goto" data-idx="${firstOpen}">Làm câu còn lại →</button>`;
+    else if (done) nextBtn = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="goto" data-idx="${firstOpen}">Làm câu còn lại →</button>`;
     else nextBtn = '';
     return `<div class="rtp-nav">
       <button type="button" class="rtp-btn" data-act="prev" ${st.idx === 0 ? 'disabled' : ''}>← Câu trước</button>
@@ -526,6 +561,8 @@
     stopTimer();
     if (st.kind === 'skimming') renderSkim();
     else if (st.kind === 'scanning') renderScan();
+    else if (st.kind === 'paraphrase') renderParaphrase();
+    else if (st.kind === 'workflow') renderWorkflow();
     else if (!st.introSeen) renderTypeIntro();
     else renderTypeQuestion();
   }
@@ -679,8 +716,131 @@
         <ol class="rtp-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
         ${g.warning ? `<div class="rtp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
         <div class="rtp-intro-meta">Bài luyện gồm ${st.items.length} câu ${esc(name)} lấy nguyên từ đề thật, giữ đúng thứ tự như trong đề.</div>
+        ${st.items[0] && st.items[0].guided ? `<div class="rtp-intro-meta">🧑‍🏫 Câu 1 là ví dụ làm mẫu từng bước · 💡 Câu 2 có gợi ý, bạn tự trả lời · ✏️ Từ câu 3 bạn tự làm.</div>` : ''}
         <button type="button" class="rtp-btn rtp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
       </div>`);
+  }
+
+  // Choices / text box for one question. `shownKey` marks the key as the
+  // answer without a graded result (the worked example's last step).
+  function answerInputHtml(q, a, shownKey) {
+    const r = a.result;
+    const locked = !!r || shownKey != null;
+    if (q.input === 'text') {
+      const cls = r ? (r.isCorrect ? 'correct' : 'incorrect') : (shownKey != null ? 'correct' : '');
+      const val = !r && shownKey != null ? String(shownKey).split('/')[0].trim() : a.value;
+      return `<input class="fill-input rtp-input ${cls}" value="${esc(val)}" ${locked ? 'readonly' : ''}
+        placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />`;
+    }
+    const choices = q.choices || [];
+    const correct = r ? r.correctAnswer : shownKey;
+    const pickCls = (c) => {
+      if (correct == null) return sameKey(a.value, c.key) ? 'selected' : '';
+      if (sameKey(correct, c.key)) return 'correct-ans';
+      return r && sameKey(a.value, c.key) ? 'wrong-ans' : '';
+    };
+    const attrs = (c) => (locked ? '' : `data-act="pick" data-val="${esc(c.key)}"`);
+    if (choices.every(c => !c.label)) {
+      // TRUE/FALSE/NOT GIVEN, YES/NO/NOT GIVEN, paragraph letters.
+      const letters = choices.every(c => c.key.length === 1);
+      return `<div class="tfng-opts rtp-key-opts${letters ? ' rtp-letter-opts' : ''}">${choices.map(c =>
+        `<div class="tfng-opt ${pickCls(c)}" ${attrs(c)}>${esc(c.key)}</div>`).join('')}</div>`;
+    }
+    return (q.listTitle ? `<div class="rtp-list-title">${esc(q.listTitle)}</div>` : '')
+      + `<div class="q-options">${choices.map(c => `<label class="radio-opt ${pickCls(c)}" ${attrs(c)}>
+        <span class="radio-dot"></span><span class="radio-letter">${esc(c.key)}.</span> ${esc(c.label)}</label>`).join('')}</div>`;
+  }
+
+  function keyLabel(q, key) {
+    const c = (q.choices || []).find(x => sameKey(x.key, key));
+    if (c) return c.label ? `${c.key}. ${c.label}` : c.key;
+    return String(key || '').split('/').map(s => s.trim()).filter(Boolean).join(' / ');
+  }
+
+  function paraName(pr, index) {
+    const p = pr.paragraphs.find(x => x.i === index);
+    if (!p) return 'bài đọc';
+    return p.label ? `đoạn ${p.label}` : p.n ? `đoạn ${p.n}` : 'phần mở đầu';
+  }
+
+  const chipsHtml = (list) => list.map(k => `<span class="rtp-anchor-chip">${esc(k)}</span>`).join(' ');
+
+  // ── Phase 3: "I do" (worked example) / "We do" (hints) / "You do" ─────
+
+  function exampleSteps(pr, q, g) {
+    const where = paraName(pr, g.evidence.paragraphIndex);
+    const answer = keyLabel(q, g.answer);
+    const analysis = g.explanation ? `<div class="q-explanation"><strong>Phân tích (lời giải của đề):</strong> ${escNl(g.explanation)}</div>` : '';
+    if (pr.questionType === 'headings') {
+      return [
+        ['BƯỚC 1 — Đọc câu chủ đề của đoạn', `Đọc câu đầu của ${esc(where)} (tô vàng, viền đỏ): “${esc(g.evidence.text)}”`],
+        ['BƯỚC 2 — Tóm tắt ý chính', 'Tự hỏi: cả đoạn đang nói về điều gì? Bỏ qua ví dụ, số liệu, tên riêng.'],
+        ['BƯỚC 3 — So với danh sách heading', 'Tìm heading diễn đạt lại đúng ý chính đó; loại heading chỉ khớp một chi tiết hoặc chỉ lặp lại một từ trong đoạn.'],
+        ['BƯỚC 4 — Kết luận', `${analysis}<div class="rtp-answer-line">→ Đáp án: <strong>${esc(answer)}</strong></div>`],
+      ];
+    }
+    const kw = g.keywords.length ? chipsHtml(g.keywords) : '<i>(không có tên riêng / số — dùng các từ nội dung chính)</i>';
+    const verdict = q.input === 'text'
+      ? `→ Chép đúng từ trong bài: <strong>${esc(answer)}</strong>${q.wordLimit ? ` (giới hạn: ${esc(q.wordLimit)})` : ''}`
+      : `→ Đáp án: <strong>${esc(answer)}</strong>`;
+    return [
+      ['BƯỚC 1 — Tìm keyword', `Gạch chân keyword trong câu hỏi: ${kw}`],
+      ['BƯỚC 2 — Scan bài đọc', `Lướt tìm keyword (tô xanh trong bài) → thông tin nằm ở <b>${esc(where)}</b> (viền đỏ).`],
+      ['BƯỚC 3 — Đọc câu chứa evidence', `“${esc(g.evidence.text)}” <span class="rtp-muted">(tô xanh lá trong bài)</span>`],
+      ['BƯỚC 4 — So sánh & kết luận', `<div class="rtp-compare"><div><b>Câu hỏi:</b> ${esc(q.text)}</div><div><b>Bài đọc:</b> “${esc(g.evidence.text)}”</div></div>${analysis}<div class="rtp-answer-line">${verdict}</div>`],
+    ];
+  }
+
+  function hintLines(pr, g) {
+    const where = paraName(pr, g.evidence.paragraphIndex);
+    if (pr.questionType === 'headings') {
+      return [
+        ['Gợi ý 1 — câu chủ đề', `Đọc câu đầu của ${esc(where)}: “${esc(g.evidence.text)}”`],
+        ['Gợi ý 2 — cách chọn', 'Heading đúng tóm được CẢ đoạn và thường diễn đạt khác câu chủ đề — loại heading chỉ khớp một chi tiết.'],
+      ];
+    }
+    return [
+      ['Gợi ý 1 — keyword', g.keywords.length ? chipsHtml(g.keywords) : 'Dùng các từ nội dung chính của câu hỏi.'],
+      ['Gợi ý 2 — vị trí', `Thông tin nằm ở <b>${esc(where)}</b> (viền đỏ) — keyword đã tô xanh trong bài.`],
+      ['Gợi ý 3 — câu evidence', `Đọc kỹ: “${esc(g.evidence.text)}”`],
+    ];
+  }
+
+  function guidedPanelHtml(pr, q, a) {
+    const g = q.guided;
+    if (!g) return '<div class="rtp-mode self">✏️ Tự làm</div>';
+    if (g.mode === 'example') {
+      const steps = exampleSteps(pr, q, g);
+      const step = Math.min(a.gStep || 1, steps.length);
+      return `<div class="rtp-guided example">
+        <div class="rtp-mode example">🧑‍🏫 Xem cách làm — câu ví dụ, không tính điểm</div>
+        ${steps.slice(0, step).map(([t, b]) => `<div class="rtp-gstep"><div class="rtp-gstep-t">${t}</div><div class="rtp-gstep-b">${b}</div></div>`).join('')}
+        ${step < steps.length ? '<button type="button" class="rtp-btn rtp-btn-primary" data-act="guide-next">Bước tiếp →</button>' : ''}
+      </div>`;
+    }
+    const lines = hintLines(pr, g);
+    const lv = Math.min(a.hintLevel || 0, lines.length);
+    return `<div class="rtp-guided hint">
+      <div class="rtp-mode hint">💡 Câu có gợi ý — bạn tự trả lời, mở gợi ý khi cần</div>
+      ${lines.slice(0, lv).map(([t, b]) => `<div class="rtp-hint-line"><b>${t}:</b> ${b}</div>`).join('')}
+      ${!a.result && lv < lines.length ? `<button type="button" class="rtp-link" data-act="hint-more">💡 Mở ${esc(lines[lv][0].toLowerCase())}</button>` : ''}
+    </div>`;
+  }
+
+  // What the passage and the question show at the current guidance level
+  // (both modes reveal in the same order: keywords → location → evidence).
+  function guidedView(pr, q, a) {
+    const g = q.guided;
+    const none = { stemKw: [], hits: [], target: q.targetParagraph, evidence: null };
+    if (!g) return none;
+    const level = g.mode === 'example' ? (a.gStep || 1) : (a.hintLevel || 0);
+    if (pr.questionType === 'headings') return none; // target paragraph + its topic sentence are always marked
+    return {
+      stemKw: level >= 1 ? g.keywords : [],
+      hits: level >= 2 ? g.keywords : [],
+      target: q.targetParagraph != null ? q.targetParagraph : (level >= 2 ? g.evidence.paragraphIndex : null),
+      evidence: level >= 3 ? g.evidence : null,
+    };
   }
 
   function renderTypeQuestion() {
@@ -689,36 +849,11 @@
     const a = st.answers[st.idx];
     const r = a.result;
     const g = TYPE_GUIDE[pr.questionType] || { steps: [] };
-    const target = q.targetParagraph;
-    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence: r && r.evidence, target })).join('');
-
-    let inputHtml;
-    let correctLabel = '';
-    if (q.input === 'text') {
-      const cls = r ? (r.isCorrect ? 'correct' : 'incorrect') : '';
-      inputHtml = `<input class="fill-input rtp-input ${cls}" value="${esc(a.value)}" ${r ? 'readonly' : ''}
-        placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />`;
-    } else {
-      const choices = q.choices || [];
-      const pickCls = (c) => {
-        if (!r) return sameKey(a.value, c.key) ? 'selected' : '';
-        if (sameKey(r.correctAnswer, c.key)) return 'correct-ans';
-        return sameKey(a.value, c.key) ? 'wrong-ans' : '';
-      };
-      const attrs = (c) => (r ? '' : `data-act="pick" data-val="${esc(c.key)}"`);
-      if (choices.every(c => !c.label)) {
-        // TRUE/FALSE/NOT GIVEN, YES/NO/NOT GIVEN, paragraph letters.
-        const letters = choices.every(c => c.key.length === 1);
-        inputHtml = `<div class="tfng-opts rtp-key-opts${letters ? ' rtp-letter-opts' : ''}">${choices.map(c =>
-          `<div class="tfng-opt ${pickCls(c)}" ${attrs(c)}>${esc(c.key)}</div>`).join('')}</div>`;
-      } else {
-        inputHtml = (q.listTitle ? `<div class="rtp-list-title">${esc(q.listTitle)}</div>` : '')
-          + `<div class="q-options">${choices.map(c => `<label class="radio-opt ${pickCls(c)}" ${attrs(c)}>
-            <span class="radio-dot"></span><span class="radio-letter">${esc(c.key)}.</span> ${esc(c.label)}</label>`).join('')}</div>`;
-      }
-      const hit = r && choices.find(c => sameKey(c.key, r.correctAnswer));
-      if (hit) correctLabel = hit.label ? `${hit.key}. ${hit.label}` : hit.key;
-    }
+    const view = guidedView(pr, q, a);
+    const exampleDone = isExample(st.idx) && (a.gStep || 1) >= exampleSteps(pr, q, q.guided).length;
+    const evidence = (r && r.evidence) || view.evidence;
+    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence, target: view.target, hits: view.hits })).join('');
+    const stemRanges = view.stemKw.flatMap(k => findTerm(q.text, k).map(x => ({ ...x, cls: 'rtp-anchor' })));
 
     showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
       + guideHtml(g, false)
@@ -728,50 +863,302 @@
           <div class="rtp-passage-scroll">${paras}</div>
         </div>
         <div class="rtp-question">
+          ${guidedPanelHtml(pr, q, a)}
           <div class="question-item">
             <div class="q-num-label"><span class="q-badge">${q.questionNumber}</span></div>
             ${q.instruction ? `<div class="rtp-instruction">${esc(q.instruction)}</div>` : ''}
-            <div class="q-text">${esc(q.text)}</div>
+            <div class="q-text">${highlight(q.text, stemRanges)}</div>
             ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
-            ${inputHtml}
+            ${answerInputHtml(q, a, exampleDone ? q.guided.answer : null)}
           </div>
-          ${feedbackHtml(a, { correctLabel })}
+          ${feedbackHtml(a, { correctLabel: r ? keyLabel(q, r.correctAnswer) : '' })}
           ${navHtml()}
         </div>
       </div>`);
     const panel = panelEl();
-    if (r && r.evidence) scrollPassageTo(panel, '.rtp-ev') || scrollPassageTo(panel, '.rtp-para-ev');
-    else if (target != null) scrollPassageTo(panel, '.rtp-para-target');
-    if (!r && q.input === 'text') {
+    if (evidence) scrollPassageTo(panel, '.rtp-ev') || scrollPassageTo(panel, '.rtp-para-ev');
+    else if (view.target != null) scrollPassageTo(panel, '.rtp-para-target');
+    if (!r && q.input === 'text' && !isExample(st.idx)) {
       const input = panel && panel.querySelector('.rtp-input');
       if (input && window.matchMedia('(min-width: 900px)').matches) input.focus({ preventScroll: true });
     }
   }
 
+  // ── Keyword → Paraphrase ──────────────────────────────────────────────
+
+  // The words of the passage sentence as clickable tokens (spaces kept).
+  function sentenceTokens(sentence) {
+    const out = [];
+    let pos = 0;
+    let wi = 0;
+    for (const t of String(sentence).split(/(\s+)/)) {
+      if (t) out.push({ text: t, start: pos, end: pos + t.length, word: /\S/.test(t) ? wi++ : null });
+      pos += t.length;
+    }
+    return out;
+  }
+
+  function selectedText(sentence, sel) {
+    if (!sel) return '';
+    const words = sentenceTokens(sentence).filter(t => t.word != null);
+    const a = words[sel[0]];
+    const b = words[sel[1]];
+    return a && b ? String(sentence).slice(a.start, b.end) : '';
+  }
+
+  function renderParaphrase() {
+    const it = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const r = a.result;
+    const okAt = r ? it.sentence.indexOf(r.correctAnswer) : -1;
+    const okEnd = okAt === -1 ? -1 : okAt + String(r.correctAnswer).length;
+    const tokens = sentenceTokens(it.sentence).map(t => {
+      if (t.word == null) return esc(t.text);
+      const inSel = a.sel && t.word >= a.sel[0] && t.word <= a.sel[1];
+      const inOk = okAt !== -1 && t.start >= okAt && t.end <= okEnd;
+      const cls = ['rtp-tok', inSel ? 'sel' : '', inOk ? 'ok' : ''].filter(Boolean).join(' ');
+      return `<span class="${cls}" ${r ? '' : `data-act="tok" data-ti="${t.word}"`}>${esc(t.text)}</span>`;
+    }).join('');
+    const kwRanges = findTerm(it.question, it.keyword).map(x => ({ ...x, cls: 'rtp-anchor' }));
+    const picked = selectedText(it.sentence, a.sel);
+    const pair = r ? `<div class="rtp-pair">🔁 <b>${esc(it.keyword)}</b> ⇄ <b>${esc(r.correctAnswer)}</b></div>` : '';
+
+    showPanelState(headerHtml(`${esc(it.sourceName)} · ${esc(it.passageTitle)}`)
+      + `<div class="rtp-pp">
+        <div class="rtp-pp-label">Câu hỏi (câu ${it.questionNumber} trong đề)</div>
+        <div class="rtp-pp-question">${highlight(it.question, kwRanges)}</div>
+        <div class="rtp-pp-kw">🔑 Keyword: <span class="rtp-anchor-chip">${esc(it.keyword)}</span></div>
+        <div class="rtp-pp-label">Câu trong bài đọc${it.paragraphLabel ? ` (đoạn ${esc(it.paragraphLabel)})` : ''}</div>
+        <div class="rtp-pp-sentence">${tokens}</div>
+        ${r ? '' : `<div class="rtp-pp-help">Bấm vào từ ĐẦU rồi từ CUỐI của cụm có nghĩa tương đương với keyword (cụm 1 từ thì bấm 1 lần). Bấm tiếp để chọn lại.</div>`}
+        ${picked && !r ? `<div class="rtp-pp-picked">Bạn chọn: “${esc(picked)}”</div>` : ''}
+        ${pair}
+        ${feedbackHtml(a, { correctLabel: `“${r ? r.correctAnswer : ''}”`, noEvidence: true })}
+        ${navHtml()}
+      </div>`);
+  }
+
+  // ── Quy trình làm bài (7 steps on one passage) ────────────────────────
+
+  const WF_STEPS = ['Đọc tiêu đề', 'Skim các đoạn', 'Ý chính', 'Đọc câu hỏi', 'Tìm keyword', 'Scan bài', 'Kiểm tra evidence'];
+  const wfStages = () => ['title', 'skim', 'main', 'read', ...st.items.map((_, i) => `q${i}`)];
+  const wfStage = () => wfStages()[st.stage] || 'title';
+
+  function wfHeader(stepNo) {
+    const pr = st.practice;
+    const steps = WF_STEPS.map((s, i) => {
+      const cls = i + 1 < stepNo ? 'done' : i + 1 === stepNo ? 'active' : '';
+      return `<div class="rtp-wf-step ${cls}"><b>${i + 1}</b><span>${esc(s)}</span></div>`;
+    }).join('');
+    const qPart = /^q\d+$/.test(wfStage()) ? ` · câu hỏi ${st.idx + 1}/${st.items.length}` : '';
+    return `<div class="rtp-head">
+      <div class="rtp-head-top">
+        <div class="rtp-title">🎯 Luyện tập: Quy trình làm bài${qPart}</div>
+        <button type="button" class="rtp-link" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+      </div>
+      <div class="rtp-source">Nguồn: ${esc(pr.sourceName)} · ${esc(pr.passageTitle)}</div>
+      <div class="rtp-wf-steps">${steps}</div>
+    </div>`;
+  }
+
+  function wfPassage(opts) {
+    const pr = st.practice;
+    return `<div class="rtp-passage">
+      <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>${opts.head || ''}</div>
+      ${opts.tip ? `<div class="rtp-tip">💡 ${esc(opts.tip)}</div>` : ''}
+      <div class="rtp-passage-scroll${opts.clickable ? ' rtp-clickable' : ''}">${pr.paragraphs.map(p => paraHtml(p, opts)).join('')}</div>
+    </div>`;
+  }
+
+  function renderWorkflow() {
+    const pr = st.practice;
+    const stage = wfStage();
+    const nextBtn = (label) => `<button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-next">${esc(label)}</button>`;
+
+    if (stage === 'title') {
+      const intro = pr.paragraphs.filter(p => p.heading && normKey(p.text) !== normKey(pr.passageTitle)).slice(0, 2);
+      showPanelState(wfHeader(1) + `<div class="rtp-wf-card">
+        <div class="rtp-wf-task">Bước 1 — Đọc tiêu đề (5–10 giây) rồi tự hỏi: bài này có thể nói về điều gì?</div>
+        <div class="rtp-wf-title">${esc(pr.passageTitle)}</div>
+        ${intro.map(p => `<div class="rtp-wf-sub">${esc(p.text)}</div>`).join('')}
+        <textarea class="rtp-wf-guess" rows="2" placeholder="Ghi nhanh dự đoán của bạn (không chấm điểm)…">${esc(st.guess)}</textarea>
+        ${nextBtn('Tiếp: Bước 2 — Skim →')}
+      </div>`);
+      return;
+    }
+
+    if (stage === 'skim') {
+      if (st.skimStartedAt == null) st.skimStartedAt = Date.now();
+      showPanelState(wfHeader(2) + `<div class="rtp-wf-grid">
+        ${wfPassage({ lead: true, dim: true, head: '<span class="rtp-timer" id="rtp-timer"></span>', tip: 'Chỉ đọc câu đầu (tô vàng) của mỗi đoạn — khoảng 90 giây. Hỏi: mỗi đoạn nói về gì?' })}
+        <div class="rtp-wf-side">
+          <div class="rtp-wf-task">Bước 2 — Skim các đoạn</div>
+          <p>Đừng đọc từng chữ. Lướt câu chủ đề để nắm “bản đồ” của bài: đoạn nào nói về gì.</p>
+          ${st.guess ? `<p class="rtp-muted">Dự đoán của bạn ở bước 1: “${esc(st.guess)}” — có đúng không?</p>` : ''}
+          ${nextBtn('Tiếp: Bước 3 — Ý chính →')}
+        </div>
+      </div>`);
+      startCountdown(90, st.skimStartedAt);
+      return;
+    }
+
+    if (stage === 'main') {
+      const m = pr.main;
+      const a = st.main;
+      const r = a.result;
+      showPanelState(wfHeader(3) + `<div class="rtp-wf-grid">
+        ${wfPassage({ lead: true, target: m.targetParagraph, evidence: r && r.evidence })}
+        <div class="rtp-wf-side">
+          <div class="rtp-wf-task">Bước 3 — Xác định ý chính (câu ${m.questionNumber} trong đề)</div>
+          <div class="question-item">
+            <div class="q-text">${esc(m.text)}</div>
+            ${answerInputHtml({ input: 'choice', choices: m.choices, listTitle: m.listTitle }, a, null)}
+          </div>
+          ${feedbackHtml(a, { correctLabel: r ? keyLabel({ choices: m.choices }, r.correctAnswer) : '' })}
+          <div class="rtp-nav"><div class="rtp-nav-right">
+            ${r ? nextBtn('Tiếp: Bước 4 — Đọc câu hỏi →') : `<button type="button" class="rtp-btn rtp-btn-primary" data-act="check" ${a.value ? '' : 'disabled'}>Kiểm tra</button>`}
+          </div></div>
+        </div>
+      </div>`);
+      if (r && r.evidence) scrollPassageTo(panelEl(), '.rtp-ev');
+      else if (m.targetParagraph != null) scrollPassageTo(panelEl(), '.rtp-para-target');
+      return;
+    }
+
+    if (stage === 'read') {
+      showPanelState(wfHeader(4) + `<div class="rtp-wf-card">
+        <div class="rtp-wf-task">Bước 4 — Đọc hết câu hỏi TRƯỚC khi đọc kỹ bài</div>
+        <p>Biết trước mình cần tìm gì giúp bạn không phải đọc lại cả bài nhiều lần.</p>
+        <ol class="rtp-wf-qlist">${st.items.map(q => `<li><span class="q-badge">${q.questionNumber}</span> ${esc(q.text)}</li>`).join('')}</ol>
+        ${nextBtn('Tiếp: Bước 5 — Tìm keyword →')}
+      </div>`);
+      return;
+    }
+
+    // q<i>: steps 5 (keyword) → 6 (scan) → 7 (evidence + answer)
+    const q = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const r = a.result;
+    const step = a.wfStep || 5;
+    const kwRanges = step === 5 ? [] : q.keywords.flatMap(k => findTerm(q.text, k).map(x => ({ ...x, cls: 'rtp-anchor' })));
+    let side;
+    let passage;
+    if (step === 5) {
+      const picked = new Set(a.kw || []);
+      const tokens = sentenceTokens(q.text).map(t => (t.word == null ? esc(t.text)
+        : `<span class="rtp-tok${picked.has(t.word) ? ' sel' : ''}" ${a.kwDone ? '' : `data-act="wf-kw" data-ti="${t.word}"`}>${esc(t.text)}</span>`)).join('');
+      const mine = sentenceTokens(q.text).filter(t => t.word != null && picked.has(t.word)).map(t => t.text.replace(/[^\p{L}\p{N}'’-]/gu, ''));
+      const matched = mine.filter(w => q.keywords.some(k => k.toLowerCase().includes(w.toLowerCase()) && w.length >= 2));
+      side = `<div class="rtp-wf-task">Bước 5 — Tìm keyword</div>
+        <p>Bấm chọn các từ khoá trong câu hỏi: tên riêng, số / năm, từ khó thay thế.</p>
+        <div class="rtp-pp-sentence">${tokens}</div>
+        ${a.kwDone ? `<div class="rtp-hint-line"><b>Keyword gợi ý:</b> ${chipsHtml(q.keywords)}</div>
+          <div class="rtp-muted">Bạn chọn ${mine.length} từ, trùng ${matched.length} với gợi ý.</div>
+          <button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-step" data-step="6">Tiếp: Bước 6 — Scan →</button>`
+        : '<button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-kw-done">Xong — xem keyword gợi ý</button>'}`;
+      passage = wfPassage({});
+    } else if (step === 6) {
+      const tried = a.loc != null;
+      const ok = tried && a.loc === q.locationParagraph;
+      side = `<div class="rtp-wf-task">Bước 6 — Scan bài</div>
+        <div class="q-text">${highlight(q.text, kwRanges)}</div>
+        <p>Keyword đã tô xanh trong bài. Lướt tìm, rồi <b>bấm vào đoạn</b> chứa thông tin của câu hỏi.</p>
+        ${tried ? `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}">${ok ? '✓ Đúng đoạn!' : `✗ Chưa đúng — thông tin nằm ở ${esc(paraName(pr, q.locationParagraph))} (viền đỏ)`}</div>
+          <button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-step" data-step="7">Tiếp: Bước 7 — Đọc evidence & trả lời →</button>` : ''}`;
+      passage = wfPassage({ hits: q.keywords, clickable: !tried, target: tried ? q.locationParagraph : null });
+    } else {
+      side = `<div class="rtp-wf-task">Bước 7 — Đọc kỹ đoạn đó, kiểm tra evidence rồi trả lời</div>
+        <div class="question-item">
+          <div class="q-num-label"><span class="q-badge">${q.questionNumber}</span></div>
+          ${q.instruction ? `<div class="rtp-instruction">${esc(q.instruction)}</div>` : ''}
+          <div class="q-text">${highlight(q.text, kwRanges)}</div>
+          ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
+          ${answerInputHtml(q, a, null)}
+        </div>
+        ${feedbackHtml(a, { correctLabel: r ? keyLabel(q, r.correctAnswer) : '' })}
+        <div class="rtp-nav"><div class="rtp-nav-right">
+          ${r ? nextBtn(st.idx < st.items.length - 1 ? 'Câu hỏi tiếp →' : 'Xem kết quả 🎉')
+            : `<button type="button" class="rtp-btn rtp-btn-primary" data-act="check" ${String(a.value || '').trim() ? '' : 'disabled'}>Kiểm tra</button>`}
+        </div></div>`;
+      passage = wfPassage({ hits: q.keywords, target: q.locationParagraph, evidence: r && r.evidence });
+    }
+    showPanelState(wfHeader(step) + `<div class="rtp-wf-grid">${passage}<div class="rtp-wf-side">${side}</div></div>`);
+    const panel = panelEl();
+    if (r && r.evidence) scrollPassageTo(panel, '.rtp-ev');
+    else if (step === 7 || (step === 6 && a.loc != null)) scrollPassageTo(panel, '.rtp-para-target');
+    else if (step === 6) scrollPassageTo(panel, '.rtp-hit');
+  }
+
+  function normKey(s) { return String(s || '').trim().toLowerCase(); }
+
+  function renderWorkflowResult() {
+    stopTimer();
+    const pr = st.practice;
+    const mainOk = !!(st.main.result && st.main.result.isCorrect);
+    const detailOk = st.answers.filter(a => a.result && a.result.isCorrect).length;
+    const locOk = st.answers.filter((a, i) => a.loc === st.items[i].locationParagraph).length;
+    const n = st.items.length + 1;
+    const score = detailOk + (mainOk ? 1 : 0);
+    if (!st.counted) { recordScore(score, n); st.counted = true; }
+    st.finished = true;
+    persist();
+    renderEntry(st.lesson);
+    const rows = [
+      `<div class="rtp-result-row ${mainOk ? 'ok' : 'bad'}"><span>${mainOk ? '✓' : '✗'}</span><span class="rtp-result-q">Ý chính (câu ${pr.main.questionNumber}): ${esc(pr.main.text)}</span></div>`,
+      ...st.items.map((q, i) => {
+        const a = st.answers[i];
+        const ok = a.result && a.result.isCorrect;
+        const loc = a.loc === q.locationParagraph;
+        return `<div class="rtp-result-row ${ok ? 'ok' : 'bad'}"><span>${ok ? '✓' : '✗'}</span><span class="rtp-result-q">Câu ${q.questionNumber}: ${esc(q.text)} <em>· ${loc ? 'tìm đúng đoạn' : 'tìm sai đoạn'}</em></span></div>`;
+      }),
+    ].join('');
+    showPanelState(`<div class="rtp-result">
+      <div class="rtp-result-icon">🎉</div>
+      <div class="rtp-result-title">Hoàn thành luyện tập Quy trình làm bài</div>
+      <div class="rtp-score">${score} / ${n}</div>
+      <div class="rtp-result-msg">Tìm đúng đoạn chứa thông tin: <b>${locOk}/${st.items.length}</b> câu</div>
+      <div class="rtp-result-list">${rows}</div>
+      <div class="rtp-result-actions">
+        <button type="button" class="rtp-btn" data-act="wf-review">📖 Ôn lại</button>
+        <button type="button" class="rtp-btn" data-act="retry">🔄 Làm lại</button>
+        <button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎲 Bài khác</button>
+      </div>
+    </div>`);
+  }
+
+  // The answer being worked on: the workflow's main-idea question has its
+  // own slot; everything else is the current question's.
+  function activeAnswer() {
+    return st.kind === 'workflow' && wfStage() === 'main' ? st.main : st.answers[st.idx];
+  }
+
   function syncCheckBtn() {
     const btn = document.querySelector('#rtp-panel [data-act="check"]');
-    if (btn) btn.disabled = !String(st.answers[st.idx].value || '').trim();
+    if (btn) btn.disabled = !String(activeAnswer().value || '').trim();
   }
 
   async function checkCurrent() {
     if (!st) return;
-    const a = st.answers[st.idx];
+    const a = activeAnswer();
     if (a.result || a.checking || !String(a.value || '').trim()) return;
-    const it = st.items[st.idx];
-    const passageId = st.kind === 'skimming' ? it.passageId : st.practice.passageId;
+    const onMain = a === st.main;
+    const it = onMain ? st.practice.main : st.items[st.idx];
+    const passageId = st.kind === 'skimming' || st.kind === 'paraphrase' ? it.passageId : st.practice.passageId;
+    const body = { passageId, questionNumber: it.questionNumber, answer: String(a.value).trim() };
+    if (st.kind === 'paraphrase') body.pairIndex = it.pairIndex;
     a.checking = true;
     const btn = document.querySelector('#rtp-panel [data-act="check"]');
     if (btn) { btn.disabled = true; btn.textContent = 'Đang chấm...'; }
     try {
       const data = await apiFetch(`/api/reading-tips/${encodeURIComponent(st.lesson.lessonKey)}/practice/check`, {
         method: 'POST',
-        body: JSON.stringify({ passageId, questionNumber: it.questionNumber, answer: String(a.value).trim() }),
+        body: JSON.stringify(body),
       });
-      if (!st || !st.answers.includes(a)) return; // practice closed / replaced meanwhile
+      if (!st || !(onMain ? st.main === a : st.answers.includes(a))) return; // practice closed / replaced meanwhile
       if (st.kind === 'scanning' && a.startedAt) a.seconds = (Date.now() - a.startedAt) / 1000;
       a.result = data.result;
       persist();
-      if (st.answers[st.idx] === a) renderQuestion();
+      if (activeAnswer() === a) renderQuestion();
     } catch (err) {
       if (err && err.body && err.body.requiresPremium && typeof openUpgradeModal === 'function') openUpgradeModal();
       else if (typeof showToast === 'function') showToast((err && err.body && err.body.message) || 'Không chấm được đáp án, thử lại nhé.', 'error');
@@ -784,9 +1171,12 @@
   // ── Result ────────────────────────────────────────────────────────────
 
   function renderResult() {
+    if (st.kind === 'workflow') { renderWorkflowResult(); return; }
     stopTimer();
-    const n = st.items.length;
-    const score = st.answers.filter(a => a.result && a.result.isCorrect).length;
+    // The worked example (Phase 3) isn't answered, so it isn't scored.
+    const scored = st.items.map((it, i) => i).filter(i => !isExample(i));
+    const n = scored.length;
+    const score = scored.filter(i => st.answers[i].result && st.answers[i].result.isCorrect).length;
     if (!st.counted) { recordScore(score, n); st.counted = true; }
     st.finished = true;
     persist();
@@ -798,8 +1188,12 @@
     const total = st.kind === 'scanning'
       ? `<div class="rtp-time">⏱ Tổng thời gian scan: ${fmtTime(st.answers.reduce((s, a) => s + (a.seconds || 0), 0))}</div>` : '';
     const rows = st.items.map((it, i) => {
+      const text = st.kind === 'skimming' ? it.question.text : st.kind === 'paraphrase' ? `keyword “${it.keyword}”` : it.text;
+      if (isExample(i)) {
+        return `<button type="button" class="rtp-result-row example" data-act="goto" data-idx="${i}">
+          <span>📘</span><span class="rtp-result-q">Câu ${it.questionNumber} (ví dụ mẫu): ${esc(text)}</span></button>`;
+      }
       const ok = st.answers[i].result && st.answers[i].result.isCorrect;
-      const text = st.kind === 'skimming' ? it.question.text : it.text;
       return `<button type="button" class="rtp-result-row ${ok ? 'ok' : 'bad'}" data-act="goto" data-idx="${i}">
         <span>${ok ? '✓' : '✗'}</span><span class="rtp-result-q">Câu ${it.questionNumber}: ${esc(text)}</span></button>`;
     }).join('');
@@ -828,26 +1222,67 @@
     if (act === 'resume') { resume(lesson); return; }
     if (act === 'upgrade') { if (typeof openUpgradeModal === 'function') openUpgradeModal(); return; }
     if (!st) return;
+    const cur = st.answers[st.idx];
     switch (act) {
-      case 'pick':
-        if (st.answers[st.idx].result) return;
-        st.answers[st.idx].value = el.dataset.val;
+      case 'pick': {
+        const a = activeAnswer();
+        if (a.result) return;
+        a.value = el.dataset.val;
         break;
+      }
       case 'check': checkCurrent(); return;
       case 'prev': if (st.idx > 0) st.idx--; break;
       case 'next': if (st.idx < st.items.length - 1) st.idx++; break;
       case 'finish': renderResult(); return;
       case 'intro-done': st.introSeen = true; break;
-      case 'hint': st.answers[st.idx].hint = true; break;
+      case 'hint': cur.hint = true; break;
       case 'toggle-full': st.showFull = !st.showFull; break;
       case 'goto': st.idx = Math.min(Math.max(Number(el.dataset.idx) || 0, 0), st.items.length - 1); break;
       case 'review': st.idx = 0; break;
+      // Phase 3: worked example steps / "We do" hints
+      case 'guide-next': {
+        const total = exampleSteps(st.practice, st.items[st.idx], st.items[st.idx].guided).length;
+        cur.gStep = Math.min((cur.gStep || 1) + 1, total);
+        if (cur.gStep >= total) cur.viewed = true;
+        break;
+      }
+      case 'hint-more': cur.hintLevel = (cur.hintLevel || 0) + 1; break;
+      // Keyword → Paraphrase: first click = start word, second = end word
+      case 'tok': {
+        if (cur.result) return;
+        const w = Number(el.dataset.ti);
+        if (cur.selAnchor == null) { cur.selAnchor = w; cur.sel = [w, w]; }
+        else { cur.sel = [Math.min(cur.selAnchor, w), Math.max(cur.selAnchor, w)]; cur.selAnchor = null; }
+        cur.value = selectedText(st.items[st.idx].sentence, cur.sel);
+        break;
+      }
+      // Quy trình làm bài
+      case 'wf-next':
+        if (st.stage >= wfStages().length - 1) { renderResult(); return; }
+        st.stage++;
+        if (/^q\d+$/.test(wfStage())) st.idx = Number(wfStage().slice(1));
+        break;
+      case 'wf-kw': {
+        const w = Number(el.dataset.ti);
+        const set = new Set(cur.kw || []);
+        if (set.has(w)) set.delete(w); else set.add(w);
+        cur.kw = [...set];
+        break;
+      }
+      case 'wf-kw-done': cur.kwDone = true; break;
+      case 'wf-step': cur.wfStep = Number(el.dataset.step) || 5; break;
+      case 'wf-loc': if (cur.loc == null) cur.loc = Number(el.dataset.pi); break;
+      case 'wf-review': st.stage = 2; break;
       case 'retry':
         st.answers = freshAnswers(st.items);
         st.idx = 0;
         st.showFull = false;
         st.finished = false;
         st.counted = false;
+        st.stage = 0;
+        st.main = { value: '', result: null };
+        st.guess = '';
+        st.skimStartedAt = null;
         break;
       case 'close': {
         stopTimer();

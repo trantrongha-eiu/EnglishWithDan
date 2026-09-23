@@ -39,17 +39,18 @@ exports.getPractice = async (req, res) => {
 };
 
 // POST /api/reading-tips/:lessonKey/practice/check
-// body: { passageId, questionNumber, answer }
+// body: { passageId, questionNumber, answer, pairIndex? } — pairIndex picks
+// the paraphrase pair within a question (Keyword → Paraphrase practice).
 exports.checkPracticeAnswer = async (req, res) => {
   try {
-    const { passageId, questionNumber, answer } = req.body || {};
+    const { passageId, questionNumber, answer, pairIndex } = req.body || {};
     if (!mongoose.isValidObjectId(passageId) || !Number.isInteger(Number(questionNumber))) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    if (answer != null && typeof answer !== 'string') {
+    if ((answer != null && typeof answer !== 'string') || (pairIndex != null && !Number.isInteger(Number(pairIndex)))) {
       return res.status(400).json({ success: false, message: 'Đáp án không hợp lệ' });
     }
-    const result = await readingTipPracticeService.checkAnswer(req.params.lessonKey, { passageId, questionNumber, answer });
+    const result = await readingTipPracticeService.checkAnswer(req.params.lessonKey, { passageId, questionNumber, answer, pairIndex });
     if (result.status === 'no_practice') {
       return res.status(404).json({ success: false, code: 'NO_PRACTICE', message: 'Bài này chưa có phần luyện tập.' });
     }

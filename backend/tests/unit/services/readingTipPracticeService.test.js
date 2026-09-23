@@ -50,6 +50,26 @@ describe('passageToParagraphs', () => {
   });
 });
 
+describe('gradePhraseSelection (Keyword → Paraphrase highlight)', () => {
+  test.each([
+    ['spoilt the flavor', 'spoilt the flavor', true],
+    ['the method spoilt the flavor of', 'spoilt the flavor', true], // a little extra context is fine
+    ['flavor', 'spoilt the flavor', false], // half the phrase
+    ['crystals formed within the cells of the food and', 'spoilt the flavor', false],
+    ['At least three observations', 'At least three observations', true],
+  ])('%s vs %s → %s', (selected, phrase, expected) => {
+    expect(I.gradePhraseSelection(selected, phrase)).toBe(expected);
+  });
+});
+
+describe('evidenceSpan', () => {
+  test('widens a quoted fragment to its whole sentence(s), nothing more', () => {
+    const paras = I.passageToParagraphs('<p>First sentence here. In 1851, railroads put ice in cars. Last one.</p>');
+    expect(I.evidenceSpan({ paragraphIndex: 0, text: 'put ice in' }, paras).text).toBe('In 1851, railroads put ice in cars.');
+    expect(I.evidenceSpan({ paragraphIndex: 0, text: 'cars. Last' }, paras).text).toBe('In 1851, railroads put ice in cars. Last one.');
+  });
+});
+
 describe('classifyGroup', () => {
   const q = (n, type, key, extra = {}) => ({ questionNumber: n, type, questionText: `Q${n}`, correctAnswer: key, ...extra });
   test.each([

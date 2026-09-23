@@ -55,9 +55,10 @@ describe('filtering by question type (spec cases 1–3)', () => {
     expect(pr).toMatchObject({ kind: 'questions', questionType: 'tfng', passageId: String(passage._id) });
     expect(pr.questions.map(q => q.questionNumber)).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(pr.questions[0].choices.map(c => c.key)).toEqual(['TRUE', 'FALSE', 'NOT GIVEN']);
-    const keys = keysOf(res.body);
-    expect(keys.has('correctAnswer')).toBe(false);
-    expect(keys.has('explanation')).toBe(false);
+    // Only the worked example (Q1, Phase 3) may carry its key.
+    expect(pr.questions[0].isGuidedExample).toBe(true);
+    const keys = keysOf({ ...res.body, practice: { ...pr, questions: pr.questions.slice(1) } });
+    ['correctAnswer', 'explanation', 'answer'].forEach(k => expect(keys.has(k)).toBe(false));
   });
 
   test('CASE 2: the MCQ practice contains no T/F/NG', async () => {
