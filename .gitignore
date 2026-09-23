@@ -24,6 +24,10 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Full-document backups written by one-off data-fix scripts (real exam
+# content — local rollback copies, never committed)
+backend/scripts/backups/
+
 # Test output
 test-results/
 playwright-report/
