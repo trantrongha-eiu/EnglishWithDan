@@ -99,10 +99,39 @@
 }
 .et-text-input:focus { outline: none; border-color: var(--brand); }
 
-.et-reading-layout, .et-listening-layout { display: block; }
-.et-passage { margin-bottom: var(--space-5); }
+.et-listening-layout { display: block; }
+
+/* Split screen, mirrors reading-v2.js's .exam-split/.split-passage/
+   .split-questions (the standalone "đề lẻ" practice UI) — passage on the
+   left, questions on the right, each its own independently-scrolling pane
+   instead of one long stacked page. Not draggable-resize like the practice
+   page's divider (that page is a dedicated full-viewport exam screen; this
+   one sits inside the Entrance Test's normal scrolling shell/card), just a
+   fixed 50/50 split, which already delivers the "read on one side, answer
+   on the other without losing your place" experience being asked for. */
+.et-reading-layout {
+  display: flex;
+  gap: var(--space-4);
+  align-items: stretch;
+  height: calc(100vh - 260px);
+  min-height: 420px;
+}
+.et-reading-layout .et-passage {
+  width: 50%;
+  min-width: 240px;
+  overflow-y: auto;
+  padding-right: var(--space-3);
+  border-right: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.et-reading-layout .et-questions {
+  flex: 1;
+  min-width: 240px;
+  overflow-y: auto;
+  padding-left: var(--space-1);
+}
 .et-passage h3 { margin: 0 0 10px; }
-.et-passage-content { font-size: var(--fs-body-sm); line-height: 1.75; color: var(--text2); max-height: 340px; overflow-y: auto; padding-right: 6px; }
+.et-passage-content { font-size: var(--fs-body-sm); line-height: 1.75; color: var(--text2); }
 .et-passage-content p { margin: 0 0 12px; }
 
 .et-group { margin-bottom: var(--space-5); }
@@ -126,18 +155,38 @@
 .et-summary-text { font-size: var(--fs-body-sm); line-height: 2; margin-bottom: 10px; }
 .et-word-bank { font-size: var(--fs-caption); color: var(--text2); background: var(--surface2); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: var(--space-4); }
 
-.et-audio { width: 100%; margin-bottom: var(--space-5); }
+/* Locked audio player — no native <audio controls> (its scrub bar/skip
+   buttons let a student rewind or jump ahead, unlike a real listening exam's
+   one-shot continuous playback). Progress readout is display-only. */
+.et-audio-wrap { margin-bottom: var(--space-5); background: var(--surface2); border-radius: var(--radius); padding: var(--space-4); }
+.et-audio-countdown { text-align: center; font-size: var(--fs-body); color: var(--text2); padding: var(--space-3) 0; }
+.et-audio-countdown b { color: var(--brand); font: 800 20px 'JetBrains Mono', monospace; }
+.et-audio-playing { display: flex; align-items: center; gap: 10px; }
+.et-audio-icon { color: var(--brand); font-size: 18px; flex-shrink: 0; }
+.et-audio-bar { flex: 1; height: 8px; border-radius: var(--radius-pill); background: var(--border2); overflow: hidden; }
+.et-audio-bar-fill { height: 100%; background: var(--brand); border-radius: var(--radius-pill); width: 0%; transition: width .25s linear; }
+.et-audio-time { font: 700 13px 'JetBrains Mono', monospace; color: var(--text2); flex-shrink: 0; white-space: nowrap; }
+.et-audio-note { font-size: var(--fs-micro); color: var(--text3); margin-top: 8px; text-align: center; }
 
-.et-writing-layout { display: flex; flex-direction: column; gap: 10px; }
-.et-task-instructions { color: var(--text2); font-size: var(--fs-body-sm); font-style: italic; }
-.et-task-prompt { font-size: var(--fs-body); font-weight: 600; }
+/* Split screen, mirrors writing.js's .exam-body/.exam-left/.exam-right (the
+   real Writing exam page) — chart/prompt on the left (its own scroll pane),
+   the answer box on the right, instead of the image sitting above the
+   textarea where scrolling down to write pushes the chart out of view. */
+.et-writing-layout { display: flex; gap: var(--space-4); align-items: stretch; height: calc(100vh - 260px); min-height: 420px; }
+.et-writing-task {
+  width: 50%; min-width: 240px; overflow-y: auto;
+  padding-right: var(--space-3); border-right: 1px solid var(--border);
+}
+.et-task-instructions { color: var(--text2); font-size: var(--fs-body-sm); font-style: italic; margin-bottom: 8px; }
+.et-task-prompt { font-size: var(--fs-body); font-weight: 600; margin-bottom: 10px; }
 .et-task-image { max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.et-writing-answer { flex: 1; min-width: 240px; display: flex; flex-direction: column; }
 .et-writing-textarea {
-  width: 100%; min-height: 320px; resize: vertical; padding: var(--space-3);
+  width: 100%; flex: 1; min-height: 240px; resize: none; padding: var(--space-3);
   border: 1px solid var(--border2); border-radius: var(--radius-sm); font: 15px/1.6 inherit;
   background: var(--surface); color: var(--text);
 }
-.et-word-count { font-size: var(--fs-caption); color: var(--text2); text-align: right; }
+.et-word-count { font-size: var(--fs-caption); color: var(--text2); text-align: right; padding-top: 6px; }
 
 .et-submit-row { text-align: right; margin-top: var(--space-5); }
 
@@ -180,4 +229,30 @@
 @media (max-width: 640px) {
   .et-overall-band { font-size: 40px; }
   .et-runner-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+@media (max-width: 900px) {
+  /* Side-by-side reading/writing panes don't fit a phone/small-tablet
+     width — stack them instead, same breakpoint idea as reading.css's
+     .exam-split mobile rule. */
+  .et-reading-layout, .et-writing-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+  .et-reading-layout .et-passage,
+  .et-writing-task {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: var(--space-3);
+    max-height: 340px;
+  }
+  .et-reading-layout .et-questions {
+    padding-left: 0;
+    padding-top: var(--space-3);
+  }
+  .et-writing-answer { padding-top: var(--space-3); }
+  .et-writing-textarea { min-height: 260px; }
 }

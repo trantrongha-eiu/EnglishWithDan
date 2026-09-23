@@ -249,9 +249,17 @@
     // flight would otherwise stay disabled forever once we land on the
     // next section — the button would then silently swallow every click.
     $('et-submit-btn').disabled = false;
+    // The previous listening audio element is about to be destroyed by the
+    // innerHTML replacement below — stop it and clear its countdown/progress
+    // interval first, so it doesn't keep silently playing in the background
+    // (or leak a setInterval ticking against a detached DOM node) once the
+    // student has moved on to another section.
+    var prevAudio = $('et-listening-audio');
+    if (prevAudio) prevAudio.pause();
+    clearInterval(state.audioCountdownHandle);
     if (section === 'grammar') body.innerHTML = renderGrammar(attempt.sections.grammar);
     else if (section === 'reading') body.innerHTML = renderReading(attempt.sections.reading);
-    else if (section === 'listening') body.innerHTML = renderListening(attempt.sections.listening);
+    else if (section === 'listening') { body.innerHTML = renderListening(attempt.sections.listening); setupLockedAudio(); }
     else if (section === 'writing') body.innerHTML = renderWriting(attempt.sections.writing);
     wireSectionInputs(section, attempt);
     $('et-submit-btn').onclick = function () { confirmSubmitSection(section); };
@@ -448,16 +456,89 @@
       + '<div class="et-questions">' + renderQuestionGroups(groups, savedByNum, 'reading') + '</div></div>';
   }
 
+  var LISTENING_AUTOPLAY_DELAY_SEC = 30;
+
   function renderListening(lSection) {
     var savedByNum = {};
     (lSection.answers || []).forEach(function (a) { savedByNum[a.questionNumber] = a.userAnswer; });
     var sec = lSection.section || {};
+    // No native `controls` — its built-in scrub bar/skip-ahead buttons would
+    // let a student rewind or jump ahead, unlike a real Listening test's
+    // one continuous playthrough. setupLockedAudio() (wired below, after
+    // this HTML lands in the DOM) renders play progress into
+    // #et-audio-status instead and auto-starts playback after a fixed delay
+    // so students first get time to read the questions, same as a real exam.
     var audio = lSection.audioUrlSnapshot
-      ? '<audio controls preload="metadata" src="' + esc(lSection.audioUrlSnapshot) + '" class="et-audio"></audio>'
+      ? '<div class="et-audio-wrap"><audio id="et-listening-audio" preload="auto" src="' + esc(lSection.audioUrlSnapshot) + '"></audio>'
+        + '<div id="et-audio-status"></div></div>'
       : '<div class="et-warning">Không tìm thấy file âm thanh.</div>';
     var groups = sec.questionGroups || [];
     return '<div class="et-listening-layout">' + audio
       + '<div class="et-questions">' + renderQuestionGroups(groups, savedByNum, 'listening') + '</div></div>';
+  }
+
+  // Auto-starts playback after LISTENING_AUTOPLAY_DELAY_SEC (giving the
+  // student that long to read the questions first, like a real exam), then
+  // shows a read-only progress readout in place of any seek control. Guards
+  // against a student forcing currentTime backward/forward anyway (a stray
+  // media-key press, or "Hiện điều khiển" from the element's own right-click
+  // context menu) by snapping back to the last naturally-reached position —
+  // oncontextmenu is also blocked below so that menu option is never offered.
+  function setupLockedAudio() {
+    var audio = $('et-listening-audio');
+    var status = $('et-audio-status');
+    if (!audio || !status) return;
+    audio.tabIndex = -1;
+    audio.oncontextmenu = function () { return false; };
+    audio.onkeydown = function (e) { e.preventDefault(); };
+
+    var lastGoodTime = 0;
+    var started = false;
+    audio.addEventListener('timeupdate', function () {
+      if (!audio.seeking) lastGoodTime = audio.currentTime;
+      renderProgress();
+    });
+    audio.addEventListener('seeking', function () {
+      if (Math.abs(audio.currentTime - lastGoodTime) > 1) audio.currentTime = lastGoodTime;
+    });
+
+    function fmt(sec) {
+      sec = Math.max(0, Math.floor(sec || 0));
+      var m = Math.floor(sec / 60), s = sec % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+    function renderProgress() {
+      var dur = audio.duration || 0;
+      var pct = dur ? Math.min(100, (audio.currentTime / dur) * 100) : 0;
+      status.innerHTML = '<div class="et-audio-playing">'
+        + '<i class="fas fa-volume-up et-audio-icon"></i>'
+        + '<div class="et-audio-bar"><div class="et-audio-bar-fill" style="width:' + pct + '%"></div></div>'
+        + '<span class="et-audio-time">' + fmt(audio.currentTime) + ' / ' + fmt(dur) + '</span></div>'
+        + '<div class="et-audio-note">Bài nghe tự động phát — không thể tua lại hoặc tua tới.</div>';
+    }
+    function startPlayback() {
+      if (started) return;
+      started = true;
+      audio.play().catch(function () {
+        // Autoplay-with-sound can be blocked by the browser without a prior
+        // user gesture — surface a manual "Nhấn để phát" fallback rather
+        // than silently leaving the student staring at a stuck countdown.
+        status.innerHTML = '<div class="et-audio-countdown">'
+          + '<button type="button" class="et-btn-primary" id="et-audio-manual-play"><i class="fas fa-play"></i> Nhấn để phát âm thanh</button></div>';
+        var btn = $('et-audio-manual-play');
+        if (btn) btn.onclick = function () { audio.play().then(renderProgress).catch(function () {}); };
+      });
+    }
+
+    var remaining = LISTENING_AUTOPLAY_DELAY_SEC;
+    function tickCountdown() {
+      status.innerHTML = '<div class="et-audio-countdown">Âm thanh sẽ tự động phát sau <b>' + remaining + 's</b></div>';
+      if (remaining <= 0) { clearInterval(state.audioCountdownHandle); startPlayback(); return; }
+      remaining--;
+    }
+    clearInterval(state.audioCountdownHandle);
+    tickCountdown();
+    state.audioCountdownHandle = setInterval(tickCountdown, 1000);
   }
 
   function countWords(text) { return String(text || '').trim().split(/\s+/).filter(Boolean).length; }
@@ -466,12 +547,19 @@
     var prompt = wSection.prompt || {};
     var img = prompt.imageUrl ? '<img class="et-task-image" src="' + esc(prompt.imageUrl) + '" alt="Task 1 chart">' : '';
     var answer = wSection.writingAnswer || '';
+    // Split screen (chart/prompt left, answer right) — same shape as the
+    // real Writing exam page (writing.js's .exam-left/.exam-right) — instead
+    // of stacking the chart above the textarea, where scrolling down to
+    // write pushed the chart out of view.
     return '<div class="et-writing-layout">'
+      + '<div class="et-writing-task">'
       + '<div class="et-task-instructions">' + esc(prompt.instructions || 'You should spend about 20 minutes on this task. Write at least 150 words.') + '</div>'
       + '<div class="et-task-prompt">' + esc(prompt.prompt || '') + '</div>' + img
+      + '</div>'
+      + '<div class="et-writing-answer">'
       + '<textarea id="et-writing-textarea" class="et-writing-textarea" placeholder="Viết bài của bạn ở đây…">' + esc(answer) + '</textarea>'
       + '<div class="et-word-count" id="et-word-count">' + countWords(answer) + ' từ (tối thiểu 150 từ)</div>'
-      + '</div>';
+      + '</div></div>';
   }
 
   // ── Autosave wiring ──────────────────────────────────────────────────
