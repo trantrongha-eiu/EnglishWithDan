@@ -139,17 +139,18 @@ describe('POST /api/entrance-test/start', () => {
     expect(count).toBe(1);
   });
 
-  test('starting again after a completed attempt does not create a new one (no self-serve retake)', async () => {
+  test('starting again after a completed attempt starts a brand new one (self-serve retake)', async () => {
     await seedFullConfig();
     const student = await createStudent();
     const api = authed(student);
-    await playThrough(api);
+    const firstId = await playThrough(api);
 
     const again = await api.post('/api/entrance-test/start');
-    expect(again.status).toBe(200);
-    expect(again.body.alreadyExists).toBe(true);
+    expect(again.status).toBe(201);
+    expect(again.body.resumed).toBeFalsy();
+    expect(again.body.attemptId).not.toBe(firstId);
     const count = await EntranceTestAttempt.countDocuments({ userId: student._id });
-    expect(count).toBe(1);
+    expect(count).toBe(2);
   });
 });
 

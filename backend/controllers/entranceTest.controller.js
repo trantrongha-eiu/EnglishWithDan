@@ -13,7 +13,7 @@ exports.getConfig = catchAsync(async (req, res) => {
 exports.start = catchAsync(async (req, res) => {
   try {
     const result = await entranceTestService.startAttempt(req.user._id);
-    res.status(result.resumed || result.alreadyExists ? 200 : 201).json({ success: true, ...result });
+    res.status(result.resumed ? 200 : 201).json({ success: true, ...result });
   } catch (e) {
     // Proctoring cooldown after a disqualified attempt — same machine-
     // readable shape mockTest.controller.js's own /start uses.

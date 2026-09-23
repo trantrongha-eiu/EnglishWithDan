@@ -79,23 +79,51 @@
     }).catch(function () {});
 
     apiFetch('/entrance-test/history').then(function (d) {
-      var last = (d.attempts || [])[0];
-      if (!last) return;
-      if (last.status === 'in-progress') {
-        $('et-start-btn').innerHTML = '<i class="fas fa-play"></i> Tiếp tục làm bài';
-      } else {
-        $('et-start-btn').disabled = true;
-        $('et-start-btn').innerHTML = '<i class="fas fa-check"></i> Đã hoàn thành';
-        $('et-resume-note').classList.remove('hidden');
-        if (last.status === 'completed') {
-          var link = $('et-view-result-link');
-          link.classList.remove('hidden');
-          link.onclick = function () { state.attemptId = last._id; openResult(); };
-        }
-      }
+      renderHistory(d.attempts || []);
     }).catch(function () {});
 
     $('et-start-btn').onclick = startOrResume;
+  }
+
+  var STATUS_LABEL = {
+    completed: 'Hoàn thành', disqualified: 'Huỷ do vi phạm', abandoned: 'Bỏ dở',
+  };
+
+  // Drives both the start button's label (Bắt đầu / Tiếp tục / Làm lại) and
+  // the history list — a student can now self-serve retake (backend no
+  // longer blocks a second attempt), so "already has a finished attempt"
+  // means "offer a retake", not "lock the button".
+  function renderHistory(attempts) {
+    var inProgress = attempts.filter(function (a) { return a.status === 'in-progress'; })[0];
+    var finished = attempts.filter(function (a) { return a.status !== 'in-progress'; });
+    var startBtn = $('et-start-btn');
+
+    if (inProgress) {
+      startBtn.innerHTML = '<i class="fas fa-play"></i> Tiếp tục làm bài';
+    } else if (finished.length) {
+      startBtn.innerHTML = '<i class="fas fa-rotate-right"></i> Làm lại Test đầu vào';
+    }
+
+    var card = $('et-history-card');
+    if (!finished.length) { card.classList.add('hidden'); return; }
+    card.classList.remove('hidden');
+    $('et-history-list').innerHTML = finished.map(function (a) {
+      var label = STATUS_LABEL[a.status] || a.status;
+      var band = a.overallBand != null ? Number(a.overallBand).toFixed(1) : (a.status === 'completed' ? 'Chờ chấm' : '—');
+      var canView = a.status === 'completed' || a.status === 'disqualified';
+      var dateStr = new Date(a.startedAt || a.createdAt).toLocaleString('vi-VN');
+      return '<div class="et-history-row">'
+        + '<div class="et-history-left">'
+        + '<span class="et-history-date">' + esc(dateStr) + '</span>'
+        + '<span class="et-history-status">' + esc(label) + '</span>'
+        + '<span class="et-history-band">Band: ' + esc(band) + '</span>'
+        + '</div>'
+        + (canView ? '<button class="et-btn-secondary et-history-view" data-id="' + a._id + '">Xem kết quả</button>' : '')
+        + '</div>';
+    }).join('');
+    Array.prototype.forEach.call($('et-history-list').querySelectorAll('.et-history-view'), function (btn) {
+      btn.onclick = function () { state.attemptId = btn.getAttribute('data-id'); openResult(); };
+    });
   }
 
   function startOrResume() {
@@ -139,6 +167,12 @@
     if (attempt.status !== 'in-progress' || attempt.currentSection === 'done') {
       stopTimer();
       if (window.EntranceTestProctor) window.EntranceTestProctor.stop();
+      if (state.pendingDoneAnnounce && attempt.status === 'completed') {
+        state.pendingDoneAnnounce = false;
+        showDoneModal();
+        return;
+      }
+      state.pendingDoneAnnounce = false;
       openResult();
       return;
     }
@@ -179,6 +213,7 @@
       if (remainingSec <= 0 && !firedExpiry) {
         firedExpiry = true; // stopTimer() below already prevents a second tick, but a
         stopTimer();        // visibilitychange re-sync (see boot()) could race a pending tick
+        if (attempt.currentSection === 'writing') state.pendingDoneAnnounce = true;
         toast('Hết giờ phần ' + SECTION_LABEL[attempt.currentSection] + ' — đang tự động chuyển sang phần tiếp theo…', 'info', 4000);
         loadRunner();
       }
@@ -471,6 +506,7 @@
     if (section === 'writing') {
       var ta = $('et-writing-textarea');
       if (ta) {
+        if (window.PasteGuard) window.PasteGuard.attach(ta, { hint: 'hãy tự gõ bài viết của bạn' });
         ta.addEventListener('input', function () {
           $('et-word-count').textContent = countWords(ta.value) + ' từ (tối thiểu 150 từ)';
           debounceSave('writing', function () { saveAnswer({ section: 'writing', writingAnswer: ta.value }); });
@@ -530,12 +566,29 @@
 
   function doSubmitSection(section) {
     $('et-submit-btn').disabled = true;
+    if (section === 'writing') state.pendingDoneAnnounce = true;
     apiFetch('/entrance-test/' + state.attemptId + '/section/' + section + '/submit', { method: 'POST' })
       .then(function () { loadRunner(); })
       .catch(function (e) {
+        state.pendingDoneAnnounce = false;
         $('et-submit-btn').disabled = false;
         toast((e && e.message) || 'Không nộp được phần này', 'error');
       });
+  }
+
+  function showDoneModal() {
+    // PasteGuard's popup sits at a very high z-index (meant to float above
+    // an exam's own fullscreen/proctor overlays) and lingers ~3.2s after a
+    // blocked paste before fading — a student who pastes right before
+    // submitting Writing could otherwise see it hanging over this modal.
+    var pg = document.getElementById('paste-guard-popup');
+    if (pg) pg.classList.remove('show');
+    var modal = $('et-done-modal');
+    modal.classList.remove('hidden');
+    $('et-done-ok').onclick = function () {
+      modal.classList.add('hidden');
+      openResult();
+    };
   }
 
   // ── Result ───────────────────────────────────────────────────────────

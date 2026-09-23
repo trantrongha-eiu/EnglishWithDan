@@ -268,6 +268,29 @@ async function autoFinalizeIfExpired(attempt) {
   return changed;
 }
 
+// Mongoose's optimistic-concurrency versionKey (__v) throws a VersionError
+// when two requests race to .save() the same attempt doc — genuinely
+// reachable here: only free-text 'input' events are debounced client-side
+// (entrance-test.js's wireSectionInputs), so a student clicking several
+// Grammar/Reading/Listening radio or checkbox answers in quick succession
+// fires one un-debounced saveAnswer POST per click, each doing its own
+// load→mutate→save. Left unhandled this surfaced as a raw 500 that
+// saveAnswer's own client-side .catch() silently swallows (it only handles
+// 409) — an answer could be lost with no visible error. Retrying re-runs
+// the whole load→mutate→save cycle against the freshest doc, so this is
+// only safe to wrap around a function with no side effects beyond that
+// save (see recordViolation's placement of its User.updateOne below).
+async function withVersionRetry(fn, maxAttempts = 5) {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (e && e.name === 'VersionError' && i < maxAttempts - 1) continue;
+      throw e;
+    }
+  }
+}
+
 async function loadOwnedAttempt(userId, attemptId) {
   if (!mongoose.isValidObjectId(attemptId)) throw new NotFoundError('Không tìm thấy bài làm');
   const attempt = await EntranceTestAttempt.findOne({ _id: attemptId, userId });
@@ -317,12 +340,10 @@ async function startAttempt(userId) {
   const existing = await EntranceTestAttempt.findOne({ userId, status: 'in-progress' }).select('_id').lean();
   if (existing) return { resumed: true, attemptId: existing._id };
 
-  // No self-serve retake for v1 (spec §19) — a student who already has a
-  // finished (completed/disqualified/abandoned) attempt gets pointed back
-  // at it instead of silently starting a second one.
-  const prior = await EntranceTestAttempt.findOne({ userId }).sort({ createdAt: -1 }).select('_id status').lean();
-  if (prior) return { resumed: false, alreadyExists: true, attemptId: prior._id, status: prior.status };
-
+  // Self-serve retake: a student who already has a finished (completed/
+  // disqualified/abandoned) attempt is free to start a brand new one —
+  // every past attempt stays on record (getHistory) for both the student
+  // and the admin attempt monitor, so nothing is lost by allowing this.
   const config = await EntranceTestConfig.findOne({ isActive: true }).lean();
   if (!config) throw new AppError('Test đầu vào chưa được cấu hình, vui lòng liên hệ quản trị viên', 503);
 
@@ -429,59 +450,63 @@ async function getAttemptForClient(userId, attemptId) {
 // (correctCount/band/score/...) are simply never looked at.
 async function saveAnswer(userId, attemptId, section, payload = {}) {
   if (!SECTION_ORDER.includes(section)) throw new ValidationError('Phần thi không hợp lệ');
-  const attempt = await loadOwnedAttempt(userId, attemptId);
-  await autoFinalizeIfExpired(attempt);
+  return withVersionRetry(async () => {
+    const attempt = await loadOwnedAttempt(userId, attemptId);
+    await autoFinalizeIfExpired(attempt);
 
-  if (attempt.status !== 'in-progress') throw new AppError('Bài làm đã kết thúc', 409);
-  if (attempt.currentSection !== section) throw new AppError(`Phần hiện tại là ${attempt.currentSection}, không phải ${section}`, 409);
+    if (attempt.status !== 'in-progress') throw new AppError('Bài làm đã kết thúc', 409);
+    if (attempt.currentSection !== section) throw new AppError(`Phần hiện tại là ${attempt.currentSection}, không phải ${section}`, 409);
 
-  if (section === 'grammar') {
-    const questionId = String(payload.questionId || '');
-    if (!questionId) throw new ValidationError('Thiếu questionId');
-    const list = attempt.sections.grammar.answers;
-    const idx = list.findIndex(a => a.questionId === questionId);
-    const userAnswer = payload.answer == null ? '' : String(payload.answer);
-    if (idx === -1) list.push({ questionId, topic: '', userAnswer, correct: false });
-    else list[idx].userAnswer = userAnswer;
-  } else if (section === 'reading' || section === 'listening') {
-    const questionNumber = Number(payload.questionNumber);
-    if (!Number.isFinite(questionNumber)) throw new ValidationError('Thiếu questionNumber');
-    const list = attempt.sections[section].answers;
-    const idx = list.findIndex(a => a.questionNumber === questionNumber);
-    const userAnswer = payload.answer == null ? '' : String(payload.answer);
-    if (idx === -1) list.push({ questionNumber, userAnswer, correctAnswer: '', isCorrect: false });
-    else list[idx].userAnswer = userAnswer;
-  } else if (section === 'writing') {
-    const writingAnswer = payload.writingAnswer == null ? '' : String(payload.writingAnswer);
-    attempt.sections.writing.writingAnswer = writingAnswer;
-    attempt.sections.writing.wordCount = countWords(writingAnswer);
-  }
+    if (section === 'grammar') {
+      const questionId = String(payload.questionId || '');
+      if (!questionId) throw new ValidationError('Thiếu questionId');
+      const list = attempt.sections.grammar.answers;
+      const idx = list.findIndex(a => a.questionId === questionId);
+      const userAnswer = payload.answer == null ? '' : String(payload.answer);
+      if (idx === -1) list.push({ questionId, topic: '', userAnswer, correct: false });
+      else list[idx].userAnswer = userAnswer;
+    } else if (section === 'reading' || section === 'listening') {
+      const questionNumber = Number(payload.questionNumber);
+      if (!Number.isFinite(questionNumber)) throw new ValidationError('Thiếu questionNumber');
+      const list = attempt.sections[section].answers;
+      const idx = list.findIndex(a => a.questionNumber === questionNumber);
+      const userAnswer = payload.answer == null ? '' : String(payload.answer);
+      if (idx === -1) list.push({ questionNumber, userAnswer, correctAnswer: '', isCorrect: false });
+      else list[idx].userAnswer = userAnswer;
+    } else if (section === 'writing') {
+      const writingAnswer = payload.writingAnswer == null ? '' : String(payload.writingAnswer);
+      attempt.sections.writing.writingAnswer = writingAnswer;
+      attempt.sections.writing.wordCount = countWords(writingAnswer);
+    }
 
-  await attempt.save();
-  return { status: 'ok' };
+    await attempt.save();
+    return { status: 'ok' };
+  });
 }
 
 async function submitSection(userId, attemptId, section) {
   if (!SECTION_ORDER.includes(section)) throw new ValidationError('Phần thi không hợp lệ');
-  const attempt = await loadOwnedAttempt(userId, attemptId);
-  await autoFinalizeIfExpired(attempt);
+  return withVersionRetry(async () => {
+    const attempt = await loadOwnedAttempt(userId, attemptId);
+    await autoFinalizeIfExpired(attempt);
 
-  if (attempt.status !== 'in-progress') throw new AppError('Bài làm đã kết thúc', 409);
-  // Idempotency: a legitimate double-submit (client retry) of a section
-  // that's already been recorded is a no-op that just returns current
-  // state, rather than erroring — same shape as mockTestService.advance()'s
-  // "already done" branch. A submit for anything OTHER than the current
-  // section (an attempt to go back and redo a past one) is rejected.
-  if (attempt.sections[section].submittedAt) {
-    if (attempt.currentSection === section || SECTION_ORDER.indexOf(attempt.currentSection) > SECTION_ORDER.indexOf(section)) {
-      return attempt;
+    if (attempt.status !== 'in-progress') throw new AppError('Bài làm đã kết thúc', 409);
+    // Idempotency: a legitimate double-submit (client retry) of a section
+    // that's already been recorded is a no-op that just returns current
+    // state, rather than erroring — same shape as mockTestService.advance()'s
+    // "already done" branch. A submit for anything OTHER than the current
+    // section (an attempt to go back and redo a past one) is rejected.
+    if (attempt.sections[section].submittedAt) {
+      if (attempt.currentSection === section || SECTION_ORDER.indexOf(attempt.currentSection) > SECTION_ORDER.indexOf(section)) {
+        return attempt;
+      }
     }
-  }
-  if (attempt.currentSection !== section) throw new AppError(`Phần hiện tại là ${attempt.currentSection}, không phải ${section}`, 409);
+    if (attempt.currentSection !== section) throw new AppError(`Phần hiện tại là ${attempt.currentSection}, không phải ${section}`, 409);
 
-  await gradeAndAdvance(attempt, userId, section);
-  await attempt.save();
-  return attempt;
+    await gradeAndAdvance(attempt, userId, section);
+    await attempt.save();
+    return attempt;
+  });
 }
 
 function buildGrammarWeaknesses(answers) {
@@ -589,47 +614,54 @@ async function getResult(userId, attemptId) {
 
 async function recordViolation(userId, attemptId, { type }) {
   if (!PROCTOR_TYPES.includes(type)) throw new ValidationError('Loại vi phạm không hợp lệ');
-  const attempt = await loadOwnedAttempt(userId, attemptId);
+  const result = await withVersionRetry(async () => {
+    const attempt = await loadOwnedAttempt(userId, attemptId);
 
-  if (attempt.status !== 'in-progress') {
-    const dq = attempt.status === 'disqualified';
+    if (attempt.status !== 'in-progress') {
+      const dq = attempt.status === 'disqualified';
+      return {
+        violationCount: attempt.proctor.violationCount || 0,
+        violated: !!attempt.proctor.violated,
+        disqualified: dq,
+        cooldownSeconds: dq ? COOLDOWN_SECONDS : 0,
+      };
+    }
+
+    attempt.proctor.violationCount = (attempt.proctor.violationCount || 0) + 1;
+    attempt.proctor.violated = true;
+    attempt.proctor.events.push({ type, at: new Date() });
+    if (attempt.proctor.events.length > PROCTOR_EVENT_CAP) {
+      attempt.proctor.events = attempt.proctor.events.slice(-PROCTOR_EVENT_CAP);
+    }
+
+    // Scoped to this attempt of the retry loop (not a shared outer variable)
+    // so a VersionError'd save can't leave a stale true behind for the next
+    // reload-and-retry pass to read.
+    let disqualified = false;
+    if (attempt.proctor.violationCount > MAX_VIOLATIONS) {
+      attempt.status = 'disqualified';
+      attempt.proctor.disqualifiedAt = new Date();
+      disqualified = true;
+      recomputeResult(attempt);
+    }
+    await attempt.save();
+
     return {
-      violationCount: attempt.proctor.violationCount || 0,
-      violated: !!attempt.proctor.violated,
-      disqualified: dq,
-      cooldownSeconds: dq ? COOLDOWN_SECONDS : 0,
+      violationCount: attempt.proctor.violationCount,
+      violated: true,
+      disqualified,
+      cooldownSeconds: disqualified ? COOLDOWN_SECONDS : 0,
     };
-  }
+  });
 
-  attempt.proctor.violationCount = (attempt.proctor.violationCount || 0) + 1;
-  attempt.proctor.violated = true;
-  attempt.proctor.events.push({ type, at: new Date() });
-  if (attempt.proctor.events.length > PROCTOR_EVENT_CAP) {
-    attempt.proctor.events = attempt.proctor.events.slice(-PROCTOR_EVENT_CAP);
-  }
-
-  let disqualified = false;
-  if (attempt.proctor.violationCount > MAX_VIOLATIONS) {
-    attempt.status = 'disqualified';
-    attempt.proctor.disqualifiedAt = new Date();
-    disqualified = true;
-    recomputeResult(attempt);
-  }
-  await attempt.save();
-
-  if (disqualified) {
+  if (result.disqualified) {
     await User.updateOne(
       { _id: userId },
       { $set: { entranceTestCooldownUntil: new Date(Date.now() + COOLDOWN_SECONDS * 1000) } }
     );
   }
 
-  return {
-    violationCount: attempt.proctor.violationCount,
-    violated: true,
-    disqualified,
-    cooldownSeconds: disqualified ? COOLDOWN_SECONDS : 0,
-  };
+  return result;
 }
 
 async function getHistory(userId) {

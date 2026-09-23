@@ -141,10 +141,10 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
 
 // Resume lookup: "does this student have an open attempt".
 EntranceTestAttemptSchema.index({ userId: 1, status: 1 });
-// "My entrance test history" (in practice: at most one completed row per
-// student today, since there's no self-serve retake yet — see spec §19 —
-// but this keeps the query shape consistent with every sibling attempt
-// model and ready for a future retake feature).
+// "My entrance test history" — a student can self-serve retake, so this can
+// hold several completed/disqualified/abandoned rows per student, each one
+// kept (no TTL, see above) as a permanent record for the student's own
+// history view and the admin attempt monitor.
 EntranceTestAttemptSchema.index({ userId: 1, createdAt: -1 });
 
 module.exports = mongoose.model('EntranceTestAttempt', EntranceTestAttemptSchema);

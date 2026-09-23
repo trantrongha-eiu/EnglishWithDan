@@ -45,6 +45,18 @@
 
 .et-note { text-align: center; margin-top: var(--space-3); font-size: var(--fs-body-sm); color: var(--text2); }
 
+/* ── History (landing) ── */
+.et-history-row {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: var(--space-3); padding: 10px 0; border-bottom: 1px solid var(--border); font-size: var(--fs-body-sm);
+}
+.et-history-row:last-child { border-bottom: none; }
+.et-history-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.et-history-date { color: var(--text2); }
+.et-history-status { font-weight: 700; }
+.et-history-band { color: var(--text3); }
+.et-history-view { padding: 6px 14px; font-size: var(--fs-caption); }
+
 /* ── Runner ── */
 .et-runner-topbar {
   position: sticky; top: 0; z-index: var(--z-nav);
