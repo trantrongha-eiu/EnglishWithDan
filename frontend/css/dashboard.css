@@ -130,13 +130,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 .sidebar-divider{height:1px;background:var(--border);margin:6px 18px}
 
-/* Unit section trong sidebar */
-.unit-section{padding:12px 18px 0}
-.unit-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+/* Practice section (sidebar) — Paraphrase and Vocab-by-topic quizzes used
+   to be two separate stacked "unit-section"/"classroom-section" blocks,
+   each with its own uppercase heading; merged under one tab switcher so
+   the sidebar isn't a wall of repeated section headings for what is, from
+   the student's point of view, one "pick something to practice" area. */
+.practice-section{padding:14px 18px 16px}
+.practice-tabs{display:flex;gap:6px;margin-bottom:12px}
+.practice-tab{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:8px 4px;border:none;background:var(--surface2);border-radius:var(--radius-sm);
+  font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;
+  transition:background .15s,color .15s;font-family:inherit;line-height:1.2;
+}
+.practice-tab i{font-size:11px}
+.practice-tab:hover{background:var(--border)}
+.practice-tab.active{background:var(--brand);color:#fff}
+.practice-panel .btn-difficult-words{margin-top:10px}
 
-/* Classroom section trong sidebar (Vocabulary Lessons giáo viên giao) */
-.classroom-section{padding:12px 18px 14px}
-.classroom-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
 .classroom-item-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(167,139,250,.15);padding:2px 7px;border-radius:10px;flex-shrink:0}
 .classroom-empty{padding:8px 10px;font-size:12px;color:var(--text3)}
 
@@ -306,8 +317,15 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
    only (buildClassroomPicker in dashboard-lesson.js); the Paraphrase Unit
    picker above it filters by typing into its own trigger input instead
    (dashboard.html's _buildPicker) and has no .classroom-picker-dd wrapper,
-   so it's unaffected by the rules below. */
-.classroom-picker-dd{padding:6px;display:flex;flex-direction:column;gap:0}
+   so it's unaffected by the rules below.
+   No `display` here on purpose — BUG: an earlier `display:flex` here tied
+   in specificity with .unit-picker-dd's own `display:none` above and won
+   by source order, so this dropdown rendered open by default on every page
+   load until the student's first click anywhere closed it. The search row
+   and results div are both plain blocks, which already stack vertically
+   with no flex needed — closed-by-default (inline style, set by JS) is
+   what actually controls visibility either way. */
+.classroom-picker-dd{padding:6px}
 /* Only the Today's Lesson card's "Đổi bài" picker needs this — its trigger
    is a compact icon-button (no room for a heading next to it, unlike the
    sidebar's own "Learn Vocab by Topics" <h4>), so the dropdown carries its

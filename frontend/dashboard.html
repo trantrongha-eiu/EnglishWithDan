@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260923vocabtopics2">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260923sidebarredesign">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -49,26 +49,44 @@
       <button class="btn-add-book" id="btn-add-book" onclick="openAddBookModal()" title="Add new notebook">＋</button>
     </div>
     <div id="book-list-sidebar"><!-- Rendered by JS --></div>
+
     <div class="sidebar-divider"></div>
-    <div class="unit-section">
-      <h4><i class="fas fa-book"></i> Học Paraphrase</h4>
-      <div class="unit-picker" id="unitPickerDesktop">
-        <div style="position:relative">
-          <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
-          <span class="unit-picker-caret">▾</span>
-        </div>
-        <div class="unit-picker-dd" id="unitPickerDdD"></div>
+
+    <!-- Practice: Paraphrase + Vocab-by-topic quizzes used to be two
+         separate stacked sections (same picker shape, same "pick something
+         to practice" purpose) — merged under one tabbed block so the
+         sidebar reads as one practice area instead of a wall of repeated
+         headings. Both pickers' own JS (dashboard.html's _buildPicker IIFE
+         for Paraphrase, buildClassroomPicker() in dashboard-lesson.js for
+         Vocab Topics) is untouched — this is purely a show/hide wrapper. -->
+    <div class="practice-section">
+      <div class="practice-tabs" role="tablist">
+        <button class="practice-tab active" id="practiceTabParaphrase" role="tab" aria-selected="true" aria-controls="practicePanelParaphrase" onclick="switchSidebarPracticeTab('paraphrase')">
+          <i class="fas fa-graduation-cap"></i> Paraphrase
+        </button>
+        <button class="practice-tab" id="practiceTabVocab" role="tab" aria-selected="false" aria-controls="practicePanelVocab" onclick="switchSidebarPracticeTab('vocab')">
+          <i class="fas fa-layer-group"></i> Vocab Topics
+        </button>
       </div>
-      <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
-      <button class="btn-difficult-words" onclick="openDifficultWordsModal()" style="margin-top:8px">
-        <i class="fas fa-fire"></i> Ôn lại từ hay sai
-        <span class="difficult-count-badge" id="difficultCountBadge" style="display:none">0</span>
-      </button>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="classroom-section">
-      <h4><i class="fas fa-layer-group"></i> Learn Vocab by Topics</h4>
-      <div id="classroom-list-sidebar"><!-- Rendered by JS --></div>
+
+      <div class="practice-panel" id="practicePanelParaphrase" role="tabpanel">
+        <div class="unit-picker" id="unitPickerDesktop">
+          <div style="position:relative">
+            <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
+            <span class="unit-picker-caret">▾</span>
+          </div>
+          <div class="unit-picker-dd" id="unitPickerDdD"></div>
+        </div>
+        <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
+        <button class="btn-difficult-words" onclick="openDifficultWordsModal()">
+          <i class="fas fa-fire"></i> Ôn lại từ hay sai
+          <span class="difficult-count-badge" id="difficultCountBadge" style="display:none">0</span>
+        </button>
+      </div>
+
+      <div class="practice-panel" id="practicePanelVocab" role="tabpanel" style="display:none">
+        <div id="classroom-list-sidebar"><!-- Rendered by JS --></div>
+      </div>
     </div>
   </aside>
 
@@ -1119,6 +1137,23 @@
     var p2=_buildPicker('unitPickerInputM','unitPickerDdM');
     if(p1)_pickers.push(p1); if(p2)_pickers.push(p2);
   })();
+
+  // ── Sidebar Practice tabs (Paraphrase / Vocab Topics) ──────────────
+  // A real outside-click mousedown (not a direct dd.style.display flip)
+  // so each picker's own close() runs and its internal isOpen flag stays
+  // correct — otherwise switching tabs away and back while a dropdown was
+  // open would leave that picker thinking it's still open, and the next
+  // click on its trigger would silently no-op instead of opening it.
+  window.switchSidebarPracticeTab = function (which) {
+    document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    var isParaphrase = which === 'paraphrase';
+    document.getElementById('practiceTabParaphrase').classList.toggle('active', isParaphrase);
+    document.getElementById('practiceTabParaphrase').setAttribute('aria-selected', isParaphrase ? 'true' : 'false');
+    document.getElementById('practiceTabVocab').classList.toggle('active', !isParaphrase);
+    document.getElementById('practiceTabVocab').setAttribute('aria-selected', !isParaphrase ? 'true' : 'false');
+    document.getElementById('practicePanelParaphrase').style.display = isParaphrase ? '' : 'none';
+    document.getElementById('practicePanelVocab').style.display = isParaphrase ? 'none' : '';
+  };
 
   // ── syncSheetUnits: now just syncs hidden selects (compat) ──────
   window.syncSheetUnits = function(){
