@@ -43,17 +43,29 @@
 }
 [data-theme="dark"] .rtp-link { color: #fca5a5; }
 
-.rtp-panel { margin-top: 16px; }
+/* scroll-margin: scrollIntoView lands below the sticky navbar (+ the site's fixed banners) */
+.rtp-panel { margin-top: 16px; scroll-margin-top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 12px); }
+.rtp-passage { scroll-margin-top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 12px); }
 .rtp-state {
   text-align: center; padding: 34px 16px; color: #6b7280; font-size: 14px;
   display: flex; flex-direction: column; align-items: center; gap: 12px;
 }
 .rtp-state-icon { font-size: 28px; }
 .rtp-state-error { color: #b91c1c; }
+.rtp-state-slow { font-size: 12.5px; color: #9ca3af; max-width: 360px; }
+.rtp-sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.rtp-section .rtp-btn:focus-visible, .rtp-section .rtp-link:focus-visible,
+.rtp-section [role="button"]:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+/* "↑ Xem trong bài đọc" — only when the passage is stacked above */
+.rtp-jump { display: none; }
 
 /* Header + progress */
 .rtp-head { margin-bottom: 12px; }
 .rtp-head-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rtp-head-top .rtp-link { white-space: nowrap; flex-shrink: 0; }
 .rtp-title { font-size: 17px; font-weight: 900; color: #111827; }
 [data-theme="dark"] .rtp-title { color: #f1f5f9; }
 .rtp-source { font-size: 12.5px; color: #6b7280; margin: 2px 0 8px; }
@@ -206,6 +218,7 @@
 .rtp-tok[data-act]:hover { background: #e0e7ff; }
 .rtp-tok.sel { background: #bfdbfe; color: #1e3a8a; }
 .rtp-tok.ok { background: #bbf7d0; color: #14532d; box-shadow: 0 0 0 1px #86efac; }
+.rtp-tok.anchor { outline: 2px dashed #2563eb; outline-offset: 1px; }
 [data-theme="dark"] .rtp-tok[data-act]:hover { background: #312e81; }
 [data-theme="dark"] .rtp-tok.sel { background: #1e3a8a; color: #dbeafe; }
 [data-theme="dark"] .rtp-tok.ok { background: #14532d; color: #bbf7d0; }
@@ -267,6 +280,9 @@
 @media (max-width: 1100px) {
   .rtp-split, .rtp-wf-grid { grid-template-columns: minmax(0, 1fr); }
   .rtp-passage-scroll { max-height: 55vh; }
+  .rtp-wf-grid.side-first > .rtp-wf-side { order: -1; }
+  .rtp-jump { display: inline-block; margin-top: 4px; font-style: normal; }
+  .rtp-evidence .rtp-jump { display: block; padding-left: 0; }
 }
 @media (max-width: 900px) {
   .rt-practice-slot { padding: 0 16px 22px; }
@@ -274,4 +290,19 @@
   .rtp-entry-actions { width: 100%; }
   .rtp-entry .rtp-btn { width: 100%; text-align: center; white-space: normal; }
   .rtp-para { font-size: 14px; }
+}
+/* Phones: shorter passage pane (like the Reading exam's 40vh), one-line
+   workflow stepper (only the current step keeps its name). */
+@media (max-width: 600px) {
+  .rtp-passage-scroll { max-height: 42vh; }
+  .rtp-title { font-size: 15.5px; }
+  .rtp-wf-step:not(.active) { padding: 3px; }
+  .rtp-wf-step:not(.active) span { display: none; }
+  .rtp-score { font-size: 32px; }
+}
+/* Touch screens: bigger targets for the small link buttons and words. */
+@media (pointer: coarse) {
+  .rtp-link { min-height: 36px; padding: 6px 8px; }
+  .rtp-tok { padding: 3px 2px; }
+  .rtp-pp-sentence { line-height: 2.5; }
 }

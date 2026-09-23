@@ -125,6 +125,18 @@ describe('Quy trình làm bài (workflow)', () => {
     expect(detail.body.result.isCorrect).toBe(true);
   });
 
+  test('?exclude= : "Bài khác" moves to another passage (workflow and paraphrase)', async () => {
+    const other = await createPassage({ content: CONTENT, questionGroups: passage.questionGroups });
+    const getEx = (key, ids) => request(app).get(`/api/reading-tips/${key}/practice`)
+      .query({ exclude: ids.map(String).join(',') }).set('Authorization', `Bearer ${token}`);
+    for (let i = 0; i < 4; i++) {
+      expect((await getEx('skim-scan-workflow', [passage._id])).body.practice.passageId).toBe(String(other._id));
+      expect((await getEx('skim-scan-workflow', [other._id])).body.practice.passageId).toBe(String(passage._id));
+      // paraphrase mixes passages; the recently practised one comes last
+      expect((await getEx('keyword-to-paraphrase', [passage._id])).body.practice.items[0].passageId).toBe(String(other._id));
+    }
+  });
+
   test('empty state when no passage has a main-idea question', async () => {
     await passage.deleteOne();
     await createPassage({ content: CONTENT, questionGroups: [{ groupType: 'plain', questions: [tf(1, 'TRUE', 'x', ''), tf(2, 'FALSE', 'y', '')] }] });

@@ -177,9 +177,78 @@
 
   let st = null;        // current practice state (null = entry card only)
   let timerHandle = null;
+  // Bumped whenever the panel changes hands (another tip, a new load, close)
+  // so a late response for an earlier request is dropped.
+  let loadSeq = 0;
+  const LOAD_TIMEOUT_MS = 45000;
+  const CHECK_TIMEOUT_MS = 30000;
+  const SLOW_NOTICE_MS = 6000;
+  const RECENT_MAX = 8; // passages remembered per tip so "Bài khác" doesn't repeat them
 
   const esc = (s) => escHtml(s == null ? '' : String(s));
   const escNl = (s) => esc(s).replace(/\n/g, '<br>');
+
+  // apiFetch with a timeout (the server can take a while to wake up).
+  async function fetchWithTimeout(url, opts, ms) {
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = ctrl && setTimeout(() => ctrl.abort(), ms);
+    try {
+      return await apiFetch(url, ctrl ? { ...opts, signal: ctrl.signal } : opts);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // What to tell the student when a request fails. Our own 4xx messages
+  // are already Vietnamese; anything else gets a plain explanation.
+  function errorMessage(err, fallback) {
+    if (err && err.name === 'AbortError') return 'Máy chủ phản hồi quá lâu (có thể đang khởi động). Vui lòng thử lại sau vài giây.';
+    if (err && err.coldStart) return 'Máy chủ đang khởi động, vui lòng thử lại sau vài giây.';
+    if (err && err.status >= 400 && err.status < 500 && err.body && err.body.message) return err.body.message;
+    if (err && err.status >= 500) return 'Máy chủ đang gặp sự cố, vui lòng thử lại sau ít phút.';
+    if (err && !err.status && (err instanceof TypeError || navigator.onLine === false)) return 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.';
+    return fallback;
+  }
+
+  // Screen-reader announcement (the panel itself is re-rendered wholesale).
+  function announce(msg) {
+    const el = document.getElementById('rtp-live');
+    if (el) el.textContent = msg;
+  }
+
+  // Height covered by the sticky navbar and the site's fixed banners.
+  function topOffset() {
+    const css = getComputedStyle(document.documentElement);
+    const px = (name, dflt) => { const v = parseInt(css.getPropertyValue(name), 10); return Number.isFinite(v) ? v : dflt; };
+    return px('--nav-height', 64) + px('--expiry-banner-height', 0);
+  }
+
+  // After moving to another screen: bring the panel header back into view
+  // when it has scrolled off (on phones the page is long).
+  function revealPanel() {
+    const panel = panelEl();
+    if (!panel || panel.hidden) return;
+    const top = panel.getBoundingClientRect().top;
+    if (top < topOffset() || top > window.innerHeight * 0.6) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Scrolls just enough to show an element that appeared below the fold
+  // (feedback after "Kiểm tra"), never pushing its top under the navbar.
+  function revealEl(el) {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const over = r.bottom - window.innerHeight + 16;
+    const room = r.top - topOffset() - 12;
+    if (over > 0 && room > 0) window.scrollBy({ top: Math.min(over, room), behavior: 'smooth' });
+  }
+
+  // Stacked (phone / tablet) layouts: the passage sits above the question,
+  // so evidence and hints get a link back up to it (hidden side by side).
+  const JUMP_HTML = '<button type="button" class="rtp-link rtp-jump" data-act="show-passage">↑ Xem trong bài đọc</button>';
+
+  // Options, tokens and clickable paragraphs aren't buttons; make them
+  // reachable and usable from the keyboard.
+  const KEY_ATTRS = 'tabindex="0" role="button"';
 
   function fmtTime(sec) {
     sec = Math.max(0, Math.round(sec));
@@ -269,6 +338,23 @@
     persistTimer = setTimeout(persist, 400);
   }
 
+  // The passages a practice uses, newest first in `recent`, so the next
+  // "Bài khác" can ask the server to avoid them.
+  function rememberPassages(key, practice) {
+    const multi = practice.kind === 'skimming' || practice.kind === 'paraphrase';
+    const ids = (multi ? practice.items.map(it => it.passageId) : [practice.passageId]).filter(Boolean);
+    const all = readStore();
+    const rec = all[key] || {};
+    rec.recent = [...new Set([...ids, ...(Array.isArray(rec.recent) ? rec.recent : [])])].slice(0, RECENT_MAX);
+    all[key] = rec;
+    writeStore(all);
+  }
+
+  function recentPassages(key) {
+    const rec = readStore()[key];
+    return rec && Array.isArray(rec.recent) ? rec.recent.filter(id => /^[a-f\d]{24}$/i.test(String(id))) : [];
+  }
+
   // Once per completed practice (a "Làm lại" or a new practice counts again).
   function recordScore(score, total) {
     const all = readStore();
@@ -329,7 +415,7 @@
     const cls = ['rtp-para', p.heading ? 'rtp-para-heading' : '', opts.dim && !p.heading ? 'rtp-dim' : '',
       isTarget ? 'rtp-para-target' : '',
       opts.evidence && opts.evidence.paragraphIndex === p.i ? 'rtp-para-ev' : ''].filter(Boolean).join(' ');
-    const act = opts.clickable && !p.heading ? ' data-act="wf-loc"' : '';
+    const act = opts.clickable && !p.heading ? ` data-act="wf-loc" ${KEY_ATTRS}` : '';
     return `<p class="${cls}" data-pi="${p.i}"${act}>${label}${highlight(p.text, ranges)}</p>`;
   }
 
@@ -354,16 +440,23 @@
     stopTimer();
     if (st) persist();
     st = null;
+    loadSeq++;
     if (!slot || !supports(lesson)) return;
     slot.innerHTML = `<section class="rtp-section" id="rtp-section">
       <div id="rtp-entry-wrap"></div>
       <div class="rtp-panel" id="rtp-panel" hidden></div>
+      <div class="rtp-sr" id="rtp-live" aria-live="polite"></div>
     </section>`;
     renderEntry(lesson);
     const section = slot.querySelector('#rtp-section');
     section.addEventListener('click', (e) => onClick(e, lesson));
     section.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.target.matches('.rtp-input')) { e.preventDefault(); checkCurrent(); }
+      if (e.key === 'Enter' && e.target.matches('.rtp-input')) { e.preventDefault(); checkCurrent(); return; }
+      // Enter / Space on an option, a word or a paragraph (see KEY_ATTRS)
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-act][role="button"]')) {
+        e.preventDefault();
+        e.target.click();
+      }
     });
     section.addEventListener('input', (e) => {
       if (!st) return;
@@ -426,39 +519,77 @@
     stopTimer();
     if (st) persist();
     st = null;
+    const seq = ++loadSeq;
     const panel = panelEl();
     if (!panel) return;
     const entryBtn = document.querySelector('#rtp-entry-wrap [data-act="start"]');
     if (!(window.AuthService && window.AuthService.isLoggedIn())) {
+      const next = location.pathname + location.search;
+      const loginUrl = window.AuthService && window.AuthService.buildLoginUrl
+        ? window.AuthService.buildLoginUrl(next) : '/login.html?next=' + encodeURIComponent(next);
       showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">🔐</div>
         <div>Bạn cần đăng nhập để luyện tập.</div>
-        <a class="rtp-btn rtp-btn-primary" href="/login.html">Đăng nhập</a></div>`);
+        <a class="rtp-btn rtp-btn-primary" href="${esc(loginUrl)}">Đăng nhập</a></div>`);
       return;
     }
     if (entryBtn) entryBtn.disabled = true;
-    showPanelState(`<div class="rtp-state"><div class="rtp-state-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải bài luyện tập...</div>`);
+    showPanelState(`<div class="rtp-state" role="status"><div class="rtp-state-icon"><i class="fas fa-spinner fa-spin"></i></div>
+      <div>Đang tải bài luyện tập...</div>
+      <div class="rtp-state-slow" hidden>Máy chủ có thể đang khởi động — chờ thêm chút nhé…</div></div>`);
+    const slow = setTimeout(() => {
+      const el = seq === loadSeq && document.querySelector('#rtp-panel .rtp-state-slow');
+      if (el) el.hidden = false;
+    }, SLOW_NOTICE_MS);
+    const recent = recentPassages(lesson.lessonKey);
+    const query = recent.length ? `?exclude=${recent.join(',')}` : '';
     try {
-      const data = await apiFetch(`/api/reading-tips/${encodeURIComponent(lesson.lessonKey)}/practice`);
+      const data = await fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(lesson.lessonKey)}/practice${query}`, {}, LOAD_TIMEOUT_MS);
+      if (seq !== loadSeq) return; // another tip / request took over meanwhile
       if (!data.practice) {
+        renderEntry(lesson);
         showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">📭</div>
-          <div>${esc(data.message || 'Chưa tìm thấy bài luyện tập phù hợp.')}</div></div>`);
+          <div>${esc(data.message || 'Chưa tìm thấy bài luyện tập phù hợp.')}</div>
+          <button type="button" class="rtp-btn" data-act="dismiss">Đóng</button></div>`);
         return;
       }
       begin(lesson, data.practice);
     } catch (err) {
+      if (seq !== loadSeq) return;
+      renderEntry(lesson); // a practice saved earlier can still be resumed
       if (err && err.body && err.body.requiresPremium) {
         showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">⭐</div>
           <div>${esc(err.body.message || 'Bạn cần nâng cấp lên Premium để luyện tập.')}</div>
           <button type="button" class="rtp-btn rtp-btn-primary" data-act="upgrade">Nâng cấp Premium</button></div>`);
         return;
       }
-      const msg = (err && err.body && err.body.message) || 'Không tải được bài luyện tập. Vui lòng thử lại.';
-      showPanelState(`<div class="rtp-state rtp-state-error"><div class="rtp-state-icon">⚠️</div>
-        <div>${esc(msg)}</div>
-        <button type="button" class="rtp-btn" data-act="start">Thử lại</button></div>`);
+      showPanelState(`<div class="rtp-state rtp-state-error" role="alert"><div class="rtp-state-icon">⚠️</div>
+        <div>${esc(errorMessage(err, 'Không tải được bài luyện tập. Vui lòng thử lại.'))}</div>
+        <button type="button" class="rtp-btn" data-act="start" data-force="1">Thử lại</button></div>`);
     } finally {
+      clearTimeout(slow);
       if (entryBtn) entryBtn.disabled = false;
     }
+  }
+
+  // Answered anything in the practice that a new one would replace?
+  function hasProgress(answers, extra) {
+    return (answers || []).some(a => a && (a.result || a.viewed)) || !!extra;
+  }
+
+  // "Bài mới" replaces the practice in progress (and its saved answers) —
+  // ask first when the student has already answered something.
+  function confirmNewPractice(lesson, go) {
+    let busy;
+    if (st) busy = !st.finished && hasProgress(st.answers, st.main && st.main.result);
+    else {
+      const rec = loadRecord(lesson.lessonKey);
+      busy = !!(rec && rec.practice && !rec.finished && hasProgress(rec.answers, rec.main && rec.main.result));
+    }
+    if (!busy) { go(); return; }
+    const msg = 'Bài đang làm dở sẽ được thay bằng một bài mới và không lưu lại. Bạn chắc chứ?';
+    if (typeof window.confirmDialog === 'function') {
+      window.confirmDialog('Làm bài mới?', msg, go, { confirmLabel: 'Làm bài mới', confirmClass: 'btn-primary' });
+    } else if (window.confirm(msg)) go();
   }
 
   function freshAnswers(items) {
@@ -473,11 +604,11 @@
       answers: freshAnswers(items),
       stage: 0, main: { value: '', result: null }, guess: '',
     };
+    rememberPassages(lesson.lessonKey, practice);
     persist();
     renderEntry(lesson);
     renderQuestion();
-    const panel = panelEl();
-    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    revealPanel();
   }
 
   // Re-opens the practice saved in this browser. Timers of unanswered
@@ -487,6 +618,7 @@
     const items = rec && itemsOf(rec.practice);
     if (!items) { renderEntry(lesson); return; }
     stopTimer();
+    loadSeq++;
     st = {
       lesson, practice: rec.practice, kind: rec.practice.kind, items,
       idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
@@ -498,8 +630,7 @@
     };
     renderEntry(lesson);
     if (st.finished) renderResult(); else renderQuestion();
-    const panel = panelEl();
-    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    revealPanel();
   }
 
   // ── Question screens ──────────────────────────────────────────────────
@@ -533,7 +664,7 @@
     return `<div class="rtp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
       <div class="q-correct-ans ${r.isCorrect ? 'right' : 'wrong'}">${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${answerLine}</div>
       ${extra.timeLine || ''}
-      ${r.evidence && !extra.noEvidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence trong bài</div>“${esc(r.evidence.text)}”</div>` : ''}
+      ${r.evidence && !extra.noEvidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence trong bài</div>“${esc(r.evidence.text)}”${JUMP_HTML}</div>` : ''}
       ${r.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
     </div>`;
   }
@@ -587,7 +718,7 @@
       const L = String.fromCharCode(65 + i);
       let cls = a.value === L ? 'selected' : '';
       if (r) cls = L === String(r.correctAnswer).toUpperCase() ? 'correct-ans' : (a.value === L ? 'wrong-ans' : '');
-      return `<label class="radio-opt ${cls}" ${r ? '' : `data-act="pick" data-val="${L}"`}>
+      return `<label class="radio-opt ${cls}" ${r ? '' : `data-act="pick" data-val="${L}" ${KEY_ATTRS} aria-pressed="${a.value === L}"`}>
         <span class="radio-dot"></span><span class="radio-letter">${L}.</span> ${esc(o)}</label>`;
     }).join('');
     const correctLabel = r ? `${String(r.correctAnswer).toUpperCase()}. ${it.question.options[String(r.correctAnswer).toUpperCase().charCodeAt(0) - 65] || ''}` : '';
@@ -671,7 +802,7 @@
             ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
             <input class="fill-input rtp-input ${inputCls}" value="${esc(a.value)}" ${r ? 'readonly' : ''}
                    placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />
-            ${r || !q.anchors.length ? '' : `<button type="button" class="rtp-link rtp-hint-btn" data-act="hint">💡 Gợi ý vị trí keyword</button>`}
+            ${r || !q.anchors.length ? '' : `<button type="button" class="rtp-link rtp-hint-btn" data-act="hint">💡 Gợi ý vị trí keyword</button>${a.hint ? JUMP_HTML : ''}`}
           </div>
           ${feedbackHtml(a, { timeLine })}
           ${navHtml()}
@@ -739,7 +870,7 @@
       if (sameKey(correct, c.key)) return 'correct-ans';
       return r && sameKey(a.value, c.key) ? 'wrong-ans' : '';
     };
-    const attrs = (c) => (locked ? '' : `data-act="pick" data-val="${esc(c.key)}"`);
+    const attrs = (c) => (locked ? '' : `data-act="pick" data-val="${esc(c.key)}" ${KEY_ATTRS} aria-pressed="${sameKey(a.value, c.key)}"`);
     if (choices.every(c => !c.label)) {
       // TRUE/FALSE/NOT GIVEN, YES/NO/NOT GIVEN, paragraph letters.
       const letters = choices.every(c => c.key.length === 1);
@@ -809,12 +940,16 @@
   function guidedPanelHtml(pr, q, a) {
     const g = q.guided;
     if (!g) return '<div class="rtp-mode self">✏️ Tự làm</div>';
+    // Once the guidance points into the passage (headings: from the start),
+    // phones get a link up to it.
+    const headings = pr.questionType === 'headings';
     if (g.mode === 'example') {
       const steps = exampleSteps(pr, q, g);
       const step = Math.min(a.gStep || 1, steps.length);
       return `<div class="rtp-guided example">
         <div class="rtp-mode example">🧑‍🏫 Xem cách làm — câu ví dụ, không tính điểm</div>
         ${steps.slice(0, step).map(([t, b]) => `<div class="rtp-gstep"><div class="rtp-gstep-t">${t}</div><div class="rtp-gstep-b">${b}</div></div>`).join('')}
+        ${headings || step >= 2 ? JUMP_HTML : ''}
         ${step < steps.length ? '<button type="button" class="rtp-btn rtp-btn-primary" data-act="guide-next">Bước tiếp →</button>' : ''}
       </div>`;
     }
@@ -823,6 +958,7 @@
     return `<div class="rtp-guided hint">
       <div class="rtp-mode hint">💡 Câu có gợi ý — bạn tự trả lời, mở gợi ý khi cần</div>
       ${lines.slice(0, lv).map(([t, b]) => `<div class="rtp-hint-line"><b>${t}:</b> ${b}</div>`).join('')}
+      ${lv >= (headings ? 1 : 2) ? JUMP_HTML : ''}
       ${!a.result && lv < lines.length ? `<button type="button" class="rtp-link" data-act="hint-more">💡 Mở ${esc(lines[lv][0].toLowerCase())}</button>` : ''}
     </div>`;
   }
@@ -916,11 +1052,14 @@
       if (t.word == null) return esc(t.text);
       const inSel = a.sel && t.word >= a.sel[0] && t.word <= a.sel[1];
       const inOk = okAt !== -1 && t.start >= okAt && t.end <= okEnd;
-      const cls = ['rtp-tok', inSel ? 'sel' : '', inOk ? 'ok' : ''].filter(Boolean).join(' ');
-      return `<span class="${cls}" ${r ? '' : `data-act="tok" data-ti="${t.word}"`}>${esc(t.text)}</span>`;
+      const cls = ['rtp-tok', inSel ? 'sel' : '', inOk ? 'ok' : '', !r && a.selAnchor === t.word ? 'anchor' : ''].filter(Boolean).join(' ');
+      return `<span class="${cls}" ${r ? '' : `data-act="tok" data-ti="${t.word}" ${KEY_ATTRS}`}>${esc(t.text)}</span>`;
     }).join('');
     const kwRanges = findTerm(it.question, it.keyword).map(x => ({ ...x, cls: 'rtp-anchor' }));
     const picked = selectedText(it.sentence, a.sel);
+    const pickedLine = a.selAnchor != null
+      ? `Từ đầu: “${esc(picked)}” — bấm tiếp từ CUỐI của cụm (cụm 1 từ thì bấm Kiểm tra luôn).`
+      : `Bạn chọn: “${esc(picked)}”`;
     const pair = r ? `<div class="rtp-pair">🔁 <b>${esc(it.keyword)}</b> ⇄ <b>${esc(r.correctAnswer)}</b></div>` : '';
 
     showPanelState(headerHtml(`${esc(it.sourceName)} · ${esc(it.passageTitle)}`)
@@ -931,7 +1070,7 @@
         <div class="rtp-pp-label">Câu trong bài đọc${it.paragraphLabel ? ` (đoạn ${esc(it.paragraphLabel)})` : ''}</div>
         <div class="rtp-pp-sentence">${tokens}</div>
         ${r ? '' : `<div class="rtp-pp-help">Bấm vào từ ĐẦU rồi từ CUỐI của cụm có nghĩa tương đương với keyword (cụm 1 từ thì bấm 1 lần). Bấm tiếp để chọn lại.</div>`}
-        ${picked && !r ? `<div class="rtp-pp-picked">Bạn chọn: “${esc(picked)}”</div>` : ''}
+        ${picked && !r ? `<div class="rtp-pp-picked">${pickedLine}</div>` : ''}
         ${pair}
         ${feedbackHtml(a, { correctLabel: `“${r ? r.correctAnswer : ''}”`, noEvidence: true })}
         ${navHtml()}
@@ -1046,7 +1185,7 @@
     if (step === 5) {
       const picked = new Set(a.kw || []);
       const tokens = sentenceTokens(q.text).map(t => (t.word == null ? esc(t.text)
-        : `<span class="rtp-tok${picked.has(t.word) ? ' sel' : ''}" ${a.kwDone ? '' : `data-act="wf-kw" data-ti="${t.word}"`}>${esc(t.text)}</span>`)).join('');
+        : `<span class="rtp-tok${picked.has(t.word) ? ' sel' : ''}" ${a.kwDone ? '' : `data-act="wf-kw" data-ti="${t.word}" ${KEY_ATTRS} aria-pressed="${picked.has(t.word)}"`}>${esc(t.text)}</span>`)).join('');
       const mine = sentenceTokens(q.text).filter(t => t.word != null && picked.has(t.word)).map(t => t.text.replace(/[^\p{L}\p{N}'’-]/gu, ''));
       const matched = mine.filter(w => q.keywords.some(k => k.toLowerCase().includes(w.toLowerCase()) && w.length >= 2));
       side = `<div class="rtp-wf-task">Bước 5 — Tìm keyword</div>
@@ -1063,8 +1202,8 @@
       side = `<div class="rtp-wf-task">Bước 6 — Scan bài</div>
         <div class="q-text">${highlight(q.text, kwRanges)}</div>
         <p>Keyword đã tô xanh trong bài. Lướt tìm, rồi <b>bấm vào đoạn</b> chứa thông tin của câu hỏi.</p>
-        ${tried ? `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}">${ok ? '✓ Đúng đoạn!' : `✗ Chưa đúng — thông tin nằm ở ${esc(paraName(pr, q.locationParagraph))} (viền đỏ)`}</div>
-          <button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-step" data-step="7">Tiếp: Bước 7 — Đọc evidence & trả lời →</button>` : ''}`;
+        ${tried ? `<div class="rtp-wf-loc"><div class="q-correct-ans ${ok ? 'right' : 'wrong'}">${ok ? '✓ Đúng đoạn!' : `✗ Chưa đúng — thông tin nằm ở ${esc(paraName(pr, q.locationParagraph))} (viền đỏ)`}</div>
+          <button type="button" class="rtp-btn rtp-btn-primary" data-act="wf-step" data-step="7">Tiếp: Bước 7 — Đọc evidence & trả lời →</button></div>` : ''}`;
       passage = wfPassage({ hits: q.keywords, clickable: !tried, target: tried ? q.locationParagraph : null });
     } else {
       side = `<div class="rtp-wf-task">Bước 7 — Đọc kỹ đoạn đó, kiểm tra evidence rồi trả lời</div>
@@ -1082,7 +1221,9 @@
         </div></div>`;
       passage = wfPassage({ hits: q.keywords, target: q.locationParagraph, evidence: r && r.evidence });
     }
-    showPanelState(wfHeader(step) + `<div class="rtp-wf-grid">${passage}<div class="rtp-wf-side">${side}</div></div>`);
+    // Steps 5–6 start from the question, so on stacked layouts the task
+    // comes before the passage.
+    showPanelState(wfHeader(step) + `<div class="rtp-wf-grid${step < 7 ? ' side-first' : ''}">${passage}<div class="rtp-wf-side">${side}</div></div>`);
     const panel = panelEl();
     if (r && r.evidence) scrollPassageTo(panel, '.rtp-ev');
     else if (step === 7 || (step === 6 && a.loc != null)) scrollPassageTo(panel, '.rtp-para-target');
@@ -1124,6 +1265,7 @@
         <button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎲 Bài khác</button>
       </div>
     </div>`);
+    announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);
   }
 
   // The answer being worked on: the workflow's main-idea question has its
@@ -1147,24 +1289,36 @@
     const body = { passageId, questionNumber: it.questionNumber, answer: String(a.value).trim() };
     if (st.kind === 'paraphrase') body.pairIndex = it.pairIndex;
     a.checking = true;
+    // (before the button is disabled — that drops its focus)
+    const panel = panelEl();
+    const keyboard = !!(panel && panel.contains(document.activeElement));
     const btn = document.querySelector('#rtp-panel [data-act="check"]');
     if (btn) { btn.disabled = true; btn.textContent = 'Đang chấm...'; }
     try {
-      const data = await apiFetch(`/api/reading-tips/${encodeURIComponent(st.lesson.lessonKey)}/practice/check`, {
+      const data = await fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(st.lesson.lessonKey)}/practice/check`, {
         method: 'POST',
         body: JSON.stringify(body),
-      });
+      }, CHECK_TIMEOUT_MS);
       if (!st || !(onMain ? st.main === a : st.answers.includes(a))) return; // practice closed / replaced meanwhile
       if (st.kind === 'scanning' && a.startedAt) a.seconds = (Date.now() - a.startedAt) / 1000;
       a.result = data.result;
       persist();
-      if (activeAnswer() === a) renderQuestion();
+      if (activeAnswer() === a) {
+        renderQuestion();
+        const verdict = document.querySelector('#rtp-panel .rtp-feedback .q-correct-ans');
+        if (verdict) announce(verdict.textContent);
+        revealEl(document.querySelector('#rtp-panel .rtp-feedback'));
+        // keyboard users continue from the "next" button
+        const go = keyboard && document.querySelector('#rtp-panel .rtp-nav .rtp-btn-primary');
+        if (go) go.focus({ preventScroll: true });
+      }
     } catch (err) {
       if (err && err.body && err.body.requiresPremium && typeof openUpgradeModal === 'function') openUpgradeModal();
-      else if (typeof showToast === 'function') showToast((err && err.body && err.body.message) || 'Không chấm được đáp án, thử lại nhé.', 'error');
-      if (btn) { btn.disabled = false; btn.textContent = 'Kiểm tra'; }
+      else if (typeof showToast === 'function') showToast(errorMessage(err, 'Không chấm được đáp án, thử lại nhé.'), 'error');
     } finally {
       a.checking = false;
+      // still on this question and not graded → the button works again
+      if (btn && btn.isConnected && !a.result) { btn.textContent = 'Kiểm tra'; syncCheckBtn(); }
     }
   }
 
@@ -1210,19 +1364,50 @@
         <button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎲 Bài khác</button>
       </div>
     </div>`);
+    announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);
   }
 
   // ── Events ────────────────────────────────────────────────────────────
+
+  // Acts that move to another screen (the rest update the current one).
+  const SCREEN_ACTS = new Set(['prev', 'next', 'goto', 'review', 'intro-done', 'retry', 'wf-next', 'wf-review', 'wf-step']);
+
+  // Selector for the same control after a re-render (keeps keyboard focus).
+  function focusKeyOf(el) {
+    const d = el.dataset;
+    const extra = ['val', 'ti', 'pi', 'idx', 'step'].filter(k => d[k] != null)
+      .map(k => `[data-${k}="${String(d[k]).replace(/["\\]/g, '\\$&')}"]`).join('');
+    return `[data-act="${d.act}"]${extra}`;
+  }
 
   function onClick(e, lesson) {
     const el = e.target.closest('[data-act]');
     if (!el || el.disabled) return;
     const act = el.dataset.act;
-    if (act === 'start') { start(lesson); return; }
+    if (act === 'start') {
+      if (el.dataset.force) start(lesson); else confirmNewPractice(lesson, () => start(lesson));
+      return;
+    }
     if (act === 'resume') { resume(lesson); return; }
     if (act === 'upgrade') { if (typeof openUpgradeModal === 'function') openUpgradeModal(); return; }
+    if (act === 'show-passage') {
+      const pane = document.querySelector('#rtp-panel .rtp-passage');
+      if (pane) pane.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if (act === 'close' || act === 'dismiss') {
+      stopTimer();
+      if (st) persist();
+      st = null;
+      loadSeq++;
+      const panel = panelEl();
+      if (panel) { panel.hidden = true; panel.innerHTML = ''; }
+      renderEntry(lesson);
+      return;
+    }
     if (!st) return;
     const cur = st.answers[st.idx];
+    const focusKey = document.activeElement === el ? focusKeyOf(el) : null;
     switch (act) {
       case 'pick': {
         const a = activeAnswer();
@@ -1233,7 +1418,7 @@
       case 'check': checkCurrent(); return;
       case 'prev': if (st.idx > 0) st.idx--; break;
       case 'next': if (st.idx < st.items.length - 1) st.idx++; break;
-      case 'finish': renderResult(); return;
+      case 'finish': renderResult(); revealPanel(); return;
       case 'intro-done': st.introSeen = true; break;
       case 'hint': cur.hint = true; break;
       case 'toggle-full': st.showFull = !st.showFull; break;
@@ -1258,7 +1443,7 @@
       }
       // Quy trình làm bài
       case 'wf-next':
-        if (st.stage >= wfStages().length - 1) { renderResult(); return; }
+        if (st.stage >= wfStages().length - 1) { renderResult(); revealPanel(); return; }
         st.stage++;
         if (/^q\d+$/.test(wfStage())) st.idx = Number(wfStage().slice(1));
         break;
@@ -1284,20 +1469,17 @@
         st.guess = '';
         st.skimStartedAt = null;
         break;
-      case 'close': {
-        stopTimer();
-        persist();
-        st = null;
-        const panel = panelEl();
-        if (panel) { panel.hidden = true; panel.innerHTML = ''; }
-        renderEntry(lesson);
-        return;
-      }
       default: return;
     }
     persist();
     if (act === 'retry') renderEntry(lesson);
     renderQuestion();
+    if (focusKey) {
+      const again = document.querySelector(`#rtp-panel ${focusKey}`);
+      if (again) again.focus({ preventScroll: true });
+    }
+    if (SCREEN_ACTS.has(act)) revealPanel();
+    else if (act === 'wf-loc') revealEl(document.querySelector('#rtp-panel .rtp-wf-loc'));
   }
 
   window.RTPractice = { supports, mount };

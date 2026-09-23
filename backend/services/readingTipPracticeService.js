@@ -866,11 +866,31 @@ function loadActivePassages() {
   return Passage.find({ isActive: true }).select('title category content questionGroups questions').lean();
 }
 
-async function buildSkimming(cfg, rng) {
+// `exclude` = the student's most recent practice passages (newest first,
+// kept in their browser). Drops them from the candidates — the oldest
+// exclusions first when nothing would be left — so "Bài khác" never repeats
+// the previous passage while any other one fits.
+function withoutRecent(candidates, exclude, idOf) {
+  for (let n = exclude.length; n > 0; n--) {
+    const skip = new Set(exclude.slice(0, n));
+    const rest = candidates.filter(c => !skip.has(idOf(c)));
+    if (rest.length) return rest;
+  }
+  return candidates;
+}
+
+// Multi-passage practices: items from recently practised passages go last.
+function recentLast(items, exclude) {
+  const skip = new Set(exclude);
+  const seen = (it) => skip.has(String(it.passage._id));
+  return [...items.filter(it => !seen(it)), ...items.filter(seen)];
+}
+
+async function buildSkimming(cfg, rng, exclude) {
   const pool = (await loadActivePassages()).flatMap(skimItemsForPassage);
   if (!pool.length) return null;
 
-  const shuffled = shuffle(pool, rng);
+  const shuffled = recentLast(shuffle(pool, rng), exclude);
   // One overall-topic (title) question when the bank has any, the rest
   // paragraph-level — the things the Skimming tip teaches. Spread the
   // paragraph items across passages first (maxPerPassage), then fill any
@@ -919,19 +939,20 @@ async function buildSkimming(cfg, rng) {
   };
 }
 
-// One existing passage with enough usable questions: at least
-// cfg.minQuestions, preferring cfg.preferQuestions+ (and, when `prefer` is
-// given, passages it accepts first), random within the best non-empty
-// tier. Its first cfg.maxQuestions questions are kept, in original order.
-async function pickPassage(cfg, rng, itemsOf, prefer) {
+// One existing passage with enough usable questions (at least
+// cfg.minQuestions). Preference order: passages `prefer` accepts (when
+// given), then ones not practised recently (`exclude`), then ones with
+// cfg.preferQuestions+ questions; random among the best. Its first
+// cfg.maxQuestions questions are kept, in original order.
+async function pickPassage(cfg, rng, itemsOf, prefer, exclude = []) {
   const candidates = (await loadActivePassages())
     .map(p => ({ passage: p, ...itemsOf(p) }))
     .filter(c => c.items.length >= cfg.minQuestions);
   if (!candidates.length) return null;
-  const big = (c) => c.items.length >= cfg.preferQuestions;
   const good = prefer ? candidates.filter(prefer) : [];
-  const tiers = [good.filter(big), good, candidates.filter(big), candidates];
-  const tier = tiers.find(t => t.length);
+  const pool = withoutRecent(good.length ? good : candidates, exclude, c => String(c.passage._id));
+  const big = pool.filter(c => c.items.length >= cfg.preferQuestions);
+  const tier = big.length ? big : pool;
   const pick = tier[Math.floor(rng() * tier.length)];
   const names = await sourceNames([pick.passage]);
   return {
@@ -943,8 +964,8 @@ async function pickPassage(cfg, rng, itemsOf, prefer) {
   };
 }
 
-async function buildScanning(cfg, rng) {
-  const pick = await pickPassage(cfg, rng, scanItemsForPassage);
+async function buildScanning(cfg, rng, exclude) {
+  const pick = await pickPassage(cfg, rng, scanItemsForPassage, null, exclude);
   if (!pick) return null;
   const { items, ...base } = pick;
   return {
@@ -986,11 +1007,11 @@ function guideFor(item, qType, paragraphs) {
   return { keywords: stemKeywords(item.text, evidence.text, ctx), evidence };
 }
 
-async function buildQuestionType(cfg, rng) {
+async function buildQuestionType(cfg, rng, exclude) {
   const qType = cfg.questionType;
   // Prefer passages whose first two questions can be walked through.
   const guidable = (c) => c.items.length >= 2 && guideFor(c.items[0], qType, c.paragraphs) && guideFor(c.items[1], qType, c.paragraphs);
-  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, qType), guidable);
+  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, qType), guidable, exclude);
   if (!pick) return null;
   const { items, ...base } = pick;
   return {
@@ -1087,13 +1108,13 @@ function gradePhraseSelection(selected, phrase) {
   return covered >= 0.6 && extra <= 2;
 }
 
-async function buildParaphrase(cfg, rng) {
+async function buildParaphrase(cfg, rng, exclude) {
   const passages = await loadActivePassages();
   const pool = passages.flatMap(p => paraphrasePairs(p).map(pair => ({ passage: p, ...pair })));
   if (!pool.length) return null;
   const chosen = [];
   const perPassage = {};
-  for (const it of shuffle(pool, rng)) {
+  for (const it of recentLast(shuffle(pool, rng), exclude)) {
     const key = String(it.passage._id);
     if (chosen.length >= cfg.maxQuestions || (perPassage[key] || 0) >= cfg.maxPerPassage) continue;
     if (chosen.some(c => c.passage === it.passage && c.q === it.q)) continue; // one pair per question
@@ -1148,11 +1169,12 @@ function workflowItems(passage) {
   return { paragraphs, main, details };
 }
 
-async function buildWorkflow(cfg, rng) {
-  const candidates = (await loadActivePassages())
+async function buildWorkflow(cfg, rng, exclude) {
+  const all = (await loadActivePassages())
     .map(p => ({ passage: p, ...workflowItems(p) }))
     .filter(c => c.main && c.details.length >= 2);
-  if (!candidates.length) return null;
+  if (!all.length) return null;
+  const candidates = withoutRecent(all, exclude, c => String(c.passage._id));
   const pick = candidates[Math.floor(rng() * candidates.length)];
   // Spread the detail questions over different paragraphs where possible,
   // then restore the original order.
@@ -1206,7 +1228,8 @@ async function findTip(lessonKey) {
 
 // { status: 'no_practice' } | { status: 'ok', tip, practice } — practice is
 // null when the bank has nothing suitable (the client shows an empty state).
-async function getPractice(lessonKey, { rng = Math.random } = {}) {
+// `exclude`: passage ids of the student's last practices, avoided if possible.
+async function getPractice(lessonKey, { rng = Math.random, exclude = [] } = {}) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
   const cfg = PRACTICE_CONFIG[lessonKey];
@@ -1214,7 +1237,7 @@ async function getPractice(lessonKey, { rng = Math.random } = {}) {
     skimming: buildSkimming, scanning: buildScanning, questions: buildQuestionType,
     paraphrase: buildParaphrase, workflow: buildWorkflow,
   }[cfg.kind];
-  const practice = await build(cfg, rng);
+  const practice = await build(cfg, rng, exclude.map(String));
   return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
 }
 

@@ -217,3 +217,37 @@ test('/lessons marks every question-type tip as having a practice', async () => 
   const res = await request(app).get('/api/reading-tips/lessons');
   expect(res.body.lessons.every(l => l.hasPractice)).toBe(true);
 });
+
+// Phase 4: the browser sends the passages of the student's last practices
+// (newest first) so "Bài khác" gives a different passage.
+describe('?exclude= — "Bài khác" avoids recently practised passages', () => {
+  const tfPassage = () => createPassage({
+    content: LABELLED,
+    questionGroups: [{ groupType: 'plain', instruction: 'Do the following statements agree with the information given in Reading Passage 1?',
+      questions: ['TRUE', 'FALSE', 'NOT GIVEN', 'TRUE', 'FALSE'].map((k, i) => tfng(i + 1, k)) }],
+  });
+  const getExcluding = (ids) => request(app).get('/api/reading-tips/true-false-not-given/practice')
+    .query({ exclude: ids.map(String).join(',') }).set('Authorization', `Bearer ${token}`);
+
+  test('an excluded passage is never picked while another one fits', async () => {
+    const a = await tfPassage();
+    const b = await tfPassage();
+    for (let i = 0; i < 5; i++) {
+      expect((await getExcluding([a._id])).body.practice.passageId).toBe(String(b._id));
+      expect((await getExcluding([b._id])).body.practice.passageId).toBe(String(a._id));
+    }
+  });
+
+  test('when every passage is excluded the oldest exclusions go first (never the last one); junk ids are ignored', async () => {
+    const a = await tfPassage();
+    const b = await tfPassage();
+    // newest first: b was the last practice, a the one before
+    for (let i = 0; i < 5; i++) expect((await getExcluding([b._id, a._id])).body.practice.passageId).toBe(String(a._id));
+    const res = await getExcluding(['not-an-id', '{"$ne":null}', b._id]);
+    expect(res.status).toBe(200);
+    expect(res.body.practice.passageId).toBe(String(a._id));
+    // a single suitable passage is still served even if it was just done
+    await b.deleteOne();
+    expect((await getExcluding([a._id])).body.practice.passageId).toBe(String(a._id));
+  });
+});
