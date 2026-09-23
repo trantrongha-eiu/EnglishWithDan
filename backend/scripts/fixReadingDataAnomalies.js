@@ -23,6 +23,26 @@
  *     instruction said "Write YES … NO …" → TRUE/FALSE wording.
  *  6. Title typo "ewels from the sea" → "Jewels from the sea".
  *
+ * Added 2026-09-23 (found by the question-type practice audit):
+ *  7. Robots and us Q38 (Cambridge 20 Test 3 Passage 3): key "E" with only
+ *     four options — official key C (also what the explanation says).
+ *     Q37 option A "lt has grown…" → "It has grown…".
+ *  8. "Should we try to bring extinct species back to life?" Q23–26 is a
+ *     person-matching group but had interchangeableAnswers on, so grading
+ *     accepted any letter from the pooled keys (Q23 answered C, key B →
+ *     marked correct).
+ *  9. Answers Underground: questions say "ten paragraphs, A–J" but the
+ *     content had no letters at all, so Q7–9 couldn't be answered. Its ten
+ *     <p> blocks get A–J in order (the explanations confirm C, F, H).
+ * 10. What should companies do to survive? Q38: key F is right (paragraph F:
+ *     "which activities should be kept in-house and which outsourced…") but
+ *     its explanation was a copy of Q37's (paragraph E) — rewritten.
+ * 11. The return of monkey life: content was cut off mid-sentence in
+ *     paragraph F ("seems to support about") and paragraph G was missing,
+ *     so Q15 (key G) couldn't be answered. The ending is restored from the
+ *     published passage (mini-ielts.com); Q15's own explanation quotes the
+ *     same sentences.
+ *
  * Deliberately NOT changed: "The Step Pyramid of Djoser" exists twice on
  * purpose (same text, different question sets), and the two "Jewels from
  * the sea" documents belong to different mock tests (29 and 33).
@@ -90,6 +110,10 @@ const INNOVATION_Q35_OLD = 'What is the writer doing in the third paragraph?';
 const INNOVATION_Q35_NEW = 'According to the writer, companies like Previously Unavailable';
 const ROMAN_Q13_BAD_KEY = /^\s*he architect\b/;
 const ROMAN_Q13_KEY = 'the harbor / harbor / the harbour / harbour';
+const COMPANIES_Q38_EXPLANATION = 'Giải thích: Đoạn F nêu cơ sở để quyết định một hoạt động nên tự làm hay thuê công ty bên ngoài: "Managers must think through from scratch which activities should be kept in-house and which outsourced, and normally a company should keep those activities it does better than its competitors." (Nhà quản lý phải cân nhắc lại từ đầu hoạt động nào nên giữ lại trong công ty và hoạt động nào nên thuê ngoài; thông thường, công ty nên giữ lại những hoạt động mà mình làm tốt hơn đối thủ.) → "kept in-house" = carry out an activity itself, "outsourced" = ask an outside company to do it.';
+const MONKEY_CUT = 'This strange habitat seems to support about</p>';
+const MONKEY_ENDING = 'This strange habitat seems to support about as many monkeys as would a same-sized patch of wild forest. The howlers eat the leaves and fruit of the shade trees, leaving the valuable cacao pods alone.</p>\n\n'
+  + '    <p><strong>G</strong> Estrada believes the monkeys bring underappreciated benefits to such plantations, dispersing the seeds of fruits such as fig and other shade trees, and fertilizing the soil. Spider monkeys also forage for fruit here, though they need nearby areas of forest to survive in the long term. He hopes that farmers will begin to see the advantages of associating with wild monkeys, which could include potential ecotourism projects, \'Conservation is usually viewed as a conflict between farming practices and the need to preserve nature,\' Estrada says. \'We\'re moving away from that vision and beginning to consider ways in which commercial activities may become a tool for the conservation of primates in human-modified landscapes.\'</p>';
 const KOALAS_OLD_WORDING = 'Write YES if the statement agrees with the information, NO if the statement contradicts the information';
 const KOALAS_NEW_WORDING = 'Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information';
 
@@ -138,6 +162,53 @@ const SPECIFIC = {
     return out;
   },
   'ewels from the sea': () => [{ path: 'title', from: 'ewels from the sea', to: 'Jewels from the sea', label: 'title typo' }],
+  'Robots and us': (p) => {
+    const out = [];
+    eachQuestion(p, 38, (q, at) => {
+      if (q.correctAnswer === 'E' && (q.options || []).length === 4) out.push({ path: `${at}.correctAnswer`, from: 'E', to: 'C', label: 'Q38 answer key' });
+    });
+    eachQuestion(p, 37, (q, at) => {
+      const opts = q.options || [];
+      if (typeof opts[0] === 'string' && /^lt\b/.test(opts[0])) {
+        out.push({ path: `${at}.options`, from: opts, to: ['It' + opts[0].slice(2), ...opts.slice(1)], label: 'Q37 option A typo' });
+      }
+    });
+    return out;
+  },
+  'Should we try to bring extinct species back to life?': (p) => {
+    const out = [];
+    (p.questionGroups || []).forEach((g, gi) => {
+      if (g.interchangeableAnswers === true && /match each statement with the correct person/i.test(g.instruction || '')) {
+        out.push({ path: `questionGroups.${gi}.interchangeableAnswers`, from: true, to: false, label: 'person-matching group flagged interchangeable' });
+      }
+    });
+    return out;
+  },
+  'Answers Underground': (p) => {
+    const content = String(p.content || '');
+    const opens = content.match(/<p(?:\s[^>]*)?>/g) || [];
+    const labelled = /<p(?:\s[^>]*)?>\s*<(strong|b)>\s*[A-J][.)]?\s*<\/\1>/i.test(content);
+    if (opens.length !== 10 || labelled) return [];
+    let i = 0;
+    const to = content.replace(/<p(?:\s[^>]*)?>/g, (m) => `${m}<strong>${String.fromCharCode(65 + i++)}</strong> `);
+    return [{ path: 'content', from: content, to, label: 'paragraph letters A–J' }];
+  },
+  'What should companies do to survive?': (p) => {
+    const out = [];
+    let q37Explanation = null;
+    eachQuestion(p, 37, (q) => { q37Explanation = q37Explanation || q.explanation; });
+    eachQuestion(p, 38, (q, at) => {
+      if (q37Explanation && q.explanation === q37Explanation) {
+        out.push({ path: `${at}.explanation`, from: q.explanation, to: COMPANIES_Q38_EXPLANATION, label: 'Q38 explanation (was a copy of Q37\'s)' });
+      }
+    });
+    return out;
+  },
+  'The return of monkey life': (p) => {
+    const content = String(p.content || '');
+    if (content.split(MONKEY_CUT).length !== 2 || /<strong>G<\/strong>/.test(content)) return [];
+    return [{ path: 'content', from: content, to: content.replace(MONKEY_CUT, MONKEY_ENDING), label: 'truncated ending restored (end of F + paragraph G)' }];
+  },
 };
 
 function planForPassage(passage) {

@@ -49,6 +49,56 @@ describe('planForPassage', () => {
     expect(byPath['questionGroups.0.questions.2.correctAnswer']).toBeUndefined(); // NOT GIVEN stays
   });
 
+  test('Robots and us Q38 key E (4 options) → C, and the "lt" typo in Q37', () => {
+    const plan = planForPassage({ title: 'Robots and us', questionGroups: [{ questions: [
+      { questionNumber: 37, options: ['lt has grown alongside robots.', 'Other', 'Third', 'Fourth'] },
+      { questionNumber: 38, options: ['w', 'x', 'y', 'z'], correctAnswer: 'E' },
+    ] }] });
+    expect(plan.map(c => [c.path, c.to])).toEqual([
+      ['questionGroups.0.questions.1.correctAnswer', 'C'],
+      ['questionGroups.0.questions.0.options', ['It has grown alongside robots.', 'Other', 'Third', 'Fourth']],
+    ]);
+  });
+
+  test('a person-matching group loses the wrong "interchangeable" flag; a Choose-TWO group keeps it', () => {
+    const plan = planForPassage({ title: 'Should we try to bring extinct species back to life?', questionGroups: [
+      { instruction: 'Choose TWO letters, A–E.', interchangeableAnswers: true, questions: [] },
+      { instruction: 'Match each statement with the correct person, A, B or C.', interchangeableAnswers: true, questions: [] },
+    ] });
+    expect(plan.map(c => [c.path, c.to])).toEqual([['questionGroups.1.interchangeableAnswers', false]]);
+  });
+
+  test('Answers Underground gets A–J on its ten paragraphs, once', () => {
+    const content = 'Subtitle\n' + Array.from({ length: 10 }, (_, i) => `<p>Para ${i}.</p>`).join('');
+    const [c] = planForPassage({ title: 'Answers Underground', content });
+    expect(c.path).toBe('content');
+    expect(c.to.startsWith('Subtitle\n<p><strong>A</strong> Para 0.</p><p><strong>B</strong> Para 1.</p>')).toBe(true);
+    expect(c.to).toContain('<p><strong>J</strong> Para 9.</p>');
+    expect(planForPassage({ title: 'Answers Underground', content: c.to })).toEqual([]);
+  });
+
+  test('companies Q38: rewrites an explanation copied from Q37, leaves an original one alone', () => {
+    const copied = planForPassage({ title: 'What should companies do to survive?', questionGroups: [{ questions: [
+      { questionNumber: 37, explanation: 'Giải thích: Đoạn E …' },
+      { questionNumber: 38, explanation: 'Giải thích: Đoạn E …' },
+    ] }] });
+    expect(copied).toHaveLength(1);
+    expect(copied[0].path).toBe('questionGroups.0.questions.1.explanation');
+    expect(copied[0].to).toMatch(/^Giải thích: Đoạn F/);
+    expect(planForPassage({ title: 'What should companies do to survive?', questionGroups: [{ questions: [
+      { questionNumber: 37, explanation: 'Giải thích: Đoạn E …' },
+      { questionNumber: 38, explanation: copied[0].to },
+    ] }] })).toEqual([]);
+  });
+
+  test('monkey life: restores the cut-off ending once', () => {
+    const content = '<p><strong>F</strong> The howlers moved in. This strange habitat seems to support about</p>\n\n';
+    const [c] = planForPassage({ title: 'The return of monkey life', content });
+    expect(c.to).toContain('as many monkeys as would a same-sized patch of wild forest.');
+    expect(c.to).toContain('<p><strong>G</strong> Estrada believes');
+    expect(planForPassage({ title: 'The return of monkey life', content: c.to })).toEqual([]);
+  });
+
   test('is idempotent: an already-fixed passage plans nothing', () => {
     expect(planForPassage({
       title: 'Roman tunnels',
