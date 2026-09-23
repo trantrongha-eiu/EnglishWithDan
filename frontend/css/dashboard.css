@@ -308,6 +308,11 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
    (dashboard.html's _buildPicker) and has no .classroom-picker-dd wrapper,
    so it's unaffected by the rules below. */
 .classroom-picker-dd{padding:6px;display:flex;flex-direction:column;gap:0}
+/* Only the Today's Lesson card's "Đổi bài" picker needs this — its trigger
+   is a compact icon-button (no room for a heading next to it, unlike the
+   sidebar's own "Learn Vocab by Topics" <h4>), so the dropdown carries its
+   own label instead once opened. */
+.up-picker-heading{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.03em;padding:4px 8px 8px;flex-shrink:0}
 .up-search-row{
   display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:4px;
   border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--bg));

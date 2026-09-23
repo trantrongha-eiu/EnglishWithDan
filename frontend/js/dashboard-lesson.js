@@ -86,21 +86,49 @@ function _lessonPickerGroupedHtml(lessons) {
 
 // "Đổi bài" picker on the Today's Lesson card — lets a student swap which
 // lesson that card (and its Start/Continue/Review button) points to,
-// instead of always defaulting to the most-recently-assigned one.
+// instead of always defaulting to the most-recently-assigned one. Same
+// search box + grouped list as buildClassroomPicker() (below), just kept
+// as its own wiring since the trigger here is the existing compact "Đổi
+// bài" icon-button, not a full input — swapping it for one would break
+// this card's tight header row.
 function setupTodaysLessonPicker() {
     const btn = document.getElementById('todays-lesson-switch-btn');
     const dd  = document.getElementById('todays-lesson-picker-dd');
     if (!btn || !dd || btn._wired) return;
     btn._wired = true;
+    dd.classList.add('classroom-picker-dd');
+    dd.innerHTML = `
+        <div class="up-picker-heading"><i class="fas fa-layer-group"></i> Vocab by Topics</div>
+        <div class="up-search-row">
+            <i class="fas fa-search"></i>
+            <input type="text" class="up-search-input" placeholder="Tìm bài quiz theo tên..." autocomplete="off">
+        </div>
+        <div class="up-search-results"></div>
+    `;
+    const searchInp = dd.querySelector('.up-search-input');
+    const resultsEl = dd.querySelector('.up-search-results');
     let isOpen = false;
+    function render(query) {
+        const lessons = lessonState.publicLessons;
+        const filtered = query
+            ? lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase()))
+            : lessons;
+        resultsEl.innerHTML = (query && !filtered.length)
+            ? '<div class="up-empty">Không tìm thấy bài quiz nào</div>'
+            : _lessonPickerGroupedHtml(filtered);
+    }
     function open() {
-        dd.innerHTML = _lessonPickerGroupedHtml(lessonState.publicLessons);
+        searchInp.value = '';
+        render('');
         dd.style.display = 'block';
         isOpen = true;
+        searchInp.focus();
     }
     function close() { dd.style.display = 'none'; isOpen = false; }
     btn.addEventListener('click', e => { e.stopPropagation(); isOpen ? close() : open(); });
-    dd.addEventListener('mousedown', e => {
+    searchInp.addEventListener('input', () => render(searchInp.value));
+    searchInp.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    resultsEl.addEventListener('mousedown', e => {
         const item = e.target.closest('.up-item');
         if (!item) return;
         e.preventDefault();
