@@ -1027,7 +1027,7 @@
         },
         {
           "id": "e6",
-          "prompt": "A solution is needed for this problem.",
+          "prompt": "Solution is needed for this problem.",
           "answer": "A solution is needed for this problem.",
           "accept": [
             "The solution is needed for this problem."
