@@ -2542,22 +2542,27 @@ function showMixedQuestion() {
             <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
           </div>`;
     } else {
-        const ex = currentWord.example || `Từ cần tìm: ${currentWord.word}`;
-        const exEsc = _esc(ex);
         const wordEsc = _esc(currentWord.word);
-        const exHtml = exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
-            `<strong class="highlight-word">${wordEsc}</strong>`);
+        const ex = currentWord.example || '';
+        const exEsc = _esc(ex);
+        // Mask the target word instead of revealing it — see
+        // showTranslationQuestion()'s comment (same direction swap applies
+        // to this Mixed-mode sub-type).
+        const exHtml = ex
+            ? exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'), '<strong class="highlight-word">_____</strong>')
+            : '';
+        const meaningEsc = _esc(String(currentWord.meaning || '').split(/[\/,]/)[0].trim());
         wrap.innerHTML = `
           <div class="question-card">
             ${repeatBadge}
             <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
               <i class="fas fa-language"></i> Translation
             </div>
-            <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Dịch: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
+            ${exHtml ? `<div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>` : ''}
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Nghĩa: <strong>${meaningEsc}</strong></div>
             <div id="mixTransWbwHost"></div>
             <div class="fb-input-row" id="mixTransInputRow">
-              <input class="trans-input" id="mixTransInput" placeholder="Nhập nghĩa..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
+              <input class="trans-input" id="mixTransInput" placeholder="Nhập từ tiếng Anh..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
             </div>
             <div id="mixTransFeedback" style="margin-top:10px"></div>
@@ -2566,12 +2571,12 @@ function showMixedQuestion() {
         setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
     }
     // Word-by-word "gõ từng chữ" drill for the Listening / Translation
-    // sub-types (same widget as the standalone Notebook modes above).
+    // sub-types (same widget as the standalone Notebook modes above) — both
+    // now target the English word/phrase, graded by _checkExactWordMatch.
     if (type === 'listening') {
         _mountVocabDrill('mixListenWbwHost', 'mixListenInputRow', currentWord.word, checkMixedListen);
     } else if (type !== 'multipleChoice') {
-        const _mt = String(currentWord.meaning || '').split(/[\/,]/)[0].trim();
-        _mountVocabDrill('mixTransWbwHost', 'mixTransInputRow', _mt, checkMixedTrans);
+        _mountVocabDrill('mixTransWbwHost', 'mixTransInputRow', currentWord.word, checkMixedTrans);
     }
     if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
     setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz', () => !_vocabQuizActive);
@@ -2634,53 +2639,6 @@ function _checkExactWordMatch(inputId, feedbackId, nextBtnId, forceWrong) {
     document.getElementById(nextBtnId).style.display = 'flex';
 }
 
-// minWordLen: standalone Translation mode and Mixed mode's translation
-// sub-type used to duplicate this exact fuzzy-match algorithm with one
-// subtle difference — Mixed filtered out single-letter words before
-// comparing (`length > 1`) while standalone Translation kept them
-// (`filter(Boolean)`, i.e. length >= 1). Preserved here via this param
-// instead of silently unifying the two (a real, if minor, behavioural
-// difference — not something this cleanup should change).
-// Grammatical/filler words a student shouldn't be forced to type for the
-// answer to count — e.g. "phát triển" must still match "sự phát triển".
-const _MEANING_STOPWORDS = new Set([
-    'su', 'sự', 'viec', 'việc', 'cai', 'cái', 'mot', 'một', 'nhung', 'những',
-    'cac', 'các', 'nguoi', 'người', 'ke', 'kẻ', 'do', 'đồ', 'lam', 'làm',
-    'bi', 'bị', 'duoc', 'được', 'co', 'có', 'la', 'là', 'va', 'và', 'hoac',
-    'hoặc', 'cua', 'của', 'cho', 'de', 'để', 'thi', 'thì', 'ma', 'mà',
-    'to', 'a', 'an', 'the', 'of', 'for', 'be', 'being', 'someone', 'something', 'sb', 'sth',
-]);
-
-function _isMeaningMatch(userAnswer, correctMeaningRaw, minWordLen) {
-    const ua    = (userAnswer || '').trim().toLowerCase();
-    const caRaw = (correctMeaningRaw || '').toLowerCase();
-    const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    // Keep spaces (was stripped, which collapsed every phrase to one token and
-    // silently disabled the per-word check below — so "từ" scored correct for
-    // "từ bỏ"). Diacritics + CJK ranges preserved; whitespace normalised.
-    const norm  = s => (s.normalize ? s.normalize('NFC') : s)
-        .replace(/[^a-z0-9\sàáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    const sig = words => words.filter(w => w.length >= minWordLen && !_MEANING_STOPWORDS.has(w));
-    return alts.some(alt => {
-        const normAlt = norm(alt), normUa = norm(ua);
-        if (!normAlt || !normUa) return false;
-        if (normUa === normAlt) return true;
-        const altWords = sig(normAlt.split(/\s+/));
-        const uaWords  = sig(normUa.split(/\s+/));
-        // Answer was all short/filler words (or a spaceless CJK string): fall
-        // back to a whole-string substring match, but only when the shorter
-        // string covers a real fraction of the longer one.
-        if (altWords.length === 0) {
-            const a = normUa.replace(/\s/g, ''), b = normAlt.replace(/\s/g, '');
-            if (Math.min(a.length, b.length) / Math.max(a.length, b.length) < 0.6) return false;
-            return a.includes(b) || b.includes(a);
-        }
-        return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
-    });
-}
-
 function checkMixedMC(btn, selected, correct) {
     _checkMCAnswer(btn, selected, correct, '#mixAnswerOptions', 'mixBtnNext');
 }
@@ -2689,27 +2647,8 @@ function checkMixedListen(forceWrong) {
     _checkExactWordMatch('mixListenInput', 'mixListenFeedback', 'mixBtnNext', forceWrong);
 }
 
-// forceWrong: see _checkExactWordMatch's comment — the drill already gave up
-// and revealed the answer, so grade wrong unconditionally.
 function checkMixedTrans(forceWrong) {
-    if (answered) return; answered = true;
-    const inputEl = document.getElementById('mixTransInput');
-    const ua = inputEl?.value.trim().toLowerCase() || '';
-    inputEl.disabled = true;
-    const ok = !forceWrong && _isMeaningMatch(ua, currentWord.meaning, 2);
-    if (ok) {
-        document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;
-        correctAnswers++; playCorrectSound();
-    } else {
-        document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Đáp án đúng: <strong>${_esc(currentWord.meaning)}</strong></div>`;
-        wrongAnswers++; playWrongSound();
-        wrongWordSet.add(currentWord.word);
-        requeueWrongWord(currentWord);
-    }
-    _countAnswer();
-    document.getElementById('mixBtnNext').style.display = 'flex';
+    _checkExactWordMatch('mixTransInput', 'mixTransFeedback', 'mixBtnNext', forceWrong);
 }
 
 /* ── Multiple Choice ── */
@@ -2981,48 +2920,33 @@ function showTranslationQuestion() {
     answered = false;
     updateProgress('trans');
     document.getElementById('transQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    const ex = currentWord.example || `Từ cần tìm: ${currentWord.word}`;
-    const exEsc = _esc(ex);
     const wordEsc = _esc(currentWord.word);
-    document.getElementById('transExample').innerHTML =
-        exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
-            `<strong class="highlight-word">${wordEsc}</strong>`);
+    const ex = currentWord.example || '';
+    const exEsc = _esc(ex);
+    // Mask the target word in the example sentence instead of revealing it —
+    // the student now has to PRODUCE the English word from its Vietnamese
+    // meaning, so showing its exact spelling here would give the answer away.
+    document.getElementById('transExample').innerHTML = ex
+        ? exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
+            '<strong class="highlight-word">_____</strong>')
+        : '';
     setupDictionaryDouble('transExample', 'vocab-quiz', () => !_vocabQuizActive);
-    document.getElementById('transWordHighlight').innerHTML = `Dịch: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
+    const meaningEsc = _esc(String(currentWord.meaning || '').split(/[\/,]/)[0].trim());
+    document.getElementById('transWordHighlight').innerHTML = `Nghĩa: <strong>${meaningEsc}</strong>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
     document.getElementById('transBtnNext').style.display = 'none';
-    // Word-by-word "gõ từng chữ" drill for the Vietnamese meaning. The
-    // meaning can list alternatives with "/" or "," — drill the first one
-    // (checkTranslation()'s _isMeaningMatch still accepts it as correct).
-    const _transTarget = String(currentWord.meaning || '').split(/[\/,]/)[0].trim();
-    _mountVocabDrill('transWbwHost', 'transInputRow', _transTarget, checkTranslation);
+    // Word-by-word "gõ từng chữ" drill for the English word/phrase — same
+    // target and grading (_checkExactWordMatch) as Listening mode, just
+    // prompted by the Vietnamese meaning instead of audio.
+    _mountVocabDrill('transWbwHost', 'transInputRow', currentWord.word, checkTranslation);
     if (!window.WbwDrill || !window.WbwDrill.isMounted(document.getElementById('transWbwHost'))) {
         document.getElementById('transInput').focus();
     }
 }
-// forceWrong: see _checkExactWordMatch's comment — the drill already gave up
-// and revealed the answer, so grade wrong unconditionally.
 function checkTranslation(forceWrong) {
-    if (answered) return; answered = true;
-    const inputEl = document.getElementById('transInput');
-    const ua = inputEl.value.trim().toLowerCase();
-    inputEl.disabled = true;
-    const ok = !forceWrong && _isMeaningMatch(ua, currentWord.meaning, 1);
-    if (ok) {
-        document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Chính xác! Đáp án: <em>${_esc(currentWord.meaning)}</em></div>`;
-        correctAnswers++; playCorrectSound();
-    } else {
-        document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Đáp án đúng: <strong>${_esc(currentWord.meaning)}</strong></div>`;
-        wrongAnswers++; playWrongSound();
-        wrongWordSet.add(currentWord.word);
-        requeueWrongWord(currentWord);
-    }
-    _countAnswer();
-    document.getElementById('transBtnNext').style.display = 'flex';
+    _checkExactWordMatch('transInput', 'transFeedback', 'transBtnNext', forceWrong);
 }
 
 /* ── Results ── */

@@ -462,7 +462,7 @@
 
         <div id="translationMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Dịch từ được tô, dựa vào câu ví dụ</p></div>
+            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Xem nghĩa tiếng Việt và câu ví dụ, gõ từ tiếng Anh còn thiếu</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
@@ -473,7 +473,7 @@
                    only as the value bridge for checkTranslation(). -->
               <div id="transWbwHost"></div>
               <div class="fb-input-row" id="transInputRow">
-                <input class="trans-input" id="transInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
+                <input class="trans-input" id="transInput" placeholder="Nhập từ tiếng Anh..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
                 <button class="btn-check" onclick="checkTranslation()">Kiểm tra</button>
               </div>
               <div id="transFeedback" style="margin-top:10px"></div>
@@ -1298,6 +1298,6 @@
 <script src="js/dashboard-classinfo.js?v=20260909cls"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
-<script src="js/dashboard.js?v=20260911para"></script>
+<script src="js/dashboard.js?v=20260923transdir"></script>
 </body>
 </html>
