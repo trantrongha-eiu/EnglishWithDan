@@ -889,6 +889,14 @@
            center it.
            ══════════════════════════════════════════════════════════════════ */
         .gf-body { overflow-y: auto; padding: 4px 16px 32px; }
+        /* Topbar + audio bar stick together at the top while the (page-
+           scrolled) transcript scrolls under them, so play/seek stay in
+           reach at any point in a long transcript. One sticky wrapper
+           instead of two sticky bars avoids hard-coding the topbar height. */
+        .gf-sticky-head { position: sticky; top: 0; z-index: 100; }
+        .gf-sticky-head .exam-topbar { position: static; }
+        /* Tab/focus into a blank must not land it under the sticky head. */
+        .gf-blank { scroll-margin-top: 150px; scroll-margin-bottom: 80px; }
 
         @keyframes gfFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
         @keyframes gfPop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }

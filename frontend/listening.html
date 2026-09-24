@@ -414,6 +414,7 @@
          (own <audio>, own JS below) so it never touches the shared `audio`
          element/state used by screen-exam/screen-review/screen-practice. -->
     <div id="screen-gapfill" class="screen">
+        <div class="gf-sticky-head">
         <div class="exam-topbar">
             <button class="exam-exit-btn" onclick="closeGapFillScreen()" title="Thoát"><i class="fas fa-times"></i></button>
             <span class="exam-title" id="gf-title" style="flex:1">Gap-fill</span>
@@ -422,7 +423,7 @@
             <button class="audio-play-btn" id="gf-play-btn" onclick="gfTogglePlay()"><i class="fas fa-play" id="gf-play-icon"></i></button>
             <button class="audio-skip-btn" onclick="gfSkip(-10)"><i class="fas fa-backward"></i> 10s</button>
             <div class="audio-seek-wrap">
-                <input type="range" class="audio-seek" id="gf-seek" value="0" min="0" max="100" step="0.1" oninput="gfSeekInput(this.value)" />
+                <input type="range" class="audio-seek" id="gf-seek" value="0" min="0" max="100" step="0.1" oninput="gfSeekInput(this.value)" onchange="gfSeekCommit(this.value)" title="Tua: ← / → (5s) — khi đang gõ trong ô trống: Ctrl + ← / →" />
                 <div class="audio-time">
                     <span id="gf-time-cur">00:00</span>
                     <span id="gf-time-total">00:00</span>
@@ -430,6 +431,7 @@
             </div>
             <button class="audio-skip-btn" onclick="gfSkip(10)">10s <i class="fas fa-forward"></i></button>
             <button class="gf-speed-btn" id="gf-speed-btn" onclick="gfCycleSpeed()">1x</button>
+        </div>
         </div>
         <div class="gf-body">
             <div id="gf-result-bar" class="gf-result-bar" style="display:none"></div>
@@ -442,7 +444,7 @@
                 <button class="btn-primary" id="gf-submit-btn" onclick="gfSubmit()"><i class="fas fa-check"></i> Nộp bài</button>
             </div>
         </div>
-        <audio id="gf-audio" preload="metadata"></audio>
+        <audio id="gf-audio" preload="auto"></audio>
     </div>
 
     <!-- Settings panel – ở body level để dùng được cho cả exam và practice khi fullscreen -->
@@ -628,7 +630,7 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="/css/listening-extra.css?v=20260907a">
+    <link rel="stylesheet" href="/css/listening-extra.css?v=20260925gf">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=20260924e">
 
     <script>
@@ -4833,9 +4835,19 @@
         });
 
         const gfAudio = _gfAudioEl();
+        const audioUrl = section.audioUrl || '';
         gfAudio.pause();
-        gfAudio.src = section.audioUrl || '';
+        gfAudio.defaultPlaybackRate = 1;
         gfAudio.playbackRate = 1;
+        _gfDragging = false;
+        if (_gfBlobUrl && _gfBlobFor === audioUrl) {
+            // Retry on the same section — the full file is already local.
+            gfAudio.src = _gfBlobUrl;
+        } else {
+            _gfResetBlob();
+            gfAudio.src = audioUrl;
+            if (audioUrl) _gfPrefetchAudio(audioUrl);
+        }
         gfAudio.load();
         document.getElementById('gf-play-icon').className = 'fas fa-play';
         document.getElementById('gf-speed-btn').textContent = '1x';
@@ -4848,31 +4860,136 @@
         if (gfAudio.paused) gfAudio.play().catch(() => toast('Không phát được audio.', 'error'));
         else gfAudio.pause();
     }
-    function gfSkip(secs) {
-        const gfAudio = _gfAudioEl();
-        gfAudio.currentTime = Math.max(0, Math.min(gfAudio.duration || 0, gfAudio.currentTime + secs));
+    // Seeking lag: the audio src is the /api/media/listening proxy (Render →
+    // Cloudinary), so every seek outside the buffered range is a fresh Range
+    // round-trip (~2s). Fix: download the whole file once in the background
+    // and switch the <audio> to a local blob: URL — seeks are then instant.
+    // Until the blob is ready, playback streams from the proxy as before.
+    let _gfBlobUrl = null;      // object URL of the fully-downloaded audio
+    let _gfBlobFor = '';        // the proxy URL that blob was downloaded from
+    let _gfPrefetchCtrl = null; // AbortController of the in-flight download
+    let _gfSwapping = false;    // src is being switched proxy → blob
+    let _gfSwapTarget = 0;      // where to land once that switch finishes
+    let _gfDragging = false;    // student is dragging the seek slider
+
+    function _gfResetBlob() {
+        if (_gfPrefetchCtrl) { _gfPrefetchCtrl.abort(); _gfPrefetchCtrl = null; }
+        if (_gfBlobUrl) { URL.revokeObjectURL(_gfBlobUrl); _gfBlobUrl = null; }
+        _gfBlobFor = '';
+        _gfSwapping = false;
     }
-    function gfSeekInput(val) { _gfAudioEl().currentTime = parseFloat(val); }
+
+    async function _gfPrefetchAudio(url) {
+        const ctrl = new AbortController();
+        _gfPrefetchCtrl = ctrl;
+        try {
+            const res = await fetch(url, { signal: ctrl.signal });
+            if (!res.ok) return;
+            const blob = await res.blob();
+            if (ctrl.signal.aborted || _gfPrefetchCtrl !== ctrl) return;
+            _gfPrefetchCtrl = null;
+            _gfBlobUrl = URL.createObjectURL(blob);
+            _gfBlobFor = url;
+            // Paused → switch now (no audible glitch). Playing → switch on the
+            // next seek, where a ~50ms hiccup is hidden by the jump itself.
+            if (_gfAudioEl().paused) _gfSwapToBlob(_gfAudioEl().currentTime);
+        } catch (e) {
+            // Aborted or network error — keep streaming from the proxy.
+            if (e?.name !== 'AbortError') console.warn('[gapfill] audio prefetch failed', e);
+        }
+    }
+
+    function _gfOnBlob() { const a = _gfAudioEl(); return !!_gfBlobUrl && a.src === _gfBlobUrl; }
+
+    function _gfSwapToBlob(targetTime) {
+        const a = _gfAudioEl();
+        const wasPlaying = !a.paused;
+        const rate = a.playbackRate;
+        _gfSwapping = true;
+        _gfSwapTarget = targetTime;
+        a.src = _gfBlobUrl;
+        a.addEventListener('loadedmetadata', () => {
+            a.defaultPlaybackRate = rate;
+            a.playbackRate = rate;
+            a.currentTime = Math.max(0, Math.min(a.duration || 0, _gfSwapTarget));
+            _gfSwapping = false;
+            if (wasPlaying) a.play().catch(() => {});
+        }, { once: true });
+        a.load();
+    }
+
+    function _gfSeekTo(t) {
+        const a = _gfAudioEl();
+        if (!a.src) return;
+        const target = Math.max(0, Math.min(a.duration || 0, t));
+        if (_gfBlobUrl && !_gfOnBlob() && !_gfSwapping) { _gfSwapToBlob(target); return; }
+        if (_gfSwapping) { _gfSwapTarget = target; _gfRenderTime(target); return; }
+        a.currentTime = target;
+        _gfRenderTime(target);
+    }
+
+    function _gfRenderTime(t) {
+        const seek = document.getElementById('gf-seek');
+        if (seek && !_gfDragging) seek.value = t;
+        document.getElementById('gf-time-cur').textContent = `${pad(Math.floor(t/60))}:${pad(Math.floor(t%60))}`;
+    }
+
+    function gfSkip(secs) {
+        _gfSeekTo(_gfAudioEl().currentTime + secs);
+    }
+    // While dragging only preview the time (streaming from the proxy, a seek
+    // per input event queued a Range request each); commit on release. Once
+    // the audio is local, scrub live since seeks cost nothing.
+    function gfSeekInput(val) {
+        const t = parseFloat(val);
+        _gfDragging = true;
+        document.getElementById('gf-time-cur').textContent = `${pad(Math.floor(t/60))}:${pad(Math.floor(t%60))}`;
+        if (_gfOnBlob() && !_gfSwapping) _gfAudioEl().currentTime = t;
+    }
+    function gfSeekCommit(val) {
+        _gfDragging = false;
+        _gfSeekTo(parseFloat(val));
+    }
     function gfCycleSpeed() {
         _gfSpeedIdx = (_gfSpeedIdx + 1) % _gfSpeeds.length;
-        _gfAudioEl().playbackRate = _gfSpeeds[_gfSpeedIdx];
+        const a = _gfAudioEl();
+        a.defaultPlaybackRate = _gfSpeeds[_gfSpeedIdx];
+        a.playbackRate = _gfSpeeds[_gfSpeedIdx];
         document.getElementById('gf-speed-btn').textContent = _gfSpeeds[_gfSpeedIdx] + 'x';
     }
+
+    // ← / → seek 5s on the gap-fill screen. Inside a blank plain arrows keep
+    // moving the caret (needed to fix a typo), so there it's Ctrl/⌘ + ← / →.
+    const GF_ARROW_SKIP = 5;
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        if (!document.getElementById('screen-gapfill')?.classList.contains('active')) return;
+        if (e.altKey || e.shiftKey) return;
+        const t = e.target;
+        const inBlank = t.classList?.contains('gf-blank');
+        const inOtherField = !inBlank && t !== document.getElementById('gf-seek')
+            && (['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) || t.isContentEditable);
+        if (inOtherField) return;
+        if (inBlank && !(e.ctrlKey || e.metaKey)) return;
+        if (!inBlank && (e.ctrlKey || e.metaKey)) return;
+        e.preventDefault();
+        gfSkip(e.key === 'ArrowLeft' ? -GF_ARROW_SKIP : GF_ARROW_SKIP);
+    });
+
     (function _wireGfAudioEvents() {
         document.addEventListener('DOMContentLoaded', () => {
             const gfAudio = _gfAudioEl();
             if (!gfAudio) return;
             gfAudio.addEventListener('play',  () => { document.getElementById('gf-play-icon').className = 'fas fa-pause'; });
-            gfAudio.addEventListener('pause', () => { document.getElementById('gf-play-icon').className = 'fas fa-play'; });
+            gfAudio.addEventListener('pause', () => { if (!_gfSwapping) document.getElementById('gf-play-icon').className = 'fas fa-play'; });
             gfAudio.addEventListener('loadedmetadata', () => {
                 const seek = document.getElementById('gf-seek');
                 if (seek) seek.max = gfAudio.duration || 0;
                 document.getElementById('gf-time-total').textContent = `${pad(Math.floor((gfAudio.duration||0)/60))}:${pad(Math.floor((gfAudio.duration||0)%60))}`;
             });
             gfAudio.addEventListener('timeupdate', () => {
-                const seek = document.getElementById('gf-seek');
-                if (seek) seek.value = gfAudio.currentTime;
-                document.getElementById('gf-time-cur').textContent = `${pad(Math.floor(gfAudio.currentTime/60))}:${pad(Math.floor(gfAudio.currentTime%60))}`;
+                if (_gfSwapping) return; // src switch briefly reports 0 — don't flash the slider back
+                _gfRenderTime(gfAudio.currentTime);
             });
         });
     })();
@@ -4926,7 +5043,9 @@
     function closeGapFillScreen() {
         const gfAudio = _gfAudioEl();
         gfAudio.pause();
-        gfAudio.src = '';
+        gfAudio.removeAttribute('src');
+        gfAudio.load();
+        _gfResetBlob();
         _gfSection = null;
         showScreen('list');
     }
