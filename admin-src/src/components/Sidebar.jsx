@@ -18,7 +18,7 @@ const NAV = [
   { section: 'THEO DÕI HỌC SINH' },
   { to: '/classes',            icon: '🗓️', label: 'Lớp & Điểm danh' },
   { to: '/monitoring',         icon: '📈', label: 'Theo dõi luyện tập', mockBadge: true },
-  { to: '/entrance-test',      icon: '🚪', label: 'Test đầu vào' },
+  { to: '/entrance-test',      icon: '🚪', label: 'Test đầu vào', entranceBadge: true },
   { to: '/writing-grades',     icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/messages',           icon: '✉️', label: 'Hộp thư', messagesBadge: true },
   { section: 'NỘI DUNG' },
@@ -53,6 +53,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [pendingMessages, setPendingMessages] = useState(0);
   const [mockViolations, setMockViolations] = useState(0);
   const [simViolations, setSimViolations] = useState(0);
+  const [pendingEntranceReviews, setPendingEntranceReviews] = useState(0);
 
   useEffect(() => {
     // One call for all six badge counts (was six separate polled requests).
@@ -65,6 +66,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
         setPendingMessages(d.pendingMessages || 0);
         setMockViolations(d.mockViolations || 0);
         setSimViolations(d.simViolations || 0);
+        setPendingEntranceReviews(d.pendingEntranceReviews || 0);
       }).catch(() => {});
     }
     fetchBadges();
@@ -152,6 +154,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 )}
                 {item.messagesBadge && pendingMessages > 0 && (
                   <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
+                )}
+                {item.entranceBadge && pendingEntranceReviews > 0 && (
+                  <span className="nav-badge" title="Kết quả Test đầu vào đang chờ duyệt">{pendingEntranceReviews > 99 ? '99+' : pendingEntranceReviews}</span>
                 )}
                 {item.mockBadge && (mockViolations + simViolations) > 0 && (
                   <span className="nav-badge nav-badge--warn" title="Lượt thi thử / Test Simulation bị đánh dấu vi phạm proctoring">

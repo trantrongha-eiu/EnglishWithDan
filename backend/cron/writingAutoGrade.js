@@ -50,7 +50,7 @@ async function runAutoGrade() {
     // never touched again. 'pending' and 'ai_done' are the only states
     // where an ungraded task could still be sitting there.
     const attempts = await WritingAttempt.find({ gradingStatus: { $in: ['pending', 'ai_done'] } })
-      .select('task1Answer task2Answer wordCount1 wordCount2 task1Snapshot task2Snapshot aiGrading')
+      .select('task1Answer task2Answer wordCount1 wordCount2 task1Snapshot task2Snapshot aiGrading examName')
       .lean();
 
     const jobs = [];
@@ -83,6 +83,12 @@ async function runAutoGrade() {
           $set: { [field]: gradeResult, 'aiGrading.generatedAt': new Date(), gradingStatus: 'ai_done' }
         });
         graded++;
+        // An Entrance Test essay: pull the new band into the attempt so it
+        // moves into the admin's "chờ duyệt" review queue right away.
+        if (attempt.examName === 'IELTS Entrance Test') {
+          await require('../services/entranceTestService').syncWritingBandByWritingAttemptId(attempt._id)
+            .catch(e => logger.error('cron', 'WritingAutoGrade: entrance test band sync failed', { attemptId: String(attempt._id), errorMessage: e.message }));
+        }
       } catch (err) {
         if (err.isOverloaded) {
           // Gemini is overloaded/out of quota right now — every remaining

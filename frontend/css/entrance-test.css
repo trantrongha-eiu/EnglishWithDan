@@ -278,3 +278,137 @@
   .et-writing-answer { padding-top: var(--space-3); }
   .et-writing-textarea { min-height: 260px; }
 }
+
+/* ── Submit overlay — blocks every other control while a section submit
+   (above all the last ones: Writing / Speaking with its recording upload)
+   is in flight, so nothing can fire a second submit. ── */
+.et-submit-overlay {
+  position: fixed; inset: 0; z-index: calc(var(--z-toast) + 10);
+  background: rgba(15, 23, 42, .55);
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--space-4);
+  cursor: progress;
+}
+.et-submit-box {
+  background: var(--surface); color: var(--text);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  padding: var(--space-6) var(--space-6) var(--space-5);
+  text-align: center; width: 100%; max-width: 340px;
+}
+.et-spinner {
+  width: 48px; height: 48px; margin: 0 auto var(--space-4);
+  border-radius: 50%;
+  border: 4px solid var(--brand-light);
+  border-top-color: var(--brand);
+  animation: et-spin .8s linear infinite;
+}
+@keyframes et-spin { to { transform: rotate(360deg); } }
+.et-submit-title { font-weight: 800; font-size: var(--fs-h3); margin-bottom: 6px; }
+.et-submit-sub { color: var(--text2); font-size: var(--fs-body-sm); }
+@media (prefers-reduced-motion: reduce) { .et-spinner { animation-duration: 2.4s; } }
+
+/* ── Speaking Part 2 (ported from the practice page, speaking.css) ── */
+.et-speaking { display: flex; flex-direction: column; gap: var(--space-4); }
+.et-sp-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: var(--space-5);
+}
+.et-sp-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-3); }
+.et-sp-part {
+  font-size: var(--fs-micro); font-weight: 700; padding: 3px 10px; border-radius: 6px;
+  background: var(--brand-light); color: var(--brand-dark); border: 1px solid var(--brand-light);
+}
+.et-sp-topic {
+  font-size: var(--fs-micro); font-weight: 600; padding: 3px 10px; border-radius: 6px;
+  background: var(--surface2); color: var(--text2);
+}
+.et-sp-q { font-size: var(--fs-h3); font-weight: 700; color: var(--text); line-height: 1.55; }
+.et-sp-cue {
+  margin-top: var(--space-4); padding: 14px 18px;
+  background: var(--surface2); border-left: 4px solid var(--brand);
+  border-radius: 0 10px 10px 0;
+  font-size: var(--fs-body-sm); color: var(--text); line-height: 1.9; white-space: pre-wrap;
+}
+
+.et-sp-box {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: var(--space-4) var(--space-5); background: var(--surface);
+}
+.et-sp-box-head {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 6px; margin-bottom: 10px;
+}
+.et-sp-label {
+  font-size: var(--fs-caption); font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--text2); display: flex; align-items: center; gap: 6px;
+}
+.et-sp-hint { font-size: var(--fs-micro); color: var(--text3); }
+.et-sp-notes { background: var(--warning-light); border-color: transparent; }
+.et-sp-textarea {
+  width: 100%; min-height: 90px; resize: vertical;
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; font: inherit; font-size: var(--fs-body-sm); line-height: 1.7;
+  color: var(--text); background: var(--surface);
+  transition: border-color var(--duration-fast);
+}
+.et-sp-textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
+.et-sp-textarea[readonly] { background: var(--surface2); cursor: default; }
+#et-sp-transcript { min-height: 130px; font-size: var(--fs-body); }
+
+.et-sp-prep {
+  border: 2px solid var(--blue); border-radius: var(--radius);
+  background: rgba(61,139,255,.08);
+  padding: var(--space-5); text-align: center;
+}
+.et-sp-prep-phase {
+  font-size: var(--fs-micro); font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue-dark); display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;
+}
+.et-sp-prep-clock {
+  font-size: 56px; font-weight: 900; color: var(--blue-dark); line-height: 1;
+  font-variant-numeric: tabular-nums; margin-bottom: 8px;
+}
+.et-sp-prep-hint { font-size: var(--fs-body-sm); color: var(--blue); margin-bottom: var(--space-4); }
+.et-sp-prep-skip {
+  padding: 9px 22px; background: var(--blue); color: #fff; border: none; border-radius: 9px;
+  font: inherit; font-size: var(--fs-body-sm); font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.et-sp-prep-skip:hover { background: var(--blue-dark); }
+
+.et-sp-record { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+.et-sp-record-area { display: flex; align-items: center; gap: 28px; }
+.et-sp-rec-btn {
+  position: relative; width: 96px; height: 96px; border-radius: 50%; border: none;
+  background: linear-gradient(135deg, #e53935, #b71c1c); color: #fff; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+  box-shadow: 0 6px 24px rgba(229,57,53,.4); transition: transform .15s, box-shadow .15s; flex-shrink: 0;
+  font-family: inherit;
+}
+.et-sp-rec-btn:hover:not(:disabled) { transform: scale(1.05); }
+.et-sp-rec-btn:disabled { opacity: .4; cursor: not-allowed; }
+.et-sp-rec-ring {
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 3px solid rgba(229,57,53,.35); display: none;
+}
+.et-sp-rec-btn.recording .et-sp-rec-ring { display: block; animation: et-sp-pulse 1.4s ease-out infinite; }
+@keyframes et-sp-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+.et-sp-rec-btn i { font-size: 28px; }
+.et-sp-rec-label { font-size: var(--fs-micro); font-weight: 700; letter-spacing: .03em; }
+.et-sp-rec-info { display: flex; flex-direction: column; gap: 6px; }
+.et-sp-rec-status { font-size: 14px; font-weight: 600; color: var(--text); max-width: 360px; }
+.et-sp-rec-status.live { color: var(--brand); }
+.et-sp-rec-timers { display: flex; align-items: center; gap: 12px; font-variant-numeric: tabular-nums; }
+.et-sp-elapsed { font-size: 14px; font-weight: 700; color: var(--brand); display: flex; align-items: center; gap: 6px; }
+.et-sp-countdown { font-size: var(--fs-body-sm); color: var(--text2); font-weight: 600; }
+.et-sp-countdown b { font-size: 15px; color: var(--blue-dark); }
+.et-sp-interim { font-size: var(--fs-body-sm); color: var(--text3); font-style: italic; text-align: center; max-width: 560px; min-height: 18px; }
+
+@media (max-width: 640px) {
+  .et-sp-record-area { flex-direction: column; gap: var(--space-3); text-align: center; }
+  .et-sp-rec-info { align-items: center; }
+  .et-sp-prep-clock { font-size: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .et-sp-rec-btn.recording .et-sp-rec-ring { animation: none; display: block; }
+}

@@ -291,6 +291,9 @@
     };
     _proctor.onFocus = function () { _onReturn(); };
     _proctor.onBlur = function () {
+      // The browser's own microphone-permission prompt (Speaking section)
+      // can take focus from the page — that's not the student leaving.
+      if (_proctor.blurGraceUntil && Date.now() < _proctor.blurGraceUntil) return;
       setTimeout(function () { if (!document.hasFocus()) _onLeave('blur'); }, 120);
     };
     _proctor.onBeforeUnload = function (e) {
@@ -341,5 +344,11 @@
 
   function isActive() { return !!_proctor; }
 
-  window.EntranceTestProctor = { start: start, stop: stop, isActive: isActive };
+  // Ignore window 'blur' (NOT tab-hidden) for the next `ms` — used while the
+  // mic-permission prompt is open; pass 0 to end the grace early.
+  function allowBlurFor(ms) {
+    if (_proctor) _proctor.blurGraceUntil = ms > 0 ? Date.now() + ms : 0;
+  }
+
+  window.EntranceTestProctor = { start: start, stop: stop, isActive: isActive, allowBlurFor: allowBlurFor };
 })();

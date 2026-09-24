@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
   <link rel="stylesheet" href="css/mobile.css?v=20260910inbox"/>
   <script src="js/theme.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/entrance-test.css?v=20260923c">
+  <link rel="stylesheet" href="css/entrance-test.css?v=20260924sp">
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20260908"></script>
@@ -33,7 +33,7 @@
   <div id="et-landing">
     <div class="et-hero">
       <h1><i class="fas fa-door-open"></i> Test đầu vào</h1>
-      <p>Bài đánh giá xếp lớp nội bộ của EnglishWithDan — 70 phút, 4 phần: Grammar, Reading, Listening, Writing.
+      <p>Bài đánh giá xếp lớp nội bộ của EnglishWithDan — 74 phút, 5 phần: Grammar, Reading, Listening, Writing, Speaking.
         Kết quả chỉ mang tính chất tham khảo để xếp lớp, <b>không phải điểm IELTS chính thức</b>.</p>
     </div>
     <div class="et-card">
@@ -44,6 +44,9 @@
         <li>Bài làm được giám sát (chống chuyển tab / thoát màn hình) trong suốt quá trình làm bài.</li>
         <li>Mỗi phần có thời gian riêng do hệ thống tính — hết giờ sẽ tự động nộp phần đó và chuyển sang phần tiếp theo.</li>
         <li>Sau khi nộp một phần, bạn không thể quay lại sửa câu trả lời.</li>
+        <li>Mỗi lượt làm nhận một bộ đề ngẫu nhiên (Reading, Listening, Writing, Speaking); câu Grammar được xáo trộn thứ tự.</li>
+        <li>Speaking (chỉ Part 2, 4 phút): 1 phút 10 giây chuẩn bị, tối đa 2 phút nói — hãy cho phép trình duyệt dùng micro. Bạn cũng có thể gõ / sửa câu trả lời.</li>
+        <li>Kết quả được giáo viên xem xét và duyệt trước khi gửi cho bạn qua hộp thư.</li>
         <li>Bạn có thể làm lại Test đầu vào nhiều lần — mỗi lượt làm đều được lưu vào lịch sử bên dưới.</li>
       </ul>
     </div>
@@ -89,20 +92,29 @@
         <div style="font-size:44px;margin-bottom:10px">✅</div>
         <h3 id="et-done-title" style="margin-bottom:8px">Đã hoàn thành Test đầu vào!</h3>
         <p style="color:var(--text2);font-size:14px;margin:0">
-          Bài làm của bạn đã được ghi nhận. Điểm Grammar/Reading/Listening đã có sẵn — riêng Writing cần
-          <b>giáo viên chấm và xác nhận</b>, kết quả tổng sẽ tự động cập nhật sau khi có điểm Writing.
+          Bài làm của bạn đã được ghi nhận. Giáo viên sẽ <b>chấm và duyệt</b> toàn bộ kết quả —
+          bạn sẽ nhận được thông báo trong hộp thư ngay khi có kết quả.
         </p>
       </div>
       <div class="modal-footer" style="justify-content:center">
-        <button class="btn btn-primary" id="et-done-ok">Xem kết quả</button>
+        <button class="btn btn-primary" id="et-done-ok">Đã hiểu</button>
       </div>
     </div>
   </div>
 
 </div>
 
+<!-- ── Submit overlay (blocks the page while a section is being submitted) ── -->
+<div id="et-submit-overlay" class="et-submit-overlay hidden" role="alertdialog" aria-modal="true" aria-live="assertive" aria-labelledby="et-submit-title">
+  <div class="et-submit-box">
+    <div class="et-spinner" aria-hidden="true"></div>
+    <div class="et-submit-title" id="et-submit-title">Đang nộp bài…</div>
+    <div class="et-submit-sub" id="et-submit-sub">Vui lòng không tắt hoặc tải lại trang.</div>
+  </div>
+</div>
+
 <script src="js/shared/paste-guard.js?v=20260918"></script>
-<script src="js/shared/entrance-test-proctor.js?v=20260918"></script>
-<script src="js/entrance-test.js?v=20260923c"></script>
+<script src="js/shared/entrance-test-proctor.js?v=20260924sp"></script>
+<script src="js/entrance-test.js?v=20260924sp"></script>
 </body>
 </html>

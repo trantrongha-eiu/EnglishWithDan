@@ -33,21 +33,32 @@ exports.getAttempt = catchAsync(async (req, res) => {
   res.json({ success: true, attempt });
 });
 
-// POST /api/entrance-test/:attemptId/answer   body: { section, questionId?, questionNumber?, answer?, writingAnswer? }
+// POST /api/entrance-test/:attemptId/answer   body: { section, questionId?, questionNumber?, answer?, writingAnswer?, transcript? }
 // Only the named fields below are ever read out of req.body — a client
 // sending band/correctCount/score alongside them is simply ignored.
 exports.saveAnswer = catchAsync(async (req, res) => {
-  const { section, questionId, questionNumber, answer, writingAnswer } = req.body || {};
+  const { section, questionId, questionNumber, answer, writingAnswer, transcript } = req.body || {};
   const result = await entranceTestService.saveAnswer(req.user._id, req.params.attemptId, section, {
-    questionId, questionNumber, answer, writingAnswer,
+    questionId, questionNumber, answer, writingAnswer, transcript,
   });
   res.json({ success: true, ...result });
 });
 
 // POST /api/entrance-test/:attemptId/section/:section/submit
+// Speaking is multipart: optional `audio` file + `transcript` + `durationSec`.
+// The response carries no grading at all — the student never sees AI
+// feedback in the entrance test; the next GET re-reads the runner state.
 exports.submitSection = catchAsync(async (req, res) => {
-  const attempt = await entranceTestService.submitSection(req.user._id, req.params.attemptId, req.params.section);
-  res.json({ success: true, attempt });
+  const section = req.params.section;
+  const body = req.body || {};
+  const extras = section === 'speaking'
+    ? { audioFile: req.file, transcript: typeof body.transcript === 'string' ? body.transcript : undefined, durationSec: body.durationSec }
+    : {};
+  const attempt = await entranceTestService.submitSection(req.user._id, req.params.attemptId, section, extras);
+  res.json({
+    success: true,
+    attempt: { _id: attempt._id, status: attempt.status, currentSection: attempt.currentSection, resultStatus: attempt.resultStatus },
+  });
 });
 
 // POST /api/entrance-test/:attemptId/violation   body: { type }

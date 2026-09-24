@@ -26,7 +26,7 @@ router.get('/entrance-test/config', auth, teacherOnly, async (req, res) => {
 });
 
 // PUT /api/admin/entrance-test/config
-// body: { readingPassageId, listeningSectionId, writingTask1Id, grammarSetKey }
+// body: { grammarSetKey } — Reading/Listening/Writing/Speaking are drawn at random per attempt
 router.put('/entrance-test/config', auth, teacherOnly, async (req, res) => {
   try {
     const config = await entranceTestService.updateAdminConfig(req.body || {}, req.user._id);
@@ -85,7 +85,7 @@ router.delete('/entrance-test/grammar-questions/:id', auth, teacherOnly, async (
   }
 });
 
-// GET /api/admin/entrance-test/attempts?page=&limit=&userId=&status=
+// GET /api/admin/entrance-test/attempts?page=&limit=&userId=&status=&resultStatus=
 router.get('/entrance-test/attempts', auth, teacherOnly, async (req, res) => {
   try {
     const data = await entranceTestService.listAdminAttempts({
@@ -93,6 +93,7 @@ router.get('/entrance-test/attempts', auth, teacherOnly, async (req, res) => {
       limit: req.query.limit,
       userId: req.query.userId || null,
       status: req.query.status || null,
+      resultStatus: req.query.resultStatus || null,
     });
     res.json({ success: true, ...data });
   } catch (err) {
@@ -110,6 +111,33 @@ router.get('/entrance-test/attempts/:id', auth, teacherOnly, async (req, res) =>
   } catch (err) {
     console.error('[admin/entrance-test/attempts/:id GET]', err);
     res.status(500).json({ success: false, message: 'Lỗi tải chi tiết lượt làm bài' });
+  }
+});
+
+// POST /api/admin/entrance-test/attempts/:id/approve
+// body: { writingBand, speakingBand, overallBand?, adminNote? } — publishes
+// the result to the student (inbox message on the first approval).
+router.post('/entrance-test/attempts/:id/approve', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempt = await entranceTestService.approveAttempt(req.params.id, req.body || {}, req.user);
+    res.json({ success: true, attempt });
+  } catch (err) {
+    const code = errStatus(err);
+    if (code >= 500) console.error('[admin/entrance-test/attempts/:id/approve POST]', err);
+    res.status(code).json({ success: false, message: err.message || 'Lỗi duyệt kết quả' });
+  }
+});
+
+// POST /api/admin/entrance-test/attempts/:id/regrade-speaking — re-run the
+// AI Speaking suggestion from the stored recording/transcript.
+router.post('/entrance-test/attempts/:id/regrade-speaking', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempt = await entranceTestService.regradeSpeaking(req.params.id);
+    res.json({ success: true, attempt });
+  } catch (err) {
+    const code = errStatus(err);
+    if (code >= 500) console.error('[admin/entrance-test/attempts/:id/regrade-speaking POST]', err);
+    res.status(code).json({ success: false, message: err.message || 'Lỗi chấm lại Speaking' });
   }
 });
 

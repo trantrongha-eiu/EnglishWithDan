@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
 
 /**
- * EntranceTestConfig — which fixed content currently makes up the IELTS
- * Entrance Test ("Test đầu vào"). Exactly one document should have
+ * EntranceTestConfig — settings for the IELTS Entrance Test ("Test đầu
+ * vào"). NOTE: since the random-draw change, only `grammarSetKey` is read —
+ * Reading/Listening/Writing/Speaking content is drawn at random per attempt
+ * from entranceTestService.CONTENT_POOLS. readingPassageId/
+ * listeningSectionId/writingTask1Id below are the old fixed assignment,
+ * kept only so existing documents still validate; nothing reads them.
+ *
+ * Original notes on the fixed-assignment design:
+ * which fixed content currently makes up the Entrance Test. Exactly one document should have
  * isActive:true at a time (enforced in entranceTestService.updateConfig,
  * not by a unique index — a brief two-active window during a save is
  * harmless since callers always read the newest active one).

@@ -22,6 +22,7 @@ const ListeningAttempt = require('../../models/ListeningAttempt');
 const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
 const TuitionFee = require('../../models/TuitionFee');
+const EntranceTestAttempt = require('../../models/EntranceTestAttempt');
 const { REWRITE_CUTOFF } = require('../../services/writingService');
 
 const router = express.Router();
@@ -50,6 +51,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       simViolationCounts,
       pendingUpgrades,
       unpaidStudentIds,
+      pendingEntranceReviews,
     ] = await Promise.all([
       User.find({ lastSeen: { $gte: onlineSince } }).select('username role lastSeen').lean(),
       WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
@@ -66,6 +68,8 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       // already 403'd (and the badge stayed 0), so don't leak them here.
       isAdmin ? UpgradeRequest.countDocuments({ status: 'pending' }) : Promise.resolve(0),
       isAdmin ? TuitionFee.distinct('studentId', { isPaid: false }) : Promise.resolve([]),
+      // Entrance Test results compiled and waiting for a teacher's approval.
+      EntranceTestAttempt.countDocuments({ resultStatus: 'PENDING_REVIEW' }),
     ]);
 
     const wc = { pending: 0, ai_done: 0 };
@@ -80,6 +84,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       pendingMessages,
       mockViolations,
       simViolations: simViolationCounts.reduce((a, b) => a + b, 0),
+      pendingEntranceReviews,
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

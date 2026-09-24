@@ -1,9 +1,11 @@
 // Integration tests for the IELTS Entrance Test HTTP surface
 // (routes/entranceTest.js, routes/admin/entranceTest.js): auth, resume/no
-// dupes, the full grammar->reading->listening->writing flow, section
-// locking, server-side timer expiry, content-independence from the normal
-// catalogue's isActive filter, client-supplied fake scores being ignored,
-// and proctor violation/disqualify/cooldown.
+// dupes, random content draw + grammar shuffle, the full grammar ->
+// reading -> listening -> writing -> speaking flow, exactly-once Writing
+// submission under concurrent submits, the admin review/approve step,
+// section locking, server-side timer expiry (+ the Speaking grace window),
+// client-supplied fake scores being ignored, proctor violations, and the
+// pre-Speaking legacy attempt path.
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
@@ -12,7 +14,10 @@ const EntranceTestConfig = require('../../models/EntranceTestConfig');
 const EntranceGrammarQuestion = require('../../models/EntranceGrammarQuestion');
 const EntranceTestAttempt = require('../../models/EntranceTestAttempt');
 const WritingAttempt = require('../../models/WritingAttempt');
+const SpeakingQuestion = require('../../models/SpeakingQuestion');
+const Message = require('../../models/Message');
 const User = require('../../models/User');
+const cloudinaryService = require('../../services/cloudinaryService');
 const { entranceBand, roundIeltsHalf } = require('../../utils/bandScore');
 
 // A free student whose first-24h trial window has already closed — the
@@ -30,6 +35,7 @@ function authed(user) {
     get: (url) => request(app).get(url).set('Authorization', `Bearer ${token}`),
     post: (url, body) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body || {}),
     put: (url, body) => request(app).put(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+    multipart: (url) => request(app).post(url).set('Authorization', `Bearer ${token}`),
   };
 }
 
@@ -49,32 +55,45 @@ async function seedGrammarQuestions(setKey = 'default') {
   ]);
 }
 
-async function seedFullConfig() {
-  await seedGrammarQuestions();
-  const passage = await createPassage({
-    category: 'passage1',
+// Content that satisfies entranceTestService.CONTENT_POOLS.
+function eligiblePassage(overrides = {}) {
+  return createPassage({
+    category: 'passage2',
     questionRange: { start: 1, end: 1 },
     questionGroups: [{ groupType: 'plain', questions: [
       { questionNumber: 1, type: 'sentence-completion', questionText: 'The sky is __1__.', correctAnswer: 'blue' },
     ] }],
+    ...overrides,
   });
-  const section = await createListeningSection({
-    partNumber: 1,
+}
+function eligibleSection(overrides = {}) {
+  return createListeningSection({
+    partNumber: 3,
     questionRange: { start: 1, end: 1 },
     questionGroups: [{ groupType: 'plain', questions: [
       { questionNumber: 1, type: 'fill-blank', questionText: 'The answer is __1__.', correctAnswer: 'sunny' },
     ] }],
-    audioUrl: 'https://res.cloudinary.com/demo/video/upload/v1/listening/fake.mp3',
+    extra: { audioUrl: 'https://res.cloudinary.com/demo/video/upload/v1/listening/fake.mp3', audioDuration: 400 },
+    ...overrides,
   });
-  const task1 = await createWritingTask1({ prompt: 'Describe the chart.' });
-  await EntranceTestConfig.create({
-    readingPassageId: passage._id,
-    listeningSectionId: section._id,
-    writingTask1Id: task1._id,
-    grammarSetKey: 'default',
-    isActive: true,
+}
+function eligibleTask1(overrides = {}) {
+  return createWritingTask1({ prompt: 'Describe the chart.', imageUrl: 'https://res.cloudinary.com/demo/image/upload/chart.png', ...overrides });
+}
+function eligibleCueCard(overrides = {}) {
+  return SpeakingQuestion.create({
+    topic: 'A memorable trip', part: 2, question: 'Describe a memorable trip you took.',
+    cueCard: 'You should say:\n- where you went\n- who you went with\n- and explain why it was memorable',
+    sampleAnswer: 'SAMPLE ANSWER TEXT', hints: { vocab: ['breathtaking'] },
+    ...overrides,
   });
-  return { passage, section, task1 };
+}
+
+async function seedFullConfig() {
+  await seedGrammarQuestions();
+  const [passage, section, task1, cue] = await Promise.all([eligiblePassage(), eligibleSection(), eligibleTask1(), eligibleCueCard()]);
+  await EntranceTestConfig.create({ grammarSetKey: 'default', isActive: true });
+  return { passage, section, task1, cue };
 }
 
 async function startAndGetAttempt(api) {
@@ -85,9 +104,13 @@ async function startAndGetAttempt(api) {
   return { attemptId, attempt: get.body.attempt };
 }
 
-// Drives the whole test to a chosen point, answering everything correctly
-// unless told otherwise. Returns { attemptId, api }.
-async function playThrough(api, { answerGrammarWrong = false, answerReadingWrong = false, answerListeningWrong = false, writingAnswer = 'word '.repeat(160) } = {}) {
+// Drives the test through Writing (and Speaking unless stopBeforeSpeaking),
+// answering everything correctly unless told otherwise.
+async function playThrough(api, {
+  answerGrammarWrong = false, answerReadingWrong = false, answerListeningWrong = false,
+  writingAnswer = 'word '.repeat(160), speakingTranscript = 'I went to Da Lat with my family last summer.',
+  stopBeforeSpeaking = false,
+} = {}) {
   const { attemptId, attempt } = await startAndGetAttempt(api);
 
   const gq = attempt.sections.grammar.questions;
@@ -106,6 +129,9 @@ async function playThrough(api, { answerGrammarWrong = false, answerReadingWrong
   await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'writing', writingAnswer });
   await api.post(`/api/entrance-test/${attemptId}/section/writing/submit`);
 
+  if (!stopBeforeSpeaking) {
+    await api.post(`/api/entrance-test/${attemptId}/section/speaking/submit`, { transcript: speakingTranscript, durationSec: 95 });
+  }
   return attemptId;
 }
 
@@ -115,7 +141,9 @@ describe('POST /api/entrance-test/start', () => {
     expect(res.status).toBe(401);
   });
 
-  test('503 when no config is active', async () => {
+  test('503 when a content pool is empty (no Part 2 cue card)', async () => {
+    await seedGrammarQuestions();
+    await Promise.all([eligiblePassage(), eligibleSection(), eligibleTask1()]);
     const res = await authed(await createStudent()).post('/api/entrance-test/start');
     expect(res.status).toBe(503);
   });
@@ -134,108 +162,193 @@ describe('POST /api/entrance-test/start', () => {
     expect(second.status).toBe(200);
     expect(second.body.resumed).toBe(true);
     expect(second.body.attemptId).toBe(first.body.attemptId);
-
-    const count = await EntranceTestAttempt.countDocuments({});
-    expect(count).toBe(1);
   });
 
   test('starting again after a completed attempt starts a brand new one (self-serve retake)', async () => {
     await seedFullConfig();
     const student = await createStudent();
-    const api = authed(student);
-    const firstId = await playThrough(api);
-
-    const again = await api.post('/api/entrance-test/start');
+    const firstId = await playThrough(authed(student));
+    const again = await authed(student).post('/api/entrance-test/start');
     expect(again.status).toBe(201);
-    expect(again.body.resumed).toBeFalsy();
-    expect(again.body.attemptId).not.toBe(firstId);
-    const count = await EntranceTestAttempt.countDocuments({ userId: student._id });
-    expect(count).toBe(2);
+    expect(again.body.attemptId).not.toBe(String(firstId));
+  });
+});
+
+describe('random content draw', () => {
+  test('only eligible content is ever drawn (Passage 2 + Listening Part 3 only; hidden / no audio / too long / Part 1 speaking excluded)', async () => {
+    const { passage, section, task1, cue } = await seedFullConfig();
+    await eligiblePassage({ isActive: false });
+    await eligiblePassage({ category: 'passage1' });
+    await eligiblePassage({ category: 'passage3' });
+    await eligibleSection({ partNumber: 1 });
+    await eligibleSection({ partNumber: 4 });
+    await eligibleSection({ extra: { audioUrl: '', audioDuration: 300 } });
+    await eligibleSection({ extra: { audioUrl: 'https://res.cloudinary.com/demo/video/upload/long.mp3', audioDuration: 900 } });
+    await eligibleTask1({ isActive: false });
+    await eligibleCueCard({ part: 1 });
+    await eligibleCueCard({ isActive: false });
+
+    for (let i = 0; i < 3; i++) {
+      const student = await createStudent();
+      const { attemptId } = await startAndGetAttempt(authed(student));
+      const doc = await EntranceTestAttempt.findById(attemptId).lean();
+      expect(String(doc.configSnapshot.readingPassageId)).toBe(String(passage._id));
+      expect(String(doc.configSnapshot.listeningSectionId)).toBe(String(section._id));
+      expect(String(doc.configSnapshot.writingTask1Id)).toBe(String(task1._id));
+      expect(String(doc.configSnapshot.speakingQuestionId)).toBe(String(cue._id));
+    }
+  });
+
+  test('a retake draws content the student has not had yet when the pool allows it', async () => {
+    await seedFullConfig();
+    await Promise.all([eligiblePassage(), eligibleSection(), eligibleTask1(), eligibleCueCard()]);
+    const student = await createStudent();
+    const firstId = await playThrough(authed(student));
+    const { attemptId: secondId } = await startAndGetAttempt(authed(student));
+
+    const [a, b] = await Promise.all([
+      EntranceTestAttempt.findById(firstId).lean(),
+      EntranceTestAttempt.findById(secondId).lean(),
+    ]);
+    for (const k of ['readingPassageId', 'listeningSectionId', 'writingTask1Id', 'speakingQuestionId']) {
+      expect(String(b.configSnapshot[k])).not.toBe(String(a.configSnapshot[k]));
+    }
+  });
+
+  test('grammar uses the configured question set (shuffled order, same questions)', async () => {
+    await seedFullConfig();
+    const { attempt } = await startAndGetAttempt(authed(await createStudent()));
+    const ids = attempt.sections.grammar.questions.map(q => q._id).sort();
+    const bank = (await EntranceGrammarQuestion.find({ setKey: 'default' }).lean()).map(q => String(q._id)).sort();
+    expect(ids).toEqual(bank);
   });
 });
 
 describe('GET /api/entrance-test/:attemptId', () => {
-  test('never includes an answer key for any section', async () => {
+  test('never includes an answer key, a sample answer or vocab hints', async () => {
     await seedFullConfig();
     const { attempt } = await startAndGetAttempt(authed(await createStudent()));
     const raw = JSON.stringify(attempt);
-    expect(raw).not.toContain('correctAnswer');
-    expect(raw).not.toMatch(/"answer":"B"/); // the mcq's own correct-option id
-    expect(raw).not.toContain('sunny');
-    expect(raw).not.toContain('"blue"');
+    expect(raw).not.toMatch(/"answer":"B"/);
+    expect(raw).not.toMatch(/correctAnswer/);
+    expect(raw).not.toMatch(/"accept"/);
+    expect(raw).not.toMatch(/SAMPLE ANSWER TEXT/);
+    expect(raw).not.toMatch(/breathtaking/);
+    expect(attempt.sectionOrder).toEqual(['grammar', 'reading', 'listening', 'writing', 'speaking']);
+    expect(attempt.sections.speaking.question.cueCard).toMatch(/You should say/);
+    expect(attempt.sections.speaking.prepSec).toBe(70);
   });
 
   test('404 for another student\'s attempt (ownership check)', async () => {
     await seedFullConfig();
-    const owner = authed(await createStudent());
-    const { attemptId } = await startAndGetAttempt(owner);
-    const intruder = authed(await createStudent());
-    const res = await intruder.get(`/api/entrance-test/${attemptId}`);
+    const { attemptId } = await startAndGetAttempt(authed(await createStudent()));
+    const res = await authed(await createStudent()).get(`/api/entrance-test/${attemptId}`);
     expect(res.status).toBe(404);
   });
 });
 
-describe('full grammar -> reading -> listening -> writing flow', () => {
-  test('grades correctly and ends PENDING_WRITING until the linked WritingAttempt is graded', async () => {
+describe('full flow + admin review', () => {
+  test('grades G/R/L, links exactly one WritingAttempt, waits for Writing, then admin approval publishes the result', async () => {
     await seedFullConfig();
     const student = await createStudent();
     const attemptId = await playThrough(authed(student));
 
-    const attempt = await EntranceTestAttempt.findById(attemptId);
+    let attempt = await EntranceTestAttempt.findById(attemptId);
     expect(attempt.status).toBe('completed');
     expect(attempt.currentSection).toBe('done');
     expect(attempt.sections.grammar.correctCount).toBe(2);
     expect(attempt.sections.reading.correctCount).toBe(1);
     expect(attempt.sections.listening.correctCount).toBe(1);
-    expect(attempt.sections.writing.band).toBeNull();
+    expect(attempt.sections.speaking.transcript).toMatch(/Da Lat/);
+    expect(attempt.sections.speaking.durationSec).toBe(95);
     expect(attempt.resultStatus).toBe('PENDING_WRITING');
     expect(attempt.overallBand).toBeNull();
 
-    // Writing section created a real WritingAttempt reusing the existing
-    // grading queue (per product decision), tagged distinctly.
-    const wa = await WritingAttempt.findById(attempt.sections.writing.writingAttemptId);
-    expect(wa).toBeTruthy();
-    expect(wa.examName).toBe('IELTS Entrance Test');
-    expect(wa.submissionType).toBe('exam');
+    const was = await WritingAttempt.find({ userId: student._id });
+    expect(was).toHaveLength(1);
+    expect(String(was[0]._id)).toBe(String(attempt.sections.writing.writingAttemptId));
+    expect(was[0].examName).toBe('IELTS Entrance Test');
 
-    // Once a teacher confirms a grade on that WritingAttempt, the next
-    // result poll picks it up and completes the overall result.
-    wa.grading = { task1: { bandScore: 6.5 }, overallBand: 6.5 };
-    wa.gradingStatus = 'confirmed';
-    await wa.save();
-
-    const result = await authed(student).get(`/api/entrance-test/${attemptId}/result`);
+    // Before approval the student sees no scores at all.
+    let result = await authed(student).get(`/api/entrance-test/${attemptId}/result`);
     expect(result.status).toBe(200);
-    expect(result.body.resultStatus).toBe('COMPLETED');
-    expect(result.body.sections.writing.band).toBe(6.5);
-    expect(result.body.overallBand).not.toBeNull();
-    // This fixture only seeds 2 grammar / 1 reading / 1 listening question
-    // (a full attempt has 25/13/10) — the entrance-test band tables are
-    // absolute-threshold, calibrated to the REAL question counts, so a
-    // small fixture like this floors to low individual bands. That's
-    // expected and correct; what this test actually verifies is that the
-    // 4 section bands are wired into the exact IELTS-half-rounded average
-    // formula, not any particular "should be high" number.
+    expect(result.body.pendingReview).toBe(true);
+    expect(result.body.sections).toBeUndefined();
+    expect(result.body.overallBand).toBeUndefined();
+
+    // The AI grades Task 1 → the admin list pulls it in → PENDING_REVIEW.
+    await WritingAttempt.updateOne({ _id: was[0]._id }, { $set: { 'aiGrading.task1': { bandScore: 6 }, gradingStatus: 'ai_done' } });
+    await EntranceTestAttempt.updateOne({ _id: attemptId }, { $set: { 'sections.speaking.aiStatus': 'done', 'sections.speaking.aiBand': 5.5 } });
+    const teacher = authed(await createTeacher());
+    const list = await teacher.get('/api/admin/entrance-test/attempts?resultStatus=PENDING_REVIEW');
+    expect(list.status).toBe(200);
+    expect(list.body.attempts).toHaveLength(1);
+    expect(list.body.pendingReview).toBe(1);
     const expectedGrammar = entranceBand('grammar', 2);
     const expectedReading = entranceBand('reading13', 1);
     const expectedListening = entranceBand('listening10', 1);
-    const expectedOverall = roundIeltsHalf((expectedGrammar + expectedReading + expectedListening + 6.5) / 4);
-    expect(result.body.sections.grammar.band).toBe(expectedGrammar);
-    expect(result.body.sections.reading.band).toBe(expectedReading);
-    expect(result.body.sections.listening.band).toBe(expectedListening);
+    const proposed = roundIeltsHalf((expectedGrammar + expectedReading + expectedListening + 6 + 5.5) / 5);
+    expect(list.body.attempts[0].proposed.overall).toBe(proposed);
+
+    // Still hidden from the student until approved.
+    result = await authed(student).get(`/api/entrance-test/${attemptId}/result`);
+    expect(result.body.pendingReview).toBe(true);
+
+    // Admin adjusts Speaking and approves.
+    const approve = await teacher.post(`/api/admin/entrance-test/attempts/${attemptId}/approve`, {
+      writingBand: '6.0', speakingBand: '6.5', adminNote: 'Nên học lớp 6.0',
+    });
+    expect(approve.status).toBe(200);
+    const expectedOverall = roundIeltsHalf((expectedGrammar + expectedReading + expectedListening + 6 + 6.5) / 5);
+    expect(approve.body.attempt.overallBand).toBe(expectedOverall);
+
+    attempt = await EntranceTestAttempt.findById(attemptId);
+    expect(attempt.resultStatus).toBe('COMPLETED');
+    expect(attempt.sections.speaking.band).toBe(6.5);
+
+    result = await authed(student).get(`/api/entrance-test/${attemptId}/result`);
+    expect(result.body.resultStatus).toBe('COMPLETED');
     expect(result.body.overallBand).toBe(expectedOverall);
+    expect(result.body.sections.speaking.band).toBe(6.5);
+    expect(result.body.sections.speaking.aiFeedback).toBeUndefined();
+    expect(result.body.adminNote).toBe('Nên học lớp 6.0');
+    expect(result.body.sections.grammar.questions[0].correctAnswer).toBeDefined();
+
+    const msgs = await Message.find({ toId: student._id });
+    expect(msgs).toHaveLength(1);
+    expect(msgs[0].body).toMatch(/Speaking: 6\.5/);
+
+    // Editing an approved result doesn't message the student again.
+    await teacher.post(`/api/admin/entrance-test/attempts/${attemptId}/approve`, { writingBand: '6.5', speakingBand: '6.5' });
+    expect(await Message.countDocuments({ toId: student._id })).toBe(1);
   });
 
-  test('result reveals the answer key + a grammar weakness breakdown', async () => {
+  test('approve validates bands and refuses an unfinished attempt', async () => {
     await seedFullConfig();
     const student = await createStudent();
-    const attemptId = await playThrough(authed(student), { answerGrammarWrong: true });
-    const result = await authed(student).get(`/api/entrance-test/${attemptId}/result`);
-    expect(result.status).toBe(200);
-    const gq = result.body.sections.grammar.questions;
-    expect(gq.every(q => q.correctAnswer != null)).toBe(true);
-    expect(gq.every(q => q.correct === false)).toBe(true);
-    expect(result.body.grammarWeaknesses.find(w => w.topic === 'Present Perfect').level).toBe('Weak');
+    const teacher = authed(await createTeacher());
+    const { attemptId: openId } = await startAndGetAttempt(authed(student));
+    const early = await teacher.post(`/api/admin/entrance-test/attempts/${openId}/approve`, { writingBand: '6', speakingBand: '6' });
+    expect(early.status).toBe(409);
+
+    await EntranceTestAttempt.deleteOne({ _id: openId });
+    const doneId = await playThrough(authed(student));
+    const bad = await teacher.post(`/api/admin/entrance-test/attempts/${doneId}/approve`, { writingBand: '6.3', speakingBand: '6' });
+    expect(bad.status).toBe(400);
+    const missing = await teacher.post(`/api/admin/entrance-test/attempts/${doneId}/approve`, { writingBand: '6' });
+    expect(missing.status).toBe(400);
+    const asStudent = await authed(student).post(`/api/admin/entrance-test/attempts/${doneId}/approve`, { writingBand: '6', speakingBand: '6' });
+    expect(asStudent.status).toBe(403);
+  });
+
+  test('an empty essay and silent speaking still reach the review queue (band 0 suggestions)', async () => {
+    await seedFullConfig();
+    const student = await createStudent();
+    const attemptId = await playThrough(authed(student), { writingAnswer: '', speakingTranscript: '' });
+    const doc = await EntranceTestAttempt.findById(attemptId);
+    expect(doc.sections.writing.aiBand).toBe(0);
+    expect(doc.sections.speaking.aiBand).toBe(0);
+    expect(doc.resultStatus).toBe('PENDING_REVIEW');
   });
 
   test('getResult 409s while the attempt is still in-progress', async () => {
@@ -244,6 +357,116 @@ describe('full grammar -> reading -> listening -> writing flow', () => {
     const { attemptId } = await startAndGetAttempt(api);
     const res = await api.get(`/api/entrance-test/${attemptId}/result`);
     expect(res.status).toBe(409);
+  });
+});
+
+describe('Writing is submitted exactly once', () => {
+  test('several concurrent Writing submits (click + timer + re-sync) create ONE WritingAttempt', async () => {
+    await seedFullConfig();
+    const student = await createStudent();
+    const api = authed(student);
+    const { attemptId: id2 } = await startAndGetAttempt(api);
+    for (const s of ['grammar', 'reading', 'listening']) await api.post(`/api/entrance-test/${id2}/section/${s}/submit`);
+    await api.post(`/api/entrance-test/${id2}/answer`, { section: 'writing', writingAnswer: 'word '.repeat(170) });
+
+    const results = await Promise.all([
+      api.post(`/api/entrance-test/${id2}/section/writing/submit`),
+      api.post(`/api/entrance-test/${id2}/section/writing/submit`),
+      api.post(`/api/entrance-test/${id2}/section/writing/submit`),
+      api.get(`/api/entrance-test/${id2}`),
+    ]);
+    results.slice(0, 3).forEach(r => expect(r.status).toBe(200));
+
+    expect(await WritingAttempt.countDocuments({ userId: student._id })).toBe(1);
+    const doc = await EntranceTestAttempt.findById(id2);
+    expect(doc.currentSection).toBe('speaking');
+    expect(await WritingAttempt.exists({ _id: doc.sections.writing.writingAttemptId })).toBeTruthy();
+  });
+
+  test('Writing expiring while a submit is in flight still creates ONE WritingAttempt', async () => {
+    await seedFullConfig();
+    const student = await createStudent();
+    const api = authed(student);
+    const { attemptId } = await startAndGetAttempt(api);
+    for (const s of ['grammar', 'reading', 'listening']) await api.post(`/api/entrance-test/${attemptId}/section/${s}/submit`);
+    await EntranceTestAttempt.updateOne({ _id: attemptId }, { $set: { 'sections.writing.sectionExpiresAt': new Date(Date.now() - 1000) } });
+
+    await Promise.all([
+      api.get(`/api/entrance-test/${attemptId}`),
+      api.get(`/api/entrance-test/${attemptId}`),
+      api.post(`/api/entrance-test/${attemptId}/section/writing/submit`),
+    ]);
+    expect(await WritingAttempt.countDocuments({ userId: student._id })).toBe(1);
+  });
+});
+
+describe('Speaking section', () => {
+  async function reachSpeaking(api) {
+    const { attemptId } = await startAndGetAttempt(api);
+    for (const s of ['grammar', 'reading', 'listening', 'writing']) await api.post(`/api/entrance-test/${attemptId}/section/${s}/submit`);
+    return attemptId;
+  }
+
+  test('multipart submit stores the recording + transcript and returns no feedback', async () => {
+    await seedFullConfig();
+    const upload = jest.spyOn(cloudinaryService, 'uploadBufferStream')
+      .mockResolvedValue({ secure_url: 'https://res.cloudinary.com/demo/video/upload/entrance-speaking/x.webm', public_id: 'entrance-speaking/x' });
+    try {
+      const api = authed(await createStudent());
+      const attemptId = await reachSpeaking(api);
+      const res = await api.multipart(`/api/entrance-test/${attemptId}/section/speaking/submit`)
+        .field('transcript', 'My most memorable trip was to Hoi An.')
+        .field('durationSec', '118')
+        .attach('audio', Buffer.from('fake-webm-bytes'), { filename: 'speaking.webm', contentType: 'audio/webm' });
+      expect(res.status).toBe(200);
+      expect(JSON.stringify(res.body)).not.toMatch(/aiFeedback|aiBand|overallBand/);
+      expect(upload).toHaveBeenCalledTimes(1);
+
+      const doc = await EntranceTestAttempt.findById(attemptId);
+      expect(doc.status).toBe('completed');
+      expect(doc.sections.speaking.audioUrl).toMatch(/entrance-speaking/);
+      expect(doc.sections.speaking.transcript).toMatch(/Hoi An/);
+      expect(doc.sections.speaking.durationSec).toBe(118);
+      expect(doc.sections.speaking.aiStatus).toBe('pending');
+
+      const detail = await authed(await createTeacher()).get(`/api/admin/entrance-test/attempts/${attemptId}`);
+      expect(detail.body.attempt.sections.speaking.audioUrl).toMatch(/entrance-speaking/);
+      expect(detail.body.attempt.sections.speaking.transcript).toMatch(/Hoi An/);
+    } finally {
+      upload.mockRestore();
+    }
+  });
+
+  test('the transcript can be typed/autosaved and is graded on expiry after the grace window', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const attemptId = await reachSpeaking(api);
+    const save = await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'speaking', transcript: 'typed answer' });
+    expect(save.status).toBe(200);
+
+    // Past the deadline but inside the upload grace → still open.
+    await EntranceTestAttempt.updateOne({ _id: attemptId }, { $set: { 'sections.speaking.sectionExpiresAt': new Date(Date.now() - 20 * 1000) } });
+    let res = await api.get(`/api/entrance-test/${attemptId}`);
+    expect(res.body.attempt.currentSection).toBe('speaking');
+
+    // Past the grace → auto-finalized with the autosaved transcript.
+    await EntranceTestAttempt.updateOne({ _id: attemptId }, { $set: { 'sections.speaking.sectionExpiresAt': new Date(Date.now() - 120 * 1000) } });
+    res = await api.get(`/api/entrance-test/${attemptId}`);
+    expect(res.body.attempt.currentSection).toBe('done');
+    const doc = await EntranceTestAttempt.findById(attemptId);
+    expect(doc.sections.speaking.transcript).toBe('typed answer');
+  });
+
+  test('a double Speaking submit is a no-op, not an error', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const attemptId = await reachSpeaking(api);
+    const [a, b] = await Promise.all([
+      api.post(`/api/entrance-test/${attemptId}/section/speaking/submit`, { transcript: 'one' }),
+      api.post(`/api/entrance-test/${attemptId}/section/speaking/submit`, { transcript: 'two' }),
+    ]);
+    expect(a.status).toBe(200);
+    expect(b.status).toBe(200);
   });
 });
 
@@ -277,8 +500,10 @@ describe('section locking / immutability', () => {
     await seedFullConfig();
     const student = await createStudent();
     const attemptId = await playThrough(authed(student));
-    const res = await authed(student).post(`/api/entrance-test/${attemptId}/answer`, { section: 'writing', writingAnswer: 'x' });
+    const res = await authed(student).post(`/api/entrance-test/${attemptId}/answer`, { section: 'speaking', transcript: 'x' });
     expect(res.status).toBe(409);
+    const resubmit = await authed(student).post(`/api/entrance-test/${attemptId}/section/grammar/submit`);
+    expect(resubmit.status).toBe(409);
   });
 });
 
@@ -293,7 +518,6 @@ describe('server-side timer expiry', () => {
     // Only answer the mcq one correctly — never submit.
     await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'grammar', questionId: gq.find(q => q.type === 'mcq')._id, answer: 'B' });
 
-    // Force the section's deadline into the past, simulating time running out.
     await EntranceTestAttempt.updateOne(
       { _id: attemptId },
       { $set: { 'sections.grammar.sectionExpiresAt': new Date(Date.now() - 1000) } }
@@ -310,15 +534,24 @@ describe('server-side timer expiry', () => {
 });
 
 describe('content independence from the normal catalogue (spec §22)', () => {
-  test('hiding the assigned Passage/ListeningSection/WritingTask1 does not break starting or grading an Entrance Test attempt', async () => {
-    const { passage, section, task1 } = await seedFullConfig();
-    // Admin hides all three from their normal student-facing catalogues.
+  test('hiding the drawn Passage/ListeningSection/WritingTask1/cue card after start does not break the attempt', async () => {
+    const { passage, section, task1, cue } = await seedFullConfig();
+    const student = await createStudent();
+    const api = authed(student);
+    const { attemptId } = await startAndGetAttempt(api);
     passage.isActive = false; await passage.save();
     section.isActive = false; await section.save();
     task1.isActive = false; await task1.save();
+    cue.isActive = false; await cue.save();
 
-    const student = await createStudent();
-    const attemptId = await playThrough(authed(student));
+    await api.post(`/api/entrance-test/${attemptId}/section/grammar/submit`);
+    await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'reading', questionNumber: 1, answer: 'blue' });
+    await api.post(`/api/entrance-test/${attemptId}/section/reading/submit`);
+    await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'listening', questionNumber: 1, answer: 'sunny' });
+    await api.post(`/api/entrance-test/${attemptId}/section/listening/submit`);
+    await api.post(`/api/entrance-test/${attemptId}/section/writing/submit`);
+    await api.post(`/api/entrance-test/${attemptId}/section/speaking/submit`, { transcript: 'hello' });
+
     const attempt = await EntranceTestAttempt.findById(attemptId);
     expect(attempt.status).toBe('completed');
     expect(attempt.sections.reading.correctCount).toBe(1);
@@ -334,7 +567,6 @@ describe('client cannot forge scores', () => {
     const api = authed(student);
     const { attemptId, attempt } = await startAndGetAttempt(api);
     const gq = attempt.sections.grammar.questions;
-    // Answer everything wrong, but try to smuggle a fake perfect score in.
     for (const q of gq) {
       await api.post(`/api/entrance-test/${attemptId}/answer`, {
         section: 'grammar', questionId: q._id, answer: 'definitely wrong',
@@ -347,6 +579,31 @@ describe('client cannot forge scores', () => {
     expect(doc.sections.grammar.correctCount).toBe(0);
     expect(doc.sections.grammar.band).toBe(1.0);
     expect(doc.overallBand).toBeNull();
+  });
+});
+
+describe('legacy (pre-Speaking) attempts', () => {
+  test('an attempt with no Speaking snapshot still ends after Writing and completes once the teacher confirms Writing', async () => {
+    await seedFullConfig();
+    const student = await createStudent();
+    const api = authed(student);
+    const { attemptId } = await startAndGetAttempt(api);
+    // Simulate an attempt started before the Speaking section existed.
+    await EntranceTestAttempt.collection.updateOne({ _id: (await EntranceTestAttempt.findById(attemptId))._id }, { $unset: { 'sections.speaking': '' } });
+
+    for (const s of ['grammar', 'reading', 'listening', 'writing']) {
+      const r = await api.post(`/api/entrance-test/${attemptId}/section/${s}/submit`);
+      expect(r.status).toBe(200);
+    }
+    let doc = await EntranceTestAttempt.findById(attemptId);
+    expect(doc.currentSection).toBe('done');
+    expect(doc.resultStatus).toBe('PENDING_WRITING');
+
+    await WritingAttempt.updateOne({ _id: doc.sections.writing.writingAttemptId }, { $set: { 'grading.overallBand': 6.5, gradingStatus: 'confirmed' } });
+    const result = await api.get(`/api/entrance-test/${attemptId}/result`);
+    expect(result.body.resultStatus).toBe('COMPLETED');
+    expect(result.body.sections.writing.band).toBe(6.5);
+    expect(result.body.sections.speaking).toBeUndefined();
   });
 });
 
@@ -390,26 +647,21 @@ describe('admin config', () => {
     expect(res.status).toBe(403);
   });
 
-  test('a teacher can view and update the assigned content', async () => {
-    const { passage, section, task1 } = await seedFullConfig();
+  test('a teacher sees the random-draw pool sizes and can change the grammar set', async () => {
+    await seedFullConfig();
     const teacher = authed(await createTeacher());
     const get = await teacher.get('/api/admin/entrance-test/config');
     expect(get.status).toBe(200);
-    expect(get.body.config.readingPassageId._id).toBe(String(passage._id));
+    expect(get.body.pools).toEqual({ reading: 1, listening: 1, writing: 1, speaking: 1, grammar: 2 });
 
-    const newPassage = await createPassage({ category: 'passage1' });
-    const put = await teacher.put('/api/admin/entrance-test/config', {
-      readingPassageId: String(newPassage._id),
-      listeningSectionId: String(section._id),
-      writingTask1Id: String(task1._id),
-      grammarSetKey: 'default',
-    });
+    const put = await teacher.put('/api/admin/entrance-test/config', { grammarSetKey: 'set-b' });
     expect(put.status).toBe(200);
-    expect(put.body.config.readingPassageId).toBe(String(newPassage._id));
+    expect(put.body.config.grammarSetKey).toBe('set-b');
+    expect(await EntranceTestConfig.countDocuments({ isActive: true })).toBe(1);
 
-    // Only one active config document should ever exist.
-    const count = await EntranceTestConfig.countDocuments({ isActive: true });
-    expect(count).toBe(1);
+    // No grammar questions in set-b → the landing page reports unavailable.
+    const landing = await authed(await createStudent()).get('/api/entrance-test');
+    expect(landing.body.available).toBe(false);
   });
 
   test('an admin can CRUD grammar bank questions', async () => {

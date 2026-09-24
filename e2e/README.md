@@ -17,6 +17,15 @@ Smoke/critical-path tests only, not exhaustive coverage.
   form renders. admin-src has no separate login route of its own —
   `ProtectedRoute.jsx` hard-redirects here.
 
+- **entrance-test.spec.js** — the whole Test đầu vào in a real browser:
+  Grammar → Reading (Passage 2) → Listening (Part 3) → Writing (submit
+  overlay, exactly one WritingAttempt) → Speaking Part 2 (fake mic,
+  recording + typed transcript) → "chờ duyệt" → admin approves in the
+  admin SPA → student sees the result. **Self-contained**: boots its own
+  in-memory MongoDB + backend + static server and reroutes the hardcoded
+  production API to it, so nothing needs to be running and production is
+  never touched. `E2E_SHOTS=<dir>` saves screenshots of the key screens.
+
 ## Intentionally skipped / fixme
 
 - `admin-login.spec.js` has a `test.fixme` for "logged-in teacher/admin

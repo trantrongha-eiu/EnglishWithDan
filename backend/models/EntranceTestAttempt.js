@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const proctorSchema = require('./shared/proctorSchema');
 
 /**
- * EntranceTestAttempt — one student's run of the 70-minute, 4-section
+ * EntranceTestAttempt — one student's run of the 74-minute, 5-section
  * IELTS Entrance Test ("Test đầu vào"). See backend/services/
  * entranceTestService.js for the full flow.
  *
@@ -83,7 +83,34 @@ const WritingSectionSchema = new mongoose.Schema({
   // from writingAttemptId.grading.overallBand into `band` below once
   // available (see entranceTestService.getResult).
   writingAttemptId: { type: mongoose.Schema.Types.ObjectId, ref: 'WritingAttempt' },
+  // Suggested band pulled from the linked WritingAttempt (a teacher-
+  // confirmed grading.overallBand if there is one, else the AI's
+  // aiGrading.task1.bandScore) — what the admin review screen proposes.
+  // `band` is the FINAL band, set when an admin approves the result (or,
+  // on a pre-Speaking legacy attempt, the confirmed grade copied straight
+  // in — see entranceTestService.isLegacyAttempt).
+  aiBand:           { type: Number, default: null },
   band:             { type: Number, default: null },
+}, { _id: false });
+
+// Speaking Part 2 — one cue card, 70s prep + up to 2 min recording (the
+// student may also type/correct the transcript). The recording is stored on
+// Cloudinary so a teacher can listen to it; the student never sees any AI
+// feedback — aiBand/aiFeedback are a suggestion for the admin review only.
+const SpeakingSectionSchema = new mongoose.Schema({
+  ...SectionTimingFields,
+  questionSnapshot: { type: mongoose.Schema.Types.Mixed, default: null }, // { _id, topic, question, cueCard }
+  transcript:       { type: String, default: '' },  // draft (autosaved) → final on submit
+  aiTranscript:     { type: String, default: '' },  // AI's transcription when the student had no STT text
+  durationSec:      { type: Number, default: 0 },
+  audioUrl:         { type: String, default: '' },
+  audioPublicId:    { type: String, default: '' },
+  audioMimeType:    { type: String, default: '' },
+  aiStatus:        { type: String, enum: ['none', 'pending', 'done', 'error'], default: 'none' },
+  aiError:          { type: String, default: '' },
+  aiBand:           { type: Number, default: null },
+  aiFeedback:       { type: mongoose.Schema.Types.Mixed, default: null },
+  band:             { type: Number, default: null }, // final, set on admin approval
 }, { _id: false });
 
 const EntranceTestAttemptSchema = new mongoose.Schema({
@@ -98,23 +125,29 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
   // all 4 bands (incl. Writing, which grades asynchronously) to be present.
   resultStatus: {
     type: String,
-    enum: ['IN_PROGRESS', 'PENDING_WRITING', 'COMPLETED', 'DISQUALIFIED', 'ABANDONED'],
+    // PENDING_WRITING — waiting for the Writing AI grade.
+    // PENDING_REVIEW  — every band has a suggestion; waiting for an admin to
+    //                   review + approve. The student sees no scores until then.
+    // COMPLETED       — approved (or a legacy attempt fully graded): visible.
+    enum: ['IN_PROGRESS', 'PENDING_WRITING', 'PENDING_REVIEW', 'COMPLETED', 'DISQUALIFIED', 'ABANDONED'],
     default: 'IN_PROGRESS',
   },
 
-  // The EntranceTestConfig content IDs resolved at start time — kept
-  // alongside the full per-section snapshots below purely for traceability
-  // (which config produced this attempt), not relied on for grading.
+  // The content IDs drawn at random for this attempt at start time — kept
+  // alongside the full per-section snapshots below for traceability and so
+  // a retake can avoid re-drawing content this student has already seen.
+  // Not relied on for grading.
   configSnapshot: {
     readingPassageId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Passage' },
     listeningSectionId: { type: mongoose.Schema.Types.ObjectId, ref: 'ListeningSection' },
     writingTask1Id:      { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask1' },
+    speakingQuestionId:  { type: mongoose.Schema.Types.ObjectId, ref: 'SpeakingQuestion' },
     grammarSetKey:       { type: String, default: 'default' },
   },
 
   currentSection: {
     type: String,
-    enum: ['grammar', 'reading', 'listening', 'writing', 'done'],
+    enum: ['grammar', 'reading', 'listening', 'writing', 'speaking', 'done'],
     default: 'grammar',
   },
 
@@ -126,9 +159,20 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
     reading:   { type: ReadingSectionSchema, default: () => ({}) },
     listening: { type: ListeningSectionAttemptSchema, default: () => ({}) },
     writing:   { type: WritingSectionSchema, default: () => ({}) },
+    speaking:  { type: SpeakingSectionSchema, default: () => ({}) },
   },
 
+  // Final overall band — only set once the result is COMPLETED (approved).
   overallBand: { type: Number, default: null },
+
+  // Admin approval of the compiled result — until approvedAt is set the
+  // student sees "đang chờ giáo viên duyệt" and no scores at all.
+  review: {
+    approvedAt:     { type: Date, default: null },
+    approvedBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    approvedByName: { type: String, default: '' },
+    adminNote:      { type: String, default: '' },
+  },
 
   // Reused shape (violationCount/violated/events/disqualifiedAt) — see
   // backend/models/shared/proctorSchema.js. Threshold is
@@ -137,7 +181,20 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
   // Test — a per-user decision confirmed for this feature, not a global
   // proctoring-threshold change.
   proctor: { type: proctorSchema, default: () => ({}) },
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  // Every save() checks __v, not just saves that touch an array. Several
+  // requests legitimately race on one attempt (the submit click, the
+  // client's expiry re-sync, the visibilitychange re-sync, autosaves), and
+  // scalar-only saves used to slip past each other silently — that is how
+  // one Writing submit produced 3 WritingAttempts. The loser now gets a
+  // VersionError and entranceTestService.withVersionRetry re-runs it
+  // against the fresh doc.
+  optimisticConcurrency: true,
+});
+
+// Admin review queue: "finished attempts waiting for approval".
+EntranceTestAttemptSchema.index({ resultStatus: 1, createdAt: -1 });
 
 // Resume lookup: "does this student have an open attempt".
 EntranceTestAttemptSchema.index({ userId: 1, status: 1 });
