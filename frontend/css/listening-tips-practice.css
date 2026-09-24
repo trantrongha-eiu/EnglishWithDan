@@ -213,6 +213,28 @@
 .ltp-pv-res.bad { border-color: #fecaca; }
 .ltp-pv-res-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
+/* Phase 2: predictions confirmed, slips diagnosed, the full workflow */
+.ltp-sig { background: #dcfce7; color: #14532d; border-radius: 4px; padding: 0 3px; font-weight: 800; box-shadow: 0 0 0 1px #86efac; }
+[data-theme="dark"] .ltp-sig { background: #14532d; color: #dcfce7; box-shadow: none; }
+.ltp-predict-btn { margin-top: 10px; }
+.ltp-reveal { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; line-height: 1.7; border: 1.5px solid #e5e7eb; }
+.ltp-reveal.ok { background: #f0fdf4; border-color: #bbf7d0; }
+.ltp-reveal.bad { background: #fff7ed; border-color: #fed7aa; }
+[data-theme="dark"] .ltp-reveal.ok { background: #052e16; border-color: #14532d; }
+[data-theme="dark"] .ltp-reveal.bad { background: #2a1208; border-color: #7c2d12; }
+.ltp-diag { margin-top: 6px; padding: 6px 10px; border-radius: 8px; background: #fef3c7; color: #92400e; font-size: 13px; font-weight: 700; }
+[data-theme="dark"] .ltp-diag { background: #422006; color: #fde68a; }
+.ltp-para {
+  width: 100%; box-sizing: border-box; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 6px 10px;
+  font: inherit; font-size: 13px; margin-top: 6px; background: #fff; color: inherit;
+}
+[data-theme="dark"] .ltp-para { background: var(--bg, #000); border-color: #334155; }
+.ltp-task-line { font-size: 13.5px; line-height: 1.6; margin: 4px 0 10px; color: #1e3a8a; }
+[data-theme="dark"] .ltp-task-line { color: #bfdbfe; }
+.ltp-checklist { flex-basis: 100%; margin: 6px 0 4px; }
+.ltp-check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; padding: 4px 0; cursor: pointer; }
+.ltp-check input { width: 18px; height: 18px; accent-color: #2563eb; }
+
 /* Symbols */
 .ltp-symbol { font-size: 54px; font-weight: 900; color: #1d4ed8; text-align: center; margin: 8px 0 12px; }
 [data-theme="dark"] .ltp-symbol { color: #93c5fd; }

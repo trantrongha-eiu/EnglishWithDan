@@ -49,14 +49,15 @@ const isInt = (v) => v != null && Number.isInteger(Number(v));
 
 // POST /api/listening-tips/:lessonKey/practice/check
 // body: { sectionId, questionNumber, answer, prediction? }        — a gap
+//     | { sectionId, questionNumber, prediction, stage: 'predict' } — confirm a prediction only
 //     | { item: 'audio', sectionId, sentenceIndex, answer }         — a heard sentence → symbol
 //     | { item: 'meaning', symbol, answer }                         — a symbol → meaning
 exports.checkPracticeAnswer = async (req, res) => {
   try {
     const body = req.body || {};
-    const { item, sectionId, questionNumber, sentenceIndex, answer, prediction, symbol } = body;
+    const { item, sectionId, questionNumber, sentenceIndex, answer, prediction, symbol, stage } = body;
     if ((answer != null && typeof answer !== 'string') || (prediction != null && typeof prediction !== 'string')
-      || (symbol != null && typeof symbol !== 'string')) {
+      || (symbol != null && typeof symbol !== 'string') || (stage != null && stage !== 'predict')) {
       return res.status(400).json({ success: false, message: 'Đáp án không hợp lệ' });
     }
     const valid = item === 'meaning' ? typeof symbol === 'string'
@@ -65,7 +66,7 @@ exports.checkPracticeAnswer = async (req, res) => {
     if (!valid) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
 
     const result = await listeningTipPracticeService.checkAnswer(req.params.lessonKey, {
-      item, sectionId, questionNumber, sentenceIndex, answer, prediction, symbol,
+      item, sectionId, questionNumber, sentenceIndex, answer, prediction, symbol, stage,
     });
     if (result.status === 'no_practice') {
       return res.status(404).json({ success: false, code: 'NO_PRACTICE', message: 'Bài này chưa có phần luyện tập.' });

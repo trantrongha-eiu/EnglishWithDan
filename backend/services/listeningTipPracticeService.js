@@ -20,12 +20,30 @@ const ListeningTip = require('../models/ListeningTip');
 const ListeningSection = require('../models/ListeningSection');
 const { gradeQuestionGroups } = require('./listeningService');
 
-// Keyed by ListeningTip.lessonKey. Phase 1: the first three foundation tips.
+// Keyed by ListeningTip.lessonKey — the 7 "Kỹ thuật nghe nền tảng" tips.
 const PRACTICE_CONFIG = {
   'keyword-highlighting': { kind: 'keywords', maxQuestions: 5, maxPerSection: 2 },
   '30-second-strategy': { kind: 'preview', minQuestions: 3, maxQuestions: 5, prepSeconds: 30 },
   'symbols-and-paraphrase': { kind: 'symbols', meaningItems: 4, audioItems: 5 },
+  'full-workflow-practice': { kind: 'workflow', minQuestions: 3, maxQuestions: 5 },
+  // predict → (confirmed) → listen → answer
+  'predict-noun-adjective-verb': { kind: 'wordclass', maxQuestions: 6, maxPerSection: 2 },
+  'predict-number-date-place': { kind: 'infotype', maxQuestions: 6, maxPerSection: 2 },
+  // predict → listen → answer → confirmed with the answer (the plural trap)
+  'predict-plural-countable-formula': { kind: 'form', maxQuestions: 6, maxPerSection: 2 },
 };
+
+// What the student predicts, per kind (the server derives the real one).
+const CHOICES = {
+  keywords: ['proper', 'date', 'time', 'price', 'number', 'word'],
+  preview: ['proper', 'date', 'time', 'price', 'number', 'word'],
+  workflow: ['proper', 'date', 'time', 'price', 'number', 'word'],
+  wordclass: ['noun', 'adjective', 'verb'],
+  infotype: ['name', 'place', 'date', 'time', 'price', 'number'],
+  form: ['singular', 'plural', 'uncountable', 'ving', 'verb', 'adjective', 'phrase'],
+};
+// Kinds whose prediction is confirmed right away, before listening.
+const REVEAL_ON_PREDICT = new Set(['wordclass', 'infotype']);
 
 // ── Text helpers (transcripts are plain text, one sentence per line) ───
 
@@ -492,6 +510,252 @@ function keywordsFor(gap, evidenceText) {
   return { keywords: keywords.slice(0, 4), signals };
 }
 
+// ── Grammar / information predictions (Phase 2) ─────────────────────────
+// Each classifier answers only when the question itself shows it (the
+// signal a student is taught to look for) AND the real key agrees; anything
+// less certain is left out of that practice.
+
+const CLAUSE_END = /^(?:and|or|but|for|to|than|because|so|in|on|at|with|from|of|by|if|when|while|which|that|who|as|before|after|during|near|around|into|per)\b/i;
+
+function gapContext(gap) {
+  const [before = '', after = ''] = String(gap.text).split('_____');
+  const b = words(before);
+  const a = words(after);
+  // trailing punctuation off ("Mrs." → "Mrs"), but "a.m." / "p.m." stay whole
+  const bare = (w) => String(w || '').replace(/[,;:]+$/, '').replace(/(?<![ap]\.m)\.$/i, '');
+  const afterTrim = after.trim();
+  return {
+    before: before.trim(),
+    prevRaw: bare(b[b.length - 1]),
+    prev: bare(b[b.length - 1]).toLowerCase(),
+    prev2: bare(b[b.length - 2]).toLowerCase(),
+    nextRaw: bare(a[0]),
+    next: bare(a[0]).toLowerCase(),
+    // nothing (or only a preposition / conjunction) follows: the gap ends its phrase
+    endsClause: !afterTrim || /^[.,;:!?)…–—-]/.test(afterTrim) || CLAUSE_END.test(afterTrim),
+  };
+}
+
+const DETERMINERS = new Set(['a', 'an', 'the', 'your', 'their', 'his', 'her', 'its', 'our', 'my', 'this', 'that', 'these', 'those',
+  'each', 'every', 'another', 'no', 'any', 'some']);
+const INTENSIFIERS = new Set(['very', 'too', 'so', 'quite', 'extremely', 'really', 'particularly', 'fairly', 'rather', 'pretty',
+  'highly', 'incredibly', 'surprisingly', 'relatively']);
+const LINKING = new Set(['is', 'are', 'was', 'were', 'be', 'been', 'being', 'seem', 'seems', 'seemed', 'look', 'looks', 'looked',
+  'feel', 'feels', 'felt', 'become', 'becomes', 'became', 'remain', 'remains', 'remained', 'sound', 'sounds', 'stay', 'stays']);
+const MODALS = new Set(['must', 'can', 'could', 'should', 'will', 'would', 'may', 'might', 'shall', 'cannot', "can't", "won't",
+  "mustn't", "shouldn't", "couldn't", "wouldn't", "don't", "doesn't", "didn't"]);
+const TO_BEFORE = /\b(?:need|needs|needed|want|wants|wanted|have|has|had|used|going|able|unable|required|told|advised|asked|allowed|try|tries|tried|trying|plan|plans|planned|decide|decided|remember|how|order|hope|hopes|expect|expected|intend|aim|aims|agree|agreed|offer|offers|encouraged|supposed|likely|important|necessary|easy|difficult|hard|possible|impossible|essential|chance|opportunity|way|help|helps|helped)\s+to$/i;
+const NOUN_PREPOSITIONS = new Set(['about', 'for', 'of', 'in', 'on', 'with', 'from', 'by', 'at', 'into', 'without', 'through']);
+const ING_BEFORE = /\b(?:involves?|involving|includes?|including|enjoys?|enjoyed|avoid(?:s|ed)?|recommends?|recommended|suggests?|suggested|considers?|considered|finish(?:es|ed)?|keeps?|kept|mind|practi[sc]es?|practi[sc]ed|go|goes|went|spend|spends|spent|stop|stops|stopped|start|starts|started|like|likes|love|loves|hate|prefer|prefers)$/i;
+const PLURAL_SIGNAL = /\b(?:two|three|four|five|six|seven|eight|nine|ten|twelve|twenty|hundred|thousand|many|several|various|both|few|numerous|a number of|a range of|a variety of|a lot of|lots of|plenty of|these|those|all the|\d{1,4})$/i;
+const SINGULAR_SIGNAL = /\b(?:a|an|one|each|every|another|a single|this|that)$/i;
+const ING_NOUNS = new Set(['morning', 'evening', 'ceiling', 'wedding', 'pudding', 'nothing', 'something', 'anything', 'everything',
+  'thing', 'things', 'king', 'ring', 'spring', 'string', 'wing', 'sibling', 'darling', 'herring', 'lightning', 'sterling', 'offspring',
+  'meeting', 'building', 'clothing', 'housing', 'heading', 'feeling', 'ending', 'railing', 'stuffing']);
+const UNCOUNTABLE = new Set(['information', 'equipment', 'advice', 'furniture', 'luggage', 'baggage', 'accommodation', 'research',
+  'homework', 'coursework', 'traffic', 'weather', 'money', 'music', 'software', 'knowledge', 'evidence', 'feedback', 'transport',
+  'transportation', 'pollution', 'rubbish', 'litter', 'clothing', 'stationery', 'machinery', 'scenery', 'news', 'progress', 'employment',
+  'insurance', 'electricity', 'water', 'bread', 'rice', 'sugar', 'salt', 'coffee', 'milk', 'cheese', 'safety', 'health', 'fitness',
+  'nutrition', 'security', 'damage', 'sunshine', 'cash', 'jewellery', 'jewelry', 'fun', 'energy', 'fuel', 'oil', 'plastic', 'soil',
+  'sand', 'grass', 'noise', 'waste', 'medication', 'furniture', 'staff', 'wildlife', 'vegetation', 'rain', 'snow']);
+const IRREGULAR_PLURALS = new Set(['people', 'children', 'men', 'women', 'feet', 'teeth', 'mice', 'geese', 'data', 'media',
+  'criteria', 'phenomena']);
+const S_SINGULAR = /(?:ss|us|is|ous|ics|news|bus|gas|lens|plus|yes|this|thus|always|perhaps|series|species|means|eas|less)$/i;
+const ADJ_SUFFIX = /(?:ful|less|ous|ive|able|ible|ic|ical|ish)$/i;
+const COMMON_ADJ = new Set(['good', 'bad', 'cheap', 'expensive', 'free', 'busy', 'quiet', 'noisy', 'safe', 'popular', 'large', 'small',
+  'big', 'long', 'short', 'high', 'low', 'full', 'empty', 'open', 'closed', 'early', 'late', 'hot', 'cold', 'warm', 'cool', 'dry', 'wet',
+  'clean', 'dirty', 'easy', 'difficult', 'hard', 'soft', 'new', 'old', 'modern', 'local', 'public', 'private', 'available', 'suitable',
+  'comfortable', 'convenient', 'strong', 'weak', 'fresh', 'healthy', 'simple', 'complex', 'fast', 'slow', 'friendly', 'lonely', 'lively',
+  'narrow', 'wide', 'deep', 'heavy', 'light', 'bright', 'dark', 'rare', 'common', 'basic', 'main', 'major', 'real', 'true', 'fair', 'poor',
+  'rich', 'young', 'famous', 'accurate', 'flexible', 'reliable', 'efficient', 'effective', 'relevant', 'traditional', 'original',
+  'permanent', 'temporary', 'necessary', 'important', 'essential', 'different', 'similar', 'natural', 'national', 'social', 'special',
+  'general', 'possible', 'impossible', 'plastic', 'wooden', 'metal', 'regular', 'urgent', 'formal', 'casual', 'crowded', 'boring',
+  'tired', 'annoyed', 'disappointed', 'satisfied', 'stable', 'visible', 'secure', 'calm', 'noisy', 'wild', 'rural', 'urban', 'direct',
+  'official', 'correct', 'wrong', 'serious', 'harmful', 'useful', 'helpful', 'successful']);
+const NATIONALITIES = /^(?:english|french|chinese|italian|spanish|german|japanese|korean|arabic|indian|russian|greek|dutch|irish|scottish|welsh|british|american|australian|canadian|thai|vietnamese|portuguese|turkish|polish|swedish|mexican|latin|european|asian|african)$/i;
+const NAME_TITLES = new Set(['mr', 'mrs', 'ms', 'miss', 'dr', 'professor', 'prof', 'sir', 'dame']);
+const NAME_LABEL = /\b(?:name|surname|first name|family name|contact|called|supervisor|manager|agent|teacher|tutor|director|leader|instructor|coordinator|owner|chef|doctor|nurse|lecturer|speaker|author|organiser|organizer)\b/i;
+const ORGANISATION = /^(?:ferries|ferry|company|hotel|restaurant|agency|school|club|centre|center|ltd|limited|group|travel|tours|airlines?|bank|shop|store|college|university)$/i;
+const PLACE_WORDS = /^(?:road|street|avenue|lane|square|park|hotel|centre|center|hall|campus|station|bridge|island|islands|beach|river|lake|hill|hills|village|town|city|room|building|close|drive|way|place|gardens|court|terrace|crescent|bay|market|house|farm|valley|forest|mountain|mountains|airport|harbour|port|castle|tower|library|museum|theatre|theater|stadium)$/i;
+const PLACE_LABEL = /\b(?:address|location|suburb|town|city|country|venue|place|destination|area|region|district|located|held|based|visited|live|lives|lived|from)\b/i;
+
+const words1 = (s) => words(s).map(w => w.replace(/[.,;:]+$/, ''));
+const keyWords = (key) => words1(answerAlternatives(key)[0] || '');
+
+function isPluralWord(w) {
+  const x = w.toLowerCase();
+  return IRREGULAR_PLURALS.has(x) || (x.length > 3 && /s$/.test(x) && !S_SINGULAR.test(x) && !UNCOUNTABLE.has(x));
+}
+function isVing(w) {
+  const x = w.toLowerCase();
+  return x.length > 5 && /ing$/.test(x) && !ING_NOUNS.has(x);
+}
+const isBaseVerb = (w) => !/(?:ing|ed)$/i.test(w) && (!/s$/i.test(w) || /ss$/i.test(w));
+
+// Noun / adjective / verb from the words around the gap (the tip's
+// signals), for single-word (or two-word noun) keys.
+function wordClassOf(it) {
+  if (it.type !== 'word') return null;
+  const kw = keyWords(it.q.correctAnswer);
+  if (!kw.length || kw.length > 2) return null;
+  const c = gapContext(it.gap);
+  const last = kw[kw.length - 1].toLowerCase();
+  const single = kw.length === 1;
+  const adjLike = COMMON_ADJ.has(last) || ADJ_SUFFIX.test(last);
+  if (c.prev === 'the' && c.next === 'of') {
+    return { value: 'noun', reason: 'Cấu trúc “the ___ of” → luôn là danh từ.', signal: 'the' };
+  }
+  if (single && INTENSIFIERS.has(c.prev) && c.endsClause) {
+    return { value: 'adjective', reason: `Sau “${c.prevRaw}” → cần tính từ.`, signal: c.prevRaw };
+  }
+  if (single && MODALS.has(c.prev) && isBaseVerb(last)) {
+    return { value: 'verb', reason: `Sau động từ khuyết thiếu “${c.prevRaw}” → động từ nguyên mẫu.`, signal: c.prevRaw };
+  }
+  if (single && c.prev === 'to' && TO_BEFORE.test(c.before) && isBaseVerb(last) && !adjLike) {
+    return { value: 'verb', reason: `Sau “${c.prev2} to” → động từ nguyên mẫu.`, signal: 'to' };
+  }
+  if (single && LINKING.has(c.prev) && c.endsClause && adjLike && !UNCOUNTABLE.has(last)) {
+    return { value: 'adjective', reason: `Sau động từ “${c.prevRaw}” (be / seem / become…) và cuối cụm → tính từ.`, signal: c.prevRaw };
+  }
+  if (DETERMINERS.has(c.prev) && c.endsClause && !/ly$/.test(last) && !adjLike && !isVing(last)) {
+    return { value: 'noun', reason: `Sau “${c.prevRaw}” và không có danh từ nào theo sau → chỗ trống là danh từ.`, signal: c.prevRaw };
+  }
+  if (single && NOUN_PREPOSITIONS.has(c.prev) && c.endsClause && !adjLike && !isVing(last) && !/ly$/.test(last)) {
+    return { value: 'noun', reason: `Sau giới từ “${c.prevRaw}” → thường là danh từ.`, signal: c.prevRaw };
+  }
+  if (single && ['a', 'an', 'the'].includes(c.prev) && c.next && !c.endsClause && adjLike) {
+    return {
+      value: 'adjective',
+      reason: `“${c.prevRaw} ___ ${c.nextRaw}” — chỗ trống đứng giữa mạo từ và danh từ “${c.nextRaw}” → tính từ bổ nghĩa (cẩn thận: đôi khi là danh từ bổ nghĩa).`,
+      signal: c.nextRaw,
+    };
+  }
+  return null;
+}
+
+// Name / place / date / time / price / number — only when the question
+// itself says which (a label, a title, a unit, a currency sign…).
+function infoTypeOf(it) {
+  const c = gapContext(it.gap);
+  const label = `${it.gap.context || ''} ${c.before}`;
+  const key = answerAlternatives(it.q.correctAnswer)[0] || '';
+  switch (it.type) {
+    case 'time':
+      if (/^(?:a\.?m\.?|p\.?m\.?|o'clock|am|pm)$/.test(c.next)) return { value: 'time', reason: `Có “${c.nextRaw}” sau chỗ trống → giờ.`, signal: c.nextRaw };
+      if (/\b(?:time|times|starts?|begins?|opens?|closes?|finish(?:es)?|ends?|arrives?|leaves?|departure|arrival|until|till)\b/i.test(label)) return { value: 'time', reason: 'Câu hỏi nói về thời điểm (start / open / close / until…) → giờ.', signal: '' };
+      return null;
+    case 'price': {
+      if (/[£$€]\s*$/.test(c.before)) return { value: 'price', reason: `Có “${c.before.trim().slice(-1)}” ngay trước chỗ trống → giá tiền.`, signal: c.before.trim().slice(-1) };
+      const w = `${label} ${c.next}`.match(/\b(cost|costs|price|prices|fee|fees|charge|charges|pay|paid|rent|salary|deposit|fare)\b/i);
+      return w ? { value: 'price', reason: `Từ “${w[1]}” → giá tiền.`, signal: w[1] } : null;
+    }
+    case 'date':
+      if (c.prev === 'on') return { value: 'date', reason: 'Sau “on” → ngày / thứ.', signal: 'on' };
+      if (/\b(?:date|day|days|deadline|month|year|when|by)\b/i.test(label)) return { value: 'date', reason: 'Câu hỏi hỏi ngày / thứ / tháng (Date / day / deadline…).', signal: '' };
+      return null;
+    case 'number': {
+      const unit = c.next.match(/^(?:people|persons?|students?|km|kilometres?|miles?|metres?|minutes?|hours?|days?|weeks?|months?|years?|percent|%|degrees?|kg|times|rooms?|members?|places?|seats?)$/);
+      if (unit) return { value: 'number', reason: `“___ ${c.nextRaw}” → một con số.`, signal: c.nextRaw };
+      const lab = label.match(/\b(number|phone|telephone|mobile|postcode|post code|room|age|how many|size|capacity|total|code|reference|flight|platform|floor|level|population|max(?:imum)?|min(?:imum)?|approx(?:imately)?|about)\b/i);
+      return lab ? { value: 'number', reason: `Từ “${lab[1]}” → một con số / mã số.`, signal: lab[1] } : null;
+    }
+    case 'proper': {
+      if (NATIONALITIES.test(key) || ORGANISATION.test(c.next)) return null;
+      // the words right at the gap first ("Mrs ___", "___ Street", "in ___"), then its label
+      if (NAME_TITLES.has(c.prev.replace(/\.$/, ''))) return { value: 'name', reason: `Sau “${c.prevRaw}” → tên người.`, signal: c.prevRaw };
+      if (PLACE_WORDS.test(c.next)) return { value: 'place', reason: `“___ ${c.nextRaw}” → tên địa điểm.`, signal: c.nextRaw };
+      if (['in', 'at', 'near', 'opposite', 'to', 'from'].includes(c.prev)) return { value: 'place', reason: `Sau “${c.prevRaw}” + tên riêng → địa điểm.`, signal: c.prevRaw };
+      if (NAME_LABEL.test(label)) return { value: 'name', reason: `Nhãn “${label.match(NAME_LABEL)[0]}” → tên người.`, signal: label.match(NAME_LABEL)[0] };
+      if (PLACE_LABEL.test(label)) return { value: 'place', reason: `Từ “${label.match(PLACE_LABEL)[0]}” → địa điểm.`, signal: label.match(PLACE_LABEL)[0] };
+      return null;
+    }
+    default:
+      return null;
+  }
+}
+
+// The form the answer takes — what to check when writing it down.
+function formOf(it) {
+  if (it.type !== 'word') return null;
+  const kw = keyWords(it.q.correctAnswer);
+  if (!kw.length || kw.length > 3) return null;
+  const c = gapContext(it.gap);
+  const last = kw[kw.length - 1].toLowerCase();
+  if (kw.length >= 2) {
+    const n = limitWords(it.limit);
+    return { value: 'phrase', reason: `Đáp án là cả một cụm ${kw.length} từ${n ? ` (đề cho tối đa ${n} từ)` : ''} — nghe và chép đủ, đừng bỏ sót từ nào.` };
+  }
+  if (isVing(last)) {
+    if (NOUN_PREPOSITIONS.has(c.prev) || c.prev === 'before' || c.prev === 'after') return { value: 'ving', reason: `Sau giới từ “${c.prevRaw}” → V-ing.`, signal: c.prevRaw };
+    if (ING_BEFORE.test(c.before)) return { value: 'ving', reason: `Sau “${c.prevRaw}” → V-ing.`, signal: c.prevRaw };
+    return { value: 'ving', reason: 'Đáp án ở dạng V-ing — nghe và viết đủ đuôi -ing.' };
+  }
+  if (isPluralWord(last)) {
+    const sig = c.before.match(PLURAL_SIGNAL);
+    return sig
+      ? { value: 'plural', reason: `Sau “${sig[0]}” → danh từ số nhiều.`, signal: sig[0] }
+      : { value: 'plural', reason: 'Câu hỏi không có dấu hiệu chắc chắn — phải nghe kỹ đuôi -s của danh từ số nhiều.' };
+  }
+  if (UNCOUNTABLE.has(last)) return { value: 'uncountable', reason: `“${last}” là danh từ không đếm được — không bao giờ thêm -s.` };
+  const wc = wordClassOf(it);
+  if (!wc) return null;
+  if (wc.value !== 'noun') return wc;
+  const sig = c.before.match(SINGULAR_SIGNAL);
+  return sig ? { value: 'singular', reason: `Sau “${sig[0]}” → danh từ số ít.`, signal: sig[0] } : null;
+}
+
+function classify(kind, it) {
+  if (kind === 'wordclass') return wordClassOf(it);
+  if (kind === 'infotype') return infoTypeOf(it);
+  if (kind === 'form') return formOf(it);
+  return it.type ? { value: it.type, reason: '' } : null;
+}
+
+// ── Checking what was written (after a wrong answer) ────────────────────
+
+function limitWords(limit) {
+  const m = String(limit || '').match(/\b(ONE|TWO|THREE|FOUR)\s+WORDS?/i);
+  return m ? { ONE: 1, TWO: 2, THREE: 3, FOUR: 4 }[m[1].toUpperCase()] : null;
+}
+
+function levenshtein(a, b) {
+  const d = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = d[0];
+    d[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = d[j];
+      d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return d[b.length];
+}
+
+// Why a wrong answer is wrong, when it's one of the classic slips: the
+// word limit, singular / plural, the word's form, a missing word of a
+// phrase, spelling.
+function diagnose(answer, key, limit) {
+  const ua = normalizeForMatch(answer).replace(/[.,;:!?]+$/, '');
+  if (!ua) return null;
+  const n = limitWords(limit);
+  const counted = ua.split(' ').filter(w => !/^\d/.test(w));
+  if (n && counted.length > n) return { kind: 'limit', note: `Vượt giới hạn từ: bạn viết ${counted.length} từ, đề chỉ cho tối đa ${n} từ.` };
+  // communicate / communicating / communicated, run / running
+  const stem = (w) => w.replace(/(?:ing|ed|es|s)$/, '').replace(/([bdgklmnprt])\1$/, '$1').replace(/e$/, '');
+  for (const alt of answerAlternatives(key).map(normalizeForMatch)) {
+    if (!alt) continue;
+    if ([`${ua}s`, `${ua}es`, ua.replace(/y$/, 'ies')].includes(alt)) return { kind: 'plural', note: `Thiếu đuôi số nhiều — đáp án là “${alt}”.` };
+    if ([`${alt}s`, `${alt}es`, alt.replace(/y$/, 'ies')].includes(ua)) return { kind: 'plural', note: `Thừa đuôi -s — đáp án là “${alt}” (số ít / không đếm được).` };
+    if (ua !== alt && stem(ua) === stem(alt) && stem(ua).length >= 3) return { kind: 'form', note: `Đúng từ nhưng sai dạng — đáp án là “${alt}”.` };
+    const altWords = alt.split(' ');
+    const uaWords = ua.split(' ');
+    if (altWords.length > uaWords.length && uaWords.every(w => altWords.includes(w))) return { kind: 'missing', note: `Thiếu từ — đáp án là cả cụm “${alt}”.` };
+    if (alt.length >= 4 && levenshtein(ua, alt) <= (alt.length >= 8 ? 2 : 1)) return { kind: 'spelling', note: `Sai chính tả — đáp án viết là “${alt}”.` };
+  }
+  return null;
+}
+
 // ── Payload builders ────────────────────────────────────────────────────
 
 function shuffle(arr, rng) {
@@ -588,6 +852,28 @@ function previewRuns(section, cfg) {
   return runs.map(r => r.slice(0, cfg.maxQuestions));
 }
 
+// A run of gaps played as one stretch of audio (from just before the first
+// one's evidence to just after the last one's).
+function runPayload(kind, s, run) {
+  const tl = timelineOf(s);
+  const first = segmentFor(tl, run[0].ev);
+  const last = run[run.length - 1].ev;
+  return {
+    kind,
+    sectionId: String(s._id),
+    sectionTitle: s.title,
+    sourceName: sourceName(s),
+    audioUrl: s.audioUrl,
+    instruction: String(run[0].group.instruction || '').replace(/\s+/g, ' ').trim(),
+    wordLimit: run[0].limit,
+    segment: { start: round(Math.max(0, first.start - 3)), end: round(Math.min(last.end + 2, tl.duration || Infinity)) },
+    questions: run.map(it => {
+      const { segment, ...rest } = questionPayload(s, it); // eslint-disable-line no-unused-vars
+      return rest;
+    }),
+  };
+}
+
 async function buildPreview(cfg, rng, exclude) {
   const sections = await loadSections();
   const all = sections.map(s => ({ s, runs: previewRuns(s, cfg) })).filter(c => c.runs.length);
@@ -597,23 +883,68 @@ async function buildPreview(cfg, rng, exclude) {
   const pickFrom = big.length ? big : candidates;
   const { s, runs } = pickFrom[Math.floor(rng() * pickFrom.length)];
   const run = runs.reduce((best, r) => (r.length > best.length ? r : best), runs[0]);
-  const tl = timelineOf(s);
-  const first = segmentFor(tl, run[0].ev);
-  const last = run[run.length - 1].ev;
+  return { ...runPayload('preview', s, run), prepSeconds: cfg.prepSeconds };
+}
+
+// Quy trình hoàn chỉnh: a run of consecutive gaps of one test, done step
+// by step — highlight → predict → listen → answer → check — with no timer.
+async function buildWorkflow(cfg, rng, exclude) {
+  const sections = await loadSections();
+  const all = sections.map(s => ({ s, runs: previewRuns(s, cfg) })).filter(c => c.runs.length);
+  if (!all.length) return null;
+  const candidates = withoutRecent(all, exclude, c => String(c.s._id));
+  const { s, runs } = candidates[Math.floor(rng() * candidates.length)];
+  return runPayload('workflow', s, runs[Math.floor(rng() * runs.length)]);
+}
+
+// Spreads the picks over the classes (noun / adjective / verb, …), taking
+// turns, and over sections (at most maxPerSection each); recently practised
+// sections go last.
+function balancedPick(pool, classOf, n, maxPerSection, rng, exclude) {
+  const skip = new Set(exclude);
+  const buckets = {};
+  shuffle(pool, rng)
+    .sort((a, b) => skip.has(String(a.s._id)) - skip.has(String(b.s._id)))
+    .forEach(c => { (buckets[classOf(c)] = buckets[classOf(c)] || []).push(c); });
+  const order = shuffle(Object.keys(buckets), rng);
+  const chosen = [];
+  const perSection = {};
+  let progress = true;
+  while (chosen.length < n && progress) {
+    progress = false;
+    for (const k of order) {
+      if (chosen.length >= n) break;
+      const i = buckets[k].findIndex(c => (perSection[String(c.s._id)] || 0) < maxPerSection);
+      if (i === -1) continue;
+      const [c] = buckets[k].splice(i, 1);
+      chosen.push(c);
+      perSection[String(c.s._id)] = (perSection[String(c.s._id)] || 0) + 1;
+      progress = true;
+    }
+  }
+  return chosen;
+}
+
+// Predict (word class / type of information / form of the answer) →
+// listen → answer, on single gaps the kind's classifier is sure about.
+async function buildPredict(cfg, rng, exclude) {
+  const sections = await loadSections();
+  const pool = sections.flatMap(s => gapItems(s).map(it => ({ s, it, cls: classify(cfg.kind, it) })).filter(c => c.cls));
+  const chosen = balancedPick(pool, c => c.cls.value, cfg.maxQuestions, cfg.maxPerSection, rng, exclude);
+  if (!chosen.length) return null;
   return {
-    kind: 'preview',
-    sectionId: String(s._id),
-    sectionTitle: s.title,
-    sourceName: sourceName(s),
-    audioUrl: s.audioUrl,
-    prepSeconds: cfg.prepSeconds,
-    instruction: String(run[0].group.instruction || '').replace(/\s+/g, ' ').trim(),
-    wordLimit: run[0].limit,
-    segment: { start: round(Math.max(0, first.start - 3)), end: round(Math.min(last.end + 2, tl.duration || Infinity)) },
-    questions: run.map(it => {
-      const { segment, ...rest } = questionPayload(s, it); // eslint-disable-line no-unused-vars
-      return rest;
-    }),
+    kind: cfg.kind,
+    items: chosen.map(({ s, it }) => ({
+      sectionId: String(s._id),
+      questionNumber: it.q.questionNumber,
+      text: it.gap.text,
+      context: it.gap.context || '',
+      wordLimit: it.limit,
+      segment: segmentFor(timelineOf(s), it.ev),
+      sectionTitle: s.title,
+      sourceName: sourceName(s),
+      audioUrl: s.audioUrl,
+    })),
   };
 }
 
@@ -722,14 +1053,17 @@ async function getPractice(lessonKey, { rng = Math.random, exclude = [] } = {}) 
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
   const cfg = PRACTICE_CONFIG[lessonKey];
-  const build = { keywords: buildKeywords, preview: buildPreview, symbols: buildSymbols }[cfg.kind];
+  const build = {
+    keywords: buildKeywords, preview: buildPreview, symbols: buildSymbols, workflow: buildWorkflow,
+    wordclass: buildPredict, infotype: buildPredict, form: buildPredict,
+  }[cfg.kind];
   const practice = await build(cfg, rng, exclude.map(String));
   return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
 }
 
-const PREDICTIONS = ['proper', 'date', 'time', 'price', 'number', 'word'];
-
 // Grades ONE answer and only then reveals answer + explanation + evidence.
+// `stage: 'predict'` (word class / type of information) only confirms the
+// prediction — why, from the question's own words — without the answer.
 async function checkAnswer(lessonKey, body) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
@@ -764,20 +1098,31 @@ async function checkAnswer(lessonKey, body) {
   }
 
   const it = gapItems(section).find(x => x.q.questionNumber === Number(body.questionNumber));
-  if (!it || !it.type) return { status: 'not_in_practice' };
+  const cls = it && classify(cfg.kind, it);
+  if (!cls) return { status: 'not_in_practice' };
+  const prediction = CHOICES[cfg.kind].includes(body.prediction) ? body.prediction : null;
+  const why = { category: cls.value, reason: cls.reason || '', signal: cls.signal || '' };
+
+  if (body.stage === 'predict') {
+    if (!REVEAL_ON_PREDICT.has(cfg.kind) || !prediction) return { status: 'not_in_practice' };
+    return { status: 'ok', result: { stage: 'predict', questionNumber: it.q.questionNumber, prediction, predictionCorrect: prediction === cls.value, ...why } };
+  }
+
   const { reviewed } = gradeQuestionGroups([{ questions: [it.q] }], () => answer.trim());
-  const prediction = PREDICTIONS.includes(body.prediction) ? body.prediction : null;
+  const isCorrect = !!(reviewed[0] && reviewed[0].isCorrect);
   return {
     status: 'ok',
     result: {
       questionNumber: it.q.questionNumber,
-      isCorrect: !!(reviewed[0] && reviewed[0].isCorrect),
+      isCorrect,
       correctAnswer: it.q.correctAnswer,
       answerType: it.type,
+      ...why,
       prediction,
-      predictionCorrect: prediction ? prediction === it.type : null,
+      predictionCorrect: prediction ? prediction === cls.value : null,
       explanation: it.q.explanation || '',
       evidence: { text: it.ev.text, speaker: it.ev.speaker, start: it.ev.start, end: it.ev.end },
+      diagnosis: isCorrect ? null : diagnose(answer, it.q.correctAnswer, it.limit),
     },
   };
 }
@@ -791,5 +1136,6 @@ module.exports = {
   _internals: {
     transcriptLines, timelineOf, timeAt, quoteRange, answerRange, evidenceOf, segmentFor,
     gapText, gapItems, answerType, keywordsFor, symbolOf, symbolClips, previewRuns, normalizeForMatch,
+    gapContext, wordClassOf, infoTypeOf, formOf, classify, diagnose, balancedPick,
   },
 };

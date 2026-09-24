@@ -104,6 +104,91 @@ describe('symbols', () => {
   });
 });
 
+// Phase 2 classifiers: only what the question itself shows, and only when
+// the real key agrees.
+const gapItem = (text, key, type = 'word', limit = 'ONE WORD ONLY', context = '') => ({ type, q: { correctAnswer: key }, gap: { text, context }, limit });
+
+describe('wordClassOf — noun / adjective / verb from the signals the tip teaches', () => {
+  test.each([
+    ['the _____ of the course', 'cost', 'noun', /the ___ of/],
+    ['Students need to bring a _____.', 'passport', 'noun', /“a”/],
+    ['Information about _____', 'transport', 'noun', /giới từ “about”/],
+    ['The rooms are extremely _____.', 'spacious', 'adjective', /“extremely”/],
+    ['The accommodation seems _____', 'comfortable', 'adjective', /“seems”/],
+    ['a _____ folder for maps', 'plastic', 'adjective', /folder/],
+    ['Students must _____ the form.', 'submit', 'verb', /“must”/],
+    ['it is very difficult to _____ rubber', 'recycle', 'verb', /difficult to/],
+  ])('"%s" → %s', (text, key, expected, reason) => {
+    const c = L.wordClassOf(gapItem(text, key));
+    expect(c.value).toBe(expected);
+    expect(c.reason).toMatch(reason);
+  });
+
+  test.each([
+    ['try to give more _____', 'examples'],      // more + noun, not an adjective
+    ['Bring: comfortable _____', 'shoes'],       // no signal at all
+    ['The problem is _____.', 'noise'],          // be + noun: the question can't tell
+  ])('"%s" → left out', (text, key) => {
+    expect(L.wordClassOf(gapItem(text, key))).toBeNull();
+  });
+});
+
+describe('infoTypeOf — the question names the kind of information', () => {
+  test.each([
+    ['Second group - Mrs. _____', 'Keogh', 'proper', 'name'],
+    ['Name of supervisor: _____', 'Kaeden', 'proper', 'name'],
+    ['Address: 707, _____ Street', 'KIPPAX', 'proper', 'place'],
+    ['The teacher trained in _____.', 'India', 'proper', 'place'],     // "in" beats the "teacher" label
+    ['Suburb: _____', 'Walkley', 'proper', 'place'],
+    ['Classes end by _____ p.m.', '11.15', 'time', 'time'],
+    ['Cost: £ _____', '67.50', 'price', 'price'],
+    ['Date of first payment: _____', '15 October', 'date', 'date'],
+    ['a total of _____ hours', '15', 'number', 'number'],
+    ['Phone number: _____', '07958847222', 'number', 'number'],
+  ])('"%s" → %s', (text, key, type, expected) => {
+    expect(L.infoTypeOf(gapItem(text, key, type)).value).toBe(expected);
+  });
+
+  test('a nationality / language or an organisation name is neither a name nor a place', () => {
+    expect(L.infoTypeOf(gapItem('must have a qualification in _____', 'English', 'proper'))).toBeNull();
+    expect(L.infoTypeOf(gapItem('Name of ferry company: _____ Ferries', 'Northern', 'proper'))).toBeNull();
+  });
+});
+
+describe('formOf — what to check when writing the answer down', () => {
+  test.each([
+    ['There are two _____.', 'classrooms', 'plural', /“two”/],
+    ['Also advisable to hire _____ for warmth', 'boots', 'plural', /đuôi -s/],   // no signal: listen for it
+    ['Bring some _____', 'equipment', 'uncountable', /không đếm được/],
+    ['improve their English by _____ with others', 'communicating', 'ving', /“by”/],
+    ['Wear a _____ to the interview', 'suit', 'singular', /“a”/],
+    ['Title: _____', 'Towns and cities', 'phrase', /cụm 3 từ/],
+  ])('"%s" → %s', (text, key, expected, reason) => {
+    const f = L.formOf(gapItem(text, key, 'word', 'NO MORE THAN THREE WORDS'));
+    expect(f.value).toBe(expected);
+    expect(f.reason).toMatch(reason);
+  });
+});
+
+describe('diagnose — the classic slips in a wrong answer', () => {
+  test.each([
+    ['classroom', 'classrooms', 'ONE WORD ONLY', 'plural'],
+    ['equipments', 'equipment', 'ONE WORD ONLY', 'plural'],
+    ['communicate', 'communicating', 'ONE WORD ONLY', 'form'],
+    ['information', 'information desk', 'NO MORE THAN TWO WORDS', 'missing'],
+    ['accomodation', 'accommodation', 'ONE WORD ONLY', 'spelling'],
+    ['the big information desk', 'information desk', 'NO MORE THAN TWO WORDS', 'limit'],
+  ])('%s vs %s → %s', (answer, key, limit, kind) => {
+    expect(L.diagnose(answer, key, limit).kind).toBe(kind);
+  });
+
+  test('numbers don\'t count towards "AND/OR A NUMBER"; an unrelated answer gets no diagnosis', () => {
+    expect(L.diagnose('2 large rooms', 'rooms', 'ONE WORD AND/OR A NUMBER').kind).toBe('limit');
+    expect(L.diagnose('2 rooms', 'rooms', 'ONE WORD AND/OR A NUMBER')).toBeNull();
+    expect(L.diagnose('xyz', 'theatre/theater', 'ONE WORD ONLY')).toBeNull();
+  });
+});
+
 test('keywordsFor: the gap\'s own words (names / numbers as one), the answer-type signal apart', () => {
   const kw = L.keywordsFor({ text: 'The Motor Show opens at _____ on 10 September', context: 'Events' }, 'The Motor Show opens at nine.');
   expect(kw.signals).toEqual(['at']);
