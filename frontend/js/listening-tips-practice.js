@@ -375,13 +375,23 @@
 
   // Plays [seg.start, seg.end] of `url` into the player widget `id`.
   // `locked` = exam mode (no pause / replay while it plays).
+  const SLOW_AUDIO_MS = 15000;
+  let slowAudioTimer = null;
+
   function playSegment(id, url, seg, { locked = false } = {}) {
     const a = audioEl();
+    // after a failed load the same src never loads again by itself
+    const failed = !!a.error || player.state === 'error';
     player.id = id;
     player.seg = seg;
     player.locked = locked;
     player.state = 'loading';
     syncPlayer();
+    // a stalled download says so instead of spinning forever
+    clearTimeout(slowAudioTimer);
+    slowAudioTimer = setTimeout(() => {
+      if (player.id === id && player.state === 'loading') { player.state = 'slow'; syncPlayer(); }
+    }, SLOW_AUDIO_MS);
     const go = () => {
       try { a.currentTime = seg.start; } catch (e) { /* not seekable yet */ }
       a.playbackRate = locked ? 1 : player.speed;
@@ -393,7 +403,7 @@
         });
       }
     };
-    if (player.url !== url) {
+    if (player.url !== url || failed) {
       player.url = url;
       a.src = url;
       a.addEventListener('loadedmetadata', go, { once: true });
@@ -404,11 +414,12 @@
 
   function pauseAudio() {
     if (player.el && !player.el.paused) player.el.pause();
-    if (player.state === 'playing' || player.state === 'loading') player.state = 'paused';
+    if (player.state === 'playing' || player.state === 'loading' || player.state === 'slow') player.state = 'paused';
     syncPlayer();
   }
 
   function stopAudio() {
+    clearTimeout(slowAudioTimer);
     if (player.el && !player.el.paused) player.el.pause();
     player.id = '';
     player.state = 'idle';
@@ -456,7 +467,7 @@
       box.dataset.state = state;
       const btn = box.querySelector('.ltp-play');
       if (btn) {
-        btn.textContent = state === 'playing' || state === 'loading' ? '❚❚' : '▶';
+        btn.textContent = state === 'playing' || state === 'loading' || state === 'slow' ? '❚❚' : '▶';
         btn.setAttribute('aria-label', state === 'playing' ? 'Tạm dừng' : 'Phát');
       }
       if (!mine || !player.seg || !player.el) return;
@@ -466,8 +477,9 @@
       if (bar) bar.style.width = `${Math.round((state === 'done' ? len : pos) / len * 100)}%`;
       const t = box.querySelector('.ltp-time');
       if (t) {
-        t.textContent = state === 'error' ? 'Không phát được audio'
+        t.textContent = state === 'error' ? 'Không phát được audio — bấm ▶ để thử lại'
           : state === 'blocked' ? 'Bấm ▶ để nghe'
+            : state === 'slow' ? 'Mạng chậm, audio đang tải…'
             : `${fmtTime(state === 'done' ? len : pos)} / ${fmtTime(len)}`;
       }
     });
@@ -622,7 +634,7 @@
   }
 
   function hasProgress(answers) {
-    return (answers || []).some(a => a && (a.result || a.kwDone));
+    return (answers || []).some(a => a && (a.result || a.kwDone || Number(a.step) > 1));
   }
 
   // "Bài mới" replaces the practice in progress — ask first when the student
@@ -1436,6 +1448,7 @@
       revealPanel();
     } catch (err) {
       if (err && err.body && err.body.requiresPremium && typeof openUpgradeModal === 'function') openUpgradeModal();
+      else if (isStale(err)) showStale();
       else if (typeof showToast === 'function') showToast(errorMessage(err, 'Không chấm được bài, thử lại nhé.'), 'error');
       const again = document.querySelector('#ltp-panel [data-act="submit-preview"], #ltp-panel [data-act="submit-run"]');
       if (again) { again.disabled = false; again.textContent = 'Nộp bài'; }
@@ -1536,6 +1549,22 @@
     if (btn && typing) btn.disabled = !String(st.answers[st.idx].value || '').trim();
   }
 
+  // The section behind a saved practice was hidden or edited since (404 /
+  // "not in this practice"): it can't be graded any more — say so in place
+  // and offer a fresh practice instead of a toast that repeats forever.
+  const isStale = (err) => !!err && (err.status === 404 || (err.body && err.body.code === 'NOT_IN_PRACTICE'));
+  function showStale() {
+    const card = document.querySelector('#ltp-panel .ltp-card, #ltp-panel .ltp-result');
+    if (!card || card.querySelector('.ltp-stale')) return;
+    const box = document.createElement('div');
+    box.className = 'ltp-stale';
+    box.setAttribute('role', 'alert');
+    box.innerHTML = `<div>⚠️ Bài nghe của bài luyện tập này vừa được cập nhật nên không chấm được nữa. Các câu đã làm vẫn giữ nguyên.</div>
+      <button type="button" class="ltp-btn ltp-btn-primary" data-act="start" data-force="1">🎲 Làm bài mới</button>`;
+    card.appendChild(box);
+    revealEl(box);
+  }
+
   async function checkCurrent() {
     if (!st || RUN_KINDS.has(st.kind)) return;
     const a = st.answers[st.idx];
@@ -1577,6 +1606,7 @@
       }
     } catch (err) {
       if (err && err.body && err.body.requiresPremium && typeof openUpgradeModal === 'function') openUpgradeModal();
+      else if (isStale(err)) { if (st && st.answers[st.idx] === a) showStale(); }
       else if (typeof showToast === 'function') showToast(errorMessage(err, 'Không chấm được đáp án, thử lại nhé.'), 'error');
     } finally {
       a.checking = false;
@@ -1691,7 +1721,7 @@
         const wrap = document.getElementById(`${id}-wrap`);
         if (wrap && !wrap.innerHTML) wrap.innerHTML = playerHtml(id, src.seg, { label: 'Câu evidence' });
       }
-      if (act === 'play' && player.id === id && player.el && (player.state === 'playing' || player.state === 'loading')) {
+      if (act === 'play' && player.id === id && player.el && (player.state === 'playing' || player.state === 'loading' || player.state === 'slow')) {
         if (!player.locked) pauseAudio();
         return;
       }
@@ -1794,7 +1824,12 @@
       if (again) again.focus({ preventScroll: true });
     }
     if (SCREEN_ACTS.has(act)) revealPanel();
-    if (act === 'ex-next' || act === 'g-next' || act === 'kw-done') revealEl(document.querySelector('#ltp-panel .ltp-gstep.current'));
+    if (act === 'ex-next' || act === 'g-next' || act === 'kw-done') {
+      const shown = document.querySelector('#ltp-panel .ltp-gstep.current');
+      revealEl(shown);
+      const title = shown && shown.querySelector('.ltp-step-title');
+      if (title) announce(title.textContent);
+    }
   }
 
   window.LTPractice = { supports, mount };

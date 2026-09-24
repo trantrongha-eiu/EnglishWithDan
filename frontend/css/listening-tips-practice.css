@@ -381,3 +381,8 @@
 [data-theme="dark"] .ltp-predres.bad { color: #fcd34d; }
 .ltp-result-row.ex > span:first-child { font-weight: 900; }
 .ltp-result-row.ex i { color: #9ca3af; font-style: normal; font-size: 12px; }
+
+/* Phase 5: a saved practice whose section changed since — can't be graded */
+.ltp-stale { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: #fef3c7; border: 1px solid #fcd34d; color: #78350f; font-size: 13.5px; line-height: 1.6; }
+.ltp-stale .ltp-btn { margin-top: 10px; }
+[data-theme="dark"] .ltp-stale { background: #451a03; border-color: #92400e; color: #fde68a; }
