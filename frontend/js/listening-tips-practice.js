@@ -34,15 +34,39 @@
     },
     'predict-noun-adjective-verb': {
       name: 'Dự đoán Noun / Adjective / Verb',
-      desc: 'Nhìn cấu trúc câu hỏi thật để đoán chỗ trống cần danh từ, tính từ hay động từ. Hệ thống chỉ ra dấu hiệu, rồi bạn nghe đúng đoạn audio để xác nhận.',
+      desc: 'Bài đọc nhanh, không cần nghe: nhìn cấu trúc câu hỏi thật để đoán chỗ trống cần danh từ, tính từ hay động từ — rồi xem dấu hiệu, đáp án thật của đề và câu trong transcript.',
     },
     'predict-number-date-place': {
       name: 'Dự đoán Number / Date / Time / Name / Place',
-      desc: 'Đoán chỗ trống cần tên người, địa điểm, ngày, giờ, giá tiền hay con số — kèm những dạng có thể nghe thấy — rồi nghe để xác nhận.',
+      desc: 'Bài đọc nhanh, không cần nghe: đoán chỗ trống cần tên người, địa điểm, ngày, giờ, giá tiền hay con số — rồi xem dấu hiệu, những dạng có thể nghe thấy và đáp án thật của đề.',
+    },
+    'form-note-table-completion': {
+      name: 'Form / Note / Table Completion',
+      desc: 'Làm các câu điền form / ghi chú / bảng của một bài nghe thật — mỗi câu có đúng đoạn audio của nó, nghe lại được.',
+    },
+    'multiple-choice': {
+      name: 'Multiple Choice',
+      desc: 'Trả lời các câu trắc nghiệm A/B/C của một bài nghe thật: nghe theo ý nghĩa, loại đáp án gây nhiễu.',
+    },
+    matching: {
+      name: 'Matching',
+      desc: 'Ghép từng người / mục với đúng lựa chọn trong một bài nghe thật.',
+    },
+    'map-plan-diagram': {
+      name: 'Map / Plan / Diagram',
+      desc: 'Điền chữ cái vị trí trên bản đồ / sơ đồ thật: xác định điểm bắt đầu rồi đi theo chỉ dẫn của người nói.',
+    },
+    'sentence-completion': {
+      name: 'Sentence Completion',
+      desc: 'Hoàn thành câu bằng từ nghe được — đúng chính tả, số ít / số nhiều và giới hạn từ.',
+    },
+    'multiple-answers': {
+      name: 'Multiple Answers',
+      desc: 'Dạng “Choose TWO / THREE letters” của một bài nghe thật: tìm đủ các ý đúng, không chọn ngay ý đầu tiên nghe thấy.',
     },
     'predict-plural-countable-formula': {
       name: 'Số ít / nhiều, V-ing & cụm từ',
-      desc: 'Đoán dạng của đáp án (số ít, số nhiều, không đếm được, V-ing, cụm từ…), nghe rồi viết đúng dạng. Sai ở đâu hệ thống chỉ ra: thiếu -s, sai đuôi, chính tả, vượt giới hạn từ.',
+      desc: 'Bài đọc nhanh, không cần nghe: đoán đáp án sẽ ở dạng nào (số ít, số nhiều, không đếm được, V-ing, cụm từ…) — rồi xem dấu hiệu trong câu và đáp án thật của đề.',
     },
   };
   // What kind of information fills a gap (the server derives the real one
@@ -97,9 +121,48 @@
     name: 'thường được đánh vần: J-A-M-I-E-S-O-N — viết hoa chữ cái đầu',
     place: 'tên đường / toà nhà / thành phố — hay được đánh vần, nhớ viết hoa',
   };
+  // "Trước khi làm" mini tutorial per question type (and collapsible on
+  // every question) — from the spec and the tips themselves.
+  const QTYPE_GUIDE = {
+    form: {
+      steps: ['Đọc câu hỏi và nhãn của ô trống (Name, Date, Cost…).', 'Dự đoán loại đáp án: số? tên? ngày? danh từ?',
+        'Gạch chân keyword.', 'Nghe keyword hoặc cách nói khác (paraphrase).', 'Chép đúng từ nghe được.',
+        'Kiểm tra: chính tả · số ít / số nhiều · giới hạn từ.'],
+      warning: 'Golden rule: đáp án có thể bị sửa lại ngay sau đó — “The course starts on Monday… actually, it’s been moved to Tuesday” → Tuesday. Nghe hết câu rồi mới chốt.',
+    },
+    mcq: {
+      steps: ['Đọc câu hỏi (chưa vội đọc kỹ các option).', 'Xác định câu hỏi đang hỏi gì.', 'Gạch chân điểm KHÁC nhau giữa A / B / C.',
+        'Dự đoán nếu có thể.', 'Nghe theo ý nghĩa, không chờ đúng từng chữ.', 'Loại các option gây nhiễu.', 'Chọn theo đúng điều audio nói.'],
+      warning: 'Đừng chọn chỉ vì audio có đúng từ giống option. Bẫy: “At first I thought it was too expensive, but actually the main problem was…”.',
+    },
+    matching: {
+      steps: ['Đọc danh sách lựa chọn (A, B, C…).', 'Xác định điểm khác nhau giữa các lựa chọn.', 'Gạch chân tên người / mục cần ghép.',
+        'Dự đoán mối liên hệ có thể có.', 'Nghe theo từng người / mục.', 'Ghép theo ý nghĩa, không theo từ giống nhau.'],
+      warning: 'Một lựa chọn có thể được nhắc tới chỉ để bị loại bỏ.',
+    },
+    map: {
+      steps: ['Nhìn bản đồ / sơ đồ trước.', 'Tìm điểm bắt đầu (entrance, you are here…).', 'Xác định các mốc (landmarks).',
+        'Nắm phương hướng: north, left / right, above / below.',
+        'Nghe: next to · opposite · behind · on the left · at the end of · across from · between.', 'Đi theo đúng lộ trình người nói mô tả.'],
+      warning: 'Sai lầm hay gặp: chỉ nghe keyword mà không theo chỉ dẫn phương hướng.',
+    },
+    sentence: {
+      steps: ['Đọc cả câu.', 'Dự đoán ngữ pháp của từ cần điền.', 'Dự đoán loại đáp án.', 'Gạch chân keyword.', 'Nghe.',
+        'Kiểm tra câu sau khi điền có đúng ngữ pháp.', 'Kiểm tra giới hạn từ.'],
+      warning: 'Listening đòi hỏi đúng chính tả (accommodation), số ít / số nhiều (student ≠ students) và số liệu chính xác (15 ≠ 50).',
+    },
+    multi: {
+      steps: ['Đọc TOÀN BỘ các option.', 'Gạch chân điểm khác nhau.', 'Xác định cần tìm mấy ý (TWO / THREE) và về điều gì.',
+        'Nghe: một option có thể được nhắc tới rồi bị bác bỏ.', 'Chọn đủ số chữ cái đề yêu cầu.'],
+      warning: 'Không chọn ngay option đầu tiên nghe thấy.',
+    },
+  };
+  const QTYPE_NAME = {
+    form: 'Form / Note / Table', mcq: 'Multiple Choice', matching: 'Matching', map: 'Map / Plan / Diagram',
+    sentence: 'Sentence Completion', multi: 'Multiple Answers',
+  };
   const CHOICE_SETS = { wordclass: WORD_CLASSES, infotype: INFO_TYPES, form: FORMS };
   const PREDICT_KINDS = new Set(['wordclass', 'infotype', 'form']);
-  const REVEAL_FIRST = new Set(['wordclass', 'infotype']); // confirmed before listening
   const RUN_KINDS = new Set(['preview', 'workflow']);       // several gaps, one stretch of audio
   const CHECKLIST = [
     ['grammar', 'Ngữ pháp: đáp án ghép vào câu có đúng không?'],
@@ -210,12 +273,16 @@
     try { localStorage.setItem(storeKey(), JSON.stringify(all)); } catch (e) { /* unavailable or full */ }
   }
 
+  // One section with its questions (runs, question types) vs items drawn
+  // from several sections.
+  const oneSection = (practice) => RUN_KINDS.has(practice.kind) || practice.kind === 'qtype';
+
   function itemsOf(practice) {
     if (!practice) return null;
-    return RUN_KINDS.has(practice.kind) ? practice.questions : practice.items;
+    return oneSection(practice) ? practice.questions : practice.items;
   }
 
-  const SAVED_ANSWER_FIELDS = ['value', 'result', 'sel', 'kwDone', 'prediction', 'predicted', 'played', 'note', 'para'];
+  const SAVED_ANSWER_FIELDS = ['value', 'result', 'sel', 'kwDone', 'prediction', 'played', 'note', 'para'];
   function savedAnswer(a) {
     const out = {};
     SAVED_ANSWER_FIELDS.forEach(k => { if (a && a[k] !== undefined) out[k] = a[k]; });
@@ -248,6 +315,7 @@
       // a 30-second run can't resume mid-timer or mid-audio: back to its start
       stage: st.kind === 'preview' && (st.stage === 'prep' || st.stage === 'listen') ? 'intro' : st.stage,
       checklist: st.checklist || {},
+      introSeen: !!st.introSeen,
       finished: st.finished,
       counted: st.counted,
     };
@@ -259,7 +327,7 @@
   }
 
   function rememberSections(key, practice) {
-    const ids = (RUN_KINDS.has(practice.kind) ? [practice.sectionId] : practice.items.map(it => it.sectionId)).filter(Boolean);
+    const ids = (oneSection(practice) ? [practice.sectionId] : practice.items.map(it => it.sectionId)).filter(Boolean);
     const all = readStore();
     const rec = all[key] || {};
     rec.recent = [...new Set([...ids, ...(Array.isArray(rec.recent) ? rec.recent : [])])].slice(0, RECENT_MAX);
@@ -462,7 +530,7 @@
     if (st && st.lesson.lessonKey === lesson.lessonKey) {
       buttons = '<button type="button" class="ltp-btn" data-act="start">🎲 Bài mới</button>';
     } else if (items && !rec.finished) {
-      const where = RUN_KINDS.has(rec.practice.kind) ? '' : ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`;
+      const where = RUN_KINDS.has(rec.practice.kind) ? '' : ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`; // questions / items
       buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm${where}</button>
         <button type="button" class="ltp-btn" data-act="start">🎲 Bài mới</button>`;
     } else if (items) {
@@ -554,7 +622,7 @@
   }
 
   function hasProgress(answers) {
-    return (answers || []).some(a => a && (a.result || a.kwDone || a.predicted));
+    return (answers || []).some(a => a && (a.result || a.kwDone));
   }
 
   // "Bài mới" replaces the practice in progress — ask first when the student
@@ -603,6 +671,7 @@
       idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
       stage: ['intro', 'kw', 'predict', 'listen', 'answer', 'result'].includes(rec.stage) ? rec.stage : 'intro',
       checklist: rec.checklist && typeof rec.checklist === 'object' ? rec.checklist : {},
+      introSeen: !!rec.introSeen,
       finished: !!rec.finished, counted: !!rec.counted,
       answers: rec.answers.map(savedAnswer),
     };
@@ -782,63 +851,167 @@
     else if (st.kind === 'preview') renderPreview();
     else if (st.kind === 'workflow') renderWorkflow();
     else if (PREDICT_KINDS.has(st.kind)) renderPredictItem();
+    else if (st.kind === 'qtype') { if (st.introSeen) renderQtypeQuestion(); else renderQtypeIntro(); }
     else renderSymbols();
     syncPlayer();
   }
 
-  // Dự đoán Noun/Adj/Verb · Number/Date/… · dạng của đáp án:
-  // read → predict (→ confirmed, with why) → listen → answer → check.
+  // Dự đoán Noun/Adj/Verb · Number/Date/… · dạng của đáp án — text only:
+  // read the question → predict → see why, the real answer and its
+  // sentence in the transcript.
   function renderPredictItem() {
     const q = st.items[st.idx];
     const a = st.answers[st.idx];
     const r = a.result;
-    const revealFirst = REVEAL_FIRST.has(st.kind);
-    const revealed = revealFirst ? a.predicted : null;
-    const canListen = revealFirst ? !!revealed : !!a.prediction;
-    const stepNo = r ? 5 : !canListen ? 2 : 3;
-    const steps = ['Đọc câu', 'Dự đoán', 'Nghe', 'Trả lời', 'Kiểm tra'].map((s, i) => {
+    const stepNo = r ? 3 : a.prediction ? 2 : 1;
+    const steps = ['Đọc câu hỏi', 'Dự đoán', 'Xem giải thích'].map((s, i) => {
       const cls = i + 1 < stepNo ? 'done' : i + 1 === stepNo ? 'active' : '';
       return `<span class="ltp-step ${cls}"><b>${i + 1}</b><span>${esc(s)}</span></span>`;
     }).join('');
-    const signal = (revealed && revealed.signal) || (r && r.signal) || '';
     const ask = { wordclass: 'chỗ trống cần <b>từ loại</b> gì?', infotype: 'chỗ trống cần <b>loại thông tin</b> gì?', form: 'đáp án sẽ ở <b>dạng</b> nào?' }[st.kind];
-    let body = questionHtml(q, signal)
-      + `<div class="ltp-task">Bước 2 — Dự đoán: ${ask}</div>${typeChipsHtml(a.prediction, { locked: !!revealed || !!r })}`;
-    if (revealFirst && !revealed) {
-      body += `<button type="button" class="ltp-btn ltp-btn-primary ltp-predict-btn" data-act="predict-check" ${a.prediction ? '' : 'disabled'}>Kiểm tra dự đoán</button>`;
-    }
-    if (revealed) body += predictRevealHtml(revealed);
-    if (!revealFirst && a.prediction && !r) body += '<div class="ltp-muted">Dự đoán chỉ là giả thuyết — nghe để xác nhận, hệ thống sẽ đối chiếu khi chấm.</div>';
-    if (canListen) {
-      body += `<div class="ltp-task">Bước 3 — Nghe đoạn audio để xác nhận</div>${playerHtml(`ltp-p-${st.idx}`, q.segment)}
-        <div class="ltp-task">Bước 4 — Viết đáp án${st.kind === 'form' ? ' (đúng dạng: số ít / nhiều, -ing…)' : ''}</div>
-        <input class="ltp-input ${r ? (r.isCorrect ? 'correct' : 'incorrect') : ''}" data-enter="check" value="${esc(a.value)}" ${r ? 'readonly' : ''}
-          placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />`;
-    }
-    if (r) body += predictResultHtml(a, r);
+    const body = questionHtml(q, r ? r.signal : '')
+      + `<div class="ltp-task">Nhìn cấu trúc câu — ${ask}</div>${typeChipsHtml(a.prediction, { locked: !!r })}`
+      + (r ? predictResultHtml(r) : '');
     showPanelState(headerHtml(esc(q.sourceName))
       + `<div class="ltp-card"><div class="ltp-steps">${steps}</div>${body}
-        ${navHtml(canListen ? checkBtnHtml(a, String(a.value || '').trim()) : '')}</div>`);
+        ${navHtml(checkBtnHtml(a, !!a.prediction))}</div>`);
   }
 
-  function predictRevealHtml(p) {
-    const forms = st.kind === 'infotype' && POSSIBLE_FORMS[p.category]
-      ? `<div class="ltp-muted">Dạng có thể nghe thấy: ${esc(POSSIBLE_FORMS[p.category])}</div>` : '';
-    return `<div class="ltp-reveal ${p.predictionCorrect ? 'ok' : 'bad'}">
-      <div class="ltp-verdict ${p.predictionCorrect ? 'right' : 'wrong'}">${p.predictionCorrect ? '✓ Dự đoán đúng' : '✗ Chưa đúng'} → <b>${esc(typeName(p.category))}</b></div>
-      <div>${esc(p.reason)}</div>${forms}
+  function predictResultHtml(r) {
+    const forms = st.kind === 'infotype' && POSSIBLE_FORMS[r.category]
+      ? `<div class="ltp-muted">Dạng có thể nghe thấy: ${esc(POSSIBLE_FORMS[r.category])}</div>` : '';
+    const answer = answerLabel(r.correctAnswer);
+    return `<div class="ltp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
+      <div class="ltp-verdict ${r.isCorrect ? 'right' : 'wrong'}">${r.isCorrect ? '✓ Dự đoán đúng' : '✗ Chưa đúng'} → <b>${esc(typeName(r.category))}</b></div>
+      <div class="ltp-reason">${esc(r.reason)}</div>${forms}
+      <div class="ltp-typeline">Đáp án trong đề: <strong>${esc(answer)}</strong></div>
+      ${r.evidence ? `<div class="ltp-evidence"><div class="ltp-evidence-label">📄 Câu trong transcript${r.evidence.speaker ? ` · ${esc(r.evidence.speaker)}` : ''}</div>
+        <div class="ltp-evidence-text">“${markTerms(r.evidence.text, answer.split(' / '), 'ltp-hit')}”</div></div>` : ''}
+      ${r.explanation ? `<details class="ltp-expl"><summary>Lời giải của đề</summary>${escNl(r.explanation)}</details>` : ''}
     </div>`;
   }
 
-  function predictResultHtml(a, r) {
-    const formLine = st.kind === 'form'
-      ? `<div class="ltp-typeline">Dạng đáp án: <b>${esc(typeName(r.category))}</b>${r.prediction ? ` · bạn dự đoán ${esc(typeName(r.prediction))} ${r.predictionCorrect ? '✓' : '✗'}` : ''}</div>
-        <div class="ltp-muted">${esc(r.reason)}</div>` : '';
-    const answerTerms = answerLabel(r.correctAnswer).split(' / ');
+  // ── Question-type practices ("Chiến thuật theo dạng bài") ─────────────
+
+  const qNumbers = (q) => (q.numbers && q.numbers.length > 1 ? `${q.numbers[0]}–${q.numbers[q.numbers.length - 1]}` : String(q.questionNumber));
+
+  function qtypeGuideHtml(open) {
+    const g = QTYPE_GUIDE[st.practice.qtype] || { steps: [] };
+    return `<details class="ltp-guide" ${open ? 'open' : ''}>
+      <summary>📋 Cách làm dạng ${esc(QTYPE_NAME[st.practice.qtype] || '')}</summary>
+      <ol>${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      ${g.warning ? `<div class="ltp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
+    </details>`;
+  }
+
+  // Mini tutorial before the first question.
+  function renderQtypeIntro() {
+    const pr = st.practice;
+    const g = QTYPE_GUIDE[pr.qtype] || { steps: [] };
+    const n = st.items.reduce((s, q) => s + (q.pick || 1), 0);
+    showPanelState(headerHtml(esc(pr.sourceName)) + `<div class="ltp-card ltp-intro">
+      <div class="ltp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(QTYPE_NAME[pr.qtype] || '')}</div>
+      <ol class="ltp-intro-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      ${g.warning ? `<div class="ltp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
+      <div class="ltp-muted">Bài gồm ${n} câu ${esc(QTYPE_NAME[pr.qtype] || '')} lấy nguyên từ đề thật (${esc(pr.sourceName)}), đúng thứ tự như trong đề. Mỗi câu có đoạn audio riêng — nghe lại thoải mái.</div>
+      <button type="button" class="ltp-btn ltp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+    </div>`);
+  }
+
+  function qtypeInputHtml(q, a) {
+    const r = a.result;
+    if (q.input === 'text') {
+      return `<input class="ltp-input ${r ? (r.isCorrect ? 'correct' : 'incorrect') : ''}" data-enter="check" value="${esc(a.value)}" ${r ? 'readonly' : ''}
+        placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />`;
+    }
+    const keys = r ? String(r.correctAnswer).split(',').map(s => s.trim().toUpperCase()) : [];
+    const chosen = q.input === 'multi' ? (a.sel || []) : (a.value ? [a.value] : []);
+    const cls = (k) => {
+      if (!r) return chosen.includes(k) ? 'selected' : '';
+      if (keys.includes(k)) return 'correct-ans';
+      return chosen.includes(k) ? 'wrong-ans' : '';
+    };
+    const act = q.input === 'multi' ? 'mpick' : 'pick';
+    const attrs = (k) => (r ? '' : `data-act="${act}" data-val="${esc(k)}" ${KEY_ATTRS} aria-pressed="${chosen.includes(k)}"`);
+    // labelled options (MCQ, "choose TWO") as a list; bare letters (map,
+    // matching — its list shown above) as chips
+    if (q.input === 'multi' || (q.choices || []).every(c => c.label) && !q.listTitle && q.reuse == null) {
+      return `<div class="ltp-opts">${q.choices.map(c => `<div class="ltp-opt ${cls(c.key)}" ${attrs(c.key)}>
+        <span class="ltp-opt-letter">${esc(c.key)}</span>${esc(c.label)}</div>`).join('')}</div>`;
+    }
+    return `<div class="ltp-letters">${q.choices.map(c => `<span class="ltp-letter ${cls(c.key)}" ${attrs(c.key)}>${esc(c.key)}</span>`).join('')}</div>`;
+  }
+
+  function renderQtypeQuestion() {
+    const pr = st.practice;
+    const q = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const r = a.result;
+    const pid = `ltp-p-${st.idx}`;
+    const player = q.segment
+      ? playerHtml(pid, q.segment, { label: `Đoạn audio của câu ${qNumbers(q)}` })
+      : playerHtml(pid, { start: 0, end: pr.audioDuration || 0 }, { label: 'Audio cả bài (câu này chưa xác định được đoạn riêng)' });
+    // the <img> itself is kept across re-renders (see mapImage) so picking
+    // an answer doesn't make the map flash / the page jump
+    const map = q.imageUrl ? `<div class="ltp-map"><div class="ltp-map-slot"></div>
+      <a class="ltp-link" href="${esc(q.imageUrl)}" target="_blank" rel="noopener">🔍 Phóng to</a></div>` : '';
+    const list = pr.qtype === 'matching' ? `<div class="ltp-matchlist">
+      ${q.listTitle ? `<div class="ltp-list-title">${esc(q.listTitle)}</div>` : ''}
+      ${q.choices.map(c => `<div class="ltp-matchrow"><b>${esc(c.key)}</b><span>${esc(c.label)}</span></div>`).join('')}
+      ${q.reuse ? '<div class="ltp-muted">NB: một chữ cái có thể dùng nhiều lần.</div>' : ''}
+    </div>` : '';
+    const pickNote = q.input === 'multi' ? `<div class="ltp-limit">☑️ Chọn đúng <b>${q.pick}</b> chữ cái (${(a.sel || []).length}/${q.pick})</div>` : '';
+    const prompt = q.input === 'text'
+      ? `${q.context ? `<div class="ltp-context">📋 ${esc(q.context)}</div>` : ''}<div class="ltp-q">${esc(q.text).replace('_____', '<span class="ltp-blank"> ______ </span>')}</div>
+        ${q.wordLimit ? `<div class="ltp-limit">✍️ ${esc(q.wordLimit)}</div>` : ''}`
+      : `<div class="ltp-q">${esc(q.text)}</div>`;
+    const ready = q.input === 'text' ? String(a.value || '').trim() : q.input === 'multi' ? (a.sel || []).length === q.pick : a.value;
+    showPanelState(headerHtml(esc(pr.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
+      ${player}
+      ${map}
+      <div class="ltp-q-block">
+        <div class="ltp-qhead"><span class="ltp-qnum">${esc(qNumbers(q))}</span>${q.instruction ? `<span class="ltp-instruction">${esc(q.instruction)}</span>` : ''}</div>
+        ${list}${prompt}${pickNote}
+        ${qtypeInputHtml(q, a)}
+      </div>
+      ${r ? qtypeFeedbackHtml(q, r) : ''}
+      ${navHtml(checkBtnHtml(a, !!ready))}
+    </div>`);
+    const slot = q.imageUrl && panelEl() && panelEl().querySelector('.ltp-map-slot');
+    if (slot) slot.appendChild(mapImage(q.imageUrl));
+    if (!r && q.input === 'text') {
+      const input = panelEl() && panelEl().querySelector('.ltp-input');
+      if (input && window.matchMedia && window.matchMedia('(min-width: 900px)').matches) input.focus({ preventScroll: true });
+    }
+  }
+
+  // One decoded <img> per map, moved into each fresh render.
+  const mapImages = new Map();
+  function mapImage(url) {
+    if (!mapImages.has(url)) {
+      const img = new Image();
+      img.alt = 'Bản đồ / sơ đồ của đề';
+      img.src = url;
+      mapImages.set(url, img);
+    }
+    return mapImages.get(url);
+  }
+
+  function qtypeFeedbackHtml(q, r) {
+    const label = (key) => {
+      const c = (q.choices || []).find(x => x.key === key);
+      return c && c.label ? `${key}. ${c.label}` : key;
+    };
+    const answer = q.input === 'text' ? answerLabel(r.correctAnswer)
+      : String(r.correctAnswer).split(',').map(s => label(s.trim().toUpperCase())).join(' · ');
+    const verdict = q.input === 'multi'
+      ? `${r.isCorrect ? '✓ Chính xác!' : `✗ Đúng ${r.correctCount}/${r.total}`} — Đáp án: <strong>${esc(answer)}</strong>`
+      : `${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${r.isCorrect ? '' : ` — Đáp án: <strong>${esc(answer)}</strong>`}`;
+    const terms = q.input === 'text' ? answerLabel(r.correctAnswer).split(' / ') : [];
     return `<div class="ltp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
-      <div class="ltp-verdict ${r.isCorrect ? 'right' : 'wrong'}">${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${r.isCorrect ? '' : ` — Đáp án: <strong>${esc(answerLabel(r.correctAnswer))}</strong>`}</div>
-      ${diagnosisHtml(r)}${formLine}
-      ${evidenceHtml(r.evidence, answerTerms, `ltp-ev-${st.idx}`)}
+      <div class="ltp-verdict ${r.isCorrect ? 'right' : 'wrong'}">${verdict}</div>
+      ${diagnosisHtml(r)}
+      ${evidenceHtml(r.evidence, terms, `ltp-ev-${st.idx}`)}
       ${r.explanation ? `<div class="ltp-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
     </div>`;
   }
@@ -1168,52 +1341,26 @@
   // ── Checking ──────────────────────────────────────────────────────────
 
   // Kinds whose screen is one typed gap.
-  const typedKind = () => st && (st.kind === 'keywords' || PREDICT_KINDS.has(st.kind));
+  const typedKind = () => st && st.kind === 'keywords';
 
   function syncCheckBtn() {
     const btn = document.querySelector('#ltp-panel [data-act="check"]');
-    if (btn && typedKind()) btn.disabled = !String(st.answers[st.idx].value || '').trim();
-  }
-
-  // Word class / type of information: confirm the prediction (and why)
-  // before listening — no answer involved.
-  async function checkPrediction() {
-    if (!st || !REVEAL_FIRST.has(st.kind)) return;
-    const a = st.answers[st.idx];
-    const q = st.items[st.idx];
-    if (!a.prediction || a.predicted || a.predicting) return;
-    a.predicting = true;
-    const btn = document.querySelector('#ltp-panel [data-act="predict-check"]');
-    if (btn) { btn.disabled = true; btn.textContent = 'Đang kiểm tra...'; }
-    try {
-      const data = await api(`/listening-tips/${encodeURIComponent(st.lesson.lessonKey)}/practice/check`, {
-        method: 'POST',
-        body: JSON.stringify({ sectionId: q.sectionId, questionNumber: q.questionNumber, prediction: a.prediction, stage: 'predict' }),
-      }, CHECK_TIMEOUT_MS);
-      if (!st || !st.answers.includes(a)) return;
-      a.predicted = data.result;
-      persist();
-      if (st.answers[st.idx] === a) {
-        renderQuestion();
-        announce(`${data.result.predictionCorrect ? 'Dự đoán đúng' : 'Chưa đúng'}: ${typeName(data.result.category)}. ${data.result.reason}`);
-        revealEl(document.querySelector('#ltp-panel .ltp-reveal'));
-      }
-    } catch (err) {
-      if (err && err.body && err.body.requiresPremium && typeof openUpgradeModal === 'function') openUpgradeModal();
-      else if (typeof showToast === 'function') showToast(errorMessage(err, 'Không kiểm tra được, thử lại nhé.'), 'error');
-    } finally {
-      a.predicting = false;
-      if (btn && btn.isConnected && !a.predicted) { btn.disabled = false; btn.textContent = 'Kiểm tra dự đoán'; }
-    }
+    const typing = typedKind() || (st && st.kind === 'qtype' && st.items[st.idx].input === 'text');
+    if (btn && typing) btn.disabled = !String(st.answers[st.idx].value || '').trim();
   }
 
   async function checkCurrent() {
     if (!st || RUN_KINDS.has(st.kind)) return;
     const a = st.answers[st.idx];
     const it = st.items[st.idx];
-    if (a.result || a.checking || !String(a.value || '').trim()) return;
+    const predictOnly = PREDICT_KINDS.has(st.kind); // text only: the prediction is the answer
+    const multi = st.kind === 'qtype' && it.input === 'multi';
+    const ready = predictOnly ? a.prediction : multi ? (a.sel || []).length === it.pick : String(a.value || '').trim();
+    if (a.result || a.checking || !ready) return;
     let body;
-    if (typedKind()) body = { sectionId: it.sectionId, questionNumber: it.questionNumber, answer: String(a.value).trim(), prediction: a.prediction || undefined };
+    if (predictOnly) body = { sectionId: it.sectionId, questionNumber: it.questionNumber, prediction: a.prediction };
+    else if (st.kind === 'qtype') body = { sectionId: st.practice.sectionId, questionNumber: it.questionNumber, answer: multi ? JSON.stringify(a.sel) : String(a.value).trim() };
+    else if (typedKind()) body = { sectionId: it.sectionId, questionNumber: it.questionNumber, answer: String(a.value).trim(), prediction: a.prediction || undefined };
     else if (it.type === 'meaning') body = { item: 'meaning', symbol: it.symbol, answer: a.value };
     else body = { item: 'audio', sectionId: it.sectionId, sentenceIndex: it.sentenceIndex, answer: a.value };
     a.checking = true;
@@ -1253,8 +1400,11 @@
     if (RUN_KINDS.has(st.kind)) { st.stage = 'result'; renderRunResult(); return; }
     stopTimer();
     stopAudio();
-    const n = st.items.length;
-    const score = st.answers.filter(a => a.result && a.result.isCorrect).length;
+    // a "choose TWO / THREE" item is worth its number of questions
+    const worth = (it) => (st.kind === 'qtype' && it.pick) || 1;
+    const got = (a, it) => (!a.result ? 0 : a.result.total ? a.result.correctCount : (a.result.isCorrect ? worth(it) : 0));
+    const n = st.items.reduce((s, it) => s + worth(it), 0);
+    const score = st.answers.reduce((s, a, i) => s + got(a, st.items[i]), 0);
     if (!st.counted) { recordScore(score, n); st.counted = true; }
     st.finished = true;
     persist();
@@ -1266,8 +1416,9 @@
     const predOk = typedKind() ? st.answers.filter(a => a.result && a.result.predictionCorrect).length : null;
     const rows = st.items.map((it, i) => {
       const ok = st.answers[i].result && st.answers[i].result.isCorrect;
-      const text = typedKind() ? `Câu ${it.questionNumber}: ${it.text}`
-        : it.type === 'meaning' ? `Ký hiệu ${it.symbol}` : `Nghe → ký hiệu (${it.sourceName})`;
+      const text = st.kind === 'qtype' ? `Câu ${qNumbers(it)}: ${it.text}`
+        : typedKind() || PREDICT_KINDS.has(st.kind) ? `Câu ${it.questionNumber}: ${it.text}`
+          : it.type === 'meaning' ? `Ký hiệu ${it.symbol}` : `Nghe → ký hiệu (${it.sourceName})`;
       return `<button type="button" class="ltp-result-row ${ok ? 'ok' : 'bad'}" data-act="goto" data-idx="${i}">
         <span>${ok ? '✓' : '✗'}</span><span class="ltp-result-q">${esc(text)}</span></button>`;
     }).join('');
@@ -1289,7 +1440,7 @@
 
   // ── Events ────────────────────────────────────────────────────────────
 
-  const SCREEN_ACTS = new Set(['prev', 'next', 'goto', 'review', 'retry', 'prep-start', 'wf-next']);
+  const SCREEN_ACTS = new Set(['prev', 'next', 'goto', 'review', 'retry', 'prep-start', 'wf-next', 'intro-done']);
 
   function focusKeyOf(el) {
     const d = el.dataset;
@@ -1304,7 +1455,9 @@
     const m = /^ltp-(p|ev)-(\d+)$/.exec(playerId);
     if (!m) return null;
     const i = Number(m[2]);
-    const url = st.kind === 'preview' ? st.practice.audioUrl : st.items[i].audioUrl;
+    const url = (oneSection(st.practice) && st.practice.audioUrl) || st.items[i].audioUrl;
+    // a question-type item without a located stretch plays the whole section
+    if (m[1] === 'p' && st.kind === 'qtype' && !st.items[i].segment) return { url, seg: { start: 0, end: st.practice.audioDuration || 3600 } };
     if (m[1] === 'p') return { url, seg: st.items[i].segment };
     const ev = st.answers[i].result && st.answers[i].result.evidence;
     return ev ? { url, seg: { start: Math.max(0, ev.start - 0.2), end: ev.end + 0.5 } } : null;
@@ -1376,8 +1529,7 @@
         break;
       }
       case 'kw-done': cur.kwDone = true; break;
-      case 'predict': if (cur.result || cur.predicted) return; cur.prediction = el.dataset.val; break;
-      case 'predict-check': checkPrediction(); return;
+      case 'predict': if (cur.result) return; cur.prediction = el.dataset.val; break;
       case 'wf-next': {
         const i = WF_STAGES.indexOf(st.stage);
         if (i === -1 || i >= WF_STAGES.indexOf('answer')) return;
@@ -1390,6 +1542,17 @@
         persist();
         return;
       case 'pick': if (cur.result) return; cur.value = el.dataset.val; break;
+      // "choose TWO / THREE": toggle a letter, never more than asked
+      case 'mpick': {
+        if (cur.result) return;
+        const k = el.dataset.val;
+        const set = new Set(cur.sel || []);
+        if (set.has(k)) set.delete(k);
+        else if (set.size < (st.items[st.idx].pick || 2)) set.add(k);
+        cur.sel = [...set].sort();
+        break;
+      }
+      case 'intro-done': st.introSeen = true; break;
       case 'prev': if (st.idx > 0) { st.idx--; stopAudio(); } break;
       case 'next': if (st.idx < st.items.length - 1) { st.idx++; stopAudio(); } break;
       case 'goto': st.idx = Math.min(Math.max(Number(el.dataset.idx) || 0, 0), st.items.length - 1); stopAudio(); break;

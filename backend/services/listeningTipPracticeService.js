@@ -26,11 +26,19 @@ const PRACTICE_CONFIG = {
   '30-second-strategy': { kind: 'preview', minQuestions: 3, maxQuestions: 5, prepSeconds: 30 },
   'symbols-and-paraphrase': { kind: 'symbols', meaningItems: 4, audioItems: 5 },
   'full-workflow-practice': { kind: 'workflow', minQuestions: 3, maxQuestions: 5 },
-  // predict → (confirmed) → listen → answer
-  'predict-noun-adjective-verb': { kind: 'wordclass', maxQuestions: 6, maxPerSection: 2 },
-  'predict-number-date-place': { kind: 'infotype', maxQuestions: 6, maxPerSection: 2 },
-  // predict → listen → answer → confirmed with the answer (the plural trap)
-  'predict-plural-countable-formula': { kind: 'form', maxQuestions: 6, maxPerSection: 2 },
+  // Text only (no audio): read the question → predict → see why, with the
+  // real answer and the sentence of the transcript.
+  'predict-noun-adjective-verb': { kind: 'wordclass', maxQuestions: 6, maxPerSection: 2, text: true },
+  'predict-number-date-place': { kind: 'infotype', maxQuestions: 6, maxPerSection: 2, text: true },
+  'predict-plural-countable-formula': { kind: 'form', maxQuestions: 6, maxPerSection: 2, text: true },
+  // "Chiến thuật theo dạng bài": one section, only its questions of the
+  // tip's type, in their original order, each with its own stretch of audio.
+  'form-note-table-completion': { kind: 'qtype', qtype: 'form', minQuestions: 3, preferQuestions: 5, maxQuestions: 7 },
+  'multiple-choice': { kind: 'qtype', qtype: 'mcq', minQuestions: 3, preferQuestions: 5, maxQuestions: 7 },
+  'matching': { kind: 'qtype', qtype: 'matching', minQuestions: 3, preferQuestions: 5, maxQuestions: 7 },
+  'map-plan-diagram': { kind: 'qtype', qtype: 'map', minQuestions: 3, preferQuestions: 5, maxQuestions: 7 },
+  'sentence-completion': { kind: 'qtype', qtype: 'sentence', minQuestions: 3, preferQuestions: 5, maxQuestions: 7 },
+  'multiple-answers': { kind: 'qtype', qtype: 'multi', minQuestions: 2, preferQuestions: 4, maxQuestions: 6 },
 };
 
 // What the student predicts, per kind (the server derives the real one).
@@ -42,8 +50,6 @@ const CHOICES = {
   infotype: ['name', 'place', 'date', 'time', 'price', 'number'],
   form: ['singular', 'plural', 'uncountable', 'ving', 'verb', 'adjective', 'phrase'],
 };
-// Kinds whose prediction is confirmed right away, before listening.
-const REVEAL_ON_PREDICT = new Set(['wordclass', 'infotype']);
 
 // ── Text helpers (transcripts are plain text, one sentence per line) ───
 
@@ -296,7 +302,9 @@ function answerRange(tl, correctAnswer, after) {
 }
 
 // The whole sentence(s) around a located range (at most three), with their
-// times in the audio. Speakers are named when the evidence is an exchange.
+// times in the audio (null when the section isn't aligned — text-only
+// practices still use the words). Speakers are named when the evidence is
+// an exchange.
 function evidenceOf(tl, range) {
   const hit = tl.sentences.filter(s => s.to > range.from && s.from < range.to).slice(0, 3);
   if (!hit.length) return null;
@@ -304,7 +312,6 @@ function evidenceOf(tl, range) {
   const lastS = hit[hit.length - 1];
   const start = timeAt(tl, first.from);
   const end = timeAt(tl, lastS.to);
-  if (start == null || end == null) return null;
   const exchange = new Set(hit.map(s => s.speaker)).size > 1;
   const text = hit.map((s, i) => {
     const t = cleanTranscriptText(s.text);
@@ -313,8 +320,8 @@ function evidenceOf(tl, range) {
   return {
     text,
     speaker: exchange ? '' : first.speaker,
-    start: round(start),
-    end: round(end),
+    start: start == null ? null : round(start),
+    end: end == null ? null : round(end),
     sentenceIndex: tl.sentences.indexOf(first),
   };
 }
@@ -384,10 +391,11 @@ function gapText(group, q) {
 }
 
 // Typed-answer gaps (form / note / table / sentence completion) of a
-// section, in order, each with its evidence in the audio.
-function gapItems(section) {
+// section, in order, each with its evidence in the transcript — and in the
+// audio, unless `audio: false` (text-only practices).
+function gapItems(section, { audio = true } = {}) {
   const tl = timelineOf(section);
-  if (!tl.anchors.length) return [];
+  if (audio && !tl.anchors.length) return [];
   const out = [];
   let after = 0;
   for (const group of section.questionGroups || []) {
@@ -399,6 +407,7 @@ function gapItems(section) {
       const ev = range && evidenceOf(tl, range);
       // a bare gap (no word around it) has nothing to highlight
       if (!gap || !gap.text.includes('_____') || !ev || !words(gap.text.replace('_____', ' ')).length) continue;
+      if (audio && ev.start == null) continue;
       after = range.from;
       out.push({ group, q, gap, ev, type: answerType(q, gap, tl), limit: wordLimit(group) });
     }
@@ -581,6 +590,9 @@ const PLACE_LABEL = /\b(?:address|location|suburb|town|city|country|venue|place|
 
 const words1 = (s) => words(s).map(w => w.replace(/[.,;:]+$/, ''));
 const keyWords = (key) => words1(answerAlternatives(key)[0] || '');
+// "family outing / families": alternatives of different lengths have no
+// single form (or word class) to predict.
+const oneShape = (key) => new Set(answerAlternatives(key).map(a => words1(a).length)).size === 1;
 
 function isPluralWord(w) {
   const x = w.toLowerCase();
@@ -595,7 +607,7 @@ const isBaseVerb = (w) => !/(?:ing|ed)$/i.test(w) && (!/s$/i.test(w) || /ss$/i.t
 // Noun / adjective / verb from the words around the gap (the tip's
 // signals), for single-word (or two-word noun) keys.
 function wordClassOf(it) {
-  if (it.type !== 'word') return null;
+  if (it.type !== 'word' || !oneShape(it.q.correctAnswer)) return null;
   const kw = keyWords(it.q.correctAnswer);
   if (!kw.length || kw.length > 2) return null;
   const c = gapContext(it.gap);
@@ -676,7 +688,7 @@ function infoTypeOf(it) {
 
 // The form the answer takes — what to check when writing it down.
 function formOf(it) {
-  if (it.type !== 'word') return null;
+  if (it.type !== 'word' || !oneShape(it.q.correctAnswer)) return null;
   const kw = keyWords(it.q.correctAnswer);
   if (!kw.length || kw.length > 3) return null;
   const c = gapContext(it.gap);
@@ -756,6 +768,225 @@ function diagnose(answer, key, limit) {
   return null;
 }
 
+// ── Question types (Phase 3) ────────────────────────────────────────────
+// The hand-entered `type` / `groupType` aren't trusted alone (two "map"
+// groups are really word-box flow-charts, one map has no image…): a
+// question's practice type comes from what it actually contains.
+
+const letterKey = (q) => /^[A-Z]$/i.test(String(q.correctAnswer || '').trim());
+const cleanOptions = (opts) => (opts || []).map(o => String(o || '').replace(/\s+/g, ' ').trim()).filter(Boolean);
+const TYPED_GROUPS = ['note-form', 'table', 'bullet-list'];
+
+function qtypeOf(group, q) {
+  const ins = String(group.instruction || '').toLowerCase();
+  if (group.groupType === 'map') {
+    const hasImage = !!(group.imageUrl || q.imageUrl);
+    return hasImage && letterKey(q) && !((group.dragDropConfig || {}).words || []).length ? 'map' : null;
+  }
+  if (group.groupType === 'matching-options') return cleanOptions(group.matchingOptions).length >= 2 && letterKey(q) ? 'matching' : null;
+  if (q.type === 'multi-answer-group') return cleanOptions(q.options).length >= 3 && letterKey(q) ? 'multi' : null;
+  if (q.type === 'multiple-choice') {
+    return cleanOptions(q.options).length >= 2 && letterKey(q) && !/choose (?:two|three)/.test(ins) ? 'mcq' : null;
+  }
+  if (q.type === 'fill-blank' && TYPED_GROUPS.includes(group.groupType) && !(group.wordBank || []).length
+    && answerAlternatives(q.correctAnswer).length) {
+    return /complete the (?:following )?sentences?/.test(ins) ? 'sentence' : 'form';
+  }
+  return null;
+}
+
+// Letters of a map from its instruction ("Write the correct letter, A–I"),
+// else up to the highest letter among its keys.
+function mapLetters(group) {
+  const m = String(group.instruction || '').match(/\b([A-Z])\s*[-–—]\s*([A-Z])\b/);
+  const last = m ? m[2].charCodeAt(0)
+    : Math.max(...(group.questions || []).map(q => String(q.correctAnswer || 'A').trim().toUpperCase().charCodeAt(0)), 72);
+  const first = m ? m[1].charCodeAt(0) : 65;
+  const out = [];
+  for (let c = first; c <= last && out.length < 20; c++) out.push(String.fromCharCode(c));
+  return out;
+}
+
+const cleanInstruction = (group) => htmlToLines(group.instruction).join(' ').replace(/\s+/g, ' ').trim();
+
+// Every question of a section in order with its practice type, its
+// evidence (located from the explanation's quote, or a typed answer's own
+// words) and the stretch of audio it plays: from just after the previous
+// question's answer to just after its own — the way the test's audio runs.
+const sectionCache = new WeakMap();
+function sectionQuestions(section) {
+  if (sectionCache.has(section)) return sectionCache.get(section);
+  const tl = timelineOf(section);
+  const list = [];
+  let after = 0;
+  for (const group of section.questionGroups || []) {
+    for (const q of group.questions || []) {
+      const qtype = qtypeOf(group, q);
+      const typed = qtype === 'form' || qtype === 'sentence';
+      const range = quoteRange(tl, q.explanation, after) || (typed ? answerRange(tl, q.correctAnswer, after) : null);
+      const ev = range ? evidenceOf(tl, range) : null;
+      if (range) after = range.from;
+      list.push({ group, q, qtype, ev: ev && ev.start != null ? ev : null, gap: typed ? gapText(group, q) : null });
+    }
+  }
+  const first = tl.anchors[0];
+  const last = tl.anchors[tl.anchors.length - 1];
+  list.forEach((it, i) => {
+    const prev = list.slice(0, i).reverse().find(x => x.ev);
+    const next = list.slice(i + 1).find(x => x.ev);
+    let start = prev ? prev.ev.end - 1 : (first ? first.start - 1 : 0);
+    let end = it.ev ? it.ev.end + 1.5 : (next ? next.ev.start : (last ? last.end + 1 : null));
+    if (end == null || !first) { it.segment = null; return; }
+    if (end - start > 75) start = end - 60;
+    if (end - start < 8) start = end - 8;
+    it.segment = { start: round(Math.max(0, start)), end: round(Math.min(end, tl.duration || Infinity)) };
+  });
+  sectionCache.set(section, list);
+  return list;
+}
+
+// "Choose TWO/THREE letters": the questions sharing one prompt and one
+// option list are one item.
+function clusterOf(list, it) {
+  const same = (x) => x.group === it.group && x.qtype === 'multi'
+    && normalizeForMatch(x.q.questionText) === normalizeForMatch(it.q.questionText);
+  return list.filter(same);
+}
+
+// The practice items of a section for one question type, in order (a
+// multi-answer cluster counts as one item worth its number of questions).
+function qtypeItems(section, qtype) {
+  const list = sectionQuestions(section);
+  const items = [];
+  const seen = new Set();
+  for (const it of list) {
+    if (it.qtype !== qtype || seen.has(it)) continue;
+    if (qtype === 'multi') {
+      const cluster = clusterOf(list, it);
+      cluster.forEach(x => seen.add(x));
+      if (cluster.length < 2) continue;
+      items.push({ ...it, cluster, segment: mergeSegments(cluster.map(x => x.segment)) });
+    } else {
+      if ((qtype === 'form' || qtype === 'sentence') && !(it.gap && it.gap.text.includes('_____'))) continue;
+      items.push({ ...it, cluster: [it] });
+    }
+  }
+  return items;
+}
+
+function mergeSegments(segs) {
+  const ok = segs.filter(Boolean);
+  if (!ok.length) return null;
+  return { start: Math.min(...ok.map(s => s.start)), end: Math.max(...ok.map(s => s.end)) };
+}
+
+// A label / statement as shown, without the answer lines some carry ("Stage____").
+const promptText = (q) => String(q.questionText || '').replace(/[_…]{2,}|\.{3,}/g, ' ').replace(/\s+/g, ' ').trim();
+
+function qtypePayload(it) {
+  const { group, q } = it;
+  const base = {
+    questionNumber: q.questionNumber,
+    instruction: cleanInstruction(group),
+    segment: it.segment,
+  };
+  switch (it.qtype) {
+    case 'form':
+    case 'sentence':
+      return { ...base, input: 'text', text: it.gap.text, context: it.gap.context || '', wordLimit: wordLimit(group) };
+    case 'mcq':
+      return { ...base, input: 'choice', text: promptText(q),
+        choices: cleanOptions(q.options).map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })) };
+    case 'matching':
+      return { ...base, input: 'choice', text: promptText(q), listTitle: (group.matchingOptionsTitle || '').trim(),
+        reuse: !!group.matchingReuseAllowed,
+        choices: cleanOptions(group.matchingOptions).map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })) };
+    case 'map':
+      return { ...base, input: 'choice', text: promptText(q), imageUrl: group.imageUrl || q.imageUrl,
+        choices: mapLetters(group).map(l => ({ key: l, label: '' })) };
+    case 'multi':
+      return { ...base, input: 'multi', text: promptText(q), numbers: it.cluster.map(x => x.q.questionNumber),
+        pick: it.cluster.length, choices: cleanOptions(q.options).map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })) };
+    default:
+      return base;
+  }
+}
+
+// One section with enough questions of the type (preferring more of them,
+// and more with evidence), not practised recently; its first maxQuestions
+// items in original order.
+async function buildQtype(cfg, rng, exclude) {
+  const sections = await loadSections();
+  const weight = (items) => items.reduce((n, it) => n + it.cluster.length, 0);
+  const all = sections.map(s => ({ s, items: qtypeItems(s, cfg.qtype) })).filter(c => weight(c.items) >= cfg.minQuestions);
+  if (!all.length) return null;
+  const pool = withoutRecent(all, exclude, c => String(c.s._id));
+  const rich = (c) => weight(c.items) >= cfg.preferQuestions;
+  const evidenced = (c) => c.items.filter(it => it.cluster.some(x => x.ev)).length / c.items.length >= 0.6;
+  const tiers = [pool.filter(c => rich(c) && evidenced(c)), pool.filter(rich), pool];
+  const tier = tiers.find(t => t.length);
+  const { s, items } = tier[Math.floor(rng() * tier.length)];
+  const chosen = [];
+  let count = 0;
+  for (const it of items) {
+    if (count >= cfg.maxQuestions) break;
+    chosen.push(it);
+    count += it.cluster.length;
+  }
+  return {
+    kind: 'qtype',
+    qtype: cfg.qtype,
+    sectionId: String(s._id),
+    sectionTitle: s.title,
+    sourceName: sourceName(s),
+    audioUrl: s.audioUrl,
+    audioDuration: s.audioDuration || null,
+    questions: chosen.map(qtypePayload),
+  };
+}
+
+function checkQtype(cfg, section, body, answer) {
+  const list = sectionQuestions(section);
+  const it = qtypeItems(section, cfg.qtype).find(x => x.cluster.some(c => c.q.questionNumber === Number(body.questionNumber)));
+  if (!it) return { status: 'not_in_practice' };
+  const evidence = it.cluster.map(x => x.ev).find(Boolean) || null;
+  const explanation = [...new Set(it.cluster.map(x => String(x.q.explanation || '').trim()).filter(Boolean))].join('\n\n');
+  const ev = evidence && { text: evidence.text, speaker: evidence.speaker, start: evidence.start, end: evidence.end };
+
+  if (cfg.qtype === 'multi') {
+    let picked;
+    try { picked = JSON.parse(answer); } catch { picked = null; }
+    const letters = Array.isArray(picked) ? [...new Set(picked.map(x => String(x).trim().toUpperCase()))] : [];
+    const valid = letters.length && letters.length <= it.cluster.length && letters.every(l => /^[A-Z]$/.test(l));
+    if (!valid) return { status: 'not_in_practice' };
+    const keys = it.cluster.map(x => String(x.q.correctAnswer).trim().toUpperCase());
+    const perQuestion = it.cluster.map((x, i) => ({ questionNumber: x.q.questionNumber, isCorrect: letters.includes(keys[i]) }));
+    const correctCount = perQuestion.filter(p => p.isCorrect).length;
+    return {
+      status: 'ok',
+      result: {
+        questionNumber: it.q.questionNumber, isCorrect: correctCount === keys.length, correctCount, total: keys.length,
+        correctAnswer: [...keys].sort().join(', '), perQuestion, explanation, evidence: ev,
+      },
+    };
+  }
+
+  const grade = (q) => {
+    const { reviewed } = gradeQuestionGroups([{ questions: [q] }], () => answer.trim());
+    return !!(reviewed[0] && reviewed[0].isCorrect);
+  };
+  // "interchangeable" gaps: any of the group's answers counts
+  const isCorrect = grade(it.q) || (!!it.group.interchangeableAnswers && list.some(x => x.group === it.group && x !== it && grade(x.q)));
+  const typed = cfg.qtype === 'form' || cfg.qtype === 'sentence';
+  return {
+    status: 'ok',
+    result: {
+      questionNumber: it.q.questionNumber, isCorrect, correctAnswer: it.q.correctAnswer, explanation, evidence: ev,
+      diagnosis: typed && !isCorrect ? diagnose(answer, it.q.correctAnswer, wordLimit(it.group)) : null,
+    },
+  };
+}
+
 // ── Payload builders ────────────────────────────────────────────────────
 
 function shuffle(arr, rng) {
@@ -767,8 +998,13 @@ function shuffle(arr, rng) {
   return a;
 }
 
-function loadSections() {
-  return ListeningSection.find({ isActive: true, audioUrl: { $ne: '' }, 'dictationSentences.0': { $exists: true } })
+// Audio practices: aligned sections only (see the header). Text-only ones:
+// any active section with a transcript to show the answer's sentence.
+function loadSections({ audio = true } = {}) {
+  const filter = audio
+    ? { isActive: true, audioUrl: { $ne: '' }, 'dictationSentences.0': { $exists: true } }
+    : { isActive: true, transcript: { $nin: ['', null] } };
+  return ListeningSection.find(filter)
     .select('title partNumber audioUrl audioDuration transcript questionGroups dictationSentences isActualTest')
     .lean();
 }
@@ -925,11 +1161,12 @@ function balancedPick(pool, classOf, n, maxPerSection, rng, exclude) {
   return chosen;
 }
 
-// Predict (word class / type of information / form of the answer) →
-// listen → answer, on single gaps the kind's classifier is sure about.
+// Predict the word class / type of information / form of the answer from
+// the question's text alone, on gaps the kind's classifier is sure about.
 async function buildPredict(cfg, rng, exclude) {
-  const sections = await loadSections();
-  const pool = sections.flatMap(s => gapItems(s).map(it => ({ s, it, cls: classify(cfg.kind, it) })).filter(c => c.cls));
+  const sections = await loadSections({ audio: !cfg.text });
+  const pool = sections.flatMap(s => gapItems(s, { audio: !cfg.text })
+    .map(it => ({ s, it, cls: classify(cfg.kind, it) })).filter(c => c.cls));
   const chosen = balancedPick(pool, c => c.cls.value, cfg.maxQuestions, cfg.maxPerSection, rng, exclude);
   if (!chosen.length) return null;
   return {
@@ -940,10 +1177,8 @@ async function buildPredict(cfg, rng, exclude) {
       text: it.gap.text,
       context: it.gap.context || '',
       wordLimit: it.limit,
-      segment: segmentFor(timelineOf(s), it.ev),
       sectionTitle: s.title,
       sourceName: sourceName(s),
-      audioUrl: s.audioUrl,
     })),
   };
 }
@@ -1055,15 +1290,15 @@ async function getPractice(lessonKey, { rng = Math.random, exclude = [] } = {}) 
   const cfg = PRACTICE_CONFIG[lessonKey];
   const build = {
     keywords: buildKeywords, preview: buildPreview, symbols: buildSymbols, workflow: buildWorkflow,
-    wordclass: buildPredict, infotype: buildPredict, form: buildPredict,
+    wordclass: buildPredict, infotype: buildPredict, form: buildPredict, qtype: buildQtype,
   }[cfg.kind];
   const practice = await build(cfg, rng, exclude.map(String));
   return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.
-// `stage: 'predict'` (word class / type of information) only confirms the
-// prediction — why, from the question's own words — without the answer.
+// Text-only kinds grade the prediction itself (why — from the question's
+// own words — plus the real answer and its sentence in the transcript).
 async function checkAnswer(lessonKey, body) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
@@ -1097,15 +1332,28 @@ async function checkAnswer(lessonKey, body) {
     };
   }
 
-  const it = gapItems(section).find(x => x.q.questionNumber === Number(body.questionNumber));
+  if (cfg.kind === 'qtype') return checkQtype(cfg, section, body, answer);
+
+  const it = gapItems(section, { audio: !cfg.text }).find(x => x.q.questionNumber === Number(body.questionNumber));
   const cls = it && classify(cfg.kind, it);
   if (!cls) return { status: 'not_in_practice' };
   const prediction = CHOICES[cfg.kind].includes(body.prediction) ? body.prediction : null;
   const why = { category: cls.value, reason: cls.reason || '', signal: cls.signal || '' };
 
-  if (body.stage === 'predict') {
-    if (!REVEAL_ON_PREDICT.has(cfg.kind) || !prediction) return { status: 'not_in_practice' };
-    return { status: 'ok', result: { stage: 'predict', questionNumber: it.q.questionNumber, prediction, predictionCorrect: prediction === cls.value, ...why } };
+  if (cfg.text) {
+    if (!prediction) return { status: 'not_in_practice' };
+    return {
+      status: 'ok',
+      result: {
+        questionNumber: it.q.questionNumber,
+        isCorrect: prediction === cls.value,
+        prediction,
+        ...why,
+        correctAnswer: it.q.correctAnswer,
+        explanation: it.q.explanation || '',
+        evidence: { text: it.ev.text, speaker: it.ev.speaker },
+      },
+    };
   }
 
   const { reviewed } = gradeQuestionGroups([{ questions: [it.q] }], () => answer.trim());
@@ -1137,5 +1385,6 @@ module.exports = {
     transcriptLines, timelineOf, timeAt, quoteRange, answerRange, evidenceOf, segmentFor,
     gapText, gapItems, answerType, keywordsFor, symbolOf, symbolClips, previewRuns, normalizeForMatch,
     gapContext, wordClassOf, infoTypeOf, formOf, classify, diagnose, balancedPick,
+    qtypeOf, mapLetters, sectionQuestions, qtypeItems, qtypePayload,
   },
 };

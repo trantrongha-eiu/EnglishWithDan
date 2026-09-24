@@ -170,6 +170,37 @@ describe('formOf — what to check when writing the answer down', () => {
   });
 });
 
+test('formOf: alternatives of different lengths have no single form to predict', () => {
+  expect(L.formOf(gapItem('Main reason: a _____', 'family outing / families'))).toBeNull();
+  expect(L.formOf(gapItem('Bring a _____', 'raincoat/rain coat'))).toBeNull();
+});
+
+describe('qtypeOf — the question-type practice a question belongs to, by content', () => {
+  const g = (groupType, instruction, extra = {}) => ({ groupType, instruction, ...extra });
+  const q = (type, extra = {}) => ({ type, correctAnswer: 'B', options: ['a', 'b', 'c'], ...extra });
+  test.each([
+    ['map with its image', g('map', 'Label the map below.', { imageUrl: 'x.png' }), q('map-labelling'), 'map'],
+    ['map without an image', g('map', 'Label the map below.'), q('map-labelling'), null],
+    ['word-box flow-chart stored as a map', g('map', 'Complete the flow-chart.', { imageUrl: 'x.png', dragDropConfig: { words: ['a'] } }), q('map-labelling'), null],
+    ['matching with its option list', g('matching-options', '', { matchingOptions: ['x', 'y', 'z'] }), q('matching-info'), 'matching'],
+    ['MCQ', g('plain', 'Choose the correct letter, A, B or C.'), q('multiple-choice'), 'mcq'],
+    ['"choose TWO" typed as an MCQ', g('plain', 'Choose TWO letters, A-E.'), q('multiple-choice'), null],
+    ['choose TWO', g('plain', 'Choose TWO letters, A-E.'), q('multi-answer-group', { options: ['a', 'b', 'c', 'd', 'e'] }), 'multi'],
+    ['sentence completion', g('note-form', 'Complete the sentences below.'), q('fill-blank', { correctAnswer: 'hat' }), 'sentence'],
+    ['form completion', g('note-form', 'Complete the form below.'), q('fill-blank', { correctAnswer: 'hat' }), 'form'],
+    ['a table', g('table', 'Complete the table below.'), q('fill-blank', { correctAnswer: 'hat' }), 'form'],
+    ['a word-bank summary', g('summary-completion', 'Complete the summary.'), q('fill-blank', { correctAnswer: 'hat' }), null],
+  ])('%s → %s', (_name, group, question, expected) => {
+    expect(L.qtypeOf(group, question)).toBe(expected);
+  });
+
+  test('mapLetters: from the instruction, else up to the highest key', () => {
+    expect(L.mapLetters({ instruction: 'Write the correct letter, A–F, next to questions 1–3.', questions: [] })).toEqual(['A', 'B', 'C', 'D', 'E', 'F']);
+    expect(L.mapLetters({ instruction: 'White the correct letter, A -I, next to questions 15-20.', questions: [] })).toHaveLength(9);
+    expect(L.mapLetters({ instruction: 'Label the plan.', questions: [{ correctAnswer: 'J' }] }).pop()).toBe('J');
+  });
+});
+
 describe('diagnose — the classic slips in a wrong answer', () => {
   test.each([
     ['classroom', 'classrooms', 'ONE WORD ONLY', 'plural'],

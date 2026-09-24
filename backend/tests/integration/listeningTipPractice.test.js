@@ -275,67 +275,80 @@ const tour = () => createListeningSection({
   extra: { audioUrl: 'https://res.cloudinary.com/demo/video/upload/tour.mp3', audioDuration: 120, transcript: TOUR_TRANSCRIPT, dictationSentences: TOUR_TIMES },
 });
 
-describe('Dự đoán Noun / Adjective / Verb', () => {
-  test('only gaps whose word class the question shows; the prediction is confirmed (with why) before listening, without the answer', async () => {
+// The three prediction tips are text only: read the question, predict,
+// then see why — with the real answer and its sentence in the transcript.
+describe('Dự đoán Noun / Adjective / Verb (text only)', () => {
+  test('only gaps whose word class the question shows; no audio, no answer before the prediction', async () => {
     const s = await tour();
     const pr = (await get('predict-noun-adjective-verb')).body.practice;
     expect(pr.kind).toBe('wordclass');
     pr.items.forEach(it => expect([1, 2, 8, 11]).toContain(it.questionNumber)); // adj / verb / noun / noun
     const keys = keysOf(pr);
-    [...NO_KEYS, 'category', 'reason'].forEach(k => expect(keys.has(k)).toBe(false));
+    [...NO_KEYS, 'category', 'reason', 'segment', 'audioUrl'].forEach(k => expect(keys.has(k)).toBe(false));
 
     const body = { sectionId: String(s._id), questionNumber: 1 };
-    const predicted = (await check('predict-noun-adjective-verb', { ...body, stage: 'predict', prediction: 'noun' })).body.result;
-    expect(predicted).toMatchObject({ stage: 'predict', predictionCorrect: false, category: 'adjective' });
-    expect(predicted.reason).toMatch(/very/);
-    expect(keysOf(predicted).has('correctAnswer')).toBe(false);
+    const wrong = (await check('predict-noun-adjective-verb', { ...body, prediction: 'noun' })).body.result;
+    expect(wrong).toMatchObject({ isCorrect: false, prediction: 'noun', category: 'adjective', signal: 'very', correctAnswer: 'popular' });
+    expect(wrong.reason).toMatch(/very/);
+    expect(wrong.evidence.text).toBe('The tour is very popular with families.');
+    expect((await check('predict-noun-adjective-verb', { ...body, questionNumber: 2, prediction: 'verb' })).body.result)
+      .toMatchObject({ isCorrect: true, category: 'verb', correctAnswer: 'register' });
+    // a gap the question doesn't give away ("comfortable ___") isn't in this practice; a prediction is required
+    expect((await check('predict-noun-adjective-verb', { ...body, questionNumber: 6, prediction: 'noun' })).status).toBe(400);
+    expect((await check('predict-noun-adjective-verb', { ...body, answer: 'popular' })).status).toBe(400);
+  });
 
-    const answered = (await check('predict-noun-adjective-verb', { ...body, answer: 'popular', prediction: 'adjective' })).body.result;
-    expect(answered).toMatchObject({ isCorrect: true, correctAnswer: 'popular', category: 'adjective', predictionCorrect: true });
-    expect(answered.evidence.text).toBe('The tour is very popular with families.');
-    expect((await check('predict-noun-adjective-verb', { ...body, questionNumber: 2, stage: 'predict', prediction: 'verb' })).body.result)
-      .toMatchObject({ predictionCorrect: true, category: 'verb' });
-    // a gap the question doesn't give away ("comfortable ___") isn't in this practice
-    expect((await check('predict-noun-adjective-verb', { ...body, questionNumber: 6, stage: 'predict', prediction: 'noun' })).status).toBe(400);
+  test('uses sections whose audio isn\'t aligned too (only the transcript is needed)', async () => {
+    const s = await createListeningSection({
+      title: 'Not aligned',
+      questionRange: { start: 1, end: 11 },
+      questionGroups: [TOUR_NOTES],
+      extra: { audioUrl: 'https://res.cloudinary.com/demo/video/upload/tour.mp3', transcript: TOUR_TRANSCRIPT, dictationSentences: [] },
+    });
+    const pr = (await get('predict-noun-adjective-verb')).body.practice;
+    pr.items.forEach(it => expect(it.sectionId).toBe(String(s._id)));
+    expect((await get('keyword-highlighting')).body.practice).toBeNull(); // audio practices still need the alignment
   });
 });
 
-describe('Dự đoán Number / Date / Time / Name / Place', () => {
+describe('Dự đoán Number / Date / Time / Name / Place (text only)', () => {
   test('name vs place from the words at the gap; time, price, date from their signals', async () => {
     const s = await tour();
     const pr = (await get('predict-number-date-place')).body.practice;
     expect(pr.kind).toBe('infotype');
     const ask = async (questionNumber, prediction) => (await check('predict-number-date-place',
-      { sectionId: String(s._id), questionNumber, stage: 'predict', prediction })).body.result;
-    expect(await ask(3, 'place')).toMatchObject({ predictionCorrect: false, category: 'name', signal: 'Mrs' });
-    expect(await ask(5, 'place')).toMatchObject({ predictionCorrect: true, category: 'place', signal: 'Street' });
-    expect(await ask(4, 'time')).toMatchObject({ predictionCorrect: true, signal: 'a.m.' });
-    expect(await ask(7, 'price')).toMatchObject({ predictionCorrect: true, signal: '£' });
-    expect((await ask(10, 'date')).predictionCorrect).toBe(true);
-    const answered = (await check('predict-number-date-place', { sectionId: String(s._id), questionNumber: 4, answer: '9:30', prediction: 'time' })).body.result;
-    expect(answered).toMatchObject({ isCorrect: true, category: 'time', evidence: { text: 'The tour starts at 9.30 a.m. on Saturday.' } });
+      { sectionId: String(s._id), questionNumber, prediction })).body.result;
+    expect(await ask(3, 'place')).toMatchObject({ isCorrect: false, category: 'name', signal: 'Mrs', correctAnswer: 'Patel' });
+    expect(await ask(5, 'place')).toMatchObject({ isCorrect: true, category: 'place', signal: 'Street' });
+    expect(await ask(4, 'time')).toMatchObject({ isCorrect: true, signal: 'a.m.', evidence: { text: 'The tour starts at 9.30 a.m. on Saturday.' } });
+    expect(await ask(7, 'price')).toMatchObject({ isCorrect: true, signal: '£' });
+    expect((await ask(10, 'date')).isCorrect).toBe(true);
   });
 });
 
-describe('Số ít / nhiều, V-ing, cụm từ', () => {
-  test('the form is confirmed only with the answer, and a wrong answer says which slip it was', async () => {
+describe('Số ít / nhiều, V-ing, cụm từ (text only)', () => {
+  test('predict the form of the answer, then see the real answer and why', async () => {
     const s = await tour();
     const pr = (await get('predict-plural-countable-formula')).body.practice;
     expect(pr.kind).toBe('form');
-    const body = { sectionId: String(s._id) };
-    // no early confirmation here: it would give the plural away
-    expect((await check('predict-plural-countable-formula', { ...body, questionNumber: 6, stage: 'predict', prediction: 'plural' })).status).toBe(400);
-
-    const shoes = (await check('predict-plural-countable-formula', { ...body, questionNumber: 6, answer: 'shoe', prediction: 'singular' })).body.result;
-    expect(shoes).toMatchObject({ isCorrect: false, category: 'plural', predictionCorrect: false, diagnosis: { kind: 'plural' } });
-    const water = (await check('predict-plural-countable-formula', { ...body, questionNumber: 11, answer: 'waters', prediction: 'uncountable' })).body.result;
-    expect(water).toMatchObject({ isCorrect: false, category: 'uncountable', predictionCorrect: true, diagnosis: { kind: 'plural' } });
-    const cycling = (await check('predict-plural-countable-formula', { ...body, questionNumber: 9, answer: 'cycle', prediction: 'ving' })).body.result;
-    expect(cycling).toMatchObject({ category: 'ving', predictionCorrect: true, diagnosis: { kind: 'form' } });
+    const ask = async (questionNumber, prediction) => (await check('predict-plural-countable-formula',
+      { sectionId: String(s._id), questionNumber, prediction })).body.result;
+    expect(await ask(6, 'singular')).toMatchObject({ isCorrect: false, category: 'plural', correctAnswer: 'shoes' });
+    expect(await ask(11, 'uncountable')).toMatchObject({ isCorrect: true, category: 'uncountable', correctAnswer: 'water' });
+    const cycling = await ask(9, 'ving');
+    expect(cycling).toMatchObject({ isCorrect: true, category: 'ving' });
     expect(cycling.reason).toMatch(/about/);
-    const guide = (await check('predict-plural-countable-formula', { ...body, questionNumber: 8, answer: 'guide book please', prediction: 'singular' })).body.result;
-    expect(guide).toMatchObject({ category: 'singular', diagnosis: { kind: 'limit' } });
+    expect(await ask(8, 'singular')).toMatchObject({ isCorrect: true, category: 'singular', signal: 'a' });
   });
+});
+
+test('a wrong typed answer says which slip it was (limit, plural, form)', async () => {
+  const s = await tour();
+  const ask = async (questionNumber, answer) => (await check('keyword-highlighting', { sectionId: String(s._id), questionNumber, answer })).body.result.diagnosis;
+  expect(await ask(6, 'shoe')).toMatchObject({ kind: 'plural' });
+  expect(await ask(11, 'waters')).toMatchObject({ kind: 'plural' });
+  expect(await ask(9, 'cycle')).toMatchObject({ kind: 'form' });
+  expect(await ask(8, 'guide book please')).toMatchObject({ kind: 'limit' });
 });
 
 describe('Quy trình hoàn chỉnh', () => {
