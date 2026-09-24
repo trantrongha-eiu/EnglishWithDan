@@ -608,7 +608,10 @@
         // ever fires for a real unpaid fee (admin click or the auto-remind
         // cron), so there's no "maybe it's nothing yet" grace period to give
         // — every reminder means money is actually owed.
-        if ((u.tuitionReminderCount || 0) >= 1) _showTuitionWarningBanner(u.tuitionReminderCount);
+        if ((u.tuitionReminderCount || 0) >= 1) {
+          _showTuitionWarningBanner(u.tuitionReminderCount);
+          _showTuitionReminderPopup(u.tuitionReminderCount);
+        }
 
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
@@ -845,6 +848,59 @@
   function _queueNotice(opts) {
     if (window.PopupQueue) window.PopupQueue.enqueue(opts);
     else opts.show(function () {});
+  }
+
+  // Tuition reminder popup — on top of the dismissible banner above, a
+  // student who has been reminded (tuitionReminderCount >= 1) gets a modal
+  // once per session ("mỗi lần online"), for as long as any fee stays unpaid.
+  // No "don't show again": it stops only when the admin confirms payment,
+  // which resets tuitionReminderCount to 0 server-side
+  // (tuitionService.resetTuitionReminderCountIfCaughtUp).
+  var TUITION_POPUP_SESSION_KEY = 'ews_tuition_popup_shown';
+  function _showTuitionReminderPopup(count) {
+    try { if (sessionStorage.getItem(TUITION_POPUP_SESSION_KEY)) return; } catch (e) {}
+    _queueNotice({
+      id: 'nav-tuition-reminder', priority: 45, until: '#nav-tuition-popup-overlay',
+      show: function (done) { _renderTuitionReminderPopup(count, done); }
+    });
+  }
+  function _renderTuitionReminderPopup(count, done) {
+    if (_fullscreenActivityActive()) { done(); return; } // retries next load
+    if (page === 'tuition.html') { done(); return; } // already looking at it
+    var headers = window.AuthService ? window.AuthService.authHeader() : {};
+    fetch(API + '/tuition/my/summary', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        // Cached count can be stale (admin just confirmed) — trust the live summary.
+        if (!d || !d.success || !(d.unpaidCount > 0) || _fullscreenActivityActive()) { done(); return; }
+        try { sessionStorage.setItem(TUITION_POPUP_SESSION_KEY, '1'); } catch (e) {}
+
+        var total = Number(d.totalUnpaid || 0).toLocaleString('vi-VN');
+        var awaiting = (d.awaitingConfirmCount || 0) >= d.unpaidCount;
+        var body = awaiting
+          ? 'Bạn đã báo chuyển khoản <strong>' + d.unpaidCount + ' khoản</strong> học phí (tổng <strong>' + total + ' VND</strong>). ' +
+            'Thông báo này sẽ tự tắt khi admin xác nhận đã nhận được tiền.'
+          : 'Bạn còn <strong>' + d.unpaidCount + ' khoản</strong> học phí chưa thanh toán, tổng cộng <strong>' + total + ' VND</strong> ' +
+            '(đã được nhắc <strong>' + count + ' lần</strong>). Học phí cần thanh toán trong <strong>tuần đầu tiên</strong> kể từ ngày khai giảng. ' +
+            'Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí.';
+
+        var overlay = document.createElement('div');
+        overlay.id = 'nav-tuition-popup-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+        overlay.innerHTML =
+          '<div role="dialog" aria-modal="true" aria-labelledby="nav-tuition-popup-title" style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:420px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
+            '<div style="font-size:44px;margin-bottom:10px">💰</div>' +
+            '<h3 id="nav-tuition-popup-title" style="font-size:18px;font-weight:800;margin-bottom:10px">' + (awaiting ? 'Đang chờ xác nhận học phí' : 'Nhắc nhở học phí') + '</h3>' +
+            '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px;text-align:left">' + body + '</p>' +
+            '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+              '<button type="button" id="nav-tuition-popup-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
+              '<a href="tuition.html" id="nav-tuition-popup-go" style="background:#d97706;color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Xem học phí</a>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(overlay);
+        document.getElementById('nav-tuition-popup-later').addEventListener('click', function () { overlay.remove(); });
+      })
+      .catch(function () { done(); });
   }
 
   var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';

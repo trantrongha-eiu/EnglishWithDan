@@ -331,7 +331,11 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
 async function getMySummary(studentId) {
   const fees = await TuitionFee.find({ studentId, isPaid: false }).lean();
   const totalUnpaid = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
-  return { unpaidCount: fees.length, totalUnpaid };
+  // Unpaid fees the student already self-reported as transferred — nav.js's
+  // tuition popup switches to "waiting for admin confirmation" wording when
+  // this covers every unpaid fee.
+  const awaitingConfirmCount = fees.filter(f => f.studentNotified).length;
+  return { unpaidCount: fees.length, totalUnpaid, awaitingConfirmCount };
 }
 
 async function getMyFees(studentId) {

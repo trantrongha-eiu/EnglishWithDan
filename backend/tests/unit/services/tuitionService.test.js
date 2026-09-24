@@ -233,11 +233,23 @@ describe('tuitionService', () => {
       const summary = await tuitionService.getMySummary(studentA._id);
       expect(summary.unpaidCount).toBe(1);
       expect(summary.totalUnpaid).toBe(300000);
+      expect(summary.awaitingConfirmCount).toBe(0);
 
       const { fees } = await tuitionService.getMyFees(studentA._id);
       expect(fees).toHaveLength(2);
       expect(fees.every(f => f.studentId.toString() === studentA._id.toString())).toBe(true);
     });
+  });
+
+  it('getMySummary counts unpaid fees the student already reported as transferred', async () => {
+    const student = await createStudent();
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 300000, isPaid: false, studentNotified: true });
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 2, year: 2026, amount: 300000, isPaid: false });
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 3, year: 2026, amount: 300000, isPaid: true, studentNotified: true });
+
+    const summary = await tuitionService.getMySummary(student._id);
+    expect(summary.unpaidCount).toBe(2);
+    expect(summary.awaitingConfirmCount).toBe(1);
   });
 
   describe('notifyPayment', () => {
