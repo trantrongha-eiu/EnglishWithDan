@@ -38,6 +38,9 @@
 
   function api() { return (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api'; }
   function authH() { return window.AuthService ? window.AuthService.authHeader() : {}; }
+  // authHeader() is Authorization only — a JSON POST without Content-Type
+  // arrives as text/plain, express.json() skips it and req.body is empty.
+  function jsonH() { return Object.assign({ 'Content-Type': 'application/json' }, authH()); }
   function esc(s) { return (typeof _esc === 'function' ? _esc(s) : String(s == null ? '' : s)); }
   function say(msg, type) { if (window.toast) window.toast(msg, type); }
 
@@ -222,7 +225,7 @@
     if (row) row.querySelectorAll('.para-rate-btn').forEach(function (x) { x.disabled = true; x.classList.toggle('chosen', x === btn); });
 
     fetch(api() + '/vocab/paraphrase/review', {
-      method: 'POST', headers: authH(),
+      method: 'POST', headers: jsonH(),
       body: JSON.stringify({
         unitId: _mountUnit._id,
         word: w.word, paraphrase: w.paraphrase || '', meaning: w.meaning || '', explanation: w.explanation || '',
@@ -351,7 +354,7 @@
       var unitId = v.item._paraUnitId || fallbackUnitId;
       if (!unitId) return;
       calls.push(fetch(base, {
-        method: 'POST', headers: authH(),
+        method: 'POST', headers: jsonH(),
         body: JSON.stringify({
           unitId: unitId,
           word: v.item.word, paraphrase: v.item.paraphrase || '',
