@@ -117,7 +117,12 @@ function lstRenderLessonContent(lesson) {
     + '<h1 class="lst-hero-title">' + (lesson.icon || '🎧') + ' ' + escHtml(lesson.title) + '</h1>'
     + '</div>';
   html += '<div class="lst-content">' + lesson.blocks.map(lstRenderBlock).join('') + '</div>';
+  // "🎧 Luyện tập" at the bottom (js/listening-tips-practice.js) — loads
+  // nothing until the student clicks start.
+  const practice = window.LTPractice && window.LTPractice.supports(lesson);
+  if (practice) html += '<div class="lst-practice-slot" id="lst-practice-slot"></div>';
   document.getElementById('lst-main-content').innerHTML = html;
+  if (window.LTPractice) window.LTPractice.mount(lesson, practice ? document.getElementById('lst-practice-slot') : null);
 }
 
 function lstRenderBlock(block) {
