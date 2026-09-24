@@ -35,6 +35,7 @@ router.use(require('./premium'));          // Plan Management, Upgrade Requests 
 router.use(require('./reviewBypass'));     // Review-gate bypass codes
 router.use(require('./mockTests'));        // Full 4-skill mock test monitoring + proctoring log
 router.use(require('./entranceTest'));     // IELTS Entrance Test config + Grammar bank + attempt monitoring
+router.use(require('./tipPacks'));        // "Tài liệu in (Tips)": AI-prompt + answer-key packs per tip
 router.use(require('./sidebarBadges'));    // GET /sidebar-badges — one call for the admin Sidebar's 6 polled counts
 
 module.exports = router;

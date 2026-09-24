@@ -37,6 +37,7 @@ const NAV = [
   { to: '/advanced-sentences', icon: '✍️', label: 'Viết câu nâng cao' },
   { to: '/task2-exercises',    icon: '📝', label: 'Task 2 Writing' },
   { to: '/task2-templates',    icon: '📄', label: 'Task 2 Templates' },
+  { to: '/tip-packs',          icon: '🖨️', label: 'Tài liệu in (Tips)' },
   { section: 'TÀI CHÍNH & HỆ THỐNG' },
   { to: '/upgrade-requests',   icon: '⭐', label: 'Yêu cầu nâng cấp', upgradeBadge: true },
   { to: '/tuition',            icon: '💰', label: 'Học phí', tuitionBadge: true },

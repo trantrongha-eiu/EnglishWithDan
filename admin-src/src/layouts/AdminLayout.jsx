@@ -27,6 +27,7 @@ const TITLES = {
   '/entrance-test':          'IELTS Entrance Test (Test đầu vào)',
   '/history':                'Lịch sử làm bài',
   '/review-bypass':          'Mã bỏ qua Review',
+  '/tip-packs':              'Tài liệu in — bài giảng từ Tips',
   '/reading-stats':          'Thống kê Reading',
   '/listening-stats':        'Thống kê Listening',
   '/writing-grades':         'Chấm bài Writing',
