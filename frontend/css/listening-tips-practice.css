@@ -328,6 +328,11 @@
   .ltp-score { font-size: 32px; }
   .ltp-q { font-size: 15px; }
   .ltp-sym-opt { width: 56px; height: 56px; font-size: 24px; }
+  /* narrow boxes (a guided step): label + track on one line, time + controls under it */
+  .ltp-player { flex-wrap: wrap; }
+  .ltp-player-body { flex-basis: calc(100% - 60px); }
+  .ltp-player .ltp-time { margin-left: auto; }
+  .ltp-gstep { padding: 8px 10px; }
 }
 /* Touch screens: bigger targets for small buttons and words. */
 @media (pointer: coarse) {
@@ -335,3 +340,44 @@
   .ltp-tok { padding: 3px 2px; }
   .ltp-q { line-height: 2.4; }
 }
+
+/* ── Phase 4: Q1 worked example (I DO) · Q2 together (WE DO) · Q3+ alone ── */
+.ltp-mode {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 12px;
+  padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; border: 1px solid;
+}
+.ltp-mode b { font-weight: 900; }
+.ltp-mode span { color: #4b5563; }
+.ltp-mode.ex { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+.ltp-mode.we { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+.ltp-mode.you { background: #faf5ff; border-color: #e9d5ff; color: #7e22ce; }
+[data-theme="dark"] .ltp-mode span { color: #cbd5e1; }
+[data-theme="dark"] .ltp-mode.ex { background: #0b1733; border-color: #1e3a8a; color: #93c5fd; }
+[data-theme="dark"] .ltp-mode.we { background: #052e16; border-color: #166534; color: #86efac; }
+[data-theme="dark"] .ltp-mode.you { background: #2e1065; border-color: #6b21a8; color: #d8b4fe; }
+.ltp-flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.ltp-flow .ltp-mode { margin: 0; padding: 6px 10px; font-size: 12.5px; }
+
+.ltp-gsteps { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ltp-gstep { border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.6; }
+.ltp-gstep.current { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, .12); }
+[data-theme="dark"] .ltp-gstep { border-color: #333; }
+[data-theme="dark"] .ltp-gstep.current { border-color: #3b82f6; }
+.ltp-step-title { font-weight: 800; color: #1d4ed8; margin-bottom: 6px; }
+[data-theme="dark"] .ltp-step-title { color: #93c5fd; }
+.ltp-step-body > * + * { margin-top: 6px; }
+.ltp-step-body .ltp-btn { margin-top: 8px; }
+.ltp-step-next { margin-top: 12px; }
+.ltp-step-end { margin-top: 12px; }
+.ltp-kwmark { box-shadow: inset 0 -2px 0 #2563eb; font-weight: 700; }
+.ltp-answer { display: inline-block; font-size: 15px; font-weight: 900; color: #15803d; background: #dcfce7; border-radius: 8px; padding: 2px 10px; }
+[data-theme="dark"] .ltp-answer { color: #bbf7d0; background: #14532d; }
+.ltp-trap { margin-top: 8px; padding: 6px 10px; border-radius: 8px; background: #fef3c7; color: #78350f; font-size: 13px; }
+[data-theme="dark"] .ltp-trap { background: #451a03; color: #fde68a; }
+.ltp-predres { font-size: 13px; font-weight: 700; margin: 4px 0; }
+.ltp-predres.ok { color: #15803d; }
+.ltp-predres.bad { color: #b45309; }
+[data-theme="dark"] .ltp-predres.ok { color: #86efac; }
+[data-theme="dark"] .ltp-predres.bad { color: #fcd34d; }
+.ltp-result-row.ex > span:first-child { font-weight: 900; }
+.ltp-result-row.ex i { color: #9ca3af; font-style: normal; font-size: 12px; }

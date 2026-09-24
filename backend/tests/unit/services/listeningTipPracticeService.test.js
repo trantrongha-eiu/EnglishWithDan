@@ -227,3 +227,23 @@ test('keywordsFor: the gap\'s own words (names / numbers as one), the answer-typ
   // a bare line borrows from its heading
   expect(L.keywordsFor({ text: 'Occupation: a _____', context: 'Employer details' }, '').keywords).toEqual(['Employer', 'Occupation']);
 });
+
+describe('guided examples (phase 4)', () => {
+  test('modeAt: Q1 worked example, Q2 together, the rest alone', () => {
+    expect([0, 1, 2, 5].map(L.modeAt)).toEqual(['example', 'guided', 'solo', 'solo']);
+  });
+
+  test('explanationParts: "Vị trí / Transcript / Phân tích" → where + the reasoning; otherwise the text without the quote', () => {
+    const full = 'Vị trí: Đầu bài.\n\nTranscript: "It can take about 2,000 people."\n\nPhân tích: Phà chở khoảng 2.000 người → đáp án C.';
+    expect(L.explanationParts(full)).toEqual({ where: 'Đầu bài.', why: 'Phà chở khoảng 2.000 người → đáp án C.' });
+    expect(L.explanationParts('Transcript: "x"\nBecause the speaker corrects herself.')).toEqual({ where: '', why: 'Because the speaker corrects herself.' });
+    expect(L.explanationParts('')).toEqual({ where: '', why: '' });
+  });
+
+  test('trapLetters: options the speaker also mentions (numbers compared without commas)', () => {
+    const ev = 'As well as the crew of 160, it can accommodate about 2,000 people and 600 cars.';
+    expect(L.trapLetters(['160', '600', '2000'], ['C'], ev)).toEqual(['A', 'B']);
+    // words like "the" don't count; the answer is never a trap
+    expect(L.trapLetters(['the lake', 'the forest', 'the food'], ['A', 'B'], 'The two best things are the lake and the forest.')).toEqual([]);
+  });
+});

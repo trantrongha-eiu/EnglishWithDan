@@ -282,7 +282,7 @@
     return oneSection(practice) ? practice.questions : practice.items;
   }
 
-  const SAVED_ANSWER_FIELDS = ['value', 'result', 'sel', 'kwDone', 'prediction', 'played', 'note', 'para'];
+  const SAVED_ANSWER_FIELDS = ['value', 'result', 'sel', 'kwSel', 'kwDone', 'prediction', 'played', 'note', 'para', 'step'];
   function savedAnswer(a) {
     const out = {};
     SAVED_ANSWER_FIELDS.forEach(k => { if (a && a[k] !== undefined) out[k] = a[k]; });
@@ -642,7 +642,7 @@
   }
 
   function freshAnswers(items) {
-    return items.map(() => ({ value: '', result: null, sel: [], kwDone: false, prediction: null, played: 0, note: '' }));
+    return items.map(() => ({ value: '', result: null, sel: [], kwDone: false, prediction: null, played: 0, note: '', step: 0 }));
   }
 
   function begin(lesson, practice) {
@@ -682,7 +682,9 @@
 
   // ── Shared pieces ─────────────────────────────────────────────────────
 
-  const isDone = (i) => !!(st.answers[i] && st.answers[i].result);
+  // the worked example (not scored) is done once all its steps are shown
+  const isExample = (i) => st.kind === 'qtype' && !!st.items[i] && st.items[i].mode === 'example';
+  const isDone = (i) => !!(st.answers[i] && (st.answers[i].result || (isExample(i) && st.answers[i].step >= EX_STEPS)));
 
   function headerHtml(sourceLine) {
     const n = st.items.length;
@@ -909,16 +911,22 @@
     const pr = st.practice;
     const g = QTYPE_GUIDE[pr.qtype] || { steps: [] };
     const n = st.items.reduce((s, q) => s + (q.pick || 1), 0);
+    const guided = st.items[0] && st.items[0].mode === 'example';
     showPanelState(headerHtml(esc(pr.sourceName)) + `<div class="ltp-card ltp-intro">
       <div class="ltp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(QTYPE_NAME[pr.qtype] || '')}</div>
       <ol class="ltp-intro-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
       ${g.warning ? `<div class="ltp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
+      ${guided ? `<div class="ltp-flow">
+        <span class="ltp-mode ex"><b>📘 Câu 1</b> xem mẫu từng bước</span>
+        <span class="ltp-mode we"><b>🤝 Câu 2</b> làm cùng, có gợi ý</span>
+        <span class="ltp-mode you"><b>✍️ Từ câu 3</b> tự làm</span>
+      </div>` : ''}
       <div class="ltp-muted">Bài gồm ${n} câu ${esc(QTYPE_NAME[pr.qtype] || '')} lấy nguyên từ đề thật (${esc(pr.sourceName)}), đúng thứ tự như trong đề. Mỗi câu có đoạn audio riêng — nghe lại thoải mái.</div>
       <button type="button" class="ltp-btn ltp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
     </div>`);
   }
 
-  function qtypeInputHtml(q, a) {
+  function qtypeInputHtml(q, a, { readOnly = false } = {}) {
     const r = a.result;
     if (q.input === 'text') {
       return `<input class="ltp-input ${r ? (r.isCorrect ? 'correct' : 'incorrect') : ''}" data-enter="check" value="${esc(a.value)}" ${r ? 'readonly' : ''}
@@ -932,7 +940,7 @@
       return chosen.includes(k) ? 'wrong-ans' : '';
     };
     const act = q.input === 'multi' ? 'mpick' : 'pick';
-    const attrs = (k) => (r ? '' : `data-act="${act}" data-val="${esc(k)}" ${KEY_ATTRS} aria-pressed="${chosen.includes(k)}"`);
+    const attrs = (k) => (r || readOnly ? '' : `data-act="${act}" data-val="${esc(k)}" ${KEY_ATTRS} aria-pressed="${chosen.includes(k)}"`);
     // labelled options (MCQ, "choose TWO") as a list; bare letters (map,
     // matching — its list shown above) as chips
     if (q.input === 'multi' || (q.choices || []).every(c => c.label) && !q.listTitle && q.reuse == null) {
@@ -942,47 +950,223 @@
     return `<div class="ltp-letters">${q.choices.map(c => `<span class="ltp-letter ${cls(c.key)}" ${attrs(c.key)}>${esc(c.key)}</span>`).join('')}</div>`;
   }
 
-  function renderQtypeQuestion() {
-    const pr = st.practice;
-    const q = st.items[st.idx];
-    const a = st.answers[st.idx];
-    const r = a.result;
-    const pid = `ltp-p-${st.idx}`;
-    const player = q.segment
+  // Pieces of a question-type screen.
+  function qtypePlayerHtml(q, i) {
+    const pid = `ltp-p-${i}`;
+    return q.segment
       ? playerHtml(pid, q.segment, { label: `Đoạn audio của câu ${qNumbers(q)}` })
-      : playerHtml(pid, { start: 0, end: pr.audioDuration || 0 }, { label: 'Audio cả bài (câu này chưa xác định được đoạn riêng)' });
-    // the <img> itself is kept across re-renders (see mapImage) so picking
-    // an answer doesn't make the map flash / the page jump
-    const map = q.imageUrl ? `<div class="ltp-map"><div class="ltp-map-slot"></div>
-      <a class="ltp-link" href="${esc(q.imageUrl)}" target="_blank" rel="noopener">🔍 Phóng to</a></div>` : '';
-    const list = pr.qtype === 'matching' ? `<div class="ltp-matchlist">
+      : playerHtml(pid, { start: 0, end: q.audioDuration || st.practice.audioDuration || 0 }, { label: 'Audio cả bài (câu này chưa xác định được đoạn riêng)' });
+  }
+  // the <img> itself is kept across re-renders (see mapImage) so picking
+  // an answer doesn't make the map flash / the page jump
+  const qtypeMapHtml = (q) => (q.imageUrl ? `<div class="ltp-map"><div class="ltp-map-slot"></div>
+      <a class="ltp-link" href="${esc(q.imageUrl)}" target="_blank" rel="noopener">🔍 Phóng to</a></div>` : '');
+  const qtypeHeadHtml = (q) => `<div class="ltp-qhead"><span class="ltp-qnum">${esc(qNumbers(q))}</span>${q.instruction ? `<span class="ltp-instruction">${esc(q.instruction)}</span>` : ''}</div>`;
+  function qtypeListHtml(q) {
+    if (st.practice.qtype !== 'matching') return '';
+    return `<div class="ltp-matchlist">
       ${q.listTitle ? `<div class="ltp-list-title">${esc(q.listTitle)}</div>` : ''}
       ${q.choices.map(c => `<div class="ltp-matchrow"><b>${esc(c.key)}</b><span>${esc(c.label)}</span></div>`).join('')}
       ${q.reuse ? '<div class="ltp-muted">NB: một chữ cái có thể dùng nhiều lần.</div>' : ''}
-    </div>` : '';
-    const pickNote = q.input === 'multi' ? `<div class="ltp-limit">☑️ Chọn đúng <b>${q.pick}</b> chữ cái (${(a.sel || []).length}/${q.pick})</div>` : '';
-    const prompt = q.input === 'text'
-      ? `${q.context ? `<div class="ltp-context">📋 ${esc(q.context)}</div>` : ''}<div class="ltp-q">${esc(q.text).replace('_____', '<span class="ltp-blank"> ______ </span>')}</div>
-        ${q.wordLimit ? `<div class="ltp-limit">✍️ ${esc(q.wordLimit)}</div>` : ''}`
-      : `<div class="ltp-q">${esc(q.text)}</div>`;
-    const ready = q.input === 'text' ? String(a.value || '').trim() : q.input === 'multi' ? (a.sel || []).length === q.pick : a.value;
-    showPanelState(headerHtml(esc(pr.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
-      ${player}
-      ${map}
+    </div>`;
+  }
+  // The prompt, its keywords marked once they're known.
+  function qtypePromptHtml(q, keywords) {
+    const body = keywords && keywords.length ? markTerms(q.text, keywords, 'ltp-kwmark') : esc(q.text);
+    if (q.input !== 'text') return `<div class="ltp-q">${body}</div>`;
+    return `${q.context ? `<div class="ltp-context">📋 ${esc(q.context)}</div>` : ''}<div class="ltp-q">${body.replace('_____', '<span class="ltp-blank"> ______ </span>')}</div>
+        ${q.wordLimit ? `<div class="ltp-limit">✍️ ${esc(q.wordLimit)}</div>` : ''}`;
+  }
+  const pickNoteHtml = (q, a) => (q.input === 'multi' ? `<div class="ltp-limit">☑️ Chọn đúng <b>${q.pick}</b> chữ cái (${(a.sel || []).length}/${q.pick})</div>` : '');
+  const qtypeReady = (q, a) => (q.input === 'text' ? String(a.value || '').trim() : q.input === 'multi' ? (a.sel || []).length === q.pick : a.value);
+  const MODE_BANNER = {
+    example: ['ex', '📘 Câu mẫu (I DO)', 'Xem cách làm từng bước — câu này không tính điểm.'],
+    guided: ['we', '🤝 Làm cùng (WE DO)', 'Làm theo từng bước có gợi ý; đáp án chỉ hiện sau khi bạn kiểm tra.'],
+    solo: ['you', '✍️ Tự làm (YOU DO)', 'Tự làm trọn vẹn: đọc → dự đoán → nghe → trả lời → kiểm tra.'],
+  };
+  function modeBannerHtml(q) {
+    const m = MODE_BANNER[q.mode];
+    if (!m) return ''; // a practice saved before the guided examples
+    return `<div class="ltp-mode ${m[0]}"><b>${m[1]}</b><span>${m[2]}</span></div>`;
+  }
+  function afterQtypeRender(q, a) {
+    const panel = panelEl();
+    const slot = q.imageUrl && panel && panel.querySelector('.ltp-map-slot');
+    if (slot) slot.appendChild(mapImage(q.imageUrl));
+    if (!a.result && q.input === 'text') {
+      const input = panel && panel.querySelector('.ltp-input');
+      if (input && window.matchMedia && window.matchMedia('(min-width: 900px)').matches) input.focus({ preventScroll: true });
+    }
+  }
+
+  function renderQtypeQuestion() {
+    const q = st.items[st.idx];
+    if (q.mode === 'example') { renderQtypeExample(); return; }
+    if (q.mode === 'guided') { renderQtypeGuided(); return; }
+    const a = st.answers[st.idx];
+    const r = a.result;
+    showPanelState(headerHtml(esc(st.practice.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
+      ${modeBannerHtml(q)}
+      ${qtypePlayerHtml(q, st.idx)}
+      ${qtypeMapHtml(q)}
       <div class="ltp-q-block">
-        <div class="ltp-qhead"><span class="ltp-qnum">${esc(qNumbers(q))}</span>${q.instruction ? `<span class="ltp-instruction">${esc(q.instruction)}</span>` : ''}</div>
-        ${list}${prompt}${pickNote}
+        ${qtypeHeadHtml(q)}
+        ${qtypeListHtml(q)}${qtypePromptHtml(q)}${pickNoteHtml(q, a)}
         ${qtypeInputHtml(q, a)}
       </div>
       ${r ? qtypeFeedbackHtml(q, r) : ''}
-      ${navHtml(checkBtnHtml(a, !!ready))}
+      ${navHtml(checkBtnHtml(a, !!qtypeReady(q, a)))}
     </div>`);
-    const slot = q.imageUrl && panelEl() && panelEl().querySelector('.ltp-map-slot');
-    if (slot) slot.appendChild(mapImage(q.imageUrl));
-    if (!r && q.input === 'text') {
-      const input = panelEl() && panelEl().querySelector('.ltp-input');
-      if (input && window.matchMedia && window.matchMedia('(min-width: 900px)').matches) input.focus({ preventScroll: true });
+    afterQtypeRender(q, a);
+  }
+
+  // ── Q1: worked example (I DO) — six steps revealed one at a time ──────
+
+  const EX_STEPS = 6;
+  // Why an answer type, in the words a student can reuse.
+  const TYPE_WHY = {
+    proper: 'Chỗ trống cần một tên riêng (người, địa điểm, tổ chức) → nghe kỹ phần đánh vần, viết hoa chữ cái đầu.',
+    date: 'Chỗ trống cần ngày / thứ / tháng → để ý cách đọc “the fifth of June”, “Tuesday the 3rd”.',
+    time: 'Chỗ trống cần giờ → để ý a.m. / p.m., “half past”, “quarter to”.',
+    price: 'Chỗ trống cần giá tiền → để ý £ / $, “per week”, “each”, và số bị sửa lại.',
+    number: 'Chỗ trống cần một con số → để ý số điện thoại, số phòng, số lượng; 15 ≠ 50.',
+    word: 'Chỗ trống cần một từ vựng → nhìn từ đứng trước / sau để đoán danh từ, tính từ hay động từ.',
+  };
+  // Step 2 of the example for the letter types: what to do before listening.
+  const EX_PREDICT = {
+    mcq: (q) => `Đọc ${q.choices.length} lựa chọn ${q.choices.map(c => c.key).join(' / ')} và để ý chúng khác nhau ở đâu. Audio thường nhắc tới cả những lựa chọn sai — chờ ý trả lời đúng câu hỏi.`,
+    multi: (q) => `Cần chọn đúng ${q.pick} chữ cái trong ${q.choices.length} lựa chọn. Đọc hết các lựa chọn trước; nghe xem ý nào được xác nhận, ý nào chỉ được nhắc tới rồi bị bác bỏ.`,
+    matching: (q) => `Đọc danh sách ${q.choices[0].key}–${q.choices[q.choices.length - 1].key} trước. Khi nghe tới “${q.text}”, chờ ý nghĩa khớp với một lựa chọn — không phải từ giống hệt.`,
+    map: () => 'Nhìn bản đồ trước: tìm điểm bắt đầu và các mốc. Khi nghe, đi theo từ chỉ hướng (next to, opposite, on the left…) chứ không chỉ chờ tên địa điểm.',
+  };
+  const choiceText = (q, keys) => String(keys).split(',').map(s => s.trim().toUpperCase()).filter(Boolean).map(k => {
+    const c = (q.choices || []).find(x => x.key === k);
+    return c && c.label ? `${k}. ${c.label}` : k;
+  }).join(' · ');
+  const wordCount = (s) => String(s).trim().split(/\s+/).filter(Boolean).length;
+
+  function exampleStepHtml(k, q, g, i) {
+    const typed = q.input === 'text';
+    const answer = typed ? answerLabel(g.answer) : choiceText(q, g.answer);
+    const chips = (list, cls) => list.map(x => `<span class="ltp-chip ${cls}">${esc(x)}</span>`).join(' ');
+    switch (k) {
+      case 1: return ['🔍 Gạch chân keyword', `${chips(g.keywords, 'kw') || '<i>—</i>'}
+        ${g.signals && g.signals.length ? `<div>🟢 Từ sát chỗ trống: ${chips(g.signals, 'sig')}</div>` : ''}
+        <div class="ltp-muted">Đây là những từ (hoặc cách nói khác của chúng) bạn sẽ chờ nghe.</div>`];
+      case 2: {
+        if (!typed) return ['🎯 Trước khi nghe', esc((EX_PREDICT[st.practice.qtype] || (() => ''))(q))];
+        if (!g.type) return ['🎯 Dự đoán loại đáp án', 'Đáp án là một cụm đặc biệt (email / địa chỉ web) — chép thật chính xác từng ký tự.'];
+        return ['🎯 Dự đoán loại đáp án', `<b>${esc(typeName(g.type))}</b><div class="ltp-muted">${esc(TYPE_WHY[g.type] || '')}</div>`];
+      }
+      case 3: return ['🎧 Nghe đoạn audio', `${qtypePlayerHtml(q, i)}${g.where ? `<div class="ltp-muted">📍 Vị trí: ${esc(g.where)}</div>` : ''}`];
+      case 4: {
+        if (!g.evidence) return ['📝 Tìm đáp án trong transcript', '<span class="ltp-muted">Câu này chưa có transcript khớp — nghe lại đoạn audio ở bước 3.</span>'];
+        const terms = typed ? answerLabel(g.answer).split(' / ') : [...(g.directions || []), ...g.keywords];
+        const traps = (g.traps || []).length ? `<div class="ltp-trap">⚠️ Bẫy: ${esc(choiceText(q, g.traps.join(',')))} cũng được nhắc tới trong đoạn này — nhưng không phải đáp án.</div>` : '';
+        const dirs = (g.directions || []).length ? `<div class="ltp-muted">🧭 Từ chỉ hướng nghe được: ${chips(g.directions, 'sig')}</div>` : '';
+        return ['📝 Tìm đáp án trong transcript', `${evidenceHtml(g.evidence, terms, `ltp-ev-${i}`)}${dirs}${traps}`];
+      }
+      case 5: {
+        const limit = typed && q.wordLimit ? `<div class="ltp-muted">✍️ ${wordCount(answerLabel(g.answer).split(' / ')[0])} từ — đúng yêu cầu “${esc(q.wordLimit)}”.</div>` : '';
+        return ['✅ Đáp án', `<span class="ltp-answer">${esc(answer)}</span>${limit}`];
+      }
+      default: {
+        const why = g.why || (g.evidence
+          ? `${typed && g.type ? `Câu hỏi cần ${typeName(g.type)}. ` : ''}Người nói: “${g.evidence.text}” → đáp án ${answer}.`
+          : `Đáp án: ${answer}.`);
+        return ['💡 Giải thích', escNl(why)];
+      }
     }
+  }
+
+  function renderQtypeExample() {
+    const q = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const g = q.guide || { keywords: [], signals: [], traps: [], directions: [] };
+    const step = Math.min(Math.max(Number(a.step) || 0, 0), EX_STEPS);
+    const steps = [];
+    for (let k = 1; k <= step; k++) {
+      const [title, body] = exampleStepHtml(k, q, g, st.idx);
+      steps.push(`<li class="ltp-gstep${k === step ? ' current' : ''}"><div class="ltp-step-title">Bước ${k} — ${title}</div><div class="ltp-step-body">${body}</div></li>`);
+    }
+    // the answer shows on the options once step 5 is reached
+    const shown = step >= 5 ? { sel: [], value: '', result: { correctAnswer: g.answer, isCorrect: true } } : { sel: [], value: '', result: null };
+    const options = q.input === 'text' ? '' : qtypeInputHtml(q, shown, { readOnly: true });
+    showPanelState(headerHtml(esc(st.practice.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
+      ${modeBannerHtml(q)}
+      ${q.sourceName ? `<div class="ltp-muted">Câu mẫu lấy từ ${esc(q.sourceName)}.</div>` : ''}
+      ${qtypeMapHtml(q)}
+      <div class="ltp-q-block">
+        ${qtypeHeadHtml(q)}
+        ${qtypeListHtml(q)}${qtypePromptHtml(q, step >= 1 ? g.keywords : null)}
+        ${q.input === 'multi' ? `<div class="ltp-limit">☑️ Chọn đúng <b>${q.pick}</b> chữ cái</div>` : ''}
+        ${options}
+      </div>
+      <ol class="ltp-gsteps">${steps.join('')}</ol>
+      ${step < EX_STEPS ? `<button type="button" class="ltp-btn ltp-btn-primary ltp-step-next" data-act="ex-next">${step ? 'Bước tiếp theo →' : '▶ Bắt đầu xem mẫu'}</button>`
+    : '<div class="ltp-muted ltp-step-end">✔️ Xong câu mẫu. Câu tiếp theo bạn sẽ làm cùng, có gợi ý từng bước.</div>'}
+      ${navHtml('')}
+    </div>`);
+    afterQtypeRender(q, shown);
+  }
+
+  // ── Q2: done together (WE DO) — keyword → predict → listen → answer ──
+
+  const WE_STEPS = ['kw', 'predict', 'listen', 'answer'];
+  const GUIDED_THINK = {
+    mcq: 'Đọc các lựa chọn và gạch chân điểm khác nhau giữa chúng. Đừng chọn chỉ vì nghe thấy một từ giống option.',
+    multi: 'Đọc hết các lựa chọn. Nhớ: có ý được nhắc tới rồi bị bác bỏ — chỉ chọn ý người nói xác nhận.',
+    matching: 'Đọc lại danh sách lựa chọn; nghĩ xem mục này có thể được nói lại bằng từ khác (paraphrase) thế nào.',
+    map: 'Tìm điểm bắt đầu và các mốc trên bản đồ; chuẩn bị nghe từ chỉ hướng.',
+  };
+
+  function renderQtypeGuided() {
+    const q = st.items[st.idx];
+    const a = st.answers[st.idx];
+    const r = a.result;
+    const c = q.coach || { keywords: [], signals: [] };
+    const step = r ? WE_STEPS.length - 1 : Math.min(Math.max(Number(a.step) || 0, 0), WE_STEPS.length - 1);
+    const typed = q.input === 'text';
+    const predicts = typed && c.predict;
+    const li = (k, title, body) => `<li class="ltp-gstep${k === step && !r ? ' current' : ''}"><div class="ltp-step-title">Bước ${k + 1} — ${title}</div><div class="ltp-step-body">${body}</div></li>`;
+    const steps = [];
+    // 1 · keywords: the student's own, then the suggested ones
+    // (the highlights live in `kwSel`: `sel` holds the "choose TWO" letters)
+    const kwSel = a.kwSel || [];
+    steps.push(li(0, '🔍 Gạch chân keyword', a.kwDone ? kwFeedbackHtml({ text: q.text, keywords: c.keywords, signals: c.signals }, { sel: kwSel })
+      : `<div class="ltp-muted">Chạm vào những từ trong câu hỏi mà bạn sẽ chờ nghe (thường 2–4 từ).</div>
+        <button type="button" class="ltp-btn ltp-btn-primary" data-act="kw-done" ${kwSel.length ? '' : 'disabled'}>Xong, xem gợi ý</button>`));
+    // 2 · predict (typed) / read the options
+    if (step >= 1) {
+      const body = predicts
+        ? `<div class="ltp-muted">Đáp án là loại gì?${(c.signals || []).length ? ` Nhìn từ sát chỗ trống: <b>${esc(c.signals.join(', '))}</b>.` : ''}</div>
+          ${typeChipsHtml(a.prediction, { locked: !!r || step > 1, compact: true })}`
+        : `<div>${esc(typed ? 'Đọc cả câu: sau khi điền, câu phải đúng ngữ pháp và không vượt giới hạn từ.' : GUIDED_THINK[st.practice.qtype] || '')}</div>`;
+      steps.push(li(1, predicts ? '🎯 Dự đoán loại đáp án' : '🎯 Trước khi nghe', body
+        + (step === 1 ? `<button type="button" class="ltp-btn ltp-btn-primary" data-act="g-next" ${predicts && !a.prediction ? 'disabled' : ''}>Tiếp: nghe →</button>` : '')));
+    }
+    // 3 · listen
+    if (step >= 2) {
+      steps.push(li(2, '🎧 Nghe đoạn audio', `${qtypePlayerHtml(q, st.idx)}<div class="ltp-muted">Chờ keyword (hoặc cách nói khác của nó); đáp án thường đến ngay sau.</div>
+        ${step === 2 ? '<button type="button" class="ltp-btn ltp-btn-primary" data-act="g-next">Nghe xong → trả lời</button>' : ''}`));
+    }
+    // 4 · answer + check
+    if (step >= 3) steps.push(li(3, '✍️ Trả lời', `${pickNoteHtml(q, a)}${qtypeInputHtml(q, a)}`));
+    showPanelState(headerHtml(esc(st.practice.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
+      ${modeBannerHtml(q)}
+      ${qtypeMapHtml(q)}
+      <div class="ltp-q-block">
+        ${qtypeHeadHtml(q)}
+        ${qtypeListHtml(q)}
+        ${typed && q.context ? `<div class="ltp-context">📋 ${esc(q.context)}</div>` : ''}
+        <div class="ltp-q ltp-tokens">${tokensHtml(q.text, kwSel, { locked: a.kwDone, kw: c.keywords })}</div>
+        ${typed && q.wordLimit ? `<div class="ltp-limit">✍️ ${esc(q.wordLimit)}</div>` : ''}
+      </div>
+      <ol class="ltp-gsteps">${steps.join('')}</ol>
+      ${r ? qtypeFeedbackHtml(q, r) : ''}
+      ${navHtml(step >= 3 ? checkBtnHtml(a, !!qtypeReady(q, a)) : '')}
+    </div>`);
+    afterQtypeRender(q, a);
   }
 
   // One decoded <img> per map, moved into each fresh render.
@@ -1008,8 +1192,11 @@
       ? `${r.isCorrect ? '✓ Chính xác!' : `✗ Đúng ${r.correctCount}/${r.total}`} — Đáp án: <strong>${esc(answer)}</strong>`
       : `${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${r.isCorrect ? '' : ` — Đáp án: <strong>${esc(answer)}</strong>`}`;
     const terms = q.input === 'text' ? answerLabel(r.correctAnswer).split(' / ') : [];
+    const pred = r.prediction && r.category
+      ? `<div class="ltp-predres ${r.predictionCorrect ? 'ok' : 'bad'}">🎯 Dự đoán loại đáp án: ${esc(typeName(r.prediction))} ${r.predictionCorrect ? '✓' : `✗ — thực tế là ${esc(typeName(r.category))}`}</div>` : '';
     return `<div class="ltp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
       <div class="ltp-verdict ${r.isCorrect ? 'right' : 'wrong'}">${verdict}</div>
+      ${pred}
       ${diagnosisHtml(r)}
       ${evidenceHtml(r.evidence, terms, `ltp-ev-${st.idx}`)}
       ${r.explanation ? `<div class="ltp-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
@@ -1359,7 +1546,10 @@
     if (a.result || a.checking || !ready) return;
     let body;
     if (predictOnly) body = { sectionId: it.sectionId, questionNumber: it.questionNumber, prediction: a.prediction };
-    else if (st.kind === 'qtype') body = { sectionId: st.practice.sectionId, questionNumber: it.questionNumber, answer: multi ? JSON.stringify(a.sel) : String(a.value).trim() };
+    else if (st.kind === 'qtype') {
+      body = { sectionId: st.practice.sectionId, questionNumber: it.questionNumber, answer: multi ? JSON.stringify(a.sel) : String(a.value).trim() };
+      if (it.mode === 'guided' && a.prediction) body.prediction = a.prediction;
+    }
     else if (typedKind()) body = { sectionId: it.sectionId, questionNumber: it.questionNumber, answer: String(a.value).trim(), prediction: a.prediction || undefined };
     else if (it.type === 'meaning') body = { item: 'meaning', symbol: it.symbol, answer: a.value };
     else body = { item: 'audio', sectionId: it.sectionId, sentenceIndex: it.sentenceIndex, answer: a.value };
@@ -1401,7 +1591,8 @@
     stopTimer();
     stopAudio();
     // a "choose TWO / THREE" item is worth its number of questions
-    const worth = (it) => (st.kind === 'qtype' && it.pick) || 1;
+    // and the worked example isn't scored
+    const worth = (it) => (st.kind === 'qtype' && it.mode === 'example' ? 0 : (st.kind === 'qtype' && it.pick) || 1);
     const got = (a, it) => (!a.result ? 0 : a.result.total ? a.result.correctCount : (a.result.isCorrect ? worth(it) : 0));
     const n = st.items.reduce((s, it) => s + worth(it), 0);
     const score = st.answers.reduce((s, a, i) => s + got(a, st.items[i]), 0);
@@ -1409,13 +1600,17 @@
     st.finished = true;
     persist();
     renderEntry(st.lesson);
-    const pct = score / n;
+    const pct = n ? score / n : 0;
     const msg = pct === 1 ? 'Xuất sắc! Bạn đã nắm chắc kỹ thuật này.'
       : pct >= 0.6 ? 'Tốt lắm! Xem lại các câu sai để hiểu vì sao nhé.'
         : 'Chưa sao cả — đọc lại phần lý thuyết phía trên rồi làm lại nhé.';
     const predOk = typedKind() ? st.answers.filter(a => a.result && a.result.predictionCorrect).length : null;
     const rows = st.items.map((it, i) => {
       const ok = st.answers[i].result && st.answers[i].result.isCorrect;
+      if (st.kind === 'qtype' && it.mode === 'example') {
+        return `<button type="button" class="ltp-result-row ex" data-act="goto" data-idx="${i}">
+        <span>📘</span><span class="ltp-result-q">Câu mẫu ${esc(qNumbers(it))}: ${esc(it.text)} <i>(không tính điểm)</i></span></button>`;
+      }
       const text = st.kind === 'qtype' ? `Câu ${qNumbers(it)}: ${it.text}`
         : typedKind() || PREDICT_KINDS.has(st.kind) ? `Câu ${it.questionNumber}: ${it.text}`
           : it.type === 'meaning' ? `Ký hiệu ${it.symbol}` : `Nghe → ký hiệu (${it.sourceName})`;
@@ -1455,11 +1650,12 @@
     const m = /^ltp-(p|ev)-(\d+)$/.exec(playerId);
     if (!m) return null;
     const i = Number(m[2]);
-    const url = (oneSection(st.practice) && st.practice.audioUrl) || st.items[i].audioUrl;
+    // (a worked example may come from another section, with its own audio)
+    const url = st.items[i].audioUrl || (oneSection(st.practice) && st.practice.audioUrl);
     // a question-type item without a located stretch plays the whole section
-    if (m[1] === 'p' && st.kind === 'qtype' && !st.items[i].segment) return { url, seg: { start: 0, end: st.practice.audioDuration || 3600 } };
+    if (m[1] === 'p' && st.kind === 'qtype' && !st.items[i].segment) return { url, seg: { start: 0, end: st.items[i].audioDuration || st.practice.audioDuration || 3600 } };
     if (m[1] === 'p') return { url, seg: st.items[i].segment };
-    const ev = st.answers[i].result && st.answers[i].result.evidence;
+    const ev = (st.answers[i].result && st.answers[i].result.evidence) || (st.items[i].guide && st.items[i].guide.evidence);
     return ev ? { url, seg: { start: Math.max(0, ev.start - 0.2), end: ev.end + 0.5 } } : null;
   }
 
@@ -1522,13 +1718,18 @@
     switch (act) {
       case 'kw': {
         if (cur.kwDone && st.kind === 'keywords') return;
+        // a question-type screen keeps `sel` for its "choose TWO" letters
+        const field = st.kind === 'qtype' ? 'kwSel' : 'sel';
         const w = Number(el.dataset.ti);
-        const set = new Set(cur.sel || []);
+        const set = new Set(cur[field] || []);
         if (set.has(w)) set.delete(w); else set.add(w);
-        cur.sel = [...set];
+        cur[field] = [...set];
         break;
       }
-      case 'kw-done': cur.kwDone = true; break;
+      case 'kw-done': cur.kwDone = true; if (st.kind === 'qtype') cur.step = Math.max(Number(cur.step) || 0, 1); break;
+      // worked example: show the next step; done together: move to the next step
+      case 'ex-next': cur.step = Math.min((Number(cur.step) || 0) + 1, EX_STEPS); break;
+      case 'g-next': if (cur.result) return; cur.step = Math.min((Number(cur.step) || 0) + 1, WE_STEPS.length - 1); break;
       case 'predict': if (cur.result) return; cur.prediction = el.dataset.val; break;
       case 'wf-next': {
         const i = WF_STAGES.indexOf(st.stage);
@@ -1593,6 +1794,7 @@
       if (again) again.focus({ preventScroll: true });
     }
     if (SCREEN_ACTS.has(act)) revealPanel();
+    if (act === 'ex-next' || act === 'g-next' || act === 'kw-done') revealEl(document.querySelector('#ltp-panel .ltp-gstep.current'));
   }
 
   window.LTPractice = { supports, mount };

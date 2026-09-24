@@ -124,8 +124,9 @@ describe('filtering by question type (spec cases 1–3)', () => {
     // Q3's stretch: from just after Q2's answer (ends 56 s) to just after
     // "You need to bring a raincoat." (60–66 s)
     expect(pr.questions[2].segment).toEqual({ start: 55, end: 67.5 });
-    const keys = keysOf(res.body);
-    ['correctAnswer', 'explanation', 'answer'].forEach(k => expect(keys.has(k)).toBe(false));
+    // only the worked example (Q1) shows its answer — see the guided cases
+    const keys = keysOf({ ...res.body.practice, questions: pr.questions.slice(1) });
+    ['correctAnswer', 'explanation', 'answer', 'guide'].forEach(k => expect(keys.has(k)).toBe(false));
   });
 
   test('CASE 2: Multiple Choice → only the MCQs, options as A/B/C', async () => {
@@ -189,6 +190,60 @@ describe('grading (spec cases 9–11)', () => {
     const res = await ask('multiple-choice', 1, 'A');
     expect(res.status).toBe(400);
     expect(res.body.code).toBe('NOT_IN_PRACTICE');
+  });
+});
+
+describe('guided examples: Q1 I DO, Q2 WE DO, Q3+ YOU DO (spec cases 6–8)', () => {
+  let s;
+  beforeEach(async () => { s = await section([FORM, MCQ, MATCHING, MULTI, MAP, SENTENCES]); });
+
+  test('CASE 6: Q1 is worked through — keywords, answer type, the line of the transcript, the answer', async () => {
+    const pr = (await get('form-note-table-completion')).body.practice;
+    expect(pr.questions.map(q => q.mode)).toEqual(['example', 'guided', 'solo', 'solo']);
+    const { guide } = pr.questions[0];
+    expect(guide).toMatchObject({ type: 'number', answer: 'BS4 7JN', traps: [], directions: [] });
+    expect(guide.keywords).toContain('Postcode');
+    expect(guide.evidence).toMatchObject({ text: 'Please write your postcode, it is BS4 7JN.', start: 40, end: 46 });
+
+    const mcqGuide = (await get('multiple-choice')).body.practice.questions[0].guide;
+    expect(mcqGuide).toMatchObject({ answer: 'B', where: '…', why: '…', type: null });
+    expect(mcqGuide.evidence.text).toBe('Most children enjoy the swimming lessons the most.');
+    const mapGuide = (await get('map-plan-diagram')).body.practice.questions[0].guide;
+    expect(mapGuide).toMatchObject({ answer: 'C', directions: ['next to'] });
+  });
+
+  test('CASE 7–8: Q2 gets only keywords to compare with; Q3+ nothing — no answer before the check', async () => {
+    const pr = (await get('form-note-table-completion')).body.practice;
+    expect(pr.questions[1].coach).toEqual({ keywords: expect.any(Array), signals: expect.any(Array), predict: true });
+    expect(pr.questions[1].coach.keywords).toContain('Date');
+    pr.questions.slice(2).forEach(q => { expect(q.guide).toBeUndefined(); expect(q.coach).toBeUndefined(); });
+    const keys = keysOf(pr.questions.slice(1));
+    ['correctAnswer', 'explanation', 'answer', 'why', 'evidence', 'type'].forEach(k => expect(keys.has(k)).toBe(false));
+    // the letter types have no answer type to predict
+    expect((await get('multiple-choice')).body.practice.questions[1].coach.predict).toBe(false);
+  });
+
+  test('WE DO: the answer-type prediction is judged with the answer', async () => {
+    const res = await check('form-note-table-completion', { sectionId: String(s._id), questionNumber: 2, answer: '5th', prediction: 'date' });
+    expect(res.body.result).toMatchObject({ isCorrect: true, category: 'date', prediction: 'date', predictionCorrect: true });
+    const off = (await check('form-note-table-completion', { sectionId: String(s._id), questionNumber: 4, answer: '40', prediction: 'word' })).body.result;
+    expect(off).toMatchObject({ category: 'price', predictionCorrect: false });
+    const letters = (await check('multiple-choice', { sectionId: String(s._id), questionNumber: 6, answer: 'B', prediction: 'word' })).body.result;
+    expect(letters.category).toBeUndefined();
+  });
+
+  test('"choose TWO": the worked example is borrowed from another section; alone, the cluster is done together', async () => {
+    const alone = (await get('multiple-answers')).body.practice;
+    expect(alone.questions.map(q => q.mode)).toEqual(['guided']);
+    const other = await section([MULTI], { title: 'Another club' });
+    const pr = (await get('multiple-answers')).body.practice;
+    expect(pr.questions).toHaveLength(2);
+    const [ex, own] = pr.questions;
+    expect(ex).toMatchObject({ mode: 'example', numbers: [11, 12], audioUrl: 'https://res.cloudinary.com/demo/video/upload/club.mp3' });
+    expect(ex.sectionId).not.toBe(pr.sectionId);
+    expect([String(s._id), String(other._id)]).toContain(ex.sectionId);
+    expect(ex.guide).toMatchObject({ answer: 'A, B' });
+    expect(own).toMatchObject({ mode: 'guided', numbers: [11, 12] });
   });
 });
 

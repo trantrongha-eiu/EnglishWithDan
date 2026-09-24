@@ -883,13 +883,94 @@ function mergeSegments(segs) {
 // A label / statement as shown, without the answer lines some carry ("Stage____").
 const promptText = (q) => String(q.questionText || '').replace(/[_…]{2,}|\.{3,}/g, ' ').replace(/\s+/g, ' ').trim();
 
-function qtypePayload(it) {
+// ── Guided examples (Phase 4) ───────────────────────────────────────────
+// Q1 is worked through step by step (I DO) and so carries its own answer;
+// Q2 is done together (WE DO): it gets only the keywords to compare the
+// student's with — its answer still comes from the check; Q3+ alone.
+const GUIDE_MODES = ['example', 'guided'];
+const modeAt = (i) => GUIDE_MODES[i] || 'solo';
+
+const DIRECTION_RE = /\b(?:next to|opposite|behind|in front of|between|beside|across from|on the (?:left|right)|to the (?:left|right)|on your (?:left|right)|turn (?:left|right)|at the end of|at the (?:top|bottom|back|front|far end)|in the (?:corner|middle|centre|center)|(?:north|south)(?:-?(?:east|west))?|east|west|straight (?:on|ahead)|past|through|along|around the corner|next door|above|below)\b/gi;
+
+// "Vị trí: … / Transcript: … / Phân tích: …" (most explanations) → where
+// the answer comes and the reasoning; otherwise the text minus the quote.
+function explanationParts(text) {
+  const s = String(text || '').trim();
+  if (!s) return { where: '', why: '' };
+  const where = (s.match(/Vị trí\s*:\s*([^\n]+)/i) || [])[1] || '';
+  const analysis = (s.match(/Phân tích\s*:\s*([\s\S]+)/i) || [])[1];
+  const why = analysis || s.split(/\n+/).filter(l => !/^\s*(?:Vị trí|Transcript)\s*:/i.test(l)).join('\n');
+  return { where: where.trim(), why: why.trim() };
+}
+
+// What to underline: the gap's words, or the prompt's (a name to match, a
+// place on the map, the MCQ stem).
+function promptKeywords(it) {
+  const evText = it.ev ? it.ev.text : '';
+  if (it.gap) {
+    // a table row reads "cell · cell · … · Enjoyment of a _____": the gap's own cell
+    const cells = it.gap.text.split(' · ');
+    const own = cells.find(c => c.includes('_____'));
+    if (cells.length > 1 && own) {
+      const { keywords } = keywordsFor({ text: own, context: it.gap.context || '' }, evText);
+      return { keywords, signals: keywordsFor(it.gap, evText).signals };
+    }
+    return keywordsFor(it.gap, evText);
+  }
+  const { keywords } = keywordsFor({ text: `${promptText(it.q)} _____`, context: '' }, evText);
+  return { keywords: keywords.filter(k => !/^(?:TWO|THREE)$/.test(k)), signals: [] };
+}
+
+// Options (not the answer) with a word or number heard in the evidence —
+// the distractors the speaker mentions on purpose.
+const bareToken = (w) => w.toLowerCase().replace(/,/g, '').replace(/[.;:!?]+$/, '');
+function trapLetters(options, keys, evText) {
+  const heard = new Set(words(normalizeForMatch(evText)).map(bareToken));
+  return options.map((o, i) => ({ key: String.fromCharCode(65 + i), o })).filter(({ key, o }) => !keys.includes(key)
+    && words(o).map(bareToken).some(w => heard.has(w) && !STOPWORDS.has(w) && (w.length >= 3 || /\d/.test(w))))
+    .map(x => x.key);
+}
+
+function guidePayload(it, section) {
+  const typed = it.qtype === 'form' || it.qtype === 'sentence';
+  // "choose TWO": every answer's line, in order
+  const evs = it.cluster.map(x => x.ev).filter(Boolean).filter((e, i, a) => a.findIndex(o => o.text === e.text) === i)
+    .sort((a, b) => a.start - b.start);
+  const ev = evs.length ? {
+    text: evs.map(e => e.text).join(' … '), speaker: evs.every(e => e.speaker === evs[0].speaker) ? evs[0].speaker : '',
+    start: evs[0].start, end: Math.max(...evs.map(e => e.end)),
+  } : null;
+  const { keywords, signals } = promptKeywords(it);
+  const keys = it.cluster.map(x => String(x.q.correctAnswer || '').trim().toUpperCase());
+  const parts = [...new Set(it.cluster.map(x => String(x.q.explanation || '').trim()).filter(Boolean))].map(explanationParts);
+  const options = it.qtype === 'mcq' || it.qtype === 'multi' ? cleanOptions(it.q.options) : [];
+  return {
+    keywords,
+    signals,
+    type: typed ? answerType(it.q, it.gap, timelineOf(section)) : null,
+    answer: typed ? String(it.q.correctAnswer) : [...keys].sort().join(', '),
+    evidence: ev,
+    where: (parts.find(p => p.where) || { where: '' }).where,
+    why: parts.map(p => p.why).filter(Boolean).join('\n'),
+    traps: ev && options.length ? trapLetters(options, keys, ev.text) : [],
+    directions: ev && it.qtype === 'map' ? [...new Set((ev.text.match(DIRECTION_RE) || []).map(d => d.toLowerCase()))] : [],
+  };
+}
+
+function qtypePayload(it, section, mode = 'solo') {
   const { group, q } = it;
   const base = {
     questionNumber: q.questionNumber,
     instruction: cleanInstruction(group),
     segment: it.segment,
+    mode,
   };
+  if (mode === 'example') base.guide = guidePayload(it, section);
+  if (mode === 'guided') {
+    const typed = it.qtype === 'form' || it.qtype === 'sentence';
+    // `predict`: whether the answer is one of the types taught (not which)
+    base.coach = { ...promptKeywords(it), predict: typed && !!answerType(q, it.gap, timelineOf(section)) };
+  }
   switch (it.qtype) {
     case 'form':
     case 'sentence':
@@ -921,9 +1002,13 @@ async function buildQtype(cfg, rng, exclude) {
   const all = sections.map(s => ({ s, items: qtypeItems(s, cfg.qtype) })).filter(c => weight(c.items) >= cfg.minQuestions);
   if (!all.length) return null;
   const pool = withoutRecent(all, exclude, c => String(c.s._id));
+  const hasEv = (it) => !!it && it.cluster.some(x => x.ev);
   const rich = (c) => weight(c.items) >= cfg.preferQuestions;
-  const evidenced = (c) => c.items.filter(it => it.cluster.some(x => x.ev)).length / c.items.length >= 0.6;
-  const tiers = [pool.filter(c => rich(c) && evidenced(c)), pool.filter(rich), pool];
+  const evidenced = (c) => c.items.filter(hasEv).length / c.items.length >= 0.6;
+  // the worked example and the one done together need their transcript line
+  const guidable = (c) => (c.items.length >= 3 ? hasEv(c.items[0]) && hasEv(c.items[1]) : hasEv(c.items[0]));
+  const tiers = [pool.filter(c => guidable(c) && rich(c) && evidenced(c)), pool.filter(c => guidable(c) && rich(c)),
+    pool.filter(guidable), pool.filter(rich), pool];
   const tier = tiers.find(t => t.length);
   const { s, items } = tier[Math.floor(rng() * tier.length)];
   const chosen = [];
@@ -933,6 +1018,22 @@ async function buildQtype(cfg, rng, exclude) {
     chosen.push(it);
     count += it.cluster.length;
   }
+  // Too few for I DO → WE DO → YOU DO (a "choose TWO" section holds two
+  // clusters at most): the worked example comes from another section.
+  let ex = null;
+  if (chosen.length < 3) {
+    const others = all.filter(c => c.s !== s).flatMap(c => c.items.filter(hasEv).map(it => ({ s: c.s, it })));
+    if (others.length) ex = others[Math.floor(rng() * others.length)];
+  }
+  // (a lone item with no example to borrow is still done together, not just shown)
+  const offset = ex || chosen.length === 1 ? 1 : 0;
+  const questions = chosen.map((it, i) => qtypePayload(it, s, modeAt(i + offset)));
+  if (ex) {
+    questions.unshift({
+      ...qtypePayload(ex.it, ex.s, 'example'),
+      sectionId: String(ex.s._id), sourceName: sourceName(ex.s), audioUrl: ex.s.audioUrl, audioDuration: ex.s.audioDuration || null,
+    });
+  }
   return {
     kind: 'qtype',
     qtype: cfg.qtype,
@@ -941,7 +1042,7 @@ async function buildQtype(cfg, rng, exclude) {
     sourceName: sourceName(s),
     audioUrl: s.audioUrl,
     audioDuration: s.audioDuration || null,
-    questions: chosen.map(qtypePayload),
+    questions,
   };
 }
 
@@ -978,11 +1079,15 @@ function checkQtype(cfg, section, body, answer) {
   // "interchangeable" gaps: any of the group's answers counts
   const isCorrect = grade(it.q) || (!!it.group.interchangeableAnswers && list.some(x => x.group === it.group && x !== it && grade(x.q)));
   const typed = cfg.qtype === 'form' || cfg.qtype === 'sentence';
+  // the answer-type prediction of the question done together (WE DO)
+  const category = typed ? answerType(it.q, it.gap, timelineOf(section)) : null;
+  const prediction = typed && CHOICES.keywords.includes(body.prediction) ? body.prediction : null;
   return {
     status: 'ok',
     result: {
       questionNumber: it.q.questionNumber, isCorrect, correctAnswer: it.q.correctAnswer, explanation, evidence: ev,
       diagnosis: typed && !isCorrect ? diagnose(answer, it.q.correctAnswer, wordLimit(it.group)) : null,
+      ...(typed ? { category, prediction, predictionCorrect: prediction && category ? prediction === category : null } : {}),
     },
   };
 }
@@ -1386,5 +1491,6 @@ module.exports = {
     gapText, gapItems, answerType, keywordsFor, symbolOf, symbolClips, previewRuns, normalizeForMatch,
     gapContext, wordClassOf, infoTypeOf, formOf, classify, diagnose, balancedPick,
     qtypeOf, mapLetters, sectionQuestions, qtypeItems, qtypePayload,
+    explanationParts, trapLetters, guidePayload, modeAt,
   },
 };
