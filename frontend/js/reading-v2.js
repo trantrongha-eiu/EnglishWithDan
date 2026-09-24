@@ -60,6 +60,7 @@ let _testsCacheAt = 0;
 const TESTS_CACHE_TTL_MS = 60000;
 let _rdGlobalSearchActive = false;
 let _rdGlobalSearchToken = 0;
+let _rdListToken = 0;          // loadPracticePassages() — latest call wins
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _mockMode = false;       // true khi mở trang này là bước 2/4 của bài thi thử full (?mock=<id>&skill=reading) — xem shared/mock-test.js
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
@@ -452,6 +453,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const modeParam      = params.get('mode') ?? params.get('tab'); // ?mode=single/full; legacy ?tab=lele accepted
   const categoryParam  = params.get('category') || 'passage1';
   const fromCleanPath  = !!cleanRoute;
+  // ?exam=practice|simulation — the mode-specific start link (see
+  // RouteParams.examMode). Practice starts straight away; Simulation still
+  // goes through ExamModeSelect (pre-selected) so a link never starts a
+  // proctored attempt without the student's click.
+  const examParam      = window.RouteParams ? window.RouteParams.examMode() : null;
 
   if (reviewId) {
     if (!fromCleanPath) history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
@@ -463,6 +469,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (testIdParam) {
     const test = allTests.find(t => t._id === testIdParam);
+    // Reloading the exam's own URL mid-test: resume the saved attempt
+    // (same as the "Tiếp tục" banner) instead of starting a fresh one,
+    // which would wipe the in-progress answers via clearExamStorage().
+    await checkResumeExam();
+    const _saved = document.getElementById('resume-banner')?._resumeData;
+    if (test && _saved && String(_saved.testId) === String(test._id) && !_saved.mockId) {
+      resumeExam();
+      return;
+    }
     if (test) {
       // Same hasPremiumAccess() fix as goToStartTest() below (Phase 5
       // audit finding) — was raw `_userPlan === 'premium'` here too, which
@@ -470,10 +485,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       // hasPremiumAccess() applies, wrongly paywalling a legitimate
       // trial/staff user who opens a direct/shared test link.
       if (window.AuthService.hasPremiumAccess()) {
-        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
+        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}${window.RouteParams ? window.RouteParams.examSuffix(examParam) : ''}`);
         state.testId = test._id;
         state.testName = test.name;
-        _doStartExam(test._id);
+        if (examParam === 'simulation' && window.ExamModeSelect) {
+          window.ExamModeSelect.open({
+            skill: 'reading', preferred: 'simulation',
+            onPractice: () => _doStartExam(test._id, 'practice'),
+            onSimulation: () => _doStartExam(test._id, 'simulation'),
+          });
+        } else {
+          _doStartExam(test._id);
+        }
       } else {
         // Same fromCleanPath guard as the premium branch above — this was
         // missing (routing audit finding), so a free user opening the
@@ -490,7 +513,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       t.classList.toggle('plele-active', t.dataset.category === categoryParam)
     );
     setReadingMode('lele', false);
-    await startPractice(passageIdParam, categoryParam);
+    // No ?category= (homework links, /reading/practice/:id) is fine —
+    // startPractice() corrects the tab/URL from the fetched passage itself.
+    if (examParam === 'practice') await startPractice(passageIdParam, categoryParam, false, 'practice');
+    else await startPractice(passageIdParam, categoryParam, false, null, examParam);
   } else if (modeParam === 'single' || modeParam === 'lele') {
     const catStr = categoryParam !== 'passage1' ? `&category=${categoryParam}` : '';
     history.replaceState({ screen: 'list', mode: 'single', category: categoryParam }, '', `?mode=single${catStr}`);
@@ -499,7 +525,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     setReadingMode('lele', false);
   } else if (modeParam === 'tips' || modeParam === 'reading-tips') {
-    history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
+    // Keep ?tip=/&tcat= — initReadingTips() opens that lesson (per-tip URL).
+    const tipQs = ['tip', 'tcat'].filter(k => params.get(k)).map(k => `&${k}=${encodeURIComponent(params.get(k))}`).join('');
+    history.replaceState({ screen: 'list', mode: 'tips' }, '', `?mode=tips${tipQs}`);
     setReadingMode('tips', false);
   } else {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
@@ -744,7 +772,7 @@ function goToRdPage(p) {
 /* ══════════════════════════════════════════════════════════════════════
    SCREEN 2 – START TEST (plan-gated)
 ══════════════════════════════════════════════════════════════════════ */
-function goToStartTest(testId, testName) {
+function goToStartTest(testId, testName, preferred = null) {
   // Was `_userPlan !== 'premium'` — that raw plan string never included
   // the staff bypass hasPremiumAccess() applies, unlike startPractice()
   // a few functions over, so admin/teacher accounts got the upgrade modal
@@ -762,13 +790,24 @@ function goToStartTest(testId, testName) {
   // a standalone student-initiated start, exactly where it belongs.
   if (window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'reading',
+      skill: 'reading', preferred,
       onPractice: () => _doStartExam(testId, 'practice'),
       onSimulation: () => _doStartExam(testId, 'simulation'),
     });
   } else {
     _doStartExam(testId, 'practice');
   }
+}
+
+// Stamps the chosen mode into the current start URL (?testId=… or the
+// clean /reading/test/:id path) — the Practice and the Simulation run of
+// one test get different links. Mock mode owns its own URL; left alone.
+function _stampExamMode(mode) {
+  if (_mockMode) return;
+  const u = new URL(location.href);
+  if (u.searchParams.get('exam') === mode) return;
+  u.searchParams.set('exam', mode);
+  history.replaceState(history.state, '', u.pathname + u.search + u.hash);
 }
 
 // Reading's own equivalent of the 4-skill Mock Test's disqualify handoff
@@ -798,6 +837,7 @@ async function _doStartExam(testId, mode = 'practice') {
       if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
       return;
     }
+    _stampExamMode(mode);
     startExam(res);
   } catch (e) {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
@@ -997,6 +1037,15 @@ function resumeExam() {
   // correctly falls back to 'practice', matching their real mode.
   state.mode = data.mode || 'practice';
 
+  // Give the resumed exam its own URL (was left on ?mode=full) so a reload
+  // lands back here via the ?testId= resume path in the init block.
+  if (!_mockMode && !data.mockId && data.testId) {
+    const url = `?testId=${data.testId}&exam=${state.mode}`;
+    const st = { screen: 'starting', testId: data.testId, testName: data.testName };
+    if (new URLSearchParams(location.search).get('testId') === String(data.testId)) history.replaceState(st, '', url);
+    else history.pushState(st, '', url);
+  }
+
   document.getElementById('exam-title').textContent = state.testName;
   renderPassageTabs('toolbar-passage-tabs', false);
   switchPassage(0);
@@ -1108,9 +1157,9 @@ async function resumePractice() {
     const res = await apiFetch(`/api/reading/practice/by-id/${data.passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không thể tiếp tục bài cũ', 'error'); return; }
     history.pushState(
-      { screen: 'practice', passageId: data.passageId, category: data.category },
+      { screen: 'practice', passageId: data.passageId, category: data.category, exam: data.mode || 'practice' },
       '',
-      `?passageId=${data.passageId}&category=${encodeURIComponent(data.category)}`
+      `?passageId=${data.passageId}&category=${encodeURIComponent(data.category)}&exam=${data.mode || 'practice'}`
     );
     _enterPracticeScreen(res.passage, data.category, data.passageId, data.mode || 'practice', data.simAttemptId || null, data.simDurationSec || null);
     const savedAnswers = data.answers || {};
@@ -1413,8 +1462,15 @@ async function loadPracticePassages(category, tabEl) {
       </div>
     </div>`).join('')}</div>`;
 
+  // Quick tab switches (or the default passage1 load racing a deep link's
+  // real category) must not let a slower, older response repaint the list
+  // with the wrong tab's cards — cards carry their category into
+  // startPractice()/copyRdPracticeLink(), so that showed up as Passage 2
+  // cards linking to category=passage1.
+  const token = ++_rdListToken;
   try {
     const res = await apiFetch(`/api/reading/practice/list?category=${category}`);
+    if (token !== _rdListToken) return;
     const passages = res.passages || [];
     _practiceDoneMap = res.doneMap || {};
 
@@ -1450,6 +1506,7 @@ async function loadPracticePassages(category, tabEl) {
     _rdPracticePage = 1;
     rerenderPracticePassages();
   } catch (e) {
+    if (token !== _rdListToken) return;
     listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
       <div class="rd-list-error">Lỗi tải danh sách bài đọc</div>
       <button onclick="loadPracticePassages('${category}')" class="rd-retry-btn">↺ Thử lại</button>
@@ -1457,7 +1514,17 @@ async function loadPracticePassages(category, tabEl) {
   }
 }
 
-async function startPractice(passageId, category, _silent = false, mode = null) {
+// The tab a passage really belongs to. The URL's ?category= can't be
+// trusted for this: homework links and /reading/practice/:id carry no
+// category at all (the init block then defaulted to 'passage1', so a
+// Passage 2 opened that way showed — and shared/saved — as passage1).
+// 'actual-test' is kept only when the passage really is an actual test.
+function _rdPassageCategory(passage, hinted) {
+  if (hinted === 'actual-test' && passage.isActualTest) return 'actual-test';
+  return passage.category || hinted || 'passage1';
+}
+
+async function startPractice(passageId, category, _silent = false, mode = null, preferred = null) {
   if (!window.AuthService.hasPremiumAccess()) {
     openUpgradeModal(); return;
   }
@@ -1467,15 +1534,13 @@ async function startPractice(passageId, category, _silent = false, mode = null) 
   // own callbacks make with `mode` already decided.
   if (!_silent && !mode && window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'reading',
+      skill: 'reading', preferred,
       onPractice: () => startPractice(passageId, category, _silent, 'practice'),
       onSimulation: () => startPractice(passageId, category, _silent, 'simulation'),
     });
     return;
   }
   mode = mode || 'practice';
-
-  _practiceCategory = category;
 
   const cards = document.querySelectorAll('#practice-passage-list .practice-card');
   const clickedCard = document.querySelector(`.practice-card[data-pid="${passageId}"]`);
@@ -1486,6 +1551,16 @@ async function startPractice(passageId, category, _silent = false, mode = null) 
   try {
     const res = await apiFetch(`/api/reading/practice/by-id/${passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
+
+    const realCategory = _rdPassageCategory(res.passage, category);
+    if (realCategory !== category) {
+      category = realCategory;
+      // Still on the list entry the init block wrote with the guessed
+      // category — fix it (and the highlighted tab/list) before the
+      // practice entry is pushed on top of it.
+      if (!_silent && history.state?.screen === 'list') loadPracticePassages(category);
+    }
+    _practiceCategory = category;
 
     // Test Simulation mode: get a server-tracked attempt row up front (so a
     // strike has something to attach to, and the ~20min exam-condition
@@ -1510,13 +1585,10 @@ async function startPractice(passageId, category, _silent = false, mode = null) 
       }
     }
 
-    if (!_silent) {
-      history.pushState(
-        { screen: 'practice', passageId, category },
-        '',
-        `?passageId=${passageId}&category=${encodeURIComponent(category)}`
-      );
-    }
+    const practiceUrl = `?passageId=${passageId}&category=${encodeURIComponent(category)}&exam=${mode}`;
+    const practiceSt  = { screen: 'practice', passageId, category, exam: mode };
+    if (!_silent) history.pushState(practiceSt, '', practiceUrl);
+    else history.replaceState(practiceSt, '', practiceUrl);
     _enterPracticeScreen(res.passage, category, passageId, mode, simAttemptId, simDurationSec);
   } catch (e) {
     if (e.body && e.body.requiresPremium) { openUpgradeModal(); return; }

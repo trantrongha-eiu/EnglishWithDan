@@ -11,6 +11,8 @@
  *     skill: 'reading' | 'listening' | 'writing',
  *     onPractice: function () { ... },      // today's existing behavior
  *     onSimulation: function () { ... },    // new Test Simulation flow
+ *     preferred: 'practice' | 'simulation', // optional — from a ?exam= link:
+ *                                           // only that card is shown
  *   });
  *
  * On open, fetches GET /api/exam-simulation/cooldown so a student who was
@@ -51,6 +53,10 @@
       '.ews-ms-btn-sim { background: #dc2626; color: #fff; }',
       '.ews-ms-btn:disabled { background: #d1d5db; color: #6b7280; cursor: not-allowed; filter: none; }',
       '.ews-ms-cooldown { font-size: 12px; font-weight: 700; color: #b91c1c; }',
+      '.ews-ms-grid.ews-ms-only { grid-template-columns: 1fr; }',
+      '.ews-ms-grid.ews-ms-only-practice .ews-ms-sim, .ews-ms-grid.ews-ms-only-simulation .ews-ms-practice { display: none; }',
+      '.ews-ms-other { display: block; margin: 12px auto 0; background: none; border: none; color: var(--text2, #6b7280); font-size: 12.5px; text-decoration: underline; cursor: pointer; }',
+      '.ews-ms-other.hidden { display: none; }',
     ].join('\n');
     document.head.appendChild(style);
   }
@@ -67,8 +73,8 @@
         '<div class="modal-body">' +
           '<h3 id="ews-ms-title" style="margin:0 0 4px">Chọn chế độ làm bài</h3>' +
           '<p style="margin:0 0 16px;color:var(--text2,#6b7280);font-size:13px" id="ews-ms-sub"></p>' +
-          '<div class="ews-ms-grid">' +
-            '<div class="ews-ms-card">' +
+          '<div class="ews-ms-grid" id="ews-ms-grid">' +
+            '<div class="ews-ms-card ews-ms-practice">' +
               '<div class="ews-ms-icon">✏️</div>' +
               '<div class="ews-ms-title">Luyện tập</div>' +
               '<ul class="ews-ms-list">' +
@@ -90,6 +96,7 @@
               '<button type="button" class="ews-ms-btn ews-ms-btn-sim" id="ews-ms-sim-btn">Bắt đầu Test Simulation</button>' +
             '</div>' +
           '</div>' +
+          '<button type="button" class="ews-ms-other hidden" id="ews-ms-other-btn">Chọn chế độ khác</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(modal);
@@ -121,6 +128,19 @@
     var practiceBtn = document.getElementById('ews-ms-practice-btn');
     var simBtn = document.getElementById('ews-ms-sim-btn');
     var simStatus = document.getElementById('ews-ms-sim-status');
+
+    // opts.preferred ('practice' | 'simulation') — the page was opened from
+    // a mode-specific link (?exam=...): show only that mode's card, with a
+    // "Chọn chế độ khác" escape hatch back to the normal two-card choice.
+    var grid = document.getElementById('ews-ms-grid');
+    var otherBtn = document.getElementById('ews-ms-other-btn');
+    var preferred = opts.preferred === 'practice' || opts.preferred === 'simulation' ? opts.preferred : null;
+    grid.className = 'ews-ms-grid' + (preferred ? ' ews-ms-only ews-ms-only-' + preferred : '');
+    otherBtn.classList.toggle('hidden', !preferred);
+    otherBtn.onclick = function () {
+      grid.className = 'ews-ms-grid';
+      otherBtn.classList.add('hidden');
+    };
 
     practiceBtn.onclick = function () {
       modal._close();
@@ -157,6 +177,7 @@
       });
 
     modal.classList.remove('hidden');
+    if (preferred === 'practice') practiceBtn.focus();
   }
 
   function _renderCooldown(modal, simBtn, simStatus, remainingSeconds, opts) {

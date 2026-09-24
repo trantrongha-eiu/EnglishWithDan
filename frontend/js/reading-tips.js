@@ -43,7 +43,7 @@ function rtMarkRead(key) {
 // Tips" tab is opened — subsequent switches just re-show the already-
 // rendered panel, matching how the practice-picker tab lazy-loads once.
 async function initReadingTips() {
-  if (rtLoaded) return;
+  if (rtLoaded) { _rtSyncFromUrl(); return; }
   rtLoaded = true;
   try {
     const res = await fetch(API + '/reading-tips/lessons');
@@ -54,11 +54,13 @@ async function initReadingTips() {
 
     const savedKey = localStorage.getItem(RT_LAST_LESSON_KEY);
     const savedLesson = savedKey && rtLessons.find(l => rtKeyOf(l) === savedKey);
-    const initialLesson = savedLesson || rtLessons[0] || null;
+    // ?tip= (per-lesson URL) wins over the last-viewed lesson.
+    const urlLesson = window.RouteParams ? window.RouteParams.findTip(rtLessons) : null;
+    const initialLesson = urlLesson || savedLesson || rtLessons[0] || null;
     rtCurrentKey = initialLesson ? rtKeyOf(initialLesson) : null;
 
     rtRenderSidebar();
-    if (rtCurrentKey) rtSelectLesson(rtCurrentKey);
+    if (rtCurrentKey) rtSelectLesson(rtCurrentKey, { history: 'replace' });
     else document.getElementById('rt-main-content').innerHTML = '<div class="rt-loading">Chưa có nội dung.</div>';
   } catch (err) {
     rtLoaded = false; // allow a retry (e.g. transient network error) on next tab switch
@@ -101,9 +103,14 @@ function rtToggleCategory(cat) {
   rtRenderSidebar();
 }
 
-function rtSelectLesson(key) {
+// opts.history: 'push' (default — a sidebar click gets its own Back step)
+// or 'replace' (initial/restored selection).
+function rtSelectLesson(key, opts) {
   const lesson = rtLessons.find(l => rtKeyOf(l) === key);
   if (!lesson) return;
+  if (window.RouteParams && _rtTipsVisible()) {
+    window.RouteParams.syncTip(lesson, rtLessons, !(opts && opts.history === 'replace'));
+  }
   rtCurrentKey = key;
   localStorage.setItem(RT_LAST_LESSON_KEY, key);
   rtMarkRead(key);
@@ -111,6 +118,22 @@ function rtSelectLesson(key) {
   rtRenderLessonContent(lesson);
   const panel = document.getElementById('reading-tips-panel');
   if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Only write ?tip= while the Tips view is what's on screen — the lesson
+// fetch can resolve after the student already switched to another view.
+function _rtTipsVisible() {
+  return !document.getElementById('reading-tips-panel')?.classList.contains('hidden');
+}
+
+// Re-entering the Tips view (tab switch, Back/Forward): open the lesson the
+// URL names, or put the current one back into the URL.
+function _rtSyncFromUrl() {
+  if (!rtLessons.length || !window.RouteParams) return;
+  const want = window.RouteParams.findTip(rtLessons);
+  if (want && rtKeyOf(want) !== rtCurrentKey) { rtSelectLesson(rtKeyOf(want), { history: 'replace' }); return; }
+  const cur = rtLessons.find(l => rtKeyOf(l) === rtCurrentKey);
+  if (cur && _rtTipsVisible()) window.RouteParams.syncTip(cur, rtLessons, false);
 }
 
 function rtRenderLessonContent(lesson) {

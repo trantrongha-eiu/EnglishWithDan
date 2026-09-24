@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+  <!-- Clean-URL router: Render ignores _redirects, so known clean paths
+       (/reading/test/:id, /listening/tips/:tip, /writing/task2/:id/simulation,
+       …) arrive here — send them to the real page before anything paints.
+       See js/shared/clean-url-router.js. -->
+  <script src="/js/shared/clean-url-router.js?v=20260925route"></script>
+  <script>
+    (function () {
+      var to = window.CleanUrlRouter && window.CleanUrlRouter.resolve(location.pathname, location.search, location.hash);
+      if (to) { document.documentElement.style.visibility = 'hidden'; location.replace(to); }
+    })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,11 +22,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="css/main.css?v=20260831"/>
-  <script src="js/theme.js?v=20260831"></script>
-  <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="/css/main.css?v=20260831"/>
+  <script src="/js/theme.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
     .notfound-wrap{
       min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -34,28 +45,28 @@
 <body>
 
 <nav class="navbar" id="navbar">
-  <a href="index.html" class="nav-logo">
-    <img src="img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img">
+  <a href="/index.html" class="nav-logo">
+    <img src="/img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img">
   </a>
   <div class="nav-links">
-    <a href="index.html">Trang chủ</a>
-    <a href="courses.html">Khóa học</a>
-    <a href="about.html">Về chúng tôi</a>
-    <a href="contact.html">Liên hệ</a>
+    <a href="/index.html">Trang chủ</a>
+    <a href="/courses.html">Khóa học</a>
+    <a href="/about.html">Về chúng tôi</a>
+    <a href="/contact.html">Liên hệ</a>
   </div>
   <div class="nav-cta">
     <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
-    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+    <a href="/login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
   </div>
   <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
-  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
-  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
-  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
-  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+  <a href="/index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="/courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
+  <a href="/about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="/contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
+  <a href="/login.html"    onclick="toggleMenu()">→ Luyện thi</a>
   <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
 </div>
 
@@ -67,8 +78,8 @@
     hoặc liên kết đã hết hạn. Kiểm tra lại đường dẫn, hoặc quay về trang chủ để tiếp tục.
   </p>
   <div class="notfound-actions">
-    <a href="index.html" class="btn btn-primary"><i class="fas fa-house"></i> Về trang chủ</a>
-    <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-layer-group"></i> Vào học ngay</a>
+    <a href="/index.html" class="btn btn-primary"><i class="fas fa-house"></i> Về trang chủ</a>
+    <a href="/dashboard.html" class="btn btn-outline"><i class="fas fa-layer-group"></i> Vào học ngay</a>
   </div>
 </main>
 

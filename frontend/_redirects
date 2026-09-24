@@ -20,6 +20,35 @@
 /admin      /admin/ 301
 /admin/* /admin/index.html 200
 
+# ── 2026-09-25: production does NOT read this file ────────────────────
+# Render Static Site ignores _redirects (verified live: /vocabulary and
+# /reading/test/<id> both answered 404). Unknown paths get 404.html, which
+# runs js/shared/clean-url-router.js and location.replace()s every route
+# below to its ?query= page — THAT table is what production uses; keep it
+# and this file in step. Rules here only matter on a host that honours them.
+#
+# Mode-specific start links (Practice vs Test Simulation) and per-lesson
+# Tips links — more specific than the /reading/test/* rewrite below, so
+# they must come first.
+/reading/test/:id/:mode      /reading.html?testId=:id&exam=:mode          302
+/reading/practice/:id/:mode  /reading.html?passageId=:id&exam=:mode       302
+/reading/tips/:tip           /reading.html?mode=tips&tip=:tip             302
+/reading/tips                /reading.html?mode=tips                      302
+/reading/single/:category    /reading.html?mode=single&category=:category 302
+/listening/test/:id/:mode    /listening.html?testId=:id&exam=:mode        302
+/listening/practice/:id/:mode /listening.html?sectionId=:id&exam=:mode    302
+/listening/review/:id        /listening.html?review=:id                   302
+/listening/tips/:tip         /listening.html?mode=tips&tip=:tip           302
+/listening/tips              /listening.html?mode=tips                    302
+/listening/single/:part      /listening.html?mode=single&part=:part       302
+/writing/task1/:id/:mode     /writing.html?taskType=1&taskId=:id&exam=:mode 302
+/writing/task2/:id/:mode     /writing.html?taskType=2&taskId=:id&exam=:mode 302
+/writing/exam/:mode          /writing.html?view=exam&exam=:mode           302
+/writing/tips/:tip           /writing.html?view=writing-tips&tip=:tip     302
+/writing/tips                /writing.html?view=writing-tips              302
+/speaking/tips/:tip          /speaking.html?tab=speaking-tips&tip=:tip    302
+/speaking/tips               /speaking.html?tab=speaking-tips             302
+
 # ── Flagship persistent clean URLs ────────────────────────────────────
 # These are true rewrites: the browser's address bar keeps showing the
 # clean path forever (bookmarks/shares stay clean). This only works

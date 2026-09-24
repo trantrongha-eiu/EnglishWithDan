@@ -41,7 +41,7 @@ function lstMarkRead(key) {
 // Called by setListeningMode() the first time the "Listening Tips" tab is
 // opened — subsequent switches just re-show the already-rendered panel.
 async function initListeningTips() {
-  if (lstLoaded) return;
+  if (lstLoaded) { _lstSyncFromUrl(); return; }
   lstLoaded = true;
   try {
     const res = await fetch(API + '/listening-tips/lessons');
@@ -52,11 +52,13 @@ async function initListeningTips() {
 
     const savedKey = localStorage.getItem(LST_LAST_LESSON_KEY);
     const savedLesson = savedKey && lstLessons.find(l => lstKeyOf(l) === savedKey);
-    const initialLesson = savedLesson || lstLessons[0] || null;
+    // ?tip= (per-lesson URL) wins over the last-viewed lesson.
+    const urlLesson = window.RouteParams ? window.RouteParams.findTip(lstLessons) : null;
+    const initialLesson = urlLesson || savedLesson || lstLessons[0] || null;
     lstCurrentKey = initialLesson ? lstKeyOf(initialLesson) : null;
 
     lstRenderSidebar();
-    if (lstCurrentKey) lstSelectLesson(lstCurrentKey);
+    if (lstCurrentKey) lstSelectLesson(lstCurrentKey, { history: 'replace' });
     else document.getElementById('lst-main-content').innerHTML = '<div class="lst-loading">Chưa có nội dung.</div>';
   } catch (err) {
     lstLoaded = false; // allow a retry (e.g. transient network error) on next tab switch
@@ -99,9 +101,14 @@ function lstToggleCategory(cat) {
   lstRenderSidebar();
 }
 
-function lstSelectLesson(key) {
+// opts.history: 'push' (default — a sidebar click gets its own Back step)
+// or 'replace' (initial/restored selection).
+function lstSelectLesson(key, opts) {
   const lesson = lstLessons.find(l => lstKeyOf(l) === key);
   if (!lesson) return;
+  if (window.RouteParams && _lstTipsVisible()) {
+    window.RouteParams.syncTip(lesson, lstLessons, !(opts && opts.history === 'replace'));
+  }
   lstCurrentKey = key;
   localStorage.setItem(LST_LAST_LESSON_KEY, key);
   lstMarkRead(key);
@@ -109,6 +116,22 @@ function lstSelectLesson(key) {
   lstRenderLessonContent(lesson);
   const panel = document.getElementById('listening-tips-panel');
   if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Only write ?tip= while the Tips view is what's on screen — the lesson
+// fetch can resolve after the student already switched to another view.
+function _lstTipsVisible() {
+  return !document.getElementById('listening-tips-panel')?.classList.contains('hidden');
+}
+
+// Re-entering the Tips view (tab switch, Back/Forward): open the lesson the
+// URL names, or put the current one back into the URL.
+function _lstSyncFromUrl() {
+  if (!lstLessons.length || !window.RouteParams) return;
+  const want = window.RouteParams.findTip(lstLessons);
+  if (want && lstKeyOf(want) !== lstCurrentKey) { lstSelectLesson(lstKeyOf(want), { history: 'replace' }); return; }
+  const cur = lstLessons.find(l => lstKeyOf(l) === lstCurrentKey);
+  if (cur && _lstTipsVisible()) window.RouteParams.syncTip(cur, lstLessons, false);
 }
 
 function lstRenderLessonContent(lesson) {

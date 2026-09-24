@@ -97,3 +97,39 @@ describe('ExamModeSelect.open', () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('ExamModeSelect.open — preferred (from a ?exam= link)', () => {
+  test('preferred simulation shows only the Simulation card plus a way back to both', async () => {
+    global.fetch = fetchOnce({ active: false, remainingSeconds: 0 });
+    const onSimulation = jest.fn();
+    window.ExamModeSelect.open({ skill: 'reading', preferred: 'simulation', onPractice: jest.fn(), onSimulation });
+    await flush();
+
+    const grid = document.getElementById('ews-ms-grid');
+    const other = document.getElementById('ews-ms-other-btn');
+    expect(grid.classList.contains('ews-ms-only-simulation')).toBe(true);
+    expect(other.classList.contains('hidden')).toBe(false);
+
+    other.click();
+    expect(grid.className).toBe('ews-ms-grid');
+    expect(other.classList.contains('hidden')).toBe(true);
+
+    document.getElementById('ews-ms-sim-btn').click();
+    expect(onSimulation).toHaveBeenCalledTimes(1);
+  });
+
+  test('without preferred (or with junk), both cards show and the switch link is hidden', () => {
+    global.fetch = fetchOnce({ active: false, remainingSeconds: 0 });
+    window.ExamModeSelect.open({ skill: 'reading', preferred: 'bogus', onPractice: jest.fn(), onSimulation: jest.fn() });
+    expect(document.getElementById('ews-ms-grid').className).toBe('ews-ms-grid');
+    expect(document.getElementById('ews-ms-other-btn').classList.contains('hidden')).toBe(true);
+  });
+
+  test('a preferred-practice open followed by a plain open resets the layout', () => {
+    global.fetch = jest.fn().mockResolvedValue({ json: () => Promise.resolve({ active: false }) });
+    window.ExamModeSelect.open({ skill: 'writing', preferred: 'practice', onPractice: jest.fn(), onSimulation: jest.fn() });
+    expect(document.getElementById('ews-ms-grid').classList.contains('ews-ms-only-practice')).toBe(true);
+    window.ExamModeSelect.open({ skill: 'writing', onPractice: jest.fn(), onSimulation: jest.fn() });
+    expect(document.getElementById('ews-ms-grid').className).toBe('ews-ms-grid');
+  });
+});

@@ -33,7 +33,7 @@
 <script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="/js/shared/confirm-dialog.js?v=20260831"></script>
 <script src="/js/shared/api-client.js?v=20260831"></script>
-<script src="/js/shared/route-params.js?v=20260831"></script>
+<script src="/js/shared/route-params.js?v=20260925route"></script>
 <script src="/js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
 <script src="/js/shared/highlight-remove.js?v=20260831"></script>
 <script src="/js/shared/review-required-popup.js?v=20260907"></script>
@@ -41,7 +41,7 @@
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/mock-test.js?v=20260906fix"></script>
 <script src="/js/shared/exam-proctor.js?v=20260917"></script>
-<script src="/js/shared/exam-mode-select.js?v=20260917"></script>
+<script src="/js/shared/exam-mode-select.js?v=20260925route"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -911,8 +911,11 @@
             const t = data.currentTest;
             state.currentTestId = data.currentTestId;
             state.currentTest = t;
-            if (new URLSearchParams(location.search).get('testId') !== String(data.currentTestId)) {
-                history.pushState({ screen: 'exam', testId: data.currentTestId, testName: t.name }, '', `?testId=${data.currentTestId}`);
+            {
+                const _url = `?testId=${data.currentTestId}&exam=${data.mode || 'practice'}`;
+                const _st = { screen: 'exam', testId: data.currentTestId, testName: t.name };
+                if (new URLSearchParams(location.search).get('testId') !== String(data.currentTestId)) history.pushState(_st, '', _url);
+                else history.replaceState(_st, '', _url);
             }
             state.attemptId = data.attemptId || t.attemptId || null;
             state.answers = data.answers || {};
@@ -1086,6 +1089,11 @@
             const modeParam      = params.get('mode') ?? params.get('tab');
             const partRaw        = params.get('part');
             const partParam      = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
+            // ?exam=practice|simulation — mode-specific start link (see
+            // RouteParams.examMode / reading-v2.js). Always via the
+            // ExamModeSelect popup here: the click is also the user gesture
+            // listening audio needs.
+            const examParam      = window.RouteParams ? window.RouteParams.examMode() : null;
             // Clean path-based deep link (/listening/test/:id — see Phase 4
             // routing notes). Routing audit finding: this block used to run
             // unconditionally and always appended ?mode=full to whatever
@@ -1106,7 +1114,9 @@
                     t.classList.toggle('plele-active', String(t.dataset.part) === String(partForSection))
                 );
                 setListeningMode('lele', false);
-                await startPracticeSection(sectionIdParam, partForSection);
+                // No ?part= (homework links, /listening/practice/:id) is fine —
+                // startPracticeSection() corrects it from the fetched section.
+                await startPracticeSection(sectionIdParam, partForSection, false, null, examParam);
             } else if (modeParam === 'single' || modeParam === 'lele') {
                 const partStr = partParam !== 1 ? `&part=${partParam}` : '';
                 history.replaceState({ screen: 'list', mode: 'single', part: partParam }, '', `?mode=single${partStr}`);
@@ -1116,7 +1126,9 @@
                 setListeningMode('lele', false);
                 showScreen('list');
             } else if (modeParam === 'tips') {
-                history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
+                // Keep ?tip=/&tcat= — initListeningTips() opens that lesson.
+                const tipQs = ['tip', 'tcat'].filter(k => params.get(k)).map(k => `&${k}=${encodeURIComponent(params.get(k))}`).join('');
+                history.replaceState({ screen: 'list', mode: 'tips' }, '', `?mode=tips${tipQs}`);
                 setListeningMode('tips', false);
                 showScreen('list');
             } else {
@@ -1466,7 +1478,17 @@
                 // search/category) previously never matched and silently did
                 // nothing.
                 const _t = (state.tests || []).find(t => String(t._id) === _tid);
-                if (_t) setTimeout(() => goToStartTest(_tid), 80);
+                if (_t) setTimeout(() => {
+                    // Reloading a running exam's URL: its "Tiếp tục" banner is
+                    // the way back in — starting a new attempt here would
+                    // clear the saved answers (startTest → clearExamStorage).
+                    const _saved = document.getElementById('resume-banner')?._resumeData;
+                    if (_saved && String(_saved.currentTestId) === String(_tid)) {
+                        document.getElementById('resume-banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+                    goToStartTest(_tid, window.RouteParams ? window.RouteParams.examMode() : null);
+                }, 80);
             }
         }
 
@@ -1589,7 +1611,7 @@
         // ══════════════════════════════════════════════
         // PLAN-GATED START
         // ══════════════════════════════════════════════
-        function goToStartTest(testId) {
+        function goToStartTest(testId, preferred = null) {
             // Was `_userPlan !== 'premium'` — see reading-v2.js's identical
             // fix (Phase 5 audit finding): staff accounts were incorrectly
             // blocked here even though startPracticeSection() already
@@ -1602,7 +1624,7 @@
             // shows for a standalone student-initiated start.
             if (window.ExamModeSelect) {
                 window.ExamModeSelect.open({
-                    skill: 'listening',
+                    skill: 'listening', preferred,
                     onPractice: () => startTest(testId, 'practice'),
                     onSimulation: () => startTest(testId, 'simulation'),
                 });
@@ -1667,8 +1689,18 @@
                 // ?testId=. Skipped in mock-test mode (mock-test.js owns the
                 // URL there) and when we're already on this test's URL
                 // (deep-link auto-start — renderTestList()).
-                if (!_mockMode && new URLSearchParams(location.search).get('testId') !== String(testId)) {
-                    history.pushState({ screen: 'exam', testId, testName: t.name }, '', `?testId=${testId}`);
+                if (!_mockMode) {
+                    // Practice and Simulation runs of one test get different
+                    // links (?exam=). A clean /listening/test/:id keeps its path.
+                    const _u = new URL(location.href);
+                    const _st = { screen: 'exam', testId, testName: t.name };
+                    const _onClean = /^\/listening\/test\/[^/]+$/.test(_u.pathname);
+                    if (_u.searchParams.get('testId') === String(testId) || _onClean) {
+                        _u.searchParams.set('exam', mode);
+                        history.replaceState(_st, '', _u.pathname + _u.search);
+                    } else {
+                        history.pushState(_st, '', `?testId=${testId}&exam=${mode}`);
+                    }
                 }
                 state.attemptId = t.attemptId || null;
                 state.answers = {};
@@ -4388,6 +4420,7 @@
     const LT_PRACTICE_PAGE_SIZE = 15;
     let _ltAllSections = [];
     let _ltCurrentPart = 1;
+    let _ltListToken = 0;
 
     /* ── Load section list for a part ───────────────────────────────────── */
     async function loadPracticeSections(partNum, tabEl) {
@@ -4429,12 +4462,16 @@
                 </div>
             </div>`).join('')}</div>`;
 
+        // Latest call wins — a slower response for the previously clicked
+        // tab must not repaint the list (see reading-v2.js's _rdListToken).
+        const _token = ++_ltListToken;
         try {
             const url = isActual
                 ? `${API}/listening/practice/list?actualTest=true`
                 : `${API}/listening/practice/list?part=${partNum}`;
             const res = await fetch(url, { headers: authH() });
             const data = await safeJson(res);
+            if (_token !== _ltListToken) return;
             if (!data.success) throw new Error(data.message);
             const sections = data.sections || [];
             _ltPracticeDoneMap = data.doneMap || {};
@@ -4473,17 +4510,25 @@
             _ltPage = 1;
             rerenderLtSections();
         } catch(e) {
+            if (_token !== _ltListToken) return;
             listEl.innerHTML = `<div class="ls-section-error">
                 Lỗi tải danh sách: ${e.message}
                 <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections('${partNum}')">Thử lại</button>
             </div>`;
         } finally {
-            _ltLoadingPart = 0; // mở lock khi xong
+            if (_token === _ltListToken) _ltLoadingPart = 0; // mở lock khi xong
         }
     }
 
     /* ── Start practice for one section ─────────────────────────────────── */
-    async function startPracticeSection(sectionId, partNum, _silent = false, mode = null) {
+    // The tab a section really belongs to — ?part= can be missing (homework
+    // links) or stale; same bug/fix as reading-v2.js's _rdPassageCategory.
+    function _ltSectionPart(section, hinted) {
+        if (hinted === 'actual' && section.isActualTest) return 'actual';
+        return section.partNumber || hinted || 1;
+    }
+
+    async function startPracticeSection(sectionId, partNum, _silent = false, mode = null, preferred = null) {
         if (!window.AuthService.hasPremiumAccess()) {
             openUpgradeModal(); return;
         }
@@ -4493,7 +4538,7 @@
         // popup's own callbacks make with `mode` already decided.
         if (!_silent && !mode && window.ExamModeSelect) {
             window.ExamModeSelect.open({
-                skill: 'listening',
+                skill: 'listening', preferred,
                 onPractice: () => startPracticeSection(sectionId, partNum, _silent, 'practice'),
                 onSimulation: () => startPracticeSection(sectionId, partNum, _silent, 'simulation'),
             });
@@ -4517,6 +4562,14 @@
             const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
             const data = await safeJson(res);
             if (!data.success || !data.section) { toast('Không tải được bài luyện tập', 'error'); return; }
+
+            const _realPart = _ltSectionPart(data.section, partNum);
+            if (String(_realPart) !== String(partNum)) {
+                partNum = _realPart;
+                // Still on the list entry the init block wrote with the
+                // guessed part — fix it and the highlighted tab/list.
+                if (!_silent && history.state?.screen === 'list') loadPracticeSections(partNum);
+            }
 
             // Test Simulation mode: get a server-tracked attempt row up
             // front (so a strike has something to attach to) before
@@ -4542,12 +4595,11 @@
                 }
             }
 
-            if (!_silent) {
-                history.pushState(
-                    { screen: 'practice', sectionId, part: partNum },
-                    '',
-                    `?sectionId=${sectionId}&part=${partNum}`
-                );
+            {
+                const _url = `?sectionId=${sectionId}&part=${partNum}&exam=${mode}`;
+                const _st = { screen: 'practice', sectionId, part: partNum, exam: mode };
+                if (!_silent) history.pushState(_st, '', _url);
+                else history.replaceState(_st, '', _url);
             }
             _enterLTPracticeScreen(data.section, partNum, sectionId, mode, simAttemptId);
         } catch(e) {
@@ -5462,7 +5514,7 @@
         return true;
     };
     </script>
-    <script src="/js/listening-tips.js?v=20260924practice"></script>
+    <script src="/js/listening-tips.js?v=20260925route"></script>
     <script src="/js/listening-tips-practice.js?v=20260924e"></script>
 </body>
 

@@ -200,6 +200,8 @@ function _blockPasteInto(ta) {
   // whatever this variable holds.
   const urlExamId = params.get('examId');
   if (urlExamId) _mockWritingExamId = urlExamId;
+  // ?exam=practice|simulation — mode-specific start link (RouteParams).
+  const urlExamMode = window.RouteParams ? window.RouteParams.examMode() : null;
 
   // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
   // Checked FIRST and independently of the other routes (it used to sit
@@ -212,7 +214,7 @@ function _blockPasteInto(ta) {
   }
 
   if ((urlTaskType === 1 || urlTaskType === 2) && urlTaskId) {
-    _openDirectPracticeTask(urlTaskType, urlTaskId);
+    _openDirectPracticeTask(urlTaskType, urlTaskId, urlExamMode);
     return;
   }
   if (urlTaskType === 1 || urlTaskType === 2) {
@@ -228,7 +230,17 @@ function _blockPasteInto(ta) {
   }
 
   if (params.get('view') === 'writing-tips') {
-    openWritingTips();
+    openWritingTips(false);
+    return;
+  }
+
+  // ?view=exam[&exam=…][&examId=…] — the full Writing test's own URL
+  // (stamped by _setWritingExamUrl). An unfinished run on this device is
+  // offered back via the restore banner; otherwise the mode popup opens
+  // pre-selected — never a silent start.
+  if (params.get('view') === 'exam' && !(window.MockTest && window.MockTest.active())) {
+    checkRestoreBanner();
+    if (!loadFromStorage()) startExam(null, urlExamMode);
     return;
   }
 
@@ -301,7 +313,7 @@ window.addEventListener('popstate', e => {
   }
 });
 
-async function _openDirectPracticeTask(taskType, taskId) {
+async function _openDirectPracticeTask(taskType, taskId, examMode = null) {
   showScreen('screen-practice');
   try {
     const taskRes = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
@@ -332,6 +344,13 @@ async function _openDirectPracticeTask(taskType, taskId) {
     }
     if (isSameTask(saved)) {
       _applyPracticeDraft(saved);
+    } else if (examMode === 'simulation' && window.ExamModeSelect) {
+      // Simulation link: confirm first (proctored attempt), pre-selected.
+      window.ExamModeSelect.open({
+        skill: 'writing', preferred: 'simulation',
+        onPractice: () => _startPracticeTaskWithMode(taskType, taskId, task, false, 'practice'),
+        onSimulation: () => _startPracticeTaskWithMode(taskType, taskId, task, false, 'simulation'),
+      });
     } else {
       startPracticeTask(taskType, taskId, false);
     }
@@ -347,7 +366,22 @@ async function _openDirectPracticeTask(taskType, taskId) {
 // reading-v2.js's startPractice() idiom; _handleQuotaError above is the
 // reactive fallback if the trial expires mid-session.)
 // ──────────────────────────────────────────────────────
-async function startExam(mode) {
+// The running full test's URL: writing.html?view=exam&exam=<mode>[&examId=…].
+// replaceState, not push — Back keeps leaving the page (onbeforeunload
+// guard) exactly as before. Mock mode owns its own URL.
+function _setWritingExamUrl(mode) {
+  if (_mockMode) return;
+  const u = new URL(location.href);
+  const examId = u.searchParams.get('examId');
+  const qs = `?view=exam&exam=${mode}${examId ? '&examId=' + encodeURIComponent(examId) : ''}`;
+  history.replaceState({ screen: 'exam' }, '', `writing.html${qs}`);
+}
+function _clearWritingExamUrl() {
+  if (_mockMode || new URLSearchParams(location.search).get('view') !== 'exam') return;
+  history.replaceState({ screen: 'key' }, '', 'writing.html');
+}
+
+async function startExam(mode, preferred = null) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
@@ -358,7 +392,7 @@ async function startExam(mode) {
   // standalone "Bắt đầu làm bài" click always asks first.
   if (!_mockMode && !mode && window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'writing',
+      skill: 'writing', preferred,
       onPractice: () => startExam('practice'),
       onSimulation: () => startExam('simulation'),
     });
@@ -394,6 +428,7 @@ async function startExam(mode) {
     // yet at all; 0 is a real, meaningful value for the latter case.
     state.secondsLeft = null;
 
+    _setWritingExamUrl(state.mode);
     launchExam();
   } catch (e) {
     if (e && e.status === 429 && e.body && e.body.code === 'SIMULATION_COOLDOWN') {
@@ -746,6 +781,7 @@ async function submitExam(statusOverride) {
     if (data.success) {
       if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
       clearAutoSave();
+      _clearWritingExamUrl();
       state.currentAttemptId = data.attemptId;
       if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
       // Done screen
@@ -1686,6 +1722,7 @@ function forceExit() {
   if (document.fullscreenElement) document.exitFullscreen();
   // Reset state (giữ autosave để restore sau)
   state.exam = null;
+  _clearWritingExamUrl();
   showScreen('screen-key');
 }
 
@@ -2345,9 +2382,11 @@ async function _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, m
     }
   }
 
-  if (pushHistory) {
-    history.pushState({ screen: 'practice-write', taskType, taskId }, '',
-      `writing.html?taskType=${taskType}&taskId=${encodeURIComponent(taskId)}`);
+  {
+    const url = `writing.html?taskType=${taskType}&taskId=${encodeURIComponent(taskId)}&exam=${mode}`;
+    const st = { screen: 'practice-write', taskType, taskId, exam: mode };
+    if (pushHistory) history.pushState(st, '', url);
+    else history.replaceState(st, '', url);
   }
   practiceState.taskType  = taskType;
   practiceState.task      = task;

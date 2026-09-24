@@ -42,7 +42,7 @@ function sstMarkRead(key) {
 }
 
 async function initSpeakingTips() {
-  if (sstLoaded) return;
+  if (sstLoaded) { _sstSyncFromUrl(); return; }
   sstLoaded = true;
   try {
     const data = await apiFetch('/api/speaking-tips/lessons');
@@ -52,11 +52,13 @@ async function initSpeakingTips() {
 
     const savedKey = localStorage.getItem(SST_LAST_LESSON_KEY);
     const savedLesson = savedKey && sstLessons.find(l => sstKeyOf(l) === savedKey);
-    const initialLesson = savedLesson || sstLessons[0] || null;
+    // ?tip= (per-lesson URL) wins over the last-viewed lesson.
+    const urlLesson = window.RouteParams ? window.RouteParams.findTip(sstLessons) : null;
+    const initialLesson = urlLesson || savedLesson || sstLessons[0] || null;
     sstCurrentKey = initialLesson ? sstKeyOf(initialLesson) : null;
 
     sstRenderSidebar();
-    if (sstCurrentKey) sstSelectLesson(sstCurrentKey);
+    if (sstCurrentKey) sstSelectLesson(sstCurrentKey, { history: 'replace' });
     else document.getElementById('sst-main-content').innerHTML = '<div class="sst-loading">Chưa có nội dung.</div>';
   } catch (err) {
     sstLoaded = false; // allow a retry (e.g. transient network error) next time the screen opens
@@ -99,9 +101,14 @@ function sstToggleCategory(cat) {
   sstRenderSidebar();
 }
 
-function sstSelectLesson(key) {
+// opts.history: 'push' (default — a sidebar click gets its own Back step)
+// or 'replace' (initial/restored selection).
+function sstSelectLesson(key, opts) {
   const lesson = sstLessons.find(l => sstKeyOf(l) === key);
   if (!lesson) return;
+  if (window.RouteParams && _sstTipsVisible()) {
+    window.RouteParams.syncTip(lesson, sstLessons, !(opts && opts.history === 'replace'));
+  }
   sstCurrentKey = key;
   localStorage.setItem(SST_LAST_LESSON_KEY, key);
   sstMarkRead(key);
@@ -109,6 +116,22 @@ function sstSelectLesson(key) {
   sstRenderLessonContent(lesson);
   const panel = document.getElementById('screen-speaking-tips');
   if (panel) panel.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Only write ?tip= while the Tips view is what's on screen — the lesson
+// fetch can resolve after the student already switched to another view.
+function _sstTipsVisible() {
+  return !!document.getElementById('screen-speaking-tips')?.classList.contains('active');
+}
+
+// Re-entering the Tips view (tab switch, Back/Forward): open the lesson the
+// URL names, or put the current one back into the URL.
+function _sstSyncFromUrl() {
+  if (!sstLessons.length || !window.RouteParams) return;
+  const want = window.RouteParams.findTip(sstLessons);
+  if (want && sstKeyOf(want) !== sstCurrentKey) { sstSelectLesson(sstKeyOf(want), { history: 'replace' }); return; }
+  const cur = sstLessons.find(l => sstKeyOf(l) === sstCurrentKey);
+  if (cur && _sstTipsVisible()) window.RouteParams.syncTip(cur, sstLessons, false);
 }
 
 function sstRenderLessonContent(lesson) {

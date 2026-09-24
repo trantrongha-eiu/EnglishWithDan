@@ -44,8 +44,11 @@ function wstMarkRead(key) {
   localStorage.setItem(WST_READ_KEY, JSON.stringify([...wstRead]));
 }
 
-function openWritingTips() {
-  history.pushState({ screen: 'writing-tips' }, '', 'writing.html?view=writing-tips');
+// push=false on a direct load of ?view=writing-tips[&tip=…] — keep that
+// URL (and its ?tip=) as-is instead of stacking a second, tip-less entry.
+function openWritingTips(push = true) {
+  if (push) history.pushState({ screen: 'writing-tips' }, '', 'writing.html?view=writing-tips');
+  else history.replaceState({ screen: 'writing-tips' }, '', location.href);
   showScreen('screen-writing-tips');
   initWritingTips();
 }
@@ -57,7 +60,7 @@ function exitWritingTips() {
 }
 
 async function initWritingTips() {
-  if (wstLoaded) return;
+  if (wstLoaded) { _wstSyncFromUrl(); return; }
   wstLoaded = true;
   try {
     const data = await apiFetch('/api/writing-tips/lessons');
@@ -67,11 +70,13 @@ async function initWritingTips() {
 
     const savedKey = localStorage.getItem(WST_LAST_LESSON_KEY);
     const savedLesson = savedKey && wstLessons.find(l => wstKeyOf(l) === savedKey);
-    const initialLesson = savedLesson || wstLessons[0] || null;
+    // ?tip= (per-lesson URL) wins over the last-viewed lesson.
+    const urlLesson = window.RouteParams ? window.RouteParams.findTip(wstLessons) : null;
+    const initialLesson = urlLesson || savedLesson || wstLessons[0] || null;
     wstCurrentKey = initialLesson ? wstKeyOf(initialLesson) : null;
 
     wstRenderSidebar();
-    if (wstCurrentKey) wstSelectLesson(wstCurrentKey);
+    if (wstCurrentKey) wstSelectLesson(wstCurrentKey, { history: 'replace' });
     else document.getElementById('wst-main-content').innerHTML = '<div class="wst-loading">Chưa có nội dung.</div>';
   } catch (err) {
     wstLoaded = false; // allow a retry (e.g. transient network error) next time the screen opens
@@ -114,9 +119,14 @@ function wstToggleCategory(cat) {
   wstRenderSidebar();
 }
 
-function wstSelectLesson(key) {
+// opts.history: 'push' (default — a sidebar click gets its own Back step)
+// or 'replace' (initial/restored selection).
+function wstSelectLesson(key, opts) {
   const lesson = wstLessons.find(l => wstKeyOf(l) === key);
   if (!lesson) return;
+  if (window.RouteParams && _wstTipsVisible()) {
+    window.RouteParams.syncTip(lesson, wstLessons, !(opts && opts.history === 'replace'));
+  }
   wstCurrentKey = key;
   localStorage.setItem(WST_LAST_LESSON_KEY, key);
   wstMarkRead(key);
@@ -124,6 +134,22 @@ function wstSelectLesson(key) {
   wstRenderLessonContent(lesson);
   const panel = document.getElementById('screen-writing-tips');
   if (panel) panel.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Only write ?tip= while the Tips view is what's on screen — the lesson
+// fetch can resolve after the student already switched to another view.
+function _wstTipsVisible() {
+  return !!document.getElementById('screen-writing-tips')?.classList.contains('active');
+}
+
+// Re-entering the Tips view (tab switch, Back/Forward): open the lesson the
+// URL names, or put the current one back into the URL.
+function _wstSyncFromUrl() {
+  if (!wstLessons.length || !window.RouteParams) return;
+  const want = window.RouteParams.findTip(wstLessons);
+  if (want && wstKeyOf(want) !== wstCurrentKey) { wstSelectLesson(wstKeyOf(want), { history: 'replace' }); return; }
+  const cur = wstLessons.find(l => wstKeyOf(l) === wstCurrentKey);
+  if (cur && _wstTipsVisible()) window.RouteParams.syncTip(cur, wstLessons, false);
 }
 
 function wstRenderLessonContent(lesson) {
