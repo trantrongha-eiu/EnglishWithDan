@@ -284,6 +284,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadUnit(unitParam, false, modeParam);
     } else if (viewParam === 'lesson' && lessonIdParam) {
         openLesson(lessonIdParam, false);
+    } else if ((viewParam === 'paraphrase' || viewParam === 'topics') && window.PracticeBrowse) {
+        window.PracticeBrowse.show(viewParam, false);
     }
 
     // ?action=review-due — the "🔁 Ôn ngay" button in nav.js's daily vocab
@@ -309,6 +311,7 @@ function goHomeView(push = true) {
     const doGo = () => {
         _clearAutoNext();
         currentBookId = null;
+        if (window.PracticeBrowse) window.PracticeBrowse.clear();
         document.querySelectorAll('.book-item, .sheet-book-item').forEach(el => el.classList.remove('active'));
         document.getElementById('view-unit').style.display = 'none';
         document.getElementById('view-lesson').style.display = 'none';
@@ -342,6 +345,8 @@ window.addEventListener('popstate', (e) => {
         loadUnit(st.unit, false, st.mode);
     } else if (st.view === 'lesson' && st.lessonId) {
         openLesson(st.lessonId, false);
+    } else if ((st.view === 'paraphrase' || st.view === 'topics') && window.openPracticeBrowse) {
+        window.openPracticeBrowse(st.view, false);
     } else {
         goHomeView(false);
     }
@@ -957,6 +962,7 @@ function openBook(bookId, push = true) {
         currentBookId = bookId;
         _isHardWordsSession = false;
         selectedWordIds.clear();
+        if (window.PracticeBrowse) window.PracticeBrowse.clear();
 
         // Clear search + status filter when switching books
         const searchEl = document.getElementById('book-search');
@@ -1943,6 +1949,11 @@ function practiceHardWords() {
 function closeUnitView(push = true) {
     const doClose = () => {
         _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
+        // Came here from the full-width Paraphrase/Topics list → Back returns
+        // to that list rather than the homepage (openBook() clears the
+        // context, so book practice still falls through to the book below).
+        const browseCtx = window.PracticeBrowse && window.PracticeBrowse.context();
+        if (browseCtx) { window.PracticeBrowse.show(browseCtx, push); return; }
         document.getElementById('view-unit').style.display   = 'none';
         document.getElementById('view-mybook').style.display = 'flex';
         const panel = document.getElementById('kbd-hint-panel');
@@ -1969,7 +1980,7 @@ async function loadUnits() {
     try {
         const res   = await fetch(`${API}/vocab/units`, { headers: authH() });
         const units = await window.ApiClient.handleResponse(res);
-        if (!Array.isArray(units)) return;
+        if (!Array.isArray(units)) throw new Error('bad units payload');
         const sel   = document.getElementById('unitSelect');
         sel.innerHTML = '<option value="">-- Chọn Paraphrase Unit --</option>';
         units.forEach(u => {
@@ -1980,7 +1991,10 @@ async function loadUnits() {
         });
         if (window._upSetUnits) window._upSetUnits(units);
         if (window.syncSheetUnits) window.syncSheetUnits();
-    } catch { }
+        if (window.onPracticeDataLoaded) window.onPracticeDataLoaded('paraphrase', units);
+    } catch {
+        if (window.onPracticeDataLoaded) window.onPracticeDataLoaded('paraphrase', []);
+    }
 }
 
 let _loadUnitSeq = 0;

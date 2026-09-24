@@ -176,10 +176,10 @@ async function loadQuizLeaderboard() {
     }
 }
 
+// The desktop sidebar's inline picker was replaced by the full-width
+// Vocab Topics list (js/dashboard-browse.js) — just tell it data is ready.
 function renderClassroomSidebar() {
-    const list = document.getElementById('classroom-list-sidebar');
-    if (!list) return;
-    buildClassroomPicker(list, {});
+    if (window.onPracticeDataLoaded) window.onPracticeDataLoaded('topics');
 }
 
 // Mirrors renderClassroomSidebar() into the mobile bottom sheet's
@@ -388,7 +388,10 @@ function closeLessonView() {
         resetQuizState(); // stops the elapsed-time interval if a quiz was abandoned mid-run
         const fab = document.getElementById('mobFab');
         if (fab) fab.style.display = ''; // let the existing mobile/desktop media-query rules decide again
-        if (typeof goHomeView === 'function') goHomeView();
+        // Opened from the full-width Vocab Topics list → return to it.
+        const browseCtx = window.PracticeBrowse && window.PracticeBrowse.context();
+        if (browseCtx) window.PracticeBrowse.show(browseCtx);
+        else if (typeof goHomeView === 'function') goHomeView();
         renderTodaysLessonCard();
     };
     if (isQuizInProgress()) {

@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260923sidebarredesign">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260924guide">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -52,41 +52,27 @@
 
     <div class="sidebar-divider"></div>
 
-    <!-- Practice: Paraphrase + Vocab-by-topic quizzes used to be two
-         separate stacked sections (same picker shape, same "pick something
-         to practice" purpose) — merged under one tabbed block so the
-         sidebar reads as one practice area instead of a wall of repeated
-         headings. Both pickers' own JS (dashboard.html's _buildPicker IIFE
-         for Paraphrase, buildClassroomPicker() in dashboard-lesson.js for
-         Vocab Topics) is untouched — this is purely a show/hide wrapper. -->
+    <!-- Practice: two plain buttons, neither selected by default. Clicking
+         one opens the full-width #practice-browse view in the main area
+         (js/dashboard-browse.js) to pick a Paraphrase Unit / Vocab Topic —
+         the old in-sidebar dropdown pickers were too cramped at 240px. The
+         button stays highlighted while that list (or a unit/lesson opened
+         from it) is on screen. -->
     <div class="practice-section">
-      <div class="practice-tabs" role="tablist">
-        <button class="practice-tab active" id="practiceTabParaphrase" role="tab" aria-selected="true" aria-controls="practicePanelParaphrase" onclick="switchSidebarPracticeTab('paraphrase')">
+      <div class="practice-tabs">
+        <button class="practice-tab" id="practiceTabParaphrase" aria-pressed="false" onclick="openPracticeBrowse('paraphrase')">
           <i class="fas fa-graduation-cap"></i> Paraphrase
         </button>
-        <button class="practice-tab" id="practiceTabVocab" role="tab" aria-selected="false" aria-controls="practicePanelVocab" onclick="switchSidebarPracticeTab('vocab')">
+        <button class="practice-tab" id="practiceTabVocab" aria-pressed="false" onclick="openPracticeBrowse('topics')">
           <i class="fas fa-layer-group"></i> Vocab Topics
         </button>
       </div>
-
-      <div class="practice-panel" id="practicePanelParaphrase" role="tabpanel">
-        <div class="unit-picker" id="unitPickerDesktop">
-          <div style="position:relative">
-            <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
-            <span class="unit-picker-caret">▾</span>
-          </div>
-          <div class="unit-picker-dd" id="unitPickerDdD"></div>
-        </div>
-        <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
-        <button class="btn-difficult-words" onclick="openDifficultWordsModal()">
-          <i class="fas fa-fire"></i> Ôn lại từ hay sai
-          <span class="difficult-count-badge" id="difficultCountBadge" style="display:none">0</span>
-        </button>
-      </div>
-
-      <div class="practice-panel" id="practicePanelVocab" role="tabpanel" style="display:none">
-        <div id="classroom-list-sidebar"><!-- Rendered by JS --></div>
-      </div>
+      <!-- Hidden: still the source of truth for loadUnit()'s current unit. -->
+      <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
+      <button class="btn-difficult-words" onclick="openDifficultWordsModal()">
+        <i class="fas fa-fire"></i> Ôn lại từ hay sai
+        <span class="difficult-count-badge" id="difficultCountBadge" style="display:none">0</span>
+      </button>
     </div>
   </aside>
 
@@ -371,6 +357,38 @@
               <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No words yet</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Full-width Paraphrase Unit / Vocab Topic picker, opened from the
+           sidebar's practice buttons (js/dashboard-browse.js). -->
+      <div id="practice-browse" class="practice-browse" style="display:none">
+        <div class="pb-inner">
+          <div class="pb-head">
+            <button class="btn btn-ghost btn-sm" onclick="goHomeView()">← Trang chủ</button>
+            <div class="pb-head-text">
+              <h2 id="pb-title"></h2>
+              <p id="pb-sub"></p>
+            </div>
+          </div>
+          <!-- "Gợi ý cho bạn" (per-student next steps) + "Cách học hiệu quả"
+               (collapsible study guide) — both rendered by dashboard-browse.js. -->
+          <div id="pb-suggest" class="pb-suggest"></div>
+          <details id="pb-guide" class="pb-guide">
+            <summary id="pb-guide-summary"></summary>
+            <div id="pb-guide-body" class="pb-guide-body"></div>
+          </details>
+          <div class="pb-toolbar">
+            <div class="pb-search">
+              <i class="fas fa-search"></i>
+              <input id="pb-search" type="search" autocomplete="off" aria-label="Tìm kiếm"/>
+            </div>
+            <span class="pb-count" id="pb-count"></span>
+            <button class="btn btn-ghost btn-sm" id="pb-review-btn" style="display:none" onclick="openParaphraseReviewModal()">
+              <i class="fas fa-rotate"></i> Ôn Paraphrase
+            </button>
+          </div>
+          <div id="pb-body"></div>
         </div>
       </div>
     </div>
@@ -1133,27 +1151,11 @@
       _units=units.map(function(u){return{value:String(u.unitNumber),label:'Unit '+u.unitNumber+' – '+u.title};});
       _pickers.forEach(function(p){p.refresh();});
     };
-    var p1=_buildPicker('unitPickerInputD','unitPickerDdD');
+    // Mobile sheet only — the desktop sidebar picker was replaced by the
+    // full-width #practice-browse view (js/dashboard-browse.js).
     var p2=_buildPicker('unitPickerInputM','unitPickerDdM');
-    if(p1)_pickers.push(p1); if(p2)_pickers.push(p2);
+    if(p2)_pickers.push(p2);
   })();
-
-  // ── Sidebar Practice tabs (Paraphrase / Vocab Topics) ──────────────
-  // A real outside-click mousedown (not a direct dd.style.display flip)
-  // so each picker's own close() runs and its internal isOpen flag stays
-  // correct — otherwise switching tabs away and back while a dropdown was
-  // open would leave that picker thinking it's still open, and the next
-  // click on its trigger would silently no-op instead of opening it.
-  window.switchSidebarPracticeTab = function (which) {
-    document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-    var isParaphrase = which === 'paraphrase';
-    document.getElementById('practiceTabParaphrase').classList.toggle('active', isParaphrase);
-    document.getElementById('practiceTabParaphrase').setAttribute('aria-selected', isParaphrase ? 'true' : 'false');
-    document.getElementById('practiceTabVocab').classList.toggle('active', !isParaphrase);
-    document.getElementById('practiceTabVocab').setAttribute('aria-selected', !isParaphrase ? 'true' : 'false');
-    document.getElementById('practicePanelParaphrase').style.display = isParaphrase ? '' : 'none';
-    document.getElementById('practicePanelVocab').style.display = isParaphrase ? 'none' : '';
-  };
 
   // ── syncSheetUnits: now just syncs hidden selects (compat) ──────
   window.syncSheetUnits = function(){
@@ -1328,11 +1330,12 @@
 <script src="js/shared/peer-profile.js?v=20260908"></script>
 <script src="js/dashboard-audio.js?v=20260906"></script>
 <script src="js/shared/wbw-drill.js?v=20260917novi"></script>
-<script src="js/dashboard-lesson.js?v=20260923vocabtopics2"></script>
+<script src="js/dashboard-lesson.js?v=20260924browse"></script>
 <script src="js/dashboard-homework.js?v=20260913dictfix"></script>
 <script src="js/dashboard-classinfo.js?v=20260909cls"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
-<script src="js/dashboard.js?v=20260923transdir"></script>
+<script src="js/dashboard.js?v=20260924browse"></script>
+<script src="js/dashboard-browse.js?v=20260924guide"></script>
 </body>
 </html>
