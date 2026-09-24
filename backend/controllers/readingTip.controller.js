@@ -17,24 +17,15 @@ exports.listLessons = async (req, res) => {
   }
 };
 
-// ?exclude=id,id… — the passages of the student's last practices (kept in
-// their browser); anything that isn't an ObjectId is ignored.
-function parseExclude(raw) {
-  if (typeof raw !== 'string') return [];
-  const ids = raw.split(',').map(s => s.trim()).filter(s => /^[a-f\d]{24}$/i.test(s));
-  return [...new Set(ids)].slice(0, 10);
-}
-
-// GET /api/reading-tips/:lessonKey/practice — a fresh mini-practice built
+// GET /api/reading-tips/:lessonKey/practice — the tip's (fixed) mini-practice built
 // from existing passages (no answer key in the payload).
 exports.getPractice = async (req, res) => {
   try {
-    const result = await readingTipPracticeService.getPractice(req.params.lessonKey, { exclude: parseExclude(req.query.exclude) });
+    const result = await readingTipPracticeService.getPractice(req.params.lessonKey);
     if (result.status === 'no_practice') {
       return res.status(404).json({ success: false, code: 'NO_PRACTICE', message: 'Bài này chưa có phần luyện tập.' });
     }
-    // Randomised per request — never let a cache hand two students (or two
-    // attempts) the same response.
+    // A saved practice can go stale when its source is edited — always fresh.
     res.set('Cache-Control', 'no-store');
     if (!result.practice) {
       return res.json({ success: true, tip: result.tip, practice: null, message: 'Chưa tìm thấy bài luyện tập phù hợp.' });

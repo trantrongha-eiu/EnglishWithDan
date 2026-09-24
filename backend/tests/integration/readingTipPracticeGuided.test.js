@@ -83,10 +83,12 @@ describe('Keyword → Paraphrase', () => {
     // paraphrase); one passage contributes at most two items.
     expect(items).toHaveLength(2);
     items.forEach(it => expect([2, 3, 4]).toContain(it.questionNumber));
-    const byKeyword = { 'Specially adapted trains': 'A', 'Affected the taste': 'B', 'A large number of homes': 'C' };
+    const byKeyword = { 'specially adapted trains': 'A', 'affected the taste': 'B', 'a large number of homes': 'C' };
     items.forEach(it => {
-      expect(Object.keys(byKeyword)).toContain(it.keyword);
-      expect(it.paragraphLabel).toBe(byKeyword[it.keyword]);
+      expect(Object.keys(byKeyword)).toContain(it.keyword.toLowerCase());
+      expect(it.paragraphLabel).toBe(byKeyword[it.keyword.toLowerCase()]);
+      // shown exactly as the question writes it, not as the explanation quotes it
+      expect(it.question).toContain(it.keyword);
     });
     const json = JSON.stringify(res.body);
     expect(json).not.toMatch(/"(phrase|correctAnswer|explanation)"/);
@@ -125,15 +127,15 @@ describe('Quy trình làm bài (workflow)', () => {
     expect(detail.body.result.isCorrect).toBe(true);
   });
 
-  test('?exclude= : "Bài khác" moves to another passage (workflow and paraphrase)', async () => {
-    const other = await createPassage({ content: CONTENT, questionGroups: passage.questionGroups });
+  test('the same practice on every load (workflow and paraphrase); ?exclude= is ignored', async () => {
+    await createPassage({ content: CONTENT, questionGroups: passage.questionGroups });
     const getEx = (key, ids) => request(app).get(`/api/reading-tips/${key}/practice`)
       .query({ exclude: ids.map(String).join(',') }).set('Authorization', `Bearer ${token}`);
-    for (let i = 0; i < 4; i++) {
-      expect((await getEx('skim-scan-workflow', [passage._id])).body.practice.passageId).toBe(String(other._id));
-      expect((await getEx('skim-scan-workflow', [other._id])).body.practice.passageId).toBe(String(passage._id));
-      // paraphrase mixes passages; the recently practised one comes last
-      expect((await getEx('keyword-to-paraphrase', [passage._id])).body.practice.items[0].passageId).toBe(String(other._id));
+    for (const key of ['skim-scan-workflow', 'keyword-to-paraphrase']) {
+      const first = (await getEx(key, [])).body.practice;
+      expect(first.fixed).toBe(true);
+      const ids = first.passageId ? [first.passageId] : first.items.map(it => it.passageId);
+      for (let i = 0; i < 3; i++) expect((await getEx(key, ids)).body.practice).toEqual(first);
     }
   });
 

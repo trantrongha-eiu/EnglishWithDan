@@ -7,6 +7,7 @@ const request = require('supertest');
 const app = require('../../app');
 const ListeningTip = require('../../models/ListeningTip');
 const ListeningSection = require('../../models/ListeningSection');
+const { FIXED_PRACTICE } = require('../../services/listeningTipPracticeService');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createListeningSection } = require('../factories/contentFactory');
 
@@ -188,12 +189,23 @@ describe('Chiến thuật 30 giây', () => {
     NO_KEYS.forEach(k => expect(keys.has(k)).toBe(false));
   });
 
-  test('?exclude= moves "Bài khác" to another section', async () => {
+  test('every load gives the same (fixed) practice: the pinned section, else one seeded pick; ?exclude= is ignored', async () => {
     const a = await aligned({ title: 'A' });
     const b = await aligned({ title: 'B' });
+    const first = (await get('30-second-strategy')).body.practice;
+    expect(first.fixed).toBe(true);
     for (let i = 0; i < 4; i++) {
-      expect((await get('30-second-strategy', { exclude: String(a._id) })).body.practice.sectionId).toBe(String(b._id));
-      expect((await get('30-second-strategy', { exclude: String(b._id) })).body.practice.sectionId).toBe(String(a._id));
+      expect((await get('30-second-strategy', { exclude: first.sectionId })).body.practice).toEqual(first);
+    }
+    const pinned = first.sectionId === String(a._id) ? b : a;
+    const saved = FIXED_PRACTICE['30-second-strategy'];
+    try {
+      FIXED_PRACTICE['30-second-strategy'] = { section: String(pinned._id) };
+      for (let i = 0; i < 3; i++) expect((await get('30-second-strategy')).body.practice.sectionId).toBe(String(pinned._id));
+      await pinned.deleteOne(); // pinned source gone: the seeded pick among the rest
+      expect((await get('30-second-strategy')).body.practice.sectionId).toBe(first.sectionId);
+    } finally {
+      FIXED_PRACTICE['30-second-strategy'] = saved;
     }
   });
 });

@@ -179,7 +179,6 @@
   const LOAD_TIMEOUT_MS = 45000;
   const CHECK_TIMEOUT_MS = 30000;
   const SLOW_NOTICE_MS = 6000;
-  const RECENT_MAX = 8;
   const SPEEDS = [1, 0.8, 1.2];
 
   const esc = (s) => escHtml(s == null ? '' : String(s));
@@ -254,7 +253,7 @@
 
   // ── Browser-only persistence ──────────────────────────────────────────
   // One localStorage entry per account: { [lessonKey]: { practice, answers,
-  // idx, stage, finished, counted, savedAt, recent, last, best, attempts } }.
+  // idx, stage, finished, counted, savedAt, last, best, attempts } }.
   const STORE_PREFIX = 'ltp_v1_';
   const STALE_MS = 30 * 24 * 60 * 60 * 1000;
   let persistTimer = null;
@@ -296,7 +295,8 @@
     const rec = readStore()[key];
     if (!rec || typeof rec !== 'object') return null;
     const items = itemsOf(rec.practice);
-    const usable = Array.isArray(items) && items.length && Array.isArray(rec.answers)
+    // (practices saved before every tip got its one fixed practice are dropped)
+    const usable = Array.isArray(items) && items.length && rec.practice.fixed && Array.isArray(rec.answers)
       && rec.answers.length === items.length && Date.now() - (rec.savedAt || 0) < STALE_MS;
     if (!usable) { rec.practice = null; rec.answers = null; }
     return rec;
@@ -307,7 +307,7 @@
     if (!st) return;
     const all = readStore();
     all[st.lesson.lessonKey] = {
-      ...(all[st.lesson.lessonKey] || {}), // keeps last / best / attempts / recent
+      ...(all[st.lesson.lessonKey] || {}), // keeps last / best / attempts
       savedAt: Date.now(),
       practice: st.practice,
       answers: st.answers.map(savedAnswer),
@@ -326,18 +326,6 @@
     persistTimer = setTimeout(persist, 400);
   }
 
-  function rememberSections(key, practice) {
-    const ids = (oneSection(practice) ? [practice.sectionId] : practice.items.map(it => it.sectionId)).filter(Boolean);
-    const all = readStore();
-    const rec = all[key] || {};
-    rec.recent = [...new Set([...ids, ...(Array.isArray(rec.recent) ? rec.recent : [])])].slice(0, RECENT_MAX);
-    all[key] = rec;
-    writeStore(all);
-  }
-  function recentSections(key) {
-    const rec = readStore()[key];
-    return rec && Array.isArray(rec.recent) ? rec.recent.filter(id => /^[a-f\d]{24}$/i.test(String(id))) : [];
-  }
 
   function recordScore(score, total) {
     const all = readStore();
@@ -540,14 +528,14 @@
     const items = rec && itemsOf(rec.practice);
     let buttons;
     if (st && st.lesson.lessonKey === lesson.lessonKey) {
-      buttons = '<button type="button" class="ltp-btn" data-act="start">🎲 Bài mới</button>';
+      buttons = '<button type="button" class="ltp-btn" data-act="start">↻ Làm lại từ đầu</button>';
     } else if (items && !rec.finished) {
       const where = RUN_KINDS.has(rec.practice.kind) ? '' : ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`; // questions / items
       buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm${where}</button>
-        <button type="button" class="ltp-btn" data-act="start">🎲 Bài mới</button>`;
+        <button type="button" class="ltp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
     } else if (items) {
-      buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="start">🎧 Luyện bài mới</button>
-        <button type="button" class="ltp-btn" data-act="resume">📖 Xem lại bài trước</button>`;
+      buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="start">↻ Luyện lại</button>
+        <button type="button" class="ltp-btn" data-act="resume">📖 Xem lại kết quả</button>`;
     } else {
       buttons = '<button type="button" class="ltp-btn ltp-btn-primary" data-act="start">🎧 Bắt đầu luyện tập</button>';
     }
@@ -602,10 +590,8 @@
       const el = seq === loadSeq && document.querySelector('#ltp-panel .ltp-state-slow');
       if (el) el.hidden = false;
     }, SLOW_NOTICE_MS);
-    const recent = recentSections(lesson.lessonKey);
-    const query = recent.length ? `?exclude=${recent.join(',')}` : '';
     try {
-      const data = await api(`/listening-tips/${encodeURIComponent(lesson.lessonKey)}/practice${query}`, {}, LOAD_TIMEOUT_MS);
+      const data = await api(`/listening-tips/${encodeURIComponent(lesson.lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS);
       if (seq !== loadSeq) return; // another tip / request took over meanwhile
       if (!data.practice) {
         renderEntry(lesson);
@@ -637,7 +623,7 @@
     return (answers || []).some(a => a && (a.result || a.kwDone || Number(a.step) > 1));
   }
 
-  // "Bài mới" replaces the practice in progress — ask first when the student
+  // "Làm lại từ đầu" replaces the practice in progress — ask first when the student
   // has already done something in it.
   function confirmNewPractice(lesson, go) {
     let busy;
@@ -647,9 +633,9 @@
       busy = !!(rec && rec.practice && !rec.finished && hasProgress(rec.answers));
     }
     if (!busy) { go(); return; }
-    const msg = 'Bài đang làm dở sẽ được thay bằng một bài mới và không lưu lại. Bạn chắc chứ?';
+    const msg = 'Các câu bạn đã làm trong bài này sẽ bị xoá để làm lại từ đầu. Bạn chắc chứ?';
     if (typeof window.confirmDialog === 'function') {
-      window.confirmDialog('Làm bài mới?', msg, go, { confirmLabel: 'Làm bài mới', confirmClass: 'btn-primary' });
+      window.confirmDialog('Làm lại từ đầu?', msg, go, { confirmLabel: 'Làm lại', confirmClass: 'btn-primary' });
     } else if (window.confirm(msg)) go();
   }
 
@@ -664,7 +650,6 @@
       idx: 0, stage: practice.kind === 'workflow' ? 'kw' : 'intro', checklist: {}, finished: false, counted: false,
       answers: freshAnswers(items),
     };
-    rememberSections(lesson.lessonKey, practice);
     persist();
     renderEntry(lesson);
     renderQuestion();
@@ -923,6 +908,9 @@
     const pr = st.practice;
     const g = QTYPE_GUIDE[pr.qtype] || { steps: [] };
     const n = st.items.reduce((s, q) => s + (q.pick || 1), 0);
+    // "choose TWO": one screen per prompt, each worth its number of answers
+    const size = n > st.items.length ? `${st.items.length} câu (${n} đáp án cần chọn)` : `${n} câu`;
+    const borrowed = st.items.find(q => q.sourceName && q.sourceName !== pr.sourceName);
     const guided = st.items[0] && st.items[0].mode === 'example';
     showPanelState(headerHtml(esc(pr.sourceName)) + `<div class="ltp-card ltp-intro">
       <div class="ltp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(QTYPE_NAME[pr.qtype] || '')}</div>
@@ -933,7 +921,7 @@
         <span class="ltp-mode we"><b>🤝 Câu 2</b> làm cùng, có gợi ý</span>
         <span class="ltp-mode you"><b>✍️ Từ câu 3</b> tự làm</span>
       </div>` : ''}
-      <div class="ltp-muted">Bài gồm ${n} câu ${esc(QTYPE_NAME[pr.qtype] || '')} lấy nguyên từ đề thật (${esc(pr.sourceName)}), đúng thứ tự như trong đề. Mỗi câu có đoạn audio riêng — nghe lại thoải mái.</div>
+      <div class="ltp-muted">Bài gồm ${size} ${esc(QTYPE_NAME[pr.qtype] || '')} lấy nguyên từ đề thật (${esc(pr.sourceName)})${borrowed ? `; câu mẫu lấy từ ${esc(borrowed.sourceName)}` : ''}, đúng thứ tự như trong đề. Mỗi câu có đoạn audio riêng — nghe lại thoải mái.</div>
       <button type="button" class="ltp-btn ltp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
     </div>`);
   }
@@ -1492,8 +1480,7 @@
     </div>`;
     showPanelState(panelHead + `<div class="ltp-pv-results">${rows}</div>
       <div class="ltp-result-actions">
-        <button type="button" class="ltp-btn" data-act="retry">🔄 Làm lại</button>
-        <button type="button" class="ltp-btn ltp-btn-primary" data-act="start">🎲 Bài khác</button>
+        <button type="button" class="ltp-btn ltp-btn-primary" data-act="retry">🔄 Làm lại</button>
       </div>`);
     announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);
   }
@@ -1560,7 +1547,7 @@
     box.className = 'ltp-stale';
     box.setAttribute('role', 'alert');
     box.innerHTML = `<div>⚠️ Bài nghe của bài luyện tập này vừa được cập nhật nên không chấm được nữa. Các câu đã làm vẫn giữ nguyên.</div>
-      <button type="button" class="ltp-btn ltp-btn-primary" data-act="start" data-force="1">🎲 Làm bài mới</button>`;
+      <button type="button" class="ltp-btn ltp-btn-primary" data-act="start" data-force="1">↻ Tải lại bài</button>`;
     card.appendChild(box);
     revealEl(box);
   }
@@ -1656,8 +1643,7 @@
       <div class="ltp-result-list">${rows}</div>
       <div class="ltp-result-actions">
         <button type="button" class="ltp-btn" data-act="review">📖 Ôn lại</button>
-        <button type="button" class="ltp-btn" data-act="retry">🔄 Làm lại</button>
-        <button type="button" class="ltp-btn ltp-btn-primary" data-act="start">🎲 Bài khác</button>
+        <button type="button" class="ltp-btn ltp-btn-primary" data-act="retry">🔄 Làm lại</button>
       </div>
     </div>`);
     announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);

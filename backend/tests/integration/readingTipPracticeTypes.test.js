@@ -3,6 +3,7 @@
 // the hand-entered type fields), original order kept, no answer key in the
 // payload, one-answer-at-a-time grading.
 const request = require('supertest');
+const { FIXED_PRACTICE } = require('../../services/readingTipPracticeService');
 const app = require('../../app');
 const ReadingTip = require('../../models/ReadingTip');
 const { createPremiumStudent, signTokenFor } = require('../factories/userFactory');
@@ -218,36 +219,38 @@ test('/lessons marks every question-type tip as having a practice', async () => 
   expect(res.body.lessons.every(l => l.hasPractice)).toBe(true);
 });
 
-// Phase 4: the browser sends the passages of the student's last practices
-// (newest first) so "Bài khác" gives a different passage.
-describe('?exclude= — "Bài khác" avoids recently practised passages', () => {
+// Every tip has one fixed practice: the hand-picked passage (FIXED_PRACTICE)
+// while it still qualifies, else the same seeded pick on every load.
+describe('fixed practice — the same passage every time', () => {
   const tfPassage = () => createPassage({
     content: LABELLED,
     questionGroups: [{ groupType: 'plain', instruction: 'Do the following statements agree with the information given in Reading Passage 1?',
       questions: ['TRUE', 'FALSE', 'NOT GIVEN', 'TRUE', 'FALSE'].map((k, i) => tfng(i + 1, k)) }],
   });
-  const getExcluding = (ids) => request(app).get('/api/reading-tips/true-false-not-given/practice')
-    .query({ exclude: ids.map(String).join(',') }).set('Authorization', `Bearer ${token}`);
+  const load = (query = {}) => request(app).get('/api/reading-tips/true-false-not-given/practice')
+    .query(query).set('Authorization', `Bearer ${token}`);
 
-  test('an excluded passage is never picked while another one fits', async () => {
-    const a = await tfPassage();
-    const b = await tfPassage();
-    for (let i = 0; i < 5; i++) {
-      expect((await getExcluding([a._id])).body.practice.passageId).toBe(String(b._id));
-      expect((await getExcluding([b._id])).body.practice.passageId).toBe(String(a._id));
-    }
+  test('repeated loads return the identical practice; ?exclude= no longer changes it', async () => {
+    await tfPassage();
+    await tfPassage();
+    const first = (await load()).body.practice;
+    expect(first.fixed).toBe(true);
+    for (let i = 0; i < 4; i++) expect((await load({ exclude: first.passageId })).body.practice).toEqual(first);
   });
 
-  test('when every passage is excluded the oldest exclusions go first (never the last one); junk ids are ignored', async () => {
+  test('the pinned passage is used while it qualifies; when it is gone the seeded pick takes over', async () => {
     const a = await tfPassage();
     const b = await tfPassage();
-    // newest first: b was the last practice, a the one before
-    for (let i = 0; i < 5; i++) expect((await getExcluding([b._id, a._id])).body.practice.passageId).toBe(String(a._id));
-    const res = await getExcluding(['not-an-id', '{"$ne":null}', b._id]);
-    expect(res.status).toBe(200);
-    expect(res.body.practice.passageId).toBe(String(a._id));
-    // a single suitable passage is still served even if it was just done
-    await b.deleteOne();
-    expect((await getExcluding([a._id])).body.practice.passageId).toBe(String(a._id));
+    const seeded = (await load()).body.practice.passageId;
+    const pinned = seeded === String(a._id) ? b : a;
+    const saved = FIXED_PRACTICE['true-false-not-given'];
+    try {
+      FIXED_PRACTICE['true-false-not-given'] = { passage: String(pinned._id) };
+      for (let i = 0; i < 3; i++) expect((await load()).body.practice.passageId).toBe(String(pinned._id));
+      await pinned.updateOne({ isActive: false });
+      expect((await load()).body.practice.passageId).toBe(seeded);
+    } finally {
+      FIXED_PRACTICE['true-false-not-given'] = saved;
+    }
   });
 });

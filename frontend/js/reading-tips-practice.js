@@ -183,7 +183,6 @@
   const LOAD_TIMEOUT_MS = 45000;
   const CHECK_TIMEOUT_MS = 30000;
   const SLOW_NOTICE_MS = 6000;
-  const RECENT_MAX = 8; // passages remembered per tip so "Bài khác" doesn't repeat them
 
   const esc = (s) => escHtml(s == null ? '' : String(s));
   const escNl = (s) => esc(s).replace(/\n/g, '<br>');
@@ -306,7 +305,8 @@
     const rec = readStore()[key];
     if (!rec || typeof rec !== 'object') return null;
     const items = itemsOf(rec.practice);
-    const usable = Array.isArray(items) && items.length && Array.isArray(rec.answers)
+    // (practices saved before every tip got its one fixed practice are dropped)
+    const usable = Array.isArray(items) && items.length && rec.practice.fixed && Array.isArray(rec.answers)
       && rec.answers.length === items.length && Date.now() - (rec.savedAt || 0) < STALE_MS;
     if (!usable) { rec.practice = null; rec.answers = null; }
     return rec;
@@ -336,23 +336,6 @@
   function persistSoon() {
     clearTimeout(persistTimer);
     persistTimer = setTimeout(persist, 400);
-  }
-
-  // The passages a practice uses, newest first in `recent`, so the next
-  // "Bài khác" can ask the server to avoid them.
-  function rememberPassages(key, practice) {
-    const multi = practice.kind === 'skimming' || practice.kind === 'paraphrase';
-    const ids = (multi ? practice.items.map(it => it.passageId) : [practice.passageId]).filter(Boolean);
-    const all = readStore();
-    const rec = all[key] || {};
-    rec.recent = [...new Set([...ids, ...(Array.isArray(rec.recent) ? rec.recent : [])])].slice(0, RECENT_MAX);
-    all[key] = rec;
-    writeStore(all);
-  }
-
-  function recentPassages(key) {
-    const rec = readStore()[key];
-    return rec && Array.isArray(rec.recent) ? rec.recent.filter(id => /^[a-f\d]{24}$/i.test(String(id))) : [];
   }
 
   // Once per completed practice (a "Làm lại" or a new practice counts again).
@@ -480,13 +463,13 @@
     const items = rec && itemsOf(rec.practice);
     let buttons;
     if (st && st.lesson.lessonKey === lesson.lessonKey) {
-      buttons = `<button type="button" class="rtp-btn" data-act="start">🎲 Bài mới</button>`;
+      buttons = `<button type="button" class="rtp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
     } else if (items && !rec.finished) {
       buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})</button>
-        <button type="button" class="rtp-btn" data-act="start">🎲 Bài mới</button>`;
+        <button type="button" class="rtp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
     } else if (items) {
-      buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎯 Luyện bài mới</button>
-        <button type="button" class="rtp-btn" data-act="resume">📖 Xem lại bài trước</button>`;
+      buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="start">↻ Luyện lại</button>
+        <button type="button" class="rtp-btn" data-act="resume">📖 Xem lại kết quả</button>`;
     } else {
       buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎯 Bắt đầu luyện tập</button>`;
     }
@@ -540,10 +523,8 @@
       const el = seq === loadSeq && document.querySelector('#rtp-panel .rtp-state-slow');
       if (el) el.hidden = false;
     }, SLOW_NOTICE_MS);
-    const recent = recentPassages(lesson.lessonKey);
-    const query = recent.length ? `?exclude=${recent.join(',')}` : '';
     try {
-      const data = await fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(lesson.lessonKey)}/practice${query}`, {}, LOAD_TIMEOUT_MS);
+      const data = await fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(lesson.lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS);
       if (seq !== loadSeq) return; // another tip / request took over meanwhile
       if (!data.practice) {
         renderEntry(lesson);
@@ -576,7 +557,7 @@
     return (answers || []).some(a => a && (a.result || a.viewed)) || !!extra;
   }
 
-  // "Bài mới" replaces the practice in progress (and its saved answers) —
+  // "Làm lại từ đầu" replaces the practice in progress (and its saved answers) —
   // ask first when the student has already answered something.
   function confirmNewPractice(lesson, go) {
     let busy;
@@ -586,9 +567,9 @@
       busy = !!(rec && rec.practice && !rec.finished && hasProgress(rec.answers, rec.main && rec.main.result));
     }
     if (!busy) { go(); return; }
-    const msg = 'Bài đang làm dở sẽ được thay bằng một bài mới và không lưu lại. Bạn chắc chứ?';
+    const msg = 'Các câu bạn đã làm trong bài này sẽ bị xoá để làm lại từ đầu. Bạn chắc chứ?';
     if (typeof window.confirmDialog === 'function') {
-      window.confirmDialog('Làm bài mới?', msg, go, { confirmLabel: 'Làm bài mới', confirmClass: 'btn-primary' });
+      window.confirmDialog('Làm lại từ đầu?', msg, go, { confirmLabel: 'Làm lại', confirmClass: 'btn-primary' });
     } else if (window.confirm(msg)) go();
   }
 
@@ -604,7 +585,6 @@
       answers: freshAnswers(items),
       stage: 0, main: { value: '', result: null }, guess: '',
     };
-    rememberPassages(lesson.lessonKey, practice);
     persist();
     renderEntry(lesson);
     renderQuestion();
@@ -1261,8 +1241,7 @@
       <div class="rtp-result-list">${rows}</div>
       <div class="rtp-result-actions">
         <button type="button" class="rtp-btn" data-act="wf-review">📖 Ôn lại</button>
-        <button type="button" class="rtp-btn" data-act="retry">🔄 Làm lại</button>
-        <button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎲 Bài khác</button>
+        <button type="button" class="rtp-btn rtp-btn-primary" data-act="retry">🔄 Làm lại</button>
       </div>
     </div>`);
     announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);
@@ -1360,8 +1339,7 @@
       <div class="rtp-result-list">${rows}</div>
       <div class="rtp-result-actions">
         <button type="button" class="rtp-btn" data-act="review">📖 Ôn lại</button>
-        <button type="button" class="rtp-btn" data-act="retry">🔄 Làm lại</button>
-        <button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎲 Bài khác</button>
+        <button type="button" class="rtp-btn rtp-btn-primary" data-act="retry">🔄 Làm lại</button>
       </div>
     </div>`);
     announce(`Hoàn thành luyện tập: đúng ${score} trên ${n} câu.`);

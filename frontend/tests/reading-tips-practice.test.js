@@ -29,7 +29,7 @@ const PARAGRAPHS = [
 ];
 
 const tfngPractice = (passageId = PASSAGE_ID) => ({
-  kind: 'questions', questionType: 'tfng', passageId, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1',
+  fixed: true, kind: 'questions', questionType: 'tfng', passageId, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1',
   paragraphs: PARAGRAPHS,
   questions: [
     { questionNumber: 1, text: 'Specially adapted trains carried butter.', input: 'choice', choices: TF, isGuidedExample: true,
@@ -350,7 +350,7 @@ describe('Phase 4 safety and polish', () => {
     expect(localStorage.getItem('rtp_v1_student1')).toBeNull();
   });
 
-  test('"Bài mới" asks before replacing answered work; cancel keeps it', async () => {
+  test('"Làm lại từ đầu" asks before replacing answered work; cancel keeps it', async () => {
     await startWith(LESSONS.tfng, tfngPractice());
     click('[data-act="intro-done"]');
     click('[data-act="next"]');
@@ -370,16 +370,14 @@ describe('Phase 4 safety and polish', () => {
     expect($('.rtp-intro')).not.toBeNull();
   });
 
-  test('"Bài khác" sends the passages just practised so the server can avoid them', async () => {
+  test('"Làm lại từ đầu" reloads the same fixed practice (no ?exclude=); the result screen offers "Làm lại" only', async () => {
     await startWith(LESSONS.tfng, tfngPractice());
-    window.apiFetch.mockResolvedValueOnce({ success: true, practice: tfngPractice(OTHER_ID) });
+    expect($('#rtp-entry-wrap [data-act="start"]').textContent).toContain('Làm lại từ đầu');
+    window.apiFetch.mockResolvedValueOnce({ success: true, practice: tfngPractice() });
     click('#rtp-entry-wrap [data-act="start"]'); // nothing answered → no confirm
     await flush();
-    expect(window.apiFetch.mock.calls[1][0]).toBe(`/api/reading-tips/true-false-not-given/practice?exclude=${PASSAGE_ID}`);
-    window.apiFetch.mockResolvedValueOnce({ success: true, practice: tfngPractice() });
-    click('#rtp-entry-wrap [data-act="start"]');
-    await flush();
-    expect(window.apiFetch.mock.calls[2][0]).toBe(`/api/reading-tips/true-false-not-given/practice?exclude=${OTHER_ID},${PASSAGE_ID}`);
+    expect(window.apiFetch.mock.calls[1][0]).toBe('/api/reading-tips/true-false-not-given/practice');
+    expect(document.body.innerHTML).not.toContain('Bài khác');
   });
 
   test('options work from the keyboard and keep focus (paragraphs: see the workflow test)', async () => {
@@ -412,7 +410,7 @@ describe('Phase 4 safety and polish', () => {
 
 describe('Keyword → Paraphrase', () => {
   const practice = {
-    kind: 'paraphrase',
+    fixed: true, kind: 'paraphrase',
     items: [{ passageId: PASSAGE_ID, questionNumber: 3, pairIndex: 0, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1',
       question: 'The early freezing method affected the taste of meat.', keyword: 'affected the taste',
       sentence: 'The method spoilt the flavor of the meat.', paragraphLabel: 'B' }],
@@ -439,7 +437,7 @@ describe('Keyword → Paraphrase', () => {
 
 describe('Quy trình làm bài (7 steps)', () => {
   const practice = {
-    kind: 'workflow', passageId: PASSAGE_ID, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1', paragraphs: PARAGRAPHS,
+    fixed: true, kind: 'workflow', passageId: PASSAGE_ID, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1', paragraphs: PARAGRAPHS,
     main: { questionNumber: 1, kind: 'mcq', text: 'What is the main idea of paragraph B?', listTitle: null, targetParagraph: 2,
       choices: [{ key: 'A', label: 'how ice was sold' }, { key: 'B', label: 'a problem with freezing' }] },
     questions: [

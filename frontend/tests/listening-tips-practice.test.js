@@ -26,7 +26,7 @@ const OTHER_AUDIO = 'https://res.cloudinary.com/demo/video/upload/other.mp3';
 const INSTRUCTION = 'Complete the form below. Write ONE WORD AND/OR A NUMBER for each answer.';
 
 const formPractice = () => ({
-  kind: 'qtype', qtype: 'form', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 1 · Holiday club',
+  fixed: true, kind: 'qtype', qtype: 'form', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 1 · Holiday club',
   audioUrl: AUDIO, audioDuration: 240,
   questions: [
     { questionNumber: 1, instruction: INSTRUCTION, segment: { start: 29, end: 47.5 }, mode: 'example', input: 'text',
@@ -43,7 +43,7 @@ const formPractice = () => ({
 
 const LETTERS = ['the lake', 'the forest', 'the food', 'the beach', 'the museum'].map((label, i) => ({ key: String.fromCharCode(65 + i), label }));
 const multiPractice = () => ({
-  kind: 'qtype', qtype: 'multi', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 3 · Holiday club',
+  fixed: true, kind: 'qtype', qtype: 'multi', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 3 · Holiday club',
   audioUrl: AUDIO, audioDuration: 240,
   questions: [
     { questionNumber: 21, numbers: [21, 22], pick: 2, input: 'multi', mode: 'example', instruction: 'Choose TWO letters, A–E.',
@@ -60,7 +60,7 @@ const multiPractice = () => ({
 });
 
 const wordclassPractice = () => ({
-  kind: 'wordclass',
+  fixed: true, kind: 'wordclass',
   items: [
     { sectionId: SECTION, sourceName: 'Part 1 · Holiday club', questionNumber: 3, text: 'Bring a _____', context: 'Booking form', wordLimit: 'ONE WORD ONLY' },
     { sectionId: SECTION, sourceName: 'Part 1 · Holiday club', questionNumber: 7, text: 'The rooms are very _____', context: '', wordLimit: 'ONE WORD ONLY' },
@@ -446,10 +446,11 @@ describe('browser-only persistence', () => {
     expect(window.fetch).toHaveBeenCalledTimes(1);
   });
 
-  test('"Bài mới" asks before throwing away work, and sends the section just practised so the server can avoid it', async () => {
+  test('"Làm lại từ đầu" asks before throwing away work, then reloads the same fixed practice (no ?exclude=)', async () => {
     await open(LESSONS.form, formPractice());
     click('[data-act="intro-done"]');
     for (let k = 0; k < 3; k++) click('[data-act="ex-next"]');
+    expect(text('#ltp-entry-wrap [data-act="start"]')).toContain('Làm lại từ đầu');
     window.confirm = jest.fn(() => false);
     click('#ltp-entry-wrap [data-act="start"]');
     expect(window.confirm).toHaveBeenCalled();
@@ -457,7 +458,17 @@ describe('browser-only persistence', () => {
     window.confirm = jest.fn(() => true);
     click('#ltp-entry-wrap [data-act="start"]');
     await settle();
-    expect(calls[1].url).toContain(`?exclude=${SECTION}`);
+    expect(calls[1].url).toMatch(/\/practice$/);
+  });
+
+  test('a practice saved before practices were fixed is not resumed', async () => {
+    localStorage.setItem('ltp_v1_student1', JSON.stringify({ [LESSONS.form.lessonKey]: {
+      practice: { ...formPractice(), fixed: undefined }, answers: formPractice().questions.map(() => ({ value: '', result: null })),
+      idx: 1, savedAt: Date.now(), last: { score: 2, total: 3 },
+    } }));
+    window.LTPractice.mount(LESSONS.form, slot);
+    expect($('#ltp-entry-wrap [data-act="resume"]')).toBeNull();
+    expect(text('#ltp-entry-wrap')).toContain('2/3'); // the scores are kept
   });
 
   test('storage that throws never breaks the practice', async () => {

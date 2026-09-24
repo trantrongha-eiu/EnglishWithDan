@@ -51,6 +51,37 @@ const PRACTICE_CONFIG = {
   'short-answer-questions': { ...QUESTION_TYPE_DEFAULTS, questionType: 'short_answer' },
 };
 
+// The hand-picked source of each tip's (fixed) practice — see "Fixed
+// practices" below. passage: one Passage; items: [passageId,
+// questionNumber(, pairIndex)] for the practices that mix passages.
+const FIXED_PRACTICE = {
+  skimming: { items: [
+    ['6a2b16b518f3aea4f062f4df', 36], // To catch a king — purpose of the first paragraph
+    ['6a55cfe9d2439c8edfc656b9', 40], // verbal and non-verbal messages — paragraph "To be fair…"
+    ['6a5541f57451993d82bd3312', 34], // Innovation in Business — main point of paragraph 7
+    ['6a2a87d3e802f36848dfcf3b', 16], // I contain multitudes — what the fifth paragraph does
+    ['6a2a6d10e802f36848df9588', 40], // Environmental practices of big businesses — best subheading
+  ] },
+  scanning: { passage: '69e598990186a5bd25a206ed' }, // Adapting to the effects of climate change (Miami Beach, Indonesia, Mekong Delta…)
+  'keyword-to-paraphrase': { items: [
+    ['69d5ec1a0552ba8754871bce', 9, 0], // affected the taste = spoilt the flavor
+    ['69fb60ac8ad4568889c8a831', 6, 1], // weather = climatic conditions
+    ['6a2a71bae802f36848dfa1d3', 8, 0], // think of bears as unintelligent = perceived as stupid
+    ['69fb66c48ad4568889c8ac20', 16, 1], // make use of = employing
+    ['6a29032085253ef89ef3bfe1', 14, 0], // not in use = parked
+    ['6a5510407451993d82bcdb0d', 40, 1], // serious consequences = grave trouble
+  ] },
+  'skim-scan-workflow': { passage: '6a6f4fa183f0561ecc0d960e' }, // Crossing the Threshold
+  'true-false-not-given': { passage: '6a6b93fa933d34eeed802985' }, // The Davies Sisters
+  'yes-no-not-given': { passage: '69d5cf07c5f9062f29190300' }, // Invasion of the Robot Umpires
+  'matching-headings': { passage: '6a55314a7451993d82bd17f5' }, // Violins and very cold weather
+  'matching-information': { passage: '6a2d9082759f3f7b6e649aad' }, // A second attempt at domesticating the tomato
+  'matching-features': { passage: '6a6b93fb933d34eeed802995' }, // Why we need silence
+  'sentence-summary-note-completion': { passage: '6a6f23c9d5e1b371f4752b21' }, // Caral: an ancient South American city
+  'multiple-choice': { passage: '6a6f227ba6fc2d9546e6df26' }, // A New Voyage Round the World
+  'short-answer-questions': { passage: '6a55c892d2439c8edfc649bb' }, // Bondi
+};
+
 const CATEGORY_LABEL = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
 
 // ── Text helpers ────────────────────────────────────────────────────────
@@ -378,8 +409,12 @@ function stemKeywords(stem, evidenceText, ctx) {
     if (picked.length >= 5) break;
     if (evidenceStems.has(wordStem(w)) && !picked.some(p => p.toLowerCase().includes(w))) picked.push(w);
   }
-  if (!picked.length) {
-    [...new Set(contentWords(clean))].sort((a, b) => b.length - a.length).slice(0, 3).forEach(w => picked.push(w));
+  // A paraphrased statement (matching features / information) repeats few
+  // words of its evidence: add its longest idea words, the ones to look for
+  // in other words.
+  if (picked.length < 2) {
+    [...new Set(contentWords(clean))].filter(w => !picked.some(p => p.toLowerCase().includes(w)))
+      .sort((a, b) => b.length - a.length).slice(0, 3 - picked.length).forEach(w => picked.push(w));
   }
   return picked;
 }
@@ -866,31 +901,45 @@ function loadActivePassages() {
   return Passage.find({ isActive: true }).select('title category content questionGroups questions').lean();
 }
 
-// `exclude` = the student's most recent practice passages (newest first,
-// kept in their browser). Drops them from the candidates — the oldest
-// exclusions first when nothing would be left — so "Bài khác" never repeats
-// the previous passage while any other one fits.
-function withoutRecent(candidates, exclude, idOf) {
-  for (let n = exclude.length; n > 0; n--) {
-    const skip = new Set(exclude.slice(0, n));
-    const rest = candidates.filter(c => !skip.has(idOf(c)));
-    if (rest.length) return rest;
-  }
-  return candidates;
+// ── Fixed practices ─────────────────────────────────────────────────────
+// Every tip always shows the same practice: the sources hand-picked in
+// FIXED_PRACTICE (checked against the bank: question, key, passage and
+// explanation agree and read well), else — a passage hidden or edited
+// since, or a test database — the same deterministic pick from the bank.
+
+// A fixed pseudo-random sequence per tip (mulberry32 seeded by its key).
+function seededRng(key) {
+  let h = 2166136261;
+  for (const ch of String(key)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return function next() {
+    h = (h + 0x6D2B79F5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-// Multi-passage practices: items from recently practised passages go last.
-function recentLast(items, exclude) {
-  const skip = new Set(exclude);
-  const seen = (it) => skip.has(String(it.passage._id));
-  return [...items.filter(it => !seen(it)), ...items.filter(seen)];
+// The pinned passage alone when it still qualifies, else every candidate.
+function pinnedFirst(candidates, passageId) {
+  const hit = passageId ? candidates.filter(c => String(c.passage._id) === passageId) : [];
+  return hit.length ? hit : candidates;
 }
 
-async function buildSkimming(cfg, rng, exclude) {
+// The pinned items ([passageId, questionNumber(, pairIndex)]), in their
+// order — null unless all of them still qualify.
+function pinnedItems(pool, fixed, keyOf) {
+  const pins = fixed && fixed.items;
+  if (!pins || !pins.length) return null;
+  const out = pins.map(pin => pool.find(it => keyOf(it).every((k, i) => i >= pin.length || String(k) === String(pin[i]))));
+  return out.every(Boolean) ? out : null;
+}
+
+async function buildSkimming(cfg, rng) {
   const pool = (await loadActivePassages()).flatMap(skimItemsForPassage);
   if (!pool.length) return null;
 
-  const shuffled = recentLast(shuffle(pool, rng), exclude);
+  const pinned = pinnedItems(pool, cfg.fixed, it => [it.passage._id, it.q.questionNumber]);
+  const shuffled = pinned || shuffle(pool, rng);
   // One overall-topic (title) question when the bank has any, the rest
   // paragraph-level — the things the Skimming tip teaches. Spread the
   // paragraph items across passages first (maxPerPassage), then fill any
@@ -940,17 +989,18 @@ async function buildSkimming(cfg, rng, exclude) {
 }
 
 // One existing passage with enough usable questions (at least
-// cfg.minQuestions). Preference order: passages `prefer` accepts (when
-// given), then ones not practised recently (`exclude`), then ones with
-// cfg.preferQuestions+ questions; random among the best. Its first
+// cfg.minQuestions): the pinned one (cfg.fixed) when it still qualifies,
+// else — preferring passages `prefer` accepts (when given), then ones with
+// cfg.preferQuestions+ questions — a seeded pick among the best. Its first
 // cfg.maxQuestions questions are kept, in original order.
-async function pickPassage(cfg, rng, itemsOf, prefer, exclude = []) {
+async function pickPassage(cfg, rng, itemsOf, prefer) {
   const candidates = (await loadActivePassages())
     .map(p => ({ passage: p, ...itemsOf(p) }))
     .filter(c => c.items.length >= cfg.minQuestions);
   if (!candidates.length) return null;
-  const good = prefer ? candidates.filter(prefer) : [];
-  const pool = withoutRecent(good.length ? good : candidates, exclude, c => String(c.passage._id));
+  const pinned = pinnedFirst(candidates, cfg.fixed && cfg.fixed.passage);
+  const good = prefer && pinned === candidates ? candidates.filter(prefer) : [];
+  const pool = good.length ? good : pinned;
   const big = pool.filter(c => c.items.length >= cfg.preferQuestions);
   const tier = big.length ? big : pool;
   const pick = tier[Math.floor(rng() * tier.length)];
@@ -964,8 +1014,8 @@ async function pickPassage(cfg, rng, itemsOf, prefer, exclude = []) {
   };
 }
 
-async function buildScanning(cfg, rng, exclude) {
-  const pick = await pickPassage(cfg, rng, scanItemsForPassage, null, exclude);
+async function buildScanning(cfg, rng) {
+  const pick = await pickPassage(cfg, rng, scanItemsForPassage, null);
   if (!pick) return null;
   const { items, ...base } = pick;
   return {
@@ -1007,11 +1057,11 @@ function guideFor(item, qType, paragraphs) {
   return { keywords: stemKeywords(item.text, evidence.text, ctx), evidence };
 }
 
-async function buildQuestionType(cfg, rng, exclude) {
+async function buildQuestionType(cfg, rng) {
   const qType = cfg.questionType;
   // Prefer passages whose first two questions can be walked through.
   const guidable = (c) => c.items.length >= 2 && guideFor(c.items[0], qType, c.paragraphs) && guideFor(c.items[1], qType, c.paragraphs);
-  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, qType), guidable, exclude);
+  const pick = await pickPassage(cfg, rng, p => questionTypeItems(p, qType), guidable);
   if (!pick) return null;
   const { items, ...base } = pick;
   return {
@@ -1108,13 +1158,21 @@ function gradePhraseSelection(selected, phrase) {
   return covered >= 0.6 && extra <= 2;
 }
 
-async function buildParaphrase(cfg, rng, exclude) {
+// The keyword as the question writes it (explanations quote it with their
+// own capitalisation: "Affected the taste").
+function asWritten(keyword, question) {
+  const at = normalizeForMatch(question).indexOf(normalizeForMatch(keyword));
+  return at === -1 ? keyword : String(question).replace(/\s+/g, ' ').trim().substr(at, normalizeForMatch(keyword).length);
+}
+
+async function buildParaphrase(cfg, rng) {
   const passages = await loadActivePassages();
   const pool = passages.flatMap(p => paraphrasePairs(p).map(pair => ({ passage: p, ...pair })));
   if (!pool.length) return null;
-  const chosen = [];
+  const pinned = pinnedItems(pool, cfg.fixed, it => [it.passage._id, it.q.questionNumber, it.k]);
+  const chosen = pinned || [];
   const perPassage = {};
-  for (const it of recentLast(shuffle(pool, rng), exclude)) {
+  for (const it of pinned ? [] : shuffle(pool, rng)) {
     const key = String(it.passage._id);
     if (chosen.length >= cfg.maxQuestions || (perPassage[key] || 0) >= cfg.maxPerPassage) continue;
     if (chosen.some(c => c.passage === it.passage && c.q === it.q)) continue; // one pair per question
@@ -1133,7 +1191,7 @@ async function buildParaphrase(cfg, rng, exclude) {
         passageTitle: it.passage.title,
         sourceName: names[String(it.passage._id)],
         question: it.question,
-        keyword: it.keyword,
+        keyword: asWritten(it.keyword, it.question),
         sentence: it.sentence.text,
         paragraphLabel: p ? (p.label || (p.n ? String(p.n) : '')) : '',
       };
@@ -1169,12 +1227,12 @@ function workflowItems(passage) {
   return { paragraphs, main, details };
 }
 
-async function buildWorkflow(cfg, rng, exclude) {
+async function buildWorkflow(cfg, rng) {
   const all = (await loadActivePassages())
     .map(p => ({ passage: p, ...workflowItems(p) }))
     .filter(c => c.main && c.details.length >= 2);
   if (!all.length) return null;
-  const candidates = withoutRecent(all, exclude, c => String(c.passage._id));
+  const candidates = pinnedFirst(all, cfg.fixed && cfg.fixed.passage);
   const pick = candidates[Math.floor(rng() * candidates.length)];
   // Spread the detail questions over different paragraphs where possible,
   // then restore the original order.
@@ -1228,17 +1286,16 @@ async function findTip(lessonKey) {
 
 // { status: 'no_practice' } | { status: 'ok', tip, practice } — practice is
 // null when the bank has nothing suitable (the client shows an empty state).
-// `exclude`: passage ids of the student's last practices, avoided if possible.
-async function getPractice(lessonKey, { rng = Math.random, exclude = [] } = {}) {
+async function getPractice(lessonKey, { rng = seededRng(lessonKey) } = {}) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
-  const cfg = PRACTICE_CONFIG[lessonKey];
+  const cfg = { ...PRACTICE_CONFIG[lessonKey], fixed: FIXED_PRACTICE[lessonKey] || null };
   const build = {
     skimming: buildSkimming, scanning: buildScanning, questions: buildQuestionType,
     paraphrase: buildParaphrase, workflow: buildWorkflow,
   }[cfg.kind];
-  const practice = await build(cfg, rng, exclude.map(String));
-  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
+  const practice = await build(cfg, rng);
+  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice: practice && { ...practice, fixed: true } };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.
@@ -1303,6 +1360,7 @@ async function checkAnswer(lessonKey, { passageId, questionNumber, answer, pairI
 
 module.exports = {
   PRACTICE_CONFIG,
+  FIXED_PRACTICE,
   hasPractice,
   getPractice,
   checkAnswer,

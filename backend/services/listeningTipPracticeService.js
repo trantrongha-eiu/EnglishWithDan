@@ -41,6 +41,59 @@ const PRACTICE_CONFIG = {
   'multiple-answers': { kind: 'qtype', qtype: 'multi', minQuestions: 2, preferQuestions: 4, maxQuestions: 6 },
 };
 
+// The hand-picked source of each tip's (fixed) practice — see "Fixed
+// practices" below. section: one ListeningSection; items: [sectionId,
+// questionNumber] (symbols: [sectionId, dictation sentence index]).
+const FIXED_PRACTICE = {
+  'keyword-highlighting': { items: [
+    ['6a6c014485e01d9821f44d27', 9], // Wetsuit and surfboard: _____ euros per day → 30 (price)
+    ['6a21384fce7f626cb9746d3e', 7], // This year, activities end by _____ p.m. → 11.15 (time)
+    ['6a53a9085c459ab074ce322a', 8], // Date of first payment: _____ → 15 October (date)
+    ['6a354f1a4aea0c7482ca46ff', 9], // Address: 707, _____ Street, Marbury → Kippax (name)
+    ['6a355d2c4aea0c7482ca51dd', 37], // kept in small pots in a _____ → hothouse (word)
+  ] },
+  '30-second-strategy': { section: '6a2d0b13e40be522868a86eb' }, // Rental Property Application Form, Q3–7
+  'symbols-and-paraphrase': { items: [
+    ['6a4698110c7fb73f80bcbf49', 25], // $ It costs £4.50 each to enter…
+    ['6a3d2ab0b3716e444f8e7710', 10], // ! It's very important that runners start in a particular order.
+    ['6a2ffc5fad243a17c3919a48', 12], // – Its main weakness is the inefficient use of space…
+    ['6a4c9670da428396002190a8', 19], // → …the number of factories … had increased to approximately 600
+    ['6a53b2975c459ab074ce48ae', 9], // ≠ Whereas digital immigrants are those born…
+  ] },
+  'full-workflow-practice': { section: '6a2d1e46e40be522868ab904', question: 11 }, // The Pre-school Family Centre, Q11–15
+  'predict-noun-adjective-verb': { items: [
+    ['6a4685f363c0ce96f89a50d8', 37], // The operator turned a _____ to move the gear wheels. → handle
+    ['6a5131e02bf801f4090e95b1', 38], // the ecosystem needs to be _____ to be stable → complex
+    ['6a6c014b85e01d9821f44f5f', 35], // it is very difficult to _____ rubber after production. → recycle
+    ['6a355d2c4aea0c7482ca51dd', 33], // mangroves were poisoned by the use of _____ → fertilizer
+    ['6a53d1e85c459ab074ceb10c', 9], // Customer feedback on website: too _____ → slow
+    ['6a2ffc5fad243a17c3919a48', 32], // shoppers can _____ through their shopping → rush
+  ] },
+  'predict-number-date-place': { items: [
+    ['6a301448b14c593213711ea9', 1], // Second group - Mrs. _____ → Keogh (name)
+    ['6a53d1e85c459ab074ceb10c', 4], // Date of outward journey: _____ → 22 November (date)
+    ['6a3c98973bbe61faa8a05bd0', 2], // cost for the week $ _____ → 835 (price)
+    ['6a6c014485e01d9821f44d27', 4], // Good surf school at _____ beach → Carrowniskey (place)
+    ['6a21384fce7f626cb9746d3e', 2], // Time: _____ p.m. → 4.30 (time)
+    ['6a301448b14c593213711ea9', 2], // a total of _____ hours → 15 (number)
+  ] },
+  'predict-plural-countable-formula': { items: [
+    ['6a2d1e46e40be522868ab904', 16], // parents must make several _____ → visits (plural)
+    ['6a4c9670da428396002190a8', 36], // _____ is needed to run the machines → electricity (uncountable)
+    ['6a355d2c4aea0c7482ca51dd', 31], // protect coastal areas from _____ by the sea → flooding (V-ing)
+    ['6a2d0b13e40be522868a86eb', 4], // a house with a _____ → garden (singular)
+    ['6a4c8a5fda428396002163be', 5], // have a job that is _____ → permanent (adjective)
+    ['6a53bc495c459ab074ce6a26', 19], // beside the _____ on the ground floor → information desk (phrase)
+  ] },
+  'form-note-table-completion': { section: '6a27a043ac84aea4f54b07f4' }, // Bankside Recruitment Agency
+  'multiple-choice': { section: '6a509ddcc7a497a299b33db3' }, // The City of Gisborne
+  'matching': { section: '6a6c014485e01d9821f44d33' }, // Cam 17 Test 3 Part 2 — activities on offer
+  'map-plan-diagram': { section: '6a3d2ab0b3716e444f8e7710' }, // Bridge to Brisbane Fun Run
+  'sentence-completion': { section: '6a301864b14c593213712218' }, // Job Centre
+  // two "choose TWO" clusters; the worked example is the geography lesson's
+  'multiple-answers': { section: '6a2d21a8e40be522868abb7a', example: '6a43fbfbe56e021a6ea6b49f' },
+};
+
 // What the student predicts, per kind (the server derives the real one).
 const CHOICES = {
   keywords: ['proper', 'date', 'time', 'price', 'number', 'word'],
@@ -342,10 +395,10 @@ function answerAlternatives(ans) {
   return String(ans || '').split('/').map(s => s.trim()).filter(Boolean);
 }
 
-const WORD_LIMIT_RE = /(NO MORE THAN (?:ONE|TWO|THREE|FOUR) WORDS?(?:\s*(?:AND\/OR|OR|AND)\s*A NUMBER)?|(?:ONE|TWO|THREE) WORDS?(?: ONLY)?(?:\s*(?:AND\/OR|OR)\s*A NUMBER)?|ONE WORD(?: ONLY)?|A NUMBER)/i;
+const WORD_LIMIT_RE = /(NO MORE THAN (?:ONE|TWO|THREE|FOUR) WORDS?(?:\s*(?:AND\s*\/\s*OR|OR|AND)\s*A NUMBER)?|(?:ONE|TWO|THREE) WORDS?(?: ONLY)?(?:\s*(?:AND\s*\/\s*OR|OR)\s*A NUMBER)?|ONE WORD(?: ONLY)?|A NUMBER)/i;
 function wordLimit(group) {
   const m = String(group.instruction || '').match(WORD_LIMIT_RE);
-  return m ? m[1].replace(/\s+/g, ' ').toUpperCase() : null;
+  return m ? m[1].replace(/\s*\/\s*/g, '/').replace(/\s+/g, ' ').toUpperCase() : null;
 }
 
 const BULLET = /^[\s●○•◦▪■□◆◇·*–-]+/;
@@ -356,8 +409,11 @@ const BULLET = /^[\s●○•◦▪■□◆◇·*–-]+/;
 // other gap as "…".
 function gapText(group, q) {
   const marker = `__Q${q.questionNumber}__`;
+  // (dotted answer lines typed after a gap — "_____.........." — and bullets
+  // in the middle of a line are paper layout, not words)
   const clean = (s) => String(s || '').replace(/^>>/, '').replace(BULLET, '').replace(marker, ' _____ ')
-    .replace(/__Q\d+__/g, ' … ').replace(/\s+/g, ' ').replace(/\s+([.,;:?!)])/g, '$1').trim();
+    .replace(/__Q\d+__/g, ' … ').replace(/(_____|…)\s*(?:[.…]\s*){2,}/g, '$1').replace(/\s[•●○◦▪]\s/g, ' ')
+    .replace(/\s+/g, ' ').replace(/\s+([.,;:?!)])/g, '$1').trim();
   if (group.groupType === 'table') {
     const { headers = [], rows = [] } = group.tableConfig || {};
     for (const row of rows) {
@@ -387,7 +443,7 @@ function gapText(group, q) {
   for (let j = i - 1; j >= Math.max(0, i - 8); j--) {
     if (isHeading(lines[j].trim())) { context = clean(lines[j]).replace(/:\s*$/, ''); break; }
   }
-  return { text: clean(lines[i]), context };
+  return { text: clean(lines[i]), context: context.replace(/\s*[:：]\s*$/, '') };
 }
 
 // Typed-answer gaps (form / note / table / sentence completion) of a
@@ -931,13 +987,34 @@ function trapLetters(options, keys, evText) {
     .map(x => x.key);
 }
 
+// Evidence lines of a "choose TWO" cluster, in order: sentences already
+// quoted by the previous line (neighbouring answers often share one) are
+// not repeated.
+function joinEvidence(texts) {
+  const out = [];
+  for (const t of texts) {
+    const prev = out[out.length - 1];
+    if (prev && prev.includes(t)) continue;
+    let rest = t;
+    if (prev) {
+      for (let n = Math.min(prev.length, t.length); n >= 12; n--) {
+        if (prev.endsWith(t.slice(0, n))) { rest = t.slice(n).trim(); break; }
+      }
+    }
+    if (!prev) out.push(t);
+    else if (rest === t) out.push(t);
+    else if (rest) out[out.length - 1] = `${prev} ${rest}`;
+  }
+  return out.join(' … ');
+}
+
 function guidePayload(it, section) {
   const typed = it.qtype === 'form' || it.qtype === 'sentence';
   // "choose TWO": every answer's line, in order
   const evs = it.cluster.map(x => x.ev).filter(Boolean).filter((e, i, a) => a.findIndex(o => o.text === e.text) === i)
     .sort((a, b) => a.start - b.start);
   const ev = evs.length ? {
-    text: evs.map(e => e.text).join(' … '), speaker: evs.every(e => e.speaker === evs[0].speaker) ? evs[0].speaker : '',
+    text: joinEvidence(evs.map(e => e.text)), speaker: evs.every(e => e.speaker === evs[0].speaker) ? evs[0].speaker : '',
     start: evs[0].start, end: Math.max(...evs.map(e => e.end)),
   } : null;
   const { keywords, signals } = promptKeywords(it);
@@ -996,12 +1073,12 @@ function qtypePayload(it, section, mode = 'solo') {
 // One section with enough questions of the type (preferring more of them,
 // and more with evidence), not practised recently; its first maxQuestions
 // items in original order.
-async function buildQtype(cfg, rng, exclude) {
+async function buildQtype(cfg, rng) {
   const sections = await loadSections();
   const weight = (items) => items.reduce((n, it) => n + it.cluster.length, 0);
   const all = sections.map(s => ({ s, items: qtypeItems(s, cfg.qtype) })).filter(c => weight(c.items) >= cfg.minQuestions);
   if (!all.length) return null;
-  const pool = withoutRecent(all, exclude, c => String(c.s._id));
+  const pool = pinnedFirst(all, cfg.fixed && cfg.fixed.section, c => c.s);
   const hasEv = (it) => !!it && it.cluster.some(x => x.ev);
   const rich = (c) => weight(c.items) >= cfg.preferQuestions;
   const evidenced = (c) => c.items.filter(hasEv).length / c.items.length >= 0.6;
@@ -1023,7 +1100,9 @@ async function buildQtype(cfg, rng, exclude) {
   let ex = null;
   if (chosen.length < 3) {
     const others = all.filter(c => c.s !== s).flatMap(c => c.items.filter(hasEv).map(it => ({ s: c.s, it })));
-    if (others.length) ex = others[Math.floor(rng() * others.length)];
+    const pinned = cfg.fixed && cfg.fixed.example && others.find(o => String(o.s._id) === cfg.fixed.example);
+    if (pinned) ex = pinned;
+    else if (others.length) ex = others[Math.floor(rng() * others.length)];
   }
   // (a lone item with no example to borrow is still done together, not just shown)
   const offset = ex || chosen.length === 1 ? 1 : 0;
@@ -1115,19 +1194,40 @@ function loadSections({ audio = true } = {}) {
 }
 
 function sourceName(section) {
-  return `Part ${section.partNumber} · ${section.title}`;
+  return `Part ${section.partNumber} · ${String(section.title || '').trim()}`;
 }
 
-// `exclude` = the student's most recent practice sections (newest first,
-// kept in their browser); the oldest exclusions go first when nothing
-// would be left.
-function withoutRecent(candidates, exclude, idOf) {
-  for (let n = exclude.length; n > 0; n--) {
-    const skip = new Set(exclude.slice(0, n));
-    const rest = candidates.filter(c => !skip.has(idOf(c)));
-    if (rest.length) return rest;
-  }
-  return candidates;
+// ── Fixed practices ─────────────────────────────────────────────────────
+// Every tip always shows the same practice: the sources hand-picked in
+// FIXED_PRACTICE (checked against the bank: question, key, transcript and
+// audio agree and read well), else — a section hidden or edited since, or a
+// test database — the same deterministic pick from the whole bank.
+
+// A fixed pseudo-random sequence per tip (mulberry32 seeded by its key).
+function seededRng(key) {
+  let h = 2166136261;
+  for (const ch of String(key)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return function next() {
+    h = (h + 0x6D2B79F5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// The pinned section alone when it still qualifies, else every candidate.
+function pinnedFirst(candidates, sectionId, sectionOf) {
+  const hit = sectionId ? candidates.filter(c => String(sectionOf(c)._id) === sectionId) : [];
+  return hit.length ? hit : candidates;
+}
+
+// The pinned items ([sectionId, questionNumber / sentence index] pairs), in
+// their order — null unless all of them still qualify.
+function pinnedItems(pool, fixed, keyOf) {
+  const pins = fixed && fixed.items;
+  if (!pins || !pins.length) return null;
+  const out = pins.map(([id, n]) => pool.find(c => { const [s, k] = keyOf(c); return String(s._id) === id && k === n; }));
+  return out.every(Boolean) ? out : null;
 }
 
 function questionPayload(section, it) {
@@ -1146,15 +1246,15 @@ function questionPayload(section, it) {
 
 // Highlight keyword: gaps from several sections (at most maxPerSection
 // each), mixing answer types.
-async function buildKeywords(cfg, rng, exclude) {
+async function buildKeywords(cfg, rng) {
   const sections = await loadSections();
-  const pool = shuffle(sections.flatMap(s => gapItems(s).filter(it => it.type).map(it => ({ s, it }))), rng);
-  const skip = new Set(exclude);
-  pool.sort((a, b) => skip.has(String(a.s._id)) - skip.has(String(b.s._id)));
-  const chosen = [];
+  const all = sections.flatMap(s => gapItems(s).filter(it => it.type).map(it => ({ s, it })));
+  const pinned = pinnedItems(all, cfg.fixed, c => [c.s, c.it.q.questionNumber]);
+  const pool = shuffle(all, rng);
+  const chosen = pinned || [];
   const perSection = {};
   const perType = {};
-  for (const pass of [true, false]) {
+  for (const pass of pinned ? [] : [true, false]) {
     for (const c of pool) {
       if (chosen.length >= cfg.maxQuestions) break;
       const k = String(c.s._id);
@@ -1215,11 +1315,11 @@ function runPayload(kind, s, run) {
   };
 }
 
-async function buildPreview(cfg, rng, exclude) {
+async function buildPreview(cfg, rng) {
   const sections = await loadSections();
   const all = sections.map(s => ({ s, runs: previewRuns(s, cfg) })).filter(c => c.runs.length);
   if (!all.length) return null;
-  const candidates = withoutRecent(all, exclude, c => String(c.s._id));
+  const candidates = pinnedFirst(all, cfg.fixed && cfg.fixed.section, c => c.s);
   const big = candidates.filter(c => c.runs.some(r => r.length >= 5));
   const pickFrom = big.length ? big : candidates;
   const { s, runs } = pickFrom[Math.floor(rng() * pickFrom.length)];
@@ -1229,23 +1329,22 @@ async function buildPreview(cfg, rng, exclude) {
 
 // Quy trình hoàn chỉnh: a run of consecutive gaps of one test, done step
 // by step — highlight → predict → listen → answer → check — with no timer.
-async function buildWorkflow(cfg, rng, exclude) {
+async function buildWorkflow(cfg, rng) {
   const sections = await loadSections();
   const all = sections.map(s => ({ s, runs: previewRuns(s, cfg) })).filter(c => c.runs.length);
   if (!all.length) return null;
-  const candidates = withoutRecent(all, exclude, c => String(c.s._id));
+  const candidates = pinnedFirst(all, cfg.fixed && cfg.fixed.section, c => c.s);
   const { s, runs } = candidates[Math.floor(rng() * candidates.length)];
-  return runPayload('workflow', s, runs[Math.floor(rng() * runs.length)]);
+  const first = cfg.fixed && cfg.fixed.question;
+  const run = (first && runs.find(r => r[0].q.questionNumber === first)) || runs[Math.floor(rng() * runs.length)];
+  return runPayload('workflow', s, run);
 }
 
 // Spreads the picks over the classes (noun / adjective / verb, …), taking
-// turns, and over sections (at most maxPerSection each); recently practised
-// sections go last.
-function balancedPick(pool, classOf, n, maxPerSection, rng, exclude) {
-  const skip = new Set(exclude);
+// turns, and over sections (at most maxPerSection each).
+function balancedPick(pool, classOf, n, maxPerSection, rng) {
   const buckets = {};
   shuffle(pool, rng)
-    .sort((a, b) => skip.has(String(a.s._id)) - skip.has(String(b.s._id)))
     .forEach(c => { (buckets[classOf(c)] = buckets[classOf(c)] || []).push(c); });
   const order = shuffle(Object.keys(buckets), rng);
   const chosen = [];
@@ -1268,11 +1367,12 @@ function balancedPick(pool, classOf, n, maxPerSection, rng, exclude) {
 
 // Predict the word class / type of information / form of the answer from
 // the question's text alone, on gaps the kind's classifier is sure about.
-async function buildPredict(cfg, rng, exclude) {
+async function buildPredict(cfg, rng) {
   const sections = await loadSections({ audio: !cfg.text });
   const pool = sections.flatMap(s => gapItems(s, { audio: !cfg.text })
     .map(it => ({ s, it, cls: classify(cfg.kind, it) })).filter(c => c.cls));
-  const chosen = balancedPick(pool, c => c.cls.value, cfg.maxQuestions, cfg.maxPerSection, rng, exclude);
+  const chosen = pinnedItems(pool, cfg.fixed, c => [c.s, c.it.q.questionNumber])
+    || balancedPick(pool, c => c.cls.value, cfg.maxQuestions, cfg.maxPerSection, rng);
   if (!chosen.length) return null;
   return {
     kind: cfg.kind,
@@ -1342,18 +1442,18 @@ function symbolOptions(correct, rng, n = 4) {
   return shuffle([correct, ...others], rng);
 }
 
-async function buildSymbols(cfg, rng, exclude) {
+async function buildSymbols(cfg, rng) {
   const meaning = shuffle(SYMBOLS, rng).slice(0, cfg.meaningItems).map(s => ({
     type: 'meaning',
     symbol: s.symbol,
     options: shuffle([s, ...shuffle(SYMBOLS.filter(x => x !== s), rng).slice(0, 3)], rng).map(x => x.meaning),
   }));
   const sections = await loadSections();
-  const skip = new Set(exclude);
-  const clips = shuffle(sections.flatMap(symbolClips), rng)
-    .sort((a, b) => skip.has(String(a.section._id)) - skip.has(String(b.section._id)));
-  const audio = [];
-  for (const c of clips) { // one clip per symbol, one per section
+  const all = sections.flatMap(symbolClips);
+  const pinned = pinnedItems(all, cfg.fixed, c => [c.section, c.index]);
+  const clips = shuffle(all, rng);
+  const audio = pinned || [];
+  for (const c of pinned ? [] : clips) { // one clip per symbol, one per section
     if (audio.length >= cfg.audioItems) break;
     if (audio.some(a => a.symbol === c.symbol || a.section === c.section)) continue;
     audio.push(c);
@@ -1389,16 +1489,16 @@ async function findTip(lessonKey) {
 
 // { status: 'no_practice' } | { status: 'ok', tip, practice } — practice is
 // null when the bank has nothing suitable (the client shows an empty state).
-async function getPractice(lessonKey, { rng = Math.random, exclude = [] } = {}) {
+async function getPractice(lessonKey, { rng = seededRng(lessonKey) } = {}) {
   const tip = await findTip(lessonKey);
   if (!tip) return { status: 'no_practice' };
-  const cfg = PRACTICE_CONFIG[lessonKey];
+  const cfg = { ...PRACTICE_CONFIG[lessonKey], fixed: FIXED_PRACTICE[lessonKey] || null };
   const build = {
     keywords: buildKeywords, preview: buildPreview, symbols: buildSymbols, workflow: buildWorkflow,
     wordclass: buildPredict, infotype: buildPredict, form: buildPredict, qtype: buildQtype,
   }[cfg.kind];
-  const practice = await build(cfg, rng, exclude.map(String));
-  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice };
+  const practice = await build(cfg, rng);
+  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice: practice && { ...practice, fixed: true } };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.
@@ -1482,6 +1582,7 @@ async function checkAnswer(lessonKey, body) {
 
 module.exports = {
   PRACTICE_CONFIG,
+  FIXED_PRACTICE,
   hasPractice,
   getPractice,
   checkAnswer,
