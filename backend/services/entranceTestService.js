@@ -578,10 +578,16 @@ async function gradeSpeakingNow(attemptId, audio, { force = false } = {}) {
         fluency: fb.fluency || 0,
         vocabulary: fb.vocabulary || 0,
         grammar: fb.grammar || 0,
-        pronunciation: fb.pronunciation || 0,
+        // null = not assessable (no recording heard) — see speakingScoringV2.
+        pronunciation: fb.pronunciation == null ? null : fb.pronunciation,
         pronunciationFromAudio: !!fb.pronunciationFromAudio,
+        provisional: !!fb.provisional,
         noGenuineAnswer: !!fb.noGenuineAnswer,
         overallFeedback: fb.overallFeedback || '',
+        // speaking-v2 per-criterion analysis for the admin review table.
+        scoringVersion: fb.scoringVersion || '',
+        criteria: fb.criteria || null,
+        priorityImprovements: fb.priorityImprovements || [],
       },
     };
     if (!transcript && typeof fb.transcript === 'string' && fb.transcript.trim()) {

@@ -1715,6 +1715,8 @@ async function analyzeTranscript() {
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
   if (errorBox) errorBox.classList.add('hidden');
+  document.getElementById('feedback-queued')?.classList.add('hidden');
+  state._queuedShownId = null;
   // Still 'locked' from recording — just swap the placeholder copy so it
   // doesn't keep telling the student to click a button they already clicked.
   const _lockedMsg = document.getElementById('tb-locked-msg');
@@ -1781,6 +1783,21 @@ async function analyzeTranscript() {
       questionId ? apiFetch('/api/speaking/history').catch(() => null) : Promise.resolve(null),
     ]);
     clearTimeout(_killer);
+
+    // AI overloaded: the answer was saved and queued for a background
+    // grade (202) — tell the student the band will come later and let them
+    // carry on with another question instead of waiting or retrying.
+    if (data.queued) {
+      _showQueuedFeedback(data, question);
+      if (_mockMode && window.MockTest && window.MockTest.active()) {
+        state._mockSpeakingAttemptId = data.attemptId || null;
+        _ensureSpeakingMockFinish();
+      }
+      if (data.attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
+        window.SpeakingAudioStore.saveAudioRecording(data.attemptId, _lastRecordingBlob);
+      }
+      return;
+    }
 
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'block';
@@ -1862,6 +1879,85 @@ async function analyzeTranscript() {
   }
 }
 
+// ──────────────────────────────────────────────────────
+// Queued grading ("AI đang xử lý — điểm sẽ gửi sau")
+// ──────────────────────────────────────────────────────
+// When the AI is overloaded, /analyze saves the answer and queues it for a
+// background grade (speakingGradeQueueService) instead of failing. The
+// student sees a note and can move on; this page then checks History every
+// 30s and announces the band when it lands — rendering it in place if the
+// student is still looking at that same answer.
+const _queuedAttempts = new Map(); // attemptId -> { question, since }
+let _queuePollTimer = null;
+const QUEUE_POLL_MS = 30000;
+const QUEUE_WATCH_MAX_MS = 45 * 60 * 1000;
+
+function _shortQ(q) {
+  const s = String(q || '').replace(/\s+/g, ' ').trim();
+  return s.length > 60 ? s.slice(0, 59) + '…' : s;
+}
+
+function _showQueuedFeedback(data, question) {
+  const loading = document.getElementById('feedback-loading');
+  const results = document.getElementById('feedback-results');
+  const queued  = document.getElementById('feedback-queued');
+  const text    = document.getElementById('feedback-queued-text');
+  if (loading) loading.style.display = 'none';
+  if (results) results.style.display = 'none';
+  if (text && data.message) text.textContent = data.message;
+  if (queued) queued.classList.remove('hidden');
+  // Back to an editable transcript (it was locked for grading).
+  const _lockedMsg = document.getElementById('tb-locked-msg');
+  if (_lockedMsg) _lockedMsg.innerHTML = '<i class="fas fa-microphone-lines"></i> Transcript được ẩn trong lúc ghi âm — bấm "Phân tích với Gemini AI" để xem lại kèm lỗi được đánh dấu.';
+  setTranscriptView('editable');
+  toast('AI đang bận — bài nói đã được lưu, điểm sẽ được gửi sau. Bạn cứ luyện câu khác nhé!', 'info', 6000);
+  if (data.attemptId) {
+    state._queuedShownId = String(data.attemptId);
+    _watchQueuedAttempt(data.attemptId, question);
+  }
+}
+
+function _watchQueuedAttempt(attemptId, question) {
+  _queuedAttempts.set(String(attemptId), { question, since: Date.now() });
+  if (!_queuePollTimer) _queuePollTimer = setInterval(_pollQueuedAttempts, QUEUE_POLL_MS);
+}
+
+async function _pollQueuedAttempts() {
+  if (!_queuedAttempts.size) { clearInterval(_queuePollTimer); _queuePollTimer = null; return; }
+  if (document.visibilityState === 'hidden') return;
+  let data;
+  try { data = await apiFetch('/api/speaking/history'); } catch (_) { return; }
+  const attempts = data.attempts || [];
+  for (const [id, info] of Array.from(_queuedAttempts.entries())) {
+    const a = attempts.find(x => String(x._id) === id);
+    if (a && a.status === 'analyzed') {
+      _queuedAttempts.delete(id);
+      const band = a.aiFeedback?.overallBand;
+      toast(`✅ Đã có điểm cho câu "${_shortQ(info.question)}": Band ${band ?? '—'} — xem chi tiết trong Lịch sử.`, 'success', 8000);
+      if (state._queuedShownId === id) _revealQueuedResult(a);
+    } else if (a && a.status === 'error') {
+      _queuedAttempts.delete(id);
+      toast(`AI chưa chấm được câu "${_shortQ(info.question)}" — vào Lịch sử và bấm "Thử chấm lại".`, 'error', 8000);
+    } else if (!a && Date.now() - info.since > 5 * 60 * 1000) {
+      // Discarded (no genuine answer) or scrolled out of the recent list.
+      _queuedAttempts.delete(id);
+    } else if (Date.now() - info.since > QUEUE_WATCH_MAX_MS) {
+      _queuedAttempts.delete(id); // the inbox message still arrives
+    }
+  }
+}
+
+function _revealQueuedResult(attempt) {
+  const queued  = document.getElementById('feedback-queued');
+  const results = document.getElementById('feedback-results');
+  const section = document.getElementById('feedback-section');
+  if (queued) queued.classList.add('hidden');
+  if (section) section.style.display = 'block';
+  if (results) results.style.display = 'block';
+  state._queuedShownId = null;
+  renderFeedback(window.SpeakingCriteria.feedbackFromAttempt(attempt.aiFeedback), null);
+}
+
 // Animate a number from 0 → target over ~600ms, one decimal, honouring
 // prefers-reduced-motion (jump straight to the value).
 function _spCountUp(el, target) {
@@ -1908,19 +2004,28 @@ function renderFeedback(fb, previousBand) {
     ['grammar',       fb.grammar],
     ['pronunciation', fb.pronunciation],
   ];
+  const isV2 = !!fb.criteria;
   scores.forEach(([key, val]) => {
     const el = document.getElementById(`score-${key}`);
     if (!el) return;
     el.dataset.band = val != null ? bandColor(val) : '';
+    // speaking-v2 never guesses Pronunciation without a recording — N/A.
+    if (key === 'pronunciation' && val == null && isV2) { el.textContent = 'N/A'; return; }
     _spCountUp(el, val != null ? val : null);
   });
+  const overallNote = document.getElementById('score-overall-note');
+  if (overallNote) overallNote.style.display = fb.provisional ? 'block' : 'none';
 
-  // Pronunciation source note — heard from the real recording (multimodal)
-  // vs the transcript-only estimate.
+  // Pronunciation source note — heard from the real recording (multimodal),
+  // not assessed (speaking-v2 without audio), or an older transcript-only
+  // estimate (speaking-v1 results).
   const pronNoteText = document.getElementById('fb-pron-note-text');
   const pronNoteIcon = document.getElementById('fb-pron-note-icon');
   if (pronNoteText) {
-    if (fb.pronunciationFromAudio) {
+    if (isV2 && !fb.pronunciationAssessable) {
+      pronNoteText.textContent = 'Phát âm chưa được chấm vì hệ thống không có bản ghi âm của bạn (văn bản không cho biết bạn phát âm thế nào). Band tổng tạm tính từ 3 tiêu chí còn lại — lần sau hãy ghi âm để được chấm đủ 4 tiêu chí.';
+      if (pronNoteIcon) { pronNoteIcon.className = 'fas fa-circle-info'; pronNoteIcon.style.color = ''; }
+    } else if (fb.pronunciationFromAudio) {
       pronNoteText.textContent = 'Điểm Pronunciation được chấm trực tiếp từ bản ghi âm của bạn — âm tiết, trọng âm từ/câu, ngữ điệu, nhịp điệu và nối âm. Vẫn nên kết hợp nhận xét phát âm từ giáo viên.';
       if (pronNoteIcon) pronNoteIcon.className = 'fas fa-circle-check';
       if (pronNoteIcon) pronNoteIcon.style.color = '#22c55e';
@@ -1960,10 +2065,17 @@ function renderFeedback(fb, previousBand) {
     if (fbOverall) fbOverall.style.display = 'none';
   }
 
+  // speaking-v2: per-criterion analysis (band, why, evidence, errors, how to
+  // improve) + the top-3 priorities. It supersedes the older flat cards
+  // below (focus / strengths / vocab upgrades / improvements are all
+  // derived from it), so those are hidden for a v2 result.
+  const fbCriteria = document.getElementById('fb-criteria');
+  if (fbCriteria) fbCriteria.innerHTML = (isV2 && window.SpeakingCriteria) ? window.SpeakingCriteria.render(fb) : '';
+
   // Today's Focus — the one biggest thing to fix next
   const fbFocus = document.getElementById('fb-focus-card');
   const fbFocusText = document.getElementById('fb-focus-text');
-  if (fb.todaysFocus) {
+  if (fb.todaysFocus && !isV2) {
     if (fbFocusText) fbFocusText.textContent = fb.todaysFocus;
     if (fbFocus) fbFocus.style.display = 'block';
   } else {
@@ -1980,7 +2092,7 @@ function renderFeedback(fb, previousBand) {
   // Strengths
   const fbStrengths = document.getElementById('fb-strengths-card');
   const fbStrengthsList = document.getElementById('fb-strengths-list');
-  if (fb.strengths?.length) {
+  if (fb.strengths?.length && !isV2) {
     if (fbStrengthsList) fbStrengthsList.innerHTML = fb.strengths.map(s => `<li>${escHtml(s)}</li>`).join('');
     if (fbStrengths) fbStrengths.style.display = 'block';
   } else {
@@ -2010,7 +2122,7 @@ function renderFeedback(fb, previousBand) {
   // mistakes above, which are actual errors).
   const fbVocab = document.getElementById('fb-vocab-card');
   const fbVocabList = document.getElementById('fb-vocab-list');
-  if (fb.vocabUpgrades?.length) {
+  if (fb.vocabUpgrades?.length && !isV2) {
     if (fbVocabList) {
       fbVocabList.innerHTML = fb.vocabUpgrades.map(v => `
         <div class="vocab-item">
@@ -2028,7 +2140,7 @@ function renderFeedback(fb, previousBand) {
   // Improvements
   const fbImprovements = document.getElementById('fb-improvements-card');
   const fbImprovementsList = document.getElementById('fb-improvements-list');
-  if (fb.improvements?.length) {
+  if (fb.improvements?.length && !isV2) {
     if (fbImprovementsList) {
       fbImprovementsList.innerHTML = fb.improvements.map(i => `<li>${escHtml(i)}</li>`).join('');
     }
@@ -2639,6 +2751,20 @@ async function finishSequentialSession() {
     if (loadingEl)    loadingEl.style.display    = 'none';
     if (feedbackBody) feedbackBody.style.display = 'block';
     if (actionsEl)    actionsEl.style.display    = 'flex';
+    if (data.queued) {
+      // AI overloaded — the session was saved and will be graded in the
+      // background; the band arrives in History + the inbox.
+      if (feedbackBody) {
+        feedbackBody.innerHTML = `<div class="feedback-queued" role="status">
+          <div class="feedback-queued-icon"><i class="fas fa-hourglass-half"></i></div>
+          <div><div class="feedback-queued-title">AI đang xử lý — điểm sẽ được gửi sau</div>
+          <div class="feedback-queued-text">${escHtml(data.message || 'Bài nói của bạn đã được lưu; khi chấm xong, điểm sẽ có trong mục Lịch sử và hộp thư.')}</div></div>
+        </div>`;
+      }
+      if (data.attemptId) _watchQueuedAttempt(data.attemptId, questionLabel);
+      toast('AI đang bận — buổi luyện đã được lưu, điểm sẽ được gửi sau.', 'info', 6000);
+      return;
+    }
     renderSeqFeedback(data.feedback || {});
     if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
 
@@ -2682,6 +2808,7 @@ function _retrySeqAnalyze() {
 window._retrySeqAnalyze = _retrySeqAnalyze;
 
 function renderSeqFeedback(fb) {
+  const isV2 = !!fb.criteria;
   const scores = [
     ['Band tổng thể',       fb.overallBand, ' score-overall'],
     ['Fluency & Coherence', fb.fluency,       ''],
@@ -2692,7 +2819,8 @@ function renderSeqFeedback(fb) {
   const scoreCards = scores.map(([label, val, extraClass]) => `
     <div class="score-card${extraClass}">
       <div class="score-label">${label}</div>
-      <div class="score-value" data-band="${val != null ? bandColor(val) : ''}">${val != null ? val : '—'}</div>
+      <div class="score-value" data-band="${val != null ? bandColor(val) : ''}">${val != null ? val : (isV2 ? 'N/A' : '—')}</div>
+      ${extraClass && fb.provisional ? '<div class="score-sub">tạm tính (chưa chấm phát âm)</div>' : ''}
     </div>`).join('');
 
   let html = `
@@ -2706,14 +2834,15 @@ function renderSeqFeedback(fb) {
       <p class="fb-card-text">${escHtml(fb.overallFeedback)}</p>
     </div>`;
   }
-  if (fb.todaysFocus) {
+  if (isV2 && window.SpeakingCriteria) html += window.SpeakingCriteria.render(fb);
+  if (fb.todaysFocus && !isV2) {
     html += `
     <div class="fb-card fb-card-focus">
       <div class="fb-card-title"><i class="fas fa-bullseye"></i> Trọng tâm hôm nay</div>
       <p class="fb-card-text">${escHtml(fb.todaysFocus)}</p>
     </div>`;
   }
-  if (fb.strengths?.length) {
+  if (fb.strengths?.length && !isV2) {
     html += `
     <div class="fb-card fb-card-blue">
       <div class="fb-card-title"><i class="fas fa-star"></i> Điểm mạnh</div>
@@ -2733,7 +2862,7 @@ function renderSeqFeedback(fb) {
         </div>`).join('')}
     </div>`;
   }
-  if (fb.vocabUpgrades?.length) {
+  if (fb.vocabUpgrades?.length && !isV2) {
     html += `
     <div class="fb-card fb-card-green">
       <div class="fb-card-title"><i class="fas fa-arrow-up"></i> Nâng cấp từ vựng</div>
@@ -2746,7 +2875,7 @@ function renderSeqFeedback(fb) {
         </div>`).join('')}
     </div>`;
   }
-  if (fb.improvements?.length) {
+  if (fb.improvements?.length && !isV2) {
     html += `
     <div class="fb-card fb-card-yellow">
       <div class="fb-card-title"><i class="fas fa-lightbulb"></i> Gợi ý cải thiện</div>
@@ -2833,7 +2962,9 @@ async function loadHistory({ resetLimit = true } = {}) {
       // grading ultimately failed — either way the attempt itself was
       // saved immediately, so show it rather than a blank/missing card.
       const statusNote = a.status === 'pending'
-        ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>'
+        ? (a.gradingQueued
+          ? '<div class="history-status-note history-status-queued">⏳ AI đang xử lý — điểm sẽ được gửi sau (hộp thư sẽ báo khi có điểm).</div>'
+          : '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>')
         : a.status === 'error'
           ? `<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.
               <button class="history-retry-btn" onclick="event.stopPropagation();retrySpeakingGrading('${a._id}', this)"><i class="fas fa-rotate-right"></i> Thử chấm lại</button>
@@ -2932,6 +3063,7 @@ async function openHistoryModal(attempt) {
 
   const fb   = attempt.aiFeedback || {};
   const band = fb.overallBand || 0;
+  const isV2 = !!fb.criteria;
 
   body.innerHTML = `
     <div class="modal-question-card">
@@ -2944,7 +3076,9 @@ async function openHistoryModal(attempt) {
 
     <div id="history-audio-slot"></div>
 
-    ${attempt.status === 'pending' ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>' : ''}
+    ${attempt.status === 'pending' ? (attempt.gradingQueued
+      ? '<div class="history-status-note history-status-queued">⏳ AI đang xử lý — điểm sẽ được gửi sau (hộp thư sẽ báo khi có điểm).</div>'
+      : '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>') : ''}
     ${attempt.status === 'error' ? `
     <div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.
       <button class="history-retry-btn" onclick="closeHistoryModal();retrySpeakingGrading('${attempt._id}', this)"><i class="fas fa-rotate-right"></i> Thử chấm lại</button>
@@ -2962,12 +3096,15 @@ async function openHistoryModal(attempt) {
       <div class="score-card score-overall">
         <div class="score-label">Band tổng</div>
         <div class="score-value">${band}</div>
+        ${fb.provisional ? '<div class="score-sub">tạm tính</div>' : ''}
       </div>
       ${fb.fluency      ? `<div class="score-card"><div class="score-label">Fluency</div><div class="score-value">${fb.fluency}</div></div>` : ''}
       ${fb.vocabulary   ? `<div class="score-card"><div class="score-label">Vocabulary</div><div class="score-value">${fb.vocabulary}</div></div>` : ''}
       ${fb.grammar      ? `<div class="score-card"><div class="score-label">Grammar</div><div class="score-value">${fb.grammar}</div></div>` : ''}
-      ${fb.pronunciation? `<div class="score-card"><div class="score-label">Pronunciation</div><div class="score-value">${fb.pronunciation}</div></div>` : ''}
+      ${fb.pronunciation? `<div class="score-card"><div class="score-label">Pronunciation</div><div class="score-value">${fb.pronunciation}</div></div>` : (isV2 ? '<div class="score-card"><div class="score-label">Pronunciation</div><div class="score-value">N/A</div></div>' : '')}
     </div>` : ''}
+
+    ${isV2 && window.SpeakingCriteria ? `<div style="margin-bottom:14px">${window.SpeakingCriteria.render(fb, { compact: true })}</div>` : ''}
 
     ${(fb.overallFeedback || fb.feedback) ? `
     <div class="fb-card" style="margin-bottom:14px">
@@ -2975,7 +3112,7 @@ async function openHistoryModal(attempt) {
       <p class="fb-card-text">${escHtml(fb.overallFeedback || fb.feedback)}</p>
     </div>` : ''}
 
-    ${fb.todaysFocus ? `
+    ${fb.todaysFocus && !isV2 ? `
     <div class="fb-card fb-card-focus" style="margin-bottom:14px">
       <div class="fb-card-title"><i class="fas fa-bullseye"></i> Trọng tâm hôm nay</div>
       <p class="fb-card-text">${escHtml(fb.todaysFocus)}</p>
@@ -2987,7 +3124,7 @@ async function openHistoryModal(attempt) {
       <p class="fb-card-text">${escHtml(fb.correctedVersion)}</p>
     </div>` : ''}
 
-    ${fb.strengths?.length ? `
+    ${fb.strengths?.length && !isV2 ? `
     <div class="fb-card fb-card-blue" style="margin-bottom:14px">
       <div class="fb-card-title"><i class="fas fa-star"></i> Điểm mạnh</div>
       <ul class="fb-list">${fb.strengths.map(s=>`<li>${escHtml(s)}</li>`).join('')}</ul>
@@ -3005,7 +3142,7 @@ async function openHistoryModal(attempt) {
         </div>`).join('')}
     </div>` : ''}
 
-    ${fb.vocabUpgrades?.length ? `
+    ${fb.vocabUpgrades?.length && !isV2 ? `
     <div class="fb-card fb-card-green" style="margin-bottom:14px">
       <div class="fb-card-title"><i class="fas fa-arrow-up"></i> Nâng cấp từ vựng</div>
       ${fb.vocabUpgrades.map(v=>`
@@ -3017,7 +3154,7 @@ async function openHistoryModal(attempt) {
         </div>`).join('')}
     </div>` : ''}
 
-    ${fb.suggestions?.length ? `
+    ${fb.suggestions?.length && !isV2 ? `
     <div class="fb-card fb-card-yellow">
       <div class="fb-card-title"><i class="fas fa-lightbulb"></i> Gợi ý cải thiện</div>
       <ul class="fb-list">${fb.suggestions.map(s=>`<li>${escHtml(s)}</li>`).join('')}</ul>

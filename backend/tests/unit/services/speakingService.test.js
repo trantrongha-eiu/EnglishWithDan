@@ -467,6 +467,74 @@ describe('speakingService.gradeSpeaking', () => {
   });
 });
 
+describe('speakingService.gradeSpeaking — speaking-v2 analysis', () => {
+  const T = 'I usually go jogging in the park near my house because it helps me clear my head after work.';
+  const crit = (band, extra = {}) => ({
+    band, descriptorMatch: ['Able to keep going'], strengths: ['Trả lời trực tiếp'], weaknesses: [],
+    evidence: [{ studentQuote: 'it helps me clear my head', feature: 'idiomatic language', evaluation: 'Tự nhiên', positive: true }],
+    limitations: [], rangeLevel: 'moderate', accuracyLevel: 'high', flexibilityLevel: 'moderate', appropriacyLevel: 'high',
+    feedback: 'Giải thích band.', nextStep: 'Bước tiếp.', ...extra,
+  });
+  const v2 = (overrides = {}) => ({
+    noGenuineAnswer: false,
+    criteria: {
+      fluencyCoherence: crit(6), lexicalResource: crit(6.5), grammaticalRangeAccuracy: crit(6),
+      pronunciation: { ...crit(7), assessable: true },
+    },
+    overallFeedback: 'Ổn.', priorityImprovements: ['A', 'B', 'C'], memorisedLanguage: [], partAnalysis: [],
+    ...overrides,
+  });
+  const ORIGINAL_GROQ_KEY = process.env.GROQ_API_KEY;
+  afterEach(() => {
+    jest.clearAllMocks();
+    if (ORIGINAL_GROQ_KEY === undefined) delete process.env.GROQ_API_KEY;
+    else process.env.GROQ_API_KEY = ORIGINAL_GROQ_KEY;
+  });
+
+  test('transcript-only: pronunciation is NOT assessed (null) and the overall is the provisional mean of 3', async () => {
+    geminiService.checkSpeaking.mockResolvedValue(v2());
+    const fb = await speakingService.gradeSpeaking('Q', T, 1);
+    expect(fb.scoringVersion).toBe('speaking-v2');
+    expect(fb.pronunciation).toBeNull();
+    expect(fb.pronunciationFromAudio).toBe(false);
+    expect(fb.provisional).toBe(true);
+    expect(fb.overallBand).toBe(6); // (6 + 6.5 + 6) / 3 = 6.17 → 6
+  });
+
+  test('with the recording heard: pronunciation assessed, overall is the mean of 4', async () => {
+    geminiService.checkSpeaking.mockResolvedValue(v2());
+    const fb = await speakingService.gradeSpeaking('Q', T, 1, { data: 'eA==', mimeType: 'video/webm' });
+    expect(fb.pronunciation).toBe(7);
+    expect(fb.pronunciationFromAudio).toBe(true);
+    expect(fb.provisional).toBe(false);
+    expect(fb.overallBand).toBe(6.5); // 25.5 / 4 = 6.375 → 6.5
+  });
+
+  test('an unusable v2 analysis from Gemini (core band missing) falls through to the next engine', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    const broken = v2();
+    broken.criteria.lexicalResource.band = null;
+    geminiService.checkSpeaking.mockResolvedValue(broken);
+    groqService.checkSpeakingGroq.mockResolvedValue(v2());
+    const fb = await speakingService.gradeSpeaking('Q', T, 1);
+    expect(groqService.checkSpeakingGroq).toHaveBeenCalledTimes(1);
+    expect(fb.vocabulary).toBe(6.5);
+  });
+
+  test('the persisted attempt keeps the detailed criteria, null pronunciation and the scoring version', async () => {
+    geminiService.checkSpeaking.mockResolvedValue(v2());
+    const fb = await speakingService.gradeSpeaking('Q', T, 1);
+    const user = await createStudent();
+    const { attemptId } = await speakingService.saveAttempt(user, { part: 1, questionText: 'Q', transcript: T, duration: 30, feedback: fb });
+    const saved = await SpeakingAttempt.findById(attemptId).lean();
+    expect(saved.aiFeedback.scoringVersion).toBe('speaking-v2');
+    expect(saved.aiFeedback.pronunciation).toBeNull();
+    expect(saved.aiFeedback.provisional).toBe(true);
+    expect(saved.aiFeedback.criteria.lexicalResource.evidence[0].studentQuote).toBe('it helps me clear my head');
+    expect(saved.aiFeedback.priorityImprovements).toEqual(['A', 'B', 'C']);
+  });
+});
+
 describe('speakingService.getSampleAnswer', () => {
   afterEach(() => jest.clearAllMocks());
 

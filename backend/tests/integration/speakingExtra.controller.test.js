@@ -10,6 +10,7 @@ const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createSpeakingQuestion, createSpeakingAttempt } = require('../factories/contentFactory');
 const SpeakingMaterial = require('../../models/SpeakingMaterial');
+const SpeakingGradeJob = require('../../models/SpeakingGradeJob');
 
 jest.mock('../../services/geminiService');
 const geminiService = require('../../services/geminiService');
@@ -175,7 +176,7 @@ describe('POST /api/speaking/analyze', () => {
     expect(historyRes.body.attempts[0].status).toBe('analyzed');
   });
 
-  test('audio file + NO transcript + grading fails: no transcript-only retry (nothing to fall back to), 500', async () => {
+  test('audio file + NO transcript + grading fails: no transcript-only retry; queued WITH the recording for a later grade', async () => {
     geminiService.checkSpeaking.mockReset();
     geminiService.checkSpeaking.mockRejectedValue(new Error('audio decode failed'));
     const user = await createPremiumStudent();
@@ -186,8 +187,12 @@ describe('POST /api/speaking/analyze', () => {
       .field('part', '1')
       .attach('audio', Buffer.from('bad'), { filename: 'answer.webm', contentType: 'audio/webm' });
 
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(202);
+    expect(res.body.queued).toBe(true);
     expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(1); // NOT retried transcript-only
+    const job = await SpeakingGradeJob.findOne({ attemptId: res.body.attemptId });
+    expect(job.audio.toString()).toBe('bad');
+    expect(job.audioMimeType).toBe('audio/webm');
   });
 
   test('no transcript AND no audio → 400 (nothing to analyze)', async () => {
@@ -199,7 +204,7 @@ describe('POST /api/speaking/analyze', () => {
     expect(res.status).toBe(400);
   });
 
-  test('AI overload error surfaces as 503, and marks the pending attempt as error', async () => {
+  test('AI overload: 202 queued — the attempt stays pending (queued) and a re-grade job is created', async () => {
     const overloadErr = new Error('Model overloaded');
     overloadErr.isOverloaded = true;
     geminiService.checkSpeaking.mockRejectedValue(overloadErr);
@@ -209,21 +214,28 @@ describe('POST /api/speaking/analyze', () => {
     const res = await request(app)
       .post('/api/speaking/analyze')
       .set('Authorization', `Bearer ${token}`)
-      .send({ transcript: 'Some transcript text here.', part: 1 });
-    expect(res.status).toBe(503);
+      .send({ transcript: 'Some transcript text here.', question: 'Do you like music?', part: 1 });
+    expect(res.status).toBe(202);
+    expect(res.body.queued).toBe(true);
+    expect(res.body.message).toMatch(/gửi điểm/);
 
     const historyRes = await request(app).get('/api/speaking/history').set('Authorization', `Bearer ${token}`);
-    expect(historyRes.body.attempts[0].status).toBe('error');
+    expect(historyRes.body.attempts[0].status).toBe('pending');
+    expect(historyRes.body.attempts[0].gradingQueued).toBe(true);
+    const job = await SpeakingGradeJob.findOne({ attemptId: res.body.attemptId }).lean();
+    expect(job.transcript).toBe('Some transcript text here.');
+    expect(job.questionText).toBe('Do you like music?');
   });
 
-  test('a generic AI failure surfaces as 500', async () => {
+  test('a generic AI failure is queued too (202), not a dead-end 500', async () => {
     geminiService.checkSpeaking.mockRejectedValue(new Error('network blew up'));
     const user = await createPremiumStudent();
     const res = await request(app)
       .post('/api/speaking/analyze')
       .set('Authorization', `Bearer ${signTokenFor(user)}`)
       .send({ transcript: 'Some transcript text here.', part: 1 });
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(202);
+    expect(res.body.queued).toBe(true);
   });
 });
 

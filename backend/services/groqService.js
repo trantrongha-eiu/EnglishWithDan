@@ -30,12 +30,12 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 // compatible chat-completions endpoint with the same timeout/error
 // shaping, differing only in system/user prompt, token budget, and
 // whether the response is JSON or plain text.
-async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, label = 'groq' } = {}) {
+async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, label = 'groq', timeoutMs = 20000 } = {}) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   let response;
   try {
@@ -87,10 +87,26 @@ async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, lab
 // — Groq (Llama) has no audio input, so it always grades transcript-only.
 // `durationSec` is still used (not audio-dependent) — feeds the same
 // MINIMUM BAND FLOOR rules as Gemini, see buildSpeakingGradingPrompt.
+// Groq's free on-demand tier caps tokens-per-minute at 8k for this model
+// and counts prompt + max_tokens against it in one request (a full
+// speaking-v2 prompt with an 8k max_tokens was rejected with 413). So the
+// prompt is the compact variant (no long analysis checklist — the scoring
+// principles still ride in the system prompt) and max_tokens is whatever
+// fits under the cap. Measured on a real Part 2 answer: the compact prompt
+// is ~5.2k tokens at ~4.5 characters per token, and the compact speaking-v2
+// answer ~1.9k tokens — 2.5k is the floor below which the JSON gets cut off
+// (Groq then rejects it as json_validate_failed).
+const GROQ_TPM_LIMIT = 8000;
+function _groqSpeakingBudget(system, prompt) {
+  const promptTokens = Math.ceil((system.length + prompt.length) / 4.5);
+  return Math.max(2500, Math.min(6000, GROQ_TPM_LIMIT - promptTokens - 150));
+}
+
 async function checkSpeakingGroq(question, transcript, part = 1, _audio = null, durationSec = 0, _attempt = 0) {
+  const prompt = buildSpeakingGradingPrompt(question, transcript, part, false, durationSec, { compact: true });
   const rawText = await _callGroq(
-    SPEAKING_SYSTEM, buildSpeakingGradingPrompt(question, transcript, part, false, durationSec),
-    { maxTokens: 1024, label: 'checkSpeakingGroq' } // matches geminiService.checkSpeaking's budget — same schema, same headroom need
+    SPEAKING_SYSTEM, prompt,
+    { maxTokens: _groqSpeakingBudget(SPEAKING_SYSTEM, prompt), label: 'checkSpeakingGroq', timeoutMs: 45000 }
   );
   try {
     return extractJson(rawText);

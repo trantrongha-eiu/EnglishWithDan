@@ -9,6 +9,7 @@ const {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
 const { checkSpeakingMistral } = require('./mistralService');
+const { isV2, normalizeSpeakingV2 } = require('./speakingScoringV2');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
@@ -244,10 +245,8 @@ function hasRealContent(feedback) {
     .some(arr => Array.isArray(arr) && arr.length > 0);
 }
 
-function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
+function floorQualifies(partNum, transcript, durationSec) {
   const partN = Number(partNum);
-  if (!hasRealContent(feedback)) return;
-
   let qualifies = false;
   if (partN === 2) {
     qualifies = Number(durationSec) >= PART2_FULL_DURATION_SEC;
@@ -263,17 +262,28 @@ function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
       .filter(Boolean).length;
     qualifies = ownWordCount >= 25; // ~3 short spoken sentences worth
   }
-  if (!qualifies) return;
+  return qualifies;
+}
 
-  const KEYS = ['fluency', 'vocabulary', 'grammar', 'pronunciation'];
-  for (const k of KEYS) feedback[k] = Math.max(feedback[k] || 0, 5);
-  let avg = KEYS.reduce((s, k) => s + feedback[k], 0) / 4;
+// Lifts the ASSESSED criteria (a null Pronunciation — not assessable
+// without audio — is left out, never invented) to the floor: none below 5,
+// average at least 5.5.
+function floorBands(bands, partNum, transcript, durationSec) {
+  if (!floorQualifies(partNum, transcript, durationSec)) return;
+  const KEYS = ['fluency', 'vocabulary', 'grammar', 'pronunciation'].filter(k => bands[k] != null);
+  if (!KEYS.length) return;
+  for (const k of KEYS) bands[k] = Math.max(bands[k] || 0, 5);
+  const avgOf = () => KEYS.reduce((s, k) => s + bands[k], 0) / KEYS.length;
   let guard = 0;
-  while (avg < 5.5 && guard++ < 20) {
-    const lowestKey = KEYS.reduce((a, b) => (feedback[a] <= feedback[b] ? a : b));
-    feedback[lowestKey] += 0.5;
-    avg = KEYS.reduce((s, k) => s + feedback[k], 0) / 4;
+  while (avgOf() < 5.5 && guard++ < 20) {
+    const lowestKey = KEYS.reduce((a, b) => (bands[a] <= bands[b] ? a : b));
+    bands[lowestKey] += 0.5;
   }
+}
+
+function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
+  if (!hasRealContent(feedback)) return;
+  floorBands(feedback, partNum, transcript, durationSec);
 }
 
 // `audio` (optional): { data: <base64>, mimeType } — the student's real
@@ -283,13 +293,44 @@ function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
 // `durationSec` (optional): real elapsed recording seconds from the client's
 // live timer — feeds the MINIMUM BAND FLOOR rules in
 // geminiService.buildSpeakingGradingPrompt (same prompt on every engine).
+//
+// Every engine's raw output goes through _finalizeGrade before it is
+// returned: a "speaking-v2" analysis is validated/normalised by
+// speakingScoringV2 (quotes checked, Pronunciation only when heard, overall
+// computed here); an unusable v2 analysis from Gemini falls through to the
+// next engine exactly like an API failure would.
 async function gradeSpeaking(questionText, transcript, partNum, audio = null, durationSec = 0) {
-  let feedback;
+  const ctx = { transcript, partNum, audio, durationSec };
   try {
-    feedback = await checkSpeaking(questionText, transcript, partNum, audio, durationSec);
+    return _finalizeGrade(await checkSpeaking(questionText, transcript, partNum, audio, durationSec), ctx);
   } catch (primaryErr) {
-    feedback = await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr, durationSec);
+    return _finalizeGrade(await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr, durationSec), ctx);
   }
+}
+
+function _finalizeGrade(raw, { transcript, partNum, audio, durationSec }) {
+  const feedback = raw && typeof raw === 'object' ? raw : {};
+  // Whether Pronunciation was actually heard: audio was provided AND the
+  // engine that graded it took the recording (Gemini always; Mistral only
+  // for non-webm; never Groq). Each engine reports this as `_heardAudio`;
+  // fall back to "audio present" when a mocked/older result omits it.
+  const hasAudio = !!(audio && audio.data);
+  const heard = hasAudio && (feedback._heardAudio === undefined ? true : feedback._heardAudio !== false);
+  delete feedback._heardAudio; // internal signal — don't leak it in the API response
+
+  if (isV2(feedback)) {
+    const floorTranscript = String(transcript || '').trim() || String(feedback.transcript || '');
+    const fb = normalizeSpeakingV2(feedback, {
+      transcript,
+      heardAudio: heard,
+      applyFloor: bands => floorBands(bands, partNum, floorTranscript, durationSec),
+    });
+    fb.pronunciationFromAudio = fb.pronunciationAssessable;
+    return fb;
+  }
+
+  // Legacy flat shape ("speaking-v1") — kept for any engine/mocked result
+  // that still returns it.
   feedback.fluency = feedback.fluency || 0;
   feedback.vocabulary = feedback.vocabulary || 0;
   feedback.grammar = feedback.grammar || 0;
@@ -304,13 +345,8 @@ async function gradeSpeaking(questionText, transcript, partNum, audio = null, du
   feedback.noGenuineAnswer = !hasRealContent(feedback);
   applyMinimumBandFloor(feedback, partNum, transcript, durationSec);
   feedback.overallBand = roundToHalfBand((feedback.fluency + feedback.vocabulary + feedback.grammar + feedback.pronunciation) / 4);
-  // Whether Pronunciation was actually heard: audio was provided AND the
-  // engine that graded it took the recording (Gemini always; Mistral only
-  // for non-webm; never Groq). Each engine reports this as `_heardAudio`;
-  // fall back to "audio present" when a mocked/older result omits it.
-  const heard = feedback._heardAudio === undefined ? !!(audio && audio.data) : feedback._heardAudio;
-  feedback.pronunciationFromAudio = !!(audio && audio.data) && heard !== false;
-  delete feedback._heardAudio; // internal signal — don't leak it in the API response
+  feedback.pronunciationFromAudio = heard;
+  feedback.scoringVersion = 'speaking-v1';
   return feedback;
 }
 
@@ -418,7 +454,9 @@ function mapFeedbackToAiFeedback(feedback) {
     fluency: feedback.fluency || 0,
     vocabulary: feedback.vocabulary || 0,
     grammar: feedback.grammar || 0,
-    pronunciation: feedback.pronunciation || 0,
+    // null = not assessable (speaking-v2 without a heard recording) — kept
+    // null rather than coerced to a fake 0.
+    pronunciation: feedback.pronunciation === null ? null : (feedback.pronunciation || 0),
     pronunciationFromAudio: !!feedback.pronunciationFromAudio,
     noGenuineAnswer: !!feedback.noGenuineAnswer,
     overallFeedback: feedback.overallFeedback || '',
@@ -431,7 +469,17 @@ function mapFeedbackToAiFeedback(feedback) {
       explanation: m.reason
     })),
     vocabUpgrades: feedback.vocabUpgrades || [],
-    suggestions: coerceToStringItems(feedback.improvements)
+    suggestions: coerceToStringItems(feedback.improvements),
+    // speaking-v2 detailed analysis (see speakingScoringV2.js).
+    scoringVersion: feedback.scoringVersion || 'speaking-v1',
+    criteria: feedback.criteria || null,
+    priorityImprovements: coerceToStringItems(feedback.priorityImprovements),
+    memorisedLanguage: Array.isArray(feedback.memorisedLanguage) ? feedback.memorisedLanguage : [],
+    partAnalysis: Array.isArray(feedback.partAnalysis) ? feedback.partAnalysis : [],
+    provisional: !!feedback.provisional,
+    pronunciationAssessable: typeof feedback.pronunciationAssessable === 'boolean' ? feedback.pronunciationAssessable : null,
+    qualityCheck: feedback.qualityCheck || null,
+    analyzedAt: feedback.analyzedAt || new Date(),
   };
 }
 

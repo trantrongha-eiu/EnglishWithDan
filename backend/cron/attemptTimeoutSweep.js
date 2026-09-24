@@ -44,7 +44,8 @@ async function sweepStaleAttempts() {
         { $set: { status: 'timeout', submittedAt: new Date() } }
       ),
       SpeakingAttempt.updateMany(
-        { status: 'pending', createdAt: { $lt: speakingCutoff } },
+        // Queued for an AI re-grade (speakingGradeQueue) — not stuck.
+        { status: 'pending', gradingQueued: { $ne: true }, createdAt: { $lt: speakingCutoff } },
         { $set: { status: 'error' } }
       ),
     ]);

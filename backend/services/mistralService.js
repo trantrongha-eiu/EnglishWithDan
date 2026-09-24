@@ -50,7 +50,7 @@ async function checkSpeakingMistral(question, transcript, part = 1, audio = null
     : promptText;
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), hasAudio ? 45000 : 20000);
+  const timer = setTimeout(() => controller.abort(), hasAudio ? 75000 : 50000); // speaking-v2 output is long
 
   let response;
   try {
@@ -63,8 +63,8 @@ async function checkSpeakingMistral(question, transcript, part = 1, audio = null
           { role: 'system', content: speakingSystemInstruction(hasAudio) },
           { role: 'user', content: userContent },
         ],
-        temperature: 0.3,
-        max_tokens: 2048,
+        temperature: 0.2,
+        max_tokens: 8192, // speaking-v2's per-criterion analysis
         response_format: { type: 'json_object' },
       }),
       signal: controller.signal,

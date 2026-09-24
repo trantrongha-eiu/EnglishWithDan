@@ -1,4 +1,5 @@
 const speakingService = require('../services/speakingService');
+const speakingGradeQueue = require('../services/speakingGradeQueueService');
 const catchAsync = require('../middleware/catchAsync');
 
 // ── GET /api/speaking/topics ─────────────────────────────────
@@ -87,6 +88,23 @@ exports.analyze = catchAsync(async (req, res) => {
     }
     if (!feedback) {
       console.error('[Speaking] Gemini error:', aiErr.message);
+      // AI overloaded / failed right now: don't make the student wait or
+      // retry by hand — queue the saved attempt (recording included) for a
+      // background re-grade and let them move on to another question. The
+      // band arrives later in History + an inbox message
+      // (speakingGradeQueueService).
+      if (pendingId) {
+        const queued = await speakingGradeQueue.enqueue(pendingId, {
+          userId: req.user._id, questionText, transcript: clientTranscript,
+          part: partNum, durationSec, audio: req.file || null,
+        });
+        if (queued) {
+          return res.status(202).json({
+            success: true, queued: true, attemptId: pendingId,
+            message: 'AI đang bận nên chưa chấm ngay được — bài nói của bạn đã được lưu. AI sẽ chấm và gửi điểm cho bạn sau (trong mục Lịch sử và hộp thư). Bạn cứ luyện câu khác nhé!',
+          });
+        }
+      }
       if (pendingId) await speakingService.markAttemptError(pendingId);
       if (aiErr.isOverloaded) {
         return res.status(503).json({ success: false, message: aiErr.message });

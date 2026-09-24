@@ -12,9 +12,12 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     fluency:          { type: Number, default: 0 },
     vocabulary:       { type: Number, default: 0 },
     grammar:          { type: Number, default: 0 },
+    // null when Pronunciation was not assessable (speaking-v2 grades it
+    // only from a heard recording — never guessed from a transcript).
     pronunciation:    { type: Number, default: 0 },
     // true when Pronunciation was graded from the student's real audio
-    // recording (multimodal), false when it's the transcript-only estimate.
+    // recording (multimodal). false = not heard (speaking-v2: not assessed;
+    // older speaking-v1 rows: a transcript-only estimate).
     pronunciationFromAudio: { type: Boolean, default: false },
     // true when the AI judged there was no real answer to assess (silent
     // recording, mic issue, nothing actually said) — the 4 scores above are
@@ -29,10 +32,35 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     corrections:      [{ original: String, corrected: String, explanation: String }],
     vocabUpgrades:    [{ original: String, upgrade: String, reason: String }],
     suggestions:      [String],
-    feedback:         { type: String, default: '' }  // legacy field
+    feedback:         { type: String, default: '' },  // legacy field
+
+    // ── speaking-v2 (see services/speakingScoringV2.js) ──
+    // The flat bands above stay the source for stats/history/other skills;
+    // these hold the detailed, evidence-backed analysis behind them.
+    // 'speaking-v1' = the older flat-only grade (criteria null).
+    scoringVersion:   { type: String, default: '' },
+    // { fluencyCoherence, lexicalResource, grammaticalRangeAccuracy,
+    //   pronunciation } — each { band, descriptorMatch, strengths,
+    //   weaknesses, evidence[], limitations[], range/accuracy/flexibility/
+    //   appropriacyLevel, feedback, nextStep } (+ lexical features, grammar
+    //   structures / errorDensity, pronunciation assessable/reason).
+    criteria:         { type: mongoose.Schema.Types.Mixed, default: null },
+    priorityImprovements: { type: [String], default: [] },
+    memorisedLanguage:    { type: mongoose.Schema.Types.Mixed, default: [] },
+    partAnalysis:         { type: mongoose.Schema.Types.Mixed, default: [] },
+    // true = Pronunciation could not be assessed (no recording heard), so
+    // overallBand is the mean of the other three criteria only.
+    provisional:      { type: Boolean, default: false },
+    pronunciationAssessable: { type: Boolean, default: null },
+    qualityCheck:     { type: mongoose.Schema.Types.Mixed, default: null }, // { verifiedQuotes, droppedQuotes }
+    analyzedAt:       { type: Date },
   },
   duration:     { type: Number, default: 0 }, // seconds
-  status:       { type: String, enum: ['pending', 'analyzed', 'error'], default: 'pending' }
+  status:       { type: String, enum: ['pending', 'analyzed', 'error'], default: 'pending' },
+  // true while a 'pending' attempt waits in the AI re-grade queue
+  // (SpeakingGradeJob — AI was overloaded at submit time). Keeps
+  // attemptTimeoutSweep from flipping it to 'error' in the meantime.
+  gradingQueued: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // getHistory()/admin history both filter by userId sorted by recency —

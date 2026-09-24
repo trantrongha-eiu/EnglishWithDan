@@ -97,6 +97,28 @@ describe('classifyGeminiError behavior (via checkEssay)', () => {
     });
   });
 
+  test('a 400 rejection is never classified as an overload, even when its text says "too many"', async () => {
+    // Real incident (speaking-v2): an over-constrained response schema was
+    // rejected with 400 "…too many states for serving", which the old text
+    // match reported to students as "AI đang quá tải".
+    mockGenerateContent.mockRejectedValue(Object.assign(
+      new Error('The specified schema produces a constraint that has too many states for serving.'), { status: 400 }
+    ));
+    await expect(checkSpeaking('question', 'transcript')).rejects.toMatchObject({
+      message: expect.stringContaining('too many states'),
+    });
+    await expect(checkSpeaking('question', 'transcript')).rejects.not.toHaveProperty('isOverloaded', true);
+  });
+
+  test('checkSpeaking asks Gemini for structured output with a schema that has no maxItems/enum constraints', async () => {
+    mockGenerateContent.mockResolvedValue({ text: '{"criteria":{}}' });
+    await checkSpeaking('question', 'transcript');
+    const cfg = mockGenerateContent.mock.calls[mockGenerateContent.mock.calls.length - 1][0].config;
+    expect(cfg.responseJsonSchema.properties.criteria.properties.lexicalResource.properties.features).toBeDefined();
+    expect(JSON.stringify(cfg.responseJsonSchema)).not.toMatch(/maxItems|"enum"/);
+    expect(cfg.temperature).toBeLessThanOrEqual(0.2);
+  });
+
   test('gradeT2Question uses its own overload message text', async () => {
     mockGenerateContent.mockRejectedValue(Object.assign(new Error('quota'), { status: 429 }));
 
@@ -174,7 +196,7 @@ describe('withTimeout behavior (via checkEssay, checkSpeaking, gradeT2Question)'
     await assertion;
   });
 
-  test('checkSpeaking rejects as overloaded once its 30s internal timeout fires', async () => {
+  test('checkSpeaking rejects as overloaded once its 70s internal timeout fires (speaking-v2 detailed output)', async () => {
     mockGenerateContent.mockReturnValue(new Promise(() => {}));
 
     const promise = checkSpeaking('question', 'transcript');
@@ -183,7 +205,7 @@ describe('withTimeout behavior (via checkEssay, checkSpeaking, gradeT2Question)'
       message: 'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.',
     });
 
-    await jest.advanceTimersByTimeAsync(30001);
+    await jest.advanceTimersByTimeAsync(70001);
     await assertion;
   });
 

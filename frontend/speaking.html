@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/mobile.css?v=20260910inbox" />
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925" />
   <link rel="stylesheet" href="css/speaking-extra.css?v=20260831" />
+  <link rel="stylesheet" href="css/speaking-criteria.css?v=20260924v2" />
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
 </head>
@@ -370,6 +371,15 @@
             <p id="feedback-loading-text">Gemini AI đang phân tích câu trả lời của bạn...</p>
           </div>
 
+          <!-- Queued: AI overloaded — graded in the background, band sent later -->
+          <div class="feedback-queued hidden" id="feedback-queued" role="status">
+            <div class="feedback-queued-icon"><i class="fas fa-hourglass-half"></i></div>
+            <div>
+              <div class="feedback-queued-title">AI đang xử lý — điểm sẽ được gửi sau</div>
+              <div class="feedback-queued-text" id="feedback-queued-text">AI đang bận nên chưa chấm ngay được. Bài nói của bạn đã được lưu; khi chấm xong, điểm sẽ có trong mục <b>Lịch sử</b> và hộp thư. Bạn cứ luyện câu khác nhé!</div>
+            </div>
+          </div>
+
           <!-- Error state -->
           <div class="feedback-error hidden" id="feedback-error">
             <div class="feedback-error-icon"><i class="fas fa-triangle-exclamation"></i></div>
@@ -388,6 +398,7 @@
               <div class="score-card score-overall">
                 <div class="score-label">Band tổng thể</div>
                 <div class="score-value" id="score-overall">—</div>
+                <div class="score-sub" id="score-overall-note" style="display:none">tạm tính (chưa chấm phát âm)</div>
               </div>
               <div class="score-card">
                 <div class="score-label">Fluency &amp; Coherence</div>
@@ -420,6 +431,9 @@
               <i class="fas fa-circle-info" id="fb-pron-note-icon" style="margin-top:2px;flex-shrink:0"></i>
               <span id="fb-pron-note-text">Điểm Pronunciation được AI ước tính dựa trên văn bản chuyển giọng nói (từ nối, ngập ngừng, lựa chọn từ), không phân tích trực tiếp âm thanh phát âm của bạn. Coi đây là tham khảo, không thay thế đánh giá phát âm từ giáo viên.</span>
             </div>
+
+            <!-- speaking-v2 per-criterion analysis (js/speaking-criteria.js) -->
+            <div id="fb-criteria"></div>
 
             <!-- Today's Focus — the ONE biggest thing to fix next. Placed
                  immediately under the scores (ahead of the general "Overall
@@ -760,7 +774,8 @@
 
 <script src="js/speaking-timer.js?v=20260915"></script>
 <script src="js/speaking-audio-store.js?v=20260831"></script>
+<script src="js/speaking-criteria.js?v=20260924v2"></script>
 <script src="js/speaking-tips.js?v=20260831"></script>
-<script src="js/speaking.js?v=20260913topicgrid"></script>
+<script src="js/speaking.js?v=20260924v2"></script>
 </body>
 </html>

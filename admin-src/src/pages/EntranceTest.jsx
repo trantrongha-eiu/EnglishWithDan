@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import Pagination from '../components/Pagination';
+import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
 
 // Admin surface for the IELTS Entrance Test ("Test đầu vào") — three tabs,
 // same inner-tabs-nav pattern Monitoring.jsx uses for its own tab hub:
@@ -515,7 +516,7 @@ function AttemptDetailModal({ id, onClose, onChanged }) {
                   <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 8, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                     {s.aiStatus === 'done' && sfb && (sfb.noGenuineAnswer
                       ? <span><strong>AI:</strong> không phát hiện câu trả lời thực sự</span>
-                      : <span><strong>AI:</strong> Band {sfb.overallBand} · FC {sfb.fluency} · LR {sfb.vocabulary} · GRA {sfb.grammar} · P {sfb.pronunciation}{sfb.pronunciationFromAudio ? '' : ' (P ước tính từ transcript)'}</span>)}
+                      : <span><strong>AI:</strong> Band {sfb.overallBand} · FC {sfb.fluency} · LR {sfb.vocabulary} · GRA {sfb.grammar} · P {sfb.pronunciation ?? 'N/A'}{sfb.pronunciationFromAudio ? '' : (sfb.criteria ? ' (chưa chấm phát âm — không có bản ghi âm)' : ' (P ước tính từ transcript)')}</span>)}
                     {s.aiStatus === 'pending' && <span>AI đang chấm…</span>}
                     {s.aiStatus === 'error' && <span style={{ color: 'var(--danger)' }}>AI lỗi: {s.aiError || 'không rõ'}</span>}
                     {finished && (
@@ -525,6 +526,7 @@ function AttemptDetailModal({ id, onClose, onChanged }) {
                     )}
                   </div>
                   {sfb?.overallFeedback && <div style={{ fontSize: 12, color: 'var(--text2)', marginTop: 4, whiteSpace: 'pre-wrap' }}>{sfb.overallFeedback}</div>}
+                  {sfb?.criteria && <div style={{ marginTop: 10 }}><SpeakingCriteriaTable feedback={sfb} /></div>}
                 </Panel>
               )}
 

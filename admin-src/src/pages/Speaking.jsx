@@ -4,6 +4,7 @@ import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
 
 const PARTS = [1, 2, 3];
 
@@ -61,9 +62,12 @@ function AttemptModal({ attempt, onClose }) {
               <ScorePill label="Fluency" value={fb.fluency} />
               <ScorePill label="Vocabulary" value={fb.vocabulary} />
               <ScorePill label="Grammar" value={fb.grammar} />
-              <ScorePill label="Pronunciation" value={fb.pronunciation} />
+              <ScorePill label="Pronunciation" value={fb.pronunciation ?? (fb.criteria ? 'N/A' : null)} />
             </div>
           )}
+
+          {/* speaking-v2 per-criterion analysis (teacher table) */}
+          {fb.criteria && <SpeakingCriteriaTable feedback={fb} />}
 
           {/* Overall feedback */}
           {(fb.overallFeedback || fb.feedback) && (
@@ -625,7 +629,7 @@ export default function Speaking() {
                               <BandCell v={fb.fluency} />
                               <BandCell v={fb.vocabulary} />
                               <BandCell v={fb.grammar} />
-                              <BandCell v={fb.pronunciation} />
+                              <BandCell v={fb.pronunciation ?? (fb.criteria ? 'N/A' : null)} />
                             </>
                           )}
                           <td style={{ fontSize:11, whiteSpace:'nowrap' }}>{formatDate(a.createdAt).split(' ')[0]}</td>
