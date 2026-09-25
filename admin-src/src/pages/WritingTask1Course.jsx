@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -281,7 +282,11 @@ export default function WritingTask1Course() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
-  const [course, setCourse] = useState('IELTS-W-T1');
+  // The course lives in the URL (?course=) so each of the three courses has
+  // its own sidebar entry / bookmarkable link instead of being hidden behind
+  // a "Task 1 Writing (khoá)" menu label.
+  const [params, setParams] = useSearchParams();
+  const course = SEED_NOTE[params.get('course')] ? params.get('course') : 'IELTS-W-T1';
   const [tree, setTree] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tick, setTick] = useState(0);
@@ -291,10 +296,17 @@ export default function WritingTask1Course() {
   const [editEx, setEditEx] = useState(null); // null=closed, 'new', or a full exercise doc
   const [open, setOpen] = useState({});
 
+  // Course changed (tab click or sidebar link): drop the previous course's
+  // selection in the same render.
+  const [shownCourse, setShownCourse] = useState(course);
+  if (shownCourse !== course) {
+    setShownCourse(course);
+    setSelLesson(null); setLessonDoc(null); setExercises([]); setOpen({});
+  }
+
   function switchCourse(c) {
     if (c === course) return;
-    setCourse(c);
-    setSelLesson(null); setLessonDoc(null); setExercises([]); setOpen({});
+    setParams(c === 'IELTS-W-T1' ? {} : { course: c });
   }
 
   useEffect(() => {

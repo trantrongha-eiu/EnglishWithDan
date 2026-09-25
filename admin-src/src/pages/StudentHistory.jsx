@@ -1,247 +1,164 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import { useApi } from '../hooks/useApi';
 import Pagination from '../components/Pagination';
-import { skillBadge } from '../components/SkillBadge';
+import { skillBadge, SKILL_META } from '../components/SkillBadge';
+import { TableBody, EmptyState } from '../components/ui/States';
+import { bandBadge, simBadge } from '../components/ui/badges';
+import { formatDur, formatNumber } from '../utils/format';
 
 const PAGE_SIZE = 25;
-const INITIAL_LOAD = 300;
+const INITIAL_LOAD = 150;
 const LOAD_MORE_STEP = 300;
 
-function bandBadge(score) {
-  if (score == null) return '–';
-  const color = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--accent2)';
-  return <span style={{ color, fontWeight: 700 }}>{score.toFixed(1)}</span>;
-}
-
-function formatDur(sec) {
-  if (sec == null) return '–';
-  const m = Math.floor(sec / 60), s = sec % 60;
-  return `${m}m${String(s).padStart(2, '0')}s`;
-}
-
-// Test Simulation mode (Reading/Listening/Writing, full test + "lẻ" practice
-// — see backend/services/examSimulationService.js) tags its rows with
-// mode:'simulation' + a proctor{violationCount,violated} sub-doc, same shape
-// MockTests.jsx already surfaces for the 4-skill Mock Test. Only reading /
-// reading-practice / listening / listening-practice / writing rows ever
-// carry this — every other skill's `mode` is undefined and this renders
-// nothing.
-function simBadge(h) {
-  if (h.mode !== 'simulation') return null;
-  return (
-    <div style={{ marginTop: 3, display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-      <span className="badge badge-blue" style={{ fontSize: 10 }} title="Bài làm ở chế độ Test Simulation (có giám sát)">🔒 Simulation</span>
-      {h.disqualified
-        ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Lượt này đã bị huỷ do vi phạm giám sát quá số lần cho phép">🚫 Huỷ · {h.violationCount} gậy</span>
-        : h.violated
-          ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Bị đánh dấu vi phạm giám sát (rời màn hình thi)">⚠️ {h.violationCount} gậy</span>
-          : null}
-    </div>
-  );
-}
+// Skill → admin DELETE endpoint. Only these collections have one; rows of
+// other skills (grammar/vocab lessons, templates, courses, gap-fill,
+// "viết câu nâng cao") get no delete button instead of the old guessed
+// `/admin/<skill>-attempts/:id` URL that 404'd.
+const DELETE_ENDPOINT = {
+  'reading':            id => `/admin/attempts/${id}`,
+  'listening':          id => `/admin/listening-attempts/${id}`,
+  'writing':            id => `/admin/writing-attempts/${id}`,
+  'listening-practice': id => `/admin/listening-practice-attempts/${id}`,
+  'reading-practice':   id => `/admin/reading-practice-attempts/${id}`,
+  'writing-practice':   id => `/admin/writing-practice-attempts/${id}`,
+  'task1-practice':     id => `/admin/task1-attempts/${id}`,
+  'task2-practice':     id => `/admin/task2-attempts/${id}`,
+  'speaking':           id => `/admin/speaking-attempts/${id}`,
+  'dictation':          id => `/admin/dictation-attempts/${id}`,
+};
 
 export default function StudentHistory() {
   const toast   = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
 
-  const [all,     setAll]     = useState([]);
-  // Real grand-total across all 9 attempt collections, from the backend
-  // (see routes/admin/stats.js's recent-attempts handler) — independent of
-  // how many rows this page has actually loaded into `all` so far. Used to
-  // show "loaded N/total" honestly instead of the old behavior where rows
-  // past the fetch cap just silently disappeared with no indication.
-  const [total,   setTotal]   = useState(0);
-  // load() only ever runs once, from the mount effect below — starting
-  // true (instead of setState(true) synchronously inside the effect)
-  // shows the same loading state without tripping set-state-in-effect.
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [loadLimit, setLoadLimit] = useState(INITIAL_LOAD);
   const [skill,   setSkill]   = useState('');
   const [search,  setSearch]  = useState('');
   const [page,    setPage]    = useState(1);
+  const [removed, setRemoved] = useState(() => new Set());
 
-  function load(limit = loadLimit) {
-    return apiFetch(`/admin/recent-attempts?limit=${limit}`)
-      .then(d => { setAll(d.attempts || []); setTotal(d.total ?? (d.attempts || []).length); setPage(1); })
-      .catch(e => toast(e.message, 'error'))
-      .finally(() => { setLoading(false); setLoadingMore(false); });
-  }
-
-  useEffect(() => { load(INITIAL_LOAD); }, []);
-
-  function loadMore() {
-    const next = loadLimit + LOAD_MORE_STEP;
-    setLoadingMore(true);
-    setLoadLimit(next);
-    load(next);
-  }
-
-  function refresh() {
-    setLoading(true);
-    load(loadLimit);
-  }
+  // Skill filtering happens on the server (?skill= queries one collection),
+  // so it covers ALL history, not just the rows loaded so far.
+  const path = `/admin/recent-attempts?limit=${loadLimit}${skill ? `&skill=${encodeURIComponent(skill)}` : ''}`;
+  const { data, error, loading, refreshing, reload } = useApi(path);
+  const all = useMemo(() => (data?.attempts || []).filter(h => !removed.has(h._id)), [data, removed]);
+  const total = Math.max(0, (data?.total ?? all.length) - removed.size);
 
   const filtered = useMemo(() => all.filter(h => {
-    if (skill && h.skill !== skill) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      const name = (h.userId?.displayName || '').toLowerCase();
-      const user = (h.userId?.username   || '').toLowerCase();
-      const test = (h.testName          || '').toLowerCase();
-      return name.includes(q) || user.includes(q) || test.includes(q);
-    }
-    return true;
-  }), [all, skill, search]);
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (h.userId?.displayName || '').toLowerCase().includes(q)
+      || (h.userId?.username || '').toLowerCase().includes(q)
+      || (h.testName || '').toLowerCase().includes(q);
+  }), [all, search]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage   = Math.min(page, totalPages);
   const rows       = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const hasMore = all.length < total;
 
-  async function del(id, skillName, name) {
+  function del(h, name) {
+    const endpoint = DELETE_ENDPOINT[h.skill];
+    if (!endpoint) return;
     confirm(`Xóa bài làm của "${name}"?`, async () => {
       try {
-        const endpointMap = {
-          'reading':            `/admin/attempts/${id}`,
-          'listening':          `/admin/listening-attempts/${id}`,
-          'writing':            `/admin/writing-attempts/${id}`,
-          'listening-practice': `/admin/listening-practice-attempts/${id}`,
-          'reading-practice':   `/admin/reading-practice-attempts/${id}`,
-          'writing-practice':   `/admin/writing-practice-attempts/${id}`,
-          'task1-practice':     `/admin/task1-attempts/${id}`,
-          'task2-practice':     `/admin/task2-attempts/${id}`,
-          'speaking':           `/admin/speaking-attempts/${id}`,
-        };
-        const endpoint = endpointMap[skillName] || `/admin/${skillName}-attempts/${id}`;
-        await apiFetch(endpoint, { method: 'DELETE' });
+        await apiFetch(endpoint(h._id), { method: 'DELETE' });
         toast('Đã xóa');
-        setAll(a => a.filter(x => x._id !== id));
-        setTotal(t => Math.max(0, t - 1));
+        setRemoved(s => new Set(s).add(h._id));
       } catch (e) { toast(e.message, 'error'); }
     });
   }
-
-  const hasMore = all.length < total;
 
   return (
     <>
       <div className="section-header">
         <h2 className="section-title">
-          Lịch sử làm bài ({filtered.length}{(skill || search) ? ` / ${all.length} đã tải` : ''})
+          Lịch sử làm bài ({formatNumber(filtered.length)}{search ? ` / ${all.length} đã tải` : ''})
         </h2>
-        <button className="btn btn-ghost btn-sm" onClick={refresh} disabled={loading}>
-          {loading ? '⏳' : '🔄'} Làm mới
+        <button className="btn btn-ghost btn-sm" onClick={reload} disabled={loading || refreshing}>
+          {refreshing ? '⏳' : '🔄'} Làm mới
         </button>
       </div>
 
-      {hasMore && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16,
-          padding: '10px 14px', background: 'var(--surface2)', border: '1px solid var(--border)',
-          borderRadius: 8, fontSize: 13, color: 'var(--text2)',
-        }}>
+      {!loading && hasMore && (
+        <div className="hint-box" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
           <span>
-            Đang hiển thị <strong>{all.length}</strong> / <strong>{total}</strong> bản ghi gần nhất — còn {total - all.length} bản ghi cũ hơn chưa tải.
-            {(skill || search) && ' Tìm kiếm/lọc chỉ áp dụng trên phần đã tải — tải thêm nếu không thấy kết quả cần tìm.'}
+            Đang hiển thị <strong>{all.length}</strong> / <strong>{formatNumber(total)}</strong> lượt gần nhất{skill ? ' của kỹ năng này' : ''}.
+            {search && ' Ô tìm kiếm chỉ lọc trên phần đã tải.'}
           </span>
-          <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }} onClick={loadMore} disabled={loadingMore}>
-            {loadingMore ? '⏳ Đang tải...' : `Tải thêm ${LOAD_MORE_STEP}`}
+          <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }} onClick={() => setLoadLimit(l => l + LOAD_MORE_STEP)} disabled={refreshing}>
+            {refreshing ? '⏳ Đang tải...' : `Tải thêm ${LOAD_MORE_STEP}`}
           </button>
         </div>
       )}
 
-      <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+      <div className="filter-bar" style={{ marginBottom: 16 }}>
         <input
+          type="search"
           className="form-input search-input"
           placeholder="Tìm tên, username, bộ đề..."
           value={search}
           onChange={e => { setSearch(e.target.value); setPage(1); }}
+          aria-label="Tìm trong lịch sử đã tải"
           style={{ maxWidth: 300 }}
         />
-        <select className="form-input" value={skill} onChange={e => { setSkill(e.target.value); setPage(1); }} style={{ width: 180 }}>
+        <select className="form-input" value={skill} onChange={e => { setSkill(e.target.value); setPage(1); setLoadLimit(INITIAL_LOAD); }} style={{ width: 220 }} aria-label="Lọc theo kỹ năng">
           <option value="">Tất cả kỹ năng</option>
-          <option value="reading">Reading (đề thi)</option>
-          <option value="reading-practice">📄 Reading lẻ</option>
-          <option value="listening">Listening (đề thi)</option>
-          <option value="listening-practice">🎵 Listening lẻ</option>
-          <option value="writing">Writing (đề thi)</option>
-          <option value="writing-practice">✍ Writing lẻ</option>
-          <option value="task1-practice">📊 Task 1 Practice</option>
-          <option value="task2-practice">📝 Task 2 Practice</option>
-          <option value="speaking">🎤 Speaking</option>
-          <option value="task2-template">📚 Task 2 Templates</option>
-          <option value="wt1-t1">📘 Khoá học Task 1</option>
-          <option value="wt1-t2">📗 Khoá học Task 2</option>
-          <option value="wt1-speaking">🎤 Khoá học Speaking</option>
-          <option value="wt1-noun-phrase">🔤 Khoá học Noun Phrase</option>
-          <option value="essential-grammar">📘 Ngữ pháp</option>
-          <option value="vocabulary-lesson">🗂 Từ vựng</option>
-          <option value="dictation">🎧 Dictation</option>
-          <option value="listening-gapfill">📝 Gap-fill</option>
+          {Object.entries(SKILL_META).filter(([k]) => k !== 'wt1-course').map(([k, m]) => <option key={k} value={k}>{m.label}</option>)}
         </select>
       </div>
 
-      <div className="table-wrap">
+      <div className={`table-wrap${refreshing ? ' is-refreshing' : ''}`}>
         <table className="table">
           <thead>
             <tr>
-              <th>HỌC SINH</th>
-              <th>KỸ NĂNG</th>
-              <th>BỘ ĐỀ</th>
-              <th>NGÀY LÀM</th>
-              <th>THỜI GIAN</th>
-              <th>ĐÚNG/TỔNG</th>
-              <th>BAND</th>
-              <th></th>
+              <th>Học sinh</th><th>Kỹ năng</th><th>Bộ đề</th><th>Ngày làm</th>
+              <th>Thời gian</th><th>Đúng/Tổng</th><th>Band</th><th aria-label="Thao tác" />
             </tr>
           </thead>
-          <tbody>
-            {loading
-              ? <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
-              : rows.length === 0
-                ? <tr><td colSpan={8} className="table-empty">Không có dữ liệu</td></tr>
-                : rows.map(h => {
-                  const name = h.userId?.displayName || h.userId?.username || '–';
-                  const isWriting = h.skill === 'writing';
-                  const isSpeaking = h.skill === 'speaking';
-                  return (
-                    <tr key={h._id}>
-                      <td>
-                        {h.userId?._id
-                          ? <Link to={`/students/${h.userId._id}`} style={{ fontWeight: 700, color: 'var(--text)' }}>{name}</Link>
-                          : <strong>{name}</strong>}
-                        {h.userId?.username && name !== h.userId.username && (
-                          <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{h.userId.username}</div>
-                        )}
-                      </td>
-                      <td>{skillBadge(h.skill)}</td>
-                      <td>
-                        {h.testName || '–'}
-                        {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
-                        {simBadge(h)}
-                      </td>
-                      <td style={{ fontSize: 12 }}>{formatDate(h.date)}</td>
-                      <td>{formatDur(h.duration)}</td>
-                      <td>{h.correctCount != null ? `${h.correctCount}/${h.totalQuestions}` : '–'}</td>
-                      <td>{(isWriting || isSpeaking) && h.bandScore == null
-                        ? <span style={{ color: 'var(--text3)', fontSize: 12 }}>{h.status === 'error' ? 'Lỗi chấm bài' : 'Chờ chấm'}</span>
-                        : bandBadge(h.bandScore)}
-                      </td>
-                      <td>
-                        {isAdmin && (
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(h._id, h.skill, name)}>🗑</button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
-            }
-          </tbody>
+          <TableBody loading={loading} error={error} onRetry={reload} colSpan={8} rows={8}
+            empty={rows.length === 0 && <EmptyState icon="📝" title="Không có dữ liệu" />}>
+            {rows.map(h => {
+              const name = h.userId?.displayName || h.userId?.username || '–';
+              const graded = h.skill === 'writing' || h.skill === 'speaking';
+              return (
+                <tr key={`${h.skill}-${h._id}`}>
+                  <td>
+                    {h.userId?._id
+                      ? <Link to={`/students/${h.userId._id}`} className="user-cell-name">{name}</Link>
+                      : <strong>{name}</strong>}
+                    {h.userId?.username && name !== h.userId.username && (
+                      <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{h.userId.username}</div>
+                    )}
+                  </td>
+                  <td>{skillBadge(h.skill)}</td>
+                  <td>
+                    {h.testName || '–'}
+                    {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
+                    {simBadge(h)}
+                  </td>
+                  <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(h.date)}</td>
+                  <td>{formatDur(h.duration)}</td>
+                  <td>{h.correctCount != null && h.totalQuestions != null ? `${h.correctCount}/${h.totalQuestions}` : '–'}</td>
+                  <td>{graded && h.bandScore == null
+                    ? <span className="muted" style={{ fontSize: 12 }}>{h.status === 'error' ? 'Lỗi chấm bài' : 'Chờ chấm'}</span>
+                    : bandBadge(h.bandScore)}
+                  </td>
+                  <td>
+                    {isAdmin && DELETE_ENDPOINT[h.skill] && (
+                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(h, name)} aria-label={`Xoá bài làm của ${name}`} title="Xoá bài làm">🗑</button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </TableBody>
         </table>
       </div>
 

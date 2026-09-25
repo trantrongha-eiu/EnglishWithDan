@@ -37,5 +37,7 @@ router.use(require('./mockTests'));        // Full 4-skill mock test monitoring 
 router.use(require('./entranceTest'));     // IELTS Entrance Test config + Grammar bank + attempt monitoring
 router.use(require('./tipPacks'));        // "Tài liệu in (Tips)": AI-prompt + answer-key packs per tip
 router.use(require('./sidebarBadges'));    // GET /sidebar-badges — one call for the admin Sidebar's 6 polled counts
+router.use(require('./studentOverview'));  // GET /users/:id/overview — per-student learning profile
+router.use(require('./tips'));             // Tips 4 kỹ năng: list / preview / show-hide
 
 module.exports = router;

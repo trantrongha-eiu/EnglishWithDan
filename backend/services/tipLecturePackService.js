@@ -395,4 +395,4 @@ async function buildPack(skill, lessonKey) {
   };
 }
 
-module.exports = { SKILLS, listTips, buildPack, _internals: { blockMarkdown, buildPrompt, mmss, table } };
+module.exports = { SKILLS, listTips, buildPack, tipMarkdown, _internals: { blockMarkdown, buildPrompt, mmss, table } };

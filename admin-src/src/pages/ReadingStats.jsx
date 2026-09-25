@@ -3,20 +3,10 @@ import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import Pagination from '../components/Pagination';
+import { bandBadge } from '../components/ui/badges';
+import { formatDur } from '../utils/format';
 
 const PAGE_SIZE = 25;
-
-function bandBadge(score) {
-  if (score == null) return '–';
-  const color = score >= 7 ? 'var(--green)' : score >= 5 ? 'var(--yellow)' : 'var(--accent2)';
-  return <span style={{ color, fontWeight: 700 }}>{score.toFixed(1)}</span>;
-}
-
-function formatDur(sec) {
-  if (sec == null) return '–';
-  const m = Math.floor(sec / 60), s = sec % 60;
-  return `${m}m${String(s).padStart(2, '0')}s`;
-}
 
 function studentName(u) {
   if (!u) return '–';

@@ -53,7 +53,12 @@ router.get('/vocab-books/:userId', auth, teacherOnly, async (req, res) => {
  */
 router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
   try {
-    const { search = '', sort = 'words-desc', page, limit } = req.query;
+    const { search = '', sort = 'words-desc', page, limit, userId } = req.query;
+    // ?userId= scopes to ONE student (StudentDetail) — it used to fetch this
+    // whole-roster aggregate and .find() its single row client-side.
+    if (userId && !mongoose.isValidObjectId(userId)) {
+      return res.status(400).json({ success: false, message: 'userId không hợp lệ' });
+    }
 
     // 1. Lấy tất cả user (không lọc role để admin/teacher cũng thấy – nhưng ưu tiên student)
     const re = search ? escapeRegex(search) : null;
@@ -68,7 +73,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
         }
       : {};
 
-    const users = await User.find({ role: 'student', ...searchFilter })
+    const users = await User.find({ role: 'student', ...searchFilter, ...(userId && { _id: userId }) })
       .select('username email firstName lastName createdAt learningStreak lastActivityDate previousStreak isBanned studyReminderCount streakHammers')
       .lean();
 

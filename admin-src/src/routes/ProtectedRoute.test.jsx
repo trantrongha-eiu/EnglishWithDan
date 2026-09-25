@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 const mockUseAuth = vi.fn();
 vi.mock('../contexts/AuthContext', () => ({
@@ -52,11 +53,11 @@ describe('ProtectedRoute', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('redirects a logged-in teacher away from an admin-only route', () => {
+  it('shows "no permission" (not a login redirect) to a teacher on an admin-only route', () => {
     mockUseAuth.mockReturnValue({ token: 'abc', loading: false, isAdmin: false, isTeacher: true });
-    const { container } = render(<ProtectedRoute role="admin"><div>admin secret</div></ProtectedRoute>);
-    expect(window.location.href).toContain('/login.html?next=');
-    expect(container).toBeEmptyDOMElement();
+    render(<MemoryRouter><ProtectedRoute role="admin"><div>admin secret</div></ProtectedRoute></MemoryRouter>);
+    expect(window.location.href).toBe('');
+    expect(screen.getByRole('alert')).toHaveTextContent('Chỉ quản trị viên');
     expect(screen.queryByText('admin secret')).not.toBeInTheDocument();
   });
 

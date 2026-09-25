@@ -23,7 +23,6 @@ const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
 const TuitionFee = require('../../models/TuitionFee');
 const EntranceTestAttempt = require('../../models/EntranceTestAttempt');
-const { REWRITE_CUTOFF } = require('../../services/writingService');
 
 const router = express.Router();
 

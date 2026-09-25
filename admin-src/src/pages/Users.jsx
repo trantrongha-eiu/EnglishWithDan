@@ -1,604 +1,242 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import { useAdminData } from '../contexts/AdminDataContext';
+import { useApi } from '../hooks/useApi';
 import Pagination from '../components/Pagination';
+import PageHeader from '../components/ui/PageHeader';
+import RowMenu from '../components/ui/RowMenu';
+import { TableBody, EmptyState } from '../components/ui/States';
+import { roleBadge, planBadge, statusBadge } from '../components/ui/badges';
+import { displayName, formatLastSeen, initials, formatNumber } from '../utils/format';
+import { PlanModal, RemindModal, CreateUserModal, EditUserModal } from './users/UserModals';
 
 const PAGE = 30;
 
-function formatLastSeen(date) {
-  if (!date) return { text: 'Chưa có', color: 'var(--text3)' };
-  const diff = Date.now() - new Date(date).getTime();
-  const mins  = Math.floor(diff / 60_000);
-  const hours = Math.floor(diff / 3_600_000);
-  const days  = Math.floor(diff / 86_400_000);
-  if (mins < 2)   return { text: 'Vừa online', color: 'var(--green)' };
-  if (mins < 60)  return { text: `${mins} phút trước`, color: 'var(--green)' };
-  if (hours < 24) return { text: `${hours} giờ trước`, color: 'var(--yellow)' };
-  if (days < 7)   return { text: `${days} ngày trước`, color: 'var(--text2)' };
-  return { text: formatDate(date).split(' ')[0], color: 'var(--text3)' };
-}
+// Người dùng (redesigned 2026-09-25):
+//  - filters/sort/page live in the URL (bookmarkable; Dashboard deep-links
+//    here with ?role=student&plan=premium);
+//  - everything is server-side (search, role, status, plan, sort, paging);
+//  - useApi aborts the previous request, so fast typing can't show stale
+//    results, and a page click fires ONE request (it used to fire two);
+//  - rows collapse 7 inline buttons into one primary action + a "⋯" menu.
 
-function roleBadge(r) {
-  const map = { admin: 'badge-red', teacher: 'badge-blue', student: 'badge-green' };
-  const label = { admin: 'Admin', teacher: 'Teacher', student: 'Student' };
-  return <span className={`badge ${map[r] || 'badge-gray'}`}>{label[r] || r}</span>;
-}
-
-function daysLeft(expiresAt) {
-  if (!expiresAt) return null;
-  const diff = Math.ceil((new Date(expiresAt) - new Date()) / 86400000);
-  return diff;
-}
-
-function planBadge(plan, expiresAt) {
-  if (plan === 'premium') {
-    const exp = expiresAt ? new Date(expiresAt) : null;
-    const days = exp ? daysLeft(exp) : null;
-    const expired = days !== null && days <= 0;
-    const urgentColor = !expired && days !== null && days <= 7 ? 'var(--yellow)' : null;
-    const expStr = exp ? exp.toLocaleDateString('vi-VN') : '';
-    const countStr = days === null ? '' : expired ? ' (Hết hạn)' : days === 0 ? ' (Hết hạn hôm nay)' : ` (còn ${days} ngày)`;
-    return (
-      <span className={`badge ${expired ? 'badge-gray' : 'badge-blue'}`}
-        style={urgentColor ? { background: urgentColor, color: '#fff', border: 'none' } : {}}
-        title={expStr ? `HSD: ${expStr}` : ''}>
-        {expired ? '⏰ Hết hạn' : '⭐ Premium'}{countStr}
-      </span>
-    );
-  }
-  return <span className="badge badge-gray">Free</span>;
-}
-
-const PLAN_OPTIONS = [
-  { months: 1,  label: '1 tháng',  price: '90.000 ₫' },
-  { months: 3,  label: '3 tháng',  price: '250.000 ₫' },
-  { months: 6,  label: '6 tháng',  price: '500.000 ₫' },
-  { months: 12, label: '1 năm',    price: '900.000 ₫', badge: 'Tiết kiệm' },
-  { months: 36, label: '3 năm',    price: '2.500.000 ₫', badge: 'Tiết kiệm nhất' },
-];
-
-function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSaved }) {
-  const toast = useToast();
-  const [loading, setLoading] = useState(false);
-
-  async function setPlan(plan, months) {
-    setLoading(true);
-    try {
-      await apiFetch(`/admin/users/${userId}/plan`, { method: 'PUT', body: JSON.stringify({ plan, months }) });
-      const label = PLAN_OPTIONS.find(o => o.months === months)?.label || `${months} tháng`;
-      toast(plan === 'premium' ? `Đã nâng ${username} lên Premium (${label})` : `Đã hạ ${username} về Free`);
-      onSaved();
-      onClose();
-    } catch (e) { toast(e.message, 'error'); }
-    finally { setLoading(false); }
-  }
-
-  const exp = planExpiresAt ? new Date(planExpiresAt) : null;
-  const days = exp ? daysLeft(exp) : null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">Gói dịch vụ — {username}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
-        </div>
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {/* Current status */}
-          <div style={{ background: 'var(--surface2,#f1f5f9)', borderRadius: 10, padding: '10px 14px', fontSize: 13 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: exp ? 4 : 0 }}>
-              <span style={{ color: 'var(--text2)' }}>Gói hiện tại:</span>
-              {planBadge(currentPlan, planExpiresAt)}
-            </div>
-            {exp && (
-              <div style={{ fontSize: 12, color: days !== null && days <= 7 ? 'var(--yellow)' : 'var(--text2)' }}>
-                HSD: {exp.toLocaleDateString('vi-VN')}
-                {days !== null && days > 0 && ` — còn ${days} ngày`}
-                {days !== null && days <= 0 && ' — Đã hết hạn'}
-              </div>
-            )}
-          </div>
-
-          {/* Cấp Premium */}
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: -4 }}>
-            Cấp Premium (cộng thêm từ ngày hết hạn hiện tại)
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {PLAN_OPTIONS.map(o => (
-              <button key={o.months} className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', o.months)}
-                style={{ position: 'relative', padding: '10px 12px', textAlign: 'left', lineHeight: 1.4 }}>
-                {o.badge && (
-                  <span style={{ position: 'absolute', top: -7, right: 8, background: 'var(--yellow)', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10 }}>
-                    {o.badge}
-                  </span>
-                )}
-                <div style={{ fontWeight: 700 }}>⭐ {o.label}</div>
-                <div style={{ fontSize: 12, opacity: .8 }}>{o.price}</div>
-              </button>
-            ))}
-          </div>
-
-          <button className="btn btn-ghost" disabled={loading} onClick={() => setPlan('free', 0)}
-            style={{ marginTop: 4, color: 'var(--danger)', border: '1px solid var(--danger)' }}>
-            🔽 Hạ về Free ngay
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function RemindModal({ userId, username, onClose, onSaved }) {
-  const toast = useToast();
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  async function send() {
-    setLoading(true);
-    try {
-      const d = await apiFetch(`/admin/users/${userId}/remind`, { method: 'POST', body: JSON.stringify({ message }) });
-      toast(`Đã nhắc nhở ${username} (lần thứ ${d.studyReminderCount})`);
-      onSaved();
-      onClose();
-    } catch (e) { toast(e.message, 'error'); }
-    finally { setLoading(false); }
-  }
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">🔔 Nhắc nhở học tập — {username}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
-        </div>
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <p style={{ fontSize: 13, color: 'var(--text2)', margin: 0 }}>
-            Gửi tin nhắn nhắc nhở về việc học từ vựng / làm bài tập chưa đầy đủ. Nếu học sinh bị nhắc nhở từ 3 lần trở lên, một cảnh báo sẽ tự động hiện nổi bật trên mọi trang mỗi khi họ truy cập.
-          </p>
-          <div className="form-group" style={{ margin: 0 }}>
-            <label className="form-label">Nội dung (để trống dùng mặc định)</label>
-            <textarea className="form-input" rows={4} value={message} onChange={e => setMessage(e.target.value)}
-              placeholder="Để trống để dùng nội dung mặc định..." style={{ resize: 'vertical', fontFamily: 'inherit' }} />
-          </div>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-            <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
-            <button className="btn btn-primary" onClick={send} disabled={loading}>
-              {loading ? 'Đang gửi...' : '📤 Gửi nhắc nhở'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CreateUserModal({ onClose, onSaved }) {
-  const toast = useToast();
-  const [form, setForm] = useState({ username: '', email: '', password: '', role: 'student', firstName: '', lastName: '' });
-  const [loading, setLoading] = useState(false);
-  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
-
-  async function save(e) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await apiFetch('/admin/users', { method: 'POST', body: JSON.stringify(form) });
-      toast('Đã tạo tài khoản thành công');
-      onSaved();
-      onClose();
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setLoading(false); }
-  }
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">Tạo tài khoản mới</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
-        </div>
-        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div className="form-group">
-              <label className="form-label">Họ</label>
-              <input className="form-input" value={form.firstName} onChange={set('firstName')} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Tên</label>
-              <input className="form-input" value={form.lastName} onChange={set('lastName')} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Username <span style={{ color: 'var(--danger)' }}>*</span></label>
-            <input className="form-input" value={form.username} onChange={set('username')} required />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Email <span style={{ color: 'var(--danger)' }}>*</span></label>
-            <input className="form-input" type="email" value={form.email} onChange={set('email')} required />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Mật khẩu <span style={{ color: 'var(--danger)' }}>*</span></label>
-            <input className="form-input" type="password" value={form.password} onChange={set('password')} required placeholder="Tối thiểu 6 ký tự" minLength={6} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Vai trò</label>
-            <select className="form-input" value={form.role} onChange={set('role')}>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
-            <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Đang tạo...' : '+ Tạo tài khoản'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-// Mirrors frontend/profile.html's compressImage() — resize to maxSize on
-// the longest edge and re-encode as JPEG so the base64 payload stays small
-// before it's sent to the avatar upload endpoint.
-function compressImage(file, maxSize, quality) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = e => {
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxSize || height > maxSize) {
-          if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
-          else { width = Math.round(width * maxSize / height); height = maxSize; }
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-const MAX_AVATAR_BYTES = 20 * 1024 * 1024; // 20MB — sanity cap before compression
-
-function UserModal({ userId, onClose, onSaved }) {
-  const toast = useToast();
-  const { isAdmin } = useAuth();
-  const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', className: '', isBanned: false, newPassword: '', avatar: '' });
-  const [loading, setLoading] = useState(false);
-  const [avatarBusy, setAvatarBusy] = useState(false);
-
-  useEffect(() => {
-    if (!userId) return;
-    apiFetch(`/admin/users/${userId}`).then(d => {
-      const u = d.user;
-      setForm({ username: u.username || '', email: u.email || '', role: u.role || 'student', firstName: u.firstName || '', lastName: u.lastName || '', className: u.className || '', isBanned: !!u.isBanned, newPassword: '', avatar: u.avatar || '' });
-    }).catch(e => toast(e.message, 'error'));
-  }, [userId]);
-
-  async function pickAvatar(e) {
-    const file = e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { toast('Vui lòng chọn file ảnh', 'error'); return; }
-    if (file.size > MAX_AVATAR_BYTES) { toast('Ảnh quá lớn, vui lòng chọn ảnh dưới 20MB', 'error'); return; }
-
-    setAvatarBusy(true);
-    try {
-      const imageBase64 = await compressImage(file, 600, 0.85);
-      const d = await apiFetch(`/admin/users/${userId}/avatar`, { method: 'POST', body: JSON.stringify({ imageBase64 }) });
-      setForm(f => ({ ...f, avatar: d.user.avatar || '' }));
-      toast('Đã cập nhật avatar');
-      onSaved();
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setAvatarBusy(false); }
-  }
-
-  async function removeAvatar() {
-    setAvatarBusy(true);
-    try {
-      await apiFetch(`/admin/users/${userId}/avatar`, { method: 'DELETE' });
-      setForm(f => ({ ...f, avatar: '' }));
-      toast('Đã xóa avatar');
-      onSaved();
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setAvatarBusy(false); }
-  }
-
-  async function save(e) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const body = { ...form };
-      if (!body.newPassword) delete body.newPassword;
-      await apiFetch(`/admin/users/${userId}`, { method: 'PUT', body: JSON.stringify(body) });
-      toast('Đã cập nhật người dùng');
-      onSaved();
-      onClose();
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setLoading(false); }
-  }
-
-  const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">Chỉnh sửa người dùng</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
-        </div>
-        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {isAdmin && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, background: 'var(--surface2,#e5e7eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text2,#6b7280)' }}>
-                {form.avatar
-                  ? <img src={form.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : (form.username || '?').charAt(0).toUpperCase()}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label className="btn btn-ghost btn-sm" style={{ cursor: avatarBusy ? 'default' : 'pointer', opacity: avatarBusy ? .6 : 1 }}>
-                  {avatarBusy ? 'Đang xử lý...' : '📷 Đổi avatar'}
-                  <input type="file" accept="image/*" onChange={pickAvatar} disabled={avatarBusy} style={{ display: 'none' }} />
-                </label>
-                {form.avatar && (
-                  <button type="button" className="btn btn-ghost btn-sm" disabled={avatarBusy}
-                    style={{ color: 'var(--danger)' }} onClick={removeAvatar}>
-                    🗑 Xóa avatar
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-          <div className="form-group">
-            <label className="form-label">Username</label>
-            <input className="form-input" value={form.username} onChange={set('username')} required />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Email</label>
-            <input className="form-input" type="email" value={form.email} onChange={set('email')} required />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div className="form-group">
-              <label className="form-label">Họ</label>
-              <input className="form-input" value={form.firstName} onChange={set('firstName')} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Tên</label>
-              <input className="form-input" value={form.lastName} onChange={set('lastName')} />
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Lớp (dùng để lọc bài Quiz từ vựng phù hợp)</label>
-            <input className="form-input" placeholder="VD: 6, 6.5, 7..." value={form.className} onChange={set('className')} />
-          </div>
-          {isAdmin && (
-            <div className="form-group">
-              <label className="form-label">Vai trò</label>
-              <select className="form-input" value={form.role} onChange={set('role')}>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-          )}
-          {isAdmin && (
-            <div className="form-group">
-              <label className="form-label">Mật khẩu mới (để trống = giữ nguyên)</label>
-              <input className="form-input" type="password" value={form.newPassword} onChange={set('newPassword')} placeholder="••••••••" />
-            </div>
-          )}
-          {isAdmin && (
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
-              <input type="checkbox" checked={form.isBanned} onChange={set('isBanned')} />
-              Tài khoản bị cấm
-            </label>
-          )}
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
-            <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
+const FILTER_KEYS = ['q', 'role', 'status', 'plan', 'sort'];
 
 export default function Users() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
+  const { badges } = useAdminData();
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  // /admin/users is a SERVER query — without debounce, every keystroke in
-  // the search box fired its own request ("nguyen" = 6 round-trips).
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [params, setParams] = useSearchParams();
+
+  const q = params.get('q') || '';
+  const role = params.get('role') || '';
+  const status = params.get('status') || '';
+  const plan = params.get('plan') || '';
+  const sort = params.get('sort') || 'newest';
+  const page = Math.max(1, parseInt(params.get('page')) || 1);
+
+  // Local text box state, pushed to the URL (and thus the query) debounced.
+  const [search, setSearch] = useState(q);
+  const [prevQ, setPrevQ] = useState(q);
+  if (prevQ !== q) { setPrevQ(q); setSearch(q); } // back/forward navigation
+
+  // Functional update: the debounced search commit below may run after a
+  // filter changed, and must not overwrite it with a stale snapshot.
+  function update(patch, { resetPage = true } = {}) {
+    setParams(prev => {
+      const next = new URLSearchParams(prev);
+      Object.entries(patch).forEach(([k, v]) => { if (v) next.set(k, v); else next.delete(k); });
+      if (resetPage) next.delete('page');
+      return next;
+    }, { replace: true });
+  }
+
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 350);
+    if (search === q) return undefined;
+    const t = setTimeout(() => update({ q: search.trim() }), 350);
     return () => clearTimeout(t);
-  }, [search]);
-  const [roleFilter, setRoleFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const query = new URLSearchParams({ page: String(page), limit: String(PAGE), sort });
+  if (q) query.set('search', q);
+  if (role) query.set('role', role);
+  if (status === 'banned') query.set('isBanned', 'true');
+  if (status === 'active') query.set('isBanned', 'false');
+  if (plan) query.set('plan', plan);
+  const { data, error, loading, refreshing, reload } = useApi(`/admin/users?${query}`);
+  const users = data?.users || [];
+  const total = data?.total || 0;
+
   const [editId, setEditId] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [planUser, setPlanUser] = useState(null);
   const [remindUser, setRemindUser] = useState(null);
-  const [onlineIds, setOnlineIds] = useState(new Set());
+  const onlineIds = badges?.onlineIds || new Set();
+  const hasFilters = FILTER_KEYS.some(k => k !== 'sort' && params.get(k));
 
-  useEffect(() => {
-    apiFetch('/admin/online-users').then(d => setOnlineIds(new Set((d.users || []).map(u => u._id)))).catch(() => {});
-  }, []);
-
-  function load(p = page) {
-    const params = new URLSearchParams({ page: p, limit: PAGE });
-    if (debouncedSearch) params.set('search', debouncedSearch);
-    if (roleFilter) params.set('role', roleFilter);
-    if (statusFilter === 'banned') params.set('isBanned', 'true');
-    if (statusFilter === 'active') params.set('isBanned', 'false');
-    apiFetch(`/admin/users?${params}`).then(d => { setUsers(d.users || []); setTotal(d.total || 0); }).catch(e => toast(e.message, 'error'));
-  }
-
-  // Adjust-during-render (not an effect): reset to page 1 whenever a
-  // filter changes. A single combined effect below (keyed on filters AND
-  // page) then loads exactly once per change, whether it came from a
-  // filter edit (page reset bundled into the same commit) or a plain
-  // pagination click — no separate ref-based "skip the other effect" flag
-  // needed.
-  const [prevFilters, setPrevFilters] = useState([debouncedSearch, roleFilter, statusFilter]);
-  if (prevFilters[0] !== debouncedSearch || prevFilters[1] !== roleFilter || prevFilters[2] !== statusFilter) {
-    setPrevFilters([debouncedSearch, roleFilter, statusFilter]);
-    if (page !== 1) setPage(1);
-  }
-  useEffect(() => { load(page); }, [debouncedSearch, roleFilter, statusFilter, page]);
-
-  async function toggleBan(id, username, isBanned) {
-    confirm(`${isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${username}"?`, async () => {
+  function toggleBan(u) {
+    confirm(`${u.isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${u.username}"?`, async () => {
       try {
-        await apiFetch(`/admin/users/${id}/ban`, { method: 'PUT', body: JSON.stringify({ isBanned: !isBanned }) });
-        toast(isBanned ? 'Đã bỏ cấm' : 'Đã cấm tài khoản');
-        load(page);
+        await apiFetch(`/admin/users/${u._id}/ban`, { method: 'PUT', body: JSON.stringify({ isBanned: !u.isBanned }) });
+        toast(u.isBanned ? 'Đã bỏ cấm' : 'Đã cấm tài khoản');
+        reload();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
 
-  async function deleteUser(id, username) {
-    confirm(`Xóa vĩnh viễn tài khoản "${username}"? Không thể khôi phục.`, async () => {
+  function deleteUser(u) {
+    confirm(`Xóa vĩnh viễn tài khoản "${u.username}"? Không thể khôi phục.`, async () => {
       try {
-        await apiFetch(`/admin/users/${id}`, { method: 'DELETE' });
+        await apiFetch(`/admin/users/${u._id}`, { method: 'DELETE' });
         toast('Đã xóa tài khoản');
-        load(page);
+        reload();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
 
-  async function resetReminders(id, username) {
-    confirm(`Xóa cảnh báo nhắc nhở tích lũy của "${username}"? Banner cảnh báo trên các trang của học sinh sẽ tắt.`, async () => {
+  function resetReminders(u) {
+    confirm(`Xóa cảnh báo nhắc nhở tích lũy của "${u.username}"? Banner cảnh báo trên các trang của học sinh sẽ tắt.`, async () => {
       try {
-        await apiFetch(`/admin/users/${id}/reset-reminders`, { method: 'POST' });
+        await apiFetch(`/admin/users/${u._id}/reset-reminders`, { method: 'POST' });
         toast('Đã xóa cảnh báo nhắc nhở');
-        load(page);
+        reload();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
 
   return (
     <>
-      {editId && <UserModal userId={editId} onClose={() => setEditId(null)} onSaved={() => load(page)} />}
-      {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} onSaved={() => load(page)} />}
-      {planUser && <PlanModal userId={planUser._id} username={planUser.username} currentPlan={planUser.plan} planExpiresAt={planUser.planExpiresAt} onClose={() => setPlanUser(null)} onSaved={() => load(page)} />}
-      {remindUser && <RemindModal userId={remindUser._id} username={remindUser.username} onClose={() => setRemindUser(null)} onSaved={() => load(page)} />}
+      {editId && <EditUserModal userId={editId} onClose={() => setEditId(null)} onSaved={reload} />}
+      {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} onSaved={reload} />}
+      {planUser && <PlanModal user={planUser} onClose={() => setPlanUser(null)} onSaved={reload} />}
+      {remindUser && <RemindModal user={remindUser} onClose={() => setRemindUser(null)} onSaved={reload} />}
 
-      <div className="section-header">
-        <div>
-          <h2 className="section-title">Người dùng ({total})</h2>
-          {!roleFilter && (
-            <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-              Bao gồm cả student, teacher, admin — lọc theo "Role" bên dưới để xem riêng số học sinh
-            </div>
-          )}
-        </div>
-        {isAdmin && <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>}
-      </div>
+      <PageHeader
+        title="Người dùng"
+        subtitle={loading ? 'Đang tải…' : `${formatNumber(total)} tài khoản${role ? ` · vai trò ${role}` : ' (mọi vai trò)'}${onlineIds.size ? ` · ${onlineIds.size} đang online` : ''}`}
+        actions={isAdmin && <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>}
+      />
 
-      <div className="filter-bar" style={{ marginBottom: 16 }}>
-        <input className="form-input search-input" placeholder="Tìm username, email..." value={search}
-          onChange={e => { setSearch(e.target.value); setPage(1); }} style={{ maxWidth: 280 }} />
-        <select className="form-input" value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }} style={{ width: 140 }}>
-          <option value="">Tất cả role</option>
-          <option value="student">Student</option>
-          <option value="teacher">Teacher</option>
+      <div className="filter-bar" style={{ marginBottom: 14 }}>
+        <input
+          type="search"
+          className="form-input search-input"
+          placeholder="Tìm tên, username, email…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          aria-label="Tìm người dùng"
+          style={{ maxWidth: 300 }}
+        />
+        <select className="form-input" value={role} onChange={e => update({ role: e.target.value })} style={{ width: 150 }} aria-label="Lọc vai trò">
+          <option value="">Mọi vai trò</option>
+          <option value="student">Học sinh</option>
+          <option value="teacher">Giáo viên</option>
           <option value="admin">Admin</option>
         </select>
-        <select className="form-input" value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }} style={{ width: 140 }}>
-          <option value="">Tất cả trạng thái</option>
+        <select className="form-input" value={plan} onChange={e => update({ plan: e.target.value })} style={{ width: 140 }} aria-label="Lọc gói">
+          <option value="">Mọi gói</option>
+          <option value="premium">Premium</option>
+          <option value="free">Free</option>
+        </select>
+        <select className="form-input" value={status} onChange={e => update({ status: e.target.value })} style={{ width: 150 }} aria-label="Lọc trạng thái">
+          <option value="">Mọi trạng thái</option>
           <option value="active">Hoạt động</option>
           <option value="banned">Bị cấm</option>
         </select>
+        <select className="form-input" value={sort} onChange={e => update({ sort: e.target.value === 'newest' ? '' : e.target.value })} style={{ width: 170 }} aria-label="Sắp xếp">
+          <option value="newest">Mới đăng ký trước</option>
+          <option value="oldest">Cũ nhất trước</option>
+          <option value="lastSeen">Online gần nhất</option>
+          <option value="name">Username A → Z</option>
+        </select>
+        {hasFilters && (
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setSearch(''); setParams({}, { replace: true }); }}>
+            ✕ Xoá bộ lọc
+          </button>
+        )}
       </div>
 
-      <div className="table-wrap">
+      <div className={`table-wrap${refreshing ? ' is-refreshing' : ''}`}>
         <table className="table">
           <thead>
             <tr>
-              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>LỚP</th><th>NHẮC NHỞ</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
+              <th>Người dùng</th><th>Lớp</th><th>Gói</th><th>Trạng thái</th>
+              <th>Nhắc nhở</th><th>Online gần nhất</th><th>Ngày tạo</th><th aria-label="Thao tác" />
             </tr>
           </thead>
-          <tbody>
-            {users.length === 0
-              ? <tr><td colSpan={11} className="table-empty">Không có người dùng</td></tr>
-              : users.map(u => {
-                const ls = formatLastSeen(u.lastSeen);
-                return (
-                <tr key={u._id} style={{ opacity: u.isBanned ? 0.55 : 1 }}>
+          <TableBody
+            loading={loading}
+            error={error}
+            onRetry={reload}
+            colSpan={8}
+            rows={8}
+            empty={users.length === 0 && (
+              <EmptyState icon="🔍" title="Không có người dùng phù hợp">
+                {hasFilters ? 'Thử bỏ bớt bộ lọc hoặc đổi từ khoá.' : 'Chưa có tài khoản nào.'}
+              </EmptyState>
+            )}
+          >
+            {users.map(u => {
+              const ls = formatLastSeen(u.lastSeen);
+              const isStudent = u.role === 'student';
+              return (
+                <tr key={u._id} style={{ opacity: u.isBanned ? 0.6 : 1 }}>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {onlineIds.has(u._id) && (
-                        <span title="Đang online" style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', flexShrink: 0, boxShadow: '0 0 4px #22c55e' }} />
-                      )}
-                      <strong>{u.username}</strong>
+                    <div className="user-cell">
+                      <span className={`avatar-sm${onlineIds.has(u._id) ? ' avatar-online' : ''}`} title={onlineIds.has(u._id) ? 'Đang online' : undefined}>
+                        {u.avatar ? <img src={u.avatar} alt="" loading="lazy" /> : initials(u)}
+                      </span>
+                      <span className="user-cell-text">
+                        {isStudent
+                          ? <Link to={`/students/${u._id}`} className="user-cell-name">{displayName(u)}</Link>
+                          : <span className="user-cell-name">{displayName(u)} {roleBadge(u.role)}</span>}
+                        <span className="user-cell-meta">@{u.username} · {u.email}</span>
+                      </span>
                     </div>
                   </td>
-                  <td style={{ fontSize: 12, color: 'var(--text3)' }}>{u.email}</td>
-                  <td>{[u.firstName, u.lastName].filter(Boolean).join(' ') || '–'}</td>
-                  <td>{u.className ? <span className="badge badge-purple">{u.className}</span> : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
+                  <td>{u.className ? <span className="badge badge-purple">{u.className}</span> : <span className="muted">–</span>}</td>
+                  <td>{isStudent ? planBadge(u.plan, u.planExpiresAt) : <span className="muted">–</span>}</td>
+                  <td>{statusBadge(u.isBanned)}</td>
                   <td>
-                    {u.studyReminderCount > 0 ? (
-                      <span
-                        className={`badge ${u.studyReminderCount >= 3 ? 'badge-red' : 'badge-gray'}`}
-                        style={{ cursor: 'pointer' }}
-                        title="Bấm để xóa cảnh báo nhắc nhở"
-                        onClick={() => resetReminders(u._id, u.username)}
-                      >
-                        {u.studyReminderCount >= 3 ? '⚠️ ' : ''}{u.studyReminderCount} lần ✕
-                      </span>
-                    ) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                    {u.studyReminderCount > 0
+                      ? <span className={`badge ${u.studyReminderCount >= 3 ? 'badge-red' : 'badge-gray'}`}>{u.studyReminderCount >= 3 ? '⚠️ ' : ''}{u.studyReminderCount} lần</span>
+                      : <span className="muted">–</span>}
                   </td>
-                  <td>{roleBadge(u.role)}</td>
-                  <td>{planBadge(u.plan, u.planExpiresAt)}</td>
-                  <td>
-                    {u.isBanned
-                      ? <span className="badge badge-red">Bị cấm</span>
-                      : <span className="badge badge-green">Hoạt động</span>}
-                  </td>
-                  <td style={{ fontSize: 12 }}>{formatDate(u.createdAt)}</td>
                   <td style={{ fontSize: 12, color: ls.color, whiteSpace: 'nowrap' }}>{ls.text}</td>
+                  <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(u.createdAt).split(' ')[0]}</td>
                   <td>
-                    <div className="row-actions">
-                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/students/${u._id}`)} title="Xem lịch sử làm bài + hoạt động từ vựng">👁 Chi tiết</button>}
-                      {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
-                      {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
-                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setRemindUser(u)} title="Nhắc nhở học tập — tính vào cột NHẮC NHỞ, hiện banner cảnh báo cho học sinh khi đủ 3 lần">🔔 Nhắc nhở</button>}
-                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn tự do — KHÔNG tính vào cột NHẮC NHỞ, dùng nút 🔔 Nhắc nhở nếu muốn nhắc nhở chính thức" aria-label="Gửi tin nhắn">✉️</button>
-                      {isAdmin && (
-                        <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
-                          onClick={() => toggleBan(u._id, u.username, u.isBanned)}>
-                          {u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm'}
-                        </button>
-                      )}
-                      {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteUser(u._id, u.username)}>🗑 Xóa</button>}
+                    <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
+                      {isStudent
+                        ? <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/students/${u._id}`)}>Hồ sơ</button>
+                        : isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>Sửa</button>}
+                      <RowMenu
+                        label={`Thao tác với ${u.username}`}
+                        items={[
+                          { label: '✏️ Sửa thông tin', onClick: () => setEditId(u._id), hidden: !isAdmin || !isStudent },
+                          { label: '⭐ Quản lý gói', onClick: () => setPlanUser(u), hidden: !isAdmin || !isStudent },
+                          { label: '🔔 Nhắc nhở học tập', onClick: () => setRemindUser(u), hidden: !isStudent },
+                          { label: '🧹 Xoá cảnh báo nhắc nhở', onClick: () => resetReminders(u), hidden: !(u.studyReminderCount > 0) },
+                          { label: '✉️ Gửi tin nhắn', onClick: () => navigate(`/messages?to=${u._id}`) },
+                          'sep',
+                          { label: u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm tài khoản', onClick: () => toggleBan(u), hidden: !isAdmin, danger: !u.isBanned },
+                          { label: '🗑 Xoá vĩnh viễn', onClick: () => deleteUser(u), hidden: !isAdmin, danger: true },
+                        ]}
+                      />
                     </div>
                   </td>
                 </tr>
-                );
-              })}
-          </tbody>
+              );
+            })}
+          </TableBody>
         </table>
       </div>
-      <div style={{ marginTop: 12 }}>
-        <Pagination page={page} total={total} pageSize={PAGE} onPage={p => { setPage(p); load(p); }} />
-      </div>
+      <Pagination page={page} total={total} pageSize={PAGE} onPage={p => update({ page: p > 1 ? String(p) : '' }, { resetPage: false })} />
     </>
   );
 }

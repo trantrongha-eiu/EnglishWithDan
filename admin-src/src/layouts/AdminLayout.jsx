@@ -1,88 +1,79 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import QuickSearch from '../components/QuickSearch';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { AdminDataProvider } from '../contexts/AdminDataProvider';
+import { routeTitle } from './navConfig';
 
-const TITLES = {
-  '/dashboard':              'Dashboard',
-  '/users':                  'Người dùng',
-  '/courses':                'Khóa học',
-  '/passages':               'Bài đọc (Passages)',
-  '/reading-tests':          'Bộ đề Reading',
-  '/listening-tests':        'Đề Listening',
-  '/listening-sections':     'Bài lẻ Listening',
-  '/writing-tests':          'Đề Writing',
-  '/speaking':               'Speaking',
-  '/vocabulary':             'Từ vựng (Units)',
-  '/vocabulary-lessons':        'Vocabulary Lessons',
-  '/vocabulary-lessons/import': 'Import Lesson',
-  '/essential-grammar':      'Essential Grammar',
-  '/writing-practice':       'Luyện viết (Writing Practice)',
-  '/task1-exercises':        'Task 1 Grammar Exercises',
-  '/task2-exercises':        'Task 2 Writing Exercises',
-  '/task2-templates':        'Task 2 Templates',
-  '/monitoring':             'Theo dõi luyện tập',
-  '/mock-tests':             'Thi thử Full 4 kỹ năng',
-  '/entrance-test':          'IELTS Entrance Test (Test đầu vào)',
-  '/history':                'Lịch sử làm bài',
-  '/review-bypass':          'Mã bỏ qua Review',
-  '/tip-packs':              'Tài liệu in — bài giảng từ Tips',
-  '/reading-stats':          'Thống kê Reading',
-  '/listening-stats':        'Thống kê Listening',
-  '/writing-grades':         'Chấm bài Writing',
-  '/vocab-activity':         'Hoạt động từ vựng',
-  '/messages':               'Hộp thư',
-  '/tuition':                'Quản lý học phí',
-  '/upgrade-requests':       'Yêu cầu nâng cấp Premium',
-};
+const COMPACT_KEY = 'admin-sidebar-compact';
 
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { pathname } = useLocation();
+  const [compact, setCompact] = useState(() => {
+    try { return localStorage.getItem(COMPACT_KEY) === '1'; } catch { return false; }
+  });
+  const { pathname, search } = useLocation();
   const { user } = useAuth();
   const { theme, toggle } = useTheme();
-  const title = TITLES[pathname]
-    || (pathname.startsWith('/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
-    || (pathname.startsWith('/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
-    || (pathname.startsWith('/listening-sections/') ? 'Chỉnh sửa bài Listening' : null)
-    || (pathname.startsWith('/students/') ? 'Chi tiết học sinh' : null)
-    || 'Admin';
+  const { title, group } = routeTitle(pathname, search);
+
+  useEffect(() => {
+    document.title = `${title} · Admin EnglishWithDan`;
+  }, [title]);
+
+  function toggleCompact() {
+    setCompact(c => {
+      try { localStorage.setItem(COMPACT_KEY, c ? '0' : '1'); } catch { /* storage unavailable */ }
+      return !c;
+    });
+  }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
-      <div className="main">
-        <header className="topbar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button
-              className="btn btn-ghost btn-icon sidebar-toggle"
-              onClick={() => setMobileOpen(o => !o)}
-              aria-label="Mở menu"
-            >☰</button>
-            <span className="topbar-title">{title}</span>
-          </div>
-          <div className="topbar-right">
-            <button
-              className="btn btn-ghost btn-icon theme-toggle"
-              onClick={toggle}
-              title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
-            >{theme === 'dark' ? '☀️' : '🌙'}</button>
-            <a href="/" className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>← Trang chủ</a>
-            {user && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text2)' }}>
-                <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'linear-gradient(135deg,var(--accent),#ff8f00)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#fff', flexShrink: 0 }}>
-                  {(user.username || 'A')[0].toUpperCase()}
-                </div>
-                <span className="topbar-username" style={{ fontWeight: 600 }}>{user.username}</span>
+    <AdminDataProvider>
+      <a href="#admin-main" className="skip-link">Bỏ qua menu</a>
+      <div className={`admin-shell${compact ? ' is-compact' : ''}`}>
+        <Sidebar
+          mobileOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          compact={compact}
+          onToggleCompact={toggleCompact}
+        />
+        <div className="main">
+          <header className="topbar">
+            <div className="topbar-left">
+              <button
+                className="btn btn-ghost btn-icon sidebar-toggle"
+                onClick={() => setMobileOpen(o => !o)}
+                aria-label="Mở menu"
+              >☰</button>
+              <div className="topbar-heading">
+                {group && <span className="topbar-crumb">{group}</span>}
+                <span className="topbar-title">{title}</span>
               </div>
-            )}
-          </div>
-        </header>
-        <div className="content">
-          <Outlet />
+            </div>
+            <div className="topbar-right">
+              <QuickSearch />
+              <button
+                className="btn btn-ghost btn-icon theme-toggle"
+                onClick={toggle}
+                aria-label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+                title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+              >{theme === 'dark' ? '☀️' : '🌙'}</button>
+              <a href="/" className="btn btn-ghost btn-sm topbar-home">← Trang học sinh</a>
+              {user && (
+                <div className="topbar-user" title={user.username}>
+                  <div className="topbar-user-dot" aria-hidden="true">{(user.username || 'A')[0].toUpperCase()}</div>
+                </div>
+              )}
+            </div>
+          </header>
+          <main className="content" id="admin-main" tabIndex={-1}>
+            <Outlet />
+          </main>
         </div>
       </div>
-    </div>
+    </AdminDataProvider>
   );
 }

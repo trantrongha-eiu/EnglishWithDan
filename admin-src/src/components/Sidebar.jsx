@@ -1,182 +1,161 @@
-import { NavLink, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useEffect, useState } from 'react';
-import { apiFetch } from '../utils/api';
+import { useAdminData } from '../contexts/AdminDataContext';
+import { NAV_GROUPS, isItemActive } from '../layouts/navConfig';
 
-// Regrouped 2026-08-28: the old split (TỔNG QUAN / NỘI DUNG THI / LUYỆN VIẾT
-// / HỌC SINH) mixed content-authoring with student-monitoring and scattered
-// the analytics across four separate entries. Now: overview, one student-
-// monitoring hub (/monitoring — tabs for history, full mock test, and the
-// per-skill stats pages), all content authoring together, then billing +
-// system. Old stats routes still resolve for bookmarks; the sidebar just
-// points at the hub.
-const NAV = [
-  { section: 'TỔNG QUAN' },
-  { to: '/dashboard',          icon: '📊', label: 'Dashboard' },
-  { to: '/users',              icon: '👥', label: 'Người dùng' },
-  { to: '/courses',            icon: '🎓', label: 'Khóa học' },
-  { section: 'THEO DÕI HỌC SINH' },
-  { to: '/classes',            icon: '🗓️', label: 'Lớp & Điểm danh' },
-  { to: '/monitoring',         icon: '📈', label: 'Theo dõi luyện tập', mockBadge: true },
-  { to: '/entrance-test',      icon: '🚪', label: 'Test đầu vào', entranceBadge: true },
-  { to: '/writing-grades',     icon: '✍️', label: 'Chấm bài Writing', badge: true },
-  { to: '/messages',           icon: '✉️', label: 'Hộp thư', messagesBadge: true },
-  { section: 'NỘI DUNG' },
-  { to: '/passages',           icon: '📖', label: 'Bài đọc (Passages)' },
-  { to: '/reading-tests',      icon: '📋', label: 'Bộ đề Reading' },
-  { to: '/listening-tests',    icon: '🎧', label: 'Đề Listening' },
-  { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening' },
-  { to: '/writing-tests',      icon: '✏️', label: 'Đề Writing' },
-  { to: '/speaking',           icon: '🎤', label: 'Speaking' },
-  { to: '/vocabulary',         icon: '🟩', label: 'Từ vựng (Units)' },
-  { to: '/vocabulary-lessons', icon: '🏫', label: 'Vocabulary Lessons' },
-  { to: '/essential-grammar',  icon: '📘', label: 'Essential Grammar' },
-  { to: '/writing-practice',   icon: '🖊️', label: 'Writing Practice' },
-  { to: '/task1-exercises',    icon: '📉', label: 'Task 1 Grammar (cũ)' },
-  { to: '/wt1-course',         icon: '📊', label: 'Task 1 Writing (khoá)' },
-  { to: '/advanced-sentences', icon: '✍️', label: 'Viết câu nâng cao' },
-  { to: '/task2-exercises',    icon: '📝', label: 'Task 2 Writing' },
-  { to: '/task2-templates',    icon: '📄', label: 'Task 2 Templates' },
-  { to: '/tip-packs',          icon: '🖨️', label: 'Tài liệu in (Tips)' },
-  { section: 'TÀI CHÍNH & HỆ THỐNG' },
-  { to: '/upgrade-requests',   icon: '⭐', label: 'Yêu cầu nâng cấp', upgradeBadge: true },
-  { to: '/tuition',            icon: '💰', label: 'Học phí', tuitionBadge: true },
-  { to: '/review-bypass',      icon: '🎫', label: 'Mã bỏ qua Review' },
-];
+// Sidebar (redesigned 2026-09-25, docs/ADMIN_AUDIT_2026-09-25.md §6/§9):
+//  - groups from navConfig, each collapsible (remembered per browser); the
+//    group holding the current page always stays open;
+//  - admin-only entries are hidden from teachers (they used to be shown and
+//    bounced the teacher to login.html);
+//  - "Tìm menu…" filters all entries across groups;
+//  - desktop "compact" mode shows icons only.
+// Badge counts come from AdminDataProvider (one shared poll).
 
-export default function Sidebar({ mobileOpen, onClose }) {
-  const { user, logout } = useAuth();
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [onlineExpanded, setOnlineExpanded] = useState(false);
-  const [pendingGrades, setPendingGrades] = useState(0);
-  const [pendingUpgrades, setPendingUpgrades] = useState(0);
-  const [pendingTuition, setPendingTuition] = useState(0);
-  const [pendingMessages, setPendingMessages] = useState(0);
-  const [mockViolations, setMockViolations] = useState(0);
-  const [simViolations, setSimViolations] = useState(0);
-  const [pendingEntranceReviews, setPendingEntranceReviews] = useState(0);
+const CLOSED_KEY = 'admin-nav-closed';
 
-  useEffect(() => {
-    // One call for all six badge counts (was six separate polled requests).
-    function fetchBadges() {
-      apiFetch('/admin/sidebar-badges').then(d => {
-        setOnlineUsers((d.onlineUsers || []).filter(u => u.role !== 'admin'));
-        setPendingGrades(d.pendingGrades || 0);
-        setPendingUpgrades(d.pendingUpgrades || 0);
-        setPendingTuition(d.pendingTuition || 0);
-        setPendingMessages(d.pendingMessages || 0);
-        setMockViolations(d.mockViolations || 0);
-        setSimViolations(d.simViolations || 0);
-        setPendingEntranceReviews(d.pendingEntranceReviews || 0);
-      }).catch(() => {});
-    }
-    fetchBadges();
-    // Skip the poll while the tab is hidden; refresh once on the way back.
-    const id = setInterval(() => {
-      if (document.visibilityState === 'visible') fetchBadges();
-    }, 60_000);
-    const onVis = () => { if (document.visibilityState === 'visible') fetchBadges(); };
-    document.addEventListener('visibilitychange', onVis);
-    return () => { clearInterval(id); document.removeEventListener('visibilitychange', onVis); };
-  }, []);
+function readClosed() {
+  try { return new Set(JSON.parse(localStorage.getItem(CLOSED_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function Badge({ count, tone, title }) {
+  if (!count) return null;
+  return (
+    <span className={`nav-badge${tone === 'warn' ? ' nav-badge--warn' : ''}`} title={title}>
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
+export default function Sidebar({ mobileOpen, onClose, compact, onToggleCompact }) {
+  const { user, logout, isAdmin } = useAuth();
+  const { badges } = useAdminData();
+  const { pathname, search } = useLocation();
+  const [query, setQuery] = useState('');
+  const [closed, setClosed] = useState(readClosed);
+  const [onlineOpen, setOnlineOpen] = useState(false);
+
+  const groups = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return NAV_GROUPS
+      .map(g => ({
+        ...g,
+        items: g.items.filter(i => (isAdmin || !i.adminOnly) && (!q || i.label.toLowerCase().includes(q) || g.label.toLowerCase().includes(q))),
+      }))
+      .filter(g => g.items.length);
+  }, [isAdmin, query]);
+
+  function toggleGroup(id) {
+    setClosed(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { localStorage.setItem(CLOSED_KEY, JSON.stringify([...next])); } catch { /* storage unavailable */ }
+      return next;
+    });
+  }
+
+  const online = (badges?.onlineUsers || []).filter(u => u.role === 'student');
 
   return (
     <>
-      {mobileOpen && (
-        <div className="sidebar-overlay open" onClick={onClose} />
-      )}
-      <nav className={`sidebar${mobileOpen ? ' open' : ''}`}>
-        <div className="sidebar-logo">
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
-            <img src="/img/big_logo.png" alt="Daniel Hà English Education" style={{ height: 52, width: 'auto', display: 'block', borderRadius: 8, background: 'rgba(255,255,255,.92)', padding: '4px 10px', marginBottom: 6 }} />
-            <button className="sidebar-close-btn" onClick={onClose} aria-label="Đóng menu" title="Đóng">✕</button>
+      {mobileOpen && <div className="sidebar-overlay open" onClick={onClose} />}
+      <nav className={`sidebar${mobileOpen ? ' open' : ''}${compact ? ' sidebar--compact' : ''}`} aria-label="Điều hướng quản trị">
+        <div className="sidebar-brand">
+          <Link to="/dashboard" className="sidebar-brand-link" onClick={onClose} title="Dashboard">
+            <span className="sidebar-brand-mark" aria-hidden="true">D</span>
+            <span className="sidebar-brand-text">
+              <span className="sidebar-brand-name">EnglishWithDan</span>
+              <span className="sidebar-brand-sub">Admin</span>
+            </span>
+          </Link>
+          <button className="sidebar-close-btn" onClick={onClose} aria-label="Đóng menu">✕</button>
+          <button className="sidebar-compact-btn" onClick={onToggleCompact} aria-label={compact ? 'Mở rộng menu' : 'Thu gọn menu'} title={compact ? 'Mở rộng menu' : 'Thu gọn menu'}>
+            {compact ? '»' : '«'}
+          </button>
+        </div>
+
+        {!compact && (
+          <div className="sidebar-search">
+            <input
+              type="search"
+              className="sidebar-search-input"
+              placeholder="Tìm menu…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              aria-label="Tìm chức năng trong menu"
+            />
           </div>
-          <div className="sidebar-logo-sub">ADMIN PANEL</div>
-          {onlineUsers.length > 0 && (
-            <div style={{ marginTop: 8, padding: '8px 10px', background: 'rgba(34,197,94,.08)', borderRadius: 8, border: '1px solid rgba(34,197,94,.2)' }}>
-              <div style={{ fontSize: 11, display: 'flex', alignItems: 'center', gap: 5, color: 'var(--green)', fontWeight: 700, marginBottom: 6 }}>
-                <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', boxShadow: '0 0 5px #22c55e' }} />
-                {onlineUsers.length} đang online
-              </div>
-              <div style={{
-                display: 'flex', flexDirection: 'column', gap: 3,
-                ...(onlineExpanded ? { maxHeight: 220, overflowY: 'auto', paddingRight: 2 } : {}),
-              }}>
-                {(onlineExpanded ? onlineUsers : onlineUsers.slice(0, 5)).map(u => (
-                  <Link
-                    key={u._id}
-                    to={`/students/${u._id}`}
-                    onClick={onClose}
-                    title={`Xem hồ sơ ${u.username}`}
-                    style={{ fontSize: 11, color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden', textDecoration: 'none' }}
-                  >
-                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.username}</span>
+        )}
+
+        {!compact && online.length > 0 && (
+          <div className="sidebar-online">
+            <button type="button" className="sidebar-online-toggle" onClick={() => setOnlineOpen(o => !o)} aria-expanded={onlineOpen}>
+              <span className="online-dot" aria-hidden="true" />
+              {online.length} học sinh đang online
+              <span className="sidebar-chevron" aria-hidden="true">{onlineOpen ? '▾' : '▸'}</span>
+            </button>
+            {onlineOpen && (
+              <div className="sidebar-online-list">
+                {online.map(u => (
+                  <Link key={u._id} to={`/students/${u._id}`} onClick={onClose} title={`Xem hồ sơ ${u.username}`}>
+                    {u.username}
                   </Link>
                 ))}
               </div>
-              {onlineUsers.length > 5 && (
-                <button
-                  onClick={() => setOnlineExpanded(v => !v)}
-                  style={{
-                    marginTop: 4, paddingLeft: 10, background: 'none', border: 'none', cursor: 'pointer',
-                    fontSize: 10, color: 'var(--green)', fontWeight: 700, textDecoration: 'underline',
-                  }}
-                >
-                  {onlineExpanded ? 'Thu gọn' : `Xem thêm ${onlineUsers.length - 5}`}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          {NAV.map((item, i) => {
-            if (item.section) {
-              return <div key={i} className="nav-section-label">{item.section}</div>;
-            }
+        <div className="sidebar-nav">
+          {groups.map(g => {
+            const hasActive = g.items.some(i => isItemActive(i, pathname, search));
+            const isOpen = compact || !!query || hasActive || !closed.has(g.id);
+            const groupCount = g.items.reduce((n, i) => n + (i.badge && badges ? (badges[i.badge] || 0) : 0), 0);
             return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-                onClick={onClose}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {item.label}
-                {item.badge && pendingGrades > 0 && (
-                  <span className="nav-badge">{pendingGrades > 99 ? '99+' : pendingGrades}</span>
-                )}
-                {item.upgradeBadge && pendingUpgrades > 0 && (
-                  <span className="nav-badge">{pendingUpgrades > 99 ? '99+' : pendingUpgrades}</span>
-                )}
-                {item.tuitionBadge && pendingTuition > 0 && (
-                  <span className="nav-badge">{pendingTuition > 99 ? '99+' : pendingTuition}</span>
-                )}
-                {item.messagesBadge && pendingMessages > 0 && (
-                  <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
-                )}
-                {item.entranceBadge && pendingEntranceReviews > 0 && (
-                  <span className="nav-badge" title="Kết quả Test đầu vào đang chờ duyệt">{pendingEntranceReviews > 99 ? '99+' : pendingEntranceReviews}</span>
-                )}
-                {item.mockBadge && (mockViolations + simViolations) > 0 && (
-                  <span className="nav-badge nav-badge--warn" title="Lượt thi thử / Test Simulation bị đánh dấu vi phạm proctoring">
-                    {(mockViolations + simViolations) > 99 ? '99+' : mockViolations + simViolations}
-                  </span>
-                )}
-              </NavLink>
+              <div key={g.id} className="nav-group">
+                {compact
+                  ? <div className="nav-group-divider" aria-hidden="true" />
+                  : (
+                    <button type="button" className="nav-section-label" onClick={() => toggleGroup(g.id)} aria-expanded={isOpen}>
+                      <span>{g.label}</span>
+                      {!isOpen && groupCount > 0 && <span className="nav-group-dot" title={`${groupCount} mục cần xử lý`} />}
+                      <span className="sidebar-chevron" aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
+                    </button>
+                  )}
+                {isOpen && g.items.map(item => {
+                  const active = isItemActive(item, pathname, search);
+                  const count = item.badge && badges ? badges[item.badge] : 0;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      className={`nav-item${active ? ' active' : ''}`}
+                      aria-current={active ? 'page' : undefined}
+                      onClick={onClose}
+                      title={compact ? item.label : undefined}
+                    >
+                      <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+                      <span className="nav-label">{item.label}</span>
+                      <Badge count={count} tone={item.badgeTone} title={item.badgeTitle} />
+                    </Link>
+                  );
+                })}
+              </div>
             );
           })}
+          {groups.length === 0 && <div className="nav-empty">Không có mục nào khớp “{query}”</div>}
         </div>
 
         <div className="sidebar-bottom">
           <div className="user-chip">
-            <div className="user-avatar">{(user?.username || 'A')[0].toUpperCase()}</div>
-            <div>
+            <div className="user-avatar" aria-hidden="true">{(user?.username || 'A')[0].toUpperCase()}</div>
+            <div className="user-chip-text">
               <div className="user-name">{user?.username || 'Admin'}</div>
-              <div className="user-role">{user?.role}</div>
+              <div className="user-role">{user?.role === 'admin' ? 'Quản trị viên' : 'Giáo viên'}</div>
             </div>
-            <button className="btn-logout" onClick={logout} title="Đăng xuất">⏻</button>
+            <button className="btn-logout" onClick={logout} title="Đăng xuất" aria-label="Đăng xuất">⏻</button>
           </div>
         </div>
       </nav>

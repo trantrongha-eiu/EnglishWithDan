@@ -52,6 +52,7 @@ const Tuition = lazy(() => import('./pages/Tuition'));
 const UpgradeRequests = lazy(() => import('./pages/UpgradeRequests'));
 const ReviewBypassCodes = lazy(() => import('./pages/ReviewBypassCodes'));
 const TipLecturePacks = lazy(() => import('./pages/TipLecturePacks'));
+const Tips = lazy(() => import('./pages/Tips'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -100,6 +101,7 @@ export default function App() {
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="review-bypass" element={<ReviewBypassCodes />} />
                 <Route path="tip-packs" element={<TipLecturePacks />} />
+                <Route path="tips" element={<Tips />} />
                 <Route path="reading-stats" element={<ReadingStats />} />
                 <Route path="listening-stats" element={<ListeningStats />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />

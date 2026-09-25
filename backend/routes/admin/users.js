@@ -25,10 +25,23 @@ const router = express.Router();
 // USER MANAGEMENT
 // ══════════════════════════════════════════════════
 
-// GET /api/admin/users – danh sách user (có search, phân trang)
+// Server-side sort keys for the admin user table (whitelisted — never pass
+// a client string straight into .sort()).
+const USER_SORTS = {
+  newest:   { createdAt: -1 },
+  oldest:   { createdAt: 1 },
+  lastSeen: { lastSeen: -1, createdAt: -1 },
+  name:     { username: 1 },
+};
+
+// GET /api/admin/users – danh sách user (search, lọc, sort, phân trang)
 router.get('/users', auth, teacherOnly, async (req, res) => {
   try {
-    const { search, role, isBanned, page = 1, limit = 50 } = req.query;
+    const { search, role, isBanned, plan, sort } = req.query;
+    // Clamp paging: `limit` used to be unbounded (?limit=100000 returned the
+    // whole user collection in one response).
+    const page  = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
     const filter = {};
     if (search) {
       const re = escapeRegex(search);
@@ -41,16 +54,19 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
     }
     if (role)     filter.role = role;
     if (isBanned !== undefined) filter.isBanned = isBanned === 'true';
+    if (plan === 'premium') filter.plan = 'premium';
+    if (plan === 'free')    filter.plan = { $ne: 'premium' };
 
     const [users, total] = await Promise.all([
       User.find(filter)
-        .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts')
-        .sort({ createdAt: -1 })
+        .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts -hammerAwardedUnits -earnedBadgeIds')
+        .sort(USER_SORTS[sort] || USER_SORTS.newest)
         .skip((page - 1) * limit)
-        .limit(Number(limit)),
+        .limit(limit)
+        .lean(),
       User.countDocuments(filter)
     ]);
-    res.json({ success: true, users, total, page: Number(page), limit: Number(limit) });
+    res.json({ success: true, users, total, page, limit });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -105,6 +121,11 @@ router.post('/users', auth, adminOnly, async (req, res) => {
 router.put('/users/:id', auth, adminOnly, async (req, res) => {
   try {
     const { username, email, firstName, lastName, role, isBanned, newPassword, className } = req.body;
+    // An admin demoting or banning their OWN account locks them out of the
+    // panel with no way back (only DELETE had a self-guard before).
+    if (req.params.id === String(req.user._id) && ((role !== undefined && role !== 'admin') || isBanned === true)) {
+      return res.status(400).json({ success: false, message: 'Không thể tự hạ quyền hoặc tự cấm tài khoản của chính mình' });
+    }
     const update = { username, email, firstName, lastName, role };
     if (className !== undefined) update.className = className;
     if (isBanned !== undefined) update.isBanned = isBanned;
@@ -170,6 +191,9 @@ router.delete('/users/:id/avatar', auth, adminOnly, async (req, res) => {
 router.put('/users/:id/ban', auth, adminOnly, async (req, res) => {
   try {
     const { isBanned, banReason = '' } = req.body;
+    if (isBanned && req.params.id === String(req.user._id)) {
+      return res.status(400).json({ success: false, message: 'Không thể tự cấm tài khoản của chính mình' });
+    }
     const update = { isBanned };
     if (isBanned) update.banReason = banReason;
     else          update.banReason = '';

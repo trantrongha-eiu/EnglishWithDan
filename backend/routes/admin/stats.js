@@ -20,13 +20,20 @@ const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttempt
 const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
 const DictationAttempt = require('../../models/DictationAttempt');
 const GapFillAttempt = require('../../models/GapFillAttempt');
+const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const WT1Submission    = require('../../models/WT1Submission');
 const WT1Exercise      = require('../../models/WT1Exercise');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
 const PageVisit        = require('../../models/PageVisit');
+const ReadingTest      = require('../../models/ReadingTest');
+const ListeningTest    = require('../../models/ListeningTest');
+const ListeningSection = require('../../models/ListeningSection');
+const WritingExam      = require('../../models/WritingExam');
+const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const { getVNDay }     = require('../../utils/streak');
+const { dailyActivity } = require('../../services/adminActivityService');
 
 const router = express.Router();
 
@@ -131,6 +138,56 @@ router.get('/stats/visits', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/stats/overview – Dashboard KPIs + 14-day activity series.
+// Site-wide (not per-caller) and ~20 aggregations, so it's memoized for 60s:
+// every open admin tab polls the Dashboard once a minute.
+let overviewCache = { at: 0, data: null };
+router.get('/stats/overview', auth, teacherOnly, async (req, res) => {
+  try {
+    if (process.env.NODE_ENV !== 'test' && overviewCache.data && Date.now() - overviewCache.at < 60_000) {
+      return res.json({ success: true, overview: overviewCache.data, cached: true });
+    }
+    const DAY = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const DAYS = 14;
+    const student = { role: 'student' };
+    const [
+      totalStudents, active24h, active7d, newThisWeek, newLastWeek, premiumActive,
+      activity, signupRows,
+      readingTests, listeningTests, listeningSections, writingExams, speakingQuestions,
+    ] = await Promise.all([
+      User.countDocuments(student),
+      User.countDocuments({ ...student, lastSeen: { $gte: new Date(now - DAY) } }),
+      User.countDocuments({ ...student, lastSeen: { $gte: new Date(now - 7 * DAY) } }),
+      User.countDocuments({ ...student, createdAt: { $gte: new Date(now - 7 * DAY) } }),
+      User.countDocuments({ ...student, createdAt: { $gte: new Date(now - 14 * DAY), $lt: new Date(now - 7 * DAY) } }),
+      User.countDocuments({ ...student, plan: 'premium', $or: [{ planExpiresAt: null }, { planExpiresAt: { $gt: new Date(now) } }] }),
+      dailyActivity(DAYS),
+      User.aggregate([
+        { $match: { ...student, createdAt: { $gte: new Date(now - DAYS * DAY) } } },
+        { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: 'Asia/Ho_Chi_Minh' } }, n: { $sum: 1 } } },
+      ]),
+      ReadingTest.countDocuments({ isActive: { $ne: false } }).catch(() => 0),
+      ListeningTest.countDocuments({ isActive: { $ne: false } }).catch(() => 0),
+      ListeningSection.countDocuments({ isActive: { $ne: false } }).catch(() => 0),
+      WritingExam.countDocuments({ isActive: { $ne: false } }).catch(() => 0),
+      SpeakingQuestion.countDocuments({ isActive: { $ne: false } }).catch(() => 0),
+    ]);
+    const signups = {};
+    signupRows.forEach(r => { signups[r._id] = r.n; });
+    const data = {
+      totalStudents, active24h, active7d, newThisWeek, newLastWeek, premiumActive,
+      daily: activity.map(d => ({ ...d, signups: signups[d.date] || 0 })),
+      content: { readingTests, listeningTests, listeningSections, writingExams, speakingQuestions },
+      generatedAt: new Date().toISOString(),
+    };
+    overviewCache = { at: Date.now(), data };
+    res.json({ success: true, overview: data });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET /api/admin/db-status – MongoDB storage stats (Atlas M0: 512 MB limit)
 router.get('/db-status', auth, adminOnly, async (req, res) => {
   try {
@@ -204,10 +261,26 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
 // the site-wide feed — same handler, same merge/sort logic, just an extra
 // $match clause per collection. WritingPracticeAttempt keys its owning
 // field `studentId`, not `userId` — every other collection uses `userId`.
+//
+// ?skill=<row skill key> (2026-09-25) queries ONLY the matching collection
+// instead of all 16 then discarding rows client-side, and ?noTotal=1 skips
+// the 16 countDocuments() — the Dashboard's 10-row widget polls this every
+// minute and never shows the total.
+const WT1_SKILL_PREFIX = { 'wt1-t1': /^T1-/, 'wt1-t2': /^T2-/, 'wt1-speaking': /^SPK-/, 'wt1-noun-phrase': /^NP-/ };
 router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
   try {
     const LIMIT = Math.min(parseInt(req.query.limit) || 80, 2000);
     const uid = req.query.userId || null;
+    if (uid && !mongoose.isValidObjectId(uid)) {
+      return res.status(400).json({ success: false, message: 'userId không hợp lệ' });
+    }
+    const skill = typeof req.query.skill === 'string' ? req.query.skill : '';
+    const noTotal = req.query.noTotal === '1' || req.query.noTotal === 'true';
+    const want = (key) => !skill || key === skill || (key === 'wt1' && skill.startsWith('wt1'));
+    const wt1Prefix = WT1_SKILL_PREFIX[skill];
+    const wt1Match = { status: { $ne: 'draft' }, ...(uid && { userId: uid }), ...(wt1Prefix && { lessonCode: wt1Prefix }) };
+    const count = (key, fn) => (noTotal || !want(key) ? Promise.resolve(0) : fn());
+    const rowsOf = (key, fn) => (want(key) ? fn() : Promise.resolve([]));
     // Task1Attempt stores one raw doc PER QUESTION, not per session (see the
     // grouping comment further down) — countDocuments() here used to count
     // those raw rows directly into `total`, wildly overstating it relative
@@ -238,23 +311,24 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     // for proctoring violations. Both terminal states now count/show.
     const READING_LISTENING_VISIBLE_STATUSES = ['completed', 'disqualified'];
     const counts = await Promise.all([
-      TestAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }),
-      ListeningAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }).catch(() => 0),
-      WritingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      WritingPracticeAttempt.countDocuments({ ...(uid && { studentId: uid }) }).catch(() => 0),
-      countTask1Sessions(),
-      Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      SpeakingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      Task2TemplateAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
-      DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      count('reading', () => TestAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })),
+      count('listening', () => ListeningAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('writing', () => WritingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('listening-practice', () => ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('reading-practice', () => ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('writing-practice', () => WritingPracticeAttempt.countDocuments({ ...(uid && { studentId: uid }) }).catch(() => 0)),
+      count('task1-practice', () => countTask1Sessions()),
+      count('task2-practice', () => Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('speaking', () => SpeakingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('task2-template', () => Task2TemplateAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('essential-grammar', () => EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('vocabulary-lesson', () => VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('dictation', () => DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
       // 'draft' = a multi-item speaking_response attempt still mid-recording
       // (see wt1Service.recordSpeakingItem) — never a real attempt yet.
-      WT1Submission.countDocuments({ status: { $ne: 'draft' }, ...(uid && { userId: uid }) }).catch(() => 0),
-      GapFillAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      count('wt1', () => WT1Submission.countDocuments(wt1Match).catch(() => 0)),
+      count('listening-gapfill', () => GapFillAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('adv-sentence', () => AdvSentenceAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
@@ -267,37 +341,37 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
            task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts,
-           wt1Submissions, gapFillAttempts] = await Promise.all([
-      TestAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
+           wt1Submissions, gapFillAttempts, advSentenceAttempts] = await Promise.all([
+      rowsOf('reading', () => TestAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
         .sort({ endTime: -1 }).limit(LIMIT)
-        .select('-answers -passagesUsed').lean(),
-      ListeningAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
+        .select('-answers -passagesUsed').lean()),
+      rowsOf('listening', () => ListeningAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => []),
-      WritingAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('writing', () => WritingAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
-        .catch(() => []),
-      ListeningPracticeAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('listening-practice', () => ListeningPracticeAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => []),
-      ReadingPracticeAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('reading-practice', () => ReadingPracticeAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => []),
-      WritingPracticeAttempt.find({ ...(uid && { studentId: uid }) })
+        .catch(() => [])),
+      rowsOf('writing-practice', () => WritingPracticeAttempt.find({ ...(uid && { studentId: uid }) })
         .populate('studentId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .lean()
-        .catch(() => []),
+        .catch(() => [])),
       // Task1Attempt stores ONE row per individual question (saveBatch()
       // insertMany's the whole practice session's questions as separate
       // docs), unlike every sibling collection here which is already
@@ -305,57 +379,62 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       // real sessions. Fetch a much larger raw window; grouped down to
       // LIMIT sessions below, same ratio the student's own history view
       // uses (task1-practice.html's renderHistory(): 200 raw -> 40 shown).
-      Task1Attempt.find({ ...(uid && { userId: uid }) })
+      rowsOf('task1-practice', () => Task1Attempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(Math.min(LIMIT * 15, 3000))
         .select('-userAnswer -feedback').lean()
-        .catch(() => []),
-      Task2Attempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('task2-practice', () => Task2Attempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ completedAt: -1 }).limit(LIMIT)
         .select('-questionsAttempted').lean()
-        .catch(() => []),
-      SpeakingAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('speaking', () => SpeakingAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-transcript').lean()
-        .catch(() => []),
-      Task2TemplateAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('task2-template', () => Task2TemplateAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .lean()
-        .catch(() => []),
-      EssentialGrammarAttemptLog.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('essential-grammar', () => EssentialGrammarAttemptLog.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('lessonId', 'title')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-wrongQuestions').lean()
-        .catch(() => []),
-      VocabularyLessonAttemptLog.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('vocabulary-lesson', () => VocabularyLessonAttemptLog.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('lessonId', 'title')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-wrongWords').lean()
-        .catch(() => []),
-      DictationAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('dictation', () => DictationAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => []),
+        .catch(() => [])),
       // Every WT1-stack course (Task 1 Writing, Task 2 Writing, Speaking
       // course, Noun Phrase course) shares this one collection — exerciseCode
       // is a string code (not a $ref), so there's no populate; titles are
       // resolved below via a separate WT1Exercise lookup instead.
-      WT1Submission.find({ status: { $ne: 'draft' }, ...(uid && { userId: uid }) })
+      rowsOf('wt1', () => WT1Submission.find(wt1Match)
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-answers -responses').lean()
-        .catch(() => []),
-      GapFillAttempt.find({ ...(uid && { userId: uid }) })
+        .catch(() => [])),
+      rowsOf('listening-gapfill', () => GapFillAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
-        .catch(() => []),
+        .catch(() => [])),
+      rowsOf('adv-sentence', () => AdvSentenceAttempt.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ completedAt: -1 }).limit(LIMIT)
+        .select('-sentencesAttempted').lean()
+        .catch(() => [])),
     ]);
 
     const wt1ExerciseTitles = {};
@@ -606,15 +685,26 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correctCount ?? null,
         totalQuestions: h.correctCount != null ? h.maxScore : null,
         duration: h.timeSpentSeconds || null
+      })),
+      ...advSentenceAttempts.map(h => ({
+        _id: h._id, skill: 'adv-sentence',
+        testName: h.groupName || 'Viết câu nâng cao',
+        testMeta: `${h.sessionType === 'exam' ? 'Kiểm tra' : 'Luyện tập'}${h.week ? ` · Tuần ${h.week}` : ''}`,
+        userId: normUser(h.userId),
+        date: h.completedAt || h.createdAt,
+        bandScore: null,
+        correctCount: h.correctCount ?? null,
+        totalQuestions: h.totalQuestions ?? null,
+        duration: null
       }))
-    ];
+    ].filter(r => !skill || r.skill === skill);
 
     rows.sort((a, b) => new Date(b.date) - new Date(a.date));
     // `total` is the real grand-total across all 9 collections (see above) —
     // `attempts.length` is just how many of the most recent ones this
     // request actually returned, which callers should treat as "loaded so
     // far," not "all of them," whenever attempts.length < total.
-    res.json({ success: true, attempts: rows.slice(0, LIMIT), total });
+    res.json({ success: true, attempts: rows.slice(0, LIMIT), total: noTotal ? null : total });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
