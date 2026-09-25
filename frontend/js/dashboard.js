@@ -1025,7 +1025,13 @@ async function refreshCurrentBook() {
 
 function renderBookContent(book) {
     document.getElementById('book-top-emoji').textContent = book.emoji;
-    document.getElementById('book-editable-name').value   = book.name;
+    const nameInp = document.getElementById('book-editable-name');
+    nameInp.value = book.name;
+    // Sổ 1–5 are fixed (teachers assign homework by them) — no rename.
+    nameInp.readOnly = !!book.isDefault;
+    nameInp.title = book.isDefault ? 'Sổ mặc định — không đổi tên được' : 'Click để đổi tên';
+    const renameBtn = document.querySelector('#book-editable-name + .btn-rename');
+    if (renameBtn) renameBtn.style.display = book.isDefault ? 'none' : '';
 
     const total = book.words.length;
     const da    = book.words.filter(w => w.status === 'da-thuoc').length;
@@ -1410,7 +1416,7 @@ async function bulkDelete() {
 async function renameBook() {
     const name = document.getElementById('book-editable-name').value.trim();
     if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
-    if (!currentBookId) return;
+    if (!currentBookId || currentBookData?.isDefault) return; // Sổ 1–5: fixed name
     try {
         const res = await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
@@ -1435,8 +1441,9 @@ function openBookMenu(bookId) {
 
     document.getElementById('book-actions-title').textContent = `${book.emoji} ${book.name}`;
 
-    // Default books: chỉ cho đổi tên, ẩn gộp/xóa
+    // Default books (Sổ 1–5): cố định — ẩn đổi tên/gộp/xóa
     const isDefault = !!book.isDefault;
+    document.getElementById('btn-rename-from-menu').style.display = isDefault ? 'none' : 'flex';
     document.getElementById('btn-merge-from-menu').style.display  = isDefault ? 'none' : 'flex';
     document.getElementById('btn-delete-from-menu').style.display = isDefault ? 'none' : 'flex';
 

@@ -10,8 +10,17 @@ const mongoose = require('mongoose');
 //    snapshot for display only.
 //  - external: a link the student opens; they tick it done manually.
 //  - image: teacher-uploaded image(s) (Cloudinary); ticked done manually.
+//  - vocab_goal: "học `wordCount` từ trong 1 sổ từ vựng cá nhân" — a quota,
+//    not a specific resource (every student's books differ). Auto-tracked
+//    from graded vocab-book practice (services/vocabGoalService.js); sticky
+//    once reached (persisted as an auto item on AssignmentProgress).
 const assignmentResourceSchema = new mongoose.Schema({
-  kind: { type: String, enum: ['internal', 'external', 'image'], required: true },
+  kind: { type: String, enum: ['internal', 'external', 'image', 'vocab_goal'], required: true },
+
+  // vocab_goal
+  wordCount: { type: Number, min: 1, max: 300 },
+  // 1..5 = must be done in that default book ("Sổ N"); null = any of the 5.
+  bookSlot:  { type: Number, min: 1, max: 5, default: null },
 
   // internal
   resourceType: {

@@ -35,7 +35,14 @@ const SavedWordSchema = new mongoose.Schema({
   // cho công thức). nextReviewAt=null nghĩa là "chưa từng ôn, due ngay".
   srsBox:         { type: Number, default: 0 },
   nextReviewAt:   { type: Date, default: null },
-  lastReviewedAt: { type: Date, default: null }
+  lastReviewedAt: { type: Date, default: null },
+  // Graded-practice-only evidence for class homework "vocab_goal" items
+  // (services/vocabGoalService.js). Unlike lastReviewedAt/srsBox — which the
+  // manual status dropdown (updateWord) ALSO moves — these are written ONLY
+  // by recordPracticeResult, so a student can't tick a homework quota done
+  // by clicking "đã thuộc" instead of actually answering a quiz.
+  lastPracticedAt:     { type: Date, default: null },
+  lastPracticeCorrect: { type: Boolean, default: null }
 }, { _id: true });
 
 // Mỗi "sổ" = 1 topic/chủ đề
@@ -51,12 +58,23 @@ const VocabBookSchema = new mongoose.Schema({
   emoji:    { type: String, default: '📘' },
   words:    [SavedWordSchema],
   isDefault:{ type: Boolean, default: false },   // 5 sổ mặc định
+  // 1..5 for the default books ("Sổ 1".."Sổ 5", utils/defaultVocabBooks.js),
+  // null for a student's own books. Homework vocab_goal items target a slot.
+  // Legacy defaults without one get it from ensureDefaultBooks on next list.
+  defaultSlot: { type: Number, min: 1, max: 5, default: null },
   sortOrder:{ type: Number, default: 0 }
 }, { timestamps: true });
 
 // Every book/word CRUD op filters by userId (see services/vocabBookService.js) —
 // was previously unindexed, forcing a full collection scan per request.
 VocabBookSchema.index({ userId: 1 });
+// One book per default slot per student — also makes a concurrent
+// ensureDefaultBooks restore of the same missing slot fail fast (E11000,
+// ignored) instead of creating a duplicate "Sổ 3".
+VocabBookSchema.index(
+  { userId: 1, defaultSlot: 1 },
+  { unique: true, partialFilterExpression: { defaultSlot: { $type: 'number' } } }
+);
 
 VocabBookSchema.plugin(guardAgainstMassDelete);
 

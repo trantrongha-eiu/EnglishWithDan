@@ -102,12 +102,38 @@ function hwFmtDeadline(deadline) {
   return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} · ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
+// vocab_goal ("học N từ trong 1 sổ") — progress line under the name, from
+// backend services/vocabGoalService.js's evaluateBooks (best book wins).
+function hwVocabGoalProgress(r) {
+  const v = r.vocabGoal;
+  if (!v) return '';
+  if (r.completed) return '<span class="hw-res-desc">✔ Đã đạt chỉ tiêu</span>';
+  const book = v.bookName ? `${escHtml(v.bookEmoji || '📘')} ${escHtml(v.bookName)}: ` : '';
+  if (v.mode === 'no_book') {
+    return '<span class="hw-res-desc">Mở trang Sổ từ vựng để hệ thống tạo lại Sổ 1–5, rồi lưu từ và luyện tập trong sổ.</span>';
+  }
+  if (v.mode === 'too_small') {
+    const where = v.requiredSlot ? escHtml(v.bookName || `Sổ ${v.requiredSlot}`) : 'một trong Sổ 1–5';
+    return `<span class="hw-res-desc">${book}mới có <b>${v.bookSize}</b> từ — cần lưu ít nhất <b>${v.minSize}</b> từ vào ${where} rồi luyện tập (quiz/flashcard) trong sổ.</span>`;
+  }
+  if (v.mode === 'whole_book') {
+    return `<span class="hw-res-desc">${book}sổ có ${v.bookSize} từ (ít hơn ${v.wordCount}) — luyện hết sổ là đạt: <b>${v.practiced}/${v.target}</b> từ</span>`;
+  }
+  return `<span class="hw-res-desc">${book}đã luyện <b>${Math.min(v.practiced, v.target)}/${v.target}</b> từ · trả lời đúng <b>${v.correct}</b> (cần ≥${v.needCorrect})</span>`;
+}
+
 function hwResourceRow(assignmentId, r) {
   const doneCls = r.completed ? 'hw-res--done' : '';
   const check = r.completed ? '☑' : '☐';
   let name = '';
   let action = '';
-  if (r.kind === 'internal') {
+  if (r.kind === 'vocab_goal') {
+    name = escHtml(r.label || `Học ${r.wordCount} từ trong ${r.bookSlot ? `Sổ ${r.bookSlot}` : '1 sổ mặc định (Sổ 1–5)'}`)
+      + '<span class="hw-res-tag hw-res-tag--quiz" title="Luyện đủ số từ trong sổ (Sổ 1–5), đúng từ 70% trở lên. Sổ có từ 50 từ nhưng ít hơn chỉ tiêu: luyện hết sổ là đạt.">≥70% đúng</span>'
+      + hwVocabGoalProgress(r);
+    const bookId = r.vocabGoal && r.vocabGoal.bookId;
+    action = `<a class="hw-res-btn" href="${bookId ? `dashboard.html?view=book&bookId=${encodeURIComponent(bookId)}` : 'dashboard.html'}">${r.completed ? 'Xem sổ' : 'Mở sổ'}</a>`;
+  } else if (r.kind === 'internal') {
     name = escHtml(r.label || r.resourceType);
     const href = hwResourceHref(r);
     action = href
@@ -183,6 +209,7 @@ async function loadHomework() {
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz: cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Luyện tập (quiz/flashcard) <b>đủ số từ yêu cầu trong 1 sổ</b> và trả lời đúng <b>từ 70%</b> trở lên. Sổ có <b>từ 50 từ</b> nhưng ít hơn yêu cầu thì chỉ cần <b>luyện hết các từ trong sổ</b>. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
       <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>.</li>
     </ul>

@@ -11,6 +11,7 @@ const { escapeRegex } = require('../utils/strings');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const { DEFAULT_BOOKS, canonicalName, assignDefaultSlots } = require('../utils/defaultVocabBooks');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
 // _reportSessionStreak()) so the 35-word/day engagement threshold stays
@@ -79,21 +80,43 @@ function logActivity(userId, inc) {
   ).catch(() => {});
 }
 
+// Guarantees the student has exactly the 5 default books "Sổ 1".."Sổ 5"
+// (utils/defaultVocabBooks.js), each tagged with its defaultSlot and its
+// canonical name — class homework targets them by slot. Runs on every
+// listBooks; the steady state is one small find and zero writes.
+//   - legacy defaults (pre-defaultSlot) get their slot assigned
+//   - a renamed default gets its canonical name back
+//   - a missing slot (deleted before delete was blocked, or a student who
+//     only ever had custom books) is recreated EMPTY — its old words are gone
+//   - >5 legacy defaults: extras become ordinary books (words kept)
+// Restored books don't count against createBook's 15-book cap check here.
 async function ensureDefaultBooks(userId) {
-  const count = await VocabBook.countDocuments({ userId });
-  if (count > 0) return;
+  const defaults = await VocabBook.find({ userId, isDefault: true })
+    .select('_id name defaultSlot').sort({ _id: 1 }).lean();
+  const { bySlot, extra, missing } = assignDefaultSlots(defaults);
 
-  const defaults = [
-    { name: 'Sổ 1', emoji: '📘', color: '#3d8bff' },
-    { name: 'Sổ 2', emoji: '📗', color: '#34d399' },
-    { name: 'Sổ 3', emoji: '📙', color: '#f59e0b' },
-    { name: 'Sổ 4', emoji: '📕', color: '#e53935' },
-    { name: 'Sổ 5', emoji: '📓', color: '#a78bfa' },
-  ];
+  const ops = [];
+  for (const [slot, b] of bySlot) {
+    const name = canonicalName(slot);
+    if (b.defaultSlot !== slot || b.name !== name) {
+      ops.push(VocabBook.updateOne({ _id: b._id, userId }, { $set: { defaultSlot: slot, name } }));
+    }
+  }
+  for (const b of extra) {
+    ops.push(VocabBook.updateOne({ _id: b._id, userId }, { $set: { isDefault: false, defaultSlot: null } }));
+  }
+  if (ops.length) await Promise.all(ops);
 
-  await VocabBook.insertMany(
-    defaults.map(d => ({ ...d, userId, isDefault: true, words: [] }))
-  );
+  if (missing.length) {
+    const docs = DEFAULT_BOOKS.filter(d => missing.includes(d.slot)).map(d => ({
+      userId, name: d.name, emoji: d.emoji, color: d.color, isDefault: true, defaultSlot: d.slot, words: [],
+    }));
+    // ordered:false — a concurrent call that already restored one slot trips
+    // the (userId, defaultSlot) unique index for THAT doc only (E11000).
+    await VocabBook.insertMany(docs, { ordered: false }).catch((err) => {
+      if (err.code !== 11000 && !(err.writeErrors || []).every(e => e.code === 11000)) throw err;
+    });
+  }
 }
 
 async function listBooks(user) {
@@ -101,12 +124,12 @@ async function listBooks(user) {
   if (user.role === 'student') logActivity(user._id, { viewCount: 1 });
 
   const books = await VocabBook.find({ userId: user._id })
-    .select('name color emoji isDefault createdAt sortOrder words')
+    .select('name color emoji isDefault defaultSlot createdAt sortOrder words')
     .sort({ sortOrder: 1, createdAt: 1 })
     .lean();
 
   return books.map(b => ({
-    _id: b._id, name: b.name, color: b.color, emoji: b.emoji, isDefault: b.isDefault,
+    _id: b._id, name: b.name, color: b.color, emoji: b.emoji, isDefault: b.isDefault, defaultSlot: b.defaultSlot ?? null,
     totalWords: b.words.length,
     daThucCount: b.words.filter(w => w.status === 'da-thuoc').length,
     nhoSoSoCount: b.words.filter(w => w.status === 'nho-so-so').length,
@@ -256,6 +279,9 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
   wordDoc.nextReviewAt = srs.nextReviewAt;
   wordDoc.lastReviewedAt = srs.lastReviewedAt;
   wordDoc.status = statusFromBox(wordDoc.srsBox);
+  // Homework vocab_goal evidence — set here and nowhere else (see VocabBook.js).
+  wordDoc.lastPracticedAt = srs.lastReviewedAt;
+  wordDoc.lastPracticeCorrect = !!correct;
 
   await book.save();
 
@@ -284,6 +310,13 @@ async function createBook(userId, { name, emoji = '📘', color = '#3d8bff' }) {
 }
 
 async function updateBook(id, userId, { name, emoji, color }) {
+  if (name) {
+    // Default books keep their fixed "Sổ N" name — teachers assign homework
+    // by it. Emoji/colour stay editable.
+    const current = await VocabBook.findOne({ _id: id, userId }).select('isDefault name').lean();
+    if (!current) return null;
+    if (current.isDefault && name.trim() !== current.name) return { status: 'default_rename' };
+  }
   const update = {};
   if (name) update.name = name.trim();
   if (emoji) update.emoji = emoji;
@@ -320,6 +353,7 @@ async function mergeBooks(destId, userId, sourceIds) {
           partOfSpeech: w.partOfSpeech, status: w.status, note: w.note, source: w.source,
           wrongCount: w.wrongCount, correctCount: w.correctCount, savedAt: w.savedAt, collocations: w.collocations || [],
           srsBox: w.srsBox, nextReviewAt: w.nextReviewAt, lastReviewedAt: w.lastReviewedAt,
+          lastPracticedAt: w.lastPracticedAt, lastPracticeCorrect: w.lastPracticeCorrect,
         });
         existingWords.add(key);
         addedCount++;

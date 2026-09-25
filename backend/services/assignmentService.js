@@ -12,6 +12,7 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const User = require('../models/User');
 const rcs = require('./resourceCompletionService');
+const vgs = require('./vocabGoalService');
 // From utils/, not classAttendanceService — that service now depends on THIS
 // module (to fold homework misses into the auto status), so this can't
 // depend back on it without a require cycle.
@@ -23,15 +24,95 @@ function itemIsInternal(r) {
   return r.kind === 'internal';
 }
 
-// derive one assignment's status for a student from its resources + progress items
-function deriveAssignmentStatus(assignment, completedItemIds, now = new Date()) {
+// Auto-tracked = completion comes from the system, never a student tick.
+function itemIsAutoTracked(r) {
+  return r.kind === 'internal' || r.kind === 'vocab_goal';
+}
+
+function vocabGoalKey(assignmentId, itemId) {
+  return `${assignmentId}:${itemId}`;
+}
+
+// Record a reached vocab_goal as an `auto` progress item. Sticky on purpose:
+// the live evaluation reads each word's LATEST practice result, so without
+// this a student who passed and later misses a few words on an unrelated
+// review (or deletes words from the book) would silently flip back to
+// "not done". Two targeted updates instead of load+save so it can't clobber
+// a concurrent manual tick on the same AssignmentProgress doc.
+async function persistVocabGoalDone(studentId, assignment, resource, result, now) {
+  try {
+    await AssignmentProgress.updateOne(
+      { assignmentId: assignment._id, studentId },
+      { $setOnInsert: { assignmentId: assignment._id, studentId, classId: assignment.classId, totalCount: assignment.resources.length } },
+      { upsert: true },
+    );
+  } catch (err) {
+    if (err.code !== 11000) throw err; // lost an upsert race — the doc exists now
+  }
+  await AssignmentProgress.updateOne(
+    { assignmentId: assignment._id, studentId, 'items.resourceItemId': { $ne: resource._id } },
+    { $push: { items: {
+      resourceItemId: resource._id, status: 'completed', source: 'auto', completedAt: now,
+      attemptRef: result.bookId ? `vocabbook:${result.bookId}` : '',
+    } } },
+  );
+}
+
+// vocab_goal completion for a set of assignments of ONE student. Returns a
+// Map vocabGoalKey(assignmentId, itemId) -> { completed, completedAt, ...
+// vocabGoalService.evaluateBooks fields }. Already-reached goals come from
+// the stored sticky item (no book load); the student's books are loaded
+// once, only if some goal is still open.
+async function resolveVocabGoals(studentId, assignments, storedByAssignment, now = new Date()) {
+  const out = new Map();
+  const pending = [];
+  for (const a of assignments) {
+    for (const r of a.resources) {
+      if (r.kind !== 'vocab_goal') continue;
+      const done = (storedByAssignment.get(String(a._id))?.items || []).find((it) =>
+        String(it.resourceItemId) === String(r._id) && it.source === 'auto' && it.status === 'completed');
+      if (done) out.set(vocabGoalKey(a._id, r._id), { completed: true, completedAt: done.completedAt, wordCount: r.wordCount, mode: 'reached', requiredSlot: r.bookSlot || null });
+      else pending.push({ a, r });
+    }
+  }
+  if (!pending.length) return out;
+
+  const books = await vgs.loadBooksForGoal(studentId); // all 5 slots; narrowed per goal below
+  const newlyDone = [];
+  for (const { a, r } of pending) {
+    const candidates = r.bookSlot ? books.filter((b) => b.slot === r.bookSlot) : books;
+    const res = { ...vgs.evaluateBooks(candidates, a.createdAt, r.wordCount), requiredSlot: r.bookSlot || null };
+    out.set(vocabGoalKey(a._id, r._id), { ...res, completedAt: res.completed ? now : null });
+    if (res.completed) newlyDone.push({ a, r, res });
+  }
+  await Promise.all(newlyDone.map(({ a, r, res }) =>
+    persistVocabGoalDone(studentId, a, r, res, now).catch(() => {})));
+  return out;
+}
+
+// Student/teacher-facing snapshot of one vocab_goal's progress.
+function shapeVocabGoal(v) {
+  if (!v) return null;
+  return {
+    wordCount: v.wordCount, mode: v.mode, completed: !!v.completed,
+    practiced: v.practiced ?? null, correct: v.correct ?? null,
+    target: v.target ?? v.wordCount, needCorrect: v.needCorrect ?? 0,
+    bookId: v.bookId || null, bookName: v.bookName || '', bookEmoji: v.bookEmoji || '', bookSize: v.bookSize ?? null,
+    bookSlot: v.bookSlot ?? null, requiredSlot: v.requiredSlot ?? null, minSize: v.minSize ?? null,
+  };
+}
+
+// derive one assignment's status for a student from its resources + progress items.
+// `partial`: a not-yet-completed item already has real progress (a vocab_goal
+// with words practised) — reads as in_progress even while 0 items are done.
+function deriveAssignmentStatus(assignment, completedItemIds, now = new Date(), { partial = false } = {}) {
   const total = assignment.resources.length;
   const done = assignment.resources.filter((r) => completedItemIds.has(String(r._id))).length;
   const overdue = assignment.deadline && new Date(assignment.deadline).getTime() < now.getTime();
   let status;
   if (total > 0 && done >= total) status = 'completed';
   else if (overdue) status = 'overdue';
-  else if (done > 0) status = 'in_progress';
+  else if (done > 0 || partial) status = 'in_progress';
   else status = 'not_started';
   return { status, done, total };
 }
@@ -70,6 +151,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
 
   const stored = await AssignmentProgress.find({ studentId, assignmentId: { $in: assignments.map((a) => a._id) } }).lean();
   const storedMap = new Map(stored.map((p) => [String(p.assignmentId), p]));
+  const vocabMap = await resolveVocabGoals(studentId, assignments, storedMap, now);
 
   const rows = [];
   let incompleteCount = 0;
@@ -85,8 +167,13 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     );
     const completedItemIds = new Set(manualCompleted);
     const resourcesShaped = a.resources.map((r) => {
-      let completed = false, completedAt = null, autoTracked = itemIsInternal(r);
-      if (autoTracked) {
+      let completed = false, completedAt = null, vocabGoal = null;
+      const autoTracked = itemIsAutoTracked(r);
+      if (r.kind === 'vocab_goal') {
+        const v = vocabMap.get(vocabGoalKey(a._id, r._id));
+        vocabGoal = shapeVocabGoal(v);
+        if (v && v.completed) { completed = true; completedAt = v.completedAt; }
+      } else if (autoTracked) {
         const hit = completionMap.get(rcs.resourceKey(r.resourceType, r.resourceId));
         // only count if completed at/after THIS assignment's createdAt
         if (hit && hit.completed && new Date(hit.completedAt) >= new Date(a.createdAt)) {
@@ -101,10 +188,12 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         resourceType: r.resourceType || null, resourceId: r.resourceId || null, resourceCode: r.resourceCode || '',
         label: r.label || r.title || '', url: r.url || '', description: r.description || '',
         images: r.images || [], title: r.title || '', instruction: r.instruction || '',
+        wordCount: r.wordCount || null, bookSlot: r.bookSlot || null, vocabGoal,
       };
     });
 
-    const { status, done, total } = deriveAssignmentStatus(a, completedItemIds, now);
+    const partial = resourcesShaped.some((r) => !r.completed && r.vocabGoal && r.vocabGoal.practiced > 0);
+    const { status, done, total } = deriveAssignmentStatus(a, completedItemIds, now, { partial });
     if (status !== 'completed') incompleteCount += 1;
     if (a.deadline && status !== 'completed') {
       const dl = new Date(a.deadline);
@@ -221,9 +310,17 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
 
   const resource = assignment.resources.find((r) => String(r._id) === String(itemId));
   if (!resource) return { error: 404, message: 'Không tìm thấy mục này trong bài tập' };
-  if (resource.kind === 'internal') {
+  if (itemIsAutoTracked(resource)) {
     return { error: 400, message: 'Mục này được hệ thống tự động ghi nhận, không thể tự đánh dấu.' };
   }
+
+  // Resolve (and, if just reached, persist) vocab goals BEFORE loading the
+  // doc below — its save() rewrites items[], so a sticky auto item pushed
+  // after the load would be clobbered.
+  const vocabGoals = assignment.resources.some((r) => r.kind === 'vocab_goal')
+    ? await resolveVocabGoals(studentId, [assignment],
+      new Map([[String(assignment._id), await AssignmentProgress.findOne({ assignmentId, studentId }).lean()]]))
+    : new Map();
 
   let doc = await AssignmentProgress.findOne({ assignmentId, studentId });
   if (!doc) {
@@ -251,6 +348,9 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
       const hit = completion.get(rcs.resourceKey(r.resourceType, r.resourceId));
       if (hit && hit.completed) completedIds.add(String(r._id));
     }
+  }
+  for (const r of assignment.resources) {
+    if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
   }
   doc.completedCount = assignment.resources.filter((r) => completedIds.has(String(r._id))).length;
   doc.totalCount = assignment.resources.length;
@@ -298,7 +398,13 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       const hit = completion.get(rcs.resourceKey(r.resourceType, r.resourceId));
       if (hit && hit.completed) completedIds.add(String(r._id));
     }
-    const { status, done, total } = deriveAssignmentStatus(assignment, completedIds, now);
+    const vocabGoals = await resolveVocabGoals(e.studentId, [assignment],
+      new Map([[String(assignment._id), storedMap.get(String(e.studentId))]]), now);
+    for (const r of assignment.resources) {
+      if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
+    }
+    const partial = [...vocabGoals.values()].some((v) => !v.completed && v.practiced > 0);
+    const { status, done, total } = deriveAssignmentStatus(assignment, completedIds, now, { partial });
     return {
       enrollmentId: e._id, studentId: e.studentId, removed: !!e.removedAt,
       student: { name: displayNameOf(sMap.get(String(e.studentId))), username: sMap.get(String(e.studentId))?.username || '' },
@@ -307,6 +413,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       items: assignment.resources.map((r) => ({
         itemId: r._id, kind: r.kind, label: r.label || r.title || '',
         completed: completedIds.has(String(r._id)),
+        vocabGoal: r.kind === 'vocab_goal' ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
       })),
     };
   }));

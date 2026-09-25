@@ -11,6 +11,8 @@ const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
 const svc = require('../services/assignmentService');
+const vgs = require('../services/vocabGoalService');
+const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
 const cloudinaryService = require('../services/cloudinaryService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
@@ -47,6 +49,9 @@ function resourceIdentityKey(r) {
   if (r.kind === 'internal') return `internal:${r.resourceType}:${r.resourceId || ''}`;
   if (r.kind === 'external') return `external:${r.url}`;
   if (r.kind === 'image') return `image:${(r.images || []).map((im) => im.url).sort().join(',')}`;
+  // Changing N makes it a different goal (fresh _id) — a sticky "reached"
+  // item for 50 words must not carry over to a raised 100-word quota.
+  if (r.kind === 'vocab_goal') return `vocab_goal:${r.wordCount}:${r.bookSlot || 'any'}`;
   return null;
 }
 
@@ -95,6 +100,22 @@ async function buildResources(input, existing = []) {
         images: images.map((im) => ({ url: im.url, publicId: im.publicId || '', width: im.width, height: im.height })),
         title: String(r.title || '').slice(0, 200),
         instruction: String(r.instruction || '').slice(0, 2000),
+      };
+    } else if (r.kind === 'vocab_goal') {
+      const n = Number(r.wordCount);
+      if (!Number.isInteger(n) || n < vgs.MIN_WORD_COUNT || n > vgs.MAX_WORD_COUNT) {
+        return { error: `Số từ phải là số nguyên từ ${vgs.MIN_WORD_COUNT} đến ${vgs.MAX_WORD_COUNT}` };
+      }
+      if (out.some((x) => x.kind === 'vocab_goal')) return { error: 'Mỗi bài tập chỉ có một chỉ tiêu sổ từ vựng' };
+      // bookSlot: one of the 5 fixed default books, or null/'' = any of them.
+      let slot = null;
+      if (r.bookSlot !== undefined && r.bookSlot !== null && r.bookSlot !== '') {
+        slot = Number(r.bookSlot);
+        if (!DEFAULT_BOOK_SLOTS.includes(slot)) return { error: 'Sổ phải là một trong Sổ 1–5' };
+      }
+      built = {
+        kind: 'vocab_goal', wordCount: n, bookSlot: slot,
+        label: slot ? `Học ${n} từ trong ${canonicalBookName(slot)}` : `Học ${n} từ trong 1 sổ mặc định (Sổ 1–5)`,
       };
     } else {
       return { error: `kind không hợp lệ: ${r.kind}` };

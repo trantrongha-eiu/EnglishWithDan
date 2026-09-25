@@ -115,6 +115,7 @@ exports.createBook = guard(async (req, res) => {
 exports.updateBook = guard(async (req, res) => {
   const book = await vocabBookService.updateBook(req.params.id, req.user._id, req.body);
   if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
+  if (book.status === 'default_rename') return res.status(400).json({ success: false, message: 'Không thể đổi tên sổ mặc định' });
   res.json({ success: true, book });
 });
 
