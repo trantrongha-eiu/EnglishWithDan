@@ -11,7 +11,7 @@ const { escapeRegex } = require('../utils/strings');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
-const { DEFAULT_BOOKS, canonicalName, assignDefaultSlots } = require('../utils/defaultVocabBooks');
+const { DEFAULT_BOOKS, canonicalName, slotFromName, assignDefaultSlots } = require('../utils/defaultVocabBooks');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
 // _reportSessionStreak()) so the 35-word/day engagement threshold stays
@@ -83,23 +83,39 @@ function logActivity(userId, inc) {
 // Guarantees the student has exactly the 5 default books "Sổ 1".."Sổ 5"
 // (utils/defaultVocabBooks.js), each tagged with its defaultSlot and its
 // canonical name — class homework targets them by slot. Runs on every
-// listBooks; the steady state is one small find and zero writes.
+// listBooks; the steady state is one small aggregate and zero writes.
 //   - legacy defaults (pre-defaultSlot) get their slot assigned
 //   - a renamed default gets its canonical name back
-//   - a missing slot (deleted before delete was blocked, or a student who
-//     only ever had custom books) is recreated EMPTY — its old words are gone
+//   - an ordinary book named "Sổ N" (isDefault lost in the Aug-2026 restore,
+//     or recreated by hand) is promoted into slot N, words kept — and
+//     replaces an EMPTY default already sitting in that slot (deleted)
+//   - a slot with no book at all is recreated EMPTY
 //   - >5 legacy defaults: extras become ordinary books (words kept)
 // Restored books don't count against createBook's 15-book cap check here.
 async function ensureDefaultBooks(userId) {
-  const defaults = await VocabBook.find({ userId, isDefault: true })
-    .select('_id name defaultSlot').sort({ _id: 1 }).lean();
-  const { bySlot, extra, missing } = assignDefaultSlots(defaults);
+  const books = await VocabBook.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(String(userId)) } },
+    { $project: { name: 1, isDefault: 1, defaultSlot: 1, wordCount: { $size: { $ifNull: ['$words', []] } } } },
+    { $sort: { _id: 1 } },
+  ]);
+  const { bySlot, extra, discard, missing } = assignDefaultSlots(books);
 
+  // Free the slot first (unique {userId, defaultSlot}). Re-checked empty at
+  // write time — if a word landed in it meanwhile, keep it and skip the swap.
+  const blocked = new Set();
+  for (const b of discard) {
+    const r = await VocabBook.deleteOne({ _id: b._id, userId, isDefault: true, 'words.0': { $exists: false } });
+    if (!r.deletedCount) blocked.add(b.defaultSlot);
+  }
+
+  // E11000 = a concurrent call already moved a book into that slot.
+  const ignoreDup = (err) => { if (err.code !== 11000) throw err; };
   const ops = [];
   for (const [slot, b] of bySlot) {
+    if (blocked.has(slot)) continue;
     const name = canonicalName(slot);
-    if (b.defaultSlot !== slot || b.name !== name) {
-      ops.push(VocabBook.updateOne({ _id: b._id, userId }, { $set: { defaultSlot: slot, name } }));
+    if (!b.isDefault || b.defaultSlot !== slot || b.name !== name) {
+      ops.push(VocabBook.updateOne({ _id: b._id, userId }, { $set: { isDefault: true, defaultSlot: slot, name } }).catch(ignoreDup));
     }
   }
   for (const b of extra) {
@@ -301,6 +317,9 @@ async function getBook(id, userId) {
 }
 
 async function createBook(userId, { name, emoji = '📘', color = '#3d8bff' }) {
+  // "Sổ 1".."Sổ 5" are the fixed default books — an ordinary book with that
+  // name would be promoted into the slot by ensureDefaultBooks.
+  if (slotFromName(name)) return { status: 'reserved_name' };
   const bookCount = await VocabBook.countDocuments({ userId });
   if (bookCount >= 15) return { status: 'limit_reached' };
 
@@ -316,6 +335,7 @@ async function updateBook(id, userId, { name, emoji, color }) {
     const current = await VocabBook.findOne({ _id: id, userId }).select('isDefault name').lean();
     if (!current) return null;
     if (current.isDefault && name.trim() !== current.name) return { status: 'default_rename' };
+    if (!current.isDefault && slotFromName(name)) return { status: 'reserved_name' };
   }
   const update = {};
   if (name) update.name = name.trim();

@@ -119,12 +119,21 @@ async function buildResources(input, existing = []) {
       if (!Number.isInteger(n) || n < vgs.MIN_WORD_COUNT || n > vgs.MAX_WORD_COUNT) {
         return { error: `Số từ phải là số nguyên từ ${vgs.MIN_WORD_COUNT} đến ${vgs.MAX_WORD_COUNT}` };
       }
-      if (out.some((x) => x.kind === 'vocab_goal')) return { error: 'Mỗi bài tập chỉ có một chỉ tiêu sổ từ vựng' };
       // bookSlot: one of the 5 fixed default books, or null/'' = any of them.
       let slot = null;
       if (r.bookSlot !== undefined && r.bookSlot !== null && r.bookSlot !== '') {
         slot = Number(r.bookSlot);
         if (!DEFAULT_BOOK_SLOTS.includes(slot)) return { error: 'Sổ phải là một trong Sổ 1–5' };
+      }
+      // Several goals per assignment ("50 từ Sổ 1 + 50 từ Sổ 2"), one per
+      // book. "Any book" only on its own — it would pick the same book a
+      // per-slot goal already counts.
+      const goals = out.filter((x) => x.kind === 'vocab_goal');
+      if (goals.some((x) => x.bookSlot === slot)) {
+        return { error: slot ? `${canonicalBookName(slot)} đã có chỉ tiêu trong bài tập này` : 'Mỗi bài tập chỉ có một chỉ tiêu "sổ bất kỳ"' };
+      }
+      if (goals.length && (slot === null || goals.some((x) => x.bookSlot === null))) {
+        return { error: 'Chỉ tiêu "1 sổ bất kỳ" không dùng chung với chỉ tiêu theo từng sổ' };
       }
       built = {
         kind: 'vocab_goal', wordCount: n, bookSlot: slot,

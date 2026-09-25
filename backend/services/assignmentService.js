@@ -447,7 +447,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       completed: done, total, missing: total - done, status,
       allCompletedAt: storedMap.get(String(e.studentId))?.allCompletedAt || null,
       items: assignment.resources.map((r) => ({
-        itemId: r._id, kind: r.kind, label: r.label || r.title || '',
+        itemId: r._id, kind: r.kind, label: r.label || r.title || '', bookSlot: r.bookSlot || null,
         completed: completedIds.has(String(r._id)),
         vocabGoal: r.kind === 'vocab_goal' ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
       })),

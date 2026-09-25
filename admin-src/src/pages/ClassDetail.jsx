@@ -857,7 +857,16 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
             <tr key={r.enrollmentId}>
               <td><strong>{r.student.name || r.student.username}</strong>{r.removed && <span className="badge badge-gray" style={{ marginLeft: 6 }}>đã rời lớp</span>}</td>
               <td style={{ fontSize: 13 }}>{r.completed}/{r.total}</td>
-              {hasVocabGoal && <td style={{ fontSize: 13 }}><VocabGoalCell item={r.items.find((it) => it.kind === 'vocab_goal')} /></td>}
+              {hasVocabGoal && (
+                <td style={{ fontSize: 13 }}>
+                  {r.items.filter((it) => it.kind === 'vocab_goal').map((it) => (
+                    <div key={it.itemId} style={{ marginBottom: 4 }}>
+                      {it.bookSlot && <span style={{ color: 'var(--text3)' }}>Sổ {it.bookSlot}: </span>}
+                      <VocabGoalCell item={it} />
+                    </div>
+                  ))}
+                </td>
+              )}
               <td style={{ fontSize: 13 }}>{r.missing}</td>
               <td style={{ fontSize: 13 }}>{r.allCompletedAt ? formatDate(r.allCompletedAt) : '—'}</td>
               <td><span className={`badge ${ASG_STATUS[r.status] || 'badge-gray'}`}><span className="dot" />{ASG_LABEL[r.status] || r.status}</span></td>
@@ -898,16 +907,11 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const [images, setImages] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'image')
     .map((r) => ({ kind: 'image', images: r.images, title: r.title || '', instruction: r.instruction || '' })));
-  // "Học N từ trong 1 sổ từ vựng" quota — '' = not part of this assignment.
-  const [vocabGoal, setVocabGoal] = useState(() => {
-    const g = (assignment?.resources || []).find((r) => r.kind === 'vocab_goal');
-    return g ? String(g.wordCount) : '';
-  });
-  // '' = any of Sổ 1–5, else '1'..'5'.
-  const [vocabSlot, setVocabSlot] = useState(() => {
-    const g = (assignment?.resources || []).find((r) => r.kind === 'vocab_goal');
-    return g && g.bookSlot ? String(g.bookSlot) : '';
-  });
+  // "Học N từ trong Sổ X" quotas, one per book (e.g. 50 từ Sổ 1 + 50 từ Sổ 2).
+  // slot '' = any of Sổ 1–5 (only allowed as the single goal), else '1'..'5'.
+  const [vocabGoals, setVocabGoals] = useState(() => (assignment?.resources || [])
+    .filter((r) => r.kind === 'vocab_goal')
+    .map((r) => ({ count: String(r.wordCount), slot: r.bookSlot ? String(r.bookSlot) : '' })));
   const [saving, setSaving] = useState(false);
 
   const [cat, setCat] = useState('reading_test');
@@ -998,7 +1002,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
       ...picked,
       ...externals.filter((x) => x.url.trim()).map((x) => ({ kind: 'external', ...x })),
       ...images,
-      ...(vocabGoal !== '' ? [{ kind: 'vocab_goal', wordCount: Number(vocabGoal), bookSlot: vocabSlot ? Number(vocabSlot) : null }] : []),
+      ...vocabGoals.map((g) => ({ kind: 'vocab_goal', wordCount: Number(g.count), bookSlot: g.slot ? Number(g.slot) : null })),
     ];
     if (!title.trim()) return toast('Nhập tên bài tập', 'error');
     if (!resources.length) return toast('Chọn ít nhất một tài nguyên', 'error');
@@ -1016,7 +1020,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
     finally { setSaving(false); }
   }
 
-  const totalRes = picked.length + externals.filter((x) => x.url.trim()).length + images.length + (vocabGoal !== '' ? 1 : 0);
+  const totalRes = picked.length + externals.filter((x) => x.url.trim()).length + images.length + vocabGoals.length;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -1099,26 +1103,43 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
 
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Sổ từ vựng cá nhân</legend>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer' }}>
-              <input type="checkbox" checked={vocabGoal !== ''} onChange={(e) => setVocabGoal(e.target.checked ? '100' : '')} />
-              Giao học từ trong sổ từ vựng của học sinh
-            </label>
-            {vocabGoal !== '' && (
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8, fontSize: 13 }}>
+            {vocabGoals.map((g, i) => {
+              const usedSlots = vocabGoals.filter((_, j) => j !== i).map((x) => x.slot);
+              const setGoal = (patch) => setVocabGoals((a) => a.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, fontSize: 13 }}>
                   Học
                   <input className="form-input" type="number" min={5} max={300} step={1} style={{ width: 90 }}
-                    value={vocabGoal} onChange={(e) => setVocabGoal(e.target.value)} />
+                    value={g.count} onChange={(e) => setGoal({ count: e.target.value })} />
                   từ trong
-                  <select className="form-input" style={{ width: 210 }} value={vocabSlot} onChange={(e) => setVocabSlot(e.target.value)}>
-                    <option value="">1 sổ bất kỳ trong Sổ 1–5</option>
-                    {[1, 2, 3, 4, 5].map((s) => <option key={s} value={String(s)}>Sổ {s}</option>)}
+                  <select className="form-input" style={{ width: 210 }} value={g.slot} onChange={(e) => setGoal({ slot: e.target.value })}>
+                    {vocabGoals.length === 1 && <option value="">1 sổ bất kỳ trong Sổ 1–5</option>}
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <option key={s} value={String(s)} disabled={usedSlots.includes(String(s))}>Sổ {s}</option>
+                    ))}
                   </select>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setVocabGoals((a) => a.filter((_, j) => j !== i))}>✕</button>
                 </div>
+              );
+            })}
+            {vocabGoals.length < 5 && (
+              <button className="btn btn-ghost btn-sm" onClick={() => setVocabGoals((a) => {
+                if (!a.length) return [{ count: '100', slot: '' }];
+                // "any book" is only allowed alone (the only goal then) — pin it to Sổ 1.
+                const fixed = a.map((x) => (x.slot ? x : { ...x, slot: '1' }));
+                const free = ['1', '2', '3', '4', '5'].find((n) => !fixed.some((x) => x.slot === n));
+                return [...fixed, { count: fixed[fixed.length - 1].count, slot: free }];
+              })}>
+                + {vocabGoals.length ? 'Thêm sổ' : 'Giao học từ trong sổ từ vựng của học sinh'}
+              </button>
+            )}
+            {vocabGoals.length > 0 && (
+              <>
                 <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 6, lineHeight: 1.5 }}>
                   Chỉ tính 5 sổ mặc định của học sinh (Sổ 1–5, không đổi tên/xoá được). Tự động chấm theo kết quả luyện tập (quiz/flashcard)
                   trong sổ, tính từ lúc giao bài: đạt khi luyện đủ số từ trong sổ và đúng ≥70%. Sổ có từ 50 từ nhưng ít hơn chỉ tiêu thì
                   luyện hết sổ là đạt; sổ dưới 50 từ chưa được tính. Học sinh tự bấm "đã thuộc" không được tính.
+                  Giao nhiều sổ (vd 50 từ Sổ 1 + 50 từ Sổ 2) thì mỗi sổ được chấm riêng, đạt hết mới xong.
                 </div>
               </>
             )}

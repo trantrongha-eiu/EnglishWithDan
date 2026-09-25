@@ -1,5 +1,5 @@
 const { evaluateBook, evaluateBooks } = require('../../../services/vocabGoalService');
-const { assignDefaultSlots } = require('../../../utils/defaultVocabBooks');
+const { assignDefaultSlots, slotFromName } = require('../../../utils/defaultVocabBooks');
 
 const SINCE = new Date('2026-09-01T00:00:00Z');
 const AFTER = new Date('2026-09-02T00:00:00Z');
@@ -98,10 +98,10 @@ describe('evaluateBooks — best book wins', () => {
 describe('assignDefaultSlots', () => {
   test('keeps tagged books, matches canonical names, fills renamed ones in _id order', () => {
     const { bySlot, missing, extra } = assignDefaultSlots([
-      { _id: 1, name: 'UNIT 8', defaultSlot: null },
-      { _id: 2, name: 'Sổ 2', defaultSlot: null },
-      { _id: 3, name: 'Speaking', defaultSlot: null },
-      { _id: 4, name: 'Sổ 4', defaultSlot: 4 },
+      { _id: 1, name: 'UNIT 8', isDefault: true, defaultSlot: null },
+      { _id: 2, name: 'Sổ 2', isDefault: true, defaultSlot: null },
+      { _id: 3, name: 'Speaking', isDefault: true, defaultSlot: null },
+      { _id: 4, name: 'Sổ 4', isDefault: true, defaultSlot: 4 },
     ]);
     expect(bySlot.get(2)._id).toBe(2);
     expect(bySlot.get(4)._id).toBe(4);
@@ -112,10 +112,42 @@ describe('assignDefaultSlots', () => {
   });
 
   test('more than 5 defaults -> extras', () => {
-    const books = Array.from({ length: 7 }, (_, i) => ({ _id: i, name: `X${i}`, defaultSlot: null }));
+    const books = Array.from({ length: 7 }, (_, i) => ({ _id: i, name: `X${i}`, isDefault: true, defaultSlot: null }));
     const { bySlot, extra, missing } = assignDefaultSlots(books);
     expect(bySlot.size).toBe(5);
     expect(extra.map((b) => b._id)).toEqual([5, 6]);
     expect(missing).toEqual([]);
+  });
+
+  test('ordinary "Sổ N" books fill their own slot (most words wins); other ordinary books are never taken', () => {
+    const { bySlot, missing, discard } = assignDefaultSlots([
+      { _id: 1, name: 'Sổ 1', isDefault: false, wordCount: 185 },
+      { _id: 2, name: 'speaking', isDefault: false, wordCount: 35 },
+      { _id: 3, name: ' sổ  3 ', isDefault: false, wordCount: 3 },
+      { _id: 4, name: 'Sổ 3', isDefault: false, wordCount: 9 },
+      { _id: 5, name: 'Sổ 6', isDefault: false, wordCount: 9 },
+    ]);
+    expect(bySlot.get(1)._id).toBe(1);
+    expect(bySlot.get(3)._id).toBe(4);
+    expect(missing).toEqual([2, 4, 5]);
+    expect(discard).toEqual([]);
+  });
+
+  test('an empty default loses its slot to a non-empty ordinary "Sổ N"; a non-empty one keeps it', () => {
+    const { bySlot, discard } = assignDefaultSlots([
+      { _id: 1, name: 'Sổ 1', isDefault: false, wordCount: 185 },
+      { _id: 2, name: 'Sổ 2', isDefault: false, wordCount: 5 },
+      { _id: 10, name: 'Sổ 1', isDefault: true, defaultSlot: 1, wordCount: 0 },
+      { _id: 11, name: 'Sổ 2', isDefault: true, defaultSlot: 2, wordCount: 1 },
+    ]);
+    expect(bySlot.get(1)._id).toBe(1);
+    expect(bySlot.get(2)._id).toBe(11);
+    expect(discard.map((b) => b._id)).toEqual([10]);
+  });
+});
+
+describe('slotFromName', () => {
+  test.each([['Sổ 1', 1], ['sổ 5', 5], ['  SỔ   2 ', 2], ['Sổ3', 3], ['Sổ 6', null], ['Sổ 10', null], ['Sổ của mẹ', null], ['So 1', null]])('%s -> %s', (name, slot) => {
+    expect(slotFromName(name)).toBe(slot);
   });
 });
