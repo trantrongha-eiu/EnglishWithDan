@@ -20,8 +20,10 @@ function withPolicyDefaults(policy = {}) {
     // which only gates the dashboard/nag-message nudge) — counted against the
     // SAME "assignments currently overdue & incomplete in this class" number,
     // recomputed live each time (see assignmentService.getOverdueCountForClass)
-    // so a teacher extending a deadline or archiving an assignment can pull a
-    // student back out of warning/failed, same as fixing an attendance record.
+    // so a teacher extending a deadline (or the student making the work up)
+    // can pull a student back out of warning/failed, same as fixing an
+    // attendance record. Archiving an incomplete assignment does NOT — it keeps
+    // counting (assignmentService.archivedIsMissed).
     homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 5,
     homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 10,
   };

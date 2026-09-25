@@ -117,6 +117,14 @@ function deriveAssignmentStatus(assignment, completedItemIds, now = new Date(), 
   return { status, done, total };
 }
 
+// An ARCHIVED assignment that was left incomplete always counts as a miss
+// (toward the warn/fail thresholds), whatever its deadline — archiving means
+// the teacher closed it, i.e. it is past due (user's rule). Archiving must
+// never be a way to wipe a student's misses.
+function archivedIsMissed(assignment, status) {
+  return status !== 'completed';
+}
+
 // ── Student: all my homework across my active classes ──────────────────
 // `persist` (only from GET /api/assignments/mine, not the nav.js summary or
 // the cron) writes an accurate completedCount/allCompletedAt back onto each
@@ -132,7 +140,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   const classIds = enrollments.map((e) => e.classId);
   const [classes, assignments] = await Promise.all([
     ClassGroup.find({ _id: { $in: classIds } }).select('name policy teacherId').lean(),
-    Assignment.find({ classId: { $in: classIds }, status: 'active' }).sort({ createdAt: -1 }).lean(),
+    // archived too — see archivedIsMissed; the non-missed ones are dropped below
+    Assignment.find({ classId: { $in: classIds }, status: { $in: ['active', 'archived'] } }).sort({ createdAt: -1 }).lean(),
   ]);
   const classMap = new Map(classes.map((c) => [String(c._id), c]));
   const teachers = await User.find({ _id: { $in: classes.map((c) => c.teacherId) } }).select('username firstName lastName').lean();
@@ -193,7 +202,17 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     });
 
     const partial = resourcesShaped.some((r) => !r.completed && r.vocabGoal && r.vocabGoal.practiced > 0);
-    const { status, done, total } = deriveAssignmentStatus(a, completedItemIds, now, { partial });
+    const derived = deriveAssignmentStatus(a, completedItemIds, now, { partial });
+    const { done, total } = derived;
+    let { status } = derived;
+    const archived = a.status === 'archived';
+    if (archived) {
+      // Only an archived MISS stays on the student's list (so they can see
+      // what counts against them, and still make it up); everything else
+      // archived is hidden exactly as before.
+      if (!archivedIsMissed(a, status)) continue;
+      status = 'overdue';
+    }
     if (status !== 'completed') incompleteCount += 1;
     if (a.deadline && status !== 'completed') {
       const dl = new Date(a.deadline);
@@ -204,7 +223,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       _id: a._id, title: a.title, instruction: a.instruction,
       className: cls.name, classId: a.classId,
       teacherName: displayNameOf(teacherMap.get(String(cls.teacherId))),
-      deadline: a.deadline, createdAt: a.createdAt,
+      deadline: a.deadline, createdAt: a.createdAt, archived,
       status, done, total, resources: resourcesShaped,
     });
   }
@@ -269,11 +288,28 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
 //    Used by classAttendanceService (refreshClass/refreshEnrollment) to fold
 //    homework misses into the enrollment's warning/failed status, alongside
 //    attendance. Recomputed fresh every call, same as the rest of that
-//    status machinery — a teacher extending a deadline or archiving an
-//    assignment lowers this number on the next refresh.
+//    status machinery — a teacher extending a deadline (or the student making
+//    the work up late) lowers this number on the next refresh. Archiving does
+//    NOT: an archived assignment left incomplete keeps
+//    counting (archivedIsMissed).
 async function getOverdueCountForClass(studentId, classId, now = new Date()) {
   const { assignments } = await getStudentAssignments(studentId, now);
   return assignments.filter((a) => a.status === 'overdue' && String(a.classId) === String(classId)).length;
+}
+
+// Every missed (overdue + incomplete, archived included) assignment per
+// class, for the student's own "Lớp học của tôi" card / warning popup.
+// Map classId -> [{ _id, title, deadline, archived, done, total }].
+async function getMissedAssignmentsByClass(studentId, now = new Date()) {
+  const { assignments } = await getStudentAssignments(studentId, now);
+  const out = new Map();
+  for (const a of assignments) {
+    if (a.status !== 'overdue') continue;
+    const k = String(a.classId);
+    if (!out.has(k)) out.set(k, []);
+    out.get(k).push({ _id: a._id, title: a.title, deadline: a.deadline, archived: !!a.archived, done: a.done, total: a.total });
+  }
+  return out;
 }
 
 function displayNameOf(u) {
@@ -426,6 +462,8 @@ module.exports = {
   getStudentAssignments,
   getStudentHomeworkSummary,
   getOverdueCountForClass,
+  getMissedAssignmentsByClass,
+  archivedIsMissed,
   markManualItem,
   getAssignmentProgressTable,
   displayNameOf,

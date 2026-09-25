@@ -11,11 +11,24 @@ const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
 const svc = require('../services/assignmentService');
+const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
 const cloudinaryService = require('../services/cloudinaryService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
+
+// Deadline / archive / resource edits change how many assignments each
+// student is behind on, which feeds the enrollment's warning/failed status —
+// recompute now rather than waiting for the nightly sweep. Best-effort: the
+// edit itself already succeeded.
+async function refreshClassStatus(classId) {
+  try {
+    await classAttendanceService.refreshClass(classId);
+  } catch (err) {
+    logger.error('[assignment] refreshClass failed', { classId: String(classId), error: err.message });
+  }
+}
 
 // The admin's <input type="datetime-local"> sends a naive "YYYY-MM-DDTHH:mm"
 // string with no timezone offset. `new Date(naiveString)` parses a
@@ -247,6 +260,7 @@ exports.updateAssignment = async (req, res) => {
       assignment.resources = built.resources;
     }
     await assignment.save();
+    if (deadline !== undefined || status !== undefined || resources !== undefined) await refreshClassStatus(assignment.classId);
     res.json({ success: true, assignment });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -263,6 +277,7 @@ exports.setAssignmentStatus = async (req, res) => {
       { status }, { new: true },
     );
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
+    await refreshClassStatus(assignment.classId);
     res.json({ success: true, assignment });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

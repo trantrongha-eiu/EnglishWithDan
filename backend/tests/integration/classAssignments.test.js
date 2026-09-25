@@ -10,6 +10,7 @@ const { createReadingTest, createListeningSection, createWritingTask1, createWri
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
+const ClassEnrollment = require('../../models/ClassEnrollment');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Module = require('../../models/WT1Module');
 const WT1Progress = require('../../models/WT1Progress');
@@ -742,7 +743,7 @@ describe('homework-driven enrollment status', () => {
     expect(refreshed.statusReason).toMatch(/bài tập quá hạn/);
   });
 
-  test('archiving an overdue assignment lowers the live miss count and can pull the enrollment back out of failed', async () => {
+  test('archiving an overdue, incomplete assignment does NOT lower the miss count — the enrollment stays failed', async () => {
     const t = await createTeacher();
     const s = await createStudent();
     const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 5, homeworkFailThreshold: 1 } });
@@ -752,9 +753,70 @@ describe('homework-driven enrollment status', () => {
     let refreshed = await classAttendanceService.refreshEnrollment(enr._id);
     expect(refreshed.status).toBe('failed');
 
-    await Assignment.updateOne({ _id: asg._id }, { $set: { status: 'archived' } });
-    refreshed = await classAttendanceService.refreshEnrollment(enr._id);
-    expect(refreshed.status).toBe('active');
+    // via the real teacher route — it also refreshes the class right away
+    const res = await request(app).post(`/api/classes/${cls._id}/assignments/${asg._id}/status`).set(authH(t)).send({ status: 'archived' });
+    expect(res.status).toBe(200);
+    refreshed = await ClassEnrollment.findById(enr._id).lean();
+    expect(refreshed.stats.homeworkMissedCount).toBe(1);
+    expect(refreshed.status).toBe('failed');
+
+    // still on the student's list, flagged, so they can see what counts
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments).toHaveLength(1);
+    expect(mine.body.assignments[0]).toMatchObject({ archived: true, status: 'overdue' });
+  });
+
+  test('any archived + incomplete assignment counts as missed (no deadline, or even before its deadline); archived + completed does not', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 5, homeworkFailThreshold: 10 } });
+    const enr = await enrollStudent(cls, s);
+    await createAssignment(cls, { deadline: null, status: 'archived' });             // missed
+    await createAssignment(cls, { status: 'archived' });                              // default future deadline — still missed
+    const rt = await createReadingTest();
+    await createAssignment(cls, { deadline: past(1), status: 'archived', resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id }); // passed — not missed
+
+    const refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(2);
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments).toHaveLength(2);
+    expect(mine.body.assignments.every((a) => a.archived && a.status === 'overdue')).toBe(true);
+  });
+
+  test('making up an archived miss (completing it late) clears it', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 5, homeworkFailThreshold: 1 } });
+    const enr = await enrollStudent(cls, s);
+    const rt = await createReadingTest();
+    await createAssignment(cls, { deadline: past(2), status: 'archived', resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+    expect((await classAttendanceService.refreshEnrollment(enr._id)).status).toBe('failed');
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    expect((await classAttendanceService.refreshEnrollment(enr._id)).status).toBe('active');
+  });
+
+  test('GET /api/classes/my/overview reports live misses (archived included), allowance numbers, and resyncs a stale status', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { maxAbsencesAllowed: 4, homeworkWarnThreshold: 1, homeworkFailThreshold: 3 } });
+    const enr = await enrollStudent(cls, s);
+    await createAssignment(cls, { deadline: past(1), title: 'Buổi 1' });
+    await createAssignment(cls, { deadline: past(1), title: 'Buổi 2', status: 'archived' });
+
+    // no refresh yet — cached stats say 0 misses / active
+    const res = await request(app).get('/api/classes/my/overview').set(authH(s));
+    expect(res.status).toBe(200);
+    const c = res.body.classes[0];
+    expect(c).toMatchObject({
+      homeworkMissedCount: 2, homeworkFailThreshold: 3, homeworkRemaining: 0,
+      maxAbsencesAllowed: 4, remainingAbsences: 4, absentExcused: 0, absentUnexcused: 0,
+      status: 'warning',
+    });
+    expect(c.missedAssignments.map((m) => m.title).sort()).toEqual(['Buổi 1', 'Buổi 2']);
+    expect(c.missedAssignments.find((m) => m.title === 'Buổi 2').archived).toBe(true);
+    expect((await ClassEnrollment.findById(enr._id).lean()).status).toBe('warning'); // persisted
   });
 
   test('a real pass (>=70%) does not count toward the miss tally even past the deadline', async () => {

@@ -173,7 +173,7 @@ function hwAssignmentBlock(a) {
         <div class="hw-item-title">${escHtml(a.title)}</div>
         <div class="hw-item-sub">${escHtml(a.className)}${a.teacherName ? ` · ${escHtml(a.teacherName)}` : ''}</div>
       </div>
-      <span class="hw-pill ${st.cls}">${st.label}</span>
+      <span class="hw-pill ${st.cls}">${a.archived ? 'Đã đóng · tính là thiếu' : st.label}</span>
     </div>
     ${a.instruction ? `<div class="hw-item-instruction">${escHtml(a.instruction)}</div>` : ''}
     <div class="hw-progress">
@@ -211,7 +211,7 @@ async function loadHomework() {
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz: cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Luyện tập (quiz/flashcard) <b>đủ số từ yêu cầu trong 1 sổ</b> và trả lời đúng <b>từ 70%</b> trở lên. Sổ có <b>từ 50 từ</b> nhưng ít hơn yêu cầu thì chỉ cần <b>luyện hết các từ trong sổ</b>. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
-      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>.</li>
+      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
     </ul>
   </details>`;
 

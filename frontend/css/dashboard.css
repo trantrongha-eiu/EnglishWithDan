@@ -2042,6 +2042,47 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .ci-checkin-btn:hover{opacity:.9}
 .ci-checkin-btn:disabled{opacity:.6;cursor:default}
 
+/* Pass/fail limits — absences allowed + homework misses (ciLimitsBlock). */
+.ci-limits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media (max-width:640px){.ci-limits{grid-template-columns:1fr}}
+.ci-limit{background:var(--surface);border:1px solid var(--border);border-left:4px solid #16a34a;border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--text2);min-width:0}
+.ci-limit--warn{border-left-color:#f59e0b}
+.ci-limit--fail{border-left-color:#dc2626;background:rgba(220,38,38,.05)}
+.ci-limit-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.ci-limit-title{font-weight:800;color:var(--text)}
+.ci-limit-count{font-size:12px;color:var(--text3)}
+.ci-limit-count b{font-size:15px;color:var(--text)}
+.ci-limit--fail .ci-limit-count b{color:var(--danger)}
+.ci-meter{height:6px;border-radius:6px;background:var(--surface2);overflow:hidden;margin:7px 0 6px}
+.ci-meter-fill{height:100%;border-radius:6px;transition:width .4s}
+.ci-meter-fill--ok{background:#16a34a}
+.ci-meter-fill--warn{background:#f59e0b}
+.ci-meter-fill--fail{background:#dc2626}
+.ci-limit-detail{color:var(--text3);font-size:12px}
+.ci-limit-line{margin-top:5px;line-height:1.5;color:var(--text)}
+.ci-limit--fail .ci-limit-line{color:var(--danger);font-weight:700}
+.ci-limit-note{margin-top:4px;font-size:11.5px;color:var(--text3);line-height:1.5}
+.ci-missed{margin-top:7px}
+.ci-missed summary{cursor:pointer;font-weight:700;color:var(--text);font-size:12px}
+.ci-missed ul{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.ci-missed li{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:var(--surface2);color:var(--text);overflow-wrap:anywhere}
+.ci-missed-meta{font-size:11px;color:var(--text3)}
+.ci-missed-tag{font-weight:700;color:var(--danger)}
+
+/* Warning popup (ciMaybeShowWarningPopup) */
+.ci-warn-overlay{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.55)}
+.ci-warn-box{width:100%;max-width:480px;max-height:calc(100vh - 32px);overflow:auto;background:var(--surface);color:var(--text);border-radius:16px;border-top:5px solid #f59e0b;box-shadow:0 20px 50px rgba(0,0,0,.3);padding:20px;animation:ci-rise .25s ease both}
+.ci-warn-title{font-size:17px;font-weight:800;margin-bottom:12px}
+.ci-warn-class{border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:13px}
+.ci-warn-class--failed{border-color:rgba(220,38,38,.4);background:rgba(220,38,38,.05)}
+.ci-warn-class-name{font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ci-warn-class ul{margin:6px 0 0;padding:0 0 0 2px;list-style:none;display:flex;flex-direction:column;gap:5px;line-height:1.55;color:var(--text2)}
+.ci-warn-bad{color:var(--danger)}
+.ci-warn-foot{font-size:12.5px;color:var(--text2);margin:4px 0 0;line-height:1.55}
+.ci-warn-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}
+.ci-warn-btn{border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;color:#fff;background:var(--brand,#e53935);cursor:pointer;text-decoration:none}
+.ci-warn-btn--ghost{background:var(--surface2);color:var(--text)}
+
 /* ══════════════════════════════════════════════
    📚 Bài tập cần làm — homework card (js/dashboard-homework.js)
 ══════════════════════════════════════════════ */

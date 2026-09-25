@@ -14,6 +14,7 @@ const AttendanceRecord = require('../models/AttendanceRecord');
 const AttendanceCheckIn = require('../models/AttendanceCheckIn');
 const User = require('../models/User');
 const svc = require('../services/classAttendanceService');
+const assignmentService = require('../services/assignmentService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
@@ -834,12 +835,31 @@ exports.myOverview = async (req, res) => {
     const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
     const clsMap = new Map(activeClasses.map((c) => [String(c._id), c]));
 
+    // Live homework misses (archived-but-missed included) — the cached
+    // stats.homeworkMissedCount only moves on a refresh (attendance edit,
+    // assignment edit, nightly sweep), but a deadline passing mid-day must
+    // show up here (and in the warning popup) right away. When the live
+    // number disagrees with the cache, refresh that enrollment so its
+    // warning/failed status catches up too.
+    const missedByClass = await assignmentService.getMissedAssignmentsByClass(req.user._id);
+    for (let i = 0; i < enrollments.length; i += 1) {
+      const e = enrollments[i];
+      if (!clsMap.has(String(e.classId))) continue;
+      const live = (missedByClass.get(String(e.classId)) || []).length;
+      if (live !== ((e.stats && e.stats.homeworkMissedCount) || 0)) {
+        const fresh = await svc.refreshEnrollment(e._id).catch(() => null);
+        if (fresh) enrollments[i] = fresh.toObject();
+      }
+    }
+
     const out = enrollments
       .map((e) => {
         const c = clsMap.get(String(e.classId));
         if (!c) return null;
         const p = svc.withPolicyDefaults(c.policy);
         const st = e.stats || {};
+        const missed = missedByClass.get(String(e.classId)) || [];
+        const absenceEquivalent = st.absenceEquivalent || 0;
         return {
           classId: e.classId,
           className: c.name,
@@ -853,12 +873,24 @@ exports.myOverview = async (req, res) => {
           statusReason: e.statusReason || '',
           heldSessions: st.heldSessions || 0,
           absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
-          absenceEquivalent: st.absenceEquivalent || 0,
+          absentExcused: st.absentExcused || 0,
+          absentUnexcused: st.absentUnexcused || 0,
+          lateCount: st.lateCount || 0,
+          absenceEquivalent,
           attendanceRate: st.attendanceRate || 0,
           maxAbsencesAllowed: p.maxAbsencesAllowed,
-          homeworkMissedCount: st.homeworkMissedCount || 0,
+          warnThreshold: p.warnThreshold,
+          remainingAbsences: Math.max(0, Math.round((p.maxAbsencesAllowed - absenceEquivalent) * 10) / 10),
+          excusedCountsAsAbsence: p.excusedCountsAsAbsence,
+          lateToAbsenceRatio: p.lateToAbsenceRatio,
+          failOnExceed: p.failOnExceed,
+          homeworkMissedCount: missed.length,
           homeworkWarnThreshold: p.homeworkWarnThreshold,
           homeworkFailThreshold: p.homeworkFailThreshold,
+          // fail triggers AT the threshold (>=), so one fewer is the most a
+          // student can still miss and pass
+          homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - missed.length),
+          missedAssignments: missed.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived, done: m.done, total: m.total })),
         };
       })
       .filter(Boolean);
