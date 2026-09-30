@@ -171,6 +171,49 @@ describe('PUT /api/admin/passages/:id', () => {
     expect(saved.title).toBe('After');
     expect(saved.isActive).toBe(false);
   });
+
+  test('sets and clears the cover image (thumbnailUrl) without touching content', async () => {
+    const passage = await createPassage({ title: 'Cover me', content: '<p>Original text</p>' });
+    const token = await authedTeacher();
+    const url = 'https://res.cloudinary.com/demo/image/upload/v1/reading/covers/cover-me.jpg';
+    let res = await request(app).put(`/api/admin/passages/${passage._id}`).set('Authorization', `Bearer ${token}`).send({ thumbnailUrl: url });
+    expect(res.status).toBe(200);
+    let saved = await Passage.findById(passage._id);
+    expect(saved.thumbnailUrl).toBe(url);
+    expect(saved.content).toBe('<p>Original text</p>');
+
+    res = await request(app).put(`/api/admin/passages/${passage._id}`).set('Authorization', `Bearer ${token}`).send({ thumbnailUrl: '' });
+    expect(res.status).toBe(200);
+    saved = await Passage.findById(passage._id);
+    expect(saved.thumbnailUrl).toBe('');
+  });
+
+  test('400 for a cover image that is not an https URL', async () => {
+    const passage = await createPassage({ title: 'Bad cover' });
+    const token = await authedTeacher();
+    for (const bad of ['javascript:alert(1)', 'http://example.com/a.jpg', 'https://x.com/a.jpg" onerror="x', 42]) {
+      const res = await request(app).put(`/api/admin/passages/${passage._id}`).set('Authorization', `Bearer ${token}`).send({ thumbnailUrl: bad });
+      expect(res.status).toBe(400);
+    }
+    expect((await Passage.findById(passage._id)).thumbnailUrl).toBe('');
+  });
+});
+
+describe('POST /api/admin/passages/upload-cover-image', () => {
+  test('student is blocked with 403', async () => {
+    const student = await createStudent();
+    const res = await request(app).post('/api/admin/passages/upload-cover-image')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`).send({ imageBase64: 'x' });
+    expect(res.status).toBe(403);
+  });
+
+  test('400 when imageBase64 is missing or not an image data URI', async () => {
+    const token = await authedTeacher();
+    for (const body of [{}, { imageBase64: 'not-an-image' }]) {
+      const res = await request(app).post('/api/admin/passages/upload-cover-image').set('Authorization', `Bearer ${token}`).send(body);
+      expect(res.status).toBe(400);
+    }
+  });
 });
 
 describe('DELETE /api/admin/passages/:id (soft delete)', () => {

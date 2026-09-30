@@ -122,8 +122,31 @@ router.post('/passages/upload-map-image', auth, teacherOnly, async (req, res) =>
   }
 });
 
+// POST /api/admin/passages/upload-cover-image
+// Body: { imageBase64 } → Cloudinary reading/covers → { url } for Passage.thumbnailUrl
+router.post('/passages/upload-cover-image', auth, teacherOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
+
+    const url = await uploadImageDataUri(imageBase64, 'reading/covers');
+    res.json({ success: true, url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Cover image of the practice-list card: '' (fall back to the first <img> in
+// content) or an https URL. Anything else is rejected — the student page puts
+// it straight into an <img src>.
+function badThumbnailUrl(v) {
+  return v !== undefined && !(typeof v === 'string' && (v === '' || (/^https:\/\/[^\s"'<>]+$/.test(v) && v.length <= 1000)));
+}
+
 router.post('/passages', auth, teacherOnly, async (req, res) => {
   try {
+    if (badThumbnailUrl(req.body.thumbnailUrl)) return res.status(400).json({ success: false, message: 'Ảnh bìa phải là link https' });
     const passage = new Passage(req.body);
     await passage.save();
     res.status(201).json({ success: true, passage });
@@ -148,7 +171,8 @@ router.put('/passages/:id', auth, teacherOnly, async (req, res) => {
     if (!passage) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
     // Gán từng field rõ ràng để Mongoose thay hẳn arrays subdocument
-    const { title, category, content, questionRange, difficulty, tags, questionGroups, questions, isActive, isActualTest } = req.body;
+    const { title, category, content, questionRange, difficulty, tags, questionGroups, questions, isActive, isActualTest, thumbnailUrl } = req.body;
+    if (badThumbnailUrl(thumbnailUrl)) return res.status(400).json({ success: false, message: 'Ảnh bìa phải là link https' });
     if (title          !== undefined) passage.title          = title;
     if (category       !== undefined) passage.category       = category;
     if (content        !== undefined) passage.content        = content;
@@ -159,6 +183,7 @@ router.put('/passages/:id', auth, teacherOnly, async (req, res) => {
     if (isActualTest   !== undefined) passage.isActualTest   = isActualTest;
     if (questionGroups !== undefined) passage.questionGroups = questionGroups;
     if (questions      !== undefined) passage.questions      = questions;
+    if (thumbnailUrl   !== undefined) passage.thumbnailUrl   = thumbnailUrl;
 
     const updated = await passage.save();
     res.json({ success: true, passage: updated });
