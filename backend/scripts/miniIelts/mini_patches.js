@@ -598,4 +598,127 @@ module.exports = {
       const n = d.questionGroups[1]; ['Advantages of aluminium screw caps', 'Advantages of cork bottle stoppers'].forEach(h => { const i = n.noteConfig.lines.indexOf(h); if (i >= 0) n.noteConfig.lines[i] = `<strong>${h}</strong>`; });
     },
   },
+  // ───── batch 7 ─────
+  1102: {
+    text: [['a substance called Chuchu could be stored', 'a substance called chuchu. Chuchu could be stored'], ['Facult de Paris', 'Faculté de Paris'], ['well suited to the Irish the soil and climate', 'well suited to the Irish soil and climate'],
+      ['relates the story of history the most important vegetable', 'relates the history of the most important vegetable'], ['，', ', '], ['；', '; ']],
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(1);
+      d.questionGroups[1].noteConfig = { title: '', lines: [
+        'In France, people started to overcome their disgust at potatoes because the King put a potato __Q6__ in his buttonhole.',
+        'Frederick realised the potential of the potato but he had to deal with the __Q7__ against potatoes among ordinary people.',
+        'The King of Prussia used some __Q8__ psychology to make people accept potatoes.',
+        'Before 1800, the English people preferred eating __Q9__ with bread, butter and cheese.',
+        'The obvious way to deal with England’s food problems was high-yielding potato __Q10__.',
+        'The Irish __Q11__ and climate suited potatoes well.',
+        'Between 1780 and 1841, based on the __Q12__ of the potato, the Irish population doubled to eight million.',
+        'The potato’s high yields helped the poorest farmers to produce more healthy food almost without __Q13__.'] };
+    },
+  },
+  1213: {
+    text: [['climactic trends', 'climatic trends'], ['research data we have compiled.</p>', 'research data we have compiled.’</p>'], ['side-effects of our own activity</p>', 'side-effects of our own activity.’</p>']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet.';
+      g0.matchingOptions = g0.matchingOptions.map(o => o.trim());
+      g1.instruction = 'Look at the following people (Questions 19-22) and the list of statements below. Match each person with the correct statement, A-F. Write the correct letter, A-F, in boxes 19-22 on your answer sheet.';
+      g1.matchingOptions = g1.matchingOptions.map(o => o.replace(/^\.\s*/, '').trim());
+      g2.instruction = TFNG(2);
+    },
+  },
+  1056: {
+    text: [['Oeco-phylla', 'Oecophylla'], ['until 1 the early', 'until the early'], ['with the i ants inside', 'with the ants inside'], ['attached k the bladders', 'attached the bladders'], ['made any in- T roads', 'made any inroads'], ['Where X mealy', 'Where mealy'], ['guickly', 'quickly']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Look at the following events (Questions 14-18) and the list of dates below. Match each event with the correct date, A-G. Write the correct letter, A-G, in boxes 14-18 on your answer sheet.';
+      d.questionGroups[1].instruction = TFNG(2);
+      setQ(d, { 14: 'The first description of citrus ants being traded in the marketplace', 16: 'The first recorded use of one insect to tackle other insects in the Western world', 18: 'Some Chinese farmers returned to the traditional biological method.' });
+    },
+  },
+  1137: {
+    text: [['thereare', 'there are'], ['that could surely to much more productive use', 'that could surely be put to much more productive use'], ['an archtophilist collects', 'an arctophile collects'],
+      ['If you think about collecting postage stamps another potential reason for it - Or, perhaps, a result of collecting is its educational value.', 'If you think about collecting postage stamps, another potential reason for it – or, perhaps, a result of collecting – is its educational value.']],
+    keys: { 5: 'hunt', 6: 'aimless' }, // mini also accepted desire/empty — neither fits the sentence
+    fn: d => {
+      const n = d.questionGroups[0]; n.noteConfig.lines = n.noteConfig.lines.map(l => l.replace(/^\d+\s+/, '').replace(/(__Q\d+__)$/, '$1.'));
+      d.questionGroups[1].instruction = TFNG(1);
+    },
+  },
+  1445: {
+    // paragraph 6 and the end of paragraph 8 were interleaved column-wise; every fragment is present, only the order is restored
+    text: [['ancient life forms Tuatara', 'ancient life forms. Tuatara'], ['1.200 grams', '1,200 grams'], ['Legal protection, was granted', 'Legal protection was granted'], ['50- 100 tuatara', '50–100 tuatara'], ['predator- free islands', 'predator-free islands'],
+      ['A few, such as the Poor Knights common tuatara lives on islands off the north-eastern coast of New Zealand, and on some islands in Cook Strait. The Brothers Island tuatara survived only on the of the Brothers Island tuatara have been created on Titi Island',
+        'A few, such as the Poor Knights islands off the Northland coast, or Stephens Island in Cook Strait, were never invaded by rats, and had few of the other mammals that threaten native animals. The common tuatara lives on islands off the north-eastern coast of New Zealand, and on some islands in Cook Strait. The Brothers Island tuatara survived only on the tiny, 4 hectare North Brother Island, in Cook Strait. However, two new populations of the Brothers Island tuatara have been created on Titi Island'],
+      [/moving tuatara to rat.?islands off the Northland coast[\s\S]*?two new populations free islands, have increased/, 'moving tuatara to rat-free islands, have increased']],
+    keys: { 8: 'teeth', 9: 'seabirds', 11: 'mainland', 13: '2,500 / 2500' },
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(1);
+      const g = d.questionGroups[1];
+      g.instruction = 'Complete the notes below. Choose ONE WORD AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 7-13 on your answer sheet.';
+      g.noteConfig = { title: 'The tuatara', lines: ['<strong>Lifespan</strong>', 'maximum lifespan unknown', 'many live to at least __Q7__ years old',
+        '<strong>Behaviour</strong>', 'attack other creatures with their __Q8__', 'eat young __Q9__ that live in the same burrows, invertebrates and reptiles',
+        '<strong>Population</strong>', 'abundant until rats were introduced by __Q10__ people', 'by the 1840s, hardly any tuatara found on the __Q11__',
+        'islands off the north-eastern coast and in Cook Strait now home to the __Q12__ tuatara', 'Brothers Island tuatara found on North Brother Island',
+        'density of tuatara on Stephens Island is up to __Q13__ tuatara for every hectare',
+        '<strong>Protection of the species</strong>', 'tuatara population dropped until rats eradicated from islands', 'eggs were gathered by conservationists'] };
+    },
+  },
+  1389: {
+    text: [['Pclouze', 'Pelouze'], ['death in 18%', 'death in 1896'], ['a young engineer __Q8__ and his invention', 'a young chemist, __Q8__, and his invention'],
+      ['trained in __Q7__ during Nobel’s study in Paris', 'trained in __Q7__. During his stay in Paris'], ['__Q11__. while in the meantime', '__Q11__, while in the meantime']],
+    keys: { 9: 'gunpowder', 11: 'detonator / a detonator / blasting cap' },
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(1);
+      const n = d.questionGroups[1]; ['Education:', 'Benefits in construction works:'].forEach(h => { const i = n.noteConfig.lines.indexOf(h); if (i >= 0) n.noteConfig.lines[i] = `<strong>${h.replace(':', '')}</strong>`; });
+    },
+  },
+  1380: {
+    text: [['<p>When German director', '<p><strong>A</strong> When German director'], ['slave-live extensions', 'slave-like extensions'],
+      ['presents the movie in an __Q34__ term', 'presents the movie in __Q34__ terms'], ['multinational corporations concern more about the growing __Q36__ and money', 'multinational corporations care more about increasing __Q36__ and profits']],
+    keys: { 33: 'John Fredersen / Fredersen' },
+    fn: d => { d.questionGroups[0].instruction = YNNG(3); },
+  },
+  1373: {
+    text: [['this months’ Harvard', 'this month’s Harvard'], ['the cliche that', 'the cliché that']],
+    keys: { 22: 'analysts / star-stock analysts', 23: 'star performer' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-17 on your answer sheet.';
+      g1.instruction = YNNG(2);
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 22-26 on your answer sheet.';
+      g2.noteConfig = { title: '', lines: ['A study of the careers of 1,000 __Q22__, reported in the Harvard Business Review, found that hiring a __Q23__ has negative effects. Firstly, stars often perform considerably worse in a new firm than in the __Q24__ they used to work in, and they soon move on and increase their __Q25__. Secondly, group performance suffers because of tensions and resentment from __Q26__ within the team. Lastly, investors punish the company that hired the star by selling its stock.'] };
+      setQ(d, { 14: 'an example from outside business showing that a better system beats bigger stars', 15: 'a company that failed because it believed in stars rather than systems',
+        16: 'the writer’s suggestion for how companies can obtain talented employees', 17: 'a medical metaphor that illustrates the problems of hiring stars',
+        21: 'Football clubs that focus on developing stars within a settled system do better than those that simply collect stars.' });
+    },
+  },
+  1348: {
+    text: [['in which they were easy, captured, killed, and eaten by humans', 'in which they were easily captured, killed, and eaten by humans'], ['<h2>Blue-footed Boobies 2</h2>', '<h2>Blue-footed Boobies</h2>'],
+      ['the male will spread his wings and stamp his feet on the ground with his bills __Q23__', 'the male raises his bright blue feet and his wings, and points his bill towards the sky – a display known as __Q23__']],
+    keys: { 19: 'vii', 23: 'sky pointing / skypointing / sky-pointing' }, // mini: G = vi (already A's heading)
+    fn: d => {
+      d.title = 'Blue-footed Boobies';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for paragraphs A, B and D-G from the list of headings below. Write the correct number, i-ix, in boxes 14-19 on your answer sheet.';
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 23-26 on your answer sheet.';
+    },
+  },
+  1244: {
+    text: [['Shelley was bom', 'Shelley was born'], ['with the establishment In 1818', 'with the establishment. In 1818']],
+    keys: { 33: 'the Mediterranean / Mediterranean', 35: 'his colourful lifestyle / colourful lifestyle / his lifestyle / lifestyle / his colorful lifestyle' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = TFNG(3);
+      g1.groupType = 'table'; delete g1.noteConfig;
+      g1.instruction = 'Complete the table below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 33-39 on your answer sheet.';
+      g1.tableConfig = { headers: ['Poet', 'Date of birth', 'Education', 'Other information'], rows: [
+        ['Byron', '1788', 'Cambridge University', 'went on a journey around __Q33__; came to love __Q34__'],
+        ['Shelley', '1792', 'Eton and Oxford University', 'some people disapproved of __Q35__ and the beliefs he held'],
+        ['Wordsworth', '1770', '–', 'became more accepted when he changed his __Q36__'],
+        ['Coleridge', '1772', 'bright scholar', 'his __Q37__ was smaller than the other Romantic poets’; left the Wordsworths due to __Q38__'],
+        ['Keats', '1795', 'qualified as a surgeon', 'left England for a change of __Q39__']] };
+      g2.instruction = 'Complete the sentence below. Choose NO MORE THAN THREE WORDS from the passage for the answer. Write your answer in box 40 on your answer sheet.';
+      g2.noteConfig.lines = ['According to the writer, the Romantic poets left us with the ideas of __Q40__.'];
+    },
+  },
 };
