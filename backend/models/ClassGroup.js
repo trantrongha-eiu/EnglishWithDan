@@ -12,7 +12,8 @@ const attendancePolicySchema = new mongoose.Schema({
   // khi failOnExceed bật.
   maxAbsencesAllowed:     { type: Number, default: 3, min: 0 },
   // Nghỉ >= con số này → "warning" + banner cảnh báo khi học viên đăng nhập.
-  warnThreshold:          { type: Number, default: 2, min: 0 },
+  // null/0 = một nửa maxAbsencesAllowed (xem utils/classPolicy.js).
+  warnThreshold:          { type: Number, default: null, min: 0 },
   // Vắng có phép có tính vào giới hạn nghỉ không. Mặc định CÓ (theo yêu cầu).
   excusedCountsAsAbsence: { type: Boolean, default: true },
   // Mỗi lần "late" cộng 1/ratio vào absence-equivalent. 2 = 2 lần trễ ~ 1 buổi vắng.

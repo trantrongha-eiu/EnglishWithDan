@@ -178,6 +178,13 @@ exports.createClass = async (req, res) => {
 exports.getClass = async (req, res) => {
   try {
     const cls = req.classGroup;
+    // The roster's BT THIẾU / status columns read the cached enrollment.stats,
+    // which otherwise only move on an attendance/assignment edit or the
+    // nightly sweep — a deadline passing or a student finishing late work
+    // mid-day left the teacher looking at stale numbers. Classes are small
+    // (tens of students), so recompute on open; a failure here must not
+    // block the page, it just shows the cached numbers.
+    if (cls.status === 'active') await svc.refreshClass(cls._id).catch(() => {});
     const enrollments = await ClassEnrollment.find({ classId: cls._id })
       .sort({ removedAt: 1, createdAt: 1 })
       .lean();
@@ -753,8 +760,16 @@ exports.myAttendanceStatus = async (req, res) => {
           className: c.name,
           status: e.status,
           statusReason: e.statusReason || '',
+          // Which cause is behind a warning/failed status — nav.js must not
+          // show the ABSENCE banner ("Bạn đã nghỉ 0 buổi…") to a student who
+          // is only in "warning" because of missed homework.
+          attendanceLevel: svc.attendanceLevel(st.absenceEquivalent || 0, c.policy),
+          homeworkLevel: svc.homeworkLevel(st.homeworkMissedCount || 0, c.policy),
+          homeworkMissedCount: st.homeworkMissedCount || 0,
+          homeworkFailThreshold: p.homeworkFailThreshold,
           absenceEquivalent: st.absenceEquivalent || 0,
           absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
+          lateCount: st.lateCount || 0,
           heldSessions: st.heldSessions || 0,
           attendanceRate: st.attendanceRate || 0,
           maxAbsencesAllowed: p.maxAbsencesAllowed,
@@ -840,13 +855,18 @@ exports.myOverview = async (req, res) => {
     // assignment edit, nightly sweep), but a deadline passing mid-day must
     // show up here (and in the warning popup) right away. When the live
     // number disagrees with the cache, refresh that enrollment so its
-    // warning/failed status catches up too.
+    // warning/failed status catches up too. Same when the stored status no
+    // longer matches the current rules (e.g. written under an older policy
+    // reading) — the badge on the card must not say "Cảnh báo" for nothing.
     const missedByClass = await assignmentService.getMissedAssignmentsByClass(req.user._id);
     for (let i = 0; i < enrollments.length; i += 1) {
       const e = enrollments[i];
-      if (!clsMap.has(String(e.classId))) continue;
+      const c = clsMap.get(String(e.classId));
+      if (!c) continue;
       const live = (missedByClass.get(String(e.classId)) || []).length;
-      if (live !== ((e.stats && e.stats.homeworkMissedCount) || 0)) {
+      const st = e.stats || {};
+      const expected = svc.deriveCombinedStatus({ absenceEquivalent: st.absenceEquivalent || 0, derivedStatus: e.status }, live, c.policy);
+      if (live !== (st.homeworkMissedCount || 0) || expected !== e.status) {
         const fresh = await svc.refreshEnrollment(e._id).catch(() => null);
         if (fresh) enrollments[i] = fresh.toObject();
       }
@@ -877,6 +897,8 @@ exports.myOverview = async (req, res) => {
           absentUnexcused: st.absentUnexcused || 0,
           lateCount: st.lateCount || 0,
           absenceEquivalent,
+          attendanceLevel: svc.attendanceLevel(absenceEquivalent, c.policy),
+          homeworkLevel: svc.homeworkLevel(missed.length, c.policy),
           attendanceRate: st.attendanceRate || 0,
           maxAbsencesAllowed: p.maxAbsencesAllowed,
           warnThreshold: p.warnThreshold,

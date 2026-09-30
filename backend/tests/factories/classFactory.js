@@ -24,10 +24,14 @@ async function createClassGroup(overrides = {}) {
   });
 }
 
+// enrolledAt defaults to 30 days ago: tests build assignments that are
+// already overdue, and an assignment that closed before the student joined
+// is not counted against them (assignmentService.closedBeforeEnrollment).
 async function enrollStudent(classGroup, student, overrides = {}) {
   const e = await ClassEnrollment.create({
     classId: classGroup._id,
     studentId: student._id,
+    enrolledAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     ...overrides,
   });
   return e;

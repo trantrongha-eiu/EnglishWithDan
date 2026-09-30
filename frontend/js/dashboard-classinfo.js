@@ -101,8 +101,8 @@ function ciClassCard(c, ck) {
     <div class="ci-tiles">
       ${ciTile('👥', c.classSize, 'Sĩ số lớp', 'ci-tile--indigo')}
       ${ciTile('📅', `${c.heldSessions}${c.totalSessions ? `/${c.totalSessions}` : ''}`, 'Buổi đã học', 'ci-tile--blue')}
-      ${ciTile('🚪', c.absentTotal, 'Buổi nghỉ', 'ci-tile--amber' + (c.maxAbsencesAllowed > 0 && c.absentTotal >= c.maxAbsencesAllowed ? ' ci-tile--danger' : ''))}
-      ${ciTile('📌', c.homeworkMissedCount, 'BT thiếu', 'ci-tile--rose' + (c.homeworkWarnThreshold > 0 && c.homeworkMissedCount >= c.homeworkWarnThreshold ? ' ci-tile--danger' : ''))}
+      ${ciTile('🚪', c.absentTotal, 'Buổi nghỉ', 'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''))}
+      ${ciTile('📌', c.homeworkMissedCount, 'BT thiếu', 'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''))}
     </div>
     ${ciLimitsBlock(c)}
     ${ciCheckinBlock(ck)}
@@ -120,9 +120,24 @@ function ciNum(n) {
 }
 
 function ciLevel(used, warnAt, failAt, failIsReach) {
-  if (failIsReach ? used >= failAt : used > failAt) return 'fail';
-  if (warnAt > 0 && used >= warnAt) return 'warn';
+  if (used > 0 && (failIsReach ? used >= failAt : used > failAt)) return 'fail';
+  if (used > 0 && warnAt > 0 && used >= warnAt) return 'warn';
   return 'ok';
+}
+
+// Server computes these (classAttendanceService.attendanceLevel /
+// homeworkLevel); the local fallback only covers an older payload. Absence
+// never reads as "warn" at 0 absences — it starts at half the allowed count.
+function ciAbsenceLevel(c) {
+  if (c.attendanceLevel) return c.attendanceLevel;
+  const warnAt = c.warnThreshold > 0 ? c.warnThreshold : c.maxAbsencesAllowed / 2;
+  if (c.failOnExceed === false) return c.absenceEquivalent > 0 && c.absenceEquivalent >= warnAt ? 'warn' : 'ok';
+  return ciLevel(c.absenceEquivalent, warnAt, c.maxAbsencesAllowed, false);
+}
+
+function ciHomeworkLevel(c) {
+  if (c.homeworkLevel) return c.homeworkLevel;
+  return ciLevel(c.homeworkMissedCount, c.homeworkWarnThreshold, c.homeworkFailThreshold, true);
 }
 
 function ciMeter(used, max, level) {
@@ -148,10 +163,8 @@ function ciAbsenceNotes(c) {
 }
 
 function ciLimitsBlock(c) {
-  const aLevel = c.failOnExceed === false
-    ? (c.absenceEquivalent >= c.warnThreshold ? 'warn' : 'ok')
-    : ciLevel(c.absenceEquivalent, c.warnThreshold, c.maxAbsencesAllowed, false);
-  const hLevel = ciLevel(c.homeworkMissedCount, c.homeworkWarnThreshold, c.homeworkFailThreshold, true);
+  const aLevel = ciAbsenceLevel(c);
+  const hLevel = ciHomeworkLevel(c);
 
   const aLine = aLevel === 'fail'
     ? '⛔ Đã vượt số buổi được nghỉ.'
@@ -192,15 +205,20 @@ function ciLimitsBlock(c) {
 }
 
 // ── Warning popup ──────────────────────────────────────────────────────
-// Shown when a class has any absence or missed homework (or is already in
-// warning/failed). At most once a day per browser, but again immediately if
-// the numbers change — so a new absence / miss is never silently swallowed.
-// localStorage is only a convenience here: if it throws, the popup just
-// shows on every dashboard load.
+// Absence part: only once the student has used HALF the allowed absences
+// (attendanceLevel warn/fail) — a student with 0 (or 1 of 4) absences gets
+// no attendance reminder. Homework part: any missed assignment. Each class
+// row lists only the part(s) that actually apply. At most once a day per
+// browser, but again immediately if the numbers change — so a new absence /
+// miss is never silently swallowed. localStorage is only a convenience
+// here: if it throws, the popup just shows on every dashboard load.
 const CI_POPUP_KEY = 'ewd_class_warning_popup';
 
+function ciPopupAbsence(c) { return ciAbsenceLevel(c) !== 'ok'; }
+function ciPopupHomework(c) { return c.homeworkMissedCount > 0; }
+
 function ciPopupNeeded(c) {
-  return c.absenceEquivalent > 0 || c.homeworkMissedCount > 0 || c.status === 'warning' || c.status === 'failed';
+  return ciPopupAbsence(c) || ciPopupHomework(c) || c.status === 'failed';
 }
 
 function ciTodayVN() {
@@ -210,39 +228,50 @@ function ciTodayVN() {
 function ciMaybeShowWarningPopup(classes) {
   const flagged = classes.filter(ciPopupNeeded);
   if (!flagged.length) return;
-  const sig = flagged.map((c) => `${c.classId}:${c.status}:${c.absenceEquivalent}:${c.homeworkMissedCount}`).join('|') + '@' + ciTodayVN();
+  const sig = flagged.map((c) => `${c.classId}:${c.status}:${ciPopupAbsence(c) ? c.absenceEquivalent : '-'}:${c.homeworkMissedCount}`).join('|') + '@' + ciTodayVN();
   try { if (localStorage.getItem(CI_POPUP_KEY) === sig) return; } catch (_) { /* show anyway */ }
   if (document.getElementById('ci-warn-modal')) return;
 
   const anyFailed = flagged.some((c) => c.status === 'failed');
+  const anyAbsence = flagged.some(ciPopupAbsence);
+  const anyHomework = flagged.some(ciPopupHomework);
   const rows = flagged.map((c) => {
     const failed = c.status === 'failed';
-    const aOver = c.failOnExceed !== false && c.absenceEquivalent > c.maxAbsencesAllowed;
-    const hOver = c.homeworkMissedCount >= c.homeworkFailThreshold;
+    const aOver = ciAbsenceLevel(c) === 'fail';
+    const hOver = ciHomeworkLevel(c) === 'fail';
+    const lines = [];
+    if (ciPopupAbsence(c)) {
+      lines.push(`<li>🚪 Đã nghỉ <b>${ciNum(c.absenceEquivalent)}/${c.maxAbsencesAllowed}</b> buổi được phép (có phép ${c.absentExcused}, không phép ${c.absentUnexcused}${c.lateCount ? `, trễ ${c.lateCount}` : ''}) —
+          ${aOver ? '<b class="ci-warn-bad">đã vượt giới hạn</b>' : `còn được nghỉ <b>${ciNum(c.remainingAbsences)}</b> buổi`}.</li>`);
+    }
+    if (ciPopupHomework(c)) {
+      lines.push(`<li>📌 Thiếu bài tập <b>${c.homeworkMissedCount}</b> lần (rớt khi thiếu ${c.homeworkFailThreshold}) —
+          ${hOver ? '<b class="ci-warn-bad">đã tới mức rớt</b>' : `còn được thiếu <b>${c.homeworkRemaining}</b> lần`}.</li>`);
+    }
     return `<div class="ci-warn-class ${failed ? 'ci-warn-class--failed' : ''}">
       <div class="ci-warn-class-name">${escHtml(c.className)}${failed ? ' <span class="ci-badge ci-badge--failed">Rớt khóa</span>' : c.status === 'warning' ? ' <span class="ci-badge ci-badge--warning">Cảnh báo</span>' : ''}</div>
-      <ul>
-        <li>🚪 Đã nghỉ <b>${ciNum(c.absenceEquivalent)}/${c.maxAbsencesAllowed}</b> buổi được phép (có phép ${c.absentExcused}, không phép ${c.absentUnexcused}${c.lateCount ? `, trễ ${c.lateCount}` : ''}) —
-          ${aOver ? '<b class="ci-warn-bad">đã vượt giới hạn</b>' : `còn được nghỉ <b>${ciNum(c.remainingAbsences)}</b> buổi`}.</li>
-        <li>📌 Thiếu bài tập <b>${c.homeworkMissedCount}</b> lần (rớt khi thiếu ${c.homeworkFailThreshold}) —
-          ${hOver ? '<b class="ci-warn-bad">đã tới mức rớt</b>' : `còn được thiếu <b>${c.homeworkRemaining}</b> lần`}.</li>
-      </ul>
+      <ul>${lines.join('')}</ul>
     </div>`;
   }).join('');
+  const title = anyFailed ? '⛔ Bạn đã không đạt yêu cầu lớp học'
+    : anyAbsence && anyHomework ? '⚠️ Nhắc nhở chuyên cần & bài tập'
+    : anyAbsence ? '⚠️ Nhắc nhở chuyên cần' : '⚠️ Nhắc nhở bài tập';
+  const foot = anyFailed ? 'Vui lòng liên hệ giáo viên để được hướng dẫn.'
+    : anyAbsence && anyHomework ? 'Nếu nghỉ quá số buổi cho phép hoặc thiếu bài tập tới mức rớt, bạn sẽ <b>rớt khóa học</b>. Bài quá hạn chưa làm — kể cả bài giáo viên đã đóng — vẫn bị tính là thiếu.'
+    : anyAbsence ? 'Nếu nghỉ quá số buổi cho phép, bạn sẽ <b>rớt khóa học</b>.'
+    : 'Nếu thiếu bài tập tới mức rớt, bạn sẽ <b>rớt khóa học</b>. Bài quá hạn chưa làm — kể cả bài giáo viên đã đóng — vẫn bị tính là thiếu. Làm bù đầy đủ sẽ được trừ khỏi số lần thiếu.';
 
   const modal = document.createElement('div');
   modal.id = 'ci-warn-modal';
   modal.className = 'ci-warn-overlay';
   modal.innerHTML = `<div class="ci-warn-box" role="alertdialog" aria-modal="true" aria-labelledby="ci-warn-title">
-    <div class="ci-warn-title" id="ci-warn-title">${anyFailed ? '⛔ Bạn đã không đạt yêu cầu lớp học' : '⚠️ Nhắc nhở chuyên cần & bài tập'}</div>
+    <div class="ci-warn-title" id="ci-warn-title">${title}</div>
     <div class="ci-warn-body">
       ${rows}
-      <p class="ci-warn-foot">${anyFailed
-        ? 'Vui lòng liên hệ giáo viên để được hướng dẫn.'
-        : 'Nếu nghỉ quá số buổi cho phép hoặc thiếu bài tập tới mức rớt, bạn sẽ <b>rớt khóa học</b>. Bài quá hạn chưa làm — kể cả bài giáo viên đã đóng — vẫn bị tính là thiếu.'}</p>
+      <p class="ci-warn-foot">${foot}</p>
     </div>
     <div class="ci-warn-actions">
-      <a class="ci-warn-btn ci-warn-btn--ghost" href="#homework-card" data-close>Xem bài tập</a>
+      ${anyHomework ? '<a class="ci-warn-btn ci-warn-btn--ghost" href="#homework-card" data-close>Xem bài tập</a>' : ''}
       <button type="button" class="ci-warn-btn" data-close>Tôi đã hiểu</button>
     </div>
   </div>`;

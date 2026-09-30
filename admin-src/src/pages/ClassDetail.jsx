@@ -43,8 +43,8 @@ const RESOURCE_CATS = [
   { type: 'mock_test', label: 'Thi thử 4 kỹ năng' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
-const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red' };
-const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn' };
+const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
+const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau hạn — không tính' };
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -128,7 +128,14 @@ function OverviewTab({ cls, onSaved }) {
   }));
   const [saving, setSaving] = useState(false);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const setP = (k) => (e) => setForm((f) => ({ ...f, policy: { ...f.policy, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value } }));
+  // Changing the allowed absences re-derives the warn threshold as half of it
+  // (owner's rule: remind from the half-way mark) — still editable after.
+  const setP = (k) => (e) => setForm((f) => {
+    const v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const policy = { ...f.policy, [k]: v };
+    if (k === 'maxAbsencesAllowed' && v !== '' && Number(v) >= 0) policy.warnThreshold = Number(v) / 2;
+    return { ...f, policy };
+  });
 
   async function save(e) {
     e.preventDefault();
@@ -196,8 +203,8 @@ function OverviewTab({ cls, onSaved }) {
             <input className="form-input" type="number" min={0} value={form.policy.maxAbsencesAllowed} onChange={setP('maxAbsencesAllowed')} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Ngưỡng cảnh báo (buổi)</label>
-            <input className="form-input" type="number" min={0} value={form.policy.warnThreshold} onChange={setP('warnThreshold')} />
+            <label className="form-label">Ngưỡng nhắc nhở / cảnh báo (buổi) — mặc định ½ số buổi được phép</label>
+            <input className="form-input" type="number" min={0} step={0.5} value={form.policy.warnThreshold} onChange={setP('warnThreshold')} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Số lần trễ = 1 buổi vắng</label>

@@ -3,7 +3,7 @@
 // Pure-function tests for computeEnrollmentStats — no DB. Builds session /
 // record arrays by hand (shape matches the Mongoose lean() docs the service
 // passes in).
-const { computeEnrollmentStats, deriveCombinedStatus } = require('../../../services/classAttendanceService');
+const { computeEnrollmentStats, deriveCombinedStatus, attendanceLevel, homeworkLevel } = require('../../../services/classAttendanceService');
 
 let idc = 0;
 const oid = () => `id${++idc}`;
@@ -145,5 +145,36 @@ describe('deriveCombinedStatus — attendance OR homework, either alone can warn
   test('terminal statuses (completed/dropped) are never overridden by homework misses', () => {
     expect(deriveCombinedStatus({ derivedStatus: 'completed', absenceEquivalent: 0 }, 99, { homeworkFailThreshold: 10 })).toBe('completed');
     expect(deriveCombinedStatus({ derivedStatus: 'dropped', absenceEquivalent: 0 }, 99, { homeworkFailThreshold: 10 })).toBe('dropped');
+  });
+});
+
+describe('attendanceLevel / homeworkLevel — reminders start at half the allowed absences, never at 0', () => {
+  test('no absences is always ok, even with a stored warnThreshold of 0', () => {
+    expect(attendanceLevel(0, { maxAbsencesAllowed: 4, warnThreshold: 0 })).toBe('ok');
+    expect(attendanceLevel(0, { maxAbsencesAllowed: 0, warnThreshold: 0 })).toBe('ok');
+  });
+
+  test('warnThreshold 0 / missing falls back to half of maxAbsencesAllowed', () => {
+    expect(attendanceLevel(1, { maxAbsencesAllowed: 4, warnThreshold: 0 })).toBe('ok');
+    expect(attendanceLevel(1.5, { maxAbsencesAllowed: 4 })).toBe('ok');
+    expect(attendanceLevel(2, { maxAbsencesAllowed: 4, warnThreshold: 0 })).toBe('warn');
+    expect(attendanceLevel(2.5, { maxAbsencesAllowed: 5 })).toBe('warn');
+    expect(attendanceLevel(4, { maxAbsencesAllowed: 4 })).toBe('warn'); // at the limit, not over
+    expect(attendanceLevel(4.5, { maxAbsencesAllowed: 4 })).toBe('fail');
+    expect(attendanceLevel(9, { maxAbsencesAllowed: 4, failOnExceed: false })).toBe('warn');
+  });
+
+  test('a student in "warning" only for homework keeps attendanceLevel ok', () => {
+    const policy = { maxAbsencesAllowed: 4, homeworkWarnThreshold: 5, homeworkFailThreshold: 10 };
+    expect(deriveCombinedStatus({ derivedStatus: 'active', absenceEquivalent: 0 }, 6, policy)).toBe('warning');
+    expect(attendanceLevel(0, policy)).toBe('ok');
+    expect(homeworkLevel(6, policy)).toBe('warn');
+    expect(homeworkLevel(10, policy)).toBe('fail');
+    expect(homeworkLevel(0, policy)).toBe('ok');
+  });
+
+  test('computeEnrollmentStats: 0 absences with warnThreshold 0 stays active', () => {
+    const out = computeEnrollmentStats({ enrollment: { status: 'active' }, policy: { maxAbsencesAllowed: 4, warnThreshold: 0 }, sessions: [], records: [] });
+    expect(out.derivedStatus).toBe('active');
   });
 });

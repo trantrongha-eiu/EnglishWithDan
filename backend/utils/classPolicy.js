@@ -8,9 +8,14 @@
 // misses into the auto status — see refreshClass/refreshEnrollment there),
 // so assignmentService can no longer depend back on classAttendanceService.
 function withPolicyDefaults(policy = {}) {
+  const maxAbsencesAllowed = policy.maxAbsencesAllowed ?? 3;
   return {
-    maxAbsencesAllowed:     policy.maxAbsencesAllowed ?? 3,
-    warnThreshold:          policy.warnThreshold ?? 2,
+    maxAbsencesAllowed,
+    // Absence reminder/warning kicks in at HALF the allowed absences (owner's
+    // rule). A stored 0/blank used to mean "warn at 0 absences" — i.e. every
+    // student in the class read as "warning" before missing a single session
+    // — so anything < 0.5 now falls back to that half-way mark.
+    warnThreshold:          policy.warnThreshold >= 0.5 ? policy.warnThreshold : maxAbsencesAllowed / 2,
     excusedCountsAsAbsence: policy.excusedCountsAsAbsence ?? true,
     lateToAbsenceRatio:     policy.lateToAbsenceRatio && policy.lateToAbsenceRatio >= 1 ? policy.lateToAbsenceRatio : 2,
     lateThresholdMinutes:   policy.lateThresholdMinutes ?? 15,

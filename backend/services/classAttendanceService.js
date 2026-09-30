@@ -30,6 +30,30 @@ function round1(n) {
   return Math.round((n + Number.EPSILON) * 10) / 10;
 }
 
+const LEVEL_TO_STATUS = { ok: 'active', warn: 'warning', fail: 'failed' };
+
+// Attendance on its own: 'fail' once the absence-equivalent goes OVER the
+// allowed count (only if failOnExceed), 'warn' from the warn threshold (half
+// the allowed absences by default — see utils/classPolicy.js), else 'ok'.
+// Never 'warn' at 0 absences, whatever the threshold says: a student who has
+// not missed anything must not be told they're close to the limit.
+function attendanceLevel(absenceEquivalent, policy) {
+  const p = withPolicyDefaults(policy);
+  const n = Number(absenceEquivalent) || 0;
+  if (p.failOnExceed && n > p.maxAbsencesAllowed) return 'fail';
+  if (n > 0 && n >= p.warnThreshold) return 'warn';
+  return 'ok';
+}
+
+// Homework on its own — fails AT the threshold (>=), unlike attendance.
+function homeworkLevel(homeworkMissedCount, policy) {
+  const p = withPolicyDefaults(policy);
+  const n = Number(homeworkMissedCount) || 0;
+  if (n > 0 && n >= p.homeworkFailThreshold) return 'fail';
+  if (n > 0 && n >= p.homeworkWarnThreshold) return 'warn';
+  return 'ok';
+}
+
 /**
  * @param {object}   args
  * @param {object}   args.enrollment  ClassEnrollment (only .status is read)
@@ -100,12 +124,8 @@ function computeEnrollmentStats({ enrollment, policy, sessions = [], records = [
   let derivedStatus;
   if (TERMINAL_STATUSES.has(enrollment?.status)) {
     derivedStatus = enrollment.status;
-  } else if (p.failOnExceed && absenceEquivalent > p.maxAbsencesAllowed) {
-    derivedStatus = 'failed';
-  } else if (absenceEquivalent >= p.warnThreshold) {
-    derivedStatus = 'warning';
   } else {
-    derivedStatus = 'active';
+    derivedStatus = LEVEL_TO_STATUS[attendanceLevel(absenceEquivalent, p)];
   }
 
   return {
@@ -120,13 +140,10 @@ function computeEnrollmentStats({ enrollment, policy, sessions = [], records = [
 // without a DB.
 function deriveCombinedStatus(stats, homeworkMissedCount, policy) {
   if (TERMINAL_STATUSES.has(stats.derivedStatus)) return stats.derivedStatus;
-  const p = withPolicyDefaults(policy);
-  const attendanceFail = p.failOnExceed && stats.absenceEquivalent > p.maxAbsencesAllowed;
-  const homeworkFail = homeworkMissedCount >= p.homeworkFailThreshold;
-  if (attendanceFail || homeworkFail) return 'failed';
-  const attendanceWarn = stats.absenceEquivalent >= p.warnThreshold;
-  const homeworkWarn = homeworkMissedCount >= p.homeworkWarnThreshold;
-  if (attendanceWarn || homeworkWarn) return 'warning';
+  const a = attendanceLevel(stats.absenceEquivalent, policy);
+  const h = homeworkLevel(homeworkMissedCount, policy);
+  if (a === 'fail' || h === 'fail') return 'failed';
+  if (a === 'warn' || h === 'warn') return 'warning';
   return 'active';
 }
 
@@ -135,10 +152,12 @@ function deriveCombinedStatus(stats, homeworkMissedCount, policy) {
 // attendance keep getting the exact same text.
 function autoStatusReason(stats, policy, homeworkMissedCount = 0, status = stats.derivedStatus) {
   const p = withPolicyDefaults(policy);
-  const attendanceFail = p.failOnExceed && stats.absenceEquivalent > p.maxAbsencesAllowed;
-  const homeworkFail = homeworkMissedCount >= p.homeworkFailThreshold;
-  const attendanceWarn = stats.absenceEquivalent >= p.warnThreshold;
-  const homeworkWarn = homeworkMissedCount >= p.homeworkWarnThreshold;
+  const a = attendanceLevel(stats.absenceEquivalent, policy);
+  const h = homeworkLevel(homeworkMissedCount, policy);
+  const attendanceFail = a === 'fail';
+  const homeworkFail = h === 'fail';
+  const attendanceWarn = a === 'warn';
+  const homeworkWarn = h === 'warn';
   const reasons = [];
   if (status === 'failed') {
     if (attendanceFail) reasons.push(`Nghỉ ${stats.absenceEquivalent}/${p.maxAbsencesAllowed} buổi — vượt giới hạn cho phép.`);
@@ -168,6 +187,10 @@ function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount =
     enrollment.status = combinedStatus;
     enrollment.statusAuto = true;
     enrollment.statusUpdatedAt = new Date();
+    enrollment.statusReason = autoStatusReason(stats, policy, homeworkMissedCount, combinedStatus);
+  } else if (enrollment.statusAuto && enrollment.status === combinedStatus) {
+    // Same status, different numbers (e.g. 5 → 7 missed assignments): keep
+    // the system-written reason in step instead of freezing the first one.
     enrollment.statusReason = autoStatusReason(stats, policy, homeworkMissedCount, combinedStatus);
   }
 }
@@ -220,6 +243,8 @@ async function refreshEnrollment(enrollmentId) {
 
 module.exports = {
   computeEnrollmentStats,
+  attendanceLevel,
+  homeworkLevel,
   deriveCombinedStatus,
   withPolicyDefaults,
   autoStatusReason,

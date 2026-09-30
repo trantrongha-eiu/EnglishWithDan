@@ -21,6 +21,7 @@ const Task2Attempt = require('../../models/Task2Attempt');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
+const assignmentService = require('../../services/assignmentService');
 
 // Backdate a document's createdAt. Mongoose's timestamps plugin marks
 // createdAt immutable, so every Mongoose-level write (findByIdAndUpdate,
@@ -359,6 +360,17 @@ describe('completion tracking', () => {
     expect(row.status).toBe('completed');
   });
 
+  test('course lesson finished BEFORE it was assigned still counts (WT1Progress.completedAt is stamped once and never moves)', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const lesson = await createWT1Lesson({ code: 'BUOI-EARLY', title: 'Buổi làm trước' });
+    await WT1Progress.create({ userId: s._id, courseCode: 'IELTS-W-T1', lessonCode: 'BUOI-EARLY', completedAt: past(5) });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: lesson._id }] });
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
+  });
+
   test('WT1-stack sibling courses: task2_course_lesson / speaking_course_lesson are course-scoped and never leak into task1_lesson', async () => {
     const t = await createTeacher();
     const s = await createStudent();
@@ -537,31 +549,48 @@ describe('completion tracking', () => {
     expect(row.status).toBe('completed');
   });
 
-  test('speaking requires the AI grading to have finished AND scored at least band 5 — a low band or still-pending attempt does not count', async () => {
+  test('speaking counts a real spoken answer whatever the band; empty / band-0 / still-pending attempts do not', async () => {
     const t = await createTeacher();
     const s = await createStudent();
     const { cls } = await makeClassWith(t, [s]);
     const q = await createSpeakingQuestion({ part: 1, topic: 'Hobbies', question: 'Do you have a hobby?' });
     const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'speaking', resourceId: q._id }] });
+    const answer = 'I really enjoy reading books in my free time because it helps me relax and learn new things every day';
+    const done = async () => {
+      const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+      return mine.body.assignments.find((a) => a._id === String(asg._id)).done;
+    };
 
-    // Below band 5 — must not count even though it's fully graded.
-    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, aiFeedback: { overallBand: 4 } } });
+    // Grader scored 0 (silence / no usable speech) — not a real answer.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, transcript: answer, aiFeedback: { overallBand: 0 } } });
+    expect(await done()).toBe(0);
+
+    // Almost nothing said — doesn't count even with a band on record.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, transcript: 'yes I do', aiFeedback: { overallBand: 4 } } });
+    expect(await done()).toBe(0);
+
+    // Still grading — not yet.
+    await createSpeakingAttempt({ userId: s._id, status: 'pending', extra: { questionId: q._id, transcript: answer, aiFeedback: { overallBand: 9 } } });
+    expect(await done()).toBe(0);
+
+    // A real answer at band 4 counts (submission-based, not a band pass mark).
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, transcript: answer, aiFeedback: { overallBand: 4 } } });
+    expect(await done()).toBe(1);
+  });
+
+  test('speaking: a real answer whose AI grading failed (status error) still counts — the outage is not the student\'s fault', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const q = await createSpeakingQuestion({ part: 1, topic: 'Hobbies', question: 'Do you have a hobby?' });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'speaking', resourceId: q._id }] });
+    await createSpeakingAttempt({ userId: s._id, status: 'error', extra: { questionId: q._id, transcript: 'hmm' } });
     let mine = await request(app).get('/api/assignments/mine').set(authH(s));
-    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
-    expect(row.done).toBe(0);
+    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).done).toBe(0);
 
-    // Still grading (pending) with a band already on record (e.g. a retry
-    // reusing the row) must not count until status flips to 'analyzed'.
-    await createSpeakingAttempt({ userId: s._id, status: 'pending', extra: { questionId: q._id, aiFeedback: { overallBand: 9 } } });
+    await createSpeakingAttempt({ userId: s._id, status: 'error', extra: { questionId: q._id, transcript: 'I live in a quiet green area near the river so I often go for a walk with my dog in the evening' } });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
-    row = mine.body.assignments.find((a) => a._id === String(asg._id));
-    expect(row.done).toBe(0);
-
-    // Analyzed and >= band 5 — counts.
-    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { questionId: q._id, aiFeedback: { overallBand: 5 } } });
-    mine = await request(app).get('/api/assignments/mine').set(authH(s));
-    row = mine.body.assignments.find((a) => a._id === String(asg._id));
-    expect(row.status).toBe('completed');
+    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
   });
 
   test('student can tick external/image items, cannot tick internal', async () => {
@@ -662,6 +691,25 @@ describe('deadline / overdue / warning', () => {
     const summary = await request(app).get('/api/assignments/mine/summary').set(authH(s));
     expect(summary.body.warn).toBe(true);
     expect(summary.body.overdueCount).toBe(2);
+  });
+});
+
+describe('joined the class after an assignment closed', () => {
+  test('an assignment due (or archived) before the student enrolled is not counted as missed', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t });
+    const enr = await enrollStudent(cls, s, { enrolledAt: past(1) });
+    // due 3 days ago — before this student joined
+    await createAssignment(cls, { deadline: new Date(past(3)), resources: [{ kind: 'external', url: 'https://x.com', title: 'x' }] });
+    // due 1 hour ago — after they joined: a real miss
+    const counted = await createAssignment(cls, { deadline: new Date(Date.now() - 3600e3), resources: [{ kind: 'external', url: 'https://y.com', title: 'y' }] });
+
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.map((a) => a._id)).toEqual([String(counted._id)]);
+    expect(await assignmentService.getOverdueCountForClass(s._id, cls._id)).toBe(1);
+    const refreshed = await classAttendanceService.refreshEnrollment(enr._id);
+    expect(refreshed.stats.homeworkMissedCount).toBe(1);
   });
 });
 

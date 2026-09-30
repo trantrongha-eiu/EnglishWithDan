@@ -1924,7 +1924,9 @@ function openFlashcardMode() {
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent     = `📘 ${currentBookData.name}`;
     if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
-    showMode('fillBlank');
+    // Default book practice = Mixed (Quiz/Flashcard/Listen/Dịch shuffled);
+    // the other modes stay one tab away.
+    showMode('mixed');
 }
 function openPreviewMode() {
     if (!currentBookData?.words?.length) { toast('Sổ này chưa có từ nào', 'error'); return; }

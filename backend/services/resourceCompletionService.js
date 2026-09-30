@@ -52,7 +52,8 @@ const { escapeRegex } = require('../utils/strings');
 // graded skills (writing_exam, mock_test — IELTS band 0–9, not a %) have no
 // `scoreGate` below and keep the old "submitted = done" rule; a 70%-of-9
 // cutoff would be an arbitrary, undiscussed pass mark for those. `speaking`
-// uses `bandGate` instead (see MIN_SPEAKING_BAND) since it has a real band.
+// uses `bandGate` instead (see speakingAttemptCounts) — submission-based,
+// but it must be a real spoken answer.
 const PASS_PERCENT = 70;
 
 // Writing tasks have no score to gate on, but DO have a real pass/fail bar
@@ -62,11 +63,25 @@ const PASS_PERCENT = 70;
 // `instructions` field is free text) matching the standard IELTS requirement.
 const MIN_WORDS = { task1: 150, task2: 250 };
 
-// Speaking is AI-graded on the real IELTS 0–9 band scale (SpeakingAttempt.
-// aiFeedback.overallBand), so unlike writing_exam/mock_test it CAN gate on a
-// real pass bar instead of "submitted = done": a recording that's just
-// silence/gibberish still gets analyzed and shouldn't count as "hoàn thành".
-const MIN_SPEAKING_BAND = 5;
+// Speaking homework = "the student really answered", NOT a band pass mark —
+// the owner's rule for AI/band-graded skills is "submission = done". The old
+// band >= 5 bar meant most of a 6.0-target class (typical AI band 4) could
+// never complete a speaking item. What still does NOT count:
+//   - an analyzed attempt the grader scored 0 (silence / no usable speech),
+//   - a recording with almost no words in the transcript,
+//   - a still-'pending' one (grading not finished yet).
+// An 'error' attempt (the AI call failed — e.g. the 14–15/09 grading outage,
+// 220+ failed attempts with real 20–50-word transcripts) DOES count when the
+// transcript shows a real answer: the failure was ours, not the student's.
+const MIN_SPEAKING_WORDS = 15;
+function speakingWordCount(transcript) {
+  return String(transcript || '').split(/\s+/).filter(Boolean).length;
+}
+function speakingAttemptCounts(d) {
+  if (speakingWordCount(d.transcript) < MIN_SPEAKING_WORDS) return false;
+  if (d.status === 'analyzed') return Number(d?.aiFeedback?.overallBand || 0) > 0;
+  return d.status === 'error';
+}
 
 const REGISTRY = {
   reading_test: {
@@ -164,12 +179,10 @@ const REGISTRY = {
     catalog: { model: SpeakingQuestion, filter: { isActive: true }, sort: { part: 1, createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: `Part ${d.part}: ${String(d.question || '').slice(0, 70)}`, meta: d.topic || '' }) },
     attempt: { model: SpeakingAttempt, userField: 'userId', idField: 'questionId', filter: {} },
-    // "Hoàn thành" requires the AI grading to have actually finished AND
-    // scored at least MIN_SPEAKING_BAND — a 'pending'/'error' attempt (still
-    // grading, or the AI call failed) or a low-band recording doesn't count.
+    // See speakingAttemptCounts — a real spoken answer counts, whatever band.
     bandGate: {
-      fields: 'status aiFeedback.overallBand',
-      ok: (d) => d.status === 'analyzed' && Number(d?.aiFeedback?.overallBand || 0) >= MIN_SPEAKING_BAND,
+      fields: 'status aiFeedback.overallBand transcript',
+      ok: speakingAttemptCounts,
     },
   },
   grammar: {
@@ -272,6 +285,12 @@ const TYPES = Object.keys(REGISTRY);
 
 function isValidType(t) {
   return Object.prototype.hasOwnProperty.call(REGISTRY, t);
+}
+
+// Course lessons (the WT1-stack `custom` types) count a completion from
+// before the assignment existed — see the `custom` branch of checkCompleted.
+function countsPriorCompletion(t) {
+  return !!(REGISTRY[t] && REGISTRY[t].attempt && REGISTRY[t].attempt.custom);
 }
 
 // Teacher resource picker. Returns [{ _id, label, meta }]. For mock_test,
@@ -390,7 +409,11 @@ async function checkCompleted(studentId, internalItems, since = null) {
       const codeToId = new Map(lessons.map((l) => [l.code, String(l._id)]));
       const codes = [...codeToId.keys()];
       if (!codes.length) return;
-      const filter = { userId: studentId, lessonCode: { $in: codes }, completedAt: since ? { $gte: since } : { $ne: null } };
+      // No `since` here on purpose: WT1Progress.completedAt is stamped ONCE,
+      // when the lesson's last exercise is first done — redoing it later never
+      // moves it. A student who finished the lesson before the teacher
+      // assigned it could otherwise never satisfy the homework.
+      const filter = { userId: studentId, lessonCode: { $in: codes }, completedAt: { $ne: null } };
       const rows = await A.model.find(filter).select('lessonCode completedAt').lean().catch(() => []);
       for (const r of rows) {
         const lid = codeToId.get(r.lessonCode);
@@ -517,6 +540,6 @@ async function checkCompleted(studentId, internalItems, since = null) {
 }
 
 module.exports = {
-  REGISTRY, TYPES, isValidType, PASS_PERCENT,
+  REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, MIN_SPEAKING_WORDS,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
 };

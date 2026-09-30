@@ -125,6 +125,19 @@ function archivedIsMissed(assignment, status) {
   return status !== 'completed';
 }
 
+// An assignment whose window had already closed before this student joined
+// the class was never theirs to do — e.g. a student added on 08/09 was being
+// charged a miss for homework due 07/09. "Closed" = its deadline, or, for an
+// archived one with no deadline, the moment it was archived (≈ updatedAt).
+function closedBeforeEnrollment(assignment, enrollment) {
+  const joined = enrollment && (enrollment.enrolledAt || enrollment.createdAt);
+  if (!joined) return false;
+  const joinedAt = new Date(joined).getTime();
+  if (assignment.deadline) return new Date(assignment.deadline).getTime() < joinedAt;
+  if (assignment.status === 'archived' && assignment.updatedAt) return new Date(assignment.updatedAt).getTime() < joinedAt;
+  return false;
+}
+
 // ── Student: all my homework across my active classes ──────────────────
 // `persist` (only from GET /api/assignments/mine, not the nav.js summary or
 // the cron) writes an accurate completedCount/allCompletedAt back onto each
@@ -170,6 +183,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     const cls = classMap.get(String(a.classId));
     const enr = enrollByClass.get(String(a.classId));
     if (!cls || !enr) continue;
+    if (closedBeforeEnrollment(a, enr)) continue;
 
     const manualCompleted = new Set(
       (storedMap.get(String(a._id))?.items || []).filter((it) => it.source === 'manual' && it.status === 'completed').map((it) => String(it.resourceItemId))
@@ -184,8 +198,10 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         if (v && v.completed) { completed = true; completedAt = v.completedAt; }
       } else if (autoTracked) {
         const hit = completionMap.get(rcs.resourceKey(r.resourceType, r.resourceId));
-        // only count if completed at/after THIS assignment's createdAt
-        if (hit && hit.completed && new Date(hit.completedAt) >= new Date(a.createdAt)) {
+        // only count if completed at/after THIS assignment's createdAt —
+        // except course lessons, whose one-time completion can't be redone
+        // (see resourceCompletionService.countsPriorCompletion)
+        if (hit && hit.completed && (rcs.countsPriorCompletion(r.resourceType) || new Date(hit.completedAt) >= new Date(a.createdAt))) {
           completed = true; completedAt = hit.completedAt;
         }
       } else {
@@ -440,7 +456,11 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
     }
     const partial = [...vocabGoals.values()].some((v) => !v.completed && v.practiced > 0);
-    const { status, done, total } = deriveAssignmentStatus(assignment, completedIds, now, { partial });
+    const derived = deriveAssignmentStatus(assignment, completedIds, now, { partial });
+    const { done, total } = derived;
+    // Joined after this assignment had already closed — not counted against
+    // them (getStudentAssignments skips it the same way).
+    const status = derived.status !== 'completed' && closedBeforeEnrollment(assignment, e) ? 'not_applicable' : derived.status;
     return {
       enrollmentId: e._id, studentId: e.studentId, removed: !!e.removedAt,
       student: { name: displayNameOf(sMap.get(String(e.studentId))), username: sMap.get(String(e.studentId))?.username || '' },
@@ -464,6 +484,7 @@ module.exports = {
   getOverdueCountForClass,
   getMissedAssignmentsByClass,
   archivedIsMissed,
+  closedBeforeEnrollment,
   markManualItem,
   getAssignmentProgressTable,
   displayNameOf,

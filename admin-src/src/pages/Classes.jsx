@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const POLICY_BLANK = {
   maxAbsencesAllowed: 3,
-  warnThreshold: 2,
+  warnThreshold: 1.5,
   excusedCountsAsAbsence: true,
   lateToAbsenceRatio: 2,
   lateThresholdMinutes: 15,
@@ -24,7 +24,14 @@ function ClassModal({ onClose, onSaved }) {
   const [form, setForm] = useState(BLANK);
   const [saving, setSaving] = useState(false);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
-  const setP = (k) => (e) => setForm((f) => ({ ...f, policy: { ...f.policy, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value } }));
+  // Changing the allowed absences re-derives the warn threshold as half of it
+  // (owner's rule: remind from the half-way mark) — still editable after.
+  const setP = (k) => (e) => setForm((f) => {
+    const v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const policy = { ...f.policy, [k]: v };
+    if (k === 'maxAbsencesAllowed' && v !== '' && Number(v) >= 0) policy.warnThreshold = Number(v) / 2;
+    return { ...f, policy };
+  });
 
   async function save(e) {
     e.preventDefault();
@@ -87,8 +94,8 @@ function ClassModal({ onClose, onSaved }) {
                 <input className="form-input" type="number" min={0} value={form.policy.maxAbsencesAllowed} onChange={setP('maxAbsencesAllowed')} />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Ngưỡng cảnh báo (buổi)</label>
-                <input className="form-input" type="number" min={0} value={form.policy.warnThreshold} onChange={setP('warnThreshold')} />
+                <label className="form-label">Ngưỡng nhắc nhở / cảnh báo (buổi) — mặc định ½ số buổi được phép</label>
+                <input className="form-input" type="number" min={0} step={0.5} value={form.policy.warnThreshold} onChange={setP('warnThreshold')} />
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Số lần trễ = 1 buổi vắng</label>

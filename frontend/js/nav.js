@@ -570,9 +570,16 @@
     fetch(API + '/classes/my/attendance-status', { headers: headers })
       .then(function (r) { return r.json(); })
       .then(function (d) {
+        // Keyed on the CAUSE, not the combined enrollment status: a student
+        // in "warning" only because of missed homework has 0 absences and
+        // must not get "Bạn đã nghỉ 0 buổi…". The absence banner starts at
+        // half the allowed absences (server-side attendanceLevel). Older
+        // payloads without the level fields fall back to the status.
         (d && d.classes || []).forEach(function (info) {
-          if (info.status === 'failed') _showAttendanceFailedBanner(info);
-          else if (info.status === 'warning') _showAttendanceWarningBanner(info);
+          var aLevel = info.attendanceLevel || (info.status === 'failed' ? 'fail' : info.status === 'warning' ? 'warn' : 'ok');
+          if (info.status === 'failed' && aLevel === 'fail') _showAttendanceFailedBanner(info);
+          else if (info.status === 'failed' && info.homeworkLevel === 'fail') _showHomeworkFailedBanner(info);
+          else if (aLevel === 'warn' || aLevel === 'fail') _showAttendanceWarningBanner(info);
         });
       })
       .catch(function () {});
@@ -765,29 +772,47 @@
     });
   }
 
+  // The level is judged on absenceEquivalent (absences + late/ratio), so the
+  // banner shows that number — absentTotal alone reads "nghỉ 0 buổi" for a
+  // student who is here only because of lateness.
+  function _attnUsed(info) {
+    var used = info.absenceEquivalent != null ? info.absenceEquivalent : info.absentTotal;
+    var s = '<strong>' + used + ' buổi</strong>';
+    if (info.lateCount) s += ' (gồm ' + info.lateCount + ' lần đi trễ quy đổi)';
+    return s;
+  }
+
   function _showAttendanceWarningBanner(info) {
-    var absent = info.absentTotal != null ? info.absentTotal : info.absenceEquivalent;
     _renderAttendanceBanner(
       'nav-attendance-warning-banner',
       'linear-gradient(90deg,#b91c1c,#dc2626)',
-      '<span style="flex:1;text-align:center">⚠️ Bạn đã nghỉ <strong>' + absent + ' buổi</strong> ở lớp <strong>' + _escAttn(info.className) + '</strong>. ' +
+      '<span style="flex:1;text-align:center">⚠️ Bạn đã nghỉ ' + _attnUsed(info) + ' ở lớp <strong>' + _escAttn(info.className) + '</strong>. ' +
       'Tối đa được phép nghỉ <strong>' + info.maxAbsencesAllowed + '</strong> buổi, còn lại <strong>' + info.remaining + '</strong>. ' +
       'Vui lòng chú ý lịch học để không bị rớt khóa.</span>'
     );
   }
 
   function _showAttendanceFailedBanner(info) {
-    var absent = info.absentTotal != null ? info.absentTotal : info.absenceEquivalent;
+    var absent = info.absenceEquivalent != null ? info.absenceEquivalent : info.absentTotal;
     _renderAttendanceBanner(
       'nav-attendance-failed-banner',
       'linear-gradient(90deg,#7f1d1d,#991b1b)',
       '<span style="flex:1;text-align:center">⛔ Bạn đã không đạt yêu cầu chuyên cần của lớp <strong>' + _escAttn(info.className) + '</strong> ' +
-      '(nghỉ <strong>' + absent + '/' + info.maxAbsencesAllowed + '</strong> buổi). Vui lòng liên hệ giáo viên.</span>'
+      '(nghỉ <strong>' + absent + '/' + info.maxAbsencesAllowed + '</strong> buổi' + (info.lateCount ? ', gồm ' + info.lateCount + ' lần đi trễ quy đổi' : '') + '). Vui lòng liên hệ giáo viên.</span>'
+    );
+  }
+
+  function _showHomeworkFailedBanner(info) {
+    _renderAttendanceBanner(
+      'nav-homework-failed-banner',
+      'linear-gradient(90deg,#7f1d1d,#991b1b)',
+      '<span style="flex:1;text-align:center">⛔ Bạn đã không đạt yêu cầu bài tập của lớp <strong>' + _escAttn(info.className) + '</strong> ' +
+      '(thiếu <strong>' + info.homeworkMissedCount + '/' + info.homeworkFailThreshold + '</strong> bài). Vui lòng liên hệ giáo viên.</span>'
     );
   }
 
   function _showHomeworkWarningBanner(w) {
-    var parts = ['⚠️ Bạn đang có <strong>' + w.missedCount + ' buổi</strong> chưa hoàn thành đầy đủ bài tập'];
+    var parts = ['⚠️ Bạn đang thiếu <strong>' + w.missedCount + ' bài tập</strong> (quá hạn chưa hoàn thành)'];
     if (w.className) parts.push(' ở lớp <strong>' + _escAttn(w.className) + '</strong>');
     parts.push('. ');
     if (w.incompleteCount) parts.push('Còn <strong>' + w.incompleteCount + '</strong> bài chưa xong. ');

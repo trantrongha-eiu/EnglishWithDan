@@ -67,7 +67,7 @@ describe('class + policy defaults', () => {
     const cls = await makeClass(t);
     expect(cls.policy).toMatchObject({
       maxAbsencesAllowed: 3,
-      warnThreshold: 2,
+      warnThreshold: null, // = half of maxAbsencesAllowed (utils/classPolicy.js)
       excusedCountsAsAbsence: true,
       lateToAbsenceRatio: 2,
       failOnExceed: true,
@@ -471,6 +471,22 @@ describe('GET /api/classes/my/overview — dashboard homepage class summary', ()
       homeworkWarnThreshold: 5,
       homeworkFailThreshold: 10,
     });
+  });
+
+  test('a stale stored "warning" with 0 absences / 0 misses is resynced, and gives no absence reminder', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await makeClass(t, { policy: { maxAbsencesAllowed: 4 } });
+    const e = await addStudent(t, cls._id, s);
+    // written by the old rules (e.g. warnThreshold 0 → everyone "warning")
+    await ClassEnrollment.updateOne({ _id: e.enrollmentId }, { $set: { status: 'warning', statusAuto: true, statusReason: 'Đã nghỉ 0 buổi' } });
+
+    const status = await request(app).get('/api/classes/my/attendance-status').set(auth(s));
+    expect(status.body.classes[0]).toMatchObject({ attendanceLevel: 'ok', homeworkLevel: 'ok' });
+
+    const res = await request(app).get('/api/classes/my/overview').set(auth(s));
+    expect(res.body.classes[0]).toMatchObject({ status: 'active', attendanceLevel: 'ok', absentTotal: 0 });
+    expect((await ClassEnrollment.findById(e.enrollmentId)).status).toBe('active');
   });
 });
 
