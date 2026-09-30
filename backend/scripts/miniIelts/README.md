@@ -11,7 +11,7 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 
 ## 2. Trạng thái hiện tại
 
-50 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện) — pilot + batch2 … batch5 (lô 3–5 nhập 2026-09-30):
+60 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện) — pilot + batch2 … batch6 (lô 3–6 nhập 2026-09-30):
 
 | _id | Tên | P |
 |---|---|---|
@@ -65,10 +65,20 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 | 6abce92d1cf40659f1d90260 | Knowledge in medicine | P3 |
 | 6abce92f1cf40659f1d90271 | Assessing the risk | P3 |
 | 6abce9301cf40659f1d90283 | The vikings wayfaring way | P2 |
+| 6abd01a41b50c9b87212e52a | The Power of Nothing | P3 |
+| 6abd01a61b50c9b87212e53c | What Are Dreams? | P3 |
+| 6abd01a81b50c9b87212e54e | Travel Accounts | P1 |
+| 6abd01aa1b50c9b87212e55e | Art in Iron and Steel | P3 |
+| 6abd01ac1b50c9b87212e570 | Multitasking Debate | P2 |
+| 6abd01ae1b50c9b87212e581 | Biodiversity | P1 |
+| 6abd01af1b50c9b87212e591 | Renewable Energy | P2 |
+| 6abd01b21b50c9b87212e5a1 | The Fruit Book | P3 |
+| 6abd01b21b50c9b87212e5b2 | The history of glass | P1 |
+| 6abd01b41b50c9b87212e5c2 | Cork | P1 |
 
-Đã xem nhưng **bỏ** (đừng làm lại trừ khi có nguồn chuẩn khác): 1528 Insect decision-making, 1529 Fear of the Unknown, 1521 E-training (không có nhãn đoạn A–H dù đề hỏi "Which paragraph"); 1513 fluoridation (lựa chọn B là chữ rác, là đáp án Q36); 1510 Global Warming NZ 2, 1497 Maori Fish Hooks, 1494 Beginning of intelligence, 1489 Sense of flavour 2, 1488 Volatility Kills, 1480 Lighting up the lies, 1456 Olive Oil, 1496 Sunny Days for Silicon, 1482 Digital diet (đáp án mini sai/mơ hồ hàng loạt hoặc parse hỏng); 1516 The importance of law (trang đáp án lỗi 500). Lô 3: 1404 History of timekeeping (câu hỏi dựa trên hình, đề hỏng), 1396 Researcher on the Tree Crown (đoạn E mất câu đầu, đáp án Alan Smith không có trong bài), 1393 Elnino and Seabirds (bài ghép nhiều nguồn, lẫn trích dẫn), 1390 Coral reefs (chỉ 12 câu, Q16 mơ hồ B/C), 1383 Brunel (đoạn D mất câu, Q19/Q23/Q25 sai), 1413/1395 Adolescence + 1410 Personality + 1382 Foot health (trùng ngân hàng); chưa xem kỹ (WARN converter): 1419, 1421, 1415, 1416, 1414, 1411, 1399, 1392, 1391, 1409, 1407, 1387, 1385, 1384, 1375, 1376, 1359. Lô 4: 1322 Product adoption (Q19 sai rõ, Q24 nhắc Webvan không có trong bài), 1319 Algae biodiesel (key Q24–26 bị xáo), 1312 British Architecture 2 (Q11 các nguồn không thống nhất, chữ rác), 1309 Bitterness (mất nhóm Q26–27), 1325 Natural pesticide (cùng bài/câu hỏi với "The pesticide-free village" đã nhập), 1316 Easter Island (Q31/Q33 key sai), 1315 Communication in Science (Q30 lệch, đoạn lặp), 1296 Blue line 2 (mất câu Q9 cần), 1292 Mental Gymnastics (Q18 key sai, Q19 hỏng, thiếu đoạn), 1284 Tattoo on Tikopia (hình 3 ô chung 1 mũi tên → không trả lời được), 1268 Satellite (Q20 không có căn cứ), 1266 Finches (mất đoạn A), 1273 Bondi (Q3/Q7 sai/mơ hồ), 1259 Tulip (Q32 hiểu sai). Lô 5: 1249 Making Copier (đoạn C bị đảo), 1103 Life-Casting (Q20/Q23 các nguồn cho 3 đáp án khác nhau), 1072 Dirty River (Q7 sai, tóm tắt hỏng), 1374 Compliance (bài rời rạc, Q36/Q38 sai), 1371 Plant Scents (mất cả nhóm Q22–26), 1369 Photovoltaics (bản mini mất 1 đoạn so với gốc A–I → key theo đoạn sai lệch), 1367 Plain English (tóm tắt hỏng), 1363 Rural transport (tóm tắt hỏng). Danh sách đầy đủ theo id: `web/mini/rejected.txt` (gitignored). Trùng với ngân hàng: xem `node mini_dedupe.js`.
+Đã xem nhưng **bỏ** (đừng làm lại trừ khi có nguồn chuẩn khác): 1528 Insect decision-making, 1529 Fear of the Unknown, 1521 E-training (không có nhãn đoạn A–H dù đề hỏi "Which paragraph"); 1513 fluoridation (lựa chọn B là chữ rác, là đáp án Q36); 1510 Global Warming NZ 2, 1497 Maori Fish Hooks, 1494 Beginning of intelligence, 1489 Sense of flavour 2, 1488 Volatility Kills, 1480 Lighting up the lies, 1456 Olive Oil, 1496 Sunny Days for Silicon, 1482 Digital diet (đáp án mini sai/mơ hồ hàng loạt hoặc parse hỏng); 1516 The importance of law (trang đáp án lỗi 500). Lô 3: 1404 History of timekeeping (câu hỏi dựa trên hình, đề hỏng), 1396 Researcher on the Tree Crown (đoạn E mất câu đầu, đáp án Alan Smith không có trong bài), 1393 Elnino and Seabirds (bài ghép nhiều nguồn, lẫn trích dẫn), 1390 Coral reefs (chỉ 12 câu, Q16 mơ hồ B/C), 1383 Brunel (đoạn D mất câu, Q19/Q23/Q25 sai), 1413/1395 Adolescence + 1410 Personality + 1382 Foot health (trùng ngân hàng); chưa xem kỹ (WARN converter): 1419, 1421, 1415, 1416, 1414, 1411, 1399, 1392, 1391, 1409, 1407, 1387, 1385, 1384, 1375, 1376, 1359. Lô 4: 1322 Product adoption (Q19 sai rõ, Q24 nhắc Webvan không có trong bài), 1319 Algae biodiesel (key Q24–26 bị xáo), 1312 British Architecture 2 (Q11 các nguồn không thống nhất, chữ rác), 1309 Bitterness (mất nhóm Q26–27), 1325 Natural pesticide (cùng bài/câu hỏi với "The pesticide-free village" đã nhập), 1316 Easter Island (Q31/Q33 key sai), 1315 Communication in Science (Q30 lệch, đoạn lặp), 1296 Blue line 2 (mất câu Q9 cần), 1292 Mental Gymnastics (Q18 key sai, Q19 hỏng, thiếu đoạn), 1284 Tattoo on Tikopia (hình 3 ô chung 1 mũi tên → không trả lời được), 1268 Satellite (Q20 không có căn cứ), 1266 Finches (mất đoạn A), 1273 Bondi (Q3/Q7 sai/mơ hồ), 1259 Tulip (Q32 hiểu sai). Lô 5: 1249 Making Copier (đoạn C bị đảo), 1103 Life-Casting (Q20/Q23 các nguồn cho 3 đáp án khác nhau), 1072 Dirty River (Q7 sai, tóm tắt hỏng), 1374 Compliance (bài rời rạc, Q36/Q38 sai), 1371 Plant Scents (mất cả nhóm Q22–26), 1369 Photovoltaics (bản mini mất 1 đoạn so với gốc A–I → key theo đoạn sai lệch), 1367 Plain English (tóm tắt hỏng), 1363 Rural transport (tóm tắt hỏng). Lô 6: 1355 Malaria (đoạn B tự mâu thuẫn, thiếu đoạn), 1344 Football (mất đoạn B–C), 1342 Biomimicry (Q31/Q39/Q40 hỏng), 1331 Organic farming (tóm tắt sai key), 1329 TV Addiction (đoạn B mất câu, Q21 sai người), 1328 Copy your neighbor (11 câu, nhóm MC rỗng), 1326 Oil (mất đoạn H chứa Michael Lynch), 1057 Music (danh sách heading rỗng), 1055 Mozart Effect (Q22 dựa câu hỏng). Danh sách đầy đủ theo id: `web/mini/rejected.txt` (gitignored). Trùng với ngân hàng: xem `node mini_dedupe.js`.
 
-Lưu ý: 50 bài này **chưa có giải thích đáp án** (bài cũ có giải thích tiếng Việt).
+Lưu ý: 60 bài này **chưa có giải thích đáp án** (bài cũ có giải thích tiếng Việt).
 
 ## 3. Công cụ (thư mục này)
 
@@ -89,7 +99,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 | `pw_admin.js [regex]` | Playwright: mở modal "📝 Câu hỏi" ở admin cho từng passage (theo `passages.json`), đọc cảnh báo; chặn mọi request không phải GET. |
 | `pw_reading.js [regex]` | Playwright: mở từng passage đang active ở chế độ luyện (chỉ GET) và kiểm tra ô trả lời/đáp án. |
 | `../importMiniIeltsReading.js <data.json> [--apply]` | Nhập vào DB (ẩn), chống trùng (tên + 8-gram ≥15%), đưa ảnh lên Cloudinary `reading/mini-ielts/<slug>`. `--image <passageId> <url|file> "<ghi công>"` để thêm ảnh thay thế. |
-| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch5.json` | Dữ liệu 5 lô đã nhập. |
+| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch6.json` | Dữ liệu 6 lô đã nhập. |
 
 ## 4. Quy trình cho một lô (~10 bài)
 
@@ -122,7 +132,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 ## 6. Việc còn lại
 
 1. Các lô tiếp theo — kế hoạch lấy hết (2026-09-30). Cả 340 bài đã tải + extract (`web/mini/all_ids.json`). Phân loại bằng `web/mini/triage.json` (clean / minor / diagram / heavy; tạo lại: dedupe `ORDER=web/mini/order_every.txt` → lọc → convert + check, xem lịch sử phiên): 43 đã nhập, ~45 đã bỏ, 27 trùng ngân hàng, 39 hỏng (thiếu đáp án/quá ngắn), còn lại chưa xem:
-   - **Giai đoạn A** — clean + minor chưa xem (~60 bài sau lô 5; clean còn: 1358 1355 1354 1353 1347 1344 1342 1334 1332 1331 1330 1329 1328 1326 1050 1057 1146 1055 1102 1029 1213 1230 1056 1140 1137 965; minor: 1493 1478 1477 1476 1454 1445 1441 1406 1405 1403 1394 1389 1380 1379 1373 1361 1348 1341 1338 1324 1299 1287 1286 1271 1261 1141 1244 1215 1036 1186 1220 1204 1143 1210 1148; cũng xét 1275 1269 1258 1035 1264). Tỉ lệ đạt ~40–50% (lô 5: 10/21).
+   - **Giai đoạn A** — clean + minor chưa xem (~45 bài sau lô 6; clean còn: 1102 1029 1213 1230 1056 1137 965; minor: 1493 1478 1477 1476 1454 1445 1441 1406 1405 1403 1394 1389 1380 1379 1373 1361 1348 1341 1338 1324 1299 1287 1286 1271 1261 1141 1244 1215 1036 1186 1220 1204 1143 1210 1148; cũng xét 1275 1269 1258 1035 1264). Tỉ lệ đạt ~40–50% (lô 5: 10/21).
    - **Giai đoạn B** — 14 bài có hình: chạy lại `mini_extract.py` (extractor cũ không lấy hình), xem hình kỹ.
    - **Giai đoạn C** — 96 bài "heavy": nâng converter (word bank trong bảng, lựa chọn tách dòng, nhóm lạ) rồi mới rà.
    - 39 bài hỏng: thử tải lại trang đáp án một lần, không được thì bỏ.

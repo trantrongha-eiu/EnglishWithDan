@@ -490,4 +490,112 @@ module.exports = {
       d.questionGroups[1].instruction = 'Look at the following statements (Questions 19-26) and the list of times and places below. Match each statement with the correct place or time, A-H. Write the correct letter, A-H, in boxes 19-26 on your answer sheet.';
     },
   },
+
+  // ───── batch 6 ─────
+  1358: {
+    // paragraph E repeated most of F word for word; all 14 keys match an independent key (engnovate.com)
+    text: [['sadness pumps the tear glands. But exactly how placebos work their medical magic is still largely unknown. Most of the scant research done so far has focused on the control of pain because it’s one of the commonest complaints and lends itself to experimental study. Here, attention has turned to the endorphins, morphine-like neurochemicals known to help control pain.', 'sadness pumps the tear glands.'],
+      ['have no direct effect on the body, yet still, work because', 'have no direct effect on the body, yet still work because'], ['integrated into conventional medicines', 'integrated into conventional medicine']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Complete each sentence with the correct ending, A-H, below. Write the correct letter, A-H, in boxes 27-32 on your answer sheet.';
+      d.questionGroups[2].instruction = TFNG(3);
+      setQ(d, { 29: 'An alternative practitioner who has faith in what he does', 30: 'The illnesses of patients who are convinced by alternative practice', 32: 'Conventional medical doctors, who are aware of the placebo effect,' });
+    },
+  },
+  1354: {
+    text: [['with Sigmund Feud, who theorized', 'with Sigmund Freud, who theorized'], ['That old them that a lot more', 'That told them that a lot more'], ['“activation-synthesis hypothesis’”', '“activation-synthesis hypothesis”'],
+      ['they’re certainly not – talking about it', 'they’re certainly not talking about it'], ['dreams are a ‘backdoor’, into', 'dreams are a ‘backdoor’ into'], ['“If you’re going to understand human behavior,” says Rosalind Cartwright, a chairman', '“If you’re going to understand human behavior,” says Rosalind Cartwright, chairman'],
+      ['Reference of an artist’s dreams who has versatile talents', 'a reference to a man with many talents who has no dreams'], ['The dream actually happens to many animals', 'the kind of sleep associated with dreaming is found in many animals'],
+      ['Dreams are related to benefit and happiness', 'the benefits of dreams for mental health'], ['advanced scientific technology applied in the investigation of the REM stage.', 'advanced technology used to study the brain during REM sleep'],
+      ['questioning concern raised about the usefulness of investigation on dreams', 'doubts about whether studying dreams is worthwhile'], ['medical relief for children with an ill desire', 'medical relief for sick people'], ['Dreams seem to be as randomly occurring and have limited research significance.', 'Dreams occur randomly and are of limited value for research.'],
+      ['Decoding dreams would provide a reminder to human desire in the early days', 'Analysing dreams can reveal unconscious desires from childhood'], ['Dreams sometimes come along with REM as no more than a trivial attachment', 'Dreams may be no more than a by-product of REM sleep']],
+    fn: d => {
+      d.title = 'What Are Dreams?'; d.content = d.content.replace('<h2>What Are Dreams ?</h2>', '<h2>What Are Dreams?</h2>');
+      d.questionGroups[0].instruction = 'Reading Passage 3 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-31 on your answer sheet.';
+      d.questionGroups[2].instruction = 'Look at the following statements (Questions 35-40) and the list of people below. Match each statement with the correct person, A-G. Write the correct letter, A-G, in boxes 35-40 on your answer sheet.';
+    },
+  },
+  1353: {
+    keys: { 6: 'colonies / societies', 1: 'Persian wars / the Persian wars' }, // independent key (thesol.edu.vn) = colonies
+    fn: d => {
+      const g = d.questionGroups[0]; g.groupType = 'table'; delete g.noteConfig;
+      g.instruction = 'Complete the table below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 1-8 on your answer sheet.';
+      g.tableConfig = { headers: ['Time', 'Destination', 'Traveller', 'Purpose'], rows: [
+        ['Classical era', 'Egypt and Anatolia', 'Herodotus', 'To obtain information on __Q1__'],
+        ['1st century BC', 'Central Asia', 'Zhang Qian', 'To seek __Q2__'],
+        ['Roman Empire', 'Mediterranean', 'Ptolemy, Strabo, Pliny the Elder', 'To gather __Q3__'],
+        ['Post-classical era', 'Eastern Hemisphere', 'Muslims', 'For business and __Q4__'],
+        ['5th to 9th centuries CE', 'India', 'Asian Buddhists', 'To study with __Q5__ and for spiritual enlightenment'],
+        ['Early modern era', 'Distant places of the globe', 'Europeans', 'To meet the public’s expectations about the outside world'],
+        ['19th century', 'Asia, Africa', 'Colonial administrators', 'To provide information on the __Q6__ they conquered'],
+        ['Mid-19th century', 'Europe and the United States', 'Sun Yat-sen, Fukuzawa Yukichi', 'To learn __Q7__ for the reorganisation of their societies'],
+        ['20th century', 'Mass tourism', 'People from __Q8__ countries', 'For entertainment']] };
+    },
+  },
+  1347: {
+    keys: { 39: 'river / Severn River / Severn', 40: 'Coalbrookdale museum / the Coalbrookdale museum' },
+    text: [['This is how Michael Rooker was Iron Bridge in his 1792 painting.', 'This is how Michael Rooker saw Iron Bridge in his 1792 painting.'], ['‘The Wonder of Work”', '“The Wonder of Work”'],
+      ['Art connected with architecture for the first time.', 'an early example of artists seeing beauty in a work of engineering'], ['small artistic object and constructions built are put together', 'man-made structures appearing in paintings alongside natural scenes'],
+      ['the working condition were recorded by the artist as an exciting subject.', 'an artist who found a factory the most exciting subject he had ever worked on'], ['mention of one engineers’ artistic work on an unfinished engineering project', 'mention of an artist’s pictures of unfinished engineering projects'],
+      ['Two examples of famous bridges which became the iconic symbols of those cities', 'two famous bridges that have become symbols of their cities'],
+      ['who made a comment that concrete constructions have a beauty just as artistic processes created by engineers the architects', 'claimed that great engineering is great art'], ['who made a romantic depiction of an old bridge in one painting', 'painted a peaceful country scene centred on a bridge'],
+      ['who produced art pieces demonstrating the courage of workers in the site', 'produced pictures showing the courage of construction workers'], ['who produced portraits involving subjects in engineers and inventions and historical human heroes.', 'painted engineers and inventors as well as the American founding fathers'],
+      ['who produced a painting of factories and named them ambitiously', 'painted a factory and gave the paintings grand titles']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 3 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 27-31 on your answer sheet.';
+      d.questionGroups[1].instruction = 'Look at the following statements (Questions 32-36) and the list of people below. Match each statement with the correct person, A-F. Write the correct letter, A-F, in boxes 32-36 on your answer sheet.';
+      const n = d.questionGroups[2]; n.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 37-40 on your answer sheet.';
+      n.noteConfig = { title: 'Iron Bridge, Coalbrookdale, England', lines: ['In the late eighteenth century, __Q37__ built the world’s first iron bridge, a dramatic departure from earlier bridges in the countryside, which were made of __Q38__ and timber. The bridge, which still spans the __Q39__, was important in the period of the industrial revolution. Many paintings of Iron Bridge are kept locally in the __Q40__, showing the iron structure at the centre of the landscape.'] };
+    },
+  },
+  1334: {
+    text: [['if you don’t expect the first event, you have no trouble to respond', 'if you don’t expect the first event, you have no trouble responding'], ['he thinks it used discretion', 'he thinks it uses discretion'],
+      [' Perhaps we will in future, though. We might yet look back one day on people like Debbie and Alun as ancestors of a new breed of true multitaskers.', ' Perhaps we will in future, though.'],
+      ['they did a better fob on Mixed image', 'they did a better job on mixed image'], ['Incapable of human memory cause people to sometimes miss the differences when presented two similar images.', 'Limits on short-term memory can make people miss the differences between two similar images.']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 14-18 on your answer sheet.';
+      d.questionGroups[2].instruction = YNNG(2);
+    },
+  },
+  1332: {
+    keys: { 7: 'FALSE', 8: 'keystone species / keystone', 9: 'fig family / fig trees', 13: 'public education' }, // Q7: text says sustainable farming "avoid[s] monoculture" — ECE key = FALSE (mini: NG)
+    text: [['the ecosystems of which they are apart', 'the ecosystems of which they are a part'], ['only 4 per cent of known plants has been assessed', 'only 4 per cent of known plants have been assessed'], ['There are known as keystone species', 'These are known as keystone species'],
+      ['their numbers are relatively small to disease or human hunters can wipe them out', 'their numbers are relatively small, so disease or human hunters can wipe them out'],
+      ['In the same way, sustainable farming techniques that minimise environmental damage and avoid monoculture.', 'In the same way, sustainable farming techniques are being developed that minimise environmental damage and avoid monoculture.'],
+      ['Because of the ignorance brought by media, people tend to neglect significant creatures called __Q8__.', 'Because of the media’s focus on large animals, people tend to neglect important creatures called __Q8__.'],
+      ['However, the operation is needed for the government to increase its financial support in __Q13__.', 'At a national level, governments need to invest in __Q13__.']],
+    fn: d => { d.questionGroups[0].instruction = TFNG(1); d.questionGroups[1].instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.'; },
+  },
+  1330: {
+    // the radon sentence is broken in every online copy; minimal repair
+    text: [['note that the steam will bring with it radon gas, along through a heat exchanger and then sent back underground for another cycle.', 'notes that the steam will bring with it radon gas, so the steam will be passed through a heat exchanger and then sent back underground for another cycle.'],
+      ['without have to make the same mistakes', 'without having to make the same mistakes'], ['this makes it difficult for renewable to compete', 'this makes it difficult for renewables to compete'], ['temperatures in some location to 250°', 'temperatures in some locations to 250°'],
+      ['drive a turbine* to produce', 'drive a turbine to produce'], ['spokesperson kay Firth', 'spokesperson Kay Firth'], ['to state: There is no doubt', 'to state: ‘There is no doubt'], ['should be below 4 cents per kilowatt-hour.', 'should be below 4 cents per kilowatt-hour.’']],
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(2);
+      d.questionGroups[1].instruction = 'Look at the following statements (Questions 21-26) and the list of companies below. Match each statement with the correct company, A-D. Write the correct letter, A-D, in boxes 21-26 on your answer sheet. NB You may use any letter more than once.';
+    },
+  },
+  1050: {
+    keys: { 37: 'piquia / piquia trees', 40: 'NTFPs / non-timber forest products' },
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 3 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 27-32 on your answer sheet.';
+      const n = d.questionGroups[1];
+      n.noteConfig = { title: '', lines: ['After the forest fire, local villagers consumed less:', '• __Q33__', '• __Q34__', '• game', 'The least game was caught under __Q35__ trees, whose fruit yield is also __Q36__. Thus, it is more reasonable to keep __Q37__.', 'The trees are also important for __Q38__, not just for selling to loggers. But this is often ignored, because most research focuses on the __Q39__ of the trees.', '<strong>The purpose of the book:</strong> to give information about __Q40__'] };
+    },
+  },
+  1146: {
+    text: [[/modem/g, 'modern'], ['2,500 bottles per hour Other developments', '2,500 bottles per hour. Other developments'], ['but it | was not until', 'but it was not until'], ['factory- owner', 'factory-owner'], ['Owens- Illinois', 'Owens-Illinois']],
+    fn: d => {
+      d.questionGroups[1].instruction = TFNG(1);
+      const n = d.questionGroups[0]; n.noteConfig.lines = n.noteConfig.lines.map(l => l.replace(/(__Q\d+__)$/, '$1.'));
+    },
+  },
+  1140: {
+    text: [['sealed then sarcophagi', 'sealed their sarcophagi'], ['putting down deep root in search', 'putting down deep roots in search'], ['used in the construction trade, Corkboard', 'used in the construction trade. Corkboard']],
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(1);
+      const n = d.questionGroups[1]; ['Advantages of aluminium screw caps', 'Advantages of cork bottle stoppers'].forEach(h => { const i = n.noteConfig.lines.indexOf(h); if (i >= 0) n.noteConfig.lines[i] = `<strong>${h}</strong>`; });
+    },
+  },
 };
