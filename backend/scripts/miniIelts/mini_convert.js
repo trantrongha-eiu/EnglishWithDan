@@ -149,7 +149,8 @@ function convert(x) {
     const simgs = sec.imgs || [];
     if (simgs.length) g.imageUrl = simgs[0];
     if (simgs.length > 1) warn.push(`${sec.heading}: ${simgs.length} images (one per question?) — only the first is kept, combine or drop`);
-    if (!simgs.length && /\b(diagram|map|plan|flow-?chart|picture|figure)\b/i.test(allText) && !/picture books?/i.test(allText)) warn.push(`${sec.heading}: mentions a diagram/map but no image found — re-extract or drop`);
+    const FIGURE = /\b(?:label|complete|on|in|shown in|look at|refer to)\s+the\s+(?:diagram|map|plan|flow-?chart|picture|figure)s?\b|\b(?:diagram|map|plan|flow-?chart|picture|figure)s?\s+(?:below|above)\b|\bwhich picture\b/i;
+    if (!simgs.length && FIGURE.test(allText)) warn.push(`${sec.heading}: mentions a diagram/map but no image found — re-extract or drop`);
     groups.push(g);
   }
   // content: paragraphs; bold a leading paragraph letter
@@ -180,6 +181,12 @@ function convert(x) {
       if (g.summaryConfig) g.summaryConfig.text = g.summaryConfig.text.replace(/__Q(\d+)__/g, (_, n) => `__Q${+n + offset}__`);
       const shift = s => s.replace(/\b(\d{1,2})(\s*(?:[-–]|and|to)\s*)(\d{1,2})\b/g, (m, a, sep, b) => (+a >= 1 && +b <= 14 && +a < +b) ? `${+a + offset}${sep}${+b + offset}` : m);
       g.groupTitle = shift(g.groupTitle); g.instruction = shift(g.instruction);
+      // the figure still shows the source's original numbers — tell students how they map
+      if (g.imageUrl && g.questions.length) {
+        const ns = g.questions.map(q => q.questionNumber), lo = Math.min(...ns), hi = Math.max(...ns);
+        g.instruction += ` (Trên hình, ô ${lo - offset}–${hi - offset} tương ứng với câu ${lo}–${hi}.)`;
+        warn.push(`${g.groupTitle}: figure keeps original numbers ${lo - offset}–${hi - offset} → mapping note added`);
+      }
     }
   }
   const nums = all.map(q => q.questionNumber);

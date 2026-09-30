@@ -272,4 +272,98 @@ module.exports = {
       });
     },
   },
+
+  // ───── batch 4 (list pages 17–29) ─────
+  1323: {
+    text: [['• the extent and nature of food promotion to children', '• the extent and nature of food promotion to children;'], [/<p>the effect, if any,/, '<p>• the effect, if any,'],
+      ['advertising for fast food, outlets', 'advertising for fast food outlets'], ['(eg. Obesity or cholesterol levels)', '(e.g. obesity or cholesterol levels)'], ['the direct effects of individual children', 'the direct effects on individual children'],
+      ['diet prompted in food advertisements', 'diet promoted in food advertisements'], ['tend to be partial and incomplete', 'tends to be partial and incomplete.']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-x, in boxes 14-20 on your answer sheet.';
+      d.questionGroups[1].instruction = YNNG(2);
+    },
+  },
+  1314: {
+    keys: { 26: 'flaw / weakness' },
+    text: [['most likely-relating', 'most likely – relating'], ['verbatim-word for word', 'verbatim – word for word'], ['would seem-so we assume to have given way', 'would seem – so we assume – to have given way'],
+      ['essential modem phenomenon', 'essential modern phenomenon'], ['no further for essential advice then the', 'no further for essential advice than the'], ['‘the suspension of disbelief.', '‘the suspension of disbelief’.'], ['literary landmarks-stories by which', 'literary landmarks – stories by which'], ['a human side-some flaw or weakness to which mortals are prone-is', 'a human side – some flaw or weakness to which mortals are prone – is'],
+      ['is intrinsically dramatic.d by logging.', 'is intrinsically dramatic.'], ['Aristotle viewed Homers works', 'Aristotle viewed Homer’s works']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 14-18 on your answer sheet.';
+      d.questionGroups[1].instruction = 'Classify the following as referring to A, B or C below. Write the correct letter, A, B or C, in boxes 19-22 on your answer sheet. NB You may use any letter more than once.';
+      const n = d.questionGroups[2]; n.noteConfig.lines = n.noteConfig.lines.map(l => l.replace(/^\d+ /, '').replace(/(__Q\d+__)$/, '$1.'));
+    },
+  },
+  1310: {
+    text: [['as eastern agricultural landfilled to capacity', 'as eastern agricultural land filled to capacity'], ['the federal government’s solution in 1881 of Winnipeg', 'the federal government’s selection in 1881 of Winnipeg'],
+      ['the secondary goal for joining British Columbia', 'the secondary goal of joining British Columbia'], ['Eastern Canadians and British immigrant offered', 'Eastern Canadians and British immigrants offered'],
+      ['would supply __Q21__. for the descendants', 'would supply __Q21__ for the descendants'], ['Politicians also declared that Western is got potential to increase __Q22__ of Canada according to __Q23__ crop that consumed in the East.', 'Politicians also declared that the West had the potential to increase the __Q22__ of Canada, especially the __Q23__ crop consumed in the East.']],
+    fn: d => { d.questionGroups[0].instruction = 'Reading Passage 2 has eight paragraphs, A-H. Choose the correct heading for paragraphs B-H from the list of headings below. Write the correct number, i-xii, in boxes 14-20 on your answer sheet.'; },
+  },
+  1320: {
+    text: [['Part, “Haunted by Music,”', 'Part I, “Haunted by Music,”'], ['but Cicoria, has declined', 'but Cicoria has declined'], ['the blind often has better hearing', 'the blind often have better hearing'],
+      ['Scientists cannot yet explain how music achieves this effect', 'Scientists cannot yet explain how music achieves this effect.'], ['He nearly died because of the lightening.', 'He nearly died because of the lightning.']],
+    fn: d => {
+      const g = d.questionGroups[1]; g.instruction = YNNG(3); g.questions.forEach(q => { q.type = 'yes-no-ng'; });
+      d.questionGroups[0].instruction = 'Choose the correct letter.';
+      const q29 = d.questionGroups[0].questions.find(q => q.questionNumber === 29); q29.options = q29.options.slice(0, 3); // D duplicated C in every copy
+    },
+  },
+  1298: {
+    keys: { 5: '950 degrees / 950', 6: '60 minutes / 60 mins' },
+    text: [['A handful of clay yesterday’s coffee grounds', 'A handful of clay, yesterday’s coffee grounds'], ['as thick as an adult’s index.', 'as thick as an adult’s index finger.'], ['organic material that bums readily', 'organic material that burns readily'],
+      ['“A potter’s din is an expensive item and can could take up to four or five hours to get upto 800 degrees.', '“A potter’s kiln is an expensive item and could take up to four or five hours to get up to 800 degrees.'],
+      ['community in East Timor The charity', 'community in East Timor. The charity'], ['While the AF problems of producing', 'While the problems of producing'],
+      ['to create a thick mixture sun dried.', 'to create a thick mixture, then sun-dried.'], ['around the cylinders place them in __Q4__ which is as burning fuel for firing (maximum temperature: __Q5__ ) filter being baked in under __Q6__', 'around the cylinders; place them in __Q4__, which is used as the burning fuel for firing (maximum temperature: __Q5__); the filter is baked in under __Q6__.']],
+    fn: d => {
+      const g = d.questionGroups[0]; g.noteConfig.title = g.noteConfig.lines.shift();
+      d.questionGroups[1].instruction = TFNG(1);
+    },
+  },
+  1293: {
+    text: [['how to get from B to c, too', 'how to get from B to C, too'], ['logical thinking. Grand Central, Please Imagine that', 'logical thinking. Imagine that'], ['Head for that “the station is right below it.”', 'Head for that – the station is right below it.”'],
+      ['retrace then steps', 'retrace their steps'], ['street comer', 'street corner'], ['directions-straight, turn, go through', 'directions – straight, turn, go through'],
+      ['G . Road Map or Metaphor? On your next visit', 'G . On your next visit'], ['the large scale-that is', 'the large scale – that is'], ['Path integration,', 'Path integration']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Classify the following statements as referring to A, B or C below. Write the correct letter, A, B or C, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.';
+      d.questionGroups[2].instruction = TFNG(2);
+      const g0 = d.questionGroups[0]; if (g0.matchingOptions) g0.matchingOptions = g0.matchingOptions.map(o => o.replace(/^\.\s*/, '').replace(/,$/, ''));
+    },
+  },
+  1267: {
+    keys: { 14: 'navigation and communications / navigation and communication' },
+    text: [['the court decided that hems putting the flight at risk', 'the court decided that he was putting the flight at risk'], ['Herndon, Virginia, Not do they affect other critical systems, she says The only impact', 'Herndon, Virginia. Nor do they affect other critical systems, she says. The only impact'],
+      ['the pilot hears a wry slight beep', 'the pilot hears a very slight beep'], ['the CAA’s Safely Regulation Croup', 'the CAA’s Safety Regulation Group'], ['he says Another study', 'he says. Another study'],
+      ['is much more worrying, lie says', 'is much more worrying, he says'], ['especially if a mouse is attached {the wire operates as an antenna or if', 'especially if a mouse is attached (the wire operates as an antenna) or if'],
+      ['intentional emission,” lie says', 'intentional emission,” he says'], ['with the same signal This effect', 'with the same signal. This effect'], ['chances of a Plane Crash', 'chances of a plane crash'],
+      ['recommended their wholesale ban on flights, But if', 'recommended their wholesale ban on flights. But if'], ['deal with __Q14__ Those devices', 'deal with __Q14__. Those devices'],
+      ['Mobile usages should be forbidden in specific fame.', 'Mobile phone use should be forbidden during specific phases of a flight.'], ['FAA initialed open debate', 'The FAA initiated an open debate'], ['Organization (listed A-E )', 'organisations and people (listed A-E)']],
+    fn: d => { d.questionGroups[2].instruction = TFNG(2); },
+  },
+  1265: {
+    text: [['the centers of the trade-in aromatic resins', 'the centers of the trade in aromatic resins'], ['The trade-in spices and perfumes', 'The trade in spices and perfumes'], ['(Job 42:14)</p>', '(Job 42:14).</p>']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 14-20 on your answer sheet.';
+      d.questionGroups[1].instruction = TFNG(2);
+    },
+  },
+  1262: {
+    text: [['It was a phenomenal finding’, she says.', '‘It was a phenomenal finding,’ she says.'], ['If you building a friendship', 'If you build a friendship'], ['doesn’t work that way, I think that they give', 'doesn’t work that way. I think that they give']],
+    // the source mis-split the Q14–17 statements; in the original order they match the keys C A D C exactly
+    fn: d => (d.title = 'Undoing Our Emotions', d.content = d.content.replace('<h2>UNDOING OUR EMOTIONS</h2>', '<h2>Undoing Our Emotions</h2>'), setQ(d, {
+      14: 'a conclusion that it is possible to train people to deal with anxiety',
+      15: 'conclusive evidence that lifespan can be influenced by emotions',
+      16: 'an explanation of the way negative emotions affect what people concentrate on',
+      17: 'an experiment that showed how a positive outlook can help people adjust to a stressful situation faster than others',
+    })),
+  },
+  1253: {
+    text: [['used fMRls on six synaesthetes', 'used fMRIs on six synaesthetes'], ['witness a film character gets shot', 'witness a film character get shot'], ['Dr Witthof and Dr Winawer', 'Dr Witthoft and Dr Winawer'], ['Fischer-Price magnets', 'Fisher-Price magnets'],
+      ['its own personality-the letter A', 'its own personality – the letter A'], ['dull or hideous colour for you-or vice versa', 'dull or hideous colour for you – or vice versa'], ['older people-using synaesthesia', 'older people – using synaesthesia'], ['graphemes and colours-pairings', 'graphemes and colours – pairings']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 3 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 27-33 on your answer sheet.';
+      d.questionGroups[1].instruction = TFNG(3);
+      const n = d.questionGroups[2]; n.noteConfig.lines = [n.noteConfig.lines.join(' ').replace(/\s+/g, ' ')];
+    },
+  },
 };
