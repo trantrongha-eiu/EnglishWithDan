@@ -2249,6 +2249,9 @@
                 ? group.endingsConfig.endings.map((e, i) => e.letter || String.fromCharCode(65 + i))
                 : matchingOptions.map((_, i) => String.fromCharCode(65 + i));
             const groupId = 'lmog-' + questions.map(q => q.questionNumber).join('-');
+            // Fewer options than questions (e.g. A/B/C for Q11-16) → letters
+            // must be reusable, or the last questions can never be answered.
+            const reuse = matchingReuseAllowed || matchingOptions.length < questions.length;
 
             const reuseNote = matchingReuseAllowed
                 ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
@@ -2256,11 +2259,11 @@
             // Cột trái: danh sách options dọc (A–G)
             const optListHtml = matchingOptions.map((opt, i) => {
                 const letter = optLetters[i];
-                const isUsed = !isReview && !matchingReuseAllowed &&
+                const isUsed = !isReview && !reuse &&
                     questions.some(q => state.answers[q.questionNumber] === letter);
                 return `<div class="mo-opt-row${isUsed ? ' mo-opt-used' : ''}"
                     data-value="${letter}" data-groupid="${groupId}"
-                    data-reuse="${matchingReuseAllowed ? 1 : 0}"
+                    data-reuse="${reuse ? 1 : 0}"
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${escH(letter)}')"
                     onclick="${isReview ? '' : `ltClickMOChip('${escH(letter)}','${groupId}')`}">
@@ -2326,12 +2329,14 @@
             const groupId = 'lddg-' + questions.map(q => q.questionNumber).join('-');
             const qMap = {};
             questions.forEach(q => { qMap[q.questionNumber] = q; });
+            // Same rule as matching-options: fewer chips than blanks → reusable.
+            const reuse = group.matchingReuseAllowed || words.length < questions.length;
 
             const chipsHtml = words.map(word => {
-                const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+                const isUsed = !isReview && !reuse && questions.some(q => state.answers[q.questionNumber] === word);
                 return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
                     data-value="${escHtml(word)}" data-groupid="${groupId}"
-                    data-reuse="0"
+                    data-reuse="${reuse ? 1 : 0}"
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${escH(word)}')"
                     onclick="ltClickSCChip('${escH(word)}','${groupId}')">
