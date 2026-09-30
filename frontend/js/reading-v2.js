@@ -2432,9 +2432,11 @@ function renderSingleQuestion(q, isReview, reviewMap) {
 function renderTFNG(qNum, isReview, review, labels = ['TRUE', 'FALSE', 'NOT GIVEN']) {
   const chosen = review ? review.userAnswer?.toUpperCase() : (state.answers[qNum] || '');
   if (isReview) {
+    // a key may list accepted alternatives ("C / A"), same as the graders
+    const okSet = (review?.correctAnswer || '').toUpperCase().split(/\s*\/\s*/);
     return `<div class="tfng-opts">${labels.map(l => {
       let cls = '';
-      if (l === review?.correctAnswer?.toUpperCase()) cls = 'correct-ans';
+      if (okSet.includes(l)) cls = 'correct-ans';
       else if (l === chosen) cls = 'wrong-ans';
       return `<div class="tfng-opt ${cls}">${l}</div>`;
     }).join('')}</div>`;
@@ -2449,10 +2451,11 @@ function renderTFNG(qNum, isReview, review, labels = ['TRUE', 'FALSE', 'NOT GIVE
 function renderMC(qNum, options, isReview, review) {
   const chosen = review ? review.userAnswer : (state.answers[qNum] || '');
   if (isReview) {
+    const okSet = (review?.correctAnswer || '').toUpperCase().split(/\s*\/\s*/);
     return `<div class="q-options">${options.map((opt, i) => {
       const l = String.fromCharCode(65 + i);
       let cls = '';
-      if (l === review?.correctAnswer) cls = 'correct-ans';
+      if (okSet.includes(l)) cls = 'correct-ans';
       else if (l === chosen) cls = 'wrong-ans';
       return `<label class="radio-opt ${cls}">
         <span class="radio-dot"></span>

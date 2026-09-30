@@ -1081,7 +1081,7 @@
        "questionNumber": 32,
        "type": "fill-blank",
        "questionText": "Question 32",
-       "correctAnswer": "background"
+       "correctAnswer": "background / experience"
       }
      ],
      "groupType": "table",
@@ -1315,7 +1315,7 @@
         "there are not enough people who truly understand the precautionary principle",
         "the precautionary principle bids us take risks at all costs"
        ],
-       "correctAnswer": "A"
+       "correctAnswer": "C / A"
       }
      ],
      "groupType": "plain"

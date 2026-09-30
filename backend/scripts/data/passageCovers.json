@@ -261,6 +261,14 @@
   "artist": "Unknown authorUnknown author"
  },
  {
+  "id": "6a29032085253ef89ef3bfe1",
+  "title": "Driverless cars",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Moscow%2C_Yandex_self-driving_Hyundai_Sonata%2C_Aug_2025_roof_unit_03.jpg/1280px-Moscow%2C_Yandex_self-driving_Hyundai_Sonata%2C_Aug_2025_roof_unit_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Moscow, Yandex self-driving Hyundai Sonata, Aug 2025 roof unit 03.jpg",
+  "license": "CC0",
+  "artist": "Retired electrician"
+ },
+ {
   "id": "6a2a6d10e802f36848df9588",
   "title": "Environmental practices of big businesses",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Smoke_Pollution.jpg/1280px-Smoke_Pollution.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -322,6 +330,14 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Reclining_Figure,_elmwood_sculpture_by_Henry_Moore_05.jpg",
   "license": "CC0",
   "artist": "14GTR"
+ },
+ {
+  "id": "6a6b974c167ec4002cfa9023",
+  "title": "How could multilingualism benefit India's poorest schoolchildren?",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Srividyarthinee_samajam_Kakinada%2C_a_school_for_girls_and_women.jpg/1280px-Srividyarthinee_samajam_Kakinada%2C_a_school_for_girls_and_women.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Srividyarthinee samajam Kakinada, a school for girls and women.jpg",
+  "license": "Public domain",
+  "artist": "Andhra Patrika editors"
  },
  {
   "id": "69c93f366bc7856a765d232c",
@@ -412,6 +428,14 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Jan_Vermeer_van_Delft_-_Young_Woman_with_a_Pearl_Necklace_-_Google_Art_Project.jpg",
   "license": "Public domain",
   "artist": "Johannes Vermeer"
+ },
+ {
+  "id": "6a6f4c8db5dfd424fb88d8db",
+  "title": "Katherine Mansfield",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Henri_Gaudier-Brzeska_-_Katherine_Mansfield_-_B1982.26.60_-_Yale_Center_for_British_Art.jpg/1280px-Henri_Gaudier-Brzeska_-_Katherine_Mansfield_-_B1982.26.60_-_Yale_Center_for_British_Art.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Henri Gaudier-Brzeska - Katherine Mansfield - B1982.26.60 - Yale Center for British Art.jpg",
+  "license": "CC0",
+  "artist": "Henri Gaudier-Brzeska"
  },
  {
   "id": "6a6f2325a37de57067377851",
