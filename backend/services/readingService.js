@@ -495,11 +495,17 @@ async function getPassageAnswerKey(id) {
     .select('questionGroups.questions.questionNumber questionGroups.questions.correctAnswer questionGroups.questions.explanation questions.questionNumber questions.correctAnswer questions.explanation')
     .lean();
   if (!passage) return null;
+  // Same source of truth as grading (gradeGroups callers above) and the
+  // frontend renderer: questionGroups when present, the legacy flat
+  // questions[] only for passages that have no groups. Merging both let a
+  // stale legacy copy override the live group key (e.g. letter keys "G"
+  // against a word bank that stores words), so practice "Kiểm tra đáp án"
+  // marked correct answers wrong.
   const answerKey = {};
-  (passage.questionGroups || []).forEach(g => (g.questions || []).forEach(q => {
-    answerKey[q.questionNumber] = { correctAnswer: q.correctAnswer, explanation: q.explanation || '' };
-  }));
-  (passage.questions || []).forEach(q => {
+  const questions = passage.questionGroups?.length
+    ? passage.questionGroups.flatMap(g => g.questions || [])
+    : (passage.questions || []);
+  questions.forEach(q => {
     answerKey[q.questionNumber] = { correctAnswer: q.correctAnswer, explanation: q.explanation || '' };
   });
   return answerKey;
