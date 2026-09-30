@@ -68,8 +68,33 @@ async function addImage([id, url, credit]) {
   }
 }
 
+// --activate <data.json…> [--apply]: publish (isActive:true) the passages of the
+// given batch files once they have passed review. Matched by exact title + the
+// mini-ielts tag, then updated by an explicit _id list — never an open filter.
+async function activate(args) {
+  const apply = args.includes('--apply');
+  const titles = args.filter(a => a !== '--apply').flatMap(f => JSON.parse(fs.readFileSync(path.resolve(f), 'utf8')).map(it => it.doc.title.trim()));
+  if (!titles.length) throw new Error('Usage: importMiniIeltsReading.js --activate <data.json…> [--apply]');
+  require('dotenv').config({ path: path.join(__dirname, '..', '.env'), quiet: true });
+  const mongoose = require('mongoose');
+  const Passage = require('../models/Passage');
+  await mongoose.connect(process.env.MONGO_URI);
+  try {
+    const found = await Passage.find({ title: { $in: titles }, tags: 'mini-ielts' }).select('title isActive').lean();
+    const missing = titles.filter(t => !found.some(p => p.title.trim() === t));
+    const ids = found.filter(p => !p.isActive).map(p => p._id);
+    console.log(`${titles.length} titles → ${found.length} found, ${found.length - ids.length} already active, ${ids.length} to activate${missing.length ? `; NOT FOUND: ${missing.join(' | ')}` : ''}`);
+    if (!apply || !ids.length) { if (ids.length) console.log('dry run — re-run with --apply.'); return; }
+    const r = await Passage.updateMany({ _id: { $in: ids }, tags: 'mini-ielts' }, { $set: { isActive: true } });
+    console.log(`✓ activated ${r.modifiedCount}/${ids.length}`);
+  } finally {
+    await mongoose.disconnect();
+  }
+}
+
 async function run() {
   if (process.argv[2] === '--image') return addImage(process.argv.slice(3));
+  if (process.argv[2] === '--activate') return activate(process.argv.slice(3));
   const [file, ...flags] = process.argv.slice(2);
   if (!file) throw new Error('Usage: importMiniIeltsReading.js <data.json> [--apply]');
   const apply = flags.includes('--apply');

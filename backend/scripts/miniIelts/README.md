@@ -7,11 +7,11 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 - Nguồn: https://mini-ielts.com/reading?c=recent-actual-tests — 29 trang, ~340 bài; ~300 bài không trùng với ngân hàng của mình.
 - Thầy Hà đã được báo rủi ro bản quyền/điều khoản (lấy nội dung của site khác đưa lên site thu phí) và vẫn quyết định làm, theo từng lô.
 - YouPass (youpass.vn) **không lấy**: có lớp chống bot Bunny Shield (403). Không tìm cách vượt.
-- Quy ước đã chốt: bài nhập vào ở trạng thái **ẩn** (`isActive:false`, tag `mini-ielts`), thầy duyệt trong Admin → Passages rồi bật; tự xếp Passage 1/2/3; kèm ảnh minh hoạ.
+- Quy ước đã chốt: bài nhập vào ở trạng thái **ẩn** (`isActive:false`, tag `mini-ielts`) để kiểm tra; **bài nào đạt chuẩn (bước 10 + 11 đều qua) thì bật hiển thị cho học sinh luôn** (thầy chốt 2026-09-30, không cần chờ duyệt tay); tự xếp Passage 1/2/3; kèm ảnh minh hoạ. Cả 40 bài của lô 1–4 đã bật 2026-09-30.
 
 ## 2. Trạng thái hiện tại
 
-40 bài đã nhập (ẩn, đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright) — pilot + batch2 + batch3 + batch4 (lô 3–4 nhập 2026-09-30):
+50 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện) — pilot + batch2 … batch5 (lô 3–5 nhập 2026-09-30):
 
 | _id | Tên | P |
 |---|---|---|
@@ -55,10 +55,20 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 | 6abcde47ee81e7573b2fe909 | Cosmetics in Ancient Past | P2 |
 | 6abcde47ee81e7573b2fe919 | Undoing Our Emotions | P2 |
 | 6abcde48ee81e7573b2fe92a | Synaesthesia | P3 |
+| 6abce9251cf40659f1d901e0 | The history of cakes at weddings (có hình Q10–13) | P1 |
+| 6abce9271cf40659f1d901f1 | The Benefits of Being Bilingual | P3 |
+| 6abce9271cf40659f1d90203 | The truth about lying | P2 |
+| 6abce9291cf40659f1d9021c | The Intersection of Health Sciences and Geography | P2 |
+| 6abce92a1cf40659f1d9022c | The Columbian Exchange | P3 |
+| 6abce92a1cf40659f1d9023e | The Farmers! Parade of history | P2 |
+| 6abce92c1cf40659f1d9024f | Pollution! In the Bay | P2 |
+| 6abce92d1cf40659f1d90260 | Knowledge in medicine | P3 |
+| 6abce92f1cf40659f1d90271 | Assessing the risk | P3 |
+| 6abce9301cf40659f1d90283 | The vikings wayfaring way | P2 |
 
-Đã xem nhưng **bỏ** (đừng làm lại trừ khi có nguồn chuẩn khác): 1528 Insect decision-making, 1529 Fear of the Unknown, 1521 E-training (không có nhãn đoạn A–H dù đề hỏi "Which paragraph"); 1513 fluoridation (lựa chọn B là chữ rác, là đáp án Q36); 1510 Global Warming NZ 2, 1497 Maori Fish Hooks, 1494 Beginning of intelligence, 1489 Sense of flavour 2, 1488 Volatility Kills, 1480 Lighting up the lies, 1456 Olive Oil, 1496 Sunny Days for Silicon, 1482 Digital diet (đáp án mini sai/mơ hồ hàng loạt hoặc parse hỏng); 1516 The importance of law (trang đáp án lỗi 500). Lô 3: 1404 History of timekeeping (câu hỏi dựa trên hình, đề hỏng), 1396 Researcher on the Tree Crown (đoạn E mất câu đầu, đáp án Alan Smith không có trong bài), 1393 Elnino and Seabirds (bài ghép nhiều nguồn, lẫn trích dẫn), 1390 Coral reefs (chỉ 12 câu, Q16 mơ hồ B/C), 1383 Brunel (đoạn D mất câu, Q19/Q23/Q25 sai), 1413/1395 Adolescence + 1410 Personality + 1382 Foot health (trùng ngân hàng); chưa xem kỹ (WARN converter): 1419, 1421, 1415, 1416, 1414, 1411, 1399, 1392, 1391, 1409, 1407, 1387, 1385, 1384, 1375, 1376, 1359. Lô 4: 1322 Product adoption (Q19 sai rõ, Q24 nhắc Webvan không có trong bài), 1319 Algae biodiesel (key Q24–26 bị xáo), 1312 British Architecture 2 (Q11 các nguồn không thống nhất, chữ rác), 1309 Bitterness (mất nhóm Q26–27), 1325 Natural pesticide (cùng bài/câu hỏi với "The pesticide-free village" đã nhập), 1316 Easter Island (Q31/Q33 key sai), 1315 Communication in Science (Q30 lệch, đoạn lặp), 1296 Blue line 2 (mất câu Q9 cần), 1292 Mental Gymnastics (Q18 key sai, Q19 hỏng, thiếu đoạn), 1284 Tattoo on Tikopia (hình 3 ô chung 1 mũi tên → không trả lời được), 1268 Satellite (Q20 không có căn cứ), 1266 Finches (mất đoạn A), 1273 Bondi (Q3/Q7 sai/mơ hồ), 1259 Tulip (Q32 hiểu sai). Trùng với ngân hàng: xem `node mini_dedupe.js`.
+Đã xem nhưng **bỏ** (đừng làm lại trừ khi có nguồn chuẩn khác): 1528 Insect decision-making, 1529 Fear of the Unknown, 1521 E-training (không có nhãn đoạn A–H dù đề hỏi "Which paragraph"); 1513 fluoridation (lựa chọn B là chữ rác, là đáp án Q36); 1510 Global Warming NZ 2, 1497 Maori Fish Hooks, 1494 Beginning of intelligence, 1489 Sense of flavour 2, 1488 Volatility Kills, 1480 Lighting up the lies, 1456 Olive Oil, 1496 Sunny Days for Silicon, 1482 Digital diet (đáp án mini sai/mơ hồ hàng loạt hoặc parse hỏng); 1516 The importance of law (trang đáp án lỗi 500). Lô 3: 1404 History of timekeeping (câu hỏi dựa trên hình, đề hỏng), 1396 Researcher on the Tree Crown (đoạn E mất câu đầu, đáp án Alan Smith không có trong bài), 1393 Elnino and Seabirds (bài ghép nhiều nguồn, lẫn trích dẫn), 1390 Coral reefs (chỉ 12 câu, Q16 mơ hồ B/C), 1383 Brunel (đoạn D mất câu, Q19/Q23/Q25 sai), 1413/1395 Adolescence + 1410 Personality + 1382 Foot health (trùng ngân hàng); chưa xem kỹ (WARN converter): 1419, 1421, 1415, 1416, 1414, 1411, 1399, 1392, 1391, 1409, 1407, 1387, 1385, 1384, 1375, 1376, 1359. Lô 4: 1322 Product adoption (Q19 sai rõ, Q24 nhắc Webvan không có trong bài), 1319 Algae biodiesel (key Q24–26 bị xáo), 1312 British Architecture 2 (Q11 các nguồn không thống nhất, chữ rác), 1309 Bitterness (mất nhóm Q26–27), 1325 Natural pesticide (cùng bài/câu hỏi với "The pesticide-free village" đã nhập), 1316 Easter Island (Q31/Q33 key sai), 1315 Communication in Science (Q30 lệch, đoạn lặp), 1296 Blue line 2 (mất câu Q9 cần), 1292 Mental Gymnastics (Q18 key sai, Q19 hỏng, thiếu đoạn), 1284 Tattoo on Tikopia (hình 3 ô chung 1 mũi tên → không trả lời được), 1268 Satellite (Q20 không có căn cứ), 1266 Finches (mất đoạn A), 1273 Bondi (Q3/Q7 sai/mơ hồ), 1259 Tulip (Q32 hiểu sai). Lô 5: 1249 Making Copier (đoạn C bị đảo), 1103 Life-Casting (Q20/Q23 các nguồn cho 3 đáp án khác nhau), 1072 Dirty River (Q7 sai, tóm tắt hỏng), 1374 Compliance (bài rời rạc, Q36/Q38 sai), 1371 Plant Scents (mất cả nhóm Q22–26), 1369 Photovoltaics (bản mini mất 1 đoạn so với gốc A–I → key theo đoạn sai lệch), 1367 Plain English (tóm tắt hỏng), 1363 Rural transport (tóm tắt hỏng). Danh sách đầy đủ theo id: `web/mini/rejected.txt` (gitignored). Trùng với ngân hàng: xem `node mini_dedupe.js`.
 
-Lưu ý: 40 bài này **chưa có giải thích đáp án** (bài cũ có giải thích tiếng Việt).
+Lưu ý: 50 bài này **chưa có giải thích đáp án** (bài cũ có giải thích tiếng Việt).
 
 ## 3. Công cụ (thư mục này)
 
@@ -79,7 +89,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 | `pw_admin.js [regex]` | Playwright: mở modal "📝 Câu hỏi" ở admin cho từng passage (theo `passages.json`), đọc cảnh báo; chặn mọi request không phải GET. |
 | `pw_reading.js [regex]` | Playwright: mở từng passage đang active ở chế độ luyện (chỉ GET) và kiểm tra ô trả lời/đáp án. |
 | `../importMiniIeltsReading.js <data.json> [--apply]` | Nhập vào DB (ẩn), chống trùng (tên + 8-gram ≥15%), đưa ảnh lên Cloudinary `reading/mini-ielts/<slug>`. `--image <passageId> <url|file> "<ghi công>"` để thêm ảnh thay thế. |
-| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch4.json` | Dữ liệu 4 lô đã nhập. |
+| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch5.json` | Dữ liệu 5 lô đã nhập. |
 
 ## 4. Quy trình cho một lô (~10 bài)
 
@@ -94,6 +104,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 8. `node ../importMiniIeltsReading.js ../data/miniIeltsReading/batchN.json` (dry) → `--apply`.
 9. Ảnh hỏng (thường ~50%): tìm ảnh Wikimedia Commons qua API (`generator=search&gsrnamespace=6&prop=imageinfo&iiextmetadatafilter=LicenseShortName|Artist`), **tải về bằng curl có User-Agent** (Cloudinary tải trực tiếp bị Wikimedia chặn 429), rồi `--image <id> <file> "Ảnh: … — Tác giả, giấy phép (Wikimedia Commons)"`. Ảnh CC BY/BY-SA bắt buộc ghi công.
 10. `node dump_passages.js` → `node ../_audit_reading_warnings.js out.json` (phải 0 cảnh báo) → `node pw_admin.js "<tên các bài mới>"` (phải N/N).
+11. Bật cho học sinh: `node ../importMiniIeltsReading.js --activate ../data/miniIeltsReading/batchN.json` (dry) → thêm `--apply` (chỉ đụng đúng các bài trong file, theo danh sách _id). Rồi `node dump_passages.js` → `TAG=mini-ielts node pw_reading.js` (mở từng bài ở chế độ luyện như học sinh, phải N/N).
 
 ## 5. Bẫy đã gặp
 
@@ -110,7 +121,11 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 
 ## 6. Việc còn lại
 
-1. Các lô tiếp theo. Cả 29 trang (340 bài) đã tải + extract (`web/mini/all_ids.json`; trang 17–29 = `order4.txt`, lọc sẵn ở `web/mini/cand4.txt`). Ứng viên chưa xem: trang 9–16 còn 1379, 1374, 1373, 1372, 1371, 1381, 1380, 1389 và các id ≤1370; `cand4.txt` từ dòng 39 trở đi còn 1270, 1255, 1249, 1275, 1269, 1264, 1258, 1035 và các dòng sau 62. Ước tính còn ~180 ứng viên, tỉ lệ đạt ~50% (lô 4: 10/24 bài đã xem).
+1. Các lô tiếp theo — kế hoạch lấy hết (2026-09-30). Cả 340 bài đã tải + extract (`web/mini/all_ids.json`). Phân loại bằng `web/mini/triage.json` (clean / minor / diagram / heavy; tạo lại: dedupe `ORDER=web/mini/order_every.txt` → lọc → convert + check, xem lịch sử phiên): 43 đã nhập, ~45 đã bỏ, 27 trùng ngân hàng, 39 hỏng (thiếu đáp án/quá ngắn), còn lại chưa xem:
+   - **Giai đoạn A** — clean + minor chưa xem (~60 bài sau lô 5; clean còn: 1358 1355 1354 1353 1347 1344 1342 1334 1332 1331 1330 1329 1328 1326 1050 1057 1146 1055 1102 1029 1213 1230 1056 1140 1137 965; minor: 1493 1478 1477 1476 1454 1445 1441 1406 1405 1403 1394 1389 1380 1379 1373 1361 1348 1341 1338 1324 1299 1287 1286 1271 1261 1141 1244 1215 1036 1186 1220 1204 1143 1210 1148; cũng xét 1275 1269 1258 1035 1264). Tỉ lệ đạt ~40–50% (lô 5: 10/21).
+   - **Giai đoạn B** — 14 bài có hình: chạy lại `mini_extract.py` (extractor cũ không lấy hình), xem hình kỹ.
+   - **Giai đoạn C** — 96 bài "heavy": nâng converter (word bank trong bảng, lựa chọn tách dòng, nhóm lạ) rồi mới rà.
+   - 39 bài hỏng: thử tải lại trang đáp án một lần, không được thì bỏ.
    Bài có hình trong câu hỏi mà extract trước khi sửa extractor (1404, 1357, 1388, 1520, 1419…) phải chạy lại `mini_extract.py` để lấy hình rồi mới xét. Khi bài bị đánh số lại, converter tự thêm ghi chú "Trên hình, ô 5–9 tương ứng với câu 31–35" vì hình vẫn giữ số gốc — kiểm tra hình có đủ rõ để trả lời không.
 2. Viết giải thích tiếng Việt cho câu hỏi các bài mini (giống bài cũ).
 3. Gắn ảnh Wikimedia Commons (giấy phép tự do) cho 118 bài cũ (không có công cụ tạo ảnh AI).

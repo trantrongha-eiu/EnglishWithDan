@@ -366,4 +366,128 @@ module.exports = {
       const n = d.questionGroups[2]; n.noteConfig.lines = [n.noteConfig.lines.join(' ').replace(/\s+/g, ' ')];
     },
   },
+
+  // ───── batch 5 ─────
+  1255: {
+    keys: { 10: 'tiers' }, // mini says BOXES; the diagram labels the cake layers — independent key (gradding.com) = tiers
+    text: [['since antiquity. Weddings customarily', 'since antiquity, weddings customarily'], ['as n symbol of good fortune', 'as a symbol of good fortune'], ['oysters, pine nuts lamb and spices', 'oysters, pine nuts, lamb and spices'],
+      ['a small piece of the pier not to do so', 'a small piece of the pie; not to do so'], [/(\d+) th century/g, '$1th century'], ['because they were a bit put on top of each other', 'because they were not put on top of each other'],
+      ['higher cakes sinking into tower cakes', 'higher cakes sinking into lower cakes']],
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(1);
+      d.questionGroups[1].noteConfig = { title: 'Wedding cakes', lines: ['<strong>17th century – Britain: Bride Cake</strong>', '– expensive ingredients were a sign of wealth', '– less expensive round cakes were made of __Q7__ with currants in between and sugar on top', '– they were baked on a hearth stone because not all homes had __Q8__', '<strong>Now – United States: groom’s cake</strong>', '– guests receive pieces of the groom’s cake', '– cakes may represent the __Q9__ of the groom'] };
+    },
+  },
+  1142: {
+    text: [['(i., the word', '(i.e. the word']],
+    fn: d => {
+      const g = d.questionGroups[0]; g.groupType = 'table'; delete g.noteConfig;
+      g.tableConfig = { headers: ['Test', 'Findings'], rows: [
+        ['Observing the __Q27__ of Russian-English bilingual people when asked to select certain objects', 'Bilingual people engage both languages simultaneously: a mechanism known as __Q28__'],
+        ['A test called the __Q29__, focusing on naming colours', 'Bilingual people are more able to handle tasks involving a skill called __Q30__'],
+        ['A test involving switching between tasks', 'When changing strategies, bilingual people have superior __Q31__']] };
+      d.questionGroups[1].instruction = YNNG(3);
+      d.questionGroups[2].instruction = 'Reading Passage 3 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G, in boxes 37-40 on your answer sheet.';
+    },
+  },
+  950: {
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has six paragraphs, A-F. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-viii, in boxes 14-19 on your answer sheet.';
+      d.questionGroups[1].instruction = 'Look at the following statements (Questions 20-23) and the list of experiments below. Match each statement with the correct experiment, A, B or C. Write the correct letter, A, B or C, in boxes 20-23 on your answer sheet. NB You may use any letter more than once.';
+      const n = d.questionGroups[2]; n.instruction = 'Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 24-26 on your answer sheet.';
+      n.noteConfig.lines = n.noteConfig.lines.map(l => l.replace(/^\d+ /, '').replace(/(__Q\d+__)$/, '$1.'));
+    },
+  },
+  1144: {
+    keys: { 22: 'mosquitos / mosquitoes' },
+    text: [['the mosquitos that can give people this disease can grew', 'the mosquitos that can give people this disease can grow'], ['(of lack thereof)', '(or lack thereof)']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 14-19 on your answer sheet. NB You may use any letter more than once.';
+      const n = d.questionGroups[1]; n.instruction = 'Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 20-26 on your answer sheet.';
+      n.noteConfig.lines = n.noteConfig.lines.map(l => l.replace(/^\d+ /, '').replace(/(__Q\d+__)$/, '$1.'));
+    },
+  },
+  1096: {
+    keys: { 39: 'missionaries and traders / the missionaries and the traders' },
+    text: [['played a major role in world p', 'played a major role in world population growth.']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 3 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 27-34 on your answer sheet.';
+      d.questionGroups[1].instruction = TFNG(3);
+      d.questionGroups[2].instruction = 'Answer the questions below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 39-40 on your answer sheet.';
+      setQ(d, { 31: 'An overall description of the species lacking in the Old World and the New World', 34: 'An account of European animals taking root in the New World' });
+    },
+  },
+  1402: {
+    keys: { 19: 'mail-order company', 20: 'chain store / chain', 22: 'celebration / sale' },
+    text: [['History of Fanner trading company', 'History of Farmers Trading Company'], ['a Fanners store', 'a Farmers store'], ['established die century-old business', 'established the century-old business'], ['an account with die company', 'an account with the company'],
+      ['the language of the catalogues hasn’t Robert Laidlaw', 'the language of the catalogues hasn’t. Robert Laidlaw'], ['aims were simple to build', 'aims were simple: to build'], ['I decided that upon the lookout tower', 'I decided that up on the lookout tower'],
+      ['So I went up to the boy said,’ Son, have you got your penny? ‘He handed it to me. It was hot he’d had it', 'So I went up to the boy and said, ‘Son, have you got your penny?’ He handed it to me. It was hot – he’d had it'],
+      ['in the 1970s his stuffed remains', 'in the 1970s; his stuffed remains'], ['We were first price point focused, we weren’t fashion focused. “Remove', 'We were first price point focused, we weren’t fashion focused.” Remove'],
+      ['World War n,', 'World War II,'], ['Robert Laidlaw a committed Christian who came to his faith at a 1902 evangelistic service in Dunedin concluded', 'Robert Laidlaw – a committed Christian who came to his faith at a 1902 evangelistic service in Dunedin – concluded'],
+      ['David and Anne Norman the latter being', 'David and Anne Norman, the latter being'], ['in their centenary celebration everything from', 'in their centenary celebration – everything from'],
+      ['Generosity offered in an occasion.', 'An act of generosity on one occasion.'], ['Innovation of offer made by the head of company.', 'An innovative offer made by the head of the company.'], ['A romantic event on the roof of farmers.', 'A romantic event on the roof of a Farmers building.'],
+      ['Farmers were sold to a private owned company.', 'Farmers was sold to a privately owned company.'], ['Product became worse as wrong aspect focused.', 'The business suffered because it focused on the wrong things.'], ['Character of the company was changed.', 'The character of the company changed.']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 14-18 on your answer sheet.';
+      d.questionGroups[2].instruction = 'Look at the following statements (Questions 24-26) and the list of people below. Match each statement with the correct person, A, B or C. Write the correct letter, A, B or C, in boxes 24-26 on your answer sheet.';
+    },
+  },
+  1381: {
+    text: [['as these rots, nutrients', 'as these rot, nutrients'], ['grown on the750,000 acres', 'grown on the 750,000 acres'], ['could mate matters much worse', 'could make matters much worse'], ['Man-made wetlands, at present, being built', 'Man-made wetlands, at present being built']],
+    fn: d => {
+      d.questionGroups[0].instruction = 'Reading Passage 2 has ten paragraphs, A-J. Which paragraph contains the following information? Write the correct letter, A-J, in boxes 14-17 on your answer sheet.';
+      d.questionGroups[1].instruction = 'Look at the following statements (Questions 18-21) and the list of people below. Match each statement with the correct person, A, B or C. Write the correct letter, A, B or C, in boxes 18-21 on your answer sheet. NB You may use any letter more than once.';
+      d.questionGroups[2].instruction = TFNG(2);
+      setQ(d, {
+        14: 'the view that seagrasses can tolerate more salinity than is found in the bay',
+        15: 'why finding the cause of the ecological change matters',
+        16: 'expensive proposals to solve the nitrogen problem',
+        17: 'figures showing the loss of coral cover and coral species',
+        18: 'Drainage in the Everglades has made the water in the bay saltier.',
+        19: 'Restoring freshwater rich in nitrogen will cause more ecological damage.',
+        20: 'High nitrogen levels may be caused by the nearby farmland.',
+        21: 'Sewage discharges, rather than nutrients from farmland, are the main cause of the problem.',
+        22: 'Everyone agrees that pouring fresh water into Florida Bay is harmless.',
+        23: 'Different types of crops release different amounts of nitrogen into the water.',
+        24: 'The Everglades restoration project will be effective whatever the cause of the pollution.',
+        25: 'Nobody knows what Florida Bay was like before the 1950s.',
+        26: 'Tourism is fundamental to the economy of the Florida Keys.',
+      });
+    },
+  },
+  1372: {
+    keys: { 29: 'families and friends / friends and family / family and friends', 30: 'practitioner', 31: 'diagnosis' },
+    text: [['You know have proof that you are ill', 'You now have proof that you are ill'], ['as well as the subjective experiences are mediated', 'as well as the subjective experiences. These are mediated']],
+    fn: d => {
+      const g = d.questionGroups[0]; g.groupType = 'table'; delete g.noteConfig;
+      g.instruction = 'Complete the table below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 27-32 on your answer sheet.';
+      g.tableConfig = { headers: ['Source of knowledge', 'Examples'], rows: [
+        ['Personal experience', 'Symptoms of a __Q27__ and tiredness'],
+        ['', 'The doctor’s measurements, e.g. taking your __Q28__ and temperature'],
+        ['', 'Common judgements from __Q29__ around you'],
+        ['Scientific evidence', 'Medical knowledge from the general __Q30__, e.g. the doctor’s medical __Q31__'],
+        ['', 'Testing a medical hypothesis in the light of previous training and __Q32__']] };
+      d.questionGroups[1].instruction = 'Reading Passage 3 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 33-40 on your answer sheet. NB You may use any letter more than once.';
+    },
+  },
+  1370: {
+    keys: { 33: 'consumer’s right / consumer\'s right / consumers right', 35: 'skiing' },
+    text: [['the many pestilences that result from were threatened to kill', 'the many pestilences that result from war threatened to kill'], ['blood transfusions. CAT scans', 'blood transfusions, CAT scans'],
+      ['people should also the consideration of the __Q33__', 'people should also take into consideration the __Q33__'], ['experts believe that future population desperately needs __Q36__ in spite of their undefined risks. However, the researchers conducted so far', 'promoters believe that the future population desperately needs __Q36__ in spite of their undefined risks. However, the research conducted so far']],
+    fn: d => {
+      d.questionGroups[0].instruction = TFNG(3);
+      d.questionGroups[1].instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 33-39 on your answer sheet.';
+      d.questionGroups[2].instruction = 'Choose the correct letter, A, B, C or D. Write your answer in box 40 on your answer sheet.';
+    },
+  },
+  1360: {
+    text: [['in modem-day Norway', 'in modern-day Norway'], ['with modem-day Istanbul', 'with modern-day Istanbul'], ['colonists to modem-day Canada', 'colonists to modern-day Canada'], ['some Danish historians cal1 these', 'some Danish historians call these'],
+      ['Views of Vikings change according to not only to forces', 'Views of Vikings change according not only to forces']],
+    fn: d => {
+      d.questionGroups = d.questionGroups.filter(g => g.questions.length); // the source's final MC question is missing
+      const n = d.questionGroups[0]; n.instruction = 'Complete the notes below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 14-18 on your answer sheet.';
+      n.noteConfig.lines = ['<strong>Origins</strong>', '• The word ‘Viking’ is __Q14__', '• Vikings came from Scandinavia.', '<strong>Dates of the Viking Age</strong>', '• In Britain: AD __Q15__ – 1066', '• Length varies elsewhere', '<strong>Territorial extent</strong>', '• In doubt – but most of Europe', '• Possibly raided as far away as __Q16__', '<strong>End of the Viking Age</strong>', '• Vikings had assimilated into __Q17__, and adopted a new __Q18__ system.'];
+      d.questionGroups[1].instruction = 'Look at the following statements (Questions 19-26) and the list of times and places below. Match each statement with the correct place or time, A-H. Write the correct letter, A-H, in boxes 19-26 on your answer sheet.';
+    },
+  },
 };

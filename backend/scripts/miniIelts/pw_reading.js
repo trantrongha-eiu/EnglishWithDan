@@ -28,6 +28,7 @@ const only = process.argv[2] ? new RegExp(process.argv[2], 'i') : null;
   const results = [];
   for (const p of ps) {
     if (only && !only.test(p.title)) continue;
+    if (process.env.TAG && !(p.tags || []).includes(process.env.TAG)) continue;
     consoleErrors.length = 0;
     const id = String(p._id);
     const url = `${SITE}/reading.html?passageId=${id}&exam=practice`;
