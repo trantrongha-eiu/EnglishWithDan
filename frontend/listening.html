@@ -28,7 +28,7 @@
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/learning-popups.js?v=20260920"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
-<script src="/js/shared/utils.js?v=20260831"></script>
+<script src="/js/shared/utils.js?v=20260930scope"></script>
 <script src="/js/shared/toast.js?v=20260831"></script>
 <script src="/js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="/js/shared/confirm-dialog.js?v=20260831"></script>
@@ -2120,6 +2120,9 @@
                 case 'summary-completion': contentHtml = renderSummaryCompletionGroup(group, isReview); break;
                 default: contentHtml = renderPlainGroup(group, isReview); break;
             }
+
+            // Pasted full-document HTML (<style> body{…}) must not restyle the page.
+            if (window.scopeEmbeddedHtml) contentHtml = window.scopeEmbeddedHtml(contentHtml);
 
             const summary = isReview ? renderGroupReviewSummary(group) : '';
             return `<div class="question-group" data-type="${groupType}">${titleHtml}${instruction}${wordBankHtml}${contentHtml}${summary}</div>`;

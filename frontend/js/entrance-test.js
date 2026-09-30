@@ -508,6 +508,7 @@
       body = (g.questions || []).map(function (q) { return renderSingleQuestionHTML(q, savedByNum, kind); }).join('');
     }
 
+    if (window.scopeEmbeddedHtml) body = window.scopeEmbeddedHtml(body);
     return '<div class="et-group">' + head + body + '</div>';
   }
 

@@ -72,4 +72,39 @@
     var rem = s % 60;
     return String(m).padStart(2, '0') + ':' + String(rem).padStart(2, '0');
   };
+
+  /**
+   * scopeEmbeddedHtml(html) — admin-authored question HTML is sometimes a
+   * whole pasted document (<!DOCTYPE>, <head>, <style> body{…} ul li::before{…}).
+   * Injected as-is, those rules restyle the entire page. Returns the markup
+   * wrapped in a unique container with document-level tags dropped and every
+   * <style> selector prefixed by that container (body/html map to it).
+   * Markup without <style>/<html> is returned unchanged.
+   */
+  var _scopeSeq = 0;
+  function scopeCss(css, scope) {
+    return css
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/([^{}]+)\{([^{}]*)\}/g, function (_, selectors, body) {
+        var sel = selectors.split(',').map(function (s) {
+          s = s.trim();
+          if (!s) return '';
+          if (/^(html|body|:root)$/i.test(s)) return scope;
+          return scope + ' ' + s.replace(/^(html|body)\s+/i, '');
+        }).filter(Boolean).join(', ');
+        return sel ? sel + '{' + body + '}' : '';
+      });
+  }
+  window.scopeEmbeddedHtml = function (html) {
+    html = String(html == null ? '' : html);
+    if (!/<style[\s>]|<html[\s>]|<!doctype/i.test(html)) return html;
+    var scope = 'emb-scope-' + (++_scopeSeq);
+    var styles = [];
+    var body = html
+      .replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, function (_, css) { styles.push(scopeCss(css, '.' + scope)); return ''; })
+      .replace(/<!doctype[^>]*>/gi, '')
+      .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
+      .replace(/<\/?(html|head|body|meta)[^>]*>/gi, '');
+    return '<div class="' + scope + '">' + (styles.length ? '<style>' + styles.join('\n') + '</style>' : '') + body + '</div>';
+  };
 })();
