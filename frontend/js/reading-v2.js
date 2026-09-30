@@ -1898,6 +1898,10 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
   let headerHtml = '';
   if (groupTitle) headerHtml += `<div class="q-group-title">${escHtml(groupTitle)}</div>`;
   if (instruction) headerHtml += `<div class="q-section-instruction">${escHtml(instruction)}</div>`;
+  // diagram / flow-chart / picture that belongs to a non-map group (map groups render their own image)
+  if (group.imageUrl && groupType !== 'map') {
+    headerHtml += `<div class="rq-map-img-wrap"><img class="rq-map-img" src="${escHtml(group.imageUrl)}" alt="Diagram" loading="lazy" /></div>`;
+  }
 
   let bodyHtml = '';
   switch (groupType) {

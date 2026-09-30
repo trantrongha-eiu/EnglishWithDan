@@ -33,3 +33,11 @@ test-results/
 playwright-report/
 coverage/
 .nyc_output/
+
+# mini-ielts import working files (raw scraped pages, prod passage dump, screenshots)
+backend/scripts/miniIelts/web/
+backend/scripts/miniIelts/shots/
+backend/scripts/miniIelts/passages.json
+backend/scripts/miniIelts/out.json
+backend/scripts/miniIelts/pw_*.json
+__pycache__/
