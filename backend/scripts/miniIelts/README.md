@@ -98,6 +98,8 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 | `pw_mini.js` | Playwright: login tài khoản teacher test (`PW_TEST_USER`/`PW_TEST_PASS` trong `backend/.env`) trên ieltsthayha.com, render từng bài qua frontend thật bằng cách chặn API (KHÔNG ghi DB). `MINI_DATA=<data.json> node pw_mini.js` |
 | `pw_admin.js [regex]` | Playwright: mở modal "📝 Câu hỏi" ở admin cho từng passage (theo `passages.json`), đọc cảnh báo; chặn mọi request không phải GET. |
 | `pw_reading.js [regex]` | Playwright: mở từng passage đang active ở chế độ luyện (chỉ GET) và kiểm tra ô trả lời/đáp án. |
+| `key_audit.js [tag]` | Kiểm tĩnh mọi đáp án điền từ: có trong bài, đúng giới hạn số từ, không dính dấu câu/ngoặc, có biến thể nháy thẳng `'`. Các "vấn đề" ở biến thể phụ (thêm cho dễ chấm) là vô hại — chỉ sửa khi đáp án chính sai. |
+| `pw_grade.js [regex]` | Playwright end-to-end: điền đáp án đúng vào từng câu ở chế độ luyện, bấm chấm như học sinh, đọc kết quả chấm; chặn mọi request không phải GET nên **không lưu gì**. Phải 100% mỗi bài. `PS_FILE=<dump.json>` để chạy trên bộ khác. |
 | `../importMiniIeltsReading.js <data.json> [--apply]` | Nhập vào DB (ẩn), chống trùng (tên + 8-gram ≥15%), đưa ảnh lên Cloudinary `reading/mini-ielts/<slug>`. `--image <passageId> <url|file> "<ghi công>"` để thêm ảnh thay thế. |
 | `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch6.json` | Dữ liệu 6 lô đã nhập. |
 
@@ -114,7 +116,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 8. `node ../importMiniIeltsReading.js ../data/miniIeltsReading/batchN.json` (dry) → `--apply`.
 9. Ảnh hỏng (thường ~50%): tìm ảnh Wikimedia Commons qua API (`generator=search&gsrnamespace=6&prop=imageinfo&iiextmetadatafilter=LicenseShortName|Artist`), **tải về bằng curl có User-Agent** (Cloudinary tải trực tiếp bị Wikimedia chặn 429), rồi `--image <id> <file> "Ảnh: … — Tác giả, giấy phép (Wikimedia Commons)"`. Ảnh CC BY/BY-SA bắt buộc ghi công.
 10. `node dump_passages.js` → `node ../_audit_reading_warnings.js out.json` (phải 0 cảnh báo) → `node pw_admin.js "<tên các bài mới>"` (phải N/N).
-11. Bật cho học sinh: `node ../importMiniIeltsReading.js --activate ../data/miniIeltsReading/batchN.json` (dry) → thêm `--apply` (chỉ đụng đúng các bài trong file, theo danh sách _id). Rồi `node dump_passages.js` → `TAG=mini-ielts node pw_reading.js` (mở từng bài ở chế độ luyện như học sinh, phải N/N).
+11. Bật cho học sinh: `node ../importMiniIeltsReading.js --activate ../data/miniIeltsReading/batchN.json` (dry) → thêm `--apply` (chỉ đụng đúng các bài trong file, theo danh sách _id). Rồi `node dump_passages.js` → `TAG=mini-ielts node pw_reading.js` (mở từng bài ở chế độ luyện như học sinh, phải N/N) → `node key_audit.js` → `TAG=mini-ielts node pw_grade.js "<tên các bài mới>"` (làm đúng hết phải được chấm 100%; bài nào không đạt thì ẩn lại và sửa).
 
 ## 5. Bẫy đã gặp
 
