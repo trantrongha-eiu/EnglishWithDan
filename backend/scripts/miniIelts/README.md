@@ -11,7 +11,7 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 
 ## 2. Trạng thái hiện tại
 
-70 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện, pw_grade 100%) — pilot + batch2 … batch7 (lô 3–7 nhập 2026-09-30):
+74 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện, pw_grade 100%) — pilot + batch2 … batch8 (lô 3–8 nhập 2026-09-30):
 
 | _id | Tên | P |
 |---|---|---|
@@ -85,10 +85,14 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 | 6abd18af766cfd5ee7885d3e | We have Star performers! | P2 |
 | 6abd18b0766cfd5ee7885d4f | Blue-footed Boobies (key mini Q19 sai: vi → vii) | P2 |
 | 6abd18b1766cfd5ee7885d69 | The Romantic Poets (bảng Q33–39 dựng lại thành tableConfig) | P3 |
+| 6abd3688ed19df2f96f58e96 | Effort and Science to Win | P2 |
+| 6abd368bed19df2f96f58ea7 | The Rise and Fall of the British Textile Industry | P1 |
+| 6abd368bed19df2f96f58eb8 | Human Remains in the Green Sahara | P3 |
+| 6abd368ded19df2f96f58eca | Numeracy: Can Animals Tell Numbers? (key mini Q3/Q4 sai; nhóm 8–13 là TFNG) | P1 |
 
 Đã xem nhưng **bỏ** (đừng làm lại trừ khi có nguồn chuẩn khác): 1528 Insect decision-making, 1529 Fear of the Unknown, 1521 E-training (không có nhãn đoạn A–H dù đề hỏi "Which paragraph"); 1513 fluoridation (lựa chọn B là chữ rác, là đáp án Q36); 1510 Global Warming NZ 2, 1497 Maori Fish Hooks, 1494 Beginning of intelligence, 1489 Sense of flavour 2, 1488 Volatility Kills, 1480 Lighting up the lies, 1456 Olive Oil, 1496 Sunny Days for Silicon, 1482 Digital diet (đáp án mini sai/mơ hồ hàng loạt hoặc parse hỏng); 1516 The importance of law (trang đáp án lỗi 500). Lô 3: 1404 History of timekeeping (câu hỏi dựa trên hình, đề hỏng), 1396 Researcher on the Tree Crown (đoạn E mất câu đầu, đáp án Alan Smith không có trong bài), 1393 Elnino and Seabirds (bài ghép nhiều nguồn, lẫn trích dẫn), 1390 Coral reefs (chỉ 12 câu, Q16 mơ hồ B/C), 1383 Brunel (đoạn D mất câu, Q19/Q23/Q25 sai), 1413/1395 Adolescence + 1410 Personality + 1382 Foot health (trùng ngân hàng); chưa xem kỹ (WARN converter): 1419, 1421, 1415, 1416, 1414, 1411, 1399, 1392, 1391, 1409, 1407, 1387, 1385, 1384, 1375, 1376, 1359. Lô 4: 1322 Product adoption (Q19 sai rõ, Q24 nhắc Webvan không có trong bài), 1319 Algae biodiesel (key Q24–26 bị xáo), 1312 British Architecture 2 (Q11 các nguồn không thống nhất, chữ rác), 1309 Bitterness (mất nhóm Q26–27), 1325 Natural pesticide (cùng bài/câu hỏi với "The pesticide-free village" đã nhập), 1316 Easter Island (Q31/Q33 key sai), 1315 Communication in Science (Q30 lệch, đoạn lặp), 1296 Blue line 2 (mất câu Q9 cần), 1292 Mental Gymnastics (Q18 key sai, Q19 hỏng, thiếu đoạn), 1284 Tattoo on Tikopia (hình 3 ô chung 1 mũi tên → không trả lời được), 1268 Satellite (Q20 không có căn cứ), 1266 Finches (mất đoạn A), 1273 Bondi (Q3/Q7 sai/mơ hồ), 1259 Tulip (Q32 hiểu sai). Lô 5: 1249 Making Copier (đoạn C bị đảo), 1103 Life-Casting (Q20/Q23 các nguồn cho 3 đáp án khác nhau), 1072 Dirty River (Q7 sai, tóm tắt hỏng), 1374 Compliance (bài rời rạc, Q36/Q38 sai), 1371 Plant Scents (mất cả nhóm Q22–26), 1369 Photovoltaics (bản mini mất 1 đoạn so với gốc A–I → key theo đoạn sai lệch), 1367 Plain English (tóm tắt hỏng), 1363 Rural transport (tóm tắt hỏng). Lô 6: 1355 Malaria (đoạn B tự mâu thuẫn, thiếu đoạn), 1344 Football (mất đoạn B–C), 1342 Biomimicry (Q31/Q39/Q40 hỏng), 1331 Organic farming (tóm tắt sai key), 1329 TV Addiction (đoạn B mất câu, Q21 sai người), 1328 Copy your neighbor (11 câu, nhóm MC rỗng), 1326 Oil (mất đoạn H chứa Michael Lynch), 1057 Music (danh sách heading rỗng), 1055 Mozart Effect (Q22 dựa câu hỏng). Lô 7: nhóm trắc nghiệm cuối bị rỗng (converter không tách được lựa chọn → thiếu câu; để Giai đoạn C) 1029 Amateur Naturalists, 1230 Need to Belong, 965 Theatrical dress, 1379 Happiness; 1406 Bite That Heals (đoạn E mất nửa câu, Q36 không có căn cứ, Q29/Q40 sai), 1405 Dugong (Q5/Q6/Q9 mơ hồ, câu Q10 hỏng), 1403 Thomas Harriot (Q30 gán nhầm đoạn, Q34/Q36/Q38 mơ hồ), 1394 Environment to Children (bài chắp vá câu để khớp đề, bảng hỏng, thiếu Q13), 1341 Telegraph (mất đoạn cáp Đại Tây Dương, Q27 sai, Q33/Q36 không có trong bài), 1271 Radio Automation (sơ đồ Q1–7 không có hình), 1261 Burgess Shale (Q13 không căn cứ), 1361 Bovids (10 câu); mất danh sách heading hoặc nhãn đoạn: 1476 1478 1477 1441 1454 1493 1287 1286 1299 1141 1215 1036. Danh sách đầy đủ theo id: `web/mini/rejected.txt` (gitignored). Trùng với ngân hàng: xem `node mini_dedupe.js`.
 
-Lưu ý: 70 bài này **chưa có giải thích đáp án** (bài cũ có giải thích tiếng Việt).
+Giải thích đáp án tiếng Việt: `../data/miniIeltsReading/explanations/<passageId>.json` → `../setMiniExplanations.js` (xem mục 6.2).
 
 ## 3. Công cụ (thư mục này)
 
@@ -111,7 +115,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 | `key_audit.js [tag]` | Kiểm tĩnh mọi đáp án điền từ: có trong bài, đúng giới hạn số từ, không dính dấu câu/ngoặc, có biến thể nháy thẳng `'`. Các "vấn đề" ở biến thể phụ (thêm cho dễ chấm) là vô hại — chỉ sửa khi đáp án chính sai. |
 | `pw_grade.js [regex]` | Playwright end-to-end: điền đáp án đúng vào từng câu ở chế độ luyện, bấm chấm như học sinh, đọc kết quả chấm; chặn mọi request không phải GET nên **không lưu gì**. Phải 100% mỗi bài. `PS_FILE=<dump.json>` để chạy trên bộ khác. |
 | `../importMiniIeltsReading.js <data.json> [--apply]` | Nhập vào DB (ẩn), chống trùng (tên + 8-gram ≥15%), đưa ảnh lên Cloudinary `reading/mini-ielts/<slug>`. `--image <passageId> <url|file> "<ghi công>"` để thêm ảnh thay thế. |
-| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch7.json` | Dữ liệu 7 lô đã nhập. |
+| `../data/miniIeltsReading/pilot.json`, `batch2.json` … `batch8.json` | Dữ liệu 8 lô đã nhập. |
 | `wm_search.js "<query>" [--free]` | Tìm ảnh minh hoạ thay thế trên Wikimedia (lọc giấy phép CC0/PD/CC BY*, `--free` = chỉ CC0/PD) → contact sheet `shots/wm.png` + `web/wm.json` (có `image` 1280px để tải bằng curl + UA). |
 | `shot.js <file.html> <out.png>` | Chụp màn hình file HTML cục bộ (contact sheet ảnh). Dùng thay cho `node -e` có regex `\\` (bị hỏng escape). |
 | `cover_candidates.js [regex]` → `cover_sheet.js <from> [n]` / `cover_sheet.js 2,4,14` → `cover_pick.js 12=a 13=- …` | Ảnh bìa card cho bài chưa có ảnh: gom ứng viên Wikimedia **chỉ CC0/PD** theo `cover_queries.json` (id → "query \| query"), dựng contact sheet `shots/covers_<n>.png`, ghi lựa chọn vào `../data/passageCovers.json` (kèm tên file Commons + giấy phép). Kho ứng viên có thể lẫn ảnh nhạy cảm — luôn chọn bằng mắt. |
@@ -151,7 +155,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 ## 6. Việc còn lại
 
 1. Các lô tiếp theo — kế hoạch lấy hết (2026-09-30). Cả 340 bài đã tải + extract (`web/mini/all_ids.json`). Phân loại bằng `web/mini/triage.json` (clean / minor / diagram / heavy; tạo lại: dedupe `ORDER=web/mini/order_every.txt` → lọc → convert + check, xem lịch sử phiên): 43 đã nhập, ~45 đã bỏ, 27 trùng ngân hàng, 39 hỏng (thiếu đáp án/quá ngắn), còn lại chưa xem:
-   - **Giai đoạn A** — clean + minor chưa xem: lô 7 (2026-09-30) đã xét 38 bài, nhận 10. Còn lại: 1338 1324 1186 1220 1204 1143 1210 1148; cũng xét 1275 1269 1258 1035 1264 (đã convert 1338/1324/1186/1220: 1324 key YNNG ghi TRUE/FALSE, 1338 thiếu nhãn đoạn). Clean đã hết. Tỉ lệ đạt ~25–50% (lô 5: 10/21, lô 7: 10/38).
+   - ✅ **Giai đoạn A xong** (2026-09-30): lô 7 xét 38 bài nhận 10, lô 8 xét 13 bài nhận 4 (1204 1210 1338 1324). Lô 8 bỏ: 1269 Meteorite lake (đoạn A mất chữ, Q31 mơ hồ, tóm tắt hỏng — hình Q32–35 thì rõ), 1258 Termite mounds (đoạn E/G mất câu, Q40 mơ hồ), 1264 + 1220 (nhóm MC rỗng), 1143 + 1148 (mất danh sách heading), 1035 (word bank rỗng), 1275 (2 nhóm không xử lý được), 1186 (11 câu). Tỉ lệ đạt ~25–50%.
    - **Giai đoạn B** — 14 bài có hình: chạy lại `mini_extract.py` (extractor cũ không lấy hình), xem hình kỹ.
    - **Giai đoạn C** — 96 bài "heavy": nâng converter (word bank trong bảng, lựa chọn tách dòng, nhóm lạ) rồi mới rà.
    - 39 bài hỏng: thử tải lại trang đáp án một lần, không được thì bỏ.

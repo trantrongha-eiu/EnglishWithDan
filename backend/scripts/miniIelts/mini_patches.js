@@ -721,4 +721,68 @@ module.exports = {
       g2.noteConfig.lines = ['According to the writer, the Romantic poets left us with the ideas of __Q40__.'];
     },
   },
+  // ───── batch 8 ─────
+  1204: {
+    text: [['<h2>EFFORT AND SCIENCE TO WIN</h2>', '<h2>Effort and Science to Win</h2>'], ['and .Applied Sciences', 'and Applied Sciences'], ['to die power of the mind', 'to the power of the mind'], ['countries in die world', 'countries in the world'],
+      ['help US arrive', 'help us arrive'], ['daffy', 'daily'], ['The CCG has had', 'The EEG has had'], ['odontology 1 .', 'odontology.'], ['ergonomic 1 construction', 'ergonomic* construction'],
+      ['<p>1 objects designed to be better adapted to the shape of the human body', '<p><small>* ergonomic: designed to be better adapted to the shape of the human body</small>'], ['(EEC)', '(EEG)']],
+    keys: { 21: 'FALSE' }, // mini: "FLASE"
+    fn: d => {
+      d.title = 'Effort and Science to Win';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 14-17 on your answer sheet.';
+      g0.matchingOptions = ['A', 'B', 'C', 'D', 'E', 'F'];
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 18-20 on your answer sheet.';
+      g1.questions.forEach(q => { q.options = q.options.map(o => o.replace(/^\.\s*/, '')); });
+      g2.instruction = TFNG(2);
+    },
+  },
+  1210: {
+    text: [['com petition', 'competition'], [/(\d+) th century/g, '$1th century']],
+    keys: { 4: 'meet the demand / meet demand', 6: 'steam engines / steam' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Complete the notes below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 1-6 on your answer sheet.';
+      ['Early history', 'Ways found to deal with situation', 'Early technology'].forEach(h => { const i = g0.noteConfig.lines.indexOf(h); if (i >= 0) g0.noteConfig.lines[i] = `<strong>${h}</strong>`; });
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 7-9 on your answer sheet.';
+      g1.questions.forEach(q => { q.options = q.options.map(o => o.replace(/\s*\d+##qa$/, '')); });
+      g2.instruction = TFNG(1);
+    },
+  },
+  1338: {
+    text: [['<h2>Human remain in Green Sahara</h2>', '<h2>Human Remains in the Green Sahara</h2>'], [/<p>\{([A-J])\} /g, '<p><strong>$1</strong> '], ['October 13,2,000', 'October 13, 2000'], ['I found some bones:’ ', 'I found some bones,” '],
+      ['Nigeria’s army', 'Niger’s army'], ['cemetery, M Garcea', 'cemetery,” Garcea'], ['animal bone Apparently', 'animal bone. Apparently'], ['Tenere ,', 'Tenere,'], ['The Tuareg ,', 'The Tuareg,']],
+    keys: { 30: 'a detailed map / a map / detailed map / map', 31: 'radiocarbon dating', 32: '9,000 years / 9000 years / 9,000 years old', 33: 'teeth / the teeth',
+      34: 'peaceful', 35: 'injuries', 36: 'protein', 37: 'strenuous', 38: 'hunting', 39: 'cow species', 40: 'transitional' },
+    fn: d => {
+      d.title = 'Human Remains in the Green Sahara';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = TFNG(3);
+      g1.noteConfig.lines = ['What did Sereno and Garcea make of the whole site during their first three weeks at Gobero? __Q30__',
+        'For what purpose did Sereno send one tooth from each of four skulls to a laboratory? __Q31__',
+        'Roughly how old were the tightly bundled burials found to be? __Q32__',
+        'From which part of the skeletons are scientists trying to obtain DNA to discover the genetic origins of the Kiffian and Tenerian? __Q33__'];
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 34-40 on your answer sheet.';
+      g2.noteConfig.lines = ['Judging by the bones, the Kiffian appear to have been __Q34__, hard-working people, since there is a lack of head and forearm __Q35__. Their huge leg muscles suggest that they ate a lot of __Q36__ and had a __Q37__ lifestyle – both consistent with a fishing way of life. The Tenerian are thought to have been herders, because drier conditions 6,000 years ago favoured herding over __Q38__. However, among the animal bones found at the site, only three came from a __Q39__, so Sereno suggested that the Tenerian at Gobero were a __Q40__ group that still relied heavily on hunting and fishing.'];
+    },
+  },
+  1324: {
+    text: [['<h2>Numeracy: can animals tell numbers? (Can animals count?)</h2>', '<h2>Numeracy: Can Animals Tell Numbers?</h2>']],
+    keys: { 3: 'calculate', 4: 'fruit flies' }, // mini: "calculate eggs" / "fruits flies" — neither is in the passage
+    fn: d => {
+      d.title = 'Numeracy: Can Animals Tell Numbers?';
+      const [g0, g1] = d.questionGroups;
+      g0.groupType = 'table'; delete g0.noteConfig;
+      g0.instruction = 'Complete the table below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.';
+      g0.tableConfig = { headers: ['Group', 'Subjects', 'Experiments', 'Results'], rows: [
+        ['Mammals and birds', 'rhesus monkeys and humans', 'looked at two sets of geometrical objects on a computer screen', 'performance of the two groups is almost __Q1__'],
+        ['', 'chicks', 'chose between two sets of __Q2__ which are altered', 'chicks can do calculations in order to choose a larger group'],
+        ['', 'coots', 'behaviour of female birds was observed', 'a bird seems to have the ability to __Q3__'],
+        ['Amphibians, fish and insects', 'salamanders', 'offered clear tubes containing different quantities of __Q4__', 'salamanders distinguish between numbers over four if the bigger number is at least two times larger'],
+        ['', '__Q5__', 'shown real shoals and later artificial ones of geometrical shapes; these are used to check the influence of total __Q6__ and brightness', 'subjects know the difference between two and three and possibly three and four, but not between four and five'],
+        ['', 'bees', 'had to learn where __Q7__ was stored', 'could soon choose the correct place']] };
+      g1.instruction = TFNG(1); // keys are TRUE/FALSE although mini's instruction said YES/NO
+      g1.questions.forEach(q => { q.type = 'true-false-ng'; });
+    },
+  },
 };

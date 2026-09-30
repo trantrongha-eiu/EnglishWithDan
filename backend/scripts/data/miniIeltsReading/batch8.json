@@ -1,0 +1,606 @@
+[
+ {
+  "source": "https://mini-ielts.com/1204/reading/-effort-and-science-to-win",
+  "imageUrl": null,
+  "doc": {
+   "title": "Effort and Science to Win",
+   "category": "passage2",
+   "content": "<h2>Effort and Science to Win</h2>\n\n<p>Winning nowadays is not only a question of disciplined training: The triumph of victory today involves the collaboration of several medical specialists who combine their particular knowledge in an effort to help each athlete to reach their potential.</p>\n\n<p><strong>A</strong> In Mexico, the Medicine Direction and Applied Sciences of the National Commission of Deporte analyses all aspects of sports science from the role of the auditory system in sporting achievement to the power of the mind and its role in the ability to win. Everything, it seems, is open to scrutiny. Recently, the focus has been evaluating the visual acuity of cyclists and long distance runners but they also focus on the more traditional areas of sports research, among them psychology, nutrition, anthropology, biochemistry and odontology. From budding child athletes as young as 9 to the more mature-aged sportsperson, the facility at Deporte has attracted some of Mexico’s most famous sporting and Olympic hopefuls.</p>\n\n<p><strong>B</strong> “The study of elite athletes is now more scientific than ever” says doctor Francisco Javier Squares, “after each competition, athletes are exposed to vigorous medical examinations and follow-up training in order to help us arrive at a program that is tailor-made. “The modern athlete has become big business, no longer is there a one-size-fits-all approach. For example, in the past two people both 1.70 meters tall and weighing 70 kilograms would have been given the same program of athletic conditioning – now this idea is obsolete. It may be that the first individual has 35 kgs of muscle and 15 kgs of fat and the other person, although the same height and weight may have 30 kgs of muscle and 20 kgs of fat. Through detailed scientific evaluation here at our facility in Deporte,” says Squares, “ … we are able to construct a very specific training programme for each individual.”</p>\n\n<p><strong>C</strong> Whereas many countries in the world focus on the elevation of the glorious champion, the Mexican Olympic team takes a slightly different approach. Psychologically speaking an athlete must bring to his endeavour a healthy dose of humility. As Squares said, “When an athlete wins for Mexico, it is always as a result of a combined team effort with many people operating behind the scenes to realise the sporting achievement. When an athlete stands on the dais, it is because of great effort on the part of many.”</p>\n\n<p><strong>D</strong> As is often the case in some poorer countries, sportsmen and women are stifled in their development due to budgetary constraints. However this has not been a factor for consideration with the team in Mexico. The Mexican government has allocated a substantial sum of money for the provision of the latest equipment and laboratories for sports research. In fact, the quality of Mexico’s facilities puts them on a par with countries like Italy and Germany in terms of access to resources. One example of sophisticated equipment used at the Mexican facility is the hyperbaric chamber. This apparatus is used to enhance oxygen recovery after a vigorous physical workout. Says Squares, “When you breathe the air while inside a hyperbaric chamber the natural state of the oxygen does not change. Green plants produced the oxygen; modern technology just increases the air pressure. This does not change the molecular composition of oxygen. Increased pressure just allows oxygen to get into tissues better. Due to our purchase of the hyperbaric chamber, athletes are able to recover from an intense workout in a much shorter space of time. We typically use the chamber for sessions of 45 to 60 minutes daily or three times per week.”</p>\n\n<p><strong>E</strong> When pushed to the limit, the true indicator of fitness is not how hard the heart operates, but how quickly it can recover after an extreme workout. Therefore, another focus area of study for the team in Mexico has been the endurance of the heart. To measure this recovery rate, an electroencephalograph (EEG) is used. The EEG enables doctors to monitor the brainwave activity from sensors placed on the scalp. Athletes exert intense effort for a sustained period after which they are given time to rest and recover. During these periods between intense physical exertion and recovery, doctors are able to monitor any weaknesses in the way the heart responds. The EEG has had a big impact upon our ability to measure the muscular endurance of the heart.</p>\n\n<p><strong>F</strong> In 1796, the life expectancy of a human being was between 25 and 36 years, in 1886 that number basically doubled to between 45 and 50. In 1996, the life expectancy of an average Mexican stood at around 75 years. People are living longer and this is due in large part to the advances of modern science. It is not all sophisticated medical equipment that is playing a part; although lesser in impact, basic advances in engineering are also greatly assisting. Take for example, a professional tennis player. In the past, most tennis players’ shoes were constructed with fabric and a solid rubber sole. These shoes were of poor construction and resulted in hip and foot injuries. Today the technology of shoe construction has radically changed. Now some shoes are injected with silicone and made of more comfortable, ergonomic* construction. This has helped not only the elite but also the recreational sportsperson and thus, helps in the preservation of the human body.</p>\n\n<p><small>* ergonomic: designed to be better adapted to the shape of the human body</small></p>",
+   "questionGroups": [
+    {
+     "groupTitle": "Questions 14–17",
+     "instruction": "Reading Passage 2 has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 14-17 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 14,
+       "type": "matching-info",
+       "questionText": "the natural process of oxygen production",
+       "correctAnswer": "D"
+      },
+      {
+       "questionNumber": 15,
+       "type": "matching-info",
+       "questionText": "standard after-competition procedure",
+       "correctAnswer": "B"
+      },
+      {
+       "questionNumber": 16,
+       "type": "matching-info",
+       "questionText": "the areas of study undertaken to improve athletic performance",
+       "correctAnswer": "A"
+      },
+      {
+       "questionNumber": 17,
+       "type": "matching-info",
+       "questionText": "the Mexican viewpoint on winning",
+       "correctAnswer": "C"
+      }
+     ],
+     "groupType": "matching-options",
+     "matchingOptions": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+     ],
+     "matchingReuseAllowed": true
+    },
+    {
+     "groupTitle": "Questions 18–20",
+     "instruction": "Choose the correct letter, A, B, C or D. Write the correct letter in boxes 18-20 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 18,
+       "type": "multiple-choice",
+       "questionText": "The hyperbaric chamber",
+       "options": [
+        "helps athletes to breathe more easily.",
+        "increases the level of oxygen an athlete breathes.",
+        "decreases the pressure of the oxygen for Mexican athletes.",
+        "speeds up recovery time for athletes."
+       ],
+       "correctAnswer": "D"
+      },
+      {
+       "questionNumber": 19,
+       "type": "multiple-choice",
+       "questionText": "The electroencephalograph (EEG)",
+       "options": [
+        "measures how fast brainwaves move during exercise.",
+        "helps doctors to determine heart problems.",
+        "measures how hard the heart works during exercise.",
+        "strengthens the heart muscle in athletes."
+       ],
+       "correctAnswer": "B"
+      },
+      {
+       "questionNumber": 20,
+       "type": "multiple-choice",
+       "questionText": "The life-span of individuals in Mexico has increased due to",
+       "options": [
+        "medical improvements.",
+        "more committed doctors.",
+        "better made sporting equipment.",
+        "advances in ergonomics."
+       ],
+       "correctAnswer": "A"
+      }
+     ],
+     "groupType": "plain"
+    },
+    {
+     "groupTitle": "Questions 21–26",
+     "instruction": "Do the following statements agree with the information given in Reading Passage 2? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+     "questions": [
+      {
+       "questionNumber": 21,
+       "type": "true-false-ng",
+       "questionText": "There are limits to the level of sporting enquiry.",
+       "correctAnswer": "FALSE"
+      },
+      {
+       "questionNumber": 22,
+       "type": "true-false-ng",
+       "questionText": "Specific athletic programs differ mostly between men and women",
+       "correctAnswer": "NOT GIVEN"
+      },
+      {
+       "questionNumber": 23,
+       "type": "true-false-ng",
+       "questionText": "Mexico and Germany have similar sporting resources.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 24,
+       "type": "true-false-ng",
+       "questionText": "Lack of money is what stops athletic improvement in some poor countries.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 25,
+       "type": "true-false-ng",
+       "questionText": "Wealthy countries enjoy greater athletic success.",
+       "correctAnswer": "NOT GIVEN"
+      },
+      {
+       "questionNumber": 26,
+       "type": "true-false-ng",
+       "questionText": "Mexican athletes have the support of their government.",
+       "correctAnswer": "TRUE"
+      }
+     ],
+     "groupType": "plain"
+    }
+   ],
+   "questionRange": {
+    "start": 14,
+    "end": 26
+   },
+   "difficulty": "medium",
+   "tags": [
+    "mini-ielts",
+    "recent-actual-tests"
+   ],
+   "isActive": false,
+   "isActualTest": false
+  }
+ },
+ {
+  "source": "https://mini-ielts.com/1210/reading/the-rise-and-fall-of-the-british-textile-industry",
+  "imageUrl": "http://images.mini-ielts.com/images/11/15/powerloomweavingin1835.jpg",
+  "doc": {
+   "title": "The Rise and Fall of the British Textile Industry",
+   "category": "passage1",
+   "content": "<h2>The Rise and Fall of the British Textile Industry</h2>\n\n<p>Textile production in Britain can be said to have its roots as an industry at the beginning of the 18th century, when Thomas Crotchet and George Sorocold established what is thought to be the first factory built in Britain. It was a textile mill with a waterwheel as its source of power, the latest machinery, and even accommodation for the workers. As well as possibly being the first sweatshop in the modern sense, it was the beginning of the end for traditional textile production.</p>\n\n<p>For hundreds of years the spinning and weaving of cloth had been done manually by men, women and children in their own homes. The yarn would be combed and spun using a spindle, then woven on a hand loom, and what they produced would be mainly for local consumption. Technology far more sophisticated than the spindle and hand-loom would change all that.</p>\n\n<p>The demand for cotton textiles had been growing since the Middle Ages, fostered by the importation of high quality cotton fabrics from the Middle East and India. So how were local producers to fight off the competition? The imported fabrics were of course expensive, so textile makers (not just in Britain but throughout Europe) produced mixed fabrics and cotton substitutes. They also had foreign textiles banned. But the key to the increased productivity needed to meet the demand, was machine production. It would be faster, cheaper and the finished products would be consistent in quality. Not least of the advantages was that it would allow manufacturers to market their goods on a large, if not yet global, scale.</p>\n\n<p>The story of the growth of the British textile industry from about 1733 and for the next two hundred years is one of constant technological innovation and expansion. In 1733 John Kay invented the fly-shuttle, which made the hand-loom more efficient, and in 1764 James Hargreaves came up with the spinning jenny, which among other things had the effect of raising productivity eightfold. The next great innovator was Richard Arkwright, who in 1768 employed John Kay (of the fly-shuttle) to help him build more efficient machinery. He was a man with a vision – to mechanise textile production – and by 1782 he had a network of mills across Britain. As the water-powered machinery, though not yet fully mechanised, became more complex, Kay began to use steam engines for power. The first power-loom, however, which was invented in 1785 by Dr Edmund Cartwright, really did mechanise the weaving stage of textile manufacture.</p>\n\n<p>The pace of growth quickened with the expansion of Britain’s influence in the world and the acquisition of colonies from which cheap raw materials could be imported. For example, in a single decade, from 1781 to 1791, imports of cotton into Britain quadrupled, going on to reach 100 million pounds in weight in 1815 and 263 million in 1830.The increase in exports is equally impressive; in 1751 £46,000 worth of cloth was exported and by the end of the century this had risen to £5.4 million. By the end of the 19th century the figure had soared to close on £50 million. Britain was now supplying cheaper and better quality clothing to a global market. Yet during the course of the 20th century Britain lost its position as a major textile manufacturer.</p>\n\n<p>So what happened? There are a number of views on this question, not all of them conflicting, and where there is disagreement it is usually about when the decline began. Whether it began before the First World War (1914-18), or during the inter-war years (1919—1939), or after 1945, most economists would give roughly the same reasons. To start with, there was competition from abroad, especially from developing countries in the Far East, notably Japan. It was thought by manufacturers that the best way to combat this increased competition was to modernise. However, management and the labour unions were unable to agree on how to handle this situation.</p>\n\n<p>Modernisation would mean people losing their jobs and possibly a change in labour practices. Such changes as were made served only to slow down the industry’s decline rather than help regain its predominant position. Economically less developed countries, on the other hand, had the advantage of being able to provide low wage competition, without the problem of powerful labour unions.</p>\n\n<p>There are, of course, many other reasons for the textile industry’s decline, two of which became particularly noticeable in the late twentieth century and are related. The first is outsourcing, when manufacturers establish factories in countries where there is cheap labour. This obviously leads to less demand for locally-produced goods. Related to this, the textile and clothing industries have acquired a bad reputation for exploiting workers, often illegal immigrants, in sweatshops where they are forced to work long hours and are paid far less than the minimum wage.</p>\n\n<p>We seem to be back with Crotchet and Sorocold and their first live-in factory. The globalising trend of out-sourcing, however, was a rational response to the growing competition from overseas, which, it goes without saying, does not excuse the exploitation of workers. The British industry itself, while no longer holding a key place in the global textile market has adapted itself and now concentrates more on the world of fashion and design, where it seems to be doing quite well.</p>",
+   "questionGroups": [
+    {
+     "groupTitle": "Questions 1–6",
+     "instruction": "Complete the notes below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 1-6 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "local consumption"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "competition"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "banned"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "meet the demand / meet demand"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "efficient"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "steam engines / steam"
+      }
+     ],
+     "groupType": "note-form",
+     "noteConfig": {
+      "title": "",
+      "lines": [
+       "<strong>Early history</strong>",
+       "Begins as a cottage industry",
+       "Products hand-woven and made for __Q1__",
+       "Local producers face __Q2__ from overseas",
+       "<strong>Ways found to deal with situation</strong>",
+       "Imported fabrics __Q3__, mixed cottons produced",
+       "<strong>Early technology</strong>",
+       "Machine production needed to __Q4__ for cotton fabrics",
+       "Improved technology (such as the fly-shuttle) more __Q5__ and productive",
+       "Machinery begins to be powered by __Q6__"
+      ]
+     }
+    },
+    {
+     "groupTitle": "Questions 7–9",
+     "instruction": "Choose the correct letter, A, B, C or D. Write the correct letter in boxes 7-9 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Which of the following innovations increased productivity by 800%?",
+       "options": [
+        "the power-loom",
+        "the steam engine",
+        "the spinning jenny",
+        "the fly-shuttle"
+       ],
+       "correctAnswer": "C"
+      },
+      {
+       "questionNumber": 8,
+       "type": "multiple-choice",
+       "questionText": "During which period was the British textile industry at its peak?",
+       "options": [
+        "1733-1785",
+        "1781-1791",
+        "1791-1830",
+        "1830-1900"
+       ],
+       "correctAnswer": "D"
+      },
+      {
+       "questionNumber": 9,
+       "type": "multiple-choice",
+       "questionText": "Which of the following was a major cause of the British textile industry’s decline?",
+       "options": [
+        "the expansion of foreign textile industries",
+        "the loss of overseas markets",
+        "there being no demand for products",
+        "labour becoming too expensive"
+       ],
+       "correctAnswer": "A"
+      }
+     ],
+     "groupType": "plain"
+    },
+    {
+     "groupTitle": "Questions 10–13",
+     "instruction": "Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+     "questions": [
+      {
+       "questionNumber": 10,
+       "type": "true-false-ng",
+       "questionText": "Foreign textiles were banned because of their inferior quality.",
+       "correctAnswer": "FALSE"
+      },
+      {
+       "questionNumber": 11,
+       "type": "true-false-ng",
+       "questionText": "Richard Arkwright built the first fully-mechanised textile mill.",
+       "correctAnswer": "NOT GIVEN"
+      },
+      {
+       "questionNumber": 12,
+       "type": "true-false-ng",
+       "questionText": "In less developed countries, the industry could rely on cheap labour.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 13,
+       "type": "true-false-ng",
+       "questionText": "Out-sourcing was one method used to compete with foreign manufacturers.",
+       "correctAnswer": "TRUE"
+      }
+     ],
+     "groupType": "plain"
+    }
+   ],
+   "questionRange": {
+    "start": 1,
+    "end": 13
+   },
+   "difficulty": "medium",
+   "tags": [
+    "mini-ielts",
+    "recent-actual-tests"
+   ],
+   "isActive": false,
+   "isActualTest": false
+  }
+ },
+ {
+  "source": "https://mini-ielts.com/1338/reading/human-remain-in-green-sahara",
+  "imageUrl": null,
+  "doc": {
+   "title": "Human Remains in the Green Sahara",
+   "category": "passage3",
+   "content": "<h2>Human Remains in the Green Sahara</h2>\n\n<p><strong>A</strong> On October 13, 2000, a small team of paleontologists led by Paul Sereno of the University of Chicago clambered out of three battered Land Rovers, filled their water bottles, and scattered on foot across the toffee-colored sands of the Tenere desert in northern Niger. The Tenere, on the southern flank of the Sahara, easily ranks among the most desolate landscapes on Earth. The Tuareg, turbaned nomads who for centuries have ruled this barren realm, refer to it as a “desert within a desert”-a California-size ocean of sand and rock, where a single massive dune might stretch a hundred miles, and the combination of 120-degree heat and inexorable winds can wick the water from a human body in less than a day. The harsh conditions, combined with intermittent conflict between the Tuareg and the Niger government, have kept the region largely unexplored.</p>\n\n<p><strong>B</strong> Mike Hettwer, a photographer accompanying the team, headed off by himself toward a trio of small dunes. He crested the first slope and stared in amazement. The dunes were spilling over with bones. He took a few shots with his digital camera and hurried back to the Land Rovers. “I found some bones,” Hettwer said, when the team had regrouped. “But they’re not dinosaurs. They’re human.”</p>\n\n<p><strong>C</strong> In the spring of 2005 Sereno contacted Elena Garcea, an archaeologist at the University of Cassino, in Italy, inviting her to accompany him on a return to the site. Garcea had spent three decades working digs along the Nile in Sudan and in the mountains of the Libyan Desert, and was well acquainted with the ancient peoples of the Sahara. But she had never heard of Paul Sereno. His claim to have found so many skeletons in one place seemed far fetched, given that no other Neolithic cemetery contained more than a dozen or so. Some archaeologists would later be skeptical; one sniped that he was just a “moonlighting paleontologist.” But Garcea was too intrigued to dismiss him as an interloper. She agreed to join him.</p>\n\n<p><strong>D</strong> Garcea explained that the Kiffian were a fishing-based culture and lived during the earliest wet period, between 8,000 and 10,000 years ago. She held a Kiffian sherd next to a Tenerian one. “What is so amazing is that the people who made these two pots lived more than a thousand years apart.”</p>\n\n<p><strong>E</strong> Over the next three weeks, Sereno and Garcea-along with five American excavators, five Tuareg guides, and five soldiers from Niger’s army, sent to protect the camp from bandits—made a detailed map of the site, which they dubbed Gobero, after the Tuareg name for the area. They exhumed eight burials and collected scores of artifacts from both cultures. In a dry lake bed adjacent to the dunes, they found dozens of fishhooks and harpoons carved from animal bone. Apparently the Kiffian fishermen weren’t just going after small fry: Scattered near the dunes were the remains of Nile perch, a beast of a fish that can weigh nearly 300 pounds, as well as crocodile and hippo bones.</p>\n\n<p><strong>F</strong> Sereno flew home with the most important skeletons and artifacts and immediately began planning for the next field season. In the meantime, he carefully removed one tooth from each of four skulls and sent them to a lab for radiocarbon dating. The results pegged the age of the tightly bundled burials at roughly 9,000 years old, the heart of the Kiffian era. The smaller “sleeping” skeletons turned out to be about 6,000 years old, well within the Tenerian period. At least now the scientists knew who was who.</p>\n\n<p><strong>G</strong> In the fall of 2006 they returned to Gobero, accompanied by a larger dig crew and six additional scientists. Garcea hoped to excavate some 80 burials, and the team began digging. As the skeletons began to emerge from the dunes, each presented a fresh riddle, especially the Tenerian. A male skeleton had been buried with a finger in his mouth.</p>\n\n<p><strong>H</strong> Even at the site, Arizona State University bio archaeologist Chris Stojanowski could begin to piece together some clues. Judging by the bones, the Kiffian appeared to be a peaceful, hard working people. “The lack of head and forearm injuries suggests they weren’t doing much fighting,” he told me. “And these guys were strong.” He pointed to a long, narrow ridge running along a femur. “That’s the muscle attachment,” he said. “This individual had huge leg muscles, which means he was eating a lot of protein and had a strenuous lifestyle — both consistent with a fishing way of life.” For contrast, he showed me the femur of a Tenerian male. The ridge was barely perceptible. “This guy had a much less strenuous lifestyle,” he said, “which you might expect of a herder.”</p>\n\n<p><strong>I</strong> Stojanowski’s assessment that the Tenerian were herders fits the prevailing view among scholars of life in the Sahara 6,000 years ago, when drier conditions favored herding over hunting. But if the Tenerian were herders, Sereno pointed out, where were the herds? Among the hundreds of animal bones that had turned up at the site, none belonged to goats or sheep, and only three came from a cow species. “It’s not unusual for a herding culture not to slaughter their cattle, particularly in a cemetery,” Garcea responded, noting that even modern pastoralists, such as Niger’s Wodaabe, are loath to butcher even one animal in their herd. Perhaps, Sereno reasoned, the Tenerian at Gobero were a transitional group that had not fully adopted herding and still relied heavily on hunting and fishing.</p>\n\n<p><strong>J</strong> Back in Arizona, Stojanowski continues to analyze the Gobero bones for clues to the Green Saharans’ health and diet. Other scientists are trying to derive DNA from the teeth, which could reveal the genetic origins of the Kiffian and Tenerian- and possibly link them to descendants living today. Sereno and Garcea estimate a hundred burials remain to be excavated. But as the harsh Tenere winds continue to erode the dunes, time is running out. “Every archaeological site has a life cycle,” Garcea said. “It begins when people begin to use the place, followed by disuse, then nature takes over, and finally it is gone. Gobero is at the end of its life.”</p>",
+   "questionGroups": [
+    {
+     "groupTitle": "Questions 27–29",
+     "instruction": "Do the following statements agree with the information given in Reading Passage 3? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+     "questions": [
+      {
+       "questionNumber": 27,
+       "type": "true-false-ng",
+       "questionText": "Hettwer accidentally found human remains in the desert.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 28,
+       "type": "true-false-ng",
+       "questionText": "Sereno and Garcea have cooperated in some archaeological activities before.",
+       "correctAnswer": "FALSE"
+      },
+      {
+       "questionNumber": 29,
+       "type": "true-false-ng",
+       "questionText": "The pictures of rock engravings found in Green Sahara is similar to other places.",
+       "correctAnswer": "NOT GIVEN"
+      }
+     ],
+     "groupType": "plain"
+    },
+    {
+     "groupTitle": "Questions 30–33",
+     "instruction": "Answer the questions below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer.",
+     "questions": [
+      {
+       "questionNumber": 30,
+       "type": "fill-blank",
+       "questionText": "Question 30",
+       "correctAnswer": "a detailed map / a map / detailed map / map"
+      },
+      {
+       "questionNumber": 31,
+       "type": "fill-blank",
+       "questionText": "Question 31",
+       "correctAnswer": "radiocarbon dating"
+      },
+      {
+       "questionNumber": 32,
+       "type": "fill-blank",
+       "questionText": "Question 32",
+       "correctAnswer": "9,000 years / 9000 years / 9,000 years old"
+      },
+      {
+       "questionNumber": 33,
+       "type": "fill-blank",
+       "questionText": "Question 33",
+       "correctAnswer": "teeth / the teeth"
+      }
+     ],
+     "groupType": "note-form",
+     "noteConfig": {
+      "title": "",
+      "lines": [
+       "What did Sereno and Garcea make of the whole site during their first three weeks at Gobero? __Q30__",
+       "For what purpose did Sereno send one tooth from each of four skulls to a laboratory? __Q31__",
+       "Roughly how old were the tightly bundled burials found to be? __Q32__",
+       "From which part of the skeletons are scientists trying to obtain DNA to discover the genetic origins of the Kiffian and Tenerian? __Q33__"
+      ]
+     }
+    },
+    {
+     "groupTitle": "Questions 34–40",
+     "instruction": "Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 34-40 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 34,
+       "type": "fill-blank",
+       "questionText": "Question 34",
+       "correctAnswer": "peaceful"
+      },
+      {
+       "questionNumber": 35,
+       "type": "fill-blank",
+       "questionText": "Question 35",
+       "correctAnswer": "injuries"
+      },
+      {
+       "questionNumber": 36,
+       "type": "fill-blank",
+       "questionText": "Question 36",
+       "correctAnswer": "protein"
+      },
+      {
+       "questionNumber": 37,
+       "type": "fill-blank",
+       "questionText": "Question 37",
+       "correctAnswer": "strenuous"
+      },
+      {
+       "questionNumber": 38,
+       "type": "fill-blank",
+       "questionText": "Question 38",
+       "correctAnswer": "hunting"
+      },
+      {
+       "questionNumber": 39,
+       "type": "fill-blank",
+       "questionText": "Question 39",
+       "correctAnswer": "cow species"
+      },
+      {
+       "questionNumber": 40,
+       "type": "fill-blank",
+       "questionText": "Question 40",
+       "correctAnswer": "transitional"
+      }
+     ],
+     "groupType": "note-form",
+     "noteConfig": {
+      "title": "",
+      "lines": [
+       "Judging by the bones, the Kiffian appear to have been __Q34__, hard-working people, since there is a lack of head and forearm __Q35__. Their huge leg muscles suggest that they ate a lot of __Q36__ and had a __Q37__ lifestyle – both consistent with a fishing way of life. The Tenerian are thought to have been herders, because drier conditions 6,000 years ago favoured herding over __Q38__. However, among the animal bones found at the site, only three came from a __Q39__, so Sereno suggested that the Tenerian at Gobero were a __Q40__ group that still relied heavily on hunting and fishing."
+      ]
+     }
+    }
+   ],
+   "questionRange": {
+    "start": 27,
+    "end": 40
+   },
+   "difficulty": "medium",
+   "tags": [
+    "mini-ielts",
+    "recent-actual-tests"
+   ],
+   "isActive": false,
+   "isActualTest": false
+  }
+ },
+ {
+  "source": "https://mini-ielts.com/1324/reading/numeracy-can-animals-tell-numbers-can-animals-count",
+  "imageUrl": "http://images.mini-ielts.com/images/2022/04/count.jpg",
+  "doc": {
+   "title": "Numeracy: Can Animals Tell Numbers?",
+   "category": "passage1",
+   "content": "<h2>Numeracy: Can Animals Tell Numbers?</h2>\n\n<p><strong>A</strong> Prime among basic numerical faculties is the ability to distinguish between a larger and a smaller, says psychologist Elizabeth Brannon. Humans can do this with ease – providing the ratio is big enough – but do other animals share this ability? In one experiment, rhesus monkeys and university students examined two sets of geometrical objects that appeared briefly on a computer monitor. They had to decide which set contained more objects. Both groups performed successfully but, importantly, Brannon’s team found that monkeys, like humans, make more errors when two sets of objects are close in number. The students’ performance ends up looking just like a monkey’s. It’s practically identical, she says.</p>\n\n<p><strong>B</strong> Humans and monkeys are mammals, in the animal family known as primates. These are not the only animals whose numerical capacities rely on ratio, however. The same seems to apply to some amphibians. Psychologist Claudia Uller’s team tempted salamanders with two sets of fruit flies held in clear tubes. In a series of trials, the researchers noted which tube the salamanders scampered towards, reasoning that if they had a capacity to recognise the number, they would head for the larger number. The salamanders successfully discriminated between tubes containing 8 and 16 flies respectively, but not between 3 and 4, 4 and 6, or 8 and 12. So it seems that for the salamanders to discriminate between two numbers, the larger must be at least twice as big as the smaller. However, they could differentiate between 2 and 3 flies just as well as between 1 and 2 flies, suggesting they recognise small numbers in a different way from larger numbers.</p>\n\n<p><strong>C</strong> Further support for this theory comes from studies of mosquitofish, which instinctively join the biggest shoal they can. A team at the University of Padova found that while mosquitofish can tell the difference between a group containing 3 shoal-mates and a group containing 4, they did not show a preference between groups of 4 and 5. The team also found that mosquitofish can discriminate between numbers up to 16, but only if the ratio between the fish in each shoal was greater than 2:1. This indicates that the fish, like salamanders, possess both the approximate and precise number systems found in more intelligent animals such as infant humans and other primates.</p>\n\n<p><strong>D</strong> While these findings are highly suggestive, some critics argue that the animals might be relying on other factors to complete the tasks, without considering the number itself. ‘Any study that’s claiming an animal is capable of representing number should also be controlling for other factors,’ says Brannon. Experiments have confirmed that primates can indeed perform numerical feats without extra clues, but what about the more primitive animals?</p>\n\n<p><strong>E</strong> To consider this possibility, the mosquitofish tests were repeated, this time using varying geometrical shapes in place of fish. The team arranged these shapes so that they had the same overall surface area and luminance even though they contained a different number of objects. Across hundreds of trials on 14 different fish, the team found they consistently discriminated 2 objects from 3. The team is now testing whether mosquitofish can also distinguish 3 geometric objects from 4.</p>\n\n<p><strong>F</strong> Even more primitive organisms may share this ability. Entomologist Jurgen Tautz sent a group of bees down a corridor, at the end of which lay two chambers – one which contained sugar water, which they like, while the other was empty. To test the bees’ numeracy, the team marked each chamber with a different number of geometrical shapes – between 2 and 6. The bees quickly learned to match the number of shapes with the correct chamber. Like the salamanders and fish, there was a limit to the bees’ mathematical prowess – they could differentiate up to 4 shapes, but failed with 5 or 6 shapes.</p>\n\n<p><strong>G</strong> These studies still do not show whether animals learn to count through training, or whether they are born with the skills already intact. If the latter is true, it would suggest there was a strong evolutionary advantage to a mathematical mind. Proof that this may be the case has emerged from an experiment testing the mathematical ability of three – and four-day-old chicks. Like mosquitofish, chicks prefer to be around as many of their siblings as possible, so they will always head towards a larger number of their kin. If chicks spend their first few days surrounded by certain objects, they become attached to these objects as if they were family. Researchers placed each chick in the middle of a platform and showed it two groups of balls of paper. Next, they hid the two piles behind screens, changed the quantities and revealed them to the chick. This forced the chick to perform simple computations to decide which side now contained the biggest number of its “brothers”. Without any prior coaching, the chicks scuttled to the larger quantity at a rate well above chance. They were doing some very simple arithmetic, claim the researchers.</p>\n\n<p><strong>H</strong> Why these skills evolved is not hard to imagine, since it would help almost any animal forage for food. Animals on the prowl for sustenance must constantly decide which tree has the most fruit, or which patch of flowers will contain the most nectar. There are also other, less obvious, advantages of numeracy. In one compelling example, researchers in America found that female coots appear to calculate how many eggs they have laid – and add any in the nest laid by an intruder – before making any decisions about adding to them. Exactly how ancient these skills are is difficult to determine, however. Only by studying the numerical abilities of more and more creatures using standardised procedures can we hope to understand the basic preconditions for the evolution of number.</p>",
+   "questionGroups": [
+    {
+     "groupTitle": "Questions 1–7",
+     "instruction": "Complete the table below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "identical"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "balls of paper"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "calculate"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "fruit flies"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "mosquitofish"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "surface area"
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "sugar water"
+      }
+     ],
+     "groupType": "table",
+     "tableConfig": {
+      "headers": [
+       "Group",
+       "Subjects",
+       "Experiments",
+       "Results"
+      ],
+      "rows": [
+       [
+        "Mammals and birds",
+        "rhesus monkeys and humans",
+        "looked at two sets of geometrical objects on a computer screen",
+        "performance of the two groups is almost __Q1__"
+       ],
+       [
+        "",
+        "chicks",
+        "chose between two sets of __Q2__ which are altered",
+        "chicks can do calculations in order to choose a larger group"
+       ],
+       [
+        "",
+        "coots",
+        "behaviour of female birds was observed",
+        "a bird seems to have the ability to __Q3__"
+       ],
+       [
+        "Amphibians, fish and insects",
+        "salamanders",
+        "offered clear tubes containing different quantities of __Q4__",
+        "salamanders distinguish between numbers over four if the bigger number is at least two times larger"
+       ],
+       [
+        "",
+        "__Q5__",
+        "shown real shoals and later artificial ones of geometrical shapes; these are used to check the influence of total __Q6__ and brightness",
+        "subjects know the difference between two and three and possibly three and four, but not between four and five"
+       ],
+       [
+        "",
+        "bees",
+        "had to learn where __Q7__ was stored",
+        "could soon choose the correct place"
+       ]
+      ]
+     }
+    },
+    {
+     "groupTitle": "Questions 8–13",
+     "instruction": "Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.",
+     "questions": [
+      {
+       "questionNumber": 8,
+       "type": "true-false-ng",
+       "questionText": "Primates are better at identifying the larger of two numbers if one is much bigger than the other.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 9,
+       "type": "true-false-ng",
+       "questionText": "Jurgen Tautz trained the insects in his experiment to recognise the shapes of individual numbers.",
+       "correctAnswer": "FALSE"
+      },
+      {
+       "questionNumber": 10,
+       "type": "true-false-ng",
+       "questionText": "The research involving young chicks took place over two separate days.",
+       "correctAnswer": "NOT GIVEN"
+      },
+      {
+       "questionNumber": 11,
+       "type": "true-false-ng",
+       "questionText": "The experiment with chicks suggests that some numerical ability exists in newborn animals.",
+       "correctAnswer": "TRUE"
+      },
+      {
+       "questionNumber": 12,
+       "type": "true-false-ng",
+       "questionText": "Researchers have experimented by altering quantities of nectar or fruit available to certain wild animals.",
+       "correctAnswer": "NOT GIVEN"
+      },
+      {
+       "questionNumber": 13,
+       "type": "true-false-ng",
+       "questionText": "When assessing the number of eggs in their nest, coots take into account those of other birds.",
+       "correctAnswer": "TRUE"
+      }
+     ],
+     "groupType": "plain"
+    }
+   ],
+   "questionRange": {
+    "start": 1,
+    "end": 13
+   },
+   "difficulty": "medium",
+   "tags": [
+    "mini-ielts",
+    "recent-actual-tests"
+   ],
+   "isActive": false,
+   "isActualTest": false
+  }
+ }
+]
