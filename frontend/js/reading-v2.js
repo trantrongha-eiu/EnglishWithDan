@@ -1414,9 +1414,14 @@ function _rdRenderPassageCard(p) {
     ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
     : (doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`);
   const btnCls    = `practice-card-btn ${isActual ? catCls : cls}${!isPremium ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
+  // Cover: the passage's own image when it has one, otherwise the Daniel logo
+  const cover = p.thumbnail
+    ? `<img class="practice-cover-img" src="${escHtml(p.thumbnail)}" alt="" loading="lazy" onerror="this.remove()">`
+    : '';
   return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
-    <div class="practice-card-cover">
+    <div class="practice-card-cover${cover ? ' has-img' : ''}">
       <div class="practice-cover-logo"><span>D</span>aniel</div>
+      ${cover}
       ${badgeLabel}
       ${doneRibbon}
       <button class="pc-share-btn" onclick="event.stopPropagation();copyRdPracticeLink('${p._id}','${category}')" title="Sao chép link bài này"><i class="fas fa-link"></i></button>

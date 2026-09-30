@@ -130,7 +130,10 @@ const PassageSchema = new mongoose.Schema({
   difficulty:    { type: String, enum: ['easy','medium','hard'], default: 'medium' },
   tags:          [String],
   isActive:      { type: Boolean, default: true },
-  isActualTest:  { type: Boolean, default: false }
+  isActualTest:  { type: Boolean, default: false },
+  // Cover image for the practice list card. Optional: when empty, the list
+  // uses the first <img> inside `content` (see readingService.listPracticePassages).
+  thumbnailUrl:  { type: String, default: '' }
 }, { timestamps: true });
 
 PassageSchema.index({ category: 1, isActive: 1 });

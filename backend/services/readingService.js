@@ -444,13 +444,28 @@ async function getHistory(userId, limit = 50) {
   return { history, total };
 }
 
+// Card thumbnail for the practice list: a small, cropped version of a
+// Cloudinary image (other hosts are returned unchanged).
+function toCardThumbnail(url) {
+  if (!url) return '';
+  return url.replace(/(res\.cloudinary\.com\/[^/]+\/image\/upload\/)(?!c_fill)/, '$1c_fill,g_auto,w_480,h_240,q_auto,f_auto/');
+}
+
 async function listPracticePassages(category, userId) {
   const filter = category === 'actual-test' ? { isActualTest: true, isActive: true } : { category, isActive: true };
-  const passages = await Passage.find(filter)
-    .select('_id title category isActualTest questionRange questionGroups questions')
-    .lean();
+  // The first <img> in the passage content becomes the card's cover image.
+  // Extracted inside MongoDB so the full passage text never leaves the DB.
+  const passages = await Passage.aggregate([
+    { $match: filter },
+    { $project: {
+      title: 1, category: 1, isActualTest: 1, questionRange: 1, questionGroups: 1, questions: 1, thumbnailUrl: 1,
+      firstImg: { $regexFind: { input: { $ifNull: ['$content', ''] }, regex: '<img[^>]*\\ssrc="([^"]+)"' } },
+    } },
+  ]);
   const safePassages = passages.map(p => ({
     _id: p._id, title: p.title, category: p.category, questionRange: p.questionRange,
+    // an explicit cover image wins; otherwise the first image inside the passage
+    thumbnail: toCardThumbnail(p.thumbnailUrl || p.firstImg?.captures?.[0] || ''),
     questionCount: (p.questionGroups || []).reduce((s, g) => s + (g.questions?.length || 0), 0) || (p.questions?.length || 0),
     questionGroups: (p.questionGroups || []).map(g => ({
       groupType: g.groupType,
