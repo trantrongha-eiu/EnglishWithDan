@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260925limits">
+  <link rel="stylesheet" href="css/dashboard.css?v=20260930smart">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -36,7 +36,7 @@
 <script src="js/shared/peer-chat-widget.js?v=20260908"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
 <script src="js/shared/confirm-dialog.js?v=20260831"></script>
-<script src="js/shared/dictionary-lookup.js?v=20260917wordatpoint"></script>
+<script src="js/shared/dictionary-lookup.js?v=20260930nobook"></script>
 <script src="js/shared/score-message.js?v=20260831"></script>
 <script src="js/shared/badge-popup.js?v=20260831"></script>
 
@@ -46,7 +46,6 @@
   <aside class="vocab-sidebar" id="vocabSidebar">
     <div class="sidebar-head">
       <span>My Notebooks <span id="book-count-badge" style="font-size:10px;font-weight:500;opacity:.7;letter-spacing:0;text-transform:none"></span></span>
-      <button class="btn-add-book" id="btn-add-book" onclick="openAddBookModal()" title="Add new notebook">＋</button>
     </div>
     <div id="book-list-sidebar"><!-- Rendered by JS --></div>
 
@@ -263,7 +262,7 @@
             <span class="stat-dot" data-status="nho-so-so" title="Lọc: chỉ hiện từ nhớ sơ sơ" onclick="filterByStatus('nho-so-so')"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
             <span class="stat-dot" data-status="chua-thuoc" title="Lọc: chỉ hiện từ chưa thuộc" onclick="filterByStatus('chua-thuoc')"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
             <span style="color:var(--text3);font-size:12px">·</span>
-            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span><span id="stat-limit-label"> / 300 words</span></span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span><span id="stat-limit-label"> / 500 words</span></span>
           </div>
         </div>
         <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
@@ -416,6 +415,7 @@
         </div>
       </div>
       <div class="mode-body" id="mode-body">
+        <div id="smartSessionBar" class="smart-session-bar" style="display:none"></div>
         <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>
 
         <div id="multipleChoiceMode" style="display:none">
@@ -653,9 +653,6 @@
           <div style="font-size:13px">Chưa có sổ nào</div>
         </div>
       </div>
-      <div class="sheet-add-book-btn" onclick="openAddBookModal();closeSheet()">
-        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Tạo sổ mới
-      </div>
       <div style="padding:0 12px 12px">
         <button class="sheet-difficult-btn" onclick="openDifficultWordsModal();closeSheet()">
           <i class="fas fa-fire"></i> Ôn lại từ hay sai
@@ -726,12 +723,41 @@
       <button class="book-action-btn" id="btn-rename-from-menu" onclick="startRenameFromMenu()">
         <i class="fas fa-pen" style="width:16px;color:var(--blue)"></i> Đổi tên sổ
       </button>
+      <button class="book-action-btn" id="btn-move-from-menu" onclick="openMoveWordsModal()">
+        <i class="fas fa-share-square" style="width:16px;color:#0891b2"></i> Chuyển toàn bộ từ sang sổ khác
+      </button>
       <button class="book-action-btn" id="btn-merge-from-menu" onclick="openMergeModal()">
         <i class="fas fa-object-group" style="width:16px;color:#7c3aed"></i> Gộp sổ
       </button>
       <div style="height:1px;background:var(--border);margin:2px 0"></div>
       <button class="book-action-btn book-action-danger" id="btn-delete-from-menu" onclick="deleteBookFromMenu()">
         <i class="fas fa-trash-alt" style="width:16px"></i> Xóa sổ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Chuyển toàn bộ từ sang sổ khác -->
+<div class="modal-overlay hidden" id="modal-move-words">
+  <div class="modal-box modal-md">
+    <div class="modal-header">
+      <h3 id="move-modal-title">Chuyển toàn bộ từ</h3>
+      <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-move-words')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">
+        Chuyển <strong id="move-src-count"></strong> từ của <strong id="move-src-name"></strong> sang sổ:
+      </p>
+      <div id="move-book-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+      <div style="background:var(--warning-light);border:1px solid rgba(217,119,6,.35);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--warning);line-height:1.6">
+        <i class="fas fa-info-circle"></i>
+        Từ giữ nguyên trạng thái ghi nhớ & lịch ôn. Từ đã có sẵn ở sổ đích sẽ không bị nhân đôi. Sổ đích tối đa 500 từ — phần không vừa sẽ ở lại sổ hiện tại.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-move-words')">Hủy</button>
+      <button class="btn btn-primary" onclick="confirmMoveWords()" id="btn-confirm-move" disabled>
+        <i class="fas fa-share-square"></i> Chuyển
       </button>
     </div>
   </div>
@@ -932,10 +958,10 @@
       <div class="guide-section">
         <div class="guide-section-title"><span class="guide-num">1</span> Tạo & quản lý sổ</div>
         <ul class="guide-list">
-          <li><strong>Tạo sổ mới:</strong> Nhấn nút <code>＋</code> ở góc trên sidebar bên trái.</li>
-          <li><strong>Đổi tên sổ:</strong> Click vào tên sổ ở topbar hoặc nhấn icon bút <i class="fas fa-pen" style="font-size:11px"></i>.</li>
-          <li><strong>Gộp sổ / Xóa sổ:</strong> Nhấn <code>⋯</code> ở topbar → chọn Gộp sổ hoặc Xóa.</li>
-          <li>Mỗi sổ chứa tối đa <strong>300 từ</strong>. Bạn có thể tạo tối đa <strong>15 sổ</strong>.</li>
+          <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ). Không tạo thêm sổ mới được.</li>
+          <li><strong>Chuyển từ sang sổ khác:</strong> Nhấn <code>⋯</code> ở topbar → <em>Chuyển toàn bộ từ sang sổ khác</em>.</li>
+          <li><strong>Sổ tự tạo trước đây</strong> vẫn giữ nguyên — có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
+          <li>Mỗi sổ chứa tối đa <strong>500 từ</strong>.</li>
         </ul>
       </div>
 
@@ -1335,7 +1361,7 @@
 <script src="js/dashboard-classinfo.js?v=20260925attn"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
-<script src="js/dashboard.js?v=20260925mixed"></script>
+<script src="js/dashboard.js?v=20260930smart"></script>
 <script src="js/dashboard-browse.js?v=20260924guide"></script>
 </body>
 </html>

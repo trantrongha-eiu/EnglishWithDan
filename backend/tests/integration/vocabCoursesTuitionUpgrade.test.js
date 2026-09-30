@@ -7,17 +7,18 @@ const { createVocabBook, createCourse, createTuitionFee } = require('../factorie
 const DifficultWord = require('../../models/DifficultWord');
 
 describe('Vocab book — scoped to the owning user', () => {
-  test('a student can create and fetch their own book', async () => {
+  test('a student can fetch their own book, but can no longer create a new one (only Sổ 1–5)', async () => {
     const user = await createStudent();
     const token = signTokenFor(user);
     const createRes = await request(app)
       .post('/api/vocabbook')
       .set('Authorization', `Bearer ${token}`)
       .send({ name: 'IELTS Vocab' });
-    expect(createRes.status).toBe(201);
+    expect(createRes.status).toBe(403);
 
+    const own = await createVocabBook({ userId: user._id, name: 'IELTS Vocab' });
     const getRes = await request(app)
-      .get(`/api/vocabbook/${createRes.body.book._id}`)
+      .get(`/api/vocabbook/${own._id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(getRes.status).toBe(200);
     expect(getRes.body.book.name).toBe('IELTS Vocab');
@@ -81,11 +82,11 @@ describe('Vocab book — free-plan 24h trial gating', () => {
     const getRes = await request(app).get(`/api/vocabbook/${book._id}`).set('Authorization', `Bearer ${token}`);
     expect(getRes.status).toBe(200);
 
-    const createRes = await request(app)
-      .post('/api/vocabbook')
+    const wordRes = await request(app)
+      .post(`/api/vocabbook/${book._id}/words`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ name: 'Another book' });
-    expect(createRes.status).toBe(201);
+      .send({ word: 'apple', meaning: 'táo' });
+    expect(wordRes.status).toBe(201);
   });
 
   test('a premium student is never blocked, regardless of account age', async () => {

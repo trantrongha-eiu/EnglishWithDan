@@ -156,15 +156,13 @@ describe('default books (Sổ 1..5)', () => {
     expect(await VocabBook.countDocuments({ userId: student._id, name: 'Sổ 1' })).toBe(2);
   });
 
-  test('"Sổ 1".."Sổ 5" are reserved for the default books (create / rename)', async () => {
+  test('"Sổ 1".."Sổ 5" are reserved for the default books (rename); creating any book is closed', async () => {
     const student = await createStudent();
-    const create = await request(app).post('/api/vocabbook').set(authH(student)).send({ name: 'sổ 3' });
-    expect(create.status).toBe(400);
+    const create = await request(app).post('/api/vocabbook').set(authH(student)).send({ name: 'Sổ 6' });
+    expect(create.status).toBe(403);
     const own = await createVocabBook({ userId: student._id, name: 'Mine' });
     const rename = await request(app).put(`/api/vocabbook/${own._id}`).set(authH(student)).send({ name: 'Sổ 2' });
     expect(rename.status).toBe(400);
-    const ok = await request(app).post('/api/vocabbook').set(authH(student)).send({ name: 'Sổ 6' });
-    expect(ok.status).toBe(201);
   });
 });
 

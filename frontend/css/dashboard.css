@@ -107,6 +107,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 }
 .book-action-btn:hover{background:var(--surface2)}
 .book-action-danger{color:#ef4444}
+/* Smart book-practice session summary (dashboard.js _renderSmartSessionBar) */
+.smart-session-bar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;
+  max-width:760px;margin:0 auto 14px;padding:10px 14px;
+  border:1px solid var(--border);border-radius:10px;background:var(--surface);
+  font-size:12.5px;line-height:1.5;color:var(--text2);
+}
+.smart-session-bar b{color:var(--text)}
+.smart-session-bar .ssb-all{
+  margin-left:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface2);
+  padding:4px 10px;font:inherit;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;
+}
+.smart-session-bar .ssb-all:hover{border-color:var(--brand);color:var(--brand)}
 .book-action-danger:hover{background:#fef2f2;border-color:#fecaca}
 [data-theme="dark"] .book-action-danger:hover{background:#3f1111;border-color:#7f1d1d}
 /* Merge book checkboxes */

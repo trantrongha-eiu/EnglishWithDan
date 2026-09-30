@@ -51,6 +51,9 @@ router.put('/:id', auth, fullAccess, vocabBookController.updateBook);
 // POST /api/vocabbook/:id/merge  – gộp nhiều sổ vào sổ này
 router.post('/:id/merge', auth, fullAccess, vocabBookController.mergeBooks);
 
+// POST /api/vocabbook/:id/move-words  – chuyển toàn bộ từ của sổ này sang sổ { destId }
+router.post('/:id/move-words', auth, fullAccess, vocabBookController.moveAllWords);
+
 // DELETE /api/vocabbook/:id  – xoá sổ (không xoá sổ default)
 router.delete('/:id', auth, fullAccess, vocabBookController.deleteBook);
 

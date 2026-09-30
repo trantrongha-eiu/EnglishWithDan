@@ -881,18 +881,11 @@ Non-student caller (teacher/admin): `{success:true}` with no `streak` field — 
 { "name": "IELTS Speaking Part 2", "emoji": "🎤", "color": "#34d399" }
 ```
 
-**Response** (201)
-```json
-{ "success": true, "book": { "_id": "...", "name": "IELTS Speaking Part 2", "emoji": "🎤", "color": "#34d399", "isDefault": false } }
-```
-
-**Validation**
-- Controller: `name` required (non-empty after trim).
-- Service: hard cap of **15 books per user** — the 16th create attempt is rejected regardless of `name` validity.
+**Closed since 2026-09-30** — every student uses only the 5 default books "Sổ 1".."Sổ 5". Books created before that date are kept (still usable, mergeable, deletable).
 
 **Error responses**
 - `400` — `name` missing/blank.
-- `400` — caller already has 15 books: `{message:'Bạn đã đạt giới hạn 15 sổ từ vựng...'}`.
+- `403` — always, for a valid request: `{message:'Không thể tạo thêm sổ mới — hãy dùng 5 sổ mặc định (Sổ 1 – Sổ 5).'}`.
 - `500` — unhandled error.
 
 ---
@@ -918,6 +911,29 @@ Non-student caller (teacher/admin): `{success:true}` with no `streak` field — 
 
 ---
 
+### POST /api/vocabbook/:id/move-words
+**Auth:** Bearer token required
+**Permissions:** owner only (both books must belong to the caller)
+**Rate limit:** none
+
+Moves every word of book `:id` into `destId` (any two of the caller's books, default or not), keeping each word's `_id` and SRS history. The source book is kept, emptied of what moved. A word already in the destination (case-insensitive `word`) is not duplicated — the destination entry stays, its blank meaning/example/note/phonetic/partOfSpeech filled from the moved copy — and leaves the source. Words that don't fit under the 500-word cap stay in the source.
+
+**Request**
+```json
+{ "destId": "665f3..." }
+```
+
+**Response** (200)
+```json
+{ "success": true, "status": "ok", "movedCount": 40, "duplicateCount": 2, "skippedLimit": 0, "sourceName": "Sổ 1", "destName": "Sổ 2", "message": "Đã chuyển 40 từ ..." }
+```
+
+**Error responses**
+- `400` — `destId` missing/invalid, same as `:id`, source has no words, or destination already full (nothing moved).
+- `404` — either book not found / not owned by caller.
+
+---
+
 ### POST /api/vocabbook/:id/merge
 **Auth:** Bearer token required
 **Permissions:** owner only (destination and all sources must belong to the caller)
@@ -932,7 +948,7 @@ Non-student caller (teacher/admin): `{success:true}` with no `streak` field — 
 ```json
 { "success": true, "addedCount": 18, "mergedCount": 2, "book": { "_id": "...", "words": ["..."] } }
 ```
-Words are merged case-insensitively by `word` text; the merge stops adding once the destination hits the 300-word cap (silently — no error, `addedCount` just ends up lower than the sources' combined total). Default books (`isDefault:true`) can never be used as a merge **source** (they're filtered out of the source query) but can be a merge **destination**. Successfully-merged source books are deleted afterward.
+Words are merged case-insensitively by `word` text; the merge stops adding once the destination hits the 500-word cap (silently — no error, `addedCount` just ends up lower than the sources' combined total). Default books (`isDefault:true`) can never be used as a merge **source** (they're filtered out of the source query) but can be a merge **destination**. Successfully-merged source books are deleted afterward.
 
 **Error responses**
 - `400` — `sourceIds` missing/empty.
@@ -980,7 +996,7 @@ If the caller is a `student`, this fire-and-forget logs a daily `wordsAdded` act
 **Error responses**
 - `400` — `word` missing/blank.
 - `404` — book not found / not owned by caller.
-- `400` — book already has 300 words: `{message:'Sổ "<name>" đã đạt giới hạn 300 từ...'}`.
+- `400` — book already has 500 words: `{message:'Sổ "<name>" đã đạt giới hạn 500 từ...'}`.
 - `200` (not an error status) — duplicate word.
 
 ---

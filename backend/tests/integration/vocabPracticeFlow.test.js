@@ -29,7 +29,7 @@ describe('Part A — Vocabulary Practice -> SRS, via the real HTTP contract', ()
     const token = signTokenFor(student);
     const book = await createVocabBook({
       userId: student._id,
-      words: [{ word: 'apple', status: 'da-thuoc', srsBox: 4, wrongCount: 1, correctCount: 6 }],
+      words: [{ word: 'apple', status: 'nho-so-so', srsBox: 2, wrongCount: 1, correctCount: 6 }], // a MASTERED word drops to box 1 instead — see vocabBookService.test.js
     });
     const wordId = book.words[0]._id;
 

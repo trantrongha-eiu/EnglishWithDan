@@ -606,6 +606,10 @@
     var modal = document.getElementById('dict-vocab-modal');
     var listEl = document.getElementById('dict-vocab-book-list');
     if (!modal || !listEl) return;
+    // Creating books is closed (only Sổ 1–5) — hide every page's
+    // "Hoặc tạo sổ mới" row rather than editing 20 copies of the markup.
+    var newSection = modal.querySelector('.rd-vocab-new-section');
+    if (newSection) newSection.style.display = 'none';
     // Guard against a rapid double-tap on "Lưu từ" firing this twice — only
     // the most recent call is allowed to render its result into listEl.
     var requestId = ++_pickerRequestSeq;
@@ -661,21 +665,10 @@
     if (el) el.classList.add('hidden');
   }
 
+  // Book creation is closed server-side (403) — the row that calls this is
+  // hidden in _loadBooksIntoPicker; kept for any stale markup/caller.
   async function createDictBookAndSave() {
-    var nameInput = document.getElementById('dict-new-book-name');
-    var name = nameInput && nameInput.value.trim();
-    if (!name) { if (nameInput) nameInput.focus(); return; }
-    try {
-      var res = await _vocabFetch('/vocabbook/', {
-        method: 'POST',
-        body: JSON.stringify({ name: name, emoji: '📘', color: '#3d8bff' })
-      });
-      if (!res.success) { showVocabToast(res.message, 'error'); return; }
-      if (nameInput) nameInput.value = '';
-      await saveDictWordToBook(res.book._id);
-    } catch (e) {
-      _handleVocabSaveError(e, 'Lỗi tạo sổ mới');
-    }
+    showVocabToast('Không thể tạo thêm sổ mới — hãy lưu vào một trong 5 sổ mặc định (Sổ 1 – Sổ 5).', 'error');
   }
 
   // Shared by createDictBookAndSave/saveDictWordToBook — a trial-expired
@@ -706,7 +699,7 @@
         // A word already present in the book comes back as skippedDup, not
         // addedCount — it's still genuinely saved from an earlier visit, so
         // the caller's "mark as learned" bookkeeping should count it too.
-        // skippedLimit is different: the book was already full (300-word
+        // skippedLimit is different: the book was already full (500-word
         // cap) and those specific words were NOT saved anywhere. The
         // endpoint only returns counts, not which words landed in which
         // bucket, so there's no safe way to mark just a subset here — firing

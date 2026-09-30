@@ -31,37 +31,64 @@ describe('vocabBookService', () => {
   });
 
   describe('createBook', () => {
-    it('creates a book for the user', async () => {
+    it('is closed for everyone — no book is created; existing own books are kept', async () => {
       const student = await createStudent();
+      const own = await createVocabBook({ userId: student._id, name: 'Made before the rule' });
       const result = await vocabBookService.createBook(student._id, { name: 'My Book' });
-      expect(result.status).toBe('ok');
-      expect(result.book.name).toBe('My Book');
+      expect(result.status).toBe('creation_disabled');
+      const books = await VocabBook.find({ userId: student._id }).lean();
+      expect(books.map(b => String(b._id))).toEqual([String(own._id)]);
     });
+  });
 
-    it('enforces the 15-book-per-user cap', async () => {
+  describe('moveAllWords', () => {
+    it('moves every word (with its SRS history) and keeps the emptied source book', async () => {
       const student = await createStudent();
-      for (let i = 0; i < 15; i++) {
-        await createVocabBook({ userId: student._id, name: `Book ${i}` });
-      }
-      const result = await vocabBookService.createBook(student._id, { name: 'Book 16' });
-      expect(result.status).toBe('limit_reached');
+      const src = await createVocabBook({ userId: student._id, name: 'Sổ 1', isDefault: true, defaultSlot: 1,
+        words: [{ word: 'alpha', meaning: 'a', srsBox: 4, wrongCount: 2 }, { word: 'beta', meaning: 'b' }] });
+      const dest = await createVocabBook({ userId: student._id, name: 'Sổ 2', isDefault: true, defaultSlot: 2, words: [{ word: 'gamma' }] });
 
-      const count = await VocabBook.countDocuments({ userId: student._id });
-      expect(count).toBe(15);
+      const result = await vocabBookService.moveAllWords(src._id, dest._id, student._id);
+      expect(result).toMatchObject({ status: 'ok', movedCount: 2, duplicateCount: 0, skippedLimit: 0 });
+
+      const [s, d] = await Promise.all([VocabBook.findById(src._id), VocabBook.findById(dest._id)]);
+      expect(s).toBeTruthy();
+      expect(s.words).toHaveLength(0);
+      expect(d.words.map(w => w.word).sort()).toEqual(['alpha', 'beta', 'gamma']);
+      const alpha = d.words.find(w => w.word === 'alpha');
+      expect(alpha.srsBox).toBe(4);
+      expect(alpha.wrongCount).toBe(2);
     });
 
-    it('the cap only counts books for that user — a different user is unaffected', async () => {
-      const studentA = await createStudent();
-      const studentB = await createStudent();
-      for (let i = 0; i < 15; i++) {
-        await createVocabBook({ userId: studentA._id, name: `A Book ${i}` });
-      }
+    it('does not duplicate a word already in the destination (fills its blank fields) and leaves overflow in the source', async () => {
+      const student = await createStudent();
+      const src = await createVocabBook({ userId: student._id,
+        words: [{ word: 'Apple', meaning: 'táo', example: 'An apple a day.' }, { word: 'extra1' }, { word: 'extra2' }] });
+      const dest = await createVocabBook({ userId: student._id, words: makeWords(498, 'd').concat([{ word: 'apple', meaning: 'quả táo' }]) });
 
-      const capped = await vocabBookService.createBook(studentA._id, { name: 'One More' });
-      expect(capped.status).toBe('limit_reached');
+      const result = await vocabBookService.moveAllWords(src._id, dest._id, student._id);
+      expect(result).toMatchObject({ status: 'ok', movedCount: 1, duplicateCount: 1, skippedLimit: 1 });
 
-      const result = await vocabBookService.createBook(studentB._id, { name: 'B Book' });
-      expect(result.status).toBe('ok');
+      const [s, d] = await Promise.all([VocabBook.findById(src._id), VocabBook.findById(dest._id)]);
+      expect(d.words).toHaveLength(500);
+      const apple = d.words.filter(w => w.word.toLowerCase() === 'apple');
+      expect(apple).toHaveLength(1);
+      expect(apple[0].meaning).toBe('quả táo'); // destination entry kept
+      expect(apple[0].example).toBe('An apple a day.'); // blank field filled
+      expect(s.words.map(w => w.word)).toEqual(['extra2']);
+    });
+
+    it("rejects the same book, an empty source, and another student's book", async () => {
+      const student = await createStudent();
+      const other = await createStudent();
+      const src = await createVocabBook({ userId: student._id, words: [{ word: 'x' }] });
+      const empty = await createVocabBook({ userId: student._id, words: [] });
+      const foreign = await createVocabBook({ userId: other._id, words: [] });
+
+      expect((await vocabBookService.moveAllWords(src._id, src._id, student._id)).status).toBe('same_book');
+      expect((await vocabBookService.moveAllWords(empty._id, src._id, student._id)).status).toBe('empty');
+      expect((await vocabBookService.moveAllWords(src._id, foreign._id, student._id)).status).toBe('dest_not_found');
+      expect((await VocabBook.findById(src._id)).words).toHaveLength(1);
     });
   });
 
@@ -74,9 +101,11 @@ describe('vocabBookService', () => {
       expect(result.word.word).toBe('apple');
     });
 
-    it('enforces the 300-word-per-book cap', async () => {
+    it('enforces the 500-word-per-book cap (and 300 is no longer full)', async () => {
       const student = await createStudent();
-      const book = await createVocabBook({ userId: student._id, words: makeWords(300) });
+      const book300 = await createVocabBook({ userId: student._id, words: makeWords(300) });
+      expect((await vocabBookService.addWord(book300._id, student, { word: 'fits', meaning: 'm' })).status).toBe('ok');
+      const book = await createVocabBook({ userId: student._id, words: makeWords(500) });
       const result = await vocabBookService.addWord(book._id, student, { word: 'newword', meaning: 'm' });
       expect(result.status).toBe('limit_reached');
       expect(result.bookName).toBe(book.name);
@@ -258,19 +287,28 @@ describe('vocabBookService', () => {
   });
 
   describe('updateWord — spaced repetition (Leitner box)', () => {
-    it('marking da-thuoc promotes a fresh word from box 0 to box 1 (1-day interval)', async () => {
+    it('marking da-thuoc puts a fresh word straight into the mastered band (box 3, 7-day interval)', async () => {
       const student = await createStudent();
       const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
       const wordId = book.words[0]._id;
 
       const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'da-thuoc' });
 
-      expect(result.word.srsBox).toBe(1);
+      expect(result.word.srsBox).toBe(3);
       const daysUntilReview = Math.round((result.word.nextReviewAt - result.word.lastReviewedAt) / 86400000);
-      expect(daysUntilReview).toBe(1);
+      expect(daysUntilReview).toBe(7);
     });
 
-    it('repeated da-thuoc reviews keep promoting the box, capped at box 5 (30-day interval)', async () => {
+    it('a manual da-thuoc stays mastered after the next correct practice answer (no drop back to So-so)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
+      const marked = await vocabBookService.updateWord(book._id, book.words[0]._id, student._id, student, { status: 'da-thuoc' });
+      const r = await vocabBookService.recordPracticeResult(book._id, marked.word._id, student._id, true);
+      expect(r.word.status).toBe('da-thuoc');
+      expect(r.word.srsBox).toBe(4);
+    });
+
+    it('marking da-thuoc on a word already at box 5 keeps it there (30-day interval)', async () => {
       const student = await createStudent();
       const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc', srsBox: 5 }] });
       const wordId = book.words[0]._id;
@@ -316,7 +354,7 @@ describe('vocabBookService', () => {
         status: 'da-thuoc', srsBox: 999, nextReviewAt: fakeFarFuture,
       });
 
-      expect(result.word.srsBox).toBe(1); // computed from real prior box (0), not the client's 999
+      expect(result.word.srsBox).toBe(3); // computed from real prior box (0) → mastered band floor, not the client's 999
       expect(result.word.nextReviewAt.getTime()).not.toBe(fakeFarFuture.getTime());
     });
   });
@@ -349,16 +387,41 @@ describe('vocabBookService', () => {
       expect(r.word.status).toBe('da-thuoc'); // box 3 — mastered only now
     });
 
-    it('a wrong answer resets the box to 0 and increments wrongCount, even from a high box', async () => {
+    it('a wrong answer on a mastered word drops it to So-so (box 1), a second miss resets it to 0', async () => {
       const student = await createStudent();
       const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'da-thuoc', srsBox: 4, wrongCount: 1 }] });
       const wordId = book.words[0]._id;
 
       const result = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, false);
-
-      expect(result.word.srsBox).toBe(0);
-      expect(result.word.status).toBe('chua-thuoc');
+      expect(result.word.srsBox).toBe(1);
+      expect(result.word.status).toBe('nho-so-so');
       expect(result.word.wrongCount).toBe(2);
+
+      const again = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, false);
+      expect(again.word.srsBox).toBe(0);
+      expect(again.word.status).toBe('chua-thuoc');
+      expect(again.word.wrongCount).toBe(3);
+    });
+
+    it('a legacy manual Mastered (status da-thuoc, box 1) reads as box 3 — a correct answer keeps it mastered', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'da-thuoc', srsBox: 1 }] });
+      const r = await vocabBookService.recordPracticeResult(book._id, book.words[0]._id, student._id, true);
+      expect(r.word.srsBox).toBe(4);
+      expect(r.word.status).toBe('da-thuoc');
+    });
+
+    it('a legacy manual Mastered is not "due" within 7 days of being marked', async () => {
+      const student = await createStudent();
+      const now = Date.now();
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'legacy', status: 'da-thuoc', srsBox: 1, nextReviewAt: new Date(now - 86400000), lastReviewedAt: new Date(now - 2 * 86400000) },
+        { word: 'realdue', status: 'nho-so-so', srsBox: 1, nextReviewAt: new Date(now - 86400000), lastReviewedAt: new Date(now - 2 * 86400000) },
+      ] });
+      expect(await vocabBookService.countDueWords(String(student._id))).toBe(1);
+      const due = await vocabBookService.getDueWords(String(student._id));
+      expect(due.map(d => d.word.word)).toEqual(['realdue']);
+      expect((await vocabBookService.getVocabStats(String(student._id))).dueToday).toBe(1);
     });
 
     it('box promotion is capped at 5, same ceiling as the manual da-thuoc path', async () => {
@@ -575,9 +638,9 @@ describe('vocabBookService', () => {
       expect(reloaded.words).toHaveLength(2);
     });
 
-    it('stops adding once the destination would exceed 300 words', async () => {
+    it('stops adding once the destination would exceed 500 words', async () => {
       const student = await createStudent();
-      const dest = await createVocabBook({ userId: student._id, words: makeWords(298, 'dest') });
+      const dest = await createVocabBook({ userId: student._id, words: makeWords(498, 'dest') });
       const src = await createVocabBook({ userId: student._id, words: makeWords(5, 'src') });
 
       const result = await vocabBookService.mergeBooks(dest._id, student._id, [src._id]);
@@ -585,7 +648,7 @@ describe('vocabBookService', () => {
       expect(result.addedCount).toBe(2);
 
       const reloaded = await VocabBook.findById(dest._id);
-      expect(reloaded.words).toHaveLength(300);
+      expect(reloaded.words).toHaveLength(500);
     });
 
     it('deletes non-default source books after merging', async () => {
@@ -625,8 +688,8 @@ describe('vocabBookService', () => {
   describe('bulkAddWords', () => {
     it('counts skippedDup and skippedLimit separately', async () => {
       const student = await createStudent();
-      const book = await createVocabBook({ userId: student._id, words: makeWords(298, 'existing').concat([{ word: 'Dup' }]) });
-      // book now has 299 words, 1 free slot
+      const book = await createVocabBook({ userId: student._id, words: makeWords(498, 'existing').concat([{ word: 'Dup' }]) });
+      // book now has 499 words, 1 free slot
 
       const result = await vocabBookService.bulkAddWords(book._id, student, [
         { word: 'dup' },     // duplicate (case-insensitive) of 'Dup'
@@ -640,7 +703,7 @@ describe('vocabBookService', () => {
       expect(result.skippedLimit).toBe(1);
 
       const reloaded = await VocabBook.findById(book._id);
-      expect(reloaded.words).toHaveLength(300);
+      expect(reloaded.words).toHaveLength(500);
     });
 
     it('returns not_found for a missing book', async () => {

@@ -31,7 +31,7 @@ const LISTEN_HINT_MAX = 3;
 
 // ── Spaced Repetition & Mixed Mode ─────────────
 let wrongWordSet = new Set();   // word strings that were answered wrong this session
-let requeuedWords = new Set();  // prevent infinite requeue
+let requeuedWords = new Map();  // word -> times requeued this session (capped, see requeueWrongWord)
 let mixedQueue = [];            // [{word, type}] for mixed mode
 let mixedIndex = 0;
 // Gates dictionary double-click/highlight lookup off during any scored vocab
@@ -92,6 +92,8 @@ function announceHammerEarned() {
 }
 
 // ── Vocab book practice tracking ───────────────
+// Per-book word cap — mirrors vocabBookService.MAX_WORDS_PER_BOOK.
+const VOCAB_BOOK_MAX_WORDS = 500;
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
 let _isDifficultPractice = false; // true khi ôn từ hay sai
 // Separate from _isDifficultPractice above (which startPractice() resets on
@@ -828,7 +830,7 @@ function renderBookSidebar() {
 
     // Update book count badge & add button state
     const badge = document.getElementById('book-count-badge');
-    if (badge) badge.textContent = `${myBooks.length}/15`;
+    if (badge) badge.textContent = `${myBooks.length}`;
     const addBtn = document.getElementById('btn-add-book');
     if (addBtn) {
         const atLimit = myBooks.length >= 15;
@@ -1065,7 +1067,7 @@ function renderBookContent(book) {
     } else {
         renderWordsTable(book.words);
         const limitEl = document.getElementById('stat-limit-label');
-        if (limitEl) limitEl.textContent = ' / 300 từ';
+        if (limitEl) limitEl.textContent = ` / ${VOCAB_BOOK_MAX_WORDS} từ`;
     }
 
     // "Mách nhỏ" — cách thêm từ. Hiện mỗi lần mở sổ cho tới khi học sinh
@@ -1232,7 +1234,7 @@ function filterWords(q) {
         const limitEl    = document.getElementById('stat-limit-label');
         const isFiltered = !!(query || currentStatusFilter);
         if (totalEl) totalEl.textContent = isFiltered ? words.length : all.length;
-        if (limitEl) limitEl.textContent = isFiltered ? ` / ${all.length} từ` : ' / 300 từ';
+        if (limitEl) limitEl.textContent = isFiltered ? ` / ${all.length} từ` : ` / ${VOCAB_BOOK_MAX_WORDS} từ`;
     }, 120);
 }
 
@@ -1446,6 +1448,8 @@ function openBookMenu(bookId) {
     document.getElementById('btn-rename-from-menu').style.display = isDefault ? 'none' : 'flex';
     document.getElementById('btn-merge-from-menu').style.display  = isDefault ? 'none' : 'flex';
     document.getElementById('btn-delete-from-menu').style.display = isDefault ? 'none' : 'flex';
+    const moveBtn = document.getElementById('btn-move-from-menu');
+    if (moveBtn) moveBtn.style.display = book.totalWords > 0 && myBooks.length > 1 ? 'flex' : 'none';
 
     openModal('modal-book-actions');
 }
@@ -1481,6 +1485,63 @@ function deleteBookFromMenu() {
             } catch (err) { toast(err.message || 'Xóa thất bại', 'error'); }
         }
     );
+}
+
+/* ── Move all words to another book ── */
+let _moveDestId = null;
+function openMoveWordsModal() {
+    closeModal('modal-book-actions');
+    const src = myBooks.find(b => b._id === _menuBookId);
+    if (!src) return;
+    _moveDestId = null;
+    document.getElementById('move-modal-title').textContent = `Chuyển toàn bộ từ của "${src.name}"`;
+    document.getElementById('move-src-name').textContent = `"${src.name}"`;
+    document.getElementById('move-src-count').textContent = src.totalWords;
+    const btn = document.getElementById('btn-confirm-move');
+    btn.disabled = true;
+    const list = document.getElementById('move-book-list');
+    const candidates = myBooks.filter(b => b._id !== src._id);
+    list.innerHTML = candidates.map(b => {
+        const room = Math.max(0, VOCAB_BOOK_MAX_WORDS - b.totalWords);
+        const full = room === 0;
+        return `<label class="merge-book-item" id="move-item-${b._id}" style="${full ? 'opacity:.45;cursor:not-allowed' : ''}">
+            <input type="radio" name="move-dest" value="${b._id}" ${full ? 'disabled' : ''} onchange="selectMoveDest('${b._id}')">
+            <span style="font-size:18px">${_esc(b.emoji)}</span>
+            <span style="font-size:13px;font-weight:600">${_esc(b.name)}</span>
+            <span class="merge-book-meta">${b.totalWords} / ${VOCAB_BOOK_MAX_WORDS} từ${full ? ' · đầy' : room < src.totalWords ? ` · còn chỗ ${room}` : ''}</span>
+        </label>`;
+    }).join('');
+    openModal('modal-move-words');
+}
+
+function selectMoveDest(bookId) {
+    _moveDestId = bookId;
+    document.querySelectorAll('#move-book-list .merge-book-item').forEach(el => el.classList.toggle('selected', el.id === `move-item-${bookId}`));
+    document.getElementById('btn-confirm-move').disabled = false;
+}
+
+async function confirmMoveWords() {
+    if (!_moveDestId || !_menuBookId) return;
+    const srcId = _menuBookId, destId = _moveDestId;
+    const btn = document.getElementById('btn-confirm-move');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang chuyển...';
+    try {
+        const res = await fetch(`${API}/vocabbook/${srcId}/move-words`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ destId })
+        });
+        const data = await window.ApiClient.handleResponse(res);
+        closeModal('modal-move-words');
+        await loadMyBooks();
+        if (currentBookId === srcId || currentBookId === destId) await openBook(currentBookId);
+        toast(data.message || 'Đã chuyển từ', 'success');
+    } catch (err) {
+        toast(err.message || 'Lỗi khi chuyển từ', 'error');
+    } finally {
+        btn.disabled = !_moveDestId;
+        btn.innerHTML = '<i class="fas fa-share-square"></i> Chuyển';
+    }
 }
 
 /* ── Merge books ── */
@@ -1567,14 +1628,10 @@ function setupEmojiPicker() {
     ).join('');
 }
 function selectEmoji(emoji) { selectedEmoji = emoji; setupEmojiPicker(); }
+// Creating books is closed (backend returns 403) — only Sổ 1–5 are used.
+// Kept as a function so any stale caller gets an explanation, not an error.
 function openAddBookModal() {
-    if (myBooks.length >= 15) {
-        toast('Bạn đã đạt giới hạn 15 sổ. Hãy xóa hoặc gộp bớt sổ cũ trước khi tạo mới.', 'error');
-        return;
-    }
-    document.getElementById('new-book-name').value = '';
-    openModal('modal-add-book');
-    setTimeout(() => document.getElementById('new-book-name').focus(), 100);
+    toast('Không thể tạo thêm sổ mới — hãy dùng 5 sổ mặc định (Sổ 1 – Sổ 5).', 'info');
 }
 async function createBook() {
     // Same free-plan gate as openBook() — POST /vocabbook is premium-gated
@@ -1632,8 +1689,8 @@ function _fetchWithTimeout(url, ms = 8000) {
 
 function openAddWordManual() {
     const wordCount = currentBookData?.words?.length ?? 0;
-    if (wordCount >= 300) {
-        toast('Sổ này đã đạt giới hạn 300 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.', 'error');
+    if (wordCount >= VOCAB_BOOK_MAX_WORDS) {
+        toast(`Sổ này đã đạt giới hạn ${VOCAB_BOOK_MAX_WORDS} từ. Hãy chuyển bớt sang sổ khác hoặc xóa từ cũ.`, 'error');
         return;
     }
     _lookupPhonetic = '';
@@ -1856,10 +1913,10 @@ window.openSaveWordModal = async function (wordObj) {
     if (!myBooks.length) await loadMyBooks();
     const list = document.getElementById('sw-book-list');
     list.innerHTML = myBooks.map(b => {
-        const isFull = b.totalWords >= 300;
-        const isNear = b.totalWords >= 250 && !isFull;
+        const isFull = b.totalWords >= VOCAB_BOOK_MAX_WORDS;
+        const isNear = b.totalWords >= VOCAB_BOOK_MAX_WORDS - 50 && !isFull;
         const countColor = isFull ? '#ef4444' : isNear ? '#f59e0b' : 'var(--text3)';
-        const countLabel = isFull ? `${b.totalWords} / 300 (đầy)` : isNear ? `${b.totalWords} / 300` : `${b.totalWords} từ`;
+        const countLabel = isFull ? `${b.totalWords} / ${VOCAB_BOOK_MAX_WORDS} (đầy)` : isNear ? `${b.totalWords} / ${VOCAB_BOOK_MAX_WORDS}` : `${b.totalWords} từ`;
         return `<div class="book-opt" id="bopt-${b._id}"
             onclick="${isFull ? '' : `selectBookForSave('${b._id}',this)`}"
             style="${isFull ? 'opacity:.45;cursor:not-allowed;pointer-events:none' : ''}">
@@ -1875,7 +1932,7 @@ window.openSaveWordModal = async function (wordObj) {
     // Auto-select currently open book (if not full)
     if (currentBookId) {
         const curBook = myBooks.find(b => b._id === currentBookId);
-        if (curBook && curBook.totalWords < 300) {
+        if (curBook && curBook.totalWords < VOCAB_BOOK_MAX_WORDS) {
             selectedBookForSave = currentBookId;
             const opt = document.getElementById(`bopt-${currentBookId}`);
             if (opt) opt.classList.add('selected');
@@ -1919,6 +1976,7 @@ function openFlashcardMode() {
     if (!currentBookData?.words?.length) { toast('Sổ này chưa có từ nào', 'error'); return; }
     _isBookPractice = true;
     _isHardWordsSession = false;
+    _bookPracticeAll = false;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
@@ -2063,7 +2121,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
 function _activateModeNow(mode) {
     _clearAutoNext();
     _unmountVocabDrills();
-    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode']
+    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode','smartSessionBar']
         .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     currentMode = mode;
@@ -2341,24 +2399,36 @@ function startPractice(mode) {
     if (wrongListEl) wrongListEl.style.display = 'none';
 
     // Lấy tất cả từ (vocab + paraphrase); _retryWordList is set by retryWrongWords
+    const isRetry = !!_retryWordList;
     const allPracticeWords = (_retryWordList || currentUnit.words).filter(w => w.word && w.meaning);
     _retryWordList = null;
     if (!allPracticeWords.length) { toast('Unit này chưa có từ nào để luyện', 'info'); return; }
 
+    // A whole personal book → smart session (see _buildSmartBookSession);
+    // units, retry lists, "từ hay sai" and "Luyện tất cả" keep every word.
+    const smart = _isBookPractice && !_isHardWordsSession && !isRetry && !_bookPracticeAll
+        ? _buildSmartBookSession(allPracticeWords) : null;
+    _renderSmartSessionBar(smart, allPracticeWords.length);
+
     if (mode === 'mixed') {
         // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
         const types = ['multipleChoice', 'listening', 'translation'];
-        const words = [...allPracticeWords];
-        shuffleArray(words);
-        mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
-        shuffleArray(mixedQueue);
+        if (smart) {
+            // keep the smart order; each item gets a random type
+            mixedQueue = smart.list.map((w, i) => ({ word: w, type: types[Math.floor(Math.random() * types.length)], _isRepeat: smart.repeats.has(i) }));
+        } else {
+            const words = [...allPracticeWords];
+            shuffleArray(words);
+            mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
+            shuffleArray(mixedQueue);
+        }
         document.getElementById('mixedMode').style.display = 'block';
         showMixedQuestion();
         return;
     }
 
-    practiceWords = [...allPracticeWords];
-    shuffleArray(practiceWords);
+    if (smart) practiceWords = [...smart.list];
+    else { practiceWords = [...allPracticeWords]; shuffleArray(practiceWords); }
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
         fillBlank:      'fillBlankMode',
@@ -2367,6 +2437,111 @@ function startPractice(mode) {
     }[mode];
     if (modeEl) document.getElementById(modeEl).style.display = 'block';
     showQuestion(mode);
+}
+
+/* ── Smart book session ────────────────────────────────────────────────
+   Owner's ask (2026-09-30): words a student keeps missing should come back
+   more, words already mastered much less. Built from each word's server SRS
+   fields (srsBox/nextReviewAt/lastReviewedAt/wrongCount/lastPracticeCorrect —
+   see vocabBookService.recordPracticeResult):
+     - every word not mastered yet, plus mastered words that are DUE
+       (nextReviewAt passed) → in the session, weakest first (box 0, many
+       misses, last answer wrong) with some shuffle so it isn't rote order
+     - mastered & not due → only a light ~10% sample (the ones closest to
+       due), the rest wait for their review date
+     - "hay sai" words (wrongCount >= 3 or last answer wrong) → a 2nd rep
+       5–9 questions later (max 15 extra), on top of the in-session
+       re-queue after a miss (requeueWrongWord)
+   Legacy manual "Mastered" (box < 3, set before the server fix) counts as
+   not due for 7 days after it was marked — same rule as the server. */
+let _bookPracticeAll = false; // "Luyện tất cả N từ" → skip the smart pick
+const _DAY_MS = 24 * 60 * 60 * 1000;
+function _wordIsMastered(w) { return w.status === 'da-thuoc' || (w.srsBox || 0) >= 3; }
+function _wordIsWeak(w) { return (w.wrongCount || 0) >= 3 || w.lastPracticeCorrect === false; }
+function _wordDueAt(w) {
+    let t = w.nextReviewAt ? new Date(w.nextReviewAt).getTime() : 0;
+    if (w.status === 'da-thuoc' && (w.srsBox || 0) < 3 && w.lastReviewedAt) {
+        t = Math.max(t, new Date(w.lastReviewedAt).getTime() + 7 * _DAY_MS);
+    }
+    return t;
+}
+function _buildSmartBookSession(words) {
+    const now = Date.now();
+    const core = [], restMastered = [];
+    for (const w of words) {
+        if (_wordIsMastered(w) && _wordDueAt(w) > now) restMastered.push(w);
+        else core.push(w);
+    }
+    const score = (w) => {
+        let s = (w.srsBox || 0) === 0 && !_wordIsMastered(w) ? 3 : _wordIsMastered(w) ? 0.5 : 2;
+        s += Math.min(w.wrongCount || 0, 6) * 0.5;
+        if (w.lastPracticeCorrect === false) s += 2;
+        const overdueDays = w.nextReviewAt ? (now - new Date(w.nextReviewAt).getTime()) / _DAY_MS : 0;
+        if (overdueDays > 0) s += Math.min(overdueDays, 3) * 0.3;
+        return s + Math.random() * 2;
+    };
+    let list = core.map(w => ({ w, s: score(w) })).sort((a, b) => b.s - a.s).map(x => x.w);
+
+    // Mastered, not due: a light sample, nearest to due first.
+    restMastered.sort((a, b) => _wordDueAt(a) - _wordDueAt(b));
+    let allMastered = false;
+    let sample;
+    if (!list.length) {
+        // everything is mastered and scheduled later — a short refresher
+        allMastered = true;
+        sample = restMastered.slice(0, 20);
+        list = [...sample];
+    } else {
+        const n = Math.min(restMastered.length, Math.max(1, Math.round(list.length * 0.1)));
+        const pool = restMastered.slice(0, n * 3);
+        shuffleArray(pool);
+        sample = pool.slice(0, n);
+        for (const w of sample) list.splice(Math.floor(Math.random() * (list.length + 1)), 0, w);
+    }
+
+    // 2nd rep for "hay sai" words, 5–9 questions after the first.
+    const weakSet = new Set(list.filter(_wordIsWeak).slice(0, 15));
+    const out = [];
+    const pending = []; // [insert once out.length reaches this, word]
+    for (const w of list) {
+        out.push(w);
+        if (weakSet.has(w)) {
+            pending.push([out.length + 4 + Math.floor(Math.random() * 5), w]);
+            pending.sort((a, b) => a[0] - b[0]);
+        }
+        while (pending.length && pending[0][0] <= out.length) out.push(pending.shift()[1]);
+    }
+    for (const [, w] of pending) out.push(w);
+    const repeats = new Set();
+    const seen = new Set();
+    out.forEach((w, i) => { if (seen.has(w)) repeats.add(i); else seen.add(w); });
+
+    return {
+        list: out, repeats, allMastered,
+        dueCount: core.length, weakCount: weakSet.size,
+        masteredSample: allMastered ? 0 : sample.length,
+        masteredHidden: restMastered.length - sample.length,
+    };
+}
+function _renderSmartSessionBar(smart, total) {
+    const bar = document.getElementById('smartSessionBar');
+    if (!bar) return;
+    if (!smart || (!smart.masteredHidden && !smart.weakCount && !smart.allMastered)) { bar.style.display = 'none'; return; }
+    const parts = smart.allMastered
+        ? [`🎉 Tất cả từ đều đã thuộc và chưa tới hạn ôn — ôn nhanh <b>${smart.list.length}</b> từ lâu chưa gặp nhất`]
+        : [`🧠 Phiên thông minh: <b>${smart.dueCount}</b> từ cần học`];
+    if (smart.weakCount) parts.push(`<b>${smart.weakCount}</b> từ hay sai được lặp lại`);
+    if (smart.masteredSample) parts.push(`<b>${smart.masteredSample}</b> từ đã thuộc (ôn nhẹ)`);
+    if (smart.masteredHidden > 0 && !smart.allMastered) parts.push(`<b>${smart.masteredHidden}</b> từ đã thuộc tạm ẩn tới hạn ôn`);
+    bar.innerHTML = `<span>${parts.join(' · ')}</span>
+        <button type="button" class="ssb-all" onclick="practiceWholeBook()">Luyện tất cả ${total} từ</button>`;
+    bar.style.display = 'flex';
+}
+function practiceWholeBook() {
+    const go = () => { _bookPracticeAll = true; _activateModeNow(currentMode); };
+    if ((correctAnswers + wrongAnswers) > 0) {
+        confirmDialog('Luyện tất cả từ?', 'Phiên hiện tại sẽ bắt đầu lại với toàn bộ từ trong sổ.', go, { confirmLabel: 'Bắt đầu', confirmClass: 'btn-primary' });
+    } else go();
 }
 
 function showQuestion(mode) {
@@ -2394,8 +2569,11 @@ function updateProgress(prefix) {
 // Spaced repetition: đưa từ sai vào 3 vị trí sau trong hàng đợi
 function requeueWrongWord(word) {
     const key = word.word;
-    if (requeuedWords.has(key)) return;
-    requeuedWords.add(key);
+    // A word missed again after its first re-queue comes back once more
+    // (max 2 re-queues) — hard words get extra reps, no infinite loop.
+    const n = requeuedWords.get(key) || 0;
+    if (n >= 2) return;
+    requeuedWords.set(key, n + 1);
     if (currentMode === 'mixed') {
         const types = ['multipleChoice', 'listening', 'translation'];
         const type  = types[Math.floor(Math.random() * types.length)];
@@ -3441,6 +3619,10 @@ window.openBookMenu          = openBookMenu;
 window.startRenameFromMenu   = startRenameFromMenu;
 window.deleteBookFromMenu    = deleteBookFromMenu;
 window.openMergeModal        = openMergeModal;
+window.openMoveWordsModal    = openMoveWordsModal;
+window.practiceWholeBook     = practiceWholeBook;
+window.selectMoveDest        = selectMoveDest;
+window.confirmMoveWords      = confirmMoveWords;
 window.toggleMergeItem       = toggleMergeItem;
 window.confirmMerge          = confirmMerge;
 window.renameBook            = renameBook;

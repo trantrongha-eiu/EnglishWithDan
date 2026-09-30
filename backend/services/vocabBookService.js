@@ -72,6 +72,10 @@ async function trackUnitProgress(userId, sessionId, wordsAnswered, correctAnswer
 // (Vietnam local day — same convention as User.getVNDay/effectiveStreak; using
 // the server's raw UTC day here would misfile anything done 00:00–07:00 VN
 // time under the previous calendar day).
+// Per-book word cap (was 300 until 2026-09-30). Mirrored in dashboard.js's
+// VOCAB_BOOK_MAX_WORDS for the "N / 500 từ" counters.
+const MAX_WORDS_PER_BOOK = 500;
+
 function logActivity(userId, inc) {
   VocabActivity.findOneAndUpdate(
     { userId, date: todayVNDate() },
@@ -266,6 +270,41 @@ function statusFromBox(box) {
   return 'chua-thuoc';
 }
 
+const MASTERED_BOX = 3;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Box a word really sits in. Before 2026-09-30 a MANUAL "Mastered" only
+// promoted one box (0 → 1), so the next correct practice answer re-derived
+// "So-so" from the box and the word kept coming back daily — the students'
+// "đã để Mastered mà vẫn phải học lại" complaint. Words stored that way
+// (status da-thuoc, box < 3) are read as box 3; no data migration needed.
+function effectiveBox(wordDoc) {
+  const box = wordDoc.srsBox || 0;
+  return wordDoc.status === 'da-thuoc' ? Math.max(box, MASTERED_BOX) : box;
+}
+
+// SRS schedule for a student's own status pick in the word table: the box
+// is moved INTO the band that status means (mastered = box 3+, so-so = 1–2,
+// not yet = 0), so graded practice afterwards agrees with what they chose.
+function srsForManualStatus(prevBox, status) {
+  let srsBox = prevBox || 0;
+  if (status === 'da-thuoc') srsBox = Math.max(srsBox, MASTERED_BOX);
+  else if (status === 'nho-so-so') srsBox = Math.min(Math.max(srsBox - 1, 1), MASTERED_BOX - 1);
+  else if (status === 'chua-thuoc') srsBox = 0;
+  const now = new Date();
+  return { srsBox, nextReviewAt: new Date(now.getTime() + SRS_INTERVAL_DAYS[srsBox] * DAY_MS), lastReviewedAt: now };
+}
+
+// "Due for review" as a $match on unwound `words` — nextReviewAt passed or
+// never set, minus the legacy manual-Mastered words above (short
+// nextReviewAt) within 7 days of being marked.
+function dueWordMatch(now) {
+  return {
+    $or: [{ 'words.nextReviewAt': { $lte: now } }, { 'words.nextReviewAt': null }],
+    $nor: [{ 'words.status': 'da-thuoc', 'words.lastReviewedAt': { $gt: new Date(now.getTime() - SRS_INTERVAL_DAYS[MASTERED_BOX] * DAY_MS) } }],
+  };
+}
+
 // Records ONE piece of learning evidence from a graded practice answer
 // (Flashcard/Quiz/Listen/Translate/Mixed/Review-due — see dashboard.js's
 // _syncPracticeEvidence(), the single call site every practice mode
@@ -290,7 +329,13 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
   } else {
     wordDoc.wrongCount = (wordDoc.wrongCount || 0) + 1;
   }
-  const srs = computeSrs(wordDoc.srsBox, correct ? 'da-thuoc' : 'chua-thuoc');
+  // One wrong answer on a mastered word drops it to "So-so" (box 1, back
+  // tomorrow) rather than all the way to "Not yet" — a slip on a word the
+  // student knew shouldn't erase it; a second miss then resets it to 0.
+  const prevBox = effectiveBox(wordDoc);
+  const srs = !correct && prevBox >= MASTERED_BOX
+    ? { srsBox: 1, nextReviewAt: new Date(Date.now() + SRS_INTERVAL_DAYS[1] * DAY_MS), lastReviewedAt: new Date() }
+    : computeSrs(prevBox, correct ? 'da-thuoc' : 'chua-thuoc');
   wordDoc.srsBox = srs.srsBox;
   wordDoc.nextReviewAt = srs.nextReviewAt;
   wordDoc.lastReviewedAt = srs.lastReviewedAt;
@@ -316,16 +361,13 @@ async function getBook(id, userId) {
   return VocabBook.findOne({ _id: id, userId });
 }
 
-async function createBook(userId, { name, emoji = '📘', color = '#3d8bff' }) {
-  // "Sổ 1".."Sổ 5" are the fixed default books — an ordinary book with that
-  // name would be promoted into the slot by ensureDefaultBooks.
-  if (slotFromName(name)) return { status: 'reserved_name' };
-  const bookCount = await VocabBook.countDocuments({ userId });
-  if (bookCount >= 15) return { status: 'limit_reached' };
-
-  const book = new VocabBook({ userId, name: name.trim(), emoji, color });
-  await book.save();
-  return { status: 'ok', book };
+// Creating books is closed for everyone since 2026-09-30 (owner's rule):
+// students use only the 5 default books "Sổ 1".."Sổ 5" (class homework
+// targets them by slot). Books a student created before that stay as they
+// are — still usable, mergeable, deletable; words can be moved out of them
+// with moveAllWords.
+async function createBook() {
+  return { status: 'creation_disabled' };
 }
 
 async function updateBook(id, userId, { name, emoji, color }) {
@@ -365,7 +407,7 @@ async function mergeBooks(destId, userId, sourceIds) {
   let addedCount = 0;
   for (const src of sources) {
     for (const w of src.words) {
-      if (dest.words.length >= 300) break;
+      if (dest.words.length >= MAX_WORDS_PER_BOOK) break;
       const key = w.word.toLowerCase().trim();
       if (!existingWords.has(key)) {
         dest.words.push({
@@ -386,6 +428,58 @@ async function mergeBooks(destId, userId, sourceIds) {
   await VocabBook.deleteMany({ _id: { $in: sources.map(s => s._id) }, userId, isDefault: false });
 
   return { status: 'ok', addedCount, mergedCount: sources.length, book: dest };
+}
+
+// Moves every word of one book into another of the same student's books
+// (any pair, default or not). The source book itself is kept (a default
+// book can't be deleted, and nobody can create a new one any more), just
+// emptied of what moved:
+//   - a word already in the destination (same text, case-insensitive) is
+//     not added twice — the destination keeps its own entry (and its SRS
+//     history), blank meaning/example/note/phonetic filled from the moved
+//     copy — and it leaves the source, since it now lives in the destination
+//   - words that don't fit under MAX_WORDS_PER_BOOK stay in the source
+// Destination is written first, then the moved ids are $pull-ed from the
+// source by _id — a failure in between duplicates words, never loses them.
+async function moveAllWords(sourceId, destId, userId) {
+  if (String(sourceId) === String(destId)) return { status: 'same_book' };
+  const [source, dest] = await Promise.all([
+    VocabBook.findOne({ _id: sourceId, userId }),
+    VocabBook.findOne({ _id: destId, userId }),
+  ]);
+  if (!source) return { status: 'source_not_found' };
+  if (!dest) return { status: 'dest_not_found' };
+  if (!source.words.length) return { status: 'empty' };
+
+  const destByKey = new Map(dest.words.map(w => [w.word.toLowerCase().trim(), w]));
+  const leavingIds = [];
+  let movedCount = 0, duplicateCount = 0, skippedLimit = 0;
+
+  for (const w of source.words) {
+    const key = w.word.toLowerCase().trim();
+    const existing = destByKey.get(key);
+    if (existing) {
+      for (const f of ['meaning', 'example', 'note', 'phonetic', 'partOfSpeech']) {
+        if (!existing[f] && w[f]) existing[f] = w[f];
+      }
+      leavingIds.push(w._id);
+      duplicateCount++;
+      continue;
+    }
+    if (dest.words.length >= MAX_WORDS_PER_BOOK) { skippedLimit++; continue; }
+    const copy = w.toObject();
+    dest.words.push(copy); // same _id — the word keeps its identity/history
+    destByKey.set(key, copy);
+    leavingIds.push(w._id);
+    movedCount++;
+  }
+
+  if (!leavingIds.length) return { status: 'dest_full', skippedLimit };
+
+  await dest.save();
+  await VocabBook.updateOne({ _id: source._id, userId }, { $pull: { words: { _id: { $in: leavingIds } } } });
+
+  return { status: 'ok', movedCount, duplicateCount, skippedLimit, sourceName: source.name, destName: dest.name };
 }
 
 async function deleteBook(id, userId) {
@@ -411,13 +505,13 @@ function sanitizeCollocations(raw) {
 async function addWord(bookId, user, { word, meaning, example, phonetic, partOfSpeech, source, note, collocations }) {
   const trimmed = word.trim();
 
-  // Ownership + soft cap check first (a small residual race on the 300-word
+  // Ownership + soft cap check first (a small residual race on the word
   // cap specifically is unchanged from before and out of scope here — the
   // fix below targets the duplicate race, which is what actually happened
   // in production, see incident: "tolerant" saved twice 165ms apart).
   const book = await VocabBook.findOne({ _id: bookId, userId: user._id }).select('name words');
   if (!book) return { status: 'not_found' };
-  if (book.words.length >= 300) return { status: 'limit_reached', bookName: book.name };
+  if (book.words.length >= MAX_WORDS_PER_BOOK) return { status: 'limit_reached', bookName: book.name };
 
   // Atomic check-and-insert: the "no case-insensitive match already exists"
   // condition lives in the FILTER of this single findOneAndUpdate, so MongoDB
@@ -480,7 +574,7 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
     // srsBox/nextReviewAt (see updateWord's caller list: PATCH accepts an
     // arbitrary body today, and this is the one part of it that must stay
     // server-authoritative).
-    const srs = computeSrs(wordDoc.srsBox, status);
+    const srs = srsForManualStatus(wordDoc.srsBox, status);
     wordDoc.srsBox = srs.srsBox;
     wordDoc.nextReviewAt = srs.nextReviewAt;
     wordDoc.lastReviewedAt = srs.lastReviewedAt;
@@ -545,7 +639,7 @@ async function bulkAddWords(bookId, user, words) {
     const wordTrimmed = (item.word || '').trim();
     if (!wordTrimmed) continue;
 
-    if (book.words.length >= 300) { skippedLimit++; continue; }
+    if (book.words.length >= MAX_WORDS_PER_BOOK) { skippedLimit++; continue; }
 
     const key = wordTrimmed.toLowerCase();
     if (existingWords.has(key)) { skippedDup++; continue; }
@@ -587,7 +681,7 @@ async function deleteWords(bookId, userId, wordIds) {
 
 // Words due for review "today": nextReviewAt in the past, OR never reviewed
 // at all (a freshly-saved word should show up in the queue right away).
-// $unwind across a user's books' embedded word arrays — capped at 300
+// $unwind across a user's books' embedded word arrays — capped at 500
 // words/book x 15 books/user max, comfortably small for this per-request
 // aggregation (see docs/PRODUCT_FEATURE_AUDIT.md's SRS phase for why no
 // dedicated index was added: revisit only if that cap assumption changes).
@@ -596,7 +690,7 @@ async function getDueWords(userId, limit = 30) {
   return VocabBook.aggregate([
     { $match: { userId: new mongoose.Types.ObjectId(userId) } },
     { $unwind: '$words' },
-    { $match: { $or: [{ 'words.nextReviewAt': { $lte: now } }, { 'words.nextReviewAt': null }] } },
+    { $match: dueWordMatch(now) },
     { $sort: { 'words.nextReviewAt': 1 } },
     { $limit: limit },
     { $project: { _id: 0, bookId: '$_id', bookName: '$name', word: '$words' } },
@@ -611,7 +705,7 @@ async function countDueWords(userId) {
   const [r] = await VocabBook.aggregate([
     { $match: { userId: new mongoose.Types.ObjectId(userId) } },
     { $unwind: '$words' },
-    { $match: { $or: [{ 'words.nextReviewAt': { $lte: now } }, { 'words.nextReviewAt': null }] } },
+    { $match: dueWordMatch(now) },
     { $count: 'n' },
   ]);
   return r ? r.n : 0;
@@ -642,7 +736,11 @@ async function getVocabStats(userId) {
         reviewing:  { $sum: { $cond: [{ $eq: ['$words.status', 'nho-so-so'] }, 1, 0] } },
         notYet:     { $sum: { $cond: [{ $eq: ['$words.status', 'chua-thuoc'] }, 1, 0] } },
         weak:       { $sum: { $cond: [{ $gte: ['$words.wrongCount', WEAK_WRONG_COUNT_THRESHOLD] }, 1, 0] } },
-        dueToday:   { $sum: { $cond: [{ $or: [{ $lte: ['$words.nextReviewAt', now] }, { $eq: ['$words.nextReviewAt', null] }] }, 1, 0] } },
+        // same predicate as dueWordMatch(), in expression form
+        dueToday:   { $sum: { $cond: [{ $and: [
+          { $or: [{ $lte: ['$words.nextReviewAt', now] }, { $eq: ['$words.nextReviewAt', null] }] },
+          { $not: [{ $and: [{ $eq: ['$words.status', 'da-thuoc'] }, { $gt: ['$words.lastReviewedAt', new Date(now.getTime() - SRS_INTERVAL_DAYS[MASTERED_BOX] * DAY_MS)] }] }] },
+        ] }, 1, 0] } },
       } },
     { $project: { _id: 0, totalWords: 1, mastered: 1, reviewing: 1, notYet: 1, weak: 1, dueToday: 1 } },
   ]);
@@ -676,7 +774,7 @@ async function getWeakWords(userId, limit = 20) {
 
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
-  mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
+  mergeBooks, moveAllWords, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
   getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
   // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
   // reuses the exact same Leitner box maths instead of a second copy.
