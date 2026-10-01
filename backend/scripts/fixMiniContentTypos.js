@@ -26,6 +26,7 @@ const FIXES = [
   { id: '6abdee1454216aa2da157a0c', title: 'Food for Thought', from: /<h2>Food for thought 2<\/h2>/g, to: '<h2>Food for Thought</h2>' },
   // "an __Q37__" pointed students at 'arrangement'; the key is 'blend' (fat and sweat "combine")
   { id: '6abdee0854216aa2da157900', title: 'How to Handle the Sun', in: 'summary', from: /the body has a defense: an __Q37__/g, to: 'the body has a defense: a __Q37__' },
+  { id: '6abdf8581a3545ddbcd9fe14', title: 'Can We Believe Our Own Eyes?', from: /arrow’ end\./g, to: 'arrow end.' },
   // the passage has paragraphs A-I but mini listed only A-H → paragraph I could not be picked
   { id: '6abdee0854216aa2da157923', title: 'John Franklin: The Discovery of Slowness', in: 'groups', fn: d => {
     const g = d.questionGroups[0];

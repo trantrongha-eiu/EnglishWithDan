@@ -1801,4 +1801,97 @@ module.exports = {
       g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace(/__Q(\d+)__$/, '__Q$1__.'));
     },
   },
+  // ───── batch 13 (thầy 2026-10-01: thêm bài P1/P3 để ghép đủ đề full) ─────
+  1211: {
+    // mini Q13 key wrong ("magistrates court" copied from Q12): the easiest anti-social behaviour to identify is physical violence
+    text: [['merely’against the law’', 'merely ‘against the law’'], ['perpetrator’.This includes', 'perpetrator’. This includes'], ['magistrates’court', 'magistrates’ court'],
+      ['‘lf you come round', '‘If you come round'], ['make a few unkind . remarks', 'make a few unkind remarks'], ['discriminated against It is worth', 'discriminated against. It is worth'],
+      ['over the age often years old', 'over the age of ten years old'], ['very expensive to implement- One estimate', 'very expensive to implement. One estimate'], ['murder, robbery, assault burglary', 'murder, robbery, assault, burglary'], ['In the writers opinion', 'In the writer’s opinion']],
+    keys: { 7: 'definition / legal definition', 10: 'make a complaint / complain', 11: 'witnesses / neighbours / acquaintances', 12: 'magistrates’ court / magistrates\' court / magistrates court', 13: 'physical violence' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose THREE letters, A-H. Write the correct letters in boxes 1-3 on your answer sheet.';
+      const opts = ['They were introduced to deal with specific crimes.', 'Parking on a double yellow line could get you served with an ASBO.', 'Swearing is one of the offences referred to in the Crime and Disorder Act.',
+        'As a private householder you can apply for an ASBO against a noisy neighbour.', 'It is not illegal for young people to gather in groups in public places.', 'An ASBO cannot be served on a group of people behaving in a disorderly manner.',
+        'A large proportion of those served with ASBOs are over the age of 21.', 'Most people agree that ASBOs have been effective all over the country.'];
+      g0.questions.forEach(q => { q.options = opts; });
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 4-6 on your answer sheet.';
+      g2.instruction = 'Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 7-13 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace(/^\d+\s+/, ''));
+    },
+  },
+  1147: {
+    text: [["It's time to start returning vanished native animals to Britain, says John Vesty There is a poem", "<em>It's time to start returning vanished native animals to Britain, says John Vesty</em></p>\n\n<p>There is a poem"],
+      ['a large spotted cat with tassel led ears', 'a large spotted cat with tasselled ears'], ['from those that retain them Some of them', 'from those that retain them. Some of them'],
+      ['as farming has,left the hills', 'as farming has left the hills'], ['it has taken a misguided approach.', 'It has taken a misguided approach.']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 1-5 on your answer sheet.';
+      g1.instruction = 'Complete the summary using the list of words and phrases, A-F, below. Write the correct answer in boxes 6-9 on your answer sheet.';
+      g2.instruction = YNNG(1);
+    },
+  },
+  1283: {
+    // mini dropped option D of every MC question, garbled Q2 and lost Q14 + its summary sentence. Options, the missing
+    // sentence and the keys come from the full version (ieltsonlinetests Mock Test 2024 Feb, Reading Test 2 passage 3;
+    // ieltsvisa): it is a 14-question PASSAGE 3 (27-40). Text repairs are spelling/punctuation only.
+    text: [['pick out.’ They look like grains of dirt.’ said Gonzalo Giribet', 'pick out. ‘They look like grains of dirt,’ said Gonzalo Giribet'], ['an extraordinary story to tell they carry a record', 'an extraordinary story to tell: they carry a record'],
+      ['Wegener speculated correctly, as it turned out that the surrounding continents', 'Wegener speculated – correctly, as it turned out – that the surrounding continents'],
+      ['‘Most of them tend to concentrate on particular parts of the world.\' Dr Giribet said. I wanted to find a new system for studying biogeography on a global scale.', '‘Most of them tend to concentrate on particular parts of the world,’ Dr Giribet said. ‘I wanted to find a new system for studying biogeography on a global scale.’'],
+      ['Sarah Boyer, a former student of Dr Giribet. ‘It’s really hard', 'Sarah Boyer, a former student of Dr Giribet, ‘It’s really hard'], ['doesn’t disperse very far.\'', 'doesn’t disperse very far.’'],
+      ['400 million-year-ago rocks', '400-million-year-old rocks'], ['carried along by continental drift ever since they’ve managed to get themselves around the world only because they’ve been around for hundreds of millions of years, Dr Boyer said.', 'carried along by continental drift ever since. ‘They’ve managed to get themselves around the world only because they’ve been around for hundreds of millions of years,’ Dr Boyer said.'],
+      ['‘The patterns are remarkably clear.’ Dr Boyer said.', '‘The patterns are remarkably clear,’ Dr Boyer said.'], ['species in Chile South Africa', 'species in Chile, South Africa'], ['were in Gondwana which was a region', 'were in Gondwana, which was a region'],
+      ['Its closet relatives', 'Its closest relatives'], ['near Segenal. North America than collied into them Pangea was forming.', 'near Senegal. North America then collided into them as Pangea was forming.'], ['came along the ride', 'came along for the ride']],
+    fn: d => {
+      d.category = 'passage3'; d.questionRange = { start: 27, end: 40 };
+      const [g0, g1, g2] = d.questionGroups;
+      const mc = [
+        ['Why is it difficult to find mite harvestmen?', ['they are too small to see with the naked eye.', 'they can easily be confused with daddy longlegs.', 'they are hard to distinguish from their surroundings.', 'they do not exist in large numbers in any one place.'], 'C'],
+        ['Why are mite harvestmen of interest to Dr Giribet and his colleagues?', ['they have been studied far less than most other species.', 'they show the effects of climate on the evolution of animals.', 'they have an unusual relationship with plants and other animals.', 'they provide evidence relating to a field of study other than insects.'], 'D'],
+        ['What factor contributed to Wegener’s idea that present-day continents used to form a single landmass?', ['changes in the level of the ocean', 'the distance that species could travel', 'the lack of certain fossils on one side of the Atlantic', 'similarities in living conditions on both sides of the Atlantic'], 'B'],
+        ['What point is made by the reference to armadillos?', ['regions have both separated and become connected.', 'certain animals could travel longer distances than others.', 'the oldest species of animals are likely to be found in Africa.', 'there is a tendency for animals to spread in a particular direction.'], 'A'],
+        ['Which of the following is stated in the fifth paragraph?', ['Hawaii is a habitat that cannot support large birds.', 'Hawaii is an attractive habitat for certain species of birds.', 'flightless birds are more likely to become extinct than others.', 'the Hawaiian goose became flightless after it had reached Hawaii.'], 'D'],
+        ['Why is evidence from cockroaches of limited value?', ['they spread too fast.', 'they multiply too quickly.', 'they are found in too few places.', 'they have divided into too many species.'], 'A'],
+      ];
+      g0.questions = mc.map(([questionText, options, correctAnswer], i) => ({ ...g0.questions[0], questionNumber: 27 + i, questionText, options, correctAnswer }));
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-32 on your answer sheet.';
+      renum(g0, 27);
+      g1.instruction = YNNG(3); renum(g1, 33);
+      g2.questions.push({ ...g2.questions[2], correctAnswer: 'continents' });
+      renum(g2, 37);
+      g2.instruction = 'Complete the summary using the list of words, A-I, below. Write the correct answer in boxes 37-40 on your answer sheet.';
+      g2.summaryConfig.text = '<strong>The age and evolution of mite harvestmen</strong><br>Some of the first creatures to live on land were the __Q37__ of mite harvestmen. Boyer, Giribet and others study differences in the __Q38__ of these insects, and trace the development of a number of __Q39__ of the species. Their evolution appears to reflect changes in the location of __Q40__. For example, the same type of mite harvestman is found in places that are now far apart but used to form Gondwana, part of a huge landmass.';
+    },
+  },
+  1207: {
+    // Q4-8 were dropdowns the converter skipped → rebuilt as a matching group; Q10 and Q11 each need their own
+    // picture (Necker cubes / Muller-Lyer lines), so the MC group is split; pictures from ieltsmaterial (same as mini's)
+    text: [['Wien the lines of the box cross', 'When the lines of the box cross'], ['with the՜ Necker cube', 'with the Necker cube'], ['arrow’ ends', 'arrow ends'], ['arrow’ end.', 'arrow end.'], ['¿Most respondents', 'Most respondents'],
+      ['Throughout the world there a number of locations', 'Throughout the world there are a number of locations'], ['‘gravity hills or ‘magnetic’ hills', '‘gravity’ hills or ‘magnetic’ hills'], ['when in fact they a rolling', 'when in fact they are rolling'],
+      ['‘distorting’ illusions ‘paradox’ illusions', '‘distorting’ illusions, ‘paradox’ illusions']],
+    keys: { 1: 'physiological / physiological illusions' },
+    fn: d => {
+      d.title = 'Can We Believe Our Own Eyes?';
+      d.content = d.content.replace(/<h2>[^<]*<\/h2>/, '<h2>Can We Believe Our Own Eyes?</h2>');
+      d.questionRange = { start: 1, end: 13 };
+      const [g0, g1] = d.questionGroups;
+      const q = g1.questions;
+      const blank = { ...g1, imageUrl: '', noteConfig: { title: '', lines: [] }, matchingOptions: [], matchingOptionsTitle: '', matchingReuseAllowed: false };
+      const gm = { ...blank, groupType: 'matching-options', matchingReuseAllowed: true,
+        instruction: 'Classify the following as relating to A Fictional illusions, B Paradox illusions, C Distorting illusions or D Ambiguous illusions. Write the correct letter, A-D, in boxes 4-8 on your answer sheet. NB You may use any letter more than once.',
+        matchingOptionsTitle: 'Types of illusion', matchingOptions: ['Fictional illusions', 'Paradox illusions', 'Distorting illusions', 'Ambiguous illusions'],
+        questions: [['may be perceived differently by individuals of diverse ethnic origin', 'C'], ['may override our natural ability to make rational judgement', 'B'], ['may be interpreted differently even by the same subject', 'D'],
+          ['may result due to chemical stimulation', 'A'], ['has been used to question the validity of arguments in a different field', 'D']]
+          .map(([questionText, correctAnswer], i) => ({ ...q[0], questionNumber: 4 + i, type: 'matching-info', questionText, options: [], correctAnswer })) };
+      renum(gm, 4);
+      const mcIns = (a, b) => `Choose the correct letter${b ? ', A, B, C or D' : ', A, B or C'}. Write the correct letter in box${a.includes('-') ? 'es' : ''} ${a} on your answer sheet.`;
+      const g9 = { ...blank, instruction: mcIns('9', true), questions: [q[0]] };
+      const g10 = { ...blank, instruction: mcIns('10'), imageUrl: 'http://ieltsmaterial.com/wp-content/uploads/2017/01/2-1.png', questions: [{ ...q[1], options: ['Box A', 'Box B', 'Box C'] }] };
+      const g11 = { ...blank, instruction: mcIns('11'), imageUrl: 'http://ieltsmaterial.com/wp-content/uploads/2017/01/3.png', questions: [{ ...q[2], options: ['Diagram A', 'Diagram B', 'Diagram C'] }] };
+      const g12 = { ...blank, instruction: mcIns('12-13', true), questions: [q[3], q[4]] };
+      [[g9, 9], [g10, 10], [g11, 11], [g12, 12]].forEach(([g, n]) => renum(g, n));
+      g0.noteConfig.lines = g0.noteConfig.lines.map(l => l.replace(/^(__Q[0-9]+__) *(.*)$/, '$2 $1'));
+      d.questionGroups = [g0, gm, g9, g10, g11, g12];
+    },
+  },
 };
