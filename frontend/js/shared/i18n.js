@@ -530,7 +530,8 @@
     'Điền từ': 'Fill in the blank',
     'Đề ngẫu nhiên · Listening → Reading → Writing → Speaking':
       'Random test · Listening → Reading → Writing → Speaking',
-    'Bài học hôm nay': "Today's lesson"
+    'Bài học hôm nay': "Today's lesson",
+    'Học vocab theo topic': 'Vocab by topic'
   };
 
   // ── Templated strings ────────────────────────────────────────────────

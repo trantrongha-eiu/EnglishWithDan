@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20260930smart">
+  <link rel="stylesheet" href="css/dashboard.css?v=20261001vt">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -27,7 +27,7 @@
 <script src="js/auth.js?v=20260831"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20260925attn"></script>
+<script src="js/nav.js?v=20261001bxh"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -104,27 +104,20 @@
                hidden until it has data (or shows an empty-state). -->
           <div id="homework-card" style="display:none"></div>
 
-          <!-- Reordered 2026-09 (product decision): Streak/Quiz leaderboards
-               moved up here (right after homework), ahead of Today's
-               Lesson/Mock Test and the weakness card — these are the
-               "most-checked" widgets, everything below is secondary/
-               discovery. (The "My Vocabulary" aggregate-stats tiles that
-               used to sit here too — Đã lưu/Cần ôn lại/Từ yếu/Đã thuộc —
-               were removed outright per a later product decision: the
-               per-book counters already in the sidebar/book view were
-               judged sufficient, and this was one card too many.) -->
-
-          <div class="dash-home-grid">
-            <!-- Left column: intro + streak mascot -->
-            <div class="dash-home-col dash-home-col--left">
-              <div style="margin-bottom:20px">
-                <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px">Sổ từ vựng thông minh</h3>
-                <p style="font-size:14px;color:var(--text2)">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên cạnh</p>
-                <p style="font-size:13px;margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
-                  <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ, học Unit, hoặc vào Classroom
-                </p>
-              </div>
-
+          <!-- Sổ từ vựng thông minh — streak mascot + Today's Lesson, right
+               after the class/homework cards and shown large (product
+               decision 2026-10-01). The Top 10 streak / quiz leaderboards
+               that used to sit here moved to their own page,
+               vocab-leaderboard.html ("BXH vocab" in the top nav). -->
+          <section class="dash-vocab-hero" data-reveal>
+            <div class="dash-vocab-hero-head">
+              <h2 class="dash-vocab-hero-title">Sổ từ vựng thông minh</h2>
+              <p class="dash-vocab-hero-sub">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên cạnh</p>
+              <p class="dash-vocab-hero-sub" style="margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
+                <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ, học Unit, hoặc vào Classroom
+              </p>
+            </div>
+            <div class="dash-vocab-hero-row">
               <!-- Streak mascot + weekly progress -->
               <div class="dan-streak-card" id="dan-streak-card">
                 <div class="dan-streak-top">
@@ -151,52 +144,29 @@
                   <div class="dan-week-row" id="dan-week-row"></div>
                 </div>
               </div>
-            </div>
 
-            <!-- Middle column: Top 10 streak leaderboard -->
-            <div class="dash-home-col dash-home-col--mid">
-              <div class="dan-leaderboard-card" id="dan-leaderboard-card">
-                <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
-                <div class="dan-lb-list" id="dan-lb-list">
-                  <div class="dan-lb-loading">Đang tải...</div>
+              <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
+              <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
+                <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div class="todays-lesson-info">
+                  <div class="todays-lesson-label-row">
+                    <div class="todays-lesson-label">Học vocab theo topic</div>
+                    <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
+                      <i class="fas fa-exchange-alt"></i> Đổi bài
+                    </button>
+                    <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
+                  </div>
+                  <div class="todays-lesson-title" id="todays-lesson-title">—</div>
+                  <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
+                  <div class="todays-lesson-progress-row">
+                    <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
+                    <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
+                  </div>
                 </div>
+                <button class="btn btn-primary" id="todays-lesson-btn">Bắt đầu</button>
               </div>
             </div>
-
-            <!-- Right column: Top 10 quiz leaderboard (Vocabulary Lessons) -->
-            <div class="dash-home-col dash-home-col--right">
-              <div class="dan-leaderboard-card quiz-leaderboard-card" id="quiz-leaderboard-card">
-                <div class="dan-lb-title"><i class="fas fa-stopwatch"></i> Top 10 Quiz điểm cao</div>
-                <div class="dan-lb-list" id="quiz-lb-list">
-                  <div class="dan-lb-loading">Đang tải...</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Today's Lesson + Full Mock Test — two half-width cards side by side -->
-          <div class="home-dual-row" data-reveal>
-            <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
-            <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
-              <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-              <div class="todays-lesson-info">
-                <div class="todays-lesson-label-row">
-                  <div class="todays-lesson-label">Today's Lesson</div>
-                  <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
-                    <i class="fas fa-exchange-alt"></i> Đổi bài
-                  </button>
-                  <div class="unit-picker-dd" id="todays-lesson-picker-dd" style="display:none"></div>
-                </div>
-                <div class="todays-lesson-title" id="todays-lesson-title">—</div>
-                <div class="todays-lesson-meta" id="todays-lesson-meta"></div>
-                <div class="todays-lesson-progress-row">
-                  <div class="progress-bar" style="flex:1"><div class="progress-fill" id="todays-lesson-progress-fill" style="width:0%"></div></div>
-                  <span class="todays-lesson-progress-text" id="todays-lesson-progress-text">0%</span>
-                </div>
-              </div>
-              <button class="btn btn-primary" id="todays-lesson-btn">Bắt đầu</button>
-            </div>
-          </div>
+          </section>
 
           <!-- "Điểm cần cải thiện" — weakest question type/criterion per skill,
                derived from existing Reading/Listening/Writing/Speaking/Vocabulary
@@ -1356,12 +1326,13 @@
 <script src="js/shared/peer-profile.js?v=20260908"></script>
 <script src="js/dashboard-audio.js?v=20260906"></script>
 <script src="js/shared/wbw-drill.js?v=20260917novi"></script>
-<script src="js/dashboard-lesson.js?v=20260924browse"></script>
+<script src="js/dashboard-lesson.js?v=20261001bxh"></script>
 <script src="js/dashboard-homework.js?v=20260925limits"></script>
 <script src="js/dashboard-classinfo.js?v=20260925attn"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
-<script src="js/dashboard.js?v=20260930smart"></script>
-<script src="js/dashboard-browse.js?v=20260924guide"></script>
+<script src="js/shared/fire-tier.js?v=20261001"></script>
+<script src="js/dashboard.js?v=20261001bxh"></script>
+<script src="js/dashboard-browse.js?v=20261001bxh"></script>
 </body>
 </html>

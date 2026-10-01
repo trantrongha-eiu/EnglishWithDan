@@ -302,18 +302,55 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   .todays-lesson-card{gap:12px;padding:14px 16px}
   .todays-lesson-icon{font-size:24px}
   .todays-lesson-card>.btn{padding:8px 14px;font-size:13px;white-space:nowrap}
-  .todays-lesson-label-row{gap:6px}
+  .todays-lesson-label-row{gap:2px 6px;flex-wrap:wrap}
   .todays-lesson-switch-btn{font-size:10px;gap:3px}
 }
 
-/* ── Home dual row: Today's Lesson + Full Mock Test, half width each ──
-   Each card is flex:1 so when one is hidden (e.g. no lessons assigned)
-   the other fills the row. Wraps to a stack below 720px. */
-.home-dual-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
-.home-dual-row>*{flex:1 1 320px;min-width:0;margin-bottom:0}
-.home-dual-row .todays-lesson-card,
-.home-dual-row .mocktest-card{padding:16px 18px;gap:14px;margin-bottom:0}
-@media(max-width:720px){ .home-dual-row{gap:12px} }
+/* ── Home "Sổ từ vựng thông minh" hero: streak card + Today's Lesson ──
+   Sits right after the class/homework cards and is deliberately large.
+   Flex (not grid) so the streak card fills the row alone when no lesson
+   is assigned (#todays-lesson-card stays display:none); stacks <820px. */
+.dash-vocab-hero{margin-bottom:28px}
+.dash-vocab-hero-head{margin-bottom:18px}
+.dash-vocab-hero-title{font-size:28px;font-weight:800;color:var(--text);margin:0 0 6px;letter-spacing:-.3px}
+.dash-vocab-hero-sub{font-size:15px;color:var(--text2);margin:0}
+.dash-vocab-hero-row{display:flex;flex-wrap:wrap;gap:20px;align-items:stretch}
+.dash-vocab-hero-row>*{flex:1 1 380px;min-width:0;margin-bottom:0}
+.dash-vocab-hero-row .todays-lesson-card{flex-grow:1.6}
+.dash-vocab-hero .dan-streak-card{padding:24px 28px;display:flex;flex-direction:column;justify-content:center}
+.dash-vocab-hero .dan-mascot{font-size:56px}
+.dash-vocab-hero .dan-mascot img{width:68px;height:68px}
+.dash-vocab-hero .dan-fire{font-size:24px}
+.dash-vocab-hero .dan-streak-num{font-size:34px}
+.dash-vocab-hero .dan-streak-label{font-size:14px}
+.dash-vocab-hero .dan-streak-msg{font-size:15px}
+.dash-vocab-hero .dan-week{margin-top:18px;padding-top:18px}
+.dash-vocab-hero .dan-week-title{font-size:12px}
+.dash-vocab-hero .dan-week-dot{max-width:46px;border-radius:11px;font-size:15px}
+.dash-vocab-hero .dan-week-day{font-size:12px}
+.dash-vocab-hero .todays-lesson-card{padding:28px 30px;gap:24px}
+.dash-vocab-hero .todays-lesson-icon{font-size:52px}
+.dash-vocab-hero .todays-lesson-label,
+.dash-vocab-hero .todays-lesson-switch-btn{font-size:13px}
+.dash-vocab-hero .todays-lesson-title{font-size:22px;margin:6px 0 4px}
+.dash-vocab-hero .todays-lesson-meta{font-size:14px;margin-bottom:14px}
+.dash-vocab-hero .todays-lesson-progress-row .progress-bar{height:10px}
+.dash-vocab-hero .todays-lesson-progress-text{font-size:14px}
+.dash-vocab-hero .todays-lesson-card>.btn{padding:13px 28px;font-size:16px;white-space:nowrap}
+@media(max-width:820px){.dash-vocab-hero-row{gap:14px}}
+@media(max-width:640px){
+  .dash-vocab-hero-title{font-size:22px}
+  .dash-vocab-hero-sub{font-size:14px}
+  .dash-vocab-hero .dan-streak-card{padding:18px 18px}
+  .dash-vocab-hero .dan-mascot img{width:52px;height:52px}
+  .dash-vocab-hero .dan-streak-num{font-size:26px}
+  .dash-vocab-hero .todays-lesson-card{padding:18px;gap:14px}
+  .dash-vocab-hero .todays-lesson-icon{font-size:28px}
+  .dash-vocab-hero .todays-lesson-label,
+  .dash-vocab-hero .todays-lesson-switch-btn{font-size:11px;white-space:nowrap}
+  .dash-vocab-hero .todays-lesson-title{font-size:18px}
+  .dash-vocab-hero .todays-lesson-card>.btn{padding:10px 16px;font-size:14px}
+}
 
 .mocktest-card{
   display:flex;align-items:center;gap:14px;
@@ -693,7 +730,7 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 .dan-streak-msg{font-size:13px;color:var(--text2);line-height:1.5}
 .dan-streak-card.is-angry .dan-streak-msg{color:var(--danger);font-weight:600}
 
-/* Fire tier ladder (see getFireTier()/applyFireTier() in dashboard.js) —
+/* Fire tier ladder (see getFireTier()/applyFireTier() in js/shared/fire-tier.js) —
    30/60/100/150/200/300/400 each recolor the fire icon + streak number;
    500+ ("legendary") gets an animated rainbow shimmer a flat color can't
    express. Used on the homepage mascot card, the book-content mascot
@@ -1303,13 +1340,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   .app-layout{padding-bottom:148px}
   #book-welcome,#book-content,#practice-browse{padding-bottom:168px}
 
-  /* Both Top-10 leaderboards stacking at full length back-to-back made the
-     Home page an extremely long scroll on mobile before reaching anything
-     else below them — cap each to ~5 rows' worth of height with its own
-     inner scroll instead, so the page scroll stays short while all 10 rows
-     remain reachable inline. */
-  .dan-lb-list{max-height:290px;overflow-y:auto}
-
   /* Mode body padding nhỏ hơn */
   .mode-body{padding:16px}
 
@@ -1816,18 +1846,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 [data-theme="dark"] .meaning-suggestion:hover{background:rgba(59,130,246,.22)!important;border-color:#3b82f6!important;color:#bfdbfe!important}
 [data-theme="dark"] .meaning-suggestion.selected{background:rgba(59,130,246,.28)!important;border-color:#60a5fa!important;color:#dbeafe!important}
 
-/* ── Dashboard homepage: 3-column layout ── */
-/* Left = intro + streak mascot, middle = streak leaderboard, right = quiz
-   leaderboard. Collapses to a single column (left, then middle, then
-   right, in source order) below 1180px. */
-.dash-home-grid{display:grid;grid-template-columns:1.2fr 1.2fr 0.85fr;gap:20px;align-items:start}
-.dash-home-col{display:flex;flex-direction:column;gap:16px}
-@media(max-width:1180px){.dash-home-grid{grid-template-columns:1fr}}
-
-/* Feature highlight cards — moved below the mascot/leaderboards grid so
-   those two boards (streak + quiz) stay the visual focus of the home
-   screen; this is a plain responsive multi-column row, not tied to
-   .dash-home-grid's 3-column layout. */
+/* Feature highlight cards — a plain responsive multi-column row. */
 .welcome-feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
 .welcome-section-title{font-size:14px;font-weight:700;color:var(--text);margin:28px 0 4px}
 
