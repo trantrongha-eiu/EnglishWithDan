@@ -447,5 +447,15 @@ describe('GET /leaderboard', () => {
 
     const res = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${studentToken}`);
     expect(res.body.leaderboard.some(r => r.userId === String(student._id) && r.score === 100)).toBe(true);
+    expect(res.body.me).toMatchObject({ rank: 1, score: 100, total: 1, nextScore: null });
+
+    // A student with no qualifying quiz: unranked, but still told the board size.
+    const other = await createStudent();
+    const res2 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${signTokenFor(other)}`);
+    expect(res2.body.me).toEqual({ rank: null, total: 1 });
+
+    // Staff never get a standing.
+    const res3 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${teacherToken}`);
+    expect(res3.body.me).toBeNull();
   });
 });

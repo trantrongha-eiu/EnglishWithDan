@@ -64,6 +64,9 @@
         { href: 'mock-test.html',     icon: 'fa-layer-group', label: 'Full Mock Test' },
       ]
     },
+    // Top 10 streak + Top 10 vocab quiz — moved off the dashboard home
+    // screen onto their own page (2026-10-01).
+    { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'BXH vocab' },
   ];
 
   // "Hộp thư" / "Học phí" moved out of the main dropdown row into the
@@ -282,7 +285,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=20260910';
+    i18nScript.src = '/js/shared/i18n.js?v=20261001bxh';
     document.body.appendChild(i18nScript);
   }
 

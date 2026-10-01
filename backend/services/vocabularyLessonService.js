@@ -137,7 +137,7 @@ const MIN_QUIZ_LEADERBOARD_QUESTIONS = 5;
 // attempt board's score-then-time ordering. Was previously each student's
 // single best attempt; changed to a true average per product decision
 // (2026-07-26) so consistent performers rank above a one-off lucky score.
-async function getQuizLeaderboard(limit = 10) {
+async function rankedQuizAverages(limit) {
   const rows = await VocabularyLessonAttemptLog.aggregate([
     { $match: { total: { $gte: MIN_QUIZ_LEADERBOARD_QUESTIONS } } },
     {
@@ -159,7 +159,7 @@ async function getQuizLeaderboard(limit = 10) {
     { $unwind: '$_user' },
     { $match: { '_user.role': 'student' } }, // exclude teacher/admin test attempts from a student-facing board
     { $sort: { avgScore: -1, avgTimeSpent: 1 } },
-    { $limit: limit },
+    ...(limit ? [{ $limit: limit }] : []),
     {
       $project: {
         _id: 0,
@@ -174,6 +174,31 @@ async function getQuizLeaderboard(limit = 10) {
     },
   ]);
   return rows.map(r => ({ ...r, name: r.name || r.username }));
+}
+
+async function getQuizLeaderboard(limit = 10) {
+  return rankedQuizAverages(limit);
+}
+
+// Top `limit` plus the caller's own standing (BXH vocab page). Ranks the
+// whole board (one row per student who ever did a qualifying quiz — small)
+// to find the caller's place. `me` is null for staff.
+async function getQuizStanding(userId, limit = 10) {
+  const all = await rankedQuizAverages(0);
+  const leaderboard = all.slice(0, limit);
+  const user = await User.findById(userId).select('role').lean();
+  if (!user || user.role !== 'student') return { leaderboard, me: null };
+  const idx = all.findIndex(r => String(r.userId) === String(userId));
+  if (idx === -1) return { leaderboard, me: { rank: null, total: all.length } };
+  const mine = all[idx];
+  const above = idx > 0 ? all[idx - 1] : null;
+  return {
+    leaderboard,
+    me: {
+      rank: idx + 1, score: mine.score, timeSpent: mine.timeSpent, attempts: mine.attempts, total: all.length,
+      nextScore: above ? above.score : null,
+    },
+  };
 }
 
 // Per-lesson "who's best at THIS quiz" board — every student's own best
@@ -528,6 +553,7 @@ module.exports = {
   submitAttempt,
   getAttemptHistory,
   getQuizLeaderboard,
+  getQuizStanding,
   getLessonAttemptLeaderboard,
   listAdminLessons,
   getAdminLesson,

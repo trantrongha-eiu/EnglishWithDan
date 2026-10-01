@@ -300,7 +300,8 @@ async function getActivityHeatmap(userId, days = 365) {
 // resetIfStale() whenever a student happens to load /user/stats, so a
 // student who lost their streak days ago but hasn't opened the app since
 // would otherwise still show their old count here.
-async function getStreakLeaderboard(limit = 10) {
+// Every student with a live streak, longest first.
+async function rankedStreaks() {
   const candidates = await User.find({ role: 'student', learningStreak: { $gt: 0 } })
     .select('firstName lastName username avatar learningStreak lastActivityDate')
     .lean();
@@ -313,8 +314,33 @@ async function getStreakLeaderboard(limit = 10) {
       streak: effectiveStreak(u.learningStreak, u.lastActivityDate),
     }))
     .filter(u => u.streak > 0)
-    .sort((a, b) => b.streak - a.streak)
-    .slice(0, limit);
+    .sort((a, b) => b.streak - a.streak);
+}
+
+async function getStreakLeaderboard(limit = 10) {
+  return (await rankedStreaks()).slice(0, limit);
+}
+
+// Top `limit` plus the caller's own standing (BXH vocab page), so a
+// student outside the top 10 still sees their rank and the gap to the
+// next place. `me` is null for staff — they never appear on the board.
+async function getStreakStanding(userId, limit = 10) {
+  const all = await rankedStreaks();
+  const leaderboard = all.slice(0, limit);
+  const user = await User.findById(userId).select('role').lean();
+  if (!user || user.role !== 'student') return { leaderboard, me: null };
+  const idx = all.findIndex(u => String(u._id) === String(userId));
+  if (idx === -1) return { leaderboard, me: { rank: null, streak: 0, total: all.length } };
+  return {
+    leaderboard,
+    me: {
+      rank: idx + 1,
+      streak: all[idx].streak,
+      total: all.length,
+      // Streak of the next place up (first entry with a strictly longer streak).
+      nextStreak: (all.slice(0, idx).reverse().find(u => u.streak > all[idx].streak) || {}).streak || null,
+    },
+  };
 }
 
 // Búa Daniel: spend 1 hammer to restore the streak lost within the last 3
@@ -328,4 +354,4 @@ async function useHammer(userId) {
   return { status: 'ok', streak: user.learningStreak, streakHammers: user.streakHammers };
 }
 
-module.exports = { getProfile, updateProfile, validateProfileInput, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard, useHammer };
+module.exports = { getProfile, updateProfile, validateProfileInput, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard, getStreakStanding, useHammer };

@@ -140,42 +140,6 @@ function setupTodaysLessonPicker() {
     });
 }
 
-// Home screen's "Top 10 Quiz điểm cao" card — mirrors loadStreakLeaderboard()
-// in dashboard.js (same row markup classes, RANK_MEDAL, avatar-or-initial
-// pattern) but ranks by quiz score/time instead of streak length.
-async function loadQuizLeaderboard() {
-    const listEl = document.getElementById('quiz-lb-list');
-    if (!listEl) return;
-    try {
-        const res = await fetch(`${API}/vocabulary-lessons/leaderboard`, { headers: authH() });
-        const data = await window.ApiClient.handleResponse(res);
-        const rows = data.leaderboard || [];
-        if (!rows.length) {
-            listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai làm Quiz đủ điều kiện xếp hạng — hãy là người đầu tiên! ⏱</div>';
-            return;
-        }
-        const myId = window.AuthService?.getUser()?._id;
-        const mm = sec => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
-        listEl.innerHTML = rows.map((r, i) => {
-            const rank = i + 1;
-            const medal = typeof RANK_MEDAL !== 'undefined' ? RANK_MEDAL[rank] : null;
-            const avatar = r.avatar
-                ? `<img class="dan-lb-avatar" src="${escHtml(r.avatar)}" alt="">`
-                : `<span class="dan-lb-avatar-placeholder">${escHtml((r.name || '?')[0].toUpperCase())}</span>`;
-            const isMe = r.userId === myId;
-            return `
-                <div class="dan-lb-row${isMe ? ' is-me' : ' dan-lb-clickable'}"${isMe ? '' : ` onclick="window.openPeerProfile('${r.userId}')"`}>
-                    <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
-                    ${avatar}
-                    <span class="dan-lb-name">${escHtml(r.name)}${isMe ? ' (Bạn)' : ''}</span>
-                    <span class="dan-lb-quiz-score">${r.score}% <span class="dan-lb-quiz-time">· ${mm(r.timeSpent)}</span></span>
-                </div>`;
-        }).join('');
-    } catch {
-        listEl.innerHTML = '<div class="dan-lb-empty">Không tải được bảng xếp hạng</div>';
-    }
-}
-
 // The desktop sidebar's inline picker was replaced by the full-width
 // Vocab Topics list (js/dashboard-browse.js) — just tell it data is ready.
 function renderClassroomSidebar() {
@@ -1266,8 +1230,8 @@ async function renderResultsTab() {
     // Every student who's attempted THIS lesson, ranked by best score desc
     // (attempt count asc as the tiebreaker) — see
     // vocabularyLessonService.getLessonAttemptLeaderboard(). Same row
-    // markup/classes as loadQuizLeaderboard()'s global "Top 10 Quiz điểm
-    // cao" card and loadStreakLeaderboard() in dashboard.js, just scoped to
+    // markup/classes as the global "Top 10 Quiz điểm cao" / streak boards
+    // on vocab-leaderboard.html (js/vocab-leaderboard.js), just scoped to
     // this one lesson instead of a cross-lesson average or streak length.
     {
         const myId = window.AuthService?.getUser()?._id;

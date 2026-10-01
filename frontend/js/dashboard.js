@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // than awaiting all 10 up front means a reload mid-unit/mid-lesson shows
     // the actual content the URL points at without waiting on a full page's
     // worth of secondary widgets first.
-    loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadStreakLeaderboard(); loadClassroomAndTodaysLesson(); loadQuizLeaderboard(); loadWeaknessProfile();
+    loadStreakAndUpdateMascot(); loadWeeklyProgress(); updateDifficultBadge(); loadClassroomAndTodaysLesson(); loadWeaknessProfile();
     if (typeof loadHomework === 'function') loadHomework();
     if (typeof loadClassInfo === 'function') loadClassInfo();
     // Double-click / drag-select word lookup on the vocab HOME screen too —
@@ -458,37 +458,8 @@ function getMascotEmoji(streak) {
     return '🐼';
 }
 
-// Fire tier ladder — every fire icon/number pairing (homepage mascot card,
-// book-content mascot banner, leaderboard rows) uses this so a student's
-// streak color stays consistent everywhere it's shown. 500+ ("legendary")
-// returns null color and instead relies on the .fire-legendary CSS class
-// for a gradient effect that a flat color can't express.
-const FIRE_TIERS = [
-    { min: 500, color: null,      cls: 'fire-legendary' }, // gradient
-    { min: 400, color: '#eab308', cls: '' },  // gold
-    { min: 300, color: '#10b981', cls: '' },  // emerald
-    { min: 200, color: '#06b6d4', cls: '' },  // cyan
-    { min: 150, color: '#3b82f6', cls: '' },  // blue
-    { min: 100, color: '#a855f7', cls: '' },  // purple
-    { min: 60,  color: '#dc2626', cls: '' },  // crimson
-    { min: 30,  color: '#ef4444', cls: '' },  // red
-];
-function getFireTier(streak) {
-    for (const tier of FIRE_TIERS) {
-        if (streak >= tier.min) return tier;
-    }
-    return { min: 0, color: null, cls: '' }; // default orange, from CSS
-}
-// Applies the tier color/class to a fire icon + its adjoining streak number.
-function applyFireTier(fireEl, numEl, streak) {
-    const tier = getFireTier(streak);
-    [fireEl, numEl].forEach(el => {
-        if (!el) return;
-        el.classList.remove('fire-legendary');
-        if (tier.cls) el.classList.add(tier.cls);
-        el.style.color = tier.cls ? '' : (tier.color || '');
-    });
-}
+// FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/fire-tier.js
+// (shared with the BXH vocab page's streak leaderboard).
 
 // Sarcastic "Dan" (our panda mascot, named after thầy Daniel) reacting to a
 // dead streak — angry if you just torched a streak bigger than 10 days,
@@ -716,40 +687,6 @@ async function loadWeaknessProfile() {
 }
 
 const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
-
-async function loadStreakLeaderboard() {
-    const listEl = document.getElementById('dan-lb-list');
-    if (!listEl) return;
-    try {
-        const res  = await fetch(`${API}/user/streak-leaderboard`, { headers: authH() });
-        const data = await window.ApiClient.handleResponse(res);
-        const rows = data.leaderboard || [];
-        if (!rows.length) {
-            listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai đang giữ streak — hãy là người đầu tiên! 🔥</div>';
-            return;
-        }
-        const myId = window.AuthService?.getUser()?._id;
-        listEl.innerHTML = rows.map((r, i) => {
-            const rank = i + 1;
-            const medal = RANK_MEDAL[rank];
-            const avatar = r.avatar
-                ? `<img class="dan-lb-avatar" src="${_esc(r.avatar)}" alt="">`
-                : `<span class="dan-lb-avatar-placeholder">${_esc((r.name || '?')[0].toUpperCase())}</span>`;
-            const tier = getFireTier(r.streak);
-            const streakStyle = tier.cls ? '' : (tier.color ? ` style="color:${tier.color}"` : '');
-            const isMe = r._id === myId;
-            return `
-                <div class="dan-lb-row${isMe ? ' is-me' : ' dan-lb-clickable'}"${isMe ? '' : ` onclick="window.openPeerProfile('${r._id}')"`}>
-                    <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
-                    ${avatar}
-                    <span class="dan-lb-name">${_esc(r.name)}${isMe ? ' (Bạn)' : ''}</span>
-                    <span class="dan-lb-streak${tier.cls ? ' ' + tier.cls : ''}"${streakStyle}><i class="fas fa-fire"></i> ${r.streak}</span>
-                </div>`;
-        }).join('');
-    } catch {
-        listEl.innerHTML = '<div class="dan-lb-empty">Không tải được bảng xếp hạng</div>';
-    }
-}
 
 // Last 7 calendar days (VN time), rendered as a mini row of dots next to
 // the streak banner — reuses the same activity-heatmap endpoint that

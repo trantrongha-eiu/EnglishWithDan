@@ -91,8 +91,8 @@ exports.getActivityHeatmap = catchAsync(async (req, res) => {
 
 // ── GET /api/user/streak-leaderboard ─────────────────────────
 exports.getStreakLeaderboard = catchAsync(async (req, res) => {
-  const leaderboard = await userService.getStreakLeaderboard(10);
-  res.json({ success: true, leaderboard });
+  const { leaderboard, me } = await userService.getStreakStanding(req.user._id, 10);
+  res.json({ success: true, leaderboard, me });
 });
 
 // ── POST /api/user/streak/use-hammer ─────────────────────────

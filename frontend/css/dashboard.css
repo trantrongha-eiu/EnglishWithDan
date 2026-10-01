@@ -311,7 +311,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
    Flex (not grid) so the streak card fills the row alone when no lesson
    is assigned (#todays-lesson-card stays display:none); stacks <820px. */
 .dash-vocab-hero{margin-bottom:28px}
-.dash-vocab-hero-head{margin-bottom:18px}
+.dash-vocab-hero-head{margin-bottom:18px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dash-vocab-hero-text{min-width:0}
+.dash-vocab-hero-lb{
+  display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;text-decoration:none;
+  color:#b45309;background:#fffbeb;border:1px solid #fde68a;transition:filter .15s,box-shadow .15s;
+}
+.dash-vocab-hero-lb:hover{filter:brightness(.98);box-shadow:0 2px 8px rgba(217,119,6,.18)}
+[data-theme="dark"] .dash-vocab-hero-lb{color:#fbbf24;background:rgba(180,83,9,.18);border-color:rgba(217,119,6,.4)}
 .dash-vocab-hero-title{font-size:28px;font-weight:800;color:var(--text);margin:0 0 6px;letter-spacing:-.3px}
 .dash-vocab-hero-sub{font-size:15px;color:var(--text2);margin:0}
 .dash-vocab-hero-row{display:flex;flex-wrap:wrap;gap:20px;align-items:stretch}

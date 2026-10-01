@@ -62,7 +62,7 @@
                 ['Xem lại câu sai ở Results', 'Mở tab <b>Results</b>, xem lại những từ đã sai và làm lại Quiz sau khoảng 1 ngày.'],
                 ['Lưu cả bài vào sổ', 'Bấm <b>Lưu tất cả</b> để đưa các từ vào sổ từ vựng. Hệ thống sẽ nhắc bạn ôn từng từ đúng lúc.'],
             ],
-            tip: 'Quiz làm đủ từ 5 câu trở lên sẽ được tính vào bảng <b>Top 10 Quiz điểm cao</b> ở trang chủ.',
+            tip: 'Quiz làm đủ từ 5 câu trở lên sẽ được tính vào bảng <b>Top 10 Quiz điểm cao</b> ở trang <b>BXH vocab</b>.',
         },
     };
 

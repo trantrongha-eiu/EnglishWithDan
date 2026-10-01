@@ -566,6 +566,24 @@ img { max-width: 100%; height: auto; }
    RESPONSIVE BREAKPOINTS
    ══════════════════════════════════════════════════════ */
 
+/* Narrow desktop (1025–1380px): the full-size link row + icon row are wider
+   than the viewport here, which pushed the right-hand icons (inbox,
+   avatar, logout…) off-screen. Tighten spacing and drop the dropdown
+   carets; below 1200px also drop the top-level link icons. Above 1024px
+   only — the hamburger drawer takes over below that. */
+@media (min-width: 1025px) and (max-width: 1380px) {
+  .top-nav { gap: 10px; }
+  .top-nav .nav-links { gap: 2px; margin: 0 6px; }
+  .top-nav .nav-links > a,
+  .top-nav .nav-links > .nav-dropdown > a { padding: 8px 9px; font-size: 13.5px; }
+  .top-nav .nav-links .nav-dd-arrow { display: none; }
+  .top-nav .nav-actions { gap: 6px; }
+}
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .top-nav .nav-links > a > i:first-child,
+  .top-nav .nav-links > .nav-dropdown > a > i:first-child { display: none; }
+}
+
 /* Tablet & smaller desktop */
 @media (max-width: 1024px) {
   .top-nav .nav-links { display: none; }

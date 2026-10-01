@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BXH Vocab – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/motion.css?v=20260904b"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20261001nav"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <!-- .dan-leaderboard-card / .dan-lb-* / .fire-legendary / .peer-* live in
+       dashboard.css (the boards used to sit on the dashboard home screen);
+       .et-shell / .et-hero are the same simple page shell as mock-test.html;
+       page-specific bits are in vocab-leaderboard.css. -->
+  <link rel="stylesheet" href="css/dashboard.css?v=20261001bxh">
+  <link rel="stylesheet" href="css/entrance-test.css?v=20260924sp">
+  <link rel="stylesheet" href="css/vocab-leaderboard.css?v=20261001b">
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20260908"></script>
+<script src="js/auth.js?v=20260831"></script>
+<script src="js/nav.js?v=20261001bxh"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
+
+<div class="et-shell vlb-shell">
+  <div class="et-hero">
+    <div class="vlb-hero-icon"><i class="fas fa-ranking-star"></i></div>
+    <h1>BXH Vocab</h1>
+    <p>Bảng xếp hạng chuỗi ngày học và điểm Quiz từ vựng. Bấm vào tên một bạn để xem hồ sơ hoặc nhắn tin.</p>
+  </div>
+
+  <!-- Vị trí của bạn — filled from the boards' `me` field; stays hidden for
+       staff (they are never ranked). -->
+  <div class="vlb-me" id="vlb-me" hidden>
+    <div class="vlb-me-tile vlb-me-tile--streak">
+      <div class="vlb-me-icon"><i class="fas fa-fire"></i></div>
+      <div class="vlb-me-body">
+        <div class="vlb-me-label">Chuỗi học của bạn</div>
+        <div class="vlb-me-value" id="vlb-me-streak-value">—</div>
+        <div class="vlb-me-sub" id="vlb-me-streak-sub"></div>
+      </div>
+      <a class="btn btn-primary btn-sm" href="dashboard.html"><i class="fas fa-book-open"></i> Học ngay</a>
+    </div>
+    <div class="vlb-me-tile vlb-me-tile--quiz">
+      <div class="vlb-me-icon"><i class="fas fa-stopwatch"></i></div>
+      <div class="vlb-me-body">
+        <div class="vlb-me-label">Quiz của bạn</div>
+        <div class="vlb-me-value" id="vlb-me-quiz-value">—</div>
+        <div class="vlb-me-sub" id="vlb-me-quiz-sub"></div>
+      </div>
+      <a class="btn btn-primary btn-sm" href="dashboard.html?view=topics"><i class="fas fa-play"></i> Làm Quiz</a>
+    </div>
+  </div>
+
+  <div class="vlb-grid">
+    <div class="dan-leaderboard-card" id="dan-leaderboard-card">
+      <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
+      <p class="vlb-board-sub">Số ngày học liên tiếp — mỗi ngày học ít nhất 1 bài để giữ chuỗi.</p>
+      <div class="dan-lb-list" id="dan-lb-list" aria-busy="true"><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div></div>
+    </div>
+
+    <div class="dan-leaderboard-card quiz-leaderboard-card" id="quiz-leaderboard-card">
+      <div class="dan-lb-title"><i class="fas fa-stopwatch"></i> Top 10 Quiz điểm cao</div>
+      <p class="vlb-board-sub">Điểm TB Quiz từ vựng (từ 5 câu) — bằng điểm thì ai nhanh hơn xếp trên.</p>
+      <div class="dan-lb-list" id="quiz-lb-list" aria-busy="true"><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Peer profile (click a name in a leaderboard) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-profile">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-id-card"></i> Hồ sơ học sinh</h3>
+      <button class="modal-close" aria-label="Đóng" onclick="closePeerProfile()">✕</button>
+    </div>
+    <div class="modal-body" id="peer-profile-body"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Peer chat (1-1 messaging between students) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-chat">
+  <div class="modal-box modal-md peer-chat-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-comment-dots"></i> <span id="peer-chat-name">...</span></h3>
+      <button class="modal-close" aria-label="Đóng" onclick="closePeerChat()">✕</button>
+    </div>
+    <div class="peer-chat-messages" id="peer-chat-messages"></div>
+    <div class="peer-chat-input-row">
+      <textarea id="peer-chat-input" class="peer-chat-input" placeholder="Nhắn gì đó..." rows="1"
+        onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendPeerChatMessage();}"></textarea>
+      <button id="peer-chat-send-btn" class="btn btn-primary" onclick="sendPeerChatMessage()" aria-label="Gửi"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Report a student (from profile card or a specific chat message) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-report">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3 id="peer-report-title">Báo cáo</h3>
+      <button class="modal-close" aria-label="Đóng" onclick="closePeerReport()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Báo cáo sẽ được gửi tới giáo viên để xem xét.</p>
+      <textarea id="peer-report-reason" class="peer-chat-input" style="width:100%;min-height:90px" placeholder="Mô tả lý do báo cáo..." maxlength="500"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePeerReport()">Hủy</button>
+      <button class="btn btn-danger" onclick="submitPeerReport()"><i class="fas fa-flag"></i> Gửi báo cáo</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/shared/peer-profile.js?v=20260908"></script>
+<script src="js/shared/fire-tier.js?v=20261001"></script>
+<script src="js/vocab-leaderboard.js?v=20261001b"></script>
+</body>
+</html>

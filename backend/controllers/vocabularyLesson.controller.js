@@ -26,8 +26,8 @@ exports.getPublicLesson = async (req, res) => {
 
 exports.getQuizLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await vocabularyLessonService.getQuizLeaderboard(10);
-    res.json({ success: true, leaderboard });
+    const { leaderboard, me } = await vocabularyLessonService.getQuizStanding(req.user._id, 10);
+    res.json({ success: true, leaderboard, me });
   } catch (err) {
     console.error('[VocabularyLesson]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });

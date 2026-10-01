@@ -61,3 +61,30 @@ describe('userService.getStreakLeaderboard', () => {
     expect(board).toEqual([]);
   });
 });
+
+describe('userService.getStreakStanding', () => {
+  test("returns the caller's rank and the next-longer streak, even outside the top `limit`", async () => {
+    const ids = [];
+    for (const n of [30, 20, 20, 10, 5]) {
+      ids.push((await createStudent({ extra: { learningStreak: n, lastActivityDate: daysAgo(0) } }))._id);
+    }
+    const { leaderboard, me } = await userService.getStreakStanding(ids[4], 2);
+    expect(leaderboard.map(b => b.streak)).toEqual([30, 20]);
+    expect(me).toEqual({ rank: 5, streak: 5, total: 5, nextStreak: 10 });
+
+    // Tied with the place above -> the next target is the first LONGER streak.
+    const tied = await userService.getStreakStanding(ids[2], 10);
+    expect(tied.me.streak).toBe(20);
+    expect(tied.me.nextStreak).toBe(30);
+
+    const top = await userService.getStreakStanding(ids[0], 10);
+    expect(top.me).toMatchObject({ rank: 1, nextStreak: null });
+  });
+
+  test('unranked student gets rank null; staff get no standing', async () => {
+    const s = await createStudent({ extra: { learningStreak: 0 } });
+    expect((await userService.getStreakStanding(s._id)).me).toEqual({ rank: null, streak: 0, total: 0 });
+    const t = await createTeacher({ extra: { learningStreak: 9, lastActivityDate: daysAgo(0) } });
+    expect((await userService.getStreakStanding(t._id)).me).toBeNull();
+  });
+});

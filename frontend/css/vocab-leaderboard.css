@@ -1,0 +1,68 @@
+/* BXH vocab page (vocab-leaderboard.html). Board rows reuse the
+   .dan-leaderboard-card / .dan-lb-* styles from dashboard.css; this file
+   only adds the page layout, the "Vị trí của bạn" tiles, the pinned
+   own-rank row and the loading skeleton. */
+
+.vlb-shell { max-width: 1100px; }
+.vlb-hero-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; border-radius: 16px; margin-bottom: 12px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; font-size: 24px;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, .18);
+}
+[data-theme="dark"] .vlb-hero-icon { background: rgba(217, 119, 6, .18); color: #fbbf24; box-shadow: none; }
+
+/* ── Vị trí của bạn ── */
+.vlb-me { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.vlb-me[hidden] { display: none; }
+.vlb-me-tile {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 22px; min-width: 0;
+}
+.vlb-me-icon {
+  width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.vlb-me-tile--streak .vlb-me-icon { background: #fff7ed; color: #f97316; }
+.vlb-me-tile--quiz .vlb-me-icon { background: #eff6ff; color: var(--blue); }
+[data-theme="dark"] .vlb-me-tile--streak .vlb-me-icon { background: rgba(249, 115, 22, .15); }
+[data-theme="dark"] .vlb-me-tile--quiz .vlb-me-icon { background: rgba(59, 130, 246, .15); }
+.vlb-me-body { flex: 1; min-width: 0; }
+.vlb-me-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+.vlb-me-value { font-size: 24px; font-weight: 900; color: var(--text); line-height: 1.2; margin: 2px 0; }
+.vlb-me-value small { font-size: 13px; font-weight: 600; color: var(--text3); margin-left: 4px; }
+.vlb-me-sub { font-size: 13px; color: var(--text2); line-height: 1.45; }
+.vlb-me-tile .btn { flex-shrink: 0; white-space: nowrap; }
+
+/* ── Boards ── */
+.vlb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.vlb-grid .dan-leaderboard-card { margin-bottom: 0; padding: 22px 24px; }
+.vlb-grid .dan-lb-title { font-size: 15px; margin-bottom: 4px; }
+.vlb-board-sub { font-size: 12px; color: var(--text3); margin: 0 0 14px; line-height: 1.5; }
+.vlb-grid .dan-lb-row { padding: 9px 12px; }
+.vlb-grid .dan-lb-name, .vlb-grid .dan-lb-streak, .vlb-grid .dan-lb-quiz-score { font-size: 14px; }
+.vlb-grid .dan-lb-avatar, .vlb-grid .dan-lb-avatar-placeholder { width: 32px; height: 32px; }
+.vlb-grid .dan-lb-rank.top1, .vlb-grid .dan-lb-rank.top2, .vlb-grid .dan-lb-rank.top3 { font-size: 20px; }
+
+/* Own row pinned under the top 10 when the student ranks lower. */
+.vlb-gap { text-align: center; color: var(--text3); font-weight: 800; letter-spacing: 3px; line-height: 1; padding: 2px 0; }
+
+/* Loading skeleton */
+.vlb-skel { display: flex; align-items: center; gap: 10px; padding: 9px 12px; }
+.vlb-skel span { display: block; border-radius: 6px; background: var(--surface2, rgba(0, 0, 0, .06)); animation: vlbPulse 1.2s ease-in-out infinite; }
+.vlb-skel .s-rank { width: 20px; height: 14px; }
+.vlb-skel .s-av { width: 32px; height: 32px; border-radius: 50%; }
+.vlb-skel .s-name { flex: 1; height: 14px; max-width: 60%; }
+.vlb-skel .s-val { width: 44px; height: 14px; margin-left: auto; }
+@keyframes vlbPulse { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .vlb-skel span { animation: none; } }
+
+@media (max-width: 860px) {
+  .vlb-me, .vlb-grid { grid-template-columns: 1fr; gap: 14px; }
+}
+@media (max-width: 480px) {
+  .vlb-me-tile { flex-wrap: wrap; padding: 16px; gap: 12px; }
+  .vlb-me-tile .btn { width: 100%; }
+  .vlb-grid .dan-leaderboard-card { padding: 16px; }
+}
