@@ -170,7 +170,7 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 **CẬP NHẬT 2026-10-01 (phiên debug + lô 12):**
 - Đang chạy **136 bài mini** (lô 1–12), tất cả có giải thích TV, tất cả tick **Actual test** (thầy yêu cầu: bài Recent Actual Tests hiển thị như bài actual test → hiện cả ở tab "Actual"). `node mini_status.js`: 136 nhập / 126 bỏ / 27 trùng ngân hàng / **51 còn lại** (33 heavy WARN, 4 broken, 4 chờ máy chủ hình, 10 chưa rà: 1471 1311 1256 1250 1094 1211 1145 1242 1147 1088).
 - Debug toàn bộ 117 bài cũ: `_audit` 0 cảnh báo, pw_reading 117/117, pw_grade 117/117, pw_admin 136/136, `mini_debug_check.js`, 15 bài có nhóm dựng tay so với bản gốc đều khớp, 9 ảnh sơ đồ khớp nhãn/key, `pw_review.js` màn xem lại OK. Lỗi tìm thấy và đã sửa (`fixMiniContentTypos.js`): nhãn đoạn `{A}` ở Economic Evolution (mini_finalize giờ tự đổi `{A}` → **A**), tiêu đề còn số của mini ("Facial Expression 1", "Food for thought 2"). Lô 12 khi rà thêm: Franklin nhóm 27–32 chỉ có lựa chọn A–H dù bài có đoạn I (đã thêm I), How to Handle the Sun tóm tắt "an ___" trỏ sai sang 'arrangement' (đổi "a"; key 'blend'), Bird Migration Q25 thêm "daytime predators".
-- Cần thầy quyết: Rainwater Harvesting Q12 đang nhận cả YES lẫn NO (hai đáp án ngược nhau; bài nói hộ dân "đồng ý góp" nhưng "rất khó khiến họ góp").
+- Rainwater Harvesting Q12: đã chốt **YES** (ieltsonlinetests, ieltsmaterial, ieltsvisa đều YES; "khó thu tiền" không mâu thuẫn với "đã bắt đầu góp"), bỏ key "YES / NO".
 
 **TRẠNG THÁI TRƯỚC ĐÓ (2026-10-01, cuối phiên lô 11):**
 - Chỉ lấy bài trong mục **Recent Actual Tests** (`reading?c=recent-actual-tests`, 340 id trong `web/mini/all_ids.json`) — thầy chốt, không lấy mục khác của mini-ielts.

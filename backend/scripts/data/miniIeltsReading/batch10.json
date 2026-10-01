@@ -1865,7 +1865,7 @@
        "questionNumber": 12,
        "type": "yes-no-ng",
        "questionText": "Households that benefited began to pay part of the maintenance or repairs.",
-       "correctAnswer": "YES / NO"
+       "correctAnswer": "YES"
       },
       {
        "questionNumber": 13,

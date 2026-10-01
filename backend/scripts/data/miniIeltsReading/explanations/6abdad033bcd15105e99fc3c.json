@@ -1,44 +1,91 @@
 {
  "title": "Rainwater Harvesting",
  "q": {
-  "1": { "d": "Cách kiếm sống chính của người dân làng Muthukandiya là gì, dù nó chỉ vừa đủ sống?", "v": "Đoạn B",
-    "t": "Because crop production, which relies entirely on rainfall, is insufficient to support most families",
-    "p": "Trồng trọt phụ thuộc hoàn toàn vào mưa và không đủ nuôi hầu hết các gia đình → crop production" },
-  "2": { "d": "Người lớn có thể kiếm thêm tiền bằng nghề làm công nhật ở đâu?", "v": "Đoạn B",
-    "t": "the village economy relies on men and women working as day-laborers in nearby sugar-cane plantations.",
-    "p": "Họ làm công nhật ở các đồn điền mía gần đó → sugar-cane plantations" },
-  "3": { "d": "Thứ gì đã được đào để cung cấp nước sinh hoạt hằng ngày?", "v": "Đoạn B",
-    "t": "Three wells have been dug to provide domestic water, but these run dry for much of the year.",
-    "p": "‘to provide domestic water’ = cấp nước sinh hoạt → three wells" },
-  "4": { "d": "Kế hoạch cho dự án mới nhằm giảm tác động của hạn hán bắt đầu năm nào?", "v": "Đoạn C",
-    "t": "In 1998, communities in the district discussed water problems with Practical Action South Asia. What followed was a drought mitigation initiative",
-    "p": "Năm 1998 cộng đồng bàn bạc với Practical Action South Asia, sau đó ra đời sáng kiến giảm nhẹ hạn hán → 1998" },
-  "5": { "d": "Máng xối và ống dẫn thu nước mưa từ đâu?", "v": "Đoạn C",
-    "t": "It uses tanks to collect and store rain channeled by gutters and pipes as it runs off the roofs of houses.",
-    "p": "Nước mưa chảy từ mái nhà, theo máng xối và ống vào bể → roofs of houses" },
-  "6": { "d": "Thứ gì giúp các hộ có nhiều nước sinh hoạt hơn những hộ chỉ dựa vào giếng và ao?", "v": "Đoạn E",
-    "t": "households with rainwater storage tanks have considerably more water for domestic needs than households relying entirely on wells and ponds.",
-    "p": "Hộ có bể chứa nước mưa có nhiều nước hơn hẳn → rainwater storage tanks" },
-  "7": { "d": "Phần lớn hoạt động của chính phủ và các chương trình khác đều phần nào thất bại.", "v": "Đoạn D",
-    "t": "Government and other programmes have, however, been top-down in their conception and application, installing tanks free of charge without providing training",
-    "p": "Bài chỉ nói các chương trình đó làm theo kiểu áp đặt từ trên xuống, không đào tạo; không đánh giá chúng thành công hay thất bại → NOT GIVEN" },
-  "8": { "d": "Thợ xây được đào tạo để xây các bộ phận của hệ thống thu nước mưa.", "v": "Đoạn E",
-    "t": "Two local masons received several days’ on-the-job training in building the 5,000-litre household storage tanks",
-    "p": "Hai thợ xây địa phương được đào tạo tại chỗ để xây bể chứa → YES" },
-  "9": { "d": "Chi phí hệ thống thu nước mưa do dân làng và chính quyền địa phương cùng chịu.", "v": "Đoạn E",
-    "t": "Just over half the cost was provided by the community, in the form of materials and unskilled labour. Practical Action South Asia contributed the rest",
-    "p": "Phần còn lại do tổ chức Practical Action South Asia đóng góp, không phải chính quyền → NO" },
-  "10": { "d": "Bể chứa làm tăng cả lượng lẫn chất lượng nước sinh hoạt.", "v": "Đoạn E",
-    "t": "During the driest months, households with tanks may have up to twice as much water available. Their water is much cleaner, too.",
-    "p": "Nhiều nước gấp đôi và nước sạch hơn nhiều → YES" },
-  "11": { "d": "Để cho con gái đi học, một góa phụ đã phải đi làm trong một dự án thu nước mưa.", "v": "Đoạn F",
-    "t": ["With a better water supply now close at hand, she began by growing a few vegetables.", "And her daughter Sandamalee has more time for school work."],
-    "p": "Bà Nandawathie trồng rau, mở cửa hàng nhỏ; con gái có thêm thời gian học vì không phải đi lấy nước, chứ bà không phải đi làm cho dự án → NO" },
-  "12": { "d": "Các hộ đã được hưởng lợi bắt đầu trả một phần chi phí bảo trì, sửa chữa.", "v": "Đoạn H",
-    "t": ["with households that had already benefited agreeing to contribute a small monthly amount to pay for maintenance, repairs and new tanks.", "it has proved difficult to get households to contribute."],
-    "p": "Các nguồn đáp án mâu thuẫn: các hộ đã đồng ý góp tiền hằng tháng (key gốc YES), nhưng bài cũng nói rất khó khiến họ thực sự góp (nên NO cũng được chấp nhận) → YES" },
-  "13": { "d": "Đào tạo hai thợ xây cùng lúc tốt hơn nhiều so với đào tạo một người.", "v": "Đoạn E, G",
-    "t": "the skills required to build and maintain storage tanks were taught fairly easily and can be shared by the two trained masons",
-    "p": "Bài nói có hai thợ được đào tạo nhưng không so sánh với việc đào tạo một người → NOT GIVEN" }
+  "1": {
+   "d": "Cách kiếm sống chính của người dân làng Muthukandiya là gì, dù nó chỉ vừa đủ sống?",
+   "v": "Đoạn B",
+   "t": "Because crop production, which relies entirely on rainfall, is insufficient to support most families",
+   "p": "Trồng trọt phụ thuộc hoàn toàn vào mưa và không đủ nuôi hầu hết các gia đình → crop production"
+  },
+  "2": {
+   "d": "Người lớn có thể kiếm thêm tiền bằng nghề làm công nhật ở đâu?",
+   "v": "Đoạn B",
+   "t": "the village economy relies on men and women working as day-laborers in nearby sugar-cane plantations.",
+   "p": "Họ làm công nhật ở các đồn điền mía gần đó → sugar-cane plantations"
+  },
+  "3": {
+   "d": "Thứ gì đã được đào để cung cấp nước sinh hoạt hằng ngày?",
+   "v": "Đoạn B",
+   "t": "Three wells have been dug to provide domestic water, but these run dry for much of the year.",
+   "p": "‘to provide domestic water’ = cấp nước sinh hoạt → three wells"
+  },
+  "4": {
+   "d": "Kế hoạch cho dự án mới nhằm giảm tác động của hạn hán bắt đầu năm nào?",
+   "v": "Đoạn C",
+   "t": "In 1998, communities in the district discussed water problems with Practical Action South Asia. What followed was a drought mitigation initiative",
+   "p": "Năm 1998 cộng đồng bàn bạc với Practical Action South Asia, sau đó ra đời sáng kiến giảm nhẹ hạn hán → 1998"
+  },
+  "5": {
+   "d": "Máng xối và ống dẫn thu nước mưa từ đâu?",
+   "v": "Đoạn C",
+   "t": "It uses tanks to collect and store rain channeled by gutters and pipes as it runs off the roofs of houses.",
+   "p": "Nước mưa chảy từ mái nhà, theo máng xối và ống vào bể → roofs of houses"
+  },
+  "6": {
+   "d": "Thứ gì giúp các hộ có nhiều nước sinh hoạt hơn những hộ chỉ dựa vào giếng và ao?",
+   "v": "Đoạn E",
+   "t": "households with rainwater storage tanks have considerably more water for domestic needs than households relying entirely on wells and ponds.",
+   "p": "Hộ có bể chứa nước mưa có nhiều nước hơn hẳn → rainwater storage tanks"
+  },
+  "7": {
+   "d": "Phần lớn hoạt động của chính phủ và các chương trình khác đều phần nào thất bại.",
+   "v": "Đoạn D",
+   "t": "Government and other programmes have, however, been top-down in their conception and application, installing tanks free of charge without providing training",
+   "p": "Bài chỉ nói các chương trình đó làm theo kiểu áp đặt từ trên xuống, không đào tạo; không đánh giá chúng thành công hay thất bại → NOT GIVEN"
+  },
+  "8": {
+   "d": "Thợ xây được đào tạo để xây các bộ phận của hệ thống thu nước mưa.",
+   "v": "Đoạn E",
+   "t": "Two local masons received several days’ on-the-job training in building the 5,000-litre household storage tanks",
+   "p": "Hai thợ xây địa phương được đào tạo tại chỗ để xây bể chứa → YES"
+  },
+  "9": {
+   "d": "Chi phí hệ thống thu nước mưa do dân làng và chính quyền địa phương cùng chịu.",
+   "v": "Đoạn E",
+   "t": "Just over half the cost was provided by the community, in the form of materials and unskilled labour. Practical Action South Asia contributed the rest",
+   "p": "Phần còn lại do tổ chức Practical Action South Asia đóng góp, không phải chính quyền → NO"
+  },
+  "10": {
+   "d": "Bể chứa làm tăng cả lượng lẫn chất lượng nước sinh hoạt.",
+   "v": "Đoạn E",
+   "t": "During the driest months, households with tanks may have up to twice as much water available. Their water is much cleaner, too.",
+   "p": "Nhiều nước gấp đôi và nước sạch hơn nhiều → YES"
+  },
+  "11": {
+   "d": "Để cho con gái đi học, một góa phụ đã phải đi làm trong một dự án thu nước mưa.",
+   "v": "Đoạn F",
+   "t": [
+    "With a better water supply now close at hand, she began by growing a few vegetables.",
+    "And her daughter Sandamalee has more time for school work."
+   ],
+   "p": "Bà Nandawathie trồng rau, mở cửa hàng nhỏ; con gái có thêm thời gian học vì không phải đi lấy nước, chứ bà không phải đi làm cho dự án → NO"
+  },
+  "12": {
+   "d": "Các hộ đã được hưởng lợi bắt đầu trả một phần chi phí bảo trì, sửa chữa.",
+   "v": "Đoạn H",
+   "t": [
+    "with households that had already benefited agreeing to contribute a small monthly amount to pay for maintenance, repairs and new tanks.",
+    "it has proved difficult to get households to contribute."
+   ],
+   "p": "Các hộ đã hưởng lợi đồng ý góp một khoản nhỏ hằng tháng để trả cho bảo trì, sửa chữa – khớp với mệnh đề. Câu sau ‘rất khó khiến các hộ đóng góp’ chỉ nói việc thu tiền gặp khó khăn, KHÔNG nói các hộ không trả, nên không mâu thuẫn với mệnh đề (các nguồn ieltsonlinetests, ieltsmaterial, ieltsvisa đều cho YES) → YES",
+   "key": "YES",
+   "why": "independent keys (ieltsonlinetests, ieltsmaterial, ieltsvisa) all give YES; \"difficult to get households to contribute\" does not contradict that they began paying"
+  },
+  "13": {
+   "d": "Đào tạo hai thợ xây cùng lúc tốt hơn nhiều so với đào tạo một người.",
+   "v": "Đoạn E, G",
+   "t": "the skills required to build and maintain storage tanks were taught fairly easily and can be shared by the two trained masons",
+   "p": "Bài nói có hai thợ được đào tạo nhưng không so sánh với việc đào tạo một người → NOT GIVEN"
+  }
  }
 }

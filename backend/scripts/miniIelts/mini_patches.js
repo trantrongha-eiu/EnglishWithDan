@@ -1203,7 +1203,7 @@ module.exports = {
         'To send her daughter to school, a widow had to take a job in a rainwater harvesting scheme.', 'Households that benefited began to pay part of the maintenance or repairs.',
         'Training two masons at the same time is much more preferable to training a single one.']
         // Q12: sources disagree (ieltsmaterial YES — they agreed to contribute; others NO — "it has proved difficult to get households to contribute") → both accepted
-        .map((questionText, i) => ({ questionNumber: 7 + i, type: 'yes-no-ng', questionText, correctAnswer: ['NOT GIVEN', 'YES', 'NO', 'YES', 'NO', 'YES / NO', 'NOT GIVEN'][i] }));
+        .map((questionText, i) => ({ questionNumber: 7 + i, type: 'yes-no-ng', questionText, correctAnswer: ['NOT GIVEN', 'YES', 'NO', 'YES', 'NO', 'YES', 'NOT GIVEN'][i] }));
       renum(g0, 1); renum(g1, 7);
       d.questionRange = { start: 1, end: 13 };
     },
