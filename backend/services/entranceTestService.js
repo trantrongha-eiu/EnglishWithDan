@@ -86,12 +86,17 @@ const GRAMMAR_QUESTION_COUNT = 25;
 const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt'];
 const PROCTOR_EVENT_CAP = 200;
 
-// Deliberately independent of mockTestService's MAX_VIOLATIONS (10, for the
-// 4-skill Full Mock Test) — this matches examSimulationService's stricter
-// single-skill Simulation threshold instead, per product decision for this
-// feature specifically (the Full Mock Test's own threshold is untouched).
-const MAX_VIOLATIONS = 5;
+// The MAX_VIOLATIONS-th strike voids the attempt (product decision
+// 2026-10-01: 3 strikes, down from "more than 5"). Independent of
+// mockTestService's / examSimulationService's own thresholds.
+const MAX_VIOLATIONS = 3;
 const COOLDOWN_SECONDS = 300;
+
+// An in-progress attempt with no sign of an open runner tab for this long
+// (the client heartbeats every 30s) is abandoned: closing the tab ends the
+// attempt instead of leaving it to be resumed hours/days later, while a
+// quick refresh or a short network blip still resumes.
+const INACTIVITY_ABANDON_SEC = 3 * 60;
 
 // Background AI grading (Writing/Speaking suggestions) is fire-and-forget
 // after the response; jest runs would otherwise hit the real AI APIs and
@@ -437,6 +442,10 @@ async function gradeAndAdvance(attempt, userId, section, extras) {
 // out all self-correct without depending on a cron job. Loops in case the
 // student was away long enough for more than one section to have expired.
 async function autoFinalizeIfExpired(attempt) {
+  // A silent attempt is abandoned, not graded section by section — and
+  // never restarted from "now" on the next section (advanceCursor stamps
+  // the next section's clock at the moment of advancing).
+  if (await abandonIfInactive(attempt)) return true;
   let changed = false;
   while (attempt.status === 'in-progress' && attempt.currentSection !== 'done') {
     const cur = attempt.sections[attempt.currentSection];
@@ -447,6 +456,61 @@ async function autoFinalizeIfExpired(attempt) {
   }
   if (changed) await saveAndRunHooks(attempt);
   return changed;
+}
+
+function lastActivityMs(attempt) {
+  const t = attempt.lastActiveAt || attempt.updatedAt || attempt.startedAt;
+  return t ? new Date(t).getTime() : 0;
+}
+
+function isInactive(attempt, now = Date.now()) {
+  return attempt.status === 'in-progress'
+    && now - lastActivityMs(attempt) > INACTIVITY_ABANDON_SEC * 1000;
+}
+
+async function abandonIfInactive(attempt) {
+  if (!isInactive(attempt)) return false;
+  attempt.status = 'abandoned';
+  attempt.abandonedAt = new Date();
+  recomputeResult(attempt);
+  await attempt.save();
+  return true;
+}
+
+// Plain $set (no __v bump), so it never makes a racing save() VersionError.
+async function touchAttempt(attemptId) {
+  await EntranceTestAttempt.updateOne(
+    { _id: attemptId, status: 'in-progress' },
+    { $set: { lastActiveAt: new Date() } }
+  );
+}
+
+// Abandons this student's silent in-progress attempt(s) — run before the
+// start/resume decision and the landing-page history, so a tab closed
+// earlier never comes back as "Tiếp tục làm bài".
+async function abandonInactiveFor(userId) {
+  const open = await EntranceTestAttempt.find({ userId, status: 'in-progress' });
+  for (const doc of open) {
+    try { await abandonIfInactive(doc); } catch (e) { if (!e || e.name !== 'VersionError') throw e; }
+  }
+}
+
+// Cron backstop (attemptTimeoutSweep) for students who never come back, so
+// the admin monitor doesn't show them "đang làm dở" forever.
+async function sweepInactiveAttempts() {
+  const cutoff = new Date(Date.now() - INACTIVITY_ABANDON_SEC * 1000);
+  const stale = await EntranceTestAttempt.find({
+    status: 'in-progress',
+    $or: [
+      { lastActiveAt: { $lt: cutoff } },
+      { lastActiveAt: null, updatedAt: { $lt: cutoff } },
+    ],
+  });
+  let n = 0;
+  for (const doc of stale) {
+    try { if (await abandonIfInactive(doc)) n++; } catch (e) { if (!e || e.name !== 'VersionError') throw e; }
+  }
+  return n;
 }
 
 // Mongoose's optimistic-concurrency versionKey (__v — checked on EVERY
@@ -612,7 +676,7 @@ async function assertNotOnCooldown(userId) {
   const remainingMs = untilMs - Date.now();
   if (remainingMs <= 0) return;
   const err = new AppError(
-    `Bạn vừa bị huỷ một lượt Test đầu vào do vi phạm giám sát quá ${MAX_VIOLATIONS} lần. `
+    `Bạn vừa bị huỷ một lượt Test đầu vào do vi phạm giám sát ${MAX_VIOLATIONS} lần. `
     + `Vui lòng đợi ít phút rồi thử lại.`,
     429
   );
@@ -685,6 +749,7 @@ async function getConfig() {
 
 async function startAttempt(userId) {
   await assertNotOnCooldown(userId);
+  await abandonInactiveFor(userId);
 
   const existing = await EntranceTestAttempt.findOne({ userId, status: 'in-progress' }).select('_id').lean();
   if (existing) return { resumed: true, attemptId: existing._id };
@@ -728,6 +793,7 @@ async function startAttempt(userId) {
     },
     currentSection: 'grammar',
     startedAt: now,
+    lastActiveAt: now,
     sections: {
       grammar: {
         startedAt: now,
@@ -764,6 +830,7 @@ async function getAttemptForClient(userId, attemptId) {
     await autoFinalizeIfExpired(doc);
     return doc;
   });
+  if (attempt.status === 'in-progress') await touchAttempt(attempt._id);
   const a = attempt.toObject();
   const legacy = isLegacyAttempt(a);
 
@@ -775,6 +842,8 @@ async function getAttemptForClient(userId, attemptId) {
     sectionOrder: legacy ? LEGACY_SECTION_ORDER : SECTION_ORDER,
     startedAt: a.startedAt,
     serverNow: new Date(),
+    proctor: { violationCount: (a.proctor && a.proctor.violationCount) || 0, maxViolations: MAX_VIOLATIONS },
+    heartbeatSec: 30,
     sections: {
       grammar: {
         startedAt: a.sections.grammar.startedAt,
@@ -862,6 +931,7 @@ async function saveAnswer(userId, attemptId, section, payload = {}) {
       attempt.sections.speaking.transcript = String(payload.transcript == null ? '' : payload.transcript).slice(0, SPEAKING_TRANSCRIPT_MAX);
     }
 
+    attempt.lastActiveAt = new Date();
     await attempt.save();
     return { status: 'ok' };
   });
@@ -1086,7 +1156,7 @@ async function recordViolation(userId, attemptId, { type }) {
     // so a VersionError'd save can't leave a stale true behind for the next
     // reload-and-retry pass to read.
     let disqualified = false;
-    if (attempt.proctor.violationCount > MAX_VIOLATIONS) {
+    if (attempt.proctor.violationCount >= MAX_VIOLATIONS) {
       attempt.status = 'disqualified';
       attempt.proctor.disqualifiedAt = new Date();
       disqualified = true;
@@ -1112,7 +1182,22 @@ async function recordViolation(userId, attemptId, { type }) {
   return result;
 }
 
+// Keep-alive from the open runner tab. Reports 'abandoned' when the
+// attempt already timed out (the tab was suspended/offline too long) so the
+// client can stop instead of carrying on with a dead attempt.
+async function heartbeat(userId, attemptId) {
+  const attempt = await loadOwnedAttempt(userId, attemptId);
+  try {
+    await abandonIfInactive(attempt);
+  } catch (e) {
+    if (!e || e.name !== 'VersionError') throw e;
+  }
+  if (attempt.status === 'in-progress') await touchAttempt(attempt._id);
+  return { status: attempt.status };
+}
+
 async function getHistory(userId) {
+  await abandonInactiveFor(userId);
   const attempts = await EntranceTestAttempt.find({ userId })
     .sort({ createdAt: -1 })
     .select('status resultStatus overallBand startedAt completedAt createdAt')
@@ -1351,6 +1436,9 @@ module.exports = {
   SECTION_DURATIONS_SEC,
   SUBMIT_GRACE_SEC,
   MAX_VIOLATIONS,
+  INACTIVITY_ABANDON_SEC,
+  sweepInactiveAttempts,
+  heartbeat,
   COOLDOWN_SECONDS,
   CONTENT_POOLS,
   getConfig,

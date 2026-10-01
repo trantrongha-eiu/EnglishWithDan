@@ -45,6 +45,7 @@
     saveTimers: {},        // debounce handles keyed by a per-input id
     pendingSaves: {},      // the debounced save fns themselves, so a submit can flush them
     submitting: false,     // a section submit is in flight — see doSubmitSection
+    heartbeatHandle: null,
   };
 
   function sectionOrderOf(attempt) {
@@ -156,7 +157,7 @@
       var band = (a.resultStatus === 'COMPLETED' && a.overallBand != null)
         ? Number(a.overallBand).toFixed(1)
         : (a.status === 'completed' ? 'Chờ giáo viên duyệt' : '—');
-      var canView = a.status === 'completed' || a.status === 'disqualified';
+      var canView = a.status !== 'in-progress';
       var dateStr = new Date(a.startedAt || a.createdAt).toLocaleString('vi-VN');
       return '<div class="et-history-row">'
         + '<div class="et-history-left">'
@@ -216,6 +217,7 @@
 
     if (attempt.status !== 'in-progress' || attempt.currentSection === 'done') {
       stopTimer();
+      stopHeartbeat();
       speakingTeardown();
       if (window.EntranceTestProctor) window.EntranceTestProctor.stop();
       if (state.pendingDoneAnnounce && attempt.status === 'completed') {
@@ -230,11 +232,41 @@
 
     showScreen('et-runner');
     if (window.EntranceTestProctor && !window.EntranceTestProctor.isActive()) {
-      window.EntranceTestProctor.start({ attemptId: state.attemptId });
+      var pr = attempt.proctor || {};
+      window.EntranceTestProctor.start({ attemptId: state.attemptId, maxViolations: pr.maxViolations, initialCount: pr.violationCount });
     }
     renderProgress(attempt.currentSection);
     renderSection(attempt);
     startTimer(attempt);
+    startHeartbeat((attempt.heartbeatSec || 30) * 1000);
+  }
+
+  // Keep-alive: the server abandons an attempt whose runner tab has gone
+  // silent for a few minutes (tab closed), so it can't be resumed days
+  // later. If this tab was suspended past that window, the reply says so
+  // and we stop instead of letting the student work on a dead attempt.
+  function sendHeartbeat() {
+    if (!state.attemptId || !state.heartbeatHandle) return;
+    apiFetch('/entrance-test/' + state.attemptId + '/heartbeat', { method: 'POST' }).then(function (d) {
+      if (!d || !d.status || d.status === 'in-progress' || !state.heartbeatHandle) return;
+      stopHeartbeat();
+      if (d.status === 'abandoned') {
+        stopTimer();
+        speakingTeardown();
+        if (window.EntranceTestProctor) window.EntranceTestProctor.stop();
+        toast('Lượt Test đầu vào đã bị huỷ vì bạn rời khỏi bài thi quá lâu.', 'error', 8000);
+        openResult();
+        return;
+      }
+      loadRunner();
+    }).catch(function () {});
+  }
+  function startHeartbeat(intervalMs) {
+    if (state.heartbeatHandle) return;
+    state.heartbeatHandle = setInterval(sendHeartbeat, intervalMs);
+  }
+  function stopHeartbeat() {
+    if (state.heartbeatHandle) { clearInterval(state.heartbeatHandle); state.heartbeatHandle = null; }
   }
 
   function renderProgress(current) {
@@ -301,6 +333,7 @@
     if (document.visibilityState !== 'visible' || !state.attemptId) return;
     var runnerEl = $('et-runner');
     if (!runnerEl || runnerEl.classList.contains('hidden')) return;
+    sendHeartbeat(); // back from a long absence -> learn right away if the attempt was abandoned
     var now = Date.now() + state.serverOffsetMs;
     if (state.currentSectionExpiresAt && now >= state.currentSectionExpiresAt) loadRunner();
   });
@@ -1175,6 +1208,13 @@
   }
 
   function renderResult(r) {
+    if (r.status === 'abandoned') {
+      $('et-result-body').innerHTML = '<div class="et-warning et-warning-big">'
+        + '<i class="fas fa-door-open"></i> Lượt Test đầu vào này đã bị huỷ vì bạn đóng tab / rời khỏi bài thi quá lâu, '
+        + 'và không được tính kết quả. Bạn có thể bắt đầu một lượt mới.</div>'
+        + '<div style="margin-top:var(--space-4)"><a class="et-btn-secondary" href="entrance-test.html">Quay lại trang Test đầu vào</a></div>';
+      return;
+    }
     if (r.status === 'disqualified') {
       $('et-result-body').innerHTML = '<div class="et-warning et-warning-big">'
         + '<i class="fas fa-ban"></i> Lượt Test đầu vào này đã bị huỷ do vi phạm giám sát nhiều lần và không được tính kết quả.</div>';

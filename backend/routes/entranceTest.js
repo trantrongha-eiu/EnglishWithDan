@@ -47,6 +47,7 @@ router.get('/:attemptId', auth, ctrl.getAttempt);
 router.post('/:attemptId/answer', auth, answerLimiter, ctrl.saveAnswer);
 router.post('/:attemptId/section/:section/submit', auth, optionalAudio, ctrl.submitSection);
 router.post('/:attemptId/violation', auth, ctrl.recordViolation);
+router.post('/:attemptId/heartbeat', auth, ctrl.heartbeat);
 router.get('/:attemptId/result', auth, ctrl.getResult);
 
 module.exports = router;

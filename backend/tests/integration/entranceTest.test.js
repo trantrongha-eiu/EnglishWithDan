@@ -608,18 +608,21 @@ describe('legacy (pre-Speaking) attempts', () => {
 });
 
 describe('proctor violations', () => {
-  test('counts violations and disqualifies past MAX_VIOLATIONS (5), with a cooldown blocking a new start', async () => {
+  test('the 3rd strike (MAX_VIOLATIONS) disqualifies, with a cooldown blocking a new start', async () => {
     await seedFullConfig();
     const student = await createStudent();
     const api = authed(student);
-    const { attemptId } = await startAndGetAttempt(api);
+    const { attemptId, attempt } = await startAndGetAttempt(api);
+    expect(attempt.proctor).toEqual({ violationCount: 0, maxViolations: 3 });
 
-    let last;
-    for (let i = 0; i < 6; i++) {
-      last = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'blur' });
-      expect(last.status).toBe(200);
+    for (let i = 1; i <= 2; i++) {
+      const r = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'blur' });
+      expect(r.body.violationCount).toBe(i);
+      expect(r.body.disqualified).toBe(false);
     }
-    expect(last.body.violationCount).toBe(6);
+    const last = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'blur' });
+    expect(last.status).toBe(200);
+    expect(last.body.violationCount).toBe(3);
     expect(last.body.disqualified).toBe(true);
     expect(last.body.cooldownSeconds).toBeGreaterThan(0);
 
@@ -638,6 +641,99 @@ describe('proctor violations', () => {
     const { attemptId } = await startAndGetAttempt(api);
     const res = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'not-a-real-type' });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('closed tab (inactivity) abandons the attempt', () => {
+  // Simulates "the runner tab went silent `sec` seconds ago".
+  async function silenceFor(attemptId, sec) {
+    const at = new Date(Date.now() - sec * 1000);
+    await EntranceTestAttempt.collection.updateOne(
+      { _id: new (require('mongoose').Types.ObjectId)(String(attemptId)) },
+      { $set: { lastActiveAt: at, updatedAt: at } }
+    );
+  }
+
+  test('a short absence (refresh) still resumes the same attempt', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId } = await startAndGetAttempt(api);
+    await silenceFor(attemptId, 60);
+
+    const again = await api.post('/api/entrance-test/start');
+    expect(again.status).toBe(200);
+    expect(again.body.resumed).toBe(true);
+    expect(String(again.body.attemptId)).toBe(String(attemptId));
+  });
+
+  test('after the inactivity window the old attempt is abandoned and /start draws a NEW one', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId } = await startAndGetAttempt(api);
+    await silenceFor(attemptId, 10 * 60);
+
+    const hist = await api.get('/api/entrance-test/history');
+    expect(hist.body.attempts.find(a => String(a._id) === String(attemptId)).status).toBe('abandoned');
+
+    const again = await api.post('/api/entrance-test/start');
+    expect(again.status).toBe(201);
+    expect(again.body.resumed).toBe(false);
+    expect(String(again.body.attemptId)).not.toBe(String(attemptId));
+
+    const old = await EntranceTestAttempt.findById(attemptId);
+    expect(old.status).toBe('abandoned');
+    expect(old.resultStatus).toBe('ABANDONED');
+    expect(old.abandonedAt).toBeTruthy();
+    // Not graded section by section, and the next section was not restarted.
+    expect(old.currentSection).toBe('grammar');
+    expect(old.sections.reading.startedAt).toBeFalsy();
+  });
+
+  test('loading / answering a silent attempt does not revive it', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId, attempt } = await startAndGetAttempt(api);
+    await silenceFor(attemptId, 10 * 60);
+
+    const get = await api.get(`/api/entrance-test/${attemptId}`);
+    expect(get.body.attempt.status).toBe('abandoned');
+    const ans = await api.post(`/api/entrance-test/${attemptId}/answer`, {
+      section: 'grammar', questionId: attempt.sections.grammar.questions[0]._id, answer: 'B',
+    });
+    expect(ans.status).toBe(409);
+    const result = await api.get(`/api/entrance-test/${attemptId}/result`);
+    expect(result.body.status).toBe('abandoned');
+  });
+
+  test('heartbeat keeps the attempt alive, and reports abandoned once it timed out', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId } = await startAndGetAttempt(api);
+
+    await silenceFor(attemptId, 120);
+    const hb = await api.post(`/api/entrance-test/${attemptId}/heartbeat`);
+    expect(hb.status).toBe(200);
+    expect(hb.body.status).toBe('in-progress');
+    const doc = await EntranceTestAttempt.findById(attemptId);
+    expect(Date.now() - doc.lastActiveAt.getTime()).toBeLessThan(10 * 1000);
+
+    await silenceFor(attemptId, 10 * 60);
+    const hb2 = await api.post(`/api/entrance-test/${attemptId}/heartbeat`);
+    expect(hb2.body.status).toBe('abandoned');
+  });
+
+  test('the cron sweep abandons silent attempts of students who never come back', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId } = await startAndGetAttempt(api);
+    const api2 = authed(await createStudent());
+    const { attemptId: activeId } = await startAndGetAttempt(api2);
+    await silenceFor(attemptId, 10 * 60);
+
+    const n = await require('../../services/entranceTestService').sweepInactiveAttempts();
+    expect(n).toBe(1);
+    expect((await EntranceTestAttempt.findById(attemptId)).status).toBe('abandoned');
+    expect((await EntranceTestAttempt.findById(activeId)).status).toBe('in-progress');
   });
 });
 

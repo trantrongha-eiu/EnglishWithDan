@@ -153,6 +153,12 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
 
   startedAt:   { type: Date, default: Date.now },
   completedAt: { type: Date },
+  // Last sign of an open runner tab (heartbeat / load / autosave). An
+  // in-progress attempt silent for longer than
+  // entranceTestService.INACTIVITY_ABANDON_SEC (tab closed, browser
+  // killed) is abandoned instead of being resumed later.
+  lastActiveAt: { type: Date },
+  abandonedAt:  { type: Date },
 
   sections: {
     grammar:   { type: GrammarSectionSchema, default: () => ({}) },
@@ -176,7 +182,7 @@ const EntranceTestAttemptSchema = new mongoose.Schema({
 
   // Reused shape (violationCount/violated/events/disqualifiedAt) — see
   // backend/models/shared/proctorSchema.js. Threshold is
-  // entranceTestService.MAX_VIOLATIONS (5), deliberately independent of
+  // entranceTestService.MAX_VIOLATIONS (3), deliberately independent of
   // mockTestService's own MAX_VIOLATIONS (10) for the 4-skill Full Mock
   // Test — a per-user decision confirmed for this feature, not a global
   // proctoring-threshold change.

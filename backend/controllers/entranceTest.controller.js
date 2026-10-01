@@ -68,6 +68,13 @@ exports.recordViolation = catchAsync(async (req, res) => {
   res.json({ success: true, ...result });
 });
 
+// POST /api/entrance-test/:attemptId/heartbeat — keep-alive from the open
+// runner tab; an attempt silent too long is abandoned (tab closed).
+exports.heartbeat = catchAsync(async (req, res) => {
+  const result = await entranceTestService.heartbeat(req.user._id, req.params.attemptId);
+  res.json({ success: true, ...result });
+});
+
 // GET /api/entrance-test/:attemptId/result
 exports.getResult = catchAsync(async (req, res) => {
   const result = await entranceTestService.getResult(req.user._id, req.params.attemptId);

@@ -2,6 +2,7 @@ const cron           = require('node-cron');
 const TestAttempt     = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const entranceTestService = require('../services/entranceTestService');
 const logger = require('../utils/logger');
 
 // Audit finding: a Reading/Listening attempt that's started but never
@@ -49,11 +50,15 @@ async function sweepStaleAttempts() {
         { $set: { status: 'error' } }
       ),
     ]);
-    if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount) {
+    // Entrance Test: tab closed mid-test -> abandoned (its own, much
+    // shorter inactivity window — see entranceTestService).
+    const entranceAbandoned = await entranceTestService.sweepInactiveAttempts();
+    if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount || entranceAbandoned) {
       logger.info('cron', 'AttemptTimeoutSweep: marked stale attempts', {
         readingTimedOut: reading.modifiedCount,
         listeningTimedOut: listening.modifiedCount,
         speakingErrored: speaking.modifiedCount,
+        entranceAbandoned,
       });
     }
   } catch (e) {

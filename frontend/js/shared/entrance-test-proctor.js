@@ -18,8 +18,9 @@
  *     attemptType split needed in the violation report body.
  *   - Reports to POST /api/entrance-test/:attemptId/violation with just
  *     { type } in the body.
- *   - maxViolations default 5, matching entranceTestService.MAX_VIOLATIONS
- *     (independent of the Full Mock Test's own threshold of 10).
+ *   - maxViolations default 3, matching entranceTestService.MAX_VIOLATIONS
+ *     (the 3rd strike voids the attempt; independent of the Full Mock
+ *     Test's own threshold of 10). The runner passes the server's value.
  *   - Own DOM element ids (entrance-proctor-*) so all three proctor engines
  *     can coexist on a page without id collisions, even though only one is
  *     ever actually armed at a time in practice.
@@ -62,7 +63,7 @@
     if (n > 0) {
       _proctor.badge.style.background = '#b91c1c';
       _proctor.badge.style.color = '#fff';
-      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 5) + ' — quay lại bài thi!';
+      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 3) + ' — quay lại bài thi!';
     } else {
       _proctor.badge.style.background = 'rgba(31,41,55,.92)';
       _proctor.badge.style.color = '#e5e7eb';
@@ -268,14 +269,15 @@
     }
   }
 
-  // opts: { attemptId, maxViolations (default 5), lockNav (default true) }
+  // opts: { attemptId, maxViolations (default 3), initialCount (strikes
+  // already on the attempt, for a resumed run), lockNav (default true) }
   function start(opts) {
     opts = opts || {};
     if (_proctor || !opts.attemptId) return;
     _proctor = {
       attemptId: opts.attemptId,
-      maxViolations: opts.maxViolations || 5,
-      count: 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
+      maxViolations: opts.maxViolations || 3,
+      count: Number(opts.initialCount) || 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
     };
