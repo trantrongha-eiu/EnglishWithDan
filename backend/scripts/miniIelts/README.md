@@ -158,6 +158,15 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 
 ## 6. Việc còn lại
 
+**TRẠNG THÁI MỚI NHẤT (2026-10-01, cuối phiên) — đọc phần này trước:**
+- Chỉ lấy bài trong mục **Recent Actual Tests** (`reading?c=recent-actual-tests`, 340 id trong `web/mini/all_ids.json`) — thầy chốt, không lấy mục khác của mini-ielts.
+- Đang chạy cho học sinh: **117 bài mini** (lô 1–11), tất cả có giải thích TV. Lô 9 = 4 minor + Giai đoạn B; lô 10 = 14 bài cứu từ 39 "hỏng" (đa số chỉ là passage nằm trong `<li>`/`<div>`, `mini_extract.py` đã xử lý); lô 11 = 18 bài Giai đoạn C.
+- **Lô 12 đang dở:** đã rà tay xong và có patch trong `mini_patches.js` (đã chạy `mini_finalize.js`, tất cả patch khớp) cho 19 bài `web/mini/batch12_reviewed.txt` = 1492 1474 1439 1421 1415 1399 1391 1384 1351 1346 1345 1339 1336 1335 1306 1301 1290 1289 1260. **Chưa** làm bước 6→12 (ảnh bìa, batch12.json, pw_mini, import, audit, activate, pw_grade, giải thích).
+- Còn chưa rà (convert sạch): 1256 (heading dồn 1 dòng, key có vẻ đúng), 1250 (chữ rác + link http trong bài, nhiều khả năng bỏ), 1094 1211 1145 1242 1147. Còn 33 bài heavy vẫn WARN sau khi nâng converter (`web/mini/heavy_convert3.txt`). 964 1183 1203 1075 chờ máy chủ hình `content.ieltsonlinetests.com` (`web/mini/image_host_down.txt`).
+- Converter đã nâng (xem commit 56a41886): `seqOptions`, tách câu hỏi dồn 1 block, MC theo số câu của radio, checkbox kiểu `name='q7' value='A'`. Helper `renum(g, start)` trong `mini_patches.js` để dựng lại nhóm.
+- Key nhiều đáp án khi nguồn mâu thuẫn: ghi `"FALSE / NOT GIVEN"`, `"A / B"`… (grader, màn xem lại và `_audit_reading_warnings.js` đều chấp nhận); giải thích phải nêu cả hai. Nhóm chọn-N (`multi-answer-group`) KHÔNG hỗ trợ key thay thế → mơ hồ thì bỏ bài.
+- Tỉ lệ nhận Giai đoạn C ~55–65%. Lý do bỏ hay gặp: đoạn văn bị cắt/mất câu mà câu hỏi dựa vào, key mini sai không có nguồn độc lập, phương án lựa chọn vô nghĩa, < 13 câu.
+
 1. Các lô tiếp theo — kế hoạch lấy hết. Cả 340 bài đã tải + extract (`web/mini/all_ids.json`). Phân loại bằng `web/mini/triage.json` (clean / minor / diagram / heavy; tạo lại: dedupe `ORDER=web/mini/order_every.txt` → lọc → convert + check, xem lịch sử phiên).
    **Số liệu 2026-10-01:** 340 bài = **74 đã nhập** + 87 đã bỏ (`web/mini/rejected.txt`) + **179 còn lại**: 30 trùng ngân hàng (bỏ), 39 hỏng (`web/mini/broken.txt`), **12 có hình** (Giai đoạn B: 1520 1419 1388 1377 1357 1285 1251 1203 1075 1095 1192 1049), **94 heavy** (Giai đoạn C), **4 minor chưa xem** (1270 964 1183 1138 — làm đầu tiên). Việc thật sự còn cho AI: 4 + 12 + 94 = **110 bài** (+ thử lại 39 bài hỏng). Tỉ lệ đạt dự kiến ~30–40% → khoảng 35–45 bài nữa.
    - ✅ **Giai đoạn A xong** (2026-09-30): lô 7 xét 38 bài nhận 10, lô 8 xét 13 bài nhận 4 (1204 1210 1338 1324). Lô 8 bỏ: 1269 Meteorite lake (đoạn A mất chữ, Q31 mơ hồ, tóm tắt hỏng — hình Q32–35 thì rõ), 1258 Termite mounds (đoạn E/G mất câu, Q40 mơ hồ), 1264 + 1220 (nhóm MC rỗng), 1143 + 1148 (mất danh sách heading), 1035 (word bank rỗng), 1275 (2 nhóm không xử lý được), 1186 (11 câu). Tỉ lệ đạt ~25–50%.
