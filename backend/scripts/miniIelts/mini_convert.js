@@ -8,6 +8,21 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const ROMAN = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii'];
 const INSTR = /^(Do the following|In boxes|Write|TRUE if|FALSE if|YES if|NO if|NOT GIVEN if|Choose|Complete|Look at the following|Match|Answer the|Reading Passage|The reading Passage|Which (paragraph|section)s? contains?|NB|Classify|Label|Using|Use the information|List of)/i;
 
+// split "A text B text C text" by looking for each expected letter in turn (letters may be wrapped as "(A)" or "A.")
+function seqOptions(text, letters) {
+  // OCR sometimes lower-cases a letter ("c David Meyer"); not for A/I, which are ordinary words in lower case
+  const find = (L, from) => { const r = new RegExp(`(?:^|\\s)\\(?${/[AI]/.test(L) ? L : `[${L}${L.toLowerCase()}]`}[.)]?\\s+`, 'g'); r.lastIndex = from; const m = r.exec(text); return m && { i: m.index, end: m.index + m[0].length }; };
+  const out = []; let cur = find(letters[0], 0);
+  if (!cur || text.slice(0, cur.i).trim()) return [];
+  for (let k = 0; k < letters.length; k++) {
+    const nxt = k + 1 < letters.length ? find(letters[k + 1], cur.end) : null;
+    if (k + 1 < letters.length && !nxt) return [];
+    out.push(text.slice(cur.end, nxt ? nxt.i : undefined).trim());
+    cur = nxt;
+  }
+  return out.every(Boolean) ? out : [];
+}
+
 function cleanAns(a) { return String(a || '').replace(/\s*\(adsbygoogle[\s\S]*$/, '').replace(/\s*Found a mistake[\s\S]*$/, '').trim(); }
 
 function convert(x) {
@@ -16,7 +31,15 @@ function convert(x) {
   for (const [k, v] of Object.entries(x.answers)) if (+k <= 40) answers[+k] = cleanAns(v);
   const groups = [];
   for (const sec of x.sections) {
-    const blocks = sec.blocks;
+    // a list of questions flattened into one block ("[[Q6]] stmt [[Q7]] stmt…" or "1. Kovacs [[Q1]] 2. Rollier [[Q2]]") → one block per question
+    const blocks = sec.blocks.flatMap(b => {
+      if ((b.text.match(/\[\[Q\d+\]\]/g) || []).length < 2) return [b];
+      let parts = null;
+      if (/^\s*\[\[Q\d+\]\]/.test(b.text)) parts = b.text.split(/(?=\[\[Q\d+\]\])/);
+      else if (/^\s*\d+\s*[.)]\s.*?\[\[Q\d+\]\]\s*\d+\s*[.)]\s/.test(b.text)) parts = b.text.split(/(?<=\[\[Q\d+\]\])\s*(?=\d+\s*[.)]\s)/);
+      if (!parts) return [b];
+      return parts.map(t => t.trim()).filter(Boolean).map(t => { const n = +(t.match(/\[\[Q(\d+)\]\]/) || [])[1]; return { text: t, ctrls: b.ctrls.filter(c => c.q === n) }; });
+    });
     const qnums = [...new Set(blocks.flatMap(b => b.ctrls.map(c => c.q)))].sort((a, b) => a - b);
     const kinds = new Set(blocks.flatMap(b => b.ctrls.map(c => c.kind)));
     const plain = blocks.filter(b => !b.ctrls.length).map(b => b.text);
@@ -52,6 +75,11 @@ function convert(x) {
       const bank = [];
       for (const t of plain) { const mm = t.match(/^([A-Z])\s+(.+)$/); if (mm && !INSTR.test(t)) bank.push({ letter: mm[1], word: mm[2].trim() }); }
       if (!bank.length) { const one = plain.find(t => /^A\s+\S+.*\sB\s+\S/.test(t)); if (one) { const r = /([A-Z])\s+(.+?)(?=\s+[A-Z]\s+\S|$)/g; let mm; while ((mm = r.exec(one))) bank.push({ letter: mm[1], word: mm[2].trim() }); } }
+      if (bank.length < selOpts.length) {
+        // several bank entries per line ("A severe B discharged C constructing a park…") → walk the letters in order
+        const seq = seqOptions(plain.filter(t => !INSTR.test(t) && /^\(?[A-Z][.)]?\s/.test(t)).join(' '), selOpts);
+        if (seq.length === selOpts.length) bank.splice(0, bank.length, ...seq.map((word, i) => ({ letter: selOpts[i], word })));
+      }
       const textBlocks = blocks.filter(b => b.ctrls.length).map(b => b.text.replace(/\[\[Q(\d+)\]\]/g, '__Q$1__'));
       const titleL = rest.find(t => !/^[A-Z]\s/.test(t) && !INSTR.test(t) && t.length < 80);
       g.groupTitle = g.groupTitle + (titleL ? '' : '');
@@ -76,6 +104,14 @@ function convert(x) {
         if (mm && !seen.has(mm[1].toUpperCase())) { seen.add(mm[1].toUpperCase()); opts.push(mm[2].trim()); }
       }
       if (listLine) { opts.length = 0; const r = /([A-Z])\s+(.+?)(?=\s+[A-Z]\s+[A-Z]|$)/g; while ((m = r.exec(optText))) opts.push(m[2].trim()); }
+      if (opts.length !== selOpts.length) {
+        // fallbacks: "A the 18th century B the 19th…" / "(A) Parkes (B) Goodyear…" on one line → walk the letters in order;
+        // an unlettered list with exactly as many lines as letters → letters by position
+        const cand = rest.filter(t => !INSTR.test(t) && !/^List of/i.test(t) && !/^NB\b/i.test(t));
+        const seq = seqOptions(cand.join(' '), selOpts);
+        if (seq.length === selOpts.length) opts.splice(0, opts.length, ...seq);
+        else if (cand.length === selOpts.length && !cand.some(t => /^\(?[A-Z][.)]?\s/.test(t))) opts.splice(0, opts.length, ...cand);
+      }
       const isEndings = /correct ending/i.test(instruction);
       const isPara = /which (paragraph|section)s? contains?/i.test(instruction) || (!opts.length && /paragraph|section/i.test(instruction));
       const titleLine = plain.find(t => /^List of/i.test(t));
@@ -97,15 +133,26 @@ function convert(x) {
     } else if (kinds.has('radio')) {
       g.groupType = 'plain';
       g.instruction = instrLines.join(' ');
-      // walk blocks: a stem line "6. ..." then options "A ..." possibly merged
-      let cur = null;
+      // options are the blocks holding radio buttons (grouped by their question number); the stem is the plain text right
+      // before a question's first option, whatever its numbering ("6. …", "9 …", "Question 10: …", or none)
+      const byQ = new Map(); let buf = [];
       for (const b of blocks) {
-        if (INSTR.test(b.text) && !b.ctrls.length && !cur) continue;
-        const stem = b.text.match(/^(\d+)\s*[.)]\s*(.+)$/);
-        if (stem && !b.ctrls.length) { cur = { questionNumber: +stem[1], type: 'multiple-choice', questionText: stem[2].trim(), options: [], correctAnswer: (answers[+stem[1]] || '').toUpperCase() }; g.questions.push(cur); continue; }
-        if (cur) for (const o of b.text.split(/\s+(?=[A-E]\s)/)) { const mm = o.match(/^([A-E])\s+(.+)$/); if (mm) cur.options.push(mm[2].trim()); }
+        const radios = b.ctrls.filter(c => c.kind === 'radio');
+        if (!radios.length) { if (!(INSTR.test(b.text) && !/\?\s*$/.test(b.text)) && !buf.some(t => t.endsWith(b.text))) buf.push(b.text); continue; }
+        const n = radios[0].q;
+        if (!byQ.has(n)) {
+          const stem = buf.join(' ').replace(/^(Question\s*)?\d+\s*[:.)]?\s+/i, '').trim();
+          byQ.set(n, { questionNumber: n, type: 'multiple-choice', questionText: stem, options: [], correctAnswer: (answers[n] || '').toUpperCase() });
+          if (!stem) warn.push(`Q${n}: MC stem missing on the page`);
+        }
+        buf = [];
+        const cur = byQ.get(n);
+        for (const o of b.text.split(/\s+(?=[A-E]\s)/)) { const mm = o.match(/^([A-E])\s+(.+)$/); if (mm) cur.options.push(mm[2].trim()); }
       }
+      g.questions.push(...[...byQ.values()].sort((a, b) => a.questionNumber - b.questionNumber));
       g.questions.forEach(q => { if (q.options.length < 3) warn.push(`Q${q.questionNumber}: only ${q.options.length} MC options`); });
+      const gotMC = new Set(g.questions.map(q => q.questionNumber));
+      qnums.filter(n => !gotMC.has(n)).forEach(n => warn.push(`Q${n}: MC stem not found`));
     } else if (kinds.has('checkbox')) {
       g.groupType = 'plain';
       g.instruction = instrLines.join(' ');

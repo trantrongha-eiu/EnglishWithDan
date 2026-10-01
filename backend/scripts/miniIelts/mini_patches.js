@@ -1231,4 +1231,269 @@ module.exports = {
       d.questionRange = { start: 14, end: 26 };
     },
   },
+  // ───── batch 11 (phase C: "heavy" pages, converter upgraded — seqOptions, split flattened question lists, newer checkbox markup) ─────
+  1428: {
+    text: [['quite exceptional music ability', 'quite exceptional musical ability'], ['Serious observation began 1774.', 'Serious observation began in 1774.'], ['not prepared to jump any conclusions', 'not prepared to jump to any conclusions'],
+      ['the occultation 1 of a star', 'the occultation¹ of a star'], ['flight of Voyager 2 2 , In addition', 'flight of Voyager 2². In addition'], ['‘O ccultation ‘ :', '¹ ‘Occultation’:'], ['‘ Voyager 2 ‘ :', '² ‘Voyager 2’:'],
+      ['or planet .', 'or planet.'], ['scientists on earth .', 'scientists on Earth.']],
+    keys: { 37: 'Georgium Sidus / Star of George', 39: 'James L. Elliot / Elliot' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      // the table was flattened into one line on the mini page → rebuilt
+      g0.groupType = 'table'; delete g0.noteConfig;
+      g0.instruction = 'Complete the table below. Write a date for each answer. Write your answers in boxes 27-31 on your answer sheet.';
+      g0.tableConfig = { headers: ['Event', 'Date'], rows: [['William Herschel was born (example)', '1738'], ['Herschel began investigating astronomy', '__Q27__'], ['Discovery of the planet Uranus', '__Q28__'],
+        ['Discovery of the moons Titania and Oberon', '__Q29__'], ['First discovery of Uranus’ rings', '__Q30__'], ['Discovery of the last 10 moons of Uranus', '__Q31__']] };
+      g1.instruction = YNNG(3);
+      g2.instruction = 'Complete the summary below with names from Reading Passage 3. Write your answers in boxes 37-40 on your answer sheet.';
+    },
+  },
+  1368: {
+    text: [['<p>K</p>\n\n<p>The busiest part', '<p><strong>K</strong> The busiest part'], ['THE scientific study of twins', 'The scientific study of twins'],
+      ['can be used, within ethical, for medical experiments', 'can be used, within ethical limits, for medical experiments'], ['have turned genes for abstract concepts to real pieces of DNA', 'have turned genes from abstract concepts into real pieces of DNA'],
+      ['The ideological pendulum has swung back; however, as', 'The ideological pendulum has swung back, however, as'], ['Twinburgh', 'Twinsburg'], ['Boldness of men', 'Baldness of men'], ['Marin Country Sheriff', 'Marin County Sheriff']],
+    keys: { 19: 'Francis Galton / Galton' },
+    fn: d => {
+      d.title = 'Twin Study: Two of a Kind';
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has eleven paragraphs, A-K. Which paragraph contains the following information? Write the correct letter, A-K, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.';
+      g0.matchingReuseAllowed = true;
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 19-20 on your answer sheet.';
+      g2.instruction = 'Choose THREE letters, A-F. Write the correct letters in boxes 21-23 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which THREE research fields were being studied by researchers from Ohio, Maryland and at Twinsburg?'; });
+      g3.instruction = 'Choose THREE letters, A-F. Write the correct letters in boxes 24-26 on your answer sheet.';
+      g3.questions.forEach(q => { q.questionText = 'Which THREE findings are confirmed in the passage?'; });
+    },
+  },
+  1365: {
+    text: [[' Magnet therapy is gaining popularity; however, scientific evidence to support the success of this therapy is lacking. More scientifically sound studies are needed in order to fully understand the effects that magnets can have on the body and the possible benefits or dangers that could result from their use.</p>\n\n<p><strong>F</strong>', '</p>\n\n<p><strong>F</strong>'],
+      ['There was so further evidence to support.', 'There was no further evidence to support it.'], ['to prevent from aging', 'to prevent ageing'], ['For those who practice magnetic therapy, strongly believe', 'Those who practise magnetic therapy strongly believe']],
+    fn: d => {
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for paragraphs A-F from the list of headings below. Write the correct number, i-ix, in boxes 14-19 on your answer sheet.';
+      g1.questions.forEach(q => { q.questionText = 'Which TWO benefits of lodestone in ancient times are mentioned by the writer?'; });
+      g2.questions.forEach(q => { q.questionText = 'Which TWO weaknesses of the Baylor research does the writer present?'; });
+      g3.instruction = 'Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 24-26 on your answer sheet.';
+    },
+  },
+  1352: {
+    text: [['switch jobs so frequently that offer the worst returns', 'switch jobs so frequently that they offer the worst returns'], ['workers on piece-fates often earn', 'workers on piece-rates often earn'],
+      ['Faced with the need to cut staff costs, and have decided', 'Faced with the need to cut staff costs, and having decided'], ['bridge jog-holders', 'bridge job-holders'],
+      ['their products are more superior to the young.', 'their output is superior to that of the young.'], ['run fast when there is a meeting', 'run meetings quickly'], ['have a better inter-person relationship', 'are better at handling people'],
+      ['identify problems in an advanced time', 'identify problems in advance'], ['their academic criteria is someway behind elders', 'their education standards are lower than those of older workers'],
+      ['young people often earn less for their piece-rates salary.', 'young people often earn less on piece-rates.']],
+    fn: d => {
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = TFNG(1);
+      g1.instruction = 'Choose TWO letters, A-E. Write the correct letters in boxes 5-6 on your answer sheet.';
+      g1.questions.forEach(q => { q.questionText = 'Which TWO advantages of employing older people are mentioned in the passage?'; });
+      g2.instruction = 'Choose TWO letters, A-E. Write the correct letters in boxes 7-8 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which TWO weaknesses of young employees compared with older ones are mentioned in the passage?'; });
+      g3.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 9-13 on your answer sheet.';
+      setQ(d, { 9: 'According to paragraph F, firms and workers still hold the opinion that', 10: 'SkillTeam, which was set up by IBM,', 11: 'Which of the following is correct according to the research of Mr Quinn?',
+        12: 'Which of the following is correct according to David Storey?' });
+    },
+  },
+  1350: {
+    text: [['Dough Alexander reports', 'Doug Alexander reports'], ['working against the clock the preserve', 'working against the clock to preserve'], ['Some seek seeds for profit-hunters in the employ', 'Some seek seeds for profit – hunters in the employ'],
+      ['plants are a source of many machines', 'plants are a source of many medicines'], ['The world Conservation Union has listed 5,714 threatened species is sure to be much higher.', 'The World Conservation Union has listed 5,714 threatened species, and the real number is sure to be much higher.'],
+      ['Stored seeds can be used the help restore damaged or destroyed the environment', 'Stored seeds can be used to help restore damaged or destroyed environments'], ['for society- in medicine, agriculture or local industry- that', 'for society – in medicine, agriculture or local industry – that'],
+      ['“Storage is the basis what we do', '“Storage is the basis of what we do'], ['Overseen by the Royal botanic gardens', 'Overseen by the Royal Botanic Gardens'], ['200-hectare Estate', '200-hectare estate'],
+      ['only 15 per cent of all banked plants is wild', 'only 15 per cent of all banked plants are wild'], ['millennium seed bank', 'Millennium Seed Bank'], ['into wildness', 'into wilderness']],
+    keys: { 8: 'drugs / drugs or crops / crops', 10: 'Sir Joseph Banks / Joseph Banks' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = TFNG(1);
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 7-11 on your answer sheet.';
+      g1.noteConfig.lines = g1.noteConfig.lines.slice(1).map(l => l.replace('The __Q9__. Of them', 'The __Q9__ of them'));
+      g2.instruction = 'Choose TWO letters, A-E. Write the correct letters in boxes 12-13 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which TWO of the following are provided by plants to humans?'; });
+    },
+  },
+  1349: {
+    text: [['presided obviously over the disappearance', 'presided obliviously over the disappearance'], ['So far about 5 teams have completed', 'So far about 75 teams have completed'], // SciAm original: "about 75 teams"
+      ['transmitting a least some', 'transmitting at least some'], ['How dis husbands', 'How did husbands'], ['three of four distinct languages', 'three or four distinct languages'],
+      ['This is how Cornish and some dialects of Scottish Gaelic is still only rarely used', 'This is how Cornish and some dialects of Scottish Gaelic died out. Irish is still only rarely used'],
+      ['in the US., Krauss told', 'in the US, Krauss told'], ['which language can be saved', 'which languages can be saved'], ['Keneth L. Hale', 'Kenneth L. Hale'],
+      ['A period when there was absent of real effort made.', 'A period when there was no real effort made'], ['They should now their loyalty', 'They should show their loyalty'], [/minority language speaker$/, 'minority language speakers']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 3 has eight paragraphs, A-H. Choose the correct heading for paragraphs A, B and D-H from the list of headings below. Write the correct number, i-xi, in boxes 27-33 on your answer sheet.';
+      g1.instruction = 'Look at the following statements (Questions 34-38) and the list of people below. Match each statement with the correct person, A-F. Write the correct letter, A-F, in boxes 34-38 on your answer sheet.';
+      g2.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 39-40 on your answer sheet.';
+      setQ(d, { 36: 'Personally witnessed the process of languages dying out', 38: 'Said there had been little organised effort until recently' });
+    },
+  },
+  1318: {
+    text: [['conveying social information among aliens', 'conveying social information among humans'], ['can also work in the order direction', 'can also work in the other direction'], ['reveal much about hos they are feeling', 'reveal much about how they are feeling'],
+      ['how nervous or at ease a person maybe', 'how nervous or at ease a person may be'], ['(not that none of these emotions', '(note that none of these emotions'], ['can not be covered', 'cannot be covered'],
+      ['Which is impossible covered, despite of __Q16__', 'which cannot be covered, regardless of __Q16__'], ['and made a conclusion that', 'and it concluded that']],
+    fn: d => {
+      d.title = 'Facial Expression';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 14-18 on your answer sheet.';
+      g0.noteConfig.lines = g0.noteConfig.lines.slice(1).map(l => l.replace('__Q15__. which', '__Q15__, which'));
+      g1.instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 19-24 on your answer sheet. NB You may use any letter more than once.';
+      g1.matchingReuseAllowed = true;
+      g2.instruction = 'Choose TWO letters, A-E. Write the correct letters in boxes 25-26 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which TWO of the following statements are true according to Ekman’s theory?'; });
+    },
+  },
+  1308: {
+    text: [['that passes in the While Mountains', 'that passes in the White Mountains'], ['certainly is no the only reason', 'certainly is not the only reason'], ['Bristlecone pines restricted to numerous', 'Bristlecone pines are restricted to numerous'],
+      ['in California’s the White Mountains', 'in California’s White Mountains'], ['ferocious wind and mal-nutritious rocky.', 'ferocious wind and nutrient-poor rocky soil.'], ['shown that in fact such, environmental limitations', 'shown that, in fact, such environmental limitations'],
+      ['Since, the rings of wood', 'Since the rings of wood'], ['higher altitudes of California’s the White Mountains', 'higher altitudes of California’s White Mountains'],
+      ['reserving the __Q21__ of leave replacement', 'saving the __Q21__ of needle replacement'], ['Germination rate is high', 'the germination rate is high'], ['The summits of Owens Valley is higher than they emerge', 'The peaks south of the Owens Valley are higher than they appear']],
+    // mini Q24 "air" — the passage: "Combined with the dry, windy, and often freezing mountain air, slow growth guarantees … tight, fibrous rings"
+    keys: { 23: 'bands of bark / bark', 24: 'slow growth', 25: 'ground cover / ground cover vegetation' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 14-17 on your answer sheet.';
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 18-20 on your answer sheet.';
+      setQ(d, { 18: 'According to paragraph A, what aspect of bristlecone pines attracts the author’s attention?', 19: 'Why are bristlecone pines in the higher altitudes of California’s White Mountains investigated?',
+        20: 'Why is the same sequence of wide and narrow rings never repeated?' });
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 21-26 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace(/from a __Q26__$/, 'from a __Q26__.'));
+    },
+  },
+  1304: {
+    text: [[/<p>([A-G]) ?\. /g, '<p><strong>$1</strong> '], ['driven laterally at different frequencies (n and amplitudes', 'driven laterally at different frequencies and amplitudes'], ['the limitations of these tests was clear', 'the limitations of these tests were clear'],
+      ['Pedesfrians', 'Pedestrians'], [/^H It was raining/, 'It was raining'], ['sideway movement', 'sideways movement'], ['the reason of the bridge’s wobbling', 'the reason for the bridge’s wobbling'], ['resulted from human activities', 'resulting from human activities']],
+    // mini Q7 "forces" — the passage: "Human activities … could cause horizontal force which in turn could cause excessive dynamic vibration"
+    keys: { 7: 'horizontal force / horizontal forces / force / forces', 8: 'vibration / dynamic vibration / excessive dynamic vibration' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose FOUR letters, A-H. Write the correct letters in boxes 1-4 on your answer sheet.';
+      g0.questions.forEach(q => { q.questionText = 'Which FOUR of the following situations were witnessed on the opening day of the bridge?'; });
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 5-9 on your answer sheet.';
+      // the table was flattened into one line on the mini page → rebuilt
+      g2.groupType = 'table'; delete g2.noteConfig;
+      g2.instruction = 'Complete the table below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 10-13 on your answer sheet.';
+      g2.tableConfig = { headers: ['Universities / People', 'Activity'], rows: [['Test at __Q10__', 'Limited ability to capture only 7-8 footsteps'],
+        ['‘Walking on the spot’ at Southampton', 'Not enough data on __Q11__'], ['Crowd test conducted by __Q12__', 'Aim to verify __Q13__']] };
+    },
+  },
+  1297: {
+    text: [[/ \d##qi/g, ''], ['made him 10 or II years old', 'made him 10 or 11 years old'], ['age.TheTurkana boy’s', 'age. The Turkana boy’s'], ['The Turkana kid still has a rounded skull', '‘The Turkana kid still has a rounded skull'],
+      ['Neanderthals had much fester tooth growth', 'Neanderthals had much faster tooth growth'], ['adolescent growth spurt So it still', 'adolescent growth spurt. So it still'], ['modem adolescence', 'modern adolescence'],
+      ['Is confined to times', 'is confined to times'], ['in human fossil.', 'in human fossils.'], [/^poor diet will cause/, 'Poor diet will cause']],
+    fn: d => {
+      d.title = 'Have Teenagers Always Existed?';
+      d.questionGroups[2].instruction = 'Complete each sentence with the correct ending, A-G, below. Write the correct letter, A-G, in boxes 37-40 on your answer sheet.';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-30 on your answer sheet.';
+      g1.instruction = YNNG(3);
+    },
+  },
+  1294: {
+    text: [['a solarium, the Latin origin', 'a salarium, the Latin origin'], ['In 1 785, the Earl', 'In 1785, the Earl'], ['throw it over your- shoulder', 'throw it over your shoulder'], [/^H Slaves used/, 'Slaves used'],
+      ['Salt is such a __Q30__.that', 'Salt is such an __Q30__ that'], ['business __Q31__.ranging', 'business __Q31__, ranging']],
+    keys: { 30: 'essential element', 31: 'applications', 32: 'portable commodity', 33: 'taxes / tax revenues', 34: 'spirits' },
+    fn: d => {
+      d.title = 'The History of Salt';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose THREE letters, A-H. Write the correct letters in boxes 27-29 on your answer sheet.';
+      g0.questions.forEach(q => { q.questionText = 'Which THREE statements are true of salt?'; });
+      g2.instruction = TFNG(3);
+    },
+  },
+  1288: {
+    text: [['Branches are stacke by the women', 'Branches are stacked by the women'], ['remunerative activity in Luapula that crop husbandry', 'remunerative activity in Luapula than crop husbandry'], ['production offood', 'production of food'],
+      ['Reading Passage!.', 'Reading Passage 2.'], ['eat goats on a regular time', 'eat goats on a regular basis'], ['When it is a busy time, children usually took part', 'At busy times, children usually take part']],
+    keys: { 24: 'FALSE' }, // mini: TRUE — the passage: "These animals are not a regular part of most peoples’ diet."
+    fn: d => {
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = 'Complete the sentences below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 14-17 on your answer sheet.';
+      g0.noteConfig.lines = g0.noteConfig.lines.map(l => /__Q1[46]__$/.test(l) ? l + '.' : l);
+      g1.instruction = 'Classify the following statements as referring to A fish, B oxen or C goats. Write the correct letter, A, B or C, in boxes 18-21 on your answer sheet. NB You may use any letter more than once.';
+      g1.matchingOptions = ['fish', 'oxen', 'goats']; g1.matchingReuseAllowed = true;
+      g2.instruction = TFNG(2);
+      g3.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in box 26 on your answer sheet.';
+      g3.groupTitle = 'Question 26';
+      g3.questions[0].questionText = 'What is the writer’s opinion about the traditional practices?';
+    },
+  },
+  1263: {
+    text: [['unlike literature for adults. Children’s literature', 'unlike literature for adults, children’s literature'], ['the kinds of lessons it can teach- either', 'the kinds of lessons it can teach – either'],
+      ['Does the term literature’ exclusively', 'Does the term ‘literature’ exclusively'], ['children’s literature of often located', 'children’s literature is often located'], ['to precess a game', 'to process a game'],
+      ['a particular set of skills is absent Non-players', 'a particular set of skills is absent. Non-players'], ['have from different origins', 'have different origins'], ['computerized forms of me children’s', 'computerized forms of media in children’s'],
+      ['the attention of the child reader, and create definitional issues', 'the attention of the child reader and create definitional issues']],
+    // Q30: mini says NOT GIVEN, but the writer says children "perceive their print literature as part of a broader continuum" (→ NO); no independent key → both accepted
+    keys: { 30: 'NO / NOT GIVEN' },
+    fn: d => {
+      d.title = 'Children’s Literature Studies Today';
+      const [g0, g1, g2, g3] = d.questionGroups;
+      [g0, g1, g2, g3].forEach(g => { g.groupTitle = g.groupTitle.replace(/^QUESTIONS?/, m => m === 'QUESTIONS' ? 'Questions' : 'Question'); });
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-29 on your answer sheet.';
+      g1.instruction = YNNG(3);
+      g2.instruction = 'Complete each sentence with the correct ending, A-H, below. Write the correct letter, A-H, in boxes 35-39 on your answer sheet.';
+      g3.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in box 40 on your answer sheet.';
+      g3.groupTitle = 'Question 40';
+    },
+  },
+  1225: {
+    text: [['so-called ‘meta materia Is’ exotic materials', 'so-called ‘metamaterials’ – exotic materials'], ['They can transform space, tricking', '‘They can transform space, tricking'],
+      ['harness a repulsive Casimir effect Their calculations', 'harness a repulsive Casimir effect. Their calculations'], ['This is a very exciting experimental result', '‘This is a very exciting experimental result'],
+      ['at St Andrew’s University', 'at St Andrews University'], ['physicists who believe the same exotic materials', 'physicists, who believe the same exotic materials']],
+    fn: d => {
+      d.title = 'Three Ways to Levitate a Magic Carpet';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = YNNG(2);
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 19-23 on your answer sheet.';
+      g2.instruction = 'Complete each sentence with the correct ending, A-F, below. Write the correct letter, A-F, in boxes 24-26 on your answer sheet.';
+    },
+  },
+  1027: {
+    text: [['There arc two charges', 'There are two charges'], ['Garlic can remove magnetism,', 'Garlic can remove magnetism.'], ['It is a French guy named du Fay', 'It was a Frenchman named du Fay'],
+      ['after the great minds of the ancient, particularly', 'after studying the great minds of the ancient world, particularly']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-x, in boxes 14-20 on your answer sheet.';
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Choose THREE letters, A-F. Write the correct letters in boxes 24-26 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which THREE of the following are parts of Gilbert’s discovery?'; });
+    },
+  },
+  1229: {
+    text: [['folloivmg', 'following'], ['what the focus of the study should he', 'what the focus of the study should be'], ['the population ot the area', 'the population of the area'], ['Tire conclusions drawn', 'The conclusions drawn'],
+      ['through reading Bataiile. Bataille', 'through reading Bataille. Bataille'], ['The Literature that seemed', 'The literature that seemed'], ['initial anaLysis', 'initial analysis'], ['the colLoquial sense', 'the colloquial sense'],
+      ['this Literature on ancient sacrifice', 'this literature on ancient sacrifice']],
+    keys: { 40: 'colloquial / metaphorical' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.questions.forEach(q => { q.questionText = 'Which THREE of the following are problems the writer encountered when conducting his study?'; });
+      g0.instruction = 'Choose THREE letters, A-F. Write the correct letters in boxes 27-29 on your answer sheet.';
+      g1.instruction = YNNG(3);
+      g2.instruction = 'Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 38-40 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.filter(l => !/^Use NO MORE/.test(l)).map(l => l.replace(/^\d+\s+/, '').replace(/__Q(\d+)__$/, '__Q$1__.'));
+    },
+  },
+  1181: {
+    text: [['similar to working through a science problem Like students', 'similar to working through a science problem. Like students'], ['Pajamas Sam', 'Pajama Sam'], ['addicting kid’s activities', 'addictive children’s activities'],
+      ['Even there is a certain proportion of violence in most video games;', 'Even though there is a certain proportion of violence in most video games,'], ['Video games improves the brain ability', 'Video games improve the brain’s abilities'],
+      ['with future intensions', 'with future intentions'], ['Those People who are addicted', 'Those people who are addicted']],
+    // Q21: the passage only says gaming brings "rewarding surges of neurotransmitters like dopamine" — nothing about addicts → NOT GIVEN accepted too
+    keys: { 21: 'TRUE / NOT GIVEN' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 14-17 on your answer sheet.';
+      setQ(d, { 14: 'What is the main purpose of the first paragraph?', 15: 'What does the writer want to express in the second paragraph?', 16: 'What is correctly stated in the fourth paragraph?',
+        17: 'What was the result of the experiment carried out by the three researchers?' });
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Look at the following statements (Questions 22-26) and the list of people below. Match each statement with the correct person, A-F. Write the correct letter, A-F, in boxes 22-26 on your answer sheet.';
+    },
+  },
+  1483: {
+    text: [['just as Humans naturally deduce', 'just as humans naturally deduce'], ['spelt out the reasons why most notably', 'spelt out the reasons why, most notably,'], ['certainly written correspondence', 'certain written correspondence']],
+    keys: { 9: 'complexity theory / complexity', 10: 'evolution and economics', 11: 'complex adaptive systems', 12: 'random genetic mutations', 13: 'permutations / numerous permutations' },
+    fn: d => {
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = TFNG(1);
+      g1.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in box 6 on your answer sheet.'; g1.groupTitle = 'Question 6';
+      setQ(d, { 6: 'According to the passage, what do people believe should play a vital role in every area of the economy?' });
+      g2.instruction = 'Choose TWO letters, A-E. Write the correct letters in boxes 7-8 on your answer sheet.';
+      g2.questions.forEach(q => { q.questionText = 'Which TWO of the following are used, according to one economic explanation, to disguise a request for an alliance?'; });
+      g3.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 9-13 on your answer sheet.';
+    },
+  },
 };

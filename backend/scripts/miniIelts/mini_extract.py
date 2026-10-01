@@ -63,6 +63,9 @@ for sec in re.split(r'<div class="exam-section">', qhtml)[1:]:
             ctrls.append({'kind': 'text', 'q': int(c.group(1))})
         for c in re.finditer(r"<input type='checkbox' name='q' value='(\d+)'[^>]*onchange='gcb\(this,(\d+),", raw):
             ctrls.append({'kind': 'checkbox', 'q': int(c.group(1)), 'n': int(c.group(2))})
+        # newer pages: name='q7' value='A' (question number in the name, option letter in the value)
+        for c in re.finditer(r"<input type='checkbox' name='q(\d+)' value='[A-Z]'[^>]*onchange='gcb\(this,(\d+),", raw):
+            ctrls.append({'kind': 'checkbox', 'q': int(c.group(1)), 'n': int(c.group(2))})
         for c in re.finditer(r"<input type='radio' name='q(\d+)' value='([^']*)'", raw):
             ctrls.append({'kind': 'radio', 'q': int(c.group(1)), 'value': c.group(2)})
         # text with placeholders for text inputs / selects
