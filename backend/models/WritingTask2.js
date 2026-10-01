@@ -16,7 +16,13 @@ const WritingTask2Schema = new mongoose.Schema({
   // how to split Body 1/Body 2, band-6.5-appropriate. Same {title, content}
   // shape as WritingTask1's analysisSections/sampleSections.
   analysisSections: { type: [SampleSectionSchema], default: [] },
-  isActive:       { type: Boolean, default: true }
+  isActive:       { type: Boolean, default: true },
+  // Same prompt entered twice (e.g. the "time spent on websites" chart
+  // under two wordings). Points at the copy to keep; homework completion
+  // (resourceCompletionService equivalence) treats a submission on either
+  // copy as done for the other, since a student browsing the Writing list
+  // can't tell which copy the teacher assigned.
+  duplicateOf:    { type: mongoose.Schema.Types.ObjectId, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('WritingTask2', WritingTask2Schema);

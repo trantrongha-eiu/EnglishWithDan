@@ -33,34 +33,28 @@ describe('evaluateBook — book with >= N words (quota mode)', () => {
     expect(r).toMatchObject({ completed: false, practiced: 0 });
   });
 
-  test('N below the 50-word floor: a book with >= N words is enough (N=15 -> 11 correct)', () => {
+  test('small N: a book with >= N words is enough (N=15 -> 11 correct)', () => {
     expect(evaluateBook(words({ practiced: 15, correct: 11 }), SINCE, 15)).toMatchObject({ mode: 'quota', completed: true });
     expect(evaluateBook(words({ practiced: 15, correct: 10 }), SINCE, 15).completed).toBe(false);
   });
 });
 
-describe('evaluateBook — 50 <= size < N (học hết sổ)', () => {
-  test('passes once every word is practised, regardless of accuracy', () => {
-    const r = evaluateBook(words({ practiced: 60, correct: 5 }), SINCE, 100);
-    expect(r).toMatchObject({ mode: 'whole_book', completed: true, target: 60 });
+describe('evaluateBook — book holds fewer than N words', () => {
+  test('97/100 words, every one practised and correct, is still not done (must save more)', () => {
+    const r = evaluateBook(words({ practiced: 97, correct: 97 }), SINCE, 100);
+    expect(r).toMatchObject({ mode: 'too_small', completed: false, bookSize: 97, minSize: 100 });
   });
 
-  test('fails while a word is still unpractised', () => {
-    expect(evaluateBook(words({ practiced: 59, correct: 59, untouched: 1 }), SINCE, 100).completed).toBe(false);
-  });
-});
-
-describe('evaluateBook — below the 50-word floor', () => {
-  test('a book under 50 (and under N) words is not eligible, even fully practised', () => {
+  test('a small book is not eligible either, even fully practised', () => {
     const r = evaluateBook(words({ practiced: 49, correct: 49 }), SINCE, 100);
-    expect(r).toMatchObject({ mode: 'too_small', completed: false, bookSize: 49, minSize: 50 });
+    expect(r).toMatchObject({ mode: 'too_small', completed: false, bookSize: 49, minSize: 100 });
   });
 
   test('an empty book is too_small', () => {
     expect(evaluateBook([], SINCE, 100)).toMatchObject({ mode: 'too_small', completed: false, bookSize: 0 });
   });
 
-  test('minSize is N when N < 50', () => {
+  test('minSize is always N', () => {
     expect(evaluateBook(words({ untouched: 10 }), SINCE, 20)).toMatchObject({ mode: 'too_small', minSize: 20 });
   });
 });

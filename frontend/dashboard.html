@@ -19,7 +19,7 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
   <script src="js/shared/pwa-register.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/dashboard.css?v=20261001tog">
+  <link rel="stylesheet" href="css/dashboard.css?v=20261001vgoal">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
 </head>
 <body>
@@ -252,6 +252,11 @@
             <div class="mascot-msg" id="mascot-msg">Let's study! I believe in you! 💪</div>
           </div>
         </div>
+
+        <!-- Homework: this book holds fewer words than a pending "học N từ"
+             assignment asks for (js/dashboard-homework.js hwCollectShortBooks
+             -> dashboard.js renderBookGoalNotice). Not dismissible. -->
+        <div id="book-goal-notice" class="hw-warn" style="display:none;margin:0 0 12px"></div>
 
         <!-- "Mách nhỏ" — how to add words. Shown on book open until dismissed. -->
         <div id="book-add-tip" class="book-add-tip hidden">
@@ -1333,12 +1338,12 @@
 <script src="js/dashboard-audio.js?v=20260906"></script>
 <script src="js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="js/dashboard-lesson.js?v=20261001bxh"></script>
-<script src="js/dashboard-homework.js?v=20260925limits"></script>
+<script src="js/dashboard-homework.js?v=20261001vgoal"></script>
 <script src="js/dashboard-classinfo.js?v=20261001tog"></script>
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
 <script src="js/shared/fire-tier.js?v=20261001"></script>
-<script src="js/dashboard.js?v=20261001movebar"></script>
+<script src="js/dashboard.js?v=20261001vgoal"></script>
 <script src="js/dashboard-browse.js?v=20261001bxh"></script>
 </body>
 </html>

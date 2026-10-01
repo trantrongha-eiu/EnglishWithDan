@@ -530,6 +530,37 @@ describe('completion tracking', () => {
     expect(row.status).toBe('completed');
   });
 
+  test('task1_practice / task2_practice: a submission on a twin copy of the assigned prompt counts', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    // Same chart entered twice under different wording, linked by duplicateOf.
+    const assigned1 = await createWritingTask1({ prompt: 'The chart shows the time spent by students on different types of websites' });
+    const twin1 = await createWritingTask1({ prompt: 'The charts below illustrate the percentage of time that male and female students spend on websites.', duplicateOf: assigned1._id, isActive: false });
+    // Same essay question entered twice, differing only in spacing/punctuation.
+    const assigned2 = await createWritingTask2({ prompt: 'Many adults living in major cities struggle to get enough exercise. Why?' });
+    const twin2 = await createWritingTask2({ prompt: 'Many adults living in major cities struggle to get enough  exercise - why ?' });
+    const unrelated = await createWritingTask1({ prompt: 'The diagram shows how milk is produced.' });
+
+    const asg = await createAssignment(cls, {
+      resources: [
+        { kind: 'internal', resourceType: 'task1_practice', resourceId: assigned1._id },
+        { kind: 'internal', resourceType: 'task2_practice', resourceId: assigned2._id },
+      ],
+    });
+
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: unrelated._id, task1Answer: 'x', wordCount1: 170 });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.done).toBe(0);
+
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task1Id: twin1._id, task1Answer: 'x', wordCount1: 170 });
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: twin2._id, task2Answer: 'y', wordCount2: 260 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.status).toBe('completed');
+  });
+
   test('writing_exam requires BOTH task word counts to meet their minimum, not just one', async () => {
     const t = await createTeacher();
     const s = await createStudent();

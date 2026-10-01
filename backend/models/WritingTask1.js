@@ -18,7 +18,13 @@ const WritingTask1Schema = new mongoose.Schema({
   // {title, content} shape as sampleSections so the frontend can reuse the
   // exact same rendering/copy-button markup for both panels.
   analysisSections: { type: [SampleSectionSchema], default: [] },
-  isActive:       { type: Boolean, default: true }
+  isActive:       { type: Boolean, default: true },
+  // Same prompt entered twice (e.g. the "time spent on websites" chart
+  // under two wordings). Points at the copy to keep; homework completion
+  // (resourceCompletionService equivalence) treats a submission on either
+  // copy as done for the other, since a student browsing the Writing list
+  // can't tell which copy the teacher assigned.
+  duplicateOf:    { type: mongoose.Schema.Types.ObjectId, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('WritingTask1', WritingTask1Schema);

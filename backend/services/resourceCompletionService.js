@@ -143,6 +143,7 @@ const REGISTRY = {
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice' } },
     wordCountGate: { fields: 'wordCount1', ok: (d) => (d.wordCount1 || 0) >= MIN_WORDS.task1 },
+    equivalence: { model: WritingTask1 },
   },
   task2_practice: {
     label: 'Task 2 Writing (Đề lẻ)',
@@ -150,6 +151,7 @@ const REGISTRY = {
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice' } },
     wordCountGate: { fields: 'wordCount2', ok: (d) => (d.wordCount2 || 0) >= MIN_WORDS.task2 },
+    equivalence: { model: WritingTask2 },
   },
   task2: {
     label: 'Task 2 Writing (Topic)',
@@ -370,6 +372,72 @@ function resourceKey(type, resourceId) {
   return `${type}:${resourceId || '*'}`;
 }
 
+// Writing prompts (WritingTask1/2) were sometimes entered twice — same chart
+// or essay question, two docs. A student who opens the prompt from the
+// Writing list instead of the homework link can land on the other copy, and
+// an id-only match then never ticks the homework (prod 2026-10-01: 4 of a
+// class's Task 1 submissions went to the twin of the assigned prompt). Two
+// prompts are treated as the same exercise when their text matches once
+// case/punctuation/spacing are ignored, or when one is marked `duplicateOf`
+// the other (for twins worded differently). Both collections are small
+// (~150 docs), so the whole set is grouped in memory and cached briefly.
+const EQUIV_TTL_MS = 60 * 1000;
+const _equivCache = new Map(); // modelName -> { at, groupOf: Map<id, groupKey>, members: Map<groupKey, id[]> }
+
+function normalizePrompt(text) {
+  return String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+// Pure: docs [{ _id, prompt, duplicateOf }] -> { groupOf, members }.
+function groupEquivalentDocs(docs) {
+  const parent = new Map();
+  const find = (x) => { while (parent.get(x) !== x) { parent.set(x, parent.get(parent.get(x))); x = parent.get(x); } return x; };
+  const union = (a, b) => { const ra = find(a), rb = find(b); if (ra !== rb) parent.set(ra, rb); };
+  const byText = new Map();
+  for (const d of docs) parent.set(String(d._id), String(d._id));
+  for (const d of docs) {
+    const id = String(d._id);
+    const norm = normalizePrompt(d.prompt);
+    if (norm) {
+      if (byText.has(norm)) union(id, byText.get(norm)); else byText.set(norm, id);
+    }
+    if (d.duplicateOf && parent.has(String(d.duplicateOf))) union(id, String(d.duplicateOf));
+  }
+  const groupOf = new Map();
+  const members = new Map();
+  for (const id of parent.keys()) {
+    const g = find(id);
+    groupOf.set(id, g);
+    if (!members.has(g)) members.set(g, []);
+    members.get(g).push(id);
+  }
+  return { groupOf, members };
+}
+
+async function loadEquivalence(model, needIds = []) {
+  const hit = _equivCache.get(model.modelName);
+  // A prompt added since the last load isn't in the cache — reload then too.
+  if (hit && Date.now() - hit.at < EQUIV_TTL_MS && needIds.every((id) => hit.groupOf.has(id))) return hit;
+  const docs = await model.find({}).select('_id prompt duplicateOf').lean();
+  const val = { at: Date.now(), ...groupEquivalentDocs(docs) };
+  _equivCache.set(model.modelName, val);
+  return val;
+}
+
+// assigned ids -> Map<anyEquivalentId, assignedId[]> (every id maps to itself).
+async function expandEquivalentIds(model, assignedIds) {
+  const out = new Map();
+  const add = (k, v) => { if (!out.has(k)) out.set(k, []); if (!out.get(k).includes(v)) out.get(k).push(v); };
+  let eq = null;
+  try { eq = await loadEquivalence(model, assignedIds); } catch (_) { /* fall back to exact ids */ }
+  for (const id of assignedIds) {
+    add(id, id);
+    const g = eq && eq.groupOf.get(id);
+    for (const other of (g && eq.members.get(g)) || []) add(other, id);
+  }
+  return out;
+}
+
 /**
  * Batch completion check.
  * @param {ObjectId} studentId
@@ -432,9 +500,16 @@ async function checkCompleted(studentId, internalItems, since = null) {
       return;
     }
 
-    const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
-    if (!ids.length) return;
+    const assignedIds = [...idSet].filter((x) => x !== '*');
+    if (!assignedIds.length) return;
+    // attemptId -> the assigned id(s) it counts for (just itself, unless the
+    // type has equivalent twin prompts — see expandEquivalentIds).
+    const idMap = entry.equivalence
+      ? await expandEquivalentIds(entry.equivalence.model, assignedIds)
+      : new Map(assignedIds.map((x) => [x, [x]]));
+    const ids = [...idMap.keys()].map((x) => new mongoose.Types.ObjectId(x));
     const gate = entry.scoreGate;
+
     const wcGate = entry.wordCountGate;
     const bandGate = entry.bandGate;
     const boolGate = wcGate || bandGate; // same "ok(r) -> pass/fail" shape as wordCountGate
@@ -457,10 +532,12 @@ async function checkCompleted(studentId, internalItems, since = null) {
       // (completed: false) purely for completedAt/attemptId display.
       const bestByKey = new Map();
       for (const r of rows) {
-        const k = resourceKey(type, r[A.idField]);
         const passes = boolGate.ok(r);
-        const prev = bestByKey.get(k);
-        if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
+        for (const target of idMap.get(String(r[A.idField])) || []) {
+          const k = resourceKey(type, target);
+          const prev = bestByKey.get(k);
+          if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
+        }
       }
       for (const [k, { passes, r }] of bestByKey) {
         out.set(k, { completed: passes, completedAt: r.createdAt, attemptId: String(r._id) });
@@ -541,5 +618,6 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
 module.exports = {
   REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, MIN_SPEAKING_WORDS,
+  groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
 };

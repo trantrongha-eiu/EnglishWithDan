@@ -136,6 +136,7 @@ async function createWritingTask1(overrides = {}) {
     instructions: overrides.instructions,
     prompt: overrides.prompt || unique('Task1 prompt'),
     isActive: overrides.isActive ?? true,
+    duplicateOf: overrides.duplicateOf ?? null,
   });
 }
 
@@ -144,6 +145,7 @@ async function createWritingTask2(overrides = {}) {
     instructions: overrides.instructions,
     prompt: overrides.prompt || unique('Task2 prompt'),
     isActive: overrides.isActive ?? true,
+    duplicateOf: overrides.duplicateOf ?? null,
   });
 }
 

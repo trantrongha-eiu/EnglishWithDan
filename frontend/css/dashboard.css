@@ -2180,6 +2180,8 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .hw-res--done .hw-res-check{color:var(--green)}
 .hw-res-name{flex:1;font-size:12.5px;font-weight:600;color:var(--text);display:flex;flex-direction:column;gap:4px}
 .hw-res-desc{font-size:11px;font-weight:400;color:var(--text3)}
+.hw-res-desc--warn{color:#b45309;font-weight:600}
+[data-theme="dark"] .hw-res-desc--warn{color:#fcd34d}
 .hw-res-tag{align-self:flex-start;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
 .hw-res-tag--quiz{background:rgba(37,99,235,.12);color:var(--blue)}
 .hw-res-tag--writing{background:rgba(124,58,237,.14);color:var(--purple,#7c3aed)}

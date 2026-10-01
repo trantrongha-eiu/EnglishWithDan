@@ -837,10 +837,7 @@ function VocabGoalCell({ item }) {
   if (!v || v.mode === 'no_book') return <span style={{ color: 'var(--text3)' }}>Chưa có sổ</span>;
   const book = v.bookName ? <div style={{ fontSize: 11, color: 'var(--text3)' }}>{v.bookEmoji || '📘'} {v.bookName}</div> : null;
   if (v.mode === 'too_small') {
-    return <><span style={{ color: 'var(--text3)' }}>Sổ mới có {v.bookSize}/{v.minSize} từ tối thiểu</span>{book}</>;
-  }
-  if (v.mode === 'whole_book') {
-    return <>{Math.min(v.practiced, v.target)}/{v.target} từ <span style={{ color: 'var(--text3)' }}>(học hết sổ)</span>{book}</>;
+    return <><span style={{ color: 'var(--text3)' }}>Sổ mới có {v.bookSize}/{v.minSize} từ — chưa đủ</span>{book}</>;
   }
   return <>{Math.min(v.practiced, v.target)}/{v.target} từ · đúng {v.correct}/{v.needCorrect}{book}</>;
 }
@@ -1144,8 +1141,8 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
               <>
                 <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 6, lineHeight: 1.5 }}>
                   Chỉ tính 5 sổ mặc định của học sinh (Sổ 1–5, không đổi tên/xoá được). Tự động chấm theo kết quả luyện tập (quiz/flashcard)
-                  trong sổ, tính từ lúc giao bài: đạt khi luyện đủ số từ trong sổ và đúng ≥70%. Sổ có từ 50 từ nhưng ít hơn chỉ tiêu thì
-                  luyện hết sổ là đạt; sổ dưới 50 từ chưa được tính. Học sinh tự bấm "đã thuộc" không được tính.
+                  trong sổ, tính từ lúc giao bài: đạt khi luyện đủ số từ trong sổ và đúng ≥70%. Sổ phải có đủ số từ được giao — sổ
+                  còn thiếu từ thì chưa được tính (học sinh được nhắc lưu thêm từ). Học sinh tự bấm "đã thuộc" không được tính.
                   Giao nhiều sổ (vd 50 từ Sổ 1 + 50 từ Sổ 2) thì mỗi sổ được chấm riêng, đạt hết mới xong.
                 </div>
               </>

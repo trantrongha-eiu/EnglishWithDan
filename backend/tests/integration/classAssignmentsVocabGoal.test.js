@@ -211,20 +211,20 @@ describe('student progress', () => {
     expect(assignment.status).toBe('completed');
   });
 
-  test('50 <= book < N: practising every word passes regardless of accuracy', async () => {
-    const { student, book } = await setup({ bookWords: 50, wordCount: 100 });
-    await markPractised(book, 0, 49, false);
-    expect((await myVocabItem(student)).item.vocabGoal).toMatchObject({ mode: 'whole_book', practiced: 49, target: 50 });
-    await practise(student, book, 49, false);
-    expect((await myVocabItem(student)).item.completed).toBe(true);
+  test('book < N (97/100): fully practised is still not done until the student saves more words', async () => {
+    const { student, book } = await setup({ bookWords: 97, wordCount: 100 });
+    await markPractised(book, 0, 97, true);
+    const { item } = await myVocabItem(student);
+    expect(item.completed).toBe(false);
+    expect(item.vocabGoal).toMatchObject({ mode: 'too_small', bookSize: 97, minSize: 100 });
   });
 
-  test('a book under 50 words is not eligible even when fully practised', async () => {
+  test('a small book is not eligible even when fully practised', async () => {
     const { student, book } = await setup({ bookWords: 49, wordCount: 100 });
     await markPractised(book, 0, 49, true);
     const { item } = await myVocabItem(student);
     expect(item.completed).toBe(false);
-    expect(item.vocabGoal).toMatchObject({ mode: 'too_small', bookSize: 49, minSize: 50 });
+    expect(item.vocabGoal).toMatchObject({ mode: 'too_small', bookSize: 49, minSize: 100 });
   });
 
   test('words in a custom (non-default) book never count', async () => {

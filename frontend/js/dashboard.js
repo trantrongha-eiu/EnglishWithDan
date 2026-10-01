@@ -1038,10 +1038,30 @@ function renderBookContent(book) {
         }
     }
 
+    renderBookGoalNotice();
+
     // "Chuyển sang sổ khác" — same visibility rule as the ⋯ menu entry
     const moveBarBtn = document.getElementById('btn-move-words-bar');
     if (moveBarBtn) moveBarBtn.style.display = book.words.length > 0 && myBooks.length > 1 ? '' : 'none';
 }
+
+// "Lưu thêm N từ" notice for the open book when a pending homework vocab
+// goal needs more words than it holds (window._hwShortBooks, filled by
+// dashboard-homework.js). The word count shown is live, so saving words
+// here shrinks the gap before the homework list is reloaded.
+function renderBookGoalNotice() {
+    const el = document.getElementById('book-goal-notice');
+    if (!el) return;
+    const goals = (window._hwShortBooks || []).filter(g => g.bookId === String(currentBookId));
+    const have = currentBookData && Array.isArray(currentBookData.words) ? currentBookData.words.length : null;
+    const g = goals.sort((a, b) => b.need - a.need)[0];
+    const size = have ?? (g && g.have) ?? 0;
+    if (!g || size >= g.need) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    el.innerHTML = `⚠️ Bài tập${g.title ? ` <b>${_esc(g.title)}</b>` : ''} yêu cầu học <b>${g.need} từ</b> trong sổ này, nhưng sổ mới có <b>${size}</b> từ. `
+        + `Hãy <b>lưu thêm ${g.need - size} từ</b> (bấm <b>+ Add word</b>, <b>Nhập hàng loạt</b>, hoặc lưu từ khi làm bài) rồi luyện tập để được tính hoàn thành.`;
+    el.style.display = '';
+}
+window.renderBookGoalNotice = renderBookGoalNotice;
 
 // Student closed the "Mách nhỏ" tip — hide it and remember so it doesn't
 // come back on the next book open.

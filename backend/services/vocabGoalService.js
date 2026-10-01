@@ -12,10 +12,11 @@
 //   - book has >= N words: practised >= N distinct words AND >= 70% of N
 //     answered correctly (a word's LATEST answer counts, so re-practising a
 //     missed word and getting it right fixes it).
-//   - MIN_BOOK_SIZE (50) <= size < N: practising every word = pass
-//     ("học hết sổ"), no accuracy bar.
-//   - size < min(N, 50): not eligible yet — the student has to save more
-//     words first. The 50 floor stops "make a 2-word book, practise it, pass".
+//   - size < N: not eligible yet (`too_small`) — the student has to save
+//     words until the book holds N, however close it is (owner's rule
+//     2026-10-01: 97/100 words all practised is still NOT done; the old
+//     "50+ words, practise the whole book = pass" shortcut is gone). The
+//     dashboard tells the student how many words to save.
 
 const VocabBook = require('../models/VocabBook');
 const { PASS_PERCENT } = require('./resourceCompletionService');
@@ -23,7 +24,6 @@ const { canonicalName, assignDefaultSlots } = require('../utils/defaultVocabBook
 
 const MIN_WORD_COUNT = 5;
 const MAX_WORD_COUNT = 300; // = a VocabBook's own word cap (addWord / mergeBooks)
-const MIN_BOOK_SIZE = 50;
 
 function evaluateBook(words, since, wordCount) {
   const sinceMs = since ? new Date(since).getTime() : 0;
@@ -42,11 +42,8 @@ function evaluateBook(words, since, wordCount) {
       practiced, correct, target: wordCount, needCorrect, bookSize: size,
     };
   }
-  if (size >= MIN_BOOK_SIZE) {
-    return { mode: 'whole_book', completed: practiced >= size, practiced, correct, target: size, needCorrect: 0, bookSize: size };
-  }
-  // Not eligible yet: minSize = words the book needs before either rule applies.
-  return { mode: 'too_small', completed: false, practiced, correct, target: wordCount, needCorrect: 0, bookSize: size, minSize: Math.min(wordCount, MIN_BOOK_SIZE) };
+  // Not eligible yet: minSize = words the book must hold before the quota applies.
+  return { mode: 'too_small', completed: false, practiced, correct, target: wordCount, needCorrect: 0, bookSize: size, minSize: wordCount };
 }
 
 // Higher = closer to done. Completed first, then eligible over too-small,
@@ -104,5 +101,5 @@ async function loadBooksForGoal(studentId, bookSlot = null) {
 
 module.exports = {
   evaluateBook, evaluateBooks, loadBooksForGoal,
-  MIN_WORD_COUNT, MAX_WORD_COUNT, MIN_BOOK_SIZE,
+  MIN_WORD_COUNT, MAX_WORD_COUNT,
 };
