@@ -38,7 +38,7 @@ function requireReviewComplete(skill) {
       code: 'REVIEW_REQUIRED',
       message: `Bạn có ${count} bài đang chờ Review. Hãy hoàn thành ít nhất 1 bài trước khi bắt đầu bài mới.`,
       count,
-      items: items.map(r => ({ _id: r._id, attemptType: r.attemptType, attemptId: r.attemptId, mistakeCount: r.mistakes.length })),
+      items: await reviewService.describePendingReviews(items),
       // Back-compat for any caller still reading the old singular shape —
       // the oldest pending review, same as before.
       reviewId: items[0]._id,

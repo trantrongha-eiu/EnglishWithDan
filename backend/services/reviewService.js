@@ -8,6 +8,13 @@
 const AttemptReview = require('../models/AttemptReview');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
 const WritingAttempt = require('../models/WritingAttempt');
+const TestAttempt = require('../models/TestAttempt');
+const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
+const ListeningAttempt = require('../models/ListeningAttempt');
+const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+// populate() targets for the attempt models above
+require('../models/ReadingTest');
+require('../models/ListeningTest');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 
 // A mistake counts as "reviewed" once the core guided-review steps are
@@ -67,6 +74,60 @@ function getPendingReviews(userId, skill) {
     .then(items => ({ items, count: items.length }));
 }
 
+// Turns getPendingReviews()'s raw docs into what the student-facing list
+// needs: WHICH test/passage each pending review belongs to, when it was
+// taken, and how far along it is. Without this the gate only ever pointed
+// at "the oldest one" — a student who fully reviewed their mock test still
+// saw "Bạn có N bài đang chờ Review" from other attempts (often Bài lẻ, or
+// several mock runs all named "MockTest Đề Random") with no way to tell
+// which ones were left, and read it as the finished test being re-demanded.
+// One batched lookup per attempt type; a row whose attempt is gone keeps a
+// generic title instead of disappearing (it still counts toward the gate).
+async function describePendingReviews(items) {
+  const idsByType = {};
+  items.forEach(r => { (idsByType[r.attemptType] = idsByType[r.attemptType] || []).push(r.attemptId); });
+  const meta = {};
+  const put = (rows, title, takenAt) => rows.forEach(a => { meta[String(a._id)] = { title: title(a), takenAt: takenAt(a) }; });
+  await Promise.all([
+    idsByType.reading && TestAttempt.find({ _id: { $in: idsByType.reading } })
+      .select('testId endTime').populate('testId', 'name').lean()
+      .then(rows => put(rows, a => a.testId?.name, a => a.endTime)),
+    idsByType['reading-practice'] && ReadingPracticeAttempt.find({ _id: { $in: idsByType['reading-practice'] } })
+      .select('passageTitle submittedAt').lean()
+      .then(rows => put(rows, a => a.passageTitle, a => a.submittedAt)),
+    idsByType.listening && ListeningAttempt.find({ _id: { $in: idsByType.listening } })
+      .select('testName testId submittedAt').populate('testId', 'name').lean()
+      .then(rows => put(rows, a => a.testName || a.testId?.name, a => a.submittedAt)),
+    idsByType['listening-practice'] && ListeningPracticeAttempt.find({ _id: { $in: idsByType['listening-practice'] } })
+      .select('sectionTitle submittedAt').lean()
+      .then(rows => put(rows, a => a.sectionTitle, a => a.submittedAt)),
+  ]);
+  return items.map(r => {
+    const m = meta[String(r.attemptId)] || {};
+    return {
+      _id: r._id,
+      attemptType: r.attemptType,
+      attemptId: r.attemptId,
+      isPractice: r.attemptType.endsWith('-practice'),
+      title: (m.title || '').trim() || 'Bài đã làm',
+      takenAt: m.takenAt || r.createdAt,
+      mistakeCount: r.mistakes.length,
+      reviewedCount: r.mistakes.filter(x => x.completedAt).length,
+    };
+  });
+}
+
+// History rows (full tests or Bài lẻ) → same rows + reviewStatus
+// ('none' | 'pending' | 'completed' | 'bypassed' | 'unavailable') and
+// reviewed/total counts, so the history tables can flag "Chưa review".
+async function attachReviewStatus(userId, attemptType, rows) {
+  const map = await getReviewStatusMap(userId, attemptType, rows.map(r => r._id));
+  return rows.map(r => {
+    const s = map[String(r._id)];
+    return { ...r, reviewStatus: s ? s.status : 'none', reviewMistakeCount: s ? s.mistakeCount : 0, reviewedCount: s ? s.reviewedCount : 0 };
+  });
+}
+
 // Gate threshold — a student may have up to this many pending reviews
 // before being blocked from starting a new test/practice of that skill.
 // Below this, they're free to keep practicing (informational nudge only);
@@ -82,7 +143,11 @@ async function getReviewStatusMap(userId, attemptType, attemptIds) {
   const reviews = await AttemptReview.find({ userId, attemptType, attemptId: { $in: attemptIds } })
     .select('attemptId status mistakes').lean();
   const map = {};
-  reviews.forEach(r => { map[r.attemptId.toString()] = { status: r.status, mistakeCount: r.mistakes.length }; });
+  reviews.forEach(r => {
+    map[r.attemptId.toString()] = {
+      status: r.status, mistakeCount: r.mistakes.length, reviewedCount: r.mistakes.filter(m => m.completedAt).length,
+    };
+  });
   return map;
 }
 
@@ -264,7 +329,8 @@ async function getReviewHistory(userId, { attemptType, from, to, page = 1, limit
 }
 
 module.exports = {
-  createReviewIfNeeded, getPendingReviews, getReviewStatusMap, MAX_PENDING_REVIEWS,
+  createReviewIfNeeded, getPendingReviews, describePendingReviews, attachReviewStatus,
+  getReviewStatusMap, MAX_PENDING_REVIEWS,
   getReviewDetail, getReviewByAttempt, updateMistake, getReviewHistory,
   redeemBypassCode, resolveOrphanedReview,
 };

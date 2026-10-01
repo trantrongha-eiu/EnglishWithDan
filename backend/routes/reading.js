@@ -60,6 +60,10 @@ router.get('/attempt/:id/review', auth, readingController.getAttemptReview);
 // GET /api/reading/history
 router.get('/history', auth, readingController.getHistory);
 
+// GET /api/reading/history/combined?limit= — Full đề + Bài lẻ in one
+// newest-first list, each row with a clear name + its review status.
+router.get('/history/combined', auth, readingController.getCombinedHistory);
+
 // GET /api/reading/practice/list?category=passage1
 router.get('/practice/list', auth, contentLimiter, readingController.listPracticePassages);
 

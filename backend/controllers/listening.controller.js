@@ -8,6 +8,7 @@
 // none of that was unified, since doing so would change client-visible
 // error text.
 const listeningService = require('../services/listeningService');
+const attemptHistoryService = require('../services/attemptHistoryService');
 const { isImageDataUri } = require('../utils/validation');
 const { protectListeningAudio } = require('../utils/protectMediaUrls');
 const { hasFullAccess } = require('../utils/plan');
@@ -345,6 +346,14 @@ exports.getHistory = async (req, res) => {
     const { attempts, total } = await listeningService.getHistory(req.user._id || req.user.id, limit);
     res.json({ success: true, attempts, total, hasMore: attempts.length < total });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+};
+
+exports.getCombinedHistory = async (req, res) => {
+  try {
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
+    const { items, total } = await attemptHistoryService.getListeningHistory(req.user._id, limit);
+    res.json({ success: true, items, total, hasMore: items.length < total });
+  } catch (err) { console.error('[Listening combined history]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
 exports.getHistoryDetail = async (req, res) => {

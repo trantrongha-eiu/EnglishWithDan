@@ -875,16 +875,21 @@ async function _doStartExam(testId, mode = 'practice') {
 // just-finished review look like it was still "stuck".
 let _pendingReadingReview = null;
 async function _checkPendingReviewBanner() {
-  let count = 0, blocked = false;
+  let count = 0, blocked = false, items = [];
   try {
     const res = await apiFetch('/api/review/pending?skill=reading');
     _pendingReadingReview = res.pending || null;
     count = res.count || 0;
     blocked = !!res.blocked;
+    items = res.items || [];
   } catch { _pendingReadingReview = null; }
 
+  // Every pending review is listed (name, date, reviewed x/y) — not just the
+  // oldest one — so a student never mistakes another attempt's pending
+  // review for the test they already finished reviewing.
+  const goTo = (it) => _goToPendingReview(it || _pendingReadingReview);
   if (blocked && window.showReviewRequiredPopup) {
-    window.showReviewRequiredPopup(_pendingReadingReview, count, () => _goToPendingReview(_pendingReadingReview));
+    window.showReviewRequiredPopup(_pendingReadingReview, count, goTo, items);
   }
 
   const wrap = document.getElementById('tests-wrapper');
@@ -912,9 +917,11 @@ async function _checkPendingReviewBanner() {
         ? `<span>🔒 Bạn có ${count} bài đang chờ Review — hoàn thành ít nhất 1 bài để mở khóa bài Reading mới.</span>`
         : `<span>🟡 Bạn có ${count} bài đang chờ Review — review khi rảnh để tránh lặp lại lỗi cũ.</span>`) +
       '<span style="display:flex;gap:8px;align-items:center">' +
-        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>' +
+        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Review bài cũ nhất</button>' +
         (blocked ? '<button style="padding:8px 12px;background:none;border:1px solid currentColor;border-radius:8px;color:inherit;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit" onclick="window.showReviewBypassPrompt&&window.showReviewBypassPrompt()">Nhập mã bỏ qua</button>' : '') +
-      '</span>';
+      '</span>' +
+      (window.ReviewPendingList ? window.ReviewPendingList.html(items) : '');
+    if (window.ReviewPendingList) window.ReviewPendingList.wire(banner, items, goTo);
   } else if (banner) {
     banner.remove();
   }
@@ -3963,48 +3970,44 @@ function retryReset() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   HISTORY MODAL
-   BUG-013 fix: /api/reading/history now reports an honest total/hasMore
-   instead of silently cutting off past its .limit() with no indication —
-   this renders that as "Đang hiển thị N/Y" + a "Tải thêm" button instead
-   of just dumping whatever page-1 happened to return.
+   HISTORY MODAL — Full đề + Bài lẻ in ONE list
+   GET /api/reading/history/combined (backend attemptHistoryService) merges
+   both attempt kinds newest-first, names each row clearly (test name +
+   passages used, "Mock test" tag, Passage N for Bài lẻ) and carries its
+   review status so pending ones show "Chưa review". Rendering is shared
+   with listening.html via js/shared/attempt-history.js. Both "Lịch sử"
+   buttons (Full đề and Bài lẻ tabs) open this same modal.
 ══════════════════════════════════════════════════════════════════════ */
 const READING_HISTORY_STEP = 50; // matches the backend's own default limit
 let _readingHistoryLimit = READING_HISTORY_STEP;
 
 async function showHistoryModal() {
   _readingHistoryLimit = READING_HISTORY_STEP;
-  await loadHistoryModalPage();
+  const root = document.getElementById('attempt-history-root');
+  if (root) root.removeAttribute('data-ah-filter');
+  window.AttemptHistory.loading(root);
   openModal('modal-history');
+  await loadHistoryModalPage();
 }
+// Old name (Bài lẻ tab's button) — same combined modal now.
+const showPracticeHistoryModal = showHistoryModal;
 
 async function loadHistoryModalPage() {
+  const root = document.getElementById('attempt-history-root');
   try {
-    const res = await apiFetch(`/api/reading/history?limit=${_readingHistoryLimit}`);
-    const history = res.history || [];
-    const tbody = document.getElementById('history-tbody');
-    tbody.innerHTML = history.map(h => `
-      <tr>
-        <td>${escHtml(h.testId?.name || '–')}</td>
-        <td>${new Date(h.endTime).toLocaleDateString('vi-VN')}</td>
-        <td>${fmtDuration(h.duration)}</td>
-        <td>${h.totalQuestions}</td>
-        <td class="rd-td-correct">${h.correctCount}</td>
-        <td class="rd-td-wrong">${h.wrongCount}</td>
-        <td class="rd-td-skip">${h.skippedCount}</td>
-        <td class="band-cell">${h.bandScore?.toFixed(1)}</td>
-        <td><button class="btn-review-sm" onclick="loadReview('${h._id}');closeModal('modal-history')">Xem lại</button></td>
-      </tr>`).join('') || '<tr><td colspan="9" class="rd-no-history">Chưa có lịch sử</td></tr>';
-
-    const footer = document.getElementById('history-pagination-footer');
-    if (footer) {
-      if (!history.length) { footer.innerHTML = ''; }
-      else {
-        footer.innerHTML = `<span>Đang hiển thị ${history.length}/${res.total} kết quả</span>` +
-          (res.hasMore ? `<button onclick="_loadMoreReadingHistory()">Tải thêm</button>` : '');
-      }
-    }
-  } catch { showVocabToast('Lỗi tải lịch sử'); }
+    const res = await apiFetch(`/api/reading/history/combined?limit=${_readingHistoryLimit}`);
+    window.AttemptHistory.render(root, res, {
+      onOpen: (row) => {
+        closeModal('modal-history');
+        if (row.kind === 'practice') loadPracticeReview(row._id);
+        else loadReview(row._id);
+      },
+      onMore: _loadMoreReadingHistory,
+    });
+  } catch {
+    window.AttemptHistory.loading(root, 'Không tải được lịch sử, thử lại sau.');
+    showVocabToast('Lỗi tải lịch sử');
+  }
 }
 
 function _loadMoreReadingHistory() {
@@ -4012,42 +4015,8 @@ function _loadMoreReadingHistory() {
   loadHistoryModalPage();
 }
 
-/* ══════════════════════════════════════════════════════════════════════
-   PRACTICE HISTORY MODAL
-══════════════════════════════════════════════════════════════════════ */
-async function showPracticeHistoryModal() {
-  try {
-    const res = await apiFetch('/api/reading/practice/history?limit=200');
-    const attempts = res.attempts || [];
-    const tbody = document.getElementById('practice-history-tbody');
-    // hasMore is true only if there are more than the 200 most recent — tell
-    // the student instead of silently cutting the list off (BUG-A06).
-    const moreNote = res.hasMore
-      ? `<tr><td colspan="9" class="rd-no-history">Đang hiển thị 200 lần gần nhất (tổng ${res.total}).</td></tr>`
-      : '';
-    tbody.innerHTML = moreNote + attempts.map(h => {
-      const date = new Date(h.submittedAt).toLocaleDateString('vi-VN');
-      const time = fmtDuration(h.timeTaken);
-      const pct  = h.totalQuestions ? Math.round(h.correctCount / h.totalQuestions * 100) : 0;
-      const catLabel = { passage1: 'P1', passage2: 'P2', passage3: 'P3', 'actual-test': 'AT' }[h.category] || '–';
-      return `<tr>
-        <td><span class="plele-badge ${catLabel === 'AT' ? 'at' : catLabel.toLowerCase()}" style="font-size:10px;padding:2px 6px">${catLabel}</span></td>
-        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(h.passageTitle || '–')}</td>
-        <td>${date}</td>
-        <td>${time}</td>
-        <td class="rd-td-correct">${h.correctCount}</td>
-        <td class="rd-td-wrong">${h.wrongCount}</td>
-        <td class="rd-td-skip">${h.skippedCount}</td>
-        <td class="${pct>=70?'rd-pct-good':pct>=40?'rd-pct-mid':'rd-pct-bad'}">${pct}%</td>
-        <td><button class="btn-review-sm" onclick="loadPracticeReview('${h._id}')">Xem lại</button></td>
-      </tr>`;
-    }).join('') || '<tr><td colspan="9" class="rd-no-history">Chưa có lịch sử luyện bài lẻ.</td></tr>';
-    openModal('modal-practice-history');
-  } catch { showVocabToast('Lỗi tải lịch sử'); }
-}
-
 async function loadPracticeReview(attemptId) {
-  closeModal('modal-practice-history');
+  closeModal('modal-history');
   showVocabToast('Đang tải bài...', 'info');
   try {
     const res = await apiFetch(`/api/reading/practice/history/${attemptId}`);

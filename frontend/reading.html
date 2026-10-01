@@ -37,7 +37,8 @@
 <script src="/js/shared/route-params.js?v=20260925route"></script>
 <script src="/js/shared/dictionary-lookup.js?v=20260930nobook"></script>
 <script src="/js/shared/highlight-remove.js?v=20260831"></script>
-<script src="/js/shared/review-required-popup.js?v=20260907"></script>
+<script src="/js/shared/review-required-popup.js?v=20261001"></script>
+<script src="/js/shared/attempt-history.js?v=20261001"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/mock-test.js?v=20260906fix"></script>
@@ -57,7 +58,7 @@
         </div>
         <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto">
           <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
-          <button onclick="showPracticeHistoryModal()" class="rd-hist-btn">
+          <button onclick="showHistoryModal()" class="rd-hist-btn">
             <i class="fas fa-history"></i> Lịch sử
           </button>
         </div>
@@ -419,27 +420,11 @@
   <div id="modal-history" class="modal-overlay hidden">
     <div class="modal-box modal-lg">
       <div class="modal-header">
-        <h3>Lịch sử làm bài</h3>
+        <h3>Lịch sử làm bài – Reading (Full đề + Bài lẻ)</h3>
         <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll">
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>Tên bài</th>
-              <th>Ngày nộp</th>
-              <th>Thời gian</th>
-              <th>Tổng câu</th>
-              <th>Đúng</th>
-              <th>Sai</th>
-              <th>Bỏ qua</th>
-              <th>Band</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="history-tbody"></tbody>
-        </table>
-        <div id="history-pagination-footer" class="rd-history-pagination"></div>
+        <div id="attempt-history-root"></div>
       </div>
     </div>
   </div>
@@ -458,35 +443,6 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════
-     MODAL – LỊCH SỬ BÀI LẺ READING
-     ════════════════════════════════════════════════════════ -->
-  <div id="modal-practice-history" class="modal-overlay hidden">
-    <div class="modal-box modal-lg">
-      <div class="modal-header">
-        <h3>📋 Lịch sử luyện bài lẻ – Reading</h3>
-        <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-practice-history')"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body-scroll">
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>Loại</th>
-              <th>Tên bài</th>
-              <th>Ngày</th>
-              <th>Thời gian</th>
-              <th>Đúng</th>
-              <th>Sai</th>
-              <th>Bỏ qua</th>
-              <th>%</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="practice-history-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
   <!-- ════════════════════════════════════════════════════════
      DICTIONARY POPUP
@@ -561,7 +517,7 @@
 
 
 
-  <script src="/js/reading-v2.js?v=20261001alts"></script>
+  <script src="/js/reading-v2.js?v=20261001hist"></script>
   <script src="/js/reading-tips.js?v=20260925route"></script>
   <script src="/js/reading-tips-practice.js?v=20260924c"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->
@@ -740,7 +696,7 @@
           icon.className = fsEl ? 'fas fa-compress' : 'fas fa-expand';
         }
       });
-      const ids = ['dict-popup', 'translate-popup', 'dict-vocab-modal', 'modal-history', 'modal-practice-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
+      const ids = ['dict-popup', 'translate-popup', 'dict-vocab-modal', 'modal-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
       if (fsEl) {
         ids.forEach(id => {
           const el = document.getElementById(id);

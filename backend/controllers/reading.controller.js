@@ -4,6 +4,7 @@
 // fallback (console.error + generic 500 'Lỗi server'), so — unlike
 // listening.js — this one file could safely use a single shared guard.
 const readingService = require('../services/readingService');
+const attemptHistoryService = require('../services/attemptHistoryService');
 const { hasFullAccess } = require('../utils/plan');
 const { stripReviewAnswerKey } = require('../utils/reviewAnswerKey');
 
@@ -75,6 +76,12 @@ exports.getHistory = guard(null, async (req, res) => {
   const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
   const { history, total } = await readingService.getHistory(req.user._id, limit);
   res.json({ success: true, history, total, hasMore: history.length < total });
+});
+
+exports.getCombinedHistory = guard('[Reading combined history]', async (req, res) => {
+  const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 200);
+  const { items, total } = await attemptHistoryService.getReadingHistory(req.user._id, limit);
+  res.json({ success: true, items, total, hasMore: items.length < total });
 });
 
 exports.listPracticePassages = guard(null, async (req, res) => {

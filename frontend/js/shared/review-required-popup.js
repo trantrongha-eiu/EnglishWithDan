@@ -12,7 +12,9 @@
  * and this file renamed since "review-drawer" with no drawer left in it
  * was misleading.
  *
- * Host page calls window.showReviewRequiredPopup(pending, count, onGoToReview).
+ * Host page calls window.showReviewRequiredPopup(pending, count, onGoToReview, items)
+ * and can show the same pending list in its own banner via
+ * window.ReviewPendingList.html(items) / .wire(root, items, onOpen).
  */
 (function () {
   'use strict';
@@ -40,7 +42,18 @@
       '.rd-code-submit{padding:9px 14px;border:none;border-radius:8px;background:var(--text,#111827);color:#fff;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}' +
       '.rd-code-submit:disabled{opacity:.5;cursor:default}' +
       '.rd-code-msg{font-size:12px;margin-top:8px;min-height:16px}' +
-      '.rd-code-msg.err{color:#dc2626}.rd-code-msg.ok{color:var(--success,#16a34a)}';
+      '.rd-code-msg.err{color:#dc2626}.rd-code-msg.ok{color:var(--success,#16a34a)}' +
+      '.rd-popup-box.has-list{max-width:460px}' +
+      '.rd-plist{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;text-align:left;margin:0 0 14px}' +
+      '.rd-pitem{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border:1px solid var(--border,#e5e7eb);border-radius:10px;background:var(--surface,#fff);color:var(--text,#111827);font-family:inherit;text-align:left;cursor:pointer}' +
+      '.rd-pitem:hover{border-color:var(--blue,#3d8bff)}' +
+      '.rd-ptag{flex-shrink:0;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;color:#fff;background:#6b7280}' +
+      '.rd-ptag.full{background:#e11d48}.rd-ptag.lele{background:#3d8bff}' +
+      '.rd-pmain{flex:1;min-width:0;display:flex;flex-direction:column}' +
+      '.rd-ptitle{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.rd-pmeta{font-size:11.5px;color:var(--text3,#6b7280)}' +
+      '.rd-pgo{flex-shrink:0;font-size:12px;font-weight:700;color:var(--blue,#3d8bff)}' +
+      '#review-required-banner .rd-plist{width:100%;margin:0;max-height:220px}';
     document.head.appendChild(s);
   }
 
@@ -55,8 +68,52 @@
   // only calls this when opts.blocked is true; below that it shows the
   // softer, non-modal banner instead. See reading-v2.js/listening.html's
   // _checkPendingReviewBanner().
+  function _esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function _fmtDate(d) {
+    if (!d) return '';
+    var dt = new Date(d);
+    return isNaN(dt) ? '' : dt.toLocaleDateString('vi-VN') + ' ' + dt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // Every pending review as one clickable row (Full đề / Bài lẻ, name, when,
+  // reviewed x/y) — items come from GET /api/review/pending (backend
+  // reviewService.describePendingReviews). Before this the gate only ever
+  // linked to the single oldest pending review, so a student who had fully
+  // reviewed one test still saw "N bài đang chờ Review" with no way to see
+  // which attempts those were, and read it as the finished test being
+  // demanded again.
+  function pendingReviewListHtml(items) {
+    if (!items || !items.length) return '';
+    return '<div class="rd-plist">' + items.map(function (it, i) {
+      return '<button type="button" class="rd-pitem" data-rd-idx="' + i + '">' +
+        '<span class="rd-ptag ' + (it.isPractice ? 'lele' : 'full') + '">' + (it.isPractice ? 'Bài lẻ' : 'Full đề') + '</span>' +
+        '<span class="rd-pmain">' +
+          '<span class="rd-ptitle">' + _esc(it.title) + '</span>' +
+          '<span class="rd-pmeta">' + _esc(_fmtDate(it.takenAt)) + ' · đã review ' + (it.reviewedCount || 0) + '/' + (it.mistakeCount || 0) + ' câu sai</span>' +
+        '</span>' +
+        '<span class="rd-pgo">Review →</span>' +
+      '</button>';
+    }).join('') + '</div>';
+  }
+  function wirePendingReviewList(root, items, onOpen) {
+    if (!root || !items) return;
+    var els = root.querySelectorAll('[data-rd-idx]');
+    for (var i = 0; i < els.length; i++) {
+      els[i].addEventListener('click', function (e) {
+        var it = items[+e.currentTarget.getAttribute('data-rd-idx')];
+        if (it && onOpen) onOpen(it);
+      });
+    }
+  }
+
+  // `items` (optional) = the described pending list; when given, the popup
+  // lists every pending review and onGoToReview(item) opens the one clicked.
   var _popupShownThisLoad = false;
-  function showReviewRequiredPopup(pending, count, onGoToReview) {
+  function showReviewRequiredPopup(pending, count, onGoToReview, items) {
     if (_popupShownThisLoad || !pending) return;
     _popupShownThisLoad = true;
     // One-at-a-time with the other login popups (goal-setup, badge, etc.) via
@@ -64,14 +121,15 @@
     if (window.PopupQueue) {
       window.PopupQueue.enqueue({
         id: 'review-required', priority: 40, until: '#rd-popup-backdrop',
-        show: function () { _renderReviewRequiredPopup(pending, count, onGoToReview); }
+        show: function () { _renderReviewRequiredPopup(pending, count, onGoToReview, items); }
       });
     } else {
-      _renderReviewRequiredPopup(pending, count, onGoToReview);
+      _renderReviewRequiredPopup(pending, count, onGoToReview, items);
     }
   }
 
-  function _renderReviewRequiredPopup(pending, count, onGoToReview) {
+  function _renderReviewRequiredPopup(pending, count, onGoToReview, items) {
+    var hasList = !!(items && items.length);
     _injectStyles();
     var backdrop = document.getElementById('rd-popup-backdrop');
     if (!backdrop) {
@@ -80,11 +138,14 @@
       document.body.appendChild(backdrop);
     }
     backdrop.innerHTML =
-      '<div class="rd-popup-box">' +
+      '<div class="rd-popup-box' + (hasList ? ' has-list' : '') + '">' +
         '<div class="rd-popup-emoji">🔒</div>' +
         '<div class="rd-popup-title">Bạn có ' + count + ' bài đang chờ Review</div>' +
-        '<div class="rd-popup-text">Hãy review ít nhất 1 bài trước khi làm bài mới.<br><br>Review giúp bạn tìm ra lỗi và tránh lặp lại cùng một lỗi trong bài tiếp theo.</div>' +
-        '<button class="rd-popup-btn" id="rd-popup-go-btn">Review ngay</button>' +
+        (hasList
+          ? '<div class="rd-popup-text" style="margin-bottom:12px">Review hết câu sai của ít nhất 1 bài dưới đây để làm bài mới. Bài nào review xong sẽ tự biến mất khỏi danh sách.</div>' +
+            pendingReviewListHtml(items)
+          : '<div class="rd-popup-text">Hãy review ít nhất 1 bài trước khi làm bài mới.<br><br>Review giúp bạn tìm ra lỗi và tránh lặp lại cùng một lỗi trong bài tiếp theo.</div>' +
+            '<button class="rd-popup-btn" id="rd-popup-go-btn">Review ngay</button>') +
         '<button class="rd-popup-dismiss" id="rd-popup-dismiss-btn">Để sau</button>' +
         '<div class="rd-popup-count">Bài đang chờ Review: ' + count + '</div>' +
         '<button class="rd-code-toggle" id="rd-code-toggle">Có mã bỏ qua từ giáo viên?</button>' +
@@ -100,9 +161,14 @@
     document.getElementById('rd-popup-dismiss-btn').addEventListener('click', function () {
       backdrop.classList.remove('open');
     });
-    document.getElementById('rd-popup-go-btn').addEventListener('click', function () {
+    var goBtn = document.getElementById('rd-popup-go-btn');
+    if (goBtn) goBtn.addEventListener('click', function () {
       backdrop.classList.remove('open');
       if (onGoToReview) onGoToReview();
+    });
+    wirePendingReviewList(backdrop, items, function (it) {
+      backdrop.classList.remove('open');
+      if (onGoToReview) onGoToReview(it);
     });
     _wireCodeRedeem();
   }
@@ -192,5 +258,10 @@
   }
 
   window.showReviewRequiredPopup = showReviewRequiredPopup;
+  // Same pending list for the host page's own banner.
+  window.ReviewPendingList = {
+    html: function (items) { _injectStyles(); return pendingReviewListHtml(items); },
+    wire: wirePendingReviewList,
+  };
   window.showReviewBypassPrompt = showReviewBypassPrompt;
 })();

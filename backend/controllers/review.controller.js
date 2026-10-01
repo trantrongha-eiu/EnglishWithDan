@@ -36,11 +36,14 @@ exports.getPending = guard(null, async (req, res) => {
   // existing callers that only ever cared about "is there anything to
   // review" — `count`/`items`/`blocked` are additive, for the redesigned
   // "up to 2 is fine, 3+ blocks" gate.
+  // `items` carries each pending review's test/passage name, date and
+  // reviewed/total progress so the student sees EVERY attempt still owed a
+  // review, not just the oldest one (see describePendingReviews).
   res.json({
     success: true,
     pending: items[0] || null,
     count,
-    items,
+    items: await reviewService.describePendingReviews(items),
     blocked: count >= reviewService.MAX_PENDING_REVIEWS,
   });
 });

@@ -92,6 +92,10 @@ router.post('/tests/:id/submit', auth, requirePremium('Bạn cần nâng cấp l
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/history', auth, listeningController.getHistory);
 
+// GET /api/listening/history/combined?limit= — Full đề + Bài lẻ in one
+// newest-first list (must stay above /history/:attemptId).
+router.get('/history/combined', auth, listeningController.getCombinedHistory);
+
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Chi tiết 1 attempt (xem lại bài cũ)
 // ══════════════════════════════════════════════════════════════════════════════
