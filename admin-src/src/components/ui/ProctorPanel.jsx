@@ -8,7 +8,7 @@ import { formatDate } from '../../utils/api';
 // services/proctorShotService.js). Was duplicated in MockTests.jsx and
 // EntranceTest.jsx before screenshots existed.
 
-export const PROCTOR_LABEL = {
+const PROCTOR_LABEL = {
   hidden: 'Ẩn tab / chuyển tab',
   blur: 'Mất focus cửa sổ (chuyển ứng dụng)',
   'unload-attempt': 'Định đóng / tải lại tab',
