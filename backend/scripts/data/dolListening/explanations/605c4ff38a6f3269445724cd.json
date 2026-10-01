@@ -1,0 +1,11 @@
+{"title":"Megequip Customer Detail","q":{
+"1":{"v":"Khi Sally hỏi tên khách hàng.","t":["Oskar Greening. That’s Oskar with a ‘K*.","O-S-K-A-R?"],"p":"Tên được đánh vần O-S-K-A-R (viết bằng chữ K, không phải C) → Oskar"},
+"2":{"v":"Khi hỏi số nhà ở York Terrace.","t":"It’s flat. Number 52C.","p":"Oskar ở căn hộ số 52C, York Terrace → 52C"},
+"3":{"v":"Khi hỏi địa chỉ giao hàng.","t":"my neighbour can take delivery at number 5 York Avenue","p":"Anh vắng nhà cả ngày nên hàng giao cho hàng xóm ở số 5 York Avenue (York Terrace là địa chỉ nhà) → Avenue"},
+"4":{"v":"Khi hỏi phương thức thanh toán.","t":"Could I come to the store and pay cash in advance?","p":"Anh chưa có thẻ nên đến cửa hàng trả tiền mặt trước → cash"},
+"5":{"v":"Khi nói về giảm giá.","t":"York Terrace is within the city so you get free delivery and 5% discount on your order","p":"Trả tiền mặt không được giảm giá; được giảm 5% vì địa chỉ nằm trong thành phố → city"},
+"6":{"v":"Khi đặt chiếc đèn bàn số 664.","t":"It’s in the ‘Living’ section of the catalogue?","p":"Đèn không thuộc mục Home Office mà ở mục ‘Living’ của catalogue, Oskar xác nhận → Living"},
+"7":{"v":"Khi Oskar muốn lấy đèn sớm.","t":"I’ll note down that’s – ‘customer will collect’.","p":"Anh sẽ tự lấy đèn khi đến trả tiền nên ghi chú là khách tự lấy → collect"},
+"8":{"v":"Khi đặt ghế số 131.","t":"OK. so I’ll go for 131 in green then.","p":"Ghế số 131 (có tay vịn điều chỉnh được) chọn màu xanh lá → green"},
+"9":{"v":"Khi đặt tủ hồ sơ hai ngăn.","t":"You can have it with a lock, which is more secure.","p":"Có loại thường và loại có khóa; Oskar chọn loại có khóa → two drawers with lock → lock"},
+"10":{"v":"Cuối bài, khi nói về thời gian giao hàng.","t":"that’ll be delivered on or before the 3rd of October","p":"Tủ hồ sơ chuyển thẳng từ London, giao muộn nhất ngày 3 tháng 10 (hôm nay là 29/9) → 3rd October"}}}

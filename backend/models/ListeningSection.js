@@ -64,6 +64,8 @@ const ListeningSectionSchema = new mongoose.Schema({
   questionGroups:  [LSGroupSchema],
   isActive:        { type: Boolean, default: true },
   isActualTest:    { type: Boolean, default: false },
+  // Cover image of the student practice-list card (cover only — never shown inside the test).
+  thumbnailUrl:    { type: String, default: '' },
   // Sentence-level dictation practice ("chép chính tả từng câu") — one
   // start/end timestamp pair (seconds into audioUrl) per sentence, derived
   // by aligning `transcript` (this section's verified, human-authored

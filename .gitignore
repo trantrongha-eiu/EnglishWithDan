@@ -40,4 +40,5 @@ backend/scripts/miniIelts/shots/
 backend/scripts/miniIelts/passages.json
 backend/scripts/miniIelts/out.json
 backend/scripts/miniIelts/pw_*.json
+backend/scripts/dolListening/web/
 __pycache__/

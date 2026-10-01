@@ -4,6 +4,7 @@ import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 import GapFillPanel from '../components/GapFillPanel';
+import CoverImageField from '../components/CoverImageField';
 
 function fmtDuration(sec) {
   if (!sec) return '';
@@ -148,6 +149,7 @@ export default function ListeningSectionEdit() {
     audioDuration: 0,
     isActive: true,
     questionRange: { start: 1, end: 10 },
+    thumbnailUrl: '',
   });
   const [questionGroups, setQuestionGroups] = useState([]);
 
@@ -192,6 +194,7 @@ export default function ListeningSectionEdit() {
           isActive:       s.isActive !== false,
           isActualTest:   s.isActualTest === true,
           questionRange:  s.questionRange || DEFAULT_RANGES[s.partNumber] || { start: 1, end: 10 },
+          thumbnailUrl:   s.thumbnailUrl || '',
         });
         setQuestionGroups(s.questionGroups || []);
         setGapFill({
@@ -332,6 +335,8 @@ export default function ListeningSectionEdit() {
             setMeta(f => ({ ...f, audioUrl: url, audioDuration: duration, audioFileName: name || '' }));
           }}
         />
+
+        <CoverImageField value={meta.thumbnailUrl} onChange={v => setField('thumbnailUrl', v)} hint="Để trống: card hiện logo." />
 
         <div style={{ display: 'flex', gap: 20, marginTop: 8 }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>

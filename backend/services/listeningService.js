@@ -361,7 +361,7 @@ async function listPracticeSections(query, userId) {
     sortBy = { createdAt: -1 };
   }
   const sections = await ListeningSection.find(filter)
-    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished')
+    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished thumbnailUrl')
     .sort(sortBy)
     .lean();
   const safe = sections.map(s => ({
@@ -377,6 +377,7 @@ async function listPracticeSections(query, userId) {
       questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
     })),
     hasGapFill: s.gapFillPublished === true,
+    thumbnail: toCardThumbnail(s.thumbnailUrl),
   }));
   const sectionIds = sections.map(s => s._id);
   const attemptStats = await ListeningPracticeAttempt.aggregate([
@@ -387,6 +388,13 @@ async function listPracticeSections(query, userId) {
   const doneMap = {};
   attemptStats.forEach(a => { doneMap[a._id.toString()] = { count: a.count, lastScore: a.lastScore, lastTotal: a.lastTotal }; });
   return { sections: safe, doneMap };
+}
+
+// Card cover for the practice list: a small 2:1 crop of a Cloudinary image
+// (other hosts are returned unchanged). Same transform as the Reading list.
+function toCardThumbnail(url) {
+  if (!url) return '';
+  return url.replace(/(res\.cloudinary\.com\/[^/]+\/image\/upload\/)(?!c_fill)/, '$1c_fill,g_auto,w_480,h_240,q_auto,f_auto/');
 }
 
 async function getPracticeSectionById(id) {

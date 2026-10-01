@@ -1,0 +1,55 @@
+{
+"title": "University Orientation Program",
+"q": {
+"21": {
+"v": "Đầu bài, khi bàn về buổi chiều thứ Hai.",
+"t": "I am interested in the ‘Uni Tour’",
+"p": "Chiều thứ Hai có Careers Lecture hoặc Uni Tour; Sam cho rằng nghĩ về nghề nghiệp còn quá sớm nên chọn tham quan trường và Liz đi cùng → University tour"
+},
+"22": {
+"v": "Buổi sáng thứ Ba.",
+"t": "we should take advantage of the library tour while it’s being offered",
+"p": "Lựa chọn là Library Tour hoặc Student Union Induction; hội sinh viên có thể đến lúc khác nên họ chọn tham quan thư viện → Library tour"
+},
+"23": {
+"v": "Buổi chiều thứ Tư.",
+"t": "computers are the basis of everything these days, so I’m going to the computer lab",
+"p": "Chọn giữa phòng máy tính và bài giảng về quyền pháp lý; họ để bài giảng pháp lý lại sau → Computer lab visit"
+},
+"24": {
+"v": "Chiều thứ Sáu.",
+"t": "There’s either a BBQ on the main lawn, or the dance.",
+"p": "Liz không bỏ lỡ dịp ăn uống, Sam cũng thích bữa ăn miễn phí và không giỏi nhảy → chọn tiệc nướng → BBQ"
+},
+"25": {
+"v": "Khi bàn về quy định trình bày bài nộp – phần trên cùng của trang.",
+"t": "everything we hand in must have a header and a footer",
+"p": "Ô 25 nằm ở dải trên cùng của trang, đối xứng với “Footer” ở dưới → header"
+},
+"26": {
+"v": "Khi nói về cỡ chữ của tiêu đề.",
+"t": "16 points, and bold print, and underlined",
+"p": "Tiêu đề (Heading) phải cỡ 16, in đậm và gạch chân → 16"
+},
+"27": {
+"v": "Khi nói về phần nội dung chính.",
+"t": "the size is 12 points",
+"p": "Nội dung chính dùng font Arial cỡ 12, giãn dòng 1.5 → 12"
+},
+"28": {
+"v": "Khi nói về header và footer.",
+"t": "The header and footer are different. They’re only single-spaced.",
+"p": "Header và footer cỡ 10 và chỉ giãn dòng đơn → single"
+},
+"29": {
+"v": "Khi nói header phải ghi gì.",
+"t": "The header has the name of the work.",
+"p": "Header ghi tên của bài làm → work"
+},
+"30": {
+"v": "Ngay sau đó, khi tìm xem tên giáo viên ghi ở đâu.",
+"t": "the teacher’s name must go somewhere. Ah, here it is. It goes in the footer.",
+"p": "Header ghi tên bài làm, còn tên giáo viên được ghi ở footer (ô 30 nằm ở phần footer) → teacher"
+}
+}
+}

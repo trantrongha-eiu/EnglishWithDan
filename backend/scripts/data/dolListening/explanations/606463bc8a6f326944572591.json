@@ -1,0 +1,11 @@
+{"title":"Transport Survey","q":{
+"1":{"v":"Đầu bài, khi hỏi tên.","t":"Yes, it’s H-A-R-D-I-E.","p":"Họ được đánh vần H-A-R-D-I-E → Hardie"},
+"2":{"v":"Khi hỏi địa chỉ.","t":"It’s 19, White Stone Road.","p":"Số nhà 19 đường White Stone → 19"},
+"3":{"v":"Khi hỏi mã bưu chính.","t":"It’s actually G-T-8, 2-L-C.","p":"Người phỏng vấn đoán GT7 nhưng Luisa sửa lại là GT8 2LC → GT82LC"},
+"4":{"v":"Khi hỏi nghề nghiệp.","t":"I’ve actually just finished my training. I’m a hairdresser.","p":"Cô không phải sinh viên mà vừa học xong và làm thợ cắt tóc → hairdresser"},
+"5":{"v":"Khi hỏi lý do vào thị trấn.","t":"Actually it’s not for shopping today, which would be my normal reason, but to see the dentist.","p":"Bình thường cô đi mua sắm, nhưng hôm nay là đi nha sĩ → dentist"},
+"6":{"v":"Phần góp ý cải thiện đi lại.","t":"I think the lighting should be better","p":"Khi đi bộ về muộn, cô muốn đèn đường tốt hơn → lighting"},
+"7":{"v":"Ngay sau đó.","t":"I don’t think there are enough trains. That’s why I don’t use them – you have to wait so long.","p":"Không đủ tàu, phải chờ lâu → muốn tàu chạy thường xuyên hơn → trains"},
+"8":{"v":"Phần về đi xe đạp.","t":"where I work there are no safe places to leave your bikes","p":"Nơi làm không có chỗ để xe đạp an toàn → safe"},
+"9":{"v":"Ngay sau đó.","t":"I think I’d need a shower somewhere at work","p":"Đạp xe lên dốc sẽ ra mồ hôi nên cần chỗ tắm ở nơi làm việc → shower"},
+"10":{"v":"Cuối bài.","t":"I think I’d like to see you offering training for that","p":"Cô không tự tin đạp xe trên đường đông nên muốn có lớp hướng dẫn → training"}}}

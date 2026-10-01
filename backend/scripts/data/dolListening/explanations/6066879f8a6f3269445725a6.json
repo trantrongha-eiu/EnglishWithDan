@@ -1,0 +1,11 @@
+{"title":"Thorndyke's Builders","q":{
+"1":{"v":"Đầu bài, khi hỏi tên.","t":"It’s P-A-R-G-E-double T-E-R.","p":"Họ được đánh vần P-A-R-G-E-double T-E-R → Pargetter"},
+"2":{"v":"Khi hỏi địa chỉ.","t":"No, actually it’s East Park, Flat 4.","p":"Bà May ở West Park Flats, còn Edith ở East Park, căn số 4 → East"},
+"3":{"v":"Ngay sau đó.","t":"Yes, it’s at the back of the library.","p":"“At the back of” = “behind”; tòa nhà nằm sau thư viện → library"},
+"4":{"v":"Khi hỏi thời điểm gọi điện.","t":"So would the best time to ring you be in the morning?","p":"Edith thường vắng nhà buổi chiều và tối nên nên gọi buổi sáng → morning"},
+"5":{"v":"Khi hỏi chỗ đỗ xe tải.","t":"park by the postbox on the other side of the road from the entrance","p":"Đỗ cạnh hòm thư, phía bên kia đường đối diện lối vào → postbox"},
+"6":{"v":"Khi nói về bảng báo giá.","t":"I’ll list all the jobs separately with individual prices","p":"Báo giá liệt kê từng việc kèm giá riêng → prices"},
+"7":{"v":"Việc gấp nhất – trong bếp.","t":"the glass in the door has cracked","p":"Kính ở cửa bếp bị nứt cần thay → glass"},
+"8":{"v":"Việc sơn trong bếp.","t":"Just the area over the cooker. It’s very greasy","p":"Chỉ sơn phần tường phía trên bếp nấu vì bị bám dầu mỡ → cooker"},
+"9":{"v":"Ngay sau đó.","t":"strip the old paint and plaster it about a week before I paint it","p":"Cạo sơn cũ và trát vữa khoảng một tuần trước khi sơn → week"},
+"10":{"v":"Việc ở ngoài vườn.","t":"Well, I’d like you to replace a fence.","p":"Thay một hàng rào ở cuối vườn → fence"}}}
