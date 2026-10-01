@@ -105,8 +105,9 @@ const fs = require('fs');
         if (['multiple-choice', 'true-false-ng', 'yes-no-ng'].includes(q.type) && !String(q.questionText || '').trim()) warns.push(`Q${n}: no text`);
         if (q.type === 'multiple-choice' && (q.options || []).filter(o => String(o).trim()).length < 2) warns.push(`Q${n}: MC <2 options`);
         if (q.type === 'sentence-completion' && !(q.wordBank || []).length) warns.push(`Q${n}(${label}): SC wordBank empty`);
-        if (q.type === 'true-false-ng' && !/^(TRUE|FALSE|NOT GIVEN)$/i.test(String(q.correctAnswer).trim())) warns.push(`Q${n}: TFNG key "${q.correctAnswer}"`);
-        if (q.type === 'yes-no-ng' && !/^(YES|NO|NOT GIVEN)$/i.test(String(q.correctAnswer).trim())) warns.push(`Q${n}: YNNG key "${q.correctAnswer}"`);
+        // a key may list accepted alternatives ("FALSE / NOT GIVEN") when sources disagree — graders and the review screen split on "/"
+        if (q.type === 'true-false-ng' && !/^(TRUE|FALSE|NOT GIVEN)(\s*\/\s*(TRUE|FALSE|NOT GIVEN))*$/i.test(String(q.correctAnswer).trim())) warns.push(`Q${n}: TFNG key "${q.correctAnswer}"`);
+        if (q.type === 'yes-no-ng' && !/^(YES|NO|NOT GIVEN)(\s*\/\s*(YES|NO|NOT GIVEN))*$/i.test(String(q.correctAnswer).trim())) warns.push(`Q${n}: YNNG key "${q.correctAnswer}"`);
         if (q.type === 'multiple-choice' && /^[A-Z]$/i.test(String(q.correctAnswer).trim())) {
           const idx = String(q.correctAnswer).trim().toUpperCase().charCodeAt(0) - 65;
           if (idx >= (q.options || []).length) warns.push(`Q${n}: MC key ${q.correctAnswer} beyond ${q.options.length} options`);

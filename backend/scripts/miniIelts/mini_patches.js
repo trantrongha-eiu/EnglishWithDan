@@ -4,7 +4,15 @@
 const TFNG = n => `Do the following statements agree with the information given in Reading Passage ${n}? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.`;
 const P = d => ({ passage1: 1, passage2: 2, passage3: 3 })[d.category];
 const YNNG = n => `Do the following statements agree with the views of the writer in Reading Passage ${n}? Write YES if the statement agrees with the views of the writer, NO if the statement contradicts the views of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.`;
-const setQ = (d, stems) => d.questionGroups.flatMap(g => g.questions).forEach(q => { if (stems[q.questionNumber]) q.questionText = stems[q.questionNumber]; });
+// renumber a group's questions from `start` (and the __Qn__ placeholders in its notes/table) — for groups rebuilt by hand
+const renum = (g, start) => {
+  const map = {}; g.questions.forEach((q, i) => { map[q.questionNumber] = start + i; q.questionNumber = start + i; if (/^Question \d+$/.test(q.questionText)) q.questionText = `Question ${start + i}`; });
+  const fix = s => s.replace(/__Q(\d+)__/g, (m, n) => map[n] ? `__Q${map[n]}__` : m);
+  if (g.noteConfig) g.noteConfig.lines = g.noteConfig.lines.map(fix);
+  if (g.tableConfig) g.tableConfig.rows = g.tableConfig.rows.map(r => r.map(fix));
+  const end = start + g.questions.length - 1; g.groupTitle = start === end ? `Question ${start}` : `Questions ${start}–${end}`;
+};
+const setQ = (d, stems) =>d.questionGroups.flatMap(g => g.questions).forEach(q => { if (stems[q.questionNumber]) q.questionText = stems[q.questionNumber]; });
 
 module.exports = {
   // ───── batch 2 ─────
@@ -986,6 +994,241 @@ module.exports = {
       g0.noteConfig.lines = ['<strong>Goals</strong>', ...g0.noteConfig.lines.slice(0, 3), '<strong>Participants</strong>', ...g0.noteConfig.lines.slice(3)];
       g1.instruction = TFNG(1);
       g2.noteConfig.lines = g2.noteConfig.lines[0].split(/\s*↓\s*/).flatMap((l, i) => i ? ['↓', l] : [l]);
+    },
+  },
+  // ───── batch 10 (retried "broken" pages — passage in <li>/<div>, fixed in mini_extract.py) ─────
+  1459: {
+    text: [['<h2>The iceman</h2>', '<h2>The Iceman</h2>'], ['inside his body-a microscopic', 'inside his body – a microscopic'], ['stalk of yew-an unfinished', 'stalk of yew – an unfinished'],
+      ['lower Vai Senales-especially', 'lower Val Senales – especially'], [/Vai (Senales|Venosta)/g, 'Val $1'], ['flint- tipped', 'flint-tipped'], ['modern- day', 'modern-day']],
+    keys: { 23: 'refrigerated high-tech / refrigerated, high-tech / refrigerated' },
+    fn: d => {
+      d.title = 'The Iceman';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 14-18 on your answer sheet.';
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Complete the sentences below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 23-26 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace(/__Q(25|26)__$/, '__Q$1__.'));
+    },
+  },
+  1462: {
+    text: [[/<p>([A-I]) /g, '<p><strong>$1</strong> '], ['to \'new orbital heights', 'to new orbital heights'], ['different world for US,’', 'different world for us,’'], ['Washington, D.c.', 'Washington, D.C.'], ['up to 4,6 million', 'up to 4.6 million'],
+      ['elaborate maps- the pride', 'elaborate maps – the pride'], ['the latest maps, with their prodigious', 'the latest maps. With their prodigious'], ['at the dick of a button', 'at the click of a button'],
+      [/(\d+) (th|st) century/g, '$1$2 century'], ['the foremost shipmaker', 'the foremost mapmaker'], ['the Cassini family- father', 'the Cassini family – father'], ['the Italian - born founder', 'the Italian-born founder'],
+      ['countryside arid his', 'countryside and his'], ['A, B, c or D', 'A, B, C or D'], ['our modem time zones', 'our modern time zones'], ['allow US to see', 'allow us to see']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 14-18 on your answer sheet.';
+      g1.instruction = 'Look at the following list of achievements (Questions 19-21) and the list of mapmakers below. Match each achievement with the correct mapmaker, A, B, C or D. Write the correct letter, A, B, C or D, in boxes 19-21 on your answer sheet.';
+      // the "rather than" landed in the wrong sentence on the mini page
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace('the responsibility of __Q23__ scientists.', 'the responsibility of __Q23__ rather than scientists.')
+        .replace('the writings of __Q24__ rather than had been kept', 'the writings of __Q24__ had been kept'));
+    },
+  },
+  1425: {
+    text: [[/­/g, ''], ['media hype cud how', 'media hype and how'], ['as so often is the ease', 'as so often is the case'], ['Yes, It is true', 'Yes, it is true'], ['is getting wanner', 'is getting warmer'],
+      ['have frown an increase', 'have shown an increase'], ['downward swing flint has', 'downward swing that has'], ['over the lust hundred', 'over the last hundred'],
+      // "19BH" — Hansen's famous "cause and effect" testimony to the US Senate was in 1988
+      ['Dr. James Hansen, in 19BH,', 'Dr. James Hansen, in 1988,'], ['cause arid effect', 'cause and effect'], ['vegetation In areas', 'vegetation in areas'], ['rises In temperature', 'rises in temperature'],
+      ['if we Look at', 'if we look at'], ['industrial processes anti the', 'industrial processes and the'], ['only two percent come From', 'only two percent come from'], ['as for as I am concerned', 'as far as I am concerned'],
+      ['the fact depend', 'the facts depend'], ['not the result oil natural', 'not the result of natural'], ['will be deviating', 'will be devastating'], ['Is variable', 'is variable'],
+      ['It is nearly Impossible', 'It is nearly impossible'], ['disastrous for in mankind', 'disastrous for mankind'], ['there Is a significant link between the climate now, mid man’s', 'there is a significant link between the climate now and man’s'],
+      ['increase In global', 'increase in global'], ['are of the opinion that.. .', 'are of the opinion that …']],
+    fn: d => {
+      const [g0, g1, g2, g3] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-31 on your answer sheet.';
+      g1.instruction = YNNG(3);
+      g2.instruction = 'Complete the sentences below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 38-39 on your answer sheet.';
+      g2.noteConfig.lines = [g2.noteConfig.lines[0] + ' ' + g2.noteConfig.lines[1], g2.noteConfig.lines[2] + '.'];
+      g3.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in box 40 on your answer sheet.';
+    },
+  },
+  1378: {
+    text: [['<h2>The history of the guitar</h2>', '<h2>The History of the Guitar</h2>'], ['NO MOR E THAN T WO WORDS', 'NO MORE THAN TWO WORDS'], ['six -string', 'six-string']],
+    // keys must be written the way the passage writes them ("about 500 years ago", "more than 5,000 years")
+    keys: { 2: '500 years / five hundred years', 7: 'fans / guitar fans', 8: '5,000 / 5000 / five thousand', 10: 'the lute / lute' },
+    fn: d => {
+      d.title = 'The History of the Guitar';
+      const [g0, g1] = d.questionGroups;
+      g0.instruction = 'Complete the sentences below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 1-7 on your answer sheet.';
+      // Q1 is cut off on the mini page itself ("‘guit-‘ and ‘") → completed from the passage sentence it paraphrases
+      g0.noteConfig.lines = g0.noteConfig.lines.map(l => l.replace(/^\d+\s+/, ''));
+      g0.noteConfig.lines[0] = 'Despite differences in __Q1__, ‘guit-’ and ‘-tar’ have been present in most words for ‘guitar’ throughout history.';
+      g0.noteConfig.lines[1] += '.';
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 8-13 on your answer sheet.';
+      g1.noteConfig.lines = g1.noteConfig.lines.map(l => l.replace('__Q12__ )', '__Q12__)'));
+    },
+  },
+  1366: {
+    text: [['Yet watching AIMIO perform', 'Yet watching ASIMO perform'], ['can __Q22__. Humans.', 'can __Q22__ humans.'], ['its __Q26__ ##a.', 'its __Q26__.']],
+    keys: { 24: 'Cog / Cognition' },
+    fn: d => {
+      const [g0, g1] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 14-19 on your answer sheet. NB You may use any letter more than once.';
+      g0.matchingReuseAllowed = true;
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 20-26 on your answer sheet.';
+    },
+  },
+  131: {
+    fn: d => {
+      const [g0, g1] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraphs concentrate on the following information? Write the correct letter, A-H, in boxes 14-19 on your answer sheet.';
+      g1.instruction = YNNG(2);
+    },
+  },
+  1525: {
+    text: [['﻿', ''], [/Havard(['’])s Center/, 'Harvard$1s Center']],
+    keys: { 17: 'vii' }, // mini: "viii" — the list only goes to vii; vietop key: D = vii
+    fn: d => {
+      d.title = d.title.replace('﻿', '');
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has six paragraphs, A-F. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-vii, in boxes 14-19 on your answer sheet.';
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Look at the following people (Questions 23-26) and the list of statements below. Match each person with the correct statement, A-E. Write the correct letter, A-E, in boxes 23-26 on your answer sheet.';
+    },
+  },
+  1524: {
+    text: [[/<p>([A-F]) /g, '<p><strong>$1</strong> '], ['the Lore Valley', 'the Loire Valley'], ['Christian used cheek kisses', 'Christians used cheek kisses'], ['In the Middle Age,', 'In the Middle Ages,']],
+    keys: { 37: '400 years / four hundred years', 39: 'social contacts / la bise / the bise / cheek kisses', 40: 'germs / bacteria' },
+    fn: d => {
+      d.title = 'Why Do We Touch Strangers So Much? A History of the Handshake Offers Clues';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = TFNG(3);
+      g1.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 34-38 on your answer sheet.';
+      g1.noteConfig.title = g1.noteConfig.lines.shift();
+      g2.instruction = 'Answer the questions below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 39-40 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace(/^\d+\s+/, '').replace('What did French', 'What did the French'));
+    },
+  },
+  1523: {
+    text: [[/<p>([A-H]) /g, '<p><strong>$1</strong> '], ['Just the days after temperatures hit', 'Just days after temperatures hit']],
+    fn: d => {
+      d.title = 'Chinstrap Penguin Population in the Last 50 Years';
+      const [g1, g2] = d.questionGroups;
+      // the paragraph-matching group (options ": A", "B"…) was dropped by the converter → rebuilt from the mini page
+      const g0 = { groupTitle: '', instruction: 'Reading Passage 1 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 1-7 on your answer sheet. NB You may use any letter more than once.',
+        groupType: 'matching-options', matchingOptions: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], matchingReuseAllowed: true,
+        questions: ['the highest temperatures ever', 'the difference between current and past records on penguin population', 'places where people cannot go to', 'places where chinstrap penguins live',
+          'measures to protect ocean species', 'factors contributing to the decline in the amount of food available', 'description of a specific species']
+          .map((questionText, i) => ({ questionNumber: i + 1, type: 'matching-info', questionText, correctAnswer: 'DCGAHEA'[i] })) };
+      renum(g0, 1); renum(g1, 8); renum(g2, 11);
+      g1.instruction = TFNG(1);
+      g2.instruction = 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 11-13 on your answer sheet.';
+      g2.noteConfig.lines = g2.noteConfig.lines.map(l => l.replace('Build __Q13__', 'build __Q13__'));
+      d.questionGroups = [g0, g1, g2];
+      d.questionRange = { start: 1, end: 13 };
+    },
+  },
+  1461: {
+    text: [[/<p>([A-K]) /g, '<p><strong>$1</strong> '], ['a mentor to tech her', 'a mentor to teach her'], ['game - playing', 'game-playing'], ['once a journey man begins', 'once a journeyman begins'],
+      [/ (The (Power|Paradox) of Expertise)<\/p>/g, '</p>\n\n<p><strong>$1</strong></p>'], ['higher -order', 'higher-order'], ['better then novices.Experts recognized', 'better than novices. Experts recognize'],
+      ['domain -specific short -term and long -term', 'domain-specific short-term and long-term'], ['Better at self-monitoring then novices', 'Better at self-monitoring than novices'],
+      ['manifestations of human bias</p>', 'manifestations of human bias.</p>'], ['Expert tend to review', 'Experts tend to review'],
+      ['However attempting endevour of finding answers did not yet produce __Q13__', 'However, attempts to find answers have not yet produced __Q13__.']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Complete the flow-chart below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.';
+      // the flow-chart's three boxes were flattened into two lines on the mini page
+      g0.noteConfig.lines = ['Novice: needs to study __Q1__ under the guidance of a __Q2__', '↓', '__Q3__: starts to identify __Q4__ for cases within or between cases; studies more __Q5__ ways of doing things', '↓ creates new knowledge', 'Expert: performs tasks independently'];
+      g1.instruction = TFNG(1);
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 11-13 on your answer sheet.';
+    },
+  },
+  1422: {
+    text: [['<h2>Warning: Mondays are bad for your heart</h2>\n\n<p>Warning: Mondays are bad for your heart</p>', '<h2>Warning: Mondays Are Bad for Your Heart</h2>'], ['smoking and cholesterol，', 'smoking and cholesterol,'],
+      ['the Luigi Saddo Hospital', 'the Luigi Sacco Hospital']],
+    fn: d => {
+      d.title = 'Warning: Mondays Are Bad for Your Heart';
+      const [g0, g1] = d.questionGroups;
+      // TFNG statements and the nine heading questions were each merged into one question on the mini page → rebuilt
+      g0.instruction = 'Do the following statements agree with the information given in Reading Passage 2? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this. Example: It was once believed that there was an equal chance of suffering a heart attack on any day of the week. – Answer: TRUE';
+      g0.questions = ['Unemployed Germans have a higher risk of heart attack than employed Germans.', 'Unemployed Italians have a lower risk of heart attack than unemployed Germans.',
+        'Germans risk heart attack because of their high consumption of fatty food.', 'Cholesterol and smoking cause heart attacks.']
+        // Q17: mini says FALSE (they are only long-term risk factors, the trigger is unknown); NOT GIVEN is just as defensible → both accepted
+        .map((questionText, i) => ({ questionNumber: 14 + i, type: 'true-false-ng', questionText, correctAnswer: ['FALSE', 'NOT GIVEN', 'NOT GIVEN', 'FALSE / NOT GIVEN'][i] }));
+      renum(g0, 14);
+      const N = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix'];
+      g1.instruction = 'Reading Passage 2 has nine paragraphs, A-I. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-ix, in boxes 18-26 on your answer sheet. Use each heading ONCE only.';
+      g1.headingsConfig = { headings: ['Exact cause of heart attacks', 'The safest day', 'Breathless, sweaty and crushed', 'Reducing heart attack hazard', 'High-risk Monday',
+        'Mondays: riskier than food and way of life', 'Jobless but safer', 'Elderly also at risk', 'Bodily adaptations'].map((text, i) => ({ numeral: N[i], text })) };
+      g1.questions = 'ABCDEFGHI'.split('').map((L, i) => ({ questionNumber: 18 + i, type: 'matching-headings', questionText: `Paragraph ${L}`, correctAnswer: ['iii', 'v', 'vii', 'ii', 'i', 'ix', 'viii', 'vi', 'iv'][i] }));
+      renum(g1, 18);
+      d.questionRange = { start: 14, end: 26 };
+    },
+  },
+  1359: {
+    text: [['<p>New transport mode PRT RUF</p>\n\n', ''], ['since the days of Gottlieb Daimler</p>', 'since the days of Gottlieb Daimler.</p>'],
+      // the "So politicians…" sentences were spliced into the Anderson paragraph; they continue the car paragraph before it
+      [' So politicians should be trying to lure people out of their cars, not forcing them out. There’s certainly no shortage of alternatives. Perhaps the most attractive is the concept known as personal rapid transit(PRT), independently invented in the US and Europe in the 1950s.</p>', '</p>'],
+      ['as anyone with small children or heavy shopping knows.</p>', 'as anyone with small children or heavy shopping knows. So politicians should be trying to lure people out of their cars, not forcing them out. There’s certainly no shortage of alternatives. Perhaps the most attractive is the concept known as personal rapid transit (PRT), independently invented in the US and Europe in the 1950s.</p>'],
+      ['computer game PacMan.White dots', 'computer game PacMan. White dots'], ['not a video game.J.Edward Anderson', 'not a video game. J. Edward Anderson'], ['personal rapid transit(PRT)', 'personal rapid transit (PRT)'],
+      ['in the 1970s, From Europe, Japan, and elsewhere in the Us,', 'in the 1970s, from Europe, Japan, and elsewhere in the US,'], ['to ‘commercialize the initiative', 'to commercialize the initiative'],
+      ['With PRT, the fracture would have to come first-and that', 'With PRT, the infrastructure would have to come first – and that'], ['became popular-and after governments started earning revenue from them- that', 'became popular – and after governments started earning revenue from them – that'],
+      ['windows versus Apple Mac', 'Windows versus Apple Mac'], ['the Ruf vehicle-the term comes from a Danish saying meaning to “go fast”-would', 'the Ruf vehicle – the term comes from a Danish saying meaning to “go fast” – would'],
+      ['per Ruf can is reduced', 'per Ruf car is reduced'], ['Of Course,', 'Of course,'], ['in a RUF system rides” very safely', 'in a RUF system “ride” very safely'],
+      ['in the past century-three times', 'in the past century – three times'], ['is rising. and what’s more', 'is rising. And what’s more']],
+    fn: d => {
+      d.title = 'Going Nowhere Fast';
+      const [g0, g1] = d.questionGroups;
+      d.category = 'passage3'; renum(g0, 27); renum(g1, 31);
+      g0.instruction = TFNG(3);
+      g1.instruction = 'Look at the following descriptions (Questions 31-37) and the list of transport systems below. Match each description with the correct system, A, B or C. Write the correct letter, A, B or C, in boxes 31-37 on your answer sheet. NB You may use any letter more than once.';
+      g1.matchingOptions = ['only PRT', 'only RUF', 'both of them']; g1.matchingReuseAllowed = true;
+      setQ(d, { 31: 'totally relies on a computer system', 32: 'opposition to the system from companies', 33: 'reaches the destination fast', 34: 'no need to share space with the public',
+        35: 'works on the existing roads', 36: 'individuals can buy their own vehicles', 37: 'controlled both by computer and manually' });
+      // "Choose THREE letters" group was not parsed by the converter → rebuilt
+      const opts = ['Stimulating economy', 'Successful application in Europe', 'Safety consideration', 'Less pollution to the environment', 'Economical budget', 'Public popularity', 'Fast speed'];
+      const stem = 'Which THREE of the following are advantages of developing a new transport system?';
+      const g2 = { groupTitle: 'Questions 38–40', instruction: 'Choose THREE letters, A-G. Write the correct letters in boxes 38-40 on your answer sheet.', groupType: 'plain', interchangeableAnswers: true,
+        questions: ['C', 'D', 'G'].map((correctAnswer, i) => ({ questionNumber: 38 + i, type: 'multi-answer-group', questionText: stem, options: opts, correctAnswer })) };
+      d.questionGroups = [g0, g1, g2];
+      d.questionRange = { start: 27, end: 40 };
+    },
+  },
+  1305: {
+    text: [['The villagers of muthukandiya', 'The villagers of Muthukandiya'], ['The Muthkandiya initiative', 'The Muthukandiya initiative'], ['especially it’s financial and organizational', 'especially its financial and organizational']],
+    fn: d => {
+      const [g0, g1] = d.questionGroups;
+      // each group's questions were merged into one text block on the mini page → rebuilt (stems lightly de-garbled)
+      g0.groupType = 'note-form';
+      g0.instruction = 'Answer the questions below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 1-6 on your answer sheet.';
+      g0.noteConfig = { title: '', lines: ['What is the main way for local people in Muthukandiya village to make a living, although it barely supports them? __Q1__',
+        'Where can adults make extra money as day-labourers? __Q2__', 'What has been dug to supply water for daily household use? __Q3__',
+        'In which year did the planning of a new project to lessen the effect of drought begin? __Q4__', 'Where do the gutters and pipes collect rainwater from? __Q5__',
+        'What helps families obtain more water for domestic needs than those relying only on wells and ponds? __Q6__'] };
+      g0.questions = ['crop production', 'sugar-cane plantations / sugarcane plantations', 'three wells / wells', '1998', 'roofs of houses / the roofs of houses / roofs', 'rainwater storage tanks / storage tanks']
+        .map((correctAnswer, i) => ({ questionNumber: 1 + i, type: 'fill-blank', questionText: `Question ${1 + i}`, correctAnswer }));
+      g1.instruction = 'Do the following statements agree with the information given in Reading Passage 1? Write YES if the statement agrees with the information, NO if the statement contradicts the information, NOT GIVEN if there is no information on this.';
+      g1.questions = ['Most of the government’s actions and other programmes have somewhat failed.', 'Masons were trained to construct parts of the rainwater harvesting system.',
+        'The cost of the rainwater harvesting systems was shared by local villagers and the local government.', 'Tanks increase both the amount and quality of the water for domestic use.',
+        'To send her daughter to school, a widow had to take a job in a rainwater harvesting scheme.', 'Households that benefited began to pay part of the maintenance or repairs.',
+        'Training two masons at the same time is much more preferable to training a single one.']
+        // Q12: sources disagree (ieltsmaterial YES — they agreed to contribute; others NO — "it has proved difficult to get households to contribute") → both accepted
+        .map((questionText, i) => ({ questionNumber: 7 + i, type: 'yes-no-ng', questionText, correctAnswer: ['NOT GIVEN', 'YES', 'NO', 'YES', 'NO', 'YES / NO', 'NOT GIVEN'][i] }));
+      renum(g0, 1); renum(g1, 7);
+      d.questionRange = { start: 1, end: 13 };
+    },
+  },
+  1139: {
+    text: [['Farmers everywhere face major risks; including', 'Farmers everywhere face major risks, including'], ['community- based', 'community-based'], ['copipunity-supported agriculture', 'community-supported agriculture']],
+    fn: d => {
+      d.title = 'The Risks Agriculture Faces in Developing Countries';
+      const [g0, g1] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 14-16 on your answer sheet.';
+      g1.instruction = 'Look at the following statements (Questions 17-22) and the list of people below. Match each statement with the correct person, A-G. Write the correct letter, A-G, in boxes 17-22 on your answer sheet. NB You may use any letter more than once.';
+      g1.matchingReuseAllowed = true;
+      // "from them" of Q20 had slipped to the end of Q22 on the mini page
+      setQ(d, { 20: 'Farmers may be helped if there is financial input by the same individuals who buy from them.', 21: 'Governments can help to reduce variation in prices.',
+        22: 'Improvements to infrastructure can have a major impact on risk for farmers.' });
+      // the two "Choose TWO letters" groups were not parsed → rebuilt
+      const two = (n, stem, opts, keys) => ({ groupTitle: '', instruction: `Choose TWO letters, A-E. Write the correct letters in boxes ${n}-${n + 1} on your answer sheet.`, groupType: 'plain', interchangeableAnswers: true,
+        questions: keys.map((correctAnswer, i) => ({ questionNumber: n + i, type: 'multi-answer-group', questionText: stem, options: opts, correctAnswer })) });
+      const g2 = two(23, 'Which TWO problems are mentioned which affect farmers with small farms in developing countries?', ['lack of demand for locally produced food', 'lack of irrigation programmes',
+        'being unable to get insurance', 'the effects of changing weather patterns', 'having to sell their goods to intermediary buyers'], ['D', 'E']);
+      const g3 = two(25, 'Which TWO actions are recommended for improving conditions for farmers?', ['reducing the size of food stocks', 'attempting to ensure that prices rise at certain times of the year',
+        'organising co-operation between a wide range of interested parties', 'encouraging consumers to take a financial stake in farming', 'making customers aware of the reasons for changing food prices'], ['C', 'D']);
+      renum(g2, 23); renum(g3, 25);
+      d.questionGroups = [g0, g1, g2, g3];
+      d.questionRange = { start: 14, end: 26 };
     },
   },
 };

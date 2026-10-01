@@ -27,6 +27,22 @@ m = re.search(r'(?s)</h2>(.*?)</div>', ptxt)
 subtitle = ''
 paras = [clean(x) for x in re.findall(r'(?s)<p[^>]*>(.*?)</p>', ptxt)]
 paras = [x for x in paras if x]
+if len(paras) < 4:
+    # some pages put the paragraphs in <ol style="list-style-type: upper-alpha"><li> (letters come from CSS),
+    # in bare <div>s, or in one block split by <br> → split on any block boundary instead
+    body = ptxt[ptxt.find('</h2>'):]
+    body = body[body.find('</div>') + 6:] if '</div>' in body else body
+    def lis(m):
+        items = re.findall(r'(?s)<li[^>]*>(.*?)</li>', m.group(2))
+        if 'upper-alpha' in m.group(1):
+            return ''.join(f'\n@@{chr(65 + i)} {x}\n' for i, x in enumerate(items))
+        return ''.join(f'\n@@{x}\n' for x in items)
+    body = re.sub(r'(?s)<ol([^>]*)>(.*?)</ol>', lis, body)
+    body = re.sub(r'(?i)</(p|div|li|h3|h4)>|<br\s*/?>', '\n@@', body)
+    alt = [clean(x) for x in body.split('@@')]
+    alt = [x for x in alt if x and x != '\xa0' and not re.fullmatch(r'<\w+', x)]  # drop a stray unclosed '<div' at the end
+    if len(alt) > len(paras):
+        paras = alt
 imgs = re.findall(r'<img src="(https?://[^"]+)"', ptxt)
 
 # ── questions ──
