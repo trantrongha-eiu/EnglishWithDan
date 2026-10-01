@@ -294,6 +294,9 @@
           <button class="btn btn-sm btn-hard-words" id="btn-hard-words" onclick="practiceHardWords()" style="display:none">
             <i class="fas fa-fire"></i> Ôn lại từ hay sai
           </button>
+          <button class="btn btn-ghost btn-sm" id="btn-move-words-bar" onclick="openMoveWordsFromBar()" title="Chuyển toàn bộ từ của sổ này sang sổ khác" style="display:none">
+            <i class="fas fa-share-square" style="color:#0891b2"></i> Chuyển sang sổ khác
+          </button>
           <div class="bulk-bar" id="bulk-bar">
             <span>Selected <span class="bulk-count" id="bulk-count">0</span> words</span>
             <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
@@ -932,7 +935,7 @@
         <div class="guide-section-title"><span class="guide-num">1</span> Tạo & quản lý sổ</div>
         <ul class="guide-list">
           <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ). Không tạo thêm sổ mới được.</li>
-          <li><strong>Chuyển từ sang sổ khác:</strong> Nhấn <code>⋯</code> ở topbar → <em>Chuyển toàn bộ từ sang sổ khác</em>.</li>
+          <li><strong>Chuyển từ sang sổ khác:</strong> Nhấn <code>Chuyển sang sổ khác</code> trên thanh công cụ của sổ (hoặc <code>⋯</code> ở topbar → <em>Chuyển toàn bộ từ sang sổ khác</em>).</li>
           <li><strong>Sổ tự tạo trước đây</strong> vẫn giữ nguyên — có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
           <li>Mỗi sổ chứa tối đa <strong>500 từ</strong>.</li>
         </ul>
@@ -1335,7 +1338,7 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
 <script src="js/shared/fire-tier.js?v=20261001"></script>
-<script src="js/dashboard.js?v=20261001bxh"></script>
+<script src="js/dashboard.js?v=20261001movebar"></script>
 <script src="js/dashboard-browse.js?v=20261001bxh"></script>
 </body>
 </html>

@@ -1037,6 +1037,10 @@ function renderBookContent(book) {
             hardBtn.classList.remove('has-hard-words');
         }
     }
+
+    // "Chuyển sang sổ khác" — same visibility rule as the ⋯ menu entry
+    const moveBarBtn = document.getElementById('btn-move-words-bar');
+    if (moveBarBtn) moveBarBtn.style.display = book.words.length > 0 && myBooks.length > 1 ? '' : 'none';
 }
 
 // Student closed the "Mách nhỏ" tip — hide it and remember so it doesn't
@@ -1449,6 +1453,13 @@ function openMoveWordsModal() {
         </label>`;
     }).join('');
     openModal('modal-move-words');
+}
+
+// Action-bar entry point: move words out of the book currently open.
+function openMoveWordsFromBar() {
+    if (!currentBookId) return;
+    _menuBookId = currentBookId;
+    openMoveWordsModal();
 }
 
 function selectMoveDest(bookId) {
