@@ -785,4 +785,207 @@ module.exports = {
       g1.questions.forEach(q => { q.type = 'true-false-ng'; });
     },
   },
+  // ───── batch 9 (last minor + …) ─────
+  1270: {
+    text: [[/<p>([A-F]) \. /g, '<p><strong>$1</strong> '], ['ensuring it preservation', 'ensuring its preservation'],
+      // every copy online has the same dropped words here; restored minimally so the sentence parses
+      ['two of Wisconsin’s most industries — are teaming up in southwestern Wisconsin has found', 'two of Wisconsin’s most important industries — are teaming up in southwestern Wisconsin. A study there has found'],
+      ['orlandmarks', 'or landmarks'], ['Grant county community', 'Grant County community'], ['Green county Tourism', 'Green County Tourism'],
+      ['and enviroment', 'and environment'], ['and bring other participants', 'and brought other participants']],
+    keys: { 38: 'picnic / picnic lunch', 39: 'Dominican Sisters / the Dominican Sisters', 40: 'income / incomes' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 3 has six paragraphs, A-F. Which paragraph contains the following information? Write the correct letter, A-F, in boxes 27-30 on your answer sheet.';
+      g1.instruction = 'Look at the following statements (Questions 31-35) and the list of visitors below. Match each statement with the correct group of visitors, A, B or C. Write the correct letter, A, B or C, in boxes 31-35 on your answer sheet. NB You may use any letter more than once.';
+      g1.matchingOptions = ['Cheese Festival visitors', 'Picnic visitors', 'Both of them'];
+      setQ(d, { 31: 'have a focused destination', 32: 'the majority prepare well beforehand', 33: 'are comparatively less keen on a picnic meal',
+        34: 'show interest in activities such as factory tours and fruit farms', 35: 'are willing to accept a variety of tour recommendations' });
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 36-40 on your answer sheet.';
+      g2.noteConfig.title = g2.noteConfig.lines.shift();
+    },
+  },
+  1138: {
+    text: [['any subject\' That was the founders motto', 'any subject.’ That was the founder’s motto'], ['a course called Arson for Profit’?', 'a course called ‘Arson for Profit’?'],
+      ['program in \'fire science’', 'program in ‘fire science’'], ['the course: \'Principles of Marketing’', 'the course: ‘Principles of Marketing’'],
+      ['the students, \'Is marketing principled?’', 'the students, ‘Is marketing principled?’'], ['the terms \'means\' and ‘end\' to marketing', 'the terms ‘means’ and ‘end’ to marketing'],
+      ['the end;hence', 'the end; hence']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 3 has six sections, A-F. Choose the correct heading for each section from the list of headings below. Write the correct number, i-viii, in boxes 27-32 on your answer sheet.';
+      g0.headingsConfig.headings = ['Courses that require a high level of commitment', 'A course title with two meanings', 'The equal importance of two key issues',
+        'Applying a theory in an unexpected context', 'The financial benefits of studying', 'A surprising course title', 'Different names for different outcomes',
+        'The possibility of attracting the wrong kind of student'].map((text, i) => ({ numeral: ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii'][i], text }));
+      g1.noteConfig.title = 'The ‘Arson for Profit’ course';
+      g2.instruction = YNNG(3);
+    },
+  },
+  1388: {
+    text: [['in and off itself', 'in and of itself'], ['an animal which adapts adapted so efficiently', 'an animal which is adapted so efficiently'],
+      ['is threatened-by a predator, for instance-because', 'is threatened – by a predator, for instance – because'],
+      ['leaving the sum of the two forward forces</p>', 'leaving the sum of the two forward forces.</p>'],
+      ['control the pitch of the ash', 'control the pitch of the fish'], ['sending the ash up or down', 'sending the fish up or down'], ['The paired ins are', 'The paired fins are']],
+    // mini: Q22 "Pectoral and pelvic" (blank is "…… fins", pointer is on the pectoral fin), Q25 "fats" (passage: "fat and glycogen"),
+    // Q23 "slows and stops" — passage says "slows down and stops" (4 words) → diagram limit raised to four words
+    keys: { 22: 'pectoral / pectoral and pelvic', 23: 'slows down and stops / slows and stops / slowing down and stopping', 25: 'fat and glycogen', 26: 'predator / a predator / danger' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has eight paragraphs, A-H. Which paragraph contains the following information? Write the correct letter, A-H, in boxes 14-19 on your answer sheet.';
+      g1.instruction = 'Label the diagram below. Choose NO MORE THAN FOUR WORDS from the passage for each answer. Write your answers in boxes 20-23 on your answer sheet. (Trên hình, ô 7–10 tương ứng với câu 20–23.)';
+      g1.noteConfig.title = 'Fish fins and their purposes';
+      g1.noteConfig.lines = ['Tail fin: providing part of __Q20__', 'Dorsal fin: __Q21__ movements', '__Q22__ fins combined with paired fins: pushing up and down', 'Paired fins: for __Q23__ movements additionally'];
+      g2.instruction = 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 24-26 on your answer sheet.';
+    },
+  },
+  1285: {
+    text: [[/<p>([A-E]) \. /g, '<p><strong>$1</strong> '], ['“palette7', '“palette”'], ['within easy reach- Others', 'within easy reach. Others'],
+      ['much more interesting, says Clery', 'much more interesting,” says Clery'], ['different from the mainland, “Apart', 'different from the mainland. “Apart'],
+      ['the rest of the Island Is impenetrable, except by hacking through the bush, says Clery', 'the rest of the island is impenetrable, except by hacking through the bush,” says Clery'],
+      ['the parched Interior', 'the parched interior'], ['flask Ỉ S fitted', 'flask is fitted'], ['If it Is Impossible', 'If it is impossible'], ['they can.be injected', 'they can be injected'],
+      ['given, off by resins', 'given off by resins'], ['But It also smelt of something the fragrance industry has learnt to live without castoreum a substance', 'But it also smelt of something the fragrance industry has learnt to live without: castoreum, a substance'],
+      ['but Ã was wonderful', 'but it was wonderful'], ['sun kissed', 'sun-kissed'], ['“aquaspace” apparatus a set', '“aquaspace” apparatus – a set'], ['the best of then captured', 'the best of the captured'],
+      ['out of their ; ingenuity', 'out of their ingenuity'], ['the musk I glands', 'the musk glands'], ['their “hotel”—a wooden hut lit by kerosene lamps, and trailed', 'their “hotel” – a wooden hut lit by kerosene lamps – and trailed']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has five paragraphs, A-E. Which paragraph contains the following information? Write the correct letter, A-E, in boxes 14-18 on your answer sheet. NB You may use any letter more than once.';
+      g0.matchingReuseAllowed = true;
+      g1.instruction = TFNG(2);
+      g2.instruction = 'Label the diagram below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 24-26 on your answer sheet. (Trên hình, ô 11–13 tương ứng với câu 24–26.)';
+      g2.noteConfig.title = 'A simple device used to trap molecules';
+      g2.noteConfig.lines = ['“__Q24__” of the flask or a glass jar', 'Pumping out air through __Q25__ collecting fragrance', 'Probe (syringe): __Q26__ made of silicone rubber'];
+    },
+  },
+  1049: {
+    text: [[/­/g, ''], ['are like rivers; says the report', 'are like rivers, says the report'], ['Indeed it is, says Joyce. ‘ In his', 'Indeed it is, says Joyce. In his']],
+    keys: { 25: 'Great Ocean Conveyor / the Great Ocean Conveyor', 26: 'fresh water / freshwater' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 14-17 on your answer sheet.';
+      g1.instruction = 'Look at the following statements (Questions 18-22) and the list of people below. Match each statement with the correct person, A-D. Write the correct letter, A-D, in boxes 18-22 on your answer sheet. NB You may use any letter more than once.';
+      g2.noteConfig.lines = ['Tropical warm water ← less __Q23__', '↓', 'Water becomes __Q24__ and sinks ← thermohaline circulation', '↓',
+        'Deep ocean current called __Q25__ ← increase in __Q26__', '↓', 'Less dense, hard to sink ← stays on top', '↓', 'Gulf Stream slows or shuts down'];
+    },
+  },
+  1095: {
+    text: [[/­/g, ''], ['which might ft not even have begun', 'which might not even have begun'], ['was gaining ground, g but', 'was gaining ground, but'],
+      ['although he conceded “brandy M in considerable', 'although he conceded “brandy in considerable'], ['eat well avoiding', 'eat well, avoid'], ['Oh 13 November 1892', 'On 13 November 1892'],
+      ['wriggled out of if if it', 'wriggled out of it if it']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      // converter merged the four TFNG statements into one question and dropped the final MC question → rebuilt from the mini page
+      g0.instruction = TFNG(2);
+      g0.questions = ['Cities rather than rural areas were badly affected by the pandemic flu.',
+        'At the time of the flu pandemic, people didn’t know the link between micro-organisms and illnesses.',
+        'People used to believe flu was caused by miasmas.', 'Flu prescriptions often contained harmful ingredients.']
+        .map((questionText, i) => ({ questionNumber: 14 + i, type: 'true-false-ng', questionText, correctAnswer: ['NOT GIVEN', 'FALSE', 'TRUE', 'NOT GIVEN'][i] }));
+      g0.groupTitle = 'Questions 14–17';
+      g1.instruction = 'Label the diagram below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 18-21 on your answer sheet. (Trên hình, ô 5–8 tương ứng với câu 18–21.)';
+      g1.noteConfig.title = 'The carbolic smoke ball';
+      g1.noteConfig.lines = ['Covered with __Q18__', 'Metal __Q19__', 'Content: __Q20__', '__Q21__ (the body of the device)'];
+      g1.questions.forEach((q, i) => { q.questionNumber = 18 + i; q.questionText = `Question ${18 + i}`; });
+      g1.questions[2].correctAnswer = 'powder';
+      g1.groupTitle = 'Questions 18–21';
+      g2.instruction = 'Look at the following people (Questions 22-25) and the list of statements below. Match each person with the correct statement, A-F. Write the correct letter, A-F, in boxes 22-25 on your answer sheet.';
+      g2.questions.forEach((q, i) => { q.questionNumber = 22 + i; });
+      g2.groupTitle = 'Questions 22–25';
+      d.questionGroups = [g0, g1, g2, { groupTitle: 'Question 26', instruction: 'Choose the correct letter, A, B, C or D. Write the correct letter in box 26 on your answer sheet.', groupType: 'plain',
+        questions: [{ questionNumber: 26, type: 'multiple-choice', questionText: 'Why is Mrs. Carlill’s case often cited in present-day court trials?',
+          options: ['It proved the untrustworthiness of advertisements.', 'It established the validity of one-sided contract.', 'It explained the nature of contract.', 'It defended the rights of consumers.'], correctAnswer: 'B' }] }];
+      d.questionRange = { start: 14, end: 26 };
+    },
+  },
+  1251: {
+    text: [['his friends near by', 'his friends nearby'], ['a couple years earlier', 'a couple of years earlier']],
+    keys: { 21: 'small pinholes / pinholes', 22: 'selenium cell / a selenium cell', 23: 'neon lamp / a neon lamp' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      // converter left the person/role table as one text block → rebuilt; Q26 statement was dropped (taken from the mini solution page)
+      g0.instruction = 'Look at the following people (Questions 14-20) who were significant in the invention of the television and the list of roles below. Match each person with the correct role, A-G. Write the correct letter, A-G, in boxes 14-20 on your answer sheet.';
+      g0.matchingOptions = ['His work was adopted by the BBC for their broadcasting business.', 'His work was used to help fight crime.', 'He was the first person to move on television.',
+        'He used second-hand parts in his invention.', 'His business was destroyed by a financial crisis.', 'He invented the image dissector.', 'His work was initially of no interest to anyone.'];
+      ['John Logie Baird', 'William Taynton', 'Philo Farnsworth', 'Vladimir Zworykin', 'Paul Nipkow', 'Arthur Korn', 'Charles Francis Jenkins'].forEach((t, i) => { g0.questions[i].questionText = t; });
+      g1.instruction = 'Label the diagram below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 21-23 on your answer sheet. (Trên hình, ô 8–10 tương ứng với câu 21–23.)';
+      g1.noteConfig.title = 'The Nipkow disk system';
+      g1.noteConfig.lines = ['(8) A spinning disk with __Q21__ in a spiral', '(9) __Q22__', '(10) __Q23__'];
+      g2.instruction = TFNG(2);
+      g2.questions.push({ questionNumber: 26, type: 'true-false-ng', questionText: 'Charles Francis Jenkins was already famous when he experimented with television.', correctAnswer: 'TRUE' });
+      g2.groupTitle = 'Questions 24–26';
+      d.questionRange = { start: 14, end: 26 };
+    },
+  },
+  1520: {
+    text: [['<h2>THE STORY OF COFFEE</h2>', '<h2>The Story of Coffee</h2>'], ['this energy laden fruit', 'this energy-laden fruit'], ['coffee producing countries', 'coffee-producing countries'],
+      ['the plantation one reaches', 'the plantation ones reach'], ['15 to 25 Degrees C', '15 to 25 degrees C']],
+    keys: { 26: 'customers’ specifications / customers\' specifications / customer specifications' },
+    fn: d => {
+      d.title = 'The Story of Coffee';
+      const [g0, g1, g2] = d.questionGroups;
+      // headings list was mis-parsed (6 of 11, numerals shifted) and the six paragraphs merged into one question → rebuilt
+      g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for paragraphs B-G from the list of headings below. Write the correct number, i-xi, in boxes 14-19 on your answer sheet. NB There are more headings than paragraphs, so you will not use them all. Example: Paragraph A – iv';
+      const N = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi'];
+      g0.headingsConfig = { headings: ['Growing Coffee', 'Problems with Manufacture', 'Processing the Bean', 'First Contact', 'Arabian Coffee', 'Coffee Varieties', 'Modern Coffee',
+        'The Spread of Coffee', 'Consuming Coffee', 'Climates for Coffee', 'The Coffee Plant'].map((text, i) => ({ numeral: N[i], text })) };
+      g0.questions = ['B', 'C', 'D', 'E', 'F', 'G'].map((L, i) => ({ questionNumber: 14 + i, type: 'matching-headings', questionText: `Paragraph ${L}`, correctAnswer: ['viii', 'ix', 'vi', 'xi', 'i', 'iii'][i] }));
+      g0.groupTitle = 'Questions 14–19';
+      g1.instruction = 'Label the diagram of a coffee bean below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 20-22 on your answer sheet. (Trên hình, ô 7–9 tương ứng với câu 20–22.)';
+      g1.noteConfig.lines = ['(7) __Q20__', '(8) __Q21__', '(9) __Q22__'];
+      g2.instruction = 'Complete the flow-chart below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 23-26 on your answer sheet.';
+      delete g2.imageUrl; // the flow-chart is reproduced in full as text below
+      g2.noteConfig.title = g2.noteConfig.lines.shift();
+      g2.noteConfig.lines = ['The coffee cherry is picked by hand and delivered to mills.', '↓', 'The coffee cherry is pulped or __Q23__.', '↓', 'The pulped beans are left __Q24__ to ferment in pure water.', '↓',
+        'The wet beans are sun dried for one or two weeks to make parchment – they are __Q25__ often to ensure an even drying procedure.', '↓',
+        'The parchment is then bagged and taken to be milled to make the green beans.', '↓', 'The green beans are then roasted to __Q26__.', '↓', 'The roasted beans are cooled.', '↓',
+        'The finished product is packaged and mailed to the customer.'];
+      d.questionRange = { start: 14, end: 26 };
+    },
+  },
+  1419: {
+    text: [['coal-fired power plants fed voracious appetites', 'coal-fired power plants feed voracious appetites'], ['oxygen, coal, and water ae burnt', 'oxygen, coal, and water are burnt'],
+      ['as the cooling Syngas travel through water', 'as the cooling Syngas travels through water']],
+    keys: { 36: 'powerful lobbies / powerful lobby groups', 37: 'solar / solar power', 40: '$0.0686/kWh / $0.0686 / 0.0686/kWh / $0.0686 per kWh' },
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 27-28 on your answer sheet.';
+      // two diagrams (already numbered 29–34 in the figures) → one group per figure, same A–H list
+      const opts = ['CO2', 'Coal', 'Natural gas', 'Oil', 'Saline aquifer', 'Steam-driven turbines', 'Syngas', 'Syngas-driven turbines'];
+      const qs = g1.questions; qs.forEach((q, i) => { q.questionText = `Question ${29 + i}`; });
+      const ins = n => `Label the diagram below. Choose the correct letter, A-H, from the list below. Write the correct letter in boxes ${n} on your answer sheet. NB You may use any letter more than once.`;
+      const ga = { ...g1, groupTitle: 'Questions 29–31', instruction: ins('29-31'), matchingOptions: opts, matchingReuseAllowed: true, questions: qs.slice(0, 3),
+        imageUrl: 'https://ieltstrainingonline.com/wp-content/uploads/2019/10/06-IELTS-Reading-q27-40-1.jpg' };
+      const gb = { ...g1, groupTitle: 'Questions 32–34', instruction: ins('32-34').replace('Label the diagram below', 'Label the diagram of an IGCC system below'), matchingOptions: opts, matchingReuseAllowed: true, questions: qs.slice(3),
+        imageUrl: 'https://ieltstrainingonline.com/wp-content/uploads/2019/10/06-IELTS-Reading-q27-40-2.jpg' };
+      g2.noteConfig = { title: '', lines: ['<strong>Advantages of CCS</strong>', 'Sequestration is already used in the oil and gas sector.', 'CCS may cut __Q35__ in a short time.',
+        '__Q36__ in labour, industry, and states already support CCS.', 'Alternatives, like __Q37__ energy, take up vast amounts of space.', '<strong>Disadvantages of CCS</strong>',
+        'The construction of new and the conversion of existing power plants and the liquefaction and transport of CO2 are very costly.', 'While sequestration is possible, the scale would be enormous.',
+        'Therefore, CCS would need __Q38__.', 'Some CCS technology is __Q39__. Gas-driven turbines for IGCC have not been used on an industrial scale.',
+        'Shallow underground storage may be limited; deep ocean storage is currently impossible.', 'Geologists fear leaks in quake-prone regions.',
+        'Natural gas and solar PVs are cheaper. LCOE estimates for CCS = $0.09-0.15/kWh; for natural gas = __Q40__; and, for solar PV = $0.0849/kWh.'] };
+      g2.instruction = 'Complete the notes below, taken from a table. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 35-40 on your answer sheet.';
+      d.questionGroups = [g0, ga, gb, g2];
+    },
+  },
+  1377: {
+    text: [['<h2>Spider silk 2</h2>', '<h2>Spider Silk</h2>']],
+    // mini Q22 "chemical" — the passage says "dissolved the protein in chemical solvents"
+    keys: { 19: 'yeast / bacteria', 20: 'bacteria / yeast', 22: 'chemical solvents / chemical solvent', 23: 'small holes / holes' },
+    fn: d => {
+      d.title = 'Spider Silk';
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Reading Passage 2 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 14-18 on your answer sheet.';
+      g1.noteConfig.lines = g1.noteConfig.lines.map(l => l.replace('globules of __Q21__.', 'globules of __Q21__'));
+      g1.instruction = 'Complete the flow-chart below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 19-23 on your answer sheet. (Q19 and Q20 can be in either order.)';
+      g2.instruction = TFNG(2);
+    },
+  },
+  1192: {
+    text: [['The subject is this study included', 'The subjects in this study included'], ['how the system were installed', 'how the systems were installed'], ['the most favorite games play by family members', 'the favorite games played by family members'],
+      ['trailed be twelve children', 'trialled by twelve children']],
+    fn: d => {
+      const [g0, g1, g2] = d.questionGroups;
+      g0.instruction = 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1-5 on your answer sheet.';
+      g0.noteConfig.title = 'Nintendo’s preschool research';
+      g0.noteConfig.lines = ['<strong>Goals</strong>', ...g0.noteConfig.lines.slice(0, 3), '<strong>Participants</strong>', ...g0.noteConfig.lines.slice(3)];
+      g1.instruction = TFNG(1);
+      g2.noteConfig.lines = g2.noteConfig.lines[0].split(/\s*↓\s*/).flatMap((l, i) => i ? ['↓', l] : [l]);
+    },
+  },
 };
