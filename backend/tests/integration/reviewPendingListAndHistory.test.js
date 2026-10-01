@@ -112,6 +112,70 @@ describe('Pending review list + combined history', () => {
     expect(pending.body.items[0]).toMatchObject({ attemptType: 'listening', isPractice: false, mistakeCount: 1, reviewedCount: 0 });
   });
 
+  test('same-named attempts owe only ONE review — the newest; older ones become superseded', async () => {
+    const user = await createPremiumStudent();
+    const api = authed(user);
+    // 3 random mock runs — different tests, all named the same.
+    const fullIds = [];
+    for (let i = 0; i < 3; i++) {
+      const { test } = await readingTest('MockTest Đề Random');
+      const st = await api.post('/api/reading/start', { testId: String(test._id) });
+      await api.post('/api/reading/submit', { attemptId: st.body.attemptId, answers: { 1: 'x', 2: 'banana', 3: 'cherry' } });
+      fullIds.push(String(st.body.attemptId));
+    }
+    // Same Bài lẻ twice, both wrong; plus an unrelated Bài lẻ.
+    const { p1 } = await readingTest('Other');
+    const practiceIds = [];
+    for (let i = 0; i < 2; i++) {
+      const save = await api.post('/api/reading/practice/save', {
+        passageId: String(p1._id), passageTitle: 'Yawning', category: 'passage1',
+        answers: [{ questionNumber: 1, userAnswer: 'pear' }], timeTaken: 30,
+      });
+      practiceIds.push(String(save.body.attemptId));
+    }
+
+    const pending = await api.get('/api/review/pending?skill=reading');
+    expect(pending.body.count).toBe(2);
+    expect(pending.body.blocked).toBe(false);
+    const ids = pending.body.items.map(i => String(i.attemptId)).sort();
+    expect(ids).toEqual([fullIds[2], practiceIds[1]].sort());
+
+    // Not blocked any more — 5 pending would have been ≥ MAX_PENDING_REVIEWS.
+    const { test: fresh } = await readingTest('Cam 19 Test 2');
+    const ok = await api.post('/api/reading/start', { testId: String(fresh._id) });
+    expect(ok.status).toBe(200);
+
+    const hist = await api.get('/api/reading/history/combined');
+    const byId = Object.fromEntries(hist.body.items.map(r => [String(r._id), r.reviewStatus]));
+    expect(byId[fullIds[0]]).toBe('superseded');
+    expect(byId[fullIds[1]]).toBe('superseded');
+    expect(byId[fullIds[2]]).toBe('pending');
+    expect(byId[practiceIds[0]]).toBe('superseded');
+    expect(byId[practiceIds[1]]).toBe('pending');
+  });
+
+  test('a newer same-named attempt with a PERFECT score also clears the older pending review', async () => {
+    const user = await createPremiumStudent();
+    const api = authed(user);
+    const { test: t1 } = await readingTest('MockTest Đề Random');
+    const s1 = await api.post('/api/reading/start', { testId: String(t1._id) });
+    await api.post('/api/reading/submit', { attemptId: s1.body.attemptId, answers: { 1: 'x', 2: 'banana', 3: 'cherry' } });
+    expect((await api.get('/api/review/pending?skill=reading')).body.count).toBe(1);
+
+    // Started but never submitted — must NOT supersede anything.
+    const { test: t2 } = await readingTest('MockTest Đề Random');
+    const s2 = await api.post('/api/reading/start', { testId: String(t2._id) });
+    expect((await api.get('/api/review/pending?skill=reading')).body.count).toBe(1);
+
+    await api.post('/api/reading/submit', { attemptId: s2.body.attemptId, answers: { 1: 'apple', 2: 'banana', 3: 'cherry' } });
+    const after = await api.get('/api/review/pending?skill=reading');
+    expect(after.body.count).toBe(0);
+    const hist = await api.get('/api/reading/history/combined');
+    const byId = Object.fromEntries(hist.body.items.map(r => [String(r._id), r.reviewStatus]));
+    expect(byId[String(s1.body.attemptId)]).toBe('superseded');
+    expect(byId[String(s2.body.attemptId)]).toBe('none');
+  });
+
   test('the 403 REVIEW_REQUIRED body lists the described items too', async () => {
     const user = await createPremiumStudent();
     const api = authed(user);

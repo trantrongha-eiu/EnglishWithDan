@@ -67,11 +67,92 @@ async function createReviewIfNeeded({ userId, attemptType, attemptId, gradedAnsw
 // one, so a student who fully finished THAT review could still be blocked
 // by a second, entirely invisible one from a concurrent attempt, with no
 // indication anything else was left).
-function getPendingReviews(userId, skill) {
+//
+// Same-named attempts only owe ONE review — the newest. Retaking a test
+// (or several random mock runs, all named "MockTest Đề Random") used to
+// stack up one pending review per run, so a student was forced to review
+// the same test over and over. A pending review is marked 'superseded'
+// once the student has SUBMITTED a newer attempt with the same name and
+// kind — whether that newer run has its own pending review or scored
+// perfectly and needed none. Done lazily here, so the existing backlog
+// clears itself on the next gate check too.
+async function getPendingReviews(userId, skill) {
   const attemptTypes = skill === 'reading' ? ['reading', 'reading-practice'] : ['listening', 'listening-practice'];
-  return AttemptReview.find({ userId, status: 'pending', attemptType: { $in: attemptTypes } })
-    .sort({ createdAt: 1 })
-    .then(items => ({ items, count: items.length }));
+  let items = await AttemptReview.find({ userId, status: 'pending', attemptType: { $in: attemptTypes } })
+    .sort({ createdAt: 1 });
+  if (items.length) {
+    const stale = await findSupersededReviews(userId, items);
+    if (stale.length) {
+      await AttemptReview.updateMany(
+        { _id: { $in: stale }, userId, status: 'pending' },
+        { $set: { status: 'superseded', completedAt: new Date() } }
+      );
+      const staleSet = new Set(stale.map(String));
+      items = items.filter(r => !staleSet.has(String(r._id)));
+    }
+  }
+  return { items, count: items.length };
+}
+
+// Where each attemptType's attempt lives, what it's called and when it was
+// submitted — shared by describePendingReviews (lookup by _id) and
+// findSupersededReviews (lookup of the student's newer attempts).
+// `done` = statuses that count as a real, graded submission (in-progress /
+// abandoned / disqualified runs never supersede anything).
+const ATTEMPT_SOURCES = {
+  reading: {
+    model: TestAttempt, select: 'testId endTime', populate: true, dateField: 'endTime',
+    done: ['completed', 'timeout'], title: a => a.testId?.name, takenAt: a => a.endTime,
+  },
+  'reading-practice': {
+    model: ReadingPracticeAttempt, select: 'passageTitle submittedAt', dateField: 'submittedAt',
+    done: ['completed'], title: a => a.passageTitle, takenAt: a => a.submittedAt,
+  },
+  listening: {
+    model: ListeningAttempt, select: 'testName testId submittedAt', populate: true, dateField: 'submittedAt',
+    done: ['completed', 'timeout'], title: a => a.testName || a.testId?.name, takenAt: a => a.submittedAt,
+  },
+  'listening-practice': {
+    model: ListeningPracticeAttempt, select: 'sectionTitle submittedAt', dateField: 'submittedAt',
+    done: ['completed'], title: a => a.sectionTitle, takenAt: a => a.submittedAt,
+  },
+};
+
+function findAttempts(attemptType, filter) {
+  const src = ATTEMPT_SOURCES[attemptType];
+  let q = src.model.find(filter).select(src.select);
+  if (src.populate) q = q.populate('testId', 'name');
+  return q.lean();
+}
+
+const titleKey = t => String(t || '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+// _ids of every pending review whose student has since submitted a NEWER
+// attempt of the same attemptType (so same skill AND same Full đề/Bài lẻ
+// kind) with the same title. Rows whose attempt is gone (no real title)
+// are never superseded — the generic fallback title would match anything.
+async function findSupersededReviews(userId, items) {
+  const described = (await describePendingReviews(items)).filter(d => d.hasTitle);
+  const byType = {};
+  described.forEach(d => { (byType[d.attemptType] = byType[d.attemptType] || []).push(d); });
+  const stale = [];
+  await Promise.all(Object.entries(byType).map(async ([attemptType, rows]) => {
+    const src = ATTEMPT_SOURCES[attemptType];
+    const oldest = new Date(Math.min(...rows.map(d => new Date(d.takenAt).getTime())));
+    const newer = await findAttempts(attemptType, {
+      userId, status: { $in: src.done }, [src.dateField]: { $gt: oldest },
+    });
+    const latest = new Map();
+    newer.forEach(a => {
+      const key = titleKey(src.title(a));
+      const t = new Date(src.takenAt(a)).getTime();
+      if (key && !(latest.get(key) >= t)) latest.set(key, t);
+    });
+    rows.forEach(d => {
+      if (latest.get(titleKey(d.title)) > new Date(d.takenAt).getTime()) stale.push(d._id);
+    });
+  }));
+  return stale;
 }
 
 // Turns getPendingReviews()'s raw docs into what the student-facing list
@@ -87,29 +168,22 @@ async function describePendingReviews(items) {
   const idsByType = {};
   items.forEach(r => { (idsByType[r.attemptType] = idsByType[r.attemptType] || []).push(r.attemptId); });
   const meta = {};
-  const put = (rows, title, takenAt) => rows.forEach(a => { meta[String(a._id)] = { title: title(a), takenAt: takenAt(a) }; });
-  await Promise.all([
-    idsByType.reading && TestAttempt.find({ _id: { $in: idsByType.reading } })
-      .select('testId endTime').populate('testId', 'name').lean()
-      .then(rows => put(rows, a => a.testId?.name, a => a.endTime)),
-    idsByType['reading-practice'] && ReadingPracticeAttempt.find({ _id: { $in: idsByType['reading-practice'] } })
-      .select('passageTitle submittedAt').lean()
-      .then(rows => put(rows, a => a.passageTitle, a => a.submittedAt)),
-    idsByType.listening && ListeningAttempt.find({ _id: { $in: idsByType.listening } })
-      .select('testName testId submittedAt').populate('testId', 'name').lean()
-      .then(rows => put(rows, a => a.testName || a.testId?.name, a => a.submittedAt)),
-    idsByType['listening-practice'] && ListeningPracticeAttempt.find({ _id: { $in: idsByType['listening-practice'] } })
-      .select('sectionTitle submittedAt').lean()
-      .then(rows => put(rows, a => a.sectionTitle, a => a.submittedAt)),
-  ]);
+  await Promise.all(Object.entries(idsByType).map(([attemptType, ids]) => {
+    const src = ATTEMPT_SOURCES[attemptType];
+    return findAttempts(attemptType, { _id: { $in: ids } }).then(rows => rows.forEach(a => {
+      meta[String(a._id)] = { title: src.title(a), takenAt: src.takenAt(a) };
+    }));
+  }));
   return items.map(r => {
     const m = meta[String(r.attemptId)] || {};
+    const title = (m.title || '').trim();
     return {
       _id: r._id,
       attemptType: r.attemptType,
       attemptId: r.attemptId,
       isPractice: r.attemptType.endsWith('-practice'),
-      title: (m.title || '').trim() || 'Bài đã làm',
+      title: title || 'Bài đã làm',
+      hasTitle: !!title,
       takenAt: m.takenAt || r.createdAt,
       mistakeCount: r.mistakes.length,
       reviewedCount: r.mistakes.filter(x => x.completedAt).length,
@@ -118,7 +192,7 @@ async function describePendingReviews(items) {
 }
 
 // History rows (full tests or Bài lẻ) → same rows + reviewStatus
-// ('none' | 'pending' | 'completed' | 'bypassed' | 'unavailable') and
+// ('none' | 'pending' | 'completed' | 'bypassed' | 'unavailable' | 'superseded') and
 // reviewed/total counts, so the history tables can flag "Chưa review".
 async function attachReviewStatus(userId, attemptType, rows) {
   const map = await getReviewStatusMap(userId, attemptType, rows.map(r => r._id));

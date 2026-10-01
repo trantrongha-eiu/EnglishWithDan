@@ -79,6 +79,8 @@
     }
     if (r.reviewStatus === 'completed') return '<span class="ah-rv done">✓ Đã review</span>';
     if (r.reviewStatus === 'bypassed') return '<span class="ah-rv void">Bỏ qua bằng mã</span>';
+    // An older run of a same-named test — only the newest run is owed a review.
+    if (r.reviewStatus === 'superseded') return '<span class="ah-rv void">Không cần review (đã làm lại)</span>';
     return '';
   }
 

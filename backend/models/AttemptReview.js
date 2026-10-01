@@ -82,7 +82,12 @@ const AttemptReviewSchema = new mongoose.Schema({
   // (called from reading/listeningService.getPracticeHistoryDetail the
   // moment the missing content is detected) so the student isn't stuck
   // forever behind a "Tiếp tục Review" button that can never load.
-  status: { type: String, enum: ['pending', 'completed', 'bypassed', 'unavailable'], default: 'pending' },
+  // 'superseded' = the student later took another attempt with the SAME
+  // name (same test/passage title, same Full đề/Bài lẻ kind) that also
+  // needs review — only the newest one is owed, so the older pending ones
+  // drop out of the gate (see reviewService.getPendingReviews). The review
+  // can still be opened and finished voluntarily (→ 'completed').
+  status: { type: String, enum: ['pending', 'completed', 'bypassed', 'unavailable', 'superseded'], default: 'pending' },
   mistakes: [MistakeSchema],
 
   // Set alongside status:'bypassed' — which code cleared this one.
