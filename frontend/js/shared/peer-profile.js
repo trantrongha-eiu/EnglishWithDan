@@ -20,6 +20,8 @@
   var _peerName = '';
   var _reportMessageId = null;
   var _chatPollTimer = null;
+  // Idle/hidden-aware setInterval — see ActivityGate in auth-service.js.
+  var _poll = (window.ActivityGate ? window.ActivityGate.poll : function (fn, ms) { var id = setInterval(fn, ms); return { stop: function () { clearInterval(id); } }; });
 
   function _toast(msg, type) {
     if (window.showVocabToast) return window.showVocabToast(msg, type);
@@ -157,8 +159,8 @@
     modal.classList.remove('hidden');
     if (nameEl) nameEl.textContent = _peerName || '...';
     await _loadThread();
-    clearInterval(_chatPollTimer);
-    _chatPollTimer = setInterval(_loadThread, 5000);
+    if (_chatPollTimer) _chatPollTimer.stop();
+    _chatPollTimer = _poll(_loadThread, 5000);
     setTimeout(function () {
       var ta = document.getElementById('peer-chat-input');
       if (ta) ta.focus();
@@ -167,7 +169,7 @@
 
   function closePeerChat() {
     document.getElementById('modal-peer-chat')?.classList.add('hidden');
-    clearInterval(_chatPollTimer);
+    if (_chatPollTimer) _chatPollTimer.stop();
     _chatPollTimer = null;
   }
 

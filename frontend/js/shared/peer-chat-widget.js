@@ -32,6 +32,8 @@
   var _activePeerId = null;
   var _activePeerName = '';
   var _threadPollTimer = null;
+  // Idle/hidden-aware setInterval — see ActivityGate in auth-service.js.
+  var _poll = (window.ActivityGate ? window.ActivityGate.poll : function (fn, ms) { var id = setInterval(fn, ms); return { stop: function () { clearInterval(id); } }; });
   var _panelOpen = false;
   var _view = 'list'; // 'list' | 'thread' | 'students'
   var _allStudents = null; // cached roster for the "start a new chat" list — fetched once per page load
@@ -447,7 +449,7 @@
   }
 
   function _stopThreadPoll() {
-    clearInterval(_threadPollTimer);
+    if (_threadPollTimer) _threadPollTimer.stop();
     _threadPollTimer = null;
   }
 
@@ -507,7 +509,7 @@
       // so the badge doesn't wait for the next 20s poll to clear.
       var conv = _conversations.filter(function (c) { return String(c.userId) === String(_activePeerId); })[0];
       if (conv && conv.unread) { conv.unread = 0; _updateBadge(); }
-      if (!_threadPollTimer) _threadPollTimer = setInterval(_renderThread, THREAD_POLL_MS);
+      if (!_threadPollTimer) _threadPollTimer = _poll(_renderThread, THREAD_POLL_MS);
     } catch (e) { /* silent — polling retry next tick */ }
   }
 
@@ -583,5 +585,5 @@
 
   _buildWidget();
   _pollConversations();
-  setInterval(_pollConversations, POLL_MS);
+  _poll(_pollConversations, POLL_MS);
 })();

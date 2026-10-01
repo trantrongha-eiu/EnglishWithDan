@@ -530,8 +530,11 @@
         })
         .catch(function () {});
     }
+    // ActivityGate (auth-service.js) skips ticks while the tab is hidden or
+    // idle, so a tab left open overnight stops keeping the server awake.
     _pollInboxBadge();
-    setInterval(_pollInboxBadge, INBOX_POLL_MS);
+    if (window.ActivityGate) window.ActivityGate.poll(_pollInboxBadge, INBOX_POLL_MS);
+    else setInterval(_pollInboxBadge, INBOX_POLL_MS);
 
     fetch(API + '/writing/unread-feedback-count', { headers: headers })
       .then(function (r) { return r.json(); })

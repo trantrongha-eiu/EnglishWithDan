@@ -280,3 +280,68 @@
 
   window.AuthService = AuthService;
 })();
+
+// ── ActivityGate: background polls only while someone is actually here ──
+// Students leave a tab open overnight; the 20s inbox/chat polls on every
+// page then kept hitting the API all night, so the Render instance never
+// spun down. ActivityGate.poll() is a drop-in for setInterval(fn, ms) that
+// skips ticks while the tab is hidden or there's been no input for
+// IDLE_MS, and fires fn once immediately when the student comes back so
+// badges catch up without waiting for the next tick. Lives in this file
+// because it's the one script every page loads before nav.js and the
+// shared widgets.
+(function () {
+  if (window.ActivityGate) return;
+
+  var IDLE_MS = 10 * 60 * 1000;
+  var lastInput = Date.now();
+  var wasActive = true;
+  var resumeCallbacks = [];
+
+  function isActive() {
+    return !document.hidden && Date.now() - lastInput < IDLE_MS;
+  }
+
+  function onInput() {
+    lastInput = Date.now();
+    checkResume();
+  }
+
+  function checkResume() {
+    var active = isActive();
+    if (active && !wasActive) {
+      resumeCallbacks.forEach(function (cb) { try { cb(); } catch (e) { /* ignore */ } });
+    }
+    wasActive = active;
+  }
+
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel', 'scroll'].forEach(function (ev) {
+    window.addEventListener(ev, onInput, { passive: true, capture: true });
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) lastInput = Date.now();
+    checkResume();
+  });
+
+  // Returns { stop() } — use that instead of clearInterval.
+  function poll(fn, ms) {
+    var stopped = false;
+    var id = setInterval(function () {
+      checkResume();
+      if (!stopped && wasActive) fn();
+    }, ms);
+    function onResume() { if (!stopped) fn(); }
+    resumeCallbacks.push(onResume);
+    return {
+      stop: function () {
+        if (stopped) return;
+        stopped = true;
+        clearInterval(id);
+        var i = resumeCallbacks.indexOf(onResume);
+        if (i !== -1) resumeCallbacks.splice(i, 1);
+      }
+    };
+  }
+
+  window.ActivityGate = { poll: poll, isActive: isActive, IDLE_MS: IDLE_MS };
+})();
