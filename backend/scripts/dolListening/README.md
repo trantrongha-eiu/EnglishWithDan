@@ -59,6 +59,32 @@ thiếu Q38–40 (`fix_old_content.js`), ẩn 1 bản trùng "Influence of Child
 (Cam 17 T4, Cam 18, 19, 21… — danh sách trong `web/audit.json`), 2 bản "Influence of Children" vẫn trùng (chờ thầy chọn),
 42/43 đề full đang ẩn từ 30/9 (thao tác hàng loạt — chưa đụng).
 
+## BÀN GIAO — cuối phiên 2026-10-01 (đọc mục này trước)
+
+**Đã xong:** 30 bài DOL đang bật (lô 1–2 + 6 bài đầu lô 3). Ảnh bìa (code đã push `36cff042`, 183 bài có ảnh). Map thiếu
+ảnh (4 bài) đã có ảnh. Gộp 3 nhóm đề lẻ trùng (`merge_duplicates.js`, lượt làm được chuyển sang bản giữ lại). Mở lại 42 đề
+full bị ẩn. Vá transcript cụt: Cam 20 T1–T4 (`fix_test_transcripts.js`, chèn câu từ bản DOL), Actual Test 7 P1, Energy
+Consumption Assignment (`fix_section_transcripts.js` + `../data/listeningTranscriptFixes.js`, nghe bằng `old_whisper.js`).
+Giải thích bài cũ: 20/53 bài lẻ xong (Energy Consumption, Cam 17 T4 P1–P4, cả Cam 18) — `old_expl.js` (file ở
+`../data/listeningExplanationsOld/`), tự chép sang bản trong đề full.
+
+**Việc tiếp theo (theo thứ tự):**
+1. Giải thích cho 33 bài lẻ cũ còn lại (Victor Hugo, Cam 19 ×12, Stanthorpe, Céide Fields, lifeboat, Tardigrades, Science
+   experiment, Microplastics, Tree planting, Cam 21 ×12, makeup trainee, rubber, cruise ship, invasive species, houses of
+   the future, music therapy) + 16 phần Cam 20 chỉ có trong đề full (target `test:Cam 20 - Test N:P`).
+   Quy trình: `node old_expl.js ctx <id>` → viết JSON → `node old_expl.js check` → `node old_expl.js apply`.
+   Danh sách: `node dump_listening.js && node audit_listening.js --tests` (dòng "no explanation").
+   Khi viết, nếu câu trả lời không có trong transcript → transcript cụt: nghe bằng `old_whisper.js <id> <from> <to>`,
+   thêm vào `listeningTranscriptFixes.js`, chạy `fix_section_transcripts.js --apply`.
+   Lỗi nhỏ cần sửa: Cam 17 T4 P3 lựa chọn H "No one ring it liked it at first" → "No one using it…"; Cam 18 T1 P1
+   transcript "DW3Q 7YZ" → "DW30 7YZ".
+2. Nhập tiếp DOL (thầy duyệt 30 bài đầu rồi mới lấy thêm): **còn 280 bài sạch, không trùng ngân hàng** —
+   Actual Test 114, Cambridge 9–14 67, Practice Tests Plus 58, Official Guide 21, IELTS Trainer 20. Danh sách:
+   `web/remaining.txt` (chạy lại `node dump_listening.js && node dol_triage.js` trước mỗi lô để chống trùng — triage so
+   transcript 8-gram + câu hỏi + tên với cả đề lẻ lẫn đề full, và loại bản "Actual Test" viết lại của bài PTP/Cambridge).
+   9 bài Cam 10 (`web/batch3.txt` dòng 7–15) đã có giải thích, chỉ cần pw_dol → import → expl → activate.
+   Mỗi bài mới nhập cũng cần ảnh bìa (`lcover_*`). 13 bài "needs-work" (ảnh trong câu hỏi, 12 câu, FLOW_CHART_COMPLEX) để sau.
+
 ## Trạng thái
 
 Xem `web/imported.json` (dolId → _id) và `web/triage.json`. 2026-10-01: lô 1 (10 bài, `web/batch1.txt`) đã bật.
