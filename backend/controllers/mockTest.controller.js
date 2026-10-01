@@ -37,9 +37,9 @@ exports.abandon = catchAsync(async (req, res) => {
 // POST /api/mock-test/:id/violation   body: { type, skill }
 // The exam tab reported a tab-switch / focus-loss / close attempt.
 exports.violation = catchAsync(async (req, res) => {
-  const { type, skill } = req.body || {};
-  const result = await mockTestService.recordViolation(req.user._id, req.params.id, { type, skill });
-  res.json({ success: true, ...result });
+  const { type, skill, capture } = req.body || {};
+  const result = await mockTestService.recordViolation(req.user._id, req.params.id, { type, skill, capture });
+  res.json({ success: true, maxViolations: mockTestService.MAX_VIOLATIONS, ...result });
 });
 
 // POST /api/mock-test/:id/advance   body: { skill, attemptId }

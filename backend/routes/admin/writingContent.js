@@ -12,6 +12,7 @@ const WritingTask2   = require('../../models/WritingTask2');
 const WritingAttempt = require('../../models/WritingAttempt');
 const User           = require('../../models/User');
 const { REWRITE_CUTOFF } = require('../../services/writingService');
+const { REAL_ATTEMPT } = require('../../services/attemptVisibility');
 
 const router = express.Router();
 
@@ -104,7 +105,8 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
     // rejected by the MongoDB driver instead of just clamping to page 1.
     const page  = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 30));
-    const and = [];
+    // Simulation placeholders (started, never submitted) aren't essays to grade.
+    const and = [REAL_ATTEMPT];
     if (status) and.push({ gradingStatus: status });
     // Rewrite-monitoring filter: 'pending' = confirmed essay (from the
     // cutoff onward) the student hasn't rewritten yet; 'done' = rewritten.

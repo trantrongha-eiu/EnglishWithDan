@@ -8,6 +8,7 @@ const ctrl = require('../controllers/examSimulation.controller');
 // Deliberately separate from /api/mock-test (the 4-skill Full Mock Test),
 // which is untouched by this feature.
 router.get('/cooldown', auth, ctrl.cooldown);
+router.get('/attempt-state', auth, ctrl.attemptState);
 router.post('/violation', auth, ctrl.violation);
 
 module.exports = router;

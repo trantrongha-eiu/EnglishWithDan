@@ -43,6 +43,7 @@ const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog
 const MockTestAttempt = require('../models/MockTestAttempt');
 const WT1Progress = require('../models/WT1Progress');
 const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
+const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 const { escapeRegex } = require('../utils/strings');
 
@@ -102,14 +103,14 @@ const REGISTRY = {
     label: 'Bài đọc lẻ (Passage)',
     catalog: { model: Passage, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.category }) },
-    attempt: { model: ReadingPracticeAttempt, userField: 'userId', idField: 'passageId', filter: {} },
+    attempt: { model: ReadingPracticeAttempt, userField: 'userId', idField: 'passageId', filter: COUNTABLE_ATTEMPT },
     scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_practice: {
     label: 'Bài nghe lẻ (Section)',
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.partNumber ? `Part ${d.partNumber}` : '' }) },
-    attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
+    attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: COUNTABLE_ATTEMPT },
     scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   dictation: {
@@ -123,7 +124,7 @@ const REGISTRY = {
     label: 'Đề Writing (Full Task 1+2)',
     catalog: { model: WritingExam, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: '' }) },
-    attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: {} },
+    attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: COUNTABLE_ATTEMPT },
     // No score gate (AI-graded band, not a %) — but a submission only counts
     // once BOTH tasks meet their real minimum word count, not just "clicked
     // submit" (an exam attempt always carries both wordCount1 and wordCount2).
@@ -141,7 +142,7 @@ const REGISTRY = {
     label: 'Task 1 Writing (Đề lẻ)',
     catalog: { model: WritingTask1, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
-    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice' } },
+    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
     wordCountGate: { fields: 'wordCount1', ok: (d) => (d.wordCount1 || 0) >= MIN_WORDS.task1 },
     equivalence: { model: WritingTask1 },
   },
@@ -149,7 +150,7 @@ const REGISTRY = {
     label: 'Task 2 Writing (Đề lẻ)',
     catalog: { model: WritingTask2, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
-    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice' } },
+    attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
     wordCountGate: { fields: 'wordCount2', ok: (d) => (d.wordCount2 || 0) >= MIN_WORDS.task2 },
     equivalence: { model: WritingTask2 },
   },
@@ -509,7 +510,6 @@ async function checkCompleted(studentId, internalItems, since = null) {
       : new Map(assignedIds.map((x) => [x, [x]]));
     const ids = [...idMap.keys()].map((x) => new mongoose.Types.ObjectId(x));
     const gate = entry.scoreGate;
-
     const wcGate = entry.wordCountGate;
     const bandGate = entry.bandGate;
     const boolGate = wcGate || bandGate; // same "ok(r) -> pass/fail" shape as wordCountGate

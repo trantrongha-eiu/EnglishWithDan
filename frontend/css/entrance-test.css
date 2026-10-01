@@ -22,12 +22,29 @@
 .et-shell-wide .et-progress { margin-bottom: var(--space-3); }
 .et-shell-wide .et-runner-card { padding: var(--space-4) var(--space-5); margin-bottom: 0; }
 .et-shell-wide .et-submit-row { margin-top: var(--space-3); }
-.et-shell-wide .et-reading-layout,
 .et-shell-wide .et-writing-layout { height: calc(100vh - 225px); gap: var(--space-5); }
-.et-shell-wide .et-passage h3 { font-size: var(--fs-h3); }
-.et-shell-wide .et-passage-content { font-size: var(--fs-body); line-height: 1.8; }
 .et-shell-wide .et-task-prompt { font-size: calc(var(--fs-body) + 1px); }
 .et-shell-wide .et-writing-textarea { font-size: 16px; line-height: 1.7; }
+
+/* Reading/Listening: the practice page itself, in an iframe (?embed=entrance
+   — see entrance-test.js embedFrameHTML and css/exam-embed.css). */
+.et-embed-wrap { position: relative; }
+.et-embed-frame {
+  display: block; width: 100%; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface);
+  height: calc(100vh - 225px); min-height: 420px;
+}
+.et-listening-layout .et-embed-frame { height: calc(100vh - 335px); min-height: 380px; }
+.et-listening-layout .et-audio-wrap { margin-bottom: var(--space-3); }
+.et-embed-loading {
+  position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--surface); border-radius: var(--radius); color: var(--text2); font-size: var(--fs-body);
+}
+.et-embed-loading .et-spinner { width: 22px; height: 22px; margin: 0; }
+@media (max-width: 640px) {
+  .et-embed-frame { height: calc(100vh - 200px); }
+  .et-listening-layout .et-embed-frame { height: calc(100vh - 300px); }
+}
 
 /* ── Landing ── */
 .et-hero {
@@ -120,60 +137,6 @@
 
 .et-listening-layout { display: block; }
 
-/* Split screen, mirrors reading-v2.js's .exam-split/.split-passage/
-   .split-questions (the standalone "đề lẻ" practice UI) — passage on the
-   left, questions on the right, each its own independently-scrolling pane
-   instead of one long stacked page. Not draggable-resize like the practice
-   page's divider (that page is a dedicated full-viewport exam screen; this
-   one sits inside the Entrance Test's normal scrolling shell/card), just a
-   fixed 50/50 split, which already delivers the "read on one side, answer
-   on the other without losing your place" experience being asked for. */
-.et-reading-layout {
-  display: flex;
-  gap: var(--space-4);
-  align-items: stretch;
-  height: calc(100vh - 260px);
-  min-height: 420px;
-}
-.et-reading-layout .et-passage {
-  width: 50%;
-  min-width: 240px;
-  overflow-y: auto;
-  padding-right: var(--space-3);
-  border-right: 1px solid var(--border);
-  margin-bottom: 0;
-}
-.et-reading-layout .et-questions {
-  flex: 1;
-  min-width: 240px;
-  overflow-y: auto;
-  padding-left: var(--space-1);
-}
-.et-passage h3 { margin: 0 0 10px; }
-.et-passage-content { font-size: var(--fs-body-sm); line-height: 1.75; color: var(--text2); }
-.et-passage-content p { margin: 0 0 12px; }
-
-.et-group { margin-bottom: var(--space-5); }
-.et-group-title { font-weight: 800; margin-bottom: 4px; }
-.et-group-instruction { font-style: italic; color: var(--text2); margin-bottom: 10px; font-size: var(--fs-body-sm); }
-.et-matching-options { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 12px; font-size: var(--fs-body-sm); }
-
-/* Inline __Qn__ answer slots (table/note-form/bullet-list/summary-completion/map) */
-.et-inline-q { display: inline-flex; align-items: center; gap: 4px; margin: 0 2px; }
-.et-inline-badge { background: var(--brand-light); color: var(--brand); font-weight: 700; font-size: var(--fs-micro); border-radius: var(--radius-pill); padding: 1px 6px; }
-.et-inline-input { width: 120px; padding: 4px 8px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: var(--fs-body-sm); font-family: inherit; background: var(--surface); color: var(--text); }
-.et-inline-input:focus { outline: none; border-color: var(--brand); }
-
-.et-inline-table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-4); font-size: var(--fs-body-sm); }
-.et-inline-table th, .et-inline-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
-.et-inline-table th { background: var(--surface2); font-weight: 700; }
-
-.et-note-title { font-weight: 700; margin-bottom: 8px; }
-.et-note-lines { display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-body-sm); margin-bottom: var(--space-4); }
-.et-bullet-list { font-size: var(--fs-body-sm); line-height: 1.9; margin: 0 0 var(--space-4); padding-left: 22px; }
-.et-summary-text { font-size: var(--fs-body-sm); line-height: 2; margin-bottom: 10px; }
-.et-word-bank { font-size: var(--fs-caption); color: var(--text2); background: var(--surface2); border-radius: var(--radius-sm); padding: 8px 12px; margin-bottom: var(--space-4); }
-
 /* Locked audio player — no native <audio controls> (its scrub bar/skip
    buttons let a student rewind or jump ahead, unlike a real listening exam's
    one-shot continuous playback). Progress readout is display-only. */
@@ -251,18 +214,17 @@
 }
 
 @media (max-width: 900px) {
-  /* Side-by-side reading/writing panes don't fit a phone/small-tablet
-     width — stack them instead, same breakpoint idea as reading.css's
-     .exam-split mobile rule. */
+  /* Side-by-side writing panes don't fit a phone/small-tablet width —
+     stack them instead, same breakpoint idea as reading.css's .exam-split
+     mobile rule. */
   .et-shell.et-shell-wide { padding-left: var(--space-4); padding-right: var(--space-4); }
   .et-shell-wide .et-runner-topbar { margin-left: calc(-1 * var(--space-4)); margin-right: calc(-1 * var(--space-4)); }
-  .et-reading-layout, .et-writing-layout,
-  .et-shell-wide .et-reading-layout, .et-shell-wide .et-writing-layout {
+  .et-writing-layout,
+  .et-shell-wide .et-writing-layout {
     flex-direction: column;
     height: auto;
     min-height: 0;
   }
-  .et-reading-layout .et-passage,
   .et-writing-task {
     width: 100%;
     border-right: none;
@@ -270,10 +232,6 @@
     padding-right: 0;
     padding-bottom: var(--space-3);
     max-height: 340px;
-  }
-  .et-reading-layout .et-questions {
-    padding-left: 0;
-    padding-top: var(--space-3);
   }
   .et-writing-answer { padding-top: var(--space-3); }
   .et-writing-textarea { min-height: 260px; }

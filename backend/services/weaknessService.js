@@ -14,6 +14,7 @@ const ListeningTest = require('../models/ListeningTest');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
 const vocabBookService = require('./vocabBookService');
+const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 // A question type / grading criterion needs at least this many answered
 // questions (or graded attempts) before it's surfaced as a real weakness —
@@ -56,7 +57,7 @@ function summarizeTypeStats(typeStats) {
 // not a query per attempt.
 async function getReadingWeakness(userId) {
   const [practiceAttempts, testAttempts] = await Promise.all([
-    ReadingPracticeAttempt.find({ userId }).select('passageId answers').lean(),
+    ReadingPracticeAttempt.find({ userId, ...COUNTABLE_ATTEMPT }).select('passageId answers').lean(),
     TestAttempt.find({ userId, status: 'completed' }).select('passagesUsed answers').lean(),
   ]);
   if (!practiceAttempts.length && !testAttempts.length) return [];
@@ -97,7 +98,7 @@ async function getReadingWeakness(userId) {
 // ListeningSection docs), so it's looked up separately.
 async function getListeningWeakness(userId) {
   const [practiceAttempts, testAttempts] = await Promise.all([
-    ListeningPracticeAttempt.find({ userId }).select('sectionId answers').lean(),
+    ListeningPracticeAttempt.find({ userId, ...COUNTABLE_ATTEMPT }).select('sectionId answers').lean(),
     ListeningAttempt.find({ userId, status: 'completed' }).select('testId answers').lean(),
   ]);
   if (!practiceAttempts.length && !testAttempts.length) return [];

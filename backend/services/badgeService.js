@@ -14,6 +14,7 @@ const TestAttempt = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const BADGES = require('../constants/badges');
 
 async function getUserStats(userId) {
@@ -40,7 +41,7 @@ async function getUserStats(userId) {
     // max band only over teacher-confirmed grades — same rule as the
     // profile page's average, an AI-only grade isn't a real score yet.
     Promise.all([
-      WritingAttempt.countDocuments({ userId: oid }),
+      WritingAttempt.countDocuments({ userId: oid, ...COUNTABLE_ATTEMPT }),
       WritingAttempt.aggregate([
         { $match: { userId: oid, 'grading.overallBand': { $ne: null } } },
         { $group: { _id: null, maxBand: { $max: '$grading.overallBand' } } },

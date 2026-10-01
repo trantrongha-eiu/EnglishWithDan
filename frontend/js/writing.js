@@ -254,6 +254,8 @@ function _blockPasteInto(ta) {
         if (!_mockWritingExamId) { showToast('Không tìm thấy đề Writing của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
         _mockMode = true;
         window.MockTest.showBanner('writing');
+        // Mandatory screen share first — no exam clock runs behind its prompt.
+        if (window.MockTest.ready) await window.MockTest.ready();
         await startExam();
       } catch (e) {
         showToast('Lỗi mở bài thi thử', 'error');

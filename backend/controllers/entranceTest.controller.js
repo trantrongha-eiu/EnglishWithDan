@@ -33,13 +33,13 @@ exports.getAttempt = catchAsync(async (req, res) => {
   res.json({ success: true, attempt });
 });
 
-// POST /api/entrance-test/:attemptId/answer   body: { section, questionId?, questionNumber?, answer?, writingAnswer?, transcript? }
+// POST /api/entrance-test/:attemptId/answer   body: { section, questionId?, questionNumber?, answer?, answers? ({qnum: answer}, Reading/Listening), writingAnswer?, transcript? }
 // Only the named fields below are ever read out of req.body — a client
 // sending band/correctCount/score alongside them is simply ignored.
 exports.saveAnswer = catchAsync(async (req, res) => {
-  const { section, questionId, questionNumber, answer, writingAnswer, transcript } = req.body || {};
+  const { section, questionId, questionNumber, answer, answers, writingAnswer, transcript } = req.body || {};
   const result = await entranceTestService.saveAnswer(req.user._id, req.params.attemptId, section, {
-    questionId, questionNumber, answer, writingAnswer, transcript,
+    questionId, questionNumber, answer, answers, writingAnswer, transcript,
   });
   res.json({ success: true, ...result });
 });
@@ -63,9 +63,9 @@ exports.submitSection = catchAsync(async (req, res) => {
 
 // POST /api/entrance-test/:attemptId/violation   body: { type }
 exports.recordViolation = catchAsync(async (req, res) => {
-  const { type } = req.body || {};
-  const result = await entranceTestService.recordViolation(req.user._id, req.params.attemptId, { type });
-  res.json({ success: true, ...result });
+  const { type, capture } = req.body || {};
+  const result = await entranceTestService.recordViolation(req.user._id, req.params.attemptId, { type, capture });
+  res.json({ success: true, maxViolations: entranceTestService.MAX_VIOLATIONS, ...result });
 });
 
 // POST /api/entrance-test/:attemptId/heartbeat — keep-alive from the open

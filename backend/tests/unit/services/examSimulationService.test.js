@@ -8,6 +8,7 @@
 // is a parallel (not shared) reimplementation of that same pattern.
 const mongoose = require('mongoose');
 const examSimulationService = require('../../../services/examSimulationService');
+const proctorPolicy = require('../../../services/proctorPolicy');
 const TestAttempt = require('../../../models/TestAttempt');
 const User = require('../../../models/User');
 const { createStudent } = require('../../factories/userFactory');
@@ -56,11 +57,21 @@ describe('examSimulationService.checkCooldown / assertNotOnCooldown', () => {
 });
 
 describe('examSimulationService.recordViolation', () => {
+  // Strikes fired back-to-back here would otherwise be merged by the 3s
+  // same-absence dedupe — tested on its own below.
+  let dedupeSpy;
+  beforeEach(() => { dedupeSpy = jest.spyOn(proctorPolicy, 'isDuplicateEvent').mockReturnValue(false); });
+  afterEach(() => dedupeSpy.mockRestore());
+
+  test('the limit is the shared 3-strike rule', () => {
+    expect(examSimulationService.MAX_VIOLATIONS).toBe(3);
+  });
+
   test('increments violationCount and does not disqualify below MAX_VIOLATIONS', async () => {
     const student = await createStudent();
     const attempt = await createInProgressSimulation(student._id);
 
-    for (let i = 1; i <= examSimulationService.MAX_VIOLATIONS; i++) {
+    for (let i = 1; i < examSimulationService.MAX_VIOLATIONS; i++) {
       const result = await examSimulationService.recordViolation(student._id, {
         skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'blur',
       });
@@ -71,14 +82,14 @@ describe('examSimulationService.recordViolation', () => {
 
     const fresh = await TestAttempt.findById(attempt._id);
     expect(fresh.status).toBe('in-progress');
-    expect(fresh.proctor.violationCount).toBe(examSimulationService.MAX_VIOLATIONS);
+    expect(fresh.proctor.violationCount).toBe(examSimulationService.MAX_VIOLATIONS - 1);
   });
 
-  test('disqualifies on the (MAX_VIOLATIONS + 1)th violation and sets the global cooldown', async () => {
+  test('disqualifies on the MAX_VIOLATIONS-th violation and sets the global cooldown', async () => {
     const student = await createStudent();
     const attempt = await createInProgressSimulation(student._id);
 
-    for (let i = 1; i <= examSimulationService.MAX_VIOLATIONS; i++) {
+    for (let i = 1; i < examSimulationService.MAX_VIOLATIONS; i++) {
       await examSimulationService.recordViolation(student._id, {
         skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'hidden',
       });
@@ -87,7 +98,7 @@ describe('examSimulationService.recordViolation', () => {
       skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'hidden',
     });
 
-    expect(result.violationCount).toBe(examSimulationService.MAX_VIOLATIONS + 1);
+    expect(result.violationCount).toBe(examSimulationService.MAX_VIOLATIONS);
     expect(result.disqualified).toBe(true);
     expect(result.cooldownSeconds).toBe(examSimulationService.COOLDOWN_SECONDS);
 
@@ -101,6 +112,16 @@ describe('examSimulationService.recordViolation', () => {
 
     const { active } = await examSimulationService.checkCooldown(student._id);
     expect(active).toBe(true);
+  });
+
+  test('records the capture mode on the event', async () => {
+    const student = await createStudent();
+    const attempt = await createInProgressSimulation(student._id);
+    await examSimulationService.recordViolation(student._id, {
+      skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'share-stopped', capture: 'unsupported',
+    });
+    const fresh = await TestAttempt.findById(attempt._id).lean();
+    expect(fresh.proctor.events[0]).toMatchObject({ type: 'share-stopped', capture: 'unsupported' });
   });
 
   test('a late/duplicate report after disqualification is idempotent — echoes terminal state, does not throw', async () => {
@@ -155,6 +176,47 @@ describe('examSimulationService.recordViolation', () => {
     await expect(examSimulationService.recordViolation(other._id, {
       skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'blur',
     })).rejects.toMatchObject({ statusCode: 404 });
+  });
+});
+
+describe('examSimulationService.recordViolation — same-absence dedupe', () => {
+  test('a second report within the dedupe window is one strike, not two (reload = unload-attempt + hidden)', async () => {
+    const student = await createStudent();
+    const attempt = await createInProgressSimulation(student._id);
+    const args = { skill: 'reading', attemptType: 'full', attemptId: attempt._id };
+
+    const first = await examSimulationService.recordViolation(student._id, { ...args, type: 'unload-attempt' });
+    const second = await examSimulationService.recordViolation(student._id, { ...args, type: 'hidden' });
+
+    expect(first.violationCount).toBe(1);
+    expect(second).toMatchObject({ violationCount: 1, duplicate: true, disqualified: false });
+    const fresh = await TestAttempt.findById(attempt._id).lean();
+    expect(fresh.proctor.events).toHaveLength(1);
+  });
+
+  test('a report after the window counts again', async () => {
+    const student = await createStudent();
+    const attempt = await createInProgressSimulation(student._id, {
+      proctor: { violationCount: 1, violated: true, events: [{ type: 'blur', at: new Date(Date.now() - proctorPolicy.DEDUPE_WINDOW_MS - 1000) }] },
+    });
+    const result = await examSimulationService.recordViolation(student._id, {
+      skill: 'reading', attemptType: 'full', attemptId: attempt._id, type: 'hidden',
+    });
+    expect(result.violationCount).toBe(2);
+  });
+});
+
+describe('examSimulationService.getAttemptState', () => {
+  test('returns status, strike count and the limit for the owner only', async () => {
+    const student = await createStudent();
+    const other = await createStudent();
+    const attempt = await createInProgressSimulation(student._id, { proctor: { violationCount: 2, violated: true } });
+    const args = { skill: 'reading', attemptType: 'full', attemptId: attempt._id };
+
+    await expect(examSimulationService.getAttemptState(student._id, args)).resolves.toEqual({
+      status: 'in-progress', violationCount: 2, maxViolations: 3,
+    });
+    await expect(examSimulationService.getAttemptState(other._id, args)).rejects.toMatchObject({ statusCode: 404 });
   });
 });
 

@@ -28,15 +28,13 @@ const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const WritingAttempt = require('../models/WritingAttempt');
+const proctorPolicy = require('./proctorPolicy');
 
 const SKILLS = ['reading', 'listening', 'writing'];
 const ATTEMPT_TYPES = ['full', 'practice'];
-const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt'];
-const PROCTOR_EVENT_CAP = 200; // keep the most recent N, never grow unbounded
-
-// Intentionally separate from mockTestService's MAX_VIOLATIONS (10) — a
-// stricter threshold for single-skill Simulation, per product decision.
-const MAX_VIOLATIONS = 5;
+// The 3rd strike voids the attempt — same rule as the Full Mock Test and
+// the Entrance Test (see proctorPolicy.js).
+const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;
 // Global across ALL 3 skills (confirmed product decision — not per-skill):
 // a disqualification in any one of Reading/Listening/Writing locks starting
 // a new Simulation in any of them for this long. Same 5-minute value as
@@ -80,7 +78,7 @@ async function assertNotOnCooldown(userId) {
   if (!active) return;
   const waitMin = Math.max(1, Math.ceil(remainingSeconds / 60));
   const err = new AppError(
-    `Bạn vừa bị huỷ một lượt Test Simulation do vi phạm giám sát quá ${MAX_VIOLATIONS} lần. `
+    `Bạn vừa bị huỷ một lượt Test Simulation do vi phạm giám sát ${MAX_VIOLATIONS} lần. `
     + `Vui lòng đợi khoảng ${waitMin} phút nữa rồi bắt đầu lượt mới.`,
     429
   );
@@ -98,7 +96,7 @@ async function assertNotOnCooldown(userId) {
 // terminal state back — same idempotency guarantee as
 // mockTestService.recordViolation, so a late/duplicate keepalive POST
 // can't double-disqualify or resurrect a finished attempt.
-async function recordViolation(userId, { skill, attemptType, attemptId, type }) {
+async function recordViolation(userId, { skill, attemptType, attemptId, type, capture }) {
   if (!mongoose.isValidObjectId(attemptId)) throw new ValidationError('attemptId không hợp lệ');
   if (!PROCTOR_TYPES.includes(type)) throw new ValidationError('Loại vi phạm không hợp lệ');
   const Model = modelFor(skill, attemptType);
@@ -119,15 +117,25 @@ async function recordViolation(userId, { skill, attemptType, attemptId, type }) 
     };
   }
 
+  // Same absence reported twice (e.g. reload = beforeunload + hidden) —
+  // one strike, not two.
+  if (proctorPolicy.isDuplicateEvent(doc.proctor.events)) {
+    return { violationCount: doc.proctor.violationCount || 0, violated: !!doc.proctor.violated, disqualified: false, cooldownSeconds: 0, duplicate: true };
+  }
+
   doc.proctor.violationCount = (doc.proctor.violationCount || 0) + 1;
   doc.proctor.violated = true;
-  doc.proctor.events.push({ type, at: new Date() });
+  doc.proctor.events.push({
+    type,
+    capture: ['screen', 'unsupported', 'none'].includes(capture) ? capture : undefined,
+    at: new Date()
+  });
   if (doc.proctor.events.length > PROCTOR_EVENT_CAP) {
     doc.proctor.events = doc.proctor.events.slice(-PROCTOR_EVENT_CAP);
   }
 
   let disqualified = false;
-  if (doc.proctor.violationCount > MAX_VIOLATIONS) {
+  if (doc.proctor.violationCount >= MAX_VIOLATIONS) {
     doc.status = 'disqualified';
     doc.proctor.disqualifiedAt = new Date();
     disqualified = true;
@@ -153,6 +161,23 @@ async function recordViolation(userId, { skill, attemptType, attemptId, type }) 
   };
 }
 
+// The proctor's view of one Simulation attempt — read when the proctor
+// (re)arms, e.g. after a page reload resumes the attempt from localStorage,
+// so the strike badge shows the real server-side count and a resume of an
+// attempt that already ended (voided, swept as abandoned, submitted from
+// another tab) is refused instead of silently carrying on.
+async function getAttemptState(userId, { skill, attemptType, attemptId }) {
+  if (!mongoose.isValidObjectId(attemptId)) throw new ValidationError('attemptId không hợp lệ');
+  const Model = modelFor(skill, attemptType);
+  const doc = await Model.findOne({ _id: attemptId, userId }).select('status mode proctor.violationCount').lean();
+  if (!doc) throw new NotFoundError('Không tìm thấy bài làm');
+  return {
+    status: doc.status,
+    violationCount: (doc.proctor && doc.proctor.violationCount) || 0,
+    maxViolations: MAX_VIOLATIONS,
+  };
+}
+
 module.exports = {
   SKILLS,
   ATTEMPT_TYPES,
@@ -164,4 +189,5 @@ module.exports = {
   checkCooldown,
   assertNotOnCooldown,
   recordViolation,
+  getAttemptState,
 };

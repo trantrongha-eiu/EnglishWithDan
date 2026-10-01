@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="/css/style.css?v=20260831" />
   <link rel="stylesheet" href="/reading.css?v=20261001widetbl" />
   <link rel="stylesheet" href="/css/mobile.css?v=20261001nav" />
+  <link rel="stylesheet" href="/css/exam-embed.css?v=20261001pc" />
+  <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
@@ -41,9 +43,10 @@
 <script src="/js/shared/attempt-history.js?v=20261001"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
-<script src="/js/shared/mock-test.js?v=20260906fix"></script>
-<script src="/js/shared/exam-proctor.js?v=20260917"></script>
-<script src="/js/shared/exam-mode-select.js?v=20260925route"></script>
+<script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
+<script src="/js/shared/mock-test.js?v=20261001pc"></script>
+<script src="/js/shared/exam-proctor.js?v=20261001pc"></script>
+<script src="/js/shared/exam-mode-select.js?v=20261001pc"></script>
 
   <!-- ════════════════════════════════════════════════════════
      SCREEN 1 – DANH SÁCH TEST
@@ -517,7 +520,7 @@
 
 
 
-  <script src="/js/reading-v2.js?v=20261001widetbl"></script>
+  <script src="/js/reading-v2.js?v=20261001pc"></script>
   <script src="/js/reading-tips.js?v=20260925route"></script>
   <script src="/js/reading-tips-practice.js?v=20260924c"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->

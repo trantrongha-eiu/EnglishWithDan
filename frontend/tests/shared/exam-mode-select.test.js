@@ -21,6 +21,13 @@ function flush() {
   return new Promise((resolve) => setTimeout(resolve, 0));
 }
 
+// The Simulation button first waits on the screen-share gate
+// (ProctorCapture.ensureShare — absent here, so an already-resolved
+// promise); onSimulation runs a microtask later.
+function microtasks() {
+  return Promise.resolve().then(() => Promise.resolve());
+}
+
 function fetchOnce(body) {
   return jest.fn().mockResolvedValueOnce({ json: () => Promise.resolve(body) });
 }
@@ -46,6 +53,7 @@ describe('ExamModeSelect.open', () => {
     const simBtn = document.getElementById('ews-ms-sim-btn');
     expect(simBtn.disabled).toBe(false);
     simBtn.click();
+    await microtasks();
     expect(onSimulation).toHaveBeenCalledTimes(1);
   });
 
@@ -72,6 +80,7 @@ describe('ExamModeSelect.open', () => {
     jest.advanceTimersByTime(3000);
     expect(simBtn.disabled).toBe(false);
     simBtn.click();
+    await microtasks();
     expect(onSimulation).toHaveBeenCalledTimes(1);
   });
 
@@ -115,6 +124,7 @@ describe('ExamModeSelect.open — preferred (from a ?exam= link)', () => {
     expect(other.classList.contains('hidden')).toBe(true);
 
     document.getElementById('ews-ms-sim-btn').click();
+    await microtasks();
     expect(onSimulation).toHaveBeenCalledTimes(1);
   });
 
@@ -131,5 +141,26 @@ describe('ExamModeSelect.open — preferred (from a ?exam= link)', () => {
     expect(document.getElementById('ews-ms-grid').classList.contains('ews-ms-only-practice')).toBe(true);
     window.ExamModeSelect.open({ skill: 'writing', onPractice: jest.fn(), onSimulation: jest.fn() });
     expect(document.getElementById('ews-ms-grid').className).toBe('ews-ms-grid');
+  });
+});
+
+describe('ExamModeSelect — Simulation requires the screen share', () => {
+  afterEach(() => { delete window.ProctorCapture; });
+
+  test('onSimulation only runs once the share is granted; "Huỷ" on the gate starts nothing', async () => {
+    let answer;
+    window.ProctorCapture = { ensureShare: jest.fn(() => Promise.resolve(answer)) };
+
+    for (const granted of [false, true]) {
+      answer = granted;
+      global.fetch = fetchOnce({ active: false, remainingSeconds: 0 });
+      const onSimulation = jest.fn();
+      window.ExamModeSelect.open({ skill: 'reading', onPractice: jest.fn(), onSimulation });
+      await flush();
+      document.getElementById('ews-ms-sim-btn').click();
+      await microtasks();
+      expect(window.ProctorCapture.ensureShare).toHaveBeenLastCalledWith({ cancelable: true });
+      expect(onSimulation).toHaveBeenCalledTimes(granted ? 1 : 0);
+    }
   });
 });

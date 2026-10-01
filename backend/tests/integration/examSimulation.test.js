@@ -4,7 +4,7 @@
 // cross-skill test proving the cooldown is genuinely global.
 //
 // Covers the scenarios explicitly called out in the feature request:
-//   - 5 strikes -> attempt cancelled (disqualified)
+//   - 3 strikes -> attempt cancelled (disqualified)
 //   - the 5-minute cooldown is enforced SERVER-SIDE (a bare API call with
 //     nothing but a valid token, no cooperating frontend, is still blocked)
 //   - the cooldown blocks a new Simulation in a DIFFERENT skill too (global)
@@ -34,8 +34,14 @@ async function seedReadingTest() {
   return createReadingTest();
 }
 
-describe('Test Simulation — start, 5 strikes, disqualify, global cooldown', () => {
-  test('full flow: start simulation -> 5 violations disqualifies -> global cooldown blocks a new Simulation in ANY skill, but not Practice', async () => {
+describe('Test Simulation — start, 3 strikes, disqualify, global cooldown', () => {
+  // Back-to-back strikes would otherwise be merged by the 3s same-absence
+  // dedupe (covered in examSimulationService.test.js).
+  let dedupeSpy;
+  beforeEach(() => { dedupeSpy = jest.spyOn(require('../../services/proctorPolicy'), 'isDuplicateEvent').mockReturnValue(false); });
+  afterEach(() => dedupeSpy.mockRestore());
+
+  test('full flow: start simulation -> the 3rd violation disqualifies -> global cooldown blocks a new Simulation in ANY skill, but not Practice', async () => {
     const test = await seedReadingTest();
     const listeningTest = await createListeningTest();
     const student = await createPremiumStudent();
@@ -48,8 +54,8 @@ describe('Test Simulation — start, 5 strikes, disqualify, global cooldown', ()
     const attemptId = startRes.body.attemptId;
     expect(attemptId).toBeTruthy();
 
-    // 2) Report violations up to MAX_VIOLATIONS — still in-progress, not disqualified.
-    for (let i = 1; i <= examSimulationService.MAX_VIOLATIONS; i++) {
+    // 2) Report violations below MAX_VIOLATIONS — still in-progress, not disqualified.
+    for (let i = 1; i < examSimulationService.MAX_VIOLATIONS; i++) {
       const res = await api.post('/api/exam-simulation/violation', {
         skill: 'reading', attemptType: 'full', attemptId, type: 'blur',
       });
@@ -57,7 +63,7 @@ describe('Test Simulation — start, 5 strikes, disqualify, global cooldown', ()
       expect(res.body.disqualified).toBe(false);
     }
 
-    // 3) The (MAX_VIOLATIONS + 1)th violation disqualifies the run.
+    // 3) The MAX_VIOLATIONS-th violation disqualifies the run.
     const dqRes = await api.post('/api/exam-simulation/violation', {
       skill: 'reading', attemptType: 'full', attemptId, type: 'blur',
     });

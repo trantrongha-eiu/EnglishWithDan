@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const proctorFields = require('./shared/proctorSchema');
+const { PROCTOR_TYPES } = require('../services/proctorPolicy');
 
 /**
  * MockTestAttempt — one full 4-skill IELTS mock test run by a student.
@@ -37,7 +39,8 @@ const stepSchema = new mongoose.Schema({
 // ("gậy") and flags the run so a teacher can see it. See
 // frontend/js/shared/mock-test.js (MockTest proctor) + recordViolation().
 const proctorEventSchema = new mongoose.Schema({
-  type:  { type: String, enum: ['hidden', 'blur', 'unload-attempt'], required: true },
+  type:  { type: String, enum: PROCTOR_TYPES, required: true },
+  capture: { type: String, enum: ['screen', 'unsupported', 'none'] },
   skill: { type: String, enum: ['listening', 'reading', 'writing', 'speaking'] },
   at:    { type: Date, default: Date.now }
 }, { _id: false });
@@ -96,8 +99,8 @@ const MockTestAttemptSchema = new mongoose.Schema({
     type: String,
     // 'abandoned'    = the student discarded a still-open run from the
     //                  dashboard so they could start a fresh mock.
-    // 'disqualified' = the student left the exam screen more than
-    //                  MAX_VIOLATIONS times; the run is voided (no overall
+    // 'disqualified' = the student left the exam screen MAX_VIOLATIONS
+    //                  (3) times; the run is voided (no overall
     //                  band) and they must wait out a cooldown before a new
     //                  one.
     // 'deleted'      = an admin removed it from the monitor.
@@ -113,7 +116,9 @@ const MockTestAttemptSchema = new mongoose.Schema({
     violationCount: { type: Number, default: 0 },
     violated:       { type: Boolean, default: false },
     events:         { type: [proctorEventSchema], default: [] },
-    // Set when violationCount first exceeds MAX_VIOLATIONS and the run is
+    // Screenshots of the shared screen taken right after a strike.
+    shots:          proctorFields.shots,
+    // Set when violationCount reaches MAX_VIOLATIONS (3) and the run is
     // voided — the start of the "wait 5 minutes" cooldown.
     disqualifiedAt: { type: Date }
   }

@@ -18,8 +18,19 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-function fetchOnce(body) {
-  return jest.fn().mockResolvedValueOnce({ json: () => Promise.resolve(body) });
+// start() first reads GET /exam-simulation/attempt-state (real strike count,
+// still open?), then each leave POSTs /exam-simulation/violation.
+function mockApi(violationBody, stateBody) {
+  return jest.fn((url) => {
+    const body = /attempt-state/.test(url)
+      ? (stateBody || { status: 'in-progress', violationCount: 0, maxViolations: 3 })
+      : violationBody;
+    return Promise.resolve({ ok: true, json: () => Promise.resolve(body) });
+  });
+}
+const fetchOnce = (body) => mockApi(body);
+function violationCalls() {
+  return global.fetch.mock.calls.filter(([url]) => url.endsWith('/violation'));
 }
 
 // fetch(...).then(r => r.json()).then(d => ...) is a 3-hop microtask chain
@@ -44,12 +55,14 @@ describe('ExamProctor.start / stop', () => {
   });
 
   test('calling start() twice does not double-arm', () => {
+    global.fetch = mockApi({});
     window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1' });
     window.ExamProctor.start({ skill: 'listening', attemptType: 'practice', attemptId: 'a2' });
     expect(document.querySelectorAll('#exam-proctor-badge').length).toBe(1);
   });
 
   test('stop() tears down the badge and any flash/nav-warn nodes', () => {
+    global.fetch = mockApi({});
     window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1' });
     window.ExamProctor.stop();
     expect(window.ExamProctor.isActive()).toBe(false);
@@ -66,10 +79,10 @@ describe('ExamProctor — leaving the tab reports a violation', () => {
     document.dispatchEvent(new window.Event('visibilitychange'));
     await flush();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    const [url, opts] = global.fetch.mock.calls[0];
+    expect(violationCalls()).toHaveLength(1);
+    const [url, opts] = violationCalls()[0];
     expect(url).toBe('http://x/api/exam-simulation/violation');
-    expect(JSON.parse(opts.body)).toEqual({ skill: 'writing', attemptType: 'practice', attemptId: 'w9', type: 'hidden' });
+    expect(JSON.parse(opts.body)).toEqual({ skill: 'writing', attemptType: 'practice', attemptId: 'w9', type: 'hidden', capture: 'none' });
   });
 
   test('a second leave within 1.5s of the first is debounced into one report', async () => {
@@ -81,11 +94,11 @@ describe('ExamProctor — leaving the tab reports a violation', () => {
     document.dispatchEvent(new window.Event('visibilitychange')); // fires again immediately
     await flush();
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(violationCalls()).toHaveLength(1);
   });
 
   test('the badge text reflects the server-confirmed violation count, not a locally-guessed one', async () => {
-    global.fetch = fetchOnce({ violationCount: 3, violated: true, disqualified: false, cooldownSeconds: 0 });
+    global.fetch = fetchOnce({ violationCount: 2, violated: true, disqualified: false, cooldownSeconds: 0, maxViolations: 3 });
     window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1' });
 
     Object.defineProperty(document, 'hidden', { value: true, configurable: true });
@@ -93,14 +106,77 @@ describe('ExamProctor — leaving the tab reports a violation', () => {
     await flush();
 
     const badgeText = document.querySelector('#exam-proctor-badge .ep-txt').textContent;
-    expect(badgeText).toContain('3/5');
+    expect(badgeText).toContain('2/3');
+  });
+});
+
+describe('ExamProctor — resume sync (attempt-state)', () => {
+  test('a re-armed proctor shows the server-side strike count', async () => {
+    global.fetch = mockApi({}, { status: 'in-progress', violationCount: 2, maxViolations: 3 });
+    window.ExamProctor.start({ skill: 'reading', attemptType: 'practice', attemptId: 'p1' });
+    await flush();
+    expect(document.querySelector('#exam-proctor-badge .ep-txt').textContent).toContain('2/3');
+  });
+
+  test('an attempt that already ended stops the proctor and hands back to the page', async () => {
+    global.fetch = mockApi({}, { status: 'abandoned', violationCount: 0, maxViolations: 3 });
+    const onDisqualified = jest.fn();
+    window.ExamProctor.start({ skill: 'reading', attemptType: 'practice', attemptId: 'p1', onDisqualified });
+    await flush();
+    expect(window.ExamProctor.isActive()).toBe(false);
+    expect(onDisqualified).toHaveBeenCalled();
+  });
+});
+
+describe('ExamProctor — screen capture (shared/proctor-capture.js)', () => {
+  let capture;
+  beforeEach(() => {
+    capture = {
+      mode: () => 'screen', isPicking: jest.fn(() => false), shoot: jest.fn(),
+      onStopped: jest.fn(), ensureShare: jest.fn(() => Promise.resolve(true)), release: jest.fn(),
+    };
+    window.ProctorCapture = capture;
+  });
+  afterEach(() => { delete window.ProctorCapture; });
+
+  test('each strike sends capture:"screen" and asks for a screenshot of it', async () => {
+    global.fetch = mockApi({ violationCount: 1 });
+    window.ExamProctor.start({ skill: 'listening', attemptType: 'practice', attemptId: 'l1' });
+    expect(capture.ensureShare).toHaveBeenCalledWith({ cancelable: false });
+
+    Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+    document.dispatchEvent(new window.Event('visibilitychange'));
+    await flush();
+
+    expect(JSON.parse(violationCalls()[0][1].body).capture).toBe('screen');
+    expect(capture.shoot).toHaveBeenCalledWith({ context: 'simulation', skill: 'listening', attemptType: 'practice', attemptId: 'l1', type: 'hidden' });
+  });
+
+  test('leaving while the browser screen-share picker is open is not a strike', async () => {
+    capture.isPicking.mockReturnValue(true);
+    global.fetch = mockApi({ violationCount: 1 });
+    window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1' });
+    Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+    document.dispatchEvent(new window.Event('visibilitychange'));
+    await flush();
+    expect(violationCalls()).toHaveLength(0);
+  });
+
+  test('stopping the screen share is a "share-stopped" strike; stop() releases the share', async () => {
+    global.fetch = mockApi({ violationCount: 1 });
+    window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1' });
+    capture.onStopped.mock.calls[0][0]();
+    await flush();
+    expect(JSON.parse(violationCalls()[0][1].body).type).toBe('share-stopped');
+    window.ExamProctor.stop();
+    expect(capture.release).toHaveBeenCalled();
   });
 });
 
 describe('ExamProctor — disqualification', () => {
   test('a disqualified response shows the overlay and calls onDisqualified with the cooldown', async () => {
     jest.useFakeTimers();
-    global.fetch = fetchOnce({ violationCount: 6, violated: true, disqualified: true, cooldownSeconds: 300 });
+    global.fetch = fetchOnce({ violationCount: 3, violated: true, disqualified: true, cooldownSeconds: 300 });
     const onDisqualified = jest.fn();
     window.ExamProctor.start({ skill: 'reading', attemptType: 'full', attemptId: 'a1', onDisqualified });
 

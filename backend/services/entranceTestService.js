@@ -83,13 +83,10 @@ const CONTENT_POOLS = {
 };
 const GRAMMAR_QUESTION_COUNT = 25;
 
-const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt'];
-const PROCTOR_EVENT_CAP = 200;
-
-// The MAX_VIOLATIONS-th strike voids the attempt (product decision
-// 2026-10-01: 3 strikes, down from "more than 5"). Independent of
-// mockTestService's / examSimulationService's own thresholds.
-const MAX_VIOLATIONS = 3;
+// The MAX_VIOLATIONS-th (3rd) strike voids the attempt — one rule shared
+// with Test Simulation and the Full Mock Test (see proctorPolicy.js).
+const proctorPolicy = require('./proctorPolicy');
+const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;
 const COOLDOWN_SECONDS = 300;
 
 // An in-progress attempt with no sign of an open runner tab for this long
@@ -915,6 +912,15 @@ async function saveAnswer(userId, attemptId, section, payload = {}) {
       const userAnswer = payload.answer == null ? '' : String(payload.answer);
       if (idx === -1) list.push({ questionId, topic: '', userAnswer, correct: false });
       else list[idx].userAnswer = userAnswer;
+    } else if ((section === 'reading' || section === 'listening') && payload.answers && typeof payload.answers === 'object') {
+      // Whole answer map { questionNumber: answer } from the embedded
+      // practice UI (reading.html / listening.html ?embed=entrance) —
+      // replaces the section's draft answers wholesale.
+      const entries = Object.entries(payload.answers).slice(0, 100);
+      attempt.sections[section].answers = entries
+        .map(([num, val]) => ({ questionNumber: Number(num), userAnswer: val == null ? '' : String(val).slice(0, 500) }))
+        .filter(a => Number.isFinite(a.questionNumber) && a.questionNumber > 0)
+        .map(a => ({ ...a, correctAnswer: '', isCorrect: false }));
     } else if (section === 'reading' || section === 'listening') {
       const questionNumber = Number(payload.questionNumber);
       if (!Number.isFinite(questionNumber)) throw new ValidationError('Thiếu questionNumber');
@@ -1130,7 +1136,7 @@ async function getResult(userId, attemptId) {
   return payload;
 }
 
-async function recordViolation(userId, attemptId, { type }) {
+async function recordViolation(userId, attemptId, { type, capture }) {
   if (!PROCTOR_TYPES.includes(type)) throw new ValidationError('Loại vi phạm không hợp lệ');
   const result = await withVersionRetry(async () => {
     const attempt = await loadOwnedAttempt(userId, attemptId);
@@ -1145,9 +1151,18 @@ async function recordViolation(userId, attemptId, { type }) {
       };
     }
 
+    // Same absence reported twice (e.g. reload = beforeunload + hidden).
+    if (proctorPolicy.isDuplicateEvent(attempt.proctor.events)) {
+      return { violationCount: attempt.proctor.violationCount || 0, violated: !!attempt.proctor.violated, disqualified: false, cooldownSeconds: 0, duplicate: true };
+    }
+
     attempt.proctor.violationCount = (attempt.proctor.violationCount || 0) + 1;
     attempt.proctor.violated = true;
-    attempt.proctor.events.push({ type, at: new Date() });
+    attempt.proctor.events.push({
+      type,
+      capture: ['screen', 'unsupported', 'none'].includes(capture) ? capture : undefined,
+      at: new Date(),
+    });
     if (attempt.proctor.events.length > PROCTOR_EVENT_CAP) {
       attempt.proctor.events = attempt.proctor.events.slice(-PROCTOR_EVENT_CAP);
     }

@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/css/components.css?v=20260831" />
     <link rel="stylesheet" href="/listening.css?v=20261001widetbl" />
     <link rel="stylesheet" href="/css/mobile.css?v=20261001nav" />
+    <link rel="stylesheet" href="/css/exam-embed.css?v=20261001pc" />
+    <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
     <script src="/js/theme.js?v=20260831"></script>
     <script src="/js/shared/visit-tracker.js?v=20260831"></script>
 </head>
@@ -40,9 +42,10 @@
 <script src="/js/shared/attempt-history.js?v=20261001"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
-<script src="/js/shared/mock-test.js?v=20260906fix"></script>
-<script src="/js/shared/exam-proctor.js?v=20260917"></script>
-<script src="/js/shared/exam-mode-select.js?v=20260925route"></script>
+<script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
+<script src="/js/shared/mock-test.js?v=20261001pc"></script>
+<script src="/js/shared/exam-proctor.js?v=20261001pc"></script>
+<script src="/js/shared/exam-mode-select.js?v=20261001pc"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -385,7 +388,7 @@
                 <button class="tool-btn" id="tool-dict-pr" onclick="setTool('dict')">
                     <i class="fas fa-book"></i><small>Tra từ</small>
                 </button>
-                <button class="tool-btn" onmousedown="event.preventDefault()" onclick="translateSelected()">
+                <button class="tool-btn" id="tool-translate-pr" onmousedown="event.preventDefault()" onclick="translateSelected()">
                     <i class="fas fa-language"></i><small>Dịch (T)</small>
                 </button>
             </div>
@@ -964,6 +967,10 @@
             setupDictionaryDouble('questions-panel', 'listening', _ltDictGate);   // dict trong exam
             setupAudioEvents();
 
+            // Entrance Test's Listening section (this page inside its iframe).
+            const entranceHost = _ltEntranceEmbedHost();
+            if (entranceHost) { _enterEntranceEmbedLT(entranceHost); return; }
+
             // Full mock test, step 1/4 (?mock=<id>&skill=listening): skip the
             // list screen entirely and jump straight into the assigned test.
             if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'listening') {
@@ -973,6 +980,8 @@
                     if (!tid) { toast('Không tìm thấy đề Listening của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
                     window.MockTest.showBanner('listening');
                     _mockMode = true;
+                    // Mandatory screen share first — no exam clock runs behind its prompt.
+                    if (window.MockTest.ready) await window.MockTest.ready();
                     await startTest(tid);
                 } catch (e) {
                     toast('Lỗi mở bài thi thử', 'error');
@@ -4689,6 +4698,83 @@
         }
 
         showScreen('practice');
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       ENTRANCE TEST EMBED (?embed=entrance)
+       The Entrance Test (entrance-test.html) runs its Listening section in
+       an iframe of this page, so students get the same question renderers,
+       drag-drop and highlighter as "lẻ" practice. The parent page owns the
+       locked single-play audio, the timer, the submit button, autosave and
+       proctoring; this page only renders the questions and reports answers
+       through window.parent.EntranceEmbedHost. Dictionary and translation
+       stay blocked: _ltPracticeMode is 'simulation', the Test Simulation gate.
+       ══════════════════════════════════════════════════════════════════ */
+    function _ltEntranceEmbedHost() {
+        try {
+            if (new URLSearchParams(location.search).get('embed') !== 'entrance' || window.parent === window) return null;
+            return window.parent.EntranceEmbedHost || null;
+        } catch { return null; }
+    }
+
+    function _enterEntranceEmbedLT(host) {
+        const data = host.getSection('listening');
+        if (!data || !data.section) return;
+        if (typeof window.hideTopNav === 'function') window.hideTopNav();
+        _ltPracticeActive = true;
+        _ltPracticeSubmitted = false;
+        _ltPracticeMode = 'simulation';
+        _ltCleanSection = JSON.parse(JSON.stringify(data.section));
+        state.answers = Object.assign({}, data.answers || {});
+        state.isReview = false;
+        setTool('none');
+
+        const section = _ltCleanSection;
+        const inner = document.getElementById('lt-practice-questions-inner');
+        let html = `<div class="section-header-card">
+            <div class="section-part-label">Section ${section.partNumber || ''}</div>
+            <div class="section-title-text">${escHtml(section.title || '')}</div>
+            ${section.description ? `<div class="section-desc">${escHtml(section.description)}</div>` : ''}
+            <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
+        </div>`;
+        (section.questionGroups || []).forEach((group, gi) => { html += renderQuestionGroup(group, gi, false); });
+        inner.innerHTML = html;
+        _ltGetAllQs(section).forEach(q => restoreAnswer(q));
+        refreshWordChips();
+        setupDragDrop(inner);
+
+        const nav = document.getElementById('lt-practice-q-nav');
+        const markNav = () => nav && nav.querySelectorAll('.q-nav-btn').forEach(btn => {
+            const a = state.answers[+btn.dataset.q];
+            btn.classList.toggle('q-nav-answered', !!(a && a !== '[]'));
+        });
+        if (nav) {
+            nav.innerHTML = _ltGetAllQs(section)
+                .map(q => `<button class="q-nav-btn" data-q="${q.questionNumber}" id="lt-qnb-${q.questionNumber}" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`)
+                .join('');
+            markNav();
+        }
+
+        // The parent plays the audio (locked, single play) — keep this
+        // page's own player silent.
+        audio.pause();
+        audio.removeAttribute('src');
+        document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> ${escHtml(section.title || 'Listening')}`;
+        document.getElementById('lt-practice-footer-btns').innerHTML = '';
+        showScreen('practice');
+
+        // Every answer change (click/type/drag/select) → the parent's autosave.
+        let t = null;
+        const report = () => {
+            clearTimeout(t);
+            t = setTimeout(() => { markNav(); host.onAnswers('listening', Object.assign({}, state.answers)); }, 250);
+        };
+        ['click', 'input', 'change', 'drop'].forEach(ev => inner.addEventListener(ev, report));
+        // The parent's proctor can't see focus leaving the window while it's
+        // inside this frame — forward it.
+        window.addEventListener('blur', () => host.childBlur());
+        window.__entranceEmbed = { getAnswers: () => Object.assign({}, state.answers) };
+        host.childReady('listening');
     }
 
     /* ══════════════════════════════════════════════════════════════════════

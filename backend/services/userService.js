@@ -11,6 +11,7 @@ const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const { signToken } = require('./authService');
 const cloudinaryService = require('./cloudinaryService');
+const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { effectiveStreak } = require('../utils/streak');
 const { todayVNDate } = require('./streakBonusService');
 
@@ -154,7 +155,7 @@ async function getStats(userId) {
       .sort({ createdAt: -1 })
       .limit(STATS_HISTORY_LIMIT)
       .lean(),
-    WritingAttempt.find({ userId })
+    WritingAttempt.find({ userId, ...COUNTABLE_ATTEMPT })
       .select('wordCount1 wordCount2 timeTaken createdAt grading.overallBand')
       .sort({ createdAt: -1 })
       .limit(STATS_HISTORY_LIMIT)
@@ -186,7 +187,7 @@ async function getStats(userId) {
     // over graded attempts. Badges like "Cây viết" (>=3 bài Writing) and the
     // peer-profile count should reflect submissions made, not just how many
     // a teacher has gotten to grading yet.
-    WritingAttempt.countDocuments({ userId }),
+    WritingAttempt.countDocuments({ userId, ...COUNTABLE_ATTEMPT }),
     SpeakingAttempt.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'analyzed' } },
       { $group: { _id: null, avg: { $avg: '$aiFeedback.overallBand' }, count: { $sum: 1 } } },

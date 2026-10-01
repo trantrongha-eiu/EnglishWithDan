@@ -23,6 +23,7 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const MockTestAttempt = require('../models/MockTestAttempt');
 const reviewService = require('./reviewService');
+const { REAL_ATTEMPT } = require('./attemptVisibility');
 require('../models/ReadingTest');
 require('../models/ListeningTest');
 require('../models/Passage');
@@ -43,7 +44,7 @@ function sortAndSlice(rows, limit) {
 
 async function getReadingHistory(userId, limit = 50) {
   const fullFilter = { userId, status: 'completed' };
-  const practiceFilter = { userId, status: { $ne: 'in-progress' } };
+  const practiceFilter = { userId, ...REAL_ATTEMPT };
   const [full, practice, fullTotal, practiceTotal] = await Promise.all([
     TestAttempt.find(fullFilter).sort({ endTime: -1 }).limit(limit)
       .select('testId passagesUsed endTime duration totalQuestions correctCount wrongCount skippedCount bandScore status mode')
@@ -85,7 +86,7 @@ async function getReadingHistory(userId, limit = 50) {
 
 async function getListeningHistory(userId, limit = 50) {
   const fullFilter = { userId, status: { $ne: 'in-progress' } };
-  const practiceFilter = { userId, status: { $ne: 'in-progress' } };
+  const practiceFilter = { userId, ...REAL_ATTEMPT };
   const [full, practice, fullTotal, practiceTotal] = await Promise.all([
     ListeningAttempt.find(fullFilter).sort({ submittedAt: -1 }).limit(limit)
       .select('testName testId submittedAt timeTaken totalQuestions correctCount wrongCount skippedCount bandScore status mode')

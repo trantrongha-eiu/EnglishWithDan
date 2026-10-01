@@ -488,6 +488,27 @@ describe('section locking / immutability', () => {
     expect(again.status).toBe(200);
   });
 
+  // The Reading/Listening sections now run the real practice UI in an
+  // iframe (reading.html / listening.html ?embed=entrance), which syncs its
+  // whole { questionNumber: answer } map at once.
+  test('saves a whole Reading answer map and grades it on submit', async () => {
+    await seedFullConfig();
+    const api = authed(await createStudent());
+    const { attemptId } = await startAndGetAttempt(api);
+    await api.post(`/api/entrance-test/${attemptId}/section/grammar/submit`);
+
+    let res = await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'reading', answers: { 1: 'red', 99: 'x', bogus: 'y' } });
+    expect(res.status).toBe(200);
+    res = await api.post(`/api/entrance-test/${attemptId}/answer`, { section: 'reading', answers: { 1: 'blue' } });
+    expect(res.status).toBe(200);
+    const doc = await EntranceTestAttempt.findById(attemptId).lean();
+    expect(doc.sections.reading.answers.map(x => [x.questionNumber, x.userAnswer])).toEqual([[1, 'blue']]);
+
+    await api.post(`/api/entrance-test/${attemptId}/section/reading/submit`);
+    const graded = await EntranceTestAttempt.findById(attemptId).lean();
+    expect(graded.sections.reading.correctCount).toBe(1);
+  });
+
   test('cannot save an answer for a section that is not current', async () => {
     await seedFullConfig();
     const api = authed(await createStudent());
@@ -608,6 +629,12 @@ describe('legacy (pre-Speaking) attempts', () => {
 });
 
 describe('proctor violations', () => {
+  // Back-to-back strikes would otherwise be merged by the 3s same-absence
+  // dedupe (covered in examSimulationService.test.js).
+  let dedupeSpy;
+  beforeEach(() => { dedupeSpy = jest.spyOn(require('../../services/proctorPolicy'), 'isDuplicateEvent').mockReturnValue(false); });
+  afterEach(() => dedupeSpy.mockRestore());
+
   test('the 3rd strike (MAX_VIOLATIONS) disqualifies, with a cooldown blocking a new start', async () => {
     await seedFullConfig();
     const student = await createStudent();

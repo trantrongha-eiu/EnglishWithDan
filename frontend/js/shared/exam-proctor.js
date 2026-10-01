@@ -70,7 +70,7 @@
     if (n > 0) {
       _proctor.badge.style.background = '#b91c1c';
       _proctor.badge.style.color = '#fff';
-      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 5) + ' — quay lại bài thi!';
+      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 3) + ' — quay lại bài thi!';
     } else {
       _proctor.badge.style.background = 'rgba(31,41,55,.92)';
       _proctor.badge.style.color = '#e5e7eb';
@@ -151,7 +151,8 @@
     if (!_proctor) return;
     var body = JSON.stringify({
       skill: _proctor.skill, attemptType: _proctor.attemptType,
-      attemptId: _proctor.attemptId, type: type
+      attemptId: _proctor.attemptId, type: type,
+      capture: window.ProctorCapture ? window.ProctorCapture.mode() : 'none'
     });
     try {
       fetch(API + '/exam-simulation/violation', { method: 'POST', headers: h(), body: body, keepalive: true })
@@ -159,6 +160,7 @@
         .then(function (d) {
           if (!_proctor) return;
           if (d && d.disqualified) { _disqualify(d.cooldownSeconds); return; }
+          if (d && d.maxViolations) _proctor.maxViolations = d.maxViolations;
           if (d && typeof d.violationCount === 'number') {
             _proctor.count = d.violationCount;
             _renderBadge();
@@ -166,6 +168,20 @@
         })
         .catch(function () {});
     } catch (_) {}
+  }
+
+  // One strike: badge, flash, server report, screenshot of the shared screen.
+  function _strike(type) {
+    _proctor.count += 1;
+    _renderBadge();
+    _flash();
+    _report(type);
+    if (window.ProctorCapture) {
+      window.ProctorCapture.shoot({
+        context: 'simulation', skill: _proctor.skill, attemptType: _proctor.attemptType,
+        attemptId: _proctor.attemptId, type: type
+      });
+    }
   }
 
   // The run has been disqualified server-side. Tear down every proctoring
@@ -179,6 +195,7 @@
     _proctor.navigatingAway = true;
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     try { document.removeEventListener('visibilitychange', _proctor.onVis); } catch (_) {}
     try { window.removeEventListener('blur', _proctor.onBlur); } catch (_) {}
     try { window.removeEventListener('focus', _proctor.onFocus); } catch (_) {}
@@ -210,14 +227,40 @@
 
   function _onLeave(type) {
     if (!_proctor || _proctor.navigatingAway) return;
+    // The browser's own screen-share picker takes focus — not a leave.
+    if (window.ProctorCapture && window.ProctorCapture.isPicking()) return;
     _alarmOn();
     var now = Date.now();
     if (now - _proctor.lastLeaveAt < 1500) return;
     _proctor.lastLeaveAt = now;
-    _proctor.count += 1;
-    _renderBadge();
-    _flash();
-    _report(type);
+    _strike(type);
+  }
+
+  // After a reload the proctor re-arms on the same attempt: show the real
+  // server-side strike count/limit, and refuse to carry on with an attempt
+  // that already ended (voided, swept as abandoned, submitted elsewhere).
+  function _syncState() {
+    var p = _proctor;
+    var qs = '?skill=' + encodeURIComponent(p.skill) + '&attemptType=' + encodeURIComponent(p.attemptType)
+      + '&attemptId=' + encodeURIComponent(p.attemptId);
+    try {
+      fetch(API + '/exam-simulation/attempt-state' + qs, { headers: h() })
+        .then(function (r) { return r && r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || _proctor !== p) return;
+          if (d.maxViolations) p.maxViolations = d.maxViolations;
+          if (typeof d.violationCount === 'number' && d.violationCount > p.count) p.count = d.violationCount;
+          _renderBadge();
+          if (d.status === 'disqualified') { _disqualify(300); return; }
+          if (d.status && d.status !== 'in-progress') {
+            var onEnd = p.onDisqualified;
+            stop();
+            if (typeof window.showToast === 'function') window.showToast('Lượt Test Simulation này đã kết thúc — hãy bắt đầu lượt mới.', 'error', 5000);
+            if (typeof onEnd === 'function') { try { onEnd(0); } catch (_) {} }
+          }
+        })
+        .catch(function () {});
+    } catch (_) {}
   }
 
   /* ── Navigation lock — identical approach to mock-test.js's own ── */
@@ -294,7 +337,7 @@
     if (_proctor || !opts.skill || !opts.attemptType || !opts.attemptId) return;
     _proctor = {
       skill: opts.skill, attemptType: opts.attemptType, attemptId: opts.attemptId,
-      onDisqualified: opts.onDisqualified, maxViolations: opts.maxViolations || 5,
+      onDisqualified: opts.onDisqualified, maxViolations: opts.maxViolations || 3,
       count: 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
@@ -311,7 +354,12 @@
     };
     _proctor.onFocus = function () { _onReturn(); };
     _proctor.onBlur = function () {
-      setTimeout(function () { if (!document.hasFocus()) _onLeave('blur'); }, 120);
+      setTimeout(function () {
+        if (document.hasFocus()) return;
+        // Focus moved into an iframe on this page (e.g. an embedded player).
+        if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
+        _onLeave('blur');
+      }, 120);
     };
     _proctor.onBeforeUnload = function (e) {
       if (!_proctor || _proctor.navigatingAway) return;
@@ -335,6 +383,14 @@
     document.addEventListener('webkitfullscreenchange', _proctor.onFsChange);
 
     if (opts.lockNav !== false) _lockNav();
+
+    if (window.ProctorCapture) {
+      window.ProctorCapture.onStopped(function () { if (_proctor && !_proctor.navigatingAway) _strike('share-stopped'); });
+      // Fresh starts already shared via ExamModeSelect; a reload-resume
+      // lost the stream with the page and must share again.
+      window.ProctorCapture.ensureShare({ cancelable: false });
+    }
+    _syncState();
   }
 
   function stop() {
@@ -342,6 +398,7 @@
     _proctor.navigatingAway = true;
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     document.removeEventListener('visibilitychange', _proctor.onVis);
     window.removeEventListener('focus', _proctor.onFocus);
     window.removeEventListener('blur', _proctor.onBlur);

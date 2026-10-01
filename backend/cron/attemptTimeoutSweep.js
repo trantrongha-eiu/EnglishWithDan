@@ -2,6 +2,9 @@ const cron           = require('node-cron');
 const TestAttempt     = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
+const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const WritingAttempt = require('../models/WritingAttempt');
 const entranceTestService = require('../services/entranceTestService');
 const logger = require('../utils/logger');
 
@@ -35,7 +38,12 @@ async function sweepStaleAttempts() {
   const cutoff = new Date(Date.now() - STALE_AFTER_MS);
   const speakingCutoff = new Date(Date.now() - SPEAKING_STALE_AFTER_MS);
   try {
-    const [reading, listening, speaking] = await Promise.all([
+    // Test Simulation placeholders (written at START so a strike has a row
+    // to attach to — see services/attemptVisibility.js) that were never
+    // submitted: the student closed the tab. Same 2h window; hidden from
+    // every list either way, this just stops them sitting 'in-progress'.
+    const simStale = { status: 'in-progress', mode: 'simulation', createdAt: { $lt: cutoff } };
+    const [reading, listening, speaking, readingSim, listeningSim, writingSim] = await Promise.all([
       TestAttempt.updateMany(
         { status: 'in-progress', startTime: { $lt: cutoff } },
         { $set: { status: 'timeout', endTime: new Date() } }
@@ -49,16 +57,21 @@ async function sweepStaleAttempts() {
         { status: 'pending', gradingQueued: { $ne: true }, createdAt: { $lt: speakingCutoff } },
         { $set: { status: 'error' } }
       ),
+      ReadingPracticeAttempt.updateMany(simStale, { $set: { status: 'abandoned' } }),
+      ListeningPracticeAttempt.updateMany(simStale, { $set: { status: 'abandoned' } }),
+      WritingAttempt.updateMany(simStale, { $set: { status: 'cancelled' } }),
     ]);
+    const simAbandoned = readingSim.modifiedCount + listeningSim.modifiedCount + writingSim.modifiedCount;
     // Entrance Test: tab closed mid-test -> abandoned (its own, much
     // shorter inactivity window — see entranceTestService).
     const entranceAbandoned = await entranceTestService.sweepInactiveAttempts();
-    if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount || entranceAbandoned) {
+    if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount || entranceAbandoned || simAbandoned) {
       logger.info('cron', 'AttemptTimeoutSweep: marked stale attempts', {
         readingTimedOut: reading.modifiedCount,
         listeningTimedOut: listening.modifiedCount,
         speakingErrored: speaking.modifiedCount,
         entranceAbandoned,
+        simulationPlaceholdersAbandoned: simAbandoned,
       });
     }
   } catch (e) {

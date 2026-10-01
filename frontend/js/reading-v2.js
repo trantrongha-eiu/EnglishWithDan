@@ -357,6 +357,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   initDividerDrag('retry-divider', 'retry-passage', 'retry-questions');
   document.addEventListener('keydown', handleKeyShortcuts);
 
+  // Entrance Test's Reading section (this page inside its iframe).
+  const entranceHost = _entranceEmbedHost();
+  if (entranceHost) { _enterEntranceEmbed(entranceHost); return; }
+
   // Handle browser back/forward button
   window.addEventListener('popstate', async (e) => {
     const s        = e.state?.screen;
@@ -427,6 +431,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       _mockMode = true;
       window.MockTest.showBanner('reading');
       state.testId = tid;
+      // Mandatory screen share first — no exam clock runs behind its prompt.
+      if (window.MockTest.ready) await window.MockTest.ready();
       await _doStartExam(tid);
     } catch (e) {
       showVocabToast('Lỗi mở bài thi thử', 'error');
@@ -1735,6 +1741,79 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
     qi.addEventListener('input', onAnswer);
     qi.addEventListener('drop', onAnswer);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ENTRANCE TEST EMBED (?embed=entrance)
+   The Entrance Test (entrance-test.html) runs its Reading section in an
+   iframe of this page, so students get the same split-screen UI, question
+   renderers and highlighter as "lẻ" practice. The parent page owns the
+   timer, the submit button, autosave and proctoring; this page only renders
+   the passage and reports answers back through window.parent.EntranceEmbedHost.
+   Dictionary and translation stay blocked: _retryState.mode is 'simulation',
+   the same gate Test Simulation uses.
+══════════════════════════════════════════════════════════════════════ */
+function _entranceEmbedHost() {
+  try {
+    if (new URLSearchParams(location.search).get('embed') !== 'entrance' || window.parent === window) return null;
+    return window.parent.EntranceEmbedHost || null;
+  } catch { return null; }
+}
+
+function _enterEntranceEmbed(host) {
+  const data = host.getSection('reading');
+  if (!data || !data.passage) return;
+  const passage = JSON.parse(JSON.stringify(data.passage));
+  if (typeof window.hideTopNav === 'function') window.hideTopNav();
+
+  _retryState = {
+    passages: [], answers: {}, isReview: false, currentPassageIdx: 0, correctMap: {},
+    isPractice: false, mode: 'simulation',
+    // Highlights survive an iframe reload, keyed to this entrance attempt.
+    practicePassageId: 'entrance-' + data.attemptId,
+  };
+  state.passages = [passage];
+  state.answers = Object.assign({}, data.answers || {});
+  state.isReview = false;
+  state.currentPassageIdx = 0;
+
+  document.getElementById('retry-title').textContent = passage.title || 'Reading';
+  document.getElementById('retry-footer-btns').innerHTML = '';
+  document.getElementById('retry-passage-inner').innerHTML =
+    `<div class="passage-title">${escHtml(passage.title)}</div>
+     <div class="passage-text">${passage.content || ''}</div>`;
+  document.getElementById('retry-questions-inner').innerHTML = renderPassageQuestions(passage, false, {});
+  const nav = document.getElementById('retry-q-nav');
+  if (nav) {
+    nav.innerHTML = getAllQuestionsFromPassage(passage)
+      .map(q => `<button class="q-nav-btn" id="qnav-${q.questionNumber}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+      .join('');
+    getAllQuestionsFromPassage(passage).forEach(q => updateQNavBtn(q.questionNumber));
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(_retryHlStorageKey(_retryState.practicePassageId)) || 'null');
+    if (saved && saved.passage) document.getElementById('retry-passage-inner').innerHTML = saved.passage;
+    if (saved && saved.questionTexts) _reapplyTextHighlights(document.getElementById('retry-questions-inner'), saved.questionTexts);
+  } catch { /* no saved highlights */ }
+
+  setTool('none');
+  initDropZones();
+  restoreAnswers(false); // drag-drop zones / matching selects from saved answers
+  showScreen('retry');
+
+  // Every answer change (click/type/drag/select) → the parent's autosave.
+  const qi = document.getElementById('retry-questions-inner');
+  let t = null;
+  const report = () => {
+    clearTimeout(t);
+    t = setTimeout(() => host.onAnswers('reading', Object.assign({}, state.answers)), 250);
+  };
+  ['click', 'input', 'change', 'drop'].forEach(ev => qi.addEventListener(ev, report));
+  // The parent's proctor can't see focus leaving the window while it's
+  // inside this frame — forward it.
+  window.addEventListener('blur', () => host.childBlur());
+  window.__entranceEmbed = { getAnswers: () => Object.assign({}, state.answers) };
+  host.childReady('reading');
 }
 
 /* ══════════════════════════════════════════════════════════════════════

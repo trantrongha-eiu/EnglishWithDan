@@ -112,6 +112,7 @@ app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/mock-test', require('./routes/mockTest'));
 app.use('/api/entrance-test', require('./routes/entranceTest'));
 app.use('/api/exam-simulation', require('./routes/examSimulation'));
+app.use('/api/proctor', require('./routes/proctor'));
 app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/weakness', require('./routes/weakness'));
 app.use('/api/recommendations', require('./routes/recommendation'));

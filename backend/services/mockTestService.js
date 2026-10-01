@@ -26,11 +26,13 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const SKILL_ORDER = ['listening', 'reading', 'writing', 'speaking'];
 const NEXT = { listening: 'reading', reading: 'writing', writing: 'speaking', speaking: 'done' };
 
-// Best-effort proctoring: once the student has left the exam screen more
-// than this many times the run is voided ('disqualified') and they must
-// wait out DQ_COOLDOWN_SECONDS before starting a fresh one. Teachers/admins
-// are exempt (see recordViolation / startMockTest callers).
-const MAX_VIOLATIONS = 10;
+// Best-effort proctoring: the MAX_VIOLATIONS-th time the student leaves the
+// exam screen the run is voided ('disqualified') and they must wait out
+// DQ_COOLDOWN_SECONDS before starting a fresh one. Shared 3-strike rule —
+// see proctorPolicy.js. Teachers/admins are exempt (see recordViolation /
+// startMockTest callers).
+const proctorPolicy = require('./proctorPolicy');
+const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;
 const DQ_COOLDOWN_SECONDS = 300; // 5 minutes
 
 // Kept out of every history list (student + admin) and the resume lookup:
@@ -172,7 +174,7 @@ async function startMockTest(userId) {
       const waitSec = Math.ceil((DQ_COOLDOWN_SECONDS * 1000 - elapsedMs) / 1000);
       const waitMin = Math.max(1, Math.ceil(waitSec / 60));
       const err = new AppError(
-        `Lượt thi thử trước đã bị huỷ do rời màn hình thi quá ${MAX_VIOLATIONS} lần. `
+        `Lượt thi thử trước đã bị huỷ do rời màn hình thi ${MAX_VIOLATIONS} lần. `
         + `Vui lòng quay lại trang chủ và đợi khoảng ${waitMin} phút nữa rồi bắt đầu lượt mới.`,
         429
       );
@@ -232,14 +234,11 @@ async function abandonCurrent(userId) {
   return { abandoned: true, attemptId: String(doc._id) };
 }
 
-const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt'];
-const PROCTOR_EVENT_CAP = 200; // keep the most recent N, never grow unbounded
-
 // A mock skill page reported the student leaving the exam tab. Bump the
 // counter + flag the run. Only counts while the run is still open; once
 // it's graded/completed/abandoned this is a no-op that just echoes the
 // current tally back.
-async function recordViolation(userId, mockId, { type, skill } = {}) {
+async function recordViolation(userId, mockId, { type, skill, capture } = {}) {
   if (!mongoose.isValidObjectId(mockId)) throw new ValidationError('mockId không hợp lệ');
   if (!PROCTOR_TYPES.includes(type)) throw new ValidationError('Loại vi phạm không hợp lệ');
 
@@ -261,10 +260,16 @@ async function recordViolation(userId, mockId, { type, skill } = {}) {
     };
   }
 
+  // Same absence reported twice (e.g. reload = beforeunload + hidden).
+  if (proctorPolicy.isDuplicateEvent(doc.proctor.events)) {
+    return { violationCount: doc.proctor.violationCount || 0, violated: !!doc.proctor.violated, disqualified: false, cooldownSeconds: 0, duplicate: true };
+  }
+
   doc.proctor.violationCount = (doc.proctor.violationCount || 0) + 1;
   doc.proctor.violated = true;
   doc.proctor.events.push({
     type,
+    capture: ['screen', 'unsupported', 'none'].includes(capture) ? capture : undefined,
     skill: SKILL_ORDER.includes(skill) ? skill : undefined,
     at: new Date()
   });
@@ -272,11 +277,11 @@ async function recordViolation(userId, mockId, { type, skill } = {}) {
     doc.proctor.events = doc.proctor.events.slice(-PROCTOR_EVENT_CAP);
   }
 
-  // Over the limit → void the run. The four sub-attempts (if any were
+  // Strike limit reached → void the run. The four sub-attempts (if any were
   // already submitted) stay in their own per-skill histories; only this
   // wrapper is closed, and no overall band is ever computed for it.
   let disqualified = false;
-  if (doc.proctor.violationCount > MAX_VIOLATIONS) {
+  if (doc.proctor.violationCount >= MAX_VIOLATIONS) {
     doc.status = 'disqualified';
     doc.proctor.disqualifiedAt = new Date();
     doc.overallBand = null;

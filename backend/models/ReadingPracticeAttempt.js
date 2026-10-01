@@ -31,9 +31,11 @@ const ReadingPracticeAttemptSchema = new mongoose.Schema({
   // 'in-progress' is written at POST /practice/start-simulation, before the
   // student has answered anything — so a strike (examSimulationService.
   // recordViolation) has a row to attach to, matching TestAttempt's
-  // (full-test) existing start-then-submit shape. 'disqualified' = 5+
-  // strikes voided the run.
-  status: { type: String, enum: ['in-progress', 'completed', 'disqualified'], default: 'completed' },
+  // (full-test) existing start-then-submit shape. 'disqualified' = 3
+  // strikes voided the run. 'abandoned' = an in-progress
+  // placeholder never submitted (tab closed) — swept by cron/attemptTimeoutSweep.js
+  // and hidden from every history/admin list.
+  status: { type: String, enum: ['in-progress', 'completed', 'disqualified', 'abandoned'], default: 'completed' },
   mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
   proctor: { type: proctorSchema, default: () => ({}) },
   // Simulation-only exam-condition timer — a single passage has no official

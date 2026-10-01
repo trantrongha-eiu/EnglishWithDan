@@ -227,6 +227,8 @@ function showScreen(id) {
   // Full mock test, step 4/4 (?mock=<id>&skill=speaking): lock the student
   // to the assigned Part 2 cue card, skip the browser/list entirely.
   if (window.MockTest && window.MockTest.active() && window.MockTest.params().skill === 'speaking') {
+    // Mandatory screen share first — no exam clock runs behind its prompt.
+    if (window.MockTest.ready) await window.MockTest.ready();
     await startSpeakingMockQuestion();
     return;
   }

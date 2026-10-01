@@ -4,6 +4,7 @@ import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import Pagination from '../components/Pagination';
 import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
+import ProctorPanel from '../components/ui/ProctorPanel';
 
 // Admin surface for the IELTS Entrance Test ("Test đầu vào") — three tabs,
 // same inner-tabs-nav pattern Monitoring.jsx uses for its own tab hub:
@@ -324,7 +325,6 @@ const RESULT_META = {
   PENDING_REVIEW:  { label: 'Chờ duyệt', cls: 'badge-yellow' },
   COMPLETED:       { label: 'Đã gửi kết quả', cls: 'badge-green' },
 };
-const PROCTOR_LABEL = { hidden: 'Ẩn tab', blur: 'Mất focus cửa sổ', 'unload-attempt': 'Định đóng tab' };
 const BAND_OPTIONS = Array.from({ length: 19 }, (_, i) => (i * 0.5).toFixed(1));
 const roundHalf = (n) => Math.round(n * 2) / 2; // same as backend utils/bandScore.roundIeltsHalf
 
@@ -563,26 +563,7 @@ function AttemptDetailModal({ id, onClose, onChanged }) {
                 </Panel>
               )}
 
-              <div style={{
-                background: p?.violated ? 'rgba(198,40,40,.08)' : 'var(--surface2)',
-                border: `1px solid ${p?.violated ? 'var(--danger)' : 'var(--border)'}`,
-                borderRadius: 10, padding: '12px 14px',
-              }}>
-                <div style={{ fontWeight: 700, marginBottom: p?.events?.length ? 10 : 0 }}>
-                  {p?.violated ? '⚠️ ' : '✅ '}Proctoring: {p?.violationCount || 0} gậy
-                  {p?.violated && <span style={{ color: 'var(--danger)' }}> · Bị đánh dấu vi phạm</span>}
-                </div>
-                {p?.events?.length > 0 && (
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: 'var(--text2)', display: 'grid', gap: 4 }}>
-                    {p.events.map((e, i) => (
-                      <li key={i}>
-                        <strong>{PROCTOR_LABEL[e.type] || e.type}</strong>
-                        <span style={{ color: 'var(--text3)' }}> · {formatDate(e.at)}</span>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-              </div>
+              <ProctorPanel proctor={p} />
             </>
           )}
         </div>

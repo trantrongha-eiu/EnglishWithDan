@@ -18,6 +18,7 @@ const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
+const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 // Mongoose `.select()` string that strips a passage's answer key
 // (correctAnswer + explanation, on both the modern questionGroups shape
@@ -475,7 +476,7 @@ async function listPracticePassages(category, userId) {
 
   const passageIds = safePassages.map(p => p._id);
   const attemptStats = await ReadingPracticeAttempt.aggregate([
-    { $match: { userId, passageId: { $in: passageIds } } },
+    { $match: { userId, passageId: { $in: passageIds }, ...COUNTABLE_ATTEMPT } },
     { $sort: { submittedAt: 1 } },
     { $group: { _id: '$passageId', count: { $sum: 1 }, lastScore: { $last: '$correctCount' }, lastTotal: { $last: '$totalQuestions' } } }
   ]);
@@ -648,7 +649,7 @@ async function savePractice(body, userId) {
 // stays accurate no matter the cap. Shape changed (was a bare array) — the
 // one caller (reading.controller.js) is updated alongside this.
 async function getPracticeHistory(userId, limit = 50) {
-  const filter = { userId };
+  const filter = { userId, ...REAL_ATTEMPT };
   const [attempts, total] = await Promise.all([
     ReadingPracticeAttempt.find(filter).select('-answers').sort({ submittedAt: -1 }).limit(limit).lean(),
     ReadingPracticeAttempt.countDocuments(filter),

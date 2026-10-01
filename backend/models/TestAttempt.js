@@ -62,7 +62,7 @@ const TestAttemptSchema = new mongoose.Schema({
 
   // 'practice' (default, today's only behavior — dictionary/translation
   // allowed, no monitoring) vs 'simulation' (Test Simulation mode — no
-  // hints, proctor armed, 5 strikes voids the run). See
+  // hints, proctor armed, 3 strikes voids the run). See
   // backend/services/examSimulationService.js.
   mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
   proctor: { type: proctorSchema, default: () => ({}) }

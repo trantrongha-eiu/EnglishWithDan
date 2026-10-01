@@ -4,6 +4,7 @@ import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
+import ProctorPanel from '../components/ui/ProctorPanel';
 
 // Admin monitoring for the full 4-skill mock test. Before this page the run
 // history + proctoring log ("gậy" = tab-switch count) were written to
@@ -65,8 +66,6 @@ function SkillCell({ skill, step }) {
     </td>
   );
 }
-
-const PROCTOR_LABEL = { hidden: 'Ẩn tab', blur: 'Mất focus cửa sổ', 'unload-attempt': 'Định đóng tab' };
 
 function ProctorModal({ id, onClose, onSaved }) {
   const toast = useToast();
@@ -215,28 +214,7 @@ function ProctorModal({ id, onClose, onSaved }) {
                 </div>
               )}
 
-              <div style={{
-                background: p?.violated ? 'rgba(198,40,40,.08)' : 'var(--surface2)',
-                border: `1px solid ${p?.violated ? 'var(--danger)' : 'var(--border)'}`,
-                borderRadius: 10, padding: '12px 14px',
-              }}>
-                <div style={{ fontWeight: 700, marginBottom: p?.events?.length ? 10 : 0 }}>
-                  {p?.violated ? '⚠️ ' : '✅ '}
-                  Proctoring: {p?.violationCount || 0} gậy
-                  {p?.violated && <span style={{ color: 'var(--danger)' }}> · Bị đánh dấu vi phạm</span>}
-                </div>
-                {p?.events?.length > 0 && (
-                  <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: 'var(--text2)', display: 'grid', gap: 4 }}>
-                    {p.events.map((e, i) => (
-                      <li key={i}>
-                        <strong>{PROCTOR_LABEL[e.type] || e.type}</strong>
-                        {e.skill && <span> · {e.skill}</span>}
-                        <span style={{ color: 'var(--text3)' }}> · {formatDate(e.at)}</span>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-              </div>
+              <ProctorPanel proctor={p} />
             </>
           )}
         </div>

@@ -176,22 +176,32 @@ describe('mockTestService.getHistory', () => {
 });
 
 describe('mockTestService.recordViolation — disqualification', () => {
+  // Back-to-back strikes would otherwise be merged by the 3s same-absence
+  // dedupe (covered in examSimulationService.test.js).
+  let dedupeSpy;
+  beforeEach(() => { dedupeSpy = jest.spyOn(require('../../../services/proctorPolicy'), 'isDuplicateEvent').mockReturnValue(false); });
+  afterEach(() => dedupeSpy.mockRestore());
+
   async function startRun(student) {
     await seedPools();
     const { attempt } = await mockTestService.startMockTest(student._id);
     return attempt._id;
   }
 
-  test('voids the run once violations exceed MAX_VIOLATIONS', async () => {
+  test('the limit is the shared 3-strike rule', () => {
+    expect(mockTestService.MAX_VIOLATIONS).toBe(3);
+  });
+
+  test('voids the run on the MAX_VIOLATIONS-th violation', async () => {
     const student = await createStudent();
     const mockId = await startRun(student);
 
     let res;
-    for (let i = 0; i < mockTestService.MAX_VIOLATIONS; i++) {
+    for (let i = 1; i < mockTestService.MAX_VIOLATIONS; i++) {
       res = await mockTestService.recordViolation(student._id, mockId, { type: 'hidden' });
       expect(res.disqualified).toBe(false);
     }
-    // The one that tips it over the limit.
+    // The one that reaches the limit.
     res = await mockTestService.recordViolation(student._id, mockId, { type: 'hidden' });
     expect(res.disqualified).toBe(true);
     expect(res.cooldownSeconds).toBe(mockTestService.DQ_COOLDOWN_SECONDS);
@@ -214,6 +224,12 @@ describe('mockTestService.recordViolation — disqualification', () => {
 });
 
 describe('mockTestService.startMockTest — cooldown after disqualification', () => {
+  // Back-to-back strikes would otherwise be merged by the 3s same-absence
+  // dedupe (covered in examSimulationService.test.js).
+  let dedupeSpy;
+  beforeEach(() => { dedupeSpy = jest.spyOn(require('../../../services/proctorPolicy'), 'isDuplicateEvent').mockReturnValue(false); });
+  afterEach(() => dedupeSpy.mockRestore());
+
   test('blocks a new run within the cooldown window, then allows it after', async () => {
     const student = await createStudent();
     await seedPools();

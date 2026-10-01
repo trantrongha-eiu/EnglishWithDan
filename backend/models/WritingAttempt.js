@@ -65,7 +65,7 @@ const WritingAttemptSchema = new mongoose.Schema({
     // only — that mode persists a placeholder attempt at START (unlike
     // every other submissionType, which only ever writes at submit time),
     // so a strike has somewhere to attach and an unfinished/voided run is
-    // visible rather than leaving no trace. 'disqualified' = 5+ strikes
+    // visible rather than leaving no trace. 'disqualified' = 3 strikes
     // (examSimulationService.recordViolation) voided the run. 'cancelled'
     // = the student exited via "Thoát" without submitting (BUG-109 —
     // exiting without cancelling left the placeholder stuck at

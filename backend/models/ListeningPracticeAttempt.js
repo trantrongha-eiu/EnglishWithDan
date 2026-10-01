@@ -29,7 +29,7 @@ const ListeningPracticeAttemptSchema = new mongoose.Schema({
   // own natural time limit (its length), so unlike Reading practice there's
   // no artificial countdown to snapshot — status/mode/proctor exist purely
   // so a strike has an in-progress row to attach to.
-  status: { type: String, enum: ['in-progress', 'completed', 'disqualified'], default: 'completed' },
+  status: { type: String, enum: ['in-progress', 'completed', 'disqualified', 'abandoned'], default: 'completed' },
   mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
   proctor: { type: proctorSchema, default: () => ({}) },
 

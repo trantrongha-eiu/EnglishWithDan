@@ -18,9 +18,12 @@
  *     attemptType split needed in the violation report body.
  *   - Reports to POST /api/entrance-test/:attemptId/violation with just
  *     { type } in the body.
- *   - maxViolations default 3, matching entranceTestService.MAX_VIOLATIONS
- *     (the 3rd strike voids the attempt; independent of the Full Mock
- *     Test's own threshold of 10). The runner passes the server's value.
+ *   - maxViolations default 3, matching the backend's shared
+ *     proctorPolicy.MAX_VIOLATIONS (the 3rd strike voids the attempt — same
+ *     rule as Test Simulation and the Full Mock Test). The runner passes the
+ *     server's value.
+ *   - Screenshots of the shared screen after each strike: see
+ *     shared/proctor-capture.js.
  *   - Own DOM element ids (entrance-proctor-*) so all three proctor engines
  *     can coexist on a page without id collisions, even though only one is
  *     ever actually armed at a time in practice.
@@ -139,7 +142,7 @@
 
   function _report(type) {
     if (!_proctor) return;
-    var body = JSON.stringify({ type: type });
+    var body = JSON.stringify({ type: type, capture: window.ProctorCapture ? window.ProctorCapture.mode() : 'none' });
     var url = API + '/entrance-test/' + encodeURIComponent(_proctor.attemptId) + '/violation';
     try {
       fetch(url, { method: 'POST', headers: h(), body: body, keepalive: true })
@@ -147,6 +150,7 @@
         .then(function (d) {
           if (!_proctor) return;
           if (d && d.disqualified) { _disqualify(d.cooldownSeconds); return; }
+          if (d && d.maxViolations) _proctor.maxViolations = d.maxViolations;
           if (d && typeof d.violationCount === 'number') {
             _proctor.count = d.violationCount;
             _renderBadge();
@@ -156,12 +160,24 @@
     } catch (_) {}
   }
 
+  // One strike: badge, flash, server report, screenshot of the shared screen.
+  function _strike(type) {
+    _proctor.count += 1;
+    _renderBadge();
+    _flash();
+    _report(type);
+    if (window.ProctorCapture) {
+      window.ProctorCapture.shoot({ context: 'entrance', attemptId: _proctor.attemptId, type: type });
+    }
+  }
+
   function _disqualify(cooldownSeconds) {
     if (!_proctor || _proctor.disqualified) return;
     _proctor.disqualified = true;
     _proctor.navigatingAway = true;
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     try { document.removeEventListener('visibilitychange', _proctor.onVis); } catch (_) {}
     try { window.removeEventListener('blur', _proctor.onBlur); } catch (_) {}
     try { window.removeEventListener('focus', _proctor.onFocus); } catch (_) {}
@@ -196,14 +212,32 @@
 
   function _onLeave(type) {
     if (!_proctor || _proctor.navigatingAway) return;
+    // The browser's own screen-share picker takes focus — not a leave.
+    if (window.ProctorCapture && window.ProctorCapture.isPicking()) return;
     _alarmOn();
     var now = Date.now();
     if (now - _proctor.lastLeaveAt < 1500) return;
     _proctor.lastLeaveAt = now;
-    _proctor.count += 1;
-    _renderBadge();
-    _flash();
-    _report(type);
+    _strike(type);
+  }
+
+  // Window blur, from this page or from the embedded Reading/Listening
+  // frame (reading.html / listening.html ?embed=entrance forward their own
+  // blur here). Focus moving between this page and that frame is not a
+  // leave; focus leaving both is.
+  function _checkBlur() {
+    if (!_proctor) return;
+    // The browser's own microphone-permission prompt (Speaking section)
+    // can take focus from the page — that's not the student leaving.
+    if (_proctor.blurGraceUntil && Date.now() < _proctor.blurGraceUntil) return;
+    setTimeout(function () {
+      if (document.hasFocus()) return;
+      var f = document.activeElement;
+      if (f && f.tagName === 'IFRAME') {
+        try { if (f.contentDocument && f.contentDocument.hasFocus()) return; } catch (_) { return; }
+      }
+      _onLeave('blur');
+    }, 120);
   }
 
   function _navWarn() {
@@ -292,12 +326,7 @@
       if (document.hidden) _onLeave('hidden'); else _onReturn();
     };
     _proctor.onFocus = function () { _onReturn(); };
-    _proctor.onBlur = function () {
-      // The browser's own microphone-permission prompt (Speaking section)
-      // can take focus from the page — that's not the student leaving.
-      if (_proctor.blurGraceUntil && Date.now() < _proctor.blurGraceUntil) return;
-      setTimeout(function () { if (!document.hasFocus()) _onLeave('blur'); }, 120);
-    };
+    _proctor.onBlur = _checkBlur;
     _proctor.onBeforeUnload = function (e) {
       if (!_proctor || _proctor.navigatingAway) return;
       _report('unload-attempt');
@@ -320,6 +349,13 @@
     document.addEventListener('webkitfullscreenchange', _proctor.onFsChange);
 
     if (opts.lockNav !== false) _lockNav();
+
+    if (window.ProctorCapture) {
+      window.ProctorCapture.onStopped(function () { if (_proctor && !_proctor.navigatingAway) _strike('share-stopped'); });
+      // Fresh starts shared before the attempt was created; a reload-resume
+      // lost the stream with the page and must share again.
+      window.ProctorCapture.ensureShare({ cancelable: false });
+    }
   }
 
   function stop() {
@@ -327,6 +363,7 @@
     _proctor.navigatingAway = true;
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     document.removeEventListener('visibilitychange', _proctor.onVis);
     window.removeEventListener('focus', _proctor.onFocus);
     window.removeEventListener('blur', _proctor.onBlur);
@@ -352,5 +389,5 @@
     if (_proctor) _proctor.blurGraceUntil = ms > 0 ? Date.now() + ms : 0;
   }
 
-  window.EntranceTestProctor = { start: start, stop: stop, isActive: isActive, allowBlurFor: allowBlurFor };
+  window.EntranceTestProctor = { start: start, stop: stop, isActive: isActive, allowBlurFor: allowBlurFor, childBlur: _checkBlur };
 })();

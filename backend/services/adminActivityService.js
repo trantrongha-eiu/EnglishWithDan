@@ -31,6 +31,7 @@ const WT1Submission = require('../models/WT1Submission');
 const MockTestAttempt = require('../models/MockTestAttempt');
 
 const FINISHED = { status: { $in: ['completed', 'disqualified'] } };
+const { REAL_ATTEMPT } = require('./attemptVisibility');
 
 // group: which skill bucket the admin UI rolls this source up into.
 // date:  the field that means "when the student did it" (falls back to
@@ -39,12 +40,12 @@ const FINISHED = { status: { $in: ['completed', 'disqualified'] } };
 // perQuestion: Task1Attempt stores ONE doc per question — count sessions.
 const ACTIVITY_SOURCES = [
   { key: 'reading',            label: 'Reading (đề thi)',     group: 'reading',   model: TestAttempt,              match: FINISHED, date: 'endTime', band: '$bandScore' },
-  { key: 'reading-practice',   label: 'Reading lẻ',           group: 'reading',   model: ReadingPracticeAttempt,   date: 'submittedAt' },
+  { key: 'reading-practice',   label: 'Reading lẻ',           group: 'reading',   model: ReadingPracticeAttempt,   match: REAL_ATTEMPT, date: 'submittedAt' },
   { key: 'listening',          label: 'Listening (đề thi)',   group: 'listening', model: ListeningAttempt,         match: FINISHED, date: 'submittedAt', band: '$bandScore' },
-  { key: 'listening-practice', label: 'Listening lẻ',         group: 'listening', model: ListeningPracticeAttempt, date: 'submittedAt' },
+  { key: 'listening-practice', label: 'Listening lẻ',         group: 'listening', model: ListeningPracticeAttempt, match: REAL_ATTEMPT, date: 'submittedAt' },
   { key: 'listening-gapfill',  label: 'Gap-fill',             group: 'listening', model: GapFillAttempt,           date: 'submittedAt' },
   { key: 'dictation',          label: 'Dictation',            group: 'listening', model: DictationAttempt,         date: 'submittedAt' },
-  { key: 'writing',            label: 'Writing (đề thi)',     group: 'writing',   model: WritingAttempt,           date: 'submittedAt', band: '$grading.overallBand' },
+  { key: 'writing',            label: 'Writing (đề thi)',     group: 'writing',   model: WritingAttempt,           match: REAL_ATTEMPT, date: 'submittedAt', band: '$grading.overallBand' },
   { key: 'writing-practice',   label: 'Writing lẻ',           group: 'writing',   model: WritingPracticeAttempt,   date: 'createdAt', userField: 'studentId' },
   { key: 'task1-practice',     label: 'Task 1 Grammar',       group: 'writing',   model: Task1Attempt,             date: 'createdAt', perQuestion: true },
   { key: 'task2-practice',     label: 'Task 2 Practice',      group: 'writing',   model: Task2Attempt,             date: 'completedAt' },

@@ -5,6 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const auth    = require('../../middleware/auth');
 const { teacherOnly, adminOnly } = require('./_shared');
+const { REAL_ATTEMPT } = require('../../services/attemptVisibility');
 
 const TestAttempt     = require('../../models/TestAttempt');
 const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
@@ -65,10 +66,10 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
       User.countDocuments({ role: { $in: ['teacher', 'admin'] } }),
       User.countDocuments({ isBanned: true }),
       TestAttempt.countDocuments({ status: 'completed' }),
-      ReadingPracticeAttempt.countDocuments(),
+      ReadingPracticeAttempt.countDocuments(REAL_ATTEMPT),
       ListeningAttempt.countDocuments({ status: 'completed' }),
-      ListeningPracticeAttempt.countDocuments(),
-      WritingAttempt.countDocuments(),
+      ListeningPracticeAttempt.countDocuments(REAL_ATTEMPT),
+      WritingAttempt.countDocuments(REAL_ATTEMPT),
       WritingPracticeAttempt.countDocuments(),
       Task1Attempt.countDocuments(),
       Task2Attempt.countDocuments(),
@@ -309,13 +310,16 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     // Reading/Listening full-test run from the admin feed, so a teacher had
     // no way to see that a run happened at all, let alone that it was voided
     // for proctoring violations. Both terminal states now count/show.
+    // The practice + Writing collections use REAL_ATTEMPT instead: their
+    // Simulation placeholders (in-progress/abandoned/cancelled) showed up as
+    // 0/0, 0m00s rows for every test a student merely opened.
     const READING_LISTENING_VISIBLE_STATUSES = ['completed', 'disqualified'];
     const counts = await Promise.all([
       count('reading', () => TestAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })),
       count('listening', () => ListeningAttempt.countDocuments({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) }).catch(() => 0)),
-      count('writing', () => WritingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
-      count('listening-practice', () => ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
-      count('reading-practice', () => ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('writing', () => WritingAttempt.countDocuments({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('listening-practice', () => ListeningPracticeAttempt.countDocuments({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('reading-practice', () => ReadingPracticeAttempt.countDocuments({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) }).catch(() => 0)),
       count('writing-practice', () => WritingPracticeAttempt.countDocuments({ ...(uid && { studentId: uid }) }).catch(() => 0)),
       count('task1-practice', () => countTask1Sessions()),
       count('task2-practice', () => Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
@@ -352,17 +356,17 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
         .catch(() => [])),
-      rowsOf('writing', () => WritingAttempt.find({ ...(uid && { userId: uid }) })
+      rowsOf('writing', () => WritingAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
         .catch(() => [])),
-      rowsOf('listening-practice', () => ListeningPracticeAttempt.find({ ...(uid && { userId: uid }) })
+      rowsOf('listening-practice', () => ListeningPracticeAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
         .catch(() => [])),
-      rowsOf('reading-practice', () => ReadingPracticeAttempt.find({ ...(uid && { userId: uid }) })
+      rowsOf('reading-practice', () => ReadingPracticeAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
@@ -507,11 +511,18 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     // monitored Simulation rather than ordinary practice. Mirrors
     // MockTests.jsx's `r.proctor.violationCount` / `r.proctor.violated`.
     function simFields(h) {
+      const sim = h.mode === 'simulation';
       return {
-        mode: h.mode === 'simulation' ? 'simulation' : 'practice',
+        mode: sim ? 'simulation' : 'practice',
         violationCount: h.proctor?.violationCount || 0,
         violated: !!h.proctor?.violated,
-        disqualified: h.status === 'disqualified'
+        disqualified: h.status === 'disqualified',
+        // Strike log + screenshots of the shared screen (proctorShotService)
+        // for the row's "📷 N ảnh" viewer — Simulation rows only.
+        ...(sim && {
+          proctorEvents: (h.proctor?.events || []).slice(-20).map(e => ({ type: e.type, capture: e.capture, at: e.at })),
+          shots: (h.proctor?.shots || []).map(s => ({ url: s.url, type: s.type, at: s.at })),
+        }),
       };
     }
     const rows = [

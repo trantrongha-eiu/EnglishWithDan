@@ -25,6 +25,7 @@ const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
+const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 // Mongoose `.select()` string that strips a section's answer key
 // (correctAnswer + explanation per question). Single source so the
@@ -381,7 +382,7 @@ async function listPracticeSections(query, userId) {
   }));
   const sectionIds = sections.map(s => s._id);
   const attemptStats = await ListeningPracticeAttempt.aggregate([
-    { $match: { userId, sectionId: { $in: sectionIds } } },
+    { $match: { userId, sectionId: { $in: sectionIds }, ...COUNTABLE_ATTEMPT } },
     { $sort: { submittedAt: 1 } },
     { $group: { _id: '$sectionId', count: { $sum: 1 }, lastScore: { $last: '$correctCount' }, lastTotal: { $last: '$totalQuestions' } } }
   ]);
@@ -1075,7 +1076,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
 }
 
 async function getPracticeHistory(userId) {
-  return ListeningPracticeAttempt.find({ userId }).select('-answers').sort({ submittedAt: -1 }).limit(50).lean();
+  return ListeningPracticeAttempt.find({ userId, ...REAL_ATTEMPT }).select('-answers').sort({ submittedAt: -1 }).limit(50).lean();
 }
 
 // Ownership-scoped ({ _id, userId }). Withholds the answer key: the raw

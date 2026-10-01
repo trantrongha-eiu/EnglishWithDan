@@ -291,7 +291,7 @@
     if (n > 0) {
       _proctor.badge.style.background = '#b91c1c';
       _proctor.badge.style.color = '#fff';
-      if (txt) txt.textContent = 'Gậy: ' + n + ' — quay lại bài thi!';
+      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 3) + ' — quay lại bài thi!';
     } else {
       _proctor.badge.style.background = 'rgba(31,41,55,.92)';
       _proctor.badge.style.color = '#e5e7eb';
@@ -372,7 +372,10 @@
 
   function _report(type) {
     if (!_proctor) return;
-    var body = JSON.stringify({ type: type, skill: _proctor.skill });
+    var body = JSON.stringify({
+      type: type, skill: _proctor.skill,
+      capture: window.ProctorCapture ? window.ProctorCapture.mode() : 'none'
+    });
     var url = API + '/mock-test/' + encodeURIComponent(_proctor.mockId) + '/violation';
     try {
       fetch(url, { method: 'POST', headers: h(), body: body, keepalive: true })
@@ -381,6 +384,7 @@
           if (!_proctor) return;
           // Server voided the run for too many exam-screen exits.
           if (d && d.disqualified) { _disqualify(d.cooldownSeconds); return; }
+          if (d && d.maxViolations) _proctor.maxViolations = d.maxViolations;
           if (d && typeof d.violationCount === 'number') {
             _proctor.count = d.violationCount;
             _renderBadge();
@@ -390,7 +394,18 @@
     } catch (_) {}
   }
 
-  // The run has been disqualified server-side (violationCount > 10). Tear
+  // One strike: badge, flash, server report, screenshot of the shared screen.
+  function _strike(type) {
+    _proctor.count += 1;
+    _renderBadge();
+    _flash();
+    _report(type);
+    if (window.ProctorCapture) {
+      window.ProctorCapture.shoot({ context: 'mock', skill: _proctor.skill, attemptId: _proctor.mockId, type: type });
+    }
+  }
+
+  // The run has been disqualified server-side (3rd strike). Tear
   // down every proctoring hook, throw up an unmissable full-screen notice,
   // then bounce the student to the dashboard — which explains the cooldown.
   function _disqualify(cooldownSeconds) {
@@ -399,6 +414,7 @@
     _proctor.navigatingAway = true;   // silences the proctor's own beforeunload
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     try { document.removeEventListener('visibilitychange', _proctor.onVis); } catch (_) {}
     try { window.removeEventListener('blur', _proctor.onBlur); } catch (_) {}
     try { window.removeEventListener('focus', _proctor.onFocus); } catch (_) {}
@@ -431,14 +447,13 @@
   // A tab switch fires blur AND visibilitychange — collapse to one "leave".
   function _onLeave(type) {
     if (!_proctor || _proctor.navigatingAway) return;
+    // The browser's own screen-share picker takes focus — not a leave.
+    if (window.ProctorCapture && window.ProctorCapture.isPicking()) return;
     _alarmOn();          // start (or keep) the continuous alarm every time
     var now = Date.now();
     if (now - _proctor.lastLeaveAt < 1500) return;
     _proctor.lastLeaveAt = now;
-    _proctor.count += 1;
-    _renderBadge();
-    _flash();
-    _report(type);
+    _strike(type);
   }
 
   /* ── Navigation lock ──────────────────────────────────────────────
@@ -522,7 +537,7 @@
     var x = params();
     if (!x.mockId || !x.skill || _proctor) return;
     _proctor = {
-      mockId: x.mockId, skill: x.skill, count: 0,
+      mockId: x.mockId, skill: x.skill, count: 0, maxViolations: 3,
       lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
@@ -541,7 +556,11 @@
     _proctor.onBlur = function () {
       // Ignore blur caused by focus moving to an element inside our own page
       // (iframes, some widgets). Real "left the window" → document has no focus.
-      setTimeout(function () { if (!document.hasFocus()) _onLeave('blur'); }, 120);
+      setTimeout(function () {
+        if (document.hasFocus()) return;
+        if (document.activeElement && document.activeElement.tagName === 'IFRAME') return;
+        _onLeave('blur');
+      }, 120);
     };
     _proctor.onBeforeUnload = function (e) {
       if (!_proctor || _proctor.navigatingAway) return;
@@ -566,6 +585,28 @@
     document.addEventListener('webkitfullscreenchange', _proctor.onFsChange);
 
     _lockNav();
+
+    if (window.ProctorCapture) {
+      window.ProctorCapture.onStopped(function () { if (_proctor && !_proctor.navigatingAway) _strike('share-stopped'); });
+      window.ProctorCapture.ensureShare({ cancelable: false });
+    }
+
+    // Strikes count across the whole run (all 4 skill pages) — show the
+    // run's real tally, not 0, on every newly opened page.
+    var armed = _proctor;
+    fetchCurrent().then(function (cur) {
+      var n = cur && cur.proctor && cur.proctor.violationCount;
+      if (_proctor !== armed || typeof n !== 'number' || n <= armed.count) return;
+      armed.count = n;
+      _renderBadge();
+    }).catch(function () {});
+  }
+
+  // Resolves once the mandatory screen share is live (instantly on devices
+  // that can't share). Skill pages await this before starting their exam
+  // in mock mode, so no timer/audio runs behind the share prompt.
+  function ready() {
+    return window.ProctorCapture ? window.ProctorCapture.ensureShare({ cancelable: false }) : Promise.resolve(true);
   }
 
   function stopProctor() {
@@ -573,6 +614,7 @@
     _proctor.navigatingAway = true;
     _alarmOff();
     _unlockNav();
+    if (window.ProctorCapture) window.ProctorCapture.release();
     document.removeEventListener('visibilitychange', _proctor.onVis);
     window.removeEventListener('focus', _proctor.onFocus);
     window.removeEventListener('blur', _proctor.onBlur);
@@ -601,6 +643,7 @@
     showBanner: showBanner,
     startProctor: startProctor,
     stopProctor: stopProctor,
+    ready: ready,
     SKILL_PAGE: SKILL_PAGE,
     SKILL_LABEL: SKILL_LABEL,
     STEP_INDEX: STEP_INDEX

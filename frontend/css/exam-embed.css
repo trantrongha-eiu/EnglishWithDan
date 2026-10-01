@@ -1,0 +1,44 @@
+/* reading.html / listening.html opened with ?embed=entrance — the Entrance
+   Test's Reading/Listening section running inside its iframe (see
+   js/entrance-test.js). Only the practice exam screen is shown; the parent
+   page owns the timer, submit button, audio and proctoring. The class is
+   set by an inline <head> script before anything renders. */
+
+/* Everything on <body> except the exam screen and the popups it uses
+   (toasts, highlight recolor panel, Listening's word picker). Global nav,
+   chat widget, onboarding/learning popups, other screens: hidden. */
+html.ews-embed body > :not(#screen-retry):not(#screen-practice):not(#toast-container):not(#hl-edit-panel):not(#word-picker):not(script):not(style):not(link) {
+  display: none !important;
+}
+html.ews-embed body {
+  padding-top: 0 !important;
+  margin: 0 !important;
+}
+
+/* Exam chrome that belongs to practice mode only. */
+html.ews-embed .exam-exit-btn,
+html.ews-embed #btn-copy-link-rt,
+html.ews-embed #btn-fullscreen-rt,
+html.ews-embed #btn-fullscreen-pr,
+html.ews-embed #practice-stopwatch,
+html.ews-embed #practice-progress-txt,
+html.ews-embed #practice-prog-bar,
+html.ews-embed #retry-score-badge,
+html.ews-embed #retry-footer-btns,
+html.ews-embed #lt-practice-stopwatch,
+html.ews-embed #lt-practice-progress-txt,
+html.ews-embed #lt-practice-prog-bar,
+html.ews-embed #lt-practice-footer-btns,
+html.ews-embed #practice-audio-bar,
+html.ews-embed #lt-practice-transcript-panel,
+/* No dictionary / translation in the Entrance Test — highlight only. */
+html.ews-embed #tool-dict-rt,
+html.ews-embed #tool-translate-rt,
+html.ews-embed #tool-dict-pr,
+html.ews-embed #tool-translate-pr,
+html.ews-embed #dict-popup,
+html.ews-embed #translate-popup,
+html.ews-embed #ews-sl-icon,
+html.ews-embed #ews-sl-popup {
+  display: none !important;
+}

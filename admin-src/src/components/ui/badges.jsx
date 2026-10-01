@@ -1,4 +1,5 @@
 import { daysUntil } from '../../utils/format';
+import { ProctorShotsButton } from './ProctorPanel';
 
 // Shared status badges — previously duplicated in Users.jsx, StudentDetail.jsx,
 // StudentHistory.jsx, Dashboard.jsx, ReadingStats.jsx and ListeningStats.jsx.
@@ -47,10 +48,11 @@ export function simBadge(h) {
     <div style={{ marginTop: 3, display: 'flex', gap: 5, flexWrap: 'wrap' }}>
       <span className="badge badge-blue" style={{ fontSize: 10 }} title="Bài làm ở chế độ Test Simulation (có giám sát)">🔒 Simulation</span>
       {h.disqualified
-        ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Lượt này đã bị huỷ do vi phạm giám sát quá số lần cho phép">🚫 Huỷ · {h.violationCount} gậy</span>
+        ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Lượt này đã bị huỷ do vi phạm giám sát (3 gậy)">🚫 Huỷ · {h.violationCount} gậy</span>
         : h.violated
           ? <span className="badge badge-red" style={{ fontSize: 10 }} title="Bị đánh dấu vi phạm giám sát (rời màn hình thi)">⚠️ {h.violationCount} gậy</span>
           : null}
+      <ProctorShotsButton row={h} />
     </div>
   );
 }

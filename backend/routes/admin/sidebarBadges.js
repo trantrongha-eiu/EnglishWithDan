@@ -11,6 +11,7 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
+const { REAL_ATTEMPT } = require('../../services/attemptVisibility');
 
 const User = require('../../models/User');
 const Message = require('../../models/Message');
@@ -53,7 +54,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       pendingEntranceReviews,
     ] = await Promise.all([
       User.find({ lastSeen: { $gte: onlineSince } }).select('username role lastSeen').lean(),
-      WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
+      WritingAttempt.aggregate([{ $match: REAL_ATTEMPT }, { $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
       Message.countDocuments({ toId: req.user._id, isRead: false, deletedBy: { $ne: req.user._id } }),
       MockTestAttempt.countDocuments({ status: { $nin: MOCK_EXCLUDED }, 'proctor.violated': true }),
       Promise.all([

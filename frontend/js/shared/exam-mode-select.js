@@ -90,7 +90,8 @@
               '<ul class="ews-ms-list">' +
                 '<li>Không được tra từ / dịch</li>' +
                 '<li>Có giám sát — rời màn hình bị tính vi phạm</li>' +
-                '<li>5 vi phạm sẽ huỷ bài, khoá 5 phút</li>' +
+                '<li>3 vi phạm sẽ huỷ bài, khoá 5 phút</li>' +
+                '<li>Máy tính: bắt buộc chia sẻ màn hình — chụp ảnh mỗi lần vi phạm</li>' +
               '</ul>' +
               '<div id="ews-ms-sim-status"></div>' +
               '<button type="button" class="ews-ms-btn ews-ms-btn-sim" id="ews-ms-sim-btn">Bắt đầu Test Simulation</button>' +
@@ -160,10 +161,7 @@
         } else {
           simStatus.innerHTML = '';
           simBtn.disabled = false;
-          simBtn.onclick = function () {
-            modal._close();
-            if (typeof opts.onSimulation === 'function') opts.onSimulation();
-          };
+          simBtn.onclick = function () { _goSimulation(modal, opts); };
         }
       })
       .catch(function () {
@@ -180,6 +178,17 @@
     if (preferred === 'practice') practiceBtn.focus();
   }
 
+  // Simulation is proctored: the student must share their entire screen
+  // (desktop) before the attempt is created — see shared/proctor-capture.js.
+  // "Huỷ" on that gate just leaves them on the list, no attempt row written.
+  function _goSimulation(modal, opts) {
+    modal._close();
+    var gate = window.ProctorCapture ? window.ProctorCapture.ensureShare({ cancelable: true }) : Promise.resolve(true);
+    gate.then(function (ok) {
+      if (ok && typeof opts.onSimulation === 'function') opts.onSimulation();
+    });
+  }
+
   function _renderCooldown(modal, simBtn, simStatus, remainingSeconds, opts) {
     simBtn.disabled = true;
     var left = remainingSeconds;
@@ -193,10 +202,7 @@
         clearInterval(modal._countdownTimer);
         simStatus.innerHTML = '';
         simBtn.disabled = false;
-        simBtn.onclick = function () {
-          modal._close();
-          if (typeof opts.onSimulation === 'function') opts.onSimulation();
-        };
+        simBtn.onclick = function () { _goSimulation(modal, opts); };
         return;
       }
       render();
