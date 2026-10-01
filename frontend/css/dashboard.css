@@ -2068,6 +2068,14 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .ci-tile--danger{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.3);border-top-color:#dc2626}
 .ci-tile--danger .ci-tile-value{color:var(--danger)}
 @media (max-width:640px){.ci-tiles{grid-template-columns:repeat(2,1fr)}}
+.ci-tile-value small{font-size:13px;font-weight:700;color:var(--text3);margin-left:1px}
+.ci-tile--danger .ci-tile-value small{color:inherit;opacity:.7}
+/* Buổi nghỉ / BT thiếu: tap to show that limit's breakdown (ciToggleLimit). */
+.ci-tile--toggle{font:inherit;color:inherit;cursor:pointer;width:100%}
+.ci-tile--toggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ci-tile--toggle[aria-expanded="true"]{box-shadow:0 0 0 2px var(--border2) inset}
+.ci-tile-caret{font-size:8px;margin-left:2px;opacity:.7;transition:transform .15s;vertical-align:1px}
+.ci-tile--toggle[aria-expanded="true"] .ci-tile-caret{transform:rotate(180deg)}
 
 /* Self-check-in ("tôi có mặt") for today's session — pending state uses the
    same amber tone as .ci-reason--warning, confirmed uses green, rejected
@@ -2084,6 +2092,8 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 
 /* Pass/fail limits — absences allowed + homework misses (ciLimitsBlock). */
 .ci-limits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ci-limits[hidden],.ci-limit[hidden]{display:none}
+.ci-limits--single{grid-template-columns:1fr}
 @media (max-width:640px){.ci-limits{grid-template-columns:1fr}}
 .ci-limit{background:var(--surface);border:1px solid var(--border);border-left:4px solid #16a34a;border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--text2);min-width:0}
 .ci-limit--warn{border-left-color:#f59e0b}

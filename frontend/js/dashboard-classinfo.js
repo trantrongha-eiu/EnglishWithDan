@@ -33,6 +33,31 @@ function ciTile(icon, value, label, extraCls) {
   </div>`;
 }
 
+// Buổi nghỉ / BT thiếu tiles double as buttons: the full limit breakdown
+// below them is hidden until the student taps one (product decision
+// 2026-10-01 — the always-open panels were too much for the homepage).
+function ciToggleTile(icon, value, label, extraCls, panelId) {
+  return `<button type="button" class="ci-tile ci-tile--toggle ${extraCls || ''}" aria-expanded="false" aria-controls="${panelId}"
+      onclick="ciToggleLimit(this)" title="Bấm để xem chi tiết">
+    <div class="ci-tile-icon">${icon}</div>
+    <div class="ci-tile-value">${value}</div>
+    <div class="ci-tile-label">${label} <i class="fas fa-chevron-down ci-tile-caret" aria-hidden="true"></i></div>
+  </button>`;
+}
+
+function ciToggleLimit(btn) {
+  const panel = document.getElementById(btn.getAttribute('aria-controls'));
+  if (!panel) return;
+  const open = btn.getAttribute('aria-expanded') !== 'true';
+  btn.setAttribute('aria-expanded', String(open));
+  panel.hidden = !open;
+  const wrap = panel.parentElement;
+  const shown = wrap.querySelectorAll('.ci-limit:not([hidden])').length;
+  wrap.hidden = shown === 0;
+  wrap.classList.toggle('ci-limits--single', shown === 1);
+}
+window.ciToggleLimit = ciToggleLimit;
+
 function ciFmtTime(d) {
   const dt = new Date(d);
   return `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
@@ -101,8 +126,10 @@ function ciClassCard(c, ck) {
     <div class="ci-tiles">
       ${ciTile('👥', c.classSize, 'Sĩ số lớp', 'ci-tile--indigo')}
       ${ciTile('📅', `${c.heldSessions}${c.totalSessions ? `/${c.totalSessions}` : ''}`, 'Buổi đã học', 'ci-tile--blue')}
-      ${ciTile('🚪', c.absentTotal, 'Buổi nghỉ', 'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''))}
-      ${ciTile('📌', c.homeworkMissedCount, 'BT thiếu', 'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''))}
+      ${ciToggleTile('🚪', `${ciNum(c.absenceEquivalent)}<small>/${c.maxAbsencesAllowed}</small>`, 'Buổi nghỉ',
+        'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-a-${c.classId}`)}
+      ${ciToggleTile('📌', `${c.homeworkMissedCount}<small>/${c.homeworkFailThreshold}</small>`, 'BT thiếu',
+        'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-h-${c.classId}`)}
     </div>
     ${ciLimitsBlock(c)}
     ${ciCheckinBlock(ck)}
@@ -180,8 +207,8 @@ function ciLimitsBlock(c) {
       <div class="ci-limit-note">Làm bù đầy đủ bài còn thiếu (kể cả bài đã đóng) sẽ được trừ khỏi số lần thiếu.</div></details>`
     : '';
 
-  return `<div class="ci-limits">
-    <div class="ci-limit ci-limit--${aLevel}">
+  return `<div class="ci-limits" hidden>
+    <div class="ci-limit ci-limit--${aLevel}" id="ci-limit-a-${c.classId}" hidden>
       <div class="ci-limit-head">
         <span class="ci-limit-title">🚪 Số buổi nghỉ</span>
         <span class="ci-limit-count"><b>${ciNum(c.absenceEquivalent)}</b> / ${c.maxAbsencesAllowed} buổi được phép</span>
@@ -191,7 +218,7 @@ function ciLimitsBlock(c) {
       <div class="ci-limit-line">${aLine}</div>
       <div class="ci-limit-note">${ciAbsenceNotes(c)}</div>
     </div>
-    <div class="ci-limit ci-limit--${hLevel}">
+    <div class="ci-limit ci-limit--${hLevel}" id="ci-limit-h-${c.classId}" hidden>
       <div class="ci-limit-head">
         <span class="ci-limit-title">📌 Số lần thiếu bài tập</span>
         <span class="ci-limit-count"><b>${c.homeworkMissedCount}</b> / ${c.homeworkFailThreshold} (mức rớt)</span>
