@@ -34,6 +34,31 @@ async function destroyAsset(publicId) {
   return cloudinary.uploader.destroy(publicId).catch(() => {});
 }
 
+// Bulk delete of up to 100 image assets per call (Admin API).
+async function destroyAssets(publicIds) {
+  const ids = (publicIds || []).filter(Boolean);
+  let deleted = 0;
+  for (let i = 0; i < ids.length; i += 100) {
+    const res = await cloudinary.api.delete_resources(ids.slice(i, i + 100), { resource_type: 'image' });
+    deleted += Object.values((res && res.deleted) || {}).filter(v => v === 'deleted').length;
+  }
+  return deleted;
+}
+
+// public_ids of image assets in `folder` uploaded more than `days` ago
+// (Search API), at most `max` per call. Uses an absolute timestamp: the
+// relative form is inverted from what it reads like (`uploaded_at>1d`
+// matched assets uploaded minutes ago when checked against the live
+// account, 2026-10-02).
+async function listOldImages(folder, days, max = 100) {
+  const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+  const res = await cloudinary.search
+    .expression(`folder:${folder} AND resource_type:image AND uploaded_at<"${cutoff}"`)
+    .max_results(max)
+    .execute();
+  return ((res && res.resources) || []).map(r => r.public_id);
+}
+
 // Lightweight connectivity check for the detailed health endpoint (Phase
 // 11) — cloudinary.api.ping() is a cheap admin-API call, not a real
 // upload, so it's safe to call from an infrequently-polled diagnostic
@@ -42,4 +67,4 @@ async function ping() {
   return cloudinary.api.ping();
 }
 
-module.exports = { uploadImage, uploadBufferStream, uploadBufferAsDataUri, destroyAsset, ping };
+module.exports = { uploadImage, uploadBufferStream, uploadBufferAsDataUri, destroyAsset, destroyAssets, listOldImages, ping };

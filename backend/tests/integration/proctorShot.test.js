@@ -2,6 +2,8 @@
 // student's shared screen right after a strike (services/proctorShotService.js).
 jest.mock('../../services/cloudinaryService', () => ({
   uploadImage: jest.fn(async () => ({ secure_url: 'https://res.cloudinary.com/x/proctor-shots/a.jpg', public_id: 'proctor-shots/a' })),
+  destroyAssets: jest.fn(async (ids) => ids.length),
+  listOldImages: jest.fn(async () => []),
 }));
 
 const mongoose = require('mongoose');
@@ -10,6 +12,8 @@ const app = require('../../app');
 const cloudinaryService = require('../../services/cloudinaryService');
 const { createStudent, signTokenFor } = require('../factories/userFactory');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
+const MockTestAttempt = require('../../models/MockTestAttempt');
+const proctorShotService = require('../../services/proctorShotService');
 
 const IMG = 'data:image/jpeg;base64,' + Buffer.from('fake-jpeg-bytes').toString('base64');
 
@@ -66,5 +70,59 @@ describe('POST /api/proctor/shot', () => {
     expect((await post(owner, { ...body, image: 'data:text/html;base64,PGgxPg==' })).status).toBe(400);
     expect((await post(owner, { ...body, context: 'nope' })).status).toBe(400);
     expect(cloudinaryService.uploadImage).not.toHaveBeenCalled();
+  });
+});
+
+describe('POST /api/proctor/shot — Full Mock Test (4 kỹ năng)', () => {
+  test('stores the shot on the mock run, tagged with the skill page it came from', async () => {
+    cloudinaryService.uploadImage.mockClear();
+    const student = await createStudent();
+    const mockId = new mongoose.Types.ObjectId();
+    await MockTestAttempt.collection.insertOne({
+      _id: mockId, userId: student._id, status: 'in-progress',
+      proctor: { violationCount: 1, violated: true, events: [{ type: 'blur', skill: 'reading', at: new Date() }], shots: [] },
+    });
+    const res = await post(student, { context: 'mock', skill: 'reading', attemptId: mockId, type: 'blur', image: IMG });
+    expect(res.status).toBe(200);
+    const doc = await MockTestAttempt.collection.findOne({ _id: mockId });
+    expect(doc.proctor.shots).toHaveLength(1);
+    expect(doc.proctor.shots[0]).toMatchObject({ type: 'blur', skill: 'reading' });
+  });
+});
+
+describe('proctorShotService.purgeOldShots — 30-day retention', () => {
+  beforeEach(() => { cloudinaryService.destroyAssets.mockClear(); cloudinaryService.listOldImages.mockClear(); });
+
+  test('deletes shots older than 30 days (Cloudinary + attempt) across Simulation and Mock Test, keeps newer ones', async () => {
+    const DAY = 24 * 60 * 60 * 1000;
+    const old = new Date(Date.now() - 31 * DAY);
+    const fresh = new Date(Date.now() - 2 * DAY);
+    const shot = (id, at) => ({ url: 'https://x/' + id + '.jpg', publicId: 'proctor-shots/' + id, type: 'hidden', at });
+
+    const student = await createStudent();
+    const sim = await simAttempt(student._id, [{ type: 'hidden', at: old }]);
+    await ListeningPracticeAttempt.updateOne({ _id: sim._id }, { $set: { 'proctor.shots': [shot('s-old', old), shot('s-new', fresh)] } });
+    const mockId = new mongoose.Types.ObjectId();
+    await MockTestAttempt.collection.insertOne({
+      _id: mockId, userId: student._id, status: 'completed',
+      proctor: { violationCount: 1, violated: true, events: [], shots: [shot('m-old', old)] },
+    });
+
+    const r = await proctorShotService.purgeOldShots();
+
+    expect(r).toMatchObject({ shots: 2, attempts: 2 });
+    const destroyed = cloudinaryService.destroyAssets.mock.calls.flatMap(c => c[0]);
+    expect(destroyed.sort()).toEqual(['proctor-shots/m-old', 'proctor-shots/s-old']);
+    expect((await ListeningPracticeAttempt.findById(sim._id).lean()).proctor.shots.map(x => x.publicId)).toEqual(['proctor-shots/s-new']);
+    expect((await MockTestAttempt.collection.findOne({ _id: mockId })).proctor.shots).toEqual([]);
+    // Orphan sweep of the Cloudinary folder by upload age.
+    expect(cloudinaryService.listOldImages).toHaveBeenCalledWith('proctor-shots', 31);
+  });
+
+  test('also deletes orphaned images the folder sweep finds', async () => {
+    cloudinaryService.listOldImages.mockResolvedValueOnce(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
+    const r = await proctorShotService.purgeOldShots();
+    expect(r.orphans).toBe(2);
+    expect(cloudinaryService.destroyAssets).toHaveBeenCalledWith(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
   });
 });

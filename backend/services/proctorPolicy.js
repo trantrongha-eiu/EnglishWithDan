@@ -35,6 +35,10 @@ const SHOT_CAP = 30;
 const SHOT_WINDOW_MS = 2 * 60 * 1000;
 const SHOT_MAX_BYTES = 1.5 * 1024 * 1024;
 const SHOT_DATA_URL = /^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/;
+// Screenshots are deleted (Cloudinary + attempt) this long after they were
+// taken, so the image store doesn't fill up — cron/proctorShotCleanup.js.
+const SHOT_RETENTION_DAYS = 30;
+const SHOT_FOLDER = 'proctor-shots';
 
 module.exports = {
   MAX_VIOLATIONS,
@@ -46,4 +50,6 @@ module.exports = {
   SHOT_WINDOW_MS,
   SHOT_MAX_BYTES,
   SHOT_DATA_URL,
+  SHOT_RETENTION_DAYS,
+  SHOT_FOLDER,
 };

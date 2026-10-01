@@ -16,8 +16,15 @@ const MockTestAttempt = require('../models/MockTestAttempt');
 const EntranceTestAttempt = require('../models/EntranceTestAttempt');
 const examSimulationService = require('./examSimulationService');
 const cloudinaryService = require('./cloudinaryService');
+const TestAttempt = require('../models/TestAttempt');
+const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
+const ListeningAttempt = require('../models/ListeningAttempt');
+const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const WritingAttempt = require('../models/WritingAttempt');
+const logger = require('../utils/logger');
 const {
   PROCTOR_TYPES, SHOT_CAP, SHOT_WINDOW_MS, SHOT_MAX_BYTES, SHOT_DATA_URL,
+  SHOT_RETENTION_DAYS, SHOT_FOLDER,
 } = require('./proctorPolicy');
 
 const CONTEXTS = ['simulation', 'mock', 'entrance'];
@@ -55,7 +62,7 @@ async function saveShot(userId, body = {}) {
     throw new AppError('Đã đủ ảnh cho lượt làm bài này', 409);
   }
 
-  const uploaded = await cloudinaryService.uploadImage(image, { folder: 'proctor-shots' });
+  const uploaded = await cloudinaryService.uploadImage(image, { folder: SHOT_FOLDER });
   const shot = {
     url: uploaded.secure_url,
     publicId: uploaded.public_id,
@@ -69,4 +76,54 @@ async function saveShot(userId, body = {}) {
   return { url: shot.url };
 }
 
-module.exports = { saveShot, CONTEXTS };
+// Every model whose proctor sub-doc can hold shots.
+const SHOT_MODELS = [
+  TestAttempt, ReadingPracticeAttempt, ListeningAttempt, ListeningPracticeAttempt,
+  WritingAttempt, MockTestAttempt, EntranceTestAttempt,
+];
+const PURGE_BATCH = 200;
+
+// Deletes every screenshot older than SHOT_RETENTION_DAYS: the Cloudinary
+// image first, then its entry on the attempt. Then a folder sweep by upload
+// date catches images whose attempt no longer exists (admin delete, the
+// 3-month practice-history TTL). Returns { shots, attempts, orphans }.
+async function purgeOldShots({ now = Date.now(), maxRounds = 50 } = {}) {
+  const cutoff = new Date(now - SHOT_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  const old = { 'proctor.shots': { $elemMatch: { at: { $lt: cutoff } } } };
+  let shots = 0, attempts = 0, orphans = 0;
+
+  for (const Model of SHOT_MODELS) {
+    for (let round = 0; round < maxRounds; round++) {
+      const docs = await Model.find(old).select('_id proctor.shots').limit(PURGE_BATCH).lean();
+      if (!docs.length) break;
+      const publicIds = [];
+      docs.forEach(d => (d.proctor.shots || []).forEach(s => {
+        if (new Date(s.at) < cutoff && s.publicId) publicIds.push(s.publicId);
+      }));
+      // An image that fails to delete here is caught by the folder sweep below.
+      await cloudinaryService.destroyAssets(publicIds).catch(e =>
+        logger.error('cron', 'ProctorShotCleanup: Cloudinary delete failed', { errorMessage: e.message }));
+      for (const d of docs) {
+        // Scoped to this one attempt and only its expired shots.
+        await Model.updateOne({ _id: d._id }, { $pull: { 'proctor.shots': { at: { $lt: cutoff } } } });
+      }
+      shots += publicIds.length;
+      attempts += docs.length;
+      if (docs.length < PURGE_BATCH) break;
+    }
+  }
+
+  try {
+    for (let round = 0; round < maxRounds; round++) {
+      const ids = await cloudinaryService.listOldImages(SHOT_FOLDER, SHOT_RETENTION_DAYS + 1);
+      if (!ids.length) break;
+      orphans += await cloudinaryService.destroyAssets(ids);
+      if (ids.length < 100) break;
+    }
+  } catch (e) {
+    logger.error('cron', 'ProctorShotCleanup: folder sweep failed', { errorMessage: e.message });
+  }
+  return { shots, attempts, orphans };
+}
+
+module.exports = { saveShot, purgeOldShots, CONTEXTS };

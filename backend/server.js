@@ -40,6 +40,7 @@ const writingAutoGradeCron = require('./cron/writingAutoGrade');
 const classAttendanceSweepCron = require('./cron/classAttendanceSweep');
 const assignmentSweepCron = require('./cron/assignmentSweep');
 const speakingGradeQueueCron = require('./cron/speakingGradeQueue');
+const proctorShotCleanupCron = require('./cron/proctorShotCleanup');
 
 // ── Process-level safety nets (Phase 11) ────────────────────────
 // An uncaught exception leaves the process in an unknown state — log it
@@ -224,6 +225,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'SpeakingGradeQueue cron failed to start', { errorMessage: e.message });
     }
+    // Delete proctoring screenshots older than 30 days
+    try {
+      proctorShotCleanupCron.start();
+    } catch (e) {
+      logger.error('startup', 'ProctorShotCleanup cron failed to start', { errorMessage: e.message });
+    }
   })
   .catch(err => logger.error('startup', 'MongoDB initial connection failed', { errorMessage: err.message }));
 
@@ -247,6 +254,7 @@ function shutdown(signal) {
   classAttendanceSweepCron.stop();
   assignmentSweepCron.stop();
   speakingGradeQueueCron.stop();
+  proctorShotCleanupCron.stop();
 
   server.close(async () => {
     logger.shutdown('HTTP server closed (no longer accepting new connections)');

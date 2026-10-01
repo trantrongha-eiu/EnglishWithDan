@@ -68,6 +68,11 @@ export default function ProctorPanel({ proctor }) {
         </ol>
       )}
       <ShotGrid shots={p.shots} />
+      {p.shots?.length > 0 && (
+        <div style={{ marginTop: 8, fontSize: 11, color: 'var(--text3)' }}>
+          Ảnh màn hình tự động xoá sau 30 ngày (kể từ lúc chụp).
+        </div>
+      )}
     </div>
   );
 }
