@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/tokens.css?v=20260831" />
     <link rel="stylesheet" href="/css/components.css?v=20260831" />
-    <link rel="stylesheet" href="/listening.css?v=20260923reviewbadge" />
+    <link rel="stylesheet" href="/listening.css?v=20261001widetbl" />
     <link rel="stylesheet" href="/css/mobile.css?v=20261001nav" />
     <script src="/js/theme.js?v=20260831"></script>
     <script src="/js/shared/visit-tracker.js?v=20260831"></script>
@@ -2094,7 +2094,8 @@
 
         function renderTableGroup(group, isReview) {
             const { headers = [], rows = [] } = group.tableConfig || {};
-            const headerHtml = headers.length
+            // All-blank headers rendered as an empty grey strip above the table.
+            const headerHtml = headers.some(h => String(h || '').trim())
                 ? `<thead><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr></thead>` : '';
             const bodyHtml = rows.map(cells =>
                 `<tr>${cells.map(cell =>

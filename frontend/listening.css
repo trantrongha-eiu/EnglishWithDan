@@ -1244,6 +1244,9 @@ body.tool-hl .check-box { user-select: none; }
   line-height: 1.6;
   max-width: 380px;   /* a long-sentence cell wraps here instead of blowing the column out */
 }
+/* Single-column table (a whole note/summary pasted into one cell): the cap
+   above squeezed it into a ~380px strip — let it use the panel width. */
+.group-table tbody td:only-child { max-width: none; }
 .group-table tbody tr:last-child td { border-bottom: none; }
 .group-table tbody tr:hover td { background: #fafafa; }
 

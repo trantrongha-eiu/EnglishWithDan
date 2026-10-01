@@ -2036,7 +2036,8 @@ function renderTableGroup(group, isReview, reviewMap) {
   const qMap = {};
   questions.forEach(q => { qMap[q.questionNumber] = q; });
 
-  const thead = headers.length
+  // All-blank headers rendered as an empty grey strip above the table.
+  const thead = headers.some(h => String(h || '').trim())
     ? `<thead><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr></thead>`
     : '';
 
