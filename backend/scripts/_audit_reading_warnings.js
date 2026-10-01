@@ -83,10 +83,11 @@ const fs = require('fs');
         const txt = [g.instruction, g.groupTitle, ...qs.map(q => q.questionText)].filter(Boolean).join(' ');
         const m = txt.match(/\b([A-Z])\s*(?:[-–—]|to)\s*([A-Z])\b/);
         const maxL = Math.max(n ? 64 + n : 0, m ? m[2].charCodeAt(0) : 0);
-        qs.forEach(q => {
-          if (!/^[A-Z]$/i.test(key(q))) warns.push(`Q${q.questionNumber}: MATCH key "${key(q)}" not a letter`);
-          else if (key(q).toUpperCase().charCodeAt(0) > maxL) warns.push(`Q${q.questionNumber}: MATCH key ${key(q)} beyond options (${n}${m ? ', instr ' + m[0] : ''})`);
-        });
+        // a key may hold alternatives ("A / B") when the passage genuinely allows both — every one must be a valid letter
+        qs.forEach(q => key(q).split(/\s*\/\s*/).forEach(a => {
+          if (!/^[A-Z]$/i.test(a)) warns.push(`Q${q.questionNumber}: MATCH key "${key(q)}" not a letter`);
+          else if (a.toUpperCase().charCodeAt(0) > maxL) warns.push(`Q${q.questionNumber}: MATCH key ${key(q)} beyond options (${n}${m ? ', instr ' + m[0] : ''})`);
+        }));
         if (m && n && n < m[2].charCodeAt(0) - 64 && (g.matchingOptions || []).every(o => o.trim().length <= 1)) warns.push(`${label}: letter list ${n} < instr ${m[0]}`);
         if (m && n && n !== m[2].charCodeAt(0) - 64 && (g.matchingOptions || []).some(o => o.trim().length > 1)) warns.push(`${label}: ${n} described options vs instr ${m[0]}`);
       }

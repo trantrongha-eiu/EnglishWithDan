@@ -11,7 +11,7 @@ Tài liệu bàn giao cho phiên AI sau (và cho thầy Hà). Cập nhật 2026-
 
 ## 2. Trạng thái hiện tại
 
-74 bài đã nhập và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện, pw_grade 100%) — pilot + batch2 … batch8 (lô 3–8 nhập 2026-09-30):
+136 bài đã nhập (lô 1–12, xem `node mini_status.js`; bảng dưới chỉ liệt kê 74 bài đầu) và **đang hiển thị cho học sinh** (đủ ảnh, 0 cảnh báo ở admin, render đúng 100% qua Playwright ở cả admin lẫn chế độ luyện, pw_grade 100%) — pilot + batch2 … batch8 (lô 3–8 nhập 2026-09-30):
 
 | _id | Tên | P |
 |---|---|---|
@@ -124,6 +124,13 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 | `../setMiniExplanations.js [files] [--local\|--apply] [--force]` | Ghi giải thích (chỉ trường `explanation`, và `correctAnswer` khi file có `key`+`why`) sau khi kiểm tra; bỏ qua câu đã có giải thích trừ `--force`. |
 | `../fixMiniContentTypos.js [--apply]` | Sửa lỗi chữ trong content bài mini theo danh sách id cố định; đồng bộ cả file lô. |
 | `pw_covers.js` | Playwright (chỉ GET): đếm `thumbnail` trong `/api/reading/practice/list` từng category, kiểm tra ảnh trên card tải được, chụp `shots/covers_list_<cat>.png`. |
+| `mini_status.js [--list]` | Đếm 340 id Recent Actual Tests: đã nhập / đã bỏ / trùng ngân hàng / còn lại (heavy WARN, broken, chờ máy chủ hình, chưa rà). Chạy cuối mỗi lô để báo cáo. |
+| `mini_debug_check.js` | Kiểm tra cấu trúc chỉ đọc mọi bài mini (≥13 câu, questionRange, MC ≥3 lựa chọn, giải thích khớp key, `__Qn__` ↔ câu, key word bank là từ trong bank, số lựa chọn matching ↔ chữ cái, ảnh nhóm HTTP 200, rác `{A}`/`##`, trùng tên). |
+| `mini_compare.js <miniId> [group…]` | In nhóm câu hỏi trên prod cạnh bản gốc `x_<id>.json` để so các nhóm dựng tay. |
+| `pw_review.js [N] [regex]` | Playwright (chặn mọi request ghi): làm N bài ngẫu nhiên (đúng/sai/bỏ trống xen kẽ), kiểm tra màn xem lại tô đúng/sai/bỏ qua và mỗi câu hiện đúng giải thích của nó. |
+| `mini_batch.js <batchN> <ids…>` | Tạo `../data/miniIeltsReading/batchN.json` từ `final_<id>.json` + tải ảnh bìa ứng viên về `shots/cover_<id>.*`. |
+| `titles_re.js <batch.json>` | In regex tên bài của một lô để lọc `pw_reading.js` / `pw_grade.js` (tránh lỗi escape của bash). |
+| `../setMiniActualTest.js [--apply]` | Bật `isActualTest` (tab "Actual test" ở danh sách luyện) cho mọi bài mini chưa bật. Importer giờ tự đặt `isActualTest: true` cho bài mới. |
 
 ## 4. Quy trình cho một lô (~10 bài)
 
@@ -158,7 +165,12 @@ Chạy mọi lệnh với cwd = `backend/scripts/miniIelts`. `web/`, `shots/`, `
 
 ## 6. Việc còn lại
 
-**TRẠNG THÁI MỚI NHẤT (2026-10-01, cuối phiên) — đọc phần này trước:**
+**CẬP NHẬT 2026-10-01 (phiên debug + lô 12) — mới nhất, đọc trước:**
+- Đang chạy **136 bài mini** (lô 1–12), tất cả có giải thích TV, tất cả tick **Actual test** (thầy yêu cầu: bài Recent Actual Tests hiển thị như bài actual test → hiện cả ở tab "Actual"). `node mini_status.js`: 136 nhập / 126 bỏ / 27 trùng ngân hàng / **51 còn lại** (33 heavy WARN, 4 broken, 4 chờ máy chủ hình, 10 chưa rà: 1471 1311 1256 1250 1094 1211 1145 1242 1147 1088).
+- Debug toàn bộ 117 bài cũ: `_audit` 0 cảnh báo, pw_reading 117/117, pw_grade 117/117, pw_admin 136/136, `mini_debug_check.js`, 15 bài có nhóm dựng tay so với bản gốc đều khớp, 9 ảnh sơ đồ khớp nhãn/key, `pw_review.js` màn xem lại OK. Lỗi tìm thấy và đã sửa (`fixMiniContentTypos.js`): nhãn đoạn `{A}` ở Economic Evolution (mini_finalize giờ tự đổi `{A}` → **A**), tiêu đề còn số của mini ("Facial Expression 1", "Food for thought 2"). Lô 12 khi rà thêm: Franklin nhóm 27–32 chỉ có lựa chọn A–H dù bài có đoạn I (đã thêm I), How to Handle the Sun tóm tắt "an ___" trỏ sai sang 'arrangement' (đổi "a"; key 'blend'), Bird Migration Q25 thêm "daytime predators".
+- Cần thầy quyết: Rainwater Harvesting Q12 đang nhận cả YES lẫn NO (hai đáp án ngược nhau; bài nói hộ dân "đồng ý góp" nhưng "rất khó khiến họ góp").
+
+**TRẠNG THÁI TRƯỚC ĐÓ (2026-10-01, cuối phiên lô 11):**
 - Chỉ lấy bài trong mục **Recent Actual Tests** (`reading?c=recent-actual-tests`, 340 id trong `web/mini/all_ids.json`) — thầy chốt, không lấy mục khác của mini-ielts.
 - Đang chạy cho học sinh: **117 bài mini** (lô 1–11), tất cả có giải thích TV. Lô 9 = 4 minor + Giai đoạn B; lô 10 = 14 bài cứu từ 39 "hỏng" (đa số chỉ là passage nằm trong `<li>`/`<div>`, `mini_extract.py` đã xử lý); lô 11 = 18 bài Giai đoạn C.
 - **Lô 12 đang dở:** đã rà tay xong và có patch trong `mini_patches.js` (đã chạy `mini_finalize.js`, tất cả patch khớp) cho 19 bài `web/mini/batch12_reviewed.txt` = 1492 1474 1439 1421 1415 1399 1391 1384 1351 1346 1345 1339 1336 1335 1306 1301 1290 1289 1260. **Chưa** làm bước 6→12 (ảnh bìa, batch12.json, pw_mini, import, audit, activate, pw_grade, giải thích).

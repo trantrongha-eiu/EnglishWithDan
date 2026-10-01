@@ -125,7 +125,8 @@ async function run() {
     const cloudinary = require('cloudinary').v2;
     cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
     for (const it of plan) {
-      const d = { ...it.doc, isActive: false };
+      // every mini passage comes from "Recent Actual Tests" → listed in the Actual Test tab too (thầy, 2026-10-01)
+      const d = { ...it.doc, isActive: false, isActualTest: true };
       if (it.imageUrl) {
         try { d.content = withImage(d.content, await rehost(cloudinary, it.imageUrl, slugify(d.title)), d.title); }
         catch (e) { console.log(`  ! image failed for "${d.title}": ${e.message}`); }

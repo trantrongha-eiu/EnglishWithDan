@@ -1325,7 +1325,7 @@ module.exports = {
     },
   },
   1318: {
-    text: [['conveying social information among aliens', 'conveying social information among humans'], ['can also work in the order direction', 'can also work in the other direction'], ['reveal much about hos they are feeling', 'reveal much about how they are feeling'],
+    text: [['<h2>Facial Expression 1</h2>', '<h2>Facial Expression</h2>'], ['conveying social information among aliens', 'conveying social information among humans'], ['can also work in the order direction', 'can also work in the other direction'], ['reveal much about hos they are feeling', 'reveal much about how they are feeling'],
       ['how nervous or at ease a person maybe', 'how nervous or at ease a person may be'], ['(not that none of these emotions', '(note that none of these emotions'], ['can not be covered', 'cannot be covered'],
       ['Which is impossible covered, despite of __Q16__', 'which cannot be covered, regardless of __Q16__'], ['and made a conclusion that', 'and it concluded that']],
     fn: d => {
@@ -1559,7 +1559,9 @@ module.exports = {
   },
   1415: {
     text: [[/<p>([A-G])\. /g, '<p><strong>$1</strong> '], ['<h2>How to handle the Sun</h2>', '<h2>How to Handle the Sun</h2>'], ['Other pans of the human body', 'Other parts of the human body'],
-      ['the year-round outdoor workers – 90% of which occurs', 'the year-round outdoor workers – 90% of the damage occurs']],
+      ['the year-round outdoor workers – 90% of which occurs', 'the year-round outdoor workers – 90% of the damage occurs'],
+      // "an __Q37__" pointed at 'arrangement'; the key (fat + sweat "combine") is 'blend' → article must be "a"
+      ['the body has a defense: an __Q37__', 'the body has a defense: a __Q37__']],
     fn: d => {
       d.title = 'How to Handle the Sun';
       const [g0, g1, g2] = d.questionGroups;
@@ -1588,6 +1590,7 @@ module.exports = {
       d.title = 'John Franklin: The Discovery of Slowness';
       const [g0, g1, g2] = d.questionGroups;
       g0.instruction = 'Reading Passage 3 has nine paragraphs, A-I. Which paragraph contains the following information? Write the correct letter, A-I, in boxes 27-32 on your answer sheet. NB You may use any letter more than once.';
+      g0.matchingOptions = 'ABCDEFGHI'.split(''); // mini listed only A-H, but the passage has paragraphs A-I
       g0.matchingReuseAllowed = true;
       g1.instruction = 'Complete the summary using the list of words, A-K, below. Write the correct word in boxes 33-36 on your answer sheet.';
       g2.instruction = 'Choose the correct letter, A, B, C or D. Write the correct letter in boxes 37-40 on your answer sheet.';
@@ -1720,7 +1723,7 @@ module.exports = {
     },
   },
   1306: {
-    text: [['nor is the land unusually crowed or infertile', 'nor is the land unusually crowded or infertile'], ['seemed unattractive when setting against', 'seemed unattractive when set against'], ['feeding children at schools work so well', 'feeding children at schools works so well'],
+    text: [['<h2>Food for thought 2</h2>', '<h2>Food for Thought</h2>'], ['nor is the land unusually crowed or infertile', 'nor is the land unusually crowded or infertile'], ['seemed unattractive when setting against', 'seemed unattractive when set against'], ['feeding children at schools work so well', 'feeding children at schools works so well'],
       ['Surprising academics outcome', 'Surprising academic outcome'], ['The pass rate as Msekeni', 'The pass rate at Msekeni'], ['Malawi has trouble to feed its large population.', 'Malawi has trouble feeding its large population.'], ['No new staffs were recruited', 'No new staff were recruited']],
     fn: d => {
       d.title = 'Food for Thought';
@@ -1783,7 +1786,7 @@ module.exports = {
   },
   1260: {
     text: [['instead of fly several thousands of miles', 'instead fly several thousands of miles'], ['Birds travelling in family groups are safe.', 'Birds travelling in family groups are safer.']],
-    keys: { 23: 'parental guidance', 24: 'compass', 25: 'predators', 26: 'visible' },
+    keys: { 23: 'parental guidance', 24: 'compass', 25: 'predators / daytime predators', 26: 'visible' },
     fn: d => {
       const [g0, g1, g2] = d.questionGroups;
       g0.instruction = 'Reading Passage 2 has seven paragraphs, A-G. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i-x, in boxes 14-20 on your answer sheet.';

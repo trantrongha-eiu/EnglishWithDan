@@ -30,7 +30,8 @@ for (const id of ids) {
   }
   // generic tidy of content/questions
   const tidy = s => s.replace(/­/g, '').replace(/ﬀ/g, 'ff').replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl').replace(/ﬃ/g, 'ffi').replace(/([a-z)]) ?\.([A-Z][a-z])/g, '$1. $2').replace(/ +([,.;:!?])(?=[\s<]|$)/g, '$1').replace(/([,;])(?=[A-Za-z])/g, '$1 ').replace(/ {2,}/g, ' ');
-  d.content = tidy(d.content);
+  // mini writes paragraph labels as "{A}" at the start of a paragraph → bold letter like the rest of the bank
+  d.content = tidy(d.content).replace(/<p>\{([A-L])\}\s*/g, '<p><strong>$1</strong> ');
   d.questionGroups.forEach(g => { g.instruction = tidy(g.instruction); g.questions.forEach(q => { q.questionText = tidy(q.questionText); if (q.options) q.options = q.options.map(o => tidy(o.replace(/[,.]$/, m => m === ',' ? '.' : m))); }); if (g.noteConfig) g.noteConfig.lines = g.noteConfig.lines.map(tidy); });
   fs.writeFileSync(`web/mini/final_${id}.json`, JSON.stringify(d, null, 1));
   console.log(id, d.title, d.category, `${d.questionRange.start}-${d.questionRange.end}`, miss.length ? 'UNMATCHED: ' + miss.join(' | ') : 'all patches applied');
