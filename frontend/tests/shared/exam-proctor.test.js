@@ -118,6 +118,26 @@ describe('ExamProctor — resume sync (attempt-state)', () => {
     expect(document.querySelector('#exam-proctor-badge .ep-txt').textContent).toContain('2/3');
   });
 
+  test('the strike badge shrinks to "n/3" after ~5s on screen so it stops covering the exam', async () => {
+    global.fetch = mockApi({}, { status: 'in-progress', violationCount: 1, maxViolations: 3 });
+    jest.useFakeTimers();
+    try {
+      window.ExamProctor.start({ skill: 'writing', attemptType: 'full', attemptId: 'w1' });
+      for (let i = 0; i < 10; i++) await Promise.resolve(); // drain the attempt-state fetch chain
+      const txt = () => document.querySelector('#exam-proctor-badge .ep-txt').textContent;
+      expect(txt()).toBe('Gậy: 1/3 — quay lại bài thi!');
+      // Time spent away from the tab doesn't count toward the collapse.
+      Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+      jest.advanceTimersByTime(10000);
+      expect(txt()).toContain('quay lại bài thi');
+      Object.defineProperty(document, 'hidden', { value: false, configurable: true });
+      jest.advanceTimersByTime(5000);
+      expect(txt()).toBe('1/3');
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   test('an attempt that already ended stops the proctor and hands back to the page', async () => {
     global.fetch = mockApi({}, { status: 'abandoned', violationCount: 0, maxViolations: 3 });
     const onDisqualified = jest.fn();

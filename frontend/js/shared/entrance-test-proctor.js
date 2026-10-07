@@ -48,10 +48,10 @@
     b.id = 'entrance-proctor-badge';
     b.style.cssText = [
       'position:fixed', 'left:12px', 'bottom:12px', 'z-index:2147483400',
-      'font:700 12px/1.2 inherit', 'padding:7px 12px', 'border-radius:999px',
+      'font:700 12px/1.2 inherit', 'padding:5px 10px', 'border-radius:999px',
       'display:flex', 'align-items:center', 'gap:6px', 'pointer-events:none',
       'background:rgba(31,41,55,.92)', 'color:#e5e7eb',
-      'box-shadow:0 4px 14px rgba(0,0,0,.28)', 'transition:background .2s,color .2s',
+      'box-shadow:0 4px 14px rgba(0,0,0,.28)', 'transition:background .2s,color .2s,opacity .2s',
       'max-width:60vw', 'white-space:nowrap'
     ].join(';');
     b.innerHTML = '<span aria-hidden="true">👁️</span><span class="etp-txt">Test đầu vào — Đang giám sát</span>';
@@ -59,19 +59,54 @@
     return b;
   }
 
+  // The full "Gậy: n/3 — quay lại bài thi!" pill used to sit permanently in
+  // the bottom-left corner and covered Reading/Listening questions and the
+  // Writing Task 1 ⇄ Task 2 switcher. Now it shows the full text only for a
+  // few seconds of on-screen time after each change (a new strike, or the
+  // start of the exam), then shrinks to a small "👁️ n/3" (or just 👁️).
+  var BADGE_EXPAND_MS = 5000;
+
+  function _expandBadge() {
+    var p = _proctor;
+    if (!p) return;
+    clearInterval(p.badgeTimer);
+    p.badgeExpanded = true;
+    var shown = 0;
+    // Count only time the student can actually see the page — a strike
+    // happens while they're away, so the message must still be there when
+    // they come back.
+    p.badgeTimer = setInterval(function () {
+      if (_proctor !== p) { clearInterval(p.badgeTimer); return; }
+      if (!document.hidden) shown += 500;
+      if (shown >= BADGE_EXPAND_MS) {
+        clearInterval(p.badgeTimer);
+        p.badgeExpanded = false;
+        _renderBadge();
+      }
+    }, 500);
+  }
+
   function _renderBadge() {
     if (!_proctor || !_proctor.badge) return;
     var n = _proctor.count;
+    var max = _proctor.maxViolations || 3;
     var txt = _proctor.badge.querySelector('.etp-txt');
+    if (n !== _proctor.badgeCount) { _proctor.badgeCount = n; _expandBadge(); }
+    var full, compact;
     if (n > 0) {
       _proctor.badge.style.background = '#b91c1c';
       _proctor.badge.style.color = '#fff';
-      if (txt) txt.textContent = 'Gậy: ' + n + '/' + (_proctor.maxViolations || 3) + ' — quay lại bài thi!';
+      full = 'Gậy: ' + n + '/' + max + ' — quay lại bài thi!';
+      compact = n + '/' + max;
     } else {
       _proctor.badge.style.background = 'rgba(31,41,55,.92)';
       _proctor.badge.style.color = '#e5e7eb';
-      if (txt) txt.textContent = 'Test đầu vào — Đang giám sát';
+      full = 'Test đầu vào — Đang giám sát';
+      compact = '';
     }
+    var label = _proctor.badgeExpanded ? full : compact;
+    if (txt) { txt.textContent = label; txt.style.display = label ? '' : 'none'; }
+    _proctor.badge.style.opacity = _proctor.badgeExpanded ? '1' : '.8';
   }
 
   var ALARM_MAX_MS = 120000;
@@ -371,6 +406,7 @@
     document.removeEventListener('fullscreenchange', _proctor.onFsChange);
     document.removeEventListener('webkitfullscreenchange', _proctor.onFsChange);
     clearInterval(_proctor.flashTimer);
+    clearInterval(_proctor.badgeTimer);
     clearTimeout(_proctor.titleTimer);
     if (_proctor.origTitle) document.title = _proctor.origTitle;
     if (_proctor.badge && _proctor.badge.parentNode) _proctor.badge.parentNode.removeChild(_proctor.badge);
