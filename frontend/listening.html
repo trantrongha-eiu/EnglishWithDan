@@ -3641,10 +3641,18 @@
         // `!inLtPractice` makes the third clause fire only when we're
         // genuinely NOT in an lt-practice session, i.e. only for the real
         // full-test screen state.mode actually describes.
+        //
+        // A SUBMITTED lt-practice (the post-submit screen, or "Xem lại" from
+        // history) is a review, so lookups are allowed whatever the mode —
+        // _ltPracticeMode keeps 'simulation' after a Test Simulation attempt
+        // (loadLTPracticeReview never resets it), which used to leave the
+        // forced review after a simulation with double-click lookup dead.
         function _ltDictGate() {
-            const inLtPractice = window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.();
+            const ltSubmitted = !!window.isLtPracticeSubmitted?.();
+            const inLtPractice = ltSubmitted || window.isLtPracticeActive?.();
             return state.tool === 'dict' && (
                 state.isReview
+                || ltSubmitted
                 || (inLtPractice && _ltPracticeMode !== 'simulation')
                 || (!inLtPractice && !_mockMode && state.mode === 'practice')
             );
@@ -3654,9 +3662,11 @@
         // help during a live timed attempt — same condition as _ltDictGate
         // above, minus its own "Dict tool toggled on" requirement.
         window.__ewsExamActive = () => {
-            const inLtPractice = window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.();
+            const ltSubmitted = !!window.isLtPracticeSubmitted?.();
+            const inLtPractice = ltSubmitted || window.isLtPracticeActive?.();
             return !(
                 state.isReview
+                || ltSubmitted
                 || (inLtPractice && _ltPracticeMode !== 'simulation')
                 || (!inLtPractice && !_mockMode && state.mode === 'practice')
             );
@@ -5586,6 +5596,10 @@
             document.getElementById('lt-practice-footer-btns').innerHTML = `
                 <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
                 <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
+
+            // Same as the post-submit screen and goToReview(): the transcript's
+            // "Double-click a word to look it up" hint should work right away.
+            setTool('dict', true);
 
             _mountInlineReviews('listening-practice', attemptId, _ltGetAllQs(reviewSection), 'lt-practice-questions-inner');
         } catch (e) {

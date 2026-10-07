@@ -3934,6 +3934,9 @@ async function _doSubmitRetry() {
     window.onbeforeunload = null;
     if (_retryState.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
   }
+  // Graded — this screen is now a review, so lookups open up even after a
+  // Test Simulation (see the dictionary gate's `submitted` clause).
+  if (_retryState) _retryState.submitted = true;
   let elapsed = 0;
   let timeLine = '';
   if (fromPractice) {
@@ -4294,6 +4297,7 @@ function fetchWithTimeout(url, ms = 7000) {
 // screen state.mode actually describes.
 setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
   state.isReview
+  || !!(_retryState && _retryState.submitted)
   || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
   || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
 ));
@@ -4304,6 +4308,7 @@ setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
 // on" requirement (the icon isn't tied to that toolbar).
 window.__ewsExamActive = () => !(
   state.isReview
+  || !!(_retryState && _retryState.submitted)
   || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
   || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
 );
