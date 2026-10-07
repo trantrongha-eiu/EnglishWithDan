@@ -66,9 +66,20 @@ module.exports = {
   '606469fb8a6f326944572592': { text: [['divided into sex areas', 'divided into six areas'], ['fits is so well', 'fits in so well']] },   // New City Development
   '60653bb18a6f326944572594': { text: [['cut of by the sea', 'cut off by the sea'], ['his own the little museum', 'his own little museum']] },   // Thor Heyerdahl
   '6065433f8a6f326944572596': { text: [['being about to choose', 'being able to choose']] },   // The Future Of Management
+  '60654c898a6f326944572597': { keys: { 1: '4/four' } },   // Early Learning Childcare: "I'll put four down"
   '606552698a6f326944572599': { fn: d => { d.title = 'Dolphin Conservation Trust'; } },
   '60655c6a8a6f32694457259b': { text: [['what’s where the doctor’s', 'that’s where the doctor’s']] },   // Theatre Studies Course
-  '60655f748a6f32694457259c': { fn: d => { d.title = 'Self-Regulatory Focus Theory and Leadership'; }, text: [['a person’ focus', 'a person’s focus']] },
+  // DOL also accepts "character"/"ambitions" — neither word is in the recording (Cambridge key: personality, aspirations)
+  '60655f748a6f32694457259c': { keys: { 32: 'personality', 35: 'aspirations' }, fn: d => { d.title = 'Self-Regulatory Focus Theory and Leadership'; }, text: [['a person’ focus', 'a person’s focus']] },
+  // ── Cambridge 11 ──
+  // Hiring A Public Room: "£" after the blank and the "(" before Q3 lost; transcript typos
+  '6066a3888a6f3269445725ad': {
+    text: [
+      ['evening: __Q2__ £ + £250 deposit __Q3__ payment', 'evening: £ __Q2__ + £250 deposit (__Q3__ payment'],
+      ['paid in cash , we', 'paid in cash, we'], ['isn’t includes is', 'isn’t included is'],
+      ['at the back of the room\n', 'at the back of the room.\n'],
+    ],
+  },
   // University Orientation Program: DOL's instruction for the diagram is a leftover from another type
   '6059bd18511ef10dfd387cf5': {
     fn: d => {

@@ -1,0 +1,68 @@
+'use strict';
+
+module.exports = [
+  {
+    sectionId: '6a6c014485e01d9821f44d27',
+    title: 'Cam 17 - Test 3 – Part 1',
+    explanations: [
+      { questionNumber: 1, explanation: 'Vị trí: Đầu hội thoại, khi Jack khuyên về kỳ nghỉ.\n\nTranscript: "I think it\'s the kind of holiday all the family can enjoy together."\n\nPhân tích: Jack khuyên đây là kỳ nghỉ phù hợp cho cả gia đình (family) → đáp án family.' },
+      { questionNumber: 2, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it\'s quite physically demanding, isn\'t it? I\'ve heard you need to be pretty fit."\n\nPhân tích: Cần có thể lực tốt (fit) để chơi lướt sóng → đáp án fit.' },
+      { questionNumber: 3, explanation: 'Vị trí: Khi bàn về Lahinch, County Clare.\n\nTranscript: "Are there good hotels there? — Yes – some very nice ones."\n\nPhân tích: Lahinch có khách sạn (hotels) chất lượng tốt → đáp án hotels.' },
+      { questionNumber: 4, explanation: 'Vị trí: Khi bàn về County Mayo.\n\nTranscript: "There\'s a good surf school at Carrowniskey beach."\n\nPhân tích: Trường dạy lướt sóng tốt ở bãi biển Carrowniskey → đáp án Carrowniskey.' },
+      { questionNumber: 5, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "Three hours every day for a week."\n\nPhân tích: Trại lướt sóng kéo dài một tuần (week) → đáp án week.' },
+      { questionNumber: 6, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "One thing we did while the kids were surfing was to rent some kayaks to have a look around the bay which is nearby."\n\nPhân tích: Có thể khám phá vịnh (bay) gần đó bằng thuyền kayak → đáp án bay.' },
+      { questionNumber: 7, explanation: 'Vị trí: Khi bàn về thời tiết.\n\nTranscript: "September\'s my favourite month because the water is warmer then."\n\nPhân tích: Tháng tốt nhất để đi là tháng 9 (September) → đáp án September.' },
+      { questionNumber: 8, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "The average temperature is about 19 degrees."\n\nPhân tích: Nhiệt độ trung bình mùa hè khoảng 19 độ → đáp án 19/nineteen.' },
+      { questionNumber: 9, explanation: 'Vị trí: Khi bàn về chi phí.\n\nTranscript: "You can expect to pay a daily rate of about 30 euros for the hire of a wetsuit and board."\n\nPhân tích: Chi phí thuê đồ khoảng 30 euro mỗi ngày → đáp án 30/thirty.' },
+      { questionNumber: 10, explanation: 'Vị trí: Cuối hội thoại.\n\nTranscript: "make sure you also get boots. They keep your feet warm."\n\nPhân tích: Nên thuê thêm giày (boots) để giữ ấm → đáp án boots.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014485e01d9821f44d33',
+    title: "School's extended hours childcare service",
+    explanations: [
+      { questionNumber: 11, explanation: 'Vị trí: Đầu bài, khi bàn về số lượng trẻ tham gia.\n\nTranscript: "we generally expect around 50-60 children for the afternoon sessions and about half that number for the breakfast sessions."\n\nPhân tích: Số trẻ tham gia buổi chiều nhiều hơn buổi sáng (more children attend after school) → đáp án B.' },
+      { questionNumber: 12, explanation: 'Vị trí: Ngay trước đó.\n\nTranscript: "We are insured to provide care for up to 70 children."\n\nPhân tích: Số trẻ tối đa được nhận là 70 (maximum number... is 70) → đáp án E.' },
+      { questionNumber: 13, explanation: 'Vị trí: Khi bàn về chi phí.\n\nTranscript: "For the afternoon sessions, which run from 3.30 until 6 p.m., it\'s £7.20."\n\nPhân tích: Chi phí trọn buổi chiều là 7.20 bảng → đáp án C.' },
+      { questionNumber: 14, explanation: 'Vị trí: Khi bàn về đồ ăn.\n\nTranscript: "At 5 p.m. children are given something more substantial, such as pasta or a casserole."\n\nPhân tích: Trẻ được ăn một bữa đầy đủ (proper meal) lúc 5 giờ → đáp án C.' },
+      { questionNumber: 15, explanation: 'Vị trí: Khi bàn về kỳ nghỉ học kỳ.\n\nTranscript: "they\'ll get the chance to make new friends with children from other schools."\n\nPhân tích: Điểm khác biệt là trẻ từ trường khác cũng có thể tham gia (children from other schools can attend) → đáp án A.' },
+      { questionNumber: 16, explanation: 'Vị trí: Khi bàn về hoạt động tiếng Tây Ban Nha.\n\nTranscript: "This is the only activity which we have to make an extra charge for."\n\nPhân tích: Hoạt động này có thu thêm phí (involves an additional fee) → đáp án E.' },
+      { questionNumber: 17, explanation: 'Vị trí: Khi bàn về hoạt động âm nhạc.\n\nTranscript: "We do rely on parental support for this, so if any of you sing or play an instrument and would be prepared to help out."\n\nPhân tích: Hoạt động cần sự hỗ trợ từ phụ huynh (requires help from parents) → đáp án D.' },
+      { questionNumber: 18, explanation: 'Vị trí: Khi bàn về hoạt động vẽ.\n\nTranscript: "we weren\'t keen on offering this... but children kept asking if they could do some art and so we finally gave in."\n\nPhân tích: Hoạt động được thêm vào theo yêu cầu của trẻ (was requested by children) → đáp án G.' },
+      { questionNumber: 19, explanation: 'Vị trí: Khi bàn về yoga.\n\nTranscript: "Yoga is something that we\'ve been meaning to introduce for some time... until now that is."\n\nPhân tích: Đây là hoạt động mới (a new activity) → đáp án F.' },
+      { questionNumber: 20, explanation: 'Vị trí: Khi bàn về nấu ăn.\n\nTranscript: "we\'ve decided to restrict this to the over 8s."\n\nPhân tích: Hoạt động chỉ dành cho trẻ trên 8 tuổi (for over 8s only) → đáp án C.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014485e01d9821f44d41',
+    title: "Holly's Work Placement Tutorial",
+    explanations: [
+      { questionNumber: 21, explanation: 'Vị trí: Đầu hội thoại, khi Holly giải thích lý do chọn nơi thực tập.\n\nTranscript: "it\'s the fresh air that attracts me – organising something indoors doesn\'t have the same appeal."\n\nPhân tích: Holly chọn vì đây là hoạt động ngoài trời (outdoors) → đáp án B.' },
+      { questionNumber: 22, explanation: 'Vị trí: Khi bàn về an toàn.\n\nTranscript: "keeping everyone within the boundary once they\'re in their kit and on the field? — Exactly... your main priority will be not to lose anyone!"\n\nPhân tích: Ưu tiên hàng đầu là giữ trẻ trong khuôn viên sân (ensuring children stay in the stadium) → đáp án A.' },
+      { questionNumber: 23, explanation: 'Vị trí: Khi bàn về khán giả.\n\nTranscript: "that\'s not always easy, especially when a proud parent\'s trying to get a snap of their child and you want them to move elsewhere."\n\nPhân tích: Khán giả có thể khó quản lý (hard to manage) → đáp án A.' },
+      { questionNumber: 24, explanation: 'Vị trí: Khi bàn về lịch trình.\n\nTranscript: "I was thinking about what to do if someone got hurt as well. I know that last year that caused a terrible delay."\n\nPhân tích: Chấn thương (an injury) từng gây trì hoãn lịch trình năm ngoái → đáp án B.' },
+      { questionNumber: 25, explanation: 'Vị trí: Khi bàn về kỹ năng giao tiếp.\n\nTranscript: "just remember it isn\'t only about what you say. If you meet someone face-to-face... — Oh, I\'ll dress up for that!"\n\nPhân tích: Ngoại hình chỉn chu (a smart appearance) quan trọng khi giao tiếp trực tiếp → đáp án C.' },
+      { questionNumber: 26, explanation: 'Vị trí: Khi bàn về kỹ năng tổ chức.\n\nTranscript: "I guess it\'s being prepared to make changes that matters. — That\'s right."\n\nPhân tích: Cần linh hoạt (being flexible) trong tổ chức → đáp án A.' },
+      { questionNumber: 27, explanation: 'Vị trí: Khi bàn về quản lý thời gian.\n\nTranscript: "I know I\'ve got to look calm even if I\'m in a panic. — Just think to yourself – no one must know I\'m under pressure."\n\nPhân tích: Cần che giấu cảm xúc thật (hiding your emotions) khi áp lực → đáp án D.' },
+      { questionNumber: 28, explanation: 'Vị trí: Khi bàn về sự sáng tạo.\n\nTranscript: "it\'s up to the events manager to think of all the fine points that go to making it work. — Right, so I need to listen carefully to that idea and then fill in all the gaps."\n\nPhân tích: Cần chú ý chi tiết (focusing on details) → đáp án B.' },
+      { questionNumber: 29, explanation: 'Vị trí: Khi bàn về lãnh đạo.\n\nTranscript: "you have the ultimate responsibility. So, believe in what you think best."\n\nPhân tích: Cần tin vào quan điểm của bản thân (trusting your own views) → đáp án F.' },
+      { questionNumber: 30, explanation: 'Vị trí: Cuối hội thoại, khi bàn về networking.\n\nTranscript: "think ahead – remember what your ambitions are and keep them in mind."\n\nPhân tích: Cần nghĩ tới tương lai (thinking of the future) khi xây dựng mạng lưới quan hệ → đáp án H.' },
+    ],
+  },
+  {
+    sectionId: '6a6c014485e01d9821f44d4e',
+    title: 'Bird Migration Theory',
+    explanations: [
+      { questionNumber: 31, explanation: 'Vị trí: Đầu bài, khi bàn về thuyết ngủ đông.\n\nTranscript: "another theory for the regular appearance and disappearance of birds was that they spend winter hidden in mud."\n\nPhân tích: Người ta từng tin chim vùi mình trong bùn (mud) vào mùa đông → đáp án mud.' },
+      { questionNumber: 32, explanation: 'Vị trí: Khi bàn về thuyết biến đổi loài của Aristotle.\n\nTranscript: "small birds called \'redstarts\' began to lose their feathers, which convinced Aristotle that they changed into robins."\n\nPhân tích: Aristotle quan sát chim rụng lông (feathers) vào mùa thu → đáp án feathers.' },
+      { questionNumber: 33, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "these assumptions are understandable given that this pair of species are similar in shape."\n\nPhân tích: Hai loài chim có hình dáng (shape) tương tự nhau → đáp án shape.' },
+      { questionNumber: 34, explanation: 'Vị trí: Khi bàn về Charles Morton.\n\nTranscript: "He wrote a surprisingly well-regarded paper claiming that birds migrate to the moon and back every year."\n\nPhân tích: Morton cho rằng chim bay tới mặt trăng (moon) vào mùa đông → đáp án moon.' },
+      { questionNumber: 35, explanation: 'Vị trí: Khi bàn về con cò bị bắn năm 1822.\n\nTranscript: "because of the long spear in its neck which incredibly had not killed it."\n\nPhân tích: Mũi giáo găm vào cổ (neck) của con cò → đáp án neck.' },
+      { questionNumber: 36, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "this was the first evidence that storks spend their winters in sub-Saharan Africa."\n\nPhân tích: Trước đó chưa có bằng chứng (evidence) nào cho việc cò di cư tới châu Phi → đáp án evidence.' },
+      { questionNumber: 37, explanation: 'Vị trí: Khi bàn về việc đeo vòng chân chim.\n\nTranscript: "very little information was available about the actual destinations of particular species."\n\nPhân tích: Ít thông tin về nơi đến (destinations) của các loài chim di cư → đáp án destinations.' },
+      { questionNumber: 38, explanation: 'Vị trí: Ngay sau đó.\n\nTranscript: "it seemed impossible that small birds... could fly over vast oceans."\n\nPhân tích: Người ta cho rằng chim nhỏ không thể tự bay qua đại dương (oceans) → đáp án oceans.' },
+      { questionNumber: 39, explanation: 'Vị trí: Khi bàn về việc đeo vòng chân chim của Mortensen.\n\nTranscript: "this is when ringed birds are found dead in the place they have migrated to, and identified" - gọi là "recovery".\n\nPhân tích: Phương pháp dựa vào việc "tìm thấy lại" (recovery) chim đã chết → đáp án recovery.' },
+      { questionNumber: 40, explanation: 'Vị trí: Cuối bài.\n\nTranscript: "In 1931, an atlas was published showing where the most common species of European birds migrated to."\n\nPhân tích: Năm 1931, một cuốn atlas (bản đồ) đầu tiên được in ra → đáp án atlas.' },
+    ],
+  },
+];
