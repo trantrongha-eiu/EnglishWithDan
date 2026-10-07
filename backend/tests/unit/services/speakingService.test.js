@@ -555,6 +555,12 @@ describe('speakingService.gradeSpeaking — speaking-v2 analysis', () => {
     expect(fb.overallBand).toBe(6);
   });
 
+  test('silent audio + a real transcript, re-grade fails: throws instead of reporting "no genuine answer"', async () => {
+    geminiService.checkSpeaking.mockResolvedValueOnce(silent()).mockRejectedValueOnce(new Error('Gemini overloaded'));
+    await expect(speakingService.gradeSpeaking('Q', T, 1, { data: 'eA==', mimeType: 'video/webm' }))
+      .rejects.toThrow('Gemini overloaded');
+  });
+
   test('silent audio and no transcript: stays "no genuine answer", no re-grade', async () => {
     geminiService.checkSpeaking.mockResolvedValue(silent());
     const fb = await speakingService.gradeSpeaking('Q', '', 1, { data: 'eA==', mimeType: 'video/webm' });

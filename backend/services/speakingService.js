@@ -320,16 +320,14 @@ async function gradeSpeaking(questionText, transcript, partNum, audio = null, du
   // 2026-10-07: some accounts could never get a Speaking grade). Re-grade
   // from the transcript alone; Pronunciation is then simply not assessed.
   if (fb.noGenuineAnswer && audio && audio.data && _candidateWordCount(transcript) >= MIN_TRANSCRIPT_WORDS) {
+    // A failed re-grade throws (caller queues it / says the AI is busy)
+    // rather than falling back to the false "no answer" result.
     console.warn('[Speaking] audio judged empty but transcript has content — re-grading transcript-only');
-    try {
-      const retry = await _gradeOnce(questionText, transcript, partNum, null, durationSec);
-      if (!retry.noGenuineAnswer) {
-        retry.audioUnusable = true;
-        if (retry.criteria && retry.criteria.pronunciation) retry.criteria.pronunciation.reason = SILENT_AUDIO_REASON;
-        return retry;
-      }
-    } catch (retryErr) {
-      console.warn('[Speaking] transcript-only re-grade failed:', retryErr.message);
+    const retry = await _gradeOnce(questionText, transcript, partNum, null, durationSec);
+    if (!retry.noGenuineAnswer) {
+      retry.audioUnusable = true;
+      if (retry.criteria && retry.criteria.pronunciation) retry.criteria.pronunciation.reason = SILENT_AUDIO_REASON;
+      return retry;
     }
   }
   return fb;
