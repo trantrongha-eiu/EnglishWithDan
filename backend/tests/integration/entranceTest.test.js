@@ -812,3 +812,60 @@ describe('admin config', () => {
     expect(res.status).toBe(400);
   });
 });
+
+describe('no-login guest entrance test (POST /api/entrance-test/guest)', () => {
+  const guestApi = (token) => ({
+    get: (url) => request(app).get(url).set('Authorization', `Bearer ${token}`),
+    post: (url, body) => request(app).post(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+    put: (url, body) => request(app).put(url).set('Authorization', `Bearer ${token}`).send(body || {}),
+    multipart: (url) => request(app).post(url).set('Authorization', `Bearer ${token}`),
+  });
+
+  test('validates name and phone', async () => {
+    expect((await request(app).post('/api/entrance-test/guest').send({ name: 'A', phone: '0912345678' })).status).toBe(400);
+    expect((await request(app).post('/api/entrance-test/guest').send({ name: 'Nguyễn An', phone: '12345' })).status).toBe(400);
+    expect((await request(app).post('/api/entrance-test/guest').send({ name: 'Nguyễn An' })).status).toBe(400);
+  });
+
+  test('name + phone -> a guest token that runs the whole test, and admin sees the name + phone', async () => {
+    await seedFullConfig();
+    const res = await request(app).post('/api/entrance-test/guest').send({ name: '  Nguyễn Văn  An ', phone: '+84 912.345.678' });
+    expect(res.status).toBe(201);
+    expect(res.body.user.isGuest).toBe(true);
+    expect(res.body.user.role).toBe('guest');
+    const guest = await User.findById(res.body.user.id).lean();
+    expect(guest).toMatchObject({ role: 'guest', phone: '0912345678', firstName: 'An', lastName: 'Nguyễn Văn' });
+    expect(guest.email).toMatch(/@guest\.invalid$/);
+
+    const api = guestApi(res.body.token);
+    expect((await api.get('/api/auth/me')).body.user.isGuest).toBe(true);
+    expect((await api.get('/api/entrance-test')).status).toBe(200);
+    const attemptId = await playThrough(api);
+    expect((await api.get('/api/entrance-test/history')).body.attempts.some((a) => String(a._id) === String(attemptId))).toBe(true);
+
+    const admin = authed(await createAdmin());
+    const list = await admin.get('/api/admin/entrance-test/attempts');
+    const row = list.body.attempts.find((a) => String(a._id) === String(attemptId));
+    expect(row.userId).toMatchObject({ phone: '0912345678', role: 'guest', firstName: 'An' });
+  });
+
+  test('a guest token opens nothing outside the Entrance Test', async () => {
+    const res = await request(app).post('/api/entrance-test/guest').send({ name: 'Trần Bình', phone: '0987654321' });
+    const api = guestApi(res.body.token);
+    for (const url of ['/api/reading/tests', '/api/listening/tests', '/api/user/messages/unread-count', '/api/writing/practice/nav-counts', '/api/admin/users']) {
+      const r = await api.get(url);
+      expect(r.status).toBe(403);
+      expect(r.body.code).toBe('GUEST_ENTRANCE_ONLY');
+    }
+  });
+
+  test('guests are left out of the admin user list and student counts unless asked for', async () => {
+    await request(app).post('/api/entrance-test/guest').send({ name: 'Lê Chi', phone: '0901234567' });
+    const admin = authed(await createAdmin());
+    const all = await admin.get('/api/admin/users?limit=100');
+    expect(all.body.users.some((u) => u.role === 'guest')).toBe(false);
+    const guests = await admin.get('/api/admin/users?role=guest');
+    expect(guests.body.users.length).toBe(1);
+    expect(guests.body.users[0].phone).toBe('0901234567');
+  });
+});

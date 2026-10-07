@@ -1317,7 +1317,7 @@ async function listAdminAttempts({ page = 1, limit = 50, userId, status, resultS
 
   const [attempts, total, pendingReview] = await Promise.all([
     EntranceTestAttempt.find(filter)
-      .populate('userId', 'firstName lastName username email')
+      .populate('userId', 'firstName lastName username email phone role')
       .sort({ createdAt: -1 })
       .skip((p - 1) * l)
       .limit(l)
@@ -1339,7 +1339,7 @@ async function getAdminAttemptDetail(id) {
   if (!exists) return null;
   await syncWritingBand(id).catch(() => {});
   const attempt = await EntranceTestAttempt.findById(id)
-    .populate('userId', 'firstName lastName username email')
+    .populate('userId', 'firstName lastName username email phone role')
     .select('-sections.grammar.questionsSnapshot -sections.reading.passageSnapshot -sections.listening.sectionSnapshot')
     .lean();
   if (!attempt) return null;

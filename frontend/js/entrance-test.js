@@ -90,6 +90,7 @@
       if (el) el.classList.toggle('hidden', x !== id);
     });
     if (id !== 'et-runner') setWideShell(false);
+    document.body.classList.toggle('et-running', id === 'et-runner'); // hides the public header's "Trang chủ" link mid-test
   }
 
   // Reading/Writing are split-screen (two panes side by side) — inside the
@@ -113,8 +114,14 @@
       + '<tr class="et-total-row"><td>Tổng</td><td>' + totalMinutes + ' phút</td><td>—</td></tr></tbody>';
   }
 
+  function isLoggedIn() { return !!(window.AuthService && window.AuthService.isLoggedIn()); }
+  function currentUser() { return window.AuthService && window.AuthService.getUser ? window.AuthService.getUser() : null; }
+  function isGuest() { var u = currentUser(); return !!(u && u.role === 'guest'); }
+
   function initLanding() {
     showScreen('et-landing');
+    setResultUrl(null);
+    // Public — the structure table shows before the visitor signs in.
     apiFetch('/entrance-test').then(function (d) {
       renderStructure(d.sections || [], d.totalMinutes || 70);
       if (!d.available) {
@@ -123,11 +130,83 @@
       }
     }).catch(function () {});
 
+    renderCandidate();
+    if (!isLoggedIn()) return; // the guest form's submit continues from here
+
     apiFetch('/entrance-test/history').then(function (d) {
       renderHistory(d.attempts || []);
     }).catch(function () {});
 
     $('et-start-btn').onclick = startOrResume;
+  }
+
+  // ── Visitor without an account: name + phone → guest session ─────────
+  // POST /entrance-test/guest returns a token limited to this test (backend
+  // middleware/auth.js); everything after that is the normal flow.
+  function renderCandidate() {
+    var form = $('et-guest-card');
+    var bar = $('et-candidate-bar');
+    var startBtn = $('et-start-btn');
+    if (!isLoggedIn()) {
+      form.classList.remove('hidden');
+      bar.classList.add('hidden');
+      startBtn.classList.add('hidden');
+      form.onsubmit = submitGuest;
+      return;
+    }
+    form.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    if (!isGuest()) { bar.classList.add('hidden'); return; }
+    var u = currentUser();
+    var name = [u.lastName, u.firstName].filter(Boolean).join(' ');
+    bar.innerHTML = '<i class="fas fa-user-check"></i> Thí sinh: <b>' + esc(name) + '</b>'
+      + (u.phone ? ' · <span class="et-candidate-phone">' + esc(u.phone) + '</span>' : '')
+      + ' <button type="button" class="et-candidate-switch" id="et-candidate-switch">Không phải bạn? Đổi thí sinh</button>';
+    bar.classList.remove('hidden');
+    $('et-candidate-switch').onclick = function () {
+      // A guest has no password to come back with — this device's token is
+      // the only way back to their results, so ask first.
+      var msg = 'Đổi thí sinh? Thiết bị này sẽ không còn xem được lịch sử / kết quả của ' + name + '.';
+      if (window.confirm(msg)) { window.AuthService.clearSession(); location.reload(); }
+    };
+  }
+
+  function submitGuest(ev) {
+    ev.preventDefault();
+    var err = $('et-guest-error');
+    var btn = $('et-guest-submit');
+    var name = $('et-guest-name').value.replace(/\s+/g, ' ').trim();
+    var phone = $('et-guest-phone').value.trim();
+    var showErr = function (m) { err.textContent = m; err.classList.remove('hidden'); };
+    err.classList.add('hidden');
+    if (name.length < 2) { showErr('Vui lòng nhập họ và tên.'); $('et-guest-name').focus(); return; }
+    if (!/^(\+?84|0)\d{9,10}$/.test(phone.replace(/[\s.\-()]/g, ''))) { showErr('Số điện thoại không hợp lệ (VD: 0912 345 678).'); $('et-guest-phone').focus(); return; }
+    btn.disabled = true;
+    apiFetch('/entrance-test/guest', {
+      method: 'POST', body: JSON.stringify({ name: name, phone: phone }),
+    }).then(function (d) {
+      window.AuthService.login(d.token, d.user);
+      document.body.classList.add('et-public');
+      initLanding();
+      toast('Xin chào ' + name + '! Đọc kỹ hướng dẫn rồi bấm "Bắt đầu làm bài".', 'success', 5000);
+      var start = $('et-start-btn');
+      if (start && start.scrollIntoView) start.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }).catch(function (e) {
+      showErr((e && e.message) || 'Không đăng ký được, vui lòng thử lại.');
+    }).then(function () { btn.disabled = false; });
+  }
+
+  // Result view has its own URL (?result=<attemptId>, clean form
+  // /test-dau-vao/ket-qua/<id> via clean-url-router.js) so it can be
+  // refreshed / bookmarked; the landing drops it again.
+  function setResultUrl(attemptId) {
+    try {
+      var params = new URLSearchParams(location.search);
+      if (attemptId) params.set('result', attemptId); else params.delete('result');
+      var qs = params.toString();
+      var url = location.pathname + (qs ? '?' + qs : '');
+      if (url !== location.pathname + location.search) history.replaceState(null, '', url);
+    } catch (_) {}
   }
 
   var STATUS_LABEL = {
@@ -1077,6 +1156,10 @@
     var pg = document.getElementById('paste-guard-popup');
     if (pg) pg.classList.remove('show');
     var modal = $('et-done-modal');
+    if (isGuest()) {
+      $('et-done-text').innerHTML = 'Bài làm của bạn đã được ghi nhận. Giáo viên sẽ <b>chấm và duyệt</b> toàn bộ kết quả '
+        + 'rồi <b>liên hệ với bạn qua số điện thoại</b> đã đăng ký. Bạn cũng có thể mở lại trang này trên thiết bị này để xem kết quả khi đã được duyệt.';
+    }
     modal.classList.remove('hidden');
     $('et-done-ok').onclick = function () {
       modal.classList.add('hidden');
@@ -1096,6 +1179,7 @@
 
   function openResult() {
     showScreen('et-result');
+    setResultUrl(state.attemptId);
     $('et-result-body').innerHTML = '<div class="et-loading">Đang tải kết quả…</div>';
     apiFetch('/entrance-test/' + state.attemptId + '/result').then(renderResult).catch(function (e) {
       if (e && e.status === 409) {
@@ -1178,10 +1262,26 @@
   // ── Boot ─────────────────────────────────────────────────────────────
 
   function boot() {
-    if (!window.AuthService || !window.AuthService.isLoggedIn()) {
-      var next = 'entrance-test.html';
-      location.href = (window.AuthService && window.AuthService.buildLoginUrl) ? window.AuthService.buildLoginUrl(next) : 'login.html?next=' + encodeURIComponent(next);
-      return;
+    // Show the shareable address (/test-dau-vao — test-dau-vao.html forwards
+    // here). One path segment, so every relative URL this page builds later
+    // (iframes, images, links) still resolves from the site root.
+    try {
+      if (/^\/entrance-test(\.html)?$/.test(location.pathname)) {
+        history.replaceState(history.state, '', '/test-dau-vao' + location.search + location.hash);
+      }
+    } catch (_) {}
+    // No login needed: a visitor fills in name + phone (renderCandidate);
+    // a logged-in student goes straight to the normal landing.
+    if (isGuest() && window.hideTopNav) window.hideTopNav();
+    if (!isLoggedIn() || isGuest()) document.body.classList.add('et-public');
+    if (isLoggedIn()) {
+      var resultId = null;
+      try { resultId = new URLSearchParams(location.search).get('result'); } catch (_) {}
+      if (resultId && /^[0-9a-f]{24}$/i.test(resultId)) {
+        state.attemptId = resultId;
+        openResult();
+        return;
+      }
     }
     // Landed here via the proctor's disqualify redirect (a real navigation,
     // not a JS screen swap — see shared/entrance-test-proctor.js) — surface

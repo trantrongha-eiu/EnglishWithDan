@@ -127,6 +127,8 @@
 /speaking/course /speaking-course.html  200
 /essential-grammar /essential-grammar.html 200
 /entrance-test   /entrance-test.html    200
+/test-dau-vao    /entrance-test.html    200
+/test-dau-vao/ket-qua/:id /entrance-test.html?result=:id 200
 /dictation       /dictation.html        200
 /task2-practice  /task2-practice.html   200
 

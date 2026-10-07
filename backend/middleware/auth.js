@@ -2,6 +2,14 @@ const jwt  = require('jsonwebtoken');
 const User = require('../models/User');
 const logger = require('../utils/logger');
 
+// What a guest token may call: the Entrance Test itself, its proctor
+// screenshots, and the session basics every page boots with.
+const GUEST_ALLOWED = [/^\/api\/entrance-test(\/|$)/, /^\/api\/proctor(\/|$)/, /^\/api\/auth\/(me|logout)$/];
+function isGuestAllowedPath(url) {
+  const path = String(url || '').split('?')[0];
+  return GUEST_ALLOWED.some((re) => re.test(path));
+}
+
 module.exports = async (req, res, next) => {
   try {
     const authHeader = req.header('Authorization');
@@ -55,6 +63,16 @@ module.exports = async (req, res, next) => {
       // a gated request completes to confirm the downgrade stuck; a
       // fire-and-forget write here raced that read intermittently in CI.
       await User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
+    }
+
+    // A guest (no-login Entrance Test taker — services/entranceGuestService.js)
+    // gets a real token so the whole proctored test flow works unchanged,
+    // but that token opens nothing else on the site.
+    if (user.role === 'guest' && !isGuestAllowedPath(req.originalUrl)) {
+      return res.status(403).json({
+        success: false, code: 'GUEST_ENTRANCE_ONLY',
+        message: 'Tài khoản khách chỉ dùng để làm Test đầu vào. Vui lòng đăng nhập để dùng các tính năng khác.',
+      });
     }
 
     req.user = user;

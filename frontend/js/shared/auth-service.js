@@ -219,6 +219,9 @@
     if (!isLoggedIn()) return false;
     var user = getUser();
     if (!user) return false;
+    // A guest (no-login Entrance Test session) has no dashboard — leave them
+    // on the home/login page so they can sign in with a real account.
+    if (user.role === 'guest') return false;
     window.location.href = isStaff(user) ? '/admin/' : '/dashboard.html';
     return true;
   }

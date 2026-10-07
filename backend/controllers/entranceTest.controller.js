@@ -2,6 +2,15 @@
 
 const catchAsync = require('../middleware/catchAsync');
 const entranceTestService = require('../services/entranceTestService');
+const entranceGuestService = require('../services/entranceGuestService');
+
+// POST /api/entrance-test/guest  { name, phone } — no auth; returns a guest
+// token limited to the Entrance Test (see middleware/auth.js).
+exports.createGuest = catchAsync(async (req, res) => {
+  const { name, phone } = req.body || {};
+  const { token, user } = await entranceGuestService.createGuestSession({ name, phone });
+  res.status(201).json({ success: true, token, user });
+});
 
 // GET /api/entrance-test — landing-page info (fixed structure + availability)
 exports.getConfig = catchAsync(async (req, res) => {

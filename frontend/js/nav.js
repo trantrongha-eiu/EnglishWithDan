@@ -1,5 +1,18 @@
 (function () {
   'use strict';
+  // A guest (no-login Entrance Test session) only ever sees the test page —
+  // no site nav, no badge polls, no study nudges (the API refuses a guest
+  // token for all of those anyway).
+  var _navUser = window.AuthService && window.AuthService.getUser ? window.AuthService.getUser() : null;
+  var _navLoggedIn = !!(window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn());
+  var _onEntrancePage = /^(entrance-test(\.html)?|test-dau-vao)$/.test(location.pathname.split('/').pop());
+  // …and a visitor who hasn't typed their name yet on the test page sees the
+  // page's own public header (entrance-test.html), not the student nav.
+  if ((_navUser && _navUser.role === 'guest') || (!_navLoggedIn && _onEntrancePage)) {
+    window.hideTopNav = function () {};
+    window.showTopNav = function () {};
+    return;
+  }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var page = location.pathname.split('/').pop() || 'index.html';
 

@@ -40,6 +40,9 @@ describe('CleanUrlRouter.resolve', () => {
     ['/dictation/s1', '/dictation.html?sectionId=s1'],
     ['/vocab/lesson/v1', '/dashboard.html?view=lesson&lessonId=v1'],
     ['/vocabulary', '/dashboard.html'],
+    ['/test-dau-vao', '/entrance-test.html'],
+    ['/entrance-test', '/entrance-test.html'],
+    ['/test-dau-vao/ket-qua/abc123', '/entrance-test.html?result=abc123'],
     ['/admin/users', '/admin/#/users'],
   ])('%s → %s', (path, expected) => {
     expect(r(path)).toBe(expected);

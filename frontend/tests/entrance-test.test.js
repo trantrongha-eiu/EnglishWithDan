@@ -224,3 +224,60 @@ describe('result before approval', () => {
     expect($('.et-result-card')).toBeNull();
   });
 });
+
+
+describe('no-login visitor (guest)', () => {
+  function bootAsVisitor() {
+    let session = null;
+    window.AuthService.isLoggedIn = () => !!session;
+    window.AuthService.getUser = () => (session ? session.user : null);
+    window.AuthService.authHeader = () => (session ? { Authorization: 'Bearer ' + session.token } : {});
+    window.AuthService.login = jest.fn((token, user) => { session = { token, user }; });
+    window.AuthService.clearSession = jest.fn(() => { session = null; });
+    route('GET', /^\/entrance-test$/, { success: true, available: true, totalMinutes: 74, sections: [{ key: 'grammar', label: 'Grammar', minutes: 20, questionCount: 25 }] });
+    route('GET', /^\/entrance-test\/history$/, { success: true, attempts: [] });
+    window.eval(PAGE_SRC);
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+  }
+
+  test('shows the name + phone form (not a login redirect) and hides the start button', async () => {
+    bootAsVisitor();
+    await settle();
+    expect($('#et-guest-card').classList.contains('hidden')).toBe(false);
+    expect($('#et-start-btn').classList.contains('hidden')).toBe(true);
+    expect(document.body.classList.contains('et-public')).toBe(true);
+    expect(calls.some(c => /\/entrance-test\/history/.test(c.url))).toBe(false);
+  });
+
+  test('a bad phone number is caught before any request', async () => {
+    bootAsVisitor();
+    await settle();
+    $('#et-guest-name').value = 'Nguyễn Văn An';
+    $('#et-guest-phone').value = '12345';
+    $('#et-guest-card').dispatchEvent(new Event('submit', { cancelable: true }));
+    await settle();
+    expect($('#et-guest-error').classList.contains('hidden')).toBe(false);
+    expect(calls.some(c => /\/entrance-test\/guest/.test(c.url))).toBe(false);
+  });
+
+  test('name + phone → guest session, then the normal landing with a candidate bar', async () => {
+    bootAsVisitor();
+    await settle();
+    route('POST', /^\/entrance-test\/guest$/, {
+      success: true, token: 'guest-token',
+      user: { id: 'g1', role: 'guest', isGuest: true, firstName: 'An', lastName: 'Nguyễn Văn', phone: '0912345678' },
+    });
+    $('#et-guest-name').value = 'Nguyễn Văn An';
+    $('#et-guest-phone').value = '0912 345 678';
+    $('#et-guest-card').dispatchEvent(new Event('submit', { cancelable: true }));
+    await settle(10);
+    const post = calls.find(c => /\/entrance-test\/guest/.test(c.url));
+    expect(JSON.parse(post.opts.body)).toEqual({ name: 'Nguyễn Văn An', phone: '0912 345 678' });
+    expect(window.AuthService.login).toHaveBeenCalledWith('guest-token', expect.objectContaining({ role: 'guest' }));
+    expect($('#et-guest-card').classList.contains('hidden')).toBe(true);
+    expect($('#et-start-btn').classList.contains('hidden')).toBe(false);
+    expect($('#et-candidate-bar').textContent).toContain('Nguyễn Văn An');
+    expect($('#et-candidate-bar').textContent).toContain('0912345678');
+    expect(calls.some(c => /\/entrance-test\/history/.test(c.url))).toBe(true);
+  });
+});

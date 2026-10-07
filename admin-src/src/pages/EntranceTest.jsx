@@ -6,6 +6,29 @@ import Pagination from '../components/Pagination';
 import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
 import ProctorPanel from '../components/ui/ProctorPanel';
 
+// Guests (no-login visitors from the home page) have no real account —
+// show the name + phone they typed instead of the generated username.
+function fullName(u) {
+  return [u?.lastName, u?.firstName].filter(Boolean).join(' ');
+}
+function Candidate({ u, link }) {
+  if (!u) return <strong>–</strong>;
+  if (u.role === 'guest') {
+    return (
+      <span style={{ display: 'inline-flex', flexDirection: 'column', gap: 2 }}>
+        <span style={{ fontWeight: 700, color: 'var(--text)' }}>
+          {fullName(u) || 'Khách'} <span className="badge badge-yellow" style={{ fontSize: 10 }}>Khách</span>
+        </span>
+        {u.phone && <a href={`tel:${u.phone}`} style={{ fontSize: 12, color: 'var(--text2)' }}>📞 {u.phone}</a>}
+      </span>
+    );
+  }
+  const label = u.username || u.email;
+  return link && u._id
+    ? <Link to={`/students/${u._id}`} style={{ fontWeight: 700, color: 'var(--text)' }}>{label}</Link>
+    : <span>{label}</span>;
+}
+
 // Admin surface for the IELTS Entrance Test ("Test đầu vào") — three tabs,
 // same inner-tabs-nav pattern Monitoring.jsx uses for its own tab hub:
 //   Cấu hình          — random-draw pool sizes + which Grammar set is used
@@ -442,7 +465,7 @@ function AttemptDetailModal({ id, onClose, onChanged }) {
           ) : (
             <>
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 14, fontSize: 13, alignItems: 'center' }}>
-                <span><strong>Học sinh:</strong> {attempt.userId?.username || attempt.userId?.email || '–'}</span>
+                <span><strong>{attempt.userId?.role === 'guest' ? 'Thí sinh:' : 'Học sinh:'}</strong> <Candidate u={attempt.userId} /></span>
                 <span><strong>Bắt đầu:</strong> {formatDate(attempt.startedAt)}</span>
                 <span>{statusBadge(attempt)}</span>
                 {approved && (
@@ -636,9 +659,7 @@ function AttemptsTab() {
                 : rows.map(r => (
                   <tr key={r._id}>
                     <td>
-                      {r.userId?._id
-                        ? <Link to={`/students/${r.userId._id}`} style={{ fontWeight: 700, color: 'var(--text)' }}>{r.userId.username || r.userId.email}</Link>
-                        : <strong>–</strong>}
+                      <Candidate u={r.userId} link />
                     </td>
                     <td style={{ fontSize: 12 }}>{formatDate(r.startedAt)}</td>
                     <td>{statusBadge(r)}</td>

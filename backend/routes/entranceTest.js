@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const { userRateLimiter } = require('../middleware/rateLimit');
+const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const multer = require('multer');
 const ctrl = require('../controllers/entranceTest.controller');
 const logger = require('../utils/logger');
@@ -40,7 +42,24 @@ const answerLimiter = userRateLimiter({
   name: 'entrance-test:answer',
 });
 
-router.get('/', auth, ctrl.getConfig);
+// No-login entry from the home page: name + phone -> guest session
+// (services/entranceGuestService.js). Per-IP cap — each call creates a User.
+const guestLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 8,
+  keyGenerator: (req) => ipKeyGenerator(req.ip),
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { limiter: 'entrance-test:guest', path: req.path, ip: req.ip });
+    res.status(429).json({ success: false, message: 'Bạn đã đăng ký quá nhiều lần, vui lòng thử lại sau 1 giờ.' });
+  },
+});
+router.post('/guest', guestLimiter, ctrl.createGuest);
+
+// Public: just the test structure + availability (the home-page visitor sees
+// it before typing their name/phone).
+router.get('/', ctrl.getConfig);
 router.post('/start', auth, startLimiter, ctrl.start);
 router.get('/history', auth, ctrl.getHistory);
 router.get('/:attemptId', auth, ctrl.getAttempt);

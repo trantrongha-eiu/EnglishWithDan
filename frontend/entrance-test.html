@@ -6,6 +6,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Test đầu vào – EnglishWithDan</title>
+  <meta name="description" content="Test đầu vào IELTS miễn phí của EnglishWithDan — 5 phần Grammar, Reading, Listening, Writing, Speaking. Không cần tài khoản, chỉ cần họ tên và số điện thoại.">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -16,16 +17,22 @@
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
   <link rel="stylesheet" href="css/mobile.css?v=20261001nav"/>
   <script src="js/theme.js?v=20260831"></script>
-  <link rel="stylesheet" href="css/entrance-test.css?v=20261001pc">
+  <link rel="stylesheet" href="css/entrance-test.css?v=20261007guest">
 </head>
 <body>
-<script src="js/shared/auth-service.js?v=20261002idle"></script>
-<script src="js/auth.js?v=20260831"></script>
-<script src="js/nav.js?v=20261002idle"></script>
+<script src="js/shared/auth-service.js?v=20261007guest"></script>
+<script src="js/auth.js?v=20261007guest"></script>
+<script src="js/nav.js?v=20261007guest"></script>
 <script src="js/shared/utils.js?v=20260930scope"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
 <script src="js/shared/confirm-dialog.js?v=20260831"></script>
+
+<!-- Visitors / guest takers get this instead of the student nav (nav.js skips them). -->
+<header class="et-public-header">
+  <a href="/" class="et-public-logo" aria-label="Trang chủ EnglishWithDan"><img src="img/big_logo.png" alt="Daniel Hà English Education"></a>
+  <a href="/" class="et-public-home"><i class="fas fa-arrow-left"></i> Trang chủ</a>
+</header>
 
 <div class="et-shell">
 
@@ -49,10 +56,32 @@
         <li>Sau khi nộp một phần, bạn không thể quay lại sửa câu trả lời.</li>
         <li>Mỗi lượt làm nhận một bộ đề ngẫu nhiên (Reading, Listening, Writing, Speaking); câu Grammar được xáo trộn thứ tự.</li>
         <li>Speaking (chỉ Part 2, 4 phút): 1 phút 10 giây chuẩn bị, tối đa 2 phút nói — hãy cho phép trình duyệt dùng micro. Bạn cũng có thể gõ / sửa câu trả lời.</li>
-        <li>Kết quả được giáo viên xem xét và duyệt trước khi gửi cho bạn qua hộp thư.</li>
+        <li>Kết quả được giáo viên xem xét và duyệt trước khi gửi cho bạn — qua hộp thư nếu bạn có tài khoản, hoặc giáo viên <b>gọi điện theo số bạn đăng ký</b> nếu bạn làm không cần tài khoản.</li>
         <li>Bạn có thể làm lại Test đầu vào nhiều lần — mỗi lượt làm đều được lưu vào lịch sử bên dưới.</li>
       </ul>
     </div>
+    <!-- Visitor (not logged in): name + phone first — creates a guest
+         session limited to this test (entrance-test.js → POST /entrance-test/guest). -->
+    <form id="et-guest-card" class="et-card et-guest-card hidden" novalidate>
+      <h3 class="et-section-heading" style="margin-top:0"><i class="fas fa-id-card"></i> Thông tin thí sinh</h3>
+      <p class="et-guest-hint">Không cần tạo tài khoản — chỉ cần để lại họ tên và số điện thoại để giáo viên liên hệ báo kết quả.</p>
+      <div class="et-guest-grid">
+        <label class="et-guest-field">
+          <span>Họ và tên</span>
+          <input id="et-guest-name" type="text" autocomplete="name" maxlength="60" placeholder="VD: Nguyễn Văn An" required>
+        </label>
+        <label class="et-guest-field">
+          <span>Số điện thoại</span>
+          <input id="et-guest-phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="16" placeholder="VD: 0912 345 678" required>
+        </label>
+      </div>
+      <div id="et-guest-error" class="et-guest-error hidden" role="alert"></div>
+      <div class="et-guest-actions">
+        <button type="submit" id="et-guest-submit" class="et-btn-primary"><i class="fas fa-arrow-right"></i> Tiếp tục</button>
+        <span class="et-guest-login">Đã có tài khoản? <a id="et-guest-login-link" href="/login.html?next=%2Fentrance-test.html">Đăng nhập</a></span>
+      </div>
+    </form>
+    <div id="et-candidate-bar" class="et-candidate-bar hidden"></div>
     <div class="et-actions">
       <button id="et-start-btn" class="et-btn-primary"><i class="fas fa-play"></i> Bắt đầu làm bài</button>
       <div id="et-unavailable-note" class="et-note hidden">Test đầu vào chưa được cấu hình — vui lòng quay lại sau.</div>
@@ -95,8 +124,8 @@
         <div style="font-size:44px;margin-bottom:10px">✅</div>
         <h3 id="et-done-title" style="margin-bottom:8px">Đã hoàn thành Test đầu vào!</h3>
         <p style="color:var(--text2);font-size:14px;margin:0">
-          Bài làm của bạn đã được ghi nhận. Giáo viên sẽ <b>chấm và duyệt</b> toàn bộ kết quả —
-          bạn sẽ nhận được thông báo trong hộp thư ngay khi có kết quả.
+          <span id="et-done-text">Bài làm của bạn đã được ghi nhận. Giáo viên sẽ <b>chấm và duyệt</b> toàn bộ kết quả —
+          bạn sẽ nhận được thông báo trong hộp thư ngay khi có kết quả.</span>
         </p>
       </div>
       <div class="modal-footer" style="justify-content:center">
@@ -119,6 +148,6 @@
 <script src="js/shared/paste-guard.js?v=20260918"></script>
 <script src="js/shared/proctor-capture.js?v=20261001pc"></script>
 <script src="js/shared/entrance-test-proctor.js?v=20261001pc"></script>
-<script src="js/entrance-test.js?v=20261001pc"></script>
+<script src="js/entrance-test.js?v=20261007guest"></script>
 </body>
 </html>

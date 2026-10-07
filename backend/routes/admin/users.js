@@ -52,7 +52,9 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
         { lastName:  { $regex: re, $options: 'i' } }
       ];
     }
-    if (role)     filter.role = role;
+    // Guests (no-login Entrance Test takers) only show when asked for —
+    // they're not site accounts; the Entrance Test page lists them.
+    filter.role = role || { $ne: 'guest' };
     if (isBanned !== undefined) filter.isBanned = isBanned === 'true';
     if (plan === 'premium') filter.plan = 'premium';
     if (plan === 'free')    filter.plan = { $ne: 'premium' };

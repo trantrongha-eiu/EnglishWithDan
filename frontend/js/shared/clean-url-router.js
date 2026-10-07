@@ -22,6 +22,7 @@
  *   /writing/exam[/practice|/simulation]  /writing/tips[/:tip]  /writing/samples
  *   /speaking/tips[/:tip]  /speaking/practice|history|materials  /speaking/question/:id
  *   /essential-grammar/:lesson  /dictation/:sectionId  /vocab/lesson/:id  …
+ *   /test-dau-vao  /test-dau-vao/ket-qua/:attemptId   (also /entrance-test/…)
  */
 (function () {
   'use strict';
@@ -78,6 +79,9 @@
     [new RegExp('^/task2-practice/' + SEG + '$'), function (m) { return '/task2-practice.html?topicId=' + m[1]; }],
     [new RegExp('^/vocab/lesson/' + SEG + '$'), function (m) { return '/dashboard.html?view=lesson&lessonId=' + m[1]; }],
     [/^\/vocabulary$/, function () { return '/dashboard.html'; }],
+    // Test đầu vào — open to visitors (name + phone, no account needed).
+    [/^\/(?:test-dau-vao|entrance-test)$/, function () { return '/entrance-test.html'; }],
+    [new RegExp('^/(?:test-dau-vao|entrance-test)/ket-qua/' + SEG + '$'), function (m) { return '/entrance-test.html?result=' + m[1]; }],
     [/^\/noun-phrase-writing(?:\.html)?$/, function () { return '/writing-task1.html'; }],
   ];
 

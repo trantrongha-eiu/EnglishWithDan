@@ -21,9 +21,15 @@ const UserSchema = new mongoose.Schema({
   avatar:     { type: String, default: '' }, // URL ảnh đại diện
   role: {
     type: String,
-    enum: ['student', 'teacher', 'admin'],
+    // 'guest' = a no-login Entrance Test taker (name + phone only, see
+    // services/entranceGuestService.js). middleware/auth.js confines a guest
+    // token to the Entrance Test APIs; every `role: 'student'` count/list
+    // skips guests on its own.
+    enum: ['student', 'teacher', 'admin', 'guest'],
     default: 'student'
   },
+  // Guest Entrance Test takers only — the contact number they typed in.
+  phone: { type: String, default: '' },
   isBanned:       { type: Boolean, default: false },
   banReason:      { type: String, default: '' },
   // BUG-023 — JWT session revocation. Compared against a token's `iat`

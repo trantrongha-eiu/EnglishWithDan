@@ -26,6 +26,11 @@
 
   const PUBLIC_PAGES = ['login.html', 'register.html', 'verify-email.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
+  // Test đầu vào is open to visitors (name + phone → guest session, see
+  // entrance-test.js) and to logged-in students alike: no login redirect,
+  // and no "already logged in → dashboard" bounce either.
+  const OPEN_PAGES   = ['entrance-test.html', 'entrance-test'];
+  const isOpen       = OPEN_PAGES.includes(currentPage);
 
   AS.installBannedInterceptor(isPublic);
 
@@ -39,6 +44,17 @@
   // below when checkInactiveLogout() already redirected fixes this.
   const justLoggedOutForInactivity = AS.isLoggedIn() && AS.checkInactiveLogout();
   if (justLoggedOutForInactivity) return;
+
+  // ── Guest session (no-login Entrance Test): only the test page itself
+  // and its embedded Reading/Listening frames (?embed=entrance) — the API
+  // refuses a guest token everywhere else anyway (middleware/auth.js). ──
+  const user = AS.isLoggedIn() ? AS.getUser() : null;
+  if (user && user.role === 'guest' && !isOpen && !isPublic
+      && !/[?&]embed=entrance(&|$)/.test(window.location.search)) {
+    window.location.replace('/entrance-test.html');
+    return;
+  }
+  if (isOpen) return;
 
   // ── Guard 1: chưa đăng nhập → về login, nhớ trang đang muốn vào ──
   if (!AS.requirePageAuth(isPublic)) return;

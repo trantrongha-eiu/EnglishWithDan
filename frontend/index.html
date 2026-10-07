@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="css/motion.css?v=20260904b" />
   <link rel="stylesheet" href="css/main.css?v=20260831" />
-  <link rel="stylesheet" href="css/index.css?v=20260831">
+  <link rel="stylesheet" href="css/index.css?v=20261007et">
   <!-- BUG-016: deferred only where a real dependency check confirmed it's
        safe — theme.js stays synchronous (sets data-theme before first
        paint to avoid a flash of the wrong theme); auth-service.js + auth.js
@@ -52,8 +52,8 @@
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831" defer></script>
   <script src="js/shared/pwa-register.js?v=20260831" defer></script>
-  <script src="js/shared/auth-service.js?v=20261002idle"></script>
-  <script src="js/auth.js?v=20260831"></script>
+  <script src="js/shared/auth-service.js?v=20261007guest"></script>
+  <script src="js/auth.js?v=20261007guest"></script>
   <script src="js/shared/utils.js?v=20260831" defer></script>
 </head>
 
@@ -73,6 +73,7 @@
 
     <div class="nav-cta">
       <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
+      <a href="/test-dau-vao" class="btn et-nav-pill" title="Làm Test đầu vào miễn phí — không cần tài khoản"><i class="fas fa-clipboard-check"></i> Test đầu vào</a>
       <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Đăng ký</a>
       <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
       <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
@@ -87,6 +88,7 @@
     <a href="courses.html" onclick="toggleMenu()">📚 Khóa học</a>
     <a href="about.html" onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
     <a href="contact.html" onclick="toggleMenu()">📞 Liên hệ</a>
+    <a href="/test-dau-vao" class="et-mobile-link">📝 Test đầu vào miễn phí <span class="et-new-tag">MỚI</span></a>
     <a href="register.html" style="color:var(--blue)">→ Đăng ký miễn phí</a>
     <a href="login.html" style="color:var(--blue)">→ Đăng nhập</a>
     <a href="#" onclick="openConsultModal();return false;" style="color:var(--red)">→ Tư vấn ngay</a>
@@ -102,6 +104,16 @@
         Từ mất gốc đến IELTS 7.5+ hay giao tiếp tự tin nơi công sở —
         lộ trình học cá nhân hoá, giáo viên tận tâm, kết quả thực chất.
       </p>
+      <a href="/test-dau-vao" class="et-hero-card" aria-label="Làm Test đầu vào miễn phí">
+        <span class="et-hero-glow" aria-hidden="true"></span>
+        <span class="et-hero-icon" aria-hidden="true"><i class="fas fa-clipboard-check"></i></span>
+        <span class="et-hero-text">
+          <span class="et-hero-kicker"><span class="et-live-dot" aria-hidden="true"></span> Miễn phí · Không cần tài khoản</span>
+          <strong>Làm Test đầu vào ngay</strong>
+          <span class="et-hero-meta">74 phút · Grammar · Reading · Listening · Writing · Speaking — giáo viên chấm &amp; gọi báo kết quả</span>
+        </span>
+        <span class="et-hero-go" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
+      </a>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-red btn-lg"><i class="fas fa-phone-alt"></i> Tư vấn miễn phí</a>
         <a href="#courses" class="btn btn-outline btn-lg"><i class="fas fa-book-open"></i> Xem khóa học</a>
