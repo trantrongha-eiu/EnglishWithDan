@@ -7,6 +7,7 @@
 
 const mongoose = require('mongoose');
 const Assignment = require('../models/Assignment');
+const AssignmentProgress = require('../models/AssignmentProgress');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
@@ -288,6 +289,25 @@ exports.setAssignmentStatus = async (req, res) => {
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
     await refreshClassStatus(assignment.classId);
     res.json({ success: true, assignment });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// DELETE /api/classes/:classId/assignments/:assignmentId — permanent, unlike
+// archive. Also drops that assignment's AssignmentProgress rows (scoped to
+// this one assignmentId — never an open filter) and its uploaded images, then
+// recomputes the class's warn/fail statuses since a missed assignment that
+// no longer exists must stop counting against anyone.
+exports.deleteAssignment = async (req, res) => {
+  try {
+    const assignment = await Assignment.findOneAndDelete({ _id: req.params.assignmentId, classId: req.classGroup._id });
+    if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
+    const { deletedCount } = await AssignmentProgress.deleteMany({ assignmentId: assignment._id });
+    const publicIds = (assignment.images || []).map((im) => im.publicId).filter(Boolean);
+    if (publicIds.length) cloudinaryService.destroyAssets(publicIds).catch(() => {});
+    await refreshClassStatus(assignment.classId);
+    res.json({ success: true, deletedProgress: deletedCount || 0 });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

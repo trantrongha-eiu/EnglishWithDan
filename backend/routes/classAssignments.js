@@ -41,5 +41,6 @@ router.post('/:classId/assignments/images', ...gate, cid, loadOwnedClass, handle
 router.get('/:classId/assignments/:assignmentId', ...gate, cid, aid, loadOwnedClass, c.getAssignment);
 router.put('/:classId/assignments/:assignmentId', ...gate, cid, aid, loadOwnedClass, c.updateAssignment);
 router.post('/:classId/assignments/:assignmentId/status', ...gate, cid, aid, loadOwnedClass, c.setAssignmentStatus);
+router.delete('/:classId/assignments/:assignmentId', ...gate, cid, aid, loadOwnedClass, c.deleteAssignment);
 
 module.exports = router;

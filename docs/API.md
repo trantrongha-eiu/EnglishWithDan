@@ -1265,7 +1265,8 @@ image items have a manual checkbox. Controller
 | `POST /api/classes/:classId/assignments` | Create `{ title, instruction, deadline, resources: [{kind:'internal',resourceType,resourceId} \| {kind:'external',url,title,description} \| {kind:'image',images:[{url,publicId}],title,instruction}] }`. Every internal `resourceId` is verified against its catalog; `label` snapshotted. Sends a "new assignment" `Message` to every enrolled student. |
 | `GET /api/classes/:classId/assignments/:assignmentId` | Assignment + `rows` (per-student `{ completed, total, missing, status, allCompletedAt, items[] }`). |
 | `PUT /api/classes/:classId/assignments/:assignmentId` | Edit `title/instruction/deadline/resources/status`. |
-| `POST /api/classes/:classId/assignments/:assignmentId/status` | `{ status: 'active' \| 'archived' }` — never hard-deleted. |
+| `POST /api/classes/:classId/assignments/:assignmentId/status` | `{ status: 'active' \| 'archived' }` — soft hide; archived + incomplete still counts as missed. |
+| `DELETE /api/classes/:classId/assignments/:assignmentId` | Permanent delete: also removes that assignment's `AssignmentProgress` rows + uploaded images and recomputes the class's warn/fail statuses → `{ deletedProgress }`. |
 | `POST /api/classes/:classId/assignments/images` | `multipart/form-data`, field `images` (≤10, 5 MB, png/jpe?g/webp) → Cloudinary → `{ images: [{ url, publicId, width, height }] }`. |
 
 ### Student routes — `/api/assignments/*` (auth; access = `req.user._id` + a live `ClassEnrollment` lookup)

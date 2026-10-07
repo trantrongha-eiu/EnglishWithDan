@@ -902,6 +902,41 @@ describe('homework-driven enrollment status', () => {
     expect(mine.body.assignments[0]).toMatchObject({ archived: true, status: 'overdue' });
   });
 
+  test('DELETING an overdue assignment removes it everywhere and lifts the miss it caused', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 5, homeworkFailThreshold: 1 } });
+    const enr = await enrollStudent(cls, s);
+    const asg = await createAssignment(cls, { deadline: past(1) });
+    const keep = await createAssignment(cls);
+    await AssignmentProgress.create([
+      { assignmentId: asg._id, classId: cls._id, studentId: s._id },
+      { assignmentId: keep._id, classId: cls._id, studentId: s._id },
+    ]);
+    expect((await classAttendanceService.refreshEnrollment(enr._id)).status).toBe('failed');
+
+    // another teacher can't delete it
+    const other = await createTeacher();
+    expect((await request(app).delete(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(other))).status).toBe(403);
+
+    const res = await request(app).delete(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t));
+    expect(res.status).toBe(200);
+    expect(res.body.deletedProgress).toBe(1);
+    expect(await Assignment.exists({ _id: asg._id })).toBeNull();
+    // only THIS assignment's progress went — the other one's row is untouched
+    expect(await AssignmentProgress.countDocuments({ assignmentId: asg._id })).toBe(0);
+    expect(await AssignmentProgress.countDocuments({ assignmentId: keep._id })).toBe(1);
+
+    const refreshed = await ClassEnrollment.findById(enr._id).lean();
+    expect(refreshed.stats.homeworkMissedCount).toBe(0);
+    expect(refreshed.status).toBe('active');
+
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments.map((a) => String(a._id))).toEqual([String(keep._id)]);
+
+    expect((await request(app).delete(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t))).status).toBe(404);
+  });
+
   test('any archived + incomplete assignment counts as missed (no deadline, or even before its deadline); archived + completed does not', async () => {
     const t = await createTeacher();
     const s = await createStudent();

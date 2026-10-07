@@ -764,6 +764,7 @@ function DashboardTab({ cls }) {
 
 function AssignmentsTab({ cls }) {
   const toast = useToast();
+  const confirm = useConfirm();
   const [list, setList] = useState([]);
   const [enrolledCount, setEnrolledCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -785,6 +786,17 @@ function AssignmentsTab({ cls }) {
       toast(a.status === 'archived' ? 'Đã mở lại' : 'Đã lưu trữ');
       load();
     } catch (e) { toast(e.message, 'error'); }
+  }
+
+  function remove(a) {
+    confirm(`Xoá vĩnh viễn bài tập "${a.title}"? Tiến độ của học viên với bài này cũng bị xoá và không thể hoàn tác. (Muốn ẩn tạm thì dùng "Lưu trữ".)`, async () => {
+      try {
+        await apiFetch(`/classes/${cls._id}/assignments/${a._id}`, { method: 'DELETE' });
+        toast('Đã xoá bài tập');
+        if (openId === a._id) setOpenId(null);
+        load();
+      } catch (e) { toast(e.message, 'error'); }
+    });
   }
 
   function closeEditor() { setShowEditor(false); setEditing(null); }
@@ -819,6 +831,7 @@ function AssignmentsTab({ cls }) {
                         <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(a); setShowEditor(true); }}>Sửa</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => setOpenId(openId === a._id ? null : a._id)}>{openId === a._id ? 'Ẩn' : 'Chi tiết'}</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => archive(a)}>{a.status === 'archived' ? 'Mở lại' : 'Lưu trữ'}</button>
+                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => remove(a)} title="Xoá bài tập">🗑</button>
                       </div>
                     </td>
                   </tr>
