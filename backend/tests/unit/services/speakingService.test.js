@@ -533,6 +533,54 @@ describe('speakingService.gradeSpeaking — speaking-v2 analysis', () => {
     expect(saved.aiFeedback.criteria.lexicalResource.evidence[0].studentQuote).toBe('it helps me clear my head');
     expect(saved.aiFeedback.priorityImprovements).toEqual(['A', 'B', 'C']);
   });
+
+  // Android Chrome: MediaRecorder + SpeechRecognition share the mic and the
+  // uploaded audio comes back silent while the transcript has the answer.
+  const silent = () => v2({
+    noGenuineAnswer: true,
+    criteria: {
+      fluencyCoherence: crit(0, { evidence: [], strengths: [] }), lexicalResource: crit(0, { evidence: [], strengths: [] }),
+      grammaticalRangeAccuracy: crit(0, { evidence: [], strengths: [] }), pronunciation: { ...crit(0, { evidence: [], strengths: [] }), assessable: true },
+    },
+  });
+
+  test('silent audio + a real transcript: re-grades transcript-only instead of "no genuine answer"', async () => {
+    geminiService.checkSpeaking.mockResolvedValueOnce(silent()).mockResolvedValueOnce(v2());
+    const fb = await speakingService.gradeSpeaking('Q', T, 1, { data: 'eA==', mimeType: 'video/webm' });
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(2);
+    expect(geminiService.checkSpeaking.mock.calls[1][3]).toBeNull(); // 2nd call has no audio
+    expect(fb.noGenuineAnswer).toBe(false);
+    expect(fb.audioUnusable).toBe(true);
+    expect(fb.pronunciation).toBeNull();
+    expect(fb.overallBand).toBe(6);
+  });
+
+  test('silent audio and no transcript: stays "no genuine answer", no re-grade', async () => {
+    geminiService.checkSpeaking.mockResolvedValue(silent());
+    const fb = await speakingService.gradeSpeaking('Q', '', 1, { data: 'eA==', mimeType: 'video/webm' });
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(1);
+    expect(fb.noGenuineAnswer).toBe(true);
+  });
+
+  test('Gemini fails on an audio-only (no transcript) webm answer: fallbacks that cannot hear it are skipped', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    process.env.MISTRAL_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('Gemini overloaded'));
+    groqService.checkSpeakingGroq.mockResolvedValue(silent());
+    mistralService.checkSpeakingMistral.mockResolvedValue(silent());
+    await expect(speakingService.gradeSpeaking('Q', '', 1, { data: 'eA==', mimeType: 'video/webm' }))
+      .rejects.toThrow('Gemini overloaded');
+    expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
+    expect(mistralService.checkSpeakingMistral).not.toHaveBeenCalled();
+    delete process.env.MISTRAL_API_KEY;
+  });
+
+  test('question lines alone do not count as a transcript worth re-grading', async () => {
+    geminiService.checkSpeaking.mockResolvedValue(silent());
+    const fb = await speakingService.gradeSpeaking('Q', 'Q1 (Part 1): Why do you study English at school?\nA1: ', 1, { data: 'eA==', mimeType: 'video/webm' });
+    expect(geminiService.checkSpeaking).toHaveBeenCalledTimes(1);
+    expect(fb.noGenuineAnswer).toBe(true);
+  });
 });
 
 describe('speakingService.getSampleAnswer', () => {

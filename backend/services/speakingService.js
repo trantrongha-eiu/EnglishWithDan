@@ -8,8 +8,8 @@ const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, PART2_FULL_
 const {
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
-const { checkSpeakingMistral } = require('./mistralService');
-const { isV2, normalizeSpeakingV2 } = require('./speakingScoringV2');
+const { checkSpeakingMistral, _voxtralFormat } = require('./mistralService');
+const { isV2, normalizeSpeakingV2, candidateText } = require('./speakingScoringV2');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
@@ -150,8 +150,18 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
 // If neither is configured (or both also fail) the caller re-throws
 // Gemini's original error. Each engine tags the result with `_heardAudio`
 // so gradeSpeaking knows whether Pronunciation was really heard.
+//
+// An engine that can't hear the recording AND has no transcript is skipped:
+// it would grade an empty answer and report "no genuine answer" for a real
+// recording (confirmed 2026-10-07 — students whose browser has no working
+// speech-to-text, e.g. Cốc Cốc / Edge / Firefox, got that message every time
+// Gemini was busy, because webm audio reaches neither Voxtral nor Groq).
+// Re-throwing Gemini's error instead lets the caller queue a re-grade or
+// tell the student the AI is busy.
 async function _gradeSpeakingFallback(question, transcript, part, audio, primaryErr, durationSec = 0) {
-  if (process.env.MISTRAL_API_KEY) {
+  const hasTranscript = !!String(transcript || '').trim();
+  const mistralHearsAudio = !!(audio && audio.data && _voxtralFormat(audio.mimeType));
+  if (process.env.MISTRAL_API_KEY && (hasTranscript || mistralHearsAudio)) {
     try {
       console.warn(`[Speaking] Gemini failed (${primaryErr.message}) — trying Mistral/Voxtral`);
       return await checkSpeakingMistral(question, transcript, part, audio, durationSec);
@@ -159,7 +169,7 @@ async function _gradeSpeakingFallback(question, transcript, part, audio, primary
       console.warn('[Speaking] Mistral fallback failed:', mistralErr.message);
     }
   }
-  if (process.env.GROQ_API_KEY) {
+  if (process.env.GROQ_API_KEY && hasTranscript) {
     try {
       console.warn('[Speaking] falling back to Groq (transcript-only)');
       const out = await checkSpeakingGroq(question, transcript, part, audio, durationSec);
@@ -300,6 +310,41 @@ function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
 // computed here); an unusable v2 analysis from Gemini falls through to the
 // next engine exactly like an API failure would.
 async function gradeSpeaking(questionText, transcript, partNum, audio = null, durationSec = 0) {
+  const fb = await _gradeOnce(questionText, transcript, partNum, audio, durationSec);
+  // Silent recording + a real speech-to-text transcript: on Android Chrome
+  // the page runs MediaRecorder and SpeechRecognition on the mic at the same
+  // time, and the OS hands the mic to only one of them — the uploaded audio
+  // is then silence while the transcript holds the actual answer. The prompt
+  // tells the AI to trust the audio over the transcript, so it reported
+  // "no genuine answer" on every submission from those devices (confirmed
+  // 2026-10-07: some accounts could never get a Speaking grade). Re-grade
+  // from the transcript alone; Pronunciation is then simply not assessed.
+  if (fb.noGenuineAnswer && audio && audio.data && _candidateWordCount(transcript) >= MIN_TRANSCRIPT_WORDS) {
+    console.warn('[Speaking] audio judged empty but transcript has content — re-grading transcript-only');
+    try {
+      const retry = await _gradeOnce(questionText, transcript, partNum, null, durationSec);
+      if (!retry.noGenuineAnswer) {
+        retry.audioUnusable = true;
+        if (retry.criteria && retry.criteria.pronunciation) retry.criteria.pronunciation.reason = SILENT_AUDIO_REASON;
+        return retry;
+      }
+    } catch (retryErr) {
+      console.warn('[Speaking] transcript-only re-grade failed:', retryErr.message);
+    }
+  }
+  return fb;
+}
+
+const MIN_TRANSCRIPT_WORDS = 5; // same "at least one sentence" bar the submit endpoints use
+const SILENT_AUDIO_REASON = 'Bản ghi âm gửi lên không nghe được tiếng nói (micro có thể đang bị trình duyệt dùng cho nhận diện giọng nói) — phát âm chưa được chấm, các tiêu chí khác chấm theo bản ghi lời nói.';
+
+// The candidate's own words only — echoed "Qn (Part n): …" question lines
+// (grouped practice / mock transcripts) don't count as an answer.
+function _candidateWordCount(transcript) {
+  return candidateText(transcript).split(/\s+/).filter(Boolean).length;
+}
+
+async function _gradeOnce(questionText, transcript, partNum, audio, durationSec) {
   const ctx = { transcript, partNum, audio, durationSec };
   try {
     return _finalizeGrade(await checkSpeaking(questionText, transcript, partNum, audio, durationSec), ctx);
