@@ -1,5 +1,4 @@
 // Integration tests for the email-verification anti trial-farming flow:
-//   POST /api/auth/register           (email configured → no session, verify required)
 //   POST /api/auth/verify-email       (consume link → session + trial starts)
 //   POST /api/auth/resend-verification
 // plus the trial gate itself (utils/plan.js) seen through a real
@@ -33,49 +32,7 @@ async function makeUnverified(rawToken, { expiresInMs = 60 * 60 * 1000, extra = 
   });
 }
 
-describe('POST /api/auth/register — email configured', () => {
-  test('creates the account but returns NO session; response says verification is needed', async () => {
-    const username = unique('reg');
-    const res = await request(app).post('/api/auth/register').send({
-      username, email: `${username}@test.local`, password: 'Test1234!', firstName: 'A', lastName: 'B',
-    });
-
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.needsEmailVerification).toBe(true);
-    expect(res.body.token).toBeUndefined();
-    expect(res.body.user).toBeUndefined();
-
-    const saved = await User.findOne({ username }).select('+emailVerifyTokenHash');
-    expect(saved.emailVerified).toBe(false);
-    expect(saved.trialStartedAt).toBeNull();
-    expect(saved.emailVerifyTokenHash).toMatch(/^[a-f0-9]{64}$/);
-  });
-
-  test('case 9 — client cannot self-grant: emailVerified / trialStartedAt / plan in the body are ignored', async () => {
-    const username = unique('tamper');
-    const res = await request(app).post('/api/auth/register').send({
-      username, email: `${username}@test.local`, password: 'Test1234!',
-      emailVerified: true, trialStartedAt: new Date(Date.now() - 1000), plan: 'premium', role: 'admin',
-    });
-    expect(res.body.needsEmailVerification).toBe(true);
-
-    const saved = await User.findOne({ username });
-    expect(saved.emailVerified).toBe(false);
-    expect(saved.trialStartedAt).toBeNull();
-    expect(saved.plan).toBe('free');
-    expect(saved.role).toBe('student');
-  });
-
-  test('rejects a disposable-email registration with 400', async () => {
-    const res = await request(app).post('/api/auth/register').send({
-      username: unique('disp'), email: 'farmer@mailinator.com', password: 'Test1234!',
-    });
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toMatch(/email/i);
-  });
-
+describe('trial gate for unverified accounts', () => {
   test('case 1 — a freshly registered (unverified) user gets NO trial on a premium-gated route', async () => {
     const user = await makeUnverified(crypto.randomBytes(32).toString('hex'));
     const res = await request(app).get(GATED).set('Authorization', `Bearer ${signTokenFor(user)}`);

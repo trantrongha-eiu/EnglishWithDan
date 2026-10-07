@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/tokens.css?v=20260831">
     <link rel="stylesheet" href="css/components.css?v=20260831">
-    <link rel="stylesheet" href="css/register.css?v=20260903">
+    <link rel="stylesheet" href="css/register.css?v=20261007">
     <script src="js/theme.js?v=20260831"></script>
 </head>
 
@@ -41,99 +41,15 @@
             </div>
 
             <h2 class="welcome-text">Bắt đầu hành trình IELTS! 🚀</h2>
-            <p class="subtitle">Tạo tài khoản để truy cập đầy đủ tính năng</p>
-
-            <form class="register-form" id="registerForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">Họ</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" id="firstName" name="firstName" placeholder="Nguyễn Văn" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lastName">Tên</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" id="lastName" name="lastName" placeholder="An" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user-check input-icon"></i>
-                        <input type="text" id="username" name="username" placeholder="user123" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="password" name="password" placeholder="Tối thiểu 8 ký tự" required
-                            minlength="8">
-                        <button type="button" class="toggle-password" onclick="togglePassword('password')">
-                            <i class="fas fa-eye eye-icon"></i>
-                        </button>
-                    </div>
-                    <div class="password-strength">
-                        <div class="strength-bar">
-                            <div class="strength-fill" id="strengthFill"></div>
-                        </div>
-                        <span class="strength-text" id="strengthText">Độ mạnh mật khẩu</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Xác nhận mật khẩu</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="confirmPassword" name="confirmPassword"
-                            placeholder="Nhập lại mật khẩu" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
-                            <i class="fas fa-eye eye-icon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <label class="terms-checkbox">
-                    <input type="checkbox" id="terms" required>
-                    <span>Tôi đồng ý với <a href="terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a></span>
-                </label>
-
-                <button type="submit" class="btn-register">
-                    <span>Đăng Ký Ngay</span>
-                    <i class="fas fa-arrow-right arrow-icon"></i>
-                </button>
-            </form>
-
-            <div class="divider">
-                <span>HOẶC</span>
-            </div>
+            <p class="subtitle">Đăng ký nhanh bằng tài khoản Google của bạn</p>
 
             <div class="social-login">
-                <button class="btn-social google">
+                <button type="button" class="btn-social google">
                     <i class="fab fa-google"></i>
-                    Google
-                </button>
-                <button class="btn-social facebook" style="opacity:.6;position:relative">
-                    <i class="fab fa-facebook-f"></i>
-                    Facebook
-                    <span style="position:absolute;top:-8px;right:-6px;background:#f59e0b;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;white-space:nowrap">Sắp ra mắt</span>
+                    Đăng ký bằng Google
                 </button>
             </div>
+            <p class="terms-note">Bằng việc tiếp tục, bạn đồng ý với <a href="terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a>.</p>
 
             <div class="login-prompt">
                 <p>Đã có tài khoản?
@@ -189,17 +105,9 @@
         // same fallback idiom used sitewide.
         const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 
-        // Pre-migration toast CSS + a bare #toast-container div used to live
-        // here, overriding js/shared/toast.js's real components.css styling
-        // (Poppins/hardcoded-gradient, no dark mode) and starving the
-        // toast-title/.toast-body/.toast-msg subparts of any style since
-        // this block never defined them — the exact toast this page depends
-        // on ("Đăng ký thành công!") rendered as a Frankenstein mix of the
-        // two systems. toast.js's own container() creates #toast-container
-        // with the right class if none exists, so removing the dead stub
-        // lets it fall through cleanly to components.css's canonical,
-        // dark-mode-aware .toast styling — same as every other page.
-        // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
+        // Sign-up is Google-only: email/password registration was removed
+        // (POST /api/auth/register now answers 410). Google OAuth creates
+        // the account on first sign-in (authService.findOrCreateGoogleUser).
 
         // register.html loads auth-service.js directly (not auth.js — see
         // that file's header comment) so an already-logged-in visitor still
@@ -208,141 +116,8 @@
             if (window.AuthService && window.AuthService.redirectIfAuthenticated()) return;
         })();
 
-        // Toggle hiển thị mật khẩu
-        function togglePassword(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            const button = passwordInput.parentElement.querySelector('.toggle-password');
-            const eyeIcon = button.querySelector('.eye-icon');
-
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
-            }
-        }
-
-        // Kiểm tra độ mạnh mật khẩu
-        document.getElementById('password').addEventListener('input', function () {
-            const password = this.value;
-            const strengthFill = document.getElementById('strengthFill');
-            const strengthText = document.getElementById('strengthText');
-
-            let strength = 0;
-            let text = 'Yếu';
-            let color = '#ef4444';
-
-            if (password.length >= 8) strength++;
-            if (password.match(/[a-z]/)) strength++;
-            if (password.match(/[A-Z]/)) strength++;
-            if (password.match(/[0-9]/)) strength++;
-            if (password.match(/[^a-zA-Z0-9]/)) strength++;
-
-            if (strength <= 2) {
-                text = 'Yếu';
-                color = '#ef4444';
-            } else if (strength === 3) {
-                text = 'Trung bình';
-                color = '#f59e0b';
-            } else if (strength === 4) {
-                text = 'Mạnh';
-                color = '#10b981';
-            } else {
-                text = 'Rất mạnh';
-                color = '#059669';
-            }
-
-            strengthFill.style.width = (strength * 20) + '%';
-            strengthFill.style.background = color;
-            strengthText.textContent = 'Độ mạnh: ' + text;
-            strengthText.style.color = color;
-        });
-
-        // Xử lý đăng ký
-        document.getElementById('registerForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const termsAccepted = document.getElementById('terms').checked;
-
-            if (!firstName || !lastName || !username || !email || !password) {
-                showToast("Vui lòng điền đầy đủ thông tin!", "warning"); return;
-            }
-            if (password.length < 8) {
-                showToast("Mật khẩu phải có ít nhất 8 ký tự!", "warning"); return;
-            }
-            if (password !== confirmPassword) {
-                showToast("Mật khẩu xác nhận không khớp!", "warning");
-                document.getElementById('confirmPassword').focus(); return;
-            }
-            if (!termsAccepted) {
-                showToast("Bạn cần đồng ý với điều khoản dịch vụ!", "warning"); return;
-            }
-            if (username.length < 3) {
-                showToast("Username phải có ít nhất 3 ký tự!", "warning"); return;
-            }
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                showToast("Username chỉ được chứa chữ cái, số và dấu gạch dưới!", "warning"); return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast("Email không hợp lệ!", "warning"); return;
-            }
-
-            const formData = { firstName, lastName, username, email, password };
-
-            const btn = document.querySelector('.btn-register');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<span>Đang xử lý...</span>';
-            btn.disabled = true;
-
-            try {
-                const res = await fetch(`${API}/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await window.ApiClient.handleResponse(res, { skipAuthRedirect: true });
-
-                if (data && data.needsEmailVerification) {
-                    // Account created but no session — server needs the
-                    // emailed link used before the 24h trial starts.
-                    showToast("Đăng ký thành công! Vui lòng kiểm tra email để xác minh và kích hoạt bản dùng thử.", "success", 3500);
-                    setTimeout(function () {
-                        window.location.href = "verify-email.html?email=" + encodeURIComponent(email);
-                    }, 2200);
-                } else {
-                    showToast("Đăng ký thành công! Mời bạn đăng nhập.", "success", 2500);
-                    setTimeout(function () { window.location.href = "login.html"; }, 2000);
-                }
-            } catch (err) {
-                console.error('Register error:', err);
-                if (err.coldStart) {
-                    showToast("Server đang khởi động lại (thường mất khoảng 30 giây), vui lòng thử lại.", "warning");
-                } else if (err.body) {
-                    showToast(err.body.message || "Đăng ký thất bại!", "error");
-                } else {
-                    showToast("Không kết nối được server! Vui lòng thử lại.", "warning");
-                }
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-            }
-        });
-
         document.querySelector('.btn-social.google').addEventListener('click', function () {
             window.location.href = `${API}/auth/google`;
-        });
-
-        document.querySelector('.btn-social.facebook').addEventListener('click', function () {
-            showToast("Tính năng đăng ký Facebook đang được phát triển!", "info");
         });
 
         window.addEventListener('DOMContentLoaded', () => {

@@ -59,41 +59,15 @@ exports.verifyOAuthState = (req, res, next) => {
 };
 
 // ── POST /api/auth/register ─────────────────────────────────
-exports.register = async (req, res) => {
-  try {
-    const { firstName, lastName, username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
-    }
-    if (password.length < 8) {
-      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 8 ký tự' });
-    }
-
-    const result = await authService.registerUser({ firstName, lastName, username, email, password });
-    if (result.status === 'duplicate') {
-      return res.status(400).json({ success: false, message: 'Email hoặc Username đã tồn tại' });
-    }
-    if (result.status === 'disposable') {
-      return res.status(400).json({ success: false, message: 'Vui lòng dùng địa chỉ email thật — email tạm thời không được chấp nhận.' });
-    }
-
-    // Email verification required: account created but no session issued —
-    // the client is told to go check their inbox. The 24h trial does not
-    // start until the emailed link is used.
-    if (result.needsEmailVerification) {
-      return res.status(201).json({
-        success: true,
-        needsEmailVerification: true,
-        email: result.email,
-        message: 'Tài khoản đã được tạo. Vui lòng kiểm tra email để xác minh và kích hoạt bản dùng thử.',
-      });
-    }
-
-    res.status(201).json({ success: true, token: result.token, user: result.user });
-  } catch (err) {
-    console.error('[Auth] register error:', err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
+// Email/password sign-up was removed — new accounts are created only via
+// Google OAuth (authService.findOrCreateGoogleUser). The old flow awaited an
+// SMTP send before responding, which made sign-up hang for students. Kept as
+// an explicit 410 so stale clients get a clear message instead of a 404.
+exports.register = (req, res) => {
+  res.status(410).json({
+    success: false,
+    message: 'Đăng ký bằng email đã ngừng. Vui lòng đăng ký bằng Google.',
+  });
 };
 
 // ── POST /api/auth/verify-email ─────────────────────────────
@@ -138,7 +112,7 @@ exports.login = async (req, res) => {
     if (result.status === 'not_found' || result.status === 'wrong_password') {
       return res.status(401).json({ success: false, message: 'Sai email/username hoặc mật khẩu' });
     }
-    if (result.status === 'social_only') return res.status(400).json({ success: false, message: 'Tài khoản này đăng nhập bằng Google/Facebook' });
+    if (result.status === 'social_only') return res.status(400).json({ success: false, message: 'Tài khoản này đăng nhập bằng Google' });
     if (result.status === 'banned') {
       return res.status(403).json({ success: false, message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.' });
     }

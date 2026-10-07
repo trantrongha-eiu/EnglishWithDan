@@ -20,12 +20,9 @@ const User = require('../../models/User');
 const { createStudent, createUser, signTokenFor, unique } = require('../factories/userFactory');
 
 describe('POST /api/auth/register', () => {
-  // NOTE: this file blanks EMAIL_USER/EMAIL_PASS (top of file), so
-  // authService sees email delivery as unconfigured and registration
-  // gracefully degrades to the pre-verification behavior: account is
-  // auto-verified and a session is returned. The verify-email flow itself
-  // (email configured) is covered in authEmailVerification.test.js.
-  test('with email delivery not configured: auto-verifies and returns a token + user payload', async () => {
+  // Email/password sign-up was removed (Google OAuth only) — the endpoint
+  // answers 410 and must never create an account.
+  test('is gone: returns 410 and creates no user', async () => {
     const username = unique('newuser');
     const res = await request(app).post('/api/auth/register').send({
       username,
@@ -35,46 +32,10 @@ describe('POST /api/auth/register', () => {
       lastName: 'User',
     });
 
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(res.body.needsEmailVerification).toBeFalsy();
-    expect(typeof res.body.token).toBe('string');
-    expect(res.body.user.username).toBe(username);
-    expect(res.body.user.role).toBe('student');
-    expect(res.body.user.emailVerified).toBe(true);
-
-    const saved = await User.findOne({ username });
-    expect(saved).toBeTruthy();
-    expect(saved.role).toBe('student');
-    expect(saved.emailVerified).toBe(true);
-  });
-
-  test('rejects a duplicate email with 400', async () => {
-    const existing = await createUser({ email: 'dup-email@test.local' });
-    const res = await request(app).post('/api/auth/register').send({
-      username: unique('anotherusername'),
-      email: existing.email,
-      password: 'Test1234!',
-    });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(410);
     expect(res.body.success).toBe(false);
-  });
-
-  test('rejects a duplicate username with 400', async () => {
-    const existing = await createUser({ username: 'dup-username' });
-    const res = await request(app).post('/api/auth/register').send({
-      username: existing.username,
-      email: `${unique('freshemail')}@test.local`,
-      password: 'Test1234!',
-    });
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-  });
-
-  test('rejects missing required fields with 400', async () => {
-    const res = await request(app).post('/api/auth/register').send({ email: 'only-email@test.local' });
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
+    expect(res.body.token).toBeUndefined();
+    expect(await User.findOne({ username })).toBeNull();
   });
 });
 

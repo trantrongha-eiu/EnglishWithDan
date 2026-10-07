@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/tokens.css?v=20260831">
     <link rel="stylesheet" href="css/components.css?v=20260831">
-    <link rel="stylesheet" href="css/login.css?v=20260903">
+    <link rel="stylesheet" href="css/login.css?v=20261007">
     <script src="js/theme.js?v=20260831"></script>
 </head>
 
@@ -95,12 +95,7 @@
             <div class="social-login">
                 <button class="btn-social google">
                     <i class="fab fa-google"></i>
-                    Google
-                </button>
-                <button class="btn-social facebook" style="opacity:.6;position:relative">
-                    <i class="fab fa-facebook-f"></i>
-                    Facebook
-                    <span style="position:absolute;top:-8px;right:-6px;background:#f59e0b;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;white-space:nowrap">Sắp ra mắt</span>
+                    Đăng nhập bằng Google
                 </button>
             </div>
 
@@ -332,9 +327,6 @@
             const next = getSafeNextUrl();
             const qs = next ? ('?next=' + encodeURIComponent(next.url)) : '';
             window.location.href = API + '/api/auth/google' + qs;
-        });
-        document.querySelector('.btn-social.facebook').addEventListener('click', function () {
-            showError('Tính năng đăng nhập Facebook đang được phát triển!');
         });
 
         // ── Forgot Password ──────────────────────────────────

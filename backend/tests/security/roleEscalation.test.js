@@ -1,31 +1,11 @@
-// Role-escalation regressions: neither registration nor a profile update
-// can let a caller elevate their own role/plan by simply including it in
-// the request body — both controllers only destructure a fixed whitelist
-// of fields off req.body.
+// Role-escalation regression: a profile update can't let a caller elevate
+// their own role/plan by simply including it in the request body — the
+// controller only destructures a fixed whitelist of fields off req.body.
+// (Email/password registration was removed; accounts come from Google OAuth.)
 const request = require('supertest');
 const app = require('../../app');
 const User = require('../../models/User');
-const { createStudent, signTokenFor, unique } = require('../factories/userFactory');
-
-describe('registration cannot set role', () => {
-  test('sending role: "admin" at registration still creates a plain student', async () => {
-    const username = unique('escalate');
-    const res = await request(app).post('/api/auth/register').send({
-      username,
-      email: `${username}@test.local`,
-      password: 'Test1234!',
-      role: 'admin',
-    });
-    expect(res.status).toBe(201);
-    // Depending on whether email delivery is configured, register either
-    // returns a session (res.body.user) or asks for email verification
-    // (no session) — the DB doc is the invariant that matters here.
-    if (res.body.user) expect(res.body.user.role).toBe('student');
-
-    const fromDb = await User.findOne({ username });
-    expect(fromDb.role).toBe('student');
-  });
-});
+const { createStudent, signTokenFor } = require('../factories/userFactory');
 
 describe('profile update cannot set role or plan', () => {
   test("a student sending role/plan in PUT /api/user/profile doesn't change them", async () => {

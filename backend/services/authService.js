@@ -11,7 +11,6 @@ const config = require('../config');
 const { escapeHtml } = require('../utils/escapeHtml');
 const logger = require('../utils/logger');
 const { sendEmail } = require('./emailService');
-const { isDisposableEmail } = require('../utils/disposableEmailDomains');
 const { applyStreakActivity } = require('../utils/streak');
 
 const MAX_OTP_ATTEMPTS = 5;
@@ -132,48 +131,6 @@ async function findOrCreateGoogleUser(profile) {
   }
   await user.save();
   return user;
-}
-
-async function registerUser({ firstName, lastName, username, email, password }) {
-  // Anti trial-farming: block registration from known throwaway-mailbox
-  // providers so "one disposable inbox per account" stops being a cheap
-  // way to reset the 24h trial. Real providers are never on this list.
-  if (isDisposableEmail(email)) {
-    logger.auth('Blocked registration from disposable email domain', { email });
-    return { status: 'disposable' };
-  }
-
-  const existing = await User.findOne({ $or: [{ email }, { username }] });
-  if (existing) return { status: 'duplicate' };
-
-  const hashed = await bcrypt.hash(password, 10);
-  const user = new User({ firstName, lastName, username, email, password: hashed });
-
-  // Anti trial-farming: when email delivery is configured, a new local
-  // account starts UNVERIFIED and gets no 24h trial until the emailed
-  // link is used (which also sets trialStartedAt). Client never sees the
-  // token or a session — it must go verify. If email isn't configured
-  // (dev / misconfigured deploy) we fall back to the old behavior so the
-  // product still works.
-  if (emailConfigured()) {
-    const rawToken = crypto.randomBytes(32).toString('hex');
-    user.emailVerified = false;
-    user.emailVerifyTokenHash = hashVerifyToken(rawToken);
-    user.emailVerifyExpires = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
-    await user.save();
-    const sent = await sendVerificationEmail(user, rawToken);
-    if (!sent) {
-      // Transient SMTP failure — the account exists and stays unverified;
-      // the user recovers via POST /resend-verification. Log loudly.
-      logger.auth('Verification email failed to send at registration', { userId: String(user._id) });
-    }
-    return { status: 'ok', needsEmailVerification: true, email: user.email };
-  }
-
-  user.emailVerified = true; // no way to verify → don't strand the user
-  await user.save();
-  logger.auth('Registered without email verification (email not configured)', { userId: String(user._id) });
-  return { status: 'ok', needsEmailVerification: false, token: signToken(user._id), user: userPayload(user) };
 }
 
 // Consumes a raw verification token from the emailed link. Single-use
@@ -381,7 +338,7 @@ async function logoutAllSessions(userId) {
 
 module.exports = {
   signToken, userPayload, findOrCreateGoogleUser,
-  registerUser, verifyEmailToken, resendVerification,
+  verifyEmailToken, resendVerification,
   loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
   logoutAllSessions,
 };

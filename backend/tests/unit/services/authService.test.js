@@ -21,58 +21,6 @@ const User = require('../../../models/User');
 const { createUser, createStudent, unique } = require('../../factories/userFactory');
 
 const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex');
-describe('authService.registerUser (email verification required)', () => {
-  test('creates an UNVERIFIED user, no token/session, and a hashed verify token on the doc', async () => {
-    const email = `${unique('reg')}@test.local`;
-    const username = unique('reguser');
-    const result = await authService.registerUser({
-      firstName: 'Ada', lastName: 'Lovelace', username, email, password: 'Sup3rSecret!',
-    });
-
-    expect(result.status).toBe('ok');
-    expect(result.needsEmailVerification).toBe(true);
-    expect(result.token).toBeUndefined();
-    expect(result.user).toBeUndefined();
-
-    const saved = await User.findOne({ email }).select('+password +emailVerifyTokenHash');
-    expect(saved).not.toBeNull();
-    expect(saved.emailVerified).toBe(false);
-    expect(saved.trialStartedAt).toBeNull();
-    expect(saved.emailVerifyTokenHash).toMatch(/^[a-f0-9]{64}$/);
-    expect(saved.emailVerifyExpires.getTime()).toBeGreaterThan(Date.now());
-    expect(await bcrypt.compare('Sup3rSecret!', saved.password)).toBe(true); // still hashed
-  });
-
-  test('rejects registration with a duplicate email', async () => {
-    const email = `${unique('dup')}@test.local`;
-    await createUser({ email });
-
-    const result = await authService.registerUser({
-      firstName: 'A', lastName: 'B', username: unique('newname'), email, password: 'x',
-    });
-    expect(result.status).toBe('duplicate');
-  });
-
-  test('rejects registration with a duplicate username', async () => {
-    const username = unique('dupuser');
-    await createUser({ username });
-
-    const result = await authService.registerUser({
-      firstName: 'A', lastName: 'B', username, email: `${unique('new')}@test.local`, password: 'x',
-    });
-    expect(result.status).toBe('duplicate');
-  });
-
-  test('rejects a disposable-email domain before creating anything', async () => {
-    const username = unique('disp');
-    const result = await authService.registerUser({
-      firstName: 'A', lastName: 'B', username, email: 'throwaway@mailinator.com', password: 'Test1234!',
-    });
-    expect(result.status).toBe('disposable');
-    expect(await User.findOne({ username })).toBeNull();
-  });
-});
-
 describe('authService.verifyEmailToken', () => {
   // Helper: register, then read the raw token back is impossible (only the
   // hash is stored) — so mint the account directly with a known raw token.
