@@ -53,7 +53,14 @@ const ReadingPracticeAttemptSchema = new mongoose.Schema({
   // present, the service upserts on (userId, clientKey) instead of always
   // inserting. Optional: older clients / direct calls without it keep the
   // old always-insert behavior.
-  clientKey:   { type: String }
+  clientKey:   { type: String },
+
+  // Highlights the student made on this attempt (while taking it and while
+  // reviewing it), so a review opened on another device/browser — or after
+  // the browser cleared its storage — still shows them. Compact shape
+  // { ts, parts: { <passage/part idx>: { p: [[start,end,color,text]], q: [text|{text,colorKey}] } } }
+  // — see services/attemptHighlightService.js. Absent until the first save.
+  highlights: { type: mongoose.Schema.Types.Mixed, default: undefined },
 }, { timestamps: true });
 
 ReadingPracticeAttemptSchema.index({ userId: 1, submittedAt: -1 });

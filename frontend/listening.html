@@ -38,6 +38,7 @@
 <script src="/js/shared/route-params.js?v=20260925route"></script>
 <script src="/js/shared/dictionary-lookup.js?v=20260930nobook"></script>
 <script src="/js/shared/highlight-remove.js?v=20260831"></script>
+<script src="/js/shared/highlight-store.js?v=20261007hl"></script>
 <script src="/js/shared/review-required-popup.js?v=20261001"></script>
 <script src="/js/shared/attempt-history.js?v=20261001"></script>
 <script src="/js/shared/review-inline.js?v=20260831"></script>
@@ -685,16 +686,41 @@
            any highlight made in questions-panel during the live exam. Passage
            markup (transcript) is identical live/review so raw HTML can be
            reused directly; questions markup can't, so only the highlighted
-           TEXT is persisted and re-applied afterward via _reapplyTextHighlights. */
-        let _pendingReviewQuestionHl = {}; // partIdx -> string[], consumed once by the fresh-render path
+           TEXT is persisted and re-applied afterward via _reapplyTextHighlights.
+           Since 2026-10-07 the transcript half is kept as text offsets (not
+           HTML) and everything is also saved on the server — see
+           js/shared/highlight-store.js for why localStorage alone kept
+           losing them. */
+        // partIdx -> { p: transcript offset ranges, q: question texts } restored
+        // from storage/server for a part not rendered yet this session.
+        // Applied (and dropped) by the fresh-render paths, and merged into
+        // every save until then so a part the student never reopens keeps its
+        // highlights (a resumed exam used to overwrite them all with only
+        // what was highlighted after the reload).
+        let _pendingHl = {};
 
         function _lHlStorageKey(attemptId) { return `ews_listening_hl_${attemptId}`; }
 
-        // A plain `.includes('class="hl"')` substring check misses a colored
-        // highlight — its class attribute renders as class="hl hl-green" (a
-        // space, not a closing quote, right after "hl"), so the exact
-        // substring never occurs. Matches either shape.
-        function _hasAnyHl(html) { return !!html && /class="hl(?:"|\s)/.test(html); }
+        // Applies a pending { p, q } entry to freshly rendered panels.
+        function _applyPendingHl(idx, transcriptEl, questionsEl) {
+            const pend = _pendingHl[idx];
+            if (!pend) return;
+            // Exam mode has no transcript on screen — keep that half pending.
+            if (transcriptEl && pend.p?.length) window.HighlightStore.apply(transcriptEl, pend.p);
+            if (questionsEl && pend.q?.length) _reapplyTextHighlights(questionsEl, pend.q);
+            if (transcriptEl || !pend.p?.length) delete _pendingHl[idx];
+            else _pendingHl[idx] = { p: pend.p, q: [] };
+        }
+
+        // Server copy vs this browser's copy — the newer wins; if this
+        // browser's is newer (an earlier upload failed), push it up again.
+        function _chooseHl(kind, attemptId, local, remoteRaw) {
+            const HS = window.HighlightStore;
+            const remote = HS.normalize(remoteRaw);
+            const chosen = HS.pickNewer(local, remote);
+            if (chosen && chosen === local && !HS.isEmpty(local) && attemptId) HS.saveRemote(kind, attemptId, local);
+            return chosen;
+        }
 
         // Returns a plain string for a default-colored highlight (unchanged
         // shape, so old localStorage data and code that doesn't know about
@@ -703,9 +729,9 @@
         // _reapplyTextHighlights below accepts either.
         function _extractHlTexts(html) {
             if (!html) return [];
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            return Array.from(div.querySelectorAll('.hl')).map(el => {
+            const tpl = document.createElement('template'); // inert parse — no image loads
+            tpl.innerHTML = html;
+            return Array.from(tpl.content.querySelectorAll('.hl')).map(el => {
                 const text = el.textContent;
                 if (!text) return null;
                 const m = el.className.match(/hl-(green|purple|pink|orange)/);
@@ -753,29 +779,21 @@
                 const qp = document.getElementById('questions-panel');
                 if (qp) partHlCache[state.partIdx] = qp.innerHTML;
             }
-            const data = {};
-            let hasAny = false;
+            const HS = window.HighlightStore;
+            const parts = Object.assign({}, _pendingHl);
             if (state.isReview) {
                 for (const idx in partHlCacheRv) {
                     const entry = partHlCacheRv[idx];
-                    const questionTexts = _extractHlTexts(entry.questions);
-                    const hasTranscriptHl = _hasAnyHl(entry.transcript);
-                    if (hasTranscriptHl || questionTexts.length) {
-                        data[idx] = { transcript: hasTranscriptHl ? entry.transcript : null, questionTexts };
-                        hasAny = true;
-                    }
+                    parts[idx] = { p: HS.serializeHtml(entry.transcript), q: _extractHlTexts(entry.questions) };
                 }
             } else {
                 for (const idx in partHlCache) {
-                    const questionTexts = _extractHlTexts(partHlCache[idx]);
-                    if (questionTexts.length) { data[idx] = { transcript: null, questionTexts }; hasAny = true; }
+                    parts[idx] = { p: _pendingHl[idx]?.p || [], q: _extractHlTexts(partHlCache[idx]) };
                 }
             }
-            try {
-                const key = _lHlStorageKey(attemptId);
-                if (hasAny) localStorage.setItem(key, JSON.stringify(data));
-                else localStorage.removeItem(key);
-            } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+            const data = HS.build(parts);
+            HS.writeLocal(_lHlStorageKey(attemptId), data);
+            HS.saveRemote('listening', attemptId, data);
         }
 
         const audio = document.getElementById('audio-player');
@@ -893,6 +911,9 @@
             state.mode = data.mode || 'practice';
             for (const k in partHlCache) delete partHlCache[k];
             for (const k in partHlCacheRv) delete partHlCacheRv[k];
+            // Bring back what was highlighted before the reload — each part
+            // gets it when first rendered and every save keeps the rest.
+            _pendingHl = { ...(window.HighlightStore.readLocal(_lHlStorageKey(state.attemptId))?.parts || {}) };
             clearInterval(_asoTimer);
             audio.playbackRate = 1;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
@@ -1694,6 +1715,7 @@
                 state.mode = t.mode || mode;
                 for (const k in partHlCache) delete partHlCache[k];
                 for (const k in partHlCacheRv) delete partHlCacheRv[k];
+                _pendingHl = {};
                 clearInterval(_asoTimer);
                 audio.playbackRate = 1;
                 document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
@@ -1987,28 +2009,18 @@
             document.querySelectorAll('#snf-section-btns .snf-section-btn')
                 .forEach((b, i) => b.classList.toggle('active', i === idx));
             if (isReview) {
+                // A part already rendered this session is restored from the
+                // in-memory cache; otherwise it's freshly rendered and any saved
+                // highlights (goToReview's _pendingHl) are applied on top.
                 const cachedRv = partHlCacheRv[idx];
-                // cachedRv.questions is only ever set by THIS branch caching a tab
-                // it's switching away from (already fully rendered this session) —
-                // a cache entry seeded from localStorage on entering review (see
-                // goToReview) carries a transcript snapshot but leaves questions
-                // undefined on purpose, since review questions markup must always
-                // be freshly rendered (correct/wrong indicators) and only
-                // re-highlighted afterward.
-                if (cachedRv !== undefined && cachedRv.questions !== undefined) {
-                    // Restore highlights from cache
+                if (cachedRv !== undefined) {
                     document.getElementById('transcript-body').innerHTML = cachedRv.transcript;
                     document.getElementById('review-questions-inner').innerHTML = cachedRv.questions;
                 } else {
-                    if (cachedRv?.transcript) {
-                        document.getElementById('transcript-body').innerHTML = cachedRv.transcript;
-                    } else {
-                        const section = getSortedSections(true)[idx];
-                        renderTranscript(section?.transcript || '');
-                    }
+                    const section = getSortedSections(true)[idx];
+                    renderTranscript(section?.transcript || '');
                     renderReviewPartQuestions(idx);
-                    const pending = _pendingReviewQuestionHl[idx];
-                    if (pending?.length) _reapplyTextHighlights(document.getElementById('review-questions-inner'), pending);
+                    _applyPendingHl(idx, document.getElementById('transcript-body'), document.getElementById('review-questions-inner'));
                 }
                 // Whichever branch ran above, #review-questions-inner's HTML
                 // was just replaced wholesale — any inline review toggle/form
@@ -2062,6 +2074,7 @@
                 html += renderQuestionGroup(group, gi, false);
             });
             panel.innerHTML = html;
+            _applyPendingHl(partIdx, null, panel);
             (section.questionGroups || []).forEach(g => g.questions.forEach(q => restoreAnswer(q)));
             refreshWordChips();
             setupDragDrop(panel);
@@ -2634,18 +2647,12 @@
             state.partIdx = 0;
             for (const k in partHlCacheRv) delete partHlCacheRv[k];
 
-            // Restore highlights made while taking this exam (see _saveListeningHighlightsToStorage)
-            _pendingReviewQuestionHl = {};
-            try {
-                const raw = localStorage.getItem(_lHlStorageKey(r.attemptId));
-                if (raw) {
-                    const saved = JSON.parse(raw);
-                    for (const idx in saved) {
-                        if (saved[idx].transcript) partHlCacheRv[idx] = { transcript: saved[idx].transcript, questions: undefined };
-                        if (saved[idx].questionTexts?.length) _pendingReviewQuestionHl[idx] = saved[idx].questionTexts;
-                    }
-                }
-            } catch { /* malformed/unavailable — just skip restoring */ }
+            // Restore highlights made while taking this exam (and in earlier
+            // visits to this review) — the server copy (r.highlights) or this
+            // browser's, whichever is newer (see _saveListeningHighlightsToStorage).
+            const savedHl = _chooseHl('listening', r.attemptId,
+                window.HighlightStore.readLocal(_lHlStorageKey(r.attemptId)), r.highlights);
+            _pendingHl = { ...(savedHl?.parts || {}) };
 
             document.getElementById('review-title').textContent = r.testName;
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
@@ -2655,16 +2662,10 @@
             audio.load();
             audio.currentTime = 0;
             const firstSection = (r.sections || [])[0];
-            const cachedFirst = partHlCacheRv[0];
-            if (cachedFirst?.transcript) {
-                document.getElementById('transcript-body').innerHTML = cachedFirst.transcript;
-            } else {
-                renderTranscript(firstSection?.transcript || '');
-            }
+            renderTranscript(firstSection?.transcript || '');
             buildPartTabs('part-tabs-rv', true);
             renderReviewPartQuestions(0);
-            const pendingFirst = _pendingReviewQuestionHl[0];
-            if (pendingFirst?.length) _reapplyTextHighlights(document.getElementById('review-questions-inner'), pendingFirst);
+            _applyPendingHl(0, document.getElementById('transcript-body'), document.getElementById('review-questions-inner'));
             renderQNav('q-nav-grid-rv', true);
             setupDictionaryDouble('transcript-body', 'listening', _ltDictGate);
             setupDictionaryDouble('review-questions-inner', 'listening', _ltDictGate);
@@ -3437,6 +3438,7 @@
             audio.pause();
             audio.src = '';
             if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
+            window.HighlightStore?.flush(); // don't leave the last highlights waiting on the debounce
 
             // Show loading overlay (works in both normal and fullscreen mode)
             let overlay = document.getElementById('submit-loading-overlay');
@@ -4054,32 +4056,40 @@
 
     // Single-section practice equivalent of _saveListeningHighlightsToStorage()
     // (defined in the previous <script> block, shared via the page's global
-    // lexical scope) — keyed by sectionId since practice attempts don't get an
-    // id until after they're submitted. _doSubmitLTPractice() replaces
-    // lt-practice-questions-inner wholesale on submit (review adds correct/
-    // wrong indicators the live practice markup doesn't have), which is what
-    // wiped out any highlight made there — this function's saved snapshot is
-    // what lets that submit path re-apply them afterward via
-    // _reapplyTextHighlights, and lets loadLTPracticeReview() (opening a past
-    // attempt from history, after a full page reload) restore them too.
+    // lexical scope). A practice attempt only gets an id when it's submitted,
+    // so until then its highlights are a local draft keyed by sectionId —
+    // _doSubmitLTPractice() replaces lt-practice-questions-inner wholesale on
+    // submit (review adds correct/wrong indicators the live practice markup
+    // doesn't have) and re-applies them from that draft. The submit sends them
+    // along with the result, and from then on they belong to that attempt id
+    // (local copy + server), so redoing the same section no longer
+    // overwrites — or wipes — what an earlier attempt's review shows.
     function _ltHlStorageKey(sectionId) { return `ews_listening_hl_lt_${sectionId}`; }
+    function _ltAttemptHlStorageKey(attemptId) { return `ews_listening_hl_ltp_${attemptId}`; }
+    let _ltSavedAttemptId = null; // set once the practice attempt exists on the server
 
-    function _saveLtPracticeHighlightsToStorage() {
-        const sectionId = _ltPracticeSectionId;
-        if (!sectionId) return;
+    function _collectLtPracticeHighlights() {
         const questionsInner  = document.getElementById('lt-practice-questions-inner');
         const transcriptInner = document.getElementById('lt-practice-transcript-body');
-        const transcriptHtml = transcriptInner ? transcriptInner.innerHTML : '';
-        const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
-        const hasTranscriptHl = _hasAnyHl(transcriptHtml);
-        try {
-            const key = _ltHlStorageKey(sectionId);
-            if (hasTranscriptHl || questionTexts.length) {
-                localStorage.setItem(key, JSON.stringify({ transcript: hasTranscriptHl ? transcriptHtml : null, questionTexts }));
-            } else {
-                localStorage.removeItem(key);
-            }
-        } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+        return window.HighlightStore.build({
+            0: {
+                p: window.HighlightStore.serialize(transcriptInner),
+                q: _extractHlTexts(questionsInner ? questionsInner.innerHTML : ''),
+            },
+        });
+    }
+
+    function _saveLtPracticeHighlightsToStorage() {
+        const HS = window.HighlightStore;
+        const sectionId = _ltPracticeSectionId;
+        if (!_ltSavedAttemptId && !sectionId) return;
+        const data = _collectLtPracticeHighlights();
+        if (_ltSavedAttemptId) {
+            HS.writeLocal(_ltAttemptHlStorageKey(_ltSavedAttemptId), data);
+            HS.saveRemote('listening-practice', _ltSavedAttemptId, data);
+        } else {
+            HS.writeLocal(_ltHlStorageKey(sectionId), data);
+        }
     }
     window._saveLtPracticeHighlightsToStorage = _saveLtPracticeHighlightsToStorage;
 
@@ -4621,6 +4631,7 @@
         _ltOrigSection       = section;
         _ltPracticePartNum   = partNum;
         _ltPracticeSectionId = sectionId;
+        _ltSavedAttemptId    = null;
         _ltPracticeSubmitted = false;
         _ltPracticeActive    = true;
         _ltPracticeMode        = mode;
@@ -5321,6 +5332,9 @@
             // Test Simulation only — undefined for Practice, so the
             // backend takes the exact same plain-insert path it always has.
             attemptId: _ltPracticeMode === 'simulation' ? _ltPracticeSimAttemptId : undefined,
+            // Highlights travel with the result (no attempt id to save them
+            // under before this); once the id comes back they are keyed to it.
+            highlights:   _collectLtPracticeHighlights(),
         });
 
         // Update footer
@@ -5340,7 +5354,18 @@
                 headers: { 'Content-Type': 'application/json', ...authH() },
                 body: JSON.stringify(payload)
             });
-            await safeJson(res);
+            const data = await safeJson(res);
+            if (data && data.attemptId) {
+                if (_ltPracticeClientKey === payload.clientKey && _ltPracticeSubmitted && !_ltSavedAttemptId) {
+                    // Still on this review — key the highlights to the attempt
+                    // (incl. any added while the request was in flight).
+                    window.HighlightStore.removeLocal(_ltHlStorageKey(payload.sectionId));
+                    _ltSavedAttemptId = data.attemptId;
+                    _saveLtPracticeHighlightsToStorage();
+                } else if (payload.highlights) {
+                    window.HighlightStore.writeLocal(_ltAttemptHlStorageKey(data.attemptId), payload.highlights);
+                }
+            }
         } catch (e) {
             toast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
         }
@@ -5462,13 +5487,18 @@
                 if (keyData.success && keyData.answerKey) Object.assign(keyMap, keyData.answerKey);
             } catch (e) { /* 403 for lapsed access, or transient — degrade to no key */ }
 
-            // Restore highlights saved locally while this practice attempt was
-            // taken (see _saveLtPracticeHighlightsToStorage).
-            let _savedLtHl = null;
-            try {
-                const raw = localStorage.getItem(_ltHlStorageKey(attempt.sectionId));
-                if (raw) _savedLtHl = JSON.parse(raw);
-            } catch { /* malformed/unavailable — just skip restoring */ }
+            // Highlights of this attempt (see _saveLtPracticeHighlightsToStorage):
+            // the server copy or this browser's, whichever is newer. An attempt
+            // saved before highlights were stored per attempt has neither —
+            // fall back to the old per-section local copy then (and pin it to
+            // this attempt).
+            const HS = window.HighlightStore;
+            let localLtHl = HS.readLocal(_ltAttemptHlStorageKey(attempt._id));
+            if (!localLtHl && !attempt.highlights) {
+                localLtHl = HS.readLocal(_ltHlStorageKey(attempt.sectionId));
+                if (localLtHl) { localLtHl.ts = 0; HS.writeLocal(_ltAttemptHlStorageKey(attempt._id), localLtHl); }
+            }
+            const savedLtPart = _chooseHl('listening-practice', attempt._id, localLtHl, attempt.highlights)?.parts?.[0] || null;
 
             // Build reviewSection: merge saved answers onto the full section
             const reviewSection = JSON.parse(JSON.stringify(section));
@@ -5496,6 +5526,7 @@
             _ltCleanSection      = reviewSection;
             _ltPracticePartNum   = attempt.partNumber;
             _ltPracticeSectionId = attempt.sectionId;
+            _ltSavedAttemptId    = attempt._id; // highlights added in this review save to it
             _ltPracticeSubmitted = true;
             _ltPracticeActive    = true;  // needed so closeLTPractice cleans up correctly
 
@@ -5551,20 +5582,17 @@
             const inner = document.getElementById('lt-practice-questions-inner');
             inner.innerHTML = html;
             inner.scrollTop = 0;
-            if (_savedLtHl?.questionTexts?.length) _reapplyTextHighlights(inner, _savedLtHl.questionTexts);
+            if (savedLtPart?.q?.length) _reapplyTextHighlights(inner, savedLtPart.q);
 
             // Show transcript if available
             const tp = document.getElementById('lt-practice-transcript-panel');
             const tb = document.getElementById('lt-practice-transcript-body');
             if (tp && tb) {
-                if (_savedLtHl?.transcript) {
-                    tb.innerHTML = _savedLtHl.transcript;
-                    tp.style.display = '';
-                    setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
-                } else if (section.transcript) {
+                if (section.transcript) {
                     tb.innerHTML = section.transcript.split('\n').map(l =>
                         l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
                     ).join('');
+                    if (savedLtPart?.p?.length) HS.apply(tb, savedLtPart.p);
                     tp.style.display = '';
                     setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
                 } else {

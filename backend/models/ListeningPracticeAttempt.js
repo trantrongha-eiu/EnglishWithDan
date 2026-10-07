@@ -36,7 +36,14 @@ const ListeningPracticeAttemptSchema = new mongoose.Schema({
   // BUG-A07 — see ReadingPracticeAttempt.js for the full rationale. One UUID
   // per practice attempt on the client; when present the service upserts on
   // (userId, clientKey) so a double fire can't duplicate the row.
-  clientKey:   { type: String }
+  clientKey:   { type: String },
+
+  // Highlights the student made on this attempt (while taking it and while
+  // reviewing it), so a review opened on another device/browser — or after
+  // the browser cleared its storage — still shows them. Compact shape
+  // { ts, parts: { <passage/part idx>: { p: [[start,end,color,text]], q: [text|{text,colorKey}] } } }
+  // — see services/attemptHighlightService.js. Absent until the first save.
+  highlights: { type: mongoose.Schema.Types.Mixed, default: undefined },
 }, { timestamps: true });
 
 ListeningPracticeAttemptSchema.index({ userId: 1, submittedAt: -1 });

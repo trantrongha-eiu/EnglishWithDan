@@ -25,6 +25,7 @@ const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
+const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 // Mongoose `.select()` string that strips a section's answer key
@@ -308,7 +309,7 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
       .sort({ submittedAt: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit))
-      .select('-sectionsSnapshot'),
+      .select('-sectionsSnapshot -highlights'),
     ListeningAttempt.countDocuments(filter)
   ]);
   return { attempts, total };
@@ -956,7 +957,8 @@ async function getHistoryDetail(attemptId, userId) {
       attemptId: attempt._id, testName: attempt.testName, bandScore: attempt.bandScore,
       correctCount: attempt.correctCount, wrongCount: attempt.wrongCount, skippedCount: attempt.skippedCount,
       totalQuestions: attempt.totalQuestions, timeTaken: attempt.timeTaken, submittedAt: attempt.submittedAt,
-      questions: reviewed, sections: reviewSections, audioUrl
+      questions: reviewed, sections: reviewSections, audioUrl,
+      highlights: attempt.highlights || null,
     }
   };
 }
@@ -1002,9 +1004,13 @@ async function startPracticeSimulation(sectionId, sectionTitle, partNumber, user
 }
 
 // ── Practice attempts (single-section, no premium gate) ─────────────────
-async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId: simulationAttemptId }, userId) {
+async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId: simulationAttemptId, highlights: rawHighlights }, userId) {
   const section = await ListeningSection.findById(sectionId).lean();
   if (!section) return null;
+  // Highlights made while practising (no attempt id to PUT them to until
+  // this call) — see attemptHighlightService.
+  const cleanHl = rawHighlights ? sanitizeHighlights(rawHighlights) : null;
+  const highlights = cleanHl && !tooLarge(cleanHl) ? cleanHl : undefined;
 
   // BUG-A07: idempotency — a double fire of this fire-and-forget save used
   // to duplicate the row + the AttemptReview it spawns. See
@@ -1036,6 +1042,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
         answers: gradedAnswers, totalQuestions: gradedAnswers.length,
         correctCount: correct, wrongCount: _wrong, skippedCount: _skipped,
         timeTaken: timeTaken || 0, submittedAt: new Date(), status: 'completed',
+        ...(highlights ? { highlights } : {}),
       },
       { new: true }
     );
@@ -1055,6 +1062,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
         timeTaken: timeTaken || 0,
         submittedAt: new Date(),
         ...(key ? { clientKey: key } : {}),
+        ...(highlights ? { highlights } : {}),
       });
     } catch (err) {
       if (err.code === 11000 && key) {
@@ -1076,7 +1084,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
 }
 
 async function getPracticeHistory(userId) {
-  return ListeningPracticeAttempt.find({ userId, ...REAL_ATTEMPT }).select('-answers').sort({ submittedAt: -1 }).limit(50).lean();
+  return ListeningPracticeAttempt.find({ userId, ...REAL_ATTEMPT }).select('-answers -highlights').sort({ submittedAt: -1 }).limit(50).lean();
 }
 
 // Ownership-scoped ({ _id, userId }). Withholds the answer key: the raw

@@ -105,16 +105,38 @@ let _reviewPassageInnerRenderedFor = null;
    highlighted HTML can be reused directly; the questions panel does NOT
    (review adds correct/wrong indicators and explanations exam markup never
    has), so only the highlighted TEXT is saved for that panel and
-   re-applied by matching it against the freshly-rendered review markup. */
-let _pendingReviewQuestionHl = {}; // passageIdx -> string[], consumed once by switchReviewPassage()'s fresh-render path
+   re-applied by matching it against the freshly-rendered review markup.
+   Since 2026-10-07 the passage half is kept as text offsets (not HTML) and
+   everything is also saved on the server — see js/shared/highlight-store.js
+   for why localStorage alone kept losing them. */
+// passageIdx -> { p: offset ranges, q: question texts } restored from
+// storage/server for a tab not rendered yet this session. Applied (and
+// dropped) by switchPassage()/switchReviewPassage()'s fresh-render path, and
+// merged into every save until then so a tab the student never reopens
+// keeps its highlights (a resumed exam used to overwrite them all with
+// only what was highlighted after the reload).
+let _pendingHl = {};
 
 function _readingHlStorageKey(attemptId) { return `ews_reading_hl_${attemptId}`; }
 
-// A plain `.includes('class="hl"')` substring check misses a colored
-// highlight — its class attribute renders as class="hl hl-green" (a space,
-// not a closing quote, right after "hl"), so the exact substring never
-// occurs. Matches either shape.
-function _hasAnyHl(html) { return !!html && /class="hl(?:"|\s)/.test(html); }
+// Applies a pending { p, q } entry to freshly rendered panels.
+function _applyPendingHl(idx, passageInner, questionsInner) {
+  const pend = _pendingHl[idx];
+  if (!pend) return;
+  delete _pendingHl[idx];
+  if (passageInner && pend.p?.length) window.HighlightStore.apply(passageInner, pend.p);
+  if (questionsInner && pend.q?.length) _reapplyTextHighlights(questionsInner, pend.q);
+}
+
+// Server copy vs this browser's copy — the newer wins; if this browser's is
+// newer (an earlier upload failed), push it up again.
+function _chooseHl(kind, attemptId, local, remoteRaw) {
+  const HS = window.HighlightStore;
+  const remote = HS.normalize(remoteRaw);
+  const chosen = HS.pickNewer(local, remote);
+  if (chosen && chosen === local && !HS.isEmpty(local) && attemptId) HS.saveRemote(kind, attemptId, local);
+  return chosen;
+}
 
 // Returns a plain string for a default-colored highlight (unchanged shape,
 // so old localStorage data and code that doesn't know about colors keep
@@ -123,9 +145,9 @@ function _hasAnyHl(html) { return !!html && /class="hl(?:"|\s)/.test(html); }
 // accepts either.
 function _extractHlTexts(html) {
   if (!html) return [];
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  return Array.from(div.querySelectorAll('.hl')).map(el => {
+  const tpl = document.createElement('template'); // inert parse — no image loads
+  tpl.innerHTML = html;
+  return Array.from(tpl.content.querySelectorAll('.hl')).map(el => {
     const text = el.textContent;
     if (!text) return null;
     const m = el.className.match(/hl-(green|purple|pink|orange)/);
@@ -169,14 +191,12 @@ function _reapplyTextHighlights(container, items) {
 }
 
 // Called after every highlight is made in exam mode OR while viewing a
-// review screen (renderReview() restores from this same storage key/cache
-// shape on open, so a highlight added directly in review must be saved back
-// to it too — previously it early-returned on state.isReview and any
-// highlight made in review was silently lost on navigating away/reloading).
-// Flushes the current (live) passage tab into the right in-memory cache
-// first — otherwise the tab the student is actively highlighting on would
-// never get captured until they switch away from it — then serializes
-// anything highlighted so far to localStorage.
+// review screen (renderReview() restores from this same storage key/server
+// copy on open, so a highlight added directly in review must be saved back
+// too). Flushes the current (live) passage tab into the right in-memory
+// cache first — otherwise the tab the student is actively highlighting on
+// would never get captured until they switch away from it — then saves
+// everything highlighted so far, locally and on the server.
 function _saveReadingHighlightsToStorage() {
   // Review mode has no state.attemptId (only ever set by exam start/resume)
   // — the attempt being reviewed lives in state.reviewData instead.
@@ -191,52 +211,59 @@ function _saveReadingHighlightsToStorage() {
       questions: questionsInner ? questionsInner.innerHTML : null,
     };
   }
-  const data = {};
-  let hasAny = false;
+  const HS = window.HighlightStore;
+  const parts = Object.assign({}, _pendingHl);
   for (const idx in cache) {
     const entry = cache[idx];
-    const questionTexts = _extractHlTexts(entry.questions);
-    const hasPassageHl = _hasAnyHl(entry.passage);
-    if (hasPassageHl || questionTexts.length) {
-      data[idx] = { passage: hasPassageHl ? entry.passage : null, questionTexts };
-      hasAny = true;
-    }
+    parts[idx] = { p: HS.serializeHtml(entry.passage), q: _extractHlTexts(entry.questions) };
   }
-  try {
-    const key = _readingHlStorageKey(attemptId);
-    if (hasAny) localStorage.setItem(key, JSON.stringify(data));
-    else localStorage.removeItem(key);
-  } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+  const data = HS.build(parts);
+  HS.writeLocal(_readingHlStorageKey(attemptId), data);
+  HS.saveRemote('reading', attemptId, data);
 }
 
 // Single-passage practice/retry ("Luyện: <passage title>") equivalent of
-// _saveReadingHighlightsToStorage() above — keyed by passageId (stable
-// across attempts, not per-attempt) since practice attempts don't get an
-// id until after they're submitted. _doSubmitRetry() replaces
-// #retry-questions-inner wholesale on submit (review adds correct/wrong
-// indicators the live practice markup doesn't have), which is what wiped
-// out any highlight made there — this function's saved snapshot is what
-// lets that submit path re-apply them afterward via _reapplyTextHighlights,
-// and lets loadPracticeReview() (opening a past attempt from history,
-// after a full page reload) restore them too.
+// _saveReadingHighlightsToStorage() above. A practice attempt only gets an
+// id when it's submitted, so until then its highlights are a local draft
+// keyed by passageId (lets resumePractice() bring them back after a reload);
+// _doSubmitRetry() sends them along with the result, and from then on they
+// belong to that attempt id (local copy + server), so redoing the same
+// passage no longer overwrites — or, with nothing highlighted, wipes — the
+// highlights an earlier attempt's review shows.
 function _retryHlStorageKey(passageId) { return `ews_reading_hl_retry_${passageId}`; }
+function _retryAttemptHlStorageKey(attemptId) { return `ews_reading_hl_rp_${attemptId}`; }
 
-function _saveRetryHighlightsToStorage() {
-  const passageId = _retryState?.practicePassageId;
-  if (!passageId) return;
+function _collectRetryHighlights() {
   const passageInner = document.getElementById('retry-passage-inner');
   const questionsInner = document.getElementById('retry-questions-inner');
-  const passageHtml = passageInner ? passageInner.innerHTML : '';
-  const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
-  const hasPassageHl = _hasAnyHl(passageHtml);
-  try {
-    const key = _retryHlStorageKey(passageId);
-    if (hasPassageHl || questionTexts.length) {
-      localStorage.setItem(key, JSON.stringify({ passage: hasPassageHl ? passageHtml : null, questionTexts }));
-    } else {
-      localStorage.removeItem(key);
-    }
-  } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+  return window.HighlightStore.build({
+    0: {
+      p: window.HighlightStore.serialize(passageInner),
+      q: _extractHlTexts(questionsInner ? questionsInner.innerHTML : ''),
+    },
+  });
+}
+
+function _saveRetryHighlightsToStorage() {
+  const HS = window.HighlightStore;
+  const attemptId = _retryState?.savedAttemptId;
+  const passageId = _retryState?.practicePassageId;
+  if (!attemptId && !passageId) return;
+  const data = _collectRetryHighlights();
+  if (attemptId) {
+    HS.writeLocal(_retryAttemptHlStorageKey(attemptId), data);
+    HS.saveRemote('reading-practice', attemptId, data);
+  } else {
+    HS.writeLocal(_retryHlStorageKey(passageId), data);
+  }
+}
+
+// Re-applies a saved practice entry (part "0") to the retry screen panels.
+function _applyRetryHighlights(saved, { passage = true, questions = true } = {}) {
+  const part = saved?.parts?.[0];
+  if (!part) return;
+  if (passage && part.p?.length) window.HighlightStore.apply(document.getElementById('retry-passage-inner'), part.p);
+  if (questions && part.q?.length) _reapplyTextHighlights(document.getElementById('retry-questions-inner'), part.q);
 }
 
 /* ── Stopwatch helpers ──────────────────────────────────────────────── */
@@ -1039,6 +1066,10 @@ function resumeExam() {
   state.passages = data.passages;
   state.attemptId = data.attemptId;
   state.testId = data.testId;
+  // Bring back what was highlighted before the reload — each tab gets it
+  // when first rendered (switchPassage) and every save keeps the rest.
+  for (const k in passageHlCache) delete passageHlCache[k];
+  _pendingHl = { ...(window.HighlightStore.readLocal(_readingHlStorageKey(data.attemptId))?.parts || {}) };
   state.testName = data.testName;
   state.answers = data.answers || {};
   state.secondsLeft = data.secondsLeft || DURATION;
@@ -1187,6 +1218,10 @@ async function resumePractice() {
       showVocabToast(`Đã khôi phục ${n} câu trả lời`, 'success');
       setTimeout(_updatePracticeProgress, 100);
     }
+    // Highlights made before the reload (local draft, see
+    // _saveRetryHighlightsToStorage) — previously never restored here, and
+    // the next highlight overwrote the draft with only the new ones.
+    _applyRetryHighlights(window.HighlightStore.readLocal(_retryHlStorageKey(data.passageId)));
   } catch (e) {
     // Audit finding: this endpoint is gated by the same mandatory-review
     // check as starting a new practice — without this branch, a student
@@ -1790,11 +1825,7 @@ function _enterEntranceEmbed(host) {
       .join('');
     getAllQuestionsFromPassage(passage).forEach(q => updateQNavBtn(q.questionNumber));
   }
-  try {
-    const saved = JSON.parse(localStorage.getItem(_retryHlStorageKey(_retryState.practicePassageId)) || 'null');
-    if (saved && saved.passage) document.getElementById('retry-passage-inner').innerHTML = saved.passage;
-    if (saved && saved.questionTexts) _reapplyTextHighlights(document.getElementById('retry-questions-inner'), saved.questionTexts);
-  } catch { /* no saved highlights */ }
+  _applyRetryHighlights(window.HighlightStore.readLocal(_retryHlStorageKey(_retryState.practicePassageId)));
 
   setTool('none');
   initDropZones();
@@ -1822,6 +1853,7 @@ function _enterEntranceEmbed(host) {
 function startExam(data) {
   clearExamStorage();          // Clear any previous in-progress exam
   for (const k in passageHlCache) delete passageHlCache[k];
+  _pendingHl = {};
   state.passages = data.passages;
   state.attemptId = data.attemptId;
   state.testName = data.testName;
@@ -1902,6 +1934,7 @@ function switchPassage(idx) {
      <div class="passage-text">${p.content || ''}</div>`;
     }
     if (questionsInner) questionsInner.innerHTML = renderPassageQuestions(p, false);
+    _applyPendingHl(idx, passageInner, questionsInner);
     restoreAnswers(false);
     initDropZones();
   }
@@ -3145,6 +3178,7 @@ async function submitExam() {
   clearInterval(state.timer);
   state.submitted = true;
   window.onbeforeunload = null;
+  window.HighlightStore?.flush(); // don't leave the last highlights waiting on the debounce
 
   // Show loading overlay
   let overlay = document.getElementById('submit-loading-overlay');
@@ -3519,23 +3553,13 @@ function renderReview(attempt, answerKeyWithheld) {
   state.currentPassageIdx = 0;
   for (const k in reviewHlCache) delete reviewHlCache[k];
 
-  // Restore highlights made while taking this exam, saved to localStorage
-  // as each one was made (see _saveReadingHighlightsToStorage) — passage
-  // markup is identical between exam/review so its raw HTML is reused
-  // directly; questions markup differs (review adds correct/wrong
-  // indicators), so only the highlighted text is restored, re-applied by
-  // switchReviewPassage()'s fresh-render path via _pendingReviewQuestionHl.
-  _pendingReviewQuestionHl = {};
-  try {
-    const raw = localStorage.getItem(_readingHlStorageKey(attempt._id));
-    if (raw) {
-      const saved = JSON.parse(raw);
-      for (const idx in saved) {
-        if (saved[idx].passage) reviewHlCache[idx] = { passage: saved[idx].passage, questions: undefined };
-        if (saved[idx].questionTexts?.length) _pendingReviewQuestionHl[idx] = saved[idx].questionTexts;
-      }
-    }
-  } catch { /* malformed/unavailable — just skip restoring */ }
+  // Restore highlights made while taking this exam (and in earlier visits
+  // to this review) — the server copy (attempt.highlights) or this
+  // browser's, whichever is newer (see _saveReadingHighlightsToStorage).
+  // Re-applied per tab by switchReviewPassage()'s fresh-render path.
+  const savedHl = _chooseHl('reading', attempt._id,
+    window.HighlightStore.readLocal(_readingHlStorageKey(attempt._id)), attempt.highlights);
+  _pendingHl = { ...(savedHl?.parts || {}) };
 
   document.getElementById('review-title').textContent = attempt.testName || 'Xem lại';
   const badge = document.getElementById('review-band-badge');
@@ -3591,30 +3615,23 @@ function switchReviewPassage(idx) {
   if (!state.reviewData) return;
   const { reviewMap } = state.reviewData;
 
+  // A tab already rendered this session is restored from the in-memory
+  // cache; otherwise it's freshly rendered and any saved highlights
+  // (renderReview's _pendingHl) are applied on top.
   const cached = reviewHlCache[idx];
-  // cached.questions is only ever set by THIS function caching a tab it's
-  // switching away from (i.e. already fully rendered once this session) —
-  // a cache entry seeded from localStorage on entering review (see
-  // renderReview) carries a passage snapshot but leaves questions
-  // undefined on purpose, since review questions markup must always be
-  // freshly rendered (correct/wrong indicators) and only re-highlighted
-  // afterward.
-  if (cached !== undefined && cached.questions !== undefined) {
+  if (cached !== undefined) {
     if (rvPassageInner) rvPassageInner.innerHTML = cached.passage ?? '';
     if (rvQuestionsInner) rvQuestionsInner.innerHTML = cached.questions ?? '';
   } else {
     if (rvPassageInner) {
-      rvPassageInner.innerHTML = (cached && cached.passage)
-        ? cached.passage
-        : `<div class="passage-title">${escHtml(p.title)}</div>
+      rvPassageInner.innerHTML = `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
     }
     if (rvQuestionsInner) {
       rvQuestionsInner.innerHTML = (state.reviewAnswerKeyWithheld ? _reviewLockedNotice() : '')
         + renderPassageQuestions(p, true, reviewMap);
-      const savedTexts = _pendingReviewQuestionHl[idx];
-      if (savedTexts && savedTexts.length) _reapplyTextHighlights(rvQuestionsInner, savedTexts);
     }
+    _applyPendingHl(idx, rvPassageInner, rvQuestionsInner);
   }
   _reviewPassageInnerRenderedFor = state.passages;
   // Whichever branch ran above, #review-questions-inner's HTML was just
@@ -3960,6 +3977,11 @@ async function _doSubmitRetry() {
     // về bản ghi cũ, không tạo thêm. Gắn 1 lần cho mỗi lượt luyện.
     _retryState.clientKey = _retryState.clientKey
       || (crypto.randomUUID ? crypto.randomUUID() : 'rk-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    // Highlights travel with the result (the attempt has no id to save them
+    // under before this); once the id comes back they're keyed to it.
+    const submittedRetryState = _retryState;
+    const draftHlKey = _retryHlStorageKey(_retryState.practicePassageId);
+    const sentHl = _collectRetryHighlights();
     apiFetch('/api/reading/practice/save', {
       method: 'POST',
       body: JSON.stringify({
@@ -3980,7 +4002,21 @@ async function _doSubmitRetry() {
         // Test Simulation only — undefined for Practice, so the backend
         // takes the exact same plain-insert path it always has.
         attemptId: _retryState.mode === 'simulation' ? _retryState.simAttemptId : undefined,
+        highlights: sentHl,
       })
+    }).then(res => {
+      if (!res || !res.attemptId) return;
+      submittedRetryState.savedAttemptId = res.attemptId;
+      if (_retryState === submittedRetryState) {
+        // Still on this review — save whatever is highlighted now (may
+        // include highlights added while the request was in flight).
+        window.HighlightStore.removeLocal(draftHlKey);
+        _saveRetryHighlightsToStorage();
+      } else {
+        // Already moved on: the draft key may hold a NEW session's
+        // highlights by now, so leave it alone.
+        window.HighlightStore.writeLocal(_retryAttemptHlStorageKey(res.attemptId), sentHl);
+      }
     }).catch(() => {
       showVocabToast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
     });
@@ -4157,7 +4193,9 @@ async function loadPracticeReview(attemptId) {
       ),
       isPractice:         true,
       practicePassageId:  attempt.passageId,
-      practiceCategory:   attempt.category || ''
+      practiceCategory:   attempt.category || '',
+      // Highlights added while viewing this review save to this attempt.
+      savedAttemptId:     attempt._id,
     };
     _practiceMode = true;
     state.passages = [cleanPassage];
@@ -4168,21 +4206,23 @@ async function loadPracticeReview(attemptId) {
     document.getElementById('retry-title').textContent = passage.title || 'Xem lại bài lẻ';
     document.getElementById('retry-score-badge').style.display = 'none';
 
-    // Restore highlights saved locally while this practice attempt was taken
-    // (see _saveRetryHighlightsToStorage) — passage markup is identical
-    // between practice/review so its raw HTML is reused directly; questions
-    // markup differs (review adds correct/wrong indicators), so only the
-    // highlighted text is restored, re-applied below via _reapplyTextHighlights.
-    let _savedRetryHl = null;
-    try {
-      const raw = localStorage.getItem(_retryHlStorageKey(attempt.passageId));
-      if (raw) _savedRetryHl = JSON.parse(raw);
-    } catch { /* malformed/unavailable — just skip restoring */ }
+    // Highlights of this attempt (see _saveRetryHighlightsToStorage): the
+    // server copy or this browser's, whichever is newer. An attempt saved
+    // before highlights were stored per attempt has neither — fall back to
+    // the old per-passage local copy then (and pin it to this attempt).
+    const HS = window.HighlightStore;
+    let localHl = HS.readLocal(_retryAttemptHlStorageKey(attempt._id));
+    if (!localHl && !attempt.highlights) {
+      localHl = HS.readLocal(_retryHlStorageKey(attempt.passageId));
+      if (localHl) { localHl.ts = 0; HS.writeLocal(_retryAttemptHlStorageKey(attempt._id), localHl); }
+    }
+    const savedRetryHl = _chooseHl('reading-practice', attempt._id, localHl, attempt.highlights);
 
     // Fill passage text (left panel)
-    document.getElementById('retry-passage-inner').innerHTML = _savedRetryHl?.passage ||
+    document.getElementById('retry-passage-inner').innerHTML =
       `<div class="passage-title">${escHtml(passage.title || '')}</div>
        <div class="passage-text">${passage.content || ''}</div>`;
+    _applyRetryHighlights(savedRetryHl, { questions: false });
 
     // Q-nav footer với màu đúng/sai/bỏ qua
     const nav = document.getElementById('retry-q-nav');
@@ -4228,7 +4268,7 @@ async function loadPracticeReview(attemptId) {
         </div>
       </div>`
       + renderPassageQuestions(passage, true, reviewMap);
-    if (_savedRetryHl?.questionTexts?.length) _reapplyTextHighlights(inner, _savedRetryHl.questionTexts);
+    _applyRetryHighlights(savedRetryHl, { passage: false });
 
     document.getElementById('retry-footer-btns').innerHTML =
       `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>

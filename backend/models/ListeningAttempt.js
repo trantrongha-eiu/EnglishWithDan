@@ -34,6 +34,10 @@ const ListeningAttemptSchema = new mongoose.Schema({
   sectionsSnapshot: { type: [mongoose.Schema.Types.Mixed], default: undefined },
   audioUrlSnapshot: { type: String, default: '' },
 
+  // Highlights the student made on this attempt — see TestAttempt.js /
+  // services/attemptHighlightService.js. Absent until the first save.
+  highlights: { type: mongoose.Schema.Types.Mixed, default: undefined },
+
   answers: [ListeningAnswerSchema],
 
   // Kết quả tổng hợp

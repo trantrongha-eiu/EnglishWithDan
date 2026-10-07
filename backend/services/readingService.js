@@ -18,6 +18,7 @@ const { applyStreakActivity } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
+const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 
 // Mongoose `.select()` string that strips a passage's answer key
@@ -420,7 +421,8 @@ async function getAttemptReview(attemptId, userId) {
     _id: attempt._id, testName: attempt.testId?.name || '', bandScore: attempt.bandScore,
     correctCount: attempt.correctCount, wrongCount: attempt.wrongCount, skippedCount: attempt.skippedCount,
     totalQuestions: attempt.totalQuestions, duration: attempt.duration, endTime: attempt.endTime,
-    passages: passagesWithResult
+    passages: passagesWithResult,
+    highlights: attempt.highlights || null,
   };
 }
 
@@ -439,7 +441,7 @@ async function getHistory(userId, limit = 50) {
       .populate('testId', 'name testNumber')
       .sort({ endTime: -1 })
       .limit(limit)
-      .select('-answers -passagesUsed -passagesSnapshot'),
+      .select('-answers -passagesUsed -passagesSnapshot -highlights'),
     TestAttempt.countDocuments(filter),
   ]);
   return { history, total };
@@ -557,6 +559,10 @@ async function savePractice(body, userId) {
   // one. Practice mode never sends this field, so it's always undefined
   // there and every existing behavior below is unchanged.
   const simulationAttemptId = typeof body.attemptId === 'string' && body.attemptId ? body.attemptId : null;
+  // Highlights made while practising (the attempt has no id to PUT them to
+  // until this very call) — see attemptHighlightService.
+  const cleanHl = body.highlights ? sanitizeHighlights(body.highlights) : null;
+  const highlights = cleanHl && !tooLarge(cleanHl) ? cleanHl : undefined;
 
   // BUG-A07: /practice/save is fire-and-forget from the review screen and
   // isn't idempotent — a double fire / retry used to create duplicate rows
@@ -605,6 +611,7 @@ async function savePractice(body, userId) {
         answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
         wrongCount, skippedCount, timeTaken: timeTaken || 0,
         submittedAt: new Date(), status: 'completed',
+        ...(highlights ? { highlights } : {}),
       },
       { new: true }
     );
@@ -616,6 +623,7 @@ async function savePractice(body, userId) {
         answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
         wrongCount, skippedCount, timeTaken: timeTaken || 0,
         submittedAt: new Date(),
+        ...(highlights ? { highlights } : {}),
         ...(clientKey ? { clientKey } : {}),
       });
     } catch (err) {
@@ -651,7 +659,7 @@ async function savePractice(body, userId) {
 async function getPracticeHistory(userId, limit = 50) {
   const filter = { userId, ...REAL_ATTEMPT };
   const [attempts, total] = await Promise.all([
-    ReadingPracticeAttempt.find(filter).select('-answers').sort({ submittedAt: -1 }).limit(limit).lean(),
+    ReadingPracticeAttempt.find(filter).select('-answers -highlights').sort({ submittedAt: -1 }).limit(limit).lean(),
     ReadingPracticeAttempt.countDocuments(filter),
   ]);
   return { attempts, total };
@@ -714,7 +722,7 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
       .sort({ endTime: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit))
-      .select('-answers -passagesUsed -passagesSnapshot'),
+      .select('-answers -passagesUsed -passagesSnapshot -highlights'),
     TestAttempt.countDocuments(filter)
   ]);
   return { attempts, total };

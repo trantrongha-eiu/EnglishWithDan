@@ -383,11 +383,11 @@ exports.getHistoryDetail = async (req, res) => {
 // ── Practice attempts ──────────────────────────────────────────────────────
 exports.savePractice = async (req, res) => {
   try {
-    const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId } = req.body;
+    const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId, highlights } = req.body;
     if (!sectionId || !Array.isArray(answers)) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId }, req.user._id);
+    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId, highlights }, req.user._id);
     if (!result) {
       // null means either "section not found" or — only possible when the
       // request carried a Simulation attemptId — "disqualified/already

@@ -49,7 +49,7 @@ async function getReadingHistory(userId, limit = 50) {
     TestAttempt.find(fullFilter).sort({ endTime: -1 }).limit(limit)
       .select('testId passagesUsed endTime duration totalQuestions correctCount wrongCount skippedCount bandScore status mode')
       .populate('testId', 'name').populate('passagesUsed', 'title').lean(),
-    ReadingPracticeAttempt.find(practiceFilter).sort({ submittedAt: -1 }).limit(limit).select('-answers -proctor').lean(),
+    ReadingPracticeAttempt.find(practiceFilter).sort({ submittedAt: -1 }).limit(limit).select('-answers -proctor -highlights').lean(),
     TestAttempt.countDocuments(fullFilter),
     ReadingPracticeAttempt.countDocuments(practiceFilter),
   ]);
@@ -91,7 +91,7 @@ async function getListeningHistory(userId, limit = 50) {
     ListeningAttempt.find(fullFilter).sort({ submittedAt: -1 }).limit(limit)
       .select('testName testId submittedAt timeTaken totalQuestions correctCount wrongCount skippedCount bandScore status mode')
       .populate('testId', 'name').lean(),
-    ListeningPracticeAttempt.find(practiceFilter).sort({ submittedAt: -1 }).limit(limit).select('-answers -proctor').lean(),
+    ListeningPracticeAttempt.find(practiceFilter).sort({ submittedAt: -1 }).limit(limit).select('-answers -proctor -highlights').lean(),
     ListeningAttempt.countDocuments(fullFilter),
     ListeningPracticeAttempt.countDocuments(practiceFilter),
   ]);

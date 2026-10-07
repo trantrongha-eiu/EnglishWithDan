@@ -37,6 +37,13 @@ const TestAttemptSchema = new mongoose.Schema({
   // falls back to reading the live Passage docs for those.
   passagesSnapshot: { type: [mongoose.Schema.Types.Mixed], default: undefined },
 
+  // Highlights the student made on this attempt (while taking it and while
+  // reviewing it), so a review opened on another device/browser — or after
+  // the browser cleared its storage — still shows them. Compact shape
+  // { ts, parts: { <passage/part idx>: { p: [[start,end,color,text]], q: [text|{text,colorKey}] } } }
+  // — see services/attemptHighlightService.js. Absent until the first save.
+  highlights: { type: mongoose.Schema.Types.Mixed, default: undefined },
+
   answers: [AnswerSchema],
 
   // Kết quả tổng hợp
