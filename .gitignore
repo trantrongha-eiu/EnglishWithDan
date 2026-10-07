@@ -41,4 +41,7 @@ backend/scripts/miniIelts/passages.json
 backend/scripts/miniIelts/out.json
 backend/scripts/miniIelts/pw_*.json
 backend/scripts/dolListening/web/
+# VOL 1–9 ORIGINAL EXAMS import: source sets (pdf/docx/mp3) + working files (drafts, audio, backups, Whisper)
+/VOL */
+backend/scripts/volListening/web/
 __pycache__/

@@ -1,0 +1,143 @@
+// Vol 1 – Test 7 (PDF p1–6, key p22; audio test 7/Part 1–4.mp3; transcript Tapescript Test 7.docx)
+// Source errors fixed: key page has no Q34 (→ insects, from the recording); Q23-24 options were lettered
+// A,B,C,C,D (→ A–E, key C/E unchanged in meaning); Q25-26 had no instruction line.
+const { note, table, mc, multi, map, matching, short } = require('../vol_build');
+
+module.exports = {
+  vol: 1, test: 7,
+  // the docx has no "Part four, you will hear…" line
+  rawFix: [
+    ['check your answers to part three. Four. ', 'check your answers to part three. '],
+    ['You will hear part of a lecture on organic farming.', 'Part four, you will hear part of a lecture on organic farming.'],
+  ],
+  sections: [
+    {
+      part: 1, title: 'Renting a House', audio: 'test 7/Part 1.mp3', cover: 'house for rent | suburban house front garden',
+      speakers: { 1: 'Student', 2: 'Landlord' },
+      fix: [['pay me $500 as a deposit', 'pay me $1,500 as a deposit'], ["That's a m d r e s s l e r.", "That's S-A-M, D-R-E-S-S-L-E-R."], ['675345, seven one', '67534571']],
+      groups: [
+        note('Complete the notes below.\nWrite ONE WORD AND/OR A NUMBER for each answer.', 'Rented Properties – Information About a House', [
+          '<strong>Available date:</strong> __Q1__',
+          '<strong>Prices</strong>',
+          '• Rent: $ __Q2__ per month',
+          '• Deposit: $1,500',
+          '• __Q3__: $15',
+          '<strong>Facilities</strong>',
+          '• 3 bedrooms and 2 bathrooms',
+          '• A remodelled __Q4__',
+          '• No __Q5__',
+          '• A __Q6__ with a work area',
+          '<strong>Utilities</strong>',
+          '• The landlord will provide a landscaping service, but the tenants must __Q7__ the grass.',
+          '• The tenants should pay $15 for the rubbish and __Q8__ service.',
+          '• The tenants should pay for electricity, water and gas bills.',
+          '<strong>Other information</strong>',
+          '• There is no central air conditioning, but there is a __Q9__ conditioning unit.',
+          '• Name of landlord: Sam __Q10__',
+        ], { 1: '5th May/5 May/May 5th/May 5/5th of May', 2: '1700/1,700', 3: 'credit check', 4: 'kitchen', 5: 'dishwasher', 6: 'garage', 7: 'water', 8: 'recycling', 9: 'window', 10: 'Dressler' }, 'Questions 1-10'),
+      ],
+      expl: {
+        1: { v: 'Đầu bài, khi hỏi ngày dọn vào.', t: 'So I think the house will be ready on the 5th of May.', p: 'Hợp đồng cũ hết hạn ngày 3/5 (bẫy), chủ nhà cần một ngày dọn dẹp nên nhà sẵn sàng ngày 5/5 → 5th May' },
+        2: { v: 'Khi hỏi tiền thuê nhà.', t: 'The rent will be 1700 dollars in total, which is within your budget.', p: '$500–600 là ngân sách mỗi người (bẫy); tổng tiền thuê là $1,700 một tháng → 1700' },
+        3: { v: 'Khi chủ nhà nhắc khoản phí $15.', t: "you'll be required to provide a credit check to guarantee your ability to pay the rent every month. This will charge you $15.", p: 'Khoản $15 là phí kiểm tra tín dụng → credit check' },
+        4: { v: 'Phần tiện nghi.', t: 'Then there is a shared kitchen which was refurbished several months ago.', p: '“Refurbished” = remodelled; căn bếp chung mới được cải tạo → kitchen' },
+        5: { v: 'Khi người thuê hỏi về đồ nấu ăn.', t: "Basic facilities for cooking are available, but if you want a dishwasher. I'm sorry. It needs to be added later.", p: 'Nhà chưa có máy rửa bát, muốn có phải lắp thêm sau → dishwasher' },
+        6: { v: 'Khi hỏi chỗ đỗ xe.', t: 'Yes, there is a garage which not only provides space for your car, but also has a special section where you can do some of your work.', p: 'Nhà để xe có cả khu làm việc riêng → garage' },
+        7: { v: 'Phần tiện ích, khi nói về khu vườn.', t: 'But you do need to help water the grass once a week.', p: 'Người làm vườn lo cảnh quan, còn người thuê phải tưới cỏ mỗi tuần → water' },
+        8: { v: 'Khi nói về dịch vụ $15 mỗi tháng.', t: 'every household is arranged with a cleaner responsible for cleaning up the rubbish and recycling. But this service will cost you $15 every month.', p: 'Dịch vụ dọn rác và tái chế giá $15 một tháng → recycling' },
+        9: { v: 'Khi hỏi về điều hoà.', t: 'But each room has a conditioning unit which is installed on the window.', p: 'Không có điều hoà trung tâm nhưng mỗi phòng có máy điều hoà gắn cửa sổ → window' },
+        10: { v: 'Cuối phần 1, khi hỏi tên chủ nhà.', t: "Yes. I'm Sam Dressler. That's S-A-M, D-R-E-S-S-L-E-R.", p: 'Họ được đánh vần D-R-E-S-S-L-E-R → Dressler' },
+      },
+    },
+    {
+      part: 2, title: 'Theme Park in Fun City', audio: 'test 7/Part 2.mp3', cover: 'theme park roller coaster | amusement park',
+      fix: [['The park opens at 930 every morning', 'The park opens at 9:30 every morning'], ['I definitely advise you. Should it miss the riding in the park?', "I definitely advise you shouldn't miss the riding in the park."], ['for the family fast flying track ticket', 'For the family fast line track ticket']],
+      groups: [
+        mc('Choose the correct letter, A, B or C.', [
+          [11, 'When does the riding in the park open?', ['9.00 am', '9.30 am', '10.00 am'], 'C'],
+          [12, 'How much does a Family Fast Line Track ticket cost if you book online?', ['£78', '£95', '£113'], 'B'],
+          [13, 'What is suggested when you plan to go to the lake in the park?', ['take a camera', 'go there in summer', 'take waterproof clothes'], 'B'],
+          [14, 'What is special about the rollercoaster bike?', ['It uses special materials.', 'It is the most exciting activity.', 'It is designed for families.'], 'A'],
+          [15, 'What should they bring to the resort?', ['food for the picnic', 'cameras', 'bottled water'], 'A'],
+          [16, 'What activity is recommended towards the end of a day trip?', ['watching fireworks', 'going fishing', 'joining the circus'], 'A'],
+        ], 'Questions 11-16'),
+        matching('What comment is made about each of the following activities?\nChoose FOUR answers from the box and write the correct letter, A-G, next to Questions 17-20.',
+          ['doesn’t have a long wait', 'is suitable for all families', 'is suitable for children', 'is suitable for young adults', 'is based on a real story', 'is the most frightening one', 'has a surprising ending'],
+          [[17, 'Cowboy Show', 'A'], [18, 'Driving School Ride', 'C'], [19, 'Rollercoaster Jumping', 'F'], [20, 'Magic Show', 'G']], { title: 'Comments', groupTitle: 'Questions 17-20' }),
+      ],
+      expl: {
+        11: { v: 'Đầu bài, giờ mở cửa.', t: 'The actual riding begins at 10 a.m., but I suggest you arrive a little earlier before the opening time.', p: 'Công viên mở cửa 9:30 (bẫy), nhưng các trò cưỡi bắt đầu lúc 10 giờ → C' },
+        12: { v: 'Khi so sánh giá vé mua trực tuyến.', t: 'You only have to pay £95 on the Internet instead of its original price £113.', p: '£78 là vé cơ bản mua online, £113 là giá gốc; vé Family Fast Line Track mua online là £95 → B' },
+        13: { v: 'Khi nói về hồ nước và trò splash ride.', t: 'As a result, I strongly advise that the best time to visit the lake is in the hottest season.', p: 'Đừng mang áo mưa hay máy ảnh vì đằng nào cũng ướt; nên đi vào mùa nóng nhất = mùa hè → B' },
+        14: { v: 'Khi nói về roller coaster bike.', t: "This roller coaster bike is different from the normal one in that it's made of wood, so it's lighter.", p: 'Điểm đặc biệt là được làm bằng gỗ, tức chất liệu đặc biệt; “gia đình có trẻ em nên thử” chỉ là lời khuyên → A' },
+        15: { v: 'Khi nói về khu nghỉ (resort).', t: 'Please remember this section is for a picnic, so you have to prepare your own snacks.', p: 'Phải tự chuẩn bị đồ ăn picnic; nước đóng chai được phát miễn phí → A' },
+        16: { v: 'Khi nói về cuối chuyến đi trong ngày.', t: "I think it's a must for you with a perfect ending of the day.", p: 'Xem xiếc, câu cá chỉ là hoạt động tuỳ thích; màn bắn pháo hoa là “a must” để kết thúc ngày → A' },
+        17: { v: 'Phần 4 hoạt động, Cowboy Show.', t: "Rest assured that you don't need to queue for hours to get in.", p: 'Không phải xếp hàng hàng giờ = không phải chờ lâu → A' },
+        18: { v: 'Driving School Ride.', t: 'But please note that this one is only for those below 1.2 meters.', p: 'Chỉ dành cho người cao dưới 1,2 m, bố mẹ ngồi xem con chơi → phù hợp với trẻ em → C' },
+        19: { v: 'Rollercoaster Jumping.', t: 'As to roller coaster jumping, it is the scariest activity as you will experience the vertical dropping.', p: '“The scariest activity” = đáng sợ nhất → F' },
+        20: { v: 'Magic Show.', t: 'there is something unexpected waiting for you.', p: 'Đừng về sớm vì có điều bất ngờ ở cuối → G' },
+      },
+    },
+    {
+      part: 3, title: 'Job Market and Hiring Strategies', audio: 'test 7/Part 3.mp3', cover: 'job interview | office recruitment',
+      speakers: { 1: 'Student', 2: 'Tutor' },
+      fix: [['unwilling to be retrained to retrench.', 'unwilling to be retrained.'], ['Will they consider candidates from a rival company?', 'Will they consider candidates from a rival company?']],
+      groups: [
+        multi('Choose TWO letters, A-E.', 21, 'Which TWO aspects should people just graduating from secondary schools emphasise?', ['degree of motivation', 'practical experience', 'eagerness to learn', 'educational qualifications', 'other areas of interest outside work'], ['A', 'C'], 'Questions 21-22'),
+        multi('Choose TWO letters, A-E.', 23, 'Which TWO of the following are mentioned about women returning to work after raising children?', ['They have limited working time.', 'They are more expensive to retrain.', 'They are very mature.', 'They lack confidence.', 'They have difficulty in re-adjusting to work.'], ['C', 'E'], 'Questions 23-24'),
+        multi('Choose TWO letters, A-E.', 25, 'Which TWO types of people do employers always avoid hiring?', ['people who have worked for a rival company', 'people who have worked for their previous company for a long time', 'people who were sacked by a previous company', 'people who have been unemployed for a long time', 'people who quit their job because it was unsuitable'], ['C', 'E'], 'Questions 25-26'),
+        multi('Choose THREE letters, A-G.', 27, 'Which THREE factors are mentioned as reasons why people avoid hiring retrenched workers?', ['lack of experience relevant to new industries', 'higher costs of employment', 'comparatively old age', 'lack of work experience', 'the difficulty of retraining', 'the reputation of the previous company', 'previous skills which are useless'], ['A', 'C', 'E'], 'Questions 27-29'),
+        note('Complete the notes below.\nWrite ONE WORD ONLY for the answer.', 'Reasons for rejection during the application process', [
+          '• Unsuitable experience and skills',
+          '• Applicants’ inappropriate __Q30__ and appearance',
+          '• Poor social skills',
+        ], { 30: 'clothes' }, 'Question 30'),
+      ],
+      expl: {
+        21: { v: 'Khi nói về học sinh vừa tốt nghiệp phổ thông.', t: 'secondary school graduates should stress that they have great enthusiasm for work.', p: 'Không có bằng cấp hay kinh nghiệm, các em nên nhấn mạnh sự nhiệt huyết với công việc = động lực → A' },
+        22: { v: 'Như câu 21 (chọn 2 đáp án).', t: 'such as curiosity, willingness to learn new stuff and good interpersonal skills.', p: '“Willingness to learn new stuff” = ham học hỏi → C' },
+        23: { v: 'Khi nói về phụ nữ đi làm lại sau khi nuôi con.', t: 'many employers find these mature women valuable assets in the workplace.', p: 'Họ được xem là những người phụ nữ chín chắn, có giá trị; họ vẫn khá tự tin (loại D) và gia đình phải đảm bảo đủ giờ làm (loại A) → C' },
+        24: { v: 'Như câu 23 (chọn 2 đáp án).', t: 'Even though they are quite confident in themselves, they often find it hard to adapt to these changes.', p: 'Khó thích nghi với thay đổi khi quay lại công việc → E' },
+        25: { v: 'Khi bàn về những người công ty không muốn tuyển.', t: 'If they have been fired. They must have done something wrong during the previous job.', p: 'Tuyển người từ công ty đối thủ không phải điều cấm kỵ; người bị sa thải thì bị e ngại → C' },
+        26: { v: 'Như câu 25 (chọn 2 đáp án).', t: "Most companies cast doubts on applicants who left the job simply because they didn't like the working hours or the work assigned.", p: 'Người thất nghiệp lâu không hẳn bị loại; người bỏ việc vì không thích giờ làm hay công việc thì bị nghi ngại → E' },
+        27: { v: 'Phần bàn về người lao động bị cắt giảm.', t: 'But retrenched workers know nothing about other industries.', p: 'Họ có kinh nghiệm nhưng không biết gì về ngành mới → thiếu kinh nghiệm phù hợp với ngành mới → A' },
+        28: { v: 'Như câu 27 (chọn 3 đáp án).', t: 'Yes. But retrenched workers are generally too old.', p: 'Họ thường đã lớn tuổi nên công ty thích người trẻ hơn → C' },
+        29: { v: 'Như câu 27 (chọn 3 đáp án).', t: 'They are also reluctant to adjust and are unwilling to be retrained', p: 'Họ ngại thay đổi và không muốn đào tạo lại → khó đào tạo lại. Tên tuổi công ty cũ không quan trọng (loại F) → E' },
+        30: { v: 'Cuối phần 3, các lý do bị từ chối.', t: 'Even experienced workers may receive rejection letters wearing appropriate clothes, and how they look during an interview are key to a successful interview.', p: 'Lý do thứ hai là quần áo và ngoại hình không phù hợp khi phỏng vấn → clothes' },
+      },
+    },
+    {
+      part: 4, title: 'Organic Farming', audio: 'test 7/Part 4.mp3', cover: 'organic farm vegetables | organic farming field',
+      groups: [
+        note('Complete the notes below.\nWrite ONE WORD AND/OR A NUMBER for each answer.', 'Organic Farming', [
+          '<strong>Advantages</strong>',
+          '• Organic farming is __Q31__.',
+          '• It can boost the __Q32__ of organic food products.',
+          '• It can save necessary __Q33__ for producing pesticides and fertilisers.',
+          '<strong>Comparison with traditional farming</strong>',
+          '• __Q34__, which double in number, may attack organic vegetables.',
+          '• Production of organic vegetables such as tomatoes and __Q35__ is 40% lower.',
+          '• Winter weed production is __Q36__ lower than it used to be.',
+          '• Production of organic products for animals, including organic __Q37__, keeps the same.',
+        ], { 31: 'sustainable', 32: 'sales', 33: 'energy', 34: 'insects', 35: 'potatoes', 36: '10%/10 percent/10 per cent/ten percent', 37: 'grass' }, 'Questions 31-37'),
+        mc('Choose the correct letter, A, B or C.', [
+          [38, 'What happened to organic farming in India?', ['Yields increased.', 'Farmers were reluctant to accept it.', 'Farmers could apply it successfully by following instructions.'], 'A'],
+          [39, 'The conclusion of an international organic farming review focuses on', ['whether people are interested in organic farming.', 'comparing different methods of organic farming in different countries.', 'whether organic farming is beneficial to wildlife.'], 'C'],
+          [40, 'According to the speaker, what is the main advantage of organic farming?', ['It depends on consumers.', 'It can produce food of more nutritional value.', 'It can protect the environment.'], 'A'],
+        ], 'Questions 38-40'),
+      ],
+      expl: {
+        31: { v: 'Phần ưu điểm của canh tác hữu cơ.', t: 'From this we can see organic farming is a sustainable production system, which is one of its advantages.', p: 'Canh tác hữu cơ là hệ thống sản xuất bền vững → sustainable' },
+        32: { v: 'Ưu điểm thứ hai.', t: 'the sales of organically produced food are promoted.', p: '“Promoted” = boost; doanh số thực phẩm hữu cơ tăng → sales' },
+        33: { v: 'Ưu điểm thứ ba.', t: 'so it is conducive to the conservation of essential energy.', p: 'Giảm nhu cầu phân bón và thuốc trừ sâu hoá học giúp tiết kiệm năng lượng thiết yếu → energy' },
+        34: { v: 'Phần so sánh với canh tác truyền thống.', t: 'the biodiversity in organic farming can also be reflected in the number of insects, which is twice as many as those in traditional farms.', p: 'Số côn trùng gấp đôi và rau hữu cơ dễ bị hại hơn vì không dùng thuốc trừ sâu (đề gốc thiếu đáp án câu này, xác định theo băng) → insects' },
+        35: { v: 'Khi nói về năng suất.', t: 'For example, organic vegetables like tomatoes and potatoes yielded 40% less than conventional ones.', p: 'Cà chua và khoai tây hữu cơ cho năng suất thấp hơn 40% → potatoes' },
+        36: { v: 'Ngay sau đó, về cỏ dại mùa đông.', t: 'the number of weeds produced in winter is about 90% at present, which is decreased by 10% than before.', p: '90% là mức hiện tại (bẫy); lượng cỏ dại giảm 10% so với trước → 10%' },
+        37: { v: 'Khi nói về sản phẩm hữu cơ cho động vật.', t: 'For example, organic grass is commonly used in organic farms to feed cows.', p: 'Cỏ hữu cơ dùng nuôi bò, sản lượng giữ nguyên nhiều năm → grass' },
+        38: { v: 'Khi nói về nghiên cứu ở Ấn Độ.', t: 'The study shows that in 2006, India became the country with the largest number of organic products and the production of crops kept growing year on year.', p: 'Lúc đầu không áp dụng thành công vì nông dân quen cách làm cũ (loại C), nhưng sản lượng tăng đều hằng năm → A' },
+        39: { v: 'Khi nói về bài tổng quan quốc tế.', t: 'Therefore, the last part of the review is mainly talking about whether organic farming brings positive effects to animals.', p: 'Phần đầu nói về sự quan tâm của con người (bẫy A); phần kết luận bàn về việc canh tác hữu cơ có lợi cho động vật hay không → C' },
+        40: { v: 'Cuối bài, quan điểm của người nói.', t: "it's you, the ones who buy organic products that will decide what they can bring to you because market demand determines everything.", p: 'Dinh dưỡng và bảo vệ môi trường là ý kiến của người khác; theo người nói, lợi ích do chính người tiêu dùng quyết định → A' },
+      },
+    },
+  ],
+};
