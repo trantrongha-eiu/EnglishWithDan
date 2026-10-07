@@ -353,6 +353,32 @@ describe('hard lock enforcement', () => {
     await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLEVERY' });
     expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
   });
+
+  test('a code typed into the wrong lesson box is refused WITHOUT consuming a use', async () => {
+    const u = await createPremiumStudent();
+    await ReviewBypassCode.create({ code: 'REVIEWONLY1', kind: 'review-bypass', maxUses: 5 });
+    await ReviewBypassCode.create({ code: 'ALLT1B', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-W-T1', maxUses: 5 });
+    await ReviewBypassCode.create({ code: 'ALLSPK2', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-SPEAKING', maxUses: 5 });
+    await ReviewBypassCode.create({ code: 'TESTL04B', kind: 'wt1-test-unlock', targetLessonCode: 'T1-L04', maxUses: 5 });
+
+    const tries = [
+      ['REVIEWONLY1', 'T1-L03'], // review-bypass code in a lesson box
+      ['ALLT1B', 'T1-L04'],      // all-lessons code on a test
+      ['ALLSPK2', 'T1-L03'],     // all-lessons code for another course
+      ['TESTL04B', 'T1-L03'],    // test code on an ordinary lesson
+    ];
+    for (const [code, lessonCode] of tries) {
+      const r = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code, lessonCode });
+      expect(r.status).toBe(400);
+      expect(r.body.code).toBe('WRONG_CODE_KIND');
+      expect((await ReviewBypassCode.findOne({ code }).lean()).usedCount).toBe(0);
+    }
+
+    // The right code in the right box still works.
+    const ok = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLT1B', lessonCode: 'T1-L03' });
+    expect(ok.status).toBe(200);
+    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
+  });
 });
 
 // BUG-091: a free-composition sentence_transform exercise (content author

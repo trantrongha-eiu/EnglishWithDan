@@ -7,6 +7,8 @@
 // existing review/history-detail endpoints).
 const AttemptReview = require('../models/AttemptReview');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
+const WT1Lesson = require('../models/WT1Lesson');
+const WT1Module = require('../models/WT1Module');
 const WritingAttempt = require('../models/WritingAttempt');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
@@ -318,7 +320,7 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   };
 }
 
-// Redeem an admin-issued code. Two kinds share this one code pool (see
+// Redeem an admin-issued code. Three kinds share this one code pool (see
 // models/ReviewBypassCode.js):
 //
 //  - 'review-bypass' (default): marks every one of this student's PENDING
@@ -329,17 +331,28 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
 //  - 'wt1-test-unlock': opens the code's one `targetLessonCode` WT1 test
 //    lesson for this student — see wt1Service.assertLessonUnlocked. No
 //    other collection is touched; the redemption itself IS the unlock.
+//  - 'wt1-all-lessons': opens every ordinary lesson of `targetCourseCode`
+//    (or of every WT1 course) — same "redemption IS the unlock" model.
+//
+// `lessonCode` = the WT1 lesson whose unlock box the code was typed into
+// (null = the Reading/Listening/Writing review-gate box). A code that
+// can't open that lesson — e.g. a review-bypass code typed into a locked
+// lesson — is refused as 'wrong_kind' BEFORE it's redeemed, so a
+// student who pastes the wrong code doesn't silently burn one of its uses.
 //
 // Returns { status, ... } — 'ok' | 'not_found' | 'not_redeemable' |
-// 'already_used' | 'nothing_pending' (review-bypass only, when there was
-// nothing to clear). `cleared` = reviews + rewrites (review-bypass only).
-async function redeemBypassCode(userId, rawCode) {
+// 'wrong_kind' (+ message) | 'already_used' | 'nothing_pending'
+// (review-bypass only, when there was nothing to clear). `cleared` =
+// reviews + rewrites (review-bypass only).
+async function redeemBypassCode(userId, rawCode, lessonCode = null) {
   const code = String(rawCode || '').trim().toUpperCase();
   if (!code) return { status: 'not_found' };
 
   const doc = await ReviewBypassCode.findOne({ code });
   if (!doc) return { status: 'not_found' };
   if (!doc.isRedeemable()) return { status: 'not_redeemable' };
+  const mismatch = await codeContextMismatch(doc, lessonCode);
+  if (mismatch) return { status: 'wrong_kind', message: mismatch };
   if (doc.redemptions.some(r => String(r.userId) === String(userId))) {
     return { status: 'already_used' };
   }
@@ -382,6 +395,34 @@ async function redeemBypassCode(userId, rawCode) {
 // at, hard-blocking new practice with no way to ever clear it (every
 // "Tiếp tục Review" click reruns the same failing lookup). A no-op if the
 // review was already resolved some other way (redeemed code, TTL-expired).
+// Why `doc` can't be used where it was typed (see redeemBypassCode), or
+// null when it fits.
+async function codeContextMismatch(doc, lessonCode) {
+  const kind = doc.kind || 'review-bypass';
+  // No lesson context (review-gate box, or a course page loaded before this
+  // field existed): every kind still does exactly what it was issued for,
+  // so nothing is wasted — keep the old behaviour.
+  if (!lessonCode) return null;
+  if (kind === 'review-bypass') {
+    return 'Đây là mã bỏ qua Review — không mở được buổi học. Hãy xin giáo viên mã "Mở tất cả buổi học" (hoặc mã riêng của bài kiểm tra).';
+  }
+  const lesson = await WT1Lesson.findOne({ code: lessonCode }).select('isTest moduleCode').lean();
+  if (!lesson) return 'Không tìm thấy buổi học này.';
+  if (kind === 'wt1-test-unlock') {
+    if (doc.targetLessonCode === lessonCode) return null;
+    return lesson.isTest
+      ? 'Mã này dành cho một bài kiểm tra khác.'
+      : 'Mã này chỉ mở một bài kiểm tra, không mở buổi học thường.';
+  }
+  // wt1-all-lessons
+  if (lesson.isTest) return 'Bài kiểm tra cần mã riêng của bài đó — mã "Mở tất cả buổi học" không mở bài kiểm tra.';
+  if (doc.targetCourseCode) {
+    const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('courseCode').lean();
+    if (!mod || mod.courseCode !== doc.targetCourseCode) return 'Mã này dành cho khoá học khác.';
+  }
+  return null;
+}
+
 async function resolveOrphanedReview(attemptType, attemptId) {
   await AttemptReview.updateOne(
     { attemptType, attemptId, status: 'pending' },

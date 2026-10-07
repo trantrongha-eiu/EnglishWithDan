@@ -83,12 +83,20 @@ exports.getHistory = guard(null, async (req, res) => {
 // 'bypassed'); 'wt1-test-unlock' opens one specific WT1 test lesson;
 // 'wt1-all-lessons' opens every ordinary lesson of a WT1 course (or all).
 exports.redeemBypass = guard('[Review redeemBypass]', async (req, res) => {
-  const result = await reviewService.redeemBypassCode(req.user._id, (req.body || {}).code);
+  // lessonCode = the WT1 lesson whose unlock box the code was typed into
+  // (absent from the review-gate box) — lets the service refuse a code of
+  // the wrong kind without consuming it.
+  const body = req.body || {};
+  const lessonCode = body.lessonCode ? String(body.lessonCode).trim() : null;
+  const result = await reviewService.redeemBypassCode(req.user._id, body.code, lessonCode);
   if (result.status === 'not_found') {
     return res.status(404).json({ success: false, message: 'Mã không tồn tại.' });
   }
   if (result.status === 'not_redeemable') {
     return res.status(400).json({ success: false, message: 'Mã đã hết lượt dùng, hết hạn hoặc đã bị khoá.' });
+  }
+  if (result.status === 'wrong_kind') {
+    return res.status(400).json({ success: false, code: 'WRONG_CODE_KIND', message: result.message });
   }
   if (result.status === 'already_used') {
     return res.status(400).json({ success: false, message: 'Bạn đã dùng mã này rồi.' });

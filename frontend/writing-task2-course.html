@@ -673,7 +673,7 @@
     if (!code) { msg.style.color = '#dc2626'; msg.textContent = 'Nhập mã trước đã.'; return; }
     btn.disabled = true;
     try {
-      var d = await api('/review/bypass', { method: 'POST', body: JSON.stringify({ code: code }) });
+      var d = await api('/review/bypass', { method: 'POST', body: JSON.stringify({ code: code, lessonCode: modal.dataset.lessonCode }) });
       msg.style.color = '#16a34a';
       msg.textContent = d.message || 'Đã mở khoá!';
       var lessonCode = d.lessonCode || modal.dataset.lessonCode;
