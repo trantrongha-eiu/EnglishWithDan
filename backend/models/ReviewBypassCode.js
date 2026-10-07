@@ -18,23 +18,31 @@
 //
 //  - 'wt1-test-unlock': opens ONE specific `isTest` lesson (`targetLessonCode`)
 //    in the WT1-stack courses (Task 1/2 Writing, Speaking) for the
-//    redeeming student — see wt1Service.assertLessonUnlocked /
-//    getUnlockedTestLessonCodes. Unlike review-bypass, redeeming this kind
-//    touches no other collection: "has this student redeemed a
-//    wt1-test-unlock code for lesson X" is answered by querying this
-//    collection directly, so there's nothing to keep in sync elsewhere.
+//    redeeming student — every test needs its own code.
+//
+//  - 'wt1-all-lessons': lifts the sequential score gate on EVERY ordinary
+//    (non-test) lesson of one course (`targetCourseCode`), or of every
+//    WT1-stack course when targetCourseCode is null. Tests stay locked.
+//
+//  Both WT1 kinds are read by wt1Service.getCodeUnlocks. Unlike
+//  review-bypass, redeeming them touches no other collection: "has this
+//  student redeemed a code for X" is answered by querying this collection
+//  directly, so there's nothing to keep in sync elsewhere.
 const mongoose = require('mongoose');
 
 const ReviewBypassCodeSchema = new mongoose.Schema({
   code:  { type: String, required: true, unique: true, uppercase: true, trim: true },
   label: { type: String, default: '', trim: true, maxlength: 120 }, // admin note, e.g. "Lớp A2 – tuần 3"
 
-  kind: { type: String, enum: ['review-bypass', 'wt1-test-unlock'], default: 'review-bypass', index: true },
+  kind: { type: String, enum: ['review-bypass', 'wt1-test-unlock', 'wt1-all-lessons'], default: 'review-bypass', index: true },
   // 'wt1-test-unlock' only — the WT1Lesson.code (an isTest:true lesson)
   // this code opens. Not used, and left null, for 'review-bypass' codes,
   // which clear a student's whole pending-review backlog regardless of
   // which lesson/attempt it came from.
   targetLessonCode: { type: String, default: null },
+  // 'wt1-all-lessons' only — the WT1Course.code whose ordinary lessons this
+  // code opens; null = every WT1-stack course.
+  targetCourseCode: { type: String, default: null },
 
   // 0 = unlimited. Otherwise the code stops working once usedCount reaches it.
   maxUses:   { type: Number, default: 1, min: 0 },
@@ -54,8 +62,8 @@ const ReviewBypassCodeSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 ReviewBypassCodeSchema.index({ active: 1, createdAt: -1 });
-// wt1Service.getUnlockedTestLessonCodes's exact query shape.
-ReviewBypassCodeSchema.index({ kind: 1, targetLessonCode: 1, 'redemptions.userId': 1 });
+// wt1Service.getCodeUnlocks looks codes up by (kind, redeeming student).
+ReviewBypassCodeSchema.index({ kind: 1, 'redemptions.userId': 1 });
 
 // True when the code can still be redeemed by *someone new* right now.
 ReviewBypassCodeSchema.methods.isRedeemable = function () {

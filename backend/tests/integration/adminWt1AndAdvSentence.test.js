@@ -270,6 +270,10 @@ describe('GET /api/admin/wt1/test-lessons', () => {
     expect(row).toMatchObject({
       title: 'TEST 1', courseCode: 'IELTS-W-T1', courseTitle: 'WT1', moduleTitle: 'Module debug 2',
     });
+
+    // Course list for the 'wt1-all-lessons' code's course picker.
+    expect(res.body.courses.map((c) => c.code)).toEqual(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
+    expect(res.body.courses.find((c) => c.code === 'IELTS-W-T1').title).toBe('WT1');
   });
 
   test('a student cannot reach this admin endpoint', async () => {

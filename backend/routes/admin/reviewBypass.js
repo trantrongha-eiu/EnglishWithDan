@@ -4,7 +4,8 @@
 // page/collection (see backend/models/ReviewBypassCode.js): the default
 // 'review-bypass' skips the mandatory post-test Review gate (see
 // backend/services/reviewService.redeemBypassCode); 'wt1-test-unlock'
-// opens one specific WT1 course `isTest` lesson.
+// opens one specific WT1 course `isTest` lesson; 'wt1-all-lessons' opens
+// every ordinary lesson of one WT1 course (or of all of them).
 
 const express = require('express');
 const auth = require('../../middleware/auth');
@@ -13,6 +14,8 @@ const ReviewBypassCode = require('../../models/ReviewBypassCode');
 const WT1Lesson = require('../../models/WT1Lesson');
 
 const router = express.Router();
+// Same set as wt1Service.COURSES / routes/admin/wt1.js COURSES.
+const WT1_COURSES = ['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING'];
 
 function genCode() {
   // Avoid look-alike chars (0/O, 1/I) so a code read off a screen is safe.
@@ -29,6 +32,7 @@ function publicShape(d) {
     label: d.label || '',
     kind: d.kind || 'review-bypass',
     targetLessonCode: d.targetLessonCode || null,
+    targetCourseCode: d.targetCourseCode || null,
     maxUses: d.maxUses,
     usedCount: d.usedCount,
     remaining: d.maxUses === 0 ? null : Math.max(0, d.maxUses - d.usedCount),
@@ -50,11 +54,11 @@ router.get('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/review-bypass-codes   { label?, maxUses?, expiresAt?, code?, kind?, targetLessonCode? }
+// POST /api/admin/review-bypass-codes   { label?, maxUses?, expiresAt?, code?, kind?, targetLessonCode?, targetCourseCode? }
 router.post('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
   try {
     const { label = '', maxUses, expiresAt } = req.body || {};
-    const kind = req.body.kind === 'wt1-test-unlock' ? 'wt1-test-unlock' : 'review-bypass';
+    const kind = ['wt1-test-unlock', 'wt1-all-lessons'].includes(req.body.kind) ? req.body.kind : 'review-bypass';
 
     let targetLessonCode = null;
     if (kind === 'wt1-test-unlock') {
@@ -64,7 +68,15 @@ router.post('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
       }
       const lesson = await WT1Lesson.findOne({ code: targetLessonCode }).select('isTest').lean();
       if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học này.' });
-      if (!lesson.isTest) return res.status(400).json({ success: false, message: 'Buổi này không phải bài kiểm tra.' });
+      if (!lesson.isTest) return res.status(400).json({ success: false, message: 'Buổi này không phải bài kiểm tra — dùng loại mã "Mở tất cả buổi học".' });
+    }
+    // 'wt1-all-lessons': empty targetCourseCode = every WT1-stack course.
+    let targetCourseCode = null;
+    if (kind === 'wt1-all-lessons' && req.body.targetCourseCode) {
+      targetCourseCode = String(req.body.targetCourseCode).trim();
+      if (!WT1_COURSES.includes(targetCourseCode)) {
+        return res.status(400).json({ success: false, message: 'Khoá học không hợp lệ.' });
+      }
     }
 
     let code = String(req.body.code || '').trim().toUpperCase();
@@ -88,7 +100,7 @@ router.post('/review-bypass-codes', auth, teacherOnly, async (req, res) => {
     const doc = await ReviewBypassCode.create({
       code,
       label: String(label || '').slice(0, 120),
-      kind, targetLessonCode,
+      kind, targetLessonCode, targetCourseCode,
       maxUses: mu,
       expiresAt: expiresAt ? new Date(expiresAt) : null,
       createdBy: req.user._id,

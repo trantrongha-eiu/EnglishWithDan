@@ -80,7 +80,8 @@ exports.getHistory = guard(null, async (req, res) => {
 // POST /api/review/bypass  { code } — redeem an admin-issued code. Two
 // kinds share this one endpoint (see models/ReviewBypassCode.js): the
 // default skips the mandatory-review gate (marks all pending reviews
-// 'bypassed'); 'wt1-test-unlock' opens one specific WT1 test lesson.
+// 'bypassed'); 'wt1-test-unlock' opens one specific WT1 test lesson;
+// 'wt1-all-lessons' opens every ordinary lesson of a WT1 course (or all).
 exports.redeemBypass = guard('[Review redeemBypass]', async (req, res) => {
   const result = await reviewService.redeemBypassCode(req.user._id, (req.body || {}).code);
   if (result.status === 'not_found') {
@@ -99,6 +100,12 @@ exports.redeemBypass = guard('[Review redeemBypass]', async (req, res) => {
     return res.json({
       success: true, kind: 'wt1-test-unlock', lessonCode: result.lessonCode,
       message: 'Đã mở khoá bài kiểm tra!',
+    });
+  }
+  if (result.kind === 'wt1-all-lessons') {
+    return res.json({
+      success: true, kind: 'wt1-all-lessons', courseCode: result.courseCode,
+      message: 'Đã mở khoá tất cả buổi học!',
     });
   }
   res.json({ success: true, cleared: result.cleared, message: `Đã bỏ qua ${result.cleared} bài chờ Review.` });

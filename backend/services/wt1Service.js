@@ -12,7 +12,11 @@
 // the previous lesson's score threshold is met, the test stays locked
 // until the student redeems an admin-issued code (ReviewBypassCode,
 // kind:'wt1-test-unlock', targetLessonCode = this lesson) — see
-// reviewService.redeemBypassCode.
+// reviewService.redeemBypassCode. Ordinary (non-test) lessons have a
+// separate, coarser bypass: one 'wt1-all-lessons' code (targetCourseCode =
+// one course, or null = every WT1-stack course) lifts the sequential gate
+// on every ordinary lesson of that course for the redeeming student —
+// tests still each need their own code.
 const mongoose = require('mongoose');
 const WT1Course = require('../models/WT1Course');
 const WT1Module = require('../models/WT1Module');
@@ -163,28 +167,40 @@ function summariseSubmissions(subs, lessonCodesByExercise, exMeta) {
   return byLesson;
 }
 
-// Which of these (isTest-only) lesson codes has this student already
-// redeemed an admin-issued unlock code for. Codes are scoped to one
-// specific test lesson (targetLessonCode) and, like review-bypass codes,
-// redeemable once per student regardless of maxUses — see
-// ReviewBypassCode.redemptions.
-async function getUnlockedTestLessonCodes(userId, testLessonCodes) {
-  if (!testLessonCodes.length) return new Set();
+// What this student has unlocked with admin-issued codes (all codes are,
+// like review-bypass codes, redeemable once per student regardless of
+// maxUses — see ReviewBypassCode.redemptions):
+//  - testLessons: isTest lesson codes opened by a per-test
+//    'wt1-test-unlock' code (targetLessonCode);
+//  - allLessonsCourses: course codes whose ordinary lessons are all open
+//    via a 'wt1-all-lessons' code ('*' = a code with no targetCourseCode,
+//    i.e. every course).
+async function getCodeUnlocks(userId) {
   const rows = await ReviewBypassCode.find({
-    kind: 'wt1-test-unlock',
-    targetLessonCode: { $in: testLessonCodes },
+    kind: { $in: ['wt1-test-unlock', 'wt1-all-lessons'] },
     'redemptions.userId': userId,
-  }).select('targetLessonCode').lean();
-  return new Set(rows.map((r) => r.targetLessonCode));
+  }).select('kind targetLessonCode targetCourseCode').lean();
+  const testLessons = new Set();
+  const allLessonsCourses = new Set();
+  for (const r of rows) {
+    if (r.kind === 'wt1-test-unlock') testLessons.add(r.targetLessonCode);
+    else allLessonsCourses.add(r.targetCourseCode || '*');
+  }
+  return { testLessons, allLessonsCourses };
+}
+function allLessonsOpen(unlocks, courseCode) {
+  return unlocks.allLessonsCourses.has('*') || unlocks.allLessonsCourses.has(courseCode);
 }
 
 // The sequential-gate chain for ONE module's lessons (already sorted by
 // order) — shared by getOverview (display) and assertLessonUnlocked
 // (enforcement), so the two can never drift apart (a lesson the overview
 // shows as unlocked must be exactly the same lesson the submit endpoints
-// will accept). `unlockedTestLessons` = getUnlockedTestLessonCodes()'s
-// result for this module's isTest lessons.
-function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, freePractice) {
+// will accept). `unlockedTestLessons` = getCodeUnlocks().testLessons.
+// `openSequence` = no sequential gate for this module's ordinary lessons —
+// a freePractice module, or the student redeemed a 'wt1-all-lessons' code
+// covering this course.
+function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, openSequence) {
   let prevMetGate = true; // first lesson of a module is always unlocked
   return mlessons.map((l) => {
     const cnt = counts[l.code] || { count: 0 };
@@ -197,7 +213,7 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
     const metGate = objAvg >= g.minObjectiveScorePercent && sum.writingCount >= g.minWritingSubmissions;
     // A freePractice module (e.g. a reference/type library students dip in
     // and out of) has no sequence to enforce — every lesson stays reachable.
-    const sequenceUnlocked = freePractice || prevMetGate;  // this lesson is reachable if the previous one met its gate
+    const sequenceUnlocked = openSequence || prevMetGate;  // this lesson is reachable if the previous one met its gate
     const hasTestCode = !!l.isTest && unlockedTestLessons.has(l.code);
     const needsTestCode = !!l.isTest && !hasTestCode;
     // An admin-issued unlock code for this specific test lesson grants access
@@ -247,13 +263,12 @@ async function getOverview(userId, courseCode) {
     (lessonsByModule[l.moduleCode] = lessonsByModule[l.moduleCode] || []).push(l);
   }
 
-  const unlockedTestLessons = await getUnlockedTestLessonCodes(
-    userId, lessons.filter((l) => l.isTest).map((l) => l.code),
-  );
+  const unlocks = await getCodeUnlocks(userId);
+  const openAll = allLessonsOpen(unlocks, cc);
 
   const outModules = modules.map((m) => {
     const mlessons = (lessonsByModule[m.code] || []).sort((a, b) => a.order - b.order);
-    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, m.freePractice);
+    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons, m.freePractice || openAll);
     return {
       code: m.code, title: m.title, titleEn: m.titleEn, order: m.order,
       outcomes: m.outcomes || [], lessons: outLessons,
@@ -277,7 +292,7 @@ async function assertLessonUnlocked(userId, lessonCode) {
   const lesson = await WT1Lesson.findOne({ code: lessonCode, published: true }).lean();
   if (!lesson) throw new NotFoundError('Không tìm thấy buổi học');
 
-  const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('freePractice').lean();
+  const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('freePractice courseCode').lean();
   const mlessons = await WT1Lesson.find({ moduleCode: lesson.moduleCode, published: true }).sort({ order: 1 }).lean();
   const counts = await lessonExerciseCounts();
   const lessonCodesByExercise = {};
@@ -290,17 +305,16 @@ async function assertLessonUnlocked(userId, lessonCode) {
     subs.map((s) => ({ ...s, lessonCode: lessonCodesByExercise[s.exerciseCode] })),
     lessonCodesByExercise, { typeByCode },
   );
-  const unlockedTestLessons = await getUnlockedTestLessonCodes(
-    userId, mlessons.filter((l) => l.isTest).map((l) => l.code),
-  );
-  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, mod && mod.freePractice);
+  const unlocks = await getCodeUnlocks(userId);
+  const openSequence = !!(mod && (mod.freePractice || allLessonsOpen(unlocks, mod.courseCode)));
+  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons, openSequence);
   const st = statuses.find((s) => s.code === lessonCode);
   if (!st || st.unlocked) return;
 
   const err = new AuthorizationError(
     st.needsTestCode
       ? 'Buổi kiểm tra này cần mã mở khoá từ giáo viên.'
-      : 'Bạn cần hoàn thành buổi học trước đó (đạt yêu cầu điểm) trước khi mở buổi này.',
+      : 'Bạn cần hoàn thành buổi học trước đó (đạt yêu cầu điểm), hoặc nhập mã mở khoá do giáo viên cấp.',
   );
   err.code = st.needsTestCode ? 'TEST_CODE_REQUIRED' : 'LESSON_LOCKED';
   throw err;

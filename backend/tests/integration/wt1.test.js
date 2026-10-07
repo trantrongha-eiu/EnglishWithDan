@@ -313,6 +313,46 @@ describe('hard lock enforcement', () => {
     expect(otherRes.status).toBe(403);
     expect(otherRes.body.code).toBe('TEST_CODE_REQUIRED');
   });
+
+  test('a wt1-all-lessons code opens every ordinary lesson of its course — but never a test', async () => {
+    const u = await createPremiumStudent();
+    const before = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
+    expect(before.status).toBe(403);
+    expect(before.body.code).toBe('LESSON_LOCKED');
+
+    // A code scoped to a DIFFERENT course does nothing for Task 1.
+    await ReviewBypassCode.create({ code: 'ALLSPK1', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-SPEAKING', maxUses: 0 });
+    expect((await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLSPK1' })).status).toBe(200);
+    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(403);
+
+    await ReviewBypassCode.create({ code: 'ALLT1', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-W-T1', maxUses: 0 });
+    const redeemRes = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLT1' });
+    expect(redeemRes.status).toBe(200);
+    expect(redeemRes.body.kind).toBe('wt1-all-lessons');
+
+    // Without meeting T1-L02's gate: T1-L03 opens and can be graded…
+    const after = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
+    expect(after.status).toBe(200);
+    const checkRes = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
+    expect(checkRes.status).toBe(200);
+
+    // …but the test lesson still needs its own code.
+    const test = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
+    expect(test.status).toBe(403);
+    expect(test.body.code).toBe('TEST_CODE_REQUIRED');
+
+    const overview = await request(app).get('/api/wt1/overview').set(bearer(u));
+    const ls = overview.body.modules.find((m) => m.code === 'T1-M1').lessons;
+    expect(ls.find((l) => l.code === 'T1-L03').unlocked).toBe(true);
+    expect(ls.find((l) => l.code === 'T1-L04')).toMatchObject({ unlocked: false, needsTestCode: true });
+  });
+
+  test('a wt1-all-lessons code with no course opens every course', async () => {
+    const u = await createPremiumStudent();
+    await ReviewBypassCode.create({ code: 'ALLEVERY', kind: 'wt1-all-lessons', maxUses: 0 });
+    await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLEVERY' });
+    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
+  });
 });
 
 // BUG-091: a free-composition sentence_transform exercise (content author

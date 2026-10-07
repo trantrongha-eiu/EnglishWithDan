@@ -87,6 +87,20 @@ describe('admin review-bypass-codes CRUD — kind:"wt1-test-unlock"', () => {
     expect(notTest.status).toBe(400);
   });
 
+  test('kind:"wt1-all-lessons" — optional targetCourseCode, must be a WT1-stack course', async () => {
+    const t = authed(await createTeacher());
+    const allCourses = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-all-lessons' });
+    expect(allCourses.status).toBe(201);
+    expect(allCourses.body.code).toMatchObject({ kind: 'wt1-all-lessons', targetCourseCode: null, targetLessonCode: null });
+
+    const oneCourse = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-SPEAKING' });
+    expect(oneCourse.status).toBe(201);
+    expect(oneCourse.body.code.targetCourseCode).toBe('IELTS-SPEAKING');
+
+    const bad = await t.post('/api/admin/review-bypass-codes', { kind: 'wt1-all-lessons', targetCourseCode: 'NOPE' });
+    expect(bad.status).toBe(400);
+  });
+
   test('creates and lists a valid wt1-test-unlock code with its target lesson', async () => {
     const t = authed(await createTeacher());
     await WT1Lesson.create({ code: 'RB-TEST1', moduleCode: 'RB-M1', order: 2, title: 'TEST 1', isTest: true });

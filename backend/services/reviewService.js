@@ -344,11 +344,13 @@ async function redeemBypassCode(userId, rawCode) {
     return { status: 'already_used' };
   }
 
-  if (doc.kind === 'wt1-test-unlock') {
+  if (doc.kind === 'wt1-test-unlock' || doc.kind === 'wt1-all-lessons') {
     doc.redemptions.push({ userId });
     doc.usedCount += 1;
     await doc.save();
-    return { status: 'ok', kind: 'wt1-test-unlock', lessonCode: doc.targetLessonCode };
+    return doc.kind === 'wt1-test-unlock'
+      ? { status: 'ok', kind: 'wt1-test-unlock', lessonCode: doc.targetLessonCode }
+      : { status: 'ok', kind: 'wt1-all-lessons', courseCode: doc.targetCourseCode || null };
   }
 
   const now = new Date();

@@ -70,8 +70,9 @@ router.get('/wt1/tree', auth, teacherOnly, async (req, res) => {
 
 // GET /api/admin/wt1/test-lessons — every `isTest` lesson across ALL 3
 // courses on the WT1 stack, with enough course/module context for a
-// dropdown label. Powers the "which test does this code unlock" picker on
-// the Review Bypass admin page (ReviewBypassCode kind:'wt1-test-unlock').
+// dropdown label, plus the course list itself. Powers the "which test does
+// this code unlock" / "which course's lessons" pickers on the Review Bypass
+// admin page (ReviewBypassCode kind:'wt1-test-unlock' / 'wt1-all-lessons').
 router.get('/wt1/test-lessons', auth, teacherOnly, async (req, res) => {
   try {
     const [courses, modules, lessons] = await Promise.all([
@@ -92,7 +93,8 @@ router.get('/wt1/test-lessons', auth, teacherOnly, async (req, res) => {
         };
       })
       .filter(Boolean);
-    res.json({ success: true, lessons: rows });
+    const courseList = [...COURSES].map((code) => ({ code, title: courseTitleByCode[code] || code }));
+    res.json({ success: true, lessons: rows, courses: courseList });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 

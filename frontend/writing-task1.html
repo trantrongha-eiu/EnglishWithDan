@@ -359,10 +359,10 @@
      wt1Service.assertLessonUnlocked. -->
 <div id="t1-code-modal" class="t1-hist-modal hidden">
   <div class="t1-hist-box" style="max-width:360px">
-    <div class="t1-hist-header"><h3><i class="fas fa-lock"></i> Mã mở khoá bài kiểm tra</h3>
+    <div class="t1-hist-header"><h3><i class="fas fa-lock"></i> <span id="t1-code-title">Mã mở khoá bài kiểm tra</span></h3>
       <button class="t1-hist-close" id="t1-code-close-btn"><i class="fas fa-times"></i></button></div>
     <div style="padding:16px">
-      <p style="font-size:13px;color:var(--text2,#4b5563);margin:0 0 12px">Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.</p>
+      <p id="t1-code-desc" style="font-size:13px;color:var(--text2,#4b5563);margin:0 0 12px">Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.</p>
       <div style="display:flex;gap:8px">
         <input id="t1-code-input" maxlength="16" placeholder="NHẬP MÃ" autocomplete="off" spellcheck="false"
           style="flex:1;min-width:0;padding:9px 11px;border:1.5px solid var(--border,#e5e7eb);border-radius:8px;font-size:14px;font-family:inherit;text-transform:uppercase;letter-spacing:1px;background:var(--bg,#fff);color:var(--text,#111827)">
@@ -539,10 +539,7 @@
     document.querySelectorAll('.t1-lesson').forEach(function (el) {
       el.addEventListener('click', function () {
         if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
-        if (el.dataset.locked === '1') {
-          toast('Hoàn thành buổi trước (đạt yêu cầu điểm) để mở khoá buổi này.', 'warning');
-          return;
-        }
+        if (el.dataset.locked === '1') { openTestCodeModal(el.dataset.code, 'locked'); return; }
         openLesson(el.dataset.code);
       });
     });
@@ -576,7 +573,7 @@
       var errCode = e && e.body && e.body.code;
       if (errCode === 'PLAN_REQUIRED') { renderPaywall(); return; }
       if (errCode === 'TEST_CODE_REQUIRED') { openTestCodeModal(code); return; }
-      if (errCode === 'LESSON_LOCKED') { toast((e.body && e.body.message) || 'Bạn cần hoàn thành buổi học trước đó.', 'warning'); goOverview(); return; }
+      if (errCode === 'LESSON_LOCKED') { goOverview(); openTestCodeModal(code, 'locked'); return; }
       toast('Lỗi tải buổi học', 'error'); goOverview();
     }
   }
@@ -636,11 +633,18 @@
   function closeHistory() { document.getElementById('t1-hist-modal').classList.add('hidden'); }
 
   // ── test-lesson unlock code ───────────────────────────────────────
-  function openTestCodeModal(lessonCode) {
+  function openTestCodeModal(lessonCode, reason) {
     var modal = document.getElementById('t1-code-modal');
     var input = document.getElementById('t1-code-input');
     var msg = document.getElementById('t1-code-msg');
     modal.dataset.lessonCode = lessonCode;
+    // 'locked' = an ordinary lesson behind the previous lesson's score gate;
+    // anything else = an isTest lesson, which always needs a code.
+    var seq = reason === 'locked';
+    document.getElementById('t1-code-title').textContent = seq ? 'Buổi học đang khoá' : 'Mã mở khoá bài kiểm tra';
+    document.getElementById('t1-code-desc').textContent = seq
+      ? 'Hoàn thành buổi trước (đạt yêu cầu điểm) để mở khoá buổi này — hoặc nhập mã do giáo viên cấp.'
+      : 'Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.';
     input.value = '';
     msg.textContent = ''; msg.style.color = '';
     modal.classList.remove('hidden');
