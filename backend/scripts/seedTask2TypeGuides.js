@@ -12,12 +12,23 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Task2TypeGuide = require('../models/Task2TypeGuide');
 const GUIDES = require('./data/task2/typeGuides');
+const { highlightsFromSpec } = require('./data/task2SampleHighlights');
+
+// modelEssay.highlightSpecs (sentence-index specs for intro/body1/body2)
+// → per-section `highlights`, the shape the frontend renders.
+function withHighlights(g) {
+  const { highlightSpecs, ...essay } = g.modelEssay;
+  const sections = essay.sections.map((s, i) =>
+    (highlightSpecs && highlightSpecs[i]) ? { ...s, highlights: highlightsFromSpec(s.text, highlightSpecs[i]) } : s);
+  return { ...g, modelEssay: { ...essay, sections } };
+}
 
 async function main() {
   const dry = process.argv.includes('--dry');
   console.log(`[seedTask2TypeGuides] ${dry ? 'DRY RUN' : 'LIVE'} — ${GUIDES.length} type guides\n`);
   for (const g of GUIDES) {
-    console.log(`  ${g.typeId}  ${g.name}  · ${g.upgradePairs.length} upgrade pairs · ${g.usefulLanguage.length} ngôn ngữ · ${g.modelEssay.sections.length} đoạn mẫu · ${g.mistakes.length} lỗi`);
+    const hl = withHighlights(g).modelEssay.sections.reduce((n, s) => n + (s.highlights || []).length, 0);
+    console.log(`  ${g.typeId}  ${g.name}  · ${g.upgradePairs.length} upgrade pairs · ${g.usefulLanguage.length} ngôn ngữ · ${g.modelEssay.sections.length} đoạn mẫu (${hl} câu tô màu) · ${g.mistakes.length} lỗi`);
   }
   if (dry) { console.log('\n(dry)'); process.exit(0); }
 
@@ -28,7 +39,7 @@ async function main() {
   for (const g of GUIDES) {
     await Task2TypeGuide.findOneAndUpdate(
       { typeId: g.typeId },
-      { $set: { ...g, isActive: true } },
+      { $set: { ...withHighlights(g), isActive: true } },
       { upsert: true, new: true, setDefaultsOnInsert: true },
     );
     n += 1;

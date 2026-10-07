@@ -1,8 +1,18 @@
 const mongoose = require('mongoose');
 
+// Colour-coded sentence roles on a model essay section ("Bài mẫu từ
+// Daniel"): each `text` is an exact sentence of `content`, wrapped in a
+// coloured span by frontend/js/shared/task2-highlight.js. A text that no
+// longer matches (content edited in admin) is simply not highlighted.
+const SampleHighlightSchema = new mongoose.Schema({
+  role: { type: String, enum: ['hook', 'topic', 'idea1', 'support1', 'idea2', 'support2'], required: true },
+  text: { type: String, required: true }
+}, { _id: false });
+
 const SampleSectionSchema = new mongoose.Schema({
   title:   { type: String, default: '' },
-  content: { type: String, default: '' }
+  content: { type: String, default: '' },
+  highlights: { type: [SampleHighlightSchema], default: undefined }
 }, { _id: false });
 
 const WritingTask2Schema = new mongoose.Schema({

@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/writing-practice.css?v=20260903"/>
   <link rel="stylesheet" href="/css/mobile.css?v=20261001nav"/>
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
+  <link rel="stylesheet" href="/css/task2-highlight.css?v=20261007hl"/>
   <script src="/js/theme.js?v=20260831"></script>
   <script src="/js/shared/visit-tracker.js?v=20260831"></script>
   <style>
@@ -637,6 +638,7 @@
 <script src="/js/shared/dictionary-lookup.js?v=20260930nobook"></script>
 <script src="/js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
+<script src="/js/shared/task2-highlight.js?v=20261007hl"></script>
 
 <!-- Type switch confirm modal -->
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
@@ -1472,9 +1474,14 @@ function renderTypeGuide() {
 
     const me = g.modelEssay || {};
     const essayText = (me.sections || []).map(s => `${s.title}\n${s.text}`).join('\n\n');
+    // Colour-coded sentence roles (hook / topic / idea / supporting) —
+    // js/shared/task2-highlight.js; plain text if the module didn't load.
+    const T2H = window.T2Highlight;
+    const hl = !!(T2H && T2H.hasAny(me.sections));
     const model = sub('📝', 'Bài mẫu Band 7+' + (me.wordCount ? ' · ' + e(me.wordCount) : ''),
-      `<div class="t2-g-essay"><div class="t2-g-prompt">${e(me.prompt)}</div>` +
-      (me.sections || []).map(s => `<h5>${e(s.title)}</h5><div>${e(s.text)}</div>`).join('') +
+      `<div class="t2-g-essay${hl ? ' t2hl-root' + (T2H.isOff() ? ' t2hl-off' : '') : ''}"><div class="t2-g-prompt">${e(me.prompt)}</div>` +
+      (hl ? T2H.legend(me.sections) : '') +
+      (me.sections || []).map(s => `<h5>${e(s.title)}</h5><div>${hl ? T2H.html(s.text, s.highlights) : e(s.text)}</div>`).join('') +
       `<button class="t2-g-copy" onclick="_copyGuideEssay(this)" data-essay="${(window.escAttr || e)(essayText)}"><i class="fas fa-copy"></i> Chép cả bài</button></div>`);
 
     const mistakes = sub('⚠️', 'Lỗi thường gặp ở dạng này',

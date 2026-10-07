@@ -2487,16 +2487,23 @@ function renderPracticeWriteScreen(taskType, task) {
   // Pre-build sample panel HTML with copy buttons
   const panel = document.getElementById('pw-sample-panel');
   if (panel && hasSample) {
-    panel.innerHTML = task.sampleSections.filter(s => s.content?.trim()).map((s, i) => `
+    // Task 2 essays carry colour-coded sentence roles (hook / topic sentence
+    // / idea / supporting) — see js/shared/task2-highlight.js.
+    const sections = task.sampleSections.filter(s => s.content?.trim());
+    const hl = window.T2Highlight && T2Highlight.hasAny(sections);
+    panel.classList.toggle('t2hl-root', !!hl);
+    panel.innerHTML = (hl ? T2Highlight.legend(sections) : '') + sections.map((s, i) => `
       <div class="pw-sample-section">
         <div class="pw-sample-section-title">
           <span>${escHtml(s.title)}</span>
           <button class="pw-copy-btn" onclick="copySampleSection(this,${i})" title="Sao chép đoạn này"><i class="fas fa-copy"></i> Copy</button>
         </div>
-        <div class="pw-sample-section-body">${escHtml(s.content)}</div>
+        <div class="pw-sample-section-body">${hl ? T2Highlight.html(s.content, s.highlights) : escHtml(s.content)}</div>
       </div>`).join('');
+    if (hl) T2Highlight.applyPref(panel);
     setupDictionaryDouble('pw-sample-panel', 'writing-practice-sample', _pwDictGate);
   } else if (panel) {
+    panel.classList.remove('t2hl-root');
     panel.innerHTML = '';
   }
 

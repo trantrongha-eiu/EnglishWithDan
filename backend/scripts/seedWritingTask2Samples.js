@@ -78,7 +78,8 @@ async function listStatus() {
   await mongoose.connect(process.env.MONGO_URI);
   const docs = await WritingTask2.find({ isActive: true })
     .select('prompt analysisSections sampleSections').sort({ createdAt: 1 }).lean();
-  const has = a => Array.isArray(a) && a.length > 0;
+  // Admin's create form saves 4 empty skeleton sections — count only real text.
+  const has = a => Array.isArray(a) && a.some(s => (s.content || '').trim());
   const both = docs.filter(d => has(d.analysisSections) && has(d.sampleSections));
   const analysisOnly = docs.filter(d => has(d.analysisSections) && !has(d.sampleSections));
   const sampleOnly = docs.filter(d => !has(d.analysisSections) && has(d.sampleSections));

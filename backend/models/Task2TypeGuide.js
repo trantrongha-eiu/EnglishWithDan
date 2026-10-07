@@ -12,9 +12,18 @@ const usefulSchema = new mongoose.Schema({
   lines: { type: [String], default: [] },
 }, { _id: false });
 
+// Colour-coded sentence roles on the model essay — same shape as
+// WritingTask2.sampleSections[].highlights (built at seed time from
+// modelEssay.highlightSpecs in the data file).
+const essayHighlightSchema = new mongoose.Schema({
+  role: { type: String, required: true },
+  text: { type: String, required: true },
+}, { _id: false });
+
 const essaySectionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   text: { type: String, required: true },
+  highlights: { type: [essayHighlightSchema], default: undefined },
 }, { _id: false });
 
 const task2TypeGuideSchema = new mongoose.Schema({
