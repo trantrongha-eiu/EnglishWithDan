@@ -2101,6 +2101,8 @@ a.user-cell-name:hover { color: var(--blue); }
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg); padding: 4px;
 }
+/* RowMenu: portalled to <body> so a table's overflow can't clip it. */
+.menu.menu--floating { position: fixed; right: auto; z-index: 1000; }
 .menu-item {
   display: flex; width: 100%; align-items: center; gap: 8px;
   padding: 8px 10px; border: none; background: none; border-radius: 6px;
