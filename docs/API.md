@@ -1260,7 +1260,7 @@ image items have a manual checkbox. Controller
 
 | Method & path | Purpose |
 |---|---|
-| `GET /api/classes/resources/catalog?type=&search=&limit=` | Resource picker source. `type` ∈ `reading_test, listening_test, reading_practice, listening_practice, dictation, writing_exam, task2, speaking, grammar, vocabulary_lesson, mock_test`. Returns `[{ _id, label, meta }]` (`mock_test` = one synthetic row, `_id: null`). |
+| `GET /api/classes/resources/catalog?type=&search=&limit=` | Resource picker source. `type` ∈ `reading_test, listening_test, reading_practice, listening_practice, listening_gapfill, dictation, writing_exam, task2, speaking, grammar, vocabulary_lesson, mock_test`. Returns `[{ _id, label, meta }]` (`mock_test` = one synthetic row, `_id: null`). |
 | `GET /api/classes/:classId/assignments` | List + `{ resourceCount, completedStudents }` per row + `enrolledCount`. |
 | `POST /api/classes/:classId/assignments` | Create `{ title, instruction, deadline, resources: [{kind:'internal',resourceType,resourceId} \| {kind:'external',url,title,description} \| {kind:'image',images:[{url,publicId}],title,instruction}] }`. Every internal `resourceId` is verified against its catalog; `label` snapshotted. Sends a "new assignment" `Message` to every enrolled student. |
 | `GET /api/classes/:classId/assignments/:assignmentId` | Assignment + `rows` (per-student `{ completed, total, missing, status, allCompletedAt, items[] }`). |

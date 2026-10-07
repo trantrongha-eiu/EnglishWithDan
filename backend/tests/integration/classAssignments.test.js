@@ -20,6 +20,7 @@ const Task2Topic = require('../../models/Task2Topic');
 const Task2Attempt = require('../../models/Task2Attempt');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
+const GapFillAttempt = require('../../models/GapFillAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
 const assignmentService = require('../../services/assignmentService');
 
@@ -307,6 +308,62 @@ describe('completion tracking', () => {
     row = mine.body.assignments.find((a) => a._id === String(asg._id));
     expect(row.done).toBe(1);
     expect(row.resources[0].completed).toBe(true);
+  });
+
+  test('bài đọc/nghe lẻ: 50% is enough (full tests stay at 70%)', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const sec = await createListeningSection();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'listening_practice', resourceId: sec._id }] });
+
+    await seedInternalCompletion('listening_practice', { studentId: s._id, resourceId: sec._id, correctCount: 49, totalQuestions: 100 });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources[0].completed).toBe(false);
+
+    await seedInternalCompletion('listening_practice', { studentId: s._id, resourceId: sec._id, correctCount: 5, totalQuestions: 10 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources[0].completed).toBe(true);
+  });
+
+  test('listening_gapfill: only published gap-fills are pickable; done at >=18 correct blanks (all of them if fewer)', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const answers30 = Array.from({ length: 30 }, (_, i) => `w${i}`);
+    const sec = await createListeningSection({ title: 'GF Published', extra: { gapFillPublished: true, gapFillTemplate: 'x', gapFillAnswers: answers30 } });
+    const small = await createListeningSection({ title: 'GF Small', extra: { gapFillPublished: true, gapFillTemplate: 'x', gapFillAnswers: answers30.slice(0, 10) } });
+    const draft = await createListeningSection({ title: 'GF Draft', extra: { gapFillPublished: false, gapFillAnswers: answers30 } });
+
+    const cat = await request(app).get('/api/classes/resources/catalog?type=listening_gapfill').set(authH(t));
+    expect(cat.status).toBe(200);
+    const ids = cat.body.items.map((i) => String(i._id));
+    expect(ids).toContain(String(sec._id));
+    expect(ids).not.toContain(String(draft._id));
+    expect(cat.body.items.find((i) => String(i._id) === String(sec._id)).meta).toContain('30 chỗ trống');
+
+    const asg = await createAssignment(cls, { resources: [
+      { kind: 'internal', resourceType: 'listening_gapfill', resourceId: sec._id },
+      { kind: 'internal', resourceType: 'listening_gapfill', resourceId: small._id },
+    ] });
+    const res = (row, id) => row.resources.find((r) => String(r.resourceId) === String(id));
+
+    await GapFillAttempt.create({ userId: s._id, sectionId: sec._id, totalBlanks: 30, correctCount: 17 });
+    await GapFillAttempt.create({ userId: s._id, sectionId: small._id, totalBlanks: 10, correctCount: 9 });
+    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    let row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(res(row, sec._id).completed).toBe(false);
+    expect(res(row, small._id).completed).toBe(false);
+
+    await GapFillAttempt.create({ userId: s._id, sectionId: sec._id, totalBlanks: 30, correctCount: 18 });
+    await GapFillAttempt.create({ userId: s._id, sectionId: small._id, totalBlanks: 10, correctCount: 10 });
+    mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    row = mine.body.assignments.find((a) => a._id === String(asg._id));
+    expect(res(row, sec._id).completed).toBe(true);
+    expect(res(row, small._id).completed).toBe(true);
+    expect(row.status).toBe('completed');
   });
 
   test('the BEST of several attempts counts, even if the most recent retry scored lower', async () => {

@@ -27,11 +27,17 @@ const HW_STATUS = {
 // Types with neither (speaking, task1_lesson / task2_course_lesson /
 // speaking_course_lesson, mock_test, external/image) get no tag —
 // "submitted/ticked = done" needs no extra explanation.
-const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'grammar', 'vocabulary_lesson', 'task2', 'advanced_sentences']);
+const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'dictation', 'grammar', 'vocabulary_lesson', 'task2', 'advanced_sentences']);
+// Bài đọc/nghe lẻ: lower bar — backend's PRACTICE_PASS_PERCENT.
+const HW_PRACTICE_TYPES = new Set(['reading_practice', 'listening_practice']);
+const PRACTICE_PASS = 50;
+const GAPFILL_MIN_CORRECT = 18; // matches backend's resourceCompletionService.GAPFILL_MIN_CORRECT
 const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
 const HW_WORD_MIN = { task1_practice: MIN_WORDS_T1, task2_practice: MIN_WORDS_T2 };
 function hwRuleTag(resourceType) {
   if (HW_QUIZ_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ 70% số điểm trở lên mới tính hoàn thành">≥70%</span>';
+  if (HW_PRACTICE_TYPES.has(resourceType)) return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ ${PRACTICE_PASS}% số điểm trở lên mới tính hoàn thành">≥${PRACTICE_PASS}%</span>`;
+  if (resourceType === 'listening_gapfill') return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần điền đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống (bài ít hơn ${GAPFILL_MIN_CORRECT} chỗ thì phải đúng hết) mới tính hoàn thành">≥${GAPFILL_MIN_CORRECT} câu đúng</span>`;
   if (resourceType === 'writing_exam') return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ Task 1 ≥${MIN_WORDS_T1} từ và Task 2 ≥${MIN_WORDS_T2} từ">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span>`;
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
@@ -45,6 +51,7 @@ function hwResourceHref(r) {
     case 'reading_practice':   return `reading.html?passageId=${id}`;
     case 'listening_test':     return `listening.html?testId=${id}`;
     case 'listening_practice': return `listening.html?sectionId=${id}`;
+    case 'listening_gapfill':  return `listening.html?gapfillId=${id}`;
     case 'dictation':          return `dictation.html?sectionId=${id}`;
     // writing.js reads ?examId= and forwards it to POST /api/writing/start so
     // the ASSIGNED WritingExam opens — without it, startExam()'s no-examId
@@ -207,7 +214,9 @@ async function loadHomework() {
   const rules = `<details class="hw-rules">
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
-      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz: cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz (đề full, dictation, grammar…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥${PRACTICE_PASS}%</span> Bài đọc lẻ / bài nghe lẻ: cần đạt <b>từ ${PRACTICE_PASS}% số điểm trở lên</b> là tự động tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥${GAPFILL_MIN_CORRECT} câu đúng</span> Bài nghe Gap-fill: cần điền <b>đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống</b> trên tổng số chỗ trống của bài.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
       <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>

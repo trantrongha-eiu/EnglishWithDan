@@ -35,6 +35,7 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
+const GapFillAttempt = require('../models/GapFillAttempt');
 const WritingAttempt = require('../models/WritingAttempt');
 const Task2Attempt = require('../models/Task2Attempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
@@ -56,6 +57,21 @@ const { escapeRegex } = require('../utils/strings');
 // uses `bandGate` instead (see speakingAttemptCounts) — submission-based,
 // but it must be a real spoken answer.
 const PASS_PERCENT = 70;
+
+// Single reading passages / listening sections ("bài đọc lẻ", "bài nghe lẻ")
+// are short drills, not a full test — owner lowered their bar to 50%
+// (2026-10-07). Full tests, dictation and the rest keep PASS_PERCENT.
+const PRACTICE_PASS_PERCENT = 50;
+
+// Listening Gap-fill (full-transcript fill-in-the-blank, GapFillAttempt): a
+// section has ~25–40 blanks, so the bar is a count of correct blanks rather
+// than a % — owner's rule "đúng ít nhất 18 câu / tổng câu". A section with
+// fewer blanks than that needs every blank right.
+const GAPFILL_MIN_CORRECT = 18;
+function gapFillPasses(d) {
+  const total = Number(d.totalBlanks) || 0;
+  return total > 0 && (Number(d.correctCount) || 0) >= Math.min(GAPFILL_MIN_CORRECT, total);
+}
 
 // Writing tasks have no score to gate on, but DO have a real pass/fail bar
 // students already see on the page itself (writing.html's "Tối thiểu 150/250
@@ -104,14 +120,29 @@ const REGISTRY = {
     catalog: { model: Passage, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.category }) },
     attempt: { model: ReadingPracticeAttempt, userField: 'userId', idField: 'passageId', filter: COUNTABLE_ATTEMPT },
-    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
+    scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_practice: {
     label: 'Bài nghe lẻ (Section)',
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.partNumber ? `Part ${d.partNumber}` : '' }) },
     attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: COUNTABLE_ATTEMPT },
-    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
+    scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
+  },
+  // Gap-fill on a listening section (listening.html "Gap-fill" screen). Only
+  // sections whose gap-fill an admin reviewed and published are pickable —
+  // the same set students see (listeningService.listGapFillSections).
+  listening_gapfill: {
+    label: 'Bài nghe lẻ (Gap-fill)',
+    catalog: { model: ListeningSection, filter: { isActive: true, gapFillPublished: true }, sort: { createdAt: -1 },
+      shape: (d) => ({ _id: d._id, label: d.title,
+        meta: [d.partNumber ? `Part ${d.partNumber}` : '', `${(d.gapFillAnswers || []).length} chỗ trống`].filter(Boolean).join(' · ') }) },
+    attempt: { model: GapFillAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
+    scoreGate: {
+      fields: 'correctCount totalBlanks',
+      percent: (d) => (d.totalBlanks ? (d.correctCount / d.totalBlanks) * 100 : 0),
+      pass: gapFillPasses,
+    },
   },
   dictation: {
     label: 'Dictation (Section)',
@@ -594,7 +625,9 @@ async function checkCompleted(studentId, internalItems, since = null) {
     for (const r of rows) {
       const k = resourceKey(type, r[A.idField]);
       const pct = gate.percent(r);
-      const passes = pct >= PASS_PERCENT && coverageOk(r);
+      // gate.pass (gap-fill's absolute count) > gate.passPercent (bài lẻ 50%) > PASS_PERCENT
+      const cleared = gate.pass ? gate.pass(r) : pct >= (gate.passPercent ?? PASS_PERCENT);
+      const passes = cleared && coverageOk(r);
       const prev = bestByKey.get(k);
       // A qualifying attempt always beats a non-qualifying one; between two of
       // the same kind, the higher score wins (keeps the old best-scoring pick).
@@ -617,7 +650,8 @@ async function checkCompleted(studentId, internalItems, since = null) {
 }
 
 module.exports = {
-  REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, MIN_SPEAKING_WORDS,
+  REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, PRACTICE_PASS_PERCENT,
+  GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
 };

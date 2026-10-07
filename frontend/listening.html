@@ -1074,8 +1074,16 @@
             const _cleanLtTid = window.RouteParams ? window.RouteParams.match([
                 { pattern: /^\/listening\/test\/([^/?#]+)$/, param: 'testId' }
             ]) : null;
+            // ?gapfillId=<sectionId> — homework deep link straight into a
+            // section's Gap-fill screen (dashboard-homework.js listening_gapfill).
+            const gapfillParam = params.get('gapfillId');
             if (_cleanLtTid) {
                 showScreen('list');
+            } else if (gapfillParam) {
+                history.replaceState({ screen: 'list', mode: 'single', part: 1 }, '', '?mode=single');
+                setListeningMode('lele', false);
+                showScreen('list');
+                await startGapFillSection(gapfillParam);
             } else if (sectionIdParam) {
                 const partForSection = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
                 history.replaceState({ screen: 'list', mode: 'single', part: partForSection }, '', `?mode=single&part=${partForSection}`);

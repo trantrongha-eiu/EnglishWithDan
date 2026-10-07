@@ -28,6 +28,7 @@ const RESOURCE_CATS = [
   { type: 'listening_test', label: 'Đề Listening' },
   { type: 'reading_practice', label: 'Bài đọc lẻ (Passage)' },
   { type: 'listening_practice', label: 'Bài nghe lẻ (Section)' },
+  { type: 'listening_gapfill', label: 'Bài nghe lẻ (Gap-fill)' },
   { type: 'dictation', label: 'Dictation' },
   { type: 'writing_exam', label: 'Đề Writing (Full Task 1+2)' },
   { type: 'task1_lesson', label: 'Writing Task 1 (Buổi học)' },
@@ -43,6 +44,14 @@ const RESOURCE_CATS = [
   { type: 'mock_test', label: 'Thi thử 4 kỹ năng' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
+// How each type auto-ticks as done — mirrors backend
+// services/resourceCompletionService.js (scoreGate / passPercent / pass).
+const RES_RULE = {
+  reading_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
+  listening_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
+  listening_gapfill: 'Tự tick khi học viên điền đúng ≥18 chỗ trống (bài ít hơn 18 chỗ thì phải đúng hết).',
+  reading_test: 'Tự tick khi đạt ≥70%.', listening_test: 'Tự tick khi đạt ≥70%.', dictation: 'Tự tick khi đạt ≥70%.',
+};
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
 const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau hạn — không tính' };
 
@@ -226,7 +235,7 @@ function OverviewTab({ cls, onSaved }) {
       <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
         <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Quy định bài tập</legend>
         <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
-          Tính trên số bài tập ĐANG quá hạn &amp; chưa đạt (≥70% điểm) của học viên trong lớp này — số này tự cập nhật mỗi đêm và mỗi khi điểm danh/bài tập thay đổi.
+          Tính trên số bài tập ĐANG quá hạn &amp; chưa đạt (≥70% điểm; bài đọc/nghe lẻ ≥50%; Gap-fill ≥18 câu đúng) của học viên trong lớp này — số này tự cập nhật mỗi đêm và mỗi khi điểm danh/bài tập thay đổi.
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -1076,6 +1085,9 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                 </>
               )}
             </div>
+            {RES_RULE[cat] && (
+              <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 8 }}>ℹ️ {RES_RULE[cat]}</div>
+            )}
             {cat === 'speaking' && speakPart && catalog.length > 0 && (
               <div style={{ marginBottom: 8 }}>
                 <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
