@@ -70,6 +70,55 @@ describe('generateGapFillBlanks — too-few-blanks quality retry', () => {
   });
 });
 
+describe('generateGapFillBlanks — question-number annotations', () => {
+  const transcript = 'They make use of waste (31) products as raw materials. Handling them is cleaner (32) than wood.';
+
+  test('a template that moved/dropped "(31)"-style annotations still passes the fidelity check', async () => {
+    mockGenerateContent.mockResolvedValueOnce({ text: JSON.stringify({
+      template: 'They make use of [[1]] products as raw (31) materials. Handling them is [[2]] than wood.',
+      answers: ['waste', 'cleaner'],
+    }) });
+    const result = await generateGapFillBlanks(transcript);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+    expect(result.answers).toEqual(['waste', 'cleaner']);
+  });
+
+  test('an answer that contains an annotation is rejected (students would have to type it)', async () => {
+    const bad = { text: JSON.stringify({ template: 'They make use of [[1]] products as raw materials. Handling them is cleaner (32) than wood.', answers: ['waste (31)'] }) };
+    mockGenerateContent.mockResolvedValueOnce(bad).mockResolvedValueOnce(bad).mockResolvedValueOnce(bad);
+    await expect(generateGapFillBlanks(transcript)).rejects.toThrow(/không giữ nguyên transcript/);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
+  });
+
+  test('a real word change is never stored: after the retries the answers are punched into the ORIGINAL text', async () => {
+    const bad = { text: JSON.stringify({ template: 'They make use of [[1]] products as raw materials. Handling them is nicer than [[2]].', answers: ['waste', 'wood'] }) };
+    mockGenerateContent.mockResolvedValueOnce(bad).mockResolvedValueOnce(bad).mockResolvedValueOnce(bad);
+    const result = await generateGapFillBlanks(transcript);
+    expect(mockGenerateContent).toHaveBeenCalledTimes(3);
+    expect(result.template).toBe('They make use of [[1]] (31) products as raw materials. Handling them is cleaner (32) than [[2]].');
+    expect(result.answers).toEqual(['waste', 'wood']);
+  });
+});
+
+describe('generateGapFillBlanks — rebuild-from-answers fallback', () => {
+  const transcript = '❓ Transcript\nManham Port\nWelcome to Manham Port, where history is brought to life.\nVisit our copper mine and see the machinery.';
+
+  test('a template that keeps rewriting the header is rebuilt from the answers, in order, on the untouched text', async () => {
+    const bad = { text: JSON.stringify({ template: 'Manham Port\nWelcome to Manham Port, where [[1]] is brought to life.\nVisit our [[2]] and see the [[3]].', answers: ['history', 'copper mine', 'machinery'] }) };
+    mockGenerateContent.mockResolvedValueOnce(bad).mockResolvedValueOnce(bad).mockResolvedValueOnce(bad);
+    const result = await generateGapFillBlanks(transcript);
+    expect(result.template).toBe('❓ Transcript\nManham Port\nWelcome to Manham Port, where [[1]] is brought to life.\nVisit our [[2]] and see the [[3]].');
+    expect(result.answers).toEqual(['history', 'copper mine', 'machinery']);
+  });
+
+  test('matches whole words only and drops answers that are not in the text; gives up when most are missing', async () => {
+    const partly = { text: JSON.stringify({ template: 'x', answers: ['story', 'copper mine', 'nonexistent phrase'] }) };
+    mockGenerateContent.mockResolvedValueOnce(partly).mockResolvedValueOnce(partly).mockResolvedValueOnce(partly);
+    // "story" must not match inside "history"; 1 of 3 kept < half → error
+    await expect(generateGapFillBlanks(transcript)).rejects.toThrow(/không giữ nguyên transcript/);
+  });
+});
+
 describe('generateGapFillBlanks — person/place name quality retry', () => {
   test('retries when an answer looks like a proper name, passing it back as a "do not reuse" hint', async () => {
     const words = 'This lovely walking holiday takes place in London every single summer weekend'.split(' ');

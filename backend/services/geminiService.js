@@ -930,8 +930,21 @@ Trả về JSON: {"results": [{"id": string, "isCorrect": boolean, "score": numb
 const GAPFILL_SYSTEM = `You are an IELTS Listening exam content creator, specialised in turning a full listening transcript into a gap-fill practice drill.
 Respond ONLY with valid JSON — no markdown, no extra text.`;
 
+// Question-number annotations some transcripts carry ("waste (31) products",
+// "harbour. Q1") — the model often drops or shifts them, failing an exact
+// compare on every retry, yet the student never sees them: listening.html's
+// _gfCleanAnnotations strips the same two patterns before rendering. So the
+// fidelity check ignores them (every other character still must match), and
+// an ANSWER containing one is rejected instead, since the student would have
+// to type it.
+const GAPFILL_ANNOTATION_RE = /[ \t]*\(\d{1,3}\)|[ \t]*\bQ\d{1,3}\b\.?/g;
+
 function normalizeGapFillText(s) {
-  return String(s || '').replace(/\s+/g, ' ').trim();
+  return String(s || '').replace(GAPFILL_ANNOTATION_RE, '').replace(/\s+/g, ' ').trim();
+}
+
+function gapFillAnswerHasAnnotation(a) {
+  return /\(\d{1,3}\)|\bQ\d{1,3}\b/.test(String(a || ''));
 }
 
 /**
@@ -977,6 +990,35 @@ QUY TẮC BẮT BUỘC:
 Trước khi trả lời, tự kiểm tra 2 việc: (a) nếu ghép "template" lại (thay mỗi [[n]] bằng answers[n-1]) thì kết quả phải giống HỆT transcript gốc ở trên, kể cả các dòng đầu tiên; (b) ĐẾM lại số phần tử trong "answers" — phải nằm trong khoảng 25-30${shortTranscript ? ' (trừ khi transcript quá ngắn để đủ)' : ''}, và không phần tử nào là tên riêng của người/địa danh.
 
 Trả về JSON: {"template": string, "answers": string[]}`;
+}
+
+/**
+ * Punches `answers` (in order) into the ORIGINAL transcript: each answer is
+ * matched as whole words at or after the previous match, and replaced by the
+ * next [[n]] token. Answers not found (or carrying a "(31)" annotation) are
+ * dropped. Returns null when fewer than half survive — the model's picks
+ * then don't describe this transcript at all.
+ */
+function punchGapFillAnswers(transcript, answers) {
+  const text = String(transcript || '');
+  const out = [];
+  let tpl = '';
+  let cursor = 0;
+  for (const raw of answers || []) {
+    const a = String(raw || '').trim();
+    if (!a || gapFillAnswerHasAnnotation(a)) continue;
+    const pattern = a.split(/\s+/).map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+');
+    const re = new RegExp(`(?<![A-Za-z0-9])${pattern}(?![A-Za-z0-9])`, 'g');
+    re.lastIndex = cursor;
+    const m = re.exec(text);
+    if (!m) continue;
+    out.push(m[0]);
+    tpl += text.slice(cursor, m.index) + `[[${out.length}]]`;
+    cursor = m.index + m[0].length;
+  }
+  tpl += text.slice(cursor);
+  if (!out.length || out.length < (answers || []).length / 2) return null;
+  return { template: tpl, answers: out };
 }
 
 const GAPFILL_NON_NAME_CAPITALIZED = new Set([
@@ -1040,17 +1082,27 @@ async function generateGapFillBlanks(transcript, _attempt = 0, _retryHint = null
     timeoutMs: 90000,
   });
 
-  const template = String(parsed.template || '');
-  const answers = Array.isArray(parsed.answers) ? parsed.answers.map(a => String(a)) : [];
+  let template = String(parsed.template || '');
+  let answers = Array.isArray(parsed.answers) ? parsed.answers.map(a => String(a)) : [];
   const rebuilt = reconstructFromGapFillTemplate(template, answers);
-  const matches = rebuilt !== null && normalizeGapFillText(rebuilt) === normalizeGapFillText(clean);
+  const matches = rebuilt !== null && normalizeGapFillText(rebuilt) === normalizeGapFillText(clean)
+    && !answers.some(gapFillAnswerHasAnnotation);
 
   if (!matches) {
     if (_attempt < MAX_ATTEMPTS) {
       logger.ai('generateGapFillBlanks: reconstructed text did not match transcript, retrying');
       return generateGapFillBlanks(clean, _attempt + 1, _retryHint);
     }
-    throw new Error('AI không giữ nguyên transcript gốc sau nhiều lần thử — vui lòng thử lại hoặc kiểm tra transcript.');
+    // Last resort: keep only the model's answer CHOICES and punch them into
+    // the untouched transcript ourselves — the template is then the original
+    // text by construction, so a model that keeps rewriting a header line or
+    // a speaker label no longer sinks the whole section.
+    const punched = punchGapFillAnswers(clean, answers);
+    if (!punched) {
+      throw new Error('AI không giữ nguyên transcript gốc sau nhiều lần thử — vui lòng thử lại hoặc kiểm tra transcript.');
+    }
+    logger.ai('generateGapFillBlanks: template mismatch — rebuilt from answers', { kept: punched.answers.length, of: answers.length });
+    ({ template, answers } = punched);
   }
 
   const tooFewBlanks = wordCount >= 300 && answers.length < 25;
@@ -1368,6 +1420,7 @@ async function gradeTask2Band(prompt, essay) {
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
   generateGapFillBlanks,
+  punchGapFillAnswers,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).
