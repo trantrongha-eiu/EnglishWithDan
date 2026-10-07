@@ -71,6 +71,24 @@
       background: #1e40af;
     }
 
+    /* Review mode: badge + student answer + "(✓ correct answer)" used to be
+       one nowrap line. In a narrow table column (cells cap at 340px) that
+       line was wider than the cell, so the whole unit — explanation box
+       included — stuck out over the next column and overlapped its
+       explanation. Let it wrap inside the cell; only badge+answer stay glued. */
+    .rq-inline-wrap--review {
+      white-space: normal;
+      max-width: 100%;
+    }
+    .rq-inline-wrap--review .rq-inline-ans {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    .rq-inline-wrap--review .rq-ans-correct {
+      display: inline-block;
+      margin-top: 2px;
+    }
+
     /* Explanation inline cho fill-blank trong table/note-form */
     .rq-inline-expl {
       display: block;
@@ -81,7 +99,8 @@
          whole table) instead of wrapping the explanation text. */
       white-space: normal;
       overflow-wrap: break-word;
-      max-width: 480px;
+      max-width: min(480px, 100%);
+      box-sizing: border-box;
       margin-top: 6px;
       font-size: 12.5px;
       color: #374151;

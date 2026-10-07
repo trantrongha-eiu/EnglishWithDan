@@ -2469,7 +2469,7 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
       const rvUA = review?.userAnswer || '';
       const cls = review?.isCorrect ? 'rq-ans-ok' : rvUA ? 'rq-ans-wrong' : 'rq-ans-skip';
       const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
-      return `<span class="rq-inline-wrap" id="sc-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}</span>`;
+      return `<span class="rq-inline-wrap rq-inline-wrap--review" id="sc-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}</span>`;
     }
     const ans = state.answers[qNum] || '';
     return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
@@ -2677,7 +2677,7 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
         ? `<span class="rq-ans-correct">(✓ ${escHtml(review.correctAnswer)})</span>` : '';
       const expl = review?.explanation
         ? `<span class="rq-inline-expl"><strong>Giải thích:</strong> ${escHtmlNl(review.explanation)}</span>` : '';
-      return `<span class="rq-inline-wrap" id="q${qNum}" data-qnum="${qNum}">
+      return `<span class="rq-inline-wrap rq-inline-wrap--review" id="q${qNum}" data-qnum="${qNum}">
     <span class="rq-q-badge">${qNum}</span>
     <span class="rq-inline-ans ${cls}">${escHtml(userAns || '–')}</span>
     ${correctHint}${expl}
