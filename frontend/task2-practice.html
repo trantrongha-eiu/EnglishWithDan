@@ -37,21 +37,8 @@
     .t2-nav-crumb span{color:#6366f1;font-weight:700;cursor:pointer}
     .t2-nav-crumb span:hover{text-decoration:underline}
 
-    /* ── Week grid ── */
-    .t2-week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:20px}
-    .t2-week-card{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:16px 14px;cursor:pointer;transition:all .2s;text-align:center}
-    .t2-week-card:hover{border-color:#6366f1;background:#f0f0ff}
-    .t2-week-card.active{border-color:#6366f1;background:#ede9fe}
-    .t2-week-card.has-draft{border-color:#f59e0b;background:#fffbeb}
-    .t2-week-card.has-draft:hover{border-color:#d97706;background:#fef3c7}
-    .t2-week-num{font-size:22px;font-weight:800;color:#6366f1;margin-bottom:4px}
-    .t2-week-label{font-size:12px;color:#6b7280}
+    /* ── "Đang dở" pill (weeks + topics) ── */
     .t2-week-draft-pill{display:inline-flex;align-items:center;gap:3px;background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px}
-    .t2-topic-redo-pill{display:inline-flex;align-items:center;gap:3px;background:#10b981;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0}
-    [data-theme="dark"] .t2-week-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#f1f5f9}
-    [data-theme="dark"] .t2-week-card:hover{border-color:#818cf8;background:#1e1b4b}
-    [data-theme="dark"] .t2-week-card.has-draft{border-color:#d97706;background:#1c1a0e}
-    [data-theme="dark"] .t2-week-card.has-draft:hover{background:#292008}
 
     /* ── Topic list ── */
     .t2-topic-list{display:flex;flex-direction:column;gap:10px;padding:16px 20px}
@@ -63,29 +50,8 @@
     [data-theme="dark"] .t2-topic-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333)}
     [data-theme="dark"] .t2-topic-name{color:#f1f5f9}
 
-    /* ── Level + mode selector ── */
-    .t2-selector-panel{padding:20px;max-width:600px;margin:0 auto}
-    .t2-selector-title{font-size:18px;font-weight:800;color:#111827;margin-bottom:4px}
+    /* ── Topic hub: prompt + draft banner ── */
     .t2-selector-prompt{font-size:13px;color:#4b5563;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:10px 14px;margin:12px 0;line-height:1.6}
-    .t2-selector-label{font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px}
-    .t2-btn-group{display:flex;gap:8px;flex-wrap:wrap}
-    .t2-btn{border:1.5px solid #e5e7eb;background:#f9fafb;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:#4b5563;transition:all .2s}
-    .t2-btn.active{border-color:#6366f1;background:#ede9fe;color:#4338ca}
-    .t2-btn:hover{border-color:#6366f1;color:#4338ca}
-    [data-theme="dark"] .t2-btn{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#94a3b8}
-    [data-theme="dark"] .t2-btn.active{border-color:#818cf8;background:#1e1b4b;color:#a5b4fc}
-    /* "Viết bài ngay" — an action (leaves this page for the full essay), not a mode toggle */
-    .t2-btn-write{border-color:#e53935;background:#fff1f2;color:#c62828}
-    .t2-btn-write:hover{border-color:#c62828;background:#fee2e2;color:#c62828}
-    [data-theme="dark"] .t2-btn-write{background:#2a1a1f;border-color:#7f1d1d;color:#fca5a5}
-    /* Locked until the topic has been practised to >= 70% */
-    .t2-btn-write-locked{border-color:#e5e7eb;background:#f3f4f6;color:#9ca3af}
-    .t2-btn-write-locked:hover{border-color:#d1d5db;background:#e5e7eb;color:#6b7280}
-    [data-theme="dark"] .t2-btn-write-locked{background:var(--surface,#0d0d0d);border-color:var(--border2,#333);color:#6b7280}
-    .t2-write-gate-note{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:10px 12px;
-      background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:12.5px;line-height:1.6;color:#92400e}
-    .t2-write-gate-note i{margin-top:2px;flex-shrink:0}
-    [data-theme="dark"] .t2-write-gate-note{background:#2a2416;border-color:#78350f;color:#fcd34d}
     .t2-start-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-top:20px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
     .t2-start-btn:hover{opacity:.9;transform:translateY(-1px)}
     .t2-draft-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
@@ -125,29 +91,6 @@
     [data-theme="dark"] .t2-answer-hint-count{background:var(--surface, #0d0d0d);color:#94a3b8}
     [data-theme="dark"] .t2-answer-hint-pattern{color:#64748b}
 
-    /* ── Vocab-gate banner (select screen) ── */
-    .t2-vocab-gate-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#eff6ff;border:1.5px solid #bae6fd;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
-    .t2-vocab-gate-info{font-size:13px;color:#0369a1;line-height:1.5}
-    [data-theme="dark"] .t2-vocab-gate-banner{background:#0c1e30;border-color:#1e4060}
-    [data-theme="dark"] .t2-vocab-gate-info{color:#7dd3fc}
-
-    /* ── Vocab "save all" button — deliberately its own class, NOT
-       .t2-start-btn: startSession()'s finally block resets whichever
-       element matches `.t2-start-btn` by a bare querySelector() after
-       render() has already swapped the DOM, so reusing that class here
-       let it clobber this button's label back to "Bắt đầu". ── */
-    .t2-vocab-saveall-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:4px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
-    .t2-vocab-saveall-btn:hover{opacity:.9}
-    .t2-vocab-saveall-btn:disabled{opacity:.6;cursor:default}
-
-    /* ── Vocab card save button ── */
-    .t2-vocab-save-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;transition:all .15s}
-    .t2-vocab-save-btn:hover{border-color:#6366f1;color:#6366f1}
-    .t2-vocab-save-btn.saved{border-color:#16a34a;color:#16a34a;cursor:default}
-    .t2-vocab-save-btn:disabled{opacity:.8;cursor:default}
-    [data-theme="dark"] .t2-vocab-save-btn{border-color:var(--border2, #333333);color:#94a3b8}
-    [data-theme="dark"] .t2-vocab-save-btn.saved{border-color:#4ade80;color:#4ade80}
-
     /* ── AI grading badge ── */
     .t2-ai-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.3px}
     [data-theme="dark"] .t2-ai-badge{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
@@ -183,16 +126,6 @@
     [data-theme="dark"] .t2-explanation .t2-exp-title{color:#4ade80}
     [data-theme="dark"] .t2-explanation .t2-exp-body{color:#86efac}
 
-    /* ── Vocab mode ── */
-    .t2-vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:20px}
-    .t2-vocab-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;padding:14px 16px;transition:box-shadow .2s}
-    .t2-vocab-card:hover{box-shadow:0 4px 12px rgba(99,102,241,.15);border-color:#6366f1}
-    .t2-vocab-term{font-size:15px;font-weight:800;color:#111827;margin-bottom:4px}
-    .t2-vocab-def{font-size:13px;color:#6366f1;font-weight:600;margin-bottom:6px}
-    .t2-vocab-ex{font-size:12px;color:#6b7280;line-height:1.5;font-style:italic}
-    [data-theme="dark"] .t2-vocab-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333)}
-    [data-theme="dark"] .t2-vocab-term{color:#f1f5f9}
-
     /* ── Done screen ── */
     .t2-done{text-align:center;padding:40px 20px;max-width:480px;margin:0 auto}
     .t2-done-icon{font-size:60px;line-height:1;margin-bottom:12px}
@@ -203,7 +136,6 @@
     .t2-done-stat-num{font-size:26px;font-weight:900;color:#6366f1}
     .t2-done-stat-lbl{font-size:12px;color:#6b7280}
 
-    @media(max-width:480px){.t2-week-grid{grid-template-columns:repeat(2,1fr)}}
 
     /* ── Submit button disabled ── */
     .wp-submit-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -219,12 +151,9 @@
     [data-theme="dark"] .t2-dot-current{box-shadow:0 0 0 2px #3730a3}
     #q-dots .t2-q-dot{cursor:pointer}
     #q-dots .t2-q-dot:hover{transform:scale(1.5)}
-    /* ── Practice context strip ── */
-    .t2-ctx-strip{display:flex;align-items:center;gap:8px;padding:7px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;font-size:12px}
-    [data-theme="dark"] .t2-ctx-strip{background:var(--surface, #0d0d0d);border-bottom-color:var(--border2, #333333)}
+    /* ── Practice header: week + topic ── */
     .t2-ctx-week{font-weight:700;color:#6366f1;background:#ede9fe;padding:2px 10px;border-radius:20px}
     [data-theme="dark"] .t2-ctx-week{background:#1e1b4b;color:#a5b4fc}
-    .t2-ctx-divider{color:#d1d5db}
     .t2-ctx-name{font-weight:600;color:#374151;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     [data-theme="dark"] .t2-ctx-name{color:#cbd5e1}
     /* ── Quit modal ── */
@@ -260,10 +189,6 @@
     [data-theme="dark"] .wp-test-timer.warn{background:#431407;border-color:#9a3412;color:#fdba74}
     [data-theme="dark"] .wp-test-timer.danger{background:#450a0a;border-color:#7f1d1d;color:#fca5a5}
 
-    /* ── Settings toggles ── */
-    .t2-settings-block{margin-top:6px;padding-top:10px;border-top:1px solid #f3f4f6}
-    [data-theme="dark"] .t2-settings-block{border-color:var(--surface, #0d0d0d)}
-
     /* ── Brainstorm step (think first, then reveal) ── */
     .t2-brainstorm{margin-top:14px;border:1px solid #e0e7ff;background:#f5f6ff;border-radius:12px;padding:12px 14px}
     [data-theme="dark"] .t2-brainstorm{background:#161a2e;border-color:#2b3357}
@@ -284,17 +209,6 @@
     [data-theme="dark"] .t2-brainstorm-hint-side{color:#a5b4fc}
     .t2-brainstorm-hint-list{margin:0 0 4px;padding-left:20px;font-size:12.5px;color:#4b5563;line-height:1.6}
     [data-theme="dark"] .t2-brainstorm-hint-list{color:#cbd5e1}
-    .t2-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
-    .t2-toggle-row:hover .t2-toggle-label{color:#6366f1}
-    .t2-toggle-label{font-size:13px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
-    [data-theme="dark"] .t2-toggle-label{color:#94a3b8}
-    .t2-switch{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
-    .t2-switch input{opacity:0;width:0;height:0}
-    .t2-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:18px;transition:.2s}
-    .t2-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-    .t2-switch input:checked+.t2-slider{background:#6366f1}
-    .t2-switch input:checked+.t2-slider:before{transform:translateX(16px)}
-    [data-theme="dark"] .t2-slider{background:var(--border2, #333333)}
 
     /* ── Auto-next countdown bar ── */
     @keyframes t2CountdownBar{from{width:100%}to{width:0%}}
@@ -309,16 +223,11 @@
     /* ── Page-level headings / sub-text (rendered inside #app) ── */
     .t2-page-h2{font-weight:800;color:#111827;margin:0 0 4px}
     .t2-page-sub{color:#6b7280;margin:0}
-    .t2-week-name{font-size:12px;font-weight:600;margin-bottom:2px}
     [data-theme="dark"] .t2-page-h2{color:#f1f5f9}
     [data-theme="dark"] .t2-page-sub{color:#9ca3af}
-    [data-theme="dark"] .t2-week-label{color:#64748b}
-    [data-theme="dark"] .t2-week-name{color:#cbd5e1}
     [data-theme="dark"] .t2-done-sub{color:#9ca3af}
     [data-theme="dark"] .t2-done-stat-lbl{color:#64748b}
-    [data-theme="dark"] .t2-selector-title{color:#f1f5f9}
     [data-theme="dark"] .t2-selector-prompt{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
-    [data-theme="dark"] .t2-selector-label{color:#94a3b8}
 
     /* ── History modal (task2) ── */
     .t2-hist-modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -475,6 +384,222 @@
       .t2-wbw-word { font-size: 15px; }
     }
 
+    /* ══ Weeks screen: grouped by essay type ══ */
+    .t2-page-head{padding:20px 20px 4px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .t2-flow-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 20px 4px;font-size:12.5px;color:#6b7280}
+    .t2-flow-hint b{color:#4338ca;background:#eef2ff;border-radius:20px;padding:2px 10px;font-weight:700}
+    .t2-flow-hint i{font-size:9px;color:#c7d2fe}
+    [data-theme="dark"] .t2-flow-hint b{background:#1e1b4b;color:#a5b4fc}
+    .t2-group-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding:12px 20px 20px}
+    .t2-group{background:var(--surface,#fff);border:1.5px solid #e5e7eb;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+    .t2-group.is-review{grid-column:1/-1}
+    .t2-group-head{display:flex;align-items:center;gap:10px}
+    .t2-group-emoji{font-size:26px;line-height:1}
+    .t2-group-theme{font-size:15px;font-weight:800;color:#111827;margin-bottom:3px}
+    .t2-badge-mixed{background:#f3f4f6;color:#4b5563}
+    .t2-group-weeks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .t2-group.is-review .t2-group-weeks{grid-template-columns:repeat(4,1fr)}
+    .t2-wk{border:1.5px solid #e5e7eb;border-radius:10px;background:#f9fafb;padding:10px 12px;cursor:pointer;text-align:left;font-family:inherit;display:flex;flex-direction:column;align-items:flex-start;gap:2px;transition:border-color .15s,background .15s,transform .1s}
+    .t2-wk:hover{border-color:#6366f1;background:#f0f0ff}
+    .t2-wk:active{transform:scale(.97)}
+    .t2-wk-num{font-size:15px;font-weight:800;color:#6366f1}
+    .t2-wk-sub{font-size:12px;color:#6b7280}
+    .t2-wk.has-draft{border-color:#f59e0b;background:#fffbeb}
+    .t2-wk.locked{opacity:.45;cursor:not-allowed}
+    .t2-wk .t2-week-draft-pill{margin-top:4px}
+    [data-theme="dark"] .t2-group{background:var(--surface,#0d0d0d);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-group-theme{color:#f1f5f9}
+    [data-theme="dark"] .t2-badge-mixed{background:#1f2937;color:#cbd5e1}
+    [data-theme="dark"] .t2-wk{background:var(--bg,#000);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-wk:hover{border-color:#818cf8;background:#1e1b4b}
+    [data-theme="dark"] .t2-wk.has-draft{border-color:#d97706;background:#1c1a0e}
+    [data-theme="dark"] .t2-wk-sub{color:#94a3b8}
+    @media(max-width:560px){.t2-group.is-review .t2-group-weeks{grid-template-columns:repeat(2,1fr)}}
+
+    /* "Đang làm dở" — one-click resume straight from the weeks screen */
+    .t2-continue{margin:8px 20px 4px;border:1.5px solid #fde68a;background:#fffbeb;border-radius:12px;padding:10px 14px}
+    .t2-continue-title{font-size:11.5px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .t2-continue-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed #fde68a}
+    .t2-continue-title+.t2-continue-row{border-top:none}
+    .t2-continue-name{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .t2-continue-meta{font-weight:500;color:#92400e;font-size:12px}
+    [data-theme="dark"] .t2-continue{background:#1c1a0e;border-color:#78350f}
+    [data-theme="dark"] .t2-continue-row{border-color:#78350f}
+    [data-theme="dark"] .t2-continue-name{color:#f1f5f9}
+    [data-theme="dark"] .t2-continue-title,[data-theme="dark"] .t2-continue-meta{color:#fcd34d}
+
+    /* ══ Topics screen: per-topic progress chips ══ */
+    .t2-topic-steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+    .t2-step-chip{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:#f3f4f6;color:#6b7280;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+    .t2-step-chip.ok{background:#dcfce7;color:#15803d}
+    .t2-step-chip.mid{background:#fef3c7;color:#92400e}
+    [data-theme="dark"] .t2-step-chip{background:#1f2937;color:#94a3b8}
+    [data-theme="dark"] .t2-step-chip.ok{background:#052e16;color:#4ade80}
+    [data-theme="dark"] .t2-step-chip.mid{background:#3a2c0a;color:#fcd34d}
+
+    /* ══ Topic hub: 3-step path (Từ vựng → Luyện câu → Viết bài) ══ */
+    .t2-nav-row{justify-content:space-between;max-width:720px;margin:0 auto}
+    .t2-icon-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid #e5e7eb;background:none;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;transition:border-color .15s,color .15s}
+    .t2-icon-btn:hover{border-color:#6366f1;color:#6366f1}
+    [data-theme="dark"] .t2-icon-btn{border-color:var(--border2,#333);color:#94a3b8}
+    .t2-hub{max-width:720px;margin:0 auto;padding:0 20px 24px}
+    .t2-hub-head{display:flex;gap:12px;align-items:center}
+    .t2-hub-emoji{font-size:36px;line-height:1}
+    .t2-hub-title{font-size:20px;font-weight:800;color:#111827;margin:0 0 4px}
+    [data-theme="dark"] .t2-hub-title{color:#f1f5f9}
+    .t2-stepper{display:flex;gap:6px;margin:14px 0 4px}
+    .t2-stepper-item{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#f3f4f6;color:#6b7280;cursor:pointer;border:none;font-family:inherit;text-align:left}
+    .t2-stepper-num{width:22px;height:22px;border-radius:50%;background:#d1d5db;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+    .t2-stepper-txt{min-width:0;font-size:12.5px;font-weight:800;line-height:1.25}
+    .t2-stepper-sub{display:block;font-size:11px;font-weight:600;opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .t2-stepper-item.is-done{background:#dcfce7;color:#15803d}
+    .t2-stepper-item.is-done .t2-stepper-num{background:#16a34a}
+    .t2-stepper-item.is-current{background:#ede9fe;color:#4338ca}
+    .t2-stepper-item.is-current .t2-stepper-num{background:#6366f1}
+    [data-theme="dark"] .t2-stepper-item{background:#1f2937;color:#94a3b8}
+    [data-theme="dark"] .t2-stepper-num{background:#374151}
+    [data-theme="dark"] .t2-stepper-item.is-done{background:#052e16;color:#4ade80}
+    [data-theme="dark"] .t2-stepper-item.is-current{background:#1e1b4b;color:#a5b4fc}
+    .t2-step{border:1.5px solid #e5e7eb;border-radius:14px;padding:16px;margin-top:12px;background:var(--surface,#fff);scroll-margin-top:80px}
+    .t2-step.is-current{border-color:#c7d2fe;box-shadow:0 4px 18px rgba(99,102,241,.10)}
+    .t2-step.is-locked{background:#f9fafb}
+    .t2-step.is-locked .t2-step-title{color:#9ca3af}
+    [data-theme="dark"] .t2-step{background:var(--surface,#0d0d0d);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-step.is-current{border-color:#3730a3}
+    [data-theme="dark"] .t2-step.is-locked{background:var(--bg,#000)}
+    .t2-step-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .t2-step-num{width:26px;height:26px;border-radius:50%;background:#6366f1;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+    .t2-step.is-locked .t2-step-num{background:#d1d5db}
+    .t2-step-num.is-done{background:#16a34a}
+    .t2-step-num.is-alt{background:#f3f4f6;color:#6b7280}
+    [data-theme="dark"] .t2-step-num.is-alt{background:#1f2937;color:#94a3b8}
+    .t2-step-title{flex:1;min-width:0;font-size:15.5px;font-weight:800;color:#111827}
+    [data-theme="dark"] .t2-step-title{color:#f1f5f9}
+    .t2-step-tag{font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:20px;background:#f3f4f6;color:#6b7280;white-space:nowrap}
+    .t2-step-tag.ok{background:#dcfce7;color:#15803d}
+    .t2-step-tag.mid{background:#fef3c7;color:#92400e}
+    [data-theme="dark"] .t2-step-tag{background:#1f2937;color:#94a3b8}
+    [data-theme="dark"] .t2-step-tag.ok{background:#052e16;color:#4ade80}
+    [data-theme="dark"] .t2-step-tag.mid{background:#3a2c0a;color:#fcd34d}
+    .t2-opt-tag{font-size:10.5px;font-weight:700;color:#9ca3af;background:#f3f4f6;border-radius:20px;padding:1px 8px;margin-left:4px;vertical-align:middle}
+    [data-theme="dark"] .t2-opt-tag{background:#1f2937}
+    .t2-step-desc{font-size:13px;color:#6b7280;margin:8px 0 10px;line-height:1.6}
+    [data-theme="dark"] .t2-step-desc{color:#94a3b8}
+    .t2-meter{height:7px;border-radius:7px;background:#eef0f3;overflow:hidden;margin:4px 0 12px}
+    .t2-meter>span{display:block;height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:7px;transition:width .35s}
+    .t2-meter.ok>span{background:#16a34a}
+    [data-theme="dark"] .t2-meter{background:#1f2937}
+    .t2-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .t2-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit;box-shadow:0 3px 10px rgba(99,102,241,.25);transition:opacity .15s,transform .1s}
+    .t2-primary:hover{opacity:.92}
+    .t2-primary:active{transform:scale(.97)}
+    .t2-primary:disabled{opacity:.55;cursor:default}
+    .t2-primary.is-lg{padding:12px 24px;font-size:15px}
+    .t2-primary.is-sm{padding:6px 12px;font-size:12.5px;box-shadow:none}
+    .t2-primary.is-write{background:linear-gradient(135deg,#e53935,#c62828);box-shadow:0 3px 10px rgba(229,57,53,.25)}
+    .t2-secondary{border:1.5px solid #e5e7eb;background:var(--surface,#fff);color:#374151;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:border-color .15s,color .15s}
+    .t2-secondary:hover:not(:disabled){border-color:#6366f1;color:#4338ca}
+    .t2-secondary:disabled{opacity:.5;cursor:default}
+    .t2-secondary.is-warn{border-color:#fcd34d;color:#92400e;background:#fffbeb}
+    [data-theme="dark"] .t2-secondary{background:transparent;border-color:var(--border2,#333);color:#cbd5e1}
+    [data-theme="dark"] .t2-secondary.is-warn{border-color:#78350f;color:#fcd34d;background:#1c1a0e}
+    .t2-link{background:none;border:none;color:#6366f1;font-weight:700;font-size:12.5px;cursor:pointer;padding:6px 2px;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+    .t2-link:hover{text-decoration:underline}
+    [data-theme="dark"] .t2-link{color:#a5b4fc}
+    .t2-lock-note{display:flex;gap:8px;align-items:center;font-size:13px;color:#6b7280;background:#f3f4f6;border-radius:9px;padding:9px 12px}
+    [data-theme="dark"] .t2-lock-note{background:#1f2937;color:#94a3b8}
+    .t2-opts-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .t2-pill-toggle{border:1.5px solid #e5e7eb;background:none;color:#6b7280;border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;transition:all .15s}
+    .t2-pill-toggle::before{content:'';width:8px;height:8px;border-radius:50%;background:#d1d5db;transition:background .15s}
+    .t2-pill-toggle.on{border-color:#6366f1;background:#eef2ff;color:#4338ca}
+    .t2-pill-toggle.on::before{background:#6366f1}
+    [data-theme="dark"] .t2-pill-toggle{border-color:var(--border2,#333);color:#94a3b8}
+    [data-theme="dark"] .t2-pill-toggle.on{background:#1e1b4b;border-color:#818cf8;color:#a5b4fc}
+    .t2-seg{display:inline-flex;border:1.5px solid #e5e7eb;border-radius:10px;overflow:hidden}
+    .t2-seg button{border:none;background:none;padding:8px 12px;font-size:12.5px;font-weight:700;color:#6b7280;cursor:pointer;font-family:inherit}
+    .t2-seg button+button{border-left:1.5px solid #e5e7eb}
+    .t2-seg button.active{background:#eef2ff;color:#4338ca}
+    [data-theme="dark"] .t2-seg,[data-theme="dark"] .t2-seg button+button{border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-seg button.active{background:#1e1b4b;color:#a5b4fc}
+    .t2-hub .t2-draft-banner{margin-top:12px}
+    /* Brainstorm is optional now — collapsed by default */
+    details.t2-brainstorm{margin-top:12px}
+    details.t2-brainstorm>summary{cursor:pointer;list-style:none;user-select:none;font-size:13px;font-weight:800;color:#4338ca}
+    details.t2-brainstorm>summary::-webkit-details-marker{display:none}
+    details.t2-brainstorm>summary::before{content:'▸ ';font-weight:900}
+    details.t2-brainstorm[open]>summary::before{content:'▾ '}
+    [data-theme="dark"] details.t2-brainstorm>summary{color:#a5b4fc}
+
+    /* Vocab list (compact, inline on the hub) */
+    .t2-vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-top:12px}
+    .t2-vitem{display:flex;gap:8px;align-items:flex-start;border:1px solid #eef0f3;border-radius:10px;padding:9px 10px;background:#fafafa}
+    .t2-vitem.is-saved{border-left:3px solid #16a34a}
+    .t2-vitem-main{flex:1;min-width:0}
+    .t2-vitem-term{font-weight:800;font-size:14px;color:#111827;display:flex;align-items:center;gap:6px}
+    .t2-vitem-def{font-size:12.5px;color:#6366f1;font-weight:600;margin-top:1px}
+    .t2-vitem-ex{font-size:12px;color:#6b7280;font-style:italic;line-height:1.45;margin-top:3px}
+    .t2-speak{background:none;border:none;color:#9ca3af;cursor:pointer;padding:0 2px;font-size:12px}
+    .t2-speak:hover{color:#6366f1}
+    .t2-vbtn{width:30px;height:30px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;color:#6b7280;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+    .t2-vbtn:hover:not(:disabled){border-color:#6366f1;color:#6366f1}
+    .t2-vbtn.saved{border-color:#86efac;color:#16a34a;background:#f0fdf4;cursor:default}
+    [data-theme="dark"] .t2-vitem{background:var(--bg,#000);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-vitem-term{color:#f1f5f9}
+    [data-theme="dark"] .t2-vitem-def{color:#a5b4fc}
+    [data-theme="dark"] .t2-vitem-ex{color:#94a3b8}
+    [data-theme="dark"] .t2-vbtn{background:transparent;border-color:var(--border2,#333);color:#94a3b8}
+    [data-theme="dark"] .t2-vbtn.saved{border-color:#166534;color:#4ade80;background:#052e16}
+
+    /* Vocab quiz (optional, inline) */
+    .t2-quiz{margin-top:12px;border:1.5px solid #e0e7ff;background:#f8f9ff;border-radius:12px;padding:14px}
+    [data-theme="dark"] .t2-quiz{background:#11142a;border-color:#2b3357}
+    .t2-quiz-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:#6b7280}
+    .t2-quiz-kind{font-size:11px;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:.04em;margin-top:6px}
+    .t2-quiz-q{font-size:17px;font-weight:700;color:#111827;margin:6px 0 12px;line-height:1.5}
+    [data-theme="dark"] .t2-quiz-q{color:#f1f5f9}
+    .t2-quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .t2-quiz-opt{text-align:left;border:1.5px solid #e5e7eb;background:#fff;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:#111827;display:flex;gap:9px;align-items:flex-start;transition:border-color .15s,background .15s}
+    .t2-quiz-opt:hover:not(:disabled){border-color:#6366f1;background:#f5f3ff}
+    .t2-quiz-opt:disabled{cursor:default}
+    .t2-quiz-key{width:20px;height:20px;border-radius:50%;background:#eef0f3;color:#6b7280;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .t2-quiz-opt.correct{border-color:#16a34a;background:#dcfce7}
+    .t2-quiz-opt.correct .t2-quiz-key{background:#16a34a;color:#fff}
+    .t2-quiz-opt.wrong{border-color:#dc2626;background:#fee2e2}
+    .t2-quiz-opt.wrong .t2-quiz-key{background:#dc2626;color:#fff}
+    [data-theme="dark"] .t2-quiz-opt{background:var(--surface,#0d0d0d);border-color:var(--border2,#333);color:#f1f5f9}
+    [data-theme="dark"] .t2-quiz-key{background:#1f2937;color:#94a3b8}
+    [data-theme="dark"] .t2-quiz-opt.correct{background:#14532d;border-color:#16a34a}
+    [data-theme="dark"] .t2-quiz-opt.wrong{background:#450a0a;border-color:#dc2626}
+    .t2-quiz-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;min-height:38px;flex-wrap:wrap}
+    .t2-quiz-fb{font-size:13px;font-weight:700}
+    .t2-quiz-fb.ok{color:#15803d}
+    .t2-quiz-fb.bad{color:#b91c1c}
+    [data-theme="dark"] .t2-quiz-fb.ok{color:#4ade80}
+    [data-theme="dark"] .t2-quiz-fb.bad{color:#fca5a5}
+    .t2-quiz-done{text-align:center;padding:6px 0}
+    .t2-quiz-score{font-size:40px;font-weight:900;color:#6366f1;line-height:1.1}
+    .t2-quiz-miss{text-align:left;margin:12px 0 4px;font-size:13px;color:#374151;line-height:1.7}
+    [data-theme="dark"] .t2-quiz-miss{color:#cbd5e1}
+    @media(max-width:560px){
+      .t2-quiz-opts{grid-template-columns:1fr}
+      .t2-stepper-item{padding:7px 8px;gap:6px}
+      .t2-stepper-num{display:none}
+    }
+
+    /* ══ Practice screen: single compact header ══ */
+    .t2-prac-head{display:flex;align-items:center;gap:10px;padding:8px 20px;flex-wrap:wrap}
+    .t2-prac-ctx{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:12.5px;overflow:hidden}
+    .t2-prac-ctx .t2-ctx-week{flex-shrink:0;white-space:nowrap}
+    .t2-prac-ctx .t2-ctx-name{max-width:none;min-width:0}
+    details.t2-prompt-box>summary{cursor:pointer;list-style:none;user-select:none}
+    details.t2-prompt-box>summary::-webkit-details-marker{display:none}
+    details.t2-prompt-box:not([open])>summary .t2-prompt-peek{display:inline}
+    .t2-prompt-peek{display:none;font-weight:500;color:#92400e;opacity:.8}
+    details.t2-prompt-box>summary::after{content:'\f078';font-family:'Font Awesome 6 Free';font-weight:900;font-size:10px;margin-left:6px;opacity:.6}
+    details.t2-prompt-box[open]>summary::after{content:'\f077'}
+    [data-theme="dark"] .t2-prompt-box{background:#1c1a00;border-color:#92400e;color:#fde68a}
+    [data-theme="dark"] .t2-prompt-box-label,[data-theme="dark"] .t2-prompt-peek{color:#fcd34d}
+
   </style>
 </head>
 <body>
@@ -482,7 +607,7 @@
 <script src="/js/auth.js?v=20261007guest"></script>
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="/js/nav.js?v=20261007guest"></script>
+<script src="/js/nav.js?v=20261008t2hub"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/shared/utils.js?v=20260831"></script>
 <script src="/js/shared/toast.js?v=20260831"></script>
@@ -613,6 +738,27 @@ const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Đ
 const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
+// Each essay type spans 2 consecutive weeks (1 theme each, no theme repeated
+// across blocks) — see restructure notes (2026). Weeks 15-18 stay "Ôn tập"
+// (mixed review content). Ordered Type01→Type07 (matches Task2Topic.week
+// reassignment in seedTask2Exercises.js and the WT1 Task 2 course's Module 2
+// lesson order). The weeks screen renders one card per group.
+const WEEK_GROUPS = [
+  { essayType: 'advantages_disadvantages',         theme: 'Technology',      emoji: '💻', weeks: [1, 2] },
+  { essayType: 'discuss_both_views',               theme: 'Government',      emoji: '🏛️', weeks: [3, 4] },
+  { essayType: 'cause_solution',                   theme: 'Health',          emoji: '🩺', weeks: [5, 6] },
+  { essayType: 'effect_solution',                  theme: 'Transport',       emoji: '🚆', weeks: [7, 8] },
+  { essayType: 'cause_effect',                     theme: 'Education',       emoji: '🎓', weeks: [9, 10] },
+  { essayType: 'agree_disagree',                   theme: 'Work',            emoji: '💼', weeks: [11, 12] },
+  { essayType: 'positive_or_negative_development', theme: 'Environment',     emoji: '🌿', weeks: [13, 14] },
+  { essayType: null,                               theme: 'Ôn tập tổng hợp', emoji: '🔁', weeks: [15, 16, 17, 18] }
+];
+function weekLabel(w) {
+  const g = WEEK_GROUPS.find(g => g.weeks.includes(w));
+  if (!g) return '';
+  return g.essayType ? `${ESSAY_LABELS[g.essayType]} · ${g.theme}` : 'Ôn tập';
+}
+
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
@@ -651,10 +797,28 @@ let state = {
   topicStats: null,
   // all drafts across topics (for week screen indicators)
   allDrafts: [],
-  // settings toggles
+  // settings toggles (remembered per browser — see _loadT2Prefs)
   autoNext: false,
-  shuffleMode: false
+  shuffleMode: false,
+  // Topic hub: vocab is loaded inline (no separate "Từ vựng" screen).
+  // vocabFor = the topic _id state.vocab belongs to; vocabError = last fetch failed.
+  vocabFor: null,
+  vocabError: false,
+  vocabOpen: null,      // null = auto (open until every term is saved)
+  vocabQuiz: null,      // optional inline quiz — see startVocabQuiz()
+  // Brainstorm notes survive hub re-renders (vocab save, stats refresh).
+  brainstorm: { topicId: null, notes: [], open: false, hintOpen: false },
+  promptOpen: true      // practice screen's collapsible prompt box
 };
+
+const T2_PREFS_KEY = 't2_prefs';
+(function _loadT2Prefs() {
+  try {
+    const p = JSON.parse(localStorage.getItem(T2_PREFS_KEY) || '{}');
+    state.autoNext = !!p.autoNext;
+    state.shuffleMode = !!p.shuffleMode;
+  } catch {}
+})();
 
 let _autoNextTimer = null;
 let _examKeyHandler = null;
@@ -662,21 +826,10 @@ let _examKeyHandler = null;
 // ════════════════════════════════════════════════════════
 //  SHAREABLE URL
 // ════════════════════════════════════════════════════════
-function _syncT2ShareUrl() {
-  const params = new URLSearchParams();
-  if (state.selectedWeek) params.set('week', state.selectedWeek);
-  if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
-  if (state.currentMode && state.currentMode !== 'practice') params.set('mode', state.currentMode);
-  const search = params.toString() ? '?' + params.toString() : location.pathname.split('?')[0];
-  history.replaceState(null, '', location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : ''));
-}
-
 function copyT2ShareUrl() {
-  // Always include current mode in the copied URL
   const params = new URLSearchParams();
   if (state.selectedWeek) params.set('week', state.selectedWeek);
   if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
-  if (state.currentMode) params.set('mode', state.currentMode);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url)
@@ -900,16 +1053,18 @@ function render() {
     case 'practice': app.innerHTML = renderPractice(); bindPractice(); break;
     case 'exam':     app.innerHTML = renderExam();     bindExam();     break;
     case 'examDone': app.innerHTML = renderExamDone(); break;
-    case 'vocab':    app.innerHTML = renderVocab();    break;
     case 'done':     app.innerHTML = renderDone();     break;
   }
   // Session stats (BÀI LÀM/XP/ĐÚNG) only mean something once a practice
   // session is actually running — outside 'practice'/'done' they'd just be
   // stale zeros floating over the weeks/topics picker, which is the bug this
-  // guards against. Desktop widget is fixed top-right (like task1/writing);
-  // mobile bar's own visibility still comes from the shared CSS media query.
+  // guards against. Desktop widget is fixed top-right (like task1/writing).
+  const inSession = state.view === 'practice' || state.view === 'done';
   const widget = document.getElementById('t2-stats-widget');
-  if (widget) widget.style.display = (state.view === 'practice' || state.view === 'done') ? '' : 'none';
+  if (widget) widget.style.display = inSession ? '' : 'none';
+  // Same for the mobile bar — '' hands visibility back to the media query.
+  const mobBar = document.getElementById('wp-mobile-stats');
+  if (mobBar) mobBar.style.display = inSession ? '' : 'none';
 }
 
 // ════════════════════════════════════════════════════════
@@ -959,8 +1114,10 @@ async function loadWeeks() {
       { pattern: /^\/task2-practice\/([^/?#]+)$/, param: 'topicId' }
     ]) : null;
     const urlTopicId = (cleanTopic && cleanTopic.topicId) || params.get('topicId');
+    // Old share links / homework links carry ?mode=vocab|exam from when the
+    // topic screen had a mode picker — now they just scroll to that step.
     const urlMode    = params.get('mode');
-    if (urlMode)  state.currentMode   = urlMode;
+    if (urlMode === 'vocab' || urlMode === 'exam') _hubFocus = urlMode;
 
     const hasToken = window.AuthService.isLoggedIn();
     const [data, allDraftsData] = await Promise.all([
@@ -1003,15 +1160,18 @@ async function loadWeeks() {
       if (topic) {
         state.selectedTopic = topic;
         state.topicStats = null;
+        _resetHubState(topic._id);
         if (hasToken) {
           try {
-            const [wrongData, draftData] = await Promise.all([
+            const [wrongData, draftData, , vocab] = await Promise.all([
               apiFetch(`/api/task2/wrong-questions/${urlTopicId}`),
               apiFetch(`/api/task2/draft/${urlTopicId}`),
-              loadTopicStats(urlTopicId)
+              loadTopicStats(urlTopicId),
+              _fetchVocab(urlTopicId)
             ]);
             state.wrongQuestionIds = wrongData.wrongIds || [];
             state.draft = draftData.draft || null;
+            _applyVocab(urlTopicId, vocab);
           } catch {}
         }
         state.view = 'select';
@@ -1035,83 +1195,82 @@ async function loadWeeks() {
   } catch { app.innerHTML = '<p style="text-align:center;color:red;padding:40px">Lỗi tải dữ liệu</p>'; }
 }
 
+// Drafts that still have unanswered questions — drives the "Đang làm dở"
+// box on the weeks screen and the per-topic "Đang dở" pill.
+function _pendingDrafts() {
+  return (state.allDrafts || [])
+    .map(d => ({ ...d, _rem: (d.questionIds?.length || 0) - (d.currentIdx || 0) }))
+    .filter(d => d._rem > 0);
+}
+
 function renderWeeks() {
-  const weekNums = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
   const weekData = {};
   state.weeks.forEach(w => { weekData[w.week] = w; });
-  // Each essay type now spans 2 consecutive weeks (1 theme each, no theme
-  // repeated across blocks) — see restructure notes (2026). Weeks 15-18
-  // stay "Ôn tập" (mixed review content, unchanged since the old 9-12).
-  // Ordered Type01→Type07 (matches Task2Topic.week reassignment in
-  // seedTask2Exercises.js and the WT1 Task 2 course's Module 2 lesson
-  // order) — was previously scrambled (Type05/06/02 sat at weeks 3-4/9-10/
-  // 11-12 instead of their type-numbered slots).
-  const weekNames = {
-    1:'Adv & Disadv · Technology', 2:'Adv & Disadv · Technology',
-    3:'Discuss Both · Government', 4:'Discuss Both · Government',
-    5:'Cause & Solution · Health', 6:'Cause & Solution · Health',
-    7:'Effect & Solution · Transport', 8:'Effect & Solution · Transport',
-    9:'Cause & Effect · Education', 10:'Cause & Effect · Education',
-    11:'Agree/Disagree · Work', 12:'Agree/Disagree · Work',
-    13:'Positive/Negative · Environment', 14:'Positive/Negative · Environment',
-    15:'Ôn tập', 16:'Ôn tập', 17:'Ôn tập', 18:'Ôn tập'
-  };
-  // group pending drafts by week
-  const draftsByWeek = {};
-  (state.allDrafts || []).forEach(dr => {
-    const rem = (dr.questionIds?.length || 0) - (dr.currentIdx || 0);
-    if (rem > 0 && dr.week) {
-      if (!draftsByWeek[dr.week]) draftsByWeek[dr.week] = { remaining: 0, topics: 0 };
-      draftsByWeek[dr.week].remaining += rem;
-      draftsByWeek[dr.week].topics++;
-    }
-  });
-  const totalDraftTopics = Object.values(draftsByWeek).reduce((s, v) => s + v.topics, 0);
+  const drafts = _pendingDrafts().filter(d => d.week);
+  const draftWeeks = new Set(drafts.map(d => Number(d.week)));
   return `
-    <div style="padding:20px 20px 8px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div class="t2-page-head">
       <div>
-        <h2 class="t2-page-h2" style="font-size:20px">📝 IELTS Task 2 Writing</h2>
+        <h2 class="t2-page-h2" style="font-size:22px">📝 IELTS Task 2 Writing</h2>
         <p class="t2-page-sub" style="font-size:14px">Chọn tuần học để bắt đầu luyện tập</p>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-        <button onclick="openT2History()" class="t2-back-btn" style="white-space:nowrap">
-          <i class="fas fa-history"></i> Lịch sử
-        </button>
-      </div>
+      <button onclick="openT2History()" class="t2-back-btn" style="white-space:nowrap">
+        <i class="fas fa-history"></i> Lịch sử
+      </button>
     </div>
-    ${(window.AuthService && !window.AuthService.hasPremiumAccess()) ? `<div id="premium-promo-banner" style="margin:0 20px 16px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;flex-wrap:wrap">
+    <div class="t2-flow-hint">
+      <span>Mỗi chủ đề gồm:</span>
+      <b>① Từ vựng</b><i class="fas fa-chevron-right"></i><b>② Luyện câu</b><i class="fas fa-chevron-right"></i><b>③ Viết bài</b>
+    </div>
+    ${(window.AuthService && !window.AuthService.hasPremiumAccess()) ? `<div id="premium-promo-banner" style="margin:8px 20px 4px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;flex-wrap:wrap">
       <div style="font-size:22px">⭐</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện tập không giới hạn</div>
-        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ 12 tuần Task 2 Writing theo chủ đề</div>
+        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ 18 tuần Task 2 Writing theo chủ đề</div>
       </div>
       <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
     </div>` : ''}
-    ${totalDraftTopics > 0 ? `<div style="margin:0 20px 4px;padding:10px 14px;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;font-size:13px;color:#92400e;display:flex;align-items:center;gap:8px">
-      <i class="fas fa-bookmark" style="color:#f59e0b"></i>
-      Bạn có <strong>${totalDraftTopics} topic</strong> đang dở — tuần được đánh dấu màu vàng. Nhấn vào để tiếp tục!
+    ${drafts.length ? `
+    <div class="t2-continue">
+      <div class="t2-continue-title"><i class="fas fa-bookmark"></i> Đang làm dở</div>
+      ${drafts.slice(0, 3).map(d => `
+        <div class="t2-continue-row">
+          <span class="t2-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2-continue-meta">· Tuần ${Number(d.week)} · còn ${d._rem} câu</span></span>
+          <button class="t2-primary is-sm t2-continue-go" data-week="${Number(d.week)}" data-topic="${_escHtml(String(d.topicId))}"><i class="fas fa-play"></i> Tiếp tục</button>
+        </div>`).join('')}
     </div>` : ''}
-    <div class="t2-week-grid">
-      ${weekNums.map(w => {
-        const d = weekData[w];
-        const hasContent = !!d;
-        const draftInfo = draftsByWeek[w];
-        const draftCls = draftInfo ? ' has-draft' : '';
-        const draftPill = draftInfo
-          ? `<div class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> còn ${draftInfo.remaining} câu</div>`
-          : '';
-        return `<div class="t2-week-card ${hasContent ? '' : 'locked'}${draftCls}" data-week="${w}" style="${!hasContent ? 'opacity:.45;cursor:not-allowed' : ''}">
-          <div class="t2-week-num">W${w}</div>
-          <div class="t2-week-name">${weekNames[w] || ''}</div>
-          <div class="t2-week-label">${hasContent ? d.topicCount + ' topic' : 'Sắp ra'}</div>
-          ${draftPill}
-        </div>`;
-      }).join('')}
+    <div class="t2-group-grid">
+      ${WEEK_GROUPS.map(g => `
+        <div class="t2-group${g.essayType ? '' : ' is-review'}">
+          <div class="t2-group-head">
+            <span class="t2-group-emoji">${g.emoji}</span>
+            <div style="min-width:0">
+              <div class="t2-group-theme">${_escHtml(g.theme)}</div>
+              ${g.essayType
+                ? `<span class="${ESSAY_BADGE_CLASS[g.essayType]}">${ESSAY_LABELS[g.essayType]}</span>`
+                : `<span class="et-badge t2-badge-mixed">Tổng hợp các dạng</span>`}
+            </div>
+          </div>
+          <div class="t2-group-weeks">
+            ${g.weeks.map(w => {
+              const d = weekData[w];
+              const hasDraft = draftWeeks.has(w);
+              return `<button type="button" class="t2-wk${d ? '' : ' locked'}${hasDraft ? ' has-draft' : ''}" data-week="${w}" ${d ? '' : 'disabled'}>
+                <span class="t2-wk-num">Tuần ${w}</span>
+                <span class="t2-wk-sub">${d ? d.topicCount + ' chủ đề' : 'Sắp ra'}</span>
+                ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
+              </button>`;
+            }).join('')}
+          </div>
+        </div>`).join('')}
     </div>`;
 }
 function bindWeeks() {
-  document.querySelectorAll('.t2-week-card:not(.locked)').forEach(el => {
+  document.querySelectorAll('.t2-wk:not(.locked)').forEach(el => {
     el.addEventListener('click', () => selectWeek(parseInt(el.dataset.week)));
+  });
+  document.querySelectorAll('.t2-continue-go').forEach(el => {
+    el.addEventListener('click', () => _withBusy(el, () => openTopicDirect(parseInt(el.dataset.week), el.dataset.topic, true)));
   });
 }
 async function selectWeek(w) {
@@ -1125,50 +1284,88 @@ async function selectWeek(w) {
   } catch { showToast('Lỗi tải topics', 'error'); }
 }
 
+// Jump straight from the weeks screen into one topic (the "Đang làm dở" box).
+// With autoResume the saved draft is reopened right away — one click instead
+// of week → topic → "Tiếp tục".
+async function openTopicDirect(week, topicId, autoResume) {
+  try {
+    if (state.selectedWeek !== week || !state.topics.some(t => t._id === topicId)) {
+      const data = await apiFetch(`/api/task2/topics/week/${week}`);
+      state.topics = data.topics || [];
+    }
+    state.selectedWeek = week;
+    if (!state.topics.some(t => t._id === topicId)) { showToast('Không tìm thấy chủ đề này nữa', 'warn'); return; }
+    await selectTopic(topicId);
+    if (autoResume && state.view === 'select' && state.selectedTopic?._id === topicId && state.draft) await resumeSession();
+  } catch { showToast('Lỗi tải chủ đề', 'error'); }
+}
+
 // ════════════════════════════════════════════════════════
 //  TOPICS SCREEN
 // ════════════════════════════════════════════════════════
-function renderTopics() {
-  const draftTopicIds = new Set((state.allDrafts || []).filter(d => {
-    const rem = (d.questionIds?.length || 0) - (d.currentIdx || 0);
-    return rem > 0;
-  }).map(d => d.topicId?.toString()));
+// Where the student is on each topic's 3-step path, from what this browser
+// already knows (no extra requests): vocab saved / best practice score /
+// essay unlocked.
+function _topicChips(t) {
+  const id = t._id;
+  const chips = [];
+  if (isVocabLearned(id)) {
+    chips.push('<span class="t2-step-chip ok"><i class="fas fa-check"></i> Từ vựng</span>');
+  } else {
+    const total = _vocabTotalMap[id];
+    const saved = Math.min(_savedTermsForTopic(id).size, total || 0);
+    chips.push(`<span class="t2-step-chip">📖 Từ vựng${total ? ` ${saved}/${total}` : ''}</span>`);
+  }
+  const best = _bestPracticeScore(id);
+  if (best == null) chips.push('<span class="t2-step-chip">✏️ Chưa luyện</span>');
+  else chips.push(`<span class="t2-step-chip ${best >= T2_WRITE_MIN_ACCURACY ? 'ok' : 'mid'}">✏️ Luyện câu ${best}%</span>`);
+  if (t.writingTask2Id) {
+    chips.push(best != null && best >= T2_WRITE_MIN_ACCURACY
+      ? '<span class="t2-step-chip ok"><i class="fas fa-pen-nib"></i> Viết bài</span>'
+      : '<span class="t2-step-chip"><i class="fas fa-lock"></i> Viết bài</span>');
+  }
+  return chips.join('');
+}
 
+function renderTopics() {
+  const draftTopicIds = new Set(_pendingDrafts().map(d => d.topicId?.toString()));
+  const label = weekLabel(state.selectedWeek);
   return `
     <div class="t2-nav">
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <b>Tuần ${state.selectedWeek}</b></div>
     </div>
-    <div style="padding:0 20px 8px">
-      <h2 class="t2-page-h2" style="font-size:18px">Tuần ${state.selectedWeek} — Chọn chủ đề</h2>
+    <div style="padding:0 20px 4px">
+      <h2 class="t2-page-h2" style="font-size:20px">Tuần ${state.selectedWeek}${label ? ` <span class="t2-page-sub" style="font-size:15px;font-weight:600">· ${_escHtml(label)}</span>` : ''}</h2>
+      <p class="t2-page-sub" style="font-size:13px">Chọn một chủ đề để bắt đầu</p>
     </div>
     <div class="t2-topic-list">
-      ${state.topics.map(t => {
+      ${state.topics.length ? state.topics.map(t => {
         const hasDraft = draftTopicIds.has(t._id?.toString());
         return `
         <div class="t2-topic-card${hasDraft ? ' has-draft' : ''}" data-id="${t._id}">
           <div class="t2-topic-emoji">${_escHtml(t.topicEmoji || '📝')}</div>
-          <div style="flex:1">
+          <div style="flex:1;min-width:0">
             <div class="t2-topic-name">${_escHtml(t.topicName)}</div>
             <div style="margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
               ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
             </div>
             <div class="t2-topic-prompt">${_escHtml(t.prompt)}</div>
+            <div class="t2-topic-steps">${_topicChips(t)}</div>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            ${isTopicCompleted(t._id) ? `
-              <i class="fas fa-check-circle wp-item-done-icon" style="margin-left:0" title="Đã hoàn thành (≥80%)"></i>
-              <span class="t2-topic-redo-pill" title="Bấm để luyện lại chủ đề này"><i class="fas fa-redo" style="font-size:9px"></i> Làm lại</span>
-            ` : ''}
-            <i class="fas fa-chevron-right" style="color:#9ca3af;font-size:18px"></i>
-          </div>
+          <i class="fas fa-chevron-right t2-topic-chev" style="color:#9ca3af;font-size:18px;flex-shrink:0"></i>
         </div>`;
-      }).join('')}
+      }).join('') : '<p class="t2-page-sub" style="text-align:center;padding:24px">Tuần này chưa có chủ đề.</p>'}
     </div>`;
 }
 function bindTopics() {
   document.querySelectorAll('.t2-topic-card').forEach(el => {
-    el.addEventListener('click', () => selectTopic(el.dataset.id));
+    el.addEventListener('click', () => {
+      // Topic data takes 4 requests — show it's working instead of a dead click.
+      const ic = el.querySelector('.t2-topic-chev');
+      if (ic) ic.className = 'fas fa-spinner fa-spin t2-topic-chev';
+      selectTopic(el.dataset.id);
+    });
   });
 }
 // Loads this user's practice record for `id` into state.topicStats, tagged
@@ -1188,18 +1385,66 @@ async function loadTopicStats(id) {
   }
 }
 
+// ── Topic vocab (loaded inline on the hub) ──────────────────────────────
+// Never rejects: null = fetch failed, so callers can Promise.all it.
+async function _fetchVocab(id) {
+  try {
+    const d = await apiFetch(`/api/task2/vocabulary/${id}`);
+    return d.vocabularyList || [];
+  } catch { return null; }
+}
+function _applyVocab(id, list) {
+  if (list == null) { state.vocabError = true; return; }
+  state.vocabError = false;
+  state.vocabFor = id;
+  state.vocab = list;
+  // Cache the total so the Luyện câu gate (isVocabLearned) and the topic
+  // list chips work without refetching. Unique term COUNT, not list.length —
+  // isVocabLearned compares this against _savedTermsForTopic(...).size, a Set
+  // keyed by term that can never exceed the number of distinct terms; a
+  // duplicated term in the list would otherwise keep the gate shut forever.
+  _vocabTotalMap[id] = new Set(list.map(v => v.term)).size;
+  localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
+}
+let _vocabLoadingFor = null;
+async function _ensureVocab(id) {
+  if (!id || state.vocabFor === id || _vocabLoadingFor === id) return;
+  _vocabLoadingFor = id;
+  const list = await _fetchVocab(id);
+  _vocabLoadingFor = null;
+  if (state.selectedTopic?._id !== id) return;
+  _applyVocab(id, list);
+  if (state.view === 'select') render();
+}
+function retryVocab() {
+  state.vocabError = false;
+  _refreshVocabStep();
+  _ensureVocab(state.selectedTopic?._id);
+}
+// Per-topic hub state that must not leak from one topic into the next.
+function _resetHubState(id) {
+  state.vocabQuiz = null;
+  state.vocabOpen = null;
+  if (state.vocabFor !== id) { state.vocab = []; state.vocabFor = null; state.vocabError = false; }
+  if (state.brainstorm.topicId !== id) state.brainstorm = { topicId: id, notes: [], open: false, hintOpen: false };
+}
+
 let _selectTopicSeq = 0;
 async function selectTopic(id) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) window.openUpgradeModal();
+    render(); // drop the card's loading spinner
     return;
   }
   const topic = state.topics.find(t => t._id === id);
+  if (!topic) return;
   state.selectedTopic = topic;
+  state.currentMode = 'practice';
   state.wrongQuestionIds = [];
   state.draft = null;
   state.topicStats = null;
-  const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, mode: state.currentMode });
+  _resetHubState(id);
+  const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `/task2-practice.html?${_p}`);
   // Guards against rapidly clicking between topics resolving out of order —
   // only the most recently-selected topic's wrong-questions/draft response
@@ -1208,124 +1453,113 @@ async function selectTopic(id) {
   const requestId = ++_selectTopicSeq;
   if (window.AuthService.isLoggedIn()) {
     try {
-      const [wrongData, draftData] = await Promise.all([
+      const [wrongData, draftData, , vocab] = await Promise.all([
         apiFetch(`/api/task2/wrong-questions/${id}`),
         apiFetch(`/api/task2/draft/${id}`),
-        loadTopicStats(id)
+        loadTopicStats(id),
+        _fetchVocab(id)
       ]);
       if (requestId !== _selectTopicSeq) return;
       state.wrongQuestionIds = wrongData.wrongIds || [];
       state.draft = draftData.draft || null;
+      _applyVocab(id, vocab);
     } catch {
       if (requestId !== _selectTopicSeq) return;
     }
   }
   state.view = 'select';
   render();
+  window.scrollTo(0, 0);
 }
 
 // ════════════════════════════════════════════════════════
-//  SELECT SCREEN (level + mode)
+//  TOPIC HUB — one page, three steps:
+//    ① Từ vựng   save the topic's words (quiz optional)  → unlocks ②
+//    ② Luyện câu  sentence drills, best ≥ 70%              → unlocks ③
+//    ③ Viết bài   full essay on writing.html
+//  plus an optional week-wide "Thi thử". Replaces the old mode picker
+//  (Luyện tập / Thi thử / Từ vựng tabs + a separate "Bắt đầu" button).
 // ════════════════════════════════════════════════════════
+let _hubFocus = null; // 'vocab' | 'exam' — scroll target after the next hub render
 
-// "Bước 1 — tự brainstorm": the student writes their own ideas for each
-// side of the essay BEFORE revealing the suggested points (native <details>,
-// so it resets when they leave the screen). Data: topic.brainstormHints
-// (backend/scripts/data/task2Augment.js). Inputs are client-only — a
-// pedagogical nudge, nothing is saved.
+function _vocabStats(id) {
+  const list = state.vocabFor === id ? state.vocab : [];
+  const savedSet = _savedTermsForTopic(id);
+  let total, saved = 0;
+  if (list.length) {
+    const terms = new Set(list.map(v => v.term));
+    total = terms.size;
+    terms.forEach(tm => { if (savedSet.has(tm)) saved++; });
+  } else {
+    total = _vocabTotalMap[id] || 0;
+    saved = Math.min(savedSet.size, total);
+  }
+  return { total, saved, pct: total ? Math.round((saved / total) * 100) : 0 };
+}
+
+// "Brainstorm" (optional): the student writes their own ideas for each side
+// of the essay before revealing the suggested points. Data:
+// topic.brainstormHints (backend/scripts/data/task2Augment.js). Notes live in
+// state.brainstorm only (never saved) so a hub re-render doesn't wipe them.
 function _renderBrainstorm(t) {
   const hints = t.brainstormHints || [];
   if (!hints.length) return '';
+  const bs = state.brainstorm;
   return `
-    <div class="t2-brainstorm">
-      <div class="t2-brainstorm-title">✍️ Bước 1 — Tự brainstorm trước khi luyện</div>
-      <div class="t2-brainstorm-sub">Đọc kỹ đề bên trên, tự viết 2–3 ý cho mỗi phần vào ô dưới. Nghĩ xong rồi mới mở gợi ý để so.</div>
-      ${hints.map(h => `
+    <details class="t2-brainstorm" ${bs.open ? 'open' : ''} ontoggle="state.brainstorm.open=this.open">
+      <summary>💡 Brainstorm ý tưởng trước <span class="t2-opt-tag">tuỳ chọn</span></summary>
+      <div class="t2-brainstorm-sub">Tự viết 2–3 ý cho mỗi phần, nghĩ xong rồi mới mở gợi ý để so.</div>
+      ${hints.map((h, i) => `
         <label class="t2-brainstorm-side">${_escHtml(h.side)}</label>
-        <textarea class="t2-brainstorm-input" rows="2" placeholder="Ý của bạn cho phần này..."></textarea>
+        <textarea class="t2-brainstorm-input" rows="2" placeholder="Ý của bạn cho phần này..." oninput="state.brainstorm.notes[${i}]=this.value">${_escHtml(bs.notes[i] || '')}</textarea>
       `).join('')}
-      <details class="t2-brainstorm-reveal">
-        <summary>Xem gợi ý ý chính (mở sau khi bạn đã tự nghĩ)</summary>
+      <details class="t2-brainstorm-reveal" ${bs.hintOpen ? 'open' : ''} ontoggle="state.brainstorm.hintOpen=this.open">
+        <summary>Xem gợi ý ý chính</summary>
         ${hints.map(h => `
           <div class="t2-brainstorm-hint-side">${_escHtml(h.side)}</div>
           <ul class="t2-brainstorm-hint-list">${(h.points || []).map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul>
         `).join('')}
       </details>
-    </div>`;
+    </details>`;
 }
 
 function renderSelect() {
   const t = state.selectedTopic;
+  const id = t._id;
+  const vocabDone = isVocabLearned(id);
+  const best = _bestPracticeScore(id);
+  const practiceOk = best != null && best >= T2_WRITE_MIN_ACCURACY;
+  const gate = canWriteFullEssay(id);
+  const hasWrite = !!t.writingTask2Id;
+  const hasDraft = !!(state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0));
+  const current = !vocabDone ? 'vocab' : (hasWrite && gate.ok ? 'write' : 'practice');
+  const vs = _vocabStats(id);
+
+  const stepItem = (key, num, label, sub, cls) => `
+    <button type="button" class="t2-stepper-item ${cls}" onclick="scrollToHubStep('${key}')">
+      <span class="t2-stepper-num">${cls === 'is-done' ? '<i class="fas fa-check"></i>' : num}</span>
+      <span class="t2-stepper-txt">${label}<span class="t2-stepper-sub">${sub}</span></span>
+    </button>`;
+
   return `
-    <div class="t2-nav" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div class="t2-nav t2-nav-row">
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <span onclick="goTopics()">Tuần ${state.selectedWeek}</span> › <b>${_escHtml(t.topicName)}</b></div>
-      <button onclick="copyT2ShareUrl()" class="t2-back-btn" style="white-space:nowrap;font-size:12px;padding:4px 10px" title="Sao chép link bài luyện này">
-        <i class="fas fa-link"></i> Sao chép link
-      </button>
+      <div style="display:flex;gap:6px">
+        <button class="t2-icon-btn" onclick="copyT2ShareUrl()" title="Sao chép link" aria-label="Sao chép link"><i class="fas fa-link"></i></button>
+        <button class="t2-icon-btn" onclick="openT2History()" title="Lịch sử" aria-label="Lịch sử"><i class="fas fa-history"></i></button>
+      </div>
     </div>
-    <div class="t2-selector-panel">
-      <div style="font-size:28px;margin-bottom:4px">${_escHtml(t.topicEmoji || '📝')}</div>
-      <div class="t2-selector-title">${_escHtml(t.topicName)}</div>
-      <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
+    <div class="t2-hub">
+      <div class="t2-hub-head">
+        <div class="t2-hub-emoji">${_escHtml(t.topicEmoji || '📝')}</div>
+        <div style="min-width:0">
+          <h2 class="t2-hub-title">${_escHtml(t.topicName)}</h2>
+          <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
+        </div>
+      </div>
       <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>
 
-      <div class="t2-selector-label">Chế độ</div>
-      <div class="t2-btn-group">
-        <button class="t2-btn ${state.currentMode==='practice'?'active':''}" onclick="setMode2('practice')"><i class="fas fa-pencil-alt"></i> Luyện tập</button>
-        ${t.writingTask2Id ? (() => {
-          const wg = canWriteFullEssay(t._id);
-          return `<button class="t2-btn t2-btn-write${wg.ok ? '' : ' t2-btn-write-locked'}" onclick="goWriteFullEssay()" title="${wg.ok ? 'Viết luôn bài văn hoàn chỉnh cho đề này' : 'Cần luyện tập đạt ≥ ' + T2_WRITE_MIN_ACCURACY + '% mới mở khoá'}"><i class="fas fa-${wg.ok ? 'pen-nib' : 'lock'}"></i> Viết bài ngay</button>`;
-        })() : ''}
-        <button class="t2-btn ${state.currentMode==='exam'?'active':''}" onclick="setMode2('exam')"><i class="fas fa-clipboard-check"></i> Thi thử</button>
-        <button class="t2-btn ${state.currentMode==='vocab'?'active':''}" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Từ vựng</button>
-        <button class="t2-btn" onclick="openT2History()" title="Xem lại từng câu bạn đã làm ở mỗi đề"><i class="fas fa-history"></i> Lịch sử</button>
-        ${state.wrongQuestionIds.length > 0 ? `<button class="t2-btn ${state.currentMode==='retry'?'active':''}" onclick="setMode2('retry')" style="border-color:#fbbf24;color:#92400e;${state.currentMode==='retry'?'background:#fef3c7;':''}"><i class="fas fa-exclamation-circle" style="color:#f59e0b"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
-      </div>
-      ${t.writingTask2Id && !canWriteFullEssay(t._id).ok ? `
-      <div class="t2-write-gate-note">
-        <i class="fas fa-lock"></i> <span>${_escHtml(writeGateMessage(canWriteFullEssay(t._id)))}</span>
-      </div>` : ''}
-
-      ${state.currentMode === 'exam' ? `
-        <div class="t2-selector-label">Số câu</div>
-        <div class="t2-btn-group">
-          <button class="t2-btn ${state.examCount===10?'active':''}" onclick="setExamCount(10)">10 câu</button>
-          <button class="t2-btn ${state.examCount===15?'active':''}" onclick="setExamCount(15)">15 câu</button>
-          <button class="t2-btn ${state.examCount===20?'active':''}" onclick="setExamCount(20)">20 câu</button>
-        </div>` : ''}
-
-      <div class="t2-selector-label">Cài đặt</div>
-      <div class="t2-settings-block">
-        <label class="t2-toggle-row" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">
-          <span class="t2-toggle-label">⚡ Tự chuyển câu</span>
-          <label class="t2-switch">
-            <input type="checkbox" ${state.autoNext ? 'checked' : ''} onchange="setAutoNext(this.checked)">
-            <span class="t2-slider"></span>
-          </label>
-        </label>
-        <label class="t2-toggle-row" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">
-          <span class="t2-toggle-label">🔀 Xáo trộn câu</span>
-          <label class="t2-switch">
-            <input type="checkbox" ${state.shuffleMode ? 'checked' : ''} onchange="setShuffleMode(this.checked)">
-            <span class="t2-slider"></span>
-          </label>
-        </label>
-      </div>
-
-      ${state.currentMode === 'practice' ? _renderBrainstorm(t) : ''}
-
-      ${state.currentMode === 'practice' ? `
-      <button class="t2-back-btn" style="margin-top:10px" onclick="openT2Preview()" title="Xem trước toàn bộ câu hỏi sẽ xuất hiện trong bài luyện tập">
-        <i class="fas fa-eye"></i> Xem trước câu hỏi
-      </button>` : ''}
-
-      ${state.currentMode === 'practice' && !isVocabLearned(t._id) ? `
-      <div class="t2-vocab-gate-banner">
-        <div class="t2-vocab-gate-info">📖 Bạn cần học từ vựng và lưu vào sổ trước khi có thể luyện tập chủ đề này.</div>
-        <button class="t2-resume-btn" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Học từ vựng ngay</button>
-      </div>` : ''}
-
-      ${state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0) ? `
+      ${hasDraft ? `
       <div class="t2-draft-banner">
         <div class="t2-draft-info">📌 Còn <strong>${(state.draft.questionIds?.length || 0) - state.draft.sessionDone} câu chưa làm</strong> từ phiên trước <span style="color:#6b7280;font-size:12px">· ${new Date(state.draft.savedAt).toLocaleDateString('vi-VN')}</span></div>
         <div style="display:flex;gap:8px;flex-shrink:0">
@@ -1334,14 +1568,191 @@ function renderSelect() {
         </div>
       </div>` : ''}
 
-      <br>
-      <button class="t2-start-btn" onclick="startSession()">
-        <i class="fas fa-play-circle"></i> ${state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0) ? 'Bắt đầu mới' : 'Bắt đầu'}
-      </button>
+      <div class="t2-stepper">
+        ${stepItem('vocab', 1, 'Từ vựng',
+          vocabDone ? 'Đã lưu đủ' : (vs.total ? `${vs.saved}/${vs.total} đã lưu` : 'Lưu vào sổ'),
+          vocabDone ? 'is-done' : 'is-current')}
+        ${stepItem('practice', 2, 'Luyện câu',
+          !vocabDone ? 'Chưa mở' : best == null ? 'Sẵn sàng' : `Cao nhất ${best}%`,
+          !vocabDone ? '' : practiceOk ? 'is-done' : 'is-current')}
+        ${hasWrite ? stepItem('write', 3, 'Viết bài',
+          gate.ok ? 'Đã mở khoá' : `Cần ≥ ${T2_WRITE_MIN_ACCURACY}%`,
+          gate.ok ? 'is-current' : '') : ''}
+      </div>
+
+      ${renderVocabStep(current === 'vocab')}
+      ${renderPracticeStep(current === 'practice')}
+      ${hasWrite ? renderWriteStep(current === 'write') : ''}
+      ${renderExamStep()}
     </div>`;
 }
-function bindSelect() {}
-function setMode2(m) { state.currentMode = m; _syncT2ShareUrl(); render(); }
+
+function renderVocabStep(isCurrent) {
+  const id = state.selectedTopic._id;
+  const done = isVocabLearned(id);
+  const vs = _vocabStats(id);
+  const loaded = state.vocabFor === id;
+  const list = loaded ? state.vocab : [];
+  const open = state.vocabOpen ?? !done;
+  const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
+  let body;
+  if (!loaded) {
+    body = !loggedIn
+      ? `<div class="t2-lock-note"><i class="fas fa-user-lock"></i> Đăng nhập để học từ vựng của chủ đề này.</div>`
+      : state.vocabError
+        ? `<div class="t2-lock-note"><i class="fas fa-exclamation-circle"></i> Không tải được từ vựng. <button class="t2-link" onclick="retryVocab()">Thử lại</button></div>`
+        : `<p class="t2-step-desc"><i class="fas fa-spinner fa-spin"></i> Đang tải từ vựng...</p>`;
+  } else if (!list.length) {
+    body = `<p class="t2-step-desc">Chủ đề này chưa có danh sách từ vựng — bạn có thể sang bước Luyện câu luôn.</p>`;
+  } else if (state.vocabQuiz) {
+    body = renderVocabQuiz();
+  } else {
+    const savedSet = _savedTermsForTopic(id);
+    const quizBest = _vquizBest[id];
+    body = `
+      <p class="t2-step-desc">${done
+        ? 'Bạn đã lưu đủ từ vựng vào sổ. Làm quiz để ôn lại nếu muốn.'
+        : 'Bấm <b>Lưu tất cả vào sổ</b> để mở khoá bước Luyện câu. Quiz chỉ để ôn thêm, không bắt buộc.'}</p>
+      <div class="t2-meter${done ? ' ok' : ''}"><span style="width:${vs.pct}%"></span></div>
+      <div class="t2-actions">
+        ${done ? '' : `<button class="t2-primary" onclick="saveAllVocabToBook()"><i class="fas fa-save"></i> Lưu tất cả vào sổ</button>`}
+        <button class="t2-secondary" onclick="startVocabQuiz()" ${list.length < 4 ? 'disabled title="Cần ít nhất 4 từ"' : ''}><i class="fas fa-bolt"></i> Quiz từ vựng <span class="t2-opt-tag">tuỳ chọn</span></button>
+        ${quizBest != null ? `<span class="t2-opt-tag" title="Kết quả quiz tốt nhất">Kỷ lục ${quizBest}%</span>` : ''}
+        <button class="t2-link" onclick="toggleVocabList()" style="margin-left:auto">${open ? 'Thu gọn' : `Xem ${list.length} từ`} <i class="fas fa-chevron-${open ? 'up' : 'down'}"></i></button>
+      </div>
+      ${open ? `<div class="t2-vlist">
+        ${list.map((v, i) => {
+          const saved = savedSet.has(v.term);
+          return `
+          <div class="t2-vitem${saved ? ' is-saved' : ''}">
+            <div class="t2-vitem-main">
+              <div class="t2-vitem-term">${_escHtml(v.term)}<button class="t2-speak" onclick="speakVocab(${i})" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button></div>
+              ${v.definitionVi ? `<div class="t2-vitem-def">${_escHtml(v.definitionVi)}</div>` : ''}
+              ${v.example ? `<div class="t2-vitem-ex">"${_escHtml(v.example)}"</div>` : ''}
+            </div>
+            <button class="t2-vbtn${saved ? ' saved' : ''}" onclick="saveOneVocabToBook(${i})" ${saved ? 'disabled title="Đã lưu"' : 'title="Lưu vào sổ"'}><i class="fas fa-${saved ? 'check' : 'plus'}"></i></button>
+          </div>`;
+        }).join('')}
+      </div>` : ''}`;
+  }
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
+      <div class="t2-step-head">
+        <span class="t2-step-num${done ? ' is-done' : ''}">${done ? '<i class="fas fa-check"></i>' : '1'}</span>
+        <div class="t2-step-title">Từ vựng</div>
+        ${vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : ''}
+      </div>
+      ${body}
+    </section>`;
+}
+
+function renderPracticeStep(isCurrent) {
+  const t = state.selectedTopic;
+  const id = t._id;
+  const vocabDone = isVocabLearned(id);
+  const best = _bestPracticeScore(id);
+  const ok = best != null && best >= T2_WRITE_MIN_ACCURACY;
+  const hasDraft = !!(state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0));
+  const tag = !vocabDone
+    ? '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>'
+    : best != null ? `<span class="t2-step-tag ${ok ? 'ok' : 'mid'}">Cao nhất ${best}%</span>` : '';
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}${vocabDone ? '' : ' is-locked'}" id="t2-step-practice">
+      <div class="t2-step-head">
+        <span class="t2-step-num${ok ? ' is-done' : ''}">${ok ? '<i class="fas fa-check"></i>' : '2'}</span>
+        <div class="t2-step-title">Luyện câu</div>
+        ${tag}
+      </div>
+      <p class="t2-step-desc">Dịch câu, sắp xếp từ, điền từ… để ráp ý cho bài viết.${t.writingTask2Id ? ` Đạt <b>≥ ${T2_WRITE_MIN_ACCURACY}%</b> để mở khoá bước Viết bài.` : ''}</p>
+      ${!vocabDone ? `
+      <div class="t2-lock-note"><i class="fas fa-lock"></i> Lưu hết từ vựng ở bước 1 để mở khoá.</div>` : `
+      <div class="t2-actions">
+        <button class="t2-primary is-lg" onclick="startPractice(this)"><i class="fas fa-play"></i> ${hasDraft ? 'Làm lại từ đầu' : best != null ? 'Luyện lại' : 'Bắt đầu luyện'}</button>
+        ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
+      </div>
+      <div class="t2-opts-row">
+        <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
+        <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
+        <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
+      </div>
+      ${_renderBrainstorm(t)}`}
+    </section>`;
+}
+
+function renderWriteStep(isCurrent) {
+  const gate = canWriteFullEssay(state.selectedTopic._id);
+  const pct = Math.min(100, Math.round(((gate.best || 0) / T2_WRITE_MIN_ACCURACY) * 100));
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}${gate.ok ? '' : ' is-locked'}" id="t2-step-write">
+      <div class="t2-step-head">
+        <span class="t2-step-num">3</span>
+        <div class="t2-step-title">Viết bài hoàn chỉnh</div>
+        ${gate.ok
+          ? '<span class="t2-step-tag ok"><i class="fas fa-unlock"></i> Đã mở khoá</span>'
+          : '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>'}
+      </div>
+      ${gate.ok ? `
+      <p class="t2-step-desc">Bạn đã sẵn sàng! Viết bài Task 2 hoàn chỉnh (≥ 250 từ) cho đề này.</p>
+      <button class="t2-primary is-write is-lg" onclick="goWriteFullEssay()"><i class="fas fa-pen-nib"></i> Viết bài ngay</button>` : `
+      <p class="t2-step-desc">${gate.code === 'not_practiced'
+        ? `Hoàn thành bước Luyện câu với tối thiểu <b>${T2_WRITE_MIN_ACCURACY}%</b> câu đúng để mở khoá.`
+        : `Điểm cao nhất của bạn: <b>${gate.best}%</b> — cần ${T2_WRITE_MIN_ACCURACY}%. Luyện thêm hoặc ôn câu sai nhé.`}</p>
+      <div class="t2-meter"><span style="width:${pct}%"></span></div>`}
+    </section>`;
+}
+
+function renderExamStep() {
+  return `
+    <section class="t2-step" id="t2-step-exam">
+      <div class="t2-step-head">
+        <span class="t2-step-num is-alt"><i class="fas fa-clipboard-check"></i></span>
+        <div class="t2-step-title">Thi thử cả tuần <span class="t2-opt-tag">tuỳ chọn</span></div>
+      </div>
+      <p class="t2-step-desc">Câu hỏi ngẫu nhiên từ các chủ đề của Tuần ${state.selectedWeek}, tính giờ 2 phút/câu.</p>
+      <div class="t2-actions">
+        <div class="t2-seg" role="group" aria-label="Số câu">
+          ${[10, 15, 20].map(n => `<button type="button" class="${state.examCount === n ? 'active' : ''}" onclick="setExamCount(${n}, this)">${n} câu</button>`).join('')}
+        </div>
+        <button class="t2-secondary" onclick="startExam(this)"><i class="fas fa-play"></i> Bắt đầu thi</button>
+      </div>
+    </section>`;
+}
+
+function bindSelect() {
+  const id = state.selectedTopic?._id;
+  if (id && state.vocabFor !== id && !state.vocabError && window.AuthService.isLoggedIn()) _ensureVocab(id);
+  if (_hubFocus) {
+    const k = _hubFocus; _hubFocus = null;
+    setTimeout(() => scrollToHubStep(k), 60);
+  }
+}
+
+function scrollToHubStep(key) {
+  const el = document.getElementById('t2-step-' + key);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Re-render just the vocab card (quiz clicks, list toggle) — keeps the rest
+// of the hub (brainstorm textareas, scroll position) untouched.
+function _refreshVocabStep() {
+  const el = document.getElementById('t2-step-vocab');
+  if (!el || state.view !== 'select') return;
+  el.outerHTML = renderVocabStep(el.classList.contains('is-current'));
+}
+
+function toggleVocabList() {
+  const id = state.selectedTopic?._id;
+  const open = state.vocabOpen ?? !isVocabLearned(id);
+  state.vocabOpen = !open;
+  _refreshVocabStep();
+}
+
+function backToHub() {
+  state.currentMode = 'practice';
+  state.view = 'select';
+  render();
+  window.scrollTo(0, 0);
+}
 
 // "Viết bài ngay" — hand the student straight into the full Task 2 essay
 // practice flow (writing.html), for THIS topic's prompt. That page reuses
@@ -1356,40 +1767,39 @@ function goWriteFullEssay() {
   const gate = canWriteFullEssay(topic._id);
   if (!gate.ok) {
     showToast('🔒 Chưa mở khoá "Viết bài ngay". ' + writeGateMessage(gate), 'warn', 8000);
-    if (gate.code === 'not_practiced' || gate.code === 'low_accuracy') setMode2('practice');
+    if (state.view === 'select') scrollToHubStep('practice');
     return;
   }
   window.location.href = `/writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
 }
-function setExamCount(n) { state.examCount = n; render(); }
-function setAutoNext(v) { state.autoNext = v; }
-function setShuffleMode(v) { state.shuffleMode = v; }
+function setExamCount(n, btn) {
+  state.examCount = n;
+  if (btn && btn.parentElement) btn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+}
+function toggleT2Pref(key, btn) {
+  state[key] = !state[key];
+  if (btn) btn.classList.toggle('on', state[key]);
+  try { localStorage.setItem(T2_PREFS_KEY, JSON.stringify({ autoNext: state.autoNext, shuffleMode: state.shuffleMode })); } catch {}
+}
 
-async function startSession() {
-  const btn = document.querySelector('.t2-start-btn');
+// Disables `btn` with a spinner while `fn` runs. The button may be gone by
+// the time fn resolves (render() swapped the DOM) — only restore it if not.
+async function _withBusy(btn, fn) {
+  if (btn && btn.disabled) return;
+  const html = btn ? btn.innerHTML : '';
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
-  try {
-    if (state.currentMode === 'vocab') {
-      await loadVocab();
-    } else if (state.currentMode === 'exam') {
-      await startExam();
-    } else if (state.currentMode === 'retry') {
-      await startRetryWrong();
-    } else {
-      await startPractice();
-    }
-  } finally {
-    const btn2 = document.querySelector('.t2-start-btn');
-    if (btn2) { btn2.disabled = false; btn2.innerHTML = '<i class="fas fa-play-circle"></i> Bắt đầu'; }
-  }
+  try { return await fn(); }
+  finally { if (btn && btn.isConnected) { btn.disabled = false; btn.innerHTML = html; } }
 }
 
 // ════════════════════════════════════════════════════════
 //  PRACTICE MODE
 // ════════════════════════════════════════════════════════
-async function startPractice() {
+function startPractice(btn) { return _withBusy(btn, _startPractice); }
+async function _startPractice() {
   if (!isVocabLearned(state.selectedTopic?._id)) {
-    showToast('Bạn cần học từ vựng và lưu vào sổ trước khi có thể luyện tập', 'warn', 4000);
+    showToast('Bạn cần lưu hết từ vựng vào sổ trước khi luyện câu', 'warn', 4000);
+    if (state.view === 'select') scrollToHubStep('vocab');
     return;
   }
   try {
@@ -1397,27 +1807,24 @@ async function startPractice() {
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
     state.questions = data.questions;
-    if (state.shuffleMode) {
-      for (let i = state.questions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [state.questions[i], state.questions[j]] = [state.questions[j], state.questions[i]];
-      }
-    }
+    if (state.shuffleMode) shuffle(state.questions);
+    state.currentMode = 'practice';
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
     state.questionStatus = new Array(state.questions.length).fill('pending');
     // No dedicated 'practice' history entry — push a fresh 'select' checkpoint
-    // instead so browser Back pops straight to the topic-select screen
-    // (handled by the existing popstate case) rather than skipping past it to
-    // 'topics', since 'select' is otherwise still the top of the stack here.
+    // instead so browser Back pops straight to the topic hub (handled by the
+    // existing popstate case) rather than skipping past it to 'topics'.
     history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'practice';
     render();
+    window.scrollTo(0, 0);
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
 }
 
-async function startRetryWrong() {
+function startRetryWrong(btn) { return _withBusy(btn, _startRetryWrong); }
+async function _startRetryWrong() {
   try {
     const params = new URLSearchParams({ level: 'all' });
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
@@ -1426,12 +1833,8 @@ async function startRetryWrong() {
     const wrongQuestions = data.questions.filter(q => wrongSet.has(q._id) || wrongSet.has(q.questionId));
     if (!wrongQuestions.length) { showToast('Không có câu sai nào', 'info'); return; }
     state.questions = wrongQuestions;
-    if (state.shuffleMode) {
-      for (let i = state.questions.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [state.questions[i], state.questions[j]] = [state.questions[j], state.questions[i]];
-      }
-    }
+    if (state.shuffleMode) shuffle(state.questions);
+    state.currentMode = 'retry';
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
@@ -1439,6 +1842,7 @@ async function startRetryWrong() {
     history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
     state.view = 'practice';
     render();
+    window.scrollTo(0, 0);
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
 }
 
@@ -1550,22 +1954,20 @@ function renderPractice() {
   // lags one question behind (0% on question 1, never 100% until done).
   const pct = Math.round(((state.currentIdx + 1) / state.questions.length) * 100);
   return `
-    <div class="t2-nav" style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between">
+    <div class="t2-prac-head">
       <button class="t2-back-btn" onclick="quitPractice()"><i class="fas fa-times"></i> Thoát</button>
-      <span style="font-size:12px;color:#9ca3af;font-weight:600">${state.currentMode === 'retry' ? '🔁 Ôn câu sai' : '✏️ Luyện tập'}</span>
+      <div class="t2-prac-ctx">
+        <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
+        <span class="t2-ctx-name" title="${_escHtml(topic.topicName)}">${_escHtml(topic.topicEmoji || '')} ${_escHtml(topic.topicName)}</span>
+      </div>
+      ${state.currentMode === 'retry'
+        ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>`
+        : `<span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>`}
     </div>
-    <div class="t2-ctx-strip">
-      <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
-      <span class="t2-ctx-divider">›</span>
-      <span class="t2-ctx-name" title="${_escHtml(topic.topicName)}">${_escHtml(topic.topicEmoji || '')} ${_escHtml(topic.topicName)}</span>
-      <span class="t2-ctx-divider">·</span>
-      <span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>
-      ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;margin-left:auto">Ôn câu sai</span>` : ''}
-    </div>
-    <div class="t2-prompt-box">
-      <div class="t2-prompt-box-label">📋 Đề bài IELTS</div>
+    <details class="t2-prompt-box" ${state.promptOpen ? 'open' : ''} ontoggle="state.promptOpen=this.open">
+      <summary class="t2-prompt-box-label">📋 Đề bài <span class="t2-prompt-peek">— ${_escHtml((topic.prompt || '').slice(0, 70))}${(topic.prompt || '').length > 70 ? '…' : ''}</span></summary>
       <p>${_escHtml(topic.prompt)}</p>
-    </div>
+    </details>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="t2-q-dots" id="q-dots">
       ${state.questions.map((q, i) => {
@@ -2220,12 +2622,12 @@ function quitPractice() {
         const existIdx = state.allDrafts.findIndex(d => d.topicId === state.selectedTopic._id);
         if (existIdx >= 0) state.allDrafts[existIdx] = savedDraft;
         else state.allDrafts.push(savedDraft);
-        state.view = 'select'; render();
+        backToHub();
       }
     });
   } else {
     cleanup();
-    state.view = 'select'; render();
+    backToHub();
   }
 }
 
@@ -2269,8 +2671,8 @@ function _stopExamSession() {
 }
 
 function quitExam() {
-  if (state.examAnswers.length === 0) { _stopExamSession(); state.view = 'select'; render(); return; }
-  askT2Quit(() => { _stopExamSession(); state.view = 'select'; render(); }, {
+  if (state.examAnswers.length === 0) { _stopExamSession(); backToHub(); return; }
+  askT2Quit(() => { _stopExamSession(); backToHub(); }, {
     mascot: '📋',
     title: 'Dừng bài thi?',
     sub: `Câu ${state.examIdx + 1}/${state.examQuestions.length}. Kết quả sẽ bị mất.`,
@@ -2279,7 +2681,8 @@ function quitExam() {
   });
 }
 
-async function startExam() {
+function startExam(btn) { return _withBusy(btn, _startExam); }
+async function _startExam() {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) window.openUpgradeModal();
     return;
@@ -2297,7 +2700,9 @@ async function startExam() {
     // See startPractice()'s comment — same "select" checkpoint trick so
     // browser Back exits the exam back to 'select' instead of skipping it.
     if (state.selectedTopic) history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
+    state.currentMode = 'exam';
     state.view = 'exam'; render();
+    window.scrollTo(0, 0);
     startExamTimer(state.examQuestions.length * 120);
   } catch { showToast('Lỗi tải đề thi', 'error'); }
 }
@@ -2428,86 +2833,204 @@ function renderExamDone() {
       <div class="t2-done-score ${scoreClass}">${r.score}%</div>
       <div style="font-size:15px;color:#6b7280;margin-bottom:16px">${message} Đúng ${r.correct} / ${r.total} câu</div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="wp-restart-btn" onclick="startExam()"><i class="fas fa-redo"></i> Thi lại</button>
-        <button class="wp-more-btn"    onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Chọn lại</button>
+        <button class="wp-restart-btn" onclick="startExam(this)"><i class="fas fa-redo"></i> Thi lại</button>
+        <button class="wp-more-btn"    onclick="backToHub()"><i class="fas fa-arrow-left"></i> Về chủ đề</button>
       </div>
     </div>
     <div style="padding:0 20px 20px">${reviews}</div>`;
 }
 
 // ════════════════════════════════════════════════════════
-//  VOCABULARY MODE
+//  VOCABULARY — save to book + optional quiz (inline on the topic hub)
 // ════════════════════════════════════════════════════════
-async function loadVocab() {
-  try {
-    const data = await apiFetch(`/api/task2/vocabulary/${state.selectedTopic._id}`);
-    state.vocab = data.vocabularyList || [];
-    if (!state.vocab.length) { showToast('Topic này chưa có từ vựng', 'warn'); return; }
-    // Cache the total so the Luyện tập gate (isVocabLearned) can tell "fully
-    // saved" apart from "never even opened this tab" without a second fetch.
-    // Unique term COUNT, not state.vocab.length — isVocabLearned compares
-    // this against _savedTermsForTopic(...).size, which is a Set keyed by
-    // term and can never exceed the number of distinct terms. If a topic
-    // ever had two vocab entries sharing the same term (dedup edge case,
-    // not currently in seed data but not schema-enforced either), using the
-    // raw array length here would make the two counts permanently
-    // incomparable — isVocabLearned would stay false forever even after
-    // every visible "Lưu" button already shows "Đã lưu".
-    _vocabTotalMap[state.selectedTopic._id] = new Set(state.vocab.map(v => v.term)).size;
-    localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
-    // See startPractice()'s comment — same "select" checkpoint trick so
-    // browser Back exits the vocab list back to 'select' instead of skipping it.
-    history.pushState({ view: 'select', week: state.selectedWeek, topicId: state.selectedTopic._id }, '', location.href);
-    state.view = 'vocab'; render();
-  } catch { showToast('Lỗi tải từ vựng', 'error'); }
-}
+function _vocabItem(v) { return { word: v.term, meaning: v.definitionVi || '', example: v.example || '' }; }
 
-function renderVocab() {
-  const t = state.selectedTopic;
-  const savedSet = _savedTermsForTopic(t._id);
-  const allSaved = state.vocab.length > 0 && state.vocab.every(v => savedSet.has(v.term));
-  return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><button class="t2-back-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Quay lại</button></div></div>
-    <div style="padding:0 20px 8px">
-      <h2 class="t2-page-h2" style="font-size:18px">📖 Từ vựng: ${_escHtml(t.topicEmoji)} ${_escHtml(t.topicName)}</h2>
-      <p class="t2-page-sub" style="font-size:13px">${state.vocab.length} từ / cụm từ quan trọng · cần lưu hết vào sổ để mở khoá Luyện tập</p>
-      <button class="t2-vocab-saveall-btn" onclick="saveAllVocabToBook()" ${allSaved ? 'disabled' : ''}>
-        <i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả vào sổ' : 'Lưu tất cả vào sổ'}
-      </button>
-    </div>
-    <div class="t2-vocab-grid">
-      ${state.vocab.map((v, i) => {
-        const isSaved = savedSet.has(v.term);
-        return `
-        <div class="t2-vocab-card">
-          <div class="t2-vocab-term">${_escHtml(v.term)}</div>
-          <div class="t2-vocab-def">${_escHtml(v.definitionVi || '')}</div>
-          ${v.example ? `<div class="t2-vocab-ex">"${_escHtml(v.example)}"</div>` : ''}
-          <button class="t2-vocab-save-btn${isSaved ? ' saved' : ''}" onclick="saveOneVocabToBook(${i})" ${isSaved ? 'disabled' : ''}>
-            <i class="fas fa-${isSaved ? 'check' : 'plus'}"></i> ${isSaved ? 'Đã lưu' : 'Lưu'}
-          </button>
-        </div>`;
-      }).join('')}
-    </div>`;
+// Shared save callback. When this save is the one that completes the list,
+// say so and move the student on to Luyện câu.
+function _onVocabSaved(topicId, terms) {
+  const wasDone = isVocabLearned(topicId);
+  _markVocabTermsSaved(topicId, terms);
+  if (state.view !== 'select' || state.selectedTopic?._id !== topicId) return;
+  if (!wasDone && isVocabLearned(topicId)) {
+    state.vocabOpen = null; // auto → list collapses now that every term is saved
+    render();
+    showToast('🎉 Đã mở khoá bước Luyện câu!', 'success', 3500);
+    setTimeout(() => scrollToHubStep('practice'), 150);
+  } else {
+    render();
+  }
 }
 
 function saveOneVocabToBook(idx) {
   const v = state.vocab[idx];
   if (!v || !window.openVocabBookPickerBulk) return;
-  window.openVocabBookPickerBulk([{ word: v.term, meaning: v.definitionVi || '', example: v.example || '' }], terms => {
-    _markVocabTermsSaved(state.selectedTopic._id, terms);
-    if (state.view === 'vocab') render();
-  });
+  const topicId = state.selectedTopic._id;
+  window.openVocabBookPickerBulk([_vocabItem(v)], terms => _onVocabSaved(topicId, terms));
 }
 
 function saveAllVocabToBook() {
   if (!state.vocab.length || !window.openVocabBookPickerBulk) return;
-  const items = state.vocab.map(v => ({ word: v.term, meaning: v.definitionVi || '', example: v.example || '' }));
-  window.openVocabBookPickerBulk(items, terms => {
-    _markVocabTermsSaved(state.selectedTopic._id, terms);
-    if (state.view === 'vocab') render();
+  const topicId = state.selectedTopic._id;
+  const savedSet = _savedTermsForTopic(topicId);
+  const pending = state.vocab.filter(v => !savedSet.has(v.term));
+  window.openVocabBookPickerBulk((pending.length ? pending : state.vocab).map(_vocabItem), terms => _onVocabSaved(topicId, terms));
+}
+
+function speakVocab(idx) {
+  const v = state.vocab[idx];
+  if (!v || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(v.term);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// ── Vocab quiz — optional practice, never gates anything. Up to 10 random
+// terms, each asked one of three ways: Vietnamese meaning → English term,
+// term → meaning, or the term blanked out of its own example sentence.
+// Best score per topic is remembered in this browser only.
+const VQUIZ_LEN = 10;
+const VQUIZ_BEST_KEY = 't2_vocab_quiz_best';
+const VQUIZ_KIND_LABEL = { vi2en: 'Chọn từ tiếng Anh đúng nghĩa', en2vi: 'Chọn nghĩa đúng', gap: 'Chọn từ điền vào chỗ trống' };
+let _vquizBest = _safeParse(localStorage.getItem(VQUIZ_BEST_KEY), {});
+let _vquizTimer = null;
+
+function _vquizGap(v) {
+  if (!v.example || !v.term) return null;
+  const re = new RegExp(v.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+  return re.test(v.example) ? v.example.replace(re, '_____') : null;
+}
+
+function _buildVocabQuiz(list) {
+  const usable = list.filter(v => v.term && v.definitionVi);
+  return shuffle([...usable]).slice(0, VQUIZ_LEN).map(v => {
+    const gap = _vquizGap(v);
+    const kinds = gap ? ['vi2en', 'en2vi', 'gap'] : ['vi2en', 'en2vi'];
+    const kind = kinds[Math.floor(Math.random() * kinds.length)];
+    const field = kind === 'en2vi' ? 'definitionVi' : 'term';
+    const answer = v[field];
+    const others = [...new Set(usable.map(o => o[field]).filter(x => x && x !== answer))];
+    return {
+      kind, answer, term: v.term, def: v.definitionVi,
+      prompt: kind === 'vi2en' ? v.definitionVi : kind === 'en2vi' ? v.term : gap,
+      options: shuffle([answer, ...shuffle(others).slice(0, 3)])
+    };
   });
 }
+
+function startVocabQuiz() {
+  const items = _buildVocabQuiz(state.vocab || []);
+  if (!items.length) return;
+  clearTimeout(_vquizTimer);
+  state.vocabQuiz = { items, idx: 0, correct: 0, picked: null, missed: [] };
+  _refreshVocabStep();
+  scrollToHubStep('vocab');
+}
+
+function closeVocabQuiz() {
+  clearTimeout(_vquizTimer);
+  state.vocabQuiz = null;
+  _refreshVocabStep();
+}
+
+function pickVocabQuiz(i) {
+  const qz = state.vocabQuiz;
+  if (!qz || qz.picked != null) return;
+  const it = qz.items[qz.idx];
+  if (!it || i >= it.options.length) return;
+  qz.picked = i;
+  const ok = it.options[i] === it.answer;
+  if (ok) { qz.correct++; if (window.playOk) playOk(); }
+  else { qz.missed.push(it); if (window.playWrong) playWrong(); }
+  _refreshVocabStep();
+  // Right answers move on by themselves; wrong ones wait so the correct
+  // option can be read.
+  if (ok) {
+    clearTimeout(_vquizTimer);
+    const at = qz.idx;
+    _vquizTimer = setTimeout(() => { if (state.vocabQuiz === qz && qz.idx === at) nextVocabQuiz(); }, 700);
+  }
+}
+
+function nextVocabQuiz() {
+  const qz = state.vocabQuiz;
+  if (!qz || qz.picked == null) return;
+  clearTimeout(_vquizTimer);
+  qz.idx++;
+  qz.picked = null;
+  if (qz.idx >= qz.items.length) {
+    const id = state.selectedTopic._id;
+    const pct = Math.round((qz.correct / qz.items.length) * 100);
+    if (_vquizBest[id] == null || pct > _vquizBest[id]) {
+      _vquizBest[id] = pct;
+      try { localStorage.setItem(VQUIZ_BEST_KEY, JSON.stringify(_vquizBest)); } catch {}
+    }
+  }
+  _refreshVocabStep();
+}
+
+function renderVocabQuiz() {
+  const qz = state.vocabQuiz;
+  const n = qz.items.length;
+  if (qz.idx >= n) {
+    const pct = Math.round((qz.correct / n) * 100);
+    return `
+      <div class="t2-quiz">
+        <div class="t2-quiz-done">
+          <div style="font-size:30px">${pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚'}</div>
+          <div class="t2-quiz-score">${qz.correct}/${n}</div>
+          <div class="t2-step-desc" style="margin:4px 0 0">${pct >= 80 ? 'Tuyệt vời! Bạn nắm từ vựng rất chắc.' : pct >= 50 ? 'Khá tốt! Ôn lại vài từ dưới đây nhé.' : 'Cần ôn thêm — xem lại các từ dưới đây.'}</div>
+        </div>
+        ${qz.missed.length ? `<div class="t2-quiz-miss">${qz.missed.map(m => `• <b>${_escHtml(m.term)}</b> — ${_escHtml(m.def)}`).join('<br>')}</div>` : ''}
+        <div class="t2-actions" style="justify-content:center;margin-top:12px">
+          <button class="t2-primary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>
+          <button class="t2-secondary" onclick="closeVocabQuiz()">Đóng quiz</button>
+        </div>
+      </div>`;
+  }
+  const it = qz.items[qz.idx];
+  const answered = qz.picked != null;
+  const ok = answered && it.options[qz.picked] === it.answer;
+  return `
+    <div class="t2-quiz">
+      <div class="t2-quiz-top">
+        <span><i class="fas fa-bolt" style="color:#6366f1"></i> Câu ${qz.idx + 1}/${n}</span>
+        <button class="t2-link" onclick="closeVocabQuiz()" style="padding:0"><i class="fas fa-times"></i> Đóng</button>
+      </div>
+      <div class="t2-meter" style="margin:8px 0 0"><span style="width:${Math.round((qz.idx / n) * 100)}%"></span></div>
+      <div class="t2-quiz-kind">${VQUIZ_KIND_LABEL[it.kind]}</div>
+      <div class="t2-quiz-q">${it.kind === 'gap' ? `"${_escHtml(it.prompt)}"` : _escHtml(it.prompt)}</div>
+      <div class="t2-quiz-opts">
+        ${it.options.map((o, i) => {
+          const cls = answered ? (o === it.answer ? ' correct' : i === qz.picked ? ' wrong' : '') : '';
+          return `<button class="t2-quiz-opt${cls}" onclick="pickVocabQuiz(${i})" ${answered ? 'disabled' : ''}><span class="t2-quiz-key">${i + 1}</span><span>${_escHtml(o)}</span></button>`;
+        }).join('')}
+      </div>
+      <div class="t2-quiz-foot">
+        ${answered
+          ? `<span class="t2-quiz-fb ${ok ? 'ok' : 'bad'}">${ok ? '✓ Chính xác!' : `✗ Đáp án: ${_escHtml(it.answer)}`}</span>
+             ${ok ? '' : `<button class="t2-primary is-sm" onclick="nextVocabQuiz()">Câu tiếp <i class="fas fa-arrow-right"></i></button>`}`
+          : `<span class="t2-step-desc" style="margin:0;font-size:12px">Mẹo: bấm phím 1–4 để chọn nhanh</span>`}
+      </div>
+    </div>`;
+}
+
+// 1–4 picks an option, Enter goes on — only while a quiz question is showing
+// and the student isn't typing somewhere (brainstorm boxes).
+document.addEventListener('keydown', e => {
+  const qz = state.vocabQuiz;
+  if (!qz || state.view !== 'select' || qz.idx >= qz.items.length) return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (/^[1-4]$/.test(e.key) && qz.picked == null) {
+    e.preventDefault();
+    pickVocabQuiz(Number(e.key) - 1);
+  } else if (e.key === 'Enter' && qz.picked != null) {
+    e.preventDefault();
+    nextVocabQuiz();
+  }
+});
 
 // ════════════════════════════════════════════════════════
 //  DONE SCREEN
@@ -2527,6 +3050,8 @@ function renderDone() {
                       : 'img/writingbelow45%25.jpg';
   const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
+  // Next step on the topic's path: the full essay once it's unlocked.
+  const canWrite = !!(state.selectedTopic?.writingTask2Id && topicId && canWriteFullEssay(topicId).ok);
 
   const wrongReview = wrongAttempts.map((a, i) => `
     <div class="wp-wr-item">
@@ -2549,10 +3074,15 @@ function renderDone() {
         <div class="t2-done-stat"><div class="t2-done-stat-num wp-score-bad">❌ ${wrongCount}</div><div class="t2-done-stat-lbl">Sai</div></div>
         <div class="t2-done-stat"><div class="t2-done-stat-num">${state.sessionDone}</div><div class="t2-done-stat-lbl">Tổng</div></div>
       </div>
+      ${canWrite ? `
+      <div style="margin:0 0 14px">
+        <button class="t2-primary is-write is-lg" onclick="goWriteFullEssay()"><i class="fas fa-pen-nib"></i> Viết bài hoàn chỉnh</button>
+        <div class="t2-done-sub" style="font-size:12.5px;margin:6px 0 0">Bạn đã mở khoá bước 3 — viết bài cho đề này nhé!</div>
+      </div>` : (state.selectedTopic?.writingTask2Id ? `<div class="t2-done-sub" style="font-size:13px;margin-top:-8px">🔒 Đạt ≥ ${T2_WRITE_MIN_ACCURACY}% để mở khoá bước Viết bài.</div>` : '')}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         ${wrongCount > 0 ? `<button class="t2-start-btn" onclick="retryWrong()" style="font-size:13px;padding:10px 20px;margin-top:0"><i class="fas fa-redo-alt"></i> Ôn lại ${wrongCount} câu sai</button>` : ''}
-        <button class="wp-restart-btn" onclick="startPractice()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
-        <button class="wp-more-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Chọn lại</button>
+        <button class="wp-restart-btn" onclick="startPractice(this)"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
+        <button class="wp-more-btn" onclick="backToHub()"><i class="fas fa-arrow-left"></i> Về chủ đề</button>
       </div>
     </div>
     ${wrongCount > 0 ? `
@@ -2605,11 +3135,17 @@ window.addEventListener('popstate', async e => {
     state.selectedWeek = e.state.week;
     const topic = state.topics.find(t => t._id === e.state.topicId);
     if (topic) {
+      if (state.selectedTopic?._id !== topic._id) { state.wrongQuestionIds = []; state.draft = null; }
       state.selectedTopic = topic;
+      state.currentMode = 'practice';
       state.topicStats = null;      // stale for this topic until refetched
+      _resetHubState(topic._id);    // bindSelect() refetches vocab if it's for another topic
       state.view = 'select';
       render();
-      loadTopicStats(e.state.topicId).then(render); // re-render once stats arrive
+      // re-render once stats arrive — only if the hub is still showing this topic
+      loadTopicStats(e.state.topicId).then(() => {
+        if (state.view === 'select' && state.selectedTopic?._id === e.state.topicId) render();
+      });
     }
     else { state.view = 'weeks'; render(); }
   } else if (s === 'topics' && e.state.week) {
