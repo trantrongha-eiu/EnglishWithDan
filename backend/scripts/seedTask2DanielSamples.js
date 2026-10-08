@@ -6,6 +6,9 @@
  *     (and their "Phân tích đề" when the doc has none). Never overwrites
  *     a sample that already has text unless --force; an already-seeded
  *     sample whose text still matches gets its highlights refreshed.
+ *     The band 7+ rewrites in data/task2DanielRewrites.js are the
+ *     exception: they REPLACE the older text they were written for. The
+ *     replaced sections are saved to data/task2SampleBackup/ first.
  *  B. Adds colour-coded sentence-role highlights (hook / thesis / topic /
  *     idea / supporting / restatement / final) to the pre-existing essays,
  *     from the sentence-index specs in data/task2SampleHighlightSpecs.js.
@@ -18,10 +21,13 @@
  *   node scripts/seedTask2DanielSamples.js            # dry run — validate + report
  *   node scripts/seedTask2DanielSamples.js --apply
  */
-require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const WritingTask2 = require('../models/WritingTask2');
 const SAMPLES = require('./data/task2DanielSamples');
+const REWRITES = require('./data/task2DanielRewrites');
 const SPECS = require('./data/task2SampleHighlightSpecs');
 const { buildParagraph, highlightsFromSpec } = require('./data/task2SampleHighlights');
 
@@ -50,17 +56,19 @@ async function run() {
   // ── A. new essays ──
   let wroteA = 0, skippedA = 0;
   const seen = new Set();
-  for (const entry of SAMPLES) {
+  const backup = [], pending = [];
+  const entries = SAMPLES.concat(REWRITES.map(r => ({ ...r, rewrite: true })));
+  for (const entry of entries) {
     if (seen.has(entry.id)) throw new Error(`duplicate sample id ${entry.id}`);
     seen.add(entry.id);
     const doc = await WritingTask2.findById(entry.id).select('prompt sampleSections analysisSections isActive').lean();
     if (!doc) { console.log(`MISS  ${entry.id} — no such WritingTask2`); skippedA++; continue; }
     const sampleSections = buildSample(entry, doc.sampleSections);
-    if (hasText(doc.sampleSections) && !FORCE) {
+    const same = (doc.sampleSections || []).length === 4 &&
+      doc.sampleSections.every((s, i) => norm(s.content) === norm(sampleSections[i].content));
+    if (hasText(doc.sampleSections) && !FORCE && (!entry.rewrite || same)) {
       // Already seeded: refresh only the highlights, and only while the
       // text is still exactly ours (an admin edit keeps its old colours).
-      const secs = doc.sampleSections;
-      const same = secs.length === 4 && secs.every((s, i) => norm(s.content) === norm(sampleSections[i].content));
       if (!same) { console.log(`SKIP  ${entry.id} — sample text differs from the data file`); skippedA++; continue; }
       const $set = {};
       sampleSections.forEach((s, i) => { $set[`sampleSections.${i}.highlights`] = s.highlights || []; });
@@ -75,9 +83,20 @@ async function run() {
     if (addAnalysis) $set.analysisSections = entry.analysis;
     console.log(`${APPLY ? 'WRITE' : 'PLAN '} ${entry.id} [${entry.type}] ${total}w${addAnalysis ? ' +analysis' : ''} · ${doc.prompt.replace(/\s+/g, ' ').slice(0, 60)}…`);
     if (total < 250) console.log(`      ⚠ under 250 words`);
-    if (APPLY) await WritingTask2.updateOne({ _id: doc._id }, { $set });
+    if (hasText(doc.sampleSections)) backup.push({ _id: entry.id, sampleSections: doc.sampleSections });
+    pending.push({ _id: doc._id, $set });
     wroteA++;
   }
+
+  // Back up every sample about to be replaced BEFORE the first write.
+  if (APPLY && backup.length) {
+    const dir = path.join(__dirname, 'data', 'task2SampleBackup');
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, `sampleSections-${new Date().toISOString().replace(/[:.]/g, '-')}.json`);
+    fs.writeFileSync(file, JSON.stringify(backup, null, 1));
+    console.log(`Backed up ${backup.length} replaced samples → ${path.relative(process.cwd(), file)}`);
+  }
+  if (APPLY) for (const p of pending) await WritingTask2.updateOne({ _id: p._id }, { $set: p.$set });
 
   // ── B. highlights for existing essays ──
   let wroteB = 0, skippedB = 0;

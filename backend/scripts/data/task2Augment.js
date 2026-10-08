@@ -313,8 +313,8 @@ const AUG = {
       en: 'In conclusion, although subsidising healthy food eases the burden on the poor, I believe taxing junk food is the more effective strategy, because real-world evidence shows that it both reduces consumption and raises revenue to fund health programmes.' },
   },
   'Funding Priorities: Free Public Libraries vs. Internet Infrastructure': {
-    a: ['Thư viện miễn phí: không gian học tập, hỗ trợ người không có internet', 'Dịch vụ cho trẻ em, người già, người tìm việc', 'Bảo tồn văn hóa, tổ chức sự kiện cộng đồng'],
-    b: ['Internet: ai cũng tra cứu được, chi phí thấp hơn về lâu dài', 'Nhiều người cho rằng thông tin trên mạng đã đủ dùng', 'Ngân sách công eo hẹp, cần ưu tiên hạ tầng số'],
+    a: ['Internet: ai cũng tra cứu được, chi phí thấp hơn về lâu dài', 'Nhiều người cho rằng thông tin trên mạng đã đủ dùng', 'Ngân sách công eo hẹp, cần ưu tiên hạ tầng số'],
+    b: ['Thư viện miễn phí: không gian học tập, hỗ trợ người không có internet', 'Dịch vụ cho trẻ em, người già, người tìm việc', 'Bảo tồn văn hóa, tổ chức sự kiện cộng đồng'],
     evidence: [
       { vi: 'Ví dụ, thư viện trung tâm mới của Helsinki mang tên "Oodi" đón hàng triệu lượt khách mỗi năm và cung cấp cả xưởng sáng chế, phòng thu và không gian làm việc, chứ không chỉ sách.',
         en: 'For example, Helsinki\'s new central library, "Oodi", attracts millions of visitors a year and offers workshops, recording studios and workspaces, not just books.' },
@@ -431,8 +431,8 @@ const AUG = {
 
   // ═══ WEEK 16 — Revision (mixed) ═══
   'Government Funding for the Arts': {
-    a: ['Nghệ thuật là di sản văn hóa, cần bảo tồn cho thế hệ sau', 'Bảo tàng, nhà hát thu hút du lịch, tái sinh kinh tế địa phương', 'Nghệ thuật trong trường học phát triển tư duy sáng tạo'],
-    b: ['Y tế và giáo dục là nhu cầu cấp thiết hơn với đa số dân', 'Nghệ thuật có thể tự huy động tài trợ tư nhân, vé', 'Ngân sách công eo hẹp buộc phải chọn ưu tiên'],
+    a: ['Y tế và giáo dục là nhu cầu cấp thiết hơn với đa số dân', 'Nghệ thuật có thể tự huy động tài trợ tư nhân, vé', 'Ngân sách công eo hẹp buộc phải chọn ưu tiên'],
+    b: ['Nghệ thuật là di sản văn hóa, cần bảo tồn cho thế hệ sau', 'Bảo tàng, nhà hát thu hút du lịch, tái sinh kinh tế địa phương', 'Nghệ thuật trong trường học phát triển tư duy sáng tạo'],
     evidence: [
       { vi: 'Ví dụ, sau khi bảo tàng Guggenheim mở tại Bilbao (Tây Ban Nha), thành phố này thu hút hàng triệu du khách mỗi năm và cả một khu vực suy thoái đã được hồi sinh — hiện tượng được gọi là "hiệu ứng Bilbao".',
         en: 'For example, after the Guggenheim Museum opened in Bilbao, Spain, the city attracted millions of tourists a year and a whole declining area was regenerated — an effect now known as the "Bilbao effect".' },
