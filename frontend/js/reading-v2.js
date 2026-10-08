@@ -3444,7 +3444,7 @@ async function _mountInlineReviews(attemptType, attemptId, allQuestions, contain
     const res = await apiFetch(`/api/review/by-attempt/${attemptType}/${attemptId}`);
     if (token !== _mountInlineReviewsToken) return;
     const review = res.review;
-    if (!review) { state.inlineReviewCtx = null; return; }
+    if (!review) { state.inlineReviewCtx = null; window.ReviewInline.setContext(null); return; }
     const qByNum = {};
     allQuestions.forEach(q => { qByNum[q.questionNumber] = q; });
     const mistakesByQNum = {};
@@ -3453,6 +3453,20 @@ async function _mountInlineReviews(attemptType, attemptId, allQuestions, contain
     // against the already-fetched data (see switchReviewPassage's
     // cache-restore branch) without another round-trip.
     state.inlineReviewCtx = { reviewId: review._id, mistakesByQNum, qByNum, containerId };
+    // Every passage's mistakes, not just the visible tab's — drives the
+    // "Lưu review" bar's x/y count and draft auto-save. onSaved fires when
+    // a mistake flips reviewed, from any save path (auto-save, per-question
+    // "Lưu câu này", or the bar).
+    window.ReviewInline.setContext({
+      reviewId: review._id, skill: 'reading', mistakes: review.mistakes,
+      onSaved: (updated) => {
+        const c = state.inlineReviewCtx;
+        if (!c || String(c.reviewId) !== String(review._id)) return;
+        c.mistakesByQNum[updated.questionNumber] = updated;
+        _checkPendingReviewBanner();
+        _updatePassageTabBadges();
+      },
+    });
     _runInlineReviewMountPass();
     _updatePassageTabBadges();
   } catch { /* server-side gate stands regardless */ }
@@ -3513,14 +3527,11 @@ function _runInlineReviewMountPass() {
     const mistake = ctx.mistakesByQNum[qnum];
     if (!mistake) return;
     const q = ctx.qByNum[qnum];
+    // Saves report back through setContext()'s onSaved (see
+    // _mountInlineReviews), which keeps ctx.mistakesByQNum current for
+    // _updatePassageTabBadges().
     window.ReviewInline.mount(anchorEl, mistake, {
       skill: 'reading', mode, reviewId: ctx.reviewId, questionType: q && q.type,
-      // review-inline.js's _submit() hands back the server's updated mistake
-      // (with completedAt now set) as the first arg — ctx.mistakesByQNum
-      // must be updated with it, not just left pointing at the original
-      // (still-incomplete) object, or _updatePassageTabBadges() recomputes
-      // "still pending" from stale data and the badge count never budges.
-      onSaved: (updated) => { ctx.mistakesByQNum[qnum] = updated; _checkPendingReviewBanner(); _updatePassageTabBadges(); },
     });
   }
 

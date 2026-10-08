@@ -41,7 +41,7 @@
 <script src="/js/shared/highlight-store.js?v=20261007hl"></script>
 <script src="/js/shared/review-required-popup.js?v=20261001"></script>
 <script src="/js/shared/attempt-history.js?v=20261001"></script>
-<script src="/js/shared/review-inline.js?v=20260831"></script>
+<script src="/js/shared/review-inline.js?v=20261008"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
 <script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
 <script src="/js/shared/mock-test.js?v=20261007badge"></script>
@@ -1302,7 +1302,7 @@
                 const res = await fetch(`${API}/review/by-attempt/${attemptType}/${attemptId}`, { headers: authH() });
                 const data = await safeJson(res);
                 const review = data.review;
-                if (!review) { state.inlineReviewCtx = null; return; }
+                if (!review) { state.inlineReviewCtx = null; window.ReviewInline.setContext(null); return; }
                 const qByNum = {};
                 (questions || []).forEach(q => { qByNum[q.questionNumber] = q; });
                 const mistakesByQNum = {};
@@ -1311,6 +1311,20 @@
                 // pass against the already-fetched data (see switchPart's
                 // cache-restore branch) without another round-trip.
                 state.inlineReviewCtx = { reviewId: review._id, mistakesByQNum, qByNum, containerId };
+                // Every part's mistakes, not just the visible tab's — drives
+                // the "Lưu review" bar's x/y count and draft auto-save.
+                // onSaved fires when a mistake flips reviewed, from any save
+                // path (auto-save, per-question "Lưu câu này", or the bar).
+                window.ReviewInline.setContext({
+                    reviewId: review._id, skill: 'listening', mistakes: review.mistakes,
+                    onSaved: (updated) => {
+                        const c = state.inlineReviewCtx;
+                        if (!c || String(c.reviewId) !== String(review._id)) return;
+                        c.mistakesByQNum[updated.questionNumber] = updated;
+                        _checkPendingReviewBanner();
+                        _updatePartTabBadges();
+                    },
+                });
                 _runInlineReviewMountPass();
                 _updatePartTabBadges();
             } catch (e) { /* server-side gate stands regardless */ }
@@ -1374,15 +1388,11 @@
                 const mistake = ctx.mistakesByQNum[qnum];
                 if (!mistake) return;
                 const q = ctx.qByNum[qnum];
+                // Saves report back through setContext()'s onSaved (see
+                // _mountInlineReviews), which keeps ctx.mistakesByQNum
+                // current for _updatePartTabBadges().
                 window.ReviewInline.mount(anchorEl, mistake, {
                     skill: 'listening', mode, reviewId: ctx.reviewId, questionType: q && q.type,
-                    // review-inline.js's _submit() hands back the server's updated
-                    // mistake (with completedAt now set) as the first arg —
-                    // ctx.mistakesByQNum must be updated with it, not just left
-                    // pointing at the original (still-incomplete) object, or
-                    // _updatePartTabBadges() recomputes "still pending" from
-                    // stale data and the badge count never budges.
-                    onSaved: (updated) => { ctx.mistakesByQNum[qnum] = updated; _checkPendingReviewBanner(); _updatePartTabBadges(); },
                 });
             }
 
