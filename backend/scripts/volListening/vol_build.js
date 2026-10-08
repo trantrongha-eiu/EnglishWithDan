@@ -44,24 +44,48 @@ const norm = s => ' ' + String(s || '').toLowerCase().replace(/[‘’`´]/g, "'
 const quotes = t => (Array.isArray(t) ? t : [t]).filter(Boolean);
 const compose = e => [`Vị trí: ${e.v}`, `Transcript: ${quotes(e.t).map(x => `“${x}”`).join(' … ')}`, `Phân tích: ${e.p}`].join('\n\n');
 
+// Gemini transcript (label line "Name:" then one sentence per line) → bank shape: no blank lines, repeated labels of
+// the same speaker merged; spec.fix = [[from, to], …] applied first (every one must match)
+function geminiTranscript(text, fix = []) {
+  let t = text.replace(/\r/g, '');
+  for (const [a, b] of fix) { if (!t.includes(a)) throw new Error(`transcript fix not found: ${a}`); t = t.split(a).join(b); }
+  const out = [];
+  let prev = null;
+  for (const l of t.split('\n').map(x => x.trim()).filter(Boolean)) {
+    if (/^[A-Z][A-Za-z.' ]{0,30}:$/.test(l)) { if (l !== prev) out.push(l); prev = l; continue; }
+    out.push(l);
+  }
+  return out.join('\n');
+}
+
 function build(specFile) {
   const spec = require(path.resolve(specFile));
   const W = f => path.join(__dirname, 'web', `vol${spec.vol}`, f);
   const ex = JSON.parse(fs.readFileSync(W('extract.json'), 'utf8'));
+  // Vol 1: one .docx machine transcript per test; Vol 2+: none → Gemini transcript per part (gemini_transcribe.js)
   const docKey = Object.keys(ex.files).find(k => k.startsWith(`test ${spec.test}/`) && ex.files[k].type === 'docx');
-  let docText = ex.files[docKey].text;
-  for (const [a, b] of spec.rawFix || []) { if (!docText.includes(a)) throw new Error(`rawFix not found: ${a}`); docText = docText.split(a).join(b); }
-  const parts = splitParts(docText);
+  let parts = {};
+  if (docKey) {
+    let docText = ex.files[docKey].text;
+    for (const [a, b] of spec.rawFix || []) { if (!docText.includes(a)) throw new Error(`rawFix not found: ${a}`); docText = docText.split(a).join(b); }
+    parts = splitParts(docText);
+  }
   fs.mkdirSync(W('draft'), { recursive: true });
   const report = [];
   for (const s of spec.sections) {
     if (s.reuse) { report.push({ part: s.part, title: `${s.title} — reuse bank ${s.reuse}`, problems: [] }); continue; }
     const problems = [];
+    const gem = W(`gemini/t${spec.test}p${s.part}.txt`);
     const raw = parts[s.part];
-    if (!raw) { report.push({ part: s.part, problems: ['no transcript part'] }); continue; }
+    const whf = W(`whisper/t${spec.test}p${s.part}.json`);
+    if (!s.transcript && !raw && !fs.existsSync(gem) && !fs.existsSync(whf)) { report.push({ part: s.part, problems: ['no transcript part'] }); continue; }
     // .docx transcript is complete but has ASR slips; Whisper (web/vol<V>/whisper) drops passages at long pauses,
     // so the docx stays the base and diff_whisper.js lists where the two disagree → spec.fix
-    const transcript = cleanPart(raw, s);
+    // Vol 2+: Gemini transcript when one was made, else Whisper words + Otter's dropped passages and turns
+    // s.transcript: the whole part written out in the spec (Otter's turns too wrong to patch with fix pairs)
+    const transcript = s.transcript ? s.transcript.trim().split('\n').map(l => l.trim()).filter(Boolean).join('\n')
+      : raw ? cleanPart(raw, s) : fs.existsSync(gem) ? geminiTranscript(fs.readFileSync(gem, 'utf8'), s.fix)
+      : (() => { const r = require('./merge_preview').merged(spec.vol, spec.test, s.part, s); for (const a of r.stats.missingFix || []) problems.push(`transcript fix not found: ${a.replace(/\n/g, '⏎').slice(0, 80)}`); return r.text; })();
     const groups = s.groups.map(g => ({ ...g }));
     const qs = groups.flatMap(g => g.questions);
     const want = Array.from({ length: 10 }, (_, i) => (s.part - 1) * 10 + 1 + i);
@@ -98,5 +122,5 @@ function build(specFile) {
   return report;
 }
 
-module.exports = { note, table, mc, multi, map, matching, short };
+module.exports = { note, table, mc, multi, map, matching, short, geminiTranscript };
 if (require.main === module) for (const f of process.argv.slice(2)) build(f);

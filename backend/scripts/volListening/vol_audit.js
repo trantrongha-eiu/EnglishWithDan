@@ -11,8 +11,10 @@ const VOL = process.argv[2];
 if (!VOL) { console.log('usage: node vol_audit.js <vol>'); process.exit(1); }
 const W = f => path.join(__dirname, 'web', `vol${VOL}`, f);
 
+// ellipses, quote marks ('Get good shoes.' vs "Get good shoes.") and British/US spelling (centre/center) aren't mismatches
 const norm = s => ' ' + String(s || '').replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').toLowerCase()
-  .replace(/[‘’`´]/g, "'").replace(/[“”]/g, '"').replace(/[–—−-]/g, ' ').replace(/[^a-z0-9'£$%. ]+/g, ' ')
+  .replace(/[‘’`´]/g, "'").replace(/[“”]/g, '"').replace(/[–—−-]/g, ' ').replace(/\.{2,}|…/g, ' ')
+  .replace(/[^a-z0-9'£$%. ]+/g, ' ').replace(/(^|\s)'+|'+(?=\s|$)/g, '$1 ').replace(/\b(cent|met|theat|fib)re\b/g, '$1er')
   .replace(/\.(\s|$)/g, ' ').replace(/\s+/g, ' ') + ' ';
 const qsOf = s => (s.questionGroups || []).flatMap(g => g.questions || []);
 // canonical form: no ids, no null/empty values, sorted keys (the two schemas store defaults differently)

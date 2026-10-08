@@ -12,9 +12,20 @@ function volDir(vol) {
   return path.join(o, fs.readdirSync(o).find(d => fs.statSync(path.join(o, d)).isDirectory()));
 }
 
+// a file of the vol by its path; when it does not exist as written, the one in that folder whose name ENDS with the
+// given name (Vol 2+ files carry a mojibake "Bản sao của Bản sao của " prefix: spec says 'listening/test 1/part 1.mp3')
+function findFile(vol, rel) {
+  const full = path.join(volDir(vol), rel);
+  if (fs.existsSync(full)) return full;
+  const dir = path.dirname(full), base = path.basename(full).toLowerCase();
+  const hit = fs.readdirSync(dir).filter(f => f.toLowerCase().endsWith(base) && /[^a-z0-9]$/i.test(f.slice(0, f.length - base.length) || ' '));
+  if (hit.length !== 1) throw new Error(`file ${rel}: ${hit.length} matches`);
+  return path.join(dir, hit[0]);
+}
+
 // mp3 of a part (original file when it is already mp3), cached under web/vol<V>/audio/
 function audioFor(draft) {
-  const src = path.join(volDir(draft._vol), draft._audio);
+  const src = findFile(draft._vol, draft._audio);
   if (/\.mp3$/i.test(src)) return src;
   const out = path.join(__dirname, 'web', `vol${draft._vol}`, 'audio', `t${draft._test}p${draft.partNumber}.mp3`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
@@ -34,10 +45,13 @@ function cropFor(draft, gi) {
   const c = draft.questionGroups[gi]._crop;
   const out = path.join(__dirname, 'web', `vol${draft._vol}`, 'maps', `t${draft._test}p${draft.partNumber}_g${gi}.png`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  const dir = path.join(volDir(draft._vol), `test ${draft._test}`);
-  const pdf = path.join(dir, fs.readdirSync(dir).find(f => /\.pdf$/i.test(f)));
+  // Vol 1: test <T>/<one pdf>; Vol 2+: listening/test <T>/Test <T>.pdf (beside per-part transcript pdfs)
+  let dir = path.join(volDir(draft._vol), `test ${draft._test}`);
+  if (!fs.existsSync(dir)) dir = path.join(volDir(draft._vol), 'listening', `test ${draft._test}`);
+  const pdfs = fs.readdirSync(dir).filter(f => /\.pdf$/i.test(f));
+  const pdf = path.join(dir, pdfs.find(f => /^Test \d+\s*\.pdf$/i.test(f)) || pdfs[0]);
   execFileSync('py', [path.join(__dirname, 'crop.py'), pdf, String(c.page), ...c.box.map(String), out], { stdio: 'pipe' });
   return out;
 }
 
-module.exports = { volDir, audioFor, durationOf, cropFor };
+module.exports = { volDir, findFile, audioFor, durationOf, cropFor };

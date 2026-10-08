@@ -6,6 +6,7 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.e
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 
 const ff = execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
+const { findFile } = require('./vol_media');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 function volDir(vol) {
@@ -45,7 +46,7 @@ async function transcribe(file) {
       const dst = path.join(out, `t${spec.test}p${s.part}.json`);
       if (fs.existsSync(dst)) { console.log(`- t${spec.test}p${s.part} cached`); continue; }
       const small = path.join(out, `t${spec.test}p${s.part}.mp3`);
-      execFileSync(ff, ['-y', '-loglevel', 'error', '-i', path.join(src, s.audio), '-vn', '-ac', '1', '-ar', '16000', '-b:a', '48k', small]);
+      execFileSync(ff, ['-y', '-loglevel', 'error', '-i', findFile(spec.vol, s.audio), '-vn', '-ac', '1', '-ar', '16000', '-b:a', '48k', small]);
       const j = await transcribe(small);
       const segs = (j.segments || []).map(x => ({ start: x.start, end: x.end, text: x.text.trim() }));
       // long runs without punctuation (a Whisper failure mode) → re-transcribe just that span
