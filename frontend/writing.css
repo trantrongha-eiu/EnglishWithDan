@@ -1005,36 +1005,294 @@ body {
 
 /* "Phân tích đề" — shown inline below the prompt/image in .exam-left
    (toggled open/closed, not a modal — a covering modal hid the prompt
-   itself, defeating the point of reading them side by side). Blue theme,
-   deliberately distinct from the green sample-essay panel above so
-   students don't mistake analysis guidance (how to plan the overview/
-   body) for a ready-made essay to copy. */
+   itself, defeating the point of reading them side by side). Each section
+   gets its own accent (intro / body 1 / body 2 / plan) and the body is
+   colour-coded by js/shared/analysis-format.js with the model-answer
+   palette (css/task2-highlight.css vars — #pw-analysis-inline carries
+   .t2hl-root). No green, so students don't mistake the guidance for a
+   ready-made essay to copy. */
 .pw-analysis-section {
-  border: 1.5px solid #bae6fd;
-  border-radius: 10px;
+  --an-ac: var(--t2hl-hook-ac, #7c3aed);
+  --an-bg: var(--t2hl-hook-bg, #ede9fe);
+  --an-fg: var(--t2hl-hook-fg, #4c1d95);
+  border: 1px solid color-mix(in srgb, var(--an-ac) 28%, transparent);
+  border-radius: 12px;
   overflow: hidden;
   margin-bottom: 14px;
+  background: #fffefa;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .05);
+  animation: anRise .45s cubic-bezier(.2, .7, .2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
 }
+.pw-analysis-section.tone-b1   { --an-ac: var(--t2hl-topic-ac);    --an-bg: var(--t2hl-topic-bg);    --an-fg: var(--t2hl-topic-fg); }
+.pw-analysis-section.tone-b2   { --an-ac: var(--t2hl-idea2-ac);    --an-bg: var(--t2hl-idea2-bg);    --an-fg: var(--t2hl-idea2-fg); }
+.pw-analysis-section.tone-plan { --an-ac: var(--t2hl-support1-ac); --an-bg: var(--t2hl-support1-bg); --an-fg: var(--t2hl-support1-fg); }
 .pw-analysis-section:last-child { margin-bottom: 0; }
 .pw-analysis-section-title {
-  background: #e0f2fe;
-  padding: 7px 12px 7px 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(90deg, var(--an-bg), color-mix(in srgb, var(--an-bg) 25%, transparent));
+  padding: 9px 12px;
   font-size: 13px;
   font-weight: 700;
-  color: #0369a1;
-  border-bottom: 1px solid #bae6fd;
+  color: var(--an-fg);
+  border-bottom: 1px solid color-mix(in srgb, var(--an-ac) 22%, transparent);
 }
+.an-badge {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--an-ac);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--an-ac) 20%, transparent);
+}
+.an-title-txt { min-width: 0; line-height: 1.4; }
+.an-title-ico { margin-left: auto; opacity: .45; font-size: 12px; }
 .pw-analysis-section-body {
-  background: #f0f9ff;
   padding: 12px 14px;
   font-size: 13.5px;
   line-height: 1.8;
-  color: #0c4a6e;
+  color: #1f2937;
   white-space: pre-wrap;
 }
-[data-theme="dark"] .pw-analysis-section { border-color: #1e4060; }
-[data-theme="dark"] .pw-analysis-section-title { background: #0f2d45; color: #7dd3fc; border-color: #1e4060; }
-[data-theme="dark"] .pw-analysis-section-body { background: #0c1e30; color: #bae6fd; }
+.pw-analysis-section-body.is-rich { white-space: normal; line-height: 1.7; }
+
+/* Prose */
+.an-p { margin: 0 0 10px; }
+.an-key {
+  display: inline-block;
+  margin-right: 3px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--an-bg);
+  color: var(--an-fg);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 20px;
+  vertical-align: 1px;
+}
+.an-list { list-style: none; margin: 0 0 10px; padding: 0; }
+.an-list--bullet li { position: relative; padding-left: 18px; margin-bottom: 5px; }
+.an-list--bullet li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: .62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--an-ac);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--an-ac) 18%, transparent);
+}
+.an-list--bullet .an-key { background: none; padding: 0; color: var(--an-fg); font-size: inherit; line-height: inherit; vertical-align: 0; }
+.an-list--bullet .an-key::after { content: ':'; }
+
+/* Inline marks: CAPS emphasis = marker sweep, figures, arrows, quotes. */
+.an-em {
+  color: inherit;
+  font-weight: 700;
+  padding: 0 2px;
+  border-radius: 3px;
+  background: linear-gradient(transparent 52%, rgba(250, 204, 21, .55) 52%) no-repeat;
+  background-size: 100% 100%;
+  animation: anSweep .6s ease-out both;
+  animation-delay: calc(var(--i, 0) * 90ms + .35s);
+}
+.an-num {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: var(--t2hl-topic-bg);
+  color: var(--t2hl-topic-fg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.an-num i { font-style: normal; color: var(--t2hl-topic-ac); margin: 0 2px; }
+.an-arrow { color: var(--an-ac); font-weight: 800; }
+.an-q {
+  quotes: '\201C' '\201D';
+  padding: 0 4px;
+  border-radius: 5px;
+  background: var(--t2hl-idea2-bg);
+  color: var(--t2hl-idea2-fg);
+  font-style: italic;
+}
+
+/* Headings ("Topic sentence:", "Cấu trúc hay:", "Checklist…:") */
+.an-head {
+  --h-ac: var(--t2hl-final-ac); --h-bg: var(--t2hl-final-bg); --h-fg: var(--t2hl-final-fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 7px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--h-fg);
+}
+.is-rich > .an-head:first-child { margin-top: 0; }
+.an-head i {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--h-bg);
+  color: var(--h-ac);
+  font-size: 11px;
+}
+.an-head--overview, .an-head--thesis { --h-ac: var(--t2hl-thesis-ac);   --h-bg: var(--t2hl-thesis-bg);   --h-fg: var(--t2hl-thesis-fg); }
+.an-head--topic                      { --h-ac: var(--t2hl-topic-ac);    --h-bg: var(--t2hl-topic-bg);    --h-fg: var(--t2hl-topic-fg); }
+.an-head--phrase                     { --h-ac: var(--t2hl-support1-ac); --h-bg: var(--t2hl-support1-bg); --h-fg: var(--t2hl-support1-fg); }
+.an-head--check                      { --h-ac: var(--t2hl-support2-ac); --h-bg: var(--t2hl-support2-bg); --h-fg: var(--t2hl-support2-fg); }
+.an-head--formula                    { --h-ac: var(--t2hl-idea2-ac);    --h-bg: var(--t2hl-idea2-bg);    --h-fg: var(--t2hl-idea2-fg); }
+
+/* Model sentence — same tint/underline/pill as the model answer, filled
+   in with a highlighter sweep when the panel opens. */
+.an-model {
+  --m-ac: var(--t2hl-final-ac); --m-bg: var(--t2hl-final-bg); --m-fg: var(--t2hl-final-fg);
+  margin: 0 0 12px;
+  padding: 9px 12px 9px 13px;
+  border-radius: 10px;
+  border-left: 4px solid var(--m-ac);
+  color: var(--m-fg);
+  font-weight: 500;
+  background: linear-gradient(var(--m-bg), var(--m-bg)) no-repeat;
+  background-size: 100% 100%;
+  animation: anSweep .7s cubic-bezier(.3, .7, .2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms + .2s);
+}
+.an-model::before {
+  content: attr(data-label);
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--m-ac);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: .02em;
+  vertical-align: 1px;
+}
+.an-model--overview, .an-model--thesis { --m-ac: var(--t2hl-thesis-ac); --m-bg: var(--t2hl-thesis-bg); --m-fg: var(--t2hl-thesis-fg); font-weight: 600; }
+.an-model--topic                       { --m-ac: var(--t2hl-topic-ac);  --m-bg: var(--t2hl-topic-bg);  --m-fg: var(--t2hl-topic-fg);  font-weight: 600; }
+
+/* Useful phrase → example sentence */
+.an-phrases { display: flex; flex-direction: column; gap: 8px; margin: 0 0 12px; }
+.an-phrase {
+  padding: 8px 11px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--t2hl-support1-ac) 30%, transparent);
+  background: color-mix(in srgb, var(--t2hl-support1-bg) 45%, transparent);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+  animation: anRise .4s ease-out both;
+  animation-delay: calc(var(--i, 0) * 90ms + .25s);
+}
+.an-phrase:hover {
+  transform: translateY(-1px);
+  border-color: var(--t2hl-support1-ac);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--t2hl-support1-ac) 18%, transparent);
+}
+.an-phrase-chip {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 6px;
+  background: var(--t2hl-support1-ac);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.an-example { position: relative; margin-top: 5px; padding-left: 18px; color: #374151; font-style: italic; }
+.an-example::before { content: '\21B3'; position: absolute; left: 2px; color: var(--t2hl-support1-ac); font-style: normal; font-weight: 700; }
+.an-hit { font-style: normal; font-weight: 700; color: var(--t2hl-support1-fg); box-shadow: inset 0 -2px 0 var(--t2hl-support1-ac); }
+
+/* Plan steps (MỞ BÀI / OVERVIEW / BODY 1 / BODY 2 / KẾT BÀI) */
+.an-step { display: flex; align-items: flex-start; gap: 9px; padding: 6px 0; border-bottom: 1px dashed #e5e7eb; }
+.an-step:last-child { border-bottom: none; }
+.an-step-tag {
+  --s-ac: var(--t2hl-final-ac);
+  flex: 0 0 auto;
+  min-width: 70px;
+  margin-top: 2px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--s-ac);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-align: center;
+  line-height: 18px;
+}
+.an-step--paraphrase .an-step-tag { --s-ac: var(--t2hl-hook-ac); }
+.an-step--overview .an-step-tag   { --s-ac: var(--t2hl-thesis-ac); }
+.an-step--topic .an-step-tag      { --s-ac: var(--t2hl-topic-ac); }
+.an-step--compare .an-step-tag    { --s-ac: var(--t2hl-idea2-ac); }
+.an-step--restate .an-step-tag    { --s-ac: var(--t2hl-restate-ac); }
+
+/* Checklist — click to tick an item off */
+.an-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 6px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--t2hl-support2-bg) 55%, transparent);
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s, opacity .15s;
+}
+.an-check:hover { background: var(--t2hl-support2-bg); }
+.an-check:focus-visible { outline: 2px solid var(--t2hl-support2-ac); outline-offset: 1px; }
+.an-check-num {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 1.5px solid var(--t2hl-support2-ac);
+  color: var(--t2hl-support2-fg);
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1;
+  transition: background .2s, color .2s;
+}
+.an-check.is-done .an-check-num { background: var(--t2hl-support2-ac); color: #fff; animation: anPop .3s ease-out; }
+.an-check.is-done .an-check-txt { text-decoration: line-through; opacity: .6; }
+
+/* "Phân tích đề" toggle */
+.pw-analysis-btn.is-open { border-color: #a5b4fc; color: #4338ca; background: #eef2ff; }
+
+@keyframes anRise  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes anSweep { from { background-size: 0% 100%; } to { background-size: 100% 100%; } }
+@keyframes anPop   { 0% { transform: scale(.7); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .pw-analysis-section, .an-em, .an-model, .an-phrase, .an-check-num { animation: none !important; }
+  .an-phrase:hover { transform: none; }
+}
+
+[data-theme="dark"] .pw-analysis-section { background: #0f172a; box-shadow: none; }
+[data-theme="dark"] .pw-analysis-section-body { color: #e5e7eb; }
+[data-theme="dark"] .an-em { background-image: linear-gradient(transparent 52%, rgba(250, 204, 21, .32) 52%); }
+[data-theme="dark"] .an-example { color: #cbd5e1; }
+[data-theme="dark"] .an-step { border-color: #334155; }
+[data-theme="dark"] .an-badge, [data-theme="dark"] .an-model::before,
+[data-theme="dark"] .an-phrase-chip, [data-theme="dark"] .an-step-tag,
+[data-theme="dark"] .an-check.is-done .an-check-num { color: #0b1020; }
+[data-theme="dark"] .pw-analysis-btn.is-open { background: #1e1b4b; border-color: #4f46e5; color: #c7d2fe; }
 
 /* Dark mode */
 [data-theme="dark"] .pw-sample-bar { background: #1a1f2e; border-color: #2d3748; }

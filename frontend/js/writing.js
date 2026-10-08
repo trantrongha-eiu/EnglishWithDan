@@ -2464,13 +2464,20 @@ function renderPracticeWriteScreen(taskType, task) {
   // reading the analysis WHILE looking at the chart/question.
   const hasAnalysis = !isSimulation && Array.isArray(task.analysisSections) && task.analysisSections.some(s => s.content?.trim());
   if (hasAnalysis) {
-    const analysisHtml = task.analysisSections.filter(s => s.content?.trim()).map(s => `
-      <div class="pw-analysis-section">
-        <div class="pw-analysis-section-title"><span>${escHtml(s.title)}</span></div>
-        <div class="pw-analysis-section-body">${escHtml(s.content)}</div>
-      </div>`).join('');
-    html += `<button class="btn-secondary" id="pw-analysis-toggle-btn" style="margin-top:12px;width:100%" onclick="toggleAnalysisPanel()"><i class="fas fa-search"></i> Phân tích đề</button>`;
-    html += `<div id="pw-analysis-inline" style="display:none;margin-top:12px">${analysisHtml}</div>`;
+    // Colour-coded like the model answer (js/shared/analysis-format.js:
+    // headings, model sentences, phrase → example, plan steps, checklist);
+    // --i staggers the open animation.
+    const fmt = window.AnalysisFormat;
+    const analysisHtml = task.analysisSections.filter(s => s.content?.trim()).map((s, i) => {
+      const t = fmt ? fmt.title(s.title) : null;
+      return `
+      <div class="pw-analysis-section${t ? ' tone-' + t.tone : ''}" style="--i:${i}">
+        <div class="pw-analysis-section-title">${t ? t.html : `<span>${escHtml(s.title)}</span>`}</div>
+        <div class="pw-analysis-section-body${fmt ? ' is-rich' : ''}">${fmt ? fmt.html(s.content) : escHtml(s.content)}</div>
+      </div>`;
+    }).join('');
+    html += `<button class="btn-secondary pw-analysis-btn" id="pw-analysis-toggle-btn" style="margin-top:12px;width:100%" onclick="toggleAnalysisPanel()"><i class="fas fa-search"></i> Phân tích đề</button>`;
+    html += `<div id="pw-analysis-inline" class="t2hl-root" style="display:none;margin-top:12px">${analysisHtml}</div>`;
   }
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
@@ -2539,6 +2546,7 @@ function toggleAnalysisPanel() {
   const show = panel.style.display === 'none';
   panel.style.display = show ? '' : 'none';
   if (btn) {
+    btn.classList.toggle('is-open', show);
     btn.innerHTML = show
       ? '<i class="fas fa-chevron-up"></i> Ẩn phân tích đề'
       : '<i class="fas fa-search"></i> Phân tích đề';
