@@ -29,7 +29,7 @@ Thiếu audio thì được tìm trên mạng. Transcript được tự sinh ho�
    Test trùng nguyên đề full cũ → đổi tên đề cũ (`rename_tests.js`, có backup), không tạo trùng.
 8. Debug cả vol trước khi báo cáo: `node vol_audit.js <V>` (chỉ đọc DB: hình dạng đề, bản trong đề full == bài lẻ,
    draft == DB, URL audio/ảnh bìa/map trả về, độ dài audio đề full ≈ tổng 4 phần, trích dẫn giải thích có trong
-   transcript, transcript dính chữ). Audio bài lẻ quá dài (vd. còn 10 phút chép đáp án) → `trim_section_audio.js`.
+   transcript, transcript dính chữ). Audio bài lẻ quá dài (vd. còn 10 phút chép đáp án) → `trim_section_audio.js`; đề full → `trim_test_audio.js`.
 
 ## Vol 2+ — khác Vol 1
 
@@ -68,7 +68,11 @@ mojibake "Bản sao của Bản sao của " → spec ghi phần đuôi (`audio: 
   chép đáp án ở cuối (nội dung hết ở ~28:25).
 - 2026-10-08 debug lại: bài lẻ cũ "Health on the Night Shift. 14 + 15" (T7 P4, nội dung y hệt bản trong đề full) đổi tên
   thành "Health on the Night Shift"; audit bỏ qua dấu "…", nháy đơn/kép và centre/center khi so trích dẫn (các cảnh báo
-  trích dẫn ở T7 P1/P2, T8 P1 là báo nhầm). `vol_audit.js 2` chỉ còn audio T7 dài (chờ thầy).
+  trích dẫn ở T7 P1/P2, T8 P1 là báo nhầm).
+- 2026-10-08 thầy duyệt: "Actual Test 11–12" → "Actual Test 10–11" (`renumber_actual_tests.js --apply`, backup
+  web/vol1/backup, 2 lượt làm bài đổi testName theo); audio đề full "Vol 2 - Test 7" cắt 2317 s → 1708 s
+  (`trim_test_audio.js`, silencedetect: hết Section 4 + câu kết ở 28:25, sau đó chỉ im lặng / "two minutes left").
+  Sau đó `vol_audit.js 2` sạch (0 problem), pw_fulltest T7 + Actual Test 10/11 đều 40/40.
 
 ## Vol 1 — 2026-10-07 (xong cả 10 test)
 
