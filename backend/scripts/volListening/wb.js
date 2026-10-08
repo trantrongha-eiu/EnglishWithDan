@@ -8,9 +8,13 @@ const { findFile } = require('./vol_media');
 const [vol, test, part, from, to] = process.argv.slice(2);
 const sec = t => String(t).includes(':') ? t.split(':').reduce((a, b) => a * 60 + +b, 0) : +t;
 const ff = execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
-const { volDir } = require('./vol_media');
+const { volDir, partFile } = require('./vol_media');
+// the part's audio as the spec gives it (Vol 3 file names / clips), else listening/test T/…part|section N…
+const specFile = path.join(__dirname, 'specs', `vol${vol}_t${test}.js`);
+const ss = fs.existsSync(specFile) && require(specFile).sections.find(x => x.part === +part && x.audio);
 const dir = path.join(volDir(+vol), 'listening', `test ${test}`);
-const audio = path.join(dir, fs.readdirSync(dir).find(f => /\.(mp3|m4a)$/i.test(f) && new RegExp(`(?:part|section)[ -]?${part}\\b`, 'i').test(f)));
+const audio = ss ? partFile(+vol, +test, +part, ss.audio, ss.clip)
+  : path.join(dir, fs.readdirSync(dir).find(f => /\.(mp3|m4a)$/i.test(f) && new RegExp(`(?:part|section)[ -]?${part}\\b`, 'i').test(f)));
 (async () => {
   const cut = path.join(os.tmpdir(), `wb_${process.pid}.mp3`);
   execFileSync(ff, ['-y', '-loglevel', 'error', '-ss', String(sec(from)), '-to', String(sec(to)), '-i', audio, '-ac', '1', '-ar', '16000', '-b:a', '64k', cut]);

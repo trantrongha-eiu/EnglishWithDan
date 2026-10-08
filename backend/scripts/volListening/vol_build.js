@@ -113,7 +113,7 @@ function build(specFile) {
       partNumber: s.part, title: s.title, description: '', transcript,
       questionRange: { start: want[0], end: want[9] }, questionGroups: groups,
       isActive: false, isActualTest: true, audioFileName: `vol${spec.vol}_t${spec.test}_p${s.part}.mp3`,
-      _audio: s.audio, _vol: spec.vol, _test: spec.test, _cover: s.cover || '',
+      _audio: s.audio, _clip: s.clip, _vol: spec.vol, _test: spec.test, _cover: s.cover || '',
     };
     fs.writeFileSync(W(`draft/t${spec.test}p${s.part}.json`), JSON.stringify(draft, null, 1));
     report.push({ part: s.part, title: s.title, problems });

@@ -14,7 +14,7 @@ const W = f => path.join(__dirname, 'web', `vol${VOL}`, f);
 // ellipses, quote marks ('Get good shoes.' vs "Get good shoes.") and British/US spelling (centre/center) aren't mismatches
 const norm = s => ' ' + String(s || '').replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').toLowerCase()
   .replace(/[‘’`´]/g, "'").replace(/[“”]/g, '"').replace(/[–—−-]/g, ' ').replace(/\.{2,}|…/g, ' ')
-  .replace(/[^a-z0-9'£$%. ]+/g, ' ').replace(/(^|\s)'+|'+(?=\s|$)/g, '$1 ').replace(/\b(cent|met|theat|fib)re\b/g, '$1er')
+  .replace(/[^a-z0-9'£$%. ]+/g, ' ').replace(/(^|\s)'+|'+(?=[\s.]|$)/g, '$1 ').replace(/\b(cent|met|theat|fib)re\b/g, '$1er')
   .replace(/\.(\s|$)/g, ' ').replace(/\s+/g, ' ') + ' ';
 const qsOf = s => (s.questionGroups || []).flatMap(g => g.questions || []);
 // canonical form: no ids, no null/empty values, sorted keys (the two schemas store defaults differently)
@@ -50,6 +50,7 @@ async function head(url) {
   const problems = [];
   const P = (where, msg) => problems.push(`${where}: ${msg}`);
   const seenSections = new Map();
+  let quotesChecked = 0;
 
   async function auditSection(s, where, standalone) {
     const qs = qsOf(s);
@@ -70,11 +71,14 @@ async function head(url) {
       const ex = String(q.explanation || '');
       if (!ex.trim()) { P(where, `Q${n} no explanation`); continue; }
       if (!/Transcript:/.test(ex) || !/Phân tích:/.test(ex)) P(where, `Q${n} explanation not in Vị trí/Transcript/Phân tích form`);
-      const m = ex.match(/Transcript:\s*"([\s\S]*?)"\s*(\n|$)/);
-      if (m) {
-        // quotes may join two turns with " — " / " ... "
-        for (const part of m[1].replace(/\[[^\]]*\]/g, ' ').split(/\s*(?:—|\.\.\.|…)\s*/)) {
+      // every quoted stretch ("…" or “…”) on the Transcript line; text between quotes ("— Steve:", " … ") is not a quote
+      const line = (ex.match(/Transcript:([^\n]*)/) || [])[1] || '';
+      const quotes = [...line.matchAll(/“([^”]*)”|"([^"]*)"/g)].map(q => q[1] ?? q[2]);
+      for (const quote of quotes) {
+        // a quote may join two turns with " — " / " ... "
+        for (const part of quote.replace(/\[[^\]]*\]/g, ' ').split(/\s*(?:—|\.\.\.|…)\s*/)) {
           const p = norm(part).trim();
+          if (p.length > 12) quotesChecked++;
           if (p.length > 12 && !tr.includes(' ' + p + ' ')) P(where, `Q${n} quote not in transcript: "${part.slice(0, 70)}"`);
         }
       }
@@ -156,7 +160,7 @@ async function head(url) {
     rows.push({ test: `${k} (lẻ only)`, parts: [] });
   }
   for (const r of rows) console.log(`${r.test.padEnd(22)} ${r.parts.join(' ')}  ${r.dur || ''}`);
-  console.log(`\n${problems.length} problem(s)`);
+  console.log(`\n${quotesChecked} explanation quotes checked\n${problems.length} problem(s)`);
   for (const p of problems) console.log('  ' + p);
   await mongoose.disconnect();
 })();

@@ -141,9 +141,14 @@ function fromWhisper(wh, rawPart, { speakers = null, wfix: fix = [], keepFrom = 
 // Otter did not name the speaker, " \n<m:ss>\n<text>". An unnamed block is a turn change in practice (one
 // voice → the other), so it gets the other speaker of the last two named ones. Output = the .docx shape
 // ("Speaker N [m:ss] text …") so cleanPart / fromWhisper / spec.fix work unchanged.
-function otterToRaw(pages) {
-  const text = pages.map(p => p.replace(/^\s*GROUP:[^\n]*\n/m, '')).join('\n')
-    .replace(/^[\s\S]*?SPEAKERS\s*\n[^\n]*\n/, '');
+// oneSpeaker (spec has hand turns, Vol 3): Otter's speaker numbers are ignored — every block is speaker 1
+function otterToRaw(pages, { oneSpeaker = false } = {}) {
+  let text = pages.map(p => p.replace(/^\s*GROUP:[^\n]*\n/im, '')).join('\n');
+  // Vol 4 export: "Speaker 1 (00:32):" before each block → the "Speaker n" / "m:ss" lines below
+  text = text.replace(/^\s*Speaker (\d+) \((\d+:\d\d(?::\d\d)?)\):\s*$/gm, 'Speaker $1\n$2');
+  // header: SUMMARY KEYWORDS … SPEAKERS <list>; without a SPEAKERS line (Vol 3) it ends at the first timestamp
+  text = /SPEAKERS\s*\n/.test(text) ? text.replace(/^[\s\S]*?SPEAKERS\s*\n[^\n]*\n/, '')
+    : text.replace(/^[\s\S]*?SUMMARY KEYWORDS[\s\S]*?(?=^\s*\d+:\d\d(?::\d\d)?\s*$)/m, '');
   const lines = text.split('\n').map(l => l.trim());
   const blocks = [];
   let cur = null, pendingSpeaker = null;
@@ -156,6 +161,7 @@ function otterToRaw(pages) {
     if (!cur) { cur = { who: null, time: '0:00', text: [] }; blocks.push(cur); }
     cur.text.push(l);
   }
+  if (oneSpeaker) blocks.forEach(b => { b.who = 1; });
   // unnamed block → the other speaker
   let last = null, other = null;
   for (const b of blocks) {
@@ -270,7 +276,24 @@ const NARR_EXTRA = [
   /^in the ielts test,? you would now have/i,
 ];
 
-module.exports = { splitParts, cleanPart, fromWhisper, otterToRaw, mergeOtterWhisper };
+// ── Speaker turns by hand (Vol 3: Otter names no speakers, one block holds both voices) ──────────────
+// turns = [[label, phrase], …] in order: each phrase (verbatim, found after the previous one) starts a turn of that
+// speaker → "Label:" line before it (breaking the line when the turn starts mid-line). Missing phrases → stats.missingFix.
+function applyTurns(text, turns, stats = {}) {
+  let t = text, pos = 0, prev = null;
+  for (const [label, phrase] of turns) {
+    const i = t.indexOf(phrase, pos);
+    if (i < 0) { stats.missingFix = (stats.missingFix || []).concat(`turn ${label}: ${phrase}`); continue; }
+    if (label === prev) stats.missingFix = (stats.missingFix || []).concat(`turn ${label} twice in a row: ${phrase}`);
+    const ins = `\n${label}:\n`;
+    t = t.slice(0, i) + ins + t.slice(i);
+    pos = i + ins.length + phrase.length;
+    prev = label;
+  }
+  return t.split('\n').map(l => l.trim()).filter(Boolean).join('\n');
+}
+
+module.exports = { splitParts, cleanPart, fromWhisper, otterToRaw, mergeOtterWhisper, applyTurns };
 
 if (require.main === module) {
   // node vol_transcript.js <vol> <test> [part]  → print the cleaned parts (no speaker map)

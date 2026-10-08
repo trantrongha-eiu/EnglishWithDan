@@ -23,15 +23,20 @@ function findFile(vol, rel) {
   return path.join(dir, hit[0]);
 }
 
-// mp3 of a part (original file when it is already mp3), cached under web/vol<V>/audio/
-function audioFor(draft) {
-  const src = findFile(draft._vol, draft._audio);
-  if (/\.mp3$/i.test(src)) return src;
-  const out = path.join(__dirname, 'web', `vol${draft._vol}`, 'audio', `t${draft._test}p${draft.partNumber}.mp3`);
+// mp3 of a part (original file when it is already mp3), cached under web/vol<V>/audio/. clip = [from, to] seconds
+// (spec part.clip): that stretch only — Vol 3 Test 1–2 come as one whole-test file, and a part file's tail of
+// answer-transfer silence is cut the same way (1 s fade-out)
+function partFile(vol, test, part, audio, clip) {
+  const src = findFile(vol, audio);
+  if (!clip && /\.mp3$/i.test(src)) return src;
+  const out = path.join(__dirname, 'web', `vol${vol}`, 'audio', `t${test}p${part}${clip ? `_${clip.join('-')}` : ''}.mp3`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  if (!fs.existsSync(out)) execFileSync(ffmpeg(), ['-y', '-loglevel', 'error', '-i', src, '-vn', '-ac', '2', '-ar', '44100', '-b:a', '128k', out]);
+  const cut = clip ? ['-ss', String(clip[0]), '-to', String(clip[1])] : [];
+  const fade = clip ? ['-af', `afade=t=out:st=${clip[1] - clip[0] - 1}:d=1`] : [];
+  if (!fs.existsSync(out)) execFileSync(ffmpeg(), ['-y', '-loglevel', 'error', ...cut, '-i', src, '-vn', ...fade, '-ac', '2', '-ar', '44100', '-b:a', '128k', out]);
   return out;
 }
+const audioFor = draft => partFile(draft._vol, draft._test, draft.partNumber, draft._audio, draft._clip);
 
 function durationOf(file) {
   let txt = '';
@@ -49,9 +54,10 @@ function cropFor(draft, gi) {
   let dir = path.join(volDir(draft._vol), `test ${draft._test}`);
   if (!fs.existsSync(dir)) dir = path.join(volDir(draft._vol), 'listening', `test ${draft._test}`);
   const pdfs = fs.readdirSync(dir).filter(f => /\.pdf$/i.test(f));
-  const pdf = path.join(dir, pdfs.find(f => /^Test \d+\s*\.pdf$/i.test(f)) || pdfs[0]);
+  // c.pdf: the question paper by its path in the vol (Vol 4 names vary: "listening- up.pdf", "test 2- listening (2).pdf")
+  const pdf = c.pdf ? findFile(draft._vol, c.pdf) : path.join(dir, pdfs.find(f => /^Test ?\d+(?:\s*-\s*up)?\s*\.pdf$/i.test(f)) || pdfs[0]);
   execFileSync('py', [path.join(__dirname, 'crop.py'), pdf, String(c.page), ...c.box.map(String), out], { stdio: 'pipe' });
   return out;
 }
 
-module.exports = { volDir, findFile, audioFor, durationOf, cropFor };
+module.exports = { volDir, findFile, partFile, audioFor, durationOf, cropFor };

@@ -14,6 +14,15 @@ const RENAMES = {
   ],
   // Vol 2 Test 7 = "Actual Test 10" (all 4 parts, same recording and keys)
   2: [{ from: 'Actual Test 10', to: 'Vol 2 - Test 7', seriesName: 'Vol 2', testNumber: 7 }],
+  // Vol 3 Test 3 = "Actual Test 8", Test 4 = "Actual Test 9" (all 4 parts, same keys and recordings); then
+  // renumber_actual_tests.js closes the gap (Actual Test 10–11 → 8–9)
+  3: [
+    { from: 'Actual Test 8', to: 'Vol 3 - Test 3', seriesName: 'Vol 3', testNumber: 3 },
+    { from: 'Actual Test 9', to: 'Vol 3 - Test 4', seriesName: 'Vol 3', testNumber: 4 },
+  ],
+  // Vol 4 Test 7 = "Actual Test 1" (all 4 parts, same recordings and keys 40/40); thầy 2026-10-08: rename, then
+  // renumber_actual_tests.js (Actual Test 2–11 → 1–10)
+  4: [{ from: 'Actual Test 1', to: 'Vol 4 - Test 7', seriesName: 'Vol 4', testNumber: 7 }],
 };
 (async () => {
   const vol = +process.argv[2];
