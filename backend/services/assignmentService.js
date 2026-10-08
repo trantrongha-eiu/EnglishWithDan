@@ -125,17 +125,15 @@ function archivedIsMissed(assignment, status) {
   return status !== 'completed';
 }
 
-// An assignment whose window had already closed before this student joined
-// the class was never theirs to do — e.g. a student added on 08/09 was being
-// charged a miss for homework due 07/09. "Closed" = its deadline, or, for an
-// archived one with no deadline, the moment it was archived (≈ updatedAt).
-function closedBeforeEnrollment(assignment, enrollment) {
+// An assignment given before this student joined the class was never theirs
+// to do (teacher's rule: a newly added student only owes homework assigned
+// from their join date on) — it is hidden from them and never counted as a
+// miss, even if its deadline is still open. Measured against the CURRENT
+// enrollment, so a removed-then-re-added student starts fresh too.
+function assignedBeforeEnrollment(assignment, enrollment) {
   const joined = enrollment && (enrollment.enrolledAt || enrollment.createdAt);
-  if (!joined) return false;
-  const joinedAt = new Date(joined).getTime();
-  if (assignment.deadline) return new Date(assignment.deadline).getTime() < joinedAt;
-  if (assignment.status === 'archived' && assignment.updatedAt) return new Date(assignment.updatedAt).getTime() < joinedAt;
-  return false;
+  if (!joined || !assignment.createdAt) return false;
+  return new Date(assignment.createdAt).getTime() < new Date(joined).getTime();
 }
 
 // ── Student: all my homework across my active classes ──────────────────
@@ -183,7 +181,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     const cls = classMap.get(String(a.classId));
     const enr = enrollByClass.get(String(a.classId));
     if (!cls || !enr) continue;
-    if (closedBeforeEnrollment(a, enr)) continue;
+    if (assignedBeforeEnrollment(a, enr)) continue;
 
     const manualCompleted = new Set(
       (storedMap.get(String(a._id))?.items || []).filter((it) => it.source === 'manual' && it.status === 'completed').map((it) => String(it.resourceItemId))
@@ -458,9 +456,9 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
     const partial = [...vocabGoals.values()].some((v) => !v.completed && v.practiced > 0);
     const derived = deriveAssignmentStatus(assignment, completedIds, now, { partial });
     const { done, total } = derived;
-    // Joined after this assignment had already closed — not counted against
-    // them (getStudentAssignments skips it the same way).
-    const status = derived.status !== 'completed' && closedBeforeEnrollment(assignment, e) ? 'not_applicable' : derived.status;
+    // Joined after this assignment was given — not theirs to do
+    // (getStudentAssignments skips it the same way).
+    const status = derived.status !== 'completed' && assignedBeforeEnrollment(assignment, e) ? 'not_applicable' : derived.status;
     return {
       enrollmentId: e._id, studentId: e.studentId, removed: !!e.removedAt,
       student: { name: displayNameOf(sMap.get(String(e.studentId))), username: sMap.get(String(e.studentId))?.username || '' },
@@ -484,7 +482,7 @@ module.exports = {
   getOverdueCountForClass,
   getMissedAssignmentsByClass,
   archivedIsMissed,
-  closedBeforeEnrollment,
+  assignedBeforeEnrollment,
   markManualItem,
   getAssignmentProgressTable,
   displayNameOf,

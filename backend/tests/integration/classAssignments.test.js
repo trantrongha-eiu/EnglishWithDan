@@ -782,15 +782,17 @@ describe('deadline / overdue / warning', () => {
   });
 });
 
-describe('joined the class after an assignment closed', () => {
-  test('an assignment due (or archived) before the student enrolled is not counted as missed', async () => {
+describe('joined the class after an assignment was given', () => {
+  test('an assignment given before the student enrolled is not theirs — overdue or still open', async () => {
     const t = await createTeacher();
     const s = await createStudent();
     const cls = await createClassGroup({ teacher: t });
     const enr = await enrollStudent(cls, s, { enrolledAt: past(1) });
-    // due 3 days ago — before this student joined
-    await createAssignment(cls, { deadline: new Date(past(3)), resources: [{ kind: 'external', url: 'https://x.com', title: 'x' }] });
-    // due 1 hour ago — after they joined: a real miss
+    // given 3 days ago, already overdue — before this student joined
+    await createAssignment(cls, { createdAt: past(3), deadline: new Date(past(2)), resources: [{ kind: 'external', url: 'https://x.com', title: 'x' }] });
+    // given 2 days ago, deadline still open — also before they joined
+    const openOld = await createAssignment(cls, { createdAt: past(2), deadline: new Date(Date.now() + 3 * 864e5) });
+    // given after they joined, due 1 hour ago: a real miss
     const counted = await createAssignment(cls, { deadline: new Date(Date.now() - 3600e3), resources: [{ kind: 'external', url: 'https://y.com', title: 'y' }] });
 
     const mine = await request(app).get('/api/assignments/mine').set(authH(s));
@@ -798,6 +800,13 @@ describe('joined the class after an assignment closed', () => {
     expect(await assignmentService.getOverdueCountForClass(s._id, cls._id)).toBe(1);
     const refreshed = await classAttendanceService.refreshEnrollment(enr._id);
     expect(refreshed.stats.homeworkMissedCount).toBe(1);
+
+    // teacher side: shown as not_applicable and left out of the X/Y denominator
+    const detail = await request(app).get(`/api/classes/${cls._id}/assignments/${openOld._id}`).set(authH(t));
+    expect(detail.body.rows.find((r) => r.studentId === String(s._id)).status).toBe('not_applicable');
+    const list = await request(app).get(`/api/classes/${cls._id}/assignments`).set(authH(t));
+    expect(list.body.assignments.find((a) => a._id === String(openOld._id)).assignedStudents).toBe(0);
+    expect(list.body.assignments.find((a) => a._id === String(counted._id)).assignedStudents).toBe(1);
   });
 });
 

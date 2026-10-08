@@ -24,9 +24,9 @@ async function createClassGroup(overrides = {}) {
   });
 }
 
-// enrolledAt defaults to 30 days ago: tests build assignments that are
-// already overdue, and an assignment that closed before the student joined
-// is not counted against them (assignmentService.closedBeforeEnrollment).
+// enrolledAt defaults to 30 days ago: tests build assignments (some already
+// overdue) right after enrolling, and an assignment given before the student
+// joined is not theirs to do (assignmentService.assignedBeforeEnrollment).
 async function enrollStudent(classGroup, student, overrides = {}) {
   const e = await ClassEnrollment.create({
     classId: classGroup._id,
@@ -88,8 +88,10 @@ const Assignment = require('../../models/Assignment');
 const TestAttempt = require('../../models/TestAttempt');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
 
+// overrides.createdAt backdates when the assignment was given (written raw,
+// past Mongoose's timestamps).
 async function createAssignment(classGroup, overrides = {}) {
-  return Assignment.create({
+  const a = await Assignment.create({
     classId: classGroup._id,
     teacherId: overrides.teacherId || classGroup.teacherId,
     createdBy: overrides.createdBy || classGroup.teacherId,
@@ -101,6 +103,11 @@ async function createAssignment(classGroup, overrides = {}) {
     ],
     status: overrides.status || 'active',
   });
+  if (overrides.createdAt) {
+    await Assignment.collection.updateOne({ _id: a._id }, { $set: { createdAt: new Date(overrides.createdAt) } });
+    a.createdAt = new Date(overrides.createdAt);
+  }
+  return a;
 }
 
 // Write the attempt doc that makes an internal resource count as "completed"

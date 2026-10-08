@@ -53,7 +53,7 @@ const RES_RULE = {
   reading_test: 'Tự tick khi đạt ≥70%.', listening_test: 'Tự tick khi đạt ≥70%.', dictation: 'Tự tick khi đạt ≥70%.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
-const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau hạn — không tính' };
+const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau khi giao — không cần làm' };
 
 export default function ClassDetail() {
   const { id } = useParams();
@@ -823,7 +823,7 @@ function AssignmentsTab({ cls }) {
                   <tr>
                     <td><button onClick={() => setOpenId(openId === a._id ? null : a._id)} style={{ fontWeight: 700, color: 'var(--purple)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{a.title}</button></td>
                     <td style={{ fontSize: 13 }}>{a.resourceCount}</td>
-                    <td style={{ fontSize: 13 }}>{a.completedStudents}/{enrolledCount}</td>
+                    <td style={{ fontSize: 13 }}>{a.completedStudents}/{a.assignedStudents ?? enrolledCount}</td>
                     <td style={{ fontSize: 13 }}>{a.deadline ? formatDate(a.deadline) : '—'}</td>
                     <td><span className={`badge ${a.status === 'archived' ? 'badge-gray' : 'badge-green'}`}><span className="dot" />{a.status === 'archived' ? 'Lưu trữ' : 'Đang giao'}</span></td>
                     <td>

@@ -188,6 +188,9 @@ exports.listAssignments = async (req, res) => {
         ...a,
         resourceCount: a.resources.length,
         completedStudents: rows.filter((r) => !r.removed && r.status === 'completed').length,
+        // denominator: active students this was actually assigned to — those
+        // who joined after it was given are excluded (not_applicable)
+        assignedStudents: rows.filter((r) => !r.removed && r.status !== 'not_applicable').length,
       };
     }));
 
