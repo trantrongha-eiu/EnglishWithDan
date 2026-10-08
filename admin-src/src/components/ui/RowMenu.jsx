@@ -36,7 +36,7 @@ export default function RowMenu({ items, label = 'Thêm thao tác' }) {
   }, [open]);
 
   useLayoutEffect(() => {
-    if (!open) { setPos(null); return; }
+    if (!open) return;
     const btn = ref.current?.querySelector('button');
     const menu = menuRef.current;
     if (!btn || !menu) return;
@@ -64,7 +64,9 @@ export default function RowMenu({ items, label = 'Thêm thao tác' }) {
         aria-expanded={open}
         aria-label={label}
         title={label}
-        onClick={() => setOpen(o => !o)}
+        // Drop the last placement so a reopen is measured afresh (hidden) —
+        // the only way the menu opens, so the layout effect needn't reset it.
+        onClick={() => { setPos(null); setOpen(o => !o); }}
       >⋯</button>
       {open && createPortal(
         <div
