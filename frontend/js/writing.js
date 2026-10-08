@@ -2487,8 +2487,10 @@ function renderPracticeWriteScreen(taskType, task) {
   // Pre-build sample panel HTML with copy buttons
   const panel = document.getElementById('pw-sample-panel');
   if (panel && hasSample) {
-    // Task 2 essays carry colour-coded sentence roles (hook / topic sentence
-    // / idea / supporting) — see js/shared/task2-highlight.js.
+    // Model answers carry colour-coded sentence roles (Task 2: hook /
+    // thesis / topic / idea / supporting / restatement / final; Task 1:
+    // paraphrase / overview / topic / detail / comparison) — see
+    // js/shared/task2-highlight.js.
     const sections = task.sampleSections.filter(s => s.content?.trim());
     const hl = window.T2Highlight && T2Highlight.hasAny(sections);
     panel.classList.toggle('t2hl-root', !!hl);

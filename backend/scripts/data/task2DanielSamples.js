@@ -6,12 +6,13 @@
 // level:'band7', typeId type01..type07 — the skeletons students drill on
 // task2-template.html).
 //
-// Every sentence of intro/body is tagged with its colour-coded role:
-//   H = hook (câu mở đầu)        T = topic sentence
-//   I = idea 1   S = supporting 1   J = idea 2   U = supporting 2
+// Every sentence is tagged with its colour-coded role:
+//   intro       H = hook (câu mở đầu, gồm câu paraphrase)   P = thesis statement
+//   body        T = topic sentence   I = idea 1   S = supporting 1
+//               J = idea 2   U = supporting 2
+//   conclusion  R = restatement   F = final statement
 //   '' = untagged
-// Conclusions are plain sentences. `analysis` ("Phân tích đề") is only
-// given for the docs that lacked one.
+// `analysis` ("Phân tích đề") is only given for the docs that lacked one.
 //
 // Applied by scripts/seedTask2DanielSamples.js (keyed by WritingTask2 _id).
 
@@ -21,8 +22,8 @@ module.exports = [
     id: '6a71eabe0404f51873811136', type: 'effect_solution',
     intro: [
       ['H', 'In recent years, increasing attention has been paid to the issue of cyclists and motorists sharing the same roads in busy cities.'],
-      ['', 'This arrangement has resulted in a range of significant problems, and if left unaddressed, it may lead to even more serious long-term implications.'],
-      ['', 'This essay will examine the major problems that arise when bicycles and cars share road space and suggest practical solutions to mitigate their impact.'],
+      ['H', 'This arrangement has resulted in a range of significant problems, and if left unaddressed, it may lead to even more serious long-term implications.'],
+      ['P', 'This essay will examine the major problems that arise when bicycles and cars share road space and suggest practical solutions to mitigate their impact.'],
     ],
     body1: [
       ['T', 'Two particularly alarming problems of this situation are the risk of serious accidents and growing tension between road users.'],
@@ -42,17 +43,17 @@ module.exports = [
       ['U', 'If implemented on a large scale, such rules, supported by public safety campaigns, could bring about long-term improvements in road behaviour.'],
     ],
     conclusion: [
-      'In conclusion, sharing roads between cyclists and drivers continues to pose serious challenges, mainly in the form of accidents and conflict between road users.',
-      'In my opinion, tackling this problem requires both segregated cycling infrastructure and stricter, well-publicised traffic rules in order to achieve sustainable results.',
-      'While the problems are undeniable, they can be addressed through coordinated efforts by governments and road users alike.',
+      ['R', 'In conclusion, sharing roads between cyclists and drivers continues to pose serious challenges, mainly in the form of accidents and conflict between road users.'],
+      ['R', 'In my opinion, tackling this problem requires both segregated cycling infrastructure and stricter, well-publicised traffic rules in order to achieve sustainable results.'],
+      ['F', 'While the problems are undeniable, they can be addressed through coordinated efforts by governments and road users alike.'],
     ],
   },
   {
     id: '6a910c98fd0973a6cd2b3a0b', type: 'effect_solution',
     intro: [
       ['H', 'In recent years, increasing attention has been paid to the issue of workplace burnout caused by long working hours.'],
-      ['', 'This issue has resulted in a range of significant consequences for both employees and their organisations, and if left unaddressed, it may lead to even more serious long-term implications.'],
-      ['', 'This essay will examine the major effects of this trend and suggest practical solutions that employers and governments can implement.'],
+      ['H', 'This issue has resulted in a range of significant consequences for both employees and their organisations, and if left unaddressed, it may lead to even more serious long-term implications.'],
+      ['P', 'This essay will examine the major effects of this trend and suggest practical solutions that employers and governments can implement.'],
     ],
     body1: [
       ['T', 'Two particularly alarming effects of this issue are damage to workers’ health and falling performance within companies.'],
@@ -73,17 +74,17 @@ module.exports = [
       ['U', 'If implemented on a large scale, such measures could bring about long-term improvements in working culture.'],
     ],
     conclusion: [
-      'In conclusion, workplace burnout continues to pose serious challenges due to its harmful effects on both employees and businesses.',
-      'In my opinion, tackling this problem requires both better workload management by employers and stronger legal protection for workers in order to achieve sustainable results.',
-      'While the effects are undeniable, they can be addressed through coordinated efforts.',
+      ['R', 'In conclusion, workplace burnout continues to pose serious challenges due to its harmful effects on both employees and businesses.'],
+      ['R', 'In my opinion, tackling this problem requires both better workload management by employers and stronger legal protection for workers in order to achieve sustainable results.'],
+      ['F', 'While the effects are undeniable, they can be addressed through coordinated efforts.'],
     ],
   },
   {
     id: '6a910cb4fd0973a6cd2b3a0c', type: 'effect_solution',
     intro: [
       ['H', 'In recent years, increasing attention has been paid to the issue of remote and hybrid working, which a growing number of companies now allow.'],
-      ['', 'This shift has had a range of significant consequences for both employee well-being and company culture.'],
-      ['', 'This essay will examine the major effects of this trend and suggest practical steps that companies can take to deal with its disadvantages.'],
+      ['H', 'This shift has had a range of significant consequences for both employee well-being and company culture.'],
+      ['P', 'This essay will examine the major effects of this trend and suggest practical steps that companies can take to deal with its disadvantages.'],
     ],
     body1: [
       ['T', 'Two particularly significant effects of this trend concern employee well-being and workplace culture.'],
@@ -103,9 +104,9 @@ module.exports = [
       ['U', 'If implemented on a large scale, these measures could bring about long-term improvements in both well-being and team spirit.'],
     ],
     conclusion: [
-      'In conclusion, remote and hybrid working continues to bring both benefits and challenges, particularly for employee well-being and company culture.',
-      'In my opinion, tackling its drawbacks requires both regular shared office time and clear boundaries between work and personal life in order to achieve sustainable results.',
-      'While the effects are undeniable, they can be addressed through careful planning by employers.',
+      ['R', 'In conclusion, remote and hybrid working continues to bring both benefits and challenges, particularly for employee well-being and company culture.'],
+      ['R', 'In my opinion, tackling its drawbacks requires both regular shared office time and clear boundaries between work and personal life in order to achieve sustainable results.'],
+      ['F', 'While the effects are undeniable, they can be addressed through careful planning by employers.'],
     ],
   },
 
@@ -114,8 +115,8 @@ module.exports = [
     id: '6a905d2231a29bc08f2e5a71', type: 'cause_effect',
     intro: [
       ['H', 'In today’s fast-changing world, the declining number of students choosing STEM subjects at university has become an increasingly significant concern.'],
-      ['', 'Science, technology, engineering and mathematics are vital to economic growth, yet fewer young people are willing to study them.'],
-      ['', 'This essay will examine the underlying causes of this trend and analyse its significant effects on the future workforce.'],
+      ['H', 'Science, technology, engineering and mathematics are vital to economic growth, yet fewer young people are willing to study them.'],
+      ['P', 'This essay will examine the underlying causes of this trend and analyse its significant effects on the future workforce.'],
     ],
     body1: [
       ['T', 'The causes of this trend are both complex and multifaceted.'],
@@ -135,9 +136,9 @@ module.exports = [
       ['U', 'Over time, these effects may accumulate, placing substantial pressure on a nation’s ability to compete in a technology-driven global economy.'],
     ],
     conclusion: [
-      'In conclusion, the fall in STEM enrolments stems from a range of interconnected factors, mainly the perceived difficulty of these subjects and a lack of career awareness, and it results in significant skills shortages.',
-      'Addressing this problem requires coordinated efforts from both schools and policymakers.',
-      'If effective measures are taken, such as more practical science teaching and better careers guidance, the negative impacts can be significantly reduced.',
+      ['R', 'In conclusion, the fall in STEM enrolments stems from a range of interconnected factors, mainly the perceived difficulty of these subjects and a lack of career awareness, and it results in significant skills shortages.'],
+      ['F', 'Addressing this problem requires coordinated efforts from both schools and policymakers.'],
+      ['F', 'If effective measures are taken, such as more practical science teaching and better careers guidance, the negative impacts can be significantly reduced.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Cause & Effect (Nguyên nhân – Hệ quả).\nThân bài 1 nêu 2 nguyên nhân, thân bài 2 nêu 2 hệ quả lên lực lượng lao động tương lai. Đề KHÔNG hỏi giải pháp → chỉ nhắc nhẹ ở câu cuối kết bài, không viết thành đoạn.\nBố cục 4 đoạn (~270–300 từ, ~40 phút): Mở bài (paraphrase đề + nêu hướng bài) → Thân bài 1 → Thân bài 2 → Kết bài (tóm ý, không thêm ý mới).' },
@@ -152,8 +153,8 @@ module.exports = [
     id: '6a74052d66bdb38d66a0c6c6', type: 'advantages_disadvantages',
     intro: [
       ['H', 'In recent years, the use of tablets and laptops in classrooms has become an increasingly prominent feature of modern education, attracting considerable public attention.'],
-      ['', 'With the growing prevalence of digital learning, some schools are even considering replacing printed textbooks altogether, and questions have arisen regarding the overall impact of this change.'],
-      ['', 'This essay will examine both the advantages and disadvantages of using digital devices instead of traditional textbooks.'],
+      ['H', 'With the growing prevalence of digital learning, some schools are even considering replacing printed textbooks altogether, and questions have arisen regarding the overall impact of this change.'],
+      ['P', 'This essay will examine both the advantages and disadvantages of using digital devices instead of traditional textbooks.'],
     ],
     body1: [
       ['T', 'One of the most significant advantages of digital devices is that they make learning more interactive and engaging.'],
@@ -171,9 +172,9 @@ module.exports = [
       ['U', 'In my experience, students without a reliable device or internet connection at home often fall behind their classmates in digital-first classrooms.'],
     ],
     conclusion: [
-      'In conclusion, although digital devices offer clear benefits such as interactive learning and greater convenience, they also entail notable disadvantages, including weaker concentration and unequal access.',
-      'On balance, it can be argued that devices work best as a supplement to printed books rather than a complete replacement for them.',
-      'Nevertheless, careful management and adequate investment are essential to minimise their negative effects.',
+      ['R', 'In conclusion, although digital devices offer clear benefits such as interactive learning and greater convenience, they also entail notable disadvantages, including weaker concentration and unequal access.'],
+      ['R', 'On balance, it can be argued that devices work best as a supplement to printed books rather than a complete replacement for them.'],
+      ['F', 'Nevertheless, careful management and adequate investment are essential to minimise their negative effects.'],
     ],
   },
 
@@ -182,8 +183,8 @@ module.exports = [
     id: '6a905d2931a29bc08f2e5a81', type: 'positive_or_negative_development',
     intro: [
       ['H', 'In recent years, the shift from fossil fuels to renewable energy has emerged as one of the most significant trends in contemporary society, sparking widespread debate.'],
-      ['', 'While this transition undoubtedly brings certain challenges, such as high initial costs, it also offers substantial benefits.'],
-      ['', 'I firmly believe that, on balance, this constitutes a predominantly positive development for the reasons outlined below.'],
+      ['P', 'While this transition undoubtedly brings certain challenges, such as high initial costs, it also offers substantial benefits.'],
+      ['P', 'I firmly believe that, on balance, this constitutes a predominantly positive development for the reasons outlined below.'],
     ],
     body1: [
       ['T', 'There are several compelling reasons to view investment in renewable energy as a positive development.'],
@@ -202,9 +203,9 @@ module.exports = [
       ['U', 'However, these concerns, while not entirely unfounded, do not fundamentally alter the overall trajectory of this development, as battery technology is improving rapidly and construction costs are recovered over time through cheaper electricity.'],
     ],
     conclusion: [
-      'In conclusion, having examined this issue from multiple angles, I maintain that investing in renewable energy is fundamentally a positive development.',
-      'The evidence overwhelmingly suggests that its environmental and economic advantages far exceed its drawbacks.',
-      'Going forward, it is essential that governments and energy companies invest in storage and grid upgrades to maximise the gains and minimise the risks of this transition.',
+      ['R', 'In conclusion, having examined this issue from multiple angles, I maintain that investing in renewable energy is fundamentally a positive development.'],
+      ['R', 'The evidence overwhelmingly suggests that its environmental and economic advantages far exceed its drawbacks.'],
+      ['F', 'Going forward, it is essential that governments and energy companies invest in storage and grid upgrades to maximise the gains and minimise the risks of this transition.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Positive or Negative Development (Xu hướng tích cực hay tiêu cực).\nPhải CHỌN RÕ một phía (ở đây: tích cực) và nêu ngay ở mở bài, nhắc lại ở kết bài.\nThân bài 1 = lập luận chính (vì sao tích cực); Thân bài 2 = thừa nhận mặt hạn chế rồi phản bác/giảm nhẹ để củng cố lập trường.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -217,8 +218,8 @@ module.exports = [
     id: '6a905d2931a29bc08f2e5a82', type: 'positive_or_negative_development',
     intro: [
       ['H', 'In recent years, the conversion of unused urban land into community gardens has emerged as one of the most interesting trends in contemporary cities, sparking widespread debate.'],
-      ['', 'While this practice undoubtedly brings certain benefits, some argue that the land could be put to more productive use.'],
-      ['', 'I firmly believe that, on balance, this constitutes a predominantly positive development for the reasons outlined below.'],
+      ['P', 'While this practice undoubtedly brings certain benefits, some argue that the land could be put to more productive use.'],
+      ['P', 'I firmly believe that, on balance, this constitutes a predominantly positive development for the reasons outlined below.'],
     ],
     body1: [
       ['T', 'There are several compelling reasons to view community gardens as a positive development.'],
@@ -237,9 +238,9 @@ module.exports = [
       ['U', 'However, these concerns, while not entirely unfounded, do not fundamentally alter the overall picture, since most gardens occupy small, previously idle plots, and any risks can be effectively mitigated through flexible leases and local management committees.'],
     ],
     conclusion: [
-      'In conclusion, having examined this issue from multiple angles, I maintain that turning unused spaces into community gardens is fundamentally a positive development.',
-      'The evidence suggests that the health, social and environmental benefits of these gardens far exceed the drawbacks.',
-      'Going forward, it is essential that local authorities support such projects to maximise their gains and minimise the risk of neglect.',
+      ['R', 'In conclusion, having examined this issue from multiple angles, I maintain that turning unused spaces into community gardens is fundamentally a positive development.'],
+      ['R', 'The evidence suggests that the health, social and environmental benefits of these gardens far exceed the drawbacks.'],
+      ['F', 'Going forward, it is essential that local authorities support such projects to maximise their gains and minimise the risk of neglect.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Positive or Negative Development (Xu hướng tích cực hay tiêu cực).\nChọn rõ một phía (ở đây: tích cực), nêu ở mở bài và nhắc lại ở kết bài.\nThân bài 1 = lập luận chính; Thân bài 2 = thừa nhận hạn chế (thiếu đất, bỏ hoang) rồi giảm nhẹ để củng cố lập trường.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -254,8 +255,8 @@ module.exports = [
     id: '6a905d2731a29bc08f2e5a7b', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the issue of how governments should promote healthier diets has attracted increasing public attention.'],
-      ['', 'While some people argue that subsidising fresh fruit and vegetables is the best way to make healthy food affordable, others believe that taxing unhealthy, high-sugar products would be more effective.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe a tax on sugary food is the stronger policy, especially if its revenue is used to support healthy options.'],
+      ['H', 'While some people argue that subsidising fresh fruit and vegetables is the best way to make healthy food affordable, others believe that taxing unhealthy, high-sugar products would be more effective.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe a tax on sugary food is the stronger policy, especially if its revenue is used to support healthy options.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people support subsidies for fresh produce.'],
@@ -274,9 +275,9 @@ module.exports = [
       ['U', 'This highlights why taxation is often considered the more sustainable choice.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding how to make diets healthier.',
-      'Personally, I believe that taxing high-sugar food is the better strategy because it reduces harmful consumption while generating funds for public health.',
-      'Moving forward, policymakers should consider using this revenue to subsidise fresh produce, so that both approaches work together.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding how to make diets healthier.'],
+      ['R', 'Personally, I believe that taxing high-sugar food is the better strategy because it reduces harmful consumption while generating funds for public health.'],
+      ['F', 'Moving forward, policymakers should consider using this revenue to subsidise fresh produce, so that both approaches work together.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Discuss Both Views + Opinion (Thảo luận hai quan điểm + nêu ý kiến).\nMỗi quan điểm 1 thân bài, độ dài tương đương. Có "give your opinion" → nêu ý kiến NGAY Ở MỞ BÀI và nhắc lại ở kết bài.\nMẹo: đặt quan điểm mình ủng hộ ở Thân bài 2 để bài dẫn tự nhiên sang kết luận.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -289,8 +290,8 @@ module.exports = [
     id: '6a905d2731a29bc08f2e5a7c', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the issue of public library funding has attracted increasing public attention.'],
-      ['', 'While some people argue that governments should continue to fund free local libraries, others believe this is a waste of public money now that information is widely available online.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe libraries still deserve public funding.'],
+      ['H', 'While some people argue that governments should continue to fund free local libraries, others believe this is a waste of public money now that information is widely available online.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe libraries still deserve public funding.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people regard library funding as unnecessary.'],
@@ -309,9 +310,9 @@ module.exports = [
       ['U', 'For instance, Helsinki’s central library, Oodi, attracts millions of visitors a year with workshops, meeting rooms and activities for children, which shows that a library can be a lively hub rather than a silent store of books.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding the funding of public libraries.',
-      'Personally, I believe that governments should continue to fund them because they provide equal access to knowledge and community services that the internet alone cannot replace.',
-      'Moving forward, policymakers should consider modernising libraries so that they meet the changing needs of their users.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding the funding of public libraries.'],
+      ['R', 'Personally, I believe that governments should continue to fund them because they provide equal access to knowledge and community services that the internet alone cannot replace.'],
+      ['F', 'Moving forward, policymakers should consider modernising libraries so that they meet the changing needs of their users.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Discuss Both Views + Opinion (Thảo luận hai quan điểm + nêu ý kiến).\nMỗi quan điểm 1 thân bài, độ dài tương đương. Nêu ý kiến ở mở bài và nhắc lại ở kết bài.\nMẹo: đặt quan điểm phản đối (lãng phí) ở Thân bài 1, quan điểm mình ủng hộ (nên tài trợ) ở Thân bài 2.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -324,8 +325,8 @@ module.exports = [
     id: '6a9313479ca5a616963131a1', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the question of whether every town should have a free public library has attracted increasing public attention.'],
-      ['', 'While some people argue that governments should provide such libraries for all communities, others believe that this is an unnecessary use of taxpayers’ money.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe free public libraries are still a worthwhile investment.'],
+      ['H', 'While some people argue that governments should provide such libraries for all communities, others believe that this is an unnecessary use of taxpayers’ money.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe free public libraries are still a worthwhile investment.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people support free public libraries.'],
@@ -344,17 +345,17 @@ module.exports = [
       ['U', 'Nevertheless, I believe these arguments overlook the many people who still lack reliable internet access, as well as the social value that libraries offer.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding the provision of free public libraries.',
-      'Personally, I believe that governments should continue to provide them because they guarantee equal access to knowledge and strengthen local communities.',
-      'Moving forward, policymakers should consider modernising libraries with digital services so that they remain relevant in the internet age.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding the provision of free public libraries.'],
+      ['R', 'Personally, I believe that governments should continue to provide them because they guarantee equal access to knowledge and strengthen local communities.'],
+      ['F', 'Moving forward, policymakers should consider modernising libraries with digital services so that they remain relevant in the internet age.'],
     ],
   },
   {
     id: '6a905d2731a29bc08f2e5a7d', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the issue of how governments should allocate sports funding has attracted increasing public attention.'],
-      ['', 'While some people argue that public money should be used to prepare elite athletes for events such as the Olympic Games, others believe it should be spent encouraging children to take part in local sports.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe grassroots sport should be the priority.'],
+      ['H', 'While some people argue that public money should be used to prepare elite athletes for events such as the Olympic Games, others believe it should be spent encouraging children to take part in local sports.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe grassroots sport should be the priority.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people support investment in elite athletes.'],
@@ -374,9 +375,9 @@ module.exports = [
       ['U', 'A broad base of young players also produces more talented athletes in the long run.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding the use of public sports funding.',
-      'Personally, I believe that encouraging children to play local sports should come first because it improves the health of millions rather than a handful of champions.',
-      'Moving forward, policymakers should consider directing most funding towards grassroots facilities while maintaining modest support for elite programmes.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding the use of public sports funding.'],
+      ['R', 'Personally, I believe that encouraging children to play local sports should come first because it improves the health of millions rather than a handful of champions.'],
+      ['F', 'Moving forward, policymakers should consider directing most funding towards grassroots facilities while maintaining modest support for elite programmes.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Discuss Both Views + Opinion (Thảo luận hai quan điểm + nêu ý kiến).\nMỗi quan điểm 1 thân bài, độ dài tương đương. Nêu ý kiến ở mở bài và nhắc lại ở kết bài.\nMẹo: đặt quan điểm mình ủng hộ (thể thao cộng đồng cho trẻ em) ở Thân bài 2.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -389,8 +390,8 @@ module.exports = [
     id: '6a905d2a31a29bc08f2e5a85', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the issue of government spending on the arts has attracted increasing public attention.'],
-      ['', 'While some people argue that public money should be used to support music, theatre and painting, others believe it should be spent on more pressing needs.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe a reasonable level of arts funding is justified.'],
+      ['H', 'While some people argue that public money should be used to support music, theatre and painting, others believe it should be spent on more pressing needs.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe a reasonable level of arts funding is justified.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people support government funding for the arts.'],
@@ -408,9 +409,9 @@ module.exports = [
       ['U', 'If artists and cultural institutions rely on ticket sales, private sponsorship and donations, governments could direct public money towards areas where it saves lives.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding government spending on the arts.',
-      'Personally, I believe that the arts deserve a reasonable share of public money because they protect cultural identity and bring long-term economic benefits.',
-      'Moving forward, policymakers should consider funding the arts at a moderate level while ensuring that healthcare and education remain the top priorities.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding government spending on the arts.'],
+      ['R', 'Personally, I believe that the arts deserve a reasonable share of public money because they protect cultural identity and bring long-term economic benefits.'],
+      ['F', 'Moving forward, policymakers should consider funding the arts at a moderate level while ensuring that healthcare and education remain the top priorities.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Discuss Both Views + Opinion (Thảo luận hai quan điểm + nêu ý kiến).\nMỗi quan điểm 1 thân bài, độ dài tương đương. Nêu ý kiến ở mở bài và nhắc lại ở kết bài.\nLập trường cân bằng vẫn được chấp nhận ("tài trợ ở mức hợp lý") miễn là nêu RÕ.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -423,8 +424,8 @@ module.exports = [
     id: '6a905d2a31a29bc08f2e5a87', type: 'discuss_both_views',
     intro: [
       ['H', 'In recent decades, the issue of how best to reduce crime has attracted increasing public attention.'],
-      ['', 'While some people argue that longer prison sentences are the most effective deterrent, others believe that there are better ways to tackle crime.'],
-      ['', 'This essay will discuss both perspectives before explaining why I believe that prevention and rehabilitation are more effective than simply extending sentences.'],
+      ['H', 'While some people argue that longer prison sentences are the most effective deterrent, others believe that there are better ways to tackle crime.'],
+      ['P', 'This essay will discuss both perspectives before explaining why I believe that prevention and rehabilitation are more effective than simply extending sentences.'],
     ],
     body1: [
       ['T', 'There are several convincing reasons why some people support longer prison sentences.'],
@@ -444,9 +445,9 @@ module.exports = [
       ['U', 'Norway, which focuses on rehabilitation, has one of the lowest reoffending rates in the world.'],
     ],
     conclusion: [
-      'In conclusion, both perspectives offer valid arguments regarding the best way to reduce crime.',
-      'Personally, I believe that prevention and rehabilitation are more effective than longer prison sentences because they tackle the reasons why people offend.',
-      'Moving forward, policymakers should consider reserving long sentences for dangerous criminals while investing in education and training programmes for other offenders.',
+      ['R', 'In conclusion, both perspectives offer valid arguments regarding the best way to reduce crime.'],
+      ['R', 'Personally, I believe that prevention and rehabilitation are more effective than longer prison sentences because they tackle the reasons why people offend.'],
+      ['F', 'Moving forward, policymakers should consider reserving long sentences for dangerous criminals while investing in education and training programmes for other offenders.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Discuss Both Views + Opinion (Thảo luận hai quan điểm + nêu ý kiến).\nMỗi quan điểm 1 thân bài, độ dài tương đương. Nêu ý kiến ở mở bài và nhắc lại ở kết bài.\nMẹo: đặt quan điểm mình ủng hộ (cách khác hiệu quả hơn) ở Thân bài 2.\nBố cục 4 đoạn (~270–300 từ, ~40 phút).' },
@@ -461,8 +462,8 @@ module.exports = [
     id: '6a71eb030404f51873811137', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, the amount of time children spend in front of screens has become an increasingly serious concern in many parts of the world.'],
-      ['', 'Studies suggest that today’s young people watch far more television than previous generations and devote less time to physical or imaginative activities.'],
-      ['', 'This essay will explore the main causes of this trend and propose practical solutions to encourage children to lead more active and creative lives.'],
+      ['H', 'Studies suggest that today’s young people watch far more television than previous generations and devote less time to physical or imaginative activities.'],
+      ['P', 'This essay will explore the main causes of this trend and propose practical solutions to encourage children to lead more active and creative lives.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this phenomenon.'],
@@ -481,17 +482,17 @@ module.exports = [
       ['U', 'Research has shown that children who take part in organised activities tend to develop better concentration and social skills, reinforcing the effectiveness of this strategy.'],
     ],
     conclusion: [
-      'In conclusion, children’s heavy television viewing remains a complex issue that is driven by easy access to screens and the time pressures faced by modern families.',
-      'Among the various measures discussed, I believe that limiting screen time at home would be the most effective in the long term.',
-      'If parents and schools work collaboratively, children can be encouraged to spend far more time on active and creative pursuits.',
+      ['R', 'In conclusion, children’s heavy television viewing remains a complex issue that is driven by easy access to screens and the time pressures faced by modern families.'],
+      ['R', 'Among the various measures discussed, I believe that limiting screen time at home would be the most effective in the long term.'],
+      ['F', 'If parents and schools work collaboratively, children can be encouraged to spend far more time on active and creative pursuits.'],
     ],
   },
   {
     id: '6a71eb1a0404f51873811138', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, hostility towards international tourism has become an increasingly visible concern in many popular destinations.'],
-      ['', 'A growing number of residents now regard foreign visitors as a burden rather than a benefit to their country.'],
-      ['', 'This essay will explore the main reasons for these negative attitudes and propose practical solutions to change them.'],
+      ['H', 'A growing number of residents now regard foreign visitors as a burden rather than a benefit to their country.'],
+      ['P', 'This essay will explore the main reasons for these negative attitudes and propose practical solutions to change them.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this resentment.'],
@@ -512,17 +513,17 @@ module.exports = [
       ['U', 'Not only would this help reduce resentment, but it would also encourage people to take pride in presenting their own culture.'],
     ],
     conclusion: [
-      'In conclusion, negative attitudes towards international tourism remain a complex issue rooted in overcrowding and an unfair distribution of its benefits.',
-      'Among the various measures discussed, I believe that giving local people a genuine share of tourism income would be the most effective in the long term.',
-      'If governments, the tourism industry and local communities work collaboratively, tourism can once again be seen as a source of national pride.',
+      ['R', 'In conclusion, negative attitudes towards international tourism remain a complex issue rooted in overcrowding and an unfair distribution of its benefits.'],
+      ['R', 'Among the various measures discussed, I believe that giving local people a genuine share of tourism income would be the most effective in the long term.'],
+      ['F', 'If governments, the tourism industry and local communities work collaboratively, tourism can once again be seen as a source of national pride.'],
     ],
   },
   {
     id: '6a71eb3c0404f51873811139', type: 'cause_solution',
     intro: [
       ['H', 'One of the major challenges facing modern society today is the apparent rise in anti-social behaviour and a declining respect for others.'],
-      ['', 'From vandalism in public places to abusive comments online, such conduct is becoming increasingly common in many communities.'],
-      ['', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
+      ['H', 'From vandalism in public places to abusive comments online, such conduct is becoming increasingly common in many communities.'],
+      ['P', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this trend, and the root causes stem from both social and technological changes.'],
@@ -543,17 +544,17 @@ module.exports = [
       ['U', 'This shows that young people who feel connected to their community are far less likely to act anti-socially.'],
     ],
     conclusion: [
-      'In conclusion, the rise in anti-social behaviour remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that teaching respect and empathy at school would be the most effective in the long term.',
-      'If families, schools and local authorities work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, the rise in anti-social behaviour remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that teaching respect and empathy at school would be the most effective in the long term.'],
+      ['F', 'If families, schools and local authorities work collaboratively, this issue can be significantly alleviated.'],
     ],
   },
   {
     id: '6a71eb570404f5187381113a', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, the decline of the bicycle as a means of transport has become an increasingly serious concern in many parts of the world.'],
-      ['', 'Fewer people now cycle to work or school, choosing motorised vehicles instead.'],
-      ['', 'This essay will explore the main causes of this trend and propose practical solutions to encourage more people to cycle.'],
+      ['H', 'Fewer people now cycle to work or school, choosing motorised vehicles instead.'],
+      ['P', 'This essay will explore the main causes of this trend and propose practical solutions to encourage more people to cycle.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this shift.'],
@@ -574,17 +575,17 @@ module.exports = [
       ['U', 'If widely implemented, these incentives could serve as a long-term solution, particularly for short urban journeys.'],
     ],
     conclusion: [
-      'In conclusion, the decreasing use of bicycles remains a complex issue that stems from the convenience of motor vehicles and unsafe roads.',
-      'Among the various measures discussed, I believe that building safe, separated cycle lanes would be the most effective in the long term.',
-      'If governments, employers and individuals work collaboratively, cycling can once again become a popular way to travel.',
+      ['R', 'In conclusion, the decreasing use of bicycles remains a complex issue that stems from the convenience of motor vehicles and unsafe roads.'],
+      ['R', 'Among the various measures discussed, I believe that building safe, separated cycle lanes would be the most effective in the long term.'],
+      ['F', 'If governments, employers and individuals work collaboratively, cycling can once again become a popular way to travel.'],
     ],
   },
   {
     id: '6a74047566bdb38d66a0c579', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, early school leaving has become an increasingly serious concern in many parts of the world.'],
-      ['', 'A growing number of teenagers appear to be losing interest in formal education and leaving school at the earliest opportunity.'],
-      ['', 'This essay will explore the main causes of this problem and propose practical solutions to encourage young people to continue their studies.'],
+      ['H', 'A growing number of teenagers appear to be losing interest in formal education and leaving school at the earliest opportunity.'],
+      ['P', 'This essay will explore the main causes of this problem and propose practical solutions to encourage young people to continue their studies.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this problem, and the root causes stem from both educational and economic factors.'],
@@ -605,17 +606,17 @@ module.exports = [
       ['U', 'If widely implemented, this could serve as a long-term solution, since it tackles one of the root causes directly.'],
     ],
     conclusion: [
-      'In conclusion, early school leaving remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that making the curriculum more practical and relevant would be the most effective in the long term.',
-      'If governments, schools and families work collaboratively, far more young people can be encouraged to complete their education.',
+      ['R', 'In conclusion, early school leaving remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that making the curriculum more practical and relevant would be the most effective in the long term.'],
+      ['F', 'If governments, schools and families work collaboratively, far more young people can be encouraged to complete their education.'],
     ],
   },
   {
     id: '6a8e8a43756b6bc7a0ce2397', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, physical inactivity among city dwellers has become an increasingly serious concern in many parts of the world.'],
-      ['', 'Many adults in large urban areas find it difficult to fit enough exercise into their daily routines.'],
-      ['', 'This essay will explore the main causes of this sedentary lifestyle and propose practical measures to encourage people to be more active.'],
+      ['H', 'Many adults in large urban areas find it difficult to fit enough exercise into their daily routines.'],
+      ['P', 'This essay will explore the main causes of this sedentary lifestyle and propose practical measures to encourage people to be more active.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this problem.'],
@@ -636,17 +637,17 @@ module.exports = [
       ['U', 'Research has shown that even short periods of regular activity reduce the risk of chronic disease, reinforcing the effectiveness of this strategy.'],
     ],
     conclusion: [
-      'In conclusion, the sedentary lifestyle of many city dwellers remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that urban planning which favours walking and cycling would be the most effective in the long term.',
-      'If governments, employers and individuals work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, the sedentary lifestyle of many city dwellers remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that urban planning which favours walking and cycling would be the most effective in the long term.'],
+      ['F', 'If governments, employers and individuals work collaboratively, this issue can be significantly alleviated.'],
     ],
   },
   {
     id: '6a905d2a31a29bc08f2e5a86', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, rising crime among young people has become an increasingly serious concern in many parts of the world.'],
-      ['', 'Offences ranging from theft to violent assault are being committed by teenagers at a rapidly growing rate.'],
-      ['', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
+      ['H', 'Offences ranging from theft to violent assault are being committed by teenagers at a rapidly growing rate.'],
+      ['P', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to youth crime, and the root causes stem from both social and economic factors.'],
@@ -666,9 +667,9 @@ module.exports = [
       ['U', 'Scotland adopted this approach in the mid-2000s, combining prevention, education and support for young offenders, and violent crime in Glasgow fell significantly over the following decade, reinforcing the effectiveness of this strategy.'],
     ],
     conclusion: [
-      'In conclusion, the increase in youth crime remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that investing in youth programmes would be the most effective in the long term, as it tackles the root causes before crimes are committed.',
-      'If governments, schools, families and communities work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, the increase in youth crime remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that investing in youth programmes would be the most effective in the long term, as it tackles the root causes before crimes are committed.'],
+      ['F', 'If governments, schools, families and communities work collaboratively, this issue can be significantly alleviated.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Cause & Solution (Nguyên nhân – Giải pháp).\nThân bài 1 nêu 2 nguyên nhân; thân bài 2 nêu 2 giải pháp, mỗi giải pháp nên khớp với một nguyên nhân đã nêu.\nBố cục 4 đoạn (~270–300 từ, ~40 phút): Mở bài (paraphrase + hướng bài) → Thân bài 1 → Thân bài 2 → Kết bài (chọn giải pháp hiệu quả nhất, không thêm ý mới).' },
@@ -681,8 +682,8 @@ module.exports = [
     id: '6a910c61fd0973a6cd2b3a06', type: 'cause_solution',
     intro: [
       ['H', 'One of the major challenges facing modern society today is the growing number of people who work extremely long hours simply to cover their basic living costs.'],
-      ['', 'As a result, many workers have little time left for their families or for leisure activities.'],
-      ['', 'This essay will explore the main causes of this situation and propose practical solutions to address this problem.'],
+      ['H', 'As a result, many workers have little time left for their families or for leisure activities.'],
+      ['P', 'This essay will explore the main causes of this situation and propose practical solutions to address this problem.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this problem, and the root causes stem from both social and economic factors.'],
@@ -701,17 +702,17 @@ module.exports = [
       ['U', 'Trials of a shorter working week in Iceland between 2015 and 2019 found that productivity stayed the same or improved while employees reported less stress, reinforcing the effectiveness of this strategy.'],
     ],
     conclusion: [
-      'In conclusion, the need to work long hours to afford basic necessities remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that guaranteeing a living wage would be the most effective in the long term, as it tackles the main cause directly.',
-      'If governments, employers and workers work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, the need to work long hours to afford basic necessities remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that guaranteeing a living wage would be the most effective in the long term, as it tackles the main cause directly.'],
+      ['F', 'If governments, employers and workers work collaboratively, this issue can be significantly alleviated.'],
     ],
   },
   {
     id: '6a910c6bfd0973a6cd2b3a07', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, competition between older and younger job seekers has become an increasingly serious concern in many parts of the world.'],
-      ['', 'As people live longer and retire later, workers in their fifties and sixties are often applying for the same positions as recent graduates.'],
-      ['', 'This essay will explore the main reasons for this situation and propose practical solutions to ensure fair opportunities for both groups.'],
+      ['H', 'As people live longer and retire later, workers in their fifties and sixties are often applying for the same positions as recent graduates.'],
+      ['P', 'This essay will explore the main reasons for this situation and propose practical solutions to ensure fair opportunities for both groups.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this situation.'],
@@ -732,17 +733,17 @@ module.exports = [
       ['U', 'If widely implemented, this could serve as a long-term solution, allowing both groups to compete on equal terms.'],
     ],
     conclusion: [
-      'In conclusion, competition between older and younger job seekers remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that lifelong retraining would be the most effective in the long term.',
-      'If governments, employers and workers work collaboratively, fair job opportunities can be ensured for people of every age.',
+      ['R', 'In conclusion, competition between older and younger job seekers remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that lifelong retraining would be the most effective in the long term.'],
+      ['F', 'If governments, employers and workers work collaboratively, fair job opportunities can be ensured for people of every age.'],
     ],
   },
   {
     id: '6a910c76fd0973a6cd2b3a08', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, the separation of workers from their families and friends in search of employment has become an increasingly serious concern in many parts of the world.'],
-      ['', 'More and more job seekers are moving to distant cities, or even abroad, because they cannot find suitable work close to home.'],
-      ['', 'This essay will explore the main reasons for this trend and propose practical solutions to reduce its negative effects on workers.'],
+      ['H', 'More and more job seekers are moving to distant cities, or even abroad, because they cannot find suitable work close to home.'],
+      ['P', 'This essay will explore the main reasons for this trend and propose practical solutions to reduce its negative effects on workers.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this trend.'],
@@ -759,17 +760,17 @@ module.exports = [
       ['S', 'This would ensure that employees in office-based roles can live near their families for at least part of the week, ultimately leading to better mental health and stronger family ties.'],      ['J', 'Another viable approach involves governments promoting economic development in smaller cities and rural regions.'],
       ['U', 'If widely implemented, tax incentives for businesses that open in these areas could serve as a long-term solution, since people would no longer need to move so far to find good jobs.'],    ],
     conclusion: [
-      'In conclusion, the growing number of people who move away from their loved ones for work remains a complex issue rooted in the uneven distribution of jobs.',
-      'Among the various measures discussed, I believe that developing regional economies would be the most effective in the long term.',
-      'If governments and employers work collaboratively, the negative effects of this trend can be significantly alleviated.',
+      ['R', 'In conclusion, the growing number of people who move away from their loved ones for work remains a complex issue rooted in the uneven distribution of jobs.'],
+      ['R', 'Among the various measures discussed, I believe that developing regional economies would be the most effective in the long term.'],
+      ['F', 'If governments and employers work collaboratively, the negative effects of this trend can be significantly alleviated.'],
     ],
   },
   {
     id: '6a910c82fd0973a6cd2b3a09', type: 'cause_solution',
     intro: [
       ['H', 'One of the major challenges facing modern workplaces today is the continued underrepresentation of women in senior leadership roles.'],
-      ['', 'Despite considerable progress in gender equality, men still occupy the majority of executive positions in many industries.'],
-      ['', 'This essay will explore the main causes of this imbalance and propose practical solutions that companies and governments can adopt.'],
+      ['H', 'Despite considerable progress in gender equality, men still occupy the majority of executive positions in many industries.'],
+      ['P', 'This essay will explore the main causes of this imbalance and propose practical solutions that companies and governments can adopt.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this problem, and the root causes stem from both social and organisational factors.'],
@@ -789,17 +790,17 @@ module.exports = [
       ['U', 'Research has shown that diverse leadership teams often make better decisions, reinforcing the effectiveness of this strategy.'],
     ],
     conclusion: [
-      'In conclusion, the underrepresentation of women in senior roles remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that fairer parental leave and childcare policies would be the most effective in the long term.',
-      'If governments and companies work collaboratively, this imbalance can be significantly reduced.',
+      ['R', 'In conclusion, the underrepresentation of women in senior roles remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that fairer parental leave and childcare policies would be the most effective in the long term.'],
+      ['F', 'If governments and companies work collaboratively, this imbalance can be significantly reduced.'],
     ],
   },
   {
     id: '6a910c8efd0973a6cd2b3a0a', type: 'cause_solution',
     intro: [
       ['H', 'In recent years, graduate unemployment has become an increasingly serious concern in many parts of the world.'],
-      ['', 'A large number of young people complete their degrees only to find that full-time jobs are surprisingly hard to obtain.'],
-      ['', 'This essay will explore the main causes of this problem and propose practical ways in which graduates can improve their employment prospects.'],
+      ['H', 'A large number of young people complete their degrees only to find that full-time jobs are surprisingly hard to obtain.'],
+      ['P', 'This essay will explore the main causes of this problem and propose practical ways in which graduates can improve their employment prospects.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to unemployment among young graduates.'],
@@ -820,17 +821,17 @@ module.exports = [
       ['U', 'If widely adopted, this habit of continuous learning could serve as a long-term solution in a rapidly changing job market.'],
     ],
     conclusion: [
-      'In conclusion, graduate unemployment remains a complex issue caused mainly by a mismatch between education and employers’ needs and by intense competition for jobs.',
-      'Among the various measures discussed, I believe that gaining practical experience during university would be the most effective in the long term.',
-      'If universities, employers and students work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, graduate unemployment remains a complex issue caused mainly by a mismatch between education and employers’ needs and by intense competition for jobs.'],
+      ['R', 'Among the various measures discussed, I believe that gaining practical experience during university would be the most effective in the long term.'],
+      ['F', 'If universities, employers and students work collaboratively, this issue can be significantly alleviated.'],
     ],
   },
   {
     id: '6ac0b78973c776372979799b', type: 'cause_solution',
     intro: [
       ['H', 'One of the major challenges facing modern society today is the difficulty many people experience in balancing their work with other parts of their lives.'],
-      ['', 'Family, friendships, hobbies and rest are often sacrificed to meet the demands of a job.'],
-      ['', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
+      ['H', 'Family, friendships, hobbies and rest are often sacrificed to meet the demands of a job.'],
+      ['P', 'This essay will explore the main causes of this problem and propose practical solutions to address it.'],
     ],
     body1: [
       ['T', 'There are several underlying factors contributing to this problem.'],
@@ -851,9 +852,9 @@ module.exports = [
       ['U', 'If widely implemented, these boundaries could serve as a long-term solution to this problem.'],
     ],
     conclusion: [
-      'In conclusion, the struggle to balance work and personal life remains a complex issue that requires immediate and coordinated action.',
-      'Among the various measures discussed, I believe that flexible working arrangements would be the most effective in the long term.',
-      'If governments, employers and individuals work collaboratively, this issue can be significantly alleviated.',
+      ['R', 'In conclusion, the struggle to balance work and personal life remains a complex issue that requires immediate and coordinated action.'],
+      ['R', 'Among the various measures discussed, I believe that flexible working arrangements would be the most effective in the long term.'],
+      ['F', 'If governments, employers and individuals work collaboratively, this issue can be significantly alleviated.'],
     ],
     analysis: [
       { title: '1. Dạng bài & cách làm', content: 'Dạng: Cause & Solution (Nguyên nhân – Giải pháp).\nĐề hỏi "reasons" + "how can this problem be overcome" → Thân bài 1 nêu 2 nguyên nhân, Thân bài 2 nêu 2 giải pháp khớp với nguyên nhân.\nBố cục 4 đoạn (~270–300 từ, ~40 phút): Mở bài (paraphrase + hướng bài) → Thân bài 1 → Thân bài 2 → Kết bài (chọn giải pháp hiệu quả nhất, không thêm ý mới).' },

@@ -14,7 +14,7 @@ const Task2TypeGuide = require('../models/Task2TypeGuide');
 const GUIDES = require('./data/task2/typeGuides');
 const { highlightsFromSpec } = require('./data/task2SampleHighlights');
 
-// modelEssay.highlightSpecs (sentence-index specs for intro/body1/body2)
+// modelEssay.highlightSpecs (sentence-index specs for intro/body1/body2/conclusion)
 // → per-section `highlights`, the shape the frontend renders.
 function withHighlights(g) {
   const { highlightSpecs, ...essay } = g.modelEssay;

@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // coloured span by frontend/js/shared/task2-highlight.js. A text that no
 // longer matches (content edited in admin) is simply not highlighted.
 const SampleHighlightSchema = new mongoose.Schema({
-  role: { type: String, enum: ['hook', 'topic', 'idea1', 'support1', 'idea2', 'support2'], required: true },
+  role: { type: String, enum: ['hook', 'thesis', 'topic', 'idea1', 'support1', 'idea2', 'support2', 'restate', 'final'], required: true },
   text: { type: String, required: true }
 }, { _id: false });
 

@@ -1,5 +1,7 @@
-/* Task 2 model-essay structure highlighting ("Bài mẫu từ Daniel" on
- * writing.html + the Band 7+ model essay on task2-template.html).
+/* Model-answer structure highlighting: Task 2 ("Bài mẫu từ Daniel" on
+ * writing.html + the Band 7+ model essay on task2-template.html) and Task 1
+ * ("Model answers from Daniel" on writing.html — paraphrase / overview /
+ * topic / detail / comparison).
  *
  * A section carries `highlights: [{ role, text }]` where `text` is an exact
  * sentence of the section body (see backend/scripts/data/
@@ -16,13 +18,28 @@
   'use strict';
 
   // Keep in sync with ROLES in backend/scripts/data/task2SampleHighlights.js.
+  // Task 2: hook/thesis · topic/idea/support · restate/final.
+  // Task 1: paraphrase · overview · topic/detail/compare.
   const ROLES = [
-    { key: 'hook',     tag: 'Hook',      name: 'Hook',           vi: 'câu mở đầu dẫn vào chủ đề' },
-    { key: 'topic',    tag: 'Topic',     name: 'Topic sentence', vi: 'câu chủ đề của đoạn' },
-    { key: 'idea1',    tag: 'Idea 1',    name: 'Idea 1',         vi: 'ý chính thứ nhất' },
-    { key: 'support1', tag: 'Support 1', name: 'Supporting 1',   vi: 'giải thích / ví dụ cho ý 1' },
-    { key: 'idea2',    tag: 'Idea 2',    name: 'Idea 2',         vi: 'ý chính thứ hai' },
-    { key: 'support2', tag: 'Support 2', name: 'Supporting 2',   vi: 'giải thích / ví dụ cho ý 2' },
+    { key: 'hook',       part: 'intro',    tag: 'Hook',       name: 'Hook',            vi: 'câu mở đầu dẫn vào chủ đề' },
+    { key: 'thesis',     part: 'intro',    tag: 'Thesis',     name: 'Thesis statement', vi: 'nêu quan điểm / hướng bài viết' },
+    { key: 'paraphrase', part: 'intro',    tag: 'Paraphrase', name: 'Paraphrase',      vi: 'giới thiệu biểu đồ (viết lại đề)' },
+    { key: 'overview',   part: 'overview', tag: 'Overview',   name: 'Overview',        vi: 'đặc điểm nổi bật, không số liệu' },
+    { key: 'topic',      part: 'body',     tag: 'Topic',      name: 'Topic sentence',  vi: 'câu chủ đề của đoạn' },
+    { key: 'idea1',      part: 'body',     tag: 'Idea 1',     name: 'Idea 1',          vi: 'ý chính thứ nhất' },
+    { key: 'support1',   part: 'body',     tag: 'Support 1',  name: 'Supporting 1',    vi: 'giải thích / ví dụ cho ý 1' },
+    { key: 'idea2',      part: 'body',     tag: 'Idea 2',     name: 'Idea 2',          vi: 'ý chính thứ hai' },
+    { key: 'support2',   part: 'body',     tag: 'Support 2',  name: 'Supporting 2',    vi: 'giải thích / ví dụ cho ý 2' },
+    { key: 'detail',     part: 'body',     tag: 'Detail',     name: 'Detail',          vi: 'số liệu / chi tiết cụ thể' },
+    { key: 'compare',    part: 'body',     tag: 'Compare',    name: 'Comparison',      vi: 'so sánh, đối chiếu' },
+    { key: 'restate',    part: 'concl',    tag: 'Restate',    name: 'Restatement',     vi: 'nhắc lại quan điểm (diễn đạt khác)' },
+    { key: 'final',      part: 'concl',    tag: 'Final',      name: 'Final statement', vi: 'câu chốt cuối bài' },
+  ];
+  const PARTS = [
+    { key: 'intro',    vi: 'Mở bài' },
+    { key: 'overview', vi: 'Overview' },
+    { key: 'body',     vi: 'Thân bài' },
+    { key: 'concl',    vi: 'Kết bài' },
   ];
   const BY_KEY = Object.fromEntries(ROLES.map(r => [r.key, r]));
   const PREF_KEY = 't2hl:off';
@@ -91,12 +108,18 @@
     try { return localStorage.getItem(PREF_KEY) === '1'; } catch (_) { return false; }
   }
 
-  // Legend for the roles actually used in `sections`, with an on/off toggle.
+  // Legend for the roles actually used in `sections`, one row per part of
+  // the essay (Mở bài / Thân bài / Kết bài), with an on/off toggle.
   function legend(sections) {
     const used = new Set();
     (sections || []).forEach(s => (s && s.highlights || []).forEach(h => used.add(h.role)));
-    const chips = ROLES.filter(r => used.has(r.key)).map(r =>
-      `<span class="t2hl-chip t2hl-chip--${r.key}" title="${esc(r.vi)}"><b>${esc(r.name)}</b><small>${esc(r.vi)}</small></span>`).join('');
+    const chips = PARTS.map(p => {
+      const roles = ROLES.filter(r => r.part === p.key && used.has(r.key));
+      if (!roles.length) return '';
+      return `<div class="t2hl-row"><span class="t2hl-part">${esc(p.vi)}</span>` + roles.map(r =>
+        `<span class="t2hl-chip t2hl-chip--${r.key}" title="${esc(r.name + ' — ' + r.vi)}"><b>${esc(r.name)}</b><small>${esc(r.vi)}</small></span>`).join('') +
+        '</div>';
+    }).join('');
     const off = isOff();
     return `<div class="t2hl-legend">` +
       `<div class="t2hl-legend-head"><span class="t2hl-legend-title">🎨 Cấu trúc bài viết</span>` +
@@ -119,5 +142,5 @@
     try { localStorage.setItem(PREF_KEY, off ? '1' : '0'); } catch (_) { /* private mode */ }
   }
 
-  window.T2Highlight = { ROLES, html, hasAny, legend, isOff, applyPref, toggle };
+  window.T2Highlight = { ROLES, PARTS, html, hasAny, legend, isOff, applyPref, toggle };
 })();

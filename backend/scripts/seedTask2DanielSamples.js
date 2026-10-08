@@ -4,11 +4,13 @@
  *  A. Writes the hand-written model essays in data/task2DanielSamples.js
  *     into WritingTask2 docs whose sample is missing / all-empty sections
  *     (and their "Phân tích đề" when the doc has none). Never overwrites
- *     a sample that already has text unless --force.
- *  B. Adds colour-coded sentence-role highlights (hook / topic / idea /
- *     supporting) to the pre-existing essays, from the sentence-index specs
- *     in data/task2SampleHighlightSpecs.js. Only the `highlights` field of
- *     each section is set — content is never touched.
+ *     a sample that already has text unless --force; an already-seeded
+ *     sample whose text still matches gets its highlights refreshed.
+ *  B. Adds colour-coded sentence-role highlights (hook / thesis / topic /
+ *     idea / supporting / restatement / final) to the pre-existing essays,
+ *     from the sentence-index specs in data/task2SampleHighlightSpecs.js.
+ *     Only the `highlights` field of each section is set — content is
+ *     never touched.
  *
  * Every write is a scoped updateOne({ _id }). Dry run by default.
  *
@@ -29,10 +31,11 @@ const DEFAULT_TITLES = ['Introduction', 'Body 1', 'Body 2', 'Conclusion'];
 const hasText = secs => (secs || []).some(s => (s.content || '').trim());
 const words = s => s.trim().split(/\s+/).filter(Boolean).length;
 
+const norm = s => String(s || '').replace(/\s+/g, ' ').trim();
+
 function buildSample(entry, existing) {
   const titles = (existing || []).length === 4 ? existing.map((s, i) => s.title || DEFAULT_TITLES[i]) : DEFAULT_TITLES;
-  const paras = [entry.intro, entry.body1, entry.body2].map(buildParagraph);
-  paras.push({ content: entry.conclusion.join(' '), highlights: [] });
+  const paras = [entry.intro, entry.body1, entry.body2, entry.conclusion].map(buildParagraph);
   return paras.map((p, i) => {
     const sec = { title: titles[i], content: p.content };
     if (p.highlights.length) sec.highlights = p.highlights;
@@ -52,8 +55,20 @@ async function run() {
     seen.add(entry.id);
     const doc = await WritingTask2.findById(entry.id).select('prompt sampleSections analysisSections isActive').lean();
     if (!doc) { console.log(`MISS  ${entry.id} — no such WritingTask2`); skippedA++; continue; }
-    if (hasText(doc.sampleSections) && !FORCE) { console.log(`SKIP  ${entry.id} — already has a sample`); skippedA++; continue; }
     const sampleSections = buildSample(entry, doc.sampleSections);
+    if (hasText(doc.sampleSections) && !FORCE) {
+      // Already seeded: refresh only the highlights, and only while the
+      // text is still exactly ours (an admin edit keeps its old colours).
+      const secs = doc.sampleSections;
+      const same = secs.length === 4 && secs.every((s, i) => norm(s.content) === norm(sampleSections[i].content));
+      if (!same) { console.log(`SKIP  ${entry.id} — sample text differs from the data file`); skippedA++; continue; }
+      const $set = {};
+      sampleSections.forEach((s, i) => { $set[`sampleSections.${i}.highlights`] = s.highlights || []; });
+      console.log(`${APPLY ? 'HL   ' : 'PLAN '} ${entry.id} [${entry.type}] highlights only`);
+      if (APPLY) await WritingTask2.updateOne({ _id: doc._id }, { $set });
+      wroteA++;
+      continue;
+    }
     const total = sampleSections.reduce((n, s) => n + words(s.content), 0);
     const $set = { sampleSections };
     const addAnalysis = Array.isArray(entry.analysis) && !(doc.analysisSections || []).length;
@@ -66,13 +81,13 @@ async function run() {
 
   // ── B. highlights for existing essays ──
   let wroteB = 0, skippedB = 0;
-  for (const [id, [b1, b2]] of Object.entries(SPECS)) {
+  for (const [id, specs] of Object.entries(SPECS)) {
     if (seen.has(id)) throw new Error(`${id} is in both the samples and the specs`);
     const doc = await WritingTask2.findById(id).select('sampleSections').lean();
     const secs = doc && doc.sampleSections;
-    if (!secs || secs.length < 3 || !hasText(secs)) { console.log(`MISS  ${id} — no sample to highlight`); skippedB++; continue; }
+    if (!secs || secs.length < specs.length || !hasText(secs)) { console.log(`MISS  ${id} — no sample to highlight`); skippedB++; continue; }
     const $set = {};
-    [['H0', 0], [b1, 1], [b2, 2]].forEach(([spec, i]) => {
+    specs.forEach((spec, i) => {
       $set[`sampleSections.${i}.highlights`] = highlightsFromSpec(secs[i].content, spec);
     });
     if (APPLY) await WritingTask2.updateOne({ _id: doc._id }, { $set });

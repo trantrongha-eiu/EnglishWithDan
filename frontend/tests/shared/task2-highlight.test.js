@@ -98,6 +98,50 @@ describe('T2Highlight legend + toggle', () => {
     expect(chips).toEqual(['topic', 'idea2']);
   });
 
+  test('legend groups roles by essay part', () => {
+    const div = document.createElement('div');
+    div.innerHTML = window.T2Highlight.legend([
+      { highlights: [{ role: 'hook', text: 'a' }, { role: 'thesis', text: 'b' }] },
+      { highlights: HL },
+      { highlights: [{ role: 'restate', text: 'c' }, { role: 'final', text: 'd' }] },
+    ]);
+    const rows = [...div.querySelectorAll('.t2hl-row')].map(r => [
+      r.querySelector('.t2hl-part').textContent,
+      [...r.querySelectorAll('.t2hl-chip')].map(c => c.className.replace('t2hl-chip t2hl-chip--', '')),
+    ]);
+    expect(rows).toEqual([
+      ['Mở bài', ['hook', 'thesis']],
+      ['Thân bài', ['topic', 'idea1', 'support1', 'idea2', 'support2']],
+      ['Kết bài', ['restate', 'final']],
+    ]);
+  });
+
+  test('Task 1 roles get their own Overview row', () => {
+    const div = document.createElement('div');
+    div.innerHTML = window.T2Highlight.legend([
+      { highlights: [{ role: 'paraphrase', text: 'a' }] },
+      { highlights: [{ role: 'overview', text: 'b' }] },
+      { highlights: [{ role: 'topic', text: 'c' }, { role: 'detail', text: 'd' }, { role: 'compare', text: 'e' }] },
+    ]);
+    const rows = [...div.querySelectorAll('.t2hl-row')].map(r => [
+      r.querySelector('.t2hl-part').textContent,
+      [...r.querySelectorAll('.t2hl-chip')].map(c => c.className.replace('t2hl-chip t2hl-chip--', '')),
+    ]);
+    expect(rows).toEqual([
+      ['Mở bài', ['paraphrase']],
+      ['Overview', ['overview']],
+      ['Thân bài', ['topic', 'detail', 'compare']],
+    ]);
+  });
+
+  test('intro and conclusion roles render with their labels', () => {
+    const div = render('Lead in. My view is X. So X. Act now.', [
+      { role: 'hook', text: 'Lead in.' }, { role: 'thesis', text: 'My view is X.' },
+      { role: 'restate', text: 'So X.' }, { role: 'final', text: 'Act now.' },
+    ]);
+    expect([...div.querySelectorAll('.t2hl')].map(s => s.dataset.label)).toEqual(['Hook', 'Thesis', 'Restate', 'Final']);
+  });
+
   test('toggle flips the root class and remembers the choice', () => {
     const root = document.createElement('div');
     root.className = 't2hl-root';

@@ -66,7 +66,7 @@ module.exports = [
       prompt: 'In some countries, many people continue to live with or very near their parents even when they are married and have their own children. Does this situation have more advantages or more disadvantages?',
       wordCount: 'khoảng 265 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2 J3 U4', 'T0 I1 S2 J3'],
+      highlightSpecs: ['H0-1 P2', 'T0 I1 S2 J3 U4', 'T0 I1 S2 J3', 'R0-1'],
       sections: [
         { title: 'INTRODUCTION', text: 'In some societies, it is increasingly common for married adults to live with or in close proximity to their parents, even after starting families of their own. With the growing prevalence of multigenerational households, questions have arisen regarding their overall impact. This essay will examine both the advantages and disadvantages of this arrangement.' },
         { title: 'BODY 1 — ADVANTAGES', text: 'One of the most significant advantages of living close to one’s parents is that it provides substantial practical and emotional support. To begin with, this arrangement enables individuals to receive assistance with childcare, thereby improving work–life balance. Grandparents often help look after young children, allowing parents to maintain full-time employment or reduce financial pressure. In addition, sharing a household can contribute to stronger family bonds, which plays a crucial role in fostering emotional stability. For example, children who grow up in extended families may benefit from greater affection, guidance, and a stronger sense of cultural identity.' },
@@ -132,7 +132,7 @@ module.exports = [
       prompt: 'Some people think international car-free days are an effective way of reducing air pollution; however, others think there are some other ways. Discuss both views and give your own opinion.',
       wordCount: 'khoảng 280 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-3 J4', 'T0 I1 S2 J3'],
+      highlightSpecs: ['H0-1 P2', 'T0 I1 S2-3 J4', 'T0 I1 S2 J3 U4', 'R0-1'],
       sections: [
         { title: 'INTRODUCTION', text: 'In recent decades, there has been an ongoing debate about whether international car-free days are an effective way of reducing air pollution. While some people argue that such initiatives can significantly improve environmental quality, others believe alternative measures would be more impactful. This essay will discuss both perspectives before explaining why I side with the latter.' },
         { title: 'BODY 1 — VIEW 1', text: 'There are several convincing reasons why some people support organising international car-free days. One major reason is that removing vehicles from the road directly lowers harmful gas emissions. This is largely because road transport accounts for a substantial share of urban air pollution. As a result, cities may experience clearer skies and measurable improvements in public health, even if only for a single day. Furthermore, such initiatives often promote cycling, walking and public transport, which helps foster long-term behavioural change.' },
@@ -200,7 +200,7 @@ module.exports = [
       prompt: 'People in many countries are becoming less physically active than they used to be. What are the causes of this, and what measures could be taken to reverse the trend?',
       wordCount: 'khoảng 315 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-4 J5 U6-7', 'T0 I1 S2-3 J4 U5'],
+      highlightSpecs: ['H0 P1', 'T0 I1 S2-4 J5 U6-7', 'T0 I1 S2-3 J4 U5', 'R0-1'],
       sections: [
         { title: 'INTRODUCTION', text: 'In recent years, declining levels of physical activity have become an increasingly serious concern in many parts of the world. This essay will explore the main causes of this trend and propose practical measures to reverse it.' },
         { title: 'BODY 1 — CAUSES', text: 'There are several underlying factors contributing to this decline. One of the primary reasons is the pervasive influence of technology on everyday routines. This can largely be attributed to the fact that people can now work, shop and socialise without leaving their homes. For instance, in cities such as Ho Chi Minh City, delivery applications allow residents to obtain meals, groceries and medicine without walking further than their front door. This suggests that convenience has quietly replaced movement in daily life. Another significant contributor is the length of the modern working day. Unlike in the past, when manual labour was common, most jobs today are sedentary and leave employees exhausted by the evening. If this pattern continues, rates of obesity and cardiovascular disease are likely to rise sharply.' },
@@ -262,7 +262,7 @@ module.exports = [
       prompt: 'Nowadays many people complain that they have difficulties getting enough sleep. What problems can lack of sleep cause? What can be done about lack of sleep?',
       wordCount: 'khoảng 280 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-3 J4 U5-6', 'T0 I1 S2-3 J4 U5'],
+      highlightSpecs: ['H0-1 P2', 'T0 I1 S2-3 J4 U5-6', 'T0 I1 S2-3 J4 U5', 'R0-1'],
       sections: [
         { title: 'INTRODUCTION', text: 'One of the most pressing challenges confronting modern society is sleep deprivation. In today’s fast-paced world, an increasing number of individuals struggle to maintain healthy sleeping patterns because of demanding work schedules and constant digital distraction. This essay will examine the major effects of insufficient sleep and propose practical solutions to mitigate its impact.' },
         { title: 'BODY 1 — EFFECTS', text: 'Two particularly alarming effects of sleep deprivation stand out. To begin with, reduced cognitive performance is a major concern. This is largely because the brain consolidates memory and restores attention during deep sleep, so when rest is cut short, concentration and decision-making decline noticeably. If this situation continues over months, it may lead to poor academic results and costly errors at work. Another significant impact is on physical health. Numerous medical studies have linked long-term sleep deprivation to obesity, cardiovascular disease and weakened immunity. Over time, this places considerable pressure on public healthcare systems.' },
@@ -321,7 +321,7 @@ module.exports = [
       prompt: 'In many countries, people are reading fewer books than in the past. What are the causes of this trend, and what effects does it have?',
       wordCount: 'khoảng 295 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-4 J5', 'T0 I1 S2 J3 U4'],
+      highlightSpecs: ['H0 P1', 'T0 I1 S2-4 J5', 'T0 I1 S2 J3 U4', 'R0 F1'],
       sections: [
         { title: 'INTRODUCTION', text: 'In today’s fast-changing world, the steady decline in book reading has become an increasingly significant concern. This essay will examine the underlying causes of this trend and analyse its effects on individuals and society.' },
         { title: 'BODY 1 — CAUSES', text: 'The causes of this decline are both complex and multifaceted. One primary factor is the sheer availability of digital entertainment, which competes directly for people’s limited free time. It is widely acknowledged that a smartphone offers instant access to videos, games and social media, making it a far easier choice than a three-hundred-page novel at the end of a long day. For example, a commuter in Hanoi who once carried a paperback now scrolls through short videos for the same twenty minutes. Not only does this convenience displace reading, but it also gradually reshapes what people expect from entertainment: speed, novelty and constant stimulation. A second contributing factor is the intensity of modern working and studying schedules, which leaves many adults with little mental energy for sustained concentration.' },
@@ -386,7 +386,7 @@ module.exports = [
       prompt: 'In the future, nobody will buy printed newspapers or books because they will be able to read everything they want online without paying. To what extent do you agree or disagree?',
       wordCount: 'khoảng 260 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-3', 'T0 I1 S2-3'],
+      highlightSpecs: ['H0-1 P2', 'T0 I1 S2-3', 'T0 I1 S2-3', 'R0 F1'],
       sections: [
         { title: 'INTRODUCTION', text: 'The future of printed newspapers and books has become a subject of considerable debate in recent years. With the rapid expansion of digital media, many people assume that physical publications will disappear once all content becomes freely accessible online. This essay will argue that printed materials are unlikely to vanish, owing to the distinctive reading experience they offer and the economics of the publishing industry.' },
         { title: 'BODY 1 — REASON 1', text: 'One compelling reason for this position is that a large number of readers continue to value the tangible experience that physical books provide. This can be attributed to the fact that printed pages create a focused, distraction-free environment which screens rarely replicate. Research has consistently shown that readers retain information more effectively from paper, thereby reinforcing the view that print serves a purpose beyond nostalgia. For instance, many universities still require students to work from printed course readers during examinations precisely because concentration is easier to sustain.' },
@@ -455,7 +455,7 @@ module.exports = [
       prompt: 'An increasing number of people now work from home rather than in an office. Is this a positive or a negative development?',
       wordCount: 'khoảng 305 từ',
       // colour-coded sentence roles (intro, body 1, body 2) — see ../task2SampleHighlights.js
-      highlightSpecs: ['H0', 'T0 I1 S2-3 J4', 'T0 I1 S2-3 J4'],
+      highlightSpecs: ['H0-1 P2', 'T0 I1 S2-3 J4', 'T0 I1 S2-3 J4', 'R0 F1'],
       sections: [
         { title: 'INTRODUCTION', text: 'Over the past two decades, and especially since the pandemic, remote working has gained considerable momentum across much of the world. This shift has had a profound influence on the way people organise their working lives. In my view, this constitutes a largely positive development, primarily because of its impact on personal autonomy and urban congestion.' },
         { title: 'BODY 1 — MAIN REASONS', text: 'The most compelling reason for regarding this trend as positive lies in the flexibility it grants employees. This is largely because staff are judged on output rather than on hours spent at a desk, which allows them to arrange work around family commitments. Consequently, many employees regain the two hours a day once lost to commuting, thereby improving both their productivity and their relationships at home. A clear illustration of this can be seen in large Vietnamese cities, where a worker living in an outer district may spend three hours a day travelling to and from a central office. A further consideration is the environmental benefit: fewer daily journeys mean lower emissions and less strain on transport infrastructure, which has the potential to reshape city planning in the long term.' },

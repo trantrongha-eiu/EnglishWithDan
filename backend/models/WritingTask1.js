@@ -1,8 +1,19 @@
 const mongoose = require('mongoose');
 
+// Colour-coded sentence roles on a model answer section ("Model answers
+// from Daniel"): each `text` is an exact sentence of `content`, wrapped in
+// a coloured span by frontend/js/shared/task2-highlight.js. Built by
+// scripts/seedTask1DanielSamples.js; a text that no longer matches (content
+// edited in admin) is simply not highlighted.
+const SampleHighlightSchema = new mongoose.Schema({
+  role: { type: String, enum: ['paraphrase', 'overview', 'topic', 'detail', 'compare'], required: true },
+  text: { type: String, required: true }
+}, { _id: false });
+
 const SampleSectionSchema = new mongoose.Schema({
   title:   { type: String, default: '' },
-  content: { type: String, default: '' }
+  content: { type: String, default: '' },
+  highlights: { type: [SampleHighlightSchema], default: undefined }
 }, { _id: false });
 
 const WritingTask1Schema = new mongoose.Schema({

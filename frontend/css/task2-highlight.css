@@ -3,19 +3,25 @@
    never ends up in copied text. */
 .t2hl-root {
   --t2hl-hook-bg: #ede9fe;     --t2hl-hook-ac: #7c3aed;     --t2hl-hook-fg: #4c1d95;
+  --t2hl-thesis-bg: #fae8ff;   --t2hl-thesis-ac: #c026d3;   --t2hl-thesis-fg: #701a75;
   --t2hl-topic-bg: #dbeafe;    --t2hl-topic-ac: #2563eb;    --t2hl-topic-fg: #1e3a8a;
   --t2hl-idea1-bg: #ffe4e6;    --t2hl-idea1-ac: #e11d48;    --t2hl-idea1-fg: #881337;
   --t2hl-support1-bg: #fef3c7; --t2hl-support1-ac: #d97706; --t2hl-support1-fg: #78350f;
   --t2hl-idea2-bg: #ccfbf1;    --t2hl-idea2-ac: #0d9488;    --t2hl-idea2-fg: #134e4a;
   --t2hl-support2-bg: #ecfccb; --t2hl-support2-ac: #65a30d; --t2hl-support2-fg: #365314;
+  --t2hl-restate-bg: #ffedd5;  --t2hl-restate-ac: #ea580c;  --t2hl-restate-fg: #7c2d12;
+  --t2hl-final-bg: #e2e8f0;    --t2hl-final-ac: #475569;    --t2hl-final-fg: #1e293b;
 }
 [data-theme="dark"] .t2hl-root {
   --t2hl-hook-bg: rgba(139, 92, 246, .24);  --t2hl-hook-ac: #a78bfa;     --t2hl-hook-fg: #ddd6fe;
+  --t2hl-thesis-bg: rgba(217, 70, 239, .22); --t2hl-thesis-ac: #e879f9;  --t2hl-thesis-fg: #f5d0fe;
   --t2hl-topic-bg: rgba(59, 130, 246, .24); --t2hl-topic-ac: #60a5fa;    --t2hl-topic-fg: #bfdbfe;
   --t2hl-idea1-bg: rgba(244, 63, 94, .22);  --t2hl-idea1-ac: #fb7185;    --t2hl-idea1-fg: #fecdd3;
   --t2hl-support1-bg: rgba(245, 158, 11, .2); --t2hl-support1-ac: #fbbf24; --t2hl-support1-fg: #fde68a;
   --t2hl-idea2-bg: rgba(20, 184, 166, .22); --t2hl-idea2-ac: #2dd4bf;    --t2hl-idea2-fg: #99f6e4;
   --t2hl-support2-bg: rgba(132, 204, 22, .2); --t2hl-support2-ac: #a3e635; --t2hl-support2-fg: #d9f99d;
+  --t2hl-restate-bg: rgba(249, 115, 22, .22); --t2hl-restate-ac: #fb923c; --t2hl-restate-fg: #fed7aa;
+  --t2hl-final-bg: rgba(148, 163, 184, .22);  --t2hl-final-ac: #94a3b8;   --t2hl-final-fg: #e2e8f0;
 }
 
 .t2hl {
@@ -45,6 +51,10 @@
 .t2hl--topic    { background: var(--t2hl-topic-bg);    color: var(--t2hl-topic-fg);    box-shadow: inset 0 -2px 0 var(--t2hl-topic-ac); font-weight: 600; }
 .t2hl--idea1    { background: var(--t2hl-idea1-bg);    color: var(--t2hl-idea1-fg);    box-shadow: inset 0 -2px 0 var(--t2hl-idea1-ac); }
 .t2hl--idea2    { background: var(--t2hl-idea2-bg);    color: var(--t2hl-idea2-fg);    box-shadow: inset 0 -2px 0 var(--t2hl-idea2-ac); }
+/* Thesis = the essay's position, so it is bold like a topic sentence. */
+.t2hl--thesis   { background: var(--t2hl-thesis-bg);   color: var(--t2hl-thesis-fg);   box-shadow: inset 0 -2px 0 var(--t2hl-thesis-ac); font-weight: 600; }
+.t2hl--restate  { background: var(--t2hl-restate-bg);  color: var(--t2hl-restate-fg);  box-shadow: inset 0 -2px 0 var(--t2hl-restate-ac); }
+.t2hl--final    { background: var(--t2hl-final-bg);    color: var(--t2hl-final-fg);    box-shadow: inset 0 -2px 0 var(--t2hl-final-ac); }
 /* Supporting sentences: tint only (no underline) so the topic/idea
    sentences read as the paragraph's skeleton. */
 .t2hl--support1 { background: var(--t2hl-support1-bg); color: var(--t2hl-support1-fg); }
@@ -55,6 +65,21 @@
 .t2hl--support1::before { background: var(--t2hl-support1-ac); }
 .t2hl--idea2::before    { background: var(--t2hl-idea2-ac); }
 .t2hl--support2::before { background: var(--t2hl-support2-ac); }
+.t2hl--thesis::before   { background: var(--t2hl-thesis-ac); }
+.t2hl--restate::before  { background: var(--t2hl-restate-ac); }
+.t2hl--final::before    { background: var(--t2hl-final-ac); }
+
+/* Task 1 roles reuse the Task 2 palette: paraphrase ≈ hook (intro),
+   overview ≈ thesis (the key sentence, bold), detail ≈ supporting (tint
+   only), comparison ≈ idea 2 (teal, underlined). */
+.t2hl--paraphrase { background: var(--t2hl-hook-bg);     color: var(--t2hl-hook-fg);     box-shadow: inset 0 -2px 0 var(--t2hl-hook-ac); }
+.t2hl--overview   { background: var(--t2hl-thesis-bg);   color: var(--t2hl-thesis-fg);   box-shadow: inset 0 -2px 0 var(--t2hl-thesis-ac); font-weight: 600; }
+.t2hl--detail     { background: var(--t2hl-support1-bg); color: var(--t2hl-support1-fg); }
+.t2hl--compare    { background: var(--t2hl-idea2-bg);    color: var(--t2hl-idea2-fg);    box-shadow: inset 0 -2px 0 var(--t2hl-idea2-ac); }
+.t2hl--paraphrase::before { background: var(--t2hl-hook-ac); }
+.t2hl--overview::before   { background: var(--t2hl-thesis-ac); }
+.t2hl--detail::before     { background: var(--t2hl-support1-ac); }
+.t2hl--compare::before    { background: var(--t2hl-idea2-ac); }
 [data-theme="dark"] .t2hl::before { color: #0b1020; }
 
 /* Off switch — plain text again. */
@@ -83,17 +108,29 @@
   cursor: pointer;
 }
 .t2hl-toggle:hover { background: #f3f4f6; }
-.t2hl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+/* One compact row per essay part (Mở bài / Thân bài / Kết bài),
+   single-line chips so the sticky legend stays short. */
+.t2hl-chips { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.t2hl-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.t2hl-part {
+  flex: 0 0 62px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
 .t2hl-chip {
   display: inline-flex;
-  flex-direction: column;
-  border-radius: 8px;
-  padding: 3px 9px 3px 8px;
+  align-items: baseline;
+  gap: 5px;
+  border-radius: 7px;
+  padding: 2px 8px 2px 7px;
   border-left: 4px solid;
-  line-height: 1.3;
+  line-height: 1.35;
   min-width: 0;
 }
-.t2hl-chip b { font-size: 12px; }
+.t2hl-chip b { font-size: 12px; white-space: nowrap; }
 .t2hl-chip small { font-size: 10.5px; opacity: .85; }
 .t2hl-chip--hook     { background: var(--t2hl-hook-bg);     color: var(--t2hl-hook-fg);     border-color: var(--t2hl-hook-ac); }
 .t2hl-chip--topic    { background: var(--t2hl-topic-bg);    color: var(--t2hl-topic-fg);    border-color: var(--t2hl-topic-ac); }
@@ -101,8 +138,16 @@
 .t2hl-chip--support1 { background: var(--t2hl-support1-bg); color: var(--t2hl-support1-fg); border-color: var(--t2hl-support1-ac); }
 .t2hl-chip--idea2    { background: var(--t2hl-idea2-bg);    color: var(--t2hl-idea2-fg);    border-color: var(--t2hl-idea2-ac); }
 .t2hl-chip--support2 { background: var(--t2hl-support2-bg); color: var(--t2hl-support2-fg); border-color: var(--t2hl-support2-ac); }
+.t2hl-chip--thesis   { background: var(--t2hl-thesis-bg);   color: var(--t2hl-thesis-fg);   border-color: var(--t2hl-thesis-ac); }
+.t2hl-chip--restate  { background: var(--t2hl-restate-bg);  color: var(--t2hl-restate-fg);  border-color: var(--t2hl-restate-ac); }
+.t2hl-chip--final    { background: var(--t2hl-final-bg);    color: var(--t2hl-final-fg);    border-color: var(--t2hl-final-ac); }
+.t2hl-chip--paraphrase { background: var(--t2hl-hook-bg);     color: var(--t2hl-hook-fg);     border-color: var(--t2hl-hook-ac); }
+.t2hl-chip--overview   { background: var(--t2hl-thesis-bg);   color: var(--t2hl-thesis-fg);   border-color: var(--t2hl-thesis-ac); }
+.t2hl-chip--detail     { background: var(--t2hl-support1-bg); color: var(--t2hl-support1-fg); border-color: var(--t2hl-support1-ac); }
+.t2hl-chip--compare    { background: var(--t2hl-idea2-bg);    color: var(--t2hl-idea2-fg);    border-color: var(--t2hl-idea2-ac); }
 [data-theme="dark"] .t2hl-legend { background: #111827; border-color: #374151; }
 [data-theme="dark"] .t2hl-legend-title { color: #e5e7eb; }
+[data-theme="dark"] .t2hl-part { color: #9ca3af; }
 [data-theme="dark"] .t2hl-toggle { background: #1f2937; border-color: #4b5563; color: #e5e7eb; }
 
 /* writing.html sample panel: neutral paper behind the colours (the green
@@ -113,6 +158,7 @@
 .t2-g-essay.t2hl-root .t2hl-legend { margin: 10px 0 4px; }
 
 @media (max-width: 600px) {
-  .t2hl-chip { padding: 2px 7px; }
+  .t2hl-chip { padding: 1px 7px; }
+  .t2hl-part { flex-basis: 56px; font-size: 9.5px; }
   .t2hl-chip small { display: none; }
 }
