@@ -221,6 +221,11 @@
       padding: 6px 4px 2px 18px;
     }
     .sidebar-online-list a {
+      /* overflow:hidden (for the ellipsis) drops a flex item's min-height to
+         0, so with many students online the column squeezed every name to
+         fit the 180px cap instead of scrolling — descenders got cut off. */
+      flex-shrink: 0;
+      line-height: 1.5;
       font-size: 12px;
       color: var(--text2);
       text-decoration: none;
