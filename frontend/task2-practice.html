@@ -522,9 +522,9 @@
     [data-theme="dark"] .t2-seg,[data-theme="dark"] .t2-seg button+button{border-color:var(--border2,#333)}
     [data-theme="dark"] .t2-seg button.active{background:#1e1b4b;color:#a5b4fc}
     .t2-hub .t2-draft-banner{margin-top:12px}
-    /* Brainstorm is optional now — collapsed by default */
+    /* Brainstorm card sits right under the prompt — open by default, collapsible */
     details.t2-brainstorm{margin-top:12px}
-    details.t2-brainstorm>summary{cursor:pointer;list-style:none;user-select:none;font-size:13px;font-weight:800;color:#4338ca}
+    details.t2-brainstorm>summary{cursor:pointer;list-style:none;user-select:none;font-size:14px;font-weight:800;color:#4338ca}
     details.t2-brainstorm>summary::-webkit-details-marker{display:none}
     details.t2-brainstorm>summary::before{content:'▸ ';font-weight:900}
     details.t2-brainstorm[open]>summary::before{content:'▾ '}
@@ -807,7 +807,7 @@ let state = {
   vocabOpen: null,      // null = auto (open until every term is saved)
   vocabQuiz: null,      // optional inline quiz — see startVocabQuiz()
   // Brainstorm notes survive hub re-renders (vocab save, stats refresh).
-  brainstorm: { topicId: null, notes: [], open: false, hintOpen: false },
+  brainstorm: { topicId: null, notes: [], open: true, hintOpen: false },
   promptOpen: true      // practice screen's collapsible prompt box
 };
 
@@ -1426,7 +1426,7 @@ function _resetHubState(id) {
   state.vocabQuiz = null;
   state.vocabOpen = null;
   if (state.vocabFor !== id) { state.vocab = []; state.vocabFor = null; state.vocabError = false; }
-  if (state.brainstorm.topicId !== id) state.brainstorm = { topicId: id, notes: [], open: false, hintOpen: false };
+  if (state.brainstorm.topicId !== id) state.brainstorm = { topicId: id, notes: [], open: true, hintOpen: false };
 }
 
 let _selectTopicSeq = 0;
@@ -1497,8 +1497,8 @@ function _vocabStats(id) {
   return { total, saved, pct: total ? Math.round((saved / total) * 100) : 0 };
 }
 
-// "Brainstorm" (optional): the student writes their own ideas for each side
-// of the essay before revealing the suggested points. Data:
+// "Brainstorm": right after reading the prompt the student writes their own
+// ideas for each side, then reveals the suggested points to compare. Data:
 // topic.brainstormHints (backend/scripts/data/task2Augment.js). Notes live in
 // state.brainstorm only (never saved) so a hub re-render doesn't wipe them.
 function _renderBrainstorm(t) {
@@ -1507,8 +1507,8 @@ function _renderBrainstorm(t) {
   const bs = state.brainstorm;
   return `
     <details class="t2-brainstorm" ${bs.open ? 'open' : ''} ontoggle="state.brainstorm.open=this.open">
-      <summary>💡 Brainstorm ý tưởng trước <span class="t2-opt-tag">tuỳ chọn</span></summary>
-      <div class="t2-brainstorm-sub">Tự viết 2–3 ý cho mỗi phần, nghĩ xong rồi mới mở gợi ý để so.</div>
+      <summary>💡 Brainstorm ý tưởng</summary>
+      <div class="t2-brainstorm-sub">Đọc kỹ đề bên trên, tự viết 2–3 ý cho mỗi phần vào ô dưới. Nghĩ xong rồi mới mở gợi ý để so.</div>
       ${hints.map((h, i) => `
         <label class="t2-brainstorm-side">${_escHtml(h.side)}</label>
         <textarea class="t2-brainstorm-input" rows="2" placeholder="Ý của bạn cho phần này..." oninput="state.brainstorm.notes[${i}]=this.value">${_escHtml(bs.notes[i] || '')}</textarea>
@@ -1558,6 +1558,7 @@ function renderSelect() {
         </div>
       </div>
       <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>
+      ${_renderBrainstorm(t)}
 
       ${hasDraft ? `
       <div class="t2-draft-banner">
@@ -1674,8 +1675,7 @@ function renderPracticeStep(isCurrent) {
         <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
         <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
         <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
-      </div>
-      ${_renderBrainstorm(t)}`}
+      </div>`}
     </section>`;
 }
 
