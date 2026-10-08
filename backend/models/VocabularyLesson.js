@@ -34,6 +34,9 @@ const VocabularyLessonSchema = new mongoose.Schema({
   // (keeps lessons created before this field existed working unchanged).
   // Matched against User.className in listPublicLessons().
   targetClass: { type: String, default: '', trim: true, maxlength: 40 },
+  // Cover image of the Vocab Topics card (Cloudinary URL, '' = Daniel logo).
+  // Free-to-use images only: the card has no room for a credit line.
+  thumbnailUrl: { type: String, default: '' },
   published:   { type: Boolean, default: false },
   createdBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   words:       [LessonWordSchema],

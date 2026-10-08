@@ -151,6 +151,16 @@ describe('updateLessonMeta', () => {
     const updated = await svc.updateLessonMeta(lesson._id, { published: true });
     expect(updated.published).toBe(true);
   });
+
+  test('sets / clears the cover image and rejects a non-https one', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const url = 'https://res.cloudinary.com/demo/image/upload/v1/vocab/covers/x.jpg';
+    expect((await svc.updateLessonMeta(lesson._id, { thumbnailUrl: url })).thumbnailUrl).toBe(url);
+    await expect(svc.updateLessonMeta(lesson._id, { thumbnailUrl: 'javascript:alert(1)' })).rejects.toThrow(/https/);
+    await expect(svc.updateLessonMeta(lesson._id, { thumbnailUrl: 'https://x.com/a.jpg" onerror="x' })).rejects.toThrow(/https/);
+    expect((await svc.updateLessonMeta(lesson._id, { thumbnailUrl: '' })).thumbnailUrl).toBe('');
+  });
 });
 
 describe('publish / unpublish / list visibility', () => {
@@ -172,6 +182,15 @@ describe('publish / unpublish / list visibility', () => {
 
     await svc.setPublished(lesson._id, false);
     expect(await svc.listPublicLessons()).toHaveLength(0);
+  });
+
+  test('listPublicLessons returns a cropped card thumbnail, never the raw thumbnailUrl', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    await svc.updateLessonMeta(lesson._id, { published: true, thumbnailUrl: 'https://res.cloudinary.com/demo/image/upload/v1/vocab/covers/x.jpg' });
+    const [l] = await svc.listPublicLessons();
+    expect(l.thumbnail).toBe('https://res.cloudinary.com/demo/image/upload/c_fill,g_auto,w_480,h_240,q_auto,f_auto/v1/vocab/covers/x.jpg');
+    expect(l).not.toHaveProperty('thumbnailUrl');
   });
 
   test('getPublicLesson never exposes rawImport', async () => {

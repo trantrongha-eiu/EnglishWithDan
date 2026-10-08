@@ -18,6 +18,7 @@ const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
 const examSimulationService = require('./examSimulationService');
+const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 async function randomDoc(Model) {
   const count = await Model.countDocuments({ isActive: true });
@@ -157,7 +158,9 @@ async function submitExam(user, body) {
 
 async function listPracticeTasks(taskType) {
   const Model = taskType === 1 ? WritingTask1 : WritingTask2;
-  return Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
+  const tasks = await Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
+  // Task 2 card cover: a small 2:1 crop (Task 1 cards show the chart itself, imageUrl).
+  return tasks.map(({ thumbnailUrl, ...t }) => ({ ...t, thumbnail: toCardThumbnail(thumbnailUrl) }));
 }
 
 async function getPracticeTask(taskType) {

@@ -6,6 +6,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import LessonPreview from '../components/LessonPreview';
+import CoverImageField from '../components/CoverImageField';
 
 const DIFFICULTY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const PREFILL_KEY = 'vocabLessonImportPrefill';
@@ -18,6 +19,7 @@ function LessonMetaModal({ lesson, onClose, onSaved }) {
     difficulty: lesson.difficulty,
     order: lesson.order ?? 0,
     targetClass: lesson.targetClass || '',
+    thumbnailUrl: lesson.thumbnailUrl || '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -39,7 +41,7 @@ function LessonMetaModal({ lesson, onClose, onSaved }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Sửa thông tin bài học</h3>
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
@@ -69,6 +71,8 @@ function LessonMetaModal({ lesson, onClose, onSaved }) {
             <label className="form-label">Lớp (để trống = hiện cho mọi học sinh)</label>
             <input className="form-input" placeholder="VD: 6, 6.5, 7..." value={form.targetClass} onChange={set('targetClass')} />
           </div>
+          <CoverImageField value={form.thumbnailUrl} onChange={v => setForm(f => ({ ...f, thumbnailUrl: v }))}
+            hint="Card Vocab Topics của học sinh. Để trống: hiện logo." />
           <div style={{ fontSize: 12, color: 'var(--text3)' }}>
             Muốn sửa danh sách từ vựng? Dùng "📋 Sửa nội dung" ở bảng danh sách để paste lại lesson.
           </div>

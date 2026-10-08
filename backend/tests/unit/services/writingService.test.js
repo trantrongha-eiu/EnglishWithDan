@@ -42,6 +42,20 @@ describe('writingService.startExam', () => {
   });
 });
 
+describe('writingService.listPracticeTasks', () => {
+  test('Task 2 cards get a cropped cover thumbnail ("" without one), never the raw thumbnailUrl', async () => {
+    const withCover = await createWritingTask2({ thumbnailUrl: 'https://res.cloudinary.com/demo/image/upload/v1/writing/covers/x.jpg' });
+    await createWritingTask2();
+    await createWritingTask2({ isActive: false });
+    const tasks = await writingService.listPracticeTasks(2);
+    expect(tasks).toHaveLength(2);
+    const byId = Object.fromEntries(tasks.map(t => [String(t._id), t]));
+    expect(byId[String(withCover._id)].thumbnail).toBe('https://res.cloudinary.com/demo/image/upload/c_fill,g_auto,w_480,h_240,q_auto,f_auto/v1/writing/covers/x.jpg');
+    expect(tasks.filter(t => t.thumbnail === '')).toHaveLength(1);
+    tasks.forEach(t => expect(t).not.toHaveProperty('thumbnailUrl'));
+  });
+});
+
 describe('writingService.submitExam', () => {
   test('returns null when the exam does not exist', async () => {
     const student = await createStudent();

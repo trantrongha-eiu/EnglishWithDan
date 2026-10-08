@@ -203,6 +203,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .pb-card-go{margin-top:auto;padding-top:4px;font-size:12px;font-weight:700;color:var(--text3);transition:color .15s}
 .pb-card-go i{font-size:10px;margin-left:3px}
 .pb-card:hover .pb-card-go{color:var(--brand)}
+/* Vocab Topics card cover: flush with the card's top edge; the Daniel logo
+   underneath shows when the lesson has no cover or the image fails to load. */
+.pb-card--cover{padding-top:0;overflow:hidden}
+.pb-card-cover{
+  position:relative;flex:none;height:120px;margin:0 -18px 4px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1e3a5f 0%,#2d5986 60%,#1e40af 100%);
+}
+.pb-card-cover-logo{font-size:20px;font-weight:900;font-style:italic;letter-spacing:1px;color:rgba(255,255,255,.85)}
+.pb-card-cover-logo span{color:#60a5fa}
+.pb-card-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.pb-card--cover:hover .pb-card-cover img{transform:scale(1.04)}
 .pb-group + .pb-group{margin-top:26px}
 .pb-group-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
 .pb-group-label span{font-weight:600;background:var(--surface2);border-radius:10px;padding:1px 7px;margin-left:4px}

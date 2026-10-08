@@ -45,3 +45,8 @@ backend/scripts/dolListening/web/
 /VOL */
 backend/scripts/volListening/web/
 __pycache__/
+# vocab topic + writing task 2 cover working files (candidate lists, contact sheets)
+backend/scripts/vocabCovers/web/
+backend/scripts/vocabCovers/shots/
+backend/scripts/writingCovers/web/
+backend/scripts/writingCovers/shots/

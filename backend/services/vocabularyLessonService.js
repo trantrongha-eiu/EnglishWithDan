@@ -9,6 +9,7 @@ const parser = require('./vocabularyLessonParser');
 const { reachedDailyWordThreshold } = require('./streakBonusService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const { toCardThumbnail, isValidCoverUrl } = require('../utils/cardThumbnail');
 
 // A quiz run under this many questions doesn't count toward the daily vocab
 // goal / streak — same >=5 floor completePractice() uses for book quizzes,
@@ -36,11 +37,12 @@ async function listPublicLessons(studentClass) {
     // same as "" (unscoped/visible to everyone).
     match.$or = [{ targetClass: '' }, { targetClass: { $exists: false } }, { targetClass: studentClass }];
   }
-  return VocabularyLesson.aggregate([
+  const lessons = await VocabularyLesson.aggregate([
     { $match: match },
-    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, createdAt: 1, wordCount: { $size: '$words' } } },
+    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, createdAt: 1, thumbnailUrl: 1, wordCount: { $size: '$words' } } },
     { $sort: { order: 1, createdAt: -1 } },
   ]);
+  return lessons.map(({ thumbnailUrl, ...l }) => ({ ...l, thumbnail: toCardThumbnail(thumbnailUrl) }));
 }
 
 async function getPublicLesson(id) {
@@ -297,7 +299,7 @@ function throwValidationError(result) {
 
 async function listAdminLessons() {
   return VocabularyLesson.aggregate([
-    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, published: 1, createdBy: 1, createdAt: 1, wordCount: { $size: '$words' } } },
+    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, thumbnailUrl: 1, published: 1, createdBy: 1, createdAt: 1, wordCount: { $size: '$words' } } },
     { $sort: { createdAt: -1 } },
     {
       // One lookup for every per-lesson attempt-row-derived stat
@@ -473,6 +475,10 @@ async function updateLessonMeta(id, payload) {
     lesson.order = Number(payload.order);
   }
   if (payload.targetClass != null) lesson.targetClass = String(payload.targetClass).trim();
+  if (payload.thumbnailUrl != null) {
+    if (!isValidCoverUrl(payload.thumbnailUrl)) throw new Error('Ảnh bìa phải là link https');
+    lesson.thumbnailUrl = payload.thumbnailUrl;
+  }
   if (typeof payload.published === 'boolean') lesson.published = payload.published;
 
   await lesson.save();
@@ -505,6 +511,7 @@ async function duplicateLesson(id, userId) {
     description: source.description,
     difficulty: source.difficulty,
     order: source.order,
+    thumbnailUrl: source.thumbnailUrl || '',
     words: source.words,
     rawImport: source.rawImport,
     published: false,

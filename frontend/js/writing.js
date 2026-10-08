@@ -1793,13 +1793,18 @@ function _renderTaskPage() {
     const imgHtml = (taskType === 1 && t.imageUrl)
       ? `<img src="${escHtml(t.imageUrl)}" alt="" class="wt-task-card-img" loading="lazy" />`
       : '';
+    // Task 2: topic cover flush with the card's top edge; the Daniel logo shows without one.
+    const coverHtml = taskType === 2
+      ? `<div class="wt-task-card-cover"><span class="wt-task-card-cover-logo"><span>D</span>aniel</span>${t.thumbnail ? `<img src="${escHtml(t.thumbnail)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>`
+      : '';
     const promptPreview = (t.prompt || '').slice(0, 200) + ((t.prompt || '').length > 200 ? '…' : '');
     const done = (practiceState.taskScores || {})[String(t._id)];
     const bandColor = done ? (done.band >= 7 ? '#16a34a' : done.band >= 5.5 ? '#2563eb' : '#d97706') : '';
     const bandHtml = done
       ? `<span class="wt-task-card-band" style="color:${bandColor};border-color:${bandColor}">Band ${done.band}</span>`
       : '';
-    return `<div class="wt-task-card" data-id="${escHtml(String(t._id))}">
+    return `<div class="wt-task-card${coverHtml ? ' wt-task-card--cover' : ''}" data-id="${escHtml(String(t._id))}">
+      ${coverHtml}
       <div class="wt-task-card-header">
         <span class="wt-task-card-num">${idx}</span>
         ${bandHtml}

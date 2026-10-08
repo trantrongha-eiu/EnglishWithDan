@@ -20,6 +20,7 @@ const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
 const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
+const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 // Mongoose `.select()` string that strips a passage's answer key
 // (correctAnswer + explanation, on both the modern questionGroups shape
@@ -445,13 +446,6 @@ async function getHistory(userId, limit = 50) {
     TestAttempt.countDocuments(filter),
   ]);
   return { history, total };
-}
-
-// Card thumbnail for the practice list: a small, cropped version of a
-// Cloudinary image (other hosts are returned unchanged).
-function toCardThumbnail(url) {
-  if (!url) return '';
-  return url.replace(/(res\.cloudinary\.com\/[^/]+\/image\/upload\/)(?!c_fill)/, '$1c_fill,g_auto,w_480,h_240,q_auto,f_auto/');
 }
 
 async function listPracticePassages(category, userId) {

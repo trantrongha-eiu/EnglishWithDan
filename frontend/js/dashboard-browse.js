@@ -155,7 +155,11 @@
             <div class="pb-group">
                 <div class="pb-group-label">${key ? `Lớp ${escHtml(key)}` : 'Chung (mọi lớp)'} <span>${groups.get(key).length}</span></div>
                 <div class="pb-grid">${groups.get(key).map(l => `
-                    <button type="button" class="pb-card" data-lesson="${escHtml(String(l._id))}">
+                    <button type="button" class="pb-card pb-card--cover" data-lesson="${escHtml(String(l._id))}">
+                        <span class="pb-card-cover">
+                            <span class="pb-card-cover-logo"><span>D</span>aniel</span>
+                            ${l.thumbnail ? `<img src="${escHtml(l.thumbnail)}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+                        </span>
                         <span class="pb-card-top">
                             ${l.difficulty ? `<span class="classroom-item-badge">${escHtml(l.difficulty)}</span>` : ''}
                             ${l.wordCount ? `<span class="pb-card-meta">${escHtml(String(l.wordCount))} từ</span>` : ''}

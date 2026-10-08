@@ -27,6 +27,7 @@ const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
 const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
+const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 // Mongoose `.select()` string that strips a section's answer key
 // (correctAnswer + explanation per question). Single source so the
@@ -390,13 +391,6 @@ async function listPracticeSections(query, userId) {
   const doneMap = {};
   attemptStats.forEach(a => { doneMap[a._id.toString()] = { count: a.count, lastScore: a.lastScore, lastTotal: a.lastTotal }; });
   return { sections: safe, doneMap };
-}
-
-// Card cover for the practice list: a small 2:1 crop of a Cloudinary image
-// (other hosts are returned unchanged). Same transform as the Reading list.
-function toCardThumbnail(url) {
-  if (!url) return '';
-  return url.replace(/(res\.cloudinary\.com\/[^/]+\/image\/upload\/)(?!c_fill)/, '$1c_fill,g_auto,w_480,h_240,q_auto,f_auto/');
 }
 
 async function getPracticeSectionById(id) {

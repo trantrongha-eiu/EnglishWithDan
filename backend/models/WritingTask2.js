@@ -26,6 +26,9 @@ const WritingTask2Schema = new mongoose.Schema({
   // how to split Body 1/Body 2, band-6.5-appropriate. Same {title, content}
   // shape as WritingTask1's analysisSections/sampleSections.
   analysisSections: { type: [SampleSectionSchema], default: [] },
+  // Cover image of the practice-list card (Cloudinary URL, '' = Daniel logo).
+  // Free-to-use images only: the card has no room for a credit line.
+  thumbnailUrl:   { type: String, default: '' },
   isActive:       { type: Boolean, default: true },
   // Same prompt entered twice (e.g. the "time spent on websites" chart
   // under two wordings). Points at the copy to keep; homework completion

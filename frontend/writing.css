@@ -1415,6 +1415,24 @@ body {
 [data-theme="dark"] .wt-task-card { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
 [data-theme="dark"] .wt-task-card:hover { border-color: #3b82f6; background: #1e3a5f; }
 
+/* Task 2 topic cover (see _renderTaskPage in js/writing.js) */
+.wt-task-card--cover { padding-top: 0; overflow: hidden; }
+.wt-task-card-cover {
+  position: relative;
+  flex: none;
+  height: 120px;
+  margin: 0 -14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 60%, #1e40af 100%);
+}
+.wt-task-card-cover-logo { font-size: 20px; font-weight: 900; font-style: italic; letter-spacing: 1px; color: rgba(255,255,255,.85); }
+.wt-task-card-cover-logo span { color: #60a5fa; }
+.wt-task-card-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.wt-task-card--cover:hover .wt-task-card-cover img { transform: scale(1.04); }
+
 .wt-task-card-header {
   display: flex;
   align-items: center;

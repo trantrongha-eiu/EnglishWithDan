@@ -1,0 +1,426 @@
+{
+ "subjects": {
+  "query": "students studying subjects | school lesson",
+  "ids": [
+   "dfb2a4",
+   "b93022"
+  ]
+ },
+ "recycling": {
+  "query": "recycling bins | recycling",
+  "ids": [
+   "dfb2a9"
+  ]
+ },
+ "charity": {
+  "query": "donation jar coins | soup kitchen volunteers | helping hands",
+  "ids": [
+   "dfb2ae"
+  ]
+ },
+ "fuel": {
+  "query": "petrol pump | gas station fuel prices | coal power plant",
+  "ids": [
+   "dfb2b3",
+   "bce88f",
+   "699789"
+  ]
+ },
+ "renewables": {
+  "query": "solar panels | wind farm",
+  "ids": [
+   "2e5a81"
+  ]
+ },
+ "games_sport": {
+  "query": "video game controller | children playing video games | children football",
+  "ids": [
+   "dfb2b8",
+   "b92fc5",
+   "bce88d"
+  ]
+ },
+ "tourism": {
+  "query": "tourists crowd | tourists sightseeing city",
+  "ids": [
+   "dfb2bd",
+   "811138"
+  ]
+ },
+ "ecotourism": {
+  "query": "ecotourism | canopy walkway rainforest",
+  "ids": [
+   "2e5a7f"
+  ]
+ },
+ "historic": {
+  "query": "historic old town buildings | old and new buildings",
+  "ids": [
+   "dfb2c2"
+  ]
+ },
+ "oil_rig": {
+  "query": "oil platform | drilling rig",
+  "ids": [
+   "dfb2c7"
+  ]
+ },
+ "planning": {
+  "query": "hourglass | calendar",
+  "ids": [
+   "dfb2ce"
+  ]
+ },
+ "study_abroad": {
+  "query": "international students | university campus",
+  "ids": [
+   "dfb2dd"
+  ]
+ },
+ "self_employed": {
+  "query": "artisan workshop | freelancer laptop cafe",
+  "ids": [
+   "dfb2e2"
+  ]
+ },
+ "smartphones": {
+  "query": "people using smartphones | smartphone",
+  "ids": [
+   "f31203",
+   "2e5a6e",
+   "f66400",
+   "2e5a89"
+  ]
+ },
+ "reading": {
+  "query": "boy reading book | girl reading library",
+  "ids": [
+   "dd5184"
+  ]
+ },
+ "online_shopping": {
+  "query": "parcel delivery | online shopping",
+  "ids": [
+   "e5ee00"
+  ]
+ },
+ "online_learning": {
+  "query": "student laptop home | laptop online class | distance learning",
+  "ids": [
+   "7de7a1",
+   "9f9cf2"
+  ]
+ },
+ "social_media": {
+  "query": "social media apps smartphone | people looking at phones",
+  "ids": [
+   "431dbc",
+   "699784"
+  ]
+ },
+ "automation": {
+  "query": "industrial robot | robotic arm factory",
+  "ids": [
+   "f67104"
+  ]
+ },
+ "academic_pressure": {
+  "query": "students exam hall | students studying exam",
+  "ids": [
+   "c93af2",
+   "a0c6c8"
+  ]
+ },
+ "cycling": {
+  "query": "cyclists city street | bicycle lane | car free day",
+  "ids": [
+   "811136",
+   "81113a",
+   "2e5a76",
+   "127740"
+  ]
+ },
+ "tv_children": {
+  "query": "family watching television | vintage television set",
+  "ids": [
+   "811137",
+   "bce890"
+  ]
+ },
+ "antisocial": {
+  "query": "graffiti wall | vandalism",
+  "ids": [
+   "811139"
+  ]
+ },
+ "dropout": {
+  "query": "empty classroom | empty lecture hall",
+  "ids": [
+   "a0c579",
+   "3a92f0",
+   "2e5a70"
+  ]
+ },
+ "digital_textbooks": {
+  "query": "tablet classroom students | textbooks",
+  "ids": [
+   "a0c6c6"
+  ]
+ },
+ "internships": {
+  "query": "trainee office | intern",
+  "ids": [
+   "a0c6ef"
+  ]
+ },
+ "celebrities": {
+  "query": "press photographers cameras | red carpet event",
+  "ids": [
+   "bce894",
+   "bce88c"
+  ]
+ },
+ "films": {
+  "query": "cinema audience | film reel",
+  "ids": [
+   "bce896"
+  ]
+ },
+ "animals": {
+  "query": "laboratory mice | farm animals cows",
+  "ids": [
+   "bce895"
+  ]
+ },
+ "crime_news": {
+  "query": "newspapers | crime scene tape",
+  "ids": [
+   "bce893"
+  ]
+ },
+ "poverty": {
+  "query": "poverty slum | food aid distribution",
+  "ids": [
+   "bce892"
+  ]
+ },
+ "edu_spending": {
+  "query": "school building | primary school children",
+  "ids": [
+   "bce891"
+  ]
+ },
+ "hard_work": {
+  "query": "construction workers | farmer working field",
+  "ids": [
+   "bce88e"
+  ]
+ },
+ "instant": {
+  "query": "stopwatch | food delivery courier",
+  "ids": [
+   "bce88b"
+  ]
+ },
+ "fast_food": {
+  "query": "fast food burger fries | junk food",
+  "ids": [
+   "ce2394",
+   "ce2395"
+  ]
+ },
+ "stress": {
+  "query": "woman feeling emotional stress | technology stress hunch | stress",
+  "ids": [
+   "ce2396",
+   "2b3a0b"
+  ]
+ },
+ "exercise_city": {
+  "query": "people jogging park city | gym workout",
+  "ids": [
+   "ce2397",
+   "2e5a72"
+  ]
+ },
+ "smartwatch": {
+  "query": "smartwatch | fitness tracker",
+  "ids": [
+   "2e5a6f"
+  ]
+ },
+ "stem": {
+  "query": "science laboratory students | chemistry lab",
+  "ids": [
+   "2e5a71",
+   "699785"
+  ]
+ },
+ "traffic": {
+  "query": "traffic jam | rush hour traffic",
+  "ids": [
+   "2e5a73",
+   "2e5a74"
+  ]
+ },
+ "freight": {
+  "query": "trucks highway | freight train",
+  "ids": [
+   "2e5a75"
+  ]
+ },
+ "work_life": {
+  "query": "working from home | office workers | family weekend park | overtime office night | happy worker",
+  "ids": [
+   "2e5a77",
+   "2e5a78",
+   "2e5a79",
+   "2e5a7a",
+   "2b3a06",
+   "2b3a0c",
+   "79799b"
+  ]
+ },
+ "healthy_food": {
+  "query": "fruit vegetables market | vegetable stall",
+  "ids": [
+   "2e5a7b",
+   "699786"
+  ]
+ },
+ "libraries": {
+  "query": "public library interior | library books",
+  "ids": [
+   "2e5a7c",
+   "3131a1",
+   "699787"
+  ]
+ },
+ "athletes": {
+  "query": "olympic stadium | athletes running track",
+  "ids": [
+   "2e5a7d",
+   "699788"
+  ]
+ },
+ "vocational": {
+  "query": "vocational training workshop | welding apprentice",
+  "ids": [
+   "2e5a7e"
+  ]
+ },
+ "ev": {
+  "query": "electric car charging | electric vehicle",
+  "ids": [
+   "2e5a80"
+  ]
+ },
+ "community_gardens": {
+  "query": "community garden | urban garden",
+  "ids": [
+   "2e5a82",
+   "69978a"
+  ]
+ },
+ "healthcare": {
+  "query": "hospital ward | hospital",
+  "ids": [
+   "2e5a83"
+  ]
+ },
+ "consumer": {
+  "query": "shopping mall crowd | shoppers carrying bags",
+  "ids": [
+   "2e5a84"
+  ]
+ },
+ "arts": {
+  "query": "art museum visitors | theatre performance",
+  "ids": [
+   "2e5a85",
+   "69978b"
+  ]
+ },
+ "youth_crime": {
+  "query": "police officers | police car",
+  "ids": [
+   "2e5a86",
+   "69978c"
+  ]
+ },
+ "prison": {
+  "query": "prison cell | prison",
+  "ids": [
+   "2e5a87",
+   "69978d"
+  ]
+ },
+ "pollution": {
+  "query": "air pollution | smog city",
+  "ids": [
+   "2e5a88",
+   "12771f"
+  ]
+ },
+ "edu_modern": {
+  "query": "computer classroom | students computers",
+  "ids": [
+   "2e5a8a"
+  ]
+ },
+ "urbanisation": {
+  "query": "crowded street | dense city aerial",
+  "ids": [
+   "2e5a8b"
+  ]
+ },
+ "globalisation": {
+  "query": "container ship | container terminal",
+  "ids": [
+   "2e5a8c"
+  ]
+ },
+ "older_workers": {
+  "query": "elderly worker | older man working",
+  "ids": [
+   "2b3a07"
+  ]
+ },
+ "moving_work": {
+  "query": "suitcase train station | moving boxes",
+  "ids": [
+   "2b3a08"
+  ]
+ },
+ "women_leaders": {
+  "query": "businesswoman portrait | woman engineer | female executive",
+  "ids": [
+   "2b3a09"
+  ]
+ },
+ "grad_jobs": {
+  "query": "job fair | graduates",
+  "ids": [
+   "2b3a0a"
+  ]
+ },
+ "languages": {
+  "query": "language learning | English class",
+  "ids": [
+   "127759"
+  ]
+ },
+ "life_skills": {
+  "query": "cooking kitchen | young people cooking",
+  "ids": [
+   "127772"
+  ]
+ },
+ "wfh": {
+  "query": "working from home laptop | home office desk",
+  "ids": [
+   "2e5a78",
+   "2b3a0c"
+  ]
+ }
+}

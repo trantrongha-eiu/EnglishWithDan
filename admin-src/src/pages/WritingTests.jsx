@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 import SortSelect from '../components/SortSelect';
 import { useListFilter } from '../hooks/useListFilter';
+import CoverImageField from '../components/CoverImageField';
 
 function ListFilterBar({ list, searchPlaceholder }) {
   return (
@@ -149,6 +150,8 @@ function Task1Modal({ task, onClose, onSaved }) {
             <label className="form-label">Hướng dẫn</label>
             <textarea className="form-input" rows={2} value={form.instructions} onChange={set('instructions')} />
           </div>
+          <CoverImageField value={form.thumbnailUrl} onChange={v => setForm(f => ({ ...f, thumbnailUrl: v }))}
+            hint="Card ở danh sách đề Task 2, chọn ảnh hợp với chủ đề. Để trống: hiện logo." />
           <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 14 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text2)', marginBottom: 10 }}>
               📝 Bài mẫu từ Daniel <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text3)' }}>(không bắt buộc — học sinh xem được ở chế độ luyện tập)</span>
@@ -184,8 +187,9 @@ function Task2Modal({ task, onClose, onSaved }) {
     prompt: task.prompt || '',
     instructions: task.instructions || DEFAULT_T2,
     sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T2_SECTIONS,
+    thumbnailUrl: task.thumbnailUrl || '',
     isActive: task.isActive !== false,
-  } : { prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, isActive: true });
+  } : { prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, thumbnailUrl: '', isActive: true });
   const [saving, setSaving] = useState(false);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));

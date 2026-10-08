@@ -13,6 +13,7 @@ const WritingAttempt = require('../../models/WritingAttempt');
 const User           = require('../../models/User');
 const { REWRITE_CUTOFF } = require('../../services/writingService');
 const { REAL_ATTEMPT } = require('../../services/attemptVisibility');
+const { isValidCoverUrl } = require('../../utils/cardThumbnail');
 
 const router = express.Router();
 
@@ -289,6 +290,7 @@ router.get('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
 // POST /api/admin/writing-task2
 router.post('/writing-task2', auth, teacherOnly, async (req, res) => {
   try {
+    if (req.body.thumbnailUrl !== undefined && !isValidCoverUrl(req.body.thumbnailUrl)) return res.status(400).json({ success: false, message: 'Ảnh bìa phải là link https' });
     const task = new WritingTask2(req.body);
     await task.save();
     res.status(201).json({ success: true, task });
@@ -300,6 +302,7 @@ router.post('/writing-task2', auth, teacherOnly, async (req, res) => {
 // PUT /api/admin/writing-task2/:id
 router.put('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
   try {
+    if (req.body.thumbnailUrl !== undefined && !isValidCoverUrl(req.body.thumbnailUrl)) return res.status(400).json({ success: false, message: 'Ảnh bìa phải là link https' });
     const task = await WritingTask2.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, task });
