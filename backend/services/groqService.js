@@ -187,7 +187,58 @@ async function gradeTask2BandGroq(prompt, essay) {
   }
 }
 
+// Speech-to-text for a Speaking recording, via Groq's free Whisper endpoint.
+// Used only on the grading fallback path when Gemini (both models) failed
+// AND the browser sent no transcript (Cốc Cốc / Edge / Firefox have no
+// working SpeechRecognition): the text-only engines can then still grade
+// the answer instead of the student being told the AI is busy. Whisper
+// accepts webm, unlike Voxtral. `audio` is the { data: <base64>, mimeType }
+// shape from speakingService.normalizeAudioForGemini. Returns plain text.
+const GROQ_TRANSCRIBE_URL = 'https://api.groq.com/openai/v1/audio/transcriptions';
+const WHISPER_MODEL = 'whisper-large-v3';
+const _WHISPER_EXT = { webm: 'webm', ogg: 'ogg', wav: 'wav', mp3: 'mp3', mpeg: 'mp3', mp4: 'mp4', m4a: 'm4a', flac: 'flac' };
+
+async function transcribeSpeechGroq(audio, { timeoutMs = 30000 } = {}) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
+  if (!audio || !audio.data) throw new Error('Không có bản ghi âm để chuyển thành chữ');
+
+  const sub = String(audio.mimeType || '').split(';')[0].split('/')[1] || '';
+  const ext = _WHISPER_EXT[sub] || 'webm';
+  const form = new FormData();
+  form.append('file', new Blob([Buffer.from(audio.data, 'base64')]), `answer.${ext}`);
+  form.append('model', WHISPER_MODEL);
+  form.append('language', 'en');
+  form.append('response_format', 'json');
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res;
+  try {
+    res = await fetch(GROQ_TRANSCRIBE_URL, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+      body: form,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    logger.ai('transcribeSpeechGroq: network/timeout error', { errorMessage: err.message });
+    throw new Error('Groq không phản hồi kịp thời khi chuyển giọng nói thành chữ.', { cause: err });
+  } finally {
+    clearTimeout(timer);
+  }
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    logger.ai('transcribeSpeechGroq: Groq API error', { status: res.status, errorMessage: errText.slice(0, 500) });
+    throw new Error(`Groq transcription lỗi (${res.status})`);
+  }
+  const data = await res.json();
+  return String(data.text || '').trim();
+}
+
 module.exports = {
+  transcribeSpeechGroq,
   checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq,
   generateTask2EssayGroq, gradeTask2BandGroq,
 };

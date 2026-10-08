@@ -59,3 +59,32 @@ describe('gradeTask2BandGroq', () => {
     expect(await groq.gradeTask2BandGroq('p', 'essay')).toBeNull();
   });
 });
+
+describe('transcribeSpeechGroq', () => {
+  test('uploads the recording to Whisper with an extension matching its mimetype and returns the text', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ text: '  I like jogging.  ' }) });
+    const text = await groq.transcribeSpeechGroq({ data: Buffer.from('abc').toString('base64'), mimeType: 'video/webm' });
+    expect(text).toBe('I like jogging.');
+    const [url, init] = global.fetch.mock.calls[0];
+    expect(url).toMatch(/audio\/transcriptions$/);
+    expect(init.body.get('file').name).toBe('answer.webm');
+    expect(init.body.get('model')).toBe('whisper-large-v3');
+    expect(init.body.get('language')).toBe('en');
+  });
+
+  test('maps audio/mp3 to .mp3 and unknown types to .webm', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ text: 'x' }) });
+    await groq.transcribeSpeechGroq({ data: 'eA==', mimeType: 'audio/mp3' });
+    await groq.transcribeSpeechGroq({ data: 'eA==', mimeType: 'weird/thing' });
+    expect(global.fetch.mock.calls[0][1].body.get('file').name).toBe('answer.mp3');
+    expect(global.fetch.mock.calls[1][1].body.get('file').name).toBe('answer.webm');
+  });
+
+  test('throws on an API error, a missing key, or no audio', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 429, text: async () => 'rate_limit_exceeded' });
+    await expect(groq.transcribeSpeechGroq({ data: 'eA==', mimeType: 'video/webm' })).rejects.toThrow('Groq transcription lỗi (429)');
+    await expect(groq.transcribeSpeechGroq(null)).rejects.toThrow('Không có bản ghi âm');
+    delete process.env.GROQ_API_KEY;
+    await expect(groq.transcribeSpeechGroq({ data: 'eA==' })).rejects.toThrow('GROQ_API_KEY');
+  });
+});

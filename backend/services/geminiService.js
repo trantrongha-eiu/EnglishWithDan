@@ -528,7 +528,7 @@ ${opts.compact ? `- COMPACT OUTPUT (strict — the response must stay short enou
  * buildSpeakingGradingPrompt (Part 2 full-length long turn / Part 1 answers
  * with 3+ on-topic sentences).
  */
-async function checkSpeaking(question, transcript, part = 1, audio = null, durationSec = 0, _attempt = 0) {
+async function checkSpeaking(question, transcript, part = 1, audio = null, durationSec = 0, _attempt = 0, _model = MODEL) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
 
@@ -544,7 +544,7 @@ async function checkSpeaking(question, transcript, part = 1, audio = null, durat
   try {
     const result = await withTimeout(
       ai.models.generateContent({
-        model: MODEL,
+        model: _model,
         contents: content,
         config: {
           systemInstruction: speakingSystemInstruction(hasAudio),
@@ -571,7 +571,7 @@ async function checkSpeaking(question, transcript, part = 1, audio = null, durat
     );
     rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
-    logger.ai('checkSpeaking: Gemini API error', { status: err.status, errorMessage: err.message, hasAudio });
+    logger.ai('checkSpeaking: Gemini API error', { status: err.status, errorMessage: err.message, hasAudio, model: _model });
     throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại sau ít phút.');
   }
 
@@ -580,10 +580,19 @@ async function checkSpeaking(question, transcript, part = 1, audio = null, durat
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('checkSpeaking: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return checkSpeaking(question, transcript, part, audio, durationSec, _attempt + 1);
+      return checkSpeaking(question, transcript, part, audio, durationSec, _attempt + 1, _model);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
+}
+
+// Same grading call on MODEL_FAST (Flash-Lite) — speakingService's first
+// fallback when MODEL fails. MODEL's free tier is only ~20 requests/day, so
+// it runs out of quota on a normal school day; Flash-Lite has its own, much
+// larger quota on the same API key and, unlike the non-Google fallbacks,
+// still hears the recording (webm included), so Pronunciation stays graded.
+function checkSpeakingLite(question, transcript, part = 1, audio = null, durationSec = 0) {
+  return checkSpeaking(question, transcript, part, audio, durationSec, 0, MODEL_FAST);
 }
 
 // ── Improved Answer (Stage 2 — opt-in only, never called automatically) ──
@@ -1418,7 +1427,7 @@ async function gradeTask2Band(prompt, essay) {
 }
 
 module.exports = {
-  checkEssay, checkSpeaking, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
+  checkEssay, checkSpeaking, checkSpeakingLite, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
   generateGapFillBlanks,
   punchGapFillAnswers,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,

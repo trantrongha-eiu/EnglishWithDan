@@ -4,9 +4,9 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, PART2_FULL_DURATION_SEC } = require('./geminiService');
+const { checkSpeaking, checkSpeakingLite, generateSampleAnswer, generateImprovedAnswer, PART2_FULL_DURATION_SEC } = require('./geminiService');
 const {
-  checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
+  checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq, transcribeSpeechGroq
 } = require('./groqService');
 const { checkSpeakingMistral, _voxtralFormat } = require('./mistralService');
 const { isV2, normalizeSpeakingV2, candidateText } = require('./speakingScoringV2');
@@ -142,7 +142,8 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
   }
 }
 
-// Grading fallback chain, tried in order after Gemini fails:
+// Grading fallback chain, tried in order after BOTH Gemini models fail
+// (gemini-2.5-flash, then Flash-Lite — see _gradeOnce):
 //   1. Mistral / Voxtral — opt-in via MISTRAL_API_KEY (free "Experiment"
 //      tier). Audio-native, so on this tier Pronunciation can still be
 //      graded from the recording (unlike Groq). Skipped if the key is unset.
@@ -297,9 +298,9 @@ function applyMinimumBandFloor(feedback, partNum, transcript, durationSec) {
 }
 
 // `audio` (optional): { data: <base64>, mimeType } — the student's real
-// recording. Fed to the multimodal engine (Gemini, or Mistral/Voxtral on the
-// fallback path) so Pronunciation is graded from what's actually heard. Groq
-// (last-resort fallback) is transcript-only.
+// recording. Fed to the multimodal engines (Gemini 2.5 Flash / Flash-Lite,
+// or Mistral/Voxtral on the fallback path) so Pronunciation is graded from
+// what's actually heard. Groq (last-resort fallback) is transcript-only.
 // `durationSec` (optional): real elapsed recording seconds from the client's
 // live timer — feeds the MINIMUM BAND FLOOR rules in
 // geminiService.buildSpeakingGradingPrompt (same prompt on every engine).
@@ -342,13 +343,52 @@ function _candidateWordCount(transcript) {
   return candidateText(transcript).split(/\s+/).filter(Boolean).length;
 }
 
+// Engine order: gemini-2.5-flash → Gemini Flash-Lite (separate, much larger
+// free quota; still hears the recording) → _gradeSpeakingFallback's
+// non-Google engines. Before those, an answer with no transcript gets one
+// from Whisper (_fallbackTranscript) so they have something to grade.
 async function _gradeOnce(questionText, transcript, partNum, audio, durationSec) {
   const ctx = { transcript, partNum, audio, durationSec };
   try {
     return _finalizeGrade(await checkSpeaking(questionText, transcript, partNum, audio, durationSec), ctx);
   } catch (primaryErr) {
-    return _finalizeGrade(await _gradeSpeakingFallback(questionText, transcript, partNum, audio, primaryErr, durationSec), ctx);
+    try {
+      console.warn(`[Speaking] Gemini failed (${primaryErr.message}) — trying Gemini Flash-Lite`);
+      const raw = await checkSpeakingLite(questionText, transcript, partNum, audio, durationSec);
+      if (!raw || typeof raw !== 'object') throw new Error('Flash-Lite returned no result');
+      // Finalized here (not after the chain) so an unusable v2 analysis from
+      // Flash-Lite falls through to the next engine like an API failure.
+      return _finalizeGrade(raw, ctx);
+    } catch (liteErr) {
+      console.warn('[Speaking] Gemini Flash-Lite fallback failed:', liteErr.message);
+    }
+    const fbTranscript = await _fallbackTranscript(transcript, audio);
+    return _finalizeGrade(
+      await _gradeSpeakingFallback(questionText, fbTranscript, partNum, audio, primaryErr, durationSec),
+      { ...ctx, transcript: fbTranscript }
+    );
   }
+}
+
+// The transcript the non-Google engines grade from. The browser's own one
+// when it has a real answer; otherwise (no SpeechRecognition — Cốc Cốc /
+// Edge / Firefox — or only echoed question lines) a Whisper transcript of
+// the recording. Whisper output under MIN_TRANSCRIPT_WORDS is discarded: on
+// silence it tends to invent a stock phrase ("Thank you."), which would be
+// graded as a real answer.
+async function _fallbackTranscript(transcript, audio) {
+  if (_candidateWordCount(transcript) >= MIN_TRANSCRIPT_WORDS) return transcript;
+  if (!process.env.GROQ_API_KEY || !audio || !audio.data) return transcript;
+  try {
+    const heard = await transcribeSpeechGroq(audio);
+    if (heard.split(/\s+/).filter(Boolean).length >= MIN_TRANSCRIPT_WORDS) {
+      console.warn('[Speaking] no browser transcript — grading the fallback from a Whisper transcript');
+      return heard;
+    }
+  } catch (err) {
+    console.warn('[Speaking] Whisper transcription failed:', err.message);
+  }
+  return transcript;
 }
 
 function _finalizeGrade(raw, { transcript, partNum, audio, durationSec }) {

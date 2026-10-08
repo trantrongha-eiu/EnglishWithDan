@@ -581,6 +581,74 @@ describe('speakingService.gradeSpeaking — speaking-v2 analysis', () => {
     delete process.env.MISTRAL_API_KEY;
   });
 
+  describe('Gemini Flash-Lite + Whisper fallbacks', () => {
+    const webm = { data: 'eA==', mimeType: 'video/webm' };
+    const WHISPER = 'Well I usually go jogging in the park because it helps me relax.';
+    afterEach(() => {
+      geminiService.checkSpeakingLite.mockReset();
+      groqService.transcribeSpeechGroq.mockReset();
+      groqService.checkSpeakingGroq.mockReset();
+    });
+
+    test('2.5 Flash fails → Flash-Lite grades it, still hearing the recording; Groq untouched', async () => {
+      process.env.GROQ_API_KEY = 'test-key';
+      geminiService.checkSpeaking.mockRejectedValue(new Error('429 quota'));
+      geminiService.checkSpeakingLite.mockResolvedValue(v2());
+      const fb = await speakingService.gradeSpeaking('Q', T, 1, webm);
+      expect(geminiService.checkSpeakingLite).toHaveBeenCalledWith('Q', T, 1, webm, 0);
+      expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
+      expect(fb.pronunciation).toBe(7);
+      expect(fb.pronunciationFromAudio).toBe(true);
+    });
+
+    test('an unusable analysis from Flash-Lite falls through to Groq', async () => {
+      process.env.GROQ_API_KEY = 'test-key';
+      const broken = v2();
+      broken.criteria.fluencyCoherence.band = null;
+      geminiService.checkSpeaking.mockRejectedValue(new Error('429 quota'));
+      geminiService.checkSpeakingLite.mockResolvedValue(broken);
+      groqService.checkSpeakingGroq.mockResolvedValue(v2());
+      const fb = await speakingService.gradeSpeaking('Q', T, 1);
+      expect(groqService.checkSpeakingGroq).toHaveBeenCalledTimes(1);
+      expect(fb.fluency).toBe(6);
+    });
+
+    test('both Gemini models fail on an answer with no transcript → Whisper transcript is graded by Groq', async () => {
+      process.env.GROQ_API_KEY = 'test-key';
+      geminiService.checkSpeaking.mockRejectedValue(new Error('429 quota'));
+      geminiService.checkSpeakingLite.mockRejectedValue(new Error('503 overloaded'));
+      groqService.transcribeSpeechGroq.mockResolvedValue(WHISPER);
+      const graded = v2();
+      graded.criteria.lexicalResource.evidence[0].studentQuote = 'it helps me relax';
+      groqService.checkSpeakingGroq.mockResolvedValue(graded);
+      const fb = await speakingService.gradeSpeaking('Q', '', 1, webm);
+      expect(groqService.transcribeSpeechGroq).toHaveBeenCalledWith(webm);
+      expect(groqService.checkSpeakingGroq).toHaveBeenCalledWith('Q', WHISPER, 1, webm, 0);
+      expect(fb.noGenuineAnswer).toBe(false);
+      expect(fb.pronunciation).toBeNull(); // Groq never heard the recording
+      expect(fb.pronunciationFromAudio).toBe(false);
+    });
+
+    test('Whisper is not called when the browser already sent a real transcript', async () => {
+      process.env.GROQ_API_KEY = 'test-key';
+      geminiService.checkSpeaking.mockRejectedValue(new Error('429 quota'));
+      geminiService.checkSpeakingLite.mockRejectedValue(new Error('503 overloaded'));
+      groqService.checkSpeakingGroq.mockResolvedValue(v2());
+      await speakingService.gradeSpeaking('Q', T, 1, webm);
+      expect(groqService.transcribeSpeechGroq).not.toHaveBeenCalled();
+      expect(groqService.checkSpeakingGroq).toHaveBeenCalledWith('Q', T, 1, webm, 0);
+    });
+
+    test('a near-empty Whisper result (silence → "Thank you.") is discarded: original Gemini error re-thrown', async () => {
+      process.env.GROQ_API_KEY = 'test-key';
+      geminiService.checkSpeaking.mockRejectedValue(new Error('Gemini overloaded'));
+      geminiService.checkSpeakingLite.mockRejectedValue(new Error('lite overloaded'));
+      groqService.transcribeSpeechGroq.mockResolvedValue('Thank you.');
+      await expect(speakingService.gradeSpeaking('Q', '', 1, webm)).rejects.toThrow('Gemini overloaded');
+      expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
+    });
+  });
+
   test('question lines alone do not count as a transcript worth re-grading', async () => {
     geminiService.checkSpeaking.mockResolvedValue(silent());
     const fb = await speakingService.gradeSpeaking('Q', 'Q1 (Part 1): Why do you study English at school?\nA1: ', 1, { data: 'eA==', mimeType: 'video/webm' });
