@@ -566,7 +566,10 @@
   }
 
   function speakDictWord() {
-    if (!_word || !window.speechSynthesis) return;
+    if (!_word) return;
+    // Shared engine (js/shared/word-audio.js): dictionary recording + lead-in.
+    if (window.WordAudio) { window.WordAudio.speak(_word); return; }
+    if (!window.speechSynthesis) return;
     var u = new SpeechSynthesisUtterance(_word);
     u.lang = 'en-US'; u.rate = 0.9;
     window.speechSynthesis.cancel();

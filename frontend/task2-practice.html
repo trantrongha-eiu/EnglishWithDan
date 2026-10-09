@@ -616,7 +616,8 @@
 <script src="/js/shared/peer-chat-widget.js?v=20261002idle"></script>
 <script src="/js/shared/api-client.js?v=20260831"></script>
 <script src="/js/shared/route-params.js?v=20260925route"></script>
-<script src="/js/shared/dictionary-lookup.js?v=20260930nobook"></script>
+<script src="/js/shared/word-audio.js?v=20261009"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20261009audio"></script>
 <script src="/js/shared/score-message.js?v=20260831"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
 
@@ -2878,7 +2879,9 @@ function saveAllVocabToBook() {
 
 function speakVocab(idx) {
   const v = state.vocab[idx];
-  if (!v || !('speechSynthesis' in window)) return;
+  if (!v) return;
+  if (window.WordAudio) { window.WordAudio.speak(v.term); return; }
+  if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(v.term);
   u.lang = 'en-US';
