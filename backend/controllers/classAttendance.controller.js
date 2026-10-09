@@ -17,6 +17,34 @@ const svc = require('../services/classAttendanceService');
 const assignmentService = require('../services/assignmentService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
+const { computeClassProgress } = require('../utils/classProgress');
+const { autoMarkDueSessions } = require('../services/classAutoAttendanceService');
+
+// Lazy "tới giờ học → tự điểm danh có mặt" on reads, on top of the 5-minute
+// cron — the server may have been asleep at class time. Never blocks a read.
+function autoMark(classIds) {
+  return autoMarkDueSessions({ classIds }).catch((e) => logger.error('cron', 'AutoAttendance (lazy) failed', { errorMessage: e.message }));
+}
+
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+function cleanTime(v) {
+  const t = String(v || '').trim();
+  return TIME_RE.test(t) ? t : '';
+}
+
+const PROGRESS_SESSION_FIELDS = 'classId sessionNumber date topic type status startTime autoMarkedAt';
+
+// classId → [sessions] for computeClassProgress, one query for many classes.
+async function sessionsByClass(classIds) {
+  const rows = await ClassSession.find({ classId: { $in: classIds } }).select(PROGRESS_SESSION_FIELDS).lean();
+  const map = new Map();
+  for (const s of rows) {
+    const k = String(s.classId);
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push(s);
+  }
+  return map;
+}
 
 const ATT_STATUSES = ['present', 'absent', 'excused', 'late'];
 const MANUAL_ENROLLMENT_STATUSES = ['active', 'completed', 'dropped'];
@@ -104,6 +132,8 @@ exports.listClasses = async (req, res) => {
     if (req.query.status) filter.status = req.query.status;
     const classes = await ClassGroup.find(filter).sort({ status: 1, createdAt: -1 }).lean();
     const ids = classes.map((c) => c._id);
+    await autoMark(ids);
+    const sessMap = await sessionsByClass(ids);
 
     const grouped = await ClassEnrollment.aggregate([
       { $match: { classId: { $in: ids }, removedAt: null } },
@@ -130,6 +160,7 @@ exports.listClasses = async (req, res) => {
         ...c,
         enrollmentCounts: countMap[String(c._id)] || { total: 0, active: 0, warning: 0, failed: 0, completed: 0, dropped: 0 },
         teacher: teacherMap[String(c.teacherId)] || null,
+        progress: computeClassProgress(c, sessMap.get(String(c._id)) || []),
       })),
     });
   } catch (err) {
@@ -166,6 +197,7 @@ exports.createClass = async (req, res) => {
       totalSessions: req.body.totalSessions || undefined,
       sessionsPerWeek: req.body.sessionsPerWeek || undefined,
       sessionsPerMonth: req.body.sessionsPerMonth || undefined,
+      startTime: cleanTime(req.body.startTime),
       policy: sanitizePolicy(req.body.policy || {}),
     });
     logger.security('Class created', { actorId: String(req.user._id), classId: String(cls._id), teacherId: String(teacherId) });
@@ -184,7 +216,10 @@ exports.getClass = async (req, res) => {
     // mid-day left the teacher looking at stale numbers. Classes are small
     // (tens of students), so recompute on open; a failure here must not
     // block the page, it just shows the cached numbers.
-    if (cls.status === 'active') await svc.refreshClass(cls._id).catch(() => {});
+    if (cls.status === 'active') {
+      await autoMark([cls._id]);
+      await svc.refreshClass(cls._id).catch(() => {});
+    }
     const enrollments = await ClassEnrollment.find({ classId: cls._id })
       .sort({ removedAt: 1, createdAt: 1 })
       .lean();
@@ -194,6 +229,7 @@ exports.getClass = async (req, res) => {
       .lean();
     const sMap = {};
     students.forEach((s) => { sMap[String(s._id)] = s; });
+    const sessions = await ClassSession.find({ classId: cls._id }).select(PROGRESS_SESSION_FIELDS).lean();
 
     const shape = (e) => ({
       ...e,
@@ -211,6 +247,7 @@ exports.getClass = async (req, res) => {
     res.json({
       success: true,
       class: cls.toObject(),
+      progress: computeClassProgress(cls, sessions),
       roster: enrollments.filter((e) => !e.removedAt).map(shape),
       formerStudents: enrollments.filter((e) => e.removedAt).map(shape),
     });
@@ -229,6 +266,7 @@ exports.updateClass = async (req, res) => {
     for (const f of fields) if (req.body[f] !== undefined) cls[f] = req.body[f] === '' ? undefined : req.body[f];
     if (req.body.courseId !== undefined) cls.courseId = mongoose.isValidObjectId(req.body.courseId) ? req.body.courseId : null;
     if (req.body.name !== undefined) cls.name = String(req.body.name).trim();
+    if (req.body.startTime !== undefined) cls.startTime = cleanTime(req.body.startTime);
 
     let policyChanged = false;
     if (req.body.policy && typeof req.body.policy === 'object') {
@@ -337,6 +375,7 @@ exports.setEnrollmentStatus = async (req, res) => {
 
 exports.listSessions = async (req, res) => {
   try {
+    if (req.classGroup.status === 'active') await autoMark([req.classGroup._id]);
     const sessions = await ClassSession.find({ classId: req.classGroup._id }).sort({ sessionNumber: 1 }).lean();
     const ids = sessions.map((s) => s._id);
     const marked = await AttendanceRecord.aggregate([
@@ -345,7 +384,11 @@ exports.listSessions = async (req, res) => {
     ]);
     const mMap = {};
     marked.forEach((m) => { mMap[String(m._id)] = m.n; });
-    res.json({ success: true, sessions: sessions.map((s) => ({ ...s, markedCount: mMap[String(s._id)] || 0 })) });
+    res.json({
+      success: true,
+      sessions: sessions.map((s) => ({ ...s, markedCount: mMap[String(s._id)] || 0 })),
+      progress: computeClassProgress(req.classGroup, sessions),
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
@@ -378,6 +421,7 @@ exports.createSession = async (req, res) => {
       date: req.body.date,
       topic: (req.body.topic || '').trim(),
       note: (req.body.note || '').trim(),
+      startTime: cleanTime(req.body.startTime),
       type,
       makeupForSessionId,
       status: ['scheduled', 'held', 'cancelled'].includes(req.body.status) ? req.body.status : 'scheduled',
@@ -481,6 +525,7 @@ exports.updateSession = async (req, res) => {
     const s = req.classSession;
     const before = { status: s.status, date: +new Date(s.date), type: s.type };
     for (const f of ['topic', 'note']) if (req.body[f] !== undefined) s[f] = String(req.body[f]).trim();
+    if (req.body.startTime !== undefined) s.startTime = cleanTime(req.body.startTime);
     if (req.body.date) s.date = req.body.date;
     if (['scheduled', 'held', 'cancelled'].includes(req.body.status)) s.status = req.body.status;
     if (req.body.type && ['regular', 'makeup'].includes(req.body.type)) s.type = req.body.type;
@@ -565,6 +610,7 @@ async function buildRoster(classId, sessionId) {
         lateMinutes: r?.lateMinutes ?? null,
         note: r?.note || '',
         edited: !!(r?.editHistory && r.editHistory.length),
+        autoMarked: !!r?.autoMarked,
         // Student's own "tôi có mặt" self-report — informational only until
         // this session's attendance is (re)saved, see saveSessionAttendance.
         checkin: ci ? { status: ci.status, checkedInAt: ci.checkedInAt } : null,
@@ -616,6 +662,7 @@ exports.saveSessionAttendance = async (req, res) => {
           existing.lastEditedAt = new Date();
         }
         existing.status = m.status;
+        existing.autoMarked = false; // the teacher has now reviewed it
         existing.lateMinutes = lateMinutes;
         existing.note = note;
         await existing.save();
@@ -835,7 +882,7 @@ exports.myOverview = async (req, res) => {
     const classIds = enrollments.map((e) => e.classId);
     const [classes, sizeAgg] = await Promise.all([
       ClassGroup.find({ _id: { $in: classIds } })
-        .select('name courseName status policy totalSessions startDate endDate teacherId').lean(),
+        .select('name courseName status policy totalSessions startDate endDate startTime teacherId').lean(),
       ClassEnrollment.aggregate([
         { $match: { classId: { $in: classIds }, removedAt: null } },
         { $group: { _id: '$classId', count: { $sum: 1 } } },
@@ -845,6 +892,8 @@ exports.myOverview = async (req, res) => {
     if (!activeClasses.length) return res.json({ success: true, hasClasses: false, classes: [] });
 
     const sizeMap = new Map(sizeAgg.map((r) => [String(r._id), r.count]));
+    await autoMark(activeClasses.map((c) => c._id));
+    const sessMap = await sessionsByClass(activeClasses.map((c) => c._id));
     const teachers = await User.find({ _id: { $in: activeClasses.map((c) => c.teacherId) } })
       .select('username firstName lastName').lean();
     const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
@@ -913,6 +962,7 @@ exports.myOverview = async (req, res) => {
           // student can still miss and pass
           homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - missed.length),
           missedAssignments: missed.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived, done: m.done, total: m.total })),
+          progress: computeClassProgress(c, sessMap.get(String(e.classId)) || []),
         };
       })
       .filter(Boolean);
@@ -947,10 +997,12 @@ exports.myCheckinStatus = async (req, res) => {
     }).lean();
     const sessionByClass = new Map(sessions.map((s) => [String(s.classId), s]));
 
-    const checkins = await AttendanceCheckIn.find({
-      sessionId: { $in: sessions.map((s) => s._id) }, studentId: req.user._id,
-    }).lean();
+    const [checkins, records] = await Promise.all([
+      AttendanceCheckIn.find({ sessionId: { $in: sessions.map((s) => s._id) }, studentId: req.user._id }).lean(),
+      AttendanceRecord.find({ sessionId: { $in: sessions.map((s) => s._id) }, studentId: req.user._id }).select('sessionId status autoMarked').lean(),
+    ]);
     const checkinBySession = new Map(checkins.map((c) => [String(c.sessionId), c]));
+    const recordBySession = new Map(records.map((r) => [String(r.sessionId), r]));
 
     const out = enrollments
       .map((e) => {
@@ -958,11 +1010,16 @@ exports.myCheckinStatus = async (req, res) => {
         if (!c) return null;
         const session = sessionByClass.get(String(e.classId)) || null;
         const ci = session ? checkinBySession.get(String(session._id)) : null;
+        const rec = session ? recordBySession.get(String(session._id)) : null;
         return {
           classId: e.classId,
           className: c.name,
           session: session ? { _id: session._id, date: session.date, sessionNumber: session.sessionNumber, topic: session.topic } : null,
           checkin: ci ? { status: ci.status, checkedInAt: ci.checkedInAt } : null,
+          // The real mark for today, once one exists (teacher's or the
+          // automatic "có mặt" at class time) — the widget shows it instead
+          // of the self-check-in button.
+          record: rec ? { status: rec.status, autoMarked: !!rec.autoMarked } : null,
         };
       })
       .filter(Boolean);

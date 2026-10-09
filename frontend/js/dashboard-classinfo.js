@@ -72,6 +72,13 @@ function ciFmtTime(d) {
 function ciCheckinBlock(ck) {
   if (!ck || !ck.session) return '';
   const sid = ck.session._id;
+  // A real mark already exists for today (teacher's, or the automatic
+  // "có mặt" once class time passed with no attendance taken) — show it.
+  if (ck.record) {
+    const ok = ck.record.status === 'present' || ck.record.status === 'late';
+    const label = { present: 'Có mặt', late: 'Đi trễ', excused: 'Vắng có phép', absent: 'Vắng' }[ck.record.status] || ck.record.status;
+    return `<div class="ci-checkin ${ok ? 'ci-checkin--ok' : 'ci-checkin--rejected'}"><span class="ci-checkin-text">${ok ? '✅' : '⚠️'} Buổi ${ck.session.sessionNumber} hôm nay: <b>${label}</b>${ck.record.autoMarked ? ' <span class="ci-auto-tag">tự động</span> — hệ thống điểm danh khi tới giờ học, giáo viên có thể điều chỉnh.' : '.'}</span></div>`;
+  }
   if (!ck.checkin) {
     return `<div class="ci-checkin">
       <span class="ci-checkin-text">📍 Buổi ${ck.session.sessionNumber} hôm nay — bạn đã có mặt chưa?</span>
@@ -103,17 +110,142 @@ async function ciSubmitCheckin(sessionId, btn) {
 }
 window.ciSubmitCheckin = ciSubmitCheckin;
 
-function ciClassCard(c, ck) {
+// ── Course progress — "Tuần X/Y · Buổi X/Y" (c.progress from
+// backend/utils/classProgress.js). Days are "YYYY-MM-DD" keys on the
+// Vietnam calendar, so all date math here stays in UTC to avoid the
+// browser's own timezone shifting a day.
+const CI_WEEKDAY = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const CI_RING_R = 34;
+const CI_RING_C = 2 * Math.PI * CI_RING_R;
+
+function ciKeyDate(key) { return new Date(`${key}T00:00:00Z`); }
+function ciKeyDiff(a, b) { return Math.round((ciKeyDate(b) - ciKeyDate(a)) / 864e5); }
+function ciKeyLabel(key) {
+  const d = ciKeyDate(key);
+  return `${CI_WEEKDAY[d.getUTCDay()]}, ${String(d.getUTCDate()).padStart(2, '0')}/${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+function ciRelDay(today, key) {
+  const n = ciKeyDiff(today, key);
+  if (n === 0) return 'hôm nay';
+  if (n === 1) return 'ngày mai';
+  if (n === 2) return 'ngày kia';
+  return n > 0 ? `còn ${n} ngày` : `${-n} ngày trước`;
+}
+
+function ciSessionName(s) {
+  if (!s) return '';
+  return s.type === 'makeup' ? 'Buổi học bù' : `Buổi ${s.ordinal || s.sessionNumber}`;
+}
+
+function ciRing(pct, done, total) {
+  const off = CI_RING_C * (1 - Math.min(100, Math.max(0, pct)) / 100);
+  return `<div class="ci-ring" role="img" aria-label="Đã học ${done}/${total || '?'} buổi (${pct}%)">
+    <svg viewBox="0 0 80 80" aria-hidden="true">
+      <defs><linearGradient id="ci-ring-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset=".55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#ec4899"/></linearGradient></defs>
+      <circle class="ci-ring-track" cx="40" cy="40" r="${CI_RING_R}"/>
+      <circle class="ci-ring-fill" cx="40" cy="40" r="${CI_RING_R}" stroke="url(#ci-ring-g)"
+        style="stroke-dasharray:${CI_RING_C.toFixed(1)};stroke-dashoffset:${off.toFixed(1)};--ci-ring-c:${CI_RING_C.toFixed(1)}"/>
+    </svg>
+    <div class="ci-ring-center"><b data-count="${pct}">${pct}</b><span>%</span></div>
+  </div>`;
+}
+
+function ciPhaseText(p) {
+  if (p.phase === 'upcoming') return `🚀 Khai giảng ${p.daysUntilStart === 1 ? '<b>ngày mai</b>' : `sau <b>${p.daysUntilStart}</b> ngày`}`;
+  if (p.phase === 'ended') return '🎓 Khóa học đã kết thúc';
+  if (p.phase === 'ongoing') {
+    const left = p.daysLeft != null ? (p.daysLeft === 0 ? ' · <b>hôm nay</b> là ngày cuối' : ` · còn <b>${p.daysLeft}</b> ngày`) : '';
+    return `📖 Đang học${left}${p.remainingSessions ? ` · còn <b>${p.remainingSessions}</b> buổi` : ''}`;
+  }
+  return '🗓️ Lớp chưa có lịch học';
+}
+
+// One segment per course-week (done / current / upcoming). Long courses
+// (> 30 weeks) fall back to a single bar so segments don't get too thin.
+function ciWeekTrack(p) {
+  if (!p.totalWeeks) return '';
+  const cur = p.phase === 'upcoming' ? 0 : (p.currentWeek || 0);
+  if (p.totalWeeks > 30) {
+    const pct = Math.round((cur / p.totalWeeks) * 100);
+    return `<div class="ci-weeks ci-weeks--bar" aria-hidden="true"><div class="ci-weeks-fill" style="width:${pct}%"></div></div>`;
+  }
+  const segs = [];
+  for (let w = 1; w <= p.totalWeeks; w += 1) {
+    const cls = w < cur || p.phase === 'ended' ? 'is-done' : w === cur ? 'is-now' : '';
+    segs.push(`<span class="ci-wseg ${cls}" style="--i:${w}" title="Tuần ${w}"></span>`);
+  }
+  return `<div class="ci-weeks" aria-hidden="true">${segs.join('')}</div>`;
+}
+
+function ciNextLine(p) {
+  if (p.todaySession) {
+    const s = p.todaySession;
+    return `<div class="ci-next ci-next--today"><span class="ci-next-dot"></span>
+      <span><b>Hôm nay có ${ciSessionName(s)}</b>${s.startTime ? ` lúc <b>${s.startTime}</b>` : ''}${s.topic ? ` — ${escHtml(s.topic)}` : ''}</span></div>`;
+  }
+  if (p.nextSession) {
+    const s = p.nextSession;
+    return `<div class="ci-next"><i class="fas fa-calendar-day" aria-hidden="true"></i>
+      <span>Tiếp theo: <b>${ciSessionName(s)}</b> · ${ciKeyLabel(s.dayKey)}${s.startTime ? ` · ${s.startTime}` : ''} <span class="ci-next-rel">(${ciRelDay(p.today, s.dayKey)})</span>${s.topic ? ` — ${escHtml(s.topic)}` : ''}</span></div>`;
+  }
+  return '';
+}
+
+function ciWeekStrip(p) {
+  const list = p.weekSessions || [];
+  if (!list.length) return '';
+  const wk = p.phase === 'upcoming' ? 1 : p.currentWeek;
+  const chips = list.map((s, i) => {
+    const state = s.dayKey < p.today ? (s.status === 'held' ? 'done' : 'past') : s.dayKey === p.today ? 'today' : 'future';
+    const icon = state === 'done' ? '✓' : state === 'today' ? '●' : state === 'past' ? '–' : '';
+    return `<div class="ci-day ci-day--${state}" style="--i:${i}">
+      <span class="ci-day-wd">${ciKeyLabel(s.dayKey).split(',')[0]}</span>
+      <span class="ci-day-date">${s.dayKey.slice(8, 10)}/${s.dayKey.slice(5, 7)}</span>
+      <span class="ci-day-name">${s.type === 'makeup' ? 'Học bù' : `Buổi ${s.ordinal || s.sessionNumber}`}${icon ? ` <i>${icon}</i>` : ''}</span>
+      ${s.topic ? `<span class="ci-day-topic" title="${escHtml(s.topic)}">${escHtml(s.topic)}</span>` : ''}
+    </div>`;
+  }).join('');
+  return `<div class="ci-week">
+    <div class="ci-week-title">Lịch tuần ${wk}${p.phase === 'upcoming' ? ' (tuần đầu tiên)' : ''}</div>
+    <div class="ci-week-days">${chips}</div>
+  </div>`;
+}
+
+function ciProgressBlock(c) {
+  const p = c.progress;
+  if (!p) return '';
+  const total = p.totalSessions || c.totalSessions || 0;
+  const done = p.currentSessionOrdinal || 0;
+  const weekChip = p.currentWeek
+    ? `<span class="ci-chip ci-chip--week"><i class="fas fa-calendar-week" aria-hidden="true"></i> Tuần <b data-count="${p.currentWeek}">${p.currentWeek}</b>${p.totalWeeks ? `<small>/${p.totalWeeks}</small>` : ''}</span>`
+    : p.phase === 'upcoming' && p.totalWeeks
+      ? `<span class="ci-chip ci-chip--week"><i class="fas fa-calendar-week" aria-hidden="true"></i> ${p.totalWeeks} tuần</span>`
+      : '';
+  const sessChip = `<span class="ci-chip ci-chip--session"><i class="fas fa-chalkboard-user" aria-hidden="true"></i> Buổi <b data-count="${done}">${done}</b>${total ? `<small>/${total}</small>` : ''}</span>`;
+  return `<div class="ci-prog">
+      ${ciRing(p.percent || 0, done, total)}
+      <div class="ci-prog-main">
+        <div class="ci-prog-chips">${weekChip}${sessChip}</div>
+        <div class="ci-prog-phase">${ciPhaseText(p)}</div>
+        ${ciWeekTrack(p)}
+        ${ciNextLine(p)}
+      </div>
+    </div>
+    ${ciWeekStrip(p)}`;
+}
+
+function ciClassCard(c, ck, idx) {
   const st = CI_STATUS[c.status] || CI_STATUS.active;
   const sub = [c.courseName, c.teacherName ? `GV: ${c.teacherName}` : ''].filter(Boolean).map(escHtml).join(' · ');
   const dates = (c.startDate || c.endDate)
-    ? `<div class="ci-dates">${ciFmtDate(c.startDate)}${c.startDate && c.endDate ? ' – ' : ''}${ciFmtDate(c.endDate)}</div>`
+    ? `<div class="ci-dates"><i class="far fa-calendar" aria-hidden="true"></i> ${ciFmtDate(c.startDate)}${c.startDate && c.endDate ? ' – ' : ''}${ciFmtDate(c.endDate)}</div>`
     : '';
   const reason = c.statusReason && (c.status === 'warning' || c.status === 'failed')
     ? `<div class="ci-reason ci-reason--${c.status}">${c.status === 'failed' ? '⛔' : '⚠️'} ${escHtml(c.statusReason)}</div>`
     : '';
+  const rate = c.heldSessions ? `<span data-count="${c.attendanceRate}">${c.attendanceRate}</span><small>%</small>` : '—';
 
-  return `<div class="ci-card">
+  return `<div class="ci-card ci-card--${c.status}" style="--i:${idx || 0}">
     <div class="ci-card-head">
       <div>
         <div class="ci-card-title">${escHtml(c.className)}</div>
@@ -123,17 +255,37 @@ function ciClassCard(c, ck) {
       <span class="ci-badge ${st.cls}">${st.label}</span>
     </div>
     ${reason}
+    ${ciProgressBlock(c)}
+    ${ciCheckinBlock(ck)}
     <div class="ci-tiles">
-      ${ciTile('👥', c.classSize, 'Sĩ số lớp', 'ci-tile--indigo')}
-      ${ciTile('📅', `${c.heldSessions}${c.totalSessions ? `/${c.totalSessions}` : ''}`, 'Buổi đã học', 'ci-tile--blue')}
+      ${ciTile('👥', `<span data-count="${c.classSize}">${c.classSize}</span>`, 'Sĩ số lớp', 'ci-tile--indigo')}
+      ${ciTile('✅', rate, `Chuyên cần · ${c.heldSessions} buổi`, 'ci-tile--blue')}
       ${ciToggleTile('🚪', `${ciNum(c.absenceEquivalent)}<small>/${c.maxAbsencesAllowed}</small>`, 'Buổi nghỉ',
         'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-a-${c.classId}`)}
       ${ciToggleTile('📌', `${c.homeworkMissedCount}<small>/${c.homeworkFailThreshold}</small>`, 'BT thiếu',
         'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-h-${c.classId}`)}
     </div>
     ${ciLimitsBlock(c)}
-    ${ciCheckinBlock(ck)}
   </div>`;
+}
+
+// Count-up for [data-count] numbers once the card is on screen. Skipped
+// under prefers-reduced-motion (the final number is already in the markup).
+function ciAnimateCounts(root) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  root.querySelectorAll('[data-count]').forEach((el) => {
+    const target = Number(el.getAttribute('data-count'));
+    if (!Number.isFinite(target) || target <= 0 || !Number.isInteger(target)) return;
+    const dur = 700 + Math.min(500, target * 8);
+    const t0 = performance.now();
+    el.textContent = '0';
+    function step(t) {
+      const k = Math.min(1, (t - t0) / dur);
+      el.textContent = String(Math.round(target * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
 }
 
 // ── Pass/fail limits — how many absences / homework misses are allowed ──
@@ -337,9 +489,19 @@ async function loadClassInfo() {
     checkinByClass = new Map((ckData.classes || []).map((c) => [String(c.classId), c]));
   } catch (err) { console.error('loadClassInfo (checkin):', err); }
 
+  // Header pill: the week of the (first) ongoing class, so the student sees
+  // "Tuần 3" even before reading the cards.
+  const lead = data.classes.find((c) => c.progress && c.progress.phase === 'ongoing' && c.progress.currentWeek);
+  const headPill = lead
+    ? `<span class="ci-head-pill"><i class="fas fa-calendar-week" aria-hidden="true"></i> Tuần ${lead.progress.currentWeek}${lead.progress.totalWeeks ? `/${lead.progress.totalWeeks}` : ''} · Buổi ${lead.progress.currentSessionOrdinal}${lead.progress.totalSessions ? `/${lead.progress.totalSessions}` : ''}</span>`
+    : '';
+
+  const firstRender = card.style.display !== 'block';
   card.style.display = 'block';
-  card.innerHTML = `<div class="ci-head"><h3>🏫 Lớp học của tôi</h3></div>
-    <div class="ci-list">${data.classes.map((c) => ciClassCard(c, checkinByClass.get(String(c.classId)))).join('')}</div>`;
+  card.innerHTML = `<div class="ci-head"><h3>🏫 Lớp học của tôi</h3>${headPill}</div>
+    <div class="ci-list">${data.classes.map((c, i) => ciClassCard(c, checkinByClass.get(String(c.classId)), i)).join('')}</div>`;
+  if (firstRender) ciAnimateCounts(card);
+  else card.classList.add('ci-no-anim'); // re-render after a check-in: no replay
   ciMaybeShowWarningPopup(data.classes);
 }
 window.loadClassInfo = loadClassInfo;

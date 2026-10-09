@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const ClassGroup = require('../models/ClassGroup');
 const { refreshClass } = require('../services/classAttendanceService');
+const { autoMarkDueSessions } = require('../services/classAutoAttendanceService');
 const logger = require('../utils/logger');
 
 // Attendance stats are refreshed synchronously whenever a mark or a session
@@ -25,16 +26,30 @@ async function runSweep() {
   }
 }
 
+// Every 5 minutes: a session whose class time has come with no attendance
+// taken gets everyone marked present (services/classAutoAttendanceService.js).
+async function runAutoAttendance() {
+  try {
+    await autoMarkDueSessions();
+  } catch (e) {
+    logger.error('cron', 'AutoAttendance run error', { errorMessage: e.message });
+  }
+}
+
 let task = null;
+let autoTask = null;
 
 function start() {
   // 02:15 ICT daily — after midnight so "today" has fully advanced.
   task = cron.schedule('15 2 * * *', runSweep, { timezone: 'Asia/Ho_Chi_Minh' });
   logger.startup('ClassAttendanceSweep cron scheduled (02:15 ICT daily)');
+  autoTask = cron.schedule('*/5 * * * *', runAutoAttendance, { timezone: 'Asia/Ho_Chi_Minh' });
+  logger.startup('AutoAttendance cron scheduled (every 5 min)');
 }
 
 function stop() {
   if (task) task.stop();
+  if (autoTask) autoTask.stop();
 }
 
-module.exports = { start, stop, runSweep };
+module.exports = { start, stop, runSweep, runAutoAttendance };

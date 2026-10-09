@@ -22,6 +22,10 @@ const AttendanceRecordSchema = new mongoose.Schema({
   lateMinutes: { type: Number, min: 0 },
   note:        { type: String, default: '', trim: true, maxlength: 500 },
 
+  // true = created by classAutoAttendanceService ("tới giờ học mà giáo viên
+  // chưa điểm danh" → có mặt). Cleared once a teacher saves this session's
+  // attendance, i.e. has actually reviewed the mark.
+  autoMarked:   { type: Boolean, default: false },
   markedBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   markedAt:     { type: Date, default: Date.now },
   lastEditedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

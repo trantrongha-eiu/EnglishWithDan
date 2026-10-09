@@ -2145,6 +2145,90 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .ci-warn-btn{border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700;color:#fff;background:var(--brand,#e53935);cursor:pointer;text-decoration:none}
 .ci-warn-btn--ghost{background:var(--surface2);color:var(--text)}
 
+/* Course progress — "Tuần X/Y · Buổi X/Y" (ciProgressBlock). */
+.ci-head{justify-content:space-between;flex-wrap:wrap}
+.ci-head-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#4f46e5;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.28);border-radius:20px;padding:5px 12px;white-space:nowrap;animation:ci-pop .45s cubic-bezier(.34,1.56,.64,1) both .15s}
+[data-theme="dark"] .ci-head-pill{color:#c7d2fe}
+@keyframes ci-pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.ci-card{animation-delay:calc(var(--i,0) * 90ms)}
+.ci-card--warning{border-color:rgba(245,158,11,.45)}
+.ci-card--failed{border-color:rgba(220,38,38,.45)}
+.ci-dates i{margin-right:3px;opacity:.75}
+
+.ci-prog{display:flex;align-items:center;gap:16px;margin-top:14px;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);box-shadow:0 1px 0 rgba(255,255,255,.6) inset}
+.ci-ring{position:relative;width:86px;height:86px;flex-shrink:0}
+.ci-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ci-ring circle{fill:none;stroke-width:8}
+.ci-ring-track{stroke:var(--surface2)}
+.ci-ring-fill{stroke-linecap:round;animation:ci-ring 1.1s cubic-bezier(.22,1,.36,1) both .1s;filter:drop-shadow(0 2px 4px rgba(139,92,246,.35))}
+@keyframes ci-ring{from{stroke-dashoffset:var(--ci-ring-c)}}
+.ci-ring-center{position:absolute;inset:0;display:flex;align-items:baseline;justify-content:center;padding-top:28px;color:var(--text)}
+.ci-ring-center b{font-size:22px;font-weight:900;line-height:1}
+.ci-ring-center span{font-size:11px;font-weight:800;color:var(--text3);margin-left:1px}
+.ci-prog-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.ci-prog-chips{display:flex;gap:8px;flex-wrap:wrap}
+.ci-chip{display:inline-flex;align-items:baseline;gap:5px;font-size:13px;font-weight:700;border-radius:10px;padding:6px 11px;white-space:nowrap}
+.ci-chip i{font-size:12px;align-self:center}
+.ci-chip b{font-size:18px;font-weight:900;line-height:1}
+.ci-chip small{font-size:12px;font-weight:700;opacity:.65}
+.ci-chip--week{color:#4338ca;background:linear-gradient(135deg,rgba(99,102,241,.16),rgba(99,102,241,.06))}
+.ci-chip--session{color:#be185d;background:linear-gradient(135deg,rgba(236,72,153,.16),rgba(236,72,153,.06))}
+[data-theme="dark"] .ci-chip--week{color:#c7d2fe}
+[data-theme="dark"] .ci-chip--session{color:#fbcfe8}
+.ci-prog-phase{font-size:12.5px;color:var(--text2)}
+.ci-prog-phase b{color:var(--text)}
+.ci-weeks{display:flex;gap:3px;height:8px}
+.ci-wseg{flex:1;border-radius:4px;background:var(--surface2);transform-origin:left;animation:ci-seg .4s ease both;animation-delay:calc(var(--i) * 25ms)}
+.ci-wseg.is-done{background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.ci-wseg.is-now{background:linear-gradient(90deg,#ec4899,#f472b6);box-shadow:0 0 0 2px rgba(236,72,153,.25);animation:ci-seg .4s ease both,ci-glow 2s ease-in-out infinite 1s;animation-delay:calc(var(--i) * 25ms),1s}
+@keyframes ci-seg{from{transform:scaleX(0);opacity:0}}
+@keyframes ci-glow{50%{box-shadow:0 0 0 4px rgba(236,72,153,.12)}}
+.ci-weeks--bar{border-radius:6px;background:var(--surface2);overflow:hidden}
+.ci-weeks-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899);transform-origin:left;animation:ci-seg .9s cubic-bezier(.22,1,.36,1) both}
+.ci-next{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text2);line-height:1.45}
+.ci-next i{color:#6366f1}
+.ci-next b{color:var(--text)}
+.ci-next-rel{color:var(--text3)}
+.ci-next--today{color:#047857;font-weight:600}
+.ci-next--today b{color:#047857}
+[data-theme="dark"] .ci-next--today,[data-theme="dark"] .ci-next--today b{color:#6ee7b7}
+.ci-next-dot{width:9px;height:9px;border-radius:50%;background:#10b981;flex-shrink:0;animation:ci-pulse 1.6s ease-out infinite}
+@keyframes ci-pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}100%{box-shadow:0 0 0 9px rgba(16,185,129,0)}}
+
+.ci-week{margin-top:12px}
+.ci-week-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin-bottom:7px}
+.ci-week-days{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.ci-day{position:relative;display:flex;flex-direction:column;gap:1px;padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);min-width:0;animation:ci-rise .35s ease both;animation-delay:calc(.25s + var(--i) * 70ms);transition:transform .15s,box-shadow .15s}
+.ci-day:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(15,23,42,.08)}
+.ci-day-wd{font-size:10.5px;font-weight:800;color:var(--text3);text-transform:uppercase}
+.ci-day-date{font-size:16px;font-weight:900;color:var(--text);line-height:1.15}
+.ci-day-name{font-size:11.5px;font-weight:700;color:var(--text2)}
+.ci-day-name i{font-style:normal}
+.ci-day-topic{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-day--done{background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.3)}
+.ci-day--done .ci-day-name{color:var(--green)}
+.ci-day--past{opacity:.7}
+.ci-day--today{border-color:transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,#6366f1,#ec4899) border-box;border:2px solid transparent;box-shadow:0 6px 18px rgba(139,92,246,.22)}
+.ci-day--today .ci-day-name{color:#7c3aed}
+.ci-day--today .ci-day-name i{color:#10b981;animation:ci-blink 1.4s ease-in-out infinite}
+@keyframes ci-blink{50%{opacity:.25}}
+.ci-auto-tag{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:20px;background:rgba(99,102,241,.14);color:#4f46e5;vertical-align:1px}
+[data-theme="dark"] .ci-auto-tag{color:#c7d2fe}
+.ci-checkin b{font-weight:800}
+.ci-checkin-btn{animation:ci-nudge 2.4s ease-in-out infinite 1.2s}
+@keyframes ci-nudge{0%,88%,100%{transform:none}92%{transform:translateY(-2px)}96%{transform:translateY(1px)}}
+
+@media (max-width:520px){
+  .ci-prog{flex-direction:column;align-items:stretch;text-align:left}
+  .ci-ring{align-self:center}
+  .ci-week-days{grid-template-columns:repeat(2,1fr)}
+}
+/* Re-render after a check-in: skip the entrance animations, keep the live pulses. */
+.ci-no-anim .ci-card,.ci-no-anim .ci-ring-fill,.ci-no-anim .ci-wseg:not(.is-now),.ci-no-anim .ci-day,.ci-no-anim .ci-weeks-fill,.ci-no-anim .ci-head-pill{animation:none !important}
+@media (prefers-reduced-motion:reduce){
+  #class-info-card *, .ci-head-pill{animation:none !important;transition:none !important}
+}
+
 /* ══════════════════════════════════════════════
    📚 Bài tập cần làm — homework card (js/dashboard-homework.js)
 ══════════════════════════════════════════════ */

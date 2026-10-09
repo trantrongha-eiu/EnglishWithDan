@@ -4,6 +4,8 @@ import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import StudentPicker from './tuition/StudentPicker';
+import { ClassProgressHero } from './classes/ClassProgress';
+import { keyLabel } from './classes/classProgressUtils';
 
 const MARK_OPTS = [
   { v: 'present', label: 'Có mặt', cls: 'badge-green' },
@@ -62,10 +64,11 @@ export default function ClassDetail() {
   const active = TABS.find((t) => t.key === params.get('tab')) || TABS[0];
   const [cls, setCls] = useState(null);
   const [roster, setRoster] = useState([]);
+  const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loadClass = () => apiFetch(`/classes/${id}`)
-    .then((d) => { setCls(d.class); setRoster(d.roster || []); })
+    .then((d) => { setCls(d.class); setRoster(d.roster || []); setProgress(d.progress || null); })
     .catch((e) => toast(e.message, 'error'))
     .finally(() => setLoading(false));
   useEffect(() => { loadClass(); }, [id]);
@@ -80,6 +83,7 @@ export default function ClassDetail() {
     failed: roster.filter((r) => r.status === 'failed').length,
   };
   const dateRange = [cls.startDate, cls.endDate].filter(Boolean).map((d) => formatDate(d).slice(0, 10)).join(' – ');
+  const goTab = (key, extra = {}) => setParams(key === 'overview' ? {} : { tab: key, ...extra }, { replace: true });
 
   return (
     <>
@@ -89,15 +93,19 @@ export default function ClassDetail() {
             <Link to="/classes" style={{ color: 'var(--text3)', textDecoration: 'none' }}>Lớp</Link> › {cls.name}
             {cls.status === 'archived' && <span className="badge badge-gray" style={{ marginLeft: 8 }}>Lưu trữ</span>}
           </h2>
-          {(cls.courseName || dateRange) && (
+          {(cls.courseName || dateRange || cls.startTime) && (
             <div style={{ fontSize: 13, color: 'var(--text3)', marginTop: 4 }}>
-              {[cls.courseName, dateRange].filter(Boolean).join(' · ')}
+              {[cls.courseName, dateRange, cls.startTime ? `🕒 ${cls.startTime}` : ''].filter(Boolean).join(' · ')}
             </div>
           )}
         </div>
       </div>
 
-      <div className="stats-row" style={{ marginBottom: 20 }}>
+      <ClassProgressHero progress={progress}
+        onTakeAttendance={(sid) => goTab('attendance', { session: sid })}
+        onGoSessions={() => goTab('sessions')} />
+
+      <div className="stats-row cp-stats" style={{ marginBottom: 20 }}>
         <div className="stat-card blue"><div className="stat-label">Sĩ số lớp</div><div className="stat-value">{kpi.total}</div></div>
         <div className="stat-card green"><div className="stat-label">Đang học</div><div className="stat-value">{kpi.active}</div></div>
         <div className="stat-card yellow"><div className="stat-label">Cảnh báo</div><div className="stat-value">{kpi.warning}</div></div>
@@ -107,7 +115,7 @@ export default function ClassDetail() {
       <div className="inner-tabs-nav" style={{ marginBottom: 18 }}>
         {TABS.map((t) => (
           <button key={t.key} className={`inner-tab${t.key === active.key ? ' active' : ''}`}
-            onClick={() => setParams(t.key === 'overview' ? {} : { tab: t.key }, { replace: true })}>
+            onClick={() => goTab(t.key)}>
             {t.label}
           </button>
         ))}
@@ -115,8 +123,8 @@ export default function ClassDetail() {
 
       {active.key === 'overview' && <OverviewTab cls={cls} onSaved={loadClass} />}
       {active.key === 'students' && <StudentsTab cls={cls} roster={roster} onChange={loadClass} />}
-      {active.key === 'sessions' && <SessionsTab cls={cls} />}
-      {active.key === 'attendance' && <AttendanceTab cls={cls} />}
+      {active.key === 'sessions' && <SessionsTab cls={cls} onChange={loadClass} />}
+      {active.key === 'attendance' && <AttendanceTab key={params.get('session') || ''} cls={cls} initialSessionId={params.get('session') || ''} onSaved={loadClass} />}
       {active.key === 'dashboard' && <DashboardTab cls={cls} />}
       {active.key === 'assignments' && <AssignmentsTab cls={cls} />}
     </>
@@ -133,6 +141,7 @@ function OverviewTab({ cls, onSaved }) {
     endDate: cls.endDate ? cls.endDate.slice(0, 10) : '',
     durationMonths: cls.durationMonths ?? '', totalSessions: cls.totalSessions ?? '',
     sessionsPerWeek: cls.sessionsPerWeek ?? '', sessionsPerMonth: cls.sessionsPerMonth ?? '',
+    startTime: cls.startTime || '',
     policy: { ...cls.policy },
   }));
   const [saving, setSaving] = useState(false);
@@ -183,6 +192,17 @@ function OverviewTab({ cls, onSaved }) {
         <div className="form-group" style={{ marginBottom: 0 }}>
           <label className="form-label">Ngày kết thúc</label>
           <input className="form-input" type="date" value={form.endDate} onChange={set('endDate')} />
+        </div>
+      </div>
+      <div className="cp-time-box">
+        <div className="form-group" style={{ marginBottom: 0 }}>
+          <label className="form-label">🕒 Giờ vào học</label>
+          <input className="form-input" type="time" value={form.startTime} onChange={set('startTime')} style={{ width: 140 }} />
+        </div>
+        <div className="cp-time-hint">
+          <b>Tự động điểm danh:</b> tới giờ này mà buổi học hôm đó chưa được điểm danh, hệ thống sẽ tự đánh dấu
+          <b> tất cả học viên có mặt</b>. Bạn vẫn sửa lại được bất cứ lúc nào ở tab Điểm danh.
+          {!form.startTime && <> Chưa đặt giờ → hệ thống tự điểm danh vào <b>cuối ngày học (23:59)</b>.</>}
         </div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 12 }}>
@@ -376,20 +396,21 @@ const WEEKDAYS = [
   { v: 4, label: 'T5' }, { v: 5, label: 'T6' }, { v: 6, label: 'T7' },
 ];
 
-function SessionsTab({ cls }) {
+function SessionsTab({ cls, onChange }) {
   const toast = useToast();
   const confirm = useConfirm();
   const [sessions, setSessions] = useState([]);
+  const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [wiping, setWiping] = useState(false);
-  const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held' });
+  const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held', startTime: '' });
   const [gen, setGen] = useState({
     weekdays: [], startDate: cls.startDate ? cls.startDate.slice(0, 10) : '', endDate: cls.endDate ? cls.endDate.slice(0, 10) : '',
   });
   const [generating, setGenerating] = useState(false);
 
   const load = () => apiFetch(`/classes/${cls._id}/sessions`)
-    .then((d) => setSessions(d.sessions || []))
+    .then((d) => { setSessions(d.sessions || []); setProgress(d.progress || null); })
     .catch((e) => toast(e.message, 'error'))
     .finally(() => setLoading(false));
   useEffect(() => { load(); }, [cls._id]);
@@ -401,8 +422,9 @@ function SessionsTab({ cls }) {
     try {
       await apiFetch(`/classes/${cls._id}/sessions`, { method: 'POST', body: JSON.stringify(form) });
       toast('Đã tạo buổi học');
-      setForm({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held' });
+      setForm({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held', startTime: '' });
       load();
+      onChange?.();
     } catch (err) { toast(err.message, 'error'); }
   }
 
@@ -411,6 +433,7 @@ function SessionsTab({ cls }) {
       await apiFetch(`/classes/${cls._id}/sessions/${s._id}`, { method: 'PUT', body: JSON.stringify({ status }) });
       toast('Đã cập nhật buổi học');
       load();
+      onChange?.();
     } catch (err) { toast(err.message, 'error'); }
   }
 
@@ -492,6 +515,10 @@ function SessionsTab({ cls }) {
           <input className="form-input" type="date" value={form.date} onChange={set('date')} required />
         </div>
         <div className="form-group" style={{ marginBottom: 0 }}>
+          <label className="form-label">Giờ học</label>
+          <input className="form-input" type="time" value={form.startTime} onChange={set('startTime')} title={cls.startTime ? `Để trống = giờ của lớp (${cls.startTime})` : 'Để trống = giờ của lớp'} />
+        </div>
+        <div className="form-group" style={{ marginBottom: 0 }}>
           <label className="form-label">Nội dung</label>
           <input className="form-input" value={form.topic} onChange={set('topic')} placeholder="Unit 3 — Reading skills" style={{ minWidth: 220 }} />
         </div>
@@ -519,21 +546,35 @@ function SessionsTab({ cls }) {
       <div className="table-wrap">
         <table className="table">
           <thead>
-            <tr><th>BUỔI</th><th>NGÀY</th><th>NỘI DUNG</th><th>LOẠI</th><th>ĐÃ ĐIỂM DANH</th><th>TRẠNG THÁI</th><th></th></tr>
+            <tr><th>BUỔI</th><th>TUẦN</th><th>NGÀY</th><th>NỘI DUNG</th><th>LOẠI</th><th>ĐÃ ĐIỂM DANH</th><th>TRẠNG THÁI</th><th></th></tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan={7} className="table-empty">Đang tải...</td></tr>
-              : sessions.length === 0 ? <tr><td colSpan={7} className="table-empty">Chưa có buổi học</td></tr>
-              : sessions.map((s) => (
-                <tr key={s._id}>
-                  <td><strong>{s.sessionNumber}</strong></td>
-                  <td style={{ fontSize: 13 }}>{formatDate(s.date).slice(0, 10)}</td>
+            {loading ? <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
+              : sessions.length === 0 ? <tr><td colSpan={8} className="table-empty">Chưa có buổi học</td></tr>
+              : sessions.map((s) => {
+                const key = new Date(s.date).toISOString().slice(0, 10);
+                const today = progress?.today;
+                const week = progress?.startDate ? Math.floor((Date.parse(key) - Date.parse(progress.startDate)) / 6048e5) + 1 : null;
+                const isToday = today && key === today;
+                const overdue = today && key < today && s.status === 'scheduled';
+                const isCurrentWeek = week && progress?.phase === 'ongoing' && progress.currentWeek === week;
+                return (
+                <tr key={s._id} className={`cp-srow${isToday ? ' cp-srow--today' : ''}${isCurrentWeek ? ' cp-srow--week' : ''}${s.status === 'cancelled' ? ' cp-srow--off' : ''}`}>
+                  <td><strong>{s.sessionNumber}</strong>{isToday && <span className="cp-today-tag">Hôm nay</span>}</td>
+                  <td style={{ fontSize: 13 }}>{week && week > 0 ? `Tuần ${week}` : '–'}</td>
+                  <td style={{ fontSize: 13 }}>
+                    {keyLabel(key)}/{key.slice(0, 4)}
+                    {(s.startTime || cls.startTime) && <div style={{ fontSize: 11, color: 'var(--text3)' }}>🕒 {s.startTime || cls.startTime}</div>}
+                  </td>
                   <td style={{ fontSize: 13 }}>{s.topic || '–'}</td>
                   <td style={{ fontSize: 13 }}>{s.type === 'makeup' ? '🔁 Học bù' : 'Thường'}</td>
-                  <td style={{ fontSize: 13 }}>{s.markedCount || 0}</td>
+                  <td style={{ fontSize: 13 }}>
+                    {s.markedCount || 0}
+                    {s.autoMarkedAt && !s.attendanceTakenBy && <span className="cp-auto" title={`Hệ thống tự điểm danh lúc ${formatDate(s.autoMarkedAt)}`}>tự động</span>}
+                  </td>
                   <td>
-                    <span className={`badge ${s.status === 'held' ? 'badge-green' : s.status === 'cancelled' ? 'badge-gray' : 'badge-blue'}`}>
-                      <span className="dot" />{s.status === 'held' ? 'Đã học' : s.status === 'cancelled' ? 'Đã huỷ' : 'Dự kiến'}
+                    <span className={`badge ${s.status === 'held' ? 'badge-green' : s.status === 'cancelled' ? 'badge-gray' : overdue ? 'badge-yellow' : 'badge-blue'}`}>
+                      <span className="dot" />{s.status === 'held' ? 'Đã học' : s.status === 'cancelled' ? 'Đã huỷ' : overdue ? 'Chưa điểm danh' : 'Dự kiến'}
                     </span>
                   </td>
                   <td>
@@ -543,7 +584,8 @@ function SessionsTab({ cls }) {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
           </tbody>
         </table>
       </div>
@@ -553,17 +595,27 @@ function SessionsTab({ cls }) {
 
 // ── Attendance grid ──────────────────────────────────────────────────
 
-function AttendanceTab({ cls }) {
+function AttendanceTab({ cls, initialSessionId = '', onSaved }) {
   const toast = useToast();
   const [sessions, setSessions] = useState([]);
   const [sessionId, setSessionId] = useState('');
+  const [current, setCurrent] = useState(null);
   const [roster, setRoster] = useState([]);
   const [marks, setMarks] = useState({}); // enrollmentId -> { status, lateMinutes, note }
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    apiFetch(`/classes/${cls._id}/sessions`).then((d) => setSessions((d.sessions || []).filter((s) => s.status !== 'cancelled'))).catch(() => {});
+    apiFetch(`/classes/${cls._id}/sessions`).then((d) => {
+      const list = (d.sessions || []).filter((s) => s.status !== 'cancelled');
+      setSessions(list);
+      // Deep link from the header ("Điểm danh ngay" / week strip), else
+      // today's session if there is one.
+      const today = d.progress?.today;
+      const pick = list.find((s) => s._id === initialSessionId)
+        || (today && list.find((s) => new Date(s.date).toISOString().slice(0, 10) === today));
+      if (pick) loadSession(pick._id);
+    }).catch(() => {});
   }, [cls._id]);
 
   function loadSession(sid) {
@@ -572,6 +624,7 @@ function AttendanceTab({ cls }) {
     setLoading(true);
     apiFetch(`/classes/${cls._id}/sessions/${sid}/attendance`)
       .then((d) => {
+        setCurrent(d.session || null);
         setRoster(d.roster || []);
         const m = {};
         (d.roster || []).forEach((r) => { m[r.enrollmentId] = { status: r.status || 'present', lateMinutes: r.lateMinutes || '', note: r.note || '' }; });
@@ -599,7 +652,9 @@ function AttendanceTab({ cls }) {
       }));
       const d = await apiFetch(`/classes/${cls._id}/sessions/${sessionId}/attendance`, { method: 'PUT', body: JSON.stringify({ marks: payload }) });
       setRoster(d.roster || []);
+      setCurrent(d.session || null);
       toast('Đã lưu điểm danh');
+      onSaved?.();
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
@@ -611,7 +666,7 @@ function AttendanceTab({ cls }) {
           <option value="">— chọn buổi học để điểm danh —</option>
           {sessions.map((s) => (
             <option key={s._id} value={s._id}>
-              Buổi {s.sessionNumber} — {formatDate(s.date).slice(0, 10)}{s.type === 'makeup' ? ' (học bù)' : ''}{s.markedCount ? ' ✓' : ''}
+              Buổi {s.sessionNumber} — {formatDate(s.date).slice(0, 10)}{s.type === 'makeup' ? ' (học bù)' : ''}{s.markedCount ? (s.autoMarkedAt && !s.attendanceTakenBy ? ' ✓ (tự động)' : ' ✓') : ''}
             </option>
           ))}
         </select>
@@ -627,6 +682,12 @@ function AttendanceTab({ cls }) {
 
       {loading ? <div className="route-loading">Đang tải…</div> : sessionId && (
         <>
+          {current?.autoMarkedAt && !current?.attendanceTakenBy && (
+            <div className="cp-auto-banner">
+              🤖 Buổi này được <b>hệ thống tự điểm danh</b> lúc {formatDate(current.autoMarkedAt)} (tới giờ học mà chưa có điểm danh) —
+              mọi học viên đang là <b>Có mặt</b>. Sửa những ai vắng/trễ rồi bấm <b>Lưu điểm danh</b>.
+            </div>
+          )}
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>HỌC VIÊN</th><th>TRẠNG THÁI</th><th>SỐ PHÚT TRỄ</th><th>GHI CHÚ</th></tr></thead>
@@ -640,6 +701,7 @@ function AttendanceTab({ cls }) {
                           <strong>{r.student.name || r.student.username}</strong>
                           {r.removed && <span className="badge badge-gray" style={{ marginLeft: 6 }}>đã rời lớp</span>}
                           {r.edited && <span className="badge badge-yellow" style={{ marginLeft: 6 }} title="Đã từng sửa">đã sửa</span>}
+                          {r.autoMarked && <span className="cp-auto" title="Hệ thống tự điểm danh có mặt khi tới giờ học">tự động</span>}
                           {r.checkin?.status === 'pending' && (
                             <span className="badge badge-blue" style={{ marginLeft: 6 }} title={`Học viên tự điểm danh lúc ${formatDate(r.checkin.checkedInAt).slice(11)} — chờ xác nhận`}>
                               🙋 tự điểm danh {formatDate(r.checkin.checkedInAt).slice(11)}

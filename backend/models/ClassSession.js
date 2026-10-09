@@ -19,6 +19,13 @@ const ClassSessionSchema = new mongoose.Schema({
 
   status: { type: String, enum: ['scheduled', 'held', 'cancelled'], default: 'scheduled' },
 
+  // Giờ vào học riêng của buổi này ("HH:mm") — ghi đè ClassGroup.startTime,
+  // vd. buổi học bù vào giờ khác. '' = dùng giờ của lớp.
+  startTime: { type: String, default: '', match: /^(|([01]\d|2[0-3]):[0-5]\d)$/ },
+  // Set when classAutoAttendanceService marked everyone present because the
+  // class time came and no teacher had taken attendance yet.
+  autoMarkedAt: { type: Date, default: null },
+
   attendanceTakenAt: { type: Date },
   attendanceTakenBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdBy:         { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

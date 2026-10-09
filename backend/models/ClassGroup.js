@@ -56,6 +56,11 @@ const ClassGroupSchema = new mongoose.Schema({
   totalSessions:   { type: Number, min: 1 },
   sessionsPerWeek:  { type: Number, min: 0 },
   sessionsPerMonth: { type: Number, min: 0 },
+  // Giờ vào học ("HH:mm", giờ Việt Nam). Tới giờ này mà buổi học hôm đó vẫn
+  // chưa được điểm danh thì hệ thống tự điểm danh mọi học viên là có mặt
+  // (services/classAutoAttendanceService.js) — giáo viên vẫn sửa lại được.
+  // '' = chưa đặt → tự điểm danh lúc cuối ngày học.
+  startTime: { type: String, default: '', match: /^(|([01]\d|2[0-3]):[0-5]\d)$/ },
 
   policy: { type: attendancePolicySchema, default: () => ({}) },
 

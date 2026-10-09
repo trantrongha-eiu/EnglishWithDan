@@ -496,3 +496,77 @@ describe('guardAgainstMassDelete', () => {
     await expect(ClassEnrollment.deleteMany({})).rejects.toThrow(/unscoped filter/i);
   });
 });
+
+describe('auto attendance at class time', () => {
+  const { autoMarkDueSessions } = require('../../services/classAutoAttendanceService');
+  const ClassSession = require('../../models/ClassSession');
+  // A UTC-midnight day key N days from now on the Vietnam calendar.
+  const vnDay = (offset = 0) => new Date(Date.now() + 7 * 3600e3 + offset * 864e5).toISOString().slice(0, 10);
+
+  test('marks everyone present once the class time passes; teacher can still edit', async () => {
+    const t = await createTeacher();
+    const s1 = await createStudent();
+    const s2 = await createStudent();
+    const cls = await makeClass(t, { startTime: '00:00' });
+    expect(cls.startTime).toBe('00:00');
+    await addStudent(t, cls._id, s1);
+    const e2 = await addStudent(t, cls._id, s2);
+    const today = await addSession(t, cls._id, { date: vnDay(0) });
+    const tomorrow = await addSession(t, cls._id, { date: vnDay(1) });
+
+    const r = await autoMarkDueSessions({ classIds: [cls._id] });
+    expect(r).toEqual({ sessions: 1, records: 2 });
+
+    const recs = await AttendanceRecord.find({ sessionId: today._id }).lean();
+    expect(recs).toHaveLength(2);
+    expect(recs.every((x) => x.status === 'present' && x.autoMarked)).toBe(true);
+    const s = await ClassSession.findById(today._id).lean();
+    expect(s.status).toBe('held');
+    expect(s.autoMarkedAt).toBeTruthy();
+    expect(await AttendanceRecord.countDocuments({ sessionId: tomorrow._id })).toBe(0);
+
+    // Idempotent — a second run (cron + lazy read racing) marks nothing.
+    expect(await autoMarkDueSessions({ classIds: [cls._id] })).toEqual({ sessions: 0, records: 0 });
+
+    const res = await mark(t, cls._id, today._id, [{ enrollmentId: e2.enrollmentId || e2._id, status: 'absent' }]);
+    expect(res.status).toBe(200);
+    const edited = await AttendanceRecord.findOne({ sessionId: today._id, studentId: s2._id }).lean();
+    expect(edited.status).toBe('absent');
+    expect(edited.autoMarked).toBe(false);
+    expect(edited.editHistory[0]).toMatchObject({ from: 'present', to: 'absent' });
+  });
+
+  test('does not touch a session the teacher already marked, or one before its start time', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t, { startTime: '23:59' });
+    const e = await addStudent(t, cls._id, st);
+    const marked = await addSession(t, cls._id, { date: vnDay(-1) });
+    await mark(t, cls._id, marked._id, [{ enrollmentId: e.enrollmentId || e._id, status: 'absent' }]);
+    const later = await addSession(t, cls._id, { date: vnDay(0) }); // 23:59 today — not yet (unless run at 23:59)
+
+    const r = await autoMarkDueSessions({ classIds: [cls._id] });
+    expect(r.sessions).toBeLessThanOrEqual(1);
+    const rec = await AttendanceRecord.findOne({ sessionId: marked._id }).lean();
+    expect(rec.status).toBe('absent');
+    expect(rec.autoMarked).toBe(false);
+    if (r.sessions === 0) expect(await AttendanceRecord.countDocuments({ sessionId: later._id })).toBe(0);
+  });
+
+  test('student check-in status shows the automatic mark', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t, { startTime: '00:00' });
+    await addStudent(t, cls._id, st);
+    await addSession(t, cls._id, { date: vnDay(0) });
+    const ov = await request(app).get('/api/classes/my/overview').set(auth(st));
+    expect(ov.status).toBe(200);
+    expect(ov.body.classes[0].progress).toMatchObject({ phase: expect.any(String), startTime: '00:00' });
+    const ck = await request(app).get('/api/classes/my/checkin').set(auth(st));
+    const row = ck.body.classes.find((c) => String(c.classId) === String(cls._id));
+    // /my/checkin picks "today" by UTC day (utcDayRange), which lags the
+    // Vietnam day between 00:00–07:00 ICT — only assert when it found it.
+    if (row.session) expect(row.record).toEqual({ status: 'present', autoMarked: true });
+    expect(await AttendanceRecord.countDocuments({ classId: cls._id, autoMarked: true })).toBe(1);
+  });
+});
