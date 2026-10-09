@@ -25,6 +25,13 @@
     .dict-picker-head { margin-bottom: 20px; }
     .dict-picker-head h1 { font-size: var(--fs-h2); font-weight: 800; color: var(--text); margin: 0 0 6px; }
     .dict-picker-head p { color: var(--text2); font-size: var(--fs-body-sm); margin: 0; }
+    .dict-search { position: relative; max-width: 420px; margin-bottom: 16px; }
+    .dict-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
+    .dict-search input {
+      width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: var(--surface);
+      color: var(--text); font-family: inherit; font-size: 14px; padding: 10px 16px 10px 38px;
+    }
+    .dict-search input:focus { outline: none; border-color: var(--brand); }
     .dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
     .dict-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -189,6 +196,11 @@
       <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
     </div>
 
+    <div class="dict-search">
+      <i class="fas fa-search"></i>
+      <input type="search" id="dict-search" placeholder="Tìm bài... (vd: Cam 18, festival, flights)" autocomplete="off" oninput="renderDictList()">
+    </div>
+
     <div id="dict-grid" class="dict-grid">
       <div class="dict-loading"><i class="fas fa-spinner fa-spin"></i>Đang tải danh sách...</div>
     </div>
@@ -339,13 +351,29 @@ async function loadDictList() {
   renderDictList();
 }
 
+// Case/diacritic-insensitive, so "cam18 test 2" or "festival" both match.
+function _dictNorm(t) {
+  return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
 function renderDictList() {
   const grid = document.getElementById('dict-grid');
   if (!dictSections.length) {
     grid.innerHTML = `<div class="dict-empty"><i class="fas fa-keyboard"></i>Chưa có bài nào sẵn sàng để luyện Dictation.</div>`;
     return;
   }
-  grid.innerHTML = dictSections.map(s => `
+  // Every word typed must appear somewhere in the title / Part label.
+  const terms = _dictNorm(document.getElementById('dict-search').value).split(' ').filter(Boolean);
+  const list = dictSections.filter(s => {
+    const hay = _dictNorm(s.title + ' ' + (s.isActualTest ? 'actual test' : 'part ' + s.partNumber));
+    const compact = hay.replace(/ /g, '');
+    return terms.every(t => hay.includes(t) || compact.includes(t));
+  });
+  if (!list.length) {
+    grid.innerHTML = `<div class="dict-empty"><i class="fas fa-search"></i>Không tìm thấy bài nào khớp với từ khóa.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(s => `
     <div class="dict-card" onclick="openDictSection('${s._id}')">
       <div class="dict-card-badges">
         <span class="dict-badge">${s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber}</span>
