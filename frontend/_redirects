@@ -71,6 +71,7 @@
 /writing/task2-course/*     /writing-task2-course.html   200
 /speaking/course/*          /speaking-course.html        200
 /dictation/*                /dictation.html              200
+/shadowing/*                /shadowing.html              200
 /task2-practice/*           /task2-practice.html         200
 
 # ── Dynamic resource links (redirect to the existing, working
@@ -130,6 +131,7 @@
 /test-dau-vao    /entrance-test.html    200
 /test-dau-vao/ket-qua/:id /entrance-test.html?result=:id 200
 /dictation       /dictation.html        200
+/shadowing       /shadowing.html        200
 /task2-practice  /task2-practice.html   200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────

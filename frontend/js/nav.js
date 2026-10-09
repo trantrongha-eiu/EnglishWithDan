@@ -55,6 +55,7 @@
       children: [
         { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
         { href: 'speaking.html',                    icon: 'fa-microphone', label: 'Speaking forecast' },
+        { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
         { href: 'speaking.html?tab=materials',      icon: 'fa-book-open',  label: 'Tài liệu' },
         { href: 'speaking.html?tab=speaking-tips',  icon: 'fa-lightbulb',  label: 'Speaking Tips' },
       ]

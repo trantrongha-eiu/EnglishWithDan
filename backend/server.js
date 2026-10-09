@@ -153,6 +153,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'ReadingTip seed error', { errorMessage: e.message });
     }
+    // Auto-seed Shadowing lessons (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runShadowingSeed } = require('./scripts/seedShadowingLessons');
+      logger.startup('ShadowingLesson seeding...');
+      await runShadowingSeed();
+      logger.startup('ShadowingLesson seed done');
+    } catch (e) {
+      logger.error('startup', 'ShadowingLesson seed error', { errorMessage: e.message });
+    }
     // Auto-seed Listening Tips strategy articles (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runListeningTipsSeed } = require('./scripts/seedListeningTips');
