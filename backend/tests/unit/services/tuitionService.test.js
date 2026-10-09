@@ -275,6 +275,32 @@ describe('tuitionService', () => {
     expect(summary.awaitingConfirmCount).toBe(1);
   });
 
+  it('getMySummary: a fee is due from day 8 (VN) of its month until paid, overdue after day 10', async () => {
+    const student = await createStudent();
+    const at = iso => tuitionService.getMySummary(student._id, new Date(iso));
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 200, isPaid: false, studentNotified: true });
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 11, year: 2026, amount: 400, isPaid: false });
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 9, year: 2026, amount: 1600, isPaid: true });
+
+    // 7/10 VN: October not due yet
+    expect(await at('2026-10-07T12:00:00Z')).toMatchObject({ unpaidCount: 2, dueCount: 0, overdue: false });
+    // 8/10 00:30 VN (17:30Z on the 7th): October due, not overdue
+    expect(await at('2026-10-07T17:30:00Z')).toMatchObject({ dueCount: 1, dueTotal: 200, dueAwaitingCount: 1, overdue: false });
+    // 11/10 VN: overdue, and still due on 3/11 (November itself not yet)
+    expect(await at('2026-10-10T17:30:00Z')).toMatchObject({ dueCount: 1, overdue: true });
+    expect(await at('2026-11-03T05:00:00Z')).toMatchObject({ dueCount: 1, dueTotal: 200 });
+    // 8/11 VN: both months due
+    expect(await at('2026-11-08T05:00:00Z')).toMatchObject({ dueCount: 2, dueTotal: 600 });
+  });
+
+  it('getMySummary: a course fee is due from day 8 of the month it was entered', async () => {
+    const student = await createStudent();
+    const fee = await createTuitionFee({ studentId: student._id, feeType: 'course', courseName: 'X', amount: 800, isPaid: false });
+    await TuitionFee.updateOne({ _id: fee._id }, { $set: { createdAt: new Date('2026-10-02T05:00:00Z') } }, { timestamps: false });
+    expect((await tuitionService.getMySummary(student._id, new Date('2026-10-05T05:00:00Z'))).dueCount).toBe(0);
+    expect((await tuitionService.getMySummary(student._id, new Date('2026-10-08T05:00:00Z'))).dueCount).toBe(1);
+  });
+
   describe('notifyPayment', () => {
     it('sets studentNotified true and creates a Message to every admin', async () => {
       const student = await createStudent();

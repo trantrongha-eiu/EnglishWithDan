@@ -486,14 +486,35 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
   return msgs.length;
 }
 
-async function getMySummary(studentId) {
+// Payment-due popup (nav.js): an unpaid fee is "due" from day 8 of its
+// billing month (VN time) — the monthly fee's own month, or the month a
+// course fee was entered — and stays due, through later months too, until
+// an admin marks it paid (the student's own "Tôi đã chuyển khoản" only
+// changes the popup wording). Past day 10 it's also "overdue".
+const PAYMENT_DUE_DAY = 8;
+const PAYMENT_DEADLINE_DAY = 10;
+function feeBillingMonthKey(f) {
+  if (f.feeType === 'monthly') return `${f.year}-${String(f.month).padStart(2, '0')}`;
+  return vnTodayKey(new Date(f.createdAt || Date.now())).slice(0, 7);
+}
+
+async function getMySummary(studentId, now = new Date()) {
   const fees = await TuitionFee.find({ studentId, isPaid: false }).lean();
   const totalUnpaid = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
   // Unpaid fees the student already self-reported as transferred — nav.js's
   // tuition popup switches to "waiting for admin confirmation" wording when
   // this covers every unpaid fee.
   const awaitingConfirmCount = fees.filter(f => f.studentNotified).length;
-  return { unpaidCount: fees.length, totalUnpaid, awaitingConfirmCount };
+  const todayKey = vnTodayKey(now);
+  const dayKey = d => String(d).padStart(2, '0');
+  const due = fees.filter(f => todayKey >= `${feeBillingMonthKey(f)}-${dayKey(PAYMENT_DUE_DAY)}`);
+  return {
+    unpaidCount: fees.length, totalUnpaid, awaitingConfirmCount,
+    dueCount: due.length,
+    dueTotal: due.reduce((sum, f) => sum + (f.amount || 0), 0),
+    dueAwaitingCount: due.filter(f => f.studentNotified).length,
+    overdue: due.some(f => todayKey > `${feeBillingMonthKey(f)}-${dayKey(PAYMENT_DEADLINE_DAY)}`),
+  };
 }
 
 async function getMyFees(studentId) {

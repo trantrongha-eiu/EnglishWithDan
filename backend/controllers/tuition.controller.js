@@ -123,8 +123,8 @@ exports.sendBulkReminders = guard('error:', async (req, res) => {
 });
 
 exports.getMySummary = guard('error:', async (req, res) => {
-  const { unpaidCount, totalUnpaid, awaitingConfirmCount } = await tuitionService.getMySummary(req.user._id);
-  res.json({ success: true, unpaidCount, totalUnpaid, awaitingConfirmCount });
+  const summary = await tuitionService.getMySummary(req.user._id);
+  res.json({ success: true, ...summary });
 });
 
 exports.getMyFees = guard('error:', async (req, res) => {

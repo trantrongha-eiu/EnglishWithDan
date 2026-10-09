@@ -572,7 +572,11 @@
 
     fetch(API + '/tuition/my/summary', { headers: headers })
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d.unpaidCount > 0) showBadge('navTuitionBadge', d.unpaidCount); })
+      .then(function (d) {
+        if (d.unpaidCount > 0) showBadge('navTuitionBadge', d.unpaidCount);
+        // A fee past day 8 of its month (server-decided): popup on every load until paid.
+        if (d.dueCount > 0) _showTuitionReminderPopup(0, true);
+      })
       .catch(function () {});
 
     fetch(API + '/task2/drafts', { headers: headers })
@@ -903,9 +907,17 @@
   // No "don't show again": it stops only when the admin confirms payment,
   // which resets tuitionReminderCount to 0 server-side
   // (tuitionService.resetTuitionReminderCountIfCaughtUp).
+  // On top of that, once an unpaid fee is due — from day 8 (VN time) of its
+  // month, summary.dueCount from tuitionService.getMySummary — the student
+  // gets it on EVERY page load, with no once-per-session limit and on into
+  // later months, until an admin marks the fees paid; the student's own
+  // "Tôi đã chuyển khoản" only changes the wording.
   var TUITION_POPUP_SESSION_KEY = 'ews_tuition_popup_shown';
-  function _showTuitionReminderPopup(count) {
-    try { if (sessionStorage.getItem(TUITION_POPUP_SESSION_KEY)) return; } catch (e) {}
+  function _showTuitionReminderPopup(count, dueWindow) {
+    if (!dueWindow) {
+      try { if (sessionStorage.getItem(TUITION_POPUP_SESSION_KEY)) return; } catch (e) {}
+    }
+    // Same id for both triggers, so the queue never shows it twice per load.
     _queueNotice({
       id: 'nav-tuition-reminder', priority: 45, until: '#nav-tuition-popup-overlay',
       show: function (done) { _renderTuitionReminderPopup(count, done); }
@@ -919,17 +931,25 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         // Cached count can be stale (admin just confirmed) — trust the live summary.
-        if (!d || !d.success || !(d.unpaidCount > 0) || _fullscreenActivityActive()) { done(); return; }
-        try { sessionStorage.setItem(TUITION_POPUP_SESSION_KEY, '1'); } catch (e) {}
+        if (!d || !d.success || _fullscreenActivityActive()) { done(); return; }
+        var dueMode = d.dueCount > 0;
+        if (!dueMode && !(count >= 1 && d.unpaidCount > 0)) { done(); return; }
+        if (!dueMode) { try { sessionStorage.setItem(TUITION_POPUP_SESSION_KEY, '1'); } catch (e) {} }
 
-        var total = Number(d.totalUnpaid || 0).toLocaleString('vi-VN');
-        var awaiting = (d.awaitingConfirmCount || 0) >= d.unpaidCount;
+        var n = dueMode ? d.dueCount : d.unpaidCount;
+        var total = Number((dueMode ? d.dueTotal : d.totalUnpaid) || 0).toLocaleString('vi-VN');
+        var awaiting = ((dueMode ? d.dueAwaitingCount : d.awaitingConfirmCount) || 0) >= n;
         var body = awaiting
-          ? 'Bạn đã báo chuyển khoản <strong>' + d.unpaidCount + ' khoản</strong> học phí (tổng <strong>' + total + ' VND</strong>). ' +
+          ? 'Bạn đã báo chuyển khoản <strong>' + n + ' khoản</strong> học phí (tổng <strong>' + total + ' VND</strong>). ' +
             'Thông báo này sẽ tự tắt khi admin xác nhận đã nhận được tiền.'
-          : 'Bạn còn <strong>' + d.unpaidCount + ' khoản</strong> học phí chưa thanh toán, tổng cộng <strong>' + total + ' VND</strong> ' +
-            '(đã được nhắc <strong>' + count + ' lần</strong>). Học phí cần thanh toán trong <strong>tuần đầu tiên</strong> kể từ ngày khai giảng. ' +
-            'Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí.';
+          : dueMode
+            ? (d.overdue ? 'Bạn đã <strong>quá hạn</strong> đóng học phí (hạn là ngày 10 hằng tháng). ' : 'Hạn đóng học phí là <strong>ngày 10 hằng tháng</strong>. ') +
+              'Bạn còn <strong>' + n + ' khoản</strong> học phí chưa thanh toán, ' +
+              'tổng cộng <strong>' + total + ' VND</strong>. Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí. ' +
+              'Thông báo này sẽ hiện mỗi lần bạn mở web cho đến khi admin xác nhận đã nhận học phí.'
+            : 'Bạn còn <strong>' + n + ' khoản</strong> học phí chưa thanh toán, tổng cộng <strong>' + total + ' VND</strong> ' +
+              '(đã được nhắc <strong>' + count + ' lần</strong>). Học phí cần thanh toán trong <strong>tuần đầu tiên</strong> kể từ ngày khai giảng. ' +
+              'Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí.';
 
         var overlay = document.createElement('div');
         overlay.id = 'nav-tuition-popup-overlay';
@@ -937,7 +957,7 @@
         overlay.innerHTML =
           '<div role="dialog" aria-modal="true" aria-labelledby="nav-tuition-popup-title" style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:420px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
             '<div style="font-size:44px;margin-bottom:10px">💰</div>' +
-            '<h3 id="nav-tuition-popup-title" style="font-size:18px;font-weight:800;margin-bottom:10px">' + (awaiting ? 'Đang chờ xác nhận học phí' : 'Nhắc nhở học phí') + '</h3>' +
+            '<h3 id="nav-tuition-popup-title" style="font-size:18px;font-weight:800;margin-bottom:10px">' + (awaiting ? 'Đang chờ xác nhận học phí' : dueMode ? (d.overdue ? 'Quá hạn đóng học phí' : 'Đến hạn đóng học phí') : 'Nhắc nhở học phí') + '</h3>' +
             '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px;text-align:left">' + body + '</p>' +
             '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
               '<button type="button" id="nav-tuition-popup-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
