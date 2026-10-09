@@ -35,6 +35,7 @@
     '.cr-pct b{font-size:40px;line-height:1;font-weight:800}',
     '.cr-pct span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3,#9ca3af);margin-top:4px}',
     '.cr-img{width:190px;max-width:70%;border-radius:16px;margin:14px auto 0;display:block;box-shadow:0 10px 30px rgba(0,0,0,.14);animation:cr-pop .6s ease .35s both}',
+    '.cr-lulu{max-width:440px;margin:14px auto 4px}',
     '.cr-roast{font-size:15px;font-weight:650;margin:16px auto 4px;max-width:420px;line-height:1.5;animation:cr-fade-up .5s ease .55s both}',
     '.cr-stats{display:flex;gap:8px;justify-content:center;margin:14px 0 4px;animation:cr-fade-up .5s ease .65s both}',
     '.cr-stat{background:var(--surface2,#f3f4f6);border-radius:12px;padding:8px 16px;min-width:74px}',
@@ -189,6 +190,16 @@
         if (hasScore && num) countUp(num, overall);
       });
     });
+
+    // Lulu reads the roast out in a speech bubble (shared/playful.js) — the
+    // plain paragraph stays when the mascot isn't on the page.
+    var roast = mount.querySelector('.cr-roast');
+    if (roast && window.Mascot && window.Mascot.react) {
+      var lulu = document.createElement('div');
+      lulu.className = 'cr-lulu';
+      roast.parentNode.replaceChild(lulu, roast);
+      window.Mascot.react(lulu, { pct: shown, text: msg.message, size: 84 });
+    }
 
     if (hasScore && overall >= 90) setTimeout(function () { confetti(90); }, 500);
     else if (!hasScore) setTimeout(function () { confetti(50); }, 400);

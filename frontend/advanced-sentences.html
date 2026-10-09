@@ -205,7 +205,7 @@
     @media (prefers-reduced-motion: reduce) { #app.as-view-anim { animation: none; } }
     .hidden { display: none !important; }
   </style>
-  <link rel="stylesheet" href="css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="css/playful.css?v=20261010lulu"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
@@ -213,7 +213,7 @@
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="js/nav.js?v=20261009pf"></script>
-<script src="js/shared/playful.js?v=20261010b"></script>
+<script src="js/shared/playful.js?v=20261010lulu"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
@@ -275,6 +275,14 @@
 </div>
 
 <script>
+// Lulu reacting to a score (js/shared/playful.js), or the given emoji
+// markup when the mascot isn't loaded.
+function luluOr(score, fallbackHtml) {
+  return window.Mascot && window.Mascot.reactHtml
+    ? window.Mascot.reactHtml({ pct: score, stacked: true })
+    : fallbackHtml;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 //  Viết câu nâng cao — Advanced Sentence Translation Practice
 //  Mirrors the screen flow of task2-practice.html (weeks → groups →
@@ -806,7 +814,7 @@
 
     app.innerHTML =
       '<div class="as-result-hero">' +
-        '<div style="font-size:44px">' + (score >= 80 ? '🎉' : score >= 50 ? '👍' : '💪') + '</div>' +
+        luluOr(score, '<div style="font-size:44px">' + (score >= 80 ? '🎉' : score >= 50 ? '👍' : '💪') + '</div>') +
         '<div class="as-result-score">' + score + '%</div>' +
         '<div style="color:var(--text2,#6b7280);font-size:14px">' + correct + ' / ' + total + ' câu đạt yêu cầu</div>' +
         '<div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
@@ -965,7 +973,7 @@
     }).join('');
     return '' +
       '<div class="as-result-hero">' +
-        '<div style="font-size:44px">' + (d.score >= 70 ? '🎉' : '💪') + '</div>' +
+        luluOr(d.score, '<div style="font-size:44px">' + (d.score >= 70 ? '🎉' : '💪') + '</div>') +
         '<div class="as-result-score">' + d.score + '%</div>' +
         '<div style="color:var(--text2,#6b7280)">' + d.correct + ' / ' + d.total + ' câu đúng</div>' +
         '<button class="as-next" style="width:auto;margin-top:16px" id="as-exam-done">Về danh sách tuần</button>' +

@@ -241,7 +241,7 @@
       .eg-nav-btn{font-size:12px;padding:9px 12px}
     }
   </style>
-  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
 <body>
 <script src="/js/shared/auth-service.js?v=20261007guest"></script>
@@ -249,7 +249,7 @@
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="/js/nav.js?v=20261009pf"></script>
-<script src="/js/shared/playful.js?v=20261010b"></script>
+<script src="/js/shared/playful.js?v=20261010lulu"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/shared/utils.js?v=20260831"></script>
 <script src="/js/shared/toast.js?v=20260831"></script>
@@ -903,7 +903,10 @@ function finalizeQuiz() {
   const result = document.getElementById('eg-quiz-result');
   if (result) {
     result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
-    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary;
+    // Lulu reads the summary out (js/shared/playful.js); icon + text without it.
+    result.innerHTML = window.Mascot && window.Mascot.reactHtml
+      ? window.Mascot.reactHtml({ pct: score, text: summary, size: 64 })
+      : (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary;
     result.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else if (typeof showToast === 'function') {
     // Lessons that grade only through practice_exercises (no <quiz> block)

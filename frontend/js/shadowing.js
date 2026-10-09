@@ -323,6 +323,7 @@
     const msg = cls === 'good' ? 'Tuyệt vời!' : cls === 'mid' ? 'Khá tốt — luyện thêm các từ màu đỏ.' : 'Nghe lại và thử thêm lần nữa nhé.';
     showScore('sh-score', cls, `${pct}% — ${msg}`, `Đúng ${refHit.size}/${ref.length} từ. Bấm "Giọng của tôi" để so với bản gốc.`);
     recordAnswer('shadowing', idx, refHit.size, ref.length);
+    luluReact(pct, 'shadowing');
   }
 
   function playMine() {
@@ -357,6 +358,19 @@
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
     $('dc-check').disabled = true;
     recordAnswer('dictation', idx, refHit.size, ref.length);
+    luluReact(perfect ? 100 : pct, 'dictation');
+  }
+
+  // Corner Lulu (js/shared/playful.js): hops on a great sentence, cheers
+  // once every sentence of the lesson has a great score in this mode.
+  function luluReact(pct, m) {
+    if (!window.Mascot || pct < 85) return;
+    const all = lesson.segments.every((_, i) => {
+      const a = answers[m][i];
+      return a && a.matched / a.total >= 0.85;
+    });
+    if (all) window.Mascot.cheer(100, m === 'shadowing' ? 'Nói theo trọn cả bài luôn! Phát âm xịn ghê 🎙🍊' : 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
+    else window.Mascot.hop('excited');
   }
 
   function dcRetry() {

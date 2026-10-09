@@ -247,7 +247,7 @@
     .t1-settings-section{margin-top:8px}
 
   </style>
-  <link rel="stylesheet" href="css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="css/playful.css?v=20261010lulu"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
@@ -255,7 +255,7 @@
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="js/nav.js?v=20261009pf"></script>
-<script src="js/shared/playful.js?v=20261010b"></script>
+<script src="js/shared/playful.js?v=20261010lulu"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
@@ -2010,7 +2010,10 @@ function showDoneSummary() {
   const wrongAttempts = sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
 
-  document.getElementById('done-icon').textContent  = pct >= 80 ? '😎' : pct >= 50 ? '🤔' : '😤';
+  const doneIcon = document.getElementById('done-icon');
+  // Lulu's face for the score (js/shared/playful.js); emoji without it.
+  if (window.Mascot && window.Mascot.mount) window.Mascot.mount(doneIcon, window.Mascot.moodForScore(pct));
+  else doneIcon.textContent = pct >= 80 ? '😎' : pct >= 50 ? '🤔' : '😤';
   document.getElementById('done-title').textContent = pct >= 80 ? 'Giỏi dữ hen!' : pct >= 50 ? 'Tạm ổn thôi...' : 'Học đàng hoàng zô!';
   document.getElementById('done-summary').textContent = `Hoàn thành ${sessionDone} câu — tỉ lệ đúng ${pct}%`;
   document.getElementById('done-stats').innerHTML =
@@ -2355,11 +2358,13 @@ async function submitTest() {
                     : data.score >= 45 ? 'img/writingbelow50%25.jpg'
                     : 'img/writingbelow45%25.jpg';
     const { emoji, message } = getScoreMessage(data.score);
+    // Lulu says the message (js/shared/playful.js); emoji + text without it.
+    const lulu = window.Mascot && window.Mascot.reactHtml;
     document.getElementById('test-score-header').innerHTML = `
       <img src="${t1ImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-      <div class="wp-done-icon">${emoji}</div>
+      ${lulu ? lulu({ pct: data.score, text: message, stacked: true }) : `<div class="wp-done-icon">${emoji}</div>`}
       <h2 class="${scoreClass}">${data.score}%</h2>
-      <p>${message} Đúng ${data.correct} / ${data.total} câu</p>`;
+      <p>${lulu ? '' : message + ' '}Đúng ${data.correct} / ${data.total} câu</p>`;
 
     const list = document.getElementById('test-review-list');
     list.innerHTML = '';

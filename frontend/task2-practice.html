@@ -601,7 +601,7 @@
     [data-theme="dark"] .t2-prompt-box-label,[data-theme="dark"] .t2-prompt-peek{color:#fcd34d}
 
   </style>
-  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
 <body>
 <script src="/js/shared/auth-service.js?v=20261007guest"></script>
@@ -609,7 +609,7 @@
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="/js/nav.js?v=20261009pf"></script>
-<script src="/js/shared/playful.js?v=20261010b"></script>
+<script src="/js/shared/playful.js?v=20261010lulu"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/shared/utils.js?v=20260831"></script>
 <script src="/js/shared/toast.js?v=20260831"></script>
@@ -2832,9 +2832,11 @@ function renderExamDone() {
   return `
     <div style="text-align:center;padding:32px 20px 16px">
       <img src="${t2ExamImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-      <div style="font-size:52px">${emoji}</div>
+      ${window.Mascot && window.Mascot.reactHtml
+        ? window.Mascot.reactHtml({ pct: r.score, text: message, stacked: true })
+        : `<div style="font-size:52px">${emoji}</div>`}
       <div class="t2-done-score ${scoreClass}">${r.score}%</div>
-      <div style="font-size:15px;color:#6b7280;margin-bottom:16px">${message} Đúng ${r.correct} / ${r.total} câu</div>
+      <div style="font-size:15px;color:#6b7280;margin-bottom:16px">${window.Mascot && window.Mascot.reactHtml ? '' : message + ' '}Đúng ${r.correct} / ${r.total} câu</div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="wp-restart-btn" onclick="startExam(this)"><i class="fas fa-redo"></i> Thi lại</button>
         <button class="wp-more-btn"    onclick="backToHub()"><i class="fas fa-arrow-left"></i> Về chủ đề</button>
@@ -3070,7 +3072,9 @@ function renderDone() {
   return `
     <div class="t2-done">
       <img src="${t2DoneImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-      <div class="t2-done-icon">${emoji}</div>
+      ${window.Mascot && window.Mascot.reactHtml
+        ? window.Mascot.reactHtml({ pct, stacked: true })
+        : `<div class="t2-done-icon">${emoji}</div>`}
       <div class="t2-done-score ${scoreClass}">${pct}%</div>
       <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${_escHtml(state.selectedTopic?.topicName || '')}</div>
       <div class="wp-status-row" style="justify-content:center">${topicStatusHtml}</div>

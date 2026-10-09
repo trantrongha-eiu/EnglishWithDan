@@ -1202,7 +1202,9 @@ async function renderResultsTab() {
             const { emoji, message } = getScoreMessage(session.score);
             html += `
                 <div style="text-align:center;margin-bottom:16px">
-                    <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${emoji} ${escHtml(message)}</div>
+                    ${window.Mascot && window.Mascot.reactHtml
+                        ? window.Mascot.reactHtml({ pct: session.score, text: message, stacked: true })
+                        : `<div style="font-size:13px;color:var(--text2);margin-bottom:10px">${emoji} ${escHtml(message)}</div>`}
                     <img src="${getVocabResultImage(session.score)}" alt="" style="width:100%;max-width:200px;border-radius:12px;object-fit:cover">
                 </div>`;
         }

@@ -5,7 +5,7 @@
 
    Inspired by theieltsdictionary.com's look: warm cream paper, bold ink
    outlines with hard offset shadows, bright candy accents, chunky rounded
-   headings — plus our mascot Dan (js/shared/playful.js).
+   headings — plus our mascot Lulu (js/shared/playful.js).
 
    Never touches the exam screens' layout (those are css/cd-exam.css).
    All motion collapses under prefers-reduced-motion.
@@ -109,7 +109,7 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 }
 :root .list-header .test-search-input { border-radius: 999px; border-width: 2px; }
 
-/* Dan peeking over the header's bottom-right edge. */
+/* Lulu peeking over the header's bottom-right edge. */
 .lh-mascot {
   position: absolute; right: 22px; bottom: -6px;
   width: 104px; pointer-events: none;
@@ -261,13 +261,15 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 :root .feat-chip:hover,
 :root .dash-vocab-hero-lb:hover { transform: translateY(-2px); box-shadow: 3px 4px 0 var(--pf-ink); }
 
-/* Dan in the streak banners / quit modal / results */
+/* Lulu in the streak banners / quit modal / results */
 .dan-host { display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
 :root .dan-mascot .dan-svg,
 :root .dash-vocab-hero .dan-mascot .dan-svg { width: 84px; height: auto; }
 :root .mascot-panda .dan-svg { width: 60px; height: auto; }
 :root .quit-mascot .dan-svg { width: 96px; height: auto; }
 :root .result-mascot .dan-svg { width: 120px; height: auto; }
+:root .wp-done-icon.dan-host .dan-svg { width: 110px; height: auto; }
+:root .wp-done-icon.dan-host { display: flex; margin: 0 auto 6px; }
 
 /* Skill cards row */
 .skill-cards {
@@ -413,9 +415,70 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 }
 @media print { .ews-mascot-dock, .lh-mascot { display: none !important; } }
 
+/* ── Lulu reactions (Mascot.react) — results, leaderboards ───────────── */
+.lulu-react {
+  --lr-size: 96px;
+  display: flex; align-items: flex-end; gap: 12px;
+  margin: 4px 0 12px; text-align: left;
+}
+.lulu-react .lr-mascot {
+  flex: 0 0 auto; width: var(--lr-size);
+  filter: drop-shadow(0 6px 8px rgba(120, 60, 0, .22));
+  animation: lulu-pop .7s var(--pf-spring) both;
+}
+.lulu-react .lr-mascot svg.dan-svg { width: 100%; height: auto; display: block; }
+.lulu-react .lr-bubble {
+  position: relative; flex: 0 1 auto; min-width: 0; margin-bottom: calc(var(--lr-size) * .38);
+  background: #fff; color: #222;
+  border: 2.5px solid var(--pf-ink); border-radius: 18px 18px 18px 4px;
+  box-shadow: var(--pf-shadow);
+  padding: 10px 14px; font-size: 14px; font-weight: 700; line-height: 1.5;
+  animation: lulu-say .45s var(--pf-spring) .35s both;
+}
+.lulu-react .lr-bubble::before { /* tail pointing at Lulu */
+  content: ''; position: absolute; left: -11px; bottom: 8px;
+  border: 7px solid transparent; border-right: 9px solid var(--pf-ink);
+}
+.lulu-react .lr-bubble::after {
+  content: ''; position: absolute; left: -6px; bottom: 10px;
+  border: 5px solid transparent; border-right: 7px solid #fff;
+}
+/* Stacked: Lulu on top, bubble underneath (narrow result columns). */
+.lulu-react.is-stacked { flex-direction: column; align-items: center; text-align: center; gap: 14px; --lr-size: 112px; max-width: 420px; margin-left: auto; margin-right: auto; }
+.lulu-react.is-stacked .lr-bubble { margin-bottom: 0; border-radius: 18px; width: 100%; }
+.lulu-react.is-stacked .lr-bubble::before { left: 50%; bottom: auto; top: -18px; margin-left: -8px; border: 8px solid transparent; border-bottom: 10px solid var(--pf-ink); }
+.lulu-react.is-stacked .lr-bubble::after { left: 50%; bottom: auto; top: -11px; margin-left: -6px; border: 6px solid transparent; border-bottom: 8px solid #fff; }
+[data-theme="dark"] .lulu-react.is-stacked .lr-bubble::before { border-right-color: transparent; border-bottom-color: #555; }
+[data-theme="dark"] .lulu-react.is-stacked .lr-bubble::after { border-right-color: transparent; border-bottom-color: #1a1a1a; }
+.lulu-react.is-compact { --lr-size: 58px; gap: 10px; margin: 0; }
+.lulu-react.is-compact .lr-bubble { font-size: 13px; padding: 7px 11px; box-shadow: 2px 2px 0 var(--pf-ink); }
+[data-theme="dark"] .lulu-react .lr-bubble { background: #1a1a1a; color: #eee; border-color: #555; }
+[data-theme="dark"] .lulu-react .lr-bubble::before { border-right-color: #555; }
+[data-theme="dark"] .lulu-react .lr-bubble::after { border-right-color: #1a1a1a; }
+@keyframes lulu-pop { 0% { transform: translateY(18px) scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@keyframes lulu-say { 0% { transform: translateX(-6px) scale(.85); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@media (max-width: 480px) { .lulu-react { --lr-size: 72px; } .lulu-react .lr-bubble { font-size: 13px; } }
+@media print { .lulu-react { display: none !important; } }
+
+/* BXH Vocab: Lulu's comment above the boards + a tiny cheering Lulu next to #1. */
+.vlb-lulu:empty { display: none; }
+.vlb-lulu { display: flex; justify-content: center; margin: 0 auto 16px; }
+.vlb-top-lulu { display: inline-flex; width: 30px; flex: 0 0 auto; margin: 0 4px; }
+.vlb-top-lulu .dan-svg { width: 100%; height: auto; }
+
+/* [data-lulu-peek] — Lulu sitting in a header's top-right corner. */
+.lulu-peek {
+  float: right; width: 76px; margin: -6px 0 6px 14px;
+  filter: drop-shadow(0 6px 8px rgba(120, 60, 0, .22));
+  animation: pf-peek .9s var(--pf-spring) .25s both;
+}
+.lulu-peek .dan-svg { width: 100%; height: auto; display: block; }
+@media (max-width: 480px) { .lulu-peek { width: 58px; } }
+@media print { .lulu-peek { display: none !important; } }
+
 /* ── Respect reduced motion ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .dan-svg *, .sk-spark, .lh-mascot,
+  .dan-svg *, .sk-spark, .lh-mascot, .lulu-peek, .lulu-react .lr-mascot, .lulu-react .lr-bubble,
   :root #screen-list.active .list-container > *,
   :root #book-welcome > div > * { animation: none !important; }
   .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title { transition: none !important; }

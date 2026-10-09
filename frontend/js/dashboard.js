@@ -457,40 +457,40 @@ function getMascotEmoji(streak) {
     if (streak >= 3)  return '🐼😊';
     return '🐼';
 }
-// Dan the capybara (js/shared/playful.js) when it's loaded, the old emoji
+// Lulu the capybara (js/shared/playful.js) when it's loaded, the old emoji
 // otherwise. `mood` overrides the streak-based pick (e.g. the quit modal).
 function setMascotEl(el, streak, mood) {
     if (!el) return;
-    if (window.Mascot) window.Mascot.mount(el, mood || window.Mascot.moodForStreak(streak), { label: 'Dan' });
+    if (window.Mascot) window.Mascot.mount(el, mood || window.Mascot.moodForStreak(streak), { label: 'Lulu' });
     else el.textContent = getMascotEmoji(streak);
 }
 
 // FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/fire-tier.js
 // (shared with the BXH vocab page's streak leaderboard).
 
-// Sarcastic "Dan" (our panda mascot, named after thầy Daniel) reacting to a
+// Sarcastic "Lulu" (our panda mascot, named after thầy Daniel) reacting to a
 // dead streak — angry if you just torched a streak bigger than 10 days,
 // sad-but-forgiving otherwise. previousStreak comes from the backend and is
 // only non-zero right after resetIfStale() detects a missed-day reset; it
 // clears itself the moment the student studies again.
 const ANGRY_MSGS = [
-    n => `😡 Dan CỰC KỲ TỨC GIẬN vì bạn vừa làm bay màu ${n} ngày streak! ${n} NGÀY! Học 1 từ ngay đi, không Dan giận cả tuần cho xem.`,
-    n => `😤 ${n} ngày công sức... đi tong trong một nốt nhạc. Dan không khóc đâu, Dan chỉ đang tức giận dữ dội thôi.`,
-    n => `🔥💔 Streak ${n} ngày vừa nằm xuống. Dan đang thắp hương cho nó — còn bạn thì đang làm gì thế?`
+    n => `😡 Lulu CỰC KỲ TỨC GIẬN vì bạn vừa làm bay màu ${n} ngày streak! ${n} NGÀY! Học 1 từ ngay đi, không Lulu giận cả tuần cho xem.`,
+    n => `😤 ${n} ngày công sức... đi tong trong một nốt nhạc. Lulu không khóc đâu, Lulu chỉ đang tức giận dữ dội thôi.`,
+    n => `🔥💔 Streak ${n} ngày vừa nằm xuống. Lulu đang thắp hương cho nó — còn bạn thì đang làm gì thế?`
 ];
 const SAD_MSGS = [
-    '😢 Dan đang buồn thiu vì hôm nay chưa thấy bạn học từ nào cả...',
-    '🥺 0 ngày streak. Dan ngồi một mình cắn hạt dưa cả ngày, buồn ơi là buồn.',
-    '😭 Dan tưởng bạn quên mất Dan rồi... học 1 từ thôi là Dan vui liền!'
+    '😢 Lulu đang buồn thiu vì hôm nay chưa thấy bạn học từ nào cả...',
+    '🥺 0 ngày streak. Lulu ngồi một mình cắn hạt dưa cả ngày, buồn ơi là buồn.',
+    '😭 Lulu tưởng bạn quên mất Lulu rồi... học 1 từ thôi là Lulu vui liền!'
 ];
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function getMascotState(streak, previousStreak) {
     if (streak === 0 && previousStreak > 10) {
-        return { mood: 'angry', img: 'img/loststreak.jpg', alt: 'Dan đang tức giận', msg: pick(ANGRY_MSGS)(previousStreak) };
+        return { mood: 'angry', img: 'img/loststreak.jpg', alt: 'Lulu đang tức giận', msg: pick(ANGRY_MSGS)(previousStreak) };
     }
     if (streak === 0) {
-        return { mood: 'sad', img: 'img/listening_readingbelow40%25.jpg', alt: 'Dan đang buồn', msg: pick(SAD_MSGS) };
+        return { mood: 'sad', img: 'img/listening_readingbelow40%25.jpg', alt: 'Lulu đang buồn', msg: pick(SAD_MSGS) };
     }
     return { mood: 'happy', emoji: getMascotEmoji(streak), msg: getMascotMsg(streak) };
 }
@@ -3158,7 +3158,9 @@ function showResults(mode) {
     const scoreMsgEl = document.getElementById('resultScoreMsg');
     if (scoreMsgEl) {
         const { emoji, message } = getScoreMessage(pct);
-        scoreMsgEl.textContent = `${emoji} ${message}`;
+        // Lulu says it (js/shared/playful.js); plain text without the mascot.
+        if (window.Mascot && window.Mascot.react) window.Mascot.react(scoreMsgEl, { pct, text: message, size: 80 });
+        else scoreMsgEl.textContent = `${emoji} ${message}`;
     }
 
     // Hiện nút ôn tập từ sai nếu có

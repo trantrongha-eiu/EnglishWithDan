@@ -19,7 +19,7 @@
     <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
     <script src="/js/theme.js?v=20260831"></script>
     <script src="/js/shared/visit-tracker.js?v=20260831"></script>
-  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
 
 <body>
@@ -28,7 +28,7 @@
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="/js/nav.js?v=20261009pf"></script>
-<script src="/js/shared/playful.js?v=20261010b"></script>
+<script src="/js/shared/playful.js?v=20261010lulu"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/learning-popups.js?v=20260920"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
@@ -3516,7 +3516,8 @@
 
             // Message (funny/sarcastic for very low scores)
             const isLow = band < 5.0;
-            document.getElementById('result-emoji').textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
+            const resultEmojiEl = document.getElementById('result-emoji');
+            resultEmojiEl.textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
             if (isLow) {
                 const funnyMsgs = [
                     'Hmm, hôm nay tai không muốn làm việc à? 😅 Nghe lại nhiều lần, tốc độ sẽ quen thôi!',
@@ -3526,6 +3527,15 @@
                 document.getElementById('result-msg').textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
             } else {
                 document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
+            }
+            // Lulu reads the message out (js/shared/playful.js); emoji + plain
+            // paragraph above stay as the fallback without the mascot.
+            const resultMsgEl = document.getElementById('result-msg');
+            if (window.Mascot && window.Mascot.react) {
+                window.Mascot.react(resultEmojiEl, { band, text: resultMsgEl.textContent, stacked: true });
+                resultMsgEl.hidden = true;
+            } else {
+                resultMsgEl.hidden = false;
             }
             showScreen('result');
 

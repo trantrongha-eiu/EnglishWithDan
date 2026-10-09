@@ -249,7 +249,7 @@
     [data-theme="dark"] .t1-hist-row-skills{color:#94a3b8}
 
   </style>
-  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
 <body>
 <script src="/js/shared/auth-service.js?v=20261007guest"></script>
@@ -257,7 +257,7 @@
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="/js/nav.js?v=20261009pf"></script>
-<script src="/js/shared/playful.js?v=20261010b"></script>
+<script src="/js/shared/playful.js?v=20261010lulu"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
 <script src="/js/shared/utils.js?v=20260831"></script>
@@ -593,7 +593,7 @@
       </div><!-- /state-exercise -->
 
       <div class="wp-state-done hidden" id="state-done">
-        <div class="wp-done-icon">🎉</div>
+        <div class="wp-done-icon" id="done-icon">🎉</div>
         <h2>Xuất sắc!</h2>
         <p id="done-summary"></p>
         <div class="wp-done-stats" id="done-stats"></div>
@@ -1963,6 +1963,8 @@ function showDoneSummary() {
   const expandNote = expandCount > 0 ? ` (+${expandCount} mở rộng)` : '';
   document.getElementById('done-summary').textContent =
     `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
+  // Lulu's face for the score (js/shared/playful.js).
+  if (window.Mascot && window.Mascot.mount) window.Mascot.mount(document.getElementById('done-icon'), window.Mascot.moodForScore(pct));
   document.getElementById('done-stats').innerHTML =
     `<span>🎯 Đúng: ${sessionCorrect}/${gradable}${expandNote} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
 
@@ -2315,8 +2317,9 @@ function showTestResults(data) {
                   : '/img/writingbelow45%25.jpg';
   document.getElementById('test-score-header').innerHTML = `
     <img src="${wpImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-    <div class="wp-test-big-score">${emoji} ${score}%</div>
-    <div class="wp-test-score-msg">${msg} Đúng ${correct}/${countable || results.length} câu${expandNote}.</div>`;
+    ${window.Mascot && window.Mascot.reactHtml ? window.Mascot.reactHtml({ pct: score, text: msg, stacked: true }) : ''}
+    <div class="wp-test-big-score">${window.Mascot && window.Mascot.reactHtml ? '' : emoji + ' '}${score}%</div>
+    <div class="wp-test-score-msg">${window.Mascot && window.Mascot.reactHtml ? '' : msg + ' '}Đúng ${correct}/${countable || results.length} câu${expandNote}.</div>`;
 
   const list = document.getElementById('test-review-list');
   list.innerHTML = '';

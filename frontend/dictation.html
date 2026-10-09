@@ -159,7 +159,7 @@
     .dict-loading { text-align: center; padding: 80px 20px; color: var(--text3); }
     .dict-loading i { font-size: 26px; margin-bottom: 10px; display: block; }
   </style>
-  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
 
 <body>
@@ -168,7 +168,7 @@
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
 <script src="/js/nav.js?v=20261009pf"></script>
-<script src="/js/shared/playful.js?v=20261010b"></script>
+<script src="/js/shared/playful.js?v=20261010lulu"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
 <script src="/js/shared/utils.js?v=20260831"></script>
 <script src="/js/shared/toast.js?v=20260831"></script>
@@ -182,7 +182,7 @@
 
   <!-- ══════════════ PICKER SCREEN ══════════════ -->
   <div id="screen-list">
-    <div class="dict-picker-head">
+    <div class="dict-picker-head" data-lulu-peek="wink">
       <h1><i class="fas fa-keyboard"></i> Luyện Dictation</h1>
       <p>Nghe và chép chính tả từng câu — chọn một bài Listening bên dưới để bắt đầu.</p>
     </div>
@@ -652,6 +652,12 @@ function dictCheck() {
     dictDone.add(dictIndex);
     document.querySelector(`.dict-num-btn[data-i="${dictIndex}"]`)?.classList.add('done');
     document.getElementById('dict-session-score').textContent = `${dictDone.size}/${dictSection.dictationSentences.length} ✓`;
+    // Corner Lulu (js/shared/playful.js): a hop per perfect sentence, a
+    // cheer when the whole section is done.
+    if (window.Mascot) {
+      if (dictDone.size === dictSection.dictationSentences.length) window.Mascot.cheer(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
+      else window.Mascot.hop('excited');
+    }
   }
 }
 

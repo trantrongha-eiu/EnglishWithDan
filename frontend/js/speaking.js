@@ -2025,6 +2025,19 @@ function renderFeedback(fb, previousBand) {
   const overallNote = document.getElementById('score-overall-note');
   if (overallNote) overallNote.style.display = fb.provisional ? 'block' : 'none';
 
+  // Lulu reacts to the overall band (js/shared/playful.js).
+  const spLulu = document.getElementById('sp-result-lulu');
+  if (spLulu && window.Mascot && window.Mascot.react && fb.overallBand != null) {
+    const b = Number(fb.overallBand);
+    window.Mascot.react(spLulu, {
+      band: b,
+      text: b >= 7 ? 'Nói hay quá! Giám khảo chắc cũng phải gật gù 😍'
+        : b >= 6 ? 'Ổn áp lắm! Đọc kỹ nhận xét bên dưới để lên band nữa nha 💪'
+        : b >= 5 ? 'Khá rồi đó — thêm từ nối và mở rộng ý là lên điểm liền!'
+        : 'Đừng ngại nha, nói nhiều là sẽ quen! Lulu ở đây cổ vũ cậu 🍊',
+    });
+  }
+
   // Pronunciation source note — heard from the real recording (multimodal),
   // not assessed (speaking-v2 without audio), or an older transcript-only
   // estimate (speaking-v1 results).

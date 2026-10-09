@@ -1,7 +1,7 @@
 /**
  * js/shared/playful.js — the student-side "playful" layer
  *
- *   • Mascot      — Dan, our round capybara with a tangerine on its head
+ *   • Mascot      — Lulu, our round capybara with a tangerine on its head
  *                   (inline SVG, several moods, blink / bob / look-at-cursor).
  *                   Replaces the old 🐼 emoji wherever the pages put one.
  *   • Mascot dock — a small companion in the corner of every student page:
@@ -96,7 +96,7 @@
     var id = 'm' + (++uid);
     var cheek = mood === 'angry' ? '.7' : '.42';
     return '<svg class="dan-svg mood-' + esc(mood) + (opts.cls ? ' ' + esc(opts.cls) : '') + '" viewBox="0 0 120 128" ' +
-      'role="img" aria-label="' + esc(opts.label || 'Dan') + '" data-eyes>' +
+      'role="img" aria-label="' + esc(opts.label || 'Lulu') + '" data-eyes>' +
       '<defs>' +
         '<linearGradient id="' + id + 'b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd257"/><stop offset=".55" stop-color="#ffb534"/><stop offset="1" stop-color="#ff9420"/></linearGradient>' +
         '<linearGradient id="' + id + 'm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffa634"/><stop offset="1" stop-color="#f58316"/></linearGradient>' +
@@ -187,6 +187,86 @@
   };
 
   /* ══════════════════════════════════════════════════════════════════
+     REACTIONS — Lulu on result screens / leaderboards
+     Mascot.react(host, { pct | band, text?, size?, compact?, stacked? }) fills host
+     with Lulu (mood picked from the score) + a speech bubble. Without
+     `text` a line for that score tier is picked. Mascot.reactHtml(opts) gives
+     the same markup as a string.
+     Mascot.cheer(pct, text?) makes the corner dock Lulu say it and hop.
+     ══════════════════════════════════════════════════════════════════ */
+  var TIERS = [
+    { min: 90, mood: 'cheer', lines: [
+      'Đỉnh của chóp! Lulu tự hào về cậu quá 🥳',
+      'Gần như tuyệt đối luôn! Cứ giữ phong độ này nha 🍊✨',
+      'Xuất sắc! Lulu phải nhảy múa ăn mừng mới được 🎉',
+    ] },
+    { min: 75, mood: 'excited', lines: [
+      'Làm tốt lắm! Chỉ còn xíu nữa là hoàn hảo 💪',
+      'Giỏi quá trời! Xem lại mấy câu sai là lên level liền 🚀',
+      'Ngon lành! Lulu thấy cậu tiến bộ rõ luôn 😍',
+    ] },
+    { min: 55, mood: 'happy', lines: [
+      'Khá ổn rồi đó! Ôn lại phần sai để lần sau cao hơn nha 😊',
+      'Đang đi đúng hướng nè — cố thêm chút nữa thôi!',
+      'Ổn áp! Lulu ở đây cổ vũ cậu nè 🍊',
+    ] },
+    { min: 35, mood: 'think', lines: [
+      'Hmm, bài này hơi khó nhỉ… Xem lại đáp án cùng Lulu nha 🤔',
+      'Chưa sao đâu — hiểu vì sao sai là đã tiến bộ rồi!',
+      'Chậm mà chắc nha, lần sau sẽ khá hơn 💛',
+    ] },
+    { min: 0, mood: 'sad', lines: [
+      'Huhu, lần này chưa may rồi 😢 Nghỉ xíu rồi thử lại nha, Lulu tin cậu!',
+      'Ai cũng có ngày "lag" mà — ôn lại rồi làm lại, chắc chắn sẽ khá hơn 💛',
+      'Đừng buồn nha, Lulu ôm một cái 🤗 Mình làm lại từ từ thôi!',
+    ] },
+  ];
+
+  // IELTS band → the same 0–100 scale the tiers use.
+  function bandToPct(band) {
+    var b = Number(band) || 0;
+    return b >= 8 ? 95 : b >= 7 ? 80 : b >= 6 ? 62 : b >= 5 ? 45 : 20;
+  }
+
+  function tierFor(opts) {
+    var pct = opts.band != null ? bandToPct(opts.band) : Number(opts.pct) || 0;
+    for (var i = 0; i < TIERS.length; i++) if (pct >= TIERS[i].min) return TIERS[i];
+    return TIERS[TIERS.length - 1];
+  }
+
+  function moodForScore(pct) { return tierFor({ pct: pct }).mood; }
+
+  function lineFor(tier) { return tier.lines[Math.floor(Math.random() * tier.lines.length)]; }
+
+  // Same markup as react(), as a string — for pages that build their result
+  // screen with template literals.
+  function reactHtml(opts) {
+    opts = opts || {};
+    var tier = tierFor(opts);
+    var mood = opts.mood || tier.mood;
+    var text = opts.text != null ? String(opts.text) : lineFor(tier);
+    return '<div class="lulu-react' + (opts.compact ? ' is-compact' : '') + (opts.stacked ? ' is-stacked' : '') + '"' +
+        (opts.size ? ' style="--lr-size:' + Number(opts.size) + 'px"' : '') + '>' +
+        '<div class="lr-mascot">' + svg(mood, { label: 'Lulu' }) + '</div>' +
+        (text ? '<div class="lr-bubble" role="status">' + esc(text) + '</div>' : '') +
+      '</div>';
+  }
+
+  function react(host, opts) {
+    if (!host) return null;
+    host.classList.add('lulu-react-host');
+    host.innerHTML = reactHtml(opts);
+    return true;
+  }
+
+  function cheer(pct, text) {
+    if (!dock) return;
+    var tier = tierFor({ pct: pct });
+    say(text || lineFor(tier), tier.mood);
+    if (tier.min >= 75) hop();
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
      MASCOT DOCK
      ══════════════════════════════════════════════════════════════════ */
   var HIDE_KEY = 'ews_mascot_hidden_day';
@@ -244,7 +324,7 @@
     try { name = ((window.AuthService && window.AuthService.getUser()) || {}).name || ''; } catch (e) {}
     name = String(name).trim().split(/\s+/).pop() || 'bạn';
     var hi = h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Trưa rồi' : h < 18 ? 'Chào buổi chiều' : 'Tối rồi';
-    return hi + ', ' + name + '! Tớ là Dan 🍊';
+    return hi + ', ' + name + '! Tớ là Lulu 🍊';
   }
 
   function today() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
@@ -254,7 +334,7 @@
   function setMood(mood, ms) {
     if (!dock) return;
     var host = dock.querySelector('.ews-md-mascot');
-    host.innerHTML = svg(mood, { label: 'Dan — bấm để nghe mẹo học' });
+    host.innerHTML = svg(mood, { label: 'Lulu — bấm để nghe mẹo học' });
     clearTimeout(moodTimer);
     if (ms) moodTimer = setTimeout(function () { setMood('happy'); }, ms);
   }
@@ -287,8 +367,8 @@
     dock.className = 'ews-mascot-dock';
     dock.innerHTML =
       '<div class="ews-md-bubble" role="status" aria-live="polite"></div>' +
-      '<button type="button" class="ews-md-close" aria-label="Ẩn Dan hôm nay" title="Ẩn Dan hôm nay"><i class="fas fa-times"></i></button>' +
-      '<button type="button" class="ews-md-mascot" aria-label="Dan — bấm để nghe mẹo học"></button>';
+      '<button type="button" class="ews-md-close" aria-label="Ẩn Lulu hôm nay" title="Ẩn Lulu hôm nay"><i class="fas fa-times"></i></button>' +
+      '<button type="button" class="ews-md-mascot" aria-label="Lulu — bấm để nghe mẹo học"></button>';
     document.body.appendChild(dock);
     setMood('happy');
 
@@ -405,7 +485,7 @@
     });
   }
 
-  // <div data-dan="excited">✅</div> → Dan in that mood (the markup's own
+  // <div data-dan="excited">✅</div> → Lulu in that mood (the markup's own
   // content stays as the no-JS fallback).
   function mountDanSlots() {
     var slots = document.querySelectorAll('[data-dan]');
@@ -414,7 +494,7 @@
     }
   }
 
-  // A peeking Dan in the coloured list headers (Reading / Listening …).
+  // A peeking Lulu in the coloured list headers (Reading / Listening …).
   function decorateHeaders() {
     var h = document.querySelector('#screen-list .list-header');
     if (h && !h.querySelector('.lh-mascot')) {
@@ -426,8 +506,23 @@
     }
   }
 
+  // <div data-lulu-peek="wink"> … </div> → a small Lulu sitting in that
+  // block's top-right corner (page headers).
+  function mountPeeks() {
+    var hosts = document.querySelectorAll('[data-lulu-peek]');
+    for (var i = 0; i < hosts.length; i++) {
+      if (hosts[i].querySelector('.lulu-peek')) continue;
+      var m = document.createElement('div');
+      m.className = 'lulu-peek';
+      m.setAttribute('aria-hidden', 'true');
+      m.innerHTML = svg(hosts[i].getAttribute('data-lulu-peek') || 'happy');
+      hosts[i].insertBefore(m, hosts[i].firstChild);
+    }
+  }
+
   function init() {
     try { buildDock(); } catch (e) {}
+    try { mountPeeks(); } catch (e) {}
     try { wrapToast(); } catch (e) {}
     try { swapPandas(); } catch (e) {}
     try { decorateHeaders(); } catch (e) {}
@@ -438,6 +533,7 @@
 
   window.Mascot = {
     svg: svg, mount: mount, moodForStreak: moodForStreak,
+    moodForScore: moodForScore, react: react, reactHtml: reactHtml, cheer: cheer,
     say: function (t, m) { say(t, m); }, hop: function (m) { hop(m); },
   };
   window.TestCardArt = TestCardArt;

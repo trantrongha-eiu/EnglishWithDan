@@ -3411,6 +3411,13 @@ function showResult(r) {
         : 'Band 5, chưa ổn lắm đâu bạn ơi 😬 Cày vocab + đọc thật nhiều là lên điểm ngay thôi!';
     }
   }
+  // Lulu reads the message out in a speech bubble (js/shared/playful.js);
+  // the plain paragraph stays as the fallback when the mascot isn't loaded.
+  const luluEl = document.getElementById('result-lulu');
+  if (luluEl && msgEl && window.Mascot && window.Mascot.react) {
+    window.Mascot.react(luluEl, { band, text: msgEl.textContent, stacked: true });
+    msgEl.hidden = true;
+  }
 
   // screen-result is outside the fullscreen container (screen-exam), so exit fullscreen first
   if (document.fullscreenElement) {

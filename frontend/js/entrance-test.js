@@ -1216,7 +1216,9 @@
       $('et-result-body').innerHTML = '<div class="et-overall et-overall-pending">'
         + '<div class="et-overall-label"><i class="fas fa-hourglass-half"></i> Đã nộp bài — đang chờ giáo viên duyệt</div>'
         + '<div class="et-overall-sub">Bài Writing và Speaking của bạn đang được chấm. Giáo viên sẽ xem xét toàn bộ kết quả, '
-        + 'sau đó bạn sẽ nhận được thông báo trong hộp thư và có thể xem kết quả chi tiết tại đây.</div></div>';
+        + 'sau đó bạn sẽ nhận được thông báo trong hộp thư và có thể xem kết quả chi tiết tại đây.</div></div>'
+        + '<div id="et-lulu"></div>';
+      luluSays({ pct: 60, mood: 'think', text: 'Lulu đang ngồi hóng kết quả cùng cậu nè… giáo viên chấm xong là báo liền nha 🍊' });
       return;
     }
 
@@ -1257,6 +1259,20 @@
           + '<div style="white-space:pre-wrap;margin-top:6px;color:var(--text2)">' + esc(r.adminNote) + '</div></div>' : '')
       + '<div class="et-result-grid">' + cards + '</div>'
       + '<h3 class="et-section-heading">Điểm yếu ngữ pháp theo chủ điểm</h3>' + weaknesses;
+    var etOverall = $('et-result-body').querySelector('.et-overall');
+    if (etOverall) etOverall.insertAdjacentHTML('afterend', '<div id="et-lulu"></div>');
+    if (r.overallBand != null) {
+      luluSays({ band: r.overallBand, text: 'Đây mới là điểm xuất phát thôi — Lulu sẽ đồng hành cùng cậu lên band nha! 🍊' });
+    } else {
+      luluSays({ pct: 60, mood: 'think', text: 'Còn chờ chấm Writing nữa thôi — sắp có kết quả tổng rồi nè!' });
+    }
+  }
+
+  // Lulu (shared/playful.js) under the overall band — decorative, skipped
+  // when the mascot isn't loaded.
+  function luluSays(opts) {
+    var host = $('et-lulu');
+    if (host && window.Mascot && window.Mascot.react) window.Mascot.react(host, opts);
   }
 
   // ── Boot ─────────────────────────────────────────────────────────────

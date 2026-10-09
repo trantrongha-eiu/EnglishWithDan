@@ -3,13 +3,13 @@
    Loaded last on writing.html (after writing.css / writing-extra.css /
    playful.css). Uses the --pf-* tokens from css/playful.css.
 
-   • Home (#screen-key): cream page, hero with Dan, a "Full đề" CTA tile
+   • Home (#screen-key): cream page, hero with Lulu, a "Full đề" CTA tile
      and four colourful feature tiles.
    • Practice picker: TID-style "TASK 1 / TASK 2" covers, chunky task cards.
    • Exam + practice-write: the computer-delivered look shared with
      Reading / Listening (css/cd-exam.css) — white chrome, grey Part box,
      "Part 1 / Part 2" footer, blue submit, black arrows.
-   • Done screens: cream + an excited Dan.
+   • Done screens: cream + an excited Lulu.
    Purely visual — every id/handler on the page is unchanged.
    ══════════════════════════════════════════════════════════════════════ */
 
