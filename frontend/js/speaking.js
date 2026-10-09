@@ -162,6 +162,13 @@ function showScreen(id) {
 // Init
 // ──────────────────────────────────────────────────────
 (async function init() {
+  // Let the rest of this file finish evaluating first. For a cached-premium
+  // student nothing below awaits before primeTtsVoice(), so init used to run
+  // synchronously mid-file and hit `let _ttsVoice` (declared further down)
+  // in its temporal dead zone — the ReferenceError silently aborted the rest
+  // of init (paste guard, ?tab=/?questionId= routing, the mock-test flow).
+  await Promise.resolve();
+
   // Delegates to the same AuthService.requirePageAuth() used by auth.js's
   // Guard 1 (Phase 5) — this used to be its own redundant `if(!token)`
   // check with no next= support.
