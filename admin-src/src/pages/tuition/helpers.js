@@ -15,3 +15,7 @@ export function fmtLabel(fee) {
   if (fee.feeType === 'monthly') return `${MONTHS[fee.month] || fee.month}/${fee.year}`;
   return fee.courseName || '(Khóa học)';
 }
+
+// Pre-filled "Ghi chú" when adding a fee (Tuition page form + StudentTuitionModal);
+// the admin can still edit or clear it. Copy/edit keep the fee's own note.
+export const DEFAULT_FEE_NOTE = 'vui lòng thanh toán trước ngày 10 tháng này';

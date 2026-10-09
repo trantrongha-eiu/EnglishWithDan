@@ -3,7 +3,7 @@ import { apiFetch, formatDate } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useConfirm } from '../../components/ConfirmDialog';
 import Modal from '../../components/ui/Modal';
-import { MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel } from './helpers';
+import { MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel, DEFAULT_FEE_NOTE } from './helpers';
 
 // Học phí of ONE student, opened from the "💰 Học phí" button on
 // StudentDetail — list (thu / bỏ thu / xoá) + add, without leaving the
@@ -24,7 +24,7 @@ export default function StudentTuitionModal({ user, initialPeriod, onClose, onSa
   const [form, setForm] = useState({
     feeType: 'monthly',
     month: String(initialPeriod?.month || CUR_MONTH), year: String(initialPeriod?.year || CUR_YEAR),
-    monthCount: '1', courseName: '', amount: '', note: '',
+    monthCount: '1', courseName: '', amount: '', note: DEFAULT_FEE_NOTE,
   });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -61,7 +61,7 @@ export default function StudentTuitionModal({ user, initialPeriod, onClose, onSa
       } else {
         toast(count > 1 ? `Đã thêm ${count} tháng học phí` : 'Đã thêm học phí');
       }
-      setForm(f => ({ ...f, courseName: '', note: '', monthCount: '1' }));
+      setForm(f => ({ ...f, courseName: '', note: DEFAULT_FEE_NOTE, monthCount: '1' }));
       load(); onSaved?.();
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }

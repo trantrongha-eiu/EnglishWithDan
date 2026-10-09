@@ -8,7 +8,7 @@ import StudentPicker from './tuition/StudentPicker';
 import SummaryTab from './tuition/SummaryTab';
 import SettingsTab from './tuition/SettingsTab';
 import { RemindModal, BulkRemindModal } from './tuition/RemindModals';
-import { PAGE, MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel } from './tuition/helpers';
+import { PAGE, MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel, DEFAULT_FEE_NOTE } from './tuition/helpers';
 
 export default function Tuition() {
   const toast   = useToast();
@@ -45,7 +45,7 @@ export default function Tuition() {
   const [isCopy, setIsCopy]         = useState(false);
   const [formData, setFormData]     = useState({
     studentId: '', feeType: 'monthly', month: String(CUR_MONTH),
-    year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: '', note: '',
+    year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: '', note: DEFAULT_FEE_NOTE,
   });
   const [saving, setSaving] = useState(false);
 
@@ -163,7 +163,7 @@ export default function Tuition() {
 
   function openCreate() {
     setEditFee(null); setIsCopy(false); setStudentUnpaid(null);
-    setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
+    setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: settings?.defaultMonthlyFee || '', note: DEFAULT_FEE_NOTE });
     setShowForm(true);
   }
   function openCopy(fee) {
