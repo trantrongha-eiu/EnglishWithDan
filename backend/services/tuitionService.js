@@ -8,6 +8,9 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 const emailService = require('./emailService');
 const { escapeHtml } = require('../utils/escapeHtml');
+const ClassGroup = require('../models/ClassGroup');
+const ClassEnrollment = require('../models/ClassEnrollment');
+const { vnTodayKey } = require('../utils/classProgress');
 
 // Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
 // below, and cron/tuitionReminder.js's daily auto-remind — so there's one
@@ -242,6 +245,65 @@ async function createMonthlyFees({ studentId, month, year, monthCount, amount, n
   return { fees, skipped: periods.filter(p => taken.has(`${p.month}/${p.year}`)) };
 }
 
+// Admin popup "học sinh đang học trong lớp mà chưa nhập học phí". A student
+// counts when they have a live enrollment (not removed, status active/warning)
+// in an active class that hasn't ended, and NEITHER
+//   - a monthly fee for the billing month — this month (VN time), or the
+//     class's start month if the class hasn't started yet; NOR
+//   - a course fee created since they enrolled (60 days of slack before
+//     enrolledAt: course fees are often entered before the student is
+//     added to the class roster).
+// One row per student, listing every class that put them on the list.
+const COURSE_FEE_SLACK_MS = 60 * 864e5;
+async function getClassStudentsMissingTuition(now = new Date()) {
+  const todayKey = vnTodayKey(now);
+  const classes = await ClassGroup.find({
+    status: 'active',
+    $or: [{ endDate: null }, { endDate: { $exists: false } }, { endDate: { $gte: new Date(`${todayKey}T00:00:00Z`) } }],
+  }).select('name startDate').lean();
+  if (!classes.length) return [];
+  const classById = new Map(classes.map(c => [String(c._id), c]));
+
+  const enrollments = await ClassEnrollment.find({
+    classId: { $in: classes.map(c => c._id) },
+    removedAt: null,
+    status: { $in: ['active', 'warning'] },
+  }).select('classId studentId enrolledAt').lean();
+  if (!enrollments.length) return [];
+
+  const studentIds = [...new Set(enrollments.map(e => String(e.studentId)))];
+  const fees = await TuitionFee.find({ studentId: { $in: studentIds } })
+    .select('studentId feeType month year createdAt').lean();
+  const monthlyKeys = new Set();
+  const courseFeeTimes = new Map(); // studentId -> [createdAt ms]
+  for (const f of fees) {
+    const sid = String(f.studentId);
+    if (f.feeType === 'monthly') monthlyKeys.add(`${sid}:${f.month}/${f.year}`);
+    else courseFeeTimes.set(sid, [...(courseFeeTimes.get(sid) || []), new Date(f.createdAt).getTime()]);
+  }
+
+  const byStudent = new Map();
+  for (const e of enrollments) {
+    const cls = classById.get(String(e.classId));
+    const startKey = cls.startDate ? vnTodayKey(new Date(cls.startDate)) : null;
+    const periodKey = startKey && startKey > todayKey ? startKey : todayKey;
+    const month = Number(periodKey.slice(5, 7)), year = Number(periodKey.slice(0, 4));
+    const sid = String(e.studentId);
+    if (monthlyKeys.has(`${sid}:${month}/${year}`)) continue;
+    const since = new Date(e.enrolledAt || 0).getTime() - COURSE_FEE_SLACK_MS;
+    if ((courseFeeTimes.get(sid) || []).some(t => t >= since)) continue;
+    if (!byStudent.has(sid)) byStudent.set(sid, { studentId: sid, month, year, classes: [] });
+    byStudent.get(sid).classes.push({ classId: String(cls._id), name: cls.name });
+  }
+  if (!byStudent.size) return [];
+
+  const users = await User.find({ _id: { $in: [...byStudent.keys()] }, role: 'student' })
+    .select('username email firstName lastName').lean();
+  return users
+    .map(u => ({ ...byStudent.get(String(u._id)), username: u.username, email: u.email, firstName: u.firstName, lastName: u.lastName }))
+    .sort((a, b) => (a.username || '').localeCompare(b.username || ''));
+}
+
 async function updateFee(id, body, sender) {
   const { amount, isPaid, note, courseName, month, year, feeType } = body;
   const fee = await TuitionFee.findById(id);
@@ -400,7 +462,7 @@ async function notifyPayment(feeId, student) {
 module.exports = {
   getSettings, updateSettings, uploadQr, deleteQr,
   listFees, getSummary, getAdminSummary, getUnpaidByStudent, listStudents,
-  createFee, createMonthlyFees, updateFee, deleteFee,
+  createFee, createMonthlyFees, updateFee, deleteFee, getClassStudentsMissingTuition,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
   buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount,

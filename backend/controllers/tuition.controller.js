@@ -65,6 +65,11 @@ exports.listStudents = guard('error:', async (req, res) => {
   res.json({ success: true, students });
 });
 
+exports.getClassStudentsMissingTuition = guard('error:', async (req, res) => {
+  const students = await tuitionService.getClassStudentsMissingTuition();
+  res.json({ success: true, students });
+});
+
 exports.createFee = guard('POST / error:', async (req, res) => {
   const { studentId, feeType, month, year, courseName, amount, note, monthCount } = req.body;
   if (!studentId || !feeType || amount === undefined) {

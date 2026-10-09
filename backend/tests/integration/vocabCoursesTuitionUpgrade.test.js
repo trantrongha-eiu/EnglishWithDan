@@ -202,3 +202,16 @@ describe('POST /api/upgrade/request — months validated against a server-side a
     expect(res.body.success).toBe(false);
   });
 });
+
+describe('GET /api/tuition/missing-in-classes — admin popup', () => {
+  it('is admin-only and returns the students list', async () => {
+    const { createTeacher, createAdmin } = require('../factories/userFactory');
+    const admin = await createAdmin();
+    const teacher = await createTeacher();
+    const ok = await request(app).get('/api/tuition/missing-in-classes').set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(ok.status).toBe(200);
+    expect(ok.body.students).toEqual([]);
+    const denied = await request(app).get('/api/tuition/missing-in-classes').set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(denied.status).toBe(403);
+  });
+});

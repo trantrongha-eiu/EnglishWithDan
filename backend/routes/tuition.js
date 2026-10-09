@@ -34,6 +34,7 @@ router.get('/summary', auth, adminOnly, tuitionController.getSummary);
 router.get('/admin-summary', auth, adminOnly, tuitionController.getAdminSummary);
 router.get('/unpaid-by-student', auth, adminOnly, tuitionController.getUnpaidByStudent);
 router.get('/students-list', auth, adminOnly, tuitionController.listStudents);
+router.get('/missing-in-classes', auth, adminOnly, tuitionController.getClassStudentsMissingTuition);
 router.post('/', auth, adminOnly, tuitionController.createFee);
 router.put('/:id', auth, adminOnly, tuitionController.updateFee);
 router.delete('/:id', auth, adminOnly, tuitionController.deleteFee);

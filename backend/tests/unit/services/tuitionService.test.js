@@ -482,4 +482,54 @@ describe('tuitionService', () => {
       expect(map[String(student._id)]).toBeUndefined();
     });
   });
+
+  describe('getClassStudentsMissingTuition', () => {
+    const ClassGroup = require('../../../models/ClassGroup');
+    const ClassEnrollment = require('../../../models/ClassEnrollment');
+    const { createTeacher } = require('../../factories/userFactory');
+    const NOW = new Date('2026-10-09T05:00:00Z'); // 9/10/2026 VN
+
+    async function setup(classOverrides = {}) {
+      const teacher = await createTeacher();
+      const cls = await ClassGroup.create({ name: 'Lớp A', teacherId: teacher._id, ...classOverrides });
+      const student = await createStudent();
+      await ClassEnrollment.create({ classId: cls._id, studentId: student._id, enrolledAt: new Date('2026-09-01') });
+      return { cls, student };
+    }
+
+    it('lists an enrolled student with no fee for the current month', async () => {
+      const { cls, student } = await setup();
+      const rows = await tuitionService.getClassStudentsMissingTuition(NOW);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ studentId: String(student._id), month: 10, year: 2026 });
+      expect(rows[0].classes).toEqual([{ classId: String(cls._id), name: 'Lớp A' }]);
+    });
+
+    it('a monthly fee for this month (paid or not) clears the student', async () => {
+      const { student } = await setup();
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 1 });
+      expect(await tuitionService.getClassStudentsMissingTuition(NOW)).toEqual([]);
+    });
+
+    it('a course fee entered since enrolling clears the student', async () => {
+      const { student } = await setup();
+      await createTuitionFee({ studentId: student._id, feeType: 'course', courseName: 'IELTS', amount: 1 });
+      expect(await tuitionService.getClassStudentsMissingTuition(NOW)).toEqual([]);
+    });
+
+    it('uses the start month for a class that has not started yet', async () => {
+      const { student } = await setup({ startDate: new Date('2026-11-15') });
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 1 });
+      const rows = await tuitionService.getClassStudentsMissingTuition(NOW);
+      expect(rows.map(r => `${r.month}/${r.year}`)).toEqual(['11/2026']);
+    });
+
+    it('ignores archived/ended classes and removed or dropped students', async () => {
+      await setup({ status: 'archived' });
+      await setup({ endDate: new Date('2026-09-30') });
+      const { cls } = await setup();
+      await ClassEnrollment.updateMany({ classId: cls._id }, { status: 'dropped' });
+      expect(await tuitionService.getClassStudentsMissingTuition(NOW)).toEqual([]);
+    });
+  });
 });

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import QuickSearch from '../components/QuickSearch';
+import TuitionMissingPopup from '../components/TuitionMissingPopup';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { AdminDataProvider } from '../contexts/AdminDataProvider';
@@ -15,7 +16,7 @@ export default function AdminLayout() {
     try { return localStorage.getItem(COMPACT_KEY) === '1'; } catch { return false; }
   });
   const { pathname, search } = useLocation();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { theme, toggle } = useTheme();
   const { title, group } = routeTitle(pathname, search);
 
@@ -54,6 +55,7 @@ export default function AdminLayout() {
               </div>
             </div>
             <div className="topbar-right">
+              {isAdmin && <TuitionMissingPopup />}
               <QuickSearch />
               <button
                 className="btn btn-ghost btn-icon theme-toggle"

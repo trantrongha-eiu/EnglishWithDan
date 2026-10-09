@@ -16,13 +16,14 @@ function addMonths(month, year, n) {
   return { month: (idx % 12) + 1, year: Math.floor(idx / 12) };
 }
 
-export default function StudentTuitionModal({ user, onClose, onSaved }) {
+export default function StudentTuitionModal({ user, initialPeriod, onClose, onSaved }) {
   const toast = useToast();
   const confirm = useConfirm();
   const [fees, setFees] = useState(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR),
+    feeType: 'monthly',
+    month: String(initialPeriod?.month || CUR_MONTH), year: String(initialPeriod?.year || CUR_YEAR),
     monthCount: '1', courseName: '', amount: '', note: '',
   });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
