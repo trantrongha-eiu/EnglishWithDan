@@ -188,6 +188,8 @@
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
             <span class="exam-audio-status" id="exam-audio-status"><i class="fas fa-headphones"></i> Chờ audio...</span>
             <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()"><i class="fas fa-play"></i> Phát ngay</button>
+            <!-- Seek/skip are unlocked only in Practice — see _updateExamToolbarForMode() -->
+            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(-5)" style="display:none"><i class="fas fa-backward"></i> 5s</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100"
                     step="0.1" tabindex="-1" />
@@ -196,6 +198,7 @@
                     <span id="audio-total">00:00</span>
                 </div>
             </div>
+            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(5)" style="display:none">5s <i class="fas fa-forward"></i></button>
             <!-- Volume control -->
             <div class="volume-wrap">
                 <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()"><i class="fas fa-volume-up"></i></span>
@@ -3904,11 +3907,20 @@
         // The exam screen's Tra từ button only exists to be clickable when
         // it'd actually work — see reading-v2.js's identical helper for
         // the full rationale. Called from startTest()/resumeExam() after
-        // state.mode is set.
+        // state.mode is set. Practice also unlocks the audio seek bar and
+        // ±5s skips; Simulation and Mock Test keep them read-only, like
+        // the real exam.
         function _updateExamToolbarForMode() {
             const show = !_mockMode && state.mode === 'practice';
             const dictBtn = document.getElementById('tool-dict-exam');
             if (dictBtn) dictBtn.style.display = show ? '' : 'none';
+            const seek = document.getElementById('audio-seek');
+            if (seek) {
+                seek.classList.toggle('exam-seek-readonly', !show);
+                seek.tabIndex = show ? 0 : -1;
+                seek.oninput = show ? () => onSeekInput(seek.value) : null;
+            }
+            document.querySelectorAll('.exam-skip-btn').forEach(b => { b.style.display = show ? '' : 'none'; });
         }
 
         function setToolExam(tool) {
