@@ -1,5 +1,5 @@
 // Rebuild an EXISTING full test's audio from its 4 đề lẻ audios (matched by title + part, like vol_audit.js), joined the
-// same way as vol_full_tests.js (re-encode 192k) → Cloudinary, point the test at it. For old hand-made full tests whose
+// same way as vol_full_tests.js (re-encode 64k mono) → R2, point the test at it. For old hand-made full tests whose
 // own recording drifted from the parts (Vol 1 - Test 1–4: the 30 s check pauses cut to ~15 s, "That is the end of
 // section N" dropped). Refused when a question has an audioTimestamp (it would no longer match). Backup → web/vol<V>/backup.
 //   node rejoin_test_audio.js <vol> "<test name>" … [--apply]
@@ -10,6 +10,7 @@ const cloudinary = require('cloudinary').v2;
 cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const { durationOf } = require('./vol_media');
 const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const ff = execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
 const [VOL, ...rest] = process.argv.slice(2);
 const names = rest.filter(a => !a.startsWith('--'));
@@ -48,14 +49,14 @@ const W = f => path.join(__dirname, 'web', `vol${VOL}`, f);
       const out = path.join(tmp, 'full.mp3');
       execFileSync(ff, ['-y', '-loglevel', 'error', ...files.flatMap(f => ['-i', f]),
         '-filter_complex', files.map((_, i) => `[${i}:a]`).join('') + `concat=n=${files.length}:v=0:a=1[a]`,
-        '-map', '[a]', '-ac', '2', '-ar', '44100', '-b:a', '192k', out]);
+        '-map', '[a]', '-ac', '1', '-ar', '44100', '-b:a', '64k', out]);
       const dur = Math.round(durationOf(out));
       if (Math.abs(dur - total) > 5) throw new Error(`${name}: joined audio ${dur}s vs sections ${total}s`);
 
       fs.mkdirSync(W('backup'), { recursive: true });
       fs.writeFileSync(W(`backup/rejoin_test_${t._id}_${Date.now()}.json`),
         JSON.stringify({ _id: String(t._id), name: t.name, audioUrl: t.audioUrl, audioDuration: t.audioDuration, audioFileName: t.audioFileName }, null, 1));
-      const up = await upload(out, { resource_type: 'video', folder: 'listening', public_id: `listening_${t._id}_${Date.now()}` });
+      const up = await uploadAudio(out, { folder: 'listening', public_id: `listening_${t._id}_${Date.now()}` });
       await db.collection('listeningtests').updateOne({ _id: t._id },
         { $set: { audioUrl: up.secure_url, audioDuration: dur, audioFileName: `${name.replace(/\W+/g, '-').toLowerCase()}-full.mp3`, updatedAt: new Date() } });
       console.log(`   ✓ audio ${dur}s ${(fs.statSync(out).size / 1e6).toFixed(1)}MB ${up.secure_url}`);

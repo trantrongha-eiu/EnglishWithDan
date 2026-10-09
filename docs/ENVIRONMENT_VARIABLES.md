@@ -64,6 +64,11 @@ is not the how-to.
 | `CLOUDINARY_CLOUD_NAME` | Optional (but all three needed together) | Cloudinary account identifier | `backend/server.js` (`cloudinary.config`), `backend/services/cloudinaryService.js`, `backend/config/index.js` | Uploads fail. `GET /health` reports `dependencies.cloudinary: { status: 'not_configured' }` (checked via presence of this + `CLOUDINARY_API_KEY`) rather than attempting a live ping. |
 | `CLOUDINARY_API_KEY` | Optional (see above) | Cloudinary auth | same as above | Same as above. |
 | `CLOUDINARY_API_SECRET` | Optional (see above) | Cloudinary auth | same as above | Same as above. **Currently an unrotated leaked secret — see warning above.** |
+| `R2_ACCOUNT_ID` | Optional (all five R2 vars needed together) | Cloudflare account id — the S3 endpoint is `https://<id>.r2.cloudflarestorage.com` | `backend/config/index.js`, `backend/services/r2Service.js` | Listening audio uploads (admin + import scripts) fall back to Cloudinary. |
+| `R2_ACCESS_KEY_ID` | Optional (see above) | R2 API token (Object Read & Write on the bucket) | same as above | Same as above. |
+| `R2_SECRET_ACCESS_KEY` | Optional (see above) | R2 API token secret | same as above | Same as above. |
+| `R2_BUCKET` | Optional (see above) | Bucket holding Listening audio | same as above | Same as above. |
+| `R2_PUBLIC_URL` | Optional (see above) | Bucket custom domain, e.g. `https://media.ieltsthayha.com`; its host is added to the media-proxy allowlist (`mediaTokenService.ALLOWED_MEDIA_HOSTS`) | same as above + `backend/services/mediaTokenService.js` | Same as above; existing R2 audio URLs could not be proxied. |
 
 ## Protected media delivery
 

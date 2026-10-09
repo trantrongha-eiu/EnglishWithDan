@@ -17,6 +17,7 @@ const imported = fs.existsSync(IMPORTED) ? JSON.parse(fs.readFileSync(IMPORTED, 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128 Safari/537.36';
 
 const upload = (buf, opts) => new Promise((res, rej) => cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r)).end(buf));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 
 function strip(o) {
   if (Array.isArray(o)) return o.map(strip);
@@ -46,7 +47,7 @@ function strip(o) {
       const r = await fetch(d._audio, { headers: { 'User-Agent': UA, Referer: 'https://tuhoc.dolenglish.vn/' } });
       if (!r.ok) { console.log(`  ✗ audio HTTP ${r.status}`); continue; }
       const buf = Buffer.from(await r.arrayBuffer());
-      const au = await upload(buf, { resource_type: 'video', folder: 'listening-sections', public_id: `dol_${d._dolSectionId}` });
+      const au = await uploadAudio(buf, { folder: 'listening-sections', public_id: `dol_${d._dolSectionId}` });
       for (const gi of maps) {
         const png = W(`maps/${id}_${gi}.png`);
         execFileSync('py', [path.join(__dirname, 'dol_mapimg.py'), W(`draft/${id}.json`), String(gi), png], { stdio: 'pipe' });

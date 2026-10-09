@@ -33,7 +33,7 @@ function partFile(vol, test, part, audio, clip) {
   fs.mkdirSync(path.dirname(out), { recursive: true });
   const cut = clip ? ['-ss', String(clip[0]), '-to', String(clip[1])] : [];
   const fade = clip ? ['-af', `afade=t=out:st=${clip[1] - clip[0] - 1}:d=1`] : [];
-  if (!fs.existsSync(out)) execFileSync(ffmpeg(), ['-y', '-loglevel', 'error', ...cut, '-i', src, '-vn', ...fade, '-ac', '2', '-ar', '44100', '-b:a', '128k', out]);
+  if (!fs.existsSync(out)) execFileSync(ffmpeg(), ['-y', '-loglevel', 'error', ...cut, '-i', src, '-vn', ...fade, '-ac', '1', '-ar', '44100', '-b:a', '64k', out]);
   return out;
 }
 const audioFor = draft => partFile(draft._vol, draft._test, draft.partNumber, draft._audio, draft._clip);

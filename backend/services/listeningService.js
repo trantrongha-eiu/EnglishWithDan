@@ -10,6 +10,7 @@
 // genuinely differs and was left un-merged.
 const mongoose = require('mongoose');
 const cloudinaryService = require('./cloudinaryService');
+const r2Service = require('./r2Service');
 const { NotFoundError } = require('../errors/AppError');
 const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -235,28 +236,35 @@ async function deleteAdminTestPermanent(id) {
 }
 
 // ── Admin – Uploads ──────────────────────────────────────────────────────
+// Audio goes to Cloudflare R2 when configured (no egress fees — Listening
+// audio was ~95% of the Cloudinary bill), else Cloudinary as before.
+// Returns { url, duration } (duration in whole seconds).
+async function uploadAudio(file, folder, name) {
+  const r = r2Service.isConfigured()
+    ? await r2Service.uploadAudio(file.buffer, {
+      folder, public_id: name,
+      ext: (/\.([a-z0-9]{2,4})$/i.exec(file.originalname || '') || [, 'mp3'])[1].toLowerCase(),
+      contentType: file.mimetype || 'audio/mpeg',
+    })
+    : await cloudinaryService.uploadBufferStream(file.buffer, { resource_type: 'video', folder, public_id: name, overwrite: true });
+  return { url: r.secure_url, duration: Math.round(r.duration || 0) };
+}
+
 async function uploadTestAudio(id, file) {
-  const uploadResult = await cloudinaryService.uploadBufferStream(file.buffer, {
-    resource_type: 'video',
-    folder: 'listening',
-    public_id: `listening_${id}_${Date.now()}`,
-    overwrite: true
-  });
+  const { url, duration } = await uploadAudio(file, 'listening', `listening_${id}_${Date.now()}`);
   const test = await ListeningTest.findByIdAndUpdate(id, {
-    audioUrl: uploadResult.secure_url,
+    audioUrl: url,
     audioFileName: file.originalname,
-    audioDuration: Math.round(uploadResult.duration || 0)
+    audioDuration: duration
   }, { new: true });
   return { audioUrl: test.audioUrl, audioDuration: test.audioDuration };
 }
 
 async function uploadStandaloneAudio(file) {
-  const uploadResult = await cloudinaryService.uploadBufferStream(file.buffer, {
-    resource_type: 'video', folder: 'listening', public_id: `listening_tmp_${Date.now()}`
-  });
+  const { url, duration } = await uploadAudio(file, 'listening', `listening_tmp_${Date.now()}`);
   return {
-    audioUrl: uploadResult.secure_url,
-    audioDuration: Math.round(uploadResult.duration || 0),
+    audioUrl: url,
+    audioDuration: duration,
     originalName: file.originalname,
   };
 }
@@ -270,13 +278,14 @@ async function uploadMapImage(imageBase64) {
 }
 
 async function uploadSectionAudio(id, file) {
-  const result = await cloudinaryService.uploadBufferStream(file.buffer, { resource_type: 'video', folder: 'listening-sections', use_filename: true });
+  const base = String(file.originalname || 'audio').replace(/\.[^.]*$/, '').replace(/[^a-zA-Z0-9_-]+/g, '_').slice(0, 60);
+  const { url, duration } = await uploadAudio(file, 'listening-sections', `${base}_${id}_${Date.now()}`);
   const s = await ListeningSection.findByIdAndUpdate(id, {
-    audioUrl: result.secure_url,
+    audioUrl: url,
     audioFileName: file.originalname,
-    audioDuration: Math.round(result.duration || 0)
+    audioDuration: duration
   }, { new: true });
-  return { audioUrl: result.secure_url, duration: Math.round(result.duration || 0), section: s };
+  return { audioUrl: url, duration, section: s };
 }
 
 // ── Admin – Transcript ───────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 // Build full Listening tests from đề lẻ that are not yet part of any full test (web/orphans.json from
 // orphan_sections.js). Sections are copied the way admin "assemble test" does (listeningService.assembleTest:
-// questionGroups without _id), the 4 section mp3s are joined into one test audio (ffmpeg concat → 192k mp3,
+// questionGroups without _id), the 4 section mp3s are joined into one test audio (ffmpeg concat → 64k mono mp3,
 // like the other full tests) and uploaded to Cloudinary listening/listening_<testId>_<ts>. Created HIDDEN;
 // activate after checking:  node build_full_tests.js --activate
 //   node build_full_tests.js            dry run: plan + numbering checks
@@ -35,6 +35,7 @@ const PLAN = [
 
 const ffmpeg = () => execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
 const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const durationOf = (ff, file) => {
   let txt = '';
   try { execFileSync(ff, ['-i', file], { stdio: 'pipe' }); } catch (e) { txt = String(e.stderr); }
@@ -86,7 +87,7 @@ const durationOf = (ff, file) => {
       const out = path.join(tmp, p.file);
       execFileSync(ff, ['-y', '-loglevel', 'error', ...parts.flatMap(f => ['-i', f]),
         '-filter_complex', parts.map((_, i) => `[${i}:a]`).join('') + `concat=n=${parts.length}:v=0:a=1[a]`,
-        '-map', '[a]', '-ac', '2', '-ar', '44100', '-b:a', '192k', out]);
+        '-map', '[a]', '-ac', '1', '-ar', '44100', '-b:a', '64k', out]);
       const dur = durationOf(ff, out);
       if (Math.abs(dur - total) > 5) throw new Error(`${p.name}: joined audio ${dur}s vs sections ${total}s`);
 
@@ -98,7 +99,7 @@ const durationOf = (ff, file) => {
           questionGroups: src.questionGroups.map(({ _id, ...g }) => ({ ...g, questions: g.questions.map(({ _id: _q, ...q }) => q) })),
         })),
       });
-      const up = await upload(out, { resource_type: 'video', folder: 'listening', public_id: `listening_${test._id}_${Date.now()}` });
+      const up = await uploadAudio(out, { folder: 'listening', public_id: `listening_${test._id}_${Date.now()}` });
       Object.assign(test, { audioUrl: up.secure_url, audioFileName: p.file, audioDuration: dur });
       await test.save();
       console.log(`   ✓ ${test._id} hidden, audio ${dur}s ${(fs.statSync(out).size / 1e6).toFixed(1)}MB`);

@@ -17,6 +17,7 @@ const W = f => path.join(__dirname, 'web', `vol${vol}`, f);
 const IMPORTED = W('imported.json');
 const imported = fs.existsSync(IMPORTED) ? JSON.parse(fs.readFileSync(IMPORTED, 'utf8')) : {};
 const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const strip = o => Array.isArray(o) ? o.map(strip) : (o && typeof o === 'object')
   ? Object.fromEntries(Object.entries(o).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, strip(v)])) : o;
 
@@ -32,7 +33,7 @@ const strip = o => Array.isArray(o) ? o.map(strip) : (o && typeof o === 'object'
       console.log(`${apply ? 'IMPORT' : 'DRY'} ${id} P${d.partNumber} ${d.title} — audio ${dur}s, ${maps.length} map(s)`);
       if (!apply) continue;
       const tag = d.audioFileName.replace(/\.mp3$/, '');
-      const au = await upload(mp3, { resource_type: 'video', folder: 'listening-sections', public_id: tag, overwrite: true });
+      const au = await uploadAudio(mp3, { folder: 'listening-sections', public_id: tag });
       for (const gi of maps) {
         const im = await upload(cropFor(d, gi), { folder: 'listening-maps', public_id: `${tag}_g${gi}`, overwrite: true });
         d.questionGroups[gi].imageUrl = im.secure_url;

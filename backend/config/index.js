@@ -24,6 +24,18 @@ module.exports = {
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
 
+  // Cloudflare R2 (services/r2Service.js) — Listening audio lives here, not
+  // on Cloudinary (zero egress fees). publicUrl is the bucket's custom
+  // domain, e.g. https://media.ieltsthayha.com. Unset ⇒ audio uploads fall
+  // back to Cloudinary.
+  r2: {
+    accountId: process.env.R2_ACCOUNT_ID,
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    bucket: process.env.R2_BUCKET,
+    publicUrl: (process.env.R2_PUBLIC_URL || '').replace(/\/$/, ''),
+  },
+
   ai: {
     openRouterApiKey: process.env.OPENROUTER_API_KEY,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,

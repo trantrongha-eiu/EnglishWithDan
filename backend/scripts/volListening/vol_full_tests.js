@@ -1,7 +1,7 @@
 // Build "Vol <V> - Test <T>" full Listening tests from the vol specs (specs/vol<V>_t<T>.js): each part is the section
 // imported from that vol test (web/vol<V>/imported.json) or, for a part already in the bank, the reused section
 // (spec part.reuse). Sections are copied like admin "assemble test"; the 4 part mp3s are joined into one test audio
-// (ffmpeg, 192k) → Cloudinary. Created HIDDEN, then pw_fulltest.js, then --activate.
+// (ffmpeg, 64k mono) → R2. Created HIDDEN, then pw_fulltest.js, then --activate.
 //   node vol_full_tests.js <vol> <test …> [--apply | --activate]
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
@@ -24,6 +24,7 @@ const PLAN = TESTS.map(t => {
 
 const ffmpeg = () => execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
 const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const durationOf = (ff, file) => {
   let txt = '';
   try { execFileSync(ff, ['-i', file], { stdio: 'pipe' }); } catch (e) { txt = String(e.stderr); }
@@ -76,7 +77,7 @@ const durationOf = (ff, file) => {
       const out = path.join(tmp, p.file);
       execFileSync(ff, ['-y', '-loglevel', 'error', ...parts.flatMap(f => ['-i', f]),
         '-filter_complex', parts.map((_, i) => `[${i}:a]`).join('') + `concat=n=${parts.length}:v=0:a=1[a]`,
-        '-map', '[a]', '-ac', '2', '-ar', '44100', '-b:a', '192k', out]);
+        '-map', '[a]', '-ac', '1', '-ar', '44100', '-b:a', '64k', out]);
       const dur = durationOf(ff, out);
       if (Math.abs(dur - total) > 5) throw new Error(`${p.name}: joined audio ${dur}s vs sections ${total}s`);
 
@@ -88,7 +89,7 @@ const durationOf = (ff, file) => {
           questionGroups: src.questionGroups.map(({ _id, ...g }) => ({ ...g, questions: g.questions.map(({ _id: _q, ...q }) => q) })),
         })),
       });
-      const up = await upload(out, { resource_type: 'video', folder: 'listening', public_id: `listening_${test._id}_${Date.now()}` });
+      const up = await uploadAudio(out, { folder: 'listening', public_id: `listening_${test._id}_${Date.now()}` });
       Object.assign(test, { audioUrl: up.secure_url, audioFileName: p.file, audioDuration: dur });
       await test.save();
       console.log(`   ✓ ${test._id} hidden, audio ${dur}s ${(fs.statSync(out).size / 1e6).toFixed(1)}MB`);

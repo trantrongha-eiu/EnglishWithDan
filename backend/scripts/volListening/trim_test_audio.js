@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
+const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const ff = execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
 const [VOL, name, cutArg] = process.argv.slice(2);
 const cut = +cutArg;
@@ -32,8 +33,8 @@ const W = f => path.join(__dirname, 'web', `vol${VOL}`, f);
   const r = await fetch(t.audioUrl);
   fs.writeFileSync(tmp + '_src', Buffer.from(await r.arrayBuffer()));
   // 1.5 s fade so the cut never clicks
-  execFileSync(ff, ['-y', '-loglevel', 'error', '-i', tmp + '_src', '-t', String(cut), '-af', `afade=t=out:st=${cut - 1.5}:d=1.5`, '-ac', '2', '-ar', '44100', '-b:a', '128k', tmp + '.mp3']);
-  const up = await upload(tmp + '.mp3', { resource_type: 'video', folder: 'listening', public_id: `trim_test_${t._id}_${Date.now()}` });
+  execFileSync(ff, ['-y', '-loglevel', 'error', '-i', tmp + '_src', '-t', String(cut), '-af', `afade=t=out:st=${cut - 1.5}:d=1.5`, '-ac', '1', '-ar', '44100', '-b:a', '64k', tmp + '.mp3']);
+  const up = await uploadAudio(tmp + '.mp3', { folder: 'listening', public_id: `trim_test_${t._id}_${Date.now()}` });
   await col.updateOne({ _id: t._id }, { $set: { audioUrl: up.secure_url, audioFileName: path.basename(up.secure_url), audioDuration: Math.round(up.duration || cut), updatedAt: new Date() } });
   console.log(`✓ ${up.secure_url} ${up.duration}s`);
   fs.unlinkSync(tmp + '_src');

@@ -32,7 +32,9 @@ const TAG_LEN = 16;
 // Only these hosts may be proxied — a hard stop against the sealed-URL
 // mechanism ever being pointed at an internal address (SSRF), even though
 // the URL is always one we put in the token ourselves.
+// Plus the R2 bucket's custom domain (Listening audio, services/r2Service).
 const ALLOWED_MEDIA_HOSTS = new Set(['res.cloudinary.com']);
+try { if (config.r2 && config.r2.publicUrl) ALLOWED_MEDIA_HOSTS.add(new URL(config.r2.publicUrl).hostname); } catch { /* malformed R2_PUBLIC_URL — R2 audio just won't be proxied */ }
 
 function key() {
   const secret = config.media.tokenSecret;
@@ -47,7 +49,7 @@ function b64urlDecode(str) {
   return Buffer.from(String(str).replace(/-/g, '+').replace(/_/g, '/'), 'base64');
 }
 
-// True if a stored URL is one we can/should protect (a Cloudinary asset).
+// True if a stored URL is one we can/should protect (a Cloudinary or R2 asset).
 // Non-Cloudinary values (legacy local paths like "img/course-x.jpg", empty
 // strings) are left untouched by the rewrite pass.
 function isProtectableUrl(url) {
