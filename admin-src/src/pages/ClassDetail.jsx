@@ -306,9 +306,13 @@ function StudentsTab({ cls, roster, onChange }) {
     setAdding(true);
     try {
       const d = await apiFetch(`/classes/${cls._id}/students`, { method: 'POST', body: JSON.stringify({ userId: studentId }) });
-      toast(d.added?.length ? `Đã thêm ${d.added.length} học viên` : 'Không thêm được');
       setPickedId('');
-      onChange();
+      // Keep "Đang thêm..." up until the roster (and the Sĩ số KPI computed
+      // from it) has actually reloaded — getClass recomputes every student's
+      // stats first, so it can lag the add by a few seconds and the count
+      // looked stuck in the meantime.
+      await onChange();
+      toast(d.added?.length ? `Đã thêm ${d.added.length} học viên` : 'Không thêm được');
     } catch (err) { toast(err.message, 'error'); }
     finally { setAdding(false); }
   }
@@ -317,8 +321,8 @@ function StudentsTab({ cls, roster, onChange }) {
     confirm(`Xoá "${enr.student.name || enr.student.username}" khỏi lớp? Lịch sử điểm danh vẫn được giữ lại.`, async () => {
       try {
         await apiFetch(`/classes/${cls._id}/students/${enr.enrollmentId}`, { method: 'DELETE' });
+        await onChange();
         toast('Đã xoá khỏi lớp');
-        onChange();
       } catch (err) { toast(err.message, 'error'); }
     });
   }

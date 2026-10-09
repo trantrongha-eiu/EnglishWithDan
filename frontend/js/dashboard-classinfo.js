@@ -505,3 +505,15 @@ async function loadClassInfo() {
   ciMaybeShowWarningPopup(data.classes);
 }
 window.loadClassInfo = loadClassInfo;
+
+// The card is otherwise fetched once per page load, so a student who keeps
+// the dashboard open never saw a classmate being added (Sĩ số lớp), a fresh
+// attendance mark, etc. Re-fetch when the tab comes back into view —
+// throttled so quick tab switches don't hammer /classes/my/overview.
+let ciLastRefresh = Date.now();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (Date.now() - ciLastRefresh < 30000) return;
+  ciLastRefresh = Date.now();
+  loadClassInfo();
+});
