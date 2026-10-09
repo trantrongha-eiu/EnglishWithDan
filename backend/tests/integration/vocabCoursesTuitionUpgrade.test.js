@@ -215,3 +215,29 @@ describe('GET /api/tuition/missing-in-classes — admin popup', () => {
     expect(denied.status).toBe(403);
   });
 });
+
+describe('GET /api/classes/:classId/tuition — class tuition tab', () => {
+  it('the class teacher and admin can read it; another teacher and students cannot', async () => {
+    const { createTeacher, createAdmin } = require('../factories/userFactory');
+    const ClassGroup = require('../../models/ClassGroup');
+    const ClassEnrollment = require('../../models/ClassEnrollment');
+    const teacher = await createTeacher();
+    const cls = await ClassGroup.create({ name: 'Lớp T', teacherId: teacher._id });
+    const student = await createStudent();
+    await ClassEnrollment.create({ classId: cls._id, studentId: student._id });
+    const url = `/api/classes/${cls._id}/tuition`;
+
+    const own = await request(app).get(url).set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(own.status).toBe(200);
+    expect(own.body.students).toHaveLength(1);
+    expect(own.body.students[0]).toMatchObject({ studentId: String(student._id), status: 'missing' });
+
+    const admin = await request(app).get(url).set('Authorization', `Bearer ${signTokenFor(await createAdmin())}`);
+    expect(admin.status).toBe(200);
+
+    const other = await request(app).get(url).set('Authorization', `Bearer ${signTokenFor(await createTeacher())}`);
+    expect([403, 404]).toContain(other.status);
+    const asStudent = await request(app).get(url).set('Authorization', `Bearer ${signTokenFor(student)}`);
+    expect(asStudent.status).toBe(403);
+  });
+});

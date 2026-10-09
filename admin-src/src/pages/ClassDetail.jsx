@@ -6,6 +6,7 @@ import { useConfirm } from '../components/ConfirmDialog';
 import StudentPicker from './tuition/StudentPicker';
 import { ClassProgressHero } from './classes/ClassProgress';
 import { keyLabel } from './classes/classProgressUtils';
+import ClassTuitionTab from './classes/ClassTuitionTab';
 
 const MARK_OPTS = [
   { v: 'present', label: 'Có mặt', cls: 'badge-green' },
@@ -23,6 +24,7 @@ const TABS = [
   { key: 'attendance', label: '✅ Điểm danh' },
   { key: 'dashboard', label: '📊 Chuyên cần' },
   { key: 'assignments', label: '📚 Bài tập' },
+  { key: 'tuition', label: '💰 Học phí' },
 ];
 
 const RESOURCE_CATS = [
@@ -127,6 +129,7 @@ export default function ClassDetail() {
       {active.key === 'attendance' && <AttendanceTab key={params.get('session') || ''} cls={cls} initialSessionId={params.get('session') || ''} onSaved={loadClass} />}
       {active.key === 'dashboard' && <DashboardTab cls={cls} />}
       {active.key === 'assignments' && <AssignmentsTab cls={cls} />}
+      {active.key === 'tuition' && <ClassTuitionTab cls={cls} />}
     </>
   );
 }

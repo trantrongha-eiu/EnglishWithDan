@@ -11,6 +11,7 @@ const { escapeHtml } = require('../utils/escapeHtml');
 const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const { vnTodayKey } = require('../utils/classProgress');
+const { escapeRegex } = require('../utils/strings');
 
 // Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
 // below, and cron/tuitionReminder.js's daily auto-remind — so there's one
@@ -116,9 +117,26 @@ async function deleteQr() {
   await s.save();
 }
 
+// Free-text search for the fee list: every word must hit the student's
+// username/email/first/last name (so "Bùi Tuấn" finds firstName "Bùi" +
+// lastName "Tuấn"), or the whole text hits the fee's course name / note.
+async function feeSearchFilter(q) {
+  const text = String(q).trim().slice(0, 100);
+  const words = text.split(/\s+/);
+  const users = await User.find({
+    $and: words.map(w => {
+      const rx = new RegExp(escapeRegex(w), 'i');
+      return { $or: [{ username: rx }, { email: rx }, { firstName: rx }, { lastName: rx }] };
+    }),
+  }).select('_id').limit(500).lean();
+  const rx = new RegExp(escapeRegex(text), 'i');
+  return { $or: [{ studentId: { $in: users.map(u => u._id) } }, { courseName: rx }, { note: rx }] };
+}
+
 async function listFees(query) {
-  const { studentId, month, year, feeType, isPaid, studentNotified, page = 1, limit = 50 } = query;
+  const { studentId, month, year, feeType, isPaid, studentNotified, q, page = 1, limit = 50 } = query;
   const filter = {};
+  if (q && String(q).trim()) Object.assign(filter, await feeSearchFilter(q));
   if (studentId) filter.studentId = studentId;
   if (month)     filter.month     = Number(month);
   if (year)      filter.year      = Number(year);
@@ -255,6 +273,32 @@ async function createMonthlyFees({ studentId, month, year, monthCount, amount, n
 //     added to the class roster).
 // One row per student, listing every class that put them on the list.
 const COURSE_FEE_SLACK_MS = 60 * 864e5;
+const LIVE_ENROLLMENT = ['active', 'warning'];
+
+function classBillingPeriod(cls, todayKey) {
+  const startKey = cls.startDate ? vnTodayKey(new Date(cls.startDate)) : null;
+  const key = startKey && startKey > todayKey ? startKey : todayKey;
+  return { month: Number(key.slice(5, 7)), year: Number(key.slice(0, 4)) };
+}
+
+// The fees (of one student) that cover an enrollment for a billing month.
+function coveringFees(fees, enrolledAt, { month, year }) {
+  const since = new Date(enrolledAt || 0).getTime() - COURSE_FEE_SLACK_MS;
+  return fees.filter(f => (f.feeType === 'monthly'
+    ? f.month === month && f.year === year
+    : new Date(f.createdAt).getTime() >= since));
+}
+
+function groupFeesByStudent(fees) {
+  const map = new Map();
+  for (const f of fees) {
+    const sid = String(f.studentId);
+    if (!map.has(sid)) map.set(sid, []);
+    map.get(sid).push(f);
+  }
+  return map;
+}
+
 async function getClassStudentsMissingTuition(now = new Date()) {
   const todayKey = vnTodayKey(now);
   const classes = await ClassGroup.find({
@@ -267,31 +311,20 @@ async function getClassStudentsMissingTuition(now = new Date()) {
   const enrollments = await ClassEnrollment.find({
     classId: { $in: classes.map(c => c._id) },
     removedAt: null,
-    status: { $in: ['active', 'warning'] },
+    status: { $in: LIVE_ENROLLMENT },
   }).select('classId studentId enrolledAt').lean();
   if (!enrollments.length) return [];
 
   const studentIds = [...new Set(enrollments.map(e => String(e.studentId)))];
-  const fees = await TuitionFee.find({ studentId: { $in: studentIds } })
-    .select('studentId feeType month year createdAt').lean();
-  const monthlyKeys = new Set();
-  const courseFeeTimes = new Map(); // studentId -> [createdAt ms]
-  for (const f of fees) {
-    const sid = String(f.studentId);
-    if (f.feeType === 'monthly') monthlyKeys.add(`${sid}:${f.month}/${f.year}`);
-    else courseFeeTimes.set(sid, [...(courseFeeTimes.get(sid) || []), new Date(f.createdAt).getTime()]);
-  }
+  const feesByStudent = groupFeesByStudent(await TuitionFee.find({ studentId: { $in: studentIds } })
+    .select('studentId feeType month year createdAt').lean());
 
   const byStudent = new Map();
   for (const e of enrollments) {
     const cls = classById.get(String(e.classId));
-    const startKey = cls.startDate ? vnTodayKey(new Date(cls.startDate)) : null;
-    const periodKey = startKey && startKey > todayKey ? startKey : todayKey;
-    const month = Number(periodKey.slice(5, 7)), year = Number(periodKey.slice(0, 4));
+    const { month, year } = classBillingPeriod(cls, todayKey);
     const sid = String(e.studentId);
-    if (monthlyKeys.has(`${sid}:${month}/${year}`)) continue;
-    const since = new Date(e.enrolledAt || 0).getTime() - COURSE_FEE_SLACK_MS;
-    if ((courseFeeTimes.get(sid) || []).some(t => t >= since)) continue;
+    if (coveringFees(feesByStudent.get(sid) || [], e.enrolledAt, { month, year }).length) continue;
     if (!byStudent.has(sid)) byStudent.set(sid, { studentId: sid, month, year, classes: [] });
     byStudent.get(sid).classes.push({ classId: String(cls._id), name: cls.name });
   }
@@ -302,6 +335,41 @@ async function getClassStudentsMissingTuition(now = new Date()) {
   return users
     .map(u => ({ ...byStudent.get(String(u._id)), username: u.username, email: u.email, firstName: u.firstName, lastName: u.lastName }))
     .sort((a, b) => (a.username || '').localeCompare(b.username || ''));
+}
+
+// Class page "Học phí" tab (the class's teacher, or admin): every live
+// student in the class with their tuition status for a billing month —
+// 'missing' (no fee entered that covers it, same rule as above), 'unpaid'
+// (a covering fee isn't paid yet) or 'paid' — plus their total unpaid debt
+// across all fees. Defaults to the class's billing month.
+const CLASS_TUITION_ORDER = { missing: 0, unpaid: 1, paid: 2 };
+async function getClassTuition(cls, { month, year } = {}, now = new Date()) {
+  const period = Number(month) >= 1 && Number(month) <= 12 && Number(year)
+    ? { month: Number(month), year: Number(year) }
+    : classBillingPeriod(cls, vnTodayKey(now));
+  const enrollments = await ClassEnrollment.find({ classId: cls._id, removedAt: null, status: { $in: LIVE_ENROLLMENT } })
+    .populate('studentId', 'username email firstName lastName role')
+    .select('studentId status enrolledAt').lean();
+  const live = enrollments.filter(e => e.studentId?.role === 'student');
+  const feesByStudent = groupFeesByStudent(await TuitionFee.find({ studentId: { $in: live.map(e => e.studentId._id) } })
+    .select('studentId feeType month year courseName amount isPaid paidDate studentNotified createdAt').lean());
+
+  const students = live.map(e => {
+    const u = e.studentId;
+    const mine = feesByStudent.get(String(u._id)) || [];
+    const fees = coveringFees(mine, e.enrolledAt, period);
+    const unpaid = mine.filter(f => !f.isPaid);
+    return {
+      studentId: String(u._id), username: u.username, email: u.email, firstName: u.firstName, lastName: u.lastName,
+      enrollmentStatus: e.status, enrolledAt: e.enrolledAt,
+      status: !fees.length ? 'missing' : fees.some(f => !f.isPaid) ? 'unpaid' : 'paid',
+      fees,
+      unpaidTotal: unpaid.reduce((s, f) => s + (f.amount || 0), 0),
+      unpaidCount: unpaid.length,
+    };
+  }).sort((a, b) => CLASS_TUITION_ORDER[a.status] - CLASS_TUITION_ORDER[b.status]
+    || (a.username || '').localeCompare(b.username || ''));
+  return { period, students };
 }
 
 async function updateFee(id, body, sender) {
@@ -462,7 +530,7 @@ async function notifyPayment(feeId, student) {
 module.exports = {
   getSettings, updateSettings, uploadQr, deleteQr,
   listFees, getSummary, getAdminSummary, getUnpaidByStudent, listStudents,
-  createFee, createMonthlyFees, updateFee, deleteFee, getClassStudentsMissingTuition,
+  createFee, createMonthlyFees, updateFee, deleteFee, getClassStudentsMissingTuition, getClassTuition,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
   buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount,

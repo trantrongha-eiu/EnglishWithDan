@@ -532,4 +532,49 @@ describe('tuitionService', () => {
       expect(await tuitionService.getClassStudentsMissingTuition(NOW)).toEqual([]);
     });
   });
+
+  describe('getClassTuition', () => {
+    const ClassGroup = require('../../../models/ClassGroup');
+    const ClassEnrollment = require('../../../models/ClassEnrollment');
+    const { createTeacher } = require('../../factories/userFactory');
+    const NOW = new Date('2026-10-09T05:00:00Z');
+
+    it('classifies each live student as missing / unpaid / paid for the billing month', async () => {
+      const teacher = await createTeacher();
+      const cls = await ClassGroup.create({ name: 'Lớp B', teacherId: teacher._id });
+      const [missing, unpaid, paid, dropped] = await Promise.all([createStudent(), createStudent(), createStudent(), createStudent()]);
+      for (const s of [missing, unpaid, paid, dropped]) {
+        await ClassEnrollment.create({ classId: cls._id, studentId: s._id, enrolledAt: new Date('2026-09-01') });
+      }
+      await ClassEnrollment.updateOne({ studentId: dropped._id }, { status: 'dropped' });
+      await createTuitionFee({ studentId: missing._id, feeType: 'monthly', month: 9, year: 2026, amount: 300, isPaid: false });
+      await createTuitionFee({ studentId: unpaid._id, feeType: 'monthly', month: 10, year: 2026, amount: 500, isPaid: false });
+      await createTuitionFee({ studentId: paid._id, feeType: 'course', courseName: 'IELTS', amount: 900, isPaid: true });
+
+      const { period, students } = await tuitionService.getClassTuition(cls, {}, NOW);
+      expect(period).toEqual({ month: 10, year: 2026 });
+      expect(students.map(s => [s.studentId, s.status])).toEqual([
+        [String(missing._id), 'missing'], [String(unpaid._id), 'unpaid'], [String(paid._id), 'paid'],
+      ]);
+      expect(students[0]).toMatchObject({ unpaidTotal: 300, unpaidCount: 1, fees: [] });
+      expect(students[1].fees).toHaveLength(1);
+
+      const sept = await tuitionService.getClassTuition(cls, { month: '9', year: '2026' }, NOW);
+      expect(sept.students.find(s => s.studentId === String(missing._id)).status).toBe('unpaid');
+    });
+  });
+
+  describe('listFees search (q)', () => {
+    it('matches student name words across first/last name, username, and course name', async () => {
+      const bui = await createStudent({ firstName: 'Bùi', lastName: 'Tuấn', username: 'buituan1207' });
+      const other = await createStudent({ firstName: 'Lan', lastName: 'Ng' });
+      await createTuitionFee({ studentId: bui._id, feeType: 'monthly', month: 10, year: 2026, amount: 1 });
+      await createTuitionFee({ studentId: other._id, feeType: 'course', courseName: 'IELTS Intensive', amount: 2 });
+
+      expect((await tuitionService.listFees({ q: 'bùi tuấn' })).total).toBe(1);
+      expect((await tuitionService.listFees({ q: 'buituan' })).total).toBe(1);
+      expect((await tuitionService.listFees({ q: 'intensive' })).fees[0].amount).toBe(2);
+      expect((await tuitionService.listFees({ q: 'không ai' })).total).toBe(0);
+    });
+  });
 });

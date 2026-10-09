@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const validateObjectIdParam = require('../middleware/validateObjectIdParam');
 const c = require('../controllers/classAttendance.controller');
+const tuitionController = require('../controllers/tuition.controller');
 
 // ── Student self-view (must come BEFORE the /:classId routes so "my" isn't
 //    parsed as a class id) ──────────────────────────────────────────────
@@ -42,5 +43,8 @@ router.put('/:classId/sessions/:sessionId/attendance', validateObjectIdParam('cl
 
 // Dashboard
 router.get('/:classId/dashboard', validateObjectIdParam('classId'), c.loadOwnedClass, c.getDashboard);
+
+// Tuition status of the class's students (read-only; fees are edited via /api/tuition, admin only)
+router.get('/:classId/tuition', validateObjectIdParam('classId'), c.loadOwnedClass, tuitionController.getClassTuition);
 
 module.exports = router;

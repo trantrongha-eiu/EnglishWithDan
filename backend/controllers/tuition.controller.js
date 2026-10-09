@@ -70,6 +70,13 @@ exports.getClassStudentsMissingTuition = guard('error:', async (req, res) => {
   res.json({ success: true, students });
 });
 
+// Mounted under /api/classes/:classId behind staffOnly + loadOwnedClass, so a
+// teacher only ever sees the students of their own class.
+exports.getClassTuition = guard('class tuition error:', async (req, res) => {
+  const { period, students } = await tuitionService.getClassTuition(req.classGroup, req.query);
+  res.json({ success: true, period, students });
+});
+
 exports.createFee = guard('POST / error:', async (req, res) => {
   const { studentId, feeType, month, year, courseName, amount, note, monthCount } = req.body;
   if (!studentId || !feeType || amount === undefined) {

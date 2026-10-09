@@ -28,8 +28,15 @@ export default function Tuition() {
   const [page, setPage]     = useState(1);
   const [filter, setFilter] = useState({
     month: String(CUR_MONTH), year: String(CUR_YEAR),
-    feeType: '', isPaid: '', studentNotified: '', studentId: '',
+    feeType: '', isPaid: '', studentNotified: '', studentId: '', q: '',
   });
+  // Search box text; copied into filter.q after a pause so each keystroke
+  // doesn't refetch the list.
+  const [search, setSearch] = useState('');
+  useEffect(() => {
+    const t = setTimeout(() => setFilter(f => (f.q === search.trim() ? f : { ...f, q: search.trim() })), 350);
+    return () => clearTimeout(t);
+  }, [search]);
   const [students, setStudents] = useState([]);
 
   // ── Create/Edit form ──
@@ -403,6 +410,12 @@ export default function Tuition() {
                 <option value="true">Đã báo</option>
                 <option value="false">Chưa báo</option>
               </select>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>Tìm kiếm</label>
+              <input className="form-input" type="search" style={{ width: 220, padding: '6px 8px' }}
+                placeholder="🔍 Tên, username, email, khóa, ghi chú…"
+                value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowBulkRemind(true)}>
