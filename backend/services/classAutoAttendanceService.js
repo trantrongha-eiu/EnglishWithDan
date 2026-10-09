@@ -28,6 +28,7 @@ const { refreshClass } = require('./classAttendanceService');
 const logger = require('../utils/logger');
 
 const LOOKBACK_DAYS = 2;
+const VN_OFFSET_MS = 7 * 3600e3;
 const END_OF_DAY = '23:59';
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -84,10 +85,15 @@ async function markSession(session, cls, now) {
  */
 async function autoMarkDueSessions({ classIds, now = new Date() } = {}) {
   const from = new Date(now.getTime() - (LOOKBACK_DAYS + 1) * 864e5);
+  // session.date is UTC midnight of the VIETNAM day, so today's sessions sit
+  // up to 7h ahead of `now` between 00:00–07:00 ICT — capping at `now` hid
+  // early-morning classes until 07:00. Cap at the Vietnam clock instead; the
+  // exact start-time check below still decides what is actually due.
+  const vnNow = new Date(now.getTime() + VN_OFFSET_MS);
   const filter = {
     attendanceTakenAt: null,
     status: { $ne: 'cancelled' },
-    date: { $gte: from, $lte: now },
+    date: { $gte: from, $lte: vnNow },
   };
   if (classIds) {
     if (!classIds.length) return { sessions: 0, records: 0 };

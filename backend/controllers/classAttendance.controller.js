@@ -18,7 +18,7 @@ const assignmentService = require('../services/assignmentService');
 const classMessageService = require('../services/classMessageService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
-const { computeClassProgress } = require('../utils/classProgress');
+const { computeClassProgress, vnTodayKey } = require('../utils/classProgress');
 const { autoMarkDueSessions } = require('../services/classAutoAttendanceService');
 
 // Lazy "tới giờ học → tự điểm danh có mặt" on reads, on top of the 5-minute
@@ -50,28 +50,20 @@ async function sessionsByClass(classIds) {
 const ATT_STATUSES = ['present', 'absent', 'excused', 'late'];
 const MANUAL_ENROLLMENT_STATUSES = ['active', 'completed', 'dropped'];
 
-// UTC calendar-day boundary — matches generateSessions below, which builds
-// session dates from UTC day keys (toISOString().slice(0,10)) rather than
-// server-local time. Using local time here instead would (on a UTC-hosted
-// server, Render's default) incorrectly refuse "chưa thể điểm danh cho buổi
-// học trong tương lai" for a session dated "today" in Vietnam (UTC+7) when
-// attendance is taken between 00:00–07:00 ICT — that's still "yesterday" by
-// UTC clock.
-function endOfToday() {
-  const d = new Date();
-  d.setUTCHours(23, 59, 59, 999);
-  return d;
+// Session dates are stored as UTC midnight of the VIETNAM school day (see
+// generateSessions / utils/classProgress.js), so "today" has to be the
+// Vietnam calendar day expressed the same way. The previous UTC-day version
+// still lagged by a day between 00:00–07:00 ICT: today's session (D 00:00Z)
+// sat after the UTC "end of today" ((D-1) 23:59Z), so a teacher got "chưa thể
+// điểm danh cho buổi học trong tương lai" and the student check-in found no
+// session for today.
+function vnDayRange(now = new Date()) {
+  const key = vnTodayKey(now);
+  return { start: new Date(`${key}T00:00:00.000Z`), end: new Date(`${key}T23:59:59.999Z`) };
 }
 
-// [start, end] of the UTC calendar day containing `date` — same convention
-// as endOfToday/generateSessions, used to decide which session a student's
-// self-check-in "today" button actually applies to.
-function utcDayRange(date = new Date()) {
-  const start = new Date(date);
-  start.setUTCHours(0, 0, 0, 0);
-  const end = new Date(date);
-  end.setUTCHours(23, 59, 59, 999);
-  return { start, end };
+function endOfToday() {
+  return vnDayRange().end;
 }
 
 // ── middleware ──────────────────────────────────────────────────────────
@@ -1007,7 +999,7 @@ exports.myCheckinStatus = async (req, res) => {
     const classes = await ClassGroup.find({ _id: { $in: classIds }, status: 'active' }).select('name').lean();
     const clsMap = new Map(classes.map((c) => [String(c._id), c]));
 
-    const { start, end } = utcDayRange();
+    const { start, end } = vnDayRange();
     const sessions = await ClassSession.find({
       classId: { $in: classIds }, date: { $gte: start, $lte: end }, status: { $ne: 'cancelled' },
     }).lean();
@@ -1061,7 +1053,7 @@ exports.submitCheckin = async (req, res) => {
     const enrollment = await ClassEnrollment.findOne({ classId: session.classId, studentId: req.user._id, removedAt: null });
     if (!enrollment) return res.status(403).json({ success: false, message: 'Bạn không thuộc lớp này' });
 
-    const { start, end } = utcDayRange();
+    const { start, end } = vnDayRange();
     const sessionDate = new Date(session.date);
     if (sessionDate < start || sessionDate > end) {
       return res.status(400).json({ success: false, message: 'Chỉ có thể điểm danh cho buổi học hôm nay' });

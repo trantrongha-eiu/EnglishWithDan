@@ -11,6 +11,9 @@ const AttendanceRecord = require('../../models/AttendanceRecord');
 const auth = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 const past = (days) => new Date(Date.now() - days * 864e5).toISOString();
 const future = (days) => new Date(Date.now() + days * 864e5).toISOString();
+// "Today" as the admin date picker sends it: the Vietnam calendar day
+// (YYYY-MM-DD). past(0) was the UTC day — a different day 00:00–07:00 ICT.
+const vnToday = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
 
 async function makeClass(teacher, body = {}) {
   const res = await request(app).post('/api/classes').set(auth(teacher)).send({ name: 'Lớp Test', totalSessions: 40, ...body });
@@ -221,7 +224,7 @@ describe('student self-check-in ("tôi có mặt")', () => {
     const s = await createStudent();
     const cls = await makeClass(t);
     const enr = await addStudent(t, cls._id, s);
-    const sess = await addSession(t, cls._id, { date: past(0) }); // today
+    const sess = await addSession(t, cls._id, { date: vnToday() }); // today
 
     const empty = await request(app).get('/api/classes/my/checkin').set(auth(s));
     expect(empty.body.classes[0]).toMatchObject({ classId: String(cls._id), checkin: null });
@@ -254,7 +257,7 @@ describe('student self-check-in ("tôi có mặt")', () => {
     const s = await createStudent();
     const cls = await makeClass(t);
     const enr = await addStudent(t, cls._id, s);
-    const sess = await addSession(t, cls._id, { date: past(0) });
+    const sess = await addSession(t, cls._id, { date: vnToday() });
 
     await request(app).post(`/api/classes/my/sessions/${sess._id}/checkin`).set(auth(s));
     await mark(t, cls._id, sess._id, [{ enrollmentId: enr.enrollmentId, status: 'absent' }]);
@@ -275,7 +278,7 @@ describe('student self-check-in ("tôi có mặt")', () => {
     const notToday = await request(app).post(`/api/classes/my/sessions/${pastSess._id}/checkin`).set(auth(s));
     expect(notToday.status).toBe(400);
 
-    const todaySess = await addSession(t, cls._id, { date: past(0) });
+    const todaySess = await addSession(t, cls._id, { date: vnToday() });
     const notEnrolled = await request(app).post(`/api/classes/my/sessions/${todaySess._id}/checkin`).set(auth(outsider));
     expect(notEnrolled.status).toBe(403);
   });
@@ -553,6 +556,26 @@ describe('auto attendance at class time', () => {
     if (r.sessions === 0) expect(await AttendanceRecord.countDocuments({ sessionId: later._id })).toBe(0);
   });
 
+  // session.date is UTC midnight of the Vietnam school day, so between
+  // 00:00–07:00 ICT it is still AHEAD of "now" in UTC. The due-session query
+  // used to cap date at now and skipped these sessions until 07:00 ICT (CI
+  // run at 17:32 UTC failed on exactly this). Fixed clock → deterministic.
+  test('a class before 07:00 ICT is auto-marked while UTC is still on the previous day', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t, { startTime: '00:30' });
+    await addStudent(t, cls._id, st);
+    const s = await addSession(t, cls._id, { date: '2030-01-15' });
+
+    // 00:20 ICT on Jan 15 — before the 00:30 start: not due yet.
+    expect(await autoMarkDueSessions({ classIds: [cls._id], now: new Date('2030-01-14T17:20:00Z') }))
+      .toEqual({ sessions: 0, records: 0 });
+    // 00:45 ICT on Jan 15 (= 17:45 UTC Jan 14): due.
+    expect(await autoMarkDueSessions({ classIds: [cls._id], now: new Date('2030-01-14T17:45:00Z') }))
+      .toEqual({ sessions: 1, records: 1 });
+    expect(await AttendanceRecord.countDocuments({ sessionId: s._id, autoMarked: true })).toBe(1);
+  });
+
   test('student check-in status shows the automatic mark', async () => {
     const t = await createTeacher();
     const st = await createStudent();
@@ -564,9 +587,10 @@ describe('auto attendance at class time', () => {
     expect(ov.body.classes[0].progress).toMatchObject({ phase: expect.any(String), startTime: '00:00' });
     const ck = await request(app).get('/api/classes/my/checkin').set(auth(st));
     const row = ck.body.classes.find((c) => String(c.classId) === String(cls._id));
-    // /my/checkin picks "today" by UTC day (utcDayRange), which lags the
-    // Vietnam day between 00:00–07:00 ICT — only assert when it found it.
-    if (row.session) expect(row.record).toEqual({ status: 'present', autoMarked: true });
+    // /my/checkin picks "today" by the Vietnam day (vnDayRange) — this used
+    // to be a UTC day and found nothing between 00:00–07:00 ICT.
+    expect(row.session).toBeTruthy();
+    expect(row.record).toEqual({ status: 'present', autoMarked: true });
     expect(await AttendanceRecord.countDocuments({ classId: cls._id, autoMarked: true })).toBe(1);
   });
 });
