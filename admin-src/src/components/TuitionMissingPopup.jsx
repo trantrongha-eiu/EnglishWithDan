@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
 import Modal from './ui/Modal';
@@ -10,6 +11,9 @@ import { displayName } from '../utils/format';
 // tuitionService.getClassStudentsMissingTuition). Pops up on opening the
 // admin panel; "Để sau" hides it until tomorrow unless a NEW student joins
 // the list, and the topbar chip reopens it any time.
+// Both dialogs are portalled to <body>: this component sits inside .topbar,
+// whose backdrop-filter makes it the containing block for position:fixed,
+// so an in-place overlay got clipped to the 60px topbar.
 
 const DISMISS_KEY = 'admin-tuition-missing-dismissed';
 
@@ -47,7 +51,7 @@ export default function TuitionMissingPopup() {
         style={{ color: 'var(--danger)', fontWeight: 700 }}>
         💰 {rows.length} chưa nhập học phí
       </button>
-      {open && !editing && (
+      {open && !editing && createPortal(
         <Modal
           title={`⚠️ ${rows.length} học sinh đang học chưa có học phí`}
           onClose={snooze}
@@ -82,16 +86,18 @@ export default function TuitionMissingPopup() {
               </tbody>
             </table>
           </div>
-        </Modal>
+        </Modal>,
+        document.body,
       )}
 
-      {editing && (
+      {editing && createPortal(
         <StudentTuitionModal
           user={{ _id: editing.studentId, username: editing.username }}
           initialPeriod={{ month: editing.month, year: editing.year }}
           onClose={() => setEditing(null)}
           onSaved={reload}
-        />
+        />,
+        document.body,
       )}
     </>
   );
