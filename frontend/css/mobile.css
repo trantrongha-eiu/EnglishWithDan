@@ -104,6 +104,26 @@ img { max-width: 100%; height: auto; }
   color: var(--primary);
 }
 
+/* "Học phí" — highlighted pill so students spot it (js/nav.js LINKS). */
+.top-nav .nav-links > a.nav-link-tuition {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  font-weight: 600;
+  color: #047857;
+  background: rgba(16,185,129,.12);
+  border: 1px solid rgba(16,185,129,.4);
+}
+.top-nav .nav-links > a.nav-link-tuition:hover,
+.top-nav .nav-links > a.nav-link-tuition.active {
+  color: #065f46;
+  background: rgba(16,185,129,.22);
+}
+[data-theme="dark"] .top-nav .nav-links > a.nav-link-tuition { color: #34d399; }
+[data-theme="dark"] .top-nav .nav-links > a.nav-link-tuition:hover,
+[data-theme="dark"] .top-nav .nav-links > a.nav-link-tuition.active { color: #6ee7b7; }
+
 /* ── Dropdown nav item ── */
 .nav-dropdown {
   position: relative;

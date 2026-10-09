@@ -80,19 +80,21 @@
     // Top 10 streak + Top 10 vocab quiz — moved off the dashboard home
     // screen onto their own page (2026-10-01).
     { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'BXH vocab' },
+    // "Học phí" was an unlabeled icon in the utility cluster — students
+    // missed it, so it's back in the main row as a labeled, highlighted
+    // pill (.nav-link-tuition) with the unpaid-count badge next to it.
+    { href: 'tuition.html', icon: 'fa-money-bill-wave', label: 'Học phí', badgeId: 'navTuitionBadge', highlight: 'nav-link-tuition' },
   ];
 
-  // "Hộp thư" / "Học phí" moved out of the main dropdown row into the
-  // utility icon cluster (nav-actions) — they're account/inbox utilities,
-  // not a learning skill, and this is also what freed up room in
-  // .nav-actions for them: same reasoning as folding Luyện viết above.
+  // "Hộp thư" moved out of the main dropdown row into the utility icon
+  // cluster (nav-actions) — it's an account/inbox utility, not a learning
+  // skill: same reasoning as folding Luyện viết above.
   // Rendered twice from this one list — mkUtilityIcons() (desktop icon row,
   // hidden ≤1024px) and mkUtilityMobileLinks() (mobile drawer row, so
   // there's still a way to reach them once the icon row hides) — so href/
   // icon/label/badgeId never drift between the two.
   var UTILITY_LINKS = [
     { href: 'inbox.html',   icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
-    { href: 'tuition.html', icon: 'fa-money-bill-wave', label: 'Học phí', badgeId: 'navTuitionBadge' },
   ];
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
@@ -141,6 +143,7 @@
         }).join('');
         return '<div class="nav-dropdown"><a href="/' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
       }
+      if (l.highlight) cls = ' class="' + l.highlight + (isActive ? ' active' : '') + '"';
       return '<a href="/' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + '</a>';
     }).join('');
   }
