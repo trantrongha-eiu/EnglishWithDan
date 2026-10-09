@@ -66,12 +66,20 @@ function readMap() {
   return fs.readFileSync(MAP_FILE, 'utf8').split('\n').filter(Boolean).map(JSON.parse);
 }
 
+const hms = (m) => (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]);
+
 // Duration in seconds, parsed from ffmpeg's banner (imageio_ffmpeg ships no ffprobe).
+// An MP3 without a Xing/Info header only gets a bitrate-based estimate there
+// (off by ~1s on 17 of the sources), so those are fully decoded instead.
 function probeDuration(file) {
   const r = spawnSync(ff(), ['-hide_banner', '-i', file], { encoding: 'utf8' });
   const m = /Duration: (\d+):(\d+):(\d+(?:\.\d+)?)/.exec(r.stderr || '');
   if (!m) throw new Error('no duration in ffmpeg output for ' + path.basename(file));
-  return (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]);
+  if (!/Estimating duration from bitrate/.test(r.stderr)) return hms(m);
+  const d = spawnSync(ff(), ['-hide_banner', '-nostats', '-i', file, '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 1 << 26 });
+  const t = [...(d.stderr || '').matchAll(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/g)].pop();
+  if (!t) throw new Error('could not decode ' + path.basename(file) + ' to measure its duration');
+  return hms(t);
 }
 
 function encode(src, dest) {
