@@ -357,6 +357,7 @@
         <!-- Audio bar -->
         <div class="audio-bar" id="practice-audio-bar">
             <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()"><i class="fas fa-play" id="play-icon-pr"></i></button>
+            <span class="exam-audio-status" id="lt-practice-audio-status" style="display:none"></span>
             <button class="audio-skip-btn" onclick="skipAudio(-10)"><i class="fas fa-backward"></i> 10s</button>
             <div class="audio-seek-wrap">
                 <input type="range" class="audio-seek" id="audio-seek-pr" value="0" min="0" max="100" step="0.1"
@@ -2571,7 +2572,15 @@
                 default: inputHtml = renderFillBlank(num, ua, ca, isReview);
             }
 
+            // Typed-answer question whose text has a blank ("... as that of
+            // the _____.") — put the box right in the blank instead of a
+            // full-width input under the sentence.
+            const inlineFill = !['multiple-choice', 'checkbox', 'multi-answer-group', 'sentence-completion', 'matching'].includes(q.type)
+                && INLINE_BLANK_RE.test(q.questionText || '');
             const showText = !['sentence-completion', 'matching'].includes(q.type);
+            const textHtml = inlineFill
+                ? `<div class="q-text">${renderInlineFill(num, q.questionText, ua, ok, isReview)}</div>`
+                : showText ? `<div class="q-text">${escHtml(q.questionText || '')}</div>` : '';
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}">
                     ${ok ? '✓ Đúng' : (ua ? '✗ Sai' : '⊘ Bỏ qua') + (ca ? ` — Đáp án: <strong>${escHtml(ca)}</strong>` : '')}
@@ -2581,9 +2590,9 @@
             return `<div class="question-item" id="qi-${num}" data-qnum="${num}">
                 <div class="q-header">
                     <span class="q-badge">${num}</span>
-                    ${showText ? `<div class="q-text">${escHtml(q.questionText || '')}</div>` : ''}
+                    ${textHtml}
                 </div>
-                ${inputHtml}${reviewExtra}
+                ${inlineFill ? '' : inputHtml}${reviewExtra}
             </div>`;
         }
 
@@ -2800,6 +2809,20 @@
             return `<input id="fi-${num}" class="fill-input" type="text"
                 placeholder="Nhập câu trả lời..." value="${escAttr(ua)}" autocomplete="off"
                 oninput="saveText(${num}, this.value)" />`;
+        }
+
+        // Blank marker in a typed-answer question's text: "_____", "…" or "[blank]".
+        const INLINE_BLANK_RE = /_{2,}|…|\[blank\]/i;
+
+        // Question text with the answer box spliced into its blank — same
+        // escape-then-splice order as renderInlineDrop below.
+        function renderInlineFill(num, questionText, ua, ok, isReview) {
+            const boxHtml = isReview
+                ? `<span class="inline-answer ${ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip'}">${escHtml(ua || '–')}</span>`
+                : `<input id="fi-${num}" class="fill-input-inline" type="text"
+                    value="${escAttr(ua)}" placeholder="..." autocomplete="off"
+                    oninput="saveText(${num}, this.value)" />`;
+            return escHtml(questionText || '').replace(INLINE_BLANK_RE, boxHtml);
         }
 
         function renderInlineDrop(num, questionText, ua, ca, isReview) {
@@ -4139,6 +4162,41 @@
 
     function _clearLTPracticeTimer() {
         if (_ltPracticeTimer) { clearInterval(_ltPracticeTimer); _ltPracticeTimer = null; }
+        _cancelLTAutoPlay();
+    }
+
+    /* ── Test Simulation: audio auto-plays after a short countdown ───────── */
+    let _ltAutoPlayTimer = null;
+    function _setLTAudioStatus(html, color) {
+        const el = document.getElementById('lt-practice-audio-status');
+        if (!el) return;
+        el.innerHTML = html || '';
+        el.style.color = color || '';
+        el.style.display = html ? '' : 'none';
+    }
+    function _cancelLTAutoPlay() {
+        if (_ltAutoPlayTimer) { clearInterval(_ltAutoPlayTimer); _ltAutoPlayTimer = null; }
+        audio.removeEventListener('play', _cancelLTAutoPlay);
+        _setLTAudioStatus('');
+    }
+    function _startLTAutoPlay(secs) {
+        _cancelLTAutoPlay();
+        let left = secs;
+        const show = () => _setLTAudioStatus(`<i class="fas fa-clock"></i> Audio tự phát sau ${left}s`, left <= 3 ? '#f59e0b' : '');
+        show();
+        // Student pressing ▶ early just starts it — drop the countdown.
+        audio.addEventListener('play', _cancelLTAutoPlay);
+        _ltAutoPlayTimer = setInterval(() => {
+            if (--left > 0) return show();
+            _cancelLTAutoPlay();
+            // No user gesture in this call stack — the browser's autoplay
+            // policy can refuse; say so instead of failing silently.
+            audio.play().catch(err => {
+                console.error('[_startLTAutoPlay] play() failed:', err);
+                _setLTAudioStatus('<i class="fas fa-exclamation-triangle"></i> Không tự phát được — bấm ▶', '#dc2626');
+                audio.addEventListener('play', () => _setLTAudioStatus(''), { once: true });
+            });
+        }, 1000);
     }
 
     function _hideLTPracticeHUD() {
@@ -4720,6 +4778,7 @@
 
         // Stopwatch + progress
         _startLTPracticeTimer(_ltGetAllQs(_ltCleanSection).length);
+        if (mode === 'simulation' && section.audioUrl) _startLTAutoPlay(10);
 
         // Listen for answer changes. Guard against re-adding on every call
         // (this screen can be entered multiple times per page load) — same
