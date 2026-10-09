@@ -32,6 +32,29 @@ describe('tuitionService', () => {
     });
   });
 
+  describe('createMonthlyFees', () => {
+    it('creates one record per month, rolling over into the next year', async () => {
+      const student = await createStudent();
+      const { fees, skipped } = await tuitionService.createMonthlyFees({
+        studentId: student._id, month: 11, year: 2026, monthCount: 3, amount: 1500000,
+      });
+      expect(skipped).toEqual([]);
+      expect(fees.map(f => `${f.month}/${f.year}`)).toEqual(['11/2026', '12/2026', '1/2027']);
+      expect(fees.every(f => f.amount === 1500000 && f.feeType === 'monthly')).toBe(true);
+    });
+
+    it('skips months the student already has a fee for instead of failing', async () => {
+      const student = await createStudent();
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 5, year: 2026, amount: 1 });
+      const { fees, skipped } = await tuitionService.createMonthlyFees({
+        studentId: student._id, month: 4, year: 2026, monthCount: 3, amount: 2,
+      });
+      expect(fees.map(f => f.month)).toEqual([4, 6]);
+      expect(skipped).toEqual([{ month: 5, year: 2026 }]);
+      expect(await TuitionFee.countDocuments({ studentId: student._id })).toBe(3);
+    });
+  });
+
   describe('updateFee', () => {
     it('actually persists a feeType change instead of silently dropping it', async () => {
       const student = await createStudent();

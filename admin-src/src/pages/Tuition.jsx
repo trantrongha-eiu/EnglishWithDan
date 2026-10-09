@@ -38,7 +38,7 @@ export default function Tuition() {
   const [isCopy, setIsCopy]         = useState(false);
   const [formData, setFormData]     = useState({
     studentId: '', feeType: 'monthly', month: String(CUR_MONTH),
-    year: String(CUR_YEAR), courseName: '', amount: '', note: '',
+    year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: '', note: '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -156,7 +156,7 @@ export default function Tuition() {
 
   function openCreate() {
     setEditFee(null); setIsCopy(false); setStudentUnpaid(null);
-    setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
+    setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), monthCount: '1', courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
     setShowForm(true);
   }
   function openCopy(fee) {
@@ -170,6 +170,7 @@ export default function Tuition() {
       feeType:    fee.feeType,
       month:      String(nextMonth),
       year:       String(nextYear),
+      monthCount: '1',
       courseName: fee.courseName || '',
       amount:     String(fee.amount),
       note:       fee.note || '',
@@ -202,8 +203,10 @@ export default function Tuition() {
         setShowForm(false);
         loadFees(page);
       } else {
-        await apiFetch('/tuition', { method: 'POST', body: JSON.stringify(payload) });
-        toast('Đã thêm học phí');
+        const d = await apiFetch('/tuition', { method: 'POST', body: JSON.stringify(payload) });
+        toast(d.skipped?.length
+          ? `Đã thêm ${d.fees.length} tháng · bỏ qua ${d.skipped.map(p => `${p.month}/${p.year}`).join(', ')} (đã có)`
+          : d.fees ? `Đã thêm ${d.fees.length} tháng học phí` : 'Đã thêm học phí');
         setShowForm(false);
         setPage(1);
         // Snap filter to the month/year of the new fee so it's immediately visible
@@ -317,6 +320,11 @@ export default function Tuition() {
   // in table) — see loadUnpaidByStudent() above, not derived from the
   // current (usually single-month) filtered `fees` page.
   const studentDebtMap = unpaidByStudent;
+
+  // "Số tháng" in the create/copy form — server makes one fee per month.
+  const monthCount = Math.min(24, Math.max(1, Math.floor(Number(formData.monthCount) || 1)));
+  const lastIdx = Number(formData.year) * 12 + Number(formData.month) - 1 + monthCount - 1;
+  const lastPeriod = { month: (lastIdx % 12) + 1, year: Math.floor(lastIdx / 12) };
 
   return (
     <>
@@ -484,6 +492,13 @@ export default function Tuition() {
                           {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                         </select>
                       </div>
+                      {!editFee && (
+                        <div className="form-group" style={{ margin: 0, flex: 1, minWidth: 80 }}>
+                          <label className="form-label">Số tháng</label>
+                          <input className="form-input" type="number" min={1} max={24} value={formData.monthCount}
+                            onChange={e => setFormData(f => ({ ...f, monthCount: e.target.value }))} required />
+                        </div>
+                      )}
                     </>
                   ) : (
                     <div className="form-group" style={{ margin: 0, flex: 2, minWidth: 180 }}>
@@ -493,11 +508,18 @@ export default function Tuition() {
                     </div>
                   )}
                   <div className="form-group" style={{ margin: 0, flex: 1, minWidth: 120 }}>
-                    <label className="form-label">Số tiền (VND) *</label>
+                    <label className="form-label">{formData.feeType === 'monthly' && !editFee ? 'Học phí / tháng (VND) *' : 'Số tiền (VND) *'}</label>
                     <input className="form-input" type="number" value={formData.amount} placeholder="0"
                       onChange={e => setFormData(f => ({ ...f, amount: e.target.value }))} required min={0} />
                   </div>
                 </div>
+                {formData.feeType === 'monthly' && !editFee && monthCount > 1 && (
+                  <div style={{ fontSize: 13 }}>
+                    <span style={{ color: 'var(--text3)' }}>{MONTHS[formData.month]}/{formData.year} → {MONTHS[lastPeriod.month]}/{lastPeriod.year} · {monthCount} × {fmtVND(formData.amount)} = </span>
+                    <strong style={{ color: 'var(--blue)', fontSize: 15 }}>Tổng {fmtVND(monthCount * (Number(formData.amount) || 0))}</strong>
+                    <span style={{ color: 'var(--text3)' }}> (tạo {monthCount} khoản, mỗi tháng 1 khoản)</span>
+                  </div>
+                )}
                 <div className="form-group" style={{ margin: 0 }}>
                   <label className="form-label">Ghi chú</label>
                   <input className="form-input" value={formData.note} placeholder="Ghi chú thêm..."
@@ -506,7 +528,7 @@ export default function Tuition() {
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
                   <button type="button" className="btn btn-ghost" onClick={() => setShowForm(false)}>Huỷ</button>
                   <button type="submit" className="btn btn-primary" disabled={saving}>
-                    {saving ? 'Đang lưu...' : '💾 Lưu'}
+                    {saving ? 'Đang lưu...' : formData.feeType === 'monthly' && !editFee && monthCount > 1 ? `💾 Lưu ${monthCount} tháng` : '💾 Lưu'}
                   </button>
                 </div>
               </form>

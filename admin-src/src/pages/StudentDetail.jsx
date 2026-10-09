@@ -11,6 +11,7 @@ import { ErrorState, EmptyState, TableBody, Skeleton } from '../components/ui/St
 import { bandBadge, roleBadge, planBadge, simBadge } from '../components/ui/badges';
 import { displayName, formatDur, formatLastSeen, formatDay, formatNumber, formatVnd, initials } from '../utils/format';
 import { PlanModal, RemindModal, EditUserModal } from './users/UserModals';
+import StudentTuitionModal from './tuition/StudentTuitionModal';
 
 // Chi tiết học sinh (redesigned 2026-09-25):
 //  - "Tổng quan" = GET /admin/users/:id/overview: goals, streak, classes,
@@ -39,7 +40,7 @@ function Kv({ label, children }) {
   return <div className="kv"><span>{label}</span><span>{children}</span></div>;
 }
 
-function OverviewTab({ id, isAdmin }) {
+function OverviewTab({ id, isAdmin, onOpenTuition }) {
   const { data, error, loading, reload } = useApi(`/admin/users/${id}/overview`);
   if (loading) return <div className="info-grid">{[0, 1, 2].map(i => <div key={i} className="panel"><Skeleton height={120} /></div>)}</div>;
   if (error) return <ErrorState error={error} onRetry={reload} />;
@@ -76,7 +77,7 @@ function OverviewTab({ id, isAdmin }) {
           {o.tuition && (
             <Kv label="Học phí chưa đóng">
               {o.tuition.unpaidCount
-                ? <Link to="/tuition" style={{ color: 'var(--danger)' }}>{o.tuition.unpaidCount} khoản · {formatVnd(o.tuition.unpaidAmount)}</Link>
+                ? <button type="button" onClick={onOpenTuition} style={{ color: 'var(--danger)', background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}>{o.tuition.unpaidCount} khoản · {formatVnd(o.tuition.unpaidAmount)}</button>
                 : <span style={{ color: 'var(--green)' }}>Không nợ</span>}
             </Kv>
           )}
@@ -278,7 +279,10 @@ export default function StudentDetail() {
   const [params, setParams] = useSearchParams();
   const tab = TABS.find(t => t.key === params.get('tab'))?.key || 'overview';
   const { data, error, loading, reload } = useApi(`/admin/users/${id}`);
-  const [modal, setModal] = useState(null); // 'plan' | 'remind' | 'edit'
+  const [modal, setModal] = useState(null); // 'plan' | 'remind' | 'edit' | 'tuition'
+  // Bumped after a change in the tuition modal so the overview's
+  // "Học phí chưa đóng" row refetches.
+  const [overviewKey, setOverviewKey] = useState(0);
 
   if (loading) {
     return <div className="panel"><div className="profile-card"><Skeleton width={64} height={64} radius={32} /><div style={{ flex: 1 }}><Skeleton width="40%" height={20} /><br /><Skeleton width="60%" style={{ marginTop: 8 }} /></div></div></div>;
@@ -304,6 +308,7 @@ export default function StudentDetail() {
       {modal === 'plan' && <PlanModal user={user} onClose={() => setModal(null)} onSaved={reload} />}
       {modal === 'remind' && <RemindModal user={user} onClose={() => setModal(null)} onSaved={reload} />}
       {modal === 'edit' && <EditUserModal userId={user._id} onClose={() => setModal(null)} onSaved={reload} />}
+      {modal === 'tuition' && <StudentTuitionModal user={user} onClose={() => setModal(null)} onSaved={() => setOverviewKey(k => k + 1)} />}
 
       <PageHeader title="Hồ sơ học sinh" back={{ to: '/users?role=student', label: 'Người dùng' }} />
 
@@ -328,6 +333,7 @@ export default function StudentDetail() {
           <div className="profile-actions">
             <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${user._id}`)}>✉️ Nhắn tin</button>
             {isStudent && <button className="btn btn-ghost btn-sm" onClick={() => setModal('remind')}>🔔 Nhắc nhở</button>}
+            {isAdmin && isStudent && <button className="btn btn-ghost btn-sm" onClick={() => setModal('tuition')}>💰 Học phí</button>}
             {isAdmin && isStudent && <button className="btn btn-soft btn-sm" onClick={() => setModal('plan')}>⭐ Gói</button>}
             {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setModal('edit')}>✏️ Sửa</button>}
           </div>
@@ -352,7 +358,7 @@ export default function StudentDetail() {
         ))}
       </div>
 
-      {tab === 'overview' && <OverviewTab id={id} isAdmin={isAdmin} />}
+      {tab === 'overview' && <OverviewTab key={overviewKey} id={id} isAdmin={isAdmin} onOpenTuition={() => setModal('tuition')} />}
       {tab === 'history' && <HistoryTab id={id} />}
       {tab === 'vocab' && <VocabTab id={id} />}
       {tab === 'badges' && <BadgesTab id={id} />}

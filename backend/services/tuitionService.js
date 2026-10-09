@@ -214,6 +214,34 @@ async function createFee({ studentId, feeType, month, year, courseName, amount, 
   return fee.populate('studentId', 'username email firstName lastName');
 }
 
+// "Nhập N tháng" from the admin forms: one monthly record per month, starting
+// at month/year and rolling over December — NOT one record of amount×N, so
+// per-month summary, reminders and "đã thu" stay per month as before. Months
+// that already have a fee for this student are skipped (the unique index
+// would reject them) and reported back rather than failing the whole batch.
+const MAX_MONTH_COUNT = 24;
+async function createMonthlyFees({ studentId, month, year, monthCount, amount, note, createdBy }) {
+  const count = Math.min(MAX_MONTH_COUNT, Math.max(1, Math.floor(Number(monthCount) || 1)));
+  const periods = [];
+  let m = Number(month), y = Number(year);
+  for (let i = 0; i < count; i++) {
+    periods.push({ month: m, year: y });
+    if (++m > 12) { m = 1; y += 1; }
+  }
+  const existing = await TuitionFee.find({
+    studentId, feeType: 'monthly', $or: periods,
+  }).select('month year').lean();
+  const taken = new Set(existing.map(f => `${f.month}/${f.year}`));
+  const toCreate = periods.filter(p => !taken.has(`${p.month}/${p.year}`));
+  const fees = toCreate.length
+    ? await TuitionFee.insertMany(toCreate.map(p => ({
+      studentId, feeType: 'monthly', month: p.month, year: p.year,
+      amount: Number(amount), note: note || '', createdBy,
+    })))
+    : [];
+  return { fees, skipped: periods.filter(p => taken.has(`${p.month}/${p.year}`)) };
+}
+
 async function updateFee(id, body, sender) {
   const { amount, isPaid, note, courseName, month, year, feeType } = body;
   const fee = await TuitionFee.findById(id);
@@ -372,7 +400,7 @@ async function notifyPayment(feeId, student) {
 module.exports = {
   getSettings, updateSettings, uploadQr, deleteQr,
   listFees, getSummary, getAdminSummary, getUnpaidByStudent, listStudents,
-  createFee, updateFee, deleteFee,
+  createFee, createMonthlyFees, updateFee, deleteFee,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
   buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount,

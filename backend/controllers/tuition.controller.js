@@ -66,9 +66,14 @@ exports.listStudents = guard('error:', async (req, res) => {
 });
 
 exports.createFee = guard('POST / error:', async (req, res) => {
-  const { studentId, feeType, month, year, courseName, amount, note } = req.body;
+  const { studentId, feeType, month, year, courseName, amount, note, monthCount } = req.body;
   if (!studentId || !feeType || amount === undefined) {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin bắt buộc' });
+  }
+  if (feeType === 'monthly' && Number(monthCount) > 1) {
+    const { fees, skipped } = await tuitionService.createMonthlyFees({ studentId, month, year, monthCount, amount, note, createdBy: req.user._id });
+    if (!fees.length) return res.status(400).json({ success: false, message: 'Tất cả các tháng này đã có học phí cho học viên này' });
+    return res.status(201).json({ success: true, fees, skipped });
   }
   try {
     const fee = await tuitionService.createFee({ studentId, feeType, month, year, courseName, amount, note, createdBy: req.user._id });
