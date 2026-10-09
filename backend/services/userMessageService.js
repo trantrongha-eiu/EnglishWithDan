@@ -20,6 +20,17 @@ async function getUnreadCount(uid) {
   return personal + broadcast + peer;
 }
 
+// Unread must-read messages (class "Nhắn tin") for nav.js's popup — it keeps
+// showing on every page load until the student opens each one (markRead).
+async function listMustRead(uid) {
+  return Message.find({ toId: uid, isBroadcast: false, mustRead: true, isRead: false, deletedBy: { $ne: uid } })
+    .select('fromName subject createdAt').sort({ createdAt: -1 }).limit(20).lean();
+}
+
+function countMustRead(uid) {
+  return Message.countDocuments({ toId: uid, isBroadcast: false, mustRead: true, isRead: false, deletedBy: { $ne: uid } });
+}
+
 async function listMessages(uid, page, limit) {
   // isPeer excluded — student-to-student chat (services/peerService.js)
   // lives in the same collection but has its own thread/conversation-list
@@ -125,4 +136,4 @@ async function claimGift(id, uid) {
   };
 }
 
-module.exports = { getUnreadCount, listMessages, markRead, deleteMessage, replyToMessage, claimGift };
+module.exports = { getUnreadCount, countMustRead, listMustRead, listMessages, markRead, deleteMessage, replyToMessage, claimGift };

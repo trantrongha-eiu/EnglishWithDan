@@ -543,6 +543,7 @@
         .then(function (r) { return r.json(); })
         .then(function (d) {
           showBadge('navInboxBadge', d.count || 0);
+          if (d.mustReadCount > 0) _showMustReadPopup();
         })
         .catch(function () {});
     }
@@ -570,11 +571,10 @@
       })
       .catch(function () {});
 
-    fetch(API + '/tuition/my/summary', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _tuitionSummary()
       .then(function (d) {
         if (d.unpaidCount > 0) showBadge('navTuitionBadge', d.unpaidCount);
-        // A fee past day 8 of its month (server-decided): popup on every load until paid.
+        // This month's fee, from day 8 (server-decided): popup on every load until paid.
         if (d.dueCount > 0) _showTuitionReminderPopup(0, true);
       })
       .catch(function () {});
@@ -641,9 +641,15 @@
         // ever fires for a real unpaid fee (admin click or the auto-remind
         // cron), so there's no "maybe it's nothing yet" grace period to give
         // — every reminder means money is actually owed.
+        // Only while a fee billed THIS month is unpaid ("nhắc tháng nào,
+        // tháng đó" — tuitionService.isBilledThisMonth): an older month's
+        // debt or a fee entered ahead for a later month doesn't nag here.
         if ((u.tuitionReminderCount || 0) >= 1) {
-          _showTuitionWarningBanner(u.tuitionReminderCount);
-          _showTuitionReminderPopup(u.tuitionReminderCount);
+          _tuitionSummary().then(function (d) {
+            if (!(d.monthCount > 0)) return;
+            _showTuitionWarningBanner(u.tuitionReminderCount);
+            _showTuitionReminderPopup(u.tuitionReminderCount);
+          }).catch(function () {});
         }
 
         if (u.role === 'student') _showStreak35Notice();
@@ -896,6 +902,17 @@
   // (js/shared/popup-queue.js) so it never lands stacked on top of the
   // goal-setup / badge / review modals. Falls back to showing immediately
   // when the queue script isn't on the page.
+  // One /tuition/my/summary per page load, shared by the nav badge and the
+  // reminder banner/popup trigger.
+  var _tuitionSummaryP; // no initializer: the badge code above calls this before this line runs
+  function _tuitionSummary() {
+    if (!_tuitionSummaryP) {
+      var h = window.AuthService ? window.AuthService.authHeader() : {};
+      _tuitionSummaryP = fetch(API + '/tuition/my/summary', { headers: h }).then(function (r) { return r.json(); });
+    }
+    return _tuitionSummaryP;
+  }
+
   function _queueNotice(opts) {
     if (window.PopupQueue) window.PopupQueue.enqueue(opts);
     else opts.show(function () {});
@@ -933,21 +950,22 @@
         // Cached count can be stale (admin just confirmed) — trust the live summary.
         if (!d || !d.success || _fullscreenActivityActive()) { done(); return; }
         var dueMode = d.dueCount > 0;
-        if (!dueMode && !(count >= 1 && d.unpaidCount > 0)) { done(); return; }
+        if (!dueMode && !(count >= 1 && d.monthCount > 0)) { done(); return; }
         if (!dueMode) { try { sessionStorage.setItem(TUITION_POPUP_SESSION_KEY, '1'); } catch (e) {} }
 
-        var n = dueMode ? d.dueCount : d.unpaidCount;
-        var total = Number((dueMode ? d.dueTotal : d.totalUnpaid) || 0).toLocaleString('vi-VN');
-        var awaiting = ((dueMode ? d.dueAwaitingCount : d.awaitingConfirmCount) || 0) >= n;
+        // Both modes talk about this month's fees only (summary.month*).
+        var n = d.monthCount;
+        var total = Number(d.monthTotal || 0).toLocaleString('vi-VN');
+        var awaiting = (d.monthAwaitingCount || 0) >= n;
         var body = awaiting
           ? 'Bạn đã báo chuyển khoản <strong>' + n + ' khoản</strong> học phí (tổng <strong>' + total + ' VND</strong>). ' +
             'Thông báo này sẽ tự tắt khi admin xác nhận đã nhận được tiền.'
           : dueMode
             ? (d.overdue ? 'Bạn đã <strong>quá hạn</strong> đóng học phí (hạn là ngày 10 hằng tháng). ' : 'Hạn đóng học phí là <strong>ngày 10 hằng tháng</strong>. ') +
-              'Bạn còn <strong>' + n + ' khoản</strong> học phí chưa thanh toán, ' +
+              'Bạn còn <strong>' + n + ' khoản</strong> học phí tháng này chưa thanh toán, ' +
               'tổng cộng <strong>' + total + ' VND</strong>. Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí. ' +
               'Thông báo này sẽ hiện mỗi lần bạn mở web cho đến khi admin xác nhận đã nhận học phí.'
-            : 'Bạn còn <strong>' + n + ' khoản</strong> học phí chưa thanh toán, tổng cộng <strong>' + total + ' VND</strong> ' +
+            : 'Bạn còn <strong>' + n + ' khoản</strong> học phí tháng này chưa thanh toán, tổng cộng <strong>' + total + ' VND</strong> ' +
               '(đã được nhắc <strong>' + count + ' lần</strong>). Học phí cần thanh toán trong <strong>tuần đầu tiên</strong> kể từ ngày khai giảng. ' +
               'Vui lòng chuyển khoản và bấm “Tôi đã chuyển khoản” trong trang Học phí.';
 
@@ -968,6 +986,60 @@
         document.getElementById('nav-tuition-popup-later').addEventListener('click', function () { overlay.remove(); });
       })
       .catch(function () { done(); });
+  }
+
+  // "Bạn có tin nhắn mới" — a teacher/admin sent this student a must-read
+  // message from the class page (backend classMessageService). Raised from
+  // the inbox-badge poll (unread-count's mustReadCount), so it also catches
+  // a message arriving mid-visit. Shows once per page load — "Để sau" only
+  // hides it for this page — and stops for good only once every such
+  // message has been opened in inbox.html (which marks it read).
+  var _mustReadState = 0; // 0 idle · 1 queued · 2 shown on this page
+  function _showMustReadPopup() {
+    if (_mustReadState || page === 'inbox.html') return;
+    _mustReadState = 1;
+    _queueNotice({
+      id: 'nav-must-read', priority: 50, until: '#nav-mustread-overlay',
+      show: _renderMustReadPopup
+    });
+  }
+  function _renderMustReadPopup(done) {
+    if (_fullscreenActivityActive()) { _mustReadState = 0; done(); return; } // next poll retries
+    var headers = window.AuthService ? window.AuthService.authHeader() : {};
+    fetch(API + '/user/messages/must-read', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var list = (d && d.success && d.messages) || [];
+        if (!list.length || _fullscreenActivityActive()) { _mustReadState = 0; done(); return; }
+        _mustReadState = 2;
+
+        var items = list.slice(0, 5).map(function (m) {
+          var when = m.createdAt ? new Date(m.createdAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
+          return '<a href="inbox.html?msg=' + encodeURIComponent(m._id) + '" style="display:block;padding:10px 12px;border:1px solid var(--border,#e5e7eb);border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;text-align:left">' +
+            '<div style="font-weight:700;font-size:14px">✉️ ' + _escAttn(m.subject || '(không tiêu đề)') + '</div>' +
+            '<div style="font-size:12px;color:var(--text2,#6b7280);margin-top:2px">Từ ' + _escAttn(m.fromName) + (when ? ' · ' + when : '') + '</div>' +
+          '</a>';
+        }).join('');
+        var more = list.length > 5 ? '<div style="font-size:12px;color:var(--text2,#6b7280);margin-bottom:8px">… và ' + (list.length - 5) + ' tin nhắn khác</div>' : '';
+
+        var overlay = document.createElement('div');
+        overlay.id = 'nav-mustread-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+        overlay.innerHTML =
+          '<div role="dialog" aria-modal="true" aria-labelledby="nav-mustread-title" style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:440px;width:100%;max-height:90vh;overflow:auto;padding:26px 22px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
+            '<div style="font-size:44px;margin-bottom:8px">📩</div>' +
+            '<h3 id="nav-mustread-title" style="font-size:18px;font-weight:800;margin-bottom:6px">Bạn có ' + list.length + ' tin nhắn mới</h3>' +
+            '<p style="font-size:13px;color:var(--text2,#6b7280);margin-bottom:14px">Giáo viên vừa gửi tin nhắn riêng cho bạn. Thông báo này sẽ hiện lại cho đến khi bạn mở đọc.</p>' +
+            items + more +
+            '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">' +
+              '<button type="button" id="nav-mustread-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
+              '<a href="inbox.html?msg=' + encodeURIComponent(list[0]._id) + '" style="background:var(--brand,#2563eb);color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Đọc ngay</a>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(overlay);
+        document.getElementById('nav-mustread-later').addEventListener('click', function () { overlay.remove(); });
+      })
+      .catch(function () { _mustReadState = 0; done(); });
   }
 
   var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';

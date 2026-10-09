@@ -121,8 +121,19 @@ function messageGuard(handler) {
 
 // ── GET /api/user/messages/unread-count ──────────────────────
 exports.getUnreadMessageCount = messageGuard(async (req, res) => {
-  const count = await userMessageService.getUnreadCount(req.user._id);
-  res.json({ success: true, count });
+  // mustReadCount rides along on this 20s nav poll so nav.js can raise the
+  // "Bạn có tin nhắn mới" popup without a second polled request.
+  const [count, mustReadCount] = await Promise.all([
+    userMessageService.getUnreadCount(req.user._id),
+    userMessageService.countMustRead(req.user._id),
+  ]);
+  res.json({ success: true, count, mustReadCount });
+});
+
+// ── GET /api/user/messages/must-read ─────────────────────────
+exports.listMustReadMessages = messageGuard(async (req, res) => {
+  const messages = await userMessageService.listMustRead(req.user._id);
+  res.json({ success: true, messages });
 });
 
 // ── GET /api/user/messages ────────────────────────────────────

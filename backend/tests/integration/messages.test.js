@@ -207,3 +207,44 @@ describe('GET /api/user/activity-heatmap', () => {
     expect(res.body.activity).toEqual([]);
   });
 });
+
+describe('Class "Nhắn tin" — POST /api/classes/:classId/messages + must-read popup feed', () => {
+  const ClassGroup = require('../../models/ClassGroup');
+  const ClassEnrollment = require('../../models/ClassEnrollment');
+
+  test('sends a private must-read message to each picked roster student only; popup feed clears once read', async () => {
+    const teacher = await createTeacher();
+    const cls = await ClassGroup.create({ name: 'Lớp M', teacherId: teacher._id });
+    const [a, b, outsider] = await Promise.all([createStudent(), createStudent(), createStudent()]);
+    await ClassEnrollment.create({ classId: cls._id, studentId: a._id });
+    await ClassEnrollment.create({ classId: cls._id, studentId: b._id });
+    const url = `/api/classes/${cls._id}/messages`;
+
+    const sent = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(teacher)}`)
+      .send({ studentIds: [String(a._id), String(outsider._id)], body: 'Em nhớ nộp bài nhé' });
+    expect(sent.status).toBe(201);
+    expect(sent.body.sent).toBe(1); // outsider isn't on the roster
+    expect(await Message.countDocuments({ toId: outsider._id })).toBe(0);
+
+    const empty = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(teacher)}`)
+      .send({ studentIds: [String(a._id)], body: '  ' });
+    expect(empty.status).toBe(400);
+    const otherTeacher = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(await createTeacher())}`)
+      .send({ studentIds: [String(a._id)], body: 'x' });
+    expect([403, 404]).toContain(otherTeacher.status);
+
+    const tokenA = signTokenFor(a);
+    const count = await request(app).get('/api/user/messages/unread-count').set('Authorization', `Bearer ${tokenA}`);
+    expect(count.body).toMatchObject({ count: 1, mustReadCount: 1 });
+    const feed = await request(app).get('/api/user/messages/must-read').set('Authorization', `Bearer ${tokenA}`);
+    expect(feed.body.messages).toHaveLength(1);
+    expect(feed.body.messages[0].subject).toBe('Tin nhắn từ lớp Lớp M');
+
+    await request(app).patch(`/api/user/messages/${feed.body.messages[0]._id}/read`).set('Authorization', `Bearer ${tokenA}`);
+    const after = await request(app).get('/api/user/messages/unread-count').set('Authorization', `Bearer ${tokenA}`);
+    expect(after.body).toMatchObject({ count: 0, mustReadCount: 0 });
+
+    const bCount = await request(app).get('/api/user/messages/unread-count').set('Authorization', `Bearer ${signTokenFor(b)}`);
+    expect(bCount.body.mustReadCount).toBe(0); // b wasn't picked
+  });
+});

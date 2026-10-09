@@ -44,6 +44,9 @@ router.put('/:classId/sessions/:sessionId/attendance', validateObjectIdParam('cl
 // Dashboard
 router.get('/:classId/dashboard', validateObjectIdParam('classId'), c.loadOwnedClass, c.getDashboard);
 
+// Private messages to roster students (popup until read — classMessageService)
+router.post('/:classId/messages', validateObjectIdParam('classId'), c.loadOwnedClass, c.sendClassMessages);
+
 // Tuition status of the class's students (read-only; fees are edited via /api/tuition, admin only)
 router.get('/:classId/tuition', validateObjectIdParam('classId'), c.loadOwnedClass, tuitionController.getClassTuition);
 

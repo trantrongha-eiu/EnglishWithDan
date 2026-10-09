@@ -21,6 +21,11 @@ const MessageSchema = new mongoose.Schema({
   // exclude admin/broadcast messages. Peer messages never set isBroadcast.
   isPeer:      { type: Boolean, default: false },
   isRead:      { type: Boolean, default: false }, // cho tin nhắn cá nhân
+  // Personal message the student must open: nav.js shows a "Bạn có tin nhắn
+  // mới" popup on every page load until isRead (opening it in inbox.html).
+  // Set by the class page's "Nhắn tin" (classMessageService); automated
+  // messages (tuition reminders etc.) leave it false.
+  mustRead:    { type: Boolean, default: false },
   readBy:      [{ type: mongoose.Schema.Types.ObjectId }], // theo dõi ai đã đọc broadcast
   deletedBy:   [{ type: mongoose.Schema.Types.ObjectId }], // soft-delete theo từng user
   parentId:    { type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: null }, // tin nhắn gốc nếu đây là phản hồi

@@ -7,6 +7,7 @@ import StudentPicker from './tuition/StudentPicker';
 import { ClassProgressHero } from './classes/ClassProgress';
 import { keyLabel } from './classes/classProgressUtils';
 import ClassTuitionTab from './classes/ClassTuitionTab';
+import ClassMessageModal from './classes/ClassMessageModal';
 
 const MARK_OPTS = [
   { v: 'present', label: 'Có mặt', cls: 'badge-green' },
@@ -288,6 +289,11 @@ function StudentsTab({ cls, roster, onChange }) {
   const [pickedId, setPickedId] = useState('');
   const [pool, setPool] = useState([]);
   const [adding, setAdding] = useState(false);
+  const [picked, setPicked] = useState(() => new Set()); // enrollmentIds ticked for "Nhắn tin"
+  const [messageTo, setMessageTo] = useState(null); // roster rows the compose modal sends to
+  const togglePick = (id) => setPicked((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const pickedRows = roster.filter((e) => picked.has(e.enrollmentId));
+  const allPicked = roster.length > 0 && pickedRows.length === roster.length;
 
   // Same searchable picker as Học phí / Tin nhắn (tuition/StudentPicker) —
   // server-side search over ALL students (not just this class's roster),
@@ -345,21 +351,34 @@ function StudentsTab({ cls, roster, onChange }) {
           <StudentPicker students={pickablePool} value={pickedId} onChange={add} onSearch={searchStudents} />
         </div>
         {adding && <span style={{ fontSize: 12.5, color: 'var(--text3)' }}>Đang thêm...</span>}
+        {roster.length > 0 && (
+          <button type="button" className="btn btn-primary btn-sm" style={{ marginLeft: 'auto' }}
+            onClick={() => setMessageTo(pickedRows.length ? pickedRows : roster)}>
+            ✉️ {pickedRows.length ? `Nhắn tin cho ${pickedRows.length} học viên đã chọn` : 'Nhắn tin cho cả lớp'}
+          </button>
+        )}
       </div>
 
       <div className="table-wrap">
         <table className="table">
           <thead>
-            <tr><th>HỌC VIÊN</th><th>ĐÃ HỌC</th><th>ĐÃ NGHỈ</th><th>TRỄ</th><th>CHUYÊN CẦN</th><th>CÒN ĐƯỢC NGHỈ</th><th>BT THIẾU</th><th>TRẠNG THÁI</th><th></th></tr>
+            <tr>
+              <th style={{ width: 32 }}>
+                <input type="checkbox" title="Chọn tất cả để nhắn tin" checked={allPicked}
+                  onChange={() => setPicked(allPicked ? new Set() : new Set(roster.map((e) => e.enrollmentId)))} />
+              </th>
+              <th>HỌC VIÊN</th><th>ĐÃ HỌC</th><th>ĐÃ NGHỈ</th><th>TRỄ</th><th>CHUYÊN CẦN</th><th>CÒN ĐƯỢC NGHỈ</th><th>BT THIẾU</th><th>TRẠNG THÁI</th><th></th>
+            </tr>
           </thead>
           <tbody>
             {roster.length === 0
-              ? <tr><td colSpan={9} className="table-empty">Chưa có học viên</td></tr>
+              ? <tr><td colSpan={10} className="table-empty">Chưa có học viên</td></tr>
               : roster.map((e) => {
                 const s = e.stats || {};
                 const absent = (s.absentUnexcused || 0) + (s.absentExcused || 0);
                 return (
                   <tr key={e.enrollmentId}>
+                    <td><input type="checkbox" checked={picked.has(e.enrollmentId)} onChange={() => togglePick(e.enrollmentId)} /></td>
                     <td>
                       <strong>{e.student.name || e.student.username}</strong>
                       <div style={{ fontSize: 11, color: 'var(--text3)' }}>{e.student.email}</div>
@@ -383,6 +402,7 @@ function StudentsTab({ cls, roster, onChange }) {
                           <option value="completed">Hoàn thành</option>
                           <option value="dropped">Nghỉ học</option>
                         </select>
+                        <button type="button" className="btn btn-ghost btn-sm btn-icon" onClick={() => setMessageTo([e])} title="Nhắn tin riêng">✉️</button>
                         <button className="btn btn-danger btn-sm btn-icon" onClick={() => remove(e)} title="Xoá khỏi lớp">🗑</button>
                       </div>
                     </td>
@@ -392,6 +412,11 @@ function StudentsTab({ cls, roster, onChange }) {
           </tbody>
         </table>
       </div>
+
+      {messageTo && (
+        <ClassMessageModal cls={cls} recipients={messageTo}
+          onClose={() => setMessageTo(null)} onSent={() => setPicked(new Set())} />
+      )}
     </>
   );
 }

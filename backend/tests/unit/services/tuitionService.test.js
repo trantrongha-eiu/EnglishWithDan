@@ -275,22 +275,32 @@ describe('tuitionService', () => {
     expect(summary.awaitingConfirmCount).toBe(1);
   });
 
-  it('getMySummary: a fee is due from day 8 (VN) of its month until paid, overdue after day 10', async () => {
+  it('getMySummary: only the fee billed THIS month is nagged — due from day 8 (VN), overdue after day 10', async () => {
     const student = await createStudent();
     const at = iso => tuitionService.getMySummary(student._id, new Date(iso));
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 9, year: 2026, amount: 100, isPaid: false });
     await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 200, isPaid: false, studentNotified: true });
     await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 11, year: 2026, amount: 400, isPaid: false });
-    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 9, year: 2026, amount: 1600, isPaid: true });
 
-    // 7/10 VN: October not due yet
-    expect(await at('2026-10-07T12:00:00Z')).toMatchObject({ unpaidCount: 2, dueCount: 0, overdue: false });
-    // 8/10 00:30 VN (17:30Z on the 7th): October due, not overdue
+    // 7/10 VN: October billed this month but not due yet; the badge still counts everything
+    expect(await at('2026-10-07T12:00:00Z')).toMatchObject({ unpaidCount: 3, monthCount: 1, monthTotal: 200, dueCount: 0, overdue: false });
+    // 8/10 00:30 VN (17:30Z on the 7th): only October — not September's debt, not November
     expect(await at('2026-10-07T17:30:00Z')).toMatchObject({ dueCount: 1, dueTotal: 200, dueAwaitingCount: 1, overdue: false });
-    // 11/10 VN: overdue, and still due on 3/11 (November itself not yet)
+    // 11/10 VN: overdue
     expect(await at('2026-10-10T17:30:00Z')).toMatchObject({ dueCount: 1, overdue: true });
-    expect(await at('2026-11-03T05:00:00Z')).toMatchObject({ dueCount: 1, dueTotal: 200 });
-    // 8/11 VN: both months due
-    expect(await at('2026-11-08T05:00:00Z')).toMatchObject({ dueCount: 2, dueTotal: 600 });
+    // 3/11 VN: October is no longer nagged, November not due yet
+    expect(await at('2026-11-03T05:00:00Z')).toMatchObject({ monthCount: 1, monthTotal: 400, dueCount: 0 });
+    // 8/11 VN: November only
+    expect(await at('2026-11-08T05:00:00Z')).toMatchObject({ dueCount: 1, dueTotal: 400 });
+  });
+
+  it('resetTuitionReminderCountIfCaughtUp ignores fees entered ahead for later months', async () => {
+    const student = await createStudent({ tuitionReminderCount: 2 });
+    const oct = await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 10, year: 2026, amount: 1, isPaid: false });
+    await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 12, year: 2026, amount: 1, isPaid: false });
+    await TuitionFee.updateOne({ _id: oct._id }, { isPaid: true });
+    await tuitionService.resetTuitionReminderCountIfCaughtUp(student._id, new Date('2026-10-09T05:00:00Z'));
+    expect((await User.findById(student._id)).tuitionReminderCount).toBe(0);
   });
 
   it('getMySummary: a course fee is due from day 8 of the month it was entered', async () => {

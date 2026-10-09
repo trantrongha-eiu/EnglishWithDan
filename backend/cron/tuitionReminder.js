@@ -3,7 +3,7 @@ const TuitionFee      = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
-const { buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount } = require('../services/tuitionService');
+const { buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth } = require('../services/tuitionService');
 const logger = require('../utils/logger');
 
 async function runReminders() {
@@ -33,9 +33,12 @@ async function runReminders() {
     const admin = await User.findOne({ role: 'admin' }, '_id username').lean();
     if (!admin) return;
 
-    // All unpaid fees across all students
-    const unpaidFees = await TuitionFee.find({ isPaid: false })
-      .populate('studentId', '_id username email').lean();
+    // Only fees billed for THIS month ("nhắc tháng nào, tháng đó" — see
+    // tuitionService.isBilledThisMonth): not fees entered ahead for later
+    // months, and not an older month's debt re-sent every month.
+    const unpaidFees = (await TuitionFee.find({ isPaid: false })
+      .populate('studentId', '_id username email').lean())
+      .filter(fee => isBilledThisMonth(fee, now));
 
     if (!unpaidFees.length) {
       logger.info('cron', 'TuitionCron: no unpaid fees, nothing to remind');

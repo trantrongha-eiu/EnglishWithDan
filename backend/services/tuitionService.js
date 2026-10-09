@@ -59,6 +59,21 @@ async function sendTuitionReminderEmail(student, fees, customMessage) {
 // tracked counter for "this student got nudged about unpaid tuition",
 // mirroring routes/admin/users.js's studyReminderCount pattern (see
 // User.js's tuitionReminderCount field comment).
+// "Nhắc tháng nào, tháng đó": every student-facing tuition nag (nav.js
+// popups/banner via getMySummary, the monthly cron, the reminder counter
+// reset) only concerns fees billed for the CURRENT month (VN time) — a
+// monthly fee's own month, or the month a course fee was entered. Fees
+// entered ahead for later months aren't nagged yet, and an older month's
+// unpaid fee isn't re-nagged every month (it still shows on the badge and
+// the Học phí page).
+function feeBillingMonthKey(f) {
+  if (f.feeType === 'monthly') return `${f.year}-${String(f.month).padStart(2, '0')}`;
+  return vnTodayKey(new Date(f.createdAt || Date.now())).slice(0, 7);
+}
+function isBilledThisMonth(f, now = new Date()) {
+  return feeBillingMonthKey(f) === vnTodayKey(now).slice(0, 7);
+}
+
 async function bumpTuitionReminderCount(studentId) {
   await User.findByIdAndUpdate(studentId, { $inc: { tuitionReminderCount: 1 } });
 }
@@ -67,9 +82,14 @@ async function bumpTuitionReminderCount(studentId) {
 // unpaid fees left, the nag is resolved, so clear the counter automatically
 // (unlike studyReminderCount, "caught up" has no ambiguity here, so this
 // doesn't need a manual admin reset button).
-async function resetTuitionReminderCountIfCaughtUp(studentId) {
-  const remaining = await TuitionFee.countDocuments({ studentId, isPaid: false });
-  if (remaining === 0) await User.findByIdAndUpdate(studentId, { tuitionReminderCount: 0 });
+// Fees entered ahead for later months don't count — otherwise a student
+// billed several months in advance could never get the counter back to 0.
+async function resetTuitionReminderCountIfCaughtUp(studentId, now = new Date()) {
+  const curMonthKey = vnTodayKey(now).slice(0, 7);
+  const unpaid = await TuitionFee.find({ studentId, isPaid: false }).select('feeType month year createdAt').lean();
+  if (!unpaid.some(f => feeBillingMonthKey(f) <= curMonthKey)) {
+    await User.findByIdAndUpdate(studentId, { tuitionReminderCount: 0 });
+  }
 }
 
 async function getSettings() {
@@ -486,17 +506,13 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
   return msgs.length;
 }
 
-// Payment-due popup (nav.js): an unpaid fee is "due" from day 8 of its
-// billing month (VN time) — the monthly fee's own month, or the month a
-// course fee was entered — and stays due, through later months too, until
-// an admin marks it paid (the student's own "Tôi đã chuyển khoản" only
-// changes the popup wording). Past day 10 it's also "overdue".
+// Payment-due popup (nav.js): from day 8 (VN time) of a month, an unpaid fee
+// billed for THAT month (isBilledThisMonth) triggers the popup on every page
+// load until an admin marks it paid (the student's own "Tôi đã chuyển khoản"
+// only changes the wording); past day 10 it reads "quá hạn". Next month it's
+// next month's fee that's nagged, not this one again.
 const PAYMENT_DUE_DAY = 8;
 const PAYMENT_DEADLINE_DAY = 10;
-function feeBillingMonthKey(f) {
-  if (f.feeType === 'monthly') return `${f.year}-${String(f.month).padStart(2, '0')}`;
-  return vnTodayKey(new Date(f.createdAt || Date.now())).slice(0, 7);
-}
 
 async function getMySummary(studentId, now = new Date()) {
   const fees = await TuitionFee.find({ studentId, isPaid: false }).lean();
@@ -505,15 +521,19 @@ async function getMySummary(studentId, now = new Date()) {
   // tuition popup switches to "waiting for admin confirmation" wording when
   // this covers every unpaid fee.
   const awaitingConfirmCount = fees.filter(f => f.studentNotified).length;
-  const todayKey = vnTodayKey(now);
-  const dayKey = d => String(d).padStart(2, '0');
-  const due = fees.filter(f => todayKey >= `${feeBillingMonthKey(f)}-${dayKey(PAYMENT_DUE_DAY)}`);
+  // This month's fees — what nav.js's popups/banner talk about.
+  const month = fees.filter(f => isBilledThisMonth(f, now));
+  const monthTotal = month.reduce((sum, f) => sum + (f.amount || 0), 0);
+  const monthAwaitingCount = month.filter(f => f.studentNotified).length;
+  const day = Number(vnTodayKey(now).slice(8, 10));
+  const due = month.length > 0 && day >= PAYMENT_DUE_DAY;
   return {
     unpaidCount: fees.length, totalUnpaid, awaitingConfirmCount,
-    dueCount: due.length,
-    dueTotal: due.reduce((sum, f) => sum + (f.amount || 0), 0),
-    dueAwaitingCount: due.filter(f => f.studentNotified).length,
-    overdue: due.some(f => todayKey > `${feeBillingMonthKey(f)}-${dayKey(PAYMENT_DEADLINE_DAY)}`),
+    monthCount: month.length, monthTotal, monthAwaitingCount,
+    dueCount: due ? month.length : 0,
+    dueTotal: due ? monthTotal : 0,
+    dueAwaitingCount: due ? monthAwaitingCount : 0,
+    overdue: due && day > PAYMENT_DEADLINE_DAY,
   };
 }
 
@@ -554,5 +574,6 @@ module.exports = {
   createFee, createMonthlyFees, updateFee, deleteFee, getClassStudentsMissingTuition, getClassTuition,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
-  buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount,
+  buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth,
+  resetTuitionReminderCountIfCaughtUp,
 };

@@ -15,6 +15,7 @@ const AttendanceCheckIn = require('../models/AttendanceCheckIn');
 const User = require('../models/User');
 const svc = require('../services/classAttendanceService');
 const assignmentService = require('../services/assignmentService');
+const classMessageService = require('../services/classMessageService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 const { computeClassProgress } = require('../utils/classProgress');
@@ -125,6 +126,21 @@ function validateClassBody(body, { partial = false } = {}) {
 exports.staffOnly = staffOnly;
 exports.loadOwnedClass = loadOwnedClass;
 exports.loadSession = loadSession;
+
+// POST /:classId/messages { studentIds, subject, body } — private message to
+// each picked student on the roster (classMessageService).
+exports.sendClassMessages = async (req, res) => {
+  try {
+    const r = await classMessageService.sendToClassStudents(req.classGroup, req.user, req.body || {});
+    if (r.status === 'empty') return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+    if (r.status === 'too_long') return res.status(400).json({ success: false, message: 'Nội dung quá dài' });
+    if (r.status === 'no_recipients') return res.status(400).json({ success: false, message: 'Chưa chọn học viên nào trong lớp' });
+    res.status(201).json({ success: true, sent: r.sent });
+  } catch (err) {
+    logger.error('classes', 'sendClassMessages failed', { errorMessage: err.message });
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 exports.listClasses = async (req, res) => {
   try {

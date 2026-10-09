@@ -45,6 +45,10 @@ async function load() {
     currentPage = 1;
     renderList();
     updateBadge();
+    // inbox.html?msg=<id> — nav.js's "Bạn có tin nhắn mới" popup links here;
+    // opening the message marks it read, which is what stops that popup.
+    const wanted = new URLSearchParams(location.search).get('msg');
+    if (wanted && messages.some(m => m._id === wanted)) selectMsg(wanted);
   } catch (e) {
     document.getElementById('msgList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>${esc(e.message)}</p></div>`;
   }
