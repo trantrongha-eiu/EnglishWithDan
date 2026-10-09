@@ -55,13 +55,20 @@
   transition: transform .22s var(--pf-spring), box-shadow .22s;
   animation: pf-rise .5s .08s ease both;
 }
-:root .sp-home-card:nth-child(1) { --c: #e0544a; grid-column: span 2; min-height: 190px;
+/* Colour by what the tile does, not its position — new tiles (e.g. the
+   Shadowing link) slot in without shifting everyone's colour. */
+:root .sp-home-card[onclick^="goPractice"] { --c: #e0544a; grid-column: span 2; min-height: 190px;
   background-image: radial-gradient(circle at 100% 100%, rgba(255,255,255,.16) 0 70px, transparent 71px),
                     radial-gradient(circle at 100% 100%, rgba(255,255,255,.1) 0 120px, transparent 121px); }
-:root .sp-home-card:nth-child(2) { --c: #6b45c4; }
-:root .sp-home-card:nth-child(3) { --c: #5873e8; }
-:root .sp-home-card:nth-child(4) { --c: #2f9e5b; }
-:root .sp-home-card:nth-child(5) { --c: #e8913a; }
+:root .sp-home-card[href*="shadowing"]          { --c: #2a9d8f; color: #fff !important; }
+:root .sp-home-card#btn-full-mock                { --c: #6b45c4; }
+:root .sp-home-card[onclick^="goHistory"]       { --c: #5873e8; }
+:root .sp-home-card[onclick^="goMaterials"]     { --c: #2f9e5b; }
+:root .sp-home-card[onclick^="goSpeakingTips"]  { --c: #e8913a; }
+/* 6 tiles in a 3-col grid (2+1 / 3 / 1): the last one runs full width as
+   a slim banner instead of sitting alone. */
+:root .sp-home-card:nth-child(6):last-child { grid-column: 1 / -1; min-height: 0; flex-direction: row; align-items: center; }
+:root .sp-home-card:nth-child(6):last-child .sp-home-card-arrow { top: 50%; margin-top: -8px; }
 :root .sp-home-card:hover { transform: translate(-2px, -3px) rotate(-.4deg); box-shadow: 6px 7px 0 var(--pf-ink); border-color: var(--pf-ink); }
 :root .sp-home-card:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pf-ink); }
 :root .sp-home-card-icon-wrap {
@@ -71,7 +78,7 @@
 }
 :root .sp-home-card-icon-wrap i { color: var(--c); }
 :root .sp-home-card-title { font-family: var(--pf-head); font-weight: 900; font-size: 21px; color: #fff; }
-:root .sp-home-card:nth-child(1) .sp-home-card-title { font-size: 28px; }
+:root .sp-home-card[onclick^="goPractice"] .sp-home-card-title { font-size: 28px; }
 :root .sp-home-card-desc { color: rgba(255,255,255,.9); font-weight: 600; font-size: 13px; }
 :root .sp-home-card-arrow { position: absolute; right: 16px; top: 20px; color: rgba(255,255,255,.75); }
 :root .sp-home-card:hover .sp-home-card-arrow { color: #fff; transform: translateX(3px); }
@@ -82,7 +89,7 @@
 }
 @media (max-width: 480px) {
   :root .sp-home-cards { grid-template-columns: 1fr; }
-  :root .sp-home-card:nth-child(1) { grid-column: auto; }
+  :root .sp-home-card[onclick^="goPractice"] { grid-column: auto; }
   :root .sp-home-title { font-size: 26px; }
 }
 
