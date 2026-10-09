@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="/js/theme.js?v=20260831"></script>
   <script src="/js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
 </head>
 
 <body id="pageBody">
@@ -27,7 +28,8 @@
 <script src="/js/auth.js?v=20261007guest"></script>
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="/js/nav.js?v=20261009msg"></script>
+<script src="/js/nav.js?v=20261009pf"></script>
+<script src="/js/shared/playful.js?v=20261010b"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/learning-popups.js?v=20260920"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
@@ -175,21 +177,27 @@
      ════════════════════════════════════════════════════════ -->
   <div id="screen-exam" class="screen hidden">
 
-    <!-- Top bar -->
+    <!-- Top bar — computer-delivered IELTS look (css/cd-exam.css):
+         logo · title over "mm:ss remaining" · Submit Test + icon tools. -->
     <div class="exam-bar">
       <div class="exam-bar-left">
         <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát" aria-label="Thoát"><i class="fas fa-times"></i></button>
-        <span class="exam-title-txt" id="exam-title">Loading...</span>
-      </div>
-      <div class="exam-timer" id="exam-timer">
-        <i class="fas fa-stopwatch"></i>
-        <span id="timer-display">01:00:00</span>
+        <img class="cd-logo" src="/img/favicon.svg" alt="" aria-hidden="true">
+        <div class="cd-title-block">
+          <span class="exam-title-txt" id="exam-title">Loading...</span>
+          <div class="exam-timer" id="exam-timer">
+            <i class="fas fa-stopwatch"></i>
+            <span id="timer-display">01:00:00</span>
+            <span class="cd-remaining" id="cd-remaining"></span>
+          </div>
+        </div>
       </div>
       <div class="exam-bar-right" style="display:flex;align-items:center;gap:8px;">
         <div id="exam-progress-pill" class="rd-progress-pill">
           <span id="prog-answered">0</span>/<span id="prog-total">40</span>
         </div>
         <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
+        <button class="cd-submit-top" onclick="confirmSubmit()">Submit Test</button>
         <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" aria-label="Toàn màn hình" id="btn-fullscreen"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
         <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt" aria-label="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
@@ -201,7 +209,13 @@
         style="height:100%;background:linear-gradient(90deg,#3d8bff,#7c3aed);width:0%;transition:width .3s ease;"></div>
     </div>
 
-    <!-- Toolbar -->
+    <!-- Part header ("Part 1 / Read the text and answer questions 1–13",
+         filled by switchPassage) with the existing tools on its right. -->
+    <div class="cd-part-header">
+      <div class="cd-part-text">
+        <div class="cd-part-title" id="cd-part-title">Part 1</div>
+        <div class="cd-part-sub" id="cd-part-sub"></div>
+      </div>
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl" onclick="setTool('highlight')">
         <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
@@ -223,6 +237,7 @@
       </button>
       <div class="toolbar-passage-tabs" id="toolbar-passage-tabs"></div>
     </div>
+    </div>
 
     <!-- Split layout -->
     <div class="exam-split" id="exam-split">
@@ -237,11 +252,9 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <div class="exam-footer">
-      <div class="q-nav-scroll" id="q-nav-scroll"></div>
-      <button class="btn-submit-exam" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
-    </div>
+    <!-- Footer — Part blocks + question numbers + Submit Test, rendered by
+         js/shared/cd-footer.js from buildQNavFooter(). -->
+    <div class="exam-footer" id="exam-cd-footer"></div>
 
     <!-- ══ MODAL NỘP BÀI – nằm trong screen-exam để hiển thị đúng khi fullscreen ══ -->
     <div id="modal-submit" class="modal-overlay hidden" style="position:absolute;z-index:9999;">
@@ -519,10 +532,12 @@
 
   <link rel="stylesheet" href="/css/reading-extra.css?v=20261007expl">
   <link rel="stylesheet" href="/css/reading-tips-practice.css?v=20260924c">
+  <link rel="stylesheet" href="/css/cd-exam.css?v=20261009cd">
 
 
 
-  <script src="/js/reading-v2.js?v=20261008rv"></script>
+  <script src="/js/shared/cd-footer.js?v=20261009cd"></script>
+  <script src="/js/reading-v2.js?v=20261010pf"></script>
   <script src="/js/reading-tips.js?v=20260925route"></script>
   <script src="/js/reading-tips-practice.js?v=20260924c"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->

@@ -20,13 +20,16 @@
   <link rel="stylesheet" href="css/task2-highlight.css?v=20261007hl3" />
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="css/pf-writing.css?v=20261010pf"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
 <script src="js/auth.js?v=20261007guest"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20261009msg"></script>
+<script src="js/nav.js?v=20261009pf"></script>
+<script src="js/shared/playful.js?v=20261010b"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -54,9 +57,14 @@
 
   <div class="key-screen-body">
     <div class="key-card">
-      <div class="key-card-icon">✏️</div>
-      <h2>IELTS Writing</h2>
-      <p class="key-desc">Làm bài thi Writing tổng hợp Task 1 + Task 2 với đề ngẫu nhiên</p>
+      <!-- Hero (css/pf-writing.css) — Dan peeks from the right. -->
+      <div class="pfw-hero">
+        <div class="pfw-hero-text">
+          <h2>IELTS <span class="pfw-tag">Writing</span></h2>
+          <p class="key-desc">Làm bài thi Writing tổng hợp Task 1 + Task 2 với đề ngẫu nhiên</p>
+        </div>
+        <div class="key-card-icon pfw-hero-dan" data-dan="think">✏️</div>
+      </div>
 
       <!-- Premium promo banner (ẩn khi user đã premium) — same pattern as
            reading.html/listening.html/speaking.html's #premium-promo-banner. -->
@@ -87,12 +95,36 @@
         <div id="key-practice-restore-list"></div>
       </div>
 
-      <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()"><i class="fas fa-pen"></i> Bắt đầu làm bài</button>
-      <div class="key-card-actions">
-        <button class="btn-secondary" onclick="showPracticeMode()"><i class="fas fa-dumbbell"></i> Luyện tập lẻ</button>
-        <button class="btn-secondary" onclick="openHistoryModal()"><i class="fas fa-history"></i> Xem lịch sử</button>
-        <button class="btn-secondary" onclick="loadWritingSamples()"><i class="fas fa-file-alt"></i> Tài liệu mẫu</button>
-        <button class="btn-secondary" onclick="openWritingTips()"><i class="fas fa-lightbulb"></i> Writing Tips</button>
+      <!-- Main CTA tile: full test (Task 1 + Task 2, 60 phút). -->
+      <div class="pfw-main-tile">
+        <div class="pfw-main-text">
+          <div class="pfw-main-kicker">Thi thử Full đề</div>
+          <div class="pfw-main-title">TASK 1 + TASK 2</div>
+          <div class="pfw-main-meta"><span><i class="far fa-clock"></i> 60 phút</span><span><i class="fas fa-shuffle"></i> Đề ngẫu nhiên</span><span><i class="fas fa-user-check"></i> AI + giáo viên chấm</span></div>
+        </div>
+        <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()"><i class="fas fa-pen"></i> Bắt đầu làm bài</button>
+      </div>
+      <div class="key-card-actions pfw-tiles">
+        <button class="btn-secondary pfw-tile pfw-t-pink" onclick="showPracticeMode()">
+          <span class="pfw-tile-ic"><i class="fas fa-dumbbell"></i></span>
+          <span class="pfw-tile-txt"><strong>Luyện tập lẻ</strong><small>Từng Task, có bài mẫu</small></span>
+          <i class="fas fa-chevron-right pfw-tile-go"></i>
+        </button>
+        <button class="btn-secondary pfw-tile pfw-t-blue" onclick="openHistoryModal()">
+          <span class="pfw-tile-ic"><i class="fas fa-history"></i></span>
+          <span class="pfw-tile-txt"><strong>Xem lịch sử</strong><small>Điểm band & nhận xét</small></span>
+          <i class="fas fa-chevron-right pfw-tile-go"></i>
+        </button>
+        <button class="btn-secondary pfw-tile pfw-t-green" onclick="loadWritingSamples()">
+          <span class="pfw-tile-ic"><i class="fas fa-file-alt"></i></span>
+          <span class="pfw-tile-txt"><strong>Tài liệu mẫu</strong><small>Bài mẫu theo quý</small></span>
+          <i class="fas fa-chevron-right pfw-tile-go"></i>
+        </button>
+        <button class="btn-secondary pfw-tile pfw-t-amber" onclick="openWritingTips()">
+          <span class="pfw-tile-ic"><i class="fas fa-lightbulb"></i></span>
+          <span class="pfw-tile-txt"><strong>Writing Tips</strong><small>Chiến lược từng dạng bài</small></span>
+          <i class="fas fa-chevron-right pfw-tile-go"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -174,7 +206,7 @@
 <div id="screen-done" class="screen">
   <div class="done-body">
     <div class="done-card">
-      <div class="done-icon">✅</div>
+      <div class="done-icon" data-dan="excited">✅</div>
       <h2>Đã nộp bài!</h2>
       <p id="done-exam-name" class="wr-done-label"></p>
       <p>Bài của bạn sẽ được AI và giáo viên chấm. Điểm band + nhận xét chi tiết sẽ xuất hiện trong <strong>Lịch sử</strong> khi có kết quả.</p>

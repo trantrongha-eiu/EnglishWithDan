@@ -21,13 +21,15 @@
   <script src="js/shared/pwa-register.js?v=20260831"></script>
   <link rel="stylesheet" href="css/dashboard.css?v=20261009class">
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
+  <link rel="stylesheet" href="css/playful.css?v=20261010b"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
 <script src="js/auth.js?v=20261007guest"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20261009msg"></script>
+<script src="js/nav.js?v=20261009pf"></script>
+<script src="js/shared/playful.js?v=20261010b"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -204,16 +206,18 @@
             <button type="button" class="feat-chip" onclick="openFeatInfo('hammer')"><i class="fas fa-hammer"></i> Búa Daniel</button>
           </div>
 
-          <!-- Other skills — was 5 always-expanded cards duplicating the top
-               nav's own Reading/Listening/... links; kept as a slim
-               discovery row instead of repeating the whole nav in card form. -->
-          <div class="skills-explore-row">
-            <span class="skills-explore-label">Khám phá:</span>
-            <a class="skills-explore-link" href="reading.html"><i class="fas fa-book-open"></i> Reading</a>
-            <a class="skills-explore-link" href="listening.html"><i class="fas fa-headphones"></i> Listening</a>
-            <a class="skills-explore-link" href="writing.html"><i class="fas fa-pen-nib"></i> Writing</a>
-            <a class="skills-explore-link" href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
-            <a class="skills-explore-link" href="writing-practice.html"><i class="fas fa-dumbbell"></i> Luyện viết</a>
+          <!-- Other skills — colourful skill tiles with peeking creatures
+               (filled by js/shared/playful.js, styled in css/playful.css).
+               The slim link row stays as the no-JS fallback. -->
+          <div class="skill-cards" data-skill-cards>
+            <div class="skills-explore-row">
+              <span class="skills-explore-label">Khám phá:</span>
+              <a class="skills-explore-link" href="reading.html"><i class="fas fa-book-open"></i> Reading</a>
+              <a class="skills-explore-link" href="listening.html"><i class="fas fa-headphones"></i> Listening</a>
+              <a class="skills-explore-link" href="writing.html"><i class="fas fa-pen-nib"></i> Writing</a>
+              <a class="skills-explore-link" href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
+              <a class="skills-explore-link" href="writing-practice.html"><i class="fas fa-dumbbell"></i> Luyện viết</a>
+            </div>
           </div>
 
           <div style="text-align:center;margin-top:28px">
@@ -1344,7 +1348,7 @@
 <script src="js/dashboard-review.js?v=20260831"></script>
 <script src="js/dashboard-paraphrase.js?v=20260911"></script>
 <script src="js/shared/fire-tier.js?v=20261001"></script>
-<script src="js/dashboard.js?v=20261001vgoal"></script>
+<script src="js/dashboard.js?v=20261009pf"></script>
 <script src="js/dashboard-browse.js?v=20261008vcover"></script>
 </body>
 </html>

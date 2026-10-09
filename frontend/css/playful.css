@@ -1,0 +1,428 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Playful student layer
+   Loaded on every student page (after the page's own sheets where
+   possible; selectors are :root-prefixed where they must win anyway).
+
+   Inspired by theieltsdictionary.com's look: warm cream paper, bold ink
+   outlines with hard offset shadows, bright candy accents, chunky rounded
+   headings — plus our mascot Dan (js/shared/playful.js).
+
+   Never touches the exam screens' layout (those are css/cd-exam.css).
+   All motion collapses under prefers-reduced-motion.
+   ══════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Lilita+One&display=swap');
+
+:root {
+  --pf-ink:       #1d1a16;
+  --pf-paper:     #fff8ee;
+  --pf-paper2:    #fdf0dc;
+  --pf-line:      #efe3cf;
+  --pf-sun:       #ffd23f;
+  --pf-tangerine: #ff8a1f;
+  --pf-pink:      #ff5da2;
+  --pf-lime:      #c6f432;
+  --pf-sky:       #4f6ef7;
+  --pf-leaf:      #2f9e5b;
+  --pf-olive:     #5f7f3f;
+  --pf-teal:      #2a9d8f;
+  --pf-grape:     #7b52d6;
+  --pf-coral:     #f0644f;
+  --pf-shadow:    4px 4px 0 var(--pf-ink);
+  --pf-shadow-lg: 7px 7px 0 var(--pf-ink);
+  --pf-head:      'Nunito', 'Plus Jakarta Sans', sans-serif;
+  --pf-spring:    cubic-bezier(.34, 1.56, .64, 1);
+}
+html:root:not([data-theme="dark"]) { --bg: var(--pf-paper); }
+[data-theme="dark"] {
+  --pf-ink:   #3a3a3a;
+  --pf-paper: #000;
+  --pf-paper2:#141414;
+  --pf-line:  #262626;
+  --pf-shadow:    4px 4px 0 #2b2b2b;
+  --pf-shadow-lg: 7px 7px 0 #2b2b2b;
+}
+
+/* ── Headings: chunky & round ───────────────────────────────────────── */
+:root .list-header h2,
+:root .dash-vocab-hero-title,
+:root .page-title,
+:root .pf-head { font-family: var(--pf-head); font-weight: 900; letter-spacing: -.01em; }
+
+/* ── Gentle page entrance ───────────────────────────────────────────── */
+@keyframes pf-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+:root #screen-list.active .list-container > *,
+:root #book-welcome > div > * {
+  animation: pf-rise .5s var(--ease-standard, ease) both;
+}
+:root #screen-list.active .list-container > *:nth-child(2),
+:root #book-welcome > div > *:nth-child(2) { animation-delay: .05s; }
+:root #screen-list.active .list-container > *:nth-child(3),
+:root #book-welcome > div > *:nth-child(3) { animation-delay: .1s; }
+:root #screen-list.active .list-container > *:nth-child(n+4),
+:root #book-welcome > div > *:nth-child(n+4) { animation-delay: .15s; }
+
+/* ── Buttons: springy hover ─────────────────────────────────────────── */
+:root .btn-primary,
+:root .btn-do-test,
+:root .feat-chip,
+:root .filter-btn,
+:root .tid-act {
+  transition: transform .18s var(--pf-spring), box-shadow .18s ease, background .15s, color .15s, border-color .15s;
+}
+:root .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIST HEADERS (Reading / Listening / …)
+   ══════════════════════════════════════════════════════════════════════ */
+:root .list-header {
+  background-color: var(--pf-olive);
+  background-image:
+    linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+  border: 3px solid var(--pf-ink);
+  border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg);
+  padding: 22px 150px 22px 26px;
+  min-height: 104px;
+  overflow: visible;
+}
+body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
+:root .list-header::before { display: none; }
+:root .list-header h2 { font-size: 26px; color: #fff; }
+:root .list-header .tag-red {
+  color: var(--pf-ink); background: var(--pf-sun);
+  padding: 0 10px; border-radius: 10px; display: inline-block;
+  transform: rotate(-1.5deg); box-shadow: 2px 2px 0 var(--pf-ink);
+}
+:root .list-header .list-subtitle { color: rgba(255,255,255,.88); }
+:root .list-header .filter-btn,
+:root .list-header .ls-hist-btn {
+  background: rgba(255,255,255,.14); border: 2px solid rgba(255,255,255,.35);
+  border-radius: 999px; color: #fff; font-weight: 700;
+}
+:root .list-header .filter-btn:hover { transform: translateY(-2px); }
+:root .list-header .filter-btn.active {
+  background: #fff; color: var(--pf-ink); border-color: var(--pf-ink);
+  box-shadow: 2px 2px 0 var(--pf-ink);
+}
+:root .list-header .test-search-input { border-radius: 999px; border-width: 2px; }
+
+/* Dan peeking over the header's bottom-right edge. */
+.lh-mascot {
+  position: absolute; right: 22px; bottom: -6px;
+  width: 104px; pointer-events: none;
+  animation: pf-peek .9s var(--pf-spring) .25s both;
+}
+.lh-mascot .dan-svg { width: 100%; height: auto; display: block; }
+@keyframes pf-peek { from { transform: translateY(40px) scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Mode tabs: chunky pills */
+:root .rmode-tabs-bar { border-bottom: none; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+:root .rmode-tab {
+  border: 2px solid var(--pf-ink); border-radius: 999px;
+  padding: 8px 18px; background: var(--surface); color: var(--text);
+  font-weight: 800; box-shadow: 2px 2px 0 var(--pf-ink);
+  transition: transform .18s var(--pf-spring), box-shadow .18s;
+}
+:root .rmode-tab:hover:not(.rmode-active) { transform: translateY(-2px); box-shadow: 3px 4px 0 var(--pf-ink); color: var(--text); }
+:root .rmode-tab.rmode-active {
+  background: var(--pf-sun); color: var(--pf-ink); border-color: var(--pf-ink);
+  border-bottom-color: var(--pf-ink);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   TEST CARDS — "TEST 1" covers
+   ══════════════════════════════════════════════════════════════════════ */
+:root .test-group-title {
+  font-family: var(--pf-head); font-weight: 900; font-size: 24px;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--text);
+  flex-wrap: wrap;
+}
+:root .test-group-title::after {
+  content: 'Giao diện giống thi thật 100%';
+  font-family: var(--font-family, sans-serif);
+  font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  color: #2f5bd3; background: #e3ecff; border: 1px solid #b9cdfc;
+  padding: 4px 10px; border-radius: 999px; order: 2;
+}
+:root .test-group-title .progress-bar-mini { order: 3; }
+:root .test-grid { gap: 22px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+:root .test-card.tid-card {
+  --c: #e07a3a; --c2: rgba(255,255,255,.14);
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column; min-height: 268px;
+  padding: 16px 16px 14px;
+  border: none; border-radius: 22px;
+  color: #fff; cursor: default;
+  background-color: var(--c);
+  box-shadow: 0 10px 24px -10px rgba(0,0,0,.35);
+  transition: transform .25s var(--pf-spring), box-shadow .25s;
+}
+:root .test-card.tid-card:hover { transform: translateY(-6px) rotate(-.4deg); box-shadow: 0 18px 32px -12px rgba(0,0,0,.45); }
+/* four covers, four patterns */
+:root .tid-card.tid-c1 {
+  --c: #e07a3a;
+  background-image: radial-gradient(circle at 0 100%, transparent 26px, var(--c2) 27px, var(--c2) 40px, transparent 41px),
+                    radial-gradient(circle at 100% 0, transparent 26px, var(--c2) 27px, var(--c2) 40px, transparent 41px);
+  background-size: 68px 68px;
+}
+:root .tid-card.tid-c2 {
+  --c: #d4689a;
+  background-image: radial-gradient(circle at 50% 100%, transparent 30px, var(--c2) 31px, var(--c2) 44px, transparent 45px);
+  background-size: 90px 46px;
+}
+:root .tid-card.tid-c3 {
+  --c: #cf5f57;
+  background-image: repeating-linear-gradient(135deg, transparent 0 18px, var(--c2) 18px 30px, transparent 30px 48px);
+  background-size: 48px 48px;
+}
+:root .tid-card.tid-c0 {
+  --c: #7d62c9;
+  background-image: repeating-linear-gradient(60deg, transparent 0 26px, var(--c2) 26px 40px);
+}
+.tid-card-top { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; opacity: .92; }
+.tid-brand { flex: 1; letter-spacing: .03em; }
+.tid-skill-ic { font-size: 18px; }
+:root .tid-card .pc-share-btn {
+  position: static; width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,.2); color: #fff; border: none;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
+}
+:root .tid-card .test-done-tick {
+  position: absolute; top: 50px; right: 14px; left: auto;
+  background: var(--pf-lime); color: var(--pf-ink); border: 2px solid var(--pf-ink);
+  width: 28px; height: 28px; font-weight: 900;
+}
+.tid-card-title {
+  font-family: 'Lilita One', var(--pf-head);
+  font-size: 50px; line-height: 1; letter-spacing: .01em;
+  margin: 26px 0 18px;
+  text-shadow: 0 3px 0 rgba(0,0,0,.12);
+  transform-origin: left center;
+  transition: transform .3s var(--pf-spring);
+}
+.tid-card:hover .tid-card-title { transform: scale(1.06) rotate(-2deg); }
+.tid-title-sm { font-size: 24px; line-height: 1.15; display: block; }
+.tid-card-stats {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-size: 12.5px; font-weight: 600; opacity: .95; margin-bottom: 12px;
+}
+.tid-card-stats i { margin-right: 3px; }
+.tid-sep { width: 1px; height: 14px; background: rgba(255,255,255,.5); }
+:root .tid-card .review-status-badge { margin: 0 0 10px; background: rgba(255,255,255,.92); color: #333; border-radius: 10px; }
+.tid-card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.tid-act {
+  display: flex; align-items: center; gap: 6px;
+  background: #fffdf8; color: #2b2b2b; border: none; border-radius: 14px;
+  padding: 9px 8px; font-family: inherit; font-size: 12.5px; font-weight: 800;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: 0 3px 0 rgba(0,0,0,.14);
+}
+.tid-act > .fa-chevron-right { margin-left: auto; font-size: 10px; opacity: .45; }
+.tid-act:hover { transform: translateY(-2px); box-shadow: 0 5px 0 rgba(0,0,0,.16); }
+.tid-act:active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,0,0,.16); }
+.tid-act-wide { grid-column: 1 / -1; }
+.tid-act-ic {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; background: color-mix(in srgb, var(--c) 18%, #fff); color: var(--c);
+}
+.tid-review-link {
+  margin-top: 10px; background: none; border: none; color: #fff; opacity: .9;
+  font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; text-align: left; padding: 0;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.tid-review-link:hover { opacity: 1; }
+[data-theme="dark"] .tid-act { background: #1b1b1b; color: #eee; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   DASHBOARD
+   ══════════════════════════════════════════════════════════════════════ */
+:root .dash-vocab-hero .dan-streak-card,
+:root .dash-vocab-hero .todays-lesson-card,
+:root .weakness-card {
+  border: 2.5px solid var(--pf-ink);
+  border-radius: 22px;
+  box-shadow: var(--pf-shadow);
+}
+:root .dash-vocab-hero .dan-streak-card {
+  background:
+    radial-gradient(circle at 92% 12%, rgba(255,210,63,.35) 0 60px, transparent 61px),
+    linear-gradient(135deg, #fff4e0, #ffe9cf);
+}
+[data-theme="dark"] .dash-vocab-hero .dan-streak-card { background: #141414; }
+:root .dash-vocab-hero-lb,
+:root .feat-chip {
+  border: 2px solid var(--pf-ink); border-radius: 999px; box-shadow: 2px 2px 0 var(--pf-ink); font-weight: 800;
+}
+:root .feat-chip:hover,
+:root .dash-vocab-hero-lb:hover { transform: translateY(-2px); box-shadow: 3px 4px 0 var(--pf-ink); }
+
+/* Dan in the streak banners / quit modal / results */
+.dan-host { display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+:root .dan-mascot .dan-svg,
+:root .dash-vocab-hero .dan-mascot .dan-svg { width: 84px; height: auto; }
+:root .mascot-panda .dan-svg { width: 60px; height: auto; }
+:root .quit-mascot .dan-svg { width: 96px; height: auto; }
+:root .result-mascot .dan-svg { width: 120px; height: auto; }
+
+/* Skill cards row */
+.skill-cards {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px;
+  margin: 26px 0 8px;
+}
+.skill-card {
+  --c: var(--pf-sky);
+  position: relative; overflow: hidden; isolation: isolate;
+  display: flex; flex-direction: column;
+  min-height: 320px; padding: 16px 14px 0;
+  background: var(--c); color: #fff; text-decoration: none;
+  border: 3px solid var(--pf-ink); border-radius: 6px;
+  box-shadow: 9px 9px 0 var(--pf-ink);
+  transition: transform .25s var(--pf-spring), box-shadow .25s;
+}
+.skill-card:hover { transform: translate(-3px, -4px); box-shadow: 12px 13px 0 var(--pf-ink); color: #fff; }
+.skill-card:active { transform: translate(3px, 3px); box-shadow: 4px 4px 0 var(--pf-ink); }
+.skill-card.sk-listening { --c: #5873e8; }
+.skill-card.sk-reading   { --c: #2f9e5b; }
+.skill-card.sk-speaking  { --c: #e8783a; }
+.skill-card.sk-writing   { --c: #e06a7e; }
+.skill-card.sk-mock      { --c: #6b45c4; }
+.skill-card.sk-vocab     { --c: #2a9d8f; }
+.skill-card::before { /* soft top light */
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(180deg, rgba(255,255,255,.14), transparent 45%);
+}
+.sk-ic {
+  width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.94);
+  color: #333; display: flex; align-items: center; justify-content: center; font-size: 19px;
+  box-shadow: 0 3px 0 rgba(0,0,0,.12);
+}
+.sk-title { font-family: var(--pf-head); font-weight: 900; font-size: 22px; line-height: 1.1; margin: 14px 0 6px; }
+.sk-desc { font-size: 12px; line-height: 1.5; opacity: .92; font-weight: 600; }
+.sk-creature { margin-top: auto; position: relative; height: 130px; }
+.sk-creature svg { position: absolute; left: -14px; right: -14px; bottom: 0; width: calc(100% + 28px); height: 130px; transition: transform .35s var(--pf-spring); }
+.skill-card:hover .sk-creature svg { transform: translateY(-6px); }
+.sk-badge {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+  background: rgba(0,0,0,.28); color: #fff; font-weight: 900; font-size: 13px;
+  padding: 4px 14px; border-radius: 999px; white-space: nowrap; letter-spacing: .02em;
+}
+.sk-spark { position: absolute; color: var(--pf-sun); font-size: 14px; animation: pf-twinkle 2.4s ease-in-out infinite; pointer-events: none; }
+.sk-spark.s2 { animation-delay: .8s; font-size: 10px; }
+.sk-spark.s3 { animation-delay: 1.5s; font-size: 18px; }
+@keyframes pf-twinkle { 0%, 100% { opacity: .25; transform: scale(.7) rotate(0); } 50% { opacity: 1; transform: scale(1.15) rotate(20deg); } }
+@media (max-width: 1280px) { .skill-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px)  {
+  .skill-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .skill-card { min-height: 240px; box-shadow: 6px 6px 0 var(--pf-ink); }
+  .sk-title { font-size: 18px; }
+  .sk-desc { display: none; }
+}
+[data-theme="dark"] .skill-card { border-color: #000; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   MASCOT (svg parts + idle motion)
+   ══════════════════════════════════════════════════════════════════════ */
+.dan-svg { overflow: visible; }
+.dan-svg .m-body { transform-origin: 60px 116px; animation: dan-bob 3.2s ease-in-out infinite; }
+.dan-svg .m-eyes { transform-box: fill-box; transform-origin: center; animation: dan-blink 4.6s infinite; }
+.dan-svg .m-fruit { transform-box: fill-box; transform-origin: 50% 100%; animation: dan-fruit 2.6s ease-in-out infinite; }
+.dan-svg .m-pupils { transition: transform .12s linear; }
+.dan-svg .m-arm-r { transform-box: fill-box; transform-origin: 30% 20%; }
+.dan-svg .m-tear { animation: dan-tear 1.8s ease-in infinite; }
+.dan-svg .m-spark { animation: pf-twinkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.dan-svg .m-zzz { animation: dan-zzz 2.4s ease-in-out infinite; }
+.dan-svg.mood-angry .m-body { animation: dan-shake .45s ease-in-out infinite; }
+.dan-svg.mood-excited .m-body,
+.dan-svg.mood-cheer .m-body { animation: dan-jump .9s var(--pf-spring) infinite; }
+@keyframes dan-bob   { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-3px) scale(1.015, .985); } }
+@keyframes dan-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes dan-fruit { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(7deg); } }
+@keyframes dan-tear  { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(14px); opacity: 0; } }
+@keyframes dan-zzz   { 0%, 100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(-4px); opacity: 1; } }
+@keyframes dan-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+@keyframes dan-jump  { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px) scale(.98, 1.03); } 70% { transform: translateY(0) scale(1.04, .96); } }
+@keyframes dan-wave  { 0%, 100% { transform: rotate(0); } 25%, 75% { transform: rotate(-38deg); } 50% { transform: rotate(-12deg); } }
+
+/* ── The dock companion ─────────────────────────────────────────────── */
+.ews-mascot-dock {
+  /* Peeks up from the bottom-left edge (half hidden) so it never sits on
+     top of the page's own bottom-right buttons / the chat bubble; rises
+     fully on hover, while talking or hopping. */
+  position: fixed; left: 26px; bottom: 0; z-index: 900;
+  width: 86px; height: 92px;
+  transform: translateY(140px); opacity: 0;
+  transition: transform .55s var(--pf-spring), opacity .4s;
+  pointer-events: none;
+}
+.ews-mascot-dock.is-in { transform: translateY(48px); opacity: 1; }
+.ews-mascot-dock.is-in:hover,
+.ews-mascot-dock.is-in:focus-within,
+.ews-mascot-dock.is-in.is-talking,
+.ews-mascot-dock.is-in.is-wave { transform: translateY(-6px); }
+.ews-mascot-dock.is-leaving { transform: translateY(140px) rotate(-12deg); opacity: 0; }
+.ews-md-mascot {
+  pointer-events: auto;
+  width: 86px; height: 92px; padding: 0; border: none; background: none; cursor: pointer;
+  filter: drop-shadow(0 6px 8px rgba(120, 60, 0, .25));
+  transition: transform .25s var(--pf-spring);
+}
+.ews-md-mascot:hover { transform: scale(1.08) rotate(-3deg); }
+.ews-md-mascot .dan-svg { width: 100%; height: 100%; }
+.ews-mascot-dock:hover .m-arm-r,
+.ews-mascot-dock.is-wave .m-arm-r { animation: dan-wave .9s ease-in-out 2; }
+.ews-mascot-dock.is-hop .ews-md-mascot { animation: dan-hop .7s var(--pf-spring); }
+@keyframes dan-hop { 0% { transform: none; } 35% { transform: translateY(-26px) rotate(-8deg); } 65% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
+
+.ews-md-close {
+  pointer-events: auto;
+  position: absolute; top: -4px; right: -8px; z-index: 2;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--pf-ink); background: #fff; color: var(--pf-ink);
+  font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: scale(.6); transition: opacity .15s, transform .2s var(--pf-spring);
+}
+.ews-mascot-dock:hover .ews-md-close,
+.ews-md-close:focus-visible { opacity: 1; transform: none; }
+
+.ews-md-bubble {
+  position: absolute; left: 70px; bottom: 74px;
+  width: max-content; max-width: 250px;
+  background: #fff; color: #222;
+  border: 2.5px solid var(--pf-ink); border-radius: 18px 18px 18px 4px;
+  box-shadow: var(--pf-shadow);
+  padding: 10px 14px; font-size: 13.5px; font-weight: 700; line-height: 1.45;
+  opacity: 0; transform: translateY(8px) scale(.9); transform-origin: 0 100%;
+  transition: opacity .2s, transform .3s var(--pf-spring);
+  pointer-events: none;
+}
+.ews-mascot-dock.is-talking .ews-md-bubble { opacity: 1; transform: none; pointer-events: auto; }
+[data-theme="dark"] .ews-md-bubble { background: #1a1a1a; color: #eee; border-color: #555; }
+[data-theme="dark"] .ews-md-close { background: #1a1a1a; color: #eee; border-color: #555; }
+
+@media (max-width: 640px) {
+  /* Phones: the corner companion would sit on top of CTAs (and the chat
+     bubble) — the header mascots carry the character there instead. */
+  .ews-mascot-dock { display: none; }
+  .lh-mascot { width: 74px; right: 10px; }
+  :root .list-header { padding-right: 96px; }
+}
+@media print { .ews-mascot-dock, .lh-mascot { display: none !important; } }
+
+/* ── Respect reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .dan-svg *, .sk-spark, .lh-mascot,
+  :root #screen-list.active .list-container > *,
+  :root #book-welcome > div > * { animation: none !important; }
+  .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title { transition: none !important; }
+}
+
+/* Test card buttons while /start is in flight (reading-v2.js _doStartExam). */
+.tid-act.is-loading { opacity: .7; cursor: progress; transform: none !important; }
+.tid-act.is-loading .tid-act-ic i { animation: pf-spin .8s linear infinite; }
+.tid-act.is-loading .tid-act-ic i::before { content: '\f110'; }
+@keyframes pf-spin { to { transform: rotate(360deg); } }

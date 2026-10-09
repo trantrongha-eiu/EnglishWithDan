@@ -703,26 +703,30 @@ function testCard(t) {
   const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
   const cor = t.lastAttempt?.correctCount ?? '';
   const tot = t.lastAttempt?.totalQuestions ?? '';
-  return `<div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}">
-    <div class="test-card-cover">
-      <div class="test-cover-badge">IELTS</div>
-      <div class="test-cover-title"><i class="fas fa-book-open"></i></div>
-      <div class="test-cover-sub">Reading Full</div>
-      ${done ? `<div class="test-done-tick">✓</div>` : ''}
+  // Colourful "TEST n" card (css/playful.css .tid-card) — two entry points
+  // straight into ExamModeSelect, pre-picked.
+  const locked = _userPlan !== 'premium';
+  const testNo = window.TestCardArt ? window.TestCardArt.label(t) : escHtml(t.name);
+  const lastDate = t.lastAttempt?.endTime ? new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : '';
+  return `<div class="test-card tid-card tid-c${(t.testNumber || 1) % 4}" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}" title="${escH(t.name || '')}">
+    <div class="tid-card-top">
+      <span class="tid-brand">english | with | dan</span>
+      <i class="fas fa-book-open tid-skill-ic"></i>
     </div>
-    <div class="test-card-body">
-      <div class="test-card-name">${escHtml(t.name)}</div>
-      <div class="test-card-meta">40 câu · 60 phút</div>
-      ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
-      ${reviewStatusBadge(t.lastAttempt, t._id)}
-      <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escH(t.name)}')">
-        ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? (t.isFixed ? 'Làm lại' : 'Làm test mới') : 'Bắt đầu')}
-      </button>
-      ${t.isFixed
-        ? `<div class="test-card-random-note"><i class="fas fa-list-ol"></i> Passage 1, 2, 3 cố định</div>`
-        : `<div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>`}
-      ${done ? `<button class="btn-redo-test" onclick="loadReviewByTest('${t._id}')">Xem lại kết quả</button>` : ''}
+    ${done ? `<div class="test-done-tick">✓</div>` : ''}
+    <div class="tid-card-title">${testNo}</div>
+    <div class="tid-card-stats">
+      <span><i class="fas ${t.isFixed ? 'fa-list-ol' : 'fa-shuffle'}"></i> ${t.isFixed ? '40 câu · 60 phút' : 'Câu hỏi ngẫu nhiên'}</span>
+      ${done ? `<span class="tid-sep"></span><span><i class="far fa-circle-check"></i> Band ${band} · ${cor}/${tot}</span>` : ''}
     </div>
+    ${reviewStatusBadge(t.lastAttempt, t._id)}
+    <div class="tid-card-actions">
+      ${locked
+        ? `<button class="tid-act tid-act-wide" onclick="goToStartTest('${t._id}','${escH(t.name)}')"><span class="tid-act-ic"><i class="fas fa-lock"></i></span>Upgrade gói<i class="fas fa-chevron-right"></i></button>`
+        : `<button class="tid-act" onclick="goToStartTest('${t._id}','${escH(t.name)}','practice')"><span class="tid-act-ic"><i class="fas fa-pen"></i></span>Luyện tập<i class="fas fa-chevron-right"></i></button>
+           <button class="tid-act" onclick="goToStartTest('${t._id}','${escH(t.name)}','simulation')"><span class="tid-act-ic"><i class="far fa-clock"></i></span>Thi thật<i class="fas fa-chevron-right"></i></button>`}
+    </div>
+    ${done ? `<button class="tid-review-link" onclick="loadReviewByTest('${t._id}')"><i class="fas fa-search"></i> Xem lại kết quả${lastDate ? ` · ${lastDate}` : ''}</button>` : ''}
   </div>`;
 }
 
@@ -857,8 +861,11 @@ function _onSimulationDisqualified() {
 }
 
 async function _doStartExam(testId, mode = 'practice') {
-  const btn = document.querySelector(`#tcard-${testId} .btn-do-test`);
-  if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
+  // The test card's Luyện tập / Thi thật buttons (.tid-act): disabled + a
+  // spinner while /start is in flight, so a double-click can't fire twice.
+  const btns = document.querySelectorAll(`#tcard-${testId} .tid-act`);
+  const setLoading = on => btns.forEach(b => { b.disabled = on; b.classList.toggle('is-loading', on); });
+  setLoading(true);
   try {
     const res = await apiFetch(`/api/reading/start${_mockMode ? '?purpose=mocktest' : ''}`, {
       method: 'POST',
@@ -867,14 +874,14 @@ async function _doStartExam(testId, mode = 'practice') {
     if (!res.success) {
       showVocabToast(res.message || 'Không thể bắt đầu bài thi', 'error');
       history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
-      if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+      setLoading(false);
       return;
     }
     _stampExamMode(mode);
     startExam(res);
   } catch (e) {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
-    if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+    setLoading(false);
     // Test Simulation cooldown after a 5-strike disqualification.
     if (e.status === 429 && e.body && e.body.code === 'SIMULATION_COOLDOWN') {
       showVocabToast(e.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error', 6000);
@@ -1948,6 +1955,8 @@ function switchPassage(idx) {
 
   updateQNavFooter();
   renderPassageTabs('toolbar-passage-tabs', false);
+  _renderCdPartHeader(idx);
+  if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.setActivePart(idx);
 }
 
 /* ── Render questions for a passage ──────────────────────────────── */
@@ -3057,18 +3066,63 @@ function restoreAnswers(isReview) {
 /* ══════════════════════════════════════════════════════════════════════
    QUESTION NAV FOOTER
 ══════════════════════════════════════════════════════════════════════ */
+// Computer-delivered-IELTS footer (js/shared/cd-footer.js): one block per
+// passage, the active one expanded into its question numbers. Buttons keep
+// the qnav-N ids so updateQNavBtn() below still toggles them directly.
 function buildQNavFooter() {
-  const nav = document.getElementById('q-nav-scroll');
-  if (!nav) return;
-  const parts = state.passages.map((p, i) => {
-    const label = p.category?.replace('passage', 'P') || `P${i + 1}`;
-    const btns = getAllQuestionsFromPassage(p).map(q =>
-      `<button class="q-nav-btn" id="qnav-${q.questionNumber}" onclick="jumpToQuestion(${q.questionNumber})">${q.questionNumber}</button>`
-    ).join('');
-    return `<span class="q-nav-passage-label">${label}</span>${btns}`;
+  const nav = document.getElementById('exam-cd-footer');
+  if (!nav || !window.CDFooter) return;
+  window.CDFooter.mount(nav, {
+    parts: state.passages.map((p, i) => ({
+      label: `Part ${i + 1}`,
+      questions: getAllQuestionsFromPassage(p).map(q => q.questionNumber),
+    })),
+    activePart: state.currentPassageIdx,
+    btnId: n => `qnav-${n}`,
+    isAnswered: n => { const a = state.answers[n]; return a !== undefined && a !== '' && a !== '[]'; },
+    onJump: n => { jumpToQuestion(n); _markCurrentQuestion(n); },
+    onSubmit: confirmSubmit,
   });
-  nav.innerHTML = parts.join('');
+  _wireCurrentQuestionTracking();
   updateProgressPill();
+}
+
+// The question the student is on gets the footer's "current" box and a
+// soft row highlight, like the real test. Follows focus/clicks inside the
+// questions column.
+function _markCurrentQuestion(n) {
+  document.querySelectorAll('#questions-inner .cd-current').forEach(el => el.classList.remove('cd-current'));
+  const el = _findQuestionEl(n);
+  if (el) el.classList.add('cd-current');
+}
+let _cdTrackingWired = false;
+function _wireCurrentQuestionTracking() {
+  if (_cdTrackingWired) return;
+  const panel = document.getElementById('split-questions');
+  if (!panel) return;
+  _cdTrackingWired = true;
+  const onTouch = e => {
+    const host = e.target.closest('[data-qnum]');
+    const n = host ? parseInt(host.dataset.qnum, 10) : NaN;
+    if (!n || !window.CDFooter) return;
+    window.CDFooter.setCurrent(n);
+    _markCurrentQuestion(n);
+  };
+  panel.addEventListener('focusin', onTouch);
+  panel.addEventListener('click', onTouch);
+}
+
+// "Part 2 / Read the text and answer questions 14–26" bar above the split.
+function _renderCdPartHeader(idx) {
+  const p = state.passages[idx];
+  const t = document.getElementById('cd-part-title');
+  const s = document.getElementById('cd-part-sub');
+  if (!p || !t || !s) return;
+  const nums = getAllQuestionsFromPassage(p).map(q => q.questionNumber);
+  t.textContent = `Part ${idx + 1}`;
+  s.textContent = nums.length
+    ? `Read the text and answer questions ${Math.min(...nums)}–${Math.max(...nums)}`
+    : 'Read the text and answer the questions';
 }
 
 function updateQNavFooter() {
@@ -3107,6 +3161,7 @@ function updateProgressPill() {
     else if (pct > 50) { pill.style.background = '#fffbeb'; pill.style.color = '#92400e'; pill.style.borderColor = '#fde68a'; }
     else { pill.style.background = ''; pill.style.color = ''; pill.style.borderColor = ''; }
   }
+  if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.refresh(); // "x of 13" per part
 }
 
 /* Find a question element by number — works for both plain (id="qN") and cluster (id="qi-N") */
@@ -3160,6 +3215,9 @@ function updateTimerDisplay() {
   const sec = String(s % 60).padStart(2, '0');
   const el = document.getElementById('timer-display');
   if (el) el.textContent = `${h}:${m}:${sec}`;
+  // Computer-delivered-test wording under the title: "57:12 remaining".
+  const rem = document.getElementById('cd-remaining');
+  if (rem) rem.textContent = `${String(Math.floor(Math.max(0, s) / 60)).padStart(2, '0')}:${sec} remaining`;
 }
 
 /* ══════════════════════════════════════════════════════════════════════

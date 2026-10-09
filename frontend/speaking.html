@@ -20,13 +20,16 @@
   <link rel="stylesheet" href="css/speaking-criteria.css?v=20260924v2" />
   <script src="js/theme.js?v=20260831"></script>
   <script src="js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="css/playful.css?v=20261010b"/>
+  <link rel="stylesheet" href="css/pf-speaking.css?v=20261010pf"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
 <script src="js/auth.js?v=20261007guest"></script>
 <script src="js/upgrade-modal.js?v=20260831"></script>
 <script src="js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="js/nav.js?v=20261009msg"></script>
+<script src="js/nav.js?v=20261009pf"></script>
+<script src="js/shared/playful.js?v=20261010b"></script>
 <script src="js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="js/learning-popups.js?v=20260920"></script>
 <script src="js/shared/sound-effects.js?v=20260831"></script>
@@ -48,7 +51,7 @@
 <div id="screen-upgrade" class="screen">
   <div class="sp-home-body" style="justify-content:center;align-items:center;min-height:calc(100vh - 56px)">
     <div style="max-width:480px;width:100%;text-align:center;padding:40px 24px">
-      <div style="font-size:56px;margin-bottom:16px">🎙</div>
+      <div class="sp-upgrade-dan" data-dan="wink" style="font-size:56px;margin-bottom:16px">🎙</div>
       <h1 style="font-size:26px;font-weight:800;margin:0 0 10px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Speaking Premium</h1>
       <p style="color:var(--text2,#555);font-size:15px;margin:0 0 28px;line-height:1.6">Tính năng luyện Speaking với AI chỉ dành cho thành viên <strong>Premium</strong>. Nâng cấp để luyện tập Part 1·2·3 và nhận phản hồi từ Gemini AI ngay lập tức.</p>
       <div style="background:var(--surface2,#f9fafb);border-radius:16px;padding:20px;margin-bottom:28px;text-align:left">
@@ -83,7 +86,7 @@
 <div id="screen-home" class="screen active">
   <div class="sp-home-body">
     <div class="sp-home-hero">
-      <div class="sp-home-icon">🎙</div>
+      <div class="sp-home-icon" data-dan="excited">🎙</div>
       <h1 class="sp-home-title">IELTS Speaking</h1>
       <p class="sp-home-subtitle">Luyện nói Part 1 · 2 · 3 với AI feedback từ Gemini</p>
     </div>
@@ -789,6 +792,6 @@
 <script src="js/speaking-criteria.js?v=20260924v2"></script>
 <script src="js/shared/route-params.js?v=20260925route"></script>
 <script src="js/speaking-tips.js?v=20260925route"></script>
-<script src="js/speaking.js?v=20261001pc"></script>
+<script src="js/speaking.js?v=20261010tts"></script>
 </body>
 </html>

@@ -1,0 +1,182 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Profile page, playful skin
+   Loaded last on profile.html (after profile.css + playful.css).
+   Uses the --pf-* tokens from css/playful.css; the student's personal
+   accent colour (--primary/--brand from theme.js) still drives the
+   avatar, heatmap and buttons.
+
+   • Sidebar: grid-paper cover with a winking Dan, ink-ringed avatar,
+     sticker-style plan card and four colour-coded stat tiles.
+   • Main: bouncing streak banner, chunky tabs, outlined cards, band
+     bars in each skill's colour, friendlier forms.
+   Purely visual — every id/handler on the page is unchanged.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Cards everywhere ───────────────────────────────────────────────── */
+:root .profile-card,
+:root .plan-card,
+:root .card-plain,
+:root .profile-layout .card {
+  border: 2.5px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow); overflow: hidden;
+  background: var(--surface);
+}
+:root .profile-layout .card { animation: pf-rise .45s ease both; }
+:root .profile-layout .card-header {
+  font-family: var(--pf-head); font-weight: 900; font-size: 16px;
+  border-bottom: 2px dashed var(--pf-line); background: transparent;
+}
+:root .profile-layout .card-header i { opacity: 1; color: var(--pf-tangerine); margin-right: 4px; }
+
+/* ── Profile card ──────────────────────────────────────────────────── */
+:root .profile-card-cover {
+  height: 104px; overflow: visible;
+  background-color: var(--pf-olive);
+  background-image:
+    linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
+  background-size: 18px 18px;
+  border-bottom: 2.5px solid var(--pf-ink);
+}
+:root .profile-card-cover::after {
+  content: '✦'; inset: auto; top: 12px; left: 18px;
+  background: none; color: var(--pf-sun); font-size: 18px;
+  animation: pf-twinkle 2.4s ease-in-out infinite;
+}
+.pfp-cover-dan { position: absolute; right: 10px; bottom: -6px; width: 70px; z-index: 1; }
+.pfp-cover-dan .dan-svg { width: 100%; height: auto; display: block; }
+:root .avatar-wrap { margin-top: -58px; }
+:root .avatar-wrap img,
+:root .avatar-wrap .avatar-placeholder {
+  border: 4px solid var(--pf-ink); box-shadow: 4px 4px 0 var(--pf-ink);
+  font-family: var(--pf-head); font-weight: 900;
+  transition: transform .3s var(--pf-spring);
+}
+:root .avatar-wrap:hover img,
+:root .avatar-wrap:hover .avatar-placeholder { transform: rotate(-4deg) scale(1.03); }
+:root .avatar-edit-btn { border: 2.5px solid var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink); }
+:root .profile-name { font-family: var(--pf-head); font-weight: 900; font-size: 22px; }
+:root .profile-role {
+  border: 2px solid var(--pf-ink); border-radius: 999px; font-weight: 800;
+  background: var(--pf-sun); color: var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink);
+}
+:root .profile-motto {
+  background: var(--pf-paper2); border: 2px dashed #e7c88f; border-radius: 14px;
+  padding: 10px 12px; font-style: italic;
+}
+:root .profile-target {
+  display: inline-block; margin-top: 8px;
+  background: #e9f0ff; border: 2px solid var(--pf-ink); border-radius: 999px;
+  padding: 4px 14px; font-weight: 800; box-shadow: 2px 2px 0 var(--pf-ink);
+}
+[data-theme="dark"] .profile-motto { background: #141414; border-color: #3a3220; }
+[data-theme="dark"] .profile-target { background: #141a2a; }
+
+/* ── Plan card ─────────────────────────────────────────────────────── */
+:root .plan-card-heading { font-family: var(--pf-head); font-weight: 900; }
+:root .plan-tag { border: 2px solid var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink); font-weight: 900; }
+:root .plan-progress-wrap { height: 10px; border: 2px solid var(--pf-ink); border-radius: 999px; background: var(--pf-paper2); }
+:root .plan-progress-fill { background: repeating-linear-gradient(135deg, var(--pf-tangerine) 0 8px, #ffa64d 8px 16px); border-radius: 999px; }
+:root .plan-upgrade-link {
+  border: 2.5px solid var(--pf-ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--pf-ink);
+  background: var(--pf-tangerine); color: #fff; font-weight: 900;
+}
+
+/* ── Mini stats: one colour per tile ───────────────────────────────── */
+:root .mini-stats { gap: 10px; }
+:root .mini-stat {
+  --c: #2f9e5b;
+  background: var(--c); border: 2.5px solid var(--pf-ink); border-radius: 16px;
+  box-shadow: 3px 3px 0 var(--pf-ink);
+  transition: transform .2s var(--pf-spring);
+}
+:root .mini-stat:hover { transform: translateY(-3px) rotate(-1deg); }
+:root .mini-stat:nth-child(2) { --c: #5873e8; }
+:root .mini-stat:nth-child(3) { --c: #e8913a; }
+:root .mini-stat:nth-child(4) { --c: #e06a7e; }
+:root .mini-stat-val { font-family: 'Lilita One', var(--pf-head); font-size: 28px; color: #fff; }
+:root .mini-stat-label { color: rgba(255,255,255,.92); font-weight: 700; }
+
+/* ── Streak banner ─────────────────────────────────────────────────── */
+:root .streak-display {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #ff7a2f, #ffb21e);
+  border: 2.5px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg); padding: 18px 22px;
+}
+:root .streak-display::after { /* flame-ish sparkles drifting up */
+  content: '✦  ✦   ✦'; position: absolute; right: 22px; top: 50%;
+  color: rgba(255,255,255,.7); font-size: 16px; letter-spacing: 4px;
+  animation: pfp-drift 3s ease-in-out infinite;
+}
+:root .streak-fire { font-size: 44px; animation: pfp-flame 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+:root .streak-info h3 { font-family: 'Lilita One', var(--pf-head); font-size: 30px; font-weight: 400; letter-spacing: .01em; }
+@keyframes pfp-flame { 0%, 100% { transform: scale(1) rotate(-3deg); } 50% { transform: scale(1.12, 1.18) rotate(3deg); } }
+@keyframes pfp-drift { 0% { transform: translateY(10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-26px); opacity: 0; } }
+
+/* ── Tabs ──────────────────────────────────────────────────────────── */
+:root .tabs { background: none; border: none; gap: 10px; padding: 0; box-shadow: none; flex-wrap: wrap; }
+:root .tab-btn {
+  border: 2px solid var(--pf-ink); border-radius: 999px; background: var(--surface);
+  color: var(--text); font-weight: 800; box-shadow: 2px 2px 0 var(--pf-ink);
+  transition: transform .18s var(--pf-spring), box-shadow .18s;
+}
+:root .tab-btn:hover { transform: translateY(-2px); box-shadow: 3px 4px 0 var(--pf-ink); }
+:root .tab-btn.active { background: var(--pf-sun); color: var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink); }
+
+/* ── Band bars in each skill's colour ──────────────────────────────── */
+:root .band-item {
+  border: 2px solid var(--pf-line); border-radius: 16px; background: var(--pf-paper);
+  transition: transform .18s var(--pf-spring), border-color .15s;
+}
+:root .band-item:hover { border-color: var(--pf-ink); transform: translateX(3px); }
+[data-theme="dark"] .band-item { background: #121212; }
+:root .band-skill { font-family: var(--pf-head); font-weight: 900; }
+:root .band-bar-wrap { height: 14px; border: 2px solid var(--pf-ink); border-radius: 999px; background: var(--surface); overflow: visible; }
+:root .band-bar-fill { border-radius: 999px; background: repeating-linear-gradient(135deg, var(--c, #2f9e5b) 0 10px, color-mix(in srgb, var(--c, #2f9e5b) 80%, #fff) 10px 20px); }
+:root .band-item:nth-child(1) { --c: #2f9e5b; }
+:root .band-item:nth-child(2) { --c: #5873e8; }
+:root .band-item:nth-child(3) { --c: #e06a7e; }
+:root .band-item:nth-child(4) { --c: #e8913a; }
+:root .band-score { font-family: 'Lilita One', var(--pf-head); font-size: 20px; color: var(--c) !important; }
+
+/* ── Badges & activity ─────────────────────────────────────────────── */
+:root .badge-item {
+  border: 2px solid var(--pf-line); border-radius: 16px;
+  transition: transform .2s var(--pf-spring), border-color .15s, box-shadow .2s;
+}
+:root .badge-item:hover { border-color: var(--pf-ink); transform: translateY(-3px) rotate(-1deg); box-shadow: 3px 3px 0 var(--pf-ink); }
+:root .badge-emoji { transition: transform .3s var(--pf-spring); }
+:root .badge-item:hover .badge-emoji { transform: scale(1.2) rotate(-8deg); }
+:root .badge-progress { border-radius: 999px; }
+:root .activity-icon { border: 2px solid var(--pf-ink); border-radius: 12px; }
+
+/* ── Forms ─────────────────────────────────────────────────────────── */
+:root .profile-layout .form-control {
+  border: 2px solid var(--pf-line); border-radius: 14px; background: var(--surface);
+  transition: border-color .15s, box-shadow .15s;
+}
+:root .profile-layout .form-control:focus {
+  outline: none; border-color: var(--pf-ink); box-shadow: 0 0 0 4px rgba(255, 210, 63, .45);
+}
+:root .profile-layout .form-control:disabled { background: var(--pf-paper2); }
+:root .profile-layout label { font-weight: 800; }
+:root .profile-layout .btn.btn-primary {
+  border: 2.5px solid var(--pf-ink); border-radius: 14px; font-weight: 900;
+  box-shadow: 3px 3px 0 var(--pf-ink);
+  transition: transform .18s var(--pf-spring), box-shadow .18s;
+}
+:root .profile-layout .btn.btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--pf-ink); }
+:root .profile-layout .btn.btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pf-ink); }
+:root .accent-swatch { border: 2.5px solid var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink); transition: transform .18s var(--pf-spring); }
+:root .accent-swatch:hover { transform: scale(1.12); }
+
+@media (max-width: 640px) {
+  .pfp-cover-dan { width: 54px; }
+  :root .streak-info h3 { font-size: 24px; }
+  :root .mini-stat-val { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .streak-fire, :root .streak-display::after, :root .profile-card-cover::after,
+  :root .profile-layout .card { animation: none !important; }
+}

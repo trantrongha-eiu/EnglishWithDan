@@ -19,6 +19,7 @@
     <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
     <script src="/js/theme.js?v=20260831"></script>
     <script src="/js/shared/visit-tracker.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/playful.css?v=20261010b"/>
 </head>
 
 <body>
@@ -26,7 +27,8 @@
 <script src="/js/auth.js?v=20261007guest"></script>
 <script src="/js/upgrade-modal.js?v=20260831"></script>
 <script src="/js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="/js/nav.js?v=20261009msg"></script>
+<script src="/js/nav.js?v=20261009pf"></script>
+<script src="/js/shared/playful.js?v=20261010b"></script>
 <script src="/js/shared/onboarding-tour.js?v=20260905nav"></script>
 <script src="/js/learning-popups.js?v=20260920"></script>
 <script src="/js/shared/sound-effects.js?v=20260831"></script>
@@ -47,6 +49,7 @@
 <script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
 <script src="/js/shared/mock-test.js?v=20261007badge"></script>
 <script src="/js/shared/exam-proctor.js?v=20261007badge"></script>
+<script src="/js/shared/cd-footer.js?v=20261009cd"></script>
 <script src="/js/shared/exam-mode-select.js?v=20261001pc"></script>
 
     <!-- ══════════════════════════════════════════════
@@ -164,16 +167,22 @@
      SCREEN: EXAM
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
+        <!-- Computer-delivered IELTS look (css/cd-exam.css): logo · title
+             over "mm:ss remaining" (audio time left) · Submit Test + tools. -->
         <div class="exam-topbar">
             <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát"><i class="fas fa-times"></i></button>
-            <span class="exam-title" id="exam-title">IELTS Listening</span>
+            <img class="cd-logo" src="/img/favicon.svg" alt="" aria-hidden="true">
+            <div class="cd-title-block">
+                <span class="exam-title" id="exam-title">IELTS Listening</span>
+                <span class="cd-remaining" id="cd-remaining-ls"><i class="fas fa-volume-high"></i> <span id="cd-remaining-ls-txt">Audio chưa phát</span></span>
+            </div>
             <div id="exam-progress-pill" class="ls-progress-pill">
                 <span id="prog-answered">0</span>/<span id="prog-total">40</span>
             </div>
             <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
+            <button class="btn-primary cd-submit-top" onclick="confirmSubmit()">Submit Test</button>
             <button id="btn-fullscreen" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
             <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
-            <button class="btn-primary" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
@@ -221,29 +230,45 @@
             </div>
         </div>
 
-        <div class="exam-body">
-            <div class="exam-toolbar" id="exam-toolbar">
-                <span class="toolbar-label">Công cụ</span>
-                <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
-                    <i class="fas fa-highlighter"></i><small>Bôi màu</small>
-                </button>
-                <!-- Hidden by default — shown only for a Practice-mode full
-                     test (never Test Simulation or the 4-skill Full Mock
-                     Test), see _updateExamToolbarForMode(). setToolExam()
-                     above already had a 'dict' branch wired to this exact
-                     id with no button to click — Test Simulation mode is
-                     what finally adds one, now that Practice allows
-                     dictionary/translate even on a full test. -->
-                <button class="tool-btn" id="tool-dict-exam" onclick="setToolExam('dict')" style="display:none">
-                    <i class="fas fa-book"></i><small>Tra từ</small>
-                </button>
+        <!-- "Part 1 / Listen and answer questions 1–10" (filled by
+             switchPart) — the existing tool buttons sit on its right. -->
+        <div class="cd-part-header" id="cd-part-header-ls">
+            <div class="cd-part-text">
+                <div class="cd-part-title" id="cd-part-title-ls">Part 1</div>
+                <div class="cd-part-sub" id="cd-part-sub-ls"></div>
             </div>
+            <div class="cd-part-tools" id="cd-part-tools-ls">
+                <div class="exam-toolbar" id="exam-toolbar">
+                    <span class="toolbar-label">Công cụ</span>
+                    <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
+                        <i class="fas fa-highlighter"></i><small>Bôi màu</small>
+                    </button>
+                    <!-- Hidden by default — shown only for a Practice-mode full
+                         test (never Test Simulation or the 4-skill Full Mock
+                         Test), see _updateExamToolbarForMode(). setToolExam()
+                         above already had a 'dict' branch wired to this exact
+                         id with no button to click — Test Simulation mode is
+                         what finally adds one, now that Practice allows
+                         dictionary/translate even on a full test. -->
+                    <button class="tool-btn" id="tool-dict-exam" onclick="setToolExam('dict')" style="display:none">
+                        <i class="fas fa-book"></i><small>Tra từ</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="exam-body">
             <div class="questions-panel" id="questions-panel"></div>
             <div class="sidebar-panel">
                 <div class="q-nav-label">Câu hỏi</div>
                 <div class="q-nav-grid" id="q-nav-grid"></div>
             </div>
         </div>
+
+        <!-- Part blocks + question numbers + Submit Test (js/shared/cd-footer.js,
+             mounted from renderQNav). Replaces the sidebar grid and the
+             dark #section-nav-fixed bar on this screen only — review keeps them. -->
+        <div class="exam-footer" id="cd-footer-ls"></div>
     </div>
 
     <!-- ══════════════════════════════════════════════
@@ -596,6 +621,7 @@
 
     <link rel="stylesheet" href="/css/listening-extra.css?v=20261001cover">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=20260924e">
+    <link rel="stylesheet" href="/css/cd-exam.css?v=20261009cd">
 
     <script>
         // ── Fullscreen toggle ──────────────────────────────────────────
@@ -1166,6 +1192,9 @@
             if (navBar) {
                 navBar.classList.toggle('hidden', name !== 'exam' && name !== 'review');
             }
+            // Exam screen uses the computer-delivered-test footer instead of
+            // #section-nav-fixed (css/cd-exam.css keys off this class).
+            document.body.classList.toggle('cd-exam-on', name === 'exam');
             if (typeof window.hideTopNav === 'function') {
                 name === 'list' ? window.showTopNav() : window.hideTopNav();
             }
@@ -1528,23 +1557,31 @@
             const dateStr = t.lastAttempt?.submittedAt
                 ? new Date(t.lastAttempt.submittedAt).toLocaleDateString('en-GB')
                 : '';
+            // Colourful "TEST n" card (css/playful.css .tid-card) — two
+            // entry points straight into ExamModeSelect, pre-picked.
+            const locked = _userPlan !== 'premium';
+            const testNo = window.TestCardArt ? window.TestCardArt.label(t) : escHtml(t.name);
             return `
-                <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}">
-                    <div class="test-card-cover ls-cover">
-                        ${done ? '<div class="test-done-tick">✓</div>' : ''}
+                <div class="test-card tid-card tid-c${(t.testNumber || 1) % 4}" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}" title="${escAttr(t.name || '')}">
+                    <div class="tid-card-top">
+                        <span class="tid-brand">english | with | dan</span>
                         <button class="pc-share-btn" onclick="copyTestLink('${t._id}',event)" title="Sao chép link bài thi"><i class="fas fa-link"></i></button>
-                        <div class="test-cover-badge">IELTS Listening</div>
-                        <div class="test-cover-title"><i class="fas fa-headphones"></i></div>
-                        <div class="test-cover-sub">${t.totalParts} phần</div>
+                        <i class="fas fa-headphones tid-skill-ic"></i>
                     </div>
-                    <div class="test-card-body">
-                        <div class="test-card-name">${escHtml(t.name)}</div>
-                        <div class="test-card-meta"><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</div>
-                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
-                        ${reviewStatusBadge(t.lastAttempt, t._id)}
-                        <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}')"><i class="fas ${_userPlan !== 'premium' ? 'fa-lock' : 'fa-headphones'}" style="font-size:11px"></i> ${_userPlan !== 'premium' ? 'Upgrade gói' : (done ? 'Làm lại' : 'Bắt đầu')}</button>
-                        ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')"><i class="fas fa-search"></i> Xem lại</button>` : ''}
+                    ${done ? '<div class="test-done-tick">✓</div>' : ''}
+                    <div class="tid-card-title">${testNo}</div>
+                    <div class="tid-card-stats">
+                        <span><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</span>
+                        ${done ? `<span class="tid-sep"></span><span><i class="far fa-circle-check"></i> Band ${band} · ${cor}/${tot}</span>` : ''}
                     </div>
+                    ${reviewStatusBadge(t.lastAttempt, t._id)}
+                    <div class="tid-card-actions">
+                        ${locked
+                            ? `<button class="tid-act tid-act-wide" onclick="goToStartTest('${t._id}')"><span class="tid-act-ic"><i class="fas fa-lock"></i></span>Upgrade gói<i class="fas fa-chevron-right"></i></button>`
+                            : `<button class="tid-act" onclick="goToStartTest('${t._id}','practice')"><span class="tid-act-ic"><i class="fas fa-pen"></i></span>Luyện tập<i class="fas fa-chevron-right"></i></button>
+                               <button class="tid-act" onclick="goToStartTest('${t._id}','simulation')"><span class="tid-act-ic"><i class="far fa-clock"></i></span>Thi thật<i class="fas fa-chevron-right"></i></button>`}
+                    </div>
+                    ${done ? `<button class="tid-review-link" onclick="reviewFromHistory('${t.lastAttempt._id}')"><i class="fas fa-search"></i> Xem lại lần cuối${dateStr ? ` · ${dateStr}` : ''}</button>` : ''}
                 </div>`;
         }
 
@@ -1734,6 +1771,8 @@
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
                 audio.load();
+                const _cdRem = document.getElementById('cd-remaining-ls-txt');
+                if (_cdRem) _cdRem.textContent = 'Audio chưa phát';
                 buildPartTabs('part-tabs', false);
                 renderPartQuestions(0);
                 renderQNav('q-nav-grid', false);
@@ -1839,7 +1878,14 @@
             if (_audioSeekRvEl) _audioSeekRvEl.value = t;
             if (!_audioSeekPrEl) _audioSeekPrEl = document.getElementById('audio-seek-pr');
             if (_audioSeekPrEl) _audioSeekPrEl.value = t;
+            // Exam top bar: "29:56 remaining" of audio, like the real test.
+            if (!_cdRemainingEl) _cdRemainingEl = document.getElementById('cd-remaining-ls-txt');
+            if (_cdRemainingEl && audio.duration) {
+                const left = Math.max(0, Math.round(audio.duration - t));
+                _cdRemainingEl.textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)} remaining`;
+            }
         }
+        let _cdRemainingEl = null;
 
         // Cached by id — setTimeDisplay is called from both the (low-frequency)
         // loadedmetadata handler and the (high-frequency) onTimeUpdate above;
@@ -2062,6 +2108,8 @@
                 } else {
                     renderPartQuestions(idx);
                 }
+                _renderCdPartHeaderLs(idx);
+                if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.setActivePart(idx);
                 // Scroll về đầu sau khi switch part
                 const qPanel = document.getElementById('questions-panel');
                 if (qPanel) qPanel.scrollTop = 0;
@@ -2086,6 +2134,7 @@
                 html += renderQuestionGroup(group, gi, false);
             });
             panel.innerHTML = html;
+            _renderCdPartHeaderLs(partIdx);
             _applyPendingHl(partIdx, null, panel);
             (section.questionGroups || []).forEach(g => g.questions.forEach(q => restoreAnswer(q)));
             refreshWordChips();
@@ -3190,6 +3239,57 @@
                 return `<span class="q-nav-section-label">S${s.partNumber}</span>${btns}`;
             });
             grid.innerHTML = parts.join('');
+            if (!isReview && gridId === 'q-nav-grid') _mountCdFooterLs();
+        }
+
+        // Computer-delivered-IELTS footer for the exam screen (see
+        // js/shared/cd-footer.js). Its buttons use cdq-N ids so they never
+        // collide with the (hidden) sidebar grid's qnb-N buttons.
+        function _mountCdFooterLs() {
+            const el = document.getElementById('cd-footer-ls');
+            if (!el || !window.CDFooter) return;
+            const sections = getSortedSections(false);
+            window.CDFooter.mount(el, {
+                parts: sections.map(s => ({
+                    label: `Part ${s.partNumber}`,
+                    questions: (s.questionGroups || []).flatMap(g => g.questions || [])
+                        .map(q => q.questionNumber).sort((a, b) => a - b),
+                })),
+                activePart: state.partIdx || 0,
+                btnId: n => `cdq-${n}`,
+                isAnswered: n => isAnswered(n),
+                onJump: n => { scrollToQ(n); _markCurrentQuestionLs(n); },
+                onSubmit: confirmSubmit,
+            });
+            if (!el._cdTracking) {
+                el._cdTracking = true;
+                const panel = document.getElementById('questions-panel');
+                const onTouch = e => {
+                    const host = e.target.closest('[data-qnum], [id^="qi-"]');
+                    const n = host ? parseInt(host.dataset.qnum || host.id.slice(3), 10) : NaN;
+                    if (!n) return;
+                    window.CDFooter.setCurrent(n);
+                    _markCurrentQuestionLs(n);
+                };
+                panel?.addEventListener('focusin', onTouch);
+                panel?.addEventListener('click', onTouch);
+            }
+        }
+        function _markCurrentQuestionLs(n) {
+            document.querySelectorAll('#questions-panel .cd-current').forEach(x => x.classList.remove('cd-current'));
+            const el = document.getElementById(`qi-${n}`) || document.getElementById(`q${n}`);
+            if (el) el.classList.add('cd-current');
+        }
+        function _renderCdPartHeaderLs(idx) {
+            const s = getSortedSections(false)[idx];
+            const t = document.getElementById('cd-part-title-ls');
+            const sub = document.getElementById('cd-part-sub-ls');
+            if (!s || !t || !sub) return;
+            t.textContent = `Part ${s.partNumber}`;
+            const r = s.questionRange || {};
+            sub.textContent = (r.start && r.end)
+                ? `Listen and answer questions ${r.start}–${r.end}`
+                : 'Listen and answer the questions';
         }
 
         function isAnswered(qnum) {
@@ -3225,6 +3325,7 @@
                 // isAnswered đã handle qua state.answers[num]
                 btn.className = `q-nav-btn ${answered ? 'answered' : ''}`;
             });
+            if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.refresh();
         }
 
         function scrollToQ(num) {

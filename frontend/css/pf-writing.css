@@ -1,0 +1,343 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Writing page, playful skin
+   Loaded last on writing.html (after writing.css / writing-extra.css /
+   playful.css). Uses the --pf-* tokens from css/playful.css.
+
+   • Home (#screen-key): cream page, hero with Dan, a "Full đề" CTA tile
+     and four colourful feature tiles.
+   • Practice picker: TID-style "TASK 1 / TASK 2" covers, chunky task cards.
+   • Exam + practice-write: the computer-delivered look shared with
+     Reading / Listening (css/cd-exam.css) — white chrome, grey Part box,
+     "Part 1 / Part 2" footer, blue submit, black arrows.
+   • Done screens: cream + an excited Dan.
+   Purely visual — every id/handler on the page is unchanged.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Home ───────────────────────────────────────────────────────────── */
+:root #screen-key.active { background: var(--bg); overflow: visible; }
+:root #screen-key.active::before { display: none; }
+:root #screen-key .key-screen-body { align-items: flex-start; padding: 36px 24px 60px; min-height: 0; }
+:root #screen-key .key-card {
+  max-width: 980px; padding: 0; text-align: left;
+  background: none; border: none; box-shadow: none; backdrop-filter: none;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.pfw-hero {
+  position: relative; overflow: visible;
+  display: flex; align-items: center; gap: 20px;
+  padding: 26px 160px 26px 28px; min-height: 130px;
+  background-color: #d4627a;
+  background-image:
+    linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px);
+  background-size: 26px 26px;
+  border: 3px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg);
+  animation: pf-rise .5s ease both;
+}
+:root .pfw-hero h2 { font-family: var(--pf-head); font-weight: 900; font-size: 30px; color: #fff; margin: 0 0 6px; }
+.pfw-tag {
+  display: inline-block; background: var(--pf-sun); color: var(--pf-ink);
+  padding: 0 12px; border-radius: 10px; transform: rotate(-1.5deg);
+  box-shadow: 2px 2px 0 var(--pf-ink);
+}
+:root .pfw-hero .key-desc { color: rgba(255,255,255,.9); font-size: 15px; margin: 0; }
+:root .pfw-hero-dan {
+  position: absolute; right: 26px; bottom: -8px; margin: 0;
+  width: 116px; font-size: 0;
+}
+.pfw-hero-dan .dan-svg { width: 100%; height: auto; }
+
+/* Banners keep their logic; just give them the chunky frame. */
+:root #screen-key #premium-promo-banner,
+:root #screen-key .wr-restore-banner { border: 2.5px solid var(--pf-ink) !important; border-radius: 18px !important; box-shadow: var(--pf-shadow); margin: 0 !important; }
+
+/* Main CTA tile */
+.pfw-main-tile {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  padding: 22px 24px;
+  background: #fff;
+  background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(255,138,31,.07) 22px 34px);
+  border: 3px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg);
+  animation: pf-rise .5s .05s ease both;
+}
+[data-theme="dark"] .pfw-main-tile { background-color: #141414; }
+.pfw-main-text { flex: 1; min-width: 240px; }
+.pfw-main-kicker { font-size: 12px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: var(--pf-tangerine); }
+.pfw-main-title { font-family: 'Lilita One', var(--pf-head); font-size: 40px; line-height: 1.05; color: var(--text); margin: 4px 0 10px; }
+.pfw-main-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+.pfw-main-meta span {
+  font-size: 12.5px; font-weight: 700; color: var(--text2);
+  background: var(--pf-paper2); border: 1.5px solid var(--pf-line);
+  padding: 5px 11px; border-radius: 999px;
+}
+.pfw-main-meta i { margin-right: 4px; color: var(--pf-tangerine); }
+:root #screen-key .key-start-btn {
+  width: auto; margin: 0; padding: 16px 28px;
+  font-family: var(--pf-head); font-size: 17px; font-weight: 900;
+  background: var(--pf-tangerine); color: #fff;
+  border: 3px solid var(--pf-ink); border-radius: 16px;
+  box-shadow: var(--pf-shadow);
+}
+:root #screen-key .key-start-btn:hover:not(:disabled) { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--pf-ink); background: #ff7a00; }
+:root #screen-key .key-start-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pf-ink); }
+
+/* Feature tiles */
+:root #screen-key .pfw-tiles {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+  margin: 0;
+}
+:root #screen-key .pfw-tile {
+  --c: var(--pf-sky);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  min-height: 150px; padding: 16px; position: relative; text-align: left;
+  background: var(--c); color: #fff;
+  border: 3px solid var(--pf-ink); border-radius: 18px;
+  box-shadow: var(--pf-shadow);
+  font-family: inherit; cursor: pointer;
+  transition: transform .2s var(--pf-spring), box-shadow .2s;
+  animation: pf-rise .5s .1s ease both;
+}
+:root #screen-key .pfw-tile:hover { transform: translate(-2px, -3px) rotate(-.6deg); box-shadow: 6px 7px 0 var(--pf-ink); }
+:root #screen-key .pfw-tile:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pf-ink); }
+.pfw-t-pink  { --c: #e06a7e !important; }
+.pfw-t-blue  { --c: #5873e8 !important; }
+.pfw-t-green { --c: #2f9e5b !important; }
+.pfw-t-amber { --c: #e8913a !important; }
+.pfw-tile-ic {
+  width: 42px; height: 42px; border-radius: 12px; background: rgba(255,255,255,.94); color: #333;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  box-shadow: 0 3px 0 rgba(0,0,0,.12);
+}
+.pfw-tile-txt { display: flex; flex-direction: column; gap: 3px; }
+.pfw-tile-txt strong { font-family: var(--pf-head); font-weight: 900; font-size: 18px; line-height: 1.15; }
+.pfw-tile-txt small { font-size: 12px; font-weight: 600; opacity: .9; }
+.pfw-tile-go { position: absolute; right: 14px; top: 18px; opacity: .7; transition: transform .2s; }
+.pfw-tile:hover .pfw-tile-go { transform: translateX(3px); opacity: 1; }
+@media (max-width: 860px) { :root #screen-key .pfw-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .pfw-hero { padding: 20px 100px 20px 20px; }
+  :root .pfw-hero h2 { font-size: 24px; }
+  :root .pfw-hero-dan { width: 84px; right: 12px; }
+  .pfw-main-title { font-size: 30px; }
+  :root #screen-key .key-start-btn { width: 100%; }
+  :root #screen-key .pfw-tile { min-height: 128px; }
+}
+
+/* ── Practice picker ───────────────────────────────────────────────── */
+:root #practice-task-select { gap: 22px !important; }
+:root .wr-pcard {
+  --c: #e07a3a;
+  position: relative; overflow: hidden; text-align: left;
+  min-height: 250px; padding: 22px 22px 20px;
+  display: flex; flex-direction: column;
+  background-color: var(--c); color: #fff;
+  border: 3px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg);
+  transition: transform .25s var(--pf-spring), box-shadow .25s;
+}
+:root #pcard-t1 {
+  background-image: radial-gradient(circle at 0 100%, transparent 26px, rgba(255,255,255,.14) 27px, rgba(255,255,255,.14) 40px, transparent 41px),
+                    radial-gradient(circle at 100% 0, transparent 26px, rgba(255,255,255,.14) 27px, rgba(255,255,255,.14) 40px, transparent 41px);
+  background-size: 68px 68px;
+}
+:root #pcard-t2 {
+  --c: #7d62c9;
+  background-image: repeating-linear-gradient(60deg, transparent 0 26px, rgba(255,255,255,.14) 26px 40px);
+}
+:root .wr-pcard:hover { transform: translate(-3px, -4px); box-shadow: 10px 11px 0 var(--pf-ink); border-color: var(--pf-ink); }
+:root .wr-pcard-emoji { font-size: 34px; width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,.95); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 0 rgba(0,0,0,.12); }
+:root .wr-pcard-name { font-family: 'Lilita One', var(--pf-head); font-size: 48px; line-height: 1; color: #fff; margin: 16px 0 8px; text-transform: uppercase; }
+:root .wr-pcard-desc { color: rgba(255,255,255,.92); font-size: 13.5px; font-weight: 600; line-height: 1.55; }
+:root .wr-pcard-desc strong { color: #fff; background: rgba(0,0,0,.18); padding: 0 6px; border-radius: 6px; }
+:root .wr-pcard .btn-primary {
+  margin-top: auto !important; padding: 12px; font-size: 14px !important; font-weight: 800;
+  background: #fffdf8; color: #2b2b2b; border: none; border-radius: 14px;
+  box-shadow: 0 3px 0 rgba(0,0,0,.16);
+}
+:root .wr-pcard .btn-primary:hover { background: #fff; }
+:root .wr-pcard-badge { background: var(--pf-sun); color: var(--pf-ink); border: 2px solid var(--pf-ink); font-weight: 900; }
+
+:root .practice-task-list-header { gap: 12px; }
+:root .practice-task-list-title { font-family: var(--pf-head); font-weight: 900; font-size: 22px; }
+:root .practice-task-list-header .btn-secondary,
+:root #screen-samples .btn-secondary,
+:root #screen-writing-tips .btn-secondary {
+  border: 2px solid var(--pf-ink); border-radius: 999px; font-weight: 800;
+  box-shadow: 2px 2px 0 var(--pf-ink); background: var(--surface); color: var(--text);
+}
+:root .wt-search-input { border: 2px solid var(--pf-ink); border-radius: 999px; }
+
+:root .wt-task-card {
+  border: 2.5px solid var(--pf-ink); border-radius: 18px; overflow: hidden;
+  box-shadow: var(--pf-shadow); background: var(--surface);
+}
+:root .wt-task-card:hover { transform: translate(-2px, -3px); box-shadow: 6px 7px 0 var(--pf-ink); }
+:root .wt-task-card-cover { background: #5873e8; border-bottom: 2.5px solid var(--pf-ink); }
+:root .wt-task-card:nth-child(4n+2) .wt-task-card-cover { background: #e06a7e; }
+:root .wt-task-card:nth-child(4n+3) .wt-task-card-cover { background: #2f9e5b; }
+:root .wt-task-card:nth-child(4n)   .wt-task-card-cover { background: #e8913a; }
+:root .wt-task-card-cover-logo { color: #fff; font-family: 'Lilita One', var(--pf-head); font-style: normal; letter-spacing: .02em; }
+:root .wt-task-card-cover-logo span { color: var(--pf-sun); }
+:root .wt-task-card-num {
+  background: var(--pf-sun); color: var(--pf-ink); border: 2px solid var(--pf-ink);
+  font-weight: 900; min-width: 30px; height: 30px; border-radius: 10px;
+}
+:root .wt-task-card-btn {
+  border-radius: 999px !important; border: 2px solid var(--pf-ink) !important;
+  box-shadow: 2px 2px 0 var(--pf-ink); font-weight: 800;
+}
+:root .wt-task-card-band { border-width: 2px; font-weight: 900; border-radius: 999px; background: var(--surface); }
+
+:root #practice-hist-section,
+:root .history-body.practice-split-mode #practice-hist-section {
+  border: 2.5px solid var(--pf-ink); border-radius: 18px; box-shadow: var(--pf-shadow);
+  background: var(--surface); padding: 16px 18px;
+}
+:root #practice-hist-title { font-family: var(--pf-head); font-weight: 900; }
+
+/* Samples / tips top bars */
+:root .wsampl-topbar { border-bottom: 2.5px solid var(--pf-ink); background: var(--surface); }
+:root .wsampl-topbar-title { font-family: var(--pf-head); font-weight: 900; }
+:root .pv-chip { border-radius: 999px; border-width: 2px; font-weight: 700; }
+:root .pv-chip.active { background: var(--pf-sun); color: var(--pf-ink); border-color: var(--pf-ink); }
+
+/* ── Exam & practice-write: computer-delivered look ───────────────── */
+#screen-exam, #screen-practice-write {
+  --cd-bg: #fff; --cd-ink: #1b1b1b; --cd-ink2: #555b66; --cd-line: #d9d9d9;
+  --cd-header: #f1f1ec; --cd-header-line: #dcdcd4; --cd-blue: #4a90d9; --cd-blue-dark: #3a7bc3;
+  --cd-serif: Georgia, 'Noto Serif', 'Times New Roman', serif;
+  background: var(--cd-bg);
+}
+[data-theme="dark"] #screen-exam,
+[data-theme="dark"] #screen-practice-write {
+  --cd-bg: #121212; --cd-ink: #ececec; --cd-ink2: #a3a3a3; --cd-line: #333;
+  --cd-header: #1c1c1c; --cd-header-line: #2e2e2e;
+}
+#screen-exam .exam-topbar,
+#screen-practice-write .exam-topbar {
+  height: 60px; background: var(--cd-bg); color: var(--cd-ink);
+  border-bottom: 1px solid var(--cd-line); padding: 0 16px;
+}
+#screen-exam .exam-topbar-left,
+#screen-practice-write .exam-topbar-left { display: flex; align-items: center; gap: 12px; color: var(--cd-ink); font-size: 15px; }
+#screen-exam #exam-candidate { font-weight: 700; }
+#screen-exam .exam-topbar-btn,
+#screen-practice-write .exam-topbar-btn {
+  background: none; color: var(--cd-ink); border: 1px solid var(--cd-line);
+  border-radius: 6px; height: 36px; padding: 0 12px; font-weight: 600;
+}
+#screen-exam .exam-topbar-btn:hover,
+#screen-practice-write .exam-topbar-btn:hover { background: #f3f4f6; }
+[data-theme="dark"] #screen-exam .exam-topbar-btn:hover,
+[data-theme="dark"] #screen-practice-write .exam-topbar-btn:hover { background: #222; }
+#screen-exam .exam-submit-topbar-btn,
+#screen-practice-write .exam-submit-topbar-btn {
+  background: var(--cd-blue); color: #fff; border-color: var(--cd-blue);
+}
+#screen-exam .exam-submit-topbar-btn:hover,
+#screen-practice-write .exam-submit-topbar-btn:hover { background: var(--cd-blue-dark); }
+#screen-exam .exam-topbar-center {
+  background: none; color: var(--cd-ink); border: 1px solid var(--cd-line);
+  font-variant-numeric: tabular-nums;
+}
+#screen-exam .exam-topbar-center.warning { background: #fff4e5; color: #b45309; border-color: #f5c27a; }
+
+#screen-exam .task-titlebar,
+#screen-practice-write .task-titlebar {
+  margin: 12px 12px 0; padding: 12px 16px;
+  background: var(--cd-header); border: 1px solid var(--cd-header-line); border-radius: 3px;
+}
+#screen-exam .task-titlebar strong,
+#screen-practice-write .task-titlebar strong { font-size: 15px; color: var(--cd-ink); }
+#screen-exam .task-titlebar p,
+#screen-practice-write .task-titlebar p { font-size: 15px; font-weight: 400; color: var(--cd-ink); }
+
+#screen-exam .exam-body,
+#screen-practice-write .exam-body { margin: 8px 12px 0; background: var(--cd-bg); }
+#screen-exam .exam-left,
+#screen-practice-write .exam-left {
+  background: var(--cd-bg); font-family: var(--cd-serif); color: var(--cd-ink);
+  font-size: 16px; line-height: 1.7;
+}
+#screen-exam .exam-left .task-prompt,
+#screen-practice-write .exam-left p { font-family: var(--cd-serif); font-size: 16px !important; line-height: 1.7 !important; color: var(--cd-ink) !important; }
+#screen-exam .exam-right,
+#screen-practice-write .exam-right { background: var(--cd-bg); }
+#screen-exam .answer-textarea,
+#screen-practice-write .answer-textarea {
+  background: var(--cd-bg); color: var(--cd-ink);
+  border: 1px solid #9a9a9a; border-radius: 2px; margin: 6px 0 0 12px;
+  font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.7;
+}
+#screen-exam .answer-textarea:focus,
+#screen-practice-write .answer-textarea:focus { outline: none; border: 2px solid #2f6fbf; }
+#screen-exam .word-count-bar,
+#screen-practice-write .word-count-bar { background: var(--cd-bg); color: var(--cd-ink2); border-top: none; padding-left: 14px; }
+
+#screen-exam .exam-footer {
+  height: 62px; background: #f8f9fa; border-top: 1px solid var(--cd-line);
+  gap: 14px; padding: 0 16px;
+}
+[data-theme="dark"] #screen-exam .exam-footer { background: #0d0d0d; }
+#screen-exam .task-nav-btns { gap: 0; height: 100%; }
+#screen-exam .task-nav-btn {
+  width: auto; height: 100%; padding: 0 18px; border-radius: 0;
+  background: none; color: var(--cd-ink); border: 1.5px solid transparent; border-bottom: none;
+  font-size: 15px; font-weight: 700;
+}
+#screen-exam .task-nav-btn::before { content: 'Part '; }
+#screen-exam .task-nav-btn.active { background: var(--cd-bg); color: var(--cd-ink); border-color: var(--cd-blue); border-bottom: none; }
+#screen-exam .task-nav-btn.flagged { color: #b45309; background: #fffbeb; }
+#screen-exam .task-nav-btn:hover:not(.active) { background: none; color: var(--cd-blue); }
+#screen-exam .arrow-btn {
+  width: 48px; height: 48px; border: none; border-radius: 2px;
+  background: #111; color: #fff; font-size: 17px;
+}
+#screen-exam #btn-prev { background: #3d3d3d; }
+#screen-exam .arrow-btn:hover:not(:disabled) { background: #000; }
+#screen-exam .arrow-btn:disabled { background: #cfd3d8; color: #f4f4f4; opacity: 1; }
+#screen-exam .btn-submit-exam { background: var(--cd-blue); border-radius: 4px; padding: 12px 24px; }
+#screen-exam .btn-submit-exam:hover { background: var(--cd-blue-dark); }
+
+/* ── Done screens ──────────────────────────────────────────────────── */
+:root #screen-done.active,
+:root #screen-practice-done.active {
+  background-color: var(--pf-paper);
+  background-image: radial-gradient(circle at 15% 20%, rgba(255,210,63,.35) 0 90px, transparent 91px),
+                    radial-gradient(circle at 85% 80%, rgba(255,93,162,.18) 0 120px, transparent 121px);
+}
+[data-theme="dark"] #screen-done.active,
+[data-theme="dark"] #screen-practice-done.active { background: #000; }
+:root #screen-done.active .done-card,
+:root #screen-practice-done.active .done-card {
+  background: var(--surface); border: 3px solid var(--pf-ink); border-radius: 24px;
+  box-shadow: var(--pf-shadow-lg);
+  animation: pf-rise .5s var(--pf-spring) both;
+}
+:root .done-icon .dan-svg { width: 120px; height: auto; }
+:root .done-card h2 { font-family: var(--pf-head); font-weight: 900; font-size: 28px; }
+:root .done-stat { border: 2px solid var(--pf-ink); border-radius: 16px; background: var(--pf-paper2); box-shadow: 2px 2px 0 var(--pf-ink); }
+:root .done-stat:nth-child(2) { background: #e9f0ff; }
+:root .done-stat-val { font-family: 'Lilita One', var(--pf-head); color: var(--pf-ink); }
+[data-theme="dark"] .done-stat-val { color: #fff; }
+:root .done-actions .btn-primary,
+:root .done-actions .btn-secondary {
+  border: 2.5px solid var(--pf-ink); border-radius: 14px; font-weight: 800; box-shadow: 3px 3px 0 var(--pf-ink);
+}
+:root .done-actions .btn-primary { background: var(--pf-tangerine); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pfw-hero, .pfw-main-tile, :root #screen-key .pfw-tile, :root #screen-done.active .done-card { animation: none !important; }
+}
+
+/* ── Fixes found in review ─────────────────────────────────────────── */
+:root #screen-key .pfw-tiles { border-top: none; padding-top: 0; }
+#screen-exam .exam-submit-topbar-btn,
+#screen-practice-write .exam-submit-topbar-btn { background: var(--cd-blue) !important; border-color: var(--cd-blue) !important; }
+#screen-exam .exam-submit-topbar-btn:hover,
+#screen-practice-write .exam-submit-topbar-btn:hover { background: var(--cd-blue-dark) !important; }
+@media (min-width: 577px) {
+  :root #practice-task-select { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}

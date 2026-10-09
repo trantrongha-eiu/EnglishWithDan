@@ -457,6 +457,13 @@ function getMascotEmoji(streak) {
     if (streak >= 3)  return '🐼😊';
     return '🐼';
 }
+// Dan the capybara (js/shared/playful.js) when it's loaded, the old emoji
+// otherwise. `mood` overrides the streak-based pick (e.g. the quit modal).
+function setMascotEl(el, streak, mood) {
+    if (!el) return;
+    if (window.Mascot) window.Mascot.mount(el, mood || window.Mascot.moodForStreak(streak), { label: 'Dan' });
+    else el.textContent = getMascotEmoji(streak);
+}
 
 // FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/fire-tier.js
 // (shared with the BXH vocab page's streak leaderboard).
@@ -510,7 +517,7 @@ function applyMascotState(streak, previousStreak) {
             pandaEl.innerHTML = state.img
                 ? `<img src="${state.img}" alt="${state.alt || ''}">`
                 : '';
-            if (!state.img) pandaEl.textContent = state.emoji;
+            if (!state.img) setMascotEl(pandaEl, streak);
         }
         if (cardEl) cardEl.classList.toggle('is-angry', state.mood === 'angry');
         if (cardEl) cardEl.classList.toggle('is-sad', state.mood === 'sad');
@@ -2272,8 +2279,7 @@ function _applyStreakResult(d) {
     if (numEl) animateCount(numEl, d.streak, 500);
     const msgEl = document.getElementById('mascot-msg');
     if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
-    const pandaEl = document.getElementById('mascot-panda');
-    if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
+    setMascotEl(document.getElementById('mascot-panda'), d.streak);
     applyFireTier(document.getElementById('mascot-fire'), numEl, d.streak);
 
     const danNumEl = document.getElementById('dan-streak-num');
@@ -2281,7 +2287,7 @@ function _applyStreakResult(d) {
     const danMsgEl = document.getElementById('dan-streak-msg');
     if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
     const danMascotEl = document.getElementById('dan-mascot');
-    if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
+    if (danMascotEl) { danMascotEl.innerHTML = ''; setMascotEl(danMascotEl, d.streak); }
     applyFireTier(document.getElementById('dan-fire'), danNumEl, d.streak);
     if (d.streak > 0) {
         // Only a real streak (bonus>0 this call, or restored) ends the
@@ -2599,7 +2605,7 @@ function askQuitPractice(onQuit) {
         const emoji   = document.getElementById('quit-mascot-emoji');
         if (titleEl) titleEl.textContent = 'Bạn đang làm dở quiz!';
         if (subEl)   subEl.textContent   = remaining > 0 ? `Còn ${remaining} câu chưa làm — tiến độ sẽ không được lưu` : 'Tiến độ lần này sẽ không được lưu';
-        if (emoji)   emoji.textContent   = '🐼';
+        setMascotEl(emoji, 0, 'sad');
         openModal('modal-quit-practice');
         return;
     }
@@ -2624,7 +2630,7 @@ function askQuitPractice(onQuit) {
         ? 'Bạn vẫn còn từ cần ôn!'
         : 'Bạn có muốn học tiếp không?';
     if (subEl)   subEl.textContent   = parts.join(' · ');
-    if (emoji)   emoji.textContent   = streak >= 7 ? '🐼🔥' : '🐼';
+    setMascotEl(emoji, streak, wrongCount > 0 ? 'sad' : 'think');
 
     openModal('modal-quit-practice');
 }

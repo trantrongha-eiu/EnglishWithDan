@@ -1,0 +1,525 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Computer-delivered IELTS exam skin
+   Reading + Listening EXAM screens only (#screen-exam on reading.html /
+   listening.html). Review, retry, practice and the test list keep their
+   own styles.
+
+   Mirrors the real computer-based test (and theieltsdictionary's copy):
+   plain white chrome, logo + title over "mm:ss remaining", a grey
+   "Part N / Read the text and answer questions a–b" box, serif reading
+   text, boxed question numbers, and the Part/question footer from
+   js/shared/cd-footer.js with floating ← → buttons and "Submit Test".
+
+   Purely visual: every id, handler and interaction (drag & drop chips,
+   highlight, dictionary, resizable split, settings panel, font size…)
+   is untouched. Selectors are #screen-exam-prefixed so they win over the
+   page sheets and their [data-theme="dark"] rules; colours go through
+   --cd-* variables so dark mode still gets a readable (dark) version.
+   ══════════════════════════════════════════════════════════════════════ */
+
+#screen-exam {
+  --cd-bg: #ffffff;
+  --cd-ink: #1b1b1b;
+  --cd-ink2: #555b66;
+  --cd-line: #d9d9d9;
+  --cd-line2: #ececec;
+  --cd-header: #f1f1ec;
+  --cd-header-line: #dcdcd4;
+  --cd-blue: #4a90d9;
+  --cd-blue-dark: #3a7bc3;
+  --cd-focus: #2f6fbf;
+  --cd-pick: #e8f1fc;
+  --cd-row: #f3f7fd;
+  --cd-footer: #f8f9fa;
+  --cd-serif: Georgia, 'Noto Serif', 'Times New Roman', serif;
+  background: var(--cd-bg);
+  color: var(--cd-ink);
+}
+[data-theme="dark"] #screen-exam {
+  --cd-bg: #121212;
+  --cd-ink: #ececec;
+  --cd-ink2: #a3a3a3;
+  --cd-line: #333;
+  --cd-line2: #262626;
+  --cd-header: #1c1c1c;
+  --cd-header-line: #2e2e2e;
+  --cd-pick: #13263d;
+  --cd-row: #161f2b;
+  --cd-footer: #0d0d0d;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────── */
+#screen-exam .exam-bar,
+#screen-exam .exam-topbar {
+  height: 64px;
+  padding: 0 16px 0 10px;
+  background: var(--cd-bg);
+  border-bottom: 1px solid var(--cd-line);
+  box-shadow: none;
+  gap: 10px;
+}
+#screen-exam .exam-bar-left { gap: 10px; min-width: 0; flex: 1; }
+#screen-exam .exam-exit-btn { color: var(--cd-ink2); font-size: 16px; }
+#screen-exam .cd-logo {
+  width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+  object-fit: contain;
+}
+#screen-exam .cd-title-block {
+  display: flex; flex-direction: column; justify-content: center;
+  min-width: 0; flex: 1; gap: 2px; line-height: 1.25;
+}
+#screen-exam .exam-title-txt,
+#screen-exam .exam-title {
+  flex: none;
+  font-size: 15px; font-weight: 700; color: var(--cd-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#screen-exam .cd-remaining {
+  font-size: 13px; font-weight: 500; color: var(--cd-ink2);
+  font-variant-numeric: tabular-nums;
+}
+#screen-exam .cd-remaining i { font-size: 11px; margin-right: 2px; }
+
+/* Reading's timer pill becomes the plain "57:12 remaining" line. */
+#screen-exam .exam-timer {
+  background: none; padding: 0; min-width: 0; border-radius: 0;
+  justify-content: flex-start; gap: 0; color: var(--cd-ink2);
+  animation: none; font-weight: 500;
+}
+#screen-exam .exam-timer > i,
+#screen-exam #timer-display { display: none; }
+#screen-exam .exam-timer.warn { background: none; }
+#screen-exam .exam-timer.warn .cd-remaining { color: #b45309; font-weight: 700; }
+#screen-exam .exam-timer.danger { background: none; animation: none; }
+#screen-exam .exam-timer.danger .cd-remaining { color: #dc2626; font-weight: 700; }
+
+#screen-exam .cd-submit-top {
+  background: var(--cd-blue); color: #fff; border: none;
+  border-radius: 4px; padding: 9px 20px; margin: 0 6px;
+  font-weight: 700; font-size: 14px; line-height: 1; font-family: inherit; cursor: pointer;
+  box-shadow: none; transform: none;
+}
+#screen-exam .cd-submit-top:hover { background: var(--cd-blue-dark); }
+#screen-exam .btn-icon-sm {
+  background: none; border: none; color: var(--cd-ink);
+  font-size: 19px; width: 42px; height: 42px; border-radius: 8px;
+}
+#screen-exam .btn-icon-sm:hover { background: var(--cd-line2); }
+#screen-exam .rd-progress-pill,
+#screen-exam .ls-progress-pill {
+  background: transparent; border: 1px solid var(--cd-line);
+  color: var(--cd-ink2); font-weight: 600;
+}
+
+/* Reading's gradient progress strip — the footer counts carry this now. */
+#screen-exam .rd-progress-bar-wrap { display: none; }
+
+/* ── Part header ─────────────────────────────────────────────────────── */
+#screen-exam .cd-part-header {
+  display: flex; align-items: center; gap: 16px;
+  margin: 12px 12px 0;
+  padding: 12px 16px;
+  background: var(--cd-header);
+  border: 1px solid var(--cd-header-line);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+#screen-exam .cd-part-text { flex: 1; min-width: 0; line-height: 1.5; }
+#screen-exam .cd-part-title { font-size: 15px; font-weight: 700; color: var(--cd-ink); }
+#screen-exam .cd-part-sub { font-size: 15px; color: var(--cd-ink); }
+
+/* Existing tools (highlight / dictionary / translate) as quiet chips on
+   the right of the Part box — same buttons, same handlers. */
+#screen-exam .cd-part-header .exam-toolbar {
+  flex-direction: row; width: auto; padding: 0; gap: 6px;
+  background: none; border: none; overflow: visible; flex-wrap: wrap;
+  justify-content: flex-end;
+}
+#screen-exam .cd-part-header .toolbar-label,
+#screen-exam .cd-part-header .toolbar-passage-tabs { display: none; }
+#screen-exam .cd-part-header .tool-btn {
+  flex-direction: row; width: auto; gap: 6px;
+  padding: 6px 12px; border-radius: 6px;
+  border: 1px solid var(--cd-header-line);
+  background: var(--cd-bg); color: var(--cd-ink2);
+  font-size: 13px; line-height: 1;
+}
+#screen-exam .cd-part-header .tool-btn small { font-size: 12px; color: inherit; }
+#screen-exam .cd-part-header .tool-btn.active {
+  background: #fff4c2; border-color: #e0b400; color: #7a5a00;
+}
+#screen-exam .cd-part-header .tool-btn:hover:not(.active) { border-color: var(--cd-blue); color: var(--cd-blue); }
+
+/* ── Reading split ───────────────────────────────────────────────────── */
+#screen-exam .exam-split { margin: 6px 12px 0; background: var(--cd-bg); }
+#screen-exam .split-passage,
+#screen-exam .split-questions { background: var(--cd-bg); }
+#screen-exam .split-divider {
+  width: 18px; position: relative;
+  background: linear-gradient(to right, transparent 7px, var(--cd-line) 7px, var(--cd-line) 11px, transparent 11px);
+}
+#screen-exam .split-divider:hover,
+#screen-exam .split-divider.dragging {
+  background: linear-gradient(to right, transparent 7px, #9aa3ad 7px, #9aa3ad 11px, transparent 11px);
+}
+#screen-exam .divider-handle {
+  width: 32px; height: 32px; border-radius: 2px; flex-shrink: 0;
+  background: var(--cd-bg); border: 1px solid var(--cd-ink);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1;
+}
+#screen-exam .divider-handle::before {
+  content: '\2194'; font-size: 18px; line-height: 1; color: var(--cd-ink);
+}
+
+#screen-exam .passage-inner,
+#screen-exam .questions-inner {
+  font-family: var(--cd-serif);
+  color: var(--cd-ink);
+  line-height: 1.7;
+  padding: 18px 22px 120px;
+}
+#screen-exam .passage-inner { text-align: justify; hyphens: auto; }
+#screen-exam .passage-title {
+  font-family: var(--cd-serif);
+  font-size: 1.6em; font-weight: 700; color: var(--cd-ink);
+  text-align: center; margin: 4px 0 18px;
+}
+/* Admin-pasted passages often repeat the title as an <h2> — keep it
+   serif and centred so it reads as the article heading. */
+#screen-exam .passage-text h1,
+#screen-exam .passage-text h2,
+#screen-exam .passage-text h3 {
+  font-family: var(--cd-serif); color: var(--cd-ink); text-align: center;
+}
+#screen-exam .passage-text p { margin: 0 0 1em; }
+
+/* ── Questions (both skills) ─────────────────────────────────────────── */
+#screen-exam .q-group-title,
+#screen-exam .group-title {
+  font-family: var(--cd-serif);
+  font-size: 1.5em; font-weight: 700; color: var(--cd-ink);
+  text-align: left; margin: 6px 0 8px; background: none; padding: 0; border: none;
+}
+#screen-exam .q-section-instruction,
+#screen-exam .group-instruction {
+  background: none; border: none; padding: 0; margin: 0 0 18px;
+  font-family: var(--cd-serif); font-size: 1em; font-style: normal;
+  color: var(--cd-ink); border-radius: 0;
+}
+#screen-exam .question-item {
+  background: transparent; border: none; box-shadow: none;
+  padding: 8px 10px; margin: 0 0 6px; border-radius: 4px;
+  transition: background .15s;
+}
+#screen-exam .question-item:hover { border-color: transparent; }
+#screen-exam .question-item.cd-current,
+#screen-exam .match-question-row.cd-current { background: var(--cd-row); outline: 1px solid #cfe0f5; }
+#screen-exam .q-num-label { margin-bottom: 6px; }
+#screen-exam .q-text {
+  font-family: var(--cd-serif); color: var(--cd-ink);
+  font-size: 1em; font-weight: 400;
+}
+
+/* Boxed question numbers, like the answer sheet. */
+#screen-exam .q-badge,
+#screen-exam .rq-q-badge,
+#screen-exam .match-q-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 26px; padding: 0 5px;
+  background: var(--cd-bg); color: var(--cd-ink);
+  border: 1px solid var(--cd-ink); border-radius: 3px;
+  font-family: var(--cd-serif); font-size: 13px; font-weight: 700;
+}
+
+/* TRUE / FALSE / NOT GIVEN — stacked radio rows instead of big buttons. */
+#screen-exam .tfng-opts {
+  display: flex; flex-direction: column; gap: 2px; margin-top: 6px;
+  grid-template-columns: none;
+}
+#screen-exam .tfng-opt {
+  position: relative;
+  display: flex; align-items: center; justify-content: flex-start;
+  padding: 7px 10px 7px 38px; min-height: 36px;
+  background: transparent; border: none; border-radius: 4px;
+  font-family: var(--cd-serif); font-size: 1em; font-weight: 400;
+  color: var(--cd-ink); text-align: left; box-shadow: none;
+}
+#screen-exam .tfng-opt::before {
+  content: ''; position: absolute; left: 12px; top: 50%;
+  width: 14px; height: 14px; margin-top: -7px;
+  border: 1px solid #6b6b6b; border-radius: 50%; background: var(--cd-bg);
+}
+#screen-exam .tfng-opt:hover { background: var(--cd-row); color: var(--cd-ink); border: none; }
+#screen-exam .tfng-opt.selected { background: var(--cd-pick); color: var(--cd-ink); border: none; font-weight: 700; }
+#screen-exam .tfng-opt.selected::before {
+  border-color: var(--cd-focus);
+  background: radial-gradient(circle, var(--cd-focus) 0 4px, var(--cd-bg) 4.5px);
+}
+
+/* Multiple choice rows (Reading .radio-opt label / Listening .radio-opt div). */
+#screen-exam .radio-opt,
+#screen-exam .checkbox-opt {
+  background: transparent; border: none; border-radius: 4px;
+  font-family: var(--cd-serif); color: var(--cd-ink); box-shadow: none;
+  padding: 8px 12px;
+}
+#screen-exam .radio-opt:hover,
+#screen-exam .checkbox-opt:hover { background: var(--cd-row); border-color: transparent; }
+#screen-exam .radio-opt.selected,
+#screen-exam .checkbox-opt.selected { background: var(--cd-pick); border-color: transparent; font-weight: 700; }
+#screen-exam .radio-dot { border: 1px solid #6b6b6b; background: var(--cd-bg); }
+#screen-exam .radio-opt.selected .radio-dot { background: var(--cd-focus); border-color: var(--cd-focus); }
+#screen-exam .radio-letter { color: var(--cd-ink); font-weight: 700; }
+
+/* Typed answers: a plain box. */
+#screen-exam .fill-input,
+#screen-exam .rq-inline-input,
+#screen-exam .fill-input-inline {
+  font-family: var(--cd-serif); font-size: 1em; color: var(--cd-ink);
+  background: var(--cd-bg);
+  border: 1px solid #8a8a8a; border-radius: 2px;
+  padding: 3px 8px; height: 30px; box-shadow: none;
+}
+#screen-exam .fill-input { max-width: 340px; }
+#screen-exam .fill-input:focus,
+#screen-exam .rq-inline-input:focus,
+#screen-exam .fill-input-inline:focus {
+  outline: none; border: 2px solid var(--cd-focus); padding: 2px 7px;
+}
+
+/* Inline gaps: the question number sits INSIDE the empty box (as on the
+   real test) and disappears once the student has typed. */
+#screen-exam .inline-input-wrap,
+#screen-exam .rq-inline-wrap { position: relative; display: inline-block; vertical-align: middle; margin: 2px 4px; }
+#screen-exam .inline-input-wrap .q-badge-inline,
+#screen-exam .rq-inline-wrap .rq-q-badge {
+  position: absolute; inset: 0; z-index: 1; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: auto; height: auto; min-width: 0; padding: 0;
+  background: none; border: none; border-radius: 0;
+  font-family: inherit; font-size: 12px; font-weight: 700; color: #6b7280;
+  pointer-events: none;
+}
+#screen-exam .inline-input-wrap .fill-input-inline,
+#screen-exam .rq-inline-wrap .rq-inline-input { width: 150px; text-align: center; }
+#screen-exam .fill-input-inline::placeholder,
+#screen-exam .rq-inline-input::placeholder { color: transparent; }
+#screen-exam .inline-input-wrap:has(.fill-input-inline:not(:placeholder-shown)) .q-badge-inline,
+#screen-exam .rq-inline-wrap:has(.rq-inline-input:not(:placeholder-shown)) .rq-q-badge,
+#screen-exam .inline-input-wrap:has(.fill-input-inline:focus) .q-badge-inline,
+#screen-exam .rq-inline-wrap:has(.rq-inline-input:focus) .rq-q-badge { opacity: 0; }
+
+/* Notes / tables / summaries keep their structure, just in the exam's
+   ink-on-white style. */
+#screen-exam .rq-note-form,
+#screen-exam .note-form,
+#screen-exam .rq-table-wrap table,
+#screen-exam .ls-table,
+#screen-exam table {
+  font-family: var(--cd-serif); color: var(--cd-ink);
+  background: var(--cd-bg);
+}
+#screen-exam .rq-note-form { border: 1px solid var(--cd-line); border-radius: 2px; box-shadow: none; }
+#screen-exam .rq-note-title { font-family: var(--cd-serif); font-weight: 700; color: var(--cd-ink); text-align: center; background: none; }
+#screen-exam table th,
+#screen-exam table td { border-color: #bdbdbd; color: var(--cd-ink); }
+
+/* Drag & drop — same chips and zones, flatter look. */
+#screen-exam .mo-options-box,
+#screen-exam .rq-chip-bank { background: transparent; border-color: var(--cd-line); }
+#screen-exam .mo-options-title { font-family: var(--cd-serif); color: var(--cd-ink); }
+#screen-exam .drag-chip,
+#screen-exam .word-chip {
+  font-family: var(--cd-serif); color: var(--cd-ink);
+  background: var(--cd-bg); border: 1px solid #9a9a9a; border-radius: 3px;
+  box-shadow: none;
+}
+#screen-exam .drag-chip:hover,
+#screen-exam .word-chip:hover { border-color: var(--cd-focus); background: var(--cd-pick); }
+#screen-exam .drop-zone {
+  background: transparent; border: none; border-bottom: 1.5px solid #8a8a8a;
+  border-radius: 0; color: var(--cd-focus); font-family: var(--cd-serif); font-weight: 700;
+}
+#screen-exam .drop-zone.filled { background: transparent; border-bottom-color: var(--cd-focus); }
+#screen-exam .drop-zone.drag-over,
+#screen-exam .drop-zone.over { background: var(--cd-pick); }
+#screen-exam .match-question-row { border: none; background: transparent; border-radius: 4px; padding: 6px 8px; }
+#screen-exam .match-q-text { font-family: var(--cd-serif); color: var(--cd-ink); }
+
+/* ── Listening body ──────────────────────────────────────────────────── */
+#screen-exam .exam-audio-bar {
+  background: var(--cd-bg); color: var(--cd-ink2);
+  border-bottom: 1px solid var(--cd-line2);
+  padding: 6px 20px; gap: 12px;
+}
+#screen-exam .exam-audio-status { color: var(--cd-ink2); font-size: 13px; }
+#screen-exam .exam-audio-bar .audio-time { color: var(--cd-ink2); }
+#screen-exam .exam-audio-bar .volume-icon { color: var(--cd-ink); }
+body.cd-exam-on #screen-exam .sidebar-panel,
+body.cd-exam-on #section-nav-fixed { display: none !important; }
+#screen-exam .exam-body { background: var(--cd-bg); }
+#screen-exam .questions-panel {
+  max-width: 1120px; width: 100%;
+  padding: 18px 28px 130px;
+  font-family: var(--cd-serif); color: var(--cd-ink);
+}
+#screen-exam .questions-panel .section-header-card { display: none; }
+
+/* "You will be listening to an audio clip…" — a grey veil over the paper
+   with white text and a black Play button; the top bar stays visible. */
+#screen-exam .audio-start-overlay {
+  position: absolute; inset: 64px 0 0 0;
+  background: rgba(60, 60, 60, .62);
+  backdrop-filter: none;
+}
+#screen-exam .aso-card {
+  background: none; box-shadow: none; padding: 0 20px; max-width: 560px;
+}
+#screen-exam .aso-icon { font-size: 72px; color: #fff; margin-bottom: 14px; }
+#screen-exam .aso-icon i { color: #fff !important; }
+#screen-exam .aso-text { color: #fff; font-size: 17px; line-height: 1.55; }
+#screen-exam .aso-text strong { color: #fff; }
+#screen-exam .aso-sub { color: #f1f1f1; font-size: 14px; }
+#screen-exam .aso-play-btn {
+  background: #000; color: #fff; border-radius: 2px;
+  padding: 16px 30px; font-size: 16px; font-weight: 700;
+}
+#screen-exam .aso-play-btn:hover { background: #222; }
+
+/* ── Footer (js/shared/cd-footer.js) ─────────────────────────────────── */
+#screen-exam .exam-footer.cd-footer {
+  position: relative; inset: auto;
+  display: flex; align-items: stretch; gap: 0;
+  height: 62px; padding: 0; flex-shrink: 0;
+  background: var(--cd-footer);
+  border-top: 1px solid var(--cd-line);
+  z-index: 60;
+}
+.cd-footer .cdf-parts {
+  display: flex; align-items: stretch; flex: 1; min-width: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.cd-footer .cdf-parts::-webkit-scrollbar { display: none; }
+.cd-footer .cdf-part {
+  display: flex; align-items: center; flex-shrink: 0;
+  padding: 0 4px 0 0;
+  border: 1.5px solid transparent; border-bottom: none;
+  border-right: 1px solid var(--cd-line2);
+}
+.cd-footer .cdf-part.is-active {
+  border-color: var(--cd-blue); border-bottom: none;
+  background: var(--cd-bg);
+}
+.cd-footer .cdf-part-label {
+  display: flex; align-items: center; gap: 14px; height: 100%;
+  padding: 0 14px 0 16px; background: none; border: none; cursor: pointer;
+  font-family: inherit; color: var(--cd-ink); white-space: nowrap;
+}
+.cd-footer .cdf-part-name { font-size: 15px; font-weight: 700; }
+.cd-footer .cdf-part-count { font-size: 14px; color: #8a8f98; }
+.cd-footer .cdf-part.is-active .cdf-part-count { display: none; }
+.cd-footer .cdf-nums { display: none; align-items: center; gap: 2px; padding-right: 8px; }
+.cd-footer .cdf-part.is-active .cdf-nums { display: flex; }
+.cd-footer .cdf-part:not(.is-active) .cdf-part-label:hover .cdf-part-name { color: var(--cd-blue); }
+
+/* Question numbers: plain digits with a thin bar above — dark once
+   answered; the current one gets a blue box. */
+#screen-exam .cd-footer .cdf-q {
+  position: relative;
+  width: auto; min-width: 26px; max-width: none; height: 30px; aspect-ratio: auto;
+  padding: 0 5px; margin-top: 8px;
+  background: none; border: 1.5px solid transparent; border-radius: 4px;
+  font-weight: 600; font-size: 14px; line-height: 1; font-family: inherit; color: var(--cd-ink);
+  cursor: pointer; transition: border-color .12s, color .12s;
+}
+#screen-exam .cd-footer .cdf-q::before {
+  content: ''; position: absolute; left: 1px; right: 1px; top: -9px;
+  height: 3px; background: #d4d4d4; border-radius: 1px;
+}
+#screen-exam .cd-footer .cdf-q:hover { color: var(--cd-blue); border-color: transparent; background: none; }
+#screen-exam .cd-footer .cdf-q.answered { background: none; color: var(--cd-ink); border-color: transparent; }
+#screen-exam .cd-footer .cdf-q.answered::before { background: #2b2b2b; }
+[data-theme="dark"] #screen-exam .cd-footer .cdf-q.answered::before { background: #e5e5e5; }
+#screen-exam .cd-footer .cdf-q.current { border-color: var(--cd-blue); color: var(--cd-ink); }
+
+.cd-footer .cdf-actions {
+  display: flex; align-items: center; padding: 0 18px;
+  border-left: 1px solid var(--cd-line);
+}
+#screen-exam .cd-footer .cdf-submit {
+  background: var(--cd-blue); color: #fff; border: none; border-radius: 4px;
+  padding: 11px 24px; font-weight: 700; font-size: 14px; line-height: 1; font-family: inherit;
+  cursor: pointer; white-space: nowrap;
+}
+#screen-exam .cd-footer .cdf-submit:hover { background: var(--cd-blue-dark); }
+
+/* Floating ← → just above the bar, over the right column. */
+.cd-footer .cdf-float {
+  position: absolute; right: 26px; bottom: calc(100% + 16px);
+  display: flex; gap: 8px; z-index: 5;
+}
+#screen-exam .cd-footer .cdf-arrow {
+  width: 56px; height: 56px; border: none; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff; background: #111; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+#screen-exam .cd-footer .cdf-prev { background: #3d3d3d; }
+#screen-exam .cd-footer .cdf-arrow:hover:not(:disabled) { background: #000; }
+#screen-exam .cd-footer .cdf-arrow:disabled { background: #cfd3d8; color: #f4f4f4; cursor: default; box-shadow: none; }
+
+/* Fullscreen keeps the footer as the last flex row. */
+#screen-exam:fullscreen .exam-footer.cd-footer { position: relative; }
+
+/* ── Small screens ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #screen-exam .exam-bar,
+  #screen-exam .exam-topbar { height: 56px; padding: 0 8px; }
+  #screen-exam .cd-logo,
+  #screen-exam .rd-progress-pill,
+  #screen-exam .ls-progress-pill { display: none; }
+  #screen-exam .cd-submit-top { padding: 8px 12px; font-size: 13px; margin: 0 2px; }
+  #screen-exam .btn-icon-sm { width: 36px; height: 36px; font-size: 16px; }
+  #screen-exam .cd-part-header { margin: 8px 8px 0; padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
+  #screen-exam .cd-part-title,
+  #screen-exam .cd-part-sub { font-size: 14px; }
+  #screen-exam .audio-start-overlay { inset: 56px 0 0 0; }
+  #screen-exam .questions-panel { padding: 14px 14px 120px; }
+  #screen-exam .exam-split { margin: 4px 0 0; }
+  #screen-exam .exam-footer.cd-footer { height: 56px; }
+  .cd-footer .cdf-part-label { padding: 0 10px; gap: 8px; }
+  .cd-footer .cdf-part-name { font-size: 14px; }
+  .cd-footer .cdf-actions { padding: 0 8px; }
+  #screen-exam .cd-footer .cdf-submit { padding: 9px 12px; font-size: 13px; }
+  .cd-footer .cdf-float { right: 12px; bottom: calc(100% + 10px); }
+  #screen-exam .cd-footer .cdf-arrow { width: 44px; height: 44px; font-size: 17px; }
+}
+
+/* ── Fine-tuning ─────────────────────────────────────────────────────── */
+/* reading.html's own sheet frames the timer — not in this layout. */
+#screen-exam .exam-timer { border: none; box-shadow: none; flex: none; }
+#screen-exam .group-instruction { font-weight: 400; }
+
+/* Number box sits on the question's first line ("[1] Heritage Farm is…"),
+   options/inputs start on a fresh line under it. */
+#screen-exam .question-item > .q-num-label { float: left; margin: 1px 10px 0 0; }
+#screen-exam .question-item > .q-text { overflow: hidden; margin-bottom: 8px; }
+#screen-exam .question-item > .tfng-opts,
+#screen-exam .question-item > .q-options,
+#screen-exam .question-item > .fill-input { clear: both; }
+
+/* Passages whose content already opens with its own heading: don't print
+   the title twice. */
+#screen-exam .passage-inner:has(> .passage-text > :is(h1, h2, h3):first-child) > .passage-title { display: none; }
+
+/* The listening veil stops at the footer so Parts/Submit stay readable. */
+#screen-exam .audio-start-overlay { bottom: 62px; }
+
+/* Audio bar range tracks were white-on-white once the bar turned white. */
+#screen-exam .exam-audio-bar input[type="range"] { background: #d9d9d9; accent-color: var(--cd-focus); border-radius: 4px; }
+[data-theme="dark"] #screen-exam .exam-audio-bar input[type="range"] { background: #3a3a3a; }
+
+@media (max-width: 768px) {
+  #screen-exam .audio-start-overlay { bottom: 56px; }
+}

@@ -320,7 +320,7 @@
   // guard. Null-guarded: the owl DOM is created lazily on first use, so it
   // often doesn't exist yet here.
   function _toggleExamAids(hidden) {
-    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup'].forEach(function (id) {
+    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup', 'ews-mascot-dock'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = hidden ? 'none' : '';
     });
