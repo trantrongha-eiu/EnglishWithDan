@@ -909,7 +909,9 @@
            single centered column instead of letting max-width+margin:auto
            center it.
            ══════════════════════════════════════════════════════════════════ */
-        .gf-body { overflow-y: auto; padding: 4px 16px 32px; }
+        /* overflow stays visible: the page itself scrolls, and a scroll
+           container here would stop the word bank's position:sticky. */
+        .gf-body { padding: 4px 16px 32px; }
         /* Topbar + audio bar stick together at the top while the (page-
            scrolled) transcript scrolls under them, so play/seek stay in
            reach at any point in a long transcript. One sticky wrapper
@@ -988,4 +990,57 @@
         @media (max-width: 600px) {
           .gf-transcript { padding: 18px 16px; margin: 12px auto 24px; border-radius: 16px; }
           .gf-blank { width: 92px; }
+        }
+
+        /* ── Word bank (30%) beside the transcript (70%) ───────────────── */
+        .gf-layout {
+          display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 7fr);
+          gap: 22px; max-width: 1280px; margin: 0 auto; align-items: start;
+        }
+        .gf-main { min-width: 0; }
+        .gf-main .gf-transcript, .gf-main .gf-result-bar { max-width: none; }
+        .gf-main .gf-result-bar { margin-top: 18px; }
+        .gf-wordbank {
+          position: sticky; top: calc(var(--gf-head-h, 150px) + 18px); margin-top: 18px;
+          max-height: calc(100vh - var(--gf-head-h, 150px) - 36px);
+          display: flex; flex-direction: column;
+          background: var(--surface, #fff); border: 1px solid var(--border, #eef0f3);
+          border-radius: 20px; box-shadow: 0 10px 30px rgba(124, 58, 237, .07), 0 2px 8px rgba(0,0,0,.04);
+          animation: gfFadeUp .4s cubic-bezier(.2,.7,.3,1) both; overflow: hidden;
+        }
+        [data-theme="dark"] .gf-wordbank { background: var(--surface, #16181d); border-color: var(--border2, #2a2d34); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+        .gf-wb-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--border, #eef0f3); }
+        [data-theme="dark"] .gf-wb-head { border-color: var(--border2, #2a2d34); }
+        .gf-wb-title { font-size: 15px; font-weight: 800; color: var(--text, #111827); display: flex; align-items: center; gap: 8px; }
+        .gf-wb-title i { color: #7c3aed; }
+        .gf-wb-total { font-size: 12px; font-weight: 700; color: #7c3aed; background: rgba(124, 58, 237, .1); border-radius: 999px; padding: 1px 9px; }
+        .gf-wb-note { margin: 4px 0 12px; font-size: 12px; color: var(--text3, #6b7280); }
+        .gf-wb-save {
+          width: 100%; padding: 9px 14px; border: none; border-radius: 999px; cursor: pointer;
+          font: inherit; font-size: 13.5px; font-weight: 700; color: #fff;
+          background: linear-gradient(135deg, #7c3aed, #6d28d9); box-shadow: 0 4px 12px rgba(124, 58, 237, .25);
+          transition: transform .12s, box-shadow .15s, opacity .15s;
+        }
+        .gf-wb-save:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(124, 58, 237, .32); }
+        .gf-wb-save:disabled { opacity: .5; cursor: default; box-shadow: none; }
+        .gf-wb-list { list-style: none; margin: 0; padding: 6px 8px 10px; overflow-y: auto; }
+        .gf-wb-item { padding: 8px 10px; border-radius: 12px; transition: opacity .2s, background .15s; }
+        .gf-wb-item:hover { background: rgba(124, 58, 237, .05); }
+        .gf-wb-item + .gf-wb-item { margin-top: 2px; }
+        .gf-wb-word { font-size: 14.5px; font-weight: 700; color: #6d28d9; overflow-wrap: anywhere; }
+        [data-theme="dark"] .gf-wb-word { color: #c4b5fd; }
+        .gf-wb-count { font-size: 11.5px; font-weight: 700; color: var(--text3, #6b7280); }
+        .gf-wb-pos { font-size: 11px; font-weight: 600; font-style: italic; color: var(--text3, #6b7280); }
+        .gf-wb-meaning { margin-top: 1px; font-size: 13px; line-height: 1.45; color: var(--text2, #374151); }
+        .gf-wb-loading { color: var(--text3, #9ca3af); font-style: italic; }
+        .gf-wb-skip .gf-wb-word { color: var(--text2, #374151); }
+        .gf-wb-used { opacity: .45; }
+        .gf-wb-used .gf-wb-word { text-decoration: line-through; }
+        @media (prefers-reduced-motion: reduce) { .gf-wordbank { animation: none !important; } }
+
+        /* Narrow screens: one column, word bank on top with its own scroll. */
+        @media (max-width: 900px) {
+          .gf-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+          .gf-wordbank { position: static; max-height: 300px; }
+          .gf-main .gf-transcript, .gf-main .gf-result-bar { max-width: 720px; }
         }

@@ -119,6 +119,21 @@ const ListeningSectionSchema = new mongoose.Schema({
   gapFillGeneratedAt: { type: Date, default: null },
   gapFillSkippedAt:   { type: Date, default: null },
   gapFillSkipReason:  { type: String, default: '' },
+  // Vietnamese in-context meanings for the word bank shown beside the drill,
+  // keyed by answer (lowercased). Filled lazily by Gemini the first time a
+  // student opens the section (listeningService.getGapFillGlossary) — entries
+  // for answers no longer in gapFillAnswers are simply ignored on read.
+  // `skip` marks numbers / names / spellings: listed, never saved to a book.
+  gapFillGlossary: {
+    type: [{
+      _id: false,
+      word:         { type: String, required: true },
+      meaning:      { type: String, default: '' },
+      partOfSpeech: { type: String, default: '' },
+      skip:         { type: Boolean, default: false },
+    }],
+    default: [],
+  },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });

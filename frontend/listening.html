@@ -488,8 +488,13 @@
         </div>
         </div>
         <div class="gf-body">
-            <div id="gf-result-bar" class="gf-result-bar" style="display:none"></div>
-            <div id="gf-transcript" class="gf-transcript"></div>
+            <div class="gf-layout">
+                <aside id="gf-wordbank" class="gf-wordbank"></aside>
+                <div class="gf-main">
+                    <div id="gf-result-bar" class="gf-result-bar" style="display:none"></div>
+                    <div id="gf-transcript" class="gf-transcript"></div>
+                </div>
+            </div>
         </div>
         <div class="exam-footer">
             <div class="exam-footer-btns">
@@ -641,7 +646,7 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="/css/listening-extra.css?v=20261001cover">
+    <link rel="stylesheet" href="/css/listening-extra.css?v=20261010wordbank">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=20260924e">
     <link rel="stylesheet" href="/css/cd-exam.css?v=20261010lele">
 
@@ -5129,7 +5134,11 @@
         // Block paste — same anti-cheat convention as dictation.html's #dict-input.
         tArea.querySelectorAll('.gf-blank').forEach(inp => {
             inp.addEventListener('paste', e => e.preventDefault());
+            inp.addEventListener('input', _gfMarkUsedWords);
         });
+
+        _gfRenderWordBank();
+        if ((section.wordBank || []).some(w => !w.hasGloss)) _gfLoadGlossary(section._id);
 
         const gfAudio = _gfAudioEl();
         const audioUrl = section.audioUrl || '';
@@ -5150,6 +5159,81 @@
         document.getElementById('gf-speed-btn').textContent = '1x';
 
         showScreen('gapfill');
+        // The word bank sticks just under the sticky head — measure it, since
+        // the topbar wraps to two lines for long titles / on narrow screens.
+        const head = document.querySelector('#screen-gapfill .gf-sticky-head');
+        if (head) document.getElementById('screen-gapfill').style.setProperty('--gf-head-h', head.offsetHeight + 'px');
+    }
+
+    // ── Word bank (left column) ──────────────────────────────────────────
+    // Every answer once, A→Z (server-sorted, so it never reveals which blank
+    // a word fills), with its in-context Vietnamese meaning. Meanings come
+    // from GET /gapfill/section/:id/glossary, which Gemini fills once per
+    // section — the first student to open a section waits a few seconds.
+    let _gfGlossLoading = false;
+    const _gfNorm = s => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+    function _gfRenderWordBank() {
+        const el = document.getElementById('gf-wordbank');
+        const bank = (_gfSection && _gfSection.wordBank) || [];
+        if (!bank.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+        el.style.display = '';
+        const saveable = bank.filter(w => !w.skip);
+        const items = bank.map(w => {
+            const meaning = w.meaning
+                ? `<div class="gf-wb-meaning">${escHtml(w.meaning)}</div>`
+                : (_gfGlossLoading && !w.hasGloss ? '<div class="gf-wb-meaning gf-wb-loading">Đang tải nghĩa…</div>' : '');
+            return `<li class="gf-wb-item${w.skip ? ' gf-wb-skip' : ''}" data-key="${escHtml(_gfNorm(w.word))}">
+                <div class="gf-wb-word">${escHtml(w.word)}${w.count > 1 ? ` <span class="gf-wb-count">×${w.count}</span>` : ''}${w.partOfSpeech && !w.skip ? ` <span class="gf-wb-pos">${escHtml(w.partOfSpeech)}</span>` : ''}</div>
+                ${meaning}
+            </li>`;
+        }).join('');
+        el.innerHTML = `
+            <div class="gf-wb-head">
+                <div class="gf-wb-title"><i class="fas fa-list-ul"></i> Từ cần điền <span class="gf-wb-total">${bank.length}</span></div>
+                <div class="gf-wb-note">Xếp theo A → Z, không theo thứ tự chỗ trống</div>
+                <button class="gf-wb-save" onclick="gfSaveWordBank()" ${saveable.length && !_gfGlossLoading ? '' : 'disabled'}>
+                    <i class="fas fa-bookmark"></i> Lưu tất cả vào sổ${saveable.length ? ` (${saveable.length})` : ''}
+                </button>
+            </div>
+            <ul class="gf-wb-list">${items}</ul>`;
+        _gfMarkUsedWords();
+    }
+
+    async function _gfLoadGlossary(sectionId) {
+        _gfGlossLoading = true;
+        _gfRenderWordBank();
+        try {
+            const res  = await fetch(`${API}/listening/gapfill/section/${sectionId}/glossary`, { headers: authH() });
+            const data = await safeJson(res);
+            if (_gfSection && String(_gfSection._id) === String(sectionId) && data.success && Array.isArray(data.wordBank)) {
+                _gfSection.wordBank = data.wordBank;
+            }
+        } catch (e) {
+            console.warn('[gapfill] glossary failed', e);
+        } finally {
+            _gfGlossLoading = false;
+            if (_gfSection && String(_gfSection._id) === String(sectionId)) _gfRenderWordBank();
+        }
+    }
+
+    // Fades out a word once some blank holds it — a "used" tick, nothing
+    // more: it says the word was typed somewhere, not that it's in the right blank.
+    function _gfMarkUsedWords() {
+        const typed = new Set(Array.from(document.querySelectorAll('#gf-transcript .gf-blank'))
+            .map(inp => _gfNorm(inp.value)).filter(Boolean));
+        document.querySelectorAll('#gf-wordbank .gf-wb-item').forEach(li => {
+            li.classList.toggle('gf-wb-used', typed.has(li.dataset.key));
+        });
+    }
+
+    function gfSaveWordBank() {
+        const items = ((_gfSection && _gfSection.wordBank) || [])
+            .filter(w => !w.skip)
+            .map(w => ({ word: w.word, meaning: w.meaning || '', partOfSpeech: w.partOfSpeech || '', source: 'listening' }));
+        if (!items.length) return;
+        if (typeof openVocabBookPickerBulk !== 'function') { toast('Không mở được sổ từ vựng, thử tải lại trang.', 'error'); return; }
+        openVocabBookPickerBulk(items);
     }
 
     function gfTogglePlay() {

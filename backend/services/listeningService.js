@@ -504,9 +504,66 @@ async function listGapFillSections() {
 }
 
 async function getGapFillSectionById(id) {
-  return ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
-    .select('_id title partNumber audioUrl audioDuration gapFillTemplate')
+  const section = await ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
+    .select('_id title partNumber audioUrl audioDuration gapFillTemplate gapFillAnswers gapFillGlossary')
     .lean();
+  if (!section) return null;
+  const { gapFillAnswers, gapFillGlossary, ...rest } = section;
+  return { ...rest, wordBank: buildGapFillWordBank(gapFillAnswers, gapFillGlossary) };
+}
+
+// Word bank shown beside the drill: every answer once (with a count when it
+// fills several blanks), sorted A→Z so the list never gives away which blank
+// a word belongs to — the blank→answer mapping itself stays server-side.
+function buildGapFillWordBank(answers, glossary) {
+  const gloss = new Map((glossary || []).map(g => [g.word.toLowerCase().trim(), g]));
+  const byKey = new Map();
+  (answers || []).forEach(a => {
+    const word = String(a || '').trim();
+    if (!word) return;
+    const key = word.toLowerCase();
+    const cur = byKey.get(key);
+    if (cur) { cur.count++; return; }
+    const g = gloss.get(key);
+    byKey.set(key, {
+      word,
+      count: 1,
+      meaning: g ? g.meaning : '',
+      partOfSpeech: g ? g.partOfSpeech : '',
+      skip: g ? g.skip : /\d/.test(word),
+      hasGloss: !!g,
+    });
+  });
+  return [...byKey.values()].sort((x, y) => x.word.localeCompare(y.word, 'en', { sensitivity: 'base' }));
+}
+
+// Fills gapFillGlossary for any answer that has no entry yet (one Gemini
+// call per section, ever — later students get the cached copy). Concurrent
+// first opens of the same section share one in-flight call.
+const _glossaryInFlight = new Map();
+async function getGapFillGlossary(id) {
+  const section = await ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
+    .select('_id transcript gapFillAnswers gapFillGlossary')
+    .lean();
+  if (!section) return null;
+  let bank = buildGapFillWordBank(section.gapFillAnswers, section.gapFillGlossary);
+  const missing = bank.filter(w => !w.hasGloss).map(w => w.word);
+  if (!missing.length) return bank;
+
+  const key = String(section._id);
+  if (!_glossaryInFlight.has(key)) {
+    _glossaryInFlight.set(key, (async () => {
+      const items = await geminiService.generateGapFillGlossary(section.transcript, missing);
+      const wanted = new Set(missing.map(w => w.toLowerCase()));
+      const fresh = items.filter(it => wanted.has(it.word.toLowerCase()));
+      if (fresh.length) {
+        await ListeningSection.updateOne({ _id: section._id }, { $push: { gapFillGlossary: { $each: fresh } } });
+      }
+      return fresh;
+    })().finally(() => _glossaryInFlight.delete(key)));
+  }
+  const fresh = await _glossaryInFlight.get(key);
+  return buildGapFillWordBank(section.gapFillAnswers, [...(section.gapFillGlossary || []), ...fresh]);
 }
 
 async function saveGapFillAttempt({ sectionId, sectionTitle, partNumber, answers }, userId) {
@@ -561,6 +618,7 @@ async function generateSectionGapFill(id) {
 
   section.gapFillTemplate = template;
   section.gapFillAnswers = answers;
+  section.gapFillGlossary = [];
   section.gapFillGeneratedAt = new Date();
   // Regenerating always resets publish state — an admin must re-review
   // before students see the new content.
@@ -1117,7 +1175,7 @@ module.exports = {
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, saveDictationAttempt,
-  listGapFillSections, getGapFillSectionById, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
+  listGapFillSections, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
   listStudentTests, startTest, submitTest,

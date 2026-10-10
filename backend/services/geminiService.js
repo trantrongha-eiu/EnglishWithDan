@@ -1125,6 +1125,46 @@ async function generateGapFillBlanks(transcript, _attempt = 0, _retryHint = null
   return { template, answers, flaggedNames };
 }
 
+// ── Gap-fill word bank glossary ─────────────────────────────────────
+// Vietnamese meanings for a gap-fill drill's answers, read IN CONTEXT of the
+// transcript (so "book" in "book a table" comes back as "đặt", not "sách").
+// One call per section, cached by listeningService.getGapFillGlossary.
+const GAPFILL_GLOSSARY_SYSTEM = `You are an English-Vietnamese dictionary assistant for IELTS learners.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+async function generateGapFillGlossary(transcript, words) {
+  if (!Array.isArray(words) || !words.length) return [];
+  const list = words.map((w, i) => `${i + 1}. ${w}`).join('\n');
+  const prompt = `Transcript (context only):
+<<<TRANSCRIPT_START>>>
+${String(transcript || '').slice(0, 12000)}
+<<<TRANSCRIPT_END>>>
+
+For each word/phrase below (all taken from the transcript above), give:
+- word: copied EXACTLY as listed
+- meaning: short, natural Vietnamese meaning matching how it is used in THIS transcript (2-6 words)
+- partOfSpeech: one of noun, verb, adjective, adverb, phrase, number, name — empty string if unsure
+- skip: true if it is a number, date, time, price, phone number, spelled-out letters, or a proper name (person/place/company) — those are not worth saving as vocabulary; false otherwise. For skip items still give a short meaning if one makes sense (e.g. "thứ Ba"), else "".
+
+${list}
+
+Return JSON: {"items": [{"word": string, "meaning": string, "partOfSpeech": string, "skip": boolean}, ...]} — exactly ${words.length} items.`;
+
+  const parsed = await _gradeWithGeminiJson({
+    prompt, systemInstruction: GAPFILL_GLOSSARY_SYSTEM, maxOutputTokens: 60 * words.length + 300,
+    timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.', logLabel: 'generateGapFillGlossary',
+  });
+  const items = Array.isArray(parsed.items) ? parsed.items : [];
+  return items
+    .filter(it => it && typeof it.word === 'string' && it.word.trim())
+    .map(it => ({
+      word: it.word.trim(),
+      meaning: String(it.meaning || '').trim(),
+      partOfSpeech: String(it.partOfSpeech || '').trim(),
+      skip: it.skip === true || it.skip === 'true',
+    }));
+}
+
 // ── Dictionary Collocations ─────────────────────────────────────────
 // One-shot lookup, not a grading call — cheap MODEL_FAST, short output cap.
 // Called at most ONCE per distinct word across the whole system; see
@@ -1430,6 +1470,7 @@ module.exports = {
   checkEssay, checkSpeaking, checkSpeakingLite, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
   generateGapFillBlanks,
   punchGapFillAnswers,
+  generateGapFillGlossary,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).

@@ -72,6 +72,9 @@ router.post('/dictation/save-attempt', auth, requirePremium('Bạn cần nâng c
 // trợ không tạo pending review.
 router.get('/gapfill/list', auth, contentLimiter, listeningController.listGapFillSections);
 router.get('/gapfill/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getGapFillSectionById);
+// Nghĩa tiếng Việt cho word bank bên trái bài làm — Gemini sinh 1 lần/section
+// rồi cache trong gapFillGlossary, lần sau chỉ là 1 lần đọc DB.
+router.get('/gapfill/section/:id/glossary', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getGapFillGlossary);
 router.post('/gapfill/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveGapFillAttempt);
 
 // ══════════════════════════════════════════════════════════════════════════════

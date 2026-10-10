@@ -196,6 +196,17 @@ exports.getGapFillSectionById = async (req, res) => {
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
+exports.getGapFillGlossary = async (req, res) => {
+  try {
+    const wordBank = await listeningService.getGapFillGlossary(req.params.id);
+    if (!wordBank) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, wordBank });
+  } catch (err) {
+    console.error('[GapFill glossary]', err);
+    res.status(err.status || 500).json({ success: false, message: 'Không tải được nghĩa của từ' });
+  }
+};
+
 exports.saveGapFillAttempt = async (req, res) => {
   try {
     const { sectionId, sectionTitle, partNumber, answers } = req.body;
