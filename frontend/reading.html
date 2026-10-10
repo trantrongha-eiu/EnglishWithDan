@@ -385,12 +385,18 @@
     <div class="exam-bar">
       <div class="exam-bar-left">
         <button class="exam-exit-btn" onclick="confirmCloseRetry()" title="Thoát" aria-label="Thoát"><i class="fas fa-times"></i></button>
-        <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
+        <!-- Same look as the full test (css/cd-exam.css, "Bài lẻ" section):
+             logo · title over the stopwatch · progress · "Kiểm tra đáp án". -->
+        <img class="cd-logo" src="/img/favicon.svg" alt="" aria-hidden="true">
+        <div class="cd-title-block">
+          <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
+          <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+        </div>
       </div>
       <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
-        <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+        <button class="cd-submit-top cd-live-only" onclick="submitRetry()">Kiểm tra đáp án</button>
         <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" aria-label="Sao chép link chia sẻ" id="btn-copy-link-rt"><i class="fas fa-link"></i></button>
         <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" aria-label="Toàn màn hình" id="btn-fullscreen-rt"><i class="fas fa-expand" id="fs-icon-retry"></i></button>
         <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt" aria-label="Cài đặt"><i class="fas fa-cog"></i></button>
@@ -400,6 +406,14 @@
       <div id="practice-prog-fill" class="practice-prog-fill"></div>
     </div>
 
+    <!-- "Part 1 / Read the text and answer questions 1–13" with the tools
+         on its right (filled by _renderRetryCdPartHeader). Unskinned (the
+         Entrance Test embed) the box vanishes and only the toolbar shows. -->
+    <div class="cd-part-header">
+      <div class="cd-part-text">
+        <div class="cd-part-title" id="cd-part-title-rt">Part 1</div>
+        <div class="cd-part-sub" id="cd-part-sub-rt"></div>
+      </div>
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl-rt" onclick="setTool('highlight')">
         <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
@@ -410,6 +424,7 @@
       <button class="tool-btn" id="tool-translate-rt" onmousedown="event.preventDefault()" onclick="translateSelected()">
         <i class="fas fa-language"></i> <small>Dịch (T)</small>
       </button>
+    </div>
     </div>
 
     <div class="exam-split" id="retry-split">
@@ -431,6 +446,9 @@
         <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>
       </div>
     </div>
+    <!-- While answering: Part block + question numbers + ← → (js/shared/cd-footer.js,
+         _mountRetryCdFooter). The footer above takes over again once checked. -->
+    <div class="exam-footer cd-footer-host" id="retry-cd-footer"></div>
   </div>
 
   <!-- ════════════════════════════════════════════════════════
@@ -533,12 +551,12 @@
 
   <link rel="stylesheet" href="/css/reading-extra.css?v=20261007expl">
   <link rel="stylesheet" href="/css/reading-tips-practice.css?v=20260924c">
-  <link rel="stylesheet" href="/css/cd-exam.css?v=20261009cd">
+  <link rel="stylesheet" href="/css/cd-exam.css?v=20261010lele">
 
 
 
-  <script src="/js/shared/cd-footer.js?v=20261009cd"></script>
-  <script src="/js/reading-v2.js?v=20261010pf"></script>
+  <script src="/js/shared/cd-footer.js?v=20261010lele"></script>
+  <script src="/js/reading-v2.js?v=20261010lele"></script>
   <script src="/js/reading-tips.js?v=20260925route"></script>
   <script src="/js/reading-tips-practice.js?v=20260924c"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->

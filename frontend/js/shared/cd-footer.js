@@ -7,7 +7,8 @@
  * other Parts collapse to "Part 2  3 of 10". Prev / next arrows walk the
  * questions one by one and "Submit Test" submits.
  *
- * Shared by listening.html (exam screen) and js/reading-v2.js (exam screen).
+ * Shared by listening.html and js/reading-v2.js: the full-test exam screen
+ * and the single-section practice ("bài lẻ") screens, one mounted at a time.
  * Each page owns its own state — this module only renders and forwards
  * clicks, so the page's existing answer / part-switch logic stays the
  * single source of truth:
@@ -19,6 +20,7 @@
  *     isAnswered: n => bool,
  *     onJump: n => {},                 // go to question n (switching part if needed)
  *     onSubmit: () => {},
+ *     submitLabel: 'Submit Test',      // optional
  *   });
  *   CDFooter.setActivePart(i)   // page switched part by other means
  *   CDFooter.setCurrent(n)      // student focused question n
@@ -73,7 +75,7 @@
         '<button type="button" class="cdf-arrow cdf-next" aria-label="Câu tiếp" title="Câu tiếp"><i class="fas fa-arrow-right"></i></button>' +
       '</div>' +
       '<div class="cdf-actions">' +
-        '<button type="button" class="cdf-submit">Submit Test</button>' +
+        '<button type="button" class="cdf-submit">' + esc(cfg.submitLabel) + '</button>' +
       '</div>';
     root.innerHTML = html;
     refresh();
@@ -145,6 +147,7 @@
         isAnswered: options.isAnswered || function () { return false; },
         onJump: options.onJump || function () {},
         onSubmit: options.onSubmit || function () {},
+        submitLabel: options.submitLabel || 'Submit Test',
       };
       activePart = Math.max(0, Math.min(options.activePart || 0, cfg.parts.length - 1));
       current = cfg.parts[activePart] ? cfg.parts[activePart].questions[0] : null;
