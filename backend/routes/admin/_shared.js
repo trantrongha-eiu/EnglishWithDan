@@ -18,6 +18,17 @@ async function uploadImageDataUri(imageBase64, folder) {
   return result.secure_url;
 }
 
+// Card cover image (Passage / ListeningSection / VocabularyLesson /
+// WritingExam .thumbnailUrl — all four admin forms post here via
+// CoverImageField). Goes to Cloudflare R2 when configured (pre-cropped
+// there, see r2Service.uploadCoverImage), else Cloudinary as before.
+async function uploadCoverImageDataUri(imageBase64) {
+  const r2Service = require('../../services/r2Service');
+  if (!r2Service.isConfigured()) return uploadImageDataUri(imageBase64, 'reading/covers');
+  const buf = Buffer.from(String(imageBase64).slice(String(imageBase64).indexOf(',') + 1), 'base64');
+  return r2Service.uploadCoverImage(buf, { folder: 'covers' });
+}
+
 // Upload a PDF Buffer (from multer memoryStorage) to Cloudinary as a raw
 // asset, return the secure URL. Shared by speaking materials + writing samples.
 async function uploadPdfBuffer(buffer, folder) {
@@ -70,4 +81,4 @@ function uploadPdf(req, res, next) {
   });
 }
 
-module.exports = { escapeRegex, effectiveStreak, teacherOnly, adminOnly, uploadPdfMemory, uploadPdf, uploadImageDataUri, uploadPdfBuffer };
+module.exports = { escapeRegex, effectiveStreak, teacherOnly, adminOnly, uploadPdfMemory, uploadPdf, uploadImageDataUri, uploadCoverImageDataUri, uploadPdfBuffer };

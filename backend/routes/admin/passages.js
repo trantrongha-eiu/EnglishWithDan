@@ -4,7 +4,7 @@
 const express    = require('express');
 const auth       = require('../../middleware/auth');
 const { isImageDataUri } = require('../../utils/validation');
-const { teacherOnly, uploadImageDataUri, escapeRegex } = require('./_shared');
+const { teacherOnly, uploadImageDataUri, uploadCoverImageDataUri, escapeRegex } = require('./_shared');
 
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
@@ -123,14 +123,15 @@ router.post('/passages/upload-map-image', auth, teacherOnly, async (req, res) =>
 });
 
 // POST /api/admin/passages/upload-cover-image
-// Body: { imageBase64 } → Cloudinary reading/covers → { url } for Passage.thumbnailUrl
+// Body: { imageBase64 } → R2 covers/ (Cloudinary reading/covers if R2 is unset)
+// → { url } for the thumbnailUrl of a Passage, ListeningSection, VocabularyLesson or WritingExam
 router.post('/passages/upload-cover-image', auth, teacherOnly, async (req, res) => {
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
     if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
-    const url = await uploadImageDataUri(imageBase64, 'reading/covers');
+    const url = await uploadCoverImageDataUri(imageBase64);
     res.json({ success: true, url });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

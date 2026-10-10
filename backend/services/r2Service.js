@@ -1,6 +1,7 @@
 'use strict';
 
-// Cloudflare R2 object storage for Listening audio. Cloudinary's free plan
+// Cloudflare R2 object storage for Listening audio and practice-card cover
+// images. Cloudinary's free plan
 // counts every byte delivered against 25 credits/month, and Listening audio
 // was ~95% of that (2026-10); R2 has no egress fees. The bucket is served
 // read-only through its custom domain (config.r2.publicUrl), so a stored
@@ -54,10 +55,33 @@ async function deleteObject(key) {
 // so the admin upload path and the import scripts swap over with one line.
 async function uploadAudio(src, { folder, public_id, ext = 'mp3', contentType = 'audio/mpeg' }) {
   const buf = Buffer.isBuffer(src) ? src : require('fs').readFileSync(src);
-  const { parseBuffer } = await import('music-metadata');
-  const meta = await parseBuffer(buf, { mimeType: contentType, size: buf.length }, { duration: true }).catch(() => null);
+  // Duration is best-effort: a file music-metadata can't read (or, under
+  // Jest, the ESM-only package failing to load) uploads with duration 0
+  // rather than failing the whole upload.
+  let meta = null;
+  try {
+    const { parseBuffer } = await import('music-metadata');
+    meta = await parseBuffer(buf, { mimeType: contentType, size: buf.length }, { duration: true });
+  } catch { /* duration stays 0 */ }
   const secure_url = await putObject(`${folder}/${public_id}.${ext}`, buf, contentType);
   return { secure_url, duration: (meta && meta.format.duration) || 0 };
 }
 
-module.exports = { isConfigured, publicHost, putObject, deleteObject, uploadAudio };
+// Practice-list card cover (Reading / Listening / Vocab / Writing). Cloudinary
+// covers are cropped per request by utils/cardThumbnail (480×240 c_fill,g_auto);
+// R2 serves bytes as-is, so the crop happens once here: 2:1 at 640×320
+// (card is ~240–320 CSS px wide → sharp on 2× screens), "attention" crop
+// ≈ g_auto, WebP. Returns the public URL.
+const COVER_W = 640, COVER_H = 320;
+async function uploadCoverImage(buf, { folder = 'covers' } = {}) {
+  const sharp = require('sharp');
+  const out = await sharp(buf, { limitInputPixels: 50e6 })
+    .rotate() // honour EXIF orientation from phone photos
+    .resize(COVER_W, COVER_H, { fit: 'cover', position: sharp.strategy.attention })
+    .webp({ quality: 80 })
+    .toBuffer();
+  const id = `${Date.now()}_${require('crypto').randomBytes(4).toString('hex')}`;
+  return putObject(`${folder}/${id}.webp`, out, 'image/webp');
+}
+
+module.exports = { isConfigured, publicHost, putObject, deleteObject, uploadAudio, uploadCoverImage, COVER_W, COVER_H };

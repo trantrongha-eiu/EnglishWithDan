@@ -22,6 +22,13 @@ if (process.env.NODE_ENV === 'production' && !process.env.MEDIA_TOKEN_SECRET) {
   logger.error('startup', 'MEDIA_TOKEN_SECRET is not set — media tokens are falling back to JWT_SECRET. Set a dedicated MEDIA_TOKEN_SECRET on the backend service.');
 }
 
+// Admin Listening audio + card-cover uploads silently fall back to
+// Cloudinary when any R2_* var is missing — say so loudly, since the
+// Cloudinary free plan can't carry the audio bandwidth.
+if (process.env.NODE_ENV === 'production' && !require('./services/r2Service').isConfigured()) {
+  logger.error('startup', 'R2 is not fully configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_PUBLIC_URL) — admin audio and cover uploads are going to Cloudinary.');
+}
+
 // Cloudinary config
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({

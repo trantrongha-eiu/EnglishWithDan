@@ -59,6 +59,18 @@ describe('GET /health', () => {
     expect(bodyText).not.toMatch(/AIza|sk-|ya29\./); // common API-key prefixes
   });
 
+  test('with the operator token: reports whether R2 is configured', async () => {
+    const config = require('../../config');
+    let res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
+    expect(res.body.dependencies.r2.status).toBe('not_configured'); // setupTestDb blanks R2_*
+    const saved = { ...config.r2 };
+    Object.assign(config.r2, { accountId: 'a', accessKeyId: 'k', secretAccessKey: 's', bucket: 'b', publicUrl: 'https://media.example.com' });
+    try {
+      res = await request(app).get('/health').set('X-Health-Token', HTOKEN);
+      expect(res.body.dependencies.r2.status).toBe('configured');
+    } finally { Object.assign(config.r2, saved); }
+  });
+
   test('with the operator token: reports Cloudinary as not_configured (not "error") when credentials are unset', async () => {
     // Explicitly clear rather than assume — a real local backend/.env
     // (common in dev) may have genuine Cloudinary credentials set, which

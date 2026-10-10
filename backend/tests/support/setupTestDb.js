@@ -23,6 +23,13 @@ jest.mock('resend', () => ({
   })),
 }));
 
+// Same for Cloudflare R2: with R2_* in the local .env, every admin audio /
+// cover upload test would put real objects in the production bucket.
+// Blank (not delete) them — dotenv never overrides a var that is already
+// set, even to '' — so r2Service.isConfigured() is false unless a test
+// opts in by mocking it.
+for (const k of ['R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']) process.env[k] = '';
+
 const dbName = `test_${crypto.randomUUID().replace(/-/g, '')}`;
 
 beforeAll(async () => {

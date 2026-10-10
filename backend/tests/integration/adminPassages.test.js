@@ -214,6 +214,42 @@ describe('POST /api/admin/passages/upload-cover-image', () => {
       expect(res.status).toBe(400);
     }
   });
+
+  describe('with R2 configured', () => {
+    const config = require('../../config');
+    const { S3Client } = require('@aws-sdk/client-s3');
+    const sharp = require('sharp');
+    let saved, send;
+    beforeEach(() => {
+      saved = { ...config.r2 };
+      Object.assign(config.r2, { accountId: 'acc', accessKeyId: 'k', secretAccessKey: 's', bucket: 'ewd-audio', publicUrl: 'https://media.example.com' });
+      send = jest.spyOn(S3Client.prototype, 'send').mockResolvedValue({});
+    });
+    afterEach(() => { Object.assign(config.r2, saved); send.mockRestore(); });
+
+    test('stores a 640×320 WebP crop in R2 and returns its public URL', async () => {
+      const png = await sharp({ create: { width: 1200, height: 1200, channels: 3, background: '#3a7' } }).png().toBuffer();
+      const res = await request(app).post('/api/admin/passages/upload-cover-image')
+        .set('Authorization', `Bearer ${await authedTeacher()}`)
+        .send({ imageBase64: `data:image/png;base64,${png.toString('base64')}` });
+      expect(res.status).toBe(200);
+      expect(res.body.url).toMatch(/^https:\/\/media\.example\.com\/covers\/\d+_[0-9a-f]{8}\.webp$/);
+      expect(send).toHaveBeenCalledTimes(1);
+      const input = send.mock.calls[0][0].input;
+      expect(input).toMatchObject({ Bucket: 'ewd-audio', ContentType: 'image/webp' });
+      expect(res.body.url.endsWith(input.Key)).toBe(true);
+      const meta = await sharp(input.Body).metadata();
+      expect(meta).toMatchObject({ format: 'webp', width: 640, height: 320 });
+    });
+
+    test('a data URI that is not a decodable image fails without uploading', async () => {
+      const res = await request(app).post('/api/admin/passages/upload-cover-image')
+        .set('Authorization', `Bearer ${await authedTeacher()}`)
+        .send({ imageBase64: `data:image/png;base64,${Buffer.from('not really a png').toString('base64')}` });
+      expect(res.status).toBe(500);
+      expect(send).not.toHaveBeenCalled();
+    });
+  });
 });
 
 describe('DELETE /api/admin/passages/:id (soft delete)', () => {
