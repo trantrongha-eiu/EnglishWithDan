@@ -514,10 +514,11 @@ function applyMascotState(streak, previousStreak) {
         if (numEl) numEl.textContent = streak;
         if (msgEl) msgEl.textContent = state.msg;
         if (pandaEl) {
-            pandaEl.innerHTML = state.img
-                ? `<img src="${state.img}" alt="${state.alt || ''}">`
-                : '';
-            if (!state.img) setMascotEl(pandaEl, streak);
+            // Lulu in the sad/angry mood; the old photo only when playful.js
+            // (window.Mascot) didn't load.
+            pandaEl.innerHTML = '';
+            if (state.img && !window.Mascot) pandaEl.innerHTML = `<img src="${state.img}" alt="${state.alt || ''}">`;
+            else setMascotEl(pandaEl, streak, state.mood === 'happy' ? null : state.mood);
         }
         if (cardEl) cardEl.classList.toggle('is-angry', state.mood === 'angry');
         if (cardEl) cardEl.classList.toggle('is-sad', state.mood === 'sad');
