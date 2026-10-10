@@ -363,6 +363,7 @@ function _updatePracticeProgress() {
       btn.classList.toggle('q-nav-answered', !!(a && a !== '[]'));
     }
   });
+  if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.refresh();
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -409,6 +410,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.onbeforeunload = null;
       _clearPracticeTimer();
       _hidePracticeHUD();
+      _setRetryCdSkin(false, false);
       _retryState = null;
       _practiceMode = false;
       const listEl = document.getElementById('practice-passage-list');
@@ -1752,6 +1754,9 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
   // Show copy-link button only in practice mode (URL has passageId)
   const copyLinkBtn = document.getElementById('btn-copy-link-rt');
   if (copyLinkBtn) copyLinkBtn.style.display = '';
+  _setRetryCdSkin(true, true);
+  _renderRetryCdPartHeader(cleanPassage, _retryPartNum(category));
+  _mountRetryCdFooter(cleanPassage, _retryPartNum(category));
   showScreen('retry');
 
   // Start stopwatch + progress HUD (practice mode only)
@@ -3836,12 +3841,94 @@ function retryCurrentPassage() {
   // Hide copy-link button for retry-from-review (URL is ?review=..., not passageId)
   const copyLinkBtn = document.getElementById('btn-copy-link-rt');
   if (copyLinkBtn) copyLinkBtn.style.display = 'none';
+  _setRetryCdSkin(true, true);
+  _renderRetryCdPartHeader(cleanPassage, passageIdx + 1);
+  _mountRetryCdFooter(cleanPassage, passageIdx + 1);
   showScreen('retry');
 }
 
 function jumpToRetryQuestion(qNum) {
-  const el = _findQuestionEl(qNum);
+  const el = _findRetryQuestionEl(qNum) || _findQuestionEl(qNum);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// _findQuestionEl() scoped to the retry column — the exam screen can hold
+// the same q/qi ids while it sits hidden.
+function _findRetryQuestionEl(qNum) {
+  const qi = document.getElementById('retry-questions-inner');
+  if (!qi) return null;
+  return qi.querySelector(`#q${qNum}`)
+    || qi.querySelector(`#qi-${qNum}`)
+    || qi.querySelector(`[data-cluster-start="${qNum}"]`)
+    || qi.querySelector(`[data-cluster-end="${qNum}"]`);
+}
+
+/* ── Full-test look for bài lẻ (css/cd-exam.css, "Bài lẻ" section) ─────
+   skin: logo, Part box, serif passage for the whole visit; live: exam-style
+   questions + the CD footer while answering (dropped once checked, so the
+   review keeps its correct/wrong look). The Entrance Test embed never calls
+   this and keeps its old look. */
+function _setRetryCdSkin(skin, live) {
+  const scr = document.getElementById('screen-retry');
+  if (!scr) return;
+  scr.classList.toggle('cd-skin', !!skin);
+  scr.classList.toggle('cd-live', !!(skin && live));
+}
+
+function _renderRetryCdPartHeader(passage, partNum) {
+  const t = document.getElementById('cd-part-title-rt');
+  const s = document.getElementById('cd-part-sub-rt');
+  if (!passage || !t || !s) return;
+  const nums = getAllQuestionsFromPassage(passage).map(q => q.questionNumber);
+  t.textContent = `Part ${partNum || 1}`;
+  s.textContent = nums.length
+    ? `Read the text and answer questions ${Math.min(...nums)}–${Math.max(...nums)}`
+    : 'Read the text and answer the questions';
+}
+
+// passage1/2/3 → 1/2/3 (practice list category).
+function _retryPartNum(category) {
+  const m = /(\d)$/.exec(category || '');
+  return m ? +m[1] : 1;
+}
+
+function _markRetryCurrentQuestion(n) {
+  document.querySelectorAll('#retry-questions-inner .cd-current').forEach(el => el.classList.remove('cd-current'));
+  const el = _findRetryQuestionEl(n);
+  if (el) el.classList.add('cd-current');
+}
+
+let _retryCdWired = false;
+function _mountRetryCdFooter(passage, partNum) {
+  const el = document.getElementById('retry-cd-footer');
+  if (!el || !passage || !window.CDFooter) return;
+  window.CDFooter.mount(el, {
+    parts: [{ label: `Part ${partNum || 1}`, questions: getAllQuestionsFromPassage(passage).map(q => q.questionNumber) }],
+    btnId: n => `rtcdq-${n}`,
+    isAnswered: n => { const a = state.answers[n]; return a !== undefined && a !== '' && a !== '[]'; },
+    onJump: n => { jumpToRetryQuestion(n); _markRetryCurrentQuestion(n); },
+    onSubmit: submitRetry,
+    submitLabel: 'Kiểm tra đáp án',
+  });
+  if (_retryCdWired) return;
+  const panel = document.getElementById('retry-questions');
+  if (!panel) return;
+  _retryCdWired = true;
+  const isLive = () => document.getElementById('screen-retry')?.classList.contains('cd-live');
+  const onTouch = e => {
+    if (!isLive()) return;
+    const host = e.target.closest('[data-qnum]');
+    const n = host ? parseInt(host.dataset.qnum, 10) : NaN;
+    if (!n) return;
+    window.CDFooter.setCurrent(n);
+    _markRetryCurrentQuestion(n);
+  };
+  panel.addEventListener('focusin', onTouch);
+  panel.addEventListener('click', onTouch);
+  // "Làm lại passage" (from a full-test review) runs no practice timer, so
+  // _updatePracticeProgress() never fires there — recount on any answer.
+  const onAnswer = () => { if (isLive()) setTimeout(() => window.CDFooter.refresh(), 40); };
+  ['click', 'input', 'change', 'drop'].forEach(ev => panel.addEventListener(ev, onAnswer));
 }
 
 function confirmCloseRetry() {
@@ -3858,6 +3945,7 @@ function closeRetry() {
   const fromPractice = _retryState?.isPractice || _practiceMode;
   _clearPracticeTimer();
   _hidePracticeHUD();
+  _setRetryCdSkin(false, false);
   if (fromPractice) clearPracticeStorage();
   window.onbeforeunload = null;
   // Leaving without submitting must disarm proctoring too — only the
@@ -4147,6 +4235,7 @@ async function _doSubmitRetry() {
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
     : `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;
+  _setRetryCdSkin(true, false); // review look for questions + footer
 }
 
 function retryReset() {
@@ -4315,6 +4404,8 @@ async function loadPracticeReview(attemptId) {
     // loadPracticeReview has no passageId URL — hide copy-link
     const copyLinkBtnPr = document.getElementById('btn-copy-link-rt');
     if (copyLinkBtnPr) copyLinkBtnPr.style.display = 'none';
+    _setRetryCdSkin(true, false);
+    _renderRetryCdPartHeader(cleanPassage, _retryPartNum(attempt.category));
     showScreen('retry');
 
     const inner = document.getElementById('retry-questions-inner');

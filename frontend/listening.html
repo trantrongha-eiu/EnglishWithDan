@@ -49,7 +49,7 @@
 <script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
 <script src="/js/shared/mock-test.js?v=20261007badge"></script>
 <script src="/js/shared/exam-proctor.js?v=20261007badge"></script>
-<script src="/js/shared/cd-footer.js?v=20261009cd"></script>
+<script src="/js/shared/cd-footer.js?v=20261010lele"></script>
 <script src="/js/shared/exam-mode-select.js?v=20261001pc"></script>
 
     <!-- ══════════════════════════════════════════════
@@ -373,9 +373,16 @@
         <!-- Topbar -->
         <div class="exam-topbar">
             <button class="exam-exit-btn" onclick="confirmCloseLTPractice()" title="Thoát"><i class="fas fa-times"></i></button>
-            <span class="exam-title" id="lt-practice-title" style="flex:1">Luyện tập Listening</span>
+            <!-- Same look as the full test (css/cd-exam.css, "Bài lẻ"
+                 section): logo · title over the stopwatch · progress ·
+                 "Kiểm tra đáp án" while answering. -->
+            <img class="cd-logo" src="/img/favicon.svg" alt="" aria-hidden="true">
+            <div class="cd-title-block">
+                <span class="exam-title" id="lt-practice-title">Luyện tập Listening</span>
+                <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+            </div>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
-            <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+            <button class="cd-submit-top cd-live-only" onclick="submitLTPractice()">Kiểm tra đáp án</button>
             <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-pr"></i></button>
             <button class="btn-icon-sm" id="btn-settings-pr" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
         </div>
@@ -409,8 +416,17 @@
                     oninput="setVolume(this.value, 'pr')" title="Volume" />
             </div>
         </div>
+        <!-- "Part 1 / Listen and answer questions 1–10" — skinned visits
+             only; _ltSetCdSkin() moves #lt-practice-toolbar in here. -->
+        <div class="cd-part-header" id="cd-part-header-pr">
+            <div class="cd-part-text">
+                <div class="cd-part-title" id="cd-part-title-pr">Part 1</div>
+                <div class="cd-part-sub" id="cd-part-sub-pr"></div>
+            </div>
+            <div class="cd-part-tools" id="cd-part-tools-pr"></div>
+        </div>
         <!-- Body -->
-        <div class="lt-practice-body">
+        <div class="lt-practice-body" id="lt-practice-body">
             <div id="lt-practice-toolbar" class="exam-toolbar">
                 <span class="toolbar-label">Công cụ</span>
                 <button class="tool-btn" id="tool-hl-pr" onclick="setTool('highlight')">
@@ -442,6 +458,9 @@
                 <button class="btn-primary" onclick="submitLTPractice()"><i class="fas fa-check"></i> Kiểm tra đáp án</button>
             </div>
         </div>
+        <!-- While answering: Part block + question numbers + ← → (js/shared/cd-footer.js,
+             _mountLtCdFooter). The footer above takes over again once checked. -->
+        <div class="exam-footer cd-footer-host" id="lt-practice-cd-footer"></div>
     </div>
 
     <!-- Gap-fill screen — full-transcript fill-in-the-blank drill, continuous
@@ -624,7 +643,7 @@
 
     <link rel="stylesheet" href="/css/listening-extra.css?v=20261001cover">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=20260924e">
-    <link rel="stylesheet" href="/css/cd-exam.css?v=20261009cd">
+    <link rel="stylesheet" href="/css/cd-exam.css?v=20261010lele">
 
     <script>
         // ── Fullscreen toggle ──────────────────────────────────────────
@@ -4356,6 +4375,7 @@
                 btn.classList.toggle('q-nav-answered', !!(a && a !== '[]'));
             }
         });
+        if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.refresh();
     }
 
     /* ── Mode switch (Full đề ↔ Bài lẻ) ─────────────────────────────────── */
@@ -4919,6 +4939,9 @@
             qi.addEventListener('input', onAnswer);
         }
 
+        _ltSetCdSkin(true, true);
+        _renderLtCdPartHeader(_ltCleanSection, partNum);
+        _mountLtCdFooter(_ltCleanSection, partNum);
         showScreen('practice');
     }
 
@@ -5534,6 +5557,7 @@
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
             <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
+        _ltSetCdSkin(true, false); // review look for questions + footer
     } // end _doSubmitLTPractice
 
     // Lưu kết quả luyện tập lên server và báo lỗi rõ ràng nếu thất bại.
@@ -5577,6 +5601,7 @@
         _ltPracticeSubmitted = false;
         _ltPracticeActive    = false;
         _ltLoadingPart = 0;
+        _ltSetCdSkin(false, false);
         const tpClose = document.getElementById('lt-practice-transcript-panel');
         if (tpClose) tpClose.style.display = 'none';
         setTool('none');
@@ -5629,11 +5654,9 @@
 
     /* ── Q-nav scroll for practice ───────────────────────────────────────── */
     function ltScrollToQ(num) {
-        let el = document.getElementById(`qi-${num}`)
-               || document.getElementById(`fi-${num}`)
-               || document.getElementById(`q${num}`);
+        let el = _ltFindQuestionEl(num);
         if (!el) {
-            document.querySelectorAll('[data-cluster-start]').forEach(c => {
+            document.querySelectorAll('#lt-practice-questions-inner [data-cluster-start]').forEach(c => {
                 const s = parseInt(c.dataset.clusterStart);
                 const e = parseInt(c.dataset.clusterEnd);
                 if (num >= s && num <= e) el = c;
@@ -5652,6 +5675,84 @@
         void el.offsetWidth;
         el.classList.add('q-scroll-flash');
         setTimeout(() => el.classList.remove('q-scroll-flash'), 950);
+    }
+
+    function _ltFindQuestionEl(num) {
+        const inner = document.getElementById('lt-practice-questions-inner');
+        if (!inner) return null;
+        return inner.querySelector(`#qi-${num}`) || inner.querySelector(`#fi-${num}`) || inner.querySelector(`#q${num}`);
+    }
+
+    /* ── Full-test look for bài lẻ (css/cd-exam.css, "Bài lẻ" section) ───── */
+    // skin: logo, Part box and white bars for the whole visit; live: exam-
+    // style questions + the CD footer while answering (dropped once checked,
+    // so the review keeps its correct/wrong look). The Entrance Test embed
+    // never calls this and keeps its old look.
+    function _ltSetCdSkin(skin, live) {
+        const scr = document.getElementById('screen-practice');
+        if (!scr) return;
+        scr.classList.toggle('cd-skin', !!skin);
+        scr.classList.toggle('cd-live', !!(skin && live));
+        // Tool buttons sit on the Part box when skinned, in the body's left
+        // column otherwise.
+        const tb = document.getElementById('lt-practice-toolbar');
+        const dest = document.getElementById(skin ? 'cd-part-tools-pr' : 'lt-practice-body');
+        if (tb && dest && tb.parentElement !== dest) dest.prepend(tb);
+    }
+    function _renderLtCdPartHeader(section, partNum) {
+        const t = document.getElementById('cd-part-title-pr');
+        const sub = document.getElementById('cd-part-sub-pr');
+        if (!t || !sub || !section) return;
+        const nums = _ltGetAllQs(section).map(q => q.questionNumber);
+        t.textContent = `Part ${partNum || section.partNumber || 1}`;
+        sub.textContent = nums.length
+            ? `Listen and answer questions ${Math.min(...nums)}–${Math.max(...nums)}`
+            : 'Listen and answer the questions';
+    }
+    function _ltIsAnswered(n) {
+        const filled = v => {
+            if (!v) return false;
+            try { const a = JSON.parse(v); return Array.isArray(a) ? a.length > 0 : true; } catch { return true; }
+        };
+        if (filled(state.answers[n])) return true;
+        // Multi-answer clusters keep the answer on their first number.
+        const c = [...document.querySelectorAll('#lt-practice-questions-inner [data-cluster-start]')]
+            .find(el => n >= +el.dataset.clusterStart && n <= +el.dataset.clusterEnd);
+        return !!c && filled(state.answers[+c.dataset.clusterStart]);
+    }
+    function _ltMarkCurrentQ(n) {
+        document.querySelectorAll('#lt-practice-questions-inner .cd-current').forEach(x => x.classList.remove('cd-current'));
+        const el = _ltFindQuestionEl(n);
+        if (el) el.classList.add('cd-current');
+    }
+    function _mountLtCdFooter(section, partNum) {
+        const el = document.getElementById('lt-practice-cd-footer');
+        if (!el || !window.CDFooter || !section) return;
+        window.CDFooter.mount(el, {
+            parts: [{
+                label: `Part ${partNum || section.partNumber || 1}`,
+                questions: _ltGetAllQs(section).map(q => q.questionNumber).sort((a, b) => a - b),
+            }],
+            btnId: n => `ltcdq-${n}`,
+            isAnswered: _ltIsAnswered,
+            onJump: n => { ltScrollToQ(n); _ltMarkCurrentQ(n); },
+            onSubmit: submitLTPractice,
+            submitLabel: 'Kiểm tra đáp án',
+        });
+        if (!el._cdTracking) {
+            el._cdTracking = true;
+            const panel = document.getElementById('lt-practice-questions');
+            const onTouch = e => {
+                if (!document.getElementById('screen-practice')?.classList.contains('cd-live')) return;
+                const host = e.target.closest('[data-qnum], [id^="qi-"]');
+                const n = host ? parseInt(host.dataset.qnum || host.id.slice(3), 10) : NaN;
+                if (!n) return;
+                window.CDFooter.setCurrent(n);
+                _ltMarkCurrentQ(n);
+            };
+            panel?.addEventListener('focusin', onTouch);
+            panel?.addEventListener('click', onTouch);
+        }
     }
 
     function confirmCloseLTPractice() { openModal('modal-lt-practice-exit'); }
@@ -5737,6 +5838,8 @@
 
             // Show practice screen
             showScreen('practice');
+            _ltSetCdSkin(true, false);
+            _renderLtCdPartHeader(section, attempt.partNumber);
             document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Xem lại – ${escHtml(section.title || `Section ${attempt.partNumber}`)}`;
 
             const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
@@ -5877,6 +5980,7 @@
         _ltPracticeSubmitted = false;
         _ltPracticeActive    = false;
         _ltLoadingPart       = 0;
+        _ltSetCdSkin(false, false);
         const tp = document.getElementById('lt-practice-transcript-panel');
         if (tp) tp.style.display = 'none';
         setTool('none');

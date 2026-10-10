@@ -1,8 +1,9 @@
 /* ══════════════════════════════════════════════════════════════════════
    EnglishWithDan — Computer-delivered IELTS exam skin
-   Reading + Listening EXAM screens only (#screen-exam on reading.html /
-   listening.html). Review, retry, practice and the test list keep their
-   own styles.
+   Reading + Listening exam screens (#screen-exam on reading.html /
+   listening.html) and the single-section practice ("bài lẻ") screens
+   (#screen-retry / #screen-practice, see the section at the end). Review
+   and the test list keep their own styles.
 
    Mirrors the real computer-based test (and theieltsdictionary's copy):
    plain white chrome, logo + title over "mm:ss remaining", a grey
@@ -12,12 +13,15 @@
 
    Purely visual: every id, handler and interaction (drag & drop chips,
    highlight, dictionary, resizable split, settings panel, font size…)
-   is untouched. Selectors are #screen-exam-prefixed so they win over the
-   page sheets and their [data-theme="dark"] rules; colours go through
-   --cd-* variables so dark mode still gets a readable (dark) version.
+   is untouched. Selectors are prefixed :is(#screen-exam, .cd-skin) (the
+   chrome: bars, Part box, passage) or :is(#screen-exam, .cd-live) (the
+   questions and footer). :is() takes its id's specificity, so either way
+   they win over the page sheets and their [data-theme="dark"] rules;
+   colours go through --cd-* variables so dark mode still gets a readable
+   (dark) version.
    ══════════════════════════════════════════════════════════════════════ */
 
-#screen-exam {
+:is(#screen-exam, .cd-skin) {
   --cd-bg: #ffffff;
   --cd-ink: #1b1b1b;
   --cd-ink2: #555b66;
@@ -35,7 +39,7 @@
   background: var(--cd-bg);
   color: var(--cd-ink);
 }
-[data-theme="dark"] #screen-exam {
+[data-theme="dark"] :is(#screen-exam, .cd-skin) {
   --cd-bg: #121212;
   --cd-ink: #ececec;
   --cd-ink2: #a3a3a3;
@@ -49,8 +53,8 @@
 }
 
 /* ── Top bar ─────────────────────────────────────────────────────────── */
-#screen-exam .exam-bar,
-#screen-exam .exam-topbar {
+:is(#screen-exam, .cd-skin) .exam-bar,
+:is(#screen-exam, .cd-skin) .exam-topbar {
   height: 64px;
   padding: 0 16px 0 10px;
   background: var(--cd-bg);
@@ -58,27 +62,27 @@
   box-shadow: none;
   gap: 10px;
 }
-#screen-exam .exam-bar-left { gap: 10px; min-width: 0; flex: 1; }
-#screen-exam .exam-exit-btn { color: var(--cd-ink2); font-size: 16px; }
-#screen-exam .cd-logo {
+:is(#screen-exam, .cd-skin) .exam-bar-left { gap: 10px; min-width: 0; flex: 1; }
+:is(#screen-exam, .cd-skin) .exam-exit-btn { color: var(--cd-ink2); font-size: 16px; }
+:is(#screen-exam, .cd-skin) .cd-logo {
   width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
   object-fit: contain;
 }
-#screen-exam .cd-title-block {
+:is(#screen-exam, .cd-skin) .cd-title-block {
   display: flex; flex-direction: column; justify-content: center;
   min-width: 0; flex: 1; gap: 2px; line-height: 1.25;
 }
-#screen-exam .exam-title-txt,
-#screen-exam .exam-title {
+:is(#screen-exam, .cd-skin) .exam-title-txt,
+:is(#screen-exam, .cd-skin) .exam-title {
   flex: none;
   font-size: 15px; font-weight: 700; color: var(--cd-ink);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-#screen-exam .cd-remaining {
+:is(#screen-exam, .cd-skin) .cd-remaining {
   font-size: 13px; font-weight: 500; color: var(--cd-ink2);
   font-variant-numeric: tabular-nums;
 }
-#screen-exam .cd-remaining i { font-size: 11px; margin-right: 2px; }
+:is(#screen-exam, .cd-skin) .cd-remaining i { font-size: 11px; margin-right: 2px; }
 
 /* Reading's timer pill becomes the plain "57:12 remaining" line. */
 #screen-exam .exam-timer {
@@ -93,29 +97,29 @@
 #screen-exam .exam-timer.danger { background: none; animation: none; }
 #screen-exam .exam-timer.danger .cd-remaining { color: #dc2626; font-weight: 700; }
 
-#screen-exam .cd-submit-top {
+:is(#screen-exam, .cd-skin) .cd-submit-top {
   background: var(--cd-blue); color: #fff; border: none;
   border-radius: 4px; padding: 9px 20px; margin: 0 6px;
   font-weight: 700; font-size: 14px; line-height: 1; font-family: inherit; cursor: pointer;
   box-shadow: none; transform: none;
 }
-#screen-exam .cd-submit-top:hover { background: var(--cd-blue-dark); }
-#screen-exam .btn-icon-sm {
+:is(#screen-exam, .cd-skin) .cd-submit-top:hover { background: var(--cd-blue-dark); }
+:is(#screen-exam, .cd-skin) .btn-icon-sm {
   background: none; border: none; color: var(--cd-ink);
   font-size: 19px; width: 42px; height: 42px; border-radius: 8px;
 }
-#screen-exam .btn-icon-sm:hover { background: var(--cd-line2); }
-#screen-exam .rd-progress-pill,
-#screen-exam .ls-progress-pill {
+:is(#screen-exam, .cd-skin) .btn-icon-sm:hover { background: var(--cd-line2); }
+:is(#screen-exam, .cd-skin) .rd-progress-pill,
+:is(#screen-exam, .cd-skin) .ls-progress-pill {
   background: transparent; border: 1px solid var(--cd-line);
   color: var(--cd-ink2); font-weight: 600;
 }
 
 /* Reading's gradient progress strip — the footer counts carry this now. */
-#screen-exam .rd-progress-bar-wrap { display: none; }
+:is(#screen-exam, .cd-skin) .rd-progress-bar-wrap { display: none; }
 
 /* ── Part header ─────────────────────────────────────────────────────── */
-#screen-exam .cd-part-header {
+:is(#screen-exam, .cd-skin) .cd-part-header {
   display: flex; align-items: center; gap: 16px;
   margin: 12px 12px 0;
   padding: 12px 16px;
@@ -124,107 +128,107 @@
   border-radius: 3px;
   flex-shrink: 0;
 }
-#screen-exam .cd-part-text { flex: 1; min-width: 0; line-height: 1.5; }
-#screen-exam .cd-part-title { font-size: 15px; font-weight: 700; color: var(--cd-ink); }
-#screen-exam .cd-part-sub { font-size: 15px; color: var(--cd-ink); }
+:is(#screen-exam, .cd-skin) .cd-part-text { flex: 1; min-width: 0; line-height: 1.5; }
+:is(#screen-exam, .cd-skin) .cd-part-title { font-size: 15px; font-weight: 700; color: var(--cd-ink); }
+:is(#screen-exam, .cd-skin) .cd-part-sub { font-size: 15px; color: var(--cd-ink); }
 
 /* Existing tools (highlight / dictionary / translate) as quiet chips on
    the right of the Part box — same buttons, same handlers. */
-#screen-exam .cd-part-header .exam-toolbar {
+:is(#screen-exam, .cd-skin) .cd-part-header .exam-toolbar {
   flex-direction: row; width: auto; padding: 0; gap: 6px;
   background: none; border: none; overflow: visible; flex-wrap: wrap;
   justify-content: flex-end;
 }
-#screen-exam .cd-part-header .toolbar-label,
-#screen-exam .cd-part-header .toolbar-passage-tabs { display: none; }
-#screen-exam .cd-part-header .tool-btn {
+:is(#screen-exam, .cd-skin) .cd-part-header .toolbar-label,
+:is(#screen-exam, .cd-skin) .cd-part-header .toolbar-passage-tabs { display: none; }
+:is(#screen-exam, .cd-skin) .cd-part-header .tool-btn {
   flex-direction: row; width: auto; gap: 6px;
   padding: 6px 12px; border-radius: 6px;
   border: 1px solid var(--cd-header-line);
   background: var(--cd-bg); color: var(--cd-ink2);
   font-size: 13px; line-height: 1;
 }
-#screen-exam .cd-part-header .tool-btn small { font-size: 12px; color: inherit; }
-#screen-exam .cd-part-header .tool-btn.active {
+:is(#screen-exam, .cd-skin) .cd-part-header .tool-btn small { font-size: 12px; color: inherit; }
+:is(#screen-exam, .cd-skin) .cd-part-header .tool-btn.active {
   background: #fff4c2; border-color: #e0b400; color: #7a5a00;
 }
-#screen-exam .cd-part-header .tool-btn:hover:not(.active) { border-color: var(--cd-blue); color: var(--cd-blue); }
+:is(#screen-exam, .cd-skin) .cd-part-header .tool-btn:hover:not(.active) { border-color: var(--cd-blue); color: var(--cd-blue); }
 
 /* ── Reading split ───────────────────────────────────────────────────── */
-#screen-exam .exam-split { margin: 6px 12px 0; background: var(--cd-bg); }
-#screen-exam .split-passage,
-#screen-exam .split-questions { background: var(--cd-bg); }
-#screen-exam .split-divider {
+:is(#screen-exam, .cd-skin) .exam-split { margin: 6px 12px 0; background: var(--cd-bg); }
+:is(#screen-exam, .cd-skin) .split-passage,
+:is(#screen-exam, .cd-skin) .split-questions { background: var(--cd-bg); }
+:is(#screen-exam, .cd-skin) .split-divider {
   width: 18px; position: relative;
   background: linear-gradient(to right, transparent 7px, var(--cd-line) 7px, var(--cd-line) 11px, transparent 11px);
 }
-#screen-exam .split-divider:hover,
-#screen-exam .split-divider.dragging {
+:is(#screen-exam, .cd-skin) .split-divider:hover,
+:is(#screen-exam, .cd-skin) .split-divider.dragging {
   background: linear-gradient(to right, transparent 7px, #9aa3ad 7px, #9aa3ad 11px, transparent 11px);
 }
-#screen-exam .divider-handle {
+:is(#screen-exam, .cd-skin) .divider-handle {
   width: 32px; height: 32px; border-radius: 2px; flex-shrink: 0;
   background: var(--cd-bg); border: 1px solid var(--cd-ink);
   display: flex; align-items: center; justify-content: center;
   position: relative; z-index: 1;
 }
-#screen-exam .divider-handle::before {
+:is(#screen-exam, .cd-skin) .divider-handle::before {
   content: '\2194'; font-size: 18px; line-height: 1; color: var(--cd-ink);
 }
 
-#screen-exam .passage-inner,
-#screen-exam .questions-inner {
+:is(#screen-exam, .cd-skin) .passage-inner,
+:is(#screen-exam, .cd-live) .questions-inner {
   font-family: var(--cd-serif);
   color: var(--cd-ink);
   line-height: 1.7;
   padding: 18px 22px 120px;
 }
-#screen-exam .passage-inner { text-align: justify; hyphens: auto; }
-#screen-exam .passage-title {
+:is(#screen-exam, .cd-skin) .passage-inner { text-align: justify; hyphens: auto; }
+:is(#screen-exam, .cd-skin) .passage-title {
   font-family: var(--cd-serif);
   font-size: 1.6em; font-weight: 700; color: var(--cd-ink);
   text-align: center; margin: 4px 0 18px;
 }
 /* Admin-pasted passages often repeat the title as an <h2> — keep it
    serif and centred so it reads as the article heading. */
-#screen-exam .passage-text h1,
-#screen-exam .passage-text h2,
-#screen-exam .passage-text h3 {
+:is(#screen-exam, .cd-skin) .passage-text h1,
+:is(#screen-exam, .cd-skin) .passage-text h2,
+:is(#screen-exam, .cd-skin) .passage-text h3 {
   font-family: var(--cd-serif); color: var(--cd-ink); text-align: center;
 }
-#screen-exam .passage-text p { margin: 0 0 1em; }
+:is(#screen-exam, .cd-skin) .passage-text p { margin: 0 0 1em; }
 
 /* ── Questions (both skills) ─────────────────────────────────────────── */
-#screen-exam .q-group-title,
-#screen-exam .group-title {
+:is(#screen-exam, .cd-live) .q-group-title,
+:is(#screen-exam, .cd-live) .group-title {
   font-family: var(--cd-serif);
   font-size: 1.5em; font-weight: 700; color: var(--cd-ink);
   text-align: left; margin: 6px 0 8px; background: none; padding: 0; border: none;
 }
-#screen-exam .q-section-instruction,
-#screen-exam .group-instruction {
+:is(#screen-exam, .cd-live) .q-section-instruction,
+:is(#screen-exam, .cd-live) .group-instruction {
   background: none; border: none; padding: 0; margin: 0 0 18px;
   font-family: var(--cd-serif); font-size: 1em; font-style: normal;
   color: var(--cd-ink); border-radius: 0;
 }
-#screen-exam .question-item {
+:is(#screen-exam, .cd-live) .question-item {
   background: transparent; border: none; box-shadow: none;
   padding: 8px 10px; margin: 0 0 6px; border-radius: 4px;
   transition: background .15s;
 }
-#screen-exam .question-item:hover { border-color: transparent; }
-#screen-exam .question-item.cd-current,
-#screen-exam .match-question-row.cd-current { background: var(--cd-row); outline: 1px solid #cfe0f5; }
-#screen-exam .q-num-label { margin-bottom: 6px; }
-#screen-exam .q-text {
+:is(#screen-exam, .cd-live) .question-item:hover { border-color: transparent; }
+:is(#screen-exam, .cd-live) .question-item.cd-current,
+:is(#screen-exam, .cd-live) .match-question-row.cd-current { background: var(--cd-row); outline: 1px solid #cfe0f5; }
+:is(#screen-exam, .cd-live) .q-num-label { margin-bottom: 6px; }
+:is(#screen-exam, .cd-live) .q-text {
   font-family: var(--cd-serif); color: var(--cd-ink);
   font-size: 1em; font-weight: 400;
 }
 
 /* Boxed question numbers, like the answer sheet. */
-#screen-exam .q-badge,
-#screen-exam .rq-q-badge,
-#screen-exam .match-q-num {
+:is(#screen-exam, .cd-live) .q-badge,
+:is(#screen-exam, .cd-live) .rq-q-badge,
+:is(#screen-exam, .cd-live) .match-q-num {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 26px; height: 26px; padding: 0 5px;
   background: var(--cd-bg); color: var(--cd-ink);
@@ -233,11 +237,11 @@
 }
 
 /* TRUE / FALSE / NOT GIVEN — stacked radio rows instead of big buttons. */
-#screen-exam .tfng-opts {
+:is(#screen-exam, .cd-live) .tfng-opts {
   display: flex; flex-direction: column; gap: 2px; margin-top: 6px;
   grid-template-columns: none;
 }
-#screen-exam .tfng-opt {
+:is(#screen-exam, .cd-live) .tfng-opt {
   position: relative;
   display: flex; align-items: center; justify-content: flex-start;
   padding: 7px 10px 7px 38px; min-height: 36px;
@@ -245,55 +249,55 @@
   font-family: var(--cd-serif); font-size: 1em; font-weight: 400;
   color: var(--cd-ink); text-align: left; box-shadow: none;
 }
-#screen-exam .tfng-opt::before {
+:is(#screen-exam, .cd-live) .tfng-opt::before {
   content: ''; position: absolute; left: 12px; top: 50%;
   width: 14px; height: 14px; margin-top: -7px;
   border: 1px solid #6b6b6b; border-radius: 50%; background: var(--cd-bg);
 }
-#screen-exam .tfng-opt:hover { background: var(--cd-row); color: var(--cd-ink); border: none; }
-#screen-exam .tfng-opt.selected { background: var(--cd-pick); color: var(--cd-ink); border: none; font-weight: 700; }
-#screen-exam .tfng-opt.selected::before {
+:is(#screen-exam, .cd-live) .tfng-opt:hover { background: var(--cd-row); color: var(--cd-ink); border: none; }
+:is(#screen-exam, .cd-live) .tfng-opt.selected { background: var(--cd-pick); color: var(--cd-ink); border: none; font-weight: 700; }
+:is(#screen-exam, .cd-live) .tfng-opt.selected::before {
   border-color: var(--cd-focus);
   background: radial-gradient(circle, var(--cd-focus) 0 4px, var(--cd-bg) 4.5px);
 }
 
 /* Multiple choice rows (Reading .radio-opt label / Listening .radio-opt div). */
-#screen-exam .radio-opt,
-#screen-exam .checkbox-opt {
+:is(#screen-exam, .cd-live) .radio-opt,
+:is(#screen-exam, .cd-live) .checkbox-opt {
   background: transparent; border: none; border-radius: 4px;
   font-family: var(--cd-serif); color: var(--cd-ink); box-shadow: none;
   padding: 8px 12px;
 }
-#screen-exam .radio-opt:hover,
-#screen-exam .checkbox-opt:hover { background: var(--cd-row); border-color: transparent; }
-#screen-exam .radio-opt.selected,
-#screen-exam .checkbox-opt.selected { background: var(--cd-pick); border-color: transparent; font-weight: 700; }
-#screen-exam .radio-dot { border: 1px solid #6b6b6b; background: var(--cd-bg); }
-#screen-exam .radio-opt.selected .radio-dot { background: var(--cd-focus); border-color: var(--cd-focus); }
-#screen-exam .radio-letter { color: var(--cd-ink); font-weight: 700; }
+:is(#screen-exam, .cd-live) .radio-opt:hover,
+:is(#screen-exam, .cd-live) .checkbox-opt:hover { background: var(--cd-row); border-color: transparent; }
+:is(#screen-exam, .cd-live) .radio-opt.selected,
+:is(#screen-exam, .cd-live) .checkbox-opt.selected { background: var(--cd-pick); border-color: transparent; font-weight: 700; }
+:is(#screen-exam, .cd-live) .radio-dot { border: 1px solid #6b6b6b; background: var(--cd-bg); }
+:is(#screen-exam, .cd-live) .radio-opt.selected .radio-dot { background: var(--cd-focus); border-color: var(--cd-focus); }
+:is(#screen-exam, .cd-live) .radio-letter { color: var(--cd-ink); font-weight: 700; }
 
 /* Typed answers: a plain box. */
-#screen-exam .fill-input,
-#screen-exam .rq-inline-input,
-#screen-exam .fill-input-inline {
+:is(#screen-exam, .cd-live) .fill-input,
+:is(#screen-exam, .cd-live) .rq-inline-input,
+:is(#screen-exam, .cd-live) .fill-input-inline {
   font-family: var(--cd-serif); font-size: 1em; color: var(--cd-ink);
   background: var(--cd-bg);
   border: 1px solid #8a8a8a; border-radius: 2px;
   padding: 3px 8px; height: 30px; box-shadow: none;
 }
-#screen-exam .fill-input { max-width: 340px; }
-#screen-exam .fill-input:focus,
-#screen-exam .rq-inline-input:focus,
-#screen-exam .fill-input-inline:focus {
+:is(#screen-exam, .cd-live) .fill-input { max-width: 340px; }
+:is(#screen-exam, .cd-live) .fill-input:focus,
+:is(#screen-exam, .cd-live) .rq-inline-input:focus,
+:is(#screen-exam, .cd-live) .fill-input-inline:focus {
   outline: none; border: 2px solid var(--cd-focus); padding: 2px 7px;
 }
 
 /* Inline gaps: the question number sits INSIDE the empty box (as on the
    real test) and disappears once the student has typed. */
-#screen-exam .inline-input-wrap,
-#screen-exam .rq-inline-wrap { position: relative; display: inline-block; vertical-align: middle; margin: 2px 4px; }
-#screen-exam .inline-input-wrap .q-badge-inline,
-#screen-exam .rq-inline-wrap .rq-q-badge {
+:is(#screen-exam, .cd-live) .inline-input-wrap,
+:is(#screen-exam, .cd-live) .rq-inline-wrap { position: relative; display: inline-block; vertical-align: middle; margin: 2px 4px; }
+:is(#screen-exam, .cd-live) .inline-input-wrap .q-badge-inline,
+:is(#screen-exam, .cd-live) .rq-inline-wrap .rq-q-badge {
   position: absolute; inset: 0; z-index: 1; margin: 0;
   display: flex; align-items: center; justify-content: center;
   width: auto; height: auto; min-width: 0; padding: 0;
@@ -301,61 +305,61 @@
   font-family: inherit; font-size: 12px; font-weight: 700; color: #6b7280;
   pointer-events: none;
 }
-#screen-exam .inline-input-wrap .fill-input-inline,
-#screen-exam .rq-inline-wrap .rq-inline-input { width: 150px; text-align: center; }
-#screen-exam .fill-input-inline::placeholder,
-#screen-exam .rq-inline-input::placeholder { color: transparent; }
-#screen-exam .inline-input-wrap:has(.fill-input-inline:not(:placeholder-shown)) .q-badge-inline,
-#screen-exam .rq-inline-wrap:has(.rq-inline-input:not(:placeholder-shown)) .rq-q-badge,
-#screen-exam .inline-input-wrap:has(.fill-input-inline:focus) .q-badge-inline,
-#screen-exam .rq-inline-wrap:has(.rq-inline-input:focus) .rq-q-badge { opacity: 0; }
+:is(#screen-exam, .cd-live) .inline-input-wrap .fill-input-inline,
+:is(#screen-exam, .cd-live) .rq-inline-wrap .rq-inline-input { width: 150px; text-align: center; }
+:is(#screen-exam, .cd-live) .fill-input-inline::placeholder,
+:is(#screen-exam, .cd-live) .rq-inline-input::placeholder { color: transparent; }
+:is(#screen-exam, .cd-live) .inline-input-wrap:has(.fill-input-inline:not(:placeholder-shown)) .q-badge-inline,
+:is(#screen-exam, .cd-live) .rq-inline-wrap:has(.rq-inline-input:not(:placeholder-shown)) .rq-q-badge,
+:is(#screen-exam, .cd-live) .inline-input-wrap:has(.fill-input-inline:focus) .q-badge-inline,
+:is(#screen-exam, .cd-live) .rq-inline-wrap:has(.rq-inline-input:focus) .rq-q-badge { opacity: 0; }
 
 /* Notes / tables / summaries keep their structure, just in the exam's
    ink-on-white style. */
-#screen-exam .rq-note-form,
-#screen-exam .note-form,
-#screen-exam .rq-table-wrap table,
-#screen-exam .ls-table,
-#screen-exam table {
+:is(#screen-exam, .cd-live) .rq-note-form,
+:is(#screen-exam, .cd-live) .note-form,
+:is(#screen-exam, .cd-live) .rq-table-wrap table,
+:is(#screen-exam, .cd-live) .ls-table,
+:is(#screen-exam, .cd-live) table {
   font-family: var(--cd-serif); color: var(--cd-ink);
   background: var(--cd-bg);
 }
-#screen-exam .rq-note-form { border: 1px solid var(--cd-line); border-radius: 2px; box-shadow: none; }
-#screen-exam .rq-note-title { font-family: var(--cd-serif); font-weight: 700; color: var(--cd-ink); text-align: center; background: none; }
-#screen-exam table th,
-#screen-exam table td { border-color: #bdbdbd; color: var(--cd-ink); }
+:is(#screen-exam, .cd-live) .rq-note-form { border: 1px solid var(--cd-line); border-radius: 2px; box-shadow: none; }
+:is(#screen-exam, .cd-live) .rq-note-title { font-family: var(--cd-serif); font-weight: 700; color: var(--cd-ink); text-align: center; background: none; }
+:is(#screen-exam, .cd-live) table th,
+:is(#screen-exam, .cd-live) table td { border-color: #bdbdbd; color: var(--cd-ink); }
 
 /* Drag & drop — same chips and zones, flatter look. */
-#screen-exam .mo-options-box,
-#screen-exam .rq-chip-bank { background: transparent; border-color: var(--cd-line); }
-#screen-exam .mo-options-title { font-family: var(--cd-serif); color: var(--cd-ink); }
-#screen-exam .drag-chip,
-#screen-exam .word-chip {
+:is(#screen-exam, .cd-live) .mo-options-box,
+:is(#screen-exam, .cd-live) .rq-chip-bank { background: transparent; border-color: var(--cd-line); }
+:is(#screen-exam, .cd-live) .mo-options-title { font-family: var(--cd-serif); color: var(--cd-ink); }
+:is(#screen-exam, .cd-live) .drag-chip,
+:is(#screen-exam, .cd-live) .word-chip {
   font-family: var(--cd-serif); color: var(--cd-ink);
   background: var(--cd-bg); border: 1px solid #9a9a9a; border-radius: 3px;
   box-shadow: none;
 }
-#screen-exam .drag-chip:hover,
-#screen-exam .word-chip:hover { border-color: var(--cd-focus); background: var(--cd-pick); }
-#screen-exam .drop-zone {
+:is(#screen-exam, .cd-live) .drag-chip:hover,
+:is(#screen-exam, .cd-live) .word-chip:hover { border-color: var(--cd-focus); background: var(--cd-pick); }
+:is(#screen-exam, .cd-live) .drop-zone {
   background: transparent; border: none; border-bottom: 1.5px solid #8a8a8a;
   border-radius: 0; color: var(--cd-focus); font-family: var(--cd-serif); font-weight: 700;
 }
-#screen-exam .drop-zone.filled { background: transparent; border-bottom-color: var(--cd-focus); }
-#screen-exam .drop-zone.drag-over,
-#screen-exam .drop-zone.over { background: var(--cd-pick); }
-#screen-exam .match-question-row { border: none; background: transparent; border-radius: 4px; padding: 6px 8px; }
-#screen-exam .match-q-text { font-family: var(--cd-serif); color: var(--cd-ink); }
+:is(#screen-exam, .cd-live) .drop-zone.filled { background: transparent; border-bottom-color: var(--cd-focus); }
+:is(#screen-exam, .cd-live) .drop-zone.drag-over,
+:is(#screen-exam, .cd-live) .drop-zone.over { background: var(--cd-pick); }
+:is(#screen-exam, .cd-live) .match-question-row { border: none; background: transparent; border-radius: 4px; padding: 6px 8px; }
+:is(#screen-exam, .cd-live) .match-q-text { font-family: var(--cd-serif); color: var(--cd-ink); }
 
 /* ── Listening body ──────────────────────────────────────────────────── */
-#screen-exam .exam-audio-bar {
+:is(#screen-exam, .cd-skin) .exam-audio-bar {
   background: var(--cd-bg); color: var(--cd-ink2);
   border-bottom: 1px solid var(--cd-line2);
   padding: 6px 20px; gap: 12px;
 }
-#screen-exam .exam-audio-status { color: var(--cd-ink2); font-size: 13px; }
-#screen-exam .exam-audio-bar .audio-time { color: var(--cd-ink2); }
-#screen-exam .exam-audio-bar .volume-icon { color: var(--cd-ink); }
+:is(#screen-exam, .cd-skin) .exam-audio-status { color: var(--cd-ink2); font-size: 13px; }
+:is(#screen-exam, .cd-skin) .exam-audio-bar .audio-time { color: var(--cd-ink2); }
+:is(#screen-exam, .cd-skin) .exam-audio-bar .volume-icon { color: var(--cd-ink); }
 body.cd-exam-on #screen-exam .sidebar-panel,
 body.cd-exam-on #section-nav-fixed { display: none !important; }
 #screen-exam .exam-body { background: var(--cd-bg); }
@@ -388,7 +392,7 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
 #screen-exam .aso-play-btn:hover { background: #222; }
 
 /* ── Footer (js/shared/cd-footer.js) ─────────────────────────────────── */
-#screen-exam .exam-footer.cd-footer {
+:is(#screen-exam, .cd-live) .exam-footer.cd-footer {
   position: relative; inset: auto;
   display: flex; align-items: stretch; gap: 0;
   height: 62px; padding: 0; flex-shrink: 0;
@@ -425,7 +429,7 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
 
 /* Question numbers: plain digits with a thin bar above — dark once
    answered; the current one gets a blue box. */
-#screen-exam .cd-footer .cdf-q {
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q {
   position: relative;
   width: auto; min-width: 26px; max-width: none; height: 30px; aspect-ratio: auto;
   padding: 0 5px; margin-top: 8px;
@@ -433,93 +437,188 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
   font-weight: 600; font-size: 14px; line-height: 1; font-family: inherit; color: var(--cd-ink);
   cursor: pointer; transition: border-color .12s, color .12s;
 }
-#screen-exam .cd-footer .cdf-q::before {
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q::before {
   content: ''; position: absolute; left: 1px; right: 1px; top: -9px;
   height: 3px; background: #d4d4d4; border-radius: 1px;
 }
-#screen-exam .cd-footer .cdf-q:hover { color: var(--cd-blue); border-color: transparent; background: none; }
-#screen-exam .cd-footer .cdf-q.answered { background: none; color: var(--cd-ink); border-color: transparent; }
-#screen-exam .cd-footer .cdf-q.answered::before { background: #2b2b2b; }
-[data-theme="dark"] #screen-exam .cd-footer .cdf-q.answered::before { background: #e5e5e5; }
-#screen-exam .cd-footer .cdf-q.current { border-color: var(--cd-blue); color: var(--cd-ink); }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q:hover { color: var(--cd-blue); border-color: transparent; background: none; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q.answered { background: none; color: var(--cd-ink); border-color: transparent; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q.answered::before { background: #2b2b2b; }
+[data-theme="dark"] :is(#screen-exam, .cd-live) .cd-footer .cdf-q.answered::before { background: #e5e5e5; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-q.current { border-color: var(--cd-blue); color: var(--cd-ink); }
+/* css/mobile.css paints every dark-mode .q-nav-btn grey (red ring when
+   .current) with !important — beat it so the dark footer keeps the same
+   plain digits. */
+[data-theme="dark"] :is(#screen-exam, .cd-live) .cd-footer .cdf-q {
+  background: none !important; border-color: transparent !important;
+  color: var(--cd-ink) !important; box-shadow: none !important;
+}
+[data-theme="dark"] :is(#screen-exam, .cd-live) .cd-footer .cdf-q:hover { color: var(--cd-blue) !important; }
+[data-theme="dark"] :is(#screen-exam, .cd-live) .cd-footer .cdf-q.current { border-color: var(--cd-blue) !important; }
 
 .cd-footer .cdf-actions {
   display: flex; align-items: center; padding: 0 18px;
   border-left: 1px solid var(--cd-line);
 }
-#screen-exam .cd-footer .cdf-submit {
+:is(#screen-exam, .cd-live) .cd-footer .cdf-submit {
   background: var(--cd-blue); color: #fff; border: none; border-radius: 4px;
   padding: 11px 24px; font-weight: 700; font-size: 14px; line-height: 1; font-family: inherit;
   cursor: pointer; white-space: nowrap;
 }
-#screen-exam .cd-footer .cdf-submit:hover { background: var(--cd-blue-dark); }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-submit:hover { background: var(--cd-blue-dark); }
 
 /* Floating ← → just above the bar, over the right column. */
 .cd-footer .cdf-float {
   position: absolute; right: 26px; bottom: calc(100% + 16px);
   display: flex; gap: 8px; z-index: 5;
 }
-#screen-exam .cd-footer .cdf-arrow {
+:is(#screen-exam, .cd-live) .cd-footer .cdf-arrow {
   width: 56px; height: 56px; border: none; border-radius: 2px;
   display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #fff; background: #111; cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,.18);
 }
-#screen-exam .cd-footer .cdf-prev { background: #3d3d3d; }
-#screen-exam .cd-footer .cdf-arrow:hover:not(:disabled) { background: #000; }
-#screen-exam .cd-footer .cdf-arrow:disabled { background: #cfd3d8; color: #f4f4f4; cursor: default; box-shadow: none; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-prev { background: #3d3d3d; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-arrow:hover:not(:disabled) { background: #000; }
+:is(#screen-exam, .cd-live) .cd-footer .cdf-arrow:disabled { background: #cfd3d8; color: #f4f4f4; cursor: default; box-shadow: none; }
 
 /* Fullscreen keeps the footer as the last flex row. */
-#screen-exam:fullscreen .exam-footer.cd-footer { position: relative; }
+:is(#screen-exam, .cd-live):fullscreen .exam-footer.cd-footer { position: relative; }
 
 /* ── Small screens ───────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  #screen-exam .exam-bar,
-  #screen-exam .exam-topbar { height: 56px; padding: 0 8px; }
-  #screen-exam .cd-logo,
-  #screen-exam .rd-progress-pill,
-  #screen-exam .ls-progress-pill { display: none; }
-  #screen-exam .cd-submit-top { padding: 8px 12px; font-size: 13px; margin: 0 2px; }
-  #screen-exam .btn-icon-sm { width: 36px; height: 36px; font-size: 16px; }
-  #screen-exam .cd-part-header { margin: 8px 8px 0; padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
-  #screen-exam .cd-part-title,
-  #screen-exam .cd-part-sub { font-size: 14px; }
+  :is(#screen-exam, .cd-skin) .exam-bar,
+  :is(#screen-exam, .cd-skin) .exam-topbar { height: 56px; padding: 0 8px; }
+  :is(#screen-exam, .cd-skin) .cd-logo,
+  :is(#screen-exam, .cd-skin) .rd-progress-pill,
+  :is(#screen-exam, .cd-skin) .ls-progress-pill { display: none; }
+  :is(#screen-exam, .cd-skin) .cd-submit-top { padding: 8px 12px; font-size: 13px; margin: 0 2px; }
+  :is(#screen-exam, .cd-skin) .btn-icon-sm { width: 36px; height: 36px; font-size: 16px; }
+  :is(#screen-exam, .cd-skin) .cd-part-header { margin: 8px 8px 0; padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
+  :is(#screen-exam, .cd-skin) .cd-part-title,
+  :is(#screen-exam, .cd-skin) .cd-part-sub { font-size: 14px; }
   #screen-exam .audio-start-overlay { inset: 56px 0 0 0; }
   #screen-exam .questions-panel { padding: 14px 14px 120px; }
-  #screen-exam .exam-split { margin: 4px 0 0; }
-  #screen-exam .exam-footer.cd-footer { height: 56px; }
+  :is(#screen-exam, .cd-skin) .exam-split { margin: 4px 0 0; }
+  :is(#screen-exam, .cd-live) .exam-footer.cd-footer { height: 56px; }
   .cd-footer .cdf-part-label { padding: 0 10px; gap: 8px; }
   .cd-footer .cdf-part-name { font-size: 14px; }
   .cd-footer .cdf-actions { padding: 0 8px; }
-  #screen-exam .cd-footer .cdf-submit { padding: 9px 12px; font-size: 13px; }
+  :is(#screen-exam, .cd-live) .cd-footer .cdf-submit { padding: 9px 12px; font-size: 13px; }
   .cd-footer .cdf-float { right: 12px; bottom: calc(100% + 10px); }
-  #screen-exam .cd-footer .cdf-arrow { width: 44px; height: 44px; font-size: 17px; }
+  :is(#screen-exam, .cd-live) .cd-footer .cdf-arrow { width: 44px; height: 44px; font-size: 17px; }
 }
 
 /* ── Fine-tuning ─────────────────────────────────────────────────────── */
 /* reading.html's own sheet frames the timer — not in this layout. */
 #screen-exam .exam-timer { border: none; box-shadow: none; flex: none; }
-#screen-exam .group-instruction { font-weight: 400; }
+:is(#screen-exam, .cd-live) .group-instruction { font-weight: 400; }
 
 /* Number box sits on the question's first line ("[1] Heritage Farm is…"),
    options/inputs start on a fresh line under it. */
-#screen-exam .question-item > .q-num-label { float: left; margin: 1px 10px 0 0; }
-#screen-exam .question-item > .q-text { overflow: hidden; margin-bottom: 8px; }
-#screen-exam .question-item > .tfng-opts,
-#screen-exam .question-item > .q-options,
-#screen-exam .question-item > .fill-input { clear: both; }
+:is(#screen-exam, .cd-live) .question-item > .q-num-label { float: left; margin: 1px 10px 0 0; }
+:is(#screen-exam, .cd-live) .question-item > .q-text { overflow: hidden; margin-bottom: 8px; }
+:is(#screen-exam, .cd-live) .question-item > .tfng-opts,
+:is(#screen-exam, .cd-live) .question-item > .q-options,
+:is(#screen-exam, .cd-live) .question-item > .fill-input { clear: both; }
 
 /* Passages whose content already opens with its own heading: don't print
    the title twice. */
-#screen-exam .passage-inner:has(> .passage-text > :is(h1, h2, h3):first-child) > .passage-title { display: none; }
+:is(#screen-exam, .cd-skin) .passage-inner:has(> .passage-text > :is(h1, h2, h3):first-child) > .passage-title { display: none; }
 
 /* The listening veil stops at the footer so Parts/Submit stay readable. */
 #screen-exam .audio-start-overlay { bottom: 62px; }
 
 /* Audio bar range tracks were white-on-white once the bar turned white. */
-#screen-exam .exam-audio-bar input[type="range"] { background: #d9d9d9; accent-color: var(--cd-focus); border-radius: 4px; }
-[data-theme="dark"] #screen-exam .exam-audio-bar input[type="range"] { background: #3a3a3a; }
+:is(#screen-exam, .cd-skin) .exam-audio-bar input[type="range"] { background: #d9d9d9; accent-color: var(--cd-focus); border-radius: 4px; }
+[data-theme="dark"] :is(#screen-exam, .cd-skin) .exam-audio-bar input[type="range"] { background: #3a3a3a; }
 
 @media (max-width: 768px) {
   #screen-exam .audio-start-overlay { bottom: 56px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Bài lẻ — single-section practice: listening.html #screen-practice and
+   reading.html #screen-retry (practice, "Làm lại passage", past practice
+   review). The page JS adds .cd-skin for the whole visit (never in the
+   Entrance Test embed, which keeps its old look) and .cd-live only while
+   the student is answering. After "Kiểm tra đáp án" .cd-live goes away:
+   questions and footer fall back to the review look (correct / wrong
+   colours, "Làm lại" buttons), like the full test's own review screen.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Pieces that exist only in the skinned / answering states. */
+:is(#screen-practice, #screen-retry):not(.cd-skin) .cd-logo,
+:is(#screen-practice, #screen-retry):not(.cd-skin) .cd-part-text,
+#screen-practice:not(.cd-skin) .cd-part-header,
+:is(#screen-practice, #screen-retry):not(.cd-live) .cd-live-only,
+:is(#screen-practice, #screen-retry):not(.cd-live) > .cd-footer-host,
+:is(#screen-practice, #screen-retry).cd-live > .exam-footer:not(.cd-footer-host) { display: none !important; }
+/* Unskinned Reading: the Part box wrapper disappears and its toolbar sits
+   between the bar and the split, where it always was. (Listening moves its
+   toolbar back into the body instead — see _ltSetCdSkin.) */
+#screen-retry:not(.cd-skin) .cd-part-header { display: contents; }
+:is(#screen-practice, #screen-retry) .cd-title-block { flex: 1; min-width: 0; }
+
+/* Top bar: stopwatch as the grey line under the title (like "mm:ss
+   remaining"), "x / 10 câu" as the progress pill; the thin progress strip
+   goes, the footer carries that. */
+.cd-skin:is(#screen-practice, #screen-retry) .practice-prog-bar { display: none !important; }
+.cd-skin:is(#screen-practice, #screen-retry) .practice-stopwatch {
+  background: none; border: none; border-radius: 0; padding: 0;
+  font-family: inherit; font-size: 13px; font-weight: 500; letter-spacing: 0;
+  color: var(--cd-ink2); font-variant-numeric: tabular-nums;
+}
+.cd-skin:is(#screen-practice, #screen-retry) .practice-stopwatch::before {
+  content: '\f017'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+  font-size: 11px; margin-right: 5px;
+}
+.cd-skin:is(#screen-practice, #screen-retry) .practice-stopwatch.sw-medium { color: #b45309; background: none; }
+.cd-skin:is(#screen-practice, #screen-retry) .practice-stopwatch.sw-slow { color: #dc2626; background: none; font-weight: 700; }
+.cd-skin:is(#screen-practice, #screen-retry) .practice-progress-txt {
+  background: transparent; border: 1px solid var(--cd-line); border-radius: 6px;
+  color: var(--cd-ink2); font-size: 13px; font-weight: 600; padding: 4px 10px;
+}
+
+/* Listening's practice player (play / ±10s / speed / volume) on the white
+   bar, same as the exam's. */
+.cd-skin #practice-audio-bar {
+  background: var(--cd-bg); color: var(--cd-ink2);
+  border-bottom: 1px solid var(--cd-line);
+  padding: 8px 20px; gap: 12px;
+}
+.cd-skin #practice-audio-bar .audio-time,
+.cd-skin #practice-audio-bar .exam-audio-status { color: var(--cd-ink2); }
+.cd-skin #practice-audio-bar .volume-icon { color: var(--cd-ink); }
+.cd-skin #practice-audio-bar input[type="range"] { background: #d9d9d9; accent-color: var(--cd-focus); border-radius: 4px; }
+[data-theme="dark"] .cd-skin #practice-audio-bar input[type="range"] { background: #3a3a3a; }
+.cd-skin #practice-audio-bar .audio-play-btn { background: var(--cd-blue); }
+.cd-skin #practice-audio-bar .audio-play-btn:hover { background: var(--cd-blue-dark); }
+.cd-skin #practice-audio-bar .audio-skip-btn,
+.cd-skin #practice-audio-bar .speed-btn {
+  background: transparent; border: 1px solid var(--cd-line); border-radius: 4px;
+  color: var(--cd-ink);
+}
+.cd-skin #practice-audio-bar .audio-skip-btn:hover,
+.cd-skin #practice-audio-bar .speed-btn:hover { background: var(--cd-line2); }
+.cd-skin #practice-audio-bar .speed-btn.active { background: var(--cd-blue); border-color: var(--cd-blue); color: #fff; }
+
+/* Listening body: the question column reads like the exam's. The Part box
+   names the section, so the dark "SECTION 1" card is not needed. */
+.cd-skin #lt-practice-body,
+.cd-skin .lt-practice-questions-panel { background: var(--cd-bg); }
+.cd-skin .lt-practice-questions-panel .section-header-card { display: none; }
+#screen-practice.cd-live .lt-practice-questions-panel {
+  max-width: 1120px; width: 100%;
+  padding: 18px 28px 130px;
+  font-family: var(--cd-serif); color: var(--cd-ink);
+}
+
+@media (max-width: 768px) {
+  .cd-skin:is(#screen-practice, #screen-retry) .practice-progress-txt { display: none !important; }
+  .cd-skin #practice-audio-bar { padding: 8px 12px; gap: 6px; }
+  /* Three tool chips leave "Listen and answer…" a one-word column —
+     give the text its own row, tools under it. */
+  .cd-skin:is(#screen-practice, #screen-retry) .cd-part-text { flex: 1 1 100%; }
+  #screen-practice.cd-live .lt-practice-questions-panel { padding: 14px 14px 120px; }
 }
