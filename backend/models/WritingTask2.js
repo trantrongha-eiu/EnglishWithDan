@@ -15,6 +15,12 @@ const SampleSectionSchema = new mongoose.Schema({
   highlights: { type: [SampleHighlightSchema], default: undefined }
 }, { _id: false });
 
+const VocabSchema = new mongoose.Schema({
+  term:         { type: String, required: true },
+  definitionVi: { type: String, default: '' },
+  example:      { type: String, default: '' }
+}, { _id: false });
+
 const WritingTask2Schema = new mongoose.Schema({
   instructions: {
     type: String,
@@ -26,6 +32,11 @@ const WritingTask2Schema = new mongoose.Schema({
   // how to split Body 1/Body 2, band-6.5-appropriate. Same {title, content}
   // shape as WritingTask1's analysisSections/sampleSections.
   analysisSections: { type: [SampleSectionSchema], default: [] },
+  // "Từ vựng chủ đề" shown under "Phân tích đề" on writing.html. Same
+  // {term, definitionVi, example} shape as Task2Topic.vocabularyList; when
+  // empty, writingService.attachTask2Vocab borrows the matching weekly-course
+  // topic's list instead. Filled by scripts/fillWritingTask2Vocab.js.
+  vocabularyList: { type: [VocabSchema], default: [] },
   // Cover image of the practice-list card (Cloudinary URL, '' = Daniel logo).
   // Free-to-use images only: the card has no room for a credit line.
   thumbnailUrl:   { type: String, default: '' },

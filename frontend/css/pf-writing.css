@@ -267,7 +267,8 @@
    (ế, ầ, ố…), so the marks rendered detached. Keep the serif for the
    English prompt only. */
 #screen-practice-write #pw-analysis-inline,
-#screen-practice-write #pw-analysis-inline p { font-family: 'Inter', system-ui, sans-serif !important; }
+#screen-practice-write #pw-analysis-inline p,
+#screen-practice-write #pw-vocab { font-family: 'Inter', system-ui, sans-serif !important; }
 #screen-exam .exam-right,
 #screen-practice-write .exam-right { background: var(--cd-bg); }
 #screen-exam .answer-textarea,

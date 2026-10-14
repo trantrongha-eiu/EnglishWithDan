@@ -11,6 +11,7 @@
 const WritingExam = require('../models/WritingExam');
 const WritingTask1 = require('../models/WritingTask1');
 const WritingTask2 = require('../models/WritingTask2');
+const Task2Topic = require('../models/Task2Topic');
 const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample = require('../models/WritingSample');
 const WritingDraft = require('../models/WritingDraft');
@@ -174,8 +175,39 @@ async function submitExam(user, body) {
 async function listPracticeTasks(taskType) {
   const Model = taskType === 1 ? WritingTask1 : WritingTask2;
   const tasks = await Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
+  if (taskType === 2) await attachTask2Vocab(tasks);
   // Task 2 card cover: a small 2:1 crop (Task 1 cards show the chart itself, imageUrl).
   return tasks.map(({ thumbnailUrl, ...t }) => ({ ...t, thumbnail: toCardThumbnail(thumbnailUrl) }));
+}
+
+const normEssayPrompt = (s) => (s || '').toLowerCase().replace(/\s+/g, ' ').replace(/[."'’,\s]+$/g, '').trim();
+
+// "Từ vựng chủ đề" under "Phân tích đề" (writing.html Task 2). A task's own
+// vocabularyList wins; otherwise it borrows the list of the weekly-course
+// Task2Topic for the same prompt — linked via writingTask2Id, or, for a
+// topic no student has opened since seeding (task2PracticeService.
+// ensureTopicEssayLinks hasn't linked it yet), by identical prompt text.
+// Mutates `tasks` in place. Best-effort: a failure just leaves no vocab.
+async function attachTask2Vocab(tasks) {
+  const need = tasks.filter(t => !(t.vocabularyList || []).length);
+  if (!need.length) return;
+  try {
+    const topics = await Task2Topic.find({ 'vocabularyList.0': { $exists: true } })
+      .sort({ isActive: -1, orderIndex: 1 })
+      .select('writingTask2Id prompt vocabularyList').lean();
+    const byLink = new Map(), byPrompt = new Map();
+    for (const tp of topics) {
+      if (tp.writingTask2Id && !byLink.has(String(tp.writingTask2Id))) byLink.set(String(tp.writingTask2Id), tp.vocabularyList);
+      const k = normEssayPrompt(tp.prompt);
+      if (k && !byPrompt.has(k)) byPrompt.set(k, tp.vocabularyList);
+    }
+    for (const t of need) {
+      const list = byLink.get(String(t._id)) || byPrompt.get(normEssayPrompt(t.prompt));
+      if (list) t.vocabularyList = list;
+    }
+  } catch (e) {
+    console.error('[writing] attachTask2Vocab:', e.message);
+  }
 }
 
 async function getPracticeTask(taskType) {

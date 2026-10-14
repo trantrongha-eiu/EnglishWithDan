@@ -54,6 +54,25 @@ describe('writingService.listPracticeTasks', () => {
     expect(tasks.filter(t => t.thumbnail === '')).toHaveLength(1);
     tasks.forEach(t => expect(t).not.toHaveProperty('thumbnailUrl'));
   });
+
+  test('Task 2 vocab: own list wins, else linked course topic, else topic with the same prompt', async () => {
+    const Task2Topic = require('../../../models/Task2Topic');
+    const v = term => [{ term, definitionVi: 'nghĩa', example: `Use ${term}.` }];
+    const own = await createWritingTask2({ prompt: 'Own list prompt.', vocabularyList: v('own term') });
+    const linked = await createWritingTask2({ prompt: 'Linked prompt.' });
+    const samePrompt = await createWritingTask2({ prompt: 'Same   prompt as topic' });
+    const none = await createWritingTask2({ prompt: 'No topic at all.' });
+    const base = { week: 1, block: 'b', topicName: 't', essayType: 'agree_disagree' };
+    await Task2Topic.create({ ...base, prompt: 'Linked prompt.', writingTask2Id: linked._id, vocabularyList: v('linked term') });
+    await Task2Topic.create({ ...base, prompt: 'same prompt as topic.', vocabularyList: v('prompt term') });
+    await Task2Topic.create({ ...base, prompt: 'Own list prompt.', vocabularyList: v('ignored') });
+
+    const byId = Object.fromEntries((await writingService.listPracticeTasks(2)).map(t => [String(t._id), t]));
+    expect(byId[String(own._id)].vocabularyList.map(x => x.term)).toEqual(['own term']);
+    expect(byId[String(linked._id)].vocabularyList.map(x => x.term)).toEqual(['linked term']);
+    expect(byId[String(samePrompt._id)].vocabularyList.map(x => x.term)).toEqual(['prompt term']);
+    expect(byId[String(none._id)].vocabularyList).toEqual([]);
+  });
 });
 
 describe('writingService.submitExam', () => {

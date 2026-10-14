@@ -147,6 +147,7 @@ async function createWritingTask2(overrides = {}) {
     isActive: overrides.isActive ?? true,
     duplicateOf: overrides.duplicateOf ?? null,
     thumbnailUrl: overrides.thumbnailUrl ?? '',
+    vocabularyList: overrides.vocabularyList ?? [],
   });
 }
 

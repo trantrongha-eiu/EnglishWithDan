@@ -1796,6 +1796,7 @@ const practiceState = {
   // equivalent) for the full rationale.
   mode: 'practice',
   simAttemptId: null,
+  vocab: [],        // "Từ vựng chủ đề" of the open Task 2 prompt (renderPracticeVocab)
 };
 
 // ── Practice task list – pagination ─────────────────────
@@ -2517,6 +2518,14 @@ function renderPracticeWriteScreen(taskType, task) {
     html += `<button class="btn-secondary pw-analysis-btn" id="pw-analysis-toggle-btn" style="margin-top:12px;width:100%" onclick="toggleAnalysisPanel()"><i class="fas fa-search"></i> Phân tích đề</button>`;
     html += `<div id="pw-analysis-inline" class="t2hl-root" style="display:none;margin-top:12px">${analysisHtml}</div>`;
   }
+  // "Từ vựng chủ đề" — topic vocab right under "Phân tích đề", open (not
+  // behind a toggle) so students can lift phrases while they write. Task 2
+  // only (lists come from WritingTask2.vocabularyList or the matching
+  // course topic — writingService.attachTask2Vocab); hidden in Test
+  // Simulation like the analysis and sample.
+  practiceState.vocab = taskType === 2 && !isSimulation && Array.isArray(task.vocabularyList)
+    ? task.vocabularyList.filter(v => v && v.term) : [];
+  if (practiceState.vocab.length) html += renderPracticeVocab(practiceState.vocab);
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
   // exam (that screen has its own separate wiring — see launchExam()) or a
@@ -2589,6 +2598,75 @@ function toggleAnalysisPanel() {
       ? '<i class="fas fa-chevron-up"></i> Ẩn phân tích đề'
       : '<i class="fas fa-search"></i> Phân tích đề';
   }
+}
+
+// First N terms shown; the rest behind "Xem thêm" (course-topic lists run
+// to 30–40 terms, which would bury the prompt).
+const PW_VOCAB_PREVIEW = 8;
+
+function renderPracticeVocab(list) {
+  const items = list.map((v, i) => `
+      <div class="pw-vitem${i >= PW_VOCAB_PREVIEW ? ' is-extra' : ''}" data-i="${i}">
+        <div class="pw-vitem-main">
+          <div class="pw-vitem-term">${escHtml(v.term)}<button type="button" class="pw-vspeak" onclick="speakPracticeVocab(${i})" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button></div>
+          ${v.definitionVi ? `<div class="pw-vitem-def">${escHtml(v.definitionVi)}</div>` : ''}
+          ${v.example ? `<div class="pw-vitem-ex">"${escHtml(v.example)}"</div>` : ''}
+        </div>
+        <button type="button" class="pw-vbtn" onclick="savePracticeVocab(${i})" title="Lưu vào sổ từ vựng" aria-label="Lưu vào sổ từ vựng"><i class="fas fa-plus"></i></button>
+      </div>`).join('');
+  const extra = list.length - PW_VOCAB_PREVIEW;
+  return `
+    <section class="pw-vocab" id="pw-vocab">
+      <div class="pw-vocab-head">
+        <span class="pw-vocab-title"><i class="fas fa-book-open"></i> Từ vựng chủ đề <span class="pw-vocab-count">${list.length} từ</span></span>
+        <button type="button" class="pw-vocab-saveall" onclick="savePracticeVocab(-1)"><i class="fas fa-save"></i> Lưu tất cả</button>
+      </div>
+      <div class="pw-vocab-hint">Tận dụng các cụm từ này trong bài viết để nâng điểm Lexical Resource.</div>
+      <div class="pw-vlist">${items}</div>
+      ${extra > 0 ? `<button type="button" class="pw-vocab-more" id="pw-vocab-more" onclick="togglePracticeVocabMore()">Xem thêm ${extra} từ <i class="fas fa-chevron-down"></i></button>` : ''}
+    </section>`;
+}
+
+function togglePracticeVocabMore() {
+  const box = document.getElementById('pw-vocab');
+  const btn = document.getElementById('pw-vocab-more');
+  if (!box || !btn) return;
+  const all = box.classList.toggle('show-all');
+  btn.innerHTML = all
+    ? 'Thu gọn <i class="fas fa-chevron-up"></i>'
+    : `Xem thêm ${practiceState.vocab.length - PW_VOCAB_PREVIEW} từ <i class="fas fa-chevron-down"></i>`;
+}
+
+function speakPracticeVocab(idx) {
+  const v = practiceState.vocab?.[idx];
+  if (!v) return;
+  if (window.WordAudio) { window.WordAudio.speak(v.term); return; }
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(v.term);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// idx -1 = "Lưu tất cả". Same book picker as the dictionary popup
+// (js/shared/dictionary-lookup.js); the callback gets the terms that were
+// actually saved, which flip to a ✓.
+function savePracticeVocab(idx) {
+  const list = practiceState.vocab || [];
+  const picked = idx < 0 ? list : [list[idx]].filter(Boolean);
+  if (!picked.length || !window.openVocabBookPickerBulk) return;
+  window.openVocabBookPickerBulk(
+    picked.map(v => ({ word: v.term, meaning: v.definitionVi || '', example: v.example || '' })),
+    terms => {
+      const saved = new Set(terms);
+      document.querySelectorAll('#pw-vocab .pw-vitem').forEach(el => {
+        const v = list[+el.dataset.i];
+        if (!v || !saved.has(v.term)) return;
+        const btn = el.querySelector('.pw-vbtn');
+        if (btn) { btn.classList.add('saved'); btn.disabled = true; btn.title = 'Đã lưu'; btn.innerHTML = '<i class="fas fa-check"></i>'; }
+      });
+    });
 }
 
 function copySampleSection(btn, idx) {
