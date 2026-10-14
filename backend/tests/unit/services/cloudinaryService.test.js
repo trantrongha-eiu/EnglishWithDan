@@ -137,7 +137,15 @@ describe('cloudinaryService.destroyAsset', () => {
 
     await cloudinaryService.destroyAsset('some/public/id');
 
-    expect(cloudinary.uploader.destroy).toHaveBeenCalledWith('some/public/id');
+    expect(cloudinary.uploader.destroy).toHaveBeenCalledWith('some/public/id', undefined);
+  });
+
+  test('passes options through (resource_type for a recording)', async () => {
+    cloudinary.uploader.destroy.mockResolvedValue({ result: 'ok' });
+
+    await cloudinaryService.destroyAsset('entrance-speaking/x', { resource_type: 'video' });
+
+    expect(cloudinary.uploader.destroy).toHaveBeenCalledWith('entrance-speaking/x', { resource_type: 'video' });
   });
 
   test('swallows a rejection from the SDK and resolves to undefined', async () => {

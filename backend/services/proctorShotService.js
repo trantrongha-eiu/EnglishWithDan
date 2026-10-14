@@ -8,7 +8,8 @@
  *
  * The page can only see the screen because the student shared it (mandatory
  * on desktop — see frontend/js/shared/proctor-capture.js). The image goes to
- * Cloudinary; the attempt keeps { url, type, at } in proctor.shots.
+ * R2 (services/mediaStore — Cloudinary when R2 isn't configured); the attempt
+ * keeps { url, publicId, type, at } in proctor.shots.
  */
 const mongoose = require('mongoose');
 const { ValidationError, NotFoundError, AppError } = require('../errors/AppError');
@@ -16,6 +17,8 @@ const MockTestAttempt = require('../models/MockTestAttempt');
 const EntranceTestAttempt = require('../models/EntranceTestAttempt');
 const examSimulationService = require('./examSimulationService');
 const cloudinaryService = require('./cloudinaryService');
+const r2Service = require('./r2Service');
+const mediaStore = require('./mediaStore');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -62,10 +65,10 @@ async function saveShot(userId, body = {}) {
     throw new AppError('Đã đủ ảnh cho lượt làm bài này', 409);
   }
 
-  const uploaded = await cloudinaryService.uploadImage(image, { folder: SHOT_FOLDER });
+  const uploaded = await mediaStore.uploadImage(image, SHOT_FOLDER);
   const shot = {
-    url: uploaded.secure_url,
-    publicId: uploaded.public_id,
+    url: uploaded.url,
+    publicId: uploaded.publicId,
     type,
     skill: typeof skill === 'string' ? skill.slice(0, 20) : undefined,
     at: new Date(),
@@ -83,10 +86,11 @@ const SHOT_MODELS = [
 ];
 const PURGE_BATCH = 200;
 
-// Deletes every screenshot older than SHOT_RETENTION_DAYS: the Cloudinary
-// image first, then its entry on the attempt. Then a folder sweep by upload
-// date catches images whose attempt no longer exists (admin delete, the
-// 3-month practice-history TTL). Returns { shots, attempts, orphans }.
+// Deletes every screenshot older than SHOT_RETENTION_DAYS: the stored image
+// first (R2 or Cloudinary, by its URL), then its entry on the attempt. Then a
+// folder sweep by upload date — in R2 and in the old Cloudinary folder —
+// catches images whose attempt no longer exists (admin delete, the 3-month
+// practice-history TTL). Returns { shots, attempts, orphans }.
 async function purgeOldShots({ now = Date.now(), maxRounds = 50 } = {}) {
   const cutoff = new Date(now - SHOT_RETENTION_DAYS * 24 * 60 * 60 * 1000);
   const old = { 'proctor.shots': { $elemMatch: { at: { $lt: cutoff } } } };
@@ -96,23 +100,31 @@ async function purgeOldShots({ now = Date.now(), maxRounds = 50 } = {}) {
     for (let round = 0; round < maxRounds; round++) {
       const docs = await Model.find(old).select('_id proctor.shots').limit(PURGE_BATCH).lean();
       if (!docs.length) break;
-      const publicIds = [];
+      const expired = [];
       docs.forEach(d => (d.proctor.shots || []).forEach(s => {
-        if (new Date(s.at) < cutoff && s.publicId) publicIds.push(s.publicId);
+        if (new Date(s.at) < cutoff && (s.publicId || s.url)) expired.push({ url: s.url, publicId: s.publicId });
       }));
       // An image that fails to delete here is caught by the folder sweep below.
-      await cloudinaryService.destroyAssets(publicIds).catch(e =>
-        logger.error('cron', 'ProctorShotCleanup: Cloudinary delete failed', { errorMessage: e.message }));
+      await mediaStore.destroy(expired);
       for (const d of docs) {
         // Scoped to this one attempt and only its expired shots.
         await Model.updateOne({ _id: d._id }, { $pull: { 'proctor.shots': { at: { $lt: cutoff } } } });
       }
-      shots += publicIds.length;
+      shots += expired.length;
       attempts += docs.length;
       if (docs.length < PURGE_BATCH) break;
     }
   }
 
+  if (r2Service.isConfigured()) {
+    try {
+      const keys = await r2Service.listOldKeys(SHOT_FOLDER, SHOT_RETENTION_DAYS + 1);
+      if (keys.length) orphans += await r2Service.deleteObjects(keys);
+    } catch (e) {
+      logger.error('cron', 'ProctorShotCleanup: R2 sweep failed', { errorMessage: e.message });
+    }
+  }
+  // Shots taken before the move to R2 (2026-10) still age out of Cloudinary.
   try {
     for (let round = 0; round < maxRounds; round++) {
       const ids = await cloudinaryService.listOldImages(SHOT_FOLDER, SHOT_RETENTION_DAYS + 1);

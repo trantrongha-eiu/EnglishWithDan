@@ -1,8 +1,9 @@
 'use strict';
 
-// Cloudflare R2 object storage for Listening audio and practice-card cover
-// images. Cloudinary's free plan
-// counts every byte delivered against 25 credits/month, and Listening audio
+// Cloudflare R2 object storage for every uploaded file: Listening audio,
+// card covers, content images, proctor screenshots, avatars, PDFs
+// (services/mediaStore.js picks R2 or the Cloudinary fallback). Cloudinary's
+// free plan counts every byte delivered against 25 credits/month, and Listening audio
 // was ~95% of that (2026-10); R2 has no egress fees. The bucket is served
 // read-only through its custom domain (config.r2.publicUrl), so a stored
 // audioUrl is a plain https URL — the media proxy, admin <audio> previews
@@ -84,4 +85,99 @@ async function uploadCoverImage(buf, { folder = 'covers' } = {}) {
   return putObject(`${folder}/${id}.webp`, out, 'image/webp');
 }
 
-module.exports = { isConfigured, publicHost, putObject, deleteObject, uploadAudio, uploadCoverImage, COVER_W, COVER_H };
+// The object key behind one of our R2 URLs ("proctor-shots/123_ab.jpg"),
+// or null for any other URL (Cloudinary, local path, '').
+function keyOf(url) {
+  if (typeof url !== 'string' || !config.r2.publicUrl || !url.startsWith(config.r2.publicUrl + '/')) return null;
+  return url.slice(config.r2.publicUrl.length + 1).split('/').map(decodeURIComponent).join('/');
+}
+
+// Up to 1000 keys per DeleteObjects call. Returns how many were deleted.
+async function deleteObjects(keys) {
+  const { DeleteObjectsCommand } = require('@aws-sdk/client-s3');
+  const list = [...new Set((keys || []).filter(Boolean))];
+  let deleted = 0;
+  for (let i = 0; i < list.length; i += 1000) {
+    const res = await s3().send(new DeleteObjectsCommand({
+      Bucket: config.r2.bucket,
+      Delete: { Objects: list.slice(i, i + 1000).map(Key => ({ Key })), Quiet: false },
+    }));
+    deleted += ((res && res.Deleted) || []).length;
+  }
+  return deleted;
+}
+
+// Keys under `prefix` last written more than `days` ago (all pages).
+async function listOldKeys(prefix, days) {
+  const { ListObjectsV2Command } = require('@aws-sdk/client-s3');
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  const keys = [];
+  let token;
+  do {
+    const res = await s3().send(new ListObjectsV2Command({
+      Bucket: config.r2.bucket, Prefix: prefix.replace(/\/?$/, '/'), ContinuationToken: token,
+    }));
+    for (const o of (res.Contents || [])) if (new Date(o.LastModified).getTime() < cutoff) keys.push(o.Key);
+    token = res.IsTruncated ? res.NextContinuationToken : undefined;
+  } while (token);
+  return keys;
+}
+
+const newId = () => `${Date.now()}_${require('crypto').randomBytes(4).toString('hex')}`;
+// No SVG: it can carry script if its URL is opened directly (see utils/validation).
+const IMAGE_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/bmp': 'bmp', 'image/avif': 'avif' };
+
+// Upload an image (base64 data URI, or Buffer + contentType) as-is under
+// `folder`. A JPEG with an EXIF rotation is turned upright first, so the
+// stored width/height match what the browser shows. Result is shaped like a
+// Cloudinary upload result: { secure_url, public_id (= the R2 key), width, height }.
+async function uploadImage(src, { folder, contentType } = {}) {
+  let buf = src, type = contentType;
+  if (typeof src === 'string') {
+    const m = /^data:([\w/+.-]+);base64,/.exec(src);
+    if (!m) throw new Error('not a base64 data URI');
+    type = m[1];
+    buf = Buffer.from(src.slice(m[0].length), 'base64');
+  }
+  type = String(type || '').toLowerCase().replace('image/jpg', 'image/jpeg');
+  const ext = IMAGE_EXT[type];
+  if (!ext) throw new Error(`unsupported image type ${type || '(none)'}`);
+  // Size is best-effort (sharp can't read BMP) — only assignment images use it.
+  let width, height;
+  try {
+    const sharp = require('sharp');
+    const meta = await sharp(buf, { limitInputPixels: 100e6 }).metadata();
+    ({ width, height } = meta);
+    if (ext === 'jpg' && meta.orientation > 1) {
+      const { data, info } = await sharp(buf, { limitInputPixels: 100e6 }).rotate().jpeg({ quality: 90 }).toBuffer({ resolveWithObject: true });
+      buf = data; ({ width, height } = info);
+    }
+  } catch { /* stored as-is, no size */ }
+  const key = `${folder}/${newId()}.${ext}`;
+  return { secure_url: await putObject(key, buf, type), public_id: key, width, height };
+}
+
+// Profile picture: square crop ("attention" ≈ Cloudinary's g_face for a
+// portrait), 256×256 WebP — shown at ≤128 CSS px.
+async function uploadAvatar(src) {
+  const sharp = require('sharp');
+  const buf = Buffer.from(String(src).slice(String(src).indexOf(',') + 1), 'base64');
+  const out = await sharp(buf, { limitInputPixels: 50e6 })
+    .rotate()
+    .resize(256, 256, { fit: 'cover', position: sharp.strategy.attention })
+    .webp({ quality: 82 })
+    .toBuffer();
+  const key = `avatars/${newId()}.webp`;
+  return { secure_url: await putObject(key, out, 'image/webp'), public_id: key };
+}
+
+// Any other file (PDF handouts, speaking recordings) under `folder`.
+async function uploadFile(buf, { folder, ext, contentType }) {
+  const key = `${folder}/${newId()}.${ext}`;
+  return { secure_url: await putObject(key, buf, contentType), public_id: key };
+}
+
+module.exports = {
+  isConfigured, publicHost, putObject, deleteObject, deleteObjects, listOldKeys, keyOf,
+  uploadAudio, uploadCoverImage, uploadImage, uploadAvatar, uploadFile, COVER_W, COVER_H,
+};

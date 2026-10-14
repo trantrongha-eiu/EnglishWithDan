@@ -30,8 +30,8 @@ async function uploadBufferAsDataUri(buffer, mimetype, options) {
   return cloudinary.uploader.upload(dataUri, options);
 }
 
-async function destroyAsset(publicId) {
-  return cloudinary.uploader.destroy(publicId).catch(() => {});
+async function destroyAsset(publicId, options) {
+  return cloudinary.uploader.destroy(publicId, options).catch(() => {});
 }
 
 // Bulk delete of up to 100 image assets per call (Admin API).

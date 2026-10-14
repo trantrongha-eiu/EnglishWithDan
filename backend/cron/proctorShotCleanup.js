@@ -5,7 +5,7 @@ const logger = require('../utils/logger');
 
 // Proctoring screenshots (Test Simulation, Full Mock Test, Entrance Test —
 // see services/proctorShotService.js) are only kept SHOT_RETENTION_DAYS
-// (30) so the Cloudinary store doesn't fill up. Daily: delete the expired
+// (30) so the image store doesn't fill up. Daily: delete the expired
 // images and drop them from their attempts.
 async function runCleanup() {
   try {

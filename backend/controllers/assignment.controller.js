@@ -15,7 +15,7 @@ const svc = require('../services/assignmentService');
 const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
-const cloudinaryService = require('../services/cloudinaryService');
+const mediaStore = require('../services/mediaStore');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
@@ -307,8 +307,8 @@ exports.deleteAssignment = async (req, res) => {
     const assignment = await Assignment.findOneAndDelete({ _id: req.params.assignmentId, classId: req.classGroup._id });
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
     const { deletedCount } = await AssignmentProgress.deleteMany({ assignmentId: assignment._id });
-    const publicIds = (assignment.images || []).map((im) => im.publicId).filter(Boolean);
-    if (publicIds.length) cloudinaryService.destroyAssets(publicIds).catch(() => {});
+    const images = (assignment.images || []).filter((im) => im.publicId || im.url);
+    if (images.length) mediaStore.destroy(images).catch(() => {});
     await refreshClassStatus(assignment.classId);
     res.json({ success: true, deletedProgress: deletedCount || 0 });
   } catch (err) {
@@ -323,8 +323,8 @@ exports.uploadAssignmentImages = async (req, res) => {
     const uploaded = [];
     for (const f of req.files) {
       const dataUri = `data:${f.mimetype};base64,${f.buffer.toString('base64')}`;
-      const r = await cloudinaryService.uploadImage(dataUri, { folder: 'assignments' });
-      uploaded.push({ url: r.secure_url, publicId: r.public_id, width: r.width, height: r.height });
+      const r = await mediaStore.uploadImage(dataUri, 'assignments');
+      uploaded.push({ url: r.url, publicId: r.publicId, width: r.width, height: r.height });
     }
     res.json({ success: true, images: uploaded });
   } catch (err) {

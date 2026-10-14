@@ -10,7 +10,7 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const { signToken } = require('./authService');
-const cloudinaryService = require('./cloudinaryService');
+const mediaStore = require('./mediaStore');
 const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { effectiveStreak } = require('../utils/streak');
 const { todayVNDate } = require('./streakBonusService');
@@ -105,18 +105,15 @@ async function changePassword(userId, currentPassword, newPassword) {
 }
 
 async function uploadAvatar(userId, imageBase64) {
-  const result = await cloudinaryService.uploadImage(imageBase64, {
-    folder: 'avatars',
-    transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }]
-  });
+  const result = await mediaStore.uploadAvatar(imageBase64);
 
   const user = await User.findByIdAndUpdate(
     userId,
-    { avatar: result.secure_url },
+    { avatar: result.url },
     { new: true }
   ).select('-password -resetOTP -resetOTPExpires -resetOTPAttempts');
 
-  return { avatar: result.secure_url, user };
+  return { avatar: result.url, user };
 }
 
 // Recent-history list size for each skill — feeds both the profile.html

@@ -955,11 +955,9 @@ async function submitSection(userId, attemptId, section, extras = {}) {
     const pre = await loadOwnedAttempt(userId, attemptId);
     if (pre.status === 'in-progress' && pre.currentSection === 'speaking' && !pre.sections.speaking.submittedAt) {
       try {
-        const cloudinaryService = require('./cloudinaryService');
-        const r = await cloudinaryService.uploadBufferStream(audioFile.buffer, {
-          resource_type: 'video', folder: 'entrance-speaking', public_id: `et_${attemptId}_${Date.now()}`,
-        });
-        uploaded = { url: r.secure_url, publicId: r.public_id, mimetype: audioFile.mimetype || '' };
+        const r = await require('./mediaStore').uploadRecording(audioFile.buffer, audioFile.mimetype,
+          'entrance-speaking', `et_${attemptId}_${Date.now()}`);
+        uploaded = { url: r.url, publicId: r.publicId, mimetype: audioFile.mimetype || '' };
       } catch (e) {
         // Keep going: the transcript still gets recorded and the AI still
         // hears the in-memory buffer — only the teacher's replay is lost.
@@ -1003,7 +1001,7 @@ async function submitSection(userId, attemptId, section, extras = {}) {
   });
 
   if (uploaded && !recordedAudio) {
-    require('./cloudinaryService').destroyAsset(uploaded.publicId);
+    require('./mediaStore').destroy(uploaded, { resourceType: 'video' });
   }
   return attempt;
 }

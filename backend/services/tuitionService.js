@@ -1,7 +1,7 @@
 'use strict';
 
 // Extracted from routes/tuition.js, verbatim logic.
-const cloudinaryService = require('./cloudinaryService');
+const mediaStore = require('./mediaStore');
 const TuitionFee = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message = require('../models/Message');
@@ -115,23 +115,20 @@ async function updateSettings(body) {
 
 async function uploadQr(file) {
   const s = await TuitionSettings.getSingleton();
-  if (s.qrImagePublicId) {
-    await cloudinaryService.destroyAsset(s.qrImagePublicId);
+  if (s.qrImagePublicId || s.qrImageUrl) {
+    await mediaStore.destroy({ url: s.qrImageUrl, publicId: s.qrImagePublicId });
   }
-  const result = await cloudinaryService.uploadBufferAsDataUri(file.buffer, file.mimetype, {
-    folder: 'tuition-qr',
-    public_id: `qr_${Date.now()}`,
-  });
-  s.qrImageUrl      = result.secure_url;
-  s.qrImagePublicId = result.public_id;
+  const result = await mediaStore.uploadImage(`data:${file.mimetype};base64,${file.buffer.toString('base64')}`, 'tuition-qr');
+  s.qrImageUrl      = result.url;
+  s.qrImagePublicId = result.publicId;
   await s.save();
   return s.qrImageUrl;
 }
 
 async function deleteQr() {
   const s = await TuitionSettings.getSingleton();
-  if (s.qrImagePublicId) {
-    await cloudinaryService.destroyAsset(s.qrImagePublicId);
+  if (s.qrImagePublicId || s.qrImageUrl) {
+    await mediaStore.destroy({ url: s.qrImageUrl, publicId: s.qrImagePublicId });
   }
   s.qrImageUrl = ''; s.qrImagePublicId = '';
   await s.save();

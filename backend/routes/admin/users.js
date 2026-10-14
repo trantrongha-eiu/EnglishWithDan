@@ -13,7 +13,7 @@ const validation = require('../../utils/validation');
 // under app.js's global 20mb JSON body limit, which is measured on the
 // larger base64-encoded string, not decoded bytes).
 const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
-const cloudinaryService = require('../../services/cloudinaryService');
+const mediaStore = require('../../services/mediaStore');
 const badgeService = require('../../services/badgeService');
 
 const User = require('../../models/User');
@@ -162,11 +162,8 @@ router.post('/users/:id/avatar', auth, adminOnly, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Ảnh quá lớn, vui lòng chọn ảnh dưới 5MB' });
     }
 
-    const result = await cloudinaryService.uploadImage(imageBase64, {
-      folder: 'avatars',
-      transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }]
-    });
-    const user = await User.findByIdAndUpdate(req.params.id, { avatar: result.secure_url }, { new: true })
+    const result = await mediaStore.uploadAvatar(imageBase64);
+    const user = await User.findByIdAndUpdate(req.params.id, { avatar: result.url }, { new: true })
       .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
     logger.security('Admin changed a user avatar', { actorId: String(req.user._id), targetId: String(user._id) });

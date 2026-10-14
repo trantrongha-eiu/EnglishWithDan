@@ -6,16 +6,15 @@
 // only the file boundary moved.
 
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
+const mediaStore = require('../../services/mediaStore');
 const { effectiveStreak } = require('../../utils/streak');
 const { escapeRegex } = require('../../utils/strings');
 
-// Upload a base64 image data URI to Cloudinary, return the secure URL.
-// Shared by every admin route that lets teachers attach an inline image
-// (passages, writing tasks) — folder controls which Cloudinary bucket it lands in.
+// Upload a base64 image data URI (R2, or Cloudinary when R2 isn't
+// configured — services/mediaStore), return its URL. Shared by every admin
+// route that lets teachers attach an inline image (passages, writing tasks).
 async function uploadImageDataUri(imageBase64, folder) {
-  const result = await cloudinary.uploader.upload(imageBase64, { folder, resource_type: 'image' });
-  return result.secure_url;
+  return (await mediaStore.uploadImage(imageBase64, folder)).url;
 }
 
 // Card cover image (Passage / ListeningSection / VocabularyLesson /
@@ -29,12 +28,10 @@ async function uploadCoverImageDataUri(imageBase64) {
   return r2Service.uploadCoverImage(buf, { folder: 'covers' });
 }
 
-// Upload a PDF Buffer (from multer memoryStorage) to Cloudinary as a raw
-// asset, return the secure URL. Shared by speaking materials + writing samples.
+// Upload a PDF Buffer (from multer memoryStorage), return its URL. Shared by
+// speaking materials + writing samples.
 async function uploadPdfBuffer(buffer, folder) {
-  const dataUri = `data:application/pdf;base64,${buffer.toString('base64')}`;
-  const result = await cloudinary.uploader.upload(dataUri, { folder, resource_type: 'raw' });
-  return result.secure_url;
+  return (await mediaStore.uploadPdf(buffer, folder)).url;
 }
 
 // Chỉ teacher và admin mới dùng được
@@ -57,7 +54,7 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-// Multer: store file in memory for Cloudinary upload
+// Multer: store file in memory for the R2 / Cloudinary upload
 const uploadPdfMemory = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB

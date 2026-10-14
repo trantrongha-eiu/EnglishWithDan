@@ -273,8 +273,7 @@ async function uploadStandaloneAudio(file) {
 // needs to return two distinct 400 messages for those two cases — this
 // only performs the upload itself.
 async function uploadMapImage(imageBase64) {
-  const result = await cloudinaryService.uploadImage(imageBase64, { folder: 'listening-maps' });
-  return result.secure_url;
+  return (await require('./mediaStore').uploadImage(imageBase64, 'listening-maps')).url;
 }
 
 async function uploadSectionAudio(id, file) {
