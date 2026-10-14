@@ -124,16 +124,26 @@ describe('POST /api/shadowing/lessons/:slug/attempt', () => {
 
 describe('seedShadowingLessons', () => {
   test('seed data is well-formed and the seed is idempotent', async () => {
+    // Shorts are ~1 minute and Listening spelling drills leave long pauses
+    // for writing between items, so the limits are per sentence, not per clip.
     for (const l of seedLessons) {
-      expect(l.segments.length).toBeGreaterThan(10);
-      expect(l.clipEnd - l.clipStart).toBeLessThanOrEqual(185); // 2–3 minute clips
+      expect(ShadowingLesson.CATEGORIES).toContain(l.category);
+      expect(['A2', 'B1', 'B2', 'C1', 'C2']).toContain(l.level);
+      expect(l.segments.length).toBeGreaterThanOrEqual(8);
+      expect(l.clipEnd - l.clipStart).toBeLessThanOrEqual(360);
       l.segments.forEach((s, i) => {
         expect(s.end).toBeGreaterThan(s.start);
+        expect(s.end - s.start).toBeLessThanOrEqual(30); // one practisable sentence
         if (i) expect(s.start).toBeGreaterThanOrEqual(l.segments[i - 1].end);
+        if (s.answer !== undefined) expect(s.answer.trim()).not.toBe('');
       });
     }
     await runSeed();
     await runSeed();
     expect(await ShadowingLesson.countDocuments()).toBe(seedLessons.length);
+    // Dictation grades `answer` when a segment has one — it must survive the seed.
+    const withAnswer = seedLessons.find((l) => l.segments.some((s) => s.answer));
+    const seeded = await ShadowingLesson.findOne({ slug: withAnswer.slug }).lean();
+    expect(seeded.segments.find((s) => s.answer).answer).toBe(withAnswer.segments.find((s) => s.answer).answer);
   });
 });
