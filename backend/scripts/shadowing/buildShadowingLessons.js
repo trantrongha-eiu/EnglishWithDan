@@ -498,6 +498,51 @@ const LESSONS = [
       [257.9, 269.5, 'Number twelve. You can receive more information by calling 9182 7364.', '9182 7364'],
     ],
   },
+  // ── Grammar (BBC Learning English) — same topics as essential-grammar.html
+  ...[
+    // Tenses
+    ['VY5nh_-1phQ', 'grammar-present-perfect-past-simple', 'Present perfect or past simple? — 4 differences', 'B1', 0, 209.1,
+      '\'I\'ve done\' or \'I did\'?', 'Ask BBC Learning English',
+      '4 điểm khác nhau giữa hiện tại hoàn thành và quá khứ đơn: kết quả ở hiện tại, mốc thời gian đã kết thúc/chưa kết thúc, việc vẫn còn đúng đến nay, và trải nghiệm.'],
+    ['pvoqkQHb3lo', 'grammar-present-perfect-continuous', 'Present perfect simple or continuous?', 'B2', 0, 162.1,
+      'Present perfect simple or continuous?', 'Ask BBC Learning English',
+      '"I\'ve chopped the onions" hay "I\'ve been chopping onions"? Năm điểm khác nhau: hoàn thành vs đang tiếp diễn, kết quả vs quá trình, bao nhiêu vs bao lâu, động từ chỉ trạng thái.'],
+    ['8c20lS2t8f0', 'grammar-past-simple-past-perfect', 'Past simple or past perfect?', 'B1', 12.9, 154.1,
+      'The past simple and past perfect tenses', 'English Learners\' Questions',
+      'Dan giải đáp: "When was the last time you ate here?" — khi nào dùng quá khứ đơn, khi nào dùng quá khứ hoàn thành ("the film had already started").'],
+    ['De_54szvmFM', 'grammar-future-will-going-to', 'Future plans: present continuous, going to or will?', 'B1', 12.3, 135.9,
+      'Future tenses: present continuous, \'be going to\', \'will\'', 'English Learners\' Questions',
+      'Câu chuyện ở sân bay: "I\'m flying to Spain" (đã có vé), "I\'m going to fly to Australia" (kế hoạch), "I will fly to Russia" (quyết định tức thời).'],
+    ['MGLedoA3SSE', 'grammar-gameshow-past-continuous', 'The Grammar Gameshow: past continuous', 'B1', 52.3, 231.5,
+      'The Past Continuous Tense', 'The Grammar Gameshow Episode 9',
+      'Gameshow ngữ pháp vui nhộn: hai thí sinh "đấu" câu hỏi về thì quá khứ tiếp diễn — was/were + V-ing, "when" vs "while", hành động dài bị cắt ngang.'],
+    ['GiI3wjFWSXQ', 'grammar-choose-the-right-tense', 'How to choose the correct tense — it\'s all about aspect', 'C1', 0.3, 210.9,
+      'How to choose the correct tense in English', 'BBC English Masterclass',
+      'Mọi thì trong tiếng Anh = thời gian + "aspect" (simple, continuous, perfect). Hiểu "tính cách" của từng aspect để chọn đúng thì.'],
+    // Conditionals
+    ['RGmKMInQZG8', 'grammar-zero-conditional', 'The zero conditional — facts, habits & rules', 'A2', 0, 191.1,
+      'The zero conditional', 'Grammar: Conditionals with Georgie',
+      'If + hiện tại đơn, hiện tại đơn: sự thật khoa học, thói quen cá nhân ("If I don\'t sleep well, I\'m grumpy") và quy định ("If you don\'t buy a ticket, you get a fine").'],
+    ['kpDaqFQ1YCM', 'grammar-first-conditional', 'The first conditional — likely future situations', 'B1', 0.3, 153.5,
+      'The first conditional', 'Grammar: Conditionals with Georgie',
+      'If + hiện tại đơn, will + V: kế hoạch phụ thuộc thời tiết, tàu bị huỷ thì làm gì, và đưa ra dự đoán.'],
+    ['0bHeJbPkAHA', 'grammar-second-conditional', 'The second conditional — imagine & give advice', 'B1', 0, 173.9,
+      'The second conditional', 'Grammar: Conditionals with Georgie',
+      'If + quá khứ đơn, would + V: trúng một triệu bảng, lạc trên đảo hoang, và lời khuyên "If I were you, I\'d…".'],
+    ['pbm9IWNQmuM', 'grammar-third-conditional', 'The third conditional — a different past, regrets, blame', 'B2', 0, 204.0,
+      'The third conditional', 'Grammar: Conditionals with Georgie',
+      'If + quá khứ hoàn thành, would have + V3: tưởng tượng quá khứ khác đi, nói về tiếc nuối ("I wish I\'d…") và đổ lỗi ("If you\'d told me…").'],
+    ['e7-qXZiesbc', 'grammar-mixed-conditional', 'Mixed conditional — past cause, present result', 'B2', 0, 148.8,
+      'Mixed conditional 1', 'Grammar: Conditionals with Georgie',
+      'If + quá khứ hoàn thành, would + V: việc trong quá khứ ảnh hưởng hiện tại — "If I\'d slept properly, I wouldn\'t be so tired now."'],
+    // Directions
+    ['SHXPpsIJTb0', 'grammar-asking-giving-directions', 'Asking for and giving directions', 'A2', 2.3, 144.8,
+      'Asking for and giving directions', 'Easy English Conversations Episode 5',
+      'Hỏi và chỉ đường đơn giản: "Where is the train station?" — go straight, go past the school, turn left/right, it\'s next to / opposite the park.'],
+  ].map(([youtubeId, slug, title, level, clipStart, clipEnd, src, series, description]) => ({
+    slug, youtubeId, title, sourceTitle: `${src} - ${series}`, channel: 'BBC Learning English',
+    category: 'grammar', level, clipStart, clipEnd, description,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -524,6 +569,7 @@ const SEGMENT_FIXES = [
   [/the experience with doing the job/, 'the experience without doing the job'],
   [/\bI think this a wake-up call\b/, 'I think this is a wake-up call'],
   [/\bThe best of the both worlds\b/, 'The best of both worlds'],
+  [/\bHe’s goes up\b/, 'He goes up'],
   // Auto-caption mishearings (English Pro Tips, Keith)
   [/^My name You already/, 'My name… You already'],
   [/^I computer games\./, 'I… computer games.'],

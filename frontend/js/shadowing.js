@@ -24,7 +24,7 @@
   const CATEGORY_LABEL = {
     'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
-    'spelling-numbers': 'Đánh vần & số',
+    'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp',
   };
   const SPEEDS = [1, 0.75, 0.5, 1.25];
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
