@@ -81,15 +81,12 @@ async function run() {
     console.log(`\n${plan.length} cover(s) to set.`);
     if (!apply || !plan.length) { if (plan.length) console.log('dry run — re-run with --apply.'); return; }
 
-    const cloudinary = require('cloudinary').v2;
-    cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
+    const r2 = require('../services/r2Service');
+    if (!r2.isConfigured()) throw new Error('R2_* env vars missing — see services/r2Service.js');
     for (const { p, image } of plan) {
       try {
-        const res = await cloudinary.uploader.upload(await loadImage(image), {
-          // some titles repeat (two "Jewels from the sea"), so the id suffix keeps covers apart
-          public_id: `reading/covers/${slugify(p.title)}-${String(p._id).slice(-6)}`, overwrite: true, resource_type: 'image',
-          transformation: [{ width: 1200, crop: 'limit' }],
-        });
+        // Pre-cropped 640×320 card cover on R2, same as an admin upload (routes/admin/_shared.js).
+        const res = { secure_url: await r2.uploadCoverImage(await r2.loadBuffer(await loadImage(image))) };
         const r = await Passage.collection.updateOne(
           { _id: p._id, updatedAt: p.updatedAt },
           { $set: { thumbnailUrl: res.secure_url, updatedAt: new Date() } });

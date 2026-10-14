@@ -406,7 +406,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Bản đồ một thị trấn ven cảng năm 2005 và năm 2010",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image3.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image3.png"
       },
       "wordBank": [
         "chopped down",
@@ -695,7 +695,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Youngsville năm 1990 và năm 2010 (bản đồ 20 năm thay đổi)",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image2.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image2.png"
       },
       "wordBank": [
         "houses",
@@ -853,7 +853,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Youngsville năm 1990 và năm 2010",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image2.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image2.png"
       },
       "responseSlots": 3,
       "rubric": {
@@ -1052,7 +1052,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Sơ đồ trường West Park Secondary School các năm 1950, 1980 và 2010",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image4.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image4.png"
       },
       "rubric": {
         "minWords": 55,
@@ -1094,7 +1094,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "West Park Secondary School – 1950, 1980, 2010",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image4.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image4.png"
       },
       "rubric": {
         "minWords": 150,
@@ -1160,7 +1160,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Khu nghỉ dưỡng ven biển Templeton năm 2000 và năm 2013",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image5.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image5.png",
         "note": "Dùng con sông làm ranh giới: Body 1 = khu phía tây, Body 2 = khu phía đông."
       },
       "rubric": {
@@ -1207,7 +1207,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Làng Eastminster năm 1999 và năm 2009",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image6.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image6.png",
         "note": "Có con sông chạy ngang → chia Bắc / Nam. Nhóm thay đổi: nhà ở (residential), cửa hàng/khách sạn/sân golf (commercial), nhà máy/kho (industrial)."
       },
       "rubric": {
@@ -1351,7 +1351,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Trung tâm thị trấn Islip hiện tại và bản quy hoạch phát triển",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image7.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image7.png",
         "note": "Không có mốc tự nhiên. Nêu thay đổi LỚN trước (đường vòng quanh trung tâm), rồi thay đổi nhỏ. Dùng thì hiện tại cho hiện trạng, will be + V3 cho quy hoạch."
       },
       "rubric": {
@@ -1397,7 +1397,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Đường vào bệnh viện thành phố năm 2007 và năm 2010",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image8.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image8.png",
         "note": "Body 1: thay đổi hạ tầng xe buýt (bus stops, roundabouts). Body 2: thay đổi bãi đỗ xe (staff / public parking)."
       },
       "rubric": {
@@ -1638,7 +1638,7 @@
         "kind": "image",
         "caption": "Two seating layout options for the same seminar room — Plan A and Plan B",
         "note": "Introduction: paraphrase đề bài. Overview: nêu 1–2 khác biệt lớn nhất giữa Plan A và Plan B (vị trí bàn tiệc trà, hướng bàn ghế, có/không bục phát biểu). Body 1: mô tả chi tiết Plan A (entrance, podium, whiteboard, bàn ghế, khu morning tea). Body 2: mô tả Plan B, bắt buộc dùng ít nhất 1 cấu trúc so sánh (whereas/Unlike Plan A...).",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/v1789626227/wt1/maps-process/layout-seminar-plan-ab.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/layout-seminar-plan-ab.png"
       },
       "rubric": {
         "minWords": 150,
@@ -1703,7 +1703,7 @@
         "kind": "image",
         "caption": "Present Office Building and Future Office Building",
         "note": "Đây là bài tổng hợp cuối cùng — áp dụng lại cả từ vựng mô tả thay đổi (Buổi 1) lẫn cấu trúc liên kết câu (Buổi 2). Introduction: paraphrase đề bài. Overview (2 câu): nêu 1–2 thay đổi lớn nhất trong kế hoạch tương lai, không nêu chi tiết. Body 1 (Present): mô tả mặt bằng hiện tại. Body 2 (Future): mô tả những thay đổi so với hiện tại.",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/v1789626230/wt1/maps-process/layout-office-present-future.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/layout-office-present-future.png"
       },
       "rubric": {
         "minWords": 150,
@@ -2333,7 +2333,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Đề thi Phần B – Templeton 2000 và 2013",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image5.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image5.png"
       },
       "rubric": {
         "minWords": 150,

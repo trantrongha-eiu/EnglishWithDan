@@ -35,12 +35,8 @@ async function main() {
   if (dry) { console.log('\n(dry)'); process.exit(0); }
 
   require('dotenv').config();
-  const cloudinary = require('cloudinary').v2;
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
+  const r2 = require('../services/r2Service');
+  if (!r2.isConfigured()) throw new Error('R2_* env vars missing — see services/r2Service.js');
   const mongoose = require('mongoose');
   const WT1Exercise = require('../models/WT1Exercise');
   await mongoose.connect(process.env.MONGO_URI);
@@ -49,9 +45,7 @@ async function main() {
   for (const [name, v] of entries) {
     const buf = fs.readFileSync(path.join(IMG_DIR, name + '.png'));
     const dataUri = `data:image/png;base64,${buf.toString('base64')}`;
-    const res = await cloudinary.uploader.upload(dataUri, {
-      public_id: 'wt1/full-v2/' + name, overwrite: true, invalidate: true, resource_type: 'image',
-    });
+    const res = await r2.uploadImageFrom(dataUri, 'wt1/full-v2/' + name);
     const r = await WT1Exercise.updateMany(
       { code: { $in: v.codes } },
       { $set: { 'stimulus.imageUrl': res.secure_url, needsAsset: false, published: true } }

@@ -51,17 +51,11 @@ async function main() {
 
   let newUrl;
   if (!dry) {
-    const cloudinary = require('cloudinary').v2;
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
+    const r2 = require('../services/r2Service');
+    if (!r2.isConfigured()) throw new Error('R2_* env vars missing — see services/r2Service.js');
     const buf = fs.readFileSync(CROPPED_PATH);
     const dataUri = `data:image/png;base64,${buf.toString('base64')}`;
-    const res = await cloudinary.uploader.upload(dataUri, {
-      public_id: PUBLIC_ID, overwrite: true, invalidate: true, resource_type: 'image',
-    });
+    const res = await r2.uploadImageFrom(dataUri, PUBLIC_ID);
     newUrl = res.secure_url;
     console.log(`Đã upload ảnh crop → ${newUrl}`);
   } else {

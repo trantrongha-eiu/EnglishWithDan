@@ -678,7 +678,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Cement Production và Concrete Production (Gravel = small stones)",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image10.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image10.png"
       },
       "rubric": {
         "minWords": 150,
@@ -742,7 +742,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Quy trình sản xuất sữa (Milk production)",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image11.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image11.png"
       },
       "items": [
         {
@@ -863,7 +863,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Brick manufacturing process",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image12.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image12.png"
       },
       "wordBank": [
         "is dug",
@@ -1052,7 +1052,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Life cycle of a frog – sơ đồ vòng đời của ếch",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image9.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image9.png"
       },
       "wordBank": [
         "lays",
@@ -1170,7 +1170,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Life cycle of a bee",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image13.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image13.png",
         "note": "Body 1 (3 giai đoạn đầu): (1) a female bee lays 1–2 eggs every three days; (2) the eggs hatch after about 9–10 days; (3) the young bee goes through the first moulting after about 5 days."
       },
       "responseSlots": 3,
@@ -1217,7 +1217,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Life cycle of the salmon",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image14.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image14.png",
         "note": "Body 1 (3 giai đoạn đầu): eggs laid in fresh water → hatch after ~3 months into alevin → alevin feeds on the yolk sac for several weeks then becomes fry. Body 2: fry (5–10 weeks) begin swimming → grow into parr with 'finger' markings → become smolt after 1–3 years and move to the sea → 1–6 years in the ocean as adult → return to fresh water to spawn and die within two weeks."
       },
       "rubric": {
@@ -1835,7 +1835,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Đề thi Phần B – Brick manufacturing",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/maps-process/image12.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image12.png",
         "note": "Body 1: 3 giai đoạn đầu (dig clay → place on grid + roll → mix with sand/water → mould or wire-cut). Body 2: 4 giai đoạn sau (dry 24–48h → kiln 870–1300°C → cool 48–72h → package & deliver)."
       },
       "rubric": {

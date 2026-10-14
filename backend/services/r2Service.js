@@ -177,7 +177,37 @@ async function uploadFile(buf, { folder, ext, contentType }) {
   return { secure_url: await putObject(key, buf, contentType), public_id: key };
 }
 
+// Bytes of a Buffer, base64 data URI, http(s) URL or local file path — for
+// the import / patch scripts, which get images from all four.
+async function loadBuffer(src) {
+  if (Buffer.isBuffer(src)) return src;
+  const s = String(src);
+  if (s.startsWith('data:')) return Buffer.from(s.slice(s.indexOf(',') + 1), 'base64');
+  if (/^https?:\/\//.test(s)) {
+    const r = await fetch(s, { headers: { 'User-Agent': 'EnglishWithDan/1.0 (https://ieltsthayha.com)' } });
+    if (!r.ok) throw new Error(`download ${r.status} ${s}`);
+    return Buffer.from(await r.arrayBuffer());
+  }
+  return require('fs').readFileSync(s);
+}
+
+// Scripts: store an image (any loadBuffer source) at `${name}_<time>.<ext>` —
+// a fresh key each run, never an overwrite (putObject marks objects
+// immutable, so a reused key would keep serving the old bytes). `maxWidth`
+// scales a wider image down (Cloudinary's c_limit). Returns { secure_url, public_id }.
+async function uploadImageFrom(src, name, { maxWidth } = {}) {
+  const sharp = require('sharp');
+  let buf = await loadBuffer(src);
+  const meta = await sharp(buf, { limitInputPixels: 100e6 }).metadata();
+  const fmt = meta.format === 'jpg' ? 'jpeg' : meta.format;
+  if (!['jpeg', 'png', 'webp', 'gif'].includes(fmt)) throw new Error(`unsupported image format ${meta.format}`);
+  if (maxWidth && meta.width > maxWidth) buf = await sharp(buf, { limitInputPixels: 100e6 }).rotate().resize({ width: maxWidth }).toFormat(fmt).toBuffer();
+  const key = `${name}_${Date.now()}.${fmt === 'jpeg' ? 'jpg' : fmt}`;
+  return { secure_url: await putObject(key, buf, `image/${fmt}`), public_id: key };
+}
+
 module.exports = {
   isConfigured, publicHost, putObject, deleteObject, deleteObjects, listOldKeys, keyOf,
-  uploadAudio, uploadCoverImage, uploadImage, uploadAvatar, uploadFile, COVER_W, COVER_H,
+  uploadAudio, uploadCoverImage, uploadImage, uploadAvatar, uploadFile, loadBuffer, uploadImageFrom,
+  COVER_W, COVER_H,
 };

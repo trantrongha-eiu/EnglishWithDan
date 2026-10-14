@@ -22,11 +22,11 @@ if (process.env.NODE_ENV === 'production' && !process.env.MEDIA_TOKEN_SECRET) {
   logger.error('startup', 'MEDIA_TOKEN_SECRET is not set — media tokens are falling back to JWT_SECRET. Set a dedicated MEDIA_TOKEN_SECRET on the backend service.');
 }
 
-// Every upload (audio, covers, images, proctor shots, avatars, PDFs —
-// services/mediaStore) silently falls back to Cloudinary when any R2_* var
-// is missing — say so loudly, since the Cloudinary free plan can't carry it.
+// Every upload (audio, covers, images, proctor shots, avatars, PDFs) goes to
+// R2 — services/mediaStore refuses to upload at all in production when any
+// R2_* var is missing (Cloudinary was emptied 2026-10-14), so say so loudly.
 if (process.env.NODE_ENV === 'production' && !require('./services/r2Service').isConfigured()) {
-  logger.error('startup', 'R2 is not fully configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_PUBLIC_URL) — all uploads are going to Cloudinary.');
+  logger.error('startup', 'R2 is not fully configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_PUBLIC_URL) — every upload will fail until it is set.');
 }
 
 // Cloudinary config

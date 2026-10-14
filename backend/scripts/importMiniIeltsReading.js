@@ -30,11 +30,9 @@ const norm = s => String(s).replace(/<[^>]+>/g, ' ').toLowerCase().replace(/[‘
 function grams(words, n = 8) { const o = new Set(); for (let i = 0; i + n <= words.length; i++) o.add(words.slice(i, i + n).join(' ')); return o; }
 const slugify = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-async function rehost(cloudinary, url, slug) {
-  const res = await cloudinary.uploader.upload(url, {
-    public_id: `reading/mini-ielts/${slug}`, overwrite: true, resource_type: 'image',
-    transformation: [{ width: 900, crop: 'limit' }],
-  });
+// Re-host a remote illustration on R2 (max 900 px wide).
+async function rehost(url, slug) {
+  const res = await require('../services/r2Service').uploadImageFrom(url, `reading/mini-ielts/${slug}`, { maxWidth: 900 });
   return res.secure_url;
 }
 
@@ -51,14 +49,12 @@ async function addImage([id, url, credit]) {
   require('dotenv').config({ path: path.join(__dirname, '..', '.env'), quiet: true });
   const mongoose = require('mongoose');
   const Passage = require('../models/Passage');
-  const cloudinary = require('cloudinary').v2;
-  cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
   await mongoose.connect(process.env.MONGO_URI);
   try {
     const p = await Passage.findById(id).select('title content updatedAt').lean();
     if (!p) throw new Error(`no passage ${id}`);
     if (/<img\s/.test(p.content)) { console.log(`"${p.title}" already has an image — skipped`); return; }
-    const hosted = await rehost(cloudinary, url, slugify(p.title));
+    const hosted = await rehost(url, slugify(p.title));
     let content = withImage(p.content, hosted, p.title);
     if (credit) content = content.replace(/(<img [^>]+>)<\/p>/, `$1<br><small style="color:#888">${credit}</small></p>`);
     const r = await Passage.collection.updateOne({ _id: p._id, updatedAt: p.updatedAt }, { $set: { content, updatedAt: new Date() } });
@@ -122,20 +118,18 @@ async function run() {
     console.log(`\n${plan.length} to import (inactive).`);
     if (!apply || !plan.length) { if (plan.length) console.log('dry run — re-run with --apply.'); return; }
 
-    const cloudinary = require('cloudinary').v2;
-    cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
     for (const it of plan) {
       // every mini passage comes from "Recent Actual Tests" → listed in the Actual Test tab too (thầy, 2026-10-01)
       const d = { ...it.doc, isActive: false, isActualTest: true };
       if (it.imageUrl) {
-        try { d.content = withImage(d.content, await rehost(cloudinary, it.imageUrl, slugify(d.title)), d.title); }
+        try { d.content = withImage(d.content, await rehost(it.imageUrl, slugify(d.title)), d.title); }
         catch (e) { console.log(`  ! image failed for "${d.title}": ${e.message}`); }
       }
       // diagram/map images belong to the questions — without them the group is unanswerable, so skip the passage
       let diagramFailed = false;
       for (const [i, g] of d.questionGroups.entries()) {
-        if (!g.imageUrl || /res\.cloudinary\.com/.test(g.imageUrl)) continue;
-        try { g.imageUrl = await rehost(cloudinary, g.imageUrl, `${slugify(d.title)}-q${i + 1}`); }
+        if (!g.imageUrl || /res\.cloudinary\.com|media\.ieltsthayha\.com/.test(g.imageUrl)) continue;
+        try { g.imageUrl = await rehost(g.imageUrl, `${slugify(d.title)}-q${i + 1}`); }
         catch (e) { console.log(`  ! diagram failed for "${d.title}" group ${i + 1}: ${e.message} — passage skipped`); diagramFailed = true; break; }
       }
       if (diagramFailed) continue;

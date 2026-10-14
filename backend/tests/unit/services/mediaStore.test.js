@@ -46,6 +46,20 @@ test('falls back to Cloudinary when R2 is not configured', async () => {
   expect(img.url).toBe('https://res.cloudinary.com/x/a.jpg');
 });
 
+test('in production a missing R2 config fails the upload — never a silent Cloudinary upload', async () => {
+  const env = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  r2Service.isConfigured.mockReturnValue(false);
+  try {
+    await expect(mediaStore.uploadImage('data:image/jpeg;base64,AAAA', 'assignments')).rejects.toThrow(/R2 is not configured/);
+    await expect(mediaStore.uploadCover('data:image/jpeg;base64,AAAA')).rejects.toThrow(/R2 is not configured/);
+    expect(cloudinaryService.uploadImage).not.toHaveBeenCalled();
+  } finally {
+    process.env.NODE_ENV = env;
+    r2Service.isConfigured.mockReturnValue(true);
+  }
+});
+
 test('destroy deletes R2 files by key and pre-R2 files by Cloudinary public_id', async () => {
   const n = await mediaStore.destroy([
     { url: 'https://media.test/proctor-shots/1_a.jpg', publicId: 'proctor-shots/1_a.jpg' },

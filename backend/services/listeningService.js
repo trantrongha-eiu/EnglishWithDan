@@ -9,8 +9,7 @@
 // below — unlike task1/task2/writingPractice's normalize(), which
 // genuinely differs and was left un-merged.
 const mongoose = require('mongoose');
-const cloudinaryService = require('./cloudinaryService');
-const r2Service = require('./r2Service');
+const mediaStore = require('./mediaStore');
 const { NotFoundError } = require('../errors/AppError');
 const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -237,19 +236,9 @@ async function deleteAdminTestPermanent(id) {
 }
 
 // ── Admin – Uploads ──────────────────────────────────────────────────────
-// Audio goes to Cloudflare R2 when configured (no egress fees — Listening
-// audio was ~95% of the Cloudinary bill), else Cloudinary as before.
-// Returns { url, duration } (duration in whole seconds).
-async function uploadAudio(file, folder, name) {
-  const r = r2Service.isConfigured()
-    ? await r2Service.uploadAudio(file.buffer, {
-      folder, public_id: name,
-      ext: (/\.([a-z0-9]{2,4})$/i.exec(file.originalname || '') || [, 'mp3'])[1].toLowerCase(),
-      contentType: file.mimetype || 'audio/mpeg',
-    })
-    : await cloudinaryService.uploadBufferStream(file.buffer, { resource_type: 'video', folder, public_id: name, overwrite: true });
-  return { url: r.secure_url, duration: Math.round(r.duration || 0) };
-}
+// Audio goes to Cloudflare R2 (services/mediaStore). Returns { url, duration }
+// (duration in whole seconds).
+const uploadAudio = (file, folder, name) => mediaStore.uploadListeningAudio(file, folder, name);
 
 async function uploadTestAudio(id, file) {
   const { url, duration } = await uploadAudio(file, 'listening', `listening_${id}_${Date.now()}`);
@@ -274,7 +263,7 @@ async function uploadStandaloneAudio(file) {
 // needs to return two distinct 400 messages for those two cases — this
 // only performs the upload itself.
 async function uploadMapImage(imageBase64) {
-  return (await require('./mediaStore').uploadImage(imageBase64, 'listening-maps')).url;
+  return (await mediaStore.uploadImage(imageBase64, 'listening-maps')).url;
 }
 
 async function uploadSectionAudio(id, file) {

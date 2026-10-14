@@ -115,14 +115,20 @@ describe('proctorShotService.purgeOldShots — 30-day retention', () => {
     expect(destroyed.sort()).toEqual(['proctor-shots/m-old', 'proctor-shots/s-old']);
     expect((await ListeningPracticeAttempt.findById(sim._id).lean()).proctor.shots.map(x => x.publicId)).toEqual(['proctor-shots/s-new']);
     expect((await MockTestAttempt.collection.findOne({ _id: mockId })).proctor.shots).toEqual([]);
-    // Orphan sweep of the Cloudinary folder by upload age.
-    expect(cloudinaryService.listOldImages).toHaveBeenCalledWith('proctor-shots', 31);
   });
 
-  test('also deletes orphaned images the folder sweep finds', async () => {
-    cloudinaryService.listOldImages.mockResolvedValueOnce(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
-    const r = await proctorShotService.purgeOldShots();
-    expect(r.orphans).toBe(2);
-    expect(cloudinaryService.destroyAssets).toHaveBeenCalledWith(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
+  test('also deletes orphaned images the R2 folder sweep finds', async () => {
+    const r2Service = require('../../services/r2Service');
+    const conf = jest.spyOn(r2Service, 'isConfigured').mockReturnValue(true);
+    const list = jest.spyOn(r2Service, 'listOldKeys').mockResolvedValue(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
+    const del = jest.spyOn(r2Service, 'deleteObjects').mockResolvedValue(2);
+    try {
+      const r = await proctorShotService.purgeOldShots();
+      expect(r.orphans).toBe(2);
+      expect(list).toHaveBeenCalledWith('proctor-shots', 31);
+      expect(del).toHaveBeenCalledWith(['proctor-shots/orphan1', 'proctor-shots/orphan2']);
+    } finally {
+      [conf, list, del].forEach(s => s.mockRestore());
+    }
   });
 });

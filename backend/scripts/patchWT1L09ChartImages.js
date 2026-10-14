@@ -31,13 +31,13 @@
 
 const ROWS = [
   ['Graph 1', 'The consumption of fish and different kinds of meat in a European country between 1979 and 2004.',
-    'https://res.cloudinary.com/dnexal8zv/image/upload/v1789613304/wt1/charts/fish-meat-1979-2004.png'],
+    'https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png'],
   ['Graph 2', 'The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.',
-    'https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png'],
+    'https://media.ieltsthayha.com/wt1/charts/population-65plus.png'],
   ['Graph 3', 'The changes in annual spending by a particular UK school in 1981 and 1991.',
-    'https://res.cloudinary.com/dnexal8zv/image/upload/v1788514573/wt1/charts/uk-school-pie-1981-1991.png'],
+    'https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png'],
   ['Graph 4', 'Male and female fitness membership in Thailand between 1985 and 2015.',
-    'https://res.cloudinary.com/dnexal8zv/image/upload/v1788514574/wt1/charts/gym-thailand-1985-2015.png'],
+    'https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png'],
 ];
 
 const E03_SAMPLE_ANSWER = 'The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040. The pie charts illustrate how a particular UK school divided its annual spending, namely in 1981 and 1991. The line graph compares fitness club membership in Thailand in terms of gender between 1985 and 2015.';

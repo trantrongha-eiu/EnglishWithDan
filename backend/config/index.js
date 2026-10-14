@@ -26,8 +26,8 @@ module.exports = {
 
   // Cloudflare R2 (services/r2Service.js) — every uploaded file lives here,
   // not on Cloudinary (zero egress fees). publicUrl is the bucket's custom
-  // domain, e.g. https://media.ieltsthayha.com. Unset ⇒ uploads fall back
-  // to Cloudinary (services/mediaStore.js).
+  // domain, e.g. https://media.ieltsthayha.com. Unset ⇒ uploads fail in
+  // production, fall back to Cloudinary elsewhere (services/mediaStore.js).
   r2: {
     accountId: process.env.R2_ACCOUNT_ID,
     accessKeyId: process.env.R2_ACCESS_KEY_ID,

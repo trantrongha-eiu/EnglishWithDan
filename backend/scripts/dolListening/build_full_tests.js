@@ -8,8 +8,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const ListeningSection = require('../../models/ListeningSection');
 const ListeningTest = require('../../models/ListeningTest');
 const W = f => path.join(__dirname, 'web', f);
@@ -34,7 +32,6 @@ const PLAN = [
 ];
 
 const ffmpeg = () => execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
-const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
 const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const durationOf = (ff, file) => {
   let txt = '';

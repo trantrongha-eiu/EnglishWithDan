@@ -1,8 +1,10 @@
 'use strict';
 
-// One place that decides where an uploaded file goes: Cloudflare R2 when
-// configured (production — no egress fees), else Cloudinary as before (local
-// dev without R2_* vars, and the test suite, which blanks them).
+// One place that decides where an uploaded file goes: Cloudflare R2 (no
+// egress fees). Cloudinary is only a fallback for local dev without R2_*
+// vars and the test suite (which blanks them) — the account was emptied on
+// 2026-10-14, so in production a missing R2 config is an error, never a
+// silent upload to Cloudinary.
 //
 // Every upload resolves to { url, publicId, width?, height? }. `publicId` is
 // the R2 key or the Cloudinary public_id; destroy() works out which from the
@@ -11,7 +13,13 @@
 const r2Service = require('./r2Service');
 const cloudinaryService = require('./cloudinaryService');
 
-const useR2 = () => r2Service.isConfigured();
+function useR2() {
+  if (r2Service.isConfigured()) return true;
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('R2 is not configured (R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY / R2_BUCKET / R2_PUBLIC_URL) — refusing to upload to Cloudinary');
+  }
+  return false;
+}
 
 // Inline / content image (base64 data URI): map, chart, assignment photo,
 // proctor screenshot, QR code. Stored as-is.
@@ -20,6 +28,25 @@ async function uploadImage(dataUri, folder) {
     ? await r2Service.uploadImage(dataUri, { folder })
     : await cloudinaryService.uploadImage(dataUri, { folder });
   return { url: r.secure_url, publicId: r.public_id, width: r.width, height: r.height };
+}
+
+// Practice-list card cover (Passage / ListeningSection / VocabularyLesson /
+// WritingExam .thumbnailUrl): pre-cropped 640×320 WebP on R2.
+async function uploadCover(dataUri) {
+  if (!useR2()) return (await cloudinaryService.uploadImage(dataUri, { folder: 'reading/covers' })).secure_url;
+  return r2Service.uploadCoverImage(await r2Service.loadBuffer(dataUri), { folder: 'covers' });
+}
+
+// Listening audio (admin upload). Returns { url, duration } (seconds, rounded).
+async function uploadListeningAudio(file, folder, name) {
+  const r = useR2()
+    ? await r2Service.uploadAudio(file.buffer, {
+      folder, public_id: name,
+      ext: (/\.([a-z0-9]{2,4})$/i.exec(file.originalname || '') || [, 'mp3'])[1].toLowerCase(),
+      contentType: file.mimetype || 'audio/mpeg',
+    })
+    : await cloudinaryService.uploadBufferStream(file.buffer, { resource_type: 'video', folder, public_id: name, overwrite: true });
+  return { url: r.secure_url, duration: Math.round(r.duration || 0) };
 }
 
 async function uploadAvatar(dataUri) {
@@ -62,7 +89,7 @@ async function destroy(items, { resourceType = 'image' } = {}) {
     else if (pid && !/^https?:/.test(pid)) cld.push(pid);
   }
   let n = 0;
-  if (r2Keys.length && useR2()) n += await r2Service.deleteObjects(r2Keys).catch(() => 0);
+  if (r2Keys.length && r2Service.isConfigured()) n += await r2Service.deleteObjects(r2Keys).catch(() => 0);
   if (cld.length) {
     n += resourceType === 'image'
       ? await cloudinaryService.destroyAssets(cld).catch(() => 0)
@@ -71,4 +98,4 @@ async function destroy(items, { resourceType = 'image' } = {}) {
   return n;
 }
 
-module.exports = { useR2, uploadImage, uploadAvatar, uploadPdf, uploadRecording, destroy };
+module.exports = { useR2, uploadImage, uploadCover, uploadListeningAudio, uploadAvatar, uploadPdf, uploadRecording, destroy };

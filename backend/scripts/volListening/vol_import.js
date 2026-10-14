@@ -5,8 +5,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const fs = require('fs'), path = require('path');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const ListeningSection = require('../../models/ListeningSection');
 const { audioFor, durationOf, cropFor } = require('./vol_media');
 
@@ -16,7 +14,6 @@ const ids = rest.filter(a => !a.startsWith('--'));
 const W = f => path.join(__dirname, 'web', `vol${vol}`, f);
 const IMPORTED = W('imported.json');
 const imported = fs.existsSync(IMPORTED) ? JSON.parse(fs.readFileSync(IMPORTED, 'utf8')) : {};
-const upload = (file, opts) => new Promise((res, rej) => fs.createReadStream(file).pipe(cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r))));
 const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 const strip = o => Array.isArray(o) ? o.map(strip) : (o && typeof o === 'object')
   ? Object.fromEntries(Object.entries(o).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, strip(v)])) : o;
@@ -35,7 +32,7 @@ const strip = o => Array.isArray(o) ? o.map(strip) : (o && typeof o === 'object'
       const tag = d.audioFileName.replace(/\.mp3$/, '');
       const au = await uploadAudio(mp3, { folder: 'listening-sections', public_id: tag });
       for (const gi of maps) {
-        const im = await upload(cropFor(d, gi), { folder: 'listening-maps', public_id: `${tag}_g${gi}`, overwrite: true });
+        const im = await require('../../services/r2Service').uploadImageFrom(cropFor(d, gi), `listening-maps/${tag}_g${gi}`);
         d.questionGroups[gi].imageUrl = im.secure_url;
       }
       const doc = strip(d);

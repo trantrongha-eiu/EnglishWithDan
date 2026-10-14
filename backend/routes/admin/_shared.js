@@ -19,13 +19,9 @@ async function uploadImageDataUri(imageBase64, folder) {
 
 // Card cover image (Passage / ListeningSection / VocabularyLesson /
 // WritingExam .thumbnailUrl — all four admin forms post here via
-// CoverImageField). Goes to Cloudflare R2 when configured (pre-cropped
-// there, see r2Service.uploadCoverImage), else Cloudinary as before.
+// CoverImageField). Pre-cropped 640×320 WebP on R2 — services/mediaStore.
 async function uploadCoverImageDataUri(imageBase64) {
-  const r2Service = require('../../services/r2Service');
-  if (!r2Service.isConfigured()) return uploadImageDataUri(imageBase64, 'reading/covers');
-  const buf = Buffer.from(String(imageBase64).slice(String(imageBase64).indexOf(',') + 1), 'base64');
-  return r2Service.uploadCoverImage(buf, { folder: 'covers' });
+  return mediaStore.uploadCover(imageBase64);
 }
 
 // Upload a PDF Buffer (from multer memoryStorage), return its URL. Shared by

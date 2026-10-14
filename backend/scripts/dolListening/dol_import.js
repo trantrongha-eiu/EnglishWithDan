@@ -7,8 +7,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
 const ListeningSection = require('../../models/ListeningSection');
 
 const W = f => path.join(__dirname, 'web', f);
@@ -16,7 +14,6 @@ const IMPORTED = W('imported.json');
 const imported = fs.existsSync(IMPORTED) ? JSON.parse(fs.readFileSync(IMPORTED, 'utf8')) : {};
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128 Safari/537.36';
 
-const upload = (buf, opts) => new Promise((res, rej) => cloudinary.uploader.upload_stream(opts, (e, r) => e ? rej(e) : res(r)).end(buf));
 const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js
 
 function strip(o) {
@@ -51,7 +48,7 @@ function strip(o) {
       for (const gi of maps) {
         const png = W(`maps/${id}_${gi}.png`);
         execFileSync('py', [path.join(__dirname, 'dol_mapimg.py'), W(`draft/${id}.json`), String(gi), png], { stdio: 'pipe' });
-        const im = await upload(fs.readFileSync(png), { folder: 'listening-maps', public_id: `dol_${d._dolSectionId}_${gi}` });
+        const im = await require('../../services/r2Service').uploadImageFrom(png, `listening-maps/dol_${d._dolSectionId}_${gi}`);
         d.questionGroups[gi].imageUrl = im.secure_url;
       }
       const doc = strip(d);

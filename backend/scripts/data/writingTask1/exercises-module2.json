@@ -679,7 +679,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Line graph — 8 đoạn với các dạng xu hướng khác nhau (tăng dần, tăng vọt, ổn định, dao động, giảm nhẹ, giảm mạnh, đạt đỉnh, chạm đáy)",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/line-graph-AN.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/line-graph-AN.png"
       },
       "responseSlots": 8,
       "rubric": {
@@ -1706,7 +1706,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "The consumption of fish and different kinds of meat in a European country between 1979 and 2004",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/fish-meat-1979-2004.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
       },
       "wordBank": [
         "The amount of [fish/chicken/beef/lamb] consumed by each person a week",
@@ -1755,7 +1755,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "The changes in annual spending by a particular UK school in 1981 and 1991 (pie charts)",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/uk-school-pie-1981-1991.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
       },
       "wordBank": [
         "The percentage of budget poured into [teachers' salaries / resources] was …",
@@ -1804,7 +1804,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Male and female fitness membership in Thailand between 1985 and 2015",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/gym-thailand-1985-2015.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
       },
       "wordBank": [
         "The number of male / female fitness members"
@@ -2001,7 +2001,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Figures A, B, C, D, E, F — sáu dạng xu hướng khác nhau",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/w_1200,h_840,c_pad,b_white,g_north/l_wt1:charts:figures-def,w_1200,c_scale/fl_layer_apply,g_south/wt1/charts/figures-abc.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/figures-abc_t2927e4e9.png"
       },
       "responseSlots": 6,
       "rubric": {
@@ -2045,7 +2045,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Biểu đồ có phần dữ liệu quá khứ và phần dự báo tương lai",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/forecast-1940-2030.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/forecast-1940-2030.png",
         "note": "Xác định “năm chuyển giao” giữa dữ liệu thật và dữ liệu dự báo trước khi viết."
       },
       "wordBank": [
@@ -2694,22 +2694,22 @@
           [
             "Graph 1",
             "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1789613304/wt1/charts/fish-meat-1979-2004.png"
+            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
           ],
           [
             "Graph 2",
             "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png"
+            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
           ],
           [
             "Graph 3",
             "The changes in annual spending by a particular UK school in 1981 and 1991.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1788514573/wt1/charts/uk-school-pie-1981-1991.png"
+            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
           ],
           [
             "Graph 4",
             "Male and female fitness membership in Thailand between 1985 and 2015.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1788514574/wt1/charts/gym-thailand-1985-2015.png"
+            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
           ]
         ]
       },
@@ -2757,22 +2757,22 @@
           [
             "Graph 1",
             "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1789613304/wt1/charts/fish-meat-1979-2004.png"
+            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
           ],
           [
             "Graph 2",
             "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png"
+            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
           ],
           [
             "Graph 3",
             "The changes in annual spending by a particular UK school in 1981 and 1991.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1788514573/wt1/charts/uk-school-pie-1981-1991.png"
+            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
           ],
           [
             "Graph 4",
             "Male and female fitness membership in Thailand between 1985 and 2015.",
-            "https://res.cloudinary.com/dnexal8zv/image/upload/v1788514574/wt1/charts/gym-thailand-1985-2015.png"
+            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
           ]
         ],
         "note": "Bốn cách tìm đặc điểm nổi bật: (1) tất cả cùng tăng/giảm? (2) cái nào luôn cao/thấp nhất? (3) cái nào thay đổi mạnh nhất? (4) có xu hướng trái ngược không?"
@@ -3003,7 +3003,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "The consumption of fish and different kinds of meat in a European country between 1979 and 2004",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/fish-meat-1979-2004.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
       },
       "responseSlots": 2,
       "rubric": {
@@ -3050,7 +3050,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "The chart below shows male and female fitness membership in Thailand between 1985 and 2015.",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/gym-thailand-1985-2015.png"
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
       },
       "rubric": {
         "minWords": 150,
@@ -3645,7 +3645,7 @@
       "stimulus": {
         "kind": "image",
         "caption": "Proportion of the population aged 65 and over, 1940–2040, three countries",
-        "imageUrl": "https://res.cloudinary.com/dnexal8zv/image/upload/wt1/charts/population-65plus.png",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/population-65plus.png",
         "note": "Biểu đồ có cả dữ liệu quá khứ và dự báo → phải chuyển thì tại năm chuyển giao."
       },
       "rubric": {

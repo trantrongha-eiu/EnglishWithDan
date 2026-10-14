@@ -16,7 +16,6 @@ const { ValidationError, NotFoundError, AppError } = require('../errors/AppError
 const MockTestAttempt = require('../models/MockTestAttempt');
 const EntranceTestAttempt = require('../models/EntranceTestAttempt');
 const examSimulationService = require('./examSimulationService');
-const cloudinaryService = require('./cloudinaryService');
 const r2Service = require('./r2Service');
 const mediaStore = require('./mediaStore');
 const TestAttempt = require('../models/TestAttempt');
@@ -87,10 +86,10 @@ const SHOT_MODELS = [
 const PURGE_BATCH = 200;
 
 // Deletes every screenshot older than SHOT_RETENTION_DAYS: the stored image
-// first (R2 or Cloudinary, by its URL), then its entry on the attempt. Then a
-// folder sweep by upload date — in R2 and in the old Cloudinary folder —
-// catches images whose attempt no longer exists (admin delete, the 3-month
-// practice-history TTL). Returns { shots, attempts, orphans }.
+// first (by its URL — services/mediaStore), then its entry on the attempt.
+// Then an R2 folder sweep by upload date catches images whose attempt no
+// longer exists (admin delete, the 3-month practice-history TTL).
+// Returns { shots, attempts, orphans }.
 async function purgeOldShots({ now = Date.now(), maxRounds = 50 } = {}) {
   const cutoff = new Date(now - SHOT_RETENTION_DAYS * 24 * 60 * 60 * 1000);
   const old = { 'proctor.shots': { $elemMatch: { at: { $lt: cutoff } } } };
@@ -123,17 +122,6 @@ async function purgeOldShots({ now = Date.now(), maxRounds = 50 } = {}) {
     } catch (e) {
       logger.error('cron', 'ProctorShotCleanup: R2 sweep failed', { errorMessage: e.message });
     }
-  }
-  // Shots taken before the move to R2 (2026-10) still age out of Cloudinary.
-  try {
-    for (let round = 0; round < maxRounds; round++) {
-      const ids = await cloudinaryService.listOldImages(SHOT_FOLDER, SHOT_RETENTION_DAYS + 1);
-      if (!ids.length) break;
-      orphans += await cloudinaryService.destroyAssets(ids);
-      if (ids.length < 100) break;
-    }
-  } catch (e) {
-    logger.error('cron', 'ProctorShotCleanup: folder sweep failed', { errorMessage: e.message });
   }
   return { shots, attempts, orphans };
 }

@@ -151,7 +151,7 @@ router.get('/', async (req, res) => {
     // reports these the same way).
     result.dependencies.googleOAuth = { status: process.env.GOOGLE_CLIENT_ID ? 'configured' : 'not_configured' };
     result.dependencies.email = { status: (process.env.EMAIL_USER || process.env.RESEND_API_KEY) ? 'configured' : 'not_configured' };
-    // R2 unset ⇒ every upload falls back to Cloudinary (services/mediaStore).
+    // R2 unset ⇒ uploads fail in production (services/mediaStore).
     result.dependencies.r2 = { status: require('../services/r2Service').isConfigured() ? 'configured' : 'not_configured' };
   }
 

@@ -6,8 +6,8 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
+const r2 = require('../../services/r2Service');
+if (!r2.isConfigured()) throw new Error('R2_* env vars missing — see services/r2Service.js');
 const W = f => path.join(__dirname, 'web', f);
 
 // our section id → where the picture comes from
@@ -47,7 +47,7 @@ const qsig = g => JSON.stringify((g.questions || []).map(q => [q.questionNumber,
       console.log(`${apply ? '→' : 'dry'} ${s.title} Q${s.questionGroups[gi].questions[0].questionNumber}+ ← ${path.basename(png)}; full-test copies: ${copies.map(c => c.t.name).join(', ') || 'none'}`);
       if (!apply) continue;
       fs.writeFileSync(W(`backup/section_${job.id}.json`), JSON.stringify(s));
-      const up = await cloudinary.uploader.upload(png, { folder: 'listening-maps', public_id: `map_${job.id}`, overwrite: true });
+      const up = await r2.uploadImageFrom(png, `listening-maps/map_${job.id}`);
       const r = await db.collection('listeningsections').updateOne({ _id: s._id, updatedAt: s.updatedAt }, { $set: { [`questionGroups.${gi}.imageUrl`]: up.secure_url, updatedAt: new Date() } });
       console.log(`   section ${r.modifiedCount ? '✓' : '✗ changed meanwhile'} ${up.secure_url}`);
       for (const c of copies) {
