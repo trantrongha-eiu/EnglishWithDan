@@ -35,6 +35,10 @@ export const SKILL_META = {
   'wt1-course':         { color: '#0284c7', label: '📖 Khoá học (khác)' },
 };
 
+// Rows from the WT1-stack courses (Khoá học Task 1 / Task 2 / Speaking /
+// Noun Phrase) — their detail opens in Wt1ReviewModal.
+export const isWt1Skill = (skill) => String(skill || '').startsWith('wt1-');
+
 export function skillBadge(skill) {
   const { color, label } = SKILL_META[skill] || { color: '#8b92a8', label: skill };
   return <span style={{ background: color + '22', color, padding: '2px 8px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>{label}</span>;

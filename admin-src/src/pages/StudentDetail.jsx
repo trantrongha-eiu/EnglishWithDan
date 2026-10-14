@@ -5,7 +5,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useAdminData } from '../contexts/AdminDataContext';
 import { useApi } from '../hooks/useApi';
 import VocabDetailPanel from '../components/VocabDetailPanel';
-import { skillBadge, SKILL_META } from '../components/SkillBadge';
+import Wt1ReviewModal from '../components/Wt1ReviewModal';
+import { skillBadge, SKILL_META, isWt1Skill } from '../components/SkillBadge';
 import PageHeader from '../components/ui/PageHeader';
 import { ErrorState, EmptyState, TableBody, Skeleton } from '../components/ui/States';
 import { bandBadge, roleBadge, planBadge, simBadge } from '../components/ui/badges';
@@ -170,6 +171,7 @@ function OverviewTab({ id, isAdmin, onOpenTuition }) {
 function HistoryTab({ id }) {
   const [skill, setSkill] = useState('');
   const [limit, setLimit] = useState(HISTORY_STEP);
+  const [wt1View, setWt1View] = useState(null); // WT1Submission id open in Wt1ReviewModal
   const path = `/admin/recent-attempts?userId=${id}&limit=${limit}${skill ? `&skill=${encodeURIComponent(skill)}` : ''}`;
   const { data, error, loading, refreshing, reload } = useApi(path);
   const rows = data?.attempts || [];
@@ -201,7 +203,9 @@ function HistoryTab({ id }) {
                       ? <Link to={`/writing-grades?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
                       : h.skill === 'speaking'
                         ? <Link to={`/speaking?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
-                        : (h.testName || '–')}
+                        : isWt1Skill(h.skill)
+                          ? <button type="button" className="link-btn" onClick={() => setWt1View(h._id)} title="Xem bài làm">{h.testName || '–'}</button>
+                          : (h.testName || '–')}
                     {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
                     {simBadge(h)}
                   </td>
@@ -217,6 +221,7 @@ function HistoryTab({ id }) {
           </TableBody>
         </table>
       </div>
+      {wt1View && <Wt1ReviewModal id={wt1View} onClose={() => setWt1View(null)} />}
       {!loading && rows.length < total && (
         <div style={{ textAlign: 'center', marginTop: 14 }}>
           <button type="button" className="btn btn-ghost" disabled={refreshing} onClick={() => setLimit(l => l + HISTORY_STEP)}>

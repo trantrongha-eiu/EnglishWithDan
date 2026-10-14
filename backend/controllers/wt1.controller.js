@@ -51,6 +51,11 @@ exports.check = async (req, res) => {
       : grading.gradeObjective(ex, answers);
     await svc.recordSubmission(req.user._id, ex, {
       answers, score: result.score, correctCount: result.correctCount, maxScore: result.maxScore,
+      // Verdicts as shown now, for the history review. Gemini's per-item
+      // feedback is kept; static explanations are re-read from the exercise.
+      results: (result.items || []).map((r) => ({
+        id: r.id, correct: !!r.correct, ...(result.aiGraded && r.explanation ? { explanation: r.explanation } : {}),
+      })),
     });
     res.json({ success: true, ...result });
   } catch (err) {
@@ -83,7 +88,10 @@ exports.submitWriting = async (req, res) => {
 
     if (ex.type === 'sentence_writing') {
       const result = grading.gradeWritingLocal(ex, arr);
-      await svc.recordSubmission(req.user._id, ex, { responses: arr, score: result.score });
+      await svc.recordSubmission(req.user._id, ex, {
+        responses: arr, score: result.score,
+        localFeedback: { feedbackVi: result.feedbackVi, checklist: result.checklist },
+      });
       return res.json({ success: true, ...result });
     }
 
@@ -98,7 +106,10 @@ exports.submitWriting = async (req, res) => {
     } catch (aiErr) {
       console.warn('[WT1] AI grading unavailable — grading against the rubric instead:', aiErr.message);
       const local = grading.gradeWritingLocal(ex, arr);
-      await svc.recordSubmission(req.user._id, ex, { responses: arr, score: local.score });
+      await svc.recordSubmission(req.user._id, ex, {
+        responses: arr, score: local.score,
+        localFeedback: { feedbackVi: local.feedbackVi, checklist: local.checklist, aiUnavailable: true },
+      });
       // `aiUnavailable` drives the "AI đang bận — điểm sơ bộ theo rubric"
       // banner in showWritingFeedback (all 3 course pages). `local` already
       // carries score / checklist / sampleAnswer in the same shape
@@ -295,6 +306,8 @@ exports.submitSpeaking = async (req, res) => {
         corrections: (feedback.mistakes || []).map((m) => ({
           original: m.original, corrected: m.corrected, note: m.reason,
         })),
+        strengths: feedback.strengths || [],
+        improvements: feedback.improvements || [],
       },
     });
 
@@ -330,6 +343,18 @@ exports.getExerciseHistory = async (req, res) => {
     res.json({ success: true, history });
   } catch (err) {
     console.error('[WT1] exercise history:', err.message);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// GET /api/wt1/history?course=IELTS-SPEAKING&limit=50&skip=0 — every
+// attempt across one course, newest first (last 3 months — TTL).
+exports.getCourseHistory = async (req, res) => {
+  try {
+    const data = await svc.getCourseHistory(req.user._id, req.query.course, { limit: req.query.limit, skip: req.query.skip });
+    res.json({ success: true, ...data });
+  } catch (err) {
+    console.error('[WT1] course history:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };

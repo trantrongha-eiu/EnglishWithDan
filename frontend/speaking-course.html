@@ -34,6 +34,8 @@
       transition: border-color .15s, color .15s, transform .1s; }
     .t1-btn:hover { border-color: #f43f5e; color: #f43f5e; }
     .t1-btn:active { transform: scale(.96); }
+    .t1-hist-btn { border: none; background: none; color: #9ca3af; cursor: pointer; font-size: 13px; margin-left: 8px; padding: 2px 4px; }
+    .t1-hist-btn:hover { color: #f43f5e; }
 
     /* Test-lesson unlock-code modal — self-contained (this page has no
        other modal to borrow chrome from, unlike writing-task1.html's
@@ -343,6 +345,7 @@
 <script src="/js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="/js/shared/score-message.js?v=20260910"></script>
 <script src="/js/shared/course-result.js?v=20260910"></script>
+<script src="/js/shared/wt1-history.js?v=20261014hist"></script>
 
 <div id="app"></div>
 
@@ -429,6 +432,10 @@
     if (window.ApiClient && window.ApiClient.handleResponse) return window.ApiClient.handleResponse(res);
     return res.json();
   }
+
+  // Lịch sử luyện tập (course-wide + per exercise) — shared/wt1-history.js
+  if (window.WT1History) window.WT1History.init({ api: api, courseCode: 'IELTS-SPEAKING' });
+  function openHistory() { var ex = curEx(); if (ex && window.WT1History) window.WT1History.openExercise(ex.code, ex.title); }
 
   function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
 
@@ -755,11 +762,14 @@
     return '<div class="sc-hero"><h2>🎤 IELTS Speaking — Khóa học</h2>' +
       '<p>' + esc((d.course && d.course.description) || 'Khoá học Speaking theo sách Daniel Ha — trọn bộ 3 phần, 45 buổi.') + '</p>' +
       (nLes ? '<div class="stats"><span>' + nMod + ' module</span><span>' + nLes + ' buổi</span><span>' + nEx + ' bài</span><span>Part 1 · 2 · 3</span></div>' : '') +
+      '<button class="t1-btn" id="t1-course-hist" style="margin-top:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</button>' +
       '</div>' +
       (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Trọn bộ 45 buổi Part 1 · Part 2 · Part 3, mỗi buổi có bài NÓI được AI chấm</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
       mods;
   }
   function bindOverview() {
+    var hb = document.getElementById('t1-course-hist');
+    if (hb && window.WT1History) hb.addEventListener('click', function () { window.WT1History.openCourse(); });
     document.querySelectorAll('.t1-lesson').forEach(function (el) {
       el.addEventListener('click', function () {
         if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
@@ -1031,7 +1041,8 @@
     var isWriting = !OBJECTIVE[ex.type];
     var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
     return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
-      '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length + '</span>' +
+      '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
+      '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i></button></span>' +
       (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + fmt(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
       '<div style="margin:0 20px;height:4px;border-radius:4px;background:var(--surface2,#eef2f7);overflow:hidden">' +
         '<span style="display:block;height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f43f5e,#22c55e);border-radius:4px"></span></div>' +
@@ -1055,6 +1066,7 @@
     document.getElementById('t1-quit').addEventListener('click', goToLesson);
     document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
     document.getElementById('t1-submit').addEventListener('click', submit);
+    document.getElementById('t1-hist-btn').addEventListener('click', openHistory);
 
     if (ex.type === 'speaking_response') SpeakingRec.mount();
 

@@ -311,6 +311,7 @@
 <script src="/js/shared/wbw-drill.js?v=20260917novi"></script>
 <script src="/js/shared/score-message.js?v=20260910"></script>
 <script src="/js/shared/course-result.js?v=20260910"></script>
+<script src="/js/shared/wt1-history.js?v=20261014hist"></script>
 
 <div id="app"></div>
 
@@ -338,13 +339,6 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-<div id="t1-hist-modal" class="t1-hist-modal hidden">
-  <div class="t1-hist-box">
-    <div class="t1-hist-header"><h3><i class="fas fa-history"></i> Lịch sử luyện tập</h3>
-      <button class="t1-hist-close" id="t1-hist-close-btn"><i class="fas fa-times"></i></button></div>
-    <div class="t1-hist-body" id="t1-hist-body"></div>
   </div>
 </div>
 <!-- Test-lesson unlock: a locked "Kiểm tra" lesson (isTest) needs a code an
@@ -413,6 +407,10 @@
     if (window.ApiClient && window.ApiClient.handleResponse) return window.ApiClient.handleResponse(res);
     return res.json();
   }
+
+  // Lịch sử luyện tập (course-wide + per exercise) — shared/wt1-history.js
+  if (window.WT1History) window.WT1History.init({ api: api, courseCode: 'IELTS-W-T2' });
+  function openHistory() { var ex = curEx(); if (ex && window.WT1History) window.WT1History.openExercise(ex.code, ex.title); }
 
   function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
 
@@ -538,11 +536,14 @@
     return '<div class="t1-hero"><h2>✍️ IELTS Task 2 Writing</h2>' +
       '<p>' + esc((d.course && d.course.description) || 'Khoá học Task 2: nền tảng 4 tiêu chí + 9 chức năng câu, và 7 dạng đề') + '</p>' +
       (nLes ? '<div class="stats"><span>' + nMod + ' module</span><span>' + nLes + ' buổi</span><span>' + nEx + ' bài</span></div>' : '') +
+      '<button class="t1-btn" id="t1-course-hist" style="margin-top:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</button>' +
       '</div>' +
       (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>Toàn bộ 3 module · 18 buổi học Task 2</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
       mods;
   }
   function bindOverview() {
+    var hb = document.getElementById('t1-course-hist');
+    if (hb && window.WT1History) hb.addEventListener('click', function () { window.WT1History.openCourse(); });
     document.querySelectorAll('.t1-lesson').forEach(function (el) {
       el.addEventListener('click', function () {
         if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
@@ -627,27 +628,6 @@
   function curEx() { return state.exercises[state.exIdx]; }
   function _recordResult(e) { var i = state.results.findIndex(function (x) { return x.code === e.code; }); if (i >= 0) state.results[i] = e; else state.results.push(e); }
 
-  // ── HISTORY (past attempts at the current exercise) ─────────────────
-  function fmtHistDate(d) {
-    try { return new Date(d).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
-    catch (e) { return ''; }
-  }
-  async function openHistory() {
-    var ex = curEx();
-    if (!ex) return;
-    var modal = document.getElementById('t1-hist-modal');
-    var body = document.getElementById('t1-hist-body');
-    modal.classList.remove('hidden');
-    body.innerHTML = '<div class="t1-hist-loading"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
-    try {
-      var d = await api('/wt1/exercise/' + encodeURIComponent(ex.code) + '/history');
-      renderHistoryList(d.history || []);
-    } catch (e) {
-      body.innerHTML = '<div class="t1-hist-empty">Không tải được lịch sử.</div>';
-    }
-  }
-  function closeHistory() { document.getElementById('t1-hist-modal').classList.add('hidden'); }
-
   // ── test-lesson unlock code ───────────────────────────────────────
   function openTestCodeModal(lessonCode, reason) {
     var modal = document.getElementById('t1-code-modal');
@@ -691,19 +671,6 @@
       btn.disabled = false;
     }
   }
-  function renderHistoryList(rows) {
-    var body = document.getElementById('t1-hist-body');
-    if (!rows.length) { body.innerHTML = '<div class="t1-hist-empty">Bạn chưa làm bài này lần nào.</div>'; return; }
-    body.innerHTML = rows.map(function (r) {
-      var scoreTxt = r.band != null ? 'Band ' + r.band
-        : (r.maxScore != null ? (r.score != null ? r.score : 0) + '/' + r.maxScore + 'đ' : (r.status === 'graded' ? 'Đã chấm' : 'Chưa chấm'));
-      return '<div class="t1-hist-row"><div class="t1-hist-row-top">' +
-        '<span class="t1-hist-attempt">Lượt ' + r.attempt + '</span>' +
-        '<span class="t1-hist-score">' + esc(scoreTxt) + '</span></div>' +
-        '<div class="t1-hist-date">' + fmtHistDate(r.createdAt) + '</div></div>';
-    }).join('');
-  }
-
   function renderStimulus(st) {
     if (!st) return '';
     var body = '';
@@ -1282,12 +1249,6 @@
     if (st.view === 'lesson' && st.lesson) openLesson(st.lesson, null, true);
     else if (st.view === 'exercise' && st.lesson) openLesson(st.lesson, st.ex, true);
     else { state.view = 'overview'; loadOverview(); }
-  });
-
-  // ── history modal (static markup, bound once) ────────────────────
-  document.getElementById('t1-hist-close-btn').addEventListener('click', closeHistory);
-  document.getElementById('t1-hist-modal').addEventListener('click', function (e) {
-    if (e.target.id === 't1-hist-modal') closeHistory();
   });
 
   // ── test-code modal (static markup, bound once) ───────────────────

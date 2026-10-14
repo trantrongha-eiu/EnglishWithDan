@@ -20,6 +20,15 @@ const WT1SubmissionSchema = new Schema(
     score: Number,
     correctCount: Number,
     maxScore: Number,
+    // Per-item verdict exactly as returned at grading time — kept so the
+    // "Lịch sử" review (student + admin, wt1Service.buildReview) shows the
+    // SAME right/wrong marks the student saw, including Gemini's verdict on
+    // autoGrade:false sentence_transform items (a local re-grade could
+    // disagree). Rows saved before this existed are re-graded locally.
+    results: [{ _id: false, id: String, correct: Boolean, explanation: String }],
+    // Rubric-based grade for writing (sentence_writing, or the fallback when
+    // AI grading is unavailable) — { feedbackVi, checklist, aiUnavailable }.
+    localFeedback: Schema.Types.Mixed,
 
     // Bài AI chấm
     responses: [String], // theo responseSlots, hoặc 1 phần tử với paragraph/full
@@ -31,6 +40,9 @@ const WT1SubmissionSchema = new Schema(
       corrections: [{ original: String, corrected: String, note: String }],
       usedStructures: [String],
       missingStructures: [String],
+      // speaking_response only
+      strengths: [String],
+      improvements: [String],
       rawTokens: Number,
     },
 
@@ -68,7 +80,9 @@ const WT1SubmissionSchema = new Schema(
 
 WT1SubmissionSchema.index({ userId: 1, exerciseCode: 1, attempt: 1 }, { unique: true });
 // Same 3-month retention convention as every other attempt-history model
-// (see memory/data_retention_policy.md).
+// (see memory/data_retention_policy.md). Lesson progress does NOT depend on
+// these rows surviving — WT1Progress.exerciseBest keeps each exercise's best
+// score after its submissions expire (see wt1Service._recompute).
 WT1SubmissionSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('WT1Submission', WT1SubmissionSchema);

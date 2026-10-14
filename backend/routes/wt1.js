@@ -66,5 +66,6 @@ router.post('/submit-speaking', auth, premiumOnly, writeLimiter, optionalAudio('
 router.get('/progress',            auth, ctrl.getProgress);
 router.get('/attempt/:attemptId',  auth, ctrl.getAttempt);
 router.get('/exercise/:code/history', auth, ctrl.getExerciseHistory);
+router.get('/history',             auth, ctrl.getCourseHistory);
 
 module.exports = router;

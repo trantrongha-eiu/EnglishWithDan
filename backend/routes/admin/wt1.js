@@ -14,6 +14,7 @@ const WT1Module = require('../../models/WT1Module');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Exercise = require('../../models/WT1Exercise');
 const { EXERCISE_TYPES } = WT1Exercise;
+const wt1Service = require('../../services/wt1Service');
 
 const router = express.Router();
 const COURSE = 'IELTS-W-T1';
@@ -194,6 +195,24 @@ router.delete('/wt1/exercises/:code', auth, adminOnly, async (req, res) => {
     const ex = await WT1Exercise.findOneAndDelete({ code: req.params.code });
     if (!ex) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
     res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+
+// ── student attempt review ─────────────────────────────────────────
+// GET /api/admin/wt1/submissions/:id — one student's saved attempt at a
+// WT1-stack course exercise (Task 1 / Task 2 / Speaking), in the same
+// render-ready shape the student's own "Lịch sử" view gets
+// (wt1Service.buildReview), plus who submitted it. Rows in the
+// /admin/recent-attempts feed link here. History older than 3 months is
+// gone (WT1Submission TTL), so a stale link answers 404.
+router.get('/wt1/submissions/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const data = await wt1Service.getSubmissionReview(req.params.id);
+    if (!data) return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm (lịch sử chỉ lưu 3 tháng)' });
+    const u = data.sub.userId || {};
+    const displayName = [u.firstName, u.lastName].filter(Boolean).join(' ').trim() || u.username || '–';
+    res.json({ success: true, student: { _id: u._id, username: u.username, displayName }, review: data.review });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 

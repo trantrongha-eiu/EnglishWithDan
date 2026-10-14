@@ -6,10 +6,11 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../hooks/useApi';
 import Pagination from '../components/Pagination';
-import { skillBadge, SKILL_META } from '../components/SkillBadge';
+import { skillBadge, SKILL_META, isWt1Skill } from '../components/SkillBadge';
 import { TableBody, EmptyState } from '../components/ui/States';
 import { bandBadge, simBadge } from '../components/ui/badges';
 import { formatDur, formatNumber } from '../utils/format';
+import Wt1ReviewModal from '../components/Wt1ReviewModal';
 
 const PAGE_SIZE = 25;
 const INITIAL_LOAD = 150;
@@ -42,6 +43,7 @@ export default function StudentHistory() {
   const [search,  setSearch]  = useState('');
   const [page,    setPage]    = useState(1);
   const [removed, setRemoved] = useState(() => new Set());
+  const [wt1View, setWt1View] = useState(null); // WT1Submission id open in Wt1ReviewModal
 
   // Skill filtering happens on the server (?skill= queries one collection),
   // so it covers ALL history, not just the rows loaded so far.
@@ -139,7 +141,9 @@ export default function StudentHistory() {
                   </td>
                   <td>{skillBadge(h.skill)}</td>
                   <td>
-                    {h.testName || '–'}
+                    {isWt1Skill(h.skill)
+                      ? <button type="button" className="link-btn" onClick={() => setWt1View(h._id)} title="Xem bài làm">{h.testName || '–'}</button>
+                      : (h.testName || '–')}
                     {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
                     {simBadge(h)}
                   </td>
@@ -161,6 +165,8 @@ export default function StudentHistory() {
           </TableBody>
         </table>
       </div>
+
+      {wt1View && <Wt1ReviewModal id={wt1View} onClose={() => setWt1View(null)} />}
 
       <Pagination page={safePage} total={filtered.length} pageSize={PAGE_SIZE} onPage={setPage} />
     </>

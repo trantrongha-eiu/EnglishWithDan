@@ -2094,6 +2094,10 @@ body { display: block; }
 .user-cell-text { display: flex; flex-direction: column; min-width: 0; }
 .user-cell-name { font-weight: 700; color: var(--text); text-decoration: none; }
 a.user-cell-name:hover { color: var(--blue); }
+/* Button that reads as an inline link (course-exercise names in the history
+   tables open Wt1ReviewModal). */
+.link-btn { background: none; border: none; padding: 0; font: inherit; color: var(--blue); cursor: pointer; text-align: left; }
+.link-btn:hover { text-decoration: underline; }
 .user-cell-meta { font-size: 12px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; }
 .muted { color: var(--text3); }
 .is-refreshing { opacity: .55; transition: opacity .15s; }

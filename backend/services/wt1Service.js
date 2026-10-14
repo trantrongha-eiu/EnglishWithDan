@@ -167,6 +167,47 @@ function summariseSubmissions(subs, lessonCodesByExercise, exMeta) {
   return byLesson;
 }
 
+// ── durable progress (survives the 3-month history TTL) ─────────────
+// WT1Submission rows expire after 3 months (data-retention policy), but a
+// finished exercise must stay finished and an opened lesson must stay open.
+// WT1Progress.exerciseBest is the durable copy: { code: best score }.
+// Legacy progress rows written before exerciseBest existed only kept the
+// list of completed codes + the lesson average, so that average stands in
+// for each code's score.
+function durableBest(p) {
+  if (!p) return {};
+  if (p.exerciseBest && typeof p.exerciseBest === 'object') return p.exerciseBest;
+  const out = {};
+  for (const c of p.completedExercises || []) out[c] = p.objectiveScorePercent || 0;
+  return out;
+}
+
+// Real submissions + one pseudo-submission per durably-recorded exercise.
+// summariseSubmissions keeps the best score per exercise, so an
+// exerciseBest entry never lowers anything; legacy (average-based) entries
+// only fill in codes that have no real submission left.
+function withDurableProgress(subs, progressRows) {
+  const seen = new Set(subs.map((s) => s.exerciseCode));
+  const out = subs.slice();
+  for (const p of progressRows) {
+    const legacy = !(p.exerciseBest && typeof p.exerciseBest === 'object');
+    for (const [code, score] of Object.entries(durableBest(p))) {
+      if (legacy && seen.has(code)) continue;
+      out.push({ exerciseCode: code, score: Number(score) || 0 });
+    }
+  }
+  return out;
+}
+
+// Every non-draft submission of this student, plus durable progress.
+async function loadDoneSubs(userId) {
+  const [subs, progress] = await Promise.all([
+    WT1Submission.find({ userId, status: { $ne: 'draft' } }).select('exerciseCode score').lean(),
+    WT1Progress.find({ userId }).select('exerciseBest completedExercises objectiveScorePercent').lean(),
+  ]);
+  return withDurableProgress(subs, progress);
+}
+
 // What this student has unlocked with admin-issued codes (all codes are,
 // like review-bypass codes, redeemable once per student regardless of
 // maxUses — see ReviewBypassCode.redemptions):
@@ -252,7 +293,7 @@ async function getOverview(userId, courseCode) {
   // 'draft' = a multi-item speaking_response attempt still mid-recording
   // (see recordSpeakingItem) — must never count toward a lesson's done/
   // score state until every item has actually been graded.
-  const subs = await WT1Submission.find({ userId, status: { $ne: 'draft' } }).select('exerciseCode score maxScore aiFeedback status').lean();
+  const subs = await loadDoneSubs(userId);
   const perLesson = summariseSubmissions(
     subs.map((s) => ({ ...s, lessonCode: lessonCodesByExercise[s.exerciseCode] })),
     lessonCodesByExercise, { typeByCode },
@@ -300,7 +341,7 @@ async function assertLessonUnlocked(userId, lessonCode) {
   for (const [lc, meta] of Object.entries(counts)) {
     meta.codes.forEach((c, i) => { lessonCodesByExercise[c] = lc; typeByCode[c] = meta.types[i]; });
   }
-  const subs = await WT1Submission.find({ userId, status: { $ne: 'draft' } }).select('exerciseCode score maxScore aiFeedback status').lean();
+  const subs = await loadDoneSubs(userId);
   const perLesson = summariseSubmissions(
     subs.map((s) => ({ ...s, lessonCode: lessonCodesByExercise[s.exerciseCode] })),
     lessonCodesByExercise, { typeByCode },
@@ -329,6 +370,10 @@ async function getLesson(code, userId) {
     .select('exerciseCode score maxScore aiFeedback status createdAt').sort({ createdAt: -1 }).lean();
   const lastByCode = {};
   for (const s of subs) if (!lastByCode[s.exerciseCode]) lastByCode[s.exerciseCode] = s;
+  // Exercises whose submissions have all expired (3-month TTL) still show
+  // as done, from durable progress.
+  const prog = await WT1Progress.findOne({ userId, lessonCode: code }).select('exerciseBest completedExercises objectiveScorePercent').lean();
+  const durable = durableBest(prog);
   // Needed only to gate gap_fill's drag-drop word bank (Speaking course) vs
   // free typing (every other course) in sanitizeExercise — see COURSES above.
   const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('courseCode').lean();
@@ -344,7 +389,8 @@ async function getLesson(code, userId) {
     exercises: exercises.map((ex) => {
       const s = sanitizeExercise(ex, courseCode);
       const last = lastByCode[ex.code];
-      s.lastAttempt = last ? { score: last.score ?? null, hasAi: !!last.aiFeedback, at: last.createdAt } : null;
+      s.lastAttempt = last ? { score: last.score ?? null, hasAi: !!last.aiFeedback, at: last.createdAt }
+        : (ex.code in durable ? { score: Number(durable[ex.code]) || 0, hasAi: false, at: null } : null);
       return s;
     }),
   };
@@ -354,13 +400,26 @@ async function getLesson(code, userId) {
 async function _recompute(userId, lessonCode) {
   const exs = await WT1Exercise.find({ lessonCode, published: true }).select('code type').lean();
   const codeType = Object.fromEntries(exs.map((e) => [e.code, e.type]));
-  const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exs.map((e) => e.code) }, status: { $ne: 'draft' } })
-    .select('exerciseCode score status').lean();
+  const [subs, prog] = await Promise.all([
+    WT1Submission.find({ userId, exerciseCode: { $in: exs.map((e) => e.code) }, status: { $ne: 'draft' } })
+      .select('exerciseCode score status').lean(),
+    WT1Progress.findOne({ userId, lessonCode }).select('exerciseBest completedExercises objectiveScorePercent').lean(),
+  ]);
+  // Start from the durable record (submissions older than 3 months are
+  // gone — see durableBest), then raise with whatever submissions remain.
+  // Legacy entries only fill codes with no surviving submission.
   const best = {};
-  for (const s of subs) if (!best[s.exerciseCode] || (s.score || 0) > (best[s.exerciseCode].score || 0)) best[s.exerciseCode] = s;
+  const legacy = !(prog && prog.exerciseBest && typeof prog.exerciseBest === 'object');
+  const withSub = new Set(subs.map((s) => s.exerciseCode));
+  for (const [c, sc] of Object.entries(durableBest(prog))) {
+    if (!(legacy && withSub.has(c))) best[c] = Number(sc) || 0;
+  }
+  for (const s of subs) if (!(s.exerciseCode in best) || (s.score || 0) > best[s.exerciseCode]) best[s.exerciseCode] = s.score || 0;
 
-  const doneCodes = Object.keys(best);
-  const objScores = doneCodes.filter((c) => grading.OBJECTIVE_TYPES.has(codeType[c])).map((c) => best[c].score || 0);
+  // Codes no longer in the lesson stay in exerciseBest (content may be
+  // re-published) but don't count toward this lesson's numbers.
+  const doneCodes = Object.keys(best).filter((c) => c in codeType);
+  const objScores = doneCodes.filter((c) => grading.OBJECTIVE_TYPES.has(codeType[c])).map((c) => best[c]);
   const writingSubmissions = doneCodes.filter((c) => !grading.OBJECTIVE_TYPES.has(codeType[c])).length;
   const objectiveScorePercent = objScores.length ? Math.round(objScores.reduce((a, b) => a + b, 0) / objScores.length) : 0;
   const allDone = exs.length > 0 && doneCodes.length >= exs.length;
@@ -375,7 +434,7 @@ async function _recompute(userId, lessonCode) {
     { userId, lessonCode },
     {
       $set: {
-        courseCode, completedExercises: doneCodes,
+        courseCode, completedExercises: doneCodes, exerciseBest: best,
         objectiveScorePercent, writingSubmissions, unlocked: met,
         completedAt: allDone ? new Date() : null,
       },
@@ -473,7 +532,7 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
 
   doc.status = 'graded';
   doc.responses = results.map((r) => r.transcript || '');
-  doc.aiFeedback = { model: 'gemini', scores, bandEstimate, feedbackVi, corrections };
+  doc.aiFeedback = { model: 'gemini', scores, bandEstimate, feedbackVi, corrections, strengths, improvements };
   await doc.save();
   await _recompute(userId, exercise.lessonCode);
 
@@ -489,24 +548,156 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
 // band if AI-graded, date); a row's full detail (answers/responses/full
 // aiFeedback) is fetched on demand via the existing getAttemptDetail/
 // GET /wt1/attempt/:id, same as clicking into one attempt already works.
+const HISTORY_FIELDS = 'exerciseCode lessonCode attempt score maxScore correctCount status aiFeedback.bandEstimate createdAt';
+function clampLimit(limit) { return Math.min(Math.max(Number(limit) || 50, 1), 200); }
+function historyRow(s) {
+  return {
+    id: s._id, attempt: s.attempt, score: s.score ?? null, maxScore: s.maxScore ?? null,
+    correctCount: s.correctCount ?? null, band: s.aiFeedback?.bandEstimate ?? null,
+    status: s.status, createdAt: s.createdAt,
+  };
+}
+
 async function getExerciseHistory(userId, exerciseCode, limit = 50) {
   const subs = await WT1Submission.find({ userId, exerciseCode, status: { $ne: 'draft' } })
-    .select('attempt score maxScore status aiFeedback.bandEstimate createdAt')
+    .select(HISTORY_FIELDS)
     .sort({ attempt: -1 })
-    .limit(Math.min(Math.max(Number(limit) || 50, 1), 200))
+    .limit(clampLimit(limit))
     .lean();
-  return subs.map((s) => ({
-    id: s._id, attempt: s.attempt, score: s.score ?? null, maxScore: s.maxScore ?? null,
-    band: s.aiFeedback?.bandEstimate ?? null, status: s.status, createdAt: s.createdAt,
+  return subs.map(historyRow);
+}
+
+// Every attempt across ONE course (newest first) — the course-wide
+// "Lịch sử luyện tập" button on the overview page. Only the last 3 months
+// exist (WT1Submission TTL), which is exactly what the student is promised.
+async function getCourseHistory(userId, courseCode, { limit, skip } = {}) {
+  const cc = resolveCourse(courseCode);
+  const modCodes = (await WT1Module.find({ courseCode: cc }).select('code').lean()).map((m) => m.code);
+  const lessons = await WT1Lesson.find({ moduleCode: { $in: modCodes } }).select('code title').lean();
+  const lessonTitle = Object.fromEntries(lessons.map((l) => [l.code, l.title]));
+  const q = { userId, status: { $ne: 'draft' }, lessonCode: { $in: Object.keys(lessonTitle) } };
+  const lim = clampLimit(limit);
+  const sk = Math.max(0, parseInt(skip, 10) || 0);
+  const [subs, total] = await Promise.all([
+    WT1Submission.find(q).select(HISTORY_FIELDS).sort({ createdAt: -1 }).skip(sk).limit(lim).lean(),
+    WT1Submission.countDocuments(q),
+  ]);
+  const exs = await WT1Exercise.find({ code: { $in: [...new Set(subs.map((s) => s.exerciseCode))] } })
+    .select('code title type').lean();
+  const exByCode = Object.fromEntries(exs.map((e) => [e.code, e]));
+  const rows = subs.map((s) => ({
+    ...historyRow(s),
+    exerciseCode: s.exerciseCode, exerciseTitle: exByCode[s.exerciseCode]?.title || s.exerciseCode,
+    exerciseType: exByCode[s.exerciseCode]?.type || null,
+    lessonCode: s.lessonCode, lessonTitle: lessonTitle[s.lessonCode] || s.lessonCode,
   }));
+  return { rows, total, hasMore: sk + subs.length < total };
+}
+
+// ── review of one saved attempt (student "Lịch sử" + admin) ──────────
+// The student's raw answer, rendered the way the exercise displayed it.
+function formatAnswer(ex, it, a) {
+  if (a == null || a === '') return '';
+  switch (ex.type) {
+    case 'mcq': {
+      const o = (it.options || []).find((x) => String(x.id) === String(a));
+      return o ? `${o.id}. ${o.text}` : String(a);
+    }
+    case 'categorize': {
+      const c = (ex.categories || []).find((x) => String(x.id) === String(a));
+      return c ? c.label : String(a);
+    }
+    case 'gap_fill':
+      return (Array.isArray(a) ? a : [a]).map((x) => String(x == null ? '' : x).trim() || '___').join(' | ');
+    case 'ordering':
+      return (Array.isArray(a) ? a : [a]).join(' → ');
+    default:
+      return Array.isArray(a) ? a.join(' | ') : String(a);
+  }
+}
+function itemPrompt(ex, it) {
+  if (ex.type === 'categorize') return it.text || it.prompt || '';
+  if (ex.type === 'matching') return it.left || it.prompt || '';
+  if (ex.type === 'sentence_transform') {
+    const p = it.promptVi || it.prompt || '';
+    return it.cue ? `${p} (${it.cue})` : p;
+  }
+  return it.prompt || '';
+}
+
+// One normalised, render-ready shape for every exercise type, so the 3
+// course pages and the admin panel share one renderer. Objective items use
+// the verdict saved at grading time (`results`); rows saved before that
+// field existed are re-graded locally against the current answer key.
+function buildReview(sub, ex, lessonTitle) {
+  const type = ex ? ex.type : null;
+  const kind = type === 'speaking_response' ? 'speaking' : (grading.OBJECTIVE_TYPES.has(type) ? 'objective' : 'writing');
+  const review = {
+    id: sub._id, attempt: sub.attempt, createdAt: sub.createdAt, status: sub.status,
+    exerciseCode: sub.exerciseCode, lessonCode: sub.lessonCode, lessonTitle: lessonTitle || sub.lessonCode || '',
+    exercise: ex
+      ? { code: ex.code, title: ex.title, type: ex.type, instruction: ex.instruction || '' }
+      : { code: sub.exerciseCode, title: sub.exerciseCode, type: null, instruction: '' },
+    kind, score: sub.score ?? null, maxScore: sub.maxScore ?? null, correctCount: sub.correctCount ?? null,
+    band: sub.aiFeedback?.bandEstimate ?? null,
+  };
+
+  if (kind === 'objective') {
+    const answers = sub.answers || {};
+    const graded = grading.gradeObjective(ex, answers);
+    const stored = new Map((sub.results || []).map((r) => [r.id, r]));
+    review.items = (ex.items || []).map((it, i) => {
+      const g = graded.items[i] || {};
+      const st = stored.get(it.id);
+      return {
+        prompt: itemPrompt(ex, it), answer: formatAnswer(ex, it, answers[it.id]),
+        correct: st ? !!st.correct : !!g.correct, correctAnswer: g.correctAnswer || '',
+        explanation: (st && st.explanation) || g.explanation || '',
+      };
+    });
+    return review;
+  }
+
+  const ai = sub.aiFeedback;
+  review.responses = sub.responses || [];
+  review.prompts = ex ? (ex.items || []).map((it) => it.prompt).filter(Boolean) : [];
+  review.ai = ai ? {
+    scores: ai.scores || {}, band: ai.bandEstimate ?? null, feedbackVi: ai.feedbackVi || '',
+    corrections: ai.corrections || [], usedStructures: ai.usedStructures || [],
+    missingStructures: ai.missingStructures || [], strengths: ai.strengths || [], improvements: ai.improvements || [],
+  } : null;
+  review.local = sub.localFeedback || null;
+  review.sampleAnswer = (ex && ex.rubric && ex.rubric.sampleAnswer) || '';
+  if (kind === 'speaking') {
+    review.speakingItems = (sub.itemResults || []).map((r) => ({
+      prompt: r.prompt || '', transcript: r.transcript || '',
+      band: r.feedback?.bandEstimate ?? null, scores: r.feedback?.scores || {},
+      feedbackVi: r.feedback?.feedbackVi || '', corrections: r.feedback?.corrections || [],
+    }));
+  }
+  return review;
+}
+
+// `filter` scopes the lookup: { userId } for a student (own attempts only),
+// {} for admin/teacher. Drafts (half-recorded speaking) are never shown.
+async function getSubmissionReview(id, filter = {}) {
+  if (!mongoose.isValidObjectId(id)) return null;
+  const sub = await WT1Submission.findOne({ _id: id, status: { $ne: 'draft' }, ...filter })
+    .populate('userId', 'username firstName lastName email').lean();
+  if (!sub) return null;
+  const [ex, lesson] = await Promise.all([
+    WT1Exercise.findOne({ code: sub.exerciseCode }).lean(),
+    sub.lessonCode ? WT1Lesson.findOne({ code: sub.lessonCode }).select('title').lean() : null,
+  ]);
+  return { sub, ex, review: buildReview(sub, ex, lesson && lesson.title) };
 }
 
 async function getAttemptDetail(userId, id) {
-  if (!mongoose.isValidObjectId(id)) return null;
-  const sub = await WT1Submission.findOne({ _id: id, userId }).lean();
-  if (!sub) return null;
-  const ex = await WT1Exercise.findOne({ code: sub.exerciseCode }).lean();
-  return { submission: sub, exercise: ex ? sanitizeExercise(ex) : null };
+  const data = await getSubmissionReview(id, { userId });
+  if (!data) return null;
+  const submission = { ...data.sub };
+  delete submission.userId;
+  return { submission, exercise: data.ex ? sanitizeExercise(data.ex) : null, review: data.review };
 }
 
 async function getProgress(userId) {
@@ -521,5 +712,5 @@ async function getProgress(userId) {
 module.exports = {
   COURSE_CODE, sanitizeExercise, gateDefaults,
   getOverview, getLesson, recordSubmission, recordSpeakingItem, getAttemptDetail, getExerciseHistory, getProgress,
-  assertLessonUnlocked,
+  getCourseHistory, getSubmissionReview, assertLessonUnlocked,
 };
