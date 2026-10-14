@@ -24,6 +24,7 @@
   const CATEGORY_LABEL = {
     'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
+    'spelling-numbers': 'Đánh vần & số',
   };
   const SPEEDS = [1, 0.75, 0.5, 1.25];
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -197,9 +198,26 @@
   }
   // Hyphenated words ("high-rise", "self-perception") are scored as their
   // parts, since recognition often returns them as separate words.
-  function tokens(text) {
-    return (text || '').replace(/[-–—]/g, ' ').split(/\s+/).filter((w) => normWord(w) !== '');
+  // joinDigits (grading a number `answer`): "1387 9645" and "13879645" are
+  // the same number however the student groups the digits.
+  function tokens(text, joinDigits = false) {
+    const words = (text || '').replace(/[-–—]/g, ' ').split(/\s+/).filter((w) => normWord(w) !== '');
+    if (!joinDigits) return words;
+    const out = [];
+    let joinNext = false;
+    for (const w of words) {
+      const digits = /^\d+$/.test(normWord(w));
+      if (digits && joinNext) out[out.length - 1] += w;
+      else out.push(w);
+      joinNext = digits && !/[,;.?!]$/.test(w);
+    }
+    return out;
   }
+
+  // What Dictation grades: a segment's `answer` (just the name or number an
+  // IELTS answer sheet wants — "Theresa May" for "T-H-E-R-E-S-A, M-A-Y")
+  // when it has one, otherwise the whole sentence.
+  function dictRef(seg) { return seg.answer || seg.text; }
 
   // LCS word alignment → which reference / attempt indices matched.
   function diffWords(refWords, saidWords) {
@@ -231,7 +249,7 @@
   }
 
   function maskText(text) {
-    return text.split(/\s+/).map((w) => w.replace(/([A-Za-z])([A-Za-z']*)/, (_, f, r) => f + r.replace(/[A-Za-z]/g, '_'))).join(' ');
+    return text.split(/\s+/).map((w) => w.replace(/([A-Za-z0-9])([A-Za-z0-9']*)/, (_, f, r) => f + r.replace(/[A-Za-z0-9]/g, '_'))).join(' ');
   }
 
   // ══════════════ SHADOWING (speech recognition + own-voice playback) ══════════════
@@ -397,9 +415,10 @@
 
   // ══════════════ DICTATION ══════════════
   function dcCheck() {
-    const typed = tokens($('dc-input').value.trim());
+    const seg = lesson.segments[idx];
+    const typed = tokens($('dc-input').value.trim(), !!seg.answer);
     if (!typed.length) return;
-    const ref = tokens(lesson.segments[idx].text);
+    const ref = tokens(dictRef(seg), !!seg.answer);
     const { refHit, saidHit } = diffWords(ref, typed);
     const extra = typed.filter((_, k) => !saidHit.has(k));
     const perfect = refHit.size === ref.length && !extra.length;
@@ -408,7 +427,7 @@
       `<span class="${refHit.has(k) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`).join(' ') +
       (extra.length ? ' ' + extra.map((w) => `<span class="w-extra">${escHtml(w)}</span>`).join(' ') : '');
     $('dc-diff').classList.add('show');
-    $('dc-vi').textContent = viOf(lesson.segments[idx]);
+    $('dc-vi').textContent = seg.answer ? [seg.text, viOf(seg)].filter(Boolean).join(' — ') : viOf(seg);
     showScore('dc-score', perfect ? 'good' : scoreClass(pct),
       perfect ? '✓ Chính xác!' : `Đúng ${refHit.size}/${ref.length} từ`,
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
@@ -491,7 +510,8 @@
     // Dictation pane
     resetDictationPane();
     $('dc-hint').style.display = 'none';
-    $('dc-hint').textContent = `${tokens(seg.text).length} từ · ${maskText(seg.text)}`;
+    $('dc-hint').textContent = `${tokens(dictRef(seg), !!seg.answer).length} từ · ${maskText(dictRef(seg))}`;
+    $('dc-input').placeholder = seg.answer ? 'Chỉ cần gõ tên / con số bạn nghe được...' : 'Nhập những gì bạn nghe được...';
     if (mode === 'dictation' && !keepPlaying && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus({ preventScroll: true });
 
     markCurrent();

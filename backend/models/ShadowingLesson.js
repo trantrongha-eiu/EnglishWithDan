@@ -10,13 +10,14 @@
  */
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'fun-shorts'];
+const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'fun-shorts', 'spelling-numbers'];
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
   end:   { type: Number, required: true },
   text:  { type: String, required: true },
   vi:    { type: String, default: '' },    // Vietnamese translation, shown under the sentence
+  answer: { type: String },                // Dictation grades this instead of `text` (spelled names, numbers)
 }, { _id: false });
 
 const ShadowingLessonSchema = new mongoose.Schema({

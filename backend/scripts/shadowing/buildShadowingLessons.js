@@ -45,6 +45,12 @@
  * "um" / "uh" from unscripted speech (mock-test candidates); `pauseSplit`
  * overrides how many seconds of silence end a turn (a comic pause before a
  * punchline shouldn't split the sentence).
+ *
+ * Spelling & Numbers lessons are hand-timed instead: captions can't split
+ * "T… H… E…" letter by letter into sentences, so `segments` lists
+ * [start, end, text, answer] directly (timings read off the auto captions'
+ * per-word times). `answer` is what Dictation grades — the name or number
+ * an IELTS answer sheet would want — while Shadowing still uses `text`.
  */
 'use strict';
 
@@ -361,6 +367,137 @@ const LESSONS = [
     slug, youtubeId, title, sourceTitle: `${TEWS_PHRASE[slug]}: The English We Speak`, channel: 'BBC Learning English',
     category: 'fun-shorts', level, clipStart, clipEnd, description, stripSpeakers: true, minWords: 3,
   })),
+  // ── Spelling & Numbers (IELTS Listening Part 1) ─────────────────────
+  {
+    slug: 'spell-names-yana', youtubeId: 'zLH3DHr8Ezc',
+    title: 'Spelling names: 10 first names & surnames',
+    sourceTitle: 'IELTS Listening Practice – Spelling Names and Surnames', channel: 'Yana | IELTS Trainer',
+    category: 'spelling-numbers', level: 'A2',
+    description: 'Nghe tên rồi nghe đánh vần từng chữ cái, gõ lại đúng chính tả như Listening Part 1. Cẩn thận bẫy: nghe "Sophia" nhưng đánh vần S-O-F-I-A; "double R", "double L".',
+    segments: [
+      [34.2, 47.6, "Name one. Ethan Barrow. That's E-T-H-A-N for Ethan, and B-A-R-R-O-W for Barrow.", 'Ethan Barrow'],
+      [59.4, 70.8, "Name two. Maya Khan. That's M-A-Y-A for Maya, and K-H-A-N for Khan.", 'Maya Khan'],
+      [79.2, 90.6, "Name three. Oliver Kempsey. That's O-L-I-V-E-R for Oliver, and K-E-M-P-S-E-Y for Kempsey.", 'Oliver Kempsey'],
+      [101.4, 111.6, "Name four. Sofia Martins. That's S-O-F-I-A for Sofia, and M-A-R-T-I-N-S for Martins.", 'Sofia Martins'],
+      [123.1, 135.4, "Name five. Noah Fernandes. That's N-O-A-H for Noah, and F-E-R-N-A-N-D-E-S for Fernandes.", 'Noah Fernandes'],
+      [146.7, 157.9, "Name six. Rohan Ellis. That's R-O-H-A-N for Rohan, and E-L-L-I-S for Ellis.", 'Rohan Ellis'],
+      [169.6, 180.9, "Name seven. Greta Morrison. That's G-R-E-T-A for Greta, and M-O-double R-I-S-O-N for Morrison.", 'Greta Morrison'],
+      [192.4, 203.6, "Name eight. Callum Jeffers. That's C-A-double L-U-M for Callum, and J-E-F-F-E-R-S for Jeffers.", 'Callum Jeffers'],
+      [215.4, 232.2, "Name nine. Shirley Fitzgerald. That's S-H-I-R-L-E-Y for Shirley, and F-I-T-Z-G-E-R-A-L-D for Fitzgerald.", 'Shirley Fitzgerald'],
+      [247.2, 260.2, "Name ten. Nathan Wallace. That's N-A-T-H-A-N for Nathan, and W-A-double L-A-C-E for Wallace.", 'Nathan Wallace'],
+    ],
+  },
+  {
+    slug: 'spell-names-actors', youtubeId: 'y3XbLFxnRnQ',
+    title: 'Spelling names: famous actors',
+    sourceTitle: 'IELTS Listening Skills E1 - Spelling names - Actors and actresses', channel: 'IELTS with Vic',
+    category: 'spelling-numbers', level: 'A2',
+    description: 'Nghe đánh vần tên 10 diễn viên nổi tiếng (Helen Mirren, Maggie Smith, Tom Hardy…) và gõ lại đúng chính tả. Luyện "double R", "double G", "double L".',
+    segments: [
+      [36.9, 47.6, 'H-E-L-E-N Helen, M-I-double R-E-N Mirren.', 'Helen Mirren'],
+      [65.5, 77.6, 'A-L-A-N Alan, R-I-C-K-M-A-N Rickman.', 'Alan Rickman'],
+      [92.3, 102.9, 'M-A-double G-I-E Maggie, S-M-I-T-H Smith.', 'Maggie Smith'],
+      [113.0, 123.9, 'G-A-R-Y Gary, O-L-D-M-A-N Oldman.', 'Gary Oldman'],
+      [133.3, 145.2, 'T-I-L-D-A Tilda, S-W-I-N-T-O-N Swinton.', 'Tilda Swinton'],
+      [153.5, 164.4, 'I-A-N Ian, M-C-K-E-double L-E-N McKellen.', 'Ian McKellen'],
+      [173.4, 184.0, 'K-A-T-E Kate, W-I-N-S-L-E-T Winslet.', 'Kate Winslet'],
+      [194.0, 204.1, 'I-D-R-I-S Idris, E-L-B-A Elba.', 'Idris Elba'],
+      [212.6, 223.8, 'E-M-I-L-Y Emily, B-L-U-N-T Blunt.', 'Emily Blunt'],
+      [233.4, 242.0, 'T-O-M Tom, H-A-R-D-Y Hardy.', 'Tom Hardy'],
+    ],
+  },
+  {
+    slug: 'spell-names-politicians', youtubeId: 'UzmUo-rMQjY',
+    title: 'Spelling names: British politicians',
+    sourceTitle: 'IELTS Listening Skills E2 - Spelling names - politicians', channel: 'IELTS with Vic',
+    category: 'spelling-numbers', level: 'B1',
+    description: 'Khó hơn: chỉ nghe các chữ cái, không nghe trước cái tên. Gõ lại tên 10 chính trị gia Anh (Theresa May, Boris Johnson, Margaret Thatcher…).',
+    segments: [
+      [42.0, 55.5, 'T-H-E-R-E-S-A, M-A-Y.', 'Theresa May'],
+      [82.2, 96.0, 'N-I-C-K, C-L-E-double G.', 'Nick Clegg'],
+      [114.2, 130.0, 'D-I-A-N-E, A-double B-O-double T.', 'Diane Abbott'],
+      [149.3, 171.0, 'B-O-R-I-S, J-O-H-N-S-O-N.', 'Boris Johnson'],
+      [186.4, 213.5, 'N-I-C-O-L-A, S-T-U-R-G-E-O-N.', 'Nicola Sturgeon'],
+      [226.7, 247.5, 'G-O-R-D-O-N, B-R-O-W-N.', 'Gordon Brown'],
+      [261.2, 274.5, 'L-I-Z, T-R-U-double S.', 'Liz Truss'],
+      [286.8, 309.5, 'D-A-V-I-D, C-A-M-E-R-O-N.', 'David Cameron'],
+      [323.4, 351.5, 'M-A-R-G-A-R-E-T, T-H-A-T-C-H-E-R.', 'Margaret Thatcher'],
+      [366.7, 383.8, 'J-O-H-N, M-A-J-O-R.', 'John Major'],
+    ],
+  },
+  {
+    slug: 'numbers-13-or-30', youtubeId: 'rgIjmos4yDE',
+    title: 'Numbers: 13 or 30? Teen vs -ty',
+    sourceTitle: 'Listening Practice Numbers 13 or 30', channel: 'The IELTS Coach',
+    category: 'spelling-numbers', level: 'A2',
+    description: 'Phân biệt 13–30, 14–40… nghe trọng âm: "-teen" nhấn âm cuối và kéo dài, "-ty" nhấn âm đầu. Mẹo: dùng logic — "bà tôi 17 tuổi" chắc là 70!',
+    // The uploaded track paraphrases what is said — text follows the audio.
+    segments: [
+      [7.0, 11.9, "Hello and welcome to today's IELTS listening practice lesson."],
+      [12.0, 18.4, "And today we're going to listen to the different sounds with certain numbers."],
+      [18.5, 24.8, 'So the numbers are 13 and 30, 14 and 40.'],
+      [24.9, 31.5, "So we'll see how they are pronounced differently and how you can listen to them and write them down correctly."],
+      [32.4, 41.5, "So let's look at the two groups. We have \"teen\", which is a longer sound, and then \"ty\", which is short, and it is a different vowel sound."],
+      [42.8, 52.4, 'And also, the difference in pronouncing these two different sets of numbers is, for the teen numbers, the last syllable is stressed.'],
+      [52.5, 58.2, 'But for 30, 40, the first syllable is stressed.'],
+      [58.3, 64.5, 'Okay, so there is a difference in the stress as well as a difference in the sound and the length of the sound.'],
+      [64.6, 81.5, "So now let's have a look and say the teen numbers: 13, 14, 15, 16, 17, 18, 19."],
+      [82.1, 87.9, "It's really easy: making it long in the second syllable, and that's the stressed syllable."],
+      [88.0, 91.8, "We know it's the \"teen\" and not the other form of the number."],
+      [91.9, 106.5, 'Now I will say the other numbers: 30, 40, 50, 60, 70, 80, 90.'],
+      [107.1, 112.0, 'So the first part, the first syllable, is longer and stressed.'],
+      [112.1, 120.5, 'Okay, now I will say them together so you can hear the difference, and this is what you need to be aware of in the listening exam.'],
+      [120.8, 140.8, '13, 30, 14, 40, 15, 50, 16, 60, 17, 70.'],
+      [141.4, 147.3, '18, 80, 19, 90.'],
+      [147.4, 153.0, "Okay, there's quite a big difference, so you can use this when you speak to show which number you're saying."],
+      [153.1, 158.0, "Make it clear. They should be different. They don't sound the same. They are quite different."],
+      [158.1, 168.3, "And of course, use this in the listening exam when you're listening for the number: think, which number did they say, as well as listening for the actual sounds."],
+      [168.4, 171.0, 'Also, think about the logic.'],
+      [171.1, 177.5, "Okay, if someone says, \"My grandmother is 17 years old\", that's probably not true."],
+      [177.6, 180.7, "It's not 17, it will be 70."],
+      [180.8, 187.3, 'Okay, so think about the logic as well as the sounds: the stress, which syllable is stressed.'],
+    ],
+  },
+  {
+    slug: 'numbers-reference-codes', youtubeId: 'V7V8xOTrEDg',
+    title: 'Numbers: room, reference & phone numbers',
+    sourceTitle: 'Part 1 of IELTS Listening Skills - NUMBERS', channel: 'IELTS with Vic',
+    category: 'spelling-numbers', level: 'A2',
+    description: 'Nghe 10 câu có dãy số (số phòng, mã tham chiếu, số điện thoại, mã khóa…) và chỉ cần gõ lại con số — đọc chậm, rõ, hợp để bắt đầu.',
+    segments: [
+      [32.3, 39.8, 'Number one. She lives in room 1207.', '1207'],
+      [40.0, 52.8, 'Two. My reference number is 1387 9645.', '1387 9645'],
+      [53.2, 63.3, 'Three. Their phone number is 776 521.', '776 521'],
+      [63.6, 76.8, 'Four. The lock number is 912 816 32.', '912 816 32'],
+      [77.2, 89.5, 'Five. The invoice number is 476 928.', '476 928'],
+      [121.0, 130.5, 'Six. Our phone number is 312 876.', '312 876'],
+      [130.8, 137.5, 'Seven. His applicant number is 912.', '912'],
+      [137.8, 145.4, 'Eight. The door code is 7642.', '7642'],
+      [145.7, 154.9, 'Nine. My receipt number is 529763.', '529763'],
+      [155.2, 167.5, 'Ten. The ID number is 12 72 64 87.', '12 72 64 87'],
+    ],
+  },
+  {
+    slug: 'numbers-phone-natural-speed', youtubeId: 'yXvVHq6LT5g',
+    title: 'Numbers: phone numbers at natural speed',
+    sourceTitle: 'IELTS Listening Practice - Telephone Numbers', channel: 'Woodward English',
+    category: 'spelling-numbers', level: 'B1',
+    description: 'Số điện thoại đọc tốc độ thật như trong bài thi: "oh" = 0, "double five", và bẫy sửa số giữa chừng ("549… oops, I mean 569…"). Chỉ cần gõ lại dãy số.',
+    segments: [
+      [105.0, 116.5, "Number one. I found his number. It's 48461329.", '48461329'],
+      [116.6, 128.5, 'Number two. My personal number is 0121 9510687.', '0121 9510687'],
+      [130.4, 144.5, 'Number three. My phone number is 549… Oops, I mean 569 8301 247.', '569 8301 247'],
+      [145.8, 161.5, "Number four. What's their phone number? Ah, here it is. It's 0412 159 07 43.", '0412 159 07 43'],
+      [163.0, 176.0, 'Number five. You can get hold of me at 151 709 6010.', '151 709 6010'],
+      [177.6, 187.0, 'Number six. My number is 8401 3590.', '8401 3590'],
+      [188.5, 200.0, "Number seven. John's number is 0171 502993.", '0171 502993'],
+      [202.4, 215.0, 'Number eight. You can request it at the following number. 02081963757.', '02081963757'],
+      [216.8, 228.0, 'Number nine. Our home phone number is 525 4333.', '525 4333'],
+      [229.7, 241.5, 'Number ten. Call us now at 01851 703 088.', '01851 703 088'],
+      [243.4, 256.0, 'Number eleven. Their fax number is 0207 035 4745.', '0207 035 4745'],
+      [257.9, 269.5, 'Number twelve. You can receive more information by calling 9182 7364.', '9182 7364'],
+    ],
+  },
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -639,6 +776,16 @@ function balanceQuotes(t) {
 }
 
 function buildLesson(spec, subsDir) {
+  if (spec.segments) {
+    const { segments, ...meta } = spec;
+    return {
+      ...meta,
+      clipStart: segments[0][0],
+      clipEnd: segments[segments.length - 1][1],
+      segments: segments.map(([start, end, text, answer]) => ({ start, end, text, ...(answer && { answer }) })),
+      _timing: 'hand-timed',
+    };
+  }
   const find = (suffixes) => suffixes
     .map((sfx) => path.join(subsDir, `${spec.youtubeId}.${sfx}.json3`))
     .find((f) => fs.existsSync(f));

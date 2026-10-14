@@ -7803,5 +7803,522 @@
       }
     ],
     "order": 49
+  },
+  {
+    "slug": "spell-names-yana",
+    "youtubeId": "zLH3DHr8Ezc",
+    "title": "Spelling names: 10 first names & surnames",
+    "sourceTitle": "IELTS Listening Practice – Spelling Names and Surnames",
+    "channel": "Yana | IELTS Trainer",
+    "category": "spelling-numbers",
+    "level": "A2",
+    "description": "Nghe tên rồi nghe đánh vần từng chữ cái, gõ lại đúng chính tả như Listening Part 1. Cẩn thận bẫy: nghe \"Sophia\" nhưng đánh vần S-O-F-I-A; \"double R\", \"double L\".",
+    "clipStart": 34.2,
+    "clipEnd": 260.2,
+    "segments": [
+      {
+        "start": 34.2,
+        "end": 47.6,
+        "text": "Name one. Ethan Barrow. That's E-T-H-A-N for Ethan, and B-A-R-R-O-W for Barrow.",
+        "answer": "Ethan Barrow"
+      },
+      {
+        "start": 59.4,
+        "end": 70.8,
+        "text": "Name two. Maya Khan. That's M-A-Y-A for Maya, and K-H-A-N for Khan.",
+        "answer": "Maya Khan"
+      },
+      {
+        "start": 79.2,
+        "end": 90.6,
+        "text": "Name three. Oliver Kempsey. That's O-L-I-V-E-R for Oliver, and K-E-M-P-S-E-Y for Kempsey.",
+        "answer": "Oliver Kempsey"
+      },
+      {
+        "start": 101.4,
+        "end": 111.6,
+        "text": "Name four. Sofia Martins. That's S-O-F-I-A for Sofia, and M-A-R-T-I-N-S for Martins.",
+        "answer": "Sofia Martins"
+      },
+      {
+        "start": 123.1,
+        "end": 135.4,
+        "text": "Name five. Noah Fernandes. That's N-O-A-H for Noah, and F-E-R-N-A-N-D-E-S for Fernandes.",
+        "answer": "Noah Fernandes"
+      },
+      {
+        "start": 146.7,
+        "end": 157.9,
+        "text": "Name six. Rohan Ellis. That's R-O-H-A-N for Rohan, and E-L-L-I-S for Ellis.",
+        "answer": "Rohan Ellis"
+      },
+      {
+        "start": 169.6,
+        "end": 180.9,
+        "text": "Name seven. Greta Morrison. That's G-R-E-T-A for Greta, and M-O-double R-I-S-O-N for Morrison.",
+        "answer": "Greta Morrison"
+      },
+      {
+        "start": 192.4,
+        "end": 203.6,
+        "text": "Name eight. Callum Jeffers. That's C-A-double L-U-M for Callum, and J-E-F-F-E-R-S for Jeffers.",
+        "answer": "Callum Jeffers"
+      },
+      {
+        "start": 215.4,
+        "end": 232.2,
+        "text": "Name nine. Shirley Fitzgerald. That's S-H-I-R-L-E-Y for Shirley, and F-I-T-Z-G-E-R-A-L-D for Fitzgerald.",
+        "answer": "Shirley Fitzgerald"
+      },
+      {
+        "start": 247.2,
+        "end": 260.2,
+        "text": "Name ten. Nathan Wallace. That's N-A-T-H-A-N for Nathan, and W-A-double L-A-C-E for Wallace.",
+        "answer": "Nathan Wallace"
+      }
+    ],
+    "order": 50
+  },
+  {
+    "slug": "spell-names-actors",
+    "youtubeId": "y3XbLFxnRnQ",
+    "title": "Spelling names: famous actors",
+    "sourceTitle": "IELTS Listening Skills E1 - Spelling names - Actors and actresses",
+    "channel": "IELTS with Vic",
+    "category": "spelling-numbers",
+    "level": "A2",
+    "description": "Nghe đánh vần tên 10 diễn viên nổi tiếng (Helen Mirren, Maggie Smith, Tom Hardy…) và gõ lại đúng chính tả. Luyện \"double R\", \"double G\", \"double L\".",
+    "clipStart": 36.9,
+    "clipEnd": 242,
+    "segments": [
+      {
+        "start": 36.9,
+        "end": 47.6,
+        "text": "H-E-L-E-N Helen, M-I-double R-E-N Mirren.",
+        "answer": "Helen Mirren"
+      },
+      {
+        "start": 65.5,
+        "end": 77.6,
+        "text": "A-L-A-N Alan, R-I-C-K-M-A-N Rickman.",
+        "answer": "Alan Rickman"
+      },
+      {
+        "start": 92.3,
+        "end": 102.9,
+        "text": "M-A-double G-I-E Maggie, S-M-I-T-H Smith.",
+        "answer": "Maggie Smith"
+      },
+      {
+        "start": 113,
+        "end": 123.9,
+        "text": "G-A-R-Y Gary, O-L-D-M-A-N Oldman.",
+        "answer": "Gary Oldman"
+      },
+      {
+        "start": 133.3,
+        "end": 145.2,
+        "text": "T-I-L-D-A Tilda, S-W-I-N-T-O-N Swinton.",
+        "answer": "Tilda Swinton"
+      },
+      {
+        "start": 153.5,
+        "end": 164.4,
+        "text": "I-A-N Ian, M-C-K-E-double L-E-N McKellen.",
+        "answer": "Ian McKellen"
+      },
+      {
+        "start": 173.4,
+        "end": 184,
+        "text": "K-A-T-E Kate, W-I-N-S-L-E-T Winslet.",
+        "answer": "Kate Winslet"
+      },
+      {
+        "start": 194,
+        "end": 204.1,
+        "text": "I-D-R-I-S Idris, E-L-B-A Elba.",
+        "answer": "Idris Elba"
+      },
+      {
+        "start": 212.6,
+        "end": 223.8,
+        "text": "E-M-I-L-Y Emily, B-L-U-N-T Blunt.",
+        "answer": "Emily Blunt"
+      },
+      {
+        "start": 233.4,
+        "end": 242,
+        "text": "T-O-M Tom, H-A-R-D-Y Hardy.",
+        "answer": "Tom Hardy"
+      }
+    ],
+    "order": 51
+  },
+  {
+    "slug": "spell-names-politicians",
+    "youtubeId": "UzmUo-rMQjY",
+    "title": "Spelling names: British politicians",
+    "sourceTitle": "IELTS Listening Skills E2 - Spelling names - politicians",
+    "channel": "IELTS with Vic",
+    "category": "spelling-numbers",
+    "level": "B1",
+    "description": "Khó hơn: chỉ nghe các chữ cái, không nghe trước cái tên. Gõ lại tên 10 chính trị gia Anh (Theresa May, Boris Johnson, Margaret Thatcher…).",
+    "clipStart": 42,
+    "clipEnd": 383.8,
+    "segments": [
+      {
+        "start": 42,
+        "end": 55.5,
+        "text": "T-H-E-R-E-S-A, M-A-Y.",
+        "answer": "Theresa May"
+      },
+      {
+        "start": 82.2,
+        "end": 96,
+        "text": "N-I-C-K, C-L-E-double G.",
+        "answer": "Nick Clegg"
+      },
+      {
+        "start": 114.2,
+        "end": 130,
+        "text": "D-I-A-N-E, A-double B-O-double T.",
+        "answer": "Diane Abbott"
+      },
+      {
+        "start": 149.3,
+        "end": 171,
+        "text": "B-O-R-I-S, J-O-H-N-S-O-N.",
+        "answer": "Boris Johnson"
+      },
+      {
+        "start": 186.4,
+        "end": 213.5,
+        "text": "N-I-C-O-L-A, S-T-U-R-G-E-O-N.",
+        "answer": "Nicola Sturgeon"
+      },
+      {
+        "start": 226.7,
+        "end": 247.5,
+        "text": "G-O-R-D-O-N, B-R-O-W-N.",
+        "answer": "Gordon Brown"
+      },
+      {
+        "start": 261.2,
+        "end": 274.5,
+        "text": "L-I-Z, T-R-U-double S.",
+        "answer": "Liz Truss"
+      },
+      {
+        "start": 286.8,
+        "end": 309.5,
+        "text": "D-A-V-I-D, C-A-M-E-R-O-N.",
+        "answer": "David Cameron"
+      },
+      {
+        "start": 323.4,
+        "end": 351.5,
+        "text": "M-A-R-G-A-R-E-T, T-H-A-T-C-H-E-R.",
+        "answer": "Margaret Thatcher"
+      },
+      {
+        "start": 366.7,
+        "end": 383.8,
+        "text": "J-O-H-N, M-A-J-O-R.",
+        "answer": "John Major"
+      }
+    ],
+    "order": 52
+  },
+  {
+    "slug": "numbers-13-or-30",
+    "youtubeId": "rgIjmos4yDE",
+    "title": "Numbers: 13 or 30? Teen vs -ty",
+    "sourceTitle": "Listening Practice Numbers 13 or 30",
+    "channel": "The IELTS Coach",
+    "category": "spelling-numbers",
+    "level": "A2",
+    "description": "Phân biệt 13–30, 14–40… nghe trọng âm: \"-teen\" nhấn âm cuối và kéo dài, \"-ty\" nhấn âm đầu. Mẹo: dùng logic — \"bà tôi 17 tuổi\" chắc là 70!",
+    "clipStart": 7,
+    "clipEnd": 187.3,
+    "segments": [
+      {
+        "start": 7,
+        "end": 11.9,
+        "text": "Hello and welcome to today's IELTS listening practice lesson."
+      },
+      {
+        "start": 12,
+        "end": 18.4,
+        "text": "And today we're going to listen to the different sounds with certain numbers."
+      },
+      {
+        "start": 18.5,
+        "end": 24.8,
+        "text": "So the numbers are 13 and 30, 14 and 40."
+      },
+      {
+        "start": 24.9,
+        "end": 31.5,
+        "text": "So we'll see how they are pronounced differently and how you can listen to them and write them down correctly."
+      },
+      {
+        "start": 32.4,
+        "end": 41.5,
+        "text": "So let's look at the two groups. We have \"teen\", which is a longer sound, and then \"ty\", which is short, and it is a different vowel sound."
+      },
+      {
+        "start": 42.8,
+        "end": 52.4,
+        "text": "And also, the difference in pronouncing these two different sets of numbers is, for the teen numbers, the last syllable is stressed."
+      },
+      {
+        "start": 52.5,
+        "end": 58.2,
+        "text": "But for 30, 40, the first syllable is stressed."
+      },
+      {
+        "start": 58.3,
+        "end": 64.5,
+        "text": "Okay, so there is a difference in the stress as well as a difference in the sound and the length of the sound."
+      },
+      {
+        "start": 64.6,
+        "end": 81.5,
+        "text": "So now let's have a look and say the teen numbers: 13, 14, 15, 16, 17, 18, 19."
+      },
+      {
+        "start": 82.1,
+        "end": 87.9,
+        "text": "It's really easy: making it long in the second syllable, and that's the stressed syllable."
+      },
+      {
+        "start": 88,
+        "end": 91.8,
+        "text": "We know it's the \"teen\" and not the other form of the number."
+      },
+      {
+        "start": 91.9,
+        "end": 106.5,
+        "text": "Now I will say the other numbers: 30, 40, 50, 60, 70, 80, 90."
+      },
+      {
+        "start": 107.1,
+        "end": 112,
+        "text": "So the first part, the first syllable, is longer and stressed."
+      },
+      {
+        "start": 112.1,
+        "end": 120.5,
+        "text": "Okay, now I will say them together so you can hear the difference, and this is what you need to be aware of in the listening exam."
+      },
+      {
+        "start": 120.8,
+        "end": 140.8,
+        "text": "13, 30, 14, 40, 15, 50, 16, 60, 17, 70."
+      },
+      {
+        "start": 141.4,
+        "end": 147.3,
+        "text": "18, 80, 19, 90."
+      },
+      {
+        "start": 147.4,
+        "end": 153,
+        "text": "Okay, there's quite a big difference, so you can use this when you speak to show which number you're saying."
+      },
+      {
+        "start": 153.1,
+        "end": 158,
+        "text": "Make it clear. They should be different. They don't sound the same. They are quite different."
+      },
+      {
+        "start": 158.1,
+        "end": 168.3,
+        "text": "And of course, use this in the listening exam when you're listening for the number: think, which number did they say, as well as listening for the actual sounds."
+      },
+      {
+        "start": 168.4,
+        "end": 171,
+        "text": "Also, think about the logic."
+      },
+      {
+        "start": 171.1,
+        "end": 177.5,
+        "text": "Okay, if someone says, \"My grandmother is 17 years old\", that's probably not true."
+      },
+      {
+        "start": 177.6,
+        "end": 180.7,
+        "text": "It's not 17, it will be 70."
+      },
+      {
+        "start": 180.8,
+        "end": 187.3,
+        "text": "Okay, so think about the logic as well as the sounds: the stress, which syllable is stressed."
+      }
+    ],
+    "order": 53
+  },
+  {
+    "slug": "numbers-reference-codes",
+    "youtubeId": "V7V8xOTrEDg",
+    "title": "Numbers: room, reference & phone numbers",
+    "sourceTitle": "Part 1 of IELTS Listening Skills - NUMBERS",
+    "channel": "IELTS with Vic",
+    "category": "spelling-numbers",
+    "level": "A2",
+    "description": "Nghe 10 câu có dãy số (số phòng, mã tham chiếu, số điện thoại, mã khóa…) và chỉ cần gõ lại con số — đọc chậm, rõ, hợp để bắt đầu.",
+    "clipStart": 32.3,
+    "clipEnd": 167.5,
+    "segments": [
+      {
+        "start": 32.3,
+        "end": 39.8,
+        "text": "Number one. She lives in room 1207.",
+        "answer": "1207"
+      },
+      {
+        "start": 40,
+        "end": 52.8,
+        "text": "Two. My reference number is 1387 9645.",
+        "answer": "1387 9645"
+      },
+      {
+        "start": 53.2,
+        "end": 63.3,
+        "text": "Three. Their phone number is 776 521.",
+        "answer": "776 521"
+      },
+      {
+        "start": 63.6,
+        "end": 76.8,
+        "text": "Four. The lock number is 912 816 32.",
+        "answer": "912 816 32"
+      },
+      {
+        "start": 77.2,
+        "end": 89.5,
+        "text": "Five. The invoice number is 476 928.",
+        "answer": "476 928"
+      },
+      {
+        "start": 121,
+        "end": 130.5,
+        "text": "Six. Our phone number is 312 876.",
+        "answer": "312 876"
+      },
+      {
+        "start": 130.8,
+        "end": 137.5,
+        "text": "Seven. His applicant number is 912.",
+        "answer": "912"
+      },
+      {
+        "start": 137.8,
+        "end": 145.4,
+        "text": "Eight. The door code is 7642.",
+        "answer": "7642"
+      },
+      {
+        "start": 145.7,
+        "end": 154.9,
+        "text": "Nine. My receipt number is 529763.",
+        "answer": "529763"
+      },
+      {
+        "start": 155.2,
+        "end": 167.5,
+        "text": "Ten. The ID number is 12 72 64 87.",
+        "answer": "12 72 64 87"
+      }
+    ],
+    "order": 54
+  },
+  {
+    "slug": "numbers-phone-natural-speed",
+    "youtubeId": "yXvVHq6LT5g",
+    "title": "Numbers: phone numbers at natural speed",
+    "sourceTitle": "IELTS Listening Practice - Telephone Numbers",
+    "channel": "Woodward English",
+    "category": "spelling-numbers",
+    "level": "B1",
+    "description": "Số điện thoại đọc tốc độ thật như trong bài thi: \"oh\" = 0, \"double five\", và bẫy sửa số giữa chừng (\"549… oops, I mean 569…\"). Chỉ cần gõ lại dãy số.",
+    "clipStart": 105,
+    "clipEnd": 269.5,
+    "segments": [
+      {
+        "start": 105,
+        "end": 116.5,
+        "text": "Number one. I found his number. It's 48461329.",
+        "answer": "48461329"
+      },
+      {
+        "start": 116.6,
+        "end": 128.5,
+        "text": "Number two. My personal number is 0121 9510687.",
+        "answer": "0121 9510687"
+      },
+      {
+        "start": 130.4,
+        "end": 144.5,
+        "text": "Number three. My phone number is 549… Oops, I mean 569 8301 247.",
+        "answer": "569 8301 247"
+      },
+      {
+        "start": 145.8,
+        "end": 161.5,
+        "text": "Number four. What's their phone number? Ah, here it is. It's 0412 159 07 43.",
+        "answer": "0412 159 07 43"
+      },
+      {
+        "start": 163,
+        "end": 176,
+        "text": "Number five. You can get hold of me at 151 709 6010.",
+        "answer": "151 709 6010"
+      },
+      {
+        "start": 177.6,
+        "end": 187,
+        "text": "Number six. My number is 8401 3590.",
+        "answer": "8401 3590"
+      },
+      {
+        "start": 188.5,
+        "end": 200,
+        "text": "Number seven. John's number is 0171 502993.",
+        "answer": "0171 502993"
+      },
+      {
+        "start": 202.4,
+        "end": 215,
+        "text": "Number eight. You can request it at the following number. 02081963757.",
+        "answer": "02081963757"
+      },
+      {
+        "start": 216.8,
+        "end": 228,
+        "text": "Number nine. Our home phone number is 525 4333.",
+        "answer": "525 4333"
+      },
+      {
+        "start": 229.7,
+        "end": 241.5,
+        "text": "Number ten. Call us now at 01851 703 088.",
+        "answer": "01851 703 088"
+      },
+      {
+        "start": 243.4,
+        "end": 256,
+        "text": "Number eleven. Their fax number is 0207 035 4745.",
+        "answer": "0207 035 4745"
+      },
+      {
+        "start": 257.9,
+        "end": 269.5,
+        "text": "Number twelve. You can receive more information by calling 9182 7364.",
+        "answer": "9182 7364"
+      }
+    ],
+    "order": 55
   }
 ]
