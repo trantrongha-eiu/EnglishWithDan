@@ -5,7 +5,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Luyện Shadowing – EnglishWithDan</title>
-  <meta name="description" content="Luyện Shadowing và Dictation theo từng câu với video IELTS Speaking Part 1, Part 2, BBC 6 Minute English và video ngắn vui cho A2–B1."/>
+  <meta name="description" content="Luyện Shadowing và Dictation theo từng câu với video IELTS Speaking Part 1–3, BBC 6 Minute English và video ngắn vui, trình độ A2–C2."/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -64,6 +64,8 @@
     .sh-level { background: var(--brand-light); color: var(--brand); }
     .sh-level.lv-A2 { background: var(--success-light); color: var(--success); }
     .sh-level.lv-B1 { background: var(--warning-light); color: var(--warning); }
+    .sh-level.lv-C1, .sh-level.lv-C2 { background: rgba(124,58,237,.12); color: #7c3aed; }
+    [data-theme="dark"] .sh-level.lv-C1, [data-theme="dark"] .sh-level.lv-C2 { background: rgba(167,139,250,.18); color: var(--purple); }
     .sh-empty, .sh-loading { text-align: center; padding: 60px 20px; color: var(--text3); grid-column: 1 / -1; }
     .sh-empty i, .sh-loading i { font-size: 28px; margin-bottom: 10px; display: block; }
 
@@ -206,7 +208,7 @@
   <div id="screen-list">
     <div class="sh-head" data-lulu-peek="excited">
       <h1><i class="fas fa-comment-dots"></i> Luyện Shadowing</h1>
-      <p>Nghe từng câu trong video rồi nói theo (Shadowing) hoặc chép lại (Dictation). Mỗi bài là một đoạn 1,5–3 phút — từ IELTS Speaking đến tiểu phẩm hài cho trình độ A2–B1.</p>
+      <p>Nghe từng câu trong video rồi nói theo (Shadowing) hoặc chép lại (Dictation). Từ video ngắn vui (A2–B1) đến bài nói mẫu IELTS Speaking Part 1–3 trình độ C1–C2.</p>
     </div>
 
     <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin:0 0 16px;flex-wrap:wrap">
@@ -222,6 +224,7 @@
       <button class="sh-chip active" data-cat="">Tất cả</button>
       <button class="sh-chip" data-cat="ielts-part1">Speaking Part 1</button>
       <button class="sh-chip" data-cat="ielts-part2">Speaking Part 2</button>
+      <button class="sh-chip" data-cat="ielts-part3">Speaking Part 3</button>
       <button class="sh-chip" data-cat="6-minute-english">BBC 6 Minute English</button>
       <button class="sh-chip" data-cat="fun-shorts">😄 Video ngắn vui</button>
     </div>
@@ -231,6 +234,8 @@
       <button class="sh-chip" data-level="A2">A2</button>
       <button class="sh-chip" data-level="B1">B1</button>
       <button class="sh-chip" data-level="B2">B2</button>
+      <button class="sh-chip" data-level="C1">C1</button>
+      <button class="sh-chip" data-level="C2">C2</button>
     </div>
 
     <div id="sh-grid" class="sh-grid">

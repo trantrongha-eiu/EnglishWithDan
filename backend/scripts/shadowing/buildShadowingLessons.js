@@ -37,10 +37,14 @@
  * yt-dlp saves them as `<id>.en.json3` (same as en-orig); unpunctuated ones
  * can't be split into sentences, so skip those videos.
  *
- * Per-lesson options: `stripSpeakers: true` drops "Feifei:" / "Rob:" style
- * speaker labels (BBC The English We Speak captions); `useAutoText: true`
- * takes the text from the punctuated auto captions (en-orig) when they are
- * closer to what is actually said than the uploaded track.
+ * Per-lesson options: `stripSpeakers: true` drops "Feifei:" / "Rob:" / "A:"
+ * style speaker labels (BBC The English We Speak captions); `useAutoText:
+ * true` takes the text from the punctuated auto captions (en-orig) when they
+ * are closer to what is actually said than the uploaded track (English Pro
+ * Tips' "en" track is often a rewritten script); `dropFillers: true` removes
+ * "um" / "uh" from unscripted speech (mock-test candidates); `pauseSplit`
+ * overrides how many seconds of silence end a turn (a comic pause before a
+ * punchline shouldn't split the sentence).
  */
 'use strict';
 
@@ -52,7 +56,14 @@ const TEWS_PHRASE = {
   'tews-my-bad': 'My bad', 'tews-step-on-it': 'Step on it', 'tews-so-done-with': 'So done with',
   'tews-wing-it': 'Wing it', 'tews-take-the-biscuit': 'Take the biscuit', 'tews-fomo': 'FOMO',
   'tews-cut-a-long-story-short': 'To cut a long story short',
+  'tews-thatll-teach-you': 'That\'ll teach you!', 'tews-best-of-both-worlds': 'The best of both worlds',
+  'tews-wake-up-call': 'A wake-up call', 'tews-walk-in-the-park': 'A walk in the park', 'tews-catch-22': 'Catch-22',
+  'tews-left-on-read': 'Left on read', 'tews-not-gonna-lie': 'Not Gonna Lie',
+  'tews-barking-up-the-wrong-tree': 'Barking up the wrong tree', 'tews-up-your-game': 'Up your game',
 };
+
+const KEITH = 'English Speaking Success (Keith)';
+const EPT = 'English Pro Tips';
 
 const LESSONS = [
   {
@@ -205,6 +216,151 @@ const LESSONS = [
     slug, youtubeId, title, sourceTitle: `${TEWS_PHRASE[slug]}: The English We Speak`, channel: 'BBC Learning English',
     category: 'fun-shorts', level, clipStart, clipEnd, description, stripSpeakers: true, minWords: 3,
   })),
+  // ── 2026-10-15: A2–C2, YouTube Shorts, Part 3 ───────────────────────
+  // English Pro Tips' "en" track is a rewritten script, so their lessons
+  // take the text from the punctuated auto captions (useAutoText).
+  {
+    slug: 'keith-part1-drive-a-lot', youtubeId: 'pD3l7zbm6Hk',
+    title: 'Part 1: "Do you drive a lot?" — from simple to better',
+    sourceTitle: 'Do you drive a lot?', channel: KEITH, category: 'ielts-part1', level: 'A2',
+    clipStart: 0, clipEnd: 61.5, useAutoText: true,
+    description: 'Video ngắn: Keith trả lời cùng một câu hỏi Part 1 ba lần, mỗi lần một hay hơn — từ "I drive to work every day" đến "commute", "a day trip", "a full tank of petrol".',
+  },
+  {
+    slug: 'ept-part1-band-ladder-desserts', youtubeId: 'EBzRkYneAS8',
+    title: 'Part 1: Desserts — Band 1 to Band 9 answers',
+    sourceTitle: 'IELTS Band 1-9 | What desserts do people eat in your country?', channel: EPT,
+    category: 'ielts-part1', level: 'B1', clipStart: 0, clipEnd: 129, useAutoText: true,
+    description: 'Video ngắn vui: một câu hỏi Part 1, chín câu trả lời từ Band 1 ("Desserts?") đến Band 9 ("quintessentially British", "piping hot"). Nghe từng bậc nâng cấp từ vựng thế nào.',
+  },
+  {
+    slug: 'ept-part1-band-ladder-weekends', youtubeId: 'g92HLI2WsVM',
+    title: 'Part 1: Weekends — Band 1 to Band 9 answers',
+    sourceTitle: 'Band 1-9 in IELTS. What do you like doing at the weekend?', channel: EPT,
+    category: 'ielts-part1', level: 'B1', clipStart: 0, clipEnd: 89.2, useAutoText: true,
+    description: 'Video ngắn vui: "What do you like doing on weekends?" — từ "Weekends. I like weekends." đến "sleep in", "at a leisurely pace", "to my heart\'s content".',
+  },
+  {
+    slug: 'keith-part1-friends-family-routine', youtubeId: 'WSvoxPMOUy4',
+    title: 'Part 1: Friends or family? & your morning routine',
+    sourceTitle: '15 Most Common IELTS Speaking Questions (with Answers)', channel: KEITH,
+    category: 'ielts-part1', level: 'B1', clipStart: 927, clipEnd: 1057.8,
+    description: 'Hai câu Part 1 rất hay gặp, Keith trả lời mẫu rồi giải thích: to tell you the truth, strive, neglect, a brisk walk, without fail, on my own vs by myself.',
+  },
+  {
+    slug: 'ept-part1-band9-nurse', youtubeId: 'YsvM5RecPd4',
+    title: 'Part 1: Work — when you KNOW you are Band 9',
+    sourceTitle: 'When you KNOW you are IELTS Band 9', channel: EPT,
+    category: 'ielts-part1', level: 'C1', clipStart: 0, clipEnd: 66.3, useAutoText: true,
+    description: 'Video ngắn vui: thí sinh trả lời ngắn, rồi tự "nâng cấp" thành câu Band 9 — my student days are behind me, a fulfilling job, the night shift, all messed up.',
+  },
+  {
+    slug: 'ept-part1-real-band9-candidate', youtubeId: 'pi7XthH4zHQ',
+    title: 'Part 1: A real Band 9 candidate — hometown & happiness',
+    sourceTitle: 'Real IELTS Band 9 Candidate answers Part 1 Questions', channel: EPT,
+    category: 'ielts-part1', level: 'C2', clipStart: 0, clipEnd: 89.1, useAutoText: true,
+    description: 'Thí sinh Band 9 thật (Romania) trả lời Part 1 tự nhiên: I\'m inclining towards yes, absolutely adore, making up scenarios, feel at ease, serene.',
+  },
+  {
+    slug: 'ept-part1-band9-cafes', youtubeId: 'LE_F9u-DYe0',
+    title: 'Part 1: Cafés — a 17-year-old Band 9 candidate',
+    sourceTitle: 'Incredible Band 9 Speaking Test (she\'s only 17!)', channel: EPT,
+    category: 'ielts-part1', level: 'C2', clipStart: 144.6, clipEnd: 274.6, useAutoText: true, dropFillers: true,
+    description: 'Trích bài thi thử Band 9 của Sia (17 tuổi): the hum of background conversations, word-of-mouth recommendations, a loyal clientele, media presence.',
+  },
+  {
+    slug: 'ept-part2-lie-in-ielts', youtubeId: 'zrkxyOMb9BA',
+    title: 'Part 2: What happens if you LIE in IELTS?',
+    sourceTitle: 'What happens if you LIE in IELTS?!', channel: EPT,
+    category: 'ielts-part2', level: 'B2', clipStart: 0, clipEnd: 54.2, useAutoText: true,
+    description: 'Video ngắn vui: thí sinh định "bịa" chuyến đi Nhật với samurai thật… Có được nói dối trong IELTS không? Lời khuyên: kể chuyện thật rồi thêm chi tiết.',
+  },
+  {
+    slug: 'keith-part2-tool-model-answer', youtubeId: 'N3x1cvJoy38',
+    title: 'Part 2: Describe a tool you use at home — model answer',
+    sourceTitle: '3 Steps to a Perfect IELTS Speaking Part 2 Answer', channel: KEITH,
+    category: 'ielts-part2', level: 'B2', clipStart: 610.3, clipEnd: 775.5,
+    description: 'Cách kết bài Part 2 thật ngắn, rồi nghe trọn bài mẫu của Keith về chiếc kéo: ergonomic handle, come in really handy, I\'d go as far as to say…, kept out of reach.',
+  },
+  {
+    slug: 'ept-part2-band9-swiss-alps', youtubeId: 'LE_F9u-DYe0',
+    title: 'Part 2: A place with beautiful views — Band 9 answer',
+    sourceTitle: 'Incredible Band 9 Speaking Test (she\'s only 17!)', channel: EPT,
+    category: 'ielts-part2', level: 'C2', clipStart: 344.6, clipEnd: 452.7, useAutoText: true, dropFillers: true,
+    description: 'Bài Part 2 Band 9 về dãy Alps (Thụy Sĩ): sprung to my mind, densely populated, virgin forests, lost for words, picturesque scenery.',
+  },
+  {
+    slug: 'ept-part3-dont-talk-about-yourself', youtubeId: 'C2hmPeVV-x0',
+    title: 'Part 3: Don\'t do this! — talk about people, not you',
+    sourceTitle: 'IELTS Part 3: Don\'t do this!', channel: EPT,
+    category: 'ielts-part3', level: 'B2', clipStart: 0, clipEnd: 58.7, useAutoText: true,
+    description: 'Video ngắn vui: thí sinh chỉ nói "I don\'t like computer games" — sai cách! Part 3 hỏi về người khác; nghe câu trả lời đúng: unwind, quite sociable.',
+  },
+  {
+    slug: 'keith-part3-generation-gap', youtubeId: 'VIK3C8YHutY',
+    title: 'Part 3: Phrases for the generation gap',
+    sourceTitle: 'The Generation Gap', channel: KEITH,
+    category: 'ielts-part3', level: 'B2', clipStart: 0.4, clipEnd: 80.6, useAutoText: true,
+    description: 'Video ngắn: cụm từ nói về người già – người trẻ cho Part 3: older people (không nói old people), struggle to relate, see eye to eye, set in your ways, bridge the gap.',
+  },
+  {
+    slug: 'ept-part3-ree-opinion', youtubeId: 'fzegwutPz60',
+    title: 'Part 3: Opinion questions — the REE method',
+    sourceTitle: 'How to Answer ANY IELTS Speaking Part 3 Question', channel: EPT,
+    category: 'ielts-part3', level: 'B2', clipStart: 40.2, clipEnd: 176.6,
+    description: 'Cựu giám khảo hướng dẫn trả lời câu hỏi ý kiến bằng REE: Respond – Elaborate – Example, kèm bài mẫu "Should children have homework every day?".',
+  },
+  {
+    slug: 'ept-part3-power-of-two', youtubeId: 'fzegwutPz60',
+    title: 'Part 3: Effects questions — "the power of two"',
+    sourceTitle: 'How to Answer ANY IELTS Speaking Part 3 Question', channel: EPT,
+    category: 'ielts-part3', level: 'C1', clipStart: 368.7, clipEnd: 531.1,
+    description: 'Câu hỏi về hậu quả, ảnh hưởng: chỉ cần 2 ý phát triển tốt. Cụm this can lead to, as a result, in the long term — bài mẫu về công nghệ và giao tiếp.',
+  },
+  {
+    slug: 'ept-part3-robots-jobs', youtubeId: 'j6nGSqkCf9k',
+    title: 'Part 3: Could robots do all of today\'s jobs?',
+    sourceTitle: 'Latest Part 3 IELTS Speaking Questions + Answers', channel: EPT,
+    category: 'ielts-part3', level: 'C1', clipStart: 276.2, clipEnd: 431.7, useAutoText: true,
+    description: 'Không rành chủ đề vẫn trả lời tốt: I\'m no expert, but…, as far as I know — cùng từ vựng emotional intelligence, empathy, a long-term therapist.',
+  },
+  {
+    slug: 'ept-part3-band9-beauty', youtubeId: 'LE_F9u-DYe0',
+    title: 'Part 3: The beauty industry — Band 9 discussion',
+    sourceTitle: 'Incredible Band 9 Speaking Test (she\'s only 17!)', channel: EPT,
+    category: 'ielts-part3', level: 'C2', clipStart: 482.1, clipEnd: 621.2, useAutoText: true, dropFillers: true,
+    description: 'Part 3 Band 9: quảng cáo mỹ phẩm và trẻ em — overhyped, a genuine purpose, insecurities, cognitive processes, vulnerable to aggressive marketing.',
+  },
+  {
+    slug: 'ept-short-gladiator', youtubeId: 'q6idE061v30',
+    title: 'How (not) to start your IELTS test — Gladiator!',
+    sourceTitle: 'How (not) to start your IELTS test', channel: EPT,
+    category: 'fun-shorts', level: 'B1', clipStart: 2.6, clipEnd: 80.2, useAutoText: true, dropFillers: true, pauseSplit: 3,
+    description: 'Thí sinh giới thiệu bản thân như phim Gladiator: "Father to a band four son…" 😄 rồi xem cách mở đầu bài thi đơn giản, đúng chuẩn.',
+  },
+  ...[
+    ['7G09ElS_2-A', 'tews-thatll-teach-you', 'That\'ll teach you!', 'A2', 7, 160,
+      'Feifei đi chơi khuya, sáng ngủ quên, đến muộn và luộm thuộm. "That\'ll teach you!" = đáng đời, lần sau chừa nhé!'],
+    ['XRZMlJRqhvw', 'tews-walk-in-the-park', 'A walk in the park', 'A2', 7, 147,
+      'Neil tự tin chạy 5 km "dễ như đi dạo trong công viên"… rồi về đích thở không ra hơi. "A walk in the park" = rất dễ.'],
+    ['fidjyJOjcXA', 'tews-left-on-read', 'Left on read', 'A2', 9, 166,
+      'Roy đọc tin nhắn mà không trả lời vì… đang ăn chuối. Đến khi biết tin nhắn mời đi xem nhạc miễn phí thì đã muộn!'],
+    ['tzaYt9N6J2I', 'tews-best-of-both-worlds', 'The best of both worlds', 'B1', 8, 150,
+      'Rob khoe được cả nhịp sống thành phố lẫn bình yên ở quê — cho đến khi tàu về làng bị huỷ. "The best of both worlds" = vẹn cả đôi đường.'],
+    ['LLI4JWe7yGg', 'tews-wake-up-call', 'A wake-up call', 'B1', 9, 157,
+      'Rob đi muộn, thở hổn hển vì chạy ra ga. Feifei bảo đây là "a wake-up call" — không phải chuông báo thức đâu, mà là lời cảnh tỉnh!'],
+    ['KA0FWnFw4Hk', 'tews-catch-22', 'Catch-22', 'B1', 8, 155,
+      'Feifei trượt phỏng vấn vì thiếu kinh nghiệm — nhưng không có việc thì sao có kinh nghiệm? "Catch-22" = tình huống không lối thoát.'],
+    ['qUAOipD_eME', 'tews-not-gonna-lie', 'Not gonna lie', 'B1', 7, 153,
+      '"Not gonna lie, you look tired" — tiếng lóng để nói thật lòng (hoặc tự khen). Neil và Feifei tranh nhau làm "best presenter".'],
+    ['gXIpQ5nfnKw', 'tews-barking-up-the-wrong-tree', 'Barking up the wrong tree', 'B1', 8, 155,
+      'Feifei nghi Rob mách sếp chuyện cô làm đổ cà phê. Rob: "You\'re barking up the wrong tree!" = nghi nhầm người rồi.'],
+    ['SuV-uETO1hc', 'tews-up-your-game', 'Up your game', 'B1', 7, 145,
+      'Neil nhờ Feifei viết tin nhắn mời bạn gái đi cà phê: "you need to up your emoji game!" = phải nâng trình lên. Kết thúc bất ngờ!'],
+  ].map(([youtubeId, slug, title, level, clipStart, clipEnd, description]) => ({
+    slug, youtubeId, title, sourceTitle: `${TEWS_PHRASE[slug]}: The English We Speak`, channel: 'BBC Learning English',
+    category: 'fun-shorts', level, clipStart, clipEnd, description, stripSpeakers: true, minWords: 3,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -226,6 +382,18 @@ const TEXT_FIXES = [
 // Fixes that span two caption lines, applied to the finished sentence.
 const SEGMENT_FIXES = [
   [/\bSonia Toxfig\b/g, 'Sandi Toksvig'],
+  // BBC caption typos
+  [/\bmy parent car\b/, 'my parents\' car'],
+  [/the experience with doing the job/, 'the experience without doing the job'],
+  [/\bI think this a wake-up call\b/, 'I think this is a wake-up call'],
+  [/\bThe best of the both worlds\b/, 'The best of both worlds'],
+  // Auto-caption mishearings (English Pro Tips, Keith)
+  [/^My name You already/, 'My name… You already'],
+  [/^I computer games\./, 'I… computer games.'],
+  [/, and Wait\.$/, ', and… wait.'],
+  [/\bpicture skew\b/, 'picturesque'],
+  [/\bhuskys\b/, 'huskies'],
+  [/\bhumans's\b/, "humans'"],
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
@@ -238,6 +406,27 @@ const LEAD_IN = 0.15;      // seconds of air before / after a segment
 const TAIL = 0.3;
 
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
+const CONJUNCTIONS = new Set(['because', 'but', 'and', 'so', 'which', 'whereas', 'while', 'since', 'although', 'or']);
+const FILLERS = new Set(['um', 'uh', 'erm', 'er', 'ah']);
+
+// "Um, there's…" → "There's…": drop the filler, keep any sentence-final
+// punctuation it carried, and re-capitalise a sentence it used to start.
+function dropFillers(words) {
+  const out = [];
+  let capNext = false;
+  for (const w of words) {
+    if (FILLERS.has(norm(w.text))) {
+      const end = (w.text.match(/[.?!]$/) || [''])[0];
+      if (end && out.length && !endsSentence(out[out.length - 1].text)) out[out.length - 1].text = out[out.length - 1].text.replace(/,$/, '') + end;
+      if (/^[A-Z]/.test(w.text) || end) capNext = true;
+      continue;
+    }
+    if (capNext) w.text = w.text[0].toUpperCase() + w.text.slice(1);
+    capNext = false;
+    out.push(w);
+  }
+  return out;
+}
 
 function readJson3(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8')).events || [];
@@ -245,13 +434,13 @@ function readJson3(file) {
 
 // "Feifei: Welcome…", "Examples : I need…" → the label becomes a TURN
 // marker, so manualWords() can flag where one speaker hands over.
-const SPEAKER_LABEL = /(^|\s)[A-Z][a-z]+\s?:\s+/g;
+const SPEAKER_LABEL = /(^|\s)[A-Z][a-z]*(?: and [A-Z][a-z]+)?\s?:(?=\s)/g;
 const TURN = '¶';
 
 function cleanText(t, { stripSpeakers } = {}) {
   let s = t.replace(/\n/g, ' ');
   for (const [re, rep] of TEXT_FIXES) s = s.replace(re, rep);
-  if (stripSpeakers) s = s.replace(SPEAKER_LABEL, `$1${TURN} `);
+  if (stripSpeakers) s = s.replace(SPEAKER_LABEL, `$1${TURN}`);
   return s
     .replace(/\([^)]*\)|\[[^\]]*\]/g, ' ') // (upbeat pop music), [Laughs]
     .replace(/^\s*-\s+/, '')               // speaker-change dash
@@ -363,13 +552,13 @@ const endsSentence = (w) => /[.?!]["'”’]?$/.test(w);
 // Dialogue (stripSpeakers): each speaker turn is split on its own, so a
 // practice sentence never mixes two voices. A turn too short to stand
 // alone ("What?", "Bye.") still joins the next turn.
-function toSentences(words, { minWords = MIN_WORDS } = {}) {
+function toSentences(words, { minWords = MIN_WORDS, pauseSplit = PAUSE_SPLIT } = {}) {
   // A long pause (music, a cut) also ends a turn, so a short line before it
   // ("So stick around.") isn't glued onto what comes after.
   const turns = [];
   let prev = null;
   for (const w of words) {
-    if (w.turn || !turns.length || w.start - prev.end > PAUSE_SPLIT) turns.push([]);
+    if (w.turn || !turns.length || w.start - prev.end > pauseSplit) turns.push([]);
     turns[turns.length - 1].push(w);
     prev = w;
   }
@@ -399,16 +588,21 @@ function turnSentences(words, minWords) {
   }
   if (cur.length) out.push(cur);
 
-  // Split overlong sentences at the comma closest to their middle.
+  // Split overlong sentences at the comma closest to their middle — or, in
+  // unpunctuated speech (auto captions), before the conjunction closest to it.
   const split = [];
+  const nearestMiddle = (rest, test) => {
+    let best = -1;
+    for (let k = MIN_SPLIT_WORDS - 1; k < rest.length - MIN_SPLIT_WORDS; k++) {
+      if (test(k) && (best < 0 || Math.abs(k - rest.length / 2) < Math.abs(best - rest.length / 2))) best = k;
+    }
+    return best;
+  };
   for (const s of out) {
     let rest = s;
     while (rest.length > MAX_WORDS) {
-      let best = -1;
-      for (let k = MIN_SPLIT_WORDS - 1; k < rest.length - MIN_SPLIT_WORDS; k++) {
-        if (/[,;:]$/.test(rest[k].text) &&
-            (best < 0 || Math.abs(k - rest.length / 2) < Math.abs(best - rest.length / 2))) best = k;
-      }
+      let best = nearestMiddle(rest, (k) => /[,;:]$/.test(rest[k].text));
+      if (best < 0) best = nearestMiddle(rest, (k) => CONJUNCTIONS.has(norm(rest[k + 1].text)));
       if (best < 0) break;
       split.push(rest.slice(0, best + 1));
       rest = rest.slice(best + 1);
@@ -435,13 +629,22 @@ function turnSentences(words, minWords) {
   return merged;
 }
 
+// A quoted model answer spanning several segments leaves a lone " at the
+// start of the first one and the end of the last — drop it.
+function balanceQuotes(t) {
+  if ((t.match(/"/g) || []).length % 2 === 0) return t;
+  if (/^"/.test(t)) return t.slice(1);
+  if (/"$/.test(t)) return t.slice(0, -1);
+  return t;
+}
+
 function buildLesson(spec, subsDir) {
   const find = (suffixes) => suffixes
     .map((sfx) => path.join(subsDir, `${spec.youtubeId}.${sfx}.json3`))
     .find((f) => fs.existsSync(f));
   const manualFile = find(spec.useAutoText ? ['en-orig'] : ['en-GB', 'en-US', 'en']);
   if (!manualFile) return null;
-  const words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers });
+  let words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers });
 
   const autoFile = find(['en-orig']);
   let timing = 'interpolated';
@@ -450,8 +653,10 @@ function buildLesson(spec, subsDir) {
     timing = `auto-aligned (${Math.round(ratio * 100)}% words matched)`;
   }
 
+  if (spec.dropFillers) words = dropFillers(words);
+
   // Keep only whole sentences inside the clip window.
-  const sentences = toSentences(words, { minWords: spec.minWords }).filter((s) =>
+  const sentences = toSentences(words, { minWords: spec.minWords, pauseSplit: spec.pauseSplit }).filter((s) =>
     s[0].start >= spec.clipStart - 0.5 && s[s.length - 1].end <= spec.clipEnd + 0.5);
   const segments = sentences.map((s, i) => {
     const next = sentences[i + 1];
@@ -462,7 +667,7 @@ function buildLesson(spec, subsDir) {
     return {
       start: Math.round(start * 100) / 100,
       end: Math.round(end * 100) / 100,
-      text: SEGMENT_FIXES.reduce((t, [re, rep]) => t.replace(re, rep), s.map((w) => w.text).join(' ')),
+      text: balanceQuotes(SEGMENT_FIXES.reduce((t, [re, rep]) => t.replace(re, rep), s.map((w) => w.text).join(' '))),
     };
   });
   // A word the LCS paired with the wrong ASR token (e.g. a quoted "Right."
@@ -471,7 +676,14 @@ function buildLesson(spec, subsDir) {
   for (let i = 0; i < segments.length - 1; i++) {
     if (segments[i].end > segments[i + 1].start) segments[i].end = segments[i + 1].start;
   }
-  const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, ...meta } = spec;
+  // Unscripted speech: a new sentence the ASR left lowercase ("probably
+  // because…") gets its capital back.
+  for (let i = 1; i < segments.length; i++) {
+    if (endsSentence(segments[i - 1].text) && !/(\.\.\.|…)$/.test(segments[i - 1].text) && /^[a-z]/.test(segments[i].text)) {
+      segments[i].text = segments[i].text[0].toUpperCase() + segments[i].text.slice(1);
+    }
+  }
+  const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, ...meta } = spec;
   return {
     ...meta,
     clipStart: segments.length ? segments[0].start : clipStart,
@@ -496,7 +708,7 @@ if (require.main === module) {
       if (!prev) throw new Error(`${spec.slug}: no manual caption file in ${subsDir} and not in ${path.basename(out)} yet`);
       console.log(`\n== ${spec.slug} — no captions in ${subsDir}, kept from ${path.basename(out)}`);
       // Metadata (title, level, description…) still follows LESSONS.
-      const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, ...meta } = spec;
+      const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, ...meta } = spec;
       return { ...prev, ...meta, order };
     }
     console.log(`\n== ${l.slug} — ${l.segments.length} segments, ${(l.clipEnd - l.clipStart).toFixed(0)}s, ${l._timing}`);

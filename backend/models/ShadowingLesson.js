@@ -10,7 +10,7 @@
  */
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', '6-minute-english', 'fun-shorts'];
+const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'fun-shorts'];
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
@@ -27,7 +27,7 @@ const ShadowingLessonSchema = new mongoose.Schema({
   sourceTitle: { type: String, default: '' }, // the full YouTube video's title
   channel:     { type: String, default: '' },
   category:    { type: String, enum: CATEGORIES, required: true },
-  level:       { type: String, enum: ['A2', 'B1', 'B2', 'C1'], default: 'B1' },
+  level:       { type: String, enum: ['A2', 'B1', 'B2', 'C1', 'C2'], default: 'B1' },
   clipStart:   { type: Number, required: true },
   clipEnd:     { type: Number, required: true },
   segments:    { type: [SegmentSchema], default: [] },

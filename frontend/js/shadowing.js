@@ -22,7 +22,7 @@
   const $ = (id) => document.getElementById(id);
 
   const CATEGORY_LABEL = {
-    'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2',
+    'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
   };
   const SPEEDS = [1, 0.75, 0.5, 1.25];
