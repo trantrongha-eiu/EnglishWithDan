@@ -390,3 +390,65 @@ describe('Draft CRUD (save/get/delete/list) — ownership scoping', () => {
     });
   });
 });
+
+describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
+  test('sessions list is public and ordered by (week, orderIndex)', async () => {
+    const b = await createTask2Topic({ week: 16, orderIndex: 1, topicName: 'Lesson B', questions: [question()] });
+    const a = await createTask2Topic({ week: 16, orderIndex: 0, topicName: 'Lesson A', questions: [question()] });
+    const res = await request(app).get('/api/task2/sessions');
+    expect(res.status).toBe(200);
+    const ids = res.body.sessions.map(s => String(s._id));
+    expect(ids.indexOf(String(a._id))).toBeLessThan(ids.indexOf(String(b._id)));
+    expect(res.body.sessions[0].questions).toBeUndefined();
+  });
+
+  test('lesson work is premium-gated, saved per student, and returns the student\'s own translations', async () => {
+    const topic = await createTask2Topic({ questions: [
+      question({ type: 'translation', questionText: 'Dịch: "Xin chào"', correctAnswer: 'Hello.', modelAnswer: 'Hello.' }),
+      question({ type: 'fill_blank' }),
+    ] });
+    const tq = topic.questions[0];
+    const studentA = await createPremiumStudent();
+    const studentB = await createPremiumStudent();
+    const authA = `Bearer ${signTokenFor(studentA)}`;
+    const url = `/api/task2/lesson/${topic._id}`;
+
+    expect((await request(app).get(url)).status).toBe(401);
+
+    await request(app).post('/api/task2/save-attempt').set('Authorization', authA)
+      .send({ topicId: String(topic._id), topicName: topic.topicName, level: 'beginner',
+        questionsAttempted: [{ questionId: String(tq._id), userAnswer: 'Hi there.', isCorrect: true, score: 100 }] });
+
+    const put = await request(app).put(url).set('Authorization', authA)
+      .send({ brainstorm: ['idea 1'], sections: { intro: 'My intro', body1: 'x'.repeat(7000), bogus: 'no' } });
+    expect(put.status).toBe(200);
+    expect(put.body.work.sections.intro).toBe('My intro');
+    expect(put.body.work.sections.body1).toHaveLength(6000);
+    expect(put.body.work.sections.bogus).toBeUndefined();
+
+    const getA = await request(app).get(url).set('Authorization', authA);
+    expect(getA.status).toBe(200);
+    expect(getA.body.work.brainstorm).toEqual(['idea 1']);
+    expect(getA.body.sentences).toHaveLength(1); // fill_blank isn't a sentence-building question
+    expect(getA.body.sentences[0].en).toBe('Hi there.');
+    expect(getA.body.sentences[0].model).toBe('Hello.');
+
+    const getB = await request(app).get(url).set('Authorization', `Bearer ${signTokenFor(studentB)}`);
+    expect(getB.body.work).toBeNull();
+    expect(getB.body.sentences[0].en).toBe('');
+
+    const prog = await request(app).get('/api/task2/lessons/progress').set('Authorization', authA);
+    expect(prog.body.progress).toEqual([{ topicId: String(topic._id), written: 2, submitted: false }]);
+  });
+
+  test('malformed body / unknown topic are rejected', async () => {
+    const user = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(user)}`;
+    const topic = await createTask2Topic({ questions: [question()] });
+    const url = `/api/task2/lesson/${topic._id}`;
+    expect((await request(app).put(url).set('Authorization', auth).send({ brainstorm: 'nope' })).status).toBe(400);
+    expect((await request(app).put(url).set('Authorization', auth).send({ sections: ['x'] })).status).toBe(400);
+    expect((await request(app).put('/api/task2/lesson/not-an-id').set('Authorization', auth).send({})).status).toBe(404);
+    expect((await request(app).get('/api/task2/lesson/507f1f77bcf86cd799439011').set('Authorization', auth)).status).toBe(404);
+  });
+});

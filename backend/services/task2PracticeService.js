@@ -11,6 +11,7 @@ const Task2Attempt = require('../models/Task2Attempt');
 const Task2Template = require('../models/Task2Template');
 const Task2TypeGuide = require('../models/Task2TypeGuide');
 const Task2Draft = require('../models/Task2Draft');
+const Task2LessonWork = require('../models/Task2LessonWork');
 const WritingTask2 = require('../models/WritingTask2');
 const { gradeT2Question } = require('./geminiService');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
@@ -596,8 +597,107 @@ async function listDrafts(userId) {
     .lean();
 }
 
+// ══════════════════════════════════════════════════════════════════════
+//  LESSONS — every topic is one class session ("Buổi"), numbered in
+//  (week, orderIndex) order across the whole course.
+// ══════════════════════════════════════════════════════════════════════
+async function listSessions() {
+  return Task2Topic.find({ isActive: true })
+    .select('_id week orderIndex topicName topicEmoji essayType')
+    .sort({ week: 1, orderIndex: 1 })
+    .lean();
+}
+
+const LESSON_SECTION_KEYS = ['intro', 'body1', 'body2', 'conclusion'];
+const LESSON_TEXT_MAX = 6000;
+const LESSON_BRAINSTORM_MAX = 6;
+
+// The student's own English for each sentence-building question of the
+// topic (translation / paraphrase / short_writing — the WBW_TYPES drill), so
+// the split-screen writer can show "câu bạn đã dịch" beside the essay. Taken
+// from saved attempts, then the unfinished-session draft (newer), keeping a
+// correct answer over a later wrong one.
+async function _lessonSentences(userId, topic) {
+  const [attempts, draft] = await Promise.all([
+    Task2Attempt.find({ userId, topicId: topic._id }).select('questionsAttempted').sort({ completedAt: 1, _id: 1 }).lean(),
+    Task2Draft.findOne({ userId, topicId: String(topic._id) }).select('sessionAttempts').lean()
+  ]);
+  const best = {};
+  const take = (qa) => {
+    if (!qa || !qa.questionId || typeof qa.userAnswer !== 'string' || !qa.userAnswer.trim()) return;
+    const prev = best[qa.questionId];
+    if (prev && prev.isCorrect && !qa.isCorrect) return;
+    best[qa.questionId] = { en: qa.userAnswer.trim(), isCorrect: !!qa.isCorrect };
+  };
+  for (const a of attempts) (a.questionsAttempted || []).forEach(take);
+  if (draft) (draft.sessionAttempts || []).forEach(take);
+
+  return (topic.questions || [])
+    .filter(q => q.isActive !== false && WBW_TYPES.has(q.type))
+    .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
+    .map(q => {
+      const id = q.questionId || String(q._id);
+      const mine = best[id] || best[String(q._id)] || null;
+      return {
+        questionId: id,
+        type: q.type,
+        questionText: q.questionText,
+        model: q.correctAnswer || q.modelAnswer || '',
+        en: mine ? mine.en : '',
+        isCorrect: mine ? mine.isCorrect : null
+      };
+    });
+}
+
+async function getLessonWork(userId, topicId) {
+  if (!mongoose.isValidObjectId(topicId)) return null;
+  const topic = await Task2Topic.findById(topicId).select('questions').lean();
+  if (!topic) return null;
+  const [work, sentences] = await Promise.all([
+    Task2LessonWork.findOne({ userId, topicId }).select('brainstorm sections submittedAt updatedAt').lean(),
+    _lessonSentences(userId, topic)
+  ]);
+  return { work: work || null, sentences };
+}
+
+async function saveLessonWork(userId, topicId, body = {}) {
+  if (!mongoose.isValidObjectId(topicId)) return null;
+  const exists = await Task2Topic.exists({ _id: topicId });
+  if (!exists) return null;
+  const set = {};
+  if (Array.isArray(body.brainstorm)) {
+    set.brainstorm = body.brainstorm.slice(0, LESSON_BRAINSTORM_MAX).map(s => String(s ?? '').slice(0, LESSON_TEXT_MAX));
+  }
+  if (body.sections && typeof body.sections === 'object') {
+    for (const k of LESSON_SECTION_KEYS) {
+      if (typeof body.sections[k] === 'string') set[`sections.${k}`] = body.sections[k].slice(0, LESSON_TEXT_MAX);
+    }
+  }
+  if (body.submitted === true) set.submittedAt = new Date();
+  const work = await Task2LessonWork.findOneAndUpdate(
+    { userId, topicId },
+    { $set: set },
+    { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
+  ).select('brainstorm sections submittedAt updatedAt').lean();
+  return work;
+}
+
+// topicIds this user has started / submitted — the lesson list's badges.
+async function listLessonProgress(userId) {
+  const rows = await Task2LessonWork.find({ userId }).select('topicId sections submittedAt').lean();
+  return rows.map(r => {
+    const s = r.sections || {};
+    return {
+      topicId: String(r.topicId),
+      written: LESSON_SECTION_KEYS.filter(k => (s[k] || '').trim()).length,
+      submitted: !!r.submittedAt
+    };
+  });
+}
+
 module.exports = {
   listTemplates, listTypeGuides, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
   checkAnswer, getExam, submitExam, saveAttempt, getHistory, getAttemptDetail, getProgress, getWrongQuestions,
   getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
+  listSessions, getLessonWork, saveLessonWork, listLessonProgress,
 };

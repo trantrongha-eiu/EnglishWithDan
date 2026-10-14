@@ -43,6 +43,10 @@ router.get('/type-guides', auth, premiumOnly, task2PracticeController.listTypeGu
 // GET /api/task2/weeks
 router.get('/weeks', task2PracticeController.listWeeks);
 
+// GET /api/task2/sessions — every active topic in course order (week,
+// orderIndex); the lesson list numbers them Buổi 1..N.
+router.get('/sessions', task2PracticeController.listSessions);
+
 // GET /api/task2/topics/week/:week
 router.get('/topics/week/:week', task2PracticeController.listTopicsForWeek);
 
@@ -88,5 +92,13 @@ router.post('/draft', auth, premiumOnly, task2PracticeController.saveDraft);
 router.get('/draft/:topicId', auth, premiumOnly, task2PracticeController.getDraft);
 router.delete('/draft/:topicId', auth, task2PracticeController.deleteDraft);
 router.get('/drafts', auth, task2PracticeController.listDrafts);
+
+// ══════════════════════════════════════════════════════════════════════
+//  LESSON WORK — brainstorm notes + the essay written in two halves
+//  (class / home), plus the student's own translated sentences
+// ══════════════════════════════════════════════════════════════════════
+router.get('/lessons/progress', auth, task2PracticeController.listLessonProgress);
+router.get('/lesson/:topicId', auth, premiumOnly, task2PracticeController.getLessonWork);
+router.put('/lesson/:topicId', auth, premiumOnly, task2PracticeController.saveLessonWork);
 
 module.exports = router;

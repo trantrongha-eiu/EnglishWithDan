@@ -347,7 +347,9 @@ async function _openDirectPracticeTask(taskType, taskId, examMode = null) {
       saved = serverDrafts.find(isSameTask) || null;
     }
     if (isSameTask(saved)) {
-      _applyPracticeDraft(saved);
+      // Fresh task from the list, not the draft's copy — task2-practice.html's
+      // lesson hand-off seeds this draft with only { _id, prompt }.
+      _applyPracticeDraft({ ...saved, task });
     } else if (examMode === 'simulation' && window.ExamModeSelect) {
       // Simulation link: confirm first (proctored attempt), pre-selected.
       window.ExamModeSelect.open({

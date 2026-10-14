@@ -216,3 +216,49 @@ exports.listDrafts = async (req, res) => {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
+
+// ── Lessons (one Buổi per topic) ─────────────────────────────────────────
+exports.listSessions = async (req, res) => {
+  try {
+    const sessions = await task2PracticeService.listSessions();
+    res.json({ success: true, sessions });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+exports.getLessonWork = async (req, res) => {
+  try {
+    const result = await task2PracticeService.getLessonWork(req.user._id, req.params.topicId);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học' });
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+exports.saveLessonWork = async (req, res) => {
+  try {
+    const { brainstorm, sections } = req.body || {};
+    if (brainstorm !== undefined && !Array.isArray(brainstorm)) {
+      return res.status(400).json({ success: false, message: 'brainstorm phải là một mảng' });
+    }
+    if (sections !== undefined && (typeof sections !== 'object' || sections === null || Array.isArray(sections))) {
+      return res.status(400).json({ success: false, message: 'sections không hợp lệ' });
+    }
+    const work = await task2PracticeService.saveLessonWork(req.user._id, req.params.topicId, req.body || {});
+    if (!work) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học' });
+    res.json({ success: true, work });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi lưu bài' });
+  }
+};
+
+exports.listLessonProgress = async (req, res) => {
+  try {
+    const progress = await task2PracticeService.listLessonProgress(req.user._id);
+    res.json({ success: true, progress });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};

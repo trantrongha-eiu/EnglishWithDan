@@ -600,6 +600,181 @@
     [data-theme="dark"] .t2-prompt-box{background:#1c1a00;border-color:#92400e;color:#fde68a}
     [data-theme="dark"] .t2-prompt-box-label,[data-theme="dark"] .t2-prompt-peek{color:#fcd34d}
 
+    body.t2-no-session-stats .wp-mobile-stats{display:none!important}
+    body.t2-composing .wp-mini-stats{display:none!important}
+
+    /* ══ Lesson list: one "Buổi" per Task 2 prompt ══ */
+    .t2-group{min-width:0}
+    .t2-group-sessions{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+    .t2-group.is-review .t2-group-sessions{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+    .t2-sess{display:flex;align-items:center;gap:10px;width:100%;min-width:0;box-sizing:border-box;text-align:left;font-family:inherit;border:1.5px solid #e5e7eb;border-radius:10px;background:#f9fafb;padding:9px 11px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+    .t2-sess:hover{border-color:#6366f1;background:#f0f0ff}
+    .t2-sess:active{transform:scale(.98)}
+    .t2-sess.has-draft{border-color:#f59e0b;background:#fffbeb}
+    .t2-sess.is-submitted{border-color:#86efac}
+    .t2-sess-num{flex-shrink:0;font-size:11.5px;font-weight:800;color:#6366f1;background:#eef2ff;border-radius:7px;padding:3px 7px;white-space:nowrap}
+    .t2-sess-name{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:#111827;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .t2-sess .t2-step-chip{flex-shrink:0}
+    [data-theme="dark"] .t2-sess{background:var(--bg,#000);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-sess:hover{border-color:#818cf8;background:#1e1b4b}
+    [data-theme="dark"] .t2-sess.has-draft{border-color:#d97706;background:#1c1a0e}
+    [data-theme="dark"] .t2-sess-num{background:#1e1b4b;color:#a5b4fc}
+    [data-theme="dark"] .t2-sess-name{color:#f1f5f9}
+
+    /* ══ Lesson hub: 3 phases, 6 steps ══ */
+    .t2-hub-kicker{font-size:11.5px;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:.05em}
+    [data-theme="dark"] .t2-hub-kicker{color:#a5b4fc}
+    .t2-rail{display:flex;gap:6px;margin:14px 0 4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+    .t2-rail::-webkit-scrollbar{display:none}
+    .t2-rail-item{flex:1 0 auto;display:inline-flex;align-items:center;gap:6px;border:none;border-radius:9px;background:#f3f4f6;color:#6b7280;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap}
+    .t2-rail-num{width:19px;height:19px;border-radius:50%;background:#d1d5db;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;flex-shrink:0}
+    .t2-rail-item.is-done{background:#dcfce7;color:#15803d}
+    .t2-rail-item.is-done .t2-rail-num{background:#16a34a}
+    .t2-rail-item.is-current{background:#ede9fe;color:#4338ca}
+    .t2-rail-item.is-current .t2-rail-num{background:#6366f1}
+    [data-theme="dark"] .t2-rail-item{background:#1f2937;color:#94a3b8}
+    [data-theme="dark"] .t2-rail-num{background:#374151}
+    [data-theme="dark"] .t2-rail-item.is-done{background:#052e16;color:#4ade80}
+    [data-theme="dark"] .t2-rail-item.is-current{background:#1e1b4b;color:#a5b4fc}
+    .t2-phase{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:22px 0 2px;padding-bottom:6px;border-bottom:2px solid #eef0f3}
+    .t2-phase-k{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:#6366f1;border-radius:6px;padding:2px 8px}
+    .t2-phase.is-class .t2-phase-k{background:#0ea5e9}
+    .t2-phase.is-home .t2-phase-k{background:#f59e0b}
+    .t2-phase b{font-size:16px;color:#111827}
+    .t2-phase-time{font-size:12px;font-weight:700;color:#6b7280}
+    .t2-phase p{flex-basis:100%;margin:2px 0 0;font-size:12.5px;color:#6b7280}
+    [data-theme="dark"] .t2-phase{border-color:#1f2937}
+    [data-theme="dark"] .t2-phase b{color:#f1f5f9}
+    [data-theme="dark"] .t2-phase p,[data-theme="dark"] .t2-phase-time{color:#94a3b8}
+    .t2-step-time{font-size:11.5px;font-weight:700;color:#6b7280;white-space:nowrap}
+    [data-theme="dark"] .t2-step-time{color:#94a3b8}
+    .t2-teacher{display:flex;gap:9px;align-items:flex-start;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:9px 12px;margin:8px 0 10px;font-size:12.5px;line-height:1.6;color:#075985}
+    .t2-teacher>i{margin-top:3px;color:#0284c7}
+    [data-theme="dark"] .t2-teacher{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
+    .t2-plan{margin:6px 0 10px;padding-left:20px;font-size:13px;line-height:1.7;color:#374151}
+    .t2-plan b{color:#111827}
+    [data-theme="dark"] .t2-plan{color:#cbd5e1}
+    [data-theme="dark"] .t2-plan b{color:#f1f5f9}
+    .t2-wc-row{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+    .t2-ideas .t2-brainstorm-side{margin-top:10px}
+    /* Guided writing: outline flow + paragraph recipe */
+    .t2-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 12px}
+    .t2-flow span{font-size:11.5px;font-weight:800;background:#eef2ff;color:#4338ca;border-radius:7px;padding:4px 9px}
+    .t2-flow i{font-size:9px;color:#a5b4fc}
+    [data-theme="dark"] .t2-flow span{background:#1e1b4b;color:#a5b4fc}
+    .t2-recipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:6px 0 12px}
+    .t2-recipe-item{border:1.5px solid #e0e7ff;border-radius:10px;padding:8px 10px;background:#f8f9ff}
+    .t2-recipe-k{font-size:11px;font-weight:900;letter-spacing:.05em;color:#6366f1}
+    .t2-recipe-v{font-size:12.5px;color:#374151;line-height:1.5;margin-top:2px}
+    .t2-recipe-ex{font-size:12px;color:#6b7280;font-style:italic;margin-top:3px}
+    [data-theme="dark"] .t2-recipe-item{background:#11142a;border-color:#2b3357}
+    [data-theme="dark"] .t2-recipe-v{color:#cbd5e1}
+    .t2-model{margin-top:6px;border:1px solid #e5e7eb;border-radius:10px;padding:8px 12px}
+    .t2-model>summary{cursor:pointer;font-size:13px;font-weight:700;color:#4338ca}
+    .t2-model p{font-size:13px;line-height:1.7;color:#374151;margin:8px 0 2px}
+    .t2-model .t2-model-q{font-size:12px;color:#6b7280;font-style:italic}
+    [data-theme="dark"] .t2-model{border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-model>summary{color:#a5b4fc}
+    [data-theme="dark"] .t2-model p{color:#cbd5e1}
+
+    /* ══ Split-screen writer: reference (left) · essay (right) ══ */
+    .t2c{padding:10px 20px 30px}
+    .t2c-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .t2c-title{flex:1;min-width:160px;font-size:15px;font-weight:800;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    [data-theme="dark"] .t2c-title{color:#f1f5f9}
+    .t2c-wc{font-size:12.5px;font-weight:800;color:#4338ca;background:#eef2ff;border-radius:20px;padding:4px 11px;white-space:nowrap}
+    .t2c-wc.is-ok{background:#dcfce7;color:#15803d}
+    [data-theme="dark"] .t2c-wc{background:#1e1b4b;color:#a5b4fc}
+    [data-theme="dark"] .t2c-wc.is-ok{background:#052e16;color:#4ade80}
+    .t2c-save{font-size:12px;color:#9ca3af;white-space:nowrap;min-width:84px}
+    .t2c-save.is-error{color:#dc2626;font-weight:700}
+    .t2c-grid{display:grid;grid-template-columns:minmax(300px,38%) 1fr;gap:16px;align-items:start}
+    .t2c-ref{position:sticky;top:76px;max-height:calc(100vh - 92px);display:flex;flex-direction:column;border:1.5px solid #e0e7ff;border-radius:14px;background:#f8f9ff;overflow:hidden}
+    [data-theme="dark"] .t2c-ref{background:#0b0e1c;border-color:#2b3357}
+    .t2c-tabs{display:flex;gap:2px;padding:6px 6px 0;border-bottom:1px solid #e0e7ff;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+    .t2c-tabs::-webkit-scrollbar{display:none}
+    .t2c-tab{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:800;color:#6b7280;padding:8px 10px;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent}
+    .t2c-tab.active{color:#4338ca;border-bottom-color:#6366f1;background:#fff}
+    .t2c-tab .t2c-count{font-size:10.5px;background:#e0e7ff;color:#4338ca;border-radius:10px;padding:0 6px;margin-left:3px}
+    [data-theme="dark"] .t2c-tabs{border-color:#2b3357}
+    [data-theme="dark"] .t2c-tab{color:#94a3b8}
+    [data-theme="dark"] .t2c-tab.active{background:#11142a;color:#a5b4fc}
+    [data-theme="dark"] .t2c-tab .t2c-count{background:#1e1b4b;color:#a5b4fc}
+    .t2c-ref-body{overflow-y:auto;padding:10px 12px 14px;flex:1}
+    .t2c-note{font-size:12px;color:#6b7280;line-height:1.55;margin:0 0 10px}
+    [data-theme="dark"] .t2c-note{color:#94a3b8}
+    .t2c-sent{position:relative;background:#fff;border:1px solid #e5e7eb;border-left:3px solid #16a34a;border-radius:9px;padding:8px 40px 8px 10px;margin-bottom:7px}
+    .t2c-sent.is-todo{border-left-color:#d1d5db;background:#fafafa}
+    .t2c-sent.is-model{border-left-color:#f59e0b}
+    .t2c-sent-en{font-size:13.5px;font-weight:600;color:#111827;line-height:1.55}
+    .t2c-sent-vi{font-size:12px;color:#6b7280;line-height:1.5;margin-top:3px}
+    .t2c-sent.is-todo .t2c-sent-vi{font-size:12.5px;color:#374151}
+    .t2c-sent-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px;font-size:11px;color:#9ca3af}
+    .t2c-kw{font-size:11px;font-weight:700;color:#92400e;background:#fef3c7;border-radius:20px;padding:0 7px}
+    [data-theme="dark"] .t2c-sent{background:var(--surface,#0d0d0d);border-color:var(--border2,#333);border-left-color:#16a34a}
+    [data-theme="dark"] .t2c-sent.is-todo{border-left-color:#374151;background:#000}
+    [data-theme="dark"] .t2c-sent.is-model{border-left-color:#d97706}
+    [data-theme="dark"] .t2c-sent-en{color:#f1f5f9}
+    [data-theme="dark"] .t2c-sent-vi,[data-theme="dark"] .t2c-sent.is-todo .t2c-sent-vi{color:#94a3b8}
+    [data-theme="dark"] .t2c-kw{background:#3a2c0a;color:#fcd34d}
+    .t2c-ins{position:absolute;top:7px;right:7px;width:27px;height:27px;border-radius:8px;border:1.5px solid #c7d2fe;background:#eef2ff;color:#4338ca;font-size:13px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .t2c-ins:hover{background:#6366f1;border-color:#6366f1;color:#fff}
+    [data-theme="dark"] .t2c-ins{background:#1e1b4b;border-color:#3730a3;color:#a5b4fc}
+    .t2c-group{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#6366f1;margin:12px 0 6px}
+    .t2c-group:first-child{margin-top:0}
+    [data-theme="dark"] .t2c-group{color:#a5b4fc}
+    .t2c-mine{font-size:13px;color:#111827;white-space:pre-wrap;line-height:1.6;background:#fff;border:1px solid #e5e7eb;border-radius:9px;padding:8px 10px}
+    [data-theme="dark"] .t2c-mine{background:var(--surface,#0d0d0d);border-color:var(--border2,#333);color:#e5e7eb}
+    .t2c-tpl{position:relative;font-size:13px;line-height:1.55;color:#111827;padding:6px 36px 6px 0;border-bottom:1px dashed #e5e7eb}
+    .t2c-tpl b{color:#4338ca}
+    .t2c-tpl mark{background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px}
+    .t2c-tpl .t2c-sent-vi{font-size:11.5px}
+    .t2c-tpl .t2c-ins{top:6px;right:0;width:25px;height:25px;font-size:12px}
+    [data-theme="dark"] .t2c-tpl{color:#e5e7eb;border-color:#1f2937}
+    [data-theme="dark"] .t2c-tpl b{color:#a5b4fc}
+    [data-theme="dark"] .t2c-tpl mark{background:#3a2c0a;color:#fcd34d}
+    .t2c-tplsec{margin-bottom:8px}
+    .t2c-tplsec>summary{cursor:pointer;font-size:12.5px;font-weight:800;color:#374151;padding:4px 0}
+    [data-theme="dark"] .t2c-tplsec>summary{color:#cbd5e1}
+    .t2c-main{min-width:0}
+    .t2c-main .t2-prompt-box{margin:0 0 12px}
+    .t2c-tip{font-size:12.5px;line-height:1.6;border-radius:10px;padding:9px 12px;margin-bottom:12px;background:#f0f9ff;border:1px solid #bae6fd;color:#075985}
+    .t2c-tip.is-home{background:#fffbeb;border-color:#fde68a;color:#92400e}
+    [data-theme="dark"] .t2c-tip{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
+    [data-theme="dark"] .t2c-tip.is-home{background:#1c1a0e;border-color:#78350f;color:#fcd34d}
+    .t2c-sec{border:1.5px solid #e5e7eb;border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--surface,#fff);transition:border-color .15s,opacity .15s}
+    .t2c-sec.is-active{border-color:#a5b4fc;box-shadow:0 3px 14px rgba(99,102,241,.08)}
+    .t2c-sec.is-other{opacity:.72}
+    .t2c-sec.is-other:focus-within{opacity:1}
+    [data-theme="dark"] .t2c-sec{background:var(--surface,#0d0d0d);border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2c-sec.is-active{border-color:#4f46e5}
+    .t2c-sec-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+    .t2c-sec-head b{font-size:14px;color:#111827}
+    [data-theme="dark"] .t2c-sec-head b{color:#f1f5f9}
+    .t2c-sec-en{flex:1;min-width:0;font-size:12px;color:#6b7280}
+    .t2c-sec-tag{font-size:10.5px;font-weight:800;border-radius:20px;padding:1px 8px;background:#e0f2fe;color:#0369a1}
+    .t2c-sec-tag.home{background:#fef3c7;color:#92400e}
+    [data-theme="dark"] .t2c-sec-tag{background:#0c1e30;color:#7dd3fc}
+    [data-theme="dark"] .t2c-sec-tag.home{background:#3a2c0a;color:#fcd34d}
+    .t2c-sec-wc{font-size:11.5px;font-weight:700;color:#9ca3af}
+    .t2c-ta{width:100%;box-sizing:border-box;font-family:inherit;font-size:15px;line-height:1.7;padding:10px 12px;border:1px solid #d1d5db;border-radius:9px;resize:vertical;background:#fff;color:#111827;min-height:80px}
+    .t2c-ta:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+    [data-theme="dark"] .t2c-ta{background:#000;border-color:#333;color:#f1f5f9}
+    .t2c-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .t2c-foot-note{font-size:12px;color:#6b7280;flex:1;min-width:200px}
+    .t2c-ref-toggle{display:none}
+    @media (max-width: 900px){
+      .t2c{padding:8px 14px 24px}
+      .t2c-grid{grid-template-columns:1fr}
+      .t2c-ref{position:static;max-height:none;display:none}
+      .t2c-ref.is-open{display:flex}
+      .t2c-ref.is-open .t2c-ref-body{max-height:46vh}
+      .t2c-ref-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;border:1.5px solid #c7d2fe;background:#eef2ff;color:#4338ca;border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:10px}
+      [data-theme="dark"] .t2c-ref-toggle{background:#1e1b4b;border-color:#3730a3;color:#a5b4fc}
+      .t2c-top .t2-seg{order:5;width:100%}
+      .t2c-top .t2-seg button{flex:1}
+    }
+
   </style>
   <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
@@ -762,6 +937,39 @@ function weekLabel(w) {
   return g.essayType ? `${ESSAY_LABELS[g.essayType]} · ${g.theme}` : 'Ôn tập';
 }
 
+// ── Lessons ("Buổi học") ────────────────────────────────────────────────
+// Every topic (= one Writing Task 2 prompt) is ONE class session, numbered
+// Buổi 1..N in course order (GET /api/task2/sessions). A session runs:
+//   Giai đoạn 1 · Scaffolding (~60′): ① từ vựng ② brainstorm nhóm
+//                                     ③ dịch câu ④ hướng dẫn viết
+//   Giai đoạn 2 · Viết trên lớp (~30′): ⑤ Mở bài + Thân bài 1
+//   Giai đoạn 3 · Bài tập về nhà:        ⑥ Thân bài 2 + Kết bài (template)
+// The essay is written on a split screen — the student's own translated
+// sentences on the left, the essay on the right. Sections + brainstorm notes
+// are saved per student on the server (/api/task2/lesson/:topicId) since
+// the two halves are usually written on different devices.
+const ESSAY_TYPE_ID = { advantages_disadvantages:'type01', discuss_both_views:'type02', cause_solution:'type03', effect_solution:'type04', cause_effect:'type05', agree_disagree:'type06', positive_or_negative_development:'type07' };
+const LESSON_SECTIONS = [
+  { key: 'intro',      label: 'Mở bài',     en: 'Introduction', phase: 'class', tplIdx: 0, ph: 'Paraphrase đề bài + nêu hướng triển khai / quan điểm (thesis)...' },
+  { key: 'body1',      label: 'Thân bài 1', en: 'Body 1',       phase: 'class', tplIdx: 1, ph: 'Câu chủ đề (ý chính) → giải thích (because) → kết quả (result) → ví dụ (example)...' },
+  { key: 'body2',      label: 'Thân bài 2', en: 'Body 2',       phase: 'home',  tplIdx: 2, ph: 'Viết theo template trong sách: câu chủ đề → giải thích → kết quả → ví dụ...' },
+  { key: 'conclusion', label: 'Kết bài',    en: 'Conclusion',   phase: 'home',  tplIdx: 3, ph: 'In conclusion, ... tóm tắt 2 ý chính + nhắc lại quan điểm...' }
+];
+const LESSON_MIN_WORDS = 250;
+function sessionNumber(topicId) {
+  const i = state.sessions.findIndex(s => s._id === topicId);
+  return i >= 0 ? i + 1 : null;
+}
+function sessionLabel(topicId) {
+  const n = sessionNumber(topicId);
+  return n ? `Buổi ${n}` : '';
+}
+function _wc(s) {
+  const t = String(s || '').trim();
+  return t ? t.split(/\s+/).length : 0;
+}
+function _emptySections() { return { intro: '', body1: '', body2: '', conclusion: '' }; }
+
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
@@ -811,7 +1019,15 @@ let state = {
   vocabQuiz: null,      // optional inline quiz — see startVocabQuiz()
   // Brainstorm notes survive hub re-renders (vocab save, stats refresh).
   brainstorm: { topicId: null, notes: [], open: true, hintOpen: false },
-  promptOpen: true      // practice screen's collapsible prompt box
+  promptOpen: true,     // practice screen's collapsible prompt box
+  // Lessons — see LESSON_SECTIONS above.
+  sessions: [],         // every topic in course order → "Buổi N"
+  lessonProgress: {},   // topicId → { written: 0-4 sections, submitted }
+  // status: idle | loading | ready | error. sentences = the student's own
+  // English for each translation/paraphrase/short_writing question.
+  lesson: { topicId: null, status: 'idle', sentences: [], sections: _emptySections(), submittedAt: null },
+  translateOnly: false, // practice run limited to the sentence-building questions (step ③)
+  compose: { phase: 'class', tab: 'sentences', lastFocus: 'intro', refOpen: false, revealed: {} }
 };
 
 const T2_PREFS_KEY = 't2_prefs';
@@ -1057,7 +1273,10 @@ function render() {
     case 'exam':     app.innerHTML = renderExam();     bindExam();     break;
     case 'examDone': app.innerHTML = renderExamDone(); break;
     case 'done':     app.innerHTML = renderDone();     break;
+    case 'compose':  app.innerHTML = renderCompose();  bindCompose();  break;
   }
+  // The split-screen writer needs the room; every other view stays narrow.
+  app.style.maxWidth = state.view === 'compose' ? '1320px' : '900px';
   // Session stats (BÀI LÀM/XP/ĐÚNG) only mean something once a practice
   // session is actually running — outside 'practice'/'done' they'd just be
   // stale zeros floating over the weeks/topics picker, which is the bug this
@@ -1068,6 +1287,11 @@ function render() {
   // Same for the mobile bar — '' hands visibility back to the media query.
   const mobBar = document.getElementById('wp-mobile-stats');
   if (mobBar) mobBar.style.display = inSession ? '' : 'none';
+  // writing-practice.css forces the mobile bar on with !important, which the
+  // inline style above can't beat — a body class can.
+  document.body.classList.toggle('t2-no-session-stats', !inSession);
+  // The writer's top bar sits where the floating XP badge is.
+  document.body.classList.toggle('t2-composing', state.view === 'compose');
 }
 
 // ════════════════════════════════════════════════════════
@@ -1123,12 +1347,18 @@ async function loadWeeks() {
     if (urlMode === 'vocab' || urlMode === 'exam') _hubFocus = urlMode;
 
     const hasToken = window.AuthService.isLoggedIn();
-    const [data, allDraftsData] = await Promise.all([
+    const [data, allDraftsData, sessData, progData] = await Promise.all([
       apiFetch('/api/task2/weeks'),
-      hasToken ? apiFetch('/api/task2/drafts').catch(() => ({ drafts: [] })) : Promise.resolve({ drafts: [] })
+      hasToken ? apiFetch('/api/task2/drafts').catch(() => ({ drafts: [] })) : Promise.resolve({ drafts: [] }),
+      apiFetch('/api/task2/sessions').catch(() => ({ sessions: [] })),
+      hasToken ? apiFetch('/api/task2/lessons/progress').catch(() => ({ progress: [] })) : Promise.resolve({ progress: [] })
     ]);
     state.weeks = data.weeks || [];
     state.allDrafts = allDraftsData.drafts || [];
+    state.sessions = sessData.sessions || [];
+    state.lessonProgress = {};
+    (progData.progress || []).forEach(p => { state.lessonProgress[p.topicId] = p; });
+    const wantWrite = !!params.get('write');
 
     // Scans every week's topic list to find which one currently owns
     // `topicId`. Used both when a deep link has no ?week= at all (older
@@ -1180,6 +1410,8 @@ async function loadWeeks() {
         state.view = 'select';
         history.replaceState({ view: 'select', week: urlWeek, topicId: urlTopicId }, '', location.href);
         render();
+        // ?write=1 — reopen the split-screen writer (reload / shared link).
+        if (wantWrite && hasToken) await openCompose(null, { replace: true });
         return;
       }
     } else if (urlWeek) {
@@ -1206,30 +1438,51 @@ function _pendingDrafts() {
     .filter(d => d._rem > 0);
 }
 
+// One row per lesson on the list: "Buổi N · topic" + where the student is.
+function _sessionRowHtml(s, draftTopicIds) {
+  const p = state.lessonProgress[s._id];
+  const hasDraft = draftTopicIds.has(String(s._id));
+  let chip = '';
+  if (p && p.submitted) chip = '<span class="t2-step-chip ok"><i class="fas fa-check"></i> Đã nộp</span>';
+  else if (p && p.written) chip = `<span class="t2-step-chip mid">✍️ ${p.written}/4 phần</span>`;
+  else if (hasDraft) chip = '<span class="t2-week-draft-pill" style="margin-top:0"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>';
+  return `<button type="button" class="t2-sess${hasDraft ? ' has-draft' : ''}${p && p.submitted ? ' is-submitted' : ''}" data-week="${Number(s.week)}" data-topic="${_escHtml(String(s._id))}">
+    <span class="t2-sess-num">Buổi ${s.n}</span>
+    <span class="t2-sess-name" title="${_escHtml(s.topicName)}">${_escHtml(s.topicEmoji || '📝')} ${_escHtml(s.topicName)}</span>
+    ${chip}
+  </button>`;
+}
+
 function renderWeeks() {
   const weekData = {};
   state.weeks.forEach(w => { weekData[w.week] = w; });
   const drafts = _pendingDrafts().filter(d => d.week);
   const draftWeeks = new Set(drafts.map(d => Number(d.week)));
+  const draftTopicIds = new Set(drafts.map(d => String(d.topicId)));
+  // Lessons grouped by week, numbered across the whole course. Falls back to
+  // the old per-week buttons if /sessions failed.
+  const byWeek = {};
+  state.sessions.forEach((s, i) => { (byWeek[s.week] = byWeek[s.week] || []).push({ ...s, n: i + 1 }); });
+  const useSessions = state.sessions.length > 0;
   return `
     <div class="t2-page-head">
       <div>
-        <h2 class="t2-page-h2" style="font-size:22px">📝 IELTS Task 2 Writing</h2>
-        <p class="t2-page-sub" style="font-size:14px">Chọn tuần học để bắt đầu luyện tập</p>
+        <h2 class="t2-page-h2" style="font-size:22px">📝 IELTS Writing Task 2 · Lộ trình theo buổi</h2>
+        <p class="t2-page-sub" style="font-size:14px">Mỗi đề là một buổi học trọn vẹn: chuẩn bị từ vựng &amp; ý tưởng → viết nửa bài trên lớp → hoàn thành ở nhà.</p>
       </div>
       <button onclick="openT2History()" class="t2-back-btn" style="white-space:nowrap">
         <i class="fas fa-history"></i> Lịch sử
       </button>
     </div>
     <div class="t2-flow-hint">
-      <span>Mỗi chủ đề gồm:</span>
-      <b>① Từ vựng</b><i class="fas fa-chevron-right"></i><b>② Luyện câu</b><i class="fas fa-chevron-right"></i><b>③ Viết bài</b>
+      <span>Mỗi buổi:</span>
+      <b>① Từ vựng</b><i class="fas fa-chevron-right"></i><b>② Brainstorm</b><i class="fas fa-chevron-right"></i><b>③ Dịch câu</b><i class="fas fa-chevron-right"></i><b>④ Hướng dẫn viết</b><i class="fas fa-chevron-right"></i><b>⑤ Viết trên lớp</b><i class="fas fa-chevron-right"></i><b>⑥ Bài về nhà</b>
     </div>
     ${(window.AuthService && !window.AuthService.hasPremiumAccess()) ? `<div id="premium-promo-banner" style="margin:8px 20px 4px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;flex-wrap:wrap">
       <div style="font-size:22px">⭐</div>
       <div style="flex:1;min-width:200px">
         <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện tập không giới hạn</div>
-        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ 18 tuần Task 2 Writing theo chủ đề</div>
+        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ ${state.sessions.length || ''} buổi học Task 2 Writing theo chủ đề</div>
       </div>
       <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
     </div>` : ''}
@@ -1238,7 +1491,7 @@ function renderWeeks() {
       <div class="t2-continue-title"><i class="fas fa-bookmark"></i> Đang làm dở</div>
       ${drafts.slice(0, 3).map(d => `
         <div class="t2-continue-row">
-          <span class="t2-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2-continue-meta">· Tuần ${Number(d.week)} · còn ${d._rem} câu</span></span>
+          <span class="t2-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2-continue-meta">· ${sessionLabel(String(d.topicId)) || `Tuần ${Number(d.week)}`} · còn ${d._rem} câu</span></span>
           <button class="t2-primary is-sm t2-continue-go" data-week="${Number(d.week)}" data-topic="${_escHtml(String(d.topicId))}"><i class="fas fa-play"></i> Tiếp tục</button>
         </div>`).join('')}
     </div>` : ''}
@@ -1254,6 +1507,11 @@ function renderWeeks() {
                 : `<span class="et-badge t2-badge-mixed">Tổng hợp các dạng</span>`}
             </div>
           </div>
+          ${useSessions ? `
+          <div class="t2-group-sessions">
+            ${g.weeks.flatMap(w => byWeek[w] || []).map(s => _sessionRowHtml(s, draftTopicIds)).join('')
+              || '<span class="t2-page-sub" style="font-size:12.5px">Sắp ra</span>'}
+          </div>` : `
           <div class="t2-group-weeks">
             ${g.weeks.map(w => {
               const d = weekData[w];
@@ -1264,13 +1522,16 @@ function renderWeeks() {
                 ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
               </button>`;
             }).join('')}
-          </div>
+          </div>`}
         </div>`).join('')}
     </div>`;
 }
 function bindWeeks() {
   document.querySelectorAll('.t2-wk:not(.locked)').forEach(el => {
     el.addEventListener('click', () => selectWeek(parseInt(el.dataset.week)));
+  });
+  document.querySelectorAll('.t2-sess').forEach(el => {
+    el.addEventListener('click', () => _withBusy(el, () => openTopicDirect(parseInt(el.dataset.week), el.dataset.topic, false)));
   });
   document.querySelectorAll('.t2-continue-go').forEach(el => {
     el.addEventListener('click', () => _withBusy(el, () => openTopicDirect(parseInt(el.dataset.week), el.dataset.topic, true)));
@@ -1348,7 +1609,7 @@ function renderTopics() {
         <div class="t2-topic-card${hasDraft ? ' has-draft' : ''}" data-id="${t._id}">
           <div class="t2-topic-emoji">${_escHtml(t.topicEmoji || '📝')}</div>
           <div style="flex:1;min-width:0">
-            <div class="t2-topic-name">${_escHtml(t.topicName)}</div>
+            <div class="t2-topic-name">${sessionNumber(t._id) ? `<span class="t2-sess-num" style="margin-right:6px">${sessionLabel(t._id)}</span>` : ''}${_escHtml(t.topicName)}</div>
             <div style="margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
               ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
@@ -1429,7 +1690,12 @@ function _resetHubState(id) {
   state.vocabQuiz = null;
   state.vocabOpen = null;
   if (state.vocabFor !== id) { state.vocab = []; state.vocabFor = null; state.vocabError = false; }
-  if (state.brainstorm.topicId !== id) state.brainstorm = { topicId: id, notes: [], open: true, hintOpen: false };
+  if (state.brainstorm.topicId !== id) {
+    // Unsaved notes / essay edits for the previous lesson go out before its state is dropped.
+    if (_lessonDirty.topicId && _lessonDirty.topicId !== id) flushLessonSave();
+    state.brainstorm = { topicId: id, notes: [], open: true, hintOpen: false };
+    state.compose.revealed = {};
+  }
 }
 
 let _selectTopicSeq = 0;
@@ -1476,12 +1742,7 @@ async function selectTopic(id) {
 }
 
 // ════════════════════════════════════════════════════════
-//  TOPIC HUB — one page, three steps:
-//    ① Từ vựng   save the topic's words (quiz optional)  → unlocks ②
-//    ② Luyện câu  sentence drills, best ≥ 70%              → unlocks ③
-//    ③ Viết bài   full essay on writing.html
-//  plus an optional week-wide "Thi thử". Replaces the old mode picker
-//  (Luyện tập / Thi thử / Từ vựng tabs + a separate "Bắt đầu" button).
+//  TOPIC HUB helpers (the lesson layout itself is renderSelect() below).
 // ════════════════════════════════════════════════════════
 let _hubFocus = null; // 'vocab' | 'exam' — scroll target after the next hub render
 
@@ -1500,53 +1761,71 @@ function _vocabStats(id) {
   return { total, saved, pct: total ? Math.round((saved / total) * 100) : 0 };
 }
 
-// "Brainstorm": right after reading the prompt the student writes their own
-// ideas for each side, then reveals the suggested points to compare. Data:
-// topic.brainstormHints (backend/scripts/data/task2Augment.js). Notes live in
-// state.brainstorm only (never saved) so a hub re-render doesn't wipe them.
-function _renderBrainstorm(t) {
+// ════════════════════════════════════════════════════════
+//  LESSON HUB — one prompt = one class session ("Buổi"), 3 phases / 6 steps:
+//    Giai đoạn 1 · Scaffolding  ① Từ vựng ② Brainstorm nhóm ③ Dịch câu ④ Hướng dẫn viết
+//    Giai đoạn 2 · Trên lớp     ⑤ Mở bài + Thân bài 1 (split-screen writer)
+//    Giai đoạn 3 · Về nhà       ⑥ Thân bài 2 + Kết bài theo template → chấm AI
+// ════════════════════════════════════════════════════════
+
+// Brainstorm sides: topic.brainstormHints (backend/scripts/data/task2Augment.js),
+// or one free box for a topic that has none.
+function _ideaSides(t) {
   const hints = t.brainstormHints || [];
-  if (!hints.length) return '';
-  const bs = state.brainstorm;
-  return `
-    <details class="t2-brainstorm" ${bs.open ? 'open' : ''} ontoggle="state.brainstorm.open=this.open">
-      <summary>💡 Brainstorm ý tưởng</summary>
-      <div class="t2-brainstorm-sub">Đọc kỹ đề bên trên, tự viết 2–3 ý cho mỗi phần vào ô dưới. Nghĩ xong rồi mới mở gợi ý để so.</div>
-      ${hints.map((h, i) => `
-        <label class="t2-brainstorm-side">${_escHtml(h.side)}</label>
-        <textarea class="t2-brainstorm-input" rows="2" placeholder="Ý của bạn cho phần này..." oninput="state.brainstorm.notes[${i}]=this.value">${_escHtml(bs.notes[i] || '')}</textarea>
-      `).join('')}
-      <details class="t2-brainstorm-reveal" ${bs.hintOpen ? 'open' : ''} ontoggle="state.brainstorm.hintOpen=this.open">
-        <summary>Xem gợi ý ý chính</summary>
-        ${hints.map(h => `
-          <div class="t2-brainstorm-hint-side">${_escHtml(h.side)}</div>
-          <ul class="t2-brainstorm-hint-list">${(h.points || []).map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul>
-        `).join('')}
-      </details>
-    </details>`;
+  return hints.length ? hints : [{ side: 'Ý tưởng của nhóm', points: [] }];
+}
+function _lessonFor(id) { return state.lesson.topicId === id ? state.lesson : null; }
+
+// Where the student is on the 6 steps — drives the rail + "current" card.
+function _lessonSteps(t) {
+  const id = t._id;
+  const L = _lessonFor(id);
+  const sent = L ? L.sentences : [];
+  const sec = L ? L.sections : _emptySections();
+  const has = k => !!(sec[k] || '').trim();
+  const classDone = has('intro') && has('body1');
+  return [
+    { key: 'vocab',     label: 'Từ vựng',        done: isVocabLearned(id) },
+    { key: 'ideas',     label: 'Brainstorm',     done: state.brainstorm.topicId === id && state.brainstorm.notes.some(n => (n || '').trim()) },
+    { key: 'translate', label: 'Dịch câu',       done: sent.length > 0 && sent.every(s => s.en) },
+    { key: 'guide',     label: 'Hướng dẫn viết', done: has('intro') || has('body1') },
+    { key: 'class',     label: 'Viết trên lớp',  done: classDone },
+    { key: 'home',      label: 'Bài về nhà',     done: has('body2') && has('conclusion') }
+  ];
+}
+function _currentStepKey(t) {
+  const steps = _lessonSteps(t);
+  return (steps.find(s => !s.done) || steps[steps.length - 1]).key;
+}
+function _renderRail(t) {
+  const steps = _lessonSteps(t);
+  const cur = _currentStepKey(t);
+  return `<nav class="t2-rail" id="t2-rail" aria-label="Các bước của buổi học">
+    ${steps.map((s, i) => `<button type="button" class="t2-rail-item${s.done ? ' is-done' : ''}${s.key === cur ? ' is-current' : ''}" onclick="scrollToHubStep('${s.key}')"><span class="t2-rail-num">${s.done ? '<i class="fas fa-check" style="font-size:9px"></i>' : i + 1}</span>${s.label}</button>`).join('')}
+  </nav>`;
+}
+function _stepHead(num, title, time, extra, done) {
+  return `<div class="t2-step-head">
+        <span class="t2-step-num${done ? ' is-done' : ''}">${done ? '<i class="fas fa-check"></i>' : num}</span>
+        <div class="t2-step-title">${title}</div>
+        ${time ? `<span class="t2-step-time"><i class="far fa-clock"></i> ${time}</span>` : ''}
+        ${extra || ''}
+      </div>`;
+}
+function _wcChip(label, text) {
+  const n = _wc(text);
+  return `<span class="t2-step-chip${n ? ' ok' : ''}">${label}: ${n} từ</span>`;
 }
 
 function renderSelect() {
   const t = state.selectedTopic;
   const id = t._id;
-  const vocabDone = isVocabLearned(id);
-  const best = _bestPracticeScore(id);
-  const practiceOk = best != null && best >= T2_WRITE_MIN_ACCURACY;
-  const gate = canWriteFullEssay(id);
-  const hasWrite = !!t.writingTask2Id;
+  const n = sessionNumber(id);
   const hasDraft = !!(state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0));
-  const current = !vocabDone ? 'vocab' : (hasWrite && gate.ok ? 'write' : 'practice');
-  const vs = _vocabStats(id);
-
-  const stepItem = (key, num, label, sub, cls) => `
-    <button type="button" class="t2-stepper-item ${cls}" onclick="scrollToHubStep('${key}')">
-      <span class="t2-stepper-num">${cls === 'is-done' ? '<i class="fas fa-check"></i>' : num}</span>
-      <span class="t2-stepper-txt">${label}<span class="t2-stepper-sub">${sub}</span></span>
-    </button>`;
-
+  const cur = _currentStepKey(t);
   return `
     <div class="t2-nav t2-nav-row">
-      <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <span onclick="goTopics()">Tuần ${state.selectedWeek}</span> › <b>${_escHtml(t.topicName)}</b></div>
+      <div class="t2-nav-crumb"><span onclick="goWeeks()">Lộ trình</span> › <b>${n ? `Buổi ${n}` : _escHtml(t.topicName)}</b></div>
       <div style="display:flex;gap:6px">
         <button class="t2-icon-btn" onclick="copyT2ShareUrl()" title="Sao chép link" aria-label="Sao chép link"><i class="fas fa-link"></i></button>
         <button class="t2-icon-btn" onclick="openT2History()" title="Lịch sử" aria-label="Lịch sử"><i class="fas fa-history"></i></button>
@@ -1556,12 +1835,12 @@ function renderSelect() {
       <div class="t2-hub-head">
         <div class="t2-hub-emoji">${_escHtml(t.topicEmoji || '📝')}</div>
         <div style="min-width:0">
+          ${n ? `<div class="t2-hub-kicker">Buổi ${n}</div>` : ''}
           <h2 class="t2-hub-title">${_escHtml(t.topicName)}</h2>
           <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
         </div>
       </div>
       <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>
-      ${_renderBrainstorm(t)}
 
       ${hasDraft ? `
       <div class="t2-draft-banner">
@@ -1572,23 +1851,736 @@ function renderSelect() {
         </div>
       </div>` : ''}
 
-      <div class="t2-stepper">
-        ${stepItem('vocab', 1, 'Từ vựng',
-          vocabDone ? 'Đã lưu đủ' : (vs.total ? `${vs.saved}/${vs.total} đã lưu` : 'Lưu vào sổ'),
-          vocabDone ? 'is-done' : 'is-current')}
-        ${stepItem('practice', 2, 'Luyện câu',
-          !vocabDone ? 'Chưa mở' : best == null ? 'Sẵn sàng' : `Cao nhất ${best}%`,
-          !vocabDone ? '' : practiceOk ? 'is-done' : 'is-current')}
-        ${hasWrite ? stepItem('write', 3, 'Viết bài',
-          gate.ok ? 'Đã mở khoá' : `Cần ≥ ${T2_WRITE_MIN_ACCURACY}%`,
-          gate.ok ? 'is-current' : '') : ''}
-      </div>
+      ${_renderRail(t)}
 
-      ${renderVocabStep(current === 'vocab')}
-      ${renderPracticeStep(current === 'practice')}
-      ${hasWrite ? renderWriteStep(current === 'write') : ''}
+      <div class="t2-phase"><span class="t2-phase-k">Giai đoạn 1</span><b>Scaffolding</b><span class="t2-phase-time">~60 phút</span>
+        <p>Chuẩn bị từ vựng, ý tưởng và cách diễn đạt trước khi viết. GV có thể đổi thứ tự hoặc gộp các bước tuỳ độ khó của đề và trình độ lớp.</p></div>
+      ${renderVocabStep(cur === 'vocab')}
+      ${renderIdeaStep(cur === 'ideas')}
+      ${renderTranslateStep(cur === 'translate')}
+      ${renderGuideStep(cur === 'guide')}
+
+      <div class="t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Viết trên lớp</b><span class="t2-phase-time">~30 phút</span>
+        <p>Viết khoảng một nửa bài dưới sự hướng dẫn của giáo viên — kết hợp viết cá nhân và viết theo nhóm.</p></div>
+      ${renderClassStep(cur === 'class')}
+
+      <div class="t2-phase is-home"><span class="t2-phase-k">Giai đoạn 3</span><b>Bài tập về nhà</b>
+        <p>Tự hoàn thành nửa bài còn lại theo template trong sách.</p></div>
+      ${renderHomeStep(cur === 'home')}
       ${renderExamStep()}
     </div>`;
+}
+
+// ② Idea generation — groups compete, the student keeps the best ideas.
+// Notes are saved with the lesson (shown again beside the essay).
+function renderIdeaStep(isCurrent) {
+  const t = state.selectedTopic;
+  const sides = _ideaSides(t);
+  const bs = state.brainstorm;
+  const hasHints = sides.some(s => (s.points || []).length);
+  const done = bs.notes.some(n => (n || '').trim());
+  return `
+    <section class="t2-step t2-ideas${isCurrent ? ' is-current' : ''}" id="t2-step-ideas">
+      ${_stepHead(2, 'Brainstorm ý tưởng', '15′', '', done)}
+      <div class="t2-teacher"><i class="fas fa-users"></i><div><b>Thi đua theo nhóm:</b> GV chia lớp thành nhóm 3–4 bạn. Mỗi nhóm có khoảng 7 phút để liệt kê thật nhiều ý cho từng phần bên dưới, rồi lần lượt trình bày. Nhóm có nhiều ý <b>hay, hợp lý và dùng được trong bài IELTS</b> nhất sẽ thắng.</div></div>
+      <p class="t2-step-desc" style="margin-top:0">Ghi lại những ý tốt nhất (của nhóm mình và nhóm bạn) — chúng sẽ hiện ở cột bên trái khi bạn viết bài.</p>
+      ${sides.map((h, i) => `
+        <label class="t2-brainstorm-side" for="t2-idea-${i}">${_escHtml(h.side)}</label>
+        <textarea id="t2-idea-${i}" class="t2-brainstorm-input" rows="3" placeholder="Ý của nhóm cho phần này..." oninput="onIdeaInput(${i}, this.value)">${_escHtml(bs.notes[i] || '')}</textarea>`).join('')}
+      ${hasHints ? `
+      <details class="t2-brainstorm-reveal" ${bs.hintOpen ? 'open' : ''} ontoggle="state.brainstorm.hintOpen=this.open">
+        <summary>Xem gợi ý ý chính (sau khi các nhóm đã trình bày)</summary>
+        ${sides.map(h => `
+          <div class="t2-brainstorm-hint-side">${_escHtml(h.side)}</div>
+          <ul class="t2-brainstorm-hint-list">${(h.points || []).map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul>`).join('')}
+      </details>` : ''}
+    </section>`;
+}
+function onIdeaInput(i, v) {
+  state.brainstorm.notes[i] = v;
+  _markLessonDirty('brainstorm');
+}
+
+// ③ Sentence translation — the translation/paraphrase/short_writing drill.
+// Can be finished at home; the English the student produces here is what the
+// writer's left column shows.
+function renderTranslateStep(isCurrent) {
+  const t = state.selectedTopic;
+  const id = t._id;
+  const vocabDone = isVocabLearned(id);
+  const L = _lessonFor(id);
+  const sent = L ? L.sentences : [];
+  const done = sent.filter(s => s.en).length;
+  const allDone = sent.length > 0 && done >= sent.length;
+  const best = _bestPracticeScore(id);
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}${vocabDone ? '' : ' is-locked'}" id="t2-step-translate">
+      ${_stepHead(3, 'Dịch câu Việt → Anh', '15′', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone)}
+      <p class="t2-step-desc">Dịch các câu tiếng Việt chứa ý chính của đề sang tiếng Anh, dùng từ vựng vừa học. <b>Câu bạn dịch sẽ hiện ở cột trái màn hình viết</b> để tham khảo khi viết bài. Hết giờ trên lớp thì làm nốt ở nhà.</p>
+      ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
+      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span></div>` : ''}
+      ${!vocabDone ? `
+      <div class="t2-lock-note"><i class="fas fa-lock"></i> Lưu hết từ vựng ở bước 1 để mở khoá.</div>` : `
+      <div class="t2-actions">
+        <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : allDone ? 'Dịch lại' : `Dịch tiếp ${sent.length - done} câu`}</button>
+        ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
+      </div>
+      <div class="t2-opts-row">
+        <button type="button" class="t2-link" onclick="startPractice(this)"><i class="fas fa-layer-group"></i> Luyện đủ bộ câu (điền từ, sắp xếp, nhận diện dạng…)${best != null ? ` · cao nhất ${best}%` : ''}</button>
+      </div>
+      <div class="t2-opts-row" style="margin-top:4px">
+        <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
+        <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
+        <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
+      </div>`}
+    </section>`;
+}
+
+// ④ Guided writing — outline of this essay type + how sentences become a
+// paragraph, with a same-type model paragraph (different prompt, so it can
+// be analysed but not copied). Data: GET /api/task2/type-guides.
+const _RECIPE = [
+  { k: 'Ý CHÍNH',   v: 'Câu chủ đề — nêu 1 ý lấy từ phần brainstorm', ex: 'One major advantage of … is that …' },
+  { k: 'GIẢI THÍCH', v: 'Vì sao ý đó đúng / hợp lý',                   ex: 'This is mainly because …' },
+  { k: 'KẾT QUẢ',   v: 'Ý đó dẫn đến điều gì',                          ex: 'As a result, …' },
+  { k: 'VÍ DỤ',     v: 'Dẫn chứng cụ thể — dùng câu ví dụ đã dịch',     ex: 'For example, …' }
+];
+function _perBodyChains(perBody) {
+  return String(perBody || '').split('|').map(g => g.trim()).filter(Boolean).map(g => {
+    let label = '', rest = g;
+    const m = g.match(/^([^:→]{2,20}):\s*(.+)$/);
+    if (m) { label = m[1].trim(); rest = m[2]; }
+    const steps = rest.split('→').map(s => s.trim()).filter(Boolean);
+    let note = '';
+    const last = steps[steps.length - 1] || '';
+    const cut = last.indexOf('. ');
+    if (cut > 0) { note = last.slice(cut + 2).trim(); steps[steps.length - 1] = last.slice(0, cut); }
+    return { label, steps, note };
+  });
+}
+function renderGuideStep(isCurrent) {
+  const t = state.selectedTopic;
+  const g = _guideFor(t);
+  const done = _lessonSteps(t)[3].done;
+  const flow = g?.outline?.flow ? g.outline.flow.split('→').map(s => s.trim()).filter(Boolean) : ['INTRODUCTION', 'BODY 1', 'BODY 2', 'CONCLUSION'];
+  const chains = _perBodyChains(g?.outline?.perBody);
+  const body1 = g?.modelEssay?.sections?.[1];
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-guide">
+      ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', '15′', '', done)}
+      <p class="t2-step-desc">GV hướng dẫn cách biến <b>ý tưởng + câu đã dịch</b> thành đoạn văn hoàn chỉnh, thay vì học thuộc bài mẫu.</p>
+      <div class="t2c-group">Bố cục bài ${_escHtml(ESSAY_LABELS[t.essayType] || '')}</div>
+      <div class="t2-flow">${flow.map(f => `<span>${_escHtml(f)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
+      ${chains.length ? `<div class="t2c-group">Triển khai mỗi đoạn thân bài</div>
+      ${chains.map(c => `<div class="t2-flow">${c.label ? `<b style="font-size:12px">${_escHtml(c.label)}:</b>` : ''}${c.steps.map(s => `<span>${_escHtml(s)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
+        ${c.note ? `<p class="t2-step-desc" style="margin:-6px 0 10px">💡 ${_escHtml(c.note)}</p>` : ''}`).join('')}` : ''}
+      <div class="t2c-group">Từ câu đơn → đoạn văn</div>
+      <div class="t2-recipe">${_RECIPE.map((r, i) => `<div class="t2-recipe-item"><div class="t2-recipe-k">${i + 1}. ${r.k}</div><div class="t2-recipe-v">${r.v}</div><div class="t2-recipe-ex">${_escHtml(r.ex)}</div></div>`).join('')}</div>
+      <div class="t2-teacher"><i class="fas fa-chalkboard-teacher"></i><div><b>GV làm mẫu trên bảng:</b> chọn 1 ý từ phần brainstorm → ghép 3–4 câu đã dịch theo thứ tự trên → thêm từ nối (<i>This is because, As a result, For example</i>) → sửa cho câu liền mạch. Sau đó cả lớp phân tích đoạn mẫu bên dưới.</div></div>
+      ${body1 ? `
+      <details class="t2-model"><summary>📖 Đoạn mẫu cùng dạng (đề khác) — xem cách triển khai ý</summary>
+        ${g.modelEssay.prompt ? `<div class="t2-model-q" style="margin-top:6px">Đề: ${_escHtml(g.modelEssay.prompt)}</div>` : ''}
+        <p><b>${_escHtml(body1.title)}.</b> ${_escHtml(body1.text)}</p>
+      </details>` : (_guideCache === null ? '<p class="t2-step-desc"><i class="fas fa-spinner fa-spin"></i> Đang tải đoạn mẫu...</p>' : '')}
+    </section>`;
+}
+
+// ⑤ In class — Introduction + Body 1 on the split-screen writer.
+function renderClassStep(isCurrent) {
+  const t = state.selectedTopic;
+  const L = _lessonFor(t._id);
+  const sec = L ? L.sections : _emptySections();
+  const done = !!(_wc(sec.intro) && _wc(sec.body1));
+  const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-class">
+      ${_stepHead(5, 'Viết Mở bài + Thân bài 1', '30′', '', done)}
+      <ol class="t2-plan">
+        <li><b>Mở bài — cá nhân (~10′):</b> paraphrase đề, nêu hướng triển khai / quan điểm.</li>
+        <li><b>Thân bài 1 — nhóm → cá nhân (~20′):</b> cả nhóm chọn ý mạnh nhất và thống nhất dàn ý (ý chính → giải thích → kết quả → ví dụ), sau đó mỗi bạn tự viết đoạn bằng lời của mình.</li>
+        <li>GV đi từng nhóm hỗ trợ chọn ý, diễn đạt câu và sắp xếp nội dung theo cấu trúc bài Task 2.</li>
+      </ol>
+      <div class="t2-teacher"><i class="fas fa-columns"></i><div>Màn hình viết chia đôi: <b>câu bạn đã dịch ở bên trái</b>, phần viết ở bên phải. Bấm <b>＋</b> để chèn một câu vào chỗ con trỏ, rồi chỉnh lại cho liền mạch với đoạn văn.</div></div>
+      ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Mở bài', sec.intro)}${_wcChip('Thân bài 1', sec.body1)}</div>` : ''}
+      ${loggedIn
+        ? `<button class="t2-primary is-lg" onclick="openComposeBtn(this, 'class')"><i class="fas fa-columns"></i> ${done ? 'Xem / sửa phần viết trên lớp' : 'Mở màn hình viết'}</button>`
+        : '<div class="t2-lock-note"><i class="fas fa-user-lock"></i> Đăng nhập để viết và lưu bài.</div>'}
+    </section>`;
+}
+
+// ⑥ Homework — Body 2 + Conclusion from the book's template, then AI grading.
+function renderHomeStep(isCurrent) {
+  const t = state.selectedTopic;
+  const L = _lessonFor(t._id);
+  const sec = L ? L.sections : _emptySections();
+  const filled = LESSON_SECTIONS.filter(s => (sec[s.key] || '').trim()).length;
+  const total = LESSON_SECTIONS.reduce((a, s) => a + _wc(sec[s.key]), 0);
+  const done = !!(_wc(sec.body2) && _wc(sec.conclusion));
+  const submitted = !!(L && L.submittedAt);
+  const untranslated = L ? L.sentences.filter(s => !s.en).length : 0;
+  const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
+  return `
+    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-home">
+      ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', '', submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : '<span class="t2-step-tag mid">Bài tập về nhà</span>', done)}
+      <ol class="t2-plan">
+        <li>Viết <b>Thân bài 2</b> và <b>Kết bài</b> theo <b>template trong sách</b> (tab “Template” ở cột trái màn hình viết).</li>
+        <li>Vận dụng từ vựng, ý tưởng và các câu đã dịch — <b>tự viết bằng lời của bạn</b>, không sao chép bài mẫu.</li>
+        ${untranslated ? `<li>Còn <b>${untranslated} câu</b> chưa dịch ở bước 3 — làm nốt trước để có thêm câu tham khảo.</li>` : ''}
+        <li>Đủ 4 phần (≥ ${LESSON_MIN_WORDS} từ) → bấm <b>Nộp bài chấm AI</b>.</li>
+      </ol>
+      ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Thân bài 2', sec.body2)}${_wcChip('Kết bài', sec.conclusion)}<span class="t2-step-chip${total >= LESSON_MIN_WORDS ? ' ok' : ''}">Cả bài: ${total} từ</span></div>` : ''}
+      ${loggedIn ? `
+      <div class="t2-actions">
+        <button class="t2-primary is-lg" onclick="openComposeBtn(this, 'home')"><i class="fas fa-house-user"></i> ${done ? 'Xem / sửa phần về nhà' : 'Viết phần về nhà'}</button>
+        ${filled === LESSON_SECTIONS.length && t.writingTask2Id ? `<button class="t2-primary is-write" onclick="submitLessonEssay(this)"><i class="fas fa-paper-plane"></i> ${submitted ? 'Nộp lại để chấm AI' : 'Nộp bài chấm AI'}</button>` : ''}
+      </div>` : ''}
+    </section>`;
+}
+
+// Re-render one hub card in place (keeps scroll + whatever the student is
+// typing elsewhere). Skips a card that currently has focus.
+const _HUB_STEP_RENDER = {
+  vocab: c => renderVocabStep(c), ideas: c => renderIdeaStep(c), translate: c => renderTranslateStep(c),
+  guide: c => renderGuideStep(c), class: c => renderClassStep(c), home: c => renderHomeStep(c)
+};
+function _refreshHubStep(key) {
+  if (state.view !== 'select' || !state.selectedTopic) return;
+  const el = document.getElementById('t2-step-' + key);
+  if (!el || el.contains(document.activeElement)) return;
+  el.outerHTML = _HUB_STEP_RENDER[key](_currentStepKey(state.selectedTopic) === key);
+}
+function _refreshHubLesson() {
+  if (state.view !== 'select' || !state.selectedTopic) return;
+  const rail = document.getElementById('t2-rail');
+  if (rail) rail.outerHTML = _renderRail(state.selectedTopic);
+  Object.keys(_HUB_STEP_RENDER).forEach(_refreshHubStep);
+}
+
+// ════════════════════════════════════════════════════════
+//  LESSON DATA — load / autosave (server + local mirror)
+// ════════════════════════════════════════════════════════
+const LESSON_LOCAL_PREFIX = 't2_lesson:';
+let _lessonInflight = null;
+let _lessonSeq = 0;
+let _lessonSaveTimer = null;
+let _lessonDirty = { topicId: null, sections: false, brainstorm: false };
+let _lessonEditSeq = 0;
+let _lessonSaveState = '';
+
+function _lessonLocal(id) {
+  try { return JSON.parse(localStorage.getItem(LESSON_LOCAL_PREFIX + id) || 'null'); } catch { return null; }
+}
+
+function loadLesson(id, force) {
+  if (!id || !(window.AuthService && window.AuthService.isLoggedIn())) return Promise.resolve();
+  const L = state.lesson;
+  if (L.topicId === id && L.status === 'loading' && _lessonInflight) return _lessonInflight;
+  if (!force && L.topicId === id && L.status === 'ready') return Promise.resolve();
+  const seq = ++_lessonSeq;
+  if (L.topicId !== id) state.lesson = { topicId: id, status: 'loading', sentences: [], sections: _emptySections(), submittedAt: null };
+  else L.status = 'loading';
+  _lessonInflight = (async () => {
+    try {
+      const d = await apiFetch(`/api/task2/lesson/${id}`);
+      if (seq !== _lessonSeq) return;
+      const w = d.work || {};
+      const sections = { ..._emptySections(), ...(w.sections || {}) };
+      let brainstorm = Array.isArray(w.brainstorm) ? w.brainstorm.slice() : null;
+      // A local copy newer than the server's = edits that never reached it
+      // (offline, tab closed mid-save). The copy is removed after every
+      // successful save, so this only fires for genuinely unsynced work.
+      const local = _lessonLocal(id);
+      const serverAt = w.updatedAt ? new Date(w.updatedAt).getTime() : 0;
+      let restored = false;
+      if (local && local.savedAt > serverAt) {
+        if (local.sections) { Object.assign(sections, local.sections); restored = true; }
+        if (Array.isArray(local.brainstorm)) { brainstorm = local.brainstorm.slice(); restored = true; }
+      }
+      // Keep only edits this device can still vouch for if a save is pending.
+      if (state.lesson.topicId === id && _lessonDirty.topicId === id && _lessonDirty.sections) Object.assign(sections, state.lesson.sections);
+      state.lesson = { topicId: id, status: 'ready', sentences: d.sentences || [], sections, submittedAt: w.submittedAt || null };
+      if (state.brainstorm.topicId === id && brainstorm && !state.brainstorm.notes.some(n => (n || '').trim())) {
+        state.brainstorm.notes = brainstorm;
+      }
+      if (restored) { _markLessonDirty('sections'); _markLessonDirty('brainstorm'); }
+    } catch {
+      if (seq === _lessonSeq) state.lesson.status = 'error';
+    } finally {
+      if (seq === _lessonSeq) _lessonInflight = null;
+    }
+    if (seq === _lessonSeq) {
+      _refreshHubLesson();
+      if (state.view === 'compose' && !document.activeElement?.classList?.contains('t2c-ta')) render();
+    }
+  })();
+  return _lessonInflight;
+}
+
+// part: 'sections' | 'brainstorm'. Only the parts actually edited are sent,
+// so typing brainstorm notes before the lesson finished loading can never
+// blank the saved essay.
+function _markLessonDirty(part) {
+  const id = state.selectedTopic?._id;
+  if (!id) return;
+  if (_lessonDirty.topicId && _lessonDirty.topicId !== id) flushLessonSave();
+  _lessonDirty.topicId = id;
+  _lessonDirty[part] = true;
+  _lessonEditSeq++;
+  try {
+    const prev = _lessonLocal(id) || {};
+    if (part === 'sections' && state.lesson.topicId === id && state.lesson.status === 'ready') prev.sections = state.lesson.sections;
+    if (part === 'brainstorm' && state.brainstorm.topicId === id) prev.brainstorm = state.brainstorm.notes;
+    prev.savedAt = Date.now();
+    localStorage.setItem(LESSON_LOCAL_PREFIX + id, JSON.stringify(prev));
+  } catch {}
+  _setSaveState('dirty');
+  clearTimeout(_lessonSaveTimer);
+  _lessonSaveTimer = setTimeout(() => flushLessonSave(), 1500);
+}
+
+// Builds the request synchronously (callers may reset state right after),
+// then sends it. extra: { submitted: true } on hand-in.
+async function flushLessonSave(opts = {}) {
+  clearTimeout(_lessonSaveTimer);
+  const d = _lessonDirty;
+  const id = d.topicId;
+  if (!id || (!d.sections && !d.brainstorm && !opts.extra)) return;
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) return;
+  const body = { ...(opts.extra || {}) };
+  if (d.sections && state.lesson.topicId === id && state.lesson.status === 'ready') body.sections = { ...state.lesson.sections };
+  if (d.brainstorm && state.brainstorm.topicId === id) body.brainstorm = state.brainstorm.notes.map(n => n || '');
+  _lessonDirty = { topicId: null, sections: false, brainstorm: false };
+  const editSeq = _lessonEditSeq;
+  _setSaveState('saving');
+  try {
+    await apiFetch(`/api/task2/lesson/${id}`, { method: 'PUT', keepalive: !!opts.keepalive, body: JSON.stringify(body) });
+    if (editSeq === _lessonEditSeq) {
+      try { localStorage.removeItem(LESSON_LOCAL_PREFIX + id); } catch {}
+      _setSaveState('saved');
+    }
+    if (state.lesson.topicId === id) _bumpLessonProgress(id);
+  } catch {
+    // Put the flags back so the next edit / leave retries; the local mirror
+    // still holds the text.
+    if (!_lessonDirty.topicId || _lessonDirty.topicId === id) {
+      _lessonDirty.topicId = id;
+      if (body.sections) _lessonDirty.sections = true;
+      if (body.brainstorm) _lessonDirty.brainstorm = true;
+    }
+    _setSaveState('error');
+  }
+}
+window.addEventListener('pagehide', () => flushLessonSave({ keepalive: true }));
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushLessonSave({ keepalive: true });
+});
+
+function _bumpLessonProgress(id) {
+  const s = state.lesson.sections;
+  state.lessonProgress[id] = {
+    topicId: id,
+    written: LESSON_SECTIONS.filter(x => (s[x.key] || '').trim()).length,
+    submitted: !!state.lesson.submittedAt
+  };
+}
+
+function _saveStateHtml() {
+  return ({
+    dirty:  '<i class="fas fa-pen"></i> Đang soạn…',
+    saving: '<i class="fas fa-spinner fa-spin"></i> Đang lưu…',
+    saved:  '<i class="fas fa-check"></i> Đã lưu',
+    error:  '<i class="fas fa-exclamation-triangle"></i> Chưa lưu được — sẽ thử lại'
+  })[_lessonSaveState] || '';
+}
+function _setSaveState(s) {
+  _lessonSaveState = s;
+  const el = document.getElementById('t2c-save');
+  if (el) { el.innerHTML = _saveStateHtml(); el.classList.toggle('is-error', s === 'error'); }
+}
+
+// Mirror an answer from the practice screen into the writer's sentence list
+// straight away (the server copy arrives with the draft/attempt save).
+function _noteMySentence(q, answer, isOk) {
+  const L = state.lesson;
+  if (L.topicId !== state.selectedTopic?._id || L.status !== 'ready') return;
+  const qid = q.questionId || q._id;
+  const s = L.sentences.find(x => x.questionId === qid || x.questionId === q._id);
+  if (!s || !String(answer || '').trim()) return;
+  if (s.en && s.isCorrect && !isOk) return;
+  s.en = String(answer).trim();
+  s.isCorrect = !!isOk;
+}
+
+// Type guides (outline + model essay) and the book's Band 6 templates — both
+// premium endpoints, loaded once per page. null = not loaded yet.
+let _guideCache = null;
+let _tplCache = null;
+let _guideLoading = null;
+let _tplLoading = null;
+function _loadGuides() {
+  if (_guideCache) return Promise.resolve(_guideCache);
+  if (!_guideLoading) {
+    _guideLoading = apiFetch('/api/task2/type-guides')
+      .then(d => (_guideCache = d.guides || []))
+      .catch(() => (_guideCache = []))
+      .finally(() => { _guideLoading = null; });
+  }
+  return _guideLoading;
+}
+function _loadTemplates() {
+  if (_tplCache) return Promise.resolve(_tplCache);
+  if (!_tplLoading) {
+    _tplLoading = apiFetch('/api/task2/templates?level=band6')
+      .then(d => (_tplCache = d.templates || []))
+      .catch(() => (_tplCache = []))
+      .finally(() => { _tplLoading = null; });
+  }
+  return _tplLoading;
+}
+function _guideFor(t) { return (_guideCache || []).find(g => g.typeId === ESSAY_TYPE_ID[t.essayType]) || null; }
+function _templateFor(t) { return (_tplCache || []).find(x => x.typeId === ESSAY_TYPE_ID[t.essayType]) || null; }
+
+// ════════════════════════════════════════════════════════
+//  SPLIT-SCREEN WRITER — reference (left) · essay (right)
+// ════════════════════════════════════════════════════════
+function openComposeBtn(btn, phase) { return _withBusy(btn, () => openCompose(phase)); }
+
+async function openCompose(phase, opts = {}) {
+  const t = state.selectedTopic;
+  if (!t) return;
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) { showToast('Đăng nhập để viết và lưu bài', 'warn'); return; }
+  const id = t._id;
+  await Promise.all([
+    loadLesson(id),
+    state.vocabFor === id ? null : _fetchVocab(id).then(list => { if (state.selectedTopic?._id === id) _applyVocab(id, list); })
+  ]);
+  if (state.selectedTopic?._id !== id) return;
+  if (state.lesson.topicId !== id || state.lesson.status !== 'ready') { showToast('Không tải được bài viết — thử lại nhé', 'error'); return; }
+  const s = state.lesson.sections;
+  const C = state.compose;
+  C.phase = phase || ((s.intro.trim() && s.body1.trim()) ? 'home' : 'class');
+  C.lastFocus = C.phase === 'home' ? 'body2' : 'intro';
+  C.tab = 'sentences';
+  C.refOpen = false;
+  const url = `/task2-practice.html?${new URLSearchParams({ week: state.selectedWeek, topicId: id, write: 1 })}`;
+  const hs = { view: 'compose', week: state.selectedWeek, topicId: id };
+  if (opts.replace) history.replaceState(hs, '', url); else history.pushState(hs, '', url);
+  state.view = 'compose';
+  render();
+  window.scrollTo(0, 0);
+  _loadTemplates().then(() => { if (state.view === 'compose') _refreshComposeRef(); });
+}
+
+function closeCompose() {
+  flushLessonSave();
+  const t = state.selectedTopic;
+  const back = state.compose.phase === 'home' ? 'home' : 'class';
+  history.pushState({ view: 'select', week: state.selectedWeek, topicId: t._id }, '',
+    `/task2-practice.html?${new URLSearchParams({ week: state.selectedWeek, topicId: t._id })}`);
+  state.view = 'select';
+  render();
+  setTimeout(() => scrollToHubStep(back), 60);
+}
+
+function setComposePhase(p) {
+  const C = state.compose;
+  if (C.phase === p) return;
+  C.phase = p;
+  C.lastFocus = p === 'home' ? 'body2' : 'intro';
+  if (p === 'home' && C.tab === 'sentences' && !state.lesson.sentences.some(s => s.en)) C.tab = 'template';
+  render();
+}
+function setComposeTab(tab) {
+  state.compose.tab = tab;
+  _refreshComposeRef();
+}
+function toggleComposeRef() {
+  state.compose.refOpen = !state.compose.refOpen;
+  const el = document.getElementById('t2c-ref');
+  if (el) el.classList.toggle('is-open', state.compose.refOpen);
+  const ic = document.querySelector('.t2c-ref-toggle i');
+  if (ic) ic.className = `fas fa-chevron-${state.compose.refOpen ? 'up' : 'down'}`;
+}
+function revealModelSentence(i) {
+  state.compose.revealed[state.lesson.topicId + ':' + i] = true;
+  _refreshComposeRef();
+}
+
+function renderCompose() {
+  const t = state.selectedTopic;
+  const L = state.lesson;
+  const C = state.compose;
+  const total = LESSON_SECTIONS.reduce((a, s) => a + _wc(L.sections[s.key]), 0);
+  const filled = LESSON_SECTIONS.filter(s => (L.sections[s.key] || '').trim()).length;
+  const nTrans = L.sentences.filter(s => s.en).length;
+  return `
+    <div class="t2c">
+      <div class="t2c-top">
+        <button class="t2-back-btn" onclick="closeCompose()"><i class="fas fa-arrow-left"></i> ${_escHtml(sessionLabel(t._id) || 'Buổi học')}</button>
+        <div class="t2c-title" title="${_escHtml(t.topicName)}">${_escHtml(t.topicEmoji || '📝')} ${_escHtml(t.topicName)}</div>
+        <div class="t2-seg" role="group" aria-label="Phần viết">
+          <button type="button" class="${C.phase === 'class' ? 'active' : ''}" onclick="setComposePhase('class')">🏫 Trên lớp · MB + TB1</button>
+          <button type="button" class="${C.phase === 'home' ? 'active' : ''}" onclick="setComposePhase('home')">🏠 Về nhà · TB2 + KB</button>
+        </div>
+        <span class="t2c-wc${total >= LESSON_MIN_WORDS ? ' is-ok' : ''}" id="t2c-total">${total} từ</span>
+        <span class="t2c-save${_lessonSaveState === 'error' ? ' is-error' : ''}" id="t2c-save">${_saveStateHtml()}</span>
+      </div>
+      <button type="button" class="t2c-ref-toggle" onclick="toggleComposeRef()"><span>📚 Câu đã dịch (${nTrans}) · Ý tưởng · Template</span><i class="fas fa-chevron-${C.refOpen ? 'up' : 'down'}"></i></button>
+      <div class="t2c-grid">
+        <aside class="t2c-ref${C.refOpen ? ' is-open' : ''}" id="t2c-ref" aria-label="Tài liệu tham khảo">${renderComposeRef()}</aside>
+        <main class="t2c-main">
+          <details class="t2-prompt-box" ${state.promptOpen ? 'open' : ''} ontoggle="state.promptOpen=this.open">
+            <summary class="t2-prompt-box-label">📋 Đề bài <span class="t2-prompt-peek">— ${_escHtml((t.prompt || '').slice(0, 70))}${(t.prompt || '').length > 70 ? '…' : ''}</span></summary>
+            <p>${_escHtml(t.prompt)}</p>
+          </details>
+          ${C.phase === 'class'
+            ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch.</div>`
+            : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template trong sách (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
+          ${LESSON_SECTIONS.map(renderComposeSection).join('')}
+          <div class="t2c-foot">
+            <span class="t2c-foot-note">Bài tự lưu khi bạn gõ. Đủ 4 phần (${filled}/4) và ≥ ${LESSON_MIN_WORDS} từ thì nộp để AI chấm.</span>
+            ${t.writingTask2Id ? `<button class="t2-primary is-write" onclick="submitLessonEssay(this)" ${filled < LESSON_SECTIONS.length ? 'disabled title="Viết đủ 4 phần trước"' : ''}><i class="fas fa-paper-plane"></i> Nộp bài chấm AI</button>` : ''}
+          </div>
+        </main>
+      </div>
+    </div>`;
+}
+
+function renderComposeSection(s) {
+  const C = state.compose;
+  const txt = state.lesson.sections[s.key] || '';
+  const active = s.phase === C.phase;
+  const tpl = _templateFor(state.selectedTopic);
+  const tplTitle = tpl?.sections?.[s.tplIdx]?.title || '';
+  // "② Body 1 – Advantages · Ưu điểm" → "Advantages · Ưu điểm"
+  const focus = (tplTitle.split(/[–-]/)[1] || '').trim();
+  return `
+    <section class="t2c-sec ${active ? 'is-active' : 'is-other'}">
+      <div class="t2c-sec-head">
+        <b>${s.label}</b>
+        <span class="t2c-sec-en">${s.en}${focus && s.key.startsWith('body') ? ` · ${_escHtml(focus)}` : ''}</span>
+        <span class="t2c-sec-tag ${s.phase}">${s.phase === 'class' ? 'Trên lớp' : 'Về nhà'}</span>
+        <span class="t2c-sec-wc" id="t2c-wc-${s.key}">${_wc(txt)} từ</span>
+      </div>
+      <textarea class="t2c-ta" id="t2c-ta-${s.key}" data-key="${s.key}" rows="${active ? 8 : 3}" spellcheck="true" placeholder="${_escHtml(s.ph)}">${_escHtml(txt)}</textarea>
+    </section>`;
+}
+
+function bindCompose() {
+  document.querySelectorAll('.t2c-ta').forEach(ta => {
+    ta.addEventListener('input', () => _onComposeInput(ta));
+    ta.addEventListener('focus', () => { state.compose.lastFocus = ta.dataset.key; });
+  });
+}
+function _onComposeInput(ta) {
+  const key = ta.dataset.key;
+  state.lesson.sections[key] = ta.value;
+  const wc = document.getElementById('t2c-wc-' + key);
+  if (wc) wc.textContent = _wc(ta.value) + ' từ';
+  const total = LESSON_SECTIONS.reduce((a, s) => a + _wc(state.lesson.sections[s.key]), 0);
+  const tot = document.getElementById('t2c-total');
+  if (tot) { tot.textContent = total + ' từ'; tot.classList.toggle('is-ok', total >= LESSON_MIN_WORDS); }
+  const btn = document.querySelector('.t2c-foot .t2-primary');
+  const filled = LESSON_SECTIONS.filter(s => (state.lesson.sections[s.key] || '').trim()).length;
+  if (btn) btn.disabled = filled < LESSON_SECTIONS.length;
+  const note = document.querySelector('.t2c-foot-note');
+  if (note) note.textContent = `Bài tự lưu khi bạn gõ. Đủ 4 phần (${filled}/4) và ≥ ${LESSON_MIN_WORDS} từ thì nộp để AI chấm.`;
+  _markLessonDirty('sections');
+}
+
+// ── Left column ─────────────────────────────────────────
+// Insertable snippets for the current render; the ＋ buttons index into it.
+let _refItems = [];
+function _insBtn(text) {
+  _refItems.push(text);
+  return `<button type="button" class="t2c-ins" title="Chèn vào chỗ con trỏ" aria-label="Chèn vào bài" onclick="insertRef(${_refItems.length - 1})">＋</button>`;
+}
+// questionText looks like: Dịch sang tiếng Anh (dùng từ "X"):\n\n"<câu tiếng Việt>"
+function _sentenceParts(qt) {
+  const raw = String(qt || '').trim();
+  const kw = (raw.match(/dùng (?:từ|cụm từ|cấu trúc)\s*["“]([^"”]+)["”]/i) || [])[1] || '';
+  const parts = raw.split(/\n\s*\n/);
+  let vi = (parts.length > 1 ? parts[parts.length - 1] : raw).trim().replace(/^["“]+|["”]+$/g, '').trim();
+  if (vi.length > 260) vi = vi.slice(0, 257) + '…';
+  return { vi, kw };
+}
+
+function renderComposeRef() {
+  _refItems = [];
+  const C = state.compose;
+  const L = state.lesson;
+  const nTrans = L.sentences.filter(s => s.en).length;
+  const tabs = [
+    ['sentences', 'Câu đã dịch', `${nTrans}/${L.sentences.length}`],
+    ['ideas', 'Ý tưởng', ''],
+    ['vocab', 'Từ vựng', ''],
+    ['template', 'Template', '']
+  ];
+  let body;
+  if (C.tab === 'ideas') body = _refIdeas();
+  else if (C.tab === 'vocab') body = _refVocab();
+  else if (C.tab === 'template') body = _refTemplate();
+  else body = _refSentences();
+  return `
+    <div class="t2c-tabs" role="tablist">
+      ${tabs.map(([k, label, count]) => `<button type="button" role="tab" aria-selected="${C.tab === k}" class="t2c-tab${C.tab === k ? ' active' : ''}" onclick="setComposeTab('${k}')">${label}${count ? `<span class="t2c-count">${count}</span>` : ''}</button>`).join('')}
+    </div>
+    <div class="t2c-ref-body" id="t2c-ref-body">${body}</div>`;
+}
+function _refreshComposeRef() {
+  const el = document.getElementById('t2c-ref');
+  if (el && state.view === 'compose') el.innerHTML = renderComposeRef();
+}
+
+const _SENT_GROUPS = [
+  { type: 'paraphrase',    title: 'Paraphrase đề — dùng cho Mở bài' },
+  { type: 'translation',   title: 'Câu ý chính & dẫn chứng — dùng cho Thân bài' },
+  { type: 'short_writing', title: 'Câu kết — dùng cho Kết bài' }
+];
+function _refSentences() {
+  const L = state.lesson;
+  if (!L.sentences.length) return '<p class="t2c-note">Đề này chưa có câu dịch. Dùng tab Ý tưởng và Template để viết nhé.</p>';
+  const missing = L.sentences.filter(s => !s.en).length;
+  const item = (s) => {
+    const i = L.sentences.indexOf(s);
+    const { vi, kw } = _sentenceParts(s.questionText);
+    if (s.en) {
+      return `<div class="t2c-sent">
+        <div class="t2c-sent-en">${_escHtml(s.en)}</div>
+        <div class="t2c-sent-vi">${_escHtml(vi)}</div>
+        ${kw ? `<div class="t2c-sent-meta"><span class="t2c-kw">${_escHtml(kw)}</span></div>` : ''}
+        ${_insBtn(s.en)}
+      </div>`;
+    }
+    if (state.compose.revealed[L.topicId + ':' + i] && s.model) {
+      return `<div class="t2c-sent is-model">
+        <div class="t2c-sent-en">${_escHtml(s.model)}</div>
+        <div class="t2c-sent-vi">${_escHtml(vi)}</div>
+        <div class="t2c-sent-meta">Câu mẫu — bạn chưa tự dịch câu này</div>
+        ${_insBtn(s.model)}
+      </div>`;
+    }
+    return `<div class="t2c-sent is-todo">
+      <div class="t2c-sent-vi">${_escHtml(vi)}</div>
+      <div class="t2c-sent-meta">${kw ? `<span class="t2c-kw">${_escHtml(kw)}</span>` : ''}Chưa dịch${s.model ? ` · <button type="button" class="t2-link" style="padding:0;font-size:11px" onclick="revealModelSentence(${i})">Xem câu mẫu</button>` : ''}</div>
+    </div>`;
+  };
+  return `
+    <p class="t2c-note">Câu bạn đã dịch ở bước ③. Bấm <b>＋</b> để chèn vào ô đang viết (chỗ con trỏ), rồi chỉnh lại cho hợp đoạn văn.</p>
+    ${_SENT_GROUPS.map(g => {
+      const list = L.sentences.filter(s => s.type === g.type);
+      return list.length ? `<div class="t2c-group">${g.title}</div>${list.map(item).join('')}` : '';
+    }).join('')}
+    ${missing ? `<button type="button" class="t2-secondary" style="width:100%;justify-content:center;margin-top:6px" onclick="translateFromCompose(this)"><i class="fas fa-language"></i> Dịch ${missing} câu còn lại</button>` : ''}`;
+}
+function _refIdeas() {
+  const t = state.selectedTopic;
+  const sides = _ideaSides(t);
+  const notes = state.brainstorm.topicId === t._id ? state.brainstorm.notes : [];
+  return `
+    <p class="t2-note t2c-note">Ý tưởng nhóm bạn đã ghi ở bước ② — chọn ý mạnh nhất cho mỗi đoạn thân bài.</p>
+    ${sides.map((h, i) => `
+      <div class="t2c-group">${_escHtml(h.side)}</div>
+      <div class="t2c-mine">${(notes[i] || '').trim() ? _escHtml(notes[i]) : '<span style="color:#9ca3af">(chưa ghi ý nào)</span>'}</div>
+      ${(h.points || []).length ? `<details class="t2c-tplsec" style="margin-top:6px"><summary>Gợi ý ý chính</summary><ul class="t2-brainstorm-hint-list">${h.points.map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul></details>` : ''}`).join('')}`;
+}
+function _refVocab() {
+  const id = state.selectedTopic._id;
+  const list = state.vocabFor === id ? state.vocab : [];
+  if (!list.length) return '<p class="t2c-note">Chưa tải được từ vựng của buổi này.</p>';
+  return `
+    <p class="t2c-note">Từ vựng & collocations của buổi — bấm <b>＋</b> để chèn.</p>
+    ${list.map(v => `<div class="t2c-sent" style="border-left-color:#6366f1">
+      <div class="t2c-sent-en">${_escHtml(v.term)}</div>
+      ${v.definitionVi ? `<div class="t2c-sent-vi">${_escHtml(v.definitionVi)}</div>` : ''}
+      ${v.example ? `<div class="t2c-sent-meta" style="font-style:italic">${_escHtml(v.example)}</div>` : ''}
+      ${_insBtn(v.term)}
+    </div>`).join('')}`;
+}
+// The book's Band 6 template for this essay type: blanks shown filled (bold)
+// and "(topic)" marked as the part the student must replace.
+function _refTemplate() {
+  if (_tplCache === null) return '<p class="t2c-note"><i class="fas fa-spinner fa-spin"></i> Đang tải template...</p>';
+  const tpl = _templateFor(state.selectedTopic);
+  if (!tpl || !(tpl.sections || []).length) return '<p class="t2c-note">Chưa có template cho dạng bài này.</p>';
+  const C = state.compose;
+  const openIdx = new Set(LESSON_SECTIONS.filter(s => s.phase === C.phase).map(s => s.tplIdx));
+  const fill = (it) => {
+    const ans = it.answer || (it.answers || [])[0] || '';
+    return String(it.en || '').replace(/_{3,}/, ans);
+  };
+  const show = (it) => {
+    const ans = it.answer || (it.answers || [])[0] || '';
+    return _escHtml(it.en || '')
+      .replace(/_{3,}/, ans ? `<b>${_escHtml(ans)}</b>` : '___')
+      .replace(/\((topic|chủ đề)\)/gi, '<mark>($1)</mark>');
+  };
+  return `
+    <p class="t2c-note">Template trong sách (${_escHtml(tpl.name)}). Thay <mark style="background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px">(topic)</mark> và ví dụ bằng nội dung của đề này — không chép nguyên văn.</p>
+    ${tpl.sections.map((sec, i) => `
+      <details class="t2c-tplsec" ${openIdx.has(i) ? 'open' : ''}>
+        <summary>${_escHtml(sec.title)}</summary>
+        ${(sec.items || []).map(it => `<div class="t2c-tpl">${show(it)}${it.vi ? `<div class="t2c-sent-vi">${_escHtml(String(it.vi).replace(/^→\s*/, ''))}</div>` : ''}${_insBtn(fill(it))}</div>`).join('')}
+      </details>`).join('')}`;
+}
+
+function insertRef(i) {
+  const text = _refItems[i];
+  if (!text) return;
+  const ta = document.getElementById('t2c-ta-' + state.compose.lastFocus);
+  if (!ta) return;
+  const start = ta.selectionStart ?? ta.value.length;
+  const end = ta.selectionEnd ?? start;
+  const before = ta.value.slice(0, start);
+  const after = ta.value.slice(end);
+  const pre = before && !/\s$/.test(before) ? ' ' : '';
+  const post = after && !/^\s/.test(after) ? ' ' : '';
+  ta.value = before + pre + text + post + after;
+  const caret = (before + pre + text).length;
+  ta.focus();
+  ta.setSelectionRange(caret, caret);
+  _onComposeInput(ta);
+  if (window.innerWidth <= 900) ta.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+function translateFromCompose(btn) {
+  flushLessonSave();
+  return startTranslate(btn);
+}
+
+// Hand the finished essay to writing.html's Task 2 flow for AI grading: seed
+// its practice autosave for this prompt (same shape savePracticeToStorage()
+// writes) so the editor opens pre-filled, then go.
+function submitLessonEssay(btn) {
+  const t = state.selectedTopic;
+  const L = state.lesson;
+  if (!t || L.topicId !== t._id || L.status !== 'ready') return;
+  const missing = LESSON_SECTIONS.filter(s => !(L.sections[s.key] || '').trim());
+  if (missing.length) { showToast('Còn thiếu: ' + missing.map(s => s.label).join(', '), 'warn', 5000); return; }
+  if (!t.writingTask2Id) { showToast('Đề này chưa có bản chấm AI — hãy nộp bài cho giáo viên.', 'info', 5000); return; }
+  const essay = LESSON_SECTIONS.map(s => L.sections[s.key].trim()).join('\n\n');
+  const words = _wc(essay);
+  const go = () => _withBusy(btn, async () => {
+    _lessonDirty.topicId = t._id;
+    _lessonDirty.sections = true;
+    await flushLessonSave({ extra: { submitted: true } });
+    L.submittedAt = new Date().toISOString();
+    _bumpLessonProgress(t._id);
+    try {
+      localStorage.setItem(`ews_practice_autosave:2:${t.writingTask2Id}`, JSON.stringify({
+        taskType: 2, task: { _id: t.writingTask2Id, prompt: t.prompt },
+        answer: essay, wordCount: words, seconds: 0, savedAt: Date.now()
+      }));
+    } catch {}
+    window.location.href = `/writing.html?taskType=2&taskId=${encodeURIComponent(t.writingTask2Id)}`;
+  });
+  if (words < LESSON_MIN_WORDS) {
+    askT2Quit(go, {
+      mascot: '📝', title: 'Bài hơi ngắn',
+      sub: `Bài mới có ${words} từ — đề yêu cầu ít nhất ${LESSON_MIN_WORDS} từ. Vẫn nộp để chấm?`,
+      confirmText: 'Vẫn nộp', continueText: 'Viết thêm'
+    });
+  } else go();
 }
 
 function renderVocabStep(isCurrent) {
@@ -1616,7 +2608,7 @@ function renderVocabStep(isCurrent) {
     body = `
       <p class="t2-step-desc">${done
         ? 'Bạn đã lưu đủ từ vựng vào sổ. Làm quiz để ôn lại nếu muốn.'
-        : 'Bấm <b>Lưu tất cả vào sổ</b> để mở khoá bước Luyện câu. Quiz chỉ để ôn thêm, không bắt buộc.'}</p>
+        : 'Bấm <b>Lưu tất cả vào sổ</b> để mở khoá bước Dịch câu. Quiz chỉ để ôn thêm, không bắt buộc.'}</p>
       <div class="t2-meter${done ? ' ok' : ''}"><span style="width:${vs.pct}%"></span></div>
       <div class="t2-actions">
         ${done ? '' : `<button class="t2-primary" onclick="saveAllVocabToBook()"><i class="fas fa-save"></i> Lưu tất cả vào sổ</button>`}
@@ -1641,66 +2633,8 @@ function renderVocabStep(isCurrent) {
   }
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
-      <div class="t2-step-head">
-        <span class="t2-step-num${done ? ' is-done' : ''}">${done ? '<i class="fas fa-check"></i>' : '1'}</span>
-        <div class="t2-step-title">Từ vựng</div>
-        ${vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : ''}
-      </div>
+      ${_stepHead(1, 'Từ vựng &amp; collocations', '15′', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', done)}
       ${body}
-    </section>`;
-}
-
-function renderPracticeStep(isCurrent) {
-  const t = state.selectedTopic;
-  const id = t._id;
-  const vocabDone = isVocabLearned(id);
-  const best = _bestPracticeScore(id);
-  const ok = best != null && best >= T2_WRITE_MIN_ACCURACY;
-  const hasDraft = !!(state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0));
-  const tag = !vocabDone
-    ? '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>'
-    : best != null ? `<span class="t2-step-tag ${ok ? 'ok' : 'mid'}">Cao nhất ${best}%</span>` : '';
-  return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}${vocabDone ? '' : ' is-locked'}" id="t2-step-practice">
-      <div class="t2-step-head">
-        <span class="t2-step-num${ok ? ' is-done' : ''}">${ok ? '<i class="fas fa-check"></i>' : '2'}</span>
-        <div class="t2-step-title">Luyện câu</div>
-        ${tag}
-      </div>
-      <p class="t2-step-desc">Dịch câu, sắp xếp từ, điền từ… để ráp ý cho bài viết.${t.writingTask2Id ? ` Đạt <b>≥ ${T2_WRITE_MIN_ACCURACY}%</b> để mở khoá bước Viết bài.` : ''}</p>
-      ${!vocabDone ? `
-      <div class="t2-lock-note"><i class="fas fa-lock"></i> Lưu hết từ vựng ở bước 1 để mở khoá.</div>` : `
-      <div class="t2-actions">
-        <button class="t2-primary is-lg" onclick="startPractice(this)"><i class="fas fa-play"></i> ${hasDraft ? 'Làm lại từ đầu' : best != null ? 'Luyện lại' : 'Bắt đầu luyện'}</button>
-        ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
-      </div>
-      <div class="t2-opts-row">
-        <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
-        <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
-        <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
-      </div>`}
-    </section>`;
-}
-
-function renderWriteStep(isCurrent) {
-  const gate = canWriteFullEssay(state.selectedTopic._id);
-  const pct = Math.min(100, Math.round(((gate.best || 0) / T2_WRITE_MIN_ACCURACY) * 100));
-  return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}${gate.ok ? '' : ' is-locked'}" id="t2-step-write">
-      <div class="t2-step-head">
-        <span class="t2-step-num">3</span>
-        <div class="t2-step-title">Viết bài hoàn chỉnh</div>
-        ${gate.ok
-          ? '<span class="t2-step-tag ok"><i class="fas fa-unlock"></i> Đã mở khoá</span>'
-          : '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>'}
-      </div>
-      ${gate.ok ? `
-      <p class="t2-step-desc">Bạn đã sẵn sàng! Viết bài Task 2 hoàn chỉnh (≥ 250 từ) cho đề này.</p>
-      <button class="t2-primary is-write is-lg" onclick="goWriteFullEssay()"><i class="fas fa-pen-nib"></i> Viết bài ngay</button>` : `
-      <p class="t2-step-desc">${gate.code === 'not_practiced'
-        ? `Hoàn thành bước Luyện câu với tối thiểu <b>${T2_WRITE_MIN_ACCURACY}%</b> câu đúng để mở khoá.`
-        : `Điểm cao nhất của bạn: <b>${gate.best}%</b> — cần ${T2_WRITE_MIN_ACCURACY}%. Luyện thêm hoặc ôn câu sai nhé.`}</p>
-      <div class="t2-meter"><span style="width:${pct}%"></span></div>`}
     </section>`;
 }
 
@@ -1724,6 +2658,8 @@ function renderExamStep() {
 function bindSelect() {
   const id = state.selectedTopic?._id;
   if (id && state.vocabFor !== id && !state.vocabError && window.AuthService.isLoggedIn()) _ensureVocab(id);
+  if (id && window.AuthService.isLoggedIn()) loadLesson(id);
+  if (_guideCache === null && window.AuthService.isLoggedIn()) _loadGuides().then(() => _refreshHubStep('guide'));
   if (_hubFocus) {
     const k = _hubFocus; _hubFocus = null;
     setTimeout(() => scrollToHubStep(k), 60);
@@ -1770,7 +2706,7 @@ function goWriteFullEssay() {
   const gate = canWriteFullEssay(topic._id);
   if (!gate.ok) {
     showToast('🔒 Chưa mở khoá "Viết bài ngay". ' + writeGateMessage(gate), 'warn', 8000);
-    if (state.view === 'select') scrollToHubStep('practice');
+    if (state.view === 'select') scrollToHubStep('translate');
     return;
   }
   window.location.href = `/writing.html?taskType=2&taskId=${encodeURIComponent(id)}`;
@@ -1798,8 +2734,12 @@ async function _withBusy(btn, fn) {
 // ════════════════════════════════════════════════════════
 //  PRACTICE MODE
 // ════════════════════════════════════════════════════════
-function startPractice(btn) { return _withBusy(btn, _startPractice); }
-async function _startPractice() {
+function startPractice(btn) { return _withBusy(btn, () => _startPractice()); }
+// Step ③ "Dịch câu": only the sentence-building questions (translation /
+// paraphrase / short_writing). Once some are done, "Dịch tiếp" runs just the
+// ones still untranslated.
+function startTranslate(btn) { return _withBusy(btn, () => _startPractice({ translateOnly: true })); }
+async function _startPractice(opts = {}) {
   if (!isVocabLearned(state.selectedTopic?._id)) {
     showToast('Bạn cần lưu hết từ vựng vào sổ trước khi luyện câu', 'warn', 4000);
     if (state.view === 'select') scrollToHubStep('vocab');
@@ -1809,7 +2749,17 @@ async function _startPractice() {
     const params = new URLSearchParams({ level: state.selectedLevel });
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
-    state.questions = data.questions;
+    let questions = data.questions;
+    if (opts.translateOnly) {
+      questions = questions.filter(q => WBW_TYPES.has(q.type));
+      const L = _lessonFor(state.selectedTopic._id);
+      const doneIds = new Set((L ? L.sentences : []).filter(s => s.en).map(s => s.questionId));
+      const missing = questions.filter(q => !doneIds.has(q.questionId || q._id) && !doneIds.has(q._id));
+      if (missing.length && missing.length < questions.length) questions = missing;
+      if (!questions.length) { showToast('Buổi này chưa có câu dịch', 'warn'); return; }
+    }
+    state.questions = questions;
+    state.translateOnly = !!opts.translateOnly;
     if (state.shuffleMode) shuffle(state.questions);
     state.currentMode = 'practice';
     state.currentIdx = 0;
@@ -1838,6 +2788,7 @@ async function _startRetryWrong() {
     state.questions = wrongQuestions;
     if (state.shuffleMode) shuffle(state.questions);
     state.currentMode = 'retry';
+    state.translateOnly = false;
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
@@ -1907,6 +2858,7 @@ async function resumeSession() {
     }
     state.questions       = restoredQuestions;
     state.currentMode     = draft.mode  || 'practice';
+    state.translateOnly   = false;
     state.sessionAttempts = draft.sessionAttempts || [];
     state.questionStatus  = draft.questionStatus  || new Array(restoredQuestions.length).fill('pending');
     state.sessionDone     = draft.sessionDone     || 0;
@@ -1960,12 +2912,14 @@ function renderPractice() {
     <div class="t2-prac-head">
       <button class="t2-back-btn" onclick="quitPractice()"><i class="fas fa-times"></i> Thoát</button>
       <div class="t2-prac-ctx">
-        <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
+        <span class="t2-ctx-week">${sessionLabel(topic._id) || `Tuần ${state.selectedWeek}`}</span>
         <span class="t2-ctx-name" title="${_escHtml(topic.topicName)}">${_escHtml(topic.topicEmoji || '')} ${_escHtml(topic.topicName)}</span>
       </div>
       ${state.currentMode === 'retry'
         ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>`
-        : `<span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>`}
+        : state.translateOnly
+          ? `<span style="background:#eef2ff;color:#4338ca;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">③ Dịch câu</span>`
+          : `<span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>`}
     </div>
     <details class="t2-prompt-box" ${state.promptOpen ? 'open' : ''} ontoggle="state.promptOpen=this.open">
       <summary class="t2-prompt-box-label">📋 Đề bài <span class="t2-prompt-peek">— ${_escHtml((topic.prompt || '').slice(0, 70))}${(topic.prompt || '').length > 70 ? '…' : ''}</span></summary>
@@ -2505,6 +3459,7 @@ async function submitPractice() {
       questionText: q.questionText || '',
       type: q.type
     });
+    if (WBW_TYPES.has(q.type)) _noteMySentence(q, answer, isOk);
     saveDraft(); // fire-and-forget
 
     // show feedback
@@ -2851,7 +3806,7 @@ function renderExamDone() {
 function _vocabItem(v) { return { word: v.term, meaning: v.definitionVi || '', example: v.example || '' }; }
 
 // Shared save callback. When this save is the one that completes the list,
-// say so and move the student on to Luyện câu.
+// say so and move the student on to the brainstorm step.
 function _onVocabSaved(topicId, terms) {
   const wasDone = isVocabLearned(topicId);
   _markVocabTermsSaved(topicId, terms);
@@ -2859,8 +3814,8 @@ function _onVocabSaved(topicId, terms) {
   if (!wasDone && isVocabLearned(topicId)) {
     state.vocabOpen = null; // auto → list collapses now that every term is saved
     render();
-    showToast('🎉 Đã mở khoá bước Luyện câu!', 'success', 3500);
-    setTimeout(() => scrollToHubStep('practice'), 150);
+    showToast('🎉 Đã mở khoá bước Dịch câu! Tiếp theo: brainstorm ý tưởng.', 'success', 3500);
+    setTimeout(() => scrollToHubStep('ideas'), 150);
   } else {
     render();
   }
@@ -3057,8 +4012,9 @@ function renderDone() {
                       : 'img/writingbelow45%25.jpg';
   const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
-  // Next step on the topic's path: the full essay once it's unlocked.
-  const canWrite = !!(state.selectedTopic?.writingTask2Id && topicId && canWriteFullEssay(topicId).ok);
+  // Next step of the lesson: the split-screen writer (translated sentences
+  // on the left). Shown after a sentence-translation run.
+  const canWriteLesson = !!(topicId && state.translateOnly && window.AuthService && window.AuthService.isLoggedIn());
 
   const wrongReview = wrongAttempts.map((a, i) => `
     <div class="wp-wr-item">
@@ -3083,15 +4039,15 @@ function renderDone() {
         <div class="t2-done-stat"><div class="t2-done-stat-num wp-score-bad">❌ ${wrongCount}</div><div class="t2-done-stat-lbl">Sai</div></div>
         <div class="t2-done-stat"><div class="t2-done-stat-num">${state.sessionDone}</div><div class="t2-done-stat-lbl">Tổng</div></div>
       </div>
-      ${canWrite ? `
+      ${canWriteLesson ? `
       <div style="margin:0 0 14px">
-        <button class="t2-primary is-write is-lg" onclick="goWriteFullEssay()"><i class="fas fa-pen-nib"></i> Viết bài hoàn chỉnh</button>
-        <div class="t2-done-sub" style="font-size:12.5px;margin:6px 0 0">Bạn đã mở khoá bước 3 — viết bài cho đề này nhé!</div>
-      </div>` : (state.selectedTopic?.writingTask2Id ? `<div class="t2-done-sub" style="font-size:13px;margin-top:-8px">🔒 Đạt ≥ ${T2_WRITE_MIN_ACCURACY}% để mở khoá bước Viết bài.</div>` : '')}
+        <button class="t2-primary is-lg" onclick="openComposeBtn(this)"><i class="fas fa-columns"></i> Vào viết bài</button>
+        <div class="t2-done-sub" style="font-size:12.5px;margin:6px 0 0">Các câu bạn vừa dịch sẽ hiện ở cột trái màn hình viết.</div>
+      </div>` : ''}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         ${wrongCount > 0 ? `<button class="t2-start-btn" onclick="retryWrong()" style="font-size:13px;padding:10px 20px;margin-top:0"><i class="fas fa-redo-alt"></i> Ôn lại ${wrongCount} câu sai</button>` : ''}
-        <button class="wp-restart-btn" onclick="startPractice(this)"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
-        <button class="wp-more-btn" onclick="backToHub()"><i class="fas fa-arrow-left"></i> Về chủ đề</button>
+        <button class="wp-restart-btn" onclick="${state.translateOnly ? 'startTranslate' : 'startPractice'}(this)"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
+        <button class="wp-more-btn" onclick="backToHub()"><i class="fas fa-arrow-left"></i> Về buổi học</button>
       </div>
     </div>
     ${wrongCount > 0 ? `
@@ -3134,7 +4090,8 @@ window.addEventListener('popstate', async e => {
   // Clean up any running timers and keyboard handlers
   if (state.examTimerInterval) _stopExamSession();
   if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
-  if (s === 'select' && e.state.week && e.state.topicId) {
+  if (state.view === 'compose') flushLessonSave();
+  if ((s === 'select' || s === 'compose') && e.state.week && e.state.topicId) {
     if (state.selectedWeek !== e.state.week || !state.topics.length) {
       try {
         const d = await apiFetch(`/api/task2/topics/week/${e.state.week}`);
@@ -3149,7 +4106,10 @@ window.addEventListener('popstate', async e => {
       state.currentMode = 'practice';
       state.topicStats = null;      // stale for this topic until refetched
       _resetHubState(topic._id);    // bindSelect() refetches vocab if it's for another topic
-      state.view = 'select';
+      // Forward into the writer only when its lesson data is already here;
+      // otherwise land on the hub (one click away).
+      const canCompose = s === 'compose' && state.lesson.topicId === topic._id && state.lesson.status === 'ready';
+      state.view = canCompose ? 'compose' : 'select';
       render();
       // re-render once stats arrive — only if the hub is still showing this topic
       loadTopicStats(e.state.topicId).then(() => {
