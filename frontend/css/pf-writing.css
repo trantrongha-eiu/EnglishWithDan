@@ -263,6 +263,11 @@
 }
 #screen-exam .exam-left .task-prompt,
 #screen-practice-write .exam-left p { font-family: var(--cd-serif); font-size: 16px !important; line-height: 1.7 !important; color: var(--cd-ink) !important; }
+/* "Phân tích đề" is Vietnamese — Georgia has no stacked-diacritic glyphs
+   (ế, ầ, ố…), so the marks rendered detached. Keep the serif for the
+   English prompt only. */
+#screen-practice-write #pw-analysis-inline,
+#screen-practice-write #pw-analysis-inline p { font-family: 'Inter', system-ui, sans-serif !important; }
 #screen-exam .exam-right,
 #screen-practice-write .exam-right { background: var(--cd-bg); }
 #screen-exam .answer-textarea,
