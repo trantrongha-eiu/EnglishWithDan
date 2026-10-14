@@ -1881,8 +1881,13 @@
             // all, so a broken audio file failed completely silently with no
             // indication to the student that anything was wrong.
             audio.addEventListener('error', () => {
+                // submitExam() / closing a part-practice clear the player
+                // with `audio.src = ''`, which the browser reports as an
+                // error too — that showed this "contact your teacher"
+                // message right after submitting a Full Mock Test even
+                // though the audio itself was fine.
+                if (state.isReview || state.submitted || !audio.getAttribute('src')) return;
                 console.error('[audio] load error:', audio.error);
-                if (state.isReview) return;
                 const el = document.getElementById('exam-audio-status');
                 if (el) {
                     el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Lỗi tải audio — vui lòng liên hệ giáo viên';
