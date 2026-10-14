@@ -775,6 +775,130 @@
       .t2c-top .t2-seg button{flex:1}
     }
 
+    /* ══ Student hub: compact phases + "Tuỳ chọn khác" ══ */
+    .t2-step{position:relative}
+    .t2-hub .t2-phase{margin:20px 0 0}
+    .t2-more{margin-top:8px}
+    .t2-more>summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#6b7280;list-style:none;display:inline-flex;align-items:center;gap:6px}
+    .t2-more>summary::-webkit-details-marker{display:none}
+    .t2-more>summary i{font-size:10px;transition:transform .2s}
+    .t2-more[open]>summary i{transform:rotate(90deg)}
+    [data-theme="dark"] .t2-more>summary{color:#94a3b8}
+
+    /* ══ "Guideline for teacher" button ══ */
+    .t2-guide-btn{height:34px;border-radius:9px;border:1.5px solid #99f6e4;background:#f0fdfa;color:#0f766e;font-family:inherit;font-size:12.5px;font-weight:800;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .15s,box-shadow .15s,background .15s}
+    .t2-guide-btn:hover{background:#ccfbf1;transform:translateY(-1px);box-shadow:0 4px 12px rgba(13,148,136,.18)}
+    .t2-guide-btn .short{display:none}
+    [data-theme="dark"] .t2-guide-btn{background:#042f2e;border-color:#115e59;color:#5eead4}
+    @media(max-width:560px){.t2-guide-btn .long{display:none}.t2-guide-btn .short{display:inline}}
+
+    /* ══ Lulu coach (hub) ══ */
+    .t2-coach{display:flex;align-items:center;gap:12px;margin:14px 0 2px;position:relative}
+    .t2-coach-lulu{width:74px;height:79px;flex-shrink:0;border:none;background:none;padding:0;cursor:pointer;position:relative}
+    .t2-coach-lulu svg{width:100%;height:auto;display:block;overflow:visible}
+    .t2-coach-lulu::after{content:'';position:absolute;left:14%;right:14%;bottom:-2px;height:7px;border-radius:50%;background:rgba(0,0,0,.10);z-index:-1}
+    .t2-coach-lulu.is-enter{animation:lulu-pop .7s var(--pf-spring,cubic-bezier(.34,1.56,.64,1)) both}
+    .t2-coach-lulu.is-enter .m-arm-r{animation:dan-wave .9s ease-in-out .8s 2}
+    .t2-coach-lulu:hover .m-arm-r{animation:dan-wave .9s ease-in-out 1}
+    .t2-coach-lulu.is-jump{animation:t2-lulu-jump .75s cubic-bezier(.34,1.56,.64,1)}
+    .t2-coach-body{flex:1;min-width:0}
+    .t2-coach-bubble{position:relative;background:#fff;border:2px solid #1d1a16;border-radius:16px;padding:9px 13px;font-size:13.5px;font-weight:700;line-height:1.5;color:#1f2937;box-shadow:3px 3px 0 #1d1a16}
+    .t2-coach-bubble::before{content:'';position:absolute;left:-12px;top:50%;margin-top:-8px;border:8px solid transparent;border-right:10px solid #1d1a16;border-left:0}
+    .t2-coach-bubble::after{content:'';position:absolute;left:-8px;top:50%;margin-top:-6px;border:6px solid transparent;border-right:8px solid #fff;border-left:0}
+    .t2-coach-bubble.is-say{animation:lulu-say .45s cubic-bezier(.34,1.56,.64,1) both}
+    .t2-coach-prog{display:flex;align-items:center;gap:4px;margin:8px 0 0 4px}
+    .t2-coach-prog i{flex:1;max-width:44px;height:7px;border-radius:6px;background:#e5e7eb;transition:background .4s}
+    .t2-coach-prog i.on{background:linear-gradient(90deg,#22c55e,#16a34a)}
+    .t2-coach-prog i.cur{background:#c7d2fe;animation:t2-prog-pulse 1.6s ease-in-out infinite}
+    .t2-coach-prog span{font-size:11.5px;font-weight:800;color:#6b7280;margin-left:6px;white-space:nowrap}
+    [data-theme="dark"] .t2-coach-bubble{background:#1a1a1a;color:#eee;border-color:#555;box-shadow:3px 3px 0 #555}
+    [data-theme="dark"] .t2-coach-bubble::before{border-right-color:#555}
+    [data-theme="dark"] .t2-coach-bubble::after{border-right-color:#1a1a1a}
+    [data-theme="dark"] .t2-coach-prog i{background:#1f2937}
+    [data-theme="dark"] .t2-coach-prog i.cur{background:#3730a3}
+    @keyframes t2-prog-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+    @keyframes t2-lulu-jump{0%{transform:none}30%{transform:translateY(-22px) rotate(-8deg)}55%{transform:translateY(0) scale(1.1,.9)}75%{transform:translateY(-6px) rotate(4deg)}100%{transform:none}}
+    @media(max-width:480px){.t2-coach-lulu{width:58px;height:62px}.t2-coach-bubble{font-size:12.5px}}
+
+    /* Confetti burst from the coach */
+    .t2-confetti{position:absolute;left:37px;top:30px;width:0;height:0;pointer-events:none;z-index:5}
+    .t2-confetti i{position:absolute;width:8px;height:12px;border-radius:2px;background:var(--c);animation:t2-confetti 1.25s cubic-bezier(.2,.7,.3,1) forwards}
+    .t2-confetti i:nth-child(3n){width:7px;height:7px;border-radius:50%}
+    @keyframes t2-confetti{0%{transform:translate(0,0) rotate(0) scale(.4);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(1);opacity:0}}
+
+    /* Rail item ticks with a pop when its step completes */
+    .t2-rail-item.is-pop{animation:t2-rail-pop .7s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes t2-rail-pop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+
+    /* Lulu peeking over the current step card */
+    .t2-hub .t2-step.is-current{margin-top:30px}
+    .t2-lulu-peek{position:absolute;right:22px;top:-31px;width:46px;height:31px;overflow:hidden;pointer-events:none}
+    .t2-lulu-peek svg{width:46px;height:auto;display:block;animation:t2-peek 7s ease-in-out infinite}
+    .t2-step.is-current:hover .t2-lulu-peek svg{animation-play-state:paused;transform:translateY(0)}
+    @keyframes t2-peek{0%{transform:translateY(100%)}8%,42%{transform:translateY(0)}48%,54%{transform:translateY(55%)}60%,92%{transform:translateY(0)}100%{transform:translateY(100%)}}
+
+    /* ══ Teacher guideline modal ══ */
+    .t2-tg-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:10001;padding:16px}
+    .t2-tg-overlay.is-open{display:flex;animation:t2-fade .2s ease both}
+    .t2-tg-modal{background:#fff;border-radius:18px;width:100%;max-width:760px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.3)}
+    .t2-tg-overlay.is-open .t2-tg-modal{animation:t2-modal-in .38s cubic-bezier(.34,1.56,.64,1) both}
+    .t2-tg-hdr{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(135deg,#ecfeff,#f0fdfa 55%,#fef9c3);border-bottom:1px solid #e5e7eb}
+    .t2-tg-lulu{width:58px;flex-shrink:0;animation:lulu-pop .7s cubic-bezier(.34,1.56,.64,1) .1s both}
+    .t2-tg-lulu svg{width:100%;height:auto;display:block}
+    .t2-tg-lulu .m-arm-r{animation:dan-wave .9s ease-in-out .7s 2}
+    .t2-tg-hdr h3{margin:0;font-size:17px;font-weight:900;color:#0f766e}
+    .t2-tg-sub{font-size:12.5px;color:#475569;margin-top:2px}
+    .t2-tg-hdr .t2-hist-close{margin-left:auto;align-self:flex-start}
+    .t2-tg-body{overflow-y:auto;padding:16px 20px 20px;flex:1}
+    .t2-tg-prompt{font-size:13px;line-height:1.6;color:#075985;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:9px 12px}
+    .t2-tg-tl{display:flex;gap:4px;margin:16px 0 4px}
+    .t2-tg-seg{border-radius:8px;padding:6px 7px;color:#fff;font-size:11px;font-weight:800;line-height:1.3;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transform-origin:left;animation:t2-grow .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 90ms + .15s)}
+    .t2-tg-seg small{display:block;font-weight:700;opacity:.85}
+    .t2-tg-seg.p1{background:#6366f1}.t2-tg-seg.p2{background:#0ea5e9}.t2-tg-seg.p3{background:#f59e0b}
+    .t2-tg-tl-note{font-size:11.5px;color:#6b7280;margin-bottom:6px}
+    .t2-tg-phase{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:18px 0 8px}
+    .t2-tg-phase p{flex-basis:100%;margin:0;font-size:12.5px;color:#6b7280}
+    .t2-tg-step{border:1.5px solid #e5e7eb;border-radius:12px;padding:12px 14px;margin-bottom:10px;animation:pf-rise .45s ease both;animation-delay:calc(var(--i) * 70ms + .2s)}
+    .t2-tg-step-head{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+    .t2-tg-step-head b{flex:1;font-size:14.5px;color:#111827}
+    .t2-tg-time{font-size:11.5px;font-weight:800;color:#0f766e;background:#ccfbf1;border-radius:20px;padding:2px 9px;white-space:nowrap}
+    .t2-tg-goal{font-size:12.5px;color:#374151;margin:0 0 6px}
+    .t2-tg-how{margin:0;padding-left:19px;font-size:13px;line-height:1.65;color:#374151}
+    .t2-tg-how li{margin-bottom:3px}
+    .t2-tg-how b{color:#111827}
+    .t2-tg-tip{font-size:12.5px;line-height:1.55;background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:9px;padding:7px 10px;margin-top:8px}
+    .t2-tg-step .t2-model{margin-top:8px}
+    .t2-tg-step .t2-flow{margin:6px 0}
+    .t2-tg-group{background:linear-gradient(135deg,#f0fdf4,#ecfeff);border:1.5px solid #86efac;border-radius:12px;padding:11px 14px;margin:12px 0 4px;animation:pf-rise .45s ease .2s both}
+    .t2-tg-group-k{font-size:13.5px;font-weight:900;color:#15803d;margin-bottom:4px}
+    .t2-tg-group p{font-size:12.5px;line-height:1.6;color:#374151;margin:0 0 6px}
+    .t2-tg-roles{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 2px}
+    .t2-tg-roles span{font-size:11.5px;font-weight:800;background:#fff;border:1px solid #bbf7d0;color:#166534;border-radius:20px;padding:2px 9px}
+    [data-theme="dark"] .t2-tg-group{background:#052e16;border-color:#166534}
+    [data-theme="dark"] .t2-tg-group-k{color:#4ade80}
+    [data-theme="dark"] .t2-tg-group p{color:#cbd5e1}
+    [data-theme="dark"] .t2-tg-roles span{background:#000;border-color:#166534;color:#86efac}
+    .t2-tg-foot{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.6;color:#075985;background:#f0f9ff;border:1px dashed #7dd3fc;border-radius:10px;padding:10px 12px;margin-top:6px}
+    [data-theme="dark"] .t2-tg-modal{background:var(--surface,#0d0d0d)}
+    [data-theme="dark"] .t2-tg-hdr{background:linear-gradient(135deg,#042f2e,#0c1e30);border-color:#333}
+    [data-theme="dark"] .t2-tg-hdr h3{color:#5eead4}
+    [data-theme="dark"] .t2-tg-sub,[data-theme="dark"] .t2-tg-goal,[data-theme="dark"] .t2-tg-how{color:#cbd5e1}
+    [data-theme="dark"] .t2-tg-how b,[data-theme="dark"] .t2-tg-step-head b{color:#f1f5f9}
+    [data-theme="dark"] .t2-tg-step{border-color:var(--border2,#333)}
+    [data-theme="dark"] .t2-tg-prompt,[data-theme="dark"] .t2-tg-foot{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
+    [data-theme="dark"] .t2-tg-tip{background:#1c1a0e;border-color:#78350f;color:#fcd34d}
+    [data-theme="dark"] .t2-tg-time{background:#042f2e;color:#5eead4}
+    @keyframes t2-fade{from{opacity:0}to{opacity:1}}
+    @keyframes t2-modal-in{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+    @keyframes t2-grow{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+    @media(max-width:560px){.t2-tg-body{padding:14px}.t2-tg-seg{font-size:10px;padding:5px}.t2-tg-seg small{display:none}}
+
+    @media (prefers-reduced-motion: reduce){
+      .t2-coach-lulu,.t2-coach-lulu .m-arm-r,.t2-coach-bubble,.t2-lulu-peek svg,.t2-rail-item.is-pop,.t2-coach-prog i.cur,
+      .t2-tg-overlay,.t2-tg-modal,.t2-tg-lulu,.t2-tg-lulu .m-arm-r,.t2-tg-seg,.t2-tg-step{animation:none!important}
+      .t2-confetti{display:none}
+    }
+
   </style>
   <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
@@ -1801,14 +1925,15 @@ function _renderRail(t) {
   const steps = _lessonSteps(t);
   const cur = _currentStepKey(t);
   return `<nav class="t2-rail" id="t2-rail" aria-label="Các bước của buổi học">
-    ${steps.map((s, i) => `<button type="button" class="t2-rail-item${s.done ? ' is-done' : ''}${s.key === cur ? ' is-current' : ''}" onclick="scrollToHubStep('${s.key}')"><span class="t2-rail-num">${s.done ? '<i class="fas fa-check" style="font-size:9px"></i>' : i + 1}</span>${s.label}</button>`).join('')}
+    ${steps.map((s, i) => `<button type="button" class="t2-rail-item${s.done ? ' is-done' : ''}${s.key === cur ? ' is-current' : ''}" data-key="${s.key}" onclick="scrollToHubStep('${s.key}')"><span class="t2-rail-num">${s.done ? '<i class="fas fa-check" style="font-size:9px"></i>' : i + 1}</span>${s.label}</button>`).join('')}
   </nav>`;
 }
-function _stepHead(num, title, time, extra, done) {
+// Timings and classroom organisation live in the teacher guideline
+// (openTeacherGuide) — the student cards only say what to do.
+function _stepHead(num, title, extra, done) {
   return `<div class="t2-step-head">
         <span class="t2-step-num${done ? ' is-done' : ''}">${done ? '<i class="fas fa-check"></i>' : num}</span>
         <div class="t2-step-title">${title}</div>
-        ${time ? `<span class="t2-step-time"><i class="far fa-clock"></i> ${time}</span>` : ''}
         ${extra || ''}
       </div>`;
 }
@@ -1827,6 +1952,7 @@ function renderSelect() {
     <div class="t2-nav t2-nav-row">
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Lộ trình</span> › <b>${n ? `Buổi ${n}` : _escHtml(t.topicName)}</b></div>
       <div style="display:flex;gap:6px">
+        <button type="button" class="t2-guide-btn" onclick="openTeacherGuide()" title="Cách tổ chức buổi học này trên lớp"><i class="fas fa-chalkboard-teacher"></i><span class="long">Guideline for teacher</span><span class="short">GV</span></button>
         <button class="t2-icon-btn" onclick="copyT2ShareUrl()" title="Sao chép link" aria-label="Sao chép link"><i class="fas fa-link"></i></button>
         <button class="t2-icon-btn" onclick="openT2History()" title="Lịch sử" aria-label="Lịch sử"><i class="fas fa-history"></i></button>
       </div>
@@ -1851,21 +1977,19 @@ function renderSelect() {
         </div>
       </div>` : ''}
 
+      ${_renderCoach(t)}
       ${_renderRail(t)}
 
-      <div class="t2-phase"><span class="t2-phase-k">Giai đoạn 1</span><b>Scaffolding</b><span class="t2-phase-time">~60 phút</span>
-        <p>Chuẩn bị từ vựng, ý tưởng và cách diễn đạt trước khi viết. GV có thể đổi thứ tự hoặc gộp các bước tuỳ độ khó của đề và trình độ lớp.</p></div>
+      <div class="t2-phase"><span class="t2-phase-k">Giai đoạn 1</span><b>Chuẩn bị</b></div>
       ${renderVocabStep(cur === 'vocab')}
       ${renderIdeaStep(cur === 'ideas')}
       ${renderTranslateStep(cur === 'translate')}
       ${renderGuideStep(cur === 'guide')}
 
-      <div class="t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Viết trên lớp</b><span class="t2-phase-time">~30 phút</span>
-        <p>Viết khoảng một nửa bài dưới sự hướng dẫn của giáo viên — kết hợp viết cá nhân và viết theo nhóm.</p></div>
+      <div class="t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Viết trên lớp</b></div>
       ${renderClassStep(cur === 'class')}
 
-      <div class="t2-phase is-home"><span class="t2-phase-k">Giai đoạn 3</span><b>Bài tập về nhà</b>
-        <p>Tự hoàn thành nửa bài còn lại theo template trong sách.</p></div>
+      <div class="t2-phase is-home"><span class="t2-phase-k">Giai đoạn 3</span><b>Bài tập về nhà</b></div>
       ${renderHomeStep(cur === 'home')}
       ${renderExamStep()}
     </div>`;
@@ -1881,9 +2005,8 @@ function renderIdeaStep(isCurrent) {
   const done = bs.notes.some(n => (n || '').trim());
   return `
     <section class="t2-step t2-ideas${isCurrent ? ' is-current' : ''}" id="t2-step-ideas">
-      ${_stepHead(2, 'Brainstorm ý tưởng', '15′', '', done)}
-      <div class="t2-teacher"><i class="fas fa-users"></i><div><b>Thi đua theo nhóm:</b> GV chia lớp thành nhóm 3–4 bạn. Mỗi nhóm có khoảng 7 phút để liệt kê thật nhiều ý cho từng phần bên dưới, rồi lần lượt trình bày. Nhóm có nhiều ý <b>hay, hợp lý và dùng được trong bài IELTS</b> nhất sẽ thắng.</div></div>
-      <p class="t2-step-desc" style="margin-top:0">Ghi lại những ý tốt nhất (của nhóm mình và nhóm bạn) — chúng sẽ hiện ở cột bên trái khi bạn viết bài.</p>
+      ${_stepHead(2, 'Brainstorm ý tưởng', '', done)}
+      <p class="t2-step-desc">Cùng nhóm nghĩ thật nhiều ý cho từng phần, rồi ghi lại những ý hay nhất — chúng sẽ hiện bên cạnh khi bạn viết bài.</p>
       ${sides.map((h, i) => `
         <label class="t2-brainstorm-side" for="t2-idea-${i}">${_escHtml(h.side)}</label>
         <textarea id="t2-idea-${i}" class="t2-brainstorm-input" rows="3" placeholder="Ý của nhóm cho phần này..." oninput="onIdeaInput(${i}, this.value)">${_escHtml(bs.notes[i] || '')}</textarea>`).join('')}
@@ -1899,6 +2022,7 @@ function renderIdeaStep(isCurrent) {
 function onIdeaInput(i, v) {
   state.brainstorm.notes[i] = v;
   _markLessonDirty('brainstorm');
+  _syncAfterIdeaInput();
 }
 
 // ③ Sentence translation — the translation/paraphrase/short_writing drill.
@@ -1915,8 +2039,8 @@ function renderTranslateStep(isCurrent) {
   const best = _bestPracticeScore(id);
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}${vocabDone ? '' : ' is-locked'}" id="t2-step-translate">
-      ${_stepHead(3, 'Dịch câu Việt → Anh', '15′', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone)}
-      <p class="t2-step-desc">Dịch các câu tiếng Việt chứa ý chính của đề sang tiếng Anh, dùng từ vựng vừa học. <b>Câu bạn dịch sẽ hiện ở cột trái màn hình viết</b> để tham khảo khi viết bài. Hết giờ trên lớp thì làm nốt ở nhà.</p>
+      ${_stepHead(3, 'Dịch câu Việt → Anh', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone)}
+      <p class="t2-step-desc">Dịch các câu ý chính sang tiếng Anh bằng từ vựng vừa học — câu dịch sẽ hiện bên cạnh khi bạn viết bài.</p>
       ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
       <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span></div>` : ''}
       ${!vocabDone ? `
@@ -1925,14 +2049,17 @@ function renderTranslateStep(isCurrent) {
         <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : allDone ? 'Dịch lại' : `Dịch tiếp ${sent.length - done} câu`}</button>
         ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
-      <div class="t2-opts-row">
-        <button type="button" class="t2-link" onclick="startPractice(this)"><i class="fas fa-layer-group"></i> Luyện đủ bộ câu (điền từ, sắp xếp, nhận diện dạng…)${best != null ? ` · cao nhất ${best}%` : ''}</button>
-      </div>
-      <div class="t2-opts-row" style="margin-top:4px">
-        <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
-        <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
-        <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
-      </div>`}
+      <details class="t2-more"${state.translateMoreOpen ? ' open' : ''} ontoggle="state.translateMoreOpen=this.open">
+        <summary><i class="fas fa-chevron-right"></i> Tuỳ chọn khác</summary>
+        <div class="t2-opts-row">
+          <button type="button" class="t2-link" onclick="startPractice(this)"><i class="fas fa-layer-group"></i> Luyện đủ bộ câu (điền từ, sắp xếp, nhận diện dạng…)${best != null ? ` · cao nhất ${best}%` : ''}</button>
+        </div>
+        <div class="t2-opts-row" style="margin-top:4px">
+          <button type="button" class="t2-pill-toggle${state.autoNext ? ' on' : ''}" onclick="toggleT2Pref('autoNext', this)" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">Tự chuyển câu</button>
+          <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
+          <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
+        </div>
+      </details>`}
     </section>`;
 }
 
@@ -1958,6 +2085,10 @@ function _perBodyChains(perBody) {
     return { label, steps, note };
   });
 }
+function _chainsHtml(chains) {
+  return chains.map(c => `<div class="t2-flow">${c.label ? `<b style="font-size:12px">${_escHtml(c.label)}:</b>` : ''}${c.steps.map(s => `<span>${_escHtml(s)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
+        ${c.note ? `<p class="t2-step-desc" style="margin:-6px 0 10px">💡 ${_escHtml(c.note)}</p>` : ''}`).join('');
+}
 function renderGuideStep(isCurrent) {
   const t = state.selectedTopic;
   const g = _guideFor(t);
@@ -1967,16 +2098,14 @@ function renderGuideStep(isCurrent) {
   const body1 = g?.modelEssay?.sections?.[1];
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-guide">
-      ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', '15′', '', done)}
-      <p class="t2-step-desc">GV hướng dẫn cách biến <b>ý tưởng + câu đã dịch</b> thành đoạn văn hoàn chỉnh, thay vì học thuộc bài mẫu.</p>
+      ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', '', done)}
+      <p class="t2-step-desc">Cách ghép <b>ý tưởng + câu đã dịch</b> thành một đoạn văn hoàn chỉnh.</p>
       <div class="t2c-group">Bố cục bài ${_escHtml(ESSAY_LABELS[t.essayType] || '')}</div>
       <div class="t2-flow">${flow.map(f => `<span>${_escHtml(f)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
-      ${chains.length ? `<div class="t2c-group">Triển khai mỗi đoạn thân bài</div>
-      ${chains.map(c => `<div class="t2-flow">${c.label ? `<b style="font-size:12px">${_escHtml(c.label)}:</b>` : ''}${c.steps.map(s => `<span>${_escHtml(s)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
-        ${c.note ? `<p class="t2-step-desc" style="margin:-6px 0 10px">💡 ${_escHtml(c.note)}</p>` : ''}`).join('')}` : ''}
       <div class="t2c-group">Từ câu đơn → đoạn văn</div>
       <div class="t2-recipe">${_RECIPE.map((r, i) => `<div class="t2-recipe-item"><div class="t2-recipe-k">${i + 1}. ${r.k}</div><div class="t2-recipe-v">${r.v}</div><div class="t2-recipe-ex">${_escHtml(r.ex)}</div></div>`).join('')}</div>
-      <div class="t2-teacher"><i class="fas fa-chalkboard-teacher"></i><div><b>GV làm mẫu trên bảng:</b> chọn 1 ý từ phần brainstorm → ghép 3–4 câu đã dịch theo thứ tự trên → thêm từ nối (<i>This is because, As a result, For example</i>) → sửa cho câu liền mạch. Sau đó cả lớp phân tích đoạn mẫu bên dưới.</div></div>
+      ${chains.length ? `
+      <details class="t2-model"><summary>🧭 Triển khai mỗi đoạn thân bài</summary>${_chainsHtml(chains)}</details>` : ''}
       ${body1 ? `
       <details class="t2-model"><summary>📖 Đoạn mẫu cùng dạng (đề khác) — xem cách triển khai ý</summary>
         ${g.modelEssay.prompt ? `<div class="t2-model-q" style="margin-top:6px">Đề: ${_escHtml(g.modelEssay.prompt)}</div>` : ''}
@@ -1994,13 +2123,12 @@ function renderClassStep(isCurrent) {
   const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-class">
-      ${_stepHead(5, 'Viết Mở bài + Thân bài 1', '30′', '', done)}
+      ${_stepHead(5, 'Viết Mở bài + Thân bài 1', '', done)}
       <ol class="t2-plan">
-        <li><b>Mở bài — cá nhân (~10′):</b> paraphrase đề, nêu hướng triển khai / quan điểm.</li>
-        <li><b>Thân bài 1 — nhóm → cá nhân (~20′):</b> cả nhóm chọn ý mạnh nhất và thống nhất dàn ý (ý chính → giải thích → kết quả → ví dụ), sau đó mỗi bạn tự viết đoạn bằng lời của mình.</li>
-        <li>GV đi từng nhóm hỗ trợ chọn ý, diễn đạt câu và sắp xếp nội dung theo cấu trúc bài Task 2.</li>
+        <li><b>Mở bài:</b> paraphrase đề, nêu hướng triển khai / quan điểm.</li>
+        <li><b>Thân bài 1:</b> cùng nhóm chọn ý mạnh nhất → ý chính → giải thích → kết quả → ví dụ, rồi viết lại bằng lời của bạn.</li>
       </ol>
-      <div class="t2-teacher"><i class="fas fa-columns"></i><div>Màn hình viết chia đôi: <b>câu bạn đã dịch ở bên trái</b>, phần viết ở bên phải. Bấm <b>＋</b> để chèn một câu vào chỗ con trỏ, rồi chỉnh lại cho liền mạch với đoạn văn.</div></div>
+      <p class="t2-step-desc">💡 Câu bạn đã dịch nằm ở cột trái màn hình viết — bấm <b>＋</b> để chèn vào bài.</p>
       ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Mở bài', sec.intro)}${_wcChip('Thân bài 1', sec.body1)}</div>` : ''}
       ${loggedIn
         ? `<button class="t2-primary is-lg" onclick="openComposeBtn(this, 'class')"><i class="fas fa-columns"></i> ${done ? 'Xem / sửa phần viết trên lớp' : 'Mở màn hình viết'}</button>`
@@ -2021,7 +2149,7 @@ function renderHomeStep(isCurrent) {
   const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-home">
-      ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', '', submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : '<span class="t2-step-tag mid">Bài tập về nhà</span>', done)}
+      ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : '', done)}
       <ol class="t2-plan">
         <li>Viết <b>Thân bài 2</b> và <b>Kết bài</b> theo <b>template trong sách</b> (tab “Template” ở cột trái màn hình viết).</li>
         <li>Vận dụng từ vựng, ý tưởng và các câu đã dịch — <b>tự viết bằng lời của bạn</b>, không sao chép bài mẫu.</li>
@@ -2048,12 +2176,300 @@ function _refreshHubStep(key) {
   const el = document.getElementById('t2-step-' + key);
   if (!el || el.contains(document.activeElement)) return;
   el.outerHTML = _HUB_STEP_RENDER[key](_currentStepKey(state.selectedTopic) === key);
+  _luluSync();
 }
 function _refreshHubLesson() {
   if (state.view !== 'select' || !state.selectedTopic) return;
   const rail = document.getElementById('t2-rail');
   if (rail) rail.outerHTML = _renderRail(state.selectedTopic);
   Object.keys(_HUB_STEP_RENDER).forEach(_refreshHubStep);
+  _luluSync();
+}
+
+// ════════════════════════════════════════════════════════
+//  LULU on the hub — a coach that says what to do next, a peek over the
+//  current card, and a little party when a step gets done.
+//  Mascot = js/shared/playful.js. Purely decorative: every entry point is
+//  guarded and the hub works the same without it.
+// ════════════════════════════════════════════════════════
+const _LULU_STEP = {
+  vocab:     { say: 'Bắt đầu bằng từ vựng nha! Lưu hết từ vào sổ là mở khoá bước Dịch câu 📒',
+               tips: ['Bấm 🔊 để nghe phát âm, đọc to theo cho nhớ lâu nha!', 'Học cả cụm (collocation) chứ đừng học từ đơn lẻ nhé 😉', 'Làm quiz từ vựng để xem mình nhớ được bao nhiêu từ!'] },
+  ideas:     { say: 'Giờ brainstorm cùng nhóm nè! Nghĩ thật nhiều ý, ý nào hay thì ghi lại liền 💡',
+               tips: ['Ý hay = rõ ràng + có ví dụ thật. Đừng ngại ghi cả ý của nhóm bạn!', 'Bí ý? Thử nghĩ theo các góc: cá nhân, xã hội, kinh tế, sức khoẻ…', 'Mỗi phần chỉ cần 2–3 ý mạnh là đủ viết rồi.'] },
+  translate: { say: 'Dịch câu nào! Dùng từ vựng vừa học nha — câu dịch sẽ giúp cậu viết nhanh hơn ✍️',
+               tips: ['Sai không sao, đọc gợi ý rồi sửa lại là nhớ lâu lắm!', 'Chưa xong trên lớp thì về nhà làm nốt nha.', 'Để ý collocation trong câu mẫu — dùng lại được trong bài đó!'] },
+  guide:     { say: 'Xem cách ghép ý + câu đã dịch thành một đoạn văn hoàn chỉnh nha 🧩',
+               tips: ['Công thức thần thánh: Ý chính → Giải thích → Kết quả → Ví dụ!', 'Từ nối làm đoạn văn mượt hơn: This is because, As a result, For example…', 'Đọc đoạn mẫu để học cách triển khai, đừng học thuộc nha.'] },
+  class:     { say: 'Cùng nhóm viết Mở bài + Thân bài 1 thôi! Đi được nửa đường rồi đó 💪',
+               tips: ['Mở bài: paraphrase đề bằng từ đồng nghĩa, đừng chép nguyên đề nha.', 'Bấm ＋ ở cột trái để chèn câu đã dịch vào bài.', 'Viết xong đọc lại một lượt để sửa lỗi nhỏ nha.'] },
+  home:      { say: 'Về nhà viết nốt Thân bài 2 + Kết bài rồi nộp chấm AI nha 🏠',
+               tips: ['Mở tab “Template” ở cột trái để viết Kết bài cho nhanh.', 'Kết bài chỉ cần tóm lại ý chính, không thêm ý mới nha.', 'Đủ 4 phần là nộp được để AI chấm rồi!'] }
+};
+let _luluSeen = { topicId: null, done: null }; // baseline the celebrations diff against
+let _coachShownFor = null;                     // entrance animation only on a fresh topic
+let _coachPokes = 0;
+
+function _luluSvg(mood) {
+  try { return window.Mascot ? window.Mascot.svg(mood, { label: 'Lulu' }) : '🍊'; } catch { return '🍊'; }
+}
+function _reduceMotion() {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+}
+function _coachState(t) {
+  const steps = _lessonSteps(t);
+  const n = steps.filter(s => s.done).length;
+  const all = n === steps.length;
+  const cur = _currentStepKey(t);
+  const L = _lessonFor(t._id);
+  return {
+    steps, n, all, cur,
+    mood: all ? 'cheer' : n >= 3 ? 'excited' : 'happy',
+    text: all
+      ? (L && L.submittedAt ? 'Cậu đã hoàn thành trọn buổi học rồi! Lulu tự hào về cậu quá 🥳' : 'Xong cả 6 bước rồi! Nộp bài để AI chấm điểm nha 🎉')
+      : _LULU_STEP[cur].say
+  };
+}
+function _coachProgHtml(c) {
+  return `<div class="t2-coach-prog" aria-label="Đã xong ${c.n}/${c.steps.length} bước">${c.steps.map(s => `<i class="${s.done ? 'on' : ''}${s.key === c.cur && !c.all ? ' cur' : ''}"></i>`).join('')}<span>${c.n}/${c.steps.length} bước</span></div>`;
+}
+function _renderCoach(t) {
+  const c = _coachState(t);
+  const enter = _coachShownFor !== t._id;
+  _coachShownFor = t._id;
+  return `<div class="t2-coach" id="t2-coach">
+        <button type="button" class="t2-coach-lulu${enter ? ' is-enter' : ''}" data-mood="${c.mood}" onclick="luluCoachPoke()" title="Bấm để nghe mẹo từ Lulu" aria-label="Lulu — bấm để nghe mẹo">${_luluSvg(c.mood)}</button>
+        <div class="t2-coach-body">
+          <div class="t2-coach-bubble${enter ? ' is-say' : ''}" id="t2-coach-say" data-base="${_escHtml(c.text)}" role="status" aria-live="polite">${_escHtml(c.text)}</div>
+          ${_coachProgHtml(c)}
+        </div>
+      </div>`;
+}
+function _coachSay(text, mood, jump) {
+  const coach = document.getElementById('t2-coach');
+  if (!coach) return;
+  const b = coach.querySelector('.t2-coach-bubble');
+  const lulu = coach.querySelector('.t2-coach-lulu');
+  b.textContent = text;
+  b.classList.remove('is-say'); void b.offsetWidth; b.classList.add('is-say');
+  if (mood && lulu.dataset.mood !== mood) { lulu.dataset.mood = mood; lulu.innerHTML = _luluSvg(mood); }
+  if (jump) { lulu.classList.remove('is-enter', 'is-jump'); void lulu.offsetWidth; lulu.classList.add('is-jump'); }
+}
+function luluCoachPoke() {
+  const t = state.selectedTopic;
+  if (!t) return;
+  const c = _coachState(t);
+  _coachPokes++;
+  const tips = c.all ? ['Tuyệt vời! Ôn lại từ vựng của buổi này vài lần nữa cho nhớ lâu nha 🍊', 'Thử “Thi thử cả tuần” bên dưới để kiểm tra lại cả tuần nè!']
+    : _LULU_STEP[c.cur].tips;
+  const text = _coachPokes % 9 === 0 ? 'Ui da, cù lét tớ hoài! 🤭' : tips[_coachPokes % tips.length];
+  _coachSay(text, ['wink', 'excited', 'think', 'happy'][_coachPokes % 4], true);
+}
+function _confettiBurst(host) {
+  if (!host || _reduceMotion()) return;
+  const colors = ['#f59e0b', '#22c55e', '#6366f1', '#ec4899', '#0ea5e9', '#facc15'];
+  const box = document.createElement('div');
+  box.className = 't2-confetti';
+  box.setAttribute('aria-hidden', 'true');
+  box.innerHTML = Array.from({ length: 18 }, (_, i) => {
+    const a = (Math.PI * 2 * i) / 18 + Math.random() * .4;
+    const d = 60 + Math.random() * 70;
+    return `<i style="--c:${colors[i % colors.length]};--dx:${Math.round(Math.cos(a) * d * 1.6)}px;--dy:${Math.round(Math.sin(a) * d - 30)}px;--r:${Math.round(Math.random() * 720 - 360)}deg"></i>`;
+  }).join('');
+  host.appendChild(box);
+  setTimeout(() => box.remove(), 1400);
+}
+function _luluCelebrate(key, c) {
+  const step = c.steps.find(s => s.key === key);
+  const next = c.steps.find(s => s.key === c.cur);
+  _coachSay(c.all ? 'Xong cả 6 bước rồi! Đỉnh quá đi 🥳🎉'
+    : `Xong bước “${step ? step.label : ''}” rồi! 🎉 Tiếp theo: ${next ? next.label : ''} nha!`, c.all ? 'cheer' : 'excited', true);
+  _confettiBurst(document.getElementById('t2-coach'));
+  const rail = document.querySelector(`.t2-rail-item[data-key="${key}"]`);
+  if (rail) { rail.classList.remove('is-pop'); void rail.offsetWidth; rail.classList.add('is-pop'); }
+}
+// Bring the coach / peek in line with the cards after any (partial) hub
+// re-render, and celebrate steps that just turned done.
+function _luluSync() {
+  if (state.view !== 'select' || !state.selectedTopic) return;
+  try {
+    const t = state.selectedTopic, id = t._id;
+    const c = _coachState(t);
+    const coach = document.getElementById('t2-coach');
+    if (coach) {
+      coach.querySelector('.t2-coach-prog').outerHTML = _coachProgHtml(c);
+      const b = coach.querySelector('.t2-coach-bubble');
+      if (b.dataset.base !== c.text) { b.dataset.base = c.text; _coachSay(c.text, c.mood); }
+    }
+    document.querySelectorAll('.t2-lulu-peek').forEach(el => { if (!el.closest('.t2-step.is-current')) el.remove(); });
+    const curEl = document.querySelector('.t2-hub .t2-step.is-current');
+    if (curEl && !curEl.querySelector('.t2-lulu-peek')) {
+      curEl.insertAdjacentHTML('afterbegin', `<div class="t2-lulu-peek" aria-hidden="true">${_luluSvg('happy')}</div>`);
+    }
+    // Only diff once both async halves (lesson + vocab list) have loaded —
+    // otherwise their arrival would read as "steps just completed".
+    const ready = state.lesson.topicId === id && state.lesson.status === 'ready' && state.vocabFor === id;
+    if (!ready) { _luluSeen = { topicId: id, done: null }; return; }
+    const done = c.steps.filter(s => s.done).map(s => s.key);
+    const prev = _luluSeen.topicId === id ? _luluSeen.done : null;
+    _luluSeen = { topicId: id, done };
+    const fresh = prev ? done.filter(k => !prev.includes(k)) : [];
+    if (fresh.length) _luluCelebrate(fresh[fresh.length - 1], c);
+  } catch {}
+}
+// Brainstorm typing doesn't re-render the hub; refresh rail + coach a beat later.
+let _ideaSyncTimer = 0;
+function _syncAfterIdeaInput() {
+  clearTimeout(_ideaSyncTimer);
+  _ideaSyncTimer = setTimeout(() => {
+    if (state.view !== 'select' || !state.selectedTopic) return;
+    const rail = document.getElementById('t2-rail');
+    if (rail) rail.outerHTML = _renderRail(state.selectedTopic);
+    _luluSync();
+  }, 600);
+}
+
+// ════════════════════════════════════════════════════════
+//  TEACHER GUIDELINE — the full lesson plan (timings, grouping, what to
+//  model on the board, the brainstorm answer key). Kept out of the student
+//  cards so the hub stays readable.
+// ════════════════════════════════════════════════════════
+function _tgStep(i, num, title, time, goal, how, tip, extra) {
+  return `<section class="t2-tg-step" style="--i:${i}">
+      <div class="t2-tg-step-head"><span class="t2-step-num">${num}</span><b>${title}</b>${time ? `<span class="t2-tg-time"><i class="far fa-clock"></i> ${time}</span>` : ''}</div>
+      ${goal ? `<p class="t2-tg-goal"><b>Mục tiêu:</b> ${goal}</p>` : ''}
+      <ul class="t2-tg-how">${how.filter(Boolean).map(h => `<li>${h}</li>`).join('')}</ul>
+      ${extra || ''}
+      ${tip ? `<div class="t2-tg-tip">💡 ${tip}</div>` : ''}
+    </section>`;
+}
+function _teacherGuideHtml(t) {
+  const n = sessionNumber(t._id);
+  const sides = _ideaSides(t);
+  const hasHints = sides.some(s => (s.points || []).length);
+  const vocabN = state.vocabFor === t._id ? state.vocab.length : 0;
+  const g = _guideFor(t);
+  const flow = g?.outline?.flow ? g.outline.flow.split('→').map(s => s.trim()).filter(Boolean) : ['INTRODUCTION', 'BODY 1', 'BODY 2', 'CONCLUSION'];
+  const chains = _perBodyChains(g?.outline?.perBody);
+  const typeLabel = ESSAY_LABELS[t.essayType] || t.essayType || '';
+  const sideNames = sides.map(s => `<b>${_escHtml(s.side)}</b>`).join(', ');
+  const tl = [
+    ['p1', 'Từ vựng', 15], ['p1', 'Brainstorm', 15], ['p1', 'Dịch câu', 15], ['p1', 'Hướng dẫn viết', 15],
+    ['p2', 'Viết trên lớp', 30], ['p3', 'Về nhà', 12]
+  ];
+  let i = 0;
+  return `
+    <div class="t2-tg-prompt"><b>Đề bài:</b> ${_escHtml(t.prompt)}</div>
+    <div class="t2-tg-tl" aria-hidden="true">${tl.map(([p, label, m], k) => `<div class="t2-tg-seg ${p}" style="flex:${m};--i:${k}">${label}<small>${p === 'p3' ? 'ở nhà' : m + '′'}</small></div>`).join('')}</div>
+    <div class="t2-tg-tl-note">Tổng thời gian trên lớp ≈ 90 phút · phần cuối làm ở nhà.</div>
+    <div class="t2-tg-group">
+      <div class="t2-tg-group-k"><i class="fas fa-users"></i> Ưu tiên học theo nhóm</div>
+      <p>Buổi học hiệu quả nhất khi HS <b>làm việc và viết bài theo nhóm</b>: các em học được ý tưởng, từ vựng và cách diễn đạt của nhau, mạnh dạn hơn khi viết.</p>
+      <ul class="t2-tg-how">
+        <li>Chia nhóm <b>3–4 bạn</b>, <b>trộn trình độ</b> (mỗi nhóm có 1 bạn khá) và giữ nguyên nhóm suốt buổi.</li>
+        <li>Phân vai, đổi vai sau mỗi bước:
+          <span class="t2-tg-roles"><span>👑 Nhóm trưởng</span><span>✍️ Thư ký</span><span>🎤 Người trình bày</span><span>⏱️ Canh giờ</span></span></li>
+        <li><b>Tính điểm thi đua nhóm</b> suốt buổi (quiz, brainstorm, đoạn văn hay nhất) — nhóm thắng được cộng điểm / khen trước lớp.</li>
+      </ul>
+    </div>
+
+    <div class="t2-tg-phase t2-phase" style="margin-top:12px"><span class="t2-phase-k">Giai đoạn 1</span><b>Scaffolding</b><span class="t2-phase-time">~60 phút</span>
+      <p>Chuẩn bị từ vựng, ý tưởng và cách diễn đạt trước khi viết.</p></div>
+    ${_tgStep(i++, 1, 'Từ vựng &amp; collocations', '15′',
+      `HS nắm ${vocabN ? vocabN + ' từ / collocation' : 'các từ / collocation'} trọng tâm của chủ đề.`,
+      ['Giới thiệu nhanh các từ trọng tâm, bấm 🔊 cho cả lớp nghe phát âm, nhấn mạnh <b>collocation</b> đi kèm.',
+       'Cho HS bấm <b>Lưu tất cả vào sổ</b> — bước này mở khoá bước Dịch câu.',
+       '<b>Thi đua nhóm:</b> mỗi nhóm làm <b>Quiz từ vựng</b> trên 1 máy, hoặc các nhóm đố nhau collocation (nhóm A nói từ, nhóm B nói cụm đi kèm) — tính điểm nhóm.'])}
+    ${_tgStep(i++, 2, 'Brainstorm ý tưởng — thi đua nhóm', '15′',
+      'Có thật nhiều ý hay, hợp lý và dùng được trong bài IELTS.',
+      [`Chia lớp thành nhóm <b>3–4 bạn</b>. Mỗi nhóm có <b>~7 phút</b> liệt kê thật nhiều ý cho từng phần: ${sideNames}.`,
+       'Các nhóm lần lượt trình bày. Nhóm có nhiều ý <b>hay, hợp lý và dùng được trong bài IELTS</b> nhất sẽ thắng.',
+       hasHints ? 'Sau khi các nhóm trình bày xong mới cho HS mở <b>“Xem gợi ý ý chính”</b> để so sánh.' : '',
+       'HS ghi lại ý tốt nhất (của nhóm mình và nhóm bạn) vào ô — các ý này hiện ở cột trái khi viết bài.'],
+      '', hasHints ? `<details class="t2-model"><summary>🔑 Gợi ý ý chính (đáp án tham khảo cho GV)</summary>
+        ${sides.map(h => `<div class="t2-brainstorm-hint-side">${_escHtml(h.side)}</div>
+          <ul class="t2-brainstorm-hint-list">${(h.points || []).map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul>`).join('')}
+      </details>` : '')}
+    ${_tgStep(i++, 3, 'Dịch câu Việt → Anh', '15′',
+      'Chuyển ý tưởng thành câu tiếng Anh đúng, dùng từ vựng vừa học.',
+      ['HS dịch các câu tiếng Việt chứa ý chính của đề; hệ thống chấm và gợi ý ngay.',
+       '<b>Đối chiếu theo nhóm (~3′):</b> các bạn trong nhóm so sánh bản dịch của nhau, chọn câu hay nhất cho mỗi ý; người trình bày đọc câu của nhóm trước lớp.',
+       'GV chữa nhanh 2–3 câu khó trên bảng, chỉ ra collocation / cấu trúc hay.',
+       'Câu HS dịch sẽ hiện ở <b>cột trái màn hình viết</b> — dịch càng nhiều, viết càng dễ.',
+       'Hết giờ trên lớp: giao làm nốt ở nhà. HS khá có thể chọn <b>Luyện đủ bộ câu</b> (điền từ, sắp xếp, nhận diện dạng…) trong “Tuỳ chọn khác”.'],
+      'Dùng <b>Xem trước câu hỏi</b> (trong “Tuỳ chọn khác”) để chuẩn bị trước buổi học.')}
+    ${_tgStep(i++, 4, 'Hướng dẫn viết (Guided writing)', '15′',
+      'HS biết biến <b>ý tưởng + câu đã dịch</b> thành đoạn văn hoàn chỉnh, thay vì học thuộc bài mẫu.',
+      [`Giới thiệu bố cục bài <b>${_escHtml(typeLabel)}</b>.`,
+       '<b>GV làm mẫu trên bảng:</b> chọn 1 ý từ phần brainstorm → ghép 3–4 câu đã dịch theo thứ tự <b>Ý chính → Giải thích → Kết quả → Ví dụ</b> → thêm từ nối (<i>This is because, As a result, For example</i>) → sửa cho câu liền mạch.',
+       '<b>Phân tích đoạn mẫu theo nhóm:</b> mỗi nhóm tìm trong <b>đoạn mẫu cùng dạng</b> (đề khác) một phần của công thức (ý chính / giải thích / kết quả / ví dụ) và các từ nối, rồi chia sẻ với lớp.'],
+      '', `<div class="t2-flow">${flow.map(f => `<span>${_escHtml(f)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
+        ${chains.length ? `<details class="t2-model"><summary>🧭 Triển khai mỗi đoạn thân bài</summary>${_chainsHtml(chains)}</details>` : ''}`)}
+
+    <div class="t2-tg-phase t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Viết trên lớp</b><span class="t2-phase-time">~30 phút</span>
+      <p>Viết khoảng một nửa bài dưới sự hướng dẫn của GV — kết hợp viết cá nhân và viết theo nhóm.</p></div>
+    ${_tgStep(i++, 5, 'Viết Mở bài + Thân bài 1 — viết theo nhóm', '30′',
+      'Cả nhóm cùng tạo ra một đoạn văn tốt, rồi mỗi bạn viết lại được bằng lời của mình.',
+      ['<b>Mở bài — theo cặp (~8′):</b> mỗi cặp cùng paraphrase đề và nêu hướng triển khai / quan điểm; 2 cặp trong nhóm so sánh, chọn câu mở bài hay nhất.',
+       '<b>Thân bài 1 — cả nhóm viết chung (~12′):</b> chọn ý mạnh nhất, thống nhất dàn ý (ý chính → giải thích → kết quả → ví dụ). <b>Thư ký</b> viết đoạn chung, mỗi bạn góp ít nhất 1 câu (dùng câu đã dịch).',
+       '<b>Đổi bài chéo (~5′):</b> các nhóm đổi đoạn văn cho nhau, góp ý theo checklist: đủ 4 phần? có từ nối? dùng từ vựng của bài? Nhóm có đoạn hay nhất được cộng điểm.',
+       '<b>Cá nhân (~5′):</b> mỗi bạn tự viết lại Mở bài + Thân bài 1 vào màn hình viết bằng lời của mình, dựa trên bản của nhóm.',
+       'GV đi từng nhóm hỗ trợ chọn ý, diễn đạt câu và sắp xếp nội dung theo cấu trúc bài Task 2; khuyến khích các bạn yếu đóng góp câu.'],
+      'Màn hình viết chia đôi: câu HS đã dịch ở bên trái, phần viết ở bên phải. HS bấm <b>＋</b> để chèn một câu vào chỗ con trỏ, rồi chỉnh lại cho liền mạch.')}
+
+    <div class="t2-tg-phase t2-phase is-home"><span class="t2-phase-k">Giai đoạn 3</span><b>Bài tập về nhà</b>
+      <p>HS tự hoàn thành nửa bài còn lại theo template trong sách.</p></div>
+    ${_tgStep(i++, 6, 'Viết Thân bài 2 + Kết bài', '', '',
+      ['HS viết <b>Thân bài 2</b> và <b>Kết bài</b> theo template trong sách (tab “Template” ở cột trái màn hình viết).',
+       'Nhắc HS làm nốt các câu chưa dịch ở bước 3 để có thêm câu tham khảo.',
+       `Đủ 4 phần (≥ ${LESSON_MIN_WORDS} từ) → HS bấm <b>Nộp bài chấm AI</b>.`,
+       'Khuyến khích HS <b>trao đổi trong nhóm</b> (nhắn tin / gặp nhau) để góp ý dàn ý Thân bài 2 trước khi viết — nhưng mỗi bạn tự viết bài của mình.',
+       'Đầu buổi sau (~5′): các nhóm đọc chéo bài của nhau, chọn 1 câu hay và 1 lỗi cần sửa; GV nhận xét các lỗi chung từ bài đã chấm.'])}
+    ${_tgStep(i++, '<i class="fas fa-clipboard-check" style="font-size:11px"></i>', 'Thi thử cả tuần <span class="t2-opt-tag">tuỳ chọn</span>', '', '',
+      [`Câu hỏi ngẫu nhiên từ các chủ đề của Tuần ${state.selectedWeek ?? ''}, 2 phút/câu — phù hợp làm bài kiểm tra nhanh cuối tuần.`])}
+
+    <div class="t2-tg-foot"><i class="fas fa-random" style="margin-top:4px"></i><div><b>Linh hoạt:</b> GV có thể đổi thứ tự hoặc gộp các bước tuỳ độ khó của đề và trình độ lớp${n ? ` (Buổi ${n})` : ''}. Lớp mạnh có thể rút ngắn bước 1 và 3 để dành thêm thời gian viết.</div></div>`;
+}
+function openTeacherGuide() {
+  const t = state.selectedTopic;
+  if (!t) return;
+  let ov = document.getElementById('t2-tg-overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 't2-tg-overlay';
+    ov.className = 't2-tg-overlay';
+    ov.addEventListener('click', e => { if (e.target === ov) closeTeacherGuide(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && ov.classList.contains('is-open')) closeTeacherGuide(); });
+    document.body.appendChild(ov);
+  }
+  const n = sessionNumber(t._id);
+  ov.innerHTML = `
+    <div class="t2-tg-modal" role="dialog" aria-modal="true" aria-labelledby="t2-tg-title">
+      <div class="t2-tg-hdr">
+        <div class="t2-tg-lulu" aria-hidden="true">${_luluSvg('wink')}</div>
+        <div style="min-width:0">
+          <h3 id="t2-tg-title">Guideline for teacher</h3>
+          <div class="t2-tg-sub">${n ? `Buổi ${n} · ` : ''}${_escHtml(t.topicName)} · ${_escHtml(ESSAY_LABELS[t.essayType] || t.essayType || '')}</div>
+        </div>
+        <button class="t2-hist-close" onclick="closeTeacherGuide()" aria-label="Đóng"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="t2-tg-body" id="t2-tg-body">${_teacherGuideHtml(t)}</div>
+    </div>`;
+  ov.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  ov.querySelector('.t2-hist-close').focus();
+  // Outline chains come from the type guides — fill them in once loaded.
+  if (_guideCache === null && window.AuthService && window.AuthService.isLoggedIn()) {
+    _loadGuides().then(() => {
+      const body = document.getElementById('t2-tg-body');
+      if (body && ov.classList.contains('is-open') && state.selectedTopic === t) body.innerHTML = _teacherGuideHtml(t);
+    });
+  }
+}
+function closeTeacherGuide() {
+  const ov = document.getElementById('t2-tg-overlay');
+  if (ov) ov.classList.remove('is-open');
+  document.body.style.overflow = '';
 }
 
 // ════════════════════════════════════════════════════════
@@ -2633,7 +3049,7 @@ function renderVocabStep(isCurrent) {
   }
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
-      ${_stepHead(1, 'Từ vựng &amp; collocations', '15′', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', done)}
+      ${_stepHead(1, 'Từ vựng &amp; collocations', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', done)}
       ${body}
     </section>`;
 }
@@ -2664,6 +3080,7 @@ function bindSelect() {
     const k = _hubFocus; _hubFocus = null;
     setTimeout(() => scrollToHubStep(k), 60);
   }
+  _luluSync();
 }
 
 function scrollToHubStep(key) {
@@ -2677,6 +3094,7 @@ function _refreshVocabStep() {
   const el = document.getElementById('t2-step-vocab');
   if (!el || state.view !== 'select') return;
   el.outerHTML = renderVocabStep(el.classList.contains('is-current'));
+  _luluSync();
 }
 
 function toggleVocabList() {
