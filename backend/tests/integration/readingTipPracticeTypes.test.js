@@ -253,4 +253,12 @@ describe('fixed practice — the same passage every time', () => {
       FIXED_PRACTICE['true-false-not-given'] = saved;
     }
   });
+
+  test('without a usable pin the pick is a Passage 1 / 2, never a harder Passage 3', async () => {
+    for (let i = 0; i < 3; i++) await (await tfPassage()).updateOne({ category: 'passage3' });
+    const easy = await tfPassage(); // factory default: passage1
+    expect((await load()).body.practice.passageId).toBe(String(easy._id));
+    await easy.updateOne({ isActive: false });
+    expect((await load()).body.practice).not.toBeNull(); // only Passage 3 left → still a practice
+  });
 });

@@ -54,13 +54,15 @@ const PRACTICE_CONFIG = {
 // The hand-picked source of each tip's (fixed) practice — see "Fixed
 // practices" below. passage: one Passage; items: [passageId,
 // questionNumber(, pairIndex)] for the practices that mix passages.
+// All from Passage 1 / 2: students are still learning the technique, so
+// the text must be easy enough to follow — never a Passage 3.
 const FIXED_PRACTICE = {
   skimming: { items: [
-    ['6a2b16b518f3aea4f062f4df', 36], // To catch a king — purpose of the first paragraph
-    ['6a55cfe9d2439c8edfc656b9', 40], // verbal and non-verbal messages — paragraph "To be fair…"
-    ['6a5541f57451993d82bd3312', 34], // Innovation in Business — main point of paragraph 7
+    ['6a2b05ba18f3aea4f062d91e', 14], // Changes in reading habits — main point of the first paragraph
+    ['6abdb3f33da7a4e8d035c80f', 14], // Unexpected Benefits to Human Brain — purpose of the first paragraph
+    ['6abdee1654216aa2da157a4a', 3], // Consecutive and Simultaneous Translation — why cite the Tower of Babel
     ['6a2a87d3e802f36848dfcf3b', 16], // I contain multitudes — what the fifth paragraph does
-    ['6a2a6d10e802f36848df9588', 40], // Environmental practices of big businesses — best subheading
+    ['6abdb3e73da7a4e8d035c700', 13], // Grey Workers — the writer's main purpose
   ] },
   scanning: { passage: '69e598990186a5bd25a206ed' }, // Adapting to the effects of climate change (Miami Beach, Indonesia, Mekong Delta…)
   'keyword-to-paraphrase': { items: [
@@ -69,16 +71,16 @@ const FIXED_PRACTICE = {
     ['6a2a71bae802f36848dfa1d3', 8, 0], // think of bears as unintelligent = perceived as stupid
     ['69fb66c48ad4568889c8ac20', 16, 1], // make use of = employing
     ['6a29032085253ef89ef3bfe1', 14, 0], // not in use = parked
-    ['6a5510407451993d82bcdb0d', 40, 1], // serious consequences = grave trouble
+    ['6a55c892d2439c8edfc649bb', 8, 0], // rural areas = countryside
   ] },
-  'skim-scan-workflow': { passage: '6a6f4fa183f0561ecc0d960e' }, // Crossing the Threshold
+  'skim-scan-workflow': { passage: '6a54e0977451993d82bc7ce9' }, // The 2003 Heatwave
   'true-false-not-given': { passage: '6a6b93fa933d34eeed802985' }, // The Davies Sisters
-  'yes-no-not-given': { passage: '69d5cf07c5f9062f29190300' }, // Invasion of the Robot Umpires
+  'yes-no-not-given': { passage: '6abdad023bcd15105e99fbb5' }, // The Motor Car
   'matching-headings': { passage: '6a55314a7451993d82bd17f5' }, // Violins and very cold weather
   'matching-information': { passage: '6a2d9082759f3f7b6e649aad' }, // A second attempt at domesticating the tomato
   'matching-features': { passage: '6a6b93fb933d34eeed802995' }, // Why we need silence
   'sentence-summary-note-completion': { passage: '6a6f23c9d5e1b371f4752b21' }, // Caral: an ancient South American city
-  'multiple-choice': { passage: '6a6f227ba6fc2d9546e6df26' }, // A New Voyage Round the World
+  'multiple-choice': { passage: '6abd01a81b50c9b87212e54e' }, // Travel Accounts
   'short-answer-questions': { passage: '6a55c892d2439c8edfc649bb' }, // Bondi
 };
 
@@ -905,7 +907,8 @@ function loadActivePassages() {
 // Every tip always shows the same practice: the sources hand-picked in
 // FIXED_PRACTICE (checked against the bank: question, key, passage and
 // explanation agree and read well), else — a passage hidden or edited
-// since, or a test database — the same deterministic pick from the bank.
+// since, or a test database — the same deterministic pick from the bank,
+// among its Passage 1 / 2 texts whenever any qualify.
 
 // A fixed pseudo-random sequence per tip (mulberry32 seeded by its key).
 function seededRng(key) {
@@ -919,10 +922,18 @@ function seededRng(key) {
   };
 }
 
-// The pinned passage alone when it still qualifies, else every candidate.
+const EASY_CATEGORIES = ['passage1', 'passage2'];
+
+// The Passage 1 / 2 candidates — every candidate when none is.
+function easiestFirst(candidates) {
+  const easy = candidates.filter(c => EASY_CATEGORIES.includes(c.passage.category));
+  return easy.length ? easy : candidates;
+}
+
+// The pinned passage alone when it still qualifies, else easiestFirst.
 function pinnedFirst(candidates, passageId) {
   const hit = passageId ? candidates.filter(c => String(c.passage._id) === passageId) : [];
-  return hit.length ? hit : candidates;
+  return hit.length ? hit : easiestFirst(candidates);
 }
 
 // The pinned items ([passageId, questionNumber(, pairIndex)]), in their
@@ -939,7 +950,7 @@ async function buildSkimming(cfg, rng) {
   if (!pool.length) return null;
 
   const pinned = pinnedItems(pool, cfg.fixed, it => [it.passage._id, it.q.questionNumber]);
-  const shuffled = pinned || shuffle(pool, rng);
+  const shuffled = pinned || shuffle(easiestFirst(pool), rng);
   // One overall-topic (title) question when the bank has any, the rest
   // paragraph-level — the things the Skimming tip teaches. Spread the
   // paragraph items across passages first (maxPerPassage), then fill any
@@ -990,16 +1001,19 @@ async function buildSkimming(cfg, rng) {
 
 // One existing passage with enough usable questions (at least
 // cfg.minQuestions): the pinned one (cfg.fixed) when it still qualifies,
-// else — preferring passages `prefer` accepts (when given), then ones with
-// cfg.preferQuestions+ questions — a seeded pick among the best. Its first
+// else — among Passage 1 / 2 when any qualify, preferring passages
+// `prefer` accepts (when given), then ones with cfg.preferQuestions+
+// questions — a seeded pick among the best. Its first
 // cfg.maxQuestions questions are kept, in original order.
 async function pickPassage(cfg, rng, itemsOf, prefer) {
   const candidates = (await loadActivePassages())
     .map(p => ({ passage: p, ...itemsOf(p) }))
     .filter(c => c.items.length >= cfg.minQuestions);
   if (!candidates.length) return null;
-  const pinned = pinnedFirst(candidates, cfg.fixed && cfg.fixed.passage);
-  const good = prefer && pinned === candidates ? candidates.filter(prefer) : [];
+  const pin = cfg.fixed && cfg.fixed.passage;
+  const pinned = pinnedFirst(candidates, pin);
+  const isPin = !!pin && String(pinned[0].passage._id) === pin;
+  const good = prefer && !isPin ? pinned.filter(prefer) : [];
   const pool = good.length ? good : pinned;
   const big = pool.filter(c => c.items.length >= cfg.preferQuestions);
   const tier = big.length ? big : pool;
@@ -1172,7 +1186,7 @@ async function buildParaphrase(cfg, rng) {
   const pinned = pinnedItems(pool, cfg.fixed, it => [it.passage._id, it.q.questionNumber, it.k]);
   const chosen = pinned || [];
   const perPassage = {};
-  for (const it of pinned ? [] : shuffle(pool, rng)) {
+  for (const it of pinned ? [] : shuffle(easiestFirst(pool), rng)) {
     const key = String(it.passage._id);
     if (chosen.length >= cfg.maxQuestions || (perPassage[key] || 0) >= cfg.maxPerPassage) continue;
     if (chosen.some(c => c.passage === it.passage && c.q === it.q)) continue; // one pair per question
