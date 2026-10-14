@@ -4674,7 +4674,7 @@ function _updateExamToolbarForMode() {
 function setTool(tool) {
   const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
   state.tool = next;
-  ['tool-hl', 'tool-hl-rv', 'tool-hl-rt'].forEach(id => {
+  ['tool-hl', 'tool-hl-rv', 'tool-hl-rt', 'rtp-tool-hl'].forEach(id => {
     const b = document.getElementById(id);
     if (b) b.classList.toggle('active', next === 'highlight');
   });

@@ -329,6 +329,7 @@
       stage: st.stage,
       main: st.main ? savedAnswer(st.main) : null,
       guess: st.guess || '',
+      hl: st.hl,
     };
     writeStore(all);
   }
@@ -496,7 +497,98 @@
     if (!panel) return;
     panel.hidden = false;
     panel.innerHTML = html;
+    applyHl();
   }
+
+  // ── Student highlights ("Bôi màu", the same tool as a "lẻ" practice) ──
+  //
+  // The panel is re-rendered wholesale on every click, so the student's
+  // highlights are kept in st.hl as text offsets (js/shared/highlight-store.js)
+  // per highlightable block and re-applied after each render: the passage
+  // ('p'; every skimming item has its own: 's<idx>') and the question stem
+  // ('q<idx>'; the workflow's main-idea question: 'qmain'). The tool itself
+  // is reading-v2.js's (setTool / state.tool), so H, Esc and the cursor
+  // behave as everywhere else on the page.
+  const HL_ROOTS = '.rtp-passage-scroll, .q-text';
+  let hlOwn = false;          // tool state when reading-v2.js isn't loaded
+  let suppressClick = false;  // the click that ends a highlighting drag
+
+  function hlOn() {
+    return typeof state !== 'undefined' && state ? state.tool === 'highlight' : hlOwn;
+  }
+
+  function toggleHl() {
+    if (typeof setTool === 'function') setTool('highlight');
+    else hlOwn = !hlOwn;
+    const btn = document.getElementById('rtp-tool-hl');
+    if (btn) btn.classList.toggle('active', hlOn());
+  }
+
+  function hlBtnHtml() {
+    return `<button type="button" class="tool-btn rtp-hl-btn${hlOn() ? ' active' : ''}" id="rtp-tool-hl" data-act="hl-tool"
+      title="Bật rồi bôi chọn chữ trong bài đọc / câu hỏi để tô màu. Bấm vào chỗ đã tô để đổi màu hoặc xoá.">
+      <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small></button>`;
+  }
+
+  function hlKeyOf(el) {
+    if (el.matches('.rtp-passage-scroll')) return st.kind === 'skimming' ? `s${st.idx}` : 'p';
+    return st.kind === 'workflow' && wfStage() === 'main' ? 'qmain' : `q${st.idx}`;
+  }
+
+  function applyHl() {
+    const HS = window.HighlightStore;
+    const panel = panelEl();
+    if (!st || !HS || !panel) return;
+    panel.querySelectorAll(HL_ROOTS).forEach(el => {
+      const key = hlKeyOf(el);
+      el.dataset.hlKey = key;
+      if (st.hl[key]) HS.apply(el, st.hl[key]);
+    });
+  }
+
+  // Reads the highlights on screen back into st.hl.
+  function captureHl() {
+    const HS = window.HighlightStore;
+    const panel = panelEl();
+    if (!st || !HS || !panel) return;
+    panel.querySelectorAll('[data-hl-key]').forEach(el => {
+      const ranges = HS.serialize(el);
+      if (ranges.length) st.hl[el.dataset.hlKey] = ranges;
+      else delete st.hl[el.dataset.hlKey];
+    });
+  }
+
+  document.addEventListener('mouseup', (e) => {
+    if (!st || !hlOn() || !window.HighlightStore) return;
+    if (e.target.closest && e.target.closest('input, textarea, select, button, .radio-opt, .tfng-opt')) return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    const common = range.commonAncestorContainer;
+    const root = (common.nodeType === 1 ? common : common.parentElement).closest('[data-hl-key]');
+    const panel = panelEl();
+    if (!root || !panel || !panel.contains(root)) return;
+    const text = range.toString();
+    if (!text.trim()) return;
+    const before = document.createRange();
+    before.selectNodeContents(root);
+    before.setEnd(range.startContainer, range.startOffset);
+    const start = before.toString().length;
+    window.HighlightStore.apply(root, [[start, start + text.length, '', text]]);
+    sel.removeAllRanges();
+    // (a drag that ends on a clickable paragraph must not also pick it)
+    suppressClick = true;
+    setTimeout(() => { suppressClick = false; }, 0);
+    captureHl();
+    persistSoon();
+  });
+
+  // Re-colored / removed by js/shared/highlight-remove.js.
+  document.addEventListener('hl:changed', () => {
+    if (!st) return;
+    captureHl();
+    persistSoon();
+  });
 
   async function start(lesson) {
     stopTimer();
@@ -583,7 +675,7 @@
       lesson, practice, kind: practice.kind, items,
       idx: 0, showFull: false, introSeen: false, finished: false, counted: false,
       answers: freshAnswers(items),
-      stage: 0, main: { value: '', result: null }, guess: '',
+      stage: 0, main: { value: '', result: null }, guess: '', hl: {},
     };
     persist();
     renderEntry(lesson);
@@ -607,6 +699,7 @@
       stage: Number(rec.stage) || 0,
       main: rec.main ? savedAnswer(rec.main) : { value: '', result: null },
       guess: rec.guess || '',
+      hl: rec.hl && typeof rec.hl === 'object' ? rec.hl : {},
     };
     renderEntry(lesson);
     if (st.finished) renderResult(); else renderQuestion();
@@ -710,6 +803,7 @@
             <span class="rtp-chip">${esc(it.targetLabel)}</span>
             ${r ? '' : `<span class="rtp-timer" id="rtp-timer">⏱ ${fmtTime(budget - (Date.now() - a.startedAt) / 1000)}</span>`}
             ${whole && !r ? `<button type="button" class="rtp-link" data-act="toggle-full">${st.showFull ? 'Chỉ hiện câu chủ đề' : 'Hiện toàn văn'}</button>` : ''}
+            ${hlBtnHtml()}
           </div>
           <div class="rtp-tip">💡 ${esc(tip)}</div>
           <div class="rtp-passage-scroll">${paras}</div>
@@ -771,7 +865,7 @@
         <div class="rtp-split">
         <div class="rtp-passage">
           <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>
-            ${r ? '' : `<span class="rtp-timer" id="rtp-timer">⏱ 0:00</span>`}</div>
+            ${r ? '' : `<span class="rtp-timer" id="rtp-timer">⏱ 0:00</span>`}${hlBtnHtml()}</div>
           <div class="rtp-passage-scroll">${paras}</div>
         </div>
         <div class="rtp-question">
@@ -975,7 +1069,7 @@
       + guideHtml(g, false)
       + `<div class="rtp-split">
         <div class="rtp-passage">
-          <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span></div>
+          <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>${hlBtnHtml()}</div>
           <div class="rtp-passage-scroll">${paras}</div>
         </div>
         <div class="rtp-question">
@@ -1083,7 +1177,7 @@
   function wfPassage(opts) {
     const pr = st.practice;
     return `<div class="rtp-passage">
-      <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>${opts.head || ''}</div>
+      <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>${opts.head || ''}${hlBtnHtml()}</div>
       ${opts.tip ? `<div class="rtp-tip">💡 ${esc(opts.tip)}</div>` : ''}
       <div class="rtp-passage-scroll${opts.clickable ? ' rtp-clickable' : ''}">${pr.paragraphs.map(p => paraHtml(p, opts)).join('')}</div>
     </div>`;
@@ -1359,9 +1453,13 @@
   }
 
   function onClick(e, lesson) {
+    if (suppressClick) return;
     const el = e.target.closest('[data-act]');
     if (!el || el.disabled) return;
     const act = el.dataset.act;
+    if (act === 'hl-tool') { toggleHl(); return; }
+    // clicking a highlight opens its color panel — it isn't an answer
+    if (act === 'wf-loc' && e.target.closest('span.hl')) return;
     if (act === 'start') {
       if (el.dataset.force) start(lesson); else confirmNewPractice(lesson, () => start(lesson));
       return;
@@ -1446,6 +1544,7 @@
         st.main = { value: '', result: null };
         st.guess = '';
         st.skimStartedAt = null;
+        st.hl = {};
         break;
       default: return;
     }

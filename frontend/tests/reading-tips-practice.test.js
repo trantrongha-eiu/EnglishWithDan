@@ -53,6 +53,7 @@ let loggedIn;
 
 beforeAll(() => {
   loadScript('utils.js'); // escHtml
+  loadScript('highlight-store.js'); // HighlightStore (the "Bôi màu" tool)
   window.eval(fs.readFileSync(path.join(__dirname, '..', 'js', 'reading-tips-practice.js'), 'utf8'));
 });
 
@@ -490,5 +491,77 @@ describe('Quy trình làm bài (7 steps)', () => {
     wfNext();
     expect($('.rtp-score').textContent).toBe('2 / 3');
     expect($('.rtp-result-msg').textContent).toBe('Tìm đúng đoạn chứa thông tin: 1/2 câu');
+  });
+});
+
+describe('Bôi màu (highlight)', () => {
+  // Selects `text` inside `root` the way a drag would, then releases the mouse.
+  // (async: the click that ends a drag is ignored until the next tick)
+  async function dragSelect(root, text) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const at = node.nodeValue.indexOf(text);
+      if (at === -1) continue;
+      const range = document.createRange();
+      range.setStart(node, at);
+      range.setEnd(node, at + text.length);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      node.parentElement.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+      await flush();
+      return;
+    }
+    throw new Error(`text not found: ${text}`);
+  }
+  const hlTexts = (sel) => $$(`${sel} .hl`).map((e) => e.textContent);
+
+  test('passage and question highlights survive re-renders and a reload; removing one sticks', async () => {
+    await startWith(LESSONS.tfng, tfngPractice());
+    click('[data-act="intro-done"]');
+    await dragSelect($('.rtp-passage-scroll'), 'flavor of the meat');
+    expect(hlTexts('.rtp-passage-scroll')).toEqual([]); // tool off: a selection is just a selection
+
+    click('#rtp-tool-hl');
+    expect($('#rtp-tool-hl').classList.contains('active')).toBe(true);
+    try {
+      await dragSelect($('.rtp-passage-scroll'), 'flavor of the meat');
+      await dragSelect($('.q-text'), 'adapted trains');
+      expect(hlTexts('.rtp-passage-scroll')).toEqual(['flavor of the meat']);
+      expect(hlTexts('.q-text')).toEqual(['adapted trains']);
+
+      click('[data-act="next"]'); // the panel is rebuilt
+      expect($('#rtp-tool-hl').classList.contains('active')).toBe(true);
+      expect(hlTexts('.rtp-passage-scroll')).toEqual(['flavor of the meat']); // one passage for every question
+      expect(hlTexts('.q-text')).toEqual([]); // each question stem has its own
+      click('[data-act="prev"]');
+      expect(hlTexts('.q-text')).toEqual(['adapted trains']);
+
+      // the student opens another tip, then resumes this one
+      window.RTPractice.mount(LESSONS.ynng, slot);
+      window.RTPractice.mount(LESSONS.tfng, slot);
+      click('#rtp-entry-wrap [data-act="resume"]');
+      expect(hlTexts('.rtp-passage-scroll')).toEqual(['flavor of the meat']);
+      expect(hlTexts('.q-text')).toEqual(['adapted trains']);
+
+      // removed from the color panel (js/shared/highlight-remove.js)
+      const span = $('.rtp-passage-scroll .hl');
+      span.replaceWith(...span.childNodes);
+      document.dispatchEvent(new CustomEvent('hl:changed'));
+      click('[data-act="next"]');
+      expect(hlTexts('.rtp-passage-scroll')).toEqual([]);
+
+      // "Làm lại" starts clean
+      click('[data-act="prev"]');
+      await dragSelect($('.rtp-passage-scroll'), 'It worked well.');
+      expect(hlTexts('.rtp-passage-scroll')).toEqual(['It worked well.']);
+      $('#rtp-panel').insertAdjacentHTML('beforeend', '<button data-act="retry"></button>');
+      click('#rtp-panel [data-act="retry"]');
+      expect($('.rtp-passage-scroll')).not.toBeNull();
+      expect(hlTexts('#rtp-panel')).toEqual([]);
+    } finally {
+      click('#rtp-tool-hl'); // tool off for the other tests
+    }
   });
 });
