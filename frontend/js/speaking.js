@@ -824,8 +824,7 @@ function setQuestion(q) {
   // Scratch notes — same reset-on-question-change rule, but NOT cleared by
   // retryQuestion() (which calls resetPractice(), not setQuestion()), so
   // notes survive a retry of the same question.
-  const notesTa = document.getElementById('notes-textarea');
-  if (notesTa) notesTa.value = '';
+  document.querySelectorAll('#notes-box .notes-textarea').forEach(ta => { ta.value = ''; });
 
   readQuestion();
 

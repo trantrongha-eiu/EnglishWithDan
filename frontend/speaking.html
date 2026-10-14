@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="css/components.css?v=20260831" />
-  <link rel="stylesheet" href="speaking.css?v=20260917seqscroll" />
+  <link rel="stylesheet" href="speaking.css?v=20261014notes" />
   <link rel="stylesheet" href="css/pdf-viewer.css?v=20260831" />
   <link rel="stylesheet" href="css/mobile.css?v=20261009tuition" />
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925" />
@@ -300,8 +300,17 @@
             <span class="box-label"><i class="fas fa-note-sticky"></i> Ghi chú của bạn</span>
             <span class="transcript-hint">Ý tưởng, dàn ý, từ vựng... — không được chấm điểm</span>
           </div>
-          <textarea class="notes-textarea" id="notes-textarea"
-            placeholder="Ghi nhanh ý tưởng, dàn ý, từ vựng muốn dùng trước khi trả lời..."></textarea>
+          <!-- 4 cells so students can split their ideas (also fits Part 2's 4 cue-card bullets) -->
+          <div class="notes-grid">
+            <label class="notes-cell"><span class="notes-cell-label">Ý 1</span>
+              <textarea class="notes-textarea" placeholder="Ý chính / câu trả lời trực tiếp..."></textarea></label>
+            <label class="notes-cell"><span class="notes-cell-label">Ý 2</span>
+              <textarea class="notes-textarea" placeholder="Lý do / giải thích..."></textarea></label>
+            <label class="notes-cell"><span class="notes-cell-label">Ý 3</span>
+              <textarea class="notes-textarea" placeholder="Ví dụ / trải nghiệm cá nhân..."></textarea></label>
+            <label class="notes-cell"><span class="notes-cell-label">Ý 4</span>
+              <textarea class="notes-textarea" placeholder="Từ vựng / cụm từ muốn dùng..."></textarea></label>
+          </div>
         </div>
 
         <!-- Part 2: Prep timer -->
@@ -793,6 +802,6 @@
 <script src="js/speaking-criteria.js?v=20260924v2"></script>
 <script src="js/shared/route-params.js?v=20260925route"></script>
 <script src="js/speaking-tips.js?v=20260925route"></script>
-<script src="js/speaking.js?v=20261010tts"></script>
+<script src="js/speaking.js?v=20261014notes"></script>
 </body>
 </html>
