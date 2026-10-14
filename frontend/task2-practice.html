@@ -551,6 +551,19 @@
     [data-theme="dark"] .t2-vbtn.saved{border-color:#166534;color:#4ade80;background:#052e16}
 
     /* Vocab quiz (optional, inline) */
+    .t2-vtasks{display:flex;flex-direction:column;gap:6px;margin:10px 0 8px}
+    .t2-vtask{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;color:#374151}
+    .t2-vtask-ic{width:20px;height:20px;border-radius:50%;background:#e5e7eb;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;flex-shrink:0}
+    .t2-vtask.ok{color:#15803d}
+    .t2-vtask.ok .t2-vtask-ic{background:#16a34a;color:#fff}
+    .t2-vtask-best{font-size:11.5px;font-weight:800;padding:1px 8px;border-radius:20px;background:#fef3c7;color:#92400e}
+    .t2-vtask-best.ok{background:#dcfce7;color:#15803d}
+    [data-theme="dark"] .t2-vtask{color:#cbd5e1}
+    [data-theme="dark"] .t2-vtask.ok{color:#4ade80}
+    [data-theme="dark"] .t2-vtask-ic{background:#1f2937;color:#94a3b8}
+    .t2-quiz-pass{display:inline-block;font-size:12.5px;font-weight:800;border-radius:20px;padding:3px 12px;margin-top:6px}
+    .t2-quiz-pass.ok{background:#dcfce7;color:#15803d}
+    .t2-quiz-pass.bad{background:#fee2e2;color:#b91c1c}
     .t2-quiz{margin-top:12px;border:1.5px solid #e0e7ff;background:#f8f9ff;border-radius:12px;padding:14px}
     [data-theme="dark"] .t2-quiz{background:#11142a;border-color:#2b3357}
     .t2-quiz-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:#6b7280}
@@ -1356,6 +1369,19 @@ function isVocabLearned(topicId) {
   return _savedTermsForTopic(topicId).size >= total;
 }
 
+// Step ① is done only when every term is saved AND the vocab quiz has been
+// passed (best ≥ VQUIZ_PASS%). This — not isVocabLearned — gates the later
+// steps. A list too short to build a quiz from counts as passed.
+function isVocabQuizPassed(topicId) {
+  if (!topicId) return false;
+  if (_vquizBest[topicId] != null && _vquizBest[topicId] >= VQUIZ_PASS) return true;
+  if (_vocabTotalMap[topicId] <= 0) return true;
+  return state.vocabFor === topicId && !_vquizPossible(state.vocab);
+}
+function isVocabStepDone(topicId) {
+  return isVocabLearned(topicId) && isVocabQuizPassed(topicId);
+}
+
 function topicStatusRowHtml(topicId) {
   const s = _topicScores[topicId];
   let html = '';
@@ -1697,8 +1723,11 @@ async function openTopicDirect(week, topicId, autoResume) {
 function _topicChips(t) {
   const id = t._id;
   const chips = [];
-  if (isVocabLearned(id)) {
+  if (isVocabStepDone(id)) {
     chips.push('<span class="t2-step-chip ok"><i class="fas fa-check"></i> Từ vựng</span>');
+  } else if (isVocabLearned(id)) {
+    const qb = _vquizBest[id];
+    chips.push(`<span class="t2-step-chip mid">⚡ Quiz từ vựng${qb != null ? ` ${qb}%` : ''}</span>`);
   } else {
     const total = _vocabTotalMap[id];
     const saved = Math.min(_savedTermsForTopic(id).size, total || 0);
@@ -1909,7 +1938,7 @@ function _lessonSteps(t) {
   const has = k => !!(sec[k] || '').trim();
   const classDone = has('intro') && has('body1');
   return [
-    { key: 'vocab',     label: 'Từ vựng',        done: isVocabLearned(id) },
+    { key: 'vocab',     label: 'Từ vựng',        done: isVocabStepDone(id) },
     { key: 'ideas',     label: 'Brainstorm',     done: state.brainstorm.topicId === id && state.brainstorm.notes.some(n => (n || '').trim()) },
     { key: 'translate', label: 'Dịch câu',       done: sent.length > 0 && sent.every(s => s.en) },
     { key: 'guide',     label: 'Hướng dẫn viết', done: has('intro') || has('body1') },
@@ -1936,6 +1965,14 @@ function _stepHead(num, title, extra, done) {
         <div class="t2-step-title">${title}</div>
         ${extra || ''}
       </div>`;
+}
+// Steps 2–6 until step ① (all terms saved + quiz ≥ VQUIZ_PASS%) is done:
+// just the title and what unlocks it.
+function _lockedStep(key, num, title) {
+  return `
+    <section class="t2-step is-locked" id="t2-step-${key}">
+      ${_stepHead(num, title, '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>', false)}
+    </section>`;
 }
 function _wcChip(label, text) {
   const n = _wc(text);
@@ -1999,6 +2036,7 @@ function renderSelect() {
 // Notes are saved with the lesson (shown again beside the essay).
 function renderIdeaStep(isCurrent) {
   const t = state.selectedTopic;
+  if (!isVocabStepDone(t._id)) return _lockedStep('ideas', 2, 'Brainstorm ý tưởng');
   const sides = _ideaSides(t);
   const bs = state.brainstorm;
   const hasHints = sides.some(s => (s.points || []).length);
@@ -2031,20 +2069,18 @@ function onIdeaInput(i, v) {
 function renderTranslateStep(isCurrent) {
   const t = state.selectedTopic;
   const id = t._id;
-  const vocabDone = isVocabLearned(id);
+  if (!isVocabStepDone(id)) return _lockedStep('translate', 3, 'Dịch câu Việt → Anh');
   const L = _lessonFor(id);
   const sent = L ? L.sentences : [];
   const done = sent.filter(s => s.en).length;
   const allDone = sent.length > 0 && done >= sent.length;
   const best = _bestPracticeScore(id);
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}${vocabDone ? '' : ' is-locked'}" id="t2-step-translate">
+    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-translate">
       ${_stepHead(3, 'Dịch câu Việt → Anh', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone)}
       <p class="t2-step-desc">Dịch các câu ý chính sang tiếng Anh bằng từ vựng vừa học — câu dịch sẽ hiện bên cạnh khi bạn viết bài.</p>
       ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
       <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span></div>` : ''}
-      ${!vocabDone ? `
-      <div class="t2-lock-note"><i class="fas fa-lock"></i> Lưu hết từ vựng ở bước 1 để mở khoá.</div>` : `
       <div class="t2-actions">
         <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : allDone ? 'Dịch lại' : `Dịch tiếp ${sent.length - done} câu`}</button>
         ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
@@ -2059,7 +2095,7 @@ function renderTranslateStep(isCurrent) {
           <button type="button" class="t2-pill-toggle${state.shuffleMode ? ' on' : ''}" onclick="toggleT2Pref('shuffleMode', this)" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">Xáo trộn câu</button>
           <button type="button" class="t2-link" onclick="openT2Preview()"><i class="fas fa-eye"></i> Xem trước câu hỏi</button>
         </div>
-      </details>`}
+      </details>
     </section>`;
 }
 
@@ -2091,6 +2127,7 @@ function _chainsHtml(chains) {
 }
 function renderGuideStep(isCurrent) {
   const t = state.selectedTopic;
+  if (!isVocabStepDone(t._id)) return _lockedStep('guide', 4, 'Hướng dẫn viết (Guided writing)');
   const g = _guideFor(t);
   const done = _lessonSteps(t)[3].done;
   const flow = g?.outline?.flow ? g.outline.flow.split('→').map(s => s.trim()).filter(Boolean) : ['INTRODUCTION', 'BODY 1', 'BODY 2', 'CONCLUSION'];
@@ -2117,6 +2154,7 @@ function renderGuideStep(isCurrent) {
 // ⑤ In class — Introduction + Body 1 on the split-screen writer.
 function renderClassStep(isCurrent) {
   const t = state.selectedTopic;
+  if (!isVocabStepDone(t._id)) return _lockedStep('class', 5, 'Viết Mở bài + Thân bài 1');
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const done = !!(_wc(sec.intro) && _wc(sec.body1));
@@ -2139,6 +2177,7 @@ function renderClassStep(isCurrent) {
 // ⑥ Homework — Body 2 + Conclusion from the book's template, then AI grading.
 function renderHomeStep(isCurrent) {
   const t = state.selectedTopic;
+  if (!isVocabStepDone(t._id)) return _lockedStep('home', 6, 'Viết Thân bài 2 + Kết bài');
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const filled = LESSON_SECTIONS.filter(s => (sec[s.key] || '').trim()).length;
@@ -2193,8 +2232,8 @@ function _refreshHubLesson() {
 //  guarded and the hub works the same without it.
 // ════════════════════════════════════════════════════════
 const _LULU_STEP = {
-  vocab:     { say: 'Bắt đầu bằng từ vựng nha! Lưu hết từ vào sổ là mở khoá bước Dịch câu 📒',
-               tips: ['Bấm 🔊 để nghe phát âm, đọc to theo cho nhớ lâu nha!', 'Học cả cụm (collocation) chứ đừng học từ đơn lẻ nhé 😉', 'Làm quiz từ vựng để xem mình nhớ được bao nhiêu từ!'] },
+  vocab:     { say: 'Bắt đầu bằng từ vựng nha! Lưu hết từ vào sổ rồi làm quiz đạt từ 70% là mở khoá các bước sau 📒',
+               tips: ['Bấm 🔊 để nghe phát âm, đọc to theo cho nhớ lâu nha!', 'Học cả cụm (collocation) chứ đừng học từ đơn lẻ nhé 😉', 'Quiz cần đạt từ 70% — chưa đạt thì ôn lại mấy từ sai rồi làm quiz mới nha!'] },
   ideas:     { say: 'Giờ brainstorm cùng nhóm nè! Nghĩ thật nhiều ý, ý nào hay thì ghi lại liền 💡',
                tips: ['Ý hay = rõ ràng + có ví dụ thật. Đừng ngại ghi cả ý của nhóm bạn!', 'Bí ý? Thử nghĩ theo các góc: cá nhân, xã hội, kinh tế, sức khoẻ…', 'Mỗi phần chỉ cần 2–3 ý mạnh là đủ viết rồi.'] },
   translate: { say: 'Dịch câu nào! Dùng từ vựng vừa học nha — câu dịch sẽ giúp cậu viết nhanh hơn ✍️',
@@ -2378,8 +2417,10 @@ function _teacherGuideHtml(t) {
     ${_tgStep(i++, 1, 'Từ vựng &amp; collocations', '15′',
       `HS nắm ${vocabN ? vocabN + ' từ / collocation' : 'các từ / collocation'} trọng tâm của chủ đề.`,
       ['Giới thiệu nhanh các từ trọng tâm, bấm 🔊 cho cả lớp nghe phát âm, nhấn mạnh <b>collocation</b> đi kèm.',
-       'Cho HS bấm <b>Lưu tất cả vào sổ</b> — bước này mở khoá bước Dịch câu.',
-       '<b>Thi đua nhóm:</b> mỗi nhóm làm <b>Quiz từ vựng</b> trên 1 máy, hoặc các nhóm đố nhau collocation (nhóm A nói từ, nhóm B nói cụm đi kèm) — tính điểm nhóm.'])}
+       'Cho HS bấm <b>Lưu tất cả vào sổ</b>.',
+       `<b>Quiz từ vựng là bắt buộc:</b> mỗi HS phải đạt <b>≥ ${VQUIZ_PASS}%</b> mới mở khoá các bước 2–6 (chưa đạt thì làm quiz mới — mỗi lần câu hỏi khác nhau).`,
+       '<b>Thi đua nhóm:</b> trước khi làm quiz cá nhân, các nhóm đố nhau collocation (nhóm A nói từ, nhóm B nói cụm đi kèm) — tính điểm nhóm; bạn đạt quiz trước kèm bạn chưa đạt.'],
+      'Nếu HS chưa đạt quiz, các bước sau trên máy vẫn bị khoá — vẫn cho HS tham gia brainstorm nhóm (trên giấy / bảng) rồi nhập ý sau khi mở khoá.')}
     ${_tgStep(i++, 2, 'Brainstorm ý tưởng — thi đua nhóm', '15′',
       'Có thật nhiều ý hay, hợp lý và dùng được trong bài IELTS.',
       [`Chia lớp thành nhóm <b>3–4 bạn</b>. Mỗi nhóm có <b>~7 phút</b> liệt kê thật nhiều ý cho từng phần: ${sideNames}.`,
@@ -2665,6 +2706,11 @@ async function openCompose(phase, opts = {}) {
   const t = state.selectedTopic;
   if (!t) return;
   if (!(window.AuthService && window.AuthService.isLoggedIn())) { showToast('Đăng nhập để viết và lưu bài', 'warn'); return; }
+  if (!isVocabStepDone(t._id)) {
+    showToast(`Hoàn thành bước Từ vựng (lưu từ + quiz ≥ ${VQUIZ_PASS}%) để mở màn hình viết`, 'warn', 4000);
+    if (state.view === 'select') scrollToHubStep('vocab');
+    return;
+  }
   const id = t._id;
   await Promise.all([
     loadLesson(id),
@@ -3021,15 +3067,18 @@ function renderVocabStep(isCurrent) {
   } else {
     const savedSet = _savedTermsForTopic(id);
     const quizBest = _vquizBest[id];
+    const passed = isVocabQuizPassed(id);
+    const canQuiz = _vquizPossible(list);
     body = `
-      <p class="t2-step-desc">${done
-        ? 'Bạn đã lưu đủ từ vựng vào sổ. Làm quiz để ôn lại nếu muốn.'
-        : 'Bấm <b>Lưu tất cả vào sổ</b> để mở khoá bước Dịch câu. Quiz chỉ để ôn thêm, không bắt buộc.'}</p>
+      <div class="t2-vtasks">
+        <div class="t2-vtask${done ? ' ok' : ''}"><span class="t2-vtask-ic">${done ? '<i class="fas fa-check"></i>' : '1'}</span>Lưu tất cả từ vào sổ <b>${vs.saved}/${vs.total}</b></div>
+        <div class="t2-vtask${passed ? ' ok' : ''}"><span class="t2-vtask-ic">${passed ? '<i class="fas fa-check"></i>' : '2'}</span>Làm quiz từ vựng đạt <b>≥ ${VQUIZ_PASS}%</b>${quizBest != null ? ` <span class="t2-vtask-best${passed ? ' ok' : ''}">cao nhất ${quizBest}%</span>` : ''}</div>
+      </div>
+      ${done && passed ? '' : `<p class="t2-step-desc" style="margin-top:0">Hoàn thành cả 2 việc trên để mở khoá các bước tiếp theo.</p>`}
       <div class="t2-meter${done ? ' ok' : ''}"><span style="width:${vs.pct}%"></span></div>
       <div class="t2-actions">
         ${done ? '' : `<button class="t2-primary" onclick="saveAllVocabToBook()"><i class="fas fa-save"></i> Lưu tất cả vào sổ</button>`}
-        <button class="t2-secondary" onclick="startVocabQuiz()" ${list.length < 4 ? 'disabled title="Cần ít nhất 4 từ"' : ''}><i class="fas fa-bolt"></i> Quiz từ vựng <span class="t2-opt-tag">tuỳ chọn</span></button>
-        ${quizBest != null ? `<span class="t2-opt-tag" title="Kết quả quiz tốt nhất">Kỷ lục ${quizBest}%</span>` : ''}
+        ${canQuiz ? `<button class="${done && !passed ? 't2-primary' : 't2-secondary'}" onclick="startVocabQuiz()"><i class="fas fa-bolt"></i> ${passed ? 'Làm lại quiz' : quizBest != null ? 'Làm quiz lại' : 'Làm quiz từ vựng'}</button>` : ''}
         <button class="t2-link" onclick="toggleVocabList()" style="margin-left:auto">${open ? 'Thu gọn' : `Xem ${list.length} từ`} <i class="fas fa-chevron-${open ? 'up' : 'down'}"></i></button>
       </div>
       ${open ? `<div class="t2-vlist">
@@ -3049,7 +3098,7 @@ function renderVocabStep(isCurrent) {
   }
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
-      ${_stepHead(1, 'Từ vựng &amp; collocations', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', done)}
+      ${_stepHead(1, 'Từ vựng &amp; collocations', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', isVocabStepDone(id))}
       ${body}
     </section>`;
 }
@@ -3158,8 +3207,8 @@ function startPractice(btn) { return _withBusy(btn, () => _startPractice()); }
 // ones still untranslated.
 function startTranslate(btn) { return _withBusy(btn, () => _startPractice({ translateOnly: true })); }
 async function _startPractice(opts = {}) {
-  if (!isVocabLearned(state.selectedTopic?._id)) {
-    showToast('Bạn cần lưu hết từ vựng vào sổ trước khi luyện câu', 'warn', 4000);
+  if (!isVocabStepDone(state.selectedTopic?._id)) {
+    showToast(`Bạn cần lưu hết từ vựng và đạt quiz từ vựng ≥ ${VQUIZ_PASS}% trước khi luyện câu`, 'warn', 4000);
     if (state.view === 'select') scrollToHubStep('vocab');
     return;
   }
@@ -4226,14 +4275,18 @@ function _vocabItem(v) { return { word: v.term, meaning: v.definitionVi || '', e
 // Shared save callback. When this save is the one that completes the list,
 // say so and move the student on to the brainstorm step.
 function _onVocabSaved(topicId, terms) {
-  const wasDone = isVocabLearned(topicId);
+  const wasSaved = isVocabLearned(topicId);
   _markVocabTermsSaved(topicId, terms);
   if (state.view !== 'select' || state.selectedTopic?._id !== topicId) return;
-  if (!wasDone && isVocabLearned(topicId)) {
+  if (!wasSaved && isVocabLearned(topicId)) {
     state.vocabOpen = null; // auto → list collapses now that every term is saved
     render();
-    showToast('🎉 Đã mở khoá bước Dịch câu! Tiếp theo: brainstorm ý tưởng.', 'success', 3500);
-    setTimeout(() => scrollToHubStep('ideas'), 150);
+    if (isVocabStepDone(topicId)) {
+      showToast('🎉 Đã mở khoá các bước tiếp theo! Tiếp theo: brainstorm ý tưởng.', 'success', 3500);
+      setTimeout(() => scrollToHubStep('ideas'), 150);
+    } else {
+      showToast(`Đã lưu đủ từ! Giờ làm quiz từ vựng đạt ≥ ${VQUIZ_PASS}% để mở khoá bước tiếp theo.`, 'success', 4000);
+    }
   } else {
     render();
   }
@@ -4266,11 +4319,14 @@ function speakVocab(idx) {
   speechSynthesis.speak(u);
 }
 
-// ── Vocab quiz — optional practice, never gates anything. Up to 10 random
-// terms, each asked one of three ways: Vietnamese meaning → English term,
-// term → meaning, or the term blanked out of its own example sentence.
-// Best score per topic is remembered in this browser only.
+// ── Vocab quiz — required: step ① is done only once the best score reaches
+// VQUIZ_PASS% (isVocabQuizPassed). Up to 10 random terms, each asked one of
+// three ways: Vietnamese meaning → English term, term → meaning, or the term
+// blanked out of its own example sentence. Best score per topic is
+// remembered in this browser only.
 const VQUIZ_LEN = 10;
+const VQUIZ_PASS = 70;
+function _vquizPossible(list) { return (list || []).filter(v => v.term && v.definitionVi).length >= 4; }
 const VQUIZ_BEST_KEY = 't2_vocab_quiz_best';
 const VQUIZ_KIND_LABEL = { vi2en: 'Chọn từ tiếng Anh đúng nghĩa', en2vi: 'Chọn nghĩa đúng', gap: 'Chọn từ điền vào chỗ trống' };
 let _vquizBest = _safeParse(localStorage.getItem(VQUIZ_BEST_KEY), {});
@@ -4313,6 +4369,10 @@ function closeVocabQuiz() {
   state.vocabQuiz = null;
   _refreshVocabStep();
 }
+function continueAfterVocabQuiz() {
+  closeVocabQuiz();
+  setTimeout(() => scrollToHubStep('ideas'), 60);
+}
 
 function pickVocabQuiz(i) {
   const qz = state.vocabQuiz;
@@ -4341,10 +4401,17 @@ function nextVocabQuiz() {
   qz.picked = null;
   if (qz.idx >= qz.items.length) {
     const id = state.selectedTopic._id;
+    const wasDone = isVocabStepDone(id);
     const pct = Math.round((qz.correct / qz.items.length) * 100);
     if (_vquizBest[id] == null || pct > _vquizBest[id]) {
       _vquizBest[id] = pct;
       try { localStorage.setItem(VQUIZ_BEST_KEY, JSON.stringify(_vquizBest)); } catch {}
+    }
+    // This quiz unlocked steps 2–6: the whole hub changes, not just this card.
+    if (!wasDone && isVocabStepDone(id)) {
+      render();
+      showToast('🎉 Đạt quiz từ vựng! Đã mở khoá các bước tiếp theo.', 'success', 3500);
+      return;
     }
   }
   _refreshVocabStep();
@@ -4355,17 +4422,25 @@ function renderVocabQuiz() {
   const n = qz.items.length;
   if (qz.idx >= n) {
     const pct = Math.round((qz.correct / n) * 100);
+    const pass = pct >= VQUIZ_PASS;
+    const saved = isVocabLearned(state.selectedTopic._id);
     return `
       <div class="t2-quiz">
         <div class="t2-quiz-done">
-          <div style="font-size:30px">${pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚'}</div>
-          <div class="t2-quiz-score">${qz.correct}/${n}</div>
-          <div class="t2-step-desc" style="margin:4px 0 0">${pct >= 80 ? 'Tuyệt vời! Bạn nắm từ vựng rất chắc.' : pct >= 50 ? 'Khá tốt! Ôn lại vài từ dưới đây nhé.' : 'Cần ôn thêm — xem lại các từ dưới đây.'}</div>
+          <div style="font-size:30px">${pct >= 90 ? '🎉' : pass ? '👍' : '📚'}</div>
+          <div class="t2-quiz-score">${qz.correct}/${n} · ${pct}%</div>
+          <div class="t2-quiz-pass ${pass ? 'ok' : 'bad'}">${pass ? `✓ Đạt (≥ ${VQUIZ_PASS}%)` : `Chưa đạt — cần ≥ ${VQUIZ_PASS}%`}</div>
+          <div class="t2-step-desc" style="margin:6px 0 0">${pass
+            ? (saved ? 'Tuyệt vời! Bạn đã mở khoá các bước tiếp theo.' : 'Giỏi lắm! Lưu tất cả từ vào sổ nữa là mở khoá bước tiếp theo.')
+            : 'Ôn lại các từ dưới đây rồi làm quiz mới nhé.'}</div>
         </div>
         ${qz.missed.length ? `<div class="t2-quiz-miss">${qz.missed.map(m => `• <b>${_escHtml(m.term)}</b> — ${_escHtml(m.def)}`).join('<br>')}</div>` : ''}
         <div class="t2-actions" style="justify-content:center;margin-top:12px">
-          <button class="t2-primary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>
-          <button class="t2-secondary" onclick="closeVocabQuiz()">Đóng quiz</button>
+          ${pass
+            ? `<button class="t2-primary" onclick="${saved ? 'continueAfterVocabQuiz()' : 'closeVocabQuiz()'}">${saved ? 'Tiếp tục <i class="fas fa-arrow-right"></i>' : 'Đóng quiz'}</button>
+               <button class="t2-secondary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>`
+            : `<button class="t2-primary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>
+               <button class="t2-secondary" onclick="closeVocabQuiz()">Đóng quiz</button>`}
         </div>
       </div>`;
   }

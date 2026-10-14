@@ -17,6 +17,8 @@
 //
 // Existing questions / vocabulary / prompt are untouched.
 
+const { SIDE_LABELS_EN, BRAINSTORM_EN } = require('./task2BrainstormEn');
+
 const SIDE_LABELS = {
   advantages_disadvantages: ['Ưu điểm (Advantages)', 'Nhược điểm (Disadvantages)'],
   cause_effect:             ['Nguyên nhân (Causes)', 'Hệ quả (Effects)'],
@@ -610,6 +612,19 @@ const AUG = {
 // ── builder ──────────────────────────────────────────────────────────────
 const AI_LONG_NOTE = 'Đây là bước "chốt bài": không đưa ý mới, chỉ tóm tắt 2 luận điểm chính đã luyện rồi khẳng định lại lập trường. AI sẽ chấm dựa trên việc bạn có mở bằng "In conclusion/To sum up", có nhắc lại đúng 2 ý, và có câu chốt quan điểm hay không.';
 
+// The hub shows the ideas in English (task2BrainstormEn.js) so students can
+// lift the phrasing straight into their essay; Vietnamese only as fallback.
+function brainstormHintsFor(topicName, essayType) {
+  const aug = AUG[topicName];
+  if (!aug) return null;
+  const en = BRAINSTORM_EN[topicName];
+  const [labA, labB] = (en && SIDE_LABELS_EN[essayType]) || SIDE_LABELS[essayType] || ['Nhóm ý 1', 'Nhóm ý 2'];
+  return [
+    { side: labA, points: (en ? en.a : aug.a).slice() },
+    { side: labB, points: (en ? en.b : aug.b).slice() },
+  ];
+}
+
 const isAugQuestion = (q) => /(?:^|[-_])aug[-_]/.test(String(q && q.questionId || ''));
 
 function augmentTopics(topics) {
@@ -617,12 +632,7 @@ function augmentTopics(topics) {
   for (const t of topics) {
     const aug = AUG[t.topicName];
     if (!aug) continue;
-    const [labA, labB] = SIDE_LABELS[t.essayType] || ['Nhóm ý 1', 'Nhóm ý 2'];
-
-    t.brainstormHints = [
-      { side: labA, points: aug.a.slice() },
-      { side: labB, points: aug.b.slice() },
-    ];
+    t.brainstormHints = brainstormHintsFor(t.topicName, t.essayType);
 
     // Idempotent: drop any previously-appended *-aug-* questions first so a
     // re-run replaces rather than stacks them.
@@ -674,4 +684,4 @@ function augmentTopics(topics) {
   return { topicsAugmented: Object.keys(AUG).length, questionsAdded: added };
 }
 
-module.exports = { AUG, SIDE_LABELS, augmentTopics, isAugQuestion };
+module.exports = { AUG, SIDE_LABELS, augmentTopics, isAugQuestion, brainstormHintsFor };
