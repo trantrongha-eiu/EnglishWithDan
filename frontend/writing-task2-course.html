@@ -199,8 +199,9 @@
     .t1-wc { font-size: 12px; color: var(--text3,#9ca3af); margin-top: 6px; text-align: right; }
     .t1-timer { font-weight: 800; color: #0ea5e9; }
     .t1-timer.low { color: #ef4444; }
-    .t1-hist-btn { border: none; background: none; color: #9ca3af; cursor: pointer; font-size: 13px; margin-left: 8px; padding: 2px 4px; }
-    .t1-hist-btn:hover { color: #0ea5e9; }
+    .t1-hist-btn { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; margin-left: 10px; padding: 6px 14px; border: 1.5px solid rgba(14,165,233,.45); border-radius: 999px; background: rgba(14,165,233,.1); color: #0ea5e9; font-size: 13px; font-weight: 800; cursor: pointer; transition: background .15s, color .15s, transform .15s; }
+    .t1-hist-btn i { font-size: 15px; }
+    .t1-hist-btn:hover { background: #0ea5e9; color: #fff; border-color: #0ea5e9; transform: translateY(-1px); }
 
     .t1-hist-modal { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .t1-hist-modal.hidden { display: none; }
@@ -798,7 +799,7 @@
     var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
     return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
       '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
-      '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i></button></span>' +
+      '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i> Lịch sử</button></span>' +
       (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer"><i class="fas fa-clock"></i> ' + fmt(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
       '<div class="t1-prog"><span style="width:' + pct + '%"></span></div>' +
       '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +

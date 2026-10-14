@@ -34,8 +34,9 @@
       transition: border-color .15s, color .15s, transform .1s; }
     .t1-btn:hover { border-color: #f43f5e; color: #f43f5e; }
     .t1-btn:active { transform: scale(.96); }
-    .t1-hist-btn { border: none; background: none; color: #9ca3af; cursor: pointer; font-size: 13px; margin-left: 8px; padding: 2px 4px; }
-    .t1-hist-btn:hover { color: #f43f5e; }
+    .t1-hist-btn { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; margin-left: 10px; padding: 6px 14px; border: 1.5px solid rgba(244,63,94,.45); border-radius: 999px; background: rgba(244,63,94,.1); color: #f43f5e; font-size: 13px; font-weight: 800; cursor: pointer; transition: background .15s, color .15s, transform .15s; }
+    .t1-hist-btn i { font-size: 15px; }
+    .t1-hist-btn:hover { background: #f43f5e; color: #fff; border-color: #f43f5e; transform: translateY(-1px); }
 
     /* Test-lesson unlock-code modal — self-contained (this page has no
        other modal to borrow chrome from, unlike writing-task1.html's
@@ -1042,7 +1043,7 @@
     var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
     return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
       '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
-      '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i></button></span>' +
+      '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i> Lịch sử</button></span>' +
       (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + fmt(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
       '<div style="margin:0 20px;height:4px;border-radius:4px;background:var(--surface2,#eef2f7);overflow:hidden">' +
         '<span style="display:block;height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f43f5e,#22c55e);border-radius:4px"></span></div>' +
