@@ -137,6 +137,34 @@ describe('mock-test advance + current + history', () => {
     // No open run left.
     expect((await api.get('/api/mock-test/current')).body.attempt).toBeNull();
   });
+
+  test('a finished run still awaiting grading does not block starting a new mock', async () => {
+    await seedPools();
+    const user = await createPremiumStudent();
+    const api = authed(user);
+    const m = (await api.post('/api/mock-test/start')).body.attempt;
+
+    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
+    const ra = await createTestAttempt({ userId: user._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
+    const wa = await createWritingAttempt({ userId: user._id }); // not graded yet
+    await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
+    const sa = await createSpeakingAttempt({ userId: user._id, part: 2 });
+    const last = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
+    expect(last.body.attempt.status).toBe('awaiting-grading');
+
+    expect((await api.get('/api/mock-test/current')).body.attempt).toBeNull();
+
+    const next = await api.post('/api/mock-test/start');
+    expect(next.body.resumed).toBe(false);
+    expect(next.body.attempt._id).not.toBe(m._id);
+    expect(next.body.attempt.progress).toBe('listening');
+
+    // The finished run is still in history, waiting for its grades.
+    const hist = await api.get('/api/mock-test/history');
+    expect(hist.body.items.map(i => String(i._id))).toContain(String(m._id));
+  });
 });
 
 describe('DELETE /api/mock-test/current — abandon the open run', () => {

@@ -124,12 +124,17 @@ function recomputeOverall(doc, { adminManual = false } = {}) {
   doc.status = allNumeric ? 'completed' : 'awaiting-grading';
 }
 
-// The one still-open mock for this user (in-progress or done-but-awaiting
-// grading), newest first.
+// The one still-open mock for this user — a run the student still has steps
+// left to take, newest first. A run they've finished (progress 'done') is
+// NOT open even while Writing/Speaking await grading: it lives on in history
+// (refreshGrades() patches the bands in there) and the student is free to
+// start a fresh mock straight away. 'awaiting-grading' stays in the status
+// list only for the case of a teacher's partial manual score landing mid-run.
 async function getCurrentDoc(userId) {
   return MockTestAttempt.findOne({
     userId,
-    status: { $in: ['in-progress', 'awaiting-grading'] }
+    status: { $in: ['in-progress', 'awaiting-grading'] },
+    progress: { $ne: 'done' }
   }).sort({ createdAt: -1 });
 }
 

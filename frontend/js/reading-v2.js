@@ -1038,8 +1038,8 @@ async function checkResumeExam() {
 
     // Backup was made mid mock-test — only worth offering if that mock run
     // is still actually alive server-side. MockTest.fetchCurrent() (GET
-    // /mock-test/current) only ever returns a doc while status is
-    // 'in-progress' or 'awaiting-grading' — so a null/mismatched _id here
+    // /mock-test/current) only ever returns a run the student still has
+    // steps left to take — so a null/mismatched _id here
     // means the run was disqualified (10 "gậy"), abandoned ("Bỏ qua & làm
     // lại" from the dashboard), or already finished. Rather than chase down
     // every place a mock run can end and remember to clearExamStorage()

@@ -9,7 +9,8 @@
                        listening.html in mock mode.
    - Run in progress → "Tiếp tục — Bước N" → jump straight to the page for
                        whichever skill is next (progress cursor).
-   - Awaiting grade / completed → show last overall band + link to history.
+   - Finished (even if still awaiting grade) → back to "Bắt đầu thi thử";
+                       results live in history (review-history.html?view=mock).
 
    Premium-gated the same way as openLesson() in dashboard-lesson.js: a
    free/expired account gets the upgrade modal instead.
@@ -157,14 +158,14 @@
           return;
         }
 
-        // progress === 'done' but still the "current" (awaiting-grading) run.
+        // Server no longer returns finished runs as "current" (they move to
+        // history the moment the last step lands), so this is only a guard
+        // against an older backend: still let the student start a new one.
         setCard({
-          title: 'Bài thi thử gần nhất',
-          meta: a.overallBand != null
-            ? ('Band tổng: ' + a.overallBand)
-            : 'Đang chờ chấm Writing / Speaking…',
-          btnLabel: 'Xem lịch sử',
-          onClick: function () { window.location.href = 'review-history.html?view=mock'; }
+          title: 'Thi thử 4 kỹ năng',
+          meta: 'Đề ngẫu nhiên · Listening → Reading → Writing → Speaking',
+          btnLabel: 'Bắt đầu thi thử',
+          onClick: startNewMock
         });
       })
       .catch(function () {
