@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=20260831" />
   <link rel="stylesheet" href="/css/components.css?v=20260831" />
   <link rel="stylesheet" href="/css/style.css?v=20260831" />
-  <link rel="stylesheet" href="/reading.css?v=20261001widetbl" />
+  <link rel="stylesheet" href="/reading.css?v=20261014mockw" />
   <link rel="stylesheet" href="/css/mobile.css?v=20261009tuition" />
   <link rel="stylesheet" href="/css/exam-embed.css?v=20261001pc" />
   <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
@@ -286,6 +286,18 @@
 
   </div><!-- /screen-exam -->
 
+  <!-- Full mock test only: shown after Reading is graded so Writing's own
+       clock only starts once the student is actually ready — see
+       continueToWritingFromMock() in js/reading-v2.js. -->
+  <div id="reading-done-overlay" class="mock-done-overlay" hidden>
+    <div class="mock-done-card">
+      <div class="mock-done-icon"><i class="fas fa-circle-check"></i></div>
+      <p class="mock-done-text">Đã hoàn thành <strong>Reading</strong>!<br>Tiếp theo là <strong>Writing</strong> — 60 phút, Task 1 + Task 2.</p>
+      <p class="mock-done-sub">Đồng hồ Writing sẽ bắt đầu chạy ngay khi bạn bấm nút bên dưới — hãy chắc chắn bạn đã sẵn sàng.</p>
+      <button type="button" class="mock-done-btn" onclick="continueToWritingFromMock()"><i class="fas fa-pen"></i> Bắt đầu Writing</button>
+    </div>
+  </div>
+
   <!-- ════════════════════════════════════════════════════════
      SCREEN 4 – KẾT QUẢ
      ════════════════════════════════════════════════════════ -->
@@ -556,7 +568,7 @@
 
 
   <script src="/js/shared/cd-footer.js?v=20261010lele"></script>
-  <script src="/js/reading-v2.js?v=20261010lele"></script>
+  <script src="/js/reading-v2.js?v=20261014mockw"></script>
   <script src="/js/reading-tips.js?v=20260925route"></script>
   <script src="/js/reading-tips-practice.js?v=20260924c"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->

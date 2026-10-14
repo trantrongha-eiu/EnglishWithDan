@@ -7,8 +7,8 @@ const { PROCTOR_TYPES } = require('../services/proctorPolicy');
  *
  * The student takes it in TWO sittings (see mockTestService / the frontend
  * "mock mode"):
- *   Sitting 1: Listening → Reading  (chained back-to-back)
- *   Sitting 2: Writing   → Speaking (resumable any time later)
+ *   Sitting 1: Listening → Reading → Writing (chained back-to-back)
+ *   Sitting 2: Speaking (resumable any time later)
  *
  * The four sub-attempts are the SAME per-skill attempt docs every other
  * flow already creates (ListeningAttempt, TestAttempt (reading),
@@ -78,7 +78,7 @@ const MockTestAttemptSchema = new mongoose.Schema({
     default: 'listening'
   },
 
-  sitting1CompletedAt: { type: Date },   // set when reading step recorded
+  sitting1CompletedAt: { type: Date },   // set when writing step recorded
   sitting2CompletedAt: { type: Date },   // set when speaking step recorded
 
   overallBand: { type: Number, default: null },  // avg of 4 bands, rounded to .5

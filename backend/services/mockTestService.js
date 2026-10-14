@@ -334,7 +334,7 @@ async function advance(userId, mockId, { skill, attemptId }) {
       manualAt: prev.manualAt
     };
     doc.progress = NEXT[skill];
-    if (skill === 'reading') doc.sitting1CompletedAt = new Date();
+    if (skill === 'writing') doc.sitting1CompletedAt = new Date();
     if (skill === 'speaking') doc.sitting2CompletedAt = new Date();
     recomputeOverall(doc);
     await doc.save();
@@ -349,14 +349,15 @@ function navFor(doc, skill) {
     return { nextSkill: 'reading', nextTargetId: String(doc.bundle.readingTestId) };
   }
   if (skill === 'reading') {
-    // End of sitting 1 — back to the dashboard, student resumes Writing later.
-    return { sittingBreak: true, nextSkill: 'writing', breakAfter: 'reading' };
+    // Sitting 1 is Listening → Reading → Writing back-to-back: the Reading
+    // page shows a "ready?" screen, then opens Writing itself.
+    return { nextSkill: 'writing', nextTargetId: String(doc.bundle.writingExamId) };
   }
   if (skill === 'writing') {
-    // Writing and Speaking are now separate, self-started steps: don't chain
-    // straight into Speaking — send the student back to the dashboard so they
-    // tap "Bắt đầu Speaking" when they're ready (e.g. waiting for a teacher
-    // to run the Speaking part live).
+    // End of sitting 1. Speaking is its own self-started step: send the
+    // student back to the dashboard so they tap "Bắt đầu Speaking" when
+    // they're ready (e.g. waiting for a teacher to run the Speaking part
+    // live).
     return { sittingBreak: true, nextSkill: 'speaking', breakAfter: 'writing' };
   }
   return { done: true };

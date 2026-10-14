@@ -91,16 +91,18 @@ describe('mockTestService.advance', () => {
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
     r = await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
     expect(r.attempt.progress).toBe('writing');
-    expect(r.nav.sittingBreak).toBe(true);
-    expect(r.attempt.sitting1CompletedAt).toBeTruthy();
+    // Sitting 1 is Listening → Reading → Writing — Reading chains straight on.
+    expect(r.nav).toEqual({ nextSkill: 'writing', nextTargetId: attempt.bundle.writingExamId });
+    expect(r.attempt.sitting1CompletedAt).toBeFalsy();
     expect(r.attempt.status).toBe('in-progress');
 
     const wa = await createWritingAttempt({ userId: student._id, extra: { grading: { overallBand: 6 } } });
     r = await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     expect(r.attempt.progress).toBe('speaking');
-    // Writing and Speaking are separate self-started steps — Writing ends in
-    // a sitting break (back to the dashboard), not an auto-chain to Speaking.
+    // Writing ends sitting 1 — a sitting break (back to the dashboard), not
+    // an auto-chain to Speaking.
     expect(r.nav).toEqual({ sittingBreak: true, nextSkill: 'speaking', breakAfter: 'writing' });
+    expect(r.attempt.sitting1CompletedAt).toBeTruthy();
 
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2, extra: { aiFeedback: { overallBand: 6 } } });
     r = await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });

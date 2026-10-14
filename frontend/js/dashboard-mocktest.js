@@ -103,9 +103,9 @@
     if (!card) return;
 
     // Break toast, shown when a mock skill page bounced the student back
-    // here. `mockbreak` says which step just finished: 'reading' = end of
-    // sitting 1 (legacy value '1'); 'writing' = Writing done, Speaking is
-    // now its own self-started step. 'mockvoid' = the run was disqualified
+    // here. `mockbreak` says which step just finished: 'writing' = end of
+    // sitting 1, Speaking is its own self-started step; 'reading' / '1' =
+    // legacy values from when sitting 1 was only Listening + Reading. 'mockvoid' = the run was disqualified
     // for too many exam-screen exits.
     try {
       var _sp = new URLSearchParams(location.search);
@@ -140,10 +140,10 @@
         if (a.progress && a.progress !== 'done') {
           var idx = STEP_INDEX[a.progress] || 1;
           var nextLabel = SKILL_LABEL[a.progress] || a.progress;
-          // Writing and Speaking are separate self-started steps now.
-          var sittingNote = a.progress === 'speaking' ? 'Phần cuối: Speaking (Nói)'
-            : a.progress === 'writing' ? 'Lượt 2: Writing (Viết)'
-            : 'Lượt 1: Listening + Reading';
+          // Sitting 1 = Listening → Reading → Writing; Speaking is its own
+          // self-started step afterwards.
+          var sittingNote = a.progress === 'speaking' ? 'Lượt 2: Speaking (Nói)'
+            : 'Lượt 1: Listening + Reading + Writing';
           var btnLabel = (a.progress === 'writing' || a.progress === 'speaking')
             ? 'Bắt đầu ' + nextLabel
             : 'Tiếp tục — ' + nextLabel;

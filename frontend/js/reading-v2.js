@@ -3236,6 +3236,12 @@ function confirmSubmit() {
   openModal('modal-submit');
 }
 
+// Full mock test only: the student clicked through the waiting screen shown
+// after Reading was graded — start Writing now.
+function continueToWritingFromMock() {
+  location.href = window.MockTest.pageUrl('writing', window.MockTest.params().mockId);
+}
+
 async function submitExam() {
   closeModal('modal-submit');
   clearInterval(state.timer);
@@ -3431,12 +3437,15 @@ function showResult(r) {
     showScreen('result');
   }
 
-  // Full mock test: Reading is the last step of sitting 1 — record it and
-  // bounce the student to the dashboard "sitting break" (Writing + Speaking
-  // come later, in sitting 2).
+  // Full mock test: sitting 1 is Listening → Reading → Writing. Record
+  // Reading in the background (advanceWithoutNav keeps advance()'s
+  // 401/retry/pending-recovery handling, it just doesn't self-navigate) and
+  // show a waiting screen so Writing's own 60-minute clock only starts once
+  // the student clicks through — same as listening.html after Listening.
   if (_mockMode && window.MockTest && window.MockTest.active()) {
-    showVocabToast('Đã xong Listening + Reading — tạm nghỉ trước khi làm Writing & Speaking', 'success');
-    setTimeout(() => window.MockTest.advance('reading', state.attemptId || r.attemptId), 1400);
+    window.MockTest.advanceWithoutNav('reading', state.attemptId || r.attemptId);
+    const ov = document.getElementById('reading-done-overlay');
+    if (ov) { ov.hidden = false; document.body.appendChild(ov); }
     return;
   }
 
