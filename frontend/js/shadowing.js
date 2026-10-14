@@ -11,6 +11,8 @@
  *    compare their own voice with the original.
  *  - Dictation: listen → type, scored with the same LCS word diff as
  *    dictation.html (video covered so on-screen captions don't give it away).
+ *  - "Phát liên tục" (or the YouTube player's own play button) plays on
+ *    past the sentence end, with the transcript following the video.
  */
 (function () {
   'use strict';
@@ -19,12 +21,27 @@
   const authH = () => ({ ...window.AuthService.authHeader(), 'Content-Type': 'application/json' });
   const $ = (id) => document.getElementById(id);
 
-  const CATEGORY_LABEL = { 'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', '6-minute-english': '6 Minute English' };
+  const CATEGORY_LABEL = {
+    'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2',
+    '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
+  };
   const SPEEDS = [1, 0.75, 0.5, 1.25];
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  // Per-viewer conveniences (speed, practice toggles) — best-effort only.
+  const PREFS_KEY = 'ews_shadowing_prefs';
+  function loadPrefs() { try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch (_) { return {}; } }
+  function savePrefs() {
+    try {
+      localStorage.setItem(PREFS_KEY, JSON.stringify({
+        speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked,
+      }));
+    } catch (_) { /* storage unavailable */ }
+  }
+
   let lessons = [];
   let filterCat = '';
+  let filterLevel = '';
   let lesson = null;
   let idx = 0;
   let mode = 'shadowing';
@@ -44,6 +61,7 @@
   let stopAt = null;     // video time at which the current segment ends
   let pollTimer = null;
   let isPlaying = false;
+  let continuous = false; // "Phát liên tục": play on to the end of the clip
 
   function ensurePlayer(videoId, start) {
     if (playerReady) {
@@ -83,14 +101,48 @@
   function startPoll() {
     stopPoll();
     pollTimer = setInterval(() => {
-      if (!player || stopAt == null) return;
-      if (player.getCurrentTime() >= stopAt) {
+      if (!player || !lesson) return;
+      const t = player.getCurrentTime();
+      if (stopAt == null || continuous) followVideo(t);
+      if (stopAt != null && t >= stopAt) {
         player.pauseVideo();
         stopAt = null;
         stopPoll();
-        onSegmentEnded();
+        if (continuous) setContinuous(false);
+        else onSegmentEnded();
       }
     }, 50);
+  }
+
+  // Free play (YouTube's own controls, or "Phát liên tục"): move the current
+  // sentence along with the video instead of leaving it on the old one.
+  // Shadowing only: in Dictation a sentence change would wipe what the
+  // student is typing.
+  function followVideo(t) {
+    const segs = lesson.segments;
+    if (mode !== 'shadowing' || t < segs[0].start || t > segs[segs.length - 1].end + 1) return;
+    let i = idx;
+    while (i + 1 < segs.length && t >= segs[i + 1].start) i++;
+    while (i > 0 && t < segs[i].start) i--;
+    if (i !== idx) goTo(i, { keepPlaying: true });
+  }
+
+  function setContinuous(on) {
+    continuous = on;
+    $('sh-playall').classList.toggle('on', on);
+    $('sh-playall').innerHTML = on ? '<i class="fas fa-pause"></i> Dừng phát' : '<i class="fas fa-forward"></i> Phát liên tục';
+  }
+
+  async function playAll() {
+    if (!lesson) return;
+    if (recording) stopRecord();
+    const p = await playerReady;
+    if (continuous) { p.pauseVideo(); stopAt = null; setContinuous(false); return; }
+    setContinuous(true);
+    stopAt = lesson.segments[lesson.segments.length - 1].end;
+    p.seekTo(lesson.segments[idx].start, true);
+    p.setPlaybackRate(SPEEDS[speedIdx]);
+    p.playVideo();
   }
   function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
 
@@ -111,7 +163,8 @@
     if (!lesson) return;
     if (recording) stopRecord();
     const p = await playerReady;
-    if (isPlaying && stopAt != null) { p.pauseVideo(); stopAt = null; return; }
+    if (isPlaying && stopAt != null) { p.pauseVideo(); stopAt = null; setContinuous(false); return; }
+    setContinuous(false);
     const seg = lesson.segments[idx];
     stopAt = seg.end;
     p.seekTo(seg.start, true);
@@ -127,6 +180,7 @@
     speedIdx = (speedIdx + 1) % SPEEDS.length;
     $('sh-speed').textContent = SPEEDS[speedIdx] + 'x';
     if (player && player.setPlaybackRate) player.setPlaybackRate(SPEEDS[speedIdx]);
+    savePrefs();
   }
 
   // ══════════════ WORD SCORING ══════════════
@@ -196,6 +250,7 @@
     if (recording || !lesson) return;
     const session = ++recSession;
     if (player && isPlaying) { player.pauseVideo(); stopAt = null; }
+    if (continuous) setContinuous(false);
     recording = true;
     finalText = '';
     $('sh-interim').textContent = SR ? 'Đang nghe bạn nói…' : 'Đang ghi âm…';
@@ -357,6 +412,8 @@
       perfect ? '✓ Chính xác!' : `Đúng ${refHit.size}/${ref.length} từ`,
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
     $('dc-check').disabled = true;
+    $('dc-check').style.display = 'none';
+    $('dc-next').style.display = idx < lesson.segments.length - 1 ? '' : 'none';
     recordAnswer('dictation', idx, refHit.size, ref.length);
     luluReact(perfect ? 100 : pct, 'dictation');
   }
@@ -373,12 +430,27 @@
     else window.Mascot.hop('excited');
   }
 
-  function dcRetry() {
+  function resetDictationPane() {
     $('dc-input').value = '';
     $('dc-diff').classList.remove('show');
     $('dc-score').className = 'sh-score';
     $('dc-check').disabled = false;
+    $('dc-check').style.display = '';
+    $('dc-next').style.display = 'none';
+  }
+
+  function dcRetry() {
+    resetDictationPane();
     $('dc-input').focus();
+  }
+
+  // Next sentence, played straight away — hands stay on the keyboard
+  // (Enter → check, Enter → next).
+  function dcNext() {
+    if (idx >= lesson.segments.length - 1) return;
+    goTo(idx + 1);
+    $('dc-input').focus({ preventScroll: true });
+    playSegment();
   }
 
   function toggleHint() {
@@ -387,11 +459,17 @@
   }
 
   // ══════════════ NAVIGATION / RENDER ══════════════
-  function goTo(i) {
+  // opts.keepPlaying: called by followVideo() while the video plays on —
+  // only the sentence UI moves, the player is left alone.
+  function goTo(i, opts) {
     if (!lesson || i < 0 || i >= lesson.segments.length) return;
+    const keepPlaying = !!(opts && opts.keepPlaying);
     if (recording) stopRecord();
-    if (player && isPlaying) player.pauseVideo();
-    stopAt = null;
+    if (!keepPlaying) {
+      if (player && isPlaying) player.pauseVideo();
+      stopAt = null;
+      if (continuous) setContinuous(false);
+    }
     idx = i;
     const seg = lesson.segments[i];
     $('sh-cur').textContent = i + 1;
@@ -408,17 +486,26 @@
     if (myAudioUrl) { URL.revokeObjectURL(myAudioUrl); myAudioUrl = null; }
 
     // Dictation pane
-    $('dc-input').value = '';
-    $('dc-diff').classList.remove('show');
-    $('dc-score').className = 'sh-score';
-    $('dc-check').disabled = false;
+    resetDictationPane();
     $('dc-hint').style.display = 'none';
     $('dc-hint').textContent = `${tokens(seg.text).length} từ · ${maskText(seg.text)}`;
-    if (mode === 'dictation' && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus();
+    if (mode === 'dictation' && !keepPlaying && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus({ preventScroll: true });
 
     renderList();
-    const cur = document.querySelector('.sh-item.current');
-    if (cur) cur.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    scrollListToCurrent();
+  }
+
+  // Scrolls the transcript box only — scrollIntoView() also scrolled the
+  // page, which on mobile (transcript below the panel) yanked the student
+  // away from the buttons on every sentence change.
+  function scrollListToCurrent() {
+    const list = $('sh-list');
+    const cur = list.querySelector('.sh-item.current');
+    if (!cur) return;
+    const top = cur.offsetTop - list.offsetTop;
+    if (top < list.scrollTop || top + cur.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTo({ top: Math.max(0, top - list.clientHeight / 3), behavior: 'smooth' });
+    }
   }
 
   function renderList() {
@@ -443,6 +530,7 @@
     document.querySelectorAll('.sh-mode').forEach((b) => b.classList.toggle('active', b.dataset.mode === m));
     $('pane-shadowing').style.display = m === 'shadowing' ? '' : 'none';
     $('pane-dictation').style.display = m === 'dictation' ? '' : 'none';
+    $('sh-playall').style.display = m === 'shadowing' ? '' : 'none';
     setVideoCover(m === 'dictation');
     if (m === 'dictation') hideCaptions();
     syncUrl();
@@ -501,7 +589,21 @@
   function fmtDur(s) { return Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0'); }
 
   function renderGrid() {
-    const list = lessons.filter((l) => !filterCat || l.category === filterCat);
+    // Category counts follow the level filter and vice versa; a chip with
+    // nothing behind it is hidden (unless it's the one selected).
+    const match = (l, cat, level) => (!cat || l.category === cat) && (!level || l.level === level);
+    document.querySelectorAll('#sh-filters .sh-chip').forEach((c) => {
+      const n = lessons.filter((l) => match(l, c.dataset.cat, filterLevel)).length;
+      let badge = c.querySelector('.n');
+      if (!badge) { badge = document.createElement('span'); badge.className = 'n'; c.appendChild(badge); }
+      badge.textContent = `(${n})`;
+      c.style.display = n || !c.dataset.cat || c.dataset.cat === filterCat ? '' : 'none';
+    });
+    document.querySelectorAll('#sh-levels .sh-chip').forEach((c) => {
+      const n = lessons.filter((l) => match(l, filterCat, c.dataset.level)).length;
+      c.style.display = n || !c.dataset.level || c.dataset.level === filterLevel ? '' : 'none';
+    });
+    const list = lessons.filter((l) => match(l, filterCat, filterLevel));
     if (!list.length) {
       $('sh-grid').innerHTML = '<div class="sh-empty"><i class="fas fa-video"></i>Chưa có bài nào trong mục này.</div>';
       return;
@@ -518,8 +620,9 @@
         </div>
         <div class="sh-card-body">
           <div class="sh-card-title">${escHtml(l.title)}</div>
+          ${l.description ? `<div class="sh-card-desc">${escHtml(l.description)}</div>` : ''}
           <div class="sh-card-meta"><span>${escHtml(l.channel)}</span><span>${l.segmentCount} câu</span></div>
-          <div class="sh-card-progress"><span class="sh-pill sh-level">${escHtml(l.level)}</span>${pill('shadowing', 'fa-microphone')}${pill('dictation', 'fa-keyboard')}</div>
+          <div class="sh-card-progress"><span class="sh-pill sh-level lv-${escHtml(l.level)}">${escHtml(l.level)}</span>${pill('shadowing', 'fa-microphone')}${pill('dictation', 'fa-keyboard')}</div>
         </div>
       </div>`;
     }).join('');
@@ -554,7 +657,10 @@
     dirty = { shadowing: false, dictation: false };
     idx = 0;
     $('sh-title').textContent = lesson.title;
-    $('sh-sub').innerHTML = `${escHtml(CATEGORY_LABEL[lesson.category] || '')} · ${escHtml(lesson.channel)} · ${lesson.segments.length} câu`;
+    $('sh-sub').innerHTML = `${escHtml(CATEGORY_LABEL[lesson.category] || '')} · ${escHtml(lesson.channel)} · ${escHtml(lesson.level || '')} · ${lesson.segments.length} câu`;
+    $('sh-desc').textContent = lesson.description || '';
+    $('sh-desc').style.display = lesson.description ? '' : 'none';
+    window.scrollTo(0, 0);
     $('sh-total').textContent = lesson.segments.length;
     const srcUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(lesson.youtubeId)}&t=${Math.floor(lesson.clipStart)}s`;
     $('sh-credit').innerHTML = `Video gốc: <a href="${srcUrl}" target="_blank" rel="noopener">${escHtml(lesson.sourceTitle || lesson.title)}</a> — ${escHtml(lesson.channel)}. Bản quyền thuộc kênh gốc, video được nhúng trực tiếp từ YouTube.`;
@@ -572,6 +678,7 @@
     const saved = saveSession();
     if (player && player.pauseVideo) player.pauseVideo();
     stopAt = null;
+    setContinuous(false);
     lesson = null;
     $('screen-practice').classList.remove('active');
     $('screen-list').classList.remove('hidden');
@@ -597,7 +704,14 @@
     const chip = e.target.closest('.sh-chip');
     if (!chip) return;
     filterCat = chip.dataset.cat;
-    document.querySelectorAll('.sh-chip').forEach((c) => c.classList.toggle('active', c === chip));
+    document.querySelectorAll('#sh-filters .sh-chip').forEach((c) => c.classList.toggle('active', c === chip));
+    renderGrid();
+  });
+  $('sh-levels').addEventListener('click', (e) => {
+    const chip = e.target.closest('.sh-chip');
+    if (!chip) return;
+    filterLevel = chip.dataset.level;
+    document.querySelectorAll('#sh-levels .sh-chip').forEach((c) => c.classList.toggle('active', c === chip));
     renderGrid();
   });
   $('sh-list').addEventListener('click', (e) => {
@@ -606,12 +720,14 @@
     goTo(Number(item.dataset.i));
     if (mode === 'shadowing') playSegment();
   });
-  $('opt-hide').addEventListener('change', () => goTo(idx));
+  $('opt-hide').addEventListener('change', () => { savePrefs(); goTo(idx); });
+  $('opt-autorec').addEventListener('change', savePrefs);
 
   $('dc-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (!$('dc-check').disabled) dcCheck();
+      else dcNext();
     }
   });
   // Same anti-paste guard as dictation.html — type what you hear.
@@ -639,11 +755,16 @@
   function toggleRecord() { if (recording) stopRecord(); else startRecord(); }
 
   // Inline onclick handlers in shadowing.html
-  Object.assign(window, { backToList, setMode, goTo, playSegment, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, toggleHint });
+  Object.assign(window, { backToList, setMode, goTo, playSegment, playAll, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, dcNext, toggleHint });
   Object.defineProperty(window, 'idx', { get: () => idx, configurable: true });
 
   // ══════════════ INIT ══════════════
   document.addEventListener('DOMContentLoaded', () => {
+    const prefs = loadPrefs();
+    if (Number.isInteger(prefs.speedIdx) && SPEEDS[prefs.speedIdx]) { speedIdx = prefs.speedIdx; $('sh-speed').textContent = SPEEDS[speedIdx] + 'x'; }
+    $('opt-autorec').checked = !!prefs.autorec;
+    $('opt-hide').checked = !!prefs.hide;
+
     const promo = $('premium-promo-banner');
     if (promo) promo.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
 

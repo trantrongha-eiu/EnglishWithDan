@@ -5,7 +5,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Luyện Shadowing – EnglishWithDan</title>
-  <meta name="description" content="Luyện Shadowing và Dictation theo từng câu với video IELTS Speaking Part 1, Part 2 và BBC 6 Minute English."/>
+  <meta name="description" content="Luyện Shadowing và Dictation theo từng câu với video IELTS Speaking Part 1, Part 2, BBC 6 Minute English và video ngắn vui cho A2–B1."/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -25,7 +25,16 @@
     /* ── Picker ── */
     .sh-head h1 { font-size: var(--fs-h2); font-weight: 800; color: var(--text); margin: 0 0 6px; }
     .sh-head p { color: var(--text2); font-size: var(--fs-body-sm); margin: 0 0 16px; }
-    .sh-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+    .sh-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .sh-levels { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; font-size: 13px; color: var(--text3); font-weight: 600; }
+    .sh-levels .sh-chip { padding: 4px 12px; font-size: 12px; }
+    .sh-chip .n { opacity: .7; font-weight: 600; margin-left: 2px; }
+    @media (max-width: 600px) {
+      /* One swipeable row instead of four wrapped ones. */
+      .sh-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+      .sh-filters::-webkit-scrollbar { display: none; }
+      .sh-filters .sh-chip { flex-shrink: 0; white-space: nowrap; }
+    }
     .sh-chip {
       border: 1px solid var(--border); background: var(--surface); color: var(--text2); border-radius: var(--radius-pill);
       padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
@@ -37,8 +46,9 @@
       cursor: pointer; transition: var(--transition); display: flex; flex-direction: column;
     }
     .sh-card:hover { border-color: var(--brand); box-shadow: var(--shadow); transform: translateY(-2px); }
-    .sh-thumb { position: relative; aspect-ratio: 16 / 9; background: #000; }
-    .sh-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sh-thumb { position: relative; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+    /* hqdefault.jpg is 4:3 with the 16:9 frame letterboxed inside — crop the black bars. */
+    .sh-thumb img { position: absolute; left: 0; top: -12.5%; width: 100%; height: 125%; object-fit: cover; display: block; }
     .sh-thumb .sh-cat, .sh-thumb .sh-dur {
       position: absolute; font-size: 11px; font-weight: 700; color: #fff; border-radius: var(--radius-pill); padding: 3px 9px;
     }
@@ -46,11 +56,14 @@
     .sh-thumb .sh-dur { bottom: 8px; right: 8px; background: rgba(0,0,0,.75); }
     .sh-card-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
     .sh-card-title { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.35; }
+    .sh-card-desc { font-size: 12.5px; color: var(--text2); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .sh-card-meta { font-size: 12px; color: var(--text3); display: flex; gap: 10px; flex-wrap: wrap; }
     .sh-card-progress { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
     .sh-pill { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--surface2); color: var(--text2); }
     .sh-pill.good { background: var(--success-light); color: var(--success); }
     .sh-level { background: var(--brand-light); color: var(--brand); }
+    .sh-level.lv-A2 { background: var(--success-light); color: var(--success); }
+    .sh-level.lv-B1 { background: var(--warning-light); color: var(--warning); }
     .sh-empty, .sh-loading { text-align: center; padding: 60px 20px; color: var(--text3); grid-column: 1 / -1; }
     .sh-empty i, .sh-loading i { font-size: 28px; margin-bottom: 10px; display: block; }
 
@@ -68,6 +81,7 @@
     .sh-title { font-size: 17px; font-weight: 800; color: var(--text); }
     .sh-sub { font-size: 12px; color: var(--text3); }
     .sh-sub a { color: inherit; }
+    .sh-desc { font-size: 13px; color: var(--text2); margin: -6px 0 14px; line-height: 1.5; }
     .sh-modes { display: inline-flex; background: var(--surface2); border-radius: var(--radius-pill); padding: 4px; gap: 4px; }
     .sh-mode {
       border: none; background: none; color: var(--text2); font-weight: 700; font-size: 13px; padding: 8px 16px;
@@ -85,8 +99,13 @@
     .sh-arrow { background: none; border: none; color: var(--text2); font-size: 16px; cursor: pointer; padding: 4px 8px; }
     .sh-arrow:disabled { opacity: .3; cursor: default; }
     .sh-counter { font-weight: 800; color: var(--text); font-size: 15px; }
-    .sh-speed {
+    .sh-playall {
       margin-left: auto; background: var(--surface2); border: none; color: var(--text2); font-size: 12px; font-weight: 700;
+      border-radius: var(--radius-pill); padding: 6px 12px; cursor: pointer; font-family: inherit;
+    }
+    .sh-playall.on { background: var(--brand-light); color: var(--brand); }
+    .sh-speed {
+      background: var(--surface2); border: none; color: var(--text2); font-size: 12px; font-weight: 700;
       border-radius: var(--radius-pill); padding: 6px 12px; cursor: pointer; font-family: inherit;
     }
 
@@ -133,7 +152,7 @@
     .sh-diff { font-size: 16px; line-height: 1.8; margin-top: 12px; display: none; }
     .sh-diff.show { display: block; }
     .sh-diff .w-match { color: var(--text); }
-    .sh-diff .w-miss { color: var(--danger); text-decoration: line-through; opacity: .75; }
+    .sh-diff .w-miss { color: var(--danger); font-weight: 700; text-decoration: underline wavy; text-underline-offset: 4px; }
     .sh-diff .w-extra { color: var(--text3); text-decoration: line-through; }
 
     /* Transcript sidebar */
@@ -155,6 +174,7 @@
     .sh-item-score.good { background: var(--success-light); color: var(--success); }
     .sh-item-score.mid { background: var(--warning-light); color: var(--warning); }
     .sh-item-score.low { background: var(--danger-light); color: var(--danger); }
+    .sh-video-cover .sh-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
     .sh-credit { font-size: 11px; color: var(--text3); margin-top: 10px; }
     .sh-credit a { color: inherit; }
   </style>
@@ -183,7 +203,7 @@
   <div id="screen-list">
     <div class="sh-head" data-lulu-peek="excited">
       <h1><i class="fas fa-comment-dots"></i> Luyện Shadowing</h1>
-      <p>Nghe từng câu trong video rồi nói theo (Shadowing) hoặc chép lại (Dictation). Mỗi bài là một đoạn 2–3 phút.</p>
+      <p>Nghe từng câu trong video rồi nói theo (Shadowing) hoặc chép lại (Dictation). Mỗi bài là một đoạn 1,5–3 phút — từ IELTS Speaking đến tiểu phẩm hài cho trình độ A2–B1.</p>
     </div>
 
     <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin:0 0 16px;flex-wrap:wrap">
@@ -200,6 +220,14 @@
       <button class="sh-chip" data-cat="ielts-part1">Speaking Part 1</button>
       <button class="sh-chip" data-cat="ielts-part2">Speaking Part 2</button>
       <button class="sh-chip" data-cat="6-minute-english">BBC 6 Minute English</button>
+      <button class="sh-chip" data-cat="fun-shorts">😄 Video ngắn vui</button>
+    </div>
+    <div class="sh-levels" id="sh-levels">
+      <span>Trình độ:</span>
+      <button class="sh-chip active" data-level="">Tất cả</button>
+      <button class="sh-chip" data-level="A2">A2</button>
+      <button class="sh-chip" data-level="B1">B1</button>
+      <button class="sh-chip" data-level="B2">B2</button>
     </div>
 
     <div id="sh-grid" class="sh-grid">
@@ -223,6 +251,7 @@
 
     <div class="sh-layout">
       <div>
+        <div class="sh-desc" id="sh-desc"></div>
         <div class="sh-video"><div id="yt-player"></div></div>
 
         <div class="sh-panel">
@@ -230,6 +259,7 @@
             <button class="sh-arrow" id="sh-prev" onclick="goTo(idx - 1)" title="Câu trước (←)"><i class="fas fa-chevron-left"></i></button>
             <span class="sh-counter">Câu <span id="sh-cur">1</span>/<span id="sh-total">1</span></span>
             <button class="sh-arrow" id="sh-next" onclick="goTo(idx + 1)" title="Câu sau (→)"><i class="fas fa-chevron-right"></i></button>
+            <button class="sh-playall" id="sh-playall" onclick="playAll()" title="Phát liên tục từ câu này đến hết bài, transcript tự chạy theo"><i class="fas fa-forward"></i> Phát liên tục</button>
             <button class="sh-speed" id="sh-speed" onclick="cycleSpeed()" title="Tốc độ phát">1x</button>
           </div>
 
@@ -261,10 +291,11 @@
             </div>
             <div class="sh-sentence masked" id="dc-hint" style="display:none"></div>
             <textarea class="sh-input" id="dc-input" placeholder="Nhập những gì bạn nghe được..."></textarea>
-            <div class="sh-hint"><kbd>Enter</kbd> kiểm tra<span class="sh-kbd"> · <kbd>Ctrl</kbd>+<kbd>Space</kbd> nghe lại · <kbd>Shift</kbd>+<kbd>Enter</kbd> xuống dòng</span></div>
+            <div class="sh-hint"><kbd>Enter</kbd> kiểm tra / câu tiếp<span class="sh-kbd"> · <kbd>Ctrl</kbd>+<kbd>Space</kbd> nghe lại · <kbd>Shift</kbd>+<kbd>Enter</kbd> xuống dòng</span></div>
             <div class="sh-actions">
               <button class="sh-btn sh-btn-ghost" onclick="dcRetry()">Làm lại</button>
               <button class="sh-btn sh-btn-primary" id="dc-check" onclick="dcCheck()">Kiểm tra</button>
+              <button class="sh-btn sh-btn-primary" id="dc-next" onclick="dcNext()" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
             <div class="sh-score" id="dc-score"></div>
             <div class="sh-diff" id="dc-diff"></div>
@@ -282,7 +313,7 @@
 
 </div>
 
-<script src="/js/shadowing.js?v=20261009"></script>
+<script src="/js/shadowing.js?v=20261014"></script>
 <script src="https://www.youtube.com/iframe_api" async></script>
 
 <div id="dict-popup" class="dict-popup hidden">

@@ -10,7 +10,7 @@
  */
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', '6-minute-english'];
+const CATEGORIES = ['ielts-part1', 'ielts-part2', '6-minute-english', 'fun-shorts'];
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
