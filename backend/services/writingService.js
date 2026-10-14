@@ -18,6 +18,7 @@ const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
 const examSimulationService = require('./examSimulationService');
+const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 async function randomDoc(Model) {
@@ -93,6 +94,11 @@ async function submitExam(user, body) {
     // this, so the branch below is unreachable for them.
     attemptId: simulationAttemptId
   } = body; // wordCount1/2 from the client are ignored — recomputed below
+  // The proctor just voided this attempt: save the essay written so far for
+  // the teacher, but leave it 'disqualified' with no streak/badges. One time
+  // only — see proctorPolicy.disqualifiedAnswerFilter. A Full Mock Test
+  // Writing step has no placeholder row, so it is inserted already voided.
+  const disqualified = body.disqualified === true;
 
   // exam/task1/task2 lookups are independent — run in parallel. (In the rare
   // case the exam doesn't exist, this does two now-unneeded lookups instead of
@@ -112,12 +118,17 @@ async function submitExam(user, body) {
     // right before this lands makes the update match nothing, so a voided
     // run can't still be submitted for a real result.
     attempt = await WritingAttempt.findOneAndUpdate(
-      { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
+      disqualified
+        ? { _id: simulationAttemptId, userId: user._id, ...disqualifiedAnswerFilter() }
+        : { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
       {
         task1Answer, task2Answer,
         wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
         timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
-        submittedAt: new Date(), status
+        submittedAt: new Date(),
+        ...(disqualified
+          ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
+          : { status }),
       },
       { new: true }
     );
@@ -130,10 +141,14 @@ async function submitExam(user, body) {
       task1Answer, task2Answer,
       wordCount1: countWords(task1Answer), wordCount2: countWords(task2Answer),
       timeTaken: Math.max(0, Math.floor(Number(timeTaken))),
-      submittedAt: new Date(), status
+      submittedAt: new Date(),
+      ...(disqualified
+        ? { status: 'disqualified', proctor: { answersSavedAt: new Date() } }
+        : { status }),
     });
     await attempt.save();
   }
+  if (disqualified) return { attemptId: attempt._id, newlyUnlocked: [], disqualified: true };
 
   // Writing (unlike Reading/Listening) isn't auto-graded at submission time
   // — a teacher may not score it for days — so there's no accuracy to tier
@@ -209,7 +224,9 @@ async function cancelSimulationAttempt(userId, attemptId) {
   return { status: 'ok' };
 }
 
-async function submitPractice(user, { taskType, taskId, answer, attemptId: simulationAttemptId }) {
+async function submitPractice(user, { taskType, taskId, answer, attemptId: simulationAttemptId, disqualified: dqFlag }) {
+  // The proctor just voided this attempt — see submitExam()'s `disqualified`.
+  const disqualified = dqFlag === true && !!simulationAttemptId;
   const tNum = taskType;
   const Model = tNum === 1 ? WritingTask1 : WritingTask2;
   const task = taskId ? await Model.findById(taskId).lean() : null;
@@ -217,14 +234,20 @@ async function submitPractice(user, { taskType, taskId, answer, attemptId: simul
 
   let attempt;
   if (simulationAttemptId) {
+    const final = disqualified
+      ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
+      : { status: 'completed' };
     attempt = await WritingAttempt.findOneAndUpdate(
-      { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
+      disqualified
+        ? { _id: simulationAttemptId, userId: user._id, ...disqualifiedAnswerFilter() }
+        : { _id: simulationAttemptId, userId: user._id, status: 'in-progress', mode: 'simulation' },
       tNum === 1
-        ? { task1Answer: answer, wordCount1: wc, submittedAt: new Date(), status: 'completed' }
-        : { task2Answer: answer, wordCount2: wc, submittedAt: new Date(), status: 'completed' },
+        ? { task1Answer: answer, wordCount1: wc, submittedAt: new Date(), ...final }
+        : { task2Answer: answer, wordCount2: wc, submittedAt: new Date(), ...final },
       { new: true }
     );
     if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+    if (disqualified) return { attemptId: attempt._id, newlyUnlocked: [], disqualified: true };
   } else {
     attempt = new WritingAttempt({
       userId: user._id, submissionType: 'practice', examName: `Luyện Task ${tNum}`,

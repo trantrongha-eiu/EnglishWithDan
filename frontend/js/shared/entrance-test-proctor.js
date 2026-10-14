@@ -18,8 +18,8 @@
  *     attemptType split needed in the violation report body.
  *   - Reports to POST /api/entrance-test/:attemptId/violation with just
  *     { type } in the body.
- *   - maxViolations default 3, matching the backend's shared
- *     proctorPolicy.MAX_VIOLATIONS (the 3rd strike voids the attempt — same
+ *   - maxViolations default 5, matching the backend's shared
+ *     proctorPolicy.MAX_VIOLATIONS (the 5th strike voids the attempt — same
  *     rule as Test Simulation and the Full Mock Test). The runner passes the
  *     server's value.
  *   - Screenshots of the shared screen after each strike: see
@@ -89,7 +89,7 @@
   function _renderBadge() {
     if (!_proctor || !_proctor.badge) return;
     var n = _proctor.count;
-    var max = _proctor.maxViolations || 3;
+    var max = _proctor.maxViolations || 5;
     var txt = _proctor.badge.querySelector('.etp-txt');
     if (n !== _proctor.badgeCount) { _proctor.badgeCount = n; _expandBadge(); }
     var full, compact;
@@ -338,14 +338,14 @@
     }
   }
 
-  // opts: { attemptId, maxViolations (default 3), initialCount (strikes
+  // opts: { attemptId, maxViolations (default 5), initialCount (strikes
   // already on the attempt, for a resumed run), lockNav (default true) }
   function start(opts) {
     opts = opts || {};
     if (_proctor || !opts.attemptId) return;
     _proctor = {
       attemptId: opts.attemptId,
-      maxViolations: opts.maxViolations || 3,
+      maxViolations: opts.maxViolations || 5,
       count: Number(opts.initialCount) || 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null

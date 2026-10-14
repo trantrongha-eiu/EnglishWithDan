@@ -20,6 +20,7 @@ const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
 const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
+const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 // Mongoose `.select()` string that strips a passage's answer key
@@ -290,7 +291,11 @@ async function startTest(testId, userId, mode = 'practice') {
   return { status: 'ok', attemptId: attempt._id, testName: test.name, passages: safePassages, duration: 3600, mode };
 }
 
-async function submitTest(attemptId, answers, user) {
+// opts.disqualified: the proctor just voided this attempt — save the answers
+// given so far (graded, so the teacher sees the score), but leave it
+// 'disqualified' with no streak/badge/review side effects. One time only —
+// see proctorPolicy.disqualifiedAnswerFilter.
+async function submitTest(attemptId, answers, user, { disqualified = false } = {}) {
   // Atomically claim this attempt (status: 'in-progress' -> 'completed')
   // before doing any grading work, instead of a plain findOne() followed
   // later by attempt.save() — the read-then-write gap let two concurrent
@@ -303,8 +308,12 @@ async function submitTest(attemptId, answers, user) {
   // call's own claim attempt will find status no longer 'in-progress' and
   // get null back. Mirrors listeningService.js's equivalent fix.
   const attempt = await TestAttempt.findOneAndUpdate(
-    { _id: attemptId, userId: user._id, status: 'in-progress' },
-    { status: 'completed' },
+    disqualified
+      ? { _id: attemptId, userId: user._id, ...disqualifiedAnswerFilter() }
+      : { _id: attemptId, userId: user._id, status: 'in-progress' },
+    disqualified
+      ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
+      : { status: 'completed' },
     { new: false }
   );
   if (!attempt) return null;
@@ -360,6 +369,10 @@ async function submitTest(attemptId, answers, user) {
     ...(passagesSnapshot ? { passagesSnapshot } : {}),
   });
 
+  if (disqualified) {
+    return { attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount, totalQuestions, duration, disqualified: true };
+  }
+
   let bonusApplied = 0;
   let newlyUnlocked = [];
   let streak = user.learningStreak;
@@ -395,7 +408,10 @@ async function submitTest(attemptId, answers, user) {
 // userId === null means "don't scope by owner" — the teacher/admin
 // mock-test-monitor review deep link (see the controller's comment).
 async function getAttemptReview(attemptId, userId) {
-  const attempt = await TestAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}), status: 'completed' }).populate('testId', 'name testNumber').lean();
+  // Staff (userId null) can also open a voided attempt whose answers were
+  // saved on disqualification.
+  const status = userId ? 'completed' : { $in: ['completed', 'disqualified'] };
+  const attempt = await TestAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}), status }).populate('testId', 'name testNumber').lean();
   if (!attempt) return null;
 
   // Prefer the as-submitted snapshot; fall back to a live read for attempts
@@ -553,6 +569,8 @@ async function savePractice(body, userId) {
   // one. Practice mode never sends this field, so it's always undefined
   // there and every existing behavior below is unchanged.
   const simulationAttemptId = typeof body.attemptId === 'string' && body.attemptId ? body.attemptId : null;
+  // The proctor just voided this attempt — see submitTest()'s opts.disqualified.
+  const disqualified = body.disqualified === true && !!simulationAttemptId;
   // Highlights made while practising (the attempt has no id to PUT them to
   // until this very call) — see attemptHighlightService.
   const cleanHl = body.highlights ? sanitizeHighlights(body.highlights) : null;
@@ -563,7 +581,7 @@ async function savePractice(body, userId) {
   // AND duplicate AttemptReview docs (which pile up against the mandatory-
   // review gate). If the client sent an idempotency key and we already have
   // a row for it, return that row and do nothing else.
-  if (clientKey) {
+  if (clientKey && !disqualified) {
     const existing = await ReadingPracticeAttempt.findOne({ userId, clientKey }).select('_id').lean();
     if (existing) return existing._id;
   }
@@ -600,16 +618,22 @@ async function savePractice(body, userId) {
     // right before this lands makes the update match nothing, so a voided
     // Simulation run can't still be submitted for a real result.
     attempt = await ReadingPracticeAttempt.findOneAndUpdate(
-      { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
+      disqualified
+        ? { _id: simulationAttemptId, userId, ...disqualifiedAnswerFilter() }
+        : { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
       {
         answers: finalAnswers, totalQuestions: finalAnswers.length, correctCount,
         wrongCount, skippedCount, timeTaken: timeTaken || 0,
-        submittedAt: new Date(), status: 'completed',
+        submittedAt: new Date(),
+        ...(disqualified
+          ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
+          : { status: 'completed' }),
         ...(highlights ? { highlights } : {}),
       },
       { new: true }
     );
     if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+    if (disqualified) return attempt._id; // voided — no review
   } else {
     try {
       attempt = await ReadingPracticeAttempt.create({

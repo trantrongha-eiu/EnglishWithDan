@@ -459,6 +459,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!tid) { showVocabToast('Không tìm thấy đề Reading của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
       _mockMode = true;
       window.MockTest.showBanner('reading');
+      // Run voided mid-Reading → save the answers so far for the teacher.
+      if (window.MockTest.setDisqualifySaver) window.MockTest.setDisqualifySaver(_saveDisqualifiedReading);
       state.testId = tid;
       // Mandatory screen share first — no exam clock runs behind its prompt.
       if (window.MockTest.ready) await window.MockTest.ready();
@@ -854,6 +856,18 @@ function _stampExamMode(mode) {
 // dashboard hand-off needed for a standalone Simulation attempt, so this
 // just abandons the exam UI and reloads the page fresh once
 // ExamProctor's own full-screen notice has had time to be read.
+// The proctor voided the attempt (Simulation, or the Full Mock Test run):
+// send the answers given so far with disqualified:true — the server saves
+// them graded but keeps the attempt voided (readingService.submitTest), so
+// the teacher sees how far the student got. Resolves to the attempt id.
+function _saveDisqualifiedReading() {
+  if (!state.attemptId) return Promise.resolve(null);
+  return apiFetch('/api/reading/submit', {
+    method: 'POST', keepalive: true, skipAuthRedirect: true,
+    body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers || {}, disqualified: true }),
+  }).then(res => (res && res.result && res.result.attemptId) || null);
+}
+
 function _onSimulationDisqualified() {
   clearInterval(state.timer);
   state.submitted = true;
@@ -1110,6 +1124,7 @@ function resumeExam() {
     window.ExamProctor.start({
       skill: 'reading', attemptType: 'full', attemptId: state.attemptId,
       onDisqualified: _onSimulationDisqualified,
+      saveAnswers: _saveDisqualifiedReading,
     });
   }
   setTool('none'); // exam screen has no dict/highlight toolbar — clear any tool left active from a prior review/practice session
@@ -1721,6 +1736,19 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
         _clearPracticeTimer();
         location.href = 'reading.html';
       },
+      // Answers so far, kept voided server-side — see _saveDisqualifiedReading.
+      saveAnswers: () => apiFetch('/api/reading/practice/save', {
+        method: 'POST', keepalive: true, skipAuthRedirect: true,
+        body: JSON.stringify({
+          passageId: passageId || passage._id,
+          passageTitle: passage.title || '',
+          category: category || '',
+          answers: Object.entries(state.answers || {}).map(([q, a]) => ({ questionNumber: Number(q), userAnswer: a })),
+          timeTaken: _practiceStartTime ? Math.floor((Date.now() - _practiceStartTime) / 1000) : 0,
+          attemptId: simAttemptId,
+          disqualified: true,
+        }),
+      }),
     });
   }
 
@@ -1894,6 +1922,7 @@ function startExam(data) {
     window.ExamProctor.start({
       skill: 'reading', attemptType: 'full', attemptId: state.attemptId,
       onDisqualified: _onSimulationDisqualified,
+      saveAnswers: _saveDisqualifiedReading,
     });
   }
 }
@@ -3237,9 +3266,19 @@ function confirmSubmit() {
 }
 
 // Full mock test only: the student clicked through the waiting screen shown
-// after Reading was graded — start Writing now.
+// after Reading was graded — start Writing now. Waits for the background
+// advance('reading') first: navigating mid-request could abort it and open
+// Writing while the run's progress cursor still says Reading. A failed
+// advance has already navigated away itself (null nav) — don't follow it.
+let _mockReadingAdvance = null;
 function continueToWritingFromMock() {
-  location.href = window.MockTest.pageUrl('writing', window.MockTest.params().mockId);
+  const btn = document.querySelector('#reading-done-overlay .mock-done-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu kết quả…'; }
+  Promise.resolve(_mockReadingAdvance).then(nav => {
+    if (_mockReadingAdvance && !nav) return;
+    window.onbeforeunload = null;
+    location.href = window.MockTest.pageUrl('writing', window.MockTest.params().mockId);
+  });
 }
 
 async function submitExam() {
@@ -3443,7 +3482,13 @@ function showResult(r) {
   // show a waiting screen so Writing's own 60-minute clock only starts once
   // the student clicks through — same as listening.html after Listening.
   if (_mockMode && window.MockTest && window.MockTest.active()) {
-    window.MockTest.advanceWithoutNav('reading', state.attemptId || r.attemptId);
+    _mockReadingAdvance = window.MockTest.advanceWithoutNav('reading', state.attemptId || r.attemptId);
+    // Sitting 1 runs straight through: warn before closing/reloading the
+    // tab on this screen. Armed only once Reading is recorded, so the
+    // failure paths' own redirects (login / mock-test.html) aren't blocked.
+    _mockReadingAdvance.then(nav => {
+      if (nav) window.onbeforeunload = e => { e.preventDefault(); e.returnValue = ''; return 'Bạn chưa làm Writing — rời trang sẽ dừng bài thi thử.'; };
+    });
     const ov = document.getElementById('reading-done-overlay');
     if (ov) { ov.hidden = false; document.body.appendChild(ov); }
     return;

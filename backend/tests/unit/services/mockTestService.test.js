@@ -190,8 +190,8 @@ describe('mockTestService.recordViolation — disqualification', () => {
     return attempt._id;
   }
 
-  test('the limit is the shared 3-strike rule', () => {
-    expect(mockTestService.MAX_VIOLATIONS).toBe(3);
+  test('the limit is the shared 5-strike rule', () => {
+    expect(mockTestService.MAX_VIOLATIONS).toBe(5);
   });
 
   test('voids the run on the MAX_VIOLATIONS-th violation', async () => {

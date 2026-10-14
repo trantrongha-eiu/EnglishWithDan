@@ -49,6 +49,15 @@ exports.advance = catchAsync(async (req, res) => {
   res.json({ success: true, attempt, nav });
 });
 
+// POST /api/mock-test/:id/disqualified-step   body: { skill, attemptId }
+// After a disqualification the skill page saved the answers so far as a
+// voided sub-attempt — link it to the run for the teacher's monitor.
+exports.disqualifiedStep = catchAsync(async (req, res) => {
+  const { skill, attemptId } = req.body || {};
+  const result = await mockTestService.attachDisqualifiedStep(req.user._id, req.params.id, { skill, attemptId });
+  res.json({ success: true, ...result });
+});
+
 // GET /api/mock-test/history?page=&limit=
 exports.history = catchAsync(async (req, res) => {
   const { page, limit } = req.query;

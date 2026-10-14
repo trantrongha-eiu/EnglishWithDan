@@ -46,11 +46,11 @@
 <script src="/js/shared/attempt-history.js?v=20261001"></script>
 <script src="/js/shared/review-inline.js?v=20261008"></script>
 <script src="/js/shared/badge-popup.js?v=20260831"></script>
-<script src="/js/shared/proctor-capture.js?v=20261001pc"></script>
-<script src="/js/shared/mock-test.js?v=20261007badge"></script>
-<script src="/js/shared/exam-proctor.js?v=20261007badge"></script>
+<script src="/js/shared/proctor-capture.js?v=20261014dq5"></script>
+<script src="/js/shared/mock-test.js?v=20261014dq5"></script>
+<script src="/js/shared/exam-proctor.js?v=20261014dq5"></script>
 <script src="/js/shared/cd-footer.js?v=20261010lele"></script>
-<script src="/js/shared/exam-mode-select.js?v=20261001pc"></script>
+<script src="/js/shared/exam-mode-select.js?v=20261014dq5"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -1017,6 +1017,7 @@
                 window.ExamProctor.start({
                     skill: 'listening', attemptType: 'full', attemptId: state.attemptId,
                     onDisqualified: _onSimulationDisqualified,
+                    saveAnswers: _saveDisqualifiedListening,
                 });
             }
         }
@@ -1056,6 +1057,8 @@
                     if (!tid) { toast('Không tìm thấy đề Listening của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
                     window.MockTest.showBanner('listening');
                     _mockMode = true;
+                    // Run voided mid-Listening → save the answers so far for the teacher.
+                    if (window.MockTest.setDisqualifySaver) window.MockTest.setDisqualifySaver(_saveDisqualifiedListening);
                     // Mandatory screen share first — no exam clock runs behind its prompt.
                     if (window.MockTest.ready) await window.MockTest.ready();
                     await startTest(tid);
@@ -1717,6 +1720,19 @@
         // handoff — see reading-v2.js's _onSimulationDisqualified for why
         // this just abandons the exam UI and reloads rather than redirecting
         // to a dashboard.
+        // The proctor voided the attempt (Simulation, or the Full Mock Test
+        // run): send the answers given so far with disqualified:true — the
+        // server saves them graded but keeps the attempt voided
+        // (listeningService.submitTest), so the teacher sees how far the
+        // student got. Resolves to the attempt id.
+        function _saveDisqualifiedListening() {
+            if (!state.attemptId || !state.currentTestId) return Promise.resolve(null);
+            return fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
+                method: 'POST', headers: authH(), keepalive: true,
+                body: JSON.stringify({ answers: state.answers || {}, startTime: state.startTime, attemptId: state.attemptId, disqualified: true }),
+            }).then(r => r.json()).then(d => (d && d.result && d.result.attemptId) || null);
+        }
+
         function _onSimulationDisqualified() {
             clearInterval(_asoTimer);
             clearInterval(_saveInterval);
@@ -1807,11 +1823,19 @@
                 setToolExam('none');
                 _updateExamToolbarForMode();
                 showScreen('exam');
-                // Show overlay — học sinh đọc cảnh báo rồi tự bấm để bắt đầu đếm ngược
-                document.getElementById('audio-start-overlay').classList.remove('hidden');
                 const playNowBtn = document.getElementById('aso-play-now-btn');
-                if (playNowBtn) playNowBtn.classList.add('hidden');
-                updateExamAudioStatus(false);
+                if (state.mode === 'simulation' && !_mockMode) {
+                    // Test Simulation: no overlay to click through — audio
+                    // auto-plays 10s after the test opens, like the real exam.
+                    document.getElementById('audio-start-overlay').classList.add('hidden');
+                    if (playNowBtn) playNowBtn.classList.remove('hidden');
+                    startAudioCountdown(10);
+                } else {
+                    // Show overlay — học sinh đọc cảnh báo rồi tự bấm để bắt đầu đếm ngược
+                    document.getElementById('audio-start-overlay').classList.remove('hidden');
+                    if (playNowBtn) playNowBtn.classList.add('hidden');
+                    updateExamAudioStatus(false);
+                }
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
                 // Start periodic auto-save every 10s
                 clearInterval(_saveInterval);
@@ -1824,6 +1848,7 @@
                     window.ExamProctor.start({
                         skill: 'listening', attemptType: 'full', attemptId: state.attemptId,
                         onDisqualified: _onSimulationDisqualified,
+                        saveAnswers: _saveDisqualifiedListening,
                     });
                 }
             } catch (err) {
@@ -1870,11 +1895,16 @@
             });
             audio.addEventListener('ended', () => {
                 if (!state.isReview) updateExamAudioStatus(false);
-                // Full mock test only: audio is over, nothing left to play —
-                // give the student a 4-minute window to check their answers
-                // before the exam force-submits. Standalone practice keeps
+                // Full Mock Test / Test Simulation: audio is over, nothing
+                // left to play — give the student a short window to check
+                // their answers before the exam force-submits. Practice keeps
                 // today's behavior (submit whenever they like, no timer).
-                if (!state.isReview && _mockMode) _startListeningReviewCountdown();
+                // "Lẻ" practice shares this audio element but runs its own
+                // countdown from audio.onended (_enterLTPracticeScreen).
+                if (state.isReview || state.submitted || window.isLtPracticeActive?.()) return;
+                const secs = _mockMode ? LISTENING_REVIEW_SECONDS
+                           : state.mode === 'simulation' ? SIMULATION_REVIEW_SECONDS : 0;
+                if (secs) _startListeningReviewCountdown(secs, () => { if (!state.submitted) submitExam(); });
             });
             // Genuine load failure (bad/missing audioUrl, network error,
             // unsupported format) — previously nothing listened for this at
@@ -1987,8 +2017,8 @@
             startAudioCountdown();
         }
 
-        function startAudioCountdown() {
-            let count = 30;
+        function startAudioCountdown(seconds) {
+            let count = seconds || 30;
             updateExamAudioStatus(false, count);
             clearInterval(_asoTimer);
             _asoTimer = setInterval(() => {
@@ -3468,30 +3498,34 @@
         // ══════════════════════════════════════════════
         function confirmSubmit() { updateFooter(); openModal('modal-submit'); }
 
-        // Full mock test only: 4-minute "check your answers" window after
-        // the audio finishes, then a forced auto-submit — mirrors
-        // reading-v2.js's time's-up auto-submit for the 60-minute Reading
-        // clock. A manual "Nộp bài" click at any point (before audio ends,
-        // or during this window) short-circuits straight to submitExam(),
-        // which clears this timer itself.
-        const LISTENING_REVIEW_SECONDS = 4 * 60;
+        // "Check your answers" window after the audio finishes, then a
+        // forced auto-submit — mirrors reading-v2.js's time's-up auto-submit
+        // for the 60-minute Reading clock. Full Mock Test gets 2 minutes,
+        // Test Simulation (full test and "lẻ" part) 30 seconds; Practice has
+        // no timer. A manual submit at any point short-circuits straight to
+        // submitExam()/submitLTPractice(), which clear this timer themselves.
+        const LISTENING_REVIEW_SECONDS = 2 * 60;
+        const SIMULATION_REVIEW_SECONDS = 30;
         let _reviewTimer = null;
 
-        function _startListeningReviewCountdown() {
-            if (_reviewTimer || state.submitted) return;
-            let secondsLeft = LISTENING_REVIEW_SECONDS;
+        function _startListeningReviewCountdown(seconds, onTimeUp) {
+            if (_reviewTimer) return;
+            let secondsLeft = seconds;
             _renderReviewBanner(secondsLeft);
             _reviewTimer = setInterval(() => {
                 secondsLeft--;
                 if (secondsLeft <= 0) {
-                    clearInterval(_reviewTimer);
-                    _reviewTimer = null;
-                    _hideReviewBanner();
-                    if (!state.submitted) submitExam();
+                    _cancelListeningReviewCountdown();
+                    onTimeUp();
                 } else {
                     _renderReviewBanner(secondsLeft);
                 }
             }, 1000);
+        }
+
+        function _cancelListeningReviewCountdown() {
+            if (_reviewTimer) { clearInterval(_reviewTimer); _reviewTimer = null; }
+            _hideReviewBanner();
         }
 
         function _renderReviewBanner(secondsLeft) {
@@ -3506,7 +3540,8 @@
             }
             const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
             const s = String(secondsLeft % 60).padStart(2, '0');
-            el.innerHTML = `<i class="fas fa-clock"></i> Audio đã kết thúc — kiểm tra lại đáp án: ${m}:${s}`;
+            el.innerHTML = `<i class="fas fa-clock"></i> Audio đã kết thúc — kiểm tra lại đáp án, tự nộp bài sau ${m}:${s}`;
+            el.style.background = secondsLeft <= 10 ? '#b91c1c' : '#111827';
         }
 
         function _hideReviewBanner() {
@@ -3611,7 +3646,7 @@
             // the timeout-recovery path below) is confirmed. window.onbeforeunload
             // also stays armed until then, so a stray reload still warns first.
             clearInterval(_asoTimer);
-            if (_reviewTimer) { clearInterval(_reviewTimer); _reviewTimer = null; _hideReviewBanner(); }
+            _cancelListeningReviewCountdown();
             audio.pause();
             audio.src = '';
             if (state.mode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
@@ -4042,6 +4077,7 @@
             saveExamToStorage();
             setToolExam('none'); // reset cursor before leaving exam
             clearInterval(_asoTimer);
+            _cancelListeningReviewCountdown();
             clearInterval(_saveInterval);
             _saveInterval = null;
             audio.pause();
@@ -4316,6 +4352,7 @@
     function _clearLTPracticeTimer() {
         if (_ltPracticeTimer) { clearInterval(_ltPracticeTimer); _ltPracticeTimer = null; }
         _cancelLTAutoPlay();
+        _cancelListeningReviewCountdown();
     }
 
     /* ── Test Simulation: audio auto-plays after a short countdown ───────── */
@@ -4865,6 +4902,16 @@
                     window.onbeforeunload = null;
                     location.href = 'listening.html';
                 },
+                // Answers so far, kept voided server-side — see _saveDisqualifiedListening.
+                saveAnswers: () => fetch(`${API}/listening/practice/save`, {
+                    method: 'POST', headers: authH(), keepalive: true,
+                    body: JSON.stringify({
+                        sectionId, sectionTitle: section.title || '', partNumber: partNum || section.partNumber || 1,
+                        answers: Object.entries(state.answers || {}).map(([q, a]) => ({ questionNumber: Number(q), userAnswer: String(a ?? '') })),
+                        timeTaken: _ltPracticeStartTime ? Math.floor((Date.now() - _ltPracticeStartTime) / 1000) : 0,
+                        attemptId: simAttemptId, disqualified: true,
+                    }),
+                }),
             });
         }
         // BUG-A07: fresh idempotency key per practice attempt — the save is
@@ -4922,7 +4969,17 @@
         audio.load();
         const prBtn = document.getElementById('play-btn-pr');
         if (prBtn) prBtn.innerHTML = '<i class="fas fa-play"></i>';
-        audio.onended = () => toast('Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
+        // Test Simulation: 30s to check answers once the audio ends, then
+        // auto-submit (same banner as the full test — see
+        // _startListeningReviewCountdown). Practice just gets a nudge.
+        audio.onended = mode === 'simulation'
+            ? () => {
+                if (!_ltPracticeActive || _ltPracticeSubmitted) return;
+                _startListeningReviewCountdown(SIMULATION_REVIEW_SECONDS, () => {
+                    if (_ltPracticeActive && !_ltPracticeSubmitted) submitLTPractice();
+                });
+            }
+            : () => toast('Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
 
         // Title + footer
         document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${escHtml(section.title || `Section ${partNum}`)}`;
@@ -5439,6 +5496,7 @@
     /* ── Submit + grade ──────────────────────────────────────────────────── */
     function submitLTPractice() {
         if (!_ltCleanSection || !_ltOrigSection) { toast('Lỗi: không tìm thấy dữ liệu bài luyện. Vui lòng tải lại trang.', 'error'); return; }
+        _cancelListeningReviewCountdown();
         _doSubmitLTPractice().catch(e => { console.error('[submitLTPractice]', e); toast('Lỗi hiển thị kết quả: ' + e.message, 'error'); });
     }
     async function _doSubmitLTPractice() {

@@ -33,6 +33,10 @@
   var SHOT_DELAY_MS = 1200;   // let the other tab/app actually paint first
   var SHOT_MAX_WIDTH = 1280;
   var PICKER_SETTLE_MS = 1500; // focus bounces around for a moment after the picker closes
+  // After a successful share the browser pins its own "sharing your screen"
+  // bar (Ẩn / Dừng chia sẻ) over the page, and clicking it takes focus away —
+  // a strike. Give the student this long to press "Ẩn" before strikes count.
+  var SHARE_GRACE_MS = 10000;
 
   var _stream = null;
   var _video = null;
@@ -90,6 +94,7 @@
       surfaceSwitching: 'exclude',
       monitorTypeSurfaces: 'include'
     };
+    var settleMs = PICKER_SETTLE_MS;
     return navigator.mediaDevices.getDisplayMedia(opts).then(function (stream) {
       var t = stream.getVideoTracks()[0];
       var surface = t && t.getSettings ? t.getSettings().displaySurface : null;
@@ -101,8 +106,9 @@
         var err = new Error('not-monitor'); err.code = 'not-monitor'; throw err;
       }
       _attach(stream);
+      settleMs = SHARE_GRACE_MS;
     }).finally(function () {
-      _pickingTimer = setTimeout(function () { _picking = false; }, PICKER_SETTLE_MS);
+      _pickingTimer = setTimeout(function () { _picking = false; }, settleMs);
     });
   }
 
@@ -112,11 +118,14 @@
     s.id = 'ews-pc-style';
     s.textContent = [
       '#ews-pc-gate{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.82);font-family:inherit}',
-      '#ews-pc-gate .pc-box{background:var(--surface,#fff);color:var(--text,#111827);max-width:480px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.35);text-align:center}',
+      '#ews-pc-gate .pc-box{background:var(--surface,#fff);color:var(--text,#111827);max-width:480px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.35);text-align:center;max-height:calc(100vh - 32px);overflow:auto}',
       '#ews-pc-gate .pc-icon{font-size:40px;line-height:1;margin-bottom:10px}',
       '#ews-pc-gate h3{margin:0 0 8px;font-size:18px;font-weight:800}',
       '#ews-pc-gate p{margin:0 0 10px;font-size:13.5px;line-height:1.6;color:var(--text2,#4b5563)}',
       '#ews-pc-gate ol{margin:0 0 14px;padding-left:20px;text-align:left;font-size:13px;line-height:1.7;color:var(--text2,#4b5563)}',
+      '#ews-pc-gate .pc-rules{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.25);text-align:left;font-size:12.5px;line-height:1.55;color:var(--text,#111827)}',
+      '#ews-pc-gate .pc-rules ul{margin:6px 0 0;padding-left:18px}',
+      '#ews-pc-gate .pc-rules li{margin:2px 0}',
       '#ews-pc-gate .pc-err{min-height:18px;margin:0 0 10px;font-size:13px;font-weight:700;color:#b91c1c}',
       '#ews-pc-gate .pc-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}',
       '#ews-pc-gate button{border:none;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}',
@@ -147,7 +156,12 @@
         (opts.reshare
           ? '<p>Dừng chia sẻ màn hình được tính là <b>1 lần vi phạm</b>. Hãy chia sẻ lại để tiếp tục làm bài.</p>'
           : '<p>Bài thi có giám sát. Mỗi lần bạn rời khỏi bài thi, hệ thống chụp <b>1 ảnh màn hình</b> gửi cho giáo viên. '
-            + 'Không quay video, không chụp khi bạn đang làm bài bình thường.</p>') +
+            + 'Không quay video, không chụp khi bạn đang làm bài bình thường.</p>'
+            + '<div class="pc-rules"><b>Quy định giám sát</b><ul>'
+            + '<li>Rời bài thi, chuyển tab / cửa sổ, hoặc bấm nút <b>"Ẩn"</b> / <b>"Dừng chia sẻ"</b> trên thanh chia sẻ màn hình của trình duyệt → tính <b>1 gậy</b>.</li>'
+            + '<li>Đủ <b>5 gậy</b> → lượt thi bị huỷ, không tính kết quả. Bài làm đến lúc bị huỷ vẫn được gửi cho giáo viên.</li>'
+            + '<li>Thanh chia sẻ che bài thi? Bấm <b>"Ẩn"</b> trên thanh đó <b>trong 10 giây đầu</b> ngay sau khi chia sẻ — lúc đó chưa tính gậy.</li>'
+            + '</ul></div>') +
         '<ol><li>Bấm <b>Chia sẻ toàn bộ màn hình</b> bên dưới.</li>' +
         '<li>Trong hộp thoại của trình duyệt, chọn thẻ <b>Toàn bộ màn hình / Entire screen</b>.</li>' +
         '<li>Chọn màn hình rồi bấm <b>Chia sẻ / Share</b>.</li></ol>' +

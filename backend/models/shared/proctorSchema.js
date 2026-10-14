@@ -39,5 +39,8 @@ module.exports = {
   // Set once violationCount reaches proctorPolicy.MAX_VIOLATIONS and the
   // attempt is voided — informational only; the cooldown lock lives on the
   // User document.
-  disqualifiedAt: { type: Date }
+  disqualifiedAt: { type: Date },
+  // When the voided attempt's answers were saved (one time only) — see
+  // proctorPolicy.disqualifiedAnswerFilter.
+  answersSavedAt: { type: Date }
 };

@@ -32,7 +32,7 @@ const proctorPolicy = require('./proctorPolicy');
 
 const SKILLS = ['reading', 'listening', 'writing'];
 const ATTEMPT_TYPES = ['full', 'practice'];
-// The 3rd strike voids the attempt — same rule as the Full Mock Test and
+// The 5th strike voids the attempt — same rule as the Full Mock Test and
 // the Entrance Test (see proctorPolicy.js).
 const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;
 // Global across ALL 3 skills (confirmed product decision — not per-skill):

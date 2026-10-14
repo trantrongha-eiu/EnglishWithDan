@@ -340,7 +340,9 @@ exports.startTest = async (req, res) => {
 
 exports.submitTest = async (req, res) => {
   try {
-    const result = await listeningService.submitTest(req.params.id, req.body, req.user);
+    // disqualified: sent right after the proctor voided the attempt — see
+    // listeningService.submitTest.
+    const result = await listeningService.submitTest(req.params.id, req.body, req.user, { disqualified: req.body.disqualified === true });
     // Also returned when attemptId was given but no longer matches an
     // in-progress attempt (already submitted, or belongs to someone else) —
     // same generic phrasing readingService's equivalent path uses, since
@@ -395,10 +397,11 @@ exports.getHistoryDetail = async (req, res) => {
 exports.savePractice = async (req, res) => {
   try {
     const { sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId, highlights } = req.body;
+    const disqualified = req.body.disqualified === true;
     if (!sectionId || !Array.isArray(answers)) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId, highlights }, req.user._id);
+    const result = await listeningService.savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId, highlights, disqualified }, req.user._id);
     if (!result) {
       // null means either "section not found" or — only possible when the
       // request carried a Simulation attemptId — "disqualified/already

@@ -246,19 +246,19 @@ describe('POST /api/mock-test/:id/violation — tab-switch proctoring', () => {
     expect(res.body.violated).toBe(false);
   });
 
-  test('the 3rd strike voids the run and /start is blocked with 429', async () => {
+  test('the 5th strike voids the run and /start is blocked with 429', async () => {
     await seedPools();
     const user = await createPremiumStudent();
     const api = authed(user);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
     let last;
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 5; i++) {
       last = await api.post(`/api/mock-test/${m._id}/violation`, { type: 'hidden' });
-      if (i < 3) expect(last.body.disqualified).toBe(false);
+      if (i < 5) expect(last.body.disqualified).toBe(false);
     }
     expect(last.body.disqualified).toBe(true);
-    expect(last.body.maxViolations).toBe(3);
+    expect(last.body.maxViolations).toBe(5);
     expect(last.body.cooldownSeconds).toBe(300);
 
     const blocked = await api.post('/api/mock-test/start');

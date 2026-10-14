@@ -3082,7 +3082,7 @@ body.tool-hl .check-box { user-select: none; }
 /* Full mock test: "Reading done — start Writing?" waiting screen
    (#reading-done-overlay), mirrors listening.html's #listening-done-overlay. */
 .mock-done-overlay {
-  position: fixed; inset: 0; z-index: 10000;
+  position: fixed; inset: 0; z-index: 2147483000; /* above nav, chat widget, mascot */
   background: rgba(0,0,0,.60);
   display: flex; align-items: center; justify-content: center;
 }

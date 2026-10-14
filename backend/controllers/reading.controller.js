@@ -51,7 +51,9 @@ exports.startTest = async (req, res) => {
 
 exports.submitTest = guard(null, async (req, res) => {
   const { attemptId, answers } = req.body;
-  const result = await readingService.submitTest(attemptId, answers, req.user);
+  // disqualified: sent by the page right after the proctor voided the
+  // attempt — saves the answers so far without un-voiding it.
+  const result = await readingService.submitTest(attemptId, answers, req.user, { disqualified: req.body.disqualified === true });
   if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi đang làm' });
   res.json({ success: true, result });
 });

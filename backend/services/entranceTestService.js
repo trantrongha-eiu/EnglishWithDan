@@ -83,7 +83,7 @@ const CONTENT_POOLS = {
 };
 const GRAMMAR_QUESTION_COUNT = 25;
 
-// The MAX_VIOLATIONS-th (3rd) strike voids the attempt — one rule shared
+// The MAX_VIOLATIONS-th (5th) strike voids the attempt — one rule shared
 // with Test Simulation and the Full Mock Test (see proctorPolicy.js).
 const proctorPolicy = require('./proctorPolicy');
 const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;

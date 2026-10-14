@@ -117,7 +117,7 @@
         if (window.toast) window.toast('Đã xong Listening + Reading. Khi sẵn sàng, bấm "Tiếp tục" để làm Writing.', 'success', 6000);
         history.replaceState(null, '', location.pathname);
       } else if (_sp.get('mockvoid') === '1') {
-        if (window.toast) window.toast('Lượt thi thử đã bị huỷ do rời khỏi màn hình thi quá 10 lần. Kết quả lượt đó không được tính — hãy đợi khoảng 5 phút rồi bắt đầu lượt mới.', 'error', 9000);
+        if (window.toast) window.toast('Lượt thi thử đã bị huỷ do vi phạm giám sát 5 lần. Kết quả lượt đó không được tính (bài làm đến lúc bị huỷ vẫn được gửi cho giáo viên) — hãy đợi khoảng 5 phút rồi bắt đầu lượt mới.', 'error', 9000);
         history.replaceState(null, '', location.pathname);
       }
     } catch (_) {}
@@ -144,7 +144,7 @@
           // self-started step afterwards.
           var sittingNote = a.progress === 'speaking' ? 'Lượt 2: Speaking (Nói)'
             : 'Lượt 1: Listening + Reading + Writing';
-          var btnLabel = (a.progress === 'writing' || a.progress === 'speaking')
+          var btnLabel = a.progress === 'speaking'
             ? 'Bắt đầu ' + nextLabel
             : 'Tiếp tục — ' + nextLabel;
           setCard({

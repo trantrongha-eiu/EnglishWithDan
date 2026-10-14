@@ -100,7 +100,7 @@ const MockTestAttemptSchema = new mongoose.Schema({
     // 'abandoned'    = the student discarded a still-open run from the
     //                  dashboard so they could start a fresh mock.
     // 'disqualified' = the student left the exam screen MAX_VIOLATIONS
-    //                  (3) times; the run is voided (no overall
+    //                  (5) times; the run is voided (no overall
     //                  band) and they must wait out a cooldown before a new
     //                  one.
     // 'deleted'      = an admin removed it from the monitor.
@@ -118,7 +118,7 @@ const MockTestAttemptSchema = new mongoose.Schema({
     events:         { type: [proctorEventSchema], default: [] },
     // Screenshots of the shared screen taken right after a strike.
     shots:          proctorFields.shots,
-    // Set when violationCount reaches MAX_VIOLATIONS (3) and the run is
+    // Set when violationCount reaches MAX_VIOLATIONS (5) and the run is
     // voided — the start of the "wait 5 minutes" cooldown.
     disqualifiedAt: { type: Date }
   }

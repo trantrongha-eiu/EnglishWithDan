@@ -314,7 +314,7 @@
   function _renderBadge() {
     if (!_proctor || !_proctor.badge) return;
     var n = _proctor.count;
-    var max = _proctor.maxViolations || 3;
+    var max = _proctor.maxViolations || 5;
     var txt = _proctor.badge.querySelector('.mp-txt');
     if (n !== _proctor.badgeCount) { _proctor.badgeCount = n; _expandBadge(); }
     var full, compact;
@@ -440,7 +440,7 @@
     }
   }
 
-  // The run has been disqualified server-side (3rd strike). Tear
+  // The run has been disqualified server-side (5th strike). Tear
   // down every proctoring hook, throw up an unmissable full-screen notice,
   // then bounce the student to the dashboard — which explains the cooldown.
   function _disqualify(cooldownSeconds) {
@@ -471,13 +471,40 @@
     ov.innerHTML =
       '<div style="font-size:44px">🚫</div>' +
       '<div style="font-size:20px;font-weight:800">Lượt thi thử đã bị huỷ</div>' +
-      '<div style="max-width:460px">Bạn đã rời khỏi màn hình thi quá nhiều lần. '
-      + 'Kết quả lượt này <b>không được tính</b>. Hãy quay lại trang Mocktest và đợi khoảng <b>'
-      + mins + ' phút</b> trước khi bắt đầu lượt thi mới.</div>' +
-      '<div style="opacity:.85">Đang chuyển về trang Mocktest…</div>';
+      '<div style="max-width:460px">Bạn đã vi phạm giám sát <b>' + (_proctor.maxViolations || 5) + ' lần</b>. '
+      + 'Kết quả lượt này <b>không được tính</b>, nhưng bài làm đến thời điểm này vẫn được gửi cho giáo viên. '
+      + 'Hãy quay lại trang Mocktest và đợi khoảng <b>' + mins + ' phút</b> trước khi bắt đầu lượt thi mới.</div>' +
+      '<div style="opacity:.85" id="mock-dq-status">Đang gửi bài làm cho giáo viên…</div>';
     (_fsRoot() || document.body).appendChild(ov);
-    setTimeout(function () { location.href = 'mock-test.html?mockvoid=1'; }, 3200);
+
+    var setStatus = function (txt) { var s = document.getElementById('mock-dq-status'); if (s) s.textContent = txt; };
+    var p = _proctor;
+    var save = Promise.resolve(null);
+    if (typeof _dqSaver === 'function') {
+      try { save = Promise.resolve(_dqSaver()); } catch (e) { save = Promise.reject(e); }
+    }
+    // The skill page saved its answers as a voided sub-attempt — link it to
+    // this run so the teacher's monitor shows the step.
+    var saved = save.then(function (subAttemptId) {
+      if (!subAttemptId) return;
+      return fetch(API + '/mock-test/' + encodeURIComponent(p.mockId) + '/disqualified-step', {
+        method: 'POST', headers: h(), keepalive: true,
+        body: JSON.stringify({ skill: p.skill, attemptId: String(subAttemptId) })
+      });
+    }).then(function () { setStatus('Đã gửi bài làm cho giáo viên. Đang chuyển về trang Mocktest…'); },
+      function () { setStatus('Không gửi được bài làm (có thể đã gửi trước đó). Đang chuyển về trang Mocktest…'); });
+    var minWait = new Promise(function (r) { setTimeout(r, 3200); });
+    var maxWait = new Promise(function (r) { setTimeout(r, 10000); });
+    Promise.race([Promise.all([saved, minWait]), maxWait]).then(function () {
+      location.href = 'mock-test.html?mockvoid=1';
+    });
   }
+
+  // A skill page registers how to save its answers so far if the run gets
+  // voided mid-skill: fn() → Promise resolving to the saved sub-attempt id
+  // (sent with disqualified:true), or null when there's nothing to save.
+  var _dqSaver = null;
+  function setDisqualifySaver(fn) { _dqSaver = fn; }
 
   // A tab switch fires blur AND visibilitychange — collapse to one "leave".
   function _onLeave(type) {
@@ -572,7 +599,7 @@
     var x = params();
     if (!x.mockId || !x.skill || _proctor) return;
     _proctor = {
-      mockId: x.mockId, skill: x.skill, count: 0, maxViolations: 3,
+      mockId: x.mockId, skill: x.skill, count: 0, maxViolations: 5,
       lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
@@ -675,6 +702,7 @@
     fetchCurrent: fetchCurrent,
     advance: advance,
     advanceWithoutNav: advanceWithoutNav,
+    setDisqualifySaver: setDisqualifySaver,
     flushPendingAdvance: flushPendingAdvance,
     showBanner: showBanner,
     startProctor: startProctor,

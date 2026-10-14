@@ -28,6 +28,7 @@ const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
 const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
+const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 
 // Mongoose `.select()` string that strips a section's answer key
@@ -837,7 +838,12 @@ async function startTest(id, userId, mode = 'practice') {
   return { _id: test._id, attemptId: attempt._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections, mode };
 }
 
-async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId }, user) {
+// opts.disqualified: the proctor just voided this attempt — save the answers
+// given so far (graded, so the teacher sees the score), but leave it
+// 'disqualified' with no streak/badge/review side effects. One time only —
+// see proctorPolicy.disqualifiedAnswerFilter.
+async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId }, user, { disqualified = false } = {}) {
+  if (disqualified && !attemptId) return null;
   const test = await ListeningTest.findById(id);
   if (!test) return null;
 
@@ -884,7 +890,8 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
     startTime: startTime || now,
     submittedAt: now,
     timeTaken,
-    status: 'completed'
+    status: disqualified ? 'disqualified' : 'completed',
+    ...(disqualified ? { 'proctor.answersSavedAt': now } : {}),
   };
 
   // Update the SAME row startTest() created (status: 'in-progress' -> 'completed')
@@ -904,13 +911,19 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   let attempt;
   if (attemptId) {
     attempt = await ListeningAttempt.findOneAndUpdate(
-      { _id: attemptId, userId: fields.userId, status: 'in-progress' },
+      disqualified
+        ? { _id: attemptId, userId: fields.userId, ...disqualifiedAnswerFilter() }
+        : { _id: attemptId, userId: fields.userId, status: 'in-progress' },
       fields,
       { new: true }
     );
     if (!attempt) return null;
   } else {
     attempt = await ListeningAttempt.create(fields);
+  }
+
+  if (disqualified) {
+    return { attemptId: attempt._id, totalQuestions: total, correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken, disqualified: true };
   }
 
   let bonusApplied = 0;
@@ -1064,7 +1077,9 @@ async function startPracticeSimulation(sectionId, sectionTitle, partNumber, user
 }
 
 // ── Practice attempts (single-section, no premium gate) ─────────────────
-async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId: simulationAttemptId, highlights: rawHighlights }, userId) {
+async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken, clientKey, attemptId: simulationAttemptId, highlights: rawHighlights, disqualified: dqFlag }, userId) {
+  // The proctor just voided this attempt — see submitTest()'s opts.disqualified.
+  const disqualified = dqFlag === true && !!simulationAttemptId;
   const section = await ListeningSection.findById(sectionId).lean();
   if (!section) return null;
   // Highlights made while practising (no attempt id to PUT them to until
@@ -1076,7 +1091,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
   // to duplicate the row + the AttemptReview it spawns. See
   // ReadingPracticeAttempt.js / readingService.savePractice for the pattern.
   const key = typeof clientKey === 'string' && clientKey ? clientKey : null;
-  if (key) {
+  if (key && !disqualified) {
     const existing = await ListeningPracticeAttempt.findOne({ userId, clientKey: key }).select('_id correctCount totalQuestions').lean();
     if (existing) {
       return { attemptId: existing._id, correctCount: existing.correctCount, totalQuestions: existing.totalQuestions, deduped: true };
@@ -1095,18 +1110,24 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
     // path — a late strike report flipping status to 'disqualified' right
     // before this lands makes the update match nothing.
     attempt = await ListeningPracticeAttempt.findOneAndUpdate(
-      { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
+      disqualified
+        ? { _id: simulationAttemptId, userId, ...disqualifiedAnswerFilter() }
+        : { _id: simulationAttemptId, userId, status: 'in-progress', mode: 'simulation' },
       {
         sectionTitle: sectionTitle || section.title || '',
         partNumber: partNumber || section.partNumber || 1,
         answers: gradedAnswers, totalQuestions: gradedAnswers.length,
         correctCount: correct, wrongCount: _wrong, skippedCount: _skipped,
-        timeTaken: timeTaken || 0, submittedAt: new Date(), status: 'completed',
+        timeTaken: timeTaken || 0, submittedAt: new Date(),
+        ...(disqualified
+          ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
+          : { status: 'completed' }),
         ...(highlights ? { highlights } : {}),
       },
       { new: true }
     );
     if (!attempt) return null; // disqualified (or a duplicate submit) — nothing to save
+    if (disqualified) return { attemptId: attempt._id, correctCount: correct, totalQuestions: gradedAnswers.length, disqualified: true };
   } else {
     try {
       attempt = await ListeningPracticeAttempt.create({

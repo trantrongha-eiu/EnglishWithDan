@@ -635,21 +635,21 @@ describe('proctor violations', () => {
   beforeEach(() => { dedupeSpy = jest.spyOn(require('../../services/proctorPolicy'), 'isDuplicateEvent').mockReturnValue(false); });
   afterEach(() => dedupeSpy.mockRestore());
 
-  test('the 3rd strike (MAX_VIOLATIONS) disqualifies, with a cooldown blocking a new start', async () => {
+  test('the 5th strike (MAX_VIOLATIONS) disqualifies, with a cooldown blocking a new start', async () => {
     await seedFullConfig();
     const student = await createStudent();
     const api = authed(student);
     const { attemptId, attempt } = await startAndGetAttempt(api);
-    expect(attempt.proctor).toEqual({ violationCount: 0, maxViolations: 3 });
+    expect(attempt.proctor).toEqual({ violationCount: 0, maxViolations: 5 });
 
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 4; i++) {
       const r = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'blur' });
       expect(r.body.violationCount).toBe(i);
       expect(r.body.disqualified).toBe(false);
     }
     const last = await api.post(`/api/entrance-test/${attemptId}/violation`, { type: 'blur' });
     expect(last.status).toBe(200);
-    expect(last.body.violationCount).toBe(3);
+    expect(last.body.violationCount).toBe(5);
     expect(last.body.disqualified).toBe(true);
     expect(last.body.cooldownSeconds).toBeGreaterThan(0);
 

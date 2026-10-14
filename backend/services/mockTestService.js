@@ -28,7 +28,7 @@ const NEXT = { listening: 'reading', reading: 'writing', writing: 'speaking', sp
 
 // Best-effort proctoring: the MAX_VIOLATIONS-th time the student leaves the
 // exam screen the run is voided ('disqualified') and they must wait out
-// DQ_COOLDOWN_SECONDS before starting a fresh one. Shared 3-strike rule —
+// DQ_COOLDOWN_SECONDS before starting a fresh one. Shared 5-strike rule —
 // see proctorPolicy.js. Teachers/admins are exempt (see recordViolation /
 // startMockTest callers).
 const proctorPolicy = require('./proctorPolicy');
@@ -296,6 +296,41 @@ async function recordViolation(userId, mockId, { type, skill, capture } = {}) {
     disqualified,
     cooldownSeconds: disqualified ? DQ_COOLDOWN_SECONDS : 0
   };
+}
+
+// The run was just voided mid-skill. The skill page has saved what the
+// student answered so far as a 'disqualified' sub-attempt (see the skill
+// services' `disqualified` submit option); link it to the step it belongs
+// to so the teacher's monitor shows how far they got. The run itself stays
+// voided — no completedAt, no progress move, no overall band.
+const DQ_STEP_SKILLS = { listening: ListeningAttempt, reading: TestAttempt, writing: WritingAttempt };
+async function attachDisqualifiedStep(userId, mockId, { skill, attemptId }) {
+  if (!mongoose.isValidObjectId(mockId)) throw new ValidationError('mockId không hợp lệ');
+  if (!DQ_STEP_SKILLS[skill]) throw new ValidationError('skill không hợp lệ');
+  if (!mongoose.isValidObjectId(attemptId)) throw new ValidationError('attemptId không hợp lệ');
+
+  const doc = await MockTestAttempt.findOne({ _id: mockId, userId });
+  if (!doc) throw new NotFoundError('Không tìm thấy bài thi thử');
+  const dqAt = doc.proctor && doc.proctor.disqualifiedAt ? new Date(doc.proctor.disqualifiedAt).getTime() : 0;
+  if (doc.status !== 'disqualified' || doc.progress !== skill
+      || Date.now() - dqAt > proctorPolicy.DQ_ANSWER_WINDOW_MS) {
+    throw new AppError('Không thể lưu bài cho lượt thi thử này.', 409);
+  }
+  const prev = (doc.steps && doc.steps[skill]) || {};
+  if (prev.attemptId) return { attached: false };
+
+  const sub = await DQ_STEP_SKILLS[skill].findOne({ _id: attemptId, userId, status: 'disqualified' }).select('_id').lean();
+  if (!sub) throw new NotFoundError('Không tìm thấy bài làm');
+
+  doc.steps[skill] = {
+    attemptId,
+    band: prev.manual ? prev.band : await readBand(skill, attemptId),
+    manual: !!prev.manual,
+    manualBy: prev.manualBy,
+    manualAt: prev.manualAt
+  };
+  await doc.save();
+  return { attached: true };
 }
 
 async function advance(userId, mockId, { skill, attemptId }) {
@@ -627,7 +662,7 @@ async function getAdminHistoryDetail(id) {
 
 module.exports = {
   startMockTest, getCurrent, abandonCurrent, recordViolation,
-  advance, getHistory, getHistoryDetail, hasActiveMockStep,
+  advance, attachDisqualifiedStep, getHistory, getHistoryDetail, hasActiveMockStep,
   getAdminHistory, getAdminHistoryDetail, setManualScores, deleteRun,
   // exported for tests
   roundOverall, randomActive, SKILL_ORDER, MAX_VIOLATIONS, DQ_COOLDOWN_SECONDS

@@ -89,9 +89,10 @@
               '<div class="ews-ms-title">Test Simulation</div>' +
               '<ul class="ews-ms-list">' +
                 '<li>Không được tra từ / dịch</li>' +
-                '<li>Có giám sát — rời màn hình bị tính vi phạm</li>' +
-                '<li>3 vi phạm sẽ huỷ bài, khoá 5 phút</li>' +
-                '<li>Máy tính: bắt buộc chia sẻ màn hình — chụp ảnh mỗi lần vi phạm</li>' +
+                '<li>Có giám sát — rời màn hình / chuyển tab bị tính 1 vi phạm (1 gậy)</li>' +
+                '<li><b>5 gậy</b> sẽ huỷ bài, khoá 5 phút — bài làm đến lúc bị huỷ vẫn được gửi cho giáo viên, nhưng không tính kết quả</li>' +
+                '<li>Máy tính: bắt buộc chia sẻ toàn màn hình — chụp ảnh mỗi lần vi phạm</li>' +
+                '<li>Trong lúc làm bài, đừng bấm nút <b>"Ẩn"</b> / <b>"Dừng chia sẻ"</b> trên thanh chia sẻ của trình duyệt — bấm vào cũng tính 1 gậy</li>' +
               '</ul>' +
               '<div id="ews-ms-sim-status"></div>' +
               '<button type="button" class="ews-ms-btn ews-ms-btn-sim" id="ews-ms-sim-btn">Bắt đầu Test Simulation</button>' +

@@ -254,6 +254,8 @@ function _blockPasteInto(ta) {
         if (!_mockWritingExamId) { showToast('Không tìm thấy đề Writing của bài thi thử', 'error'); location.href = 'dashboard.html'; return; }
         _mockMode = true;
         window.MockTest.showBanner('writing');
+        // Run voided mid-Writing → save the essays so far for the teacher.
+        if (window.MockTest.setDisqualifySaver) window.MockTest.setDisqualifySaver(_saveDisqualifiedWriting);
         // Mandatory screen share first — no exam clock runs behind its prompt.
         if (window.MockTest.ready) await window.MockTest.ready();
         await startExam();
@@ -501,6 +503,7 @@ function launchExam() {
         clearAutoSave();
         location.href = 'writing.html';
       },
+      saveAnswers: _saveDisqualifiedWriting,
     });
   }
 }
@@ -701,6 +704,30 @@ function toggleFlag() {
 // ──────────────────────────────────────────────────────
 // Submit
 // ──────────────────────────────────────────────────────
+// The proctor voided the attempt (Simulation, or the Full Mock Test run):
+// send the essays written so far with disqualified:true — saved for the
+// teacher but kept voided (writingService.submitExam). Resolves to the
+// attempt id.
+function _saveDisqualifiedWriting() {
+  if (!state.exam) return Promise.resolve(null);
+  const ta = document.getElementById('answer-textarea');
+  if (ta) state.answers[state.currentTask] = ta.value;
+  if (!(state.answers[1] || '').trim() && !(state.answers[2] || '').trim()) return Promise.resolve(null);
+  return apiFetch('/api/writing/submit', {
+    method: 'POST', keepalive: true, skipAuthRedirect: true,
+    body: JSON.stringify({
+      examId: state.exam._id,
+      task1Id: state.exam.task1?._id,
+      task2Id: state.exam.task2?._id,
+      task1Answer: state.answers[1] || '',
+      task2Answer: state.answers[2] || '',
+      timeTaken: Math.max(0, (state.totalSeconds || 0) - (state.secondsLeft || 0)),
+      attemptId: state.mode === 'simulation' ? state.simAttemptId : undefined,
+      disqualified: true,
+    }),
+  }).then(d => (d && d.attemptId) || null);
+}
+
 function confirmSubmit() {
   // Save current textarea
   state.answers[state.currentTask] = document.getElementById('answer-textarea').value;
@@ -2425,6 +2452,15 @@ async function _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, m
         window.onbeforeunload = null;
         clearPracticeAutoSave(taskType, taskId);
         location.href = 'writing.html';
+      },
+      // The essay so far, kept voided server-side — see _saveDisqualifiedWriting.
+      saveAnswers: () => {
+        const answer = (document.getElementById('pw-textarea')?.value || '').trim();
+        if (!answer) return Promise.resolve(null);
+        return apiFetch('/api/writing/practice/submit', {
+          method: 'POST', keepalive: true, skipAuthRedirect: true,
+          body: JSON.stringify({ taskType, taskId: practiceState.task?._id || taskId, answer, attemptId: simAttemptId, disqualified: true }),
+        });
       },
     });
   }

@@ -63,11 +63,11 @@
     return b;
   }
 
-  // The full "Gậy: n/3 — quay lại bài thi!" pill used to sit permanently in
+  // The full "Gậy: n/5 — quay lại bài thi!" pill used to sit permanently in
   // the bottom-left corner and covered Reading/Listening questions and the
   // Writing Task 1 ⇄ Task 2 switcher. Now it shows the full text only for a
   // few seconds of on-screen time after each change (a new strike, or the
-  // start of the exam), then shrinks to a small "👁️ n/3" (or just 👁️).
+  // start of the exam), then shrinks to a small "👁️ n/5" (or just 👁️).
   var BADGE_EXPAND_MS = 5000;
 
   function _expandBadge() {
@@ -93,7 +93,7 @@
   function _renderBadge() {
     if (!_proctor || !_proctor.badge) return;
     var n = _proctor.count;
-    var max = _proctor.maxViolations || 3;
+    var max = _proctor.maxViolations || 5;
     var txt = _proctor.badge.querySelector('.ep-txt');
     if (n !== _proctor.badgeCount) { _proctor.badgeCount = n; _expandBadge(); }
     var full, compact;
@@ -248,16 +248,33 @@
     ov.innerHTML =
       '<div style="font-size:44px">🚫</div>' +
       '<div style="font-size:20px;font-weight:800">Bài Test Simulation đã bị huỷ</div>' +
-      '<div style="max-width:460px">Bạn đã rời khỏi màn hình thi quá nhiều lần. '
-      + 'Kết quả lần này <b>không được tính</b>. Bạn cần đợi khoảng <b>'
-      + mins + ' phút</b> trước khi bắt đầu một lượt Test Simulation mới (ở bất kỳ kỹ năng nào).</div>' +
-      '<div style="opacity:.85">Đang quay lại…</div>';
+      '<div style="max-width:460px">Bạn đã vi phạm giám sát <b>' + (_proctor.maxViolations || 5) + ' lần</b>. '
+      + 'Kết quả lần này <b>không được tính</b>, nhưng bài làm đến thời điểm này vẫn được gửi cho giáo viên. '
+      + 'Bạn cần đợi khoảng <b>' + mins + ' phút</b> trước khi bắt đầu một lượt Test Simulation mới (ở bất kỳ kỹ năng nào).</div>' +
+      '<div style="opacity:.85" id="exam-proctor-dq-status">Đang gửi bài làm cho giáo viên…</div>';
     (_fsRoot() || document.body).appendChild(ov);
 
     var onDisqualified = _proctor.onDisqualified;
-    setTimeout(function () {
+    _saveThenLeave(_proctor.saveAnswers, document.getElementById('exam-proctor-dq-status'), function () {
       if (typeof onDisqualified === 'function') { try { onDisqualified(cooldownSeconds); } catch (_) {} }
-    }, 2800);
+    });
+  }
+
+  // On disqualification the page's saveAnswers() sends the answers given so
+  // far (they're voided, but the teacher still gets them). Leave the notice
+  // up at least 2.8s so it can be read, and never wait on a hung request for
+  // more than ~10s.
+  function _saveThenLeave(saveAnswers, statusEl, leave) {
+    var save = Promise.resolve(null);
+    if (typeof saveAnswers === 'function') {
+      try { save = Promise.resolve(saveAnswers()); } catch (e) { save = Promise.reject(e); }
+    }
+    var setStatus = function (txt) { if (statusEl) statusEl.textContent = txt; };
+    var saved = save.then(function () { setStatus('Đã gửi bài làm cho giáo viên. Đang quay lại…'); },
+      function () { setStatus('Không gửi được bài làm (có thể đã gửi trước đó). Đang quay lại…'); });
+    var minWait = new Promise(function (r) { setTimeout(r, 2800); });
+    var maxWait = new Promise(function (r) { setTimeout(r, 10000); });
+    Promise.race([Promise.all([saved, minWait]), maxWait]).then(leave);
   }
 
   function _onLeave(type) {
@@ -363,7 +380,9 @@
   }
 
   // opts: { skill: 'reading'|'listening'|'writing', attemptType:
-  // 'full'|'practice', attemptId, onDisqualified(cooldownSeconds), lockNav
+  // 'full'|'practice', attemptId, onDisqualified(cooldownSeconds),
+  // saveAnswers() (returns a Promise — sends the answers so far with
+  // disqualified:true, run before onDisqualified), lockNav
   // (default true — set false for a page where students are expected to
   // navigate between screens, e.g. Listening's separate audio-start
   // overlay before the exam screen proper) }
@@ -372,7 +391,7 @@
     if (_proctor || !opts.skill || !opts.attemptType || !opts.attemptId) return;
     _proctor = {
       skill: opts.skill, attemptType: opts.attemptType, attemptId: opts.attemptId,
-      onDisqualified: opts.onDisqualified, maxViolations: opts.maxViolations || 3,
+      onDisqualified: opts.onDisqualified, saveAnswers: opts.saveAnswers, maxViolations: opts.maxViolations || 5,
       count: 0, lastLeaveAt: 0, navigatingAway: false, navLocked: false, disqualified: false,
       badge: null, actx: null, alarm: null, alarmSafety: null,
       flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null

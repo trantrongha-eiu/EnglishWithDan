@@ -8,9 +8,12 @@
  * this module only holds what must be identical across them.
  */
 
-// The 3rd strike voids the attempt — in every proctored flow (product
-// decision 2026-10-01; Simulation used to allow 5, the Mock Test 10).
-const MAX_VIOLATIONS = 3;
+// The 5th strike voids the attempt — in every proctored flow. Was 3
+// (2026-10-01) until 2026-10-14: the browser's own screen-share bar
+// ("Ẩn" / "Dừng chia sẻ") sits over the exam, and clicking it registers as
+// leaving the page, so 3 strikes cost students attempts they didn't mean
+// to throw away.
+const MAX_VIOLATIONS = 5;
 
 // 'share-stopped' = the student ended the mandatory screen share mid-test.
 const PROCTOR_TYPES = ['hidden', 'blur', 'unload-attempt', 'share-stopped'];
@@ -28,6 +31,27 @@ function isDuplicateEvent(events, now = Date.now()) {
   return !!(last && last.at && now - new Date(last.at).getTime() < DEDUPE_WINDOW_MS);
 }
 
+// A voided attempt still gets the student's answers saved once (graded, but
+// kept 'disqualified' — no streak, badges or review), so the teacher sees how
+// far they got. The page sends them right after the disqualifying strike;
+// this window only stops a much later replay.
+const DQ_ANSWER_WINDOW_MS = 15 * 60 * 1000;
+
+// Mongo filter for that one-time save. Matches the student's own attempt
+// when it is either a Simulation run voided within the window, or still
+// 'in-progress' (a Full Mock Test sub-attempt — the mock wrapper is what got
+// voided; self-voiding your own open attempt gains nothing). Callers add
+// { _id, userId } and set status 'disqualified' + proctor.answersSavedAt.
+function disqualifiedAnswerFilter(now = Date.now()) {
+  return {
+    'proctor.answersSavedAt': null,
+    $or: [
+      { status: 'disqualified', mode: 'simulation', 'proctor.disqualifiedAt': { $gte: new Date(now - DQ_ANSWER_WINDOW_MS) } },
+      { status: 'in-progress' },
+    ],
+  };
+}
+
 // Screenshots taken (via the student's shared screen) right after a strike.
 const SHOT_CAP = 30;
 // A screenshot is only accepted shortly after a recorded strike — the
@@ -35,7 +59,7 @@ const SHOT_CAP = 30;
 const SHOT_WINDOW_MS = 2 * 60 * 1000;
 const SHOT_MAX_BYTES = 1.5 * 1024 * 1024;
 const SHOT_DATA_URL = /^data:image\/(jpeg|webp|png);base64,[A-Za-z0-9+/=]+$/;
-// Screenshots are deleted (stored image + attempt entry) this long after they were
+// Screenshots are deleted (Cloudinary + attempt) this long after they were
 // taken, so the image store doesn't fill up — cron/proctorShotCleanup.js.
 const SHOT_RETENTION_DAYS = 30;
 const SHOT_FOLDER = 'proctor-shots';
@@ -46,6 +70,8 @@ module.exports = {
   PROCTOR_EVENT_CAP,
   DEDUPE_WINDOW_MS,
   isDuplicateEvent,
+  DQ_ANSWER_WINDOW_MS,
+  disqualifiedAnswerFilter,
   SHOT_CAP,
   SHOT_WINDOW_MS,
   SHOT_MAX_BYTES,

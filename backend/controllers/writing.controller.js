@@ -43,6 +43,8 @@ exports.startExam = async (req, res) => {
 exports.submitExam = guard(async (req, res) => {
   const { examId } = req.body;
   if (!examId) return res.status(400).json({ success: false, message: 'Thiếu examId' });
+  // body.disqualified: sent right after the proctor voided the attempt —
+  // see writingService.submitExam.
   const result = await writingService.submitExam(req.user, req.body);
   if (!result?.attemptId) {
     // Distinguish "no such exam" (practice/exam mode) from "this Simulation
@@ -73,11 +75,12 @@ exports.getPracticeTask = guard(async (req, res) => {
 
 exports.submitPractice = guard(async (req, res) => {
   const { taskType, taskId, answer = '', attemptId } = req.body; // wordCount ignored — server counts it
+  const disqualified = req.body.disqualified === true;
   const tNum = parseInt(taskType);
   if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
   if (!answer.trim()) return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
 
-  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, attemptId });
+  const result = await writingService.submitPractice(req.user, { taskType: tNum, taskId, answer, attemptId, disqualified });
   if (!result) {
     // Only reachable via the Test Simulation update path (attemptId given
     // but disqualified/already submitted) — see writingService.submitPractice.

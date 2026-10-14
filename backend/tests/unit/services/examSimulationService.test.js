@@ -63,8 +63,8 @@ describe('examSimulationService.recordViolation', () => {
   beforeEach(() => { dedupeSpy = jest.spyOn(proctorPolicy, 'isDuplicateEvent').mockReturnValue(false); });
   afterEach(() => dedupeSpy.mockRestore());
 
-  test('the limit is the shared 3-strike rule', () => {
-    expect(examSimulationService.MAX_VIOLATIONS).toBe(3);
+  test('the limit is the shared 5-strike rule', () => {
+    expect(examSimulationService.MAX_VIOLATIONS).toBe(5);
   });
 
   test('increments violationCount and does not disqualify below MAX_VIOLATIONS', async () => {
@@ -214,7 +214,7 @@ describe('examSimulationService.getAttemptState', () => {
     const args = { skill: 'reading', attemptType: 'full', attemptId: attempt._id };
 
     await expect(examSimulationService.getAttemptState(student._id, args)).resolves.toEqual({
-      status: 'in-progress', violationCount: 2, maxViolations: 3,
+      status: 'in-progress', violationCount: 2, maxViolations: 5,
     });
     await expect(examSimulationService.getAttemptState(other._id, args)).rejects.toMatchObject({ statusCode: 404 });
   });
