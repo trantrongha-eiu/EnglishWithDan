@@ -1,6 +1,21 @@
 const router   = require('express').Router();
 const auth     = require('../middleware/auth');
 const userCtrl = require('../controllers/user.controller');
+const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
+const logger   = require('../utils/logger');
+
+// "Góp ý" is free text that lands in the admin inbox — cap it so a stuck
+// client or a bored student can't flood the queue.
+const feedbackLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Bạn đã gửi nhiều góp ý, vui lòng thử lại sau ít phút.' });
+  },
+});
 
 router.get('/profile',         auth, userCtrl.getProfile);
 router.put('/profile',         auth, userCtrl.updateProfile);
@@ -29,5 +44,8 @@ router.post('/peer/:id/message',   auth, userCtrl.sendPeerMessage);
 router.post('/peer/:id/block',     auth, userCtrl.blockPeer);
 router.delete('/peer/:id/block',   auth, userCtrl.unblockPeer);
 router.post('/peer/:id/report',    auth, userCtrl.reportPeer);
+
+// ── FEEDBACK (bug reports / feature requests → straight to admin inbox) ──
+router.post('/feedback', auth, feedbackLimiter, userCtrl.submitFeedback);
 
 module.exports = router;

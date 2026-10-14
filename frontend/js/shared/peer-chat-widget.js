@@ -234,6 +234,27 @@
       // via _buildWidget()'s runtime check, so pages without a Zalo button
       // keep the normal corner-hugging position.
       '#pcw-root.pcw-above-zalo{bottom:100px}' +
+      // "Góp ý" button stacked above the chat launcher (home page only —
+      // see _isHomePage()). Hidden while either panel is open, since both
+      // panels open over the space it sits in.
+      '.pcw-fb-launcher{position:absolute;bottom:62px;right:4px;width:44px;height:44px;border-radius:50%;background:#f59e0b;color:#fff;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .15s}' +
+      '.pcw-fb-launcher:hover{transform:scale(1.08)}' +
+      '.pcw-fb-tip{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);background:#111827;color:#fff;font-size:12px;font-weight:600;white-space:nowrap;padding:5px 9px;border-radius:7px;opacity:0;pointer-events:none;transition:opacity .15s}' +
+      '.pcw-fb-launcher:hover .pcw-fb-tip{opacity:1}' +
+      '#pcw-root.pcw-any-open .pcw-fb-launcher{display:none}' +
+      '.pcw-fb-panel{height:auto;max-height:calc(100vh - 110px)}' +
+      '.pcw-fb-body{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}' +
+      '.pcw-fb-intro{font-size:12.5px;color:var(--text2,#6b7280);line-height:1.45;margin:0}' +
+      '.pcw-fb-types{display:flex;gap:6px;flex-wrap:wrap}' +
+      '.pcw-fb-type{flex:1;min-width:0;border:1.5px solid var(--border,#e5e7eb);background:var(--surface,#fff);color:var(--text,#111827);border-radius:10px;padding:7px 6px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}' +
+      '.pcw-fb-type.active{border-color:#f59e0b;background:rgba(245,158,11,.12);color:#b45309}' +
+      '.pcw-fb-text{width:100%;box-sizing:border-box;resize:vertical;min-height:110px;max-height:240px;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13.5px;line-height:1.45;background:var(--bg,var(--surface,#fff));color:var(--text,#111827)}' +
+      '.pcw-fb-text:focus{outline:none;border-color:#f59e0b}' +
+      '.pcw-fb-meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--text3,#9ca3af)}' +
+      '.pcw-fb-send{background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}' +
+      '.pcw-fb-send:disabled{opacity:.55;cursor:default}' +
+      '.pcw-fb-done{padding:28px 18px;text-align:center;color:var(--text,#111827);font-size:13.5px;line-height:1.5}' +
+      '.pcw-fb-done-icon{font-size:34px;margin-bottom:6px}' +
       '@media(max-width:480px){#pcw-root{bottom:12px;right:12px}.pcw-panel{width:calc(100vw - 24px);right:-4px}#pcw-root.pcw-above-zalo{bottom:80px}}';
     document.head.appendChild(s);
   }
@@ -267,12 +288,135 @@
       _panelOpen = !_panelOpen;
       _panel.classList.toggle('open', _panelOpen);
       if (_panelOpen) {
+        _closeFeedback();
         if (_view === 'list') _renderList();
         else _renderThread();
       } else {
         _stopThreadPoll();
       }
     });
+
+    if (_isHomePage()) _buildFeedback();
+
+    // Every open/close path (launcher, ✕ buttons, toast click) toggles the
+    // panels' .open class directly — watch the class instead of hooking
+    // each one, so the "Góp ý" button hides whenever any panel is open.
+    if (window.MutationObserver) {
+      new MutationObserver(_syncAnyOpen).observe(_root, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
+  function _syncAnyOpen() {
+    var anyOpen = !!_root.querySelector('.pcw-panel.open');
+    if (_root.classList.contains('pcw-any-open') !== anyOpen) _root.classList.toggle('pcw-any-open', anyOpen);
+  }
+
+  // ── "Góp ý" (bug report / feature request → admin inbox) ────────────
+  // Only on the student home page — the vocab dashboard the logo links to
+  // (same paths as nav.js's _onVocabHomePage(), see frontend/_redirects).
+  function _isHomePage() {
+    var p = location.pathname.replace(/\/+$/, '');
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary';
+  }
+
+  var FEEDBACK_TYPES = [
+    { id: 'bug',     label: '🐞 Báo lỗi',  placeholder: 'Lỗi xảy ra ở đâu, bạn đã làm gì trước đó? Mô tả càng cụ thể càng dễ sửa nhé.' },
+    { id: 'feature', label: '✨ Tính năng', placeholder: 'Bạn muốn web có thêm tính năng gì? Nó sẽ giúp bạn học thế nào?' },
+    { id: 'other',   label: '💬 Khác',     placeholder: 'Bạn muốn góp ý điều gì?' },
+  ];
+  var _fbPanel = null;
+  var _fbType = 'bug';
+
+  function _buildFeedback() {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pcw-fb-launcher';
+    btn.setAttribute('aria-label', 'Góp ý / báo lỗi');
+    btn.innerHTML = '<i class="fas fa-lightbulb"></i><span class="pcw-fb-tip">Góp ý / báo lỗi</span>';
+    _fbPanel = document.createElement('div');
+    _fbPanel.className = 'pcw-panel pcw-fb-panel';
+    _root.insertBefore(_fbPanel, _root.firstChild);
+    _root.insertBefore(btn, _launcher);
+    btn.addEventListener('click', _openFeedback);
+  }
+
+  function _openFeedback() {
+    _panelOpen = false;
+    _panel.classList.remove('open');
+    _stopThreadPoll();
+    _renderFeedbackForm();
+    _fbPanel.classList.add('open');
+    setTimeout(function () {
+      var ta = document.getElementById('pcw-fb-text');
+      if (ta) ta.focus();
+    }, 50);
+  }
+
+  function _closeFeedback() {
+    if (_fbPanel) _fbPanel.classList.remove('open');
+  }
+
+  function _fbHeader(title) {
+    return '<div class="pcw-header"><span class="pcw-header-title">' + title + '</span>' +
+      '<button class="pcw-icon-btn" id="pcw-fb-close" title="Đóng" type="button"><i class="fas fa-times"></i></button></div>';
+  }
+
+  function _renderFeedbackForm() {
+    _fbPanel.innerHTML =
+      _fbHeader('💡 Góp ý cho EnglishWithDan') +
+      '<div class="pcw-fb-body">' +
+        '<p class="pcw-fb-intro">Gặp lỗi hay muốn có tính năng mới? Góp ý của bạn được gửi thẳng tới thầy.</p>' +
+        '<div class="pcw-fb-types">' + FEEDBACK_TYPES.map(function (t) {
+          return '<button type="button" class="pcw-fb-type' + (t.id === _fbType ? ' active' : '') + '" data-type="' + t.id + '">' + t.label + '</button>';
+        }).join('') + '</div>' +
+        '<textarea class="pcw-fb-text" id="pcw-fb-text" maxlength="2000"></textarea>' +
+        '<div class="pcw-fb-meta"><span>Trang hiện tại sẽ được gửi kèm</span><span id="pcw-fb-count">0/2000</span></div>' +
+        '<button type="button" class="pcw-fb-send" id="pcw-fb-send" disabled><i class="fas fa-paper-plane"></i> Gửi góp ý</button>' +
+      '</div>';
+
+    var ta = document.getElementById('pcw-fb-text');
+    var sendBtn = document.getElementById('pcw-fb-send');
+    var count = document.getElementById('pcw-fb-count');
+    function setType(id) {
+      _fbType = id;
+      var t = FEEDBACK_TYPES.filter(function (x) { return x.id === id; })[0] || FEEDBACK_TYPES[0];
+      ta.placeholder = t.placeholder;
+      _fbPanel.querySelectorAll('.pcw-fb-type').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-type') === id);
+      });
+    }
+    setType(_fbType);
+    _fbPanel.querySelectorAll('.pcw-fb-type').forEach(function (b) {
+      b.addEventListener('click', function () { setType(b.getAttribute('data-type')); ta.focus(); });
+    });
+    ta.addEventListener('input', function () {
+      count.textContent = ta.value.length + '/2000';
+      sendBtn.disabled = !ta.value.trim();
+    });
+    sendBtn.addEventListener('click', _sendFeedback);
+    document.getElementById('pcw-fb-close').addEventListener('click', _closeFeedback);
+  }
+
+  async function _sendFeedback() {
+    var ta = document.getElementById('pcw-fb-text');
+    var btn = document.getElementById('pcw-fb-send');
+    var text = ta ? ta.value.trim() : '';
+    if (!text) return;
+    btn.disabled = true;
+    try {
+      await _api('/user/feedback', {
+        method: 'POST',
+        body: JSON.stringify({ type: _fbType, message: text, pageUrl: location.href }),
+      });
+      _fbPanel.innerHTML =
+        _fbHeader('💡 Góp ý cho EnglishWithDan') +
+        '<div class="pcw-fb-done"><div class="pcw-fb-done-icon">🎉</div>' +
+          '<strong>Cảm ơn bạn đã góp ý!</strong><br>Thầy sẽ xem và phản hồi qua Hộp thư nếu cần.</div>';
+      document.getElementById('pcw-fb-close').addEventListener('click', _closeFeedback);
+    } catch (e) {
+      btn.disabled = false;
+      if (window.showToastWithTitle) window.showToastWithTitle('error', 'Không gửi được góp ý', e.message || '');
+    }
   }
 
   function _updateBadge() {
@@ -568,6 +712,7 @@
     if (el) {
       el.style.cursor = 'pointer';
       el.addEventListener('click', function () {
+        _closeFeedback();
         _panelOpen = true;
         _panel.classList.add('open');
         _openThread(conv.userId, conv.name, conv.avatar, conv.lastSeen);

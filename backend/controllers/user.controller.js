@@ -250,3 +250,13 @@ exports.reportPeer = messageGuard(async (req, res) => {
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
   res.status(201).json({ success: true });
 });
+
+// ── POST /api/user/feedback ──────────────────────────────────
+// "Góp ý" button above the peer chat bubble — bug reports / feature
+// requests, delivered to every admin's inbox.
+exports.submitFeedback = messageGuard(async (req, res) => {
+  const result = await userMessageService.sendFeedbackToAdmins(req.user, displayName(req.user), req.body || {});
+  if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung góp ý' });
+  if (result.status === 'too_long') return res.status(400).json({ success: false, message: 'Góp ý tối đa 2000 ký tự' });
+  res.status(201).json({ success: true });
+});

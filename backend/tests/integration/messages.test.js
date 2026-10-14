@@ -248,3 +248,55 @@ describe('Class "Nhắn tin" — POST /api/classes/:classId/messages + must-read
     expect(bCount.body.mustReadCount).toBe(0); // b wasn't picked
   });
 });
+
+describe('POST /api/user/feedback ("Góp ý" button → admin inbox)', () => {
+  test('requires authentication', async () => {
+    const res = await request(app).post('/api/user/feedback').send({ type: 'bug', message: 'hi' });
+    expect(res.status).toBe(401);
+  });
+
+  test('rejects an empty message', async () => {
+    const student = await createStudent();
+    const res = await request(app)
+      .post('/api/user/feedback')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`)
+      .send({ type: 'bug', message: '   ' });
+    expect(res.status).toBe(400);
+  });
+
+  test('lands in every admin\'s received inbox with type label + page link', async () => {
+    const admin = await createAdmin();
+    const admin2 = await createAdmin();
+    const student = await createStudent();
+
+    const res = await request(app)
+      .post('/api/user/feedback')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`)
+      .send({ type: 'feature', message: 'Thêm chế độ tối nhé thầy', pageUrl: 'https://example.com/dashboard.html' });
+    expect(res.status).toBe(201);
+
+    for (const a of [admin, admin2]) {
+      const inbox = await request(app)
+        .get('/api/admin/messages/received')
+        .set('Authorization', `Bearer ${signTokenFor(a)}`);
+      expect(inbox.body.total).toBe(1);
+      const m = inbox.body.messages[0];
+      expect(m.subject).toContain('[Góp ý]');
+      expect(m.subject).toContain('Tính năng mới');
+      expect(m.body).toContain('Thêm chế độ tối nhé thầy');
+      expect(m.body).toContain('https://example.com/dashboard.html');
+      expect(m.fromId.username).toBe(student.username);
+    }
+  });
+
+  test('drops a non-http(s) page URL', async () => {
+    const admin = await createAdmin();
+    const student = await createStudent();
+    await request(app)
+      .post('/api/user/feedback')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`)
+      .send({ type: 'bug', message: 'Lỗi', pageUrl: 'javascript:alert(1)' });
+    const msg = await Message.findOne({ toId: admin._id }).lean();
+    expect(msg.body).toBe('Lỗi');
+  });
+});

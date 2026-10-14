@@ -136,4 +136,30 @@ async function claimGift(id, uid) {
   };
 }
 
-module.exports = { getUnreadCount, countMustRead, listMustRead, listMessages, markRead, deleteMessage, replyToMessage, claimGift };
+// "Góp ý" button above the peer chat bubble (js/shared/peer-chat-widget.js):
+// a bug report / feature request lands straight in every admin's inbox
+// ("Đã nhận" tab + unread badge), same delivery as tuitionService's
+// notifyPayment — so the teacher can ↩️ reply to the student from there.
+const FEEDBACK_LABELS = { bug: '🐞 Báo lỗi', feature: '✨ Tính năng mới', other: '💬 Góp ý khác' };
+
+async function sendFeedbackToAdmins(student, fromName, { type, message, pageUrl }) {
+  const text = typeof message === 'string' ? message.trim() : '';
+  if (!text) return { status: 'empty' };
+  if (text.length > 2000) return { status: 'too_long' };
+  const label = FEEDBACK_LABELS[type] || FEEDBACK_LABELS.other;
+  const page = (typeof pageUrl === 'string' && /^https?:\/\//i.test(pageUrl)) ? pageUrl.slice(0, 500) : '';
+
+  const admins = await User.find({ role: 'admin' }, '_id').lean();
+  if (!admins.length) return { status: 'ok' };
+  await Message.insertMany(admins.map(admin => ({
+    fromId: student._id,
+    fromName,
+    toId: admin._id,
+    subject: `[Góp ý] ${label} — ${fromName}`,
+    body: text + (page ? `\n\n— Trang: ${page}` : ''),
+    type: 'personal',
+  })));
+  return { status: 'ok' };
+}
+
+module.exports = { getUnreadCount, countMustRead, listMustRead, listMessages, markRead, deleteMessage, replyToMessage, claimGift, sendFeedbackToAdmins };
