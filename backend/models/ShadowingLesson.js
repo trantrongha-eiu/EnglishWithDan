@@ -16,6 +16,7 @@ const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
   end:   { type: Number, required: true },
   text:  { type: String, required: true },
+  vi:    { type: String, default: '' },    // Vietnamese translation, shown under the sentence
 }, { _id: false });
 
 const ShadowingLessonSchema = new mongoose.Schema({

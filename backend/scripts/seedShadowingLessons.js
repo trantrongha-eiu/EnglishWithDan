@@ -10,14 +10,24 @@
  *
  * Also runs on every server start (server.js) — upsert key `slug`, so it's
  * idempotent and a new lesson in the JSON goes live with the next deploy.
+ *
+ * Vietnamese translations live separately in scripts/data/
+ * shadowingTranslations.json ({ slug: { "<English sentence>": "<vi>" } }),
+ * keyed by sentence text so re-running the caption builder doesn't drop
+ * them; a sentence with no entry just shows without a translation.
  */
 'use strict';
 
-const lessons = require('./data/shadowingLessons.json');
+const translations = require('./data/shadowingTranslations.json');
+const lessons = require('./data/shadowingLessons.json').map((l) => {
+  const vi = translations[l.slug] || {};
+  return { ...l, segments: l.segments.map((s) => ({ ...s, vi: vi[s.text] || '' })) };
+});
 
 function summarise() {
   for (const l of lessons) {
-    console.log(`  ${l.slug.padEnd(32)} ${l.category.padEnd(17)} ${String(l.segments.length).padStart(3)} câu  ${Math.round(l.clipEnd - l.clipStart)}s`);
+    const missing = l.segments.filter((s) => !s.vi).length;
+    console.log(`  ${l.slug.padEnd(32)} ${l.category.padEnd(17)} ${String(l.segments.length).padStart(3)} câu  ${Math.round(l.clipEnd - l.clipStart)}s${missing ? `  (${missing} câu chưa dịch)` : ''}`);
   }
   console.log(`\n  Tổng: ${lessons.length} bài`);
 }

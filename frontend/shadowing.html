@@ -113,6 +113,8 @@
     .sh-sentence.masked { color: var(--text3); letter-spacing: 1px; font-family: 'Courier New', monospace; font-size: 17px; }
     .sh-sentence .w-match { color: var(--success); }
     .sh-sentence .w-miss { color: var(--danger); }
+    .sh-vi { font-size: 15px; line-height: 1.5; color: var(--text2); margin: -6px 0 14px; }
+    .sh-vi:empty { display: none; }
     .sh-interim { font-size: 14px; color: var(--text3); font-style: italic; min-height: 20px; margin-bottom: 10px; }
 
     .sh-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -169,6 +171,7 @@
     .sh-item.current { background: var(--brand-light); color: var(--text); }
     .sh-item-num { font-size: 11px; font-weight: 800; color: var(--text3); min-width: 20px; padding-top: 2px; }
     .sh-item-text { flex: 1; }
+    .sh-item-vi { display: block; margin-top: 2px; font-size: 12.5px; color: var(--text3); }
     .sh-item-text.masked { color: var(--text3); letter-spacing: 2px; }
     .sh-item-score { font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: var(--radius-pill); background: var(--surface2); color: var(--text3); align-self: center; }
     .sh-item-score.good { background: var(--success-light); color: var(--success); }
@@ -195,7 +198,7 @@
 <script src="/js/shared/api-client.js?v=20260831"></script>
 <script src="/js/shared/route-params.js?v=20260925route"></script>
 <script src="/js/shared/word-audio.js?v=20261009"></script>
-<script src="/js/shared/dictionary-lookup.js?v=20261009audio"></script>
+<script src="/js/shared/dictionary-lookup.js?v=20261015gate"></script>
 
 <div class="sh-wrap">
 
@@ -269,6 +272,7 @@
               <i class="fas fa-circle-info"></i> Trình duyệt này không hỗ trợ nhận diện giọng nói nên không chấm điểm được — bạn vẫn có thể ghi âm và tự nghe lại để so sánh. Hãy dùng <b>Chrome</b> hoặc <b>Edge</b> để được chấm điểm.
             </div>
             <div class="sh-sentence" id="sh-sentence"></div>
+            <div class="sh-vi" id="sh-vi"></div>
             <div class="sh-interim" id="sh-interim"></div>
             <div class="sh-actions">
               <button class="sh-btn sh-btn-primary" id="sh-play" onclick="playSegment()" title="Nghe câu (Space)"><i class="fas fa-play"></i> Nghe</button>
@@ -278,6 +282,7 @@
             <div class="sh-opts">
               <label class="sh-toggle"><input type="checkbox" id="opt-autorec"> Tự ghi âm sau khi nghe xong</label>
               <label class="sh-toggle"><input type="checkbox" id="opt-hide"> Ẩn câu (thử thách)</label>
+              <label class="sh-toggle"><input type="checkbox" id="opt-vi" checked> Hiện tiếng Việt</label>
             </div>
             <div class="sh-score" id="sh-score"></div>
             <div class="sh-hint sh-kbd" style="margin:12px 0 0">Phím tắt: <kbd>Space</kbd> nghe · <kbd>R</kbd> ghi âm · <kbd>←</kbd>/<kbd>→</kbd> chuyển câu</div>
@@ -299,6 +304,7 @@
             </div>
             <div class="sh-score" id="dc-score"></div>
             <div class="sh-diff" id="dc-diff"></div>
+            <div class="sh-vi" id="dc-vi"></div>
           </div>
         </div>
         <div class="sh-credit" id="sh-credit"></div>
@@ -313,7 +319,7 @@
 
 </div>
 
-<script src="/js/shadowing.js?v=20261014"></script>
+<script src="/js/shadowing.js?v=20261015dict"></script>
 <script src="https://www.youtube.com/iframe_api" async></script>
 
 <div id="dict-popup" class="dict-popup hidden">

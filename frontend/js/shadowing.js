@@ -34,7 +34,7 @@
   function savePrefs() {
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify({
-        speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked,
+        speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked, vi: $('opt-vi').checked,
       }));
     } catch (_) { /* storage unavailable */ }
   }
@@ -408,6 +408,7 @@
       `<span class="${refHit.has(k) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`).join(' ') +
       (extra.length ? ' ' + extra.map((w) => `<span class="w-extra">${escHtml(w)}</span>`).join(' ') : '');
     $('dc-diff').classList.add('show');
+    $('dc-vi').textContent = viOf(lesson.segments[idx]);
     showScore('dc-score', perfect ? 'good' : scoreClass(pct),
       perfect ? '✓ Chính xác!' : `Đúng ${refHit.size}/${ref.length} từ`,
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
@@ -433,6 +434,7 @@
   function resetDictationPane() {
     $('dc-input').value = '';
     $('dc-diff').classList.remove('show');
+    $('dc-vi').textContent = '';
     $('dc-score').className = 'sh-score';
     $('dc-check').disabled = false;
     $('dc-check').style.display = '';
@@ -480,6 +482,7 @@
     const hide = $('opt-hide').checked;
     $('sh-sentence').classList.toggle('masked', hide);
     $('sh-sentence').textContent = hide ? maskText(seg.text) : seg.text;
+    $('sh-vi').textContent = viOf(seg);
     $('sh-interim').textContent = '';
     $('sh-score').className = 'sh-score';
     $('sh-mine').disabled = true;
@@ -491,9 +494,13 @@
     $('dc-hint').textContent = `${tokens(seg.text).length} từ · ${maskText(seg.text)}`;
     if (mode === 'dictation' && !keepPlaying && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus({ preventScroll: true });
 
-    renderList();
+    markCurrent();
     scrollListToCurrent();
   }
+
+  // Vietnamese translation of a sentence, or '' when it has none or the
+  // student turned "Hiện tiếng Việt" off.
+  function viOf(seg) { return $('opt-vi').checked ? (seg.vi || '') : ''; }
 
   // Scrolls the transcript box only — scrollIntoView() also scrolled the
   // page, which on mobile (transcript below the panel) yanked the student
@@ -508,6 +515,16 @@
     }
   }
 
+  // Moves the .current highlight without rebuilding the list — a rebuild on
+  // every sentence change replaced the nodes under the student's cursor, so
+  // a double-click to look up a word lost its selection before the
+  // dictionary popup could read it.
+  function markCurrent() {
+    const items = $('sh-list').querySelectorAll('.sh-item');
+    if (items.length !== lesson.segments.length) { renderList(); return; }
+    items.forEach((el, i) => el.classList.toggle('current', i === idx));
+  }
+
   function renderList() {
     if (!lesson) return;
     const done = answers[mode];
@@ -517,7 +534,7 @@
       const masked = mode === 'dictation' && !a;
       return `<div class="sh-item${i === idx ? ' current' : ''}" data-i="${i}">
         <span class="sh-item-num">${i + 1}</span>
-        <span class="sh-item-text${masked ? ' masked' : ''}">${masked ? '•••' : escHtml(s.text)}</span>
+        <span class="sh-item-text${masked ? ' masked' : ''}">${masked ? '•••' : escHtml(s.text) + (viOf(s) ? `<span class="sh-item-vi">${escHtml(viOf(s))}</span>` : '')}</span>
         ${pct != null ? `<span class="sh-item-score ${scoreClass(pct)}">${pct}%</span>` : ''}
       </div>`;
     }).join('');
@@ -535,6 +552,7 @@
     if (m === 'dictation') hideCaptions();
     syncUrl();
     goTo(idx);
+    renderList();
   }
 
   // Covers the video in Dictation so captions / on-screen text can't give
@@ -669,7 +687,8 @@
     ensurePlayer(lesson.youtubeId, lesson.clipStart);
     setMode(new URLSearchParams(location.search).get('mode') === 'dictation' ? 'dictation' : 'shadowing');
     if (!fromCleanPath) syncUrl();
-    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('screen-practice', 'shadowing');
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('screen-practice', 'shadowing',
+      (e) => !(e.target.closest && e.target.closest('.sh-vi, .sh-item-vi, .masked')));
   }
 
   function backToList() {
@@ -716,12 +735,21 @@
   });
   $('sh-list').addEventListener('click', (e) => {
     const item = e.target.closest('.sh-item');
-    if (!item) return;
+    // The 2nd click of a double-click is a word lookup (dictionary popup),
+    // not another "jump + replay".
+    if (!item || e.detail >= 2) return;
     goTo(Number(item.dataset.i));
     if (mode === 'shadowing') playSegment();
   });
   $('opt-hide').addEventListener('change', () => { savePrefs(); goTo(idx); });
   $('opt-autorec').addEventListener('change', savePrefs);
+  $('opt-vi').addEventListener('change', () => {
+    savePrefs();
+    if (!lesson) return;
+    $('sh-vi').textContent = viOf(lesson.segments[idx]);
+    if ($('dc-diff').classList.contains('show')) $('dc-vi').textContent = viOf(lesson.segments[idx]);
+    renderList();
+  });
 
   $('dc-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -764,6 +792,7 @@
     if (Number.isInteger(prefs.speedIdx) && SPEEDS[prefs.speedIdx]) { speedIdx = prefs.speedIdx; $('sh-speed').textContent = SPEEDS[speedIdx] + 'x'; }
     $('opt-autorec').checked = !!prefs.autorec;
     $('opt-hide').checked = !!prefs.hide;
+    $('opt-vi').checked = prefs.vi !== false;
 
     const promo = $('premium-promo-banner');
     if (promo) promo.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';

@@ -20,11 +20,14 @@
  *   (BBC) but drifts for ones that break mid-sentence (English Pro Tips).
  *
  * Step 2 — build:   node scripts/shadowing/buildShadowingLessons.js <subsDir>
- * Step 3 — seed:    node scripts/seedShadowingLessons.js
+ * Step 3 — translate: add each new sentence's Vietnamese to
+ *                    scripts/data/shadowingTranslations.json (keyed by
+ *                    slug, then by the exact English sentence)
+ * Step 4 — seed:    node scripts/seedShadowingLessons.js
  *
  * To add a lesson: append to LESSONS (clipStart/clipEnd pick the 2–3 min
  * window of the video; only whole sentences inside it are kept), fetch its
- * captions, re-run step 2, check the printed segments, then step 3.
+ * captions, re-run step 2, check the printed segments, then steps 3–4.
  * Lessons whose caption files aren't in <subsDir> are carried over
  * unchanged from the current shadowingLessons.json, so only the new
  * videos' captions need fetching.

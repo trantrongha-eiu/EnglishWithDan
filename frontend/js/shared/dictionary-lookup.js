@@ -237,6 +237,8 @@
   // Reading/Listening, where double-click lookup only fires while their own
   // toolbar "Dict" tool is toggled on and a review/practice/retry screen is
   // active. Callers that don't pass a gate get the old unconditional behavior.
+  // The gate is handed the triggering event, so a page can also skip parts of
+  // its container (e.g. Shadowing's Vietnamese translation lines).
   // Pointer coords from either a mouse event or a touch event (touchend
   // carries no clientX/Y of its own — the last touch point is on
   // changedTouches). Falls back to the viewport centre so positionDictPopup
@@ -258,7 +260,7 @@
     el._dictSource = source || 'other';
     el._dictGate = gate || null;
     el._dictHandler = function (e) {
-      if (el._dictGate && !el._dictGate()) return;
+      if (el._dictGate && !el._dictGate(e)) return;
       var word = _extractDoubleClickedWord(e);
       if (!word) return;
       _source = el._dictSource;
@@ -271,7 +273,7 @@
     // _extractDragSelectedPhrase reads. A 400ms debounce stops a synthesized
     // mouseup right after a real touchend from opening the popup twice.
     function runDragSelect(e) {
-      if (el._dictGate && !el._dictGate()) return;
+      if (el._dictGate && !el._dictGate(e)) return;
       var now = Date.now();
       if (now - (el._dictLastLookup || 0) < 400) return;
       var word = _extractDragSelectedPhrase(e);
