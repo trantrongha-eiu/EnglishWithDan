@@ -5,6 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ProgressRing, ProgressChips, WeekTrack } from './classes/ClassProgress';
 import { phaseText, keyLabel, relDay, sessionName } from './classes/classProgressUtils';
+import ClassKpiModal from './classes/ClassKpiModal';
 
 const POLICY_BLANK = {
   maxAbsencesAllowed: 3,
@@ -204,6 +205,7 @@ export default function Classes() {
   const [showArchived, setShowArchived] = useState(false);
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState('all');
+  const [kpiOpen, setKpiOpen] = useState(null);
 
   const load = () => apiFetch('/classes')
     .then((d) => setClasses(d.classes || []))
@@ -237,6 +239,7 @@ export default function Classes() {
   return (
     <>
       {showModal && <ClassModal onClose={() => setShowModal(false)} onSaved={load} />}
+      {kpiOpen && <ClassKpiModal kind={kpiOpen} classes={classes} isAdmin={isAdmin} onClose={() => setKpiOpen(null)} />}
 
       <div className="section-header">
         <h2 className="section-title">Lớp & Điểm danh ({rows.length})</h2>
@@ -245,10 +248,18 @@ export default function Classes() {
 
       {!loading && classes.length > 0 && (
         <div className="stats-row cp-stats" style={{ marginBottom: 20 }}>
-          <div className="stat-card blue"><div className="stat-label">Lớp đang học</div><div className="stat-value">{kpi.active}</div></div>
-          <div className="stat-card green"><div className="stat-label">Có buổi hôm nay</div><div className="stat-value">{kpi.today}</div></div>
-          <div className="stat-card yellow"><div className="stat-label">Tổng học viên</div><div className="stat-value">{kpi.students}</div></div>
-          <div className="stat-card red"><div className="stat-label">Cảnh báo / Rớt</div><div className="stat-value">{kpi.atRisk}</div></div>
+          {[
+            ['active', 'blue', 'Lớp đang học'],
+            ['today', 'green', 'Có buổi hôm nay'],
+            ['students', 'yellow', 'Tổng học viên'],
+            ['atRisk', 'red', 'Cảnh báo / Rớt'],
+          ].map(([key, color, label]) => (
+            <button key={key} type="button" className={`stat-card ${color} cp-stat-btn`} onClick={() => setKpiOpen(key)} title="Bấm để xem chi tiết">
+              <div className="stat-label">{label}</div>
+              <div className="stat-value">{kpi[key]}</div>
+              <span className="cp-stat-more">Xem chi tiết →</span>
+            </button>
+          ))}
         </div>
       )}
 

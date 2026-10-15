@@ -176,6 +176,46 @@ exports.listClasses = async (req, res) => {
   }
 };
 
+// GET /students — every live (not soft-removed) enrollment across the classes
+// the caller can see, flattened with class + student info. Backs the clickable
+// "Tổng học viên" / "Cảnh báo / Rớt" KPI tiles on the class list.
+exports.listClassStudents = async (req, res) => {
+  try {
+    const filter = req.user.role === 'admin' ? {} : { teacherId: req.user._id };
+    const classes = await ClassGroup.find(filter).select('name status').lean();
+    const cMap = {};
+    classes.forEach((c) => { cMap[String(c._id)] = c; });
+    const enrollments = await ClassEnrollment.find({ classId: { $in: classes.map((c) => c._id) }, removedAt: null })
+      .select('classId studentId status statusReason stats')
+      .lean();
+    const students = await User.find({ _id: { $in: [...new Set(enrollments.map((e) => String(e.studentId)))] } })
+      .select('username firstName lastName email')
+      .lean();
+    const sMap = {};
+    students.forEach((s) => { sMap[String(s._id)] = s; });
+
+    res.json({
+      success: true,
+      students: enrollments.map((e) => {
+        const s = sMap[String(e.studentId)];
+        const c = cMap[String(e.classId)];
+        return {
+          enrollmentId: e._id,
+          status: e.status,
+          statusReason: e.statusReason || '',
+          stats: e.stats || {},
+          class: { _id: e.classId, name: c?.name || '', status: c?.status || '' },
+          student: s
+            ? { _id: s._id, name: studentName(s), username: s.username, email: s.email }
+            : { _id: e.studentId, name: '(đã xoá tài khoản)', username: '', email: '' },
+        };
+      }),
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.createClass = async (req, res) => {
   try {
     const errs = validateClassBody(req.body);

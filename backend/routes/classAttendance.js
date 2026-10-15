@@ -19,6 +19,8 @@ router.use(auth, c.staffOnly);
 // Class list + create
 router.get('/', c.listClasses);
 router.post('/', c.createClass);
+// Flattened roster across all of the caller's classes (KPI tile drill-down)
+router.get('/students', c.listClassStudents);
 
 // Single class — loadOwnedClass enforces "a teacher only touches their own class"
 router.get('/:classId', validateObjectIdParam('classId'), c.loadOwnedClass, c.getClass);

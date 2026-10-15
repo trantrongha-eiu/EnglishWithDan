@@ -2272,6 +2272,12 @@ button.cp-day:hover { transform: translateY(-2px); border-color: var(--border2);
 .cp-stats .stat-card:nth-child(2) { animation-delay: .05s; }
 .cp-stats .stat-card:nth-child(3) { animation-delay: .1s; }
 .cp-stats .stat-card:nth-child(4) { animation-delay: .15s; }
+.cp-stat-btn { font: inherit; color: inherit; text-align: left; width: 100%; cursor: pointer; }
+.cp-stat-btn:hover { box-shadow: var(--shadow-md); }
+.cp-stat-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cp-stat-more { position: absolute; right: 16px; bottom: 14px; font-size: 12px; font-weight: 700; color: var(--purple); opacity: 0; transform: translateX(-4px); transition: opacity .2s, transform .2s; }
+.cp-stat-btn:hover .cp-stat-more, .cp-stat-btn:focus-visible .cp-stat-more { opacity: 1; transform: none; }
+@media (hover: none) { .cp-stat-more { opacity: .8; transform: none; } }
 .cp-filter { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .cp-filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .cp-fchip { font: inherit; font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
