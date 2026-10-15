@@ -1481,7 +1481,9 @@ function _buildStudentFeedback(g) {
 }
 
 // ──────────────────────────────────────────────────────
-// Download attempt as .txt
+// Download attempt — as text (.txt) or as an image (.png).
+// Both include the essay AND, once the teacher has returned it, the full
+// grading (band, criteria, teacher note, sentence-by-sentence feedback).
 // ──────────────────────────────────────────────────────
 function downloadAttempt() {
   if (!_currentViewData) return;
@@ -1498,13 +1500,90 @@ async function downloadAttemptById(id) {
   }
 }
 
-function doDownload(a) {
-  const t1   = a.task1Snapshot || a.examId?.task1 || {};
-  const t2   = a.task2Snapshot || a.examId?.task2 || {};
-  const date = new Date(a.submittedAt).toLocaleString('vi-VN');
+function _attemptFileBase(a) {
+  const d = new Date(a.submittedAt);
+  const pad = n => String(n).padStart(2, '0');
+  const stamp = isNaN(d) ? '' : `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+  const name = (a.examName || 'submission').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '_');
+  return `writing_${name}${stamp ? '_' + stamp : ''}`;
+}
+
+function _saveBlob(blob, filename) {
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href     = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function _attemptTasks(a) {
   const isPractice = a.submissionType === 'practice';
-  const hasT1 = !isPractice || (a.wordCount1 || 0) > 0 || !!(a.task1Answer?.trim());
-  const hasT2 = !isPractice || (a.wordCount2 || 0) > 0 || !!(a.task2Answer?.trim());
+  return {
+    t1: a.task1Snapshot || a.examId?.task1 || {},
+    t2: a.task2Snapshot || a.examId?.task2 || {},
+    isPractice,
+    hasT1: !isPractice || (a.wordCount1 || 0) > 0 || !!(a.task1Answer?.trim()),
+    hasT2: !isPractice || (a.wordCount2 || 0) > 0 || !!(a.task2Answer?.trim()),
+  };
+}
+
+// Plain-text version of one task's grading — mirrors _fbTaskCard.
+function _fbTaskText(label, td) {
+  if (!td) return [];
+  if (td.bandScore == null && !td.overallFeedback && !(td.sentenceFeedback?.length)) return [];
+  const isT1 = label.includes('1');
+  const crit = [
+    ['ta',  isT1 ? 'Task Achievement' : 'Task Response'],
+    ['cc',  'Coherence & Cohesion'],
+    ['lr',  'Lexical Resource'],
+    ['gra', 'Grammatical Range & Accuracy'],
+  ];
+  const indent = (text, pad) => String(text).split('\n').map(l => pad + l);
+  const out = [`▶ ${label.toUpperCase()} — Band ${td.bandScore ?? '–'}`];
+  crit.forEach(([k, name]) => {
+    if (!td[k]) return;
+    out.push(`  • ${name}: ${td[k].score ?? '–'}`);
+    if (td[k].comment) out.push(...indent(td[k].comment, '      '));
+  });
+  if (td.overallFeedback) out.push('', '  Nhận xét chung:', ...indent(td.overallFeedback, '    '));
+
+  const sf = td.sentenceFeedback || [];
+  if (sf.length) {
+    out.push('', '  Phân tích từng câu:');
+    sf.forEach((s, i) => {
+      const n = `  ${i + 1}. `;
+      if (s.type === 'ok') {
+        out.push(`${n}[✓ Tốt] ${s.original || ''}`);
+        return;
+      }
+      out.push(`${n}[✗${s.criterion ? ' ' + s.criterion : ''}] ${s.original || ''}`);
+      if (s.issue)  out.push(`       Vấn đề: ${s.issue}`);
+      if (s.better) out.push(`       Gợi ý sửa: ${s.better}`);
+    });
+  } else {
+    // Legacy format (older graded attempts)
+    const corr = td.corrections || [];
+    if (corr.length) {
+      out.push('', '  Lỗi cần sửa:');
+      corr.forEach(c => {
+        out.push(`  - ${c.original} → ${c.corrected}`);
+        if (c.explanation) out.push(`      ${c.explanation}`);
+      });
+    }
+    const sugg = td.suggestions || [];
+    if (sugg.length) out.push('', '  Gợi ý cải thiện:', ...sugg.map(x => `  - ${x}`));
+  }
+  out.push('');
+  return out;
+}
+
+function doDownload(a) {
+  const { t1, t2, isPractice, hasT1, hasT2 } = _attemptTasks(a);
+  const date = new Date(a.submittedAt).toLocaleString('vi-VN');
+  const RULE = `────────────────────────────────────────`;
 
   // Use null for optional/conditional lines; '' for intentional blank lines
   const lines = [
@@ -1518,35 +1597,163 @@ function doDownload(a) {
     ``,
   ];
 
+  const g = a.gradingStatus === 'confirmed' ? a.grading : null;
+  if (g) {
+    const gDate = g.confirmedAt ? new Date(g.confirmedAt).toLocaleDateString('vi-VN') : '';
+    lines.push(
+      `========================================`,
+      `KẾT QUẢ CHẤM BÀI`,
+      `========================================`,
+      `Overall Band: ${g.overallBand ?? '–'}${gDate ? `  (chấm ngày ${gDate})` : ''}`,
+      `(Overall = trung bình 4 tiêu chí, làm tròn xuống 0.5 gần nhất)`,
+      ``
+    );
+    if (g.adminNote) lines.push(`Nhận xét từ giáo viên:`, g.adminNote, ``);
+    lines.push(..._fbTaskText('Task 1', g.task1), ..._fbTaskText('Task 2', g.task2));
+  } else {
+    lines.push(a.gradingStatus === 'ai_done'
+      ? `(AI đã chấm xong – đang chờ giáo viên xác nhận và gửi feedback.)`
+      : `(Bài đang chờ chấm – chưa có feedback.)`, ``);
+  }
+
   if (hasT1) {
     lines.push(
-      `────────────────────────────────────────`,
-      `TASK 1`,
-      `────────────────────────────────────────`,
+      RULE,
+      `TASK 1 – BÀI LÀM`,
+      RULE,
       t1.prompt || null,
-      ``,
+      t1.prompt ? `` : null,
       a.task1Answer || '(Không có bài làm)',
       ``
     );
   }
   if (hasT2) {
     lines.push(
-      `────────────────────────────────────────`,
-      `TASK 2`,
-      `────────────────────────────────────────`,
+      RULE,
+      `TASK 2 – BÀI LÀM`,
+      RULE,
       t2.prompt || null,
-      ``,
+      t2.prompt ? `` : null,
       a.task2Answer || '(Không có bài làm)',
+      ``
     );
   }
 
-  const blob = new Blob([lines.filter(l => l != null).join('\n')], { type: 'text/plain;charset=utf-8' });
-  const url  = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href     = url;
-  link.download = `writing_${(a.examName || 'submission').replace(/\s+/g, '_')}_${date.replace(/[/:,\s]/g, '-')}.txt`;
-  link.click();
-  URL.revokeObjectURL(url);
+  const rw = a.rewrite || {};
+  if (rw.task1?.trim() || rw.task2?.trim()) {
+    lines.push(
+      RULE,
+      `BÀI VIẾT LẠI${rw.submittedAt ? ` (${new Date(rw.submittedAt).toLocaleDateString('vi-VN')})` : ''}`,
+      RULE
+    );
+    if (rw.task1?.trim()) lines.push(`[Task 1 – ${rw.wordCount1 || 0} từ]`, rw.task1, ``);
+    if (rw.task2?.trim()) lines.push(`[Task 2 – ${rw.wordCount2 || 0} từ]`, rw.task2, ``);
+  }
+
+  // BOM so Notepad on Windows opens the Vietnamese text as UTF-8.
+  const blob = new Blob(['﻿' + lines.filter(l => l != null).join('\r\n')], { type: 'text/plain;charset=utf-8' });
+  _saveBlob(blob, `${_attemptFileBase(a)}.txt`);
+}
+
+// ── Image (.png) export ───────────────────────────────
+// html2canvas is self-hosted (CSP allows scripts from 'self' only) and only
+// fetched the first time a student exports an image.
+let _h2cPromise = null;
+function _loadHtml2Canvas() {
+  if (window.html2canvas) return Promise.resolve(window.html2canvas);
+  if (!_h2cPromise) {
+    _h2cPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'lib/html2canvas/html2canvas.min.js';
+      s.onload  = () => window.html2canvas ? resolve(window.html2canvas) : reject(new Error('html2canvas'));
+      s.onerror = () => { _h2cPromise = null; reject(new Error('Không tải được thư viện xuất ảnh')); };
+      document.head.appendChild(s);
+    });
+  }
+  return _h2cPromise;
+}
+
+// Resolves true when the image can be drawn onto the canvas (same-origin, or
+// cross-origin served with CORS) — otherwise it's left out of the export.
+function _imgUsable(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = new URL(src, location.href);
+    if (url.origin !== location.origin) img.crossOrigin = 'anonymous';
+    img.onload  = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = url.href;
+    setTimeout(() => resolve(false), 8000);
+  });
+}
+
+async function downloadAttemptImage() {
+  const a = _currentViewData;
+  if (!a) return;
+  const btn = document.getElementById('btn-download-img');
+  const btnHtml = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo ảnh...'; }
+
+  let box = null;
+  try {
+    const html2canvas = await _loadHtml2Canvas();
+    const { t1, t2, isPractice, hasT1, hasT2 } = _attemptTasks(a);
+    const t1Img = t1.imageUrl && await _imgUsable(t1.imageUrl) ? t1.imageUrl : '';
+    const g = a.gradingStatus === 'confirmed' ? a.grading : null;
+    const date = new Date(a.submittedAt).toLocaleString('vi-VN');
+
+    const taskHtml = (n, task, answer, wc, img) => `<div class="review-task-section">
+        <h4>Task ${n} – ${wc || 0} từ</h4>
+        ${img ? `<img src="${escHtml(img)}" crossorigin="anonymous" style="max-width:100%;border-radius:6px;margin-bottom:8px" />` : ''}
+        ${task.prompt ? `<div class="review-task-prompt">${escHtml(task.prompt)}</div>` : ''}
+        <div class="review-answer">${escHtml(answer || '(Không có bài làm)')}</div>
+      </div>`;
+
+    box = document.createElement('div');
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = 'position:absolute;left:-10000px;top:0;width:820px;padding:28px 32px;background:#ffffff;color:#222;box-sizing:border-box';
+    box.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2px solid #e53935;padding-bottom:12px;margin-bottom:18px">
+        <div>
+          <div style="font-size:12px;font-weight:800;letter-spacing:.08em;color:#e53935">ENGLISH WITH DAN · WRITING</div>
+          <div style="font-size:20px;font-weight:800;color:#111827;margin-top:4px">${escHtml(a.examName || 'Bài viết')}</div>
+        </div>
+        <div style="text-align:right;font-size:12px;color:#6b7280;line-height:1.6">
+          ${isPractice ? 'Luyện tập' : 'Thi'}<br>Nộp: ${escHtml(date)}
+        </div>
+      </div>
+      ${g ? _buildStudentFeedback(g).replace(/\sloading="lazy"/g, '')
+          : `<div style="background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#1e40af">${a.gradingStatus === 'ai_done' ? 'AI đã chấm xong – đang chờ giáo viên xác nhận và gửi feedback.' : 'Bài đang chờ chấm – chưa có feedback.'}</div>`}
+      <div style="margin-top:20px">
+        ${hasT1 ? taskHtml(1, t1, a.task1Answer, a.wordCount1, t1Img) : ''}
+        ${hasT2 ? taskHtml(2, t2, a.task2Answer, a.wordCount2, '') : ''}
+      </div>`;
+    document.body.appendChild(box);
+
+    // Let images (band picture, Task 1 chart) and web fonts settle first.
+    await Promise.all([...box.querySelectorAll('img')].map(img => img.complete ? null
+      : new Promise(r => { img.onload = img.onerror = r; })));
+    if (document.fonts?.ready) await document.fonts.ready;
+
+    // Keep the canvas under browser size limits for very long essays.
+    const scale = Math.max(1, Math.min(2, 16000 / box.scrollHeight));
+    const canvas = await html2canvas(box, {
+      scale,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      // Always export the light theme, even when the site is in dark mode.
+      onclone: doc => doc.documentElement.setAttribute('data-theme', 'light'),
+    });
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    if (!blob) throw new Error('Không tạo được ảnh');
+    _saveBlob(blob, `${_attemptFileBase(a)}.png`);
+  } catch (e) {
+    showToast('Lỗi xuất ảnh: ' + (e?.message || e), 'error');
+  } finally {
+    if (box) box.remove();
+    if (btn) { btn.disabled = false; btn.innerHTML = btnHtml; }
+  }
 }
 
 // ──────────────────────────────────────────────────────
