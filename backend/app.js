@@ -8,6 +8,7 @@ const cors     = require('cors');
 const helmet   = require('helmet');
 const mongoSanitize = require('./middleware/mongoSanitize');
 const errorHandler  = require('./middleware/errorHandler');
+const { botGuard }  = require('./middleware/botGuard');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -74,6 +75,11 @@ app.use(cors({
   },
   credentials: true
 }));
+// Bot/scraper filter + site-wide API ceiling (see middleware/botGuard.js).
+// After cors so a blocked response still carries CORS headers (the browser
+// then shows the real 403/429 instead of a CORS error), before body parsing
+// so a rejected request costs nothing.
+app.use('/api', botGuard());
 app.use(require('compression')());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));

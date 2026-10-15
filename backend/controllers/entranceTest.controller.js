@@ -3,10 +3,14 @@
 const catchAsync = require('../middleware/catchAsync');
 const entranceTestService = require('../services/entranceTestService');
 const entranceGuestService = require('../services/entranceGuestService');
+const { isHoneypotTripped } = require('../utils/honeypot');
 
 // POST /api/entrance-test/guest  { name, phone } — no auth; returns a guest
 // token limited to the Entrance Test (see middleware/auth.js).
 exports.createGuest = catchAsync(async (req, res) => {
+  if (isHoneypotTripped(req, 'entrance-guest')) {
+    return res.status(400).json({ success: false, message: 'Không đăng ký được, vui lòng thử lại.' });
+  }
   const { name, phone } = req.body || {};
   const { token, user } = await entranceGuestService.createGuestSession({ name, phone });
   res.status(201).json({ success: true, token, user });

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/components.css?v=20260831"/>
   <link rel="stylesheet" href="css/mobile.css?v=20261009tuition"/>
   <script src="js/theme.js?v=20260831"></script>
+  <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
   <link rel="stylesheet" href="css/entrance-test.css?v=20261007guest">
   <link rel="stylesheet" href="css/playful.css?v=20261015lumi3"/>
 </head>
@@ -80,6 +81,7 @@
       </div>
       <div id="et-guest-error" class="et-guest-error hidden" role="alert"></div>
       <div class="et-guest-actions">
+        <input type="text" id="et-guest-hp" name="hp_check" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
         <button type="submit" id="et-guest-submit" class="et-btn-primary"><i class="fas fa-arrow-right"></i> Tiếp tục</button>
         <span class="et-guest-login">Đã có tài khoản? <a id="et-guest-login-link" href="/login.html?next=%2Fentrance-test.html">Đăng nhập</a></span>
       </div>

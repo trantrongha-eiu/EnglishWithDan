@@ -183,7 +183,7 @@
     if (!/^(\+?84|0)\d{9,10}$/.test(phone.replace(/[\s.\-()]/g, ''))) { showErr('Số điện thoại không hợp lệ (VD: 0912 345 678).'); $('et-guest-phone').focus(); return; }
     btn.disabled = true;
     apiFetch('/entrance-test/guest', {
-      method: 'POST', body: JSON.stringify({ name: name, phone: phone }),
+      method: 'POST', body: JSON.stringify({ name: name, phone: phone, hp_check: ($('et-guest-hp') || {}).value || '' }),
     }).then(function (d) {
       window.AuthService.login(d.token, d.user);
       document.body.classList.add('et-public');

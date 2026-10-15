@@ -272,7 +272,7 @@ describe('no-login visitor (guest)', () => {
     $('#et-guest-card').dispatchEvent(new Event('submit', { cancelable: true }));
     await settle(10);
     const post = calls.find(c => /\/entrance-test\/guest/.test(c.url));
-    expect(JSON.parse(post.opts.body)).toEqual({ name: 'Nguyễn Văn An', phone: '0912 345 678' });
+    expect(JSON.parse(post.opts.body)).toEqual({ name: 'Nguyễn Văn An', phone: '0912 345 678', hp_check: '' });
     expect(window.AuthService.login).toHaveBeenCalledWith('guest-token', expect.objectContaining({ role: 'guest' }));
     expect($('#et-guest-card').classList.contains('hidden')).toBe(true);
     expect($('#et-start-btn').classList.contains('hidden')).toBe(false);

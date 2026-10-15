@@ -83,6 +83,7 @@
               '<label>Tin nhắn thêm</label>' +
               '<textarea id="_cmMsg" placeholder="Trình độ hiện tại, mục tiêu, thời gian học..."></textarea>' +
             '</div>' +
+            '<input type="text" id="_cmHp" name="hp_check" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none" />' +
             '<button type="submit" class="_cm-submit" id="_cmSubmit"><i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn</button>' +
             '<div class="_cm-msg" id="_cmResult"></div>' +
           '</div>' +
@@ -111,7 +112,8 @@
           phone:   document.getElementById('_cmPhone').value.trim(),
           email:   document.getElementById('_cmEmail').value.trim(),
           course:  document.getElementById('_cmCourse').value,
-          message: document.getElementById('_cmMsg').value.trim()
+          message: document.getElementById('_cmMsg').value.trim(),
+          hp_check: document.getElementById('_cmHp').value
         })
       });
       var data = await res.json();

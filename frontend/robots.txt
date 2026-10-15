@@ -1,3 +1,30 @@
+# AI-training / data-harvesting crawlers — the lesson content is ours, not
+# training data. Well-behaved bots honour this; the API additionally rejects
+# these user-agents outright (backend/middleware/botGuard.js).
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: CCBot
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: PerplexityBot
+User-agent: Amazonbot
+User-agent: cohere-ai
+User-agent: Diffbot
+User-agent: Meta-ExternalAgent
+User-agent: ImagesiftBot
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: PetalBot
+User-agent: DataForSeoBot
+Disallow: /
+
 User-agent: *
 Allow: /
 

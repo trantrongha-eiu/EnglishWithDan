@@ -827,6 +827,15 @@ describe('no-login guest entrance test (POST /api/entrance-test/guest)', () => {
     expect((await request(app).post('/api/entrance-test/guest').send({ name: 'Nguyễn An' })).status).toBe(400);
   });
 
+  test('a filled honeypot field is rejected and creates no account; an empty one is fine', async () => {
+    const before = await User.countDocuments({ role: 'guest' });
+    const bot = await request(app).post('/api/entrance-test/guest').send({ name: 'Bot Bot', phone: '0912345678', hp_check: 'http://spam' });
+    expect(bot.status).toBe(400);
+    expect(await User.countDocuments({ role: 'guest' })).toBe(before);
+    const human = await request(app).post('/api/entrance-test/guest').send({ name: 'Lê Chi', phone: '0912345679', hp_check: '' });
+    expect(human.status).toBe(201);
+  });
+
   test('name + phone -> a guest token that runs the whole test, and admin sees the name + phone', async () => {
     await seedFullConfig();
     const res = await request(app).post('/api/entrance-test/guest').send({ name: '  Nguyễn Văn  An ', phone: '+84 912.345.678' });

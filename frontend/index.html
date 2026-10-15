@@ -49,6 +49,7 @@
        ever called after an async course-list fetch resolves, well after any
        deferred script has finished) — safe to defer. -->
   <script src="js/theme.js?v=20260831"></script>
+  <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
   <script src="js/shared/scroll-reveal.js?v=20260904b"></script>
   <script src="js/shared/visit-tracker.js?v=20260831" defer></script>
   <script src="js/shared/pwa-register.js?v=20260831" defer></script>
@@ -536,6 +537,7 @@
       <div class="form-card">
         <h3><i class="fas fa-paper-plane" style="color:var(--blue)"></i> Gửi thông tin tư vấn</h3>
         <form id="consultForm" onsubmit="submitForm(event)">
+          <input type="text" id="f-hp" name="hp_check" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
           <div class="form-row">
             <div class="form-group">
               <label for="f-name">Họ &amp; tên <span style="color:var(--red)">*</span></label>
@@ -655,7 +657,8 @@
         phone: document.getElementById('f-phone').value.trim(),
         email: document.getElementById('f-email').value.trim(),
         course: document.getElementById('f-course').value,
-        message: document.getElementById('f-msg').value.trim()
+        message: document.getElementById('f-msg').value.trim(),
+        hp_check: document.getElementById('f-hp').value
       };
 
       try {

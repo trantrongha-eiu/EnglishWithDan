@@ -67,3 +67,8 @@
   Cache-Control: no-cache
 /admin/assets/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Back office — keep it out of every search index even if a link to it leaks
+# (robots.txt only asks crawlers not to fetch; this forbids indexing).
+/admin/*
+  X-Robots-Tag: noindex, nofollow
