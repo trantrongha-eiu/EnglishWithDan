@@ -85,6 +85,16 @@ async function reachedDailyWordThreshold(userId, wordsInc) {
   return (doc.wordsStudied || 0) >= target;
 }
 
+const DAILY_STREAK_BONUS_CAP = 5;
+
+// How much of today's cap is already used — read-only. The Búa Hi Vọng
+// (shopService.useItem) checks it so a student can't place a bet that the
+// cap already makes impossible to win.
+async function streakBonusEarnedToday(userId) {
+  const doc = await VocabActivity.findOne({ userId, date: todayVNDate() }).select('streakBonusEarned').lean();
+  return (doc && doc.streakBonusEarned) || 0;
+}
+
 // Daily streak-bonus cap (max 5/day, shared across vocab/reading/listening):
 // reads how much bonus has already been granted today, then reserves
 // `rawBonus` more via an optimistic compare-and-swap — the increment only
@@ -110,7 +120,7 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
   for (let i = 0; i < _retries; i++) {
     const doc = await VocabActivity.findOne({ userId, date }).select('streakBonusEarned').lean();
     const prevEarned = doc?.streakBonusEarned || 0;
-    const appliedBonus = Math.max(0, Math.min(rawBonus, 5 - prevEarned));
+    const appliedBonus = Math.max(0, Math.min(rawBonus, DAILY_STREAK_BONUS_CAP - prevEarned));
     if (appliedBonus === 0) return 0;
 
     const result = await VocabActivity.updateOne(
@@ -127,6 +137,7 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
 
 module.exports = {
   todayVNDate, bonusForAccuracy, reserveDailyStreakBonus,
+  DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday,
   reachedDailyWordThreshold, VOCAB_STREAK_WORD_THRESHOLD,
   dailyWordTargetForBand, dailyWordTarget, vocabStudiedToday,
 };

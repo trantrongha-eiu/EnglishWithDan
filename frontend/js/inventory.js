@@ -112,7 +112,7 @@
     function petById(id) { return state.pets.filter(function (p) { return p.id === id; })[0]; }
 
     var USE_MSG = {
-        hopeHammer: 'Từ giờ đến hết hôm nay mọi 🔥 kiếm được đều ×2. Nhưng nếu đến nửa đêm chưa kiếm thêm đủ 3 🔥 thì chuỗi bị trừ 10 🔥. Chơi không?',
+        hopeHammer: 'Từ giờ đến hết hôm nay mọi 🔥 kiếm được đều ×2. Nhưng nếu đến nửa đêm chưa kiếm thêm đủ 3 🔥 thì chuỗi bị trừ 10 🔥. (Mỗi ngày chỉ kiếm tối đa 5 🔥 — nên đập búa trước khi học.) Chơi không?',
         cloak: 'Giấu số 🔥 của bạn trên BXH trong 24 giờ.',
         crown: 'Đội vương miện, tên bạn phát sáng trên BXH trong 7 ngày.',
     };

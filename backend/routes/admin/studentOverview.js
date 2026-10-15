@@ -37,7 +37,7 @@ router.get('/users/:id/overview', auth, teacherOnly, async (req, res) => {
     const isAdmin = req.user.role === 'admin';
 
     const user = await User.findById(uid)
-      .select('role targetBand currentBand currentBandSource targetExamDate weeklyStudyMinutes studyDays preferredSessionMinutes studyMotto learningStreak maxLearningStreak lastActivityDate streakHammers totalStudyMinutes trialStartedAt emailVerified authProvider')
+      .select('role targetBand currentBand currentBandSource targetExamDate weeklyStudyMinutes studyDays preferredSessionMinutes studyMotto learningStreak maxLearningStreak lastActivityDate shopItems.iceShield streakHammers totalStudyMinutes trialStartedAt emailVerified authProvider')
       .lean();
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
 
@@ -101,7 +101,7 @@ router.get('/users/:id/overview', auth, teacherOnly, async (req, res) => {
           studyMotto: user.studyMotto || '',
         },
         streak: {
-          current: effectiveStreak(user.learningStreak, user.lastActivityDate),
+          current: effectiveStreak(user.learningStreak, user.lastActivityDate, user.shopItems && user.shopItems.iceShield),
           max: user.maxLearningStreak || 0,
           hammers: user.streakHammers || 0,
           lastActivityDate: user.lastActivityDate || null,

@@ -7,7 +7,9 @@
 const User = require('../models/User');
 const Message = require('../models/Message');
 const ShopPurchase = require('../models/ShopPurchase');
+const mongoose = require('mongoose');
 const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
+const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
 const {
   ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS,
@@ -175,11 +177,30 @@ async function getFeed(viewerId, since) {
   }));
 }
 
+// A Khiên Băng only protects gaps that happen while it is held. If the
+// streak is already lost when one is bought (a gap the shields already in
+// the kho can't cover), the loss is finalized first — the same snapshot as
+// User.resetIfStale(), so the Búa Daniel can still restore it — instead of
+// the new shield quietly reviving it on the next read. (Before, that only
+// happened for students who hadn't opened the dashboard yet that day.)
+async function finalizeLostStreak(userId) {
+  await coverMissedDaysWithShields(User, userId).catch(() => 0);
+  const today = getVNDay(new Date());
+  // getVNDay(lastActivityDate) <= today - 2 days, for both day-bucketed
+  // and raw stored values.
+  await User.updateOne(
+    { _id: userId, learningStreak: { $gt: 0 }, lastActivityDate: { $lt: new Date(today.getTime() - 24 * HOUR - 7 * HOUR) } },
+    [{ $set: { previousStreak: '$learningStreak', streakLostAt: today, learningStreak: 0 } }],
+    { updatePipeline: true }
+  );
+}
+
 async function buyItem(userId, key) {
   const item = ITEM_BY_KEY[key];
   if (!item) return { status: 'not_found' };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
+  if (key === 'iceShield') await finalizeLostStreak(userId);
   const field = `shopItems.${key}`;
   const filter = { _id: userId, flameWallet: { $gte: item.price } };
   if (item.maxOwned) filter[field] = { $not: { $gte: item.maxOwned } };
@@ -251,6 +272,14 @@ async function useItem(userId, key) {
   if (key === 'hopeHammer') {
     // Settle a previous day's bet first, so the new one starts clean.
     await settleHopeHammer(userId);
+    const pre = await User.findById(userId).select('hopeHammerDay shopItems').lean();
+    if (!pre) return { status: 'not_found' };
+    if (pre.hopeHammerDay) return { status: 'already_active' };
+    if (!((pre.shopItems || {}).hopeHammer >= 1)) return { status: 'none_left' };
+    // 🔥 earned per day is capped (streakBonusService) — once less than the
+    // quota is left today, the bet could only be lost, so it isn't offered.
+    const left = Math.max(0, DAILY_STREAK_BONUS_CAP - await streakBonusEarnedToday(userId));
+    if (left < HOPE_QUOTA) return { status: 'hope_too_late', left, quota: HOPE_QUOTA };
     const today = getVNDay(new Date());
     const u = await spendOne(userId, 'hopeHammer', { hopeHammerDay: null },
       { $set: { hopeHammerDay: today, hopeHammerBase: 0 } });
@@ -273,29 +302,29 @@ async function useItem(userId, key) {
   return { status: 'ok', owned: u.shopItems[key], until };
 }
 
-// Bánh Kem: spend the cake first, then land it on the target; if the
-// target can't be hit (gone, staff, already covered in cake) refund it.
+// Bánh Kem: check the target, spend the cake, then land it; if someone
+// else's cake landed in between (already covered in cake) refund it.
 async function throwCake(userId, targetId) {
   if (!targetId || String(targetId) === String(userId)) return { status: 'invalid_target' };
   const thrower = await User.findById(userId).select('firstName lastName username role').lean();
   if (!thrower || thrower.role !== 'student') return { status: 'forbidden' };
+  const target = mongoose.isValidObjectId(targetId)
+    ? await User.findById(targetId).select('role cakedUntil').lean()
+    : null;
+  if (!target || target.role !== 'student') return { status: 'target_not_found' };
+  if (isActive(target.cakedUntil)) return { status: 'already_caked' };
 
   const spent = await spendOne(userId, 'cake', {}, {});
   if (!spent) return { status: 'none_left' };
 
-  let hit;
-  try {
-    hit = await User.findOneAndUpdate(
-      {
-        _id: targetId, role: 'student',
-        $or: [{ cakedUntil: null }, { cakedUntil: { $lte: new Date() } }],
-      },
-      { $set: { cakedUntil: new Date(Date.now() + CAKE_HOURS * HOUR), cakedBy: displayName(thrower) } },
-      { new: true }
-    ).select('firstName lastName username').lean();
-  } catch {
-    hit = null; // e.g. a malformed id — refund below
-  }
+  const hit = await User.findOneAndUpdate(
+    {
+      _id: targetId, role: 'student',
+      $or: [{ cakedUntil: null }, { cakedUntil: { $lte: new Date() } }],
+    },
+    { $set: { cakedUntil: new Date(Date.now() + CAKE_HOURS * HOUR), cakedBy: displayName(thrower) } },
+    { new: true }
+  ).select('firstName lastName username').lean();
   if (!hit) {
     await User.updateOne({ _id: userId }, { $inc: { 'shopItems.cake': 1 } });
     return { status: 'already_caked' };

@@ -112,6 +112,19 @@ describe('Búa Hi Vọng', () => {
     expect((await User.findById(poor._id).lean()).learningStreak).toBe(0);
   });
 
+  test('is refused (and kept) once the daily 🔥 cap leaves less than the quota', async () => {
+    const VocabActivity = require('../../../models/VocabActivity');
+    const user = await createStudent({ extra: { shopItems: { hopeHammer: 1 } } });
+    await VocabActivity.create({ userId: user._id, date: todayVN(), streakBonusEarned: 3 });
+    expect(await shopService.useItem(user._id, 'hopeHammer')).toMatchObject({ status: 'hope_too_late', left: 2 });
+    const u = await User.findById(user._id).lean();
+    expect(u.shopItems.hopeHammer).toBe(1);
+    expect(u.hopeHammerDay).toBeNull();
+
+    await VocabActivity.updateOne({ userId: user._id, date: todayVN() }, { $set: { streakBonusEarned: 2 } });
+    expect((await shopService.useItem(user._id, 'hopeHammer')).status).toBe('ok');
+  });
+
   test('today\'s bet is not settled early', async () => {
     const user = await createStudent({ extra: { learningStreak: 20, hopeHammerDay: todayVN(), hopeHammerBase: 0 } });
     expect(await shopService.settleHopeHammer(user._id)).toBeNull();
@@ -132,6 +145,29 @@ describe('Khiên Băng', () => {
     const u = await applyStreakActivity(User, user._id, 1);
     expect(u.learningStreak).toBe(1);
     expect(u.shopItems.iceShield).toBe(1);
+  });
+
+  test('a shield bought after the streak is already lost does not revive it (Búa Daniel still can)', async () => {
+    const user = await createStudent({ extra: { learningStreak: 15, lastActivityDate: daysAgo(2), flameWallet: 50, flameWalletGranted: true } });
+    expect((await shopService.buyItem(user._id, 'iceShield')).status).toBe('ok');
+    const state = await shopService.getState(user._id);
+    expect(state.streak).toBe(0);
+    const u = await User.findById(user._id).lean();
+    expect(u).toMatchObject({ learningStreak: 0, previousStreak: 15 });
+    expect(u.shopItems.iceShield).toBe(1);
+    expect(state.danielHammer.previousStreak).toBe(15);
+  });
+
+  test('buying a shield leaves a live streak (or one the held shields cover) alone', async () => {
+    const alive = await createStudent({ extra: { learningStreak: 7, lastActivityDate: daysAgo(1), flameWallet: 50, flameWalletGranted: true } });
+    await shopService.buyItem(alive._id, 'iceShield');
+    expect((await User.findById(alive._id).lean()).learningStreak).toBe(7);
+
+    const covered = await createStudent({ extra: { learningStreak: 7, lastActivityDate: daysAgo(2), flameWallet: 50, flameWalletGranted: true, shopItems: { iceShield: 1 } } });
+    await shopService.buyItem(covered._id, 'iceShield');
+    const c = await User.findById(covered._id).lean();
+    expect(c.learningStreak).toBe(7);
+    expect(c.shopItems.iceShield).toBe(1); // one spent on the gap, one bought
   });
 
   test('getStats keeps a shielded streak alive instead of resetting it', async () => {
@@ -166,6 +202,14 @@ describe('BXH decorations', () => {
     expect((await shopService.throwCake(a._id, b._id)).status).toBe('already_caked');
     expect((await User.findById(a._id).lean()).shopItems.cake).toBe(1);
     expect((await User.findById(b._id).lean()).cakedBy).toBe('An');
+  });
+
+  test('a cake at a missing / non-student target is not spent', async () => {
+    const a = await createStudent({ extra: { shopItems: { cake: 1 } } });
+    const admin = await User.create({ username: 'cakeadmin', email: 'cakeadmin@x.com', password: 'Passw0rd!', role: 'admin' });
+    expect((await shopService.throwCake(a._id, 'not-an-id')).status).toBe('target_not_found');
+    expect((await shopService.throwCake(a._id, admin._id)).status).toBe('target_not_found');
+    expect((await User.findById(a._id).lean()).shopItems.cake).toBe(1);
   });
 
   test('vĩ thú are priced 50 → 210 in steps of 20; the old pets all cost 30', async () => {

@@ -13,6 +13,8 @@ const MESSAGES = {
   already_active: [400, 'Hôm nay bạn đã đập Búa Hi Vọng rồi!'],
   invalid_target: [400, 'Không ném bánh vào chính mình được 😆'],
   already_caked: [400, 'Bạn này đang dính kem rồi — để mai ném tiếp nhé!'],
+  target_not_found: [404, 'Không tìm thấy bạn này trên BXH.'],
+  hope_too_late: [400, 'Hôm nay bạn đã kiếm gần hết 🔥 tối đa (5/ngày) — không còn đủ chỗ để kiếm thêm 3 🔥 cho Búa Hi Vọng. Hãy đập búa vào đầu ngày mai, trước khi học nhé!'],
 };
 
 function send(res, result) {
