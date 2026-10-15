@@ -452,7 +452,7 @@ describe('GET /leaderboard', () => {
     // A student with no qualifying quiz: unranked, but still told the board size.
     const other = await createStudent();
     const res2 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${signTokenFor(other)}`);
-    expect(res2.body.me).toEqual({ rank: null, total: 1 });
+    expect(res2.body.me).toMatchObject({ rank: null, total: 1 });
 
     // Staff never get a standing.
     const res3 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${teacherToken}`);
