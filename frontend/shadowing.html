@@ -218,6 +218,34 @@
       .sh-credit { flex: none; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .sh-side { position: static; height: 100%; max-height: none; min-height: 0; }
     }
+
+    /* "Video lớn" (default on desktop): YouTube-style theater — the video
+       spans the full width, capped so the sentence + Nghe / Nói theo row
+       still peeks in under it; the panel and transcript sit side by side
+       below and the page scrolls. Toggled off → the fit-to-screen layout. */
+    .sh-size {
+      background: var(--surface2); border: none; color: var(--text2); font-size: 13px; font-weight: 700;
+      border-radius: var(--radius-pill); padding: 10px 14px; cursor: pointer; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sh-size:hover { background: var(--border); color: var(--text); }
+    @media (max-width: 960px) { .sh-size { display: none; } }
+    @media (min-width: 961px) {
+      #screen-practice.sh-theater.active { display: block; height: auto; }
+      .sh-theater .sh-layout { grid-template-rows: auto auto 1fr; row-gap: 14px; align-items: start; }
+      .sh-theater .sh-main { display: contents; }
+      .sh-theater .sh-video-box { grid-column: 1 / -1; grid-row: 1; display: flex; justify-content: center; container-type: normal; min-height: 0; }
+      .sh-theater .sh-video {
+        height: auto; aspect-ratio: 16 / 9;
+        width: min(100%, max(640px, calc((100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 350px) * 16 / 9)));
+      }
+      .sh-theater .sh-panel { grid-column: 1; grid-row: 2; margin-top: 0; overflow: visible; }
+      .sh-theater .sh-credit { grid-column: 1; grid-row: 3; margin-top: 0; white-space: normal; }
+      .sh-theater .sh-side {
+        grid-column: 2; grid-row: 2 / span 2; height: auto; min-height: 0;
+        max-height: calc(100vh - var(--nav-height, 64px) - 40px); position: sticky; top: calc(var(--nav-height, 64px) + 20px);
+      }
+    }
   </style>
   <link rel="stylesheet" href="/css/playful.css?v=20261010lulu"/>
 </head>
@@ -305,6 +333,7 @@
         <div class="sh-sub" id="sh-sub"></div>
         <div class="sh-desc" id="sh-desc" onclick="this.classList.toggle('open')" title="Bấm để xem đầy đủ / thu gọn"></div>
       </div>
+      <button class="sh-size" id="sh-size" onclick="toggleBigVideo()"></button>
       <div class="sh-modes" role="tablist">
         <button class="sh-mode active" data-mode="shadowing" onclick="setMode('shadowing')"><i class="fas fa-microphone"></i> Shadowing</button>
         <button class="sh-mode" data-mode="dictation" onclick="setMode('dictation')"><i class="fas fa-keyboard"></i> Dictation</button>
@@ -341,9 +370,9 @@
               <label class="sh-toggle"><input type="checkbox" id="opt-autorec"> Tự ghi âm sau khi nghe xong</label>
               <label class="sh-toggle"><input type="checkbox" id="opt-hide"> Ẩn câu (thử thách)</label>
               <label class="sh-toggle"><input type="checkbox" id="opt-vi" checked> Hiện tiếng Việt</label>
+              <div class="sh-hint sh-kbd" style="margin:0 0 0 auto">Phím tắt: <kbd>Space</kbd> nghe · <kbd>R</kbd> ghi âm · <kbd>←</kbd>/<kbd>→</kbd> chuyển câu</div>
             </div>
             <div class="sh-score" id="sh-score"></div>
-            <div class="sh-hint sh-kbd" style="margin:10px 0 0">Phím tắt: <kbd>Space</kbd> nghe · <kbd>R</kbd> ghi âm · <kbd>←</kbd>/<kbd>→</kbd> chuyển câu</div>
           </div>
 
           <!-- Dictation mode -->
@@ -377,7 +406,7 @@
 
 </div>
 
-<script src="/js/shadowing.js?v=20261015ted"></script>
+<script src="/js/shadowing.js?v=20261015big"></script>
 <script src="https://www.youtube.com/iframe_api" async></script>
 
 <div id="dict-popup" class="dict-popup hidden">

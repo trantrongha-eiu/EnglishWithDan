@@ -37,12 +37,25 @@
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify({
         speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked, vi: $('opt-vi').checked,
-        tipsClosed: !$('sh-tips').open,
+        tipsClosed: !$('sh-tips').open, bigVideo,
       }));
     } catch (_) { /* storage unavailable */ }
   }
 
   let lessons = [];
+
+  // Theater layout on desktop (see .sh-theater in shadowing.html); on by default.
+  let bigVideo = true;
+  function applyBigVideo() {
+    $('screen-practice').classList.toggle('sh-theater', bigVideo);
+    $('sh-size').innerHTML = bigVideo
+      ? '<i class="fas fa-compress"></i> Thu nhỏ video'
+      : '<i class="fas fa-expand"></i> Video lớn';
+    $('sh-size').title = bigVideo
+      ? 'Thu nhỏ để video, câu và nút bấm vừa một màn hình'
+      : 'Phóng to video toàn chiều rộng';
+  }
+  function toggleBigVideo() { bigVideo = !bigVideo; applyBigVideo(); savePrefs(); }
   let filterCat = '';
   let filterLevel = '';
   let lesson = null;
@@ -806,7 +819,7 @@
   function toggleRecord() { if (recording) stopRecord(); else startRecord(); }
 
   // Inline onclick handlers in shadowing.html
-  Object.assign(window, { backToList, setMode, goTo, playSegment, playAll, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, dcNext, toggleHint });
+  Object.assign(window, { backToList, setMode, toggleBigVideo, goTo, playSegment, playAll, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, dcNext, toggleHint });
   Object.defineProperty(window, 'idx', { get: () => idx, configurable: true });
 
   // ══════════════ INIT ══════════════
@@ -816,6 +829,8 @@
     $('opt-autorec').checked = !!prefs.autorec;
     $('opt-hide').checked = !!prefs.hide;
     $('opt-vi').checked = prefs.vi !== false;
+    bigVideo = prefs.bigVideo !== false;
+    applyBigVideo();
     // Tips stay open until the student folds them away once.
     if (prefs.tipsClosed) $('sh-tips').open = false;
     $('sh-tips').addEventListener('toggle', savePrefs);
