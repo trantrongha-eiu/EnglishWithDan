@@ -968,10 +968,16 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
   }, [cls._id, assignmentId]);
   if (!data) return <div style={{ padding: 12, color: 'var(--text3)' }}>Đang tải…</div>;
   const hasVocabGoal = (data.assignment?.resources || []).some((r) => r.kind === 'vocab_goal');
+  const mockItem = (data.assignment?.resources || []).find((r) => r.resourceType === 'mock_test' && r.mockBundle);
   return (
     <div style={{ padding: '10px 6px' }}>
+      {mockItem && (
+        <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 8 }}>
+          🧪 Bộ đề thi thử chung của lớp — {mockBundleSummary(mockItem)}
+        </div>
+      )}
       <table className="table" style={{ margin: 0 }}>
-        <thead><tr><th>HỌC VIÊN</th><th>HOÀN THÀNH</th>{hasVocabGoal && <th>SỔ TỪ VỰNG</th>}<th>THIẾU</th><th>XONG LÚC</th><th>TRẠNG THÁI</th></tr></thead>
+        <thead><tr><th>HỌC VIÊN</th><th>HOÀN THÀNH</th>{hasVocabGoal && <th>SỔ TỪ VỰNG</th>}{mockItem && <th>THI THỬ</th>}<th>THIẾU</th><th>XONG LÚC</th><th>TRẠNG THÁI</th></tr></thead>
         <tbody>
           {data.rows.map((r) => (
             <tr key={r.enrollmentId}>
@@ -987,6 +993,11 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
                   ))}
                 </td>
               )}
+              {mockItem && (
+                <td style={{ fontSize: 13 }}>
+                  <MockRunCell item={r.items.find((it) => String(it.itemId) === String(mockItem._id))} />
+                </td>
+              )}
               <td style={{ fontSize: 13 }}>{r.missing}</td>
               <td style={{ fontSize: 13 }}>{r.allCompletedAt ? formatDate(r.allCompletedAt) : '—'}</td>
               <td><span className={`badge ${ASG_STATUS[r.status] || 'badge-gray'}`}><span className="dot" />{ASG_LABEL[r.status] || r.status}</span></td>
@@ -996,6 +1007,92 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
       </table>
     </div>
   );
+}
+
+// ── "Thi thử full 4 kỹ năng" — the whole class takes ONE bundle ──────────
+// The backend fixes it when the assignment is saved (assignment.controller
+// buildMockResource): any skill left on "Ngẫu nhiên" is drawn once, then
+// stored on the item, so every student gets identical L/R/W/S tests.
+const MOCK_SKILLS = [
+  { key: 'listeningTestId', nameKey: 'listeningTestName', type: 'listening_test', label: 'Listening', short: 'L' },
+  { key: 'readingTestId', nameKey: 'readingTestName', type: 'reading_test', label: 'Reading', short: 'R' },
+  { key: 'writingExamId', nameKey: 'writingExamName', type: 'writing_exam', label: 'Writing', short: 'W' },
+  { key: 'speakingQuestionId', nameKey: 'speakingTopic', type: 'speaking', label: 'Speaking (Part 2)', short: 'S' },
+];
+
+function mockBundleSummary(p) {
+  const b = p?.mockBundle;
+  if (!b) return 'đề ngẫu nhiên cho từng học sinh (kiểu cũ)';
+  return MOCK_SKILLS.map((s) => `${s.short}: ${b[s.key] ? (b[s.nameKey] || 'đã chọn') : '🎲 ngẫu nhiên'}`).join(' · ');
+}
+
+function MockBundlePicker({ current, onPick }) {
+  const [lists, setLists] = useState({});
+  const [sel, setSel] = useState(() => Object.fromEntries(MOCK_SKILLS.map((s) => [s.key, current?.mockBundle?.[s.key] ? String(current.mockBundle[s.key]) : ''])));
+
+  useEffect(() => {
+    let alive = true;
+    Promise.all(MOCK_SKILLS.map((s) => {
+      const qs = new URLSearchParams({ type: s.type, limit: '300' });
+      if (s.type === 'speaking') qs.set('part', '2');
+      return apiFetch(`/classes/resources/catalog?${qs}`).then((d) => [s.key, d.items || []]).catch(() => [s.key, []]);
+    })).then((pairs) => { if (alive) setLists(Object.fromEntries(pairs)); });
+    return () => { alive = false; };
+  }, []);
+
+  function use() {
+    const mockBundle = {};
+    for (const s of MOCK_SKILLS) {
+      const id = sel[s.key];
+      mockBundle[s.key] = id || null;
+      const prevName = current?.mockBundle && String(current.mockBundle[s.key] || '') === id ? current.mockBundle[s.nameKey] : '';
+      const fromList = (lists[s.key] || []).find((x) => String(x._id) === id);
+      mockBundle[s.nameKey] = id ? (prevName || (fromList ? (s.type === 'speaking' ? (fromList.meta || fromList.label) : fromList.label) : '')) : '';
+    }
+    onPick({ kind: 'internal', resourceType: 'mock_test', resourceId: null, label: 'Thi thử full 4 kỹ năng', mockBundle });
+  }
+
+  return (
+    <div style={{ border: '1px solid var(--border)', borderRadius: 6, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5 }}>
+        Cả lớp làm <b>chung 1 bộ đề</b>. Kỹ năng để "🎲 Ngẫu nhiên" sẽ được hệ thống bốc <b>1 lần</b> lúc giao bài
+        rồi cố định cho mọi học sinh. Tính hoàn thành khi học sinh nộp xong Listening → Reading → Writing (Speaking làm sau, không bắt buộc).
+      </div>
+      {MOCK_SKILLS.map((s) => (
+        <label key={s.key} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 13 }}>
+          <span style={{ fontWeight: 600 }}>{s.label}</span>
+          <select className="form-input" value={sel[s.key]} onChange={(e) => setSel((x) => ({ ...x, [s.key]: e.target.value }))}>
+            <option value="">🎲 Ngẫu nhiên (chốt 1 đề chung khi giao)</option>
+            {sel[s.key] && !(lists[s.key] || []).some((x) => String(x._id) === sel[s.key]) && (
+              <option value={sel[s.key]}>{current?.mockBundle?.[s.nameKey] || 'Đề đã chọn'}</option>
+            )}
+            {(lists[s.key] || []).map((x) => (
+              <option key={String(x._id)} value={String(x._id)}>{x.label}{x.meta ? ` — ${x.meta}` : ''}</option>
+            ))}
+          </select>
+        </label>
+      ))}
+      <div>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={use}>
+          {current ? '✓ Cập nhật bộ đề thi thử' : '+ Thêm bài thi thử full vào bài tập'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// One student's mock cell in the progress table (resourceCompletionService.checkFixedMocks).
+const MOCK_PROGRESS_LABEL = { listening: 'Listening', reading: 'Reading', writing: 'Writing', speaking: 'Speaking' };
+function MockRunCell({ item }) {
+  const m = item?.mock;
+  if (!m) return <span style={{ color: 'var(--text3)' }}>Chưa bắt đầu</span>;
+  const b = m.bands || {};
+  const v = (x, empty = '…') => (x == null ? empty : x);
+  const bands = `L ${v(b.listening)} · R ${v(b.reading)} · W ${v(b.writing, 'chờ chấm')} · S ${v(b.speaking, '–')}`;
+  if (m.status === 'disqualified') return <span className="badge badge-red"><span className="dot" />Bị huỷ (vi phạm)</span>;
+  if (!item.completed) return <span>Đang làm — {MOCK_PROGRESS_LABEL[m.progress] || m.progress}</span>;
+  if (m.status === 'abandoned' && !b.speaking) return <>{`L ${v(b.listening)} · R ${v(b.reading)} · W ${v(b.writing, 'chờ chấm')} · S bỏ qua`}</>;
+  return <>{bands}{m.overallBand ? <div style={{ fontSize: 12 }}>Overall <b>{m.overallBand}</b></div> : null}</>;
 }
 
 // Local datetime-local value (YYYY-MM-DDTHH:mm) from a stored ISO deadline —
@@ -1020,7 +1117,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const [deadline, setDeadline] = useState(toDatetimeLocalValue(assignment?.deadline));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
-    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, label: r.label })));
+    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, label: r.label, mockBundle: r.mockBundle })));
   const [externals, setExternals] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'external')
     .map((r) => ({ url: r.url, title: r.title, description: r.description || '' })));
@@ -1202,6 +1299,12 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                 </button>
               </div>
             )}
+            {cat === 'mock_test' ? (
+              <MockBundlePicker
+                current={picked.find((p) => p.resourceType === 'mock_test')}
+                onPick={(item) => setPicked((p) => [...p.filter((x) => x.resourceType !== 'mock_test'), item])}
+              />
+            ) : (
             <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 6 }}>
               {loadingCat ? <div style={{ padding: 10, color: 'var(--text3)' }}>Đang tải…</div>
                 : catalog.length === 0 ? <div style={{ padding: 10, color: 'var(--text3)' }}>Không có kết quả</div>
@@ -1213,11 +1316,12 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                   </label>
                 ))}
             </div>
+            )}
             {picked.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                 {picked.map((p) => (
                   <span key={keyOf(p.resourceType, p.resourceId)} className="badge badge-blue" style={{ cursor: 'pointer' }} onClick={() => setPicked((x) => x.filter((y) => y !== p))}>
-                    {RES_LABEL[p.resourceType]}: {p.label} ✕
+                    {RES_LABEL[p.resourceType]}: {p.resourceType === 'mock_test' ? mockBundleSummary(p) : p.label} ✕
                   </span>
                 ))}
               </div>

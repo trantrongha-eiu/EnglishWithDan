@@ -43,6 +43,28 @@ const assignmentResourceSchema = new mongoose.Schema({
   // resourceCompletionService.deepLinkKeyFor).
   resourceCode: { type: String, default: '' },
 
+  // mock_test only — the ONE bundle the whole class takes, fixed when the
+  // teacher assigns it (a "random" skill is drawn once, server-side, at that
+  // moment — never per student). Starting the mock from this homework item
+  // creates a MockTestAttempt with exactly these tests (see
+  // mockTestService.startMockTest's `assigned` option). Legacy mock_test
+  // items saved before this existed have no bundle: each student still gets
+  // a random one and any completed run counts.
+  mockBundle: {
+    type: new mongoose.Schema({
+      listeningTestId:    { type: mongoose.Schema.Types.ObjectId, ref: 'ListeningTest', required: true },
+      readingTestId:      { type: mongoose.Schema.Types.ObjectId, ref: 'ReadingTest', required: true },
+      writingExamId:      { type: mongoose.Schema.Types.ObjectId, ref: 'WritingExam', required: true },
+      speakingQuestionId: { type: mongoose.Schema.Types.ObjectId, ref: 'SpeakingQuestion', required: true },
+      listeningTestName:  { type: String, default: '' }, // snapshots, teacher display only
+      readingTestName:    { type: String, default: '' },
+      writingExamName:    { type: String, default: '' },
+      speakingTopic:      { type: String, default: '' },
+      speakingCueCard:    { type: String, default: '' },
+    }, { _id: false }),
+    default: undefined,
+  },
+
   // external
   url:         { type: String, default: '' },
   title:       { type: String, default: '' },

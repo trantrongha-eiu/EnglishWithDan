@@ -65,6 +65,13 @@ const MockTestAttemptSchema = new mongoose.Schema({
     writingExamName:    { type: String, default: '' }     // snapshot
   },
 
+  // Set when the run was started from a class homework item (a mock_test
+  // resource carrying a fixed `mockBundle`) — the bundle above is then that
+  // item's, identical for every student in the class. Completion of the
+  // homework is matched on assignmentItemId (Assignment.resources[]._id).
+  assignmentId:     { type: mongoose.Schema.Types.ObjectId, ref: 'Assignment' },
+  assignmentItemId: { type: mongoose.Schema.Types.ObjectId },
+
   steps: {
     listening: { type: stepSchema, default: () => ({}) },
     reading:   { type: stepSchema, default: () => ({}) },
@@ -128,6 +135,9 @@ const MockTestAttemptSchema = new mongoose.Schema({
 MockTestAttemptSchema.index({ userId: 1, createdAt: -1 });
 // Resume lookup: the student's one still-open mock.
 MockTestAttemptSchema.index({ userId: 1, status: 1 });
+// Homework completion: a student's runs of one assigned mock item.
+MockTestAttemptSchema.index({ assignmentItemId: 1, userId: 1 },
+  { partialFilterExpression: { assignmentItemId: { $exists: true } } });
 // Retention: auto-delete 3 months after creation — same policy as every
 // sibling attempt model (ListeningAttempt, TestAttempt, WritingAttempt,
 // SpeakingAttempt). The sub-attempts expire on their own identical TTL.

@@ -2,13 +2,25 @@
 
 const catchAsync = require('../middleware/catchAsync');
 const mockTestService = require('../services/mockTestService');
+const assignmentService = require('../services/assignmentService');
 
-// POST /api/mock-test/start
+// POST /api/mock-test/start   body (optional): { assignmentId, itemId }
+// With a homework item → the class's fixed bundle (same tests for every
+// student); without → a random bundle as before.
 exports.start = catchAsync(async (req, res) => {
   try {
-    const { resumed, attempt } = await mockTestService.startMockTest(req.user._id);
+    const { assignmentId, itemId } = req.body || {};
+    let assigned = null;
+    if (assignmentId || itemId) {
+      assigned = await assignmentService.getAssignedMock(req.user._id, assignmentId, itemId);
+      if (assigned.error) return res.status(assigned.error).json({ success: false, message: assigned.message });
+    }
+    const { resumed, attempt } = await mockTestService.startMockTest(req.user._id, { assigned });
     res.status(resumed ? 200 : 201).json({ success: true, resumed, attempt });
   } catch (e) {
+    if (e && e.code === 'MOCK_OPEN_OTHER') {
+      return res.status(409).json({ success: false, code: e.code, message: e.message });
+    }
     // Proctoring cooldown after a disqualified run — surface a machine-
     // readable code + the remaining seconds so the dashboard can explain it.
     if (e && e.statusCode === 429 && e.cooldownSeconds != null) {

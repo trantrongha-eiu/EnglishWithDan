@@ -84,7 +84,7 @@ function hwResourceHref(r) {
     // instead of the one actually assigned (e.g. Past Simple → Present Simple).
     case 'grammar':            return r.resourceCode ? `essential-grammar.html?lesson=${encodeURIComponent(r.resourceCode)}` : 'essential-grammar.html';
     case 'vocabulary_lesson':  return `dashboard.html?view=lesson&lessonId=${id}`;
-    case 'mock_test':          return 'dashboard.html';
+    case 'mock_test':          return 'mock-test.html';
     default:                   return null;
   }
 }
@@ -138,6 +138,9 @@ function hwResourceRow(assignmentId, r) {
       + hwVocabGoalProgress(r);
     const bookId = r.vocabGoal && r.vocabGoal.bookId;
     action = `<a class="hw-res-btn" href="${bookId ? `dashboard.html?view=book&bookId=${encodeURIComponent(bookId)}` : 'dashboard.html'}">${r.completed ? 'Xem sổ' : 'Mở sổ'}</a>`;
+  } else if (r.kind === 'internal' && r.fixedMock) {
+    name = escHtml(r.label || 'Thi thử full 4 kỹ năng') + hwMockProgress(r);
+    action = hwMockAction(assignmentId, r);
   } else if (r.kind === 'internal') {
     name = escHtml(r.label || r.resourceType);
     const href = hwResourceHref(r);
@@ -160,6 +163,69 @@ function hwResourceRow(assignmentId, r) {
     <span class="hw-res-action">${action}</span>
   </div>`;
 }
+
+// ── Class mock test (fixed bundle — same tests for the whole class) ──
+// Backend: POST /api/mock-test/start { assignmentId, itemId } →
+// mockTestService.startMockTest's `assigned` path. Counts as done once
+// Listening → Reading → Writing are submitted (resourceCompletionService
+// checkFixedMocks); Speaking is a later, separate sitting.
+const HW_MOCK_SKILL = { listening: 'Listening', reading: 'Reading', writing: 'Writing', speaking: 'Speaking' };
+function hwMockOpen(r) {
+  const m = r.mock;
+  return !!(m && m.progress && m.progress !== 'done' && (m.status === 'in-progress' || m.status === 'awaiting-grading'));
+}
+function hwMockProgress(r) {
+  const m = r.mock;
+  const fmt = (v) => (v == null ? '…' : v);
+  if (r.completed && m) {
+    const b = m.bands || {};
+    const sp = m.progress === 'speaking' ? ' · Speaking: chưa thi' : ` · S ${fmt(b.speaking)}`;
+    return `<span class="hw-res-desc">L ${fmt(b.listening)} · R ${fmt(b.reading)} · W ${b.writing == null ? 'chờ chấm' : b.writing}${sp}${m.overallBand ? ` · Overall <b>${m.overallBand}</b>` : ''}</span>`;
+  }
+  if (hwMockOpen(r)) return `<span class="hw-res-desc">Đang làm — tiếp theo: <b>${HW_MOCK_SKILL[m.progress] || m.progress}</b></span>`;
+  if (m && m.status === 'disqualified') return '<span class="hw-res-desc hw-res-desc--warn">Lượt trước bị huỷ do rời màn hình thi — hãy làm lại.</span>';
+  return '<span class="hw-res-desc">Cả lớp làm chung 1 bộ đề · Listening → Reading → Writing (Speaking làm sau). Xong Writing là tính hoàn thành.</span>';
+}
+function hwMockAction(assignmentId, r) {
+  if (r.completed && !hwMockOpen(r)) return '<a class="hw-res-btn" href="review-history.html?view=mock">Xem kết quả</a>';
+  const label = hwMockOpen(r) ? (r.mock.progress === 'speaking' ? 'Bắt đầu Speaking' : 'Tiếp tục') : 'Bắt đầu';
+  return `<button type="button" class="hw-res-btn" onclick="hwStartAssignedMock('${assignmentId}','${r.itemId}',this)">${label}</button>`;
+}
+async function hwStartAssignedMock(assignmentId, itemId, btn) {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
+  const oldLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang mở đề…'; }
+  const post = () => fetch(`${API}/mock-test/start`, {
+    method: 'POST', headers: { ...authH(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ assignmentId, itemId }),
+  });
+  try {
+    let res = await post();
+    if (res.status === 409) {
+      const body = await res.json().catch(() => ({}));
+      if (body.code !== 'MOCK_OPEN_OTHER') throw new Error(body.message || 'Không mở được bài thi thử');
+      const ok = window.confirm('Bạn đang có một bài thi thử khác làm dở. Bỏ bài đó để bắt đầu bài thi thử giáo viên giao?');
+      if (!ok) throw null;
+      await window.ApiClient.handleResponse(await fetch(`${API}/mock-test/current`, { method: 'DELETE', headers: authH() }));
+      res = await post();
+    }
+    const data = await window.ApiClient.handleResponse(res);
+    const a = data.attempt;
+    if (!a) throw new Error('Không mở được bài thi thử');
+    const skill = (a.progress && a.progress !== 'done') ? a.progress : 'listening';
+    window.location.href = window.MockTest ? window.MockTest.pageUrl(skill, a._id)
+      : `${skill}.html?mock=${encodeURIComponent(a._id)}&skill=${skill}`;
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = oldLabel; }
+    if (!err) return; // student cancelled
+    const msg = (err.body && err.body.message) || err.message || 'Không mở được bài thi thử';
+    if (window.showToast) window.showToast(msg, 'error'); else alert(msg);
+  }
+}
+window.hwStartAssignedMock = hwStartAssignedMock;
 
 function hwManualToggle(assignmentId, r) {
   return `<label class="hw-manual">

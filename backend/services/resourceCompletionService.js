@@ -345,7 +345,7 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
   if (!entry.catalog) {
-    return [{ _id: null, label: entry.label, meta: 'Đề ngẫu nhiên mỗi lần làm' }];
+    return [{ _id: null, label: entry.label, meta: 'Cả lớp làm chung 1 bộ đề' }];
   }
   const q = { ...entry.catalog.filter, ...extraFilters };
   if (entry.catalog.courseScope) {
@@ -402,6 +402,62 @@ async function deepLinkKeyFor(type, resourceId) {
 // key used to match an assignment resource against a completion result
 function resourceKey(type, resourceId) {
   return `${type}:${resourceId || '*'}`;
+}
+
+// A mock_test homework item with a fixed class bundle (Assignment
+// resources[].mockBundle) is completed by a run started FROM that item —
+// matched on the item's own _id, not "any mock". Legacy bundle-less items
+// keep the "any completed run" rule.
+function isFixedMock(r) {
+  return r.resourceType === 'mock_test' && !!(r.mockBundle && r.mockBundle.listeningTestId);
+}
+
+// Assignment resource -> the item checkCompleted() takes. Callers build their
+// internal-item lists through this and look results up with completionKey().
+function completionItem(r) {
+  return { resourceType: r.resourceType, resourceId: r.resourceId, mockItemId: isFixedMock(r) ? r._id : null };
+}
+
+function completionKey(r) {
+  return isFixedMock(r) ? `mock_test:item:${r._id}` : resourceKey(r.resourceType, r.resourceId);
+}
+
+// An assigned full mock counts as done once sitting 1 (Listening → Reading →
+// Writing — the part every student sits on the same bundle) is submitted, on
+// a run that wasn't voided. Speaking is its own later sitting (often run live
+// by the teacher), so it isn't required for the homework tick; its band still
+// shows in the teacher's table once there. Not 'completed' status either: that
+// waits on Writing being graded, which is the teacher's job, not the student's.
+// A run discarded ('abandoned') AFTER sitting 1 still counts — the student
+// may drop the pending Speaking step to start another mock; one discarded
+// before finishing sitting 1 is ignored entirely.
+async function checkFixedMocks(studentId, itemIds, out) {
+  const runs = await MockTestAttempt.find({
+    userId: studentId,
+    assignmentItemId: { $in: itemIds.map((x) => new mongoose.Types.ObjectId(String(x))) },
+    status: { $ne: 'deleted' },
+  }).sort({ createdAt: -1 })
+    .select('assignmentItemId status progress sitting1CompletedAt overallBand steps.listening.band steps.reading.band steps.writing.band steps.speaking.band createdAt')
+    .lean().catch(() => []);
+  for (const run of runs) {
+    const k = `mock_test:item:${run.assignmentItemId}`;
+    const done = !!run.sitting1CompletedAt && run.status !== 'disqualified';
+    if (run.status === 'abandoned' && !done) continue;
+    const prev = out.get(k);
+    // newest-first: a finished run beats an unfinished one; otherwise the newest wins
+    if (prev && (prev.completed || !done)) continue;
+    const band = (s) => (run.steps && run.steps[s] && run.steps[s].band > 0 ? run.steps[s].band : null);
+    out.set(k, {
+      completed: done,
+      completedAt: done ? run.sitting1CompletedAt : run.createdAt,
+      attemptId: String(run._id),
+      mock: {
+        runId: String(run._id), status: run.status, progress: run.progress,
+        overallBand: run.overallBand > 0 ? run.overallBand : null,
+        bands: { listening: band('listening'), reading: band('reading'), writing: band('writing'), speaking: band('speaking') },
+      },
+    });
+  }
 }
 
 // Writing prompts (WritingTask1/2) were sometimes entered twice — same chart
@@ -485,9 +541,14 @@ async function checkCompleted(studentId, internalItems, since = null) {
   const out = new Map();
   if (!internalItems || !internalItems.length) return out;
 
+  // fixed-bundle mock homework items are matched by item id (see checkFixedMocks)
+  const fixedMockIds = internalItems.filter((it) => it.mockItemId).map((it) => it.mockItemId);
+  if (fixedMockIds.length) await checkFixedMocks(studentId, fixedMockIds, out);
+
   // group ids by type
   const byType = new Map();
   for (const it of internalItems) {
+    if (it.mockItemId) continue;
     if (!isValidType(it.resourceType)) continue;
     if (!byType.has(it.resourceType)) byType.set(it.resourceType, new Set());
     if (it.resourceId) byType.get(it.resourceType).add(String(it.resourceId));
@@ -654,4 +715,5 @@ module.exports = {
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
+  isFixedMock, completionItem, completionKey,
 };

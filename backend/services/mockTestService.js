@@ -161,10 +161,68 @@ async function hasActiveMockStep(userId, skill) {
   return !!doc;
 }
 
-async function startMockTest(userId) {
+// The bundle snapshot stored on both MockTestAttempt.bundle and a homework
+// item's Assignment.resources[].mockBundle.
+function bundleFrom(lt, rt, we, sq) {
+  return {
+    listeningTestId: lt._id,
+    readingTestId: rt._id,
+    writingExamId: we._id,
+    speakingQuestionId: sq._id,
+    speakingTopic: sq.topic || '',
+    speakingCueCard: sq.cueCard || sq.question || '',
+    listeningTestName: lt.name || '',
+    readingTestName: rt.name || '',
+    writingExamName: we.name || ''
+  };
+}
+
+// Homework "giao bài thi thử full" — fix the ONE bundle a whole class takes.
+// `picks` may name a specific test per skill; any skill left empty is drawn
+// at random right here, ONCE, so every student gets the identical set.
+// Speaking is always a Part 2 cue card (same pool as a self-started mock).
+const BUNDLE_SKILLS = [
+  { key: 'listeningTestId', label: 'Listening', model: ListeningTest, filter: {} },
+  { key: 'readingTestId', label: 'Reading', model: ReadingTest, filter: {} },
+  { key: 'writingExamId', label: 'Writing', model: WritingExam, filter: {} },
+  { key: 'speakingQuestionId', label: 'Speaking', model: SpeakingQuestion, filter: { part: 2 } },
+];
+async function resolveMockBundle(picks = {}) {
+  const docs = await Promise.all(BUNDLE_SKILLS.map(async ({ key, label, model, filter }) => {
+    const id = picks && picks[key];
+    if (id) {
+      if (!mongoose.isValidObjectId(id)) throw new ValidationError(`Đề ${label} không hợp lệ`);
+      const doc = await model.findOne({ _id: id, isActive: true, ...filter }).lean();
+      if (!doc) throw new ValidationError(`Đề ${label} không tồn tại hoặc đã bị ẩn`);
+      return doc;
+    }
+    const doc = await randomActive(model, filter);
+    if (!doc) throw new ValidationError(`Chưa có đề ${label} nào để ghép bài thi thử`);
+    return doc;
+  }));
+  return bundleFrom(...docs);
+}
+
+// `assigned` (optional): { assignmentId, itemId, bundle } — the run is the
+// class homework's fixed bundle instead of a random draw. Resolved and
+// authorised by assignmentService.getAssignedMock (enrollment etc.).
+async function startMockTest(userId, { assigned = null } = {}) {
   // Resume rather than stacking a second open run.
   const existing = await getCurrentDoc(userId);
-  if (existing) return { resumed: true, attempt: publicShape(existing) };
+  if (existing) {
+    // An assigned start must land on THAT homework's bundle. Another open run
+    // (a self-started random mock, or a different homework) is not silently
+    // resumed in its place — the client asks the student to discard it first.
+    if (assigned && String(existing.assignmentItemId || '') !== String(assigned.itemId)) {
+      const err = new AppError(
+        'Bạn đang có một bài thi thử khác làm dở. Hãy bỏ bài đó để bắt đầu bài thi thử giáo viên giao.',
+        409
+      );
+      err.code = 'MOCK_OPEN_OTHER';
+      throw err;
+    }
+    return { resumed: true, attempt: publicShape(existing) };
+  }
 
   // Proctoring cooldown: a run voided for too many exam-screen exits locks
   // the student out of starting a new one for DQ_COOLDOWN_SECONDS.
@@ -188,6 +246,28 @@ async function startMockTest(userId) {
     }
   }
 
+  if (assigned) {
+    const b = assigned.bundle;
+    const doc = await MockTestAttempt.create({
+      userId,
+      assignmentId: assigned.assignmentId,
+      assignmentItemId: assigned.itemId,
+      bundle: {
+        listeningTestId: b.listeningTestId,
+        readingTestId: b.readingTestId,
+        writingExamId: b.writingExamId,
+        speakingQuestionId: b.speakingQuestionId,
+        speakingTopic: b.speakingTopic || '',
+        speakingCueCard: b.speakingCueCard || '',
+        listeningTestName: b.listeningTestName || '',
+        readingTestName: b.readingTestName || '',
+        writingExamName: b.writingExamName || ''
+      },
+      progress: 'listening'
+    });
+    return { resumed: false, attempt: publicShape(doc) };
+  }
+
   const [lt, rt, we, sq] = await Promise.all([
     randomActive(ListeningTest),
     randomActive(ReadingTest),
@@ -206,17 +286,7 @@ async function startMockTest(userId) {
 
   const doc = await MockTestAttempt.create({
     userId,
-    bundle: {
-      listeningTestId: lt._id,
-      readingTestId: rt._id,
-      writingExamId: we._id,
-      speakingQuestionId: sq._id,
-      speakingTopic: sq.topic || '',
-      speakingCueCard: sq.cueCard || sq.question || '',
-      listeningTestName: lt.name || '',
-      readingTestName: rt.name || '',
-      writingExamName: we.name || ''
-    },
+    bundle: bundleFrom(lt, rt, we, sq),
     progress: 'listening'
   });
 
@@ -458,6 +528,7 @@ function publicShape(doc) {
     _id: String(doc._id),
     progress: doc.progress,
     status: doc.status,
+    assignmentId: doc.assignmentId ? String(doc.assignmentId) : null,
     overallBand: numericBand(doc.overallBand),
     createdAt: doc.createdAt,
     sitting1CompletedAt: doc.sitting1CompletedAt || null,
@@ -666,7 +737,7 @@ async function getAdminHistoryDetail(id) {
 }
 
 module.exports = {
-  startMockTest, getCurrent, abandonCurrent, recordViolation,
+  startMockTest, resolveMockBundle, getCurrent, abandonCurrent, recordViolation,
   advance, attachDisqualifiedStep, getHistory, getHistoryDetail, hasActiveMockStep,
   getAdminHistory, getAdminHistoryDetail, setManualScores, deleteRun,
   // exported for tests

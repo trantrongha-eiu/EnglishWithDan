@@ -6,6 +6,7 @@
 // stored on AssignmentProgress. Progress is keyed by studentId so a
 // student removed then re-added to a class keeps it.
 
+const mongoose = require('mongoose');
 const Assignment = require('../models/Assignment');
 const AssignmentProgress = require('../models/AssignmentProgress');
 const ClassGroup = require('../models/ClassGroup');
@@ -161,7 +162,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   // one batched completion check across every internal item of every assignment
   const allInternal = [];
   for (const a of assignments) {
-    for (const r of a.resources) if (r.kind === 'internal') allInternal.push({ resourceType: r.resourceType, resourceId: r.resourceId });
+    for (const r of a.resources) if (r.kind === 'internal') allInternal.push(rcs.completionItem(r));
   }
   // group completion by (assignment.createdAt as `since`) — simplest correct
   // approach is per-assignment, but batching by type still helps: we pass the
@@ -188,14 +189,15 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     );
     const completedItemIds = new Set(manualCompleted);
     const resourcesShaped = a.resources.map((r) => {
-      let completed = false, completedAt = null, vocabGoal = null;
+      let completed = false, completedAt = null, vocabGoal = null, mock = null;
       const autoTracked = itemIsAutoTracked(r);
       if (r.kind === 'vocab_goal') {
         const v = vocabMap.get(vocabGoalKey(a._id, r._id));
         vocabGoal = shapeVocabGoal(v);
         if (v && v.completed) { completed = true; completedAt = v.completedAt; }
       } else if (autoTracked) {
-        const hit = completionMap.get(rcs.resourceKey(r.resourceType, r.resourceId));
+        const hit = completionMap.get(rcs.completionKey(r));
+        if (hit && hit.mock) mock = hit.mock;
         // only count if completed at/after THIS assignment's createdAt —
         // except course lessons, whose one-time completion can't be redone
         // (see resourceCompletionService.countsPriorCompletion)
@@ -212,6 +214,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         label: r.label || r.title || '', url: r.url || '', description: r.description || '',
         images: r.images || [], title: r.title || '', instruction: r.instruction || '',
         wordCount: r.wordCount || null, bookSlot: r.bookSlot || null, vocabGoal,
+        // fixed class bundle — the test names stay teacher-side only
+        fixedMock: rcs.isFixedMock(r), mock,
       };
     });
 
@@ -389,13 +393,12 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
   // external link would cache completedCount/allCompletedAt as if only the
   // external part counted.
   const completedIds = new Set(doc.items.filter((it) => it.status === 'completed').map((it) => String(it.resourceItemId)));
-  const internalItems = assignment.resources.filter((r) => r.kind === 'internal')
-    .map((r) => ({ resourceType: r.resourceType, resourceId: r.resourceId }));
+  const internalItems = assignment.resources.filter((r) => r.kind === 'internal').map(rcs.completionItem);
   if (internalItems.length) {
     const completion = await rcs.checkCompleted(studentId, internalItems, assignment.createdAt);
     for (const r of assignment.resources) {
       if (r.kind !== 'internal') continue;
-      const hit = completion.get(rcs.resourceKey(r.resourceType, r.resourceId));
+      const hit = completion.get(rcs.completionKey(r));
       if (hit && hit.completed) completedIds.add(String(r._id));
     }
   }
@@ -408,6 +411,28 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
   doc.allCompletedAt = doc.totalCount > 0 && doc.completedCount >= doc.totalCount ? (doc.allCompletedAt || new Date()) : null;
   await doc.save();
   return { ok: true, completedCount: doc.completedCount, totalCount: doc.totalCount };
+}
+
+// ── Student: start the class's fixed-bundle mock test ──────────────────
+// Resolves + authorises a homework mock_test item for this student and
+// returns what mockTestService.startMockTest's `assigned` option needs.
+// Same visibility rules as getStudentAssignments: active enrollment, not
+// assigned before they joined; an archived assignment can still be made up.
+async function getAssignedMock(studentId, assignmentId, itemId) {
+  if (!mongoose.isValidObjectId(assignmentId) || !mongoose.isValidObjectId(itemId)) {
+    return { error: 404, message: 'Không tìm thấy bài thi thử được giao' };
+  }
+  const assignment = await Assignment.findById(assignmentId).lean();
+  if (!assignment || !['active', 'archived'].includes(assignment.status)) {
+    return { error: 404, message: 'Không tìm thấy bài thi thử được giao' };
+  }
+  const enrollment = await ClassEnrollment.findOne({ classId: assignment.classId, studentId, removedAt: null }).lean();
+  if (!enrollment || assignedBeforeEnrollment(assignment, enrollment)) {
+    return { error: 403, message: 'Bạn không thuộc lớp của bài tập này' };
+  }
+  const item = assignment.resources.find((r) => String(r._id) === String(itemId));
+  if (!item || !rcs.isFixedMock(item)) return { error: 404, message: 'Không tìm thấy bài thi thử được giao' };
+  return { assignmentId: assignment._id, itemId: item._id, bundle: item.mockBundle };
 }
 
 // ── Teacher: per-student progress table for one assignment ─────────────
@@ -432,8 +457,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
     .select('username firstName lastName').lean();
   const sMap = new Map(students.map((s) => [String(s._id), s]));
 
-  const internalItems = assignment.resources.filter((r) => r.kind === 'internal')
-    .map((r) => ({ resourceType: r.resourceType, resourceId: r.resourceId }));
+  const internalItems = assignment.resources.filter((r) => r.kind === 'internal').map(rcs.completionItem);
   const stored = await AssignmentProgress.find({ assignmentId: assignment._id }).lean();
   const storedMap = new Map(stored.map((p) => [String(p.studentId), p]));
 
@@ -443,10 +467,12 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       (storedMap.get(String(e.studentId))?.items || []).filter((it) => it.source === 'manual' && it.status === 'completed').map((it) => String(it.resourceItemId))
     );
     const completedIds = new Set(manualCompleted);
+    const mockByItem = new Map();
     for (const r of assignment.resources) {
       if (r.kind !== 'internal') continue;
-      const hit = completion.get(rcs.resourceKey(r.resourceType, r.resourceId));
+      const hit = completion.get(rcs.completionKey(r));
       if (hit && hit.completed) completedIds.add(String(r._id));
+      if (hit && hit.mock) mockByItem.set(String(r._id), hit.mock);
     }
     const vocabGoals = await resolveVocabGoals(e.studentId, [assignment],
       new Map([[String(assignment._id), storedMap.get(String(e.studentId))]]), now);
@@ -468,6 +494,8 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
         itemId: r._id, kind: r.kind, label: r.label || r.title || '', bookSlot: r.bookSlot || null,
         completed: completedIds.has(String(r._id)),
         vocabGoal: r.kind === 'vocab_goal' ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
+        fixedMock: rcs.isFixedMock(r) || undefined,
+        mock: mockByItem.get(String(r._id)) || undefined,
       })),
     };
   }));
@@ -484,6 +512,7 @@ module.exports = {
   archivedIsMissed,
   assignedBeforeEnrollment,
   markManualItem,
+  getAssignedMock,
   getAssignmentProgressTable,
   displayNameOf,
   DEADLINE_SOON_MS,

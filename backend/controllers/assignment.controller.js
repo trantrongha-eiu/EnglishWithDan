@@ -12,6 +12,7 @@ const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
 const svc = require('../services/assignmentService');
+const mockTestService = require('../services/mockTestService');
 const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
@@ -59,7 +60,15 @@ function parseVnDeadline(input) {
 // Internal resources don't strictly need this (their completion is matched
 // by resourceType+resourceId, not _id), but keeping their _id stable too
 // avoids needlessly resetting anything else keyed off it.
+const MOCK_BUNDLE_KEYS = ['listeningTestId', 'readingTestId', 'writingExamId', 'speakingQuestionId'];
+function mockBundleSig(b) {
+  return b && b.listeningTestId ? MOCK_BUNDLE_KEYS.map((k) => String(b[k] || '')).join(',') : 'legacy';
+}
+
 function resourceIdentityKey(r) {
+  // A different bundle is a different exam — fresh _id, so runs of the old
+  // bundle (keyed by item _id) don't tick the new one.
+  if (r.kind === 'internal' && r.resourceType === 'mock_test') return `internal:mock_test:${mockBundleSig(r.mockBundle)}`;
   if (r.kind === 'internal') return `internal:${r.resourceType}:${r.resourceId || ''}`;
   if (r.kind === 'external') return `external:${r.url}`;
   if (r.kind === 'image') return `image:${(r.images || []).map((im) => im.url).sort().join(',')}`;
@@ -67,6 +76,38 @@ function resourceIdentityKey(r) {
   // item for 50 words must not carry over to a raised 100-word quota.
   if (r.kind === 'vocab_goal') return `vocab_goal:${r.wordCount}:${r.bookSlot || 'any'}`;
   return null;
+}
+
+// "Thi thử full 4 kỹ năng" — the bundle is fixed HERE, once, for the whole
+// class: the teacher may pick a test per skill, any skill left empty is drawn
+// at random now (mockTestService.resolveMockBundle) and stored on the item, so
+// every student's run uses the identical Listening/Reading/Writing/Speaking.
+// On an edit, an unchanged bundle (or a legacy bundle-less item) is kept
+// exactly as stored — never re-drawn.
+async function buildMockResource(r, existing, builtSoFar) {
+  if (builtSoFar.some((x) => x.resourceType === 'mock_test')) {
+    return { error: 'Mỗi bài tập chỉ giao 1 bài thi thử full' };
+  }
+  const prev = existing.find((x) => x.kind === 'internal' && x.resourceType === 'mock_test');
+  const picks = r.mockBundle && typeof r.mockBundle === 'object' ? r.mockBundle : null;
+  const label = 'Thi thử full 4 kỹ năng (cả lớp chung 1 đề)';
+
+  if (prev && !picks && !rcs.isFixedMock(prev)) {
+    // legacy item resubmitted untouched — keep its old "random per student" rule
+    return { built: { kind: 'internal', resourceType: 'mock_test', resourceId: null, label: prev.label || label, resourceCode: '' } };
+  }
+  if (prev && rcs.isFixedMock(prev) && picks && mockBundleSig(picks) === mockBundleSig(prev.mockBundle)) {
+    const b = prev.mockBundle.toObject ? prev.mockBundle.toObject() : prev.mockBundle;
+    return { built: { kind: 'internal', resourceType: 'mock_test', resourceId: null, label: prev.label || label, resourceCode: '', mockBundle: b } };
+  }
+  try {
+    const clean = {};
+    for (const k of MOCK_BUNDLE_KEYS) if (picks && picks[k]) clean[k] = String(picks[k]);
+    const mockBundle = await mockTestService.resolveMockBundle(clean);
+    return { built: { kind: 'internal', resourceType: 'mock_test', resourceId: null, label, resourceCode: '', mockBundle } };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 // ── validation of the resources[] payload ─────────────────────────────
@@ -87,7 +128,11 @@ async function buildResources(input, existing = []) {
   const out = [];
   for (const r of input) {
     let built;
-    if (r.kind === 'internal') {
+    if (r.kind === 'internal' && r.resourceType === 'mock_test') {
+      const m = await buildMockResource(r, existing, out);
+      if (m.error) return { error: m.error };
+      built = m.built;
+    } else if (r.kind === 'internal') {
       if (!rcs.isValidType(r.resourceType)) return { error: `Loại tài nguyên không hợp lệ: ${r.resourceType}` };
       const ok = await rcs.resourceExists(r.resourceType, r.resourceId || null);
       if (!ok) return { error: `Tài nguyên "${r.resourceType}" không tồn tại` };
