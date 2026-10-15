@@ -363,7 +363,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=20261015vi';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=20261015loop';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -376,6 +376,10 @@
   var REST_KEY = 'ews-pet-rest';
   var CACHE_MS = 10 * 60 * 1000;
   var EXAM_PAGES = /^(mock-test|entrance-test|test-dau-vao|login|register|verify-email|auth-callback)(\.html)?$/;
+  // Reading / Listening (incl. Dictation) practice: no pet at all on these
+  // pages — matched on the whole path so clean URLs (/reading/test/<id>)
+  // count too.
+  var NO_PET_PATHS = /(^|\/)(reading|listening|dictation)(\.html)?(\/|$)/;
   var SPEED = { meo: 42, shiba: 55, cut: 28, cao: 62, rong: 50,
     vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66 };
 
@@ -385,6 +389,7 @@
 
   function examActive() {
     if (EXAM_PAGES.test(location.pathname.split('/').pop())) return true;
+    if (NO_PET_PATHS.test(location.pathname)) return true;
     if (document.body && !document.body.classList.contains('has-global-nav')) return true;
     try { if (typeof window.__ewsExamActive === 'function' && window.__ewsExamActive()) return true; } catch (e) {}
     try { if (typeof window._isActivePractice === 'function' && window._isActivePractice()) return true; } catch (e) {}
@@ -393,41 +398,65 @@
 
   var walker = null;
 
+  // The pet walks a loop around the whole screen edge: along the bottom,
+  // up the right wall, along the top (upside down, just under the nav),
+  // down the left wall — sometimes turning back, sitting, or dozing off.
+  // Position on the loop is one number, `t` (px from the bottom-left
+  // corner, clockwise on screen); geometry() maps it to x/y + rotation.
+  var SIZE = 58;
+
   function Walker(id) {
     this.id = id;
-    this.x = 0; this.target = 0; this.dir = 1;
+    this.t = 0; this.target = 0; this.dir = 1; this.rot = 0;
     this.state = 'idle'; this.until = 0; this.last = 0; this.idleCount = 0;
     this.build();
   }
-  Walker.prototype.bounds = function () {
-    var w = window.innerWidth || 800;
-    // Clear of the Lulu/Lumi dock (bottom-left) and the chat bubble (bottom-right).
-    if (w < 640) return [8, Math.max(60, w - 128)];
-    return [200, Math.max(260, w - 150)];
+  Walker.prototype.rect = function () {
+    var w = window.innerWidth || 800, h = window.innerHeight || 600;
+    var nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 64;
+    var r = { left: 4, right: Math.max(60, w - SIZE - 4), top: nav + 4, bottom: Math.max(nav + 60, h - SIZE - 2) };
+    r.lb = r.right - r.left; r.lr = r.bottom - r.top;
+    r.perim = 2 * (r.lb + r.lr);
+    return r;
+  };
+  // t → { x, y, rot }. rot is how the pet is turned so its feet face the
+  // edge it's walking on (0 floor, -90 right wall, 180 ceiling, 90 left wall).
+  Walker.prototype.geometry = function (t) {
+    var r = this.rect();
+    t = ((t % r.perim) + r.perim) % r.perim;
+    if (t < r.lb) return { x: r.left + t, y: r.bottom, rot: 0 };
+    t -= r.lb;
+    if (t < r.lr) return { x: r.right, y: r.bottom - t, rot: -90 };
+    t -= r.lr;
+    if (t < r.lb) return { x: r.right - t, y: r.top, rot: 180 };
+    t -= r.lb;
+    return { x: r.left, y: r.top + t, rot: 90 };
   };
   Walker.prototype.build = function () {
     var self = this;
     var layer = document.createElement('div');
     layer.id = 'ews-pet-layer';
     layer.className = 'ews-pet-layer';
-    layer.innerHTML = '<div class="ews-pet" role="button" tabindex="0" aria-label="Linh thú ' + NAMES[this.id] + ' — bấm để chơi">'
-      + '<div class="ews-pet-bubble" hidden></div>'
-      + '<div class="ews-pet-flip">' + svg(this.id) + '</div>' + ZZZ
+    layer.innerHTML = '<div class="ews-pet-bubble" hidden></div>'
+      + '<div class="ews-pet" role="button" tabindex="0" aria-label="Linh thú ' + NAMES[this.id] + ' — bấm để chơi">'
+      + '<div class="ews-pet-rot"><div class="ews-pet-flip">' + svg(this.id) + '</div>' + ZZZ + '</div>'
       + '</div>';
     document.body.appendChild(layer);
     this.layer = layer;
     this.el = layer.querySelector('.ews-pet');
+    this.rotEl = layer.querySelector('.ews-pet-rot');
     this.flip = layer.querySelector('.ews-pet-flip');
     this.bubble = layer.querySelector('.ews-pet-bubble');
-    var b = this.bounds();
-    this.x = b[0] + Math.random() * (b[1] - b[0]);
+    // Start somewhere along the floor, clear of the Lulu/Lumi dock.
+    var r = this.rect();
+    this.t = Math.min(r.lb, 200 + Math.random() * Math.max(0, r.lb - 260));
     this.place();
-    this.el.addEventListener('click', function (e) {
-      if (e.target.closest('.ews-pet-rest')) { self.rest(); return; }
-      self.poke();
-    });
+    this.el.addEventListener('click', function () { self.poke(); });
     this.el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); self.poke(); }
+    });
+    this.bubble.addEventListener('click', function (e) {
+      if (e.target.closest('.ews-pet-rest')) self.rest();
     });
     if (!REDUCED) this.raf = requestAnimationFrame(function (t) { self.tick(t); });
     else this.setState('sit');
@@ -435,8 +464,25 @@
     this.layer.style.display = examActive() ? 'none' : '';
   };
   Walker.prototype.place = function () {
-    this.el.style.transform = 'translateX(' + Math.round(this.x) + 'px)';
+    var g = this.geometry(this.t);
+    this.g = g;
+    this.el.style.transform = 'translate(' + Math.round(g.x) + 'px,' + Math.round(g.y) + 'px)';
+    if (g.rot !== this.rot) { this.rot = g.rot; this.rotEl.style.transform = g.rot ? 'rotate(' + g.rot + 'deg)' : ''; }
     this.flip.style.transform = this.dir < 0 ? 'scaleX(-1)' : '';
+    if (!this.bubble.hidden) this.placeBubble();
+  };
+  // The bubble lives outside the rotating pet so its text is never sideways.
+  Walker.prototype.placeBubble = function () {
+    var g = this.g || this.geometry(this.t);
+    var w = window.innerWidth || 800;
+    var bw = Math.min(220, w - 16);
+    var x = Math.max(8, Math.min(w - bw - 8, g.x + SIZE / 2 - bw / 2));
+    var below = g.y < 200;
+    this.bubble.style.width = bw + 'px';
+    this.bubble.style.left = x + 'px';
+    this.bubble.style.top = below ? (g.y + SIZE + 10) + 'px' : '';
+    this.bubble.style.bottom = below ? '' : ((window.innerHeight || 600) - g.y + 8) + 'px';
+    this.bubble.classList.toggle('is-below', below);
   };
   Walker.prototype.setState = function (s) {
     this.state = s;
@@ -445,19 +491,19 @@
     this.el.classList.toggle('is-sleeping', s === 'sleep');
   };
   Walker.prototype.pickNext = function (now) {
-    var b = this.bounds();
-    var r = Math.random();
-    if (this.state === 'walk' || r < 0.15) {
+    var r = this.rect();
+    if (this.state === 'walk' || Math.random() < 0.15) {
       // Rest a while; after a few rests in a row, doze off.
       this.idleCount++;
       var sleepy = this.idleCount > 3 && Math.random() < 0.35;
       this.setState(sleepy ? 'sleep' : 'sit');
-      this.until = now + (sleepy ? 9000 + Math.random() * 8000 : 1800 + Math.random() * 3500);
+      this.until = now + (sleepy ? 9000 + Math.random() * 8000 : 1500 + Math.random() * 3000);
       if (this.id === 'rong' && !sleepy && Math.random() < 0.5) this.puff();
     } else {
+      // Mostly keep going the same way round; now and then turn back.
       this.idleCount = 0;
-      this.target = b[0] + Math.random() * (b[1] - b[0]);
-      this.dir = this.target >= this.x ? 1 : -1;
+      if (Math.random() < 0.25) this.dir = -this.dir;
+      this.target = this.t + this.dir * (r.perim * (0.12 + Math.random() * 0.3));
       this.setState('walk');
     }
   };
@@ -467,10 +513,9 @@
     this.last = now;
     if (this.layer.style.display !== 'none') {
       if (this.state === 'walk') {
-        var step = (SPEED[this.id] || 45) * dt * this.dir;
-        this.x += step;
-        if ((this.dir > 0 && this.x >= this.target) || (this.dir < 0 && this.x <= this.target)) {
-          this.x = this.target;
+        this.t += (SPEED[this.id] || 45) * dt * this.dir;
+        if ((this.dir > 0 && this.t >= this.target) || (this.dir < 0 && this.t <= this.target)) {
+          this.t = this.target;
           this.pickNext(now);
         }
         this.place();
@@ -478,9 +523,6 @@
         this.pickNext(now);
         this.place();
       }
-      // Window resized under the pet — bring it back on screen.
-      var b = this.bounds();
-      if (this.x > b[1] + 10) { this.x = b[1]; this.place(); }
     }
     this.raf = requestAnimationFrame(function (t) { self.tick(t); });
   };
@@ -495,6 +537,7 @@
     this.bubble.innerHTML = '<span>' + lines[Math.floor(Math.random() * lines.length)] + '</span>'
       + '<button type="button" class="ews-pet-rest">💤 Cho nghỉ hôm nay</button>';
     this.bubble.hidden = false;
+    this.placeBubble();
     this.el.classList.remove('is-hop'); void this.el.offsetWidth; this.el.classList.add('is-hop');
     var heart = document.createElement('span');
     heart.className = 'ews-pet-heart'; heart.textContent = '❤';
@@ -518,6 +561,8 @@
     if (this.layer && this.layer.parentNode) this.layer.parentNode.removeChild(this.layer);
   };
 
+  window.addEventListener('resize', function () { if (walker) walker.place(); });
+
   function show(id) {
     if (walker) { walker.destroy(); walker = null; }
     if (!id || !ART[id]) return;
@@ -530,7 +575,7 @@
       if (!window.AuthService || !window.AuthService.isLoggedIn || !window.AuthService.isLoggedIn()) return;
       var u = window.AuthService.getUser && window.AuthService.getUser();
       if (u && u.role && u.role !== 'student') return;
-      if (EXAM_PAGES.test(location.pathname.split('/').pop())) return;
+      if (EXAM_PAGES.test(location.pathname.split('/').pop()) || NO_PET_PATHS.test(location.pathname)) return;
       var cached = lsGet(CACHE_KEY);
       if (cached && Date.now() - cached.t < CACHE_MS) { show(cached.id); return; }
       fetch(API + '/shop/pet', { headers: window.AuthService.authHeader() })

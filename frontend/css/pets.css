@@ -22,11 +22,14 @@
 
 /* ── The walker ───────────────────────────────────────────────────── */
 .ews-pet-layer {
-  position: fixed; left: 0; right: 0; bottom: 0; height: 0;
-  z-index: 880; pointer-events: none;
+  /* Full-screen, click-through: the pet loops the screen edge
+     (js/shared/pets.js Walker.geometry); only the pet itself and its
+     bubble take clicks. */
+  position: fixed; inset: 0;
+  z-index: 880; pointer-events: none; overflow: hidden;
 }
 .ews-pet {
-  position: absolute; left: 0; bottom: 4px;
+  position: absolute; left: 0; top: 0;
   width: 58px; height: 58px;
   pointer-events: auto; cursor: pointer; outline: none;
   will-change: transform;
@@ -34,6 +37,8 @@
 }
 .ews-pet:focus-visible { outline: 2px solid var(--brand, #f97316); outline-offset: 2px; border-radius: 12px; }
 .ews-pet-flip { width: 100%; height: 100%; }
+/* Turns the pet so its feet face the edge it walks on; eased at corners. */
+.ews-pet-rot { position: relative; width: 100%; height: 100%; transition: transform .35s ease; transform-origin: 50% 50%; }
 
 .ews-pet .pt-tail { animation: pt-wag 1.2s ease-in-out infinite; }
 .ews-pet .pt-eye { animation: pt-blink 4.5s infinite; }
@@ -66,8 +71,7 @@
 }
 
 .ews-pet-bubble {
-  position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%);
-  width: max-content; max-width: 220px;
+  position: absolute; pointer-events: auto; box-sizing: border-box;
   padding: 8px 12px; border-radius: 14px;
   background: var(--surface, #fff); color: var(--text, #1f2937);
   border: 1px solid var(--border, #e5e7eb);
@@ -75,11 +79,7 @@
   font-size: 13px; font-weight: 600; line-height: 1.4; text-align: center;
   animation: pt-pop .25s ease-out;
 }
-.ews-pet-bubble::after {
-  content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px;
-  transform: translateX(-50%) rotate(45deg);
-  background: inherit; border-right: 1px solid var(--border, #e5e7eb); border-bottom: 1px solid var(--border, #e5e7eb);
-}
+.ews-pet-bubble[hidden] { display: none; }
 .ews-pet-bubble span { display: block; }
 .ews-pet-rest {
   margin-top: 6px; padding: 2px 8px; border: none; border-radius: 999px;
@@ -98,7 +98,7 @@
 @keyframes pt-puff { 0% { opacity: 0; transform: scale(.3); } 30% { opacity: 1; transform: scale(1.15); } 100% { opacity: 0; transform: translateX(6px) scale(1.4); } }
 @keyframes pt-hop { 0% { transform: none; } 40% { transform: translateY(-20px); } 70% { transform: translateY(0) scale(1.08, .92); } 100% { transform: none; } }
 @keyframes pt-heart { from { opacity: 1; transform: translate(-50%, 0) scale(.8); } to { opacity: 0; transform: translate(-50%, -34px) scale(1.3); } }
-@keyframes pt-pop { from { opacity: 0; transform: translate(-50%, 6px) scale(.92); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes pt-pop { from { opacity: 0; transform: translateY(6px) scale(.92); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   .ews-pet *, .pet-badge * { animation: none !important; }
