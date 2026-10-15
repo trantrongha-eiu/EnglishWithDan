@@ -40,6 +40,8 @@ export default function Messages() {
   const [received, setReceived] = useState([]);
   const [receivedTotal, setReceivedTotal] = useState(0);
   const [receivedPage, setReceivedPage] = useState(1);
+  // Received message open in the read modal (null = closed).
+  const [viewing, setViewing] = useState(null);
 
   // Reports state — students reporting each other from peer chat (see
   // services/peerService.js). Small volume expected, so no pagination —
@@ -134,6 +136,15 @@ export default function Messages() {
     setEditingId(null);
     setForm({ toId: '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' });
     setShowGift(false);
+  }
+
+  async function openReceived(m) {
+    setViewing(m);
+    if (m.isRead) return;
+    setReceived(list => list.map(x => (x._id === m._id ? { ...x, isRead: true } : x)));
+    try {
+      await apiFetch(`/admin/messages/received/${m._id}/read`, { method: 'PATCH' });
+    } catch { /* not critical — the message is still readable */ }
   }
 
   async function deleteReceived(id) {
@@ -420,8 +431,11 @@ export default function Messages() {
                   : received.length === 0
                   ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
                   : received.map(m => (
-                    <tr key={m._id} style={{ fontWeight: m.isRead ? 400 : 700 }}>
-                      <td><strong>{m.fromId?.username || m.fromName || '–'}</strong></td>
+                    <tr key={m._id} onClick={() => openReceived(m)} title="Bấm để đọc thư" style={{ fontWeight: m.isRead ? 400 : 700, cursor: 'pointer' }}>
+                      <td>
+                        {!m.isRead && <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: 'var(--primary, #ef4444)', marginRight: 8, verticalAlign: 'middle' }} />}
+                        <strong>{m.fromId?.username || m.fromName || '–'}</strong>
+                      </td>
                       <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {m.subject || <span style={{ color: 'var(--text3)' }}>(Không có tiêu đề)</span>}
                       </td>
@@ -429,7 +443,7 @@ export default function Messages() {
                         {m.body}
                       </td>
                       <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
-                      <td style={{ display: 'flex', gap: 6 }}>
+                      <td style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
                         {m.fromId?._id && (
                           <button className="btn btn-ghost btn-sm" onClick={() => replyTo(m.fromId._id)} title="Trả lời">↩️</button>
                         )}
@@ -484,7 +498,46 @@ export default function Messages() {
           </div>
         </>
       )}
+
+      {viewing && (
+        <ReceivedMessageModal
+          m={viewing}
+          onClose={() => setViewing(null)}
+          onReply={viewing.fromId?._id ? () => { const id = viewing.fromId._id; setViewing(null); replyTo(id); } : null}
+          onDelete={isAdmin ? () => { const id = viewing._id; setViewing(null); deleteReceived(id); } : null}
+        />
+      )}
     </>
+  );
+}
+
+function ReceivedMessageModal({ m, onClose, onReply, onDelete }) {
+  useEffect(() => {
+    const onKey = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 640 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">{m.subject || '(Không có tiêu đề)'}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '16px 24px 0', fontSize: 13, color: 'var(--text3)' }}>
+          Từ <strong style={{ color: 'var(--text)' }}>{m.fromId?.username || m.fromName || '–'}</strong> · {formatDate(m.createdAt)}
+        </div>
+        <div style={{ padding: '16px 24px 20px', color: 'var(--text)', lineHeight: 1.65, whiteSpace: 'pre-wrap', wordBreak: 'break-word', maxHeight: '60vh', overflowY: 'auto' }}>
+          {m.body}
+        </div>
+        <div style={{ display: 'flex', gap: 10, padding: '0 24px 20px', justifyContent: 'flex-end' }}>
+          {onDelete && <button className="btn btn-danger btn-sm" onClick={onDelete}>🗑 Xóa</button>}
+          {onReply && <button className="btn btn-primary btn-sm" onClick={onReply}>↩️ Trả lời</button>}
+          <button className="btn btn-ghost btn-sm" onClick={onClose}>Đóng</button>
+        </div>
+      </div>
+    </div>
   );
 }
 

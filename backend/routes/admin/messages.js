@@ -69,6 +69,22 @@ router.get('/messages/received', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// PATCH /api/admin/messages/received/:id/read – đánh dấu đã đọc khi admin mở thư
+// (để badge unread-count trên sidebar giảm xuống).
+router.patch('/messages/received/:id/read', auth, teacherOnly, async (req, res) => {
+  try {
+    const msg = await Message.findOneAndUpdate(
+      { _id: req.params.id, toId: req.user._id },
+      { $set: { isRead: true } },
+      { new: true }
+    );
+    if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // DELETE /api/admin/messages/received/:id – xóa thư đã nhận (soft-delete cho người xem này)
 router.delete('/messages/received/:id', auth, teacherOnly, async (req, res) => {
   try {
