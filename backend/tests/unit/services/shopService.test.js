@@ -3,7 +3,7 @@ const User = require('../../../models/User');
 const shopService = require('../../../services/shopService');
 const userService = require('../../../services/userService');
 const { applyStreakActivity, getVNDay } = require('../../../utils/streak');
-const { HOPE_PENALTY, WALLET_SEED_CAP } = require('../../../constants/shop');
+const { HOPE_PENALTY } = require('../../../constants/shop');
 
 function daysAgo(n) {
   const d = new Date();
@@ -27,18 +27,31 @@ describe('ví lửa — credited alongside the streak', () => {
     expect(updated.flameWallet).toBe(4);
   });
 
-  test('the launch gift seeds the wallet once, capped', async () => {
+  test('the starting grant fills the wallet up to the current streak, once', async () => {
     const user = await createStudent({ extra: { learningStreak: 80, lastActivityDate: new Date() } });
     let state = await shopService.getState(user._id);
-    expect(state.wallet).toBe(WALLET_SEED_CAP);
+    expect(state.wallet).toBe(80);
+    await User.updateOne({ _id: user._id }, { $set: { learningStreak: 90 } });
     state = await shopService.getState(user._id);
-    expect(state.wallet).toBe(WALLET_SEED_CAP);
+    expect(state.wallet).toBe(80);
+  });
+
+  test('an old capped launch gift is topped up to the streak; a bigger wallet is kept', async () => {
+    const capped = await createStudent({ extra: { learningStreak: 1001, lastActivityDate: new Date(), flameWallet: 0, flameWalletSeeded: true } });
+    expect((await shopService.getState(capped._id)).wallet).toBe(1001);
+    const rich = await createStudent({ extra: { learningStreak: 10, lastActivityDate: new Date(), flameWallet: 70, flameWalletSeeded: true } });
+    expect((await shopService.getState(rich._id)).wallet).toBe(70);
+  });
+
+  test('a lost streak grants nothing', async () => {
+    const user = await createStudent({ extra: { learningStreak: 40, lastActivityDate: daysAgo(5) } });
+    expect((await shopService.getState(user._id)).wallet).toBe(0);
   });
 });
 
 describe('buying', () => {
   test('cannot buy without enough 🔥, can with', async () => {
-    const user = await createStudent({ extra: { flameWallet: 5, flameWalletSeeded: true } });
+    const user = await createStudent({ extra: { flameWallet: 5, flameWalletGranted: true } });
     expect((await shopService.buyItem(user._id, 'crown')).status).toBe('not_enough');
     await User.updateOne({ _id: user._id }, { $set: { flameWallet: 100 } });
     const r = await shopService.buyItem(user._id, 'crown');
@@ -46,7 +59,7 @@ describe('buying', () => {
   });
 
   test('Khiên Băng is capped at 2', async () => {
-    const user = await createStudent({ extra: { flameWallet: 100, flameWalletSeeded: true } });
+    const user = await createStudent({ extra: { flameWallet: 100, flameWalletGranted: true } });
     expect((await shopService.buyItem(user._id, 'iceShield')).status).toBe('ok');
     expect((await shopService.buyItem(user._id, 'iceShield')).status).toBe('ok');
     expect((await shopService.buyItem(user._id, 'iceShield')).status).toBe('max_owned');
@@ -54,7 +67,7 @@ describe('buying', () => {
   });
 
   test('a first linh thú goes out walking; a second one does not replace it', async () => {
-    const user = await createStudent({ extra: { flameWallet: 200, flameWalletSeeded: true } });
+    const user = await createStudent({ extra: { flameWallet: 200, flameWalletGranted: true } });
     expect(await shopService.buyPet(user._id, 'meo')).toMatchObject({ status: 'ok', activePet: 'meo' });
     expect(await shopService.buyPet(user._id, 'rong')).toMatchObject({ status: 'ok', activePet: 'meo', wallet: 140 });
     expect((await shopService.buyPet(user._id, 'meo')).status).toBe('already_owned');
@@ -159,7 +172,7 @@ describe('BXH decorations', () => {
     const { PETS } = require('../../../constants/shop');
     expect(PETS.filter(p => !p.tier).map(p => p.price)).toEqual([30, 30, 30, 30, 30]);
     expect(PETS.filter(p => p.tier === 'vi').map(p => p.price)).toEqual([50, 70, 90, 110, 130, 150, 170, 190, 210]);
-    const user = await createStudent({ extra: { flameWallet: 60, flameWalletSeeded: true } });
+    const user = await createStudent({ extra: { flameWallet: 60, flameWalletGranted: true } });
     expect((await shopService.buyPet(user._id, 'vi2')).status).toBe('not_enough');
     expect(await shopService.buyPet(user._id, 'vi1')).toMatchObject({ status: 'ok', wallet: 10, activePet: 'vi1' });
   });

@@ -152,12 +152,12 @@ const UserSchema = new mongoose.Schema({
   // ── Cửa hàng lửa (constants/shop.js, services/shopService.js) ──────────
   // The "ví lửa": credited alongside learningStreak by applyStreakActivity()
   // (utils/streak.js) with the same amount, but spending it never touches
-  // the streak. flameWalletSeeded marks the one-time launch gift.
+  // the streak. flameWalletGranted marks the one-time starting grant
+  // (wallet topped up to the streak — shopService.seedWallet);
+  // flameWalletSeeded is the older, capped launch gift it superseded.
   flameWallet:          { type: Number, default: 0 },
   flameWalletSeeded:    { type: Boolean, default: false },
-  // One-time backfill of 🔥 gifts claimed from inbox messages before gifts
-  // started crediting the wallet too (shopService.syncGiftWallet).
-  giftWalletSynced:     { type: Boolean, default: false },
+  flameWalletGranted:   { type: Boolean, default: false },
   shopItems: {
     hopeHammer: { type: Number, default: 0 },
     iceShield:  { type: Number, default: 0 },

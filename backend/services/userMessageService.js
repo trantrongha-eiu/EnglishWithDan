@@ -118,8 +118,9 @@ async function claimGift(id, uid) {
   if (!msg.giftHammers && !msg.giftStreakDays) return { status: 'no_gift' };
   if (msg.claimedBy.some(cid => cid.toString() === uid.toString())) return { status: 'already_claimed' };
 
-  // Backfill older 🔥 gifts into the wallet first, so this one isn't counted twice.
-  if (msg.giftStreakDays) await shopService.syncGiftWallet(uid).catch(() => {});
+  // Grant the ví lửa its starting balance first (= streak before this gift),
+  // so the gift below is added on top instead of being swallowed by it.
+  if (msg.giftStreakDays) await shopService.seedWallet(uid).catch(() => {});
   const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers flameWallet');
   if (!user) return { status: 'not_found' };
 

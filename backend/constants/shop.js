@@ -62,15 +62,11 @@ const HOPE_MULTIPLIER = 2;
 const HOPE_QUOTA = 3;      // base 🔥 (before ×2) to earn after activating
 const HOPE_PENALTY = 10;   // 🔥 taken off learningStreak on a miss
 
-// Launch gift: a student's wallet starts at their current streak, capped,
-// so the shop isn't empty-handed on day one.
-const WALLET_SEED_CAP = 50;
-
 const CAKE_HOURS = 24;
 const CLOAK_HOURS = 24;
 const CROWN_DAYS = 7;
 
 module.exports = {
-  ITEMS, PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY, WALLET_SEED_CAP,
+  ITEMS, PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS,
 };

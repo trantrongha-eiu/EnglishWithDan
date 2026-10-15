@@ -15,7 +15,7 @@ describe('/api/shop', () => {
   });
 
   test('GET returns the wallet, the catalog and the pets', async () => {
-    const s = await createStudent({ extra: { flameWallet: 12, flameWalletSeeded: true } });
+    const s = await createStudent({ extra: { flameWallet: 12, flameWalletGranted: true } });
     const res = await request(app).get('/api/shop').set(auth(s));
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ success: true, wallet: 12, activePet: '' });
@@ -24,7 +24,7 @@ describe('/api/shop', () => {
   });
 
   test('buy → use flow, with the error codes the page shows', async () => {
-    const s = await createStudent({ extra: { flameWallet: 30, flameWalletSeeded: true } });
+    const s = await createStudent({ extra: { flameWallet: 30, flameWalletGranted: true } });
     let res = await request(app).post('/api/shop/buy').set(auth(s)).send({ kind: 'item', key: 'crown' });
     expect(res.status).toBe(400);
     expect(res.body.code).toBe('not_enough');
@@ -41,7 +41,7 @@ describe('/api/shop', () => {
   });
 
   test('pets: buy, then GET/PUT the walking one', async () => {
-    const s = await createStudent({ extra: { flameWallet: 40, flameWalletSeeded: true } });
+    const s = await createStudent({ extra: { flameWallet: 40, flameWalletGranted: true } });
     let res = await request(app).post('/api/shop/buy').set(auth(s)).send({ kind: 'pet', key: 'meo' });
     expect(res.body).toMatchObject({ success: true, activePet: 'meo', wallet: 10 });
     expect((await request(app).get('/api/shop/pet').set(auth(s))).body.activePet).toBe('meo');
@@ -52,7 +52,7 @@ describe('/api/shop', () => {
   });
 
   test('kho đồ: selling refunds half the price (rounded down)', async () => {
-    const s = await createStudent({ extra: { flameWallet: 0, flameWalletSeeded: true, shopItems: { cloak: 1, hopeHammer: 1 }, pets: ['vi2', 'meo'], activePet: 'vi2' } });
+    const s = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true, shopItems: { cloak: 1, hopeHammer: 1 }, pets: ['vi2', 'meo'], activePet: 'vi2' } });
     let res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'item', key: 'cloak' });
     expect(res.body).toMatchObject({ success: true, refund: 7, wallet: 7, owned: 0 });
     res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'item', key: 'cloak' });
@@ -72,7 +72,7 @@ describe('/api/shop', () => {
     const Message = require('../../models/Message');
     const { createAdmin } = require('../factories/userFactory');
     const admin = await createAdmin();
-    const buyer = await createStudent({ extra: { firstName: 'Minh', lastName: 'Anh', flameWallet: 100, flameWalletSeeded: true } });
+    const buyer = await createStudent({ extra: { firstName: 'Minh', lastName: 'Anh', flameWallet: 100, flameWalletGranted: true } });
     const other = await createStudent();
     await request(app).post('/api/shop/buy').set(auth(buyer)).send({ kind: 'pet', key: 'vi1' });
 
@@ -89,7 +89,7 @@ describe('/api/shop', () => {
 
   test('a failed purchase notifies nobody', async () => {
     const Message = require('../../models/Message');
-    const s = await createStudent({ extra: { flameWallet: 0, flameWalletSeeded: true } });
+    const s = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true } });
     await request(app).post('/api/shop/buy').set(auth(s)).send({ kind: 'item', key: 'crown' });
     expect(await Message.countDocuments({ fromId: s._id })).toBe(0);
   });
@@ -98,27 +98,26 @@ describe('/api/shop', () => {
     const Message = require('../../models/Message');
     const { createAdmin } = require('../factories/userFactory');
     const admin = await createAdmin();
-    const s = await createStudent({ extra: { learningStreak: 5, lastActivityDate: new Date(), flameWallet: 3, flameWalletSeeded: true } });
+    const s = await createStudent({ extra: { learningStreak: 5, lastActivityDate: new Date(), flameWallet: 3, flameWalletGranted: true } });
+    // (already granted: wallet 3 is what's left after shopping)
     const msg = await Message.create({ fromId: admin._id, fromName: 'Admin', toId: s._id, body: 'Quà', giftStreakDays: 100, type: 'gift' });
     const res = await request(app).post(`/api/user/messages/${msg._id}/claim`).set(auth(s));
     expect(res.status).toBe(200);
     const u = await User.findById(s._id).lean();
     expect(u.learningStreak).toBe(105);
     expect(u.flameWallet).toBe(103);
-    // The one-time backfill already ran before this claim — opening the shop adds nothing more.
     expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(103);
   });
 
-  test('gifts claimed before the wallet existed are backfilled once', async () => {
+  test('a gift claimed before the student ever opened the shop is added on top of the grant', async () => {
     const Message = require('../../models/Message');
     const { createAdmin } = require('../factories/userFactory');
     const admin = await createAdmin();
-    const s = await createStudent({ extra: { learningStreak: 1001, lastActivityDate: new Date(), flameWallet: 0, flameWalletSeeded: true } });
-    await Message.create({ fromId: admin._id, fromName: 'Admin', toId: s._id, body: 'Quà 1', giftStreakDays: 600, claimedBy: [s._id], type: 'gift' });
-    await Message.create({ fromId: admin._id, fromName: 'Admin', isBroadcast: true, body: 'Quà 2', giftStreakDays: 400, claimedBy: [s._id], type: 'gift' });
-    await Message.create({ fromId: admin._id, fromName: 'Admin', isBroadcast: true, body: 'Chưa nhận', giftStreakDays: 999, type: 'gift' });
-    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(1000);
-    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(1000);
+    const s = await createStudent({ extra: { learningStreak: 20, lastActivityDate: new Date() } });
+    const msg = await Message.create({ fromId: admin._id, fromName: 'Admin', toId: s._id, body: 'Quà', giftStreakDays: 50, type: 'gift' });
+    await request(app).post(`/api/user/messages/${msg._id}/claim`).set(auth(s));
+    // grant 20 (the streak before the gift) + the 50 gifted
+    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(70);
   });
 
   test('staff cannot buy', async () => {

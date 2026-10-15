@@ -7,9 +7,9 @@
 const User = require('../models/User');
 const Message = require('../models/Message');
 const ShopPurchase = require('../models/ShopPurchase');
-const { getVNDay, coverMissedDaysWithShields } = require('../utils/streak');
+const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const {
-  ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY, WALLET_SEED_CAP,
+  ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS,
 } = require('../constants/shop');
 
@@ -33,35 +33,22 @@ function extendFrom(until, ms) {
   return new Date(base + ms);
 }
 
-// One-time launch gift: the wallet opens at min(current streak, cap).
+// One-time grant: the ví lửa is topped up to the student's current streak
+// (keeping anything above that), then grows with every 🔥 they earn from
+// studying (utils/streak.js applyStreakActivity) or are gifted by message
+// (User.applyGiftStreak). Students who opened the shop before this rule got
+// a capped launch gift (flameWalletSeeded) — they're topped up the same way,
+// since flameWalletGranted is the flag that counts now.
 async function seedWallet(userId) {
-  const u = await User.findOne({ _id: userId, flameWalletSeeded: { $ne: true } })
-    .select('learningStreak').lean();
+  const u = await User.findOne({ _id: userId, flameWalletGranted: { $ne: true } })
+    .select('learningStreak lastActivityDate shopItems').lean();
   if (!u) return;
-  const gift = Math.min(Math.max(u.learningStreak || 0, 0), WALLET_SEED_CAP);
+  const streak = effectiveStreak(u.learningStreak, u.lastActivityDate, u.shopItems && u.shopItems.iceShield);
   await User.updateOne(
-    { _id: userId, flameWalletSeeded: { $ne: true } },
-    { $inc: { flameWallet: gift }, $set: { flameWalletSeeded: true } }
+    { _id: userId, flameWalletGranted: { $ne: true } },
+    [{ $set: { flameWallet: { $max: [{ $ifNull: ['$flameWallet', 0] }, streak] }, flameWalletGranted: true, flameWalletSeeded: true } }],
+    { updatePipeline: true }
   );
-}
-
-// 🔥 gifts claimed from inbox messages (userMessageService.claimGift) now
-// credit the wallet as they're claimed (User.applyGiftStreak). Gifts claimed
-// before that change only ever reached the streak — add them to the wallet
-// once, the first time this runs for the student.
-async function syncGiftWallet(userId) {
-  const u = await User.findOne({ _id: userId, giftWalletSynced: { $ne: true } }).select('_id').lean();
-  if (!u) return 0;
-  const [agg] = await Message.aggregate([
-    { $match: { claimedBy: u._id, giftStreakDays: { $gt: 0 } } },
-    { $group: { _id: null, total: { $sum: '$giftStreakDays' } } },
-  ]);
-  const total = (agg && agg.total) || 0;
-  const res = await User.updateOne(
-    { _id: userId, giftWalletSynced: { $ne: true } },
-    { $inc: { flameWallet: total }, $set: { giftWalletSynced: true } }
-  );
-  return res.modifiedCount === 1 ? total : 0;
 }
 
 // Búa Hi Vọng settlement for one user: once the VN day it was used on is
@@ -107,7 +94,6 @@ async function settleAllHopeHammers() {
 
 async function getState(userId) {
   await seedWallet(userId);
-  await syncGiftWallet(userId);
   await settleHopeHammer(userId);
   await coverMissedDaysWithShields(User, userId).catch(() => 0);
   const u = await User.findById(userId)
@@ -186,7 +172,6 @@ async function buyItem(userId, key) {
   if (!item) return { status: 'not_found' };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
-  await syncGiftWallet(userId);
   const field = `shopItems.${key}`;
   const filter = { _id: userId, flameWallet: { $gte: item.price } };
   if (item.maxOwned) filter[field] = { $not: { $gte: item.maxOwned } };
@@ -206,7 +191,6 @@ async function buyPet(userId, petId) {
   if (!pet) return { status: 'not_found' };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
-  await syncGiftWallet(userId);
   // A first pet goes straight out for a walk.
   const u = await User.findOneAndUpdate(
     { _id: userId, flameWallet: { $gte: pet.price }, pets: { $ne: petId } },
@@ -362,5 +346,5 @@ function boardDecor(u) {
 
 module.exports = {
   getState, getFeed, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
-  settleHopeHammer, settleAllHopeHammers, seedWallet, syncGiftWallet, boardDecor,
+  settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
 };
