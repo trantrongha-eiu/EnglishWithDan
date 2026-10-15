@@ -12,12 +12,18 @@ const NUM = '(one|two|three|four|1|2|3|4)';
 const PART_START = new RegExp(`(?:Now turn to (?:part|section) ${NUM}\\.?\\s*)?(?:Part|Section|PART|SECTION) ${NUM}[.,]?\\s+(?:you|You) will hear`, 'g');
 const NARRATION = [
   /^.*?(?:listening test|This is the|Test (?:one|two|three|four|\d+)\b)[^.]*\.\s*/i, // test intro (first part only, handled below)
-  /(?:Now turn to (?:part|section) \w+\.?\s*)?(?:Part|Section) \w+[.,]?\s+you will hear[^.]*\.\s*/gi,
-  /(?:First,?\s*)?you have (?:some time|\d+ seconds|half a minute|a minute|one minute) to (?:look at|read)[^.]*\.(?:\s*\d+\s*to\s*\d+\.)?\s*/gi,
-  /Now listen (?:carefully )?and answer questions?\.?\s*\d+\s*(?:to|and)\s*\d+\.\s*/gi,
+  /Now turn to (?:part|section) \w+ on page \w+(?: of your question booklet)?\.\s*/gi,
+  /(?:Now turn to (?:part|section) \w+\.?\s*)?(?:Part|Section) \w+[.,]?\s+you(?: will|'ll) hear[^.]*\.\s*/gi,
+  /^\s*(?:\d\.|\.)?\s*You(?: will|'ll) hear [^.]*\.\s*/i, // Vol 7 docx: the part's heading eaten into "1." / "."
+  // before "you have some time…" below: that one would leave "Before you hear the rest of the talk," whose [^.]*
+  // then ran on into the next sentence of the recording
   /Before you hear the rest of the [a-z]+,?[^.]*\.(?:\s*\d+\s*to\s*\d+\.)?\s*/gi,
+  /(?:First,?\s*)?you have (?:some time|\d+ seconds|half a minute|a minute|one minute) to (?:look at|read)[^.]*\.(?:\s*\d+\s*to\s*\d+\.)?\s*/gi,
+  /Now,? listen (?:carefully )?and answer questions?\.?\s*[\w-]+\s*(?:to|and)\s*[\w-]+\.\s*/gi,
+  /That is the end of the listening test\.\s*/gi,
+  /You now have (?:10|ten) minutes to transfer your answers to the listening answer sheet(?:\.|$)\s*/gi,
   /That is the end of (?:part|section) \w+\.\s*/gi,
-  /You now have (?:\w+ )+to check your answers to (?:part|section) \w+\.\s*/gi,
+  /You now have (?:\w+ )+to check your answers(?: to (?:part|section) \w+)?(?:\.|$)\s*/gi,
   /You will see that there is an example[^.]*\.\s*/gi,
   /(?:On this occasion,? )?[Oo]nly the conversation relating to this will be played first\.\s*/g,
   /Now we shall begin\.\s*/g,

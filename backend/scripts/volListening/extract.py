@@ -17,8 +17,8 @@ def docx_text(path):
         xml = z.read('word/document.xml').decode('utf8')
     paras = []
     for p in re.findall(r'<w:p[ >].*?</w:p>', xml, flags=re.S):
-        t = ''.join(re.findall(r'<w:t[^>]*>(.*?)</w:t>', p, flags=re.S))
-        t = re.sub(r'<w:tab/>', '\t', t)
+        # <w:t> or <w:t xml:space=…> only — `<w:t[^>]*>` also matched <w:tab/>, <w:tbl>… and swallowed raw XML (Vol 7)
+        t = ''.join(txt if txt or not tab else '\t' for txt, tab in re.findall(r'<w:t(?:\s[^>]*)?>(.*?)</w:t>|(<w:tab/>)', p, flags=re.S))
         t = t.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"').replace('&apos;', "'")
         paras.append(t)
     return '\n'.join(paras)

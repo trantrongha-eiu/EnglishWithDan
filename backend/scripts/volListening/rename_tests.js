@@ -23,6 +23,12 @@ const RENAMES = {
   // Vol 4 Test 7 = "Actual Test 1" (all 4 parts, same recordings and keys 40/40); thầy 2026-10-08: rename, then
   // renumber_actual_tests.js (Actual Test 2–11 → 1–10)
   4: [{ from: 'Actual Test 1', to: 'Vol 4 - Test 7', seriesName: 'Vol 4', testNumber: 7 }],
+  // Vol 7 Test 2 = "Actual Test 2", Test 3 = "Actual Test 1" (all 4 parts, same recordings and keys 40/40); thầy
+  // 2026-10-16: rename, then renumber_actual_tests.js (Actual Test 3–9 → 1–7)
+  7: [
+    { from: 'Actual Test 2', to: 'Vol 7 - Test 2', seriesName: 'Vol 7', testNumber: 2 },
+    { from: 'Actual Test 1', to: 'Vol 7 - Test 3', seriesName: 'Vol 7', testNumber: 3 },
+  ],
 };
 (async () => {
   const vol = +process.argv[2];

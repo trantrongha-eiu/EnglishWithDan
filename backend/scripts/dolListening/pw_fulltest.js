@@ -23,12 +23,14 @@ const publicShape = t => ({
   })),
 });
 
+// the site's bot guard (middleware/botGuard.js) rejects the default headless UA ("HeadlessChrome") → a desktop Chrome UA
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 (async () => {
   await mongoose.connect(process.env.MONGO_URI);
   const tests = await ListeningTest.find({ name: { $in: names } }).lean();
   await mongoose.disconnect();
   const browser = await chromium.launch({ headless: true });
-  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 } })).newPage();
+  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: UA })).newPage();
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
   await page.goto(`${SITE}/login.html`);

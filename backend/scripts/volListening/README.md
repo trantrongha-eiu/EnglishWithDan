@@ -113,6 +113,58 @@ bài thi (~41–50 s) → `clip` từ "Part 1"; Track 4 của T1–T5 dính 10 p
   `wb.js` nhận `WB_MODEL=whisper-large-v3` (mỗi model hạn mức riêng 7200 s audio/giờ).
 - Hai giọng cùng giới (T1P3 tutor + Fiona, T5P3) → chia lượt theo nội dung; đoạn large-v3 thường ngắt đúng chỗ đổi lượt.
 
+## Vol 7 — khác Vol 6
+
+`Listening/Test 1-10/`: đề `Test N.pdf` (**có text layer**, gõ câu hỏi từ `extract.json`; ảnh map vẫn cắt bằng `map(…, { pdf, page,
+box })`, trang 612×792 pt) + key cả vol `Key Lis VOL 7 (T1-T10).pdf` (text) → `web/vol7/keys.json`; audio **1 file cả đề**
+`VOL 7 Audio (T1-T10)/VOL 7 TEST N.mp4|m4a|mp3` → `clip` từng phần; transcript `Transcript VOL 7 (T1-T10)/… test N.docx` =
+TurboScribe (dòng `(m:ss - m:ss)`, tiêu đề `Section N`/`Part N`, không ghi người nói). `Listening/Test 11/`: audio cả đề + đề PDF
+(key ở 2 trang cuối) + transcript **PDF** (đánh dấu đáp án "Q7 …" ngay trong câu → spec `rawRe`).
+
+- `extract.py`: regex `<w:t[^>]*>` cũ khớp cả `<w:tab/>`, `<w:tbl>` → T5–T10 ra lẫn XML; nay chỉ `<w:t>`/`<w:t …>`.
+- Spec `docx: '<đường dẫn trong vol>'` → `vol_build.js` tách phần theo dòng tiêu đề (`splitHeadings`), bỏ dòng timestamp;
+  `cut: [[từ, đến]]` xoá đoạn thô (Part 1 phát ví dụ trước rồi phát lại cả bài); `rawRe`; `turns` (Vol 3) áp sau `cleanPart`.
+  Bộ lọc lời dẫn (`vol_transcript.js`) thêm: "Now turn to section N on page N", "You'll hear", số viết chữ ("six to ten",
+  "thirty-one to forty"), "end of the listening test / 10 minutes to transfer", câu "check your answers" không dấu chấm; mẫu
+  "Before you hear the rest…" chạy TRƯỚC mẫu "you have some time…" (trước đây nuốt luôn câu kế tiếp của bài, vd "And then…
+  we bring in a buffet").
+- Mốc phần: silencedetect (`noise=-40dB:d=8`) + nghe máy 12–16 s quanh mỗi mốc (Groq turbo) → bắt đầu ở "Part/Section N" (hoặc
+  "Now turn to…"), hết trước lời dẫn phần sau. Nhiều đề bỏ khoảng 30 s soát đáp án giữa các phần.
+- `diff_whisper.js` nay hiểu `spec.docx`/`rawRe` và dùng turbo `words/` khi không có large-v3, in kèm giây.
+- Người nói: `speaker_pitch.js` (stub `web/vol7/stubs/t<T>.js`) + nội dung; công cụ riêng (git-ignored) `web/vol7/prev.js <T> <P>`
+  = transcript docx đã lọc, mỗi câu một dòng (để viết `turns`).
+- Playwright: site có `middleware/botGuard.js` chặn UA "HeadlessChrome" (403 "Truy cập bị từ chối" lúc đăng nhập) → `vol_pw.js`,
+  `pw_fulltest.js` dùng UA Chrome thường.
+
+## Vol 7 — 2026-10-16 (xong cả 11 test)
+
+- Chống trùng (`vol_keys_dedupe.js` + so 6-gram transcript docx với ngân hàng): **T2 = "Actual Test 2", T3 = "Actual Test 1"**
+  (cùng băng, key 40/40) → thầy duyệt đổi tên thành Vol 7 - Test 2/3 (`rename_tests.js 7 --apply`, backup web/vol7/backup, 9 + 9
+  nhãn testName) rồi đánh số lại "Actual Test 3–8" → "1–6" (`renumber_actual_tests.js --apply`, backup web/vol1/backup, 39
+  nhãn). Đề gộp tiếp theo = Actual Test 7. **T9 = "Vol 4 - Test 3"** (40/40) → thầy chọn KHÔNG tạo đề trùng.
+  Dùng lại: T4 P1–P3 = Superior Home Appliances / Connections / Climate change and allergies ("Actual Test 1" nay, trước là 3;
+  ngân hàng lưu Q15–20, Q25–30 dạng kéo-thả từ nên key là chữ); T5 P3 = Music Students' Attitudes to Performing (Vol 4 - T5);
+  T6 P1 = The London Relocation Services (Vol 5 - T7); T8 P1–P3 = Vol 2 - Test 7 P1–P3; T11 P3 = Oral History Project (Vol 4 - T8).
+- Mới: 23 bài lẻ (T1, T7, T10 đủ 4 phần; T5 P1/P2/P4; T6 P2–P4; T11 P1/P2/P4; T4 P4; T8 P4) — đều bật, ảnh bìa R2, Playwright nháp +
+  live 23/23; 4 ảnh map (T1P2, T5P2, T6P2, T7P2). Đề full **Vol 7 - Test 1, 4, 5, 6, 7, 8, 10, 11** tạo + bật; pw_fulltest 40/40
+  cả 10 đề Vol 7. `vol_audit.js 7`: 0 problem, 1104 trích dẫn khớp.
+- Lỗi đề gốc đã sửa theo băng (ghi ở đầu spec): **T1 Q25 C → B** ("reads every assignment… That's why all the rest of us asked
+  you"; engnovate.com cùng đề: B); T6 Q27–28 đề in gộp 2 lựa chọn vào dòng A → A = their standard length, thêm F = how recent the
+  genre is (key A, B theo băng). Băng gốc: T6 P2 phát lời giới thiệu của đề khác ("beach races") → clip từ "First, you have some
+  time…"; T7 P1 cụt giữa câu và mất "Part 2"; T10 P4 không có lời dẫn; T6 phát lại Part 1 sau khi hết đề; docx T1 P2 thiếu đoạn
+  Q20 (lấy từ Whisper), docx T10 P1 ghi sai tên người nói, docx T11 đánh dấu "Q7" trong câu.
+- Debug (ngoài audit): key DB ↔ key in từng câu; transcript 23 bài ↔ Whisper turbo của chính audio đã up, mọi đoạn turbo bỏ sót
+  (T4P4 Crete, T5P4 mở đầu + "six or seven million dollars", T5P2 barbecues, T6P4 hai đoạn + đoạn cuối, T7P4, T11P4) nghe lại bằng
+  `WB_MODEL=whisper-large-v3 wb.js` → docx đúng; turbo bịa câu prompt ("well it's £15 a day", "I'm going to go to…") ở chỗ lặng.
+  Nghe máy 12 s đầu + 15 s cuối cả 23 audio đã up → sửa 2 ranh giới (`reclip_section_audio.js` mới, rồi `rejoin_test_audio.js`):
+  T6 P2 dính lời dẫn P3 → mốc P2/P3 769.3 s; T10 P4 dính "IELTS Listening. Version…" của đề khác → cắt ở 1578 s.
+- Lỗi cũ lộ ra ở đề vừa đổi tên (thầy duyệt sửa, backup web/vol7/backup/legacy*_): transcript "Planning a party" (bài lẻ + bản trong
+  Vol 7 - Test 3) chèn "(Đáp án câu 1…4)" — lộ đáp án → xoá (cả ngân hàng chỉ bài này); giải thích Q1 "Holiday Job" gõ "Jameson"
+  → Jamieson; Vol 7 - Test 3 P2 (bản trong đề full) nhãn "...:" → "Narrator:" như bài lẻ; "Aims of the geography lesson" Q28–30
+  giải thích lộ ghi chú "(đã đổi số thứ tự…)" → xoá (bài lẻ + Vol 7 - T3 + Vol 4 - T2); Antikythera Q33 nhận thêm "inscriptions";
+  audio đề full Vol 7 - Test 2 dư 8 phút lặng (2221 → 1640 s) và Test 3 ngắn hơn 4 phần (1687 → 1799 s) → nối lại từ bài lẻ.
+  Sau đó `vol_audit.js 7` và `vol_audit.js 4` 0 problem, pw_fulltest 40/40.
+
 ## Vol 6 — 2026-10-15 (xong cả 6 test)
 
 - Mới: 22 bài lẻ (T2–T5 đủ 4 phần, T1 P2–P4, T6 P1/P3/P4) — đều bật, có ảnh bìa (R2), Playwright nháp + live 22/22; 3 ảnh map

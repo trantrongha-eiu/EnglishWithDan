@@ -4,7 +4,21 @@
 //   node vol_build.js specs/vol1_t6.js      → web/vol<V>/draft/t<T>p<P>.json + problems list
 // Spec helpers (exported): note, table, mc, multi, map, matching, short — each returns a question group.
 const fs = require('fs'), path = require('path');
-const { splitParts, cleanPart, fromWhisper } = require('./vol_transcript');
+const { splitParts, cleanPart, fromWhisper, applyTurns } = require('./vol_transcript');
+
+// Vol 7: one TurboScribe-style transcript per test (.docx, or the PDF of Test 11) — heading lines "Section N" /
+// "Part N" between paragraphs of "(m:ss - m:ss)" timestamps → { part: text } without the timestamps
+function splitHeadings(text) {
+  const out = {};
+  let cur = 0;
+  for (const l of text.replace(/\r/g, '').split('\n')) {
+    const h = l.trim().match(/^(?:Section|Part)\s*(\d)\s*:?$/i);
+    if (h) { cur = +h[1]; continue; }
+    if (!cur || /^\(\d+:\d+\s*-\s*\d+:\d+\)$/.test(l.trim())) continue;
+    out[cur] = (out[cur] ? out[cur] + ' ' : '') + l.trim();
+  }
+  return out;
+}
 
 const q = (n, type, text, a, extra = {}) => ({ questionNumber: n, type, questionText: text, options: [], correctAnswer: a, ...extra });
 const placeholders = s => [...String(s).matchAll(/__Q(\d+)__/g)].map(m => +m[1]);
@@ -63,12 +77,17 @@ function build(specFile) {
   const W = f => path.join(__dirname, 'web', `vol${spec.vol}`, f);
   const ex = JSON.parse(fs.readFileSync(W('extract.json'), 'utf8'));
   // Vol 1: one .docx machine transcript per test; Vol 2+: none → Gemini transcript per part (gemini_transcribe.js)
-  const docKey = Object.keys(ex.files).find(k => k.startsWith(`test ${spec.test}/`) && ex.files[k].type === 'docx');
+  // spec.docx (Vol 7): that transcript file of the vol (docx, or pdf pages), split by its heading lines
+  const docKey = spec.docx || Object.keys(ex.files).find(k => k.startsWith(`test ${spec.test}/`) && ex.files[k].type === 'docx');
   let parts = {};
   if (docKey) {
-    let docText = ex.files[docKey].text;
+    const f = ex.files[docKey];
+    if (!f) throw new Error(`no ${docKey} in extract.json`);
+    let docText = f.text || f.pages.join('\n');
     for (const [a, b] of spec.rawFix || []) { if (!docText.includes(a)) throw new Error(`rawFix not found: ${a}`); docText = docText.split(a).join(b); }
-    parts = splitParts(docText);
+    // spec.rawRe = [[regex source, replacement], …] on the whole file (Vol 7 Test 11's transcript marks answers "Q7 …")
+    for (const [re, b] of spec.rawRe || []) docText = docText.replace(new RegExp(re, 'g'), b);
+    parts = spec.docx ? splitHeadings(docText) : splitParts(docText);
   }
   fs.mkdirSync(W('draft'), { recursive: true });
   const report = [];
@@ -76,7 +95,13 @@ function build(specFile) {
     if (s.reuse) { report.push({ part: s.part, title: `${s.title} — reuse bank ${s.reuse}`, problems: [] }); continue; }
     const problems = [];
     const gem = W(`gemini/t${spec.test}p${s.part}.txt`);
-    const raw = parts[s.part];
+    let raw = parts[s.part];
+    // s.cut = [[from, to], …]: drop the raw text from `from` through `to` (Part 1's example played first, then again)
+    for (const [a, b] of s.cut || []) {
+      const i = raw ? raw.indexOf(a) : -1, j = i < 0 ? -1 : raw.indexOf(b, i);
+      if (j < 0) { problems.push(`cut not found: ${a.slice(0, 40)} … ${b.slice(0, 40)}`); continue; }
+      raw = raw.slice(0, i) + raw.slice(j + b.length);
+    }
     const whf = W(`whisper/t${spec.test}p${s.part}.json`);
     if (!s.transcript && !raw && !fs.existsSync(gem) && !fs.existsSync(whf)) { report.push({ part: s.part, problems: ['no transcript part'] }); continue; }
     // .docx transcript is complete but has ASR slips; Whisper (web/vol<V>/whisper) drops passages at long pauses,
@@ -84,7 +109,14 @@ function build(specFile) {
     // Vol 2+: Gemini transcript when one was made, else Whisper words + Otter's dropped passages and turns
     // s.transcript: the whole part written out in the spec (Otter's turns too wrong to patch with fix pairs)
     const transcript = s.transcript ? s.transcript.trim().split('\n').map(l => l.trim()).filter(Boolean).join('\n')
-      : raw ? cleanPart(raw, s) : fs.existsSync(gem) ? geminiTranscript(fs.readFileSync(gem, 'utf8'), s.fix)
+      : raw ? (() => {
+        const t = cleanPart(raw, s);
+        if (!s.turns) return t;
+        // one sentence per line first, then "Label:" lines where each turn starts (s.turns, Vol 3 style)
+        const st = {}, r = applyTurns(t, s.turns, st);
+        for (const a of st.missingFix || []) problems.push(`transcript ${a.slice(0, 90)}`);
+        return r;
+      })() : fs.existsSync(gem) ? geminiTranscript(fs.readFileSync(gem, 'utf8'), s.fix)
       : (() => { const r = require('./merge_preview').merged(spec.vol, spec.test, s.part, s); for (const a of r.stats.missingFix || []) problems.push(`transcript fix not found: ${a.replace(/\n/g, '⏎').slice(0, 80)}`); return r.text; })();
     const groups = s.groups.map(g => ({ ...g }));
     const qs = groups.flatMap(g => g.questions);
@@ -122,5 +154,5 @@ function build(specFile) {
   return report;
 }
 
-module.exports = { note, table, mc, multi, map, matching, short, geminiTranscript };
+module.exports = { note, table, mc, multi, map, matching, short, geminiTranscript, splitHeadings };
 if (require.main === module) for (const f of process.argv.slice(2)) build(f);

@@ -17,9 +17,11 @@ const imported = LIVE ? JSON.parse(fs.readFileSync(W('imported.json'), 'utf8')) 
 const strip = o => Array.isArray(o) ? o.map(strip) : (o && typeof o === 'object')
   ? Object.fromEntries(Object.entries(o).filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, strip(v)])) : o;
 
+// the site's bot guard (middleware/botGuard.js) rejects the default headless UA ("HeadlessChrome") → a desktop Chrome UA
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+  const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: UA });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
