@@ -59,7 +59,7 @@
             ? 'Nhận búa khi hoàn thành 1 Unit Paraphrase đạt ≥ 90%.'
             : (h.canUse ? 'Khôi phục chuỗi ' + h.previousStreak + ' 🔥 vừa mất!' : 'Dùng được trong 3 ngày sau khi lỡ mất chuỗi.');
         return '<div class="inv-card inv-daniel' + (h.canUse ? ' is-ready' : '') + '">'
-            + '<span class="inv-emoji" aria-hidden="true">🔨</span>'
+            + '<img class="inv-emoji inv-daniel-img" src="/img/buaDaniel.jpg" alt="" aria-hidden="true">'
             + '<div class="inv-info"><b>Búa Daniel</b><span class="inv-qty">×' + h.count + '</span></div>'
             + '<div class="inv-actions">'
             + '<button type="button" class="btn btn-primary btn-sm" data-inv-daniel' + (h.canUse && h.count ? '' : ' disabled') + '>Dùng</button>'
