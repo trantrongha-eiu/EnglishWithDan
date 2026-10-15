@@ -44,7 +44,14 @@
  * Tips' "en" track is often a rewritten script); `dropFillers: true` removes
  * "um" / "uh" from unscripted speech (mock-test candidates); `pauseSplit`
  * overrides how many seconds of silence end a turn (a comic pause before a
- * punchline shouldn't split the sentence).
+ * punchline shouldn't split the sentence); `fixCaps: true` turns the ALL-CAPS
+ * lines of stand-up auto captions back into sentence case; `skip: [n, …]`
+ * drops 1-based segments the captions mangled (a bleeped word, a 0.3 s blip).
+ *
+ * Captions: fetch only `en-orig` (or `en-GB` for BBC) — asking yt-dlp for the
+ * auto `en` track pulls YouTube's translated tracks and quickly hits HTTP 429.
+ * Stand-up / crowd-work captions silently DROP bleeped words ("who the are
+ * you?"), so every comedy clip has to be read in full before it goes in.
  *
  * Spelling & Numbers lessons are hand-timed instead: captions can't split
  * "T… H… E…" letter by letter into sentences, so `segments` lists
@@ -66,6 +73,9 @@ const TEWS_PHRASE = {
   'tews-wake-up-call': 'A wake-up call', 'tews-walk-in-the-park': 'A walk in the park', 'tews-catch-22': 'Catch-22',
   'tews-left-on-read': 'Left on read', 'tews-not-gonna-lie': 'Not Gonna Lie',
   'tews-barking-up-the-wrong-tree': 'Barking up the wrong tree', 'tews-up-your-game': 'Up your game',
+  'tews-rub-it-in': 'Rub it in', 'tews-have-a-go': 'Have a go',
+  'tews-taste-of-your-own-medicine': 'A taste of your own medicine', 'tews-out-of-the-loop': 'Out of the loop',
+  'tews-crunch-time': 'Crunch time', 'tews-thought-that-counts': 'It\'s the thought that counts',
 };
 
 const KEITH = 'English Speaking Success (Keith)';
@@ -197,6 +207,35 @@ const LESSONS = [
       'Học ngoại ngữ bằng app như Duolingo có hiệu quả? Implicit vs explicit learning, full immersion và kết quả một nghiên cứu.'],
     ['2lxvNnGkdTo', 'bbc-6min-favourite-snack', 'What\'s your favourite snack?', 122, 290,
       'Vì sao chúng ta thích ăn vặt? Snack là "affordable luxury", ăn "on the go" và xu hướng đồ ăn vặt "functional".'],
+    // 2026-10-15: +14
+    ['_PIlvBI9rXY', 'bbc-6min-reading-brain', 'How reading shapes your brain', 86.5, 248.2,
+      'Đọc sách không "tự nhiên" như nói: não phải "co-opt" nhiều vùng khác nhau. Câu chuyện người đọc được tiếng Anh nhưng mất khả năng đọc tiếng Trung.'],
+    ['QdE63sYqwd8', 'bbc-6min-stressed', 'Why are we all so stressed?', 163, 288.8,
+      'Căng thẳng trước kỳ thi có thể giúp bạn làm bài tốt hơn ("nerves sharpen the mind"). Mẹo giảm stress: không có giải pháp "one-size-fits-all".'],
+    ['9ifQ3xRz4hM', 'bbc-6min-multiple-languages', 'Learning multiple languages', 79.3, 234.4,
+      'Biết nhiều ngôn ngữ là "a brain workout": trẻ em "tune in", "juggle" nhiều thứ tiếng; câu chuyện nhà báo nói 5 thứ tiếng.'],
+    ['hb1CBEENiPQ', 'bbc-6min-cycle-more', 'Should we cycle more?', 85.6, 238.8,
+      'Xe đạp "deeply ingrained" trong văn hóa Hà Lan; Dubai xây 600 km đường xe đạp vì "quality of life" và "liveability".'],
+    ['m7IlyBEyi3c', 'bbc-6min-screen-time', 'Limiting screen time for children', 110.6, 244.5,
+      'Không cấm hẳn công nghệ, mà dùng "intentional" hơn và "set the bar higher" — chuyên gia khuyên cha mẹ quản lý thời gian dùng màn hình của con.'],
+    ['vOuhs1mA0xo', 'bbc-6min-advertisers', 'How advertisers make us spend money', 127.3, 291.3,
+      'Vì sao gọi món qua màn hình cảm ứng khiến ta tiêu nhiều hơn? "Upsell", "basket spend", "nudge theory" và "think outside the box".'],
+    ['LZYCjqAOhEE', 'bbc-6min-quieter-cities', 'Making cities feel quieter', 115, 290.1,
+      'Mumbai ồn đến 80 decibel; ở Montreal, nghệ sĩ thêm tiếng sóng biển vào công viên để nó "nghe" yên tĩnh hơn — thật "counterintuitive"!'],
+    ['d6BGuntMwCM', 'bbc-6min-zoos', 'Should animals be kept in zoos?', 91, 272.1,
+      'Tranh luận hai phía về sở thú: giáo dục bảo tồn, cứu loài nguy cấp vs "zoochosis" — hợp với IELTS Writing Task 2 và Speaking Part 3.'],
+    ['Mn0mXeor0ug', 'bbc-6min-play', 'How important is play?', 160.6, 296,
+      'Sân chơi "phiêu lưu" đầy đồ bỏ đi giúp trẻ tự tin và "resilient": vì sao vui chơi tự do quan trọng "by far" hơn ta nghĩ.'],
+    ['eabT4z25qxE', 'bbc-6min-say-sorry', 'How do you say sorry?', 136.2, 279.8,
+      'Người Ghana, Pakistan, Nga và Hàn Quốc xin lỗi thế nào? "Forgiveness Sunday", cúi chào, và vì sao "sorry seems to be the hardest word".'],
+    ['wCgPjVzREqs', 'bbc-6min-fast-food', 'How the world learned to love fast food', 81.9, 250.4,
+      'Đồ ăn nhanh và "giấc mơ Mỹ": "a can-do attitude", "at the heart of" — và vì sao Iceland không còn cửa hàng McDonald\'s nào.'],
+    ['Xbv4IIqwW-4', 'bbc-6min-best-schools', 'Which country has the best schools?', 120.9, 285.6,
+      'Bảng xếp hạng PISA: các nước nhỏ như Singapore, Estonia "outpace" và "outperform" các nước lớn châu Âu nhờ không "segregate" học sinh.'],
+    ['MXCrPmVuXjs', 'bbc-6min-robot-companion', 'Would you like a robot companion?', 119, 293.6,
+      'Abi — robot bạn đồng hành "sassy", có mắt to biểu cảm và biết thổi bong bóng, mang niềm vui cho người già. Bạn có muốn một robot như vậy?'],
+    ['CrwwsrWfYDk', 'bbc-6min-twins', 'What\'s it like to be a twin?', 130.4, 299.5,
+      'Làm sinh đôi có "plain sailing" không? "Nature vs nurture" và câu chuyện kỳ lạ về cặp song sinh Jim bị chia cắt từ lúc sinh.'],
   ].map(([youtubeId, slug, title, clipStart, clipEnd, description]) => ({
     slug, youtubeId, title, sourceTitle: `${title} 6 Minute English`, channel: 'BBC Learning English',
     category: '6-minute-english', level: 'B1', clipStart, clipEnd, description,
@@ -363,6 +402,19 @@ const LESSONS = [
       'Feifei nghi Rob mách sếp chuyện cô làm đổ cà phê. Rob: "You\'re barking up the wrong tree!" = nghi nhầm người rồi.'],
     ['SuV-uETO1hc', 'tews-up-your-game', 'Up your game', 'B1', 7, 145,
       'Neil nhờ Feifei viết tin nhắn mời bạn gái đi cà phê: "you need to up your emoji game!" = phải nâng trình lên. Kết thúc bất ngờ!'],
+    // 2026-10-15: +6
+    ['7kQkkto7igU', 'tews-rub-it-in', 'Don\'t rub it in!', 'A2', 8.8, 124.6,
+      'Feifei bảo Neil "don\'t rub it in" (đừng nhắc mãi nữa) — và Neil… không thoa kem chống nắng. Về như con tôm luộc!'],
+    ['BiaUB9bz8jc', 'tews-have-a-go', 'Why are you having a go at me?', 'B1', 6.6, 116.4,
+      'Áo chưa là, dính sốt cà chua, chưa cạo râu… Feifei "has a go at" Neil (chê trách). "Have a go" còn có nghĩa là "thử làm".'],
+    ['hf0I6VwS0YE', 'tews-taste-of-your-own-medicine', 'A taste of your own medicine', 'B1', 7.1, 148.3,
+      'Feifei bị cảm và uống thuốc vị "dâu" kinh khủng. "A taste of your own medicine" = gậy ông đập lưng ông — và ai mới là người hay sai bảo?'],
+    ['_4ZmQA6OiUc', 'tews-out-of-the-loop', 'Out of the loop', 'B1', 7, 148,
+      'Neil bỏ lỡ cuộc họp về chính sách "làm việc lành mạnh": không được ngồi, không cà phê… "Out of the loop" = không nắm thông tin.'],
+    ['rfIY5aMMo2s', 'tews-crunch-time', 'It\'s crunch time!', 'B1', 8.8, 153.4,
+      'Rob nói "crunch time", Feifei tưởng là "lunch time" và lấy khoai tây chiên ra nhai rôm rốp. Hóa ra dự án quan trọng là… chọn bánh quy!'],
+    ['GLyLyzzw2tc', 'tews-thought-that-counts', 'It\'s the thought that counts', 'A2', 5.3, 158.2,
+      'Neil tặng Feifei quà Giáng sinh sớm: kính Harry Potter! "It\'s the thought that counts" = quý ở tấm lòng — cách khen lịch sự món quà mình không thích.'],
   ].map(([youtubeId, slug, title, level, clipStart, clipEnd, description]) => ({
     slug, youtubeId, title, sourceTitle: `${TEWS_PHRASE[slug]}: The English We Speak`, channel: 'BBC Learning English',
     category: 'fun-shorts', level, clipStart, clipEnd, description, stripSpeakers: true, minWords: 3,
@@ -543,6 +595,335 @@ const LESSONS = [
     slug, youtubeId, title, sourceTitle: `${src} - ${series}`, channel: 'BBC Learning English',
     category: 'grammar', level, clipStart, clipEnd, description,
   })),
+  // ── TED / TEDx Shorts (2026-10-15): ~1-minute talk excerpts, punctuated
+  // auto captions. [youtubeId, slug, title, level, clipEnd, channel, sourceTitle, description]
+  ...[
+    ['_LhxnnltylA', 'ted-change-your-habits', 'How to actually change your habits', 'B2', 99, 'TEDx Talks',
+      'How to actually change your habits',
+      'Vì sao biết phải làm gì vẫn không đủ để thay đổi thói quen? Bí quyết nằm ở "identity" — bạn nghĩ mình là người thế nào.'],
+    ['1xS116SvV60', 'ted-healthy-perfectionism', 'Can perfectionism ever be healthy?', 'B1', 99, 'TEDx Talks',
+      'Can perfectionism ever be healthy?',
+      'Cầu toàn "lành mạnh" và cầu toàn "có hại" khác nhau thế nào? Học cách "dial down" và thôi tự chỉ trích bản thân.'],
+    ['r_lRaLhlvE0', 'ted-imposter-syndrome', 'Struggling with imposter syndrome?', 'B2', 99, 'TEDx Talks',
+      'Struggling with imposter syndrome?',
+      'Sợ nói sai trong lớp, sợ bị đánh giá — "stereotype threat" là gì, và lời khuyên thay đổi tất cả: chỉ so sánh bạn với chính bạn.'],
+    ['6xngcgwuooM', 'ted-paper-towel', 'How to use ONE paper towel', 'B1', 99, 'TEDx Talks',
+      'How to use a paper towel',
+      'Bài nói vui nổi tiếng: lau tay chỉ cần MỘT tờ giấy — "Shake… fold"! Nghe và đếm theo diễn giả.'],
+    ['Zx1xYXbFK90', 'ted-first-impression', 'How to make a good first impression', 'B2', 99, 'TEDx Talks',
+      'How to make a good first impression',
+      'Vài giây đầu gặp ai đó định hình cả sự nghiệp. Cách tạo ấn tượng tự nhiên: một lời khen bất ngờ, một câu chuyện để họ kể lại.'],
+    ['gMIENROmamU', 'ted-increase-confidence', 'How to increase your confidence — 3, 2, 1, go!', 'B2', 99, 'TEDx Talks',
+      'How to increase your confidence',
+      'Muốn tự tin, hãy thay đổi hành động trước: đếm "3, 2, 1, go" rồi bước tới — câu chuyện cuộc nói chuyện khó xử trên sân bóng chày.'],
+    ['YBN_xM7aqVg', 'ted-content-killed-creativity', 'How "creating content" killed my creativity', 'B2', 99, 'TEDx Talks',
+      'How "creating content" killed my creativity',
+      'Một YouTuber đăng video liên tục theo thuật toán… và kênh "chết". Khi thôi ám ảnh lượt xem, anh ấy lại thành công.'],
+    ['NrARzmzUGds', 'ted-one-true-calling', 'Why you might not have one true calling', 'B2', 99, 'TEDx Talks',
+      'Why you might not have one true calling',
+      'Bạn thích nhiều thứ và chưa tìm được "đam mê duy nhất"? Không sao cả — bạn là một "multipotentialite".'],
+    ['-OiCXpYQIWI', 'ted-introduce-yourself-hired', 'How to introduce yourself — and get hired', 'B2', 66, 'TEDx Talks',
+      'How to introduce yourself—and get hired',
+      'Giới thiệu bản thân trong 20 từ: "soundbite, not data dump". Đừng nói về bạn, hãy nói bạn làm được gì cho người nghe.'],
+    ['huHi6D_MI7U', 'ted-decisions-poker', 'How to make decisions like a poker pro', 'C1', 99, 'TEDx Talks',
+      'How to make decisions like a poker pro',
+      'Thua một ván không có nghĩa là quyết định sai. Nghĩ theo xác suất thay vì tuyệt đối — bài học từ poker cho cuộc sống.'],
+    ['fVEsPruv_Kc', 'ted-why-we-love-bluey', 'Why we love Bluey', 'B2', 99, 'TEDx Talks',
+      'Why we love Bluey',
+      'Vì sao phim hoạt hình Bluey được cả trẻ em lẫn bố mẹ yêu thích? Người lớn cũng mắc lỗi — và câu nói "You\'re doing great."'],
+    ['twQB0A-QOgk', 'ted-actor-confidence', 'An actor\'s secret for confidence: the leader stance', 'B2', 99, 'TEDx Talks',
+      'An actor\'s tips on confidence',
+      'Bí quyết của diễn viên: "leader stance" — đứng thẳng, ánh mắt vững vàng, cử động chậm và chiếm không gian.'],
+    ['-2Hb5ykxMUE', 'ted-kermit-creativity', 'Kermit the Frog talks creativity', 'B2', 99, 'TEDx Talks',
+      'Kermit the Frog talks creativity',
+      'Ếch Kermit (The Muppets) lên sân khấu TEDx nói về sáng tạo: "a conspiracy of craziness". Vui và dễ thương!'],
+    ['N6O8b7U6Ti8', 'ted-move-every-hour', 'Move for 1 minute every hour — the challenge', 'B1', 99, 'TED',
+      'Good news: Even moving as little as 1 minute every 60 minutes can have health benefits',
+      'Ngồi cả ngày có hại thế nào? Nhóm TED thử thử thách vận động vài phút mỗi giờ — nghe họ chấm điểm "7 out of 10".'],
+    ['DBhAROQM51E', 'ted-adult-friendships', 'Why do adult friendships feel so hard?', 'B1', 60.6, 'TED',
+      'Is this why adult friendships feel so hard?',
+      'Kết bạn khi lớn lên sao khó thế? Chuyên gia chia ra 3 lý do — và thử nghiệm vui: nhắn tin trước cho bạn bè (kèm ảnh bánh pudding).'],
+    ['wMAtRRCKtbE', 'ted-learn-a-language', 'You don\'t need a special talent to learn a language', 'B1', 99, 'TED',
+      'You don\'t need a special talent to learn a new language',
+      'Một người học ngôn ngữ mới mỗi 2 năm chia sẻ bí quyết: phương pháp hiệu quả, hệ thống, và kiên nhẫn học từng chút mỗi ngày.'],
+    ['BsqFxyU37HY', 'ted-read-books-yourself', 'If you want more people to read, read books yourself', 'B2', 120, 'TED',
+      'If you want more people to read, read books yourself',
+      'Muốn con đọc sách, hãy để con thấy bạn đọc sách. Tiểu thuyết dạy ta sự thấu cảm và giữ cho ta một "long format brain".'],
+    ['dEBhiP1yZZY', 'ted-tell-me-about-yourself', '"Tell me about yourself" — 5 formulas in 20 words', 'B2', 140, 'TED',
+      'No more panicking when someone says, "Tell me about yourself"',
+      'Năm công thức giới thiệu bản thân dưới 20 từ: I help…, …without…, I\'m passionate about…, I\'m known for…, I\'m on a mission to…'],
+    ['ix7zi1s2uD0', 'ted-better-conversations', 'Better conversations: stop waiting for your turn to speak', 'B2', 99, 'TED',
+      'The secret to better conversations? Stop waiting for your turn to speak',
+      'Nghe người khác như nghe một bài hát — đừng "hát bài khác trong đầu". Gật đầu, im lặng chủ động và đừng kéo chuyện về mình.'],
+    ['UiiR5MwI2wI', 'ted-julian-treasure-rasa', 'Julian Treasure: RASA — listen better', 'B2', 99, 'TED',
+      'Want to get better at listening (and speaking)? Try this trick from Julian Treasure',
+      'RASA = Receive, Appreciate, Summarize, Ask: công cụ giúp cuộc trò chuyện trôi chảy, kèm ví dụ thực tế dùng từ "So…".'],
+    ['ZmZkQ-YvM1g', 'ted-favourite-toy', 'What was your favourite toy growing up?', 'B2', 120, 'TED',
+      'What was your favorite toy growing up?',
+      'Barbie thay đổi theo từng thế hệ thế nào? Và đồ chơi yêu thích hồi nhỏ nói gì về con người bạn hôm nay. (Gợi ý cho Part 2!)'],
+    ['Q-pnqCPpNFw', 'ted-reach-out-connect', 'Compliment a stranger — you do more good than you think', 'C1', 99, 'TED',
+      'Compliment a stranger or reach out to a loved one. You may do more good than you think',
+      'Ta thường ngại bắt chuyện, ngại cảm ơn, ngại hỏi han. Hơn 100 thí nghiệm cho thấy: kết nối với người khác tốt hơn ta tưởng.'],
+    ['1LZX3l8TKl4', 'ted-lonelier-than-ever', 'More connected than ever — so why lonelier?', 'B2', 99, 'TED',
+      'We\'re more connected than ever — so why are we lonelier than ever?',
+      'Chỉ có bạn thân và người lạ, không có gì ở giữa? Vì sao xếp lịch mọi thứ khiến ta cô đơn hơn.'],
+    ['DyHGGbmtmz8', 'ted-rats-drive-cars', 'I taught rats to drive cars', 'B2', 120, 'TED',
+      '"I taught rats to drive cars, but they taught me to enjoy the ride"',
+      'Nhà khoa học dạy chuột lái xe để lấy bánh Fruit Loops — và phát hiện chúng chọn "đi đường vòng cho vui". Rất thú vị!'],
+    ['botYt9uElQs', 'ted-play-with-your-cat', 'Would your cat give you a good review?', 'B1', 99, 'TED',
+      'Would your cat give you a paw-sitive review?',
+      'Mèo thích kiểu chơi nào: "rabbit", "mouse" hay "moth"? Chỉ vài phút chơi mỗi ngày giúp mèo vui hơn và bớt săn mồi.'],
+  ].map(([youtubeId, slug, title, level, clipEnd, channel, sourceTitle, description]) => ({
+    slug, youtubeId, title, sourceTitle, channel, category: 'ted-shorts', level,
+    clipStart: 0, clipEnd, description, useAutoText: true, dropFillers: true,
+  })),
+  // ── Stand-up comedy (2026-10-15): Max Amini crowd-work Shorts ───────
+  // Hand-picked for a classroom: no profanity (YouTube's captions silently
+  // drop bleeped words, so every clip was read in full), no sexual jokes.
+  // Auto captions shout in CAPS — fixCaps normalises them.
+  // [youtubeId, slug, title, level, clipEnd, description]
+  ...[
+    ['yBmkkGuqQWs', 'max-tall-and-single', 'Tall and single in Dubai', 'B1', 999,
+      'Anh chàng cao 1m98 không nhớ mình có mấy anh chị em… và lý do vợ cũ bị đau cổ. Hỏi – đáp: How tall are you? How many brothers and sisters?'],
+    ['vfUWWgLamJY', 'max-adopted-belgian', 'Adopted by Belgian parents at 30', 'B2', 999,
+      'Hassan 30 tuổi được bố mẹ người Bỉ "nhận nuôi" — và vẫn chưa chịu dọn ra ở riêng. Nghe cách Max trêu khéo: move out, favorite kid.'],
+    ['PUVqd-IA2gs', 'max-world-cup-debate', 'Spain vs Argentina: who wins the World Cup?', 'B2', 999,
+      'Fan Tây Ban Nha và Argentina "đấu khẩu": a young team, great passes, more experience — rồi Max đưa ra câu trả lời ngoại giao.',
+      { skip: [18] }], // 0.3 s — too short to play
+    ['Jf_hukHUOCw', 'max-84-and-single', '84 years old and single!', 'B1', 999,
+      'Cụ bà 84 tuổi vỗ tay hưởng ứng "Who\'s single?" — Age is just a number! Cụm hay: clap if you\'re single, good for you.'],
+    ['TzjSlFyT-Ew', 'max-focused-german', 'The very focused German', 'B2', 999,
+      'Khán giả người Đức tập trung đến mức… không cười: "I will laugh later." Max trêu anh ấy là gián điệp chính phủ.'],
+    ['uAOuOlTpFtA', 'max-laugh-every-day', 'Find a reason to laugh every day', 'B1', 999,
+      'Một khoảnh khắc ấm áp: Max cảm ơn khán giả đang điều trị bệnh vì vẫn tự tin đến xem hài — "find an excuse to laugh every single day".'],
+    ['ieaUwoWJKpI', 'max-fbi-agent', 'The guy in the suit is… an FBI agent?!', 'B1', 999,
+      'Max đùa anh chàng mặc vest trông như đặc vụ FBI — và anh ấy là đặc vụ thật! Từ vựng: underdressed, intimidating, show your badge.'],
+    ['i6aJrtTktTE', 'max-nepal-traveller', 'She travelled all the way from Nepal', 'B1', 999,
+      'Cô gái Nepal đi công tác khắp nơi nhưng vẫn bay đến xem Max diễn — "You must be the luckiest husband… your wife is never home!"'],
+    ['oYjaixZWs9M', 'max-giant-hockey-player', 'The 6\'6" hockey player', 'B1', 999,
+      'Anh chàng cao 1m98 chơi khúc côn cầu và "làm cho chính phủ"… Max đoán ngay: immigration! How tall are you? What do you do?'],
+    ['x8h50InUtEc', 'max-new-step-dad', '"Make fun of my mom!"', 'B1', 999,
+      'Cậu con trai muốn Max trêu mẹ mình — nhưng Max lại muốn… nhận cậu ấy làm con nuôi. Câu hỏi hay: Are you out of your mind?'],
+    ['oGwveuxQlD0', 'max-worst-airline', 'They lost my suitcase — twice!', 'B1', 999,
+      'Max bị hãng bay làm thất lạc vali hai lần — và người ngồi hàng đầu lại làm cho chính hãng đó! Từ vựng: lost my suitcase, customer service, sorry for the inconvenience.',
+      { skip: [21, 22] }], // 0.3 s each — too short to play
+    ['PYfUHDXf9k4', 'max-north-korean-boyfriend', 'A long-distance boyfriend in North Korea?', 'B2', 999,
+      'Cô gái yêu xa một anh chàng "ở Triều Tiên"… hay Hàn Quốc? Max: "You fell for an internet scam, my love!" — long distance relationship.'],
+    ['JRDuQf3RaMc', 'max-its-complicated', '"How long have you been together?" — It\'s complicated', 'B1', 999,
+      'Hỏi một cặp đôi "Are you together?" và cả hai nhìn nhau ngại ngùng… "Complicated is the best comedy material!"'],
+    ['S9u92ZrqXP4', 'max-louis-vuitton-couple', 'The Louis Vuitton couple', 'B2', 999,
+      'Thắt lưng, giày, kính… tất cả đều Louis Vuitton — và vợ anh ấy cũng vậy! Max trêu cặp đôi "matching" cực vui.'],
+    ['TMBIMgXJ6gI', 'max-grim-to-grin', 'He hasn\'t smiled once — until now', 'B1', 71,
+      'Kevin bị vợ kéo đi xem hài và nhất quyết không cười… cho đến khi Max ra tay. "It\'s comedy, we\'re joking!"',
+      { skip: [17] }], // "I'll show you who's the…" — a bleeped word
+    ['1LdHUm7d3i0', 'max-single-one-week', 'Single for… one whole week', 'B1', 43.5,
+      'Hỏi khán giả Toronto: "How long have you been single?" — "One week." Max: "You\'re such a player!"'],
+    ['H8KxnRBQajQ', 'max-millionaire-match', 'They met on "Millionaire Match"', 'B1', 999,
+      'Cặp đôi quen nhau trên ứng dụng hẹn hò… dành cho triệu phú! Cả khán phòng phản ứng thế nào? Từ vựng: dating app, fiancé.'],
+    ['vvpDfWEcwgY', 'max-flew-from-japan', 'He flew from Japan to see the show', 'B1', 999,
+      'Khán giả bay từ Nhật sang Ấn Độ xem Max diễn… trong khi tuần sau Max diễn ở Nhật! "I wasted all my money!"'],
+    ['lCU2h4sK69w', 'max-magic-of-india', 'What I love about India', 'B1', 999,
+      'Một đoạn ngắn tích cực: hơn 121 ngôn ngữ, nhiều tôn giáo, mọi người sống hòa thuận "under the same roof" — hợp làm ý cho Speaking Part 3.'],
+    ['2ZoY_EILTgg', 'max-alaska-car-restorer', 'From Alaska: "I restore cars"', 'B1', 999,
+      'Anh chàng từ Alaska đến San Diego vì… ấm áp. Nghề phục chế ô tô — vì ở Alaska xe vừa đến là đóng băng! Câu hỏi: What brought you to…?'],
+    ['c_tNB3BlLn0', 'max-disaster-date', 'Setting up a date… that goes wrong', 'B1', 999,
+      'Max mai mối chàng trai 19 tuổi với cô gái 18 tuổi ngay giữa buổi diễn — và bị từ chối phũ phàng. "You snooze, you lose!"'],
+    ['RP87r569P6A', 'max-couple-fight', 'They had a fight on the way to the show', 'B1', 999,
+      'Cặp đôi cãi nhau trên đường đến xem hài vì cô vợ khen Max "funny". Ai mới hài hơn? Cụm hay: it happens to the best of us.'],
+    ['wzPN8ZJ-cHg', 'max-be-authentic', 'Being authentic is a superpower', 'B2', 999,
+      'Không phải tiểu phẩm mà là lời chia sẻ của Max: vì sao sự chân thật (authenticity) giúp người khác kết nối với bạn — "being honest is a superpower".'],
+    ['P5ZWXUEbq-w', 'max-star-and-moon', '"My name is Star." — "My name is Moon."', 'B1', 999,
+      'Khán giả tên Star, Max tự xưng là Moon 😄 — rồi cô ấy mời Max diễn tuần sau ở một nơi mà… Max không hề diễn. "You don\'t even know who I am, do you?"'],
+    ['7QlwYmkVXbI', 'max-volunteer-coordinator', 'The volunteer coordinator', 'B1', 999,
+      'Nghề "điều phối tình nguyện viên" — được trả lương để quản lý những người làm không công! Max: "I bought two mansions by just volunteering."'],
+    ['SqQaCpt2G6g', 'max-follow-your-dreams', '"What do you want to do when you grow up?"', 'A2', 999,
+      'Cậu bé 18 tuổi bị bố ép học kỹ sư nhưng không giỏi toán, không giỏi đại số… Max khuyên: "You should become a comedian!"'],
+    ['bO4lBQjtErs', 'max-lottery-prank', 'Pranking the boss with fake lottery tickets', 'A2', 999,
+      'Nhân viên tặng Max vé số giả — "I won $50,000!" — và Max tin thật. Câu ngắn, dễ nhại: How much did I win? Are you pranking me?'],
+    ['KmZDtGxAG-s', 'max-swiss-road-trip', 'She drove from Switzerland to see the show', 'B1', 999,
+      'Khán giả lái xe từ Thụy Sĩ đến xem diễn. Max định trả tiền xăng — nhưng cô ấy đi xe Tesla! "So I owe you nothing!"'],
+    ['hyvjnSS5IOI', 'max-tax-advice', 'Tax advice from the IRS', 'B1', 999,
+      'Khán giả làm ở Sở Thuế Mỹ (IRS) — Max xin "mẹo" tránh thuế và nhận được lời khuyên đơn giản nhất: "Pay your taxes."'],
+    ['a5_FWW3MERk', 'max-tajikistan-pride', 'Two fans from Tajikistan', 'B1', 46.4,
+      'Hai khán giả đến từ Tajikistan bất ngờ gặp nhau trong khán phòng! Max đùa: "I came with my horse." — "What colour is your horse?"'],
+    ['rjZZrTQgLZ8', 'max-taekwondo-champion', 'Meeting a Taekwondo world champion', 'B1', 72,
+      'Nhà vô địch Taekwondo thế giới Kimia Alizadeh ngồi ngay hàng ghế khán giả — "the most dangerous person in the audience to roast"!'],
+  ].map(([youtubeId, slug, title, level, clipEnd, description, extra]) => ({
+    slug, youtubeId, title, sourceTitle: `${title} — Max Amini Stand-up Comedy`, channel: 'Max Amini', category: 'comedy', level,
+    clipStart: 0, clipEnd, description, useAutoText: true, dropFillers: true, fixCaps: true, minWords: 3, ...extra,
+  })),
+  // ── Speaking Part 2 & 3 (2026-10-15) ────────────────────────────────
+  // Full Band 9 mock tests (IELTS Advantage, Keith) cut into their Part 2
+  // talk and Part 3 discussions; English Pro Tips' Part 3 methods video.
+  // [youtubeId, slug, title, category, level, clipStart, clipEnd, channel, sourceTitle, description]
+  ...[
+    ['gdzrv2N40II', 'adv-part2-did-something-in-a-hurry', 'Part 2: A time you had to do something in a hurry', 'ielts-part2', 'C1', 342, 437.4, 'IELTS Advantage',
+      'Shadow This Band 9 IELTS Speaking Test (Word for Word)',
+      'Bài Part 2 Band 9: dọn nhà sang nước khác chỉ trong một tuần — pack my whole life into two suitcases, last minute, anxiety-inducing, a team effort.'],
+    ['ZITN5qjA2Kk', 'adv-part2-something-for-home', 'Part 2: Something you bought for your home', 'ielts-part2', 'B2', 350.8, 446.7, 'IELTS Advantage',
+      'This Student Made Band 9 Speaking Look Easy',
+      'Kệ sách mua online trở thành "thư viện mini": I was a bit hesitant, it turned out to be…, it brings me a lot of joy, gives an insight into my personality.'],
+    ['YWqU_QwCYCQ', 'adv-part2-website-bought-from', 'Part 2: A website you bought something from', 'ielts-part2', 'C1', 376.4, 466.5, 'IELTS Advantage',
+      'IELTS Speaking Test- Perfect Band 9',
+      'Mua giường cho chó trên Etsy: customizable, small businesses, stay-at-home moms, needless to say… — câu trả lời Band 9 rất tự nhiên.'],
+    ['A53fe3e0PcE', 'keith-part2-foreign-food', 'Part 2: A foreign food you have tried and liked', 'ielts-part2', 'C1', 325.9, 478.5, KEITH,
+      'IELTS Speaking test Band 8.5 (with feedback)',
+      'Bài thi thật với Keith: đề "describe a kind of foreign food you have had and liked" — nghe cả lời giám khảo giao đề và bài nói 2 phút.'],
+    ['gDkpbrFS7VU', 'keith-part2-family-business', 'Part 2: A family-run business', 'ielts-part2', 'B2', 0, 125, KEITH,
+      'IELTS Speaking Sample Answer Part 2 - A Family Run Business',
+      'Bài mẫu của Keith về nhà hàng của anh họ: a family-run business, a saturated market, a niche, on a shoestring budget, word of mouth, it\'s taken off.'],
+    ['XHbxia6PUpE', 'ept-part2-special-day-cheap', 'Part 2: A special day that didn\'t cost much — before & after', 'ielts-part2', 'B1', 0, 140, EPT,
+      'Do this in IELTS part 2',
+      'Câu trả lời "and then… and then…" chỉ được 20 giây — và cách sửa: kể thành câu chuyện, lập sơ đồ ý, nói về tương lai khi hết ý. Nghe lại bài mẫu sau khi sửa.'],
+    ['vWiGOKI6tJM', 'ept-part2-beautiful-city-almaty', 'Part 2: A beautiful place — my hometown Almaty', 'ielts-part2', 'C1', 365.8, 522, EPT,
+      'Best IELTS Speaking Test?',
+      'Bài Part 2 xuất sắc về Almaty (Kazakhstan): picturesque scenery, multifaceted, cloud-piercing skyscrapers, a vintage feel, lush meadows, breathtaking.'],
+    ['vWiGOKI6tJM', 'ept-part3-tall-buildings', 'Part 3: Why do modern cities have tall buildings?', 'ielts-part3', 'C1', 520.4, 671, EPT,
+      'Best IELTS Speaking Test?',
+      'Vì sao thành phố hiện đại nhiều nhà cao tầng? Có phải mọi thành phố đều giống nhau? Thành phố tương lai sẽ ra sao? — a double-edged sword.'],
+    ['vWiGOKI6tJM', 'ept-part3-city-vs-countryside', 'Part 3: City or countryside — which is better?', 'ielts-part3', 'C1', 669.9, 852.8, EPT,
+      'Best IELTS Speaking Test?',
+      'Chất lượng sống ở thành phố và nông thôn, người thành phố có xa rời thiên nhiên không, đô thị hóa ảnh hưởng thế nào — climb the corporate ladder, lose touch with nature.'],
+    ['LE_F9u-DYe0', 'ept-part3-band9-beauty-success', 'Part 3: Beauty, youth and success — Band 9', 'ielts-part3', 'C2', 621.2, 763.5, EPT,
+      'Incredible Band 9 Speaking Test (she\'s only 17!)',
+      'Vì sao người ta đánh đồng cái đẹp với tuổi trẻ? Ngoại hình có ảnh hưởng đến thành công không? — evolution, the media, conventionally beautiful, counterparts.'],
+    ['gdzrv2N40II', 'adv-part3-arriving-late', 'Part 3: Is it acceptable to arrive late?', 'ielts-part3', 'C1', 437.5, 539.9, 'IELTS Advantage',
+      'Shadow This Band 9 IELTS Speaking Test (Word for Word)',
+      'Part 3 Band 9 về quản lý thời gian: đến muộn khi gặp bạn bè, đi làm muộn có nên bị phạt — unforeseen circumstances, time is money, reprimand.'],
+    ['gdzrv2N40II', 'adv-part3-study-time', 'Part 3: Long study sessions or short chunks?', 'ielts-part3', 'C1', 539.9, 624.7, 'IELTS Advantage',
+      'Shadow This Band 9 IELTS Speaking Test (Word for Word)',
+      'Học liền mạch hay chia nhỏ? Có nên kết hợp giải trí với học tập? — short-form media, motivation, go hand in hand.'],
+    ['ZITN5qjA2Kk', 'adv-part3-creating-a-nice-home', 'Part 3: Why do people buy lots of things for their home?', 'ielts-part3', 'B2', 446.6, 590.3, 'IELTS Advantage',
+      'This Student Made Band 9 Speaking Look Easy',
+      'Vì sao có người thích mua sắm đồ trang trí nhà, có người lại không quan tâm nhà trông thế nào? Trả lời bằng cảm xúc và ví dụ thật.'],
+    ['ZITN5qjA2Kk', 'adv-part3-apartment-or-house', 'Part 3: Apartment or house? Homes in the future', 'ielts-part3', 'B2', 590.3, 701.5, 'IELTS Advantage',
+      'This Student Made Band 9 Speaking Look Easy',
+      'Sống chung cư hay nhà riêng tốt hơn? Nhà ở sẽ thay đổi thế nào trong tương lai? — it depends where you\'re located, I would lean more towards…'],
+    ['Ayuy4zGnfkQ', 'adv-part3-monuments-architecture', 'Part 3: Monuments, statues & architecture', 'ielts-part3', 'B2', 357.9, 501.6, 'IELTS Advantage',
+      'IELTS Speaking Test- Perfect Band 9.0',
+      'Vì sao có nhiều tượng người nổi tiếng? Có nên bảo tồn mọi công trình cổ? Kiến trúc ảnh hưởng tâm trạng ra sao? — chủ đề rất hay gặp.'],
+    ['YWqU_QwCYCQ', 'adv-part3-shopping-online', 'Part 3: Shopping online in your country', 'ielts-part3', 'C1', 466.4, 614.9, 'IELTS Advantage',
+      'IELTS Speaking Test- Perfect Band 9',
+      'Người dân nước bạn mua gì online? Ưu – nhược điểm của mua sắm trực tuyến — câu trả lời Band 9 có ví dụ cụ thể và so sánh.'],
+    ['YWqU_QwCYCQ', 'adv-part3-future-of-shops', 'Part 3: Will shopping malls survive? Online-only businesses', 'ielts-part3', 'C1', 614.9, 782.2, 'IELTS Advantage',
+      'IELTS Speaking Test- Perfect Band 9',
+      'Có công bằng không khi mua tại cửa hàng đắt hơn online? Trung tâm thương mại còn phổ biến? Ngân hàng, đại lý du lịch sẽ chỉ còn online?'],
+    ['A53fe3e0PcE', 'keith-part3-eating-habits', 'Part 3: Eating habits — phones at the table', 'ielts-part3', 'C1', 478.5, 628.6, KEITH,
+      'IELTS Speaking test Band 8.5 (with feedback)',
+      'Thói quen ăn uống ở nước bạn, dùng điện thoại trong bữa ăn, trò chuyện với gia đình khi ăn — thí sinh Band 8.5+ trả lời cùng Keith.'],
+    ['A53fe3e0PcE', 'keith-part3-healthy-diets', 'Part 3: Healthy diets — why don\'t people eat well?', 'ielts-part3', 'C1', 628.6, 807.7, KEITH,
+      'IELTS Speaking test Band 8.5 (with feedback)',
+      'Thế nào là chế độ ăn lành mạnh? Vì sao nhiều người không ăn uống lành mạnh? Chính phủ nên làm gì? — strike a balance, on several levels.'],
+    ['4Fspx4fXFQM', 'ept-part3-hedging', 'Part 3: Hedging — sound less absolute', 'ielts-part3', 'C1', 195.8, 426.6, EPT,
+      '5 Methods to Develop Answers in IELTS Part 3',
+      'Kỹ thuật "hedging" của band 7+: tend to, may/might, many people believe, often — kèm câu trả lời mẫu về làm việc nhóm, mạng xã hội, chính phủ và ăn uống.'],
+    ['4Fspx4fXFQM', 'ept-part3-multiple-perspectives', 'Part 3: The multiple perspectives method', 'ielts-part3', 'C1', 426.6, 607.1, EPT,
+      '5 Methods to Develop Answers in IELTS Part 3',
+      'Nhìn vấn đề từ 2–3 góc độ: from an employee\'s perspective, from an employer\'s point of view… — mẫu về làm việc từ xa, lương vs sự hài lòng, thế hệ và môi trường.'],
+    ['4Fspx4fXFQM', 'ept-part3-rule-of-two', 'Part 3: The rule of two', 'ielts-part3', 'C1', 607.1, 780.6, EPT,
+      '5 Methods to Develop Answers in IELTS Part 3',
+      'Chỉ cần hai lý do được phát triển tốt: There are two main reasons… Firstly… Secondly… — mẫu về sống ở thành phố, du lịch, làm việc tại nhà.'],
+    ['4Fspx4fXFQM', 'ept-part3-it-depends', 'Part 3: The two most useful words — "It depends"', 'ielts-part3', 'C1', 780.6, 997.9, EPT,
+      '5 Methods to Develop Answers in IELTS Part 3',
+      '"It depends" + giải thích phụ thuộc vào điều gì: đi du lịch một mình hay cùng người khác, trẻ lớn lên ở thành phố hay nông thôn, đại học miễn phí.',
+      { skip: [9, 10, 11, 12, 13, 14] }], // on-screen template phrases, read with gaps
+  ].map(([youtubeId, slug, title, category, level, clipStart, clipEnd, channel, sourceTitle, description, extra]) => ({
+    slug, youtubeId, title, sourceTitle, channel, category, level,
+    clipStart, clipEnd, description, useAutoText: true, dropFillers: true, ...extra,
+  })),
+  // ── Speaking Part 1 (2026-10-15): +8 shorts ─────────────────────────
+  ...[
+    ['XmE08wV3h9U', 'ept-part1-daily-routine-band7', 'Part 1: Daily routine — Band 5/6 vs Band 7+ vocabulary', 'B1', 0, 86, EPT,
+      'Band 5/6 vs. Band 7+ Vocabulary for talking about your Daily Routine in IELTS',
+      'Mỗi câu nói hai lần: bản Band 5/6 rồi bản Band 7+ — at the crack of dawn, head to work, squeeze in a walk, wrap things up, doze off, potter around.'],
+    ['-dEWcWZ_6s4', 'ept-part1-first-minute', 'Part 1: The first minute — walking in & your name', 'B1', 14, 123, EPT,
+      'How to introduce yourself in IELTS Speaking',
+      'Phút đầu tiên trong phòng thi: không bắt tay giám khảo, nói tên, "You can call me…", đưa giấy tờ tùy thân — và câu hỏi đầu tiên "Do you work or are you a student?"'],
+    ['RoWFGJnIy2E', 'keith-part1-where-from', 'Part 1: "Where are you from?" — from simple to better', 'A2', 0, 43.1, KEITH,
+      'Where are you from?',
+      'Cùng một câu hỏi, bốn câu trả lời hay dần: I\'m from England → I grew up in… → I was born and bred in…, where I\'ve been living for…'],
+    ['MREF14eyZ5A', 'keith-part1-closest-family', 'Part 1: Who are you closest to in your family?', 'B1', 0, 88.8, KEITH,
+      'Who are you closest to in your family?',
+      'Ba cụm làm "khung" câu trả lời: I would say the person I\'m closest to is…, mainly because he\'s…, whenever we get together, we just hit it off.'],
+    ['D2ThgRJmv0c', 'keith-part1-free-time', 'Part 1: Free time — 3 phrases for any hobby', 'B1', 0, 79.6, KEITH,
+      'Free time Part 1 Answer',
+      'Ba cụm dùng được cho mọi sở thích: One thing I love doing is…, I find it helps me unwind, I try to make time for this whenever I can.'],
+    ['92xspbQVqXU', 'keith-part1-friends', 'Part 1: Friends — "we go way back"', 'B1', 0, 44.1, KEITH,
+      'IELTS Speaking Part 1 Topic Friends',
+      'Câu trả lời đơn giản mà tự nhiên về bạn bè: I get on well with…, we go way back, we have a good laugh / a good chat.'],
+    ['8tNUGeOQIU4', 'keith-part1-your-subject', 'Part 1: "Do you like your subject?"', 'B1', 0, 57.5, KEITH,
+      'Do you like your subject?',
+      'Chủ đề học tập: I love it to bits, it\'s just so fascinating, I\'ve been interested in it since I was a teenager, useful for my future career.'],
+    ['ghX_B2ThCi0', 'keith-part1-favourite-animal', 'Part 1: What\'s your favourite animal?', 'A2', 0, 48.9, KEITH,
+      'What\'s your favourite animal?',
+      'Từ "I like dogs" đến "I reckon I like dogs the best… they\'re a big responsibility… they keep me company." — nâng cấp từng bước.'],
+  ].map(([youtubeId, slug, title, level, clipStart, clipEnd, channel, sourceTitle, description]) => ({
+    slug, youtubeId, title, sourceTitle, channel, category: 'ielts-part1', level,
+    clipStart, clipEnd, description, useAutoText: true, dropFillers: true,
+  })),
+  // ── Everyday English (2026-10-15) ──────────────────────────────────
+  // BBC Easy English Conversations (A2): one clean stretch of dialogue per
+  // episode, skipping the quiz pauses and "click here" asides.
+  ...[
+    ['on_1sS6Ii8M', 'everyday-hometown', 'What is there in your town?', 10, 93.6, 'How to talk about your home town: Easy English Conversations Episode 3',
+      'Hỏi – đáp về thành phố của bạn: "What is there in Brighton?" — "There\'s a beach… There are lots of shops." Is there…? No, there isn\'t.'],
+    ['bq6GBbh3uhU', 'everyday-daily-routine', 'What do you do every day?', 118.5, 207.8, 'How to talk about your daily routine: Easy English Conversations Episode 4',
+      'Kể thói quen hằng ngày bằng thì hiện tại đơn: I wake up, I have a shower, I walk to work, I go to sleep.'],
+    ['sMg4vj6ugSs', 'everyday-weather', 'How\'s the weather?', 10.3, 101, 'Describing the weather where you are: Easy English Conversations Episode 8',
+      'Gọi điện cho bạn bè khắp thế giới: "Where are you? What are you doing? How\'s the weather?" — It\'s hot and sunny / raining / snowing.'],
+    ['gCs4knrlnD4', 'everyday-habits', 'How often do you…? Talking about habits', 126.8, 220.9, 'Talk about your habits with Easy English Conversations Episode 12',
+      'Trạng từ tần suất: always, usually, often, sometimes, occasionally, hardly ever, never — Georgie và Tim kể thói quen của mình.'],
+    ['kTf0V4HyFtM', 'everyday-last-weekend', 'What did you do at the weekend?', 10.4, 138, 'Talk about what you did last weekend: Easy English Conversations Episode 13',
+      'Kể về cuối tuần bằng thì quá khứ đơn: I went hiking, I made a cake, I had an ice cream — và Tim không được ăn bánh!'],
+    ['v9EU41cuhHY', 'everyday-family', 'Who\'s in your family?', 10.3, 113.8, 'How to describe your family: Easy English Conversations Episode 15',
+      'Giới thiệu gia đình qua cây phả hệ: my parents, grandparents, aunt and uncle, niece and nephew, older/younger brother.'],
+    ['2mnL9jPVzsk', 'everyday-clothes-shopping', 'Clothes shopping: "Do you have this in a smaller size?"', 243.2, 353.9, 'Talking about clothes shopping: Easy English Conversations Episode 19',
+      'Mua quần áo: How do these shoes look? They\'re a bit big. Do you have them in a smaller size / in black? I\'ll take them.'],
+    ['Te-UyphkKRk', 'everyday-home-furniture', 'What do I need in my new home?', 90.2, 200.3, 'Describing your home: Easy English Conversations Episode 20',
+      'Georgie có nhà mới nhưng trống trơn! Từ vựng đồ đạc: bed, lamp, wardrobe, drawers, fridge, cupboards, oven, microwave.'],
+    ['osDr7To4Ml4', 'everyday-personality', 'What\'s your friend like?', 95.2, 174.4, 'How to talk about personality in English! Easy English Conversations Episode 16',
+      'Tả tính cách: grumpy, brave, talkative, quiet, hardworking, lazy — và cách nói từ trái nghĩa "the opposite of…".'],
+  ].map(([youtubeId, slug, title, clipStart, clipEnd, sourceTitle, description]) => ({
+    slug, youtubeId, title, sourceTitle, channel: 'BBC Learning English', category: 'everyday-english',
+    level: 'A2', clipStart, clipEnd, description, minWords: 4,
+  })),
+  // BBC Real Easy English (B1): two presenters chatting naturally — the
+  // first ~2.5 minutes of the conversation, after the intro.
+  ...[
+    ['BFJsSnEEGrI', 'everyday-coffee', 'How do you take your coffee?', 52, 225.2, 'How do you take your coffee? Real Easy English',
+      'Neil và Georgie trò chuyện về cà phê: take your coffee black/white, decaf, caffeine, cut down on — rất tự nhiên.'],
+    ['_5x_h23rXWE', 'everyday-lunch', 'Talking about lunch', 29.2, 196.7, 'Talking about lunch: Real Easy English',
+      'Trưa nay ăn gì? leftovers, skip lunch, hangry (đói + cáu), brunch, working lunch, I\'d rather…'],
+    ['bVRIpmjTSxM', 'everyday-restaurants', 'Talking about restaurants', 25.9, 188.2, 'Talking about restaurants: Real Easy English',
+      'Bạn có hay đi nhà hàng không? Gọi món, đặt bàn, nhà hàng yêu thích — hội thoại đời thường của Neil và Georgie.'],
+    ['lrTRNbC3BDQ', 'everyday-weekend-plans', 'Talking about weekend plans', 26, 182.9, 'Talking about weekend plans: Real Easy English',
+      'Cuối tuần này bạn định làm gì? Cách nói kế hoạch: I\'m going to…, I\'m planning to…, nothing special.'],
+    ['Fxi4uYmCrPo', 'everyday-public-transport', 'Talking about public transport', 27.7, 186, 'Talking about public transport: Real Easy English',
+      'Đi làm bằng gì? Tàu, xe buýt, đi bộ — chuyện trễ tàu, đông người và commute hằng ngày.'],
+    ['sJ7sRSK2in4', 'everyday-routines', 'Talking about routines', 25.9, 177.3, 'Talking about routines: Real Easy English',
+      'Một ngày của bạn thế nào? Buổi sáng, đi làm, buổi tối — từ vựng thói quen hằng ngày trong hội thoại thật.'],
+    ['0UIcwcYrPek', 'everyday-pets', 'Talking about pets', 26, 178, 'Talking about pets: Real Easy English',
+      'Bạn thích chó hay mèo? Neil và Georgie kể về thú cưng — rất hợp cho Speaking Part 1 chủ đề animals/pets.'],
+  ].map(([youtubeId, slug, title, clipStart, clipEnd, sourceTitle, description]) => ({
+    slug, youtubeId, title, sourceTitle, channel: 'BBC Learning English', category: 'everyday-english',
+    level: 'B1', clipStart, clipEnd, description,
+  })),
+  // Keith's everyday-English shorts.
+  ...[
+    ['lFARSxVyDdc', 'everyday-keith-well', 'Phrases natives use every day: "Well…"', 0, 61, 'Phrases Native Speakers Use Everyday - Part 1',
+      '"Well…" — từ người bản xứ dùng mỗi ngày để có thời gian suy nghĩ và làm câu trả lời nhẹ nhàng hơn. Ví dụ vui: "Do you like my new dress?"'],
+    ['rsF8AqPm6IU', 'everyday-keith-actually', 'Phrases natives use every day: "Actually…"', 0, 66.3, 'Phrases Native Speakers Use Everyday! - Part 2',
+      '"Actually" để sửa lời người khác ("Actually, I live in Spain") hoặc thêm một sự thật bất ngờ — chú ý ngữ điệu xuống-lên.'],
+    ['z-usNyco4h0', 'everyday-keith-right', 'Phrases natives use every day: "Right…"', 0, 83.4, 'Phrases Native Speakers Use Everyday! - Part 3',
+      '"Right" rất "British": thể hiện đã hiểu, chuyển sang việc khác ("Right. Let\'s go.") và ngạc nhiên nhẹ ("Oh, right.").'],
+    ['FXk51v150Vc', 'everyday-keith-late-for-meeting', 'Late for a meeting — what do you say to your boss?', 0, 34, 'What would you say to an angry boss?',
+      'Đến muộn và sếp hỏi "What time do you call this?" — cách xin lỗi: I got caught in traffic, something urgent came up, this won\'t happen again.'],
+    ['VN7KLN-vOhw', 'everyday-keith-dinner-gift', 'A friend brings you a gift — what do you say?', 0, 32, 'Friend comes round for dinner',
+      'Bạn đến ăn tối và tặng quà: "Oh, you shouldn\'t have!", "You needn\'t have bothered", "That\'s so kind" — nói cảm ơn tự nhiên như người bản xứ.'],
+  ].map(([youtubeId, slug, title, clipStart, clipEnd, sourceTitle, description]) => ({
+    slug, youtubeId, title, sourceTitle, channel: KEITH, category: 'everyday-english',
+    level: 'B1', clipStart, clipEnd, description, useAutoText: true, dropFillers: true,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -559,6 +940,7 @@ const TEXT_FIXES = [
   [/\bdodle\b/g, 'doddle'],
   [/\bcliffhers\b/g, 'cliffhangers'],
   [/generic Answer:/g, 'generic answer.'],
+  [/\ba\.m\. each\b/g, 'am each'], // "at 9:00 a.m. each day" — not a sentence end
 ];
 
 // Fixes that span two caption lines, applied to the finished sentence.
@@ -569,6 +951,9 @@ const SEGMENT_FIXES = [
   [/the experience with doing the job/, 'the experience without doing the job'],
   [/\bI think this a wake-up call\b/, 'I think this is a wake-up call'],
   [/\bThe best of the both worlds\b/, 'The best of both worlds'],
+  [/^Hello and welcome to The English I'm Feifei\./, 'Hello and welcome to The English We Speak. I\'m Feifei.'],
+  [/\bmake me a nice cup up of tea\b/, 'make me a nice cup of tea'],
+  [/\bthe phrase, we are teaching which is\b/, 'the phrase we are teaching, which is'],
   [/\bHe’s goes up\b/, 'He goes up'],
   // Auto-caption mishearings (English Pro Tips, Keith)
   [/^My name You already/, 'My name… You already'],
@@ -577,6 +962,51 @@ const SEGMENT_FIXES = [
   [/\bpicture skew\b/, 'picturesque'],
   [/\bhuskys\b/, 'huskies'],
   [/\bhumans's\b/, "humans'"],
+  // TED / TEDx Shorts
+  [/^Cuz we not when we get up/, 'Because when we get up'],
+  [/^Which comes us to/, 'Which brings us to'],
+  [/^People go 1 2 3 4 tear\.$/, 'People go 1, 2, 3, 4, tear.'],
+  [/^Wet hands\. Shake\. 1 2 3 4 5 6 7 8 9 10 11 12\.$/, 'Wet hands. Shake. 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12.'],
+  [/^Shake\. FOLD\. YOU WILL, FOR THE REST of your life/, 'Shake. Fold. You will, for the rest of your life'],
+  [/\b20word\b/, '20-word'],
+  [/^I called the difference/, 'I call the difference'],
+  [/\bI'm on a mission too, to\b/, "I'm on a mission to"],
+  [/\bTexas Holdem\b/, "Texas Hold'em"],
+  [/\ballin\b/g, 'all-in'],
+  [/\bis for artist\./, 'is for artists.'],
+  [/\bselfdeceptive\b/, 'self-deceptive'],
+  [/^She her play is grounded/, 'Her play is grounded'],
+  [/^So, keep with saying what he does is he kind of/, 'So, Keith was saying what he does is he kind of'],
+  [/\bThe Sanskrit word for juice, r a s a\./, 'The Sanskrit word for juice, R-A-S-A.'],
+  [/^The a is appreciate\./, 'The A is appreciate.'],
+  [/^The s is summarize\./, 'The S is summarize.'],
+  [/^And the final a is ask\./, 'And the final A is ask.'],
+  [/^And we so we taught them/, 'And so we taught them'],
+  // Keith (everyday English)
+  [/\bmaking them happily happy\b/, 'making them happy'],
+  [/^Something relaxed and formal, ideally/, 'Something relaxed and informal, ideally'],
+  // Part 2 / 3 mock tests
+  [/\banxietyinducing\b/, 'anxiety-inducing'],
+  [/\bthe Taj Mahul\b/, 'the Taj Mahal'],
+  [/\bthe red fort\b/, 'the Red Fort'],
+  [/\bI was taken a back\b/, 'I was taken aback'],
+  [/\bfamily bones\b/, 'family bonds'],
+  [/\bwe have cantens\b/, 'we have canteens'],
+  [/\bensuring then can provide\b/, 'ensuring canteens can provide'],
+  [/\byou mustn't it depends\b/, "you mustn't say it depends"],
+  [/\bthere are going to be certain and drawbacks\b/, 'there are going to be certain advantages and drawbacks'],
+  [/\bgaining in same popularity\b/, 'gaining in popularity'],
+  // Max Amini (stand-up)
+  [/\bEagloo\b/g, 'igloo'],
+  [/\btajikistan\b/gi, 'Tajikistan'], // also before fixCaps sees "TAJIKISTAN"
+  // Part 1 shorts (Keith, English Pro Tips)
+  [/\bintro\. candidate is\b/, 'intro. Candidate is'],
+  [/^IEL speaking part one topic of family\./, 'IELTS Speaking Part 1, topic of family.'],
+  [/^I was speaking part one topic of friends\./, 'IELTS Speaking Part 1, topic of friends.'],
+  [/^IELTS speaking part one topic of study\./, 'IELTS Speaking Part 1, topic of study.'],
+  [/^Right, IELTS speaking part one topic of free time and hobbies\./, 'Right, IELTS Speaking Part 1, topic of free time and hobbies.'],
+  [/\bhelps meup I find it helps me unwind\b/, 'helps me unwind'],
+  [/^Don't worry try these phrases\./, "Don't worry, try these phrases."],
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
@@ -812,6 +1242,42 @@ function turnSentences(words, minWords) {
   return merged;
 }
 
+// Stand-up auto captions SHOUT whole lines ("THANK YOU SO MUCH FOR COMING").
+// Lowercase all-caps words, except acronyms and names the clip also writes
+// in Title case elsewhere, then re-capitalise sentence starts and "I".
+const ACRONYMS = new Set(['AI', 'USA', 'UK', 'LA', 'FBI', 'TSA', 'CEO', 'TV', 'OK', 'DJ', 'BBC', 'CNN', 'NYC', 'GPT', 'ID', 'PG', 'VIP', 'UAE', 'NBA', 'NFL', 'DNA', 'IQ', 'IRS', 'AWS']);
+function fixCaps(segments) {
+  const sentenceStart = (i, prev) => i === 0 || /[.?!]["'”’]?$/.test(prev);
+  // Names: written in Title case mid-sentence and never in lowercase.
+  const titleCase = new Set(), lowerCase = new Set();
+  for (const s of segments) {
+    s.text.split(' ').forEach((w, i, words) => {
+      const m = w.match(/[A-Za-z']+/);
+      if (!m) return;
+      if (/^[a-z]/.test(m[0])) lowerCase.add(m[0]);
+      else if (/^[A-Z][a-z]/.test(m[0]) && !sentenceStart(i, words[i - 1])) titleCase.add(m[0].toLowerCase());
+    });
+  }
+  for (const w of lowerCase) titleCase.delete(w);
+  for (const s of segments) {
+    const words = s.text.split(' ');
+    s.text = words.map((w, i) => {
+      const m = w.match(/^([^A-Za-z]*)([A-Za-z']+)(.*)$/);
+      if (!m) return w;
+      let [, pre, core, post] = m;
+      const shouted = /[A-Z]{2}/.test(core.replace(/'/g, '')) && core === core.toUpperCase();
+      if ((shouted && !ACRONYMS.has(core.replace(/'S$/, ''))) || (core === 'A' && !sentenceStart(i, words[i - 1]))) {
+        const lower = core.toLowerCase();
+        core = titleCase.has(lower) ? lower[0].toUpperCase() + lower.slice(1) : lower;
+      }
+      if (/^i('|$)/.test(core)) core = 'I' + core.slice(1);
+      // Sentence starts, and quoted speech: He's like, "No, I ate…"
+      if ((sentenceStart(i, words[i - 1]) || /["“]$/.test(pre)) && /^[a-z]/.test(core)) core = core[0].toUpperCase() + core.slice(1);
+      return pre + core + post;
+    }).join(' ').replace(/\b([a-z]+)-([A-Z]{2,})\b/g, (_, a, b) => a + '-' + b.toLowerCase()); // cool-LOOKING
+  }
+}
+
 // A quoted model answer spanning several segments leaves a lone " at the
 // start of the first one and the end of the last — drop it.
 function balanceQuotes(t) {
@@ -851,7 +1317,7 @@ function buildLesson(spec, subsDir) {
   // Keep only whole sentences inside the clip window.
   const sentences = toSentences(words, { minWords: spec.minWords, pauseSplit: spec.pauseSplit }).filter((s) =>
     s[0].start >= spec.clipStart - 0.5 && s[s.length - 1].end <= spec.clipEnd + 0.5);
-  const segments = sentences.map((s, i) => {
+  let segments = sentences.map((s, i) => {
     const next = sentences[i + 1];
     const start = Math.max(0, s[0].start - LEAD_IN);
     let end = s[s.length - 1].end + TAIL;
@@ -869,6 +1335,9 @@ function buildLesson(spec, subsDir) {
   for (let i = 0; i < segments.length - 1; i++) {
     if (segments[i].end > segments[i + 1].start) segments[i].end = segments[i + 1].start;
   }
+  // skip: 1-based segments to leave out (a line the captions mangled).
+  if (spec.skip) segments = segments.filter((_, i) => !spec.skip.includes(i + 1));
+  if (spec.fixCaps) fixCaps(segments);
   // Unscripted speech: a new sentence the ASR left lowercase ("probably
   // because…") gets its capital back.
   for (let i = 1; i < segments.length; i++) {
@@ -876,7 +1345,7 @@ function buildLesson(spec, subsDir) {
       segments[i].text = segments[i].text[0].toUpperCase() + segments[i].text.slice(1);
     }
   }
-  const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, ...meta } = spec;
+  const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, ...meta } = spec;
   return {
     ...meta,
     clipStart: segments.length ? segments[0].start : clipStart,
@@ -901,7 +1370,7 @@ if (require.main === module) {
       if (!prev) throw new Error(`${spec.slug}: no manual caption file in ${subsDir} and not in ${path.basename(out)} yet`);
       console.log(`\n== ${spec.slug} — no captions in ${subsDir}, kept from ${path.basename(out)}`);
       // Metadata (title, level, description…) still follows LESSONS.
-      const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, ...meta } = spec;
+      const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, ...meta } = spec;
       return { ...prev, ...meta, order };
     }
     console.log(`\n== ${l.slug} — ${l.segments.length} segments, ${(l.clipEnd - l.clipStart).toFixed(0)}s, ${l._timing}`);

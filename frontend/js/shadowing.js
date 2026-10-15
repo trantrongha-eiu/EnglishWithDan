@@ -24,6 +24,7 @@
   const CATEGORY_LABEL = {
     'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
+    'comedy': 'Hài Stand-up', 'ted-shorts': 'TED ngắn', 'everyday-english': 'Everyday English',
     'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp',
   };
   const SPEEDS = [1, 0.75, 0.5, 1.25];
@@ -36,6 +37,7 @@
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify({
         speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked, vi: $('opt-vi').checked,
+        tipsClosed: !$('sh-tips').open,
       }));
     } catch (_) { /* storage unavailable */ }
   }
@@ -698,6 +700,7 @@
     $('sh-sub').innerHTML = `${escHtml(CATEGORY_LABEL[lesson.category] || '')} · ${escHtml(lesson.channel)} · ${escHtml(lesson.level || '')} · ${lesson.segments.length} câu`;
     $('sh-desc').textContent = lesson.description || '';
     $('sh-desc').style.display = lesson.description ? '' : 'none';
+    $('sh-desc').classList.remove('open');
     window.scrollTo(0, 0);
     $('sh-total').textContent = lesson.segments.length;
     const srcUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(lesson.youtubeId)}&t=${Math.floor(lesson.clipStart)}s`;
@@ -813,6 +816,9 @@
     $('opt-autorec').checked = !!prefs.autorec;
     $('opt-hide').checked = !!prefs.hide;
     $('opt-vi').checked = prefs.vi !== false;
+    // Tips stay open until the student folds them away once.
+    if (prefs.tipsClosed) $('sh-tips').open = false;
+    $('sh-tips').addEventListener('toggle', savePrefs);
 
     const promo = $('premium-promo-banner');
     if (promo) promo.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
