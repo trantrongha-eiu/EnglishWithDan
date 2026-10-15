@@ -94,6 +94,51 @@ nên dùng để soát bằng mắt, không ghép tự động. Nhiều phần c
   `web/vol5/words/`) + cao độ giọng (`f0.py`, numpy) → mỗi câu một dòng `M`/`F`/`~`. Chỉ phân biệt nam/nữ; hai giọng cùng
   giới thì suy theo nội dung.
 
+## Vol 6 — khác Vol 5
+
+`Lis/`: đề `L-TEST N.pdf` (ảnh scan, 6 test, trang khổ lớn ~1800×2900 pt → toạ độ map = px ảnh 110 dpi × 72/110) + key cả vol
+`L-key.pdf` (ảnh, 1 trang/test → gõ tay `web/vol6/keys.json`) + `Full Listening.docx` = **chữ của đề (OCR), không phải transcript**
+(dùng để gõ câu hỏi; `web/vol6/questions.txt`). Audio `Lis/Audio Lis/Test N/` từng phần; Track 1 của T2–T5 có phần giới thiệu cả
+bài thi (~41–50 s) → `clip` từ "Part 1"; Track 4 của T1–T5 dính 10 phút chép đáp án → `clip` đến ~2 s sau "10 minutes to transfer".
+`map(…, { pdf: 'Lis/L-TEST N.pdf', page, box })` (`cropFor` nay chỉ dò thư mục test khi spec không ghi `pdf`).
+
+- Transcript: thầy 2026-10-15 — **tìm trên mạng trước, không có mới tự sinh**. Vol 6 chỉ có transcript máy của chính nhóm phát hành
+  trên Scribd (khoá, không ghi người nói) và youpass.vn ("VOL 6 Test N - …", trường transcription rỗng) → tự sinh.
+- Tự sinh = Whisper large-v3 (`whisper_parts.js` với stub `web/vol6/stubs/t<T>.js`) + turbo có cao độ (`speaker_pitch.js`, cache
+  `web/vol6/pitch/`). Công cụ riêng (git-ignored): `node web/vol6/draft.js <T> <P> M=Tên F=Tên` = bản nháp từ turbo, chia lượt theo
+  M/F, đánh dấu `[T?]` câu turbo có mà large-v3 không (đoạn large-v3 bỏ sót — hoặc câu bịa) và `[L+]` câu large-v3 có mà turbo
+  không; `view.js` xem 2 bản song song; `wdedupe.js` so 6-gram với ngân hàng; `wbq.sh` hàng đợi nghe lại tự thử lại khi hết hạn mức.
+  Cả hai model hay bỏ cùng một đoạn ở chỗ nghỉ (T4P4 237–267 s chứa đáp án Q37, T5P1 327–341 s) và turbo hay chép **prompt** vào chỗ
+  lặng ("Well, it's £15 a day.", "Yes, that's right.") hoặc bịa "Transcription by CastingWords" → luôn soát `[T?]`.
+  `wb.js` nhận `WB_MODEL=whisper-large-v3` (mỗi model hạn mức riêng 7200 s audio/giờ).
+- Hai giọng cùng giới (T1P3 tutor + Fiona, T5P3) → chia lượt theo nội dung; đoạn large-v3 thường ngắt đúng chỗ đổi lượt.
+
+## Vol 6 — 2026-10-15 (xong cả 6 test)
+
+- Mới: 22 bài lẻ (T2–T5 đủ 4 phần, T1 P2–P4, T6 P1/P3/P4) — đều bật, có ảnh bìa (R2), Playwright nháp + live 22/22; 3 ảnh map
+  (T2P2 Parson's Fruit Farm, T3P2 Cross country running event, T5P2 Plan of hotel). Đề full **Vol 6 - Test 1…6** tạo + bật
+  (pw_fulltest 40/40 cả 6). `vol_audit.js 6`: 0 problem, 774 trích dẫn khớp.
+- Dùng lại: T1 P1 = "Sailing Courses for Children" (Vol 5 - Test 3, key 10/10); T6 P2 = "The Elmsden Way Cycle Route" (Vol 4 -
+  Test 4, cùng băng 6-gram 0,79, cùng câu hỏi). T6 P4 "Crocodile Study" khác băng với "Tracking Crocodiles in Queensland" → seed riêng.
+  vol_keys_dedupe báo CHECK ở T1P2/T2P3/T5P3 chỉ là chuỗi chữ cái MC trùng ngẫu nhiên (đề khác hẳn).
+- Lỗi key gốc đã sửa theo băng (ghi ở đầu spec): **T4 Q25 A → C** (băng gạt "managing time" để đọc về "managing all distribution
+  from just one office" = centralisation); **T6 Q16 A → C** (dùng bài ngân hàng: ga "closed in the 1950s… ready for trains to start
+  using it again earlier this year"); key gõ sai T2 Q33 "eroison", Q39 "wildife".
+- 2026-10-16 debug lại (ngoài `vol_audit.js`): so key DB ↔ trang key in (`keys.json`) từng câu → ngoài T4 Q25/T6 Q16 còn 2 chỗ
+  đã sửa theo băng lúc seed nhưng **chưa ghi lại** (nay ghi ở đầu spec): **T1 Q24 C → A** ("an issue that the students already
+  have strong opinions about" = chủ đề khiến họ quan tâm; phe ủng hộ/phản đối do họ tự chọn, không bị giao) và **T2 Q23–30**
+  key in A B C E C D A D không khớp đề/băng → C A D B A F C E (Q23 "keep most Māori terminology out…", Q25 "who the writers
+  were"…). Giải thích "→ đáp án" khớp key DB cả 240 câu. Transcript 22 bài so 6-gram với large-v3 + turbo: chỗ cả hai model
+  không nghe ra (T4P2 74–116 s, T4P3 Q25, T4P4 Q37, T5P1 327–341 s, T2P3) đều có bản `wb.js` trong `web/vol6/wb/` khớp
+  transcript; còn lại chỉ là lời dẫn đề/"Thank you" bịa. Đầu/cuối audio (silencedetect + Whisper): T2P4/T3P2 lời giảng cụt
+  giữa câu là do băng gốc (đáp án ở trước), vẫn có "end of Part N". 3 ảnh map đủ chữ cái.
+  - **T1 P3 "Organising a Debate"** (`S3 (1).mp3`, không clip): sau "30 seconds to check" (~342 s) băng đọc tiếp lời giới
+    thiệu Part 4 **của đề khác** ("a chemistry student… the colour purple and the development of purple dyes", 372,6–387,5 s)
+    rồi 47 s lặng → trong đề full Test 1 người học nghe 2 lời giới thiệu Part 4 khác nhau. Thầy duyệt → cắt bài lẻ còn
+    372 s (giữ 30 s soát đáp án; `trim_section_audio.js 6 …85f8 372 --apply`, spec `clip: [0, 372]`) + nối lại đề full
+    (`rejoin_test_audio.js 6 "Vol 6 - Test 1" --apply`, 1762 → 1699 s), backup web/vol6/backup. Sau đó `vol_audit.js 6`
+    0 problem, pw_fulltest Test 1 40/40.
+
 ## Vol 5 — 2026-10-08 (xong cả 10 test)
 
 - Mới: 36 bài lẻ (T1, T3, T5, T6, T9, T10 đủ 4 phần; T2 P1–P3; T4 P2–P4; T7 P1/P3/P4; T8 P1/P2/P4) — đều bật, có ảnh bìa,

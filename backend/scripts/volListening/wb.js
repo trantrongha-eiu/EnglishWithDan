@@ -1,5 +1,5 @@
 // Listen to a stretch of a part by machine: cut <from>–<to> seconds of a vol part's audio and print Whisper's text
-// (Groq whisper-large-v3-turbo: its own rate limit, so it works while whisper_parts.js waits on large-v3), plus the
+// (Groq whisper-large-v3-turbo, or WB_MODEL=whisper-large-v3: each has its own rate limit, so it works while whisper_parts.js waits on large-v3), plus the
 // Whisper segments of the part around that time. For checking a word the merged transcript got wrong.
 //   node wb.js <vol> <test> <part> <from> <to>          (times in seconds or m:ss)
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
@@ -20,7 +20,7 @@ const audio = ss ? partFile(+vol, +test, +part, ss.audio, ss.clip)
   execFileSync(ff, ['-y', '-loglevel', 'error', '-ss', String(sec(from)), '-to', String(sec(to)), '-i', audio, '-ac', '1', '-ar', '16000', '-b:a', '64k', cut]);
   const form = new FormData();
   form.append('file', new Blob([fs.readFileSync(cut)]), 'cut.mp3');
-  form.append('model', 'whisper-large-v3-turbo');
+  form.append('model', process.env.WB_MODEL || 'whisper-large-v3-turbo');
   form.append('language', 'en');
   form.append('temperature', '0');
   const r = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', { method: 'POST', headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` }, body: form });

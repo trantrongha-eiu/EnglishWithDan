@@ -50,12 +50,15 @@ function cropFor(draft, gi) {
   const c = draft.questionGroups[gi]._crop;
   const out = path.join(__dirname, 'web', `vol${draft._vol}`, 'maps', `t${draft._test}p${draft.partNumber}_g${gi}.png`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  // Vol 1: test <T>/<one pdf>; Vol 2+: listening/test <T>/Test <T>.pdf (beside per-part transcript pdfs)
-  let dir = path.join(volDir(draft._vol), `test ${draft._test}`);
-  if (!fs.existsSync(dir)) dir = path.join(volDir(draft._vol), 'listening', `test ${draft._test}`);
-  const pdfs = fs.readdirSync(dir).filter(f => /\.pdf$/i.test(f));
-  // c.pdf: the question paper by its path in the vol (Vol 4 names vary: "listening- up.pdf", "test 2- listening (2).pdf")
-  const pdf = c.pdf ? findFile(draft._vol, c.pdf) : path.join(dir, pdfs.find(f => /^Test ?\d+(?:\s*-\s*up)?\s*\.pdf$/i.test(f)) || pdfs[0]);
+  // c.pdf: the question paper by its path in the vol (Vol 4 names vary: "listening- up.pdf", "test 2- listening (2).pdf";
+  // Vol 6: "Lis/L-TEST 2.pdf"). Otherwise Vol 1: test <T>/<one pdf>; Vol 2+: listening/test <T>/Test <T>.pdf
+  const testPdf = () => {
+    let dir = path.join(volDir(draft._vol), `test ${draft._test}`);
+    if (!fs.existsSync(dir)) dir = path.join(volDir(draft._vol), 'listening', `test ${draft._test}`);
+    const pdfs = fs.readdirSync(dir).filter(f => /\.pdf$/i.test(f));
+    return path.join(dir, pdfs.find(f => /^Test ?\d+(?:\s*-\s*up)?\s*\.pdf$/i.test(f)) || pdfs[0]);
+  };
+  const pdf = c.pdf ? findFile(draft._vol, c.pdf) : testPdf();
   execFileSync('py', [path.join(__dirname, 'crop.py'), pdf, String(c.page), ...c.box.map(String), out], { stdio: 'pipe' });
   return out;
 }
