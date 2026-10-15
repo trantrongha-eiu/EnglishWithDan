@@ -219,10 +219,10 @@
       .sh-side { position: static; height: 100%; max-height: none; min-height: 0; }
     }
 
-    /* "Video lớn" (default on desktop): YouTube-style theater — the video
-       spans the full width, capped so the sentence + Nghe / Nói theo row
-       still peeks in under it; the panel and transcript sit side by side
-       below and the page scrolls. Toggled off → the fit-to-screen layout. */
+    /* "Video lớn" (default on desktop): the video fills the left column,
+       capped so the sentence + Nghe / Nói theo row still peeks in under it;
+       the transcript runs down the right from the top and the page scrolls.
+       Toggled off → the fit-to-screen layout. */
     .sh-size {
       background: var(--surface2); border: none; color: var(--text2); font-size: 13px; font-weight: 700;
       border-radius: var(--radius-pill); padding: 10px 14px; cursor: pointer; font-family: inherit;
@@ -234,7 +234,7 @@
       #screen-practice.sh-theater.active { display: block; height: auto; }
       .sh-theater .sh-layout { grid-template-rows: auto auto 1fr; row-gap: 14px; align-items: start; }
       .sh-theater .sh-main { display: contents; }
-      .sh-theater .sh-video-box { grid-column: 1 / -1; grid-row: 1; display: flex; justify-content: center; container-type: normal; min-height: 0; }
+      .sh-theater .sh-video-box { grid-column: 1; grid-row: 1; display: flex; justify-content: center; container-type: normal; min-height: 0; }
       .sh-theater .sh-video {
         height: auto; aspect-ratio: 16 / 9;
         width: min(100%, max(640px, calc((100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 350px) * 16 / 9)));
@@ -242,7 +242,7 @@
       .sh-theater .sh-panel { grid-column: 1; grid-row: 2; margin-top: 0; overflow: visible; }
       .sh-theater .sh-credit { grid-column: 1; grid-row: 3; margin-top: 0; white-space: normal; }
       .sh-theater .sh-side {
-        grid-column: 2; grid-row: 2 / span 2; height: auto; min-height: 0;
+        grid-column: 2; grid-row: 1 / span 3; height: auto; min-height: 0;
         max-height: calc(100vh - var(--nav-height, 64px) - 40px); position: sticky; top: calc(var(--nav-height, 64px) + 20px);
       }
     }
