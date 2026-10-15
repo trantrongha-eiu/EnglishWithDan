@@ -68,6 +68,59 @@ describe('/api/shop', () => {
     expect(res.body.code).toBe('not_owned');
   });
 
+  test('a purchase notifies every admin and shows up in the other students feed', async () => {
+    const Message = require('../../models/Message');
+    const { createAdmin } = require('../factories/userFactory');
+    const admin = await createAdmin();
+    const buyer = await createStudent({ extra: { firstName: 'Minh', lastName: 'Anh', flameWallet: 100, flameWalletSeeded: true } });
+    const other = await createStudent();
+    await request(app).post('/api/shop/buy').set(auth(buyer)).send({ kind: 'pet', key: 'vi1' });
+
+    const msg = await Message.findOne({ toId: admin._id }).lean();
+    expect(msg.subject).toBe('[Cửa hàng] Minh Anh đã mua 🐾 linh thú Lửng Cát Nhất Vĩ');
+
+    let res = await request(app).get('/api/shop/feed').set(auth(other));
+    expect(res.body.feed).toEqual([expect.objectContaining({ name: 'Minh Anh', kind: 'pet', key: 'vi1', itemName: 'Lửng Cát Nhất Vĩ' })]);
+    // Not shown to the buyer themselves, and `since` skips what was seen.
+    expect((await request(app).get('/api/shop/feed').set(auth(buyer))).body.feed).toEqual([]);
+    res = await request(app).get('/api/shop/feed').query({ since: new Date(Date.now() + 1000).toISOString() }).set(auth(other));
+    expect(res.body.feed).toEqual([]);
+  });
+
+  test('a failed purchase notifies nobody', async () => {
+    const Message = require('../../models/Message');
+    const s = await createStudent({ extra: { flameWallet: 0, flameWalletSeeded: true } });
+    await request(app).post('/api/shop/buy').set(auth(s)).send({ kind: 'item', key: 'crown' });
+    expect(await Message.countDocuments({ fromId: s._id })).toBe(0);
+  });
+
+  test('🔥 gifted by inbox message lands in the wallet too', async () => {
+    const Message = require('../../models/Message');
+    const { createAdmin } = require('../factories/userFactory');
+    const admin = await createAdmin();
+    const s = await createStudent({ extra: { learningStreak: 5, lastActivityDate: new Date(), flameWallet: 3, flameWalletSeeded: true } });
+    const msg = await Message.create({ fromId: admin._id, fromName: 'Admin', toId: s._id, body: 'Quà', giftStreakDays: 100, type: 'gift' });
+    const res = await request(app).post(`/api/user/messages/${msg._id}/claim`).set(auth(s));
+    expect(res.status).toBe(200);
+    const u = await User.findById(s._id).lean();
+    expect(u.learningStreak).toBe(105);
+    expect(u.flameWallet).toBe(103);
+    // The one-time backfill already ran before this claim — opening the shop adds nothing more.
+    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(103);
+  });
+
+  test('gifts claimed before the wallet existed are backfilled once', async () => {
+    const Message = require('../../models/Message');
+    const { createAdmin } = require('../factories/userFactory');
+    const admin = await createAdmin();
+    const s = await createStudent({ extra: { learningStreak: 1001, lastActivityDate: new Date(), flameWallet: 0, flameWalletSeeded: true } });
+    await Message.create({ fromId: admin._id, fromName: 'Admin', toId: s._id, body: 'Quà 1', giftStreakDays: 600, claimedBy: [s._id], type: 'gift' });
+    await Message.create({ fromId: admin._id, fromName: 'Admin', isBroadcast: true, body: 'Quà 2', giftStreakDays: 400, claimedBy: [s._id], type: 'gift' });
+    await Message.create({ fromId: admin._id, fromName: 'Admin', isBroadcast: true, body: 'Chưa nhận', giftStreakDays: 999, type: 'gift' });
+    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(1000);
+    expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(1000);
+  });
+
   test('staff cannot buy', async () => {
     const t = await createTeacher({ extra: { flameWallet: 100 } });
     const res = await request(app).post('/api/shop/buy').set(auth(t)).send({ kind: 'item', key: 'cake' });

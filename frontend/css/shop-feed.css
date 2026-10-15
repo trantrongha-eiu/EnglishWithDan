@@ -1,0 +1,29 @@
+/* "X vừa mua Y" ticker — js/shared/shop-feed.js. Slides down from under the nav. */
+.ews-shopfeed {
+  position: fixed; left: 50%; top: calc(var(--nav-height, 64px) + 10px); z-index: 950;
+  display: flex; align-items: center; gap: 10px;
+  max-width: min(92vw, 460px); padding: 7px 16px 7px 8px;
+  border-radius: 999px; text-decoration: none;
+  background: linear-gradient(90deg, #fff7ed, #fffbeb);
+  border: 1px solid #fdba74; color: #7c2d12;
+  box-shadow: 0 8px 24px rgba(234, 88, 12, .18);
+  font-size: 13px; line-height: 1.35;
+  transform: translate(-50%, -140%); opacity: 0; pointer-events: none;
+  transition: transform .45s cubic-bezier(.3, 1.4, .5, 1), opacity .3s;
+}
+.ews-shopfeed.is-in { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.ews-shopfeed:hover { border-color: #f97316; }
+[data-theme="dark"] .ews-shopfeed { background: #2a1d12; border-color: rgba(251, 146, 60, .5); color: #fed7aa; }
+.ews-shopfeed b { font-weight: 800; }
+.ews-shopfeed-text { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.ews-shopfeed-emoji {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 18px; background: #ffedd5;
+}
+.ews-shopfeed-pet { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: #e0f2fe; }
+.ews-shopfeed-pet .pt-tail { animation: pt-wag 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ews-shopfeed { transition: opacity .2s; transform: translate(-50%, 0); }
+  .ews-shopfeed-pet * { animation: none !important; }
+}
+@media print { .ews-shopfeed { display: none !important; } }

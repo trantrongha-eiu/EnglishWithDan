@@ -32,6 +32,11 @@ exports.getState = catchAsync(async (req, res) => {
   res.json({ success: true, ...state });
 });
 
+// ── GET /api/shop/feed?since=ISO — "X vừa mua Y" ticker (shop-feed.js) ──
+exports.getFeed = catchAsync(async (req, res) => {
+  res.json({ success: true, feed: await shopService.getFeed(req.user._id, req.query.since) });
+});
+
 // ── GET /api/shop/pet — the walking linh thú, for js/shared/pets.js ──
 exports.getPet = catchAsync(async (req, res) => {
   res.json({ success: true, activePet: await shopService.getActivePet(req.user._id) });

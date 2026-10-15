@@ -183,7 +183,7 @@ function renderGiftBox(msg) {
   if (!msg.giftHammers && !msg.giftStreakDays) return '';
   const parts = [];
   if (msg.giftHammers) parts.push(`<span class="gift-item"><img src="img/buaDaniel.jpg" alt="Búa Daniel"> ${msg.giftHammers} búa Daniel</span>`);
-  if (msg.giftStreakDays) parts.push(`<span class="gift-item">🔥 ${msg.giftStreakDays} ngày lửa streak</span>`);
+  if (msg.giftStreakDays) parts.push(`<span class="gift-item">🔥 ${msg.giftStreakDays} lửa (chuỗi + ví lửa)</span>`);
   if (msg.giftClaimed) {
     return `<div class="gift-box gift-box-claimed">
       <div class="gift-items">${parts.join('')}</div>
@@ -203,7 +203,7 @@ async function claimGift(id) {
     const d = await apiFetch(`/user/messages/${id}/claim`, { method: 'POST' });
     const msg = messages.find(m => m._id === id);
     if (msg) msg.giftClaimed = true;
-    if (window.showToast) window.showToast(`Đã nhận quà: ${d.giftHammers ? d.giftHammers + ' búa' : ''}${d.giftHammers && d.giftStreakDays ? ', ' : ''}${d.giftStreakDays ? d.giftStreakDays + ' ngày lửa' : ''}`, 'success');
+    if (window.showToast) window.showToast(`Đã nhận quà: ${d.giftHammers ? d.giftHammers + ' búa' : ''}${d.giftHammers && d.giftStreakDays ? ', ' : ''}${d.giftStreakDays ? d.giftStreakDays + ' lửa (đã cộng vào chuỗi và ví lửa)' : ''}`, 'success');
     if (msg && msg._id === selectedId) selectMsg(id);
   } catch (e) {
     if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');

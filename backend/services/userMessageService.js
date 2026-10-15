@@ -2,6 +2,7 @@
 
 // Extracted from the inbox routes in routes/user.js, verbatim logic.
 const Message = require('../models/Message');
+const shopService = require('./shopService');
 const User = require('../models/User');
 
 async function getUnreadCount(uid) {
@@ -117,7 +118,9 @@ async function claimGift(id, uid) {
   if (!msg.giftHammers && !msg.giftStreakDays) return { status: 'no_gift' };
   if (msg.claimedBy.some(cid => cid.toString() === uid.toString())) return { status: 'already_claimed' };
 
-  const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers');
+  // Backfill older 🔥 gifts into the wallet first, so this one isn't counted twice.
+  if (msg.giftStreakDays) await shopService.syncGiftWallet(uid).catch(() => {});
+  const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers flameWallet');
   if (!user) return { status: 'not_found' };
 
   if (msg.giftHammers) user.streakHammers += msg.giftHammers;

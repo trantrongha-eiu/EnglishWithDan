@@ -5,6 +5,8 @@
 // conditional update (wallet >= price, item count >= 1, …) so a
 // double-click or two tabs can never overspend or double-use.
 const User = require('../models/User');
+const Message = require('../models/Message');
+const ShopPurchase = require('../models/ShopPurchase');
 const { getVNDay, coverMissedDaysWithShields } = require('../utils/streak');
 const {
   ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY, WALLET_SEED_CAP,
@@ -41,6 +43,25 @@ async function seedWallet(userId) {
     { _id: userId, flameWalletSeeded: { $ne: true } },
     { $inc: { flameWallet: gift }, $set: { flameWalletSeeded: true } }
   );
+}
+
+// 🔥 gifts claimed from inbox messages (userMessageService.claimGift) now
+// credit the wallet as they're claimed (User.applyGiftStreak). Gifts claimed
+// before that change only ever reached the streak — add them to the wallet
+// once, the first time this runs for the student.
+async function syncGiftWallet(userId) {
+  const u = await User.findOne({ _id: userId, giftWalletSynced: { $ne: true } }).select('_id').lean();
+  if (!u) return 0;
+  const [agg] = await Message.aggregate([
+    { $match: { claimedBy: u._id, giftStreakDays: { $gt: 0 } } },
+    { $group: { _id: null, total: { $sum: '$giftStreakDays' } } },
+  ]);
+  const total = (agg && agg.total) || 0;
+  const res = await User.updateOne(
+    { _id: userId, giftWalletSynced: { $ne: true } },
+    { $inc: { flameWallet: total }, $set: { giftWalletSynced: true } }
+  );
+  return res.modifiedCount === 1 ? total : 0;
 }
 
 // Búa Hi Vọng settlement for one user: once the VN day it was used on is
@@ -86,6 +107,7 @@ async function settleAllHopeHammers() {
 
 async function getState(userId) {
   await seedWallet(userId);
+  await syncGiftWallet(userId);
   await settleHopeHammer(userId);
   await coverMissedDaysWithShields(User, userId).catch(() => 0);
   const u = await User.findById(userId)
@@ -118,11 +140,53 @@ async function assertStudent(userId) {
   return !!(u && u.role === 'student');
 }
 
+// After a successful purchase: log it for the "X vừa mua Y" ticker and drop
+// a note in every admin's inbox (same shape as sendFeedbackToAdmins).
+// Best-effort — a failure here must never undo or fail the purchase itself.
+async function recordPurchase(userId, kind, entry) {
+  try {
+    const buyer = await User.findById(userId).select('firstName lastName username').lean();
+    if (!buyer) return;
+    const name = displayName(buyer);
+    const emoji = entry.emoji || '🐾';
+    const what = kind === 'pet' ? `linh thú ${entry.name}` : entry.name;
+    await ShopPurchase.create({ userId, name, kind, key: entry.key || entry.id, itemName: entry.name, emoji, price: entry.price });
+    const admins = await User.find({ role: 'admin' }, '_id').lean();
+    if (!admins.length) return;
+    await Message.insertMany(admins.map(admin => ({
+      fromId: userId,
+      fromName: name,
+      toId: admin._id,
+      subject: `[Cửa hàng] ${name} đã mua ${emoji} ${what}`,
+      body: `${name} vừa mua ${emoji} ${what} với giá ${entry.price} 🔥 trong Cửa hàng lửa.`,
+      type: 'personal',
+    })));
+  } catch (err) {
+    console.error('[shop] recordPurchase failed:', err.message);
+  }
+}
+
+// Recent purchases for the ticker, newest last, never the viewer's own
+// (they already got their own toast). `since` is clamped to the last hour
+// so a student back after a week isn't shown a flood.
+async function getFeed(viewerId, since) {
+  const floor = Date.now() - HOUR;
+  const t = since ? new Date(since).getTime() : NaN;
+  const from = new Date(Number.isFinite(t) ? Math.max(t, floor) : floor);
+  const rows = await ShopPurchase.find({ createdAt: { $gt: from }, userId: { $ne: viewerId } })
+    .sort({ createdAt: -1 }).limit(5)
+    .select('name kind key itemName emoji createdAt').lean();
+  return rows.reverse().map(r => ({
+    id: String(r._id), name: r.name, kind: r.kind, key: r.key, itemName: r.itemName, emoji: r.emoji, at: r.createdAt,
+  }));
+}
+
 async function buyItem(userId, key) {
   const item = ITEM_BY_KEY[key];
   if (!item) return { status: 'not_found' };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
+  await syncGiftWallet(userId);
   const field = `shopItems.${key}`;
   const filter = { _id: userId, flameWallet: { $gte: item.price } };
   if (item.maxOwned) filter[field] = { $not: { $gte: item.maxOwned } };
@@ -133,6 +197,7 @@ async function buyItem(userId, key) {
     if (item.maxOwned && ((cur.shopItems || {})[key] || 0) >= item.maxOwned) return { status: 'max_owned', max: item.maxOwned };
     return { status: 'not_enough', wallet: cur.flameWallet || 0, price: item.price };
   }
+  await recordPurchase(userId, 'item', item);
   return { status: 'ok', wallet: u.flameWallet, owned: u.shopItems[key] };
 }
 
@@ -141,6 +206,7 @@ async function buyPet(userId, petId) {
   if (!pet) return { status: 'not_found' };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
+  await syncGiftWallet(userId);
   // A first pet goes straight out for a walk.
   const u = await User.findOneAndUpdate(
     { _id: userId, flameWallet: { $gte: pet.price }, pets: { $ne: petId } },
@@ -158,6 +224,7 @@ async function buyPet(userId, petId) {
     if ((cur.pets || []).includes(petId)) return { status: 'already_owned' };
     return { status: 'not_enough', wallet: cur.flameWallet || 0, price: pet.price };
   }
+  await recordPurchase(userId, 'pet', pet);
   return { status: 'ok', wallet: u.flameWallet, activePet: u.activePet };
 }
 
@@ -294,6 +361,6 @@ function boardDecor(u) {
 }
 
 module.exports = {
-  getState, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
-  settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
+  getState, getFeed, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
+  settleHopeHammer, settleAllHopeHammers, seedWallet, syncGiftWallet, boardDecor,
 };

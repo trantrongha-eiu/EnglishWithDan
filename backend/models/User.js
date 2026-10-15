@@ -155,6 +155,9 @@ const UserSchema = new mongoose.Schema({
   // the streak. flameWalletSeeded marks the one-time launch gift.
   flameWallet:          { type: Number, default: 0 },
   flameWalletSeeded:    { type: Boolean, default: false },
+  // One-time backfill of 🔥 gifts claimed from inbox messages before gifts
+  // started crediting the wallet too (shopService.syncGiftWallet).
+  giftWalletSynced:     { type: Boolean, default: false },
   shopItems: {
     hopeHammer: { type: Number, default: 0 },
     iceShield:  { type: Number, default: 0 },
@@ -338,6 +341,8 @@ UserSchema.methods.useHammerToRestore = function () {
 // otherwise resetIfStale() would immediately wipe the gifted days again.
 UserSchema.methods.applyGiftStreak = function (days) {
   if (!days || days <= 0) return;
+  // Gifted 🔥 also lands in the ví lửa (Cửa hàng lửa), like studied 🔥 does.
+  this.flameWallet = (this.flameWallet || 0) + days;
   if (this.previousStreak > 0 && this.learningStreak === 0) {
     this.learningStreak = this.previousStreak + days;
     this.previousStreak = 0;

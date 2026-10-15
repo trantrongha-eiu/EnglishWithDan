@@ -326,6 +326,14 @@
     document.body.appendChild(petScript);
   }
 
+  // ── "X vừa mua Y" ticker (js/shared/shop-feed.js) ─────────
+  if (!document.getElementById('ews-shopfeed-js')) {
+    var feedScript = document.createElement('script');
+    feedScript.id = 'ews-shopfeed-js';
+    feedScript.src = '/js/shared/shop-feed.js?v=20261015b';
+    document.body.appendChild(feedScript);
+  }
+
   // ── Nav visibility helpers ────────────────────────────────
   // Also hides the floating peer-chat bubble (js/shared/peer-chat-widget.js)
   // while it's active — on Reading/Listening/Writing exam screens it sits

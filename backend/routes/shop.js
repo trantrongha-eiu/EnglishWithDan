@@ -6,6 +6,7 @@ const shopCtrl = require('../controllers/shop.controller');
 // Cửa hàng lửa — not premium-gated, same as the streak/BXH it hangs off.
 // See backend/services/shopService.js.
 router.get('/',      auth, shopCtrl.getState);
+router.get('/feed',  auth, shopCtrl.getFeed);
 router.get('/pet',   auth, shopCtrl.getPet);
 router.put('/pet',   auth, shopCtrl.setPet);
 router.post('/buy',  auth, shopCtrl.buy);
