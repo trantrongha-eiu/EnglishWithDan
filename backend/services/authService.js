@@ -12,6 +12,7 @@ const { escapeHtml } = require('../utils/escapeHtml');
 const logger = require('../utils/logger');
 const { sendEmail } = require('./emailService');
 const { applyStreakActivity } = require('../utils/streak');
+const { checkEmail } = require('../utils/emailCheck');
 
 const MAX_OTP_ATTEMPTS = 5;
 const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // link valid 24h
@@ -135,6 +136,41 @@ async function findOrCreateGoogleUser(profile) {
   return user;
 }
 
+// Email/password sign-up. The address is checked up front (utils/emailCheck:
+// syntax, Gmail rules, disposable list, typo'd domains, DNS MX) instead of
+// via an emailed link — the old link flow awaited an SMTP send and kept the
+// student locked out until they clicked it. A passing account is created
+// verified with its trial starting now, so the student can log in at once.
+// No session is issued here: the client sends them to login.html.
+async function registerUser({ firstName, lastName, username, email, password }) {
+  const check = await checkEmail(email);
+  if (!check.ok) {
+    logger.auth('Registration rejected by email check', { email, reason: check.reason });
+    return { status: 'bad_email', reason: check.reason, suggestion: check.suggestion };
+  }
+
+  const normalized = check.email;
+  const existing = await User.findOne({ $or: [{ email: normalized }, { email }, { username }] });
+  if (existing) return { status: 'duplicate' };
+
+  const user = new User({
+    firstName, lastName, username,
+    email: normalized,
+    password: await bcrypt.hash(password, 10),
+    authProvider: 'local',
+    emailVerified: true,
+    trialStartedAt: new Date(),
+  });
+  try {
+    await user.save();
+  } catch (err) {
+    if (err && err.code === 11000) return { status: 'duplicate' }; // lost a race to the same email/username
+    throw err;
+  }
+  logger.auth('Registered with email', { userId: String(user._id) });
+  return { status: 'ok', email: user.email };
+}
+
 // Consumes a raw verification token from the emailed link. Single-use
 // (the hash is cleared on success), time-limited (emailVerifyExpires),
 // and it's what starts the 24h trial clock (trialStartedAt). Returns a
@@ -188,7 +224,11 @@ async function loginUser({ email, password }) {
   if (typeof password !== 'string' || !password) {
     return { status: 'not_found' };
   }
-  const user = await User.findOne({ $or: [{ email }, { username: email }] }).select('+password');
+  // Email sign-ups are stored lowercased (registerUser), so also match the
+  // lowercased form — "Lan@Gmail.com" typed at login must still find them.
+  const idents = [{ email }, { username: email }];
+  if (typeof email === 'string' && email.toLowerCase() !== email) idents.push({ email: email.toLowerCase() });
+  const user = await User.findOne({ $or: idents }).select('+password');
   if (!user || !user.password) {
     await bcrypt.compare(password, DUMMY_PASSWORD_HASH); // pay the same time cost as a real check
     return { status: user ? 'social_only' : 'not_found' };
@@ -340,7 +380,7 @@ async function logoutAllSessions(userId) {
 
 module.exports = {
   signToken, userPayload, findOrCreateGoogleUser,
-  verifyEmailToken, resendVerification,
+  registerUser, verifyEmailToken, resendVerification,
   loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
   logoutAllSessions,
 };

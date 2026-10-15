@@ -20,22 +20,88 @@ const User = require('../../models/User');
 const { createStudent, createUser, signTokenFor, unique } = require('../factories/userFactory');
 
 describe('POST /api/auth/register', () => {
-  // Email/password sign-up was removed (Google OAuth only) — the endpoint
-  // answers 410 and must never create an account.
-  test('is gone: returns 410 and creates no user', async () => {
-    const username = unique('newuser');
-    const res = await request(app).post('/api/auth/register').send({
-      username,
-      email: `${username}@test.local`,
-      password: 'Test1234!',
-      firstName: 'New',
-      lastName: 'User',
-    });
+  // The email is checked for real/fake up front (utils/emailCheck) instead
+  // of via an emailed link, so a passing account is active immediately and
+  // can log in straight away. DNS is stubbed — tests never hit the network.
+  const dns = require('dns');
+  const { _mxCache } = require('../../utils/emailCheck');
+  let resolveMx;
+  beforeEach(() => {
+    _mxCache.clear();
+    resolveMx = jest.spyOn(dns.promises, 'resolveMx');
+  });
+  afterEach(() => resolveMx.mockRestore());
 
-    expect(res.status).toBe(410);
-    expect(res.body.success).toBe(false);
-    expect(res.body.token).toBeUndefined();
-    expect(await User.findOne({ username })).toBeNull();
+  const body = (overrides = {}) => {
+    const username = unique('newuser');
+    return { username, email: `${username}@gmail.com`, password: 'Test1234!', firstName: 'New', lastName: 'User', ...overrides };
+  };
+
+  test('real email: 201, account active with trial started, then login works at once', async () => {
+    const payload = body({ email: `Mixed.Case${Date.now()}@Gmail.com` });
+    const res = await request(app).post('/api/auth/register').send(payload);
+
+    expect(res.status).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(res.body.token).toBeUndefined(); // no session — client goes to login.html
+    expect(res.body.email).toBe(payload.email.toLowerCase());
+    expect(resolveMx).not.toHaveBeenCalled(); // big providers skip DNS
+
+    const user = await User.findOne({ username: payload.username });
+    expect(user.email).toBe(payload.email.toLowerCase());
+    expect(user.emailVerified).toBe(true);
+    expect(user.trialStartedAt).toBeInstanceOf(Date);
+
+    // Typed with the original casing at login — still matches.
+    const login = await request(app).post('/api/auth/login').send({ email: payload.email, password: payload.password });
+    expect(login.status).toBe(200);
+    expect(login.body.user.emailVerified).toBe(true);
+  });
+
+  test('custom domain with MX records is accepted', async () => {
+    resolveMx.mockResolvedValue([{ exchange: 'mx.school.edu.vn', priority: 10 }]);
+    const payload = body({ email: `${unique('st')}@school.edu.vn` });
+    const res = await request(app).post('/api/auth/register').send(payload);
+    expect(res.status).toBe(201);
+    expect(resolveMx).toHaveBeenCalledWith('school.edu.vn');
+  });
+
+  test.each([
+    ['domain with no mail server', 'someone@no-such-domain-xyz.com', 'no_mx'],
+    ['disposable inbox', 'someone@mailinator.com', 'disposable'],
+    ['impossible Gmail name', 'abc@gmail.com', 'gmail_invalid'],
+    ['typo\'d domain', 'someone@gmial.com', 'typo'],
+    ['malformed', 'not-an-email', 'invalid'],
+  ])('fake email (%s) → 400 BAD_EMAIL, no account', async (_label, email, reason) => {
+    resolveMx.mockRejectedValue(Object.assign(new Error('nx'), { code: 'ENOTFOUND' }));
+    const payload = body({ email });
+    const res = await request(app).post('/api/auth/register').send(payload);
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('BAD_EMAIL');
+    expect(res.body.reason).toBe(reason);
+    if (reason === 'typo') expect(res.body.suggestion).toBe('someone@gmail.com');
+    expect(await User.findOne({ username: payload.username })).toBeNull();
+  });
+
+  test('DNS outage fails open — a real student is never blocked by infra trouble', async () => {
+    resolveMx.mockRejectedValue(Object.assign(new Error('servfail'), { code: 'ESERVFAIL' }));
+    const res = await request(app).post('/api/auth/register').send(body({ email: `${unique('x')}@company.vn` }));
+    expect(res.status).toBe(201);
+  });
+
+  test('duplicate email or username → 400', async () => {
+    const first = body();
+    expect((await request(app).post('/api/auth/register').send(first)).status).toBe(201);
+    const dupEmail = await request(app).post('/api/auth/register').send(body({ email: first.email.toUpperCase() }));
+    expect(dupEmail.status).toBe(400);
+    const dupUser = await request(app).post('/api/auth/register').send(body({ username: first.username }));
+    expect(dupUser.status).toBe(400);
+  });
+
+  test('short password / bad username → 400', async () => {
+    expect((await request(app).post('/api/auth/register').send(body({ password: 'short' }))).status).toBe(400);
+    expect((await request(app).post('/api/auth/register').send(body({ username: 'a b' }))).status).toBe(400);
   });
 });
 

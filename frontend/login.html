@@ -239,6 +239,18 @@
             }
         })();
 
+        // ── Just signed up on register.html (?registered=1&email=...):
+        // prefill the email and put the cursor on the password so the
+        // student can log in with one more field ─
+        (function () {
+            const qs = new URLSearchParams(window.location.search);
+            if (qs.get('registered') !== '1') return;
+            const email = qs.get('email');
+            if (email) document.getElementById('email').value = email;
+            document.getElementById('password').focus();
+            showToastWithTitle('success', 'Đăng ký thành công 🎉', 'Nhập mật khẩu để đăng nhập và bắt đầu học ngay.');
+        })();
+
         // ── Google OAuth failure feedback (backend redirects here with
         // ?error=... on every failure path — was previously silently
         // dropped, leaving the user on a blank form with no explanation;

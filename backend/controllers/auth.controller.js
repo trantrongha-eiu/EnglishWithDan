@@ -59,15 +59,53 @@ exports.verifyOAuthState = (req, res, next) => {
 };
 
 // ── POST /api/auth/register ─────────────────────────────────
-// Email/password sign-up was removed — new accounts are created only via
-// Google OAuth (authService.findOrCreateGoogleUser). The old flow awaited an
-// SMTP send before responding, which made sign-up hang for students. Kept as
-// an explicit 410 so stale clients get a clear message instead of a 404.
-exports.register = (req, res) => {
-  res.status(410).json({
-    success: false,
-    message: 'Đăng ký bằng email đã ngừng. Vui lòng đăng ký bằng Google.',
-  });
+// The email is checked for real/fake synchronously (utils/emailCheck — no
+// SMTP send in the request path, which is what used to make sign-up hang),
+// the account is created active, and the client goes straight to login.
+const BAD_EMAIL_MESSAGES = {
+  invalid:       'Email không hợp lệ.',
+  gmail_invalid: 'Địa chỉ Gmail này không tồn tại (tên Gmail phải dài 6–30 ký tự, chỉ gồm chữ, số và dấu chấm).',
+  disposable:    'Vui lòng dùng địa chỉ email thật — email tạm thời không được chấp nhận.',
+  typo:          'Tên miền email có vẻ bị gõ sai.',
+  no_mx:         'Tên miền email này không nhận được thư. Vui lòng kiểm tra lại địa chỉ email.',
+};
+
+exports.register = async (req, res) => {
+  try {
+    const { firstName, lastName, username, email, password } = req.body;
+    if (typeof username !== 'string' || typeof email !== 'string' || typeof password !== 'string'
+        || !username.trim() || !email.trim() || !password) {
+      return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
+    }
+    if (!/^[a-zA-Z0-9_]{3,30}$/.test(username.trim())) {
+      return res.status(400).json({ success: false, message: 'Username dài 3–30 ký tự, chỉ gồm chữ cái, số và dấu gạch dưới' });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 8 ký tự' });
+    }
+
+    const result = await authService.registerUser({
+      firstName: typeof firstName === 'string' ? firstName.trim().slice(0, 50) : '',
+      lastName: typeof lastName === 'string' ? lastName.trim().slice(0, 50) : '',
+      username: username.trim(),
+      email,
+      password,
+    });
+    if (result.status === 'bad_email') {
+      const message = result.suggestion
+        ? `${BAD_EMAIL_MESSAGES.typo} Có phải bạn muốn nhập ${result.suggestion}?`
+        : BAD_EMAIL_MESSAGES[result.reason] || BAD_EMAIL_MESSAGES.invalid;
+      return res.status(400).json({ success: false, code: 'BAD_EMAIL', reason: result.reason, suggestion: result.suggestion, message });
+    }
+    if (result.status === 'duplicate') {
+      return res.status(400).json({ success: false, message: 'Email hoặc Username đã tồn tại' });
+    }
+
+    res.status(201).json({ success: true, email: result.email, message: 'Đăng ký thành công! Mời bạn đăng nhập.' });
+  } catch (err) {
+    console.error('[Auth] register error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
 };
 
 // ── POST /api/auth/verify-email ─────────────────────────────
