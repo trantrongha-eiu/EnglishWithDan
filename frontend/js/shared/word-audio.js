@@ -25,10 +25,14 @@
 
   var LEAD_MS = 450;          // silence before each word
   var PROBE_TIMEOUT_MS = 3000;
+  var DICT_TIMEOUT_MS = 1500; // dictionaryapi.dev is often slow / down (522s)
+  var LOOKUP_BUDGET_MS = 1500; // longest a tap waits for a recording before TTS
   var RATE_TTS = 0.85, RATE_TTS_SLOW = 0.6;
   var RATE_MP3_SLOW = 0.75;   // recordings play at natural speed unless slow
 
   var _urlCache = new Map();  // normalised word → recording URL, or '' (none → TTS)
+  var STORE_KEY = 'ews_word_audio_v1', STORE_MAX = 3000;
+  var _stored = {};           // found recordings, persisted across visits
   var _pending = new Map();   // normalised word → in-flight lookup promise
   var _seq = 0;               // only the newest speak() call may play
   var _el = null;             // one shared <audio>: unlocked by the first tap (iOS)
@@ -85,6 +89,20 @@
     });
   }
 
+  // Only FOUND recordings are persisted: a miss may just be the dictionary
+  // API being down, so misses stay in the per-page _urlCache only.
+  try { _stored = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { _stored = {}; }
+  Object.keys(_stored).forEach(function (k) { _urlCache.set(k, _stored[k]); });
+
+  function remember(key, url) {
+    _urlCache.set(key, url);
+    if (!url || _stored[key] === url) return;
+    _stored[key] = url;
+    var keys = Object.keys(_stored);
+    if (keys.length > STORE_MAX) keys.slice(0, keys.length - STORE_MAX).forEach(function (k) { delete _stored[k]; });
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(_stored)); } catch (e) { /* quota / private mode */ }
+  }
+
   function oxfordUrl(w) {
     // Google's Oxford recordings exist only for single words.
     if (!/^[a-z][a-z'-]*$/.test(w)) return '';
@@ -93,7 +111,7 @@
 
   function dictApiUrl(w) {
     var ctrl = window.AbortController ? new AbortController() : null;
-    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, PROBE_TIMEOUT_MS);
+    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, DICT_TIMEOUT_MS);
     return fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(w),
       ctrl ? { signal: ctrl.signal } : undefined)
       .then(function (r) { return r.ok ? r.json() : []; })
@@ -115,12 +133,15 @@
     var key = w.toLowerCase();
     if (_urlCache.has(key)) return Promise.resolve(_urlCache.get(key));
     if (_pending.has(key)) return _pending.get(key);
+    // Multi-word phrases ("splits into two halves") have no recording in
+    // either dictionary — go straight to TTS instead of waiting on a lookup.
+    if (/\s/.test(key)) { _urlCache.set(key, ''); return Promise.resolve(''); }
     var ox = oxfordUrl(key);
     var dictP = dictApiUrl(key); // in parallel, only used if Oxford has nothing
     var p = (ox ? probe(ox) : Promise.resolve(false))
       .then(function (ok) { return ok ? ox : dictP; })
       .then(function (url) {
-        _urlCache.set(key, url || '');
+        remember(key, url || '');
         _pending.delete(key);
         return url || '';
       });
@@ -204,7 +225,13 @@
     stop();
     var id = _seq;
     var lead = playLead();
-    return Promise.all([lead, lookup(w)]).then(function (r) {
+    // A slow lookup never holds the word back for long: past the budget,
+    // speak with TTS now; the lookup still finishes and is cached, so the
+    // next tap gets the recording.
+    var found = Promise.race([lookup(w), new Promise(function (res) {
+      setTimeout(function () { res(''); }, LOOKUP_BUDGET_MS);
+    })]);
+    return Promise.all([lead, found]).then(function (r) {
       if (id !== _seq) return;           // a newer word was requested meanwhile
       return r[1] ? playUrl(r[1], slow) : playTts(w, slow);
     });

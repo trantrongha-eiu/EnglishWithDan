@@ -63,6 +63,8 @@
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab',
       children: [
         { href: 'dashboard.html',                    icon: 'fa-layer-group', label: 'Sổ từ vựng' },
+        { href: 'dashboard.html?view=paraphrase',    icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
+        { href: 'dashboard.html?view=topics',        icon: 'fa-shapes',      label: 'Học Vocab Topics' },
         { href: 'reading-listening-strategy.html',    icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
       ]
     },
