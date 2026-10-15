@@ -80,6 +80,16 @@ const ListeningSectionSchema = new mongoose.Schema({
     _id: false,
   }],
   dictationAlignedAt: { type: Date, default: null },
+  // Vietnamese meaning per dictation sentence, shown once the student types
+  // it correctly. Keyed by the sentence's exact text (not its index): the
+  // split/rebuild scripts below re-slice dictationSentences, and a stale
+  // index→meaning pairing would show the wrong translation. Filled lazily,
+  // one Gemini call per section — listeningService.getDictationTranslations.
+  dictationVi: [{
+    text: { type: String, required: true },
+    vi:   { type: String, default: '' },
+    _id: false,
+  }],
   // Set when a bulk-alignment attempt rejects this section (failed strict
   // validation) or hits a permanent error (e.g. audio file too large for
   // Groq's free-tier 25MB cap) — lets the default bulk run skip it on

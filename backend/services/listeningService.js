@@ -18,6 +18,7 @@ const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
 const GapFillAttempt = require('../models/GapFillAttempt');
 const geminiService = require('./geminiService');
+const logger = require('../utils/logger');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const User = require('../models/User');
@@ -431,6 +432,47 @@ async function listDictationSections() {
     isActualTest: s.isActualTest,
     sentenceCount: s.dictationSentences.length,
   }));
+}
+
+// Vietnamese meaning of each dictation sentence, aligned to
+// dictationSentences ('' where none could be made). Missing ones are
+// translated in ONE Gemini call for the section and stored in dictationVi,
+// so every later student gets them straight from the DB. Same in-flight
+// dedupe as getGapFillGlossary below: two students opening a fresh section
+// together share one call.
+const _dictationViInFlight = new Map();
+async function getDictationTranslations(id) {
+  const section = await ListeningSection.findOne({ _id: id, isActive: true })
+    .select('_id dictationSentences dictationVi')
+    .lean();
+  if (!section || !(section.dictationSentences || []).length) return null;
+  const texts = section.dictationSentences.map(s => s.text);
+  const known = new Map((section.dictationVi || []).filter(d => d.vi).map(d => [d.text, d.vi]));
+  const missing = [...new Set(texts.filter(t => !known.has(t)))];
+
+  if (missing.length) {
+    const key = String(section._id);
+    if (!_dictationViInFlight.has(key)) {
+      _dictationViInFlight.set(key, (async () => {
+        const vi = await geminiService.translateDictationSentences(missing);
+        const fresh = missing.map((text, i) => ({ text, vi: vi[i] })).filter(d => d.vi);
+        if (fresh.length) {
+          // Drop any older entry for the same text (e.g. an earlier empty
+          // one) and prune meanings for sentences no longer in the section.
+          const keep = (section.dictationVi || []).filter(d => d.vi && texts.includes(d.text) && !fresh.some(f => f.text === d.text));
+          await ListeningSection.updateOne({ _id: section._id }, { $set: { dictationVi: [...keep, ...fresh] } });
+        }
+        return fresh;
+      })().finally(() => _dictationViInFlight.delete(key)));
+    }
+    try {
+      for (const d of await _dictationViInFlight.get(key)) known.set(d.text, d.vi);
+    } catch (err) {
+      // AI down/over quota: the drill still works, just without meanings.
+      logger.ai('getDictationTranslations: translation failed', { sectionId: key, errorMessage: err.message });
+    }
+  }
+  return texts.map(t => known.get(t) || '');
 }
 
 // dictation.html previously never saved anything server-side at all —
@@ -1183,7 +1225,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, saveDictationAttempt,
+  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, getDictationTranslations, saveDictationAttempt,
   listGapFillSections, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,

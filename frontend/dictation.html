@@ -11,13 +11,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="/css/tokens.css?v=20260831"/>
-  <link rel="stylesheet" href="/css/components.css?v=20260831"/>
-  <link rel="stylesheet" href="/css/mobile.css?v=20261009tuition"/>
-  <link rel="stylesheet" href="/css/dictionary-popup.css?v=20260925"/>
-  <script src="/js/theme.js?v=20260831"></script>
+  <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb"/>
+  <link rel="stylesheet" href="/css/components.css?v=da1c91b381"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=79efafabbe"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3"/>
+  <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
-  <script src="/js/shared/visit-tracker.js?v=20260831"></script>
+  <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <style>
     body { background: var(--bg); }
     .dict-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
@@ -142,9 +142,24 @@
     .dict-result.correct .dict-result-label { color: var(--success); }
     .dict-result.wrong .dict-result-label { color: var(--danger); }
     .dict-diff { font-size: 16px; line-height: 1.8; }
-    .dict-diff .w-match { color: var(--text); }
-    .dict-diff .w-miss { color: var(--danger); text-decoration: line-through; opacity: .7; }
-    .dict-diff .w-extra { color: var(--text3); text-decoration: line-through; }
+    /* Wrong answer: the student's OWN words, wrong ones in red (shaking, like
+       Task 2's Dịch câu drill), ＿ where a word is missing — never the answer. */
+    .dict-diff .w-ok { color: var(--text); }
+    .dict-diff .w-bad, .dict-diff .w-gap {
+      display: inline-block; color: var(--danger); font-weight: 700;
+      background: rgba(220, 38, 38, .1); border-bottom: 2px solid var(--danger);
+      border-radius: 4px; padding: 0 4px; animation: dictShake .4s ease;
+    }
+    .dict-diff .w-gap { letter-spacing: 1px; }
+    .dict-shake { animation: dictShake .4s ease; border-color: var(--danger) !important; }
+    @keyframes dictShake {
+      10%,90% { transform: translateX(-2px); } 20%,80% { transform: translateX(4px); }
+      30%,50%,70% { transform: translateX(-6px); } 40%,60% { transform: translateX(6px); }
+    }
+    @media (prefers-reduced-motion: reduce) { .dict-diff .w-bad, .dict-diff .w-gap, .dict-shake { animation: none; } }
+    .dict-correct-en { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.6; }
+    .dict-vi { margin-top: 8px; font-size: 14.5px; color: var(--text2); line-height: 1.6; }
+    .dict-vi b { color: var(--success); font-weight: 700; }
 
     .dict-script-toggle {
       margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
@@ -155,29 +170,37 @@
     .dict-script-body.show { display: block; }
     .dict-hint-count { display: inline-block; background: var(--surface2, #f3f4f6); color: var(--text2, #4b5563); border-radius: 20px; padding: 3px 12px; font-weight: 700; font-size: 12.5px; margin-bottom: 8px; }
     .dict-hint-pattern { font-family: 'Courier New', monospace; letter-spacing: 1px; font-size: 15px; color: var(--text3, #9ca3af); font-weight: 700; line-height: 1.8; }
+    .dict-hint-step { font-size: 12px; font-weight: 700; color: var(--text3); margin: 0 0 6px; }
+    .dict-hint2 { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+    .dict-hint2-btn {
+      background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-pill);
+      padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .dict-hint2-btn:hover { border-color: var(--brand); color: var(--brand); }
+    .dict-hint-full { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.6; }
 
     .dict-session-stat { font-size: 12px; color: var(--text3); text-align: center; margin-top: 10px; }
     .dict-loading { text-align: center; padding: 80px 20px; color: var(--text3); }
     .dict-loading i { font-size: 26px; margin-bottom: 10px; display: block; }
   </style>
-  <link rel="stylesheet" href="/css/playful.css?v=20261015lumi3"/>
+  <link rel="stylesheet" href="/css/playful.css?v=637bc34694"/>
 </head>
 
 <body>
-<script src="/js/shared/auth-service.js?v=20261007guest"></script>
-<script src="/js/auth.js?v=20261007guest"></script>
-<script src="/js/upgrade-modal.js?v=20260831"></script>
-<script src="/js/shared/popup-queue.js?v=20260909exam"></script>
-<script src="/js/nav.js?v=20261015cake"></script>
-<script src="/js/shared/playful.js?v=20261015lumi3"></script>
-<script src="/js/shared/sound-effects.js?v=20260831"></script>
-<script src="/js/shared/utils.js?v=20260831"></script>
-<script src="/js/shared/toast.js?v=20260831"></script>
-<script src="/js/shared/peer-chat-widget.js?v=20261002idle"></script>
-<script src="/js/shared/api-client.js?v=20260831"></script>
-<script src="/js/shared/route-params.js?v=20260925route"></script>
-<script src="/js/shared/word-audio.js?v=20261015a"></script>
-<script src="/js/shared/dictionary-lookup.js?v=20261009audio"></script>
+<script src="/js/shared/auth-service.js?v=68c6093d75"></script>
+<script src="/js/auth.js?v=86dd2a8f17"></script>
+<script src="/js/upgrade-modal.js?v=532be4c117"></script>
+<script src="/js/shared/popup-queue.js?v=bbc9fd1fee"></script>
+<script src="/js/nav.js?v=c3ce08c2c3"></script>
+<script src="/js/shared/playful.js?v=0a50b869e1"></script>
+<script src="/js/shared/sound-effects.js?v=8a095a512d"></script>
+<script src="/js/shared/utils.js?v=8ecb49a6c3"></script>
+<script src="/js/shared/toast.js?v=08d12e7571"></script>
+<script src="/js/shared/peer-chat-widget.js?v=d6d8bcb0d8"></script>
+<script src="/js/shared/api-client.js?v=5bb9a26ee8"></script>
+<script src="/js/shared/route-params.js?v=46c4705e71"></script>
+<script src="/js/shared/word-audio.js?v=56b3f70500"></script>
+<script src="/js/shared/dictionary-lookup.js?v=f9ebb9bf99"></script>
 
 <div class="dict-wrap">
 
@@ -279,6 +302,7 @@ let dictSections = [];      // picker list
 let dictSection  = null;    // currently open section (full doc incl. dictationSentences + audioUrl)
 let dictIndex    = 0;       // current sentence index
 let dictDone     = new Set(); // indices answered correctly this session
+let dictTranslations = null; // Vietnamese meaning per sentence (null until loaded)
 let dictSpeeds   = [1, 1.25, 1.5, 0.75];
 let dictSpeedIdx = 0;
 const audio = document.getElementById('dict-audio');
@@ -454,12 +478,37 @@ async function openDictSection(id, fromCleanPath) {
   document.getElementById('dict-section-sub').textContent = (dictSection.isActualTest ? 'Actual Test' : 'Part ' + dictSection.partNumber) + ' · ' + dictSection.dictationSentences.length + ' câu';
   document.getElementById('dict-total-num').textContent = dictSection.dictationSentences.length;
   document.getElementById('dict-session-score').textContent = `0/${dictSection.dictationSentences.length} ✓`;
+  _loadDictTranslations(id, requestId);
   renderNumGrid();
   dictGoTo(0);
   // Skip when the clean /dictation/:sectionId path already resolved to this
   // exact section — that URL is meant to keep showing forever, same
   // fromCleanPath idiom reading-v2.js uses for /reading/test/:id.
   if (!fromCleanPath) syncViewUrl(id);
+}
+
+// Vietnamese meanings (shown under a correctly typed sentence). Fetched in
+// the background — the first student on a section waits on a one-off AI
+// translation server-side, so practice never blocks on it.
+function _loadDictTranslations(id, requestId) {
+  dictTranslations = null;
+  fetch(`${API}/listening/dictation/section/${id}/translations`, { headers: authH() })
+    .then(r => r.json())
+    .then(d => (d && d.success && Array.isArray(d.translations)) ? d.translations : [])
+    .catch(() => [])
+    .then(list => {
+      if (requestId !== _openDictSeq) return;
+      dictTranslations = list;
+      _fillDictVi(); // a sentence may already be showing "Đang tải nghĩa..."
+    });
+}
+
+function _fillDictVi() {
+  const el = document.getElementById('dict-vi');
+  if (!el || Number(el.dataset.i) !== dictIndex || !dictTranslations) return;
+  const vi = dictTranslations[dictIndex] || '';
+  el.innerHTML = vi ? `<b>Nghĩa:</b> ${escHtml(vi)}` : '';
+  el.style.display = vi ? '' : 'none';
 }
 
 function backToList() {
@@ -505,8 +554,14 @@ function dictGoTo(i) {
   document.getElementById('dict-word-count').textContent = dictWords(sentenceText).length + ' từ';
   const hint = _buildDictHint(sentenceText);
   document.getElementById('dict-script-body').innerHTML =
+    `<div class="dict-hint-step">Gợi ý 1 · chữ cái đầu mỗi từ</div>` +
     `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
-    `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>`;
+    `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>` +
+    `<div class="dict-hint2">` +
+      `<button type="button" class="dict-hint2-btn" id="dict-hint2-btn" onclick="dictShowHint2()"><i class="fas fa-eye"></i> Gợi ý 2: Hiện cả câu</button>` +
+      `<div class="dict-hint-step" id="dict-hint2-step" style="display:none">Gợi ý 2 · cả câu</div>` +
+      `<div class="dict-hint-full" id="dict-hint-full" style="display:none">${escHtml(sentenceText)}</div>` +
+    `</div>`;
   updateDictProgress(0);
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
   // Only auto-focus on desktop — on mobile this yanks the on-screen keyboard
@@ -527,6 +582,14 @@ function _buildDictHint(text) {
   const words = dictWords(text);
   const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
   return { wordCount: words.length, pattern };
+}
+
+// Second-level hint, one click deeper: the whole sentence, for when the
+// first-letter pattern still isn't enough to make out what was said.
+function dictShowHint2() {
+  document.getElementById('dict-hint2-btn').style.display = 'none';
+  document.getElementById('dict-hint2-step').style.display = '';
+  document.getElementById('dict-hint-full').style.display = '';
 }
 
 /* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared
@@ -583,7 +646,11 @@ audio.addEventListener('timeupdate', () => {
 
 /* ══════════════ CHECK ANSWER (word-level diff against the correct,
    human-verified sentence — not the ASR's own wording) ══════════════ */
-function normWord(w) { return w.toLowerCase().replace(/[^a-z0-9']/g, ''); }
+// Curly/typographic apostrophes (’ ‘ ʼ ` ´) count as a plain ' — the
+// transcripts mostly use ’ ("you’ll") while a keyboard types ' ("you'll"),
+// and a phone's smart punctuation can do either; without this a perfectly
+// typed "you'll" was graded wrong against "you’ll".
+function normWord(w) { return w.toLowerCase().replace(/[’‘ʼ`´]/g, "'").replace(/[^a-z0-9']/g, ''); }
 
 // Tokenise a sentence into scorable words, dropping any token that is pure
 // punctuation (a lone "–", "-", ".", "—", "…" that the transcript writes
@@ -597,12 +664,14 @@ function dictWords(text) {
 }
 
 function dictCheck() {
-  const typed = document.getElementById('dict-input').value.trim();
+  const inputEl = document.getElementById('dict-input');
+  const typed = inputEl.value.trim();
   const correct = currentSentence().text || '';
   const typedWords = dictWords(typed);
   const correctWords = dictWords(correct);
+  if (!typedWords.length) { _dictShake(inputEl); inputEl.focus(); return; }
 
-  // Simple LCS-based word diff — small sentences (a few dozen words at
+  // Simple LCS-based word alignment — small sentences (a few dozen words at
   // most), so an O(n*m) table is trivial.
   const n = typedWords.length, m = correctWords.length;
   const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
@@ -613,53 +682,85 @@ function dictCheck() {
         : Math.max(dp[i - 1][j], dp[i][j - 1]);
     }
   }
-  const matchedCorrectIdx = new Set();
-  const matchedTypedIdx = new Set();
+  // Walk the table back into an ordered list of ops: 'ok' (typed word
+  // matches), 'bad' (typed word with no match) and 'gap' (answer word the
+  // student didn't type).
+  const ops = [];
   let i = n, j = m;
-  while (i > 0 && j > 0) {
-    if (normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])) {
-      matchedCorrectIdx.add(j - 1);
-      matchedTypedIdx.add(i - 1);
-      i--; j--;
-    } else if (dp[i - 1][j] >= dp[i][j - 1]) i--;
-    else j--;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])) {
+      ops.push({ type: 'ok', word: typedWords[i - 1] }); i--; j--;
+    } else if (i > 0 && (j === 0 || dp[i - 1][j] >= dp[i][j - 1])) {
+      ops.push({ type: 'bad', word: typedWords[i - 1] }); i--;
+    } else {
+      ops.push({ type: 'gap' }); j--;
+    }
   }
-
-  const isPerfect = matchedCorrectIdx.size === m && n === m;
-  // Extra typed words (e.g. filler "um") never appear among correctWords, so
-  // without this every word could render green (w-match) while the sentence
-  // is still marked wrong overall — with nothing shown telling the student
-  // what actually caused the mismatch. Appended with .w-extra (styled but,
-  // until now, never assigned by any code).
-  const extraWords = typedWords.filter((_, idx) => !matchedTypedIdx.has(idx));
-  const diffHtml = correctWords.map((w, idx) =>
-    `<span class="${matchedCorrectIdx.has(idx) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`
-  ).join(' ') + (extraWords.length
-    ? ' ' + extraWords.map(w => `<span class="w-extra">${escHtml(w)}</span>`).join(' ')
-    : '');
+  ops.reverse();
+  const matched = ops.filter(o => o.type === 'ok').length;
+  const isPerfect = matched === m && n === m;
 
   const resultEl = document.getElementById('dict-result');
+  const diffEl = document.getElementById('dict-diff');
   resultEl.classList.add('show');
   resultEl.classList.toggle('correct', isPerfect);
   resultEl.classList.toggle('wrong', !isPerfect);
-  document.getElementById('dict-result-label').textContent = isPerfect
-    ? '✓ Chính xác!'
-    : `Đúng ${matchedCorrectIdx.size}/${m} từ — phần bôi đỏ là từ bạn thiếu/sai${extraWords.length ? ', phần xám gạch ngang là từ thừa' : ''}:`;
-  document.getElementById('dict-diff').innerHTML = diffHtml;
-  document.getElementById('dict-check-btn').disabled = true;
-  _recordDictAnswer(dictIndex, isPerfect, matchedCorrectIdx.size, m);
+  _recordDictAnswer(dictIndex, isPerfect, matched, m);
 
-  if (isPerfect) {
-    dictDone.add(dictIndex);
-    document.querySelector(`.dict-num-btn[data-i="${dictIndex}"]`)?.classList.add('done');
-    document.getElementById('dict-session-score').textContent = `${dictDone.size}/${dictSection.dictationSentences.length} ✓`;
-    // Corner Lulu (js/shared/playful.js): a hop per perfect sentence, a
-    // cheer when the whole section is done.
-    if (window.Mascot) {
-      if (dictDone.size === dictSection.dictationSentences.length) window.Mascot.cheer(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
-      else window.Mascot.hop('excited');
-    }
+  if (!isPerfect) {
+    // Show the student's OWN text with each wrong word in red (shaking, same
+    // as Task 2's Dịch câu drill) and ＿＿ where words are missing — never the
+    // answer, so they fix it from the audio. Between two matched words, a
+    // wrong word stands in for a missing one (a misspelling), so only the
+    // surplus missing words become gaps.
+    const html = [];
+    let bad = [], gaps = 0;
+    const flush = () => {
+      bad.forEach(w => html.push(`<span class="w-bad">${escHtml(w)}</span>`));
+      for (let k = bad.length; k < gaps; k++) html.push('<span class="w-gap">＿＿</span>');
+      bad = []; gaps = 0;
+    };
+    ops.forEach(o => {
+      if (o.type === 'ok') { flush(); html.push(`<span class="w-ok">${escHtml(o.word)}</span>`); }
+      else if (o.type === 'bad') bad.push(o.word);
+      else gaps++;
+    });
+    flush();
+    const hasGap = html.some(h => h.includes('w-gap'));
+    document.getElementById('dict-result-label').textContent =
+      `Đúng ${matched}/${m} từ — sửa các từ bôi đỏ${hasGap ? ' (＿＿ là chỗ còn thiếu từ)' : ''} rồi kiểm tra lại.`;
+    diffEl.innerHTML = html.join(' ');
+    _dictShake(inputEl);
+    if (typeof playWrong === 'function') playWrong();
+    inputEl.focus();
+    return;
   }
+
+  document.getElementById('dict-result-label').textContent = '✓ Chính xác!';
+  diffEl.innerHTML =
+    `<div class="dict-correct-en">${escHtml(correct)}</div>` +
+    `<div class="dict-vi" id="dict-vi" data-i="${dictIndex}">${dictTranslations ? '' : '<i class="fas fa-spinner fa-spin"></i> Đang tải nghĩa...'}</div>`;
+  _fillDictVi();
+  document.getElementById('dict-check-btn').disabled = true;
+  if (typeof playOk === 'function') playOk();
+
+  dictDone.add(dictIndex);
+  document.querySelector(`.dict-num-btn[data-i="${dictIndex}"]`)?.classList.add('done');
+  document.getElementById('dict-session-score').textContent = `${dictDone.size}/${dictSection.dictationSentences.length} ✓`;
+  // Corner Lulu (js/shared/playful.js): a hop per perfect sentence, a
+  // cheer when the whole section is done.
+  if (window.Mascot) {
+    if (dictDone.size === dictSection.dictationSentences.length) window.Mascot.cheer(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
+    else window.Mascot.hop('excited');
+  }
+}
+
+// Restartable shake (re-adding the class alone wouldn't replay it).
+function _dictShake(el) {
+  el.classList.remove('dict-shake');
+  void el.offsetWidth;
+  el.classList.add('dict-shake');
+  setTimeout(() => el.classList.remove('dict-shake'), 450);
 }
 
 function dictRetry() {

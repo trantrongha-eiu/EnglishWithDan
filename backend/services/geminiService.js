@@ -1165,6 +1165,40 @@ Return JSON: {"items": [{"word": string, "meaning": string, "partOfSpeech": stri
     }));
 }
 
+// ── Dictation sentence meanings ─────────────────────────────────────
+// Vietnamese translation of each dictation sentence, shown after the
+// student transcribes it correctly. The sentences are consecutive lines of
+// one listening transcript, so they're sent together (in order) for
+// context. One call per section, cached by
+// listeningService.getDictationTranslations.
+const DICTATION_VI_SYSTEM = `You are an English-Vietnamese translator for IELTS learners.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+async function translateDictationSentences(sentences) {
+  if (!Array.isArray(sentences) || !sentences.length) return [];
+  const list = sentences.map((s, i) => `${i + 1}. ${s}`).join('\n');
+  const prompt = `These are consecutive sentences from one IELTS Listening recording, in order.
+Translate EACH one into natural, accurate Vietnamese that a learner can read to check its meaning.
+- Translate only that sentence (use the others for context only).
+- Keep names, numbers and proper nouns as they are.
+- A sentence that is a fragment stays a fragment.
+
+${list}
+
+Return JSON: {"items": [{"n": number, "vi": string}, ...]} — exactly ${sentences.length} items, n = the sentence number above.`;
+
+  const parsed = await _gradeWithGeminiJson({
+    prompt, systemInstruction: DICTATION_VI_SYSTEM, maxOutputTokens: 120 * sentences.length + 300,
+    timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.', logLabel: 'translateDictationSentences',
+  });
+  const out = new Array(sentences.length).fill('');
+  for (const it of Array.isArray(parsed.items) ? parsed.items : []) {
+    const idx = Number(it && it.n) - 1;
+    if (Number.isInteger(idx) && idx >= 0 && idx < out.length) out[idx] = String(it.vi || '').trim();
+  }
+  return out;
+}
+
 // ── Dictionary Collocations ─────────────────────────────────────────
 // One-shot lookup, not a grading call — cheap MODEL_FAST, short output cap.
 // Called at most ONCE per distinct word across the whole system; see
@@ -1471,6 +1505,7 @@ module.exports = {
   generateGapFillBlanks,
   punchGapFillAnswers,
   generateGapFillGlossary,
+  translateDictationSentences,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).

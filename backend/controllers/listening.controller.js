@@ -7,6 +7,7 @@
 // generic 'Lỗi server' + console.error for the three practice/* routes) —
 // none of that was unified, since doing so would change client-visible
 // error text.
+const mongoose = require('mongoose');
 const listeningService = require('../services/listeningService');
 const attemptHistoryService = require('../services/attemptHistoryService');
 const { isImageDataUri } = require('../utils/validation');
@@ -164,6 +165,18 @@ exports.listDictationSections = async (req, res) => {
     const sections = await listeningService.listDictationSections();
     res.json({ success: true, sections });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+};
+
+exports.getDictationTranslations = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    const translations = await listeningService.getDictationTranslations(req.params.id);
+    if (!translations) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, translations });
+  } catch (err) {
+    console.error('[Dictation translations]', err);
+    res.status(500).json({ success: false, message: 'Không tải được nghĩa của câu' });
+  }
 };
 
 exports.saveDictationAttempt = async (req, res) => {

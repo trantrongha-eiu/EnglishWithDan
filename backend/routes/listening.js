@@ -58,6 +58,9 @@ router.get('/dictation/list', auth, contentLimiter, listeningController.listDict
 // switching off the gate — replaced so nothing turns the gate off from the
 // request side (audit finding BUG-A01).
 router.get('/dictation/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
+// Vietnamese meaning per sentence (shown once a sentence is typed correctly);
+// generated + cached on first request — listeningService.getDictationTranslations.
+router.get('/dictation/section/:id/translations', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getDictationTranslations);
 // requirePremium added (audit finding BUG-A11) — this creates a real
 // DictationAttempt (feeds admin's "Lịch sử làm bài" + dictation stats), yet
 // was the one practice-save route with no plan gate. Same posture as
