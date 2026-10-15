@@ -31,7 +31,7 @@ async function isBlockedEitherWay(idA, idB) {
 // for exactly that reason).
 async function getPeerProfile(viewerId, targetId) {
   if (!mongoose.isValidObjectId(targetId)) return { status: 'not_found' };
-  const target = await User.findById(targetId).select('firstName lastName username avatar role').lean();
+  const target = await User.findById(targetId).select('firstName lastName username avatar role invisibleUntil activePet').lean();
   if (!target || target.role !== 'student') return { status: 'not_found' };
 
   const stats = await getStats(targetId);
@@ -45,7 +45,9 @@ async function getPeerProfile(viewerId, targetId) {
       name: (`${target.firstName || ''} ${target.lastName || ''}`.trim()) || target.username,
       username: target.username,
       avatar: target.avatar || '',
-      streak: stats.streak,
+      // Áo Tàng Hình (Cửa hàng lửa) hides the number from peers, same as on the BXH.
+      streak: (String(viewerId) !== String(targetId) && target.invisibleUntil && new Date(target.invisibleUntil) > new Date()) ? null : stats.streak,
+      pet: target.activePet || '',
       reading: { avgBand: stats.reading.avgBand, total: stats.reading.total },
       listening: { avgBand: stats.listening.avgBand, total: stats.listening.total },
       writing: { avgBand: stats.writing.avgBand, total: stats.writing.total },

@@ -70,7 +70,7 @@ describe('userService.getStreakStanding', () => {
     }
     const { leaderboard, me } = await userService.getStreakStanding(ids[4], 2);
     expect(leaderboard.map(b => b.streak)).toEqual([30, 20]);
-    expect(me).toEqual({ rank: 5, streak: 5, total: 5, nextStreak: 10 });
+    expect(me).toMatchObject({ rank: 5, streak: 5, total: 5, nextStreak: 10 });
 
     // Tied with the place above -> the next target is the first LONGER streak.
     const tied = await userService.getStreakStanding(ids[2], 10);
@@ -83,7 +83,7 @@ describe('userService.getStreakStanding', () => {
 
   test('unranked student gets rank null; staff get no standing', async () => {
     const s = await createStudent({ extra: { learningStreak: 0 } });
-    expect((await userService.getStreakStanding(s._id)).me).toEqual({ rank: null, streak: 0, total: 0 });
+    expect((await userService.getStreakStanding(s._id)).me).toMatchObject({ rank: null, streak: 0, total: 0 });
     const t = await createTeacher({ extra: { learningStreak: 9, lastActivityDate: daysAgo(0) } });
     expect((await userService.getStreakStanding(t._id)).me).toBeNull();
   });

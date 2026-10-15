@@ -78,7 +78,10 @@
       '<div class="peer-profile-header">' +
         avatar +
         '<div class="peer-profile-name">' + escHtml(p.name) + '</div>' +
-        '<div class="peer-profile-streak"><i class="fas fa-fire"></i> ' + p.streak + ' ngày streak</div>' +
+        (p.streak == null
+          ? '<div class="peer-profile-streak">👻 Đang mặc Áo Tàng Hình — 🔥 ???</div>'
+          : '<div class="peer-profile-streak"><i class="fas fa-fire"></i> ' + p.streak + ' ngày streak</div>') +
+        (p.pet && window.Pets ? '<div class="peer-profile-pet">' + window.Pets.badge(p.pet) + '</div>' : '') +
       '</div>' +
       '<div class="peer-band-grid">' +
         _bandRow('Reading', p.reading.avgBand, p.reading.total) +

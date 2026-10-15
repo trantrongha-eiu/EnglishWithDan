@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cửa hàng lửa – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/tokens.css?v=20260831"/>
+  <link rel="stylesheet" href="css/motion.css?v=20260904b"/>
+  <link rel="stylesheet" href="css/components.css?v=20260831"/>
+  <link rel="stylesheet" href="css/mobile.css?v=20261009tuition"/>
+  <script src="js/theme.js?v=20260831"></script>
+  <!-- .et-shell / .et-hero: the same simple page shell as vocab-leaderboard.html. -->
+  <link rel="stylesheet" href="css/entrance-test.css?v=20260924sp">
+  <link rel="stylesheet" href="css/playful.css?v=20261015lumi3"/>
+  <link rel="stylesheet" href="css/pets.css?v=20261015">
+  <link rel="stylesheet" href="css/shop.css?v=20261015">
+</head>
+<body>
+<script src="js/shared/auth-service.js?v=20261007guest"></script>
+<script src="js/auth.js?v=20261007guest"></script>
+<script src="js/nav.js?v=20261015shop"></script>
+<script src="js/shared/playful.js?v=20261015lumi3"></script>
+<script src="js/shared/utils.js?v=20260831"></script>
+<script src="js/shared/toast.js?v=20260831"></script>
+<script src="js/shared/api-client.js?v=20260831"></script>
+<script src="js/shared/confirm-dialog.js?v=20260831"></script>
+
+<div class="et-shell shop-shell">
+  <div class="et-hero shop-hero">
+    <div class="shop-hero-icon"><i class="fas fa-store"></i></div>
+    <h1>Cửa hàng lửa</h1>
+    <p>Mỗi 🔥 bạn kiếm được khi học được cộng vào cả <b>chuỗi</b> lẫn <b>ví lửa</b>. Mua sắm chỉ trừ ví — chuỗi và hạng trên BXH vẫn giữ nguyên.</p>
+  </div>
+
+  <div class="shop-wallet" id="shop-wallet" aria-live="polite">
+    <div class="shop-wallet-main">
+      <span class="shop-wallet-label">Ví lửa của bạn</span>
+      <span class="shop-wallet-value"><span class="shop-flame">🔥</span> <b id="shop-wallet-value">…</b></span>
+    </div>
+    <div class="shop-wallet-side">
+      <span>Chuỗi hiện tại: <b id="shop-streak">…</b> 🔥</span>
+      <a class="btn btn-ghost btn-sm" href="vocab-leaderboard.html"><i class="fas fa-ranking-star"></i> Xem BXH</a>
+    </div>
+  </div>
+
+  <!-- Active effects (Búa Hi Vọng progress, crown, cloak, cake on you). -->
+  <div class="shop-effects" id="shop-effects" hidden></div>
+
+  <section class="shop-section">
+    <h2 class="shop-h2"><span>⚔️</span> Vật phẩm đua top</h2>
+    <div class="shop-grid" id="shop-items" aria-busy="true">
+      <div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div>
+    </div>
+  </section>
+
+  <section class="shop-section">
+    <h2 class="shop-h2"><span>🐾</span> Linh thú</h2>
+    <p class="shop-sub">Linh thú sẽ đi dạo quanh các trang học (tự trốn đi khi bạn làm bài thi) và ngồi cạnh tên bạn trên BXH.</p>
+    <div class="shop-grid shop-grid--pets" id="shop-pets" aria-busy="true">
+      <div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div>
+    </div>
+  </section>
+</div>
+
+<script src="js/shared/pets.js?v=20261015" id="ews-pets-js"></script>
+<script src="js/shop.js?v=20261015"></script>
+</body>
+</html>

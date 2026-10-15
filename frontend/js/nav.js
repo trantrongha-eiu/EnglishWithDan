@@ -82,7 +82,15 @@
     },
     // Top 10 streak + Top 10 vocab quiz — moved off the dashboard home
     // screen onto their own page (2026-10-01).
-    { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'BXH vocab' },
+    // Cửa hàng lửa (shop.html) sits under BXH: it sells the items that
+    // show up there (linh thú, crown, cloak, cake) and the streak boosts
+    // students race the board with.
+    { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'BXH vocab',
+      children: [
+        { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
+        { href: 'shop.html',              icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
+      ]
+    },
     // "Học phí" was an unlabeled icon in the utility cluster — students
     // missed it, so it's back in the main row as a labeled, highlighted
     // pill (.nav-link-tuition) with the unpaid-count badge next to it.
@@ -308,6 +316,16 @@
     document.body.appendChild(i18nScript);
   }
 
+  // ── Linh thú (js/shared/pets.js) ──────────────────────────
+  // Same injection pattern as the two above: every page with the global nav
+  // gets the student's walking pet, which hides itself in exam mode.
+  if (!document.getElementById('ews-pets-js')) {
+    var petScript = document.createElement('script');
+    petScript.id = 'ews-pets-js';
+    petScript.src = '/js/shared/pets.js?v=20261015';
+    document.body.appendChild(petScript);
+  }
+
   // ── Nav visibility helpers ────────────────────────────────
   // Also hides the floating peer-chat bubble (js/shared/peer-chat-widget.js)
   // while it's active — on Reading/Listening/Writing exam screens it sits
@@ -322,7 +340,7 @@
   // guard. Null-guarded: the owl DOM is created lazily on first use, so it
   // often doesn't exist yet here.
   function _toggleExamAids(hidden) {
-    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup', 'ews-mascot-dock'].forEach(function (id) {
+    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup', 'ews-mascot-dock', 'ews-pet-layer'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = hidden ? 'none' : '';
     });

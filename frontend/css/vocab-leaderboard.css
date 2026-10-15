@@ -66,3 +66,76 @@
   .vlb-me-tile .btn { width: 100%; }
   .vlb-grid .dan-leaderboard-card { padding: 16px; }
 }
+
+/* ── Cửa hàng lửa on the boards ──────────────────────────────────────
+   The linh thú sits right after the name (so the name no longer
+   stretches — .vlb-spacer pushes the score to the right edge instead),
+   crown/cake decorate the avatar, 👻 ??? replaces a cloaked streak. */
+.vlb-grid .dan-lb-name { flex: 0 1 auto; }
+.vlb-spacer { flex: 1 1 0; min-width: 4px; }
+.vlb-grid .pet-badge { margin-left: -4px; }
+
+.vlb-av { position: relative; display: inline-flex; flex-shrink: 0; }
+.vlb-crown {
+  position: absolute; left: 50%; top: -12px; transform: translateX(-50%) rotate(-12deg);
+  font-size: 15px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .25));
+}
+.vlb-name-crown {
+  color: #b7791f !important; font-weight: 800 !important;
+  text-shadow: 0 0 8px rgba(251, 191, 36, .55);
+}
+[data-theme="dark"] .vlb-name-crown { color: #fcd34d !important; }
+
+.vlb-av.is-caked .dan-lb-avatar, .vlb-av.is-caked .dan-lb-avatar-placeholder {
+  filter: saturate(.6) brightness(1.05);
+}
+.vlb-av.is-caked::after {
+  /* the cream splat */
+  content: ''; position: absolute; inset: -3px; border-radius: 50%; pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 30%, #fff 0 22%, transparent 23%),
+    radial-gradient(circle at 70% 40%, #fffaf0 0 18%, transparent 19%),
+    radial-gradient(circle at 45% 72%, #fff 0 20%, transparent 21%),
+    radial-gradient(circle at 78% 76%, #ffe4ef 0 12%, transparent 13%);
+  opacity: .92;
+}
+.vlb-cake {
+  position: absolute; right: -8px; bottom: -6px; z-index: 1; font-size: 14px; line-height: 1;
+  transform: rotate(18deg);
+}
+
+.vlb-hidden { color: var(--text3) !important; letter-spacing: 1px; }
+
+.vlb-cake-btn {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  border: 1px dashed var(--border2, #d1d5db); background: var(--surface);
+  font-size: 15px; line-height: 1; cursor: pointer;
+  transition: transform .15s, border-color .15s;
+}
+.vlb-cake-btn:hover { transform: scale(1.15) rotate(-12deg); border-color: #f472b6; }
+.vlb-cake-btn:disabled { opacity: .4; cursor: default; transform: none; }
+
+/* Shop strip above the boards. */
+.vlb-shop {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 18px; padding: 12px 18px;
+  background: linear-gradient(90deg, #fff7ed, #fef3c7);
+  border: 1px solid #fed7aa; border-radius: var(--radius);
+}
+.vlb-shop[hidden] { display: none; }
+[data-theme="dark"] .vlb-shop { background: rgba(249, 115, 22, .1); border-color: rgba(249, 115, 22, .3); }
+.vlb-shop-wallet { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.vlb-shop-wallet b { color: #ea580c; font-size: 17px; margin-left: 4px; }
+.vlb-shop-bits { flex: 1; min-width: 160px; font-size: 13px; color: var(--text2); }
+.vlb-shop .btn { white-space: nowrap; }
+
+/* Grid items default to min-width:auto, so a row's extra pieces (linh thú,
+   🎂 button) could force the card wider than a phone screen — let the
+   cards shrink and the name ellipsize instead. */
+.vlb-grid > * { min-width: 0; }
+@media (max-width: 480px) {
+  .vlb-grid .dan-lb-row { gap: 6px; padding: 8px 6px; }
+  .vlb-grid .vlb-top-lulu { display: none; }
+  .vlb-grid .pet-badge { width: 26px; height: 26px; flex-basis: 26px; }
+  .vlb-cake-btn { width: 26px; height: 26px; font-size: 13px; }
+}

@@ -149,6 +149,38 @@ const UserSchema = new mongoose.Schema({
   // Paraphrase VocabUnits already rewarded with a hammer — each unit only
   // ever grants one, no matter how many times it's re-cleared at >=90%.
   hammerAwardedUnits:   [{ type: mongoose.Schema.Types.ObjectId, ref: 'VocabUnit' }],
+  // ── Cửa hàng lửa (constants/shop.js, services/shopService.js) ──────────
+  // The "ví lửa": credited alongside learningStreak by applyStreakActivity()
+  // (utils/streak.js) with the same amount, but spending it never touches
+  // the streak. flameWalletSeeded marks the one-time launch gift.
+  flameWallet:          { type: Number, default: 0 },
+  flameWalletSeeded:    { type: Boolean, default: false },
+  shopItems: {
+    hopeHammer: { type: Number, default: 0 },
+    iceShield:  { type: Number, default: 0 },
+    cake:       { type: Number, default: 0 },
+    cloak:      { type: Number, default: 0 },
+    crown:      { type: Number, default: 0 },
+  },
+  // Búa Hi Vọng in play: the VN day it was used on (null = none pending),
+  // and how many base 🔥 (before ×2) have been earned since. Settled the
+  // next VN day by shopService.settleHopeHammer(); the outcome is kept in
+  // hopeHammerLast so the shop can tell the student how it went.
+  hopeHammerDay:        { type: Date, default: null },
+  hopeHammerBase:       { type: Number, default: 0 },
+  hopeHammerLast:       {
+    day: { type: Date, default: null },
+    success: { type: Boolean, default: false },
+    base: { type: Number, default: 0 },
+    penalty: { type: Number, default: 0 },
+  },
+  crownUntil:           { type: Date, default: null },
+  invisibleUntil:       { type: Date, default: null },
+  cakedUntil:           { type: Date, default: null },
+  cakedBy:              { type: String, default: '' },
+  // Linh thú owned (constants/shop.js PETS ids) and the one out walking.
+  pets:                 [{ type: String }],
+  activePet:            { type: String, default: '' },
   totalStudyMinutes:    { type: Number, default: 0 },
   // Password reset OTP
   resetOTP:           { type: String, default: '' },
@@ -190,6 +222,8 @@ const UserSchema = new mongoose.Schema({
 // a full collection scan on the User model.
 UserSchema.index({ role: 1, createdAt: -1 });
 UserSchema.index({ lastSeen: 1 });
+// Leaderboard-time sweep for unsettled Búa Hi Vọng bets.
+UserSchema.index({ hopeHammerDay: 1 });
 
 // Trả về ngày theo giờ Việt Nam (UTC+7), lưu dưới dạng UTC midnight
 function getVNDay(date) {

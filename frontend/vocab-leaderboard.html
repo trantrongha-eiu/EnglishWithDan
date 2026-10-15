@@ -22,17 +22,19 @@
        page-specific bits are in vocab-leaderboard.css. -->
   <link rel="stylesheet" href="css/dashboard.css?v=20261001bxh">
   <link rel="stylesheet" href="css/entrance-test.css?v=20260924sp">
-  <link rel="stylesheet" href="css/vocab-leaderboard.css?v=20261001b">
+  <link rel="stylesheet" href="css/vocab-leaderboard.css?v=20261015shop">
+  <link rel="stylesheet" href="css/pets.css?v=20261015">
   <link rel="stylesheet" href="css/playful.css?v=20261015lumi3"/>
 </head>
 <body>
 <script src="js/shared/auth-service.js?v=20261007guest"></script>
 <script src="js/auth.js?v=20261007guest"></script>
-<script src="js/nav.js?v=20261015vm"></script>
+<script src="js/nav.js?v=20261015shop"></script>
 <script src="js/shared/playful.js?v=20261015lumi3"></script>
 <script src="js/shared/utils.js?v=20260831"></script>
 <script src="js/shared/toast.js?v=20260831"></script>
 <script src="js/shared/api-client.js?v=20260831"></script>
+<script src="js/shared/confirm-dialog.js?v=20260831"></script>
 
 <div class="et-shell vlb-shell">
   <div class="et-hero">
@@ -40,6 +42,9 @@
     <h1>BXH Vocab</h1>
     <p>Bảng xếp hạng chuỗi ngày học và điểm Quiz từ vựng. Bấm vào tên một bạn để xem hồ sơ hoặc nhắn tin.</p>
   </div>
+
+  <!-- Cửa hàng lửa strip: ví lửa, active items, link to shop.html. -->
+  <div class="vlb-shop" id="vlb-shop" hidden></div>
 
   <!-- Lulu comments on the student's standing (js/vocab-leaderboard.js). -->
   <div class="vlb-lulu" id="vlb-lulu"></div>
@@ -70,7 +75,7 @@
   <div class="vlb-grid">
     <div class="dan-leaderboard-card" id="dan-leaderboard-card">
       <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
-      <p class="vlb-board-sub">Số ngày học liên tiếp — mỗi ngày học ít nhất 1 bài để giữ chuỗi.</p>
+      <p class="vlb-board-sub">Số 🔥 của chuỗi học — mỗi ngày học ít nhất 1 bài để giữ chuỗi. 👻 = đang mặc Áo Tàng Hình.</p>
       <div class="dan-lb-list" id="dan-lb-list" aria-busy="true"><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div><div class="vlb-skel"><span class="s-rank"></span><span class="s-av"></span><span class="s-name"></span><span class="s-val"></span></div></div>
     </div>
 
@@ -127,8 +132,9 @@
   </div>
 </div>
 
-<script src="js/shared/peer-profile.js?v=20261002idle"></script>
+<script src="js/shared/peer-profile.js?v=20261015pet"></script>
 <script src="js/shared/fire-tier.js?v=20261001"></script>
-<script src="js/vocab-leaderboard.js?v=20261001b"></script>
+<script src="js/shared/pets.js?v=20261015" id="ews-pets-js"></script>
+<script src="js/vocab-leaderboard.js?v=20261015shop"></script>
 </body>
 </html>

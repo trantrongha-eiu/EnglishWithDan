@@ -9,6 +9,7 @@ const parser = require('./vocabularyLessonParser');
 const { reachedDailyWordThreshold } = require('./streakBonusService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const shopService = require('./shopService');
 const { toCardThumbnail, isValidCoverUrl } = require('../utils/cardThumbnail');
 
 // A quiz run under this many questions doesn't count toward the daily vocab
@@ -172,6 +173,11 @@ async function rankedQuizAverages(limit) {
         name: { $trim: { input: { $concat: [{ $ifNull: ['$_user.firstName', ''] }, ' ', { $ifNull: ['$_user.lastName', ''] }] } } },
         username: '$_user.username',
         avatar: '$_user.avatar',
+        // Cửa hàng lửa decorations — same fields as the streak board's
+        // shopService.boardDecor() (the cloak only hides 🔥, not quiz scores).
+        pet: { $ifNull: ['$_user.activePet', ''] },
+        crown: { $gt: ['$_user.crownUntil', '$$NOW'] },
+        cakedBy: { $cond: [{ $gt: ['$_user.cakedUntil', '$$NOW'] }, { $ifNull: ['$_user.cakedBy', 'Ai đó'] }, ''] },
       },
     },
   ]);
@@ -188,10 +194,11 @@ async function getQuizLeaderboard(limit = 10) {
 async function getQuizStanding(userId, limit = 10) {
   const all = await rankedQuizAverages(0);
   const leaderboard = all.slice(0, limit);
-  const user = await User.findById(userId).select('role').lean();
+  const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
   if (!user || user.role !== 'student') return { leaderboard, me: null };
+  const { pet, crown, cakedBy } = shopService.boardDecor(user);
   const idx = all.findIndex(r => String(r.userId) === String(userId));
-  if (idx === -1) return { leaderboard, me: { rank: null, total: all.length } };
+  if (idx === -1) return { leaderboard, me: { rank: null, total: all.length, pet, crown, cakedBy } };
   const mine = all[idx];
   const above = idx > 0 ? all[idx - 1] : null;
   return {
@@ -199,6 +206,7 @@ async function getQuizStanding(userId, limit = 10) {
     me: {
       rank: idx + 1, score: mine.score, timeSpent: mine.timeSpent, attempts: mine.attempts, total: all.length,
       nextScore: above ? above.score : null,
+      pet, crown, cakedBy,
     },
   };
 }

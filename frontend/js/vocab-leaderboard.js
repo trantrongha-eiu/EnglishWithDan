@@ -31,20 +31,40 @@
 
     function mmss(sec) { return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
 
+    // Cửa hàng lửa state for the shop strip + the 🎂 buttons (loadShop).
+    var myCakes = 0;
+
     // Shared row shell: rank/medal, avatar-or-initial, name, right-hand value.
-    // Clicking someone else's row opens their peer profile.
-    function rowHtml(rank, userId, name, avatarUrl, valueHtml) {
+    // Clicking someone else's row opens their peer profile. `decor` carries
+    // the row's Cửa hàng lửa extras (shopService.boardDecor): linh thú next
+    // to the name, crown, cake on the avatar.
+    function rowHtml(rank, userId, name, avatarUrl, valueHtml, decor) {
+        decor = decor || {};
         var medal = RANK_MEDAL[rank];
         var avatar = avatarUrl
             ? '<img class="dan-lb-avatar" src="' + escHtml(avatarUrl) + '" alt="">'
             : '<span class="dan-lb-avatar-placeholder">' + escHtml((name || '?')[0].toUpperCase()) + '</span>';
         var isMe = String(userId) === String(myId());
+        var avWrap = '<span class="vlb-av' + (decor.cakedBy ? ' is-caked' : '') + '"'
+            + (decor.cakedBy ? ' title="Bị ' + escHtml(decor.cakedBy) + ' úp bánh kem 🎂"' : '') + '>'
+            + avatar
+            + (decor.crown ? '<span class="vlb-crown" aria-hidden="true">👑</span>' : '')
+            + (decor.cakedBy ? '<span class="vlb-cake" aria-hidden="true">🎂</span>' : '')
+            + '</span>';
+        var pet = decor.pet && window.Pets ? window.Pets.badge(decor.pet) : '';
+        var cakeBtn = !isMe && myCakes > 0 && !decor.cakedBy
+            ? '<button type="button" class="vlb-cake-btn" title="Ném bánh kem vào ' + escHtml(name) + '" aria-label="Ném bánh kem vào ' + escHtml(name) + '"'
+              + ' data-cake="' + escHtml(String(userId)) + '" data-name="' + escHtml(name) + '">🎂</button>'
+            : '';
         return '<div class="dan-lb-row' + (isMe ? ' is-me' : ' dan-lb-clickable') + '"'
             + (isMe ? '' : ' onclick="window.openPeerProfile(\'' + escHtml(String(userId)) + '\')"') + '>'
             + '<span class="dan-lb-rank' + (medal ? ' top' + rank : '') + '">' + (medal || rank) + '</span>'
-            + avatar
-            + '<span class="dan-lb-name">' + escHtml(name) + (isMe ? ' (Bạn)' : '') + '</span>'
+            + avWrap
+            + '<span class="dan-lb-name' + (decor.crown ? ' vlb-name-crown' : '') + '">' + escHtml(name) + (isMe ? ' (Bạn)' : '') + '</span>'
+            + pet
             + (rank === 1 && window.Mascot ? '<span class="vlb-top-lulu" title="Lulu cổ vũ người dẫn đầu">' + window.Mascot.svg('cheer', { label: 'Lulu' }) + '</span>' : '')
+            + '<span class="vlb-spacer"></span>'
+            + cakeBtn
             + valueHtml
             + '</div>';
     }
@@ -53,10 +73,12 @@
     function pinnedMeRow(standing, shown, valueHtml) {
         if (!standing || !standing.rank || standing.rank <= shown) return '';
         return '<div class="vlb-gap" aria-hidden="true">⋯</div>'
-            + rowHtml(standing.rank, myId(), myName(), me().avatar || '', valueHtml);
+            + rowHtml(standing.rank, myId(), myName(), me().avatar || '', valueHtml, standing);
     }
 
     function streakValue(streak) {
+        // Áo Tàng Hình — the server blanks the number for everyone else.
+        if (streak == null) return '<span class="dan-lb-streak vlb-hidden" title="Đang mặc Áo Tàng Hình">👻 ???</span>';
         var tier = getFireTier(streak);
         var style = tier.cls ? '' : (tier.color ? ' style="color:' + tier.color + '"' : '');
         return '<span class="dan-lb-streak' + (tier.cls ? ' ' + tier.cls : '') + '"' + style + '><i class="fas fa-fire"></i> ' + streak + '</span>';
@@ -124,7 +146,7 @@
             var s = data.me;
             standings.streak = s || null; updateLulu();
             renderList(listEl, rows, 'Chưa có ai đang giữ streak — hãy là người đầu tiên! 🔥',
-                function (r, rank) { return rowHtml(rank, r._id, r.name, r.avatar, streakValue(r.streak)); },
+                function (r, rank) { return rowHtml(rank, r._id, r.name, r.avatar, streakValue(r.streak), r); },
                 s ? pinnedMeRow(s, rows.length, streakValue(s.streak)) : '');
             if (!s) return;
             var sub;
@@ -132,6 +154,7 @@
             else if (s.rank === 1) sub = s.streak + ' ngày liên tiếp — bạn đang dẫn đầu, giữ vững nhé! 👑';
             else if (s.nextStreak) sub = s.streak + ' ngày liên tiếp — kém người xếp trên ' + (s.nextStreak - s.streak) + ' ngày. Đừng bỏ ngày nào!';
             else sub = s.streak + ' ngày liên tiếp — học đều mỗi ngày để giữ hạng.';
+            if (s.hidden) sub += ' 👻 Bạn đang tàng hình — người khác chỉ thấy "???".';
             showMeTile('streak', rankValue(s), sub);
         }).catch(function () { renderError(listEl); standings.streak = null; updateLulu(); });
     }
@@ -144,7 +167,7 @@
             var q = data.me;
             standings.quiz = q || null; updateLulu();
             renderList(listEl, rows, 'Chưa có ai làm Quiz đủ điều kiện xếp hạng — hãy là người đầu tiên! ⏱',
-                function (r, rank) { return rowHtml(rank, r.userId, r.name, r.avatar, quizValue(r.score, r.timeSpent)); },
+                function (r, rank) { return rowHtml(rank, r.userId, r.name, r.avatar, quizValue(r.score, r.timeSpent), r); },
                 q ? pinnedMeRow(q, rows.length, q.rank ? quizValue(q.score, q.timeSpent) : '') : '');
             if (!q) return;
             var sub;
@@ -159,14 +182,60 @@
         }).catch(function () { renderError(listEl); standings.quiz = null; updateLulu(); });
     }
 
+    // ── Cửa hàng lửa strip: wallet, active effects, 🎂 count ─────
+    function loadShop() {
+        var strip = document.getElementById('vlb-shop');
+        if (!strip || (me().role && me().role !== 'student')) return Promise.resolve();
+        return fetchBoard('/shop').then(function (d) {
+            if (!d || !d.success) return;
+            var owned = {};
+            (d.items || []).forEach(function (i) { owned[i.key] = i.owned; });
+            myCakes = owned.cake || 0;
+            var bits = [];
+            if (d.effects && d.effects.hope) bits.push('🔨 Búa Hi Vọng: ' + Math.min(d.effects.hope.base, d.effects.hope.quota) + '/' + d.effects.hope.quota + ' 🔥');
+            if (owned.iceShield) bits.push('🛡️ ×' + owned.iceShield);
+            if (myCakes) bits.push('Bạn có ' + myCakes + ' 🎂 — bấm 🎂 cạnh tên một bạn để ném');
+            strip.innerHTML = '<span class="vlb-shop-wallet">Ví lửa <b>🔥 ' + d.wallet + '</b></span>'
+                + '<span class="vlb-shop-bits">' + (bits.length ? bits.map(escHtml).join(' · ') : 'Mua linh thú, vương miện, búa hi vọng… để đua top!') + '</span>'
+                + '<a class="btn btn-primary btn-sm" href="shop.html"><i class="fas fa-store"></i> Cửa hàng</a>';
+            strip.hidden = false;
+        }).catch(function () {});
+    }
+
+    // 🎂 next to a name: throw a cake (capture phase, so the row's own
+    // onclick — open the peer profile — doesn't fire too).
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.vlb-cake-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var name = btn.getAttribute('data-name');
+        var msg = 'Dùng 1 🎂 ném vào ' + name + '? Bánh sẽ dính trên ảnh đại diện 24 giờ.';
+        if (window.confirmDialog) window.confirmDialog('Ném bánh kem?', msg, function () { throwCake(btn, name); }, { confirmLabel: 'Ném! 🎂', confirmClass: 'btn-primary' });
+        else if (window.confirm(msg)) throwCake(btn, name);
+    }, true);
+
+    function throwCake(btn, name) {
+        btn.disabled = true;
+        fetch(API + '/shop/cake', { method: 'POST', headers: authH(), body: JSON.stringify({ targetId: btn.getAttribute('data-cake') }) })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (window.showToast) window.showToast(d.success ? '🎂 Bẹp! ' + name + ' dính đầy kem rồi 😆' : (d.message || 'Không ném được'), d.success ? 'success' : 'error');
+                loadShop().then(function () { loadStreakBoard(); loadQuizBoard(); });
+            })
+            .catch(function () { btn.disabled = false; });
+    }
+
     function boot() {
         if (!window.AuthService || !window.AuthService.isLoggedIn()) {
             var next = 'vocab-leaderboard.html';
             location.href = (window.AuthService && window.AuthService.buildLoginUrl) ? window.AuthService.buildLoginUrl(next) : 'login.html?next=' + encodeURIComponent(next);
             return;
         }
-        loadStreakBoard();
-        loadQuizBoard();
+        // The shop state first — it decides whether rows get a 🎂 button.
+        loadShop().then(function () {
+            loadStreakBoard();
+            loadQuizBoard();
+        });
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

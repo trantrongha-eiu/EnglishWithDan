@@ -12,7 +12,8 @@ const bcrypt = require('bcryptjs');
 const { signToken } = require('./authService');
 const mediaStore = require('./mediaStore');
 const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
-const { effectiveStreak } = require('../utils/streak');
+const { effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
+const shopService = require('./shopService');
 const { todayVNDate } = require('./streakBonusService');
 
 // targetBand/targetExamDate are the SAME underlying User fields
@@ -130,6 +131,11 @@ async function uploadAvatar(userId, imageBase64) {
 const STATS_HISTORY_LIMIT = 60;
 
 async function getStats(userId) {
+  // Cửa hàng lửa: a Khiên Băng covers a missed day and yesterday's Búa Hi
+  // Vọng bet is settled BEFORE the user is read below, so resetIfStale()
+  // and the returned streak both see the outcome.
+  await coverMissedDaysWithShields(User, userId).catch(() => 0);
+  await shopService.settleHopeHammer(userId).catch(() => null);
   const [
     readingAttempts,
     listeningAttempts,
@@ -299,9 +305,15 @@ async function getActivityHeatmap(userId, days = 365) {
 // student who lost their streak days ago but hasn't opened the app since
 // would otherwise still show their old count here.
 // Every student with a live streak, longest first.
-async function rankedStreaks() {
+//
+// Each row also carries its Cửa hàng lửa decorations (shopService.boardDecor:
+// linh thú, crown, Áo Tàng Hình, cake). A cloaked student's number is
+// blanked out here, server-side — for everyone but themselves (`viewerId`)
+// — so it can't be read back out of the response either.
+async function rankedStreaks(viewerId) {
+  await shopService.settleAllHopeHammers().catch(() => 0);
   const candidates = await User.find({ role: 'student', learningStreak: { $gt: 0 } })
-    .select('firstName lastName username avatar learningStreak lastActivityDate')
+    .select('firstName lastName username avatar learningStreak lastActivityDate shopItems activePet crownUntil invisibleUntil cakedUntil cakedBy')
     .lean();
 
   return candidates
@@ -309,34 +321,40 @@ async function rankedStreaks() {
       _id: u._id,
       name: (`${u.firstName || ''} ${u.lastName || ''}`.trim()) || u.username,
       avatar: u.avatar || '',
-      streak: effectiveStreak(u.learningStreak, u.lastActivityDate),
+      streak: effectiveStreak(u.learningStreak, u.lastActivityDate, u.shopItems && u.shopItems.iceShield),
+      ...shopService.boardDecor(u),
     }))
     .filter(u => u.streak > 0)
-    .sort((a, b) => b.streak - a.streak);
+    .sort((a, b) => b.streak - a.streak)
+    .map(u => (u.hidden && String(u._id) !== String(viewerId) ? { ...u, streak: null } : u));
 }
 
-async function getStreakLeaderboard(limit = 10) {
-  return (await rankedStreaks()).slice(0, limit);
+async function getStreakLeaderboard(limit = 10, viewerId = null) {
+  return (await rankedStreaks(viewerId)).slice(0, limit);
 }
 
 // Top `limit` plus the caller's own standing (BXH vocab page), so a
 // student outside the top 10 still sees their rank and the gap to the
 // next place. `me` is null for staff — they never appear on the board.
 async function getStreakStanding(userId, limit = 10) {
-  const all = await rankedStreaks();
+  const all = await rankedStreaks(userId);
   const leaderboard = all.slice(0, limit);
-  const user = await User.findById(userId).select('role').lean();
+  const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
   if (!user || user.role !== 'student') return { leaderboard, me: null };
+  const decor = shopService.boardDecor(user);
   const idx = all.findIndex(u => String(u._id) === String(userId));
-  if (idx === -1) return { leaderboard, me: { rank: null, streak: 0, total: all.length } };
+  if (idx === -1) return { leaderboard, me: { rank: null, streak: 0, total: all.length, ...decor } };
+  // Streak of the next place up (first entry with a strictly longer
+  // streak) — unknown when that student is wearing an Áo Tàng Hình.
+  const above = all.slice(0, idx).reverse().find(u => u.streak === null || u.streak > all[idx].streak);
   return {
     leaderboard,
     me: {
       rank: idx + 1,
       streak: all[idx].streak,
       total: all.length,
-      // Streak of the next place up (first entry with a strictly longer streak).
-      nextStreak: (all.slice(0, idx).reverse().find(u => u.streak > all[idx].streak) || {}).streak || null,
+      nextStreak: (above && above.streak) || null,
+      ...decor,
     },
   };
 }
