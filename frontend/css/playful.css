@@ -84,7 +84,7 @@ html:root:not([data-theme="dark"]) { --bg: var(--pf-paper); }
   border: 3px solid var(--pf-ink);
   border-radius: 22px;
   box-shadow: var(--pf-shadow-lg);
-  padding: 22px 150px 22px 26px;
+  padding: 22px 196px 22px 26px;
   min-height: 104px;
   overflow: visible;
 }
@@ -109,10 +109,10 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 }
 :root .list-header .test-search-input { border-radius: 999px; border-width: 2px; }
 
-/* Lulu peeking over the header's bottom-right edge. */
+/* Lulu & Lumi peeking over the header's bottom-right edge. */
 .lh-mascot {
-  position: absolute; right: 22px; bottom: -6px;
-  width: 104px; pointer-events: none;
+  position: absolute; right: 18px; bottom: -6px;
+  width: 168px; pointer-events: none;
   animation: pf-peek .9s var(--pf-spring) .25s both;
 }
 .lh-mascot .dan-svg { width: 100%; height: auto; display: block; }
@@ -350,13 +350,25 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 @keyframes dan-jump  { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px) scale(.98, 1.03); } 70% { transform: translateY(0) scale(1.04, .96); } }
 @keyframes dan-wave  { 0%, 100% { transform: rotate(0); } 25%, 75% { transform: rotate(-38deg); } 50% { transform: rotate(-12deg); } }
 
+/* ── Lulu & Lumi side by side (Mascot.duo) — sized by the host's width ── */
+.pf-duo { position: relative; display: flex; align-items: flex-end; width: 100%; line-height: 0; }
+.pf-duo-lulu { flex: 0 0 56%; }
+.pf-duo-lumi { flex: 0 0 50%; margin-left: -6%; }
+.pf-duo .dan-svg { width: 100%; height: auto; display: block; }
+.pf-duo-lumi .dan-svg .m-body { animation-delay: -1.3s; } /* bob out of step */
+.pf-duo-heart {
+  position: absolute; left: 47%; top: 6%; width: 11%; height: auto;
+  animation: pf-heart 2.2s ease-in-out infinite;
+}
+@keyframes pf-heart { 0%, 100% { transform: translateY(0) scale(1); opacity: .85; } 50% { transform: translateY(-5px) scale(1.15); opacity: 1; } }
+
 /* ── The dock companion ─────────────────────────────────────────────── */
 .ews-mascot-dock {
   /* Peeks up from the bottom-left edge (half hidden) so it never sits on
      top of the page's own bottom-right buttons / the chat bubble; rises
      fully on hover, while talking or hopping. */
   position: fixed; left: 26px; bottom: 0; z-index: 900;
-  width: 86px; height: 92px;
+  width: 152px; height: 92px;
   transform: translateY(140px); opacity: 0;
   transition: transform .55s var(--pf-spring), opacity .4s;
   pointer-events: none;
@@ -369,11 +381,16 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 .ews-mascot-dock.is-leaving { transform: translateY(140px) rotate(-12deg); opacity: 0; }
 .ews-md-mascot {
   pointer-events: auto;
+  position: absolute; left: 0; bottom: 0;
   width: 86px; height: 92px; padding: 0; border: none; background: none; cursor: pointer;
   filter: drop-shadow(0 6px 8px rgba(120, 60, 0, .25));
   transition: transform .25s var(--pf-spring);
 }
 .ews-md-mascot:hover { transform: scale(1.08) rotate(-3deg); }
+/* Lumi stands a little shorter, just to Lulu's right. */
+.ews-md-mascot.ews-md-lumi { left: 76px; width: 74px; height: 80px; filter: drop-shadow(0 6px 8px rgba(160, 40, 80, .22)); }
+.ews-md-mascot.ews-md-lumi:hover { transform: scale(1.08) rotate(3deg); }
+.ews-mascot-dock.is-hop .ews-md-lumi { animation-delay: .12s; }
 .ews-md-mascot .dan-svg { width: 100%; height: 100%; }
 .ews-mascot-dock:hover .m-arm-r,
 .ews-mascot-dock.is-wave .m-arm-r { animation: dan-wave .9s ease-in-out 2; }
@@ -392,7 +409,7 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 .ews-md-close:focus-visible { opacity: 1; transform: none; }
 
 .ews-md-bubble {
-  position: absolute; left: 70px; bottom: 74px;
+  position: absolute; left: 44px; bottom: 86px;
   width: max-content; max-width: 250px;
   background: #fff; color: #222;
   border: 2.5px solid var(--pf-ink); border-radius: 18px 18px 18px 4px;
@@ -403,6 +420,7 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
   pointer-events: none;
 }
 .ews-mascot-dock.is-talking .ews-md-bubble { opacity: 1; transform: none; pointer-events: auto; }
+.ews-mascot-dock.is-lumi-talking .ews-md-bubble { left: 112px; border-color: var(--lumi-accent, #e0447a); box-shadow: 3px 3px 0 var(--lumi-accent, #e0447a); }
 [data-theme="dark"] .ews-md-bubble { background: #1a1a1a; color: #eee; border-color: #555; }
 [data-theme="dark"] .ews-md-close { background: #1a1a1a; color: #eee; border-color: #555; }
 
@@ -410,8 +428,8 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
   /* Phones: the corner companion would sit on top of CTAs (and the chat
      bubble) — the header mascots carry the character there instead. */
   .ews-mascot-dock { display: none; }
-  .lh-mascot { width: 74px; right: 10px; }
-  :root .list-header { padding-right: 96px; }
+  .lh-mascot { width: 104px; right: 8px; }
+  :root .list-header { padding-right: 118px; }
 }
 @media print { .ews-mascot-dock, .lh-mascot { display: none !important; } }
 
@@ -427,6 +445,13 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
   animation: lulu-pop .7s var(--pf-spring) both;
 }
 .lulu-react .lr-mascot svg.dan-svg { width: 100%; height: auto; display: block; }
+.lulu-react.is-duo .lr-mascot { width: calc(var(--lr-size) * 1.7); }
+.lulu-react .pf-duo-lumi { animation: lulu-pop .7s var(--pf-spring) .18s both; }
+.lr-who { display: block; font-size: 11px; font-weight: 900; letter-spacing: .04em; margin-bottom: 2px; color: #d26a00; }
+.lr-by-lumi .lr-who { color: #e0447a; }
+.lulu-react.is-compact .lr-who { font-size: 10px; margin-bottom: 0; }
+[data-theme="dark"] .lr-who { color: #ffb35c; }
+[data-theme="dark"] .lr-by-lumi .lr-who { color: #ff8fb4; }
 .lulu-react .lr-bubble {
   position: relative; flex: 0 1 auto; min-width: 0; margin-bottom: calc(var(--lr-size) * .38);
   background: #fff; color: #222;
@@ -468,17 +493,18 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 
 /* [data-lulu-peek] — Lulu sitting in a header's top-right corner. */
 .lulu-peek {
-  float: right; width: 76px; margin: -6px 0 6px 14px;
+  float: right; width: 128px; margin: -6px 0 6px 14px;
   filter: drop-shadow(0 6px 8px rgba(120, 60, 0, .22));
   animation: pf-peek .9s var(--pf-spring) .25s both;
 }
 .lulu-peek .dan-svg { width: 100%; height: auto; display: block; }
-@media (max-width: 480px) { .lulu-peek { width: 58px; } }
+@media (max-width: 480px) { .lulu-peek { width: 98px; } }
 @media print { .lulu-peek { display: none !important; } }
 
 /* ── Respect reduced motion ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .dan-svg *, .sk-spark, .lh-mascot, .lulu-peek, .lulu-react .lr-mascot, .lulu-react .lr-bubble,
+  .pf-duo-heart, .lulu-react .pf-duo-lumi,
   :root #screen-list.active .list-container > *,
   :root #book-welcome > div > * { animation: none !important; }
   .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title { transition: none !important; }
