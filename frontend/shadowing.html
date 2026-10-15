@@ -50,6 +50,24 @@
     }
     .sh-chip.active { background: var(--brand); border-color: var(--brand); color: #fff; }
     .sh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    #sh-filters { scroll-margin-top: calc(var(--nav-height, 64px) + 16px); }
+
+    /* Pager under the grid — same look as listening.css / reading.css */
+    #sh-pagination { padding: 24px 0 32px; }
+    .pg-wrap { display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; }
+    .pg-btn {
+      min-width: 34px; height: 34px; padding: 0 9px; border-radius: 7px; border: 1px solid #e5e7eb;
+      background: #fff; color: #374151; font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
+      transition: background .12s, border-color .12s; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .pg-btn:hover:not(:disabled):not(.pg-active) { background: #f3f4f6; border-color: #d1d5db; }
+    .pg-btn.pg-active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+    .pg-btn:disabled { opacity: .38; cursor: default; }
+    .pg-ellipsis { color: #9ca3af; font-size: 13px; padding: 0 2px; }
+    .pg-info { font-size: 12px; color: #9ca3af; margin-left: 8px; white-space: nowrap; }
+    [data-theme="dark"] .pg-btn { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); color: #e5e7eb; }
+    [data-theme="dark"] .pg-btn:hover:not(:disabled):not(.pg-active) { background: var(--border2, #333333); border-color: #4b5563; }
+    [data-theme="dark"] .pg-btn.pg-active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
     .sh-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
       cursor: pointer; transition: var(--transition); display: flex; flex-direction: column;
@@ -322,6 +340,7 @@
     <div id="sh-grid" class="sh-grid">
       <div class="sh-loading"><i class="fas fa-spinner fa-spin"></i>Đang tải danh sách...</div>
     </div>
+    <div id="sh-pagination"></div>
   </div>
 
   <!-- ══════════════ PRACTICE ══════════════ -->
@@ -406,7 +425,7 @@
 
 </div>
 
-<script src="/js/shadowing.js?v=20261015big"></script>
+<script src="/js/shadowing.js?v=20261015pg"></script>
 <script src="https://www.youtube.com/iframe_api" async></script>
 
 <div id="dict-popup" class="dict-popup hidden">

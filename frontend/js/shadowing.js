@@ -58,6 +58,8 @@
   function toggleBigVideo() { bigVideo = !bigVideo; applyBigVideo(); savePrefs(); }
   let filterCat = '';
   let filterLevel = '';
+  let page = 1;
+  const PAGE_SIZE = 24; // fills 2, 3 or 4 grid columns evenly
   let lesson = null;
   let idx = 0;
   let mode = 'shadowing';
@@ -659,9 +661,13 @@
     const list = lessons.filter((l) => match(l, filterCat, filterLevel));
     if (!list.length) {
       $('sh-grid').innerHTML = '<div class="sh-empty"><i class="fas fa-video"></i>Chưa có bài nào trong mục này.</div>';
+      $('sh-pagination').innerHTML = '';
       return;
     }
-    $('sh-grid').innerHTML = list.map((l) => {
+    const pages = Math.ceil(list.length / PAGE_SIZE);
+    page = Math.min(Math.max(1, page), pages);
+    renderPagination(pages, list.length);
+    $('sh-grid').innerHTML = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((l) => {
       const p = l.progress || {};
       const pill = (m, icon) => p[m] != null
         ? `<span class="sh-pill ${p[m] >= 85 ? 'good' : ''}"><i class="fas ${icon}"></i> ${p[m]}%</span>` : '';
@@ -679,6 +685,23 @@
         </div>
       </div>`;
     }).join('');
+  }
+
+  // Same pager as listening/reading: ‹ 1 … 4 5 6 … 22 › · Trang x/y · n bài
+  function renderPagination(pages, total) {
+    if (pages <= 1) { $('sh-pagination').innerHTML = ''; return; }
+    let start = Math.max(1, page - 2);
+    let end = Math.min(pages, page + 2);
+    if (end - start < 4) { if (start === 1) end = Math.min(pages, 5); else start = Math.max(1, end - 4); }
+    const btn = (p, label, extra = '') => `<button class="pg-btn${extra}" data-page="${p}">${label}</button>`;
+    let html = '<div class="pg-wrap">';
+    html += `<button class="pg-btn" data-page="${page - 1}" ${page === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+    if (start > 1) { html += btn(1, 1); if (start > 2) html += '<span class="pg-ellipsis">…</span>'; }
+    for (let i = start; i <= end; i++) html += btn(i, i, i === page ? ' pg-active' : '');
+    if (end < pages) { if (end < pages - 1) html += '<span class="pg-ellipsis">…</span>'; html += btn(pages, pages); }
+    html += `<button class="pg-btn" data-page="${page + 1}" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+    html += `<span class="pg-info">Trang ${page}/${pages} · ${total} bài</span></div>`;
+    $('sh-pagination').innerHTML = html;
   }
 
   // ══════════════ OPEN / CLOSE A LESSON ══════════════
@@ -759,6 +782,7 @@
     const chip = e.target.closest('.sh-chip');
     if (!chip) return;
     filterCat = chip.dataset.cat;
+    page = 1;
     document.querySelectorAll('#sh-filters .sh-chip').forEach((c) => c.classList.toggle('active', c === chip));
     renderGrid();
   });
@@ -766,8 +790,16 @@
     const chip = e.target.closest('.sh-chip');
     if (!chip) return;
     filterLevel = chip.dataset.level;
+    page = 1;
     document.querySelectorAll('#sh-levels .sh-chip').forEach((c) => c.classList.toggle('active', c === chip));
     renderGrid();
+  });
+  $('sh-pagination').addEventListener('click', (e) => {
+    const b = e.target.closest('.pg-btn');
+    if (!b || b.disabled) return;
+    page = Number(b.dataset.page);
+    renderGrid();
+    $('sh-filters').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   $('sh-list').addEventListener('click', (e) => {
     const item = e.target.closest('.sh-item');
