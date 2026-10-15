@@ -2,7 +2,8 @@
  * js/shared/playful.js — the student-side "playful" layer
  *
  *   • Mascot      — Lulu, our round capybara with a tangerine on its head,
- *                   and Lumi, his girlfriend (pink, with a bow) — inline SVG,
+ *                   and Lumi, his girlfriend (same tangerine capybara with a
+ *                   bow, eyelashes and a frilly dress) — inline SVG,
  *                   several moods, blink / bob / look-at-cursor.
  *                   Replaces the old 🐼 emoji wherever the pages put one.
  *   • Mascot dock — a small companion in the corner of every student page:
@@ -35,54 +36,39 @@
      ══════════════════════════════════════════════════════════════════ */
   var uid = 0;
 
-  // Lulu (tangerine capybara) and Lumi, his girlfriend (pastel capybara
-  // with eyelashes) share one drawing; only the palette and what they wear
-  // change.
+  // Lulu and Lumi, his girlfriend, are the same tangerine-topped capybara;
+  // Lumi adds eyelashes, a bow on the left of her head and a frilly dress.
   var LULU_LOOK = {
     body: ['#ffd257', '#ffb534', '#ff9420'], muzzle: ['#ffa634', '#f58316'],
     arm: '#ffad33', ear: '#f5a020', earIn: '#e3871a', nose: '#7a3e12',
     cheek: '#ff6f6f', brow: '#7a4a1c',
   };
+  var LUMI_LOOK = Object.assign({}, LULU_LOOK, { cheek: '#ff6f8f' });
 
   /* ── Lumi's wardrobe ──────────────────────────────────────────────────
-     An outfit = { fur, accent, hat, ears, face }. Each day picks one (the
-     same on every page that day), the page adds its own item (headphones
-     on Listening, glasses on Reading, a pencil on Writing), late at night
-     she wears a nightcap, a top score earns a crown, and clicking her
-     enough makes her change clothes (kept for the rest of the day). */
-  var LUMI_FUR = {
-    hong: { name: 'hồng phấn', body: ['#ffe1d6', '#ffc3bb', '#ffa3a8'], muzzle: ['#ffc4b8', '#ffa59c'],
-      arm: '#ffbcb2', ear: '#ffa6a6', earIn: '#f0828f', nose: '#8a3b45', cheek: '#ff5f8a', brow: '#9a4a5c' },
-    tim: { name: 'tím lavender', body: ['#f1e6ff', '#dccaff', '#c4a6f4'], muzzle: ['#e4d2fd', '#cdb1f2'],
-      arm: '#d7c1fa', ear: '#c6a6f0', earIn: '#a983df', nose: '#5b3a7a', cheek: '#ff6fa6', brow: '#6d4a8f' },
-    mint: { name: 'xanh bạc hà', body: ['#e5fbf0', '#c3efdb', '#9fe0c2'], muzzle: ['#cff4e2', '#abe6cb'],
-      arm: '#bcecd6', ear: '#9adcbf', earIn: '#76c4a3', nose: '#2f6b55', cheek: '#ff7a9a', brow: '#3f7a64' },
-    dao: { name: 'cam đào', body: ['#ffeedd', '#ffd6b3', '#ffbd8f'], muzzle: ['#ffdcbf', '#ffc49b'],
-      arm: '#ffd2ab', ear: '#ffc193', earIn: '#f0a274', nose: '#8a4a2b', cheek: '#ff6f80', brow: '#9a5a3a' },
-    may: { name: 'xanh mây', body: ['#eaf5ff', '#cfe6ff', '#afd3fa'], muzzle: ['#d6eaff', '#b8d8fb'],
-      arm: '#c9e2fd', ear: '#a9cff7', earIn: '#86b6ea', nose: '#2d4f78', cheek: '#ff7fa8', brow: '#45658f' },
-  };
+     An outfit = { dress, pattern, hat, ears, face }. Each day picks one
+     (the same on every page that day), the page adds its own item
+     (headphones on Listening, glasses on Reading, a pencil on Writing),
+     late at night she wears a nightcap, a top score earns a crown, and
+     clicking her enough makes her change clothes (kept for the day). */
   // light → main → dark
   var LUMI_ACCENT = {
-    hong: ['#ff8fb4', '#ff5d8f', '#e0447a'],
-    do:   ['#ff8a8a', '#ef4b4b', '#b92e2e'],
-    tim:  ['#c9a2ff', '#9b6cf0', '#6f43c2'],
-    vang: ['#ffe07a', '#ffc531', '#d99a00'],
-    xanh: ['#8fd3ff', '#4aa8f0', '#2a78c2'],
-    mint: ['#8de6c0', '#3fc493', '#24936b'],
+    hong: ['#ffc2d6', '#ff8fb4', '#e0447a'],
+    tim:  ['#e2cfff', '#b48cf5', '#6f43c2'],
+    mint: ['#c9f3df', '#6fd6a8', '#24936b'],
+    xanh: ['#cfe8ff', '#7cbcf5', '#2a78c2'],
+    do:   ['#ffc4c4', '#f26b6b', '#b92e2e'],
   };
-  // Accents that look good on each fur.
-  var FUR_ACCENTS = {
-    hong: ['hong', 'do', 'tim'], tim: ['vang', 'hong', 'tim'], mint: ['hong', 'vang', 'do'],
-    dao: ['do', 'mint', 'xanh'], may: ['vang', 'hong', 'tim'],
-  };
+  var DRESS_NAMES = { hong: 'hồng', tim: 'tím', mint: 'xanh bạc hà', xanh: 'xanh dương', do: 'đỏ' };
+  var PATTERN_NAMES = { dots: 'chấm bi', lace: 'viền ren', strawberry: 'hoạ tiết dâu' };
   var HAT_NAMES = {
-    bow: 'nơ xinh', flower: 'hoa cài tóc', beret: 'mũ nồi', strawberry: 'kẹp dâu tây',
+    bow: 'nơ xinh', flower: 'hoa cài tóc', strawberry: 'kẹp dâu tây', bonnet: 'mũ bèo',
     crown: 'vương miện', nightcap: 'mũ ngủ',
   };
-  var DAILY_HATS = ['bow', 'flower', 'beret', 'strawberry'];
-  var FUR_KEYS = Object.keys(LUMI_FUR);
-  var OUTFIT_KEY = 'ews_lumi_outfit';
+  var DRESSES = ['hong', 'hong', 'tim', 'mint', 'xanh', 'do']; // pink is her signature
+  var PATTERNS = ['dots', 'lace', 'strawberry'];
+  var DAILY_HATS = ['bow', 'bow', 'flower', 'strawberry', 'bonnet'];
+  var OUTFIT_KEY = 'ews_lumi_outfit_v2';
 
   function dayNumber() {
     var d = new Date();
@@ -99,13 +85,12 @@
   }
 
   function randomOutfit(not) {
+    var r = function (arr) { return arr[Math.floor(Math.random() * arr.length)]; };
     for (var i = 0; i < 8; i++) {
-      var fur = FUR_KEYS[Math.floor(Math.random() * FUR_KEYS.length)];
-      var acc = FUR_ACCENTS[fur][Math.floor(Math.random() * 3)];
-      var hat = DAILY_HATS[Math.floor(Math.random() * DAILY_HATS.length)];
-      if (!not || not.fur !== fur || not.hat !== hat) return { fur: fur, accent: acc, hat: hat };
+      var o = { dress: r(DRESSES), pattern: r(PATTERNS), hat: r(DAILY_HATS) };
+      if (!not || not.dress !== o.dress || not.hat !== o.hat) return o;
     }
-    return { fur: 'hong', accent: 'hong', hat: 'bow' };
+    return { dress: 'hong', pattern: 'dots', hat: 'bow' };
   }
 
   // Today's base outfit: the one she changed into today, else a pick from
@@ -113,15 +98,14 @@
   function baseOutfit() {
     try {
       var saved = JSON.parse(localStorage.getItem(OUTFIT_KEY) || 'null');
-      if (saved && saved.day === dayNumber() && LUMI_FUR[saved.fur]) return { fur: saved.fur, accent: saved.accent, hat: saved.hat };
+      if (saved && saved.day === dayNumber() && LUMI_ACCENT[saved.dress]) return { dress: saved.dress, pattern: saved.pattern, hat: saved.hat };
     } catch (e) {}
     var n = dayNumber();
-    var fur = FUR_KEYS[n % FUR_KEYS.length];
-    return { fur: fur, accent: FUR_ACCENTS[fur][(n * 7) % 3], hat: DAILY_HATS[(n * 3 + 1) % DAILY_HATS.length] };
+    return { dress: DRESSES[n % DRESSES.length], pattern: PATTERNS[(n * 7) % PATTERNS.length], hat: DAILY_HATS[(n * 3 + 1) % DAILY_HATS.length] };
   }
 
   function saveOutfit(o) {
-    try { localStorage.setItem(OUTFIT_KEY, JSON.stringify({ day: dayNumber(), fur: o.fur, accent: o.accent, hat: o.hat })); } catch (e) {}
+    try { localStorage.setItem(OUTFIT_KEY, JSON.stringify({ day: dayNumber(), dress: o.dress, pattern: o.pattern, hat: o.hat })); } catch (e) {}
   }
 
   // The outfit as worn right now on this page.
@@ -200,19 +184,20 @@
     }
   }
 
-  // Lulu's tangerine. Wrapped in .m-fruit so it wobbles.
-  function tangerine(id) {
-    return '<g class="m-fruit">' +
-      '<circle cx="60" cy="24" r="12" fill="url(#' + id + 'f)"/>' +
+  // The tangerine both of them wear (gradient id+'t'). Wrapped in .m-fruit
+  // so it wobbles. Lumi's sits a bit smaller and to the right.
+  function tangerine(id, small) {
+    var t = '<g class="m-fruit">' +
+      '<circle cx="60" cy="24" r="12" fill="url(#' + id + 't)"/>' +
       '<ellipse cx="55.5" cy="19.5" rx="3.6" ry="2.2" fill="#fff" opacity=".45"/>' +
       '<path d="M60 13 L60 9" stroke="#5b8a2b" stroke-width="2.2" stroke-linecap="round"/>' +
       '<path d="M60 11 C64 4 72 5 74 8 C70 12 64 13 60 11 Z" fill="#5fb84a"/>' +
     '</g>';
+    return small ? '<g transform="translate(66 26) scale(.86) translate(-60 -24)">' + t + '</g>' : t;
   }
 
-  function heartClip(fill) {
-    return '<path d="M44 34 C44 31 48 30.5 49 33 C50 30.5 54 31 54 34 C54 37 49 40 49 40 C49 40 44 37 44 34 Z" fill="' + fill + '"/>';
-  }
+  // Draws a right-side head piece on the left (mirrored around x = 60).
+  function onLeft(markup) { return '<g transform="translate(120 0) scale(-1 1)">' + markup + '</g>'; }
 
   function flowerAt(cx, cy, r, petal, center) {
     var out = '';
@@ -223,39 +208,50 @@
     return out + '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * .75).toFixed(1) + '" fill="' + center + '"/>';
   }
 
-  // Lumi's head piece (A = accent light/main/dark; id+'f' is a gradient in
-  // the accent colour). Wrapped in .m-fruit so it wobbles like the tangerine.
+  // Points along the quadratic curve p0 → (control c) → p1.
+  function alongQuad(p0, c, p1, n) {
+    var pts = [];
+    for (var i = 0; i <= n; i++) {
+      var t = i / n, u = 1 - t;
+      pts.push([u * u * p0[0] + 2 * u * t * c[0] + t * t * p1[0], u * u * p0[1] + 2 * u * t * c[1] + t * t * p1[1]]);
+    }
+    return pts;
+  }
+
+  // Lumi's head piece (A = dress colours light/main/dark; id+'f' is a
+  // gradient in them). Side pieces sit on the left, the tangerine on top.
   function lumiHat(hat, A, id) {
     var grad = 'url(#' + id + 'f)';
     switch (hat) {
       case 'flower':
-        return '<g class="m-fruit">' +
-          '<path d="M62 37 C62 31 66 28 70 29 C69 33 66 36 62 37 Z" fill="#5fb84a"/>' +
-          flowerAt(73, 29, 6, A[1], '#ffd23f') +
-          flowerAt(47, 34, 3, '#fff', A[0]) +
-        '</g>';
-      case 'beret':
-        return '<g class="m-fruit">' +
-          '<path d="M30 39 C27 27 50 18 71 19 C88 20 94 28 88 34 C80 40 46 43 30 39 Z" fill="' + grad + '"/>' +
-          '<path d="M33 39 Q60 45 86 35" fill="none" stroke="' + A[2] + '" stroke-width="2.6" stroke-linecap="round"/>' +
-          '<path d="M64 19 L65 13" stroke="' + A[2] + '" stroke-width="3" stroke-linecap="round"/>' +
-          '<ellipse cx="50" cy="25" rx="6" ry="2.2" fill="#fff" opacity=".35" transform="rotate(-12 50 25)"/>' +
+        return tangerine(id, true) + '<g class="m-fruit">' +
+          '<path d="M52 38 C51 32 47 29 43 30 C44 34 48 37 52 38 Z" fill="#5fb84a"/>' +
+          flowerAt(44, 31, 6, A[1], '#ffd23f') +
+          flowerAt(55, 36, 2.8, '#fff', A[0]) +
         '</g>';
       case 'strawberry':
-        return '<g class="m-fruit">' +
+        return tangerine(id, true) + '<g class="m-fruit">' + onLeft(
           '<path d="M74 22 C82 22 85 28 83 34 C81 40 76 44 74 44 C72 44 67 40 65 34 C63 28 66 22 74 22 Z" fill="#ff4b5c"/>' +
           '<g fill="#ffe08a"><ellipse cx="70" cy="30" rx=".9" ry="1.3"/><ellipse cx="77" cy="29" rx=".9" ry="1.3"/><ellipse cx="73.5" cy="35" rx=".9" ry="1.3"/><ellipse cx="79" cy="35" rx=".9" ry="1.3"/><ellipse cx="69.5" cy="37" rx=".9" ry="1.3"/><ellipse cx="74" cy="40.5" rx=".9" ry="1.3"/></g>' +
           '<path d="M66 23 L70 20 L71 15.5 L74 19.5 L77.5 15.5 L78 20.5 L83 22 L77 25 L71 25 Z" fill="#4fb848"/>' +
-          '<ellipse cx="69" cy="27" rx="1.8" ry="1" fill="#fff" opacity=".55"/>' +
-          heartClip(A[1]) +
+          '<ellipse cx="78" cy="27" rx="1.8" ry="1" fill="#fff" opacity=".55"/>') +
         '</g>';
-      case 'crown':
+      case 'bonnet': { // frilly cap, like her movie-night look
+        var frill = alongQuad([25, 50], [60, 34], [95, 50], 9).map(function (pt) {
+          return '<circle cx="' + pt[0].toFixed(1) + '" cy="' + pt[1].toFixed(1) + '" r="4.6"/>';
+        }).join('');
         return '<g class="m-fruit">' +
-          '<path d="M42 31 L45 13 L53 23 L60 8 L67 23 L75 13 L78 31 Z" fill="#ffcf3a" stroke="#c98a00" stroke-width="1.4" stroke-linejoin="round"/>' +
-          '<path d="M42 31 L78 31" stroke="#c98a00" stroke-width="2.4" stroke-linecap="round"/>' +
-          '<circle cx="60" cy="25" r="2.8" fill="#ff5d8f"/><circle cx="50" cy="27" r="1.9" fill="#4aa8f0"/><circle cx="70" cy="27" r="1.9" fill="#3fc493"/>' +
-          '<circle cx="45" cy="13" r="1.8" fill="#fff3b0"/><circle cx="60" cy="8" r="1.8" fill="#fff3b0"/><circle cx="75" cy="13" r="1.8" fill="#fff3b0"/>' +
-        '</g>';
+          '<path d="M25 50 C21 30 40 20 60 20 C80 20 99 30 95 50 Q60 34 25 50 Z" fill="' + A[0] + '"/>' +
+          '<g fill="' + A[1] + '" opacity=".75"><circle cx="40" cy="31" r="1.8"/><circle cx="52" cy="26" r="1.8"/><circle cx="68" cy="26" r="1.8"/><circle cx="80" cy="31" r="1.8"/><circle cx="60" cy="33" r="1.6"/><circle cx="46" cy="38" r="1.5"/><circle cx="74" cy="38" r="1.5"/></g>' +
+          '<g fill="#fff" stroke="' + A[0] + '" stroke-width="1.2">' + frill + '</g>' +
+        '</g>' + tangerine(id, true);
+      }
+      case 'crown':
+        return tangerine(id, true) + '<g class="m-fruit"><g transform="translate(44 31) rotate(-20) scale(.55) translate(-60 -22)">' +
+          '<path d="M42 31 L45 13 L53 23 L60 8 L67 23 L75 13 L78 31 Z" fill="#ffcf3a" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/>' +
+          '<circle cx="60" cy="25" r="3.4" fill="#ff5d8f"/><circle cx="50" cy="27" r="2.4" fill="#4aa8f0"/><circle cx="70" cy="27" r="2.4" fill="#3fc493"/>' +
+          '<circle cx="45" cy="13" r="2.4" fill="#fff3b0"/><circle cx="60" cy="8" r="2.4" fill="#fff3b0"/><circle cx="75" cy="13" r="2.4" fill="#fff3b0"/>' +
+        '</g></g>';
       case 'nightcap':
         return '<g class="m-fruit">' +
           '<path d="M33 39 C36 24 52 17 66 18 C84 19 98 30 105 49 C96 41 89 38 86 37 Q60 31 33 39 Z" fill="' + grad + '"/>' +
@@ -263,18 +259,45 @@
           '<path d="M32 40 Q60 31 88 38" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>' +
           '<circle cx="105" cy="50" r="5" fill="#fff"/>' +
         '</g>';
-      default: // bow
-        return '<g class="m-fruit">' +
-          '<g transform="rotate(14 72 31)">' +
-            '<path d="M72 31 C64 19 51 21 53 31 C55 41 65 39 72 31 Z" fill="' + grad + '"/>' +
-            '<path d="M72 31 C80 19 93 21 91 31 C89 41 79 39 72 31 Z" fill="' + grad + '"/>' +
-            '<path d="M70 33 L65 43 L69 41.5 L71 45 Z" fill="' + A[2] + '"/><path d="M74 33 L79 43 L75 41.5 L73 45 Z" fill="' + A[2] + '"/>' +
-            '<ellipse cx="59" cy="27" rx="3" ry="1.8" fill="#fff" opacity=".5"/>' +
-            '<circle cx="72" cy="31" r="4.6" fill="' + A[0] + '" stroke="' + A[2] + '" stroke-width="1.4"/>' +
-          '</g>' +
-          heartClip(A[1]) +
+      default: // bow — big and soft, on the left like in the films
+        return tangerine(id, true) + '<g class="m-fruit">' + onLeft(
+          '<g transform="rotate(10 74 32)">' +
+            '<path d="M73 36 L69 44 L72.5 43 L74 46 Z M75 36 L79 44 L75.5 43 L74 46 Z" fill="' + A[1] + '"/>' +
+            '<path d="M74 32 C64 17 47 20 50 33 C53 46 66 41 74 32 Z" fill="' + grad + '" stroke="#fff" stroke-width="1.8" stroke-dasharray="2.4 1.6"/>' +
+            '<path d="M74 32 C84 17 101 20 98 33 C95 46 82 41 74 32 Z" fill="' + grad + '" stroke="#fff" stroke-width="1.8" stroke-dasharray="2.4 1.6"/>' +
+            '<path d="M58 26 Q62 32 57 39 M90 26 Q86 32 91 39" fill="none" stroke="' + A[2] + '" stroke-width="1.3" stroke-linecap="round" opacity=".45"/>' +
+            '<ellipse cx="57" cy="26" rx="3.2" ry="1.8" fill="#fff" opacity=".65"/>' +
+            '<ellipse cx="74" cy="32" rx="4.6" ry="5.4" fill="' + A[1] + '"/>' +
+            '<ellipse cx="73" cy="30.5" rx="1.6" ry="1.2" fill="#fff" opacity=".6"/>' +
+          '</g>') +
         '</g>';
     }
+  }
+
+  // The frilly dress: a skirt flaring out from under the muzzle, a waist
+  // ribbon with a tiny bow, and a pattern.
+  function lumiDress(pattern, A, id) {
+    var hem = '', x = 104;
+    for (var i = 0; i < 8; i++) { hem += ' Q' + (x - 5.5) + ' 127 ' + (x - 11) + ' 120'; x -= 11; }
+    var skirt = 'M27 101 Q60 112 93 101 L104 120' + hem + ' Z';
+    var deco = '';
+    var spots = [[33, 110], [46, 114], [60, 116], [74, 114], [87, 110], [26, 117], [40, 120], [80, 120], [94, 117], [53, 121], [67, 121]];
+    if (pattern === 'lace') {
+      for (var k = 0; k < 15; k++) deco += '<circle cx="' + (19 + k * 6) + '" cy="120.5" r="2.4"/>';
+      deco = '<g fill="#fff" opacity=".9">' + deco + '</g>' +
+        '<path d="M22 114 Q60 122 98 114" fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 2.4" opacity=".85"/>';
+    } else if (pattern === 'strawberry') {
+      deco = spots.map(function (p) {
+        return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.2" fill="#ff4b5c"/><path d="M' + (p[0] - 1.8) + ' ' + (p[1] - 1.8) + ' L' + p[0] + ' ' + (p[1] - 3.2) + ' L' + (p[0] + 1.8) + ' ' + (p[1] - 1.8) + '" fill="#4fb848"/>';
+      }).join('');
+    } else { // dots
+      deco = '<g fill="#fff" opacity=".85">' + spots.map(function (p) { return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="1.7"/>'; }).join('') + '</g>';
+    }
+    return '<clipPath id="' + id + 'd"><path d="' + skirt + '"/></clipPath>' +
+      '<path d="' + skirt + '" fill="url(#' + id + 'f)"/>' +
+      '<g clip-path="url(#' + id + 'd)">' + deco + '</g>' +
+      '<path d="M27 101 Q60 112 93 101" fill="none" stroke="' + A[2] + '" stroke-width="2.6" stroke-linecap="round"/>' +
+      '<g fill="' + A[2] + '"><path d="M60 106.5 L54 103 L54 110 Z"/><path d="M60 106.5 L66 103 L66 110 Z"/><circle cx="60" cy="106.5" r="2"/></g>';
   }
 
   function lumiEars(item, A) {
@@ -283,11 +306,11 @@
         '<rect x="14" y="51" width="14" height="23" rx="6.5" fill="' + A[1] + '"/><rect x="92" y="51" width="14" height="23" rx="6.5" fill="' + A[1] + '"/>' +
         '<rect x="17" y="55" width="5" height="15" rx="2.5" fill="#fff" opacity=".45"/><rect x="98" y="55" width="5" height="15" rx="2.5" fill="#fff" opacity=".45"/>';
     }
-    if (item === 'pencil') { // tucked behind the left ear (the hat sits right)
-      return '<g transform="translate(120 0) scale(-1 1)"><g transform="rotate(-32 92 34)">' +
+    if (item === 'pencil') { // tucked behind the right ear (the bow sits left)
+      return '<g transform="rotate(-32 92 34)">' +
         '<rect x="77" y="31" width="23" height="6" rx="1" fill="#ffd23f" stroke="#c98a00" stroke-width=".8"/>' +
         '<path d="M100 31 L106 34 L100 37 Z" fill="#f5d6a8"/><path d="M104.2 33.1 L106 34 L104.2 34.9 Z" fill="#3b2716"/>' +
-        '<rect x="74" y="31" width="4" height="6" rx="1" fill="' + A[0] + '"/></g></g>';
+        '<rect x="74" y="31" width="4" height="6" rx="1" fill="' + A[1] + '"/></g>';
     }
     return '';
   }
@@ -305,13 +328,12 @@
     opts = opts || {};
     var who = opts.who === 'lumi' ? 'lumi' : 'lulu';
     var O = who === 'lumi' ? lumiOutfit(opts.outfit) : null;
-    var L = O ? LUMI_FUR[O.fur] || LUMI_FUR.hong : LULU_LOOK;
-    var A = O ? LUMI_ACCENT[O.accent] || LUMI_ACCENT.hong : null;
+    var L = O ? LUMI_LOOK : LULU_LOOK;
+    var A = O ? LUMI_ACCENT[O.dress] || LUMI_ACCENT.hong : null;
     var id = 'm' + (++uid);
     var cheek = mood === 'angry' ? '.7' : who === 'lumi' ? '.55' : '.42';
-    var hat = O
-      ? '<linearGradient id="' + id + 'f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + A[0] + '"/><stop offset="1" stop-color="' + A[1] + '"/></linearGradient>'
-      : '<radialGradient id="' + id + 'f" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ff6a13"/></radialGradient>';
+    var hat = '<radialGradient id="' + id + 't" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ff6a13"/></radialGradient>' +
+      (O ? '<linearGradient id="' + id + 'f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + A[0] + '"/><stop offset="1" stop-color="' + A[1] + '"/></linearGradient>' : '');
     return '<svg class="dan-svg is-' + who + ' mood-' + esc(mood) + (opts.cls ? ' ' + esc(opts.cls) : '') + '" viewBox="0 0 120 128" ' +
       'role="img" aria-label="' + esc(opts.label || (who === 'lumi' ? 'Lumi' : 'Lulu')) + '" data-eyes>' +
       '<defs>' +
@@ -333,6 +355,7 @@
         '<g fill="' + L.nose + '"><ellipse cx="53" cy="79" rx="2.3" ry="1.7"/><ellipse cx="67" cy="79" rx="2.3" ry="1.7"/></g>' +
         // cheeks
         '<g fill="' + L.cheek + '" opacity="' + cheek + '"><ellipse cx="33" cy="76" rx="6" ry="3.6"/><ellipse cx="87" cy="76" rx="6" ry="3.6"/></g>' +
+        (O ? lumiDress(O.pattern, A, id) : '') +
         eyes(mood, !!O) + brows(mood, L.brow) + mouth(mood) +
         (O ? lumiEars(O.ears, A) + lumiFace(O.face, A) + lumiHat(O.hat, A, id) : tangerine(id)) +
       '</g>' +
@@ -350,7 +373,7 @@
   // opts.lumiOutfit: overrides for Lumi's outfit (e.g. { hat: 'crown' }).
   function duoHtml(mood, opts) {
     opts = opts || {};
-    var heart = (LUMI_ACCENT[lumiOutfit(opts.lumiOutfit).accent] || LUMI_ACCENT.hong)[1];
+    var heart = (LUMI_ACCENT[lumiOutfit(opts.lumiOutfit).dress] || LUMI_ACCENT.hong)[1];
     return '<span class="pf-duo">' +
       '<span class="pf-duo-lulu">' + svg(mood, { label: 'Lulu' }) + '</span>' +
       '<span class="pf-duo-lumi">' + svg(opts.lumiMood || lumiMoodFor(mood), { who: 'lumi', label: 'Lumi', outfit: opts.lumiOutfit }) + '</span>' +
@@ -596,7 +619,7 @@
       'Information không đếm được, đừng thêm -s nha, Lumi soi kỹ lắm 🔍',
     ],
     girly: [
-      'Hôm nay Lumi điệu hông? Lulu khen rồi đó nha 💅',
+      'Hôm nay Lumi mặc váy mới nè, điệu hông? Lulu khen rồi đó nha 💅',
       'Lumi mê dâu tây nhất trên đời, nhì là học sinh chăm chỉ 🍓💕',
       'Bí mật nè: Lulu toàn lén ăn quýt trong giờ học 🤫🍊',
     ],
@@ -614,6 +637,7 @@
     [['lumi', 'Lulu lại ngủ gật lúc nghe Listening hả? 😤', 'shock'], ['lulu', 'Đâu có… tớ nhắm mắt để nghe kỹ hơn thôi 😴', 'sleepy']],
     [['lumi', 'Lulu, "information" có -s không?', 'think'], ['lulu', 'Ờ… có… à không! Không đếm được! 😅', 'shock']],
     [['lumi', 'Lulu thương Lumi nhiều không?', 'wink'], ['lulu', 'Nhiều hơn cả band 9 luôn 🥹💕', 'excited']],
+    [['lumi', 'Lulu ơi, cái quần dưa hấu của cậu đâu rồi? 🍉', 'think'], ['lulu', 'Suỵt! Lên lớp phải ăn mặc lịch sự chứ 😳', 'shock']],
   ];
 
   var LULU_COMPLIMENTS = ['Xinh xỉu luôn á 😍', 'Đẹp hơn cả quả quýt của tớ luôn 🥹', 'Ai cho Lumi xinh dữ vậy trời 🫣'];
@@ -694,14 +718,14 @@
     });
   }
 
-  // Lumi puts on a new outfit (kept for the rest of the day, on every page).
+  // Lumi puts on a new dress + head piece (kept for the rest of the day).
   function changeOutfit() {
     var o = randomOutfit(baseOutfit());
     saveOutfit(o);
     var shown = lumiOutfit();
     paintAccent();
     dialog([
-      ['lumi', 'Ta-da! Lumi thay đồ ' + LUMI_FUR[o.fur].name + ' với ' + HAT_NAMES[shown.hat] + ' nè, xinh hông? ✨', 'excited'],
+      ['lumi', 'Ta-da! Lumi mặc váy ' + DRESS_NAMES[o.dress] + ' ' + PATTERN_NAMES[o.pattern] + ' với ' + HAT_NAMES[shown.hat] + ' nè, xinh hông? ✨', 'excited'],
       ['lulu', pick(LULU_COMPLIMENTS), 'excited'],
     ]);
     hop();
@@ -710,7 +734,7 @@
   // The speech bubble takes Lumi's accent colour when she talks.
   function paintAccent() {
     if (!dock) return;
-    var A = LUMI_ACCENT[lumiOutfit().accent] || LUMI_ACCENT.hong;
+    var A = LUMI_ACCENT[lumiOutfit().dress] || LUMI_ACCENT.hong;
     dock.style.setProperty('--lumi-accent', A[2]);
   }
 
