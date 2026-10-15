@@ -322,7 +322,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=20261015';
+    petScript.src = '/js/shared/pets.js?v=20261015vi';
     document.body.appendChild(petScript);
   }
 

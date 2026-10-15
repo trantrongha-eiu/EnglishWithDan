@@ -104,3 +104,7 @@
   .ews-pet *, .pet-badge * { animation: none !important; }
 }
 @media print { .ews-pet-layer { display: none !important; } }
+
+/* Sên Lục Vĩ has no legs — it squishes forward instead of stepping. */
+.ews-pet.is-walking .pt-squish { animation: pt-squish .55s ease-in-out infinite alternate; }
+@keyframes pt-squish { from { transform: scale(1, 1); } to { transform: scale(1.06, .93); } }

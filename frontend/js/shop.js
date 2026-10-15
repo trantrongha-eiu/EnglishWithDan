@@ -1,7 +1,8 @@
 /**
  * shop.js — Cửa hàng lửa (shop.html). Reads GET /api/shop, renders the
  * wallet, the active effects, the item cards and the linh thú cards, and
- * posts buy / use / pick-a-pet. The catalog (names, prices, descriptions)
+ * posts purchases. Using / walking / selling happens in the Kho đồ tab
+ * (js/inventory.js on profile.html). The catalog (names, prices, descriptions)
  * comes from the server (backend/constants/shop.js); only the pet art lives
  * here, in js/shared/pets.js.
  *
@@ -80,21 +81,14 @@
         el.hidden = !rows.length;
     }
 
+    // The shop only sells — using, walking a pet and selling back all live
+    // in the Kho đồ tab on profile.html (js/inventory.js).
+    var KHO = 'profile.html#inventory';
     function itemAction(i) {
         var canBuy = state.wallet >= i.price && !(i.maxOwned && i.owned >= i.maxOwned);
-        var buy = '<button type="button" class="btn btn-primary btn-sm" data-buy="' + i.key + '"' + (canBuy ? '' : ' disabled') + '>'
-            + (i.maxOwned && i.owned >= i.maxOwned ? 'Đã đầy' : 'Mua · 🔥 ' + i.price) + '</button>';
-        var use = '';
-        if (i.usage === 'manual') {
-            var blocked = i.key === 'hopeHammer' && state.effects && state.effects.hope;
-            use = '<button type="button" class="btn btn-ghost btn-sm" data-use="' + i.key + '"' + (i.owned && !blocked ? '' : ' disabled') + '>'
-                + (blocked ? 'Đang dùng' : 'Dùng') + '</button>';
-        } else if (i.usage === 'target') {
-            use = '<a class="btn btn-ghost btn-sm' + (i.owned ? '' : ' is-disabled') + '" href="vocab-leaderboard.html"' + (i.owned ? '' : ' aria-disabled="true" tabindex="-1"') + '>Ném ở BXH</a>';
-        } else {
-            use = '<span class="shop-passive">Tự động bật</span>';
-        }
-        return buy + use;
+        return '<button type="button" class="btn btn-primary btn-sm" data-buy="' + i.key + '"' + (canBuy ? '' : ' disabled') + '>'
+            + (i.maxOwned && i.owned >= i.maxOwned ? 'Đã đầy' : 'Mua · 🔥 ' + i.price) + '</button>'
+            + (i.owned ? '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Mở kho</a>' : '');
     }
 
     function renderItems() {
@@ -112,20 +106,25 @@
     }
 
     function renderPets() {
-        var el = document.getElementById('shop-pets');
+        renderPetGrid('shop-pets', state.pets.filter(function (p) { return p.tier !== 'vi'; }));
+        renderPetGrid('shop-beasts', state.pets.filter(function (p) { return p.tier === 'vi'; }));
+    }
+
+    function renderPetGrid(id, pets) {
+        var el = document.getElementById(id);
+        if (!el) return;
         el.removeAttribute('aria-busy');
-        el.innerHTML = state.pets.map(function (p) {
+        el.innerHTML = pets.map(function (p) {
             var active = state.activePet === p.id;
             var action;
             if (!p.owned) {
                 action = '<button type="button" class="btn btn-primary btn-sm" data-buy-pet="' + p.id + '"' + (state.wallet >= p.price ? '' : ' disabled') + '>Mua · 🔥 ' + p.price + '</button>';
-            } else if (active) {
-                action = '<span class="shop-walking">✓ Đang đi dạo</span>'
-                    + '<button type="button" class="btn btn-ghost btn-sm" data-pet="">Cất về</button>';
             } else {
-                action = '<button type="button" class="btn btn-primary btn-sm" data-pet="' + p.id + '">Dắt đi dạo</button>';
+                action = (active ? '<span class="shop-walking">✓ Đang đi dạo</span>' : '')
+                    + '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Trong kho</a>';
             }
-            return '<article class="shop-card shop-pet' + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
+            return '<article class="shop-card shop-pet' + (p.tier === 'vi' ? ' shop-pet--vi' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
+                + (p.tails ? '<span class="shop-tails" title="' + p.tails + ' đuôi">' + p.tails + ' đuôi</span>' : '')
                 + '<div class="shop-pet-stage"><div class="ews-pet is-walking shop-pet-preview">' + (window.Pets ? window.Pets.svg(p.id) : '') + '</div></div>'
                 + '<h3>' + escHtml(p.name) + (p.owned ? ' <span class="shop-tag">Của bạn</span>' : '') + '</h3>'
                 + '<p>' + escHtml(p.description) + '</p>'
@@ -149,21 +148,7 @@
         var i = itemByKey(key);
         confirmThen('Mua ' + i.name + '?', 'Trừ ' + i.price + ' 🔥 trong ví lửa (chuỗi không bị trừ).', 'Mua', function () {
             busy = true;
-            api('POST', '/shop/buy', { kind: 'item', key: key }).then(function (d) { after(d, i.emoji + ' Đã mua ' + i.name + '!'); });
-        });
-    }
-    function useItem(key) {
-        var i = itemByKey(key);
-        var msg = {
-            hopeHammer: 'Từ giờ đến hết hôm nay mọi 🔥 kiếm được đều ×2. Nhưng nếu đến nửa đêm chưa kiếm thêm đủ 3 🔥 thì chuỗi bị trừ 10 🔥. Chơi không?',
-            cloak: 'Giấu số 🔥 của bạn trên BXH trong 24 giờ.',
-            crown: 'Đội vương miện, tên bạn phát sáng trên BXH trong 7 ngày.',
-        }[key] || '';
-        confirmThen('Dùng ' + i.name + '?', msg, key === 'hopeHammer' ? 'Đập búa! 🔨' : 'Dùng', function () {
-            busy = true;
-            api('POST', '/shop/use', { key: key }).then(function (d) {
-                after(d, key === 'hopeHammer' ? '🔨 Búa đã đập — hôm nay lửa ×2, học ngay thôi!' : i.emoji + ' Đã dùng ' + i.name + '!');
-            });
+            api('POST', '/shop/buy', { kind: 'item', key: key }).then(function (d) { after(d, i.emoji + ' Đã mua ' + i.name + ' — cất trong Kho đồ (trang cá nhân).'); });
         });
     }
     function buyPet(id) {
@@ -176,21 +161,11 @@
             });
         });
     }
-    function setPet(id) {
-        busy = true;
-        api('PUT', '/shop/pet', { petId: id }).then(function (d) {
-            if (d && d.success && window.Pets) window.Pets.setActive(d.activePet);
-            after(d, id ? '🐾 ' + petById(id).name + ' ra ngoài đi dạo rồi!' : 'Linh thú đã về nghỉ.');
-        });
-    }
-
     document.addEventListener('click', function (e) {
-        var b = e.target.closest && e.target.closest('button[data-buy],button[data-use],button[data-buy-pet],button[data-pet]');
+        var b = e.target.closest && e.target.closest('button[data-buy],button[data-buy-pet]');
         if (!b || b.disabled || busy || !state) return;
         if (b.hasAttribute('data-buy')) buyItem(b.getAttribute('data-buy'));
-        else if (b.hasAttribute('data-use')) useItem(b.getAttribute('data-use'));
-        else if (b.hasAttribute('data-buy-pet')) buyPet(b.getAttribute('data-buy-pet'));
-        else setPet(b.getAttribute('data-pet'));
+        else buyPet(b.getAttribute('data-buy-pet'));
     });
 
     function load() {
@@ -200,7 +175,7 @@
             render();
         }).catch(function (err) {
             if (window.console) console.warn('[shop] load failed', err);
-            ['shop-items', 'shop-pets'].forEach(function (id) {
+            ['shop-items', 'shop-pets', 'shop-beasts'].forEach(function (id) {
                 var el = document.getElementById(id);
                 el.removeAttribute('aria-busy');
                 el.innerHTML = '<div class="shop-empty">Không tải được cửa hàng. <button type="button" class="btn btn-ghost btn-sm" onclick="location.reload()">Thử lại</button></div>';

@@ -98,8 +98,8 @@ async function getState(userId) {
   return {
     wallet: u.flameWallet || 0,
     streak: u.learningStreak || 0,
-    items: ITEMS.map(i => ({ ...i, owned: items[i.key] || 0 })),
-    pets: PETS.map(p => ({ ...p, owned: (u.pets || []).includes(p.id) })),
+    items: ITEMS.map(i => ({ ...i, owned: items[i.key] || 0, sellPrice: sellPrice(i.price) })),
+    pets: PETS.map(p => ({ ...p, owned: (u.pets || []).includes(p.id), sellPrice: sellPrice(p.price) })),
     activePet: u.activePet || '',
     effects: {
       hope: hopeToday ? { base: u.hopeHammerBase || 0, quota: HOPE_QUOTA, penalty: HOPE_PENALTY } : null,
@@ -244,6 +244,44 @@ async function throwCake(userId, targetId) {
   return { status: 'ok', owned: spent.shopItems.cake, targetName: displayName(hit) };
 }
 
+// Kho đồ (profile.html): sell one owned item / a linh thú back for half
+// its price (rounded down). Selling the pet that is out walking sends it
+// home (activePet → ''). A Búa Hi Vọng already in play can't be sold —
+// it has left the inventory the moment it was used.
+function sellPrice(price) { return Math.floor(price / 2); }
+
+async function sellItem(userId, key) {
+  const item = ITEM_BY_KEY[key];
+  if (!item) return { status: 'not_found' };
+  const refund = sellPrice(item.price);
+  const u = await User.findOneAndUpdate(
+    { _id: userId, [`shopItems.${key}`]: { $gte: 1 } },
+    { $inc: { [`shopItems.${key}`]: -1, flameWallet: refund } },
+    { new: true }
+  ).select('flameWallet shopItems').lean();
+  if (!u) return { status: 'none_left' };
+  return { status: 'ok', wallet: u.flameWallet, owned: u.shopItems[key], refund };
+}
+
+async function sellPet(userId, petId) {
+  const pet = PET_BY_ID[petId];
+  if (!pet) return { status: 'not_found' };
+  const refund = sellPrice(pet.price);
+  const u = await User.findOneAndUpdate(
+    { _id: userId, pets: petId },
+    [{
+      $set: {
+        flameWallet: { $add: [{ $ifNull: ['$flameWallet', 0] }, refund] },
+        pets: { $filter: { input: '$pets', cond: { $ne: ['$$this', petId] } } },
+        activePet: { $cond: [{ $eq: ['$activePet', petId] }, '', '$activePet'] },
+      },
+    }],
+    { new: true, updatePipeline: true }
+  ).select('flameWallet activePet').lean();
+  if (!u) return { status: 'not_owned' };
+  return { status: 'ok', wallet: u.flameWallet, activePet: u.activePet || '', refund };
+}
+
 // Decorations for the BXH rows (userService.rankedStreaks): which linh
 // thú sits next to the name, crown, cloak, cake.
 function boardDecor(u) {
@@ -256,6 +294,6 @@ function boardDecor(u) {
 }
 
 module.exports = {
-  getState, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake,
+  getState, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
 };

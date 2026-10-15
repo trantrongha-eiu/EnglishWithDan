@@ -124,3 +124,16 @@
 @media (prefers-reduced-motion: reduce) {
   .shop-flame, .shop-pet-stage::after, .shop-skel { animation: none; }
 }
+
+/* Vĩ thú cards: a dusk stage and a tail-count badge. */
+.shop-pet { position: relative; }
+.shop-pet--vi .shop-pet-stage {
+  background: linear-gradient(180deg, #ffe4c7 0%, #fff1de 62%, #f6d7a8 62%, #e9bf7f 100%);
+}
+[data-theme="dark"] .shop-pet--vi .shop-pet-stage { background: linear-gradient(180deg, #3b2a1e 0%, #4a3423 62%, #5c3d1c 62%, #6e4a22 100%); }
+.shop-pet--vi .shop-pet-stage::after { background: repeating-linear-gradient(90deg, rgba(146, 64, 14, .3) 0 6px, transparent 6px 26px); }
+.shop-tails {
+  position: absolute; top: 26px; right: 26px; z-index: 2;
+  padding: 2px 8px; border-radius: 99px; font-size: 12px; font-weight: 800;
+  background: rgba(255, 255, 255, .9); color: #c2410c; box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+}

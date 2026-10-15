@@ -42,6 +42,32 @@
   var ZZZ = '<svg class="pt-zzz" viewBox="0 0 64 64" aria-hidden="true"><g fill="#7c8db5" font-family="inherit" font-weight="800">'
     + '<text x="48" y="14" font-size="9">z</text><text x="55" y="7" font-size="7">z</text></g></svg>';
 
+  // Vĩ thú: a fan of `n` tails rooted at (bx, by), drawn pointing left and
+  // rotated upward (positive SVG rotation lifts a left-pointing tail).
+  function tails(n, bx, by, len, w, fill, tip, line) {
+    var from = n === 1 ? 32 : -6, to = n === 1 ? 32 : (n > 5 ? 100 : 88);
+    var st = line ? ' stroke="' + line + '" stroke-width=".9" stroke-linejoin="round"' : '';
+    var out = '';
+    for (var i = 0; i < n; i++) {
+      var a = n === 1 ? from : from + (to - from) * i / (n - 1);
+      out += '<g transform="rotate(' + a.toFixed(1) + ' ' + bx + ' ' + by + ')">'
+        + '<path d="M' + bx + ' ' + (by - w) + ' Q' + (bx - len * 0.6) + ' ' + (by - w * 1.7) + ' ' + (bx - len) + ' ' + by
+        + ' Q' + (bx - len * 0.6) + ' ' + (by + w * 1.2) + ' ' + bx + ' ' + (by + w) + ' Z" fill="' + fill + '"' + st + '/>'
+        + (tip ? '<path d="M' + (bx - len * 0.62) + ' ' + (by - w * 1.05) + ' Q' + (bx - len * 0.85) + ' ' + (by - w * 0.9) + ' ' + (bx - len) + ' ' + by
+          + ' Q' + (bx - len * 0.82) + ' ' + (by + w * 0.7) + ' ' + (bx - len * 0.62) + ' ' + (by + w * 0.75) + ' Z" fill="' + tip + '"/>' : '')
+        + '</g>';
+    }
+    return '<g class="pt-tail">' + out + '</g>';
+  }
+  // Chibi head shared by the four-legged vĩ thú: big round head, cheeks.
+  function chibiCheeks(x1, x2, y) {
+    return '<ellipse cx="' + x1 + '" cy="' + y + '" rx="2.2" ry="1.3" fill="#ff8a8a" opacity=".6"/>'
+      + '<ellipse cx="' + x2 + '" cy="' + y + '" rx="2.2" ry="1.3" fill="#ff8a8a" opacity=".6"/>';
+  }
+  function smile(x, y) {
+    return '<path d="M' + (x - 1.6) + ' ' + y + 'q1.6 1.8 3.2 0" stroke="#3b2412" stroke-width="1" fill="none" stroke-linecap="round"/>';
+  }
+
   var ART = {
     meo: function () {
       var c = '#f6a04d', d = '#dc7f2e', cream = '#ffe7c9';
@@ -145,15 +171,181 @@
         + '</g>'
         + legs('pt-leg-a', [25, 41], 45, 13, c);
     },
+
+    // ── Vĩ thú (1–9 đuôi), chibi: short legs, oversized heads ──────────
+    vi1: function () { // Lửng Cát Nhất Vĩ — tanuki with a leaf on its head
+      var c = '#d8b07a', d = '#a97c47', cream = '#f6e6c8', mask = '#8a6440';
+      return legs('pt-leg-b', [21, 36], 50, 8, d)
+        + tails(1, 20, 45, 19, 6, c, d, d)
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '"/>'
+        + '<ellipse cx="31" cy="50" rx="7" ry="4" fill="' + cream + '"/>'
+        + '<circle cx="38" cy="19" r="4.5" fill="' + d + '"/><circle cx="38" cy="19" r="2.2" fill="' + cream + '"/>'
+        + '<circle cx="56" cy="19" r="4.5" fill="' + d + '"/><circle cx="56" cy="19" r="2.2" fill="' + cream + '"/>'
+        + '<circle cx="47" cy="31" r="13" fill="' + c + '"/>'
+        + '<ellipse cx="42.5" cy="30" rx="4.6" ry="3.6" fill="' + mask + '"/><ellipse cx="51.5" cy="30" rx="4.6" ry="3.6" fill="' + mask + '"/>'
+        + '<ellipse cx="47" cy="37" rx="5.5" ry="3.8" fill="' + cream + '"/>'
+        + eyes([42.5, 51.5], 30, '#1d140c')
+        + '<ellipse cx="47" cy="35" rx="1.6" ry="1.2" fill="#2a1a0e"/>' + smile(47, 37.2)
+        + chibiCheeks(39, 55, 35)
+        + '<path d="M43 19 C43 12 50 10 53 12 C51 17 48 19 43 19 Z" fill="#6cc04a"/><path d="M44 18 L51 13" stroke="#3f8f2e" stroke-width=".8"/>'
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 50, 9, c);
+    },
+    vi2: function () { // Mèo Nhị Vĩ — white cat, two blue-flame tails
+      var c = '#fbf8ff', d = '#ddd6f0', flame = '#5aa9ff';
+      return legs('pt-leg-b', [21, 36], 50, 8, d)
+        + tails(2, 20, 45, 20, 3.4, c, flame, d)
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<path d="M36 22 L37 9 L45 18 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/><path d="M38.5 18 L39 13 L42.5 17 Z" fill="#ffb3c7"/>'
+        + '<path d="M50 18 L58 9 L59 22 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/><path d="M52.5 17 L56.5 12.5 L57 18 Z" fill="#ffb3c7"/>'
+        + '<circle cx="47" cy="31" r="13" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<path d="M47 20 C45 23 46 25 47 26 C48 25 49 23 47 20 Z" fill="' + flame + '"/>'
+        + eyes([42, 52], 30.5, '#2b4a9a')
+        + '<path d="M45.8 34h2.4l-1.2 1.3z" fill="#ff7a8a"/>' + smile(47, 36.2)
+        + chibiCheeks(38.5, 55.5, 35)
+        + '<path d="M60 34h4M60 36l3.5 1M34 34h-4M34 36l-3.5 1" stroke="#b9b0d6" stroke-width=".7" stroke-linecap="round"/>'
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 50, 9, c);
+    },
+    vi3: function () { // Rùa Tam Vĩ — little turtle, three stubby tails
+      var skin = '#7cc79a', d = '#4f9a72', shell = '#3f8f6b', hex = '#5fb58a';
+      return legs('pt-leg-b', [18, 36], 50, 7, d)
+        + tails(3, 14, 50, 12, 2.6, skin, d, d)
+        + '<g class="pt-body">'
+        + '<path d="M10 52 C10 36 19 29 29 29 C39 29 47 36 47 52 Z" fill="' + shell + '"/>'
+        + '<path d="M22 36l5-3 5 3v5l-5 3-5-3z M14 46l4-2.5 4 2.5v4h-8z M33 46l4-2.5 4 2.5v4h-8z" fill="' + hex + '"/>'
+        + '<path d="M8 52 H49" stroke="#2f6e52" stroke-width="3" stroke-linecap="round"/>'
+        + '<circle cx="52" cy="38" r="11" fill="' + skin + '"/>'
+        + eyes([48, 56.5], 37, '#183a2a')
+        + smile(52.5, 42) + chibiCheeks(45.5, 59.5, 41.5)
+        + '</g>'
+        + legs('pt-leg-a', [22, 40], 50, 8, skin);
+    },
+    vi4: function () { // Khỉ Tứ Vĩ — red monkey, four thin tails
+      var c = '#c75a3a', d = '#9e4128', face = '#f7d9b8';
+      return legs('pt-leg-b', [21, 36], 50, 8, d)
+        + tails(4, 20, 45, 19, 2.2, c, d, d)
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '"/>'
+        + '<ellipse cx="31" cy="50" rx="7" ry="4" fill="' + face + '"/>'
+        + '<circle cx="34.5" cy="31" r="4.5" fill="' + c + '"/><circle cx="34.5" cy="31" r="2.4" fill="' + face + '"/>'
+        + '<circle cx="47" cy="30" r="13" fill="' + c + '"/>'
+        + '<path d="M44 17.5 C46 14 49 14 50 17.5" stroke="' + c + '" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+        + '<path d="M38 31 C38 24 45 22.5 47 26 C49 22.5 56 24 56 31 C56 38 51 41 47 41 C43 41 38 38 38 31Z" fill="' + face + '"/>'
+        + eyes([43, 51], 30, '#2a160c')
+        + '<circle cx="46" cy="35" r=".7" fill="' + d + '"/><circle cx="48" cy="35" r=".7" fill="' + d + '"/>' + smile(47, 37.3)
+        + chibiCheeks(40, 54, 35)
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 50, 9, c);
+    },
+    vi5: function () { // Ngựa Ngũ Vĩ — white pony, pink mane, five ribbon tails
+      var c = '#f7f4ee', d = '#ddd6cc', mane = '#ffb3cf';
+      return legs('pt-leg-b', [21, 36], 48, 10, d)
+        + tails(5, 20, 44, 19, 2.2, mane, '#ff8fb8', '#e06a99')
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="45" rx="12" ry="8" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<path d="M41 15 L43 9 L46 15 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<circle cx="47" cy="29" r="12.5" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<ellipse cx="54" cy="35" rx="7" ry="5" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<circle cx="57" cy="34" r=".8" fill="#b9a99a"/>'
+        + '<path d="M48.5 16.5 L51 9 L52.5 17 Z" fill="#ffd257"/>'
+        + '<path d="M38 22 C40 15 47 13 50 17 C46 17 44 20 44 24 C41 23 39 24 37 27 Z" fill="' + mane + '"/>'
+        + eyes([44, 51.5], 28.5, '#4a2a3a')
+        + smile(54, 37.5) + chibiCheeks(41, 57.5, 32.5)
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 48, 11, c);
+    },
+    vi6: function () { // Sên Lục Vĩ — soft slug, eye stalks, six little tails
+      var c = '#f4f1d8', d = '#d6cf9e', spot = '#c9e7a3';
+      return tails(6, 13, 53, 12, 1.8, c, '#b8e08a', d)
+        + '<g class="pt-body pt-squish">'
+        + '<path d="M8 56 C8 48 17 45 28 45 C36 45 39 38 44 34 C50 29 61 31 62 41 C63 52 54 58 42 58 L11 58 C9 58 8 57 8 56 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".9"/>'
+        + '<circle cx="20" cy="51" r="2.4" fill="' + spot + '"/><circle cx="29" cy="49" r="1.8" fill="' + spot + '"/><circle cx="37" cy="53" r="2" fill="' + spot + '"/>'
+        + '<path d="M48 34 L46 24 M56 33 L58 23" stroke="' + c + '" stroke-width="3" stroke-linecap="round"/>'
+        + '<circle cx="46" cy="23" r="3.6" fill="#fff" stroke="' + d + '" stroke-width=".8"/><circle cx="58" cy="22" r="3.6" fill="#fff" stroke="' + d + '" stroke-width=".8"/>'
+        + eyes([46.5, 58.5], 23, '#2d2a18')
+        + smile(53, 44) + chibiCheeks(47, 59, 42)
+        + '</g>';
+    },
+    vi7: function () { // Bọ Thất Vĩ — green beetle, see-through wings, seven ribbons
+      var c = '#7bd664', d = '#3f9a3a', wing = '#d4f7ff';
+      return legs('pt-leg-b', [21, 35], 50, 8, d)
+        + tails(7, 19, 47, 17, 1.6, '#9be38a', '#ffd257', d)
+        + '<g class="pt-wing"><ellipse cx="25" cy="34" rx="10" ry="5.5" transform="rotate(-28 25 34)" fill="' + wing + '" stroke="#86c8dc" stroke-width=".8" opacity=".9"/>'
+        + '<ellipse cx="31" cy="33" rx="8" ry="4.5" transform="rotate(-48 31 33)" fill="' + wing + '" stroke="#86c8dc" stroke-width=".8" opacity=".9"/></g>'
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '"/>'
+        + '<path d="M18 45 Q29 40 40 45" stroke="' + d + '" stroke-width="1.2" fill="none"/>'
+        + '<circle cx="24" cy="49" r="1.6" fill="' + d + '"/><circle cx="33" cy="49" r="1.6" fill="' + d + '"/>'
+        + '<path d="M44 20 Q42 13 37 12 M52 20 Q55 13 60 13" stroke="' + d + '" stroke-width="1.2" fill="none" stroke-linecap="round"/>'
+        + '<circle cx="37" cy="12" r="1.6" fill="#ffd257"/><circle cx="60" cy="13" r="1.6" fill="#ffd257"/>'
+        + '<circle cx="48" cy="32" r="12.5" fill="#94e47c"/>'
+        + '<path d="M48 20 C47 16 49 13 52 12 C51 15 51 18 50 20 Z" fill="#ffd257"/>'
+        + eyes([43.5, 52.5], 31.5, '#173a14')
+        + smile(48, 37) + chibiCheeks(40.5, 55.5, 35.5)
+        + '</g>'
+        + legs('pt-leg-a', [25, 39], 50, 9, c);
+    },
+    vi8: function () { // Bò Bát Vĩ — lilac ox with curly horns, eight tentacles
+      var c = '#9a86c4', d = '#6c5a96', muzzle = '#efe7fb', horn = '#fff3d6';
+      return legs('pt-leg-b', [21, 36], 50, 8, d)
+        + tails(8, 20, 45, 19, 2.1, c, d, d)
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '"/>'
+        + '<ellipse cx="31" cy="50" rx="7" ry="4" fill="' + muzzle + '"/>'
+        + '<path d="M37 22 C31 20 30 13 34 10 C34 14 36 18 40 20 Z" fill="' + horn + '"/>'
+        + '<path d="M57 21 C63 19 64 12 60 9 C60 13 58 17 54 19 Z" fill="' + horn + '"/>'
+        + '<ellipse cx="34" cy="27" rx="4" ry="2.4" transform="rotate(-20 34 27)" fill="' + d + '"/>'
+        + '<ellipse cx="60" cy="26" rx="4" ry="2.4" transform="rotate(20 60 26)" fill="' + d + '"/>'
+        + '<circle cx="47" cy="30" r="13" fill="' + c + '"/>'
+        + '<ellipse cx="47" cy="36.5" rx="7.5" ry="5" fill="' + muzzle + '"/>'
+        + '<circle cx="44.5" cy="35.5" r="1" fill="' + d + '"/><circle cx="49.5" cy="35.5" r="1" fill="' + d + '"/>'
+        + '<path d="M44.5 40.5 a2.5 2.5 0 0 0 5 0" stroke="#ffd257" stroke-width="1.4" fill="none"/>'
+        + eyes([42, 52], 28.5, '#2a1f3d')
+        + chibiCheeks(38.5, 55.5, 33)
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 50, 9, c);
+    },
+    vi9: function () { // Hồ Ly Cửu Vĩ — golden fox, nine white-tipped tails
+      var c = '#f7c548', d = '#e0a52a', w = '#fffaf0';
+      return legs('pt-leg-b', [21, 36], 50, 8, d)
+        + tails(9, 20, 45, 21, 2.3, c, w, d)
+        + '<g class="pt-body">'
+        + '<ellipse cx="29" cy="47" rx="12" ry="8" fill="' + c + '"/>'
+        + '<ellipse cx="32" cy="50" rx="7" ry="4" fill="' + w + '"/>'
+        + '<path d="M36 22 L37 8 L45 17 Z" fill="' + c + '"/><path d="M38.5 17 L39 12 L42.5 16 Z" fill="#ffb3c7"/>'
+        + '<path d="M50 17 L58 8 L59 22 Z" fill="' + c + '"/><path d="M52.5 16 L56.5 11.5 L57 17 Z" fill="#ffb3c7"/>'
+        + '<circle cx="47" cy="31" r="13" fill="' + c + '"/>'
+        + '<path d="M36 34 C40 41 54 41 58 34 C54 36 50 35 47 33 C44 35 40 36 36 34 Z" fill="' + w + '"/>'
+        + '<path d="M47 20 L48.6 23 L47 26 L45.4 23 Z" fill="#ff6f8f"/>'
+        + eyes([42, 52], 29.5, '#7a3a12')
+        + '<ellipse cx="47" cy="34.5" rx="1.6" ry="1.2" fill="#3b2412"/>' + smile(47, 36.6)
+        + chibiCheeks(38.5, 55.5, 34)
+        + '</g>'
+        + legs('pt-leg-a', [25, 40], 50, 9, c);
+    },
   };
 
-  var NAMES = { meo: 'Mèo Quýt', shiba: 'Shiba Lì Xì', cut: 'Cánh Cụt Bông', cao: 'Cáo Lửa', rong: 'Rồng Con' };
+  var NAMES = { meo: 'Mèo Quýt', shiba: 'Shiba Lì Xì', cut: 'Cánh Cụt Bông', cao: 'Cáo Lửa', rong: 'Rồng Con',
+    vi1: 'Lửng Cát Nhất Vĩ', vi2: 'Mèo Lửa Nhị Vĩ', vi3: 'Rùa Tam Vĩ', vi4: 'Khỉ Tứ Vĩ', vi5: 'Ngựa Ngũ Vĩ',
+    vi6: 'Sên Lục Vĩ', vi7: 'Bọ Thất Vĩ', vi8: 'Bò Bát Vĩ', vi9: 'Hồ Ly Cửu Vĩ' };
   var LINES = {
     meo: ['Meo~ học xong bài này rồi ngủ trưa nha 😽', 'Sổ từ vựng ấm ghê, cho mèo nằm xíu…', 'Meo! Hôm nay giữ chuỗi chưa đó?'],
     shiba: ['Gâu! Cậu học giỏi quá trời 🐕', 'Vẫy đuôi cổ vũ nè! Thêm 1 bài nữa nha!', 'Gâu gâu — đi dạo xong là học tiếp nhé!'],
     cut: ['Lạch bạch… cánh cụt cũng đang học IELTS đó 🐧', 'Ngã cũng không sao, đứng dậy làm bài tiếp!', 'Băng ở đây lạnh, nhưng chuỗi của cậu nóng 🔥'],
     cao: ['Hehe, mình biết mẹo làm Reading nè 🦊', 'Tinh ranh như cáo — đọc câu hỏi trước nha!', 'Đuôi rực lửa giống chuỗi của cậu đó!'],
     rong: ['Grào~ 🔥 phun lửa tiếp sức cho cậu!', 'Rồng con sẽ canh chuỗi lửa giúp cậu!', 'Lửa của rồng không bằng lửa học của cậu đâu!'],
+    vi1: ['Một đuôi thôi nhưng học chăm gấp mười 🍃', 'Lá trên đầu là bùa học bài đó!', 'Lửng cát ngủ đủ, cậu học đủ nha!'],
+    vi2: ['Meo~ hai đuôi lửa xanh cổ vũ cậu 💙', 'Lửa xanh mát lạnh, đầu óc tỉnh táo!', 'Hai đuôi = hai lần chăm chỉ!'],
+    vi3: ['Chậm mà chắc — mỗi ngày một bài 🐢', 'Mai rùa cứng như chuỗi lửa của cậu!', 'Ba đuôi rùa vẫy vẫy chào cậu~'],
+    vi4: ['Khỉ khôn mách nhỏ: đọc câu hỏi trước! 🐒', 'Bốn đuôi đu dây lên top nè!', 'Học xong thưởng chuối nha!'],
+    vi5: ['Phi nước đại lên band cao thôi 🦄', 'Năm đuôi bay bay, tiến lên nào!', 'Bờm hồng hôm nay chải đẹp chưa?'],
+    vi6: ['Từ từ mà tới… nhưng ngày nào cũng tới 🐌', 'Sên nhớ từ vựng bằng mắt dài nè!', 'Sáu đuôi nhỏ xíu, ý chí to đùng!'],
+    vi7: ['Vù vù~ bay quanh nhắc cậu học bài 🪲', 'Bảy dải đuôi lấp lánh như chuỗi lửa!', 'Cánh trong suốt, đầu óc trong veo!'],
+    vi8: ['Mooo~ tám tua chép bài giúp cậu 🐙', 'Sừng cong cong, quyết tâm thẳng tắp!', 'Bát vĩ đây — vào top chưa?'],
+    vi9: ['Chín đuôi vàng óng — linh thú mạnh nhất đây ✨', 'Hồ ly chín đuôi phù hộ cậu đạt band cao!', 'Đuôi nhiều như số 🔥 của cậu vậy!'],
   };
 
   function svg(id, cls) {
@@ -171,7 +363,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=20261015';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=20261015vi';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -184,7 +376,8 @@
   var REST_KEY = 'ews-pet-rest';
   var CACHE_MS = 10 * 60 * 1000;
   var EXAM_PAGES = /^(mock-test|entrance-test|test-dau-vao|login|register|verify-email|auth-callback)(\.html)?$/;
-  var SPEED = { meo: 42, shiba: 55, cut: 28, cao: 62, rong: 50 };
+  var SPEED = { meo: 42, shiba: 55, cut: 28, cao: 62, rong: 50,
+    vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66 };
 
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }

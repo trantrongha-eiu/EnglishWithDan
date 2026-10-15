@@ -20,7 +20,7 @@ describe('/api/shop', () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ success: true, wallet: 12, activePet: '' });
     expect(res.body.items.map(i => i.key)).toEqual(['hopeHammer', 'iceShield', 'cake', 'cloak', 'crown']);
-    expect(res.body.pets).toHaveLength(5);
+    expect(res.body.pets).toHaveLength(14);
   });
 
   test('buy → use flow, with the error codes the page shows', async () => {
@@ -48,6 +48,23 @@ describe('/api/shop', () => {
     res = await request(app).put('/api/shop/pet').set(auth(s)).send({ petId: '' });
     expect(res.body.activePet).toBe('');
     res = await request(app).put('/api/shop/pet').set(auth(s)).send({ petId: 'rong' });
+    expect(res.body.code).toBe('not_owned');
+  });
+
+  test('kho đồ: selling refunds half the price (rounded down)', async () => {
+    const s = await createStudent({ extra: { flameWallet: 0, flameWalletSeeded: true, shopItems: { cloak: 1, hopeHammer: 1 }, pets: ['vi2', 'meo'], activePet: 'vi2' } });
+    let res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'item', key: 'cloak' });
+    expect(res.body).toMatchObject({ success: true, refund: 7, wallet: 7, owned: 0 });
+    res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'item', key: 'cloak' });
+    expect(res.body.code).toBe('none_left');
+    res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'item', key: 'hopeHammer' });
+    expect(res.body).toMatchObject({ refund: 12, wallet: 19 });
+    // Selling the pet that's out walking sends it home.
+    res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'pet', key: 'vi2' });
+    expect(res.body).toMatchObject({ success: true, refund: 35, wallet: 54, activePet: '' });
+    const u = await User.findById(s._id).lean();
+    expect(u.pets).toEqual(['meo']);
+    res = await request(app).post('/api/shop/sell').set(auth(s)).send({ kind: 'pet', key: 'vi2' });
     expect(res.body.code).toBe('not_owned');
   });
 

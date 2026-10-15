@@ -19,13 +19,15 @@
   <link rel="stylesheet" href="css/dictionary-popup.css?v=20260925">
   <link rel="stylesheet" href="css/playful.css?v=20261015lumi3"/>
   <link rel="stylesheet" href="css/pf-profile.css?v=20261010pf"/>
+  <link rel="stylesheet" href="css/pets.css?v=20261015vi"/>
+  <link rel="stylesheet" href="css/inventory.css?v=20261015"/>
 </head>
 <body>
   <script src="js/shared/auth-service.js?v=20261007guest"></script>
   <script src="js/auth.js?v=20261007guest"></script>
   <script src="js/upgrade-modal.js?v=20260831"></script>
   <script src="js/shared/popup-queue.js?v=20260909exam"></script>
-  <script src="js/nav.js?v=20261015shop"></script>
+  <script src="js/nav.js?v=20261015vi"></script>
 <script src="js/shared/playful.js?v=20261015lumi3"></script>
   <script src="js/shared/sound-effects.js?v=20260831"></script>
   <script src="js/shared/utils.js?v=20260831"></script>
@@ -35,6 +37,8 @@
   <script src="js/shared/word-audio.js?v=20261015a"></script>
   <script src="js/shared/dictionary-lookup.js?v=20261009audio"></script>
   <script src="js/shared/badge-popup.js?v=20260831"></script>
+  <script src="js/shared/confirm-dialog.js?v=20260831"></script>
+  <script src="js/inventory.js?v=20261015"></script>
 
   <!-- Main Content -->
   <div class="profile-layout">
@@ -129,6 +133,7 @@
         <button class="tab-btn" data-tab="edit" onclick="switchTab('edit', this)"><i class="fas fa-edit"></i> Chỉnh sửa</button>
         <button class="tab-btn" data-tab="security" onclick="switchTab('security', this)"><i class="fas fa-lock"></i> Bảo mật</button>
         <button class="tab-btn" data-tab="history" onclick="switchTab('history', this)"><i class="fas fa-history"></i> Lịch sử</button>
+        <button class="tab-btn" data-tab="inventory" onclick="switchTab('inventory', this)"><i class="fas fa-box-open"></i> Kho đồ</button>
       </div>
 
       <!-- Overview Tab -->
@@ -349,6 +354,18 @@
         </div>
       </div>
 
+      <!-- Kho đồ Tab — items + linh thú bought in the Cửa hàng lửa (js/inventory.js) -->
+      <div class="tab-content" id="tab-inventory">
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-box-open"></i> Kho đồ</span>
+          </div>
+          <div class="card-body" id="inventory-body">
+            <p style="color:var(--text-light);text-align:center;padding:20px 0;">Đang tải kho đồ…</p>
+          </div>
+        </div>
+      </div>
+
       <!-- History Tab -->
       <div class="tab-content" id="tab-history">
         <div class="card mb-16" id="readingHistoryCard">
@@ -415,7 +432,7 @@
     // showToastWithTitle() lives in js/shared/toast.js (single source of truth).
 
     // ── Tabs ──────────────────────────────────────────────────
-    const VALID_TABS = ['overview', 'edit', 'security', 'history'];
+    const VALID_TABS = ['overview', 'edit', 'security', 'history', 'inventory'];
 
     function switchTab(name, btn, syncHash = true) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));

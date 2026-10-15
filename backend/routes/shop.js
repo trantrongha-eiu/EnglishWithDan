@@ -10,6 +10,7 @@ router.get('/pet',   auth, shopCtrl.getPet);
 router.put('/pet',   auth, shopCtrl.setPet);
 router.post('/buy',  auth, shopCtrl.buy);
 router.post('/use',  auth, shopCtrl.use);
+router.post('/sell', auth, shopCtrl.sell);
 router.post('/cake', auth, shopCtrl.throwCake);
 
 module.exports = router;

@@ -46,6 +46,15 @@ exports.buy = catchAsync(async (req, res) => {
   send(res, result);
 });
 
+// ── POST /api/shop/sell { kind: 'item'|'pet', key } — half price back ──
+exports.sell = catchAsync(async (req, res) => {
+  const { kind, key } = req.body || {};
+  const result = kind === 'pet'
+    ? await shopService.sellPet(req.user._id, String(key || ''))
+    : await shopService.sellItem(req.user._id, String(key || ''));
+  send(res, result);
+});
+
 // ── POST /api/shop/use { key } ────────────────────────────────
 exports.use = catchAsync(async (req, res) => {
   send(res, await shopService.useItem(req.user._id, String((req.body || {}).key || '')));

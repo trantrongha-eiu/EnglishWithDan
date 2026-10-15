@@ -38,11 +38,23 @@ const ITEMS = [
 // student's non-exam pages and sits next to their name on the BXH. The
 // art lives in frontend/js/shared/pets.js, keyed by the same ids.
 const PETS = [
-  { id: 'meo',   name: 'Mèo Quýt',      price: 30,  description: 'Mèo cam lười biếng, thích nằm phơi nắng cạnh sổ từ vựng.' },
-  { id: 'shiba', name: 'Shiba Lì Xì',   price: 40,  description: 'Chú chó Shiba lúc nào cũng vẫy đuôi cổ vũ bạn học bài.' },
-  { id: 'cut',   name: 'Cánh Cụt Bông', price: 50,  description: 'Lạch bạch đi khắp màn hình, ngã cũng không khóc.' },
-  { id: 'cao',   name: 'Cáo Lửa',       price: 70,  description: 'Cáo chín… à không, cáo một đuôi rực lửa — tinh ranh như người chủ.' },
-  { id: 'rong',  name: 'Rồng Con',      price: 100, description: 'Linh thú huyền thoại, thỉnh thoảng phun ra một đốm lửa nhỏ.' },
+  { id: 'meo',   name: 'Mèo Quýt',      price: 30, description: 'Mèo cam lười biếng, thích nằm phơi nắng cạnh sổ từ vựng.' },
+  { id: 'shiba', name: 'Shiba Lì Xì',   price: 30, description: 'Chú chó Shiba lúc nào cũng vẫy đuôi cổ vũ bạn học bài.' },
+  { id: 'cut',   name: 'Cánh Cụt Bông', price: 30, description: 'Lạch bạch đi khắp màn hình, ngã cũng không khóc.' },
+  { id: 'cao',   name: 'Cáo Lửa',       price: 30, description: 'Cáo một đuôi rực lửa — tinh ranh như người chủ.' },
+  { id: 'rong',  name: 'Rồng Con',      price: 30, description: 'Linh thú huyền thoại, thỉnh thoảng phun ra một đốm lửa nhỏ.' },
+  // Vĩ thú — chibi folklore beasts with 1..9 tails, priced 50 → 210 (+20 each).
+  ...[
+    ['vi1', 'Lửng Cát Nhất Vĩ', 'Chú lửng một đuôi đội lá trên đầu — bùa may mắn cho người mới.'],
+    ['vi2', 'Mèo Lửa Nhị Vĩ',   'Mèo trắng hai đuôi cháy lửa xanh, mát lạnh mà rực rỡ.'],
+    ['vi3', 'Rùa Tam Vĩ',       'Rùa con ba đuôi — chậm mà chắc, ngày nào cũng học.'],
+    ['vi4', 'Khỉ Tứ Vĩ',        'Khỉ đỏ bốn đuôi lanh lợi, chuyền cành lên top.'],
+    ['vi5', 'Ngựa Ngũ Vĩ',      'Ngựa trắng bờm hồng, năm dải đuôi bay trong gió.'],
+    ['vi6', 'Sên Lục Vĩ',       'Sên mềm sáu đuôi, mắt dài nhìn xa trông rộng.'],
+    ['vi7', 'Bọ Thất Vĩ',       'Bọ xanh có cánh trong suốt và bảy dải đuôi lấp lánh.'],
+    ['vi8', 'Bò Bát Vĩ',        'Bò tím sừng cong với tám xúc tu — khỏe nhất bầy.'],
+    ['vi9', 'Hồ Ly Cửu Vĩ',     'Hồ ly vàng chín đuôi — linh thú huyền thoại mạnh nhất.'],
+  ].map(([id, name, description], i) => ({ id, name, description, price: 50 + 20 * i, tier: 'vi', tails: i + 1 })),
 ];
 
 // Búa Hi Vọng tuning.

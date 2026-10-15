@@ -56,7 +56,7 @@ describe('buying', () => {
   test('a first linh thú goes out walking; a second one does not replace it', async () => {
     const user = await createStudent({ extra: { flameWallet: 200, flameWalletSeeded: true } });
     expect(await shopService.buyPet(user._id, 'meo')).toMatchObject({ status: 'ok', activePet: 'meo' });
-    expect(await shopService.buyPet(user._id, 'rong')).toMatchObject({ status: 'ok', activePet: 'meo', wallet: 70 });
+    expect(await shopService.buyPet(user._id, 'rong')).toMatchObject({ status: 'ok', activePet: 'meo', wallet: 140 });
     expect((await shopService.buyPet(user._id, 'meo')).status).toBe('already_owned');
     expect((await shopService.setActivePet(user._id, 'rong')).activePet).toBe('rong');
     expect((await shopService.setActivePet(user._id, 'cao')).status).toBe('not_owned');
@@ -153,6 +153,15 @@ describe('BXH decorations', () => {
     expect((await shopService.throwCake(a._id, b._id)).status).toBe('already_caked');
     expect((await User.findById(a._id).lean()).shopItems.cake).toBe(1);
     expect((await User.findById(b._id).lean()).cakedBy).toBe('An');
+  });
+
+  test('vĩ thú are priced 50 → 210 in steps of 20; the old pets all cost 30', async () => {
+    const { PETS } = require('../../../constants/shop');
+    expect(PETS.filter(p => !p.tier).map(p => p.price)).toEqual([30, 30, 30, 30, 30]);
+    expect(PETS.filter(p => p.tier === 'vi').map(p => p.price)).toEqual([50, 70, 90, 110, 130, 150, 170, 190, 210]);
+    const user = await createStudent({ extra: { flameWallet: 60, flameWalletSeeded: true } });
+    expect((await shopService.buyPet(user._id, 'vi2')).status).toBe('not_enough');
+    expect(await shopService.buyPet(user._id, 'vi1')).toMatchObject({ status: 'ok', wallet: 10, activePet: 'vi1' });
   });
 
   test('a crown stacks its 7 days on top of a running one', async () => {
