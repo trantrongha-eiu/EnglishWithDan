@@ -3,12 +3,15 @@ const User = require('../models/User');
 const logger = require('../utils/logger');
 
 // What a guest token may call: the Entrance Test itself, its proctor
-// screenshots, and the session basics every page boots with.
-const GUEST_ALLOWED = [/^\/api\/entrance-test(\/|$)/, /^\/api\/proctor(\/|$)/, /^\/api\/auth\/(me|logout)$/];
+// screenshots, and the session basics every page boots with (the nav
+// summary only hands a guest its /auth/me part — routes/nav.js).
+const GUEST_ALLOWED = [/^\/api\/entrance-test(\/|$)/, /^\/api\/proctor(\/|$)/, /^\/api\/auth\/(me|logout)$/, /^\/api\/nav\/summary$/];
 function isGuestAllowedPath(url) {
   const path = String(url || '').split('?')[0];
   return GUEST_ALLOWED.some((re) => re.test(path));
 }
+
+const LAST_SEEN_THROTTLE_MS = 60 * 1000;
 
 module.exports = async (req, res, next) => {
   try {
@@ -19,7 +22,10 @@ module.exports = async (req, res, next) => {
 
     const token   = authHeader.replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user    = await User.findById(decoded.id).select('-password');
+    // savedVocab is a legacy word list (unbounded, never read via req.user —
+    // vocab lives in VocabBook now); skipping it keeps this per-request
+    // lookup small. Still a full document: services mutate and .save() req.user.
+    const user    = await User.findById(decoded.id).select('-password -savedVocab');
 
     if (!user) {
       return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại' });
@@ -76,8 +82,14 @@ module.exports = async (req, res, next) => {
     }
 
     req.user = user;
-    // Cập nhật lastSeen — fire-and-forget, không chặn request
-    User.updateOne({ _id: user._id }, { lastSeen: new Date() }).catch(() => {});
+    // Cập nhật lastSeen — fire-and-forget, không chặn request. Throttled to
+    // once a minute: a page load fires ~15 authed calls, and every reader
+    // ("online" = lastSeen within 5 min — admin online-users, peer chat)
+    // only needs minute precision.
+    const now = new Date();
+    if (!user.lastSeen || now - user.lastSeen >= LAST_SEEN_THROTTLE_MS) {
+      User.updateOne({ _id: user._id }, { lastSeen: now }).catch(() => {});
+    }
     next();
   } catch (err) {
     return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn' });

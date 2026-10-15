@@ -73,7 +73,12 @@ app.use(cors({
       callback(corsErr);
     }
   },
-  credentials: true
+  credentials: true,
+  // Every authed call (Authorization header, cross-origin from
+  // ieltsthayha.com) needs a preflight OPTIONS first. Without maxAge the
+  // browser only remembers it for 5s, so each page load paid an extra
+  // round trip per API url. Chrome caps this at 2h, Firefox at 24h.
+  maxAge: 86400
 }));
 // Bot/scraper filter + site-wide API ceiling (see middleware/botGuard.js).
 // After cors so a blocked response still carries CORS headers (the browser
@@ -137,6 +142,7 @@ app.use('/api/classes',         require('./routes/classAssignments'));
 app.use('/api/classes',         require('./routes/classAttendance'));
 app.use('/api/assignments',     require('./routes/assignment'));
 app.use('/api/search',          require('./routes/search'));
+app.use('/api/nav',             require('./routes/nav'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));
 app.use('/api/task2',           require('./routes/task2Practice'));

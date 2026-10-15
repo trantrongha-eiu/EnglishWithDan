@@ -50,7 +50,7 @@
     if (el) return el;
     if (!document.getElementById('ews-shopfeed-css')) {
       var l = document.createElement('link');
-      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=20261015cake';
+      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=c894a73453';
       document.head.appendChild(l);
     }
     el = document.createElement('a');

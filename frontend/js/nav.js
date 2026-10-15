@@ -293,13 +293,13 @@
     var slLink = document.createElement('link');
     slLink.id = 'ews-sentence-lookup-css';
     slLink.rel = 'stylesheet';
-    slLink.href = '/css/sentence-lookup.css';
+    slLink.href = '/css/sentence-lookup.css?v=fd7dd5ee56';
     document.head.appendChild(slLink);
   }
   if (!document.getElementById('ews-sentence-lookup-js')) {
     var slScript = document.createElement('script');
     slScript.id = 'ews-sentence-lookup-js';
-    slScript.src = '/js/shared/sentence-lookup.js';
+    slScript.src = '/js/shared/sentence-lookup.js?v=93284f9f4e';
     document.body.appendChild(slScript);
   }
 
@@ -312,7 +312,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=20261008t2hub';
+    i18nScript.src = '/js/shared/i18n.js?v=6c0204a784';
     document.body.appendChild(i18nScript);
   }
 
@@ -322,7 +322,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=20261015loop';
+    petScript.src = '/js/shared/pets.js?v=c6d8001f16';
     document.body.appendChild(petScript);
   }
 
@@ -330,7 +330,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=20261015cake';
+    feedScript.src = '/js/shared/shop-feed.js?v=3224574df4';
     document.body.appendChild(feedScript);
   }
 
@@ -556,6 +556,59 @@
   // (inbox.html, the fa-envelope utility icon) is the single mailbox now.
 
   var token = window.AuthService ? window.AuthService.getToken() : localStorage.getItem('token');
+
+  // ── Page-load nav data in one request ──────────────────────────────
+  // GET /api/nav/summary carries every payload below (backend/routes/nav.js
+  // — each part is exactly its standalone endpoint's body), instead of ~10
+  // separate calls per page. Kept in sessionStorage for NAV_SUMMARY_TTL_MS,
+  // so clicking between pages doesn't re-ask; the inbox badge keeps its own
+  // 20s live poll, and the tuition popup re-checks live before showing.
+  // _navPart() falls back to the part's own endpoint whenever the summary
+  // (or that one part) is missing — e.g. a frontend deployed ahead of the API.
+  var NAV_SUMMARY_KEY = 'ews_nav_summary';
+  var NAV_SUMMARY_TTL_MS = 60000;
+  var _navSummaryP = null;
+  var _navSummaryFresh = false; // true = fetched on this page load, not from the cache
+
+  // Ties the cached copy to this login without storing any of the token.
+  function _navTokenTag() {
+    var h = 5381;
+    for (var i = 0; i < token.length; i++) h = ((h << 5) + h + token.charCodeAt(i)) | 0;
+    return String(h);
+  }
+
+  function _navSummary() {
+    if (_navSummaryP) return _navSummaryP;
+    var tag = _navTokenTag();
+    try {
+      var c = JSON.parse(sessionStorage.getItem(NAV_SUMMARY_KEY) || 'null');
+      if (c && c.tag === tag && Date.now() - c.at < NAV_SUMMARY_TTL_MS) {
+        _navSummaryP = Promise.resolve(c.data);
+        return _navSummaryP;
+      }
+    } catch (e) {}
+    _navSummaryP = fetch(API + '/nav/summary', { headers: headers })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.success) return null;
+        _navSummaryFresh = true;
+        try { sessionStorage.setItem(NAV_SUMMARY_KEY, JSON.stringify({ tag: tag, at: Date.now(), data: d })); } catch (e) {}
+        return d;
+      })
+      .catch(function () { return null; });
+    return _navSummaryP;
+  }
+
+  // Body of one standalone nav endpoint (`path`), served from the summary
+  // when it has it. opts.fresh: only accept a summary fetched on this page
+  // load — for data the student may have just changed on the previous page.
+  function _navPart(key, path, opts) {
+    return _navSummary().then(function (s) {
+      if (s && s[key] && (!(opts && opts.fresh) || _navSummaryFresh)) return s[key];
+      return fetch(API + path, { headers: headers }).then(function (r) { return r.json(); });
+    });
+  }
+
   if (token) {
     var headers = window.AuthService ? window.AuthService.authHeader() : { Authorization: 'Bearer ' + token };
 
@@ -567,9 +620,14 @@
     // showBadge() call (not gated on count > 0) so the badge also clears
     // itself once the student reads the message in another tab.
     var INBOX_POLL_MS = 20000;
+    var _inboxPolledOnce = false;
     function _pollInboxBadge() {
-      fetch(API + '/user/messages/unread-count', { headers: headers })
-        .then(function (r) { return r.json(); })
+      // First tick (page load) rides the nav summary; later ticks are live.
+      var p = _inboxPolledOnce
+        ? fetch(API + '/user/messages/unread-count', { headers: headers }).then(function (r) { return r.json(); })
+        : _navPart('unreadMessages', '/user/messages/unread-count');
+      _inboxPolledOnce = true;
+      p
         .then(function (d) {
           showBadge('navInboxBadge', d.count || 0);
           if (d.mustReadCount > 0) _showMustReadPopup();
@@ -582,8 +640,7 @@
     if (window.ActivityGate) window.ActivityGate.poll(_pollInboxBadge, INBOX_POLL_MS);
     else setInterval(_pollInboxBadge, INBOX_POLL_MS);
 
-    fetch(API + '/writing/unread-feedback-count', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _navPart('writingFeedback', '/writing/unread-feedback-count')
       .then(function (d) { if (d.count > 0) showBadge('navWritingBadge', d.count); })
       .catch(function () {});
 
@@ -591,8 +648,7 @@
     // combined) for the "Writing" dropdown's own Task 1 / Task 2 rows —
     // navWritingBadge above only tells a student SOMETHING needs attention
     // under Writing; this tells them which of Task 1 / Task 2 it is.
-    fetch(API + '/writing/practice/nav-counts', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _navPart('writingNavCounts', '/writing/practice/nav-counts')
       .then(function (d) {
         if (!d.success || !d.counts) return;
         showBadge('navWritingTask1Badge', d.counts[1] || 0);
@@ -608,8 +664,7 @@
       })
       .catch(function () {});
 
-    fetch(API + '/task2/drafts', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _navPart('task2Drafts', '/task2/drafts')
       .then(function (d) {
         var count = (d.drafts || []).filter(function (dr) {
           return ((dr.questionIds && dr.questionIds.length) || 0) - (dr.currentIdx || 0) > 0;
@@ -622,8 +677,7 @@
     // has already failed it on absences. Own endpoint (mirrors
     // /tuition/my/summary above); returns { classes: [] } for anyone with no
     // enrollments, so it's a no-op for non-students. One banner per class.
-    fetch(API + '/classes/my/attendance-status', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _navPart('attendanceStatus', '/classes/my/attendance-status')
       .then(function (d) {
         // Keyed on the CAUSE, not the combined enrollment status: a student
         // in "warning" only because of missed homework has 0 absences and
@@ -642,8 +696,7 @@
     // Homework warning — student has missed full homework completion past
     // their class's threshold (assignmentService). Deadline-soon / overdue
     // live on the dashboard card, not here.
-    fetch(API + '/assignments/mine/summary', { headers: headers })
-      .then(function (r) { return r.json(); })
+    _navPart('homeworkSummary', '/assignments/mine/summary')
       .then(function (d) { if (d && d.warn && d.warning) _showHomeworkWarningBanner(d.warning); })
       .catch(function () {});
 
@@ -653,7 +706,12 @@
     // to live only here — nav.js now just decides whether to show the
     // expiry banner from the result.
     if (window.AuthService) {
-      window.AuthService.refreshPlan().then(function (u) {
+      // Same as AuthService.refreshPlan(), with the /auth/me body taken from
+      // the nav summary.
+      _navPart('me', '/auth/me')
+        .then(window.AuthService.applyMePayload)
+        .catch(function () { return null; })
+        .then(function (u) {
         if (!u) return;
         if (u.plan === 'premium' && u.planExpiresAt) {
           var daysLeft = Math.ceil((new Date(u.planExpiresAt) - Date.now()) / 86400000);
@@ -935,10 +993,7 @@
   // reminder banner/popup trigger.
   var _tuitionSummaryP; // no initializer: the badge code above calls this before this line runs
   function _tuitionSummary() {
-    if (!_tuitionSummaryP) {
-      var h = window.AuthService ? window.AuthService.authHeader() : {};
-      _tuitionSummaryP = fetch(API + '/tuition/my/summary', { headers: h }).then(function (r) { return r.json(); });
-    }
+    if (!_tuitionSummaryP) _tuitionSummaryP = _navPart('tuitionSummary', '/tuition/my/summary');
     return _tuitionSummaryP;
   }
 
@@ -1207,13 +1262,14 @@
       || document.getElementById('nav-vocab-inactivity-overlay')
       || document.getElementById('nav-streak35-notice-overlay')) { done(); return; }
 
-    var hdr = { headers: window.AuthService.authHeader() };
+    // fresh: a cached summary could predate the words the student just
+    // studied on the previous page — the card would nag about a goal met.
     Promise.all([
-      fetch(API + '/vocabbook/daily-goal', hdr).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      _navPart('vocabDailyGoal', '/vocabbook/daily-goal', { fresh: true }).catch(function () { return null; }),
       // Paraphrase items on their own Leitner schedule (GET
       // /api/vocab/paraphrase/due-count). Separate count, separate "Ôn ngay"
       // row on the same nudge card.
-      fetch(API + '/vocab/paraphrase/due-count', hdr).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      _navPart('paraphraseDueCount', '/vocab/paraphrase/due-count', { fresh: true }).catch(function () { return null; }),
     ])
       .then(function (res) {
         var d = res[0];

@@ -363,7 +363,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=20261015loop';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=2cd25f63bc';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}

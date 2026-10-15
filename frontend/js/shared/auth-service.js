@@ -106,28 +106,33 @@
     if (!token) return Promise.resolve(null);
     return fetch((apiBase || AuthService.API) + '/auth/me', { headers: authHeader() })
       .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (!d || !d.success || !d.user) return null;
-        touchLastLoginAt();
-        var u = getUser() || {};
-        u.plan = d.user.plan;
-        u.planExpiresAt = d.user.planExpiresAt;
-        u.planStartedAt = d.user.planStartedAt;
-        u.studyReminderCount = d.user.studyReminderCount || 0;
-        u.tuitionReminderCount = d.user.tuitionReminderCount || 0;
-        u.lastVocabStudyDate = d.user.lastVocabStudyDate || null;
-        u.targetBand = d.user.targetBand || null;
-        // Needed by isWithinTrial()/hasPremiumAccess() — a user cached
-        // before this field existed self-heals here on their very next
-        // page load (nav.js already calls refreshPlan() unconditionally).
-        u.createdAt = d.user.createdAt || u.createdAt || null;
-        // Email-verification / trial-anchor fields (isWithinTrial mirror).
-        if (typeof d.user.emailVerified === 'boolean') u.emailVerified = d.user.emailVerified;
-        u.trialStartedAt = d.user.trialStartedAt || u.trialStartedAt || null;
-        setUser(u);
-        return u;
-      })
+      .then(applyMePayload)
       .catch(function () { return null; });
+  }
+
+  // The merge half of refreshPlan(), for a /auth/me body fetched some other
+  // way (nav.js gets it inside GET /api/nav/summary). Returns the merged
+  // cached user, or null for an unusable body.
+  function applyMePayload(d) {
+    if (!d || !d.success || !d.user) return null;
+    touchLastLoginAt();
+    var u = getUser() || {};
+    u.plan = d.user.plan;
+    u.planExpiresAt = d.user.planExpiresAt;
+    u.planStartedAt = d.user.planStartedAt;
+    u.studyReminderCount = d.user.studyReminderCount || 0;
+    u.tuitionReminderCount = d.user.tuitionReminderCount || 0;
+    u.lastVocabStudyDate = d.user.lastVocabStudyDate || null;
+    u.targetBand = d.user.targetBand || null;
+    // Needed by isWithinTrial()/hasPremiumAccess() — a user cached
+    // before this field existed self-heals here on their very next
+    // page load (nav.js already calls refreshPlan() unconditionally).
+    u.createdAt = d.user.createdAt || u.createdAt || null;
+    // Email-verification / trial-anchor fields (isWithinTrial mirror).
+    if (typeof d.user.emailVerified === 'boolean') u.emailVerified = d.user.emailVerified;
+    u.trialStartedAt = d.user.trialStartedAt || u.trialStartedAt || null;
+    setUser(u);
+    return u;
   }
 
   function authHeader() {
@@ -272,7 +277,7 @@
     clearSession: clearSession,
     isLoggedIn: isLoggedIn,
     getRole: getRole, isAdmin: isAdmin, isTeacher: isTeacher, isStaff: isStaff,
-    isPremiumCached: isPremiumCached, isWithinTrial: isWithinTrial, hasPremiumAccess: hasPremiumAccess, refreshPlan: refreshPlan,
+    isPremiumCached: isPremiumCached, isWithinTrial: isWithinTrial, hasPremiumAccess: hasPremiumAccess, refreshPlan: refreshPlan, applyMePayload: applyMePayload,
     authHeader: authHeader,
     login: login, logout: logout,
     getSafeNext: getSafeNext, buildLoginUrl: buildLoginUrl, getPostLoginRedirect: getPostLoginRedirect,
