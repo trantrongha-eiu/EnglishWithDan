@@ -97,7 +97,7 @@ async function getState(userId) {
   await settleHopeHammer(userId);
   await coverMissedDaysWithShields(User, userId).catch(() => 0);
   const u = await User.findById(userId)
-    .select('flameWallet shopItems hopeHammerDay hopeHammerBase hopeHammerLast crownUntil invisibleUntil cakedUntil cakedBy pets activePet learningStreak')
+    .select('flameWallet shopItems hopeHammerDay hopeHammerBase hopeHammerLast crownUntil invisibleUntil cakedUntil cakedBy pets activePet learningStreak lastActivityDate streakHammers previousStreak streakLostAt')
     .lean();
   if (!u) return null;
   const today = getVNDay(new Date());
@@ -105,7 +105,15 @@ async function getState(userId) {
   const hopeToday = !!(u.hopeHammerDay && new Date(u.hopeHammerDay).getTime() === today.getTime());
   return {
     wallet: u.flameWallet || 0,
-    streak: u.learningStreak || 0,
+    streak: effectiveStreak(u.learningStreak, u.lastActivityDate, items.iceShield),
+    // Búa Daniel (not sold here — earned from Paraphrase units / admin gifts),
+    // shown in the Kho đồ next to the shop items. Used via the existing
+    // POST /api/user/streak/use-hammer; canUse is User.canUseHammer()'s rule.
+    danielHammer: {
+      count: u.streakHammers || 0,
+      canUse: User.hydrate(u).canUseHammer(),
+      previousStreak: u.previousStreak || 0,
+    },
     items: ITEMS.map(i => ({ ...i, owned: items[i.key] || 0, sellPrice: sellPrice(i.price) })),
     pets: PETS.map(p => ({ ...p, owned: (u.pets || []).includes(p.id), sellPrice: sellPrice(p.price) })),
     activePet: u.activePet || '',

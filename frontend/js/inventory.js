@@ -1,7 +1,8 @@
 /**
  * inventory.js — "Kho đồ" tab on profile.html (#inventory). Everything a
  * student bought in the Cửa hàng lửa (shop.html) lives here: items with
- * Dùng / Bán, linh thú with Dắt đi dạo / Cất về / Bán. Selling refunds half
+ * Dùng / Bán, linh thú with Dắt đi dạo / Cất về / Bán — plus the Búa Daniel
+ * (earned, not bought) and the current streak next to the wallet. Selling refunds half
  * the price, rounded down (backend shopService.sellItem / sellPet).
  *
  * Needs: AuthService, escHtml (shared/utils.js), showToast (shared/toast.js),
@@ -50,6 +51,22 @@
             + '</div>';
     }
 
+    // Búa Daniel — not a shop item (earned from Paraphrase units ≥ 90% or an
+    // admin gift), always shown: it restores a streak lost in the last 3 days.
+    function danielCard() {
+        var h = state.danielHammer || { count: 0, canUse: false };
+        var hint = !h.count
+            ? 'Nhận búa khi hoàn thành 1 Unit Paraphrase đạt ≥ 90%.'
+            : (h.canUse ? 'Khôi phục chuỗi ' + h.previousStreak + ' 🔥 vừa mất!' : 'Dùng được trong 3 ngày sau khi lỡ mất chuỗi.');
+        return '<div class="inv-card inv-daniel' + (h.canUse ? ' is-ready' : '') + '">'
+            + '<span class="inv-emoji" aria-hidden="true">🔨</span>'
+            + '<div class="inv-info"><b>Búa Daniel</b><span class="inv-qty">×' + h.count + '</span></div>'
+            + '<div class="inv-actions">'
+            + '<button type="button" class="btn btn-primary btn-sm" data-inv-daniel' + (h.canUse && h.count ? '' : ' disabled') + '>Dùng</button>'
+            + '<span class="inv-hint">' + escHtml(hint) + '</span></div>'
+            + '</div>';
+    }
+
     function petCard(p) {
         var active = state.activePet === p.id;
         var art = window.Pets ? window.Pets.svg(p.id) : '';
@@ -70,16 +87,18 @@
         if (!el) return;
         var items = state.items.filter(function (i) { return i.owned > 0; });
         var pets = state.pets.filter(function (p) { return p.owned; });
-        var head = '<div class="inv-wallet"><span>Ví lửa: <b>🔥 ' + state.wallet + '</b></span>'
+        var head = '<div class="inv-wallet">'
+            + '<div class="inv-stats">'
+            + '<div class="inv-stat"><span>Ví lửa</span><b>🔥 ' + state.wallet + '</b></div>'
+            + '<div class="inv-stat inv-stat--streak"><span>Lửa chuỗi hiện có</span><b>🔥 ' + state.streak + '</b></div>'
+            + '</div>'
             + '<a class="btn btn-primary btn-sm" href="shop.html"><i class="fas fa-store"></i> Cửa hàng</a></div>'
-            + '<p class="inv-note">Bán lại được một nửa giá mua (làm tròn xuống).</p>';
-        if (!items.length && !pets.length) {
-            el.innerHTML = head + '<div class="inv-empty">🎒 Kho đang trống — ghé <a href="shop.html">Cửa hàng lửa</a> mua vật phẩm hoặc linh thú nhé!</div>';
-            return;
-        }
+            + '<p class="inv-note">Ví lửa dùng để mua sắm; lửa chuỗi là thứ hạng trên BXH. Bán lại được một nửa giá mua (làm tròn xuống).</p>';
         el.innerHTML = head
-            + (items.length ? '<h4 class="inv-h">⚔️ Vật phẩm</h4><div class="inv-grid">' + items.map(itemCard).join('') + '</div>' : '')
-            + (pets.length ? '<h4 class="inv-h">🐾 Linh thú</h4><div class="inv-grid">' + pets.map(petCard).join('') + '</div>' : '');
+            + '<h4 class="inv-h">⚔️ Vật phẩm</h4><div class="inv-grid">' + danielCard() + items.map(itemCard).join('') + '</div>'
+            + (pets.length
+                ? '<h4 class="inv-h">🐾 Linh thú</h4><div class="inv-grid">' + pets.map(petCard).join('') + '</div>'
+                : '<div class="inv-empty">🐾 Chưa có linh thú — ghé <a href="shop.html">Cửa hàng lửa</a> rước một bé về nhé!</div>');
     }
 
     /* ── Actions ────────────────────────────────────────────────────── */
@@ -124,6 +143,15 @@
             });
         });
     }
+    function useDaniel() {
+        var h = state.danielHammer;
+        confirmThen('Dùng Búa Daniel?', 'Khôi phục chuỗi ' + h.previousStreak + ' 🔥 vừa mất (tốn 1 búa).', 'Khôi phục 🔨', function () {
+            busy = true;
+            api('POST', '/user/streak/use-hammer').then(function (d) {
+                after(d, '🔨 Đã khôi phục chuỗi ' + (d && d.streak) + ' 🔥!');
+            });
+        });
+    }
     function setPet(id) {
         busy = true;
         api('PUT', '/shop/pet', { petId: id }).then(function (d) {
@@ -133,9 +161,10 @@
     }
 
     document.addEventListener('click', function (e) {
-        var b = e.target.closest && e.target.closest('[data-inv-use],[data-inv-sell-item],[data-inv-sell-pet],[data-inv-pet]');
+        var b = e.target.closest && e.target.closest('[data-inv-use],[data-inv-sell-item],[data-inv-sell-pet],[data-inv-pet],[data-inv-daniel]');
         if (!b || b.disabled || busy || !state) return;
-        if (b.hasAttribute('data-inv-use')) useItem(b.getAttribute('data-inv-use'));
+        if (b.hasAttribute('data-inv-daniel')) useDaniel();
+        else if (b.hasAttribute('data-inv-use')) useItem(b.getAttribute('data-inv-use'));
         else if (b.hasAttribute('data-inv-sell-item')) sellItem(b.getAttribute('data-inv-sell-item'));
         else if (b.hasAttribute('data-inv-sell-pet')) sellPet(b.getAttribute('data-inv-sell-pet'));
         else setPet(b.getAttribute('data-inv-pet'));

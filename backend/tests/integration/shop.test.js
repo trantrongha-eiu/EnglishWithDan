@@ -120,6 +120,17 @@ describe('/api/shop', () => {
     expect((await request(app).get('/api/shop').set(auth(s))).body.wallet).toBe(70);
   });
 
+  test('GET reports Búa Daniel and whether it can be used right now', async () => {
+    const plain = await createStudent({ extra: { streakHammers: 2, learningStreak: 7, lastActivityDate: new Date(), flameWalletGranted: true } });
+    let res = await request(app).get('/api/shop').set(auth(plain));
+    expect(res.body.danielHammer).toEqual({ count: 2, canUse: false, previousStreak: 0 });
+    expect(res.body.streak).toBe(7);
+
+    const lost = await createStudent({ extra: { streakHammers: 1, learningStreak: 0, previousStreak: 30, streakLostAt: new Date(), flameWalletGranted: true } });
+    res = await request(app).get('/api/shop').set(auth(lost));
+    expect(res.body.danielHammer).toEqual({ count: 1, canUse: true, previousStreak: 30 });
+  });
+
   test('staff cannot buy', async () => {
     const t = await createTeacher({ extra: { flameWallet: 100 } });
     const res = await request(app).post('/api/shop/buy').set(auth(t)).send({ kind: 'item', key: 'cake' });
