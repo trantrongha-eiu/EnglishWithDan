@@ -27,3 +27,36 @@
   .ews-shopfeed-pet * { animation: none !important; }
 }
 @media print { .ews-shopfeed { display: none !important; } }
+
+/* "Bạn đã bị úp bánh kem bởi X" — shop-feed.js showCakeNotice, once per cake. */
+.ews-cake-notice {
+  position: fixed; right: 16px; bottom: 16px; z-index: 960;
+  width: min(340px, calc(100vw - 32px)); padding: 16px 16px 14px;
+  border-radius: 18px; background: #fff; border: 2px solid #f9a8d4; color: #1f2937;
+  box-shadow: 0 14px 40px rgba(219, 39, 119, .22);
+  display: flex; flex-direction: column; gap: 10px;
+  transform: translateY(24px) scale(.96); opacity: 0;
+  transition: transform .4s cubic-bezier(.3, 1.4, .5, 1), opacity .25s;
+}
+.ews-cake-notice.is-in { transform: none; opacity: 1; }
+[data-theme="dark"] .ews-cake-notice { background: #2a1520; border-color: rgba(244, 114, 182, .55); color: #fce7f3; }
+.ews-cake-head { display: flex; gap: 12px; align-items: center; }
+.ews-cake-emoji { font-size: 38px; line-height: 1; animation: ews-cake-splat .6s cubic-bezier(.3, 1.6, .5, 1); }
+.ews-cake-head b { font-size: 15px; line-height: 1.35; }
+.ews-cake-head b span { color: #db2777; }
+.ews-cake-notice p { margin: 0; font-size: 13px; line-height: 1.45; opacity: .85; }
+.ews-cake-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.ews-cake-actions button, .ews-cake-actions a {
+  border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+  text-decoration: none; border: 1px solid transparent; font-family: inherit;
+}
+.ews-cake-wipe { background: #db2777; color: #fff; }
+.ews-cake-wipe:hover { background: #be185d; }
+.ews-cake-wipe:disabled { opacity: .6; cursor: default; }
+.ews-cake-close { background: transparent; color: inherit; border-color: rgba(219, 39, 119, .35) !important; }
+@keyframes ews-cake-splat { 0% { transform: scale(2.2) rotate(-20deg); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .ews-cake-notice { transition: opacity .2s; transform: none; }
+  .ews-cake-emoji { animation: none; }
+}
+@media print { .ews-cake-notice { display: none !important; } }

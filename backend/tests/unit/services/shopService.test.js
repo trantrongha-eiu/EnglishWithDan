@@ -66,7 +66,24 @@ describe('buying', () => {
     expect((await User.findById(user._id).lean()).flameWallet).toBe(60);
   });
 
-  test('a first linh thú goes out walking; a second one does not replace it', async () => {
+  test('buys several at once, all or nothing', async () => {
+    const user = await createStudent({ extra: { flameWallet: 35, flameWalletGranted: true } });
+    expect(await shopService.buyItem(user._id, 'cake', 3)).toMatchObject({ status: 'ok', wallet: 5, owned: 3, qty: 3 });
+    expect((await shopService.buyItem(user._id, 'cake', 2)).status).toBe('not_enough');
+    expect((await shopService.buyItem(user._id, 'cake', 0)).status).toBe('invalid_qty');
+    expect((await shopService.buyItem(user._id, 'cake', 1.5)).status).toBe('invalid_qty');
+    expect((await User.findById(user._id).lean()).shopItems.cake).toBe(3);
+  });
+
+  test('a multi-buy cannot push Khiên Băng past its cap', async () => {
+    const user = await createStudent({ extra: { flameWallet: 100, flameWalletGranted: true } });
+    expect((await shopService.buyItem(user._id, 'iceShield', 3)).status).toBe('max_owned');
+    expect((await shopService.buyItem(user._id, 'iceShield', 1)).status).toBe('ok');
+    expect(await shopService.buyItem(user._id, 'iceShield', 2)).toMatchObject({ status: 'max_owned', left: 1 });
+    expect(await shopService.buyItem(user._id, 'iceShield', 1)).toMatchObject({ status: 'ok', owned: 2, wallet: 60 });
+  });
+
+  test('a first linh thú goes out walking;a second one does not replace it', async () => {
     const user = await createStudent({ extra: { flameWallet: 200, flameWalletGranted: true } });
     expect(await shopService.buyPet(user._id, 'meo')).toMatchObject({ status: 'ok', activePet: 'meo' });
     expect(await shopService.buyPet(user._id, 'rong')).toMatchObject({ status: 'ok', activePet: 'meo', wallet: 140 });
@@ -202,6 +219,21 @@ describe('BXH decorations', () => {
     expect((await shopService.throwCake(a._id, b._id)).status).toBe('already_caked');
     expect((await User.findById(a._id).lean()).shopItems.cake).toBe(1);
     expect((await User.findById(b._id).lean()).cakedBy).toBe('An');
+  });
+
+  test('the caked student is told who did it and can wipe it off with a Khăn Lau', async () => {
+    const a = await createStudent({ extra: { firstName: 'An', lastName: '', shopItems: { cake: 2 } } });
+    const b = await createStudent({ extra: { shopItems: { towel: 1 } } });
+    expect((await shopService.useItem(b._id, 'towel')).status).toBe('not_caked');
+    expect(await shopService.getCakeNotice(b._id)).toBeNull();
+    await shopService.throwCake(a._id, b._id);
+    expect(await shopService.getCakeNotice(b._id)).toMatchObject({ by: 'An', towels: 1 });
+    expect(await shopService.useItem(b._id, 'towel')).toMatchObject({ status: 'ok', owned: 0 });
+    expect(await shopService.getCakeNotice(b._id)).toBeNull();
+    expect(shopService.boardDecor(await User.findById(b._id).lean()).cakedBy).toBe('');
+    // Clean again, so a new cake can land — and with no khăn left, it stays.
+    expect((await shopService.throwCake(a._id, b._id)).status).toBe('ok');
+    expect((await shopService.useItem(b._id, 'towel')).status).toBe('none_left');
   });
 
   test('a cake at a missing / non-student target is not spent', async () => {

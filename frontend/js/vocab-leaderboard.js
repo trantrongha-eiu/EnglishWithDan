@@ -202,6 +202,9 @@
         }).catch(function () {});
     }
 
+    // Wiped from the shop-feed.js cake popup — take the 🎂 off my row.
+    document.addEventListener('ews:cake-wiped', function () { loadStreakBoard(); });
+
     // 🎂 next to a name: throw a cake (capture phase, so the row's own
     // onclick — open the peer profile — doesn't fire too).
     document.addEventListener('click', function (e) {

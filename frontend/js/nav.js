@@ -330,7 +330,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=20261015b';
+    feedScript.src = '/js/shared/shop-feed.js?v=20261015cake';
     document.body.appendChild(feedScript);
   }
 

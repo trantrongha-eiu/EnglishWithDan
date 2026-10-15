@@ -35,7 +35,11 @@
     function itemCard(i) {
         var hopeOn = i.key === 'hopeHammer' && state.effects && state.effects.hope;
         var use;
-        if (i.usage === 'manual') {
+        if (i.key === 'towel') {
+            var caked = state.effects && state.effects.cakedUntil;
+            use = '<button type="button" class="btn btn-primary btn-sm" data-inv-use="towel"' + (caked ? '' : ' disabled') + '>'
+                + (caked ? '🧽 Lau kem' : 'Ảnh đang sạch ✨') + '</button>';
+        } else if (i.usage === 'manual') {
             use = '<button type="button" class="btn btn-primary btn-sm" data-inv-use="' + i.key + '"' + (hopeOn ? ' disabled' : '') + '>'
                 + (hopeOn ? 'Đang dùng hôm nay' : 'Dùng') + '</button>';
         } else if (i.usage === 'target') {
@@ -115,6 +119,7 @@
         hopeHammer: 'Từ giờ đến hết hôm nay mọi 🔥 kiếm được đều ×2. Nhưng nếu đến nửa đêm chưa kiếm thêm đủ 3 🔥 thì chuỗi bị trừ 10 🔥. (Mỗi ngày chỉ kiếm tối đa 5 🔥 — nên đập búa trước khi học.) Chơi không?',
         cloak: 'Giấu số 🔥 của bạn trên BXH trong 24 giờ.',
         crown: 'Đội vương miện, tên bạn phát sáng trên BXH trong 7 ngày.',
+        towel: 'Lau sạch bánh kem trên ảnh đại diện của bạn ngay bây giờ.',
     };
 
     function useItem(key) {
@@ -122,7 +127,9 @@
         confirmThen('Dùng ' + i.name + '?', USE_MSG[key] || '', key === 'hopeHammer' ? 'Đập búa! 🔨' : 'Dùng', function () {
             busy = true;
             api('POST', '/shop/use', { key: key }).then(function (d) {
-                after(d, key === 'hopeHammer' ? '🔨 Búa đã đập — hôm nay lửa ×2, học ngay thôi!' : i.emoji + ' Đã dùng ' + i.name + '!');
+                after(d, key === 'hopeHammer' ? '🔨 Búa đã đập — hôm nay lửa ×2, học ngay thôi!'
+                    : key === 'towel' ? '🧽 Lau sạch bong! Ảnh đại diện đã hết kem ✨'
+                    : i.emoji + ' Đã dùng ' + i.name + '!');
             });
         });
     }
@@ -181,6 +188,9 @@
             el.innerHTML = '<div class="inv-empty">Không tải được kho đồ. <button type="button" class="btn btn-ghost btn-sm" onclick="location.reload()">Thử lại</button></div>';
         });
     }
+
+    // Wiped from the shop-feed.js cake popup — refresh the Khăn Lau card.
+    document.addEventListener('ews:cake-wiped', function () { if (state) load(); });
 
     function boot() {
         if (!window.AuthService || !window.AuthService.isLoggedIn()) return;

@@ -162,6 +162,7 @@ const UserSchema = new mongoose.Schema({
     hopeHammer: { type: Number, default: 0 },
     iceShield:  { type: Number, default: 0 },
     cake:       { type: Number, default: 0 },
+    towel:      { type: Number, default: 0 },
     cloak:      { type: Number, default: 0 },
     crown:      { type: Number, default: 0 },
   },

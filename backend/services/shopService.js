@@ -12,7 +12,7 @@ const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../ut
 const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
 const {
   ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY,
-  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS,
+  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
 } = require('../constants/shop');
 
 const HOUR = 60 * 60 * 1000;
@@ -139,14 +139,16 @@ async function assertStudent(userId) {
 // After a successful purchase: log it for the "X vừa mua Y" ticker and drop
 // a note in every admin's inbox (same shape as sendFeedbackToAdmins).
 // Best-effort — a failure here must never undo or fail the purchase itself.
-async function recordPurchase(userId, kind, entry) {
+async function recordPurchase(userId, kind, entry, qty = 1) {
   try {
     const buyer = await User.findById(userId).select('firstName lastName username').lean();
     if (!buyer) return;
     const name = displayName(buyer);
     const emoji = entry.emoji || '🐾';
-    const what = kind === 'pet' ? `linh thú ${entry.name}` : entry.name;
-    await ShopPurchase.create({ userId, name, kind, key: entry.key || entry.id, itemName: entry.name, emoji, price: entry.price });
+    const itemName = qty > 1 ? `${qty} × ${entry.name}` : entry.name;
+    const what = kind === 'pet' ? `linh thú ${itemName}` : itemName;
+    const price = entry.price * qty;
+    await ShopPurchase.create({ userId, name, kind, key: entry.key || entry.id, itemName, emoji, price });
     const admins = await User.find({ role: 'admin' }, '_id').lean();
     if (!admins.length) return;
     await Message.insertMany(admins.map(admin => ({
@@ -154,12 +156,21 @@ async function recordPurchase(userId, kind, entry) {
       fromName: name,
       toId: admin._id,
       subject: `[Cửa hàng] ${name} đã mua ${emoji} ${what}`,
-      body: `${name} vừa mua ${emoji} ${what} với giá ${entry.price} 🔥 trong Cửa hàng lửa.`,
+      body: `${name} vừa mua ${emoji} ${what} với giá ${price} 🔥 trong Cửa hàng lửa.`,
       type: 'personal',
     })));
   } catch (err) {
     console.error('[shop] recordPurchase failed:', err.message);
   }
+}
+
+// The cake currently on the viewer's avatar (null if none), for the
+// "bạn đã bị úp bánh kem bởi X" popup shop-feed.js shows on every page —
+// `until` doubles as the id of that cake, so each one is announced once.
+async function getCakeNotice(userId) {
+  const u = await User.findById(userId).select('cakedUntil cakedBy shopItems').lean();
+  if (!u || !isActive(u.cakedUntil)) return null;
+  return { by: u.cakedBy || 'Ai đó', until: u.cakedUntil, towels: (u.shopItems || {}).towel || 0 };
 }
 
 // Recent purchases for the ticker, newest last, never the viewer's own
@@ -195,24 +206,31 @@ async function finalizeLostStreak(userId) {
   );
 }
 
-async function buyItem(userId, key) {
+// `qty` copies in one purchase (1..MAX_BUY_QTY) — all or nothing: the
+// wallet must cover qty × price and a capped item must still have room for
+// all of them.
+async function buyItem(userId, key, qty = 1) {
   const item = ITEM_BY_KEY[key];
   if (!item) return { status: 'not_found' };
+  const n = Number(qty);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_BUY_QTY) return { status: 'invalid_qty', max: MAX_BUY_QTY };
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
   if (key === 'iceShield') await finalizeLostStreak(userId);
   const field = `shopItems.${key}`;
-  const filter = { _id: userId, flameWallet: { $gte: item.price } };
-  if (item.maxOwned) filter[field] = { $not: { $gte: item.maxOwned } };
-  const u = await User.findOneAndUpdate(filter, { $inc: { flameWallet: -item.price, [field]: 1 } }, { new: true })
+  const total = item.price * n;
+  const filter = { _id: userId, flameWallet: { $gte: total } };
+  if (item.maxOwned) filter[field] = { $not: { $gt: item.maxOwned - n } };
+  const u = await User.findOneAndUpdate(filter, { $inc: { flameWallet: -total, [field]: n } }, { new: true })
     .select('flameWallet shopItems').lean();
   if (!u) {
     const cur = await User.findById(userId).select('flameWallet shopItems').lean();
-    if (item.maxOwned && ((cur.shopItems || {})[key] || 0) >= item.maxOwned) return { status: 'max_owned', max: item.maxOwned };
-    return { status: 'not_enough', wallet: cur.flameWallet || 0, price: item.price };
+    const owned = (cur.shopItems || {})[key] || 0;
+    if (item.maxOwned && owned + n > item.maxOwned) return { status: 'max_owned', max: item.maxOwned, left: Math.max(0, item.maxOwned - owned) };
+    return { status: 'not_enough', wallet: cur.flameWallet || 0, price: total };
   }
-  await recordPurchase(userId, 'item', item);
-  return { status: 'ok', wallet: u.flameWallet, owned: u.shopItems[key] };
+  await recordPurchase(userId, 'item', item, n);
+  return { status: 'ok', wallet: u.flameWallet, owned: u.shopItems[key], qty: n };
 }
 
 async function buyPet(userId, petId) {
@@ -289,6 +307,15 @@ async function useItem(userId, key) {
       return { status: 'none_left' };
     }
     return { status: 'ok', owned: u.shopItems.hopeHammer, hope: { base: 0, quota: HOPE_QUOTA, penalty: HOPE_PENALTY } };
+  }
+
+  // Khăn Lau Diệu Kì: wipes the cake off the student's own avatar now.
+  if (key === 'towel') {
+    const u = await spendOne(userId, 'towel', { cakedUntil: { $gt: new Date() } },
+      { $set: { cakedUntil: null, cakedBy: '' } });
+    if (u) return { status: 'ok', owned: u.shopItems.towel };
+    const cur = await User.findById(userId).select('cakedUntil').lean();
+    return { status: cur && isActive(cur.cakedUntil) ? 'none_left' : 'not_caked' };
   }
 
   // Timed effects: read the current end first so a renewal stacks on top.
@@ -382,6 +409,6 @@ function boardDecor(u) {
 }
 
 module.exports = {
-  getState, getFeed, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
+  getState, getFeed, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
 };

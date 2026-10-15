@@ -8,7 +8,12 @@
  * the viewer's own purchases and anything older than an hour. Stays quiet
  * in exam mode, same signals as pets.js.
  *
- * Injected by nav.js on every page with the student nav. Purely decorative.
+ * The same poll carries `caked` — the cake on the viewer's own avatar — and
+ * pops up "Bạn đã bị úp bánh kem bởi X!" once per cake (keyed by its end
+ * time), with a button to wipe it off with a 🧽 Khăn Lau Diệu Kì (or buy
+ * one). A successful wipe fires `ews:cake-wiped` so the page can refresh.
+ *
+ * Injected by nav.js on every page with the student nav.
  */
 (function () {
   'use strict';
@@ -17,6 +22,7 @@
 
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var SEEN_KEY = 'ews-shopfeed-seen';
+  var CAKE_SEEN_KEY = 'ews-cake-seen';
   var POLL_MS = 60 * 1000;
   var SHOW_MS = 5200;
   var EXAM_PAGES = /^(mock-test|entrance-test|test-dau-vao|login|register|verify-email|auth-callback)(\.html)?$/;
@@ -44,7 +50,7 @@
     if (el) return el;
     if (!document.getElementById('ews-shopfeed-css')) {
       var l = document.createElement('link');
-      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=20261015b';
+      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=20261015cake';
       document.head.appendChild(l);
     }
     el = document.createElement('a');
@@ -79,18 +85,81 @@
     }, SHOW_MS);
   }
 
+  /* ── 🎂 "Bạn đã bị úp bánh kem bởi X" ─────────────────────────── */
+  var cakeEl = null;
+
+  function closeCake() {
+    if (!cakeEl) return;
+    var box = cakeEl;
+    cakeEl = null;
+    box.classList.remove('is-in');
+    setTimeout(function () { box.remove(); }, 400);
+  }
+
+  function wipeCake(btn) {
+    btn.disabled = true;
+    btn.textContent = 'Đang lau…';
+    fetch(API + '/shop/use', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, window.AuthService.authHeader()),
+      body: JSON.stringify({ key: 'towel' }),
+    })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (!d || !d.success) {
+          btn.disabled = false;
+          btn.textContent = '🧽 Lau ngay';
+          if (window.showToast) window.showToast((d && d.message) || 'Chưa lau được, thử lại nhé.', 'error');
+          return;
+        }
+        closeCake();
+        if (window.showToast) window.showToast('🧽 Lau sạch bong! Ảnh đại diện đã hết kem ✨', 'success');
+        try { document.dispatchEvent(new CustomEvent('ews:cake-wiped')); } catch (e) {}
+      })
+      .catch(function () { btn.disabled = false; btn.textContent = '🧽 Lau ngay'; });
+  }
+
+  function showCakeNotice(c) {
+    if (cakeEl || examActive()) return;
+    var id = String(c.until);
+    if (lsGet(CAKE_SEEN_KEY) === id) return;
+    lsSet(CAKE_SEEN_KEY, id);
+    ensureEl();
+    cakeEl = document.createElement('div');
+    cakeEl.className = 'ews-cake-notice';
+    cakeEl.setAttribute('role', 'alert');
+    cakeEl.innerHTML = '<div class="ews-cake-head"><span class="ews-cake-emoji" aria-hidden="true">🎂</span>'
+      + '<b>Bạn đã bị úp bánh kem bởi <span>' + esc(c.by) + '</span>!</b></div>'
+      + '<p>' + (c.towels
+        ? 'Kem đang dính trên ảnh đại diện của bạn trên BXH. Bạn có ' + c.towels + ' 🧽 Khăn Lau Diệu Kì — lau ngay cho sạch nhé!'
+        : 'Kem sẽ dính trên ảnh đại diện của bạn trên BXH suốt 24 giờ… trừ khi bạn có 🧽 Khăn Lau Diệu Kì!') + '</p>'
+      + '<div class="ews-cake-actions">'
+      + '<button type="button" class="ews-cake-close">Để sau</button>'
+      + (c.towels
+        ? '<button type="button" class="ews-cake-wipe" data-cake-wipe>🧽 Lau ngay</button>'
+        : '<a class="ews-cake-wipe" href="/shop.html">🧽 Mua khăn lau</a>')
+      + '</div>';
+    cakeEl.addEventListener('click', function (e) {
+      if (e.target.closest('.ews-cake-close')) closeCake();
+      else if (e.target.closest('[data-cake-wipe]')) wipeCake(e.target.closest('[data-cake-wipe]'));
+    });
+    document.body.appendChild(cakeEl);
+    var box = cakeEl;
+    requestAnimationFrame(function () { box.classList.add('is-in'); });
+  }
+
   function poll() {
     if (document.hidden) return;
     var since = lsGet(SEEN_KEY);
-    if (!since) {
-      // First visit ever: start the clock now instead of replaying the past hour.
-      lsSet(SEEN_KEY, new Date().toISOString());
-      return;
-    }
-    fetch(API + '/shop/feed?since=' + encodeURIComponent(since), { headers: window.AuthService.authHeader() })
+    var first = !since;
+    // First visit ever: start the clock now instead of replaying the past hour.
+    if (first) lsSet(SEEN_KEY, new Date().toISOString());
+    fetch(API + '/shop/feed' + (first ? '' : '?since=' + encodeURIComponent(since)), { headers: window.AuthService.authHeader() })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
-        if (!d || !d.success || !d.feed || !d.feed.length) return;
+        if (!d || !d.success) return;
+        if (d.caked) showCakeNotice(d.caked);
+        if (first || !d.feed || !d.feed.length) return;
         lsSet(SEEN_KEY, d.feed[d.feed.length - 1].at);
         if (examActive()) return;
         queue = queue.concat(d.feed).slice(-5);

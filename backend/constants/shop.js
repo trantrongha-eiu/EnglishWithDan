@@ -23,6 +23,11 @@ const ITEMS = [
     usage: 'target',
   },
   {
+    key: 'towel', name: 'Khăn Lau Diệu Kì', emoji: '🧽', price: 8,
+    description: 'Bị úp bánh kem? Lau một cái là ảnh đại diện sạch bong ngay, không phải chờ 24 giờ ✨',
+    usage: 'manual',
+  },
+  {
     key: 'cloak', name: 'Áo Tàng Hình', emoji: '👻', price: 15,
     description: 'Giấu số 🔥 của bạn trên BXH trong 24 giờ — đối thủ chỉ thấy "???" và không biết bạn sắp vượt.',
     usage: 'manual',
@@ -66,7 +71,10 @@ const CAKE_HOURS = 24;
 const CLOAK_HOURS = 24;
 const CROWN_DAYS = 7;
 
+// Most of one item a student can buy in a single purchase.
+const MAX_BUY_QTY = 99;
+
 module.exports = {
   ITEMS, PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY,
-  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS,
+  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
 };
