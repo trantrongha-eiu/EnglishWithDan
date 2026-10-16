@@ -19,7 +19,7 @@ describe('/api/shop', () => {
     const res = await request(app).get('/api/shop').set(auth(s));
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ success: true, wallet: 12, activePet: '' });
-    expect(res.body.items.map(i => i.key)).toEqual(['hopeHammer', 'iceShield', 'cake', 'towel', 'cloak', 'crown']);
+    expect(res.body.items.map(i => i.key)).toEqual(['hopeHammer', 'danielHammer', 'iceShield', 'cake', 'towel', 'cloak', 'crown']);
     expect(res.body.pets).toHaveLength(14);
   });
 
