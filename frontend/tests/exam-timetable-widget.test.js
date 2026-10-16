@@ -1,21 +1,17 @@
 /**
- * The 7-week timetable widget on reading-listening-strategy.html is an
- * inline <script>, not a js/shared/*.js module (it owns page-specific
- * markup that doesn't belong in a reusable file) — so unlike the rest of
- * tests/shared/, this test extracts that one <script> block straight out
- * of the real .html file and runs it against a minimal fixture DOM. That
- * keeps the test honest about what's actually shipped (no separate copy
- * of the logic to drift out of sync) while staying independent of the
- * page's other ~15 unrelated <script src> includes (nav.js, auth.js, …).
+ * The 7-week timetable widget on reading-listening-strategy.html lives in
+ * the page's own script, js/reading-listening-strategy.js, not a
+ * js/shared/*.js module (it owns page-specific markup that doesn't belong
+ * in a reusable file) — so this test runs that real file against a minimal
+ * fixture DOM, independent of the page's other <script src> includes
+ * (the app-shell bundle, …).
  */
 const fs = require('fs');
 const path = require('path');
 
 function extractWidgetScript() {
-  const html = fs.readFileSync(path.join(__dirname, '..', 'reading-listening-strategy.html'), 'utf8');
-  const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-  const widget = blocks.find((b) => b.includes('TIMETABLE_WEEKS'));
-  if (!widget) throw new Error('7-week timetable <script> block not found in reading-listening-strategy.html');
+  const widget = fs.readFileSync(path.join(__dirname, '..', 'js', 'reading-listening-strategy.js'), 'utf8');
+  if (!widget.includes('TIMETABLE_WEEKS')) throw new Error('7-week timetable code not found in js/reading-listening-strategy.js');
   return widget;
 }
 
