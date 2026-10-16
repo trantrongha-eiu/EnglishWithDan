@@ -121,73 +121,7 @@ function _readingHlStorageKey(attemptId) { return `ews_reading_hl_${attemptId}`;
 
 // Applies a pending { p, q } entry to freshly rendered panels.
 function _applyPendingHl(idx, passageInner, questionsInner) {
-  const pend = _pendingHl[idx];
-  if (!pend) return;
-  delete _pendingHl[idx];
-  if (passageInner && pend.p?.length) window.HighlightStore.apply(passageInner, pend.p);
-  if (questionsInner && pend.q?.length) _reapplyTextHighlights(questionsInner, pend.q);
-}
-
-// Server copy vs this browser's copy — the newer wins; if this browser's is
-// newer (an earlier upload failed), push it up again.
-function _chooseHl(kind, attemptId, local, remoteRaw) {
-  const HS = window.HighlightStore;
-  const remote = HS.normalize(remoteRaw);
-  const chosen = HS.pickNewer(local, remote);
-  if (chosen && chosen === local && !HS.isEmpty(local) && attemptId) HS.saveRemote(kind, attemptId, local);
-  return chosen;
-}
-
-// Returns a plain string for a default-colored highlight (unchanged shape,
-// so old localStorage data and code that doesn't know about colors keep
-// working) or { text, colorKey } when the student picked a non-default
-// color via js/shared/highlight-remove.js — _reapplyTextHighlights below
-// accepts either.
-function _extractHlTexts(html) {
-  if (!html) return [];
-  const tpl = document.createElement('template'); // inert parse — no image loads
-  tpl.innerHTML = html;
-  return Array.from(tpl.content.querySelectorAll('.hl')).map(el => {
-    const text = el.textContent;
-    if (!text) return null;
-    const m = el.className.match(/hl-(green|purple|pink|orange)/);
-    return m ? { text, colorKey: m[1] } : text;
-  }).filter(Boolean);
-}
-
-// Finds the first still-unhighlighted occurrence of `text` in `container`
-// and wraps it in a <span class="hl"> — used to re-apply highlights saved
-// from exam mode onto review's freshly-rendered (structurally different)
-// questions markup. Best-effort: a highlight whose text no longer appears
-// verbatim (or that spanned multiple text nodes) is silently skipped
-// rather than breaking the render.
-function _reapplyTextHighlights(container, items) {
-  if (!container || !items || !items.length) return;
-  items.forEach(item => {
-    const text = typeof item === 'string' ? item : item.text;
-    const colorKey = typeof item === 'string' ? '' : (item.colorKey || '');
-    if (!text || !text.trim()) return;
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-      acceptNode(node) {
-        if (node.parentElement && node.parentElement.closest('.hl, .radio-opt, .checkbox-opt, input, textarea, select, button')) {
-          return NodeFilter.FILTER_REJECT;
-        }
-        return node.nodeValue.includes(text) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-      }
-    });
-    const node = walker.nextNode();
-    if (!node) return;
-    const idx = node.nodeValue.indexOf(text);
-    if (idx === -1) return;
-    try {
-      const range = document.createRange();
-      range.setStart(node, idx);
-      range.setEnd(node, idx + text.length);
-      const span = document.createElement('span');
-      span.className = colorKey ? 'hl hl-' + colorKey : 'hl';
-      range.surroundContents(span);
-    } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
-  });
+  window.HighlightStore.applyPending(_pendingHl, idx, passageInner, questionsInner, false);
 }
 
 // Called after every highlight is made in exam mode OR while viewing a
@@ -215,7 +149,7 @@ function _saveReadingHighlightsToStorage() {
   const parts = Object.assign({}, _pendingHl);
   for (const idx in cache) {
     const entry = cache[idx];
-    parts[idx] = { p: HS.serializeHtml(entry.passage), q: _extractHlTexts(entry.questions) };
+    parts[idx] = { p: HS.serializeHtml(entry.passage), q: window.HighlightStore.extractTexts(entry.questions) };
   }
   const data = HS.build(parts);
   HS.writeLocal(_readingHlStorageKey(attemptId), data);
@@ -239,7 +173,7 @@ function _collectRetryHighlights() {
   return window.HighlightStore.build({
     0: {
       p: window.HighlightStore.serialize(passageInner),
-      q: _extractHlTexts(questionsInner ? questionsInner.innerHTML : ''),
+      q: window.HighlightStore.extractTexts(questionsInner ? questionsInner.innerHTML : ''),
     },
   });
 }
@@ -263,7 +197,7 @@ function _applyRetryHighlights(saved, { passage = true, questions = true } = {})
   const part = saved?.parts?.[0];
   if (!part) return;
   if (passage && part.p?.length) window.HighlightStore.apply(document.getElementById('retry-passage-inner'), part.p);
-  if (questions && part.q?.length) _reapplyTextHighlights(document.getElementById('retry-questions-inner'), part.q);
+  if (questions && part.q?.length) window.HighlightStore.applyTexts(document.getElementById('retry-questions-inner'), part.q);
 }
 
 /* ── Stopwatch helpers ──────────────────────────────────────────────── */
@@ -3698,7 +3632,7 @@ function renderReview(attempt, answerKeyWithheld) {
   // to this review) — the server copy (attempt.highlights) or this
   // browser's, whichever is newer (see _saveReadingHighlightsToStorage).
   // Re-applied per tab by switchReviewPassage()'s fresh-render path.
-  const savedHl = _chooseHl('reading', attempt._id,
+  const savedHl = window.HighlightStore.choose('reading', attempt._id,
     window.HighlightStore.readLocal(_readingHlStorageKey(attempt._id)), attempt.highlights);
   _pendingHl = { ...(savedHl?.parts || {}) };
 
@@ -4261,7 +4195,7 @@ async function _doSubmitRetry() {
     // Capture highlights made during practice before the innerHTML swap
     // below wipes them (review markup adds correct/wrong indicators the
     // live practice markup doesn't have, so raw HTML can't be reused).
-    const savedQuestionHl = _extractHlTexts(qi.innerHTML);
+    const savedQuestionHl = window.HighlightStore.extractTexts(qi.innerHTML);
     qi.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
         ${rdPracImgHtml}
@@ -4273,7 +4207,7 @@ async function _doSubmitRetry() {
         </div>${timeLine}
       </div>`
       + renderPassageQuestions(passage, true, retryReviewMap);
-    if (savedQuestionHl.length) _reapplyTextHighlights(qi, savedQuestionHl);
+    if (savedQuestionHl.length) window.HighlightStore.applyTexts(qi, savedQuestionHl);
     _saveRetryHighlightsToStorage();
   }
 
@@ -4441,7 +4375,7 @@ async function loadPracticeReview(attemptId) {
       localHl = HS.readLocal(_retryHlStorageKey(attempt.passageId));
       if (localHl) { localHl.ts = 0; HS.writeLocal(_retryAttemptHlStorageKey(attempt._id), localHl); }
     }
-    const savedRetryHl = _chooseHl('reading-practice', attempt._id, localHl, attempt.highlights);
+    const savedRetryHl = window.HighlightStore.choose('reading-practice', attempt._id, localHl, attempt.highlights);
 
     // Fill passage text (left panel)
     document.getElementById('retry-passage-inner').innerHTML =

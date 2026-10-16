@@ -165,3 +165,46 @@ describe('HighlightStore storage', () => {
     jest.useRealTimers();
   });
 });
+
+describe('HighlightStore questions-panel helpers', () => {
+  const QUESTIONS = '<p>Which insect makes honey?</p><label class="radio-opt">A. Bees</label><p>Where do bees live?</p>';
+
+  test('extractTexts returns plain strings for default highlights, objects for colored ones', () => {
+    const html = '<p><span class="hl">honey</span> and <span class="hl hl-green">bees</span></p>';
+    expect(window.HighlightStore.extractTexts(html)).toEqual(['honey', { text: 'bees', colorKey: 'green' }]);
+    expect(window.HighlightStore.extractTexts('')).toEqual([]);
+  });
+
+  test('applyTexts re-finds each text, skipping options and already-highlighted text', () => {
+    const root = el(QUESTIONS);
+    window.HighlightStore.applyTexts(root, ['honey', { text: 'bees', colorKey: 'pink' }, 'missing']);
+    expect(root.innerHTML).toBe('<p>Which insect makes <span class="hl">honey</span>?</p>'
+      + '<label class="radio-opt">A. Bees</label><p>Where do <span class="hl hl-pink">bees</span> live?</p>');
+  });
+
+  test('applyPending drops the entry, or keeps the text half when no text panel is shown', () => {
+    const p = window.HighlightStore.serialize((() => { const r = el(PASSAGE); highlight(r, 'pollinate'); return r; })());
+    const pending = { 0: { p, q: ['honey'] }, 1: { p, q: ['honey'] } };
+    const q0 = el(QUESTIONS), t0 = el(PASSAGE);
+    window.HighlightStore.applyPending(pending, 0, t0, q0, false);
+    expect(t0.querySelectorAll('.hl')).toHaveLength(1);
+    expect(q0.querySelectorAll('.hl')).toHaveLength(1);
+    expect(pending[0]).toBeUndefined();
+
+    const q1 = el(QUESTIONS);
+    window.HighlightStore.applyPending(pending, 1, null, q1, true);
+    expect(q1.querySelectorAll('.hl')).toHaveLength(1);
+    expect(pending[1]).toEqual({ p, q: [] });
+  });
+
+  test('choose re-uploads this browser’s copy when it is the newer one', () => {
+    jest.useFakeTimers();
+    const local = { v: 2, ts: 200, parts: { 0: { p: [], q: ['x'] } } };
+    const remote = { v: 2, ts: 100, parts: {} };
+    expect(window.HighlightStore.choose('reading', 'att1', local, remote)).toBe(local);
+    window.HighlightStore.flush();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(window.HighlightStore.choose('reading', 'att1', null, remote)).toEqual(remote);
+    jest.useRealTimers();
+  });
+});

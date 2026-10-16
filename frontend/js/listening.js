@@ -63,7 +63,7 @@ const partHlCacheRv = {};  // review mode: { partIdx: { transcript, questions } 
    any highlight made in questions-panel during the live exam. Passage
    markup (transcript) is identical live/review so raw HTML can be
    reused directly; questions markup can't, so only the highlighted
-   TEXT is persisted and re-applied afterward via _reapplyTextHighlights.
+   TEXT is persisted and re-applied afterward via HighlightStore.applyTexts().
    Since 2026-10-07 the transcript half is kept as text offsets (not
    HTML) and everything is also saved on the server — see
    js/shared/highlight-store.js for why localStorage alone kept
@@ -80,69 +80,7 @@ function _lHlStorageKey(attemptId) { return `ews_listening_hl_${attemptId}`; }
 
 // Applies a pending { p, q } entry to freshly rendered panels.
 function _applyPendingHl(idx, transcriptEl, questionsEl) {
-    const pend = _pendingHl[idx];
-    if (!pend) return;
-    // Exam mode has no transcript on screen — keep that half pending.
-    if (transcriptEl && pend.p?.length) window.HighlightStore.apply(transcriptEl, pend.p);
-    if (questionsEl && pend.q?.length) _reapplyTextHighlights(questionsEl, pend.q);
-    if (transcriptEl || !pend.p?.length) delete _pendingHl[idx];
-    else _pendingHl[idx] = { p: pend.p, q: [] };
-}
-
-// Server copy vs this browser's copy — the newer wins; if this
-// browser's is newer (an earlier upload failed), push it up again.
-function _chooseHl(kind, attemptId, local, remoteRaw) {
-    const HS = window.HighlightStore;
-    const remote = HS.normalize(remoteRaw);
-    const chosen = HS.pickNewer(local, remote);
-    if (chosen && chosen === local && !HS.isEmpty(local) && attemptId) HS.saveRemote(kind, attemptId, local);
-    return chosen;
-}
-
-// Returns a plain string for a default-colored highlight (unchanged
-// shape, so old localStorage data and code that doesn't know about
-// colors keep working) or { text, colorKey } when the student picked
-// a non-default color via js/shared/highlight-remove.js —
-// _reapplyTextHighlights below accepts either.
-function _extractHlTexts(html) {
-    if (!html) return [];
-    const tpl = document.createElement('template'); // inert parse — no image loads
-    tpl.innerHTML = html;
-    return Array.from(tpl.content.querySelectorAll('.hl')).map(el => {
-        const text = el.textContent;
-        if (!text) return null;
-        const m = el.className.match(/hl-(green|purple|pink|orange)/);
-        return m ? { text, colorKey: m[1] } : text;
-    }).filter(Boolean);
-}
-
-function _reapplyTextHighlights(container, items) {
-    if (!container || !items || !items.length) return;
-    items.forEach(item => {
-        const text = typeof item === 'string' ? item : item.text;
-        const colorKey = typeof item === 'string' ? '' : (item.colorKey || '');
-        if (!text || !text.trim()) return;
-        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-            acceptNode(node) {
-                if (node.parentElement && node.parentElement.closest('.hl, .radio-opt, .checkbox-opt, input, textarea, select, button')) {
-                    return NodeFilter.FILTER_REJECT;
-                }
-                return node.nodeValue.includes(text) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-            }
-        });
-        const node = walker.nextNode();
-        if (!node) return;
-        const idx = node.nodeValue.indexOf(text);
-        if (idx === -1) return;
-        try {
-            const range = document.createRange();
-            range.setStart(node, idx);
-            range.setEnd(node, idx + text.length);
-            const span = document.createElement('span');
-            span.className = colorKey ? 'hl hl-' + colorKey : 'hl';
-            range.surroundContents(span);
-        } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
-    });
+    window.HighlightStore.applyPending(_pendingHl, idx, transcriptEl, questionsEl, true);
 }
 
 function _saveListeningHighlightsToStorage() {
@@ -161,11 +99,11 @@ function _saveListeningHighlightsToStorage() {
     if (state.isReview) {
         for (const idx in partHlCacheRv) {
             const entry = partHlCacheRv[idx];
-            parts[idx] = { p: HS.serializeHtml(entry.transcript), q: _extractHlTexts(entry.questions) };
+            parts[idx] = { p: HS.serializeHtml(entry.transcript), q: window.HighlightStore.extractTexts(entry.questions) };
         }
     } else {
         for (const idx in partHlCache) {
-            parts[idx] = { p: _pendingHl[idx]?.p || [], q: _extractHlTexts(partHlCache[idx]) };
+            parts[idx] = { p: _pendingHl[idx]?.p || [], q: window.HighlightStore.extractTexts(partHlCache[idx]) };
         }
     }
     const data = HS.build(parts);
@@ -2103,7 +2041,7 @@ function goToReview() {
     // Restore highlights made while taking this exam (and in earlier
     // visits to this review) — the server copy (r.highlights) or this
     // browser's, whichever is newer (see _saveListeningHighlightsToStorage).
-    const savedHl = _chooseHl('listening', r.attemptId,
+    const savedHl = window.HighlightStore.choose('listening', r.attemptId,
         window.HighlightStore.readLocal(_lHlStorageKey(r.attemptId)), r.highlights);
     _pendingHl = { ...(savedHl?.parts || {}) };
 

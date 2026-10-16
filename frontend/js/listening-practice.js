@@ -86,7 +86,7 @@ function _collectLtPracticeHighlights() {
     return window.HighlightStore.build({
         0: {
             p: window.HighlightStore.serialize(transcriptInner),
-            q: _extractHlTexts(questionsInner ? questionsInner.innerHTML : ''),
+            q: window.HighlightStore.extractTexts(questionsInner ? questionsInner.innerHTML : ''),
         },
     });
 }
@@ -1400,7 +1400,7 @@ async function _doSubmitLTPractice() {
     // Capture highlights made during practice before the innerHTML swap
     // below wipes them (review markup adds correct/wrong indicators the
     // live practice markup doesn't have, so raw HTML can't be reused).
-    const savedQuestionHl = _extractHlTexts(inner.innerHTML);
+    const savedQuestionHl = window.HighlightStore.extractTexts(inner.innerHTML);
     const ltPracImgSrc = pct >= 75 ? 'img/above7.5.jpg'
                         : pct >= 60 ? 'img/band_6_7.jpg'
                         : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
@@ -1428,7 +1428,7 @@ async function _doSubmitLTPractice() {
 
     inner.innerHTML = html;
     inner.scrollTop = 0;
-    if (savedQuestionHl.length) _reapplyTextHighlights(inner, savedQuestionHl);
+    if (savedQuestionHl.length) window.HighlightStore.applyTexts(inner, savedQuestionHl);
 
     // Update Q-nav with correct/wrong/skipped colors
     const navPr = document.getElementById('lt-practice-q-nav');
@@ -1729,7 +1729,7 @@ async function loadLTPracticeReview(attemptId) {
             localLtHl = HS.readLocal(_ltHlStorageKey(attempt.sectionId));
             if (localLtHl) { localLtHl.ts = 0; HS.writeLocal(_ltAttemptHlStorageKey(attempt._id), localLtHl); }
         }
-        const savedLtPart = _chooseHl('listening-practice', attempt._id, localLtHl, attempt.highlights)?.parts?.[0] || null;
+        const savedLtPart = window.HighlightStore.choose('listening-practice', attempt._id, localLtHl, attempt.highlights)?.parts?.[0] || null;
 
         // Build reviewSection: merge saved answers onto the full section
         const reviewSection = JSON.parse(JSON.stringify(section));
@@ -1815,7 +1815,7 @@ async function loadLTPracticeReview(attemptId) {
         const inner = document.getElementById('lt-practice-questions-inner');
         inner.innerHTML = html;
         inner.scrollTop = 0;
-        if (savedLtPart?.q?.length) _reapplyTextHighlights(inner, savedLtPart.q);
+        if (savedLtPart?.q?.length) window.HighlightStore.applyTexts(inner, savedLtPart.q);
 
         // Show transcript if available
         const tp = document.getElementById('lt-practice-transcript-panel');

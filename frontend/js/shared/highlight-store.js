@@ -22,7 +22,7 @@
  * so an offset that no longer matches (passage edited since) can still be
  * re-found. The questions panel renders differently in review (correct/wrong
  * markers, explanations), so for it only the highlighted text is kept, as
- * before — each page keeps its own text-based helpers for that half.
+ * before — see extractTexts()/applyTexts().
  */
 (function () {
   'use strict';
@@ -196,6 +196,87 @@
     return { v: 2, ts: Date.now(), parts: parts };
   }
 
+  // Server copy vs this browser's copy — the newer wins; if this browser's is
+  // newer (an earlier upload failed), push it up again.
+  function choose(kind, attemptId, local, remoteRaw) {
+    var remote = normalize(remoteRaw);
+    var chosen = pickNewer(local, remote);
+    if (chosen && chosen === local && !isEmpty(local) && attemptId) saveRemote(kind, attemptId, local);
+    return chosen;
+  }
+
+  // ── Questions panel (text-based) ──────────────────────────────────────
+
+  // The highlighted texts in a questions panel's HTML. A plain string for a
+  // default-colored highlight (unchanged shape, so old localStorage data and
+  // code that doesn't know about colors keep working) or { text, colorKey }
+  // when the student picked a non-default color via
+  // js/shared/highlight-remove.js — applyTexts() below accepts either.
+  function extractTexts(html) {
+    if (!html) return [];
+    var tpl = document.createElement('template'); // inert parse — no image loads
+    tpl.innerHTML = html;
+    return Array.prototype.map.call(tpl.content.querySelectorAll('.hl'), function (el) {
+      var text = el.textContent;
+      if (!text) return null;
+      var m = el.className.match(COLOR_RE);
+      return m ? { text: text, colorKey: m[1] } : text;
+    }).filter(Boolean);
+  }
+
+  // Finds the first still-unhighlighted occurrence of each text in
+  // `container` and wraps it in a <span class="hl"> — used to re-apply
+  // highlights saved from exam mode onto review's freshly-rendered
+  // (structurally different) questions markup. Best-effort: a highlight
+  // whose text no longer appears verbatim (or that spanned multiple text
+  // nodes) is silently skipped rather than breaking the render.
+  function applyTexts(container, items) {
+    if (!container || !items || !items.length) return;
+    items.forEach(function (item) {
+      var text = typeof item === 'string' ? item : item.text;
+      var colorKey = typeof item === 'string' ? '' : (item.colorKey || '');
+      if (!text || !text.trim()) return;
+      var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (node) {
+          if (node.parentElement && node.parentElement.closest('.hl, .radio-opt, .checkbox-opt, input, textarea, select, button')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          return node.nodeValue.includes(text) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+        }
+      });
+      var node = walker.nextNode();
+      if (!node) return;
+      var idx = node.nodeValue.indexOf(text);
+      if (idx === -1) return;
+      try {
+        var range = document.createRange();
+        range.setStart(node, idx);
+        range.setEnd(node, idx + text.length);
+        var span = document.createElement('span');
+        span.className = colorKey ? 'hl hl-' + colorKey : 'hl';
+        range.surroundContents(span);
+      } catch (e) { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
+    });
+  }
+
+  // pending: a page's { idx: { p, q } } of highlights restored from
+  // storage/server for a passage/part not rendered yet this session. Applies
+  // entry `idx` to its freshly rendered panels and drops it. keepTextPending:
+  // with no text panel on screen (Listening's exam mode shows no
+  // transcript), keep the p half pending instead of dropping it.
+  function applyPending(pending, idx, textRoot, questionsRoot, keepTextPending) {
+    var pend = pending[idx];
+    if (!pend) return;
+    var hasP = !!(pend.p && pend.p.length);
+    if (!keepTextPending) delete pending[idx];
+    if (textRoot && hasP) apply(textRoot, pend.p);
+    if (questionsRoot && pend.q && pend.q.length) applyTexts(questionsRoot, pend.q);
+    if (keepTextPending) {
+      if (textRoot || !hasP) delete pending[idx];
+      else pending[idx] = { p: pend.p, q: [] };
+    }
+  }
+
   // ── localStorage ──────────────────────────────────────────────────────
 
   var KEY_RE = /^ews_(reading|listening)_hl_/;
@@ -287,6 +368,10 @@
     isEmpty: isEmpty,
     pickNewer: pickNewer,
     build: build,
+    choose: choose,
+    extractTexts: extractTexts,
+    applyTexts: applyTexts,
+    applyPending: applyPending,
     readLocal: readLocal,
     writeLocal: writeLocal,
     removeLocal: removeLocal,
