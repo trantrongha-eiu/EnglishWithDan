@@ -54,6 +54,7 @@ let loggedIn;
 beforeAll(() => {
   loadScript('utils.js'); // escHtml
   loadScript('highlight-store.js'); // HighlightStore (the "Bôi màu" tool)
+  loadScript('tips-practice-shell.js');
   window.eval(fs.readFileSync(path.join(__dirname, '..', 'js', 'reading-tips-practice.js'), 'utf8'));
 });
 

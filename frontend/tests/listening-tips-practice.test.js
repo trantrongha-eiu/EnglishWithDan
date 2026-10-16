@@ -113,6 +113,7 @@ const audio = () => $('audio.ltp-audio');
 beforeAll(() => {
   loadScript('utils.js'); // escHtml
   loadScript('api-client.js'); // ApiClient.handleResponse
+  loadScript('tips-practice-shell.js');
   window.eval(fs.readFileSync(path.join(__dirname, '..', 'js', 'listening-tips-practice.js'), 'utf8'));
 });
 

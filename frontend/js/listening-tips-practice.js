@@ -181,10 +181,6 @@
   const SLOW_NOTICE_MS = 6000;
   const SPEEDS = [1, 0.8, 1.2];
 
-  const esc = (s) => escHtml(s == null ? '' : String(s));
-  const escNl = (s) => esc(s).replace(/\n/g, '<br>');
-  const KEY_ATTRS = 'tabindex="0" role="button"';
-
   function fmtTime(sec) {
     sec = Math.max(0, Math.round(sec || 0));
     return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
@@ -212,65 +208,7 @@
     }
   }
 
-  // What to tell the student when a request fails. Our own 4xx messages are
-  // already Vietnamese; anything else gets a plain explanation.
-  function errorMessage(err, fallback) {
-    if (err && err.name === 'AbortError') return 'Máy chủ phản hồi quá lâu (có thể đang khởi động). Vui lòng thử lại sau vài giây.';
-    if (err && err.coldStart) return 'Máy chủ đang khởi động, vui lòng thử lại sau vài giây.';
-    if (err && err.status >= 400 && err.status < 500 && err.body && err.body.message) return err.body.message;
-    if (err && err.status >= 500) return 'Máy chủ đang gặp sự cố, vui lòng thử lại sau ít phút.';
-    if (err && !err.status && (err instanceof TypeError || navigator.onLine === false)) return 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.';
-    return fallback;
-  }
-
-  function announce(msg) {
-    const el = document.getElementById('ltp-live');
-    if (el) el.textContent = msg;
-  }
-
-  // ── Scrolling (the page is long on phones) ────────────────────────────
-
-  function topOffset() {
-    const css = getComputedStyle(document.documentElement);
-    const px = (name, dflt) => { const v = parseInt(css.getPropertyValue(name), 10); return Number.isFinite(v) ? v : dflt; };
-    return px('--nav-height', 64) + px('--expiry-banner-height', 0);
-  }
-
-  function revealPanel() {
-    const panel = panelEl();
-    if (!panel || panel.hidden) return;
-    const top = panel.getBoundingClientRect().top;
-    if (top < topOffset() || top > window.innerHeight * 0.6) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function revealEl(el) {
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const over = r.bottom - window.innerHeight + 16;
-    const room = r.top - topOffset() - 12;
-    if (over > 0 && room > 0) window.scrollBy({ top: Math.min(over, room), behavior: 'smooth' });
-  }
-
-  // ── Browser-only persistence ──────────────────────────────────────────
-  // One localStorage entry per account: { [lessonKey]: { practice, answers,
-  // idx, stage, finished, counted, savedAt, last, best, attempts } }.
-  const STORE_PREFIX = 'ltp_v1_';
-  const STALE_MS = 30 * 24 * 60 * 60 * 1000;
-  let persistTimer = null;
-
-  function storeKey() {
-    const u = window.AuthService && typeof window.AuthService.getUser === 'function' ? window.AuthService.getUser() : null;
-    return STORE_PREFIX + ((u && (u._id || u.id || u.username)) || 'anon');
-  }
-  function readStore() {
-    try {
-      const v = JSON.parse(localStorage.getItem(storeKey()) || '{}');
-      return v && typeof v === 'object' ? v : {};
-    } catch (e) { return {}; }
-  }
-  function writeStore(all) {
-    try { localStorage.setItem(storeKey(), JSON.stringify(all)); } catch (e) { /* unavailable or full */ }
-  }
+  // ── What this page saves (the store itself: js/shared/tips-practice-shell.js) ──
 
   // One section with its questions (runs, question types) vs items drawn
   // from several sections.
@@ -289,53 +227,6 @@
     if (out.result === undefined) out.result = null;
     if (!Array.isArray(out.sel)) out.sel = [];
     return out;
-  }
-
-  function loadRecord(key) {
-    const rec = readStore()[key];
-    if (!rec || typeof rec !== 'object') return null;
-    const items = itemsOf(rec.practice);
-    // (practices saved before every tip got its one fixed practice are dropped)
-    const usable = Array.isArray(items) && items.length && rec.practice.fixed && Array.isArray(rec.answers)
-      && rec.answers.length === items.length && Date.now() - (rec.savedAt || 0) < STALE_MS;
-    if (!usable) { rec.practice = null; rec.answers = null; }
-    return rec;
-  }
-
-  function persist() {
-    clearTimeout(persistTimer);
-    if (!st) return;
-    const all = readStore();
-    all[st.lesson.lessonKey] = {
-      ...(all[st.lesson.lessonKey] || {}), // keeps last / best / attempts
-      savedAt: Date.now(),
-      practice: st.practice,
-      answers: st.answers.map(savedAnswer),
-      idx: st.idx,
-      // a 30-second run can't resume mid-timer or mid-audio: back to its start
-      stage: st.kind === 'preview' && (st.stage === 'prep' || st.stage === 'listen') ? 'intro' : st.stage,
-      checklist: st.checklist || {},
-      introSeen: !!st.introSeen,
-      finished: st.finished,
-      counted: st.counted,
-    };
-    writeStore(all);
-  }
-  function persistSoon() {
-    clearTimeout(persistTimer);
-    persistTimer = setTimeout(persist, 400);
-  }
-
-
-  function recordScore(score, total) {
-    const all = readStore();
-    const rec = all[st.lesson.lessonKey] || {};
-    const now = Date.now();
-    rec.last = { score, total, at: now };
-    if (!rec.best || score / total > rec.best.score / rec.best.total) rec.best = { score, total, at: now };
-    rec.attempts = (rec.attempts || 0) + 1;
-    all[st.lesson.lessonKey] = rec;
-    writeStore(all);
   }
 
   // ── Audio (one element, one segment at a time) ────────────────────────
@@ -473,149 +364,68 @@
     });
   }
 
-  // ── Entry card + lifecycle ────────────────────────────────────────────
+  // ── Entry card + lifecycle, persistence, scrolling — js/shared/tips-practice-shell.js ──
 
-  function supports(lesson) { return !!(lesson && lesson.hasPractice && COPY[lesson.lessonKey]); }
+  const {
+    esc, escNl, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl,
+    persist, persistSoon, recordScore,
+    supports, mount, renderEntry, panelEl, showPanelState, start, confirmNewPractice, resume, headerHtml,
+  } = window.TipsPracticeShell.create({
+    prefix: 'ltp', icon: '🎧', copy: COPY, storePrefix: 'ltp_v1_',
+    getSt: () => st, setSt: (v) => { st = v; },
+    nextSeq: () => ++loadSeq, curSeq: () => loadSeq,
+    stopTimer: () => stopTimer(),
+    halt: () => stopAudio(),
+    onMount: () => { onSegmentEnd = null; },
+    fetchPractice: (lessonKey) => api(`/listening-tips/${encodeURIComponent(lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS),
+    slowNoticeMs: SLOW_NOTICE_MS,
+    itemsOf, savedAnswer,
+    freshState: (practice, items) => ({
+      stage: practice.kind === 'workflow' ? 'kw' : 'intro', checklist: {}, finished: false, counted: false,
+      answers: freshAnswers(items),
+    }),
+    restoreState: (rec) => ({
+      stage: ['intro', 'kw', 'predict', 'listen', 'answer', 'result'].includes(rec.stage) ? rec.stage : 'intro',
+      checklist: rec.checklist && typeof rec.checklist === 'object' ? rec.checklist : {},
+      introSeen: !!rec.introSeen,
+      finished: !!rec.finished, counted: !!rec.counted,
+      answers: rec.answers.map(savedAnswer),
+    }),
+    snapshot: (s) => ({
+      // a 30-second run can't resume mid-timer or mid-audio: back to its start
+      stage: s.kind === 'preview' && (s.stage === 'prep' || s.stage === 'listen') ? 'intro' : s.stage,
+      checklist: s.checklist || {},
+      introSeen: !!s.introSeen,
+      finished: s.finished,
+      counted: s.counted,
+    }),
+    isBusy: (x) => hasProgress(x.answers),
+    // a run (several gaps, one stretch of audio) resumes at its own stage, not a question
+    resumeWhere: (rec, items) => (RUN_KINDS.has(rec.practice.kind) ? '' : ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`),
+    isDone: (i) => isDone(i),
+    closeClass: ' ltp-close',
+    enterSel: '.ltp-input[data-enter="check"]',
+    onInput: (e) => onInput(e),
+    onClick: (e, lesson) => onClick(e, lesson),
+    checkCurrent: () => checkCurrent(),
+    renderQuestion: () => renderQuestion(),
+    renderResult: () => renderResult(),
+  });
 
-  // Called by listening-tips.js after it renders a tip.
-  function mount(lesson, slot) {
-    stopTimer();
-    stopAudio();
-    if (st) persist();
-    st = null;
-    loadSeq++;
-    onSegmentEnd = null;
-    if (!slot || !supports(lesson)) return;
-    slot.innerHTML = `<section class="ltp-section" id="ltp-section">
-      <div id="ltp-entry-wrap"></div>
-      <div class="ltp-panel" id="ltp-panel" hidden></div>
-      <div class="ltp-sr" id="ltp-live" aria-live="polite"></div>
-    </section>`;
-    renderEntry(lesson);
-    const section = slot.querySelector('#ltp-section');
-    section.addEventListener('click', (e) => onClick(e, lesson));
-    section.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.target.matches('.ltp-input[data-enter="check"]')) { e.preventDefault(); checkCurrent(); return; }
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-act][role="button"]')) {
-        e.preventDefault();
-        e.target.click();
-      }
-    });
-    section.addEventListener('input', (e) => {
-      if (!st) return;
-      const qi = e.target.dataset.qi;
-      const a = qi != null ? st.answers[Number(qi)] : st.answers[st.idx];
-      if (!a) return;
-      if (e.target.matches('.ltp-input')) {
-        a.value = e.target.value;
-        syncCheckBtn();
-        persistSoon();
-      } else if (e.target.matches('.ltp-note')) {
-        a.note = e.target.value;
-        persistSoon();
-      } else if (e.target.matches('.ltp-para')) {
-        a.para = e.target.value;
-        persistSoon();
-      }
-    });
-  }
-
-  function renderEntry(lesson) {
-    const wrap = document.getElementById('ltp-entry-wrap');
-    if (!wrap) return;
-    const c = COPY[lesson.lessonKey];
-    const rec = loadRecord(lesson.lessonKey);
-    const items = rec && itemsOf(rec.practice);
-    let buttons;
-    if (st && st.lesson.lessonKey === lesson.lessonKey) {
-      buttons = '<button type="button" class="ltp-btn" data-act="start">↻ Làm lại từ đầu</button>';
-    } else if (items && !rec.finished) {
-      const where = RUN_KINDS.has(rec.practice.kind) ? '' : ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`; // questions / items
-      buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm${where}</button>
-        <button type="button" class="ltp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
-    } else if (items) {
-      buttons = `<button type="button" class="ltp-btn ltp-btn-primary" data-act="start">↻ Luyện lại</button>
-        <button type="button" class="ltp-btn" data-act="resume">📖 Xem lại kết quả</button>`;
-    } else {
-      buttons = '<button type="button" class="ltp-btn ltp-btn-primary" data-act="start">🎧 Bắt đầu luyện tập</button>';
-    }
-    const stats = rec && rec.last
-      ? `<div class="ltp-entry-stats">Lần gần nhất: <b>${rec.last.score}/${rec.last.total}</b>`
-        + (rec.best ? ` · Cao nhất: <b>${rec.best.score}/${rec.best.total}</b>` : '')
-        + ` · Đã luyện ${rec.attempts || 1} lần <span class="ltp-entry-note">(lưu trên trình duyệt này)</span></div>`
-      : '';
-    wrap.innerHTML = `<div class="ltp-entry">
-      <div class="ltp-entry-icon">🎧</div>
-      <div class="ltp-entry-text">
-        <div class="ltp-entry-title">Luyện tập ${esc(c.name)}</div>
-        <div class="ltp-entry-desc">${esc(c.desc)}</div>
-        ${stats}
-      </div>
-      <div class="ltp-entry-actions">${buttons}</div>
-    </div>`;
-  }
-
-  function panelEl() { return document.getElementById('ltp-panel'); }
-
-  function showPanelState(html) {
-    const panel = panelEl();
-    if (!panel) return;
-    panel.hidden = false;
-    panel.innerHTML = html;
-  }
-
-  async function start(lesson) {
-    stopTimer();
-    stopAudio();
-    if (st) persist();
-    st = null;
-    const seq = ++loadSeq;
-    const panel = panelEl();
-    if (!panel) return;
-    const entryBtn = document.querySelector('#ltp-entry-wrap [data-act="start"]');
-    if (!(window.AuthService && window.AuthService.isLoggedIn())) {
-      const next = location.pathname + location.search;
-      const loginUrl = window.AuthService && window.AuthService.buildLoginUrl
-        ? window.AuthService.buildLoginUrl(next) : '/login.html?next=' + encodeURIComponent(next);
-      showPanelState(`<div class="ltp-state"><div class="ltp-state-icon">🔐</div>
-        <div>Bạn cần đăng nhập để luyện tập.</div>
-        <a class="ltp-btn ltp-btn-primary" href="${esc(loginUrl)}">Đăng nhập</a></div>`);
-      return;
-    }
-    if (entryBtn) entryBtn.disabled = true;
-    showPanelState(`<div class="ltp-state" role="status"><div class="ltp-state-icon"><i class="fas fa-spinner fa-spin"></i></div>
-      <div>Đang tải bài luyện tập...</div>
-      <div class="ltp-state-slow" hidden>Máy chủ có thể đang khởi động — chờ thêm chút nhé…</div></div>`);
-    const slow = setTimeout(() => {
-      const el = seq === loadSeq && document.querySelector('#ltp-panel .ltp-state-slow');
-      if (el) el.hidden = false;
-    }, SLOW_NOTICE_MS);
-    try {
-      const data = await api(`/listening-tips/${encodeURIComponent(lesson.lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS);
-      if (seq !== loadSeq) return; // another tip / request took over meanwhile
-      if (!data.practice) {
-        renderEntry(lesson);
-        showPanelState(`<div class="ltp-state"><div class="ltp-state-icon">📭</div>
-          <div>${esc(data.message || 'Chưa tìm thấy bài luyện tập phù hợp.')}</div>
-          <button type="button" class="ltp-btn" data-act="dismiss">Đóng</button></div>`);
-        return;
-      }
-      begin(lesson, data.practice);
-    } catch (err) {
-      if (seq !== loadSeq) return;
-      renderEntry(lesson);
-      if (err && err.body && err.body.requiresPremium) {
-        showPanelState(`<div class="ltp-state"><div class="ltp-state-icon">⭐</div>
-          <div>${esc(err.body.message || 'Bạn cần nâng cấp lên Premium để luyện tập.')}</div>
-          <button type="button" class="ltp-btn ltp-btn-primary" data-act="upgrade">Nâng cấp Premium</button></div>`);
-        return;
-      }
-      showPanelState(`<div class="ltp-state ltp-state-error" role="alert"><div class="ltp-state-icon">⚠️</div>
-        <div>${esc(errorMessage(err, 'Không tải được bài luyện tập. Vui lòng thử lại.'))}</div>
-        <button type="button" class="ltp-btn" data-act="start" data-force="1">Thử lại</button></div>`);
-    } finally {
-      clearTimeout(slow);
-      if (entryBtn) entryBtn.disabled = false;
+  function onInput(e) {
+    const qi = e.target.dataset.qi;
+    const a = qi != null ? st.answers[Number(qi)] : st.answers[st.idx];
+    if (!a) return;
+    if (e.target.matches('.ltp-input')) {
+      a.value = e.target.value;
+      syncCheckBtn();
+      persistSoon();
+    } else if (e.target.matches('.ltp-note')) {
+      a.note = e.target.value;
+      persistSoon();
+    } else if (e.target.matches('.ltp-para')) {
+      a.para = e.target.value;
+      persistSoon();
     }
   }
 
@@ -623,58 +433,8 @@
     return (answers || []).some(a => a && (a.result || a.kwDone || Number(a.step) > 1));
   }
 
-  // "Làm lại từ đầu" replaces the practice in progress — ask first when the student
-  // has already done something in it.
-  function confirmNewPractice(lesson, go) {
-    let busy;
-    if (st) busy = !st.finished && hasProgress(st.answers);
-    else {
-      const rec = loadRecord(lesson.lessonKey);
-      busy = !!(rec && rec.practice && !rec.finished && hasProgress(rec.answers));
-    }
-    if (!busy) { go(); return; }
-    const msg = 'Các câu bạn đã làm trong bài này sẽ bị xoá để làm lại từ đầu. Bạn chắc chứ?';
-    if (typeof window.confirmDialog === 'function') {
-      window.confirmDialog('Làm lại từ đầu?', msg, go, { confirmLabel: 'Làm lại', confirmClass: 'btn-primary' });
-    } else if (window.confirm(msg)) go();
-  }
-
   function freshAnswers(items) {
     return items.map(() => ({ value: '', result: null, sel: [], kwDone: false, prediction: null, played: 0, note: '', step: 0 }));
-  }
-
-  function begin(lesson, practice) {
-    const items = itemsOf(practice);
-    st = {
-      lesson, practice, kind: practice.kind, items,
-      idx: 0, stage: practice.kind === 'workflow' ? 'kw' : 'intro', checklist: {}, finished: false, counted: false,
-      answers: freshAnswers(items),
-    };
-    persist();
-    renderEntry(lesson);
-    renderQuestion();
-    revealPanel();
-  }
-
-  function resume(lesson) {
-    const rec = loadRecord(lesson.lessonKey);
-    const items = rec && itemsOf(rec.practice);
-    if (!items) { renderEntry(lesson); return; }
-    stopTimer();
-    stopAudio();
-    loadSeq++;
-    st = {
-      lesson, practice: rec.practice, kind: rec.practice.kind, items,
-      idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
-      stage: ['intro', 'kw', 'predict', 'listen', 'answer', 'result'].includes(rec.stage) ? rec.stage : 'intro',
-      checklist: rec.checklist && typeof rec.checklist === 'object' ? rec.checklist : {},
-      introSeen: !!rec.introSeen,
-      finished: !!rec.finished, counted: !!rec.counted,
-      answers: rec.answers.map(savedAnswer),
-    };
-    renderEntry(lesson);
-    if (st.finished) renderResult(); else renderQuestion();
-    revealPanel();
   }
 
   // ── Shared pieces ─────────────────────────────────────────────────────
@@ -682,23 +442,6 @@
   // the worked example (not scored) is done once all its steps are shown
   const isExample = (i) => st.kind === 'qtype' && !!st.items[i] && st.items[i].mode === 'example';
   const isDone = (i) => !!(st.answers[i] && (st.answers[i].result || (isExample(i) && st.answers[i].step >= EX_STEPS)));
-
-  function headerHtml(sourceLine) {
-    const n = st.items.length;
-    const done = st.answers.filter((a, i) => isDone(i)).length;
-    return `<div class="ltp-head">
-      <div class="ltp-head-top">
-        <div class="ltp-title">🎧 Luyện tập: ${esc(COPY[st.lesson.lessonKey].name)}</div>
-        <button type="button" class="ltp-link ltp-close" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
-      </div>
-      ${sourceLine ? `<div class="ltp-source">Nguồn: ${sourceLine}</div>` : ''}
-      <div class="ltp-progress">
-        <span>Câu ${st.idx + 1} / ${n}</span>
-        <div class="ltp-bar"><i style="width:${Math.round(done / n * 100)}%"></i></div>
-        <span class="ltp-done">${done}/${n} đã làm</span>
-      </div>
-    </div>`;
-  }
 
   function navHtml(checkBtn) {
     const last = st.idx === st.items.length - 1;

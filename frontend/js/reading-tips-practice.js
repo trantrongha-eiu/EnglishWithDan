@@ -184,9 +184,6 @@
   const CHECK_TIMEOUT_MS = 30000;
   const SLOW_NOTICE_MS = 6000;
 
-  const esc = (s) => escHtml(s == null ? '' : String(s));
-  const escNl = (s) => esc(s).replace(/\n/g, '<br>');
-
   // apiFetch with a timeout (the server can take a while to wake up).
   async function fetchWithTimeout(url, opts, ms) {
     const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
@@ -198,56 +195,9 @@
     }
   }
 
-  // What to tell the student when a request fails. Our own 4xx messages
-  // are already Vietnamese; anything else gets a plain explanation.
-  function errorMessage(err, fallback) {
-    if (err && err.name === 'AbortError') return 'Máy chủ phản hồi quá lâu (có thể đang khởi động). Vui lòng thử lại sau vài giây.';
-    if (err && err.coldStart) return 'Máy chủ đang khởi động, vui lòng thử lại sau vài giây.';
-    if (err && err.status >= 400 && err.status < 500 && err.body && err.body.message) return err.body.message;
-    if (err && err.status >= 500) return 'Máy chủ đang gặp sự cố, vui lòng thử lại sau ít phút.';
-    if (err && !err.status && (err instanceof TypeError || navigator.onLine === false)) return 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.';
-    return fallback;
-  }
-
-  // Screen-reader announcement (the panel itself is re-rendered wholesale).
-  function announce(msg) {
-    const el = document.getElementById('rtp-live');
-    if (el) el.textContent = msg;
-  }
-
-  // Height covered by the sticky navbar and the site's fixed banners.
-  function topOffset() {
-    const css = getComputedStyle(document.documentElement);
-    const px = (name, dflt) => { const v = parseInt(css.getPropertyValue(name), 10); return Number.isFinite(v) ? v : dflt; };
-    return px('--nav-height', 64) + px('--expiry-banner-height', 0);
-  }
-
-  // After moving to another screen: bring the panel header back into view
-  // when it has scrolled off (on phones the page is long).
-  function revealPanel() {
-    const panel = panelEl();
-    if (!panel || panel.hidden) return;
-    const top = panel.getBoundingClientRect().top;
-    if (top < topOffset() || top > window.innerHeight * 0.6) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Scrolls just enough to show an element that appeared below the fold
-  // (feedback after "Kiểm tra"), never pushing its top under the navbar.
-  function revealEl(el) {
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const over = r.bottom - window.innerHeight + 16;
-    const room = r.top - topOffset() - 12;
-    if (over > 0 && room > 0) window.scrollBy({ top: Math.min(over, room), behavior: 'smooth' });
-  }
-
   // Stacked (phone / tablet) layouts: the passage sits above the question,
   // so evidence and hints get a link back up to it (hidden side by side).
   const JUMP_HTML = '<button type="button" class="rtp-link rtp-jump" data-act="show-passage">↑ Xem trong bài đọc</button>';
-
-  // Options, tokens and clickable paragraphs aren't buttons; make them
-  // reachable and usable from the keyboard.
-  const KEY_ATTRS = 'tabindex="0" role="button"';
 
   function fmtTime(sec) {
     sec = Math.max(0, Math.round(sec));
@@ -259,30 +209,7 @@
     timerHandle = null;
   }
 
-  // ── Browser-only persistence ──────────────────────────────────────────
-  // One localStorage entry per account: { [lessonKey]: { practice, answers,
-  // idx, showFull, finished, counted, savedAt, last, best, attempts } }.
-  // Every access is guarded — storage can be unavailable (private mode,
-  // quota) and the practice must still work without it.
-  const STORE_PREFIX = 'rtp_v1_';
-  const STALE_MS = 30 * 24 * 60 * 60 * 1000; // a month-old unfinished practice is dropped
-  let persistTimer = null;
-
-  function storeKey() {
-    const u = window.AuthService && typeof window.AuthService.getUser === 'function' ? window.AuthService.getUser() : null;
-    return STORE_PREFIX + ((u && (u._id || u.id || u.username)) || 'anon');
-  }
-
-  function readStore() {
-    try {
-      const v = JSON.parse(localStorage.getItem(storeKey()) || '{}');
-      return v && typeof v === 'object' ? v : {};
-    } catch (e) { return {}; }
-  }
-
-  function writeStore(all) {
-    try { localStorage.setItem(storeKey(), JSON.stringify(all)); } catch (e) { /* unavailable or full */ }
-  }
+  // ── What this page saves (the store itself: js/shared/tips-practice-shell.js) ──
 
   function itemsOf(practice) {
     if (!practice) return null;
@@ -297,58 +224,6 @@
     if (out.value == null) out.value = '';
     if (out.result === undefined) out.result = null;
     return out;
-  }
-
-  // The saved record for a tip, with its practice dropped if it's stale or
-  // malformed (scores are kept either way).
-  function loadRecord(key) {
-    const rec = readStore()[key];
-    if (!rec || typeof rec !== 'object') return null;
-    const items = itemsOf(rec.practice);
-    // (practices saved before every tip got its one fixed practice are dropped)
-    const usable = Array.isArray(items) && items.length && rec.practice.fixed && Array.isArray(rec.answers)
-      && rec.answers.length === items.length && Date.now() - (rec.savedAt || 0) < STALE_MS;
-    if (!usable) { rec.practice = null; rec.answers = null; }
-    return rec;
-  }
-
-  function persist() {
-    clearTimeout(persistTimer);
-    if (!st) return;
-    const all = readStore();
-    all[st.lesson.lessonKey] = {
-      ...(all[st.lesson.lessonKey] || {}), // keeps last / best / attempts
-      savedAt: Date.now(),
-      practice: st.practice,
-      answers: st.answers.map(savedAnswer),
-      idx: st.idx,
-      showFull: st.showFull,
-      introSeen: st.introSeen,
-      finished: st.finished,
-      counted: st.counted,
-      stage: st.stage,
-      main: st.main ? savedAnswer(st.main) : null,
-      guess: st.guess || '',
-      hl: st.hl,
-    };
-    writeStore(all);
-  }
-
-  function persistSoon() {
-    clearTimeout(persistTimer);
-    persistTimer = setTimeout(persist, 400);
-  }
-
-  // Once per completed practice (a "Làm lại" or a new practice counts again).
-  function recordScore(score, total) {
-    const all = readStore();
-    const rec = all[st.lesson.lessonKey] || {};
-    const now = Date.now();
-    rec.last = { score, total, at: now };
-    if (!rec.best || score / total > rec.best.score / rec.best.total) rec.best = { score, total, at: now };
-    rec.attempts = (rec.attempts || 0) + 1;
-    all[st.lesson.lessonKey] = rec;
-    writeStore(all);
   }
 
   // ── Text highlighting (plain-text paragraphs from the server) ─────────
@@ -414,90 +289,65 @@
     return true;
   }
 
-  // ── Entry card + lifecycle ────────────────────────────────────────────
+  // ── Entry card + lifecycle, persistence, scrolling — js/shared/tips-practice-shell.js ──
 
-  function supports(lesson) { return !!(lesson && lesson.hasPractice && COPY[lesson.lessonKey]); }
+  const {
+    esc, escNl, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl,
+    persist, persistSoon, recordScore,
+    supports, mount, renderEntry, panelEl, showPanelState, start, confirmNewPractice, resume, headerHtml,
+  } = window.TipsPracticeShell.create({
+    prefix: 'rtp', icon: '🎯', copy: COPY, storePrefix: 'rtp_v1_',
+    getSt: () => st, setSt: (v) => { st = v; },
+    nextSeq: () => ++loadSeq, curSeq: () => loadSeq,
+    stopTimer: () => stopTimer(),
+    fetchPractice: (lessonKey) => fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS),
+    slowNoticeMs: SLOW_NOTICE_MS,
+    itemsOf, savedAnswer,
+    freshState: (practice, items) => ({
+      showFull: false, introSeen: false, finished: false, counted: false,
+      answers: freshAnswers(items),
+      stage: 0, main: { value: '', result: null }, guess: '', hl: {},
+    }),
+    // Timers of unanswered questions restart; checked answers keep their result and time.
+    restoreState: (rec) => ({
+      showFull: !!rec.showFull, introSeen: !!rec.introSeen, finished: !!rec.finished, counted: !!rec.counted,
+      answers: rec.answers.map(savedAnswer),
+      stage: Number(rec.stage) || 0,
+      main: rec.main ? savedAnswer(rec.main) : { value: '', result: null },
+      guess: rec.guess || '',
+      hl: rec.hl && typeof rec.hl === 'object' ? rec.hl : {},
+    }),
+    snapshot: (s) => ({
+      showFull: s.showFull,
+      introSeen: s.introSeen,
+      finished: s.finished,
+      counted: s.counted,
+      stage: s.stage,
+      main: s.main ? savedAnswer(s.main) : null,
+      guess: s.guess || '',
+      hl: s.hl,
+    }),
+    isBusy: (x) => hasProgress(x.answers, x.main && x.main.result),
+    resumeWhere: (rec, items) => ` (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})`,
+    isDone: (i) => isDone(i),
+    enterSel: '.rtp-input',
+    onInput: (e) => onInput(e),
+    onClick: (e, lesson) => onClick(e, lesson),
+    checkCurrent: () => checkCurrent(),
+    renderQuestion: () => renderQuestion(),
+    renderResult: () => renderResult(),
+    afterPanelState: () => applyHl(),
+  });
 
-  // Called by reading-tips.js after it renders a tip. Resets any practice
-  // from a previously opened tip (its progress is already saved).
-  function mount(lesson, slot) {
-    stopTimer();
-    if (st) persist();
-    st = null;
-    loadSeq++;
-    if (!slot || !supports(lesson)) return;
-    slot.innerHTML = `<section class="rtp-section" id="rtp-section">
-      <div id="rtp-entry-wrap"></div>
-      <div class="rtp-panel" id="rtp-panel" hidden></div>
-      <div class="rtp-sr" id="rtp-live" aria-live="polite"></div>
-    </section>`;
-    renderEntry(lesson);
-    const section = slot.querySelector('#rtp-section');
-    section.addEventListener('click', (e) => onClick(e, lesson));
-    section.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.target.matches('.rtp-input')) { e.preventDefault(); checkCurrent(); return; }
-      // Enter / Space on an option, a word or a paragraph (see KEY_ATTRS)
-      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-act][role="button"]')) {
-        e.preventDefault();
-        e.target.click();
-      }
-    });
-    section.addEventListener('input', (e) => {
-      if (!st) return;
-      if (e.target.matches('.rtp-input')) {
-        activeAnswer().value = e.target.value;
-        syncCheckBtn();
-        persistSoon();
-      } else if (e.target.matches('.rtp-wf-guess')) {
-        st.guess = e.target.value;
-        persistSoon();
-      }
-    });
-  }
-
-  // Entry card: start / resume buttons + the scores saved in this browser.
-  function renderEntry(lesson) {
-    const wrap = document.getElementById('rtp-entry-wrap');
-    if (!wrap) return;
-    const c = COPY[lesson.lessonKey];
-    const rec = loadRecord(lesson.lessonKey);
-    const items = rec && itemsOf(rec.practice);
-    let buttons;
-    if (st && st.lesson.lessonKey === lesson.lessonKey) {
-      buttons = `<button type="button" class="rtp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
-    } else if (items && !rec.finished) {
-      buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm (Câu ${Math.min((rec.idx || 0) + 1, items.length)}/${items.length})</button>
-        <button type="button" class="rtp-btn" data-act="start">↻ Làm lại từ đầu</button>`;
-    } else if (items) {
-      buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="start">↻ Luyện lại</button>
-        <button type="button" class="rtp-btn" data-act="resume">📖 Xem lại kết quả</button>`;
-    } else {
-      buttons = `<button type="button" class="rtp-btn rtp-btn-primary" data-act="start">🎯 Bắt đầu luyện tập</button>`;
+  function onInput(e) {
+    if (e.target.matches('.rtp-input')) {
+      activeAnswer().value = e.target.value;
+      syncCheckBtn();
+      persistSoon();
+    } else if (e.target.matches('.rtp-wf-guess')) {
+      st.guess = e.target.value;
+      persistSoon();
     }
-    const stats = rec && rec.last
-      ? `<div class="rtp-entry-stats">Lần gần nhất: <b>${rec.last.score}/${rec.last.total}</b>`
-        + (rec.best ? ` · Cao nhất: <b>${rec.best.score}/${rec.best.total}</b>` : '')
-        + ` · Đã luyện ${rec.attempts || 1} lần <span class="rtp-entry-note">(lưu trên trình duyệt này)</span></div>`
-      : '';
-    wrap.innerHTML = `<div class="rtp-entry">
-      <div class="rtp-entry-icon">🎯</div>
-      <div class="rtp-entry-text">
-        <div class="rtp-entry-title">Luyện tập ${esc(c.name)}</div>
-        <div class="rtp-entry-desc">${esc(c.desc)}</div>
-        ${stats}
-      </div>
-      <div class="rtp-entry-actions">${buttons}</div>
-    </div>`;
-  }
-
-  function panelEl() { return document.getElementById('rtp-panel'); }
-
-  function showPanelState(html) {
-    const panel = panelEl();
-    if (!panel) return;
-    panel.hidden = false;
-    panel.innerHTML = html;
-    applyHl();
   }
 
   // ── Student highlights ("Bôi màu", the same tool as a "lẻ" practice) ──
@@ -590,145 +440,20 @@
     persistSoon();
   });
 
-  async function start(lesson) {
-    stopTimer();
-    if (st) persist();
-    st = null;
-    const seq = ++loadSeq;
-    const panel = panelEl();
-    if (!panel) return;
-    const entryBtn = document.querySelector('#rtp-entry-wrap [data-act="start"]');
-    if (!(window.AuthService && window.AuthService.isLoggedIn())) {
-      const next = location.pathname + location.search;
-      const loginUrl = window.AuthService && window.AuthService.buildLoginUrl
-        ? window.AuthService.buildLoginUrl(next) : '/login.html?next=' + encodeURIComponent(next);
-      showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">🔐</div>
-        <div>Bạn cần đăng nhập để luyện tập.</div>
-        <a class="rtp-btn rtp-btn-primary" href="${esc(loginUrl)}">Đăng nhập</a></div>`);
-      return;
-    }
-    if (entryBtn) entryBtn.disabled = true;
-    showPanelState(`<div class="rtp-state" role="status"><div class="rtp-state-icon"><i class="fas fa-spinner fa-spin"></i></div>
-      <div>Đang tải bài luyện tập...</div>
-      <div class="rtp-state-slow" hidden>Máy chủ có thể đang khởi động — chờ thêm chút nhé…</div></div>`);
-    const slow = setTimeout(() => {
-      const el = seq === loadSeq && document.querySelector('#rtp-panel .rtp-state-slow');
-      if (el) el.hidden = false;
-    }, SLOW_NOTICE_MS);
-    try {
-      const data = await fetchWithTimeout(`/api/reading-tips/${encodeURIComponent(lesson.lessonKey)}/practice`, {}, LOAD_TIMEOUT_MS);
-      if (seq !== loadSeq) return; // another tip / request took over meanwhile
-      if (!data.practice) {
-        renderEntry(lesson);
-        showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">📭</div>
-          <div>${esc(data.message || 'Chưa tìm thấy bài luyện tập phù hợp.')}</div>
-          <button type="button" class="rtp-btn" data-act="dismiss">Đóng</button></div>`);
-        return;
-      }
-      begin(lesson, data.practice);
-    } catch (err) {
-      if (seq !== loadSeq) return;
-      renderEntry(lesson); // a practice saved earlier can still be resumed
-      if (err && err.body && err.body.requiresPremium) {
-        showPanelState(`<div class="rtp-state"><div class="rtp-state-icon">⭐</div>
-          <div>${esc(err.body.message || 'Bạn cần nâng cấp lên Premium để luyện tập.')}</div>
-          <button type="button" class="rtp-btn rtp-btn-primary" data-act="upgrade">Nâng cấp Premium</button></div>`);
-        return;
-      }
-      showPanelState(`<div class="rtp-state rtp-state-error" role="alert"><div class="rtp-state-icon">⚠️</div>
-        <div>${esc(errorMessage(err, 'Không tải được bài luyện tập. Vui lòng thử lại.'))}</div>
-        <button type="button" class="rtp-btn" data-act="start" data-force="1">Thử lại</button></div>`);
-    } finally {
-      clearTimeout(slow);
-      if (entryBtn) entryBtn.disabled = false;
-    }
-  }
-
   // Answered anything in the practice that a new one would replace?
   function hasProgress(answers, extra) {
     return (answers || []).some(a => a && (a.result || a.viewed)) || !!extra;
   }
 
-  // "Làm lại từ đầu" replaces the practice in progress (and its saved answers) —
-  // ask first when the student has already answered something.
-  function confirmNewPractice(lesson, go) {
-    let busy;
-    if (st) busy = !st.finished && hasProgress(st.answers, st.main && st.main.result);
-    else {
-      const rec = loadRecord(lesson.lessonKey);
-      busy = !!(rec && rec.practice && !rec.finished && hasProgress(rec.answers, rec.main && rec.main.result));
-    }
-    if (!busy) { go(); return; }
-    const msg = 'Các câu bạn đã làm trong bài này sẽ bị xoá để làm lại từ đầu. Bạn chắc chứ?';
-    if (typeof window.confirmDialog === 'function') {
-      window.confirmDialog('Làm lại từ đầu?', msg, go, { confirmLabel: 'Làm lại', confirmClass: 'btn-primary' });
-    } else if (window.confirm(msg)) go();
-  }
-
   function freshAnswers(items) {
     return items.map(() => ({ value: '', result: null, seconds: null, hint: false }));
   }
-
-  function begin(lesson, practice) {
-    const items = itemsOf(practice);
-    st = {
-      lesson, practice, kind: practice.kind, items,
-      idx: 0, showFull: false, introSeen: false, finished: false, counted: false,
-      answers: freshAnswers(items),
-      stage: 0, main: { value: '', result: null }, guess: '', hl: {},
-    };
-    persist();
-    renderEntry(lesson);
-    renderQuestion();
-    revealPanel();
-  }
-
-  // Re-opens the practice saved in this browser. Timers of unanswered
-  // questions restart; checked answers keep their result and time.
-  function resume(lesson) {
-    const rec = loadRecord(lesson.lessonKey);
-    const items = rec && itemsOf(rec.practice);
-    if (!items) { renderEntry(lesson); return; }
-    stopTimer();
-    loadSeq++;
-    st = {
-      lesson, practice: rec.practice, kind: rec.practice.kind, items,
-      idx: Math.min(Math.max(Number(rec.idx) || 0, 0), items.length - 1),
-      showFull: !!rec.showFull, introSeen: !!rec.introSeen, finished: !!rec.finished, counted: !!rec.counted,
-      answers: rec.answers.map(savedAnswer),
-      stage: Number(rec.stage) || 0,
-      main: rec.main ? savedAnswer(rec.main) : { value: '', result: null },
-      guess: rec.guess || '',
-      hl: rec.hl && typeof rec.hl === 'object' ? rec.hl : {},
-    };
-    renderEntry(lesson);
-    if (st.finished) renderResult(); else renderQuestion();
-    revealPanel();
-  }
-
   // ── Question screens ──────────────────────────────────────────────────
 
   // Phase 3 "I do": the worked example isn't answered — it counts as done
   // once walked through, and is left out of the score.
   const isExample = (i) => !!(st.items[i] && st.items[i].guided && st.items[i].guided.mode === 'example');
   const isDone = (i) => !!(st.answers[i] && (st.answers[i].result || (isExample(i) && st.answers[i].viewed)));
-
-  function headerHtml(sourceLine) {
-    const n = st.items.length;
-    const done = st.answers.filter((a, i) => isDone(i)).length;
-    return `<div class="rtp-head">
-      <div class="rtp-head-top">
-        <div class="rtp-title">🎯 Luyện tập: ${esc(COPY[st.lesson.lessonKey].name)}</div>
-        <button type="button" class="rtp-link" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
-      </div>
-      ${sourceLine ? `<div class="rtp-source">Nguồn: ${sourceLine}</div>` : ''}
-      <div class="rtp-progress">
-        <span>Câu ${st.idx + 1} / ${n}</span>
-        <div class="rtp-bar"><i style="width:${Math.round(done / n * 100)}%"></i></div>
-        <span class="rtp-done">${done}/${n} đã làm</span>
-      </div>
-    </div>`;
-  }
 
   function feedbackHtml(a, extra) {
     const r = a.result;
