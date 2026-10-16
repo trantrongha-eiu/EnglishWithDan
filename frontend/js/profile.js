@@ -384,6 +384,12 @@ async function loadProfile() {
 
     if (sd.success) {
       const s = sd.stats;
+      // Every block below reads s.<skill>.history — default a missing skill
+      // block so one absent field can't throw and blank the whole page.
+      ['reading', 'listening', 'writing', 'speaking'].forEach(k => {
+        s[k] = { total: 0, avgBand: null, ...s[k] };
+        if (!Array.isArray(s[k].history)) s[k].history = [];
+      });
       // Streak
       if (s.streak > 0) {
         document.getElementById('streakDisplay').style.display = 'flex';
