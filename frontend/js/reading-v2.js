@@ -2110,13 +2110,14 @@ function renderPlainGroup(questions, isReview, reviewMap) {
 
 /* ── MULTI-ANSWER CLUSTER (Choose TWO/THREE Letters) ─────────────── */
 function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
+  reviewMap = reviewMap || {};
   const count = cluster.length;
   const firstNum = cluster[0].questionNumber;
   const lastNum  = cluster[cluster.length - 1].questionNumber;
   const opts = cluster[0].options || [];
   const LETTERS = 'ABCDEFGHIJ';
 
-  const caLetters = cluster.map(q => (q.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
+  const caLetters = cluster.map(q => (q.correctAnswer || reviewMap[q.questionNumber]?.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
 
   let uaArr = [];
   if (isReview) {
@@ -2791,7 +2792,12 @@ function toggleMultiAnswer(firstNum, letter, maxCount, lastNum) {
   document.querySelectorAll(`[data-cluster="${firstNum}"]`).forEach(o =>
     o.classList.toggle('selected', arr.includes(o.dataset.value))
   );
-  saveExamToStorage();
+  if (_practiceMode) {
+    savePracticeToStorage();
+    setTimeout(_updatePracticeProgress, 40);
+  } else {
+    saveExamToStorage();
+  }
 }
 
 function pickMatchAnswer(qNum, val) {
@@ -4755,7 +4761,8 @@ function handleKeyShortcuts(e) {
   }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'h' || e.key === 'H') setTool('highlight');
-  if (e.key === 'd' || e.key === 'D') setTool('dict');
+  // D key only in review/practice/retry — exam mode has no dict UI
+  if ((e.key === 'd' || e.key === 'D') && (state.isReview || _practiceMode || _retryState)) setTool('dict');
   if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) translateSelected();
   if (['1', '2', '3'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
     const idx = parseInt(e.key) - 1;
@@ -4911,3 +4918,14 @@ document.addEventListener('click', e => {
 window.goToRdPage = goToRdPage;
 window.goToRdPracticePage = goToRdPracticePage;
 window.goToStartTest = goToStartTest;
+
+// ── Fullscreen toggle ───────────────────────────────────
+ExamFullscreen.install({
+  target: () => {
+    // Fullscreen trên màn hình đang active (exam hoặc retry/practice)
+    const retry = document.getElementById('screen-retry');
+    return (retry && !retry.classList.contains('hidden')) ? retry : document.getElementById('screen-exam');
+  },
+  buttons: [['btn-fullscreen', 'fs-icon-exam'], ['btn-fullscreen-rt', 'fs-icon-retry']],
+  carry: ['dict-popup', 'translate-popup', 'dict-vocab-modal', 'modal-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'],
+});

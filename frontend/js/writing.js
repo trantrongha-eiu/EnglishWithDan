@@ -1895,34 +1895,11 @@ function closeWritingMobilePdf() {
 // ──────────────────────────────────────────────────────
 // Fullscreen  (đồng bộ với reading/listening)
 // ──────────────────────────────────────────────────────
-function toggleFullscreen() {
-  const el = document.getElementById('screen-exam');
-  if (!document.fullscreenElement) {
-    el.requestFullscreen && el.requestFullscreen();
-  } else {
-    document.exitFullscreen && document.exitFullscreen();
-  }
-}
-
-document.addEventListener('fullscreenchange', () => {
-  const btn  = document.getElementById('btn-fullscreen');
-  const icon = document.getElementById('fs-icon-exam');
-  if (btn)  btn.title    = document.fullscreenElement ? 'Thoát toàn màn hình' : 'Toàn màn hình';
-  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
+ExamFullscreen.install({
+  target: () => document.getElementById('screen-exam'),
+  buttons: [['btn-fullscreen', 'fs-icon-exam']],
   // Đưa modals vào trong fullscreen element khi cần
-  const fsEl = document.fullscreenElement;
-  const ids = ['confirm-modal-overlay', 'exit-modal-overlay', 'review-modal-overlay'];
-  if (fsEl) {
-    ids.forEach(id => {
-      const m = document.getElementById(id);
-      if (m && !fsEl.contains(m)) { m._fsPrev = m.parentNode; fsEl.appendChild(m); }
-    });
-  } else {
-    ids.forEach(id => {
-      const m = document.getElementById(id);
-      if (m && m._fsPrev) { m._fsPrev.appendChild(m); m._fsPrev = null; }
-    });
-  }
+  carry: ['confirm-modal-overlay', 'exit-modal-overlay', 'review-modal-overlay'],
 });
 
 // ──────────────────────────────────────────────────────
