@@ -42,7 +42,18 @@ const state = {
   // startExam()/_enterPracticeScreen() from the server's own echoed mode,
   // never trusted from anywhere else client-side.
   mode: 'practice',
+  // "Chọn phần làm": passage numbers picked for this attempt ([1, 3]), or
+  // null = the whole test. Echoed by /api/reading/start.
+  parts: null,
 };
+
+// ExamModeSelect's "Chọn phần làm" config for a full Reading test.
+const READING_PARTS = { count: 3, unit: 'Passage', minutesEach: 20 };
+
+// "Cam 19 - Test 1 · Passage 1, 3" for a partial attempt.
+function _titleWithParts(name, parts) {
+  return parts && parts.length ? `${name} · Passage ${parts.join(', ')}` : name;
+}
 
 let allTests = [];
 let _userPlan = 'free';   // refreshed on loadTests
@@ -461,9 +472,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         state.testName = test.name;
         if (examParam === 'simulation' && window.ExamModeSelect) {
           window.ExamModeSelect.open({
-            skill: 'reading', preferred: 'simulation',
-            onPractice: () => _doStartExam(test._id, 'practice'),
-            onSimulation: () => _doStartExam(test._id, 'simulation'),
+            skill: 'reading', preferred: 'simulation', parts: READING_PARTS,
+            onPractice: parts => _doStartExam(test._id, 'practice', parts),
+            onSimulation: parts => _doStartExam(test._id, 'simulation', parts),
           });
         } else {
           _doStartExam(test._id);
@@ -765,9 +776,9 @@ function goToStartTest(testId, testName, preferred = null) {
   // a standalone student-initiated start, exactly where it belongs.
   if (window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'reading', preferred,
-      onPractice: () => _doStartExam(testId, 'practice'),
-      onSimulation: () => _doStartExam(testId, 'simulation'),
+      skill: 'reading', preferred, parts: READING_PARTS,
+      onPractice: parts => _doStartExam(testId, 'practice', parts),
+      onSimulation: parts => _doStartExam(testId, 'simulation', parts),
     });
   } else {
     _doStartExam(testId, 'practice');
@@ -810,7 +821,8 @@ function _onSimulationDisqualified() {
   location.href = 'reading.html';
 }
 
-async function _doStartExam(testId, mode = 'practice') {
+// parts: passage numbers to do ("Chọn phần làm") — null = the whole test.
+async function _doStartExam(testId, mode = 'practice', parts = null) {
   // The test card's Luyện tập / Thi thật buttons (.tid-act): disabled + a
   // spinner while /start is in flight, so a double-click can't fire twice.
   const btns = document.querySelectorAll(`#tcard-${testId} .tid-act`);
@@ -819,7 +831,7 @@ async function _doStartExam(testId, mode = 'practice') {
   try {
     const res = await apiFetch(`/api/reading/start${_mockMode ? '?purpose=mocktest' : ''}`, {
       method: 'POST',
-      body: JSON.stringify({ testId, mode })
+      body: JSON.stringify({ testId, mode, ...(parts ? { parts } : {}) })
     });
     if (!res.success) {
       showVocabToast(res.message || 'Không thể bắt đầu bài thi', 'error');
@@ -950,6 +962,7 @@ function saveExamToStorage() {
       // re-enabling dictionary lookup and never re-arming the proctor. See
       // writing-autosave.js's identical fix for the full rationale.
       mode: state.mode,
+      parts: state.parts,
       savedAt: Date.now()
     }));
     const lbl = document.getElementById('exam-autosave');
@@ -1037,6 +1050,7 @@ function resumeExam() {
   // payloads (from before this field existed) have no `mode` key, so this
   // correctly falls back to 'practice', matching their real mode.
   state.mode = data.mode || 'practice';
+  state.parts = data.parts || null;
 
   // Give the resumed exam its own URL (was left on ?mode=full) so a reload
   // lands back here via the ?testId= resume path in the init block.
@@ -1047,7 +1061,7 @@ function resumeExam() {
     else history.pushState(st, '', url);
   }
 
-  document.getElementById('exam-title').textContent = state.testName;
+  document.getElementById('exam-title').textContent = _titleWithParts(state.testName, state.parts);
   renderPassageTabs('toolbar-passage-tabs', false);
   switchPassage(0);
   buildQNavFooter();
@@ -1837,8 +1851,9 @@ function startExam(data) {
   state.isReview = false;
   state.submitted = false;
   state.mode = data.mode || 'practice';
+  state.parts = data.parts || null;
 
-  document.getElementById('exam-title').textContent = state.testName;
+  document.getElementById('exam-title').textContent = _titleWithParts(state.testName, state.parts);
   renderPassageTabs('toolbar-passage-tabs', false);
   switchPassage(0);
   buildQNavFooter();
@@ -3288,6 +3303,7 @@ async function submitExam() {
             wrongCount:    rec.attempt.wrongCount,
             skippedCount:  rec.attempt.skippedCount,
             totalQuestions: rec.attempt.totalQuestions,
+            parts:         rec.attempt.parts,
           });
           return;
         }
@@ -3366,7 +3382,8 @@ function resultImgSrcForBand(band) {
 
 function showResult(r) {
   document.getElementById('result-band').textContent = r.bandScore?.toFixed(1) || '–';
-  document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions} câu đúng`;
+  document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions} câu đúng`
+    + (r.parts && r.parts.length ? ` · Passage ${r.parts.join(', ')} (band quy đổi theo 40 câu)` : '');
   document.getElementById('r-correct').textContent = r.correctCount;
   document.getElementById('r-wrong').textContent = r.wrongCount;
   document.getElementById('r-skip').textContent = r.skippedCount;

@@ -22,6 +22,7 @@ const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
+const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
 
 // Mongoose `.select()` string that strips a passage's answer key
 // (correctAnswer + explanation, on both the modern questionGroups shape
@@ -200,7 +201,8 @@ async function listTestsForUser(userId) {
     // an arbitrary/default value) so "Test 2" sorts before "Test 10" instead
     // of lexicographically, matching what students expect to see.
     ReadingTest.find({ isActive: true }).collation({ locale: 'en', numericOrdering: true }).sort({ name: 1 }).lean(),
-    TestAttempt.find({ userId, status: 'completed' })
+    // Only whole-test attempts mark a card done — a P1-only run isn't the test.
+    TestAttempt.find({ userId, status: 'completed', parts: { $exists: false } })
       .select('testId bandScore correctCount wrongCount skippedCount totalQuestions endTime duration').lean()
   ]);
   const attemptMap = {};
@@ -223,7 +225,10 @@ async function listTestsForUser(userId) {
   return tests.map(t => ({ ...t, isFixed: (t.passageIds || []).length === 3, lastAttempt: attemptMap[t._id.toString()] || null }));
 }
 
-async function startTest(testId, userId, mode = 'practice') {
+// rawParts: passage numbers (1–3) to do — "Chọn phần làm". Absent/all =
+// the whole test. 20 minutes per passage (1 → 20', 2 → 40', 3 → 60').
+async function startTest(testId, userId, mode = 'practice', rawParts = null) {
+  const parts = normalizeParts(rawParts, 3);
   if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
 
   const test = await ReadingTest.findById(testId);
@@ -251,7 +256,7 @@ async function startTest(testId, userId, mode = 'practice') {
   // Scoped to `mode` too — a still-open Practice attempt must never be
   // silently resumed as a Simulation one (or vice versa): they're two
   // different modes with different rules, not the same run.
-  const existingAttempt = await TestAttempt.findOne({ userId, testId, status: 'in-progress', mode });
+  const existingAttempt = await TestAttempt.findOne({ userId, testId, status: 'in-progress', mode, ...partsFilter(parts) });
 
   let passages;
   if (existingAttempt) {
@@ -266,6 +271,12 @@ async function startTest(testId, userId, mode = 'practice') {
     const byId = new Map(raw.map(p => [p._id.toString(), p]));
     passages = test.passageIds.map(id => byId.get(id.toString())).filter(Boolean);
     if (passages.length !== 3) return { status: 'insufficient_data' };
+    if (parts) passages = parts.map(n => passages[n - 1]);
+  } else if (parts) {
+    const picked = await Promise.all(parts.map(n =>
+      Passage.aggregate([{ $match: { category: `passage${n}`, isActive: true } }, { $sample: { size: 1 } }, safeProject])));
+    if (picked.some(a => !a[0])) return { status: 'insufficient_data' };
+    passages = picked.map(a => a[0]);
   } else {
     const [p1arr, p2arr, p3arr] = await Promise.all([
       Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
@@ -278,7 +289,7 @@ async function startTest(testId, userId, mode = 'practice') {
 
   let attempt = existingAttempt;
   if (!attempt) {
-    attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date(), mode });
+    attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date(), mode, ...(parts ? { parts } : {}) });
     await attempt.save();
   }
 
@@ -288,7 +299,7 @@ async function startTest(testId, userId, mode = 'practice') {
     questions: (p.questions || []).map(safeQ)
   }));
 
-  return { status: 'ok', attemptId: attempt._id, testName: test.name, passages: safePassages, duration: 3600, mode };
+  return { status: 'ok', attemptId: attempt._id, testName: test.name, passages: safePassages, duration: 1200 * safePassages.length, mode, parts };
 }
 
 // opts.disqualified: the proctor just voided this attempt — save the answers
@@ -342,7 +353,10 @@ async function submitTest(attemptId, answers, user, { disqualified = false } = {
   const endTime = new Date();
   const duration = Math.max(0, Math.floor((endTime - attempt.startTime) / 1000));
   const totalQuestions = gradedAnswers.length;
-  const bandScore = bandScoreTable('reading', correctCount);
+  // Partial attempt ("Chọn phần làm"): band estimated from the score scaled
+  // to 40 questions.
+  const partial = Array.isArray(attempt.parts) && attempt.parts.length > 0;
+  const bandScore = bandScoreTable('reading', partial ? scaledCorrect(correctCount, totalQuestions) : correctCount);
 
   // A plain findByIdAndUpdate rather than mutating+saving the `attempt`
   // instance above — that instance is the PRE-claim snapshot returned by
@@ -370,7 +384,7 @@ async function submitTest(attemptId, answers, user, { disqualified = false } = {
   });
 
   if (disqualified) {
-    return { attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount, totalQuestions, duration, disqualified: true };
+    return { attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount, totalQuestions, duration, disqualified: true, ...(partial ? { parts: attempt.parts } : {}) };
   }
 
   let bonusApplied = 0;
@@ -402,6 +416,7 @@ async function submitTest(attemptId, answers, user, { disqualified = false } = {
   return {
     attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount,
     totalQuestions, duration, bonusApplied, streak, newlyUnlocked,
+    ...(partial ? { parts: attempt.parts } : {}),
   };
 }
 
@@ -440,6 +455,7 @@ async function getAttemptReview(attemptId, userId) {
     totalQuestions: attempt.totalQuestions, duration: attempt.duration, endTime: attempt.endTime,
     passages: passagesWithResult,
     highlights: attempt.highlights || null,
+    parts: attempt.parts || null,
   };
 }
 

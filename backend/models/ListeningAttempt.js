@@ -65,6 +65,9 @@ const ListeningAttemptSchema = new mongoose.Schema({
   },
 
   mode: { type: String, enum: ['practice', 'simulation'], default: 'practice' },
+  // Section numbers (1–4) the student picked when doing only part of the
+  // test ("Chọn phần làm"); absent = the whole test. See utils/partSelection.js.
+  parts: { type: [Number], default: undefined },
   proctor: { type: proctorSchema, default: () => ({}) }
 }, { timestamps: true });
 

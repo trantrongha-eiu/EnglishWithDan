@@ -27,15 +27,15 @@ exports.listTests = guard(null, async (req, res) => {
 
 exports.startTest = async (req, res) => {
   try {
-    const { testId, mode } = req.body;
-    const result = await readingService.startTest(testId, req.user._id, mode);
+    const { testId, mode, parts } = req.body;
+    const result = await readingService.startTest(testId, req.user._id, mode, parts);
     if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
     if (result.status === 'insufficient_data') {
       return res.status(400).json({ success: false, message: 'Database chưa đủ bài đọc (cần ít nhất 1 bài ở mỗi category)' });
     }
     res.json({
       success: true, attemptId: result.attemptId, testName: result.testName,
-      passages: result.passages, duration: result.duration, mode: result.mode
+      passages: result.passages, duration: result.duration, mode: result.mode, parts: result.parts
     });
   } catch (e) {
     // Test Simulation cooldown after a 5-strike disqualification — surface

@@ -42,7 +42,7 @@
 <script src="/js/shared/mock-test.js?v=e41706e5f9"></script>
 <script src="/js/shared/exam-proctor.js?v=28d48cf894"></script>
 <script src="/js/shared/cd-footer.js?v=f2f465f188"></script>
-<script src="/js/shared/exam-mode-select.js?v=086e1fe718"></script>
+<script src="/js/shared/exam-mode-select.js?v=12bc79bb78"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -179,7 +179,7 @@
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
             <span class="exam-audio-status" id="exam-audio-status"><i class="fas fa-headphones"></i> Chờ audio...</span>
-            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()"><i class="fas fa-play"></i> Phát ngay</button>
+            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="examPlayBtn()"><i class="fas fa-play"></i> Phát ngay</button>
             <!-- Seek/skip are unlocked only in Practice — see _updateExamToolbarForMode() -->
             <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(-5)" style="display:none"><i class="fas fa-backward"></i> 5s</button>
             <div class="audio-seek-wrap" style="flex:1">
@@ -641,7 +641,7 @@
 
     <script src="/js/shared/exam-fullscreen.js?v=4aae1fbd2b"></script>
 
-    <script src="/js/listening.js?v=e4b7447bc2"></script>
+    <script src="/js/listening.js?v=20a9ac358a"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
     <script src="/js/listening-practice.js?v=fab052c579"></script>

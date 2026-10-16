@@ -45,7 +45,72 @@ const state = {
     // 'practice' (default) | 'simulation' — see reading-v2.js's
     // identical field for the full rationale.
     mode: 'practice',
+    // "Chọn phần làm": section numbers picked for this attempt ([1, 3]),
+    // or null = the whole test on its one recording. A partial attempt's
+    // sections each carry their own audioUrl (the part's đề lẻ audio).
+    parts: null,
+    audioPartIdx: null,   // partial attempt: index of the section whose audio is loaded
 };
+
+// Partial attempt: where each section's audio was left (Practice — the
+// student hops between parts and comes back to the same spot).
+let _partAudioPos = {};
+
+function _hasPartAudio(isReview) {
+    const s = getSortedSections(isReview)[0];
+    return !!(s && s.audioUrl);
+}
+
+// "Cam 19 - Test 1 · Section 1, 3" for a partial attempt.
+function _titleWithParts(name, parts) {
+    return parts && parts.length ? `${name} · Section ${parts.join(', ')}` : name;
+}
+
+// Partial attempt: put section idx's own audio in the player (no-op when
+// it's already there). Practice resumes where that part was left.
+function _loadPartAudio(idx, isReview) {
+    const s = getSortedSections(isReview)[idx];
+    if (!s || !s.audioUrl) return;
+    if (state.audioPartIdx === idx && audio.getAttribute('src') === s.audioUrl) return;
+    if (state.audioPartIdx != null) _partAudioPos[state.audioPartIdx] = audio.currentTime || 0;
+    audio.pause();
+    state.audioPartIdx = idx;
+    audio.src = s.audioUrl;
+    audio.load();
+    const pos = _partAudioPos[idx];
+    if (pos > 0) {
+        audio.addEventListener('loadedmetadata', function seekOnce() {
+            audio.currentTime = pos;
+            audio.removeEventListener('loadedmetadata', seekOnce);
+        });
+    }
+    if (!isReview) _syncPartPlayBtn();
+}
+
+// Practice on a partial attempt: no one-shot auto-play — the student
+// plays each section's audio themself with this button (play/pause).
+function _isPartPractice() {
+    return state.mode === 'practice' && !_mockMode && !state.isReview && _hasPartAudio(false);
+}
+function _syncPartPlayBtn() {
+    if (!_isPartPractice()) return;
+    const btn = document.getElementById('aso-play-now-btn');
+    const s = getSortedSections(false)[state.audioPartIdx];
+    if (!btn || !s) return;
+    btn.classList.remove('hidden');
+    btn.innerHTML = audio.paused
+        ? `<i class="fas fa-play"></i> Phát Section ${s.partNumber}`
+        : `<i class="fas fa-pause"></i> Dừng`;
+    if (audio.paused) {
+        const el = document.getElementById('exam-audio-status');
+        if (el) { el.innerHTML = `<i class="fas fa-headphones"></i> Audio Section ${s.partNumber}`; el.style.color = ''; }
+    }
+}
+function examPlayBtn() {
+    if (_isPartPractice()) { togglePlay(); return; }
+    startAudioPlay();
+}
+window.examPlayBtn = examPlayBtn;
 
 // Set when this page was opened as step 1 of a full mock test
 // (?mock=<id>&skill=listening) — see the DOMContentLoaded handler and
@@ -143,6 +208,8 @@ function saveExamToStorage() {
             // mid-Simulation would silently fall back to 'practice'
             // on resume.
             mode: state.mode,
+            parts: state.parts,
+            audioPartIdx: state.audioPartIdx,
             savedAt: Date.now()
         }));
         const lbl = document.getElementById('exam-autosave');
@@ -224,6 +291,9 @@ function resumeExam() {
     // have no `mode` key, so this correctly falls back to
     // 'practice', matching their real mode.
     state.mode = data.mode || 'practice';
+    state.parts = data.parts || null;
+    state.audioPartIdx = null;
+    _partAudioPos = {};
     for (const k in partHlCache) delete partHlCache[k];
     for (const k in partHlCacheRv) delete partHlCacheRv[k];
     // Bring back what was highlighted before the reload — each part
@@ -233,16 +303,24 @@ function resumeExam() {
     audio.playbackRate = 1;
     document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
 
-    document.getElementById('exam-title').textContent = t.name;
-    audio.src = t.audioUrl || '';
-    audio.load();
+    document.getElementById('exam-title').textContent = _titleWithParts(t.name, state.parts);
+    if (_hasPartAudio(false)) {
+        // Partial attempt: back to the section whose audio was playing.
+        const _aIdx = data.audioPartIdx || 0;
+        _partAudioPos[_aIdx] = data.audioTime || 0;
+        audio.src = '';
+        _loadPartAudio(_aIdx, false);
+    } else {
+        audio.src = t.audioUrl || '';
+        audio.load();
 
-    // Restore audio position after metadata is ready
-    if (data.audioTime > 0) {
-        audio.addEventListener('loadedmetadata', function seekOnce() {
-            audio.currentTime = data.audioTime;
-            audio.removeEventListener('loadedmetadata', seekOnce);
-        });
+        // Restore audio position after metadata is ready
+        if (data.audioTime > 0) {
+            audio.addEventListener('loadedmetadata', function seekOnce() {
+                audio.currentTime = data.audioTime;
+                audio.removeEventListener('loadedmetadata', seekOnce);
+            });
+        }
     }
 
     buildPartTabs('part-tabs', false);
@@ -255,6 +333,14 @@ function resumeExam() {
 
     // Resume mode: skip overlay, auto-play after 5s countdown
     document.getElementById('audio-start-overlay').classList.add('hidden');
+    if (_isPartPractice()) {
+        // Partial Practice: the student plays each section themself.
+        _syncPartPlayBtn();
+        clearInterval(_saveInterval);
+        _saveInterval = setInterval(saveExamToStorage, 10000);
+        window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+        return;
+    }
     let _rCount = 5;
     updateExamAudioStatus(false, _rCount);
     clearInterval(_asoTimer);
@@ -966,10 +1052,12 @@ function goToStartTest(testId, preferred = null) {
     // bypassing the list screen entirely — so this popup only ever
     // shows for a standalone student-initiated start.
     if (window.ExamModeSelect) {
+        const _t = (state.tests || []).find(t => String(t._id) === String(testId));
         window.ExamModeSelect.open({
             skill: 'listening', preferred,
-            onPractice: () => startTest(testId, 'practice'),
-            onSimulation: () => startTest(testId, 'simulation'),
+            parts: { count: 4, unit: 'Section', available: !!(_t && _t.partsPickable) },
+            onPractice: parts => startTest(testId, 'practice', parts),
+            onSimulation: parts => startTest(testId, 'simulation', parts),
         });
     } else {
         startTest(testId, 'practice');
@@ -1022,7 +1110,8 @@ async function safeJson(res, opts) {
 // ══════════════════════════════════════════════
 // START EXAM
 // ══════════════════════════════════════════════
-async function startTest(testId, mode = 'practice') {
+// parts: section numbers to do ("Chọn phần làm") — null = the whole test.
+async function startTest(testId, mode = 'practice', parts = null) {
     // Guards against clicking "Bắt đầu" on test B before test A's
     // /start request resolves — without this, whichever response
     // arrives last wins and silently overwrites state.currentTest/
@@ -1033,7 +1122,7 @@ async function startTest(testId, mode = 'practice') {
         clearExamStorage(); // clear any previous in-progress exam
         const res = await fetch(`${API}/listening/tests/${testId}/start${_mockMode ? '?purpose=mocktest' : ''}`, {
             method: 'POST', headers: authH(),
-            body: JSON.stringify({ mode })
+            body: JSON.stringify({ mode, ...(parts ? { parts } : {}) })
         });
         const data = await safeJson(res);
         if (testId !== state.pendingTestId) return; // superseded by a later startTest() call
@@ -1065,15 +1154,25 @@ async function startTest(testId, mode = 'practice') {
         state.isReview = false;
         state.startTime = new Date().toISOString();
         state.mode = t.mode || mode;
+        state.parts = t.parts || null;
+        state.audioPartIdx = null;
+        _partAudioPos = {};
         for (const k in partHlCache) delete partHlCache[k];
         for (const k in partHlCacheRv) delete partHlCacheRv[k];
         _pendingHl = {};
         clearInterval(_asoTimer);
         audio.playbackRate = 1;
         document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
-        document.getElementById('exam-title').textContent = t.name;
-        audio.src = t.audioUrl || '';
-        audio.load();
+        document.getElementById('exam-title').textContent = _titleWithParts(t.name, state.parts);
+        if (_hasPartAudio(false)) {
+            // Partial attempt: each picked section plays its own audio,
+            // starting with the first one.
+            audio.src = '';
+            _loadPartAudio(0, false);
+        } else {
+            audio.src = t.audioUrl || '';
+            audio.load();
+        }
         const _cdRem = document.getElementById('cd-remaining-ls-txt');
         if (_cdRem) _cdRem.textContent = 'Audio chưa phát';
         buildPartTabs('part-tabs', false);
@@ -1084,7 +1183,12 @@ async function startTest(testId, mode = 'practice') {
         _updateExamToolbarForMode();
         showScreen('exam');
         const playNowBtn = document.getElementById('aso-play-now-btn');
-        if (state.mode === 'simulation' && !_mockMode) {
+        if (_isPartPractice()) {
+            // Partial Practice: no "plays once" warning or countdown —
+            // the student plays each section's audio with the button.
+            document.getElementById('audio-start-overlay').classList.add('hidden');
+            _syncPartPlayBtn();
+        } else if (state.mode === 'simulation' && !_mockMode) {
             // Test Simulation: no overlay to click through — audio
             // auto-plays 10s after the test opens, like the real exam.
             document.getElementById('audio-start-overlay').classList.add('hidden');
@@ -1118,6 +1222,8 @@ async function startTest(testId, mode = 'practice') {
         } else if (err.body && err.body.code === 'REVIEW_REQUIRED') {
             toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
             _goToPendingReview(err.body);
+        } else if (err.body && err.body.code === 'PARTS_UNAVAILABLE') {
+            toast(err.body.message, 'warning');
         } else {
             toast('Lỗi tải bài thi: ' + err.message, 'error');
         }
@@ -1145,6 +1251,7 @@ function setupAudioEvents() {
             if (el) el.innerHTML = '<i class="fas fa-pause"></i>';
         });
         if (!state.isReview) updateExamAudioStatus(true);
+        if (!state.isReview) _syncPartPlayBtn();
     });
     audio.addEventListener('pause', () => {
         ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
@@ -1152,9 +1259,11 @@ function setupAudioEvents() {
             if (el) el.innerHTML = '<i class="fas fa-play"></i>';
         });
         if (!state.isReview) updateExamAudioStatus(false);
+        if (!state.isReview) _syncPartPlayBtn();
     });
     audio.addEventListener('ended', () => {
         if (!state.isReview) updateExamAudioStatus(false);
+        if (!state.isReview) _syncPartPlayBtn();
         // Full Mock Test / Test Simulation: audio is over, nothing
         // left to play — give the student a short window to check
         // their answers before the exam force-submits. Practice keeps
@@ -1162,6 +1271,18 @@ function setupAudioEvents() {
         // "Lẻ" practice shares this audio element but runs its own
         // countdown from audio.onended (_enterLTPracticeScreen).
         if (state.isReview || state.submitted || window.isLtPracticeActive?.()) return;
+        // Partial Simulation: one section's audio is over — go straight
+        // on to the next picked section (questions + its audio), like the
+        // real exam running through the parts.
+        if (state.mode === 'simulation' && _hasPartAudio(false)) {
+            const next = (state.audioPartIdx ?? 0) + 1;
+            if (next < getSortedSections(false).length) {
+                switchPart(next, false);
+                _loadPartAudio(next, false);
+                startAudioPlay();
+                return;
+            }
+        }
         const secs = _mockMode ? LISTENING_REVIEW_SECONDS
                    : state.mode === 'simulation' ? SIMULATION_REVIEW_SECONDS : 0;
         if (secs) _startListeningReviewCountdown(secs, () => { if (!state.submitted) submitExam(); });
@@ -1410,6 +1531,7 @@ function switchPart(idx, isReview) {
         // identical switchReviewPassage wiring.
         _runInlineReviewMountPass();
         _updatePartTabBadges();
+        if (_hasPartAudio(true)) _loadPartAudio(idx, true);
         // Scroll về đầu sau khi switch part
         const rvInner = document.getElementById('review-questions-inner');
         if (rvInner) rvInner.scrollTop = 0;
@@ -1432,6 +1554,8 @@ function switchPart(idx, isReview) {
         }
         _renderCdPartHeaderLs(idx);
         if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.setActivePart(idx);
+        // Partial Practice: each section's tab brings its own audio.
+        if (_isPartPractice()) _loadPartAudio(idx, false);
         // Scroll về đầu sau khi switch part
         const qPanel = document.getElementById('questions-panel');
         if (qPanel) qPanel.scrollTop = 0;
@@ -2049,9 +2173,16 @@ function goToReview() {
     document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
     const reviewImgEl = document.getElementById('review-result-img');
     if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(r.bandScore || 0); reviewImgEl.style.display = ''; }
-    audio.src = r.audioUrl || '';
-    audio.load();
-    audio.currentTime = 0;
+    state.audioPartIdx = null;
+    _partAudioPos = {};
+    if (_hasPartAudio(true)) {
+        audio.src = '';
+        _loadPartAudio(0, true);
+    } else {
+        audio.src = r.audioUrl || '';
+        audio.load();
+        audio.currentTime = 0;
+    }
     const firstSection = (r.sections || [])[0];
     renderTranscript(firstSection?.transcript || '');
     buildPartTabs('part-tabs-rv', true);
@@ -2830,7 +2961,8 @@ function _renderExamResult(r, answerKeyWithheld) {
         loadTestList();
     }
     document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
-    document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
+    document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`
+        + (r.parts && r.parts.length ? ` · Section ${r.parts.join(', ')} (band quy đổi theo 40 câu)` : '');
     document.getElementById('r-correct').textContent = r.correctCount;
     document.getElementById('r-wrong').textContent = r.wrongCount;
     document.getElementById('r-skip').textContent = r.skippedCount;

@@ -338,8 +338,9 @@ exports.listStudentTests = async (req, res) => {
 
 exports.startTest = async (req, res) => {
   try {
-    const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id, req.body && req.body.mode);
+    const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id, req.body && req.body.mode, req.body && req.body.parts);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+    if (test.partsUnavailable) return res.status(400).json({ success: false, code: 'PARTS_UNAVAILABLE', message: 'Đề này chưa có audio riêng từng section — hãy làm cả bài' });
     res.json({ success: true, test: protectListeningAudio(test, req.user._id) });
   } catch (err) {
     // Test Simulation cooldown after a 5-strike disqualification — same

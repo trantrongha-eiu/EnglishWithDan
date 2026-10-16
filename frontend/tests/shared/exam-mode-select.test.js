@@ -164,3 +164,62 @@ describe('ExamModeSelect — Simulation requires the screen share', () => {
     }
   });
 });
+
+describe('ExamModeSelect — "Chọn phần làm"', () => {
+  const READING = { count: 3, unit: 'Passage', minutesEach: 20 };
+  const chip = (n) => document.querySelector(`#ews-ms-chips .ews-ms-chip[data-part="${n}"]`);
+
+  test('no parts option → no picker, callbacks get null', () => {
+    global.fetch = fetchOnce({ active: false });
+    const onPractice = jest.fn();
+    window.ExamModeSelect.open({ skill: 'writing', onPractice, onSimulation: jest.fn() });
+    expect(document.getElementById('ews-ms-parts').classList.contains('hidden')).toBe(true);
+    document.getElementById('ews-ms-practice-btn').click();
+    expect(onPractice).toHaveBeenCalledWith(null);
+  });
+
+  test('all passages picked by default = whole test (null), 60 phút', () => {
+    global.fetch = fetchOnce({ active: false });
+    const onPractice = jest.fn();
+    window.ExamModeSelect.open({ skill: 'reading', parts: READING, onPractice, onSimulation: jest.fn() });
+    expect(document.querySelectorAll('#ews-ms-chips .ews-ms-chip')).toHaveLength(3);
+    expect(document.getElementById('ews-ms-parts-sum').textContent).toBe('Cả bài · 60 phút');
+    document.getElementById('ews-ms-practice-btn').click();
+    expect(onPractice).toHaveBeenCalledWith(null);
+  });
+
+  test('two passages → 40 phút, Simulation gets the picked numbers', async () => {
+    global.fetch = fetchOnce({ active: false });
+    const onSimulation = jest.fn();
+    window.ExamModeSelect.open({ skill: 'reading', parts: READING, onPractice: jest.fn(), onSimulation });
+    await flush();
+    chip(2).click();
+    expect(chip(2).getAttribute('aria-pressed')).toBe('false');
+    expect(document.getElementById('ews-ms-parts-sum').textContent).toBe('2 passage · 40 phút');
+    document.getElementById('ews-ms-sim-btn').click();
+    await microtasks();
+    expect(onSimulation).toHaveBeenCalledWith([1, 3]);
+  });
+
+  test('nothing picked disables both buttons; re-picking keeps a cooled-down Simulation disabled', async () => {
+    global.fetch = fetchOnce({ active: true, remainingSeconds: 60 });
+    window.ExamModeSelect.open({ skill: 'reading', parts: READING, onPractice: jest.fn(), onSimulation: jest.fn() });
+    await flush();
+    [1, 2, 3].forEach(n => chip(n).click());
+    expect(document.getElementById('ews-ms-practice-btn').disabled).toBe(true);
+    expect(document.getElementById('ews-ms-sim-btn').disabled).toBe(true);
+    chip(1).click();
+    expect(document.getElementById('ews-ms-practice-btn').disabled).toBe(false);
+    expect(document.getElementById('ews-ms-sim-btn').disabled).toBe(true);
+  });
+
+  test('available:false (no per-section audio) shows no chips and starts the whole test', () => {
+    global.fetch = fetchOnce({ active: false });
+    const onPractice = jest.fn();
+    window.ExamModeSelect.open({ skill: 'listening', parts: { count: 4, unit: 'Section', available: false }, onPractice, onSimulation: jest.fn() });
+    expect(document.querySelectorAll('#ews-ms-chips .ews-ms-chip')).toHaveLength(0);
+    expect(document.getElementById('ews-ms-parts-note').textContent).toMatch(/chỉ làm được cả bài/);
+    document.getElementById('ews-ms-practice-btn').click();
+    expect(onPractice).toHaveBeenCalledWith(null);
+  });
+});

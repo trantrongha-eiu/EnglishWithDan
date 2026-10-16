@@ -30,6 +30,7 @@ const { sanitizeHighlights, tooLarge } = require('./attemptHighlightService');
 const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
+const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
 
 // Mongoose `.select()` string that strips a section's answer key
 // (correctAnswer + explanation per question). Single source so the
@@ -182,8 +183,40 @@ function buildReviewSections(sections, reviewMap) {
       imageUrl: g.imageUrl,
       dragDropConfig: g.dragDropConfig,
       questions: g.questions.map(q => reviewMap[q.questionNumber] || { questionNumber: q.questionNumber })
-    }))
+    })),
+    // Partial attempt ("Chọn phần làm"): each section plays its own audio.
+    ...(s.audioUrl ? { audioUrl: s.audioUrl } : {}),
   }));
+}
+
+// A full test's sections → each part's own đề lẻ audio ({ partNumber:
+// { audioUrl, audioDuration } }), matched by title + part number — the
+// same pairing full tests are assembled from (assembleTest,
+// scripts/volListening/rejoin_test_audio.js). Lets a student who picked
+// only some sections play just those parts instead of seeking around
+// the test's one joined recording.
+async function findPartAudios(sections) {
+  const keys = (sections || []).map(s => ({ title: s.title, partNumber: s.partNumber }));
+  if (!keys.length) return {};
+  const lone = await ListeningSection.find({ $or: keys, audioUrl: { $nin: ['', null] } })
+    .select('title partNumber audioUrl audioDuration isActive').lean();
+  const out = {};
+  for (const s of sections) {
+    const match = lone.filter(l => l.title === s.title && l.partNumber === s.partNumber)
+      .sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0))[0];
+    if (match) out[s.partNumber] = { audioUrl: match.audioUrl, audioDuration: match.audioDuration || 0 };
+  }
+  return out;
+}
+
+// sections (plain objects) narrowed to the picked part numbers, each
+// carrying its own audio — null when some picked part has no audio.
+async function pickSectionsWithAudio(sections, parts) {
+  const picked = sections.filter(s => parts.includes(s.partNumber));
+  if (picked.length !== parts.length) return null;
+  const audios = await findPartAudios(picked);
+  if (picked.some(s => !audios[s.partNumber])) return null;
+  return picked.map(s => ({ ...s, ...audios[s.partNumber] }));
 }
 
 // ── Admin – CRUD Tests ──────────────────────────────────────────────────
@@ -791,9 +824,10 @@ async function listStudentTests(userId) {
           } } }
         }
       } },
-      { $project: { name: 1, testNumber: 1, seriesName: 1, audioDuration: 1, totalParts: 1, totalQuestions: 1 } }
+      { $project: { name: 1, testNumber: 1, seriesName: 1, audioDuration: 1, totalParts: 1, totalQuestions: 1, 'sections.title': 1, 'sections.partNumber': 1 } }
     ]).collation({ locale: 'en', numericOrdering: true }),
-    ListeningAttempt.find({ userId, status: 'completed' })
+    // Only whole-test attempts mark a card done — a Part-1-only run isn't the test.
+    ListeningAttempt.find({ userId, status: 'completed', parts: { $exists: false } })
       .select('testId bandScore correctCount wrongCount skippedCount submittedAt timeTaken').lean()
   ]);
 
@@ -802,6 +836,10 @@ async function listStudentTests(userId) {
     const key = a.testId.toString();
     if (!attemptMap[key] || attemptMap[key].submittedAt < a.submittedAt) attemptMap[key] = a;
   });
+  // partsPickable: every part has its own đề lẻ audio (findPartAudios), so
+  // the student may pick just some sections. One query for all tests.
+  const withAudio = new Set((await ListeningSection.find({ audioUrl: { $nin: ['', null] } }).select('title partNumber').lean())
+    .map(l => `${l.partNumber}|${l.title}`));
   // Per-test review-status badge — see readingService.listTestsForUser's
   // identical use of this same shared helper.
   const reviewMap = await reviewService.getReviewStatusMap(userId, 'listening', Object.values(attemptMap).map(a => a._id));
@@ -814,15 +852,27 @@ async function listStudentTests(userId) {
   return tests.map(t => ({
     _id: t._id, name: t.name, testNumber: t.testNumber, seriesName: t.seriesName,
     audioDuration: t.audioDuration, totalParts: t.totalParts, totalQuestions: t.totalQuestions,
+    partsPickable: (t.sections || []).length === 4 && t.sections.every(s => withAudio.has(`${s.partNumber}|${s.title}`)),
     lastAttempt: attemptMap[t._id.toString()] || null
   }));
 }
 
-async function startTest(id, userId, mode = 'practice') {
+// rawParts: section numbers (1–4) to do — "Chọn phần làm". Absent/all =
+// the whole test on its one recording; a subset plays each picked part's
+// own audio (sections[i].audioUrl). { partsUnavailable: true } when some
+// picked part has no audio of its own.
+async function startTest(id, userId, mode = 'practice', rawParts = null) {
   if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
 
   const test = await ListeningTest.findOne({ _id: id, isActive: true });
   if (!test) return null;
+
+  const parts = normalizeParts(rawParts, 4);
+  let picked = test.sections;
+  if (parts) {
+    picked = await pickSectionsWithAudio((typeof test.toObject === 'function' ? test.toObject() : test).sections || [], parts);
+    if (!picked) return { partsUnavailable: true };
+  }
 
   // Persisted immediately (status: 'in-progress') so an abandoned mock test
   // leaves a record instead of vanishing entirely — previously nothing was
@@ -844,16 +894,17 @@ async function startTest(id, userId, mode = 'practice') {
   // Scoped to `mode` too — a still-open Practice attempt must never be
   // silently resumed as a Simulation one (or vice versa). See Reading's
   // startTest() for the identical reasoning.
-  let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress', mode });
+  let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress', mode, ...partsFilter(parts) });
   if (!attempt) {
-    const totalQuestions = test.sections.reduce((sum, s) =>
+    const totalQuestions = picked.reduce((sum, s) =>
       sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
     attempt = await ListeningAttempt.create({
-      userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date(), mode
+      userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date(), mode,
+      ...(parts ? { parts } : {}),
     });
   }
 
-  const sections = test.sections.map(s => ({
+  const sections = picked.map(s => ({
     partNumber: s.partNumber, title: s.title, description: s.description, questionRange: s.questionRange,
     questionGroups: s.questionGroups.map(g => ({
       _id: g._id, groupType: g.groupType, instruction: g.instruction, tableConfig: g.tableConfig,
@@ -866,9 +917,13 @@ async function startTest(id, userId, mode = 'practice') {
         options: q.options, checkboxCount: q.checkboxCount, wordBank: q.wordBank, imageUrl: q.imageUrl
         // correctAnswer intentionally omitted
       }))
-    }))
+    })),
+    ...(parts ? { audioUrl: s.audioUrl, audioDuration: s.audioDuration } : {}),
   }));
-  return { _id: test._id, attemptId: attempt._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections, mode };
+  return {
+    _id: test._id, attemptId: attempt._id, name: test.name,
+    audioUrl: parts ? '' : test.audioUrl, audioDuration: test.audioDuration, sections, mode, parts,
+  };
 }
 
 // opts.disqualified: the proctor just voided this attempt — save the answers
@@ -889,31 +944,39 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   // (no attemptId / a genuinely unmatched one), where there's no server
   // record to trust instead.
   let serverStartTime = null;
+  let parts = null;
   if (attemptId) {
-    const existing = await ListeningAttempt.findOne({ _id: attemptId, userId: user._id || user.id }).select('startTime').lean();
+    const existing = await ListeningAttempt.findOne({ _id: attemptId, userId: user._id || user.id }).select('startTime parts').lean();
     if (existing) serverStartTime = existing.startTime;
+    if (existing && Array.isArray(existing.parts) && existing.parts.length) parts = existing.parts;
   }
   const startTime = serverStartTime || (startTimeRaw ? new Date(startTimeRaw) : null);
   const maxSecs = (test.audioDuration || 40) * 60;
   const timeTaken = startTime ? Math.min(Math.max(0, Math.round((now - startTime) / 1000)), maxSecs) : 0;
 
-  const allGroups = test.sections.flatMap(s => s.questionGroups);
+  // Snapshot the sections as-submitted so a later admin edit to the live
+  // ListeningTest / ListeningSection can't retro-change this student's review.
+  // A partial attempt grades (and snapshots) only its picked sections, each
+  // with its own audio for the review.
+  const testObj = typeof test.toObject === 'function' ? test.toObject() : test;
+  const sectionsUsed = parts
+    ? (await pickSectionsWithAudio(testObj.sections || [], parts)) || (testObj.sections || []).filter(s => parts.includes(s.partNumber))
+    : (testObj.sections || []);
+
+  const allGroups = sectionsUsed.flatMap(s => s.questionGroups);
   const getUserAnswer = num => answers[num] !== undefined ? String(answers[num]).trim() : '';
   const extraFields = q => ({ explanation: q.explanation, type: q.type, questionText: q.questionText, options: q.options, wordBank: q.wordBank, audioTimestamp: q.audioTimestamp });
   const { correct, wrong, skipped, reviewed } = gradeQuestionGroups(allGroups, getUserAnswer, extraFields);
-  const total = flattenQuestions(test.sections).length;
-  const bandScore = calcBandScore(correct);
-
-  // Snapshot the sections as-submitted so a later admin edit to the live
-  // ListeningTest / ListeningSection can't retro-change this student's review.
-  const testObj = typeof test.toObject === 'function' ? test.toObject() : test;
+  const total = flattenQuestions(sectionsUsed).length;
+  // Partial attempt: band estimated from the score scaled to 40 questions.
+  const bandScore = calcBandScore(parts ? scaledCorrect(correct, total) : correct);
 
   const fields = {
     userId: user._id || user.id,
     testId: test._id,
     testName: test.name,
-    sectionsSnapshot: Array.isArray(testObj.sections) && testObj.sections.length ? testObj.sections : undefined,
-    audioUrlSnapshot: test.audioUrl || '',
+    sectionsSnapshot: sectionsUsed.length ? sectionsUsed : undefined,
+    audioUrlSnapshot: parts ? '' : (test.audioUrl || ''),
     answers: reviewed.map(r => ({ questionNumber: r.questionNumber, userAnswer: r.userAnswer, correctAnswer: r.correctAnswer, isCorrect: r.isCorrect })),
     totalQuestions: total,
     correctCount: correct,
@@ -956,7 +1019,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   }
 
   if (disqualified) {
-    return { attemptId: attempt._id, totalQuestions: total, correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken, disqualified: true };
+    return { attemptId: attempt._id, totalQuestions: total, correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken, disqualified: true, ...(parts ? { parts } : {}) };
   }
 
   let bonusApplied = 0;
@@ -979,7 +1042,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
 
   const reviewMap = {};
   reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
-  const reviewSections = buildReviewSections(test.sections, reviewMap);
+  const reviewSections = buildReviewSections(sectionsUsed, reviewMap);
 
   // Mandatory Review System — must be awaited, not fire-and-forget: the
   // gate must be active the instant the score is returned. `reviewed`
@@ -995,8 +1058,8 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   return {
     attemptId: attempt._id, testName: test.name, totalQuestions: total,
     correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken,
-    questions: reviewed, sections: reviewSections, audioUrl: test.audioUrl,
-    bonusApplied, streak, newlyUnlocked,
+    questions: reviewed, sections: reviewSections, audioUrl: parts ? '' : test.audioUrl,
+    bonusApplied, streak, newlyUnlocked, ...(parts ? { parts } : {}),
   };
 }
 
@@ -1065,6 +1128,7 @@ async function getHistoryDetail(attemptId, userId) {
       totalQuestions: attempt.totalQuestions, timeTaken: attempt.timeTaken, submittedAt: attempt.submittedAt,
       questions: reviewed, sections: reviewSections, audioUrl,
       highlights: attempt.highlights || null,
+      parts: attempt.parts || null,
     }
   };
 }
