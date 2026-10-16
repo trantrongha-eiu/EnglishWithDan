@@ -1335,6 +1335,100 @@ async function generateExampleSentence(word, _attempt = 0) {
   }
 }
 
+// ── Phrase lookup ("Tra từ vựng" panel on the Writing screens) ────────
+// Việt→Anh: a Vietnamese idea → the natural English phrase for it.
+// Anh→Việt: an English phrase → its Vietnamese meaning.
+// Both return English equivalents + IELTS-Writing example sentences.
+// Called at most ONCE per distinct (direction, query) — see
+// services/dictionaryPhraseService.js for the cache wrapper.
+const PHRASE_SYSTEM = `You are an English-Vietnamese phrase dictionary for Vietnamese IELTS Writing learners.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildPhraseLookupPrompt(query, dir) {
+  const task = dir === 'vi-en'
+    ? `Vietnamese word/phrase: "${query}"
+
+Find the single most natural English word/phrase an IELTS Writing candidate would use for this meaning.
+- phrase: that English phrase (lowercase unless a proper noun, no trailing punctuation)
+- meaning: the Vietnamese meaning, cleaned up (fix missing diacritics/typos in the input)`
+    : `English word/phrase: "${query}"
+
+- phrase: the English phrase, corrected if misspelled (lowercase unless a proper noun)
+- meaning: its accurate, natural Vietnamese meaning (the sense most useful for IELTS Writing; up to 2 senses separated by "; ")`;
+
+  return `${task}
+- alternatives: 2-3 OTHER English words/phrases with the same meaning, at a similar or more academic register (never repeat "phrase")
+- examples: exactly 2 natural English sentences in IELTS Writing style (Task 1 data description or Task 2 argument, whichever suits the phrase), each 10-22 words. The first uses "phrase", the second uses one of the alternatives. For each give:
+  - en: the sentence
+  - highlight: the exact substring of "en" that is the phrase as used (inflected form allowed, must appear verbatim in "en")
+  - vi: short Vietnamese meaning of the highlighted phrase
+
+Return this exact JSON (no other text):
+{"phrase": "...", "meaning": "...", "alternatives": ["..."], "examples": [{"en": "...", "highlight": "...", "vi": "..."}]}
+
+If the input is not a real ${dir === 'vi-en' ? 'Vietnamese' : 'English'} word/phrase (gibberish, random letters), return {"phrase": "", "meaning": "", "alternatives": [], "examples": []} — never invent a translation for nonsense.`;
+}
+
+function sanitisePhraseLookup(parsed) {
+  const str = (v, max) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, max);
+  const phrase = str(parsed.phrase, 120);
+  if (!phrase) return { phrase: '', meaning: '', alternatives: [], examples: [] };
+  const alternatives = [...new Set(
+    (Array.isArray(parsed.alternatives) ? parsed.alternatives : [])
+      .map(a => str(a, 120))
+      .filter(a => a && a.toLowerCase() !== phrase.toLowerCase())
+  )].slice(0, 4);
+  const examples = (Array.isArray(parsed.examples) ? parsed.examples : [])
+    .map(e => {
+      const en = str(e && e.en, 300);
+      let highlight = str(e && e.highlight, 120);
+      if (highlight && !en.toLowerCase().includes(highlight.toLowerCase())) highlight = '';
+      return { en, highlight, vi: str(e && e.vi, 120) };
+    })
+    .filter(e => e.en)
+    .slice(0, 3);
+  return { phrase, meaning: str(parsed.meaning, 200), alternatives, examples };
+}
+
+async function generatePhraseLookup(query, dir, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL_FAST,
+        contents: buildPhraseLookupPrompt(query, dir),
+        config: {
+          systemInstruction: PHRASE_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.3,
+          maxOutputTokens: 700,
+        }
+      }),
+      15000,
+      'AI phản hồi quá lâu, vui lòng thử lại.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generatePhraseLookup: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại.');
+  }
+
+  try {
+    return sanitisePhraseLookup(extractJson(rawText));
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generatePhraseLookup: JSON parse failed, retrying', { errorMessage: parseErr.message });
+      return generatePhraseLookup(query, dir, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
+  }
+}
+
 // ── Task 2 — "Bài mẫu từ Daniel" + "Phân tích đề" generator ───────────
 // Fills a WritingTask2 doc's analysisSections (Vietnamese guide) and
 // sampleSections (a Band 7.5+ model essay). Used only by the offline seed
@@ -1507,6 +1601,7 @@ module.exports = {
   generateGapFillGlossary,
   translateDictationSentences,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
+  generatePhraseLookup, sanitisePhraseLookup,
   // Exported so groqService.js can generate/grade Task 2 essays against the
   // exact same prompts (same convention as the SPEAKING_SYSTEM group below).
   T2_ESSAY_SYSTEM, buildTask2EssayPrompt, parseTask2EssayResponse,

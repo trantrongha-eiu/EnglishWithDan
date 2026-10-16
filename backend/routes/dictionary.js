@@ -48,6 +48,20 @@ const exampleBulkLimiter = rateLimit({
   skip: req => req.user?.role === 'admin',
 });
 
+// "Tra từ vựng" panel (Writing practice screens) — typed lookups, so more
+// headroom than collocations; cache hits are a plain DB read.
+const phraseLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 60,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Bạn tra hơi nhiều, vui lòng thử lại sau ít phút.' });
+  },
+  skip: req => req.user?.role === 'admin',
+});
+
+router.post('/phrase-lookup',     auth, premiumOnly, phraseLimiter,      ctrl.lookupPhrase);
 router.get('/:word/collocations', auth, premiumOnly, collocationsLimiter, ctrl.getCollocations);
 router.post('/examples',          auth, premiumOnly, exampleBulkLimiter, ctrl.getExamples);
 router.get('/:word/example',      auth, premiumOnly, exampleLimiter,     ctrl.getExample);

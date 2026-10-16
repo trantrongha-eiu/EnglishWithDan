@@ -140,6 +140,21 @@ function showScreen(id) {
     const NAV_SCREENS = ['screen-key', 'screen-history', 'screen-practice', 'screen-samples', 'screen-writing-tips'];
     NAV_SCREENS.includes(id) ? window.showTopNav() : window.hideTopNav();
   }
+  if (window.PhraseLookup) window.PhraseLookup.refresh();
+}
+
+// "Tra từ vựng" panel (js/shared/phrase-lookup.js) — type a Vietnamese/
+// English phrase, AI returns the English phrase + examples. Practice only:
+// shown on the full test (#screen-exam) and the single-task screen
+// (#screen-practice-write) only while __ewsExamActive() says it's NOT a
+// Test Simulation / Full Mock Test attempt. showScreen() re-checks it.
+if (window.PhraseLookup) {
+  window.PhraseLookup.init({
+    isAllowed: () => {
+      const on = id => !!document.getElementById(id)?.classList.contains('active');
+      return (on('screen-exam') || on('screen-practice-write')) && !window.__ewsExamActive();
+    },
+  });
 }
 
 // ──────────────────────────────────────────────────────
