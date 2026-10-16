@@ -419,7 +419,10 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
+    .topbar-right > * { flex-shrink: 0; }
+    .tuition-missing-btn { white-space: nowrap; }
 
     .topbar-home { font-size: 12px; }
 
@@ -1483,7 +1486,7 @@
       .main { margin-left: 0; min-width: 0; width: 100%; }
 
       /* Show hamburger */
-      .sidebar-toggle { display: flex !important; }
+      .sidebar-toggle { display: flex !important; flex-shrink: 0; }
 
       /* Show sidebar close button */
       .sidebar-close-btn { display: block; }
@@ -1504,6 +1507,8 @@
 
     @media (max-width: 600px) {
       .topbar-crumb { display: none; }
+      /* "💰 5" only — the full label pushed the right cluster over the ☰ */
+      .tuition-missing-label { display: none; }
       .quick-search-input, .quick-search-input:focus { width: 140px; }
       .quick-search-panel { position: fixed; left: 12px; right: 12px; top: 64px; width: auto; }
     }

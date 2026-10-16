@@ -46,10 +46,11 @@ export default function TuitionMissingPopup() {
 
   return (
     <>
-      <button type="button" className="btn btn-ghost btn-sm" onClick={() => setReopened(true)}
+      <button type="button" className="btn btn-ghost btn-sm tuition-missing-btn" onClick={() => setReopened(true)}
         title="Học sinh đang học trong lớp nhưng chưa nhập học phí"
+        aria-label={`${rows.length} học sinh chưa nhập học phí`}
         style={{ color: 'var(--danger)', fontWeight: 700 }}>
-        💰 {rows.length} chưa nhập học phí
+        💰 {rows.length}<span className="tuition-missing-label"> chưa nhập học phí</span>
       </button>
       {open && !editing && createPortal(
         <Modal
