@@ -1,0 +1,72 @@
+// Vol 1 - Test 7 - Reading Passage 2 (PDF p10–14). Not in the bank, no scraped copy. Text from OCR of the PDF; the PDF's
+// own copy errors fixed by sense ("theft day" → their, "winch naively assume that die user" → which … the user, "Horvitz's
+// weak" → work, "has beat running" → been, "comer-suite" → corner-suite, "read the print" → fine print, "care and other
+// gadgets" → cars, "rate then" → their, "them office/datebook" → their). Headline in capitals → sentence case.
+// Q20–26 diagram → note lines. Printed instruction "ONLY ONE WORDS AND/OR A NUMBER" but key Q24 = "voice mail" (2 words)
+// → NO MORE THAN TWO WORDS.
+const { tfng, notes } = require('../../vr_build');
+module.exports = {
+  vol: 1, test: 7, part: 2, title: 'Thoughtful Computing system', text: 't7p2.txt',
+  free: ['voicemail'],
+  groups: [
+    tfng(14, [
+      'According to Ted Selker, human productivity has frequently been disturbed by office competitors.',
+      'If people are interrupted by calls or e-mails, they usually put up with it instead of taking uncooperative action.',
+      'Microsoft is now investigating software which is compatible with ordinary office units.',
+      'People usually have a misperception about whether they are busy or not.',
+      'Research showed that concentration time in the office takes up, on average, a little over 65%.',
+      'Advanced phone and computer systems will install a shortcut key for people to receive information immediately.',
+    ], { instruction: 'Do the following statements agree with the information given in Reading Passage 2? In boxes 14–19 on your answer sheet, write TRUE if the statement is true, FALSE if the statement is false, NOT GIVEN if the information is not given in the passage.' }),
+    notes(20, 26, [
+      'Bestcom system made further efforts in order to find __Q20__ about what users are doing.',
+      '<strong>In the office</strong>',
+      '• check the __Q21__ between caller and user: whether callers have contact information of users, such as user’s family or friends',
+      '• if callers are not in the directory, a __Q22__ will show up on their screen, saying that the user is not available at the moment. Callers can __Q23__ a suitable time for both, or they can choose to leave a __Q24__ to the user',
+      '<strong>Out of the office</strong>',
+      '• Bestcom provides a solution to transfer your call to the user’s __Q25__ if there is no __Q26__ in his schedule',
+    ], { title: 'BESTCOM WORKING PROCESS', instruction: 'Complete the diagram below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 20–26 on your answer sheet.' }),
+  ],
+  key: { 14: 'NOT GIVEN', 15: 'TRUE', 16: 'TRUE', 17: 'TRUE', 18: 'FALSE', 19: 'NOT GIVEN',
+    20: 'clues', 21: 'relationship', 22: 'message', 23: 'reschedule', 24: 'voice mail / voicemail', 25: 'cellphone', 26: 'meeting' },
+  expl: {
+    14: ['Theo Ted Selker, năng suất của con người thường xuyên bị các đối thủ trong văn phòng làm gián đoạn.', 'Đoạn A',
+      '“A complicated life, continually interrupted by competing requests for attention, is as old as procreation,” laughs Ted Selker',
+      'Selker chỉ nói cuộc sống bị gián đoạn bởi những “yêu cầu tranh giành sự chú ý” vốn có từ xưa; không hề nhắc đến “đối thủ trong văn phòng” hay năng suất → NOT GIVEN'],
+    15: ['Khi bị điện thoại, e-mail làm gián đoạn, người ta thường chịu đựng thay vì có hành động bất hợp tác.', 'Đoạn B',
+      '“although we could simply turn off the phones, close the e-mail program, and shut the office door … we usually don’t. We just endure the consequences.”',
+      '“put up with it” = “endure the consequences”; “uncooperative action” = tắt máy, đóng cửa — điều mà ta thường không làm → TRUE'],
+    16: ['Microsoft đang nghiên cứu một phần mềm tương thích với các thiết bị văn phòng thông thường.', 'Đoạn D + I',
+      '“Microsoft has been running extensive in-house tests of a much more sophisticated system since 2003.” … “Most large companies already use computerized phone systems and standard calendar and contact management software, so tapping into those “sensors” should be straightforward.”',
+      'Microsoft đang thử nghiệm hệ thống “chu đáo” (Bestcom), hệ thống này khai thác điện thoại, lịch và danh bạ chuẩn mà công ty nào cũng có = tương thích với thiết bị văn phòng thông thường → TRUE'],
+    17: ['Người ta thường nhận định sai về việc mình có bận hay không.', 'Đoạn E',
+      '“Most people aren’t as busy as they think they are”',
+      'Phần lớn mọi người không bận như họ nghĩ = nhận định sai về mức độ bận của mình → TRUE'],
+    18: ['Nghiên cứu cho thấy thời gian tập trung ở văn phòng trung bình chiếm hơn 65% một chút.', 'Đoạn E',
+      '“On average, the subjects wanted to work without interruption about one third of the time.” … “they typically spend more than 65 percent of their day in a state of low attention.”',
+      'Hơn 65% thời gian là trạng thái ít tập trung; thời gian muốn làm việc không bị quấy rầy chỉ khoảng một phần ba → ngược với câu hỏi → FALSE'],
+    19: ['Hệ thống điện thoại và máy tính tiên tiến sẽ cài phím tắt để người dùng nhận thông tin ngay.', 'Cả bài',
+      '“Bestcom/Enhanced Telephony, a Microsoft prototype based on Horvitz’s work, digs a little deeper into each user’s computer to find clues about what they are up to.”',
+      'Bài chỉ mô tả hệ thống tự sàng lọc cuộc gọi, e-mail; không nhắc đến phím tắt nào → NOT GIVEN'],
+    20: ['Bestcom nỗ lực hơn để tìm ______ về việc người dùng đang làm.', 'Đoạn G',
+      '“digs a little deeper into each user’s computer to find clues about what they are up to.”',
+      '“made further efforts” = “digs a little deeper”; “what users are doing” = “what they are up to” → clues'],
+    21: ['Kiểm tra ______ giữa người gọi và người dùng', 'Đoạn H',
+      '“First it checks whether the caller is listed in his address book, the company directory, or its log of people he has called recently. Triangulating these sources, it tries to deduce their relationship.”',
+      'Hệ thống đối chiếu danh bạ để suy ra mối quan hệ giữa người gọi và chủ máy → relationship'],
+    22: ['Nếu người gọi không có trong danh bạ, một ______ sẽ hiện trên màn hình của họ', 'Đoạn H',
+      '“Others see a message on their computer that he is in a meeting and won’t be available until 3 P.M.”',
+      'Những người khác thấy một tin nhắn trên máy tính báo rằng ông đang họp, chưa rảnh → message'],
+    23: ['Người gọi có thể ______ một thời điểm phù hợp cho cả hai', 'Đoạn H',
+      '“offers to reschedule the call at a time that is open for both.”',
+      'Hệ thống đề nghị dời cuộc gọi sang lúc cả hai cùng rảnh → reschedule'],
+    24: ['… hoặc chọn để lại ______ cho người dùng', 'Đoạn H',
+      '“Some callers choose that option; others leave voice mail.”',
+      'Người gọi khác để lại thư thoại → voice mail'],
+    25: ['Ngoài văn phòng: Bestcom chuyển cuộc gọi đến ______ của người dùng', 'Đoạn H',
+      '“When Horvitz is out of the office, Bestcom automatically offers to forward selected callers to his cellphone”',
+      '“transfer your call” = “forward selected callers” → cellphone'],
+    26: ['… nếu trong lịch không có ______', 'Đoạn H',
+      '“unless his calendar and other evidence suggest that he is in a meeting.”',
+      'Chỉ chuyển cuộc gọi khi lịch không cho thấy ông đang họp → meeting'],
+  },
+};

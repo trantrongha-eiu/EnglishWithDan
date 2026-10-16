@@ -5,7 +5,7 @@ const { chromium } = require('../../../node_modules/playwright');
 const SITE = 'https://ieltsthayha.com';
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 } })).newPage();
+  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' /* botGuard 403s HeadlessChrome */ })).newPage();
   await page.goto(`${SITE}/login.html`);
   await page.fill('#email', process.env.PW_TEST_USER);
   await page.fill('#password', process.env.PW_TEST_PASS);
@@ -14,13 +14,14 @@ const SITE = 'https://ieltsthayha.com';
   await page.route('**/api/**', r => (r.request().method() === 'GET' ? r.continue() : r.abort()));
   await page.goto(`${SITE}/reading.html`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(4000);
-  const out = await page.evaluate(async () => {
+  const want = (process.argv[2] || 'Actual Mocktest 38|Actual Mocktest 76').split('|');
+  const out = await page.evaluate(async want => {
     const r = await apiFetch('/api/reading/tests');
     const tests = r.tests || r.data || r;
     const names = (Array.isArray(tests) ? tests : []).map(t => t.name);
     const text = document.body.innerText;
-    return { count: names.length, last: names.slice(-5), shown: ['Actual Mocktest 38', 'Actual Mocktest 76'].map(n => [n, text.includes(n)]) };
-  });
+    return { count: names.length, last: names.slice(-5), shown: want.map(n => [n, text.includes(n)]) };
+  }, want);
   console.log(JSON.stringify(out));
   await page.screenshot({ path: require('path').join(__dirname, 'shots', 'tests_list.png'), fullPage: false });
   await browser.close();

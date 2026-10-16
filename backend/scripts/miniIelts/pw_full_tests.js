@@ -23,7 +23,7 @@ const strip = p => ({
   await mongoose.disconnect();
 
   const browser = await chromium.launch({ headless: true });
-  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 } })).newPage();
+  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' /* botGuard 403s HeadlessChrome */ })).newPage();
   await page.goto(`${SITE}/login.html`);
   await page.fill('#email', process.env.PW_TEST_USER);
   await page.fill('#password', process.env.PW_TEST_PASS);
@@ -51,6 +51,7 @@ const strip = p => ({
       await page.evaluate(id => { window.onbeforeunload = null; return _doStartExam(id, 'practice'); }, String(t._id));
       await page.waitForFunction(() => state && state.passages && state.passages.length === 3, null, { timeout: 20000 });
       await page.waitForTimeout(600);
+      if (process.env.SHOT) await page.screenshot({ path: require('path').join(__dirname, 'shots', `full_${t.name.replace(/\W+/g, '_')}.png`) });
       const res = await page.evaluate(async () => {
         const out = { title: document.getElementById('exam-title')?.textContent || '', nav: [], perPassage: [] };
         out.nav = [...document.querySelectorAll('.q-nav-btn')].map(b => parseInt(b.textContent)).filter(n => !isNaN(n));
@@ -73,7 +74,10 @@ const strip = p => ({
       });
       if (res.title.trim() !== t.name) problems.push(`title "${res.title}"`);
       const nav = [...new Set(res.nav)].sort((a, b) => a - b);
-      if (nav.length !== 40 || nav[0] !== 1 || nav[39] !== 40) problems.push(`navigator ${nav.length} questions (${nav[0]}…${nav[nav.length - 1]})`);
+      // expected = every question number of the 3 passages (normally 1–40; some Vol tests print 39, e.g. no Q27)
+      const want = t.passageIds.flatMap(id => (ps.get(String(id))?.questionGroups || []).flatMap(g => g.questions.map(q => q.questionNumber))).sort((a, b) => a - b);
+      if (nav.join() !== want.join()) problems.push(`navigator ${nav.length} questions (${nav[0]}…${nav[nav.length - 1]}) ≠ passages' ${want.length}`);
+      else if (want.length !== 40) console.log(`   (${t.name}: ${want.length} questions, as printed)`);
       res.perPassage.forEach((p, i) => {
         if (p.missing.length) problems.push(`P${i + 1} "${p.title}" no control for Q${p.missing.join(',')}`);
         if (p.passLen < 1500) problems.push(`P${i + 1} passage text short (${p.passLen})`);

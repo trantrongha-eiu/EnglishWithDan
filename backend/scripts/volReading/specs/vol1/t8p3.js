@@ -1,0 +1,80 @@
+// Vol 1 - Test 8 - Reading Passage 3 (PDF p15–19). Not in the bank (mini-ielts 1089 "Mechanisms of Linguistic Change", same
+// questions). No "READING PASSAGE 3" heading in the PDF. Text = mini copy (identical to the PDF; phonetic symbols cleaner than
+// OCR), fixes: "football as football" → “foopball” (the original example of assimilation), "['ba:k3]" → [ˈbaːkə].
+// The source sentence in C about Russian ("When a social group goes up or down…, its pronunciation of Russian…") is
+// garbled in every copy — left as printed. Question fixes: "Reading Passage 243" → 3; "white they assume" → while;
+// Q40 "The omit of 'f in…" → omission of 't'. Key (= mini) checked against the passage: all correct.
+const { notes, tfng, matching } = require('../../vr_build');
+module.exports = {
+  vol: 1, test: 8, part: 3, title: 'The Cause of Linguistic Change', text: 't8p3.txt',
+  groups: [
+    notes(27, 30, [
+      'The pronunciation of living languages undergoes changes over thousands of years. Large-scale regular changes are usually called __Q27__. There are three reasons for these changes. Firstly, the influence of one language on another: when one person imitates another’s pronunciation (the most prestigious), the imitation always partly involves the factor of __Q28__. Secondly, children’s imitation of adults’ language is sometimes __Q29__, and may also contribute to this change if there are insignificant deviations, though later they may be corrected. Finally, for those random variations in pronunciation, the deeper explanation lies in the __Q30__ or minimization of effort.',
+    ], { instruction: 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 27–30 on your answer sheet.' }),
+    tfng(31, [
+      'It is impossible for modern people to find out the pronunciation of words in an earlier age.',
+      'The great change of language in Russian history is related to the rising status and fortune of the middle classes.',
+      'All children learn speech from adults while they assume that certain language is difficult to imitate exactly.',
+      'Pronunciation with casual inaccuracy will not exert a big influence on language changes.',
+      'The word ‘scant’ can be pronounced more easily than ‘skamt’.',
+      'The [g] in ‘gnat’, not being pronounced, will not be spelt out in the future.',
+      'The sound of ‘temporary’ cannot wholly represent its spelling.',
+    ]),
+    matching(38, [
+      'Since the speakers can pronounce it with less effort',
+      'Assimilation of a sound under the influence of a neighbouring one',
+      'It is a trend for changes in pronunciation on a large scale in a given period',
+      'Because the speaker can pronounce [n] and [t] both at the same time',
+    ], [
+      'As a consequence, ‘b’ will be pronounced as ‘p’',
+      'The pronunciation of [mt] changed to [nt]',
+      'The omission of ‘t’ in the sound of ‘Christmas’',
+    ], { instruction: 'Look at the following sentences and the list of statements below. Match each sentence with the correct statement, A–D. Write the correct letter, A–D, in boxes 38–40 on your answer sheet.' }),
+  ],
+  key: { 27: 'sound laws', 28: 'fashion', 29: 'imperfect', 30: 'principle of ease', 31: 'FALSE', 32: 'FALSE', 33: 'NOT GIVEN', 34: 'TRUE',
+    35: 'TRUE', 36: 'NOT GIVEN', 37: 'TRUE', 38: 'C', 39: 'B', 40: 'A' },
+  expl: {
+    27: ['Những thay đổi quy mô lớn, có quy luật thường được gọi là ______.', 'Đoạn B',
+      '“we find there are always large-scale regularities in the changes” … “Such regular changes are often called sound laws.”',
+      '“Large-scale regular changes” = “large-scale regularities”; được gọi là quy luật ngữ âm → sound laws'],
+    28: ['… sự bắt chước luôn có một phần yếu tố ______.', 'Đoạn C',
+      '“It is also possible that fashion plays a part in the process of change. It certainly plays a part in the spread of change: one person imitates another, and people with the most prestige are most likely to be imitated”',
+      'Việc bắt chước người có uy tín nhất chịu tác động của “mốt” (fashion) → fashion'],
+    29: ['Thứ hai, việc trẻ em bắt chước ngôn ngữ người lớn đôi khi ______.', 'Đoạn D',
+      '“A less specific variant of the argument is that the imitation of children is imperfect: they copy their parents’ speech, but never reproduce it exactly.”',
+      'Trẻ bắt chước không hoàn hảo, không bao giờ lặp lại chính xác → imperfect'],
+    30: ['… lời giải thích sâu xa nằm ở ______ hay việc giảm thiểu công sức.', 'Đoạn E',
+      '“One such force which is often invoked is the principle of ease, or minimization of effort.”',
+      '“or minimization of effort” đứng ngay sau cụm cần điền → principle of ease'],
+    31: ['Người hiện đại không thể biết cách phát âm từ ngữ ở thời trước.', 'Đoạn A',
+      '“These various kinds of evidence, combined with a knowledge of the mechanisms of speech-production, can often give us a very good idea of the pronunciation of an earlier age”',
+      'Các bằng chứng thường cho ta hình dung rất rõ cách phát âm thời trước (chỉ là không chắc chắn tuyệt đối) → không phải “không thể” → FALSE'],
+    32: ['Sự thay đổi ngôn ngữ lớn trong lịch sử nước Nga liên quan đến địa vị và của cải ngày càng tăng của tầng lớp trung lưu.', 'Đoạn C',
+      '“Some of the changes in accepted English pronunciation in the seventeenth and eighteenth centuries” … “the increased power and wealth of the middle classes”',
+      'Quyền lực và của cải của tầng lớp trung lưu gắn với thay đổi phát âm tiếng ANH thế kỷ 17–18, không phải tiếng Nga → FALSE'],
+    33: ['Mọi trẻ em học nói từ người lớn trong khi cho rằng có những thứ tiếng khó bắt chước chính xác.', 'Đoạn D',
+      '“they copy their parents’ speech, but never reproduce it exactly.”',
+      'Bài chỉ nói trẻ bắt chước không chính xác; không nói trẻ “cho rằng” ngôn ngữ nào khó bắt chước → NOT GIVEN'],
+    34: ['Những chỗ phát âm sai ngẫu nhiên sẽ không ảnh hưởng lớn đến sự thay đổi ngôn ngữ.', 'Đoạn D',
+      '“if they are merely random deviations they will cancel one another out and there will be no net change in the language.”',
+      'Sai lệch ngẫu nhiên triệt tiêu lẫn nhau, không làm ngôn ngữ thay đổi → TRUE'],
+    35: ['Từ “scant” dễ phát âm hơn “skamt”.', 'Đoạn E',
+      '“the word scant was once skamt, but the /m/ has been changed to /n/ under the influence of the following /t/. Greater efficiency has hereby been achieved”',
+      '/n/ và /t/ cùng vị trí cấu âm nên đọc “scant” đỡ tốn sức hơn → TRUE'],
+    36: ['Âm [g] không được phát âm trong “gnat” sẽ không còn được viết trong tương lai.', 'Đoạn F',
+      '“At one time there was a [t] in words like castle and Christmas, and an initial [k] in words like knight and know.”',
+      'Bài không nhắc đến “gnat” hay dự đoán gì về cách viết trong tương lai → NOT GIVEN'],
+    37: ['Cách đọc từ “temporary” không thể hiện đầy đủ cách viết của nó.', 'Đoạn F',
+      '“a recent example is temporary, which in Britain is often pronounced as if it were tempory.”',
+      'Người Anh hay đọc “temporary” như “tempory” — mất một âm tiết so với chữ viết → TRUE'],
+    38: ['Kết quả là “b” sẽ được đọc thành “p”.', 'Đoạn B',
+      '“all the [b] consonants in a certain position (for example at the end of a word) may change into [p] consonants. Such regular changes are often called sound laws.”',
+      'Đây là ví dụ về quy luật thay đổi phát âm trên diện rộng trong một giai đoạn → C'],
+    39: ['Cách đọc [mt] đổi thành [nt].', 'Đoạn E',
+      '“Assimilation is the changing of a sound under the influence of a neighbouring one. For example, the word scant was once skamt”',
+      '/m/ đổi thành /n/ do ảnh hưởng của /t/ đứng sau = đồng hoá âm. D sai: /n/ và /t/ cùng vị trí cấu âm chứ không phải đọc “cùng lúc” → B'],
+    40: ['Việc bỏ âm “t” trong “Christmas”.', 'Đoạn F',
+      '“Assimilation is not the only way in which we change our pronunciation in order to increase efficiency.” … “At one time there was a [t] in words like castle and Christmas”',
+      'Lược bỏ phụ âm trong cụm phụ âm là một cách đọc đỡ tốn sức hơn → A'],
+  },
+};

@@ -15,7 +15,7 @@ ps = ps.map(p => [Math.random(), p]).sort((a, b) => a[0] - b[0]).slice(0, N).map
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 } })).newPage();
+  const page = await (await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' /* botGuard 403s HeadlessChrome */ })).newPage();
   await page.goto(`${SITE}/login.html`);
   await page.fill('#email', process.env.PW_TEST_USER);
   await page.fill('#password', process.env.PW_TEST_PASS);

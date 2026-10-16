@@ -5,6 +5,8 @@ Thầy 2026-10-07: seed các bài lẻ của Vol 1–9 lên web, mỗi test = 4 
 bài có sẵn để ghép. **Listening trước, Reading sau. Mỗi lần 1 vol, xong thì dừng và báo cáo.** Chỗ cần quyết thì hỏi thầy.
 Thiếu audio thì được tìm trên mạng. Transcript được tự sinh hoặc lấy trên mạng.
 
+**Reading** (từ 2026-10-16): quy trình + nhật ký riêng ở `../volReading/README.md` (Vol 1 xong).
+
 ## Quy trình 1 vol (cwd = backend/scripts/volListening)
 
 1. `py extract.py <V>` → `web/vol<V>/extract.json` (chữ docx transcript; PDF là ảnh scan, không có text) + ảnh trang PDF.

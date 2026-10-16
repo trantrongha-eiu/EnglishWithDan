@@ -44,6 +44,7 @@ backend/scripts/dolListening/web/
 # VOL 1–9 ORIGINAL EXAMS import: source sets (pdf/docx/mp3) + working files (drafts, audio, backups, Whisper)
 /VOL */
 backend/scripts/volListening/web/
+backend/scripts/volReading/web/
 __pycache__/
 # vocab topic + writing task 2 cover working files (candidate lists, contact sheets)
 backend/scripts/vocabCovers/web/

@@ -16,7 +16,7 @@ const only = process.argv[2] ? new RegExp(process.argv[2], 'i') : null;
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+  const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' /* botGuard 403s HeadlessChrome */ });
   const page = await ctx.newPage();
   const consoleErrors = [];
   page.on('pageerror', e => consoleErrors.push(String(e)));
