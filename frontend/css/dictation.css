@@ -1,0 +1,164 @@
+/* dictation.html — Luyện Dictation */
+body { background: var(--bg); }
+.dict-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── Picker screen ── */
+.dict-picker-head { margin-bottom: 20px; }
+.dict-picker-head h1 { font-size: var(--fs-h2); font-weight: 800; color: var(--text); margin: 0 0 6px; }
+.dict-picker-head p { color: var(--text2); font-size: var(--fs-body-sm); margin: 0; }
+.dict-search { position: relative; max-width: 420px; margin-bottom: 16px; }
+.dict-search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
+.dict-search input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-pill); background: var(--surface);
+  color: var(--text); font-family: inherit; font-size: 14px; padding: 10px 16px 10px 38px;
+}
+.dict-search input:focus { outline: none; border-color: var(--brand); }
+.dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.dict-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; gap: 8px;
+}
+.dict-card:hover { border-color: var(--brand); box-shadow: var(--shadow); transform: translateY(-2px); }
+.dict-card-badges { display: flex; gap: 6px; align-items: center; }
+.dict-badge {
+  font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill);
+  background: var(--brand-light); color: var(--brand);
+}
+.dict-card-title { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.35; }
+.dict-card-meta { font-size: 12px; color: var(--text3); display: flex; gap: 12px; }
+.dict-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+.dict-empty i { font-size: 32px; margin-bottom: 10px; display: block; }
+
+/* ── Practice screen ── */
+#screen-practice { display: none; }
+#screen-practice.active { display: block; }
+#screen-list.hidden { display: none; }
+.dict-practice-top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.dict-back-btn {
+  background: var(--surface2); border: none; color: var(--text2); width: 36px; height: 36px;
+  border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dict-back-btn:hover { background: var(--border); }
+.dict-practice-title { font-size: 17px; font-weight: 800; color: var(--text); }
+.dict-practice-sub { font-size: 12px; color: var(--text3); }
+
+.dict-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start; }
+@media (max-width: 800px) { .dict-layout { grid-template-columns: 1fr; } }
+
+.dict-sidebar {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; position: sticky; top: calc(var(--nav-height, 64px) + 20px);
+}
+.dict-sidebar-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text3); margin-bottom: 10px; cursor: pointer; }
+.dict-num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 340px; overflow-y: auto; }
+.dict-num-btn {
+  width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text2); font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.dict-num-btn.current { background: var(--brand); border-color: var(--brand); color: #fff; }
+.dict-num-btn.done { background: var(--success-light); border-color: var(--success); color: var(--success); }
+.dict-num-btn.current.done { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* .dict-sidebar's position:sticky above makes sense in the desktop
+   side-by-side layout (stays visible while .dict-main scrolls next to
+   it), but once .dict-layout collapses to a single column below, the
+   sidebar stacks ABOVE .dict-main in normal flow — sticky then pins it
+   to the top of the screen as the student scrolls past it, eating
+   screen space and, combined with its own internal max-height scroll,
+   creating a confusing nested-scroll trap (student-reported mobile UI
+   bug). Placed AFTER the base rules above so it wins the cascade at
+   this breakpoint instead of being overridden by them. */
+@media (max-width: 800px) {
+  .dict-sidebar { position: static; top: auto; }
+  .dict-num-grid { max-height: none; overflow-y: visible; }
+}
+
+.dict-main { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.dict-nav-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.dict-nav-arrow { background: none; border: none; color: var(--text2); font-size: 16px; cursor: pointer; padding: 4px 8px; }
+.dict-nav-arrow:disabled { opacity: .3; cursor: default; }
+.dict-counter { font-weight: 800; color: var(--text); font-size: 15px; }
+.dict-word-count { margin-left: auto; font-size: 12px; color: var(--text3); background: var(--surface2); padding: 3px 10px; border-radius: var(--radius-pill); }
+
+.dict-audio-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.dict-play-btn {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--brand); color: #fff; border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+}
+.dict-play-btn:hover { background: var(--brand-dark); }
+.dict-restart-btn {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); color: var(--text2); border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dict-progress-wrap { flex: 1; height: 5px; background: var(--surface2); border-radius: var(--radius-pill); overflow: hidden; }
+.dict-progress-fill { height: 100%; background: var(--brand); width: 0%; transition: width .1s linear; }
+.dict-time { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 76px; text-align: right; }
+.dict-speed-btn {
+  background: var(--surface2); border: none; color: var(--text2); font-size: 12px; font-weight: 700;
+  border-radius: var(--radius-pill); padding: 6px 10px; cursor: pointer; flex-shrink: 0;
+}
+
+.dict-input {
+  width: 100%; min-height: 90px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); resize: vertical;
+}
+.dict-input:focus { outline: none; border-color: var(--brand); }
+.dict-hint-row { font-size: 12px; color: var(--text3); margin: 8px 0 14px; }
+.dict-hint-row kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: inherit; }
+
+.dict-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.dict-btn { border: none; border-radius: var(--radius-sm); padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.dict-btn-ghost { background: var(--surface2); color: var(--text2); }
+.dict-btn-ghost:hover { background: var(--border); }
+.dict-btn-primary { background: var(--brand); color: #fff; }
+.dict-btn-primary:hover { background: var(--brand-dark); }
+.dict-btn-primary:disabled { opacity: .5; cursor: default; }
+
+.dict-result { margin-top: 18px; padding: 16px; border-radius: var(--radius-sm); display: none; }
+.dict-result.show { display: block; }
+.dict-result.correct { background: var(--success-light); }
+.dict-result.wrong { background: var(--danger-light); }
+.dict-result-label { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.dict-result.correct .dict-result-label { color: var(--success); }
+.dict-result.wrong .dict-result-label { color: var(--danger); }
+.dict-diff { font-size: 16px; line-height: 1.8; }
+/* Wrong answer: the student's OWN words, wrong ones in red (shaking, like
+   Task 2's Dịch câu drill), ＿ where a word is missing — never the answer. */
+.dict-diff .w-ok { color: var(--text); }
+.dict-diff .w-bad, .dict-diff .w-gap {
+  display: inline-block; color: var(--danger); font-weight: 700;
+  background: rgba(220, 38, 38, .1); border-bottom: 2px solid var(--danger);
+  border-radius: 4px; padding: 0 4px; animation: dictShake .4s ease;
+}
+.dict-diff .w-gap { letter-spacing: 1px; }
+.dict-shake { animation: dictShake .4s ease; border-color: var(--danger) !important; }
+@keyframes dictShake {
+  10%,90% { transform: translateX(-2px); } 20%,80% { transform: translateX(4px); }
+  30%,50%,70% { transform: translateX(-6px); } 40%,60% { transform: translateX(6px); }
+}
+@media (prefers-reduced-motion: reduce) { .dict-diff .w-bad, .dict-diff .w-gap, .dict-shake { animation: none; } }
+.dict-correct-en { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.6; }
+.dict-vi { margin-top: 8px; font-size: 14.5px; color: var(--text2); line-height: 1.6; }
+.dict-vi b { color: var(--success); font-weight: 700; }
+
+.dict-script-toggle {
+  margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;
+}
+.dict-script-toggle-label { font-size: 14px; font-weight: 700; color: var(--text); }
+.dict-script-body { display: none; margin-top: 12px; }
+.dict-script-body.show { display: block; }
+.dict-hint-count { display: inline-block; background: var(--surface2, #f3f4f6); color: var(--text2, #4b5563); border-radius: 20px; padding: 3px 12px; font-weight: 700; font-size: 12.5px; margin-bottom: 8px; }
+.dict-hint-pattern { font-family: 'Courier New', monospace; letter-spacing: 1px; font-size: 15px; color: var(--text3, #9ca3af); font-weight: 700; line-height: 1.8; }
+.dict-hint-step { font-size: 12px; font-weight: 700; color: var(--text3); margin: 0 0 6px; }
+.dict-hint2 { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.dict-hint2-btn {
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-pill);
+  padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.dict-hint2-btn:hover { border-color: var(--brand); color: var(--brand); }
+.dict-hint-full { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.6; }
+
+.dict-session-stat { font-size: 12px; color: var(--text3); text-align: center; margin-top: 10px; }
+.dict-loading { text-align: center; padding: 80px 20px; color: var(--text3); }
+.dict-loading i { font-size: 26px; margin-bottom: 10px; display: block; }

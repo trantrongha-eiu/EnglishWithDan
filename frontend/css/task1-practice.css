@@ -1,0 +1,228 @@
+/* task1-practice.html — IELTS Task 1 Practice */
+/* ── Quit modal ── */
+.wp-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000}
+.wp-quit-overlay.hidden{display:none}
+.wp-quit-box{background:#fff;border-radius:16px;width:320px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.wp-quit-top{background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);padding:32px 24px 20px;text-align:center}
+.wp-quit-mascot{font-size:48px;line-height:1}
+.wp-quit-title{font-size:17px;font-weight:800;color:#92400e;margin:12px 0 6px}
+.wp-quit-sub{font-size:13px;color:#6b7280;line-height:1.5}
+.wp-quit-actions{padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+.wp-quit-continue{background:#16a34a;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.wp-quit-continue:hover{background:#15803d}
+.wp-quit-leave{background:none;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
+.wp-quit-leave:hover{border-color:#e53935;color:#e53935}
+[data-theme="dark"] .wp-quit-box{background:var(--surface, #0d0d0d)}
+[data-theme="dark"] .wp-quit-top{background:linear-gradient(135deg,#1c2618 0%,#2a3820 100%)}
+[data-theme="dark"] .wp-quit-title{color:#fbbf24}
+[data-theme="dark"] .wp-quit-leave{border-color:var(--border2, #333333);color:#9ca3af}
+
+/* ── Stop button ── */
+.wp-stop-btn{background:none;border:1.5px solid #d1d5db;color:#9ca3af;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:border-color .2s,color .2s}
+.wp-stop-btn:hover{border-color:#e53935;color:#e53935}
+[data-theme="dark"] .wp-stop-btn{border-color:var(--border2, #333333);color:#64748b}
+
+/* ── Test countdown timer ── */
+.wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
+.wp-test-timer.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+.wp-test-timer.danger{background:#fff1f2;border-color:#fecaca;color:#dc2626;animation:timerPulse .8s ease-in-out infinite}
+@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.5}}
+[data-theme="dark"] .wp-test-timer{background:#14532d;border-color:#166534;color:#86efac}
+[data-theme="dark"] .wp-test-timer.warn{background:#431407;border-color:#9a3412;color:#fdba74}
+[data-theme="dark"] .wp-test-timer.danger{background:#450a0a;border-color:#7f1d1d;color:#fca5a5}
+
+/* ── XP float ── */
+@keyframes wpXpFloat{0%{opacity:1;transform:translateY(0) scale(1)}70%{opacity:1;transform:translateY(-38px) scale(1.15)}100%{opacity:0;transform:translateY(-56px) scale(.85)}}
+.wp-xp-float{position:fixed;pointer-events:none;z-index:9998;font-size:14px;font-weight:800;color:#b45309;animation:wpXpFloat 1.3s ease-out forwards}
+
+/* ── Combo badge ── */
+.wp-combo-badge{display:inline-flex;align-items:center;gap:4px;background:#fff7ed;color:#c2410c;border:1.5px solid #fed7aa;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;animation:comboAppear .3s ease}
+.wp-combo-badge.hidden{display:none}
+@keyframes comboAppear{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+[data-theme="dark"] .wp-combo-badge{background:#431407;border-color:#9a3412;color:#fdba74}
+
+/* ── Skip button ── */
+.wp-skip-btn{background:none;border:1.5px solid #d1d5db;color:#9ca3af;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:border-color .2s,color .2s}
+.wp-skip-btn:hover{border-color:#f59e0b;color:#d97706}
+.wp-skip-btn.hidden{display:none}
+[data-theme="dark"] .wp-skip-btn{border-color:var(--border2, #333333);color:#6b7280}
+
+/* ── Welcome ── */
+.wp-state-welcome{text-align:center;padding:28px 16px 20px;max-width:600px;margin:0 auto}
+.wp-welcome-icon{font-size:52px;line-height:1;margin-bottom:10px}
+.wp-welcome-title{font-size:21px;font-weight:800;color:#111827;margin:0 0 8px}
+.wp-welcome-sub{font-size:14px;color:#6b7280;line-height:1.6;margin:0 0 24px}
+.wp-welcome-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;text-align:left}
+.wp-welcome-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px}
+.wp-welcome-card-icon{font-size:22px;margin-bottom:6px}
+.wp-welcome-card-title{font-size:13px;font-weight:700;color:#111827;margin-bottom:4px}
+.wp-welcome-card-desc{font-size:12px;color:#6b7280;line-height:1.5}
+.wp-welcome-types{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px 16px;margin-bottom:22px}
+.wp-welcome-types-lbl{font-size:12px;font-weight:700;color:#0369a1;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.wp-welcome-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.wp-welcome-chips span{background:#fff;border:1px solid #bae6fd;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;color:#0369a1}
+.wp-welcome-start{background:linear-gradient(135deg,#e53935 0%,#ff6b6b 100%);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(229,57,53,.35)}
+.wp-welcome-start:hover{opacity:.9;transform:translateY(-1px)}
+.wp-welcome-hint{font-size:12px;color:#9ca3af;margin-top:10px}
+@media(max-width:480px){.wp-welcome-cards{grid-template-columns:1fr}}
+[data-theme="dark"] .wp-welcome-title{color:#f1f5f9}
+[data-theme="dark"] .wp-welcome-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333)}
+[data-theme="dark"] .wp-welcome-card-title{color:#f1f5f9}
+[data-theme="dark"] .wp-welcome-types{background:#0c1e30;border-color:#1e4060}
+[data-theme="dark"] .wp-welcome-types-lbl{color:#7dd3fc}
+[data-theme="dark"] .wp-welcome-chips span{background:#0f2d45;border-color:#1e4060;color:#7dd3fc}
+
+/* ── Multiple choice ── */
+.t1-mc-options{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.t1-mc-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;width:100%}
+.t1-mc-option:hover{border-color:#3d8bff;background:#f0f7ff}
+.t1-mc-option.selected{border-color:#3d8bff;background:#eff6ff;font-weight:600}
+.t1-mc-option.correct{border-color:#16a34a;background:#dcfce7}
+.t1-mc-option.wrong{border-color:#dc2626;background:#fee2e2}
+.t1-mc-option .t1-opt-letter{width:22px;height:22px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+.t1-mc-option.selected .t1-opt-letter{background:#3d8bff;color:#fff}
+.t1-mc-option.correct .t1-opt-letter{background:#16a34a;color:#fff}
+.t1-mc-option.wrong .t1-opt-letter{background:#dc2626;color:#fff}
+[data-theme="dark"] .t1-mc-option{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#f1f5f9}
+[data-theme="dark"] .t1-mc-option:hover{border-color:#3d8bff;background:#0c1e30}
+[data-theme="dark"] .t1-mc-option.selected{border-color:#3d8bff;background:#0c1e30}
+[data-theme="dark"] .t1-mc-option .t1-opt-letter{background:var(--border2, #333333);color:#94a3b8}
+
+/* ── Skill tabs in sidebar ── */
+.t1-skill-tab{background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;transition:all .2s;text-align:left;width:100%}
+.t1-skill-tab.active{border-color:#e53935;color:#e53935;background:#fff0f0}
+.t1-skill-tab:hover{border-color:#e53935;color:#e53935}
+[data-theme="dark"] .t1-skill-tab{border-color:var(--border2, #333333);color:#64748b}
+[data-theme="dark"] .t1-skill-tab.active{border-color:#f87171;color:#f87171;background:#2d1111}
+.t1-skill-list{display:flex;flex-direction:column;gap:6px}
+.t1-skill-redo-pill{display:inline-flex;align-items:center;gap:3px;background:#10b981;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;flex-shrink:0;margin-left:6px}
+
+/* ── Data context box ── */
+.t1-data-ctx{background:#fefce8;border:1.5px solid #fde047;border-radius:10px;padding:10px 14px;margin:8px 0;font-size:13px;color:#713f12}
+.t1-data-ctx-label{font-weight:700;font-size:11px;color:#92400e;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.t1-data-ctx-note{font-size:12px;color:#b45309;margin-top:5px;padding-top:5px;border-top:1px dashed #fde68a;font-weight:600}
+[data-theme="dark"] .t1-data-ctx{background:#1c1400;border-color:#854d0e;color:#fcd34d}
+[data-theme="dark"] .t1-data-ctx-note{color:#fbbf24;border-color:#78350f}
+
+/* ── Error correction display ── */
+.t1-error-text{font-family:monospace;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.8;color:#92400e;margin:8px 0}
+[data-theme="dark"] .t1-error-text{background:#1c0a00;border-color:#9a3412;color:#fdba74}
+
+/* ── Explanation box ── */
+.t1-explanation{background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:12px 14px;margin:8px 0;font-size:13px}
+.t1-explanation .t1-exp-title{font-weight:700;color:#15803d;margin-bottom:6px}
+.t1-explanation .t1-exp-body{color:#166534;line-height:1.6}
+[data-theme="dark"] .t1-explanation{background:#0f2d1a;border-color:#166534}
+[data-theme="dark"] .t1-explanation .t1-exp-title{color:#4ade80}
+[data-theme="dark"] .t1-explanation .t1-exp-body{color:#86efac}
+
+/* ── Answer diff ── */
+.wp-diff-ok{color:#16a34a;font-weight:600}
+.wp-diff-err{color:#dc2626;text-decoration:underline dotted;font-weight:600}
+[data-theme="dark"] .wp-diff-ok{color:#4ade80}
+[data-theme="dark"] .wp-diff-err{color:#f87171}
+
+/* ── Hints row ── */
+.t1-hints-row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px;align-items:center;min-height:24px}
+.t1-hint-label{font-size:12px;color:#9ca3af}
+.t1-hint-chip{background:#fef3c7;border:1px solid #fde68a;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#92400e;cursor:default}
+[data-theme="dark"] .t1-hint-chip{background:#451a03;border-color:#78350f;color:#fcd34d}
+
+/* ── Answer word-count / letter-pattern hint ── */
+.t1-answer-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px;font-size:12px}
+.t1-answer-hint-count{background:#f3f4f6;color:#4b5563;border-radius:20px;padding:2px 10px;font-weight:700;white-space:nowrap}
+.t1-answer-hint-pattern{font-family:'Courier New',monospace;letter-spacing:1px;color:#9ca3af;font-weight:700}
+[data-theme="dark"] .t1-answer-hint-count{background:var(--surface, #0d0d0d);color:#94a3b8}
+[data-theme="dark"] .t1-answer-hint-pattern{color:#64748b}
+
+/* ── Grammar context note (shown before answer) ── */
+.t1-ctx-note{background:#f0f9ff;border-left:3px solid #3d8bff;border-radius:0 8px 8px 0;padding:7px 12px;margin:8px 0 10px;font-size:12px;color:#1e40af;line-height:1.5}
+.t1-ctx-note-lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#3d8bff;margin-bottom:2px}
+[data-theme="dark"] .t1-ctx-note{background:#0c1e30;border-color:#3d8bff;color:#93c5fd}
+[data-theme="dark"] .t1-ctx-note-lbl{color:#7dd3fc}
+
+/* ── Sidebar toggle switches ── */
+.t1-settings-section{margin-top:4px;padding:10px 0 2px;border-top:1px solid #f3f4f6}
+[data-theme="dark"] .t1-settings-section{border-color:var(--surface, #0d0d0d)}
+.t1-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
+.t1-toggle-row:hover .t1-toggle-label{color:#e53935}
+.t1-toggle-label{font-size:12px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
+[data-theme="dark"] .t1-toggle-label{color:#94a3b8}
+.t1-switch{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+.t1-switch input{opacity:0;width:0;height:0}
+.t1-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:18px;transition:.2s}
+.t1-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.t1-switch input:checked+.t1-slider{background:#3d8bff}
+.t1-switch input:checked+.t1-slider:before{transform:translateX(16px)}
+[data-theme="dark"] .t1-slider{background:var(--border2, #333333)}
+
+/* ── Auto-next countdown bar ── */
+@keyframes t1CountdownBar{from{width:100%}to{width:0%}}
+.t1-countdown-bar{height:3px;background:#3d8bff;border-radius:2px;margin-top:6px;animation:t1CountdownBar var(--cd-dur,1.5s) linear forwards}
+
+/* ── Mobile sheet: skill tabs go horizontal ── */
+.wp-sheet-filters .t1-skill-list{flex-direction:row;flex-wrap:wrap;gap:6px}
+.wp-sheet-filters .t1-skill-tab{width:auto;padding:6px 12px;font-size:12px}
+
+/* ── Count badge (số câu bên cạnh level/skill) ── */
+.wp-level-btn,.t1-skill-tab{display:flex;align-items:center;justify-content:space-between}
+.wp-lc-badge{background:rgba(0,0,0,.08);color:inherit;border-radius:20px;padding:0 7px;font-size:10px;font-weight:700;line-height:17px;flex-shrink:0}
+.wp-level-btn.active .wp-lc-badge,.t1-skill-tab.active .wp-lc-badge{background:rgba(255,255,255,.3)}
+[data-theme="dark"] .wp-lc-badge{background:rgba(255,255,255,.12)}
+
+/* ── History button ── */
+.t1-hist-open-btn{background:none;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 22px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;margin-top:8px}
+.t1-hist-open-btn:hover{border-color:#e53935;color:#e53935;background:#fff0f0}
+[data-theme="dark"] .t1-hist-open-btn{border-color:var(--border2, #333333);color:#64748b}
+[data-theme="dark"] .t1-hist-open-btn:hover{border-color:#f87171;color:#f87171;background:#2d1111}
+
+/* ── History modal ── */
+.t1-hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px}
+.t1-hist-overlay.hidden{display:none}
+.t1-hist-modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.t1-hist-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6}
+.t1-hist-header h3{margin:0;font-size:16px;font-weight:800;color:#111827}
+.t1-hist-close{background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer;line-height:1;padding:4px}
+.t1-hist-close:hover{color:#374151}
+.t1-hist-body{overflow-y:auto;padding:16px 20px;flex:1}
+.t1-hist-summary{display:flex;gap:10px;margin-bottom:16px}
+.t1-hist-stat{flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6}
+.t1-hist-num{font-size:20px;font-weight:800;color:#111827}
+.t1-hist-lbl{font-size:11px;color:#9ca3af;margin-top:2px}
+.t1-hist-row{padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa}
+.t1-hist-row-date{font-size:11px;color:#9ca3af;margin-bottom:3px}
+.t1-hist-row-skills{font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+.t1-hist-row-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.t1-hist-row-count{font-size:12px;color:#6b7280}
+.t1-hist-row-acc{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px}
+.t1-hist-row-acc.good{background:#dcfce7;color:#15803d}
+.t1-hist-row-acc.mid{background:#fef3c7;color:#92400e}
+.t1-hist-row-acc.bad{background:#fee2e2;color:#b91c1c}
+.t1-hist-row-xp{font-size:12px;color:#d97706;font-weight:700;margin-left:auto}
+.t1-hist-empty{text-align:center;padding:40px 20px;color:#9ca3af}
+.t1-hist-empty-icon{font-size:40px;margin-bottom:10px}
+[data-theme="dark"] .t1-hist-modal{background:var(--surface, #0d0d0d)}
+[data-theme="dark"] .t1-hist-header{border-color:var(--border2, #333333)}
+[data-theme="dark"] .t1-hist-header h3{color:#f1f5f9}
+[data-theme="dark"] .t1-hist-close{color:#64748b}
+[data-theme="dark"] .t1-hist-close:hover{color:#f1f5f9}
+[data-theme="dark"] .t1-hist-stat{background:var(--bg, #000000);border-color:var(--border2, #333333)}
+[data-theme="dark"] .t1-hist-num{color:#f1f5f9}
+[data-theme="dark"] .t1-hist-row{background:var(--bg, #000000);border-color:var(--border2, #333333)}
+[data-theme="dark"] .t1-hist-row-skills{color:#94a3b8}
+[data-theme="dark"] .t1-hist-row-count{color:#64748b}
+
+/* ── MC options after answer – dark mode ── */
+[data-theme="dark"] .t1-mc-option.correct{border-color:#16a34a;background:#14532d;color:#f1f5f9}
+[data-theme="dark"] .t1-mc-option.wrong{border-color:#dc2626;background:#450a0a;color:#f1f5f9}
+[data-theme="dark"] .t1-mc-option.correct .t1-opt-letter{background:#16a34a;color:#fff}
+[data-theme="dark"] .t1-mc-option.wrong .t1-opt-letter{background:#dc2626;color:#fff}
+
+/* ── Desktop stats widget (Task 1 override: 3 boxes in a row) ── */
+#t1-stats-widget .wp-stats-row{flex-wrap:nowrap}
+
+/* ── wp-state-exercise wrapper ── */
+.wp-state-exercise{display:block}
+
+/* ── Skill list gap sync ── */
+.t1-settings-section{margin-top:8px}
