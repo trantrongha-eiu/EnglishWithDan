@@ -469,6 +469,27 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
     expect(res.body.work.sections.intro).toBe('');
   });
 
+  test('a draft saved before the lesson copy existed is still kept when the next session replaces it', async () => {
+    const Task2Draft = require('../../models/Task2Draft');
+    const topic = await createTask2Topic({ questions: [
+      question({ type: 'translation', questionText: 'Dịch 1', correctAnswer: 'One.' }),
+      question({ type: 'translation', questionText: 'Dịch 2', correctAnswer: 'Two.' }),
+    ] });
+    const [q1, q2] = topic.questions.map(q => String(q._id));
+    const user = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(user)}`;
+    const topicId = String(topic._id);
+    await Task2Draft.create({ userId: user._id, topicId, questionIds: [q1, q2],
+      sessionAttempts: [{ questionId: q1, userAnswer: 'One.', isCorrect: true, type: 'translation' }] });
+
+    await request(app).post('/api/task2/draft').set('Authorization', auth)
+      .send({ topicId, mode: 'practice', questionIds: [q2], sessionAttempts: [{ questionId: q2, userAnswer: 'Two.', isCorrect: true, type: 'translation' }] });
+    await request(app).delete(`/api/task2/draft/${topicId}`).set('Authorization', auth);
+
+    const res = await request(app).get(`/api/task2/lesson/${topicId}`).set('Authorization', auth);
+    expect(res.body.sentences.map(s => s.en)).toEqual(['One.', 'Two.']);
+  });
+
   test('malformed body / unknown topic are rejected', async () => {
     const user = await createPremiumStudent();
     const auth = `Bearer ${signTokenFor(user)}`;

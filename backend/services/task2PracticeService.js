@@ -568,11 +568,11 @@ const MAX_DRAFTS_PER_USER = 12;
 
 async function saveDraft(userId, body) {
   const { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect } = body;
-  await Task2Draft.findOneAndUpdate(
+  const prevDraft = await Task2Draft.findOneAndUpdate(
     { userId, topicId },
     { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect, savedAt: new Date() },
-    { upsert: true, new: true }
-  );
+    { upsert: true, returnDocument: 'before', projection: { sessionAttempts: 1 } }
+  ).lean();
   // Trim to the most-recently-saved N (the one just upserted has the newest
   // savedAt, so it's always kept).
   const stale = await Task2Draft.find({ userId })
@@ -581,7 +581,10 @@ async function saveDraft(userId, body) {
     .select('_id')
     .lean();
   if (stale.length) await Task2Draft.deleteMany({ _id: { $in: stale.map(d => d._id) } });
-  await _keepLessonSentences(userId, topicId, sessionAttempts);
+  // The draft being replaced goes first, so answers it held that the new
+  // session doesn't (a draft saved before this copy existed) are kept too.
+  const prevAttempts = (prevDraft && prevDraft.sessionAttempts) || [];
+  await _keepLessonSentences(userId, topicId, [...prevAttempts, ...(sessionAttempts || [])]);
 }
 
 // Copies the sentence-building answers of a draft save into the lesson work,
