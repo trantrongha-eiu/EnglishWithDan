@@ -332,3 +332,6 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
 .icon-sm { font-size: 14px; }
 .icon-md { font-size: 18px; }
 .icon-lg { font-size: 24px; }
+
+/* ── Premium-locked practice card button (Reading/Listening "Bài lẻ" lists) ── */
+.btn-upgrade-lock { background: linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828)) !important; color:#fff !important; }
