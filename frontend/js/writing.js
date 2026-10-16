@@ -1664,7 +1664,7 @@ function _loadHtml2Canvas() {
   if (!_h2cPromise) {
     _h2cPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'lib/html2canvas/html2canvas.min.js?v=e87e550794';
+      s.src = '/lib/html2canvas/html2canvas.min.js?v=e87e550794';
       s.onload  = () => window.html2canvas ? resolve(window.html2canvas) : reject(new Error('html2canvas'));
       s.onerror = () => { _h2cPromise = null; reject(new Error('Không tải được thư viện xuất ảnh')); };
       document.head.appendChild(s);

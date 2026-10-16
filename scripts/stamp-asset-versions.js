@@ -14,8 +14,10 @@
 // file's own hash includes the stamped refs inside it, so the passes repeat
 // until nothing changes. Only refs to files that exist under frontend/ are
 // touched; sw.js is left alone (the browser update-checks it on its own).
+// Runs scripts/build-bundles.js between two stamping passes, so the bundles
+// copy their sources' final refs and the pages then get the bundles' hashes.
 //
-//   node scripts/stamp-asset-versions.js          rewrite in place
+//   node scripts/stamp-asset-versions.js          rebuild bundles + rewrite in place
 //   node scripts/stamp-asset-versions.js --check  list stale refs, exit 1 if any
 'use strict';
 
@@ -96,16 +98,26 @@ module.exports = { stamp, ROOT };
 
 if (require.main === module) {
   const check = process.argv.includes('--check');
-  const stale = stamp({ write: !check });
+  const { build } = require('./build-bundles');
   if (check) {
+    const staleBundles = build({ write: false });
+    for (const b of staleBundles) console.log(`${b}: stale bundle`);
+    const stale = stamp({ write: false });
     for (const s of stale) console.log(`${s.file}: ${s.ref} ${s.from} -> ${s.to}`);
-    if (stale.length) {
-      console.error(`\n${stale.length} stale asset version(s). Run: node scripts/stamp-asset-versions.js`);
+    if (stale.length || staleBundles.length) {
+      console.error(`
+${stale.length} stale asset version(s), ${staleBundles.length} stale bundle(s). Run: node scripts/stamp-asset-versions.js`);
       process.exit(1);
     }
-    console.log('All asset versions match their file contents.');
+    console.log('All bundles and asset versions match their sources.');
   } else {
+    // Stamp the sources first so the bundles copy their final ?v= refs,
+    // then stamp again so the pages pick up the bundles' new hashes.
+    const stale = stamp({ write: true });
+    const rebuilt = build({ write: true });
+    stale.push(...stamp({ write: true }));
     const files = new Set(stale.map((s) => s.file));
+    if (rebuilt.length) console.log(`Rebuilt ${rebuilt.join(', ')}.`);
     console.log(`Stamped ${stale.length} ref(s) in ${files.size} file(s).`);
   }
 }

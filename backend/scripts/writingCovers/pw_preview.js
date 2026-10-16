@@ -24,7 +24,7 @@ const FE = path.join(__dirname, '..', '..', '..', 'frontend');
     await page.fill('#password', process.env.PW_TEST_PASS);
     await Promise.all([page.waitForNavigation({ timeout: 30000 }).catch(() => {}), page.click('#loginForm button[type=submit]')]);
     await page.route(/\/js\/writing\.js/, r => r.fulfill({ path: path.join(FE, 'js', 'writing.js'), contentType: 'application/javascript' }));
-    await page.route(/\/writing\.css/, r => r.fulfill({ path: path.join(FE, 'writing.css'), contentType: 'text/css' }));
+    await page.route(/\/writing\.css/, r => r.fulfill({ path: path.join(FE, 'css', 'writing.css'), contentType: 'text/css' }));
     await page.route('**/api/writing/practice/tasks**', async r => {
       const res = await r.fetch(); const j = await res.json();
       (j.tasks || []).forEach(t => { t.thumbnail = thumbs.get(String(t._id)) || ''; });
