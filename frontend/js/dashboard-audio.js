@@ -42,6 +42,10 @@ function syncSlowSpeechBtns() {
     document.querySelectorAll('.js-slow-speech-btn').forEach(b => {
         b.classList.toggle('active', _slowSpeech);
         b.setAttribute('aria-pressed', _slowSpeech ? 'true' : 'false');
+        // The persisted state must be obvious, or a learner who once turned
+        // it on just hears "slow audio" with no idea why.
+        b.textContent = _slowSpeech ? '🐢 Đang đọc chậm' : '🐢 Đọc chậm';
+        b.title = _slowSpeech ? 'Bấm để về tốc độ bình thường' : 'Đọc chậm lại để nghe rõ hơn';
     });
 }
 
@@ -69,7 +73,7 @@ async function speakWord(word) {
         window.speechSynthesis.cancel();
         const utt = new SpeechSynthesisUtterance(String(word).trim());
         utt.lang = 'en-US';
-        utt.rate = _slowSpeech ? 0.6 : 0.85;
+        utt.rate = _slowSpeech ? 0.8 : 1;
         window.speechSynthesis.speak(utt);
     }
 }

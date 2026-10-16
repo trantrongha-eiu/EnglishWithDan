@@ -27,8 +27,10 @@
   var PROBE_TIMEOUT_MS = 3000;
   var DICT_TIMEOUT_MS = 1500; // dictionaryapi.dev is often slow / down (522s)
   var LOOKUP_BUDGET_MS = 1500; // longest a tap waits for a recording before TTS
-  var RATE_TTS = 0.85, RATE_TTS_SLOW = 0.6;
-  var RATE_MP3_SLOW = 0.75;   // recordings play at natural speed unless slow
+  // TTS below ~0.75 drags and slurs the sounds (worst on phrases, which
+  // always go through TTS), so "slow" is only a mild slow-down.
+  var RATE_TTS = 1, RATE_TTS_SLOW = 0.8;
+  var RATE_MP3_SLOW = 0.85;   // recordings play at natural speed unless slow
 
   var _urlCache = new Map();  // normalised word → recording URL, or '' (none → TTS)
   var STORE_KEY = 'ews_word_audio_v1', STORE_MAX = 3000;
