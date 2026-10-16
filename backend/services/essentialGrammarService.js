@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
 const EssentialGrammarAttempt = require('../models/EssentialGrammarAttempt');
 const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog');
+const { keepStreakAlive } = require('../utils/streak');
 
 const MAX_WRONG_QUESTIONS_LOGGED = 50; // a lesson realistically has far fewer than this many gradeable items
 
@@ -74,6 +75,7 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
       userId, lessonId, score, correct, wrong, total, timeSpent: spent, wrongQuestions: safeWrongQuestions,
     }),
   ]);
+  await keepStreakAlive(userId);
   return attempt;
 }
 

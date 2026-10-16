@@ -10,6 +10,7 @@
 const mongoose = require('mongoose');
 const SentenceStructureGroup = require('../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
+const { keepStreakAlive } = require('../utils/streak');
 const AdvSentenceDraft = require('../models/AdvSentenceDraft');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
 
@@ -247,6 +248,7 @@ async function saveAttempt(userId, body) {
     scorePercentage: score,
   });
   await attempt.save();
+  await keepStreakAlive(userId);
   return attempt;
 }
 

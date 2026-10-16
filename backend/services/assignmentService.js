@@ -159,6 +159,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   const teachers = await User.find({ _id: { $in: classes.map((c) => c.teacherId) } }).select('username firstName lastName').lean();
   const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
 
+  await rcs.refreshResourceSnapshots(assignments.flatMap((a) => a.resources));
+
   // one batched completion check across every internal item of every assignment
   const allInternal = [];
   for (const a of assignments) {

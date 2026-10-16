@@ -8,6 +8,7 @@ import { ClassProgressHero } from './classes/ClassProgress';
 import { keyLabel } from './classes/classProgressUtils';
 import ClassTuitionTab from './classes/ClassTuitionTab';
 import ClassMessageModal from './classes/ClassMessageModal';
+import { studentUrlFor, mockBundleUrls } from './classes/assignmentLinks';
 
 const MARK_OPTS = [
   { v: 'present', label: 'Có mặt', cls: 'badge-green' },
@@ -971,11 +972,7 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
   const mockItem = (data.assignment?.resources || []).find((r) => r.resourceType === 'mock_test' && r.mockBundle);
   return (
     <div style={{ padding: '10px 6px' }}>
-      {mockItem && (
-        <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 8 }}>
-          🧪 Bộ đề thi thử chung của lớp — {mockBundleSummary(mockItem)}
-        </div>
-      )}
+      <AssignmentResourceList resources={data.assignment?.resources || []} />
       <table className="table" style={{ margin: 0 }}>
         <thead><tr><th>HỌC VIÊN</th><th>HOÀN THÀNH</th>{hasVocabGoal && <th>SỔ TỪ VỰNG</th>}{mockItem && <th>THI THỬ</th>}<th>THIẾU</th><th>XONG LÚC</th><th>TRẠNG THÁI</th></tr></thead>
         <tbody>
@@ -1009,6 +1006,71 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
   );
 }
 
+// What this assignment gave the class — every name opens the exact page the
+// students land on, in a new tab (assignmentLinks.studentUrlFor).
+const linkStyle = { color: 'var(--purple)', fontWeight: 600, textDecoration: 'none' };
+function NewTabLink({ href, children }) {
+  if (!href) return <span style={{ fontWeight: 600 }}>{children}</span>;
+  return <a href={href} target="_blank" rel="noopener noreferrer" style={linkStyle} title="Mở bài này ở tab mới (trang học sinh)">{children} ↗</a>;
+}
+
+function AssignmentResourceList({ resources }) {
+  if (!resources.length) return null;
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', marginBottom: 6 }}>NỘI DUNG BÀI TẬP</div>
+      <ol style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+        {resources.map((r) => (
+          <li key={String(r._id)}>
+            <AssignmentResourceLine r={r} />
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function AssignmentResourceLine({ r }) {
+  const tag = (t) => <span className="badge badge-gray" style={{ marginRight: 6 }}>{t}</span>;
+  if (r.kind === 'internal' && r.resourceType === 'mock_test') {
+    const b = r.mockBundle;
+    if (!b) {
+      return <>{tag(RES_LABEL.mock_test)}<NewTabLink href={studentUrlFor(r)}>{r.label || 'Thi thử'}</NewTabLink> <span style={{ color: 'var(--text3)' }}>— đề ngẫu nhiên cho từng học sinh (kiểu cũ)</span></>;
+    }
+    const urls = mockBundleUrls(b);
+    return (
+      <>
+        {tag(`🧪 ${RES_LABEL.mock_test}`)}<span style={{ color: 'var(--text2)' }}>cả lớp chung 1 bộ đề:</span>
+        {MOCK_SKILLS.map((s) => (
+          <span key={s.key} style={{ marginLeft: 10 }}>
+            {s.short}: <NewTabLink href={urls[s.key]}>{b[s.nameKey] || s.label}</NewTabLink>
+          </span>
+        ))}
+      </>
+    );
+  }
+  if (r.kind === 'internal') {
+    return <>{tag(RES_LABEL[r.resourceType] || r.resourceType)}<NewTabLink href={studentUrlFor(r)}>{r.label || r.resourceType}</NewTabLink></>;
+  }
+  if (r.kind === 'external') {
+    return <>{tag('Link ngoài')}<NewTabLink href={r.url}>{r.title || r.url}</NewTabLink></>;
+  }
+  if (r.kind === 'image') {
+    return (
+      <>
+        {tag('Ảnh')}<span style={{ fontWeight: 600 }}>{r.title || 'Bài tập ảnh'}</span>
+        {(r.images || []).map((im, i) => (
+          <a key={im.url || i} href={im.url} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, marginLeft: 8 }}>ảnh {i + 1} ↗</a>
+        ))}
+      </>
+    );
+  }
+  if (r.kind === 'vocab_goal') {
+    return <>{tag('Sổ từ vựng')}Học {r.wordCount} từ {r.bookSlot ? `trong Sổ ${r.bookSlot}` : 'trong 1 sổ bất kỳ (Sổ 1–5)'}</>;
+  }
+  return null;
+}
+
 // ── "Thi thử full 4 kỹ năng" — the whole class takes ONE bundle ──────────
 // The backend fixes it when the assignment is saved (assignment.controller
 // buildMockResource): any skill left on "Ngẫu nhiên" is drawn once, then
@@ -1033,7 +1095,7 @@ function MockBundlePicker({ current, onPick }) {
   useEffect(() => {
     let alive = true;
     Promise.all(MOCK_SKILLS.map((s) => {
-      const qs = new URLSearchParams({ type: s.type, limit: '300' });
+      const qs = new URLSearchParams({ type: s.type, limit: '2000' });
       if (s.type === 'speaking') qs.set('part', '2');
       return apiFetch(`/classes/resources/catalog?${qs}`).then((d) => [s.key, d.items || []]).catch(() => [s.key, []]);
     })).then((pairs) => { if (alive) setLists(Object.fromEntries(pairs)); });
@@ -1109,6 +1171,16 @@ function toDatetimeLocalValue(iso) {
 // `assignment` (optional): the full row from GET .../assignments (already
 // carries resources[] — see listAssignments' .lean() spread) to edit in
 // place instead of creating a new one.
+// Small ↗ in a picker row: preview the resource before assigning it. Sits
+// inside the row's <label>, so it must not also toggle the checkbox.
+function PreviewLink({ href }) {
+  if (!href) return null;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+      title="Xem trước bài này ở tab mới" style={{ fontSize: 12, color: 'var(--purple)', textDecoration: 'none' }}>↗</a>
+  );
+}
+
 function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const toast = useToast();
   const isEdit = !!assignment;
@@ -1117,7 +1189,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   const [deadline, setDeadline] = useState(toDatetimeLocalValue(assignment?.deadline));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
-    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, label: r.label, mockBundle: r.mockBundle })));
+    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle })));
   const [externals, setExternals] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'external')
     .map((r) => ({ url: r.url, title: r.title, description: r.description || '' })));
@@ -1162,13 +1234,14 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
     let alive = true;
     const qs = new URLSearchParams({ type: cat });
     if (search.trim()) qs.set('search', search.trim());
+    // The backend default (100) is smaller than several whole categories
+    // (375 listening sections, ~800 speaking questions) — list everything so
+    // every resource is pickable and "Chọn cả nhóm" never sees a truncated
+    // slice. 2000 is listCatalog's own ceiling (CATALOG_MAX).
+    qs.set('limit', '2000');
     if (cat === 'speaking') {
       if (speakPart) qs.set('part', speakPart);
       if (speakTopic) qs.set('topic', speakTopic);
-      // Default cap (100) can be less than a whole Part's question count —
-      // "Chọn cả nhóm" below must see every matching question, not a
-      // silently-truncated slice of them. 300 is listCatalog's own ceiling.
-      qs.set('limit', '300');
     }
     apiFetch(`/classes/resources/catalog?${qs}`)
       .then((d) => { if (alive) setCatalog(d.items || []); })
@@ -1185,7 +1258,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
       const already = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
       const additions = catalog
         .filter((item) => !already.has(keyOf(cat, item._id)))
-        .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, label: item.label }));
+        .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label }));
       return [...p, ...additions];
     });
   }
@@ -1195,7 +1268,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
     const k = keyOf(cat, item._id);
     setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
       ? p.filter((x) => keyOf(x.resourceType, x.resourceId) !== k)
-      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, label: item.label }]);
+      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label }]);
   }
   const isPicked = (item) => picked.some((x) => keyOf(x.resourceType, x.resourceId) === keyOf(cat, item._id));
 
@@ -1313,6 +1386,7 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                     <input type="checkbox" checked={isPicked(item)} onChange={() => togglePick(item)} />
                     <span style={{ flex: 1 }}>{item.label}</span>
                     {item.meta && <span style={{ fontSize: 11, color: 'var(--text3)' }}>{item.meta}</span>}
+                    <PreviewLink href={studentUrlFor({ resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode })} />
                   </label>
                 ))}
             </div>
@@ -1320,8 +1394,13 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
             {picked.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                 {picked.map((p) => (
-                  <span key={keyOf(p.resourceType, p.resourceId)} className="badge badge-blue" style={{ cursor: 'pointer' }} onClick={() => setPicked((x) => x.filter((y) => y !== p))}>
-                    {RES_LABEL[p.resourceType]}: {p.resourceType === 'mock_test' ? mockBundleSummary(p) : p.label} ✕
+                  <span key={keyOf(p.resourceType, p.resourceId)} className="badge badge-blue">
+                    {RES_LABEL[p.resourceType]}:{' '}
+                    {p.resourceType === 'mock_test'
+                      ? mockBundleSummary(p)
+                      : <a href={studentUrlFor(p) || undefined} target="_blank" rel="noopener noreferrer" title="Mở bài này ở tab mới" style={{ color: 'inherit' }}>{p.label}</a>}
+                    <button type="button" onClick={() => setPicked((x) => x.filter((y) => y !== p))} title="Bỏ bài này"
+                      style={{ marginLeft: 6, background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0 }}>✕</button>
                   </span>
                 ))}
               </div>

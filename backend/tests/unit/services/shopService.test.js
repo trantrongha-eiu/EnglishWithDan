@@ -58,6 +58,19 @@ describe('buying', () => {
     expect(r).toMatchObject({ status: 'ok', wallet: 40, owned: 1 });
   });
 
+  test('Búa Daniel goes into streakHammers (stacks with earned ones) and cannot be sold', async () => {
+    const user = await createStudent({ extra: { flameWallet: 120, flameWalletGranted: true, streakHammers: 1 } });
+    expect(await shopService.buyItem(user._id, 'danielHammer', 2)).toMatchObject({ status: 'ok', wallet: 20, owned: 3 });
+    const u = await User.findById(user._id).lean();
+    expect(u.streakHammers).toBe(3);
+    expect((u.shopItems || {}).danielHammer).toBeUndefined();
+    const state = await shopService.getState(user._id);
+    expect(state.danielHammer.count).toBe(3);
+    expect(state.items.find(i => i.key === 'danielHammer').owned).toBe(3);
+    expect((await shopService.sellItem(user._id, 'danielHammer')).status).toBe('not_sellable');
+    expect((await User.findById(user._id).lean()).streakHammers).toBe(3);
+  });
+
   test('Khiên Băng is capped at 2', async () => {
     const user = await createStudent({ extra: { flameWallet: 100, flameWalletGranted: true } });
     expect((await shopService.buyItem(user._id, 'iceShield')).status).toBe('ok');

@@ -8,6 +8,7 @@
 const mongoose = require('mongoose');
 const Task2Topic = require('../models/Task2Topic');
 const Task2Attempt = require('../models/Task2Attempt');
+const { keepStreakAlive } = require('../utils/streak');
 const Task2Template = require('../models/Task2Template');
 const Task2TypeGuide = require('../models/Task2TypeGuide');
 const Task2Draft = require('../models/Task2Draft');
@@ -441,6 +442,7 @@ async function saveAttempt(userId, body) {
     totalQuestions: verifiedTotal, correctCount: verifiedCorrect, scorePercentage: score
   });
   await attempt.save();
+  await keepStreakAlive(userId);
   return attempt;
 }
 

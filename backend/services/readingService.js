@@ -14,7 +14,7 @@ const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const User = require('../models/User');
-const { applyStreakActivity } = require('../utils/streak');
+const { applyStreakActivity, keepStreakAlive } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
@@ -665,6 +665,7 @@ async function savePractice(body, userId) {
     });
   }
 
+  await keepStreakAlive(userId);
   return attempt._id;
 }
 

@@ -223,6 +223,8 @@ exports.listAssignments = async (req, res) => {
   try {
     const list = await Assignment.find({ classId: req.classGroup._id }).sort({ createdAt: -1 }).lean();
     const enrolledCount = await ClassEnrollment.countDocuments({ classId: req.classGroup._id, removedAt: null });
+    // the editor pre-fills from these rows — show current names, not stale snapshots
+    await rcs.refreshResourceSnapshots(list.flatMap((a) => a.resources));
 
     // Completion is computed LIVE (not from the AssignmentProgress cache) so
     // the count is right even for an all-internal assignment nobody has
@@ -291,6 +293,7 @@ exports.getAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findOne({ _id: req.params.assignmentId, classId: req.classGroup._id }).lean();
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
+    await rcs.refreshResourceSnapshots(assignment.resources);
     const rows = await svc.getAssignmentProgressTable(assignment);
     res.json({ success: true, assignment, rows });
   } catch (err) {

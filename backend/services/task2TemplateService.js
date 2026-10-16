@@ -1,6 +1,7 @@
 'use strict';
 
 const Task2TemplateAttempt = require('../models/Task2TemplateAttempt');
+const { keepStreakAlive } = require('../utils/streak');
 
 async function saveAttempt({ userId, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec, level }) {
   await Task2TemplateAttempt.create({
@@ -12,6 +13,7 @@ async function saveAttempt({ userId, templateType, templateName, totalItems, cor
     timeTakenSec: timeTakenSec != null ? Number(timeTakenSec) : undefined,
     level: level === 'band6' ? 'band6' : 'band7',
   });
+  await keepStreakAlive(userId);
 }
 
 async function getHistory(userId, limit) {

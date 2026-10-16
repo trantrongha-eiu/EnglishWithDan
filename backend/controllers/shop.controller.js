@@ -9,6 +9,7 @@ const MESSAGES = {
   invalid_qty: [400, 'Số lượng không hợp lệ.'],
   already_owned: [400, 'Bạn đã có linh thú này rồi.'],
   not_owned: [400, 'Bạn chưa sở hữu linh thú này.'],
+  not_sellable: [400, 'Vật phẩm này không bán lại được.'],
   not_manual: [400, 'Vật phẩm này không dùng trực tiếp được.'],
   none_left: [400, 'Bạn không còn vật phẩm này — mua thêm ở cửa hàng nhé.'],
   already_active: [400, 'Hôm nay bạn đã đập Búa Hi Vọng rồi!'],

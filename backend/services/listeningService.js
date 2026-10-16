@@ -22,7 +22,7 @@ const logger = require('../utils/logger');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
 const User = require('../models/User');
-const { applyStreakActivity } = require('../utils/streak');
+const { applyStreakActivity, keepStreakAlive, MIN_STREAK_SENTENCES } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
@@ -506,6 +506,7 @@ async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answe
     correctCount,
     submittedAt: new Date()
   });
+  if (safeAnswers.length >= MIN_STREAK_SENTENCES) await keepStreakAlive(userId);
 
   return { attemptId: attempt._id, correctCount, totalSentences: safeAnswers.length };
 }
@@ -626,6 +627,7 @@ async function saveGapFillAttempt({ sectionId, sectionTitle, partNumber, answers
     correctCount,
     submittedAt: new Date()
   });
+  await keepStreakAlive(userId);
 
   return {
     attemptId: attempt._id,
@@ -1191,6 +1193,7 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
     userId, attemptType: 'listening-practice', attemptId: attempt._id,
     gradedAnswers, questionTypeMap,
   });
+  await keepStreakAlive(userId);
 
   return { attemptId: attempt._id, correctCount: correct, totalQuestions: gradedAnswers.length };
 }

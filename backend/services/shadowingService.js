@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ShadowingLesson = require('../models/ShadowingLesson');
 const ShadowingAttempt = require('../models/ShadowingAttempt');
 const { NotFoundError, ValidationError } = require('../errors/AppError');
+const { keepStreakAlive, MIN_STREAK_SENTENCES } = require('../utils/streak');
 
 const MODES = ['dictation', 'shadowing'];
 
@@ -72,6 +73,7 @@ async function saveAttempt(slug, { mode, answers }, userId) {
     avgScore,
     submittedAt: new Date(),
   });
+  if (safeAnswers.length >= MIN_STREAK_SENTENCES) await keepStreakAlive(userId);
   return { attemptId: attempt._id, avgScore, answered: safeAnswers.length };
 }
 

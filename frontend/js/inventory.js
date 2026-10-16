@@ -2,7 +2,7 @@
  * inventory.js — "Kho đồ" tab on profile.html (#inventory). Everything a
  * student bought in the Cửa hàng lửa (shop.html) lives here: items with
  * Dùng / Bán, linh thú with Dắt đi dạo / Cất về / Bán — plus the Búa Daniel
- * (earned, not bought) and the current streak next to the wallet. Selling refunds half
+ * (bought or earned; its own card, can't be sold) and the current streak next to the wallet. Selling refunds half
  * the price, rounded down (backend shopService.sellItem / sellPet).
  *
  * Needs: AuthService, escHtml (shared/utils.js), showToast (shared/toast.js),
@@ -55,12 +55,12 @@
             + '</div>';
     }
 
-    // Búa Daniel — not a shop item (earned from Paraphrase units ≥ 90% or an
-    // admin gift), always shown: it restores a streak lost in the last 3 days.
+    // Búa Daniel — bought in the shop, or earned from Paraphrase units ≥ 90%
+    // / an admin gift; always shown: it restores a streak lost in the last 3 days.
     function danielCard() {
         var h = state.danielHammer || { count: 0, canUse: false };
         var hint = !h.count
-            ? 'Nhận búa khi hoàn thành 1 Unit Paraphrase đạt ≥ 90%.'
+            ? 'Mua ở Cửa hàng lửa, hoặc nhận búa khi hoàn thành 1 Unit Paraphrase đạt ≥ 90%.'
             : (h.canUse ? 'Khôi phục chuỗi ' + h.previousStreak + ' 🔥 vừa mất!' : 'Dùng được trong 3 ngày sau khi lỡ mất chuỗi.');
         return '<div class="inv-card inv-daniel' + (h.canUse ? ' is-ready' : '') + '">'
             + '<img class="inv-emoji inv-daniel-img" src="/img/buaDaniel.jpg" alt="" aria-hidden="true">'
@@ -89,7 +89,7 @@
     function render() {
         var el = host();
         if (!el) return;
-        var items = state.items.filter(function (i) { return i.owned > 0; });
+        var items = state.items.filter(function (i) { return i.owned > 0 && i.key !== 'danielHammer'; });
         var pets = state.pets.filter(function (p) { return p.owned; });
         var head = '<div class="inv-wallet">'
             + '<div class="inv-stats">'

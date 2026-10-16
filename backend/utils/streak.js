@@ -163,4 +163,28 @@ async function applyStreakActivity(User, userId, bonus = 1, { allowSameDayStack 
   );
 }
 
-module.exports = { getVNDay, effectiveStreak, applyStreakActivity, coverMissedDaysWithShields };
+// Practice that earns no 🔥 of its own — Bài lẻ Reading/Listening, Gap-fill,
+// Dictation, Shadowing, Essential Grammar, Writing Task 1/2 lessons, Adv
+// Sentence… — still means the student studied today, so it keeps the
+// day-chain alive (bonus 0: lastActivityDate moves to today, the count
+// doesn't grow — same as a sub-80% vocab/test session). Before this, a day
+// spent only on these (often the class homework) didn't count at all, and
+// the next day the streak was gone: the "có học mà vẫn mất chuỗi" reports.
+// Students only; best-effort — never fails the save that called it.
+// Dictation / Shadowing save per sentence count, so they only keep the
+// chain alive once a save covers at least this many sentences.
+const MIN_STREAK_SENTENCES = 5;
+
+async function keepStreakAlive(userId) {
+  try {
+    const User = require('../models/User'); // lazy: models/User ↔ utils
+    const u = await User.findById(userId).select('role').lean();
+    if (!u || u.role !== 'student') return null;
+    return await applyStreakActivity(User, userId, 0, { allowSameDayStack: true });
+  } catch (err) {
+    console.error('[streak] keepStreakAlive failed:', err.message);
+    return null;
+  }
+}
+
+module.exports = { getVNDay, effectiveStreak, applyStreakActivity, coverMissedDaysWithShields, keepStreakAlive, MIN_STREAK_SENTENCES };

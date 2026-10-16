@@ -513,6 +513,27 @@ describe('completion tracking', () => {
     expect((await Assignment.findById(created.body.assignment._id).lean()).resources[0].resourceCode).toBe('4');
   });
 
+  test('topic moved to another week / renamed after assigning: student + teacher see the CURRENT week and name', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const topic = await Task2Topic.create({
+      week: 3, block: 'agree_disagree', topicName: 'Old Name', essayType: 'agree_disagree',
+      prompt: 'Prompt.', isActive: true, questions: [],
+    });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task2', resourceId: topic._id, label: 'Old Name', resourceCode: '3' }] });
+    await Task2Topic.updateOne({ _id: topic._id }, { week: 9, topicName: 'New Name' });
+
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    const item = mine.body.assignments.find((a) => a._id === String(asg._id)).resources[0];
+    expect(item.resourceCode).toBe('9');
+    expect(item.label).toBe('New Name');
+
+    const detail = await request(app).get(`/api/classes/${cls._id}/assignments/${asg._id}`).set(authH(t));
+    expect(detail.body.assignment.resources[0].resourceCode).toBe('9');
+    expect(detail.body.assignment.resources[0].label).toBe('New Name');
+  });
+
   test('task2 (weekly topic): 70% AND covered most of the topic — a cherry-picked subset does not count', async () => {
     const t = await createTeacher();
     const s = await createStudent();

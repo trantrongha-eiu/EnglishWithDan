@@ -95,12 +95,18 @@
             + (i.owned ? '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Mở kho</a>' : '');
     }
 
+    function itemIcon(i) {
+        return i.image
+            ? '<img class="shop-emoji shop-emoji-img" src="' + escHtml(i.image) + '" alt="" aria-hidden="true">'
+            : '<span class="shop-emoji" aria-hidden="true">' + i.emoji + '</span>';
+    }
+
     function renderItems() {
         var el = document.getElementById('shop-items');
         el.removeAttribute('aria-busy');
         el.innerHTML = state.items.map(function (i) {
             return '<article class="shop-card shop-card--' + i.key + '">'
-                + '<div class="shop-card-top"><span class="shop-emoji" aria-hidden="true">' + i.emoji + '</span>'
+                + '<div class="shop-card-top">' + itemIcon(i)
                 + '<span class="shop-owned' + (i.owned ? ' has' : '') + '">Đang có: <b>' + i.owned + '</b>' + (i.maxOwned ? '/' + i.maxOwned : '') + '</span></div>'
                 + '<h3>' + escHtml(i.name) + '</h3>'
                 + '<p>' + escHtml(i.description) + '</p>'
@@ -164,7 +170,7 @@
         wrap.className = 'modal-overlay shop-qty-modal';
         wrap.innerHTML = '<div class="modal-box modal-sm" role="dialog" aria-modal="true" aria-labelledby="shop-qty-title">'
             + '<div class="modal-body shop-qty-body">'
-            + '<span class="shop-emoji" aria-hidden="true">' + i.emoji + '</span>'
+            + itemIcon(i)
             + '<h3 id="shop-qty-title">Mua ' + escHtml(i.name) + '</h3>'
             + '<div class="shop-qty" role="group" aria-label="Số lượng">'
             + '<button type="button" class="shop-qty-btn" data-step="-1" aria-label="Bớt 1">−</button>'

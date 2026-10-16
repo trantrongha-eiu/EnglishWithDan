@@ -4,13 +4,24 @@
 // separate "ví lửa"), never from learningStreak itself, so buying something
 // never costs a student their streak or their leaderboard rank.
 //
-// `key` is also the field name under User.shopItems for consumables.
+// `key` is also the field name under User.shopItems for consumables, unless
+// the item sets `field` (a top-level User path it is counted in instead).
 const ITEMS = [
   {
     key: 'hopeHammer', name: 'Búa Hi Vọng', emoji: '🔨', price: 25,
     description: 'Đập búa đặt cược cho hôm nay: mọi 🔥 kiếm được sau khi đập đều ×2. '
       + 'Nhưng nếu đến hết ngày chưa kiếm thêm đủ 3 🔥 thì bị trừ 10 🔥 khỏi chuỗi!',
     usage: 'manual',
+  },
+  {
+    // Same inventory as the hammers earned from Paraphrase units / admin
+    // gifts (User.streakHammers, not shopItems), used from the Kho đồ via
+    // POST /api/user/streak/use-hammer. Can't be sold back — otherwise a
+    // free earned hammer would turn into 🔥.
+    key: 'danielHammer', name: 'Búa Daniel', emoji: '🔨', image: '/img/buaDaniel.jpg', price: 50,
+    field: 'streakHammers', sellable: false,
+    description: 'Lỡ mất chuỗi? Đập Búa Daniel trong vòng 3 ngày là khôi phục lại toàn bộ chuỗi 🔥 vừa mất.',
+    usage: 'restore',
   },
   {
     key: 'iceShield', name: 'Khiên Băng', emoji: '🛡️', price: 20, maxOwned: 2,

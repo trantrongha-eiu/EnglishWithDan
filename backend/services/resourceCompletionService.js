@@ -341,6 +341,11 @@ async function wt1ModuleCodesForCourse(courseCode) {
   return mods.map((m) => m.code);
 }
 
+// Hard ceiling for one picker page — above every type's full catalog today
+// (largest: ~800 speaking questions), so the admin picker can list a whole
+// category instead of silently stopping at the first 100.
+const CATALOG_MAX = 2000;
+
 async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
@@ -361,9 +366,12 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   }
   const docs = await entry.catalog.model.find(q)
     .sort(entry.catalog.sort)
-    .limit(Math.min(Number(limit) || 100, 300))
+    .limit(Math.min(Number(limit) || 100, CATALOG_MAX))
     .lean();
-  return docs.map(entry.catalog.shape);
+  // resourceCode lets the admin picker preview-link a row whose student page
+  // isn't keyed by _id (lesson code / week) — same value buildResources stores.
+  const { shape, deepLinkKey } = entry.catalog;
+  return docs.map((d) => (deepLinkKey ? { ...shape(d), resourceCode: deepLinkKey(d) || '' } : shape(d)));
 }
 
 // Verify an internal resource id really exists for its type — called before
@@ -397,6 +405,35 @@ async function deepLinkKeyFor(type, resourceId) {
   if (!entry || !entry.catalog || !entry.catalog.deepLinkKey) return '';
   const doc = await entry.catalog.model.findById(resourceId).lean();
   return doc ? entry.catalog.deepLinkKey(doc) : '';
+}
+
+// label/resourceCode on an Assignment are snapshots taken at assign time. A
+// lesson renumbered later ("Buổi 10" → "Buổi 17") or a Task 2 topic moved to
+// another week would otherwise keep showing the old name, and its deep link
+// (?week=<old>&topicId=…) would open the wrong week. Overwrites both IN PLACE
+// on lean resource objects with the resource's current values — one query
+// per type; a deleted resource keeps its snapshot.
+async function refreshResourceSnapshots(resources) {
+  const idsByType = new Map();
+  for (const r of resources) {
+    if (r.kind !== 'internal' || !r.resourceId || !REGISTRY[r.resourceType] || !REGISTRY[r.resourceType].catalog) continue;
+    if (!idsByType.has(r.resourceType)) idsByType.set(r.resourceType, new Set());
+    idsByType.get(r.resourceType).add(String(r.resourceId));
+  }
+  const docByKey = new Map();
+  await Promise.all([...idsByType].map(async ([type, ids]) => {
+    const docs = await REGISTRY[type].catalog.model.find({ _id: { $in: [...ids] } }).lean();
+    for (const d of docs) docByKey.set(resourceKey(type, d._id), d);
+  }));
+  for (const r of resources) {
+    const doc = r.kind === 'internal' && docByKey.get(resourceKey(r.resourceType, r.resourceId));
+    if (!doc) continue;
+    const { catalog } = REGISTRY[r.resourceType];
+    const label = catalog.shape(doc).label;
+    if (label) r.label = label;
+    if (catalog.deepLinkKey) r.resourceCode = catalog.deepLinkKey(doc) || r.resourceCode || '';
+  }
+  return resources;
 }
 
 // key used to match an assignment resource against a completion result
@@ -714,6 +751,6 @@ module.exports = {
   REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, PRACTICE_PASS_PERCENT,
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
-  listCatalog, resourceExists, labelFor, deepLinkKeyFor, resourceKey, checkCompleted,
+  listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,
   isFixedMock, completionItem, completionKey,
 };

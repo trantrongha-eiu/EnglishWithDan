@@ -23,6 +23,7 @@ const WT1Module = require('../models/WT1Module');
 const WT1Lesson = require('../models/WT1Lesson');
 const WT1Exercise = require('../models/WT1Exercise');
 const WT1Submission = require('../models/WT1Submission');
+const { keepStreakAlive } = require('../utils/streak');
 const WT1Progress = require('../models/WT1Progress');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
 const { NotFoundError, AuthorizationError } = require('../errors/AppError');
@@ -455,6 +456,7 @@ async function recordSubmission(userId, exercise, payload) {
   };
   const saved = await WT1Submission.create(doc);
   await _recompute(userId, exercise.lessonCode);
+  await keepStreakAlive(userId);
   return saved;
 }
 
@@ -535,6 +537,7 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
   doc.aiFeedback = { model: 'gemini', scores, bandEstimate, feedbackVi, corrections, strengths, improvements };
   await doc.save();
   await _recompute(userId, exercise.lessonCode);
+  await keepStreakAlive(userId);
 
   return {
     fluency: scores.fluency, vocabulary: scores.vocabulary, grammar: scores.grammar, pronunciation: scores.pronunciation,

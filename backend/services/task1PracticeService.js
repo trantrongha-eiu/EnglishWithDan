@@ -3,6 +3,7 @@
 // Extracted from routes/task1Practice.js, verbatim logic.
 const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
+const { keepStreakAlive } = require('../utils/streak');
 const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
 
 // Practice-mode types that show a visible "word count + first-letter" hint
@@ -307,6 +308,7 @@ async function saveBatch(userId, attempts, sessionId) {
     };
   });
   await Task1Attempt.insertMany(docs);
+  if (docs.length) await keepStreakAlive(userId);
   return docs.length;
 }
 

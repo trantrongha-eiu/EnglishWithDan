@@ -7,8 +7,31 @@ const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../
 const { createListeningSection } = require('../factories/contentFactory');
 const DictationAttempt = require('../../models/DictationAttempt');
 const AttemptReview = require('../../models/AttemptReview');
+const User = require('../../models/User');
+const { getVNDay } = require('../../utils/streak');
 
 describe('POST /api/listening/dictation/save-attempt', () => {
+  test('keeps the streak alive only when at least 5 sentences are saved', async () => {
+    const yesterday = getVNDay(new Date(Date.now() - 864e5));
+    const student = await createStudent({ extra: { learningStreak: 20, lastActivityDate: yesterday } });
+    const section = await createListeningSection({ title: 'Part 1' });
+    const save = (n) => request(app)
+      .post('/api/listening/dictation/save-attempt')
+      .set('Authorization', `Bearer ${signTokenFor(student)}`)
+      .send({
+        sectionId: section._id,
+        answers: Array.from({ length: n }, (_, i) => ({ sentenceIndex: i, isCorrect: true, matchedWords: 5, totalWords: 5 })),
+      });
+
+    expect((await save(4)).status).toBe(200);
+    expect((await User.findById(student._id).lean()).lastActivityDate.getTime()).toBe(yesterday.getTime());
+
+    expect((await save(5)).status).toBe(200);
+    const u = await User.findById(student._id).lean();
+    expect(u.lastActivityDate.getTime()).toBe(getVNDay(new Date()).getTime());
+    expect(u.learningStreak).toBe(20);
+  });
+
   test('saves the session and never creates a mandatory-review record', async () => {
     const student = await createStudent();
     const token = signTokenFor(student);

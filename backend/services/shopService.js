@@ -19,6 +19,12 @@ const HOUR = 60 * 60 * 1000;
 const ITEM_BY_KEY = Object.fromEntries(ITEMS.map(i => [i.key, i]));
 const PET_BY_ID = Object.fromEntries(PETS.map(p => [p.id, p]));
 
+// Where an item's count lives on the User doc.
+function itemField(item) { return item.field || `shopItems.${item.key}`; }
+function ownedOf(u, item) {
+  return (item.field ? u[item.field] : (u.shopItems || {})[item.key]) || 0;
+}
+
 function displayName(u) {
   return (`${u.firstName || ''} ${u.lastName || ''}`.trim()) || u.username || 'Ai đó';
 }
@@ -108,15 +114,15 @@ async function getState(userId) {
   return {
     wallet: u.flameWallet || 0,
     streak: effectiveStreak(u.learningStreak, u.lastActivityDate, items.iceShield),
-    // Búa Daniel (not sold here — earned from Paraphrase units / admin gifts),
-    // shown in the Kho đồ next to the shop items. Used via the existing
+    // Búa Daniel (bought here, or earned from Paraphrase units / admin
+    // gifts) — the Kho đồ shows it as its own card. Used via the existing
     // POST /api/user/streak/use-hammer; canUse is User.canUseHammer()'s rule.
     danielHammer: {
       count: u.streakHammers || 0,
       canUse: User.hydrate(u).canUseHammer(),
       previousStreak: u.previousStreak || 0,
     },
-    items: ITEMS.map(i => ({ ...i, owned: items[i.key] || 0, sellPrice: sellPrice(i.price) })),
+    items: ITEMS.map(i => ({ ...i, owned: ownedOf(u, i), sellPrice: sellPrice(i.price) })),
     pets: PETS.map(p => ({ ...p, owned: (u.pets || []).includes(p.id), sellPrice: sellPrice(p.price) })),
     activePet: u.activePet || '',
     effects: {
@@ -217,20 +223,20 @@ async function buyItem(userId, key, qty = 1) {
   if (!(await assertStudent(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
   if (key === 'iceShield') await finalizeLostStreak(userId);
-  const field = `shopItems.${key}`;
+  const field = itemField(item);
   const total = item.price * n;
   const filter = { _id: userId, flameWallet: { $gte: total } };
   if (item.maxOwned) filter[field] = { $not: { $gt: item.maxOwned - n } };
   const u = await User.findOneAndUpdate(filter, { $inc: { flameWallet: -total, [field]: n } }, { new: true })
-    .select('flameWallet shopItems').lean();
+    .select(`flameWallet ${field}`).lean();
   if (!u) {
-    const cur = await User.findById(userId).select('flameWallet shopItems').lean();
-    const owned = (cur.shopItems || {})[key] || 0;
+    const cur = await User.findById(userId).select(`flameWallet ${field}`).lean();
+    const owned = ownedOf(cur, item);
     if (item.maxOwned && owned + n > item.maxOwned) return { status: 'max_owned', max: item.maxOwned, left: Math.max(0, item.maxOwned - owned) };
     return { status: 'not_enough', wallet: cur.flameWallet || 0, price: total };
   }
   await recordPurchase(userId, 'item', item, n);
-  return { status: 'ok', wallet: u.flameWallet, owned: u.shopItems[key], qty: n };
+  return { status: 'ok', wallet: u.flameWallet, owned: ownedOf(u, item), qty: n };
 }
 
 async function buyPet(userId, petId) {
@@ -368,6 +374,7 @@ function sellPrice(price) { return Math.floor(price / 2); }
 async function sellItem(userId, key) {
   const item = ITEM_BY_KEY[key];
   if (!item) return { status: 'not_found' };
+  if (item.sellable === false) return { status: 'not_sellable' };
   const refund = sellPrice(item.price);
   const u = await User.findOneAndUpdate(
     { _id: userId, [`shopItems.${key}`]: { $gte: 1 } },

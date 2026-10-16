@@ -1,6 +1,6 @@
 const { createStudent } = require('../../factories/userFactory');
 const User = require('../../../models/User');
-const { applyStreakActivity } = require('../../../utils/streak');
+const { applyStreakActivity, keepStreakAlive, getVNDay } = require('../../../utils/streak');
 
 function daysAgo(n) {
   const d = new Date();
@@ -96,5 +96,23 @@ describe('applyStreakActivity — same day-chain rules as User.updateStreak(), a
     const final = await User.findById(user._id).select('learningStreak lastActivityDate');
     expect(final.learningStreak).toBe(8);
     expect(Math.max(...results.map(r => r.learningStreak))).toBe(8);
+  });
+});
+
+// Bài lẻ / Gap-fill / Dictation / Writing lessons… earn no 🔥 but must keep
+// the day-chain alive — a day of only those used to cost the streak.
+describe('keepStreakAlive', () => {
+  test('a streak from yesterday survives today without growing', async () => {
+    const user = await createStudent({ extra: { learningStreak: 373, lastActivityDate: getVNDay(daysAgo(1)), flameWallet: 10 } });
+    const updated = await keepStreakAlive(user._id);
+    expect(updated.learningStreak).toBe(373);
+    expect(updated.flameWallet).toBe(10);
+    expect(updated.lastActivityDate.getTime()).toBe(getVNDay(new Date()).getTime());
+  });
+
+  test('ignores staff accounts', async () => {
+    const teacher = await createStudent({ extra: { role: 'teacher', learningStreak: 5, lastActivityDate: getVNDay(daysAgo(1)) } });
+    expect(await keepStreakAlive(teacher._id)).toBeNull();
+    expect((await User.findById(teacher._id).lean()).lastActivityDate.getTime()).toBe(getVNDay(daysAgo(1)).getTime());
   });
 });
