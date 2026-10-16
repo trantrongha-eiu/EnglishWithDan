@@ -20,7 +20,7 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=7ee95a7227">
+  <link rel="stylesheet" href="/css/dashboard.css?v=7967eef045">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=637bc34694"/>
 </head>
@@ -274,7 +274,7 @@
         <div id="book-classify-tip" class="book-add-tip hidden">
           <span class="book-add-tip-emoji">🏷️</span>
           <div class="book-add-tip-body">
-            <strong>Mách nhỏ:</strong> Đừng quên xếp loại mức độ nhớ cho từng từ! Bấm vào ô trạng thái (<span class="status-select-hint chua-thuoc">Not yet</span> / <span class="status-select-hint nho-so-so">So-so</span> / <span class="status-select-hint da-thuoc">Mastered</span>) ở mỗi từ trong bảng bên dưới — càng cập nhật đúng, hệ thống càng nhắc ôn tập chính xác hơn.
+            <strong>Mách nhỏ:</strong> Đừng quên xếp loại mức độ nhớ cho từng từ! Bấm vào ô trạng thái (<span class="status-select-hint chua-thuoc">Not yet</span> / <span class="status-select-hint nho-so-so">So-so</span> / <span class="status-select-hint da-thuoc">Mastered</span>) ở mỗi từ trong bảng bên dưới — càng cập nhật đúng, hệ thống càng nhắc ôn tập chính xác hơn. Muốn đổi nhiều từ cùng lúc: tick ô vuông đầu mỗi dòng (hoặc ô trên cùng để chọn tất cả) rồi bấm trạng thái mới.
           </div>
           <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookClassifyTip()">×</button>
         </div>
@@ -299,14 +299,12 @@
             <i class="fas fa-share-square" style="color:#0891b2"></i> Chuyển sang sổ khác
           </button>
           <div class="bulk-bar" id="bulk-bar">
-            <span>Selected <span class="bulk-count" id="bulk-count">0</span> words</span>
-            <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
-              <option value="">Change status...</option>
-              <option value="chua-thuoc">Not yet</option>
-              <option value="nho-so-so">So-so</option>
-              <option value="da-thuoc">Mastered</option>
-            </select>
+            <span>Đã chọn <span class="bulk-count" id="bulk-count">0</span> từ · chuyển sang:</span>
+            <button type="button" class="bulk-status-btn chua-thuoc" onclick="bulkChangeStatus('chua-thuoc', this)">Not yet</button>
+            <button type="button" class="bulk-status-btn nho-so-so" onclick="bulkChangeStatus('nho-so-so', this)">So-so</button>
+            <button type="button" class="bulk-status-btn da-thuoc" onclick="bulkChangeStatus('da-thuoc', this)">Mastered</button>
             <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="fas fa-trash"></i> Delete</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="clearWordSelection()" title="Bỏ chọn tất cả">Bỏ chọn</button>
           </div>
           <div class="book-search-wrap">
             <i class="fas fa-search"></i>
@@ -1170,7 +1168,7 @@
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
 <script src="/js/shared/fire-tier.js?v=9d6b07142e"></script>
-<script src="/js/dashboard.js?v=8e4d9e6068"></script>
+<script src="/js/dashboard.js?v=b15d6ddf53"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

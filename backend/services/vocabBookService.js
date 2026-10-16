@@ -618,6 +618,35 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
   return { status2: 'ok', word: wordDoc, newlyUnlocked };
 }
 
+// The word table's "change status" for every ticked word at once — one load
+// and one save instead of a PATCH per word. Same SRS move as updateWord's
+// manual dropdown, but deliberately NOT counted toward the daily goal /
+// streak: ticking 300 words into "Mastered" isn't 300 words studied.
+async function bulkUpdateStatus(bookId, userId, wordIds, status) {
+  const book = await VocabBook.findOne({ _id: bookId, userId });
+  if (!book) return { status: 'not_found' };
+
+  const ids = new Set(wordIds);
+  let updated = 0;
+  for (const wordDoc of book.words) {
+    if (!ids.has(wordDoc._id.toString()) || wordDoc.status === status) continue;
+    const srs = srsForManualStatus(wordDoc.srsBox, status);
+    wordDoc.status = status;
+    wordDoc.srsBox = srs.srsBox;
+    wordDoc.nextReviewAt = srs.nextReviewAt;
+    wordDoc.lastReviewedAt = srs.lastReviewedAt;
+    updated++;
+  }
+  if (!updated) return { status: 'ok', updated, newlyUnlocked: [] };
+  await book.save();
+
+  let newlyUnlocked = [];
+  if (status === 'da-thuoc') {
+    newlyUnlocked = (await badgeService.checkAndAwardNewBadges(userId)).newlyUnlocked;
+  }
+  return { status: 'ok', updated, newlyUnlocked };
+}
+
 async function deleteWord(bookId, wordId, userId) {
   const book = await VocabBook.findOne({ _id: bookId, userId });
   if (!book) return { status: 'not_found' };
@@ -774,7 +803,7 @@ async function getWeakWords(userId, limit = 20) {
 
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
-  mergeBooks, moveAllWords, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
+  mergeBooks, moveAllWords, deleteBook, addWord, updateWord, bulkUpdateStatus, deleteWord, bulkAddWords, deleteWords,
   getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
   // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
   // reuses the exact same Leitner box maths instead of a second copy.

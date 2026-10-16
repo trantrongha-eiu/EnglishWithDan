@@ -13,6 +13,10 @@ let myBooks = [];
 let currentBookId = null;
 let currentBookData = null;
 let selectedWordIds = new Set();
+// Words the table is showing right now (search + status filter applied) —
+// "select all" ticks only these, so filtering to "Not yet" and ticking all
+// never drags hidden words along.
+let _visibleWordIds = [];
 
 // ── Unit State ─────────────────────────────────
 let currentUnit = null;
@@ -1095,6 +1099,8 @@ function renderWordsTable(words) {
         const sd = (statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0);
         return sd !== 0 ? sd : a.word.localeCompare(b.word, 'vi', { sensitivity: 'base' });
     });
+    _visibleWordIds = words.map(w => w._id);
+    _syncCheckAll();
 
     if (!total) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text3)">
@@ -1330,12 +1336,25 @@ function toggleSelect(wordId, checked) {
 }
 function toggleSelectAll(cb) {
     if (!currentBookData) return;
-    currentBookData.words.forEach(w => {
-        if (cb.checked) selectedWordIds.add(w._id);
-        else selectedWordIds.delete(w._id);
+    _visibleWordIds.forEach(id => {
+        if (cb.checked) selectedWordIds.add(id);
+        else selectedWordIds.delete(id);
     });
     updateBulkBar();
-    renderWordsTable(currentBookData.words);
+    _visibleWordIds.forEach(id => {
+        const row = document.getElementById(`row-${id}`);
+        if (!row) return;
+        row.classList.toggle('selected', cb.checked);
+        const box = row.querySelector('.cb-wrap input');
+        if (box) box.checked = cb.checked;
+    });
+}
+function _syncCheckAll() {
+    const allCb = document.getElementById('check-all');
+    if (!allCb) return;
+    const n = _visibleWordIds.filter(id => selectedWordIds.has(id)).length;
+    allCb.checked = n > 0 && n === _visibleWordIds.length;
+    allCb.indeterminate = n > 0 && n < _visibleWordIds.length;
 }
 function updateBulkBar() {
     const bar = document.getElementById('bulk-bar');
@@ -1344,27 +1363,47 @@ function updateBulkBar() {
         document.getElementById('bulk-count').textContent = selectedWordIds.size;
     } else {
         bar.classList.remove('show');
-        const allCb = document.getElementById('check-all');
-        if (allCb) allCb.checked = false;
     }
+    _syncCheckAll();
 }
-async function bulkChangeStatus(status) {
-    if (!status || !selectedWordIds.size) return;
+function clearWordSelection() {
+    selectedWordIds.clear();
+    updateBulkBar();
+    if (currentBookData) renderBookContent(currentBookData);
+}
+async function bulkChangeStatus(status, btn) {
+    if (!status || !selectedWordIds.size || !currentBookData) return;
+    // Optimistic, like the per-row dropdown: the table re-sorts straight away
+    // and is put back if the server says no.
+    const prev = new Map();
+    currentBookData.words.forEach(w => {
+        if (selectedWordIds.has(w._id)) { prev.set(w._id, w.status); w.status = status; }
+    });
+    const ids = [...prev.keys()];
+    if (btn) btn.disabled = true;
     try {
         // Routed through handleResponse (not raw fetch+r.ok) so an expired
         // session 401s into the same logout/redirect every other write path
         // on this page gets, instead of silently failing in place.
-        const results = await Promise.allSettled([...selectedWordIds].map(wid =>
-            fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
-                method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
-            }).then(r => window.ApiClient.handleResponse(r))
-        ));
-        const allOk = results.every(r => r.status === 'fulfilled');
+        const res = await fetch(`${API}/vocabbook/${currentBookId}/words`, {
+            method: 'PATCH', headers: authH(), body: JSON.stringify({ wordIds: ids, status })
+        });
+        const data = await window.ApiClient.handleResponse(res);
         selectedWordIds.clear();
-        document.getElementById('bulk-status-sel').value = '';
-        toast(allOk ? 'Status updated' : 'Some updates failed', allOk ? 'success' : 'error');
-        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-    } catch (err) { toast(err.message || 'Cập nhật thất bại', 'error'); }
+        updateBulkBar();
+        renderBookContent(currentBookData);
+        const label = { 'chua-thuoc': 'Not yet', 'nho-so-so': 'So-so', 'da-thuoc': 'Mastered' }[status];
+        toast(`Đã chuyển ${ids.length} từ sang ${label}`, 'success');
+        if (status === 'da-thuoc') checkBookCompletion();
+        if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
+        loadMyBooks();
+    } catch (err) {
+        currentBookData.words.forEach(w => { if (prev.has(w._id)) w.status = prev.get(w._id); });
+        renderBookContent(currentBookData);
+        toast(err.message || 'Cập nhật thất bại', 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+    }
 }
 async function bulkDelete() {
     if (!selectedWordIds.size) return;
@@ -3608,6 +3647,7 @@ window.updateWordStatus   = updateWordStatus;
 window.toggleSelect       = toggleSelect;
 window.toggleSelectAll    = toggleSelectAll;
 window.bulkChangeStatus   = bulkChangeStatus;
+window.clearWordSelection = clearWordSelection;
 window.bulkDelete         = bulkDelete;
 window.openAddWordManual  = openAddWordManual;
 window.addWordManual      = addWordManual;

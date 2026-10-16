@@ -11,6 +11,53 @@ const VocabActivity = require('../../models/VocabActivity');
 const VocabBook = require('../../models/VocabBook');
 const { todayVNDate } = require('../../services/streakBonusService');
 
+describe('PATCH /api/vocabbook/:id/words (bulk status)', () => {
+  async function setUp() {
+    const user = await createPremiumStudent();
+    const book = await createVocabBook({
+      userId: user._id,
+      words: [{ word: 'apple' }, { word: 'banana' }, { word: 'cherry', status: 'nho-so-so', srsBox: 2 }],
+    });
+    return { user, book, auth: `Bearer ${signTokenFor(user)}` };
+  }
+
+  test('moves only the given words, with the same SRS band as the per-word dropdown', async () => {
+    const { book, auth } = await setUp();
+    const [apple, banana, cherry] = book.words.map(w => String(w._id));
+    const res = await request(app).patch(`/api/vocabbook/${book._id}/words`).set('Authorization', auth)
+      .send({ wordIds: [apple, cherry], status: 'da-thuoc' });
+    expect(res.status).toBe(200);
+    expect(res.body.updated).toBe(2);
+
+    const after = await VocabBook.findById(book._id).lean();
+    const byId = Object.fromEntries(after.words.map(w => [String(w._id), w]));
+    expect(byId[apple].status).toBe('da-thuoc');
+    expect(byId[apple].srsBox).toBe(3);
+    expect(byId[cherry].status).toBe('da-thuoc');
+    expect(byId[banana].status).toBe('chua-thuoc');
+
+    const back = await request(app).patch(`/api/vocabbook/${book._id}/words`).set('Authorization', auth)
+      .send({ wordIds: [apple, banana], status: 'chua-thuoc' });
+    expect(back.body.updated).toBe(1); // banana was already "Not yet"
+    const again = await VocabBook.findById(book._id).lean();
+    const appleNow = again.words.find(w => String(w._id) === apple);
+    expect(appleNow.status).toBe('chua-thuoc');
+    expect(appleNow.srsBox).toBe(0);
+  });
+
+  test('bad status / wordIds → 400; someone else\'s book → 404', async () => {
+    const { book, auth } = await setUp();
+    const url = `/api/vocabbook/${book._id}/words`;
+    const wid = String(book.words[0]._id);
+    expect((await request(app).patch(url).set('Authorization', auth).send({ wordIds: [wid], status: 'bogus' })).status).toBe(400);
+    expect((await request(app).patch(url).set('Authorization', auth).send({ wordIds: [], status: 'da-thuoc' })).status).toBe(400);
+    expect((await request(app).patch(url).set('Authorization', auth).send({ wordIds: wid, status: 'da-thuoc' })).status).toBe(400);
+    const other = await createPremiumStudent();
+    const res = await request(app).patch(url).set('Authorization', `Bearer ${signTokenFor(other)}`).send({ wordIds: [wid], status: 'da-thuoc' });
+    expect(res.status).toBe(404);
+  });
+});
+
 describe('DELETE /api/vocabbook/:id/words', () => {
   async function setUp() {
     const user = await createPremiumStudent();

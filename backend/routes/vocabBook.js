@@ -75,6 +75,9 @@ router.delete('/:id/words/:wordId', auth, fullAccess, vocabBookController.delete
 // POST /api/vocabbook/:id/words/bulk  – thêm nhiều từ cùng lúc
 router.post('/:id/words/bulk', auth, fullAccess, vocabBookController.bulkAddWords);
 
+// PATCH /api/vocabbook/:id/words  – đổi trạng thái nhiều từ cùng lúc
+router.patch('/:id/words', auth, fullAccess, vocabBookController.bulkUpdateStatus);
+
 // DELETE /api/vocabbook/:id/words  – xoá nhiều từ cùng lúc
 router.delete('/:id/words', auth, fullAccess, vocabBookController.deleteWords);
 

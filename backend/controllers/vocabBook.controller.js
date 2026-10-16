@@ -197,6 +197,21 @@ exports.bulkAddWords = guard(async (req, res) => {
   res.json({ success: true, addedCount: result.addedCount, skippedDup: result.skippedDup, skippedLimit: result.skippedLimit, message: parts.join(' · ') });
 });
 
+const WORD_STATUSES = new Set(['chua-thuoc', 'nho-so-so', 'da-thuoc']);
+
+exports.bulkUpdateStatus = guard(async (req, res) => {
+  const { wordIds, status } = req.body;
+  if (!WORD_STATUSES.has(status)) {
+    return res.status(400).json({ success: false, message: 'Trạng thái không hợp lệ' });
+  }
+  if (!Array.isArray(wordIds) || !wordIds.length || wordIds.length > 1000 || wordIds.some(id => typeof id !== 'string')) {
+    return res.status(400).json({ success: false, message: 'wordIds phải là một mảng chuỗi ID' });
+  }
+  const result = await vocabBookService.bulkUpdateStatus(req.params.id, req.user._id, wordIds, status);
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+  res.json({ success: true, updated: result.updated, newlyUnlocked: result.newlyUnlocked });
+});
+
 exports.deleteWords = guard(async (req, res) => {
   // wordIds:null (not just undefined) used to reach vocabBookService's
   // wordIds.includes(...) filter and throw — the `= []` default only ever

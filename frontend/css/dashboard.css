@@ -878,8 +878,16 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 
 /* Buttons: moved to css/components.css (single source of truth — audit UI#2) */
 
-.bulk-bar{display:none;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.bulk-bar{display:none;align-items:center;gap:8px;font-size:13px;color:var(--text2);flex-wrap:wrap}
 .bulk-bar.show{display:flex}
+.bulk-status-btn{border:1px solid transparent;border-radius:20px;padding:4px 12px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.bulk-status-btn.chua-thuoc{color:var(--text2);background:var(--surface);border-color:var(--border)}
+.bulk-status-btn.nho-so-so{color:var(--yellow);background:#fffbeb;border-color:#fde68a}
+.bulk-status-btn.da-thuoc{color:var(--green);background:#f0fdf4;border-color:#bbf7d0}
+.bulk-status-btn:hover{filter:brightness(.96)}
+.bulk-status-btn:disabled{opacity:.6;cursor:wait}
+[data-theme="dark"] .bulk-status-btn.nho-so-so{background:rgba(234,179,8,.12);border-color:rgba(234,179,8,.35)}
+[data-theme="dark"] .bulk-status-btn.da-thuoc{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
 .bulk-count{font-weight:700;color:var(--brand)}
 
 /* Search bar in book view */
@@ -1401,17 +1409,18 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   .book-stats{gap:10px}
   .book-action-bar{padding:8px 12px}
 
-  /* Word table: hide checkbox + example + notes columns; enable h-scroll */
+  /* Word table: hide example + notes columns; enable h-scroll. The
+     checkbox column stays — it's how a student changes status in bulk. */
   .words-table-wrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .words-table{min-width:360px}
   .words-table .cb-wrap,
-  .words-table thead th:first-child{display:none}
+  .words-table thead th:first-child{width:28px;padding-left:10px;padding-right:0}
   .words-table tbody td:nth-child(5),
   .words-table thead th:nth-child(5),
   .words-table tbody td:nth-child(6),
   .words-table thead th:nth-child(6){display:none}
-  /* Hide bulk ops bar (depends on checkboxes that are hidden) */
-  .bulk-bar{display:none !important}
+  /* Bulk bar takes its own full-width row above the search box */
+  .bulk-bar.show{width:100%;order:-1;padding:6px 0}
   /* Tighter cell padding on mobile */
   .words-table thead th{padding:8px 10px}
   .words-table tbody td{padding:10px 10px}
