@@ -1,13 +1,12 @@
 'use strict';
 
-// Unit tests for shared/exam-proctor.js — the generalized Test Simulation
-// proctor engine (a parameterized copy of mock-test.js's own, see that
-// file's header comment for why it's a copy and not a shared refactor).
+// Unit tests for shared/exam-proctor.js — the Test Simulation proctor
+// (shared/proctor-engine.js wired to /exam-simulation/*).
 const { loadScript } = require('../helpers/loadScript');
 
 beforeAll(() => {
   window.AuthService = { API: 'http://x/api', authHeader: () => ({ Authorization: 'Bearer t' }) };
-  loadScript('exam-proctor.js');
+  loadScript('proctor-engine.js', 'exam-proctor.js');
 });
 
 afterEach(() => {
