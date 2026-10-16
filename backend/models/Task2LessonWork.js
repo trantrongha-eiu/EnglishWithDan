@@ -19,7 +19,17 @@ const task2LessonWorkSchema = new mongoose.Schema({
   },
   // Set when the student hands the finished essay over to writing.html for
   // AI grading — drives the "Hoàn thành" mark on the lesson list.
-  submittedAt: { type: Date, default: null }
+  submittedAt: { type: Date, default: null },
+  // questionId → the student's English for a sentence-building question,
+  // copied from every draft save. A draft only holds the CURRENT session, so
+  // without this a half-done "Dịch câu" run was lost as soon as the student
+  // started "Dịch tiếp N câu" (the new session overwrote the draft, then
+  // finishing it deleted the draft).
+  sentences: {
+    type: Map,
+    of: new mongoose.Schema({ en: String, isCorrect: Boolean }, { _id: false }),
+    default: undefined
+  }
 }, { timestamps: true });
 
 task2LessonWorkSchema.index({ userId: 1, topicId: 1 }, { unique: true });

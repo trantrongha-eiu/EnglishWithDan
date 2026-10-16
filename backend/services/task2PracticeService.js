@@ -581,6 +581,45 @@ async function saveDraft(userId, body) {
     .select('_id')
     .lean();
   if (stale.length) await Task2Draft.deleteMany({ _id: { $in: stale.map(d => d._id) } });
+  await _keepLessonSentences(userId, topicId, sessionAttempts);
+}
+
+// Copies the sentence-building answers of a draft save into the lesson work,
+// so they outlive the draft (see Task2LessonWork.sentences). Same rule as
+// _lessonSentences: a correct answer is never replaced by a later wrong one.
+async function _keepLessonSentences(userId, topicId, sessionAttempts) {
+  if (!mongoose.isValidObjectId(topicId) || !Array.isArray(sessionAttempts)) return;
+  const incoming = {};
+  for (const a of sessionAttempts) {
+    if (!a || !WBW_TYPES.has(a.type) || typeof a.questionId !== 'string' || typeof a.userAnswer !== 'string') continue;
+    const qid = a.questionId.trim();
+    const en = a.userAnswer.trim().slice(0, LESSON_TEXT_MAX);
+    if (!qid || !en || qid.length > 64 || /[.$]/.test(qid)) continue;
+    const prev = incoming[qid];
+    if (prev && prev.isCorrect && !a.isCorrect) continue;
+    incoming[qid] = { en, isCorrect: !!a.isCorrect };
+  }
+  const ids = Object.keys(incoming);
+  if (!ids.length) return;
+  const saved = await Task2LessonWork.findOne({ userId, topicId }).select('sentences').lean();
+  const kept = (saved && saved.sentences) || {};
+  const set = {};
+  for (const qid of ids) {
+    const prev = kept[qid];
+    const next = incoming[qid];
+    if (prev && prev.isCorrect && !next.isCorrect) continue;
+    if (prev && prev.en === next.en && prev.isCorrect === next.isCorrect) continue;
+    set[`sentences.${qid}`] = next;
+  }
+  if (!Object.keys(set).length) return;
+  // updatedAt is left alone: the writer compares it with its unsynced local
+  // copy of the essay, which a translation must not make look stale.
+  const now = new Date();
+  await Task2LessonWork.updateOne(
+    { userId, topicId },
+    { $set: set, $setOnInsert: { createdAt: now, updatedAt: now } },
+    { upsert: true, timestamps: false }
+  );
 }
 
 async function getDraft(userId, topicId) {
@@ -615,9 +654,10 @@ const LESSON_BRAINSTORM_MAX = 6;
 // The student's own English for each sentence-building question of the
 // topic (translation / paraphrase / short_writing — the WBW_TYPES drill), so
 // the split-screen writer can show "câu bạn đã dịch" beside the essay. Taken
-// from saved attempts, then the unfinished-session draft (newer), keeping a
-// correct answer over a later wrong one.
-async function _lessonSentences(userId, topic) {
+// from saved attempts, then the answers kept from earlier drafts, then the
+// unfinished-session draft (newest), keeping a correct answer over a later
+// wrong one.
+async function _lessonSentences(userId, topic, kept) {
   const [attempts, draft] = await Promise.all([
     Task2Attempt.find({ userId, topicId: topic._id }).select('questionsAttempted').sort({ completedAt: 1, _id: 1 }).lean(),
     Task2Draft.findOne({ userId, topicId: String(topic._id) }).select('sessionAttempts').lean()
@@ -630,6 +670,7 @@ async function _lessonSentences(userId, topic) {
     best[qa.questionId] = { en: qa.userAnswer.trim(), isCorrect: !!qa.isCorrect };
   };
   for (const a of attempts) (a.questionsAttempted || []).forEach(take);
+  for (const [questionId, s] of Object.entries(kept || {})) take({ questionId, userAnswer: s.en, isCorrect: s.isCorrect });
   if (draft) (draft.sessionAttempts || []).forEach(take);
 
   return (topic.questions || [])
@@ -653,11 +694,11 @@ async function getLessonWork(userId, topicId) {
   if (!mongoose.isValidObjectId(topicId)) return null;
   const topic = await Task2Topic.findById(topicId).select('questions').lean();
   if (!topic) return null;
-  const [work, sentences] = await Promise.all([
-    Task2LessonWork.findOne({ userId, topicId }).select('brainstorm sections submittedAt updatedAt').lean(),
-    _lessonSentences(userId, topic)
-  ]);
-  return { work: work || null, sentences };
+  const work = await Task2LessonWork.findOne({ userId, topicId }).select('brainstorm sections submittedAt updatedAt sentences').lean();
+  const sentences = await _lessonSentences(userId, topic, work && work.sentences);
+  if (!work) return { work: null, sentences };
+  const { sentences: _kept, ...rest } = work;
+  return { work: rest, sentences };
 }
 
 async function saveLessonWork(userId, topicId, body = {}) {

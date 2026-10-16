@@ -441,6 +441,34 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
     expect(prog.body.progress).toEqual([{ topicId: String(topic._id), written: 2, submitted: false }]);
   });
 
+  test('translations from an unfinished run survive "Dịch tiếp" (new session overwrites, then deletes, the draft)', async () => {
+    const topic = await createTask2Topic({ questions: [
+      question({ type: 'translation', questionText: 'Dịch 1', correctAnswer: 'One.' }),
+      question({ type: 'translation', questionText: 'Dịch 2', correctAnswer: 'Two.' }),
+    ] });
+    const [q1, q2] = topic.questions.map(q => String(q._id));
+    const user = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(user)}`;
+    const topicId = String(topic._id);
+    const url = `/api/task2/lesson/${topicId}`;
+    const draft = (ids, attempts) => request(app).post('/api/task2/draft').set('Authorization', auth)
+      .send({ topicId, mode: 'practice', questionIds: ids, sessionAttempts: attempts, questionStatus: [], sessionDone: attempts.length });
+
+    // Run 1: q1 answered correctly, then the student leaves.
+    expect((await draft([q1, q2], [{ questionId: q1, userAnswer: 'One.', isCorrect: true, type: 'translation' }])).status).toBe(200);
+    // Run 2 ("Dịch tiếp 1 câu"): only q2 — the draft no longer holds q1, and
+    // a later wrong retry of q1 must not replace the correct one.
+    await draft([q2], [{ questionId: q2, userAnswer: 'Two.', isCorrect: true, type: 'translation' }]);
+    await draft([q1], [{ questionId: q1, userAnswer: 'Wrong', isCorrect: false, type: 'translation' }]);
+    await request(app).delete(`/api/task2/draft/${topicId}`).set('Authorization', auth);
+
+    const res = await request(app).get(url).set('Authorization', auth);
+    expect(res.status).toBe(200);
+    expect(res.body.sentences.map(s => s.en)).toEqual(['One.', 'Two.']);
+    expect(res.body.work.sentences).toBeUndefined();
+    expect(res.body.work.sections.intro).toBe('');
+  });
+
   test('malformed body / unknown topic are rejected', async () => {
     const user = await createPremiumStudent();
     const auth = `Bearer ${signTokenFor(user)}`;
