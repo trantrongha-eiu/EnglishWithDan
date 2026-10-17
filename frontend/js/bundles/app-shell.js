@@ -1625,6 +1625,7 @@
           }).catch(function () {});
         }
 
+        if (u.role === 'student') _showShopLaunchBanner();
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
         if (u.role === 'student') _showDailyVocabGoalNudge();
@@ -2010,6 +2011,57 @@
         document.getElementById('nav-mustread-later').addEventListener('click', function () { overlay.remove(); });
       })
       .catch(function () { _mustReadState = 0; done(); });
+  }
+
+  // Cửa hàng lửa launch announcement — a time-boxed banner, 5 days from
+  // 17/10/2026 through 21/10/2026 (Vietnam time), then it switches itself
+  // off; no admin action or redeploy needed. Same fixed + additive
+  // --expiry-banner-height stacking as the banners above. Closing it hides
+  // it for the rest of that day only (localStorage keyed by date), so it
+  // comes back once a day for the whole launch window without nagging on
+  // every page. Not on shop.html itself, nor over a live exam/practice.
+  var SHOP_LAUNCH_START = Date.parse('2026-10-17T00:00:00+07:00');
+  var SHOP_LAUNCH_END = Date.parse('2026-10-22T00:00:00+07:00');
+  var SHOP_LAUNCH_DISMISS_KEY = 'ews_shop_launch_banner_dismissed';
+  function _showShopLaunchBanner() {
+    var now = Date.now();
+    if (now < SHOP_LAUNCH_START || now >= SHOP_LAUNCH_END) return;
+    if (/\/shop(\.html)?$/.test(location.pathname)) return;
+    if (_fullscreenActivityActive()) return;
+    if (document.getElementById('nav-shop-launch-banner')) return;
+    var today = new Date(now + 7 * 3600000).toISOString().slice(0, 10);
+    try { if (localStorage.getItem(SHOP_LAUNCH_DISMISS_KEY) === today) return; } catch (e) {}
+
+    var daysLeft = Math.ceil((SHOP_LAUNCH_END - now) / 86400000);
+    var baseOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--expiry-banner-height')) || 0;
+    var banner = document.createElement('div');
+    banner.id = 'nav-shop-launch-banner';
+    banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#be123c,#ea580c,#f59e0b);box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.innerHTML =
+      '<span style="flex:1 1 260px;text-align:center">🎉 <strong>Cửa hàng lửa 🔥 chính thức ra mắt!</strong> Dùng ví lửa đổi Búa, Khiên Băng, Vương Miện Lửa, linh thú… rồi cùng <strong>đua top BXH</strong> nào! 🏆' +
+        (daysLeft > 1 ? ' <span style="opacity:.85;font-weight:500">(còn ' + daysLeft + ' ngày khai trương)</span>' : '') + '</span>' +
+      '<span style="display:flex;align-items:center;gap:8px;flex-shrink:0">' +
+        '<a href="shop.html" style="color:#be123c;background:#fff;border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;font-weight:700;white-space:nowrap">Vào cửa hàng</a>' +
+        '<a href="vocab-leaderboard.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem BXH</a>' +
+        '<button type="button" style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px" title="Đóng">&times;</button>' +
+      '</span>';
+    var shown = document.querySelectorAll('[id^="nav-"][id$="-banner"]');
+    var afterEl = shown.length ? shown[shown.length - 1] : document.getElementById('globalTopNav');
+    if (!afterEl) return;
+    document.body.insertBefore(banner, afterEl.nextSibling);
+
+    function applyOffset() {
+      document.documentElement.style.setProperty('--expiry-banner-height', (baseOffset + banner.offsetHeight) + 'px');
+    }
+    applyOffset();
+    window.addEventListener('resize', applyOffset);
+
+    banner.querySelector('button').addEventListener('click', function () {
+      try { localStorage.setItem(SHOP_LAUNCH_DISMISS_KEY, today); } catch (e) {}
+      window.removeEventListener('resize', applyOffset);
+      document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
+      banner.remove();
+    });
   }
 
   var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';
