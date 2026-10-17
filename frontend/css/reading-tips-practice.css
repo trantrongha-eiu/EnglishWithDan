@@ -42,6 +42,8 @@
   cursor: pointer; padding: 2px 4px; font-family: inherit;
 }
 [data-theme="dark"] .rtp-link { color: #fca5a5; }
+/* "Hỏi Lulu" hint links — a tangerine pill (colours from .ask-lulu in playful.css) */
+.rtp-link.ask-lulu { border-width: 1.5px; border-style: solid; border-radius: 20px; padding: 3px 11px 3px 8px; }
 
 /* scroll-margin: scrollIntoView lands below the sticky navbar (+ the site's fixed banners) */
 .rtp-panel { margin-top: 16px; scroll-margin-top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 12px); }

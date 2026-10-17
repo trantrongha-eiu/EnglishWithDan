@@ -86,7 +86,7 @@ function wbwInit(answer) {
   if (!wrap || !answer) { wbwTeardown(); return; }
   const tokens = _wbwTokenize(answer);
   if (!tokens.length) { wbwTeardown(); return; }
-  _wbw = { answer, tokens, activeIdx: 0, typed: '', showAll: false, erroring: false, done: false, locked: false };
+  _wbw = { answer, tokens, activeIdx: 0, typed: '', erroring: false, done: false, locked: false };
   wrap.classList.remove('hidden');
 
   const input = document.getElementById('wbw-input');
@@ -102,12 +102,8 @@ function wbwInit(answer) {
     input.addEventListener('input', _wbwOnInput);
     input.addEventListener('paste', _wbwPreventPaste);
   }
-  const showAllBtn = document.getElementById('wbw-showall');
-  if (showAllBtn) {
-    showAllBtn.style.display = '';
-    const sp = showAllBtn.querySelector('span'); if (sp) sp.textContent = 'Hiện tất cả';
-    const ic = showAllBtn.querySelector('i');    if (ic) ic.className = 'fas fa-eye';
-  }
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = false;
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(false);
@@ -126,22 +122,26 @@ function wbwFocus() {
   if (input) input.focus();
 }
 
-function wbwToggleShowAll() {
-  if (!_wbw) return;
-  _wbw.showAll = !_wbw.showAll;
-  const btn = document.getElementById('wbw-showall');
-  if (btn) {
-    const sp = btn.querySelector('span'); if (sp) sp.textContent = _wbw.showAll ? 'Ẩn bớt' : 'Hiện tất cả';
-    const ic = btn.querySelector('i');    if (ic) ic.className = _wbw.showAll ? 'fas fa-eye-slash' : 'fas fa-eye';
+// "Hỏi Lulu": Lulu tells the next letter of the word being typed — one
+// letter per ask, never the whole sentence, and never typed in for the
+// student (they still type it themselves — active recall).
+function wbwAskLulu() {
+  if (!_wbw || _wbw.done || _wbw.locked) return;
+  const tok = _wbw.tokens[_wbw.activeIdx];
+  if (!tok) return;
+  const next = tok.target.charAt(_wbw.typed.length);
+  if (next && window.AskLulu) {
+    const so = _wbw.typed + next;
+    window.AskLulu.say(document.getElementById('wbw-ask'),
+      `Chữ tiếp theo là “${next}” nè — từ này bắt đầu “${so}${so.length < tok.target.length ? '…' : ''}” 🍊`);
   }
-  _wbwRenderWords();
   wbwFocus();
 }
 
 function _wbwRenderWords() {
   const host = document.getElementById('wbw-words');
   if (!host || !_wbw) return;
-  const { tokens, activeIdx, typed, erroring, showAll, done } = _wbw;
+  const { tokens, activeIdx, typed, erroring, done } = _wbw;
   host.innerHTML = tokens.map((t, i) => {
     if (i < activeIdx) {
       return `<span class="wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
@@ -154,8 +154,7 @@ function _wbwRenderWords() {
       return `<span class="wbw-word is-active${erroring ? ' is-error' : ''}" data-i="${i}">`
         + `${_escHtml(typed)}${tail}<span class="wbw-star">${'*'.repeat(remaining)}</span></span>`;
     }
-    const text = showAll ? _escHtml(t.raw) : _escHtml(t.mask);
-    return `<span class="wbw-word is-locked${showAll ? ' is-peek' : ''}" data-i="${i}">${text}</span>`;
+    return `<span class="wbw-word is-locked" data-i="${i}">${_escHtml(t.mask)}</span>`;
   }).join('');
 
   const input = document.getElementById('wbw-input');
@@ -251,6 +250,8 @@ function _wbwComplete() {
   _wbw.locked = true;
   const input = document.getElementById('wbw-input');
   if (input) { input.disabled = true; input.blur(); }
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = true;
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(true);

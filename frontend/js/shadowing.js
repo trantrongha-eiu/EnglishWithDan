@@ -62,6 +62,7 @@
   const PAGE_SIZE = 24; // fills 2, 3 or 4 grid columns evenly
   let lesson = null;
   let idx = 0;
+  let dcHintShown = []; // letters Lulu has opened per word (Dictation pane hint)
   let mode = 'shadowing';
   let speedIdx = 0;
   // Best result per segment, per mode: { shadowing: {i: {matched,total}}, dictation: {...} }
@@ -491,9 +492,23 @@
     playSegment();
   }
 
+  // "Hỏi Lulu": the first ask shows the first-letter pattern; every ask
+  // after that opens ONE more letter of the first word the student hasn't
+  // typed right yet (AskLulu.letterHint) — never the whole sentence.
   function toggleHint() {
     const el = $('dc-hint');
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    const btn = $('dc-hint-btn');
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      if (window.AskLulu) window.AskLulu.say(btn, 'Chữ cái đầu mỗi từ đây nè! Bí nữa thì hỏi Lulu tiếp 🍊');
+      return;
+    }
+    if (!lesson || !window.AskLulu) return;
+    const seg = lesson.segments[idx];
+    const ref = dictRef(seg);
+    const res = window.AskLulu.letterHint(ref, $('dc-input').value, dcHintShown);
+    el.textContent = `${tokens(ref, !!seg.answer).length} từ · ${res.pattern}`;
+    window.AskLulu.say(btn, window.AskLulu.line(res));
   }
 
   // ══════════════ NAVIGATION / RENDER ══════════════
@@ -527,6 +542,7 @@
     // Dictation pane
     resetDictationPane();
     $('dc-hint').style.display = 'none';
+    dcHintShown = [];
     $('dc-hint').textContent = `${tokens(dictRef(seg), !!seg.answer).length} từ · ${maskText(dictRef(seg))}`;
     $('dc-input').placeholder = seg.answer ? 'Chỉ cần gõ tên / con số bạn nghe được...' : 'Nhập những gì bạn nghe được...';
     if (mode === 'dictation' && !keepPlaying && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus({ preventScroll: true });

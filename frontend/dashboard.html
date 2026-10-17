@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb"/>
   <link rel="stylesheet" href="/css/motion.css?v=cf232e2585"/>
   <link rel="stylesheet" href="/css/components.css?v=d2125349c7"/>
-  <link rel="stylesheet" href="/css/mobile.css?v=79efafabbe"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8"/>
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
@@ -22,11 +22,11 @@
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
   <link rel="stylesheet" href="/css/dashboard.css?v=7967eef045">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
-  <link rel="stylesheet" href="/css/playful.css?v=637bc34694"/>
+  <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=c3ca51aefd"></script>
-<script src="/js/shared/onboarding-tour.js?v=b078d9ea3f"></script>
+<script src="/js/bundles/app-shell.js?v=238c2d3c10"></script>
+<script src="/js/shared/onboarding-tour.js?v=bba31307cf"></script>
 <script src="/js/learning-popups.js?v=d05aa08d9c"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
 <script src="/js/shared/word-audio.js?v=11e353bb64"></script>
@@ -435,7 +435,7 @@
               <div id="fbInputArea" style="margin-top:14px;display:none">
                 <div class="fb-input-row">
                   <input class="fb-input" id="fbInput" placeholder="Gõ từ để kiểm tra..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
-                  <button class="btn-hint-sm" onclick="showHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i></button>
+                  <button class="btn-hint-sm ask-lulu" id="fbHintBtn" onclick="showHint()" title="Hỏi Lulu chữ cái tiếp theo"><span class="ask-lulu-ic"></span> Hỏi Lulu</button>
                   <button class="btn-check" onclick="checkFillBlank()">Kiểm tra</button>
                 </div>
                 <div id="fbFeedback"></div>
@@ -462,7 +462,7 @@
               <div id="listenWbwHost"></div>
               <div class="fb-input-row" id="listenInputRow">
                 <input class="listen-input" id="listenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
-                <button class="btn-hint-sm" id="listenHintBtn" onclick="showListenHint()" aria-label="Gợi ý"><i class="fas fa-lightbulb"></i> <span id="listenHintBtnLabel">Gợi ý (3)</span></button>
+                <button class="btn-hint-sm ask-lulu" id="listenHintBtn" onclick="showListenHint()" title="Hỏi Lulu chữ cái tiếp theo"><span class="ask-lulu-ic"></span> <span id="listenHintBtnLabel">Hỏi Lulu (3)</span></button>
                 <button class="btn-check" onclick="checkListening()">Kiểm tra</button>
               </div>
               <div id="listenFeedback" style="margin-top:10px"></div>
@@ -1162,13 +1162,13 @@
 <script src="/js/shared/peer-profile.js?v=a13eda43b1"></script>
 <script src="/js/dashboard-audio.js?v=4d62f2efe9"></script>
 <script src="/js/shared/wbw-drill.js?v=6d5b24b4f9"></script>
-<script src="/js/dashboard-lesson.js?v=ebc3e79476"></script>
+<script src="/js/dashboard-lesson.js?v=529d03eed8"></script>
 <script src="/js/dashboard-homework.js?v=5a34073e72"></script>
 <script src="/js/dashboard-classinfo.js?v=3675f6e23d"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
 <script src="/js/shared/fire-tier.js?v=9d6b07142e"></script>
-<script src="/js/dashboard.js?v=b15d6ddf53"></script>
+<script src="/js/dashboard.js?v=32440548ed"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

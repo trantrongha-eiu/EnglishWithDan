@@ -28,6 +28,8 @@ let currentMode = 'study';
 let currentWord = null;
 let isFlipped = false;
 let hintUsed = false;
+const FB_HINT_MAX = 3;   // "Hỏi Lulu" asks per Fill-blank card (showHint)
+let _fbHintCount = 0;
 let answered = false;
 let _listenHintCount = 0; // presses used so far on the current Listen-mode question — capped at 3
 const LISTEN_HINT_MAX = 3;
@@ -2906,6 +2908,9 @@ function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 /* ── Flashcard ── */
 function showFillBlankQuestion() {
     answered = false; isFlipped = false; hintUsed = false;
+    _fbHintCount = 0;
+    const fbHintBtn = document.getElementById('fbHintBtn');
+    if (fbHintBtn) fbHintBtn.disabled = false;
     updateProgress('fb');
     document.getElementById('fbQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('fbMeaning').textContent  = currentWord.meaning;
@@ -2995,13 +3000,19 @@ function disableFlashcardBtns() {
     const inp = document.getElementById('fbInput');
     if (inp) inp.disabled = true;
 }
+// "Hỏi Lulu": each ask opens one more letter of EVERY word (multi-word
+// answers shown as separate groups), capped at FB_HINT_MAX asks.
 function showHint() {
     if (!document.getElementById('flashcard').classList.contains('flipped')) return;
-    // First letter of EVERY word (multi-word answers shown as separate groups).
-    const hint = _esc(_buildLetterHint(currentWord.word, 1));
+    if (_fbHintCount >= FB_HINT_MAX) return;
+    _fbHintCount++;
+    const hint = _esc(_buildLetterHint(currentWord.word, _fbHintCount));
     document.getElementById('fbFeedback').innerHTML =
-        `<div class="feedback-hint">💡 Hint: <strong>${hint}</strong> (${_letterHintMeta(currentWord.word, 'en')})</div>`;
+        `<div class="feedback-hint">🍊 Lulu gợi ý: <strong>${hint}</strong> (${_letterHintMeta(currentWord.word, 'en')})</div>`;
     hintUsed = true;
+    const btn = document.getElementById('fbHintBtn');
+    if (btn && _fbHintCount >= FB_HINT_MAX) btn.disabled = true;
+    if (window.AskLulu) window.AskLulu.say(btn, `Lulu mách nè: ${_buildLetterHint(currentWord.word, _fbHintCount)} 🍊`);
 }
 function checkFillBlank() {
     if (answered || !isFlipped) return;
@@ -3048,7 +3059,7 @@ function showListeningQuestion() {
     const hintBtn = document.getElementById('listenHintBtn');
     if (hintBtn) {
         hintBtn.disabled = false;
-        document.getElementById('listenHintBtnLabel').textContent = `Gợi ý (${LISTEN_HINT_MAX})`;
+        document.getElementById('listenHintBtnLabel').textContent = `Hỏi Lulu (${LISTEN_HINT_MAX})`;
     }
     document.getElementById('listenInput').value   = '';
     document.getElementById('listenInput').disabled = false;
@@ -3122,9 +3133,10 @@ function showListenHint() {
     const remaining = LISTEN_HINT_MAX - _listenHintCount;
     const hintBtn = document.getElementById('listenHintBtn');
     if (hintBtn) {
-        document.getElementById('listenHintBtnLabel').textContent = remaining > 0 ? `Gợi ý (${remaining})` : 'Gợi ý';
+        document.getElementById('listenHintBtnLabel').textContent = remaining > 0 ? `Hỏi Lulu (${remaining})` : 'Hỏi Lulu';
         if (remaining <= 0) hintBtn.disabled = true;
     }
+    if (window.AskLulu) window.AskLulu.say(hintBtn, `Lulu mách nè: ${_buildLetterHint(word, _listenHintCount)} 🍊`);
 }
 function checkListening(forceWrong) {
     _checkExactWordMatch('listenInput', 'listenFeedback', 'listenBtnNext', forceWrong);

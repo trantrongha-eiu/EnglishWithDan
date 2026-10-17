@@ -465,7 +465,11 @@
     try { localStorage.removeItem(tourKeyFor(page)); } catch (e) {}
   }
 
-  window.EWSTour = { start, reset };
+  // Whether a page has a tour — page-help.js offers "Xem hướng dẫn từng
+  // bước" only then.
+  function has(page) { return !!PAGE_TOURS[page]; }
+
+  window.EWSTour = { start, reset, has };
 
   // ── Auto-start (once per browser per page, logged-in users only) + the
   // always-available "replay" button nav.js injects hidden by default —

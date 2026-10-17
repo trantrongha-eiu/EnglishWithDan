@@ -7,6 +7,7 @@ function fmtTime(s) { if (!isFinite(s) || s < 0) s = 0; return Math.floor(s / 60
 let dictSections = [];      // picker list
 let dictSection  = null;    // currently open section (full doc incl. dictationSentences + audioUrl)
 let dictIndex    = 0;       // current sentence index
+let dictHintShown = [];     // letters Lulu has opened per word of the current sentence
 let dictDone     = new Set(); // indices answered correctly this session
 let dictTranslations = null; // Vietnamese meaning per sentence (null until loaded)
 let dictSpeeds   = [1, 1.25, 1.5, 0.75];
@@ -259,14 +260,13 @@ function dictGoTo(i) {
   const sentenceText = sentence.text || '';
   document.getElementById('dict-word-count').textContent = dictWords(sentenceText).length + ' từ';
   const hint = _buildDictHint(sentenceText);
+  dictHintShown = [];
   document.getElementById('dict-script-body').innerHTML =
-    `<div class="dict-hint-step">Gợi ý 1 · chữ cái đầu mỗi từ</div>` +
+    `<div class="dict-hint-step">Gợi ý · chữ cái đầu mỗi từ</div>` +
     `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
-    `<div class="dict-hint-pattern">${escHtml(hint.pattern)}</div>` +
+    `<div class="dict-hint-pattern" id="dict-hint-pattern">${escHtml(hint.pattern)}</div>` +
     `<div class="dict-hint2">` +
-      `<button type="button" class="dict-hint2-btn" id="dict-hint2-btn" onclick="dictShowHint2()"><i class="fas fa-eye"></i> Gợi ý 2: Hiện cả câu</button>` +
-      `<div class="dict-hint-step" id="dict-hint2-step" style="display:none">Gợi ý 2 · cả câu</div>` +
-      `<div class="dict-hint-full" id="dict-hint-full" style="display:none">${escHtml(sentenceText)}</div>` +
+      `<button type="button" class="dict-hint2-btn ask-lulu" id="dict-hint2-btn" onclick="dictAskLulu()"><span class="ask-lulu-ic"></span> Hỏi Lulu thêm 1 chữ</button>` +
     `</div>`;
   updateDictProgress(0);
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
@@ -290,12 +290,18 @@ function _buildDictHint(text) {
   return { wordCount: words.length, pattern };
 }
 
-// Second-level hint, one click deeper: the whole sentence, for when the
-// first-letter pattern still isn't enough to make out what was said.
-function dictShowHint2() {
-  document.getElementById('dict-hint2-btn').style.display = 'none';
-  document.getElementById('dict-hint2-step').style.display = '';
-  document.getElementById('dict-hint-full').style.display = '';
+// "Hỏi Lulu", for when the first-letter pattern isn't enough: each ask
+// opens ONE more letter of the first word the student hasn't typed right
+// yet (AskLulu.letterHint) — letter by letter, never the whole sentence
+// (that used to be a "Hiện cả câu" button, which let a student just read
+// the answer instead of transcribing what they heard).
+function dictAskLulu() {
+  if (!dictSection || !window.AskLulu) return;
+  const text = dictWords(currentSentence().text || '').join(' ');
+  const res = AskLulu.letterHint(text, document.getElementById('dict-input').value, dictHintShown);
+  const el = document.getElementById('dict-hint-pattern');
+  if (el) el.textContent = res.pattern;
+  AskLulu.say(document.getElementById('dict-hint2-btn'), AskLulu.line(res));
 }
 
 /* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared

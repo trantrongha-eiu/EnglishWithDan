@@ -12,18 +12,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb"/>
   <link rel="stylesheet" href="/css/components.css?v=d2125349c7"/>
-  <link rel="stylesheet" href="/css/writing-practice.css?v=155c178512"/>
-  <link rel="stylesheet" href="/css/mobile.css?v=79efafabbe"/>
+  <link rel="stylesheet" href="/css/writing-practice.css?v=f34fe3721d"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8"/>
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3"/>
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <link rel="stylesheet" href="/css/task1-practice.css?v=255b5fcdbb">
-  <link rel="stylesheet" href="/css/playful.css?v=637bc34694"/>
+  <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=c3ca51aefd"></script>
-<script src="/js/shared/onboarding-tour.js?v=b078d9ea3f"></script>
+<script src="/js/bundles/app-shell.js?v=238c2d3c10"></script>
+<script src="/js/shared/onboarding-tour.js?v=bba31307cf"></script>
 <script src="/js/shared/review-required-popup.js?v=3c690f3016"></script>
 <script src="/js/shared/writing-rewrite-reminder.js?v=2c99b4056c"></script>
 <script src="/js/shared/word-audio.js?v=11e353bb64"></script>
@@ -299,14 +299,14 @@
             <div class="wbw hidden" id="wbw">
               <div class="wbw-bar">
                 <span class="wbw-count" id="wbw-count">0 / 0 từ</span>
-                <button type="button" class="wbw-showall" id="wbw-showall" onclick="wbwToggleShowAll()">
-                  <i class="fas fa-eye"></i> <span>Hiện tất cả</span>
+                <button type="button" class="wbw-ask ask-lulu" id="wbw-ask" onclick="wbwAskLulu()" title="Hỏi Lulu chữ cái tiếp theo">
+                  <span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span>
                 </button>
               </div>
               <div class="wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
               <input class="wbw-input" id="wbw-input" type="text" autocomplete="off"
                 autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-              <div class="wbw-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.</div>
+              <div class="wbw-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.</div>
             </div>
             <textarea class="wp-answer-box" id="answer-box" placeholder="Viết câu trả lời của bạn tại đây..." rows="3" onkeydown="handleKeydown(event)"></textarea>
           </div>
@@ -357,8 +357,8 @@
             <button class="wp-skip-btn" id="skip-btn" onclick="skipExercise()">
               <i class="fas fa-forward"></i> Bỏ qua
             </button>
-            <button class="wp-vocab-hint-btn hidden" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">
-              <i class="fas fa-lightbulb"></i> <span id="vocab-hint-count"></span>
+            <button class="wp-vocab-hint-btn ask-lulu hidden" id="vocab-hint-btn" onclick="revealVocabHint()" title="Hỏi Lulu gợi ý từ vựng (tối đa 3 lần)">
+              <span class="ask-lulu-ic"></span> Hỏi Lulu <span id="vocab-hint-count"></span>
             </button>
             <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()" style="flex:1">
               <i class="fas fa-check"></i> Kiểm tra
@@ -526,8 +526,8 @@
   </div>
 </div>
 
-<script src="/js/shared/sentence-drill.js?v=dd6f448ca7"></script>
-<script src="/js/task1-practice.js?v=de9d388cd0"></script>
+<script src="/js/shared/sentence-drill.js?v=2690975fec"></script>
+<script src="/js/task1-practice.js?v=87250bf01b"></script>
 
 <!-- ── Mobile FAB ── -->
 <button class="wp-mob-fab" id="wp-mob-fab" onclick="openWpSheet()" aria-label="Bộ lọc & Cài đặt">

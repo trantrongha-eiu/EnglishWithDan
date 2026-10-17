@@ -69,7 +69,7 @@ function revealVocabHint() {
   if (!row) return;
   row.innerHTML = '';
   const lbl = document.createElement('span');
-  lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
+  lbl.className = 't1-hint-label'; lbl.textContent = '🍊 Lulu gợi ý:';
   row.appendChild(lbl);
   _vocabHintList.slice(0, _vocabHintCount).forEach(h => {
     const chip = document.createElement('span');
@@ -80,6 +80,7 @@ function revealVocabHint() {
   const countEl = document.getElementById('vocab-hint-count');
   if (countEl) countEl.textContent = `${_vocabHintCount}/${maxHints}`;
   if (btn) btn.disabled = _vocabHintCount >= maxHints;
+  if (window.AskLulu) window.AskLulu.say(btn, `Thử dùng “${_vocabHintList[_vocabHintCount - 1]}” xem sao nè 🍊`);
 }
 
 // rearrange

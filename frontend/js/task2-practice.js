@@ -2493,11 +2493,14 @@ function renderQuestion(q) {
   <div class="t2-wbw" id="wbw">
     <div class="t2-wbw-bar">
       <span class="t2-wbw-count" id="wbw-count">0 / 0 từ</span>
+      <button type="button" class="wbw-ask ask-lulu" id="wbw-ask" onclick="wbwAskLulu()" title="Hỏi Lulu chữ cái tiếp theo">
+        <span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span>
+      </button>
     </div>
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá.'}</div>
+    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'}</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
@@ -2583,6 +2586,8 @@ function wbwInit() {
     locked: answered
   };
 
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = _wbw.locked;
   const input = document.getElementById('wbw-input');
   if (input) {
     if (_wbw.locked) {
@@ -2603,6 +2608,22 @@ function wbwFocus() {
   if (!_wbw || _wbw.locked) return;
   const input = document.getElementById('wbw-input');
   if (input) input.focus();
+}
+
+// "Hỏi Lulu": Lulu tells the next letter of the word being typed — one
+// letter per ask, never the whole sentence, and never typed in for the
+// student (same as Luyện viết câu / Task 1's drill, js/shared/sentence-drill.js).
+function wbwAskLulu() {
+  if (!_wbw || _wbw.done || _wbw.locked) return;
+  const tok = _wbw.tokens[_wbw.activeIdx];
+  if (!tok) return;
+  const next = tok.target.charAt(_wbw.typed.length);
+  if (next && window.AskLulu) {
+    const so = _wbw.typed + next;
+    window.AskLulu.say(document.getElementById('wbw-ask'),
+      `Chữ tiếp theo là “${next}” nè — từ này bắt đầu “${so}${so.length < tok.target.length ? '…' : ''}” 🍊`);
+  }
+  wbwFocus();
 }
 
 function _wbwRenderWords() {
@@ -2722,6 +2743,8 @@ function _wbwComplete() {
   _wbw.locked = true;
   const input = document.getElementById('wbw-input');
   if (input) { input.disabled = true; input.blur(); }
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = true;
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(true);

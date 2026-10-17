@@ -501,13 +501,58 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 @media (max-width: 480px) { .lulu-peek { width: 98px; } }
 @media print { .lulu-peek { display: none !important; } }
 
+/* ── Hỏi Lulu — hint buttons (AskLulu in js/shared/playful.js) ──────────
+   .ask-lulu goes on the page's own hint button (keeps its size/layout, only
+   recolours it — never sets display, so the page's .hidden still wins);
+   .ask-lulu-ic is the live Lulu filled in by playful.js. */
+:root .ask-lulu { background: #fff4e6; border-color: #ffc58a; color: #c2410c; font-weight: 800; }
+:root .ask-lulu:hover:not(:disabled) { background: #ffe8cc; border-color: var(--pf-tangerine); color: #9a3412; }
+:root .ask-lulu:disabled { opacity: .5; cursor: default; }
+[data-theme="dark"] .ask-lulu.ask-lulu { background: #2a1a0a; border-color: #7c3d12; color: #fdba74; }
+[data-theme="dark"] .ask-lulu.ask-lulu:hover:not(:disabled) { background: #3a2410; border-color: var(--pf-tangerine); color: #fed7aa; }
+.ask-lulu-ic {
+  display: inline-block; width: 26px; height: 26px; flex: none;
+  vertical-align: middle; margin: -8px 1px -6px -4px;
+}
+.ask-lulu-ic .dan-svg { width: 100%; height: 100%; display: block; }
+.ask-lulu:hover:not(:disabled) .ask-lulu-ic .m-arm-r { animation: dan-wave .9s ease-in-out 1; }
+.ask-lulu.is-asked .ask-lulu-ic { animation: ask-lulu-hop .55s var(--pf-spring); }
+.ask-lulu:disabled .ask-lulu-ic { filter: grayscale(.7); }
+@keyframes ask-lulu-hop { 0% { transform: none; } 40% { transform: translateY(-7px) rotate(-10deg); } 75% { transform: scale(1.1, .9); } 100% { transform: none; } }
+
+.ask-lulu-bubble {
+  position: fixed; left: 0; top: 0; z-index: 10060;
+  display: flex; align-items: center; gap: 8px;
+  width: max-content; max-width: min(300px, calc(100vw - 16px)); box-sizing: border-box;
+  background: #fff; color: #222;
+  border: 2.5px solid var(--pf-ink); border-radius: 16px; box-shadow: var(--pf-shadow);
+  padding: 7px 13px 7px 7px; font-size: 13.5px; font-weight: 700; line-height: 1.45;
+  opacity: 0; visibility: hidden; pointer-events: none; cursor: pointer;
+  transform: translateY(6px) scale(.9); transform-origin: var(--alb-tail, 50%) 100%;
+  transition: opacity .16s, transform .24s var(--pf-spring), visibility 0s .24s;
+}
+.ask-lulu-bubble.is-below { transform: translateY(-6px) scale(.9); transform-origin: var(--alb-tail, 50%) 0; }
+.ask-lulu-bubble.is-on { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity .16s, transform .24s var(--pf-spring); }
+.ask-lulu-bubble::after {
+  content: ''; position: absolute; left: var(--alb-tail, 50%); bottom: -8px;
+  width: 12px; height: 12px; background: inherit;
+  border-right: 2.5px solid var(--pf-ink); border-bottom: 2.5px solid var(--pf-ink);
+  transform: translateX(-50%) rotate(45deg);
+}
+.ask-lulu-bubble.is-below::after { bottom: auto; top: -8px; transform: translateX(-50%) rotate(225deg); }
+.ask-lulu-bubble .alb-face { width: 36px; height: 36px; flex: none; }
+.ask-lulu-bubble .alb-face .dan-svg { width: 100%; height: 100%; display: block; }
+[data-theme="dark"] .ask-lulu-bubble { background: #1a1a1a; color: #eee; border-color: #555; }
+[data-theme="dark"] .ask-lulu-bubble::after { border-color: #555; }
+@media print { .ask-lulu-bubble { display: none !important; } }
+
 /* ── Respect reduced motion ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .dan-svg *, .sk-spark, .lh-mascot, .lulu-peek, .lulu-react .lr-mascot, .lulu-react .lr-bubble,
-  .pf-duo-heart, .lulu-react .pf-duo-lumi,
+  .pf-duo-heart, .lulu-react .pf-duo-lumi, .ask-lulu-ic,
   :root #screen-list.active .list-container > *,
   :root #book-welcome > div > * { animation: none !important; }
-  .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title { transition: none !important; }
+  .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title, .ask-lulu-bubble { transition: none !important; }
 }
 
 /* Test card buttons while /start is in flight (reading-v2.js _doStartExam). */

@@ -1187,12 +1187,12 @@ body {
   transition: background .2s, color .2s;
 }
 .wbw-count.is-full { background: #dcfce7; color: #15803d; }
-.wbw-showall {
-  background: none; border: none; color: #6366f1; font-weight: 700;
-  font-size: 12px; cursor: pointer; padding: 2px 4px; display: inline-flex;
-  align-items: center; gap: 4px;
+/* "Hỏi Lulu" — next-letter hint (colours from .ask-lulu in playful.css). */
+.wbw-ask {
+  margin-left: auto; border-width: 1.5px; border-style: solid; border-radius: 20px;
+  font-size: 12px; font-family: inherit; cursor: pointer; padding: 3px 11px 3px 8px;
+  display: inline-flex; align-items: center; gap: 3px;
 }
-.wbw-showall:hover { text-decoration: underline; }
 .wbw-words {
   display: flex; flex-wrap: wrap; gap: 7px 8px;
   padding: 12px; border-radius: 12px; background: #f9fafb;
@@ -1205,7 +1205,6 @@ body {
   background: #eef0f3; color: #9ca3af; border: 1.5px solid transparent;
   transition: background .18s, color .18s, border-color .18s, transform .18s;
 }
-.wbw-word.is-peek { color: #6b7280; font-style: italic; }
 .wbw-word.is-done { background: #dcfce7; color: #15803d; border-color: #86efac; }
 .wbw-word.just-done { animation: wbw-pop .34s ease; }
 .wbw-word.is-active {

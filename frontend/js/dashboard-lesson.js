@@ -667,7 +667,7 @@ function renderQuizQuestion() {
             <div id="qWbwHost"></div>
             <div class="fb-input-row" id="qInputRow">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
-                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
+                <button class="btn-hint-sm ask-lulu" id="qHintBtn" onclick="showLessonQuizHint()" title="Hỏi Lulu chữ cái tiếp theo"><span class="ask-lulu-ic"></span> <span id="qHintBtnLabel">Hỏi Lulu (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkFillQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -685,7 +685,7 @@ function renderQuizQuestion() {
             <div id="qWbwHost"></div>
             <div class="fb-input-row" id="qInputRow">
                 <input class="text-input" id="qListenInput" placeholder="Nhập từ bạn vừa nghe..." onkeypress="if(event.key==='Enter')checkListenQuiz()">
-                <button class="btn-hint-sm" id="qHintBtn" onclick="showLessonQuizHint()" aria-label="Gợi ý chữ cái"><i class="fas fa-lightbulb"></i> <span id="qHintBtnLabel">Gợi ý (${LESSON_QUIZ_HINT_MAX})</span></button>
+                <button class="btn-hint-sm ask-lulu" id="qHintBtn" onclick="showLessonQuizHint()" title="Hỏi Lulu chữ cái tiếp theo"><span class="ask-lulu-ic"></span> <span id="qHintBtnLabel">Hỏi Lulu (${LESSON_QUIZ_HINT_MAX})</span></button>
                 <button class="btn-check" onclick="checkListenQuiz()">Check</button>
             </div>
             <div id="qFeedback"></div>
@@ -878,11 +878,10 @@ function showLessonQuizHint() {
     }
     const remaining = LESSON_QUIZ_HINT_MAX - lessonState.quiz.hintCount;
     const label = document.getElementById('qHintBtnLabel');
-    if (label) label.textContent = remaining > 0 ? `Gợi ý (${remaining})` : 'Gợi ý';
-    if (remaining <= 0) {
-        const btn = document.getElementById('qHintBtn');
-        if (btn) btn.disabled = true;
-    }
+    if (label) label.textContent = remaining > 0 ? `Hỏi Lulu (${remaining})` : 'Hỏi Lulu';
+    const btn = document.getElementById('qHintBtn');
+    if (btn && remaining <= 0) btn.disabled = true;
+    if (window.AskLulu) window.AskLulu.say(btn, `Lulu mách nè: ${_buildLetterHint(word, lessonState.quiz.hintCount)} 🍊`);
 }
 
 // Word-by-word "gõ từng chữ" drill for the Fill / Listen quiz types — the

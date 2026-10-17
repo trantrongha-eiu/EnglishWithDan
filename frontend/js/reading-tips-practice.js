@@ -601,7 +601,7 @@
             ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
             <input class="fill-input rtp-input ${inputCls}" value="${esc(a.value)}" ${r ? 'readonly' : ''}
                    placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" />
-            ${r || !q.anchors.length ? '' : `<button type="button" class="rtp-link rtp-hint-btn" data-act="hint">💡 Gợi ý vị trí keyword</button>${a.hint ? JUMP_HTML : ''}`}
+            ${r || !q.anchors.length ? '' : `<button type="button" class="rtp-link rtp-hint-btn ask-lulu" data-act="hint"><span class="ask-lulu-ic"></span> Hỏi Lulu vị trí keyword</button>${a.hint ? JUMP_HTML : ''}`}
           </div>
           ${feedbackHtml(a, { timeLine })}
           ${navHtml()}
@@ -758,7 +758,7 @@
       <div class="rtp-mode hint">💡 Câu có gợi ý — bạn tự trả lời, mở gợi ý khi cần</div>
       ${lines.slice(0, lv).map(([t, b]) => `<div class="rtp-hint-line"><b>${t}:</b> ${b}</div>`).join('')}
       ${lv >= (headings ? 1 : 2) ? JUMP_HTML : ''}
-      ${!a.result && lv < lines.length ? `<button type="button" class="rtp-link" data-act="hint-more">💡 Mở ${esc(lines[lv][0].toLowerCase())}</button>` : ''}
+      ${!a.result && lv < lines.length ? `<button type="button" class="rtp-link ask-lulu" data-act="hint-more"><span class="ask-lulu-ic"></span> Hỏi Lulu: ${esc(lines[lv][0].toLowerCase())}</button>` : ''}
     </div>`;
   }
 

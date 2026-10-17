@@ -362,7 +362,7 @@ function luluOr(score, fallbackHtml) {
       }).join('') + '</div>' +
       '<div class="as-counter">' + (state.idx + 1) + ' / ' + state.sentences.length + ' câu</div>' +
       (state.showHints && hints.length
-        ? '<div class="as-hint-row" id="as-hint-row"><button class="as-hint-btn" id="as-hint-btn">💡 Gợi ý từ vựng <span id="as-hint-n">0/' + maxHint + '</span></button></div>'
+        ? '<div class="as-hint-row" id="as-hint-row"><button class="as-hint-btn ask-lulu" id="as-hint-btn" title="Hỏi Lulu gợi ý từ vựng"><span class="ask-lulu-ic"></span> Hỏi Lulu từ vựng <span id="as-hint-n">0/' + maxHint + '</span></button></div>'
         : '') +
       '<div class="as-card">' +
         '<div id="as-drill-host" class="as-drill-host"></div>' +
@@ -432,6 +432,7 @@ function luluOr(score, fallbackHtml) {
     });
     document.getElementById('as-hint-n').textContent = state.hintCount + '/' + max;
     if (state.hintCount >= max) btn.disabled = true;
+    if (window.AskLulu) window.AskLulu.say(btn, 'Thử dùng “' + hints[state.hintCount - 1] + '” xem sao nè 🍊');
   }
 
   async function submitAnswer() {

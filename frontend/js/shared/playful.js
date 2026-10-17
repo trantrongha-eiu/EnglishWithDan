@@ -927,7 +927,147 @@
     }
   }
 
+  // Lulu's face on the nav's "hướng dẫn trang này" button (nav.js renders it
+  // with a ? icon fallback; js/shared/page-help.js opens the guide).
+  function mountHelpButton() {
+    var slot = document.querySelector('#globalHelpBtn .nav-help-lulu');
+    if (slot && !slot.querySelector('.dan-svg')) slot.innerHTML = svg('happy', { label: 'Lulu' });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════
+     HỎI LULU — every student hint button asks Lulu instead of showing a
+     💡. The markup carries an empty <span class="ask-lulu-ic"></span>
+     (plus class "ask-lulu" on the button for the tangerine pill look);
+     it is filled with a live Lulu here — also for buttons rendered later
+     from template strings, via one MutationObserver.
+       AskLulu.say(btn, text, mood?)  Lulu pops a speech bubble over btn.
+       AskLulu.letterHint(target, typed, shown)
+                                      one more letter of the first word the
+                                      student hasn't got right yet — hints
+                                      go letter by letter, never the whole
+                                      sentence (dictation, shadowing, Task 2
+                                      template).
+       AskLulu.line(res)              what Lulu says for a letterHint result.
+     ══════════════════════════════════════════════════════════════════ */
+  function fillAskIcons() {
+    var nodes = document.querySelectorAll('.ask-lulu-ic:empty');
+    for (var i = 0; i < nodes.length; i++) {
+      nodes[i].setAttribute('aria-hidden', 'true');
+      nodes[i].innerHTML = svg('think', { label: 'Lulu' });
+    }
+  }
+
+  function watchAskIcons() {
+    fillAskIcons();
+    if (!window.MutationObserver || !document.body) return;
+    new MutationObserver(fillAskIcons).observe(document.body, { childList: true, subtree: true });
+  }
+
+  var askBubble = null, askTimer = 0, askScrollY = 0;
+  function hideAsk() { if (askBubble) askBubble.classList.remove('is-on'); }
+
+  function askSay(anchor, text, mood) {
+    if (!text || !document.body) return;
+    if (!askBubble) {
+      askBubble = document.createElement('div');
+      askBubble.className = 'ask-lulu-bubble';
+      askBubble.setAttribute('role', 'status');
+      askBubble.setAttribute('aria-live', 'polite');
+      askBubble.addEventListener('click', hideAsk);
+      document.body.appendChild(askBubble);
+      // Fixed-position: drop it once the page scrolls away from the button
+      // (a small nudge — e.g. focusing the input below — keeps it).
+      window.addEventListener('scroll', function () {
+        if (Math.abs(window.pageYOffset - askScrollY) > 40) hideAsk();
+      }, { passive: true });
+      window.addEventListener('resize', hideAsk);
+    }
+    askBubble.innerHTML = '<span class="alb-face" aria-hidden="true">' + svg(mood || 'wink', { label: 'Lulu' }) + '</span>' +
+      '<span class="alb-text"></span>';
+    askBubble.querySelector('.alb-text').textContent = text;
+    askBubble.classList.remove('is-on', 'is-below');
+
+    var vw = document.documentElement.clientWidth || window.innerWidth;
+    var r = anchor && anchor.getBoundingClientRect ? anchor.getBoundingClientRect() : null;
+    if (!r || (!r.width && !r.height)) r = { left: vw / 2, width: 0, top: window.innerHeight - 90, bottom: window.innerHeight - 90 };
+    var bw = askBubble.offsetWidth, bh = askBubble.offsetHeight;
+    var cx = r.left + r.width / 2;
+    var left = Math.max(8, Math.min(vw - bw - 8, cx - bw / 2));
+    var top = r.top - bh - 14, below = top < 8;
+    if (below) top = r.bottom + 14;
+    askBubble.style.left = left + 'px';
+    askBubble.style.top = top + 'px';
+    askBubble.style.setProperty('--alb-tail', Math.max(18, Math.min(bw - 18, cx - left)) + 'px');
+    askBubble.classList.toggle('is-below', below);
+    askScrollY = window.pageYOffset;
+    void askBubble.offsetWidth; // restart the pop-in
+    askBubble.classList.add('is-on');
+
+    if (anchor && anchor.classList) {
+      anchor.classList.remove('is-asked');
+      void anchor.offsetWidth;
+      anchor.classList.add('is-asked');
+    }
+    clearTimeout(askTimer);
+    askTimer = setTimeout(hideAsk, Math.min(9000, 3400 + text.length * 45));
+  }
+
+  // Letters that count for hints (Latin incl. Vietnamese) — punctuation
+  // stays visible in the pattern. No \p{L}: this file stays ES5-safe.
+  var HINT_LETTER = /[A-Za-z0-9À-ɏḀ-ỿ]/;
+  function hintLetters(w) {
+    var out = '';
+    for (var i = 0; i < w.length; i++) if (HINT_LETTER.test(w[i])) out += w[i];
+    return out;
+  }
+  function hintMask(w, n) {
+    var out = '', k = 0;
+    for (var i = 0; i < w.length; i++) {
+      if (HINT_LETTER.test(w[i])) { out += k < n ? w[i] : '_'; k++; }
+      else out += w[i];
+    }
+    return out;
+  }
+
+  // shown: per-word count of letters already revealed — the caller keeps it
+  // per question (an empty array is fine; each word starts at 1, the
+  // first-letter pattern pages already show). Mutated in place.
+  // → { pattern, done, word (1-based), letters, full }
+  function letterHint(target, typed, shown) {
+    var words = String(target || '').trim().split(/\s+/).filter(Boolean);
+    var got = String(typed || '').trim().split(/\s+/).filter(Boolean);
+    var i, idx = -1;
+    for (i = 0; i < words.length; i++) if (shown[i] == null) shown[i] = 1;
+    for (i = 0; i < words.length; i++) {
+      if (hintLetters(got[i] || '').toLowerCase() !== hintLetters(words[i]).toLowerCase()) { idx = i; break; }
+    }
+    var res = { done: idx < 0, word: idx + 1, letters: '', full: false };
+    if (idx >= 0) {
+      var want = hintLetters(words[idx]), have = hintLetters(got[idx] || '').toLowerCase();
+      var p = 0;
+      while (p < have.length && p < want.length && have[p] === want[p].toLowerCase()) p++;
+      // At least one new letter per ask, and always the one right after
+      // what they already typed correctly.
+      shown[idx] = Math.min(want.length, Math.max(shown[idx] + 1, p + 1));
+      res.full = shown[idx] >= want.length;
+      // As written (apostrophes kept): "I'm", "perso" — minus the blanks /
+      // the sentence's closing punctuation.
+      var masked = hintMask(words[idx], shown[idx]);
+      res.letters = res.full ? masked.replace(/[.,!?;:"”)]+$/, '') : masked.slice(0, masked.indexOf('_'));
+    }
+    res.pattern = words.map(function (w, j) { return hintMask(w, shown[j]); }).join(' ');
+    return res;
+  }
+
+  function letterLine(res) {
+    if (res.done) return 'Cậu gõ đúng hết rồi đó, bấm Kiểm tra thôi! 🎉';
+    if (res.full) return 'Từ thứ ' + res.word + ' là “' + res.letters + '” nè, cố lên! 💪';
+    return 'Từ thứ ' + res.word + ' bắt đầu bằng “' + res.letters + '…” nè 🍊';
+  }
+
   function init() {
+    try { watchAskIcons(); } catch (e) {}
+    try { mountHelpButton(); } catch (e) {}
     try { buildDock(); } catch (e) {}
     try { mountPeeks(); } catch (e) {}
     try { wrapToast(); } catch (e) {}
@@ -944,6 +1084,7 @@
     say: function (t, m, who) { say(t, m, who); }, hop: function (m) { hop(m); },
     lumiOutfit: lumiOutfit,
   };
+  window.AskLulu = { say: askSay, letterHint: letterHint, line: letterLine };
   window.TestCardArt = TestCardArt;
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -1153,7 +1153,7 @@ function switchTplMode(mode) {
 
 // ── Mode 1: Sentence-by-Sentence Translation ─────────────────────
 let _transIdx = 0; // index into the active type's flattened item list
-let _transHintLevel = 0; // 0=none, 1=one-third, 2=two-thirds, 3=full — resets whenever _transIdx changes
+let _transHintShown = []; // letters Lulu has opened per word (showTranslationHint) — resets whenever _transIdx changes
 
 function _tplFlatItems(typeId) {
   const type = TPL_DATA[typeId];
@@ -1202,7 +1202,7 @@ function renderTranslationMode() {
   const key = `${si}-${ii}`;
   const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
   const target = _fullEnglishSentence(item);
-  _transHintLevel = 0;
+  _transHintShown = [];
   const answerHint = _buildAnswerHint(target);
   // Word-by-word "gõ từng chữ" drill (same widget as Luyện viết Task 2) for
   // ordinary practice. Exam mode keeps the plain textarea — the drill needs
@@ -1230,7 +1230,7 @@ function renderTranslationMode() {
         <div class="t2-trans-actions" id="trans-actions">
           ${!alreadyOk ? `
             <button class="t2-trans-btn t2-trans-btn--check" id="trans-check-btn" onclick="checkTranslation()"${useDrill ? ' style="display:none"' : ''}><i class="fas fa-check"></i> Kiểm tra</button>
-            ${_examMode || useDrill ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" id="trans-hint-btn" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>`}
+            ${_examMode || useDrill ? '' : `<button class="t2-trans-btn t2-trans-btn--hint ask-lulu" id="trans-hint-btn" onclick="showTranslationHint()" title="Hỏi Lulu gợi ý từng chữ"><span class="ask-lulu-ic"></span> Hỏi Lulu</button>`}
             <button class="t2-trans-btn t2-trans-btn--skip" onclick="skipTranslation()"><i class="fas fa-forward"></i> Bỏ qua</button>
           ` : `
             <button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
@@ -1404,32 +1404,25 @@ function checkTranslation() {
   }
 }
 
+// "Hỏi Lulu": each ask opens ONE more letter of the first word the student
+// hasn't typed right yet (AskLulu.letterHint, in js/shared/playful.js) —
+// letter by letter, never the whole sentence.
 function showTranslationHint() {
-  if (_examMode) return; // hint button is hidden during exam mode
+  if (_examMode || !window.AskLulu) return; // hint button is hidden during exam mode
   const flat = _tplFlatItems(_tplActiveType);
   const target = _fullEnglishSentence(flat[_transIdx].item);
-  const words = target.split(' ');
-  _transHintLevel = Math.min(3, _transHintLevel + 1);
-  const fraction = _transHintLevel / 3;
-  const revealCount = _transHintLevel === 3 ? words.length : Math.max(1, Math.ceil(words.length * fraction));
-  const revealed = words.slice(0, revealCount).join(' ');
-  const isFull = _transHintLevel === 3;
+  const input = document.getElementById('trans-input');
+  const res = AskLulu.letterHint(target, input ? input.value : '', _transHintShown);
 
   const box = document.getElementById('trans-hint-box');
   if (box) {
     box.style.display = 'block';
     box.innerHTML = `
-      <div class="t2-trans-hint-label"><i class="fas fa-lightbulb"></i> Gợi ý ${isFull ? '(toàn bộ câu)' : `(${_transHintLevel}/3)`}</div>
-      <div class="t2-trans-hint-text">${escHtml(revealed)}${isFull ? '' : ' …'}</div>`;
+      <div class="t2-trans-hint-label">🍊 Lulu gợi ý</div>
+      <div class="t2-trans-hint-text">${escHtml(res.pattern)}</div>`;
   }
-
-  const btn = document.getElementById('trans-hint-btn');
-  if (btn && isFull) {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-lightbulb"></i> Đã hiện toàn bộ';
-  } else if (btn) {
-    btn.innerHTML = '<i class="fas fa-lightbulb"></i> Gợi ý thêm';
-  }
+  AskLulu.say(document.getElementById('trans-hint-btn'), AskLulu.line(res));
+  if (input) input.focus();
 }
 
 function skipTranslation() {
@@ -2064,7 +2057,7 @@ function enterExamMode() {
   // Reset the active mode to the start of one fresh, single pass — exam runs
   // never resume mid-session and never touch persisted practice progress
   // (mirrors Cloze, whose exam cards ignore _tplScores while _examMode).
-  if (_examScopeMode === 'translation') { _transIdx = 0; _transHintLevel = 0; }
+  if (_examScopeMode === 'translation') { _transIdx = 0; _transHintShown = []; }
   else if (_examScopeMode === 'dictation') { _dictIdx = 0; if ('speechSynthesis' in window) speechSynthesis.cancel(); }
   else if (_examScopeMode === 'chunks') { _chunkQueueType = null; }
   else if (_examScopeMode === 'build')  { _buildQueueType = null; }

@@ -206,6 +206,12 @@
     '<a href="/dashboard.html" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
+      // "Hướng dẫn trang này" — Lulu (js/shared/playful.js fills the face in
+      // once it loads; the ? icon is only the fallback). The panel itself is
+      // js/shared/page-help.js, loaded on first click — see below.
+      '<button class="btn-dark-mode nav-help-btn" id="globalHelpBtn" title="Lulu hướng dẫn dùng trang này" aria-label="Hướng dẫn sử dụng trang này" aria-haspopup="dialog">' +
+        '<span class="nav-help-lulu"><i class="fas fa-circle-question"></i></span>' +
+      '</button>' +
       // Sound / dark-mode / language / "replay tour" used to be 4 separate
       // round icon buttons crowding .nav-actions — merged into one "Tiện
       // ích" dropdown (hover on desktop via the shared .nav-dropdown
@@ -334,6 +340,31 @@
     document.body.appendChild(feedScript);
   }
 
+  // ── Lulu "hướng dẫn trang này" (js/shared/page-help.js) ──
+  // Loaded on the first click only — the per-page guide text is most of
+  // that file and most visits never open it. Pulses until the student has
+  // opened it once, so the button gets noticed.
+  (function () {
+    var helpBtn = document.getElementById('globalHelpBtn');
+    if (!helpBtn) return;
+    var SEEN_KEY = 'ews_page_help_seen';
+    try { if (!localStorage.getItem(SEEN_KEY)) helpBtn.classList.add('is-new'); } catch (e) {}
+    var loading = false;
+    helpBtn.addEventListener('click', function () {
+      helpBtn.classList.remove('is-new');
+      try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) {}
+      if (window.PageHelp) { window.PageHelp.open(); return; }
+      if (loading) return;
+      loading = true;
+      var s = document.createElement('script');
+      s.id = 'ews-page-help-js';
+      s.src = '/js/shared/page-help.js?v=2b67e4db33';
+      s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
+      s.onerror = function () { loading = false; s.remove(); };
+      document.body.appendChild(s);
+    });
+  })();
+
   // ── Nav visibility helpers ────────────────────────────────
   // Also hides the floating peer-chat bubble (js/shared/peer-chat-widget.js)
   // while it's active — on Reading/Listening/Writing exam screens it sits
@@ -352,6 +383,7 @@
       var el = document.getElementById(id);
       if (el) el.style.display = hidden ? 'none' : '';
     });
+    if (hidden && window.PageHelp) window.PageHelp.close();
   }
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
