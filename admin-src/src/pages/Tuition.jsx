@@ -442,9 +442,11 @@ export default function Tuition() {
             ))}
           </div>
 
-          {/* Create/Edit Form */}
+          {/* Create/Edit/Copy Form — a popup (was inline above the table, so
+              ✏️/📋 on a row further down opened a form the admin couldn't see) */}
           {showForm && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24, marginBottom: 20 }}>
+            <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+            <div role="dialog" aria-modal="true" style={{ background: 'var(--bg)', borderRadius: 12, padding: 24, width: 640, maxWidth: '95vw', maxHeight: '90vh', overflowY: 'auto' }}>
               <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>
                 {editFee ? '✏️ Sửa học phí' : isCopy ? '📋 Copy học phí sang tháng tiếp' : '＋ Thêm khoản học phí'}
               </h3>
@@ -545,6 +547,7 @@ export default function Tuition() {
                   </button>
                 </div>
               </form>
+            </div>
             </div>
           )}
 
