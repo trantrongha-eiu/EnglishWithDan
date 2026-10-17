@@ -81,6 +81,9 @@ const TEWS_PHRASE = {
   'tews-crunch-time': 'Crunch time', 'tews-thought-that-counts': 'It\'s the thought that counts',
 };
 
+// Hand-timed BBC Storytellers segments, { slug: [[start, end, text], …] }.
+const STORYTELLERS = require('./storytellersSegments.json');
+
 const KEITH = 'English Speaking Success (Keith)';
 const EPT = 'English Pro Tips';
 const JIMMY = 'Jimmy English Home';
@@ -1639,6 +1642,32 @@ const LESSONS = [
         clipStart: part3At - 1, clipEnd: 9999, description: part3Description, ...extra.p3 },
     ];
   }),
+  // ── BBC Learning English: The Storytellers (Joe & Bella stories) ────
+  // Whole story, hand-timed (storytellersSegments.json). The BBC videos are
+  // "made for kids", so YouTube serves no captions for them. Text = the
+  // official script on bbc.co.uk/learningenglish/english/features/
+  // childrens-stories/<page>; timings = per-word times of the en-orig auto
+  // captions on Picture Future's re-upload, whose timeline matches the BBC
+  // video frame for frame (YouTube storyboards compared, 0 s shift). Only the
+  // BBC original is embedded. Other episodes have no caption-bearing copy
+  // with a matching timeline yet.
+  ...[
+    ['ikEzzuijaJ0', 'story-football-match', 'Football match', 'Football match - The Storytellers',
+      'Joe được chọn vào đội bóng của trường, nhưng một cậu bé to con cứ chơi xấu — và Bella lao ra sân bênh anh! Từ vựng: pitch, referee, yellow card, trip up, bully, score a goal.'],
+    ['vv8xhL7Xstg', 'story-sick-day', 'Sick day', 'Sick day - The Storytellers',
+      'Bella kêu ốm để được nghỉ học — hóa ra đã ăn vụng hết hộp kẹo! Còn Joe đau khuỷu tay mà chẳng ai để ý. Từ vựng: sore, tummy, feverish, bruise, X-ray, sling.'],
+    ['ZjkU4GZKaqQ', 'story-camping', 'Camping', 'Camping - The Storytellers',
+      'Chuyến cắm trại đầu tiên của Bella: dựng lều, nướng marshmallow và tiếng sột soạt bí ẩn ngoài lều lúc nửa đêm. Từ vựng: tent, sleeping bag, pitch a tent, rustling, hike.'],
+    ['FnxIZ3RxG7o', 'story-school-trip', 'School trip', 'School trip - The Storytellers',
+      'Lớp Joe đi công viên động vật hoang dã nhưng xe hỏng giữa đường cao tốc và khu sư tử lại đóng cửa! Từ vựng: wildlife park, coach, break down, motorway, enclosure.'],
+    ['4XuB_U69nAY', 'story-rainy-day', 'Rainy day', 'Rainy day - The Storytellers',
+      'Mưa cả ngày, không đi biển được — Bella làm "bánh" cho chú chó Selby (thức ăn cho chó + cornflakes!). Từ vựng: pouring, sheeting down, queasy, make the best of it, sprinkles.'],
+    ['jrFaxNvX2Bo', 'story-car-journey', 'Car journey', 'Car journey - The Storytellers',
+      '"Are we nearly there yet?" — chuyến đi xe lên Scotland: chơi I Spy, kẹt xe, lạc đường ở ngã tư và Bella chỉ đúng hướng. Từ vựng: traffic jam, service station, crossroads, signpost.'],
+  ].map(([youtubeId, slug, title, sourceTitle, description]) => ({
+    slug, youtubeId, title: `Joe & Bella: ${title}`, sourceTitle, channel: 'BBC Learning English',
+    category: 'kids-stories', level: 'B1', description, segments: STORYTELLERS[slug], burnedInCaptions: true,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.

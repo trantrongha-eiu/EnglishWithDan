@@ -244,3 +244,57 @@ body { background: var(--bg); }
     max-height: calc(100vh - var(--nav-height, 64px) - 40px); position: sticky; top: calc(var(--nav-height, 64px) + 20px);
   }
 }
+
+/* "Xem video" mode: our own subtitles over the video (the stories have no
+   YouTube captions), kept clear of the player's control bar. */
+.sh-video > .sh-subtitle {
+  position: absolute; inset: auto 6% clamp(40px, 12%, 64px); width: auto; height: auto;
+  text-align: center; pointer-events: none; z-index: 2;
+}
+.sh-video > .sh-subtitle.top { inset: clamp(8px, 4%, 24px) 18% auto; }
+.sh-subtitle.top .sh-subtitle-vi { margin-top: 0; }
+.sh-subtitle[hidden] { display: none; }
+.sh-subtitle span {
+  display: inline; background: rgba(0, 0, 0, .72); color: #fff; padding: 2px 8px; border-radius: 4px;
+  font-size: clamp(14px, 1.7vw, 22px); line-height: 1.55; font-weight: 600;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.sh-subtitle .sh-subtitle-vi { display: block; margin-top: 4px; }
+.sh-subtitle .sh-subtitle-vi span { font-size: clamp(12px, 1.35vw, 17px); font-weight: 500; color: #ffe58a; }
+
+/* Mode picker shown when a lesson opens */
+.sh-chooser {
+  position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, .55);
+  display: flex; align-items: center; justify-content: center; padding: 16px; overflow-y: auto;
+}
+.sh-chooser[hidden] { display: none; }
+.sh-chooser-box {
+  background: var(--surface); color: var(--text); border-radius: var(--radius); box-shadow: var(--shadow-lg, 0 20px 50px rgba(0,0,0,.25));
+  width: min(760px, 100%); padding: 24px; margin: auto;
+}
+.sh-chooser-box h2 { margin: 0 0 4px; font-size: 20px; }
+.sh-chooser-lesson { margin: 0 0 18px; color: var(--text2); font-size: 14px; }
+.sh-chooser-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 640px) { .sh-chooser-grid { grid-template-columns: 1fr; } .sh-chooser-box { padding: 18px 16px; } }
+.sh-choice {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left;
+  border: 2px solid var(--border); background: var(--surface); color: var(--text); border-radius: var(--radius);
+  padding: 16px; cursor: pointer; font-family: inherit; font-size: 15px; transition: border-color .15s, transform .15s;
+}
+.sh-choice > span:last-child { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.sh-choice:hover, .sh-choice:focus-visible { border-color: var(--brand); transform: translateY(-2px); outline: none; }
+.sh-choice.last { border-color: var(--brand); }
+.sh-choice-ic { font-size: 28px; line-height: 1; }
+@media (max-width: 640px) {
+  .sh-choice { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; row-gap: 2px; padding: 12px 14px; }
+  .sh-choice-ic { grid-row: 1 / span 2; align-self: center; }
+}
+.sh-chooser-back {
+  margin-top: 16px; background: none; border: none; color: var(--text2); font-family: inherit; font-size: 13px;
+  font-weight: 600; cursor: pointer; padding: 6px 0;
+}
+.sh-chooser-back:hover { color: var(--text); }
+@media (max-width: 600px) {
+  .sh-modes { width: 100%; }
+  .sh-mode { flex: 1; padding: 8px 6px; font-size: 12.5px; white-space: nowrap; }
+}

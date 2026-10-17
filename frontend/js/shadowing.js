@@ -5,12 +5,19 @@
  * video is embedded with the YouTube IFrame API — never downloaded — and a
  * sentence is "played" by seeking to its start and pausing at its end.
  *
+ * A mode picker opens with every lesson (unless the URL names a mode):
+ *
+ *  - Xem video (watch): the whole clip plays on, with our own English /
+ *    Vietnamese subtitles over the video; the student pauses when they like.
  *  - Shadowing: listen → repeat aloud. The browser's SpeechRecognition
  *    transcribes the attempt, which is diffed word-by-word against the
  *    sentence; a parallel MediaRecorder keeps the audio so the student can
  *    compare their own voice with the original.
  *  - Dictation: listen → type, scored with the same LCS word diff as
  *    dictation.html (video covered so on-screen captions don't give it away).
+ *    The Vietnamese meaning appears once the sentence is typed right.
+ *  - Moving to another sentence (→, "Câu tiếp") plays it straight away in
+ *    Shadowing / Dictation, and each sentence pauses at its end.
  *  - "Phát liên tục" (or the YouTube player's own play button) plays on
  *    past the sentence end, with the transcript following the video.
  */
@@ -25,8 +32,9 @@
     'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
     'comedy': 'Hài Stand-up', 'ted-shorts': 'TED ngắn', 'everyday-english': 'Everyday English',
-    'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp',
+    'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp', 'kids-stories': 'Truyện kể BBC',
   };
+  const MODES = ['watch', 'shadowing', 'dictation'];
   const SPEEDS = [1, 0.75, 0.5, 1.25];
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -37,7 +45,7 @@
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify({
         speedIdx, autorec: $('opt-autorec').checked, hide: $('opt-hide').checked, vi: $('opt-vi').checked,
-        tipsClosed: !$('sh-tips').open, bigVideo,
+        sub: $('opt-sub').checked, tipsClosed: !$('sh-tips').open, bigVideo, lastMode,
       }));
     } catch (_) { /* storage unavailable */ }
   }
@@ -64,6 +72,7 @@
   let idx = 0;
   let dcHintShown = []; // letters Lulu has opened per word (Dictation pane hint)
   let mode = 'shadowing';
+  let lastMode = 'shadowing'; // pre-selected in the mode picker next time
   let speedIdx = 0;
   // Best result per segment, per mode: { shadowing: {i: {matched,total}}, dictation: {...} }
   let answers = { shadowing: {}, dictation: {} };
@@ -127,19 +136,20 @@
         player.pauseVideo();
         stopAt = null;
         stopPoll();
-        if (continuous) setContinuous(false);
-        else onSegmentEnded();
+        if (continuous) {
+          setContinuous(false);
+          if (mode === 'watch') onWatchEnded();
+        } else onSegmentEnded();
       }
     }, 50);
   }
 
   // Free play (YouTube's own controls, or "Phát liên tục"): move the current
   // sentence along with the video instead of leaving it on the old one.
-  // Shadowing only: in Dictation a sentence change would wipe what the
-  // student is typing.
+  // Not in Dictation: a sentence change would wipe what the student is typing.
   function followVideo(t) {
     const segs = lesson.segments;
-    if (mode !== 'shadowing' || t < segs[0].start || t > segs[segs.length - 1].end + 1) return;
+    if (mode === 'dictation' || t < segs[0].start || t > segs[segs.length - 1].end + 1) return;
     let i = idx;
     while (i + 1 < segs.length && t >= segs[i + 1].start) i++;
     while (i > 0 && t < segs[i].start) i--;
@@ -176,6 +186,62 @@
       const btn = $(id);
       if (btn) btn.innerHTML = playing ? '<i class="fas fa-pause"></i> Dừng' : '<i class="fas fa-play"></i> Nghe';
     }
+    $('wt-play').innerHTML = playing ? '<i class="fas fa-pause"></i> Tạm dừng' : '<i class="fas fa-play"></i> Xem';
+  }
+
+  // ══════════════ WATCH ("Xem video") ══════════════
+  // Plays from sentence i (default: where the student is) to the end of the
+  // clip; the transcript and subtitles follow the video (followVideo).
+  async function watchFrom(i) {
+    if (!lesson) return;
+    if (i != null && i !== idx) goTo(i);
+    const p = await playerReady;
+    const segs = lesson.segments;
+    $('wt-done').className = 'sh-score';
+    setContinuous(true);
+    stopAt = segs[segs.length - 1].end;
+    p.seekTo(segs[idx].start, true);
+    p.setPlaybackRate(SPEEDS[speedIdx]);
+    p.playVideo();
+  }
+
+  // Pause keeps the position; play resumes from it — unless the student has
+  // since moved to another sentence, then it starts from that one.
+  async function watchToggle() {
+    if (!lesson) return;
+    const p = await playerReady;
+    if (isPlaying) { p.pauseVideo(); return; }
+    const segs = lesson.segments;
+    const t = p.getCurrentTime();
+    const next = segs[idx + 1];
+    const inCurrent = t >= segs[idx].start - 0.2 && (next ? t < next.start : t < segs[idx].end - 0.2);
+    if (!inCurrent) { watchFrom(); return; }
+    $('wt-done').className = 'sh-score';
+    setContinuous(true);
+    stopAt = segs[segs.length - 1].end;
+    p.setPlaybackRate(SPEEDS[speedIdx]);
+    p.playVideo();
+  }
+
+  function onWatchEnded() {
+    showScore('wt-done', 'good', '🎉 Xem hết bài rồi!',
+      'Giờ chọn tab Shadowing để nói theo từng câu, hoặc Dictation để chép lại.');
+  }
+
+  // Subtitles over the video in watch mode. A video with its own English
+  // subtitles burned in (BBC Storytellers) gets only the Vietnamese, at the
+  // top, so the two don't sit on top of each other.
+  function renderSubtitle() {
+    const el = $('sh-subtitle');
+    const seg = lesson && lesson.segments[idx];
+    const burned = !!(lesson && lesson.burnedInCaptions);
+    const vi = seg ? viOf(seg) : '';
+    const on = !!seg && mode === 'watch' && $('opt-sub').checked && (!burned || !!vi);
+    el.hidden = !on;
+    if (!on) return;
+    el.classList.toggle('top', burned);
+    el.innerHTML = (burned ? '' : `<span>${escHtml(seg.text)}</span>`) +
+      (vi ? `<span class="sh-subtitle-vi"><span>${escHtml(vi)}</span></span>` : '');
   }
 
   async function playSegment() {
@@ -445,7 +511,8 @@
       `<span class="${refHit.has(k) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`).join(' ') +
       (extra.length ? ' ' + extra.map((w) => `<span class="w-extra">${escHtml(w)}</span>`).join(' ') : '');
     $('dc-diff').classList.add('show');
-    $('dc-vi').textContent = seg.answer ? [seg.text, viOf(seg)].filter(Boolean).join(' — ') : viOf(seg);
+    // The Vietnamese meaning is the reward for a sentence typed right.
+    $('dc-vi').textContent = [seg.answer ? seg.text : '', perfect ? (seg.vi || '') : ''].filter(Boolean).join(' — ');
     showScore('dc-score', perfect ? 'good' : scoreClass(pct),
       perfect ? '✓ Chính xác!' : `Đúng ${refHit.size}/${ref.length} từ`,
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
@@ -512,6 +579,17 @@
   }
 
   // ══════════════ NAVIGATION / RENDER ══════════════
+  // ← / → / "Câu tiếp": move one sentence and play it straight away
+  // (Shadowing / Dictation); in watch mode a playing video carries on from it.
+  function step(delta) {
+    const i = idx + delta;
+    if (!lesson || i < 0 || i >= lesson.segments.length) return;
+    const wasPlaying = isPlaying;
+    goTo(i);
+    if (mode !== 'watch') playSegment();
+    else if (wasPlaying) watchFrom();
+  }
+
   // opts.keepPlaying: called by followVideo() while the video plays on —
   // only the sentence UI moves, the player is left alone.
   function goTo(i, opts) {
@@ -528,6 +606,12 @@
     $('sh-cur').textContent = i + 1;
     $('sh-prev').disabled = i === 0;
     $('sh-next').disabled = i === lesson.segments.length - 1;
+    $('sh-nextbtn').disabled = i === lesson.segments.length - 1;
+
+    // Watch pane + subtitles
+    $('wt-sentence').textContent = seg.text;
+    $('wt-vi').textContent = viOf(seg);
+    renderSubtitle();
 
     // Shadowing pane
     const hide = $('opt-hide').checked;
@@ -580,32 +664,59 @@
 
   function renderList() {
     if (!lesson) return;
-    const done = answers[mode];
+    const done = answers[mode] || {};
     $('sh-list').innerHTML = lesson.segments.map((s, i) => {
       const a = done[i];
       const pct = a ? Math.round((a.matched / a.total) * 100) : null;
       const masked = mode === 'dictation' && !a;
+      // Dictation: the meaning only shows for sentences already typed right.
+      const vi = mode !== 'dictation' || (a && a.matched === a.total) ? viOf(s) : '';
       return `<div class="sh-item${i === idx ? ' current' : ''}" data-i="${i}">
         <span class="sh-item-num">${i + 1}</span>
-        <span class="sh-item-text${masked ? ' masked' : ''}">${masked ? '•••' : escHtml(s.text) + (viOf(s) ? `<span class="sh-item-vi">${escHtml(viOf(s))}</span>` : '')}</span>
+        <span class="sh-item-text${masked ? ' masked' : ''}">${masked ? '•••' : escHtml(s.text) + (vi ? `<span class="sh-item-vi">${escHtml(vi)}</span>` : '')}</span>
         ${pct != null ? `<span class="sh-item-score ${scoreClass(pct)}">${pct}%</span>` : ''}
       </div>`;
     }).join('');
-    $('sh-progress').textContent = `${Object.keys(done).length}/${lesson.segments.length} câu`;
+    $('sh-progress').textContent = mode === 'watch' ? `${lesson.segments.length} câu` : `${Object.keys(done).length}/${lesson.segments.length} câu`;
   }
 
   function setMode(m) {
+    if (!MODES.includes(m)) m = 'shadowing';
     if (recording) stopRecord();
     mode = m;
+    if (lastMode !== m) { lastMode = m; savePrefs(); }
     document.querySelectorAll('.sh-mode').forEach((b) => b.classList.toggle('active', b.dataset.mode === m));
+    $('pane-watch').style.display = m === 'watch' ? '' : 'none';
     $('pane-shadowing').style.display = m === 'shadowing' ? '' : 'none';
     $('pane-dictation').style.display = m === 'dictation' ? '' : 'none';
     $('sh-playall').style.display = m === 'shadowing' ? '' : 'none';
+    $('wt-done').className = 'sh-score';
     setVideoCover(m === 'dictation');
     if (m === 'dictation') hideCaptions();
     syncUrl();
     goTo(idx);
     renderList();
+  }
+
+  // ══════════════ MODE PICKER ══════════════
+  // Shown when a lesson opens, before anything plays; the click that picks
+  // a mode is also the user gesture that lets the video start.
+  function showChooser() {
+    $('sh-chooser-lesson').textContent = lesson ? lesson.title : '';
+    document.querySelectorAll('.sh-choice').forEach((b) => b.classList.toggle('last', b.dataset.mode === lastMode));
+    $('sh-chooser').hidden = false;
+    const last = document.querySelector(`.sh-choice[data-mode="${lastMode}"]`);
+    if (last) last.focus({ preventScroll: true });
+  }
+  function chooserOpen() { return !$('sh-chooser').hidden; }
+  function closeChooser() { $('sh-chooser').hidden = true; }
+
+  function chooseMode(m) {
+    closeChooser();
+    if (!lesson) return;
+    setMode(m);
+    if (m === 'watch') watchFrom(0);
+    else playSegment();
   }
 
   // Covers the video in Dictation so captions / on-screen text can't give
@@ -744,6 +855,8 @@
     if (reqId !== openSeq) return;
     lesson = data.lesson;
     if (!lesson || !(lesson.segments || []).length) { toast('Bài này chưa có dữ liệu.', 'error'); backToList(); return; }
+    setContinuous(false);
+    stopAt = null;
 
     answers = { shadowing: {}, dictation: {} };
     dirty = { shadowing: false, dictation: false };
@@ -760,7 +873,10 @@
     $('sh-sr-notice').classList.toggle('show', !SR);
 
     ensurePlayer(lesson.youtubeId, lesson.clipStart);
-    setMode(new URLSearchParams(location.search).get('mode') === 'dictation' ? 'dictation' : 'shadowing');
+    // A link that names the mode skips the picker.
+    const urlMode = new URLSearchParams(location.search).get('mode');
+    setMode(MODES.includes(urlMode) ? urlMode : lastMode);
+    if (!MODES.includes(urlMode)) showChooser();
     if (!fromCleanPath) syncUrl();
     if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('screen-practice', 'shadowing',
       (e) => !(e.target.closest && e.target.closest('.sh-vi, .sh-item-vi, .masked')));
@@ -768,6 +884,7 @@
 
   function backToList() {
     openSeq++;
+    closeChooser();
     if (recording) stopRecord();
     const saved = saveSession();
     if (player && player.pauseVideo) player.pauseVideo();
@@ -785,7 +902,7 @@
     const url = new URL(location.href);
     if (url.pathname.startsWith('/shadowing/')) return; // clean path stays as-is
     url.searchParams.set('lesson', lesson.slug);
-    if (mode === 'dictation') url.searchParams.set('mode', 'dictation'); else url.searchParams.delete('mode');
+    if (mode === 'shadowing') url.searchParams.delete('mode'); else url.searchParams.set('mode', mode);
     history.replaceState({}, '', url);
   }
 
@@ -824,16 +941,25 @@
     if (!item || e.detail >= 2) return;
     goTo(Number(item.dataset.i));
     if (mode === 'shadowing') playSegment();
+    else if (mode === 'watch') watchFrom();
   });
+  document.querySelectorAll('.sh-choice').forEach((b) => b.addEventListener('click', () => chooseMode(b.dataset.mode)));
+  // Clicking the dimmed backdrop just closes the picker (current mode, nothing plays).
+  $('sh-chooser').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeChooser(); });
   $('opt-hide').addEventListener('change', () => { savePrefs(); goTo(idx); });
   $('opt-autorec').addEventListener('change', savePrefs);
-  $('opt-vi').addEventListener('change', () => {
+  // "Hiện tiếng Việt" lives in both the watch and the shadowing pane.
+  function onViToggle(e) {
+    $('opt-vi').checked = $('opt-vi-w').checked = e.target.checked;
     savePrefs();
     if (!lesson) return;
-    $('sh-vi').textContent = viOf(lesson.segments[idx]);
-    if ($('dc-diff').classList.contains('show')) $('dc-vi').textContent = viOf(lesson.segments[idx]);
+    $('sh-vi').textContent = $('wt-vi').textContent = viOf(lesson.segments[idx]);
+    renderSubtitle();
     renderList();
-  });
+  }
+  $('opt-vi').addEventListener('change', onViToggle);
+  $('opt-vi-w').addEventListener('change', onViToggle);
+  $('opt-sub').addEventListener('change', () => { savePrefs(); renderSubtitle(); });
 
   $('dc-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -848,7 +974,13 @@
 
   document.addEventListener('keydown', (e) => {
     if (!lesson || !$('screen-practice').classList.contains('active')) return;
-    if (e.ctrlKey && e.code === 'Space') { e.preventDefault(); playSegment(); return; }
+    if (chooserOpen()) {
+      if (e.key === 'Escape') closeChooser();
+      else if (/^[123]$/.test(e.key)) chooseMode(MODES[Number(e.key) - 1]);
+      return;
+    }
+    const play = mode === 'watch' ? watchToggle : playSegment;
+    if (e.ctrlKey && e.code === 'Space') { e.preventDefault(); play(); return; }
     const t = e.target;
     if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.isContentEditable)) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -857,17 +989,17 @@
       // Space only ever means play/pause here.
       if (t && t.tagName === 'BUTTON') t.blur();
       e.preventDefault();
-      playSegment();
+      play();
     }
-    else if (e.key === 'ArrowRight') goTo(idx + 1);
-    else if (e.key === 'ArrowLeft') goTo(idx - 1);
+    else if (e.key === 'ArrowRight') step(1);
+    else if (e.key === 'ArrowLeft') step(-1);
     else if ((e.key === 'r' || e.key === 'R') && mode === 'shadowing') toggleRecord();
   });
 
   function toggleRecord() { if (recording) stopRecord(); else startRecord(); }
 
   // Inline onclick handlers in shadowing.html
-  Object.assign(window, { backToList, setMode, toggleBigVideo, goTo, playSegment, playAll, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, dcNext, toggleHint });
+  Object.assign(window, { backToList, setMode, toggleBigVideo, goTo, step, watchToggle, watchFrom, playSegment, playAll, toggleRecord, playMine, cycleSpeed, dcCheck, dcRetry, dcNext, toggleHint });
   Object.defineProperty(window, 'idx', { get: () => idx, configurable: true });
 
   // ══════════════ INIT ══════════════
@@ -876,7 +1008,9 @@
     if (Number.isInteger(prefs.speedIdx) && SPEEDS[prefs.speedIdx]) { speedIdx = prefs.speedIdx; $('sh-speed').textContent = SPEEDS[speedIdx] + 'x'; }
     $('opt-autorec').checked = !!prefs.autorec;
     $('opt-hide').checked = !!prefs.hide;
-    $('opt-vi').checked = prefs.vi !== false;
+    $('opt-vi').checked = $('opt-vi-w').checked = prefs.vi !== false;
+    $('opt-sub').checked = prefs.sub !== false;
+    if (MODES.includes(prefs.lastMode)) lastMode = prefs.lastMode;
     bigVideo = prefs.bigVideo !== false;
     applyBigVideo();
     // Tips stay open until the student folds them away once.

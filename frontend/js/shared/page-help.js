@@ -324,23 +324,27 @@
 
     'shadowing.html': {
       title: 'Shadowing',
-      intro: 'Luyện nói theo video YouTube ngắn: nghe từng câu rồi nói lại (Shadowing) hoặc gõ lại (Dictation).',
+      intro: 'Luyện nghe – nói theo video YouTube: mở bài nào cũng được chọn 1 trong 3 chế độ — Xem video (có phụ đề), Shadowing (nói theo từng câu) hoặc Dictation (gõ lại).',
       sections: [
         { icon: '🎬', title: 'Chọn bài', items: [
-          'Lọc theo chủ đề (Speaking Part 1–3, BBC 6 Minute English, TED, Everyday English…) và trình độ A2 – C2.',
+          'Lọc theo chủ đề (Speaking Part 1–3, Truyện kể BBC, BBC 6 Minute English, TED, Everyday English…) và trình độ A2 – C2.',
           'Mẹo: xem <b>1 video nhiều lần</b> hiệu quả hơn xem nhiều video 1 lần.',
         ] },
+        { icon: '📺', title: 'Xem video', items: [
+          'Video chạy liền mạch từ đầu đến cuối, phụ đề Anh – Việt hiện ngay trên video. Bấm <b>Tạm dừng</b> / <b>Space</b> khi muốn dừng.',
+          'Bấm một câu trong transcript để xem từ câu đó. Tắt <b>Phụ đề trên video</b> hoặc <b>Hiện tiếng Việt</b> nếu muốn thử thách.',
+        ] },
         { icon: '🗣️', title: 'Shadowing', items: [
-          'Bấm <b>Nghe</b> để phát câu, rồi <b>Nói theo</b> để ghi âm. Hệ thống so từng từ với câu gốc.',
+          'Video tự dừng sau mỗi câu. Bấm <b>Nói theo</b> để ghi âm, hệ thống so từng từ với câu gốc. Bấm <b>Câu tiếp</b> (hoặc →) là phát luôn câu sau.',
           'Bấm <b>Giọng của tôi</b> để nghe lại và so với bản gốc.',
           'Tuỳ chọn: <b>Tự ghi âm sau khi nghe xong</b>, <b>Ẩn câu</b> (thử thách), <b>Hiện tiếng Việt</b>.',
           '<b>Phát liên tục</b> để xem video chạy tiếp, transcript tự chạy theo.',
         ] },
         { icon: '⌨️', title: 'Dictation', items: [
-          'Chuyển sang tab <b>Dictation</b>: nghe câu, gõ lại, bấm <b>Kiểm tra</b> rồi <b>Câu tiếp</b>. Bí thì bấm <b>Gợi ý</b>.',
+          'Nghe câu, gõ lại, bấm <b>Kiểm tra</b> rồi <b>Câu tiếp</b>. Chép đúng cả câu sẽ hiện nghĩa tiếng Việt. Bí thì bấm <b>Hỏi Lulu</b>.',
         ] },
       ],
-      keys: [['Space', 'Phát / dừng câu hiện tại'], ['← →', 'Câu trước / câu sau'], ['R', 'Bắt đầu / dừng ghi âm (Shadowing)'], ['Ctrl + Space', 'Phát câu khi đang gõ'], ['Enter', 'Kiểm tra / sang câu tiếp (Dictation)']],
+      keys: [['Space', 'Phát / dừng câu hiện tại (Xem video: xem / tạm dừng)'], ['← →', 'Câu trước / câu sau (tự phát)'], ['1 2 3', 'Chọn chế độ khi vừa mở bài'], ['R', 'Bắt đầu / dừng ghi âm (Shadowing)'], ['Ctrl + Space', 'Phát câu khi đang gõ'], ['Enter', 'Kiểm tra / sang câu tiếp (Dictation)']],
     },
 
     'reading-listening-strategy.html': {

@@ -10,7 +10,7 @@
  */
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'fun-shorts', 'comedy', 'ted-shorts', 'everyday-english', 'spelling-numbers', 'grammar'];
+const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'kids-stories', 'fun-shorts', 'comedy', 'ted-shorts', 'everyday-english', 'spelling-numbers', 'grammar'];
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
@@ -31,6 +31,9 @@ const ShadowingLessonSchema = new mongoose.Schema({
   level:       { type: String, enum: ['A2', 'B1', 'B2', 'C1', 'C2'], default: 'B1' },
   clipStart:   { type: Number, required: true },
   clipEnd:     { type: Number, required: true },
+  // The video shows its own English subtitles (BBC Storytellers): the
+  // player's "Xem video" overlay then adds only the Vietnamese, at the top.
+  burnedInCaptions: { type: Boolean, default: false },
   segments:    { type: [SegmentSchema], default: [] },
   order:       { type: Number, default: 0 },
   isPublished: { type: Boolean, default: true },

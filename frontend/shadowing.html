@@ -19,12 +19,12 @@
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=a3c022da4f" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/shadowing.css?v=c78929c2a7">
+  <link rel="stylesheet" href="/css/shadowing.css?v=eb9d8e43cf">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 
 <body>
-<script src="/js/bundles/app-shell.js?v=f1f7636a92"></script>
+<script src="/js/bundles/app-shell.js?v=00aa59f2ac"></script>
 <script src="/js/shared/route-params.js?v=9269bcbbb4"></script>
 <script src="/js/shared/word-audio.js?v=11e353bb64"></script>
 <script src="/js/shared/dictionary-lookup.js?v=f9ebb9bf99"></script>
@@ -42,7 +42,7 @@
       <summary>💡 Bí quyết: xem 1 video nhiều lần, đừng xem nhiều video 1 lần</summary>
       <ol>
         <li><b>Chọn 1 video vừa sức và luyện nó đến khi thành thạo</b> rồi mới sang bài mới. Nhại lại 1 video 5–10 lần giúp bạn tiến bộ hơn nhiều so với xem lướt 10 video.</li>
-        <li><b>Lần đầu: xem cả video để hiểu nội dung</b> (bật "Hiện tiếng Việt" nếu cần).</li>
+        <li><b>Lần đầu: chọn chế độ "Xem video"</b> để xem liền mạch kèm phụ đề Anh – Việt và hiểu nội dung.</li>
         <li><b>Những lần sau: nghe từng câu rồi nhại lại y hệt.</b> Bắt chước ngữ điệu (lên/xuống giọng), trọng âm, nối âm và chỗ ngắt nghỉ, không chỉ đọc đúng từ. Câu nhanh thì giảm tốc độ xuống 0.75x.</li>
         <li><b>Bấm "Giọng của tôi" để nghe lại và so với giọng gốc.</b> Sửa từng chỗ khác rồi nói lại.</li>
         <li><b>Gặp từ mới thì bấm đúp vào từ để tra nghĩa và lưu vào Sổ từ vựng.</b> Ôn lại mỗi ngày và thử dùng từ đó khi nói.</li>
@@ -65,6 +65,7 @@
       <button class="sh-chip" data-cat="ielts-part2">Speaking Part 2</button>
       <button class="sh-chip" data-cat="ielts-part3">Speaking Part 3</button>
       <button class="sh-chip" data-cat="6-minute-english">BBC 6 Minute English</button>
+      <button class="sh-chip" data-cat="kids-stories">📖 Truyện kể BBC</button>
       <button class="sh-chip" data-cat="fun-shorts">😄 Video ngắn vui</button>
       <button class="sh-chip" data-cat="comedy">🎭 Hài Stand-up</button>
       <button class="sh-chip" data-cat="ted-shorts">🎤 TED Talks ngắn</button>
@@ -99,6 +100,7 @@
       </div>
       <button class="sh-size" id="sh-size" onclick="toggleBigVideo()"></button>
       <div class="sh-modes" role="tablist">
+        <button class="sh-mode" data-mode="watch" onclick="setMode('watch')"><i class="fas fa-film"></i> Xem video</button>
         <button class="sh-mode active" data-mode="shadowing" onclick="setMode('shadowing')"><i class="fas fa-microphone"></i> Shadowing</button>
         <button class="sh-mode" data-mode="dictation" onclick="setMode('dictation')"><i class="fas fa-keyboard"></i> Dictation</button>
       </div>
@@ -106,15 +108,31 @@
 
     <div class="sh-layout">
       <div class="sh-main">
-        <div class="sh-video-box"><div class="sh-video"><div id="yt-player"></div></div></div>
+        <div class="sh-video-box"><div class="sh-video"><div id="yt-player"></div><div class="sh-subtitle" id="sh-subtitle" hidden></div></div></div>
 
         <div class="sh-panel">
           <div class="sh-nav-row">
-            <button class="sh-arrow" id="sh-prev" onclick="goTo(idx - 1)" title="Câu trước (←)"><i class="fas fa-chevron-left"></i></button>
+            <button class="sh-arrow" id="sh-prev" onclick="step(-1)" title="Câu trước (←)"><i class="fas fa-chevron-left"></i></button>
             <span class="sh-counter">Câu <span id="sh-cur">1</span>/<span id="sh-total">1</span></span>
-            <button class="sh-arrow" id="sh-next" onclick="goTo(idx + 1)" title="Câu sau (→)"><i class="fas fa-chevron-right"></i></button>
+            <button class="sh-arrow" id="sh-next" onclick="step(1)" title="Câu sau (→)"><i class="fas fa-chevron-right"></i></button>
             <button class="sh-playall" id="sh-playall" onclick="playAll()" title="Phát liên tục từ câu này đến hết bài, transcript tự chạy theo"><i class="fas fa-forward"></i> Phát liên tục</button>
             <button class="sh-speed" id="sh-speed" onclick="cycleSpeed()" title="Tốc độ phát">1x</button>
+          </div>
+
+          <!-- Watch mode: the whole clip plays on, with subtitles over the video -->
+          <div id="pane-watch" style="display:none">
+            <div class="sh-sentence" id="wt-sentence"></div>
+            <div class="sh-vi" id="wt-vi"></div>
+            <div class="sh-actions">
+              <button class="sh-btn sh-btn-primary" id="wt-play" onclick="watchToggle()" title="Xem / tạm dừng (Space)"><i class="fas fa-play"></i> Xem</button>
+              <button class="sh-btn sh-btn-ghost" onclick="watchFrom(0)" title="Xem lại từ câu đầu"><i class="fas fa-rotate-left"></i> Xem lại từ đầu</button>
+            </div>
+            <div class="sh-opts">
+              <label class="sh-toggle"><input type="checkbox" id="opt-sub" checked> Phụ đề trên video</label>
+              <label class="sh-toggle"><input type="checkbox" id="opt-vi-w" checked> Hiện tiếng Việt</label>
+              <div class="sh-hint sh-kbd" style="margin:0 0 0 auto">Phím tắt: <kbd>Space</kbd> xem / tạm dừng · <kbd>←</kbd>/<kbd>→</kbd> câu trước / sau</div>
+            </div>
+            <div class="sh-score" id="wt-done"></div>
           </div>
 
           <!-- Shadowing mode -->
@@ -129,12 +147,13 @@
               <button class="sh-btn sh-btn-primary" id="sh-play" onclick="playSegment()" title="Nghe câu (Space)"><i class="fas fa-play"></i> Nghe</button>
               <button class="sh-btn sh-btn-rec" id="sh-rec" onclick="toggleRecord()" title="Nói theo (R)"><i class="fas fa-microphone"></i> Nói theo</button>
               <button class="sh-btn sh-btn-ghost" id="sh-mine" onclick="playMine()" disabled title="Nghe lại giọng của bạn"><i class="fas fa-user"></i> Giọng của tôi</button>
+              <button class="sh-btn sh-btn-primary" id="sh-nextbtn" onclick="step(1)" title="Sang câu sau và nghe luôn (→)">Câu tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
             <div class="sh-opts">
               <label class="sh-toggle"><input type="checkbox" id="opt-autorec"> Tự ghi âm sau khi nghe xong</label>
               <label class="sh-toggle"><input type="checkbox" id="opt-hide"> Ẩn câu (thử thách)</label>
               <label class="sh-toggle"><input type="checkbox" id="opt-vi" checked> Hiện tiếng Việt</label>
-              <div class="sh-hint sh-kbd" style="margin:0 0 0 auto">Phím tắt: <kbd>Space</kbd> nghe · <kbd>R</kbd> ghi âm · <kbd>←</kbd>/<kbd>→</kbd> chuyển câu</div>
+              <div class="sh-hint sh-kbd" style="margin:0 0 0 auto">Phím tắt: <kbd>Space</kbd> nghe · <kbd>R</kbd> ghi âm · <kbd>←</kbd>/<kbd>→</kbd> chuyển câu (tự phát)</div>
             </div>
             <div class="sh-score" id="sh-score"></div>
           </div>
@@ -166,11 +185,34 @@
         <div class="sh-list" id="sh-list"></div>
       </aside>
     </div>
+
+    <!-- Mode picker, shown when a lesson opens (before the video starts) -->
+    <div class="sh-chooser" id="sh-chooser" hidden>
+      <div class="sh-chooser-box" role="dialog" aria-modal="true" aria-labelledby="sh-chooser-title">
+        <h2 id="sh-chooser-title">Bạn muốn luyện bài này thế nào?</h2>
+        <p class="sh-chooser-lesson" id="sh-chooser-lesson"></p>
+        <div class="sh-chooser-grid">
+          <button class="sh-choice" data-mode="watch" type="button">
+            <span class="sh-choice-ic">🎬</span><b>1. Xem video</b>
+            <span>Xem liền mạch từ đầu đến cuối, có phụ đề Anh – Việt. Muốn dừng thì bấm tạm dừng.</span>
+          </button>
+          <button class="sh-choice" data-mode="shadowing" type="button">
+            <span class="sh-choice-ic">🎙️</span><b>2. Shadowing</b>
+            <span>Video tự dừng sau mỗi câu để bạn nói theo. Bấm "Câu tiếp" là phát luôn câu sau.</span>
+          </button>
+          <button class="sh-choice" data-mode="dictation" type="button">
+            <span class="sh-choice-ic">⌨️</span><b>3. Dictation</b>
+            <span>Nghe từng câu rồi gõ lại. Chép đúng cả câu sẽ hiện nghĩa tiếng Việt.</span>
+          </button>
+        </div>
+        <button class="sh-chooser-back" type="button" onclick="backToList()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+      </div>
+    </div>
   </div>
 
 </div>
 
-<script src="/js/shadowing.js?v=9613680a22"></script>
+<script src="/js/shadowing.js?v=e4f7d15846"></script>
 <script src="https://www.youtube.com/iframe_api" async></script>
 
 <div id="dict-popup" class="dict-popup hidden">
