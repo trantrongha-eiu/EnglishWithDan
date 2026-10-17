@@ -71,6 +71,29 @@
     return EXAM_MODES[mode] ? '&exam=' + mode : '';
   }
 
+  // ── ?parts=1,2 ─────────────────────────────────────────────────────
+  // "Chọn phần làm": a full Reading/Listening test link can carry the
+  // passages/sections picked, so a teacher can copy the address bar of a
+  // "Section 1, 2" attempt and send exactly that to a student.
+
+  /** Picked part numbers ([1, 2]) within 1..max, or null = whole test. */
+  function examParts(max) {
+    var raw = new URLSearchParams(window.location.search).get('parts');
+    if (!raw) return null;
+    var out = [];
+    raw.split(',').forEach(function (s) {
+      var n = parseInt(s, 10);
+      if (n >= 1 && n <= max && out.indexOf(n) < 0) out.push(n);
+    });
+    out.sort(function (a, b) { return a - b; });
+    return out.length && out.length < max ? out : null;
+  }
+
+  /** "&parts=1,2" for a partial pick, '' for the whole test. */
+  function partsSuffix(parts) {
+    return parts && parts.length ? '&parts=' + parts.join(',') : '';
+  }
+
   // ── ?tip=<lessonKey>[&tcat=<category>] ─────────────────────────────
   // One URL per Tips lesson (Reading/Listening/Writing/Speaking Tips).
   // lessonKey is only unique per category (see the {category, lessonKey}
@@ -114,6 +137,8 @@
     match: match,
     examMode: examMode,
     examSuffix: examSuffix,
+    examParts: examParts,
+    partsSuffix: partsSuffix,
     findTip: findTip,
     syncTip: syncTip,
   };

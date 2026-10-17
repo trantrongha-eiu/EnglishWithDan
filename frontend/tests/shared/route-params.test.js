@@ -75,6 +75,28 @@ describe('RouteParams.examMode / examSuffix', () => {
   });
 });
 
+describe('RouteParams.examParts / partsSuffix', () => {
+  test('reads a valid ?parts= pick, sorted and de-duplicated', () => {
+    setPath('/listening.html?testId=abc&exam=practice&parts=2,1,2');
+    expect(window.RouteParams.examParts(4)).toEqual([1, 2]);
+  });
+
+  test('missing, out-of-range or whole-test picks → null', () => {
+    setPath('/listening.html?testId=abc');
+    expect(window.RouteParams.examParts(4)).toBeNull();
+    setPath('/listening.html?testId=abc&parts=0,9,x');
+    expect(window.RouteParams.examParts(4)).toBeNull();
+    setPath('/reading.html?testId=abc&parts=1,2,3');
+    expect(window.RouteParams.examParts(3)).toBeNull();
+  });
+
+  test('partsSuffix only for a partial pick', () => {
+    expect(window.RouteParams.partsSuffix([1, 2])).toBe('&parts=1,2');
+    expect(window.RouteParams.partsSuffix(null)).toBe('');
+    expect(window.RouteParams.partsSuffix([])).toBe('');
+  });
+});
+
 describe('RouteParams.findTip / syncTip', () => {
   const LESSONS = [
     { category: 'Kỹ thuật', lessonKey: '30-second-strategy' },

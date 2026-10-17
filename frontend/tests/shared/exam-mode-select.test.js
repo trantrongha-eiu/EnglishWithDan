@@ -213,6 +213,17 @@ describe('ExamModeSelect — "Chọn phần làm"', () => {
     expect(document.getElementById('ews-ms-sim-btn').disabled).toBe(true);
   });
 
+  test('picked (from a ?parts= link) pre-selects only those sections', () => {
+    global.fetch = fetchOnce({ active: false });
+    const onPractice = jest.fn();
+    window.ExamModeSelect.open({ skill: 'listening', parts: { count: 4, unit: 'Section', picked: [1, 2] }, onPractice, onSimulation: jest.fn() });
+    expect(chip(1).getAttribute('aria-pressed')).toBe('true');
+    expect(chip(3).getAttribute('aria-pressed')).toBe('false');
+    expect(document.getElementById('ews-ms-parts-sum').textContent).toBe('2 section');
+    document.getElementById('ews-ms-practice-btn').click();
+    expect(onPractice).toHaveBeenCalledWith([1, 2]);
+  });
+
   test('available:false (no per-section audio) shows no chips and starts the whole test', () => {
     global.fetch = fetchOnce({ active: false });
     const onPractice = jest.fn();

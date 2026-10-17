@@ -440,6 +440,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // goes through ExamModeSelect (pre-selected) so a link never starts a
   // proctored attempt without the student's click.
   const examParam      = window.RouteParams ? window.RouteParams.examMode() : null;
+  // ?parts=1,3 — a "Chọn phần làm" link: those passages only.
+  const partsParam     = window.RouteParams ? window.RouteParams.examParts(READING_PARTS.count) : null;
 
   if (reviewId) {
     if (!fromCleanPath) history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
@@ -467,17 +469,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       // hasPremiumAccess() applies, wrongly paywalling a legitimate
       // trial/staff user who opens a direct/shared test link.
       if (window.AuthService.hasPremiumAccess()) {
-        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}${window.RouteParams ? window.RouteParams.examSuffix(examParam) : ''}`);
+        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}${window.RouteParams ? window.RouteParams.examSuffix(examParam) + window.RouteParams.partsSuffix(partsParam) : ''}`);
         state.testId = test._id;
         state.testName = test.name;
         if (examParam === 'simulation' && window.ExamModeSelect) {
           window.ExamModeSelect.open({
-            skill: 'reading', preferred: 'simulation', parts: READING_PARTS,
+            skill: 'reading', preferred: 'simulation', parts: { ...READING_PARTS, picked: partsParam },
             onPractice: parts => _doStartExam(test._id, 'practice', parts),
             onSimulation: parts => _doStartExam(test._id, 'simulation', parts),
           });
         } else {
-          _doStartExam(test._id);
+          _doStartExam(test._id, 'practice', partsParam);
         }
       } else {
         // Same fromCleanPath guard as the premium branch above — this was
@@ -785,15 +787,18 @@ function goToStartTest(testId, testName, preferred = null) {
   }
 }
 
-// Stamps the chosen mode into the current start URL (?testId=… or the
-// clean /reading/test/:id path) — the Practice and the Simulation run of
-// one test get different links. Mock mode owns its own URL; left alone.
-function _stampExamMode(mode) {
+// Stamps the chosen mode — and the "Chọn phần làm" pick (?parts=1,3) — into
+// the current start URL (?testId=… or the clean /reading/test/:id path), so
+// the Practice / Simulation / partial runs of one test each get their own
+// link a teacher can copy and send. Mock mode owns its own URL; left alone.
+function _stampExamMode(mode, parts = null) {
   if (_mockMode) return;
   const u = new URL(location.href);
-  if (u.searchParams.get('exam') === mode) return;
   u.searchParams.set('exam', mode);
-  history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+  if (parts && parts.length) u.searchParams.set('parts', parts.join(','));
+  else u.searchParams.delete('parts');
+  const next = u.pathname + u.search.replace(/%2C/gi, ',') + u.hash;
+  if (next !== location.pathname + location.search + location.hash) history.replaceState(history.state, '', next);
 }
 
 // Reading's own equivalent of the 4-skill Mock Test's disqualify handoff
@@ -839,7 +844,7 @@ async function _doStartExam(testId, mode = 'practice', parts = null) {
       setLoading(false);
       return;
     }
-    _stampExamMode(mode);
+    _stampExamMode(mode, res.parts || parts);
     startExam(res);
   } catch (e) {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
@@ -1055,7 +1060,7 @@ function resumeExam() {
   // Give the resumed exam its own URL (was left on ?mode=full) so a reload
   // lands back here via the ?testId= resume path in the init block.
   if (!_mockMode && !data.mockId && data.testId) {
-    const url = `?testId=${data.testId}&exam=${state.mode}`;
+    const url = `?testId=${data.testId}&exam=${state.mode}${window.RouteParams ? window.RouteParams.partsSuffix(state.parts) : ''}`;
     const st = { screen: 'starting', testId: data.testId, testName: data.testName };
     if (new URLSearchParams(location.search).get('testId') === String(data.testId)) history.replaceState(st, '', url);
     else history.pushState(st, '', url);

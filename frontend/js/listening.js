@@ -275,7 +275,7 @@ function resumeExam() {
     state.currentTestId = data.currentTestId;
     state.currentTest = t;
     {
-        const _url = `?testId=${data.currentTestId}&exam=${data.mode || 'practice'}`;
+        const _url = `?testId=${data.currentTestId}&exam=${data.mode || 'practice'}${window.RouteParams ? window.RouteParams.partsSuffix(data.parts) : ''}`;
         const _st = { screen: 'exam', testId: data.currentTestId, testName: t.name };
         if (new URLSearchParams(location.search).get('testId') !== String(data.currentTestId)) history.pushState(_st, '', _url);
         else history.replaceState(_st, '', _url);
@@ -908,7 +908,8 @@ function renderTestList(groups) {
                 document.getElementById('resume-banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
-            goToStartTest(_tid, window.RouteParams ? window.RouteParams.examMode() : null);
+            goToStartTest(_tid, window.RouteParams ? window.RouteParams.examMode() : null,
+                window.RouteParams ? window.RouteParams.examParts(4) : null);
         }, 80);
     }
 }
@@ -1040,7 +1041,8 @@ function goToLsPage(p) {
 // ══════════════════════════════════════════════
 // PLAN-GATED START
 // ══════════════════════════════════════════════
-function goToStartTest(testId, preferred = null) {
+// pickedParts: sections to pre-pick in "Chọn phần làm" (a ?parts= link).
+function goToStartTest(testId, preferred = null, pickedParts = null) {
     // Was `_userPlan !== 'premium'` — see reading-v2.js's identical
     // fix (Phase 5 audit finding): staff accounts were incorrectly
     // blocked here even though startPracticeSection() already
@@ -1055,7 +1057,7 @@ function goToStartTest(testId, preferred = null) {
         const _t = (state.tests || []).find(t => String(t._id) === String(testId));
         window.ExamModeSelect.open({
             skill: 'listening', preferred,
-            parts: { count: 4, unit: 'Section', available: !!(_t && _t.partsPickable) },
+            parts: { count: 4, unit: 'Section', available: !!(_t && _t.partsPickable), picked: pickedParts },
             onPractice: parts => startTest(testId, 'practice', parts),
             onSimulation: parts => startTest(testId, 'simulation', parts),
         });
@@ -1136,15 +1138,20 @@ async function startTest(testId, mode = 'practice', parts = null) {
         // (deep-link auto-start — renderTestList()).
         if (!_mockMode) {
             // Practice and Simulation runs of one test get different
-            // links (?exam=). A clean /listening/test/:id keeps its path.
+            // links (?exam=), and so does a "Chọn phần làm" pick (?parts=1,2)
+            // — the teacher copies the address bar to send exactly that
+            // attempt. A clean /listening/test/:id keeps its path.
             const _u = new URL(location.href);
             const _st = { screen: 'exam', testId, testName: t.name };
             const _onClean = /^\/listening\/test\/[^/]+$/.test(_u.pathname);
+            const _parts = t.parts || parts;
             if (_u.searchParams.get('testId') === String(testId) || _onClean) {
                 _u.searchParams.set('exam', mode);
-                history.replaceState(_st, '', _u.pathname + _u.search);
+                if (_parts && _parts.length) _u.searchParams.set('parts', _parts.join(','));
+                else _u.searchParams.delete('parts');
+                history.replaceState(_st, '', _u.pathname + _u.search.replace(/%2C/gi, ','));
             } else {
-                history.pushState(_st, '', `?testId=${testId}&exam=${mode}`);
+                history.pushState(_st, '', `?testId=${testId}&exam=${mode}${window.RouteParams ? window.RouteParams.partsSuffix(_parts) : ''}`);
             }
         }
         state.attemptId = t.attemptId || null;

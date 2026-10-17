@@ -15,8 +15,9 @@
  *                                           // only that card is shown
  *     parts: { count: 3, unit: 'Passage',   // optional — full Reading/Listening
  *              minutesEach: 20,             // test: "Chọn phần làm" chips. The
- *              available: true },           // callbacks then get the picked part
- *                                           // numbers ([1, 2]) or null = all.
+ *              available: true,             // callbacks then get the picked part
+ *              picked: [1, 2] },            // numbers ([1, 2]) or null = all.
+ *                                           // picked: pre-pick (a ?parts= link).
  *   });
  *
  * On open, fetches GET /api/exam-simulation/cooldown so a student who was
@@ -162,7 +163,9 @@
 
     var unit = cfg.unit || 'Part';
     var picked = [];
-    for (var i = 1; i <= count; i++) picked.push(i);
+    for (var i = 1; i <= count; i++) {
+      if (!cfg.picked || !cfg.picked.length || cfg.picked.indexOf(i) >= 0) picked.push(i);
+    }
 
     if (cfg.available === false) {
       sum.textContent = 'Cả bài';
