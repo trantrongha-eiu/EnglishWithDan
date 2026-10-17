@@ -123,7 +123,9 @@
     isPlaying = e.data === YT.PlayerState.PLAYING;
     setPlayIcon(isPlaying);
     if (isPlaying) startPoll(); else stopPoll();
-    if (mode === 'dictation') hideCaptions();
+    if (mode === 'dictation' || (mode === 'watch' && $('opt-sub').checked)) hideCaptions();
+    // Paused: YouTube's controls come up, so the subtitles move above them.
+    document.querySelector('.sh-video').classList.toggle('paused', !isPlaying);
   }
 
   function startPoll() {
@@ -236,8 +238,17 @@
     const seg = lesson && lesson.segments[idx];
     const burned = !!(lesson && lesson.burnedInCaptions);
     const vi = seg ? viOf(seg) : '';
-    const on = !!seg && mode === 'watch' && $('opt-sub').checked && (!burned || !!vi);
+    const watching = !!seg && mode === 'watch';
+    const subOn = $('opt-sub').checked;
+    const on = watching && subOn && (!burned || !!vi);
+    // On/off button in the corner of the video (watch mode only)
+    const btn = $('sh-cc-btn');
+    btn.hidden = !watching;
+    btn.classList.toggle('off', !subOn);
+    btn.querySelector('span').textContent = subOn ? 'Phụ đề: bật' : 'Phụ đề: tắt';
     el.hidden = !on;
+    // Ours replaces YouTube's own CC, which would otherwise show twice.
+    if (on) hideCaptions();
     if (!on) return;
     el.classList.toggle('top', burned);
     el.innerHTML = (burned ? '' : `<span>${escHtml(seg.text)}</span>`) +
@@ -960,6 +971,12 @@
   $('opt-vi').addEventListener('change', onViToggle);
   $('opt-vi-w').addEventListener('change', onViToggle);
   $('opt-sub').addEventListener('change', () => { savePrefs(); renderSubtitle(); });
+  function toggleSubtitles() {
+    $('opt-sub').checked = !$('opt-sub').checked;
+    savePrefs();
+    renderSubtitle();
+  }
+  $('sh-cc-btn').addEventListener('click', (e) => { e.currentTarget.blur(); toggleSubtitles(); });
 
   $('dc-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -994,6 +1011,7 @@
     else if (e.key === 'ArrowRight') step(1);
     else if (e.key === 'ArrowLeft') step(-1);
     else if ((e.key === 'r' || e.key === 'R') && mode === 'shadowing') toggleRecord();
+    else if ((e.key === 'c' || e.key === 'C') && mode === 'watch') toggleSubtitles();
   });
 
   function toggleRecord() { if (recording) stopRecord(); else startRecord(); }

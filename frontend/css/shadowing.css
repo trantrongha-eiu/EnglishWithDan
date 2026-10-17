@@ -254,6 +254,20 @@ body { background: var(--bg); }
 .sh-video > .sh-subtitle.top { inset: clamp(8px, 4%, 24px) 18% auto; }
 .sh-subtitle.top .sh-subtitle-vi { margin-top: 0; }
 .sh-subtitle[hidden] { display: none; }
+/* Paused: YouTube's (taller, newer) control bar is up — lift the subtitles over it. */
+.sh-video.paused > .sh-subtitle:not(.top) { bottom: clamp(70px, 26%, 140px); }
+
+/* Subtitle on/off button in the video's corner (watch mode) */
+.sh-video > .sh-cc-btn {
+  position: absolute; left: 10px; bottom: auto; top: clamp(56px, 16%, 72px); z-index: 3;
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, .35); border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, .62); color: #fff; font: 600 12px/1.2 inherit; font-family: inherit; cursor: pointer;
+}
+.sh-video > .sh-cc-btn:hover { background: rgba(0, 0, 0, .8); }
+.sh-video > .sh-cc-btn.off { opacity: .75; }
+.sh-video > .sh-cc-btn.off i { text-decoration: line-through; }
+.sh-cc-btn[hidden] { display: none; }
 .sh-subtitle span {
   display: inline; background: rgba(0, 0, 0, .72); color: #fff; padding: 2px 8px; border-radius: 4px;
   font-size: clamp(14px, 1.7vw, 22px); line-height: 1.55; font-weight: 600;

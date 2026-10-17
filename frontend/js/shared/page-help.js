@@ -332,7 +332,7 @@
         ] },
         { icon: '📺', title: 'Xem video', items: [
           'Video chạy liền mạch từ đầu đến cuối, phụ đề Anh – Việt hiện ngay trên video. Bấm <b>Tạm dừng</b> / <b>Space</b> khi muốn dừng.',
-          'Bấm một câu trong transcript để xem từ câu đó. Tắt <b>Phụ đề trên video</b> hoặc <b>Hiện tiếng Việt</b> nếu muốn thử thách.',
+          'Bấm một câu trong transcript để xem từ câu đó. Bấm nút <b>Phụ đề</b> ở góc video (hoặc phím C) để bật / tắt phụ đề; tắt <b>Hiện tiếng Việt</b> nếu chỉ muốn xem phụ đề tiếng Anh.',
         ] },
         { icon: '🗣️', title: 'Shadowing', items: [
           'Video tự dừng sau mỗi câu. Bấm <b>Nói theo</b> để ghi âm, hệ thống so từng từ với câu gốc. Bấm <b>Câu tiếp</b> (hoặc →) là phát luôn câu sau.',
@@ -344,7 +344,7 @@
           'Nghe câu, gõ lại, bấm <b>Kiểm tra</b> rồi <b>Câu tiếp</b>. Chép đúng cả câu sẽ hiện nghĩa tiếng Việt. Bí thì bấm <b>Hỏi Lulu</b>.',
         ] },
       ],
-      keys: [['Space', 'Phát / dừng câu hiện tại (Xem video: xem / tạm dừng)'], ['← →', 'Câu trước / câu sau (tự phát)'], ['1 2 3', 'Chọn chế độ khi vừa mở bài'], ['R', 'Bắt đầu / dừng ghi âm (Shadowing)'], ['Ctrl + Space', 'Phát câu khi đang gõ'], ['Enter', 'Kiểm tra / sang câu tiếp (Dictation)']],
+      keys: [['Space', 'Phát / dừng câu hiện tại (Xem video: xem / tạm dừng)'], ['← →', 'Câu trước / câu sau (tự phát)'], ['1 2 3', 'Chọn chế độ khi vừa mở bài'], ['C', 'Bật / tắt phụ đề trên video (Xem video)'], ['R', 'Bắt đầu / dừng ghi âm (Shadowing)'], ['Ctrl + Space', 'Phát câu khi đang gõ'], ['Enter', 'Kiểm tra / sang câu tiếp (Dictation)']],
     },
 
     'reading-listening-strategy.html': {
