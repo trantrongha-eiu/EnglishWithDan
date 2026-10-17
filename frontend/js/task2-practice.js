@@ -1014,6 +1014,7 @@ function renderIdeaStep(isCurrent) {
     <section class="t2-step t2-ideas${isCurrent ? ' is-current' : ''}" id="t2-step-ideas">
       ${_stepHead(2, 'Brainstorm ý tưởng', '', done)}
       <p class="t2-step-desc">Cùng nhóm nghĩ thật nhiều ý cho từng phần, rồi ghi lại những ý hay nhất — chúng sẽ hiện bên cạnh khi bạn viết bài.</p>
+      ${t.prompt ? `<div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>` : ''}
       ${sides.map((h, i) => `
         <label class="t2-brainstorm-side" for="t2-idea-${i}">${_escHtml(h.side)}</label>
         <textarea id="t2-idea-${i}" class="t2-brainstorm-input" rows="3" placeholder="Ý của nhóm cho phần này..." oninput="onIdeaInput(${i}, this.value)">${_escHtml(bs.notes[i] || '')}</textarea>`).join('')}
@@ -1387,7 +1388,7 @@ function _teacherGuideHtml(t) {
       `HS nắm ${vocabN ? vocabN + ' từ / collocation' : 'các từ / collocation'} trọng tâm của chủ đề.`,
       ['Giới thiệu nhanh các từ trọng tâm, bấm 🔊 cho cả lớp nghe phát âm, nhấn mạnh <b>collocation</b> đi kèm.',
        'Cho HS bấm <b>Lưu tất cả vào sổ</b>.',
-       `<b>Quiz từ vựng là bắt buộc:</b> mỗi HS phải đạt <b>≥ ${VQUIZ_PASS}%</b> mới mở khoá các bước 2–6 (chưa đạt thì làm quiz mới — mỗi lần câu hỏi khác nhau).`,
+       `<b>Quiz từ vựng là bắt buộc:</b> mỗi HS phải đạt <b>≥ ${VQUIZ_PASS}%</b> mới mở khoá các bước 2–6 (chưa đạt thì làm lại). Quiz cố định ${VQUIZ_LEN} câu — cả lớp cùng một bộ câu hỏi, cùng thứ tự, nên GV có thể chữa chung.`,
        '<b>Thi đua nhóm:</b> trước khi làm quiz cá nhân, các nhóm đố nhau collocation (nhóm A nói từ, nhóm B nói cụm đi kèm) — tính điểm nhóm; bạn đạt quiz trước kèm bạn chưa đạt.'],
       'Nếu HS chưa đạt quiz, các bước sau trên máy vẫn bị khoá — vẫn cho HS tham gia brainstorm nhóm (trên giấy / bảng) rồi nhập ý sau khi mở khoá.')}
     ${_tgStep(i++, 2, 'Brainstorm ý tưởng — thi đua nhóm', '15′',
@@ -3312,11 +3313,13 @@ function speakVocab(idx) {
 }
 
 // ── Vocab quiz — required: step ① is done only once the best score reaches
-// VQUIZ_PASS% (isVocabQuizPassed). Up to 10 random terms, each asked one of
-// three ways: Vietnamese meaning → English term, term → meaning, or the term
-// blanked out of its own example sentence. Best score per topic is
-// remembered in this browser only.
-const VQUIZ_LEN = 10;
+// VQUIZ_PASS% (isVocabQuizPassed). Up to 25 terms, each asked one of three
+// ways: Vietnamese meaning → English term, term → meaning, or the term
+// blanked out of its own example sentence. The quiz is fixed per topic —
+// every pick is drawn from an RNG seeded by the topic id, so every student
+// (and every retry) gets the same questions in the same order. Best score
+// per topic is remembered in this browser only.
+const VQUIZ_LEN = 25;
 const VQUIZ_PASS = 70;
 function _vquizPossible(list) { return (list || []).filter(v => v.term && v.definitionVi).length >= 4; }
 const VQUIZ_BEST_KEY = 't2_vocab_quiz_best';
@@ -3330,25 +3333,38 @@ function _vquizGap(v) {
   return re.test(v.example) ? v.example.replace(re, '_____') : null;
 }
 
-function _buildVocabQuiz(list) {
+// mulberry32 seeded from a string hash — deterministic per topic.
+function _seededRng(seed) {
+  let h = 2166136261;
+  for (const c of String(seed)) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  return () => {
+    h = (h + 0x6D2B79F5) | 0;
+    let x = Math.imul(h ^ (h >>> 15), 1 | h);
+    x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function _buildVocabQuiz(list, seed) {
+  const rng = _seededRng(seed);
   const usable = list.filter(v => v.term && v.definitionVi);
-  return shuffle([...usable]).slice(0, VQUIZ_LEN).map(v => {
+  return shuffle([...usable], rng).slice(0, VQUIZ_LEN).map(v => {
     const gap = _vquizGap(v);
     const kinds = gap ? ['vi2en', 'en2vi', 'gap'] : ['vi2en', 'en2vi'];
-    const kind = kinds[Math.floor(Math.random() * kinds.length)];
+    const kind = kinds[Math.floor(rng() * kinds.length)];
     const field = kind === 'en2vi' ? 'definitionVi' : 'term';
     const answer = v[field];
     const others = [...new Set(usable.map(o => o[field]).filter(x => x && x !== answer))];
     return {
       kind, answer, term: v.term, def: v.definitionVi,
       prompt: kind === 'vi2en' ? v.definitionVi : kind === 'en2vi' ? v.term : gap,
-      options: shuffle([answer, ...shuffle(others).slice(0, 3)])
+      options: shuffle([answer, ...shuffle(others, rng).slice(0, 3)], rng)
     };
   });
 }
 
 function startVocabQuiz() {
-  const items = _buildVocabQuiz(state.vocab || []);
+  const items = _buildVocabQuiz(state.vocab || [], state.selectedTopic._id);
   if (!items.length) return;
   clearTimeout(_vquizTimer);
   state.vocabQuiz = { items, idx: 0, correct: 0, picked: null, missed: [] };
@@ -3424,14 +3440,14 @@ function renderVocabQuiz() {
           <div class="t2-quiz-pass ${pass ? 'ok' : 'bad'}">${pass ? `✓ Đạt (≥ ${VQUIZ_PASS}%)` : `Chưa đạt — cần ≥ ${VQUIZ_PASS}%`}</div>
           <div class="t2-step-desc" style="margin:6px 0 0">${pass
             ? (saved ? 'Tuyệt vời! Bạn đã mở khoá các bước tiếp theo.' : 'Giỏi lắm! Lưu tất cả từ vào sổ nữa là mở khoá bước tiếp theo.')
-            : 'Ôn lại các từ dưới đây rồi làm quiz mới nhé.'}</div>
+            : 'Ôn lại các từ dưới đây rồi làm lại quiz nhé.'}</div>
         </div>
         ${qz.missed.length ? `<div class="t2-quiz-miss">${qz.missed.map(m => `• <b>${_escHtml(m.term)}</b> — ${_escHtml(m.def)}`).join('<br>')}</div>` : ''}
         <div class="t2-actions" style="justify-content:center;margin-top:12px">
           ${pass
             ? `<button class="t2-primary" onclick="${saved ? 'continueAfterVocabQuiz()' : 'closeVocabQuiz()'}">${saved ? 'Tiếp tục <i class="fas fa-arrow-right"></i>' : 'Đóng quiz'}</button>
-               <button class="t2-secondary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>`
-            : `<button class="t2-primary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm quiz mới</button>
+               <button class="t2-secondary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm lại quiz</button>`
+            : `<button class="t2-primary" onclick="startVocabQuiz()"><i class="fas fa-redo"></i> Làm lại quiz</button>
                <button class="t2-secondary" onclick="closeVocabQuiz()">Đóng quiz</button>`}
         </div>
       </div>`;
@@ -3677,9 +3693,9 @@ function checkSubmitEnabled() {
 // ════════════════════════════════════════════════════════
 //  UTILITIES
 // ════════════════════════════════════════════════════════
-function shuffle(arr) {
+function shuffle(arr, rng = Math.random) {
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
