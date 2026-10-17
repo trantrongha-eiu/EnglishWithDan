@@ -522,9 +522,10 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
 :is(#screen-exam, .cd-live) .question-item > .q-options,
 :is(#screen-exam, .cd-live) .question-item > .fill-input { clear: both; }
 
-/* Passages whose content already opens with its own heading: don't print
-   the title twice. */
-:is(#screen-exam, .cd-skin) .passage-inner:has(> .passage-text > :is(h1, h2, h3):first-child) > .passage-title { display: none; }
+/* Content opening with a heading that repeats the title: don't print it
+   twice. reading-v2.js passageBodyHtml() sets .is-dup only when the
+   heading really is the title — a different subtitle keeps the title. */
+.passage-title.is-dup { display: none; }
 
 /* The listening veil stops at the footer so Parts/Submit stay readable. */
 #screen-exam .audio-start-overlay { bottom: 62px; }

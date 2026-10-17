@@ -244,6 +244,19 @@ const REGISTRY = {
     catalog: null, // synthetic — a single pickable entry, no id
     attempt: { model: MockTestAttempt, userField: 'userId', idField: null, filter: { status: 'completed' } },
   },
+  // speaking.html's "Thi thử Speaking đầy đủ" (Part 1 + 2 + 3). Its questions
+  // are drawn at random per run in the browser (composeFullMockQueue), so
+  // like mock_test there's no id to pick — any full-mock run since the
+  // assignment counts. The finished run is saved as ONE SpeakingAttempt with
+  // topic 'Full Mock Test' (finishSequentialSession), held to the same
+  // "really answered" bar as a single speaking question.
+  speaking_full_mock: {
+    label: 'Speaking thi thử full (Part 1+2+3)',
+    catalog: null,
+    syntheticMeta: 'Đề ngẫu nhiên Part 1 + 2 + 3',
+    attempt: { model: SpeakingAttempt, userField: 'userId', idField: null, filter: { topic: 'Full Mock Test' } },
+    bandGate: { fields: 'status aiFeedback.overallBand transcript', ok: speakingAttemptCounts },
+  },
   task1_lesson: {
     label: 'Writing Task 1 (Buổi học)',
     // WT1Lesson's real Mongo _id is used as the assignment's resourceId (so
@@ -350,7 +363,7 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
   if (!entry.catalog) {
-    return [{ _id: null, label: entry.label, meta: 'Cả lớp làm chung 1 bộ đề' }];
+    return [{ _id: null, label: entry.label, meta: entry.syntheticMeta || 'Cả lớp làm chung 1 bộ đề' }];
   }
   const q = { ...entry.catalog.filter, ...extraFilters };
   if (entry.catalog.courseScope) {
@@ -624,6 +637,15 @@ async function checkCompleted(studentId, internalItems, since = null) {
     if (since) base.createdAt = { $gte: since };
 
     if (!A.idField) {
+      if (entry.bandGate) {
+        // speaking_full_mock — the newest run that passes the gate, else the
+        // newest one (completed: false), same as the boolGate branch below.
+        const rows = await A.model.find(base).sort({ createdAt: -1 }).limit(20)
+          .select(`_id createdAt ${entry.bandGate.fields}`).lean().catch(() => []);
+        const doc = rows.find((r) => entry.bandGate.ok(r)) || rows[0];
+        if (doc) out.set(resourceKey(type, null), { completed: entry.bandGate.ok(doc), completedAt: doc.createdAt, attemptId: String(doc._id) });
+        return;
+      }
       // mock_test — the most recent completed run
       const doc = await A.model.findOne(base).sort({ createdAt: -1 }).select('_id createdAt').lean().catch(() => null);
       if (doc) out.set(resourceKey(type, null), { completed: true, completedAt: doc.createdAt, attemptId: String(doc._id) });

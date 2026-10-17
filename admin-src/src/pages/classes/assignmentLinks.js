@@ -25,6 +25,7 @@ export function studentPathFor(r) {
     case 'task2':                  return code ? `/task2-practice.html?week=${code}&topicId=${id}` : '/task2-practice.html';
     case 'advanced_sentences':     return code ? `/advanced-sentences.html?week=${code}&groupId=${id}` : '/advanced-sentences.html';
     case 'speaking':               return `/speaking.html?questionId=${id}`;
+    case 'speaking_full_mock':     return '/speaking.html?tab=fullmock';
     case 'grammar':                return code ? `/essential-grammar.html?lesson=${code}` : '/essential-grammar.html';
     case 'vocabulary_lesson':      return `/dashboard.html?view=lesson&lessonId=${id}`;
     case 'mock_test':              return '/mock-test.html';

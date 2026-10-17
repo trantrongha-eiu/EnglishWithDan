@@ -76,6 +76,7 @@ function hwResourceHref(r) {
     // is the week number (deepLinkKey), id is the SentenceStructureGroup _id.
     case 'advanced_sentences': return r.resourceCode ? `advanced-sentences.html?week=${encodeURIComponent(r.resourceCode)}&groupId=${id}` : 'advanced-sentences.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
+    case 'speaking_full_mock': return 'speaking.html?tab=fullmock';
     // essential-grammar.html opens a specific lesson via ?lesson=<lessonKey>
     // (falling back to the student's last-viewed lesson, then the very first
     // lesson, if no key given) — resourceCode is the lessonKey snapshot taken

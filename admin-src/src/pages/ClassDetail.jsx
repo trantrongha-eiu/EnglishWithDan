@@ -45,6 +45,7 @@ const RESOURCE_CATS = [
   { type: 'task2', label: 'Task 2 Writing (Quiz theo tuần)' },
   { type: 'advanced_sentences', label: 'Viết câu nâng cao' },
   { type: 'speaking', label: 'Speaking (Câu hỏi lẻ)' },
+  { type: 'speaking_full_mock', label: 'Speaking thi thử full (Part 1+2+3)' },
   { type: 'grammar', label: 'Essential Grammar' },
   { type: 'vocabulary_lesson', label: 'Vocabulary Lessons' },
   { type: 'mock_test', label: 'Thi thử 4 kỹ năng' },

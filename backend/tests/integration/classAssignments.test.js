@@ -702,6 +702,33 @@ describe('completion tracking', () => {
     expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
   });
 
+  test('speaking_full_mock: assignable with no id; only a real "Full Mock Test" run counts', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const created = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t))
+      .send({ title: 'Speaking full', resources: [{ kind: 'internal', resourceType: 'speaking_full_mock', resourceId: null }] });
+    expect(created.status).toBe(201);
+    const item = created.body.assignment.resources[0];
+    expect(item.resourceType).toBe('speaking_full_mock');
+    expect(item.label).toBe('Speaking thi thử full (Part 1+2+3)');
+    const asgId = created.body.assignment._id;
+    const answer = 'Q1 (Part 1): Do you work or study?\nA1: I am a student at a university in the city and I study economics because I like numbers';
+    const done = async () => {
+      const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+      return mine.body.assignments.find((a) => a._id === String(asgId)).done;
+    };
+
+    // A single-topic practice session is not the full test.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { topic: 'Hobbies', transcript: answer, aiFeedback: { overallBand: 6 } } });
+    expect(await done()).toBe(0);
+    // A full run the grader scored 0 (nothing usable said) doesn't count.
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { topic: 'Full Mock Test', transcript: answer, aiFeedback: { overallBand: 0 } } });
+    expect(await done()).toBe(0);
+    await createSpeakingAttempt({ userId: s._id, status: 'analyzed', extra: { topic: 'Full Mock Test', transcript: answer, aiFeedback: { overallBand: 5 } } });
+    expect(await done()).toBe(1);
+  });
+
   test('student can tick external/image items, cannot tick internal', async () => {
     const t = await createTeacher();
     const s = await createStudent();

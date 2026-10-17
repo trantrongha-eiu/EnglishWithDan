@@ -1109,6 +1109,25 @@ async function safeJson(res, opts) {
     return window.ApiClient.handleResponse(res, opts);
 }
 
+// A dropped connection (Render redeploy / instance swap, flaky wifi)
+// rejects fetch() with "Failed to fetch" and the student saw "Lỗi tải
+// bài thi" on the first click, then it worked on the second. Retry those
+// and Render's 502/503/504 gateway errors a couple of times before
+// giving up. Safe for /start: the server reuses the open in-progress
+// attempt (BUG-010), so a repeated request never creates a second one.
+async function _fetchRetryTransient(url, opts, tries = 3) {
+    for (let i = 1; ; i++) {
+        try {
+            const res = await fetch(url, opts);
+            if (i < tries && [502, 503, 504].includes(res.status)) throw new TypeError('HTTP ' + res.status);
+            return res;
+        } catch (err) {
+            if (!(err instanceof TypeError) || i >= tries) throw err;
+            await new Promise(r => setTimeout(r, 1000 * i));
+        }
+    }
+}
+
 // ══════════════════════════════════════════════
 // START EXAM
 // ══════════════════════════════════════════════
@@ -1122,7 +1141,7 @@ async function startTest(testId, mode = 'practice', parts = null) {
     state.pendingTestId = testId;
     try {
         clearExamStorage(); // clear any previous in-progress exam
-        const res = await fetch(`${API}/listening/tests/${testId}/start${_mockMode ? '?purpose=mocktest' : ''}`, {
+        const res = await _fetchRetryTransient(`${API}/listening/tests/${testId}/start${_mockMode ? '?purpose=mocktest' : ''}`, {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ mode, ...(parts ? { parts } : {}) })
         });

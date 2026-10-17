@@ -107,6 +107,35 @@ const reviewHlCache = {};   // review mode: { passageIdx: passageInnerHTML }
 let _passageInnerRenderedFor = null;
 let _reviewPassageInnerRenderedFor = null;
 
+/* Passage panel markup (title + text), shared by exam, review and the
+   single-passage screens. The title is always shown unless the content
+   opens with a heading that just repeats it — Cambridge passages open with
+   a different subtitle ("The arid valleys of southern Peru…" under "The
+   return of the huarango"), and hiding the title for every leading heading
+   left students with no way to tell which passage it was. The element stays
+   in the DOM either way (only .is-dup hides it) so saved highlight offsets
+   over the panel's text don't shift. */
+function _normTitle(s) {
+  return String(s || '').replace(/<[^>]*>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ')
+    .toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+// Same text give or take spacing/one word ("Teleworking" / "Tele-working",
+// "…Discovery of Slowness" / "…Discovery of the Slowness").
+function _headingRepeatsTitle(t, h) {
+  if (!t || !h) return false;
+  const a = t.replace(/ /g, ''), b = h.replace(/ /g, '');
+  if (a === b || b.startsWith(a) || a.startsWith(b)) return true;
+  const tw = t.split(' '), hw = h.split(' '), hs = new Set(hw);
+  const hit = tw.filter(w => hs.has(w)).length;
+  return hw.length <= tw.length + 2 && hit >= tw.length - 1 && hit >= Math.ceil(tw.length * 0.6);
+}
+function passageBodyHtml(p) {
+  const m = /^\s*<(h[1-3])\b[^>]*>([\s\S]*?)<\/\1>/i.exec(p.content || '');
+  const dup = !!m && _headingRepeatsTitle(_normTitle(p.title), _normTitle(m[2]));
+  return `<div class="passage-title${dup ? ' is-dup' : ''}">${escHtml(p.title || '')}</div>
+     <div class="passage-text">${p.content || ''}</div>`;
+}
+
 /* ── Highlights surviving submission (localStorage, keyed by attemptId) ──
    Exam-mode highlights lived only in passageHlCache/reviewHlCache — both
    in-memory and both wiped the moment exam mode ended, so anything a
@@ -1717,8 +1746,7 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
     <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
-    `<div class="passage-title">${escHtml(passage.title)}</div>
-     <div class="passage-text">${passage.content || ''}</div>`;
+    passageBodyHtml(passage);
 
   document.getElementById('retry-questions-inner').innerHTML =
     renderPassageQuestions(cleanPassage, false, {});
@@ -1808,8 +1836,7 @@ function _enterEntranceEmbed(host) {
   document.getElementById('retry-title').textContent = passage.title || 'Reading';
   document.getElementById('retry-footer-btns').innerHTML = '';
   document.getElementById('retry-passage-inner').innerHTML =
-    `<div class="passage-title">${escHtml(passage.title)}</div>
-     <div class="passage-text">${passage.content || ''}</div>`;
+    passageBodyHtml(passage);
   document.getElementById('retry-questions-inner').innerHTML = renderPassageQuestions(passage, false, {});
   const nav = document.getElementById('retry-q-nav');
   if (nav) {
@@ -1925,8 +1952,7 @@ function switchPassage(idx) {
     // Fresh render
     if (passageInner) {
       passageInner.innerHTML =
-        `<div class="passage-title">${escHtml(p.title)}</div>
-     <div class="passage-text">${p.content || ''}</div>`;
+        passageBodyHtml(p);
     }
     if (questionsInner) questionsInner.innerHTML = renderPassageQuestions(p, false);
     _applyPendingHl(idx, passageInner, questionsInner);
@@ -3721,8 +3747,7 @@ function switchReviewPassage(idx) {
     if (rvQuestionsInner) rvQuestionsInner.innerHTML = cached.questions ?? '';
   } else {
     if (rvPassageInner) {
-      rvPassageInner.innerHTML = `<div class="passage-title">${escHtml(p.title)}</div>
-     <div class="passage-text">${p.content || ''}</div>`;
+      rvPassageInner.innerHTML = passageBodyHtml(p);
     }
     if (rvQuestionsInner) {
       rvQuestionsInner.innerHTML = (state.reviewAnswerKeyWithheld ? _reviewLockedNotice() : '')
@@ -3839,8 +3864,7 @@ function retryCurrentPassage() {
     <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
-    `<div class="passage-title">${escHtml(cleanPassage.title)}</div>
-     <div class="passage-text">${cleanPassage.content || ''}</div>`;
+    passageBodyHtml(cleanPassage);
 
   document.getElementById('retry-questions-inner').innerHTML =
     renderPassageQuestions(cleanPassage, false, {});
@@ -4401,8 +4425,7 @@ async function loadPracticeReview(attemptId) {
 
     // Fill passage text (left panel)
     document.getElementById('retry-passage-inner').innerHTML =
-      `<div class="passage-title">${escHtml(passage.title || '')}</div>
-       <div class="passage-text">${passage.content || ''}</div>`;
+      passageBodyHtml(passage);
     _applyRetryHighlights(savedRetryHl, { questions: false });
 
     // Q-nav footer với màu đúng/sai/bỏ qua

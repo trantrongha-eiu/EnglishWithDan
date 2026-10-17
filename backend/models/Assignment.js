@@ -33,9 +33,10 @@ const assignmentResourceSchema = new mongoose.Schema({
       // WT1-stack sibling courses + "Viết câu nâng cao" — see
       // services/resourceCompletionService.js REGISTRY.
       'task2_course_lesson', 'speaking_course_lesson', 'advanced_sentences',
+      'speaking_full_mock',
     ],
   },
-  resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test
+  resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test / speaking_full_mock
   label:      { type: String, default: '' },            // name snapshot at assign time
   // Deep-link key snapshot for types whose student-facing URL isn't keyed by
   // resourceId — task1_lesson links by WT1Lesson.code (re-seeding-safe id),

@@ -263,6 +263,10 @@ function showScreen(id) {
   } else if (tabParam === 'speaking-tips') {
     showScreen('screen-speaking-tips');
     if (typeof initSpeakingTips === 'function') initSpeakingTips();
+  } else if (tabParam === 'fullmock') {
+    // Homework "Speaking full 3 parts" (speaking_full_mock): land on home
+    // with the full mock test's preview already open.
+    openFullMockPreviewModal();
   }
   // else 'home' — screen-home is already the active screen in the static HTML.
 
@@ -2362,7 +2366,8 @@ async function composeFullMockQueue() {
   const eligibleCues = p2.filter(q => p3Topics.has(q.topic));
   const cuePool = eligibleCues.length ? eligibleCues : p2;
   const cue = cuePool[Math.floor(Math.random() * cuePool.length)];
-  const part3Queue = p3.filter(q => q.topic === cue.topic);
+  // Real Part 3 is ~4-5 follow-ups, not the topic's whole bank (some have 10+).
+  const part3Queue = pickRandomSubsetInOrder(p3.filter(q => q.topic === cue.topic), Math.random() < 0.5 ? 4 : 5);
 
   return [...part1Queue, cue, ...part3Queue];
 }
