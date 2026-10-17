@@ -197,6 +197,16 @@ describe('GET /api/admin/writing-history/counts', () => {
     expect(res.body.counts.pending).toBeGreaterThanOrEqual(1);
     expect(res.body.counts.confirmed).toBeGreaterThanOrEqual(1);
   });
+
+  test('leaves out unsubmitted Simulation placeholders, like the list does', async () => {
+    const student = await createStudent();
+    const token = await authedTeacher();
+    const get = () => request(app).get('/api/admin/writing-history/counts').set('Authorization', `Bearer ${token}`);
+    const before = (await get()).body.counts.pending;
+    await createWritingAttempt({ userId: student._id, extra: { gradingStatus: 'pending', mode: 'simulation', status: 'in-progress' } });
+    await createWritingAttempt({ userId: student._id, extra: { gradingStatus: 'pending', mode: 'simulation', status: 'cancelled' } });
+    expect((await get()).body.counts.pending).toBe(before);
+  });
 });
 
 describe('GET /api/admin/writing-attempt/:id', () => {

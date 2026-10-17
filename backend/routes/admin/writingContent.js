@@ -155,11 +155,14 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
 // GET /api/admin/writing-history/counts – tổng số bài theo trạng thái, dùng
 // cho 2 dòng thống kê đầu trang ("N chờ chấm · N AI đã chấm") mà không phải
 // tải hết toàn bộ bài nộp về client chỉ để đếm.
+// Same REAL_ATTEMPT scope as the list above (and the sidebar badge) — an
+// unsubmitted Simulation placeholder sits at gradingStatus 'pending', so
+// counting it showed "N chờ chấm" while the Chờ chấm filter listed nothing.
 router.get('/writing-history/counts', auth, teacherOnly, async (req, res) => {
   try {
     const [rows, rewritePending] = await Promise.all([
-      WritingAttempt.aggregate([{ $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
-      WritingAttempt.countDocuments({ gradingStatus: 'confirmed', 'grading.confirmedAt': { $gte: REWRITE_CUTOFF }, 'rewrite.done': { $ne: true } }),
+      WritingAttempt.aggregate([{ $match: REAL_ATTEMPT }, { $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
+      WritingAttempt.countDocuments({ $and: [REAL_ATTEMPT, { gradingStatus: 'confirmed', 'grading.confirmedAt': { $gte: REWRITE_CUTOFF }, 'rewrite.done': { $ne: true } }] }),
     ]);
     const counts = { pending: 0, ai_done: 0, confirmed: 0, rewritePending };
     rows.forEach(r => { if (r._id in counts) counts[r._id] = r.count; });
