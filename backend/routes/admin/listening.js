@@ -82,6 +82,11 @@ router.post('/listening/sections/:id/audio', auth, teacherOnly, upload.single('a
 // ══════════════════════════════════════════════════════════════════════════════
 router.post('/listening/sections/:id/gapfill/generate', auth, teacherOnly, listeningController.generateSectionGapFill);
 router.put('/listening/sections/:id/gapfill', auth, teacherOnly, listeningController.updateSectionGapFill);
+// Pre-listening warm-up — GET returns the teacher-only answer key (students
+// get the answer-free copy inside /api/listening/practice/by-id/:id).
+router.get('/listening/sections/:id/warmup', auth, teacherOnly, listeningController.getSectionWarmUp);
+router.post('/listening/sections/:id/warmup/generate', auth, teacherOnly, listeningController.generateSectionWarmUp);
+router.put('/listening/sections/:id/warmup', auth, teacherOnly, listeningController.updateSectionWarmUp);
 
 // POST /api/admin/listening/assemble – tạo ListeningTest từ 4 ListeningSection
 router.post('/listening/assemble', auth, teacherOnly, listeningController.assembleTest);

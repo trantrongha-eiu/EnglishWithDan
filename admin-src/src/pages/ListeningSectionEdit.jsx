@@ -4,6 +4,7 @@ import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 import GapFillPanel from '../components/GapFillPanel';
+import WarmUpPanel from '../components/WarmUpPanel';
 import CoverImageField from '../components/CoverImageField';
 
 function fmtDuration(sec) {
@@ -368,6 +369,13 @@ export default function ListeningSectionEdit() {
       {savedId && (
         <div className="card" style={{ padding: 20, marginBottom: 20 }}>
           <GapFillPanel sectionId={savedId} transcript={meta.transcript} value={gapFill} onChange={setGapFill} />
+        </div>
+      )}
+
+      {/* Pre-listening warm-up (own endpoint; answer key is teacher-only) */}
+      {savedId && (
+        <div className="card" style={{ padding: 20, marginBottom: 20 }}>
+          <WarmUpPanel key={savedId} sectionId={savedId} hasTranscript={!!meta.transcript?.trim()} />
         </div>
       )}
 

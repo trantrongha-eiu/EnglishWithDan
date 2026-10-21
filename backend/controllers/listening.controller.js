@@ -280,6 +280,28 @@ exports.updateSectionGapFill = async (req, res) => {
   } catch (err) { res.status(err.status || 500).json({ success: false, message: err.message }); }
 };
 
+// Warm-up answer key — teacher/admin only (routes/admin/listening.js).
+exports.getSectionWarmUp = async (req, res) => {
+  try {
+    const warmUp = await listeningService.getSectionWarmUp(req.params.id);
+    res.json({ success: true, warmUp });
+  } catch (err) { res.status(err.status || err.statusCode || 500).json({ success: false, message: err.message }); }
+};
+
+exports.generateSectionWarmUp = async (req, res) => {
+  try {
+    const result = await listeningService.generateSectionWarmUp(req.params.id, { quality: req.body?.quality === true });
+    res.json({ success: true, ...result });
+  } catch (err) { res.status(err.status || err.statusCode || 500).json({ success: false, message: err.message }); }
+};
+
+exports.updateSectionWarmUp = async (req, res) => {
+  try {
+    const warmUp = await listeningService.updateSectionWarmUp(req.params.id, req.body);
+    res.json({ success: true, warmUp });
+  } catch (err) { res.status(err.status || err.statusCode || 500).json({ success: false, message: err.message }); }
+};
+
 exports.hideAdminSection = async (req, res) => {
   try {
     await listeningService.hideAdminSection(req.params.id);

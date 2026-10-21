@@ -800,6 +800,9 @@ function _enterLTPracticeScreen(section, partNum, sectionId, mode = 'practice', 
     _renderLtCdPartHeader(_ltCleanSection, partNum);
     _mountLtCdFooter(_ltCleanSection, partNum);
     showScreen('practice');
+    // Pre-listening warm-up (js/listening-warmup.js) — Practice only;
+    // Test Simulation stays exam-like.
+    if (window.LtWarmUp) window.LtWarmUp.mount(mode === 'practice' ? section.warmUp : null, sectionId);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1533,6 +1536,7 @@ function closeLTPractice() {
     // nav-lock armed indefinitely (BUG-108).
     if (_ltPracticeMode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (window.LtWarmUp) window.LtWarmUp.mount(null, null);
     _clearLTPracticeTimer();
     _hideLTPracticeHUD();
     _ltPracticeSubmitted = false;

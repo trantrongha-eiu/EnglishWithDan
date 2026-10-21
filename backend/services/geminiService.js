@@ -1165,6 +1165,87 @@ Return JSON: {"items": [{"word": string, "meaning": string, "partOfSpeech": stri
     }));
 }
 
+// ── Listening warm-up (Synonym Hunt + Paraphrase Detectives) ────────
+// Raw AI output only — utils/listeningWarmUp.validateWarmUp() keeps just the
+// items that are verbatim-grounded in the questions and the transcript.
+const WARMUP_SYSTEM = `You are an experienced IELTS Listening teacher preparing a pre-listening vocabulary warm-up.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildWarmUpPrompt({ transcript, questionMaterial, explanationHints, retryNote }) {
+  return `QUESTION PAPER (what students read before listening):
+<<<QUESTIONS_START>>>
+${questionMaterial}
+<<<QUESTIONS_END>>>
+
+TRANSCRIPT:
+<<<TRANSCRIPT_START>>>
+${transcript}
+<<<TRANSCRIPT_END>>>
+${explanationHints ? `\nTEACHER NOTES (where each answer is heard — use them to find the paraphrases the test really targets):\n${explanationHints}\n` : ''}
+Build two warm-up activities that train students to recognise how IELTS Listening paraphrases the question paper.
+
+ACTIVITY 1 — "synonyms": 10 items. Each item:
+- "keyword": a word or short phrase (1-5 words) copied EXACTLY, character for character, from the QUESTION PAPER (questions, options, notes, table cells). Pick meaningful words (verbs, adjectives, nouns, short phrases) — never names, numbers, dates or the instruction boilerplate ("Choose the correct letter", "NO MORE THAN").
+- "answer": the word or phrase (1-6 words) the SPEAKER actually uses for the same idea, copied EXACTLY from the TRANSCRIPT. It must mean the same in context but be worded differently from the keyword. If the speaker uses two different expressions for the idea, give both separated by " / " — each must be copied exactly from the transcript.
+
+ACTIVITY 2 — "paraphrases": 10 items, in the order they are heard. Each item:
+- "question": an idea from the question paper (3-10 words) copied EXACTLY from the QUESTION PAPER.
+- "evidence": the matching stretch of the TRANSCRIPT (6-20 words, copied EXACTLY, within one speaker turn) with ONE key word or short phrase replaced by "____" (four underscores). The removed part must be the paraphrase that matches the question.
+- "answer": the exact text that was replaced by "____" (1-3 words). It must be the speaker's PARAPHRASE of a word in the question — a DIFFERENT word from anything in "question" (e.g. question "a way for tutors to save time", evidence "they don't have to spend so long ____", answer "marking"; question "increases students' self-awareness", evidence "assess their own assignments ____", answer "objectively"). Never blank a word that also appears in the question, a name, or a filler word.
+
+Rules: everything you copy must be verbatim (same words, same order) so it can be found in the source; don't change spelling, tense or word forms. Prefer items tied to the actual test questions. No duplicates.${retryNote ? `\n\n⚠️ ${retryNote}` : ''}
+
+Return JSON: {"synonyms": [{"keyword": string, "answer": string}], "paraphrases": [{"question": string, "evidence": string, "answer": string}]}`;
+}
+
+async function generateListeningWarmUp({ transcript, questionMaterial, explanationHints, retryNote, quality = false }) {
+  if (!String(transcript || '').trim()) throw new Error('Transcript rỗng');
+  if (!String(questionMaterial || '').trim()) throw new Error('Section chưa có câu hỏi');
+  return _gradeWithGeminiJson({
+    prompt: buildWarmUpPrompt({ transcript: String(transcript).slice(0, 15000), questionMaterial, explanationHints, retryNote }),
+    systemInstruction: WARMUP_SYSTEM,
+    maxOutputTokens: 4000,
+    timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.',
+    logLabel: 'generateListeningWarmUp',
+    // Same quota trade-off as generateGapFillBlanks: bulk-seeding every
+    // section needs MODEL_FAST's daily quota; the verbatim validation is
+    // what guarantees the key is grounded. `quality` is for one-offs.
+    model: quality ? MODEL : MODEL_FAST,
+    timeoutMs: 90000,
+  });
+}
+
+// Second opinion on a validated warm-up: verbatim grounding can't tell a
+// real paraphrase from a distractor the speaker rejects ("commercial port"
+// vs "lookout point for ships"), so each pair is re-judged for meaning in
+// context. Returns { synonyms: bool[], paraphrases: bool[] } (true = keep).
+async function judgeListeningWarmUp({ transcript, synonyms, paraphrases }) {
+  const syn = synonyms.map((s, i) => `S${i + 1}. question: "${s.keyword}" — speaker: "${s.answer}"`).join('\n');
+  const para = paraphrases.map((p, i) => `P${i + 1}. question: "${p.question}" — speaker: "${p.evidence.replace('____', `[${p.answer}]`)}"`).join('\n');
+  const prompt = `TRANSCRIPT:
+<<<TRANSCRIPT_START>>>
+${String(transcript).slice(0, 15000)}
+<<<TRANSCRIPT_END>>>
+
+Each item pairs words from an IELTS Listening question paper with what the speaker says. Mark an item true ONLY if, in the context of this transcript, the speaker's words express the SAME meaning as the question words (a genuine synonym/paraphrase a student should learn to match). Mark false if the meaning differs, if it is only loosely related, or if the speaker mentions it as a distractor (rejects it, says it is not the case, or talks about something else).
+
+${syn || '(no S items)'}
+${para || '(no P items)'}
+
+Return JSON: {"synonyms": boolean[${synonyms.length}], "paraphrases": boolean[${paraphrases.length}]}`;
+  const parsed = await _gradeWithGeminiJson({
+    prompt,
+    systemInstruction: WARMUP_SYSTEM,
+    maxOutputTokens: 800,
+    timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.',
+    logLabel: 'judgeListeningWarmUp',
+    model: MODEL_FAST,
+    timeoutMs: 60000,
+  });
+  const bools = (arr, n) => Array.from({ length: n }, (_, i) => !(Array.isArray(arr) && (arr[i] === false || arr[i] === 'false')));
+  return { synonyms: bools(parsed.synonyms, synonyms.length), paraphrases: bools(parsed.paraphrases, paraphrases.length) };
+}
+
 // ── Dictation sentence meanings ─────────────────────────────────────
 // Vietnamese translation of each dictation sentence, shown after the
 // student transcribes it correctly. The sentences are consecutive lines of
@@ -1599,6 +1680,7 @@ module.exports = {
   generateGapFillBlanks,
   punchGapFillAnswers,
   generateGapFillGlossary,
+  generateListeningWarmUp, judgeListeningWarmUp,
   translateDictationSentences,
   generateCollocations, generateExampleSentence, generateTask2Essay, gradeTask2Band,
   generatePhraseLookup, sanitisePhraseLookup,

@@ -31,6 +31,8 @@ const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
+const warmUpUtil = require('../utils/listeningWarmUp');
+const { toStudentWarmUp } = warmUpUtil;
 
 // Mongoose `.select()` string that strips a section's answer key
 // (correctAnswer + explanation per question). Single source so the
@@ -436,9 +438,13 @@ async function getPracticeSectionById(id) {
   // deliberately still included: the review screen (loadLTPracticeReview)
   // reads it off this same pre-fetched object post-submission rather than
   // re-fetching, so stripping it here would break that display.
-  return ListeningSection.findOne({ _id: id, isActive: true })
-    .select(PRACTICE_SECTION_SAFE_FIELDS)
+  // warmUp is select:false (its answers are a teacher-only key) — pulled in
+  // explicitly here and swapped for the answer-free student copy.
+  const section = await ListeningSection.findOne({ _id: id, isActive: true })
+    .select(`${PRACTICE_SECTION_SAFE_FIELDS} +warmUp`)
     .lean();
+  if (section) section.warmUp = toStudentWarmUp(section.warmUp);
+  return section;
 }
 
 // ── Dictation practice (sentence-by-sentence chép chính tả) ─────────────
@@ -704,6 +710,81 @@ async function updateSectionGapFill(id, { gapFillTemplate, gapFillAnswers, gapFi
   ).select('gapFillTemplate gapFillAnswers gapFillPublished gapFillGeneratedAt');
   if (!section) throw new NotFoundError('Không tìm thấy section');
   return section;
+}
+
+// ── Admin – Listening warm-up (pre-listening synonyms / paraphrases) ──
+// One AI pass, plus a second one when either activity came back short —
+// the second is told which keywords/questions it already has so it looks
+// elsewhere. Only verbatim-grounded items survive (validateWarmUp).
+const WARMUP_FULL = 8;
+const WARMUP_MIN = 3;
+
+async function buildSectionWarmUp(section, { quality = false } = {}) {
+  const transcript = String(section.transcript || '').trim();
+  if (!transcript) { const err = new Error('Section chưa có transcript'); err.status = 400; throw err; }
+  const questionMaterial = warmUpUtil.buildQuestionMaterial(section);
+  if (!questionMaterial.trim()) { const err = new Error('Section chưa có câu hỏi'); err.status = 400; throw err; }
+  const explanationHints = warmUpUtil.buildExplanationHints(section);
+  const ctx = { transcript, questionMaterial };
+
+  const parts = [];
+  const dropped = [];
+  for (let pass = 0; pass < 2; pass++) {
+    const have = warmUpUtil.mergeWarmUps(parts, ctx);
+    if (pass > 0 && have.synonyms.length >= WARMUP_FULL && have.paraphrases.length >= WARMUP_FULL) break;
+    const retryNote = pass === 0 ? null
+      : `You already produced these — give DIFFERENT items this time. Keywords: ${have.synonyms.map(x => `"${x.keyword}"`).join(', ') || 'none'}. Questions: ${have.paraphrases.map(x => `"${x.question}"`).join(', ') || 'none'}. Copy every phrase EXACTLY from its source.`;
+    const raw = await geminiService.generateListeningWarmUp({ ...ctx, explanationHints, retryNote, quality });
+    const v = warmUpUtil.validateWarmUp(raw, ctx);
+    parts.push(v);
+    dropped.push(...v.dropped);
+  }
+  let merged = warmUpUtil.mergeWarmUps(parts, ctx);
+  // Meaning check (see geminiService.judgeListeningWarmUp). A judge failure
+  // keeps the grounded items rather than losing the whole section.
+  try {
+    const verdict = await geminiService.judgeListeningWarmUp({ transcript, ...merged });
+    merged.synonyms.forEach((x, i) => { if (!verdict.synonyms[i]) dropped.push(`syn:judge "${x.keyword}" ≈ "${x.answer}"`); });
+    merged.paraphrases.forEach((x, i) => { if (!verdict.paraphrases[i]) dropped.push(`para:judge "${x.question}" ~ "${x.answer}"`); });
+    merged = {
+      synonyms: merged.synonyms.filter((_, i) => verdict.synonyms[i]),
+      paraphrases: merged.paraphrases.filter((_, i) => verdict.paraphrases[i]),
+    };
+  } catch (err) {
+    if (err.isOverloaded) throw err;
+    logger.ai('buildSectionWarmUp: judge failed, keeping grounded items', { errorMessage: err.message });
+  }
+  if (merged.synonyms.length < WARMUP_MIN && merged.paraphrases.length < WARMUP_MIN) {
+    const err = new Error(`AI không tạo được đủ cặp từ khớp nguyên văn transcript (${merged.synonyms.length} synonym, ${merged.paraphrases.length} paraphrase) — thử lại hoặc nhập tay.`);
+    err.status = 422;
+    err.dropped = dropped;
+    throw err;
+  }
+  return { ...merged, dropped };
+}
+
+async function generateSectionWarmUp(id, opts = {}) {
+  const section = await ListeningSection.findById(id).select('_id transcript questionGroups').lean();
+  if (!section) throw new NotFoundError('Không tìm thấy section');
+  const { synonyms, paraphrases, dropped } = await buildSectionWarmUp(section, opts);
+  const warmUp = { synonyms, paraphrases, generatedAt: new Date(), editedAt: null };
+  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp, warmUpSkippedAt: null, warmUpSkipReason: '' } });
+  return { warmUp, dropped };
+}
+
+async function getSectionWarmUp(id) {
+  const section = await ListeningSection.findById(id).select('warmUp').lean();
+  if (!section) throw new NotFoundError('Không tìm thấy section');
+  return section.warmUp || { synonyms: [], paraphrases: [], generatedAt: null, editedAt: null };
+}
+
+async function updateSectionWarmUp(id, body) {
+  const { synonyms, paraphrases } = warmUpUtil.sanitizeWarmUpInput(body);
+  const prev = await ListeningSection.findById(id).select('warmUp').lean();
+  if (!prev) throw new NotFoundError('Không tìm thấy section');
+  const warmUp = { synonyms, paraphrases, generatedAt: prev.warmUp?.generatedAt || null, editedAt: new Date() };
+  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp } });
+  return warmUp;
 }
 
 async function listAdminSections() {
@@ -1294,6 +1375,7 @@ module.exports = {
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, getDictationTranslations, saveDictationAttempt,
   listGapFillSections, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
+  buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
   listStudentTests, startTest, submitTest,
