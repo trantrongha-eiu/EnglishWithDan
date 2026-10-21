@@ -18,6 +18,7 @@ const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const Task2Topic = require('../../models/Task2Topic');
 const Task2Attempt = require('../../models/Task2Attempt');
+const Task2LessonWork = require('../../models/Task2LessonWork');
 const WritingAttempt = require('../../models/WritingAttempt');
 const TestAttempt = require('../../models/TestAttempt');
 const GapFillAttempt = require('../../models/GapFillAttempt');
@@ -556,6 +557,60 @@ describe('completion tracking', () => {
     await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80 });
     mine = await request(app).get('/api/assignments/mine').set(authH(s));
     expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
+  });
+
+  test('task2 (weekly topic): submitting the topic essay (>= 250 words) completes it, even with the topic link wiped', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const prompt = 'Some people believe it is better to be unemployed than to have a job they do not enjoy.';
+    const wt2 = await createWritingTask2({ prompt });
+    const topic = await Task2Topic.create({
+      week: 12, block: 'agree_disagree', topicName: 'Unenjoyable Employment', essayType: 'agree_disagree',
+      prompt, isActive: true, writingTask2Id: wt2._id,
+      questions: Array.from({ length: 24 }, (_, i) => ({
+        level: 'beginner', type: 'translation', questionText: `Q${i}`, correctAnswer: `a${i}`,
+      })),
+    });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task2', resourceId: topic._id }] });
+    const statusOf = async () => (await request(app).get('/api/assignments/mine').set(authH(s)))
+      .body.assignments.find((a) => a._id === String(asg._id)).status;
+
+    // The lesson's "Dịch câu" step: 15 of 24 at 100% — under the coverage bar.
+    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 12, topicId: topic._id, correctCount: 15, totalQuestions: 15, scorePercentage: 100 });
+    // Too-short essay on the topic's prompt doesn't count either.
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y', wordCount2: 200 });
+    expect(await statusOf()).not.toBe('completed');
+
+    // seedTask2Exercises' replaceOne wipes the link — the essay is still
+    // matched to the topic by its prompt.
+    await Task2Topic.updateOne({ _id: topic._id }, { $set: { writingTask2Id: null } });
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y', wordCount2: 271 });
+    expect(await statusOf()).toBe('completed');
+  });
+
+  test('task2 (weekly topic): the lesson hand-in ("Nộp bài chấm AI") counts even if writing.html was never submitted', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const topic = await Task2Topic.create({
+      week: 2, block: 'agree_disagree', topicName: 'Social Media', essayType: 'agree_disagree',
+      prompt: 'Social media does more harm than good.', isActive: true,
+      questions: [{ level: 'beginner', type: 'translation', questionText: 'Q', correctAnswer: 'a' }],
+    });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task2', resourceId: topic._id }] });
+    const statusOf = async () => (await request(app).get('/api/assignments/mine').set(authH(s)))
+      .body.assignments.find((a) => a._id === String(asg._id)).status;
+    const words = (n) => Array.from({ length: n }, () => 'word').join(' ');
+
+    // Saved but not handed in, then handed in short — neither counts.
+    await Task2LessonWork.create({ userId: s._id, topicId: topic._id, sections: { intro: words(60), body1: words(60), body2: words(60), conclusion: words(60) } });
+    expect(await statusOf()).not.toBe('completed');
+    await Task2LessonWork.updateOne({ userId: s._id, topicId: topic._id }, { $set: { submittedAt: new Date() } });
+    expect(await statusOf()).not.toBe('completed');
+
+    await Task2LessonWork.updateOne({ userId: s._id, topicId: topic._id }, { $set: { 'sections.conclusion': words(70) } });
+    expect(await statusOf()).toBe('completed');
   });
 
   test('task1_practice / task2_practice: standalone "Chọn đề" prompts show up, and searching by prompt text works', async () => {

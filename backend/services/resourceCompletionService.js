@@ -42,6 +42,7 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const MockTestAttempt = require('../models/MockTestAttempt');
+const Task2LessonWork = require('../models/Task2LessonWork');
 const WT1Progress = require('../models/WT1Progress');
 const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
 const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
@@ -207,6 +208,14 @@ const REGISTRY = {
     // questions in one sitting. `arrayField` is the question bank on the
     // catalog doc; `minRatio` of it must be present in attempt.totalQuestions.
     coverage: { model: Task2Topic, arrayField: 'questions', field: 'totalQuestions', minRatio: 0.8 },
+    // The weekly lesson's last step is the full essay ("Nộp bài chấm AI" /
+    // "Viết bài ngay" → writing.html, saved as a WritingAttempt on the topic's
+    // WritingTask2). Submitting it — at the real 250-word minimum — also
+    // completes the item; the quiz rule above alone never did for the lesson
+    // flow, whose "Dịch câu" step only runs the sentence-building questions in
+    // chunks, so no single sitting reaches the coverage bar (prod 2026-10-21:
+    // 8 students had submitted the essay and the homework stayed unticked).
+    essay: true,
   },
   speaking: {
     label: 'Speaking (Câu hỏi)',
@@ -549,13 +558,15 @@ function groupEquivalentDocs(docs) {
     if (!members.has(g)) members.set(g, []);
     members.get(g).push(id);
   }
-  return { groupOf, members };
+  // byText: normalized prompt -> one id with that text (task2 topic -> essay)
+  return { groupOf, members, byText };
 }
 
-async function loadEquivalence(model, needIds = []) {
+async function loadEquivalence(model, needIds = [], needTexts = []) {
   const hit = _equivCache.get(model.modelName);
   // A prompt added since the last load isn't in the cache — reload then too.
-  if (hit && Date.now() - hit.at < EQUIV_TTL_MS && needIds.every((id) => hit.groupOf.has(id))) return hit;
+  if (hit && Date.now() - hit.at < EQUIV_TTL_MS && needIds.every((id) => hit.groupOf.has(id))
+    && needTexts.every((t) => hit.byText.has(t))) return hit;
   const docs = await model.find({}).select('_id prompt duplicateOf').lean();
   const val = { at: Date.now(), ...groupEquivalentDocs(docs) };
   _equivCache.set(model.modelName, val);
@@ -574,6 +585,61 @@ async function expandEquivalentIds(model, assignedIds) {
     for (const other of (g && eq.members.get(g)) || []) add(other, id);
   }
   return out;
+}
+
+// task2 topic ids -> Map<topicId, latest essay submission that meets
+// MIN_WORDS.task2>. A topic's essay is its linked WritingTask2
+// (Task2Topic.writingTask2Id) or any WritingTask2 with the same prompt —
+// seedTask2Exercises.js's replaceOne wipes writingTask2Id, and the link is
+// only rebuilt the next time the week is opened (ensureTopicEssayLinks).
+async function task2EssayCompletions(studentId, topicIds, since) {
+  const res = new Map();
+  const topics = await Task2Topic.find({ _id: { $in: topicIds } }).select('_id prompt writingTask2Id').lean();
+  if (!topics.length) return res;
+  // The lesson's own hand-in ("Nộp bài chấm AI" stamps submittedAt, then
+  // opens writing.html) counts as submitted — a student who then leaves
+  // writing.html without pressing submit again has still handed the essay in.
+  const lq = { userId: studentId, topicId: { $in: topics.map((t) => t._id) }, submittedAt: { $ne: null } };
+  if (since) lq.submittedAt = { $gte: since };
+  const works = await Task2LessonWork.find(lq).select('_id topicId submittedAt sections').lean().catch(() => []);
+  for (const w of works) {
+    const words = Object.values(w.sections || {}).join(' ').split(/\s+/).filter(Boolean).length;
+    if (words >= MIN_WORDS.task2) res.set(String(w.topicId), { completedAt: w.submittedAt, attemptId: String(w._id) });
+  }
+  let eq = null;
+  try {
+    eq = await loadEquivalence(WritingTask2,
+      topics.filter((t) => t.writingTask2Id).map((t) => String(t.writingTask2Id)),
+      topics.map((t) => normalizePrompt(t.prompt)).filter(Boolean));
+  } catch (_) { /* linked id only */ }
+  const topicsOfEssay = new Map(); // WritingTask2 id -> topic ids
+  const link = (essayId, topicId) => {
+    const g = eq && eq.groupOf.get(essayId);
+    for (const id of (g && eq.members.get(g)) || [essayId]) {
+      if (!topicsOfEssay.has(id)) topicsOfEssay.set(id, new Set());
+      topicsOfEssay.get(id).add(topicId);
+    }
+  };
+  for (const t of topics) {
+    if (t.writingTask2Id) link(String(t.writingTask2Id), String(t._id));
+    const byPrompt = eq && eq.byText.get(normalizePrompt(t.prompt));
+    if (byPrompt) link(byPrompt, String(t._id));
+  }
+  if (!topicsOfEssay.size) return res;
+  const q = {
+    userId: studentId, ...COUNTABLE_ATTEMPT,
+    task2Id: { $in: [...topicsOfEssay.keys()].map((x) => new mongoose.Types.ObjectId(x)) },
+    wordCount2: { $gte: MIN_WORDS.task2 },
+  };
+  if (since) q.createdAt = { $gte: since };
+  const rows = await WritingAttempt.find(q).sort({ createdAt: -1 }).select('_id createdAt task2Id').lean().catch(() => []);
+  for (const r of rows) { // newest first — keep the first per topic
+    for (const topicId of topicsOfEssay.get(String(r.task2Id)) || []) {
+      const prev = res.get(topicId);
+      if (!prev || prev.completedAt < r.createdAt) res.set(topicId, { completedAt: r.createdAt, attemptId: String(r._id) });
+    }
+  }
+  return res;
 }
 
 /**
@@ -763,6 +829,18 @@ async function checkCompleted(studentId, internalItems, since = null) {
         attemptId: String(r._id),
         scorePercent: Math.round(pct),
       });
+    }
+
+    if (entry.essay) {
+      // task2: a submitted essay completes the topic too. completedAt is the
+      // later of the two passing dates (same "latest pass" rule as above).
+      const essays = await task2EssayCompletions(studentId, assignedIds, since);
+      for (const [topicId, e] of essays) {
+        const k = resourceKey(type, topicId);
+        const prev = out.get(k);
+        if (prev && prev.completed && new Date(prev.completedAt) >= new Date(e.completedAt)) continue;
+        out.set(k, { ...(prev || {}), completed: true, completedAt: e.completedAt, attemptId: e.attemptId });
+      }
     }
   }));
 
