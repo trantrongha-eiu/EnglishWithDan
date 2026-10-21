@@ -115,8 +115,103 @@
     });
   }
 
+  // ── notifications (bell) ───────────────────────────
+  var notif = { list: [], unread: 0 };
+  var NOTIF_KIND = {
+    absence:          { cls: 'ph-notif-absence',  icon: 'fa-user-xmark', target: 'phClasses' },
+    homework_overdue: { cls: 'ph-notif-homework', icon: 'fa-list-check', target: 'phHomework' },
+    tuition_due:      { cls: 'ph-notif-tuition',  icon: 'fa-receipt',    target: 'phTuition' },
+    tuition_reminder: { cls: 'ph-notif-tuition',  icon: 'fa-receipt',    target: 'phTuition' },
+  };
+  var $bell = document.getElementById('phBell');
+  var $badge = document.getElementById('phBellBadge');
+  var $notifModal = document.getElementById('phNotifModal');
+
+  function fmtWhen(d) {
+    return new Date(d).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' });
+  }
+
+  function loadNotifications() {
+    api('/parent/notifications')
+      .then(function (body) {
+        notif.list = body.notifications || [];
+        notif.unread = body.unreadCount || 0;
+        renderBell();
+      })
+      .catch(function () { /* the bell is optional — the page works without it */ });
+  }
+
+  function renderBell() {
+    $bell.hidden = false;
+    $badge.hidden = !notif.unread;
+    $badge.textContent = notif.unread > 9 ? '9+' : String(notif.unread);
+    var slot = document.getElementById('phAlertSlot');
+    if (!slot) return;
+    slot.innerHTML = notif.unread
+      ? '<button class="ph-alert" type="button" id="phAlertBtn"><i class="fas fa-bell"></i><span>Có ' + notif.unread +
+        ' thông báo mới về việc học của con</span><i class="fas fa-chevron-right"></i></button>'
+      : '';
+    var btn = document.getElementById('phAlertBtn');
+    if (btn) btn.addEventListener('click', openNotifications);
+  }
+
+  function openNotifications() {
+    var $list = document.getElementById('phNotifList');
+    $list.innerHTML = notif.list.length
+      ? notif.list.map(function (n, i) {
+        var k = NOTIF_KIND[n.kind] || NOTIF_KIND.tuition_reminder;
+        return '<div class="ph-notif ' + k.cls + (n.read ? '' : ' ph-notif-unread') + '" data-i="' + i + '" role="button" tabindex="0">' +
+          '<div class="ph-notif-icon"><i class="fas ' + k.icon + '"></i></div>' +
+          '<div class="ph-notif-main"><div class="ph-notif-title">' + esc(n.title) + '</div>' +
+          (n.body ? '<div class="ph-notif-body">' + esc(n.body) + '</div>' : '') +
+          '<div class="ph-notif-meta">' + (state.children.length > 1 ? esc(n.studentName) + ' · ' : '') + fmtWhen(n.createdAt) + '</div></div></div>';
+      }).join('')
+      : '<div class="ph-empty">Chưa có thông báo nào.</div>';
+    $notifModal.hidden = false;
+    document.getElementById('phNotifClose').focus();
+    Array.prototype.forEach.call($list.querySelectorAll('.ph-notif'), function (el) {
+      var go = function () { openFromNotification(notif.list[Number(el.getAttribute('data-i'))]); };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+    if (notif.unread) {
+      api('/parent/notifications/read', { method: 'POST' })
+        .then(function () {
+          notif.unread = 0;
+          notif.list.forEach(function (n) { n.read = true; });
+          renderBell();
+        })
+        .catch(function () { /* stays unread; retried next open */ });
+    }
+  }
+
+  function closeNotifications() { $notifModal.hidden = true; $bell.focus(); }
+
+  // Jump to the child + section the alert is about.
+  function openFromNotification(n) {
+    closeNotifications();
+    if (!n) return;
+    var target = (NOTIF_KIND[n.kind] || {}).target;
+    var scroll = function () {
+      var el = target && document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    if (String(n.studentId) !== state.childId && state.children.some(function (c) { return String(c._id) === String(n.studentId); })) {
+      selectChild(n.studentId);
+      setTimeout(scroll, 300);
+    } else {
+      scroll();
+    }
+  }
+
+  $bell.addEventListener('click', openNotifications);
+  document.getElementById('phNotifClose').addEventListener('click', closeNotifications);
+  $notifModal.addEventListener('click', function (e) { if (e.target === $notifModal) closeNotifications(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$notifModal.hidden) closeNotifications(); });
+
   // ── children ───────────────────────────────────────
   function start() {
+    loadNotifications();
     api('/parent/children')
       .then(function (body) {
         state.children = body.children || [];
@@ -166,7 +261,7 @@
       tile('late', 'Đi trễ', child.lateCount, child.lateCount > 0 ? 'warn' : '') +
       tile('homework', 'Bài tập quá hạn', child.homeworkMissed, child.homeworkMissed > 0 ? 'bad' : '');
 
-    $main.innerHTML = kids +
+    $main.innerHTML = '<div id="phAlertSlot"></div>' + kids +
       '<div class="ph-child-head"><div class="ph-avatar">' + avatar + '</div>' +
       '<div><h1 class="ph-child-name">' + esc(child.name) + '</h1>' + (statusPill(child.status) || '<span class="ph-muted">Chưa vào lớp nào</span>') + '</div></div>' +
       '<div class="ph-tiles">' + tiles + '</div>' +
@@ -176,6 +271,7 @@
       '<div id="phTuition">' + section('fa-receipt', 'Học phí', loadingBody()) + '</div>' +
       '<p class="ph-foot">Kết quả bài làm được lưu trong 3 tháng gần nhất.</p>';
 
+    if (notif.list.length || notif.unread) renderBell();
     Array.prototype.forEach.call($main.querySelectorAll('[data-kid]'), function (b) {
       b.addEventListener('click', function () { if (b.getAttribute('data-kid') !== state.childId) selectChild(b.getAttribute('data-kid')); });
     });

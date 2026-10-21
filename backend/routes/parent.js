@@ -9,6 +9,8 @@ const c = require('../controllers/parent.controller');
 router.use(auth, c.parentOnly);
 
 router.get('/children', c.listChildren);
+router.get('/notifications', c.listNotifications);
+router.post('/notifications/read', c.markNotificationsRead);
 router.get('/children/:childId/classes',  c.loadLinkedChild, c.getClasses);
 router.get('/children/:childId/homework', c.loadLinkedChild, c.getHomework);
 router.get('/children/:childId/scores',   c.loadLinkedChild, c.getScores);

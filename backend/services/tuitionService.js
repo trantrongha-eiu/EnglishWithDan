@@ -12,6 +12,7 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const { vnTodayKey } = require('../utils/classProgress');
 const { escapeRegex } = require('../utils/strings');
+const parentNotifyService = require('./parentNotifyService');
 
 // Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
 // below, and cron/tuitionReminder.js's daily auto-remind — so there's one
@@ -33,6 +34,19 @@ function buildReminderBody(fees) {
   const lines = fees.map(f => `• ${feeLabel(f)}: ${fmtVNDAmount(f.amount)} VND`).join('\n');
   const total = fees.reduce((s, f) => s + (f.amount || 0), 0);
   return `📢 Nhắc nhở học phí\n\nBạn đang có ${fees.length} khoản học phí chưa thanh toán:\n${lines}\n\nTổng cộng: ${fmtVNDAmount(total)} VND\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`;
+}
+
+// Staff/cron tuition reminder → the student's parents too (phụ huynh is
+// usually who pays). One alert per fee per VN day, so a double click or the
+// cron + a manual nudge on the same day don't alert twice.
+function remindParents(studentId, fees, now = new Date()) {
+  const day = vnTodayKey(now);
+  return parentNotifyService.notify(studentId, fees.map((fee) => ({
+    kind: 'tuition_reminder',
+    key: `fee-remind:${fee._id}:${day}`,
+    title: `Nhắc học phí ${feeLabel(fee)}: ${fmtVNDAmount(fee.amount)} ₫`,
+    body: 'Trung tâm nhắc phụ huynh hoàn tất học phí. Thông tin chuyển khoản có ở mục Học phí trên trang phụ huynh.',
+  })));
 }
 
 // Additive notification channel for tuition reminders — the in-app Message
@@ -472,6 +486,7 @@ async function sendReminder(feeId, customMessage, sender) {
   // is the guaranteed notification, this is purely additive.
   sendTuitionReminderEmail(fee.studentId, [fee], customMessage)
     .catch(err => console.error('[Tuition] reminder email failed:', err.message));
+  await remindParents(fee.studentId._id, [fee]);
   await bumpTuitionReminderCount(fee.studentId._id);
   return true;
 }
@@ -499,6 +514,7 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
   // Dedupe by student first — one nudge per student this batch, even on the
   // rare student with 2+ unpaid fees the same month/year.
   const studentIds = [...new Set(fees.map(fee => String(fee.studentId._id)))];
+  await Promise.all(studentIds.map(sid => remindParents(sid, fees.filter(f => String(f.studentId._id) === sid))));
   await Promise.all(studentIds.map(bumpTuitionReminderCount));
   return msgs.length;
 }
@@ -572,5 +588,6 @@ module.exports = {
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
   buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth,
-  resetTuitionReminderCountIfCaughtUp,
+  resetTuitionReminderCountIfCaughtUp, remindParents,
+  feeLabel, fmtVNDAmount, PAYMENT_DUE_DAY, PAYMENT_DEADLINE_DAY,
 };

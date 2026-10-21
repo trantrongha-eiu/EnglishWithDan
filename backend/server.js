@@ -46,6 +46,7 @@ const attemptTimeoutSweepCron = require('./cron/attemptTimeoutSweep');
 const writingAutoGradeCron = require('./cron/writingAutoGrade');
 const classAttendanceSweepCron = require('./cron/classAttendanceSweep');
 const assignmentSweepCron = require('./cron/assignmentSweep');
+const parentNotifySweepCron = require('./cron/parentNotifySweep');
 const speakingGradeQueueCron = require('./cron/speakingGradeQueue');
 const proctorShotCleanupCron = require('./cron/proctorShotCleanup');
 
@@ -235,6 +236,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'AssignmentSweep cron failed to start', { errorMessage: e.message });
     }
+    // Phụ huynh alerts: overdue homework + tuition due (08:00 ICT)
+    try {
+      parentNotifySweepCron.start();
+    } catch (e) {
+      logger.error('startup', 'ParentNotifySweep cron failed to start', { errorMessage: e.message });
+    }
     // Retry Speaking answers whose AI grading failed at submit (overload)
     try {
       speakingGradeQueueCron.start();
@@ -269,6 +276,7 @@ function shutdown(signal) {
   writingAutoGradeCron.stop();
   classAttendanceSweepCron.stop();
   assignmentSweepCron.stop();
+  parentNotifySweepCron.stop();
   speakingGradeQueueCron.stop();
   proctorShotCleanupCron.stop();
 

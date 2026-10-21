@@ -3,7 +3,7 @@ const TuitionFee      = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
-const { buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth } = require('../services/tuitionService');
+const { buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth, remindParents } = require('../services/tuitionService');
 const logger = require('../utils/logger');
 
 async function runReminders() {
@@ -72,6 +72,7 @@ async function runReminders() {
     // per-fee/bulk reminders bump, so nav.js's escalation banner also
     // catches students only ever reminded by this daily cron.
     await Promise.all(groups.map(({ student }) => bumpTuitionReminderCount(student._id)));
+    await Promise.all(groups.map(({ student, fees }) => remindParents(student._id, fees, now)));
     logger.info('cron', 'TuitionCron: sent auto-reminders', { count: msgs.length, day: today, month: currentMonth, year: currentYear });
   } catch (e) {
     logger.error('cron', 'TuitionCron run error', { errorMessage: e.message });

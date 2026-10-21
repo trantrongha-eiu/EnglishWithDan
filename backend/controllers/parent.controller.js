@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const parentService = require('../services/parentService');
 const assignmentService = require('../services/assignmentService');
 const tuitionService = require('../services/tuitionService');
+const parentNotifyService = require('../services/parentNotifyService');
 const { overviewForStudent, enrollmentsForStudent } = require('./classAttendance.controller');
 const logger = require('../utils/logger');
 
@@ -109,6 +110,22 @@ exports.getTuition = async (req, res) => {
         paymentNote: settings?.paymentNote || '',
       },
     });
+  } catch (err) {
+    fail(res, err);
+  }
+};
+
+exports.listNotifications = async (req, res) => {
+  try {
+    res.json({ success: true, ...(await parentNotifyService.listForParent(req.user._id)) });
+  } catch (err) {
+    fail(res, err);
+  }
+};
+
+exports.markNotificationsRead = async (req, res) => {
+  try {
+    res.json({ success: true, marked: await parentNotifyService.markAllRead(req.user._id) });
   } catch (err) {
     fail(res, err);
   }

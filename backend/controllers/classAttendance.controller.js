@@ -20,6 +20,8 @@ const { staffOnly, loadOwnedClass, displayName: studentName } = require('../midd
 const logger = require('../utils/logger');
 const { computeClassProgress, vnTodayKey } = require('../utils/classProgress');
 const { autoMarkDueSessions } = require('../services/classAutoAttendanceService');
+const ParentLink = require('../models/ParentLink');
+const parentNotifyService = require('../services/parentNotifyService');
 
 // Lazy "tới giờ học → tự điểm danh có mặt" on reads, on top of the 5-minute
 // cron — the server may have been asleep at class time. Never blocks a read.
@@ -675,6 +677,31 @@ exports.getSessionAttendance = async (req, res) => {
   }
 };
 
+// Phụ huynh alerts for this save (vắng / vắng có phép), only for students
+// who have a parent linked. Runs after refreshClass so the "buổi nghỉ tính
+// đến nay" count includes this session. Never fails the save itself.
+async function alertParents(cls, session, marks, eMap) {
+  try {
+    const studentIds = marks.map((m) => eMap[String(m.enrollmentId)]?.studentId).filter(Boolean);
+    const linked = new Set((await ParentLink.find({ studentId: { $in: studentIds } }).select('studentId').lean())
+      .map((l) => String(l.studentId)));
+    if (!linked.size) return;
+    const enrollments = await ClassEnrollment.find({ classId: cls._id, studentId: { $in: [...linked] }, removedAt: null })
+      .select('studentId stats').lean();
+    await parentNotifyService.notifyAttendance({
+      cls,
+      session,
+      marks: marks
+        .map((m) => ({ studentId: eMap[String(m.enrollmentId)]?.studentId, status: m.status }))
+        .filter((m) => m.studentId && linked.has(String(m.studentId))),
+      statsByStudent: new Map(enrollments.map((e) => [String(e.studentId), e.stats || {}])),
+      policy: svc.withPolicyDefaults(cls.policy),
+    });
+  } catch (err) {
+    logger.error('parent', 'Absence alert failed', { errorMessage: err.message, classId: String(cls._id) });
+  }
+}
+
 exports.saveSessionAttendance = async (req, res) => {
   try {
     const cls = req.classGroup;
@@ -749,6 +776,7 @@ exports.saveSessionAttendance = async (req, res) => {
     await session.save();
 
     await svc.refreshClass(cls._id);
+    await alertParents(cls, session, marks, eMap);
     const roster = await buildRoster(cls._id, session._id);
     res.json({ success: true, session: session.toObject(), roster });
   } catch (err) {
