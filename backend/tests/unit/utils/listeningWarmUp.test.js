@@ -116,6 +116,38 @@ describe('validateWarmUp — never helps with the test itself', () => {
     expect(v.dropped[0]).toMatch(/adds-nothing/);
   });
 
+  test('numbers leak whatever their format; MC options count; spelling variants and filler/name blanks go', () => {
+    const sec = {
+      questionGroups: [{
+        noteConfig: { lines: ['phone number: __Q10__', 'Date of purchase: __Q3__', 'Information Centre', 'fund-raising', 'Aster Cottage'] },
+        questions: [
+          { questionNumber: 3, questionText: '', correctAnswer: '12 January / January 12th' },
+          { questionNumber: 10, questionText: '', correctAnswer: '0914638520' },
+          { questionNumber: 11, questionText: 'How many passengers does the ferry hold?', options: ['500', '2,000'], correctAnswer: 'B' },
+          { questionNumber: 12, questionText: 'Which group will run first in the race? What is the play called?', options: [], correctAnswer: 'A' },
+        ],
+      }],
+    };
+    const t = 'It is 091-463-8520. You bought it on January the 12th. It can accommodate about 2,000 people. Go to the information center. fundraising. Astor Cottage. We would like them to start the race. It is called Jemima.';
+    const c = { transcript: t, questionMaterial: buildQuestionMaterial(sec), testAnswers: buildTestAnswers(sec) };
+    const v = validateWarmUp({
+      synonyms: [
+        { keyword: 'Date of purchase', answer: 'January the 12th' },
+        { keyword: 'Information Centre', answer: 'information center' },
+        { keyword: 'fund-raising', answer: 'fundraising' },
+        { keyword: 'Aster Cottage', answer: 'Astor Cottage' },
+      ],
+      paraphrases: [
+        { question: 'How many passengers does the ferry hold?', evidence: 'accommodate about ____', answer: '2,000 people' },
+        { question: 'Which group will run first in the race?', evidence: 'We would like ____ to start the race', answer: 'them' },
+        { question: 'What is the play called?', evidence: 'It is called ____', answer: 'Jemima' },
+      ],
+    }, c);
+    expect(v.synonyms).toEqual([]);
+    expect(v.paraphrases).toEqual([]);
+    expect(v.dropped.join('\n')).toMatch(/gives-test-answer "January the 12th"[\s\S]*spelling-variant[\s\S]*filler-blank[\s\S]*name-blank/);
+  });
+
   test('fragment questions are dropped', () => {
     const v = validateWarmUp({ synonyms: [], paraphrases: [{ question: 'making wooden', evidence: 'Helmets are ____ at the gate', answer: 'issued' }] }, formCtx);
     expect(v.dropped[0]).toMatch(/question-fragment/);
