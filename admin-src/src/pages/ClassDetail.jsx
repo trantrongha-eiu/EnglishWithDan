@@ -70,39 +70,40 @@ export default function ClassDetail() {
   const [cls, setCls] = useState(null);
   const [roster, setRoster] = useState([]);
   const [progress, setProgress] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // id the last finished load was for — "loading" is derived from it, so
+  // switching classes shows the spinner instead of the previous class.
+  const [loadedFor, setLoadedFor] = useState(null);
   const [loadError, setLoadError] = useState(null);
 
   // A slow server (Render cold start) or a dropped request used to land on
   // "Không tìm thấy lớp" exactly like a real 404 — retry a cold start once
   // on its own, and only call it "not found" when the server says so.
   const loadClass = (retried = false) => apiFetch(`/classes/${id}`)
-    .then((d) => { setCls(d.class); setRoster(d.roster || []); setProgress(d.progress || null); setLoadError(null); })
+    .then((d) => { setCls(d.class); setRoster(d.roster || []); setProgress(d.progress || null); setLoadError(null); setLoadedFor(id); })
     .catch((e) => {
       if (e.coldStart && !retried) return loadClass(true);
       setLoadError(e);
+      setLoadedFor(id);
       toast(e.message, 'error');
-    })
-    .finally(() => setLoading(false));
-  useEffect(() => {
-    setLoading(true); setCls(null); setLoadError(null);
-    loadClass();
-  }, [id]);
+    });
+  useEffect(() => { loadClass(); }, [id]);
   const reload = () => loadClass();
 
-  if (loading) return <div className="route-loading">Đang tải…</div>;
-  if (!cls && loadError && loadError.status !== 404 && loadError.status !== 403) {
+  if (loadedFor !== id) return <div className="route-loading">Đang tải…</div>;
+  // a failed load right after switching classes must not show the old one
+  const current = cls && String(cls._id) === String(id) ? cls : null;
+  if (!current && loadError && loadError.status !== 404 && loadError.status !== 403) {
     return (
       <div className="section-header">
         <div>
           <h2 className="section-title">Không tải được lớp</h2>
           <div style={{ fontSize: 13, color: 'var(--text3)', margin: '4px 0 12px' }}>{loadError.message}</div>
-          <button className="btn btn-primary" onClick={() => { setLoading(true); loadClass(); }}>Thử lại</button>
+          <button className="btn btn-primary" onClick={() => { setLoadedFor(null); loadClass(); }}>Thử lại</button>
         </div>
       </div>
     );
   }
-  if (!cls) return <div className="section-header"><h2 className="section-title">{loadError?.status === 403 ? loadError.message : 'Không tìm thấy lớp'}</h2></div>;
+  if (!current) return <div className="section-header"><h2 className="section-title">{loadError?.status === 403 ? loadError.message : 'Không tìm thấy lớp'}</h2></div>;
 
   const kpi = {
     total: roster.length,
