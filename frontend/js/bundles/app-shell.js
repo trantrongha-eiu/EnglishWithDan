@@ -213,6 +213,9 @@
   // login/OAuth" decision — previously duplicated between login.html and
   // auth-callback.html.
   function getPostLoginRedirect(user) {
+    // A parent has exactly one page; a next= aimed anywhere else would just
+    // bounce back off auth.js's parent guard.
+    if (getRole(user) === 'parent') return '/parent.html';
     var staff = isStaff(user);
     var next = getSafeNext();
     if (next && next.admin === staff) return next.url;
@@ -243,7 +246,7 @@
     // A guest (no-login Entrance Test session) has no dashboard — leave them
     // on the home/login page so they can sign in with a real account.
     if (user.role === 'guest') return false;
-    window.location.href = isStaff(user) ? '/admin/' : '/dashboard.html';
+    window.location.href = user.role === 'parent' ? '/parent.html' : isStaff(user) ? '/admin/' : '/dashboard.html';
     return true;
   }
 
@@ -429,6 +432,13 @@
     return;
   }
   if (isOpen) return;
+
+  // ── Parent (phụ huynh): parent.html is their whole site — the API refuses
+  // a parent token everywhere else (middleware/auth.js PARENT_ALLOWED). ──
+  if (user && user.role === 'parent' && !isPublic && currentPage !== 'parent.html') {
+    window.location.replace('/parent.html');
+    return;
+  }
 
   // ── Guard 1: chưa đăng nhập → về login, nhớ trang đang muốn vào ──
   if (!AS.requirePageAuth(isPublic)) return;

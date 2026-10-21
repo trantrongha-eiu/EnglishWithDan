@@ -23,6 +23,7 @@
  *   /speaking/tips[/:tip]  /speaking/practice|history|materials  /speaking/question/:id
  *   /essential-grammar/:lesson  /dictation/:sectionId  /vocab/lesson/:id  …
  *   /test-dau-vao  /test-dau-vao/ket-qua/:attemptId   (also /entrance-test/…)
+ *   /phu-huynh                                    parent view (link sent to parents)
  */
 (function () {
   'use strict';
@@ -81,6 +82,7 @@
     [/^\/vocabulary$/, function () { return '/dashboard.html'; }],
     // Test đầu vào — open to visitors (name + phone, no account needed).
     [/^\/(?:test-dau-vao|entrance-test)$/, function () { return '/entrance-test.html'; }],
+    [/^\/phu-huynh$/, function () { return '/parent.html'; }],
     [new RegExp('^/(?:test-dau-vao|entrance-test)/ket-qua/' + SEG + '$'), function (m) { return '/entrance-test.html?result=' + m[1]; }],
     [/^\/noun-phrase-writing(?:\.html)?$/, function () { return '/writing-task1.html'; }],
   ];

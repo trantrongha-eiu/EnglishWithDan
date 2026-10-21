@@ -879,39 +879,46 @@ exports.myAttendanceStatus = async (req, res) => {
   }
 };
 
+// Per-class enrollment + per-session marks for one student. Shared by the
+// student's own /my/enrollments and the parent view (routes/parent.js).
+async function enrollmentsForStudent(studentId) {
+  const enrollments = await ClassEnrollment.find({ studentId }).sort({ createdAt: -1 }).lean();
+  if (!enrollments.length) return [];
+  const classes = await ClassGroup.find({ _id: { $in: enrollments.map((e) => e.classId) } })
+    .select('name courseName status policy totalSessions').lean();
+  const clsMap = {};
+  classes.forEach((c) => { clsMap[String(c._id)] = c; });
+
+  const sessions = await ClassSession.find({ classId: { $in: enrollments.map((e) => e.classId) } })
+    .sort({ sessionNumber: 1 }).lean();
+  const records = await AttendanceRecord.find({ studentId }).lean();
+  const recMap = {};
+  records.forEach((r) => { recMap[`${r.classId}:${r.sessionId}`] = r; });
+
+  const out = enrollments.map((e) => {
+    const c = clsMap[String(e.classId)];
+    const clsSessions = sessions
+      .filter((s) => String(s.classId) === String(e.classId) && s.type === 'regular')
+      .map((s) => {
+        const r = recMap[`${e.classId}:${s._id}`];
+        return { sessionNumber: s.sessionNumber, date: s.date, sessionStatus: s.status, mark: r?.status || null };
+      });
+    return {
+      enrollmentId: e._id,
+      class: c ? { _id: c._id, name: c.name, courseName: c.courseName, status: c.status, totalSessions: c.totalSessions, policy: svc.withPolicyDefaults(c.policy) } : null,
+      status: e.status,
+      statusReason: e.statusReason || '',
+      stats: e.stats || {},
+      sessions: clsSessions,
+    };
+  });
+  return out;
+}
+exports.enrollmentsForStudent = enrollmentsForStudent;
+
 exports.myEnrollments = async (req, res) => {
   try {
-    const enrollments = await ClassEnrollment.find({ studentId: req.user._id }).sort({ createdAt: -1 }).lean();
-    if (!enrollments.length) return res.json({ success: true, enrollments: [] });
-    const classes = await ClassGroup.find({ _id: { $in: enrollments.map((e) => e.classId) } })
-      .select('name courseName status policy totalSessions').lean();
-    const clsMap = {};
-    classes.forEach((c) => { clsMap[String(c._id)] = c; });
-
-    const sessions = await ClassSession.find({ classId: { $in: enrollments.map((e) => e.classId) } })
-      .sort({ sessionNumber: 1 }).lean();
-    const records = await AttendanceRecord.find({ studentId: req.user._id }).lean();
-    const recMap = {};
-    records.forEach((r) => { recMap[`${r.classId}:${r.sessionId}`] = r; });
-
-    const out = enrollments.map((e) => {
-      const c = clsMap[String(e.classId)];
-      const clsSessions = sessions
-        .filter((s) => String(s.classId) === String(e.classId) && s.type === 'regular')
-        .map((s) => {
-          const r = recMap[`${e.classId}:${s._id}`];
-          return { sessionNumber: s.sessionNumber, date: s.date, sessionStatus: s.status, mark: r?.status || null };
-        });
-      return {
-        enrollmentId: e._id,
-        class: c ? { _id: c._id, name: c.name, courseName: c.courseName, status: c.status, totalSessions: c.totalSessions, policy: svc.withPolicyDefaults(c.policy) } : null,
-        status: e.status,
-        statusReason: e.statusReason || '',
-        stats: e.stats || {},
-        sessions: clsSessions,
-      };
-    });
-    res.json({ success: true, enrollments: out });
+    res.json({ success: true, enrollments: await enrollmentsForStudent(req.user._id) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
@@ -922,99 +929,107 @@ exports.myEnrollments = async (req, res) => {
 // own endpoint rather than folded into myAttendanceStatus, which nav.js polls
 // on EVERY page for EVERY logged-in student and should stay cheap; this one
 // is only fetched once by dashboard.html.
+// Shared by the student's own /my/overview and the parent view
+// (routes/parent.js) — returns the per-class summary array.
+async function overviewForStudent(studentId) {
+  const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
+  if (!enrollments.length) return [];
+
+  const classIds = enrollments.map((e) => e.classId);
+  const [classes, sizeAgg] = await Promise.all([
+    ClassGroup.find({ _id: { $in: classIds } })
+      .select('name courseName status policy totalSessions startDate endDate startTime teacherId').lean(),
+    ClassEnrollment.aggregate([
+      { $match: { classId: { $in: classIds }, removedAt: null } },
+      { $group: { _id: '$classId', count: { $sum: 1 } } },
+    ]),
+  ]);
+  const activeClasses = classes.filter((c) => c.status === 'active');
+  if (!activeClasses.length) return [];
+
+  const sizeMap = new Map(sizeAgg.map((r) => [String(r._id), r.count]));
+  await autoMark(activeClasses.map((c) => c._id));
+  const sessMap = await sessionsByClass(activeClasses.map((c) => c._id));
+  const teachers = await User.find({ _id: { $in: activeClasses.map((c) => c.teacherId) } })
+    .select('username firstName lastName').lean();
+  const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
+  const clsMap = new Map(activeClasses.map((c) => [String(c._id), c]));
+
+  // Live homework misses (archived-but-missed included) — the cached
+  // stats.homeworkMissedCount only moves on a refresh (attendance edit,
+  // assignment edit, nightly sweep), but a deadline passing mid-day must
+  // show up here (and in the warning popup) right away. When the live
+  // number disagrees with the cache, refresh that enrollment so its
+  // warning/failed status catches up too. Same when the stored status no
+  // longer matches the current rules (e.g. written under an older policy
+  // reading) — the badge on the card must not say "Cảnh báo" for nothing.
+  const missedByClass = await assignmentService.getMissedAssignmentsByClass(studentId);
+  for (let i = 0; i < enrollments.length; i += 1) {
+    const e = enrollments[i];
+    const c = clsMap.get(String(e.classId));
+    if (!c) continue;
+    const live = (missedByClass.get(String(e.classId)) || []).length;
+    const st = e.stats || {};
+    const expected = svc.deriveCombinedStatus({ absenceEquivalent: st.absenceEquivalent || 0, derivedStatus: e.status }, live, c.policy);
+    if (live !== (st.homeworkMissedCount || 0) || expected !== e.status) {
+      const fresh = await svc.refreshEnrollment(e._id).catch(() => null);
+      if (fresh) enrollments[i] = fresh.toObject();
+    }
+  }
+
+  const out = enrollments
+    .map((e) => {
+      const c = clsMap.get(String(e.classId));
+      if (!c) return null;
+      const p = svc.withPolicyDefaults(c.policy);
+      const st = e.stats || {};
+      const missed = missedByClass.get(String(e.classId)) || [];
+      const absenceEquivalent = st.absenceEquivalent || 0;
+      return {
+        classId: e.classId,
+        className: c.name,
+        courseName: c.courseName || '',
+        teacherName: studentName(teacherMap.get(String(c.teacherId))) || '',
+        startDate: c.startDate || null,
+        endDate: c.endDate || null,
+        totalSessions: c.totalSessions || 0,
+        classSize: sizeMap.get(String(e.classId)) || 0,
+        status: e.status,
+        statusReason: e.statusReason || '',
+        heldSessions: st.heldSessions || 0,
+        absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
+        absentExcused: st.absentExcused || 0,
+        absentUnexcused: st.absentUnexcused || 0,
+        lateCount: st.lateCount || 0,
+        absenceEquivalent,
+        attendanceLevel: svc.attendanceLevel(absenceEquivalent, c.policy),
+        homeworkLevel: svc.homeworkLevel(missed.length, c.policy),
+        attendanceRate: st.attendanceRate || 0,
+        maxAbsencesAllowed: p.maxAbsencesAllowed,
+        warnThreshold: p.warnThreshold,
+        remainingAbsences: Math.max(0, Math.round((p.maxAbsencesAllowed - absenceEquivalent) * 10) / 10),
+        excusedCountsAsAbsence: p.excusedCountsAsAbsence,
+        lateToAbsenceRatio: p.lateToAbsenceRatio,
+        failOnExceed: p.failOnExceed,
+        homeworkMissedCount: missed.length,
+        homeworkWarnThreshold: p.homeworkWarnThreshold,
+        homeworkFailThreshold: p.homeworkFailThreshold,
+        // fail triggers AT the threshold (>=), so one fewer is the most a
+        // student can still miss and pass
+        homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - missed.length),
+        missedAssignments: missed.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived, done: m.done, total: m.total })),
+        progress: computeClassProgress(c, sessMap.get(String(e.classId)) || []),
+      };
+    })
+    .filter(Boolean);
+  return out;
+}
+exports.overviewForStudent = overviewForStudent;
+
 exports.myOverview = async (req, res) => {
   try {
-    const enrollments = await ClassEnrollment.find({ studentId: req.user._id, removedAt: null }).lean();
-    if (!enrollments.length) return res.json({ success: true, hasClasses: false, classes: [] });
-
-    const classIds = enrollments.map((e) => e.classId);
-    const [classes, sizeAgg] = await Promise.all([
-      ClassGroup.find({ _id: { $in: classIds } })
-        .select('name courseName status policy totalSessions startDate endDate startTime teacherId').lean(),
-      ClassEnrollment.aggregate([
-        { $match: { classId: { $in: classIds }, removedAt: null } },
-        { $group: { _id: '$classId', count: { $sum: 1 } } },
-      ]),
-    ]);
-    const activeClasses = classes.filter((c) => c.status === 'active');
-    if (!activeClasses.length) return res.json({ success: true, hasClasses: false, classes: [] });
-
-    const sizeMap = new Map(sizeAgg.map((r) => [String(r._id), r.count]));
-    await autoMark(activeClasses.map((c) => c._id));
-    const sessMap = await sessionsByClass(activeClasses.map((c) => c._id));
-    const teachers = await User.find({ _id: { $in: activeClasses.map((c) => c.teacherId) } })
-      .select('username firstName lastName').lean();
-    const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
-    const clsMap = new Map(activeClasses.map((c) => [String(c._id), c]));
-
-    // Live homework misses (archived-but-missed included) — the cached
-    // stats.homeworkMissedCount only moves on a refresh (attendance edit,
-    // assignment edit, nightly sweep), but a deadline passing mid-day must
-    // show up here (and in the warning popup) right away. When the live
-    // number disagrees with the cache, refresh that enrollment so its
-    // warning/failed status catches up too. Same when the stored status no
-    // longer matches the current rules (e.g. written under an older policy
-    // reading) — the badge on the card must not say "Cảnh báo" for nothing.
-    const missedByClass = await assignmentService.getMissedAssignmentsByClass(req.user._id);
-    for (let i = 0; i < enrollments.length; i += 1) {
-      const e = enrollments[i];
-      const c = clsMap.get(String(e.classId));
-      if (!c) continue;
-      const live = (missedByClass.get(String(e.classId)) || []).length;
-      const st = e.stats || {};
-      const expected = svc.deriveCombinedStatus({ absenceEquivalent: st.absenceEquivalent || 0, derivedStatus: e.status }, live, c.policy);
-      if (live !== (st.homeworkMissedCount || 0) || expected !== e.status) {
-        const fresh = await svc.refreshEnrollment(e._id).catch(() => null);
-        if (fresh) enrollments[i] = fresh.toObject();
-      }
-    }
-
-    const out = enrollments
-      .map((e) => {
-        const c = clsMap.get(String(e.classId));
-        if (!c) return null;
-        const p = svc.withPolicyDefaults(c.policy);
-        const st = e.stats || {};
-        const missed = missedByClass.get(String(e.classId)) || [];
-        const absenceEquivalent = st.absenceEquivalent || 0;
-        return {
-          classId: e.classId,
-          className: c.name,
-          courseName: c.courseName || '',
-          teacherName: studentName(teacherMap.get(String(c.teacherId))) || '',
-          startDate: c.startDate || null,
-          endDate: c.endDate || null,
-          totalSessions: c.totalSessions || 0,
-          classSize: sizeMap.get(String(e.classId)) || 0,
-          status: e.status,
-          statusReason: e.statusReason || '',
-          heldSessions: st.heldSessions || 0,
-          absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
-          absentExcused: st.absentExcused || 0,
-          absentUnexcused: st.absentUnexcused || 0,
-          lateCount: st.lateCount || 0,
-          absenceEquivalent,
-          attendanceLevel: svc.attendanceLevel(absenceEquivalent, c.policy),
-          homeworkLevel: svc.homeworkLevel(missed.length, c.policy),
-          attendanceRate: st.attendanceRate || 0,
-          maxAbsencesAllowed: p.maxAbsencesAllowed,
-          warnThreshold: p.warnThreshold,
-          remainingAbsences: Math.max(0, Math.round((p.maxAbsencesAllowed - absenceEquivalent) * 10) / 10),
-          excusedCountsAsAbsence: p.excusedCountsAsAbsence,
-          lateToAbsenceRatio: p.lateToAbsenceRatio,
-          failOnExceed: p.failOnExceed,
-          homeworkMissedCount: missed.length,
-          homeworkWarnThreshold: p.homeworkWarnThreshold,
-          homeworkFailThreshold: p.homeworkFailThreshold,
-          // fail triggers AT the threshold (>=), so one fewer is the most a
-          // student can still miss and pass
-          homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - missed.length),
-          missedAssignments: missed.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived, done: m.done, total: m.total })),
-          progress: computeClassProgress(c, sessMap.get(String(e.classId)) || []),
-        };
-      })
-      .filter(Boolean);
-    res.json({ success: true, hasClasses: out.length > 0, classes: out });
+    const classes = await overviewForStudent(req.user._id);
+    res.json({ success: true, hasClasses: classes.length > 0, classes });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

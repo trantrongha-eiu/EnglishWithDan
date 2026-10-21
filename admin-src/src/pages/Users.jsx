@@ -138,6 +138,7 @@ export default function Users() {
           <option value="student">Học sinh</option>
           <option value="teacher">Giáo viên</option>
           <option value="admin">Admin</option>
+          <option value="parent">Phụ huynh</option>
         </select>
         <select className="form-input" value={plan} onChange={e => update({ plan: e.target.value })} style={{ width: 140 }} aria-label="Lọc gói">
           <option value="">Mọi gói</option>

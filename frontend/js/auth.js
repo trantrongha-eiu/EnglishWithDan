@@ -56,6 +56,13 @@
   }
   if (isOpen) return;
 
+  // ── Parent (phụ huynh): parent.html is their whole site — the API refuses
+  // a parent token everywhere else (middleware/auth.js PARENT_ALLOWED). ──
+  if (user && user.role === 'parent' && !isPublic && currentPage !== 'parent.html') {
+    window.location.replace('/parent.html');
+    return;
+  }
+
   // ── Guard 1: chưa đăng nhập → về login, nhớ trang đang muốn vào ──
   if (!AS.requirePageAuth(isPublic)) return;
 

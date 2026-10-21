@@ -15,6 +15,7 @@ const ROLE = {
   admin:   { cls: 'badge-red',   label: 'Admin' },
   teacher: { cls: 'badge-blue',  label: 'Teacher' },
   student: { cls: 'badge-green', label: 'Student' },
+  parent:  { cls: 'badge-purple', label: 'Phụ huynh' },
 };
 
 export function roleBadge(role) {

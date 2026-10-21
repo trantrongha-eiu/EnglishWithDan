@@ -197,6 +197,9 @@
   // login/OAuth" decision — previously duplicated between login.html and
   // auth-callback.html.
   function getPostLoginRedirect(user) {
+    // A parent has exactly one page; a next= aimed anywhere else would just
+    // bounce back off auth.js's parent guard.
+    if (getRole(user) === 'parent') return '/parent.html';
     var staff = isStaff(user);
     var next = getSafeNext();
     if (next && next.admin === staff) return next.url;
@@ -227,7 +230,7 @@
     // A guest (no-login Entrance Test session) has no dashboard — leave them
     // on the home/login page so they can sign in with a real account.
     if (user.role === 'guest') return false;
-    window.location.href = isStaff(user) ? '/admin/' : '/dashboard.html';
+    window.location.href = user.role === 'parent' ? '/parent.html' : isStaff(user) ? '/admin/' : '/dashboard.html';
     return true;
   }
 

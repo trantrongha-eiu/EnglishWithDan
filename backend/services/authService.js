@@ -98,6 +98,7 @@ function userPayload(user) {
     // the email is confirmed; trialStartedAt (verification time) is the
     // trial anchor when present. Mirrored in AuthService.isWithinTrial().
     emailVerified: user.emailVerified !== false,
+    mustChangePassword: !!user.mustChangePassword,
     trialStartedAt: user.trialStartedAt || null
   };
 }

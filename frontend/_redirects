@@ -115,6 +115,7 @@
 /profile         /profile.html          200
 /inbox           /inbox.html            200
 /tuition         /tuition.html          200
+/phu-huynh       /parent.html           200
 /reading         /reading.html          200
 /listening       /listening.html        200
 /writing         /writing.html          200

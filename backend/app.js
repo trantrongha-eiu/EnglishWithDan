@@ -158,6 +158,7 @@ app.use('/api/speaking-tips',   require('./routes/speakingTip'));
 app.use('/api/difficult-words', require('./routes/difficultWords'));
 app.use('/api/tuition',        require('./routes/tuition'));
 app.use('/api/upgrade',        require('./routes/upgrade'));
+app.use('/api/parent',         require('./routes/parent'));
 
 // ── 404 handler ──────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route không tồn tại' }));

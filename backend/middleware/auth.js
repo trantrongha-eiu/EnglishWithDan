@@ -11,6 +11,16 @@ function isGuestAllowedPath(url) {
   return GUEST_ALLOWED.some((re) => re.test(path));
 }
 
+// What a parent token may call: their own read-only parent API, plus the
+// session basics parent.html needs (who am I, log out, change the temporary
+// password). Everything else — the practice content students pay for, the
+// student "my/*" endpoints — is closed to them.
+const PARENT_ALLOWED = [/^\/api\/parent(\/|$)/, /^\/api\/auth\/(me|logout)$/, /^\/api\/user\/change-password$/];
+function isParentAllowedPath(url) {
+  const path = String(url || '').split('?')[0];
+  return PARENT_ALLOWED.some((re) => re.test(path));
+}
+
 const LAST_SEEN_THROTTLE_MS = 60 * 1000;
 
 module.exports = async (req, res, next) => {
@@ -78,6 +88,12 @@ module.exports = async (req, res, next) => {
       return res.status(403).json({
         success: false, code: 'GUEST_ENTRANCE_ONLY',
         message: 'Tài khoản khách chỉ dùng để làm Test đầu vào. Vui lòng đăng nhập để dùng các tính năng khác.',
+      });
+    }
+    if (user.role === 'parent' && !isParentAllowedPath(req.originalUrl)) {
+      return res.status(403).json({
+        success: false, code: 'PARENT_READ_ONLY',
+        message: 'Tài khoản phụ huynh chỉ dùng để theo dõi việc học của con.',
       });
     }
 

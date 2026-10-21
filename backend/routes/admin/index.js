@@ -38,6 +38,7 @@ router.use(require('./entranceTest'));     // IELTS Entrance Test config + Gramm
 router.use(require('./tipPacks'));        // "Tài liệu in (Tips)": AI-prompt + answer-key packs per tip
 router.use(require('./sidebarBadges'));    // GET /sidebar-badges — one call for the admin Sidebar's 6 polled counts
 router.use(require('./studentOverview'));  // GET /users/:id/overview — per-student learning profile
+router.use(require('./parents'));          // Phụ huynh accounts linked to a student (create / reset / unlink)
 router.use(require('./tips'));             // Tips 4 kỹ năng: list / preview / show-hide
 
 module.exports = router;

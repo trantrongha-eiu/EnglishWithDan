@@ -25,7 +25,11 @@ const UserSchema = new mongoose.Schema({
     // services/entranceGuestService.js). middleware/auth.js confines a guest
     // token to the Entrance Test APIs; every `role: 'student'` count/list
     // skips guests on its own.
-    enum: ['student', 'teacher', 'admin', 'guest'],
+    // 'parent' = phụ huynh: read-only view of their linked children
+    // (models/ParentLink.js). Created only by a teacher/admin
+    // (routes/admin/parents.js); middleware/auth.js confines a parent token
+    // to /api/parent/* + the session basics, same idea as a guest.
+    enum: ['student', 'teacher', 'admin', 'guest', 'parent'],
     default: 'student'
   },
   // Guest Entrance Test takers only — the contact number they typed in.
@@ -43,6 +47,11 @@ const UserSchema = new mongoose.Schema({
   // this app), matching how a password change already invalidates
   // sessions everywhere in most real-world apps.
   tokenValidAfter: { type: Date, default: null },
+  // Set when staff hand out a temporary password (parent accounts — see
+  // routes/admin/parents.js); cleared by the account's own password change.
+  // parent.html blocks everything else behind a change-password form while
+  // it's true.
+  mustChangePassword: { type: Boolean, default: false },
   // Test Simulation mode (Reading/Listening/Writing — see
   // backend/services/examSimulationService.js): set to now+5min the moment
   // a simulation run is disqualified for 5+ proctor violations. Global

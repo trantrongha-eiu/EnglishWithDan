@@ -13,6 +13,7 @@ import { bandBadge, roleBadge, planBadge, simBadge } from '../components/ui/badg
 import { displayName, formatDur, formatLastSeen, formatDay, formatNumber, formatVnd, initials } from '../utils/format';
 import { PlanModal, RemindModal, EditUserModal } from './users/UserModals';
 import StudentTuitionModal from './tuition/StudentTuitionModal';
+import ParentsPanel from './users/ParentsPanel';
 
 // Chi tiết học sinh (redesigned 2026-09-25):
 //  - "Tổng quan" = GET /admin/users/:id/overview: goals, streak, classes,
@@ -364,6 +365,7 @@ export default function StudentDetail() {
       </div>
 
       {tab === 'overview' && <OverviewTab key={overviewKey} id={id} isAdmin={isAdmin} onOpenTuition={() => setModal('tuition')} />}
+      {tab === 'overview' && isStudent && <ParentsPanel student={user} />}
       {tab === 'history' && <HistoryTab id={id} />}
       {tab === 'vocab' && <VocabTab id={id} />}
       {tab === 'badges' && <BadgesTab id={id} />}

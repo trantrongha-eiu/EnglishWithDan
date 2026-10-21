@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phụ huynh – EnglishWithDan</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
+  <link rel="stylesheet" href="/css/components.css?v=d2125349c7">
+  <link rel="stylesheet" href="/css/parent.css?v=79b24dbe50">
+  <script src="/js/theme.js?v=81e03964c4"></script>
+  <!-- Not the student app-shell bundle: its nav polls student-only APIs a
+       parent token can't call. Just the session plumbing + helpers. -->
+  <script src="/js/shared/toast.js?v=08d12e7571"></script>
+  <script src="/js/shared/utils.js?v=8ecb49a6c3"></script>
+  <script src="/js/shared/safe-redirect.js?v=01ecdccece"></script>
+  <script src="/js/shared/auth-service.js?v=7234e6691d"></script>
+  <script src="/js/auth.js?v=510377e0d2"></script>
+  <script src="/js/shared/api-client.js?v=5bb9a26ee8"></script>
+</head>
+<body class="ph-body">
+  <header class="ph-header">
+    <div class="ph-brand"><i class="fas fa-graduation-cap"></i> <span>EnglishWithDan</span> <span class="ph-brand-tag">Phụ huynh</span></div>
+    <div class="ph-header-right">
+      <span class="ph-user" id="phUserName"></span>
+      <button class="btn btn-ghost btn-sm" id="phLogout" type="button"><i class="fas fa-right-from-bracket"></i> <span class="ph-hide-sm">Đăng xuất</span></button>
+    </div>
+  </header>
+
+  <main class="ph-main" id="phMain">
+    <div class="ph-loading" id="phLoading"><div class="spinner"></div><div>Đang tải…</div></div>
+  </main>
+
+  <!-- First login with a teacher-issued temporary password: change it first. -->
+  <div class="modal-overlay ph-pw-overlay" id="phPwModal" hidden>
+    <form class="modal-box modal-sm" id="phPwForm" autocomplete="off">
+      <div class="modal-header"><strong><i class="fas fa-key"></i> Đặt mật khẩu mới</strong></div>
+      <div class="modal-body">
+        <p class="ph-muted">Bạn đang dùng mật khẩu tạm do giáo viên cấp. Vui lòng đặt mật khẩu riêng để tiếp tục.</p>
+        <div class="form-group">
+          <label class="form-label" for="phPwCurrent">Mật khẩu tạm</label>
+          <input class="form-control" id="phPwCurrent" type="password" required autocomplete="current-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phPwNew">Mật khẩu mới (ít nhất 8 ký tự)</label>
+          <input class="form-control" id="phPwNew" type="password" minlength="8" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phPwConfirm">Nhập lại mật khẩu mới</label>
+          <input class="form-control" id="phPwConfirm" type="password" minlength="8" required autocomplete="new-password">
+        </div>
+        <div class="ph-pw-error" id="phPwError" hidden></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-full" type="submit" id="phPwSubmit">Lưu mật khẩu</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="/js/parent.js?v=275a2f7ea0"></script>
+</body>
+</html>

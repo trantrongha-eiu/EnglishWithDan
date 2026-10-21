@@ -101,6 +101,7 @@ async function changePassword(userId, currentPassword, newPassword) {
 
   user.password = await bcrypt.hash(newPassword, 10);
   user.tokenValidAfter = new Date();
+  user.mustChangePassword = false;
   await user.save();
   return { status: 'changed', token: signToken(user._id) };
 }
