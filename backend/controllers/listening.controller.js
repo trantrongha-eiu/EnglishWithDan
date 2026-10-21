@@ -201,6 +201,17 @@ exports.listGapFillSections = async (req, res) => {
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
+exports.getWarmUpSectionById = async (req, res) => {
+  try {
+    const section = await listeningService.getWarmUpSectionById(req.params.id);
+    res.json({ success: true, section });
+  } catch (err) {
+    if (err.statusCode === 404) return res.status(404).json({ success: false, message: err.message });
+    console.error('[Listening warm-up]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.getGapFillSectionById = async (req, res) => {
   try {
     const section = await listeningService.getGapFillSectionById(req.params.id);

@@ -413,6 +413,7 @@ function _ltRenderSectionCard(s) {
                 <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur"><i class="fas fa-music"></i> ${dur}</small>` : ''}</div>
                 ${s.hasGapFill ? `<button class="practice-card-btn-gapfill" onclick="event.stopPropagation();startGapFillSection('${s._id}')"><i class="fas fa-pen"></i> Gap-fill</button>` : ''}
                 <button class="${btnCls}" onclick="event.stopPropagation();startPracticeSection('${s._id}',${partArg})">${btnText}</button>
+                ${s.hasWarmUp ? `<button class="practice-card-btn-warmup" onclick="event.stopPropagation();LtWarmUp.start('${s._id}',${partArg})"><i class="fas fa-fire"></i> Warm-up trước khi nghe</button>` : ''}
             </div>
         </div>`;
 }
@@ -800,9 +801,6 @@ function _enterLTPracticeScreen(section, partNum, sectionId, mode = 'practice', 
     _renderLtCdPartHeader(_ltCleanSection, partNum);
     _mountLtCdFooter(_ltCleanSection, partNum);
     showScreen('practice');
-    // Pre-listening warm-up (js/listening-warmup.js) — Practice only;
-    // Test Simulation stays exam-like.
-    if (window.LtWarmUp) window.LtWarmUp.mount(mode === 'practice' ? section.warmUp : null, sectionId);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1536,7 +1534,6 @@ function closeLTPractice() {
     // nav-lock armed indefinitely (BUG-108).
     if (_ltPracticeMode === 'simulation' && window.ExamProctor) window.ExamProctor.stop();
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    if (window.LtWarmUp) window.LtWarmUp.mount(null, null);
     _clearLTPracticeTimer();
     _hideLTPracticeHUD();
     _ltPracticeSubmitted = false;
@@ -1916,7 +1913,6 @@ window.handleLtPracticePopstate = function(tab, part) {
     // in-page close button) leaves the page stuck in fullscreen with the
     // toolbar hidden even though the section list is now showing.
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    if (window.LtWarmUp) window.LtWarmUp.mount(null, null);
     _clearLTPracticeTimer();
     _hideLTPracticeHUD();
     _ltPracticeSubmitted = false;

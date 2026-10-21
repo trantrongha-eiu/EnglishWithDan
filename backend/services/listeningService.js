@@ -398,7 +398,7 @@ async function listPracticeSections(query, userId) {
     sortBy = { createdAt: -1 };
   }
   const sections = await ListeningSection.find(filter)
-    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished thumbnailUrl')
+    .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished warmUpPublished thumbnailUrl')
     .sort(sortBy)
     .lean();
   const safe = sections.map(s => ({
@@ -414,6 +414,7 @@ async function listPracticeSections(query, userId) {
       questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
     })),
     hasGapFill: s.gapFillPublished === true,
+    hasWarmUp: s.warmUpPublished === true,
     thumbnail: toCardThumbnail(s.thumbnailUrl),
   }));
   const sectionIds = sections.map(s => s._id);
@@ -438,17 +439,26 @@ async function getPracticeSectionById(id) {
   // deliberately still included: the review screen (loadLTPracticeReview)
   // reads it off this same pre-fetched object post-submission rather than
   // re-fetching, so stripping it here would break that display.
-  // warmUp is select:false (its answers are a teacher-only key) — pulled in
-  // explicitly here and swapped for the answer-free student copy, and only
-  // once an admin has published it (warmUpPublished, like gap-fill).
-  const section = await ListeningSection.findOne({ _id: id, isActive: true })
-    .select(`${PRACTICE_SECTION_SAFE_FIELDS} +warmUp`)
+  // warmUp stays out (select:false — its answers are a teacher-only key);
+  // the warm-up is its own optional mode, see getWarmUpSectionById.
+  return ListeningSection.findOne({ _id: id, isActive: true })
+    .select(PRACTICE_SECTION_SAFE_FIELDS)
     .lean();
-  if (section) {
-    section.warmUp = section.warmUpPublished === true ? toStudentWarmUp(section.warmUp) : null;
-    delete section.warmUpPublished;
-  }
-  return section;
+}
+
+// ── Warm-up mode (pre-listening synonyms / paraphrases) ─────────────────
+// Optional drill the student opens from the section card, like gap-fill.
+// Only published warm-ups; the transcript comes along because Activity 2
+// is done by finding the paraphrase in it. Answers never leave the server
+// (toStudentWarmUp) — teachers read them from the admin endpoint.
+async function getWarmUpSectionById(id) {
+  const section = await ListeningSection.findOne({ _id: id, isActive: true, warmUpPublished: true })
+    .select('_id title partNumber transcript +warmUp')
+    .lean();
+  if (!section) throw new NotFoundError('Bài này chưa có Warm-up');
+  const warmUp = toStudentWarmUp(section.warmUp);
+  if (!warmUp) throw new NotFoundError('Bài này chưa có Warm-up');
+  return { _id: section._id, title: section.title, partNumber: section.partNumber, transcript: section.transcript || '', warmUp };
 }
 
 // ── Dictation practice (sentence-by-sentence chép chính tả) ─────────────
@@ -1390,7 +1400,7 @@ module.exports = {
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, getDictationTranslations, saveDictationAttempt,
   listGapFillSections, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
-  buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
+  getWarmUpSectionById, buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
   listStudentTests, startTest, submitTest,

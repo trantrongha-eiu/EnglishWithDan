@@ -375,7 +375,6 @@
             </div>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
             <button class="cd-submit-top cd-live-only" onclick="submitLTPractice()">Kiểm tra đáp án</button>
-            <button id="btn-warmup-pr" class="btn-icon-sm lt-wu-topbtn" onclick="LtWarmUp.open()" title="Warm-up trước khi nghe" style="display:none"><i class="fas fa-fire"></i><span>Warm-up</span></button>
             <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-pr"></i></button>
             <button class="btn-icon-sm" id="btn-settings-pr" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
         </div>
@@ -593,6 +592,21 @@
         </div>
     </div>
 
+    <!-- Warm-up screen — optional pre-listening drill opened from the section
+         card (like Gap-fill): step 1 Synonym Hunt, step 2 Paraphrase
+         Detectives with the transcript on the left. Ungraded; rendered by
+         js/listening-warmup.js. -->
+    <div id="screen-warmup" class="screen">
+        <div class="exam-topbar">
+            <button class="exam-exit-btn" onclick="LtWarmUp.close()" title="Thoát"><i class="fas fa-times"></i></button>
+            <span class="exam-title wu-title" id="wu-title">Warm-up</span>
+            <span id="wu-keybtn-slot"></span>
+        </div>
+        <div class="wu-steps" id="wu-steps" role="tablist"></div>
+        <div class="wu-body" id="wu-body"></div>
+        <div class="exam-footer wu-footer" id="wu-footer"></div>
+    </div>
+
     <!-- Modal: Exit Practice (Bài lẻ) -->
     <div class="modal-overlay hidden" id="modal-lt-practice-exit">
         <div class="modal-box modal-sm">
@@ -639,15 +653,15 @@
     <link rel="stylesheet" href="/css/listening-extra.css?v=0da2bc03e1">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=f27ab4c5e9">
     <link rel="stylesheet" href="/css/cd-exam.css?v=032e879bfc">
-    <link rel="stylesheet" href="/css/listening-warmup.css?v=436bfe701b">
+    <link rel="stylesheet" href="/css/listening-warmup.css?v=cd419383e2">
 
     <script src="/js/shared/exam-fullscreen.js?v=4aae1fbd2b"></script>
 
     <script src="/js/listening.js?v=3f295017d0"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
-    <script src="/js/listening-practice.js?v=1819036ff2"></script>
-    <script src="/js/listening-warmup.js?v=6d9f6bb01f"></script>
+    <script src="/js/listening-practice.js?v=c1ab175cfa"></script>
+    <script src="/js/listening-warmup.js?v=3f279b60bd"></script>
     <script src="/js/listening-tips.js?v=6664bc17da"></script>
     <script src="/js/shared/tips-practice-shell.js?v=3a472d16e0"></script>
     <script src="/js/listening-tips-practice.js?v=1f172bdfb4"></script>

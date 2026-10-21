@@ -80,6 +80,11 @@ router.get('/gapfill/section/:id', auth, contentLimiter, requirePremium('Bạn c
 router.get('/gapfill/section/:id/glossary', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getGapFillGlossary);
 router.post('/gapfill/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveGapFillAttempt);
 
+// STUDENT – Warm-up trước khi nghe (Synonym Hunt + Paraphrase Detectives) —
+// optional, ungraded drill opened from the section card like gap-fill, so
+// the same review-exempt shape. Only published warm-ups; no answers.
+router.get('/warmup/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getWarmUpSectionById);
+
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, listeningController.listStudentTests);
 

@@ -1,5 +1,6 @@
-// Pre-listening warm-up: students get the prompts inside the practice fetch,
-// never the answer key; the key is teacher/admin-only.
+// Pre-listening warm-up: an optional mode (GET /api/listening/warmup/section/:id)
+// that gives students the prompts + transcript, never the answer key; the key
+// is teacher/admin-only.
 const request = require('supertest');
 const app = require('../../app');
 const ListeningSection = require('../../models/ListeningSection');
@@ -17,11 +18,12 @@ async function sectionWithWarmUp({ published = true } = {}) {
 }
 
 describe('Listening warm-up', () => {
-  test('a student sees the warm-up prompts without any answer', async () => {
+  test('a student gets the warm-up prompts and transcript without any answer', async () => {
     const s = await sectionWithWarmUp();
     const token = signTokenFor(await createPremiumStudent());
-    const res = await request(app).get(`/api/listening/practice/by-id/${s._id}`).set('Authorization', `Bearer ${token}`);
+    const res = await request(app).get(`/api/listening/warmup/section/${s._id}`).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
+    expect(res.body.section.transcript).toBe('They spend so long marking.');
     expect(res.body.section.warmUp).toEqual({
       synonyms: [{ keyword: 'save time' }],
       paraphrases: [{ question: 'a way for tutors to save time', evidence: 'spend so long ____' }],
@@ -29,13 +31,31 @@ describe('Listening warm-up', () => {
     expect(JSON.stringify(res.body)).not.toMatch(/SECRET_/);
   });
 
-  test('an unpublished (Chờ duyệt) warm-up is not shown to students', async () => {
+  test('an unpublished (Chờ duyệt) warm-up is not available to students', async () => {
     const s = await sectionWithWarmUp({ published: false });
+    const token = signTokenFor(await createPremiumStudent());
+    const res = await request(app).get(`/api/listening/warmup/section/${s._id}`).set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
+  });
+
+  test('the practice list flags which sections have a published warm-up', async () => {
+    const pub = await sectionWithWarmUp();
+    const unpub = await sectionWithWarmUp({ published: false });
+    const token = signTokenFor(await createPremiumStudent());
+    const res = await request(app).get('/api/listening/practice/list?part=1').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    const flag = (id) => res.body.sections.find((x) => x._id === String(id)).hasWarmUp;
+    expect(flag(pub._id)).toBe(true);
+    expect(flag(unpub._id)).toBe(false);
+  });
+
+  test('the practice fetch itself carries no warm-up', async () => {
+    const s = await sectionWithWarmUp();
     const token = signTokenFor(await createPremiumStudent());
     const res = await request(app).get(`/api/listening/practice/by-id/${s._id}`).set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.section.warmUp).toBeNull();
-    expect(res.body.section.warmUpPublished).toBeUndefined();
+    expect(res.body.section.warmUp).toBeUndefined();
+    expect(JSON.stringify(res.body)).not.toMatch(/SECRET_/);
   });
 
   test('the admin list carries only the warm-up size and publish state, never the key', async () => {
@@ -94,11 +114,10 @@ describe('Listening warm-up', () => {
     expect(empty.body.warmUp.published).toBe(false);
   });
 
-  test('a section without a warm-up returns warmUp: null', async () => {
+  test('a section without a warm-up → 404 on the warm-up endpoint', async () => {
     const s = await createListeningSection();
     const token = signTokenFor(await createPremiumStudent());
-    const res = await request(app).get(`/api/listening/practice/by-id/${s._id}`).set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(200);
-    expect(res.body.section.warmUp).toBeNull();
+    const res = await request(app).get(`/api/listening/warmup/section/${s._id}`).set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
   });
 });
