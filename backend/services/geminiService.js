@@ -31,6 +31,9 @@ function classifyGeminiError(err, overloadMessage) {
   if (!isOverload) return err;
   const overloadErr = new Error(overloadMessage);
   overloadErr.isOverloaded = true;
+  // Daily free-tier quota (quota id "...PerDay...") — unlike the per-minute
+  // limit, waiting a minute won't help; bulk scripts stop on this.
+  overloadErr.isDailyQuota = err.status === 429 && /per ?day/i.test(err.message || '');
   return overloadErr;
 }
 

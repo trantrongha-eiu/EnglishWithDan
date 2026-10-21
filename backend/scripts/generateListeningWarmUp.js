@@ -70,11 +70,12 @@ async function run() {
   console.log(`[warmup] ${total} section(s) need a warm-up; processing ${sections.length} (concurrency ${args.concurrency}).`);
 
   let next = 0, ok = 0, failed = 0;
+  let stopReason = null;
   const thin = [];
   const failedList = [];
 
   async function worker() {
-    while (next < sections.length) {
+    while (next < sections.length && !stopReason) {
       const i = next++;
       const s = sections[i];
       const tag = `[${i + 1}/${sections.length}] P${s.partNumber} "${s.title}"`;
@@ -90,8 +91,16 @@ async function run() {
           console.log(`${tag} OK — ${synonyms.length} synonym, ${paraphrases.length} paraphrase`);
           if (args.verbose) dropped.forEach(d => console.log(`    dropped ${d}`));
         } catch (err) {
+          // Daily quota gone (or still throttled after 4 minutes of waiting):
+          // stop the whole run instead of failing section after section —
+          // the rest of the day's quota belongs to the live site.
+          if (err.isDailyQuota || (err.isOverloaded && waits >= 4)) {
+            stopReason = err.isDailyQuota ? 'Gemini daily quota exhausted' : 'Gemini still rate limited after 4 retries';
+            console.log(`${tag} STOP — ${stopReason}`);
+            break;
+          }
           // Gemini free tier is rate limited per minute — wait it out a few times.
-          if (err.isOverloaded && waits < 4) { console.log(`${tag} rate limited — waiting 65s`); await sleep(65000); continue; }
+          if (err.isOverloaded) { console.log(`${tag} rate limited — waiting 65s`); await sleep(65000); continue; }
           failed++;
           failedList.push(`${s._id} ${s.title}: ${err.message}`);
           if (!err.isOverloaded) {
@@ -106,7 +115,7 @@ async function run() {
 
   await Promise.all(Array.from({ length: Math.min(args.concurrency, sections.length) }, worker));
 
-  console.log(`\n[warmup] Done. ${ok} generated, ${failed} failed.`);
+  console.log(`\n[warmup] Done. ${ok} generated, ${failed} failed.${stopReason ? ` Stopped early: ${stopReason}.` : ''}`);
   if (thin.length) console.log(`[warmup] ${thin.length} with fewer than 6 items in an activity (synonym/paraphrase):\n  - ${thin.join('\n  - ')}`);
   if (failedList.length) console.log(`[warmup] Failed:\n  - ${failedList.join('\n  - ')}`);
   await mongoose.disconnect();
