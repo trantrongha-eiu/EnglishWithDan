@@ -257,29 +257,48 @@ exports.createClass = async (req, res) => {
   }
 };
 
+// How fresh the on-open recompute must be, and how long the page waits for it.
+const OPEN_REFRESH_MAX_AGE_MS = 60 * 1000;
+const OPEN_REFRESH_BUDGET_MS = 3000;
+
+// Resolves when `promise` settles or after `ms`, whichever comes first — the
+// promise itself keeps running either way.
+function waitAtMost(promise, ms) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((resolve) => { timer = setTimeout(resolve, ms); }),
+  ]).finally(() => clearTimeout(timer));
+}
+
 exports.getClass = async (req, res) => {
   try {
     const cls = req.classGroup;
     // The roster's BT THIẾU / status columns read the cached enrollment.stats,
     // which otherwise only move on an attendance/assignment edit or the
     // nightly sweep — a deadline passing or a student finishing late work
-    // mid-day left the teacher looking at stale numbers. Classes are small
-    // (tens of students), so recompute on open; a failure here must not
-    // block the page, it just shows the cached numbers.
+    // mid-day left the teacher looking at stale numbers, so recompute on open.
+    // That recompute scans every student's homework and could take long
+    // enough on a big class that the admin request timed out (shown as
+    // "Không tìm thấy lớp"): it's skipped if one ran in the last minute, and
+    // the page waits at most a few seconds for it — past that it answers with
+    // the cached numbers while the refresh finishes in the background.
     if (cls.status === 'active') {
-      await autoMark([cls._id]);
-      await svc.refreshClass(cls._id).catch(() => {});
+      const refresh = autoMark([cls._id])
+        .then(() => svc.refreshClassIfStale(cls._id, OPEN_REFRESH_MAX_AGE_MS))
+        .catch((e) => logger.error('classes', 'refresh on open failed', { classId: String(cls._id), errorMessage: e.message }));
+      await waitAtMost(refresh, OPEN_REFRESH_BUDGET_MS);
     }
-    const enrollments = await ClassEnrollment.find({ classId: cls._id })
-      .sort({ removedAt: 1, createdAt: 1 })
-      .lean();
+    const [enrollments, sessions] = await Promise.all([
+      ClassEnrollment.find({ classId: cls._id }).sort({ removedAt: 1, createdAt: 1 }).lean(),
+      ClassSession.find({ classId: cls._id }).select(PROGRESS_SESSION_FIELDS).lean(),
+    ]);
     const studentIds = enrollments.map((e) => e.studentId);
     const students = await User.find({ _id: { $in: studentIds } })
       .select('username firstName lastName email avatar')
       .lean();
     const sMap = {};
     students.forEach((s) => { sMap[String(s._id)] = s; });
-    const sessions = await ClassSession.find({ classId: cls._id }).select(PROGRESS_SESSION_FIELDS).lean();
 
     const shape = (e) => ({
       ...e,

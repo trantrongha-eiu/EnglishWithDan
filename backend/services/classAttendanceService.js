@@ -195,9 +195,52 @@ function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount =
   }
 }
 
+// The per-student homework-miss count is the expensive part of a refresh
+// (a full getStudentAssignments scan each), so a few students run at once
+// instead of strictly one after another.
+const REFRESH_CONCURRENCY = 5;
+
+async function forEachLimit(items, limit, fn) {
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const item = items[next++];
+      await fn(item);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+}
+
+// classId -> ms timestamp the last completed refresh STARTED at, and the
+// refresh currently running per class. In-process only (single server), so
+// a restart just means the next class open refreshes again.
+const lastRefreshedAt = new Map();
+const inFlight = new Map();
+
 // Recompute every non-removed enrollment in a class. Loads sessions/records
 // once and groups records by student to avoid a query per enrollment.
-async function refreshClass(classId) {
+function refreshClass(classId) {
+  const k = String(classId);
+  const startedAt = Date.now();
+  const p = runRefreshClass(classId)
+    .then(() => { lastRefreshedAt.set(k, startedAt); })
+    .finally(() => { if (inFlight.get(k) === p) inFlight.delete(k); });
+  inFlight.set(k, p);
+  return p;
+}
+
+// Read-path refresh (opening a class page): reuse a refresh already running
+// for this class, and skip it entirely if one finished within maxAgeMs —
+// every write path (attendance, assignments, roster) still refreshes on its
+// own, so this only bounds how stale late homework / passed deadlines get.
+function refreshClassIfStale(classId, maxAgeMs) {
+  const k = String(classId);
+  if (inFlight.has(k)) return inFlight.get(k);
+  if (Date.now() - (lastRefreshedAt.get(k) || 0) < maxAgeMs) return Promise.resolve();
+  return refreshClass(classId);
+}
+
+async function runRefreshClass(classId) {
   const cls = await ClassGroup.findById(classId).lean();
   if (!cls) return;
   const enrollments = await ClassEnrollment.find({ classId, removedAt: null });
@@ -214,7 +257,7 @@ async function refreshClass(classId) {
     byStudent.get(k).push(r);
   }
 
-  for (const e of enrollments) {
+  await forEachLimit(enrollments, REFRESH_CONCURRENCY, async (e) => {
     const stats = computeEnrollmentStats({
       enrollment: e, policy: cls.policy, sessions,
       records: byStudent.get(String(e.studentId)) || [],
@@ -222,7 +265,7 @@ async function refreshClass(classId) {
     const homeworkMissedCount = await assignmentService.getOverdueCountForClass(e.studentId, classId);
     applyStatsToEnrollment(e, stats, cls.policy, homeworkMissedCount);
     await e.save();
-  }
+  });
 }
 
 async function refreshEnrollment(enrollmentId) {
@@ -250,5 +293,6 @@ module.exports = {
   autoStatusReason,
   applyStatsToEnrollment,
   refreshClass,
+  refreshClassIfStale,
   refreshEnrollment,
 };

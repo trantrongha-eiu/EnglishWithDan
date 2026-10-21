@@ -71,15 +71,38 @@ export default function ClassDetail() {
   const [roster, setRoster] = useState([]);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
-  const loadClass = () => apiFetch(`/classes/${id}`)
-    .then((d) => { setCls(d.class); setRoster(d.roster || []); setProgress(d.progress || null); })
-    .catch((e) => toast(e.message, 'error'))
+  // A slow server (Render cold start) or a dropped request used to land on
+  // "Không tìm thấy lớp" exactly like a real 404 — retry a cold start once
+  // on its own, and only call it "not found" when the server says so.
+  const loadClass = (retried = false) => apiFetch(`/classes/${id}`)
+    .then((d) => { setCls(d.class); setRoster(d.roster || []); setProgress(d.progress || null); setLoadError(null); })
+    .catch((e) => {
+      if (e.coldStart && !retried) return loadClass(true);
+      setLoadError(e);
+      toast(e.message, 'error');
+    })
     .finally(() => setLoading(false));
-  useEffect(() => { loadClass(); }, [id]);
+  useEffect(() => {
+    setLoading(true); setCls(null); setLoadError(null);
+    loadClass();
+  }, [id]);
+  const reload = () => loadClass();
 
   if (loading) return <div className="route-loading">Đang tải…</div>;
-  if (!cls) return <div className="section-header"><h2 className="section-title">Không tìm thấy lớp</h2></div>;
+  if (!cls && loadError && loadError.status !== 404 && loadError.status !== 403) {
+    return (
+      <div className="section-header">
+        <div>
+          <h2 className="section-title">Không tải được lớp</h2>
+          <div style={{ fontSize: 13, color: 'var(--text3)', margin: '4px 0 12px' }}>{loadError.message}</div>
+          <button className="btn btn-primary" onClick={() => { setLoading(true); loadClass(); }}>Thử lại</button>
+        </div>
+      </div>
+    );
+  }
+  if (!cls) return <div className="section-header"><h2 className="section-title">{loadError?.status === 403 ? loadError.message : 'Không tìm thấy lớp'}</h2></div>;
 
   const kpi = {
     total: roster.length,
@@ -126,10 +149,10 @@ export default function ClassDetail() {
         ))}
       </div>
 
-      {active.key === 'overview' && <OverviewTab cls={cls} onSaved={loadClass} />}
-      {active.key === 'students' && <StudentsTab cls={cls} roster={roster} onChange={loadClass} />}
-      {active.key === 'sessions' && <SessionsTab cls={cls} onChange={loadClass} />}
-      {active.key === 'attendance' && <AttendanceTab key={params.get('session') || ''} cls={cls} initialSessionId={params.get('session') || ''} onSaved={loadClass} />}
+      {active.key === 'overview' && <OverviewTab cls={cls} onSaved={reload} />}
+      {active.key === 'students' && <StudentsTab cls={cls} roster={roster} onChange={reload} />}
+      {active.key === 'sessions' && <SessionsTab cls={cls} onChange={reload} />}
+      {active.key === 'attendance' && <AttendanceTab key={params.get('session') || ''} cls={cls} initialSessionId={params.get('session') || ''} onSaved={reload} />}
       {active.key === 'dashboard' && <DashboardTab cls={cls} />}
       {active.key === 'assignments' && <AssignmentsTab cls={cls} />}
       {active.key === 'tuition' && <ClassTuitionTab cls={cls} />}
