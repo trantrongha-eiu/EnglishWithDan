@@ -4,13 +4,16 @@ import { useToast } from '../contexts/ToastContext';
 
 // Pre-listening warm-up ("Synonym Hunt" + "Paraphrase Detectives") for one
 // Listening section. Students see it before listening (ungraded, no
-// answers); the answer key below is teacher-only. Loads/saves through its
-// own endpoint — the section GET never carries warmUp (select:false).
+// answers) once it is published — same review gate as GapFillPanel; the
+// answer key below is teacher-only. Loads/saves through its own endpoint —
+// the section GET never carries warmUp (select:false). Used by
+// ListeningSectionEdit.jsx and ListeningSections.jsx's quick modal;
+// `onChange(warmUp)` reports every generate/save so the list badge can follow.
 const BLANK = '____';
 const emptySyn = () => ({ keyword: '', answer: '' });
 const emptyPara = () => ({ question: '', evidence: '', answer: '' });
 
-export default function WarmUpPanel({ sectionId, hasTranscript }) {
+export default function WarmUpPanel({ sectionId, hasTranscript, onChange }) {
   const toast = useToast();
   const [warmUp, setWarmUp] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,24 +37,26 @@ export default function WarmUpPanel({ sectionId, hasTranscript }) {
     try {
       const d = await apiFetch(`/admin/listening/sections/${sectionId}/warmup/generate`, { method: 'POST', body: JSON.stringify({}) });
       setWarmUp(d.warmUp);
+      onChange?.(d.warmUp);
       setDirty(false);
-      toast(`Đã sinh ${d.warmUp.synonyms.length} cặp từ + ${d.warmUp.paraphrases.length} paraphrase ✓`, 'success');
+      toast(`Đã sinh ${d.warmUp.synonyms.length} cặp từ + ${d.warmUp.paraphrases.length} paraphrase ✓ — kiểm tra lại rồi Publish`, 'success');
     } catch (err) { toast(err.message, 'error'); }
     finally { setGenerating(false); }
   }
 
-  async function save() {
+  async function save(publish) {
     const bad = (warmUp.paraphrases || []).findIndex(p => p.question.trim() && p.evidence.split(BLANK).length !== 2);
     if (bad >= 0) { toast(`Paraphrase ${bad + 1}: evidence phải có đúng 1 chỗ trống "${BLANK}"`, 'error'); return; }
     setSaving(true);
     try {
       const d = await apiFetch(`/admin/listening/sections/${sectionId}/warmup`, {
         method: 'PUT',
-        body: JSON.stringify({ synonyms: warmUp.synonyms, paraphrases: warmUp.paraphrases }),
+        body: JSON.stringify({ synonyms: warmUp.synonyms, paraphrases: warmUp.paraphrases, published: publish }),
       });
       setWarmUp(d.warmUp);
+      onChange?.(d.warmUp);
       setDirty(false);
-      toast('Đã lưu warm-up ✓');
+      toast(d.warmUp.published ? 'Đã publish warm-up ✓' : publish ? 'Warm-up trống — chưa publish' : 'Đã lưu warm-up (chưa publish) ✓');
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
@@ -90,12 +95,14 @@ export default function WarmUpPanel({ sectionId, hasTranscript }) {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
         {title}
-        {has
-          ? <span style={{ fontSize: 11, fontWeight: 700, color: '#16a34a' }}>✅ {syn.length} synonym · {para.length} paraphrase — học viên đang thấy</span>
-          : <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)' }}>Chưa có</span>}
+        {warmUp?.published
+          ? <span style={{ fontSize: 11, fontWeight: 700, color: '#16a34a' }}>✅ Đã publish — {syn.length} synonym · {para.length} paraphrase</span>
+          : has
+            ? <span style={{ fontSize: 11, fontWeight: 700, color: '#d97706' }}>⏳ Đã sinh, chưa publish — {syn.length} synonym · {para.length} paraphrase</span>
+            : <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)' }}>Chưa sinh</span>}
       </div>
       <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 12 }}>
-        Học viên điền trước khi nghe, không chấm điểm. Cột đáp án chỉ giáo viên/admin xem được.
+        Học viên điền trước khi nghe, không chấm điểm (chỉ thấy sau khi Publish). Cột đáp án chỉ giáo viên/admin xem được.
         {warmUp?.editedAt ? ' · Đã sửa tay' : warmUp?.generatedAt ? ' · AI sinh' : ''}
       </div>
 
@@ -154,10 +161,16 @@ export default function WarmUpPanel({ sectionId, hasTranscript }) {
             <button className="btn btn-ghost btn-sm" style={{ marginTop: 6 }} onClick={() => addRow('paraphrases')}>+ Thêm paraphrase</button>
           </div>
 
-          <div style={{ marginTop: 14 }}>
-            <button className="btn btn-primary" onClick={save} disabled={saving || !dirty}>
-              {saving ? 'Đang lưu...' : dirty ? '💾 Lưu warm-up' : '✓ Đã lưu'}
+          <div style={{ display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
+            <button className="btn btn-ghost" onClick={() => save(false)} disabled={saving || !dirty}>
+              💾 Lưu (chưa publish)
             </button>
+            <button className="btn btn-primary" onClick={() => save(true)} disabled={saving || !has || (warmUp.published && !dirty)}>
+              {saving ? 'Đang lưu...' : warmUp.published ? (dirty ? '✅ Lưu & giữ publish' : '✅ Đã publish') : '🚀 Publish cho học sinh'}
+            </button>
+            {warmUp.published && (
+              <button className="btn btn-ghost" onClick={() => save(false)} disabled={saving}>⏸ Gỡ publish</button>
+            )}
           </div>
         </>
       )}

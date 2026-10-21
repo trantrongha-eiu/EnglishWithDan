@@ -30,6 +30,15 @@ function containsPhrase(haystackNorm, phrase) {
 
 const STOP = new Set(['a', 'an', 'the', 'of', 'to', 'for', 'in', 'on', 'at', 'by', 'and', 'or', 'with', 'is', 'are', 'be', 'it', 'its', 'this', 'that', 'some', 'very', 'more', 'their', 'they', 'you', 'your']);
 const contentTokens = (s) => normText(s).split(' ').filter((w) => w && !STOP.has(w));
+// Crude word-family key: "helmet"/"helmets", "exploiting"/"exploitation",
+// "introduce"/"introductory" collide — a pair that only changes the word
+// form isn't a synonym, and a blank of the same family isn't a paraphrase.
+const stem = (w) => w.replace(/(ations?|ions?|ing|ed|es|s|ory|ly)$/, '').slice(0, 5) || w;
+const stems = (s) => contentTokens(s).map(stem);
+
+// Gap markers from the question paper ("__Q1__", "___", "Q21", "…") — a
+// keyword or question copied with one in it is the test gap itself.
+const PLACEHOLDER_RE = /_{2,}|\bQ\d{1,2}\b|…|\.{3,}/;
 
 const wordCount = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;
 
@@ -56,6 +65,26 @@ function buildQuestionMaterial(section) {
     }
   }
   return lines.join('\n');
+}
+
+// The test's own word answers (completion questions — letter answers of
+// MC/matching are skipped), normalised. The warm-up is done BEFORE
+// listening, so no item may contain one: a blank whose answer is "litter"
+// for "keep the beach free of __Q1__" just hands out Q1.
+function buildTestAnswers(section) {
+  const out = new Set();
+  for (const g of section.questionGroups || []) {
+    for (const q of g.questions || []) {
+      for (const alt of String(q.correctAnswer || '').split(/\s*(?:\/|\||;|\bor\b)\s*/i)) {
+        for (const variant of [alt.replace(/\([^)]*\)/g, ' '), alt.replace(/[()]/g, ' ')]) {
+          const n = normText(variant);
+          if (!n || n.split(' ').every((w) => w.length === 1)) continue; // "A", "B C"
+          out.add(n);
+        }
+      }
+    }
+  }
+  return [...out];
 }
 
 // Teacher explanations quote where each answer is in the transcript — a
@@ -87,9 +116,10 @@ function canonicalBlank(evidence) {
  *    transcript.
  * Returns { synonyms, paraphrases, dropped } — dropped lists the reasons.
  */
-function validateWarmUp(raw, { transcript, questionMaterial }) {
+function validateWarmUp(raw, { transcript, questionMaterial, testAnswers = [] }) {
   const tNorm = normText(transcript);
   const qNorm = normText(questionMaterial);
+  const leaksAnswer = (text) => testAnswers.some((a) => containsPhrase(normText(text), a));
   const dropped = [];
   const synonyms = [];
   const paraphrases = [];
@@ -104,14 +134,17 @@ function validateWarmUp(raw, { transcript, questionMaterial }) {
     if (seenKw.has(k)) { dropped.push(`syn:dup "${keyword}"`); continue; }
     if (!containsPhrase(qNorm, keyword)) { dropped.push(`syn:keyword-not-in-questions "${keyword}"`); continue; }
     if (wordCount(keyword) > 6) { dropped.push(`syn:keyword-too-long "${keyword}"`); continue; }
+    if (PLACEHOLDER_RE.test(keyword)) { dropped.push(`syn:keyword-has-gap "${keyword}"`); continue; }
+    if (!contentTokens(keyword).some((w) => w.length >= 3)) { dropped.push(`syn:keyword-too-weak "${keyword}"`); continue; }
     const alts = answer.split(/\s+\/\s+/).map((a) => a.trim()).filter(Boolean);
     if (alts.some((a) => wordCount(a) > 7)) { dropped.push(`syn:answer-too-long "${answer}"`); continue; }
     if (!alts.length || alts.some((a) => !containsPhrase(tNorm, a))) { dropped.push(`syn:answer-not-in-transcript "${answer}"`); continue; }
     // "earplugs ≈ pair of earplugs" isn't a synonym — the answer must reword it.
     if (alts.some((a) => containsPhrase(normText(a), keyword))) { dropped.push(`syn:answer-repeats-keyword "${keyword}"`); continue; }
-    // "swimming togs ≈ togs" — nothing new to learn.
-    const kwTokens = new Set(contentTokens(keyword));
-    if (alts.every((a) => contentTokens(a).every((w) => kwTokens.has(w)))) { dropped.push(`syn:answer-adds-nothing "${answer}"`); continue; }
+    // "swimming togs ≈ togs", "safety helmet ≈ helmets" — nothing new to learn.
+    const kwStems = new Set(stems(keyword));
+    if (alts.every((a) => stems(a).every((w) => kwStems.has(w)))) { dropped.push(`syn:answer-adds-nothing "${answer}"`); continue; }
+    if (alts.some(leaksAnswer)) { dropped.push(`syn:gives-test-answer "${answer}"`); continue; }
     seenKw.add(k);
     synonyms.push({ keyword, answer: alts.join(' / ') });
   }
@@ -124,6 +157,8 @@ function validateWarmUp(raw, { transcript, questionMaterial }) {
     const q = normText(question);
     if (seenQ.has(q)) { dropped.push(`para:dup "${question}"`); continue; }
     if (!containsPhrase(qNorm, question)) { dropped.push(`para:question-not-in-questions "${question}"`); continue; }
+    if (PLACEHOLDER_RE.test(question)) { dropped.push(`para:question-has-gap "${question}"`); continue; }
+    if (wordCount(question) < 3 || contentTokens(question).length < 2) { dropped.push(`para:question-fragment "${question}"`); continue; }
     if (evidence.split(BLANK).length !== 2) { dropped.push(`para:blank-count "${evidence}"`); continue; }
     if (wordCount(answer) > 4) { dropped.push(`para:answer-too-long "${answer}"`); continue; }
     if (wordCount(evidence) > 30) { dropped.push(`para:evidence-too-long "${evidence}"`); continue; }
@@ -131,9 +166,11 @@ function validateWarmUp(raw, { transcript, questionMaterial }) {
     // The blank must be the paraphrase — a word lifted straight from the
     // question ("presenters" for "... marking male presenters", "a torch"
     // for "torch") trains nothing.
-    const qTokens = new Set(contentTokens(question));
-    const ansTokens = contentTokens(answer);
-    if (!ansTokens.length || ansTokens.some((w) => qTokens.has(w))) { dropped.push(`para:answer-repeats-question "${answer}"`); continue; }
+    const qStems = new Set(stems(question));
+    const ansStems = stems(answer);
+    if (!ansStems.length || ansStems.some((w) => qStems.has(w))) { dropped.push(`para:answer-repeats-question "${answer}"`); continue; }
+    // Neither the blank nor the visible excerpt may give away a test answer.
+    if (leaksAnswer(evidence.replace(BLANK, answer))) { dropped.push(`para:gives-test-answer "${evidence}" + "${answer}"`); continue; }
     // Same transcript spot under a reworded question = duplicate.
     const spot = normText(evidence.replace(BLANK, answer));
     if (seenQ.has(spot)) { dropped.push(`para:dup-evidence "${evidence}"`); continue; }
@@ -187,6 +224,6 @@ function sanitizeWarmUpInput(body) {
 
 module.exports = {
   BLANK, MAX_ITEMS,
-  normText, buildQuestionMaterial, buildExplanationHints,
+  normText, buildQuestionMaterial, buildExplanationHints, buildTestAnswers,
   validateWarmUp, mergeWarmUps, toStudentWarmUp, sanitizeWarmUpInput,
 };

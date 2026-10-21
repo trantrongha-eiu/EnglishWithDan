@@ -1,5 +1,5 @@
 const {
-  buildQuestionMaterial, validateWarmUp, mergeWarmUps, toStudentWarmUp, sanitizeWarmUpInput, BLANK,
+  buildQuestionMaterial, buildTestAnswers, validateWarmUp, mergeWarmUps, toStudentWarmUp, sanitizeWarmUpInput, BLANK,
 } = require('../../../utils/listeningWarmUp');
 
 const transcript = `Sally:
@@ -78,6 +78,47 @@ describe('validateWarmUp', () => {
       ],
     }, ctx);
     expect(v.paraphrases).toHaveLength(1);
+  });
+});
+
+describe('validateWarmUp — never helps with the test itself', () => {
+  const formSection = {
+    questionGroups: [{
+      noteConfig: { lines: ['keep the beach free of __Q1__', 'Activities: making wooden __Q9__ for children', 'safety helmet required'] },
+      questions: [{ questionNumber: 1, questionText: '', correctAnswer: 'litter' }, { questionNumber: 9, questionText: '', correctAnswer: '(wooden) spoons' }],
+    }],
+  };
+  const formTranscript = 'One of the regular ones is trying to keep the beach free of litter. You will be making spoons from wood. Helmets are issued at the gate.';
+  const formCtx = { transcript: formTranscript, questionMaterial: buildQuestionMaterial(formSection), testAnswers: buildTestAnswers(formSection) };
+
+  test('buildTestAnswers keeps word answers (with/without bracketed words), skips letters', () => {
+    expect(buildTestAnswers({ questionGroups: [{ questions: [{ correctAnswer: 'A' }, { correctAnswer: 'B, C' }, { correctAnswer: '(the) island' }, { correctAnswer: 'litter/rubbish' }] }] }))
+      .toEqual(['island', 'the island', 'litter', 'rubbish']);
+  });
+
+  test('drops a blank (or excerpt) that is a test answer, and gap markers in the question', () => {
+    const v = validateWarmUp({
+      synonyms: [{ keyword: 'free of __Q1__', answer: 'free of litter' }],
+      paraphrases: [
+        { question: 'keep the beach free of __Q1__', evidence: 'keep the beach free of ____', answer: 'litter' },
+        { question: 'making wooden', evidence: 'making ____ from wood', answer: 'spoons' },
+      ],
+    }, formCtx);
+    expect(v.synonyms).toEqual([]);
+    expect(v.paraphrases).toEqual([]);
+    expect(v.dropped.join(' ')).toMatch(/keyword-has-gap/);
+    expect(v.dropped.join(' ')).toMatch(/question-has-gap/);
+  });
+
+  test('a different form of the same word is not a synonym', () => {
+    const v = validateWarmUp({ synonyms: [{ keyword: 'safety helmet', answer: 'Helmets' }], paraphrases: [] }, formCtx);
+    expect(v.synonyms).toEqual([]);
+    expect(v.dropped[0]).toMatch(/adds-nothing/);
+  });
+
+  test('fragment questions are dropped', () => {
+    const v = validateWarmUp({ synonyms: [], paraphrases: [{ question: 'making wooden', evidence: 'Helmets are ____ at the gate', answer: 'issued' }] }, formCtx);
+    expect(v.dropped[0]).toMatch(/question-fragment/);
   });
 });
 

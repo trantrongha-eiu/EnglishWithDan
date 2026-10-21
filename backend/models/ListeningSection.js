@@ -162,6 +162,9 @@ const ListeningSectionSchema = new mongoose.Schema({
     select: false,
     default: undefined,
   },
+  // Same review gate as gapFillPublished: AI output reaches students only
+  // after an admin reviews it and publishes. Regenerating resets it.
+  warmUpPublished:  { type: Boolean, default: false },
   warmUpSkippedAt:  { type: Date, default: null },
   warmUpSkipReason: { type: String, default: '' },
 }, { timestamps: true });

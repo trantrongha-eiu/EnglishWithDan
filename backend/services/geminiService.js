@@ -1193,7 +1193,8 @@ ACTIVITY 2 — "paraphrases": 10 items, in the order they are heard. Each item:
 - "evidence": the matching stretch of the TRANSCRIPT (6-20 words, copied EXACTLY, within one speaker turn) with ONE key word or short phrase replaced by "____" (four underscores). The removed part must be the paraphrase that matches the question.
 - "answer": the exact text that was replaced by "____" (1-3 words). It must be the speaker's PARAPHRASE of a word in the question — a DIFFERENT word from anything in "question" (e.g. question "a way for tutors to save time", evidence "they don't have to spend so long ____", answer "marking"; question "increases students' self-awareness", evidence "assess their own assignments ____", answer "objectively"). Never blank a word that also appears in the question, a name, or a filler word.
 
-Rules: everything you copy must be verbatim (same words, same order) so it can be found in the source; don't change spelling, tense or word forms. Prefer items tied to the actual test questions. No duplicates.${retryNote ? `\n\n⚠️ ${retryNote}` : ''}
+Rules: everything you copy must be verbatim (same words, same order) so it can be found in the source; don't change spelling, tense or word forms. Prefer items tied to the actual test questions. No duplicates.
+Students do this BEFORE listening, so it must never give away a test answer: never copy a gap marker (like "__Q1__", "___", "Q21") into "keyword" or "question", never blank (or show in an excerpt) the word that fills a test gap, and skip note/form lines whose point is the missing answer. Use whole ideas (3+ words) for "question", never a fragment like "especially the". A different form of the same word ("exploiting" / "exploitation", "helmet" / "helmets") is not a synonym.${retryNote ? `\n\n⚠️ ${retryNote}` : ''}
 
 Return JSON: {"synonyms": [{"keyword": string, "answer": string}], "paraphrases": [{"question": string, "evidence": string, "answer": string}]}`;
 }

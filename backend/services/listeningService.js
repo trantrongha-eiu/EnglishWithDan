@@ -439,11 +439,15 @@ async function getPracticeSectionById(id) {
   // reads it off this same pre-fetched object post-submission rather than
   // re-fetching, so stripping it here would break that display.
   // warmUp is select:false (its answers are a teacher-only key) — pulled in
-  // explicitly here and swapped for the answer-free student copy.
+  // explicitly here and swapped for the answer-free student copy, and only
+  // once an admin has published it (warmUpPublished, like gap-fill).
   const section = await ListeningSection.findOne({ _id: id, isActive: true })
     .select(`${PRACTICE_SECTION_SAFE_FIELDS} +warmUp`)
     .lean();
-  if (section) section.warmUp = toStudentWarmUp(section.warmUp);
+  if (section) {
+    section.warmUp = section.warmUpPublished === true ? toStudentWarmUp(section.warmUp) : null;
+    delete section.warmUpPublished;
+  }
   return section;
 }
 
@@ -725,7 +729,7 @@ async function buildSectionWarmUp(section, { quality = false } = {}) {
   const questionMaterial = warmUpUtil.buildQuestionMaterial(section);
   if (!questionMaterial.trim()) { const err = new Error('Section chưa có câu hỏi'); err.status = 400; throw err; }
   const explanationHints = warmUpUtil.buildExplanationHints(section);
-  const ctx = { transcript, questionMaterial };
+  const ctx = { transcript, questionMaterial, testAnswers: warmUpUtil.buildTestAnswers(section) };
 
   const parts = [];
   const dropped = [];
@@ -768,27 +772,38 @@ async function generateSectionWarmUp(id, opts = {}) {
   if (!section) throw new NotFoundError('Không tìm thấy section');
   const { synonyms, paraphrases, dropped } = await buildSectionWarmUp(section, opts);
   const warmUp = { synonyms, paraphrases, generatedAt: new Date(), editedAt: null };
-  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp, warmUpSkippedAt: null, warmUpSkipReason: '' } });
-  return { warmUp, dropped };
+  // Regenerating always resets publish state — an admin must re-review.
+  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp, warmUpPublished: false, warmUpSkippedAt: null, warmUpSkipReason: '' } });
+  return { warmUp: { ...warmUp, published: false }, dropped };
 }
 
+const EMPTY_WARMUP = { synonyms: [], paraphrases: [], generatedAt: null, editedAt: null };
+
+// Teacher view: the key plus its publish state as `published`.
 async function getSectionWarmUp(id) {
-  const section = await ListeningSection.findById(id).select('warmUp').lean();
+  const section = await ListeningSection.findById(id).select('warmUp warmUpPublished').lean();
   if (!section) throw new NotFoundError('Không tìm thấy section');
-  return section.warmUp || { synonyms: [], paraphrases: [], generatedAt: null, editedAt: null };
+  return { ...(section.warmUp || EMPTY_WARMUP), published: section.warmUpPublished === true };
 }
 
 async function updateSectionWarmUp(id, body) {
   const { synonyms, paraphrases } = warmUpUtil.sanitizeWarmUpInput(body);
   const prev = await ListeningSection.findById(id).select('warmUp').lean();
   if (!prev) throw new NotFoundError('Không tìm thấy section');
+  const published = body?.published === true && (synonyms.length > 0 || paraphrases.length > 0);
   const warmUp = { synonyms, paraphrases, generatedAt: prev.warmUp?.generatedAt || null, editedAt: new Date() };
-  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp } });
-  return warmUp;
+  await ListeningSection.updateOne({ _id: id }, { $set: { warmUp, warmUpPublished: published } });
+  return { ...warmUp, published };
 }
 
+// Admin list: the warm-up key itself stays out (select:false) — only its
+// size, for the list's status badge.
 async function listAdminSections() {
-  return ListeningSection.find().sort({ partNumber: 1, createdAt: -1 });
+  const sections = await ListeningSection.find().select('+warmUp').sort({ partNumber: 1, createdAt: -1 }).lean();
+  return sections.map(({ warmUp, ...s }) => ({
+    ...s,
+    warmUpCount: (warmUp?.synonyms?.length || 0) + (warmUp?.paraphrases?.length || 0),
+  }));
 }
 
 async function getAdminSection(id) {

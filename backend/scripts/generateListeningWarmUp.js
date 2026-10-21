@@ -3,6 +3,8 @@
 // listeningService.buildSectionWarmUp. Every saved item is verbatim-grounded
 // in the section's questions and transcript (utils/listeningWarmUp.js); the
 // answer key stays teacher-only (ListeningSection.warmUp is select:false).
+// Saved as unpublished ("Chờ duyệt") — students see it only after an admin
+// publishes it, from the admin panel or scripts/_publish_warmup.js.
 //
 // Safe to re-run: by default only sections with no warm-up yet that weren't
 // already marked skipped are picked up.
@@ -12,6 +14,7 @@
 //   node backend/scripts/generateListeningWarmUp.js --limit 20          # cap this run
 //   node backend/scripts/generateListeningWarmUp.js --concurrency 3     # parallel sections (default 3)
 //   node backend/scripts/generateListeningWarmUp.js --include-skipped   # retry previously failed sections
+//   node backend/scripts/generateListeningWarmUp.js --below 6           # ALSO redo unpublished, un-edited warm-ups with < 6 items
 //   node backend/scripts/generateListeningWarmUp.js --ids id1,id2       # (re)generate exactly these
 //   node backend/scripts/generateListeningWarmUp.js --force             # regenerate everything (overwrites hand edits!)
 //   node backend/scripts/generateListeningWarmUp.js --verbose           # also print every dropped item and why
@@ -20,12 +23,13 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 
 function parseArgs(argv) {
-  const args = { limit: Infinity, force: false, includeSkipped: false, ids: null, concurrency: 3, verbose: false };
+  const args = { limit: Infinity, force: false, includeSkipped: false, ids: null, concurrency: 3, verbose: false, below: 0 };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--limit') args.limit = parseInt(argv[++i], 10) || Infinity;
     else if (argv[i] === '--force') args.force = true;
     else if (argv[i] === '--include-skipped') args.includeSkipped = true;
     else if (argv[i] === '--verbose') args.verbose = true;
+    else if (argv[i] === '--below') args.below = parseInt(argv[++i], 10) || 0;
     else if (argv[i] === '--concurrency') args.concurrency = Math.max(1, parseInt(argv[++i], 10) || 3);
     else if (argv[i] === '--ids') args.ids = argv[++i].split(',').map(s => s.trim()).filter(Boolean);
   }
@@ -46,8 +50,14 @@ async function run() {
   if (args.ids) {
     filter._id = { $in: args.ids.map(id => new mongoose.Types.ObjectId(id)) };
   } else if (!args.force) {
-    filter['warmUp.synonyms.0'] = { $exists: false };
-    filter['warmUp.paraphrases.0'] = { $exists: false };
+    const missing = { 'warmUp.synonyms.0': { $exists: false }, 'warmUp.paraphrases.0': { $exists: false } };
+    // Thin AI drafts nobody has published or hand-edited yet — safe to redo.
+    const thin = {
+      warmUpPublished: { $ne: true },
+      'warmUp.editedAt': null,
+      $expr: { $lt: [{ $add: [{ $size: { $ifNull: ['$warmUp.synonyms', []] } }, { $size: { $ifNull: ['$warmUp.paraphrases', []] } }] }, args.below] },
+    };
+    filter.$or = args.below > 0 ? [missing, thin] : [missing];
     if (!args.includeSkipped) filter.warmUpSkippedAt = null;
   }
 
@@ -73,7 +83,7 @@ async function run() {
           const { synonyms, paraphrases, dropped } = await listeningService.buildSectionWarmUp(s);
           await ListeningSection.updateOne({ _id: s._id }, { $set: {
             warmUp: { synonyms, paraphrases, generatedAt: new Date(), editedAt: null },
-            warmUpSkippedAt: null, warmUpSkipReason: '',
+            warmUpPublished: false, warmUpSkippedAt: null, warmUpSkipReason: '',
           } });
           ok++;
           if (synonyms.length < 6 || paraphrases.length < 6) thin.push(`${s._id} ${s.title} (${synonyms.length}/${paraphrases.length})`);

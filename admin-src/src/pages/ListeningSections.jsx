@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 import { useListFilter } from '../hooks/useListFilter';
 import GapFillPanel from '../components/GapFillPanel';
+import WarmUpPanel from '../components/WarmUpPanel';
 
 function AssembleModal({ sections, onClose, onSuccess }) {
   const toast = useToast();
@@ -211,6 +212,23 @@ function GapFillModal({ section, onClose, onSaved }) {
   );
 }
 
+function WarmUpModal({ section, onClose, onSaved }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 960, width: '100%', maxHeight: '88vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Warm-up – {section.title}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '20px 24px' }}>
+          <WarmUpPanel sectionId={section._id} hasTranscript={!!section.transcript?.trim()}
+            onChange={next => onSaved(section._id, next)} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ListeningSections() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -221,6 +239,7 @@ export default function ListeningSections() {
   const [partFilter, setPartFilter] = useState('all');
   const [audioSection, setAudioSection] = useState(null);
   const [gapFillSection, setGapFillSection] = useState(null);
+  const [warmUpSection, setWarmUpSection] = useState(null);
   const [showAssemble, setShowAssemble] = useState(false);
 
   const load = () =>
@@ -291,6 +310,20 @@ export default function ListeningSections() {
     return { label: 'Chưa sinh', cls: 'badge-gray' };
   }
 
+  function warmUpStatus(s) {
+    if (s.warmUpPublished) return { label: 'Đã publish', cls: 'badge-green' };
+    if (s.warmUpCount > 0) return { label: 'Chờ duyệt', cls: 'badge-yellow' };
+    return { label: 'Chưa sinh', cls: 'badge-gray' };
+  }
+
+  function onWarmUpSaved(sectionId, next) {
+    setSections(prev => prev.map(s => (s._id === sectionId ? {
+      ...s,
+      warmUpPublished: next.published === true,
+      warmUpCount: (next.synonyms?.length || 0) + (next.paraphrases?.length || 0),
+    } : s)));
+  }
+
   // Applies a GapFillPanel change (from the modal) straight onto the row in
   // local state, so the status badge updates immediately without a full
   // reload — mirrors toggleActive()'s optimistic-update pattern above.
@@ -311,6 +344,9 @@ export default function ListeningSections() {
       )}
       {gapFillSection && (
         <GapFillModal section={gapFillSection} onClose={() => setGapFillSection(null)} onSaved={onGapFillSaved} />
+      )}
+      {warmUpSection && (
+        <WarmUpModal section={warmUpSection} onClose={() => setWarmUpSection(null)} onSaved={onWarmUpSaved} />
       )}
       {showAssemble && (
         <AssembleModal
@@ -357,12 +393,13 @@ export default function ListeningSections() {
               <th>DẢI CÂU</th>
               <th>TRẠNG THÁI</th>
               <th>GAP-FILL</th>
+              <th>WARM-UP</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {paged.length === 0
-              ? <tr><td colSpan={9} className="table-empty">Không có section nào</td></tr>
+              ? <tr><td colSpan={10} className="table-empty">Không có section nào</td></tr>
               : paged.map(s => {
                 const pc = PART_COLOR[s.partNumber] || PART_COLOR[1];
                 return (
@@ -408,6 +445,14 @@ export default function ListeningSections() {
                         <span className={`badge ${gf.cls}`} style={{ cursor: 'pointer' }}
                           onClick={() => setGapFillSection(s)} title="Click để sinh/duyệt Gap-fill">
                           <span className="dot" />{gf.label}
+                        </span>
+                      ); })()}
+                    </td>
+                    <td>
+                      {(() => { const wu = warmUpStatus(s); return (
+                        <span className={`badge ${wu.cls}`} style={{ cursor: 'pointer' }}
+                          onClick={() => setWarmUpSection(s)} title="Click để sinh/duyệt Warm-up">
+                          <span className="dot" />{wu.label}
                         </span>
                       ); })()}
                     </td>

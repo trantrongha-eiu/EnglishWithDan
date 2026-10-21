@@ -1916,6 +1916,7 @@ window.handleLtPracticePopstate = function(tab, part) {
     // in-page close button) leaves the page stuck in fullscreen with the
     // toolbar hidden even though the section list is now showing.
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    if (window.LtWarmUp) window.LtWarmUp.mount(null, null);
     _clearLTPracticeTimer();
     _hideLTPracticeHUD();
     _ltPracticeSubmitted = false;
