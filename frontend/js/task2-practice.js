@@ -784,6 +784,7 @@ function _applyVocab(id, list) {
   state.vocabError = false;
   state.vocabFor = id;
   state.vocab = list;
+  window.WordAudio?.prefetch(list.map(v => v && v.term));
   // Cache the total so the Luyện câu gate (isVocabLearned) and the topic
   // list chips work without refetching. Unique term COUNT, not list.length —
   // isVocabLearned compares this against _savedTermsForTopic(...).size, a Set

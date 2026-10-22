@@ -1922,6 +1922,7 @@ window.openSaveWordModal = async function (wordObj) {
     selectedBookForSave = null;
 
     document.getElementById('sw-word').textContent     = wordObj.word     || '';
+    window.WordAudio?.prefetch(wordObj.word);
     document.getElementById('sw-phonetic').textContent = wordObj.phonetic  || '';
     document.getElementById('sw-meaning').textContent  = wordObj.meaning   || '';
     document.getElementById('sw-example').textContent  = wordObj.example   || '';
@@ -2439,12 +2440,14 @@ function startPractice(mode) {
             shuffleArray(mixedQueue);
         }
         document.getElementById('mixedMode').style.display = 'block';
+        window.WordAudio?.prefetch(mixedQueue.map(it => it.word?.word));
         showMixedQuestion();
         return;
     }
 
     if (smart) practiceWords = [...smart.list];
     else { practiceWords = [...allPracticeWords]; shuffleArray(practiceWords); }
+    window.WordAudio?.prefetch(practiceWords.map(w => w?.word));
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
         fillBlank:      'fillBlankMode',

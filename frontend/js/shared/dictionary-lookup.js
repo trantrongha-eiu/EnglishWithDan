@@ -360,6 +360,7 @@
   function lookupWord(word, x, y) {
     var key = word.toLowerCase();
     _word = word;
+    if (window.WordAudio) window.WordAudio.prefetch(word);
     document.getElementById('dict-word').textContent = word;
     var _ph = document.getElementById('dict-phonetic');
     _ph.textContent = ''; _ph.style.display = 'none';

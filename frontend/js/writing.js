@@ -2725,6 +2725,7 @@ function renderPracticeWriteScreen(taskType, task) {
   practiceState.vocab = taskType === 2 && !isSimulation && Array.isArray(task.vocabularyList)
     ? task.vocabularyList.filter(v => v && v.term) : [];
   if (practiceState.vocab.length) html += renderPracticeVocab(practiceState.vocab);
+  window.WordAudio?.prefetch(practiceState.vocab.map(v => v.term));
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
   // exam (that screen has its own separate wiring — see launchExam()) or a

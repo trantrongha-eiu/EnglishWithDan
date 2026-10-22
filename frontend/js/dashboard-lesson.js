@@ -429,6 +429,7 @@ function renderLearnTab() {
     const saveAllBtn = document.getElementById('lesson-saveall-btn');
     if (!grid) return;
     const words = lessonState.currentLesson?.words || [];
+    window.WordAudio?.prefetch(words.map(w => w.word));
     if (saveAllBtn) {
         if (!words.length) {
             saveAllBtn.style.display = 'none';
@@ -611,6 +612,7 @@ function renderQuizQuestion() {
     const container = document.getElementById('lesson-tab-quiz');
 
     lessonState.quiz.currentWord = q.word;
+    window.WordAudio?.prefetch(q.word?.word);
 
     // (index+1) to match the "N/total" text below — otherwise the bar always
     // lags one question behind (0% on question 1, never 100% until results).
