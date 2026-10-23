@@ -19,11 +19,10 @@ const PARENT_URL = `${FRONTEND_URL}/phu-huynh`;
 function credentialsMessage({ studentName, phone, password }) {
   return [
     `Kính gửi Quý phụ huynh của ${studentName},`,
-    `Trung tâm gửi tài khoản để phụ huynh theo dõi việc học của con (điểm danh, bài tập, điểm số, học phí):`,
+    `Thầy Hà xin thông báo tài khoản để phụ huynh theo dõi việc học của con (điểm danh, bài tập, điểm số, học phí):`,
     `- Đăng nhập: ${PARENT_URL}`,
     `- Tài khoản: ${phone}`,
     `- Mật khẩu: ${password} (chính là số điện thoại của phụ huynh)`,
-    `Lần đầu đăng nhập, hệ thống sẽ yêu cầu phụ huynh đặt mật khẩu mới.`,
   ].join('\n');
 }
 
