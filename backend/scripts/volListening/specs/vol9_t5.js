@@ -1,0 +1,158 @@
+// Vol 9 – Test 5 (same layout as vol9_t1.js; map = the image embedded in the question docx, redrawn without the watermark
+// → img/t5/map_redraw.png). Audio starts with 24 s of silence then "Now listen carefully and answer questions 1 to 5" (no test
+// intro, no Part 1 introduction) → P1 from 23.9 s; Part 2 → 3 and 3 → 4 have no answer-check pause (cut before "Part N").
+// Source key error fixed by the recording: Q8 "tea" → colour ("you have to see colour accurately … when looking at tea leaves").
+const { note, mc, multi, map, matching } = require('../vol_build');
+const RE = require('./vol9_rawre');
+const A = 'LISTENING/AUDIO/TEST 5.mp4';
+
+module.exports = {
+  vol: 9, test: 5, docx: 'LISTENING/KEY - TRANSCRIPT/KEY TEST 5-L.docx',
+  rawRe: RE,
+  sections: [
+    {
+      part: 1, title: 'How to Become a Tea Taster', audio: A, clip: [23.9, 303.6], cover: 'tea tasting cups spoons | tea leaves samples',
+      turns: [
+        ['Tea taster', 'Hello, can I help you?'], ['Student', "Hi, I'm still a student"], ['Tea taster', "Well, that's actually"], ['Student', 'Yes, please.'],
+        ['Tea taster', 'Well, initially'], ['Student', 'Right.'], ['Tea taster', 'No, rather than that'], ['Student', 'Ah, OK.'], ['Tea taster', 'Well, there are many'],
+        ['Student', 'Yes, I can see why.'], ['Tea taster', 'And then another'], ['Student', "Gosh, I'd never"], ['Tea taster', "Yes, that's another"],
+        ['Student', 'I can imagine.'], ['Tea taster', 'Well, it used to be'], ['Student', 'Right, I see.'], ['Tea taster', 'Well, you need to have a degree.'],
+        ['Student', "Well, that's fine."], ['Tea taster', "However, it doesn't"], ['Student', "I'm studying languages."], ['Tea taster', "Yes, that'll be fine."],
+        ['Student', 'Is there anything else?'], ['Tea taster', 'Yes, you need to be able'], ['Student', 'OK, that makes sense.'], ['Tea taster', 'And this might seem'],
+        ['Student', "Wow, I'd never"], ['Tea taster', 'Essential.'], ['Student', "OK, I've noted"], ['Tea taster', "Yes, I'd say there's no point"], ['Student', 'OK, well, thanks'],
+      ],
+      groups: [
+        note('Complete the notes below.\nWrite ONE WORD AND/OR A NUMBER for each answer.', 'How to become a tea taster', [
+          '<strong>What the training involves</strong>',
+          "• A trainee tea taster mainly works in the company's __Q1__",
+          '• He/she learns how to:',
+          '– taste the tea using a __Q2__',
+          '– give a __Q3__ to samples of tea according to their quality',
+          '– select the right size of leaves for teabags',
+          '– remember the __Q4__ of different kinds of tea.',
+          '• He/she only qualifies after __Q5__ of training.',
+          '<strong>What the tea company is looking for in new staff</strong>',
+          '• a degree (__Q6__ is an advantage)',
+          '• able to do __Q7__ quickly',
+          '• ability to distinguish different kinds of __Q8__ accurately',
+          '• effective __Q9__ skills in different situations',
+          '• being prepared to __Q10__',
+        ], { 1: 'lab/laboratory', 2: 'spoon', 3: 'grade', 4: 'name/names', 5: '5 years/five years', 6: 'science', 7: 'maths/math', 8: 'colour/color/colours/colors', 9: 'communication', 10: 'travel' }, 'Questions 1-10'),
+      ],
+      expl: {
+        1: { v: 'Khi người nếm trà nói về nơi làm việc của học viên.', t: 'Well, initially, even though there\'s some time spent in meetings at our office, a trainee is based in our lab for most of their time being trained how to do the tasting.', p: 'Có họp ở văn phòng (bẫy office) nhưng phần lớn thời gian ở phòng thí nghiệm → lab' },
+        2: { v: 'Khi sinh viên hỏi có dùng cốc đặc biệt không.', t: 'No, rather than that or even a glass to do the tasting, we sip it from a spoon.', p: 'Không dùng cốc hay ly (bẫy cup, glass); nhấp trà bằng thìa → spoon' },
+        3: { v: 'Khi nói về chất lượng trà.', t: 'so one of the most important things is to learn how to decide which grade should be assigned to each sample.', p: 'Học cách xếp hạng cho từng mẫu trà → grade' },
+        4: { v: 'Khi sinh viên hỏi về tên các loại trà.', t: ['So do all of the teas have their own name?', "Yes, that's another important part of the training.", 'It took me ages before I remembered them all.'], p: 'Phải nhớ tên của tất cả các loại trà → name' },
+        5: { v: 'Khi hỏi bao lâu thì đủ trình độ.', t: ['I heard it was seven years, is that right?', "Well, it used to be, but we've speeded things up a bit, so now it only takes five."], p: 'Trước đây 7 năm (bẫy), nay chỉ còn 5 năm → 5 years' },
+        6: { v: 'Khi nói về bằng cấp.', t: "However, it doesn't have to be a science degree, even though that's a definite bonus.", p: 'Bằng khoa học là một điểm cộng; lịch sử, ngôn ngữ chỉ là ví dụ (bẫy) → science' },
+        7: { v: 'Khi nói về kỹ năng cần có.', t: 'Yes, you need to be able to do maths and do it fast.', p: 'Phải làm toán nhanh → maths' },
+        8: { v: 'Khi nói về bài kiểm tra thị lực.', t: ["We're not worried about whether you need glasses or not, that's fine, but you have to see colour accurately.", "It's very important when looking at tea leaves."], p: 'Đeo kính không sao (bẫy glasses); phải nhìn màu sắc chính xác → colour' },
+        9: { v: 'Khi sinh viên hỏi về giao tiếp.', t: ['What about other things, like how important is good communication?', 'Essential.', "You'll need to be highly skilled at that, as you'll meet such varied people in this job, everyone from farmers to buyers."], p: 'Kỹ năng giao tiếp thiết yếu vì gặp đủ loại người → communication' },
+        10: { v: 'Khi sinh viên hỏi còn gì cần nhớ.', t: "Yes, I'd say there's no point doing this job if you don't like to travel.", p: 'Phải sẵn sàng đi lại nhiều, ra nước ngoài → travel' },
+      },
+    },
+    {
+      part: 2, title: 'Pioneer Historical Village', audio: A, clip: [303.6, 656.6], cover: 'pioneer village historic buildings | old wooden mill village',
+      fix: [['06:58', '']],
+      turns: [],
+      groups: [
+        mc('Choose the correct letter, A, B or C.\n\nPioneer Historical Village', [
+          [11, 'When did Pioneer Historical Village open to the public?', ['1962', '1970', '1980'], 'C'],
+          [12, 'How much will each adult in the group pay for a ticket?', ['$11.00', '$12.50', '$16.00'], 'A'],
+          [13, 'What sort of demonstration will the visitors be able to watch?', ['an unusual approach to baking bread', 'a quick way of making candles', 'a traditional method of making sweets'], 'C'],
+          [14, 'What kind of experience with animals can visitors have at Pioneer Village?', ['gathering eggs', 'milking cows', 'feeding goats'], 'A'],
+        ], 'Questions 11-14'),
+        map('Label the map below.\nChoose the correct letter, A-K, next to Questions 15-20.', [
+          [15, 'Schoolhouse', 'I'], [16, 'Mill', 'B'], [17, 'Stables', 'H'], [18, "Doctor's Office", 'E'], [19, 'Hotel', 'F'], [20, 'Workshop', 'J'],
+        ], { img: 'img/t5/map_redraw.png' }, 'Questions 15-20'),
+      ],
+      expl: {
+        11: { v: 'Khi hướng dẫn viên kể lịch sử ngôi làng.', t: ['in 1962 a committee was formed in the hope of preserving some of the local history.', 'Volunteers worked throughout the 1970s to restore and move buildings to the site.', 'In 1980 the village welcomed its first paying visitors.'], p: '1962 lập uỷ ban, thập niên 1970 trùng tu (bẫy); năm 1980 đón khách đầu tiên → C' },
+        12: { v: 'Khi nói về giá vé.', t: "The normal price of admission is $16 for adults and $12.50 for students and seniors, but it'll only be $11 per person for all of you today", p: 'Giá thường 16 đô, sinh viên 12.50 (bẫy); đoàn 10 người được giảm còn 11 đô mỗi người → A' },
+        13: { v: 'Khi nói về các buổi trình diễn.', t: ['We had hoped to show you how candles are made, but the person organising it had to cancel at the last minute.', "Just outside the shop we have an expert sweet maker who will be making lollipops the old-fashioned way, so do go and have a look."], p: 'Làm nến bị huỷ (bẫy B), làm bánh mì thì không cho xem (bẫy A); xem làm kẹo mút kiểu truyền thống → C' },
+        14: { v: 'Khi nói về động vật trong làng.', t: ['Every house kept a few for the eggs.', "You're welcome to have a look and see if you can find any to collect.", 'The ones that we had have moved to a nearby farm.'], p: 'Không còn bò để vắt sữa, dê đã chuyển đi (bẫy B, C); khách có thể đi nhặt trứng gà → A' },
+        15: { v: 'Khi chỉ đường đến trường học.', t: ["If you head directly north, you'll come to a beautiful old church.", 'The schoolhouse is diagonally across from it.'], p: 'Đi thẳng lên phía bắc gặp nhà thờ; trường học nằm chéo đối diện nhà thờ → I' },
+        16: { v: 'Khi chỉ đường đến cối xay.', t: ['To find it, go straight up from the main gate until you get to the clock tower.', "Turn right and it's on the other side of the road, across from the pond."], p: 'Đi thẳng đến tháp đồng hồ, rẽ phải, bên kia đường đối diện hồ nước → B' },
+        17: { v: 'Khi chỉ đường đến chuồng ngựa.', t: ["You may have seen the back of the stables already because they're a large building backing onto the car park.", "If you head west past the church, it's the first building you come to."], p: 'Toà nhà lớn quay lưng ra bãi xe, đi về phía tây qua nhà thờ là toà đầu tiên → H' },
+        18: { v: 'Khi chỉ đường đến phòng khám bác sĩ.', t: ["Look in the middle of your maps and it's in a block of three buildings that are all close together.", "It's one of them."], p: 'Ở giữa bản đồ, trong cụm ba toà nhà gần nhau → E' },
+        19: { v: 'Khi chỉ đường đến khách sạn.', t: 'Go up past the picnic area and the hotel is on the opposite side of the path, near the pond.', p: 'Đi qua khu dã ngoại, khách sạn ở bên kia lối đi, gần hồ → F' },
+        20: { v: 'Khi chỉ đường đến xưởng.', t: "It's at the end of that narrow winding path just south of the picnic area, which is on the right-hand side of your map, at the eastern end of the village.", p: 'Cuối con đường nhỏ quanh co phía nam khu dã ngoại, phía đông ngôi làng → J' },
+      },
+    },
+    {
+      part: 3, title: 'Disposing of Hazardous Household Waste', audio: A, clip: [656.6, 1071.6], cover: 'recycling centre household waste | used batteries recycling bin',
+      fix: [['hazardous materials. than when', 'hazardous materials than when']],
+      turns: [
+        ['Tutor', 'Hi, Annie, Ryan'], ['Annie', 'Morning.'], ['Tutor', 'I know you want'], ['Ryan', "We've been looking"], ['Annie', 'That includes things'],
+        ['Ryan', 'Yes, but I did think'], ['Annie', 'Me too.'], ['Ryan', 'Absolutely.'], ['Tutor', 'I can see why.'], ['Ryan', 'Well, in the conclusions'],
+        ['Annie', 'I think financial penalties'], ['Ryan', 'I still think legislation'], ['Tutor', 'You can present both ideas.'], ['Ryan', 'Yeah, and agree to differ.'],
+        ['Annie', 'I think encouragement'], ['Tutor', 'Okay.'], ['Ryan', "Yes, we thought we'd talk"], ['Tutor', "That's a great idea."], ['Annie', "We thought we'd start"],
+        ['Ryan', "Yeah, we'll explain"], ['Tutor', 'Yes, which is a positive'], ['Ryan', 'Definitely.'], ['Annie', 'And I think we should emphasise'],
+        ['Ryan', 'Medicines are really interesting.'], ['Tutor', 'I imagine people'], ['Annie', 'No, indeed.'], ['Tutor', 'Doubly good strategy.'], ['Ryan', 'Yes.'],
+        ['Annie', "We thought we'd also look"], ['Tutor', 'Good, yeah.'], ['Ryan', "We've opted to finish"], ['Annie', 'The fact that we now have'], ['Tutor', 'Good.'],
+      ],
+      groups: [
+        multi('Choose TWO letters, A-E.', 21, "Which TWO things do Annie and Ryan agree are surprising about people's behaviour and attitudes to waste disposal?", ['People like to be reminded about what to recycle.', 'People often forget what is dangerous.', 'People are prepared to pay more for safer products.', 'People recycle cheap items less often than expensive ones.', 'People think waste disposal is boring.'], ['B', 'E'], 'Questions 21-22'),
+        multi('Choose TWO letters, A-E.', 23, 'Which TWO things does Annie think will improve recycling rates in the local area?', ['giving people financial rewards for recycling', "giving a fine to households which don't recycle", 'involving children in more schemes', 'passing laws which require local councils to recycle more', "having more research on people's current habits"], ['B', 'C'], 'Questions 23-24'),
+        matching('What advice do Ryan and Annie agree should be given about each of the following types of waste?\nChoose SIX answers from the box and write the correct letter, A-H, next to Questions 25-30.',
+          ['should be disposed of more regularly', 'should have better labelling', 'should normally be used up completely', 'should be saved for later disposal', "should be made available for others' use", 'should be repaired rather than thrown away', 'should be further modified to be made less harmful', 'should be retained and used for different purposes'], [
+            [25, 'paint', 'E'], [26, 'batteries', 'D'], [27, 'some medicines', 'C'], [28, 'pesticides', 'B'], [29, 'tyres', 'H'], [30, 'fridges', 'G'],
+          ], { title: 'Advice', groupTitle: 'Questions 25-30' }),
+      ],
+      expl: {
+        21: { v: 'Khi hai bạn nói về kết quả bất ngờ của nghiên cứu.', t: ['Another striking thing was that many people are more careful when they\'re using certain hazardous materials than when they are getting rid of them.', "At that stage, they simply don't remember that they'll be bad for the environment.", 'Absolutely.', 'That really amazed us.'], p: 'Khi vứt bỏ, người ta quên mất chúng nguy hại = hay quên thứ gì nguy hiểm; việc ý thức về đồ rẻ tiền thì "không có gì lạ" (loại D) → B' },
+        22: { v: 'Khi hai bạn nói về kết quả bất ngờ của nghiên cứu.', t: ["Yes, but I did think it was surprising that people don't get very enthusiastic about the subject of waste disposal, like they do about other aspects of environmental protection.", 'Me too.', 'Apparently they find it all rather tiresome.'], p: 'Người ta thấy chuyện xử lý rác khá nhàm chán → E' },
+        23: { v: 'Khi bàn cách tăng tỷ lệ tái chế.', t: ["I think financial penalties are a good idea, but criminalising people is too harsh.", "I think it's more effective to impose a penalty on homes if they don't recycle stuff."], p: 'Annie cho rằng phạt tiền hộ không tái chế hiệu quả hơn; luật buộc hội đồng địa phương là ý của Ryan (bẫy D) → B' },
+        24: { v: 'Khi bàn cách tăng tỷ lệ tái chế.', t: 'I think encouragement is always better in the long run, and getting the local community involved, such as schools, working with kids.', p: 'Annie muốn lôi kéo cộng đồng như trường học, làm việc với trẻ em → C' },
+        25: { v: 'Khi nói về sơn.', t: "Yeah, we'll explain that we advise setting up schemes where you can take it to a centre to be used by people who need it, repainting an elderly person's home, for example", p: 'Mang sơn đến trung tâm để người cần dùng = để người khác sử dụng → E' },
+        26: { v: 'Khi nói về pin.', t: "And I think we should emphasise that people should have a storage container at home where they can put them until they've got enough to take to a central collection facility", p: 'Cất trong hộp ở nhà đến khi đủ nhiều mới mang đi = giữ lại để xử lý sau → D' },
+        27: { v: 'Khi nói về thuốc.', t: ['things like antibiotics should not need to be thrown away in the first place because doctors usually tell us we should finish off the whole course of tablets.', "So there aren't any left to go for waste."], p: 'Uống hết cả liệu trình nên không còn thuốc thừa = dùng hết → C' },
+        28: { v: 'Khi nói về thuốc trừ sâu.', t: ['The point we highlight from the article is that people are often unsure what to do with them.', 'And there needs to be clearer information given on the packaging so people are left in no doubt.'], p: 'Cần thông tin rõ hơn trên bao bì = ghi nhãn tốt hơn → B' },
+        29: { v: 'Khi nói về lốp xe.', t: ['Rather than sending them to the dump, people should be encouraged to be creative with them.', 'Not just sending them away to be recut for retreads, but to make them into things like plant holders for your garden.'], p: 'Giữ lại lốp và dùng vào việc khác như chậu cây → H' },
+        30: { v: 'Khi nói về tủ lạnh.', t: ['The fact that we now have the capacity to use less dangerous materials.', 'And we should continue to exploit that capacity to reduce effects on the ozone layer.'], p: 'Tiếp tục cải tiến dùng vật liệu ít nguy hại hơn → G' },
+      },
+    },
+    {
+      part: 4, title: 'Whale Shark Conservation Field Trip', audio: A, clip: [1071.6, 1455.2], cover: 'whale shark swimming | whale shark ningaloo reef',
+      turns: [],
+      groups: [
+        note('Complete the notes below.\nWrite ONE WORD ONLY for each answer.', 'Whale Shark Conservation Field Trip', [
+          '<strong>Background</strong>',
+          "• Whale sharks are the world's biggest fish.",
+          '• Comparison with whales:',
+          "– Similarities: They're large and they feed on plankton and krill.",
+          '– Differences: They stay near the __Q31__ and they lack any actual __Q32__.',
+          '• A large number head to the waters off Ningaloo, Western Australia, each year.',
+          '• The coral reef, where the whale sharks feed, is unusually close to the __Q33__.',
+          '<strong>Research centre activities</strong>',
+          '• Existing methods of monitoring whale sharks are imperfect:',
+          "– tracking devices attached to the whale shark's __Q34__ (these are expensive and unreliable)",
+          '– from a __Q35__ (this is imprecise)',
+          '• New research project on whale shark feeding habits:',
+          '– Analysis of plankton shows different amounts of __Q36__ varieties.',
+          '– Researchers are comparing plankton data using special maps.',
+          '• Study on the impact of humans on whale shark behaviour: noise caused whale sharks to __Q37__.',
+          '• Community outreach programme – The whale shark race:',
+          '– A mature whale shark is tagged and assigned to a __Q38__ to follow.',
+          '– Results are displayed on the research centre website.',
+          '<strong>Conservation and management</strong>',
+          '• Record any __Q39__ to whale sharks in photo-identification libraries.',
+          '• Ban scuba activities as whale sharks are affected by the __Q40__ the activities produce.',
+        ], { 31: 'surface', 32: 'bones/bone', 33: 'shore', 34: 'fin', 35: 'drone', 36: 'carbon', 37: 'dive', 38: 'school', 39: 'injuries', 40: 'bubbles' }, 'Questions 31-40'),
+      ],
+      expl: {
+        31: { v: 'Khi so sánh cá mập voi với cá voi.', t: 'Unlike many whale species, they prefer to swim close to the surface of the water rather than cruising the depths of the ocean.', p: 'Khác cá voi, chúng thích bơi gần mặt nước → surface' },
+        32: { v: 'Khi nói về khác biệt cấu tạo cơ thể.', t: 'Their skeleton is made entirely of cartilage, in comparison to whales that have skeletons made of real bones.', p: 'Bộ xương toàn sụn, không có xương thật như cá voi → bones' },
+        33: { v: 'Khi nói về rạn san hô ở Ningaloo.', t: "although it's in relatively deep waters, the reef is in close proximity to the shore, unlike some reefs that you have to travel miles to get to.", p: 'Rạn san hô nằm rất gần bờ → shore' },
+        34: { v: 'Khi nói về thiết bị theo dõi.', t: 'One way is to use an electronic tracking device, or tag, which researchers have to attach manually to the fin.', p: 'Gắn thẻ điện tử bằng tay vào vây → fin' },
+        35: { v: 'Khi nói về cách theo dõi thứ hai.', t: ['Another way of monitoring whale sharks is with a special drone to spot the animals in the ocean.', "This can give you a rough idea of numbers, but obviously it's not an exact science."], p: 'Dùng thiết bị bay không người lái, chỉ cho số liệu ước chừng → drone' },
+        36: { v: 'Khi nói về phân tích sinh vật phù du.', t: 'Apparently, plankton from different places contains different quantities of carbon types.', p: 'Sinh vật phù du ở mỗi nơi chứa lượng các loại carbon khác nhau → carbon' },
+        37: { v: 'Khi kể về thí nghiệm bật động cơ thuyền.', t: ['We noticed that the resulting noise affected the behaviour of the animal.', 'As soon as it heard the sound, we saw it dive.'], p: 'Nghe tiếng động cơ, cá mập lặn xuống → dive' },
+        38: { v: 'Khi nói về cuộc đua cá mập voi.', t: 'The researchers select a mature whale shark which has been tagged and they allocate it to a school.', p: 'Mỗi con cá mập trưởng thành được gắn thẻ và giao cho một trường học → school' },
+        39: { v: 'Khi nói về bảo tồn.', t: 'all injuries which whale sharks suffer must be documented, with information such as date and location and a photograph if possible.', p: 'Mọi vết thương của cá mập voi phải được ghi lại kèm ảnh → injuries' },
+        40: { v: 'Khi nói về quy tắc ứng xử mới.', t: 'Scuba diving is not going to be allowed anymore, as previous research has found that whale sharks find bubbles disturbing.', p: 'Cấm lặn bình dưỡng khí vì bong bóng làm cá mập voi khó chịu → bubbles' },
+      },
+    },
+  ],
+};

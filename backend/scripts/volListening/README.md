@@ -6,7 +6,7 @@ bài có sẵn để ghép. **Listening trước, Reading sau. Mỗi lần 1 vol
 Thiếu audio thì được tìm trên mạng. Transcript được tự sinh hoặc lấy trên mạng.
 
 **Reading** (từ 2026-10-16): quy trình + nhật ký riêng ở `../volReading/README.md` (Vol 1 xong).
-**Listening: Vol 1–8 xong (2026-10-23); còn Vol 9.**
+**Listening: Vol 1–9 xong (2026-10-23).**
 
 ## Quy trình 1 vol (cwd = backend/scripts/volListening)
 
@@ -157,6 +157,48 @@ TurboScribe (dòng `(m:ss - m:ss)`, tiêu đề `Section N`/`Part N`, không ghi
   `prev.js <T> <P>` transcript docx đã lọc, mỗi câu một dòng; `tdedupe.js` so 6-gram transcript với ngân hàng.
 - Bộ lọc lời dẫn: "You now have one minute to check" (docx cụt, không có "your answers") nay cũng bị xoá.
 - Tiêu đề nhóm `'X\nQuestions N-M'` và `\n\n` trong instruction bị site gộp thành 1 dòng → chỉ dùng `'Questions N-M'`.
+
+## Vol 9 — khác Vol 8
+
+`LISTENING/`: đề `TEST N-L.docx` (đánh máy; map nhúng trong docx → `web/vol9/img/t<T>/image1.png`) + `KEY - TRANSCRIPT/KEY TEST
+N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi transcript TurboScribe) + `AUDIO/TEST N.mp4` cả đề 1 file. 9 test.
+`web/vol9/keys.js` → `keys.json`.
+
+- Timestamp `(m:ss - m:ss)` nằm **đầu đoạn, cùng dòng** (Vol 8 nằm riêng dòng) → `rawRe` chung ở `specs/vol9_rawre.js` (bỏ khối key +
+  timestamp). Docx còn sót mốc trơ ("07:56", "06:14"…) → `fix`. Docx T2 chia Part 2/3 lệch một câu mỗi phía → `rawFix` chuyển lại.
+- Công cụ (git-ignored, như Vol 8): `full_words.js`, `clips.js`, `mkstubs.js` (OVR đặt tay), `prev.js`, `tdedupe.js`, `probe.js`,
+  `edges.js`, `coverq.js` + mới `sil.js <T>` (khoảng lặng kèm chữ Whisper hai bên), `seg.js <T> <từ> <đến> [regex]`, `probew.js`
+  (= probe có mốc từng từ). Nhiều đề **không có 30 s soát đáp án** giữa các phần (T5, T6, T7, T8, T9 P2→3) → mốc đặt ngay trước
+  "Part N" bằng `probew.js`; T5/T6/T7/T8 audio bắt đầu giữa lời dẫn Part 1; T9 audio hết 10 s sau "one minute to check".
+- Map: watermark chỉ là **màu nhạt phủ lên nền** → `web/vol9/maps_src/clean.py` đưa từng điểm ảnh về bảng màu của chính map (nền
+  trắng/hồng/tím, xanh ô chữ), giữ nguyên nét đen, chữ, bóng icon → ảnh sạch, đúng nguyên bản (T5–T9; nền trắng `TH=22`, nền màu
+  `TH=35 WL=999 WARM=0`). T1 (sơ đồ đơn giản) vẽ lại SVG `maps_src/t1p2.svg` + `render.js`. Spec trỏ `img/t<T>/map_redraw.png`.
+- T1 Q18–20 là sơ đồ đánh số + hộp từ (không phải chữ cái trên map) → group `map` + `dragDropConfig.words`, key = chữ.
+
+## Vol 9 — 2026-10-23 (xong cả 9 test)
+
+- Chống trùng (`vol_keys_dedupe.js 9` + `tdedupe.js` + so chữ câu hỏi): dùng lại 6 phần — T2 P4 = Health on the Night Shift (Actual
+  Test 5 / Vol 2 - T7), T3 P1/P2 = Windshem Farm Center / Student Vacation Jobs (Vol 2 - T7), T4 P4 = The Impact of Technology on Young
+  People (Vol 3 - T3; key 10/10, transcript ngân hàng khác bản), T7 P3 = The artist Samuel Prout (Vol 2 - T8), T8 P3 = Stone Point (Vol 6 -
+  T2). CHECK giả ở T7 P1/P2, T8 P2 (chuỗi chữ cái MC trùng ngẫu nhiên, đề khác). Không đề full nào trùng.
+- Mới: 30 bài lẻ — đều bật, ảnh bìa R2 (CC0/PD Wikimedia), Playwright nháp + live 30/30; 6 map (T1P2, T5P2–T9P2). Đề full **Vol 9 - Test
+  1–9** tạo + bật; pw_fulltest 40/40 cả 9. `vol_audit.js 9`: 0 problem, 1102 trích dẫn khớp.
+- Lỗi key gốc sửa theo băng (ghi đầu spec): **T5 Q8** "tea" → **colour** ("you have to see colour accurately"); T3 Q39 "nutritions" →
+  nutrition. Docx sai so với băng/đề: T6 P4 "bought" → brought, T2 "Gerry" → Jerry, T4 "Hawthorne" → Hawthorn, T8 "Forts Road" → Forest
+  Road, T1 "Springdown" → Spring Down; T8 P1 bản phát lại mất câu mở đầu → `fix` lấy từ bản ví dụ; T3 P3 băng cụt "So the others...".
+- Người nói theo `speaker_pitch.js` + nội dung; T2P3 (Emma/Nick), T5P3 (Tutor/Annie/Ryan) cao độ lẫn lộn → chia theo nội dung câu hỏi.
+  T4 P3 "will you be teaching out?" — cả turbo lẫn large-v3 đều nghe vậy, giữ nguyên.
+- 2026-10-23 debug lại (ngoài `vol_audit.js`, công cụ git-ignored trong `web/vol9/`):
+  - `keycheck.js`: key DB (bài lẻ + bản trong đề full) ↔ key docx từng câu + "→ đáp án" của giải thích, 360 câu. Lộ thêm 2 chỗ đã key theo
+    băng lúc seed nhưng **chưa ghi** (nay ghi ở đầu spec, nghe lại bằng large-v3): **T7 Q15 A → C** (hội đồng "have authorised the
+    spending" cho hệ thống đèn; thêm nhân viên mới chỉ đang xin duyệt), **T8 Q16 C → B** ("Payment to the centre is made by school, not by
+    parents… leave payment… at the school office"). Các chỗ lệch còn lại đều có lý do (T1 Q18–20 key là chữ; T2 P4 là bài ngân hàng; T5 Q8).
+  - Mọi đoạn Whisper lần đầu bỏ sót trong vùng đáp án (T7P2, T8P1, T8P4, T9P2) nghe lại bằng large-v3 (`probe.js`) → docx đúng.
+  - Người nói: cao độ từng từ (`f0.py` + mốc từ, lệch ~0,4 s) cho T1P3/T2P3 → T1P3 "My problem is creating things to worry about…" là
+    giọng **Rob** (đã sửa lại như băng), T2P3 Nick gợi ý ảnh, Emma phản đối ("Hang on. There's no point…"). `sync_transcripts.js --apply`
+    ghi transcript mới vào bài lẻ + bản trong đề full (backup `web/vol9/backup/transcript_*`). Các phần khác DB == draft.
+  - `audiocheck.js`: 9 audio đề full + 30 audio bài lẻ trên R2 đều 200, độ dài header = giải mã = DB. Sau đó audit 0 problem, pw_fulltest
+    T1/T2 40/40.
 
 ## Vol 8 — 2026-10-23 (xong cả 8 test)
 
