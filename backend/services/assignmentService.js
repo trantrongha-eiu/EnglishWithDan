@@ -137,6 +137,13 @@ function assignedBeforeEnrollment(assignment, enrollment) {
   return new Date(assignment.createdAt).getTime() < new Date(joined).getTime();
 }
 
+// The mirror case: the student had already left the class (soft-removed)
+// before this assignment was given, so it was never theirs to do.
+function leftBeforeAssigned(assignment, enrollment) {
+  if (!enrollment || !enrollment.removedAt || !assignment.createdAt) return false;
+  return new Date(enrollment.removedAt).getTime() <= new Date(assignment.createdAt).getTime();
+}
+
 // ── Student: all my homework across my active classes ──────────────────
 // `persist` (only from GET /api/assignments/mine, not the nav.js summary or
 // the cron) writes an accurate completedCount/allCompletedAt back onto each
@@ -454,7 +461,9 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
     const prev = byStudent.get(String(e.studentId));
     if (!prev || !e.removedAt || prev.removedAt) byStudent.set(String(e.studentId), e);
   }
-  const enrollments = [...byStudent.values()];
+  // A student who had already left when this was given was never asked to do
+  // it — no row at all, so they never read as "thiếu" on newer homework.
+  const enrollments = [...byStudent.values()].filter((e) => !leftBeforeAssigned(assignment, e));
   const students = await User.find({ _id: { $in: enrollments.map((e) => e.studentId) } })
     .select('username firstName lastName').lean();
   const sMap = new Map(students.map((s) => [String(s._id), s]));

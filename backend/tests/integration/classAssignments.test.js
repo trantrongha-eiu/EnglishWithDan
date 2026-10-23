@@ -931,6 +931,24 @@ describe('removed from class', () => {
     expect(mine.body.assignments).toHaveLength(0);
     expect(await AssignmentProgress.countDocuments({ assignmentId: asg._id })).toBe(1); // history kept
   });
+
+  test('a student who left is not listed on assignments given after they left, but stays on older ones', async () => {
+    const t = await createTeacher();
+    const stays = await createStudent();
+    const leaver = await createStudent();
+    const { cls, enrs } = await makeClassWith(t, [stays, leaver]);
+    const before = await createAssignment(cls, { deadline: past(1) });
+    await request(app).delete(`/api/classes/${cls._id}/students/${enrs[1]._id}`).set(authH(t));
+    const after = await createAssignment(cls, { deadline: past(1) });
+
+    const oldRes = await request(app).get(`/api/classes/${cls._id}/assignments/${before._id}`).set(authH(t));
+    const oldRow = oldRes.body.rows.find((r) => String(r.studentId) === String(leaver._id));
+    expect(oldRow).toBeTruthy();
+    expect(oldRow.removed).toBe(true);
+
+    const newRes = await request(app).get(`/api/classes/${cls._id}/assignments/${after._id}`).set(authH(t));
+    expect(newRes.body.rows.map((r) => String(r.studentId))).toEqual([String(stays._id)]);
+  });
 });
 
 describe('resource catalog', () => {

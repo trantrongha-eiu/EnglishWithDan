@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
@@ -923,7 +923,7 @@ function AssignmentsTab({ cls }) {
 
   return (
     <>
-      {showEditor && <AssignmentEditor cls={cls} assignment={editing} onClose={closeEditor} onSaved={load} />}
+      {showEditor && <AssignmentEditor cls={cls} assignment={editing} allAssignments={list} onClose={closeEditor} onSaved={load} />}
 
       <div className="section-header" style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 13, color: 'var(--text3)' }}>{list.length} bài tập · {enrolledCount} học viên</div>
@@ -1107,13 +1107,41 @@ const MOCK_SKILLS = [
   { key: 'speakingQuestionId', nameKey: 'speakingTopic', type: 'speaking', label: 'Speaking (Part 2)', short: 'S' },
 ];
 
+// "type:id" → every earlier assignment of this class that already gave that
+// resource (archived ones included; the one being edited is skipped). Tests
+// fixed inside a mock bundle count under their own type too.
+const assignedKey = (type, id) => `${type}:${id || '*'}`;
+function buildAssignedIndex(assignments, excludeId) {
+  const idx = new Map();
+  const add = (type, id, a) => {
+    const k = assignedKey(type, id);
+    if (!idx.has(k)) idx.set(k, []);
+    if (!idx.get(k).some((x) => x._id === a._id)) idx.get(k).push({ _id: a._id, title: a.title, createdAt: a.createdAt });
+  };
+  for (const a of assignments || []) {
+    if (excludeId && String(a._id) === String(excludeId)) continue;
+    for (const r of a.resources || []) {
+      if (r.kind !== 'internal') continue;
+      if (r.resourceType === 'mock_test') {
+        for (const s of MOCK_SKILLS) if (r.mockBundle?.[s.key]) add(s.type, r.mockBundle[s.key], a);
+      } else {
+        add(r.resourceType, r.resourceId, a);
+      }
+    }
+  }
+  return idx;
+}
+function assignedTooltip(list) {
+  return `Đã giao trong: ${list.map((a) => `"${a.title}"${a.createdAt ? ` (${formatDate(a.createdAt)})` : ''}`).join(', ')}`;
+}
+
 function mockBundleSummary(p) {
   const b = p?.mockBundle;
   if (!b) return 'đề ngẫu nhiên cho từng học sinh (kiểu cũ)';
   return MOCK_SKILLS.map((s) => `${s.short}: ${b[s.key] ? (b[s.nameKey] || 'đã chọn') : '🎲 ngẫu nhiên'}`).join(' · ');
 }
 
-function MockBundlePicker({ current, onPick }) {
+function MockBundlePicker({ current, onPick, assignedIndex }) {
   const [lists, setLists] = useState({});
   const [sel, setSel] = useState(() => Object.fromEntries(MOCK_SKILLS.map((s) => [s.key, current?.mockBundle?.[s.key] ? String(current.mockBundle[s.key]) : ''])));
 
@@ -1153,9 +1181,12 @@ function MockBundlePicker({ current, onPick }) {
             {sel[s.key] && !(lists[s.key] || []).some((x) => String(x._id) === sel[s.key]) && (
               <option value={sel[s.key]}>{current?.mockBundle?.[s.nameKey] || 'Đề đã chọn'}</option>
             )}
-            {(lists[s.key] || []).map((x) => (
-              <option key={String(x._id)} value={String(x._id)}>{x.label}{x.meta ? ` — ${x.meta}` : ''}</option>
-            ))}
+            {(lists[s.key] || []).map((x) => {
+              const done = assignedIndex?.has(assignedKey(s.type, x._id));
+              return (
+                <option key={String(x._id)} value={String(x._id)}>{done ? '✓ ' : ''}{x.label}{x.meta ? ` — ${x.meta}` : ''}{done ? ' (đã giao)' : ''}</option>
+              );
+            })}
           </select>
         </label>
       ))}
@@ -1206,9 +1237,12 @@ function PreviewLink({ href }) {
   );
 }
 
-function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
+function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved }) {
   const toast = useToast();
   const isEdit = !!assignment;
+  const assignedIndex = useMemo(() => buildAssignedIndex(allAssignments, assignment?._id), [allAssignments, assignment?._id]);
+  // '' = all, 'new' = never given to this class, 'done' = already given
+  const [assignedFilter, setAssignedFilter] = useState('');
   const [title, setTitle] = useState(assignment?.title || '');
   const [instruction, setInstruction] = useState(assignment?.instruction || '');
   const [deadline, setDeadline] = useState(toDatetimeLocalValue(assignment?.deadline));
@@ -1281,14 +1315,18 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
   function pickAllListed() {
     setPicked((p) => {
       const already = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
-      const additions = catalog
+      const additions = visibleCatalog
         .filter((item) => !already.has(keyOf(cat, item._id)))
         .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label }));
       return [...p, ...additions];
     });
   }
 
-  const keyOf = (type, id) => `${type}:${id || '*'}`;
+  const keyOf = assignedKey;
+  const assignedFor = (item) => assignedIndex.get(keyOf(cat, item._id));
+  const assignedCount = catalog.filter((item) => assignedFor(item)).length;
+  const visibleCatalog = !assignedFilter ? catalog
+    : catalog.filter((item) => (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
   function togglePick(item) {
     const k = keyOf(cat, item._id);
     setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
@@ -1372,6 +1410,13 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
               <input className="form-input" style={{ flex: 1, minWidth: 140 }} placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              {cat !== 'mock_test' && (
+                <select className="form-input" style={{ width: 150 }} value={assignedFilter} onChange={(e) => setAssignedFilter(e.target.value)} title="Lọc theo bài đã giao cho lớp này">
+                  <option value="">Tất cả bài</option>
+                  <option value="new">Chưa giao</option>
+                  <option value="done">Đã giao</option>
+                </select>
+              )}
               {cat === 'speaking' && (
                 <>
                   <select className="form-input" style={{ width: 90 }} value={speakPart} onChange={(e) => { setSpeakPart(e.target.value); setSpeakTopic(''); }}>
@@ -1390,10 +1435,15 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
             {RES_RULE[cat] && (
               <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 8 }}>ℹ️ {RES_RULE[cat]}</div>
             )}
-            {cat === 'speaking' && speakPart && catalog.length > 0 && (
+            {cat !== 'mock_test' && !loadingCat && catalog.length > 0 && (
+              <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>
+                Lớp này: <b style={{ color: 'var(--green)' }}>{assignedCount} đã giao</b> · <b>{catalog.length - assignedCount} chưa giao</b> / {catalog.length} bài
+              </div>
+            )}
+            {cat === 'speaking' && speakPart && visibleCatalog.length > 0 && (
               <div style={{ marginBottom: 8 }}>
                 <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
-                  ✓ Chọn cả nhóm ({catalog.length} câu — Part {speakPart}{speakTopic ? `, "${speakTopic}"` : ', tất cả chủ đề'})
+                  ✓ Chọn cả nhóm ({visibleCatalog.length} câu — Part {speakPart}{speakTopic ? `, "${speakTopic}"` : ', tất cả chủ đề'}{assignedFilter === 'new' ? ', chưa giao' : assignedFilter === 'done' ? ', đã giao' : ''})
                 </button>
               </div>
             )}
@@ -1401,19 +1451,33 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
               <MockBundlePicker
                 current={picked.find((p) => p.resourceType === 'mock_test')}
                 onPick={(item) => setPicked((p) => [...p.filter((x) => x.resourceType !== 'mock_test'), item])}
+                assignedIndex={assignedIndex}
               />
             ) : (
             <div style={{ maxHeight: 180, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 6 }}>
               {loadingCat ? <div style={{ padding: 10, color: 'var(--text3)' }}>Đang tải…</div>
-                : catalog.length === 0 ? <div style={{ padding: 10, color: 'var(--text3)' }}>Không có kết quả</div>
-                : catalog.map((item) => (
-                  <label key={String(item._id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderBottom: '1px solid var(--border)', cursor: 'pointer', fontSize: 13 }}>
-                    <input type="checkbox" checked={isPicked(item)} onChange={() => togglePick(item)} />
-                    <span style={{ flex: 1 }}>{item.label}</span>
-                    {item.meta && <span style={{ fontSize: 11, color: 'var(--text3)' }}>{item.meta}</span>}
-                    <PreviewLink href={studentUrlFor({ resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode })} />
-                  </label>
-                ))}
+                : visibleCatalog.length === 0 ? <div style={{ padding: 10, color: 'var(--text3)' }}>{catalog.length ? (assignedFilter === 'new' ? 'Đã giao hết các bài trong danh sách này' : 'Chưa giao bài nào trong danh sách này') : 'Không có kết quả'}</div>
+                : visibleCatalog.map((item) => {
+                  const given = assignedFor(item);
+                  return (
+                    <label key={String(item._id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderBottom: '1px solid var(--border)', cursor: 'pointer', fontSize: 13 }}>
+                      <input type="checkbox" checked={isPicked(item)} onChange={() => togglePick(item)} />
+                      <span style={{ flex: 1, minWidth: 0 }}>
+                        {item.label}
+                        {given && (
+                          <span style={{ display: 'block', fontSize: 11, color: 'var(--text3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={assignedTooltip(given)}>
+                            trong "{given[0].title}"{given[0].createdAt ? ` · ${formatDate(given[0].createdAt)}` : ''}{given.length > 1 ? ` (+${given.length - 1} bài khác)` : ''}
+                          </span>
+                        )}
+                      </span>
+                      {item.meta && <span style={{ fontSize: 11, color: 'var(--text3)' }}>{item.meta}</span>}
+                      {given
+                        ? <span className="badge badge-green" title={assignedTooltip(given)} style={{ whiteSpace: 'nowrap' }}>✓ Đã giao{given.length > 1 ? ` ×${given.length}` : ''}</span>
+                        : <span className="badge badge-gray" style={{ whiteSpace: 'nowrap' }}>Chưa giao</span>}
+                      <PreviewLink href={studentUrlFor({ resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode })} />
+                    </label>
+                  );
+                })}
             </div>
             )}
             {picked.length > 0 && (
@@ -1424,6 +1488,9 @@ function AssignmentEditor({ cls, assignment, onClose, onSaved }) {
                     {p.resourceType === 'mock_test'
                       ? mockBundleSummary(p)
                       : <a href={studentUrlFor(p) || undefined} target="_blank" rel="noopener noreferrer" title="Mở bài này ở tab mới" style={{ color: 'inherit' }}>{p.label}</a>}
+                    {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
+                      <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>
+                    )}
                     <button type="button" onClick={() => setPicked((x) => x.filter((y) => y !== p))} title="Bỏ bài này"
                       style={{ marginLeft: 6, background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0 }}>✕</button>
                   </span>
