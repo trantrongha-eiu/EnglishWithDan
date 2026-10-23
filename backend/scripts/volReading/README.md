@@ -74,3 +74,65 @@ Mỗi `Test N.pdf` (scan) có Reading ở khoảng trang 6–19, key ở trang c
     đầu đàn; dẫn trong bài báo của Queen's University Belfast) thay cho bản đoán của ece.edu.vn.
   - T3 P3 "A New Voyage": bộ Q38–40 của Vol = bản "Recent Actual Tests" của mini-ielts 1451 (cùng key NO/NG/YES) → giữ bản ngân hàng.
   Sau đó `vr_audit.js 1` 0 problem, `_audit_reading_warnings` 0, pw_admin / pw_grade / pw_full_tests đạt.
+
+## Vol 2+ — khác Vol 1 (công cụ)
+
+Reading của Vol 2 nằm ở `<VOL>/reading/*.pdf` (không theo thư mục test; Vol 2 = 9 file 3 bài + 2 file 1 bài, chỉ "Test 1" và
+"Test 3" có trang KEY; tất cả là ảnh scan, nhiều trang chụp điện thoại → OCR kém, watermark "Group: Real Ielts Exams" đè lên 1 dòng).
+- `py render2.py <V>` → `web/vol<V>/pages/<stem>_p<k>.png` (stem = tên file bỏ cách, "AC_" → "ACx"), OCR như Vol 1.
+- `node dedupe2.js <V> [minPct]` (chỉ đọc): mỗi file chứa bài ngân hàng nào (6-gram của bài ngân hàng có trong OCR cả file; 80–98% =
+  cùng bài, 20–47% = cùng bài nhưng scan mờ → xem ảnh). Không cần key.
+- `web/vol<V>/keys.json` dạng `{ "<stem>": [{title, start, pages:[trang bài], qpages:[trang câu hỏi], key?}] }` → `node split2.js <V>`
+  → `text/<stem>p<P>.txt` → `node qcheck.js <V> <stem> <P> <id> [offset]` (key so sánh khi có).
+- `node showbank.js <id|đuôi id>`: in gọn câu hỏi + key một bài ngân hàng (so với ảnh trang PDF).
+- Bài mới vẫn đặt tên `specs/vol<V>/t<T>p<P>` theo số đề full; bản sao đánh số lại cần thêm vào `SAME_TEXT_OK[<V>]` của vr_import.js.
+- Lỗi của chính bài ngân hàng: `specs/vol<V>/bank_fixes.js` (`[{id, why, fix(doc)}]`) → `node bank_fix.js <V> [--apply]` (in diff
+  từng trường, backup `web/vol<V>/backup/bank_<id>_*.json`, ghi có điều kiện updatedAt; chỉ title/content/questionGroups).
+- `vr_audit.js` nay chấp nhận kết luận "→ E (Sound)" (chú thích trong ngoặc sau đáp án).
+
+## Vol 2 — 2026-10-23 (xong: 9 đề full, 3 bài mới)
+
+- **Đề full Vol 2 - Test 1…9** (đánh số theo số trong tên file; "AC3" trùng số với "Test 3" → 8, "AC_" → 9):
+  T1 = Test 1 (The Iceman (Vol 2) / Twin Study / The origin of ancient writing), T2 = AC2 (Bondi / economic effect of climate /
+  verbal and non-verbal messages), T3 = Test 3 (Becoming an Expert / Revolutions in Mapping / Sir Francis Ronalds and Telegraph),
+  T4 = AR4, T5 = AC5, T6 = AC6, T7 = AC7, T8 = AC3, T9 = AC_. "book review" (P1) + "whale culture" (P3) là bài lẻ không có P2 →
+  không có đề full; cả hai đã có trong ngân hàng.
+- **Dùng lại 26 bài nguyên trạng** (Actual Mocktest 21–76; text 6-gram + từng câu hỏi/lựa chọn + xem ảnh mọi chỗ yếu). Key Test 1/3
+  khớp ngân hàng. AC5 "Footprints" Vol in Q1–6 YES/NO/NG, ngân hàng TRUE/FALSE/NG — cùng câu, cùng đáp án → giữ. "Jewels from the
+  Sea" có 2 bản ngân hàng → dùng bản Mocktest 29 (bản 33 sai key Q5).
+- **Mới 3 bài** (bật, giải thích tiếng Việt): "The Iceman (Vol 2)" = bản sao đánh số lại 1–13 (ngân hàng lưu là Passage 2, giữ ảnh
+  bìa gốc); "The origin of ancient writing" (Test 1 P3; mini 1460 chỉ có câu hỏi) — word bank in "L clay tablets Uruk" → L / N,
+  "oracle message" → oral; "Sir Francis Ronalds and Telegraph" (Test 3 P3; mini 1463 lẫn 2 câu của bài Mapping, PDF đúng) —
+  "Queen Elizabeth I" → Queen Victoria (phong tước 1870), Q32 key không nguyên văn (`free`), Q39 nhận "D / C" (đoạn C cũng nói
+  "The system was slow"). Ảnh bìa CC0/PD trên R2.
+- **Sửa ngân hàng** (`bank_fix.js 2 --apply`, backup web/vol2/backup): Whale Culture Q29 chép nhầm câu 27 (key + giải thích vốn
+  đúng cho câu thật) + lựa chọn F; Jewels (Mocktest 33) Q5 TRUE → FALSE; "A closer examination…" lỗi chính tả Q38 + dấu cách cuối
+  tên; "Bondi " → Bondi; "Nature's use Full designs" → Nature's Useful Designs.
+- Kiểm: pw_mini 3/3, pw_admin 3/3, pw_grade 100% (bài mới + bài vừa sửa + cả 27 bài của 9 đề), pw_full_tests 9/9,
+  `_audit_reading_warnings` 0, `vr_audit.js 2`: 0 problem (360 câu).
+
+## Vol 3 — 2026-10-23 (xong: 10 đề full, 9 bài mới)
+
+Nguồn: `reading/TEST N.pdf` / `test N - full.pdf` (scan, 1 file = 1 đề, đánh số theo tên file) + `reading/explain/test N.pdf`
+(bảng "key + đoạn trích" tiếng Anh, chính là key của T1–T9; scan) + `reading/key/key.pdf` (= `explain/reading tets 10.pdf`, key T10,
+có text layer). `render2.py` đặt tên `t<N>` cho file đề, `explain-t<N>` / `key-key` cho file trong thư mục con; `split2.js` /
+`qcheck.js` nhận số đề (`3 1 …`). `node keycmp3.js <V> <T> <id…>` (chỉ đọc) = key đọc từ cột trái file explain so với key ngân hàng
+(OCR hay mất vài số → xem ảnh). `node vol_titles_re.js <V>` = regex tên mọi bài của các đề "Vol V" (cho pw_grade / pw_admin).
+
+- **Đề full Vol 3 - Test 1…10** tạo + bật.
+- **Dùng lại 21 bài** (T1 P1, T3 cả 3 — P2 = "New filter…" đã làm ở Vol 1, T4 P2–P3, T5–T9 cả 3). Khác biệt giữ bản ngân hàng:
+  T5 P2 Q20–21 Vol đảo thứ tự lựa chọn B/C (đáp án vẫn A + D); T9 P1 Q6 Vol in "cannot cope with supermarket ___" (key
+  competition), ngân hàng "competition from ___ supermarkets" (key suburban) — như "A New Voyage" ở Vol 1. Key Vol sai theo bài
+  (giữ ngân hàng): T4 P2 Q20 (chính trích dẫn của explain nói "a long way behind"), T5 P1 Q1, T5 P3 Q39, T8 P2 Q20, T9 P1 Q13,
+  T9 P3 Q35. explain/test 8.pdf giải thích nhầm bài "tone deaf" của T7 thay cho "Yawning" → dùng key ngân hàng.
+- **Sửa ngân hàng** (`bank_fix.js 3 --apply`): "Science and the Stradivarius" Q17 (đoạn E) vii → viii (thợ Ý chỉnh cộng hưởng theo
+  "exact musical intervals… numbers and exact ratios"; key Vol đúng) + giải thích mới.
+- **Mới 9 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt): T1 P2 Insect decision-making (2 câu cụt ở mọi bản → bổ sung
+  theo bài gốc The Economist trên trang LSE của Christian List), T1 P3 Fear of the Unknown (Peter Chemin → Chernin), T2 P1 Bovids
+  (bản Vol nói nhiều nhất ở "Southeast Asian islands" → Q1 = D theo bài in), T2 P2 Photovoltaics on the rooftop (mini thiếu đoạn G;
+  PDF đủ 9 đoạn; explain "16 D" nhưng trích đoạn H → H), T2 P3 How should reading be taught? (Q33 explain NG / key gốc TRUE → nhận
+  cả hai), T4 P1 The Wonder Plant (bản Vol khác hẳn mini 1062 cả bài lẫn câu hỏi → theo PDF), T10 P1–P3 (chỉ có PDF; Q19 nhận
+  "movie / dancing", P2 đoạn B mất "not exist").
+- Kiểm: pw_mini 9/9, pw_admin 9/9, pw_grade 100% (9 bài mới + cả 30 bài của 10 đề), pw_full_tests 10/10, `_audit_reading_warnings` 0,
+  `vr_audit.js 3`: 0 problem (400 câu).
+  `vr_audit.js` nay chấp nhận "→ vii Heading text" như vr_build.js.

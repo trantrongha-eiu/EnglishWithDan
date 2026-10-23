@@ -1,0 +1,80 @@
+// Vol 3 - "test 10 - full.pdf" - Reading Passage 2 (PDF p5–8). Not in the bank, no other copy found. Text = PDF (typed OCR).
+// Fixes: B "The arts do not have to have a purpose – they do in order to teach…; they exist chiefly for their own sake" (a "not
+// exist" lost — the sentence contradicts itself otherwise) → "they do not exist in order to teach"; missing comma after "to draw
+// attention to something about it"; closing dash after "more relaxed". Q19: "music can be written chiefly to accompany dancing, or
+// as a soundtrack to a movie" — the key is movie, dancing fits the summary as well → accepted. Key = key/key.pdf, checked against
+// the passage: all correct.
+const { matching, notes, multi } = require('../../vr_build');
+module.exports = {
+  vol: 3, test: 10, part: 2, title: 'Why do we need the arts?', text: 't10p2.txt',
+  groups: [
+    matching(14, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], [
+      'a claim that artists may have no clear objective when creating a piece of art',
+      'a description of how artists hope to benefit other people',
+      'a comparison between the arts and things made to perform a particular function',
+      'a claim that it\'s possible to convince the world that anything you have made is a work of art',
+      'an example of something that has an unintentional benefit for us',
+    ], { instruction: 'Reading Passage 2 has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G, in boxes 14–18 on your answer sheet.' }),
+    notes(19, 22, [
+      'Some people may claim that the arts serve no useful purpose, that they achieve nothing measurable and help nobody. But there are many clear examples of their usefulness, such as the inter-dependent relationship between music and __Q19__, or between the visual arts and the __Q20__ business. A dramatist may use a __Q21__ to draw our attention to various issues in society, for example some kind of injustice which needs correcting. Apart from these obvious practical benefits, there are other benefits that we gain from things, such as the __Q22__ we find in an artist\'s work.',
+    ], { title: 'The arts and human experience',
+      instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 19–22 on your answer sheet.' }),
+    multi(23, 2, 'In paragraph D, which TWO of the following effects does the writer say the arts can have?', [
+      'They can interest people from all over the world.',
+      'They can make us see things from a different perspective.',
+      'They can inspire us to take up an artistic activity ourselves.',
+      'They can encourage us to think about our reactions to things around us.',
+      'They can draw our attention to serious global issues.',
+    ]),
+    multi(25, 2, 'Which TWO of the following statements about composers and music does the writer make?', [
+      'Music tends to spring from the composer\'s individual experiences.',
+      'Composers need to structure music very carefully.',
+      'Music can be quite unrelated to the natural world.',
+      'Music finds its best expression in a symphony.',
+      'Composers are good at depicting the world around us.',
+    ]),
+  ],
+  key: { 14: 'B', 15: 'G', 16: 'C', 17: 'D', 18: 'E', 19: 'movie / dancing', 20: 'advertising', 21: 'play', 22: 'beauty',
+    23: 'B', 24: 'D', 25: 'A', 26: 'C' },
+  expl: {
+    14: ['Nhận định rằng nghệ sĩ có thể không có mục tiêu rõ ràng khi sáng tác.', 'Đoạn B',
+      '“But equally, artists may just make a work of art because they feel compelled to.” … “no aim or goal is necessarily required to explain or, still less, to justify its existence.”',
+      'Nghệ sĩ có thể sáng tác chỉ vì thôi thúc, không cần mục tiêu → B'],
+    15: ['Mô tả cách nghệ sĩ mong mang lại lợi ích cho người khác.', 'Đoạn G',
+      '“They seek to connect with their audience and express an idea or emotion which has the capacity to enrich our experience of life itself.”',
+      'Kết nối với khán giả, làm phong phú trải nghiệm sống của người khác → G'],
+    16: ['So sánh nghệ thuật với những thứ được tạo ra để thực hiện một chức năng cụ thể.', 'Đoạn C',
+      '“The distinction here lies between things that are instrumental and things that are ends in themselves. An instrument exists for something beyond itself – namely, for what it can be used to do.”',
+      '“instrumental” = vật được làm ra để phục vụ một chức năng; đem so với nghệ thuật là mục đích tự thân → C'],
+    17: ['Nhận định rằng có thể thuyết phục mọi người rằng bất cứ thứ gì bạn làm ra cũng là tác phẩm nghệ thuật.', 'Đoạn D',
+      '“and whatever else (to quote the famous US artist Andy Warhol) anyone can get away with in calling their creation a contribution to \'the arts\'.”',
+      '“anyone can get away with in calling their creation…” = gọi gì là nghệ thuật cũng được chấp nhận → D'],
+    18: ['Một ví dụ về thứ mang lại lợi ích cho ta dù không chủ ý.', 'Đoạn E',
+      '“We do not laugh so that we can achieve a further goal” … “But although it is merely a reaction, laughing is, in fact, good for something nevertheless; it does make people feel better.”',
+      'Cười không nhằm mục đích gì nhưng vẫn khiến ta dễ chịu hơn → E'],
+    19: ['… mối quan hệ phụ thuộc lẫn nhau giữa âm nhạc và ______', 'Đoạn C',
+      '“Similarly, music can be written chiefly to accompany dancing, or as a soundtrack to a movie.”',
+      'Nhạc viết làm nhạc nền cho phim (key: movie); “dancing” trong cùng câu cũng hợp nghĩa nên được chấp nhận → movie'],
+    20: ['… hoặc giữa nghệ thuật thị giác và ngành ______.', 'Đoạn C',
+      '“We know that pictures are used as instruments in advertising, and the objective is always to persuade us to buy something.”',
+      'Tranh ảnh (nghệ thuật thị giác) được dùng trong quảng cáo → advertising'],
+    21: ['Một nhà soạn kịch có thể dùng một ______ để khiến ta chú ý đến các vấn đề xã hội.', 'Đoạn C',
+      '“A play can be written to point out to the theatre audience a social injustice or other problems that should be dealt with.”',
+      'Vở kịch chỉ ra bất công xã hội → play'],
+    22: ['… những lợi ích khác ta có được, chẳng hạn ______ ta tìm thấy trong tác phẩm của nghệ sĩ.', 'Đoạn C',
+      '“representing many different things that are valuable for their own sakes – such as, for instance, the creation of beauty.”',
+      'Giá trị tự thân của nghệ thuật, ví dụ cái đẹp → beauty'],
+    23: ['Ở đoạn D, tác giả nói nghệ thuật có thể có HAI tác động nào?', 'Đoạn D',
+      '“to present a surprising or fresh angle on it”',
+      '“a surprising or fresh angle” = nhìn sự vật từ góc độ khác → B'],
+    24: ['Ở đoạn D, tác giả nói nghệ thuật có thể có HAI tác động nào?', 'Đoạn D',
+      '“They can help people to focus on, for example, the colour or shape of an object, its eccentricity or typicality, and the interest or perhaps disgust it provokes in them.”',
+      'Giúp ta để ý đến hứng thú hay ghê sợ mà sự vật gợi ra = suy nghĩ về phản ứng của mình → D'],
+    25: ['Tác giả đưa ra HAI nhận định nào về nhà soạn nhạc và âm nhạc?', 'Đoạn F',
+      '“And they are also often an expression of what presses from within the artist without being elicited by externals. Music is a prime example.”',
+      'Âm nhạc thể hiện điều xuất phát từ bên trong người nghệ sĩ = trải nghiệm cá nhân → A'],
+    26: ['Tác giả đưa ra HAI nhận định nào về nhà soạn nhạc và âm nhạc?', 'Đoạn F',
+      '“A symphony, unless it is devised to represent bird song, rain, the sea and the like, is an abstract expression of a composer\'s conception.”',
+      'Trừ khi mô phỏng tiếng chim, mưa, biển…, bản giao hưởng là biểu đạt trừu tượng — có thể không liên quan đến thế giới tự nhiên → C'],
+  },
+};

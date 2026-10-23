@@ -1,0 +1,73 @@
+// Vol 3 - Test 4 - Reading Passage 1 (PDF p2–5). Not in the bank. mini-ielts 1062 "A Wonder Plant" is a longer re-written
+// version with a different question set → text + questions = PDF (typed, clean OCR). Section letters A–F stand in the margin
+// next to the first paragraph of each section (checked by OCR position). Fixes: "the only local keen" → locals; "forest
+// ecosystem" → ecosystems. Key = explain file, checked against the passage: all correct (Q11 Townsend: "What is under threat is
+// its habitat"; Kapos only explains that habitat loss is the cause in mini's longer text, not in this one).
+const { matching, short } = require('../../vr_build');
+module.exports = {
+  vol: 3, test: 4, part: 1, title: 'The Wonder Plant', text: 't4p1.txt',
+  groups: [
+    matching(1, ['A', 'B', 'C', 'D', 'E', 'F'], [
+      'an assessment of current levels of knowledge about bamboo',
+      'a comparison between bamboo and more fragile plants',
+      'details of the commercial significance of bamboo',
+      'a human development that is threatening the availability of bamboo',
+      'a description of the limited extent of existing research on bamboo',
+      'examples of the uses to which bamboo is put',
+      'an explanation of how bamboo may contribute to the survival of a range of plants',
+    ], { reuse: true, instruction: 'Reading Passage 1 has six sections, A–F. Which section contains the following information? Write the correct letter, A–F, in boxes 1–7 on your answer sheet. NB You may use any letter more than once.' }),
+    matching(8, ['Ian Redmond', 'Valerie Kapos', 'Chris Stapleton', 'Ray Townsend'], [
+      'Some people do not regard bamboo as an endangered plant species.',
+      'A scarcity of bamboo places certain wildlife under threat.',
+      'Research methods investigating endangered plants have yet to be fully developed.',
+      'The greatest danger to bamboo is disturbance of the places it grows in.',
+    ], { title: 'List of People', reuse: true,
+      instruction: 'Look at the following statements (Questions 8–11) and the list of people below. Match each statement with the correct person, A–D. Write the correct letter, A–D, in boxes 8–11 on your answer sheet. NB You may use any letter more than once.' }),
+    short(12, [
+      'What ecological problem do the roots of bamboo help to control?',
+      'Which bamboo product is undergoing market expansion?',
+    ], { instruction: 'Answer the questions below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 12 and 13 on your answer sheet.' }),
+  ],
+  key: { 1: 'B', 2: 'E', 3: 'D', 4: 'A', 5: 'B', 6: 'D', 7: 'C', 8: 'B', 9: 'A', 10: 'B', 11: 'D', 12: 'soil erosion', 13: 'paper' },
+  expl: {
+    1: ['Đánh giá về mức độ hiểu biết hiện nay về tre.', 'Section B',
+      '“Despite bamboo\'s importance, we know surprisingly little about it.” … “has revealed just how profound our ignorance of global bamboo resources is”',
+      '“we know surprisingly little”, “profound our ignorance” = đánh giá mức hiểu biết hiện tại (rất thấp) → B'],
+    2: ['So sánh giữa tre và những loài cây yếu ớt hơn.', 'Section E',
+      '“Some plants are threatened because they can\'t survive in the habitat – they aren\'t strong enough or there aren\'t enough of them, perhaps. But bamboo can take care of itself”',
+      'Townsend so sánh: có cây không đủ khoẻ để tồn tại (fragile), còn tre tự lo được → E'],
+    3: ['Chi tiết về tầm quan trọng thương mại của tre.', 'Section D',
+      '“However, bamboo\'s most immediate significance lies in its economic value. Many countries, particularly in Asia, are involved in the trade of bamboo products.”',
+      'Giá trị kinh tế, thương mại sản phẩm tre, trị giá 4,5 tỷ USD mỗi năm → D'],
+    4: ['Một sự phát triển của con người đang đe doạ nguồn tre.', 'Section A',
+      '“resources have come under increasing pressure as populations have exploded and large areas of bamboo forest have been cleared to make way for commercial plantations.”',
+      'Dân số bùng nổ, chặt rừng tre làm đồn điền thương mại → A'],
+    5: ['Mô tả mức độ hạn chế của các nghiên cứu hiện có về tre.', 'Section B',
+      '“Of these, only 38 \'priority species\' identified for their commercial value have been the subject of any real scientific research to date.”',
+      'Chỉ 38 trên khoảng 1.200 loài từng được nghiên cứu thật sự → B'],
+    6: ['Ví dụ về những công dụng của tre.', 'Section D',
+      '“it can be used in a variety of ways, for example as flooring and laminates. Traditionally it is used in construction, but one of the fastest growing bamboo products is paper”',
+      'Ván sàn, gỗ ép, xây dựng, giấy = các ví dụ công dụng → D'],
+    7: ['Giải thích cách tre có thể góp phần giúp nhiều loài cây tồn tại.', 'Section C',
+      '“they create patches of open ground far bigger than would be left by a fallen tree. Patchiness helps to preserve diversity because certain plant species do better during the early stages of regeneration”',
+      'Tre chết hàng loạt, cháy, tạo khoảng trống giúp nhiều loài cây khác phát triển → bảo tồn đa dạng → C'],
+    8: ['Một số người không coi tre là loài cây bị đe doạ.', 'Section E',
+      '“\'In a lot of places, the people who live with bamboo don\'t perceive it as being under threat in any way,\' says Kapos.”',
+      '“don\'t perceive it as being under threat” = không coi là bị đe doạ; người nói: Kapos → B'],
+    9: ['Sự khan hiếm tre đặt một số loài hoang dã vào tình trạng bị đe doạ.', 'Section A',
+      '“For the 650 or so that remain in the wild, it\'s a vital food source. Without it, says Ian Redmond, chairman of the Ape Alliance, their chances of survival would be reduced significantly.”',
+      'Không có tre, khả năng sống sót của khỉ đột giảm mạnh — ý của Ian Redmond → A'],
+    10: ['Các phương pháp nghiên cứu cây bị đe doạ vẫn chưa được phát triển đầy đủ.', 'Section B',
+      '“the science of assessing the conservation status of plants is still in its infancy. \'People have only started looking at this during the past 10–15 years, and only now are they understanding how to go about it systematically,\' says Dr Valerie Kapos”',
+      '“still in its infancy”, “only now … how to go about it systematically” = phương pháp chưa hoàn thiện → B'],
+    11: ['Mối nguy lớn nhất với tre là sự xáo trộn nơi nó sinh trưởng.', 'Section E',
+      '“But bamboo can take care of itself – it\'s strong enough to survive if left alone. What is under threat is its habitat. When forest goes, it\'s converted into something else”',
+      'Townsend: thứ bị đe doạ là môi trường sống (rừng bị chuyển đổi), không phải bản thân cây tre → D'],
+    12: ['Rễ tre giúp kiểm soát vấn đề sinh thái nào?', 'Section C',
+      '“Its rhizome systems, which lie in the top layers of the soil, are crucial in preventing soil erosion.”',
+      '“rhizome systems” = rễ; “preventing” = giúp kiểm soát → soil erosion'],
+    13: ['Sản phẩm tre nào đang mở rộng thị trường?', 'Section D',
+      '“one of the fastest growing bamboo products is paper”',
+      '“fastest growing” = đang mở rộng thị trường → paper'],
+  },
+};

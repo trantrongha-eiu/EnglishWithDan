@@ -34,9 +34,12 @@ const nrm = s => plain(s).toLowerCase().replace(/[‘’`´]/g, "'").replace(/[�
           last = q.questionNumber;
           if (!q.correctAnswer) out.push(`Q${q.questionNumber} empty key`);
           if (!q.explanation) { out.push(`Q${q.questionNumber} no explanation`); continue; }
-          const concl = (q.explanation.match(/→\s*([^→\n]+)\s*$/) || [])[1];
+          // a trailing note in brackets is allowed: "→ E (Sound)", "→ E (có thể dùng một chữ cái nhiều lần)"
+          const concl = ((q.explanation.match(/→\s*([^→\n]+)\s*$/) || [])[1] || '').replace(/\s*\([^()]*\)\s*\.?\s*$/, '') || null;
           const k1 = q.correctAnswer.split(/\s*\/\s*/)[0];
-          if (concl && /^Phân tích/m.test(q.explanation) && nrm(concl) !== nrm(k1) && !q.correctAnswer.split(/\s*\/\s*/).some(v => nrm(v) === nrm(concl)))
+          // heading answers may be followed by the heading text ("→ vii How the number…"), as vr_build.js allows
+          const headingOk = concl && /^[ivx]+$/i.test(k1) && nrm(concl).startsWith(nrm(k1) + ' ');
+          if (concl && !headingOk && /^Phân tích/m.test(q.explanation) && nrm(concl) !== nrm(k1) && !q.correctAnswer.split(/\s*\/\s*/).some(v => nrm(v) === nrm(concl)))
             out.push(`Q${q.questionNumber} explanation → "${concl.trim()}" vs key "${q.correctAnswer}"`);
           const tr = (q.explanation.match(/^Trích:(.*)$/m) || [])[1] || '';
           for (const m of tr.match(/“([^”]+)”/g) || []) for (const part of m.slice(1, -1).split(/\s*…\s*/)) {

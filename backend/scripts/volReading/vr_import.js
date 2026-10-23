@@ -16,8 +16,11 @@ const impFile = path.join(dir, 'imported.json');
 const imported = fs.existsSync(impFile) ? JSON.parse(fs.readFileSync(impFile, 'utf8')) : {};
 const words = s => String(s).replace(/<[^>]+>/g, ' ').toLowerCase().replace(/[‘’]/g, "'").replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/);
 const grams = (w, n = 8) => { const o = new Set(); for (let i = 0; i + n <= w.length; i++) o.add(w.slice(i, i + n).join(' ')); return o; };
-// deliberate same-text copies (different question set or renumbered slot) — key = draft name
-const SAME_TEXT_OK = { t8p2: '6abcde40ee81e7573b2fe8d6', t6p2: '6abd01ae1b50c9b87212e581' };
+// deliberate same-text copies (different question set or renumbered slot) — per vol, key = draft name → bank id
+const SAME_TEXT_OK = ({
+  1: { t8p2: '6abcde40ee81e7573b2fe8d6', t6p2: '6abd01ae1b50c9b87212e581' },
+  2: { t1p1: '6abdacfa3bcd15105e99fb60' }, // The Iceman (Vol 2) = renumbered copy of The Iceman (bank P2)
+})[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover
 // (thumbnailUrl or an <img> in content) or with a question lacking a key / an explanation.
