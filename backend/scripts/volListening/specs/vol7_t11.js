@@ -17,7 +17,7 @@ module.exports = {
         ['Greg', 'And also, at one point'], ['Jenny', 'Oh, great.'], ['Greg', 'Oh, and another thing'], ['Jenny', "I'm up for that."], ['Greg', 'Through some amazing'],
         ['Jenny', 'Is it hard work'], ['Greg', 'No.'], ['Jenny', "And what's on day two?"], ['Greg', 'No.'], ['Jenny', 'Wow, that sounds great.'],
         ['Greg', "Well, I'd had a sore knee"], ['Jenny', 'No problem there.'], ['Greg', 'Yeah, but another thing'], ['Jenny', "I think you've convinced me"],
-        ['Greg', 'I registered online'], ['Jenny', 'I just have to let my boss know'],
+        ['Greg', 'I registered online'], ['Jenny', 'I just have to let my boss know'], ['Greg', "I'm sure it won't."],
       ],
       groups: [
         note('Complete the notes below.\nWrite NO MORE THAN TWO WORDS for each answer.', 'Horseback riding trip', [

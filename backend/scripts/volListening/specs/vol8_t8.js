@@ -16,8 +16,8 @@ module.exports = {
         ['Elinor', 'Do you know how long'], ['Agent', "I'm afraid you'll have"], ['Elinor', 'Oh, dear.'], ['Agent', 'Not in my experience.'],
         ['Elinor', 'Yes, I realised that.'], ['Agent', 'Well, in that case'], ['Elinor', 'OK.'], ['Agent', 'Right.'], ['Elinor', "It's very difficult"],
         ['Agent', "OK, that'd be great."], ['Elinor', 'OK.'], ['Agent', 'Now, can you tell me'], ['Elinor', 'Yeah, well, first of all'], ['Agent', 'I see.'],
-        ['Elinor', 'Oh, right.'], ['Agent', "Well, that'll need"], ['Elinor', "Actually, if we're getting"], ['Agent', 'That would be a good idea.'],
-        ['Elinor', 'The only other thing'], ['Agent', "Hmm, you've had"], ['Elinor', 'Well, as long as'],
+        ['Elinor', 'Oh, right.'], ['Agent', "Well, that'll need"], ['Elinor', 'That would be a good idea.'],
+        ['Agent', "Hmm, you've had"], ['Elinor', 'Well, as long as'],
       ],
       groups: [
         note('Complete the sentences below.\nWrite NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.', 'Problems with flat', [
@@ -89,7 +89,7 @@ module.exports = {
         ['Simon', 'And what sort of criteria'], ['Dr Azari', 'Well, basically'], ['Simon', "Well, I don't think"], ['Dr Azari', 'Right.'], ['Simon', "Yes, that's been"],
         ['Dr Azari', 'And of course, the usual'], ['Simon', "OK, that's very helpful."], ['Dr Azari', 'Well, if all goes well'], ['Simon', 'OK, right.'],
         ['Dr Azari', 'Good.'], ['Simon', 'Oh, right.'], ['Dr Azari', "Don't worry, Simon."], ['Simon', 'I know.'], ['Dr Azari', 'Well, if you do want'],
-        ['Simon', "Yes, it's www"], ['Dr Azari', 'Pleasure.'],
+        ['Simon', 'Have you got the address?'], ['Dr Azari', "Yes, it's www"], ['Simon', 'OK, right.'], ['Dr Azari', 'Pleasure.'],
       ],
       groups: [
         note('Complete the notes below.\nWrite NO MORE THAN THREE WORDS for each answer.', 'Notes on presentation and feedback', [

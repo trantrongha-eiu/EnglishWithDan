@@ -102,7 +102,7 @@ module.exports = {
         ['Professor', "That's it."], ['Pam', 'In our survey of the literature'], ['Jason', "That's right."], ['Professor', "That's interesting."],
         ['Jason', "That'd be helpful."], ['Professor', 'Now, the number of different designs'], ['Pam', 'Okay, good idea.'], ['Professor', 'Probably not.'],
         ['Jason', 'Right.'], ['Professor', "Now, as to how you're going"], ['Jason', 'Okay, we can do that.'], ['Pam', "We're going to ask each student"],
-        ['Professor', "Well, don't just rely"], ['Pam', 'Okay.'], ['Jason', 'But what about analyzing'], ['Pam', "So, we'll need to give"],
+        ['Professor', "Well, don't just rely"], ['Pam', 'Okay.'], ['Professor', 'But what about analyzing'], ['Jason', "Well, we've got an excellent"], ['Pam', "So, we'll need to give"],
         ['Jason', 'Yes, we will.'], ['Professor', "Anyway, it's all looking good."],
       ],
       groups: [

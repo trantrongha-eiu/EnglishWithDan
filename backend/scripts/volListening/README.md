@@ -208,8 +208,8 @@ N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi
   4 ảnh map (T1P2, T3P2, T5P2, T6P2). Đề full **Vol 8 - Test 1–8** tạo + bật; pw_fulltest 40/40 cả 8 đề. `vol_audit.js 8`:
   0 problem, 952 trích dẫn khớp.
 - Lỗi key gốc đã sửa theo băng (ghi ở đầu spec): **T1 Q1** "13 March 1998" → **31 March (1988)** (cả turbo lẫn large-v3 nghe "March
-  the 30th. Oh, … the 31st. 1988" — tự sửa ngày); **T4 Q37** B → **A** ("the outer box could be made of any material, but the lining
-  was gold"). Chính tả theo đề/băng: T7 Q1 Thorn (đánh vần T-H-O-R-N), T5 Q5 Fearnleigh.
+  the 30th. Oh, … the 31st. 1988" — tự sửa ngày). (T4 Q37 từng ghi "B → A" là nhầm: key docx vốn là A = the inside, khớp băng.)
+  Chính tả theo đề/băng: T7 Q1 Thorn (đánh vần T-H-O-R-N), T5 Q5 Fearnleigh.
 - Transcript: docx T5 P4 cụt ở "Many people were surprised." (mất đoạn chứa Q37–40) → bổ sung từ Whisper large-v3 (`rawFix`).
   Whisper bỏ sót nhiều đoạn ở chỗ ngắt (T1P2, T2P1, T5P3, T6P2/P4, T7P2, T8P2/P4) → nghe lại từng đoạn chứa đáp án: docx đúng.
   T3 P4 băng dừng sau "management of absence" (docx dính mẩu lời dẫn → `fix`); T4 audio bắt đầu giữa lời dẫn Part 1, Part 1 không
@@ -220,6 +220,38 @@ N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi
   `_ovl.png` chồng lên bản gốc để căn; `measure.py` đo toạ độ theo màu/đường đen). `replace_maps.js --apply` đưa lên R2 và thay
   imageUrl ở bài lẻ + bản sao trong đề full (URL cũ: `web/vol8/backup/maps_old.json`); spec trỏ `img/t<T>/map_redraw.png`.
   Live 4/4, pw_fulltest T1/T3/T5/T6 40/40, audit 0 problem.
+
+## Vol 7 + Vol 8 — debug lại 2026-10-23 (như Vol 9)
+
+Công cụ chung (git-ignored, `web/`, nhận số vol): `keycheck.js <V>` (key DB bài lẻ + bản trong đề full ↔ `vol<V>/keys.json` + đuôi "→ đáp
+án"), `audiocheck.js <V>`, `sync_drafts.js <V> <id…> [--apply]` (transcript + giải thích của draft → bài lẻ + bản trong đề full, backup
+`vol<V>/backup/sync_<id>.json`), và **kiểm người nói bằng giọng**: `turncheck.js <V> <id…>` (câu transcript ↔ từ Whisper turbo bằng LCS,
+cao độ chỉ trên các từ đó; `DUMP=1` ghi `vol<V>/turns/<id>.json`) → `py web/voicecheck.py <V> <id…>` (MFCC + cao độ mỗi câu, so với trung
+bình từng người nói trong cùng bài, leave-one-out → cờ câu giống người khác; `--at=<từ>-<đến>` = dòng thời gian từng từ) + `wordpitch.js`.
+Cách này tách được cả hai giọng cùng giới tốt hơn `speaker_pitch.js`, nhưng câu 1–2 từ và chỗ đổi lượt vẫn nhiễu → luôn đối chiếu cao độ
+từng từ + nội dung; khi MFCC và cao độ trái nhau thì không sửa.
+
+- Key: Vol 7 keys.json == PDF key gốc; Vol 8 keys.json == key docx gốc (đọc lại thẳng từ docx). Mọi chỗ lệch DB ↔ key gốc đều đã ghi:
+  Vol 7 T1 Q25 (C → B), T3P3/T4P2 (bài ngân hàng lưu chữ hộp), T8 Q13 ("wearing formal" ⊂ "wearing formal clothes"); Vol 8 T1 Q1, còn lại
+  chỉ là dạng "C have individual…" ↔ "C". Không có chỗ key theo băng mà chưa ghi. Phát hiện ghi chú sai T4 Q37 (xem trên) → sửa ghi chú.
+- Người nói — sửa 8 bài (spec `turns` → `vol_build.js` → `sync_drafts.js --apply`; draft cũ: `web/vol<V>/backup/draft_pre_speakers/`):
+  - V8 T3P1: "OK, so let's think about the second week now." là **Pam** (Duncan nói tiếp "We want something totally different").
+  - V8 T8P1: "Actually, if we're getting an electrician out…/It was new last year, though…" là **Agent**; "That would be a good idea." là
+    **Elinor** (giọng nữ 250–310 Hz).
+  - V8 T8P3: **Simon** hỏi "Have you got the address?", **Dr Azari** đọc "www.studentlink. All one word…", Simon "OK, right.".
+  - V7 T1P1: "Long tables aren't really very friendly, are they?" là **Debbie**; "That would be better, thanks." là **Manager** (giọng
+    nam 163→102 Hz, nói tiếp "Should we say 11.30?") → sửa giải thích Q10 (quản lý chọn ngày 15).
+  - V7 T1P3: "Anyway, we haven't talked about the introduction yet. Have you finished reading those articles…?" là **Jen** (190–360 Hz;
+    Bill 86–155); "It only makes sense that Irene writes up…" là **Jen**, "Oh, that's easy." là **Bill** (Jen đáp "didn't you just say we
+    owe her one?" — Bill nói "we owe her" lúc đầu).
+  - V7 T10P3: **Professor** hỏi "But what about analyzing the data?", **Jason** đáp "Well, we've got an excellent computer program…".
+  - V7 T11P1: "I'm sure it won't. But better be safe than sorry." là **Greg**.
+  - Giữ nguyên (không đủ chắc): V8 T3P3 nuclear (giọng Sylvia/Greg gần nhau; Q28 vẫn đúng vì "safety factor" là Greg cả hai cách), V8 T2P3
+    (Charlie/Gina), V8 T7P3 "I can't remember." (MFCC nói Charlie nhưng cao độ 239/216/180 Hz = Sandra), V7 T1P1 "Good.", V7 T6P3 (hai
+    giọng đều ~160–220 Hz — có thể là hai nữ dù nhãn Man/Woman; không tìm được transcript gốc trên mạng).
+- Đoạn Whisper bỏ sót trong vùng đáp án: cả hai vol đã nghe lại lúc seed (xem nhật ký từng vol) → không làm lại.
+- `audiocheck.js`: Vol 7 10 đề full + 23 bài lẻ, Vol 8 8 đề full + 31 bài lẻ trên R2 đều 200, độ dài header = giải mã = DB.
+- Sau khi sửa: `vol_audit.js 7`/`8` 0 problem, các phần không sửa DB == draft, pw_fulltest Vol 7 - Test 1, Vol 8 - Test 8 (live) 40/40.
 
 ## Vol 7 — 2026-10-16 (xong cả 11 test)
 

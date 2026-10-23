@@ -20,7 +20,7 @@ module.exports = {
         ['Pam', "Well, I'm sure it will"], ['Duncan', 'They want to try sailing'], ['Pam', 'Kids change their minds'], ['Duncan', 'Wonderful.'],
         ['Pam', 'And what about your wife'], ['Duncan', 'Well, my mother Susan'], ['Pam', 'Can I suggest golf'], ['Duncan', 'Sounds perfect.'],
         ['Pam', "OK, I'll organise a time."], ['Duncan', 'Thanks.'], ['Pam', 'Sure, there are some good'], ['Duncan', 'Great.'],
-        ['Pam', 'Very nice.'], ['Duncan', 'Yes, we did think'], ['Pam', "It'd have to be a caravan"], ['Duncan', 'How much does it cost?'],
+        ['Pam', "OK, so let's think about the second week"], ['Duncan', 'We want something totally different.'], ['Pam', 'Very nice.'], ['Duncan', 'Yes, we did think'], ['Pam', "It'd have to be a caravan"], ['Duncan', 'How much does it cost?'],
         ['Pam', '$100 a night'], ['Duncan', "Well, it's actually going"], ['Pam', 'I can book a really nice'], ['Duncan', 'Lovely.'],
         ['Pam', 'Or would she rather'], ['Duncan', "Oh no, she'd be terrified."], ['Pam', "Yes, there's a fantastic"], ['Duncan', 'Oh, good.'], ['Pam', 'No problem, Duncan.'],
       ],

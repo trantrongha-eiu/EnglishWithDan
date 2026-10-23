@@ -1,7 +1,8 @@
 // Vol 8 – Test 4 (layout as vol8_t1.js). The audio starts mid-way through the Part 1 heading and Part 1 has no closing
 // narration → clip P1 [0, end of the 1-minute silence]. The docx spells the student "Sally Lehman"; the paper "Layman".
-// Source errors fixed by the recording: key Q37 B (the outside) → A — "The outer box could be made of any material, but the
-// lining was gold because the perfume tended to corrode other substances" (both docx and Whisper).
+// Q37 key A (the inside) — "The outer box could be made of any material, but the lining was gold because the perfume tended
+// to corrode other substances" (both docx and Whisper). Debug 2026-10-23: the key docx already says A (an earlier note here
+// called it a B → A fix; it never was).
 const { note, table, mc, matching } = require('../vol_build');
 const A = 'LISTENING/AUDIO/TEST 4 VOL 8.mp4';
 
