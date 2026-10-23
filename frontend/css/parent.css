@@ -215,7 +215,9 @@ details[open] > .ph-group-head .ph-group-toggle i { transform: rotate(180deg); }
 .ph-pay { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); font-size: var(--fs-caption); }
 .ph-pay-info { flex: 1; min-width: 200px; display: grid; gap: 4px; }
 .ph-pay-info b { color: var(--text); }
-.ph-qr { width: 160px; max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; }
+.ph-pay-title { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.ph-qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; text-align: center; max-width: 220px; }
+.ph-qr { width: 200px; max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; }
 
 .ph-pw-overlay[hidden], .ph-notif-overlay[hidden] { display: none; }
 .ph-pw-error { color: var(--danger); font-size: var(--fs-caption); }

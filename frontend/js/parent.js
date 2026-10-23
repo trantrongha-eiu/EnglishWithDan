@@ -651,22 +651,31 @@
         var unpaid = fees.filter(function (f) { return !f.isPaid; });
         var paidCount = fees.length - unpaid.length;
         var total = unpaid.reduce(function (s, f) { return s + (f.amount || 0); }, 0);
+        // Bank details + QR are shown whatever the fee state — parents may pay
+        // ahead, or before the centre has entered this month's fee.
+        var pay = body.payment || {};
+        var payHtml = (pay.bankAccount || pay.qrImageUrl)
+          ? '<div class="ph-pay"><div class="ph-pay-info">' +
+            '<div class="ph-pay-title">Thông tin chuyển khoản</div>' +
+            (pay.bankName ? '<div>Ngân hàng: <b>' + esc(pay.bankName) + '</b></div>' : '') +
+            (pay.bankAccount ? '<div>Số tài khoản: <b>' + esc(pay.bankAccount) + '</b></div>' : '') +
+            (pay.accountName ? '<div>Chủ tài khoản: <b>' + esc(pay.accountName) + '</b></div>' : '') +
+            (pay.paymentNote ? '<div class="ph-muted">' + esc(pay.paymentNote) + '</div>' : '') +
+            '</div>' +
+            (pay.qrImageUrl
+              ? '<a class="ph-qr-wrap" href="' + esc(pay.qrImageUrl) + '" target="_blank" rel="noopener">' +
+                '<img class="ph-qr" src="' + esc(pay.qrImageUrl) + '" alt="Mã QR chuyển khoản">' +
+                '<span class="ph-row-sub">Quét mã để chuyển khoản · bấm để mở ảnh lớn / lưu ảnh</span></a>'
+              : '') +
+            '</div>'
+          : '';
         var html;
         if (!fees.length) {
-          html = '<div class="ph-section-body"><div class="ph-empty">Chưa có thông tin học phí.</div></div>';
+          html = '<div class="ph-section-body"><div class="ph-empty">Chưa có khoản học phí nào.</div>' + payHtml + '</div>';
         } else if (!unpaid.length) {
           html = '<div class="ph-section-body"><span class="ph-status ph-status-ok"><i class="fas fa-circle-check"></i> Đã đóng đủ học phí</span>' +
-            '<div class="ph-row-sub" style="margin-top:6px">' + paidCount + ' khoản đã đóng</div></div>';
+            '<div class="ph-row-sub" style="margin-top:6px">' + paidCount + ' khoản đã đóng</div>' + payHtml + '</div>';
         } else {
-          var pay = body.payment || {};
-          var payHtml = (pay.bankAccount || pay.qrImageUrl)
-            ? '<div class="ph-pay"><div class="ph-pay-info">' +
-              (pay.bankName ? '<div>Ngân hàng: <b>' + esc(pay.bankName) + '</b></div>' : '') +
-              (pay.bankAccount ? '<div>Số tài khoản: <b>' + esc(pay.bankAccount) + '</b></div>' : '') +
-              (pay.accountName ? '<div>Chủ tài khoản: <b>' + esc(pay.accountName) + '</b></div>' : '') +
-              (pay.paymentNote ? '<div class="ph-muted">' + esc(pay.paymentNote) + '</div>' : '') +
-              '</div>' + (pay.qrImageUrl ? '<img class="ph-qr" src="' + esc(pay.qrImageUrl) + '" alt="Mã QR chuyển khoản">' : '') + '</div>'
-            : '';
           html = '<div class="ph-section-body"><div class="ph-debt"><span>Còn cần đóng</span><span class="ph-debt-amount">' + fmtVND(total) + '</span></div>' +
             '<ul class="ph-list">' + unpaid.map(function (f) {
               return '<li class="ph-row"><div class="ph-row-main"><div class="ph-row-title">' + esc(feeLabel(f)) + '</div>' +
