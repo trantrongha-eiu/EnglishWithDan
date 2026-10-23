@@ -217,7 +217,7 @@ details[open] > .ph-group-head .ph-group-toggle i { transform: rotate(180deg); }
 .ph-pay-info b { color: var(--text); }
 .ph-qr { width: 160px; max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; }
 
-.ph-pw-overlay[hidden], .ph-notif-overlay[hidden] { display: none; }
+.ph-notif-overlay[hidden] { display: none; }
 
 /* ── Notifications ──────────────────────────────── */
 .ph-bell {
@@ -258,7 +258,6 @@ details[open] > .ph-group-head .ph-group-toggle i { transform: rotate(180deg); }
 }
 .ph-notif-body { font-size: var(--fs-caption); color: var(--text2); white-space: pre-line; overflow-wrap: anywhere; }
 .ph-notif-meta { font-size: var(--fs-micro); color: var(--text3); margin-top: 2px; }
-.ph-pw-error { color: var(--danger); font-size: var(--fs-caption); }
 .ph-foot { text-align: center; color: var(--text3); font-size: var(--fs-micro); margin-top: 8px; }
 
 @media (max-width: 480px) {

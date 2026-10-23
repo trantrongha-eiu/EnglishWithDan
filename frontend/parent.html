@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
   <link rel="stylesheet" href="/css/components.css?v=d2125349c7">
-  <link rel="stylesheet" href="/css/parent.css?v=b8b7a84149">
+  <link rel="stylesheet" href="/css/parent.css?v=340aaff578">
   <script src="/js/theme.js?v=81e03964c4"></script>
   <!-- Not the student app-shell bundle: its nav polls student-only APIs a
        parent token can't call. Just the session plumbing + helpers. -->
@@ -51,32 +51,6 @@
     </div>
   </div>
 
-  <!-- First login with a teacher-issued temporary password: change it first. -->
-  <div class="modal-overlay ph-pw-overlay" id="phPwModal" hidden>
-    <form class="modal-box modal-sm" id="phPwForm" autocomplete="off">
-      <div class="modal-header"><strong><i class="fas fa-key"></i> Đặt mật khẩu mới</strong></div>
-      <div class="modal-body">
-        <p class="ph-muted">Bạn đang đăng nhập bằng mật khẩu ban đầu (số điện thoại). Vui lòng đặt mật khẩu riêng để bảo vệ thông tin của con.</p>
-        <div class="form-group">
-          <label class="form-label" for="phPwCurrent">Mật khẩu hiện tại (số điện thoại)</label>
-          <input class="form-control" id="phPwCurrent" type="password" required autocomplete="current-password">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="phPwNew">Mật khẩu mới (ít nhất 8 ký tự)</label>
-          <input class="form-control" id="phPwNew" type="password" minlength="8" required autocomplete="new-password">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="phPwConfirm">Nhập lại mật khẩu mới</label>
-          <input class="form-control" id="phPwConfirm" type="password" minlength="8" required autocomplete="new-password">
-        </div>
-        <div class="ph-pw-error" id="phPwError" hidden></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary btn-full" type="submit" id="phPwSubmit">Lưu mật khẩu</button>
-      </div>
-    </form>
-  </div>
-
-  <script src="/js/parent.js?v=f7a9c55b11"></script>
+  <script src="/js/parent.js?v=bcd3ae0193"></script>
 </body>
 </html>

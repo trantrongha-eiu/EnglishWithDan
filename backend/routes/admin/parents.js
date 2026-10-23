@@ -4,9 +4,9 @@
 // Only staff create parents (no self-sign-up): a teacher for a student in a
 // class they run, an admin for anyone. A parent logs in with their phone
 // number (= username); the starting password is that same phone number, so
-// the teacher only has to tell them "đăng nhập bằng số điện thoại". parent.html
-// then forces a password change on first login (User.mustChangePassword) —
-// a phone number alone is easy to guess.
+// the teacher only has to tell them "đăng nhập bằng số điện thoại". Parents are
+// not forced to change it; User.mustChangePassword just stays true until they
+// do, so the admin panel can show who still uses the phone number.
 //
 //   GET    /api/admin/users/:id/parents                        list linked parents
 //   POST   /api/admin/users/:id/parents                        create-or-link { name, phone, relation, email? }

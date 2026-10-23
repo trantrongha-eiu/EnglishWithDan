@@ -80,41 +80,6 @@
   function loadingBody() { return '<div class="ph-section-body"><div class="ph-empty">Đang tải…</div></div>'; }
   function errorBody(msg) { return '<div class="ph-section-body"><div class="ph-empty">' + esc(msg || 'Không tải được dữ liệu.') + '</div></div>'; }
 
-  // ── password gate ──────────────────────────────────
-  function needPasswordChange() {
-    var modal = document.getElementById('phPwModal');
-    var form = document.getElementById('phPwForm');
-    var err = document.getElementById('phPwError');
-    var btn = document.getElementById('phPwSubmit');
-    modal.hidden = false;
-    document.getElementById('phPwCurrent').focus();
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      err.hidden = true;
-      var cur = document.getElementById('phPwCurrent').value;
-      var nw = document.getElementById('phPwNew').value;
-      var cf = document.getElementById('phPwConfirm').value;
-      if (nw.length < 8) { err.textContent = 'Mật khẩu mới phải có ít nhất 8 ký tự.'; err.hidden = false; return; }
-      if (nw !== cf) { err.textContent = 'Hai mật khẩu mới không khớp.'; err.hidden = false; return; }
-      if (nw === cur) { err.textContent = 'Mật khẩu mới phải khác số điện thoại.'; err.hidden = false; return; }
-      btn.disabled = true;
-      api('/user/change-password', { method: 'PUT', body: JSON.stringify({ currentPassword: cur, newPassword: nw }) })
-        .then(function (body) {
-          if (body.token) AS.setToken(body.token);
-          user.mustChangePassword = false;
-          AS.setUser(user);
-          modal.hidden = true;
-          if (window.showToast) window.showToast('Đã đổi mật khẩu', 'success');
-          start();
-        })
-        .catch(function (e2) {
-          err.textContent = (e2 && e2.message) || 'Không đổi được mật khẩu.';
-          err.hidden = false;
-        })
-        .then(function () { btn.disabled = false; });
-    });
-  }
-
   // ── notifications (bell) ───────────────────────────
   var notif = { list: [], unread: 0 };
   var NOTIF_KIND = {
@@ -675,6 +640,5 @@
       .catch(failInto('phTuition', 'Học phí', 'fa-receipt'));
   }
 
-  if (user.mustChangePassword) needPasswordChange();
-  else start();
+  start();
 })();
