@@ -217,7 +217,8 @@ details[open] > .ph-group-head .ph-group-toggle i { transform: rotate(180deg); }
 .ph-pay-info b { color: var(--text); }
 .ph-qr { width: 160px; max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); background: #fff; }
 
-.ph-notif-overlay[hidden] { display: none; }
+.ph-pw-overlay[hidden], .ph-notif-overlay[hidden] { display: none; }
+.ph-pw-error { color: var(--danger); font-size: var(--fs-caption); }
 
 /* ── Notifications ──────────────────────────────── */
 .ph-bell {

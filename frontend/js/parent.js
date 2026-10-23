@@ -80,6 +80,47 @@
   function loadingBody() { return '<div class="ph-section-body"><div class="ph-empty">Đang tải…</div></div>'; }
   function errorBody(msg) { return '<div class="ph-section-body"><div class="ph-empty">' + esc(msg || 'Không tải được dữ liệu.') + '</div></div>'; }
 
+  // ── change password (optional) ─────────────────────
+  var $pwModal = document.getElementById('phPwModal');
+  var $pwForm = document.getElementById('phPwForm');
+  var $pwErr = document.getElementById('phPwError');
+  var $pwBtn = document.getElementById('phPwSubmit');
+  function openPasswordModal() {
+    $pwForm.reset();
+    $pwErr.hidden = true;
+    document.getElementById('phPwHint').hidden = !user.mustChangePassword;
+    $pwModal.hidden = false;
+    document.getElementById('phPwCurrent').focus();
+  }
+  function closePasswordModal() { $pwModal.hidden = true; }
+  function pwError(msg) { $pwErr.textContent = msg; $pwErr.hidden = false; }
+  document.getElementById('phPwOpen').addEventListener('click', openPasswordModal);
+  document.getElementById('phPwClose').addEventListener('click', closePasswordModal);
+  $pwModal.addEventListener('click', function (e) { if (e.target === $pwModal) closePasswordModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$pwModal.hidden) closePasswordModal(); });
+  $pwForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    $pwErr.hidden = true;
+    var cur = document.getElementById('phPwCurrent').value;
+    var nw = document.getElementById('phPwNew').value;
+    var cf = document.getElementById('phPwConfirm').value;
+    if (nw.length < 8) return pwError('Mật khẩu mới phải có ít nhất 8 ký tự.');
+    if (nw !== cf) return pwError('Hai mật khẩu mới không khớp.');
+    if (nw === cur) return pwError('Mật khẩu mới phải khác mật khẩu hiện tại.');
+    $pwBtn.disabled = true;
+    api('/user/change-password', { method: 'PUT', body: JSON.stringify({ currentPassword: cur, newPassword: nw }) })
+      .then(function (body) {
+        // The change revokes old tokens; keep this session on the fresh one.
+        if (body.token) AS.setToken(body.token);
+        user.mustChangePassword = false;
+        AS.setUser(user);
+        closePasswordModal();
+        if (window.showToast) window.showToast('Đã đổi mật khẩu', 'success');
+      })
+      .catch(function (e2) { pwError((e2 && e2.message) || 'Không đổi được mật khẩu.'); })
+      .then(function () { $pwBtn.disabled = false; });
+  });
+
   // ── notifications (bell) ───────────────────────────
   var notif = { list: [], unread: 0 };
   var NOTIF_KIND = {

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
   <link rel="stylesheet" href="/css/components.css?v=d2125349c7">
-  <link rel="stylesheet" href="/css/parent.css?v=340aaff578">
+  <link rel="stylesheet" href="/css/parent.css?v=cb9eef07d6">
   <script src="/js/theme.js?v=81e03964c4"></script>
   <!-- Not the student app-shell bundle: its nav polls student-only APIs a
        parent token can't call. Just the session plumbing + helpers. -->
@@ -32,6 +32,7 @@
         <i class="fas fa-bell"></i><span class="ph-bell-badge" id="phBellBadge" hidden></span>
       </button>
       <span class="ph-user" id="phUserName"></span>
+      <button class="btn btn-ghost btn-sm" id="phPwOpen" type="button" aria-label="Đổi mật khẩu"><i class="fas fa-key"></i> <span class="ph-hide-sm">Đổi mật khẩu</span></button>
       <button class="btn btn-ghost btn-sm" id="phLogout" type="button"><i class="fas fa-right-from-bracket"></i> <span class="ph-hide-sm">Đăng xuất</span></button>
     </div>
   </header>
@@ -51,6 +52,35 @@
     </div>
   </div>
 
-  <script src="/js/parent.js?v=bcd3ae0193"></script>
+  <!-- Optional: parents may keep the phone-number password; this is only for those who want their own. -->
+  <div class="modal-overlay ph-pw-overlay" id="phPwModal" hidden>
+    <form class="modal-box modal-sm" id="phPwForm" autocomplete="off" role="dialog" aria-modal="true" aria-labelledby="phPwTitle">
+      <div class="modal-header">
+        <strong id="phPwTitle"><i class="fas fa-key"></i> Đổi mật khẩu</strong>
+        <button class="modal-close" id="phPwClose" type="button" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="phPwCurrent">Mật khẩu hiện tại</label>
+          <input class="form-control" id="phPwCurrent" type="password" required autocomplete="current-password">
+          <small class="ph-muted" id="phPwHint" hidden>Nếu chưa đổi lần nào, mật khẩu hiện tại là số điện thoại của bạn.</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phPwNew">Mật khẩu mới (ít nhất 8 ký tự)</label>
+          <input class="form-control" id="phPwNew" type="password" minlength="8" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phPwConfirm">Nhập lại mật khẩu mới</label>
+          <input class="form-control" id="phPwConfirm" type="password" minlength="8" required autocomplete="new-password">
+        </div>
+        <div class="ph-pw-error" id="phPwError" hidden></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary btn-full" type="submit" id="phPwSubmit">Lưu mật khẩu</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="/js/parent.js?v=1acd331c4a"></script>
 </body>
 </html>
