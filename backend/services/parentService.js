@@ -91,6 +91,7 @@ function shapeHomework(data) {
     assignments: (data.assignments || []).map((a) => ({
       _id: a._id, title: a.title, className: a.className, teacherName: a.teacherName,
       deadline: a.deadline, createdAt: a.createdAt, status: a.status, done: a.done, total: a.total,
+      archived: !!a.archived,
     })),
   };
 }

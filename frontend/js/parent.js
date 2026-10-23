@@ -96,7 +96,7 @@
       var cf = document.getElementById('phPwConfirm').value;
       if (nw.length < 8) { err.textContent = 'Mật khẩu mới phải có ít nhất 8 ký tự.'; err.hidden = false; return; }
       if (nw !== cf) { err.textContent = 'Hai mật khẩu mới không khớp.'; err.hidden = false; return; }
-      if (nw === cur) { err.textContent = 'Mật khẩu mới phải khác mật khẩu tạm.'; err.hidden = false; return; }
+      if (nw === cur) { err.textContent = 'Mật khẩu mới phải khác số điện thoại.'; err.hidden = false; return; }
       btn.disabled = true;
       api('/user/change-password', { method: 'PUT', body: JSON.stringify({ currentPassword: cur, newPassword: nw }) })
         .then(function (body) {
@@ -255,36 +255,101 @@
       ? '<img src="' + esc(child.avatar) + '" alt="">'
       : initials(child.name);
 
-    var tiles =
-      tile('classes', 'Lớp đang học', child.classCount, '') +
-      tile('absent', 'Buổi vắng', child.absentTotal, child.absentTotal > 0 ? 'warn' : '') +
-      tile('late', 'Đi trễ', child.lateCount, child.lateCount > 0 ? 'warn' : '') +
-      tile('homework', 'Bài tập quá hạn', child.homeworkMissed, child.homeworkMissed > 0 ? 'bad' : '');
-
     $main.innerHTML = '<div id="phAlertSlot"></div>' + kids +
       '<div class="ph-child-head"><div class="ph-avatar">' + avatar + '</div>' +
       '<div><h1 class="ph-child-name">' + esc(child.name) + '</h1>' + (statusPill(child.status) || '<span class="ph-muted">Chưa vào lớp nào</span>') + '</div></div>' +
-      '<div class="ph-tiles">' + tiles + '</div>' +
-      '<div id="phClasses">' + section('fa-calendar-check', 'Chuyên cần', loadingBody()) + '</div>' +
+      '<div class="ph-overview">' +
+        '<div id="phSumAtt">' + attSummary(null, child) + '</div>' +
+        '<div id="phSumHw">' + hwSummary(null, child) + '</div>' +
+      '</div>' +
+      '<div id="phClasses">' + section('fa-calendar-check', 'Chuyên cần theo lớp', loadingBody()) + '</div>' +
       '<div id="phHomework">' + section('fa-list-check', 'Bài tập về nhà', loadingBody()) + '</div>' +
       '<div id="phScores">' + section('fa-chart-line', 'Kết quả học tập', loadingBody()) + '</div>' +
       '<div id="phTuition">' + section('fa-receipt', 'Học phí', loadingBody()) + '</div>' +
       '<p class="ph-foot">Kết quả bài làm được lưu trong 3 tháng gần nhất.</p>';
 
     if (notif.list.length || notif.unread) renderBell();
+    bindJumps();
     Array.prototype.forEach.call($main.querySelectorAll('[data-kid]'), function (b) {
       b.addEventListener('click', function () { if (b.getAttribute('data-kid') !== state.childId) selectChild(b.getAttribute('data-kid')); });
     });
   }
 
-  function tile(key, label, value, level) {
-    return '<div class="ph-tile' + (level ? ' ph-tile-' + level : '') + '" data-tile="' + key + '"><div class="ph-tile-label">' + label + '</div><div class="ph-tile-value">' + esc(String(value || 0)) + '</div></div>';
+  // ── overview cards ─────────────────────────────────
+  // One card per topic: the headline number big, then every count that
+  // makes it up on its own labelled line, so nothing has to be inferred.
+  function sumRow(label, value, tone) {
+    return '<div class="ph-sum-row' + (tone && value > 0 ? ' ph-tone-' + tone : '') + '"><span>' + label + '</span><b>' +
+      (value == null ? '…' : esc(String(value))) + '</b></div>';
   }
-  function setTile(key, value, level) {
-    var el = $main.querySelector('[data-tile="' + key + '"]');
-    if (!el) return;
-    el.className = 'ph-tile' + (value > 0 && level ? ' ph-tile-' + level : '');
-    el.querySelector('.ph-tile-value').textContent = String(value || 0);
+  function sumCard(icon, title, bigLabel, bigValue, bigTone, rows, foot, target) {
+    return '<a class="ph-sum" href="#' + target + '" data-jump="' + target + '">' +
+      '<div class="ph-sum-head"><span><i class="fas ' + icon + '"></i> ' + title + '</span><span class="ph-sum-more">Xem chi tiết <i class="fas fa-chevron-down"></i></span></div>' +
+      '<div class="ph-sum-big' + (bigTone && bigValue > 0 ? ' ph-tone-' + bigTone : '') + '"><span class="ph-sum-num">' +
+        (bigValue == null ? '…' : esc(String(bigValue))) + '</span><span class="ph-sum-label">' + bigLabel + '</span></div>' +
+      (rows ? '<div class="ph-sum-rows">' + rows + '</div>' : '') +
+      (foot ? '<div class="ph-sum-foot ph-tone-' + foot.tone + '"><i class="fas ' + foot.icon + '"></i> ' + foot.text + '</div>' : '') +
+      '</a>';
+  }
+
+  // `classes` null = still loading: show the cached counts from the child list.
+  function attSummary(classes, child) {
+    if (!classes) {
+      return sumCard('fa-calendar-check', 'Chuyên cần', 'buổi nghỉ', child.absentTotal, 'bad',
+        sumRow('Đi trễ', child.lateCount, 'warn'), null, 'phClasses');
+    }
+    if (!classes.length) {
+      return sumCard('fa-calendar-check', 'Chuyên cần', 'buổi nghỉ', 0, '',
+        '<div class="ph-empty">Con chưa vào lớp nào đang học.</div>', null, 'phClasses');
+    }
+    var sum = function (k) { return classes.reduce(function (n, c) { return n + (c[k] || 0); }, 0); };
+    var held = sum('heldSessions'), absent = sum('absentTotal'), late = sum('lateCount');
+    var over = classes.some(function (c) { return c.attendanceLevel === 'fail'; });
+    var near = classes.some(function (c) { return c.attendanceLevel === 'warn'; });
+    var foot = over ? { tone: 'bad', icon: 'fa-circle-xmark', text: 'Số buổi nghỉ đã vượt giới hạn cho phép' }
+      : near ? { tone: 'warn', icon: 'fa-triangle-exclamation', text: 'Số buổi nghỉ sắp chạm giới hạn cho phép' }
+        : absent === 0 && late === 0 ? { tone: 'ok', icon: 'fa-circle-check', text: 'Con đi học đầy đủ, đúng giờ' }
+          : { tone: 'ok', icon: 'fa-circle-check', text: 'Vẫn trong giới hạn nghỉ cho phép' };
+    return sumCard('fa-calendar-check', 'Chuyên cần', 'buổi nghỉ', absent, 'bad',
+      sumRow('Số buổi đã học', held) +
+      sumRow('Có mặt đúng giờ', Math.max(0, held - absent - late)) +
+      sumRow('Đi trễ', late, 'warn') +
+      sumRow('Vắng có phép', sum('absentExcused'), 'info') +
+      sumRow('Vắng không phép', sum('absentUnexcused'), 'bad'),
+      foot, 'phClasses');
+  }
+
+  function hwSummary(list, child) {
+    if (!list) {
+      return sumCard('fa-list-check', 'Bài tập về nhà', 'bài còn thiếu', child.homeworkMissed, 'bad', '', null, 'phHomework');
+    }
+    if (!list.length) {
+      return sumCard('fa-list-check', 'Bài tập về nhà', 'bài còn thiếu', 0, '',
+        '<div class="ph-empty">Chưa có bài tập nào được giao.</div>', null, 'phHomework');
+    }
+    var g = groupHomework(list);
+    var foot = g.missed.length
+      ? { tone: 'bad', icon: 'fa-triangle-exclamation', text: 'Con vẫn có thể làm bù các bài còn thiếu' }
+      : { tone: 'ok', icon: 'fa-circle-check', text: 'Không có bài nào bị thiếu' };
+    return sumCard('fa-list-check', 'Bài tập về nhà', 'bài còn thiếu', g.missed.length, 'bad',
+      sumRow('Tổng số bài được giao', list.length) +
+      sumRow('Đã hoàn thành', g.done.length, 'ok') +
+      sumRow('Chưa đến hạn, chưa xong', g.todo.length, 'warn') +
+      sumRow('Quá hạn, chưa làm xong', g.missed.length, 'bad'),
+      foot, 'phHomework');
+  }
+
+  function bindJumps() {
+    Array.prototype.forEach.call($main.querySelectorAll('[data-jump]'), function (a) {
+      if (a.getAttribute('data-bound')) return;
+      a.setAttribute('data-bound', '1');
+      a.addEventListener('click', function (e) {
+        var el = document.getElementById(a.getAttribute('data-jump'));
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
   }
 
   // A child switch can land while an older request is still in flight —
@@ -298,6 +363,16 @@
     };
   }
 
+  // Calendar-day difference in VN time: > 0 means d is in the future.
+  function dayKey(d) { return new Date(d).toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }); }
+  function daysFromToday(d) {
+    var a = dayKey(new Date()).split('-'), b = dayKey(d).split('-');
+    return Math.round((Date.UTC(+b[0], b[1] - 1, +b[2]) - Date.UTC(+a[0], a[1] - 1, +a[2])) / 86400000);
+  }
+  function fmtDay(d) {
+    return new Date(d).toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Ho_Chi_Minh' });
+  }
+
   // ── attendance ─────────────────────────────────────
   function loadClasses() {
     var id = state.childId;
@@ -305,44 +380,73 @@
       .then(forCurrent(id, function (body) {
         var classes = body.classes || [];
         // The children list reads cached counters; these are live (the
-        // overview recomputes overdue homework on read), so refresh the tiles.
-        var sum = function (k) { return classes.reduce(function (n, c) { return n + (c[k] || 0); }, 0); };
-        setTile('classes', classes.length, '');
-        setTile('absent', sum('absentTotal'), 'warn');
-        setTile('late', sum('lateCount'), 'warn');
-        setTile('homework', sum('homeworkMissedCount'), 'bad');
+        // overview recomputes overdue homework on read).
+        document.getElementById('phSumAtt').innerHTML = attSummary(classes);
+        bindJumps();
         var html = classes.length
-          ? '<div class="ph-section-body">' + classes.map(renderClass).join('') + legend() + '</div>'
+          ? '<div class="ph-section-body ph-stack">' + classes.map(renderClass).join('') + '</div>'
           : '<div class="ph-section-body"><div class="ph-empty">Con chưa được xếp vào lớp nào đang học.</div></div>';
-        document.getElementById('phClasses').innerHTML = section('fa-calendar-check', 'Chuyên cần', html);
+        document.getElementById('phClasses').innerHTML = section('fa-calendar-check', 'Chuyên cần theo lớp', html);
       }))
-      .catch(failInto('phClasses', 'Chuyên cần', 'fa-calendar-check'));
+      .catch(failInto('phClasses', 'Chuyên cần theo lớp', 'fa-calendar-check'));
+  }
+
+  function statCell(label, value, tone) {
+    return '<div class="ph-stat' + (tone && value > 0 ? ' ph-tone-' + tone : '') + '"><b>' + esc(String(value || 0)) + '</b><span>' + label + '</span></div>';
   }
 
   function renderClass(c) {
     var p = c.progress || {};
-    var attended = Math.max(0, (c.heldSessions || 0) - (c.absentTotal || 0));
-    var rate = c.heldSessions ? Math.round((attended / c.heldSessions) * 100) : null;
-    var next = p.nextSession
-      ? 'Buổi tiếp theo: ' + fmtShort(p.nextSession.date) + (p.startTime ? ' · ' + esc(p.startTime) : '')
-      : '';
+    var held = c.heldSessions || 0;
+    var absent = c.absentTotal || 0;
+    var late = c.lateCount || 0;
+    var attended = Math.max(0, held - absent);
+    var rate = held ? Math.round((attended / held) * 100) : null;
     var meta = [
-      c.teacherName ? 'GV: ' + esc(c.teacherName) : '',
-      c.totalSessions ? 'Đã học ' + (p.currentSessionOrdinal || c.heldSessions || 0) + '/' + c.totalSessions + ' buổi' : '',
-      next,
-    ].filter(Boolean).join(' · ');
+      c.teacherName ? '<span><i class="fas fa-chalkboard-user"></i> GV: ' + esc(c.teacherName) + '</span>' : '',
+      c.totalSessions ? '<span><i class="fas fa-book-open"></i> Đã học ' + (p.currentSessionOrdinal || held) + '/' + c.totalSessions + ' buổi</span>' : '',
+      p.nextSession ? '<span><i class="fas fa-clock"></i> Buổi tiếp theo: ' + fmtDay(p.nextSession.date) + (p.startTime ? ' · ' + esc(p.startTime) : '') + '</span>' : '',
+    ].filter(Boolean).join('');
 
-    var warn = '';
-    if (c.attendanceLevel === 'warn' || c.attendanceLevel === 'fail') {
-      warn += '<div class="ph-reason"><i class="fas fa-triangle-exclamation"></i> Con đã nghỉ ' + c.absenceEquivalent +
-        ' buổi (tính cả đi trễ), giới hạn ' + c.maxAbsencesAllowed + ' buổi. Còn được nghỉ ' + c.remainingAbsences + ' buổi.</div>';
+    var stats = '<div class="ph-stats">' +
+      statCell('Buổi đã học', held, '') +
+      statCell('Có mặt đúng giờ', Math.max(0, held - absent - late), '') +
+      statCell('Đi trễ', late, 'warn') +
+      statCell('Vắng có phép', c.absentExcused, 'info') +
+      statCell('Vắng không phép', c.absentUnexcused, 'bad') +
+      '</div>';
+
+    // Limits, spelled out in full sentences.
+    var notes = '';
+    if (c.maxAbsencesAllowed) {
+      var lvl = c.attendanceLevel === 'fail' ? 'bad' : c.attendanceLevel === 'warn' ? 'warn' : 'ok';
+      notes += '<div class="ph-callout ph-tone-' + lvl + '"><i class="fas ' + (lvl === 'ok' ? 'fa-circle-info' : 'fa-triangle-exclamation') + '"></i><div>' +
+        'Số buổi nghỉ đã tính: <b>' + c.absenceEquivalent + '/' + c.maxAbsencesAllowed + '</b> buổi cho phép' +
+        (late && c.lateToAbsenceRatio ? ' (cứ ' + c.lateToAbsenceRatio + ' lần đi trễ tính 1 buổi nghỉ)' : '') +
+        '. Còn được nghỉ <b>' + c.remainingAbsences + '</b> buổi.</div></div>';
     }
-    if (c.homeworkLevel === 'warn' || c.homeworkLevel === 'fail') {
-      warn += '<div class="ph-reason"><i class="fas fa-triangle-exclamation"></i> Con đang thiếu ' + c.homeworkMissedCount +
-        ' bài tập quá hạn (đến ' + c.homeworkFailThreshold + ' bài sẽ không đạt khóa).</div>';
+    if (c.homeworkMissedCount > 0) {
+      var hl = c.homeworkLevel === 'fail' ? 'bad' : 'warn';
+      notes += '<div class="ph-callout ph-tone-' + hl + '"><i class="fas fa-triangle-exclamation"></i><div>' +
+        'Lớp này con đang thiếu <b>' + c.homeworkMissedCount + '</b> bài tập' +
+        (c.homeworkFailThreshold ? ' (thiếu đến ' + c.homeworkFailThreshold + ' bài sẽ không đạt khóa)' : '') +
+        '. Xem danh sách ở mục Bài tập về nhà.</div></div>';
     }
 
-    var strip = (c.sessions || []).map(function (s) {
+    // Every missed / late session with its date — the "nghỉ hôm nào?" a parent asks.
+    var sessions = c.sessions || [];
+    var misses = sessions.filter(function (s) {
+      return s.sessionStatus !== 'cancelled' && (s.mark === 'absent' || s.mark === 'excused' || s.mark === 'late');
+    });
+    var missList = misses.length
+      ? '<ul class="ph-miss-list">' + misses.map(function (s) {
+        var m = MARK[s.mark];
+        return '<li><span><b>Buổi ' + s.sessionNumber + '</b> · ' + fmtDay(s.date) + '</span>' +
+          '<span class="ph-tag ' + m.cls + '">' + m.text + '</span></li>';
+      }).join('') + '</ul>'
+      : '<div class="ph-empty">' + (held ? 'Con chưa nghỉ hay đi trễ buổi nào.' : 'Lớp chưa có buổi học nào.') + '</div>';
+
+    var strip = sessions.map(function (s) {
       var m = MARK[s.mark];
       var title = 'Buổi ' + s.sessionNumber + ' · ' + fmtShort(s.date);
       if (s.sessionStatus === 'cancelled') return '<span class="ph-sess ph-sess-cancelled" title="' + title + ' · Hủy">–</span>';
@@ -350,46 +454,93 @@
       return '<span class="ph-sess" title="' + title + ' · Chưa học">' + s.sessionNumber + '</span>';
     }).join('');
 
-    return '<div class="ph-class">' +
+    return '<article class="ph-class">' +
       '<div class="ph-class-top"><span class="ph-class-name">' + esc(c.className) + '</span>' + statusPill(c.status) + '</div>' +
       (meta ? '<div class="ph-class-meta">' + meta + '</div>' : '') +
-      (rate != null ? '<div class="ph-bar" aria-hidden="true"><span style="width:' + rate + '%"></span></div><div class="ph-class-meta">Chuyên cần ' + rate + '% (' + attended + '/' + c.heldSessions + ' buổi đã diễn ra)</div>' : '') +
-      '<div class="ph-kv">' +
-        '<div><b>' + (c.heldSessions || 0) + '</b><span>Buổi đã diễn ra</span></div>' +
-        '<div><b>' + (c.absentUnexcused || 0) + '</b><span>Vắng không phép</span></div>' +
-        '<div><b>' + (c.absentExcused || 0) + '</b><span>Vắng có phép</span></div>' +
-        '<div><b>' + (c.lateCount || 0) + '</b><span>Đi trễ</span></div>' +
+      '<div class="ph-block"><div class="ph-block-title">Thống kê buổi học</div>' + stats +
+        (rate != null ? '<div class="ph-bar" aria-hidden="true"><span style="width:' + rate + '%"></span></div>' +
+          '<div class="ph-muted">Tỉ lệ đi học ' + rate + '% (' + attended + '/' + held + ' buổi)</div>' : '') +
+        notes +
       '</div>' +
-      warn +
-      (strip ? '<div class="ph-strip">' + strip + '</div>' : '') +
-      '</div>';
+      '<div class="ph-block"><div class="ph-block-title">Các buổi nghỉ / đi trễ' + (misses.length ? ' <span class="ph-count">' + misses.length + '</span>' : '') + '</div>' + missList + '</div>' +
+      (strip ? '<div class="ph-block"><div class="ph-block-title">Toàn bộ buổi học</div><div class="ph-strip">' + strip + '</div>' + legend() + '</div>' : '') +
+      '</article>';
   }
 
   function legend() {
     return '<div class="ph-legend">' +
       ['present', 'late', 'excused', 'absent'].map(function (k) {
         return '<span><i class="' + MARK[k].cls + '"></i>' + MARK[k].letter + ' ' + MARK[k].text + '</span>';
-      }).join('') + '</div>';
+      }).join('') + '<span><i class="ph-sess-future"></i>Số = buổi chưa học</span></div>';
   }
 
   // ── homework ───────────────────────────────────────
+  function groupHomework(list) {
+    var byDeadline = function (x, y) {
+      var dx = x.deadline ? new Date(x.deadline).getTime() : Infinity;
+      var dy = y.deadline ? new Date(y.deadline).getTime() : Infinity;
+      return dx - dy;
+    };
+    return {
+      missed: list.filter(function (a) { return a.status === 'overdue'; }).sort(byDeadline),
+      todo: list.filter(function (a) { return a.status === 'not_started' || a.status === 'in_progress'; }).sort(byDeadline),
+      done: list.filter(function (a) { return a.status === 'completed'; }).sort(function (x, y) { return byDeadline(y, x); }),
+    };
+  }
+
+  function deadlineText(a) {
+    if (!a.deadline) return 'Không có hạn nộp';
+    var base = 'Hạn ' + fmtDate(a.deadline);
+    if (a.status === 'completed') return base;
+    var n = daysFromToday(a.deadline);
+    if (a.status === 'overdue') return base + ' · <b class="ph-tone-bad">' + (n < 0 ? 'quá hạn ' + (-n) + ' ngày' : 'đã quá hạn') + '</b>';
+    if (n <= 0) return base + ' · <b class="ph-tone-warn">hết hạn hôm nay</b>';
+    if (n === 1) return base + ' · <b class="ph-tone-warn">còn 1 ngày</b>';
+    return base + ' · còn ' + n + ' ngày';
+  }
+
+  function hwRow(a) {
+    var st = HW[a.status] || HW.not_started;
+    var sub = [esc(a.className), deadlineText(a)];
+    if (a.archived && a.status === 'overdue') sub.push('giáo viên đã đóng bài, vẫn tính là thiếu');
+    return '<li class="ph-row"><div class="ph-row-main"><div class="ph-row-title">' + esc(a.title) + '</div>' +
+      '<div class="ph-row-sub">' + sub.join(' · ') + '</div></div>' +
+      '<div class="ph-row-side"><span class="ph-status ' + st.cls + '">' + st.text + '</span>' +
+      (a.total ? '<div class="ph-row-sub">Xong ' + a.done + '/' + a.total + ' phần</div>' : '') + '</div></li>';
+  }
+
+  function hwGroup(tone, icon, title, hint, items, emptyText, collapsed) {
+    var head = '<span class="ph-group-title"><i class="fas ' + icon + '"></i> ' + title + '</span><span class="ph-count">' + items.length + '</span>';
+    var body = '<div class="ph-group-body">' + (hint && items.length ? '<div class="ph-group-hint">' + hint + '</div>' : '') +
+      (items.length ? '<ul class="ph-list">' + items.map(hwRow).join('') + '</ul>' : '<div class="ph-empty">' + emptyText + '</div>') + '</div>';
+    if (collapsed && items.length) {
+      return '<details class="ph-group ph-tone-' + tone + '"><summary class="ph-group-head">' + head +
+        '<span class="ph-group-toggle">Xem <i class="fas fa-chevron-down"></i></span></summary>' + body + '</details>';
+    }
+    return '<div class="ph-group ph-tone-' + tone + '"><div class="ph-group-head">' + head + '</div>' + body + '</div>';
+  }
+
   function loadHomework() {
     var id = state.childId;
     api('/parent/children/' + id + '/homework')
       .then(forCurrent(id, function (body) {
         var list = body.assignments || [];
-        var done = list.filter(function (a) { return a.status === 'completed'; }).length;
-        var head = list.length ? '<span class="ph-muted">Đã xong ' + done + '/' + list.length + '</span>' : '';
-        var html = list.length
-          ? '<div class="ph-section-body"><ul class="ph-list">' + list.map(function (a) {
-            var st = HW[a.status] || HW.not_started;
-            var sub = [esc(a.className), a.deadline ? 'Hạn ' + fmtDate(a.deadline) : 'Không có hạn'].join(' · ');
-            return '<li class="ph-row"><div class="ph-row-main"><div class="ph-row-title">' + esc(a.title) + '</div>' +
-              '<div class="ph-row-sub">' + sub + '</div></div>' +
-              '<div class="ph-row-side"><span class="ph-status ' + st.cls + '">' + st.text + '</span>' +
-              (a.total ? '<div class="ph-row-sub">' + a.done + '/' + a.total + ' phần</div>' : '') + '</div></li>';
-          }).join('') + '</ul></div>'
-          : '<div class="ph-section-body"><div class="ph-empty">Chưa có bài tập nào được giao.</div></div>';
+        document.getElementById('phSumHw').innerHTML = hwSummary(list);
+        bindJumps();
+        var html;
+        if (!list.length) {
+          html = '<div class="ph-section-body"><div class="ph-empty">Chưa có bài tập nào được giao.</div></div>';
+        } else {
+          var g = groupHomework(list);
+          html = '<div class="ph-section-body ph-stack">' +
+            hwGroup('bad', 'fa-circle-exclamation', 'Còn thiếu — đã quá hạn',
+              'Con vẫn làm bù được: làm xong thì bài không còn bị tính là thiếu.', g.missed, 'Không có bài nào bị thiếu.', false) +
+            hwGroup('warn', 'fa-hourglass-half', 'Cần làm — chưa đến hạn', '', g.todo, 'Không có bài nào đang chờ làm.', false) +
+            hwGroup('ok', 'fa-circle-check', 'Đã hoàn thành', '', g.done, 'Chưa có bài nào hoàn thành.', true) +
+            '</div>';
+        }
+        var doneCount = list.filter(function (a) { return a.status === 'completed'; }).length;
+        var head = list.length ? '<span class="ph-muted">Đã xong ' + doneCount + '/' + list.length + ' bài</span>' : '';
         document.getElementById('phHomework').innerHTML = section('fa-list-check', 'Bài tập về nhà', html, head);
       }))
       .catch(failInto('phHomework', 'Bài tập về nhà', 'fa-list-check'));

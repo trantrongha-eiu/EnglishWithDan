@@ -3,15 +3,16 @@
 // Phụ huynh accounts, managed from the admin Chi tiết học sinh page.
 // Only staff create parents (no self-sign-up): a teacher for a student in a
 // class they run, an admin for anyone. A parent logs in with their phone
-// number (= username) and a temporary password shown once here; parent.html
-// then forces a password change (User.mustChangePassword).
+// number (= username); the starting password is that same phone number, so
+// the teacher only has to tell them "đăng nhập bằng số điện thoại". parent.html
+// then forces a password change on first login (User.mustChangePassword) —
+// a phone number alone is easy to guess.
 //
 //   GET    /api/admin/users/:id/parents                        list linked parents
 //   POST   /api/admin/users/:id/parents                        create-or-link { name, phone, relation, email? }
-//   POST   /api/admin/users/:id/parents/:parentId/reset-password
+//   POST   /api/admin/users/:id/parents/:parentId/reset-password  (back to the phone number)
 //   DELETE /api/admin/users/:id/parents/:parentId              unlink (account kept)
 
-const crypto = require('crypto');
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
@@ -26,15 +27,6 @@ const logger = require('../../utils/logger');
 const router = express.Router();
 
 const RELATIONS = ['mother', 'father', 'other'];
-// No 0/O/1/l/i — the password gets read out or retyped from a Zalo message.
-const PW_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789';
-
-function tempPassword(len = 8) {
-  const bytes = crypto.randomBytes(len);
-  let out = '';
-  for (let i = 0; i < len; i += 1) out += PW_ALPHABET[bytes[i] % PW_ALPHABET.length];
-  return out;
-}
 
 // "+84 912 345 678" / "0912.345.678" → "0912345678"; null if not a VN mobile.
 function normalizePhone(raw) {
@@ -125,7 +117,7 @@ router.post('/users/:id/parents', auth, staffOnly, loadStudent, async (req, res)
       if (email && await User.exists({ email })) {
         return res.status(409).json({ success: false, message: 'Email này đã được dùng cho tài khoản khác' });
       }
-      password = tempPassword();
+      password = phone;
       parent = await User.create({
         username: phone,
         email: email || `parent-${phone}@parent.invalid`,
@@ -148,7 +140,8 @@ router.post('/users/:id/parents', auth, staffOnly, loadStudent, async (req, res)
       success: true,
       created,
       parent: shapeParent(parent, link),
-      // Shown once in the admin UI — never stored in clear, never re-sent.
+      // The starting password (= phone); null when we only linked an
+      // existing account, whose password we don't touch.
       tempPassword: password,
     });
   } catch (err) {
@@ -176,9 +169,10 @@ async function loadLinkedParent(req, res, next) {
 
 router.post('/users/:id/parents/:parentId/reset-password', auth, staffOnly, loadStudent, loadLinkedParent, async (req, res) => {
   try {
-    const parent = await User.findById(req.parentLink.parentId).select('role');
+    const parent = await User.findById(req.parentLink.parentId).select('role username');
     if (!parent || parent.role !== 'parent') return res.status(404).json({ success: false, message: 'Không tìm thấy phụ huynh' });
-    const password = tempPassword();
+    // Back to the phone number, same as a fresh account.
+    const password = parent.username;
     parent.password = await bcrypt.hash(password, 10);
     parent.mustChangePassword = true;
     // Old sessions (e.g. a lost phone) stop working.

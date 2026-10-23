@@ -9,8 +9,9 @@ import { formatLastSeen } from '../../utils/format';
 
 // "Phụ huynh" panel on Chi tiết học sinh — backend routes/admin/parents.js.
 // A teacher manages parents of students in their own classes, an admin of
-// anyone. The temporary password is shown once, with a ready-to-paste Zalo
-// message; the parent must change it on first login (parent.html).
+// anyone. The starting password is the parent's phone number (same as the
+// login), shown with a ready-to-paste Zalo message; the parent must change it
+// on first login (parent.html).
 
 const RELATION_LABEL = { mother: 'Mẹ', father: 'Bố', other: 'Người giám hộ' };
 const PARENT_URL = `${FRONTEND_URL}/phu-huynh`;
@@ -21,8 +22,8 @@ function credentialsMessage({ studentName, phone, password }) {
     `Trung tâm gửi tài khoản để phụ huynh theo dõi việc học của con (điểm danh, bài tập, điểm số, học phí):`,
     `- Đăng nhập: ${PARENT_URL}`,
     `- Tài khoản: ${phone}`,
-    `- Mật khẩu tạm: ${password}`,
-    `Lần đầu đăng nhập, hệ thống sẽ yêu cầu đổi mật khẩu.`,
+    `- Mật khẩu: ${password} (chính là số điện thoại của phụ huynh)`,
+    `Lần đầu đăng nhập, hệ thống sẽ yêu cầu phụ huynh đặt mật khẩu mới.`,
   ].join('\n');
 }
 
@@ -39,9 +40,9 @@ function CredentialsModal({ info, onClose }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ background: 'var(--surface2)', borderRadius: 10, padding: '10px 14px', fontSize: 13 }}>
           <div>Tài khoản: <strong>{info.phone}</strong></div>
-          <div>Mật khẩu tạm: <strong style={{ fontFamily: 'monospace', fontSize: 15 }}>{info.password}</strong></div>
+          <div>Mật khẩu: <strong style={{ fontFamily: 'monospace', fontSize: 15 }}>{info.password}</strong> <span className="muted">(= số điện thoại)</span></div>
         </div>
-        <div className="muted" style={{ fontSize: 12 }}>⚠️ Mật khẩu chỉ hiện một lần. Nếu quên, bấm "Cấp lại mật khẩu".</div>
+        <div className="muted" style={{ fontSize: 12 }}>Lần đầu đăng nhập phụ huynh sẽ phải đặt mật khẩu mới. Nếu phụ huynh quên mật khẩu, bấm "Đặt lại mật khẩu" để đưa về số điện thoại.</div>
         <textarea className="form-input" readOnly rows={7} value={text} style={{ fontSize: 12, resize: 'vertical' }} onFocus={e => e.target.select()} />
       </div>
     </Modal>
@@ -91,7 +92,7 @@ function AddParentModal({ studentId, onClose, onDone }) {
             <input id="ap-email" className="form-input" type="email" value={form.email} onChange={set('email')} />
           </div>
         </div>
-        <div className="muted" style={{ fontSize: 12 }}>Nếu số điện thoại đã là tài khoản phụ huynh (anh/chị/em học cùng trung tâm), hệ thống chỉ liên kết thêm, không tạo tài khoản mới.</div>
+        <div className="muted" style={{ fontSize: 12 }}>Mật khẩu ban đầu chính là số điện thoại này. Nếu số điện thoại đã là tài khoản phụ huynh (anh/chị/em học cùng trung tâm), hệ thống chỉ liên kết thêm, không tạo tài khoản mới và không đổi mật khẩu.</div>
       </form>
     </Modal>
   );
@@ -105,12 +106,14 @@ export default function ParentsPanel({ student }) {
   const [creds, setCreds] = useState(null);
   const studentName = [student.firstName, student.lastName].filter(Boolean).join(' ') || student.username;
 
-  async function resetPassword(p) {
-    try {
-      const d = await apiFetch(`/admin/users/${student._id}/parents/${p._id}/reset-password`, { method: 'POST' });
-      setCreds({ studentName, phone: p.phone, password: d.tempPassword });
-      reload();
-    } catch (e) { toast(e.message, 'error'); }
+  function resetPassword(p) {
+    confirm(`Đặt lại mật khẩu của ${p.name} về số điện thoại ${p.phone}? Phụ huynh sẽ bị đăng xuất và phải đặt mật khẩu mới khi đăng nhập lại.`, async () => {
+      try {
+        const d = await apiFetch(`/admin/users/${student._id}/parents/${p._id}/reset-password`, { method: 'POST' });
+        setCreds({ studentName, phone: p.phone, password: d.tempPassword });
+        reload();
+      } catch (e) { toast(e.message, 'error'); }
+    });
   }
 
   function unlink(p) {
@@ -152,10 +155,10 @@ export default function ParentsPanel({ student }) {
           <div key={p._id} className="kv" style={{ alignItems: 'center' }}>
             <span>
               <strong>{p.name}</strong> <span className="badge badge-gray">{RELATION_LABEL[p.relation] || p.relation}</span>
-              <br /><small className="muted">📞 {p.phone}{p.email ? ` · ${p.email}` : ''} · {p.lastSeen ? `Hoạt động: ${ls.text}` : 'Chưa đăng nhập'}{p.mustChangePassword ? ' · đang dùng mật khẩu tạm' : ''}</small>
+              <br /><small className="muted">📞 {p.phone}{p.email ? ` · ${p.email}` : ''} · {p.lastSeen ? `Hoạt động: ${ls.text}` : 'Chưa đăng nhập'}{p.mustChangePassword ? ' · mật khẩu vẫn là số điện thoại' : ''}</small>
             </span>
             <span style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-              <button className="btn btn-ghost btn-sm" onClick={() => resetPassword(p)}>🔑 Cấp lại mật khẩu</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => resetPassword(p)}>🔑 Đặt lại mật khẩu</button>
               <button className="btn btn-ghost btn-sm" onClick={() => unlink(p)}>Gỡ liên kết</button>
             </span>
           </div>

@@ -35,7 +35,7 @@ describe('staff create / link parents', () => {
     expect(res.status).toBe(201);
     expect(res.body.created).toBe(true);
     expect(res.body.parent.phone).toBe('0912345678');
-    expect(res.body.tempPassword).toMatch(/^[a-z2-9]{8}$/);
+    expect(res.body.tempPassword).toBe('0912345678');
 
     const parent = await User.findById(res.body.parent._id).lean();
     expect(parent.role).toBe('parent');
@@ -106,7 +106,7 @@ describe('staff create / link parents', () => {
     await new Promise((r) => setTimeout(r, 1100)); // tokenValidAfter compares whole seconds
     const reset = await request(app).post(`/api/admin/users/${student._id}/parents/${parentId}/reset-password`).set(auth(admin));
     expect(reset.status).toBe(200);
-    expect(reset.body.tempPassword).toMatch(/^[a-z2-9]{8}$/);
+    expect(reset.body.tempPassword).toBe(created.body.parent.phone);
     expect((await request(app).get('/api/parent/children').set({ Authorization: `Bearer ${oldToken}` })).status).toBe(401);
     expect((await login(created.body.parent.phone, reset.body.tempPassword)).status).toBe(200);
 
