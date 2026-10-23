@@ -50,6 +50,12 @@ function cropFor(draft, gi) {
   const c = draft.questionGroups[gi]._crop;
   const out = path.join(__dirname, 'web', `vol${draft._vol}`, 'maps', `t${draft._test}p${draft.partNumber}_g${gi}.png`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
+  // c.img (Vol 8): the map is an image embedded in the question .docx, extracted to web/vol<V>/img/ → as PNG, uncropped
+  if (c.img) {
+    const src = path.join(__dirname, 'web', `vol${draft._vol}`, c.img);
+    if (!fs.existsSync(out) || fs.statSync(out).mtimeMs < fs.statSync(src).mtimeMs) execFileSync(ffmpeg(), ['-y', '-loglevel', 'error', '-i', src, out]);
+    return out;
+  }
   // c.pdf: the question paper by its path in the vol (Vol 4 names vary: "listening- up.pdf", "test 2- listening (2).pdf";
   // Vol 6: "Lis/L-TEST 2.pdf"). Otherwise Vol 1: test <T>/<one pdf>; Vol 2+: listening/test <T>/Test <T>.pdf
   const testPdf = () => {

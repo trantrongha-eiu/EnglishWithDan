@@ -6,6 +6,7 @@ bài có sẵn để ghép. **Listening trước, Reading sau. Mỗi lần 1 vol
 Thiếu audio thì được tìm trên mạng. Transcript được tự sinh hoặc lấy trên mạng.
 
 **Reading** (từ 2026-10-16): quy trình + nhật ký riêng ở `../volReading/README.md` (Vol 1 xong).
+**Listening: Vol 1–8 xong (2026-10-23); còn Vol 9.**
 
 ## Quy trình 1 vol (cwd = backend/scripts/volListening)
 
@@ -137,6 +138,46 @@ TurboScribe (dòng `(m:ss - m:ss)`, tiêu đề `Section N`/`Part N`, không ghi
   = transcript docx đã lọc, mỗi câu một dòng (để viết `turns`).
 - Playwright: site có `middleware/botGuard.js` chặn UA "HeadlessChrome" (403 "Truy cập bị từ chối" lúc đăng nhập) → `vol_pw.js`,
   `pw_fulltest.js` dùng UA Chrome thường.
+
+## Vol 8 — khác Vol 7
+
+`LISTENING/`: đề `VOL 8 TEST N LIS.docx` (**đánh máy**, gõ câu hỏi từ `extract.json`; ảnh map nhúng trong docx → giải nén
+`web/vol8/img/t<T>/image1.*`, spec `map(…, { img: 'img/t1/image1.jpg' })` — `cropFor` nay hiểu `c.img`, đổi sang PNG, không cắt)
++ `TRANSCRIPT-KEY/TRANSCRIPT-KEY VOL 8 TEST N LIS.docx` = key dòng `Câu số N:` (câu chọn 2–3 đáp án ghi gộp `Câu số 17-18:` →
+`B, C`) rồi transcript TurboScribe (tiêu đề `Section N`, không ghi người nói) + audio `AUDIO/TEST N VOL 8.mp4` = **cả đề 1 file**.
+8 test, không có 10 phút chép đáp án ở cuối. Map có watermark "REAL IELTS EXAMS 0964879926" của nhà phát hành.
+
+- Spec: `docx: 'LISTENING/TRANSCRIPT-KEY/…'` + `rawRe: [['^[\\s\\S]*?\\n(?=Section 1\\n)', '']]` (bỏ khối key; key viết `SECTION N`
+  hoa, transcript `Section N`). Tên riêng docx viết khác đề in → `rawRe` theo đề (Fernley→Fearnley, Beachheads→Beach Heads, …).
+- Mốc phần (công cụ git-ignored trong `web/vol8/`): `full_words.js` = Whisper cả đề có mốc từng từ → `full/t<T>.json` (turbo; hết
+  hạn mức thì `WB_MODEL=whisper-large-v3`); `clips.js <T>` = P1 từ sau "…of your question booklet.", ranh giới = cuối khoảng lặng
+  soát đáp án sau "end of part N" − 0,5 s, P4 hết sau câu "check your answers" cuối → `clips.json`; `mkstubs.js <T>` (+ `OVR` đặt
+  tay) → `stubs/t<T>.js`, `clips_final.json` (spec T6–T8 đọc file này) và cắt `words/t<T>p<P>.json` cho `speaker_pitch.js`;
+  `probe.js <T> <từ> <đến>` nghe 1 đoạn của file cả đề; `edges.js t1p1 …` nghe 10 s đầu + 12 s cuối mỗi audio phần đã cắt;
+  `prev.js <T> <P>` transcript docx đã lọc, mỗi câu một dòng; `tdedupe.js` so 6-gram transcript với ngân hàng.
+- Bộ lọc lời dẫn: "You now have one minute to check" (docx cụt, không có "your answers") nay cũng bị xoá.
+- Tiêu đề nhóm `'X\nQuestions N-M'` và `\n\n` trong instruction bị site gộp thành 1 dòng → chỉ dùng `'Questions N-M'`.
+
+## Vol 8 — 2026-10-23 (xong cả 8 test)
+
+- Chống trùng (`vol_keys_dedupe.js 8` + `web/vol8/tdedupe.js`): chỉ **T2 P2 = "Becoming a Millionaire"** (Vol 5 - Test 2; key 10/10,
+  transcript 83 %) → dùng lại. 31 phần còn lại mới, không đề full nào trùng.
+- Mới: 31 bài lẻ (T1, T3–T8 đủ 4 phần; T2 P1/P3/P4) — đều bật, ảnh bìa R2 (CC0/PD Wikimedia), Playwright nháp + live 31/31;
+  4 ảnh map (T1P2, T3P2, T5P2, T6P2). Đề full **Vol 8 - Test 1–8** tạo + bật; pw_fulltest 40/40 cả 8 đề. `vol_audit.js 8`:
+  0 problem, 952 trích dẫn khớp.
+- Lỗi key gốc đã sửa theo băng (ghi ở đầu spec): **T1 Q1** "13 March 1998" → **31 March (1988)** (cả turbo lẫn large-v3 nghe "March
+  the 30th. Oh, … the 31st. 1988" — tự sửa ngày); **T4 Q37** B → **A** ("the outer box could be made of any material, but the lining
+  was gold"). Chính tả theo đề/băng: T7 Q1 Thorn (đánh vần T-H-O-R-N), T5 Q5 Fearnleigh.
+- Transcript: docx T5 P4 cụt ở "Many people were surprised." (mất đoạn chứa Q37–40) → bổ sung từ Whisper large-v3 (`rawFix`).
+  Whisper bỏ sót nhiều đoạn ở chỗ ngắt (T1P2, T2P1, T5P3, T6P2/P4, T7P2, T8P2/P4) → nghe lại từng đoạn chứa đáp án: docx đúng.
+  T3 P4 băng dừng sau "management of absence" (docx dính mẩu lời dẫn → `fix`); T4 audio bắt đầu giữa lời dẫn Part 1, Part 1 không
+  có câu kết → mốc đặt tay; T6 P3/P4 mốc đặt tay (1234,6 s); T1 P4 đuôi dính 1 s lời giới thiệu phát lại → cắt ở 1441,9 s.
+- Người nói theo `speaker_pitch.js` + nội dung; T2P3, T3P3, T5P3 cao độ lẫn lộn → chia theo nội dung câu hỏi.
+- 4 ảnh map có watermark "REAL IELTS EXAMS 0964879926" → thầy duyệt thay (2026-10-23): không tìm được bản sạch trên mạng (chỉ trang
+  luyện thi bên thứ ba) → **vẽ lại bằng SVG** bám theo bản gốc (`web/vol8/maps_src/t<T>p2.js` → `.svg`; `render.js` xuất PNG 2x +
+  `_ovl.png` chồng lên bản gốc để căn; `measure.py` đo toạ độ theo màu/đường đen). `replace_maps.js --apply` đưa lên R2 và thay
+  imageUrl ở bài lẻ + bản sao trong đề full (URL cũ: `web/vol8/backup/maps_old.json`); spec trỏ `img/t<T>/map_redraw.png`.
+  Live 4/4, pw_fulltest T1/T3/T5/T6 40/40, audit 0 problem.
 
 ## Vol 7 — 2026-10-16 (xong cả 11 test)
 

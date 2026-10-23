@@ -23,7 +23,8 @@ const NARRATION = [
   /That is the end of the listening test\.\s*/gi,
   /You now have (?:10|ten) minutes to transfer your answers to the listening answer sheet(?:\.|$)\s*/gi,
   /That is the end of (?:part|section) \w+\.\s*/gi,
-  /You now have (?:\w+ )+to check your answers(?: to (?:part|section) \w+)?(?:\.|$)\s*/gi,
+  // " your answers" optional: Vol 8 docx cut off mid-sentence ("You now have one minute to check" at the end of a part)
+  /You now have (?:\w+ )+to check(?: your answers(?: to (?:part|section) \w+)?)?(?:\.|$)\s*/gi,
   /You will see that there is an example[^.]*\.\s*/gi,
   /(?:On this occasion,? )?[Oo]nly the conversation relating to this will be played first\.\s*/g,
   /Now we shall begin\.\s*/g,
