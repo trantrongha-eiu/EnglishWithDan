@@ -187,9 +187,7 @@ Yes, it's amazing, isn't it?
 And from measuring the bones in one of the sites, we found that the people were actually taller and had better teeth than the people who live in the area today.
 Tomas:
 Probably due to less carbohydrates.
-May:
 How were the people you had to work with?
-Tomas:
 My team was great.
 They were made up of people my age from all over the world.
 It was good to work with them.

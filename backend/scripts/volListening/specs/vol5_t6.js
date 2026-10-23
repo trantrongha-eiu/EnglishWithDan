@@ -35,8 +35,8 @@ What's the address?
 Grace:
 It's graceb@travel.co.nz.
 I chose it when I was younger and I just haven't changed it since.
-It's easy to remember.
 William:
+It's easy to remember.
 Now, do you have any particular qualifications, Grace?
 Grace:
 I'm a housewife now, but I used to be in teaching.

@@ -120,6 +120,7 @@ At first, we thought we'd ask the other students to suggest something, but we we
 So instead, we brainstormed some, just the two of us, then made a shortlist, and we'll get them to vote for the one they like best.
 Tutor:
 Right.
+Daniel:
 But the thing is, if people don't know how debates work, they could feel at a disadvantage.
 I mean, it wouldn't affect their grades or anything, but it could put them off.
 Fiona:
@@ -129,6 +130,7 @@ I think that's a good idea.
 Fiona:
 And we thought we could establish some key points of a successful debate there, like that debates are effective methods for considering an issue, and that you need to understand both sides of an argument in order to support one side effectively.
 We think it'll be best if we can use an issue that the students already have strong opinions about.
+Daniel:
 Then some people will be happy to speak in support of it and others to oppose it.
 Tutor:
 Right.
@@ -138,7 +140,6 @@ Well, we've got to think about how people will do the background research for th
 We could organise everyone into two teams.
 That should save time for the main speakers.
 They won't have to do it on their own.
-Fiona:
 And we'll need to decide on some rules, like how long each person speaks for, and to select a chair for the debate, someone who's really confident.
 Tutor:
 Fine.
@@ -162,8 +163,8 @@ Fiona:
 Or instead of that, we could make a summary of the main stages and hand that out.
 Daniel:
 Then talk it through.
-Fiona:
 Yes, OK, that's better.
+Fiona:
 OK, but we do need to talk about body language as well.
 Tutor:
 Yes, that's a very important tool.
@@ -176,12 +177,11 @@ Then we need to think about where people will find the information on the debate
 We could compile a list of sources, textbooks and articles and so on.
 Fiona:
 We could, but couldn't people offer their own suggestions and advice on that at the meeting instead?
-Daniel:
-Yes, get everyone involved.
 Tutor:
+Yes, get everyone involved.
 Right.
-What about preparation for asking and answering questions?
 Fiona:
+What about preparation for asking and answering questions?
 We could try to demonstrate that, but I'm not sure how.
 Daniel:
 Maybe we could put up a list of points on the board, then discuss them.

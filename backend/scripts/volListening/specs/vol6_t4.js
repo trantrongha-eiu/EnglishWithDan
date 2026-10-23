@@ -311,9 +311,7 @@ What about Elbeys?
 There are really detailed figures showing that by going global, they were in a strong position to negotiate rock-bottom prices for their materials because they were buying in bulk.
 Tutor:
 Yes, they would be a good choice because it would allow you to present data effectively.
-Lara:
 Babbis would be good for that too.
-Tutor:
 All the figures relating to their staffing levels before and after going global are available.
 Lara:
 Oh, and they're huge, aren't they?

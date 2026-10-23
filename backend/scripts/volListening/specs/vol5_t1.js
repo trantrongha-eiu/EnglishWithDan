@@ -50,13 +50,11 @@ We could cook some sausages and sing songs around it in the evenings.
 And perhaps it would be a good way to meet other families there, too.
 Man:
 Great.
-Woman:
 And it isn't too expensive.
-Man:
 £6 per adult per night, £3 per child.
 But wait, families of four can get it for £15.75 a night.
-Woman:
 That works out even cheaper.
+Woman:
 Let's look at a couple of other campsites before we decide.
 Man:
 Yes, let's look at Snetton Forest Campsite.
@@ -92,9 +90,7 @@ But this one has got an open-air pool, which we'd all love in the summer.
 And they have a little shop where you can buy basic things like bread and milk.
 Man:
 That's really useful.
-Woman:
 And there's lots to do there.
-Man:
 I think on Saturday nights...`,
       groups: [
         note('Complete the notes below.\nWrite ONE WORD AND/OR A NUMBER for each answer.', 'Campsites', [

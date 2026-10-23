@@ -2,6 +2,8 @@
 // S1 clipped from "Now turn to section one" (the test introduction comes first); its example is played first and then the
 // whole conversation again → transcript keeps the full version only).
 // Transcript: Whisper large-v3 + turbo (speaker_pitch.js for turns) checked against "Transcripts & Keys/test 3- transcript.pdf".
+// Source key fixed: Q17 "reception" → mobile phone (the note reads "use your ___ in the western area"; recording: "the reception for
+// your mobile phone may be unreliable") — noted 2026-10-23 debug.
 const { note, mc, multi, matching } = require('../vol_build');
 
 module.exports = {
@@ -309,9 +311,10 @@ Laura:
 Actually, I have to get it finished by the 2nd, because I've arranged a work placement after that.
 Tutor:
 OK.
+Laura:
 So, our next meeting is two weeks today.
 Is that still OK?
-Laura:
+Tutor:
 Yes, and in the meantime, I'll send you an email.`,
       groups: [
         mc('Choose the correct letter, A, B or C.\n\nResearch on absence from work', [

@@ -43,9 +43,7 @@ Mountain Campground has many hiking trails close by.
 But then again, Sunrise Campground is next to the lake, and my husband loves to fish.
 Ranger:
 Hmm.
-Sandra:
 They're both really beautiful spots.
-Ranger:
 I guess it depends on when you're going.
 Sandra:
 Really?

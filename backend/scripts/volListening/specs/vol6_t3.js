@@ -273,8 +273,8 @@ Luke:
 Was that the one that had an ultrasonic dishwashing machine?
 Millie:
 Yes, that would still be pretty revolutionary today.
-Did you read about the Wonderhouse?
 Luke:
+Did you read about the Wonderhouse?
 It was designed in 1964 by an industrial designer called Alfred Noyes.
 Millie:
 Oh, the one with the roof like a sort of tent or an umbrella.
@@ -287,9 +287,9 @@ Millie:
 Hmm, pity.
 Luke:
 What about those spaceship houses they built between 1968 and 1978?
-Millie:
 Like flying saucers.
 They built over a hundred of them.
+Millie:
 I don't know if I'd want to live in one.
 The living area was quite limited and they had really low ceilings, but they do look really futuristic, don't they?
 Luke:

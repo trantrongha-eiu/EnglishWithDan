@@ -121,11 +121,9 @@ Now, are there any other requirements for your new property?
 Anna:
 Hmm, well, it's not essential, but it'd be handy to have an office for when my husband works from home.
 It doesn't need to be a big one.
-Daniel:
 I guess it all comes down to budget.
-Anna:
-Yes.
 Daniel:
+Yes.
 OK, Anna.
 Well, I've certainly got enough to be getting on with, and I will...`,
       groups: [

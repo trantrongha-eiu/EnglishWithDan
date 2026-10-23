@@ -59,15 +59,17 @@ Uh-huh.
 And can I ask if you work?
 Jan:
 Yes, I want to be an actor, but I'm working as a waitress at the moment.
-After this course, who knows?
 Receptionist:
+After this course, who knows?
 Right, back to the paperwork.
 So, we're enrolling you on the two-day course that starts tomorrow, the 30th of May.
+Jan:
 Oh, uh, sorry, no, on the 13th of June.
 I meant the one starting in two weeks.
 Is that still all right?
-Jan:
+Receptionist:
 Oh, that's fine.
+Jan:
 Can you tell me something about accommodation?
 Receptionist:
 Yes.
@@ -152,7 +154,7 @@ Wait till you see what we have in...`,
         2: { v: 'Khi hỏi khoá học đã tham gia trước đây.', t: ['Which course did you do?', 'The writing for the theatre course.'], p: 'Khoá viết cho sân khấu → theatre' },
         3: { v: 'Khi lễ tân đọc địa chỉ trên máy.', t: ["Oh, so that's 20 Gregory Avenue.", 'Gregory Place, actually.'], p: 'Hồ sơ ghi Avenue nhưng Jan sửa lại (bẫy Avenue) → Place' },
         4: { v: 'Khi hỏi Jan có đi làm không.', t: "Yes, I want to be an actor, but I'm working as a waitress at the moment.", p: 'Muốn làm diễn viên (bẫy actor) nhưng hiện là nhân viên phục vụ bàn → waitress' },
-        5: { v: 'Khi chốt ngày khoá học bắt đầu.', t: ["So, we're enrolling you on the two-day course that starts tomorrow, the 30th of May.", 'Oh, uh, sorry, no, on the 13th of June.'], p: 'Ngày 30/5 bị nói nhầm rồi sửa lại (bẫy) → 13th June' },
+        5: { v: 'Khi chốt ngày khoá học bắt đầu.', t: ["So, we're enrolling you on the two-day course that starts tomorrow, the 30th of May.", 'Oh, uh, sorry, no, on the 13th of June.'], p: 'Lễ tân ghi khoá bắt đầu ngày mai 30/5 (bẫy), Jan sửa lại là khoá ngày 13/6 → 13th June' },
         6: { v: 'Khi hỏi giờ đến.', t: 'Is 5.30 too early to arrive?', p: 'Jan định đến lúc 5.30 chiều; 5 giờ là giờ kết thúc ngày cuối (bẫy) → 5.30' },
         7: { v: 'Khi hỏi về chế độ ăn.', t: ["But I don't eat anything that's made from milk.", "I don't eat much of it, but that's fine.", "You don't need to note that."], p: 'Thịt thì không cần ghi chú (bẫy meat); không ăn đồ làm từ sữa → no milk products → milk' },
         8: { v: 'Khi nói về lớp buổi chiều.', t: ["If we do that, there'll be a choice of doing comic or what we call classic work.", "Oh, I'd always go with comedy."], p: 'Chọn hài kịch → comic work → comic' },

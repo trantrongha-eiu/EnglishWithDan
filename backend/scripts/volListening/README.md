@@ -288,6 +288,46 @@ Sửa thêm (draft trước lượt 2: `web/vol<V>/backup/draft_pre_speakers2/`)
 - Sau lượt 2: `vol_audit.js 7`/`8` 0 problem; mọi bài lẻ sửa DB == draft (cả bản trong đề full); pw_fulltest live 40/40 Vol 8 - Test 1,
   Vol 8 - Test 5, Vol 7 - Test 6.
 
+## Vol 5 + Vol 6 — debug lại 2026-10-23 (như Vol 7 + 8 lượt 2)
+
+Công cụ mới (git-ignored, `web/`):
+- `fetchr2.js <V> <id…>` tải audio bài lẻ đã up (R2) → `vol<V>/audio/<id>_r2.mp3`; `turncheck.js` ưu tiên file này.
+- `py web/localwords.py <V> <id…>` = mốc từng từ bằng **faster-whisper small.en chạy trên máy** (CPU, không tốn hạn mức Groq; model có sẵn
+  trong cache HF) → `vol<V>/words_r2/<id>.json`. Lý do: `words/` cũ của Vol 5/6 nhiều bài **vượt độ dài audio** 20–60 s (làm trên file gốc
+  chưa clip hoặc turbo trôi mốc) → embedding lấy sai đoạn. Mọi tool đọc mốc từ nay nhận `WORDS=words_r2`.
+- `py web/spkaudit.py <model> <V> <id…> [--all]` = spkcheck + clipvote gộp: mỗi câu → margin tới người kia, so với phân bố margin của các
+  cửa sổ cùng độ dài lấy từ câu chắc chắn của từng người → `>>` (margin âm, ngoài 98 % cửa sổ của chính nhãn, trong ≥ 5 % cửa sổ người kia)
+  / `?` (yếu). `sh web/runaudit.sh <V> <id…>` = turncheck DUMP + spkaudit. Hiệu chuẩn: V8 T5P1/T2P3 (đã sửa lượt 2) → 0 cờ.
+- `spksplitk.py <model> <V> <id> <K>` = tách K giọng không nhìn nhãn (bài 3 người), `lowfrac.js` = tỉ lệ khung cao độ < 140 Hz từng câu,
+  `ctx.js <V> <id> <t…>` = các câu quanh một mốc, `copies.js <V> <id…>` = mọi đề full chứa bản sao bài lẻ (kể cả vol khác).
+- `sync_drafts.js` nay ghi **mọi** đề full có bản sao (cùng title + part), không chỉ "Vol V - Test T" — V5 T7P1 nằm cả trong Vol 7 - Test 6.
+  Backup `vol<V>/backup/sync_<id>_<ms>.json`. Câu `?` có span > 15 s là căn lệch qua chỗ nghỉ, bỏ qua.
+
+Kết quả:
+- Key: `keycheck.js` 5/6 — mọi chỗ lệch DB ↔ key in đều đã ghi, trừ **V5 T3 Q17** "reception" → mobile phone (đề "use your ___ in the
+  western area"; sửa lúc seed, chưa ghi → nay ghi ở đầu spec). V5 T10 Q35 "3,000" ↔ "3,000/3000" chỉ là biến thể.
+- `audiocheck.js`: Vol 5 10 đề + 36 bài, Vol 6 6 đề + 22 bài trên R2 đều 200, header = giải mã = DB.
+- Người nói — 31 bài hội thoại (V5 19, V6 12; V5 T3P1 = V6 T1P1), sửa 10 bài (draft cũ `vol<V>/backup/draft_pre_speakers/`):
+  - V5 T1P1: "And it isn't too expensive.", "That works out even cheaper.", "And there's lots to do there." là **Man**.
+  - V5 T3P3: "So, our next meeting is two weeks today. Is that still OK?" là **Laura**, "Yes, and in the meantime, I'll send you an email."
+    là **Tutor** (cao độ 262 Hz / giọng nam).
+  - V5 T6P1: "It's easy to remember." là **William** (75 % khung < 140 Hz).
+  - V5 T7P1: "I guess it all comes down to budget." là **Anna**, "Yes." sau đó là Daniel. Sửa cả bản trong **Vol 7 - Test 6**.
+  - V6 T1P3 (3 người, tách 3 giọng không nhãn khớp rõ X = Daniel, Y = Fiona, Z = Tutor): Daniel nói "But the thing is… disadvantage. I mean…
+    put them off.", "Then some people will be happy to speak in support…", "And we'll need to decide on some rules…", "Yes, OK, that's
+    better."; Tutor "Yes, get everyone involved. Right."; Fiona "What about preparation for asking and answering questions?".
+  - V6 T2P1: Receptionist "After this course, who knows?" và "Oh, that's fine."; **Jan** tự sửa ngày "Oh, uh, sorry, no, on the 13th of
+    June. I meant the one starting in two weeks. Is that still all right?" → sửa giải thích Q5 (key 13th June không đổi).
+  - V6 T3P3: Luke nói "Did you read about the Wonderhouse?", "Like flying saucers. They built over a hundred of them.".
+  - V6 T4P3: "Babbis would be good for that too." là **Tutor** (86–102 Hz).
+  - V6 T5P1: "They're both really beautiful spots." là **Ranger**.
+  - V6 T6P3: "How were the people you had to work with?" là **Tomas** (từng từ 76–176 Hz, dòng thời gian giọng liền mạch Tomas tới "…all over
+    the world") — băng để Tomas tự hỏi tự đáp → ghi đúng như băng.
+  - Còn lại sạch; cờ yếu để nguyên (câu 1 từ "Why?", "Great.", "Okay." margin < 0,15). V6 T5P3 (2 giọng nam, lúc seed chia theo nội dung)
+    tách giọng tốt (cosine 0,29), 0 cờ.
+- Sau khi sửa: `vol_audit.js 5`/`6`/`7` 0 problem; mọi bản sao == bài lẻ (`copies.js`); pw_fulltest live 40/40 Vol 6 - Test 1, Vol 6 -
+  Test 2, Vol 5 - Test 7, Vol 7 - Test 6.
+
 ## Vol 7 — 2026-10-16 (xong cả 11 test)
 
 - Chống trùng (`vol_keys_dedupe.js` + so 6-gram transcript docx với ngân hàng): **T2 = "Actual Test 2", T3 = "Actual Test 1"**
