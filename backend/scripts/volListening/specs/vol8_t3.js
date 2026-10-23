@@ -97,9 +97,8 @@ module.exports = {
         ['Sylvia', 'Right.'], ['Greg', "I think it's easier"], ['Sylvia', 'Why?'], ['Greg', 'Well, last time'], ['Sylvia', 'Oh, I forgot that.'],
         ['Greg', 'You know what the lecturers'], ['Sylvia', 'OK.'], ['Greg', 'I think we want to stick'], ['Sylvia', "You're probably right."], ['Greg', 'Exactly.'],
         ['Sylvia', 'Well, we need to find out'], ['Greg', 'Do you think so?'], ['Sylvia', 'We also need to find out'], ['Greg', 'And what they cost.'],
-        ['Sylvia', "That's not so important."], ['Greg', "You're right."], ['Sylvia', "Then there's nuclear power."], ['Greg', "That's an interesting one"],
-        ['Sylvia', 'Yes.'], ['Greg', 'Yes.'], ['Sylvia', 'But once people realise'], ['Greg', "That's true."], ['Sylvia', "They're not that bad."], ['Greg', 'A good point.'],
-        ['Sylvia', "It'll be very interesting"],
+        ['Sylvia', "That's not so important."], ['Greg', "You're right."],
+        ['Sylvia', 'Yes.'], ['Greg', 'I know that the technology'], ['Sylvia', 'Are there any problems'], ['Greg', 'Yes.'], ['Sylvia', 'But once people realise'], ['Greg', "That's true."], ['Sylvia', "They're not that bad."], ['Greg', 'A good point.'],
       ],
       groups: [
         note('Complete the notes below.\nWrite ONE WORD ONLY for each answer.', 'Products using renewable energy sources', [

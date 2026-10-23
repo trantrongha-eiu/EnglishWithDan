@@ -17,13 +17,13 @@ module.exports = {
       cut: [['On this occasion only, the conversation', 'answer questions 1 to 4.']],
       turns: [
         ['Susie', 'Hello?'], ['Steve', "Hi Susie, it's Steve."], ['Susie', 'Steve, hi!'], ['Steve', "I'm fine, thanks."], ['Susie', 'I sure am.'],
-        ['Steve', "What's the weather like"], ['Susie', "That's right, and not less"], ['Steve', 'A bit different'], ['Susie', 'True.'], ['Steve', 'I was wondering what'],
+        ['Steve', "What's the weather like"], ['Susie', "That's right, and not less"], ['Steve', 'True.'],
         ['Susie', "Well, you'll find that"], ['Steve', 'My conference is only'], ['Susie', "Well, it's a beautiful"], ['Steve', "Okay, I'm writing"],
-        ['Susie', 'Well, there are lots of museums.'], ['Steve', 'Hmm, what else?'], ['Susie', 'Well, there are plenty of walks'], ['Steve', 'Any chance of a game'],
-        ['Susie', 'Oh, absolutely.'], ['Steve', 'Great!'], ['Susie', 'Sure.'], ['Steve', 'Okay.\nHow do you spell'], ['Susie', 'F-E-A-R-N'], ['Steve', '6073 Fearnleigh Drive.'],
-        ['Susie', "The town's in northern"], ['Steve', 'Sounds interesting.'], ['Susie', 'Well, the post office'], ['Steve', 'So, when exactly'],
+        ['Susie', 'Well, there are lots of museums.'], ['Steve', 'Any chance of a game'],
+        ['Susie', 'Oh, absolutely.'], ['Steve', 'Great!'], ['Susie', 'Sure.'], ['Steve', 'Okay.\nHow do you spell'], ['Susie', 'F-E-A-R-N'], ['Steve', 'Okay.\nGot that.'],
+        ['Susie', "The town's in northern"], ['Steve', 'Sounds interesting.'], ['Susie', 'Well, the post office'], ['Steve', 'The conference is from'],
         ['Susie', 'Oh, yes.'], ['Steve', 'Ah, okay.'], ['Susie', 'As soon as the sun'], ['Steve', 'Okay.\nI\'ll do that tonight.'], ['Susie', 'And really, you shouldn'],
-        ['Steve', 'Hold on.'], ['Susie', 'Okay.\nIt says here'], ['Steve', 'Someone told me'], ['Susie', 'Sure.\nThat tour takes'], ['Steve', 'Sounds good.'],
+        ['Steve', 'Someone told me'], ['Susie', 'Sure.\nThat tour takes'], ['Steve', 'Sounds good.'],
         ['Susie', 'Yes, you can do that'], ['Steve', 'Well, that should keep'],
       ],
       groups: [
@@ -90,7 +90,7 @@ module.exports = {
       turns: [
         ['Tutor', 'Morning, Katie.'], ['Katie', "Well, the writer's made"], ['Tutor', 'Students do sometimes'], ['John', "Well, what if you don't"],
         ['Tutor', "There's another type"], ['John', 'Yes.'], ['Katie', 'Tony, can I'], ['Tutor', 'Of course.'], ['Katie', "This person's used italics"], ['Tutor', "Actually, he's done it"],
-        ['Katie', 'You mentioned the University'], ['Tutor', 'Well, not really.'], ['Katie', 'So, when exactly'], ['Tutor', 'Particularly where there'],
+        ['Katie', 'You mentioned the University'], ['John', 'But using a range'], ['Tutor', 'Well, not really.'], ['Katie', 'So, when exactly'], ['Tutor', 'Particularly where there'],
         ['John', 'One thing that struck me'], ['Tutor', 'It is important that you'], ['John', 'Yes.'], ['Tutor', 'Good, because'],
         ['Katie', 'Yes, I would.'], ['Tutor', 'Do you agree, John?'], ['John', 'Yes.\nI mean, it is very clear.'], ['Tutor', 'Well, my general feeling'],
         ['John', 'One thing I thought'], ['Tutor', "Yes.\nI'm glad you"], ['Katie', 'Another thing that helps'], ['Tutor', 'You mean things like'],

@@ -91,7 +91,7 @@ module.exports = {
         ['Charlie', 'Hi, Sandra.'], ['Sandra', "I'm going to include an"], ['Charlie', 'Oh, I was going to pick'], ['Sandra', 'What are you going to include'],
         ['Charlie', 'That publicity flyer'], ['Sandra', "Anyway, we've also"], ['Charlie', 'Well, what about choosing'], ['Sandra', 'The set of pictures'],
         ['Charlie', 'Yes, they demonstrate'], ['Sandra', 'Yes, I agree.'], ['Charlie', 'To be honest'], ['Sandra', "You're right."], ['Charlie', 'Right.'],
-        ['Sandra', "I can't remember."], ['Charlie', 'No, nor do I.'], ['Sandra', "There's a sculptor"], ['Charlie', 'OK.'], ['Sandra', 'Have you?'],
+        ['Sandra', 'I thought his most useful'], ['Charlie', 'No, nor do I.'], ['Sandra', "There's a sculptor"], ['Charlie', 'OK.'], ['Sandra', 'Have you?'],
         ['Charlie', 'Well, like my design'], ['Sandra', 'Right.'], ['Charlie', 'Then I did some work'], ['Sandra', 'So, is that to show'],
         ['Charlie', "That's not why"], ['Sandra', 'Oh, I see.'], ['Charlie', 'Yes.'], ['Sandra', 'OK, good.'], ['Charlie', 'Then there was the advertisement.'],
         ['Sandra', 'I remember.'], ['Charlie', 'Right.'],

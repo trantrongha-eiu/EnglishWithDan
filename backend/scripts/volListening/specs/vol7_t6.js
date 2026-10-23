@@ -53,14 +53,17 @@ module.exports = {
       part: 3, title: 'Teachers Reading Picture Books with Children', audio: A, clip: [769.3, 1129.5], cover: 'children picture books reading | teacher reading to young children',
       fix: [['So, what are we going to say', 'Hi, are you ready to discuss our presentation? Yeah, sure. So, what are we going to say'], ['Like, I spy friends.', 'Like, I Spy Friends.'], ['about the boat party.', 'about The Boat Party.']],
       turns: [
-        ['Man', 'Hi, are you ready'], ['Woman', 'Yeah, sure.'], ['Man', 'I think we should start'], ['Woman', 'The journal article'],
-        ['Man', 'Right.'], ['Woman', "It's a lovely story."], ['Man', "And they're all doing"], ['Woman', 'Yes.'],
-        ['Man', 'Me too.'], ['Woman', 'Very cute.'], ['Man', 'I really liked what'], ['Woman', "That's true."],
-        ['Man', "Oh, that's good to know."], ['Woman', 'And shall we also include'], ['Man', 'Yes.'], ['Woman', 'Sounds good.'],
-        ['Man', "That's why teachers like this one"], ['Woman', 'And the pages are so full'], ['Man', "Yes, and it's full of beautiful"],
-        ['Woman', 'In the next part'], ['Man', 'Yes, one thing that shocked me'], ['Woman', 'Yes, that was unexpected'], ['Man', "I think that's interesting."],
-        ['Woman', 'Me neither.'], ['Man', 'Alright.'], ['Woman', 'Okay, well, a lot of them'], ['Man', 'I agree.'],
-        ['Woman', 'Good point.'], ['Man', "Yes, it's probably different"], ['Woman', "It sounds interesting, but"],
+        // Debug 2026-10-23: turns re-done by voice (WeSpeaker embeddings, label-free 2-way split; the old content-based turns matched
+        // the voices no better than chance). Voice B is the man (a third of its pitch frames < 140 Hz, like the other men), A the woman.
+        // The recording does not always follow conversational logic (e.g. the woman says both "Yes, one thing that shocked me…" and
+        // "Yes, that was unexpected for me as well.") — labelled as heard. Weak-margin lines kept by content.
+        ['Man', 'Hi, are you ready'], ['Woman', 'Yeah, sure.'], ['Man', 'Right.'], ['Woman', 'Yeah.'],
+        ['Man', "And they're all doing"], ['Woman', 'Yes.'], ['Man', 'I love the way'], ['Woman', 'Me too.'],
+        ['Man', "It's still relevant."], ['Woman', 'I really liked what'], ['Man', "That's true."], ['Woman', "Oh, that's good to know."],
+        ['Man', 'Yes.'], ['Woman', 'It sounds like an innocent'], ['Man', 'Teachers like to use this'], ['Woman', "Because it's so different"],
+        ['Man', 'A good choice.'], ['Woman', 'This one uses a lot'], ['Man', 'I think they should be just'], ['Woman', "I think that's interesting."],
+        ['Man', 'Me neither.'], ['Woman', "Now let's think about other"], ['Man', 'Okay, well, a lot of them'], ['Woman', 'For me, the main thing'],
+        ['Man', "Why don't we also discuss"], ['Woman', "Yes, it's probably different"], ['Man', 'It sounds interesting, but'],
       ],
       groups: [
         matching('What reason do the speakers give for teachers using each of the following picture books with children?\nChoose SIX answers from the box and write the correct letter, A-I, next to Questions 21-26.',

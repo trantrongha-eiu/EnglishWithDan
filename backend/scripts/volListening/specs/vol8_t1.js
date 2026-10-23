@@ -2,8 +2,10 @@
 // "LISTENING/TRANSCRIPT-KEY/TRANSCRIPT-KEY VOL 8 TEST 1 LIS.docx" = key lines "Câu số N:" then a TurboScribe-style transcript
 // (headings "Section N", no speakers); audio = the whole test in one file "LISTENING/AUDIO/TEST 1 VOL 8.mp4" → clip per part
 // (web/vol8/clips.js: silencedetect + Whisper turbo word times). Turns by content + voice pitch (speaker_pitch.js).
-// Source errors fixed by the recording: key Q1 "13 March 1998" → 31 March (1988) — both Whisper models hear "March the 30th.
-// Oh, I'm the 31st. 1988." (she corrects herself; the year is 1988); docx "March the 13th" → 30th.
+// Source errors fixed by the recording: key Q1 "13 March 1998" → 30 March (1988) — both Whisper models hear "March the 30th.
+// Oh, I'm the 31st. 1988."; the docx's "13th" is a mishearing of her "30th". Debug 2026-10-23: "Oh, I'm the 31st!" is the AGENT
+// (speaker embedding: inside the agent's range, outside all of Sarah's) remarking on his own birthday — not her correcting
+// herself as first assumed (key was 31 March until then).
 const { note, mc, map, matching } = require('../vol_build');
 const A = 'LISTENING/AUDIO/TEST 1 VOL 8.mp4';
 
@@ -16,7 +18,7 @@ module.exports = {
       fix: [["March the 13th. Oh, I'm the 31st!", "March the 30th. Oh, I'm the 31st."]],
       turns: [
         ['Agent', 'Hello, how can I help you?'], ['Sarah', "I'm taking a year off"], ['Agent', "That's right, we can help"], ['Sarah', 'Great.'],
-        ['Agent', 'OK, your full name?'], ['Sarah', 'Sarah Brown.'], ['Agent', 'Date of birth?'], ['Sarah', 'March the 30th.'],
+        ['Agent', 'OK, your full name?'], ['Sarah', 'Sarah Brown.'], ['Agent', 'Date of birth?'], ['Sarah', 'March the 30th.'], ['Agent', "Oh, I'm the 31st."], ['Sarah', '1988.'],
         ['Agent', 'And your address?'], ['Sarah', '21 Waverley Road'], ['Agent', 'And a contact telephone number'], ['Sarah', 'I can give you my mobile'],
         ['Agent', 'Fine.'], ['Sarah', "Well, I'd like to go to Northern"], ['Agent', 'Have you been there before?'], ['Sarah', 'No, I know Southern'],
         ['Agent', 'Now, just as important'], ['Sarah', 'Well, I thought about hotel'], ['Agent', 'That sort of work'], ['Sarah', 'Such as?'],
@@ -40,12 +42,12 @@ module.exports = {
           '• agreed to take out __Q9__ from the Agency',
           '• told to use an __Q10__ for contacting people',
         ], {
-          1: '31 March/31st March/March 31/March 31st/31 March 1988/31st March 1988/March 31 1988/March 31st 1988/31st of March/31/03/1988',
+          1: '30 March/30th March/March 30/March 30th/30 March 1988/30th March 1988/March 30 1988/March 30th 1988/30th of March/the 30th of March',
           2: '0903775115/0903 775 115', 3: 'northern', 4: 'train', 5: 'hotel', 6: 'farm', 7: 'pass', 8: 'booklet', 9: 'insurance', 10: 'internet cafe/internet café',
         }, 'Questions 1-10'),
       ],
       expl: {
-        1: { v: 'Khi nhân viên hỏi ngày sinh.', t: ['Date of birth?', "March the 30th. Oh, I'm the 31st.", '1988.'], p: 'Sarah nói ngày 30 rồi sửa lại ngay là ngày 31 (bẫy 30), năm 1988 → 31 March' },
+        1: { v: 'Khi nhân viên hỏi ngày sinh.', t: ['Date of birth?', 'March the 30th.', "Oh, I'm the 31st.", '1988.'], p: 'Sarah sinh ngày 30 tháng 3 năm 1988; "Oh, I\'m the 31st." là nhân viên nói ngày sinh của chính mình (bẫy 31) → 30 March' },
         2: { v: 'Khi nhân viên xin số điện thoại liên lạc.', t: ['I can give you my mobile number.', '0903 775 115.'], p: 'Sarah đọc số di động → 0903775115' },
         3: { v: 'Khi nhân viên hỏi Sarah định đi đâu.', t: ["Well, I'd like to go to Northern Europe.", 'No, I know Southern Europe quite well'], p: 'Sarah đã biết Nam Âu (bẫy southern); cô muốn đi Bắc Âu → northern' },
         4: { v: 'Khi Sarah nói về phương tiện đi lại.', t: ['We always went by plane, but now I can choose.', "I'd like to go by train so I can stop off whenever I want."], p: 'Trước đây đi máy bay cùng gia đình (bẫy plane); lần này muốn đi tàu → train' },

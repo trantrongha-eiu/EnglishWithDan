@@ -64,8 +64,8 @@ module.exports = {
       turns: [
         ['Charlie', 'So, Gina, we'], ['Gina', 'Sure, Charlie.'], ['Charlie', 'So did you choose'], ['Gina', 'Well, there are other good'],
         ['Charlie', "And you don't regret it?"], ['Gina', "No, it's been brilliant"], ['Charlie', "I'm sorry I didn't go"], ['Gina', 'Absolutely.'],
-        ['Charlie', "That's right."], ['Gina', 'Hmm.'], ['Charlie', 'Great.'], ['Gina', 'So what do you think you gained'],
-        ['Charlie', "I think I've got much better"], ['Gina', 'For me, it was'], ['Charlie', "That's good."], ['Gina', "So we've got quite"],
+        ['Charlie', "That's right."], ['Gina', 'Hmm.'], ['Charlie', 'Great.'],
+        ['Gina', 'For me, it was'], ['Charlie', "That's good."], ['Gina', 'I also think it could'],
         ['Charlie', 'Sure.'], ['Gina', 'OK.'], ['Charlie', 'That sounds pretty challenging.'], ['Gina', "I've thought about it quite"],
         ['Charlie', 'Quite.'], ['Gina', "I'm still undecided."], ['Charlie', 'Yes, I think lots of graduates'], ['Gina', 'Yes, but the performers'],
         ['Charlie', 'I know lots of graduates go into education'], ['Gina', 'I was wondering about theatre'], ['Charlie', "That's what our tutor did"],

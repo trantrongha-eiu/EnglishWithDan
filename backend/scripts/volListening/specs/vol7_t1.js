@@ -30,7 +30,7 @@ module.exports = {
         ['Manager', 'So, just to give you an idea'], ['Debbie', 'Sure.'], ['Manager', 'Right.'], ['Debbie', "And how's the room arranged?"],
         ['Manager', "That's right."], ['Debbie', "Long tables aren't"], ['Manager', "They're included"], ['Debbie', 'Oh, right.'],
         ['Manager', 'And then, towards the end'], ['Debbie', 'Right.'], ['Manager', 'No, but we could'], ['Debbie', "Yes, that'd be better"],
-        ['Manager', 'Good.'], ['Debbie', 'So, apart from the music'], ['Manager', '£5,995.'], ['Debbie', "That's a bit more"],
+        ['Manager', '£5,995.'], ['Debbie', "That's a bit more"],
         ['Manager', 'Yes.'], ['Debbie', "Yes, you're probably right."], ['Manager', 'Certainly.'], ['Debbie', "Yes, well, I'd definitely"],
         ['Manager', 'Right.'], ['Debbie', "I'm free on the 12th"], ['Manager', 'That would be better, thanks.'], ['Debbie', 'Fine.'],
         ['Manager', 'And can I just take'], ['Debbie', 'Sure.'],

@@ -90,9 +90,9 @@ module.exports = {
         ['Adele', "Yes, but I'm not doing"], ['Ray', 'Yeah, and the quality'], ['Adele', 'Yeah, they use materials'], ['Ray', 'Yeah, they essentially'],
         ['Adele', 'Right.'], ['Ray', 'It really helped me'], ['Adele', 'OK.'], ['Ray', 'Yeah.'], ['Adele', 'I thought the reason'], ['Ray', 'Maybe.'],
         ['Adele', 'What did you think'], ['Ray', 'Yeah, bricks made out'], ['Adele', 'OK.'], ['Ray', 'I presume because'], ['Adele', "You'd think so."],
-        ['Ray', 'No.'], ['Adele', 'Bitublocks are dark brown'], ['Ray', 'Oh.'], ['Adele', 'Yeah.'], ['Ray', 'So how do you think'],
+        ['Ray', 'No.'], ['Adele', 'Bitublocks are dark brown'], ['Ray', 'Oh.'], ['Adele', 'So there are advantages'], ['Ray', 'So how do you think'],
         ['Adele', 'Well, I think Bitublocks'], ['Ray', 'I have my doubts.'], ['Adele', 'Maybe.'], ['Ray', "Yes, you're right."], ['Adele', 'There was a bit of interest'],
-        ['Ray', "I'm not sure."], ['Adele', "Yes, that's true."], ['Ray', "It'll be interesting"], ['Adele', 'So what do you know?'],
+        ['Ray', "I'm not sure."], ['Adele', "Yes, that's true."], ['Ray', "It'll be interesting"],
       ],
       groups: [
         mc('Choose the correct letter, A, B or C.', [

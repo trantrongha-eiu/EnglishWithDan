@@ -207,8 +207,9 @@ N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi
 - Mới: 31 bài lẻ (T1, T3–T8 đủ 4 phần; T2 P1/P3/P4) — đều bật, ảnh bìa R2 (CC0/PD Wikimedia), Playwright nháp + live 31/31;
   4 ảnh map (T1P2, T3P2, T5P2, T6P2). Đề full **Vol 8 - Test 1–8** tạo + bật; pw_fulltest 40/40 cả 8 đề. `vol_audit.js 8`:
   0 problem, 952 trích dẫn khớp.
-- Lỗi key gốc đã sửa theo băng (ghi ở đầu spec): **T1 Q1** "13 March 1998" → **31 March (1988)** (cả turbo lẫn large-v3 nghe "March
-  the 30th. Oh, … the 31st. 1988" — tự sửa ngày). (T4 Q37 từng ghi "B → A" là nhầm: key docx vốn là A = the inside, khớp băng.)
+- Lỗi key gốc đã sửa theo băng (ghi ở đầu spec): **T1 Q1** "13 March 1998" → **30 March (1988)** (băng "March the 30th. Oh, I'm the
+  31st. 1988"; lúc seed tưởng Sarah tự sửa thành 31, debug 2026-10-23 bằng voice embedding: "Oh, I'm the 31st." là **nhân viên** nói ngày
+  sinh của mình → 30; "13th" của docx/key là nghe nhầm "30th"). (T4 Q37 từng ghi "B → A" là nhầm: key docx vốn là A = the inside.)
   Chính tả theo đề/băng: T7 Q1 Thorn (đánh vần T-H-O-R-N), T5 Q5 Fearnleigh.
 - Transcript: docx T5 P4 cụt ở "Many people were surprised." (mất đoạn chứa Q37–40) → bổ sung từ Whisper large-v3 (`rawFix`).
   Whisper bỏ sót nhiều đoạn ở chỗ ngắt (T1P2, T2P1, T5P3, T6P2/P4, T7P2, T8P2/P4) → nghe lại từng đoạn chứa đáp án: docx đúng.
@@ -246,12 +247,46 @@ từng từ + nội dung; khi MFCC và cao độ trái nhau thì không sửa.
     owe her one?" — Bill nói "we owe her" lúc đầu).
   - V7 T10P3: **Professor** hỏi "But what about analyzing the data?", **Jason** đáp "Well, we've got an excellent computer program…".
   - V7 T11P1: "I'm sure it won't. But better be safe than sorry." là **Greg**.
-  - Giữ nguyên (không đủ chắc): V8 T3P3 nuclear (giọng Sylvia/Greg gần nhau; Q28 vẫn đúng vì "safety factor" là Greg cả hai cách), V8 T2P3
-    (Charlie/Gina), V8 T7P3 "I can't remember." (MFCC nói Charlie nhưng cao độ 239/216/180 Hz = Sandra), V7 T1P1 "Good.", V7 T6P3 (hai
-    giọng đều ~160–220 Hz — có thể là hai nữ dù nhãn Man/Woman; không tìm được transcript gốc trên mạng).
+  - (Lượt 1 để lại các chỗ chưa chắc — lượt 2 bên dưới xử lý bằng speaker embedding.)
 - Đoạn Whisper bỏ sót trong vùng đáp án: cả hai vol đã nghe lại lúc seed (xem nhật ký từng vol) → không làm lại.
 - `audiocheck.js`: Vol 7 10 đề full + 23 bài lẻ, Vol 8 8 đề full + 31 bài lẻ trên R2 đều 200, độ dài header = giải mã = DB.
 - Sau khi sửa: `vol_audit.js 7`/`8` 0 problem, các phần không sửa DB == draft, pw_fulltest Vol 7 - Test 1, Vol 8 - Test 8 (live) 40/40.
+
+### Lượt 2 (cùng ngày, thầy: "nghe thêm fix và push") — speaker embedding
+
+**Công cụ mạnh nhất cho người nói**: model nhận dạng giọng WeSpeaker ResNet34 VoxCeleb (ONNX 26 MB, `onnxruntime` đã có sẵn; bản lưu
+`web/models/wespeaker_en_voxceleb_resnet34.onnx`, nguồn github k2-fsa/sherpa-onnx release "speaker-recongition-models"). Fbank 80 chiều kiểu
+Kaldi viết bằng numpy. Script (git-ignored, sau `DUMP=1 node web/turncheck.js <V> <id…>`):
+- `py web/spkcheck.py <model> <V> <id…> [--all] [--at=a-b]` — mỗi câu ≥ 1 s → embedding 256 chiều → cosine với trung bình từng người nói
+  (leave-one-out) + gom cụm không nhìn nhãn + cosine giữa các người nói. Chuẩn: bài đúng nhãn có cosine giữa 2 người 0,04–0,41 và gom cụm
+  khớp nhãn gần 100 % (kể cả 2 giọng cùng giới); nhãn lộn xộn → cosine ~0,9.
+- `py web/clipvote.py <model> <V> <id> <từ> <đến>` (`PAIR=X,Y`) — một đoạn ngắn là ai: so margin của nó với phân bố margin của các đoạn
+  cùng độ dài lấy từ câu đã biết người nói (cách câu đó > 5 s). Dùng để chốt từng câu.
+- `py web/spksplit.py <model> <V> <id>` — tách 2 giọng không dùng nhãn (eigenvector + 2-means) + dòng thời gian từng từ; `genderprobe.py`
+  chiếu giọng lên trục nam–nữ học từ các bài khác. Giới tính chốt bằng phân bố cao độ (nam: ~1/3 khung < 140 Hz; nữ gần như không có).
+- Thử LLM nghe audio qua OpenRouter (key free, không dùng ở web): `inkling:free` chỉ chạy trong "agentic harness", nemotron omni cần
+  ≥ $0,50 credit → bỏ. Gemini vẫn không dùng (quota chung với chấm Speaking).
+
+Sửa thêm (draft trước lượt 2: `web/vol<V>/backup/draft_pre_speakers2/`):
+- **V8 T1 Q1 key 31 March → 30 March (1988)** — "Oh, I'm the 31st." là nhân viên (margin +0.43, nằm trong khoảng của nhân viên, không đoạn
+  nào của Sarah đạt mức đó); sửa key + giải thích (bài lẻ + đề full). Bỏ luôn biến thể "31/03/1988": key tách theo "/" nên nó thành "31",
+  "03", "1988" — gõ mỗi "1988" cũng được tính đúng (quét cả DB Listening: chỉ có câu này).
+- V8 T2P3: Charlie nói "Great. So what do you think you gained most…? I think I've got much better at controlling my stress levels." và
+  "That's good. So we've got quite a few things ready to say to our tutor. It'd be a good chance…".
+- V8 T3P3: Greg nói "Then there's nuclear power." và "I know that the technology has improved…"; "It'll be very interesting to see the
+  results of this survey." là Greg.
+- V8 T5P1: Susie nói "A bit different from England in July.", "6073 Fearnleigh Drive." (sau khi đánh vần), "So, when exactly are you
+  going?", "Hmm, what else?", "Hold on. I've got a leaflet here… She had a great time. Okay, it says here…"; Steve "True.".
+- V8 T5P3: John hỏi "But using a range of quotations…, isn't it?" (giọng nam 113–165 Hz).
+- V8 T6P3: Adele nói "So there are advantages and disadvantages with both types."; Ray nói "So what do you know?".
+- V8 T7P3: "I can't remember." là Charlie (sau câu hỏi của chính anh; lượt 1 giữ theo cao độ là sai).
+- V7 T1P1: "Good." (trước "So, apart from the music…") là Debbie.
+- **V7 T6P3 làm lại toàn bộ theo giọng**: nhãn cũ (theo nội dung) khớp giọng không hơn ngẫu nhiên (cosine Man–Woman 0,93). Giọng B = nam,
+  A = nữ. Băng không luôn theo logic hội thoại (nữ nói cả "Yes, one thing that shocked me…" lẫn "Yes, that was unexpected for me as well.",
+  margin +0.43/+0.52) → ghi đúng như băng; câu margin yếu (< 0,2) chọn theo nội dung. Sau sửa cosine 0,49, còn 4 câu yếu.
+- Giữ nguyên: V8 T6P1 "A photocopy?" (Whisper bỏ chữ nên đoạn lệch giờ; dòng thời gian = Customer), V7 T7P3 "Good idea." (ở ranh giới).
+- Sau lượt 2: `vol_audit.js 7`/`8` 0 problem; mọi bài lẻ sửa DB == draft (cả bản trong đề full); pw_fulltest live 40/40 Vol 8 - Test 1,
+  Vol 8 - Test 5, Vol 7 - Test 6.
 
 ## Vol 7 — 2026-10-16 (xong cả 11 test)
 
