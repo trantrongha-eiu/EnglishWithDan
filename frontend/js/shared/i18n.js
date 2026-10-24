@@ -9,22 +9,25 @@
  * On switch to English we walk every text node / translatable attribute,
  * and if its trimmed value is a key in DICT we swap in the English text,
  * stashing the original on the node so switching back is exact. A
- * MutationObserver re-runs the swap on anything added later (nav bell
- * items, toasts, modals rendered by other scripts).
+ * MutationObserver re-runs the swap on anything added or rewritten later
+ * (nav bell items, toasts, modals, placeholders set by other scripts).
+ * Lookups ignore extra whitespace and leading emoji / arrows / trailing
+ * colons (see _lookup).
  *
  * Storage key: localStorage['ews_lang'] ∈ {'vi','en'} (default 'vi').
- * Public API: window.EWSI18n = { lang, set(l), toggle(), apply(), t(s) }.
+ * Public API: window.EWSI18n = { lang, set(l), toggle(), apply(), t(s), extend(d) }.
  * Event: document dispatches 'ews:langchange' after every switch.
  *
- * To extend coverage: add "Vietnamese source": "English" pairs to DICT.
- * Keep entries to short UI strings — labels, buttons, headings — not full
- * explanatory sentences.
+ * To extend coverage: add "Vietnamese source": "English" pairs to
+ * js/shared/i18n-en.js (loaded only in English mode). DICT below holds the
+ * core nav/button strings everyone downloads.
  */
 (function () {
   'use strict';
 
   var STORAGE_KEY = 'ews_lang';
-  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, CODE: 1, PRE: 1, KBD: 1, SAMP: 1 };
+  // <code> is not skipped: help texts use it for button names ("Nhấn <code>Nhập hàng loạt</code>").
+  var SKIP_TAGS = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, PRE: 1, KBD: 1, SAMP: 1 };
 
   // ── Dictionary: Vietnamese (as written in the markup) → English ──────
   var DICT = {
@@ -639,6 +642,24 @@
   var REV = {};
   Object.keys(DICT).forEach(function (vi) { if (!(DICT[vi] in REV)) REV[DICT[vi]] = vi; });
 
+  // Merge more "vi": "en" pairs (js/shared/i18n-en.js calls this) and
+  // re-apply so nodes that had no match yet pick them up.
+  function extend(more) {
+    if (!more) return;
+    // Not added to REV on purpose: the EN → VI fallback rewrites any
+    // unstashed node whose text equals an English value, and with thousands
+    // of entries that would hit real English content ("Health", a saved
+    // vocab word). Nodes this file translated are restored from their stash.
+    Object.keys(more).forEach(function (vi) { DICT[vi] = more[vi]; });
+    if (LANG === 'en' && document.body) {
+      // Undo the first pass before re-applying: a node a generic pattern
+      // only half-translated ("Updated: cơ chế…") may have a full entry now.
+      _applying = true;
+      try { _walk(document.body, false); } finally { _applying = false; }
+      apply();
+    }
+  }
+
   var LANG = 'vi';
   try { var s = localStorage.getItem(STORAGE_KEY); if (s === 'en' || s === 'vi') LANG = s; } catch (e) {}
 
@@ -650,6 +671,45 @@
     return Object.prototype.hasOwnProperty.call(REV, key) ? REV[key] : null;
   }
 
+  // Splits "📚 Từ vựng: 🔥" into lead "📚 ", core "Từ vựng", tail ": 🔥" so
+  // one DICT entry covers the emoji / arrow / bullet / colon variants
+  // (sentence-ending . ! ? and closing quotes/brackets stay in the core).
+  // Built with new RegExp so a browser without \p{} support only loses
+  // this fallback instead of failing to parse the whole file.
+  var EDGE_RE = null;
+  try { EDGE_RE = new RegExp('^([^\\p{L}\\p{N}"“(]*)([\\s\\S]*?)([^\\p{L}\\p{N}.!?)"”\'\\]]*)$', 'u'); } catch (e) {}
+
+  // VI → EN for one trimmed string: exact hit, then whitespace-collapsed,
+  // then with leading symbols / trailing colon stripped, then patterns.
+  function _lookup(key) {
+    var en = _translit(key, true);
+    if (en != null) return en;
+    var k = key.replace(/\s+/g, ' ');
+    if (k !== key && (en = _translit(k, true)) != null) return en;
+    var m = EDGE_RE && k.match(EDGE_RE);
+    if (m && m[2] && m[2] !== k) {
+      en = _translit(m[2], true);
+      if (en == null) en = _applyPatterns(m[2]);
+      if (en != null) return m[1] + en + m[3];
+    }
+    return _applyPatterns(k);
+  }
+
+  // English dictionary bulk (js/shared/i18n-en.js) — loaded only once the
+  // page is in English, so Vietnamese visitors never download it.
+  var _extraState = 0; // 0 = not loaded, 1 = loading, 2 = loaded
+  function _loadExtra() {
+    if (_extraState) return;
+    if (window.__ewsI18nExtra) { _extraState = 2; extend(window.__ewsI18nExtra); return; }
+    _extraState = 1;
+    var sc = document.createElement('script');
+    sc.src = '/js/shared/i18n-en.js?v=693a6f966b';
+    sc.async = true;
+    sc.onload = function () { _extraState = 2; };
+    sc.onerror = function () { _extraState = 0; };
+    (document.head || document.documentElement).appendChild(sc);
+  }
+
   function _handleTextNode(node, toEn) {
     var parent = node.parentNode;
     if (!parent || SKIP_TAGS[parent.nodeName]) return;
@@ -658,17 +718,20 @@
     if (!raw || !raw.trim()) return;
 
     if (toEn) {
-      if (node.__ewsVi != null) return; // already translated
+      if (node.__ewsVi != null) {
+        if (node.__ewsEn === raw) return; // already translated
+        node.__ewsVi = null;              // page script rewrote it since
+      }
       var key = raw.trim();
-      var en = _translit(key, true);
-      if (en == null) en = _applyPatterns(key);   // templated fallback
+      var en = _lookup(key);
       if (en != null && en !== key) {
         node.__ewsVi = raw;
-        node.nodeValue = raw.replace(key, en);
+        node.nodeValue = node.__ewsEn = raw.replace(key, en);
       }
     } else {
       if (node.__ewsVi != null) {
-        node.nodeValue = node.__ewsVi;
+        // only restore if the page hasn't rewritten the node since
+        if (node.__ewsEn === raw) node.nodeValue = node.__ewsVi;
         node.__ewsVi = null;
       } else {
         // node added while in EN and never stashed — best-effort reverse
@@ -690,15 +753,20 @@
       var cur = el.getAttribute(a);
       if (!cur || !cur.trim()) return;
       el.__ewsAttr = el.__ewsAttr || {};
+      el.__ewsAttrEn = el.__ewsAttrEn || {};
       if (toEn) {
-        if (el.__ewsAttr[a] != null) return;
-        var en = _translit(cur.trim(), true);
+        if (el.__ewsAttr[a] != null) {
+          if (el.__ewsAttrEn[a] === cur) return; // already translated
+          el.__ewsAttr[a] = null;                // page script rewrote it
+        }
+        var en = _lookup(cur.trim());
         if (en != null && en !== cur.trim()) {
           el.__ewsAttr[a] = cur;
-          el.setAttribute(a, cur.replace(cur.trim(), en));
+          el.__ewsAttrEn[a] = cur.replace(cur.trim(), en);
+          el.setAttribute(a, el.__ewsAttrEn[a]);
         }
       } else if (el.__ewsAttr[a] != null) {
-        el.setAttribute(a, el.__ewsAttr[a]);
+        if (el.__ewsAttrEn[a] === cur) el.setAttribute(a, el.__ewsAttr[a]);
         el.__ewsAttr[a] = null;
       }
     });
@@ -733,7 +801,7 @@
       // <title>
       if (toEn) {
         if (document.title && document.__ewsTitle == null) {
-          var t = _translit(document.title.trim(), true);
+          var t = _lookup(document.title.trim());
           if (t) { document.__ewsTitle = document.title; document.title = t; }
         }
       } else if (document.__ewsTitle != null) {
@@ -774,25 +842,35 @@
     if (_observer) return;
     _observer = new MutationObserver(function (muts) {
       if (_applying || LANG !== 'en') return;
-      var roots = [];
+      var roots = [], texts = [], attrEls = [];
       muts.forEach(function (m) {
         // ignore our own button churn (data-i18n-skip regions)
         if (m.target && m.target.nodeType === 1 && m.target.closest &&
             m.target.closest('[data-i18n-skip]')) return;
+        // A page script rewrote a text node / placeholder / title in place
+        // (no node added). Our own writes land here too but are no-ops:
+        // the handlers skip values they wrote themselves.
+        if (m.type === 'characterData') { texts.push(m.target); return; }
+        if (m.type === 'attributes') { attrEls.push(m.target); return; }
         m.addedNodes && m.addedNodes.forEach(function (nd) {
           if (nd.nodeType === 1 || nd.nodeType === 3) roots.push(nd);
         });
       });
-      if (!roots.length) return;
+      if (!roots.length && !texts.length && !attrEls.length) return;
       _applying = true;
       try {
         roots.forEach(function (r) {
           if (r.nodeType === 3) _handleTextNode(r, true);
           else _walk(r, true);
         });
+        texts.forEach(function (n) { _handleTextNode(n, true); });
+        attrEls.forEach(function (el) { _handleAttrs(el, true); });
       } finally { _applying = false; }
     });
-    _observer.observe(document.body, { childList: true, subtree: true });
+    _observer.observe(document.body, {
+      childList: true, subtree: true, characterData: true,
+      attributes: true, attributeFilter: ATTR_LIST
+    });
   }
 
   function set(lang) {
@@ -801,6 +879,7 @@
     LANG = lang;
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     apply();
+    if (lang === 'en') _loadExtra();
     try { document.dispatchEvent(new CustomEvent('ews:langchange', { detail: { lang: lang } })); } catch (e) {}
   }
 
@@ -809,7 +888,7 @@
   function t(vi) {
     if (LANG !== 'en') return vi;
     var key = (vi || '').trim();
-    var en = _translit(key, true);
+    var en = key ? _lookup(key) : null;
     return en != null ? vi.replace(key, en) : vi;
   }
 
@@ -819,12 +898,14 @@
     toggle: toggle,
     apply: apply,
     t: t,
+    extend: extend,
     DICT: DICT
   };
 
   function boot() {
     apply();
     _startObserver();
+    if (LANG === 'en') _loadExtra();
     // A second pass after full load catches late synchronous renders.
     window.addEventListener('load', function () { if (LANG === 'en') apply(); }, { once: true });
   }

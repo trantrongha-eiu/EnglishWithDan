@@ -1182,7 +1182,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=6c0204a784';
+    i18nScript.src = '/js/shared/i18n.js?v=4770ad0faf';
     document.body.appendChild(i18nScript);
   }
 

@@ -1501,7 +1501,7 @@ async function loadPracticePassages(category, tabEl) {
   const searchInp = document.getElementById('practice-search-input');
   if (searchInp) searchInp.value = '';
   _practiceStatusFilter = 'all';
-  document.querySelectorAll('.pf-btn').forEach(b => b.classList.toggle('pf-active', b.textContent.trim() === 'Tất cả'));
+  document.querySelectorAll('.pf-btn').forEach(b => b.classList.toggle('pf-active', (b.getAttribute('onclick') || '').indexOf("'all'") !== -1));
 
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
