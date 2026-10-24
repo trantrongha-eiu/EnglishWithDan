@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { downloadText } from '../utils/csvDownload';
+import WarmUpPromptPanel from '../components/WarmUpPromptPanel';
 
 // "Tài liệu in (Tips)": for every Tips lesson of the four skills, a Markdown
 // pack (AI prompt + the tip's content + for Reading/Listening its fixed
@@ -102,6 +103,8 @@ export default function TipLecturePacks() {
           </button>
         ))}
       </div>
+
+      {active && <WarmUpPromptPanel key={active.skill} skill={active.skill} />}
 
       <div className="filter-bar">
         <input className="form-input search-input" placeholder="Tìm theo tên bài / nhóm…" value={q}
