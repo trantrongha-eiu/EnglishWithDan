@@ -62,7 +62,11 @@
     '.wbwd-input:focus{outline:none;border-color:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.15)}',
     '.wbwd-input.is-error{border-color:#ef4444;background:#fef2f2;box-shadow:0 0 0 3px rgba(239,68,68,.18);animation:wbwd-shake .24s ease}',
     '.wbwd-input:disabled{background:#f3f4f6;color:#9ca3af}',
+    '.wbwd-input.is-warn{border-color:#f59e0b;background:#fffbeb}',
     '.wbwd-hint{margin-top:7px;font-size:11.5px;color:#9ca3af}',
+    '.wbwd-ime{margin-top:8px;font-size:12.5px;line-height:1.5;color:#92400e;background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:8px 11px}',
+    '[data-theme="dark"] .wbwd-ime{color:#fcd34d;background:#422006;border-color:#854d0e}',
+    '[data-theme="dark"] .wbwd-input.is-warn{background:#1c1505}',
     '@keyframes wbwd-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}',
     '@keyframes wbwd-pop{0%{transform:scale(1)}45%{transform:scale(1.12)}100%{transform:scale(1)}}',
     '@keyframes wbwd-blink{50%{opacity:0}}',
@@ -122,6 +126,73 @@
     s = String(s == null ? '' : s);
     return s.normalize ? s.normalize('NFC') : s;
   }
+
+  // ── Vietnamese keyboard left ON while typing an ENGLISH answer ──────────
+  // Students often keep Unikey/EVKey (Telex) or a Vietnamese phone keyboard
+  // on, so plain English keystrokes come out accented: "draw" → "dră",
+  // "book" → "bôk", "best" → "bét", "add" → "ađ". Per-letter mode used to
+  // reject those as wrong letters, and with maxErrors 3 a correctly typed
+  // vocab word failed. These helpers read the accented text back as the
+  // Telex keys that produced it, so the drill can still accept it.
+  var TELEX_TONE_KEY = { '́': 's', '̀': 'f', '̉': 'r', '̃': 'x', '̣': 'j' };
+
+  // One entry per typed letter: the key sequences it may stand for, plus its
+  // tone key ('' if none). null = a letter Telex can't produce.
+  function _telexUnits(letters) {
+    return letters.map(function (ch) {
+      var lc = ch.toLowerCase();
+      if (lc.charCodeAt(0) < 128) return { opts: [lc], tone: '' };
+      if (lc === 'đ') return { opts: ['dd'], tone: '' };
+      var d = lc.normalize ? lc.normalize('NFD') : lc;
+      var base = d[0], tone = '', mods = '';
+      for (var i = 1; i < d.length; i++) {
+        if (TELEX_TONE_KEY[d[i]]) tone = TELEX_TONE_KEY[d[i]];
+        else mods += d[i];
+      }
+      if (base.charCodeAt(0) >= 128) return null;
+      var opts;
+      if (!mods) opts = [base];
+      else if (mods === '̂') opts = [base + base];                       // â ê ô ← aa ee oo
+      else if (mods === '̆') opts = [base + 'w'];                        // ă ← aw
+      else if (mods === '̛') opts = base === 'u' ? ['uw', 'w'] : [base + 'w']; // ư ← uw / w, ơ ← ow
+      else return null;
+      return { opts: opts, tone: tone };
+    });
+  }
+
+  // How many letters of `target` (ASCII) the accented `letters` stand for,
+  // or -1 if they can't be read as a prefix of it. A tone key may have been
+  // pressed any time after its vowel (the IME moves the mark onto the
+  // vowel), so it's matched anywhere from there on.
+  function _telexPrefixLen(letters, target) {
+    var units = _telexUnits(letters);
+    for (var u = 0; u < units.length; u++) if (!units[u]) return -1;
+    var t = target.toLowerCase();
+    var budget = 5000;
+    function go(i, pos, pending) {
+      if (--budget < 0) return -1;
+      for (var p = 0; p < pending.length; p++) {
+        if (t[pos] === pending[p]) {
+          var r = go(i, pos + 1, pending.slice(0, p) + pending.slice(p + 1));
+          if (r >= 0) return r;
+        }
+      }
+      if (i === units.length) return pending ? -1 : pos;
+      var unit = units[i];
+      for (var k = 0; k < unit.opts.length; k++) {
+        var o = unit.opts[k];
+        if (t.substr(pos, o.length) === o) {
+          var r2 = go(i + 1, pos + o.length, pending + unit.tone);
+          if (r2 >= 0) return r2;
+        }
+      }
+      return -1;
+    }
+    return go(0, 0, '');
+  }
+
+  var IME_TIP = '⌨️ Bạn đang bật bộ gõ tiếng Việt nên chữ tự thêm dấu (ă, ô, đ, é…). Không bị tính lỗi, nhưng nên tắt bộ gõ khi gõ tiếng Anh (bấm chữ V → E ở góc màn hình hoặc Ctrl+Shift; điện thoại: đổi sang bàn phím English).';
+  var IME_WARN = '⌨️ Bạn đang bật bộ gõ tiếng Việt nên chữ bị thêm dấu (ă, ô, đ, é…). Hãy tắt bộ gõ (bấm chữ V → E ở góc màn hình hoặc Ctrl+Shift; điện thoại: đổi sang bàn phím English) rồi xoá chữ có dấu và gõ lại. Lần này không bị tính lỗi.';
 
   function tokenize(answer) {
     return nfc(answer).trim().split(/\s+/).filter(Boolean).map(function (raw) {
@@ -219,11 +290,13 @@
         '<div class="wbwd-words" data-role="words"></div>' +
         '<input class="wbwd-input" data-role="input" type="text" autocomplete="off" ' +
           'autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />' +
+        '<div class="wbwd-ime" data-role="ime" role="status" style="display:none"></div>' +
         '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.</div>' +
       '</div>';
     this.$count = this.host.querySelector('[data-role="count"]');
     this.$words = this.host.querySelector('[data-role="words"]');
     this.$input = this.host.querySelector('[data-role="input"]');
+    this.$ime = this.host.querySelector('[data-role="ime"]');
     this.$words.addEventListener('click', this._focus);
     this._renderWords();
     this._updateBar();
@@ -343,6 +416,7 @@
     this.done = true;
     this.failed = true;
     this.erroring = false;
+    this._setImeNotice(null);
     if (this.$input) {
       this.$input.classList.remove('is-error');
       this.$input.disabled = true;
@@ -446,6 +520,13 @@
     // was rejecting the key) is simply absorbed as a no-op below — never
     // required, never rejected — so it can't get anyone stuck.
     var typedRaw = nfc(this.$input.value);
+    // Accented letters in the box for an English word = a Vietnamese
+    // keyboard is on (see _telexPrefixLen), not a wrong letter.
+    if (_hasNonAscii(typedRaw.replace(NOT_TYPABLE, '')) && !_hasNonAscii(tok.raw)) {
+      this._onInputTelex(tok, typedRaw);
+      return;
+    }
+    this._setImeNotice(null);
     var good = '';
     var pos = 0;
     var rejected = false;
@@ -468,6 +549,43 @@
     if (rejected) { this._flashError(); return; }
     if (pos < tok.raw.length) { this._renderWords(); return; }
     this._advanceWord();
+  };
+
+  // Per-letter mode with a Vietnamese keyboard on. Never writes to the box
+  // (rewriting it would desync the IME's own buffer) and never counts a
+  // strike: if the text reads back as the start of the word, show that
+  // progress; if not, show the "turn off Vietnamese typing" warning.
+  Drill.prototype._onInputTelex = function (tok, typedRaw) {
+    var letters = Array.from(typedRaw).filter(function (ch) { return TYPABLE.test(ch); });
+    var n = _telexPrefixLen(letters, tok.target);
+    if (n < 0) {
+      this._setImeNotice(IME_WARN);
+      this._renderWords();
+      return;
+    }
+    this._setImeNotice(IME_TIP);
+    // Rebuild the shown progress from the word itself (n letters plus any
+    // punctuation the pointer reaches, same as skipPunct above).
+    var good = '', pos = 0, seen = 0;
+    while (pos < tok.raw.length) {
+      if (TYPABLE.test(tok.raw[pos])) { if (seen === n) break; seen++; }
+      good += tok.raw[pos]; pos++;
+    }
+    this.typed = good;
+    if (pos < tok.raw.length) { this._renderWords(); return; }
+    this._advanceWord();
+  };
+
+  // msg = IME_TIP / IME_WARN, or null to hide. Only IME_WARN marks the box.
+  Drill.prototype._setImeNotice = function (msg) {
+    if (!this.$ime) return;
+    if (msg) {
+      if (this.$ime.textContent !== msg) this.$ime.textContent = msg;
+      this.$ime.style.display = '';
+    } else if (this.$ime.style.display !== 'none') {
+      this.$ime.style.display = 'none';
+    }
+    if (this.$input) this.$input.classList.toggle('is-warn', msg === IME_WARN);
   };
 
   // Per-word validation: never touch the box directly (so IME composition —
@@ -527,6 +645,7 @@
 
   Drill.prototype._complete = function () {
     this.done = true;
+    this._setImeNotice(null);
     if (this.$input) { this.$input.disabled = true; this.$input.blur(); }
     this._renderWords();
     this._updateBar();

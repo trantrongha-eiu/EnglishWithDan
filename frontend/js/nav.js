@@ -318,7 +318,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=7b3bef4343';
+    i18nScript.src = '/js/shared/i18n.js?v=134b70c068';
     document.body.appendChild(i18nScript);
   }
 

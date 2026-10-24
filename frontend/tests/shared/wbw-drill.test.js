@@ -306,3 +306,78 @@ describe('WbwDrill — mounting several drills at once on one page (WT1/WT2 mult
     expect(input.disabled).toBe(true); // single-word answer fully typed -> drill completes
   });
 });
+
+describe('WbwDrill — Vietnamese keyboard (Telex) left on while typing an English answer', () => {
+  // Replays what Unikey/EVKey leave in the box after each keystroke — the
+  // whole box text per step, since the IME rewrites earlier letters.
+  function typeSteps(input, steps) {
+    steps.forEach((v) => { input.value = v; input.dispatchEvent(new Event('input', { bubbles: true })); });
+  }
+  function mountLimited(answer) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const onComplete = jest.fn();
+    const onFail = jest.fn();
+    window.WbwDrill.mount(host, { answer, onComplete, onFail, maxErrors: 3 });
+    return { host, input: host.querySelector('[data-role="input"]'), onComplete, onFail };
+  }
+  const imeBox = (host) => host.querySelector('[data-role="ime"]');
+
+  test.each([
+    ['draw', ['d', 'dr', 'dra', 'dră']],
+    ['book', ['b', 'bo', 'bô', 'bôk']],
+    ['add', ['a', 'ad', 'ađ']],
+    ['best', ['b', 'be', 'bé', 'bét']],
+    ['now', ['n', 'no', 'nơ']],
+    ['we', ['ư', 'ưe']],
+  ])('"%s" typed through Telex is accepted, no strike', async (answer, steps) => {
+    const { host, input, onComplete, onFail } = mountLimited(answer);
+    typeSteps(input, steps);
+    expect(host.querySelector('.is-error')).toBeNull();
+    await sleep(600);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onFail).not.toHaveBeenCalled();
+  }, 10000);
+
+  test('the box is left as the IME wrote it, and progress shows the English letters', () => {
+    const { host, input } = mountLimited('drawing');
+    typeSteps(input, ['d', 'dr', 'dra', 'dră']);
+    expect(input.value).toBe('dră');
+    expect(activeWordEl(host).textContent).toContain('draw');
+    expect(imeBox(host).style.display).toBe('');
+  });
+
+  test('accented text that cannot be read back warns instead of counting strikes', async () => {
+    const { host, input, onFail } = mountLimited('first');
+    for (let i = 0; i < 5; i++) {
+      typeSteps(input, ['f', 'fi', 'fỉ', 'fí', 'fít']); // tone replaced: the "r" key is lost
+      await sleep(300);
+      typeSteps(input, ['']);
+    }
+    typeSteps(input, ['fít']);
+    expect(onFail).not.toHaveBeenCalled();
+    expect(input.disabled).toBe(false);
+    expect(input.classList.contains('is-warn')).toBe(true);
+    expect(imeBox(host).textContent).toMatch(/bộ gõ tiếng Việt/);
+    // Turning the IME off and retyping clears the warning and works normally.
+    typeSteps(input, ['']);
+    'first'.split('').forEach((ch) => typeChar(input, ch));
+    expect(input.disabled).toBe(true);
+    expect(imeBox(host).style.display).toBe('none');
+  }, 10000);
+
+  test('a plain wrong English letter still counts as a strike', () => {
+    const { host, input } = mountLimited('draw');
+    typeChar(input, 'd');
+    typeChar(input, 'x');
+    expect(activeWordEl(host).classList.contains('is-error')).toBe(true);
+  });
+
+  test('Vietnamese answers (per-word mode) are untouched by this', () => {
+    const { host, input } = mount('vẽ tranh');
+    'vẽ'.split('').forEach((ch) => typeChar(input, ch));
+    pressKey(input, ' ');
+    expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1);
+    expect(imeBox(host).style.display).toBe('none');
+  });
+});

@@ -1374,6 +1374,8 @@
     'Gõ câu vào ô rồi bấm': 'Type the sentence in the box and click',
     'Gõ từ bạn nghe được...': 'Type the word you hear...',
     'Gõ từ để kiểm tra...': 'Type a word to check...',
+    'Bạn đang bật bộ gõ tiếng Việt nên chữ tự thêm dấu (ă, ô, đ, é…). Không bị tính lỗi, nhưng nên tắt bộ gõ khi gõ tiếng Anh (bấm chữ V → E ở góc màn hình hoặc Ctrl+Shift; điện thoại: đổi sang bàn phím English).': 'Your Vietnamese keyboard is on, so letters get accents (ă, ô, đ, é…). It doesn\'t count as a mistake, but turn it off when typing English (click V → E in the screen corner or press Ctrl+Shift; on a phone, switch to the English keyboard).',
+    'Bạn đang bật bộ gõ tiếng Việt nên chữ bị thêm dấu (ă, ô, đ, é…). Hãy tắt bộ gõ (bấm chữ V → E ở góc màn hình hoặc Ctrl+Shift; điện thoại: đổi sang bàn phím English) rồi xoá chữ có dấu và gõ lại. Lần này không bị tính lỗi.': 'Your Vietnamese keyboard is on, so letters get accents (ă, ô, đ, é…). Turn it off (click V → E in the screen corner or press Ctrl+Shift; on a phone, switch to the English keyboard), then delete the accented letters and type again. This doesn\'t count as a mistake.',
     'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.': 'Type each letter — get it right and the next word opens. Punctuation is added for you. Backspace to delete. Stuck on a letter? Ask Lulu.',
     'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.': 'Type each letter — get it right and the next word opens. No need to type punctuation (-, \', .) — just keep typing the next letter, punctuation is added for you. Backspace to delete.',
     'Gõ từng từ': 'Type word by word',
