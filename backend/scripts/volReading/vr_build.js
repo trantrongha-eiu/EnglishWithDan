@@ -6,6 +6,7 @@
 //            expl: {n: [dịch, vị trí, trích, phân tích → đáp án]} } — groups made with the helpers exported below.
 // Passage file: paragraphs separated by blank lines; "A " / "A. " at the start of a paragraph = paragraph letter (bold);
 // a first line "# subtitle" = italic standfirst under the title.
+// "## Sub-heading" = a bold sub-heading paragraph inside the passage.
 const fs = require('fs'), path = require('path');
 
 // ── group helpers ────────────────────────────────────────────────────────────
@@ -67,6 +68,7 @@ function contentHtml(spec, raw) {
   let sub = null;
   if (paras[0].startsWith('# ')) sub = paras.shift().slice(2);
   const body = paras.map(p => {
+    if (p.startsWith('## ')) return `<p><strong>${esc(p.slice(3))}</strong></p>`; // sub-heading inside the passage (Vol 6)
     const m = p.match(/^([A-J])\.?\s+(?=\S)(.+)$/);
     return m && spec.lettered !== false ? `<p><strong>${m[1]}</strong> ${esc(m[2])}</p>` : `<p>${esc(p)}</p>`;
   });

@@ -220,3 +220,37 @@ curl — để lấy nguyên văn chỗ PDF mất chữ); `vr_build.js`: số vi
   (0 lượt làm). So DB với draft: 27 bài còn lại khớp. T9 P2 tiêu đề iv in lỗi ("The importance in the natural world") — bản
   online (bestmytest) là phiên bản khác bộ tiêu đề, giữ như PDF. Kiểm lại: pw_admin 30/30, pw_grade 30/30 100%,
   pw_full_tests 10/10, `_audit_reading_warnings` 0, `vr_audit.js 5` 0 problem, `vr_incomplete.js` 0.
+
+## Vol 6 — 2026-10-24 (xong: 6 đề full, 18 bài mới)
+
+Nguồn: thư mục `Read/` (không phải `reading/`): `R-TEST N.pdf` (đề, scan; Test 1 có 4 trang bìa/mục lục đầu), `expl 1-4.pdf` +
+`expl 5-6.pdf` (key + giải thích tiếng Anh, scan in sạch → OCR đọc tốt) và **`Full Reading.docx` = bản gõ sẵn cả 6 đề** (làm nền
+chữ, có vài ghi chú tiếng Việt của người gõ phải xoá). `render2.py` nay tìm thư mục `read` và nhận tên `R-TEST N` → `tN`
+(file `expl 1-4` → `expl1-4`); trang Vol 6 rất to → render 72 dpi. Công cụ mới: `py docx2txt.py <docx> web/vol6/full_reading.txt`
+(văn bản + bảng) → `node docxsplit.js 6` → `web/vol6/docx/t<T>p<P>.txt`; `SRC=docx node dedupe2.js 6` / `SRC=docx node
+dedupe_mini.js 6` đọc các file này thay cho OCR. So docx với OCR trang PDF bằng `wdiff.js` (docx khớp PDF gần như từng chữ).
+`vr_build.js`: đoạn "## Tiêu đề" = tiêu đề phụ in đậm trong bài. `_audit_reading_warnings.js`: key sentence-endings dạng
+"C / E" hợp lệ khi mọi lựa chọn đều có trong danh sách (máy chấm vốn tách "/").
+
+- **Đề full Vol 6 - Test 1…6** tạo + bật, đều đủ 40 câu.
+- **Không dùng lại bài nào**: chỉ "Mungo Lady and Mungo Man" trùng ~21% chữ với "Mungo Man" (Mocktest 48, bài khác, bộ câu hỏi
+  khác) → `SAME_TEXT_OK[6]`.
+- **Mới 18 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt). File key Vol 6 sai nhiều — hay gặp nhất là chữ cái lệch so
+  với chính lời giải thích của nó. Đã sửa theo bài (chi tiết đầu từng spec): T1 P1 Q10 FALSE → NOT GIVEN; T1 P3 Q29 F → G, Q30
+  E → F, Q36 C → D, Q40 E → C (nhận cả E); T2 P1 Q2 FALSE → NOT GIVEN; T2 P3 Q38–40 D,C,B → F,B,C; T3 P2 Q25–26 B,E → C,E;
+  T3 P3 file key bỏ câu 30 và đánh lệch số → 30 C, 31 B, 32 G; T4 P1 Q7 FALSE → TRUE (dolacademy/ece/izone cũng TRUE); T5 P2
+  Q20 key bỏ trống → laboratory rats, Q24 E → G; T5 P3 Q36 NOT GIVEN → NO, Q38 B (setting) → H (period).
+- **Câu hỏi thiếu trong PDF**: T5 P2 PDF dừng ở Q23 — Q24–26 (nối đoạn A–G) lấy từ file key (in đủ đề). T4 P3 Q40 bị cắt
+  ("…an effect which is") → "positive" theo file key (người gõ docx tự đoán "unexpected" — bỏ). T4 P3 PDF đánh nhầm Q27 thành "24".
+- **Chữ hỏng trong PDF**: T3 P1 bản scan dán lẫn dòng của đoạn khác (3 chỗ) → khôi phục ("lives hunting animals", "…in Africa,
+  Asia, and Europe. By 2,000 years ago much of the Earth's population…"), notes Q2–3 lặp câu; T5 P2 sửa theo bài gốc "Bedtime
+  Stories" (National Wildlife 2007: "10 to 20 seconds", "tired muscles", câu của Bingman in hai lần). **Tự bổ sung tối thiểu**
+  (không tìm được nguyên văn, ghi trong spec): T3 P2 "some realised it was the shape", "forces involved in flight - weight, lift,
+  drag and thrust" (câu sau nói "four forces"); T6 P3 "mixes the quantitative and the qualitative" (mất một dòng ở chỗ sang trang).
+- Kiểm: pw_mini 18/18, pw_admin 18/18, pw_grade 18/18 100%, pw_full_tests 6/6, `_audit_reading_warnings` 0 (cả 352 bài),
+  `vr_audit.js 6`: 0 problem (240 câu, 304 trích dẫn), `vr_incomplete.js`: 0.
+- **Debug lại (thầy bảo, cùng ngày)**: không có bản online kèm key cho các bài đã sửa key (chỉ "Radiocarbon dating" có — Q7 TRUE
+  khớp). `vr_update.js 6 <18 bài>` (dry run): DB trùng khớp spec, 0 lượt làm. So từng câu hỏi / lựa chọn / tiêu đề / ending trong
+  DB với OCR trang PDF (bigram ≥ 80%): chỉ lệch ở chỗ OCR đọc sai hoặc chỗ đã sửa có chủ ý (thêm: T6 P3 lựa chọn C in "The
+  world's first futurology was hosted by Finland" → "futurology conference"). Chạy lại: pw_admin 18/18, pw_grade 18/18 100%,
+  pw_full_tests 6/6, `_audit_reading_warnings` 0, `vr_audit.js 6` 0 problem, `vr_incomplete.js` 0.

@@ -9,13 +9,14 @@ import pymupdf
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 vol, dpi = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 150
 src = next(d for d in glob.glob(os.path.join(ROOT, f'VOL {vol}*ORIGINAL EXAMS*')) if os.path.isdir(d))
-rd = next(d for d in glob.glob(os.path.join(src, '**', 'reading'), recursive=True) if os.path.isdir(d))
+# Vol 6: the folder is "Read" (R-TEST N.pdf, "expl 1-4.pdf" = keys + explanations of tests 1-4)
+rd = next(d for n in ('reading', 'read') for d in glob.glob(os.path.join(src, '**', n), recursive=True) if os.path.isdir(d))
 out = os.path.join(os.path.dirname(__file__), 'web', f'vol{vol}', 'pages')
 os.makedirs(out, exist_ok=True)
 for p in sorted(glob.glob(os.path.join(rd, '**', '*.pdf'), recursive=True)):
     base = os.path.splitext(os.path.basename(p))[0]
     sub = os.path.relpath(os.path.dirname(p), rd)
-    m = re.match(r'(?:test|tets)\s*(\d+)', base, re.I)
+    m = re.match(r'(?:R-)?(?:test|tets)\s*(\d+)', base, re.I)
     stem = f't{m.group(1)}' if m and vol != '2' else re.sub(r'[\s()]+', '', base).replace('_', 'x')
     # Vol 4: reading/test N/<anything>.pdf → tN (the folder names the test)
     # Vol 5: reading/Test N/Explanation- N.pdf (key + explanation) → explain-tN

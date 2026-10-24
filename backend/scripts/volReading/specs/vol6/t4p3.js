@@ -1,0 +1,80 @@
+// Vol 6 - Read/R-TEST 4.pdf - Reading Passage 3 (PDF p9–12). Not in the bank / mini-ielts. Text = Full Reading.docx, checked
+// against the PDF. The PDF numbers the first MC question "24" (typo, = 27). Q40 is cut off on the page ("…have had an effect
+// which is") — the docx typist guessed "unexpected"; the Vol key quotes the statement as "…an effect which is positive." →
+// used that. Key = Read/expl 1-4.pdf, checked against the passage: all correct.
+const { mc, summary, ynng } = require('../../vr_build');
+module.exports = {
+  vol: 6, test: 4, part: 3, title: 'Petrol power: an eco-revolution?', text: 't4p3.txt',
+  groups: [
+    mc(27, [
+      ['Why were the inhabitants of De Smet in danger of starvation?', [
+        'The trains were unable to operate normally.', 'The harvest had been completely destroyed.',
+        'The roads to the town had not yet been built.', 'The farmers were reluctant to sell their produce.']],
+      ['What problem did subsistence farmers have in the past?', [
+        'They had no effective means of storing food.', 'Food was expensive because of high shipping costs.',
+        'Their access to food was limited at certain times.', 'Food could not be transported for long distances by road.']],
+      ['The writer says that the use of coal to power railways and steamships', [
+        'led to a greater range of fresh vegetables being available in urban areas.', 'was less efficient than the use of petroleum-derived products.',
+        'allowed farmers to be more self-sufficient than they were previously.', 'was better for the environment than using petroleum-derived products.']],
+      ['The writer refers to an urban planning conference held in 1898 in order to', [
+        'illustrate a problem that was later solved by modern technology.', 'give an example of poor decisions made about urban planning.',
+        'show that urban issues were misunderstood in the past.', 'indicate the disregard at the time for public health concerns.']],
+    ]),
+    summary(31, 35, 'In cities, the large amounts of horse manure led to __Q31__ in the streets and was also linked to the spread of __Q32__. In certain situations, the horses might even cause __Q33__ to passers-by. There were also the problems of noise and congestion caused by horse-drawn vehicles. In the countryside, there were problems too. The __Q34__ was damaged because of the need to provide __Q35__ for urban workhorses.',
+      ['rich landowners', 'injuries', 'food', 'accidental falls', 'environment', 'dangerous area', 'use of irrigation',
+        'unpleasant smells', 'treatment', 'diseases'], { title: 'Problems caused by urban workhorses' }),
+    ynng(36, [
+      'Farmers whose land was poor failed to benefit from modern forms of transport.',
+      'Between 1830 and 1960 there were positive effects associated with changing patterns of agriculture in France.',
+      'A fairer distribution of the world\'s water resources is needed.',
+      'Living in the countryside does less harm to the environment than living in a city.',
+      'It is possible that modern developments in transportation have had an effect which is positive.',
+    ]),
+  ],
+  key: { 27: 'A', 28: 'C', 29: 'B', 30: 'A', 31: 'unpleasant smells', 32: 'diseases', 33: 'injuries', 34: 'environment',
+    35: 'food', 36: 'NO', 37: 'YES', 38: 'NOT GIVEN', 39: 'NO', 40: 'YES' },
+  expl: {
+    27: ['Vì sao cư dân De Smet có nguy cơ chết đói?', 'Đoạn 1',
+      '“Over three metres of snow fell on the northern plains, immobilising the railways and cutting off the settlers from the rest of the world.”',
+      '“immobilising the railways” = the trains were unable to operate normally; bài không nói mùa màng bị phá hủy hoàn toàn hay đường chưa được xây → A'],
+    28: ['Nông dân tự cung tự cấp ngày xưa gặp vấn đề gì?', 'Đoạn 1',
+      '“subsistence farmers in many countries had to cope with the \'lean season\' - the period of greatest scarcity before new crops became available. In England, late spring was once referred to as the \'hungry gap\'.”',
+      '“lean season”, “hungry gap” = những thời điểm khan hiếm lương thực = access to food was limited at certain times → C'],
+    29: ['Tác giả nói việc dùng than để chạy tàu hỏa và tàu hơi nước …', 'Đoạn 2',
+      '“Since then, petroleum-derived fuels have largely displaced coal because of their higher energy density, cleaner combustion and greater ease of extraction”',
+      'Nhiên liệu dầu mỏ thay thế than vì mật độ năng lượng cao hơn, cháy sạch hơn, dễ khai thác hơn → than kém hiệu quả hơn (D ngược lại; C sai vì nông dân chuyên môn hóa, dựa vào người khác) → B'],
+    30: ['Tác giả nhắc đến hội nghị quy hoạch đô thị năm 1898 để …', 'Đoạn 3',
+      '“few people grasp their historical significance in terms of their beneficial impact on large cities” … “The topic that dominated discussions was not infrastructure or housing, but horse manure.”',
+      'Vấn đề phân ngựa ở đô thị (khi đó không ai nghĩ ra giải pháp) về sau được phương tiện vận tải hiện đại giải quyết → A'],
+    31: ['Ở thành phố, lượng phân ngựa lớn gây ra ______ trên đường phố.', 'Đoạn 5',
+      '“In cities, apart from their overpowering stench, the manure piles were prime breeding grounds for house flies”',
+      '“overpowering stench” (mùi hôi nồng nặc) = unpleasant smells → unpleasant smells'],
+    32: ['… và còn liên quan đến sự lây lan của ______.', 'Đoạn 5',
+      '“With flies came outbreaks of typhoid, cholera and diphtheria.”',
+      'Thương hàn, tả, bạch hầu = diseases → diseases'],
+    33: ['Trong một số tình huống, ngựa còn có thể gây ______ cho người qua đường.', 'Đoạn 5',
+      '“Workhorses sometimes panicked in heavy traffic and kicked or bit bystanders.”',
+      'Đá, cắn người đứng gần = cause injuries to passers-by → injuries'],
+    34: ['Ở nông thôn, ______ bị tổn hại …', 'Đoạn 5',
+      '“additional land had to be cleared of its natural animal life and vegetation, and sometimes water had to be diverted to irrigate it, with considerable negative effects on the whole area.”',
+      'Phát quang động thực vật tự nhiên, chuyển dòng nước = môi trường bị tổn hại → environment'],
+    35: ['… vì phải cung cấp ______ cho ngựa kéo ở thành phố.', 'Đoạn 5',
+      '“To supply the workhorses with oats and hay, additional land had to be cleared”',
+      'Yến mạch và cỏ khô = thức ăn cho ngựa → food'],
+    36: ['Nông dân có đất xấu không được hưởng lợi từ phương tiện vận tải hiện đại.', 'Đoạn 6',
+      '“It could be argued that modern transportation allowed the development of remote regions like the Canadian prairies and allowed more suitable crops to be grown in the poorer soils in Europe before being sold elsewhere.”',
+      'Nhờ vận tải hiện đại, đất xấu ở châu Âu trồng được cây phù hợp hơn rồi bán đi nơi khác → họ có hưởng lợi → NO'],
+    37: ['Từ 1830 đến 1960 có những tác động tích cực gắn với sự thay đổi mô hình nông nghiệp ở Pháp.', 'Đoạn 7',
+      '“Over time, the concentration of food production in the world\'s best locations allowed some agricultural land to revert to a wild state. For instance, France benefited from an expansion of its forest area by one third between 1830 and 1960.”',
+      'Sản xuất tập trung ở nơi tốt nhất → một phần đất nông nghiệp trở lại tự nhiên, Pháp “benefited” (diện tích rừng tăng 1/3) → YES'],
+    38: ['Cần phân bổ tài nguyên nước của thế giới công bằng hơn.', 'Đoạn 8',
+      '“Improvements in logistics also allowed the production and export of food from locations where water was abundant to regions where it was scarce, thus preventing the depletion of water resources there.”',
+      'Tác giả chỉ nói vận tải giúp tránh cạn kiệt nước ở vùng khô hạn, không nêu quan điểm về việc phân bổ nước công bằng hơn → NOT GIVEN'],
+    39: ['Sống ở nông thôn ít gây hại cho môi trường hơn sống ở thành phố.', 'Đoạn 8',
+      '“Contrary to what most people believe, the growth in cities is a positive development.” … “living in a concrete jungle is actually far more ecologically friendly”',
+      'Tác giả (dẫn lời Glaser) cho rằng sống ở đô thị thân thiện với môi trường hơn nhiều → NO'],
+    40: ['Có thể những phát triển hiện đại trong giao thông vận tải đã có tác động tích cực.', 'Đoạn 8',
+      '“It could be argued that modern transportation technologies have been a major contributor to a wealthier, cleaner and more sustainable world.”',
+      '“It could be argued” = it is possible; giàu hơn, sạch hơn, bền vững hơn = positive effect → YES'],
+  },
+};

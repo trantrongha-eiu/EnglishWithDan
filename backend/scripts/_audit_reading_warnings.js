@@ -76,7 +76,8 @@ const fs = require('fs');
       }
       if (g.groupType === 'sentence-endings' && g.endingsConfig?.endings?.length) {
         const L = g.endingsConfig.endings.map((e, i) => e.letter || String.fromCharCode(65 + i));
-        qs.forEach(q => { if (!L.includes(key(q).toUpperCase())) warns.push(`Q${q.questionNumber}: ENDINGS key "${key(q)}" not in ${L.join('')}`); });
+        // alternatives ("C / E") are graded like any other key — each one must be a listed ending
+        qs.forEach(q => { if (!key(q).split(/\s*\/\s*/).every(a => L.includes(a.toUpperCase()))) warns.push(`Q${q.questionNumber}: ENDINGS key "${key(q)}" not in ${L.join('')}`); });
       }
       if (g.groupType === 'matching-options' || (g.groupType === 'sentence-endings' && !g.endingsConfig?.endings?.length)) {
         const n = (g.matchingOptions || []).length || (g.endingsConfig?.endings || []).length;

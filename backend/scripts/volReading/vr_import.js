@@ -22,6 +22,8 @@ const SAME_TEXT_OK = ({
   2: { t1p1: '6abdacfa3bcd15105e99fb60' }, // The Iceman (Vol 2) = renumbered copy of The Iceman (bank P2)
   // Vol 5: shorter versions of a bank article with a different question set
   5: { t7p2: '6abd01aa1b50c9b87212e55e', t9p3: '6abd01a41b50c9b87212e52a' }, // Art in Iron and Steel / The Power of Nothing
+  // Vol 6: "Mungo Lady and Mungo Man" (P1, 13 q) shares ~21% text with the bank's "Mungo Man" (P3, Mocktest 48) — other article
+  6: { t1p1: '6abcd39d4bdca60c3b137d5b' },
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

@@ -144,6 +144,15 @@
   "artist": "NPS Photo"
  },
  {
+  "id": "6adcc26ef8a4c8187d3ff1fb",
+  "title": "Ambergris – what is it and where does it come from?",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Ambergris%2C_Skagway_Museum.JPG/1280px-Ambergris%2C_Skagway_Museum.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Ambergris, Skagway Museum.JPG",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Ambergris,_Skagway_Museum.JPG",
+  "license": "CC0",
+  "artist": "Wmpearl"
+ },
+ {
   "id": "6a6f227aa6fc2d9546e6df05",
   "title": "An important language development",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Clay_Tablet_with_Cuneiform_Writing-_Nebuchadnezzar%2C_King_of_Justice.jpg/1280px-Clay_Tablet_with_Cuneiform_Writing-_Nebuchadnezzar%2C_King_of_Justice.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -189,6 +198,15 @@
   "artist": "The original uploader was Options at Chinese Wikipedia."
  },
  {
+  "id": "6adcc26df8a4c8187d3ff11f",
+  "title": "Australia's camouflaged creatures",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Phasme_%C3%A0_Tokyo.jpg/1280px-Phasme_%C3%A0_Tokyo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Phasme à Tokyo.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Phasme_%C3%A0_Tokyo.jpg",
+  "license": "CC0",
+  "artist": "Syced"
+ },
+ {
   "id": "6a6f2325a37de57067377862",
   "title": "Australia's Megafauna Controversy",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Diprotodon_optatum_display_WA.jpg/1280px-Diprotodon_optatum_display_WA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -214,6 +232,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Great_Indian_Fruit_Bat_MET_DP167067.jpg",
   "license": "CC0",
   "artist": "Bhawani Das"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff0f6",
+  "title": "Blind to Change",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Close_up_eye_%28Unsplash%29.jpg/1280px-Close_up_eye_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Close up eye (Unsplash).jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Close_up_eye_(Unsplash).jpg",
+  "license": "CC0",
+  "artist": "Liam Welch lwxlch"
  },
  {
   "id": "6a55c892d2439c8edfc649bb",
@@ -565,6 +592,15 @@
   "artist": "NIH Image Gallery from Bethesda, Maryland, USA"
  },
  {
+  "id": "6adcc26df8a4c8187d3ff192",
+  "title": "How sleep helps us learn",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/A_child_sleeping.jpg/1280px-A_child_sleeping.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:A child sleeping.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:A_child_sleeping.jpg",
+  "license": "Public domain",
+  "artist": "Alessandro Zangrilli"
+ },
+ {
   "id": "69c93f366bc7856a765d232c",
   "title": "How stress affects our judgement",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg/1280px-Edvard_Munch_-_The_Scream_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -726,6 +762,24 @@
   "artist": ""
  },
  {
+  "id": "6adcc26ef8a4c8187d3ff1e0",
+  "title": "Looking at daily life in ancient Rome",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Roman_Forum_3.jpg/1280px-Roman_Forum_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Roman Forum 3.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Roman_Forum_3.jpg",
+  "license": "CC0",
+  "artist": "Kurt Kaiser"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff170",
+  "title": "Looking for inspiration",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Marguerite_G%C3%A9rard_-_Artist_Painting_a_Portrait_of_a_Musician_-_WGA8606_sharpened.jpg/1280px-Marguerite_G%C3%A9rard_-_Artist_Painting_a_Portrait_of_a_Musician_-_WGA8606_sharpened.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Marguerite Gérard - Artist Painting a Portrait of a Musician - WGA8606 sharpened.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Marguerite_G%C3%A9rard_-_Artist_Painting_a_Portrait_of_a_Musician_-_WGA8606_sharpened.jpg",
+  "license": "Public domain",
+  "artist": "Marguerite Gérard"
+ },
+ {
   "id": "6adc803f29781001e793ea2c",
   "title": "Mammoth Kill",
   "image": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Woolly_mammoth_reconstruction%2C_from_Abel%2C_O._%281919%29._Die_St%C3%A4mme_der_Wirbeltiere.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
@@ -796,6 +850,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Childrens_learning_area_at_Summit_Speech_School.jpg",
   "license": "CC0",
   "artist": "Tomwsulcer"
+ },
+ {
+  "id": "6adcc26cf8a4c8187d3ff0ce",
+  "title": "Mungo Lady and Mungo Man",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Walls_of_China_in_Mungo_National_Park_%2827464678334%29.jpg/1280px-Walls_of_China_in_Mungo_National_Park_%2827464678334%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Walls of China in Mungo National Park (27464678334).jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Walls_of_China_in_Mungo_National_Park_(27464678334).jpg",
+  "license": "CC0",
+  "artist": "Caroline Jones"
  },
  {
   "id": "6a550c3e7451993d82bcd14b",
@@ -879,6 +942,24 @@
   "artist": "Elliott &amp; Fry"
  },
  {
+  "id": "6adcc26df8a4c8187d3ff1a3",
+  "title": "Petrol power: an eco-revolution?",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Horse_and_wagon_on_Mulberry_Street_in_1900_New_York_City_detail%2C_3g04637u_unprocessed_%28cropped%29.jpg/1280px-Horse_and_wagon_on_Mulberry_Street_in_1900_New_York_City_detail%2C_3g04637u_unprocessed_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Horse and wagon on Mulberry Street in 1900 New York City detail, 3g04637u unprocessed (cropped).jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Horse_and_wagon_on_Mulberry_Street_in_1900_New_York_City_detail,_3g04637u_unprocessed_(cropped).jpg",
+  "license": "Public domain",
+  "artist": "Detroit Photograph Company"
+ },
+ {
+  "id": "6adcc26ef8a4c8187d3ff20c",
+  "title": "Photography",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Susse_Fr%C3%A8res_Daguerreotype_camera_1839.png/1280px-Susse_Fr%C3%A8res_Daguerreotype_camera_1839.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Susse Frères Daguerreotype camera 1839.png",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Susse_Fr%C3%A8res_Daguerreotype_camera_1839.png",
+  "license": "CC0",
+  "artist": "Liudmila &amp; Nelson"
+ },
+ {
   "id": "6adb792bc1591fd3f6d8c308",
   "title": "Photovoltaics on the rooftop",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Solar_Energy_Roof_Solar_Power_Generation_2666770_CC0.jpg/1280px-Solar_Energy_Roof_Solar_Power_Generation_2666770_CC0.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -922,6 +1003,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Leatherback_sea_turtle_on_the_beach_Tinglar_(5839996429).jpg",
   "license": "Public domain",
   "artist": "U.S. Fish and Wildlife Service Southeast Region"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff182",
+  "title": "Radiocarbon dating",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Archaeologist_in_Catlow_Valley%2C_Oregon.jpg/1280px-Archaeologist_in_Catlow_Valley%2C_Oregon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Archaeologist in Catlow Valley, Oregon.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Archaeologist_in_Catlow_Valley,_Oregon.jpg",
+  "license": "Public domain",
+  "artist": "Bureau of Land Management"
  },
  {
   "id": "6a6b967bf0b8b4183d199925",
@@ -1032,6 +1122,15 @@
   "artist": "U.S. Air Force photo by Senior Airman Zoe Thacker"
  },
  {
+  "id": "6adcc26ef8a4c8187d3ff1cf",
+  "title": "Sleep – who needs it?",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Kiska_Orcinus_orca_killer_whale_Marineland_Niagara_Falls_Canada_2022-08-15_2.17.48PM.jpg/1280px-Kiska_Orcinus_orca_killer_whale_Marineland_Niagara_Falls_Canada_2022-08-15_2.17.48PM.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Kiska Orcinus orca killer whale Marineland Niagara Falls Canada 2022-08-15 2.17.48PM.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Kiska_Orcinus_orca_killer_whale_Marineland_Niagara_Falls_Canada_2022-08-15_2.17.48PM.jpg",
+  "license": "CC0",
+  "artist": "A Streetcar Named Keanu"
+ },
+ {
   "id": "6adc40e55cf66bdff87cfc08",
   "title": "Some views on the use of headphones",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Headphones_on_wood_in_black_and_white_%28Unsplash%29.jpg/1280px-Headphones_on_wood_in_black_and_white_%28Unsplash%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -1068,6 +1167,15 @@
   "artist": "Love Krittaya"
  },
  {
+  "id": "6adcc26df8a4c8187d3ff1bf",
+  "title": "Studies in the History of Art and Visual Culture",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/The_Harris_Museum%2C_Art_Gallery_%26_Library.jpg/1280px-The_Harris_Museum%2C_Art_Gallery_%26_Library.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:The Harris Museum, Art Gallery & Library.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:The_Harris_Museum,_Art_Gallery_%26_Library.jpg",
+  "license": "CC0",
+  "artist": "Michael D Beckwith"
+ },
+ {
   "id": "6a54d90a7451993d82bc7544",
   "title": "Sweet Trouble",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Sugar_cane_tram_travelling_through_Mossman%2C_Queensland%2C_1900.jpg/1280px-Sugar_cane_tram_travelling_through_Mossman%2C_Queensland%2C_1900.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -1095,6 +1203,15 @@
   "artist": "\"Image courtesy Reto Stockli and Robert Simmon, based upon data provided by the "
  },
  {
+  "id": "6adcc26df8a4c8187d3ff158",
+  "title": "The aerofoil",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/NASA%2C_Boeing_Advance_Truss-Braced_Wing_Research_in_Test.jpg/1280px-NASA%2C_Boeing_Advance_Truss-Braced_Wing_Research_in_Test.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:NASA, Boeing Advance Truss-Braced Wing Research in Test.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:NASA,_Boeing_Advance_Truss-Braced_Wing_Research_in_Test.jpg",
+  "license": "Public domain",
+  "artist": "QinetiQ"
+ },
+ {
   "id": "6adc803f29781001e793e9c4",
   "title": "The Analysis of Fear",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Rhesus_macaque_mother_with_infant_in_a_tree.jpg/1280px-Rhesus_macaque_mother_with_infant_in_a_tree.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -1111,6 +1228,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Expression_of_the_Emotions_Figure_21.png",
   "license": "Public domain",
   "artist": "Guillaume Duchenne"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff0de",
+  "title": "The attraction of video games",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Xbox-360-Controller-Black.jpg/1280px-Xbox-360-Controller-Black.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Xbox-360-Controller-Black.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Xbox-360-Controller-Black.jpg",
+  "license": "Public domain",
+  "artist": "Evan-Amos"
  },
  {
   "id": "6adc803f29781001e793e9d6",
@@ -1239,6 +1365,15 @@
   "artist": "Original author: US Department of Agriculture; then denoised rescaled, enhanced "
  },
  {
+  "id": "6adcc26df8a4c8187d3ff130",
+  "title": "The effectiveness of an online course",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Students_using_a_computer_laptop.jpg/1280px-Students_using_a_computer_laptop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Students using a computer laptop.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Students_using_a_computer_laptop.jpg",
+  "license": "CC0",
+  "artist": "Kwameghana(Bright Kwame Ayisi)"
+ },
+ {
   "id": "6adc40e45cf66bdff87cfae9",
   "title": "The fashion industry",
   "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Seamstresses_at_their_stations_in_the_Consolidated_Garment_Company_sewing_workshop.jpg/1280px-Seamstresses_at_their_stations_in_the_Consolidated_Garment_Company_sewing_workshop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -1282,6 +1417,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Hemelglobe_in_stoel,_NG-2003-117.jpg",
   "license": "CC0",
   "artist": "Rijksmuseum"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff148",
+  "title": "The growth of agriculture",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Rosa_Bonheur_-_Ploughing_in_Nevers_-_Google_Art_Project.jpg/1280px-Rosa_Bonheur_-_Ploughing_in_Nevers_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Rosa Bonheur - Ploughing in Nevers - Google Art Project.jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Rosa_Bonheur_-_Ploughing_in_Nevers_-_Google_Art_Project.jpg",
+  "license": "Public domain",
+  "artist": "Rosa Bonheur"
  },
  {
   "id": "6adc803e29781001e793e891",
@@ -1336,6 +1480,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Thomas_Young_(scientist).jpg",
   "license": "Public domain",
   "artist": "After Thomas Lawrence"
+ },
+ {
+  "id": "6adcc26ef8a4c8187d3ff21d",
+  "title": "The long view",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Crystal_ball_-_Fairbanks_Museum_and_Planetarium_-_DSC04367.JPG/1280px-Crystal_ball_-_Fairbanks_Museum_and_Planetarium_-_DSC04367.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Crystal ball - Fairbanks Museum and Planetarium - DSC04367.JPG",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Crystal_ball_-_Fairbanks_Museum_and_Planetarium_-_DSC04367.JPG",
+  "license": "Public domain",
+  "artist": "Daderot"
  },
  {
   "id": "6adb6e396ecf73f6671ec94d",
@@ -1525,6 +1678,15 @@
   "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Arashiyama_Bamboo_Grove_(Unsplash).jpg",
   "license": "CC0",
   "artist": "Erol Ahmed erol"
+ },
+ {
+  "id": "6adcc26df8a4c8187d3ff10f",
+  "title": "The world's first cities",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Columns_with_clay_mosaic_cones_from_the_Eanna_precinct_in_Uruk_%28southern_Mesopotamia%29%2C_Pergamon_Museum%2C_Berlin%2C_Germany%2C_unknown_architect%2C_3600-3200_BC_%2802%29.jpg/1280px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "file": "File:Columns with clay mosaic cones from the Eanna precinct in Uruk (southern Mesopotamia), Pergamon Museum, Berlin, Germany, unknown architect, 3600-3200 BC (02).jpg",
+  "descriptionUrl": "https://commons.wikimedia.org/wiki/File:Columns_with_clay_mosaic_cones_from_the_Eanna_precinct_in_Uruk_(southern_Mesopotamia),_Pergamon_Museum,_Berlin,_Germany,_unknown_architect,_3600-3200_BC_(02).jpg",
+  "license": "CC0",
+  "artist": "Neoclassicism Enthusiast"
  },
  {
   "id": "6adc803e29781001e793e8bb",
