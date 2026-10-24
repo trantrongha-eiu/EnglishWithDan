@@ -1,0 +1,21 @@
+/* Generic Task 2 template reading view — js/shared/task2-generic-tpl.js.
+   Used inside the "Full template" pop-up (task2-template.html) and the
+   "Xem template" panel (writing.html). */
+.gtpl-title{margin:0 0 4px;font-size:15px;font-weight:800;color:#111827}
+[data-theme="dark"] .gtpl-title{color:#f1f5f9}
+.gtpl-hint{margin:0 0 16px;font-size:12.5px;color:#6b7280}
+[data-theme="dark"] .gtpl-hint{color:#94a3b8}
+.gtpl-sec{margin-bottom:18px}
+.gtpl-sec:last-child{margin-bottom:0}
+.gtpl-sec-title{margin:0 0 6px;font-size:12px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.02em}
+[data-theme="dark"] .gtpl-sec-title{color:#a5b4fc}
+.gtpl-en{font-size:14px;line-height:1.65;color:#1f2937}
+[data-theme="dark"] .gtpl-en{color:#e2e8f0}
+.gtpl-en + .gtpl-en,.gtpl-vi + .gtpl-en{margin-top:8px}
+.gtpl-vi{margin-top:2px;font-size:12.5px;line-height:1.6;color:#9ca3af;font-style:italic}
+[data-theme="dark"] .gtpl-vi{color:#64748b}
+.gtpl-slot{color:#dc2626;font-style:italic}
+[data-theme="dark"] .gtpl-slot{color:#f87171}
+.gtpl-label{margin:10px 0 2px;font-size:12px;font-weight:700;color:#2563eb}
+[data-theme="dark"] .gtpl-label{color:#93c5fd}
+.gtpl-empty{text-align:center;padding:24px;color:#9ca3af;font-size:13px}

@@ -1277,6 +1277,32 @@ body {
 /* "Phân tích đề" toggle */
 .pw-analysis-btn.is-open { border-color: #a5b4fc; color: #4338ca; background: #eef2ff; }
 
+/* "Xem template" — Task 2 type picker + generic template (js/writing.js
+   renderPracticeTemplatePanel; template body styles in task2-generic-tpl.css) */
+.pw-tpl { margin-top: 12px; padding: 14px; border: 1px solid #e0e7ff; border-radius: 12px; background: #fafaff; }
+.pw-tpl-ask { font-size: 12.5px; font-weight: 700; color: #4b5563; margin-bottom: 8px; }
+.pw-tpl-types { display: flex; flex-wrap: wrap; gap: 6px; }
+.pw-tpl-type { border: 1px solid #e5e7eb; background: #fff; color: #374151; border-radius: 999px; padding: 5px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s, border-color .15s, color .15s; }
+.pw-tpl-type:hover { border-color: #a5b4fc; color: #4338ca; }
+.pw-tpl-type.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+.pw-tpl-type-no { font-weight: 800; opacity: .6; margin-right: 2px; }
+.pw-tpl-type.active .pw-tpl-type-no { opacity: .85; }
+.pw-tpl-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 0; }
+.pw-tpl-levels { display: flex; gap: 4px; background: #eef0f4; border-radius: 10px; padding: 3px; }
+.pw-tpl-level { border: none; background: transparent; color: #6b7280; border-radius: 7px; padding: 5px 12px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.pw-tpl-level.active { background: #fff; color: #6d28d9; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.pw-tpl-vi-btn { border: 1px solid #e5e7eb; background: #fff; color: #4b5563; border-radius: 8px; padding: 5px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.pw-tpl-vi-btn:hover { border-color: #a5b4fc; }
+.pw-tpl-body:not(:empty) { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #e0e7ff; }
+[data-theme="dark"] .pw-tpl { background: #12131f; border-color: #312e81; }
+[data-theme="dark"] .pw-tpl-ask { color: #cbd5e1; }
+[data-theme="dark"] .pw-tpl-type, [data-theme="dark"] .pw-tpl-vi-btn { background: #1e1f2e; border-color: #334155; color: #e2e8f0; }
+[data-theme="dark"] .pw-tpl-type.active { background: #6366f1; border-color: #6366f1; color: #fff; }
+[data-theme="dark"] .pw-tpl-levels { background: #000; }
+[data-theme="dark"] .pw-tpl-level { color: #94a3b8; }
+[data-theme="dark"] .pw-tpl-level.active { background: #1e1f2e; color: #c4b5fd; }
+[data-theme="dark"] .pw-tpl-body:not(:empty) { border-color: #312e81; }
+
 /* "Từ vựng chủ đề" — below "Phân tích đề" (js/writing.js renderPracticeVocab).
    Card look matches task2-practice.html's .t2-vitem. Past the first 8 terms
    the rest show only with .show-all ("Xem thêm"). */

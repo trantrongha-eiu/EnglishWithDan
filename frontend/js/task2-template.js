@@ -277,10 +277,6 @@ let TPL_DATA = {
 let _tplActiveType = 'type01';
 let _tplActiveMode = 'translation'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation' — Dịch câu is the default
 let _tplActiveLevel = 'band6'; // 'band6' | 'band7' — see switchTplLevel(). Band 6+ is the default level shown on page load.
-// Populated as each level is fetched (by _loadTplTemplates or the "Xem đầy
-// đủ" modal's own on-demand fetch) so the full-view modal can show either
-// level's complete text without re-fetching one already seen this session.
-let _tplDataByLevel = { band6: null, band7: null };
 
 // typeId is shared between the Band 6+ and Band 7+ document for the "same"
 // essay type (see Task2Template's {typeId,level} compound key) — but every
@@ -1054,7 +1050,6 @@ async function _loadTplTemplates(level) {
         });
         TPL_DATA = {};
         data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
-        _tplDataByLevel[level] = TPL_DATA;
         // Chunks/Build pre-build an ordered {si,ii} queue and only rebuild it
         // when _tplActiveType changes — typeId is shared across levels, so a
         // level switch alone (same typeId, different/shorter item list under
@@ -1069,27 +1064,6 @@ async function _loadTplTemplates(level) {
     }
   } catch (e) {}
   return false;
-}
-
-// Fetches a level's templates into _tplDataByLevel without touching the
-// active practice state (TPL_TYPES/TPL_DATA/_tplActiveLevel) — used by the
-// "Xem đầy đủ" modal so a student can read the *other* level's full text
-// without leaving whatever they're currently practicing.
-async function _ensureLevelCached(level) {
-  if (_tplDataByLevel[level]) return _tplDataByLevel[level];
-  try {
-    const token = window.AuthService && window.AuthService.getToken();
-    const res = await fetch(`${API}/api/task2/templates?level=${level}`, {
-      headers: token ? { Authorization: 'Bearer ' + token } : {}
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.success || !data.templates || !data.templates.length) return null;
-    const map = {};
-    data.templates.forEach(t => { map[t.typeId] = { name: t.name, sections: t.sections }; });
-    _tplDataByLevel[level] = map;
-    return map;
-  } catch (e) { return null; }
 }
 
 function switchTplLevel(level) {
@@ -2438,41 +2412,13 @@ window.addEventListener('beforeunload', () => saveTplAttemptToServer(_tplActiveT
 
 // ── Template history modal ────────────────────────────────────
 // ── "Xem đầy đủ" — full template reader ──────────────────────────
-// Shows every sentence of the currently-selected essay type fully resolved
-// (blank filled with its answer, highlighted) so a student can read the
-// whole model essay in one place while writing their own — for either
-// level, independent of whichever level the student is actively
-// practicing in the page behind the modal.
+// Shows the generic fill-in template of the currently-selected essay type —
+// sentence frames with (placeholders) that fit any topic, from the Task 2
+// Template Bank book (js/shared/task2-generic-tpl.js renders it).
+// The practice modes behind the modal keep their topic-based sentences.
+// Either level can be read, independent of the level being practiced.
 let _tplFullLevel = 'band6';
 let _tplFullShowVi = false;
-
-function _fullSentenceHtml(item) {
-  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-  const parts = item.en.split('___');
-  let out = escHtml(parts[0]);
-  answers.forEach((a, i) => {
-    out += `<strong class="tpl-full-blank">${escHtml(a)}</strong>${escHtml(parts[i + 1] || '')}`;
-  });
-  return out;
-}
-
-function _tplFullViewHtml(level) {
-  const data = _tplDataByLevel[level];
-  if (!data) return '<div class="tpl-full-loading">⏳ Đang tải...</div>';
-  const type = data[_tplActiveType];
-  if (!type) return '<div class="tpl-full-loading">Không có dữ liệu cho dạng bài này.</div>';
-  const viDisplay = _tplFullShowVi ? '' : 'display:none';
-  const sections = type.sections.map(sec => {
-    const enHtml = sec.items.map(_fullSentenceHtml).join(' ');
-    const viHtml = sec.items.map(it => escHtml((it.vi || '').replace(/^→\s*/, ''))).join(' ');
-    return `<div class="tpl-full-section">
-      <h4 class="tpl-full-sec-title">${escHtml(sec.title)}</h4>
-      <p class="tpl-full-en">${enHtml}</p>
-      <p class="tpl-full-vi" style="${viDisplay}">${viHtml}</p>
-    </div>`;
-  }).join('');
-  return `<h3 class="tpl-full-essay-title">${escHtml(type.name)}</h3>${sections}`;
-}
 
 function _renderTplFullLevelBtns() {
   document.querySelectorAll('.tpl-full-level-btn').forEach(btn => {
@@ -2480,18 +2426,14 @@ function _renderTplFullLevelBtns() {
   });
 }
 
-// Guards against a slow fetch for a level the student already tapped away
-// from (in the modal) resolving after a newer, faster one already rendered.
-let _tplFullSeq = 0;
 async function _renderTplFullBody() {
   const body = document.getElementById('tpl-full-body');
   if (!body) return;
-  const requestId = ++_tplFullSeq;
-  const level = _tplFullLevel;
-  body.innerHTML = '<div class="tpl-full-loading">⏳ Đang tải...</div>';
-  const data = await _ensureLevelCached(level);
-  if (requestId !== _tplFullSeq) return;
-  body.innerHTML = data ? _tplFullViewHtml(level)
+  if (!window.TASK2_GENERIC_TEMPLATES) body.innerHTML = '<div class="tpl-full-loading">⏳ Đang tải...</div>';
+  let data = null;
+  try { data = await Task2GenericTpl.load(); } catch (e) {}
+  // Render whatever level is current once loaded (it may have been switched meanwhile).
+  body.innerHTML = data ? Task2GenericTpl.html(data, _tplFullLevel, _tplActiveType, _tplFullShowVi)
     : '<p style="color:#e53935;text-align:center;padding:24px">Không tải được nội dung. Vui lòng thử lại.</p>';
 }
 
@@ -2506,18 +2448,12 @@ function toggleTplFullVi() {
   _tplFullShowVi = !_tplFullShowVi;
   const lbl = document.getElementById('tpl-full-vi-label');
   if (lbl) lbl.textContent = _tplFullShowVi ? '🇻🇳 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
-  document.querySelectorAll('#tpl-full-body .tpl-full-vi').forEach(el => {
-    el.style.display = _tplFullShowVi ? '' : 'none';
-  });
+  Task2GenericTpl.setVi(document.getElementById('tpl-full-body'), _tplFullShowVi);
 }
 
 function copyTplFullText() {
-  const data = _tplDataByLevel[_tplFullLevel];
-  const type = data && data[_tplActiveType];
-  if (!type) return;
-  const text = type.sections
-    .map(sec => `${sec.title}\n${sec.items.map(_fullEnglishSentence).join(' ')}`)
-    .join('\n\n');
+  const text = Task2GenericTpl.text(window.TASK2_GENERIC_TEMPLATES, _tplFullLevel, _tplActiveType);
+  if (!text) return;
   const onDone = () => showToast('Đã sao chép văn bản!', 'info', 2500);
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(onDone).catch(() => _copyTplFullTextFallback(text, onDone));

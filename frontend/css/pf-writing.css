@@ -268,7 +268,8 @@
    English prompt only. */
 #screen-practice-write #pw-analysis-inline,
 #screen-practice-write #pw-analysis-inline p,
-#screen-practice-write #pw-vocab { font-family: 'Inter', system-ui, sans-serif !important; }
+#screen-practice-write #pw-vocab,
+#screen-practice-write #pw-tpl-inline { font-family: 'Inter', system-ui, sans-serif !important; }
 #screen-exam .exam-right,
 #screen-practice-write .exam-right { background: var(--cd-bg); }
 #screen-exam .answer-textarea,

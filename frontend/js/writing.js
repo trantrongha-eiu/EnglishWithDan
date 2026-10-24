@@ -2717,6 +2717,15 @@ function renderPracticeWriteScreen(taskType, task) {
     html += `<button class="btn-secondary pw-analysis-btn" id="pw-analysis-toggle-btn" style="margin-top:12px;width:100%" onclick="toggleAnalysisPanel()"><i class="fas fa-search"></i> Phân tích đề</button>`;
     html += `<div id="pw-analysis-inline" class="t2hl-root" style="display:none;margin-top:12px">${analysisHtml}</div>`;
   }
+  // "Xem template" — Task 2 only: the generic fill-in template of whichever
+  // of the 7 essay types the student picks (js/shared/task2-generic-tpl.js),
+  // inline under "Phân tích đề" so the prompt stays in view. Hidden in Test
+  // Simulation like the analysis.
+  if (taskType === 2 && !isSimulation && window.Task2GenericTpl) {
+    practiceState.tplType = Task2GenericTpl.guessType(task.prompt);
+    html += `<button class="btn-secondary pw-analysis-btn" id="pw-tpl-toggle-btn" style="margin-top:12px;width:100%" onclick="togglePracticeTemplate()"><i class="fas fa-file-lines"></i> Xem template</button>`;
+    html += renderPracticeTemplatePanel();
+  }
   // "Từ vựng chủ đề" — topic vocab right under "Phân tích đề", open (not
   // behind a toggle) so students can lift phrases while they write. Task 2
   // only (lists come from WritingTask2.vocabularyList or the matching
@@ -2798,6 +2807,92 @@ function toggleAnalysisPanel() {
       ? '<i class="fas fa-chevron-up"></i> Ẩn phân tích đề'
       : '<i class="fas fa-search"></i> Phân tích đề';
   }
+}
+
+// ── "Xem template" panel (Task 2 practice) ──────────────────────
+// practiceState.tplType is pre-set from the prompt wording when it clearly
+// matches one type (Task2GenericTpl.guessType), otherwise null until the
+// student picks a type. Level and the Vietnamese toggle persist across
+// prompts for the session.
+function renderPracticeTemplatePanel() {
+  if (!practiceState.tplLevel) practiceState.tplLevel = 'band6';
+  const types = Task2GenericTpl.TYPES.map((t, i) => `
+      <button type="button" class="pw-tpl-type" data-type="${t.id}" onclick="pickPracticeTemplate('${t.id}')">
+        <span class="pw-tpl-type-no">${String(i + 1).padStart(2, '0')}</span> ${escHtml(t.label)}
+      </button>`).join('');
+  return `
+    <div id="pw-tpl-inline" class="pw-tpl" style="display:none">
+      <div class="pw-tpl-ask">Chọn dạng bài bạn muốn xem template:</div>
+      <div class="pw-tpl-types">${types}</div>
+      <div class="pw-tpl-bar">
+        <div class="pw-tpl-levels">
+          <button type="button" class="pw-tpl-level" data-level="band6" onclick="setPracticeTemplateLevel('band6')">🌱 Band 6+</button>
+          <button type="button" class="pw-tpl-level" data-level="band7" onclick="setPracticeTemplateLevel('band7')">🏆 Band 7+</button>
+        </div>
+        <button type="button" class="pw-tpl-vi-btn" id="pw-tpl-vi-btn" onclick="togglePracticeTemplateVi()"></button>
+      </div>
+      <div id="pw-tpl-body" class="pw-tpl-body"></div>
+    </div>`;
+}
+
+function togglePracticeTemplate() {
+  const panel = document.getElementById('pw-tpl-inline');
+  const btn = document.getElementById('pw-tpl-toggle-btn');
+  if (!panel) return;
+  const show = panel.style.display === 'none';
+  panel.style.display = show ? '' : 'none';
+  if (btn) {
+    btn.classList.toggle('is-open', show);
+    btn.innerHTML = show
+      ? '<i class="fas fa-chevron-up"></i> Ẩn template'
+      : '<i class="fas fa-file-lines"></i> Xem template';
+  }
+  if (show) renderPracticeTemplateBody();
+}
+
+function pickPracticeTemplate(typeId) {
+  practiceState.tplType = typeId;
+  renderPracticeTemplateBody();
+}
+
+function setPracticeTemplateLevel(level) {
+  if (practiceState.tplLevel === level) return;
+  practiceState.tplLevel = level;
+  renderPracticeTemplateBody();
+}
+
+function togglePracticeTemplateVi() {
+  practiceState.tplVi = !practiceState.tplVi;
+  _syncPracticeTemplateControls();
+  Task2GenericTpl.setVi(document.getElementById('pw-tpl-body'), practiceState.tplVi);
+}
+
+function _syncPracticeTemplateControls() {
+  document.querySelectorAll('#pw-tpl-inline .pw-tpl-type').forEach(b =>
+    b.classList.toggle('active', b.dataset.type === practiceState.tplType));
+  document.querySelectorAll('#pw-tpl-inline .pw-tpl-level').forEach(b =>
+    b.classList.toggle('active', b.dataset.level === practiceState.tplLevel));
+  const vi = document.getElementById('pw-tpl-vi-btn');
+  if (vi) vi.textContent = practiceState.tplVi ? '🇻🇳 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
+}
+
+async function renderPracticeTemplateBody() {
+  const body = document.getElementById('pw-tpl-body');
+  if (!body) return;
+  _syncPracticeTemplateControls();
+  if (!practiceState.tplType) {
+    body.innerHTML = '';
+    return;
+  }
+  if (!window.TASK2_GENERIC_TEMPLATES) body.innerHTML = '<div class="gtpl-empty">⏳ Đang tải...</div>';
+  let data = null;
+  try { data = await Task2GenericTpl.load(); } catch (e) {}
+  // The panel may have been re-rendered for another prompt while loading.
+  const cur = document.getElementById('pw-tpl-body');
+  if (!cur) return;
+  cur.innerHTML = data
+    ? Task2GenericTpl.html(data, practiceState.tplLevel, practiceState.tplType, !!practiceState.tplVi)
+    : '<div class="gtpl-empty">Không tải được nội dung. Vui lòng thử lại.</div>';
 }
 
 // First N terms shown; the rest behind "Xem thêm" (course-topic lists run
