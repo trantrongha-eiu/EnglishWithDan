@@ -18,7 +18,9 @@ for p in sorted(glob.glob(os.path.join(rd, '**', '*.pdf'), recursive=True)):
     m = re.match(r'(?:test|tets)\s*(\d+)', base, re.I)
     stem = f't{m.group(1)}' if m and vol != '2' else re.sub(r'[\s()]+', '', base).replace('_', 'x')
     # Vol 4: reading/test N/<anything>.pdf → tN (the folder names the test)
-    if sub != '.' and re.fullmatch(r'test\s*\d+', sub, re.I): stem = 't' + re.search(r'\d+', sub).group(0)
+    # Vol 5: reading/Test N/Explanation- N.pdf (key + explanation) → explain-tN
+    if sub != '.' and re.fullmatch(r'test\s*\d+', sub, re.I):
+        stem = ('explain-t' if re.match(r'expla', base, re.I) else 't') + re.search(r'\d+', sub).group(0)
     elif sub != '.': stem = re.sub(r'[\s()]+', '', sub) + '-' + stem
     doc = pymupdf.open(p)
     for i, page in enumerate(doc):

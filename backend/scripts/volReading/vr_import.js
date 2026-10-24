@@ -20,6 +20,8 @@ const grams = (w, n = 8) => { const o = new Set(); for (let i = 0; i + n <= w.le
 const SAME_TEXT_OK = ({
   1: { t8p2: '6abcde40ee81e7573b2fe8d6', t6p2: '6abd01ae1b50c9b87212e581' },
   2: { t1p1: '6abdacfa3bcd15105e99fb60' }, // The Iceman (Vol 2) = renumbered copy of The Iceman (bank P2)
+  // Vol 5: shorter versions of a bank article with a different question set
+  5: { t7p2: '6abd01aa1b50c9b87212e55e', t9p3: '6abd01a41b50c9b87212e52a' }, // Art in Iron and Steel / The Power of Nothing
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

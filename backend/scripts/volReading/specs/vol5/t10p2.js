@@ -1,0 +1,68 @@
+// Vol 5 - Reading/Test 10/Test 10-up.pdf - Reading Passage 2 (PDF p5–8). Not in the bank; mini-ielts 1179 "Mammoth kill" is a
+// longer Scientific American version (different text and questions). Text = PDF (typed scan). PDF slips fixed: "coincided roughly
+// with the arrival t humans in this on" → the arrival of humans in the New World (Kate Wong's original), "'megafauna Some 1
+// years ago" → 'megafauna'. Some 11,000 years ago (Q14's summary says 11,000), "thak", "smallertnammals", "hardlly", "as the the
+// Yukon", "Iow resistance". Key = Test 10/explanation- 10.pdf, checked against the passage: all correct.
+const { notes, matching } = require('../../vr_build');
+module.exports = {
+  vol: 5, test: 10, part: 2, title: 'Mammoth Kill', text: 't10p2.txt',
+  groups: [
+    notes(14, 20, [
+      'Three theories have been put forward to explain the disappearance of the different species of large mammals that inhabited __Q14__ 11,000 years ago. The __Q15__, proposed around fifty years ago by Paul S Martin, blames __Q16__ by people for mass extinction. Computer calculations seem to support this explanation, but critics question the reliability of the figures they are based on.',
+      'The second theory suggests that humans introduced a __Q17__ which wiped out the large mammals. However, so far this theory also lacks any __Q18__.',
+      'The final theory suggests that this period experienced significant __Q19__ which eventually led to the loss of habitat and to the division of the __Q20__ that some of the large mammals had organized.',
+    ], { instruction: 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 14–20 on your answer sheet.' }),
+    matching(21, ['John Alroy', 'Ross D E Macphee', 'Russell W Graham'], [
+      'Too little evidence exists to support the hunting theory.',
+      'The bigger the animal, the bigger the territory it requires for survival.',
+      'Globally, humans have been indirectly responsible for the elimination of many species.',
+      'Population estimates can be used to understand how large mammals become extinct.',
+      'Scientific examination of fossil remains may provide some proof for one of the theories.',
+      'Environmental changes negatively affected the social groupings of some large species.',
+    ], { title: 'List of People', reuse: true,
+      instruction: 'Look at the following statements (Questions 21–26) and the list of people below. Match each statement with the correct person, A, B or C. Write the correct letter, A, B or C, in boxes 21–26 on your answer sheet. NB You may use any letter more than once.' }),
+  ],
+  key: { 14: 'North America', 15: 'overkill model', 16: 'hunting', 17: 'deadly disease', 18: 'empirical evidence',
+    19: 'climate instability', 20: 'communities', 21: 'B', 22: 'C', 23: 'B', 24: 'A', 25: 'B', 26: 'C' },
+  expl: {
+    14: ['Các loài thú lớn từng sống ở ______ cách đây 11.000 năm.', 'Đoạn 1',
+      '“North America once belonged to huge, elephant-like mammoths, camels, bear-sized beavers and other giant beasts” … “Some 11,000 years ago, however, these large-bodied mammals … disappeared.”',
+      '→ North America'],
+    15: ['______, do Paul S Martin đề xuất khoảng năm mươi năm trước,', 'Đoạn 2',
+      '“the overkill model which emerged in the 1960s, when it was put forth by Paul S Martin”',
+      '“put forth” = proposed → overkill model'],
+    16: ['… quy sự tuyệt chủng hàng loạt cho việc ______ của con người.', 'Đoạn 1–2',
+      '“that human hunting drove these huge \'megafauna\' species to extinction. This belief resulted in the overkill model”',
+      '→ hunting'],
+    17: ['Thuyết thứ hai cho rằng con người mang đến một ______ quét sạch các loài thú lớn.', 'Đoạn 5',
+      '“he suggests that people may have introduced a deadly disease, perhaps through their dogs or accompanying vermin”',
+      '“introduced a deadly disease” → deadly disease'],
+    18: ['Tuy nhiên đến nay thuyết này cũng thiếu ______.', 'Đoạn 5',
+      '“So far, Macphee does not have empirical evidence for this theory”',
+      '“does not have” = lacks → empirical evidence'],
+    19: ['Thuyết cuối cho rằng thời kỳ này có ______ đáng kể.', 'Đoạn 6',
+      '“The Pleistocene epoch in question witnessed considerable climate instability”',
+      '“considerable” = significant → climate instability'],
+    20: ['… dẫn đến mất môi trường sống và chia cắt các ______ mà một số loài thú lớn đã hình thành.', 'Đoạn 6',
+      '“As a result, their regular habitats disappeared, and species that had once formed communities split apart.”',
+      '“split apart” = division; “formed communities” = had organized → communities'],
+    21: ['Có quá ít bằng chứng ủng hộ thuyết săn bắt.', 'Đoạn 4',
+      '“the relevant archaeological record contains barely a dozen examples of stone points embedded in mammoth bones … hardly what one might expect if hunting drove these animals to extinction.”',
+      '“barely a dozen examples” = too little evidence → Ross D E Macphee → B'],
+    22: ['Con vật càng lớn thì lãnh thổ cần để sống càng rộng.', 'Đoạn 6',
+      '“shrinking geographical ranges – a death sentence for large animals, which need correspondingly large ranges.”',
+      'Ý của Graham → Russell W Graham → C'],
+    23: ['Trên toàn cầu, con người gián tiếp gây ra sự biến mất của nhiều loài.', 'Đoạn 5',
+      '“Macphee agrees that humans most likely brought about these extinctions (as well as others around the world that coincided with human arrival), but not directly.”',
+      '“around the world” = globally; “not directly” = indirectly → Ross D E Macphee → B'],
+    24: ['Có thể dùng ước tính số lượng quần thể để hiểu các loài thú lớn tuyệt chủng như thế nào.', 'Đoạn 3',
+      '“Assuming an initial human population of 100 people that grew no more than two per cent annually, Alroy determined that, if each band of, say, 50 people killed 15 to 20 large animals a year, humans could have eliminated the animal populations within 1,000 years.”',
+      'Alroy dựa vào số liệu quần thể (người và thú) trong mô phỏng để giải thích sự tuyệt chủng → John Alroy → A'],
+    25: ['Phân tích khoa học hoá thạch có thể cung cấp bằng chứng cho một trong các thuyết.', 'Đoạn 5',
+      '“But he hopes that analyses of tissue and DNA from the most recent animal remains will eventually reveal the microbes responsible.”',
+      'Macphee hy vọng phân tích mô, DNA của di cốt sẽ chứng minh thuyết dịch bệnh → Ross D E Macphee → B'],
+    26: ['Thay đổi môi trường ảnh hưởng xấu đến các nhóm xã hội của một số loài lớn.', 'Đoạn 6',
+      '“explains Russell W Graham … As a result, their regular habitats disappeared, and species that had once formed communities split apart.”',
+      'Khí hậu bất ổn làm các quần xã tan rã → Russell W Graham → C'],
+  },
+};

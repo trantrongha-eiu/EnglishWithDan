@@ -1,0 +1,78 @@
+// Vol 5 - Reading/Test 2/Test 2 - up.pdf - Reading Passage 2 (PDF p5–8). Not in the bank / mini-ielts. Text = PDF (typed scan).
+// Typos fixed: "moder insanity", "5'C" / "3'C" → °C, "SUS 170" → $US, "sucha8", "museum piece" → pieces, "homes to loge no more
+// than60 kilowatt-hours per square more over the year" → to lose no more than 60 … per square metre over the year (as in the
+// langmaster.edu.vn copy). "let in invisible light" kept as printed (same in the online copies; not tested). Key =
+// Test 2/Explanation- 2.pdf, checked against the passage: all correct.
+const { matching, tfng } = require('../../vr_build');
+const L = 'ABCDEFGHIJK'.split('');
+module.exports = {
+  vol: 5, test: 2, part: 2, title: 'Ideal Homes', text: 't2p2.txt',
+  groups: [
+    matching(14, L, [
+      'reasons why a particular construction material is advantageous',
+      'an example of a construction design which benefits domestic interaction',
+      'a description of a house that is ventilated from below',
+      'an example of self-sufficient energy supply',
+      'suggested methods of reducing temperatures in a city',
+    ], { instruction: 'Reading Passage 2 has eleven paragraphs, A–K. Which paragraph contains the following information? Write the correct letter, A–K, in boxes 14–18 on your answer sheet.' }),
+    matching(19, [
+      'The choice of a certain construction material can have a socio-economic impact.',
+      'Throughout the world, people are rejecting traditional housing design in order to appear modern.',
+      'Houses should not only meet people\'s physical needs but also their social and psychological needs.',
+      'Traditional knowledge can be superior to modern knowledge.',
+      'There is an innovation that can save costs on both air-conditioning and heating.',
+      'Solar energy can meet the energy needs of people living in villages in developing countries.',
+      'There is a very simple solution that can save on the cost of air-conditioning.',
+    ], ['Muhammad Peter Davis', 'Arthur Rosenfeld', 'R van der Ley', 'Amory Lovins'], { title: 'List of ideas',
+      instruction: 'Look at the following people (Questions 19–22) and the list of ideas below. Match each person with the correct idea, A–G. Write the correct letter, A–G, in boxes 19–22 on your answer sheet.' }),
+    tfng(23, [
+      'The air temperature in modern Malaysian houses is lower than the air temperature outside.',
+      'The construction industry is more to blame than transport for global warming.',
+      'The use of wind towers for cooling is widespread in the Middle East today.',
+      'The \'super-windows\' promoted by Amory Lovins can be installed at low cost.',
+    ]),
+  ],
+  key: { 14: 'G', 15: 'E', 16: 'A', 17: 'J', 18: 'C', 19: 'D', 20: 'G', 21: 'A', 22: 'E', 23: 'FALSE', 24: 'TRUE', 25: 'FALSE',
+    26: 'NOT GIVEN' },
+  expl: {
+    14: ['Lý do một loại vật liệu xây dựng có lợi thế.', 'Đoạn G',
+      '“clay has many benefits over its industrialized version, brick. Clay blocks cost only half as much as ordinary bricks.” … “Moreover, clay is an excellent insulator against both cold and heat outside, and can easily be recycled.”',
+      'Đất sét: rẻ bằng nửa gạch, tạo việc làm, cách nhiệt, tái chế được → G'],
+    15: ['Ví dụ về một thiết kế xây dựng có lợi cho sinh hoạt gia đình.', 'Đoạn E',
+      '“The buildings were inward-looking, which served the dual function of focusing attention on the courtyard, where family members spend time together”',
+      'Nhà hướng vào sân trong, nơi cả nhà sum họp = domestic interaction → E'],
+    16: ['Mô tả ngôi nhà được thông gió từ bên dưới.', 'Đoạn A',
+      '“The raised structure ensures a cooling breeze comes up through the floorboards”',
+      'Gió mát đi lên qua sàn nhà sàn kampung = ventilated from below → A'],
+    17: ['Ví dụ về nguồn cung năng lượng tự túc.', 'Đoạn J',
+      '“countries, whether developing or developed, no longer need huge national grids to supply electricity. Every home can do its own thing with the help of a solar panel and a storage battery.”',
+      'Mỗi nhà tự cấp điện bằng pin mặt trời và ắc quy, không cần lưới điện quốc gia → J'],
+    18: ['Các cách được đề xuất để giảm nhiệt độ thành phố.', 'Đoạn C',
+      '“If Los Angeles painted its roofs white, planted trees to shade buildings, and chose lighter-colored paving, it could reduce city temperatures by 3°C”',
+      'Sơn mái trắng, trồng cây, lát đường màu sáng → giảm nhiệt độ thành phố → C'],
+    19: ['Muhammad Peter Davis', 'Đoạn A',
+      '“The builders of kampung houses \'had no knowledge of modern science or engineering but they came up with the perfect design,\' says Davis.”',
+      'Người xưa không có khoa học hiện đại nhưng vẫn thiết kế hoàn hảo, còn nhà bê tông hiện đại là “heat traps” → kiến thức truyền thống có thể hơn kiến thức hiện đại → D'],
+    20: ['Arthur Rosenfeld', 'Đoạn C',
+      '“According to Arthur Rosenfeld from the University of California, what California needs is white paint.” … “cut the annual air-conditioning bill by $US 170 million a year.”',
+      '“white paint” = giải pháp rất đơn giản giúp giảm tiền điều hoà → G'],
+    21: ['R van der Ley', 'Đoạn G',
+      '“Clay blocks cost only half as much as ordinary bricks. Clay also generates work because people can find it, mould it, bake it and work it themselves.”',
+      'Chọn đất sét: rẻ hơn và tạo việc làm = tác động kinh tế – xã hội → A'],
+    22: ['Amory Lovins', 'Đoạn I',
+      '“\'superwindows\', for example, which let in invisible light but can be \'tuned\' to either allow in, or reflect away, infrared solar radiation – the stuff that heats. Buildings with large expanses of window (and big energy bills) can be designed to achieve optimum temperatures.”',
+      'Cửa sổ “điều chỉnh” để cho vào (sưởi) hoặc phản xạ (làm mát) bức xạ hồng ngoại → tiết kiệm cả tiền điều hoà lẫn sưởi → E'],
+    23: ['Nhiệt độ trong các ngôi nhà hiện đại ở Malaysia thấp hơn nhiệt độ bên ngoài.', 'Đoạn A',
+      '“He has calculated that typical modern Malaysian houses are 5°C hotter than the air outside.”',
+      'Nóng hơn bên ngoài 5°C, không phải thấp hơn → FALSE'],
+    24: ['Ngành xây dựng có lỗi nhiều hơn giao thông trong việc làm Trái Đất nóng lên.', 'Đoạn D',
+      '“globally, transportation is responsible for just 22 per cent of carbon dioxide emissions. The building sector is responsible for 31 per cent”',
+      '31% (xây dựng) > 22% (giao thông) → TRUE'],
+    25: ['Việc dùng tháp gió để làm mát hiện nay phổ biến ở Trung Đông.', 'Đoạn F',
+      '“Throughout the Middle East today, wind towers are often little more than museum pieces. But there are exceptions.”',
+      'Tháp gió nay chủ yếu chỉ còn là “hiện vật bảo tàng”, chỉ có vài ngoại lệ → FALSE'],
+    26: ['Siêu cửa sổ do Amory Lovins quảng bá có thể lắp đặt với chi phí thấp.', 'Đoạn I',
+      '“Amory Lovins has promoted a range of low-energy technologies: \'superwindows\', for example”',
+      'Bài chỉ nói công dụng (tiết kiệm năng lượng), không nói giá lắp đặt → NOT GIVEN'],
+  },
+};

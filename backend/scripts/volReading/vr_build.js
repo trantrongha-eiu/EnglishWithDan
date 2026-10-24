@@ -129,8 +129,11 @@ function build(specPath) {
           if (g.groupType === 'summary-completion') { if (!g.summaryConfig.wordBank.some(w => w.word === variants[0])) warn.push(`Q${n}: key "${k}" not a bank word`); break; }
           for (const v of variants) {
             if (!C.includes(nrm(v)) && !(spec.free || []).includes(v)) warn.push(`Q${n}: key variant "${v}" not in passage`);
-            const wc = v.split(/\s+/).filter(w => !/^\d[\d,.]*$/.test(w) || !num).length;
-            if (maxW && wc > maxW) warn.push(`Q${n}: "${v}" has ${wc} words > ${maxW}`);
+            // a number spelt out ("five hours") counts as the number when the instruction allows one
+            const NUMW = /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|twenty|thirty|forty|fifty|hundred)$/i;
+            const wc = v.split(/\s+/).filter(w => !(/^\d[\d,.]*$/.test(w) || NUMW.test(w)) || !num).length;
+            // longOk: [n] = a question printed with two gaps under one number (key "x and y")
+            if (maxW && wc > maxW && !(spec.longOk || []).includes(n)) warn.push(`Q${n}: "${v}" has ${wc} words > ${maxW}`);
           }
       }
       // explanation: quotes must be in the passage, conclusion must match the key

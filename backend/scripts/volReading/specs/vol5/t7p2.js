@@ -1,0 +1,76 @@
+// Vol 5 - Reading/Test 7/Test 7- up.pdf - Reading Passage 2 (PDF p5–8). Not in the bank: "Art in Iron and Steel" (Mocktest 70)
+// is Henry Petroski's longer original — a different text and question set (18% shared). Text = PDF (typed scan). PDF loses words
+// in A: "Critics of technology protest against what they see as the same time, megastructures" → RESTORED "the artless and
+// dehumanising aspects of living in an industrialised society. At" (as in the Petroski text in the bank). Typos fixed: "Work of
+// engineering … are sometime", "connotation", "Fordis", "paintervphotographer", "I-JK", "Parin" → Paris, "flower" → flowers,
+// "engineenng", quote marks, Q21 "an conic" → an iconic. "In the period around World War I" (Hine's Empire State photos are
+// from 1930–31) kept as printed — not tested. Key = Test 7/Explanation- 7.pdf (OCR lost the Q16 row; the passage gives A),
+// checked against the passage: all correct.
+const { matching, notes } = require('../../vr_build');
+module.exports = {
+  vol: 5, test: 7, part: 2, title: 'Art and engineering', text: 't7p2.txt',
+  groups: [
+    matching(14, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], [
+      'a time when a transport system became an inspiration for artists',
+      'a reference to the current trend of including artists in engineering projects',
+      'reasons for the idea that art and engineering are difficult to combine',
+      'how the depiction of human labour involved danger to an artist',
+      'a reference to an artist who celebrated a number of unfinished structures',
+      'a reference to two large engineering works that are symbols of their locations',
+    ], { reuse: true, instruction: 'Reading Passage 2 has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G, in boxes 14–19 on your answer sheet. NB You may use any letter more than once.' }),
+    matching(20, ['Lewis Hine', 'Charles Sheeler', 'Abraham Darby', 'Michael Rooker', 'Claude Monet', 'Joseph Pennell',
+      'Santiago Calatrava'], [
+      'His engineering constructions are also regarded as works of art.',
+      'He created images of builders constructing an iconic American skyscraper.',
+      'He painted a building connected with a significant innovation in transport.',
+    ], { title: 'List of People',
+      instruction: 'Look at the following statements (Questions 20–22) and the list of people below. Match each statement with the correct person, A–G. Write the correct letter, A–G, in boxes 20–22 on your answer sheet.' }),
+    notes(23, 26, [
+      'Before the late 18th century, bridges were traditionally constructed of wood and __Q23__. Then the engineer __Q24__ manufactured the elements of an innovative bridge across the __Q25__. This iron bridge was the subject of a number of artworks, including a notable one by __Q26__. While some may have viewed it as ugly, artists regarded the bridge as a central feature of the landscape.',
+    ], { title: 'The iron bridge',
+      instruction: 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 23–26 on your answer sheet.' }),
+  ],
+  key: { 14: 'E', 15: 'G', 16: 'A', 17: 'B', 18: 'F', 19: 'A', 20: 'G', 21: 'A', 22: 'E', 23: 'stone', 24: 'Abraham Darby',
+    25: 'River Severn', 26: 'Michael Rooker' },
+  expl: {
+    14: ['Thời kỳ một hệ thống giao thông trở thành nguồn cảm hứng cho nghệ sĩ.', 'Đoạn E',
+      '“In the 19th century, the railways were another feat of engineering which captured the imagination of painters”',
+      'Đường sắt thế kỷ 19 “captured the imagination of painters” → E'],
+    15: ['Xu hướng hiện nay đưa nghệ sĩ vào các dự án kỹ thuật.', 'Đoạn G',
+      '“Increasingly, commissioners of bridges in the US are looking to such individuals, to teams of engineers and architects who work with artists.”',
+      '“Increasingly” = xu hướng hiện nay; đội ngũ làm việc cùng nghệ sĩ → G'],
+    16: ['Lý do cho quan niệm nghệ thuật và kỹ thuật khó kết hợp.', 'Đoạn A',
+      '“Works of engineering and technology are sometimes viewed as having nothing to do with art and humanity. Think of the connotations of assembly lines, robots and computers.”',
+      'Kỹ thuật gắn với dây chuyền, công việc lặp lại, căng thẳng → bị coi là xa lạ với nghệ thuật; “seldom been easy or consistent” → A'],
+    17: ['Việc khắc hoạ lao động con người khiến một nghệ sĩ gặp nguy hiểm.', 'Đoạn B',
+      '“Hine put his own life at risk to photograph workers suspended on cables hundreds of feet in the air”',
+      '“put his own life at risk” = danger to an artist → B'],
+    18: ['Một nghệ sĩ ca ngợi nhiều công trình chưa hoàn thành.', 'Đoạn F',
+      '“He is perhaps best known for his prints of the Panama Canal as it neared completion and of the partially completed Hell Gate and Delaware River Bridges.”',
+      '“neared completion”, “partially completed” = unfinished structures → F'],
+    19: ['Hai công trình kỹ thuật lớn là biểu tượng của nơi chúng toạ lạc.', 'Đoạn A',
+      '“megastructures such as the Brooklyn and Golden Gate Bridges in the US … have come to embody the spirit of their respective cities.”',
+      '“embody the spirit of their respective cities” = symbols of their locations → A'],
+    20: ['Các công trình kỹ thuật của ông cũng được coi là tác phẩm nghệ thuật.', 'Đoạn G',
+      '“Santiago Calatrava … His bridges and other structures provide public spaces on a human scale, and stand as pieces of sculpture in their own right.”',
+      '“pieces of sculpture in their own right” = works of art → Santiago Calatrava → G'],
+    21: ['Ông tạo ra hình ảnh những người thợ xây một toà nhà chọc trời biểu tượng của Mỹ.', 'Đoạn B',
+      '“he visited New York and was given the opportunity to record the construction of the famous Empire State Building”',
+      'Empire State Building = iconic American skyscraper; Hine chụp ảnh thợ xây → Lewis Hine → A'],
+    22: ['Ông vẽ một công trình gắn với một đổi mới quan trọng trong giao thông.', 'Đoạn E',
+      '“The Impressionist Claude Monet painted railway stations – such as the Gare St-Lazare in Paris”',
+      'Nhà ga = building; đường sắt = innovation in transport → Claude Monet → E'],
+    23: ['Trước cuối thế kỷ 18, cầu thường được xây bằng gỗ và ______.', 'Đoạn D',
+      '“a dramatic departure from the classic stone and timber bridges that dotted the countryside”',
+      '“timber” = wood; vế còn lại → stone'],
+    24: ['Rồi kỹ sư ______ chế tạo các bộ phận của một cây cầu mới lạ.', 'Đoạn D',
+      '“In the late 18th century, Abraham Darby cast the large iron ribs that formed the world\'s first iron bridge”',
+      '“cast the large iron ribs” = manufactured the elements → Abraham Darby'],
+    25: ['… bắc qua ______.', 'Đoạn D',
+      '“This structure still spans the River Severn”',
+      '“spans” = across → River Severn'],
+    26: ['Cây cầu là đề tài của nhiều tác phẩm, trong đó nổi bật là tác phẩm của ______.', 'Đoạn D',
+      '“This is how Michael Rooker shows the iron bridge in his late 18th-century painting, in which the surrounding area radiates out from the bridge and pales behind it.”',
+      'Bức tranh của Rooker coi cây cầu là trung tâm (focal point) → Michael Rooker'],
+  },
+};

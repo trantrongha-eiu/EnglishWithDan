@@ -184,3 +184,39 @@ chạy cả ngân hàng).
   Deer" (engnovate) đánh số 28–40: đề nguồn có Passage 2 dài 14 câu nhưng không còn bản nào, không có ví dụ để chuyển thành câu.
   Vol 4 - Test 9 + bài **Temperament** (chỉ Q30–40) — không tìm thấy bản nào của bài này trên mạng. Backend chỉ trả đề/bài isActive:true cho học sinh. Khi tìm được câu bị thiếu: bổ sung spec →
 `vr_update.js` → bật lại trong admin (Đề thi → bật / Bài đọc → bật). Chạy `vr_incomplete.js` sau mỗi vol mới.
+
+## Vol 5 — 2026-10-24 (xong: 10 đề full, 30 bài mới)
+
+Nguồn: `Reading/Test N/Test N- up.pdf` (đề, scan) + `Reading/Test N/Explanation- N.pdf` (bảng key + đoạn trích; scan, riêng
+Test 8 có chữ gõ — đọc bằng pymupdf). `render2.py` nay đặt tên `explain-tN` cho file "Expla…" trong thư mục `Test N/`
+(trước đây trùng tên `tN` với file đề). Công cụ mới: `webgrep.py <page.html> "<cụm>" …` (xem cụm từ trong trang online đã
+curl — để lấy nguyên văn chỗ PDF mất chữ); `vr_build.js`: số viết bằng chữ ("five hours") được tính như số khi đề cho
+"AND/OR A NUMBER", và `longOk: [n]` cho câu in hai chỗ trống dưới một số câu (T10 P3 Q33 "weight and position").
+
+- **Đề full Vol 5 - Test 1…10** tạo + bật, đều đủ 40 câu.
+- **Không dùng lại bài nào**: chỉ T7 P2 "Art and engineering" (~ "Art in Iron and Steel", Mocktest 70) và T9 P3 "The Placebo
+  Effect" (~ "The Power of Nothing", Mocktest 66) trùng một phần chữ (bản gốc dài hơn) nhưng bộ câu hỏi khác hẳn → bài mới,
+  ghi trong `SAME_TEXT_OK[5]` của vr_import.js.
+- **Mới 30 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt). Key Vol sai đã sửa theo bài (chi tiết đầu từng spec):
+  T3 P2 Q14 B → F (B đã là đáp án Q16); T3 P3 Q37 file key in "G" (tên đoạn) → marketing managers; T4 P1 Q9 NG → FALSE (nhận cả
+  hai); T4 P3 Q27 F → E; T5 P1 Q6 genetically-engineered → traditional, Q11 NG → FALSE; T5 P2 Q23 B → A, Q24 C → B (ghép theo
+  người nói); T5 P3 Q33 NG → NO; T6 P3 Q31 A → B. Key không chắc: T10 P1 Q2 "growing problem" giữ TRUE, nhận thêm NOT GIVEN.
+  T4 P2 file key bỏ trống Q25–26 → records, nutrition (theo bài).
+- **Chữ bị mất trong PDF**: lấy lại nguyên văn khi có nguồn — T2 P2 "homes to lose no more than 60 kilowatt-hours per square
+  metre" (langmaster), T4 P2 câu "they can achieve records … nutrition … 0.0001 of a second" (Prospect "Out of thin air"),
+  T7 P2 "the artless and dehumanising aspects…" (bản Petroski trong ngân hàng), T9 P3 "inflating a blood-pressure cuff",
+  T10 P1 cả bài đối chiếu langmaster, T10 P2 "arrival of humans in the New World". **Tự bổ sung tối thiểu** (không có nguồn,
+  ghi rõ trong spec): T4 P1 "a … know as graphite. It crumbled", T6 P1 "showing that teens are biologically", T7 P1 "engineering
+  graduate, Nolan Bushnell, realised that technology had developed" (chứa đáp án Q1 của key Vol), T7 P3 "are more open to it,
+  but Nicholson".
+- **Câu hỏi bị thiếu / cụt trong PDF**: T9 P3 Q34 (PDF chỉ in 32–33, key có "34 C") → khôi phục từ bộ câu gốc trên
+  koolearn / ielts.xdf.cn ("Fabrizio Benedetti's research … neutralized by introducing naloxone", khớp key); T7 P3 Q33 bị cắt →
+  "…has prepared our brains well for post-industrial life"; T7 P3 PDF không có tên bài → đặt "Managing the Human Animal" (tên
+  sách trong bài).
+- Kiểm: pw_mini 30/30, pw_admin 30/30, pw_grade 30/30 100%, pw_full_tests 10/10, `_audit_reading_warnings` 0,
+  `vr_audit.js 5`: 0 problem (400 câu, 484 trích dẫn), `vr_incomplete.js`: 0.
+- **Debug lại (cùng ngày)**: dò từ lạ trong chữ bài so với toàn ngân hàng + dò lỗi dấu câu/khoảng trắng → sửa 3 chỗ gạch nối /
+  dấu phẩy (T9 P1 "USA , the", T9 P2 "radio- tagged", T10 P3 "thrill- seeking"), `vr_update.js 5 t9p1 t9p2 t10p3 --apply`
+  (0 lượt làm). So DB với draft: 27 bài còn lại khớp. T9 P2 tiêu đề iv in lỗi ("The importance in the natural world") — bản
+  online (bestmytest) là phiên bản khác bộ tiêu đề, giữ như PDF. Kiểm lại: pw_admin 30/30, pw_grade 30/30 100%,
+  pw_full_tests 10/10, `_audit_reading_warnings` 0, `vr_audit.js 5` 0 problem, `vr_incomplete.js` 0.

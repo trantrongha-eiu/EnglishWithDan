@@ -1,0 +1,81 @@
+// Vol 5 - Reading/Test 7/Test 7- up.pdf - Reading Passage 1 (PDF p1–4). Not in the bank / mini-ielts; online copies
+// (youpass.vn) could not be fetched. Text = PDF (typed scan). PDF (and the key file) lose words in paragraph 2: "a young
+// University of Utah engine to the point that adaptation of Spacewar … was becoming economically feasible. Bushnell and his
+// associates …" → ADDED "engineering graduate, Nolan Bushnell, realised that technology had developed" (the next sentence names
+// Bushnell; Q1's Vol key "adaptation" comes from this sentence — kept). Typos fixed: "leas sustained", "withdew", "Japanese
+// manufacture" → manufacturer, "Pac - Man (in 1908)" → 1980 (the key file has 1980; Q5 is under "1980s"), "begun to Iow down" →
+// slow down, "s7 billion" → $7 billion, "Playstation" → PlayStation, "diffcult". Key = Test 7/Explanation- 7.pdf, checked against
+// the passage: all correct.
+const { notes, tfng } = require('../../vr_build');
+module.exports = {
+  vol: 5, test: 7, part: 1, title: 'Computer games', text: 't7p1.txt',
+  groups: [
+    notes(1, 6, [
+      '<strong>1960s</strong>',
+      '• Spacewar was first played on a computer and special screen.',
+      '<strong>1970s</strong>',
+      '• Advances in technology led to cheaper __Q1__ and the possibility of coin-operated video games.',
+      '• The first successful coin-operated video game was __Q2__.',
+      '• __Q3__ was bought from its original owners.',
+      '• Space Invaders was successful because of its colourful __Q4__.',
+      '<strong>1980s</strong>',
+      '• Pac-Man was the first game to attract __Q5__.',
+      '<strong>1990s</strong>',
+      '• At first one company dominated the market.',
+      '• By the end of the decade __Q6__ had become the biggest selling home entertainment product.',
+    ], { title: 'A history of video games',
+      instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1–6 on your answer sheet.' }),
+    tfng(7, [
+      'Spacewar was unpopular at first.',
+      'Bushnell and his team failed to create a coin-operated version of Spacewar.',
+      'From the beginning the home video game market has been commercially successful.',
+      'Atari was successful for the first time in 1979.',
+      'Video arcade game usage continued strongly in the 1980s.',
+      'The time taken to produce a video game can be compared to producing a book.',
+      'The qualities needed for a video game to become successful have been researched thoroughly.',
+    ]),
+  ],
+  key: { 1: 'adaptation', 2: 'Pong', 3: 'Atari', 4: 'graphics', 5: 'females', 6: 'PlayStation', 7: 'FALSE', 8: 'TRUE',
+    9: 'FALSE', 10: 'TRUE', 11: 'FALSE', 12: 'NOT GIVEN', 13: 'NOT GIVEN' },
+  expl: {
+    1: ['Tiến bộ công nghệ giúp việc ______ rẻ hơn và mở ra khả năng có trò chơi điện tử bỏ xu.', 'Đoạn 2',
+      '“realised that technology had developed to the point that adaptation of Spacewar from a large computer into coin-operated form, for use in video game arcades, was becoming economically feasible.”',
+      '“economically feasible” = đủ rẻ; việc chuyển thể (adaptation) Spacewar sang máy bỏ xu → adaptation'],
+    2: ['Trò chơi bỏ xu thành công đầu tiên là ______.', 'Đoạn 3',
+      '“Pong took the industry by storm and quickly became the first coin-operated video-game hit.”',
+      '“the first coin-operated video-game hit” = first successful → Pong'],
+    3: ['______ được mua lại từ những người sáng lập.', 'Đoạn 3',
+      '“In 1976, the founders of Atari sold their share of the company”',
+      '“founders … sold their share” = was bought from its original owners → Atari'],
+    4: ['Space Invaders thành công nhờ ______ nhiều màu sắc.', 'Đoạn 4',
+      '“With its vibrant graphics it was so different from the previous black and white games that Space Invaders immediately captured public interest.”',
+      '“vibrant graphics” (khác với game đen trắng) = colourful graphics → graphics'],
+    5: ['Pac-Man là trò chơi đầu tiên thu hút ______.', 'Đoạn 4',
+      '“Pac-Man (in 1980) was especially significant, because now females began to take an interest.”',
+      '“now females began to take an interest” → females'],
+    6: ['Cuối thập niên, ______ trở thành sản phẩm giải trí gia đình bán chạy nhất.', 'Đoạn 7',
+      '“In 1999, sales of game hardware and software, led by PlayStation, were equal in size (around $7 billion) to US domestic box-office revenues.”',
+      '1999 = cuối thập niên 1990, dẫn đầu là PlayStation → PlayStation'],
+    7: ['Spacewar lúc đầu không được ưa chuộng.', 'Đoạn 2',
+      '“That game immediately attracted a wide cult following among computer buffs.”',
+      '“immediately attracted a wide cult following” = được yêu thích ngay → FALSE'],
+    8: ['Bushnell và nhóm không làm được phiên bản bỏ xu của Spacewar.', 'Đoạn 2',
+      '“Bushnell and his associates began working on such a machine in a converted bedroom workshop, but were unsuccessful.”',
+      '“were unsuccessful” = failed → TRUE'],
+    9: ['Ngay từ đầu thị trường trò chơi điện tử tại nhà đã thành công về thương mại.', 'Đoạn 3',
+      '“Yet despite early enthusiasm, consumer interest in this area proved less sustained than had been anticipated and, as prices started to drop and losses mounted, most of the early manufacturers withdrew from the field.”',
+      'Thua lỗ, các nhà sản xuất rút lui → không thành công từ đầu → FALSE'],
+    10: ['Atari lần đầu thành công vào năm 1979.', 'Đoạn 5',
+      '“Unprofitable for the first three years, Atari had, by the end of 1979, become a success.”',
+      'Ba năm đầu thua lỗ, cuối 1979 mới thành công → TRUE'],
+    11: ['Việc chơi game ở khu trò chơi tiếp tục mạnh mẽ trong thập niên 1980.', 'Đoạn 6',
+      '“By late 1982, the public\'s fascination with arcade games had begun to slow down”',
+      '“had begun to slow down” → không tiếp tục mạnh → FALSE'],
+    12: ['Thời gian làm một trò chơi có thể so với việc làm một cuốn sách.', 'Đoạn 6',
+      '“had stabilized and become restructured in a manner similar, in many respects, to the book publishing business.”',
+      'Bài so sánh cấu trúc ngành với ngành xuất bản sách, không nói về thời gian sản xuất → NOT GIVEN'],
+    13: ['Các phẩm chất cần có để một trò chơi thành công đã được nghiên cứu kỹ.', 'Đoạn 8',
+      '“no matter what the technology or the format, the essence of a successful game will always be the same: it is simple to understand and to play on an elementary level”',
+      'Tác giả nêu bản chất của trò chơi thành công, nhưng không nói điều này đã được nghiên cứu → NOT GIVEN'],
+  },
+};
