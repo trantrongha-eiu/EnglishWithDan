@@ -72,7 +72,7 @@ describe('filtering by question type (spec cases 1–3)', () => {
   test('check: grades one answer server-side, then reveals key + explanation + evidence', async () => {
     const wrong = await check('true-false-not-given', { passageId: String(passage._id), questionNumber: 2, answer: 'TRUE' });
     expect(wrong.body.result).toMatchObject({ isCorrect: false, correctAnswer: 'FALSE' });
-    expect(wrong.body.result.evidence.text).toBe('It then adds detail 1 about bees in Kenya in 1911');
+    expect(wrong.body.result.evidence.text).toBe('It then adds detail 1 about bees in Kenya in 1911.');
     const right = await check('true-false-not-given', { passageId: String(passage._id), questionNumber: 3, answer: 'not given' });
     expect(right.body.result.isCorrect).toBe(true);
     // An MCQ question number is not part of the T/F/NG practice.
@@ -100,6 +100,41 @@ test('CASE 3: matching headings returns only the headings questions, each pointi
   expect(pr.questions[1].targetParagraph).toBe(paraB.i);
   const ok = await check('matching-headings', { passageId: pr.passageId, questionNumber: 15, answer: 'I' });
   expect(ok.body.result.isCorrect).toBe(true);
+});
+
+test('matching headings: the highlighted sentence is the one carrying the heading, not just the first sentence', async () => {
+  const paras = [
+    ['A', 'Researchers began the project in 1990. Most of the money was spent on the cost of new laboratory equipment.'],
+    ['B', 'Many people had ideas about the cause. The debate (still unresolved) continues among scientists today.'],
+    ['C', 'The team visited three islands. They recorded birds there. Their report was published in 2001.'],
+  ];
+  await createPassage({
+    content: '<h2>Key sentences</h2>' + paras.map(([l, t]) => `<p><strong>${l}</strong> ${t}</p>`).join(''),
+    questionGroups: [{
+      groupType: 'matching-headings', instruction: 'Choose the correct heading for each paragraph from the list of headings below.',
+      headingsConfig: { headings: [
+        { numeral: 'i', text: 'Spending on equipment' },
+        { numeral: 'ii', text: 'A continuing argument' },
+        { numeral: 'iii', text: 'Something unrelated' },
+      ] },
+      questions: [
+        { questionNumber: 1, type: 'matching-headings', questionText: 'Paragraph A', correctAnswer: 'i', explanation: '' },
+        { questionNumber: 2, type: 'matching-headings', questionText: 'Paragraph B', correctAnswer: 'ii', explanation: 'Đoạn B: cuộc tranh luận vẫn tiếp diễn (still unresolved).' },
+        { questionNumber: 3, type: 'matching-headings', questionText: 'Paragraph C', correctAnswer: 'iii', explanation: '' },
+      ],
+    }],
+  });
+  const pr = (await get('matching-headings')).body.practice;
+  // worked example (A): the heading's words point at the second sentence
+  expect(pr.questions[0].guided.evidence.text).toBe('Most of the money was spent on the cost of new laboratory equipment.');
+  // hint (B): the English term the explanation cites in brackets
+  expect(pr.questions[1].guided.evidence.text).toBe('The debate (still unresolved) continues among scientists today.');
+  // "Kiểm tra" reveals the same sentence the hint pointed at
+  const b = await check('matching-headings', { passageId: pr.passageId, questionNumber: 2, answer: 'iii' });
+  expect(b.body.result.evidence.text).toBe('The debate (still unresolved) continues among scientists today.');
+  // nothing to go on (C): falls back to the first sentence
+  const c = await check('matching-headings', { passageId: pr.passageId, questionNumber: 3, answer: 'i' });
+  expect(c.body.result.evidence.text).toBe('The team visited three islands.');
 });
 
 test('same-type questions split by another type keep their original order (spec §6)', async () => {

@@ -103,7 +103,7 @@
     },
     headings: {
       steps: [
-        'Đọc lướt đoạn cần tìm heading (có viền đỏ) — câu đầu (tô vàng) và câu cuối thường chứa ý chính.',
+        'Đọc lướt đoạn cần tìm heading (có viền đỏ): câu đầu, câu cuối và câu sau từ đổi ý (However, But…) thường chứa ý chính.',
         'Tự tóm tắt ý chính của đoạn bằng một câu ngắn.',
         'Bỏ qua chi tiết hỗ trợ: ví dụ, số liệu, tên riêng.',
         'So nghĩa từng heading với ý chính — heading đúng thường là cách diễn đạt khác của ý chính.',
@@ -264,7 +264,13 @@
   function paraHtml(p, opts) {
     const ranges = [];
     const isTarget = opts.target != null && opts.target === p.i;
-    if ((opts.lead || isTarget) && p.leadEnd > 0 && !p.heading) ranges.push({ start: 0, end: p.leadEnd, cls: 'rtp-lead' });
+    if (opts.lead && p.leadEnd > 0 && !p.heading) ranges.push({ start: 0, end: p.leadEnd, cls: 'rtp-lead' });
+    // the sentence carrying the paragraph's main idea (headings) — not
+    // always its first sentence
+    if (opts.key && opts.key.paragraphIndex === p.i) {
+      const at = p.text.indexOf(opts.key.text);
+      if (at !== -1) ranges.push({ start: at, end: at + opts.key.text.length, cls: 'rtp-lead' });
+    }
     (opts.hits || []).forEach(t => findTerm(p.text, t).forEach(r => ranges.push({ ...r, cls: 'rtp-hit' })));
     if (opts.evidence && opts.evidence.paragraphIndex === p.i) {
       const at = p.text.indexOf(opts.evidence.text);
@@ -703,7 +709,7 @@
     const analysis = g.explanation ? `<div class="q-explanation"><strong>Phân tích (lời giải của đề):</strong> ${escNl(g.explanation)}</div>` : '';
     if (pr.questionType === 'headings') {
       return [
-        ['BƯỚC 1 — Đọc câu chủ đề của đoạn', `Đọc câu đầu của ${esc(where)} (tô vàng, viền đỏ): “${esc(g.evidence.text)}”`],
+        ['BƯỚC 1 — Tìm câu then chốt của đoạn', `Ý chính của ${esc(where)} (viền đỏ) nằm ở câu tô vàng: “${esc(g.evidence.text)}” <span class="rtp-muted">— câu then chốt không phải lúc nào cũng là câu đầu.</span>`],
         ['BƯỚC 2 — Tóm tắt ý chính', 'Tự hỏi: cả đoạn đang nói về điều gì? Bỏ qua ví dụ, số liệu, tên riêng.'],
         ['BƯỚC 3 — So với danh sách heading', 'Tìm heading diễn đạt lại đúng ý chính đó; loại heading chỉ khớp một chi tiết hoặc chỉ lặp lại một từ trong đoạn.'],
         ['BƯỚC 4 — Kết luận', `${analysis}<div class="rtp-answer-line">→ Đáp án: <strong>${esc(answer)}</strong></div>`],
@@ -725,8 +731,8 @@
     const where = paraName(pr, g.evidence.paragraphIndex);
     if (pr.questionType === 'headings') {
       return [
-        ['Gợi ý 1 — câu chủ đề', `Đọc câu đầu của ${esc(where)}: “${esc(g.evidence.text)}”`],
-        ['Gợi ý 2 — cách chọn', 'Heading đúng tóm được CẢ đoạn và thường diễn đạt khác câu chủ đề — loại heading chỉ khớp một chi tiết.'],
+        ['Gợi ý 1 — câu then chốt', `Ý chính của ${esc(where)} nằm ở câu tô vàng: “${esc(g.evidence.text)}”`],
+        ['Gợi ý 2 — cách chọn', 'Heading đúng tóm được CẢ đoạn và thường diễn đạt khác câu then chốt — loại heading chỉ khớp một chi tiết.'],
       ];
     }
     return [
@@ -766,10 +772,12 @@
   // (both modes reveal in the same order: keywords → location → evidence).
   function guidedView(pr, q, a) {
     const g = q.guided;
-    const none = { stemKw: [], hits: [], target: q.targetParagraph, evidence: null };
+    const none = { stemKw: [], hits: [], target: q.targetParagraph, evidence: null, key: null };
     if (!g) return none;
     const level = g.mode === 'example' ? (a.gStep || 1) : (a.hintLevel || 0);
-    if (pr.questionType === 'headings') return none; // target paragraph + its topic sentence are always marked
+    // headings: the target paragraph is always outlined; its key sentence is
+    // marked in the worked example and from the first hint on
+    if (pr.questionType === 'headings') return { ...none, key: level >= 1 ? g.evidence : null };
     return {
       stemKw: level >= 1 ? g.keywords : [],
       hits: level >= 2 ? g.keywords : [],
@@ -787,7 +795,7 @@
     const view = guidedView(pr, q, a);
     const exampleDone = isExample(st.idx) && (a.gStep || 1) >= exampleSteps(pr, q, q.guided).length;
     const evidence = (r && r.evidence) || view.evidence;
-    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence, target: view.target, hits: view.hits })).join('');
+    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence, target: view.target, hits: view.hits, key: view.key })).join('');
     const stemRanges = view.stemKw.flatMap(k => findTerm(q.text, k).map(x => ({ ...x, cls: 'rtp-anchor' })));
 
     showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)

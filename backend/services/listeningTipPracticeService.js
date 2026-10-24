@@ -44,11 +44,16 @@ const PRACTICE_CONFIG = {
 // The hand-picked source of each tip's (fixed) practice — see "Fixed
 // practices" below. section: one ListeningSection; items: [sectionId,
 // questionNumber] (symbols: [sectionId, dictation sentence index]).
+// Audio practices use clean recordings only (official per-part tracks, no
+// background hiss, no bleed from the neighbouring part where the file was
+// cut): the test-10…13 "track" series (noise floor ~-55 dB vs ~-88 dB) and
+// the TEST 9 cuts were swapped out on 2026-10-24. The text-only "predict"
+// tips play no audio, so their sources may stay.
 const FIXED_PRACTICE = {
   'keyword-highlighting': { items: [
     ['6a6c014485e01d9821f44d27', 9], // Wetsuit and surfboard: _____ euros per day → 30 (price)
     ['6a21384fce7f626cb9746d3e', 7], // This year, activities end by _____ p.m. → 11.15 (time)
-    ['6a53a9085c459ab074ce322a', 8], // Date of first payment: _____ → 15 October (date)
+    ['6a6c014685e01d9821f44d8d', 2], // Cam 18 T1 P1 — Date of bus journey: _____ → 24 April (date)
     ['6a354f1a4aea0c7482ca46ff', 9], // Address: 707, _____ Street, Marbury → Kippax (name)
     ['6a355d2c4aea0c7482ca51dd', 37], // kept in small pots in a _____ → hothouse (word)
   ] },
@@ -58,7 +63,7 @@ const FIXED_PRACTICE = {
     ['6a3d2ab0b3716e444f8e7710', 10], // ! It's very important that runners start in a particular order.
     ['6a2ffc5fad243a17c3919a48', 12], // – Its main weakness is the inefficient use of space…
     ['6a4c9670da428396002190a8', 19], // → …the number of factories … had increased to approximately 600
-    ['6a53b2975c459ab074ce48ae', 9], // ≠ Whereas digital immigrants are those born…
+    ['6a6c014b85e01d9821f44f51', 31], // ≠ …whereas now everyone knows about them (Cam 21 T1 P3)
   ] },
   'full-workflow-practice': { section: '6a2d1e46e40be522868ab904', question: 11 }, // The Pre-school Family Centre, Q11–15
   'predict-noun-adjective-verb': { items: [
@@ -86,7 +91,7 @@ const FIXED_PRACTICE = {
     ['6a53bc495c459ab074ce6a26', 19], // beside the _____ on the ground floor → information desk (phrase)
   ] },
   'form-note-table-completion': { section: '6a27a043ac84aea4f54b07f4' }, // Bankside Recruitment Agency
-  'multiple-choice': { section: '6a509ddcc7a497a299b33db3' }, // The City of Gisborne
+  'multiple-choice': { section: '6a53d6c95c459ab074ceb86a' }, // Moving Office (Part 2, 6 MCQs, clean audio)
   'matching': { section: '6a6c014485e01d9821f44d33' }, // Cam 17 Test 3 Part 2 — activities on offer
   'map-plan-diagram': { section: '6a3d2ab0b3716e444f8e7710' }, // Bridge to Brisbane Fun Run
   'sentence-completion': { section: '6a301864b14c593213712218' }, // Job Centre

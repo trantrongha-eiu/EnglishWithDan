@@ -129,7 +129,7 @@ const ABBREVIATIONS = /(?:\b(?:Mr|Mrs|Ms|Dr|Prof|St|Mt|Jr|Sr|vs|etc|No|Co|Inc|Lt
 // End index (exclusive) of each sentence in an already-collapsed string.
 function sentenceEnds(text) {
   const ends = [];
-  const re = /[.!?…]+["”’)\]]*(?=\s+["“‘([]?[A-Z0-9])/g;
+  const re = /[.!?…]+["”’')\]]*(?=\s+["“‘'([]?[A-Z0-9])/g;
   let m;
   while ((m = re.exec(text))) {
     const end = m.index + m[0].length;
@@ -435,6 +435,71 @@ function bestSentence(p, keywords) {
   return best ? { paragraphIndex: p.i, text: best.text } : null;
 }
 
+// ── Key sentence (paragraph main-idea questions) ───────────────────────
+// Headings and "what is the paragraph about / doing" questions are answered
+// by the sentence that carries the paragraph's main idea — often NOT its
+// first sentence ("However, …", a closing "These were questions that…").
+// Order: a hand-checked pin, the passage text the explanation quotes, the
+// English terms it cites in brackets ("(considerable controversy)",
+// "(Maple)"), the words of the correct heading/option, else the first
+// sentence.
+
+// Exact fragments of key sentences, checked by hand for the fixed
+// practices where the explanation names no passage wording.
+const KEY_SENTENCE_PINS = [
+  'It coincided with a sharp dip in temperatures', // Violins and very cold weather, F → ix (exceptional environmental conditions)
+  'The first man to see these extraordinarily potent creatures', // I contain multitudes, ¶5 → A (how a discovery was made)
+];
+
+function bracketTerms(explanation) {
+  const out = [];
+  const re = /\(([^()]{3,60})\)/g;
+  let m;
+  while ((m = re.exec(String(explanation || '')))) {
+    const t = m[1].trim();
+    if (/^[A-Za-z][A-Za-z\s'’-]+$/.test(t)) out.push(normalizeForMatch(t));
+  }
+  return out;
+}
+
+function keySentence(p, q, cue) {
+  if (!p) return null;
+  const pin = KEY_SENTENCE_PINS.find(f => p.text.includes(f));
+  if (pin) return evidenceSpan({ paragraphIndex: p.i, text: pin }, [p]);
+  const quote = locateQuotes(q.explanation, [p])[0];
+  if (quote) return evidenceSpan(quote, [p]);
+  const terms = bracketTerms(q.explanation);
+  const cueStems = contentWords(cue).map(wordStem);
+  let best = null;
+  for (const text of splitSentences(p.text)) {
+    const norm = normalizeForMatch(text);
+    const score = terms.filter(t => containsTerm(norm, t)).length * 3
+      + contentWords(text).filter(w => cueStems.includes(wordStem(w))).length;
+    if (!best || score > best.score) best = { score, text };
+  }
+  const text = best && best.score > 0 ? best.text : p.text.slice(0, p.leadEnd).trim();
+  return text ? { paragraphIndex: p.i, text } : null;
+}
+
+// The evidence a question shows — the same in the guided hints, after
+// "Kiểm tra" and in the printable handout: a main-idea question's key
+// sentence, otherwise the whole sentence(s) around what the explanation
+// quotes (a bare quote fragment like "We know that Hugh Blaker, as a
+// champion of" never reaches the student).
+function itemEvidence(item, paragraphs) {
+  if (item.mainIdea) {
+    return keySentence(paragraphs.find(x => x.i === item.targetParagraph), item.q, item.cue);
+  }
+  let evidence = item.evidence || locateEvidence(item.q.explanation, paragraphs);
+  const p = evidence && paragraphs.find(x => x.i === evidence.paragraphIndex);
+  // Matching information falls back to its whole key paragraph; narrow it
+  // to the sentence that best matches the statement.
+  if (p && evidence.text === p.text) {
+    evidence = bestSentence(p, stemKeywords(item.text || item.stem || '', p.text, textContext(paragraphs)));
+  }
+  return evidenceSpan(evidence, paragraphs);
+}
+
 // ── Question helpers ────────────────────────────────────────────────────
 
 function nonEmptyGroups(passage) {
@@ -631,7 +696,14 @@ function skimItemsForPassage(passage) {
       const stem = stripOwnNumber(q.questionText, q.questionNumber);
       const target = skimTarget(stem, q.explanation, paragraphs);
       if (!target) continue;
-      items.push({ passage, paragraphs, group, q, stem, target });
+      const optIdx = String(q.correctAnswer).trim().toUpperCase().charCodeAt(0) - 65;
+      items.push({
+        passage, paragraphs, group, q, stem, target,
+        // paragraph-level skim questions are main-idea questions
+        mainIdea: target.scope === 'paragraph',
+        targetParagraph: target.scope === 'paragraph' ? target.index : null,
+        cue: String((q.options || [])[optIdx] || ''),
+      });
     }
   }
   return items;
@@ -824,7 +896,8 @@ function typeItem(qType, group, q, ctx) {
       const m = text.match(/\b(?:paragraph|section)\s+([A-J])\b/i);
       const target = m && ctx.paragraphs.find(p => p.label === m[1].toUpperCase());
       if (!target || !headings.some(h => h.key === key.toLowerCase())) return null;
-      return { text, input: 'choice', listTitle: 'List of Headings', choices: headings, targetParagraph: target.i };
+      const cue = headings.find(h => h.key === key.toLowerCase()).label;
+      return { text, input: 'choice', listTitle: 'List of Headings', choices: headings, targetParagraph: target.i, mainIdea: true, cue };
     }
     case 'completion':
     case 'short_answer': {
@@ -1055,18 +1128,7 @@ function textContext(paragraphs) {
 // existing explanation, no AI. null when there is no reliable evidence.
 function guideFor(item, qType, paragraphs) {
   const ctx = textContext(paragraphs);
-  let evidence;
-  if (qType === 'headings') {
-    const p = paragraphs.find(x => x.i === item.targetParagraph);
-    evidence = p ? { paragraphIndex: p.i, text: p.text.slice(0, p.leadEnd).trim() } : null;
-  } else {
-    evidence = item.evidence || locateEvidence(item.q.explanation, paragraphs);
-    const p = evidence && paragraphs.find(x => x.i === evidence.paragraphIndex);
-    // Matching information falls back to its whole key paragraph; narrow it
-    // to the sentence that best matches the statement.
-    if (p && evidence.text === p.text) evidence = bestSentence(p, stemKeywords(item.text, p.text, ctx));
-    evidence = evidenceSpan(evidence, paragraphs);
-  }
+  const evidence = itemEvidence(item, paragraphs);
   if (!evidence || !evidence.text) return null;
   return { keywords: stemKeywords(item.text, evidence.text, ctx), evidence };
 }
@@ -1226,10 +1288,11 @@ function workflowItems(passage) {
   const skim = skimItemsForPassage(passage).map(it => ({
     q: it.q, kind: 'mcq', text: it.stem,
     choices: (it.q.options || []).filter(o => String(o || '').trim()).map((o, i) => ({ key: String.fromCharCode(65 + i), label: o })),
-    targetParagraph: it.target.scope === 'paragraph' ? it.target.index : null,
+    targetParagraph: it.targetParagraph, mainIdea: it.mainIdea, cue: it.cue,
   }));
   const heads = questionTypeItems(passage, 'headings').items.map(it => ({
     q: it.q, kind: 'headings', text: it.text, choices: it.choices, listTitle: it.listTitle, targetParagraph: it.targetParagraph,
+    mainIdea: true, cue: it.cue,
   }));
   const main = skim[0] || heads[0] || null;
   const details = WORKFLOW_DETAIL_TYPES
@@ -1359,7 +1422,7 @@ async function checkAnswer(lessonKey, { passageId, questionNumber, answer, pairI
   if (!entry) return { status: 'not_in_practice' };
 
   const { gradedAnswers } = gradeGroups([{ questions: [entry.q] }], { [qNum]: userAnswer });
-  const evidence = entry.evidence || locateEvidence(entry.q.explanation, paragraphs);
+  const evidence = itemEvidence(entry, paragraphs);
   return {
     status: 'ok',
     result: {
@@ -1380,7 +1443,7 @@ module.exports = {
   checkAnswer,
   // Exported for unit tests / the read-only data audit.
   _internals: {
-    locateQuotes, classifyGroup, questionTypeItems, guideFor, stemKeywords, evidenceSpan,
+    locateQuotes, classifyGroup, questionTypeItems, guideFor, stemKeywords, evidenceSpan, keySentence, itemEvidence,
     paraphrasePairs, gradePhraseSelection, workflowItems,
     passageToParagraphs, locateEvidence, answerSentence, splitSentences, extractAnchors, normalizeForMatch,
     skimItemsForPassage, scanItemsForPassage, questionStem, isChoiceAnswer, answerInPassage, wordLimit, htmlToLines,

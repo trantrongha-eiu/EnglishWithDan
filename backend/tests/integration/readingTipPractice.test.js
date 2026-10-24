@@ -133,7 +133,7 @@ describe('Skimming practice', () => {
     expect(wrong.status).toBe(200);
     expect(wrong.body.result).toMatchObject({ isCorrect: false, correctAnswer: 'C' });
     expect(wrong.body.result.explanation).toMatch(/Transcript/);
-    expect(wrong.body.result.evidence.text).toBe('Some of the most important decisions of our lives occur while we are stressed');
+    expect(wrong.body.result.evidence.text).toBe('Some of the most important decisions of our lives occur while we are stressed.');
     const right = await check('skimming', { passageId: String(p._id), questionNumber: 27, answer: 'c' });
     expect(right.body.result.isCorrect).toBe(true);
   });
