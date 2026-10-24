@@ -136,3 +136,39 @@ có text layer). `render2.py` đặt tên `t<N>` cho file đề, `explain-t<N>` 
 - Kiểm: pw_mini 9/9, pw_admin 9/9, pw_grade 100% (9 bài mới + cả 30 bài của 10 đề), pw_full_tests 10/10, `_audit_reading_warnings` 0,
   `vr_audit.js 3`: 0 problem (400 câu).
   `vr_audit.js` nay chấp nhận "→ vii Heading text" như vr_build.js.
+
+## Vol 4 — 2026-10-24 (xong: 8 đề full, 23 bài mới)
+
+Nguồn: `reading/test N/*.pdf` (scan/ảnh chụp, 1 thư mục = 1 đề) + `reading/explain key/*.pdf` (bảng "số câu | đáp án | ảnh đoạn
+trích"; T1, T2, T10 có chữ gõ — đọc bằng pymupdf; còn lại scan → xem ảnh, `keycmp3.js` không đọc được bố cục bảng này).
+`render2.py` nay đặt tên `t<N>` cho file trong thư mục con `test N/`, `explainkey-t<N>` cho file key. `test 6/test 6.docx` = bản
+OCR sẵn của đề 6 (dùng làm nền chữ, đối chiếu ảnh). Công cụ mới: `dedupe_mini.js <V> [minPct] [stem]` (như dedupe2 nhưng dò kho
+cào mini-ielts, kể cả bài chưa vào ngân hàng → tìm bản chữ sạch: T3 P3 = mini 1513, T5 P3 = mini 1029); `vol_new_titles_re.js <V>`
+(regex tên các bài draft của vol — cho pw_admin / pw_grade; đừng dựng regex bằng `node -e` trong bash, escape hỏng → regex rỗng =
+chạy cả ngân hàng).
+
+- **Đề full Vol 4 - Test 1…6, 8, 9** tạo + bật. **T7 = nguyên Vol 3 - Test 9, T10 = nguyên Vol 3 - Test 10 → không tạo** (thầy chọn,
+  vr_tests chặn đề trùng bộ 3 bài). **T9 chỉ 37 câu**: PDF và file key đều không có câu 27–29 (P3 "Temperament" bắt đầu ở câu 30).
+- **Dùng lại**: T8 P1 Traditional Maori medicines (Mocktest 65); T7/T10 (6 bài của Vol 3). Key khớp. T7 PDF trang 4 là trang câu
+  27–31 của P3 đặt nhầm (thiếu trang Q7–13 của P1). **Sửa ngân hàng** (`bank_fix.js 4 --apply`): The dingo debate Q25 nhận thêm
+  "rabbit numbers" (key Vol, đúng cụm trong bài).
+- **Mới 23 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt). Key Vol sai đã sửa theo bài (chi tiết đầu từng spec):
+  T1 P2 Q22–23 A,B → B,D (langmaster xác nhận); T2 P1 Q2 NG → FALSE, Q6 NG → TRUE; T2 P3 Q33 NO → YES, Q34 NG → NO; T3 P1 Q5
+  NG (Vol TRUE nhầm Rayner/Raymond — nhận cả hai); T4 P1 Q8 "other people" → construction materials; T4 P2 Q21 C → A; T6 P2 Q15
+  vi → ii, Q17 ii → vii; T8 P3 Q37 B → A; T9 P3 Q33 C → D.
+- **Chữ bị mất trong PDF, đã bổ sung** (ghi rõ trong spec): T4 P1 (thiếu mô tả Bodily-kinesthetic, nhãn Interpersonal, cả mục
+  Naturalist → theo danh sách của M. A. Christison, English Teaching Forum 1998 — không kiểm chứng được nguyên văn trên mạng);
+  T4 P3 nửa đầu câu mở đoạn 3; T5 P2 đoạn A ("…to do business. Reputation is used…", theo Porter & Kramer HBR 2006, file key còn
+  giữ phần đầu); T9 P2 mục C một câu nối về enzyme trong máu sam (PDF và file key cùng mất).
+- Kiểm: pw_mini 23/23, pw_admin 23/23, pw_grade 100% (23 bài mới + dingo + Maori), pw_full_tests 8/8, `_audit_reading_warnings` 0,
+  `vr_audit.js 4`: 0 problem (317 câu, 355 trích dẫn).
+- **Đối chiếu bản online (thầy bảo, cùng ngày)** — tải trang bằng curl (WebFetch chỉ trả tóm tắt), `py webcmp.py <spec.txt>
+  <page.html> <out.txt>` cắt đúng đoạn bài rồi `wdiff.js` so từng từ. Có bản: ieltsit.com (`/news/e-482-<slug>-reading-answers`),
+  tuhoc.dolenglish.vn (`/<slug>-de`), ieltsreading.info, izone.edu.vn, ieltscity.vn, thesol.edu.vn. Kết quả:
+  T9 P2 mục C khôi phục nguyên văn (ieltsit) thay câu tự viết; T4 P3 "When he realised that traditional experiments…"
+  (ieltsit/dolenglish); T3 P1 Q5 là "Jane Raymond believes…" (izone) → key TRUE; T5 P2 câu Porter & Kramer đúng nguyên văn
+  (dolenglish cũng mất đoạn như PDF). Key đã sửa được xác nhận: T2 P1 (ieltsreading.info), T2 P3 (thesol), T4 P2 Q21 (ieltsit),
+  T6 P2 B ii / D vii (ieltscity; ieltsit chép key Vol), T8 P3 Q37 A (izone/ece/ieltscity; ieltsit chép key Vol). Không tìm được:
+  nguyên văn Christison cho T4 P1 (Wayback chặn 429; các trang IELTS tự dựng lại mục này từ bảng câu hỏi), câu 27–29 và key Q33 của
+  T9 P3 "Temperament". `vr_update.js 4 t3p1 t4p3 t9p2 --apply` (0 lượt làm bài). Debug lại: pw_admin 24/24, pw_grade 24/24 100% +
+  dingo, pw_full_tests 8/8, `_audit_reading_warnings` 0, `vr_audit.js 4` 0 problem.

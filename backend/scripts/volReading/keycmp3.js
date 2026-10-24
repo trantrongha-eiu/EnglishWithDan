@@ -1,11 +1,11 @@
 'use strict';
-// READ-ONLY: compare the keys OCR'd from the Vol explain files (web/vol<V>/ocr/explain-t<T>_p*.txt, left column "N answer")
+// READ-ONLY: compare the keys OCR'd from the Vol explain files (web/vol<V>/ocr/explain-t<T>_p*.txt, Vol 4: explainkey-t<T>_p*.txt, left column "N answer")
 // with the bank keys of the passages chosen in specs/vol<V>/tests.js-like map given here. Prints mismatches + numbers not read.
 //   node keycmp3.js <vol> <T> <id1> <id2> <id3>
 const fs = require('fs'), path = require('path');
 const [vol, T, ...ids] = process.argv.slice(2);
 const dir = path.join(__dirname, 'web', `vol${vol}`, 'ocr');
-const files = fs.readdirSync(dir).filter(f => f.startsWith(`explain-t${T}_p`)).sort((a, b) => +a.match(/_p(\d+)/)[1] - +b.match(/_p(\d+)/)[1]);
+const files = fs.readdirSync(dir).filter(f => f.startsWith(`explain-t${T}_p`) || f.startsWith(`explainkey-t${T}_p`)).sort((a, b) => +a.match(/_p(\d+)/)[1] - +b.match(/_p(\d+)/)[1]);
 const vk = {};
 for (const f of files) for (const l of fs.readFileSync(path.join(dir, f), 'utf8').split(/\r?\n/)) {
   const [geo, text] = l.split('\t'); if (text == null) continue;

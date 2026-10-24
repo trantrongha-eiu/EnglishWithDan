@@ -1,0 +1,86 @@
+// Vol 4 - reading/test 6/test 6.pdf - Reading Passage 3 (PDF p9–12; text base = test 6.docx, checked against the images).
+// Not in the bank / mini-ielts. Typos fixed: "belief, they maintain" → ";", "another reporter dryly concluded" → report,
+// "USA state of Utah" → US state, "mastonishing", "Nills L Wallin and Bjorn Merker" → Nils L. Wallin and Björn Merker, "3,5000
+// years" → 3,500, "don't' want"; Q32 option D "urban centres". Key = explain key/test 6- ,up.pdf (scan), checked against the
+// passage: all correct.
+const { ynng, mc, summary } = require('../../vr_build');
+module.exports = {
+  vol: 4, test: 6, part: 3, title: 'Some views on the use of headphones', text: 't6p3.txt', lettered: false,
+  groups: [
+    ynng(27, [
+      'Young people are easily persuaded by surveys that listening to music is beneficial.',
+      'Different studies share the same conclusions about the desirability of working in silence.',
+      'Some doctors recommend wearing headphones to lower blood pressure.',
+      'Nathaniel Baldwin was a respected government researcher.',
+      'The effect of the invention of headphones is comparable to the effect of the invention of writing.',
+    ]),
+    mc(32, [
+      ['What does the writer suggest about a service economy?', [
+        'The work is mentally demanding.', 'It provides employment for younger workers.',
+        'It is a small part of a country\'s economy.', 'Workers have to live in urban centres.']],
+      ['When the writer mentions the historical evidence for early music he is', [
+        'emphasizing the diversity of musical forms.', 'expressing his frustration with the limited archaeological evidence uncovered.',
+        'lending support to the view that music has been important in human history.', 'creating a geographical map of the evolution of music.']],
+      ['What does the writer say about the social effects of listening to music through headphones?', [
+        'It has caused a reduction in the number of people who listen to music.', 'It has increased people\'s participation in music events.',
+        'It has reduced the global variation of music styles.', 'It has changed the traditional role of music in society.']],
+      ['What does the writer say about personal independence?', [
+        'Americans are unique in their desire for personal independence.', 'Personal independence is something that can be purchased.',
+        'Striving for personal independence is a recent phenomenon.', 'Personal independence destroys social connections.']],
+      ['Why does the writer quote Jonah Lehrer in the last paragraph?', [
+        'to support the writer\'s own view', 'to draw attention to an authoritative book about music',
+        'to raise awareness of people\'s loss of listening skills', 'to illustrate how music brings people closer to each other']],
+    ]),
+    summary(37, 40,
+      'Dr Michael Bull believes that listening to music through headphones has changed the __Q37__ that the wearers of headphones have with public spaces. Living in the centre of cities is becoming popular, as people become less keen on living in the __Q38__. In densely populated city centres, headphones form __Q39__ that isolate people from fellow citizens and from their environment. Wearers of headphones are treated with __Q40__ that other people do not receive. This is because if we see someone wearing headphones, we believe they must be occupied in some way and should not be interrupted.',
+      ['courtesy', 'relationship', 'difficulty', 'countryside', 'suburbs', 'language', 'barriers', 'obstacles', 'disapproval'],
+      { title: 'Headphones and city living',
+        instruction: 'Complete the summary using the list of words, A–I, below. Write the correct letter, A–I, in boxes 37–40 on your answer sheet.' }),
+  ],
+  key: { 27: 'YES', 28: 'YES', 29: 'NOT GIVEN', 30: 'NO', 31: 'YES', 32: 'A', 33: 'C', 34: 'D', 35: 'B', 36: 'A',
+    37: 'relationship', 38: 'suburbs', 39: 'barriers', 40: 'courtesy' },
+  expl: {
+    27: ['Người trẻ dễ bị các cuộc khảo sát thuyết phục rằng nghe nhạc có lợi.', 'Đoạn 1',
+      '“Up to half of younger workers listen to music on their headphones, and nearly all of them think it makes them better at their jobs. In survey after survey, people report with confidence that music makes them happier”',
+      'Gần như tất cả nhân viên trẻ tin rằng nhạc giúp họ làm việc tốt hơn — điều mà giới khoa học không đồng tình → YES'],
+    28: ['Các nghiên cứu khác nhau có cùng kết luận về việc nên làm việc trong im lặng.', 'Đoạn 2',
+      '“A Taiwanese study linked music that has lyrics to lower marks on concentration tests” … “\'As silence has the best overall performance, it would still be advisable that people work in silence,\' another report dryly concluded.”',
+      'Nghiên cứu Đài Loan, nghiên cứu khác và “another report” đều đi đến kết luận im lặng là tốt nhất → YES'],
+    29: ['Một số bác sĩ khuyên đeo tai nghe để hạ huyết áp.', 'Đoạn 3',
+      '“evidence that music relaxes our muscles, improves our mood, and may even moderately reduce blood pressure, heart rate and anxiety.”',
+      'Bài chỉ nói có bằng chứng âm nhạc có thể giảm huyết áp; không nói bác sĩ khuyên đeo tai nghe → NOT GIVEN'],
+    30: ['Nathaniel Baldwin là một nhà nghiên cứu được kính trọng của chính phủ.', 'Đoạn 4',
+      '“The letter writer, an eccentric inventor and repairman named Nathaniel Baldwin, from the US state of Utah, made what at the time was an astonishing claim: he had built, in his kitchen, a new kind of headset”',
+      'Ông là thợ sửa chữa, nhà phát minh lập dị, làm tai nghe trong bếp nhà mình — không phải nhà nghiên cứu của chính phủ → NO'],
+    31: ['Tác động của tai nghe tương đương tác động của chữ viết.', 'Đoạn 5',
+      '“headphones have done what writing and literacy did for language – they made music private.”',
+      'Tai nghe làm với âm nhạc điều chữ viết đã làm với ngôn ngữ → có thể so sánh được → YES'],
+    32: ['Tác giả gợi ý gì về nền kinh tế dịch vụ?', 'Đoạn 3',
+      '“a service economy, with an emphasis on jobs in offices that require higher levels of concentration, reflection and creativity.”',
+      'Công việc đòi hỏi tập trung, suy ngẫm, sáng tạo = mentally demanding → A'],
+    33: ['Khi nhắc đến bằng chứng lịch sử về âm nhạc thời sơ khai, tác giả đang…', 'Đoạn 5',
+      '“evidence of musical notation dates back to Sumeria, 3,500 years ago, and in 1995 archeologists discovered a bone flute in southern Europe estimated to be 44,000 years old.”',
+      'Ký âm 3.500 năm, sáo xương 44.000 năm → củng cố quan điểm âm nhạc có vai trò quan trọng (gắn kết xã hội) suốt lịch sử loài người → C'],
+    34: ['Tác giả nói gì về tác động xã hội của việc nghe nhạc qua tai nghe?', 'Đoạn 5',
+      '“The purpose of headphones is to concentrate a quiet and private sound in the ear of the listener, which is a radical departure from music\'s social purpose in history.”',
+      '“a radical departure from music\'s social purpose” = thay đổi vai trò truyền thống (gắn kết xã hội) của âm nhạc → D'],
+    35: ['Tác giả nói gì về sự độc lập cá nhân?', 'Đoạn 6',
+      '“Marche is right; wealth can buy – and modern technology can deliver – personal independence”',
+      '“wealth can buy” = có thể mua được. (A sai: “Americans are not alone”; C sai: “people have always sought”.) → B'],
+    36: ['Vì sao tác giả trích lời Jonah Lehrer ở đoạn cuối?', 'Đoạn cuối',
+      '“However, with music \'When our minds are at ease, we\'re more likely to direct the spotlight of attention inward,\' Jonah Lehrer wrote”',
+      'Tác giả cho rằng âm nhạc giúp thư giãn, suy ngẫm; lời Lehrer củng cố chính quan điểm đó → A'],
+    37: ['Nghe nhạc qua tai nghe đã thay đổi ______ giữa người đeo và không gian công cộng.', 'Đoạn 7',
+      '“has repeatedly made the larger point that personal music devices change how we relate to public spaces.”',
+      '“how we relate to” = mối quan hệ (chữ B) → relationship'],
+    38: ['Sống ở trung tâm thành phố ngày càng phổ biến vì người ta ít muốn sống ở ______.', 'Đoạn 7',
+      '“more people are moving from the edges of cities to live in urban centers.”',
+      '“the edges of cities” = vùng ngoại ô (chữ E) → suburbs'],
+    39: ['Ở trung tâm đông đúc, tai nghe tạo thành ______ ngăn cách con người với nhau và với môi trường.', 'Đoạn 7',
+      '“Headphones create shields for wearers, separating them from other people and their surroundings.”',
+      '“shields … separating them” = rào chắn (chữ G) → barriers'],
+    40: ['Người đeo tai nghe được đối xử với ______ mà người khác không có.', 'Đoạn 7',
+      '“Headphones have their own rules of good manners; they are like wearing a \'Do not disturb\' sign. We assume that people wearing them are busy and we should respect their privacy”',
+      '“good manners”, “respect their privacy” = sự lịch sự, tôn trọng (chữ A) → courtesy'],
+  },
+};

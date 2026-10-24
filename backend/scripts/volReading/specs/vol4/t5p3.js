@@ -1,0 +1,83 @@
+// Vol 4 - reading/test 5/test 5.pdf - Reading Passage 3 (PDF p10–14). Not in the bank. Same text and questions as mini-ielts
+// 1029 "Amateur Naturalists" (wdiff: only OCR noise; the Vol renumbers the questions 27–40) → text from the mini copy (soft
+// hyphens removed). Key = explain key/test 5- up.pdf (scan) = the mini key, checked against the passage: all correct.
+const { matching, notes, mc } = require('../../vr_build');
+module.exports = {
+  vol: 4, test: 5, part: 3, title: 'Amateur Naturalists', text: 't5p3.txt',
+  groups: [
+    matching(27, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], [
+      'The definition of phenology',
+      'How Sparks first became aware of amateur records',
+      'How people reacted to their involvement in data collection',
+      'The necessity to encourage amateur data collection',
+      'A description of using amateur records to make predictions',
+      'Records of a competition providing clues to climate change',
+      'A description of a very old record compiled by generations of amateur naturalists',
+    ], { instruction: 'Reading Passage 3 has eight paragraphs, A–H. Which paragraph contains the following information? Write the correct letter, A–H, in boxes 27–33 on your answer sheet.' }),
+    notes(34, 36, [
+      'Walter Coates\'s records largely contain the information of __Q34__.',
+      'Robert Marsham is famous for recording the __Q35__ of animals and plants on his land.',
+      'According to some phenologists, global warming may cause the number of waterfowl in North America to drop significantly due to increased __Q36__.',
+    ], { instruction: 'Complete the sentences below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 34–36 on your answer sheet.' }),
+    mc(37, [
+      ['Why do a lot of scientists discredit the data collected by amateurs?', [
+        'Scientific methods were not used in data collection.', 'Amateur observers are not careful in recording their data.',
+        'Amateur data is not reliable.', 'Amateur data is produced by wrong candidates.']],
+      ['Mark Schwartz used the example of leaves to illustrate that', [
+        'amateur records can\'t be used.', 'amateur records are always unsystematic.',
+        'the colour change of leaves is hard to observe.', 'valuable information is often precise.']],
+      ['How do the scientists suggest amateur data should be used?', [
+        'Using improved methods', 'Being more careful in observation', 'Using raw materials',
+        'Applying statistical techniques in data collection']],
+      ['What\'s the implication of phenology for ordinary people?', [
+        'It empowers the public.', 'It promotes public relations.', 'It warns people of animal infestation.',
+        'It raises awareness about climate change in the public.']],
+    ]),
+  ],
+  key: { 27: 'B', 28: 'C', 29: 'H', 30: 'G', 31: 'E', 32: 'D', 33: 'A', 34: 'bee-keeping', 35: 'life cycles', 36: 'droughts',
+    37: 'C', 38: 'D', 39: 'D', 40: 'D' },
+  expl: {
+    27: ['Định nghĩa về vật hậu học (phenology).', 'Đoạn B',
+      '“These data sets, and others like them, are proving invaluable to ecologists interested in the timing of biological events, or phenology.”',
+      '“the timing of biological events, or phenology” = giải thích phenology là gì → B'],
+    28: ['Sparks lần đầu biết đến các ghi chép nghiệp dư như thế nào.', 'Đoạn C',
+      '“Sparks first became aware of the army of "closet phenologists", as he describes them, when a retiring colleague gave him the Marsham records.”',
+      '“first became aware … when a retiring colleague gave him the Marsham records” → C'],
+    29: ['Mọi người phản ứng thế nào khi được tham gia thu thập dữ liệu.', 'Đoạn H',
+      '“People are thrilled to think that the data they\'ve been collecting as a hobby can be used for something scientific - it empowers them,"”',
+      '“thrilled” = phản ứng hào hứng của người tham gia → H'],
+    30: ['Sự cần thiết phải khuyến khích người nghiệp dư thu thập dữ liệu.', 'Đoạn G',
+      '“It\'s very difficult to collect data on a large geographical scale without enlisting an army of observers," says Root.”',
+      'Không thể thu thập dữ liệu quy mô lớn nếu không huy động “an army of observers” → cần khuyến khích người nghiệp dư → G'],
+    31: ['Mô tả việc dùng ghi chép nghiệp dư để dự đoán.', 'Đoạn E',
+      '“The data can also hint at how nature will change in the future. Together with models of climate change, amateurs\' records could help guide conservation.”',
+      '“hint at how nature will change in the future” + phân tích của Terry Root dự báo số chim nước giảm một nửa → E'],
+    32: ['Ghi chép về một cuộc thi cung cấp manh mối về biến đổi khí hậu.', 'Đoạn D',
+      '“recently studied records of a betting contest” … “analysis of the results showed that the thaw now arrives five days earlier than it did when the contest began.”',
+      'Cuộc thi cá cược ở sông Tenana cho thấy băng tan sớm hơn 5 ngày → D'],
+    33: ['Mô tả một ghi chép rất cũ do nhiều thế hệ nhà tự nhiên học nghiệp dư thực hiện.', 'Đoạn A',
+      '“Successive Marshams continued compiling these notes for 211 years.”',
+      '“Successive Marshams” = nhiều thế hệ nhà Marsham; 211 năm = rất cũ → A'],
+    34: ['Ghi chép của Walter Coates chủ yếu chứa thông tin về ______.', 'Đoạn A',
+      '“The book\'s yellowing pages contain bee-keeping notes made between 1941 and 1969 by the late Walter Coates”',
+      '“contain bee-keeping notes” → bee-keeping'],
+    35: ['Robert Marsham nổi tiếng vì ghi lại ______ của động thực vật trên đất của ông.', 'Đoạn A',
+      '“Robert Marsham, a landowner from Norfolk in the east of England, began recording the life cycles of plants and animals on his estate”',
+      '“on his estate” = on his land → life cycles'],
+    36: ['Số chim nước ở Bắc Mỹ có thể giảm mạnh do ______ gia tăng.', 'Đoạn E',
+      '“Her analysis shows that the increased droughts that the models predict could halve the breeding populations at the ponds.”',
+      '“increased droughts … could halve the breeding populations” → droughts'],
+    37: ['Vì sao nhiều nhà khoa học không tin dữ liệu của người nghiệp dư?', 'Đoạn F',
+      '“A lot of scientists won\'t touch them, they say they\'re too full of problems," says Root. Because different observers can have different ideas of what constitutes, for example, an open snowdrop.”',
+      'Mỗi người quan sát hiểu một kiểu → dữ liệu “too full of problems” = không đáng tin cậy → C'],
+    38: ['Mark Schwartz lấy ví dụ về lá cây để minh hoạ điều gì?', 'Đoạn F',
+      '“We need to know pretty precisely what a person\'s been observing - if they just say \'I noted when the leaves came out\', it might not be that useful."”',
+      'Ghi chép chung chung thì không hữu ích → thông tin có giá trị là thông tin chính xác → D'],
+    39: ['Các nhà khoa học đề xuất dùng dữ liệu nghiệp dư thế nào?', 'Đoạn G',
+      '“Others suggest that the right statistics can iron out some of the problems with amateur data.” … “Arnold van Vliet is developing statistical techniques to account for the uncertainty in amateur phenological data.”',
+      'Dùng kỹ thuật thống kê để xử lý độ bất định của dữ liệu → D'],
+    40: ['Ý nghĩa của vật hậu học đối với người bình thường là gì?', 'Đoạn H',
+      '“Phenology also helps to drive home messages about climate change. "Because the public understand these records, they accept them," says Sparks.”',
+      '“drive home messages about climate change” = giúp công chúng nhận thức về biến đổi khí hậu. (A: “empowers them” nói về người tham gia ghi chép, không phải ý nghĩa của vật hậu học với mọi người.) → D'],
+  },
+};

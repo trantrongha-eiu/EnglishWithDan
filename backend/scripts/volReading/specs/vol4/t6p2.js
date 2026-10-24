@@ -1,0 +1,78 @@
+// Vol 4 - reading/test 6/test 6.pdf - Reading Passage 2 (PDF p5–8; text base = test 6.docx, checked against the images).
+// Not in the bank / mini-ielts. Typos fixed: "have always had shared", "so much an important", "In the modern are" → era,
+// "famous nor for" → not, "programmers" → programmes. Key = explain key/test 6- ,up.pdf (scan); Q21–26 = ece.edu.vn's key.
+// Fixed against the passage (= ieltscity.vn's key: B ii, D vii; ieltsit.com copies the Vol key): Q15 (B) Vol vi → ii — the gods of Greece and Rome =
+// non-human celebrities who "had a direct impact on their lives"; nothing about advantages of celebrity status. Q17 (D) Vol
+// ii → vii — spiritual figures excited people "as they faced war, disease and food shortages" (the explain file highlights
+// exactly this sentence); the saints of paragraph D are not non-human.
+const { headings, matching, notes } = require('../../vr_build');
+module.exports = {
+  vol: 4, test: 6, part: 2, title: 'A study of western celebrity', text: 't6p2.txt',
+  groups: [
+    headings(14, [
+      'Why it is necessary to explain the meaning of the word celebrity',
+      'The influence of non-human celebrities on societies',
+      'The impact of broadcasting on concepts of celebrity',
+      'Creativity having greater value',
+      'Admiration for physical achievement',
+      'The advantages of celebrity status in the ancient world',
+      'A result of hardship',
+      'Literacy and widespread celebrity',
+      'Attitudes of celebrities towards the media',
+      'The original definition of celebrity',
+    ], ['Paragraph A', 'Paragraph B', 'Paragraph C', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G']),
+    matching(21, ['Ancient times', 'Dark Ages', 'Renaissance', 'Modern era'], [
+      'A wide variety of people achieve a brief period of fame.',
+      'Stories are invented about celebrities\' lives.',
+      'The fame of rulers is starting to diminish.',
+    ], { reuse: true, title: 'List of historical periods in Europe',
+      instruction: 'Look at the following statements (Questions 21–23) and the list of historical periods in Europe below. Match each statement with the correct historical period, A, B, C or D. Write the correct letter, A, B, C or D, in boxes 21–23 on your answer sheet.' }),
+    notes(24, 26, [
+      'The development of the publishing industry in the 1700s signalled the beginning of international fame. A growing number of people could read, which meant they had the chance to become informed about their favourite figures by reading __Q24__. This exposure to celebrities expanded further when radio and television became popular, and it was mass media attention that resulted in higher status and fame for some celebrities. The recent rise of reality television has also meant that a person\'s __Q25__ rather than their talent can bring fame. With this type of television programme, fame may be entirely dependent on the response of the __Q26__.',
+    ], { title: 'Celebrities achieve a global status',
+      instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 24–26 on your answer sheet.' }),
+  ],
+  key: { 14: 'x', 15: 'ii', 16: 'v', 17: 'vii', 18: 'iv', 19: 'viii', 20: 'iii', 21: 'D', 22: 'A', 23: 'C', 24: 'newspapers',
+    25: 'appearance', 26: 'audience' },
+  expl: {
+    14: ['Chọn tiêu đề cho đoạn A.', 'Đoạn A',
+      '“The word we now know to mean \'a condition of being famous\' or \'a famous person\' is derived from the Latin word \'celeber\', meaning \'frequented or populous\'.”',
+      'Đoạn truy nguồn gốc chữ “celebrity” từ tiếng Latin “celeber” = nghĩa ban đầu của từ → x The original definition of celebrity'],
+    15: ['Chọn tiêu đề cho đoạn B.', 'Đoạn B',
+      '“The celebrities of the ancient world were the powerful and awesome deities of Greece and Rome, and the citizens of these civilizations believed in a vast number of immortals who had a direct impact on their lives.”',
+      'Người nổi tiếng thời cổ là các vị thần (không phải người) và họ ảnh hưởng trực tiếp đến đời sống xã hội. (vi sai: đoạn không nói gì về lợi ích của danh tiếng; key Vol ghi vi.) → ii The influence of non-human celebrities on societies'],
+    16: ['Chọn tiêu đề cho đoạn C.', 'Đoạn C',
+      '“Victors in the ancient Olympic Games were treated as heroes” … “gladiators … were also revered by the common people for their heroics and seemingly superhuman strength.”',
+      'Vận động viên, đấu sĩ được tôn sùng vì thành tích thể chất, sức mạnh → v Admiration for physical achievement'],
+    17: ['Chọn tiêu đề cho đoạn D.', 'Đoạn D',
+      '“The miraculous lives and fascinating deaths of spiritual figures lent excitement to the lives of common people when there was often little else to be excited about, as they faced war, disease and food shortages.”',
+      'Danh tiếng của các nhân vật tôn giáo nảy sinh vì dân chúng sống khổ (chiến tranh, bệnh tật, thiếu ăn). (Các vị thánh vẫn là người nên không phải ii; key Vol ghi ii.) → vii A result of hardship'],
+    18: ['Chọn tiêu đề cho đoạn E.', 'Đoạn E',
+      '“This period of appreciation for the arts lent a sense of celebrity to artists” … “artists began to surpass political and religious individuals for supreme celebrity”',
+      'Nghệ sĩ (sự sáng tạo) được coi trọng hơn chính khách, tu sĩ → iv Creativity having greater value'],
+    19: ['Chọn tiêu đề cho đoạn F.', 'Đoạn F',
+      '“The increase in the availability of the written word was accompanied by a huge rise in the number of common people who could read, allowing a mass audience to find out about celebrities for the first time.”',
+      'Nhiều người biết đọc → danh tiếng lan rộng khắp thế giới → viii Literacy and widespread celebrity'],
+    20: ['Chọn tiêu đề cho đoạn G.', 'Đoạn G',
+      '“In the modern era, particularly as radio and film took off in the 1900s, things really began to change.” … “Professional athletes also began to be regarded as stars, as their games and exploits could be broadcast over the air”',
+      'Radio, truyền hình, truyền hình thực tế làm thay đổi khái niệm người nổi tiếng → iii The impact of broadcasting on concepts of celebrity'],
+    21: ['Đủ loại người có được danh tiếng ngắn ngủi.', 'Đoạn G',
+      '“The emergence of reality television shows in the late 1990s allowed all kinds of people with little ability to enjoy a short burst of fame on the television screen.”',
+      '“all kinds of people” = a wide variety of people; “a short burst of fame” = a brief period of fame; thời kỳ hiện đại → D'],
+    22: ['Người ta bịa ra các câu chuyện về đời tư người nổi tiếng.', 'Đoạn B',
+      '“This need to know led to the creation of myths, which personalized the gods and involved them in ancient celebrity scandals”',
+      '“the creation of myths” = stories are invented; thời cổ đại → A'],
+    23: ['Danh tiếng của giới cầm quyền bắt đầu giảm.', 'Đoạn E',
+      '“During the period 1300–1600 AD, or the Renaissance period as it is known, interest in ruling figures faded.”',
+      '“interest in ruling figures faded” = danh tiếng của người cầm quyền giảm; thời Phục hưng → C'],
+    24: ['Mọi người có cơ hội biết về những nhân vật họ yêu thích bằng cách đọc ______.', 'Đoạn F',
+      '“Suddenly, the lives of authors, politicians, war heroes, and other celebrities could now be read about in newspapers around the world.”',
+      '“read about in newspapers” → newspapers'],
+    25: ['Truyền hình thực tế khiến ______ của một người chứ không phải tài năng mang lại danh tiếng.', 'Đoạn G',
+      '“allowed all kinds of people with little ability to enjoy a short burst of fame on the television screen. All you needed, it seemed, was an attractive appearance.”',
+      '“little ability” = không cần tài năng; thứ cần là ngoại hình hấp dẫn → appearance'],
+    26: ['Danh tiếng có thể hoàn toàn phụ thuộc vào phản ứng của ______.', 'Đoạn G',
+      '“with the audience deciding whether someone deserves to become a celebrity or not.”',
+      'Khán giả quyết định ai đáng nổi tiếng → audience'],
+  },
+};
