@@ -33,6 +33,7 @@
     '6-minute-english': '6 Minute English', 'fun-shorts': 'Video ngắn vui',
     'comedy': 'Hài Stand-up', 'ted-shorts': 'TED ngắn', 'everyday-english': 'Everyday English',
     'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp', 'kids-stories': 'Truyện kể BBC',
+    'connected-speech': 'Nối âm cơ bản', 'connected-speech-advanced': 'Nối âm nâng cao',
   };
   const MODES = ['watch', 'shadowing', 'dictation'];
   const SPEEDS = [1, 0.75, 0.5, 1.25];

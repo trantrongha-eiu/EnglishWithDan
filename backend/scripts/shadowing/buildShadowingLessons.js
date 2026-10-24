@@ -88,6 +88,11 @@ const KEITH = 'English Speaking Success (Keith)';
 const EPT = 'English Pro Tips';
 const JIMMY = 'Jimmy English Home';
 
+const CS_ADVANCED = new Set([
+  'cs-intrusive-r', 'cs-elision-d', 'cs-twinning-t', 'cs-assim-d-b', 'cs-assim-n-m', 'cs-assim-t-k',
+  'cs-assim-d-g', 'cs-would-you', 'cs-unreleased-stops', 'cs-weak-have',
+]);
+
 const LESSONS = [
   {
     slug: 'keith-part1-home-city',
@@ -1668,6 +1673,148 @@ const LESSONS = [
     slug, youtubeId, title: `Joe & Bella: ${title}`, sourceTitle, channel: 'BBC Learning English',
     category: 'kids-stories', level: 'B1', description, segments: STORYTELLERS[slug], burnedInCaptions: true,
   })),
+  // ── Nối âm / connected speech (2026-10-24): BBC Tim's Pronunciation
+  // Workshop — ~3-min videos, each ends with short "listen and repeat"
+  // sentences. Clip = from the topic (after the "Hi, I'm Tim" intro) to the
+  // last repeat (before "Well done"). Manual captions only (no en-orig), so
+  // timings are interpolated. Left out: videos whose captions skip the
+  // example sentences (they're only on screen) — elision of /t/, 'meet you',
+  // 'white paper', 'bless you', 'sandwich', 'have to', 'from', linking /r/.
+  // [youtubeId, slug, title, level, clipStart, clipEnd, sourceTitle, description, extra]
+  ...[
+    ['mV_CEIroJs8', 'cs-consonant-vowel', 'Consonant + vowel: "an egg" → "anegg"', 'A2', 0, 110.3,
+      'Tim\'s pronunciation workshop: Consonant - vowel linking',
+      'Quy tắc nối âm cơ bản nhất: từ trước kết thúc bằng PHỤ ÂM, từ sau bắt đầu bằng NGUYÊN ÂM → đọc liền như một từ. "an egg" → /ənɛg/, "He\'s in the garden", "give up", "had it in".'],
+    ['cu-VK3JlgAk', 'cs-linking-w', 'Linking /w/: "the shoe is" → "the shoe-w-is"', 'B1', 0.5, 133.7,
+      'Pronunciation: Linking /w/',
+      'Từ trước kết thúc bằng âm /uː/ (shoe, do, clue, glue), từ sau bắt đầu bằng nguyên âm → chen một âm /w/ nhẹ: "The shoe-w-is on the wrong foot", "do-w-I", "clue-w-at all".'],
+    ['2Oi0NLl5Fdg', 'cs-linking-j', 'Linking /j/: "I always" → "I-y-always"', 'B1', 25.8, 167.4,
+      'Pronunciation: The linking /j/',
+      'Từ trước kết thúc bằng /aɪ/, /iː/, /eɪ/, /ɔɪ/ (I, the, lie, high), từ sau bắt đầu bằng nguyên âm → chen một âm /j/ nhẹ: "I-y-always", "the-y-end", "I-y-ate", "high-y-up".'],
+    ['JBugPH9wje0', 'cs-vowel-vowel', 'Vowel + vowel: "the end" → "the-y-end"', 'B1', 13.8, 203,
+      'Stop Saying... Vowel to vowel linking',
+      'Hai nguyên âm gặp nhau thì nối bằng /j/ hoặc /w/: sau "ee, i, a" là /j/ ("the-y-end", "another-y-day"), sau "o, oo" là /w/ ("go-w-on", "you-w-often"). Tim và "Tim" nói chuyện ở văn phòng.',
+      { minWords: 2 }],
+    ['DCJrFM3hdlg', 'cs-intrusive-r', 'Intrusive /r/: "law and order" → "law-r-and order"', 'B2', 30.1, 194.9,
+      'Pronunciation: The intrusive /r/',
+      'Giọng Anh: từ kết thúc bằng /ɔː/ hoặc /ə/ (law, draw, paw, saw) + nguyên âm → chen âm /r/ nhẹ dù không viết: "law-r-and order", "draw-r-a circle", "saw-r-a good film".'],
+    ['M_tKuYaE620', 'cs-elision-d', 'Elision: the disappearing /d/ — "boiled potatoes"', 'B1', 0.4, 155.5,
+      'Why does the /d/ sound sometimes disappear? Tim\'s Pronunciation Workshop',
+      'Âm /d/ kẹp giữa hai phụ âm thường bị nuốt: "boiled potatoes" → "boil potatoes", "best friend", "hold back", "rolled down". Nghe khảo sát vui: khoai tây hấp hay luộc?'],
+    ['BI0RTH6sA_k', 'cs-twinning-t', 'Twinning: "it takes two to tango"', 'B1', 25.1, 166.5,
+      'Pronunciation: The twinning of /t/',
+      'Hai âm /t/ đứng cạnh nhau ("it takes", "right to", "took the") gộp thành MỘT âm /t/ hơi mạnh hơn — không đọc hai lần. Tim và em sinh đôi Tom cùng dẫn.'],
+    ['Wiz1YeLMjyA', 'cs-assim-d-b', 'Assimilation: /d/ + /b/ — "speed boat" → "speeb boat"', 'B2', 26.0, 146.9,
+      'Pronunciation: Assimilation of /d/ and /b/',
+      'Âm /d/ cuối từ đứng trước /b/ biến thành /b/: "speed boat" → "speeb boat", "good boy" → "goob boy", "rude before", "towed back", "should buy".'],
+    ['Yrzg7DDo0ao', 'cs-assim-n-m', 'Assimilation: /n/ → /m/ — "Green Park" → "Greem Park"', 'B2', 31.1, 183.3,
+      'Pronunciation: Assimilation of /n/ followed by /p/',
+      'Âm /n/ cuối từ đứng trước /p/, /b/, /m/, /w/ biến thành /m/: "Green Park" → "Greem Park", "ten pairs", "on purpose", "in Paris", "on Wednesday".'],
+    ['lc2eOCVJMuQ', 'cs-assim-t-k', 'Assimilation: /t/ → /k/ — "credit card"', 'B2', 25.7, 122.0,
+      'Pronunciation: Assimilation of /t/ followed by /k/',
+      'Âm /t/ cuối từ đứng trước /k/ biến thành /k/: "credit card" → "credik card", "get cold", "it quickly", "short cut", "that cake".'],
+    ['sDDV01W20bo', 'cs-assim-d-g', 'Assimilation: /d/ → /g/ — "bad girl" → "bag girl"', 'B2', 24.8, 121.8,
+      'Pronunciation: Assimilation of /d/ to /g/',
+      'Âm /d/ cuối từ đứng trước /g/ hoặc /k/ biến thành /g/: "bad girl" → "bag girl", "good cook", "had guests", "hard copy", "red carpet".',
+      { stripSpeakers: true }],
+    ['3rXlFsd-yUA', 'cs-would-you', '"Would you…?" → "Wouldjou…?"', 'B1', 1.0, 127.6,
+      'How to pronounce \'would you...?\' Tim\'s Pronunciation Workshop',
+      'Âm /d/ + /j/ (you) hòa thành /dʒ/: "Would you do me a favour?" → "Wouldjou…", "Could you…", "sad you", "gold you". Chữ "you" còn có thể yếu thành "ya".'],
+    ['vW77q1IGlmI', 'cs-unreleased-stops', 'Unreleased stops: "I\'d like to" — the swallowed /d/', 'B2', 26.8, 187.9,
+      'Pronunciation: How fluent speakers pronounce plosives',
+      'Âm bật /p b t d k g/ ở cuối từ, trước một phụ âm khác, thường chỉ "ngậm" lại mà không bật hơi: "I\'d like to", "quick chat", "should thank", "sad time", "sit down".'],
+    ['KwDJnXt3ZVQ', 'cs-schwa', 'The schwa /ə/: "a piece of cake"', 'A2', 6.0, 127.4,
+      'Tim\'s Pronunciation Workshop: The Schwa',
+      'Âm /ə/ (schwa) là âm phổ biến nhất trong tiếng Anh — các từ nhỏ không nhấn như "a", "of", "to" đều đọc là /ə/: "a piece of cake" → "uh piece uh cake", "a cup of tea".'],
+    ['m-lWwRomisk', 'cs-weak-and', 'Weak form of "and": "fish and chips" → "fish \'n\' chips"', 'A2', 0.2, 141.7,
+      'Pronunciation: How do fluent speakers pronounce \'and\'?',
+      '"and" không nhấn thì mất /d/ và nguyên âm yếu thành /ən/ hoặc chỉ /n/: "fish \'n\' chips", "go \'n\' get", "apples \'n\' oranges", "thinking \'n\' thinking".'],
+    ['hbu6X_TYqMQ', 'cs-weak-can', 'Weak form of "can": /kæn/ → /kən/', 'A2', 25.8, 147.9,
+      'Pronunciation: How fluent speakers pronounce \'can\'',
+      '"can" (động từ khuyết thiếu) không nhấn đọc là /kən/: "I /kən/ speak two languages", "Can you help me…?", "How far can you throw…?" — còn "can\'t" thì giữ /ɑː/.'],
+    ['psI7E_J1zPo', 'cs-weak-was-were', 'Weak forms: "was" /wəz/ and "were" /wə/', 'A2', 24.6, 158.1,
+      'Tim\'s Pronunciation Workshop: \'was\' and \'were\'',
+      '"was" và "were" không nhấn đọc yếu là /wəz/ và /wə/: "I /wəz/ watching a movie", "We /wə/ delighted with the results". Nghe người London kể tối qua họ làm gì.'],
+    ['z7Ya1BFLRmg', 'cs-weak-have', '"I\'d have" → "I\'d\'ve": weak "have"', 'B2', 24.4, 170.0,
+      'Pronunciation: How to pronounce \'have\' when it\'s an auxiliary',
+      '"have" làm trợ động từ đọc yếu thành /əv/: "I\'d\'ve missed the bus", "should\'ve been", "would\'ve done", "might\'ve made" — rất hay gặp trong câu điều kiện loại 3.'],
+    ['ZNsWDzoAffA', 'cs-weak-been', 'Weak form of "been": /biːn/ → /bɪn/', 'A2', 25.8, 164.0,
+      'Pronunciation: How fluent speakers pronounce \'been\'',
+      '"been" không nhấn đọc ngắn là /bɪn/ (như "bin"): "I\'ve /bɪn/ in London seven years", "How long have you /bɪn/ waiting?", "It\'s /bɪn/ years since…".'],
+    ['CQrH4a9Tx4o', 'cs-weak-the', 'Two ways to say "the": /ðə/ and /ðiː/', 'A2', 28.3, 182.0,
+      'Pronunciation: Two different ways to pronounce the English word \'the\'',
+      '"the" + phụ âm đọc /ðə/ ("the blue one"), "the" + nguyên âm đọc /ðiː/ và nối /j/ ("the-y-orange one", "the apple pie", "the autumn").'],
+  ].map(([youtubeId, slug, title, level, clipStart, clipEnd, sourceTitle, description, extra = {}]) => ({
+    slug, youtubeId, title, sourceTitle, channel: 'BBC Learning English',
+    // "Nối âm cơ bản" = linking + weak forms; "nâng cao" = sounds that
+    // change or disappear (assimilation, elision, intrusion, twinning…).
+    category: CS_ADVANCED.has(slug) ? 'connected-speech-advanced' : 'connected-speech',
+    level, clipStart, clipEnd, description, minWords: 3, ...extra,
+  })),
+  // Two short drills, hand-timed off the en-orig per-word times (the auto
+  // captions write the full "going to" / have no punctuation). Repeats of a
+  // sentence are separate segments: model first, then the reduced version.
+  {
+    slug: 'cs-gonna-wanna-gotta', youtubeId: 's5c_POQLMfI',
+    title: 'Gonna, wanna, gotta — shadow the American version',
+    sourceTitle: 'American English Pronunciation | Gonna, Wanna & Gotta', channel: 'Speak English With Josh',
+    category: 'connected-speech', level: 'A2',
+    description: 'Ba dạng nói nhanh của người Mỹ: going to → gonna, want to → wanna, got to → gotta. Mỗi câu nghe bản đầy đủ trước, rồi hai lần bản rút gọn — nói theo bản rút gọn. Lưu ý: đây là văn nói, khi viết bài IELTS vẫn dùng dạng đầy đủ.',
+    segments: [
+      [0.0, 4.3, "Let's practice three words you'll hear Americans use all the time."],
+      [4.4, 7.6, 'Gonna, wanna, and gotta.'],
+      [7.7, 12.5, "I'll say the full sentence first, then listen twice and repeat the American version."],
+      [12.5, 14.4, "I'm going to call her later."],
+      [14.5, 16.4, "I'm gonna call her later."],
+      [16.6, 18.6, "I'm gonna call her later."],
+      [21.3, 23.7, 'Do you want to get some lunch?'],
+      [23.9, 25.5, 'Do you wanna get some lunch?'],
+      [26.2, 28.2, 'Do you wanna get some lunch?'],
+      [30.9, 32.7, "I've got to go."],
+      [32.9, 34.4, 'I gotta go.'],
+      [34.7, 36.3, 'I gotta go.'],
+      [38.8, 41.1, 'What are you going to do?'],
+      [41.4, 43.0, 'What are you gonna do?'],
+      [43.4, 45.1, 'What are you gonna do?'],
+      [47.8, 49.8, 'Do you want to come with us?'],
+      [49.9, 51.7, 'Do you wanna come with us?'],
+      [51.9, 53.8, 'Do you wanna come with us?'],
+      [57.1, 59.9, "Let's put them together. Shadow me."],
+      [60.0, 61.8, "I'm gonna call her later."],
+      [62.5, 64.4, 'Do you wanna get some lunch?'],
+      [65.2, 66.6, 'I gotta go.'],
+      [67.3, 69.0, 'What are you gonna do?'],
+      [69.7, 71.6, 'Do you wanna come with us?'],
+      [72.3, 74.9, 'Okay, one more time, a little faster.'],
+      [74.9, 76.6, "I'm gonna call her later."],
+      [77.4, 79.1, 'Do you wanna get some lunch?'],
+      [79.8, 81.3, 'I gotta go.'],
+      [82.0, 83.7, 'What are you gonna do?'],
+      [84.4, 86.3, 'Do you wanna come with us?'],
+    ],
+  },
+  {
+    slug: 'cs-linking-sentences-drill', youtubeId: 'jHtebYQ1mWI',
+    title: 'Linking drill: 5 sentences, find the links',
+    sourceTitle: 'Test Your English Connected Speech/Linking Sounds in English Exercises', channel: 'Fluent American',
+    category: 'connected-speech', level: 'B1',
+    description: 'Bài luyện nối âm 80 giây: mỗi câu đọc hai lần, đoán chỗ nối rồi nói theo. Gợi ý: "isn\'t his aunt" → "isn-t-is-saunt", "left his oven on" → "lef-tis-so-ve-non", "checked her other" → "check-ter-ro-ther", "open up" → "o-pe-nup".',
+    segments: [
+      [0.2, 3.9, 'Welcome to a linking sound exercise with Fluent American.'],
+      [4.1, 9.3, 'I will read for you a group of sentences and repeat each sentence one time.'],
+      [9.7, 15.6, 'Try to identify where the linking occurs across words.'],
+      [16.4, 19.2, 'If it isn\'t his aunt, then whose is it?'],
+      [21.9, 24.7, 'If it isn\'t his aunt, then whose is it?'],
+      [26.3, 29.5, 'He said he left his oven on.'],
+      [32.0, 34.7, 'He said he left his oven on.'],
+      [37.4, 40.8, 'The problem is the bank account\'s empty.'],
+      [42.9, 46.3, 'The problem is the bank account\'s empty.'],
+      [49.3, 53.6, 'The last time I checked, her other bag was in the office.'],
+      [54.8, 59.0, 'The last time I checked, her other bag was in the office.'],
+      [60.9, 63.4, 'Never open up this envelope again.'],
+      [65.7, 68.2, 'Never open up this envelope again.'],
+    ],
+  },
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -1685,10 +1832,36 @@ const TEXT_FIXES = [
   [/\bcliffhers\b/g, 'cliffhangers'],
   [/generic Answer:/g, 'generic answer.'],
   [/\ba\.m\. each\b/g, 'am each'], // "at 9:00 a.m. each day" — not a sentence end
+  // Tim's Pronunciation Workshop: vox-pop lines with no full stops
+  [/^Green Park Green Park\s*$/, 'Green Park. Green Park.'],
+  [/^Green Park It's Green Park\s*$/, 'Green Park. It\'s Green Park.'],
+  [/^Green Park\s*$/, 'Green Park.'],
+  [/^It's Green Park\s*$/, 'It\'s Green Park.'],
+  [/^Bad girl! She's a bad girl\s*$/, 'Bad girl! She\'s a bad girl.'],
+  [/^The dog has been a bad girl\s*$/, 'The dog has been a bad girl.'],
+  [/\b([Ss])pee\? boat/g, '$1peeb boat'],
+  [/^I was playing football I was out drinking\./, 'I was playing football. I was out drinking.'],
 ];
 
 // Fixes that span two caption lines, applied to the finished sentence.
 const SEGMENT_FIXES = [
+  // Tim's Pronunciation Workshop: IPA-only tokens (/ɪ/, /ə/…) have no a–z
+  // letters, so the word splitter drops them — put them back.
+  [/'is' begins with the sound But can/, "'is' begins with the sound /ɪ/. But can"],
+  [/^In fluent speech, if a word ends in an sound,$/, 'In fluent speech, if a word ends in an /ɔː/ sound,'],
+  [/the next word begins in an you'll/, 'the next word begins in an /ə/, you\'ll'],
+  [/when one word ends in \/aɪ\/, \/eɪ\/ or\/ɔɪ\/ sound/, 'when one word ends in an /aɪ/, /iː/, /eɪ/ or /ɔɪ/ sound'],
+  [/^I always becomes I always This is/, "'I always' becomes 'I-y-always'. This is"],
+  [/come together and change to a sound\.$/, 'come together and change to a /dʒ/ sound.'],
+  [/are both pronounced as and they/, 'are both pronounced as /ə/ and they'],
+  [/^This sound is the most common sound/, 'This sound, /ə/, is the most common sound'],
+  [/^\/n\/, \/d\/ - but listen again\./, '/æ/, /n/, /d/ - but listen again.'],
+  [/changes to schwa:$/, 'changes to schwa: /ə/,'],
+  [/made of the sounds \/w\/, z\/, isn't it\?/, "made of the sounds /w/, /ɒ/, /z/, isn't it?"],
+  [/changes to a schwa - So 'was' becomes/, "changes to a schwa, /ə/. So 'was' becomes"],
+  [/it's pronounced I prefer the blue one\./, "it's pronounced /ðə/. I prefer the blue one."],
+  [/it's pronounced I prefer the orange one\./, "it's pronounced /ðiː/. I prefer the orange one."],
+  [/when the sound is followed by a vowel sound,/, 'when the sound /iː/ is followed by a vowel sound,'],
   [/\bSonia Toxfig\b/g, 'Sandi Toksvig'],
   // BBC caption typos
   [/\bmy parent car\b/, 'my parents\' car'],
