@@ -172,3 +172,15 @@ chạy cả ngân hàng).
   nguyên văn Christison cho T4 P1 (Wayback chặn 429; các trang IELTS tự dựng lại mục này từ bảng câu hỏi), câu 27–29 và key Q33 của
   T9 P3 "Temperament". `vr_update.js 4 t3p1 t4p3 t9p2 --apply` (0 lượt làm bài). Debug lại: pw_admin 24/24, pw_grade 24/24 100% +
   dingo, pw_full_tests 8/8, `_audit_reading_warnings` 0, `vr_audit.js 4` 0 problem.
+
+## Đề / bài thiếu câu — không publish (thầy 2026-10-24)
+
+"Đề nào thiếu câu thì tạm thời không publish cho học sinh." `node vr_incomplete.js [--apply]` liệt kê (và ẩn, isActive:false) mọi
+đề full có cố định 3 bài mà không đủ câu 1–40, và mọi bài lẻ có dưới 13 câu (bài 13 câu đánh số 28–40 vẫn đủ, giữ). Đề "MockTest
+Đề Random" (không gắn bài) bỏ qua. Thầy: "đề nào sửa được thì sửa, không sửa được mới ẩn" → tìm câu thiếu trong bản gốc trước.
+- **Vol 1 - Test 9: đã sửa, bật lại** — Cane Toad (mọi bản online cũng 13 câu, đoạn A là ví dụ) → ví dụ thành câu 27 (Paragraph A →
+  v, đáp án có sẵn), tiêu đề 27–33 cho A–G, đề đủ 40 câu (`vr_update.js 1 t9p3 --apply`, 0 lượt làm).
+- **Còn ẩn (không sửa được):** Vol 1 - Test 7 — bản gốc "Bestcom—Considerate Computing" có 13 câu (14–26), "Extinct: the Giant
+  Deer" (engnovate) đánh số 28–40: đề nguồn có Passage 2 dài 14 câu nhưng không còn bản nào, không có ví dụ để chuyển thành câu.
+  Vol 4 - Test 9 + bài **Temperament** (chỉ Q30–40) — không tìm thấy bản nào của bài này trên mạng. Backend chỉ trả đề/bài isActive:true cho học sinh. Khi tìm được câu bị thiếu: bổ sung spec →
+`vr_update.js` → bật lại trong admin (Đề thi → bật / Bài đọc → bật). Chạy `vr_incomplete.js` sau mỗi vol mới.

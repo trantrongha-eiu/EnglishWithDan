@@ -1,14 +1,17 @@
-// Vol 1 - Test 9 - Reading Passage 3 (PDF p15–19). Not in the bank (mini-ielts 1446, same questions). The test has 39
-// questions: Passage 2 ends at 26 and Passage 3 is numbered 28–40 (13 questions, as in mini-ielts) → kept as printed.
+// Vol 1 - Test 9 - Reading Passage 3 (PDF p15–19). Not in the bank (mini-ielts 1446, same questions). The PDF has 39
+// questions: Passage 2 ends at 26 and Passage 3 is numbered 28–40, paragraph A being the headings example (v). Every copy of
+// the passage (mini-ielts, ece.edu.vn …) has the same 13 questions, so Q27 cannot be recovered; 2026-10-24 (thầy: complete the
+// tests that can be completed) the example became Question 27 (Paragraph A → v, the answer the PDF and all copies give) →
+// headings 27–33 for A–G, the test has 40 questions.
 // Text = OCR of the PDF with its copy errors fixed (mini copy has the same kind of errors in other places).
 // Key (= mini-ielts) checked against the passage: all correct.
 const { headings, matching, summary } = require('../../vr_build');
 module.exports = {
-  vol: 1, test: 9, part: 3, title: 'The Cane Toad in Australia', text: 't9p3.txt', start: 28, allowCount: [13],
+  vol: 1, test: 9, part: 3, title: 'The Cane Toad in Australia', text: 't9p3.txt', start: 27,
   groups: [
-    headings(28, ['Diet', 'Habitat', 'Pollution effects', 'Danger', 'Arrival in Australia', 'Food for snakes', 'Identification', 'Captivity', 'Distribution', 'Environmental impacts'],
-      ['Paragraph B', 'Paragraph C', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G'],
-      { instruction: 'Reading Passage 3 has seven paragraphs, A–G. From the list of headings below, choose the most suitable headings for paragraphs B–G. Write the appropriate number, i–x, in boxes 28–33 on your answer sheet. Example: Paragraph A — v. NB There are more headings than paragraphs, so you will not use them all.' }),
+    headings(27, ['Diet', 'Habitat', 'Pollution effects', 'Danger', 'Arrival in Australia', 'Food for snakes', 'Identification', 'Captivity', 'Distribution', 'Environmental impacts'],
+      ['Paragraph A', 'Paragraph B', 'Paragraph C', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G'],
+      { instruction: 'Reading Passage 3 has seven paragraphs, A–G. From the list of headings below, choose the most suitable heading for each paragraph. Write the appropriate number, i–x, in boxes 27–33 on your answer sheet. NB There are more headings than paragraphs, so you will not use them all.' }),
     matching(34, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], [
       'Male cane toads grow protuberances during mating periods.',
       'The cane toad’s unique way of laying eggs in Australia.',
@@ -22,8 +25,11 @@ module.exports = {
     ].join('<br><br>'), ['flowers', 'hearing', 'hair', 'walking', 'leaves', 'roots', 'smelling', 'tadpoles', 'stalks', 'rope', 'seeds', 'sleeping'],
     { instruction: 'Complete each of the following statements (Questions 38–40) with words taken from the box below. Write the correct letter, A–L, in boxes 38–40 on your answer sheet.' }),
   ],
-  key: { 28: 'vii', 29: 'ix', 30: 'ii', 31: 'i', 32: 'x', 33: 'iv', 34: 'B', 35: 'B', 36: 'F', 37: 'G', 38: 'rope', 39: 'roots', 40: 'walking' },
+  key: { 27: 'v', 28: 'vii', 29: 'ix', 30: 'ii', 31: 'i', 32: 'x', 33: 'iv', 34: 'B', 35: 'B', 36: 'F', 37: 'G', 38: 'rope', 39: 'roots', 40: 'walking' },
   expl: {
+    27: ['Đoạn A: Đến Úc', 'Đoạn A',
+      '“The cane toad was introduced into Australia in 1935 to control sugar cane pests in Queensland. One hundred and one cane toads arrived at Edmonton in June in 1935.”',
+      'Đoạn A kể việc cóc mía được đưa vào Úc năm 1935 (thời điểm, lý do, số lượng) → v'],
     28: ['Đoạn B: Nhận dạng', 'Đoạn B',
       '“Cane toads are large heavily-built amphibians with dry, warty skin. They have a bony head”',
       'Đoạn B mô tả hình dáng, màu sắc, kích thước, tiếng kêu, trứng của cóc mía — các đặc điểm để nhận dạng → vii'],
