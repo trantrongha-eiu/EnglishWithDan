@@ -112,6 +112,7 @@ function sstSelectLesson(key, opts) {
   sstCurrentKey = key;
   localStorage.setItem(SST_LAST_LESSON_KEY, key);
   sstMarkRead(key);
+  if (window.reportContentView) window.reportContentView('speaking_tip', lesson._id); // homework "mở xem là xong"
   sstRenderSidebar();
   sstRenderLessonContent(lesson);
   const panel = document.getElementById('screen-speaking-tips');

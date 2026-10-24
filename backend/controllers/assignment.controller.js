@@ -17,6 +17,7 @@ const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
 const mediaStore = require('../services/mediaStore');
+const contentViewService = require('../services/contentViewService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 
@@ -419,12 +420,26 @@ exports.getMyAssignment = async (req, res) => {
   }
 };
 
+// POST /api/assignments/viewed   { resourceType, resourceId }
+// Beacon from the Tips pages / Vocab units: "the student opened this" —
+// what a view-only homework item (rcs.VIEW_TYPES) needs to tick.
+exports.recordView = async (req, res) => {
+  try {
+    const { resourceType, resourceId } = req.body || {};
+    const r = await contentViewService.recordViewChecked(req.user._id, String(resourceType || ''), resourceId);
+    if (r.error) return res.status(r.error).json({ success: false, message: r.message });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 // POST /api/assignments/:assignmentId/items/:itemId/complete   { done }
 exports.completeItem = async (req, res) => {
   try {
     const done = req.body.done !== false;
     const r = await svc.markManualItem(req.user._id, req.params.assignmentId, req.params.itemId, done);
-    if (r.error) return res.status(r.error).json({ success: false, message: r.message });
+    if (r.error) return res.status(r.error).json({ success: false, code: r.code, message: r.message });
     res.json({ success: true, ...r });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

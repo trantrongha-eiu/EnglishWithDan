@@ -1,5 +1,6 @@
 const shadowingService = require('../services/shadowingService');
 const catchAsync = require('../middleware/catchAsync');
+const contentViewService = require('../services/contentViewService');
 
 // ── GET /api/shadowing/lessons ───────────────────────────────
 exports.listLessons = catchAsync(async (req, res) => {
@@ -10,6 +11,8 @@ exports.listLessons = catchAsync(async (req, res) => {
 // ── GET /api/shadowing/lessons/:slug ─────────────────────────
 exports.getLesson = catchAsync(async (req, res) => {
   const lesson = await shadowingService.getLesson(req.params.slug);
+  // Opening the video is what a "shadowing" homework item asks for.
+  contentViewService.recordView(req.user._id, 'shadowing', lesson._id).catch(() => {});
   res.json({ success: true, lesson });
 });
 

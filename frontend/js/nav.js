@@ -16,6 +16,21 @@
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var page = location.pathname.split('/').pop() || 'index.html';
 
+  // "Student opened this" beacon for view-only homework items (Tips lessons,
+  // Vocab/Paraphrase units — backend rcs.VIEW_TYPES). Fire-and-forget; the
+  // backend dedupes, so calling it on every open is fine.
+  window.reportContentView = function (resourceType, resourceId) {
+    try {
+      var token = window.AuthService && window.AuthService.getToken();
+      if (!token || !resourceType || !resourceId) return;
+      fetch(API + '/assignments/viewed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ resourceType: resourceType, resourceId: String(resourceId) }),
+      }).catch(function () {});
+    } catch (e) { /* never let tracking break the page */ }
+  };
+
   var LINKS = [
     { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading',
       children: [
@@ -729,7 +744,12 @@
     // their class's threshold (assignmentService). Deadline-soon / overdue
     // live on the dashboard card, not here.
     _navPart('homeworkSummary', '/assignments/mine/summary')
-      .then(function (d) { if (d && d.warn && d.warning) _showHomeworkWarningBanner(d.warning); })
+      .then(function (d) {
+        // Locked homework is the more actionable message (it names what to
+        // do next), so it replaces the generic warning banner.
+        if (d && d.lock && d.lock.lockedCount) _showHomeworkLockBanner(d.lock);
+        else if (d && d.warn && d.warning) _showHomeworkWarningBanner(d.warning);
+      })
       .catch(function () {});
 
     // Refresh plan silently and show expiry warning if needed.
@@ -978,6 +998,19 @@
       'linear-gradient(90deg,#b45309,#d97706)',
       '<span style="flex:1;text-align:center">' + parts.join('') + '</span>' +
       '<a href="dashboard.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
+    );
+  }
+
+  // Homework lock (assignmentService.applyHomeworkLocks): too many old
+  // assignments left incomplete → newer ones can't be started.
+  function _showHomeworkLockBanner(lock) {
+    var old = (lock.pendingOld || []).length;
+    _renderAttendanceBanner(
+      'nav-homework-lock-banner',
+      'linear-gradient(90deg,#b91c1c,#ea580c)',
+      '<span style="flex:1;text-align:center">🔒 Bạn còn <strong>' + old + ' bài tập cũ</strong> chưa hoàn thành nên <strong>' +
+      lock.lockedCount + ' bài tập mới</strong> đang bị khoá. Hãy làm xong bài cũ để mở khoá bài mới.</span>' +
+      '<a href="dashboard.html#homework-card" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Làm bài cũ</a>'
     );
   }
 

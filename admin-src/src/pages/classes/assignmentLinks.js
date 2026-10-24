@@ -29,8 +29,27 @@ export function studentPathFor(r) {
     case 'grammar':                return code ? `/essential-grammar.html?lesson=${code}` : '/essential-grammar.html';
     case 'vocabulary_lesson':      return `/dashboard.html?view=lesson&lessonId=${id}`;
     case 'mock_test':              return '/mock-test.html';
+    // resourceCode: shadowing = slug, tips = "lessonKey||category", vocab_unit
+    // = unit number, task2_template = "typeId||level", writing_practice = topic key
+    case 'shadowing':              return code ? `/shadowing.html?lesson=${code}` : '/shadowing.html';
+    case 'listening_tip':          return `/listening.html?mode=tips${tipQs(r.resourceCode)}`;
+    case 'reading_tip':            return `/reading.html?mode=tips${tipQs(r.resourceCode)}`;
+    case 'writing_tip':            return `/writing.html?view=writing-tips${tipQs(r.resourceCode)}`;
+    case 'speaking_tip':           return `/speaking.html?tab=speaking-tips${tipQs(r.resourceCode)}`;
+    case 'vocab_unit':             return code ? `/dashboard.html?view=unit&unit=${code}` : '/dashboard.html?view=topics';
+    case 'task2_template': {
+      const [type, level] = String(r.resourceCode || '').split('||');
+      return type ? `/task2-template.html?type=${encodeURIComponent(type)}&level=${encodeURIComponent(level || 'band7')}` : '/task2-template.html';
+    }
+    case 'writing_practice':       return code ? `/writing-practice.html?topic=${code}` : '/writing-practice.html';
+    case 'task1_skill':            return code ? `/task1-practice.html?skill=${code}` : '/task1-practice.html';
     default:                       return null;
   }
+}
+
+function tipQs(resourceCode) {
+  const [tip, cat] = String(resourceCode || '').split('||');
+  return tip ? `&tip=${encodeURIComponent(tip)}${cat ? `&tcat=${encodeURIComponent(cat)}` : ''}` : '';
 }
 
 export function studentUrlFor(r) {

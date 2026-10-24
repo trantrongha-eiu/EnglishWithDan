@@ -98,6 +98,7 @@ function sanitizePolicy(input = {}, base = {}) {
   if (num(input.homeworkMissThreshold) !== undefined) out.homeworkMissThreshold = Math.max(1, num(input.homeworkMissThreshold));
   if (num(input.homeworkWarnThreshold) !== undefined) out.homeworkWarnThreshold = Math.max(1, num(input.homeworkWarnThreshold));
   if (num(input.homeworkFailThreshold) !== undefined) out.homeworkFailThreshold = Math.max(1, num(input.homeworkFailThreshold));
+  if (num(input.homeworkLockThreshold) !== undefined) out.homeworkLockThreshold = Math.max(0, num(input.homeworkLockThreshold));
   return out;
 }
 

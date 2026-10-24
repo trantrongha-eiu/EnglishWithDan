@@ -6,6 +6,7 @@
 // that's the original API contract, not an oversight.
 const vocabService = require('../services/vocabService');
 const paraphraseSrsService = require('../services/paraphraseSrsService');
+const contentViewService = require('../services/contentViewService');
 
 exports.listUnits = async (req, res) => {
   try {
@@ -23,6 +24,8 @@ exports.getUnit = async (req, res) => {
   try {
     const unit = await vocabService.getUnitByNumber(Number(req.params.number));
     if (!unit) return res.status(404).json({ message: 'Unit not found' });
+    // Opening a unit is what a 'vocab_unit' homework item asks for.
+    if (unit._id) contentViewService.recordView(req.user._id, 'vocab_unit', unit._id).catch(() => {});
     res.json(unit);
   } catch (err) {
     res.status(500).json({ message: 'Cannot load unit' });

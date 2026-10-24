@@ -112,6 +112,7 @@ function lstSelectLesson(key, opts) {
   lstCurrentKey = key;
   localStorage.setItem(LST_LAST_LESSON_KEY, key);
   lstMarkRead(key);
+  if (window.reportContentView) window.reportContentView('listening_tip', lesson._id); // homework "mở xem là xong"
   lstRenderSidebar();
   lstRenderLessonContent(lesson);
   const panel = document.getElementById('listening-tips-panel');

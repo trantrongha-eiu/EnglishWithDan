@@ -34,11 +34,16 @@ const PRACTICE_PASS = 50;
 const GAPFILL_MIN_CORRECT = 18; // matches backend's resourceCompletionService.GAPFILL_MIN_CORRECT
 const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
 const HW_WORD_MIN = { task1_practice: MIN_WORDS_T1, task2_practice: MIN_WORDS_T2 };
+// backend resourceCompletionService.VIEW_TYPES — opened = done
+const HW_VIEW_TYPES = new Set(['shadowing', 'listening_tip', 'reading_tip', 'writing_tip', 'speaking_tip', 'vocab_unit']);
 function hwRuleTag(resourceType) {
   if (HW_QUIZ_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ 70% số điểm trở lên mới tính hoàn thành">≥70%</span>';
   if (HW_PRACTICE_TYPES.has(resourceType)) return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ ${PRACTICE_PASS}% số điểm trở lên mới tính hoàn thành">≥${PRACTICE_PASS}%</span>`;
   if (resourceType === 'listening_gapfill') return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần điền đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống (bài ít hơn ${GAPFILL_MIN_CORRECT} chỗ thì phải đúng hết) mới tính hoàn thành">≥${GAPFILL_MIN_CORRECT} câu đúng</span>`;
   if (resourceType === 'writing_exam') return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ Task 1 ≥${MIN_WORDS_T1} từ và Task 2 ≥${MIN_WORDS_T2} từ">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span>`;
+  if (HW_VIEW_TYPES.has(resourceType)) return '<span class="hw-res-tag" title="Chỉ cần bấm vào mở xem là tự động tính hoàn thành">Mở xem là xong</span>';
+  if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần làm đúng từ 70% số câu của template trong 1 lượt">≥70%</span>';
+  if (resourceType === 'writing_practice' || resourceType === 'task1_skill') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm ít nhất 10 câu của chủ đề, đúng từ 70% trở lên">≥10 câu · ≥70%</span>';
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
 }
@@ -86,8 +91,28 @@ function hwResourceHref(r) {
     case 'grammar':            return r.resourceCode ? `essential-grammar.html?lesson=${encodeURIComponent(r.resourceCode)}` : 'essential-grammar.html';
     case 'vocabulary_lesson':  return `dashboard.html?view=lesson&lessonId=${id}`;
     case 'mock_test':          return 'mock-test.html';
+    // resourceCode snapshots (resourceCompletionService deepLinkKey):
+    // shadowing = slug, tips = "lessonKey||category", vocab_unit = unit
+    // number, task2_template = "typeId||level", writing_practice = topic key.
+    case 'shadowing':          return r.resourceCode ? `shadowing.html?lesson=${encodeURIComponent(r.resourceCode)}` : 'shadowing.html';
+    case 'listening_tip':      return `listening.html?mode=tips${hwTipQs(r.resourceCode)}`;
+    case 'reading_tip':        return `reading.html?mode=tips${hwTipQs(r.resourceCode)}`;
+    case 'writing_tip':        return `writing.html?view=writing-tips${hwTipQs(r.resourceCode)}`;
+    case 'speaking_tip':       return `speaking.html?tab=speaking-tips${hwTipQs(r.resourceCode)}`;
+    case 'vocab_unit':         return r.resourceCode ? `dashboard.html?view=unit&unit=${encodeURIComponent(r.resourceCode)}` : 'dashboard.html?view=topics';
+    case 'task2_template': {
+      const [type, level] = String(r.resourceCode || '').split('||');
+      return type ? `task2-template.html?type=${encodeURIComponent(type)}&level=${encodeURIComponent(level || 'band7')}` : 'task2-template.html';
+    }
+    case 'writing_practice':   return r.resourceCode ? `writing-practice.html?topic=${encodeURIComponent(r.resourceCode)}` : 'writing-practice.html';
+    case 'task1_skill':        return r.resourceCode ? `task1-practice.html?skill=${encodeURIComponent(r.resourceCode)}` : 'task1-practice.html';
     default:                   return null;
   }
+}
+
+function hwTipQs(code) {
+  const [tip, cat] = String(code || '').split('||');
+  return tip ? `&tip=${encodeURIComponent(tip)}${cat ? `&tcat=${encodeURIComponent(cat)}` : ''}` : '';
 }
 
 function hwCountdown(deadline) {
@@ -128,7 +153,7 @@ function hwVocabGoalProgress(r) {
   return `<span class="hw-res-desc">${book}đã luyện <b>${Math.min(v.practiced, v.target)}/${v.target}</b> từ · trả lời đúng <b>${v.correct}</b> (cần ≥${v.needCorrect})</span>`;
 }
 
-function hwResourceRow(assignmentId, r) {
+function hwResourceRow(assignmentId, r, locked) {
   const doneCls = r.completed ? 'hw-res--done' : '';
   const check = r.completed ? '☑' : '☐';
   let name = '';
@@ -157,6 +182,10 @@ function hwResourceRow(assignmentId, r) {
     const thumbs = (r.images || []).map((im) => `<a href="${escHtml(im.url)}" target="_blank" rel="noopener"><img class="hw-res-thumb" src="${escHtml(im.url)}" alt=""></a>`).join('');
     action = thumbs + hwManualToggle(assignmentId, r);
   }
+  // Locked assignment (too many old ones unfinished): no way in from here
+  // until the old homework is made up — backend refuses ticks / the class
+  // mock too (assignmentService.applyHomeworkLocks).
+  if (locked && !r.completed) action = '<span class="hw-res-locked">🔒 Đang khoá</span>';
   const ruleTag = r.kind === 'internal' ? hwRuleTag(r.resourceType) : '';
   return `<div class="hw-res ${doneCls}">
     <span class="hw-res-check">${check}</span>
@@ -236,23 +265,43 @@ function hwManualToggle(assignmentId, r) {
   </label>`;
 }
 
+// "Why is this locked" note + the old assignments to finish first.
+function hwLockNote(a) {
+  const list = (a.lockedBy || []).map((o) =>
+    `<li><a href="#" onclick="hwScrollTo('${o._id}');return false">${escHtml(o.title)}</a>${o.status === 'overdue' ? ' <span class="hw-due hw-due--over">Quá hạn</span>' : ''}</li>`).join('');
+  const need = a.unlockNeed || 1;
+  return `<div class="hw-lock-note">🔒 <b>Bài này đang bị khoá.</b> Bạn còn ${(a.lockedBy || []).length} bài tập cũ chưa hoàn thành —
+    hãy làm xong ${need > 1 ? `<b>${need} bài</b>` : '<b>1 bài</b>'} trong số này để mở khoá:<ul>${list}</ul></div>`;
+}
+
+function hwScrollTo(id) {
+  const el = document.querySelector(`.hw-item[data-id="${id}"]`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('hw-item--flash');
+  setTimeout(() => el.classList.remove('hw-item--flash'), 1600);
+}
+window.hwScrollTo = hwScrollTo;
+
 function hwAssignmentBlock(a) {
   const st = HW_STATUS[a.status] || HW_STATUS.not_started;
   const pct = a.total ? Math.round((a.done / a.total) * 100) : 0;
-  return `<div class="hw-item" data-id="${a._id}" data-status="${a.status || 'not_started'}">
+  const pill = a.locked ? '🔒 Đang khoá' : (a.archived ? 'Đã đóng · tính là thiếu' : st.label);
+  return `<div class="hw-item${a.locked ? ' hw-item--locked' : ''}" data-id="${a._id}" data-status="${a.status || 'not_started'}">
     <div class="hw-item-head">
       <div>
         <div class="hw-item-title">${escHtml(a.title)}</div>
         <div class="hw-item-sub">${escHtml(a.className)}${a.teacherName ? ` · ${escHtml(a.teacherName)}` : ''}</div>
       </div>
-      <span class="hw-pill ${st.cls}">${a.archived ? 'Đã đóng · tính là thiếu' : st.label}</span>
+      <span class="hw-pill ${a.locked ? 'hw-pill--locked' : st.cls}">${pill}</span>
     </div>
+    ${a.locked ? hwLockNote(a) : ''}
     ${a.instruction ? `<div class="hw-item-instruction">${escHtml(a.instruction)}</div>` : ''}
     <div class="hw-progress">
       <div class="hw-progress-bar"><div class="hw-progress-fill" style="width:${pct}%"></div></div>
       <span class="hw-progress-text">${a.done}/${a.total} hoàn thành</span>
     </div>
-    <div class="hw-reslist">${a.resources.map((r) => hwResourceRow(a._id, r)).join('')}</div>
+    <div class="hw-reslist">${a.resources.map((r) => hwResourceRow(a._id, r, a.locked)).join('')}</div>
     <div class="hw-item-foot">
       <span class="hw-deadline">⏰ ${hwFmtDeadline(a.deadline)}</span>
       ${a.status !== 'completed' ? hwCountdown(a.deadline) : '<span class="hw-due hw-due--ok">✔ Đã xong</span>'}
@@ -278,6 +327,12 @@ async function loadHomework() {
   const warn = data.homeworkWarning
     ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} buổi</b> chưa hoàn thành đầy đủ bài tập${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
     : '';
+  const lk = data.homeworkLock;
+  const lockBanner = lk && lk.lockedCount
+    ? `<div class="hw-lock-banner">🔒 Bạn còn <b>${lk.pendingOld.length} bài tập cũ</b> chưa hoàn thành nên <b>${lk.lockedCount} bài tập mới</b> đang bị khoá.
+        Hãy hoàn thành các bài cũ dưới đây (kể cả bài đã quá hạn) để được làm tiếp bài mới:
+        <ul>${lk.pendingOld.map((o) => `<li><a href="#" onclick="hwScrollTo('${o._id}');return false">${escHtml(o.title)}</a> · ${o.done}/${o.total}${o.status === 'overdue' ? ' <span class="hw-due hw-due--over">Quá hạn</span>' : ''}</li>`).join('')}</ul></div>`
+    : '';
   const rules = `<details class="hw-rules">
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
@@ -286,6 +341,8 @@ async function loadHomework() {
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${GAPFILL_MIN_CORRECT} câu đúng</span> Bài nghe Gap-fill: cần điền <b>đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống</b> trên tổng số chỗ trống của bài.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
+      <li><span class="hw-res-tag">Mở xem là xong</span> Video Shadowing, bài giảng Tips, Unit Vocab/Paraphrase: chỉ cần <b>bấm vào mở xem</b> là tự động tính hoàn thành.</li>
+      <li>🔒 Còn <b>hơn 2 bài tập cũ</b> chưa hoàn thành (kể cả bài đã quá hạn) thì các bài tập mới hơn sẽ bị <b>khoá</b> — làm bù bài cũ để mở khoá.</li>
       <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
     </ul>
   </details>`;
@@ -309,8 +366,9 @@ async function loadHomework() {
     : `${incompleteAssignments.length} chưa xong`;
   card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>
       <span class="hw-count">${countLabel}</span></div>
+    ${lockBanner}
     ${rules}
-    ${warn}
+    ${lockBanner ? '' : warn}
     <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;
 }
 

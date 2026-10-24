@@ -63,6 +63,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
         }
         continue;
       }
+      if (entry.catalog.static) continue; // fixed list (task1_skill) — nothing to drift
       const doc = await entry.catalog.model.findById(r.resourceId).lean();
       if (!doc) { issues.push(`${where}: ${r.resourceType} ${r.resourceId} "${r.label}" — RESOURCE DELETED`); continue; }
       const realLabel = entry.catalog.shape(doc).label;
@@ -86,6 +87,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
   console.log('\n=== CATALOG COVERAGE (assignable items per type) ===');
   for (const [type, entry] of Object.entries(REGISTRY)) {
     if (!entry.catalog) { console.log(`  ${type}: synthetic`); continue; }
+    if (entry.catalog.static) { console.log(`  ${type}: ${entry.catalog.static.length} (fixed list)`); continue; }
     const q = { ...entry.catalog.filter };
     const scope = await scopeOf(entry);
     if (scope) q.moduleCode = { $in: scope };

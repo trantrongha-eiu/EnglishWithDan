@@ -144,6 +144,65 @@ function leftBeforeAssigned(assignment, enrollment) {
   return new Date(enrollment.removedAt).getTime() <= new Date(assignment.createdAt).getTime();
 }
 
+// ── Homework lock ──────────────────────────────────────────────────────
+// Owner's rule: a student who still has MORE than `homeworkLockThreshold`
+// (default 2) older assignments incomplete in a class — overdue / archived
+// misses included — can't start any newer assignment in that class until
+// they make the old ones up. Walks each class oldest → newest, so the
+// student can always work on the oldest open ones; every newer open one is
+// locked. Completed assignments are never locked (work already done stays
+// done). Stateless: recomputed on every read, so finishing an old one
+// unlocks the next straight away. Mutates `rows`.
+function applyHomeworkLocks(rows, classMap) {
+  const byClass = new Map();
+  for (const r of rows) {
+    const k = String(r.classId);
+    if (!byClass.has(k)) byClass.set(k, []);
+    byClass.get(k).push(r);
+  }
+  const lockedRows = [];
+  const mustFinish = new Map(); // _id -> row (unlocked, incomplete, blocking something)
+  for (const [cid, list] of byClass) {
+    const thr = withPolicyDefaults(classMap.get(cid)?.policy).homeworkLockThreshold;
+    list.sort((x, y) => new Date(x.createdAt) - new Date(y.createdAt));
+    const olderOpen = [];
+    for (const r of list) {
+      r.locked = false;
+      if (r.status === 'completed') continue;
+      if (olderOpen.length > thr) {
+        const blockers = olderOpen.filter((o) => !o.locked);
+        r.locked = true;
+        r.lockThreshold = thr;
+        // how many more old ones must be finished before THIS one opens
+        r.unlockNeed = olderOpen.length - thr;
+        r.lockedBy = blockers.map((o) => ({ _id: o._id, title: o.title, deadline: o.deadline, status: o.status }));
+        for (const o of blockers) mustFinish.set(String(o._id), o);
+        lockedRows.push(r);
+      }
+      olderOpen.push(r);
+    }
+  }
+  if (!lockedRows.length) return null;
+  return {
+    lockedCount: lockedRows.length,
+    pendingOld: [...mustFinish.values()].map((o) => ({
+      _id: o._id, title: o.title, className: o.className, deadline: o.deadline, status: o.status, done: o.done, total: o.total,
+    })),
+  };
+}
+
+// The lock state of one assignment for one student (null = not visible to
+// them). Used to refuse manual ticks / the class mock on a locked one.
+async function getLockState(studentId, assignmentId, now = new Date()) {
+  const { assignments } = await getStudentAssignments(studentId, now);
+  return assignments.find((a) => String(a._id) === String(assignmentId)) || null;
+}
+
+function lockedMessage(row) {
+  const n = row.unlockNeed || 1;
+  return `Bài tập này đang bị khoá: bạn còn ${row.lockedBy?.length || n} bài tập cũ chưa hoàn thành. Hãy làm xong ít nhất ${n} bài cũ để mở khoá bài này.`;
+}
+
 // ── Student: all my homework across my active classes ──────────────────
 // `persist` (only from GET /api/assignments/mine, not the nav.js summary or
 // the cron) writes an accurate completedCount/allCompletedAt back onto each
@@ -153,7 +212,7 @@ function leftBeforeAssigned(assignment, enrollment) {
 // student never ticks anything.
 async function getStudentAssignments(studentId, now = new Date(), { persist = false } = {}) {
   const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
-  if (!enrollments.length) return { assignments: [], homeworkWarning: null, hasClasses: false };
+  if (!enrollments.length) return { assignments: [], homeworkWarning: null, homeworkLock: null, hasClasses: false };
 
   const enrollByClass = new Map(enrollments.map((e) => [String(e.classId), e]));
   const classIds = enrollments.map((e) => e.classId);
@@ -255,11 +314,15 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     });
   }
 
-  // priority sort: (1) not-done + nearest deadline, (2) in progress, (3) overdue, (4) completed
-  const rank = { in_progress: 1, not_started: 1, overdue: 3, completed: 4 };
+  const homeworkLock = applyHomeworkLocks(rows, classMap);
+
+  // priority sort: (1) not-done + nearest deadline, (2) in progress,
+  // (3) overdue, (4) locked (until the old ones are made up), (5) completed
+  const rank = { in_progress: 1, not_started: 1, overdue: 3, completed: 5 };
+  const rankOf = (r) => (r.locked ? 4 : rank[r.status]);
   rows.sort((x, y) => {
-    const rx = x.status === 'not_started' ? 1 : rank[x.status];
-    const ry = y.status === 'not_started' ? 1 : rank[y.status];
+    const rx = rankOf(x);
+    const ry = rankOf(y);
     if (rx !== ry) return rx - ry;
     const dx = x.deadline ? new Date(x.deadline).getTime() : Infinity;
     const dy = y.deadline ? new Date(y.deadline).getTime() : Infinity;
@@ -307,7 +370,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     }
   }
 
-  return { assignments: rows, homeworkWarning, hasClasses: true };
+  return { assignments: rows, homeworkWarning, homeworkLock, hasClasses: true };
 }
 
 // ── Live "how many assignments is this student currently behind on, in this
@@ -347,7 +410,7 @@ function displayNameOf(u) {
 
 // lightweight version for nav.js
 async function getStudentHomeworkSummary(studentId, now = new Date()) {
-  const { assignments, homeworkWarning, hasClasses } = await getStudentAssignments(studentId, now);
+  const { assignments, homeworkWarning, homeworkLock, hasClasses } = await getStudentAssignments(studentId, now);
   const incomplete = assignments.filter((a) => a.status !== 'completed');
   const overdue = assignments.filter((a) => a.status === 'overdue');
   const next = incomplete
@@ -361,6 +424,7 @@ async function getStudentHomeworkSummary(studentId, now = new Date()) {
     nearestTitle: next ? next.title : null,
     warn: !!homeworkWarning,
     warning: homeworkWarning,
+    lock: homeworkLock,
   };
 }
 
@@ -375,6 +439,10 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
   if (!resource) return { error: 404, message: 'Không tìm thấy mục này trong bài tập' };
   if (itemIsAutoTracked(resource)) {
     return { error: 400, message: 'Mục này được hệ thống tự động ghi nhận, không thể tự đánh dấu.' };
+  }
+  if (done) {
+    const row = await getLockState(studentId, assignmentId);
+    if (row && row.locked) return { error: 423, code: 'HOMEWORK_LOCKED', message: lockedMessage(row) };
   }
 
   // Resolve (and, if just reached, persist) vocab goals BEFORE loading the
@@ -441,6 +509,8 @@ async function getAssignedMock(studentId, assignmentId, itemId) {
   }
   const item = assignment.resources.find((r) => String(r._id) === String(itemId));
   if (!item || !rcs.isFixedMock(item)) return { error: 404, message: 'Không tìm thấy bài thi thử được giao' };
+  const row = await getLockState(studentId, assignment._id);
+  if (row && row.locked) return { error: 423, code: 'HOMEWORK_LOCKED', message: lockedMessage(row) };
   return { assignmentId: assignment._id, itemId: item._id, bundle: item.mockBundle };
 }
 
@@ -524,6 +594,7 @@ module.exports = {
   assignedBeforeEnrollment,
   markManualItem,
   getAssignedMock,
+  applyHomeworkLocks,
   getAssignmentProgressTable,
   displayNameOf,
   DEADLINE_SOON_MS,

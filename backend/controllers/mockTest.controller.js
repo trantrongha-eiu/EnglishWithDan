@@ -13,7 +13,7 @@ exports.start = catchAsync(async (req, res) => {
     let assigned = null;
     if (assignmentId || itemId) {
       assigned = await assignmentService.getAssignedMock(req.user._id, assignmentId, itemId);
-      if (assigned.error) return res.status(assigned.error).json({ success: false, message: assigned.message });
+      if (assigned.error) return res.status(assigned.error).json({ success: false, code: assigned.code, message: assigned.message });
     }
     const { resumed, attempt } = await mockTestService.startMockTest(req.user._id, { assigned });
     res.status(resumed ? 200 : 201).json({ success: true, resumed, attempt });

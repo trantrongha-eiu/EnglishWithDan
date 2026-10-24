@@ -36,6 +36,10 @@ const attendancePolicySchema = new mongoose.Schema({
   // khỏi cảnh báo/rớt khóa.
   homeworkWarnThreshold: { type: Number, default: 5, min: 1 },
   homeworkFailThreshold: { type: Number, default: 10, min: 1 },
+  // Khoá bài mới: còn HƠN số này bài tập cũ (giao trước) chưa hoàn thành —
+  // kể cả đã quá hạn — thì mọi bài mới hơn bị khoá cho tới khi học viên làm
+  // bù bài cũ (xem assignmentService.applyHomeworkLocks).
+  homeworkLockThreshold: { type: Number, default: 2, min: 0 },
 }, { _id: false });
 
 const ClassGroupSchema = new mongoose.Schema({

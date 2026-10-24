@@ -885,6 +885,61 @@ describe('deadline / overdue / warning', () => {
   });
 });
 
+describe('homework lock (too many old assignments unfinished)', () => {
+  const ext = [{ kind: 'external', url: 'https://x.com', title: 'x' }];
+  async function setup(policy = {}) {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy });
+    await enrollStudent(cls, s);
+    const asgs = [];
+    // 3 old (2 already overdue) + 2 new, oldest first
+    for (let i = 0; i < 5; i++) {
+      asgs.push(await createAssignment(cls, {
+        title: `HW ${i + 1}`, resources: ext,
+        deadline: i < 2 ? new Date(past(1)) : undefined,
+        createdAt: new Date(Date.now() - (10 - i) * 864e5),
+      }));
+    }
+    return { s, cls, asgs };
+  }
+  const rowOf = (body, a) => body.assignments.find((r) => r._id === String(a._id));
+  const itemOf = (a) => a.resources[0]._id;
+
+  test('more than 2 older incomplete → newer ones are locked; finishing an old one unlocks the next', async () => {
+    const { s, asgs } = await setup();
+    let mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body;
+    expect(asgs.slice(0, 3).map((a) => rowOf(mine, a).locked)).toEqual([false, false, false]);
+    expect(asgs.slice(3).map((a) => rowOf(mine, a).locked)).toEqual([true, true]);
+    expect(rowOf(mine, asgs[3]).lockedBy.map((o) => o.title)).toEqual(['HW 1', 'HW 2', 'HW 3']);
+    expect(mine.homeworkLock.lockedCount).toBe(2);
+    expect(mine.homeworkLock.pendingOld).toHaveLength(3);
+
+    // can't tick a locked one
+    const denied = await request(app).post(`/api/assignments/${asgs[3]._id}/items/${itemOf(asgs[3])}/complete`).set(authH(s)).send({ done: true });
+    expect(denied.status).toBe(423);
+    expect(denied.body.code).toBe('HOMEWORK_LOCKED');
+
+    // finish the oldest (overdue) one → HW 4 opens, HW 5 still locked
+    const ok = await request(app).post(`/api/assignments/${asgs[0]._id}/items/${itemOf(asgs[0])}/complete`).set(authH(s)).send({ done: true });
+    expect(ok.status).toBe(200);
+    mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body;
+    expect(rowOf(mine, asgs[3]).locked).toBe(false);
+    expect(rowOf(mine, asgs[4]).locked).toBe(true);
+
+    const summary = (await request(app).get('/api/assignments/mine/summary').set(authH(s))).body;
+    expect(summary.lock.lockedCount).toBe(1);
+  });
+
+  test('archived misses count as old incomplete; threshold is per class policy', async () => {
+    const { s, asgs } = await setup({ homeworkLockThreshold: 0 });
+    await Assignment.updateOne({ _id: asgs[0]._id }, { status: 'archived' });
+    const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body;
+    expect(rowOf(mine, asgs[0]).locked).toBe(false);
+    expect(asgs.slice(1).every((a) => rowOf(mine, a).locked)).toBe(true);
+  });
+});
+
 describe('joined the class after an assignment was given', () => {
   test('an assignment given before the student enrolled is not theirs — overdue or still open', async () => {
     const t = await createTeacher();

@@ -49,6 +49,15 @@ const RESOURCE_CATS = [
   { type: 'grammar', label: 'Essential Grammar' },
   { type: 'vocabulary_lesson', label: 'Vocabulary Lessons' },
   { type: 'mock_test', label: 'Thi thử 4 kỹ năng' },
+  { type: 'shadowing', label: 'Shadowing (Video)' },
+  { type: 'listening_tip', label: 'Listening Tips (Bài giảng)' },
+  { type: 'reading_tip', label: 'Reading Tips (Bài giảng)' },
+  { type: 'writing_tip', label: 'Writing Tips (Bài giảng)' },
+  { type: 'speaking_tip', label: 'Speaking Tips (Bài giảng)' },
+  { type: 'vocab_unit', label: 'Vocab Topics / Paraphrase (Unit)' },
+  { type: 'task2_template', label: 'Task 2 Templates' },
+  { type: 'writing_practice', label: 'Luyện viết câu giao tiếp (Chủ đề)' },
+  { type: 'task1_skill', label: 'Task 1 Practice (Kỹ năng)' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
 // How each type auto-ticks as done — mirrors backend
@@ -58,6 +67,13 @@ const RES_RULE = {
   listening_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
   listening_gapfill: 'Tự tick khi học viên điền đúng ≥18 chỗ trống (bài ít hơn 18 chỗ thì phải đúng hết).',
   reading_test: 'Tự tick khi đạt ≥70%.', listening_test: 'Tự tick khi đạt ≥70%.', dictation: 'Tự tick khi đạt ≥70%.',
+  shadowing: 'Tự tick khi học viên bấm vào mở video.',
+  listening_tip: 'Tự tick khi học viên mở bài giảng.', reading_tip: 'Tự tick khi học viên mở bài giảng.',
+  writing_tip: 'Tự tick khi học viên mở bài giảng.', speaking_tip: 'Tự tick khi học viên mở bài giảng.',
+  vocab_unit: 'Tự tick khi học viên mở Unit.',
+  task2_template: 'Tự tick khi học viên làm đúng ≥70% số câu của template trong 1 lượt.',
+  writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
+  task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
 const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau khi giao — không cần làm' };
@@ -295,6 +311,13 @@ function OverviewTab({ cls, onSaved }) {
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Số bài thiếu tối đa (rớt nếu vượt)</label>
             <input className="form-input" type="number" min={1} value={form.policy.homeworkFailThreshold} onChange={setP('homeworkFailThreshold')} />
+          </div>
+          <div className="form-group" style={{ marginBottom: 0, gridColumn: '1 / -1' }}>
+            <label className="form-label">Khoá bài mới khi còn hơn … bài cũ chưa xong</label>
+            <input className="form-input" type="number" min={0} value={form.policy.homeworkLockThreshold ?? 2} onChange={setP('homeworkLockThreshold')} />
+            <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 4 }}>
+              Mặc định 2: học viên còn từ 3 bài cũ chưa hoàn thành (kể cả đã quá hạn) thì các bài mới hơn bị khoá cho tới khi làm bù. 0 = phải xong hết bài cũ mới được làm bài mới.
+            </div>
           </div>
         </div>
       </fieldset>
@@ -1224,6 +1247,12 @@ function toDatetimeLocalValue(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+const DEFAULT_DEADLINE_DAYS = 3;
+function defaultAssignmentTitle(d = new Date()) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `Assignment ${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
+}
+
 // `assignment` (optional): the full row from GET .../assignments (already
 // carries resources[] — see listAssignments' .lean() spread) to edit in
 // place instead of creating a new one.
@@ -1243,9 +1272,11 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const assignedIndex = useMemo(() => buildAssignedIndex(allAssignments, assignment?._id), [allAssignments, assignment?._id]);
   // '' = all, 'new' = never given to this class, 'done' = already given
   const [assignedFilter, setAssignedFilter] = useState('');
-  const [title, setTitle] = useState(assignment?.title || '');
+  // New assignment defaults: "Assignment dd/mm" (the day it's given) and a
+  // deadline 3 days from now — both still editable before saving.
+  const [title, setTitle] = useState(() => (isEdit ? assignment.title || '' : defaultAssignmentTitle()));
   const [instruction, setInstruction] = useState(assignment?.instruction || '');
-  const [deadline, setDeadline] = useState(toDatetimeLocalValue(assignment?.deadline));
+  const [deadline, setDeadline] = useState(() => toDatetimeLocalValue(isEdit ? assignment.deadline : new Date(Date.now() + DEFAULT_DEADLINE_DAYS * 864e5)));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
     .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle })));
@@ -1385,7 +1416,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
         <div style={{ padding: '18px 22px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Tên bài tập *</label>
-            <input className="form-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Homework – Week 4" />
+            <input className="form-input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Assignment 24/10" />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Hướng dẫn</label>

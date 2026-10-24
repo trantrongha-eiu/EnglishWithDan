@@ -34,6 +34,10 @@ const assignmentResourceSchema = new mongoose.Schema({
       // services/resourceCompletionService.js REGISTRY.
       'task2_course_lesson', 'speaking_course_lesson', 'advanced_sentences',
       'speaking_full_mock',
+      // "opened = done" (models/ContentView.js) + Task 2 Templates /
+      // writing practice (score-based, custom check).
+      'shadowing', 'listening_tip', 'reading_tip', 'writing_tip', 'speaking_tip',
+      'vocab_unit', 'task2_template', 'writing_practice', 'task1_skill',
     ],
   },
   resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test / speaking_full_mock

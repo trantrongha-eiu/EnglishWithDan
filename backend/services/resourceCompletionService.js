@@ -46,6 +46,20 @@ const Task2LessonWork = require('../models/Task2LessonWork');
 const WT1Progress = require('../models/WT1Progress');
 const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
 const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
+const ShadowingLesson = require('../models/ShadowingLesson');
+const ListeningTip = require('../models/ListeningTip');
+const ReadingTip = require('../models/ReadingTip');
+const WritingTip = require('../models/WritingTip');
+const SpeakingTip = require('../models/SpeakingTip');
+const VocabUnit = require('../models/VocabUnit');
+const Task2Template = require('../models/Task2Template');
+const Task2TemplateAttempt = require('../models/Task2TemplateAttempt');
+const WPTopic = require('../models/WPTopic');
+const WPExercise = require('../models/WPExercise');
+const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
+const ContentView = require('../models/ContentView');
+const Task1Exercise = require('../models/Task1Exercise');
+const Task1Attempt = require('../models/Task1Attempt');
 
 const { escapeRegex } = require('../utils/strings');
 
@@ -99,6 +113,126 @@ function speakingAttemptCounts(d) {
   if (speakingWordCount(d.transcript) < MIN_SPEAKING_WORDS) return false;
   if (d.status === 'analyzed') return Number(d?.aiFeedback?.overallBand || 0) > 0;
   return d.status === 'error';
+}
+
+// "Mở xem là xong" types — completion is any ContentView of the resource
+// since the assignment (see models/ContentView.js for who records it).
+function viewAttempt(type) {
+  return { model: ContentView, userField: 'userId', idField: 'resourceId', filter: { resourceType: type } };
+}
+const VIEW_TYPES = ['shadowing', 'listening_tip', 'reading_tip', 'writing_tip', 'speaking_tip', 'vocab_unit'];
+
+// Tips lessons are unique by (category, lessonKey) — the student pages take
+// ?tip=<lessonKey>&tcat=<category>, so both go in the deep-link key.
+function tipCatalog(model) {
+  return { model, filter: { isActive: true }, sort: { orderIndex: 1, category: 1 },
+    shape: (d) => ({ _id: d._id, label: d.title, meta: d.category || '' }),
+    deepLinkKey: (d) => `${d.lessonKey}||${d.category}` };
+}
+
+// Task 2 Templates (task2-template.html): done once one session of that
+// template (any mode) got >= PASS_PERCENT of ALL the template's items right.
+// Attempts are keyed by (templateType, level), not the template's _id. A
+// practice save's totalItems is the whole template, an exam save's only the
+// attempted ones — dividing by the larger of the two keeps a 3-item exam run
+// from passing at 3/3.
+async function checkTask2Templates(studentId, ids, since) {
+  const out = new Map();
+  const tpls = await Task2Template.find({ _id: { $in: ids } }).select('_id typeId level sections').lean();
+  if (!tpls.length) return out;
+  const q = { userId: studentId, templateType: { $in: [...new Set(tpls.map((t) => t.typeId))] } };
+  if (since) q.createdAt = { $gte: since };
+  const rows = await Task2TemplateAttempt.find(q).sort({ createdAt: -1 })
+    .select('_id templateType level totalItems correctItems createdAt').lean().catch(() => []);
+  for (const t of tpls) {
+    const itemCount = (t.sections || []).reduce((n, sec) => n + ((sec.items || []).length), 0);
+    let best = null;
+    for (const r of rows) {
+      if (r.templateType !== t.typeId || (r.level || 'band7') !== (t.level || 'band7')) continue;
+      const denom = Math.max(Number(r.totalItems) || 0, itemCount, 1);
+      const pct = ((Number(r.correctItems) || 0) / denom) * 100;
+      const passes = pct >= PASS_PERCENT;
+      if (!best || (passes && !best.passes) || (passes === best.passes && pct > best.pct)) best = { r, pct, passes };
+      if (passes) break; // newest passing run — rows are newest-first
+    }
+    if (best) out.set(String(t._id), { completed: best.passes, completedAt: best.r.createdAt, attemptId: String(best.r._id), scorePercent: Math.round(best.pct) });
+  }
+  return out;
+}
+
+// Writing practice ("Luyện viết câu giao tiếp", writing-practice.html), one
+// topic. Answers are saved one by one or in batches as WritingPracticeAttempt
+// rows keyed by topic key, so they're summed since the assignment: done once
+// the student answered at least WP_MIN_ANSWERS of the topic's exercises (all
+// of them if it has fewer) with >= PASS_PERCENT correct.
+const WP_MIN_ANSWERS = 10;
+async function checkWritingPractice(studentId, ids, since) {
+  const out = new Map();
+  const topics = await WPTopic.find({ _id: { $in: ids } }).select('_id key').lean();
+  if (!topics.length) return out;
+  const keys = topics.map((t) => t.key);
+  const q = { studentId, topic: { $in: keys } };
+  if (since) q.createdAt = { $gte: since };
+  const [rows, counts] = await Promise.all([
+    WritingPracticeAttempt.find(q).select('topic totalItems correctItems createdAt').lean().catch(() => []),
+    WPExercise.aggregate([{ $match: { isActive: true, topicKey: { $in: keys } } }, { $group: { _id: '$topicKey', n: { $sum: 1 } } }]).catch(() => []),
+  ]);
+  const countOf = new Map(counts.map((c) => [c._id, c.n]));
+  for (const t of topics) {
+    const mine = rows.filter((r) => r.topic === t.key);
+    if (!mine.length) continue;
+    const answered = mine.reduce((n, r) => n + (Number(r.totalItems) || 0), 0);
+    const correct = mine.reduce((n, r) => n + (Number(r.correctItems) || 0), 0);
+    const need = Math.max(1, Math.min(WP_MIN_ANSWERS, countOf.get(t.key) || WP_MIN_ANSWERS));
+    const pct = answered ? (correct / answered) * 100 : 0;
+    const last = mine.reduce((a, r) => (!a || r.createdAt > a ? r.createdAt : a), null);
+    out.set(String(t._id), { completed: answered >= need && pct >= PASS_PERCENT, completedAt: last, scorePercent: Math.round(pct) });
+  }
+  return out;
+}
+
+// Task 1 Practice (task1-practice.html) is organised by skill, and a skill
+// has no document of its own — so the picker lists this fixed set, each with
+// a stable made-up ObjectId (resourceId must be one). Never renumber: the id
+// is what assignments store.
+const T1_SKILLS = [
+  ['noun_phrase', 'Noun Phrase'], ['data_description', 'Mô tả Data'], ['comparison', 'So sánh'],
+  ['trend_language', 'Xu hướng'], ['paraphrase', 'Paraphrase'], ['overview', 'Overview'], ['introduction', 'Introduction'],
+];
+const T1_SKILL_ROWS = T1_SKILLS.map(([code, name], i) => ({
+  _id: new mongoose.Types.ObjectId(`7731${String(i + 1).padStart(20, '0')}`), code, name,
+}));
+
+// Same rule as writing_practice: since the assignment, at least
+// WP_MIN_ANSWERS answers in that skill (all of them if it has fewer), with
+// >= PASS_PERCENT correct. Task1Attempt is one row per answered exercise.
+async function checkTask1Skills(studentId, ids, since) {
+  const out = new Map();
+  const want = T1_SKILL_ROWS.filter((s) => ids.some((id) => String(id) === String(s._id)));
+  if (!want.length) return out;
+  const codes = want.map((s) => s.code);
+  const q = { userId: studentId, skillType: { $in: codes } };
+  if (since) q.createdAt = { $gte: since };
+  const [rows, counts] = await Promise.all([
+    Task1Attempt.find(q).select('skillType isCorrect createdAt').lean().catch(() => []),
+    Task1Exercise.aggregate([{ $match: { isActive: true, skillType: { $in: codes } } }, { $group: { _id: '$skillType', n: { $sum: 1 } } }]).catch(() => []),
+  ]);
+  const countOf = new Map(counts.map((c) => [c._id, c.n]));
+  for (const s of want) {
+    const mine = rows.filter((r) => r.skillType === s.code);
+    if (!mine.length) continue;
+    const correct = mine.filter((r) => r.isCorrect).length;
+    const need = Math.max(1, Math.min(WP_MIN_ANSWERS, countOf.get(s.code) || WP_MIN_ANSWERS));
+    const pct = (correct / mine.length) * 100;
+    const last = mine.reduce((a, r) => (!a || r.createdAt > a ? r.createdAt : a), null);
+    out.set(String(s._id), { completed: mine.length >= need && pct >= PASS_PERCENT, completedAt: last, scorePercent: Math.round(pct) });
+  }
+  return out;
+}
+
+// Catalog rows for a `static` catalog (no model) — see T1_SKILL_ROWS.
+function staticDoc(catalog, id) {
+  return (catalog.static || []).find((d) => String(d._id) === String(id)) || null;
 }
 
 const REGISTRY = {
@@ -335,6 +469,48 @@ const REGISTRY = {
     // answering just that one posts a 1/1 = 100% attempt otherwise.
     coverage: { model: SentenceStructureGroup, arrayField: 'sentences', field: 'totalQuestions', minRatio: 0.8 },
   },
+  // ── "Mở xem là xong" — opened = done (VIEW_TYPES) ──
+  shadowing: {
+    label: 'Shadowing (Video)',
+    catalog: { model: ShadowingLesson, filter: { isPublished: true }, sort: { order: 1, createdAt: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title, meta: [d.category, d.level].filter(Boolean).join(' · ') }),
+      deepLinkKey: (d) => d.slug },
+    attempt: viewAttempt('shadowing'),
+  },
+  listening_tip: { label: 'Listening Tips (Bài giảng)', catalog: tipCatalog(ListeningTip), attempt: viewAttempt('listening_tip') },
+  reading_tip:   { label: 'Reading Tips (Bài giảng)',   catalog: tipCatalog(ReadingTip),   attempt: viewAttempt('reading_tip') },
+  writing_tip:   { label: 'Writing Tips (Bài giảng)',   catalog: tipCatalog(WritingTip),   attempt: viewAttempt('writing_tip') },
+  speaking_tip:  { label: 'Speaking Tips (Bài giảng)',  catalog: tipCatalog(SpeakingTip),  attempt: viewAttempt('speaking_tip') },
+  // Vocab Topics / Paraphrase units (dashboard.html?view=unit&unit=N).
+  vocab_unit: {
+    label: 'Vocab Topics / Paraphrase (Unit)',
+    catalog: { model: VocabUnit, filter: { isActive: true }, sort: { sortOrder: 1, unitNumber: 1 },
+      shape: (d) => ({ _id: d._id, label: `Unit ${d.unitNumber}: ${d.title}`, meta: d.type === 'paraphrase' ? 'Paraphrase' : 'Vocab' }),
+      deepLinkKey: (d) => String(d.unitNumber) },
+    attempt: viewAttempt('vocab_unit'),
+  },
+  // ── score-based, attempts not keyed by an ObjectId — custom `check` ──
+  task2_template: {
+    label: 'Task 2 Templates',
+    catalog: { model: Task2Template, filter: { isActive: true }, sort: { level: 1, orderIndex: 1 },
+      shape: (d) => ({ _id: d._id, label: [d.label, d.name].filter(Boolean).join(' – '), meta: d.level === 'band6' ? 'Band 6+' : 'Band 7+' }),
+      deepLinkKey: (d) => `${d.typeId}||${d.level || 'band7'}` },
+    attempt: { check: checkTask2Templates },
+  },
+  writing_practice: {
+    label: 'Luyện viết câu giao tiếp (Chủ đề)',
+    catalog: { model: WPTopic, filter: { isActive: true }, sort: { orderIndex: 1 },
+      shape: (d) => ({ _id: d._id, label: d.titleVi ? `${d.titleVi} (${d.title})` : d.title, meta: '' }),
+      deepLinkKey: (d) => d.key },
+    attempt: { check: checkWritingPractice },
+  },
+  task1_skill: {
+    label: 'Task 1 Practice (Kỹ năng)',
+    catalog: { static: T1_SKILL_ROWS,
+      shape: (d) => ({ _id: d._id, label: `Task 1 Practice: ${d.name}`, meta: '' }),
+      deepLinkKey: (d) => d.code },
+    attempt: { check: checkTask1Skills },
+  },
 };
 
 const TYPES = Object.keys(REGISTRY);
@@ -374,6 +550,13 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   if (!entry.catalog) {
     return [{ _id: null, label: entry.label, meta: entry.syntheticMeta || 'Cả lớp làm chung 1 bộ đề' }];
   }
+  if (entry.catalog.static) {
+    const { shape, deepLinkKey } = entry.catalog;
+    const re = search && search.trim() ? new RegExp(escapeRegex(search.trim()), 'i') : null;
+    return entry.catalog.static
+      .map((d) => ({ ...shape(d), resourceCode: deepLinkKey ? deepLinkKey(d) : '' }))
+      .filter((row) => !re || re.test(row.label));
+  }
   const q = { ...entry.catalog.filter, ...extraFilters };
   if (entry.catalog.courseScope) {
     q.moduleCode = { $in: await wt1ModuleCodesForCourse(entry.catalog.courseScope) };
@@ -384,7 +567,8 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
     // WritingTask1/2 (task1_practice/task2_practice), which have no name/
     // title/question field at all.
     q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }, { prompt: re },
-      { nameVi: re }, { nameEn: re }]; // nameVi/En: SentenceStructureGroup (advanced_sentences)
+      { nameVi: re }, { nameEn: re }, // nameVi/En: SentenceStructureGroup (advanced_sentences)
+      { label: re }, { titleVi: re }, { category: re }]; // Task2Template / WPTopic / Tips
   }
   const docs = await entry.catalog.model.find(q)
     .sort(entry.catalog.sort)
@@ -403,6 +587,7 @@ async function resourceExists(type, resourceId) {
   if (!entry) return false;
   if (!entry.catalog) return resourceId == null; // mock_test: only the null id is valid
   if (!mongoose.isValidObjectId(resourceId)) return false;
+  if (entry.catalog.static) return !!staticDoc(entry.catalog, resourceId);
   const scope = {};
   if (entry.catalog.courseScope) {
     scope.moduleCode = { $in: await wt1ModuleCodesForCourse(entry.catalog.courseScope) };
@@ -414,7 +599,7 @@ async function labelFor(type, resourceId) {
   const entry = REGISTRY[type];
   if (!entry) return '';
   if (!entry.catalog) return entry.label;
-  const doc = await entry.catalog.model.findById(resourceId).lean();
+  const doc = entry.catalog.static ? staticDoc(entry.catalog, resourceId) : await entry.catalog.model.findById(resourceId).lean();
   return doc ? entry.catalog.shape(doc).label : '';
 }
 
@@ -425,7 +610,7 @@ async function labelFor(type, resourceId) {
 async function deepLinkKeyFor(type, resourceId) {
   const entry = REGISTRY[type];
   if (!entry || !entry.catalog || !entry.catalog.deepLinkKey) return '';
-  const doc = await entry.catalog.model.findById(resourceId).lean();
+  const doc = entry.catalog.static ? staticDoc(entry.catalog, resourceId) : await entry.catalog.model.findById(resourceId).lean();
   return doc ? entry.catalog.deepLinkKey(doc) : '';
 }
 
@@ -438,7 +623,8 @@ async function deepLinkKeyFor(type, resourceId) {
 async function refreshResourceSnapshots(resources) {
   const idsByType = new Map();
   for (const r of resources) {
-    if (r.kind !== 'internal' || !r.resourceId || !REGISTRY[r.resourceType] || !REGISTRY[r.resourceType].catalog) continue;
+    if (r.kind !== 'internal' || !r.resourceId || !REGISTRY[r.resourceType] || !REGISTRY[r.resourceType].catalog
+      || REGISTRY[r.resourceType].catalog.static) continue; // static rows never change
     if (!idsByType.has(r.resourceType)) idsByType.set(r.resourceType, new Set());
     idsByType.get(r.resourceType).add(String(r.resourceId));
   }
@@ -675,6 +861,14 @@ async function checkCompleted(studentId, internalItems, since = null) {
     const entry = REGISTRY[type];
     const A = entry.attempt;
 
+    if (A.check) {
+      const ids = [...idSet].filter((x) => x !== '*' && mongoose.isValidObjectId(x)).map((x) => new mongoose.Types.ObjectId(x));
+      if (!ids.length) return;
+      const res = await A.check(studentId, ids, since).catch(() => new Map());
+      for (const [id, v] of res) out.set(resourceKey(type, id), v);
+      return;
+    }
+
     if (A.custom) {
       // task1_lesson: resourceId is WT1Lesson._id, but WT1Progress (the
       // completion record) is keyed by lessonCode, not an ObjectId ref — the
@@ -848,7 +1042,7 @@ async function checkCompleted(studentId, internalItems, since = null) {
 }
 
 module.exports = {
-  REGISTRY, TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, PRACTICE_PASS_PERCENT,
+  REGISTRY, TYPES, VIEW_TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, PRACTICE_PASS_PERCENT,
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,

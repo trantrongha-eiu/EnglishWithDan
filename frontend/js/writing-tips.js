@@ -130,6 +130,7 @@ function wstSelectLesson(key, opts) {
   wstCurrentKey = key;
   localStorage.setItem(WST_LAST_LESSON_KEY, key);
   wstMarkRead(key);
+  if (window.reportContentView) window.reportContentView('writing_tip', lesson._id); // homework "mở xem là xong"
   wstRenderSidebar();
   wstRenderLessonContent(lesson);
   const panel = document.getElementById('screen-writing-tips');

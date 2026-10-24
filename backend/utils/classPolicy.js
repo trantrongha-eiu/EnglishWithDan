@@ -31,6 +31,10 @@ function withPolicyDefaults(policy = {}) {
     // counting (assignmentService.archivedIsMissed).
     homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 5,
     homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 10,
+    // More than this many OLDER assignments still incomplete (overdue ones
+    // included) locks every newer assignment in the class — see
+    // assignmentService.applyHomeworkLocks. 0 = finish everything first.
+    homeworkLockThreshold:  Number.isFinite(policy.homeworkLockThreshold) && policy.homeworkLockThreshold >= 0 ? policy.homeworkLockThreshold : 2,
   };
 }
 

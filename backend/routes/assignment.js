@@ -9,6 +9,7 @@ const c = require('../controllers/assignment.controller');
 // cannot reach another class's homework by editing an id.
 router.get('/mine', auth, c.myAssignments);
 router.get('/mine/summary', auth, c.myHomeworkSummary);
+router.post('/viewed', auth, c.recordView);
 router.get('/:assignmentId', auth, validateObjectIdParam('assignmentId'), c.getMyAssignment);
 router.post('/:assignmentId/items/:itemId/complete', auth, validateObjectIdParam('assignmentId'), validateObjectIdParam('itemId'), c.completeItem);
 
