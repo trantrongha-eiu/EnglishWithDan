@@ -1496,6 +1496,19 @@ async function _doSubmitLTPractice() {
             <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
             <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     _ltSetCdSkin(true, false); // review look for questions + footer
+
+    // This screen already is the review — the button jumps to the first
+    // question answered wrong (or skipped).
+    if (window.showPostSubmitReminder) {
+        const firstWrong = _ltGetAllQs(reviewSection).find(q => !q.isCorrect);
+        window.showPostSubmitReminder({
+            skill: 'listening',
+            onReview: () => {
+                if (firstWrong) ltScrollToQ(firstWrong.questionNumber);
+                else inner.scrollTop = 0;
+            },
+        });
+    }
 } // end _doSubmitLTPractice
 
 // Lưu kết quả luyện tập lên server và báo lỗi rõ ràng nếu thất bại.

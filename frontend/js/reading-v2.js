@@ -3482,6 +3482,8 @@ function showResult(r) {
     return;
   }
 
+  if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'reading', onReview: goToReview });
+
   // Priority 2C — only fires for a session actually launched via the
   // Today's Learning popup's "Start" button (see learning-popups.js's
   // markStart/consumeStart); a student practicing normally never sees this.
@@ -4276,6 +4278,18 @@ async function _doSubmitRetry() {
     : `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;
   _setRetryCdSkin(true, false); // review look for questions + footer
+
+  // Bài lẻ: this screen already is the review — the button jumps to the
+  // first question answered wrong (or skipped).
+  if (fromPractice && window.showPostSubmitReminder) {
+    const firstWrong = allQ.find(q => !retryReviewMap[q.questionNumber]?.isCorrect);
+    window.showPostSubmitReminder({
+      skill: 'reading',
+      onReview: () => firstWrong
+        ? jumpToRetryQuestion(firstWrong.questionNumber)
+        : document.querySelector('#retry-questions-inner .rd-result-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    });
+  }
 }
 
 function retryReset() {

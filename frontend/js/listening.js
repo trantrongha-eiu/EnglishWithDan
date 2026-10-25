@@ -3037,6 +3037,8 @@ function _renderExamResult(r, answerKeyWithheld) {
         return;
     }
 
+    if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'listening', onReview: () => goToReview() });
+
     // Priority 2C — only fires for a session launched via the
     // Today's Learning popup's "Start" button; normal practice is
     // unaffected (see learning-popups.js's markStart/consumeStart).
