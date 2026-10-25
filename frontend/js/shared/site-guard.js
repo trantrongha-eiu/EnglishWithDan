@@ -30,6 +30,66 @@
 (function () {
   'use strict';
 
+  // ── No writing assistance (runs for everyone, incl. localhost/staff) ──
+  // Students reported the browser underlining mistakes and suggesting words /
+  // grammar fixes while writing Task 1/2. Turn off, on every text field:
+  // native spellcheck + autocorrect, Chrome/Edge/Safari writing suggestions
+  // (`writingsuggestions`), Grammarly, LanguageTool and Microsoft Editor.
+  // Fields created later by JS are caught by the observer + focusin.
+  var NO_ASSIST = {
+    spellcheck: 'false',
+    autocorrect: 'off',
+    writingsuggestions: 'false',
+    'data-gramm': 'false',
+    'data-gramm_editor': 'false',
+    'data-enable-grammarly': 'false',
+    'data-lt-active': 'false',
+    'data-ms-editor': 'false'
+  };
+  // Free-text boxes also lose word autocomplete / auto-capitalise. Not applied
+  // to <input> so login / name / phone autofill keeps working.
+  var NO_ASSIST_TEXTAREA = { autocomplete: 'off', autocapitalize: 'off' };
+  var TEXT_INPUT = /^(text|search|)$/;
+
+  function setAll(el, attrs) {
+    for (var k in attrs) {
+      if (el.getAttribute(k) !== attrs[k]) el.setAttribute(k, attrs[k]);
+    }
+  }
+  function noAssist(el) {
+    if (!el || el.nodeType !== 1) return;
+    var tag = el.tagName;
+    if (tag === 'TEXTAREA' || el.isContentEditable) {
+      setAll(el, NO_ASSIST);
+      setAll(el, NO_ASSIST_TEXTAREA);
+    } else if (tag === 'INPUT' && TEXT_INPUT.test((el.getAttribute('type') || '').toLowerCase())) {
+      setAll(el, NO_ASSIST);
+    }
+  }
+  function scan(root) {
+    if (!root || root.nodeType !== 1) return;
+    noAssist(root);
+    var list = root.querySelectorAll('textarea, input, [contenteditable]');
+    for (var i = 0; i < list.length; i++) noAssist(list[i]);
+  }
+  document.addEventListener('focusin', function (e) { noAssist(e.target); }, true);
+  function startNoAssist() {
+    scan(document.body);
+    if (!window.MutationObserver) return;
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var m = muts[i];
+        if (m.type === 'attributes') { noAssist(m.target); continue; }
+        for (var j = 0; j < m.addedNodes.length; j++) scan(m.addedNodes[j]);
+      }
+    }).observe(document.documentElement, {
+      childList: true, subtree: true,
+      attributes: true, attributeFilter: ['spellcheck', 'contenteditable']
+    });
+  }
+  if (document.body) startNoAssist();
+  else document.addEventListener('DOMContentLoaded', startNoAssist);
+
   var COPY_LIMIT = 120;
   var GAP_THRESHOLD = 160; // px the viewport must shrink by to count as DevTools
 

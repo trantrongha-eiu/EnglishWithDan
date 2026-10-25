@@ -1795,7 +1795,7 @@ function renderComposeSection(s) {
         <span class="t2c-sec-tag ${s.phase}">${s.phase === 'class' ? 'Trên lớp' : 'Về nhà'}</span>
         <span class="t2c-sec-wc" id="t2c-wc-${s.key}">${_wc(txt)} từ</span>
       </div>
-      <textarea class="t2c-ta" id="t2c-ta-${s.key}" data-key="${s.key}" rows="${active ? 8 : 3}" spellcheck="true" placeholder="${_escHtml(s.ph)}">${_escHtml(txt)}</textarea>
+      <textarea class="t2c-ta" id="t2c-ta-${s.key}" data-key="${s.key}" rows="${active ? 8 : 3}" spellcheck="false" placeholder="${_escHtml(s.ph)}">${_escHtml(txt)}</textarea>
     </section>`;
 }
 
