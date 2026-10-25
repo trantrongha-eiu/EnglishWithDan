@@ -435,6 +435,7 @@
       var hl = c.homeworkLevel === 'fail' ? 'bad' : 'warn';
       notes += '<div class="ph-callout ph-tone-' + hl + '"><i class="fas fa-triangle-exclamation"></i><div>' +
         'Lớp này con đang thiếu <b>' + c.homeworkMissedCount + '</b> bài tập' +
+        (c.homeworkLateCount ? ' — gồm ' + (c.homeworkOverdueCount || 0) + ' bài quá hạn chưa làm và ' + c.homeworkLateCount + ' bài nộp trễ (cứ 2 bài nộp trễ tính 1 bài thiếu)' : '') +
         (c.homeworkFailThreshold ? ' (thiếu đến ' + c.homeworkFailThreshold + ' bài sẽ không đạt khóa)' : '') +
         '. Xem danh sách ở mục Bài tập về nhà.</div></div>';
     }
@@ -509,6 +510,7 @@
     var st = HW[a.status] || HW.not_started;
     var sub = [esc(a.className), deadlineText(a)];
     if (a.archived && a.status === 'overdue') sub.push('giáo viên đã đóng bài, vẫn tính là thiếu');
+    if (a.late) sub.push('<b class="ph-tone-warn">nộp trễ</b> (làm bù sau hạn — 2 bài trễ tính 1 bài thiếu)');
     return '<li class="ph-row"><div class="ph-row-main"><div class="ph-row-title">' + esc(a.title) + '</div>' +
       '<div class="ph-row-sub">' + sub.join(' · ') + '</div></div>' +
       '<div class="ph-row-side"><span class="ph-status ' + st.cls + '">' + st.text + '</span>' +

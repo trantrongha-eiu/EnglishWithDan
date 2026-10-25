@@ -20,7 +20,11 @@ const enrollmentStatsSchema = new mongoose.Schema({
   // thời điểm tính — live snapshot từ assignmentService.getOverdueCountForClass,
   // không phải bộ đếm cộng dồn vĩnh viễn. So với policy.homeworkWarnThreshold /
   // homeworkFailThreshold để ra enrollment.status.
+  // = homeworkOverdueCount + floor(homeworkLateCount / 2): bài đang quá hạn
+  // chưa làm, cộng mỗi 2 bài làm bù sau hạn ("nộp trễ") tính là 1 bài thiếu.
   homeworkMissedCount: { type: Number, default: 0 },
+  homeworkOverdueCount: { type: Number, default: 0 },
+  homeworkLateCount:    { type: Number, default: 0 },
   computedAt:        { type: Date },
 }, { _id: false });
 

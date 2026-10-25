@@ -3,7 +3,9 @@ const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const Message = require('../models/Message');
 const User = require('../models/User');
+const Assignment = require('../models/Assignment');
 const assignmentService = require('../services/assignmentService');
+const { refreshClass } = require('../services/classAttendanceService');
 const logger = require('../utils/logger');
 
 const RENOTIFY_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
@@ -53,16 +55,55 @@ async function runSweep(now = new Date()) {
   }
 }
 
+// "Nộp trễ" needs to know who was still incomplete WHEN the deadline passed.
+// getStudentAssignments flags a miss whenever it sees one, but a student could
+// finish the work minutes after the deadline before anything reads their
+// homework — then it would never look late. So shortly after each deadline,
+// refresh the class: that reads every enrolled student's homework (flagging
+// misses) and updates their warning/failed status. missSnapshotFor remembers
+// which deadline value was handled, so an extended deadline is handled again.
+const SNAPSHOT_LOOKBACK_MS = 7 * 24 * 60 * 60 * 1000;
+
+async function runDeadlineSnapshot(now = new Date()) {
+  try {
+    const due = await Assignment.find({
+      status: 'active',
+      deadline: { $lte: now, $gte: new Date(now.getTime() - SNAPSHOT_LOOKBACK_MS) },
+      $expr: { $ne: ['$missSnapshotFor', '$deadline'] },
+    }).select('_id classId deadline').lean();
+    if (!due.length) return;
+    const classIds = [...new Set(due.map((a) => String(a.classId)))];
+    for (const cid of classIds) {
+      try {
+        await refreshClass(cid);
+      } catch (e) {
+        logger.error('cron', 'DeadlineSnapshot: class refresh failed', { classId: cid, errorMessage: e.message });
+        continue;
+      }
+      for (const a of due.filter((x) => String(x.classId) === cid)) {
+        await Assignment.updateOne({ _id: a._id, deadline: a.deadline }, { $set: { missSnapshotFor: a.deadline } });
+      }
+    }
+    logger.info('cron', 'DeadlineSnapshot: done', { assignments: due.length, classes: classIds.length });
+  } catch (e) {
+    logger.error('cron', 'DeadlineSnapshot run error', { errorMessage: e.message });
+  }
+}
+
 let task = null;
+let snapshotTask = null;
 
 function start() {
   // 02:30 ICT daily — just after the attendance sweep.
   task = cron.schedule('30 2 * * *', () => runSweep(), { timezone: 'Asia/Ho_Chi_Minh' });
   logger.startup('AssignmentSweep cron scheduled (02:30 ICT daily)');
+  snapshotTask = cron.schedule('*/5 * * * *', () => runDeadlineSnapshot(), { timezone: 'Asia/Ho_Chi_Minh' });
+  logger.startup('DeadlineSnapshot cron scheduled (every 5 min)');
 }
 
 function stop() {
   if (task) task.stop();
+  if (snapshotTask) snapshotTask.stop();
 }
 
-module.exports = { start, stop, runSweep };
+module.exports = { start, stop, runSweep, runDeadlineSnapshot };

@@ -127,7 +127,7 @@ function OverviewTab({ id, isAdmin, onOpenTuition }) {
               <div key={c.classId} className="kv">
                 <span>
                   <Link to={`/classes/${c.classId}`}>{c.name}</Link>
-                  <br /><small className="muted">{c.heldSessions ? `Đi học ${c.attendedCount}/${c.heldSessions} buổi` : 'Chưa có buổi nào'}{c.homeworkMissedCount ? ` · thiếu ${c.homeworkMissedCount} BTVN` : ''}</small>
+                  <br /><small className="muted">{c.heldSessions ? `Đi học ${c.attendedCount}/${c.heldSessions} buổi` : 'Chưa có buổi nào'}{c.homeworkMissedCount ? ` · thiếu ${c.homeworkMissedCount} BTVN` : ''}{c.homeworkLateCount ? ` · ${c.homeworkLateCount} bài nộp trễ` : ''}</small>
                 </span>
                 <span>
                   <span className={`badge ${ENROLL_BADGE[c.status] || 'badge-gray'}`} title={c.statusReason || undefined}>{ENROLL_LABEL[c.status] || c.status}</span>

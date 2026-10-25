@@ -28,6 +28,15 @@ const AssignmentProgressSchema = new mongoose.Schema({
   firstCompletedAt: { type: Date },
   allCompletedAt:   { type: Date },
   lastRecomputedAt: { type: Date },
+
+  // "Nộp trễ" marker: set the first time the system sees this assignment past
+  // its deadline (or archived) while still incomplete. If the student then
+  // makes it up, it reads as completed-but-late — 2 late = 1 miss toward the
+  // class's warn/fail thresholds (assignmentService.missFlagApplies).
+  // missedDeadline = the deadline in force at that moment (null when it was
+  // only archived), so a teacher extending the deadline voids the flag.
+  missedAt:       { type: Date, default: null },
+  missedDeadline: { type: Date, default: null },
 }, { timestamps: true });
 
 AssignmentProgressSchema.index({ assignmentId: 1, studentId: 1 }, { unique: true });

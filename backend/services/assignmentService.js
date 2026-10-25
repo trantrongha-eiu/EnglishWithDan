@@ -126,6 +126,23 @@ function archivedIsMissed(assignment, status) {
   return status !== 'completed';
 }
 
+// Is this progress row's "missed" flag (missedAt) still in force for the
+// assignment as it stands now? Archived = closed, so a flag always stands.
+// Otherwise it only stands while the current deadline is no later than the
+// one that was missed — a teacher extending the deadline voids it.
+function missFlagApplies(assignment, progress) {
+  if (!progress || !progress.missedAt) return false;
+  if (assignment.status === 'archived') return true;
+  if (!assignment.deadline || !progress.missedDeadline) return false;
+  return new Date(assignment.deadline).getTime() <= new Date(progress.missedDeadline).getTime();
+}
+
+// Every 2 assignments made up after the deadline count as 1 miss (owner's rule).
+const LATE_PER_MISS = 2;
+function effectiveMissCount(overdue, late) {
+  return overdue + Math.floor(late / LATE_PER_MISS);
+}
+
 // An assignment given before this student joined the class was never theirs
 // to do (teacher's rule: a newly added student only owes homework assigned
 // from their join date on) — it is hidden from them and never counted as a
@@ -210,7 +227,9 @@ function lockedMessage(row) {
 // does zero writes. This is what keeps the teacher's "X/Y hoàn thành"
 // rollup honest for assignments made only of internal resources, where the
 // student never ticks anything.
-async function getStudentAssignments(studentId, now = new Date(), { persist = false } = {}) {
+// `readOnly` (the parent view) skips every write, including the "nộp trễ"
+// miss flags — the cron and the student's/teacher's own reads still set those.
+async function getStudentAssignments(studentId, now = new Date(), { persist = false, readOnly = false } = {}) {
   const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
   if (!enrollments.length) return { assignments: [], homeworkWarning: null, homeworkLock: null, hasClasses: false };
 
@@ -243,6 +262,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   const vocabMap = await resolveVocabGoals(studentId, assignments, storedMap, now);
 
   const rows = [];
+  const missFlagWrites = [];
   let incompleteCount = 0;
   let nearestDeadline = null;
 
@@ -292,13 +312,22 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     const { done, total } = derived;
     let { status } = derived;
     const archived = a.status === 'archived';
-    if (archived) {
-      // Only an archived MISS stays on the student's list (so they can see
-      // what counts against them, and still make it up); everything else
-      // archived is hidden exactly as before.
-      if (!archivedIsMissed(a, status)) continue;
-      status = 'overdue';
+    if (archived && archivedIsMissed(a, status)) status = 'overdue';
+
+    // "Nộp trễ": flag the miss the first time it is seen, so a later make-up
+    // still reads as late. Completed + flagged = completed late.
+    const prog = storedMap.get(String(a._id));
+    let late = false;
+    if (status === 'overdue') {
+      if (!missFlagApplies(a, prog)) missFlagWrites.push({ assignmentId: a._id, classId: a.classId, deadline: a.deadline || null });
+    } else if (status === 'completed') {
+      late = missFlagApplies(a, prog);
     }
+
+    // Only an archived MISS (or late make-up) stays on the student's list, so
+    // they can see what counts against them; everything else archived is
+    // hidden exactly as before.
+    if (archived && status === 'completed' && !late) continue;
     if (status !== 'completed') incompleteCount += 1;
     if (a.deadline && status !== 'completed') {
       const dl = new Date(a.deadline);
@@ -310,8 +339,16 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       className: cls.name, classId: a.classId,
       teacherName: displayNameOf(teacherMap.get(String(cls.teacherId))),
       deadline: a.deadline, createdAt: a.createdAt, archived,
-      status, done, total, resources: resourcesShaped,
+      status, late, done, total, resources: resourcesShaped,
     });
+  }
+
+  if (missFlagWrites.length && !readOnly) {
+    await Promise.all(missFlagWrites.map((w) => AssignmentProgress.updateOne(
+      { assignmentId: w.assignmentId, studentId },
+      { $set: { missedAt: now, missedDeadline: w.deadline }, $setOnInsert: { assignmentId: w.assignmentId, studentId, classId: w.classId } },
+      { upsert: true },
+    ).catch(() => {})));
   }
 
   const homeworkLock = applyHomeworkLocks(rows, classMap);
@@ -359,13 +396,20 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   // student is over the line in (report against that class's policy).
   let homeworkWarning = null;
   const missedByClass = new Map();
-  for (const r of rows) if (r.status === 'overdue') missedByClass.set(String(r.classId), (missedByClass.get(String(r.classId)) || 0) + 1);
-  for (const [cid, n] of missedByClass) {
+  for (const r of rows) {
+    if (r.status !== 'overdue' && !r.late) continue;
+    const k = String(r.classId);
+    const c = missedByClass.get(k) || { overdue: 0, late: 0 };
+    if (r.late) c.late += 1; else c.overdue += 1;
+    missedByClass.set(k, c);
+  }
+  for (const [cid, c] of missedByClass) {
+    const n = effectiveMissCount(c.overdue, c.late);
     const cls = classMap.get(cid);
     const thr = withPolicyDefaults(cls?.policy).homeworkMissThreshold;
     if (n >= thr) {
       if (!homeworkWarning || n > homeworkWarning.missedCount) {
-        homeworkWarning = { classId: cid, missedCount: n, threshold: thr, className: cls?.name || '', incompleteCount, nearestDeadline };
+        homeworkWarning = { classId: cid, missedCount: n, overdueCount: c.overdue, lateCount: c.late, threshold: thr, className: cls?.name || '', incompleteCount, nearestDeadline };
       }
     }
   }
@@ -378,27 +422,37 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
 //    Used by classAttendanceService (refreshClass/refreshEnrollment) to fold
 //    homework misses into the enrollment's warning/failed status, alongside
 //    attendance. Recomputed fresh every call, same as the rest of that
-//    status machinery — a teacher extending a deadline (or the student making
-//    the work up late) lowers this number on the next refresh. Archiving does
-//    NOT: an archived assignment left incomplete keeps
-//    counting (archivedIsMissed).
+//    status machinery — a teacher extending a deadline lowers this number on
+//    the next refresh. Making the work up late turns a miss into a "late"
+//    one: 2 late = 1 miss. Archiving does NOT clear anything: an archived
+//    assignment left incomplete keeps counting (archivedIsMissed).
+//    Returns { count, overdue, late } — count is what the thresholds see.
 async function getOverdueCountForClass(studentId, classId, now = new Date()) {
   const { assignments } = await getStudentAssignments(studentId, now);
-  return assignments.filter((a) => a.status === 'overdue' && String(a.classId) === String(classId)).length;
+  let overdue = 0, late = 0;
+  for (const a of assignments) {
+    if (String(a.classId) !== String(classId)) continue;
+    if (a.status === 'overdue') overdue += 1;
+    else if (a.late) late += 1;
+  }
+  return { count: effectiveMissCount(overdue, late), overdue, late };
 }
 
-// Every missed (overdue + incomplete, archived included) assignment per
-// class, for the student's own "Lớp học của tôi" card / warning popup.
-// Map classId -> [{ _id, title, deadline, archived, done, total }].
+// Every missed (overdue + incomplete, archived included) and late-made-up
+// assignment per class, for the student's own "Lớp học của tôi" card /
+// warning popup. Map classId -> { count, missed: [...], late: [...] } where
+// each entry is { _id, title, deadline, archived, done, total }.
 async function getMissedAssignmentsByClass(studentId, now = new Date()) {
   const { assignments } = await getStudentAssignments(studentId, now);
   const out = new Map();
   for (const a of assignments) {
-    if (a.status !== 'overdue') continue;
+    if (a.status !== 'overdue' && !a.late) continue;
     const k = String(a.classId);
-    if (!out.has(k)) out.set(k, []);
-    out.get(k).push({ _id: a._id, title: a.title, deadline: a.deadline, archived: !!a.archived, done: a.done, total: a.total });
+    if (!out.has(k)) out.set(k, { count: 0, missed: [], late: [] });
+    const entry = { _id: a._id, title: a.title, deadline: a.deadline, archived: !!a.archived, done: a.done, total: a.total };
+    (a.late ? out.get(k).late : out.get(k).missed).push(entry);
   }
+  for (const v of out.values()) v.count = effectiveMissCount(v.missed.length, v.late.length);
   return out;
 }
 
@@ -570,6 +624,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       enrollmentId: e._id, studentId: e.studentId, removed: !!e.removedAt,
       student: { name: displayNameOf(sMap.get(String(e.studentId))), username: sMap.get(String(e.studentId))?.username || '' },
       completed: done, total, missing: total - done, status,
+      late: status === 'completed' && missFlagApplies(assignment, storedMap.get(String(e.studentId))),
       allCompletedAt: storedMap.get(String(e.studentId))?.allCompletedAt || null,
       items: assignment.resources.map((r) => ({
         itemId: r._id, kind: r.kind, label: r.label || r.title || '', bookSlot: r.bookSlot || null,
@@ -589,6 +644,8 @@ module.exports = {
   getStudentAssignments,
   getStudentHomeworkSummary,
   getOverdueCountForClass,
+  effectiveMissCount,
+  missFlagApplies,
   getMissedAssignmentsByClass,
   archivedIsMissed,
   assignedBeforeEnrollment,

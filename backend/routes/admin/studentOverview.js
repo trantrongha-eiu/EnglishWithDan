@@ -119,6 +119,7 @@ router.get('/users/:id/overview', auth, teacherOnly, async (req, res) => {
           heldSessions: e.stats?.heldSessions ?? 0,
           attendedCount: e.stats?.attendedCount ?? 0,
           homeworkMissedCount: e.stats?.homeworkMissedCount ?? 0,
+          homeworkLateCount: e.stats?.homeworkLateCount ?? 0,
           enrolledAt: e.enrolledAt,
         })),
         homework: homework[0] ? { assignments: homework[0].assignments, completed: homework[0].done } : { assignments: 0, completed: 0 },

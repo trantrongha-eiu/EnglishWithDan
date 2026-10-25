@@ -147,10 +147,28 @@ function deriveCombinedStatus(stats, homeworkMissedCount, policy) {
   return 'active';
 }
 
+// `homework` is either a plain miss count (older callers) or
+// assignmentService.getOverdueCountForClass's { count, overdue, late }.
+function normHomework(homework) {
+  if (homework && typeof homework === 'object') {
+    return { count: Number(homework.count) || 0, overdue: Number(homework.overdue) || 0, late: Number(homework.late) || 0 };
+  }
+  const n = Number(homework) || 0;
+  return { count: n, overdue: n, late: 0 };
+}
+
+// "quá hạn" alone, or "(5 quá hạn + 4 nộp trễ)" once late make-ups count.
+function hwBreakdown(hw) {
+  if (!hw.late) return ' quá hạn';
+  return ` (${hw.overdue} quá hạn + ${hw.late} nộp trễ, 2 bài trễ = 1 bài thiếu)`;
+}
+
 // homeworkMissedCount/status default to the attendance-only reading (0 misses,
 // stats.derivedStatus) so existing callers that only ever knew about
 // attendance keep getting the exact same text.
-function autoStatusReason(stats, policy, homeworkMissedCount = 0, status = stats.derivedStatus) {
+function autoStatusReason(stats, policy, homework = 0, status = stats.derivedStatus) {
+  const hw = normHomework(homework);
+  const homeworkMissedCount = hw.count;
   const p = withPolicyDefaults(policy);
   const a = attendanceLevel(stats.absenceEquivalent, policy);
   const h = homeworkLevel(homeworkMissedCount, policy);
@@ -161,15 +179,17 @@ function autoStatusReason(stats, policy, homeworkMissedCount = 0, status = stats
   const reasons = [];
   if (status === 'failed') {
     if (attendanceFail) reasons.push(`Nghỉ ${stats.absenceEquivalent}/${p.maxAbsencesAllowed} buổi — vượt giới hạn cho phép.`);
-    if (homeworkFail) reasons.push(`Thiếu ${homeworkMissedCount} bài tập quá hạn (giới hạn ${p.homeworkFailThreshold}) — vượt giới hạn cho phép.`);
+    if (homeworkFail) reasons.push(`Thiếu ${homeworkMissedCount} bài tập${hwBreakdown(hw)} (giới hạn ${p.homeworkFailThreshold}) — vượt giới hạn cho phép.`);
   } else if (status === 'warning') {
     if (attendanceWarn) reasons.push(`Đã nghỉ ${stats.absenceEquivalent} buổi (ngưỡng cảnh báo ${p.warnThreshold}).`);
-    if (homeworkWarn) reasons.push(`Đang thiếu ${homeworkMissedCount} bài tập quá hạn (ngưỡng cảnh báo ${p.homeworkWarnThreshold}).`);
+    if (homeworkWarn) reasons.push(`Đang thiếu ${homeworkMissedCount} bài tập${hwBreakdown(hw)} (ngưỡng cảnh báo ${p.homeworkWarnThreshold}).`);
   }
   return reasons.join(' ');
 }
 
-function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount = 0) {
+function applyStatsToEnrollment(enrollment, stats, policy, homework = 0) {
+  const hw = normHomework(homework);
+  const homeworkMissedCount = hw.count;
   enrollment.stats = {
     heldSessions:      stats.heldSessions,
     attendedCount:     stats.attendedCount,
@@ -180,6 +200,8 @@ function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount =
     attendanceRate:    stats.attendanceRate,
     remainingAllowed:  stats.remainingAllowed,
     homeworkMissedCount,
+    homeworkOverdueCount: hw.overdue,
+    homeworkLateCount:    hw.late,
     computedAt:        new Date(),
   };
   const combinedStatus = deriveCombinedStatus(stats, homeworkMissedCount, policy);
@@ -187,11 +209,11 @@ function applyStatsToEnrollment(enrollment, stats, policy, homeworkMissedCount =
     enrollment.status = combinedStatus;
     enrollment.statusAuto = true;
     enrollment.statusUpdatedAt = new Date();
-    enrollment.statusReason = autoStatusReason(stats, policy, homeworkMissedCount, combinedStatus);
+    enrollment.statusReason = autoStatusReason(stats, policy, hw, combinedStatus);
   } else if (enrollment.statusAuto && enrollment.status === combinedStatus) {
     // Same status, different numbers (e.g. 5 → 7 missed assignments): keep
     // the system-written reason in step instead of freezing the first one.
-    enrollment.statusReason = autoStatusReason(stats, policy, homeworkMissedCount, combinedStatus);
+    enrollment.statusReason = autoStatusReason(stats, policy, hw, combinedStatus);
   }
 }
 
@@ -262,8 +284,8 @@ async function runRefreshClass(classId) {
       enrollment: e, policy: cls.policy, sessions,
       records: byStudent.get(String(e.studentId)) || [],
     });
-    const homeworkMissedCount = await assignmentService.getOverdueCountForClass(e.studentId, classId);
-    applyStatsToEnrollment(e, stats, cls.policy, homeworkMissedCount);
+    const homework = await assignmentService.getOverdueCountForClass(e.studentId, classId);
+    applyStatsToEnrollment(e, stats, cls.policy, homework);
     await e.save();
   });
 }
@@ -278,8 +300,8 @@ async function refreshEnrollment(enrollmentId) {
     AttendanceRecord.find({ classId: enrollment.classId, studentId: enrollment.studentId }).lean(),
   ]);
   const stats = computeEnrollmentStats({ enrollment, policy: cls.policy, sessions, records });
-  const homeworkMissedCount = await assignmentService.getOverdueCountForClass(enrollment.studentId, enrollment.classId);
-  applyStatsToEnrollment(enrollment, stats, cls.policy, homeworkMissedCount);
+  const homework = await assignmentService.getOverdueCountForClass(enrollment.studentId, enrollment.classId);
+  applyStatsToEnrollment(enrollment, stats, cls.policy, homework);
   await enrollment.save();
   return enrollment;
 }

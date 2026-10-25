@@ -955,7 +955,7 @@ describe('joined the class after an assignment was given', () => {
 
     const mine = await request(app).get('/api/assignments/mine').set(authH(s));
     expect(mine.body.assignments.map((a) => a._id)).toEqual([String(counted._id)]);
-    expect(await assignmentService.getOverdueCountForClass(s._id, cls._id)).toBe(1);
+    expect((await assignmentService.getOverdueCountForClass(s._id, cls._id)).count).toBe(1);
     const refreshed = await classAttendanceService.refreshEnrollment(enr._id);
     expect(refreshed.stats.homeworkMissedCount).toBe(1);
 
@@ -1194,5 +1194,91 @@ describe('guardAgainstMassDelete', () => {
   test('Assignment / AssignmentProgress refuse an unscoped deleteMany', async () => {
     await expect(Assignment.deleteMany({})).rejects.toThrow(/unscoped filter/i);
     await expect(AssignmentProgress.deleteMany({})).rejects.toThrow(/unscoped filter/i);
+  });
+});
+
+describe('late make-ups ("nộp trễ")', () => {
+  const rtAssignment = async (cls, rt, extra = {}) => createAssignment(cls, {
+    deadline: past(1), resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }], ...extra,
+  });
+
+  test('a miss made up after the deadline is completed + late; every 2 late = 1 miss', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t, policy: { homeworkWarnThreshold: 1, homeworkFailThreshold: 10 } });
+    const enr = await enrollStudent(cls, s);
+    const rts = [await createReadingTest(), await createReadingTest(), await createReadingTest()];
+    const asgs = [];
+    for (const rt of rts) asgs.push(await rtAssignment(cls, rt));
+
+    let st = (await classAttendanceService.refreshEnrollment(enr._id)).stats;
+    expect(st).toMatchObject({ homeworkMissedCount: 3, homeworkOverdueCount: 3, homeworkLateCount: 0 });
+
+    // make up one: 2 overdue + 1 late → 2 + floor(1/2) = 2
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rts[0]._id });
+    st = (await classAttendanceService.refreshEnrollment(enr._id)).stats;
+    expect(st).toMatchObject({ homeworkMissedCount: 2, homeworkOverdueCount: 2, homeworkLateCount: 1 });
+
+    // make up another: 1 overdue + 2 late → 1 + 1 = 2
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rts[1]._id });
+    st = (await classAttendanceService.refreshEnrollment(enr._id)).stats;
+    expect(st).toMatchObject({ homeworkMissedCount: 2, homeworkOverdueCount: 1, homeworkLateCount: 2 });
+
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    const byId = new Map(mine.body.assignments.map((a) => [String(a._id), a]));
+    expect(byId.get(String(asgs[0]._id))).toMatchObject({ status: 'completed', late: true });
+    expect(byId.get(String(asgs[2]._id))).toMatchObject({ status: 'overdue', late: false });
+
+    const ov = (await request(app).get('/api/classes/my/overview').set(authH(s))).body.classes[0];
+    expect(ov).toMatchObject({ homeworkMissedCount: 2, homeworkOverdueCount: 1, homeworkLateCount: 2 });
+    expect(ov.lateAssignments).toHaveLength(2);
+    expect(ov.missedAssignments).toHaveLength(1);
+  });
+
+  test('done before the deadline is never late, even when read only after the deadline', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t });
+    const enr = await enrollStudent(cls, s);
+    const rt = await createReadingTest();
+    const asg = await rtAssignment(cls, rt, { deadline: new Date(Date.now() + 864e5).toISOString() });
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    await classAttendanceService.refreshEnrollment(enr._id);
+    await Assignment.updateOne({ _id: asg._id }, { $set: { deadline: past(1) } });
+    const st = (await classAttendanceService.refreshEnrollment(enr._id)).stats;
+    expect(st).toMatchObject({ homeworkMissedCount: 0, homeworkLateCount: 0 });
+  });
+
+  test('extending the deadline voids an earlier miss flag', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t });
+    const enr = await enrollStudent(cls, s);
+    const rt = await createReadingTest();
+    const asg = await rtAssignment(cls, rt);
+    expect((await classAttendanceService.refreshEnrollment(enr._id)).stats.homeworkMissedCount).toBe(1);
+    await Assignment.updateOne({ _id: asg._id }, { $set: { deadline: new Date(Date.now() + 864e5) } });
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    const mine = await request(app).get('/api/assignments/mine').set(authH(s));
+    expect(mine.body.assignments[0]).toMatchObject({ status: 'completed', late: false });
+  });
+
+  test('the deadline snapshot cron flags students still incomplete when the deadline passes', async () => {
+    const { runDeadlineSnapshot } = require('../../cron/assignmentSweep');
+    const t = await createTeacher();
+    const s = await createStudent();
+    const cls = await createClassGroup({ teacher: t });
+    const enr = await enrollStudent(cls, s);
+    const rt = await createReadingTest();
+    const asg = await rtAssignment(cls, rt);
+
+    await runDeadlineSnapshot();
+    const prog = await AssignmentProgress.findOne({ assignmentId: asg._id, studentId: s._id }).lean();
+    expect(prog.missedAt).toBeTruthy();
+    expect(new Date((await Assignment.findById(asg._id).lean()).missSnapshotFor).getTime()).toBe(new Date(asg.deadline).getTime());
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    const st = (await classAttendanceService.refreshEnrollment(enr._id)).stats;
+    expect(st).toMatchObject({ homeworkMissedCount: 0, homeworkOverdueCount: 0, homeworkLateCount: 1 });
   });
 });

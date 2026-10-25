@@ -94,6 +94,11 @@ const AssignmentSchema = new mongoose.Schema({
   // Assignment-level lifecycle — NEVER auto-deleted. An overdue assignment
   // stays visible; only a teacher archiving it hides it from students.
   status:      { type: String, enum: ['active', 'archived'], default: 'active' },
+
+  // The deadline value the deadline-passed sweep last snapshotted (cron
+  // assignmentSweep.runDeadlineSnapshot) — lets it flag every student still
+  // incomplete right after the deadline, before anyone can make it up unseen.
+  missSnapshotFor: { type: Date, default: null },
 }, { timestamps: true });
 
 AssignmentSchema.index({ classId: 1, status: 1, createdAt: -1 });

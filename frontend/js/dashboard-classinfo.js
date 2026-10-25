@@ -356,7 +356,12 @@ function ciLimitsBlock(c) {
   const missedList = missed.length
     ? `<details class="ci-missed"><summary>Xem ${missed.length} bài tập đang tính là thiếu</summary><ul>${missed.map((m) =>
       `<li><span>${escHtml(m.title)}</span><span class="ci-missed-meta">${m.deadline ? `hạn ${ciFmtDate(m.deadline)}` : 'không có hạn'} · ${m.done}/${m.total} mục${m.archived ? ' · <span class="ci-missed-tag">đã đóng</span>' : ''}</span></li>`).join('')}</ul>
-      <div class="ci-limit-note">Làm bù đầy đủ bài còn thiếu (kể cả bài đã đóng) sẽ được trừ khỏi số lần thiếu.</div></details>`
+      <div class="ci-limit-note">Làm bù đầy đủ bài còn thiếu (kể cả bài đã đóng) vẫn được tính là hoàn thành nhưng <b>nộp trễ</b> — cứ 2 bài nộp trễ tính là 1 bài thiếu.</div></details>`
+    : '';
+  const late = (c.lateAssignments || []);
+  const lateList = late.length
+    ? `<details class="ci-missed"><summary>Xem ${late.length} bài nộp trễ (tính ${Math.floor(late.length / 2)} bài thiếu)</summary><ul>${late.map((m) =>
+      `<li><span>${escHtml(m.title)}</span><span class="ci-missed-meta">${m.deadline ? `hạn ${ciFmtDate(m.deadline)}` : 'không có hạn'} · đã làm bù</span></li>`).join('')}</ul></details>`
     : '';
 
   return `<div class="ci-limits" hidden>
@@ -377,8 +382,10 @@ function ciLimitsBlock(c) {
       </div>
       ${ciMeter(c.homeworkMissedCount, c.homeworkFailThreshold, hLevel)}
       <div class="ci-limit-line">${hLine}</div>
-      <div class="ci-limit-note">Bài tập quá hạn chưa hoàn thành đầy đủ bị tính là thiếu — kể cả khi giáo viên đã đóng (lưu trữ) bài đó.</div>
+      ${c.homeworkLateCount ? `<div class="ci-limit-detail">${c.homeworkOverdueCount || 0} bài quá hạn chưa làm + ${c.homeworkLateCount} bài nộp trễ (= ${Math.floor(c.homeworkLateCount / 2)} bài thiếu)</div>` : ''}
+      <div class="ci-limit-note">Bài tập quá hạn chưa hoàn thành đầy đủ bị tính là thiếu — kể cả khi giáo viên đã đóng (lưu trữ) bài đó. Làm bù sau hạn được tính là hoàn thành nhưng nộp trễ: cứ <b>2 bài nộp trễ = 1 bài thiếu</b>.</div>
       ${missedList}
+      ${lateList}
     </div>
   </div>`;
 }

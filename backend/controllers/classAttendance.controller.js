@@ -909,6 +909,7 @@ exports.myAttendanceStatus = async (req, res) => {
           attendanceLevel: svc.attendanceLevel(st.absenceEquivalent || 0, c.policy),
           homeworkLevel: svc.homeworkLevel(st.homeworkMissedCount || 0, c.policy),
           homeworkMissedCount: st.homeworkMissedCount || 0,
+          homeworkLateCount: st.homeworkLateCount || 0,
           homeworkFailThreshold: p.homeworkFailThreshold,
           absenceEquivalent: st.absenceEquivalent || 0,
           absentTotal: (st.absentUnexcused || 0) + (st.absentExcused || 0),
@@ -1016,10 +1017,12 @@ async function overviewForStudent(studentId) {
     const e = enrollments[i];
     const c = clsMap.get(String(e.classId));
     if (!c) continue;
-    const live = (missedByClass.get(String(e.classId)) || []).length;
+    const m = missedByClass.get(String(e.classId));
+    const live = m ? m.count : 0;
+    const liveLate = m ? m.late.length : 0;
     const st = e.stats || {};
     const expected = svc.deriveCombinedStatus({ absenceEquivalent: st.absenceEquivalent || 0, derivedStatus: e.status }, live, c.policy);
-    if (live !== (st.homeworkMissedCount || 0) || expected !== e.status) {
+    if (live !== (st.homeworkMissedCount || 0) || liveLate !== (st.homeworkLateCount || 0) || expected !== e.status) {
       const fresh = await svc.refreshEnrollment(e._id).catch(() => null);
       if (fresh) enrollments[i] = fresh.toObject();
     }
@@ -1031,7 +1034,8 @@ async function overviewForStudent(studentId) {
       if (!c) return null;
       const p = svc.withPolicyDefaults(c.policy);
       const st = e.stats || {};
-      const missed = missedByClass.get(String(e.classId)) || [];
+      const hw = missedByClass.get(String(e.classId)) || { count: 0, missed: [], late: [] };
+      const missed = hw.missed;
       const absenceEquivalent = st.absenceEquivalent || 0;
       return {
         classId: e.classId,
@@ -1051,7 +1055,7 @@ async function overviewForStudent(studentId) {
         lateCount: st.lateCount || 0,
         absenceEquivalent,
         attendanceLevel: svc.attendanceLevel(absenceEquivalent, c.policy),
-        homeworkLevel: svc.homeworkLevel(missed.length, c.policy),
+        homeworkLevel: svc.homeworkLevel(hw.count, c.policy),
         attendanceRate: st.attendanceRate || 0,
         maxAbsencesAllowed: p.maxAbsencesAllowed,
         warnThreshold: p.warnThreshold,
@@ -1059,13 +1063,17 @@ async function overviewForStudent(studentId) {
         excusedCountsAsAbsence: p.excusedCountsAsAbsence,
         lateToAbsenceRatio: p.lateToAbsenceRatio,
         failOnExceed: p.failOnExceed,
-        homeworkMissedCount: missed.length,
+        // what the thresholds see: overdue + floor(late / 2)
+        homeworkMissedCount: hw.count,
+        homeworkOverdueCount: missed.length,
+        homeworkLateCount: hw.late.length,
         homeworkWarnThreshold: p.homeworkWarnThreshold,
         homeworkFailThreshold: p.homeworkFailThreshold,
         // fail triggers AT the threshold (>=), so one fewer is the most a
         // student can still miss and pass
-        homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - missed.length),
+        homeworkRemaining: Math.max(0, p.homeworkFailThreshold - 1 - hw.count),
         missedAssignments: missed.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived, done: m.done, total: m.total })),
+        lateAssignments: hw.late.map((m) => ({ _id: m._id, title: m.title, deadline: m.deadline, archived: m.archived })),
         progress: computeClassProgress(c, sessMap.get(String(e.classId)) || []),
       };
     })

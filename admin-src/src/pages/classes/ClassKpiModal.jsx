@@ -93,7 +93,10 @@ function StudentRows({ rows, risk }) {
               <td style={{ fontSize: 13 }}>{s.attendedCount || 0}/{s.heldSessions || 0}</td>
               <td style={{ fontSize: 13 }}>{absent}{s.lateCount ? ` · ${s.lateCount} trễ` : ''}</td>
               <td style={{ fontSize: 13 }}>{s.heldSessions ? `${s.attendanceRate || 0}%` : '—'}</td>
-              <td style={{ fontSize: 13 }}>{s.homeworkMissedCount || 0}</td>
+              <td style={{ fontSize: 13 }}>
+                      {s.homeworkMissedCount || 0}
+                      {s.homeworkLateCount ? <div style={{ fontSize: 11, color: 'var(--text3)' }} title="Bài làm bù sau hạn — cứ 2 bài nộp trễ tính là 1 bài thiếu">{s.homeworkOverdueCount || 0} quá hạn · {s.homeworkLateCount} nộp trễ</div> : null}
+                    </td>
               <td>
                 <span className={`badge ${ENR_BADGE[e.status] || 'badge-gray'}`}><span className="dot" />{ENR_LABEL[e.status] || e.status}</span>
                 {e.statusReason && <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>{e.statusReason}</div>}

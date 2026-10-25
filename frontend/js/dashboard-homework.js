@@ -286,14 +286,18 @@ window.hwScrollTo = hwScrollTo;
 function hwAssignmentBlock(a) {
   const st = HW_STATUS[a.status] || HW_STATUS.not_started;
   const pct = a.total ? Math.round((a.done / a.total) * 100) : 0;
-  const pill = a.locked ? '🔒 Đang khoá' : (a.archived ? 'Đã đóng · tính là thiếu' : st.label);
+  // late = made up after the deadline: done, but 2 of these count as 1 miss
+  const pill = a.locked ? '🔒 Đang khoá'
+    : a.late ? 'Hoàn thành · nộp trễ'
+    : (a.archived ? 'Đã đóng · tính là thiếu' : st.label);
+  const pillCls = a.locked ? 'hw-pill--locked' : (a.late ? 'hw-pill--late' : st.cls);
   return `<div class="hw-item${a.locked ? ' hw-item--locked' : ''}" data-id="${a._id}" data-status="${a.status || 'not_started'}">
     <div class="hw-item-head">
       <div>
         <div class="hw-item-title">${escHtml(a.title)}</div>
         <div class="hw-item-sub">${escHtml(a.className)}${a.teacherName ? ` · ${escHtml(a.teacherName)}` : ''}</div>
       </div>
-      <span class="hw-pill ${a.locked ? 'hw-pill--locked' : st.cls}">${pill}</span>
+      <span class="hw-pill ${pillCls}"${a.late ? ' title="Làm bù sau hạn — cứ 2 bài nộp trễ tính là 1 bài thiếu"' : ''}>${pill}</span>
     </div>
     ${a.locked ? hwLockNote(a) : ''}
     ${a.instruction ? `<div class="hw-item-instruction">${escHtml(a.instruction)}</div>` : ''}
@@ -304,7 +308,9 @@ function hwAssignmentBlock(a) {
     <div class="hw-reslist">${a.resources.map((r) => hwResourceRow(a._id, r, a.locked)).join('')}</div>
     <div class="hw-item-foot">
       <span class="hw-deadline">⏰ ${hwFmtDeadline(a.deadline)}</span>
-      ${a.status !== 'completed' ? hwCountdown(a.deadline) : '<span class="hw-due hw-due--ok">✔ Đã xong</span>'}
+      ${a.status !== 'completed' ? hwCountdown(a.deadline)
+        : a.late ? '<span class="hw-due hw-due--late">✔ Đã xong · nộp trễ (2 bài trễ = 1 bài thiếu)</span>'
+        : '<span class="hw-due hw-due--ok">✔ Đã xong</span>'}
     </div>
   </div>`;
 }

@@ -78,7 +78,7 @@ exports.getClasses = async (req, res) => {
 exports.getHomework = async (req, res) => {
   try {
     // persist: false — a parent looking must not write progress rows.
-    const data = await assignmentService.getStudentAssignments(req.childId, new Date(), { persist: false });
+    const data = await assignmentService.getStudentAssignments(req.childId, new Date(), { persist: false, readOnly: true });
     res.json({ success: true, ...parentService.shapeHomework(data) });
   } catch (err) {
     fail(res, err);

@@ -2287,6 +2287,7 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .hw-pill--progress{background:rgba(99,102,241,.14);color:#6366f1;border-color:rgba(99,102,241,.3)}
 .hw-pill--done{background:rgba(22,163,74,.14);color:var(--green);border-color:rgba(22,163,74,.3)}
 .hw-pill--overdue{background:rgba(220,38,38,.14);color:var(--danger);border-color:rgba(220,38,38,.3)}
+.hw-pill--late{background:rgba(217,119,6,.14);color:#b45309;border-color:rgba(217,119,6,.35)}
 .hw-progress{display:flex;align-items:center;gap:8px;margin:12px 0}
 .hw-progress-bar{flex:1;height:8px;border-radius:20px;background:var(--surface2);overflow:hidden}
 .hw-progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6,#ec4899);border-radius:20px;transition:width .4s ease;box-shadow:0 0 8px rgba(139,92,246,.4)}
@@ -2319,5 +2320,7 @@ button.hw-res-btn{border:none;cursor:pointer;font-family:inherit}
 .hw-due--soon{color:#b45309;background:rgba(245,158,11,.14)}
 .hw-due--over{color:var(--danger);background:rgba(220,38,38,.12)}
 .hw-due--ok{color:var(--green);background:rgba(22,163,74,.12)}
+.hw-due--late{color:#b45309;background:rgba(217,119,6,.12)}
+[data-theme="dark"] .hw-due--late,[data-theme="dark"] .hw-pill--late{color:#fbbf24}
 [data-theme="dark"] .hw-due--soon{color:#fcd34d}
 [data-theme="dark"] .hw-res:hover{border-color:#4f46e5}
