@@ -29,8 +29,8 @@ function withPolicyDefaults(policy = {}) {
     // can pull a student back out of warning/failed, same as fixing an
     // attendance record. Archiving an incomplete assignment does NOT — it keeps
     // counting (assignmentService.archivedIsMissed).
-    homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 5,
-    homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 10,
+    homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 3,
+    homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 6,
     // More than this many OLDER assignments still incomplete (overdue ones
     // included) locks every newer assignment in the class — see
     // assignmentService.applyHomeworkLocks. 0 = finish everything first.

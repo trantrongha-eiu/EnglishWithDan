@@ -343,7 +343,7 @@ async function loadHomework() {
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
       <li><span class="hw-res-tag">Mở xem là xong</span> Video Shadowing, bài giảng Tips, Unit Vocab/Paraphrase: chỉ cần <b>bấm vào mở xem</b> là tự động tính hoàn thành.</li>
       <li>🔒 Còn <b>hơn 2 bài tập cũ</b> chưa hoàn thành (kể cả bài đã quá hạn) thì các bài tập mới hơn sẽ bị <b>khoá</b> — làm bù bài cũ để mở khoá.</li>
-      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 5 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>10 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
+      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 3 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>6 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
     </ul>
   </details>`;
 

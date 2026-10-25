@@ -34,8 +34,8 @@ const attendancePolicySchema = new mongoose.Schema({
   // refreshEnrollment) — y hệt cách điểm danh tự "gỡ" rớt khóa khi sửa lại
   // bản ghi, nên giáo viên gia hạn/ẩn một bài tập cũng tự kéo học viên ra
   // khỏi cảnh báo/rớt khóa.
-  homeworkWarnThreshold: { type: Number, default: 5, min: 1 },
-  homeworkFailThreshold: { type: Number, default: 10, min: 1 },
+  homeworkWarnThreshold: { type: Number, default: 3, min: 1 },
+  homeworkFailThreshold: { type: Number, default: 6, min: 1 },
   // Khoá bài mới: còn HƠN số này bài tập cũ (giao trước) chưa hoàn thành —
   // kể cả đã quá hạn — thì mọi bài mới hơn bị khoá cho tới khi học viên làm
   // bù bài cũ (xem assignmentService.applyHomeworkLocks).

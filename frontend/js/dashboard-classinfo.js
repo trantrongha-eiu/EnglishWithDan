@@ -386,15 +386,20 @@ function ciLimitsBlock(c) {
 // ── Warning popup ──────────────────────────────────────────────────────
 // Absence part: only once the student has used HALF the allowed absences
 // (attendanceLevel warn/fail) — a student with 0 (or 1 of 4) absences gets
-// no attendance reminder. Homework part: any missed assignment. Each class
-// row lists only the part(s) that actually apply. At most once a day per
-// browser, but again immediately if the numbers change — so a new absence /
-// miss is never silently swallowed. localStorage is only a convenience
-// here: if it throws, the popup just shows on every dashboard load.
+// no attendance reminder. Homework part: once misses reach the class's
+// homework warning threshold (homeworkLevel warn/fail, default 3). Each class
+// row lists only the part(s) that actually apply.
+// Absence-only popup: at most once a day per browser, but again immediately
+// if the numbers change. Homework at warning level is "sticky": it can be
+// closed for the current page view only and comes back on every dashboard
+// load until the misses drop below the warning threshold (owner's rule).
+// localStorage is only a convenience: if it throws, the popup just shows on
+// every dashboard load.
 const CI_POPUP_KEY = 'ewd_class_warning_popup';
+let ciStickyClosedSig = null; // sticky popup closed in this page view
 
 function ciPopupAbsence(c) { return ciAbsenceLevel(c) !== 'ok'; }
-function ciPopupHomework(c) { return c.homeworkMissedCount > 0; }
+function ciPopupHomework(c) { return c.homeworkMissedCount > 0 && ciHomeworkLevel(c) !== 'ok'; }
 
 function ciPopupNeeded(c) {
   return ciPopupAbsence(c) || ciPopupHomework(c) || c.status === 'failed';
@@ -408,7 +413,14 @@ function ciMaybeShowWarningPopup(classes) {
   const flagged = classes.filter(ciPopupNeeded);
   if (!flagged.length) return;
   const sig = flagged.map((c) => `${c.classId}:${c.status}:${ciPopupAbsence(c) ? c.absenceEquivalent : '-'}:${c.homeworkMissedCount}`).join('|') + '@' + ciTodayVN();
-  try { if (localStorage.getItem(CI_POPUP_KEY) === sig) return; } catch (_) { /* show anyway */ }
+  const sticky = flagged.some(ciPopupHomework);
+  if (sticky) {
+    // Closed already in this page view (tab-return refresh) — don't re-pop
+    // unless the numbers changed. A reload shows it again.
+    if (ciStickyClosedSig === sig) return;
+  } else {
+    try { if (localStorage.getItem(CI_POPUP_KEY) === sig) return; } catch (_) { /* show anyway */ }
+  }
   if (document.getElementById('ci-warn-modal')) return;
 
   const anyFailed = flagged.some((c) => c.status === 'failed');
@@ -448,6 +460,7 @@ function ciMaybeShowWarningPopup(classes) {
     <div class="ci-warn-body">
       ${rows}
       <p class="ci-warn-foot">${foot}</p>
+      ${sticky ? `<p class="ci-warn-foot">🔔 Thông báo này sẽ hiện lại mỗi lần bạn vào trang cho tới khi số bài thiếu giảm xuống dưới <b>${Math.min(...flagged.filter(ciPopupHomework).map((c) => c.homeworkWarnThreshold || 3))}</b> bài.</p>` : ''}
     </div>
     <div class="ci-warn-actions">
       ${anyHomework ? '<a class="ci-warn-btn ci-warn-btn--ghost" href="#homework-card" data-close>Xem bài tập</a>' : ''}
@@ -455,7 +468,8 @@ function ciMaybeShowWarningPopup(classes) {
     </div>
   </div>`;
   function close() {
-    try { localStorage.setItem(CI_POPUP_KEY, sig); } catch (_) { /* ignore */ }
+    if (sticky) ciStickyClosedSig = sig;
+    else { try { localStorage.setItem(CI_POPUP_KEY, sig); } catch (_) { /* ignore */ } }
     modal.remove();
     document.removeEventListener('keydown', onKey);
   }

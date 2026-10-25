@@ -333,7 +333,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=134b70c068';
+    i18nScript.src = '/js/shared/i18n.js?v=7969cb53eb';
     document.body.appendChild(i18nScript);
   }
 

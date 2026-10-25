@@ -471,8 +471,8 @@ describe('GET /api/classes/my/overview — dashboard homepage class summary', ()
       absentTotal: 1,
       maxAbsencesAllowed: 5,
       homeworkMissedCount: 0,
-      homeworkWarnThreshold: 5,
-      homeworkFailThreshold: 10,
+      homeworkWarnThreshold: 3,
+      homeworkFailThreshold: 6,
     });
   });
 
