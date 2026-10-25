@@ -254,3 +254,39 @@ dedupe_mini.js 6` đọc các file này thay cho OCR. So docx với OCR trang PD
   DB với OCR trang PDF (bigram ≥ 80%): chỉ lệch ở chỗ OCR đọc sai hoặc chỗ đã sửa có chủ ý (thêm: T6 P3 lựa chọn C in "The
   world's first futurology was hosted by Finland" → "futurology conference"). Chạy lại: pw_admin 18/18, pw_grade 18/18 100%,
   pw_full_tests 6/6, `_audit_reading_warnings` 0, `vr_audit.js 6` 0 problem, `vr_incomplete.js` 0.
+
+## Vol 7 — 2026-10-25 (xong: 16 đề full, 46 bài mới)
+
+Nguồn: `Reading/Test 1-10/Test N.pdf`, `Reading/Test 11-16/Test N.pdf` — **PDF có chữ (text layer)**, không cần OCR.
+`Reading T1-10 VOL 7.pdf` = 10 đề đầu gộp lại (bỏ qua). Key: `Test 1-10/Key Read VOL 7 (T1-T10).pdf`, `Test 11-16/Key Test 11.pdf`
+(trang kết quả làm bài: dòng đầu dưới mỗi "Câu số" là đáp án đúng), trang "Key"/"Keys"/"Đáp án" ở cuối Test 12–16.pdf,
+`Explaination Read VOL 7/Key VOL 7 TEST 13 và 14.pdf` (key + giải thích 13–14) và `giải vol 7.1–7.12.docx` (giải thích T1–T12).
+Thư mục `các đề update web khác trên bản pdf/` là **bản cập nhật của đề vol cũ** (Vol 1 T5/T7/T9, Vol 2 T1/T3/T9/T10, Vol 4
+T4/T5) — chưa xử lý; Vol 1 T7 ở đó là đề đủ 40 câu (P3 khác bản cũ) → có thể dùng để bật lại Vol 1 - Test 7.
+
+Công cụ mới (cho PDF có chữ): `py` + pymupdf `get_text()` từng trang → `web/vol7/txt/t<T>.txt`; `node pdfparas.js 7` → nối dòng
+thành đoạn `web/vol7/paras/t<T>.txt` (`[n|p<trang>]` mỗi đoạn); `node cutparas.js 7 <T> specs/vol7/t<T>p<P>.txt <từ-đến>` cắt
+đoạn thành file bài; `node txtfix.js <fixes.js>` sửa chữ chính xác (mỗi chuỗi phải xuất hiện đúng 1 lần; `'\n\n'` = nối đoạn
+bị ngắt trang); `node explkeys.js 7 [T]` (chỉ đọc) so key spec với "Đáp án:" trong docx giải thích. Nhiều đề in các đoạn A–J
+liền một khối → tách đoạn bằng txtfix. Docx giải thích → chữ: `py docx2txt.py <docx> web/vol7/expl/t<T>.txt`.
+
+- **Đề full Vol 7 - Test 1…16** tạo + bật, đều đủ 40 câu.
+- **Dùng lại 2 bài**: T8 P3 "The fluoridation controversy" (Vol 4 - Test 3; ending B của PDF bị hỏng, ngân hàng đúng); T16 P2
+  "Bird Migration" (Actual Mocktest 56; key Vol Q19 iii, ngân hàng i "The best moment to migrate" — đoạn F nói chọn thời điểm
+  khởi hành → giữ ngân hàng).
+- **Mới 46 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt). "The history of the guitar" trùng tên một bài khác trong
+  ngân hàng (Mocktest 48) → "The history of the guitar (Vol 7)". Key hai nguồn lệch → nhận cả hai: T1 Q17 NG/NO, T3 Q37 NG/NO,
+  T4 Q2 NG/TRUE, T7 Q35–36 TRUE/NG. Key sai đã sửa: T14 Q10 TRUE → FALSE (xăng-đan sợi thực vật; phần giải thích của chính file
+  key ghi FALSE), T14 Q20 (Test 14.pdf lặp "iv") → vi; T4 Q37 "barchans / dunes" → barchans / barchan dunes.
+- **Chữ / câu hỏi hỏng trong PDF, đã khôi phục** (ghi đầu từng spec): T2 P2 thư của Lambert bị đảo dòng; T4 P2 "London … until
+  1584" → 1684, "could be changing. If it makes…" → "could be damaging if…"; T7 P1 "charter" → chartar, ES150 "1836" → 1936;
+  T10 P1 Q3 bị cắt → lấy từ docx giải thích; T13 P2 "Не" (chữ Н Kirin) → He; T13 P3 "S.V." trong thí nghiệm của Ericsson → S.F.;
+  T14 P2 danh sách tiêu đề thiếu vi → lấy từ file giải thích; T12 P2 Q14–16 dán nhãn sơ đồ (xích/bánh răng/mô-tơ) → chuyển
+  thành dòng ghi chú như Vol 1 T7. Nhiều lỗi gõ nhỏ khác (ghi trong spec).
+- Kiểm: pw_mini 46/46, pw_admin 46/46, pw_grade 46/46 100% (+ fluoridation, Bird Migration), pw_full_tests 16/16,
+  `_audit_reading_warnings` 0 (398 bài), `vr_audit.js 7`: 0 problem (640 câu, 717 trích dẫn), `vr_incomplete.js`: 0.
+- **Debug lại (thầy bảo, cùng ngày)**: `vr_update.js 7 <46 bài>` (dry run): DB trùng khớp spec, 0 lượt làm. Dò dấu câu / khoảng
+  trắng / từ lặp và từ không có ở đâu khác trong ngân hàng: chỉ còn dấu lược trong trích dẫn nguyên văn, tên riêng, từ có dấu.
+  So từng câu hỏi / lựa chọn / tiêu đề / ending / ô bảng với chữ PDF (bigram ≥ 85%): chỉ lệch ở chỗ đã sửa có chủ ý.
+  `explkeys.js 7`: key khớp file giải thích ở mọi câu (trừ các câu đã ghi "nhận cả hai"). Chạy lại: pw_grade 48/48 100%,
+  pw_full_tests 16/16, pw_admin 46/46, `_audit_reading_warnings` 0, `vr_audit.js 7` 0 problem, `vr_incomplete.js` 0.

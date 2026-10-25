@@ -1,0 +1,73 @@
+// Vol 7 - Test 1-10/Test 10.pdf - Reading Passage 1 (PDF p1–4, text layer). Not in the bank; mini-ielts 1468 has the same
+// article (82%, messier text). The PDF prints the passage as two blocks → split at the topic changes; text fixes:
+// "domestic no market" → domestic market, "$3,3 billion" → $3.3 billion, "a variety of factor, better …" → "factors:
+// better …". Q3 is cut off in the PDF ("…better for construction than 4") → "than native-forest wood" (giải vol 7.10.docx
+// has the full statement). Key = Key Read VOL 7 (T1-T10).pdf, checked against the passage; Q12 also accepts the full
+// "Scandinavian countries".
+const { tfng, short } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 10, part: 1, title: 'Wood: a valuable resource in New Zealand\'s economy', text: 't10p1.txt',
+  free: ['60000'],
+  groups: [
+    tfng(1, [
+      'Settlers realised that wooden houses were more dangerous than other types of structure.',
+      'During the 1800s, New Zealand exported wood for use in boat-building.',
+      'Plantation-grown wood is generally better for construction than native-forest wood.',
+      'Compared to other types of wood, pine has a narrow range of uses.',
+      'Demand for housing in New Zealand is predicted to fall in the next few years.',
+      'In future, the expansion of New Zealand\'s wood industry will depend on its exports.',
+    ]),
+    short(7, [
+      'Apart from exchange rates, which factor has had a negative impact on New Zealand\'s forestry exports?',
+      'Which part of New Zealand\'s economy does the forestry industry rank third in?',
+      'According to the New Zealand forestry industry, what could be the size of its workforce by 2025?',
+      'What kind of timber product is available in large amounts from renewable forests in New Zealand?',
+      'Which aspect of timber production are New Zealand\'s main customers increasingly concerned about?',
+      'Outside the southern hemisphere, who are New Zealand forestry\'s main competitors?',
+      'Which group of products is New Zealand\'s forestry industry now having to compete with?',
+    ], { instruction: 'Answer the questions below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 7–13 on your answer sheet.' }),
+  ],
+  key: { 1: 'FALSE', 2: 'TRUE', 3: 'NOT GIVEN', 4: 'FALSE', 5: 'NOT GIVEN', 6: 'TRUE', 7: 'shipping costs', 8: 'export sector',
+    9: '60,000 / 60000', 10: 'softwood', 11: 'sustainability', 12: 'Scandinavian countries / Scandinavian', 13: 'wood substitutes' },
+  expl: {
+    1: ['Người định cư nhận ra nhà gỗ nguy hiểm hơn các kiểu công trình khác.', 'Đoạn 1',
+      '“A tradition of wooden houses arose, supported by the recognition that they were less likely to collapse suddenly during earthquakes”',
+      'Nhà gỗ ít bị sập khi động đất = an toàn hơn, trái với “more dangerous” → FALSE'],
+    2: ['Trong thế kỷ 19, New Zealand xuất khẩu gỗ để đóng thuyền.', 'Đoạn 2',
+      '“Early explorers recognised the suitability of the tall, straight trunks of the kauri for constructing sailing vessels.” … “So from the early 1800s, huge amounts of this type of wood were sold to Australia and the UK for that purpose.”',
+      '“for that purpose” = để đóng tàu buồm (boat-building) → TRUE'],
+    3: ['Gỗ rừng trồng nhìn chung tốt cho xây dựng hơn gỗ rừng tự nhiên.', 'Đoạn 3',
+      '“By the 1960s, plantation-grown timber was providing most of the country’s sawn timber needs, especially for construction.”',
+      'Gỗ rừng trồng đáp ứng phần lớn nhu cầu xây dựng, nhưng bài không so sánh chất lượng với gỗ rừng tự nhiên → NOT GIVEN'],
+    4: ['So với các loại gỗ khác, gỗ thông có ít công dụng.', 'Đoạn 4',
+      '“As the pine industry developed, it became apparent that this type of wood was also well suited for many uses.” … “This amazing versatility”',
+      '“well suited for many uses”, “amazing versatility” = rất nhiều công dụng → FALSE'],
+    5: ['Nhu cầu nhà ở tại New Zealand được dự báo sẽ giảm trong vài năm tới.', 'Đoạn 6',
+      '“the construction industry is the principal user of solid wood products, servicing around 20,000 new house starts annually.”',
+      'Bài chỉ nêu số nhà khởi công mỗi năm, không dự báo nhu cầu tăng hay giảm → NOT GIVEN'],
+    6: ['Trong tương lai, sự mở rộng của ngành gỗ New Zealand sẽ phụ thuộc vào xuất khẩu.', 'Đoạn 6',
+      '“Accordingly, the development of the export market is the key to the industry’s growth and contribution to the national economy in decades to come.”',
+      '“the export market is the key to the industry’s growth” → TRUE'],
+    7: ['Ngoài tỷ giá, yếu tố nào ảnh hưởng xấu đến xuất khẩu lâm sản?', 'Đoạn 7',
+      '“their value having increased steadily for ten years, until affected by the exchange fluctuations and shipping costs of recent years.”',
+      '“affected by the exchange fluctuations and shipping costs” → shipping costs'],
+    8: ['Ngành lâm nghiệp đứng thứ ba trong lĩnh vực nào của nền kinh tế?', 'Đoạn 7',
+      '“The forestry industry is New Zealand’s third largest export sector”',
+      '“third largest export sector” → export sector'],
+    9: ['Theo ngành lâm nghiệp, quy mô lực lượng lao động năm 2025 có thể là bao nhiêu?', 'Đoạn 8',
+      '“by 2025 the forestry sector could be the country’s biggest export earner, generating $20 billion a year and employing 60,000 people.”',
+      '“employing 60,000 people” → 60,000'],
+    10: ['Loại gỗ nào có sẵn với số lượng lớn từ rừng tái tạo ở New Zealand?', 'Đoạn 9',
+      '“One competitive advantage that New Zealand has is its ability to source large quantities of softwood from renewable forests.”',
+      '“large quantities of softwood from renewable forests” → softwood'],
+    11: ['Khách hàng chính ngày càng quan tâm đến khía cạnh nào của sản xuất gỗ?', 'Đoạn 9',
+      '“Consumers in several key wood markets are becoming more worried about sustainability”',
+      '“becoming more worried about sustainability” = increasingly concerned → sustainability'],
+    12: ['Ngoài Nam bán cầu, ai là đối thủ chính của ngành lâm nghiệp New Zealand?', 'Đoạn 9',
+      '“and in the northern hemisphere, Scandinavian countries have all expanded their forests or controlled their use in the interests of future production.”',
+      '“in the northern hemisphere” = outside the southern hemisphere → Scandinavian countries'],
+    13: ['Ngành lâm nghiệp New Zealand đang phải cạnh tranh với nhóm sản phẩm nào?', 'Đoạn 10',
+      '“New Zealand faces competition from goods such as wood substitutes. These include steel framing for houses.”',
+      '“faces competition from goods such as wood substitutes” → wood substitutes'],
+  },
+};

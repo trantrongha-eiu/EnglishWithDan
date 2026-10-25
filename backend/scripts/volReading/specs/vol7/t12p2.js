@@ -1,0 +1,72 @@
+// Vol 7 - Test 12.pdf - Reading Passage 2 (PDF p5–8, text layer). Not in the bank / mini-ielts.
+// The PDF runs paragraphs A–K together (sub-headings "How they move", "Coasting through history" inline) → split.
+// "29 km down to mountain" → down the mountain. Q14–16 label a picture of the lifting mechanism (chain on a gear driven by a
+// motor, PDF p7) → note lines describing what each label points at, as Vol 1 T7 did for its diagram.
+// Key = the "Key" pages of Test 12.pdf, checked against the passage.
+const { notes, tfng } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 12, part: 2, title: 'Roller coaster: the great fairground attraction', text: 't12p2.txt',
+  groups: [
+    notes(14, 16, [
+      '<strong>Lifting mechanism (at the bottom of the lift hill, under the tracks)</strong>',
+      '• __Q14__ – the moving loop running up the hill that the coaster cars grip onto',
+      '• __Q15__ – the toothed wheel at the bottom of the hill that the loop is wound around',
+      '• __Q16__ – the machine that turns this wheel',
+    ], { title: 'The lifting mechanism of a roller coaster',
+      instruction: 'Label the diagram of the lifting mechanism, described below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 14–16 on your answer sheet.' }),
+    notes(17, 21, [
+      'Modern roller coasters are descended from 16th-century Russian slides with a surface of __Q17__. People climbed to the top, and travelled down in sleds. In France, because of the higher temperatures, the wooden surface on the slides was __Q18__ and __Q19__ were attached to the cars to ease the descent. The first US roller coaster was used for transporting __Q20__ down a mountainside in carts. Initially, these were pulled by mules but in time power was produced by __Q21__.',
+    ], { title: 'History of roller coasters',
+      instruction: 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 17–21 on your answer sheet.' }),
+    tfng(22, [
+      'The earliest modifications to the basic slide were made in France.',
+      'Roller coasters continued to increase in popularity throughout the 1920s and 1930s.',
+      'New roller coaster technology was introduced in the 1970s in response to public demand.',
+      'Roller coasters were less popular for most of the 1980s than in the 1970s and 1990s.',
+      'The design of roller-coaster rides became more varied in the 1990s.',
+    ]),
+  ],
+  key: { 14: 'chain', 15: 'gear', 16: 'motor', 17: 'ice', 18: 'waxed', 19: 'wheels', 20: 'coal', 21: 'steam engines', 22: 'TRUE',
+    23: 'FALSE', 24: 'NOT GIVEN', 25: 'TRUE', 26: 'TRUE' },
+  expl: {
+    14: ['Bộ phận chạy vòng lên dốc mà các toa bám vào.', 'Đoạn B',
+      '“The traditional lifting mechanism is a long length of chain running up the hill under the track.” … “The coaster cars grip onto the chain, which simply pulls them to the top of the hill.”',
+      'Toa tàu bám vào xích (chain) để được kéo lên đỉnh → chain'],
+    15: ['Bánh răng ở chân dốc mà vòng xích quấn quanh.', 'Đoạn B',
+      '“The chain is fastened in a loop, which is wound around a gear at the top of the hill and another one at the bottom of the hill.”',
+      'Vòng xích quấn quanh bánh răng (gear) ở đỉnh và chân dốc → gear'],
+    16: ['Bộ phận làm quay bánh răng.', 'Đoạn B',
+      '“The gear at the bottom of the hill is turned by a motor.”',
+      '“turned by a motor” → motor'],
+    17: ['Tàu lượn hiện đại bắt nguồn từ những đường trượt Nga thế kỷ 16 có bề mặt bằng ______.', 'Đoạn F',
+      '“Their direct ancestors were ice slides, popular in Russia in the 16th and 17th centuries. They consisted of a long, steep, wooden slide covered in ice.”',
+      '“wooden slide covered in ice” = surface of ice → ice'],
+    18: ['Ở Pháp, vì nhiệt độ cao hơn, bề mặt gỗ của đường trượt được ______…', 'Đoạn G',
+      '“For most of the year, the warmer climate would melt the ice, so the French started building waxed slides instead.”',
+      '“warmer climate” = higher temperatures; “waxed slides” → waxed'],
+    19: ['… và ______ được gắn vào xe để dễ trượt xuống.', 'Đoạn G',
+      '“To help the sleds move down these slides, they added wheels”',
+      '“To help the sleds move down … they added wheels” = to ease the descent → wheels'],
+    20: ['Tàu lượn đầu tiên ở Mỹ dùng để chở ______ xuống núi bằng xe goòng.', 'Đoạn H',
+      '“originally to provide an easy way to send coal to the railway 29 km down the mountain.”',
+      '“send coal … down the mountain” → coal'],
+    21: ['Ban đầu xe được la kéo nhưng về sau năng lượng do ______ cung cấp.', 'Đoạn H',
+      '“They were eventually replaced with steam engines, to make the system more efficient.”',
+      'Đàn la được thay bằng động cơ hơi nước → steam engines'],
+    22: ['Những cải tiến đầu tiên cho đường trượt cơ bản được thực hiện ở Pháp.', 'Đoạn G',
+      '“so the French started building waxed slides instead. To help the sleds move down these slides, they added wheels, and in 1817, for the first time, a train was attached to the track.”',
+      'Đường trượt sáp, bánh xe, đoàn tàu gắn ray đều xuất hiện đầu tiên ở Pháp → TRUE'],
+    23: ['Tàu lượn tiếp tục được ưa chuộng hơn suốt thập niên 1920 và 1930.', 'Đoạn J',
+      '“By the 1920s, roller coasters were in full swing” … “Following the Great Depression, a decline in roller coaster production began in the early 1930s”',
+      'Đầu thập niên 1930 việc sản xuất tàu lượn suy giảm → không tiếp tục tăng → FALSE'],
+    24: ['Công nghệ tàu lượn mới ra đời vào thập niên 1970 do nhu cầu của công chúng.', 'Đoạn J',
+      '“a second roller-coaster boom in the 1970s and the beginning of the 1980s revitalized the amusement park industry, and introduced a slew of innovative tubular steel coasters.”',
+      'Bài nói có tàu lượn thép mới trong đợt bùng nổ, không nói nguyên nhân là đòi hỏi của công chúng → NOT GIVEN'],
+    25: ['Tàu lượn kém được ưa chuộng trong phần lớn thập niên 1980 so với thập niên 1970 và 1990.', 'Đoạn K',
+      '“This was followed by a decline in interest for the rest of the decade, but since the early 1990s the amusement-park industry has experienced another coaster boom of sorts.”',
+      'Bùng nổ thập niên 1970 – đầu 1980, rồi giảm hứng thú phần còn lại của thập niên 1980, đến 1990 lại bùng nổ → TRUE'],
+    26: ['Thiết kế tàu lượn đa dạng hơn trong thập niên 1990.', 'Đoạn K',
+      '“New launching techniques and other technological developments have opened up a world of options for designers”',
+      '“opened up a world of options for designers” từ đầu thập niên 1990 = thiết kế đa dạng hơn → TRUE'],
+  },
+};

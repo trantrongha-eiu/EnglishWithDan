@@ -1,0 +1,82 @@
+// Vol 7 - Test 13.pdf - Reading Passage 3 (PDF p9–12, text layer). Not in the bank / mini-ielts.
+// The PDF runs paragraphs A–G together → split. In G the PDF says "During two years of experimentation, S.V. increased his
+// ability to recall numbers from seven to over eighty" — S.V. is Shereshevski (paragraph F), but the subject of Ericsson's
+// two-year digit-span experiment was the student "S.F." (Ericsson & Chase 1980) → S.F. Summary Q33–36 lead-in reworded
+// ("Using visual imagery … are investigated" → "The use of … has been investigated"; final "." before "While" → ",").
+// Key = the "Keys" pages of Test 13.pdf, checked against the passage; Q33/Q35 also accept the answer without "specific".
+const { matching, notes, endings } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 13, part: 3, title: 'Memory Champions … or just good at tricks', text: 't13p3.txt',
+  groups: [
+    matching(27, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], [
+      'a description of how a contestant remembers complex sequences',
+      'an example of how one person\'s memory was improved over time',
+      'a description of a memorizing competition',
+      'a commonly held belief about memory that many experts say is unproven',
+      'a reference to the first recorded use of memorizing through location',
+      'a reference to an unusual condition which results in improved memory',
+    ], { instruction: 'Reading Passage 3 has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G, in boxes 27–32 on your answer sheet.' }),
+    notes(33, 36, [
+      'The use of visual imagery and spatial navigation to remember numbers has been investigated and explained. A __Q33__, an action, and a thing are assigned to consecutive cards in the pack. Combining these images allows Cooke to memorise __Q34__ at a time. The mind pictures are then positioned on a __Q35__. The pack of cards is remembered by going for a __Q36__, while the pictures are converted back into cards.',
+    ], { instruction: 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 33–36 on your answer sheet.' }),
+    endings(37, [
+      'used mainly for educational purposes.',
+      'activated brain areas associated with visual and spatial memory.',
+      'became widespread in ancient Greece for memorizing speeches and texts.',
+      'the result of techniques and extensive practice.',
+      'retaining a wide variety of tasks.',
+      'benefited from additional cognitive abilities.',
+    ], [
+      'Valentine, Wilding and Maguire\'s experiment shows that the memory contestants',
+      'After Simonides discovered the loci method in 477 BC, it was',
+      'According to Valentine and Wilding, natural memorisers are better than strategic memorisers at',
+      'According to K. Anders Ericsson, Shereshevski\'s skills were',
+    ]),
+  ],
+  key: { 27: 'D', 28: 'G', 29: 'A', 30: 'E', 31: 'B', 32: 'F', 33: 'specific human being / human being', 34: 'three cards',
+    35: 'specific familiar path / familiar path', 36: 'mental walk', 37: 'B', 38: 'C', 39: 'E', 40: 'D' },
+  expl: {
+    27: ['Mô tả cách một thí sinh ghi nhớ các chuỗi phức tạp.', 'Đoạn D',
+      '“When Cooke commits a deck to memory, he does it three cards in one go, with every three-card group forming a composite picture of a person doing something to an object.”',
+      'Cách Ed Cooke nhớ thứ tự bộ bài → D'],
+    28: ['Ví dụ về việc trí nhớ của một người được cải thiện theo thời gian.', 'Đoạn G',
+      '“During two years of experimentation, S.F. increased his ability to recall numbers from seven to over eighty.”',
+      'Sau hai năm, khả năng nhớ số tăng từ 7 lên hơn 80 → G'],
+    29: ['Mô tả một cuộc thi ghi nhớ.', 'Đoạn A',
+      '“The Examinations School at Oxford University is where, last August, 34 contestants gathered at the World Memory Championships.”',
+      'Giải Vô địch Trí nhớ Thế giới với các phần thi đọc thơ, nhớ dãy số, nhớ khuôn mặt → A'],
+    30: ['Một niềm tin phổ biến về trí nhớ mà nhiều chuyên gia nói là chưa được chứng minh.', 'Đoạn E',
+      '“The term \'photographic memory\' is frequently used to describe people with exceptional recall. Yet, most researchers agree there is no proof that such a memory truly exists.”',
+      '“no proof that such a memory truly exists” = unproven → E'],
+    31: ['Nhắc đến lần đầu tiên được ghi nhận dùng vị trí để ghi nhớ.', 'Đoạn B',
+      '“They are using a technique known as the loci method, reportedly originating in 477 BC with the Greek poet Simonides of Ceos.”',
+      'Phương pháp loci (gắn với vị trí) bắt nguồn từ Simonides năm 477 TCN → B'],
+    32: ['Nhắc đến một tình trạng bất thường giúp trí nhớ tốt hơn.', 'Đoạn F',
+      '“Shereshevski also experienced synesthesia, a rare sensory condition where the senses are interconnected, which significantly improved his memorization ability.”',
+      'Chứng cảm giác kèm (synesthesia) hiếm gặp giúp ông nhớ tốt hơn → F'],
+    33: ['Một ______, một hành động và một vật được gán cho các lá bài.', 'Đoạn D',
+      '“Ed Cooke has memorized a specific human being, verb, and object that he associates with every card in the deck.”',
+      '“a specific human being, verb, and object” = a ___, an action and a thing → specific human being'],
+    34: ['Kết hợp các hình ảnh giúp Cooke nhớ ______ mỗi lần.', 'Đoạn D',
+      '“When Cooke commits a deck to memory, he does it three cards in one go”',
+      '“three cards in one go” = three cards at a time → three cards'],
+    35: ['Các hình ảnh trong đầu được đặt trên một ______.', 'Đoạn D',
+      '“He then places those images along a specific familiar path in his mind”',
+      '“places those images along a specific familiar path” → specific familiar path'],
+    36: ['Bộ bài được nhớ lại bằng cách đi một ______.', 'Đoạn D',
+      '“When it comes to recall, Cooke takes a mental walk along his route and translates the images into cards”',
+      '“takes a mental walk” = going for a mental walk → mental walk'],
+    37: ['Thí nghiệm của Valentine, Wilding và Maguire cho thấy các thí sinh…', 'Đoạn C',
+      '“the memory champions were activating some brain regions that were different from those the control subjects were using. These regions are known to be involved in visual memory and spatial navigation.”',
+      'Nhà vô địch kích hoạt vùng não về trí nhớ thị giác và định hướng không gian → B'],
+    38: ['Sau khi Simonides phát hiện phương pháp loci năm 477 TCN, nó…', 'Đoạn B',
+      '“After Simonides\'s discovery, the loci method became widely embraced across ancient Greece, serving as a fundamental technique for orators and scholars.”',
+      '“widely embraced across ancient Greece … for orators and scholars” = phổ biến ở Hy Lạp cổ để nhớ bài diễn văn, văn bản → C'],
+    39: ['Theo Valentine và Wilding, người nhớ bẩm sinh giỏi hơn người nhớ bằng chiến lược ở…', 'Đoạn G',
+      '“Strategists are usually outstanding at remembering only certain kinds of material, whereas naturals exhibit strong memory across many types of tasks”',
+      'Người bẩm sinh nhớ tốt ở nhiều loại nhiệm vụ = retaining a wide variety of tasks → E'],
+    40: ['Theo K. Anders Ericsson, kỹ năng của Shereshevski là…', 'Đoạn G',
+      '“When he revisited original case reports of natural memorizers, he discovered that their remarkable abilities were actually based on the use of specific techniques — sometimes unconsciously — combined with extensive practice.”',
+      'Ericsson xem lại hồ sơ những người nhớ “bẩm sinh” (như Shereshevski): khả năng đến từ kỹ thuật và luyện tập → D'],
+  },
+};

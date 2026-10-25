@@ -1,0 +1,76 @@
+// Vol 7 - Test 9.pdf - Reading Passage 3 (PDF p7–12, text layer). Not in the bank; mini-ielts 1309 has the same article
+// (98% shared text) with another question set. The PDF runs paragraphs A–I together → split; typos fixed ("304and",
+// "6-n-propylthiouraci", "figured put", "type pf", "Amp", stray dashes as hyphens). The questions are printed with rough
+// English (as in the source) and kept; the instruction says "seven paragraphs" for A–I → nine.
+// Key = Key Read VOL 7 (T1-T10).pdf, checked against the passage.
+const { matching, notes, mc } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 9, part: 3, title: 'Biology of Bitterness', text: 't9p3.txt',
+  groups: [
+    matching(27, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], [
+      'Experiment on bitterness conducted',
+      'Look into the future application',
+      'Bitterness means different information for humans and animals',
+      'Spread process of bitterness inside of body',
+      'How AMP blocks bitterness',
+      'Some bitterness blockers may help lower unhealthy impact',
+      'Bitterness introduced from a fruit',
+      'Genetic feature determines sensitivity',
+    ], { instruction: 'Reading Passage 3 has nine paragraphs, A–I. Which paragraph contains the following information? Write the correct letter, A–I, in boxes 27–34 on your answer sheet.' }),
+    notes(35, 38, [
+      'The reason why grapefruit tastes bitter is because of a substance called __Q35__ contained in it. However, bitterness plays a significant role for plants. It gives a signal that a certain plant is __Q36__. For human beings, different people carry various genetic abilities of tasting bitterness. According to a scientist at the University of Utah, __Q37__ have exceptionally plenty of __Q38__ which allows them to perceive bitter compounds.',
+    ], { instruction: 'Complete the following summary of the paragraphs of Reading Passage 3. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 35–38 on your answer sheet.' }),
+    mc(39, [
+      ['What is the main feature of AMP according to this passage?', [
+        'offset bitter flavour in food', 'only exist in 304 cup', 'tastes like citrus', 'chemical reaction when meets biscuit']],
+      ['What is the main function of G protein?', [
+        'collecting taste molecule', 'identifying different flavor elements', 'resolving large molecules', 'transmitting bitter signals to the brain']],
+    ]),
+  ],
+  key: { 27: 'B', 28: 'I', 29: 'C', 30: 'E', 31: 'G', 32: 'H', 33: 'A', 34: 'D', 35: 'naringin', 36: 'poisonous',
+    37: 'supertasters', 38: 'taste buds', 39: 'A', 40: 'D' },
+  expl: {
+    27: ['Thí nghiệm về vị đắng được tiến hành.', 'Đoạn B',
+      '“I found that out by participating in a test conducted at the Linguagen Corporation”',
+      'Tác giả tham gia thử nước bưởi ở cốc 304 và 305 → B'],
+    28: ['Nhìn về ứng dụng trong tương lai.', 'Đoạn I',
+      '“In a few years, perhaps, after food companies have taken the bitterness from canned soup and TV dinners, they can set their sights on something more useful: a bitter blocker in a bottle”',
+      '“In a few years, perhaps” = viễn cảnh ứng dụng tương lai → I'],
+    29: ['Vị đắng mang thông tin khác nhau đối với con người và động vật.', 'Đoạn C',
+      '“Every other species is averse to bitter because it means bad news. But we have learned to enjoy it.”',
+      'Với loài khác đắng = tin xấu, còn con người học cách thích nó → C'],
+    30: ['Quá trình truyền vị đắng bên trong cơ thể.', 'Đoạn E',
+      '“Once a bitter signal has been received, it is relayed via proteins known as G proteins.” … “Ultimately, this delivers a signal to the brain that registers as bitter.”',
+      'Tín hiệu đắng được chuyển qua protein G rồi đến não → E'],
+    31: ['AMP chặn vị đắng như thế nào.', 'Đoạn G',
+      '“Amp has no bitterness of its own, but when put in foods, Margolskee and his colleagues discovered, it attaches to bitter-taste receptors.”',
+      'AMP gắn vào thụ thể vị đắng → G'],
+    32: ['Một số chất chặn vị đắng có thể giúp giảm tác hại cho sức khỏe.', 'Đoạn H',
+      '“In time, some taste researchers believe, compounds like AMP will help make processed foods less unhealthy.”',
+      '“help make processed foods less unhealthy” → H'],
+    33: ['Vị đắng được giới thiệu qua một loại quả.', 'Đoạn A',
+      '“Naringin, a natural chemical compound found in grapefruit, tastes bitter.”',
+      'Đoạn A mở đầu bằng vị đắng của bưởi → A'],
+    34: ['Đặc điểm di truyền quyết định độ nhạy cảm.', 'Đoạn D',
+      '“People have varying capacities for tasting bitterness, and the differences appear to be genetic.”',
+      '“the differences appear to be genetic” → D'],
+    35: ['Bưởi đắng là do một chất gọi là ______.', 'Đoạn A',
+      '“Naringin, a natural chemical compound found in grapefruit, tastes bitter.”',
+      '“Naringin … found in grapefruit, tastes bitter” → naringin'],
+    36: ['Nó báo hiệu rằng một loại cây nào đó ______.', 'Đoạn C',
+      '“They defend plants by warning animals away and protect animals by letting them know when a plant may be poisonous.”',
+      '“letting them know when a plant may be poisonous” → poisonous'],
+    37: ['______ có rất nhiều …', 'Đoạn D',
+      '“Some people, known as supertasters, are especially sensitive to 6-n-propylthiouracil because they have an unusually high number of taste buds.”',
+      '“known as supertasters … an unusually high number of taste buds” → supertasters'],
+    38: ['… ______, giúp họ cảm nhận các hợp chất đắng.', 'Đoạn D',
+      '“because they have an unusually high number of taste buds.”',
+      '“an unusually high number of taste buds” = exceptionally plenty of taste buds → taste buds'],
+    39: ['Đặc điểm chính của AMP theo bài là gì?', 'Đoạn B',
+      '“This juice had been treated with adenosine monophosphate, or AMP, a compound that blocks the bitterness in foods without making them less nutritious.”',
+      '“blocks the bitterness in foods” = offset bitter flavour in food → A'],
+    40: ['Chức năng chính của protein G là gì?', 'Đoạn E',
+      '“Once a bitter signal has been received, it is relayed via proteins known as G proteins.” … “Ultimately, this delivers a signal to the brain that registers as bitter.”',
+      'Protein G chuyển tiếp tín hiệu đắng, cuối cùng đến não; A là việc của thụ thể (receptors capture the taste molecules) → D'],
+  },
+};

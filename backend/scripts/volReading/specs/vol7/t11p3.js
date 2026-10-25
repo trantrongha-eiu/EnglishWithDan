@@ -1,0 +1,81 @@
+// Vol 7 - Test 11.pdf - Reading Passage 3 (PDF p9–13, text layer). Not in the bank / mini-ielts.
+// Text: "this is not the something at all as inherent talent" → "not the same thing at all as"; summary "an express from one
+// of his books" → expression. Key = Key Test 11.pdf, checked against the passage.
+const { mc, ynng, summary } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 11, part: 3, title: 'Robert Louis Stevenson', text: 't11p3.txt',
+  groups: [
+    mc(27, [
+      ['In the opinion of the writer, the biographers Balfour and Crouch', [
+        'understated the role played by Stevenson\'s family.', 'misunderstood Stevenson\'s religious beliefs.',
+        'overestimated other writers\' influence on Stevenson.', 'elevated Stevenson above his true status as a writer.']],
+      ['What point does the writer make about Stevenson in the second paragraph?', [
+        'The public judged him more fairly than the critics.', 'Recent criticism of him has been justified.',
+        'Critics argued that his style covered up his faults.', 'The ethical nature of his stories was often criticised.']],
+      ['According to the writer, the adventure story', [
+        'is more appropriate for books than films.', 'can be used by writers to tell moral stories.',
+        'is more fashionable today than in the past.', 'has been used by other writers but not Stevenson.']],
+      ['What point does the writer make about Stevenson and Scotland?', [
+        'His ideas contrasted with those of many Scots.', 'He demonstrated great sympathy for Scotland\'s problems.',
+        'He was not considered a true Scot as he was not born there.', 'His unflattering stories about Scotland angered many Scots.']],
+      ['According to the writer, Stevenson\'s own lifestyle', [
+        'was envied by his friends.', 'was responsible for his early death.',
+        'attracted more attention than his books.', 'did not prepare him for living in Samoa.']],
+    ]),
+    ynng(32, [
+      'Although Oscar Wilde admired Stevenson\'s work, he believed Stevenson could have written something better.',
+      'Stevenson encouraged Oscar Wilde to start writing.',
+      'Galsworthy had greater respect for Hardy than Stevenson.',
+      'More research is needed regarding Stevenson\'s influence on Chesterton.',
+    ]),
+    summary(36, 40, 'Opinions differ as to whether Robert Louis Stevenson or Sir Walter Scott should be considered Scotland\'s best writer. Scott had greater __Q36__ but Stevenson had more __Q37__ and the same distinction can be made between the two composers Shostakovich and Prokofiev. It is true that Scott\'s books showed more __Q38__ when it came to tragedy, though in an old-fashioned way, while Stevenson\'s books are still popular because of his __Q39__. And Stevenson\'s understanding of __Q40__ has resulted in the widespread use of an expression from one of his books.',
+      ['natural ability', 'critical acclaim', 'humour', 'romance', 'colourful language', 'technical control', 'story telling', 'depth', 'human nature'],
+      { title: 'Robert Louis Stevenson and Sir Walter Scott' }),
+  ],
+  key: { 27: 'D', 28: 'C', 29: 'B', 30: 'A', 31: 'C', 32: 'YES', 33: 'NOT GIVEN', 34: 'NO', 35: 'YES', 36: 'technical control',
+    37: 'natural ability', 38: 'depth', 39: 'story telling', 40: 'human nature' },
+  expl: {
+    27: ['Theo tác giả, hai nhà viết tiểu sử Balfour và Crouch đã…', 'Đoạn A',
+      '“Subsequent works of biography then turned him into a writer of almost religious importance.” … “the biographer Crouch absurdly overstated Stevenson\'s significance”',
+      '“absurdly overstated Stevenson\'s significance”, đặt ngang Shakespeare và Keats = đề cao quá mức → D'],
+    28: ['Tác giả nói gì về Stevenson ở đoạn thứ hai?', 'Đoạn B',
+      '“Some critics accused him of being a literary charlatan, of juggling words very prettily to strike effects which overawed an ignorant public, and served to distract from the inadequacy of his ideas.”',
+      'Giới phê bình cho rằng lối viết hoa mỹ che lấp sự nghèo nàn ý tưởng = style covered up his faults → C'],
+    29: ['Theo tác giả, truyện phiêu lưu…', 'Đoạn C',
+      '“It seems that we can accept that an adventure film can successfully express profound moral truths, but we reject the same idea for a book. The absurdity of this becomes apparent when we think of writers like Joseph Conrad and Graham Greene”',
+      'Tác giả cho định kiến đó là vô lý: Conrad, Greene dùng truyện phiêu lưu để chuyển tải đạo lý → B'],
+    30: ['Tác giả nói gì về Stevenson và Scotland?', 'Đoạn C',
+      '“Stevenson has often not found favour in the land of his birth because his conservatism so often collides with the strong radical tradition in Scotland.”',
+      'Tư tưởng bảo thủ của ông va chạm với truyền thống cấp tiến của Scotland = ideas contrasted with those of many Scots. C sai: Scotland là “the land of his birth” → A'],
+    31: ['Theo tác giả, lối sống của chính Stevenson…', 'Đoạn C',
+      '“Lastly the high adventure of Stevenson\'s own lifestyle has sometimes obscured his output.” … “tended to make his own life a greater story than any he could devise.”',
+      'Cuộc đời ông thành câu chuyện hấp dẫn hơn tác phẩm = attracted more attention than his books → C'],
+    32: ['Dù ngưỡng mộ tác phẩm của Stevenson, Oscar Wilde tin Stevenson có thể viết hay hơn.', 'Đoạn D',
+      '“The writer and poet Oscar Wilde was deeply influenced by Stevenson, even though he declared that Stevenson would have produced better work if he had lived in London rather than Samoa.”',
+      'Wilde chịu ảnh hưởng sâu sắc nhưng cho rằng sống ở London thì Stevenson sẽ viết hay hơn → YES'],
+    33: ['Stevenson đã khuyến khích Oscar Wilde bắt đầu viết.', 'Đoạn D',
+      '“The writer and poet Oscar Wilde was deeply influenced by Stevenson”',
+      'Bài chỉ nói Wilde chịu ảnh hưởng, không nói Stevenson khuyến khích Wilde viết → NOT GIVEN'],
+    34: ['Galsworthy tôn trọng Hardy hơn Stevenson.', 'Đoạn D',
+      '“later changed his mind and said that the superiority of Stevenson over the novelist Hardy was that Stevenson was all life and Hardy all death.”',
+      'Galsworthy cho Stevenson vượt trội hơn Hardy → ngược lại → NO'],
+    35: ['Cần nghiên cứu thêm về ảnh hưởng của Stevenson lên Chesterton.', 'Đoạn D',
+      '“The influence on the novelist Chesterton would also repay detailed study”',
+      '“would also repay detailed study” = đáng được nghiên cứu chi tiết → YES'],
+    36: ['Scott có ______ tốt hơn…', 'Đoạn E',
+      '“it is true that in terms of craftsmanship, precision and the ability to minutely regulate language to create the desired effect, Scott takes the prize.”',
+      'Tay nghề, sự chính xác, kiểm soát ngôn ngữ = kỹ thuật → F technical control → technical control'],
+    37: ['… nhưng Stevenson có nhiều ______ hơn.', 'Đoạn E',
+      '“However, this is not the same thing at all as inherent talent” … “the latter\'s intrinsic genius was greater, and so it seems to be with Scott and Stevenson.”',
+      '“inherent talent”, “intrinsic genius” = năng khiếu bẩm sinh → A natural ability → natural ability'],
+    38: ['Sách của Scott thể hiện nhiều ______ hơn khi viết về bi kịch, dù theo lối cũ.', 'Đoạn E',
+      '“Scott\'s detailed style does permit his stories to explore levels of tragedy that are beyond Stevenson\'s reach, but in this regard they have the musty smell of the museum”',
+      'Khám phá các tầng bi kịch mà Stevenson không với tới = chiều sâu; “musty smell of the museum” = old-fashioned → H depth → depth'],
+    39: ['… còn sách của Stevenson vẫn được ưa chuộng nhờ ______ của ông.', 'Đoạn E',
+      '“On the other hand, Stevenson\'s skill with plotting and narrative give his books a timeless quality, so that they still live today.”',
+      '“skill with plotting and narrative” = tài kể chuyện → G story telling → story telling'],
+    40: ['Sự thấu hiểu ______ của Stevenson khiến một cụm từ trong sách ông được dùng rộng rãi.', 'Đoạn E',
+      '“And Stevenson was also the shrewder judge of behaviour and psychology.” … “the expression \'Jekyll and Hyde\' has entered common English usage.”',
+      '“behaviour and psychology” = bản chất con người → I human nature → human nature'],
+  },
+};

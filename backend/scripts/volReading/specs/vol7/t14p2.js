@@ -1,0 +1,77 @@
+// Vol 7 - Test 14.pdf - Reading Passage 2 (PDF p4–7, text layer). Not in the bank / mini-ielts.
+// Seven paragraphs lettered A–G ("Despite their popularity…" and "David Garrick…" are one paragraph split by the page break).
+// The PDF's list of headings omits vi and cuts ii off ("…with a standard set of") → vi from the explanation pages of
+// Explaination Read VOL 7/Key VOL 7 TEST 13 và 14.pdf ("An explanation of how a pantomime character appeals to modern
+// audiences"), ii completed with "characters". Key = that file (Test 14.pdf's own list repeats "iv" for Q20 → vi), checked
+// against the passage; Q21 key "Masks"/"Mask" → masks.
+const { headings, notes, matching } = require('../../vr_build');
+module.exports = {
+  vol: 7, test: 14, part: 2, title: 'Pantomime', text: 't14p2.txt',
+  groups: [
+    headings(14, [
+      'A character who provoked sympathy and amusement',
+      'Outdoor performances with a standard set of characters',
+      'Pantomime as a means of focusing on political issues',
+      'Discovering pantomime at a young age',
+      'A way of dealing with a negative attitude toward pantomime',
+      'An explanation of how a pantomime character appeals to modern audiences',
+      'Debate about the origins of pantomime',
+      'A successful merging of artistic sources',
+    ], ['Paragraph A', 'Paragraph B', 'Paragraph C', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G'],
+    { instruction: 'Reading Passage 2 has seven paragraphs, A–G. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i–viii, in boxes 14–20 on your answer sheet.' }),
+    notes(21, 23, [
+      '21. Commedia dell\'arte actors used __Q21__ to disguise their real identities.',
+      '22. Harlequinades combined elements of a 16th-century art form with a __Q22__ written many centuries earlier.',
+      '23. In early 19th-century pantomimes, __Q23__ were often victims of the Clown\'s activities.',
+    ], { instruction: 'Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 21–23 on your answer sheet.' }),
+    matching(24, ['John Rich', 'David Garrick', 'Joseph Grimaldi', 'Dan Leno'], [
+      'His performances focused on the situation of the less wealthy sections of society.',
+      'He introduced elements of the supernatural to the pantomime genre.',
+      'His pantomime character was never seen to be punished for his on-stage crimes.',
+    ], { title: 'List of People',
+      instruction: 'Look at the following statements (Questions 24–26) and the list of people below. Match each statement with the correct person, A, B, C or D. Write the correct letter, A, B, C or D, in boxes 24–26 on your answer sheet.' }),
+  ],
+  key: { 14: 'iv', 15: 'ii', 16: 'viii', 17: 'v', 18: 'iii', 19: 'i', 20: 'vi', 21: 'masks', 22: 'poem', 23: 'policemen',
+    24: 'D', 25: 'A', 26: 'C' },
+  expl: {
+    14: ['Chọn tiêu đề cho đoạn A.', 'Đoạn A',
+      '“For many British children, their first family trip to see a pantomime in the Christmas holiday season is their introduction to the magic of the theatre.”',
+      'Lần đầu xem pantomime khi còn nhỏ → iv Discovering pantomime at a young age'],
+    15: ['Chọn tiêu đề cho đoạn B.', 'Đoạn B',
+      '“These improvised shows took place in streets and marketplaces” … “The key roles in the cast were invariably rich old men” … “young lovers” … “and ingenious and quick-witted servants.”',
+      'Diễn ngoài đường phố, chợ (outdoor) với bộ nhân vật cố định → ii Outdoor performances with a standard set of characters'],
+    16: ['Chọn tiêu đề cho đoạn C.', 'Đoạn C',
+      '“harlequinades, a new kind of entertainment which interwove Ovid’s first-century Latin poem Metamorphoses with aspects of the Italian commedia.” … “cleverly mixed spectacle, music, ballet and myth”',
+      'Kết hợp thành công thơ Ovid, commedia, âm nhạc, ba-lê, thần thoại → viii A successful merging of artistic sources'],
+    17: ['Chọn tiêu đề cho đoạn D.', 'Đoạn D',
+      '“Critics bitterly attacked pantomimes” … “His tactic was to set about changing pantomime’s cultural identity, partly by confining shows to his theatre’s Christmas season.”',
+      'Garrick xử lý sự chỉ trích bằng cách gắn pantomime với mùa Giáng sinh → v A way of dealing with a negative attitude toward pantomime'],
+    18: ['Chọn tiêu đề cho đoạn E.', 'Đoạn E',
+      '“a world of comic revenge against a highly repressive government. Grimaldi became one of the great satirists of his age”',
+      'Chú hề Grimaldi châm biếm chính quyền thời bất ổn → iii Pantomime as a means of focusing on political issues'],
+    19: ['Chọn tiêu đề cho đoạn F.', 'Đoạn F',
+      '“In the Dame, Leno developed a persona whose theatrical power comes from the locking together of compassion and laughter.”',
+      '“compassion and laughter” = sympathy and amusement → i A character who provoked sympathy and amusement'],
+    20: ['Chọn tiêu đề cho đoạn G.', 'Đoạn G',
+      '“Pantomimes are as popular today as they have ever been. Our delight in this form comes from a complex mixture of emotions and relationships.” … “The engaging character of the Dame exemplifies pantomime’s self-proclaimed absurdity.”',
+      'Giải thích vì sao nhân vật Dame vẫn hấp dẫn khán giả ngày nay → vi An explanation of how a pantomime character appeals to modern audiences'],
+    21: ['Diễn viên commedia dell\'arte dùng ______ để che giấu danh tính thật.', 'Đoạn B',
+      '“Distinctive masks enabled audiences to recognise the people in these stories immediately; they also allowed actors to be rude or disrespectful without fear of being recognised.”',
+      'Mặt nạ cho phép diễn viên không sợ bị nhận ra → masks'],
+    22: ['Harlequinade kết hợp một loại hình thế kỷ 16 với một ______ viết từ nhiều thế kỷ trước.', 'Đoạn C',
+      '“which interwove Ovid’s first-century Latin poem Metamorphoses with aspects of the Italian commedia.”',
+      'Thơ Ovid thế kỷ 1 = written many centuries earlier; commedia = 16th-century art form → poem'],
+    23: ['Trong pantomime đầu thế kỷ 19, ______ thường là nạn nhân của chú hề.', 'Đoạn E',
+      '“His anarchic activities included chasing and imprisoning policemen and stealing gigantic quantities of sausages.”',
+      'Chú hề đuổi bắt, giam cảnh sát → policemen'],
+    24: ['Các vai diễn của ông tập trung vào hoàn cảnh của tầng lớp kém giàu có.', 'Đoạn F',
+      '“a mother facing the difficulties of poverty, which he and his audiences knew all too well.” … “artists such as Leno began to infuse pantomime with the plots and dilemmas of working people’s culture.”',
+      'Dan Leno đưa nghèo khó, văn hóa người lao động vào pantomime → D'],
+    25: ['Ông đưa yếu tố siêu nhiên vào pantomime.', 'Đoạn C',
+      '“Created by actor John Rich, these early pantomimes cleverly mixed spectacle, music, ballet and myth” … “Amazing transformations happened at the touch of a magic wand”',
+      'Thần thoại, biến hóa bằng đũa thần = yếu tố siêu nhiên trong pantomime của John Rich → A'],
+    26: ['Nhân vật của ông chưa bao giờ bị trừng phạt vì “tội ác” trên sân khấu.', 'Đoạn E',
+      '“But the Clown was never caught or sent to jail.”',
+      'Chú hề của Grimaldi không bao giờ bị bắt hay bỏ tù → C'],
+  },
+};
