@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
     <link rel="stylesheet" href="/css/components.css?v=d2125349c7">
-    <link rel="stylesheet" href="/css/register.css?v=40ea0265dd">
+    <link rel="stylesheet" href="/css/register.css?v=35291d2cde">
     <script src="/js/theme.js?v=81e03964c4"></script>
     <script src="/js/shared/site-guard.js?v=c04e9f321f" defer></script>
 </head>
@@ -44,85 +44,14 @@
             <h2 class="welcome-text">Bắt đầu hành trình IELTS! 🚀</h2>
             <p class="subtitle">Tạo tài khoản để truy cập đầy đủ tính năng</p>
 
-            <form class="register-form" id="registerForm" novalidate>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">Họ</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" id="firstName" name="firstName" placeholder="Nguyễn Văn" maxlength="50" autocomplete="family-name" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lastName">Tên</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" id="lastName" name="lastName" placeholder="An" maxlength="50" autocomplete="given-name" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-user-check input-icon"></i>
-                        <input type="text" id="username" name="username" placeholder="user123" maxlength="30" autocomplete="username" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="email" name="email" placeholder="example@gmail.com" autocomplete="email" required>
-                    </div>
-                    <p class="email-hint" id="emailHint" hidden></p>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="password" name="password" placeholder="Tối thiểu 8 ký tự" minlength="8" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('password')" aria-label="Hiện/ẩn mật khẩu">
-                            <i class="fas fa-eye eye-icon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Xác nhận mật khẩu</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')" aria-label="Hiện/ẩn mật khẩu">
-                            <i class="fas fa-eye eye-icon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <label class="terms-checkbox">
-                    <input type="checkbox" id="terms" required>
-                    <span>Tôi đồng ý với <a href="terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a></span>
-                </label>
-
-                <button type="submit" class="btn-register">
-                    <span>Đăng Ký Ngay</span>
-                    <i class="fas fa-arrow-right arrow-icon"></i>
-                </button>
-            </form>
-
-            <div class="divider">
-                <span>HOẶC</span>
-            </div>
-
             <div class="social-login">
                 <button type="button" class="btn-social google">
                     <i class="fab fa-google"></i>
                     Đăng ký bằng Google
                 </button>
             </div>
+
+            <p class="terms-note">Khi đăng ký, bạn đồng ý với <a href="terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a>.</p>
 
             <div class="login-prompt">
                 <p>Đã có tài khoản?
@@ -172,7 +101,7 @@
     </div>
   </div><!-- /.page-center -->
 
-    <script src="/js/register.js?v=1340e3e41f"></script>
+    <script src="/js/register.js?v=9ab3e52d50"></script>
 
   <footer class="site-footer">
     © <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center &nbsp;·&nbsp;

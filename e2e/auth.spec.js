@@ -70,51 +70,22 @@ test.describe('Login page', () => {
 });
 
 test.describe('Register page', () => {
-  test('renders the registration form', async ({ page }) => {
+  test('offers Google sign-up only — no form fields', async ({ page }) => {
     await page.goto('/register.html');
 
-    await expect(page.locator('#registerForm')).toBeVisible();
-    await expect(page.locator('#firstName')).toBeVisible();
-    await expect(page.locator('#lastName')).toBeVisible();
-    await expect(page.locator('#username')).toBeVisible();
-    await expect(page.locator('#email')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-    await expect(page.locator('#confirmPassword')).toBeVisible();
-    await expect(page.locator('.btn-register')).toBeVisible();
+    await expect(page.locator('.btn-social.google')).toBeVisible();
+    await expect(page.locator('#registerForm')).toHaveCount(0);
+    await expect(page.locator('#password')).toHaveCount(0);
   });
 
-  test('required-field validation prevents an empty submission', async ({ page }) => {
+  test('Google button starts OAuth in register mode', async ({ page }) => {
     await page.goto('/register.html');
-
-    await page.locator('.btn-register').click();
-
-    // Nothing filled in -> native `required` on #firstName (first field in
-    // the form) should block submission and keep us on register.html.
-    await expect(page).toHaveURL(/register\.html/);
-    const firstNameValidity = await page.locator('#firstName').evaluate((el) => el.validity.valid);
-    expect(firstNameValidity).toBe(false);
-  });
-
-  test('client-side validation rejects a too-short password before any network call', async ({ page }) => {
-    // This exercises register.html's own pre-submit JS checks (password
-    // length, confirm-password match, terms checkbox) which run BEFORE the
-    // fetch() to the production API — so this is a pure client-side check,
-    // no seeded account or backend reachability required.
-    await page.goto('/register.html');
-
-    await page.locator('#firstName').fill('Nguyen');
-    await page.locator('#lastName').fill('Van A');
-    await page.locator('#username').fill('e2e_test_user');
-    await page.locator('#email').fill('e2e-test@example.com');
-    await page.locator('#password').fill('short'); // < 8 chars, also fails minlength
-    await page.locator('#confirmPassword').fill('short');
-    await page.locator('#terms').check();
-
-    await page.locator('.btn-register').click();
-
-    // Either the HTML5 minlength=8 constraint or the inline JS check
-    // ("Mật khẩu phải có ít nhất 8 ký tự!") stops submission — either way
-    // we must still be on register.html.
-    await expect(page).toHaveURL(/register\.html/);
+    // Stop the navigation at the backend so no real Google round trip happens.
+    await page.route('**/api/auth/google**', (route) => route.fulfill({ status: 200, body: 'ok' }));
+    const [req] = await Promise.all([
+      page.waitForRequest('**/api/auth/google**'),
+      page.locator('.btn-social.google').click(),
+    ]);
+    expect(new URL(req.url()).searchParams.get('mode')).toBe('register');
   });
 });

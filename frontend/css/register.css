@@ -689,3 +689,23 @@
         [data-theme="dark"] .btn-social:hover { border-color: #4b5563; }
         [data-theme="dark"] .login-prompt { border-top-color: var(--border2, #333333); }
         [data-theme="dark"] .terms-checkbox { color: #9ca3af; }
+
+/* Google-only sign-up: bigger, primary-looking button + terms line */
+.register-card .btn-social.google {
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.terms-note {
+    font-size: 12.5px;
+    color: var(--text2);
+    text-align: center;
+    margin: 0 0 18px;
+    line-height: 1.5;
+}
+.terms-note a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 500;
+}
+.terms-note a:hover { text-decoration: underline; }

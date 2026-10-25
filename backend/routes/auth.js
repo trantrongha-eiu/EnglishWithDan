@@ -38,7 +38,12 @@ const verifyEmailLimiter       = authLimiter(20); // token is 64 hex chars — b
 const resendVerificationLimiter = authLimiter(5);
 
 // ── Local auth ────────────────────────────────────────────────
-router.post('/register', registerLimiter, authCtrl.register);
+// Form sign-up is closed: accounts are created only via Google
+// (register.html → /google?mode=register). authCtrl.register is kept
+// in case the form ever comes back.
+router.post('/register', registerLimiter, (req, res) => res.status(410).json({
+  success: false, message: 'Vui lòng đăng ký bằng tài khoản Google.'
+}));
 router.post('/login',           loginLimiter,          authCtrl.login);
 router.post('/verify-email',         verifyEmailLimiter,        authCtrl.verifyEmail);
 router.post('/resend-verification',  resendVerificationLimiter, authCtrl.resendVerification);

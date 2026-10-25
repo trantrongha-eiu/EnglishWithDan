@@ -16,19 +16,26 @@ const authService = require('../services/authService');
 const OAUTH_NONCE_COOKIE = 'g_oauth_nonce';
 const OAUTH_NONCE_LEN = 32; // hex chars (16 bytes)
 
-function packOAuthState(nonce, next) {
-  return next ? `${nonce}:${encodeURIComponent(next)}` : nonce;
+// State layout: <nonce>[~r][:<encoded next>]. The "~r" flag marks a
+// sign-up started from register.html: the account is created but no
+// session is issued — the student is sent to login.html to sign in.
+const REGISTER_FLAG = '~r';
+function packOAuthState(nonce, next, register) {
+  const base = register ? nonce + REGISTER_FLAG : nonce;
+  return next ? `${base}:${encodeURIComponent(next)}` : base;
 }
 function unpackOAuthState(state) {
   const nonce = (state || '').slice(0, OAUTH_NONCE_LEN);
-  const rest = (state || '').slice(OAUTH_NONCE_LEN);
+  let rest = (state || '').slice(OAUTH_NONCE_LEN);
+  const register = rest.startsWith(REGISTER_FLAG);
+  if (register) rest = rest.slice(REGISTER_FLAG.length);
   let next = '';
   if (rest.startsWith(':')) {
     // decodeURIComponent throws on malformed %-sequences — a crafted
     // ?state= must degrade to "no next redirect", not a 500 (security audit finding).
     try { next = decodeURIComponent(rest.slice(1)); } catch { next = ''; }
   }
-  return { nonce, next };
+  return { nonce, next, register };
 }
 function parseCookie(req, name) {
   const header = req.headers.cookie || '';
@@ -254,12 +261,13 @@ exports.startGoogleAuth = (req, res, next) => {
   const safeNext = /^\/[^/\\]|^[a-zA-Z0-9][\w-]*\.html/.test(rawNext) && !rawNext.includes('://')
     ? rawNext
     : '';
+  const register = req.query.mode === 'register';
   const nonce = crypto.randomBytes(OAUTH_NONCE_LEN / 2).toString('hex');
   setOAuthNonceCookie(res, nonce);
   passport.authenticate('google', {
     scope: ['profile', 'email'],
     session: false,
-    state: packOAuthState(nonce, safeNext)
+    state: packOAuthState(nonce, safeNext, register)
   })(req, res, next);
 };
 
@@ -270,15 +278,20 @@ exports.googleCallback = (req, res) => {
     if (req.user.isBanned) {
       return res.redirect(`${frontendUrl}/login.html?error=banned`);
     }
-    const { token, user } = authService.completeGoogleLogin(req.user);
-    const payload = encodeURIComponent(JSON.stringify(user));
     // 'state' carries the CSRF nonce + pre-login destination through the
     // OAuth round trip (packed in startGoogleAuth, already verified by
     // verifyOAuthState before this handler runs) — echo the destination
     // back to auth-callback.html as `next` so it can send the user back to
     // the page they originally deep-linked into, same as the JWT login flow.
-    const { next: state } = unpackOAuthState(typeof req.query.state === 'string' ? req.query.state : '');
+    const { next: state, register } = unpackOAuthState(typeof req.query.state === 'string' ? req.query.state : '');
     const nextParam = state ? `&next=${encodeURIComponent(state)}` : '';
+    if (register) {
+      // Sign-up from register.html: the account now exists (passport's
+      // verify callback created it) — send them to log in with Google.
+      return res.redirect(`${frontendUrl}/login.html?registered=google${nextParam}`);
+    }
+    const { token, user } = authService.completeGoogleLogin(req.user);
+    const payload = encodeURIComponent(JSON.stringify(user));
     res.redirect(`${frontendUrl}/auth-callback.html?token=${token}&user=${payload}${nextParam}`);
   } catch (err) {
     res.redirect(`${frontendUrl}/login.html?error=social_auth_failed`);

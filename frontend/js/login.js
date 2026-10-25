@@ -56,6 +56,20 @@ function getSafeNextUrl() {
 // ── Just signed up on register.html (?registered=1&email=...):
 // prefill the email and put the cursor on the password so the
 // student can log in with one more field ─
+// ── Just signed up with Google (?registered=google): point them at
+// the Google button — one click logs them in ─
+(function () {
+    const qs = new URLSearchParams(window.location.search);
+    if (qs.get('registered') !== 'google') return;
+    const btn = document.querySelector('.btn-social.google');
+    if (btn) {
+        btn.classList.add('just-registered');
+        btn.scrollIntoView({ block: 'center' });
+        btn.focus();
+    }
+    showToastWithTitle('success', 'Đăng ký thành công 🎉', 'Bấm "Đăng nhập bằng Google" để đăng nhập và bắt đầu học ngay.');
+})();
+
 (function () {
     const qs = new URLSearchParams(window.location.search);
     if (qs.get('registered') !== '1') return;
