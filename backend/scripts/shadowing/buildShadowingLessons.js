@@ -269,6 +269,27 @@ const LESSONS = [
       'Vì sao ta cứ để việc đến phút chót? Trì hoãn là phản ứng cảm xúc từ thời tổ tiên "impulsive". Từ vựng: under pressure, gratification, oodles of time.'],
     ['s1HxJVusR2w', 'bbc-6min-future-of-work', 'What is the future of work?',
       'AI có lấy hết việc làm? Tuần làm việc 4 ngày? Hãy "take predictions with a pinch of salt". Từ vựng: track record, come to pass, dystopian, crop up.'],
+    // 2026-10-28: +20, mixed topics
+    ['CelIpn03m1w', 'bbc-6min-gold', 'Why gold is so valuable', 'Vì sao vàng vẫn là "safe haven" khi tiền chỉ còn là con số? Vàng không thể tạo ra "out of thin air". Từ vựng: asset, alchemy, ethereal, a hankering for.'],
+    ['dgFm7A8pyzo', 'bbc-6min-debt', 'Living with debt', 'Sống chung với nợ ở Anh: "make ends meet", "in arrears", mua trả góp "on the never-never" và áp lực "financial strain". Pay back / pay off / clear a debt.'],
+    ['WsKg6HsoDaw', 'bbc-6min-doomscrolling', 'Doomscrolling: Why do we do it?', 'Vì sao ta cứ lướt đọc tin xấu? Thiên kiến tiêu cực từ thời hang động, tin tức luôn "on tap". Từ vựng: feel ick, make up for, romanticise.'],
+    ['_zmMl7T8164', 'bbc-6min-ai-crime', 'Can AI solve crime?', 'AI giúp cảnh sát phá án nhanh hơn: so khớp dấu vân tay, dấu giày theo "real-time". Từ vựng: where you\'re coming from, background, renaissance, out of favour.'],
+    ['vxoPApiNZBU', 'bbc-6min-rude-emails', 'Rude emails', 'Email cụt lủn, trả lời bằng một emoji, cc sếp để "put someone in their place" — phản ứng chiến/chạy khi "frazzled". Từ vựng: uncivil, belittle.'],
+    ['DsQMLrPdLf8', 'bbc-6min-sitting', 'Why sitting is bad for health', 'Trung bình người Anh ngồi 9 tiếng/ngày! Vì sao ngồi nhiều hại sức khoẻ và mẹo đơn giản để vận động. Từ vựng: engineer out, geared around, swim against the tide.', 9999, { join: [72] }], // "…at 6 Minute." | "English. Goodbye…"
+    ['H5BVbrZ64bQ', 'bbc-6min-allergies', 'Are we getting more allergic to things?', 'Cô gái dị ứng hơn 50 thứ, và vì sao Úc là "allergy capital of the world". Từ vựng: call ahead of time, accommodate, protocols, drop off, "or so".'],
+    ['GPbPAC0xS1s', 'bbc-6min-adapt-to-cold', 'How do we adapt to the cold?', 'Vì sao mỗi người chịu lạnh khác nhau? Giới tính, thói quen và những người chăn tuần lộc ở Phần Lan. Từ vựng: first and foremost, tolerant of, yes and no, shiver.'],
+    ['RMHxQOzb9Lc', 'bbc-6min-wild-bees', 'How can we help wild bees?', 'Ăn mật ong có cứu được loài ong? Ong mật không nguy cấp nhưng ong hoang dã đang "clinging on". Từ vựng: vegan, take for granted, oblivious.'],
+    ['a5UADG2c0sw', 'bbc-6min-black-white-animals', 'Why are some animals black and white?', 'Ngựa vằn, gấu trúc, chim cánh cụt — vì sao chúng có màu đen trắng? Ảo ảnh thị giác, nguỵ trang và cảnh báo. Từ vựng: put off, giveaway, black and white.'],
+    ['bywWgD9yJq0', 'bbc-6min-pets', 'Our love of pets', 'Người Anh và thú cưng từ thời Victoria đến TikTok: 17% chó mèo có tài khoản mạng xã hội! Từ vựng: living standards, disposable income, fit the bill.', 9999, { join: [17] }], // "A. 7% B." | "17% or C. 70%?"
+    ['Cq8v437OWyU', 'bbc-6min-poetry', 'The power of poetry', 'Sức mạnh của thơ ca: đêm "open mic" chữa lành cảm xúc và Hot Poets biến khoa học khí hậu thành thơ. Từ vựng: jargon, impenetrable, a turn-off, goosebumps.'],
+    ['8P_ya85lxzw', 'bbc-6min-mother-tongue', 'Losing your mother tongue', 'Julie rời Tiệp Khắc sang Canada khi còn nhỏ và dần quên tiếng mẹ đẻ. Nói nhiều ngôn ngữ giúp ta bao dung hơn. Từ vựng: dunk, sort itself out, either-or.'],
+    ['uIllvkN7p58', 'bbc-6min-babies-communicate', 'How do babies communicate?', 'Trẻ sơ sinh "nói" với cha mẹ bằng cử động tay chân có chủ đích; "yêu từ cái nhìn đầu tiên" là một "unhelpful cliche". Từ vựng: jerky, to the naked eye.', 9999, { join: [25, 26] }], // quiz options A. | B. | C. split across lines
+    ['j8d5kkKfDbo', 'bbc-6min-lonely-crowd', 'Are you lonely in a crowd?', 'Vì sao đám đông khiến người này hào hứng, người kia sợ hãi? "Mob mentality" có thật không? Từ vựng: regress, gullible, correlation, the flip side.'],
+    ['rCIs5x0SGTY', 'bbc-6min-hearing-no', 'How do you feel when someone says \'no\'?', '"Rejection therapy" — cố tình xin những điều kỳ quặc để quen với việc bị từ chối và tự tin hơn. Từ vựng: spike, socially anxious, come easier, appraise.'],
+    ['GDwLjLHsGGg', 'bbc-6min-broken-heart', 'What can science tell us about the pain of a broken heart?', 'Thất tình đau thật: não xử lý nó giống như gãy xương. Tình yêu như cơn nghiện và gắn kết xã hội giúp sống lâu hơn. Từ vựng: addicted, longevity, an ex.'],
+    ['YjwHsdFZPxE', 'bbc-6min-future-of-food', 'The future of food', 'Anh nhập khẩu 40% thực phẩm — an ninh lương thực, biến đổi khí hậu và giảm chăn nuôi. Từ vựng: worst-case scenario, stark, livestock, a piece of the puzzle.'],
+    ['xy27CfuFtJE', 'bbc-6min-talking-at-table', 'Talking at the table', 'Bàn ăn tối là nơi gia đình trò chuyện, "open up" và đôi khi gán vai cho nhau. Từ vựng: the funny one, a mixed bag, culture shock, take with a pinch of salt.', 341], // a podcast promo follows "Goodbye"
+    ['r4rl5wEjuLw', 'bbc-6min-writing-lists', 'The joys of writing lists', 'Vì sao chúng ta mê lập danh sách: danh sách đi chợ như mật mã, bucket list, pros and cons. Từ vựng: bang for your buck, saccharine, the nub of things.'],
   ].map(([youtubeId, slug, title, description, clipEnd = 9999, opts]) => ({
     slug, youtubeId, title, sourceTitle: `${title} 6 Minute English`, channel: 'BBC Learning English',
     category: '6-minute-english', level: 'B1', clipStart: 0, clipEnd, description, ...opts,
@@ -2071,6 +2092,8 @@ const SEGMENT_FIXES = [
   [/\bMy mom loves\b/, 'My mum loves'],
   [/^So, we can say, "I've been living/, 'So, we can say: I\'ve been living'], // English Pro Tips: unclosed quote
   [/^Daryl O'Connor: /, ''], // 6 Minute English: a two-word speaker label stripSpeakers misses
+  [/here at 6 Minute\. English\./, 'here at 6 Minute English.'], // caption line broke the show's name
+  [/\beyes change color\./, 'eyes change colour.'],
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
