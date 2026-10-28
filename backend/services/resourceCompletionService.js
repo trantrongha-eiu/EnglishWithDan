@@ -54,6 +54,7 @@ const SpeakingTip = require('../models/SpeakingTip');
 const VocabUnit = require('../models/VocabUnit');
 const Task2Template = require('../models/Task2Template');
 const Task2TemplateAttempt = require('../models/Task2TemplateAttempt');
+const Task2TemplateProgress = require('../models/Task2TemplateProgress');
 const WPTopic = require('../models/WPTopic');
 const WPExercise = require('../models/WPExercise');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
@@ -130,32 +131,62 @@ function tipCatalog(model) {
     deepLinkKey: (d) => `${d.lessonKey}||${d.category}` };
 }
 
-// Task 2 Templates (task2-template.html): done once one session of that
-// template (any mode) got >= PASS_PERCENT of ALL the template's items right.
+// Task 2 Templates (task2-template.html), one essay type at one level.
+// Done when BOTH hold:
+//   1. the student finished all 5 steps of that type's practice path
+//      (Task2TemplateProgress.steps — durable, may predate the assignment);
+//   2. since the assignment, one whole-template recall run — step ④ "Ghép cả
+//      bài" or the mock test, both saved with mode 'path' — got >= PASS_PERCENT
+//      of ALL the template's sentences memorised.
 // Attempts are keyed by (templateType, level), not the template's _id. A
-// practice save's totalItems is the whole template, an exam save's only the
-// attempted ones — dividing by the larger of the two keeps a 3-item exam run
-// from passing at 3/3.
+// run's totalItems may be smaller than the template (a mock test submitted
+// early), so the denominator is the larger of the two.
+// Runs saved by the old separate modes (cloze/translation/…, before the
+// 2026-10-28 practice-path redesign) keep the old rule — one run >= 70% —
+// so homework already ticked that way stays ticked.
+const T2_PATH_STEPS = ['warmup', 'read', 'drill', 'assemble', 'apply'];
+const T2_RECALL_MODES = new Set(['path']);
+const T2_LEGACY_MODES = new Set(['cloze', 'translation', 'chunks', 'build', 'dictation']);
 async function checkTask2Templates(studentId, ids, since) {
   const out = new Map();
   const tpls = await Task2Template.find({ _id: { $in: ids } }).select('_id typeId level sections').lean();
   if (!tpls.length) return out;
-  const q = { userId: studentId, templateType: { $in: [...new Set(tpls.map((t) => t.typeId))] } };
+  const typeIds = [...new Set(tpls.map((t) => t.typeId))];
+  const q = { userId: studentId, templateType: { $in: typeIds } };
   if (since) q.createdAt = { $gte: since };
-  const rows = await Task2TemplateAttempt.find(q).sort({ createdAt: -1 })
-    .select('_id templateType level totalItems correctItems createdAt').lean().catch(() => []);
+  const [rows, progress] = await Promise.all([
+    Task2TemplateAttempt.find(q).sort({ createdAt: -1 })
+      .select('_id templateType level mode totalItems correctItems createdAt').lean().catch(() => []),
+    Task2TemplateProgress.find({ userId: studentId, typeId: { $in: typeIds } }).select('typeId level steps').lean().catch(() => []),
+  ]);
   for (const t of tpls) {
+    const level = t.level || 'band7';
     const itemCount = (t.sections || []).reduce((n, sec) => n + ((sec.items || []).length), 0);
+    const prog = progress.find((p) => p.typeId === t.typeId && p.level === level);
+    const steps = (prog && prog.steps) || {};
+    const stepsDone = T2_PATH_STEPS.filter((k) => steps[k]).length;
+    const pathDone = stepsDone === T2_PATH_STEPS.length;
+    const pathDoneAt = pathDone ? new Date(Math.max(...T2_PATH_STEPS.map((k) => new Date(steps[k]).getTime()))) : null;
+
     let best = null;
     for (const r of rows) {
-      if (r.templateType !== t.typeId || (r.level || 'band7') !== (t.level || 'band7')) continue;
+      if (r.templateType !== t.typeId || (r.level || 'band7') !== level) continue;
+      const legacy = !r.mode || T2_LEGACY_MODES.has(r.mode);
+      if (!legacy && !T2_RECALL_MODES.has(r.mode)) continue; // e.g. 'review' — only a few sentences
       const denom = Math.max(Number(r.totalItems) || 0, itemCount, 1);
       const pct = ((Number(r.correctItems) || 0) / denom) * 100;
-      const passes = pct >= PASS_PERCENT;
-      if (!best || (passes && !best.passes) || (passes === best.passes && pct > best.pct)) best = { r, pct, passes };
+      const passes = pct >= PASS_PERCENT && (legacy || pathDone);
+      if (!best || (passes && !best.passes) || (passes === best.passes && pct > best.pct)) best = { r, pct, passes, legacy };
       if (passes) break; // newest passing run — rows are newest-first
     }
-    if (best) out.set(String(t._id), { completed: best.passes, completedAt: best.r.createdAt, attemptId: String(best.r._id), scorePercent: Math.round(best.pct) });
+    if (!best && !prog) continue;
+    // The tick lands when the LATER of the two conditions was met.
+    let completedAt = best ? best.r.createdAt : pathDoneAt;
+    if (best && best.passes && !best.legacy && pathDoneAt && pathDoneAt > new Date(completedAt)) completedAt = pathDoneAt;
+    out.set(String(t._id), {
+      completed: !!(best && best.passes), completedAt, attemptId: best ? String(best.r._id) : undefined,
+      scorePercent: best ? Math.round(best.pct) : 0, stepsDone, stepsTotal: T2_PATH_STEPS.length,
+    });
   }
   return out;
 }

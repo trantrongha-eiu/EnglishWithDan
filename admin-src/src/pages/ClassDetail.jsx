@@ -71,7 +71,7 @@ const RES_RULE = {
   listening_tip: 'Tự tick khi học viên mở bài giảng.', reading_tip: 'Tự tick khi học viên mở bài giảng.',
   writing_tip: 'Tự tick khi học viên mở bài giảng.', speaking_tip: 'Tự tick khi học viên mở bài giảng.',
   vocab_unit: 'Tự tick khi học viên mở Unit.',
-  task2_template: 'Tự tick khi học viên làm đúng ≥70% số câu của template trong 1 lượt.',
+  task2_template: 'Tự tick khi học viên học xong cả 5 bước của lộ trình VÀ thuộc ≥70% số câu (nhớ lại cả bài ở bước ④ hoặc Thi thử, làm sau khi giao bài).',
   writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
 };

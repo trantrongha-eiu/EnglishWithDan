@@ -10,6 +10,7 @@ const ListeningTip = require('../../models/ListeningTip');
 const VocabUnit = require('../../models/VocabUnit');
 const Task2Template = require('../../models/Task2Template');
 const Task2TemplateAttempt = require('../../models/Task2TemplateAttempt');
+const Task2TemplateProgress = require('../../models/Task2TemplateProgress');
 const WPTopic = require('../../models/WPTopic');
 const WritingPracticeAttempt = require('../../models/WritingPracticeAttempt');
 const Task1Attempt = require('../../models/Task1Attempt');
@@ -74,7 +75,7 @@ test('tips + vocab unit: the page beacon / unit open ticks them; bogus ids are r
   expect(row.status).toBe('completed');
 });
 
-test('task2_template: needs >= 70% of ALL the template items in one run', async () => {
+test('task2_template (legacy modes): one old-mode run with >= 70% of ALL the items still counts', async () => {
   const { t, s, cls } = await setup();
   const items = Array.from({ length: 10 }, (_, i) => ({ en: `s${i}` }));
   const tpl = await Task2Template.create({ typeId: 'type01', level: 'band7', label: 'Type 01', sub: 'x', name: 'Opinion', sections: [{ title: 'Intro', items }] });
@@ -84,8 +85,42 @@ test('task2_template: needs >= 70% of ALL the template items in one run', async 
   // other level doesn't count
   await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type01', level: 'band6', totalItems: 10, correctItems: 10 });
   expect((await itemOf(s, asg._id)).completed).toBe(false);
-  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type01', level: 'band7', totalItems: 10, correctItems: 7 });
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type01', level: 'band7', totalItems: 10, correctItems: 7, mode: 'translation' });
   expect((await itemOf(s, asg._id)).completed).toBe(true);
+});
+
+test('task2_template (practice path): all 5 steps done AND a whole-template recall >= 70% since assigned', async () => {
+  const { t, s, cls } = await setup();
+  const items = Array.from({ length: 10 }, (_, i) => ({ en: `s${i}` }));
+  const tpl = await Task2Template.create({ typeId: 'type02', level: 'band6', label: 'Type 02', sub: 'x', name: 'Discuss', sections: [{ title: 'Intro', items }] });
+  // A passing run BEFORE the assignment doesn't count.
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 10, correctItems: 10, mode: 'path', createdAt: new Date(Date.now() - 60000) });
+  const asg = await assign(t, cls, [{ kind: 'internal', resourceType: 'task2_template', resourceId: tpl._id }]);
+
+  // 70% memorised, but the path isn't finished yet (step ⑤ missing) → not done.
+  const now = new Date();
+  await Task2TemplateProgress.create({ userId: s._id, level: 'band6', typeId: 'type02',
+    steps: { warmup: now, read: now, drill: now, assemble: now } });
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 10, correctItems: 7, mode: 'path' });
+  expect((await itemOf(s, asg._id)).completed).toBe(false);
+
+  // A quick review with every answer right is only a few sentences → never enough.
+  await Task2TemplateProgress.updateOne({ userId: s._id, level: 'band6', typeId: 'type02' }, { $set: { 'steps.apply': new Date() } });
+  await Task2TemplateAttempt.deleteMany({ userId: s._id, mode: 'path', correctItems: 7 });
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 6, correctItems: 6, mode: 'review' });
+  expect((await itemOf(s, asg._id)).completed).toBe(false);
+
+  // Below 70% of the sentences → not done; a mock test submitted early is
+  // measured against the whole template.
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 10, correctItems: 6, mode: 'path' });
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 10, correctItems: 5, mode: 'path', isExam: true });
+  expect((await itemOf(s, asg._id)).completed).toBe(false);
+
+  // Path finished + 7/10 memorised → done.
+  await Task2TemplateAttempt.create({ userId: s._id, templateType: 'type02', level: 'band6', totalItems: 10, correctItems: 7, mode: 'path', isExam: true });
+  const item = await itemOf(s, asg._id);
+  expect(item.completed).toBe(true);
+  expect(item.resourceCode).toBe('type02||band6');
 });
 
 test('writing_practice / task1_skill: >= 10 answers since assigned, >= 70% correct', async () => {

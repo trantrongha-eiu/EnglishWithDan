@@ -30,7 +30,7 @@ const FIXTURE = require('./fixtures/task2-templates.json');
 const breq = (m) => require(require.resolve(m, { paths: [BACKEND] }));
 
 let mongod, apiServer, staticServer, apiBase;
-let student, studentToken, Progress, Attempt;
+let student, studentToken, Progress, Attempt, TemplateModel, teacherToken, classGroup;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css',
@@ -71,6 +71,7 @@ test.beforeAll(async () => {
   const Task2Template = require(path.join(BACKEND, 'models', 'Task2Template'));
   const Task2TypeGuide = require(path.join(BACKEND, 'models', 'Task2TypeGuide'));
   Progress = require(path.join(BACKEND, 'models', 'Task2TemplateProgress'));
+  TemplateModel = Task2Template;
   Attempt = require(path.join(BACKEND, 'models', 'Task2TemplateAttempt'));
   const users = require(path.join(BACKEND, 'tests', 'factories', 'userFactory'));
 
@@ -83,6 +84,11 @@ test.beforeAll(async () => {
 
   student = await users.createPremiumStudent({ username: 'e2e_tpl_student' });
   studentToken = users.signTokenFor(student);
+  const classes = require(path.join(BACKEND, 'tests', 'factories', 'classFactory'));
+  const teacher = await users.createTeacher({ username: 'e2e_tpl_teacher' });
+  teacherToken = users.signTokenFor(teacher);
+  classGroup = await classes.createClassGroup({ teacher });
+  await classes.enrollStudent(classGroup, student);
 });
 
 test.afterAll(async () => {
@@ -96,8 +102,14 @@ async function wire(page) {
   await page.route('**/*', async (route) => {
     const url = route.request().url();
     if (url.startsWith(PROD_API)) {
-      const resp = await route.fetch({ url: apiBase + url.slice(PROD_API.length) });
-      return route.fulfill({ response: resp });
+      // A reload can drop a request that is still in flight — ignore that.
+      try {
+        const resp = await route.fetch({ url: apiBase + url.slice(PROD_API.length) });
+        return await route.fulfill({ response: resp });
+      } catch (e) {
+        if (/disposed|closed|Target page/i.test(String(e && e.message))) return;
+        throw e;
+      }
     }
     if (url.startsWith(`http://localhost:${STATIC_PORT}`)) return route.continue();
     return route.abort();
@@ -195,7 +207,23 @@ async function doDrill(page) {
 test('Band 6+: student walks the whole path for Type 01 and progress is saved', async ({ page }) => {
   test.setTimeout(240 * 1000);
   const errors = await wire(page);
+  // The teacher assigns Type 01 (Band 6+) as class homework.
+  const tpl = await TemplateModel.findOne({ typeId: 'type01', level: 'band6' }).lean();
+  const res = await fetch(`${apiBase}/api/classes/${classGroup._id}/assignments`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${teacherToken}` },
+    body: JSON.stringify({ title: 'Học template Type 01', resources: [{ kind: 'internal', resourceType: 'task2_template', resourceId: tpl._id }] }),
+  });
+  expect(res.status).toBe(201);
+  const homeworkDone = async () => {
+    const r = await fetch(`${apiBase}/api/assignments/mine`, { headers: { Authorization: `Bearer ${studentToken}` } });
+    const body = await r.json();
+    return body.assignments[0].resources[0].completed;
+  };
+
   await page.goto('/task2-template.html?type=type01');
+  await expect(page.locator('.pth-hw')).toContainText('Bài tập về nhà');
+  await expect(page.locator('.pth-hw')).toContainText('Học xong cả 5 bước (0/5)');
+  await expect(page.locator('.t2-type-tab-btn[data-tpl-type="type01"] .pth-due-badge')).toContainText('📌');
 
   // Overview: 5 steps, step ① open, the rest locked; old mode tabs gone.
   await expect(page.locator('.pth-step')).toHaveCount(5);
@@ -226,6 +254,7 @@ test('Band 6+: student walks the whole path for Type 01 and progress is saved', 
   }
   await expect(page.locator('.pth-score')).toContainText('100%');
   await shot(page, '05-assemble');
+  expect(await homeworkDone()).toBe(false); // 100% memorised, but step ⑤ not done yet
   await primary(page).click(); // → ⑤
 
   // ⑤ write an essay that reuses the template frames, then compare.
@@ -257,6 +286,8 @@ test('Band 6+: student walks the whole path for Type 01 and progress is saved', 
   await page.goto('/task2-template.html?type=type01');
   await expect(page.locator('.pth-step.is-done')).toHaveCount(5);
   await expect(page.locator('.pth-review')).toBeVisible();
+  expect(await homeworkDone()).toBe(true);
+  await expect(page.locator('.pth-hw.is-done')).toContainText('Đã đạt bài tập về nhà');
   await shot(page, '07-overview-done');
   await page.setViewportSize({ width: 390, height: 844 });
   await shot(page, '08-mobile-overview');

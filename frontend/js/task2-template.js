@@ -54,6 +54,7 @@ let _progress = {};  // typeId -> progress row for _level (see backend Task2Temp
 let _view = 'overview'; // overview | warmup | read | drill | assemble | apply | review | exam
 let _run = null;        // state of the open activity
 let _showVi = true;
+let _homework = []; // class homework of type task2_template: [{title, className, deadline, typeId, level, completed}]
 
 const STEPS = [
   { key: 'warmup',   num: '①', icon: 'fa-sitemap',     title: 'Khung bài',      desc: 'Mỗi đoạn có mấy câu, bao nhiêu chữ — rồi tự sắp xếp các câu theo đúng thứ tự.' },
@@ -64,8 +65,13 @@ const STEPS = [
 ];
 const STEP_KEYS = STEPS.map(s => s.key);
 const DRILL_STAGES = ['Ghép cụm', 'Điền dần', 'Nhớ lại'];
-const ASSEMBLE_PASS = 70;  // % words recalled for ④ to count as done
-const RECALL_PASS_B7 = 90; // % words right for a free-typed sentence to count
+// "Thuộc" (memorised) = a sentence recalled with >= SENT_KNOWN % of its words
+// right. ④ and the mock test pass at >= ASSEMBLE_PASS % of the template's
+// sentences memorised — the same bar the class homework tick uses
+// (backend resourceCompletionService.checkTask2Templates).
+const SENT_KNOWN = 80;
+const ASSEMBLE_PASS = 70;
+const RECALL_PASS_B7 = 90; // % words right for a free-typed sentence to count in ③ (Band 7+)
 
 // ── Small helpers ──────────────────────────────────────────────
 const esc  = s => (window.escHtml ? window.escHtml(s) : String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]));
@@ -324,6 +330,77 @@ async function saveAttempt({ mode, total, correct, isExam = false, timeTakenSec 
     });
     if (window.ApiClient) await window.ApiClient.handleResponse(res);
   } catch {}
+  refreshHomeworkSoon();
+}
+
+// ── Class homework ("Bài tập về nhà") ──────────────────────────
+// A teacher can assign one essay type at one level. The tick (server side)
+// needs all 5 steps done AND one whole-template recall (④ or the mock test)
+// with >= 70% of the sentences memorised since it was assigned.
+let _hwLoadSeq = 0;
+async function loadHomework() {
+  const req = ++_hwLoadSeq;
+  try {
+    const res = await fetch(`${API}/api/assignments/mine`, { headers: authHeaders() });
+    const data = res.ok ? await res.json() : null;
+    if (req !== _hwLoadSeq || !data || !data.success) return;
+    const before = new Map(_homework.map(h => [h.key, h.completed]));
+    const out = [];
+    (data.assignments || []).forEach(a => (a.resources || []).forEach(r => {
+      if (r.resourceType !== 'task2_template') return;
+      const [typeId, level] = String(r.resourceCode || '').split('||');
+      if (!typeId) return;
+      out.push({ key: `${a._id}:${r.itemId}`, title: a.title || '', className: a.className || '', deadline: a.deadline || null,
+        typeId, level: level || 'band7', completed: !!r.completed });
+    }));
+    _homework = out;
+    if (out.some(h => h.completed && before.get(h.key) === false)) {
+      showToast('✅ Đạt bài tập về nhà: đã học xong và thuộc ≥ 70% số câu!', 'success', 4000);
+      updateXPStorage(10);
+    }
+    renderChrome();
+    if (_view === 'overview') renderOverview();
+  } catch {}
+}
+// Re-check after anything that can change the tick (waits for pending saves).
+function refreshHomeworkSoon() {
+  if (!_homework.some(h => !h.completed)) return;
+  _saveChain.then(() => setTimeout(loadHomework, 400));
+}
+function pendingHomework(typeId, level = _level) { return _homework.filter(h => h.typeId === typeId && h.level === level && !h.completed); }
+
+function homeworkHtml() {
+  const mine = _homework.filter(h => h.typeId === _type);
+  if (!mine.length) return '';
+  return mine.map(h => {
+    const lvlName = h.level === 'band6' ? 'Band 6+' : 'Band 7+';
+    const when = h.deadline ? ` · hạn ${new Date(h.deadline).toLocaleDateString('vi-VN')}` : '';
+    const from = `${esc(h.title)}${h.className ? ` · ${esc(h.className)}` : ''}${when}`;
+    if (h.level !== _level) {
+      return `<div class="pth-hw">
+        <div class="pth-hw-ic">📌</div>
+        <div class="pth-hw-txt"><b>Bài tập về nhà ở ${lvlName}</b><span>${from}</span></div>
+        <button class="pth-btn" onclick="switchTplLevel('${h.level}')">Chuyển sang ${lvlName}</button>
+      </div>`;
+    }
+    if (h.completed) {
+      return `<div class="pth-hw is-done">
+        <div class="pth-hw-ic">✅</div>
+        <div class="pth-hw-txt"><b>Đã đạt bài tập về nhà</b><span>${from}</span></div>
+      </div>`;
+    }
+    const p = prog();
+    const steps = STEP_KEYS.filter(k => p.steps[k]).length;
+    return `<div class="pth-hw">
+      <div class="pth-hw-ic">📌</div>
+      <div class="pth-hw-txt"><b>Bài tập về nhà — cần làm để được tick</b><span>${from}</span>
+        <ul class="pth-hw-req">
+          <li class="${steps === STEP_KEYS.length ? 'ok' : ''}">${steps === STEP_KEYS.length ? '✓' : '○'} Học xong cả 5 bước (${steps}/5)</li>
+          <li>○ Thuộc ≥ ${ASSEMBLE_PASS}% số câu khi nhớ lại cả bài — ở bước ④ Ghép cả bài hoặc Thi thử, làm sau khi được giao bài</li>
+        </ul>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── Progress maths ─────────────────────────────────────────────
@@ -382,7 +459,9 @@ function renderTabs() {
     const pct = typePct(t.id);
     const allDone = STEP_KEYS.every(k => stepDone(k, t.id));
     const due = reviewDue(t.id);
+    const hw = pendingHomework(t.id).length > 0;
     const badge = due ? '<span class="t2-tab-pct-badge pth-due-badge" title="Đến hạn ôn">🔔</span>'
+      : hw ? '<span class="t2-tab-pct-badge pth-due-badge" title="Bài tập về nhà">📌</span>'
       : allDone ? '<span class="t2-tab-done-badge">✓</span>'
       : pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '';
     const dots = STEP_KEYS.map(k => `<span class="t2-tab-mode-dot" style="${stepDone(k, t.id) ? `background:${color}` : ''}"></span>`).join('');
@@ -526,6 +605,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderChrome();
   renderTypeGuide();
   render();
+  loadHomework();
   document.getElementById('tpl-switch-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) cancelTypeSwitch(); });
   window.addEventListener('beforeunload', e => { if (_view === 'exam') { e.preventDefault(); e.returnValue = ''; } });
 });
@@ -601,8 +681,8 @@ function renderOverview() {
       const r = paras.map((_, k) => Math.min(3, p.drillRounds[k] || 0));
       meta2 = `Đoạn xong: ${r.filter(x => x >= 3).length}/${paras.length}`;
     }
-    if (s.key === 'assemble' && p.assembleBest) meta2 = `Tốt nhất: ${p.assembleBest}% · cần ≥ ${ASSEMBLE_PASS}%`;
-    if (s.key === 'assemble' && !p.assembleBest) meta2 = `Cần ≥ ${ASSEMBLE_PASS}% để hoàn thành`;
+    if (s.key === 'assemble' && p.assembleBest) meta2 = `Tốt nhất: thuộc ${p.assembleBest}% số câu · cần ≥ ${ASSEMBLE_PASS}%`;
+    if (s.key === 'assemble' && !p.assembleBest) meta2 = `Cần thuộc ≥ ${ASSEMBLE_PASS}% số câu để hoàn thành`;
     const state = done ? 'is-done' : current ? 'is-current' : open ? '' : 'is-locked';
     const btn = !open ? '<span class="pth-lock"><i class="fas fa-lock"></i></span>'
       : `<button class="pth-btn ${current ? 'pth-btn--primary' : ''}" onclick="startStep('${s.key}')">${done ? '<i class="fas fa-rotate-right"></i> Luyện lại' : current ? '<i class="fas fa-play"></i> Bắt đầu' : '<i class="fas fa-play"></i> Mở'}</button>`;
@@ -629,6 +709,7 @@ function renderOverview() {
         </div>
         <div class="t2-type-structure"><i class="fas fa-route" style="margin-right:4px;font-size:10px;opacity:.7"></i>${paras.length} đoạn · ${total} câu mẫu</div>
       </div>
+      ${homeworkHtml()}
       ${reviewCard}
       <div class="pth-steps">${cards}</div>
       <div class="pth-foot">
@@ -664,6 +745,7 @@ function startStep(key) {
 function completeStep(key, extra = {}) {
   const first = !stepDone(key);
   saveProg(Object.assign({ steps: { [key]: true } }, extra));
+  refreshHomeworkSoon();
   if (first) { updateXPStorage(10); showToast(`🎉 Xong bước ${STEPS[STEP_KEYS.indexOf(key)].num} ${STEPS[STEP_KEYS.indexOf(key)].title}! +10 XP`, 'success', 2500); }
 }
 function nextStepButton(key) {
@@ -1097,8 +1179,8 @@ function fadeCheck() {
 //   free=false → WbwDrill (word masks with first letter, wrong letters rejected)
 //   free=true  → plain textarea, graded by word diff (≥ RECALL_PASS_B7 %)
 let _recall = null;
-function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'drillNext()' }) {
-  _recall = { host, s, onDone, free, done: false, nextLabel, nextFn };
+function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'drillNext()', passPct = RECALL_PASS_B7 }) {
+  _recall = { host, s, onDone, free, done: false, nextLabel, nextFn, passPct };
   host.innerHTML = `
     <div id="pth-wbw"></div>
     <textarea class="pth-textarea" id="pth-recall-in" rows="3" placeholder="Gõ lại cả câu tiếng Anh... (không cần gõ phần trong ngoặc)"
@@ -1130,7 +1212,7 @@ function recallCheck() {
   const input = document.getElementById('pth-recall-in');
   if (!input.value.trim()) { showToast('Hãy gõ câu trả lời.', 'warn', 1800); return; }
   const d = alignWords(targetWords([r.s]), input.value);
-  _recallFinish(d.pct >= RECALL_PASS_B7, d);
+  _recallFinish(d.pct >= r.passPct, d);
 }
 function recallGiveUp() {
   const r = _recall; if (!r || r.done) return;
@@ -1143,7 +1225,7 @@ function _recallFinish(ok, diff) {
   const input = document.getElementById('pth-recall-in');
   if (input) input.readOnly = true;
   if (ok) playOk(); else playWrong();
-  const diffPart = diff ? `<div class="pth-diff">${diffHtml(diff.ops)}</div><div class="pth-muted">Đúng ${diff.pct}% số chữ${r.free ? ` (cần ≥ ${RECALL_PASS_B7}%)` : ''}</div>` : '';
+  const diffPart = diff ? `<div class="pth-diff">${diffHtml(diff.ops)}</div><div class="pth-muted">Đúng ${diff.pct}% số chữ${r.free ? ` (cần ≥ ${r.passPct}%)` : ''}</div>` : '';
   const fb = document.getElementById('pth-recall-fb');
   if (fb) fb.innerHTML = ok
     ? `<div class="pth-fb pth-fb--good">✅ Nhớ đúng!${diffPart}</div>`
@@ -1182,7 +1264,7 @@ function _asmCueHtml(p) {
 function _asmBoxHtml(p, i) {
   const res = _run.results[i];
   return `<div class="pth-asm-para">
-    <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.pct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">${res.pct}%</span>` : ''}</div>
+    <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.knownPct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">Thuộc ${res.known}/${res.sent} câu · ${res.knownPct}%</span>` : ''}</div>
     ${_asmCueHtml(p)}
     ${res ? `<div class="pth-diff pth-diff--box">${diffHtml(res.ops)}</div>`
       : `<textarea class="pth-textarea pth-asm-in" id="pth-asm-${i}" rows="${Math.max(4, p.sentences.length + 1)}" placeholder="Viết lại cả đoạn từ trí nhớ... (bỏ qua phần trong ngoặc)" oninput="_run.texts[${i}]=this.value">${esc(_run.texts[i])}</textarea>`}
@@ -1195,11 +1277,11 @@ function renderAssemble() {
   let body;
   if (r.submitted) {
     const tot = _asmTotal();
-    const pass = tot.pct >= ASSEMBLE_PASS;
+    const pass = tot.knownPct >= ASSEMBLE_PASS;
     body = `<div class="pth-card">
-        <div class="pth-score ${pass ? 'is-ok' : 'is-bad'}">${tot.pct}%</div>
-        <p class="pth-muted" style="text-align:center">Nhớ đúng ${tot.right}/${tot.total} chữ · ${tot.goodSent}/${tot.sent} câu gần như hoàn hảo${r.secs ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
-        ${pass ? '' : `<div class="pth-fb pth-fb--bad">Cần ≥ ${ASSEMBLE_PASS}% để hoàn thành bước này. Xem lại các chữ đỏ/xám rồi thử lại nhé — câu sai đã được đánh dấu để ôn nhiều hơn.</div>`}
+        <div class="pth-score ${pass ? 'is-ok' : 'is-bad'}">${tot.knownPct}%</div>
+        <p class="pth-muted" style="text-align:center">Thuộc <b>${tot.goodSent}/${tot.sent}</b> câu (một câu được tính là thuộc khi đúng ≥ ${SENT_KNOWN}% số chữ) · nhớ đúng ${tot.right}/${tot.total} chữ${r.secs ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
+        ${pass ? '' : `<div class="pth-fb pth-fb--bad">Cần thuộc ≥ ${ASSEMBLE_PASS}% số câu để hoàn thành bước này. Xem lại các chữ đỏ/xám rồi thử lại nhé — câu sai đã được đánh dấu để ôn nhiều hơn.</div>`}
         <div class="pth-legend"><span class="pth-d-ok">đúng</span> <span class="pth-d-wrong">sai</span><span class="pth-d-fix">đáp án</span> <span class="pth-d-miss">thiếu</span> <span class="pth-d-extra">thừa</span></div>
         ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
         <div class="pth-actions"><button class="pth-btn" onclick="startAssemble()"><i class="fas fa-rotate-right"></i> Làm lại</button>${pass ? nextStepButton('assemble') : ''}</div>
@@ -1231,13 +1313,16 @@ function _asmGrade(i) {
   // Per-sentence accuracy → mastery.
   const per = {};
   tw.forEach((t, k) => { per[t.sid] = per[t.sid] || [0, 0]; per[t.sid][1]++; if (d.matched[k]) per[t.sid][0]++; });
-  _run.results[i] = { ops: d.ops, pct: d.pct, right: d.matched.filter(Boolean).length, total: tw.length, per };
+  const known = Object.values(per).filter(([a, b]) => b && a / b * 100 >= SENT_KNOWN).length;
+  const sent = p.sentences.length;
+  _run.results[i] = { ops: d.ops, pct: d.pct, right: d.matched.filter(Boolean).length, total: tw.length, per,
+    known, sent, knownPct: sent ? Math.round(known / sent * 100) : 0 };
 }
 function asmCheckPara() {
   const i = _run.p;
   if (!(_run.texts[i] || '').trim()) { showToast('Hãy viết đoạn văn trước khi kiểm tra.', 'warn', 2000); return; }
   _asmGrade(i);
-  if (_run.results[i].pct >= ASSEMBLE_PASS) playOk(); else playWrong();
+  if (_run.results[i].knownPct >= ASSEMBLE_PASS) playOk(); else playWrong();
   renderAssemble();
 }
 function asmNextPara() {
@@ -1255,9 +1340,10 @@ function _asmTotal() {
   _run.results.forEach(r => {
     if (!r) return;
     right += r.right; total += r.total;
-    Object.values(r.per).forEach(([a, b]) => { sent++; if (b && a / b >= 0.8) goodSent++; });
+    sent += r.sent; goodSent += r.known;
   });
-  return { right, total, sent, goodSent, pct: total ? Math.round(right / total * 100) : 0 };
+  return { right, total, sent, goodSent, pct: total ? Math.round(right / total * 100) : 0,
+    knownPct: sent ? Math.round(goodSent / sent * 100) : 0 };
 }
 function _asmFinish() {
   _stopTimers();
@@ -1271,10 +1357,10 @@ function _asmFinish() {
     if (acc >= 0.9) bumpMastery(pending, key, 1);
     else if (acc < 0.6) bumpMastery(pending, key, -1);
   }));
-  const patch = { mastery: pending, assembleBest: tot.pct };
-  if (tot.pct >= ASSEMBLE_PASS) completeStep('assemble', patch); else saveProg(patch);
+  const patch = { mastery: pending, assembleBest: tot.knownPct };
+  if (tot.knownPct >= ASSEMBLE_PASS) completeStep('assemble', patch); else saveProg(patch);
   saveAttempt({ mode: 'path', total: tot.sent, correct: tot.goodSent, timeTakenSec: _run.secs });
-  if (tot.pct >= ASSEMBLE_PASS) playOk();
+  if (tot.knownPct >= ASSEMBLE_PASS) playOk();
   renderAssemble();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1452,6 +1538,7 @@ function renderRecallRun() {
       ${isExam ? `<img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" class="pth-tier-img">` : '<div class="pth-done-ic">⚡</div>'}
       <div class="pth-score ${pct >= 60 ? 'is-ok' : 'is-bad'}">${pct}%</div>
       <p class="pth-muted">${correct}/${total} câu nhớ đúng${isExam ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
+      ${isExam && pendingHomework(_type).length ? `<p class="pth-muted">${pct >= ASSEMBLE_PASS ? '✅ Đủ ≥ 70% số câu cho bài tập về nhà' + (STEP_KEYS.every(k => stepDone(k)) ? '.' : ' — còn cần học xong cả 5 bước.') : `Bài tập về nhà cần thuộc ≥ ${ASSEMBLE_PASS}% số câu.`}</p>` : ''}
       ${!isExam && next ? `<p class="pth-muted">Lần ôn tiếp theo: <b>${new Date(next).toLocaleDateString('vi-VN')}</b></p>` : ''}
       <div class="pth-actions">
         ${isExam ? '<button class="pth-btn" onclick="toggleExamMode()"><i class="fas fa-redo"></i> Thi lại</button>' : ''}
@@ -1471,6 +1558,7 @@ function renderRecallRun() {
     free: isExam || isB7(),
     nextLabel: last ? 'Xem kết quả' : 'Câu tiếp',
     nextFn: 'recallRunNext()',
+    passPct: isExam ? SENT_KNOWN : RECALL_PASS_B7,
     onDone: ok => {
       r.results[r.pos] = ok;
       if (!isExam) bumpMastery(r.pending, s.key, ok ? 1 : -1);
