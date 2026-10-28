@@ -26,7 +26,8 @@
  * Step 4 — seed:    node scripts/seedShadowingLessons.js
  *
  * To add a lesson: append to LESSONS (clipStart/clipEnd pick the 2–3 min
- * window of the video; only whole sentences inside it are kept), fetch its
+ * window of the video — 6 Minute English takes the whole episode; only
+ * whole sentences inside it are kept), fetch its
  * captions, re-run step 2, check the printed segments, then steps 3–4.
  * Lessons whose caption files aren't in <subsDir> are carried over
  * unchanged from the current shadowingLessons.json, so only the new
@@ -49,7 +50,10 @@
  * drops 1-based segments the captions mangled (a bleeped word, a 0.3 s blip);
  * `join: [n, …]` glues segment n to n + 1 where an overlong sentence was cut
  * mid-phrase ("I came across like a" | "while ago…"). Both use the numbers
- * the build log prints.
+ * the build log prints. `transcript: '…'` replaces the caption text with a
+ * hand-punctuated transcript when the auto captions have no punctuation —
+ * en-orig still times every word; `endAt: { n: seconds }` fixes segment n's
+ * end where the ASR put its last word far too late.
  *
  * Captions: fetch only `en-orig` (or `en-GB` for BBC) — asking yt-dlp for the
  * auto `en` track pulls YouTube's translated tracks and quickly hits HTTP 429.
@@ -193,64 +197,81 @@ const LESSONS = [
     clipStart: 98, clipEnd: 248.5,
     description: 'Nghe một bài Part 2 nói đủ 2 phút theo cấu trúc mở – thân – kết, rồi phân tích vì sao kể chuyện giúp bạn nói trôi chảy hơn.',
   },
-  {
-    slug: 'bbc-6min-scared-to-speak',
-    youtubeId: 'YAsDeXcYyTg',
-    title: 'Scared to speak English?',
-    sourceTitle: 'Scared to speak English? 6 Minute English',
-    channel: 'BBC Learning English',
-    category: '6-minute-english',
-    level: 'B1',
-    clipStart: 99, clipEnd: 260,
-    description: 'Vì sao nói tiếng Anh lại khiến ta lo lắng? Nghe câu chuyện của nhà báo Hanan Razek và ý kiến chuyên gia về "speaking anxiety".',
-  },
+  // BBC 6 Minute English — the WHOLE episode is the lesson (2026-10-28:
+  // the user wanted full videos, not a 2–3 min window), so ~70 sentences each.
   ...[
-    ['Y681hXWwhQY', 'bbc-6min-doing-nothing', 'The benefits of doing nothing', 105, 270,
+    ['YAsDeXcYyTg', 'bbc-6min-scared-to-speak', 'Scared to speak English?',
+      'Vì sao nói tiếng Anh lại khiến ta lo lắng? Nghe câu chuyện của nhà báo Hanan Razek và ý kiến chuyên gia về "speaking anxiety".'],
+    ['Y681hXWwhQY', 'bbc-6min-doing-nothing', 'The benefits of doing nothing',
       'Vì sao nhiều loài vật dành phần lớn thời gian… không làm gì? Kiến lười, sư tử và lợi ích bất ngờ của sự nhàm chán: "boredom is the mother of invention".'],
-    ['7F1iJZr-p4E', 'bbc-6min-drinking-water', 'Are you drinking enough water?', 96, 262,
+    ['7F1iJZr-p4E', 'bbc-6min-drinking-water', 'Are you drinking enough water?',
       'Có thật mỗi ngày phải uống 2 lít nước? Chuyên gia giải thích con số "ballpark figure" này và dấu hiệu mất nước.'],
-    ['C830bmzNjDc', 'bbc-6min-breakfast', 'Is breakfast the most important meal of the day?', 120, 285,
+    ['C830bmzNjDc', 'bbc-6min-breakfast', 'Is breakfast the most important meal of the day?',
       '"Breakfast like a king, dine like a pauper" — ăn sáng nhiều có tốt hơn? Từ vựng: metabolism, spike, skip a meal, lean.'],
-    ['j2PdEQpu5js', 'bbc-6min-good-sleep', 'Why you need a good night\'s sleep', 80, 246,
-      'Ngủ giúp não ghi nhớ và giải quyết vấn đề ("sleep on it"); thiếu ngủ gây stress và knock-on effects.'],
-    ['D9jZMLm72a8', 'bbc-6min-housework', 'Who does the housework?', 132, 296,
+    ['j2PdEQpu5js', 'bbc-6min-good-sleep', 'Why you need a good night\'s sleep',
+      'Ngủ giúp não ghi nhớ và giải quyết vấn đề ("sleep on it"); thiếu ngủ gây stress và knock-on effects.',
+      337], // stop at "Goodbye" — a podcast promo follows
+    ['D9jZMLm72a8', 'bbc-6min-housework', 'Who does the housework?',
       'Ai làm việc nhà? Câu chuyện từ đảo Rote (Indonesia) và Croatia: domestic chores, division of labour, pull your weight.'],
-    ['-XcALxwXJVY', 'bbc-6min-language-apps', 'Can apps teach you a language?', 55, 222,
+    ['-XcALxwXJVY', 'bbc-6min-language-apps', 'Can apps teach you a language?',
       'Học ngoại ngữ bằng app như Duolingo có hiệu quả? Implicit vs explicit learning, full immersion và kết quả một nghiên cứu.'],
-    ['2lxvNnGkdTo', 'bbc-6min-favourite-snack', 'What\'s your favourite snack?', 122, 290,
+    ['2lxvNnGkdTo', 'bbc-6min-favourite-snack', 'What\'s your favourite snack?',
       'Vì sao chúng ta thích ăn vặt? Snack là "affordable luxury", ăn "on the go" và xu hướng đồ ăn vặt "functional".'],
     // 2026-10-15: +14
-    ['_PIlvBI9rXY', 'bbc-6min-reading-brain', 'How reading shapes your brain', 86.5, 248.2,
+    ['_PIlvBI9rXY', 'bbc-6min-reading-brain', 'How reading shapes your brain',
       'Đọc sách không "tự nhiên" như nói: não phải "co-opt" nhiều vùng khác nhau. Câu chuyện người đọc được tiếng Anh nhưng mất khả năng đọc tiếng Trung.'],
-    ['QdE63sYqwd8', 'bbc-6min-stressed', 'Why are we all so stressed?', 163, 288.8,
+    ['QdE63sYqwd8', 'bbc-6min-stressed', 'Why are we all so stressed?',
       'Căng thẳng trước kỳ thi có thể giúp bạn làm bài tốt hơn ("nerves sharpen the mind"). Mẹo giảm stress: không có giải pháp "one-size-fits-all".'],
-    ['9ifQ3xRz4hM', 'bbc-6min-multiple-languages', 'Learning multiple languages', 79.3, 234.4,
+    ['9ifQ3xRz4hM', 'bbc-6min-multiple-languages', 'Learning multiple languages',
       'Biết nhiều ngôn ngữ là "a brain workout": trẻ em "tune in", "juggle" nhiều thứ tiếng; câu chuyện nhà báo nói 5 thứ tiếng.'],
-    ['hb1CBEENiPQ', 'bbc-6min-cycle-more', 'Should we cycle more?', 85.6, 238.8,
+    ['hb1CBEENiPQ', 'bbc-6min-cycle-more', 'Should we cycle more?',
       'Xe đạp "deeply ingrained" trong văn hóa Hà Lan; Dubai xây 600 km đường xe đạp vì "quality of life" và "liveability".'],
-    ['m7IlyBEyi3c', 'bbc-6min-screen-time', 'Limiting screen time for children', 110.6, 244.5,
+    ['m7IlyBEyi3c', 'bbc-6min-screen-time', 'Limiting screen time for children',
       'Không cấm hẳn công nghệ, mà dùng "intentional" hơn và "set the bar higher" — chuyên gia khuyên cha mẹ quản lý thời gian dùng màn hình của con.'],
-    ['vOuhs1mA0xo', 'bbc-6min-advertisers', 'How advertisers make us spend money', 127.3, 291.3,
+    ['vOuhs1mA0xo', 'bbc-6min-advertisers', 'How advertisers make us spend money',
       'Vì sao gọi món qua màn hình cảm ứng khiến ta tiêu nhiều hơn? "Upsell", "basket spend", "nudge theory" và "think outside the box".'],
-    ['LZYCjqAOhEE', 'bbc-6min-quieter-cities', 'Making cities feel quieter', 115, 290.1,
+    ['LZYCjqAOhEE', 'bbc-6min-quieter-cities', 'Making cities feel quieter',
       'Mumbai ồn đến 80 decibel; ở Montreal, nghệ sĩ thêm tiếng sóng biển vào công viên để nó "nghe" yên tĩnh hơn — thật "counterintuitive"!'],
-    ['d6BGuntMwCM', 'bbc-6min-zoos', 'Should animals be kept in zoos?', 91, 272.1,
+    ['d6BGuntMwCM', 'bbc-6min-zoos', 'Should animals be kept in zoos?',
       'Tranh luận hai phía về sở thú: giáo dục bảo tồn, cứu loài nguy cấp vs "zoochosis" — hợp với IELTS Writing Task 2 và Speaking Part 3.'],
-    ['Mn0mXeor0ug', 'bbc-6min-play', 'How important is play?', 160.6, 296,
+    ['Mn0mXeor0ug', 'bbc-6min-play', 'How important is play?',
       'Sân chơi "phiêu lưu" đầy đồ bỏ đi giúp trẻ tự tin và "resilient": vì sao vui chơi tự do quan trọng "by far" hơn ta nghĩ.'],
-    ['eabT4z25qxE', 'bbc-6min-say-sorry', 'How do you say sorry?', 136.2, 279.8,
+    ['eabT4z25qxE', 'bbc-6min-say-sorry', 'How do you say sorry?',
       'Người Ghana, Pakistan, Nga và Hàn Quốc xin lỗi thế nào? "Forgiveness Sunday", cúi chào, và vì sao "sorry seems to be the hardest word".'],
-    ['wCgPjVzREqs', 'bbc-6min-fast-food', 'How the world learned to love fast food', 81.9, 250.4,
+    ['wCgPjVzREqs', 'bbc-6min-fast-food', 'How the world learned to love fast food',
       'Đồ ăn nhanh và "giấc mơ Mỹ": "a can-do attitude", "at the heart of" — và vì sao Iceland không còn cửa hàng McDonald\'s nào.'],
-    ['Xbv4IIqwW-4', 'bbc-6min-best-schools', 'Which country has the best schools?', 120.9, 285.6,
+    ['Xbv4IIqwW-4', 'bbc-6min-best-schools', 'Which country has the best schools?',
       'Bảng xếp hạng PISA: các nước nhỏ như Singapore, Estonia "outpace" và "outperform" các nước lớn châu Âu nhờ không "segregate" học sinh.'],
-    ['MXCrPmVuXjs', 'bbc-6min-robot-companion', 'Would you like a robot companion?', 119, 293.6,
+    ['MXCrPmVuXjs', 'bbc-6min-robot-companion', 'Would you like a robot companion?',
       'Abi — robot bạn đồng hành "sassy", có mắt to biểu cảm và biết thổi bong bóng, mang niềm vui cho người già. Bạn có muốn một robot như vậy?'],
-    ['CrwwsrWfYDk', 'bbc-6min-twins', 'What\'s it like to be a twin?', 130.4, 299.5,
+    ['CrwwsrWfYDk', 'bbc-6min-twins', 'What\'s it like to be a twin?',
       'Làm sinh đôi có "plain sailing" không? "Nature vs nurture" và câu chuyện kỳ lạ về cặp song sinh Jim bị chia cắt từ lúc sinh.'],
-  ].map(([youtubeId, slug, title, clipStart, clipEnd, description]) => ({
+    // 2026-10-28: +10
+    ['26PrgjTboVQ', 'bbc-6min-following-dreams', 'Are you following your dreams?',
+      'Daisy sống trong một cộng đồng chia sẻ mọi thứ ở New Zealand, gia đình Zapp lái xe cổ vòng quanh thế giới 22 năm. Từ vựng: utopia, outlandish, humble, "a grain of sand".'],
+    ['vq2x7k_nofw', 'bbc-6min-exercise-lazy', 'Exercise for the lazy',
+      'Tập ít nhất bao nhiêu mà vẫn khoẻ? Tập ngắn nhưng "push yourself", đi bộ nhanh hơn, "easy wins" cho dân văn phòng và "more bang for your buck".'],
+    ['SC_opiKLohg', 'bbc-6min-driverless-cars', 'Sharing the road with driverless cars',
+      'Không có tài xế để "eye contact" hay vẫy tay — xe tự lái báo hiệu cho người đi bộ, đi xe đạp thế nào? Từ vựng: alert, glance, jaywalking.'],
+    ['h_pvijqmolQ', 'bbc-6min-books-not-screens', 'Why read books, not screens?',
+      'Đọc trên màn hình khiến ta "skim" ở "surface level"; đọc sách giấy rèn "deep reading", suy luận và thấu cảm. Mỗi ngày ta đọc tới 100.000 từ!'],
+    ['g8q-Nq-ajx8', 'bbc-6min-social-media-teens', 'Social media and teenage health',
+      'Thuật toán "feed" nội dung gây nghiện cho thanh thiếu niên vì doanh thu đến từ quảng cáo. Từ vựng: adolescent, algorithm, revenue, the onus, a losing battle.'],
+    ['pEO9-iPZQWA', 'bbc-6min-extreme-weather', 'Climate and extreme weather',
+      'Nhà khí tượng BBC giải thích weather vs climate, hurricane/cyclone/typhoon, storm surge, landslide — và vì sao chỉ 1°C nóng lên đã gây nhiều thời tiết cực đoan.'],
+    ['V2eW5jGQe8I', 'bbc-6min-unhappy-at-work', 'Are you unhappy at work?',
+      'Sếp "breathing down your neck", "presenteeism" và burnout — vì sao người Anh không vui khi đi làm, và cách làm việc theo nhiệm vụ giúp cân bằng work-life.',
+      9999, { join: [16] }], // "B. a bartender? or C." | "A traffic warden?"
+    ['we4KiShNjlA', 'bbc-6min-improving-memory', 'Improving your memory',
+      'Vẽ giúp nhớ tốt hơn viết! Các kiểu học visual, auditory, kinaesthetic; từ vựng: encode, contextual, intuitive — và món ăn nào tốt cho trí nhớ.',
+      9999, { stripSpeakers: true }], // captions carry "Neil:" / "Rob:" labels
+    ['vP3VOKBcloo', 'bbc-6min-procrastinate', 'Why do we procrastinate?',
+      'Vì sao ta cứ để việc đến phút chót? Trì hoãn là phản ứng cảm xúc từ thời tổ tiên "impulsive". Từ vựng: under pressure, gratification, oodles of time.'],
+    ['s1HxJVusR2w', 'bbc-6min-future-of-work', 'What is the future of work?',
+      'AI có lấy hết việc làm? Tuần làm việc 4 ngày? Hãy "take predictions with a pinch of salt". Từ vựng: track record, come to pass, dystopian, crop up.'],
+  ].map(([youtubeId, slug, title, description, clipEnd = 9999, opts]) => ({
     slug, youtubeId, title, sourceTitle: `${title} 6 Minute English`, channel: 'BBC Learning English',
-    category: '6-minute-english', level: 'B1', clipStart, clipEnd, description,
+    category: '6-minute-english', level: 'B1', clipStart: 0, clipEnd, description, ...opts,
   })),
   // BBC "The English We Speak": 2–3 minute comic sketches built around one
   // everyday phrase — the whole episode is the clip.
@@ -606,6 +627,55 @@ const LESSONS = [
   ].map(([youtubeId, slug, title, level, clipStart, clipEnd, src, series, description]) => ({
     slug, youtubeId, title, sourceTitle: `${src} - ${series}`, channel: 'BBC Learning English',
     category: 'grammar', level, clipStart, clipEnd, description,
+  })),
+  // ── Grammar Shorts (2026-10-28): ~1-minute grammar tips, whole Short.
+  // BBC's own grammar Shorts have no captions at all, so these come from
+  // channels with en-orig auto captions; where those are unpunctuated (or
+  // the ASR garbled a word), `transcript` gives the punctuated text.
+  ...[
+    ['xuSFg2La7b4', 'grammar-short-present-perfect-continuous', 'Present perfect continuous: "I\'ve been living here for 10 years"', 'B1', EPT,
+      'Use the Present Perfect Continuous in IELTS',
+      'have/has + been + V-ing cho việc bắt đầu trong quá khứ và vẫn còn đúng đến nay, thường đi với "for" và "since" — kèm câu trả lời IELTS Part 1 mẫu.'],
+    ['rNwqHFgc648', 'grammar-short-articles', 'Articles: a, an, the or no article?', 'B1', EPT,
+      'Don\'t make mistakes with Articles | IELTS Writing and Speaking',
+      'Khi nào không dùng mạo từ (nói chung chung), khi nào dùng "the" (cụ thể, "the rich"), "a" hay "an" (âm phụ âm / nguyên âm) — ví dụ về chủ đề thi cử.',
+      'Avoid these mistakes to improve your accuracy when speaking and in writing. Articles: a and the, and the zero article. Don\'t use an article when describing things in general. Exams put a lot of pressure on students. Use the when you\'re talking about something specific. The exams that students do in the final year of high school can shape their whole life. Use the with an adjective to describe groups. The rich are getting richer every year. Use a with words that start with a consonant sound. A large number of students study abroad every year. Use an with words that start with a vowel sound. Regular exams are an important feature of secondary school education.', { endAt: { 12: 46.2 } }],
+    ['iaflvynbvvg', 'grammar-short-question-tags', 'Question tags: "It\'s a gorgeous day, isn\'t it?"', 'B1', 'English with Lucy',
+      'How to use question tags in English',
+      'Câu khẳng định → đuôi phủ định và ngược lại, trợ động từ phải khớp; ngữ điệu xuống (đã biết câu trả lời) vs lên (hỏi thật); "aren\'t I?", "will you?" sau câu mệnh lệnh và "innit".',
+      'You need to learn how to use question tags in English. You\'re not sure how to use question tags, are you? See what I did there? Question tags are short phrases like \'are you\' that we add to the end of statements to make them into questions. If the statement is positive, use a negative question tag. It\'s a gorgeous day, isn\'t it? If the statement is negative, you guessed it, use a positive tag. You didn\'t forget the snacks, did you? The auxiliaries in the statements and questions match. Is, isn\'t. Didn\'t, did. Falling intonation means we already know the answer. You haven\'t told anyone, have you? I trust you. Rising intonation is more like a real question. You haven\'t told anyone, have you? I\'m panicking. But what tag would you use here? Shut the window. It\'s \'will you\' or \'would you\' after an imperative. How about here? I\'m invited. Aren\'t I? Not \'amn\'t I\'. English is wild, innit? Innit is a very popular question tag in the UK. It\'s casual. Okay, write a sentence using a question tag in the comments and let\'s see if you can get it right.'],
+    ['untUvCSNfMo', 'grammar-short-uncountable-nouns', 'Furniture or furnitures? Uncountable nouns', 'A2', 'English with Lucy',
+      'Is it furniture or furnitures?',
+      'Furniture, luggage, baggage, equipment, research, accommodation — những danh từ không đếm được không bao giờ thêm "s". Và nhớ: "do research", không phải "make research".'],
+    ['4WNeQqwRoXA', 'grammar-short-adjective-order', 'Adjective order: big blue sea, not blue big sea', 'B1', 'English with Lucy',
+      'Is it BIG BLUE sea or BLUE BIG sea?',
+      'Trật tự tính từ: opinion → size → age → shape → colour → origin → material → purpose. "A beautiful small old round brown Italian wooden cooking spoon".'],
+    ['EbHOMSbmuXE', 'grammar-short-dependent-prepositions', 'Married to, proud of, good at — prepositions after words', 'A2', 'English with Lucy',
+      'Is it \'married to\' or \'married with\'?',
+      'Giới từ đi kèm động từ và tính từ: married to, proud of, interested in, good at, pay for, depend on, excited about, aware of, belong to, laugh at, listen to.',
+      'You need to know these prepositions in English. I\'m going to go fast. Are you ready? Married to: I\'m married to Will. Proud of: I\'m so proud of you. Interested in: She\'s interested in baseball. Good or bad at: My dad\'s good at cooking. Pay for: I\'ll pay for dinner. Depend on: We might go for a picnic. It depends on the weather. Excited about: I\'m really excited about my trip to Japan. Wrong with: What\'s wrong with Pete? Aware of: Imogen\'s aware of the problem. Belong to: Who does this jacket belong to? Laugh at: Don\'t laugh at me. Listen to: Are you listening to me? Which of those prepositions do you use accurately? Let me know in the comments.'],
+    ['_7RnQZ4yp_k', 'grammar-short-make-or-do', 'Make or do? Outcome vs action', 'A2', 'English with Lucy',
+      'MAKE or DO - Which should you use?',
+      '"Make" = tạo ra, chú ý vào kết quả (made the cake); "do" = thực hiện hành động (did the shopping, did a great job).',
+      'Should you say make or do? What is the difference? To make is to create or prepare something. When we use make, we generally focus more on the outcome, or the product that has been made. She made her own wedding invitations. Do is to perform an action. However, when we use do in a noun or noun phrase, we focus more on the action rather than the outcome of the action. You did a great job last week. Think of do as the action, and make as the outcome. She did the shopping, but I made the cake.'],
+    ['V6d8erAPL5w', 'grammar-short-in-or-on-transport', 'In or on a bus, train or taxi?', 'A2', 'English with Lucy',
+      'IN or ON a train/bus/taxi? Use my easy trick to know every time!',
+      'Mẹo nhớ mãi: đứng thẳng bước lên được thì dùng "on" (on a bus, a train, a plane); phải cúi người ngồi vào thì dùng "in" (in a car, a taxi, a helicopter).',
+      'In a train or on a train? In a taxi or on a taxi? I will teach you how to know the correct answer every single time. If you can walk onto the vehicle standing up on your feet, then it\'s on. You get on a plane, you get on a train, you get on a bus, on a tram. If you have to crouch down and sit in the vehicle, if you have to make yourself smaller, you get in the vehicle. You get in a car, you get in a taxi, you get in a helicopter. You never have to think about it ever again. You are welcome.'],
+    ['h2ZNCKp44R8', 'grammar-short-by-from-of', 'A book by, from or of someone?', 'B1', 'mmmEnglish',
+      'BY FROM OF - what\'s the difference? English prepositions',
+      'Một giới từ nhỏ đổi cả nghĩa câu: a book by James Clear (ông ấy viết), from James Clear (ông ấy tặng), of James Clear\'s (sách của ông ấy), a book of poetry (tập thơ).',
+      'So let\'s go a little bit deeper into those moments where you need to choose between by, from and of. A book by James Clear is a book written by James Clear. He wrote this book. It\'s a book by him. But a book from James Clear is a book that James Clear gave me. So in this case, he is the starting point of the book. It\'s where it came from. But a book of James Clear\'s is a book that belongs to James Clear. Maybe he lent it to me because he wanted me to read it. A book of James Clear\'s is a book that belongs to him. A book of poetry, meaning this book is a collection of poetry, or it contains poetry. Do you see how changing something as small and insignificant as a little preposition can actually completely change the meaning of a sentence?'],
+    ['1g4s3WTzwL4', 'grammar-short-because-alternatives', 'Advanced alternatives to "because"', 'B2', 'mmmEnglish',
+      'Don\'t always use \'BECAUSE\' in English',
+      'Thay "because" bằng thanks to, owing to the fact that, as a result of, given that, in light of — rất hữu ích cho IELTS Writing và Speaking.',
+      'Because is a conjunction that connects two phrases, and it means \'for the reason that\'. I\'m wet because I got caught in the rain. But because is an extremely common English word. It\'s used all the time, and if you want to avoid repeating yourself, I\'ve got some advanced alternatives for you. Thanks to the rain, I\'m soaked. My shoes are wet owing to the fact that I stepped in a puddle. As a result of the downpour, my washing got soaked. Given that the forecast looks like rain, I\'ll go for my run tomorrow. In light of this atrocious weather, let\'s cancel our plans and stay home. Share a sentence using one of these new expressions down in the comments below.'],
+    ['uU36YYstNLU', 'grammar-short-giving-advice', 'Giving advice: should, if I were you, why don\'t you…?', 'B1', 'mmmEnglish',
+      'DOs & DON\'Ts for Giving Advice In English',
+      'Tránh "you must", "we should" và câu mệnh lệnh; thay vào đó dùng câu điều kiện "If I were you, I would…", "You should try…", "Why don\'t you…?", "Have you ever thought about…?".'],
+  ].map(([youtubeId, slug, title, level, channel, sourceTitle, description, transcript, opts]) => ({
+    slug, youtubeId, title, sourceTitle, channel, category: 'grammar', level,
+    clipStart: 0, clipEnd: 9999, useAutoText: true, description, ...(transcript && { transcript }), ...opts,
   })),
   // ── TED / TEDx Shorts (2026-10-15): ~1-minute talk excerpts, punctuated
   // auto captions. [youtubeId, slug, title, level, clipEnd, channel, sourceTitle, description]
@@ -1996,6 +2066,11 @@ const SEGMENT_FIXES = [
   // BBC The English We Speak
   [/\ba smombie's going step out\b/, 'a smombie\'s going to step out'],
   [/^no! You have deleted my script\./, 'No! You have deleted my script.'],
+  [/^furniture or furnitures\?/, 'Furniture or furnitures?'], // English with Lucy
+  [/\bFive, color\./, 'Five, colour.'], // Lucy is British; the ASR spells US
+  [/\bMy mom loves\b/, 'My mum loves'],
+  [/^So, we can say, "I've been living/, 'So, we can say: I\'ve been living'], // English Pro Tips: unclosed quote
+  [/^Daryl O'Connor: /, ''], // 6 Minute English: a two-word speaker label stripSpeakers misses
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
@@ -2290,9 +2365,17 @@ function buildLesson(spec, subsDir) {
   const find = (suffixes) => suffixes
     .map((sfx) => path.join(subsDir, `${spec.youtubeId}.${sfx}.json3`))
     .find((f) => fs.existsSync(f));
-  const manualFile = find(spec.useAutoText ? ['en-orig'] : ['en-GB', 'en-US', 'en']);
-  if (!manualFile) return null;
-  let words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers });
+  let words;
+  if (spec.transcript) {
+    // Auto captions with no punctuation: a hand-punctuated transcript gives
+    // the text, the en-orig word timings still place every word (LCS below).
+    if (!find(['en-orig'])) return null;
+    words = spec.transcript.split(/\s+/).filter((w) => norm(w)).map((text) => ({ text, start: 0, end: 0 }));
+  } else {
+    const manualFile = find(spec.useAutoText ? ['en-orig'] : ['en-GB', 'en-US', 'en']);
+    if (!manualFile) return null;
+    words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers });
+  }
 
   const autoFile = find(['en-orig']);
   let timing = 'interpolated';
@@ -2324,6 +2407,9 @@ function buildLesson(spec, subsDir) {
   for (let i = 0; i < segments.length - 1; i++) {
     if (segments[i].end > segments[i + 1].start) segments[i].end = segments[i + 1].start;
   }
+  // endAt: { n: seconds } — the ASR timed a segment's last word far too
+  // late (a Short's final word placed at the end of the outro music).
+  for (const [n, end] of Object.entries(spec.endAt || {})) segments[n - 1].end = end;
   // join: glue segment n to n + 1; skip: leave out a line the captions
   // mangled. Both count in the original 1-based numbering.
   if (spec.join) {
@@ -2343,7 +2429,7 @@ function buildLesson(spec, subsDir) {
       segments[i].text = segments[i].text[0].toUpperCase() + segments[i].text.slice(1);
     }
   }
-  const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
+  const { clipStart, clipEnd, stripSpeakers, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
   return {
     ...meta,
     clipStart: segments.length ? segments[0].start : clipStart,
@@ -2368,7 +2454,7 @@ if (require.main === module) {
       if (!prev) throw new Error(`${spec.slug}: no manual caption file in ${subsDir} and not in ${path.basename(out)} yet`);
       console.log(`\n== ${spec.slug} — no captions in ${subsDir}, kept from ${path.basename(out)}`);
       // Metadata (title, level, description…) still follows LESSONS.
-      const { clipStart, clipEnd, stripSpeakers, useAutoText, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
+      const { clipStart, clipEnd, stripSpeakers, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
       return { ...prev, ...meta, order };
     }
     console.log(`\n== ${l.slug} — ${l.segments.length} segments, ${(l.clipEnd - l.clipStart).toFixed(0)}s, ${l._timing}`);
